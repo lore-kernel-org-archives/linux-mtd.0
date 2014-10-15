@@ -1,26 +1,20 @@
+Received: from vs185185.vserver.de ([62.75.185.185] helo=DiningPhilosopher.de)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XeU0F-0007LN-NC
+ for linux-mtd@lists.infradead.org; Wed, 15 Oct 2014 19:12:56 +0000
+Received: from zoidberg (dslb-092-076-003-151.092.076.pools.vodafone-ip.de
+ [92.76.3.151])
+ by DiningPhilosopher.de (Postfix) with ESMTPSA id B20DEB8303CC
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Oct 2014 21:12:05 +0200 (CEST)
+Date: Wed, 15 Oct 2014 21:12:03 +0200
+From: Timo Warns <timo.warns@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] mtd-utils: jffs2dump: XATTR and XREF support for content
+ dump
+Message-ID: <20141015191203.GA32621@zoidberg>
 MIME-Version: 1.0
-In-Reply-To: <1375889649-14638-9-git-send-email-zonque@gmail.com>
-References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-9-git-send-email-zonque@gmail.com>
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Date: Wed, 15 Oct 2014 21:32:39 +0300
-Message-ID: <CA+E=qVe5zRoR8qVa_gyJu+qpuGHFmqoGvEHowcu_hXR01GBzTA@mail.gmail.com>
-Subject: Re: [PATCH 08/20] mmc: host: pxamci: switch over to dmaengine use
-To: Daniel Mack <zonque@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
- Haojian Zhuang <haojian.zhuang@linaro.org>, cxie4@marvell.com,
- Lars-Peter Clausen <lars@metafoo.de>, nico@linaro.org,
- Vinod Koul <vinod.koul@intel.com>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
- devicetree@vger.kernel.org, samuel@sortiz.org, Arnd Bergmann <arnd@arndb.de>,
- Mark Brown <broonie@kernel.org>, mika.westerberg@linux.intel.com,
- arm-linux <linux-arm-kernel@lists.infradead.org>,
- thomas.petazzoni@free-electrons.com, Eric Miao <eric.y.miao@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, davem@davemloft.net,
- sachin.kamat@linaro.org, kernel@pengutronix.de, djbw@fb.com,
- g.liakhovetski@gmx.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,381 +24,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Daniel,
+Add support for XATTR and XREF nodes to "dump image content" action of
+jffs2dump.
 
-On Wed, Aug 7, 2013 at 6:33 PM, Daniel Mack <zonque@gmail.com> wrote:
-> Successfully testes on a PXA3xx board.
+Signed-off-by: Timo Warns <timo.warns@gmail.com>
+---
+ jffs2dump.c |   64 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-I know it could be a bit late, but I tested your pxa-dma-3.15 branch
-rebased against 3.17 on pxa270 device,
-and unfortunatelly pxamci driver doesn't work well.
-
-It complains like this:
-
-[    4.586118] mmc0: DMA error on rx channel
-[    4.586471] mmc0: status: 1
-[    4.587340] mmcblk0: error -5 transferring data, sector 1586251, nr
-8, cmd response 0x900, card status 0xb00
-
-status == 1, it's DMA_IN_PROGRESS, so I guess it's mmp_pdma bug, it
-calls callback without calling dma_cookie_complete on appropriate
-cookie? Any ideas how to fix it?
-
-Regards,
-Vasily
-
->
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
-> ---
->  drivers/mmc/host/pxamci.c | 188 +++++++++++++++++++++++++---------------------
->  1 file changed, 102 insertions(+), 86 deletions(-)
->
-> diff --git a/drivers/mmc/host/pxamci.c b/drivers/mmc/host/pxamci.c
-> index 2c5a91b..7aa97eb 100644
-> --- a/drivers/mmc/host/pxamci.c
-> +++ b/drivers/mmc/host/pxamci.c
-> @@ -22,7 +22,9 @@
->  #include <linux/platform_device.h>
->  #include <linux/delay.h>
->  #include <linux/interrupt.h>
-> +#include <linux/dmaengine.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/dma/mmp-pdma.h>
->  #include <linux/clk.h>
->  #include <linux/err.h>
->  #include <linux/mmc/host.h>
-> @@ -37,7 +39,6 @@
->  #include <asm/sizes.h>
->
->  #include <mach/hardware.h>
-> -#include <mach/dma.h>
->  #include <linux/platform_data/mmc-pxamci.h>
->
->  #include "pxamci.h"
-> @@ -58,7 +59,6 @@ struct pxamci_host {
->         struct clk              *clk;
->         unsigned long           clkrate;
->         int                     irq;
-> -       int                     dma;
->         unsigned int            clkrt;
->         unsigned int            cmdat;
->         unsigned int            imask;
-> @@ -69,8 +69,10 @@ struct pxamci_host {
->         struct mmc_command      *cmd;
->         struct mmc_data         *data;
->
-> +       struct dma_chan         *dma_chan_rx;
-> +       struct dma_chan         *dma_chan_tx;
-> +       dma_cookie_t            dma_cookie;
->         dma_addr_t              sg_dma;
-> -       struct pxa_dma_desc     *sg_cpu;
->         unsigned int            dma_len;
->
->         unsigned int            dma_dir;
-> @@ -173,14 +175,18 @@ static void pxamci_disable_irq(struct pxamci_host *host, unsigned int mask)
->         spin_unlock_irqrestore(&host->lock, flags);
->  }
->
-> +static void pxamci_dma_irq(void *param);
-> +
->  static void pxamci_setup_data(struct pxamci_host *host, struct mmc_data *data)
->  {
-> +       struct dma_async_tx_descriptor *tx;
-> +       enum dma_data_direction direction;
-> +       struct dma_slave_config config;
-> +       struct dma_chan *chan;
->         unsigned int nob = data->blocks;
->         unsigned long long clks;
->         unsigned int timeout;
-> -       bool dalgn = 0;
-> -       u32 dcmd;
-> -       int i;
-> +       int ret;
->
->         host->data = data;
->
-> @@ -195,54 +201,46 @@ static void pxamci_setup_data(struct pxamci_host *host, struct mmc_data *data)
->         timeout = (unsigned int)clks + (data->timeout_clks << host->clkrt);
->         writel((timeout + 255) / 256, host->base + MMC_RDTO);
->
-> +       memset(&config, 0, sizeof(config));
-> +       config.src_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
-> +       config.dst_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
-> +       config.src_addr = host->res->start + MMC_RXFIFO;
-> +       config.dst_addr = host->res->start + MMC_TXFIFO;
-> +       config.src_maxburst = 32;
-> +       config.dst_maxburst = 32;
-> +
->         if (data->flags & MMC_DATA_READ) {
->                 host->dma_dir = DMA_FROM_DEVICE;
-> -               dcmd = DCMD_INCTRGADDR | DCMD_FLOWSRC;
-> -               DRCMR(host->dma_drcmrtx) = 0;
-> -               DRCMR(host->dma_drcmrrx) = host->dma | DRCMR_MAPVLD;
-> +               direction = DMA_DEV_TO_MEM;
-> +               chan = host->dma_chan_rx;
->         } else {
->                 host->dma_dir = DMA_TO_DEVICE;
-> -               dcmd = DCMD_INCSRCADDR | DCMD_FLOWTRG;
-> -               DRCMR(host->dma_drcmrrx) = 0;
-> -               DRCMR(host->dma_drcmrtx) = host->dma | DRCMR_MAPVLD;
-> +               direction = DMA_MEM_TO_DEV;
-> +               chan = host->dma_chan_tx;
->         }
->
-> -       dcmd |= DCMD_BURST32 | DCMD_WIDTH1;
-> +       config.direction = direction;
-> +
-> +       ret = dmaengine_slave_config(chan, &config);
-> +       if (ret < 0) {
-> +               dev_err(mmc_dev(host->mmc), "dma slave config failed\n");
-> +               return;
-> +       }
->
-> -       host->dma_len = dma_map_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
-> +       host->dma_len = dma_map_sg(chan->device->dev, data->sg, data->sg_len,
->                                    host->dma_dir);
->
-> -       for (i = 0; i < host->dma_len; i++) {
-> -               unsigned int length = sg_dma_len(&data->sg[i]);
-> -               host->sg_cpu[i].dcmd = dcmd | length;
-> -               if (length & 31 && !(data->flags & MMC_DATA_READ))
-> -                       host->sg_cpu[i].dcmd |= DCMD_ENDIRQEN;
-> -               /* Not aligned to 8-byte boundary? */
-> -               if (sg_dma_address(&data->sg[i]) & 0x7)
-> -                       dalgn = 1;
-> -               if (data->flags & MMC_DATA_READ) {
-> -                       host->sg_cpu[i].dsadr = host->res->start + MMC_RXFIFO;
-> -                       host->sg_cpu[i].dtadr = sg_dma_address(&data->sg[i]);
-> -               } else {
-> -                       host->sg_cpu[i].dsadr = sg_dma_address(&data->sg[i]);
-> -                       host->sg_cpu[i].dtadr = host->res->start + MMC_TXFIFO;
-> -               }
-> -               host->sg_cpu[i].ddadr = host->sg_dma + (i + 1) *
-> -                                       sizeof(struct pxa_dma_desc);
-> +       tx = dmaengine_prep_slave_sg(chan, data->sg, host->dma_len, direction,
-> +                                    DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-> +       if (!tx) {
-> +               dev_err(mmc_dev(host->mmc), "prep_slave_sg() failed\n");
-> +               return;
->         }
-> -       host->sg_cpu[host->dma_len - 1].ddadr = DDADR_STOP;
-> -       wmb();
->
-> -       /*
-> -        * The PXA27x DMA controller encounters overhead when working with
-> -        * unaligned (to 8-byte boundaries) data, so switch on byte alignment
-> -        * mode only if we have unaligned data.
-> -        */
-> -       if (dalgn)
-> -               DALGN |= (1 << host->dma);
-> -       else
-> -               DALGN &= ~(1 << host->dma);
-> -       DDADR(host->dma) = host->sg_dma;
-> +       tx->callback = pxamci_dma_irq;
-> +       tx->callback_param = host;
-> +
-> +       host->dma_cookie = dmaengine_submit(tx);
->
->         /*
->          * workaround for erratum #91:
-> @@ -251,7 +249,7 @@ static void pxamci_setup_data(struct pxamci_host *host, struct mmc_data *data)
->          * before starting DMA.
->          */
->         if (!cpu_is_pxa27x() || data->flags & MMC_DATA_READ)
-> -               DCSR(host->dma) = DCSR_RUN;
-> +               dma_async_issue_pending(chan);
->  }
->
->  static void pxamci_start_cmd(struct pxamci_host *host, struct mmc_command *cmd, unsigned int cmdat)
-> @@ -343,7 +341,7 @@ static int pxamci_cmd_done(struct pxamci_host *host, unsigned int stat)
->                  * enable DMA late
->                  */
->                 if (cpu_is_pxa27x() && host->data->flags & MMC_DATA_WRITE)
-> -                       DCSR(host->dma) = DCSR_RUN;
-> +                       dma_async_issue_pending(host->dma_chan_tx);
->         } else {
->                 pxamci_finish_request(host, host->mrq);
->         }
-> @@ -358,9 +356,8 @@ static int pxamci_data_done(struct pxamci_host *host, unsigned int stat)
->         if (!data)
->                 return 0;
->
-> -       DCSR(host->dma) = 0;
-> -       dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
-> -                    host->dma_dir);
-> +       dma_unmap_sg(host->dma_chan_rx->device->dev,
-> +                    data->sg, data->sg_len, host->dma_dir);
->
->         if (stat & STAT_READ_TIME_OUT)
->                 data->error = -ETIMEDOUT;
-> @@ -552,17 +549,25 @@ static const struct mmc_host_ops pxamci_ops = {
->         .enable_sdio_irq        = pxamci_enable_sdio_irq,
->  };
->
-> -static void pxamci_dma_irq(int dma, void *devid)
-> +static void pxamci_dma_irq(void *param)
->  {
-> -       struct pxamci_host *host = devid;
-> -       int dcsr = DCSR(dma);
-> -       DCSR(dma) = dcsr & ~DCSR_STOPIRQEN;
-> +       struct pxamci_host *host = param;
-> +       struct dma_tx_state state;
-> +       enum dma_status status;
-> +       struct dma_chan *chan;
->
-> -       if (dcsr & DCSR_ENDINTR) {
-> +       if (host->data->flags & MMC_DATA_READ)
-> +               chan = host->dma_chan_rx;
-> +       else
-> +               chan = host->dma_chan_tx;
-> +
-> +       status = dmaengine_tx_status(chan, host->dma_cookie, &state);
-> +
-> +       if (likely(status == DMA_SUCCESS)) {
->                 writel(BUF_PART_FULL, host->base + MMC_PRTBUF);
->         } else {
-> -               pr_err("%s: DMA error on channel %d (DCSR=%#x)\n",
-> -                      mmc_hostname(host->mmc), dma, dcsr);
-> +               pr_err("%s: DMA error on %s channel\n", mmc_hostname(host->mmc),
-> +                       host->data->flags & MMC_DATA_READ ? "rx" : "tx");
->                 host->data->error = -EIO;
->                 pxamci_data_done(host, 0);
->         }
-> @@ -626,6 +631,7 @@ static int pxamci_probe(struct platform_device *pdev)
->         struct pxamci_host *host = NULL;
->         struct resource *r, *dmarx, *dmatx;
->         int ret, irq, gpio_cd = -1, gpio_ro = -1, gpio_power = -1;
-> +       dma_cap_mask_t mask;
->
->         ret = pxamci_of_init(pdev);
->         if (ret)
-> @@ -671,7 +677,6 @@ static int pxamci_probe(struct platform_device *pdev)
->
->         host = mmc_priv(mmc);
->         host->mmc = mmc;
-> -       host->dma = -1;
->         host->pdata = pdev->dev.platform_data;
->         host->clkrt = CLKRT_OFF;
->
-> @@ -702,12 +707,6 @@ static int pxamci_probe(struct platform_device *pdev)
->                                      MMC_CAP_SD_HIGHSPEED;
->         }
->
-> -       host->sg_cpu = dma_alloc_coherent(&pdev->dev, PAGE_SIZE, &host->sg_dma, GFP_KERNEL);
-> -       if (!host->sg_cpu) {
-> -               ret = -ENOMEM;
-> -               goto out;
-> -       }
-> -
->         spin_lock_init(&host->lock);
->         host->res = r;
->         host->irq = irq;
-> @@ -728,32 +727,50 @@ static int pxamci_probe(struct platform_device *pdev)
->         writel(64, host->base + MMC_RESTO);
->         writel(host->imask, host->base + MMC_I_MASK);
->
-> -       host->dma = pxa_request_dma(DRIVER_NAME, DMA_PRIO_LOW,
-> -                                   pxamci_dma_irq, host);
-> -       if (host->dma < 0) {
-> -               ret = -EBUSY;
-> -               goto out;
-> -       }
-> -
->         ret = request_irq(host->irq, pxamci_irq, 0, DRIVER_NAME, host);
->         if (ret)
->                 goto out;
->
->         platform_set_drvdata(pdev, mmc);
->
-> -       dmarx = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> -       if (!dmarx) {
-> -               ret = -ENXIO;
-> +       if (!pdev->dev.of_node) {
-> +               dmarx = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> +               if (!dmarx) {
-> +                       ret = -ENXIO;
-> +                       goto out;
-> +               }
-> +               host->dma_drcmrrx = dmarx->start;
-> +
-> +               dmatx = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-> +               if (!dmatx) {
-> +                       ret = -ENXIO;
-> +                       goto out;
-> +               }
-> +               host->dma_drcmrtx = dmatx->start;
-> +       }
-> +
-> +       dma_cap_zero(mask);
-> +       dma_cap_set(DMA_SLAVE, mask);
-> +
-> +       host->dma_chan_rx =
-> +               dma_request_slave_channel_compat(mask, mmp_pdma_filter_fn,
-> +                                                &host->dma_drcmrrx,
-> +                                                &pdev->dev, "rx");
-> +       if (host->dma_chan_rx == NULL) {
-> +               dev_err(&pdev->dev, "unable to request rx dma channel\n");
-> +               ret = -ENODEV;
->                 goto out;
->         }
-> -       host->dma_drcmrrx = dmarx->start;
->
-> -       dmatx = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-> -       if (!dmatx) {
-> -               ret = -ENXIO;
-> +       host->dma_chan_tx =
-> +               dma_request_slave_channel_compat(mask, mmp_pdma_filter_fn,
-> +                                                &host->dma_drcmrtx,
-> +                                                &pdev->dev, "tx");
-> +       if (host->dma_chan_tx == NULL) {
-> +               dev_err(&pdev->dev, "unable to request tx dma channel\n");
-> +               ret = -ENODEV;
->                 goto out;
->         }
-> -       host->dma_drcmrtx = dmatx->start;
->
->         if (host->pdata) {
->                 gpio_cd = host->pdata->gpio_card_detect;
-> @@ -814,12 +831,12 @@ err_gpio_ro:
->         gpio_free(gpio_power);
->   out:
->         if (host) {
-> -               if (host->dma >= 0)
-> -                       pxa_free_dma(host->dma);
-> +               if (host->dma_chan_rx)
-> +                       dma_release_channel(host->dma_chan_rx);
-> +               if (host->dma_chan_tx)
-> +                       dma_release_channel(host->dma_chan_tx);
->                 if (host->base)
->                         iounmap(host->base);
-> -               if (host->sg_cpu)
-> -                       dma_free_coherent(&pdev->dev, PAGE_SIZE, host->sg_cpu, host->sg_dma);
->                 if (host->clk)
->                         clk_put(host->clk);
->         }
-> @@ -863,13 +880,12 @@ static int pxamci_remove(struct platform_device *pdev)
->                        END_CMD_RES|PRG_DONE|DATA_TRAN_DONE,
->                        host->base + MMC_I_MASK);
->
-> -               DRCMR(host->dma_drcmrrx) = 0;
-> -               DRCMR(host->dma_drcmrtx) = 0;
-> -
->                 free_irq(host->irq, host);
-> -               pxa_free_dma(host->dma);
-> +               dmaengine_terminate_all(host->dma_chan_rx);
-> +               dmaengine_terminate_all(host->dma_chan_tx);
-> +               dma_release_channel(host->dma_chan_rx);
-> +               dma_release_channel(host->dma_chan_tx);
->                 iounmap(host->base);
-> -               dma_free_coherent(&pdev->dev, PAGE_SIZE, host->sg_cpu, host->sg_dma);
->
->                 clk_put(host->clk);
->
-> --
-> 1.8.3.1
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+diff --git a/jffs2dump.c b/jffs2dump.c
+index 9e13e98..edac2b2 100644
+--- a/jffs2dump.c
++++ b/jffs2dump.c
+@@ -285,6 +285,47 @@ void do_dumpcontent (void)
+ 				p += PAD(je32_to_cpu (node->d.totlen));
+ 				break;
+ 
++			case JFFS2_NODETYPE_XATTR:
++				memcpy(name, node->x.data, node->x.name_len);
++				name[node->x.name_len] = '\x00';
++				printf ("%8s Xattr      node at 0x%08zx, totlen 0x%08x, xid   %5d, version %5d, name_len   %3d, name %s\n",
++						obsolete ? "Obsolete" : "",
++						p - data,
++						je32_to_cpu (node->x.totlen),
++						je32_to_cpu (node->x.xid),
++						je32_to_cpu (node->x.version),
++						node->x.name_len,
++						name);
++
++				crc = mtd_crc32 (0, node, sizeof (struct jffs2_raw_xattr) - sizeof (node->x.node_crc));
++				if (crc != je32_to_cpu (node->x.node_crc)) {
++					printf ("Wrong node_crc at  0x%08zx, 0x%08x instead of 0x%08x\n", p - data, je32_to_cpu (node->x.node_crc), crc);
++					p += PAD(je32_to_cpu (node->x.totlen));
++					dirty += PAD(je32_to_cpu (node->x.totlen));
++					continue;
++				}
++
++				crc = mtd_crc32 (0, p + sizeof (struct jffs2_raw_xattr), node->x.name_len + je16_to_cpu (node->x.value_len) + 1);
++				if (crc != je32_to_cpu (node->x.data_crc)) {
++					printf ("Wrong data_crc at  0x%08zx, 0x%08x instead of 0x%08x\n", p - data, je32_to_cpu (node->x.data_crc), crc);
++					p += PAD(je32_to_cpu (node->x.totlen));
++					dirty += PAD(je32_to_cpu (node->x.totlen));
++					continue;
++				}
++				p += PAD(je32_to_cpu (node->x.totlen));
++				break;
++
++			case JFFS2_NODETYPE_XREF:
++				printf ("%8s Xref       node at 0x%08zx, totlen 0x%08x, xid   %5d, xseqno  %5d, #ino  %8d\n",
++						obsolete ? "Obsolete" : "",
++						p - data,
++						je32_to_cpu (node->r.totlen),
++						je32_to_cpu (node->r.xid),
++						je32_to_cpu (node->r.xseqno),
++						je32_to_cpu (node->r.ino));
++				p += PAD(je32_to_cpu (node->r.totlen));
++				break;
++
+ 			case JFFS2_NODETYPE_SUMMARY: {
+ 
+ 											 int i;
+@@ -359,6 +400,29 @@ void do_dumpcontent (void)
+ 																						  break;
+ 																					  }
+ 
++														 case JFFS2_NODETYPE_XATTR : {
++																						  struct jffs2_sum_xattr_flash *spx;
++																						  spx = sp;
++																						  printf ("%14s Xattr  offset 0x%08x, totlen 0x%08x, version %5d, #xid %8d\n",
++																								  "",
++																								  je32_to_cpu (spx->offset),
++																								  je32_to_cpu (spx->totlen),
++																								  je32_to_cpu (spx->version),
++																								  je32_to_cpu (spx->xid));
++																						  sp += JFFS2_SUMMARY_XATTR_SIZE;
++																						  break;
++																					  }
++
++														 case JFFS2_NODETYPE_XREF : {
++																						  struct jffs2_sum_xref_flash *spr;
++																						  spr = sp;
++																						  printf ("%14s Xref   offset 0x%08x\n",
++																								  "",
++																								  je32_to_cpu (spr->offset));
++																						  sp += JFFS2_SUMMARY_XREF_SIZE;
++																						  break;
++																					  }
++
+ 														 default :
+ 																					  printf("Unknown summary node!\n");
+ 																					  break;
+-- 
+1.7.10.4
