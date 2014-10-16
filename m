@@ -1,29 +1,23 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XeffA-0000Lw-SH
- for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 07:39:57 +0000
-Received: from epcpsbgr2.samsung.com
- (u142.gpu120.samsung.co.kr [203.254.230.142])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0NDJ00I3V19UCQB0@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 16:39:30 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-To: 'Michael Opdenacker' <michael.opdenacker@free-electrons.com>
-References: <543F4CF0.8080404@free-electrons.com>
- <1413435515-12134-1-git-send-email-michael.opdenacker@free-electrons.com>
-In-reply-to: <1413435515-12134-1-git-send-email-michael.opdenacker@free-electrons.com>
-Subject: Re: [PATCH v2] mtd: orion_nand: fix error code path in probe
-Date: Thu, 16 Oct 2014 16:39:30 +0900
-Message-id: <000e01cfe914$528cf160$f7a6d420$%han@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: andrew@lunn.ch, 'Jingoo Han' <jg1.han@samsung.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- ezequiel.garcia@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Received: from mailsec115.isp.belgacom.be ([195.238.20.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xefy5-0005KN-T4
+ for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 07:59:31 +0000
+Date: Thu, 16 Oct 2014 09:59:04 +0200 (CEST)
+From: Fabian Frederick <fabf@skynet.be>
+Reply-To: Fabian Frederick <fabf@skynet.be>
+To: Joe Perches <joe@perches.com>
+Message-ID: <1884722160.6037.1413446344204.open-xchange@webmail.nmp.skynet.be>
+In-Reply-To: <1413305557.3269.21.camel@joe-AO725>
+References: <1413305085-7318-1-git-send-email-fabf@skynet.be>
+ <1413305557.3269.21.camel@joe-AO725>
+Subject: Re: [PATCH 1/1 linux-next] fs/jffs2/nodelist.h: remove unnecessary
+ __constant_ prefix
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +27,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, October 16, 2014 1:59 PM, Michael Opdenacker wrote:
-> 
-> This replaces kzalloc() and ioremap() calls by devm_ functions
-> in the probe() routine, which automatically release the corresponding
-> resources when probe() fails or when the device is removed.
-> 
-> This simplifies simplifies the error management code, and brings
-> the below improvements or changes:
-> 
-> A. Fixing a bug reported by "make coccicheck":
-> 
-> If "board = devm_kzalloc()" fails, the probe() function jumps
-> incorrectly to label "no_res" and therefore returns without
-> running iounmap().
-> 
-> B. Requesting the memory region
-> 
-> Using devm_ioremap_resource() makes the probe() function request
-> the corresponding memory region before running ioremap(), as
-> it is supposed to do.
-> 
-> C. Standardizing the error codes:
-> 
-> The use of devm_ioremap_resource() changes the return value:
->  * -ENOMEM instead of -EIO in case of ioremap() failure,
->  * -EINVAL instead of -ENODEV in case of platform_get_resource()
->    failure.
-> 
-> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
 
-Reviewed-by: Jingoo Han <jg1.han@samsung.com>
 
-Best regards,
-Jingoo Han
+> On 14 October 2014 at 18:52 Joe Perches <joe@perches.com> wrote:
+>
+>
+> On Tue, 2014-10-14 at 18:44 +0200, Fabian Frederick wrote:
+> > See commit fbdb8138cf0c
+> > ("checkpatch: warn on uses of __constant_ functions")
+>
+> Perhaps it'd be better to use the same
+> __builtin_constant_p test as swab.h and use
+> just one pattern instead
+>
+> > diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+> > index fa35ff7..9f0d547 100644
+> > --- a/fs/jffs2/nodelist.h
+> > +++ b/fs/jffs2/nodelist.h
+> > @@ -48,8 +48,8 @@
+> >=C2=A0 #define cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
+> >=C2=A0 #define cpu_to_jemode(x) ((jmode_t){cpu_to_be32(os_to_jffs2_mode(=
+x))})
+> >=C2=A0
+> > -#define constant_cpu_to_je16(x) ((jint16_t){__constant_cpu_to_be16(x)}=
+)
+> > -#define constant_cpu_to_je32(x) ((jint32_t){__constant_cpu_to_be32(x)}=
+)
+> > +#define constant_cpu_to_je16(x) ((jint16_t){cpu_to_be16(x)})
+> > +#define constant_cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
+>
+> So none of these constant_ things would be here
+> at all.
 
-> ---
->  drivers/mtd/nand/orion_nand.c | 39 +++++++++++----------------------------
->  1 file changed, 11 insertions(+), 28 deletions(-)
+I guess you're talking about include/uapi/linux/swab.h eg=C2=A0 =C2=A0 =C2=
+=A0 =C2=A0
+#define __swab16(x)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
+(__builtin_constant_p((__u16)(x)) ?=C2=A0 =C2=A0 =C2=A0\
+___constant_swab16(x) :=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0\
+__fswab16(x))
+
+As your commit fbdb8138cf0c states
+
+("Emit a warning when using any of these __constant_ forms:")
+
+There's no need for __constant outside include/uapi.
+So maybe we could just remove all #define constant_cpu_to_xxx
+and always call cpu_to_xxx from jffs2 instead ?
+
+Fabian
+>
+>
