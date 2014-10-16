@@ -1,20 +1,24 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xei0I-0001Pt-UM
- for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 10:09:55 +0000
-Message-ID: <1413454168.7906.154.camel@sauron.fi.intel.com>
-Subject: Re: UBI: ignore/overwrite old data/PEBs after flashing
+ id 1Xei6E-0005Cv-6n
+ for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 10:16:02 +0000
+Message-ID: <1413454534.7906.156.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 3/4] UBI: Fastmap: Care about the protection queue
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Thu, 16 Oct 2014 13:09:28 +0300
-In-Reply-To: <CACna6rxapt_J8qjMb37UnQ5iFE3DJ06U8nok_Fw=RO5UHs6Vsg@mail.gmail.com>
-References: <CACna6rxapt_J8qjMb37UnQ5iFE3DJ06U8nok_Fw=RO5UHs6Vsg@mail.gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 16 Oct 2014 13:15:34 +0300
+In-Reply-To: <543F9895.7010502@nod.at>
+References: <1412029248-22454-1-git-send-email-richard@nod.at>
+ <1412029248-22454-4-git-send-email-richard@nod.at>
+ <1412346676.3795.62.camel@sauron.fi.intel.com> <542EF3BF.1070401@nod.at>
+ <1413206263.7906.18.camel@sauron.fi.intel.com> <543BE21F.5020504@nod.at>
+ <1413213803.7906.45.camel@sauron.fi.intel.com> <543C3E60.4080507@nod.at>
+ <1413282203.7906.72.camel@sauron.fi.intel.com> <543F9895.7010502@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Felix Fietkau <nbd@openwrt.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +28,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2014-10-16 at 07:34 +0200, Rafał Miłecki wrote:
-> Hi,
-> 
-> I need some help with flashing UBI images.
-> 
-> I work with Broadcom ARM SoCs that use a CFE bootloader. In most cases
-> it doesn't provide a way to clear flash content before flashing the
-> firmware. It means that if I have 120 MiB of space for the firmware
-> and I flash 20 MiB firmware, the rest of flash (100 MiB) won't be
-> cleared. My partitioner driver will create 2 MiB partition for kernel
-> and 118 MiB partition for UBI.
+On Thu, 2014-10-16 at 12:06 +0200, Richard Weinberger wrote:
+> What I'm trying to say is, state tracking would solve the "internal state accessing" problem in a clean and
+> sane way.
 
-So what I hear is that the flasher does not provide users the "erase"
-operation, but only provides users a "write" operation?
-
-Then the solution would be to pad your image with 0xFFs and write it.
-UBI will notice PEBs which do not contain UBI headers and will erase
-them in background.
-
-And by the way, this is not related to your problem, but if you are
-using a dumb flasher and you wanna use UBIFS, you may need to check the
-"space fixup" stuff:
-
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_free_space_fixup
+Can you squeeze the stat to the lookup talbe? It contains pointers, so
+the last 2 bits could be used for the state.
