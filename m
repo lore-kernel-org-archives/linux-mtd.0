@@ -1,24 +1,31 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xei6E-0005Cv-6n
- for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 10:16:02 +0000
-Message-ID: <1413454534.7906.156.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 3/4] UBI: Fastmap: Care about the protection queue
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Date: Thu, 16 Oct 2014 13:15:34 +0300
-In-Reply-To: <543F9895.7010502@nod.at>
-References: <1412029248-22454-1-git-send-email-richard@nod.at>
- <1412029248-22454-4-git-send-email-richard@nod.at>
- <1412346676.3795.62.camel@sauron.fi.intel.com> <542EF3BF.1070401@nod.at>
- <1413206263.7906.18.camel@sauron.fi.intel.com> <543BE21F.5020504@nod.at>
- <1413213803.7906.45.camel@sauron.fi.intel.com> <543C3E60.4080507@nod.at>
- <1413282203.7906.72.camel@sauron.fi.intel.com> <543F9895.7010502@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xei9a-00071M-EZ
+ for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 10:19:31 +0000
+Received: by mail-ig0-f176.google.com with SMTP id hn15so19113813igb.3
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2014 03:19:09 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6315E6FE5@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315E62CB@NTXXIAMBX02.xacn.micron.com>
+ <CACna6rw4g1wWPv+VgL8WeA9rz-j8A6k+4bN7D=MQ9OU-BinToA@mail.gmail.com>
+ <A765B125120D1346A63912DDE6D8B6315E6F6F@NTXXIAMBX02.xacn.micron.com>
+ <CACna6rxNbPzSYbe9GjQCSAeB8FgVi6ZpgKo=AB=6nYc4QcqN1g@mail.gmail.com>
+ <A765B125120D1346A63912DDE6D8B6315E6FE5@NTXXIAMBX02.xacn.micron.com>
+Date: Thu, 16 Oct 2014 12:19:09 +0200
+Message-ID: <CACna6ryjvp1F7=u0NSK77G5X8dQgutuQRwg3AX_XCRS=MG_Vcg@mail.gmail.com>
+Subject: Re: [PATCH 1/1 v2] driver:mtd:spi-nor:fix spi_nor_scan overwrite
+ platform ID point
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: bpqw <bpqw@micron.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Marek Vasut <marex@denx.de>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,9 +35,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2014-10-16 at 12:06 +0200, Richard Weinberger wrote:
-> What I'm trying to say is, state tracking would solve the "internal state accessing" problem in a clean and
-> sane way.
+On 16 October 2014 10:41, bpqw <bpqw@micron.com> wrote:
+> By the way ,I still don't understand why you specify id NULL in you patch:
 
-Can you squeeze the stat to the lookup talbe? It contains pointers, so
-the last 2 bits could be used for the state.
+I guess I needed it for my Broadcom SPI driver, see:
+mtd: bcm53xxspiflash: new driver for SPI flahes on Broadcom ARM SoCs
+https://patchwork.ozlabs.org/patch/381902/
+
+But I'll need to re-think that and update my patch.
