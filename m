@@ -1,18 +1,27 @@
-Received: from mail-ig0-x22a.google.com ([2607:f8b0:4001:c05::22a])
+Received: from h1446028.stratoserver.net ([85.214.92.142]
+ helo=mail.ahsoftware.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xedi5-00008v-2F
- for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 05:34:49 +0000
-Received: by mail-ig0-f170.google.com with SMTP id hn15so471385igb.5
- for <linux-mtd@lists.infradead.org>; Wed, 15 Oct 2014 22:34:27 -0700 (PDT)
+ id 1Xeehd-0003c9-HL
+ for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 06:38:26 +0000
+Received: from eiche.ahsoftware (p4FC369BA.dip0.t-ipconnect.de
+ [79.195.105.186])
+ (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.ahsoftware.de (Postfix) with ESMTPSA id 799F02C9C1F9
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2014 08:37:52 +0200 (CEST)
+Message-ID: <543F678E.1030401@ahsoftware.de>
+Date: Thu, 16 Oct 2014 08:37:02 +0200
+From: Alexander Holler <holler@ahsoftware.de>
 MIME-Version: 1.0
-Date: Thu, 16 Oct 2014 07:34:27 +0200
-Message-ID: <CACna6rxapt_J8qjMb37UnQ5iFE3DJ06U8nok_Fw=RO5UHs6Vsg@mail.gmail.com>
-Subject: UBI: ignore/overwrite old data/PEBs after flashing
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Felix Fietkau <nbd@openwrt.org>
+To: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/27] Fix common bug in most nand drivers not showing
+ a device in sysfs
+References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
+In-Reply-To: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +31,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-I need some help with flashing UBI images.
+I wonder if anyone else will fix this in a maintainer-approved style 
+which doesn't use these evil leftovers from C666 called functions.
 
-I work with Broadcom ARM SoCs that use a CFE bootloader. In most cases
-it doesn't provide a way to clear flash content before flashing the
-firmware. It means that if I have 120 MiB of space for the firmware
-and I flash 20 MiB firmware, the rest of flash (100 MiB) won't be
-cleared. My partitioner driver will create 2 MiB partition for kernel
-and 118 MiB partition for UBI.
+Or will the sysfs for most NAND drivers be knowingly broken forever?
 
-So the result is that UBI partition contains 18 MiB of prebuilt
-(ubinize-d) image and 100 MiB of rubbish. This will lead to problems
-like:
-UBI warning: scan_peb: valid VID header but corrupted EC header at PEB 17
+Regards,
 
-UBI will find some old PEBs, try to use them, this may even lead to
-situation where the data from previous install will be still
-available!
+Alexander Holler
 
-
-Of course, I'm aware I should not upgrade my images this way all the
-time. Normally I would simply use
-$ ubiformat /dev/mtd0 -f ubi.img
-, but I'm trying to handle some corner cases. Sometimes the firmware
-may be broken and user may not be able to boot. In such case I need to
-be able to re-flash the firmware using bootloader (and sacrifice the
-wearing info).
-
-
-Is there some way to tell UBI to ignore & overwrite all flash data
-(including PEBs) that are placed after the flashed (ubinize-d) image?
-Could we add some magic PEB that will tell UBI that all the flash
-content after that single PEB is rubbish?
-
---=20
-Rafa=C5=82
+Am 27.05.2014 00:12, schrieb Alexander Holler:
+> A comment in mtdcore.c function add_mtd_device() which is called by
+> mtd_device_parse_register() made me wonder:
+>
+> "Caller should have set dev.parent to match the physical device."
+>
+> In fact this is not done by most nand drivers.
+>
+> What follows is a series which fixes this.
+>
+> Tested: orion and omap2
+> Compile-Tested: atmel, gpio, fsmc, gpmi, plat, pxa3xx, s3c2410, sh_flctl,
+> 		sharpsl, tmio, docg4, davinci, lpc32xx_mlc, lpc32xx_slc, mxc
+> Not tested at all (only be view, patches 19-27): bcm47, fsl_elbc, fsl_upm,
+> 		fsl_ifc, jz4740, mpc5121m, ndfc, txx9ndfmx, socrates
+>
+> The overall stat is
+>
+> 27 files changed, 36 insertions(+), 80 deletions(-)
+>
+> and it fixes 21 of these bugs.
+>
+> Regards,
+>
+> Alexander Holler
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+>
