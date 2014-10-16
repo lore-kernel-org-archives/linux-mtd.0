@@ -1,22 +1,19 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xecun-0000cQ-Mg
- for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 04:43:54 +0000
-Message-ID: <543F4CF0.8080404@free-electrons.com>
-Date: Thu, 16 Oct 2014 06:43:28 +0200
+ id 1Xed9U-0004yf-Lo
+ for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 04:59:05 +0000
 From: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH] mtd: orion_nand: fix error code path in probe
-References: <1413296198-29486-1-git-send-email-michael.opdenacker@free-electrons.com>
- <20141014213503.GD5331@lunn.ch> <20141015213953.GB23155@arch.hh.imgtec.org>
-In-Reply-To: <20141015213953.GB23155@arch.hh.imgtec.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: jg1.han@samsung.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+To: andrew@lunn.ch, ezequiel.garcia@free-electrons.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com
+Subject: [PATCH v2] mtd: orion_nand: fix error code path in probe
+Date: Thu, 16 Oct 2014 06:58:35 +0200
+Message-Id: <1413435515-12134-1-git-send-email-michael.opdenacker@free-electrons.com>
+In-Reply-To: <543F4CF0.8080404@free-electrons.com>
+References: <543F4CF0.8080404@free-electrons.com>
+Cc: Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ jg1.han@samsung.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,50 +23,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andrew, Ezequiel,
+This replaces kzalloc() and ioremap() calls by devm_ functions
+in the probe() routine, which automatically release the corresponding
+resources when probe() fails or when the device is removed.
 
-Many thanks for your review!
+This simplifies simplifies the error management code, and brings
+the below improvements or changes:
 
-On 10/15/2014 11:39 PM, Ezequiel Garcia wrote:
-> On 14 Oct 11:35 PM, Andrew Lunn wrote:
->
->> Hi Michael
->>
->> It is quite a common pattern to use:
->>
->>         res = platform_get_resource(dev, IORESOURCE_MEM, 0);
->>         c->membase = devm_ioremap_resource(&dev->dev, res);
->>         if (IS_ERR(c->membase))
->> 	   return PTR_ERR(c->membase)
->>
->> which is more compact.
+A. Fixing a bug reported by "make coccicheck":
 
-I like it, thanks for the suggestion!
+If "board = devm_kzalloc()" fails, the probe() function jumps
+incorrectly to label "no_res" and therefore returns without
+running iounmap().
 
->>
-> Be careful with this. devm_ioremap and devm_ioremap_resource are not
-> the same thing, as the former requests the region as well.
->
-> It can break things if the region is shared across several drivers.
-> I don't think this is the case, so in fact adding the request is correct,
-> but it's a more intrusive change than just "code cleanup".
+B. Requesting the memory region
 
-Right. If I understand correctly, requesting the region should always be
-done anyway, so this should be a welcome change.
+Using devm_ioremap_resource() makes the probe() function request
+the corresponding memory region before running ioremap(), as
+it is supposed to do.
 
-What Andrew suggests also changes the return value: -ENOMEM instead of
--EIO, though it should be more standard. This could have side effects too!
+C. Standardizing the error codes:
 
-I'll post a V2 right away.
+The use of devm_ioremap_resource() changes the return value:
+ * -ENOMEM instead of -EIO in case of ioremap() failure,
+ * -EINVAL instead of -ENODEV in case of platform_get_resource()
+   failure.
 
-Thanks again!
+Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+---
+ drivers/mtd/nand/orion_nand.c | 39 +++++++++++----------------------------
+ 1 file changed, 11 insertions(+), 28 deletions(-)
 
-Cheers,
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index 471b4df3a5ac..0b49d5d34c50 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -19,7 +19,7 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/clk.h>
+ #include <linux/err.h>
+-#include <asm/io.h>
++#include <linux/io.h>
+ #include <asm/sizes.h>
+ #include <linux/platform_data/mtd-orion_nand.h>
 
-Michael.
+@@ -85,33 +85,24 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 	int ret = 0;
+ 	u32 val = 0;
 
--- 
-Michael Opdenacker, CEO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-+33 484 258 098
+-	nc = kzalloc(sizeof(struct nand_chip) + sizeof(struct mtd_info), GFP_KERNEL);
+-	if (!nc) {
+-		ret = -ENOMEM;
+-		goto no_res;
+-	}
++	nc = devm_kzalloc(&pdev->dev,
++			sizeof(struct nand_chip) + sizeof(struct mtd_info),
++			GFP_KERNEL);
++	if (!nc)
++		return -ENOMEM;
+ 	mtd = (struct mtd_info *)(nc + 1);
+
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res) {
+-		ret = -ENODEV;
+-		goto no_res;
+-	}
++	io_base = devm_ioremap_resource(&pdev->dev, res);
+
+-	io_base = ioremap(res->start, resource_size(res));
+-	if (!io_base) {
+-		dev_err(&pdev->dev, "ioremap failed\n");
+-		ret = -EIO;
+-		goto no_res;
+-	}
++	if (IS_ERR(io_base))
++		return PTR_ERR(io_base);
+
+ 	if (pdev->dev.of_node) {
+ 		board = devm_kzalloc(&pdev->dev, sizeof(struct orion_nand_data),
+ 					GFP_KERNEL);
+-		if (!board) {
+-			ret = -ENOMEM;
+-			goto no_res;
+-		}
++		if (!board)
++			return -ENOMEM;
+ 		if (!of_property_read_u32(pdev->dev.of_node, "cle", &val))
+ 			board->cle = (u8)val;
+ 		else
+@@ -185,9 +176,6 @@ no_dev:
+ 		clk_disable_unprepare(clk);
+ 		clk_put(clk);
+ 	}
+-	iounmap(io_base);
+-no_res:
+-	kfree(nc);
+
+ 	return ret;
+ }
+@@ -195,15 +183,10 @@ no_res:
+ static int orion_nand_remove(struct platform_device *pdev)
+ {
+ 	struct mtd_info *mtd = platform_get_drvdata(pdev);
+-	struct nand_chip *nc = mtd->priv;
+ 	struct clk *clk;
+
+ 	nand_release(mtd);
+
+-	iounmap(nc->IO_ADDR_W);
+-
+-	kfree(nc);
+-
+ 	clk = clk_get(&pdev->dev, NULL);
+ 	if (!IS_ERR(clk)) {
+ 		clk_disable_unprepare(clk);
+--
+1.9.1
