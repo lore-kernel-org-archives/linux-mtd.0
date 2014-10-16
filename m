@@ -1,31 +1,22 @@
-Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xei9a-00071M-EZ
- for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 10:19:31 +0000
-Received: by mail-ig0-f176.google.com with SMTP id hn15so19113813igb.3
- for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2014 03:19:09 -0700 (PDT)
+ id 1XeiC9-0000x0-JM
+ for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 10:22:10 +0000
+Received: by mail-ie0-f180.google.com with SMTP id x19so3143724ier.11
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2014 03:21:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6315E6FE5@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315E62CB@NTXXIAMBX02.xacn.micron.com>
- <CACna6rw4g1wWPv+VgL8WeA9rz-j8A6k+4bN7D=MQ9OU-BinToA@mail.gmail.com>
- <A765B125120D1346A63912DDE6D8B6315E6F6F@NTXXIAMBX02.xacn.micron.com>
- <CACna6rxNbPzSYbe9GjQCSAeB8FgVi6ZpgKo=AB=6nYc4QcqN1g@mail.gmail.com>
- <A765B125120D1346A63912DDE6D8B6315E6FE5@NTXXIAMBX02.xacn.micron.com>
-Date: Thu, 16 Oct 2014 12:19:09 +0200
-Message-ID: <CACna6ryjvp1F7=u0NSK77G5X8dQgutuQRwg3AX_XCRS=MG_Vcg@mail.gmail.com>
-Subject: Re: [PATCH 1/1 v2] driver:mtd:spi-nor:fix spi_nor_scan overwrite
- platform ID point
+In-Reply-To: <CAFLxGvzCAaixC6ahfqRfr+7SRrrrrQ8ubA3WrfqzCPwfLP=tOg@mail.gmail.com>
+References: <CACna6rxapt_J8qjMb37UnQ5iFE3DJ06U8nok_Fw=RO5UHs6Vsg@mail.gmail.com>
+ <CAFLxGvzCAaixC6ahfqRfr+7SRrrrrQ8ubA3WrfqzCPwfLP=tOg@mail.gmail.com>
+Date: Thu, 16 Oct 2014 12:21:47 +0200
+Message-ID: <CACna6ryuPpRuxjk3FA0kfq4VGpZfmZZhv6Py2KesSjXrCOqbHw@mail.gmail.com>
+Subject: Re: UBI: ignore/overwrite old data/PEBs after flashing
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: bpqw <bpqw@micron.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: Marek Vasut <marex@denx.de>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "grmoore@altera.com" <grmoore@altera.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "shijie8@gmail.com" <shijie8@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: Felix Fietkau <nbd@openwrt.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,11 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 16 October 2014 10:41, bpqw <bpqw@micron.com> wrote:
-> By the way ,I still don't understand why you specify id NULL in you patch:
+On 16 October 2014 11:10, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> On Thu, Oct 16, 2014 at 7:34 AM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.co=
+m> wrote:
+>> Hi,
+>>
+>> I need some help with flashing UBI images.
+>>
+>> I work with Broadcom ARM SoCs that use a CFE bootloader. In most cases
+>> it doesn't provide a way to clear flash content before flashing the
+>> firmware. It means that if I have 120 MiB of space for the firmware
+>> and I flash 20 MiB firmware, the rest of flash (100 MiB) won't be
+>> cleared. My partitioner driver will create 2 MiB partition for kernel
+>> and 118 MiB partition for UBI.
+>>
+>> So the result is that UBI partition contains 18 MiB of prebuilt
+>> (ubinize-d) image and 100 MiB of rubbish. This will lead to problems
+>> like:
+>> UBI warning: scan_peb: valid VID header but corrupted EC header at PEB 1=
+7
+>>
+>> UBI will find some old PEBs, try to use them, this may even lead to
+>> situation where the data from previous install will be still
+>> available!
+>>
+>>
+>> Of course, I'm aware I should not upgrade my images this way all the
+>> time. Normally I would simply use
+>> $ ubiformat /dev/mtd0 -f ubi.img
+>> , but I'm trying to handle some corner cases. Sometimes the firmware
+>> may be broken and user may not be able to boot. In such case I need to
+>> be able to re-flash the firmware using bootloader (and sacrifice the
+>> wearing info).
+>>
+>>
+>> Is there some way to tell UBI to ignore & overwrite all flash data
+>> (including PEBs) that are placed after the flashed (ubinize-d) image?
+>> Could we add some magic PEB that will tell UBI that all the flash
+>> content after that single PEB is rubbish?
+>
+> I'm confused. Do you always use the same UBI sequence number?
+> If you flash only 20MiB why do you create a much larger MTD partition?
 
-I guess I needed it for my Broadcom SPI driver, see:
-mtd: bcm53xxspiflash: new driver for SPI flahes on Broadcom ARM SoCs
-https://patchwork.ozlabs.org/patch/381902/
+I tried to explain everything, but ofc forgot about this.
 
-But I'll need to re-think that and update my patch.
+The answer is:
+vol_flags=3Dautoresize
+I create much bigger MTD partition, because I want UBI to resize my
+partition (to let user use whole flash space).
+
+--=20
+Rafa=C5=82
