@@ -1,23 +1,24 @@
-Received: from mailsec115.isp.belgacom.be ([195.238.20.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xefy5-0005KN-T4
- for linux-mtd@lists.infradead.org; Thu, 16 Oct 2014 07:59:31 +0000
-Date: Thu, 16 Oct 2014 09:59:04 +0200 (CEST)
-From: Fabian Frederick <fabf@skynet.be>
-Reply-To: Fabian Frederick <fabf@skynet.be>
-To: Joe Perches <joe@perches.com>
-Message-ID: <1884722160.6037.1413446344204.open-xchange@webmail.nmp.skynet.be>
-In-Reply-To: <1413305557.3269.21.camel@joe-AO725>
-References: <1413305085-7318-1-git-send-email-fabf@skynet.be>
- <1413305557.3269.21.camel@joe-AO725>
-Subject: Re: [PATCH 1/1 linux-next] fs/jffs2/nodelist.h: remove unnecessary
- __constant_ prefix
+From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Rafal Milecki <zajec5@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: RE: [PATCH 1/1 v2] driver:mtd:spi-nor:fix spi_nor_scan overwrite
+ platform ID point
+Date: Thu, 16 Oct 2014 08:00:51 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315E6F6F@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315E62CB@NTXXIAMBX02.xacn.micron.com>
+ <CACna6rw4g1wWPv+VgL8WeA9rz-j8A6k+4bN7D=MQ9OU-BinToA@mail.gmail.com>
+In-Reply-To: <CACna6rw4g1wWPv+VgL8WeA9rz-j8A6k+4bN7D=MQ9OU-BinToA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: Marek Vasut <marex@denx.de>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-> On 14 October 2014 at 18:52 Joe Perches <joe@perches.com> wrote:
->
->
-> On Tue, 2014-10-14 at 18:44 +0200, Fabian Frederick wrote:
-> > See commit fbdb8138cf0c
-> > ("checkpatch: warn on uses of __constant_ functions")
->
-> Perhaps it'd be better to use the same
-> __builtin_constant_p test as swab.h and use
-> just one pattern instead
->
-> > diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
-> > index fa35ff7..9f0d547 100644
-> > --- a/fs/jffs2/nodelist.h
-> > +++ b/fs/jffs2/nodelist.h
-> > @@ -48,8 +48,8 @@
-> >=C2=A0 #define cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
-> >=C2=A0 #define cpu_to_jemode(x) ((jmode_t){cpu_to_be32(os_to_jffs2_mode(=
-x))})
-> >=C2=A0
-> > -#define constant_cpu_to_je16(x) ((jint16_t){__constant_cpu_to_be16(x)}=
-)
-> > -#define constant_cpu_to_je32(x) ((jint32_t){__constant_cpu_to_be32(x)}=
-)
-> > +#define constant_cpu_to_je16(x) ((jint16_t){cpu_to_be16(x)})
-> > +#define constant_cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
->
-> So none of these constant_ things would be here
-> at all.
-
-I guess you're talking about include/uapi/linux/swab.h eg=C2=A0 =C2=A0 =C2=
-=A0 =C2=A0
-#define __swab16(x)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
-(__builtin_constant_p((__u16)(x)) ?=C2=A0 =C2=A0 =C2=A0\
-___constant_swab16(x) :=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0\
-__fswab16(x))
-
-As your commit fbdb8138cf0c states
-
-("Emit a warning when using any of these __constant_ forms:")
-
-There's no need for __constant outside include/uapi.
-So maybe we could just remove all #define constant_cpu_to_xxx
-and always call cpu_to_xxx from jffs2 instead ?
-
-Fabian
->
->
+PlRoZXJlIGFyZSBhIGxvdCBvZiBjaGFuZ2VzIGhhcHBlbmluZy9yZXF1ZXN0ZWQgYXJvdW5kIHRo
+aXMgY29kZS4gSSBhbHNvIHByb3Bvc2VkIHNvbWUgcGF0Y2ggdG91Y2hpbmcgdGhpcyBjb2RlLCBz
+ZWUgaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wYXRjaC8zNzc5MTcvDQoNCj5SaWdodCBu
+b3cgdGhlcmUgaXMgYSBzbG93IG9uZ29pbmcgd29yayBvbiBmaXhpbmcgc29tZSBtMjVwODAgcmVn
+cmVzc2lvbiwgd2hpY2ggYWxzbyBtYXkgdG91Y2ggdGhlIGNvZGUgeW91IGNoYW5nZS4gU28gSSds
+bCBzdWdnZXN0IHBvc3Rwb25pbmcgdGhpcyBwYXRjaCB1bnRpbCB3ZSBnZXQgYSByZWdyZXNzaW9u
+IGZpeGVkIGFuZCB0aGVuIHdvcmsgb24gdGhpcyBoYWNreSBjb2RlIGFnYWluLg0KDQoNClRoYW5r
+cyBmb3IgeW91ciBjb25jZXJucy5CdXQgZm9yIHRoZSBzYW1lIGRlaXZjZSBpZCB3aXRoIHRoZSBk
+aWZmZXJlbnQgZXh0ZW5kZWQgaWQgYW5kDQp0aGUgc2FtZSBkZXZpY2UgbmFtZSB3aXRoIHRoZSBk
+aWZmZXJlbnQgZGV2aWNlIGlkIGlzc3VlLCBpbiB5b3VyIHBhdGNoLHRoaXMgZG9lc24ndCB0YWtl
+DQppbnRvIGFjY291bnQuIEkgaGF2ZSBlbmNvdW50ZXJlZCB0aGlzIHNpdHVhdGlvbi4gZm9yIGV4
+YW1wbGU6DQoNCg0KZmlyc3QgY29uZGl0aW9uIChmb3IgdGhlIHNhbWUgZGVpdmNlIGlkIHdpdGgg
+dGhlIGRpZmZlcmVudCBleHRlbmRlZCBpZCk6DQoNCgl7ICJuMjVxMDY0IiwgICAgIElORk8oMHgy
+MGJhMTcsIDAsIDY0ICogMTAyNCwgIDEyOCwgMCkgfSwNCgl7ICJuMjVtbDA2NCIsICAgIElORk8o
+MHgyMGJhMTcsIDB4MTIzNCwgNjQgKiAxMDI0LCAgMjU2LCAwKSB9LC8vcmlnaHQgZGV2aWNlIGRh
+dGENCgl7ICJuMjVxMTI4YTEzIiwgIElORk8oMHgyMGJhMTgsIDAsIDY0ICogMTAyNCwgIDI1Niwg
+MCkgfSwNCgl7ICJuMjVxMjU2YSIsICAgIElORk8oMHgyMGJhMTksIDAsIDY0ICogMTAyNCwgIDUx
+MiwgU0VDVF80SykgfSwNCgl7ICJuMjVxNTEyYSIsICAgIElORk8oMHgyMGJiMjAsIDAsIDY0ICog
+MTAyNCwgMTAyNCwgU0VDVF80SykgfSwNCg0Kc2Vjb25kIGNvbmRpdGlvbih0aGUgc2FtZSBkZXZp
+Y2UgaWQgd2l0aCB0aGUgZGlmZmVyZW50IGRldmljZSBuYW1lKToNCg0KIAl7ICJuMjV0bDI4Iiwg
+ICAgIElORk8oMHgyMGJhMTcsIDAsIDY0ICogMTAyNCwgIDEyOCwgMCkgfSwNCgl7ICJuMjVtbDAy
+OCIsICAgICBJTkZPKDB4MjBiYTE3LCAwLCA2NCAqIDEwMjQsICAyNTYsIDApIH0sLy9yaWdodCBk
+ZXZpY2UgZGF0YQ0KCXsgIm4yNXExMjhhMTMiLCAgSU5GTygweDIwYmExOCwgMCwgNjQgKiAxMDI0
+LCAgMjU2LCAwKSB9LA0KCXsgIm4yNXEyNTZhIiwgICAgSU5GTygweDIwYmExOSwgMCwgNjQgKiAx
+MDI0LCAgNTEyLCBTRUNUXzRLKSB9LA0KCXsgIm4yNXE1MTJhIiwgICAgSU5GTygweDIwYmIyMCwg
+MCwgNjQgKiAxMDI0LCAxMDI0LCBTRUNUXzRLKSB9LA0K
