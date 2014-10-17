@@ -1,27 +1,23 @@
-Received: from h1446028.stratoserver.net ([85.214.92.142]
- helo=mail.ahsoftware.de)
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xf3ch-00033V-Mf
- for linux-mtd@lists.infradead.org; Fri, 17 Oct 2014 09:15:00 +0000
-Received: from eiche.ahsoftware (p4FC36386.dip0.t-ipconnect.de [79.195.99.134])
- (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mail.ahsoftware.de (Postfix) with ESMTPSA id 393412C9C3CA
- for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2014 11:14:39 +0200 (CEST)
-Message-ID: <5440DDDA.90502@ahsoftware.de>
-Date: Fri, 17 Oct 2014 11:14:02 +0200
-From: Alexander Holler <holler@ahsoftware.de>
+ id 1Xf5AW-0000JO-TI
+ for linux-mtd@lists.infradead.org; Fri, 17 Oct 2014 10:54:01 +0000
+Received: by mail-wi0-f171.google.com with SMTP id em10so1704575wid.16
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2014 03:53:37 -0700 (PDT)
 MIME-Version: 1.0
-To: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/27] Fix common bug in most nand drivers not showing
- a device in sysfs
+In-Reply-To: <543F678E.1030401@ahsoftware.de>
 References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
  <543F678E.1030401@ahsoftware.de>
-In-Reply-To: <543F678E.1030401@ahsoftware.de>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Date: Fri, 17 Oct 2014 12:53:37 +0200
+Message-ID: <CAH6sp9O=36FTGg4FTCywsNzdJi4PjUmiiT6_EHr=i166+NA2ng@mail.gmail.com>
+Subject: Re: [PATCH 00/27] Fix common bug in most nand drivers not showing a
+ device in sysfs
+From: Frans Klaver <fransklaver@gmail.com>
+To: Alexander Holler <holler@ahsoftware.de>
+Content-Type: text/plain; charset=UTF-8
 Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,64 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 16.10.2014 08:37, schrieb Alexander Holler:
-> Hello,
+On Thu, Oct 16, 2014 at 8:37 AM, Alexander Holler <holler@ahsoftware.de> wrote:
 >
-> I wonder if anyone else will fix this in a maintainer-approved style
-> which doesn't use these evil leftovers from C666 called functions.
->
-> Or will the sysfs for most NAND drivers be knowingly broken forever?
+> I wonder if anyone else will fix this in a maintainer-approved style which
+> doesn't use these evil leftovers from C666 called functions.
 
+I'll pick this up then.
 
-To explain that a bit more:
+Still interested in following progress?
 
-1. The reason I had to write 27 patches instead of just one is that such 
-a function didn't exist. Therefor I've implemented one.
-
-2. I was kind to write 27 patches to fix that silly bug.
-
-3. I'm no fool and I will NOT write n * 21 patches in order to brutforce 
-some maintainers prefered style.
-
-
-
->
-> Regards,
->
-> Alexander Holler
->
-> Am 27.05.2014 00:12, schrieb Alexander Holler:
->> A comment in mtdcore.c function add_mtd_device() which is called by
->> mtd_device_parse_register() made me wonder:
->>
->> "Caller should have set dev.parent to match the physical device."
->>
->> In fact this is not done by most nand drivers.
->>
->> What follows is a series which fixes this.
->>
->> Tested: orion and omap2
->> Compile-Tested: atmel, gpio, fsmc, gpmi, plat, pxa3xx, s3c2410, sh_flctl,
->>         sharpsl, tmio, docg4, davinci, lpc32xx_mlc, lpc32xx_slc, mxc
->> Not tested at all (only be view, patches 19-27): bcm47, fsl_elbc,
->> fsl_upm,
->>         fsl_ifc, jz4740, mpc5121m, ndfc, txx9ndfmx, socrates
->>
->> The overall stat is
->>
->> 27 files changed, 36 insertions(+), 80 deletions(-)
->>
->> and it fixes 21 of these bugs.
->>
->> Regards,
->>
->> Alexander Holler
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe
->> linux-kernel" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->> Please read the FAQ at  http://www.tux.org/lkml/
->>
->
+Frans
