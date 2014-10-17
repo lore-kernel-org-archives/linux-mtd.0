@@ -1,19 +1,23 @@
-Received: from mail-yh0-x22f.google.com ([2607:f8b0:4002:c01::22f])
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XfCJj-0004yX-5Z
- for linux-mtd@lists.infradead.org; Fri, 17 Oct 2014 18:31:59 +0000
-Received: by mail-yh0-f47.google.com with SMTP id c41so611748yho.34
- for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2014 11:31:37 -0700 (PDT)
+ id 1XfCTt-0000D5-S9
+ for linux-mtd@lists.infradead.org; Fri, 17 Oct 2014 18:42:30 +0000
+Received: by mail-lb0-f179.google.com with SMTP id l4so1159069lbv.10
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2014 11:42:07 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1407804896-1808-3-git-send-email-shijie.huang@intel.com>
+References: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
+ <1407804896-1808-3-git-send-email-shijie.huang@intel.com>
+Date: Fri, 17 Oct 2014 15:42:07 -0300
+Message-ID: <CAOMZO5DdkB1VeSpO0S+Fos1Ct31GqC7CTD7C350BW3xBSH_jhw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd: spi-nor: add support for s25fl128s
 From: Fabio Estevam <festevam@gmail.com>
-To: computersforpeace@gmail.com
-Subject: [PATCH 2/2] mtd: fsl-quadspi: Provide an error code on
- spi_nor_match_id() failure
-Date: Fri, 17 Oct 2014 15:31:09 -0300
-Message-Id: <1413570669-30738-2-git-send-email-festevam@gmail.com>
-In-Reply-To: <1413570669-30738-1-git-send-email-festevam@gmail.com>
-References: <1413570669-30738-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
- b45815@freescale.com, linux-mtd@lists.infradead.org
+To: Huang Shijie <shijie.huang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +27,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+Hi Brian,
 
-If spi_nor_match_id fails then we need to propagate an error code into 'ret',
-otherwise the probe function will succeed.
+On Mon, Aug 11, 2014 at 9:54 PM, Huang Shijie <shijie.huang@intel.com> wrote:
+> We need to store the six bytes ID for s25fl128s, since it shares the same
+> five bytes with s25fl129p1.
+>
+> This patch adds a macro INFO6 which is used for the six bytes ID flash, and adds
+> a new item for the s25fl128s.
+>
+> Signed-off-by: Huang Shijie <shijie.huang@intel.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c |   18 ++++++++++++++++++
+>  1 files changed, 18 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index a0923b0..c130bf7 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -471,6 +471,23 @@ err:
+>                 .flags = (_flags),                                      \
+>         })
+>
+> +#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)    \
+> +       ((kernel_ulong_t)&(struct flash_info) {                         \
+> +               .id = {                                                 \
+> +                       ((_jedec_id) >> 16) & 0xff,                     \
+> +                       ((_jedec_id) >> 8) & 0xff,                      \
+> +                       (_jedec_id) & 0xff,                             \
+> +                       ((_ext_id) >> 16) & 0xff,                       \
+> +                       ((_ext_id) >> 8) & 0xff,                        \
+> +                       (_ext_id) & 0xff,                               \
+> +                       },                                              \
+> +               .id_len = 6,                                            \
+> +               .sector_size = (_sector_size),                          \
+> +               .n_sectors = (_n_sectors),                              \
+> +               .page_size = 256,                                       \
+> +               .flags = (_flags),                                      \
+> +       })
+> +
+>  #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_width, _flags)  \
+>         ((kernel_ulong_t)&(struct flash_info) {                         \
+>                 .sector_size = (_sector_size),                          \
+> @@ -565,6 +582,7 @@ const struct spi_device_id spi_nor_ids[] = {
+>         { "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+>         { "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+>         { "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+> +       { "s25fl128s",  INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_QUAD_READ) },
+>         { "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, 0) },
+>         { "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, 0) },
+>         { "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+We have a s25fl128s flash on imx6sx-sdb board and this patch would be helpful.
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index c5d10c3..4a2799f 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -911,8 +911,10 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 			goto map_failed;
- 
- 		id = spi_nor_match_id(modalias);
--		if (!id)
-+		if (!id) {
-+			ret = -EINVAL;
- 			goto map_failed;
-+		}
- 
- 		ret = of_property_read_u32(np, "spi-max-frequency",
- 				&q->clk_rate);
--- 
-1.9.1
+Do you see any issues with it?
+
+Thanks,
+
+Fabio Estevam
