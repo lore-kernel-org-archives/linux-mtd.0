@@ -1,24 +1,23 @@
-Date: Sun, 19 Oct 2014 10:20:38 +0800
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XfgGc-0003OR-Bi
+ for linux-mtd@lists.infradead.org; Sun, 19 Oct 2014 02:30:46 +0000
+Received: by mail-pa0-f43.google.com with SMTP id lf10so3025588pab.30
+ for <linux-mtd@lists.infradead.org>; Sat, 18 Oct 2014 19:30:24 -0700 (PDT)
+Date: Sun, 19 Oct 2014 10:30:10 +0800
 From: Huang Shijie <shijie8@gmail.com>
-To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-Subject: Re: [PATCH v3 0/3] mtd: nand: gpmi: add proper raw access support
-Message-ID: <20141019022035.GA1412@localhost.localdomain>
-References: <1411481256-29141-1-git-send-email-boris.brezillon@free-electrons.com>
- <20141008142437.GA9912@localhost.localdomain>
- <20141008171034.1506550f@bbrezillon>
- <20141010144248.GA5107@localhost.localdomain>
- <EACD232272DA4849B060F0828564D13B44955ABE1F@ntcex01.corp.netcomm.com.au>
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: fsl-quadspi: Propagate the error from
+ of_modalias_node()
+Message-ID: <20141019023007.GB1412@localhost.localdomain>
+References: <1413570669-30738-1-git-send-email-festevam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <EACD232272DA4849B060F0828564D13B44955ABE1F@ntcex01.corp.netcomm.com.au>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Mike Voytovich <mvoytovich@paypal.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <1413570669-30738-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
+ b45815@freescale.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 14, 2014 at 04:50:27PM +1100, Iwo Mergler wrote:
+On Fri, Oct 17, 2014 at 03:31:08PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 > 
-> >
-> > No, it doesn't seem to be correct.
-> > But it's an MLC flash, so you'll most probably need to apply this patch
-> > to nandbiterrs testsuite:
-> >
-> > http://code.bulix.org/f69wuu-87021
-> >
-> > This patch is flashing the block between each bitflip insertion to
-> > avoid multiple write without erasure (which, AFAIK, is not supported
-> > by MLC flashes).
+> The 'map_failed' label will return 'ret', so we need to assign the error
+> code to 'ret', otherwise the probe function will return success.
 > 
-> Hi Huang,
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 8d659a2..c5d10c3 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -906,7 +906,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  		nor->prepare = fsl_qspi_prep;
+>  		nor->unprepare = fsl_qspi_unprep;
+>  
+> -		if (of_modalias_node(np, modalias, sizeof(modalias)) < 0)
+> +		ret = of_modalias_node(np, modalias, sizeof(modalias));
+> +		if (ret < 0)
+>  			goto map_failed;
+>  
+>  		id = spi_nor_match_id(modalias);
+> -- 
+> 1.9.1
 > 
-> just out of interest, have you tried this on the MLC NAND without the patch?
-> 
-> I'm aware that MLC says you shouldn't write multiple times, but that is
-> with a view towards specified data endurance. I would only expect a few
-> additional bit errors during the test.
-> 
-> Did you try the overwrite test?
-> 
-The following is the test result for overwrite with this MLC patch:
+thanks, please add my acks to both the patches.
 
-root@imx6qdlsolo:~# insmod mtd_nandbiterrs.ko dev=1 mode=1
-[  762.534714] 
-[  762.536259] ==================================================
-[  762.542115] mtd_nandbiterrs: MTD device: 1
-[  762.546326] mtd_nandbiterrs: MTD device size 16777216,
-	eraseblock=2097152, page=8192, oob=744
-	[  762.554937] mtd_nandbiterrs: Device uses 1 subpages of 8192
-	bytes
-	[  762.561059] mtd_nandbiterrs: Using page=0, offset=0,
-	eraseblock=0
-	[  762.571333] mtd_nandbiterrs: overwrite biterrors test
-	[  762.576715] mtd_nandbiterrs: write_page
-	[  762.590448] mtd_nandbiterrs: error: read failed at 0x0
-	[  762.595650] mtd_nandbiterrs: Read reported error -74
-	[  762.600625] mtd_nandbiterrs: Bit error histogram (0
-			operations total):
-	[  762.608586] mtd_nandbiterrs: finished successfully.
-	[  762.613501]
-	==================================================
-	insmod: ERROR: could not insert module mtd_nandbiterrs.ko:
-	Input/output error
-
-
-thanks	   
-
-Huang Shijie
+Acked-by: Huang Shijie <shijie8@gmail.com>
