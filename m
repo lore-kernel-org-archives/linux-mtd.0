@@ -1,23 +1,21 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XfgGc-0003OR-Bi
- for linux-mtd@lists.infradead.org; Sun, 19 Oct 2014 02:30:46 +0000
-Received: by mail-pa0-f43.google.com with SMTP id lf10so3025588pab.30
- for <linux-mtd@lists.infradead.org>; Sat, 18 Oct 2014 19:30:24 -0700 (PDT)
-Date: Sun, 19 Oct 2014 10:30:10 +0800
+ id 1XfgHh-0003ep-BL
+ for linux-mtd@lists.infradead.org; Sun, 19 Oct 2014 02:31:54 +0000
+Received: by mail-pd0-f170.google.com with SMTP id p10so2911026pdj.29
+ for <linux-mtd@lists.infradead.org>; Sat, 18 Oct 2014 19:31:32 -0700 (PDT)
+Date: Sun, 19 Oct 2014 10:31:19 +0800
 From: Huang Shijie <shijie8@gmail.com>
 To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 1/2] mtd: fsl-quadspi: Propagate the error from
- of_modalias_node()
-Message-ID: <20141019023007.GB1412@localhost.localdomain>
-References: <1413570669-30738-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH] mtd : fsl-quadspi: Let the clocks error path be clearer
+Message-ID: <20141019023117.GC1412@localhost.localdomain>
+References: <1413576841-5707-1-git-send-email-festevam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1413570669-30738-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1413576841-5707-1-git-send-email-festevam@gmail.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
- b45815@freescale.com, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 17, 2014 at 03:31:08PM -0300, Fabio Estevam wrote:
+On Fri, Oct 17, 2014 at 05:14:01PM -0300, Fabio Estevam wrote:
 > From: Fabio Estevam <fabio.estevam@freescale.com>
 > 
-> The 'map_failed' label will return 'ret', so we need to assign the error
-> code to 'ret', otherwise the probe function will return success.
+> When clk_prepare_enable(q->clk) fails it is clearer to disable the previous
+> acquired clock (q->clk_en) in the error path rather than doing it locally.
+> 
+> So disable q->clk_en in the error path only.
 > 
 > Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 > ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 8d659a2..c5d10c3 100644
+> index e1c517d..8006f26 100644
 > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -906,7 +906,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  		nor->prepare = fsl_qspi_prep;
->  		nor->unprepare = fsl_qspi_unprep;
+> @@ -843,9 +843,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
 >  
-> -		if (of_modalias_node(np, modalias, sizeof(modalias)) < 0)
-> +		ret = of_modalias_node(np, modalias, sizeof(modalias));
-> +		if (ret < 0)
->  			goto map_failed;
+>  	ret = clk_prepare_enable(q->clk);
+>  	if (ret) {
+> -		clk_disable_unprepare(q->clk_en);
+>  		dev_err(dev, "can not enable the qspi clock\n");
+> -		goto map_failed;
+> +		goto clk_failed;
+>  	}
 >  
->  		id = spi_nor_match_id(modalias);
+>  	/* find the irq */
+> @@ -966,6 +965,7 @@ last_init_failed:
+>  
+>  irq_failed:
+>  	clk_disable_unprepare(q->clk);
+> +clk_failed:
+>  	clk_disable_unprepare(q->clk_en);
+>  map_failed:
+>  	dev_err(dev, "Freescale QuadSPI probe failed\n");
 > -- 
 > 1.9.1
-> 
-thanks, please add my acks to both the patches.
-
 Acked-by: Huang Shijie <shijie8@gmail.com>
