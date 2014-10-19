@@ -1,17 +1,17 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-wg0-f43.google.com ([74.125.82.43])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XfqAS-00043Y-8q
- for linux-mtd@lists.infradead.org; Sun, 19 Oct 2014 13:05:05 +0000
-Received: by mail-pa0-f43.google.com with SMTP id lf10so3488222pab.16
- for <linux-mtd@lists.infradead.org>; Sun, 19 Oct 2014 06:04:41 -0700 (PDT)
-From: Akinobu Mita <akinobu.mita@gmail.com>
+ id 1Xfx4Q-0004xo-55
+ for linux-mtd@lists.infradead.org; Sun, 19 Oct 2014 20:27:19 +0000
+Received: by mail-wg0-f43.google.com with SMTP id m15so4058206wgh.2
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Oct 2014 13:26:54 -0700 (PDT)
+From: Andrew Murray <amurray@embedded-bits.co.uk>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] nandsim: add id_bytes module parameter
-Date: Sun, 19 Oct 2014 22:04:27 +0900
-Message-Id: <1413723867-26767-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Akinobu Mita <akinobu.mita@gmail.com>
+Subject: [PATCH] mtd: ubi: Use UBI_METAONLY constraint for renames
+Date: Sun, 19 Oct 2014 21:26:59 +0100
+Message-Id: <1413750419-7020-1-git-send-email-amurray@embedded-bits.co.uk>
+Cc: Richard Weinberger <richard@nod.at>,
+ Andrew Murray <amurray@embedded-bits.co.uk>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,120 +21,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nandsim can simulate NAND Flash which returns the ID bytes specified
-by first_id_byte, ..., fourth_id_byte module parameters.
+Renaming a volume does not alter nor read volume data - thus the existing
+UBI_READWRITE constraint can be weakened. This patch provides a new
+UBI_METAONLY constraint and updates the UBI rename logic to use it.
 
-In order to simulate NAND flash which returns more than four ID bytes,
-this adds id_bytes module parameter which is specified by the array of
-byte like this:
+This change permits the rename of a mounted volume which enables support
+for additional methods of firmware upgrade - see discussion at
+https://patchwork.ozlabs.org/patch/398784
 
- # modprobe nandsim id_bytes=0x98,0xdc,0x90,0x26,0x76,0x15,0x01,0x08 bch=1
+This patch differs from that of the original discussion through the addition
+on an additional 'break' statement.
 
-This doesn't add fifth_id_byte, ..., seventh_id_byte module parameters,
-because they are redundant.  But the existing first_id_byte, ...,
-fourth_id_byte module parameters are preserved and add "(obsolete)" to
-the description.
-
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Tested-by: Andrew Murray <amurray@embedded-bits.co.uk>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Andrew Murray <amurray@embedded-bits.co.uk>
 ---
-* v2
-- use module_param_named() instead of module_param_cb()
-- add "(obsolete)" to old module params description, suggested by Artem
+ drivers/mtd/ubi/cdev.c  |  2 +-
+ drivers/mtd/ubi/kapi.c  | 12 +++++++++++-
+ drivers/mtd/ubi/ubi.h   |  5 ++++-
+ include/linux/mtd/ubi.h |  3 ++-
+ 4 files changed, 18 insertions(+), 4 deletions(-)
 
- drivers/mtd/nand/nandsim.c | 42 ++++++++++++++++++++++++------------------
- 1 file changed, 24 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 504fb32..552ae46 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -89,10 +89,6 @@
- #define CONFIG_NANDSIM_MAX_PARTS  32
- #endif
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 7646220..4c4c455 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -731,7 +731,7 @@ static int rename_volumes(struct ubi_device *ubi,
+ 			goto out_free;
+ 		}
  
--static uint first_id_byte  = CONFIG_NANDSIM_FIRST_ID_BYTE;
--static uint second_id_byte = CONFIG_NANDSIM_SECOND_ID_BYTE;
--static uint third_id_byte  = CONFIG_NANDSIM_THIRD_ID_BYTE;
--static uint fourth_id_byte = CONFIG_NANDSIM_FOURTH_ID_BYTE;
- static uint access_delay   = CONFIG_NANDSIM_ACCESS_DELAY;
- static uint programm_delay = CONFIG_NANDSIM_PROGRAMM_DELAY;
- static uint erase_delay    = CONFIG_NANDSIM_ERASE_DELAY;
-@@ -113,11 +109,19 @@ static unsigned int overridesize = 0;
- static char *cache_file = NULL;
- static unsigned int bbt;
- static unsigned int bch;
-+static u_char id_bytes[8] = {
-+	[0] = CONFIG_NANDSIM_FIRST_ID_BYTE,
-+	[1] = CONFIG_NANDSIM_SECOND_ID_BYTE,
-+	[2] = CONFIG_NANDSIM_THIRD_ID_BYTE,
-+	[3] = CONFIG_NANDSIM_FOURTH_ID_BYTE,
-+	[4 ... 7] = 0xFF,
-+};
+-		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_READWRITE);
++		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_METAONLY);
+ 		if (IS_ERR(re->desc)) {
+ 			err = PTR_ERR(re->desc);
+ 			ubi_err("cannot open volume %d, error %d", vol_id, err);
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 3aac1ac..b470619 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -137,7 +137,7 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
+ 		return ERR_PTR(-EINVAL);
  
--module_param(first_id_byte,  uint, 0400);
--module_param(second_id_byte, uint, 0400);
--module_param(third_id_byte,  uint, 0400);
--module_param(fourth_id_byte, uint, 0400);
-+module_param_array(id_bytes, byte, NULL, 0400);
-+module_param_named(first_id_byte, id_bytes[0], byte, 0400);
-+module_param_named(second_id_byte, id_bytes[1], byte, 0400);
-+module_param_named(third_id_byte, id_bytes[2], byte, 0400);
-+module_param_named(fourth_id_byte, id_bytes[3], byte, 0400);
- module_param(access_delay,   uint, 0400);
- module_param(programm_delay, uint, 0400);
- module_param(erase_delay,    uint, 0400);
-@@ -138,10 +142,11 @@ module_param(cache_file,     charp, 0400);
- module_param(bbt,	     uint, 0400);
- module_param(bch,	     uint, 0400);
+ 	if (mode != UBI_READONLY && mode != UBI_READWRITE &&
+-	    mode != UBI_EXCLUSIVE)
++	    mode != UBI_EXCLUSIVE && mode != UBI_METAONLY)
+ 		return ERR_PTR(-EINVAL);
  
--MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID' command (manufacturer ID)");
--MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND Flash 'read ID' command (chip ID)");
--MODULE_PARM_DESC(third_id_byte,  "The third byte returned by NAND Flash 'read ID' command");
--MODULE_PARM_DESC(fourth_id_byte, "The fourth byte returned by NAND Flash 'read ID' command");
-+MODULE_PARM_DESC(id_bytes,       "The ID bytes returned by NAND Flash 'read ID' command (obsolete)");
-+MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID' command (manufacturer ID) (obsolete)");
-+MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND Flash 'read ID' command (chip ID) (obsolete)");
-+MODULE_PARM_DESC(third_id_byte,  "The third byte returned by NAND Flash 'read ID' command (obsolete)");
-+MODULE_PARM_DESC(fourth_id_byte, "The fourth byte returned by NAND Flash 'read ID' command (obsolete)");
- MODULE_PARM_DESC(access_delay,   "Initial page access delay (microseconds)");
- MODULE_PARM_DESC(programm_delay, "Page programm delay (microseconds");
- MODULE_PARM_DESC(erase_delay,    "Sector erase delay (milliseconds)");
-@@ -306,7 +311,7 @@ struct nandsim {
- 	unsigned int nbparts;
+ 	/*
+@@ -186,6 +186,12 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
+ 			goto out_unlock;
+ 		vol->exclusive = 1;
+ 		break;
++
++	case UBI_METAONLY:
++		if (vol->metaonly)
++			goto out_unlock;
++		vol->metaonly = 1;
++		break;
+ 	}
+ 	get_device(&vol->dev);
+ 	vol->ref_count += 1;
+@@ -343,6 +349,10 @@ void ubi_close_volume(struct ubi_volume_desc *desc)
+ 		break;
+ 	case UBI_EXCLUSIVE:
+ 		vol->exclusive = 0;
++		break;
++	case UBI_METAONLY:
++		vol->metaonly = 0;
++		break;
+ 	}
+ 	vol->ref_count -= 1;
+ 	spin_unlock(&ubi->volumes_lock);
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 7bf4163..629973f 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -260,6 +260,7 @@ struct ubi_fm_pool {
+  * @readers: number of users holding this volume in read-only mode
+  * @writers: number of users holding this volume in read-write mode
+  * @exclusive: whether somebody holds this volume in exclusive mode
++ * @metaonly: whether somebody is altering only meta data of this volume
+  *
+  * @reserved_pebs: how many physical eraseblocks are reserved for this volume
+  * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
+@@ -308,6 +309,7 @@ struct ubi_volume {
+ 	int readers;
+ 	int writers;
+ 	int exclusive;
++	int metaonly;
  
- 	uint busw;              /* flash chip bus width (8 or 16) */
--	u_char ids[4];          /* chip's ID bytes */
-+	u_char ids[8];          /* chip's ID bytes */
- 	uint32_t options;       /* chip's characteristic bits */
- 	uint32_t state;         /* current chip state */
- 	uint32_t nxstate;       /* next expected state */
-@@ -2214,17 +2219,18 @@ static int __init ns_init_module(void)
- 	 * Perform minimum nandsim structure initialization to handle
- 	 * the initial ID read command correctly
- 	 */
--	if (third_id_byte != 0xFF || fourth_id_byte != 0xFF)
-+	if (id_bytes[6] != 0xFF || id_bytes[7] != 0xFF)
-+		nand->geom.idbytes = 8;
-+	else if (id_bytes[4] != 0xFF || id_bytes[5] != 0xFF)
-+		nand->geom.idbytes = 6;
-+	else if (id_bytes[2] != 0xFF || id_bytes[3] != 0xFF)
- 		nand->geom.idbytes = 4;
- 	else
- 		nand->geom.idbytes = 2;
- 	nand->regs.status = NS_STATUS_OK(nand);
- 	nand->nxstate = STATE_UNKNOWN;
- 	nand->options |= OPT_PAGE512; /* temporary value */
--	nand->ids[0] = first_id_byte;
--	nand->ids[1] = second_id_byte;
--	nand->ids[2] = third_id_byte;
--	nand->ids[3] = fourth_id_byte;
-+	memcpy(nand->ids, id_bytes, sizeof(nand->ids));
- 	if (bus_width == 16) {
- 		nand->busw = 16;
- 		chip->options |= NAND_BUSWIDTH_16;
+ 	int reserved_pebs;
+ 	int vol_type;
+@@ -389,7 +391,8 @@ struct ubi_debug_info {
+  * @volumes_lock: protects @volumes, @rsvd_pebs, @avail_pebs, beb_rsvd_pebs,
+  *                @beb_rsvd_level, @bad_peb_count, @good_peb_count, @vol_count,
+  *                @vol->readers, @vol->writers, @vol->exclusive,
+- *                @vol->ref_count, @vol->mapping and @vol->eba_tbl.
++ *                @vol->metaonly, @vol->ref_count, @vol->mapping and
++ *                @vol->eba_tbl.
+  * @ref_count: count of references on the UBI device
+  * @image_seq: image sequence number recorded on EC headers
+  *
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index c3918a0..1ace519 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -38,7 +38,8 @@
+ enum {
+ 	UBI_READONLY = 1,
+ 	UBI_READWRITE,
+-	UBI_EXCLUSIVE
++	UBI_EXCLUSIVE,
++	UBI_METAONLY
+ };
+ 
+ /**
 -- 
-1.9.1
+1.8.3.2
