@@ -1,24 +1,26 @@
-Received: from mail-yh0-f54.google.com ([209.85.213.54])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XfxYY-0000g4-8k
- for linux-mtd@lists.infradead.org; Sun, 19 Oct 2014 20:58:26 +0000
-Received: by mail-yh0-f54.google.com with SMTP id z6so2104072yhz.13
- for <linux-mtd@lists.infradead.org>; Sun, 19 Oct 2014 13:58:04 -0700 (PDT)
+ id 1XfxyO-0000oC-7v
+ for linux-mtd@lists.infradead.org; Sun, 19 Oct 2014 21:25:09 +0000
+Received: by mail-wi0-f176.google.com with SMTP id hi2so5638867wib.3
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Oct 2014 14:24:45 -0700 (PDT)
+Date: Sun, 19 Oct 2014 23:24:43 +0200
+From: Frans Klaver <fransklaver@gmail.com>
+To: Alexander Holler <holler@ahsoftware.de>
+Subject: Re: [PATCH 00/27] Fix common bug in most nand drivers not showing a
+ device in sysfs
+Message-ID: <20141019212443.GA9322@gmail.com>
+References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
+ <543F678E.1030401@ahsoftware.de>
+ <CAH6sp9O=36FTGg4FTCywsNzdJi4PjUmiiT6_EHr=i166+NA2ng@mail.gmail.com>
+ <54413B9B.9030702@ahsoftware.de>
 MIME-Version: 1.0
-In-Reply-To: <54384B11.6080209@nod.at>
-References: <CAPcvp5E=MgV0-f8q9SFuMCzCEt-WVQiEu4XGJXj2QLyf5L1ohw@mail.gmail.com>
- <20141009102546.GA2755@arch.hh.imgtec.org>
- <CAPcvp5FammqUr67rv_LvqWPoPegLsPMLBTT-mkQ2u=VCs2-_8g@mail.gmail.com>
- <54384B11.6080209@nod.at>
-Date: Sun, 19 Oct 2014 21:58:04 +0100
-Message-ID: <CAPcvp5H39rdavCr8OENfaeCGmiaYrLeiGzBCrxrOg5n8xud-NQ@mail.gmail.com>
-Subject: Re: UBI_READWRITE constraint when opening volumes to rename
-From: Andrew Murray <amurray@embedded-bits.co.uk>
-To: Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <54413B9B.9030702@ahsoftware.de>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +30,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10 October 2014 22:09, Richard Weinberger <richard@nod.at> wrote:
->
-> As discussed with Ezequiel on IRC the right thing is to fix the UBI rename logic.
->
->> To satisfy my curiosity - does the UBI rename function really need to
->> open the UBI volume as UBI_READWRITE to rename? Does it matter that a
->> UBIFS fileystem may be writing UBI whilst a UBI rename occurs - I've
->> assumed that UBIFS doesn't ever read/write the volume label - so it
->> doesn't matter if it changes beneath it? (I'm not too familiar with
->> UBI/UBIFS internals).
->
-> Correct. Renaming a volume does not alter nor read volume data.
-> Only the UBI volume table is altered.
-> This is why I've cooked up the following patch.
-> Please give it some testing!
+On Fri, Oct 17, 2014 at 05:54:03PM +0200, Alexander Holler wrote:
+> I assume the result will be just 21 one-line-patches anyway, missing
+> the chance to avoid similiar silly patch series in the future by
+> creating a common function (which even reduces code size over all).
 
-This appears to work for me - I can rename a mounted volume without
-any obvious side effects. I've slightly tweaked (added a break
-statement) and submitted your patch.
+That's to be expected, yes. A single patch may even be defensible. I
+share your concern that it's easier to get it wrong than it is to get it
+right, though.
 
-Though I've had a further look and have an additional questions.
+> So, if you like, just add my Signed-off-by too, there isn't really much
+> one could do wrong. ;)
 
-This patch means that UBI_EXCLUSIVE is no longer exclusive (unless
-these constraints are with respect to the volume data only and not the
-volume table as well) - thus should we update the ubi_open_volume
-function to prevent UBI_EXCLUSIVE when metaonly is already held (and
-to prevent UBI_METAONLY when exclusive is already held)? I can't see
-the harm in doing this and it probably won't impact the use case that
-led to this patch.
+Sure.
 
-I can't see any locking around the table fields and thus (with present
-patch) I assume you could perform a rename and volume remove at the
-same time - I wonder if this would sometimes break. I assume that
-anything that currently modifies the volume table will be doing so
-with exclusive held.
-
-Thanks,
-
-Andrew Murray
+Frans
