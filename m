@@ -1,25 +1,19 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgClA-0000fD-HW
- for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 13:12:29 +0000
-Message-ID: <1413810719.7906.268.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
+ id 1XgD2j-0005Iw-W3
+ for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 13:30:38 +0000
+Message-ID: <1413811808.7906.278.camel@sauron.fi.intel.com>
+Subject: Re: bad node type after using ubiupdatevol
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Caizhiyong <caizhiyong@hisilicon.com>, "linux-fsdevel@vger.kernel.org"
- <linux-fsdevel@vger.kernel.org>, linux-mm@kvack.org
-Date: Mon, 20 Oct 2014 16:11:59 +0300
-In-Reply-To: <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
-References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
- <1413805935.7906.225.camel@sauron.fi.intel.com>
- <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
+To: Per Smitt <per.smitt@sbie.se>
+Date: Mon, 20 Oct 2014 16:30:08 +0300
+In-Reply-To: <1413805882326.37838@sbie.se>
+References: <1413805882326.37838@sbie.se>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "Wanli \(welly\)" <welly.wan@hisilicon.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- Jijiagang <jijiagang@hisilicon.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,97 +25,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-first of all, what is your architecture? ARM? And how easily can you
-reproduce this? And can you try a kernel newer than 3.10?
+On Mon, 2014-10-20 at 11:51 +0000, Per Smitt wrote:
+> Hi
+> 
+> I am having some issues with ubifs. I have a system with two rootfs and
+> when I upgrade I planned to simply update the rootfs volume currently not 
+> in use with the new filesystem.
+> 
+> When loading the system for the first time using U-Boot it always works to
+> write both rootfs volumes but once I try to upgrade I run into problems.
+> 
+> My upgrade process:
+> ubiupdatevol /dev/ubi0_$INDEX "$FS_IMG"
+> sync
+> mount -t ubifs ubi0:rootfs$INDEX "$MOUNT_POINT"
+> # Migrate config files like passwords, hostname, application specific config
+> sync
+> umount "$MOUNT_POINT"
+> sync
+> fw_setenv boot_index "$INDEX"    (Telling U-Boot environment which rootfs to use)
 
-And for fs-devel and mm people, here is the link to the original report:
-http://lists.infradead.org/pipermail/linux-mtd/2014-October/055930.html, 
+Can you experiment and put a very long sleep here, say, 20 minutes. The
+idea is to wait until UBI finishes all the background operations. This
+should not matter normally, but may be for your HW/SW it does for some
+reasons.
 
-On Mon, 2014-10-20 at 12:01 +0000, Caizhiyong wrote:
-> Here is part of the log, linux version 3.10:
->    cache 16240kB is below limit 16384kB for oom_score_adj 529
->    Free memory is -1820kB above reserved
-> lowmemorykiller: Killing '.networkupgrade' (6924), adj 705,
->    to free 20968kB on behalf of 'kswapd0' (543) because
->    cache 16240kB is below limit 16384kB for oom_score_adj 529
->    Free memory is -2192kB above reserved
+> reboot
 
-OK, no memory and OOM starts. So your system is in trouble anyway :-)
+I'd also tried to validate the flash with MTD tests.
 
-> UBIFS assert failed in ubifs_set_page_dirty at 1421 (pid 543)
+> Yes I was littering with syncs in a desperate attempt to get it to work. I am also
+> checking for error codes after every command and I get return code 0 all the time.
 
-UBIFS complain here that someone marks a page as dirty "directly", not
-through one of the UBIFS functions. And that someone is the page reclaim
-path.
+sync is only the FS sync, it does not flush the UBI queue, because it
+should not be necessary.
 
-Now, I do not really know what is going on here, so I am CCing a couple
-of mailing lists, may be someone will help.
+> When rebooting I get the following in the log:
+> UBIFS error (pid 418): ubifs_read_node: bad node type (255 but expected 1)                                
+> UBIFS error (pid 418): ubifs_read_node: bad node at LEB 68:27440                                                                      
+> UBIFS error (pid 418): do_readpage: cannot read page 1000 of inode 617, error -22                                                     
+> UBIFS error (pid 418): ubifs_read_node: bad node type (255 but expected 1)                                                            
+> UBIFS error (pid 418): ubifs_read_node: bad node at LEB 68:27440                                                                      
+> UBIFS error (pid 418): do_readpage: cannot read page 1000 of inode 617, error -22      
 
-Here is what I see is going on.
+> It seems random which files are affected as I can sometimes upgrade without
+> any error message. It might even be possible that the upgrade completed without
+> any error at all, I cannot say.
+> 
+> Do anyone see anything outright wrong here that I simply am not aware of?
 
-1. UBIFS wants to make sure that no one marks UBIFS-backed pages (and
-actually inodes too) as dirty directly. UBIFS wants everyone to ask
-UBIFS to mark a page as dirty.
+What may, in theory cause issues may be related to how you flash your
+images. There are whole bunch of tricks related to this, see [1] and
+[2]. It is possible that you see the issues only after the update just
+because you hit them this way first. If you do enough UBIFS operations
+before update, you may also hit issues due to "improper" flashing.
 
-2. This is because for every dirty page, UBIFS needs to reserve certain
-amount of space on the flash media, because all writes are out-of-place,
-even when you are changing an existing file.
+To exclude those, please either use ubiformat, or just start with fully
+erase flash, and attach it to UBI, so UBI formats it. Then you may be
+sure it is not your u-boot/firmware/whatever flasher doing nasty things.
 
-3. There are exactly 2 places where UBIFS-backed pages may be marked as
-dirty:
-
-  a) ubifs_write_end() [->wirte_end] - the file write path
-  b) ubifs_page_mkwrite() [->page_mkwirte] - the file mmap() path
-
-4. If anything calls 'ubifs_set_page_dirty()' directly (not through
-write_end()/mkwrite()), and the page was not dirty, UBIFS will complain
-with the assertion that you see.
-
-> CPU: 3 PID: 543 Comm: kswapd0 Tainted: P           O 3.10.0_s40 #1
-> [<8001d8a0>] (unwind_backtrace+0x0/0x108) from [<80019f44>] (show_stack+0x20/0x24)
-> [<80019f44>] (show_stack+0x20/0x24) from [<80af2ef8>] (dump_stack+0x24/0x2c)
-> [<80af2ef8>] (dump_stack+0x24/0x2c) from [<80297234>] (ubifs_set_page_dirty+0x54/0x5c)
-> [<80297234>] (ubifs_set_page_dirty+0x54/0x5c) from [<800cea60>] (set_page_dirty+0x50/0x78)
-> [<800cea60>] (set_page_dirty+0x50/0x78) from [<800f4be4>] (try_to_unmap_one+0x1f8/0x3d0)
-> [<800f4be4>] (try_to_unmap_one+0x1f8/0x3d0) from [<800f4f44>] (try_to_unmap_file+0x9c/0x740)
-> [<800f4f44>] (try_to_unmap_file+0x9c/0x740) from [<800f5678>] (try_to_unmap+0x40/0x78)
-> [<800f5678>] (try_to_unmap+0x40/0x78) from [<800d6a04>] (shrink_page_list+0x23c/0x884)
-> [<800d6a04>] (shrink_page_list+0x23c/0x884) from [<800d76c8>] (shrink_inactive_list+0x21c/0x3c8)
-> [<800d76c8>] (shrink_inactive_list+0x21c/0x3c8) from [<800d7c20>] (shrink_lruvec+0x3ac/0x524)
-> [<800d7c20>] (shrink_lruvec+0x3ac/0x524) from [<800d8970>] (kswapd+0x854/0xdc0)
-> [<800d8970>] (kswapd+0x854/0xdc0) from [<80051e28>] (kthread+0xc8/0xcc)
-> [<80051e28>] (kthread+0xc8/0xcc) from [<80015198>] (ret_from_fork+0x14/0x20)
-
-
-So the reclaim path seems to be marking UBIFS-backed pages as dirty
-directly, I do not know why, the reclaim path is extremely complex and I
-am no expert there. But may be someone on the MM list may help.
-
-Note, this warning is not necessarily fatal. It just indicates that
-UBIFS sees something which it believes should not happen.
-
-> UBIFS assert failed in do_writepage at 936 (pid 543)
-> CPU: 1 PID: 543 Comm: kswapd0 Tainted: P           O 3.10.0_s40 #1
-> [<8001d8a0>] (unwind_backtrace+0x0/0x108) from [<80019f44>] (show_stack+0x20/0x24)
-> [<80019f44>] (show_stack+0x20/0x24) from [<80af2ef8>] (dump_stack+0x24/0x2c)
-> [<80af2ef8>] (dump_stack+0x24/0x2c) from [<802990b8>] (do_writepage+0x1b8/0x1c4)
-> [<802990b8>] (do_writepage+0x1b8/0x1c4) from [<802991e8>] (ubifs_writepage+0x124/0x1dc)
-> [<802991e8>] (ubifs_writepage+0x124/0x1dc) from [<800d6eb8>] (shrink_page_list+0x6f0/0x884)
-> [<800d6eb8>] (shrink_page_list+0x6f0/0x884) from [<800d76c8>] (shrink_inactive_list+0x21c/0x3c8)
-> [<800d76c8>] (shrink_inactive_list+0x21c/0x3c8) from [<800d7c20>] (shrink_lruvec+0x3ac/0x524)
-> [<800d7c20>] (shrink_lruvec+0x3ac/0x524) from [<800d8970>] (kswapd+0x854/0xdc0)
-> [<800d8970>] (kswapd+0x854/0xdc0) from [<80051e28>] (kthread+0xc8/0xcc)
-> [<80051e28>] (kthread+0xc8/0xcc) from [<80015198>] (ret_from_fork+0x14/0x20)
-
-And here UBIFS sees a page being writted, but there is no budget
-allocated for it, so the write may fail with -ENOSPC (no space), which
-is not supposed to ever happen.
-
-This is not necessarily fatal either, but indicates that UBIFS's
-assumptions about how the system functions are wrong.
-
-Now the question is: is it UBIFS which has incorrect assumptions, or
-this is the Linux MM which is not doing the right thing? I do not know
-the answer, let's see if the MM list may give us a clue.
-
-Thanks!
+Artem
