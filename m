@@ -1,23 +1,21 @@
-Date: Mon, 20 Oct 2014 14:29:15 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Varka Bhadram <varkabhadram@gmail.com>
-Subject: Re: [PATCH v6 1/2] mtd: nand: add sunxi NAND flash controller support
-Message-ID: <20141020142915.5bebeb2c@bbrezillon>
-In-Reply-To: <5444F9AF.5000104@gmail.com>
-References: <1413805520-14947-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413805520-14947-2-git-send-email-boris.brezillon@free-electrons.com>
- <5444F9AF.5000104@gmail.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgCJ0-0001UL-G1
+ for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 12:43:23 +0000
+Message-ID: <54450352.6000408@nod.at>
+Date: Mon, 20 Oct 2014 14:42:58 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: dedekind1@gmail.com
+Subject: Re: UBI_READWRITE constraint when opening volumes to rename
+References: <CAPcvp5E=MgV0-f8q9SFuMCzCEt-WVQiEu4XGJXj2QLyf5L1ohw@mail.gmail.com>		<20141009102546.GA2755@arch.hh.imgtec.org>		<CAPcvp5FammqUr67rv_LvqWPoPegLsPMLBTT-mkQ2u=VCs2-_8g@mail.gmail.com>		<54384B11.6080209@nod.at>	
+ <CAPcvp5H39rdavCr8OENfaeCGmiaYrLeiGzBCrxrOg5n8xud-NQ@mail.gmail.com>	
+ <5444EDA4.9010808@nod.at> <1413806574.7906.233.camel@sauron.fi.intel.com>
+In-Reply-To: <1413806574.7906.233.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
- linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: Andrew Murray <amurray@embedded-bits.co.uk>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,82 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Varka,
-
-On Mon, 20 Oct 2014 17:31:51 +0530
-Varka Bhadram <varkabhadram@gmail.com> wrote:
-
-> On 10/20/2014 05:15 PM, Boris Brezillon wrote:
-> > Add support for the sunxi NAND Flash Controller (NFC).
-> >
-> (...)
+Am 20.10.2014 um 14:02 schrieb Artem Bityutskiy:
+> On Mon, 2014-10-20 at 13:10 +0200, Richard Weinberger wrote:
+>> This is why I need to review all code paths first.
+>> My initial patch was not supposed to be a final solution, more a base for discussion.
+>> I.e. to follow the "less talk, more code" rule.
 > 
-> > +
-> > +static int sunxi_nfc_dev_ready(struct mtd_info *mtd)
-> > +{
-> > +	struct nand_chip *nand = mtd->priv;
-> > +	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
-> > +	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
-> > +	struct sunxi_nand_rb *rb;
-> > +	unsigned long timeo = (sunxi_nand->nand.state == FL_ERASING ? 400 : 20);
-> > +	int ret;
-> > +
-> > +	if (sunxi_nand->selected < 0)
-> > +		return 0;
-> > +
-> > +	rb = &sunxi_nand->sels[sunxi_nand->selected].rb;
-> > +
-> > +	switch (rb->type) {
-> > +	case RB_NATIVE:
-> > +		ret = !!(readl(nfc->regs + NFC_REG_ST) &
-> > +			 (NFC_RB_STATE0 << rb->info.nativeid));
-> > +		if (ret)
-> > +			break;
-> > +
-> > +		sunxi_nfc_wait_int(nfc, NFC_RB_B2R, timeo);
-> > +		ret = !!(readl(nfc->regs + NFC_REG_ST) &
-> > +			 (NFC_RB_STATE0 << rb->info.nativeid));
-> > +		break;
-> > +	case RB_GPIO:
-> > +		ret = gpio_get_value(rb->info.gpio);
-> > +		break;
-> > +	case RB_NONE:
-> > +	default:
-> > +		ret = 0;
-> > +		pr_err("cannot check R/B NAND status!");
+> Let me try to summarise.
 > 
-> Missed terminating  new line...  :-)
-
-I'll fix that.
-
+> Exclusive mode - used for volume and LEB update. We do not want someone
+> to race with these operations on the same LEBs. Indeed, if one performs
+> a volume or LEB update, we want to guarantee that that the result of the
+> operation is that the volume/LEB contains the data user sent us.
 > 
-> > +		break;
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +
+> Read/write - just R/W mode, many users may race
 > 
-> (...)
+> Read-only - when we know we should not write to the volume, and want UBI
+> to refuse our writes in case we try to write, say, because of a bug in
+> UBIFS code.
 > 
-> > +static struct platform_driver sunxi_nfc_driver = {
-> > +	.driver = {
-> > +		.name = "sunxi_nand",
-> > +		.owner = THIS_MODULE,
+> AFAICS, all the modes are useful.
 > 
-> This field updated by module_platform_driver()..
+> Metaonly - we are not going to change the data, only the meta-data like
+> the volume name. Seem to be a good idea to me, thanks!
 
-Yep, I'll remove this line.
+BTW: one corner case is the volume delete operation.
+It touches meta data and LEBs. Currently you need exclusive mode for this.
+IMHO it makes sense to deny metaonly mode if an UBI volume is opened in exclusive mode.
 
-Thanks for your review.
-
-Best Regards,
-
-Boris
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+//richard
