@@ -1,25 +1,26 @@
-Received: from mdfmta005.mxout.tbr.inty.net ([91.221.168.46]
- helo=smtp.demon.co.uk)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgFy2-0001Xg-I8
- for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 16:37:59 +0000
-Date: Mon, 20 Oct 2014 17:33:21 +0100 (BST)
-From: Steve B <steve@baconbits.demon.co.uk>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: UBI/UBFS: ubi_eba_read_leb() reporting unmapped LEB
-In-Reply-To: <1413820062.7906.376.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.02.1410201732380.2556@ubuntu>
-References: <alpine.DEB.2.02.1410101444510.2556@ubuntu>
- <1413812127.7906.282.camel@sauron.fi.intel.com>
- <alpine.DEB.2.02.1410201442380.2556@ubuntu>
- <1413813912.7906.305.camel@sauron.fi.intel.com>
- <alpine.DEB.2.02.1410201529590.2556@ubuntu>
- <1413818380.7906.352.camel@sauron.fi.intel.com>
- <alpine.DEB.2.02.1410201624320.2556@ubuntu>
- <1413820062.7906.376.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: linux-mtd@lists.infradead.org
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgG57-00040L-JF
+ for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 16:45:18 +0000
+From: Vinod Koul <vinod.koul@intel.com>
+To: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] mtd: atmel_nand: use __iowrite32_copy for 32 bit copy
+Date: Mon, 20 Oct 2014 21:36:12 +0530
+Message-Id: <1413821173-18347-1-git-send-email-vinod.koul@intel.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Michael Grzeschik <m.grzeschik@pengutronix.de>, Bo Shen <voice.shen@atmel.com>,
+ Wei Yongjun <yongjun_wei@trendmicro.com.cn>, Mark Brown <broonie@linaro.org>,
+ Vinod Koul <vinod.koul@intel.com>, Huang Shijie <shijie8@gmail.com>,
+ Jingoo Han <jg1.han@samsung.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Josh Triplett <josh@joshtriplett.org>, Herve Codina <Herve.CODINA@celad.com>,
+ Josh Wu <Josh.wu@atmel.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +30,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The driver was also using own method to do 32bit copy, turns out
+we have a kernel API so use that instead
 
-Thanks again, plenty for me to thing about!
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ drivers/mtd/nand/atmel_nand.c |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
 
-On Mon, 20 Oct 2014, Artem Bityutskiy wrote:
-
-> On Mon, 2014-10-20 at 16:25 +0100, Steve B wrote:
->> Thank you very much for your suggestions Artem, gives me plenty to look
->> into :)
->
-> May be this will be also a useful piece of data.
->
-> Back several years ago, we saw ext4 not recovering after power cuts on
-> eMMC.
->
-> We knew ext4 is extremely complex, so we decided to go and test if eMMC
-> does the right job. Namely, if I submit data, they sync, does eMMC make
-> sure the data are on the media?
->
-> Adrian (the other UBIFS author) implemented the eMMC power cut test. And
-> he found that you may write to block A, they sync, then write to block
-> B, and have power cut, and after reboot block A is corrupted. So
-> interrupted write to block B affected a different block A.
->
-> We reported to the eMMC vendor, and the vendor acknowledged the problem
-> and we got newer eMMC, which was devoid of the issue. And our ext4
-> issues went away, it became a lot better.
->
-> This is why I say may be stressing UBI could be a good idea. It may be
-> waste of time too, though, if the problem is in UBIFS, or if the test
-> won't reveal a problem in UBI because the test is not good enough. But
-> it may also hit the nail quickly.
->
-> Artem.
->
->
->
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index e321c56..b03e80d 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -265,14 +265,10 @@ static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
+ 		*t++ = readl_relaxed(s++);
+ }
+ 
+-static void memcpy32_toio(void __iomem *trg, const void *src, int size)
++static inline void memcpy32_toio(void __iomem *trg, const void *src, int size)
+ {
+-	int i;
+-	u32 __iomem *t = trg;
+-	const u32 *s = src;
+-
+-	for (i = 0; i < (size >> 2); i++)
+-		writel_relaxed(*s++, t++);
++	/* __iowrite32_copy use 32bit size values so divide by 4 */
++	__iowrite32_copy(trg, src, size/4);
+ }
+ 
+ /*
+-- 
+1.7.0.4
