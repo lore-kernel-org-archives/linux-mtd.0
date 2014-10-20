@@ -1,17 +1,21 @@
-Received: from mail-db3on0145.outbound.protection.outlook.com
- ([157.55.234.145] helo=emea01-db3-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgBV4-0005Ov-8A
- for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 11:51:47 +0000
-From: Per Smitt <per.smitt@sbie.se>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: bad node type after using ubiupdatevol
-Date: Mon, 20 Oct 2014 11:51:22 +0000
-Message-ID: <1413805882326.37838@sbie.se>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgBVv-0005jZ-Lb
+ for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 11:52:40 +0000
+Message-ID: <1413805935.7906.225.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Jijiagang <jijiagang@hisilicon.com>
+Date: Mon, 20 Oct 2014 14:52:15 +0300
+In-Reply-To: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
+References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Caizhiyong <caizhiyong@hisilicon.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CkhpCgpJIGFtIGhhdmluZyBzb21lIGlzc3VlcyB3aXRoIHViaWZzLiBJIGhhdmUgYSBzeXN0ZW0g
-d2l0aCB0d28gcm9vdGZzIGFuZAp3aGVuIEkgdXBncmFkZSBJIHBsYW5uZWQgdG8gc2ltcGx5IHVw
-ZGF0ZSB0aGUgcm9vdGZzIHZvbHVtZSBjdXJyZW50bHkgbm90wqAKaW4gdXNlIHdpdGggdGhlIG5l
-dyBmaWxlc3lzdGVtLgoKV2hlbiBsb2FkaW5nIHRoZSBzeXN0ZW0gZm9yIHRoZSBmaXJzdCB0aW1l
-IHVzaW5nIFUtQm9vdCBpdCBhbHdheXMgd29ya3MgdG8Kd3JpdGUgYm90aCByb290ZnMgdm9sdW1l
-cyBidXQgb25jZSBJIHRyeSB0byB1cGdyYWRlIEkgcnVuIGludG8gcHJvYmxlbXMuCgpNeSB1cGdy
-YWRlIHByb2Nlc3M6CnViaXVwZGF0ZXZvbCAvZGV2L3ViaTBfJElOREVYICIkRlNfSU1HIgpzeW5j
-Cm1vdW50IC10IHViaWZzIHViaTA6cm9vdGZzJElOREVYICIkTU9VTlRfUE9JTlQiCiMgTWlncmF0
-ZSBjb25maWcgZmlsZXMgbGlrZSBwYXNzd29yZHMsIGhvc3RuYW1lLCBhcHBsaWNhdGlvbiBzcGVj
-aWZpYyBjb25maWcKc3luYwp1bW91bnQgIiRNT1VOVF9QT0lOVCIKc3luYwpmd19zZXRlbnYgYm9v
-dF9pbmRleCAiJElOREVYIiDCoCDCoChUZWxsaW5nIFUtQm9vdCBlbnZpcm9ubWVudCB3aGljaCBy
-b290ZnMgdG8gdXNlKQpyZWJvb3QKClllcyBJIHdhcyBsaXR0ZXJpbmcgd2l0aCBzeW5jcyBpbiBh
-IGRlc3BlcmF0ZSBhdHRlbXB0IHRvIGdldCBpdCB0byB3b3JrLiBJIGFtIGFsc28KY2hlY2tpbmcg
-Zm9yIGVycm9ywqBjb2RlcyBhZnRlciBldmVyeSBjb21tYW5kIGFuZCBJwqBnZXQgcmV0dXJuIGNv
-ZGUgMCBhbGwgdGhlIHRpbWUuCgpXaGVuIHJlYm9vdGluZyBJIGdldCB0aGUgZm9sbG93aW5nIGlu
-IHRoZSBsb2c6ClVCSUZTIGVycm9yIChwaWQgNDE4KTogdWJpZnNfcmVhZF9ub2RlOiBiYWQgbm9k
-ZSB0eXBlICgyNTUgYnV0IGV4cGVjdGVkIDEpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgClVCSUZTIGVycm9yIChwaWQgNDE4KTogdWJpZnNfcmVhZF9ub2Rl
-OiBiYWQgbm9kZSBhdCBMRUIgNjg6Mjc0NDAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAKVUJJRlMgZXJyb3IgKHBpZCA0MTgpOiBkb19yZWFkcGFnZTogY2Fu
-bm90IHJlYWQgcGFnZSAxMDAwIG9mIGlub2RlIDYxNywgZXJyb3IgLTIyIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgwqAKVUJJRlMgZXJyb3IgKHBpZCA0MTgpOiB1Ymlmc19yZWFkX25vZGU6IGJhZCBub2Rl
-IHR5cGUgKDI1NSBidXQgZXhwZWN0ZWQgMSkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAKVUJJRlMgZXJyb3IgKHBpZCA0MTgpOiB1Ymlmc19yZWFkX25vZGU6IGJhZCBub2RlIGF0IExF
-QiA2ODoyNzQ0MCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oApVQklGUyBlcnJvciAocGlkIDQxOCk6IGRvX3JlYWRwYWdlOiBjYW5ub3QgcmVhZCBwYWdlIDEw
-MDAgb2YgaW5vZGUgNjE3LCBlcnJvciAtMjIgwqAgwqAgwqAKCkl0IHNlZW1zIHJhbmRvbSB3aGlj
-aCBmaWxlcyBhcmUgYWZmZWN0ZWQgYXMgSSBjYW4gc29tZXRpbWVzIHVwZ3JhZGUgd2l0aG91dAph
-bnkgZXJyb3IgbWVzc2FnZS4gSXQgbWlnaHQgZXZlbiBiZSBwb3NzaWJsZSB0aGF0IHRoZSB1cGdy
-YWRlIGNvbXBsZXRlZCB3aXRob3V0CmFueSBlcnJvciBhdCBhbGwsIEkgY2Fubm90IHNheS4KCkRv
-IGFueW9uZSBzZWUgYW55dGhpbmcgb3V0cmlnaHQgd3JvbmcgaGVyZSB0aGF0IEkgc2ltcGx5IGFt
-IG5vdCBhd2FyZSBvZj8KCkJlc3QgcmVnYXJkcywKUGVyIFNtaXR04oCL
+On Thu, 2014-10-09 at 06:48 +0000, Jijiagang wrote:
+> Hi Artem and Adrian,
+> 
+> We encountered a “UBIFS assert failed in ubifs_set_page_dirty at 1421
+> (pid 543)” problem when running MONKEY test in android platform.
+
+Hi, yes, this looks like a bug,
+
+could you please re-send this e-mail in plain test format, because the
+MTD mailing list traps HTML e-mails.
+
+Thanks!
