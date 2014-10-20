@@ -1,24 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgEEX-0008Q0-2R
- for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 14:46:53 +0000
-Message-ID: <1413816389.7906.336.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 3/4] UBI: Fastmap: Care about the protection queue
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Date: Mon, 20 Oct 2014 17:46:29 +0300
-In-Reply-To: <543F9895.7010502@nod.at>
-References: <1412029248-22454-1-git-send-email-richard@nod.at>
- <1412029248-22454-4-git-send-email-richard@nod.at>
- <1412346676.3795.62.camel@sauron.fi.intel.com> <542EF3BF.1070401@nod.at>
- <1413206263.7906.18.camel@sauron.fi.intel.com> <543BE21F.5020504@nod.at>
- <1413213803.7906.45.camel@sauron.fi.intel.com> <543C3E60.4080507@nod.at>
- <1413282203.7906.72.camel@sauron.fi.intel.com> <543F9895.7010502@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mdfmta004.mxout.tch.inty.net ([91.221.169.45]
+ helo=smtp.demon.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgEND-0004Fb-TX
+ for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 14:55:53 +0000
+Date: Mon, 20 Oct 2014 15:51:12 +0100 (BST)
+From: Steve B <steve@baconbits.demon.co.uk>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBI/UBFS: ubi_eba_read_leb() reporting unmapped LEB
+In-Reply-To: <1413813912.7906.305.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.02.1410201529590.2556@ubuntu>
+References: <alpine.DEB.2.02.1410101444510.2556@ubuntu>
+ <1413812127.7906.282.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.02.1410201442380.2556@ubuntu>
+ <1413813912.7906.305.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,117 +25,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2014-10-16 at 12:06 +0200, Richard Weinberger wrote:
-> Am 14.10.2014 um 12:23 schrieb Artem Bityutskiy:
-> > On Mon, 2014-10-13 at 23:04 +0200, Richard Weinberger wrote:
-> >> Am 13.10.2014 um 17:23 schrieb Artem Bityutskiy:
-> >>> Well, used and free are RB-trees, looking them up is slow.
-> >>
-> >> This is true but we'd have to look it up in multiple trees and the protection queue...
-> > 
-> > Right. 2 RB-trees, and one list. The list is empty most of the time, or
-> > contains one element. 
-> 
-> Actually it is the free, used and scrub tree plus the protection queue.
 
-OK, still does not change my point: 3 trees and a list which is mostly
-empty or short. Not that bad.
+The log on the target is very minimal as I was only capturing error
+logs, so don't have much info to share on that, but here is the log from
+the target:
 
-Besides, the used tree is the large one, contains most of the stuff. The
-scrub tree is usually small, and mostly empty. The erroneous tree also
-mostly empty.
+[   13.178297] UBIFS error (pid 1273): ubifs_read_node: bad node type (255 but expected 1)
+[   13.178481] UBIFS error (pid 1273): ubifs_read_node: bad node at LEB 39:0, LEB mapping status 0
+[   13.178668] Not a node, first 24 bytes:
+[   13.178755] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff                          ........................
+[   13.179093] [<80012b7c>] (unwind_backtrace+0x0/0x11c) from [<80131138>] (ubifs_read_node+0x25c/0x2a0)
+[   13.179311] [<80131138>] (ubifs_read_node+0x25c/0x2a0) from [<8014d2ac>] (ubifs_tnc_read_node+0x60/0x198)
+[   13.185906] [<8014d2ac>] (ubifs_tnc_read_node+0x60/0x198) from [<801343e0>] (ubifs_tnc_locate+0xa8/0x180)
+[   13.195449] [<801343e0>] (ubifs_tnc_locate+0xa8/0x180) from [<80126e1c>] (do_readpage+0x1bc/0x448)
+[   13.204388] [<80126e1c>] (do_readpage+0x1bc/0x448) from [<801284f8>] (ubifs_readpage+0x3e8/0x428)
+[   13.213246] [<801284f8>] (ubifs_readpage+0x3e8/0x428) from [<8008e6e4>] (generic_file_aio_read+0x328/0x6f4)
+[   13.222973] [<8008e6e4>] (generic_file_aio_read+0x328/0x6f4) from [<800b37c4>] (do_sync_read+0x98/0xd4)
+[   13.232342] [<800b37c4>] (do_sync_read+0x98/0xd4) from [<800b3e0c>] (vfs_read+0xa4/0x134)
+[   13.240501] [<800b3e0c>] (vfs_read+0xa4/0x134) from [<800b4190>] (sys_read+0x34/0x68)
+[   13.248316] [<800b4190>] (sys_read+0x34/0x68) from [<8000e280>] (ret_fast_syscall+0x0/0x30)
+[   13.256639] UBIFS error (pid 1273): do_readpage: cannot read page 991 of inode 91, error -22
+[   13.265085] UBIFS error (pid 1273): ubifs_read_node: bad node type (255 but expected 1)
+[   13.273046] UBIFS error (pid 1273): ubifs_read_node: bad node at LEB 39:0, LEB mapping status 0
 
-So this in most of the cases, this will be about looking up a single
-tree.
+I'm currently trying to create a test to more reliably reproduce the issue,
+when I do I can share those logs.
 
-And again, all you need is:
+Fastmap doesn't exist in the kernel version we are running (3.4.0)
 
-1. all used
-2. all scrub
-3. all erroneous
+The first test to show up this issue simple copies a file in a tight loop and
+power is pulled randomly on the board. I am now trying to refine the test to speed
+up the failure by randomly pulling the power in the NAND driver after a random 
+number of erase/write calls, but I haven't been able to reproduce the issue
+with this.
 
-> Then there is another place where PEBs can hide, the erase work queue.
+I'm fairly sure the reconstructed image is correct as it's producing the same 
+backtrace as the original issue on the target. My program that scans the NAND 
+flash dump for UBI headers confirms that the expected mapping is missing.
 
-That's just fastmap code not doing the right thing. We should not touch
-the work queue directly at all. What we _should_ do instead is to make
-it empty by asking the subsystem which manages it to flush it.
 
-1. Lock the work queue to prevent anyone from submitting new jobs while
-we are in process of writing the fastmap.
-2. Flush all works
-3. do all the fastmap write stuff
-4. Unlock
 
-> This brings me to an issue I've recently identified and fixed in my local queue.
-> 
-> ubi_wl_put_peb() does the following:
->                 if (in_wl_tree(e, &ubi->used)) {
->                         self_check_in_wl_tree(ubi, e, &ubi->used);
->                         rb_erase(&e->u.rb, &ubi->used);
->                 } else if (in_wl_tree(e, &ubi->scrub)) {
->                         self_check_in_wl_tree(ubi, e, &ubi->scrub);
->                         rb_erase(&e->u.rb, &ubi->scrub);
->                 } else if (in_wl_tree(e, &ubi->erroneous)) {
->                         self_check_in_wl_tree(ubi, e, &ubi->erroneous);
->                         rb_erase(&e->u.rb, &ubi->erroneous);
->                         ubi->erroneous_peb_count -= 1;
->                         ubi_assert(ubi->erroneous_peb_count >= 0);
->                         /* Erroneous PEBs should be tortured */
->                         torture = 1;
->                 } else {
->                         err = prot_queue_del(ubi, e->pnum);
->                         if (err) {
->                                 ubi_err("PEB %d not found", pnum);
->                                 ubi_ro_mode(ubi);
->                                 spin_unlock(&ubi->wl_lock);
->                                 return err;
->                         }
->                 }
->         }
->         spin_unlock(&ubi->wl_lock);
-> 
->         err = schedule_erase(ubi, e, vol_id, lnum, torture);
-> 
-> If it happens that a fastmap write is needed between spin_unlock() and schedule_erase(), fastmap
-> will miss this PEB.
+On Mon, 20 Oct 2014, Artem Bityutskiy wrote:
 
-You say is that LEBs change while you are writing fastmap. Of course
-they do. We should have a locking mechanism in place which would prevent
-this.
-
-Mat be wl_lock needs to become a mutex, or may be there should be
-separate mutex.
-
-Or may be 'ubi_wl_put_peb()' should go through the fatmap subsystem
-which should be able to block it if it is writing fastmap.
-
-Ideally, you should be able to "freeze" the state (of course for a short
-time), prepare fastmap data structures in memory, unfreeze, let users to
-further IO, and wirte fastmap.
-
-This is roughly what UBIFS does when committing. It freezes all writers,
-builds the commit list, unfreezes the writers, and continues the commit
-process.
-
-Now, to be that advanced, you need a journal. Without journal, you do
-freeze, prepare and write, unfreeze. The end results is that writers are
-blocked for longer time, but this may be good enough.
-
-> What do you think?
-
-I think that UBI is memory consumption grows linearly with the flash
-growth. Mount time was linear too, fastmap is supposed to improve this.
-
-I know that there are people, who also reported their issues in this
-mailing list, who are very concerned about UBI memory consumption.
-
-And I think that fastmap should try really hard to not only improve the
-mount time, but also not to make the memory consumption problem worse.
-
-So yes, I understand code niceness argument. I really do. But this
-should not make UBI problem to be an even worse problem.
-
-Please, let's try much harder to go without increasing the memory
-footprint.
-
-Thanks!
+> On Mon, 2014-10-20 at 14:48 +0100, Steve B wrote:
+>> Hi Artem,
+>>
+>> Thanks for the reply.
+>>
+>> I have the kernel built with:
+>> CONFIG_MTD_UBI_DEBUG=y
+>> CONFIG_UBIFS_FS=y
+>>
+>> The failure was seen on an embedded device, I dumped the flash
+>> contents (raw format) and then re-constructed the image on my Linux PC
+>> using nandsim with UBI and UBIFS modules i've built with some extra debugging.
+>> The call stack in the log posted is the same as the one seen on the device
+>> that showed the original problem.
+>>
+>
+> I see. Would you post the full log, not just the extract near the
+> failure message?
+>
+>> From what I see so far, UBIFS believes that the data of a file is stored
+> in LEB 352. But UBI says: "nope, this LEB was unmapped".
+>
+> So the bug may be in both UBIFS and UBI.
+>
+> When we were writing this code years ago, we were stressing UBIFS
+> power-cut tolerance a lot. We dead real power cuts, but we did emulated
+> power cuts a lot more than real. And emulated power cuts only test
+> UBIFS, not UBI. On the other hand, UBI is very simple comparing to
+> UBIFS.
+>
+> BTW, do you have fastmap enabled or disabled?
+>
+> Are you doing deliberate power cut testing, or you hit this error by
+> chance? In the former case, you may enable additional debugging,
+> probably, depending on how many test-boxes are you stressing
+> simultaneously.
+>
+> Also, are you 100% sure you "reconstructed" the image correctly, and you
+> are not wasting time looking at irrelevant errors?
+>
+> Artem.
+>
+>
+>
