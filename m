@@ -1,26 +1,17 @@
-Received: from mail-yh0-f50.google.com ([209.85.213.50])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgBKo-00067n-Q3
- for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 11:41:11 +0000
-Received: by mail-yh0-f50.google.com with SMTP id a41so2942870yho.23
- for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2014 04:40:48 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <5444EDA4.9010808@nod.at>
-References: <CAPcvp5E=MgV0-f8q9SFuMCzCEt-WVQiEu4XGJXj2QLyf5L1ohw@mail.gmail.com>
- <20141009102546.GA2755@arch.hh.imgtec.org>
- <CAPcvp5FammqUr67rv_LvqWPoPegLsPMLBTT-mkQ2u=VCs2-_8g@mail.gmail.com>
- <54384B11.6080209@nod.at>
- <CAPcvp5H39rdavCr8OENfaeCGmiaYrLeiGzBCrxrOg5n8xud-NQ@mail.gmail.com>
- <5444EDA4.9010808@nod.at>
-Date: Mon, 20 Oct 2014 12:40:48 +0100
-Message-ID: <CAPcvp5HrOhqMJJWnADX=HYQ=sWgsrJJ4YRBEYkx8+_C7zc2=1Q@mail.gmail.com>
-Subject: Re: UBI_READWRITE constraint when opening volumes to rename
-From: Andrew Murray <amurray@embedded-bits.co.uk>
-To: Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH v6 0/2] mtd: nand: add sunxi NAND flash controller support
+Date: Mon, 20 Oct 2014 13:45:18 +0200
+Message-Id: <1413805520-14947-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
+ linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+ Kumar Gala <galak@codeaurora.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,57 +21,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 20 October 2014 12:10, Richard Weinberger <richard@nod.at> wrote:
-> Am 19.10.2014 um 22:58 schrieb Andrew Murray:
->> On 10 October 2014 22:09, Richard Weinberger <richard@nod.at> wrote:
->>>
->>> As discussed with Ezequiel on IRC the right thing is to fix the UBI rename logic.
->>>
->>>> To satisfy my curiosity - does the UBI rename function really need to
->>>> open the UBI volume as UBI_READWRITE to rename? Does it matter that a
->>>> UBIFS fileystem may be writing UBI whilst a UBI rename occurs - I've
->>>> assumed that UBIFS doesn't ever read/write the volume label - so it
->>>> doesn't matter if it changes beneath it? (I'm not too familiar with
->>>> UBI/UBIFS internals).
->>>
->>> Correct. Renaming a volume does not alter nor read volume data.
->>> Only the UBI volume table is altered.
->>> This is why I've cooked up the following patch.
->>> Please give it some testing!
->>
->> This appears to work for me - I can rename a mounted volume without
->> any obvious side effects. I've slightly tweaked (added a break
->> statement) and submitted your patch.
->>
->> Though I've had a further look and have an additional questions.
->>
->> This patch means that UBI_EXCLUSIVE is no longer exclusive (unless
->> these constraints are with respect to the volume data only and not the
->> volume table as well) - thus should we update the ubi_open_volume
->> function to prevent UBI_EXCLUSIVE when metaonly is already held (and
->> to prevent UBI_METAONLY when exclusive is already held)? I can't see
->> the harm in doing this and it probably won't impact the use case that
->> led to this patch.
->>
->
-> Correct. See my first mail. :)
->
->> I can't see any locking around the table fields and thus (with present
->> patch) I assume you could perform a rename and volume remove at the
->> same time - I wonder if this would sometimes break. I assume that
->> anything that currently modifies the volume table will be doing so
->> with exclusive held.
->
-> This is why I need to review all code paths first.
-> My initial patch was not supposed to be a final solution, more a base for discussion.
-> I.e. to follow the "less talk, more code" rule.
+Hi Brian,
 
-Sure I understand.
+The sunxi NAND controller driver is being submitted for almost 9 month now
+and I've only had one review (from Ezequiel) during this period.
 
-I'm happy to further investigate this and propose a v2.
+I'd really like to get this first implementation mainlined, so that I can
+follow up with other MLC specific stuff (like randomizer/scrambler support)
+which are required on most HW designs embedding an Allwinner SoC.
 
-Andrew Murray
+I'm aware that you have a lot of things to review, and that you do most of
+it (if not all of it) on your spare time, so let know if I can help you in
+any way (by reviewing other submissions for example).
+Hopefully this will speed up the review of my driver :-).
 
->
-> Thanks,
-> //richard
+This being said, here comes the usal cover letter:
+
+This series adds support for the sunxi NAND Flash Controller (NFC)
+block.
+
+These two patches only add support for the basic NAND stuff:
+ - NAND controller operations
+ - SW and HW ECC handling (with both syndrome and normal ECC scheme)
+
+If you want support for advanced features you can find it on my github
+repo [1]:
+ - HW randomization support
+ - per partition ECC/Randomizer to handle bootloader partitions
+
+DMA transfers are not supported yet, but I reworked the OOB layout
+when using the HW ECC scheme to match the one used when accessing the NAND
+through DMA (the available OOB bytes are placed at the end of the OOB area).
+
+Best Regards,
+
+Boris
+
+[1]https://github.com/bbrezillon/linux-sunxi/tree/sunxi-nand-v6
+
+Changes since v5:
+ - make use of of_get_nand_ecc_step_size and of_get_nand_ecc_strength
+ - add error messages
+
+Changes since v4:
+ - adapt to v2 of "mtd: nand: support ONFI timing mode retrieval for non-ONFI
+   NANDs" series
+
+Changes since v3:
+ - removed nand core code modifications from the patch series (submitted
+   separately)
+ - added documentation to the code
+ - forced timeout (a default timeout is used when none is provided by the
+   caller) on controller operations
+ - fixed coding style issues
+ - removed unneeded irq field from the sunxi_nfc struct
+ - fixed several memory leaks
+ - reworked the NFC reset code (to avoid potential garbage config from the
+   bootloader)
+ - made use of ECC_EXCEPTION flag to prevent erased page from generating
+   ECC errors
+ - changed the OOB layout for HW ECC scheme
+
+Changes since v2:
+ - merge HW ECC implementation in base implementation patch
+ - fix timing config when interfacing with an ONFI compatible chip
+
+Changes since v1:
+ - add HW ECC support
+ - rework NAND timings retrieval (use ONFI timing mode instead of raw timings)
+ - add nand-ecc-level property to specify NAND ECC requirements from DT
+
+
+Boris Brezillon (2):
+  mtd: nand: add sunxi NAND flash controller support
+  mtd: nand: add sunxi NFC dt bindings doc
+
+ .../devicetree/bindings/mtd/sunxi-nand.txt         |   45 +
+ drivers/mtd/nand/Kconfig                           |    6 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/sunxi_nand.c                      | 1400 ++++++++++++++++++++
+ 4 files changed, 1452 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+ create mode 100644 drivers/mtd/nand/sunxi_nand.c
+
+-- 
+1.9.1
