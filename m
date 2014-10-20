@@ -1,30 +1,21 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgDOz-0003Yk-RS
- for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 13:53:38 +0000
-Message-ID: <1413813193.7906.295.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v4] mtd: ubi: Extend UBI layer debug/messaging capabilities
+ id 1XgDbT-0003HY-GP
+ for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 14:06:31 +0000
+Message-ID: <1413813912.7906.305.camel@sauron.fi.intel.com>
+Subject: Re: UBI/UBFS: ubi_eba_read_leb() reporting unmapped LEB
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Joe Perches <joe@perches.com>
-Date: Mon, 20 Oct 2014 16:53:13 +0300
-In-Reply-To: <1413315062.10221.1.camel@joe-AO725>
-References: <1413296037-22346-1-git-send-email-tlinder@codeaurora.org>
- <20141014143902.GA9768@arch.hh.imgtec.org>
- <1413299343.7906.103.camel@sauron.fi.intel.com>
- <20141014184702.GA12662@arch.hh.imgtec.org>
- <1413314020.26864.7.camel@joe-AO725>
- <20141014191815.GB12662@arch.hh.imgtec.org>
- <1413315062.10221.1.camel@joe-AO725>
+To: Steve B <steve@baconbits.demon.co.uk>
+Date: Mon, 20 Oct 2014 17:05:12 +0300
+In-Reply-To: <alpine.DEB.2.02.1410201442380.2556@ubuntu>
+References: <alpine.DEB.2.02.1410101444510.2556@ubuntu>
+ <1413812127.7906.282.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.02.1410201442380.2556@ubuntu>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Tanya Brokhman <tlinder@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-10-14 at 12:31 -0700, Joe Perches wrote:
-> On Tue, 2014-10-14 at 16:18 -0300, Ezequiel Garcia wrote:
-> > On 14 Oct 12:13 PM, Joe Perches wrote:
-> > > On Tue, 2014-10-14 at 15:47 -0300, Ezequiel Garcia wrote:
-> []
-> > > > When the gendisk is not available, a simple pr_{} would work.
-> > > 
-> > > Or maybe combine these in the ubi_<level> calls passing
-> > > NULL when there is no struct ubi_device *
-> []
-> > Isn't this excessive obfuscation? What's the benefit of it?
+On Mon, 2014-10-20 at 14:48 +0100, Steve B wrote:
+> Hi Artem,
 > 
-> Single error message type.
+> Thanks for the reply.
+> 
+> I have the kernel built with:
+> CONFIG_MTD_UBI_DEBUG=y
+> CONFIG_UBIFS_FS=y
+> 
+> The failure was seen on an embedded device, I dumped the flash
+> contents (raw format) and then re-constructed the image on my Linux PC
+> using nandsim with UBI and UBIFS modules i've built with some extra debugging.
+> The call stack in the log posted is the same as the one seen on the device
+> that showed the original problem.
+> 
 
-Well, these are 2 separate drivers just living in the same folder, so
-they do not have to have to share message functions.
+I see. Would you post the full log, not just the extract near the
+failure message?
+
+>From what I see so far, UBIFS believes that the data of a file is stored
+in LEB 352. But UBI says: "nope, this LEB was unmapped".
+
+So the bug may be in both UBIFS and UBI.
+
+When we were writing this code years ago, we were stressing UBIFS
+power-cut tolerance a lot. We dead real power cuts, but we did emulated
+power cuts a lot more than real. And emulated power cuts only test
+UBIFS, not UBI. On the other hand, UBI is very simple comparing to
+UBIFS.
+
+BTW, do you have fastmap enabled or disabled?
+
+Are you doing deliberate power cut testing, or you hit this error by
+chance? In the former case, you may enable additional debugging,
+probably, depending on how many test-boxes are you stressing
+simultaneously.
+
+Also, are you 100% sure you "reconstructed" the image correctly, and you
+are not wasting time looking at irrelevant errors?
 
 Artem.
