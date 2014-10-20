@@ -1,28 +1,30 @@
-Received: from smtprelay0152.hostedemail.com ([216.40.44.152]
- helo=smtprelay.hostedemail.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgGmU-0006Ov-4w
- for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 17:30:07 +0000
-Message-ID: <1413826179.19661.1.camel@perches.com>
-Subject: Re: [PATCH v4] mtd: ubi: Extend UBI layer debug/messaging capabilities
-From: Joe Perches <joe@perches.com>
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Date: Mon, 20 Oct 2014 10:29:39 -0700
-In-Reply-To: <54453E3B.2050809@codeaurora.org>
-References: <1413296037-22346-1-git-send-email-tlinder@codeaurora.org>
- <543D304C.5000607@codeaurora.org> <1413297205.3269.11.camel@joe-AO725>
- <1413299231.7906.101.camel@sauron.fi.intel.com>
- <1413302724.3269.18.camel@joe-AO725>
- <1413813074.7906.294.camel@sauron.fi.intel.com>
- <54453E3B.2050809@codeaurora.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, linux-arm-msm@vger.kernel.org,
- open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- ezequiel.garcia@free-electrons.com, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgHso-0007X8-1V
+ for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 18:40:43 +0000
+Received: by mail-ig0-f174.google.com with SMTP id a13so5932761igq.1
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2014 11:40:18 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1413812845.7906.291.camel@sauron.fi.intel.com>
+References: <CACna6rxapt_J8qjMb37UnQ5iFE3DJ06U8nok_Fw=RO5UHs6Vsg@mail.gmail.com>
+ <1413454168.7906.154.camel@sauron.fi.intel.com>
+ <CACna6ryBtZd3rAD+gsi9s+hfdM-mSk1uKt7w=p0xM83yHKns-A@mail.gmail.com>
+ <1413456043.7906.164.camel@sauron.fi.intel.com>
+ <CACna6ry_vUS7ZnDG7k4=_q_vNkbn35mSm4V8u95KoienmrVPHw@mail.gmail.com>
+ <1413458869.7906.199.camel@sauron.fi.intel.com>
+ <CACna6rz_+EpVVOHZcQiE=_-KzHGxAoFj4DDuM6DcFFpqv6QH2Q@mail.gmail.com>
+ <1413460486.7906.216.camel@sauron.fi.intel.com>
+ <CACna6rwe46Umvt9SFYTsfEjUPU7yY7oyJXbdovYehQrNfLwNQA@mail.gmail.com>
+ <1413812845.7906.291.camel@sauron.fi.intel.com>
+Date: Mon, 20 Oct 2014 20:40:17 +0200
+Message-ID: <CACna6rwUiZ64Z5sDQOn5Mmd5CVXbrx++SBZWFMUb723gJJSLbg@mail.gmail.com>
+Subject: Re: UBI: ignore/overwrite old data/PEBs after flashing
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Felix Fietkau <nbd@openwrt.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,45 +34,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-10-20 at 19:54 +0300, Tanya Brokhman wrote:
-> On 10/20/2014 4:51 PM, Artem Bityutskiy wrote:
-> > On Tue, 2014-10-14 at 09:05 -0700, Joe Perches wrote:
-> >> It's pretty trivial when all the lines are already
-> >> being touched.
-> >
-> > OK, but then the same change should done in UBIFS, because it's
-> > ubifs_msg() and so on macros are consistent with UBI macros. So I think
-> > if this is done, then it is done separately for both UBI and UBIFS.
-[]
-> We have similar patch for ubifs as well, one that adds ubi number to all 
-> ubifs messages. We just didn't get to sharing it yet.
+On 20 October 2014 15:47, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Thu, 2014-10-16 at 15:51 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> Unfortunately this won't work if we flash the same firmware twice (it
+>> will contain the same sequence). Imagine someone flashing a stable
+>> OpenWrt release, then breaking something and flashing the same image
+>> again. It'll contain the same sequence number and my magic driver
+>> won't clean the old data :(
+>
+> Yes, flashing with ubiformat would be fine, because it changes the
+> sequence number on-the-fly. With industial flashers, you'd need to erase
+> the flash.
+>
+> Now you say you do not have the erase operation. You idea of a
+> "IMAGE_ENDS_HERE" bit seems to be nice, and you could implement it, but
+> you should think about the fastmap case too. Probably you need to do
+> nothing, because fastmap will only refer the PEBs within the image, and
+> the PEBs outside of the image will be scheduled for erasure. But you
+> should verify this.
 
-[]
+So far I've implemented it for OpenWrt needs with a hacky patch you
+can see there:
+http://git.openwrt.org/?p=3Dopenwrt.git;a=3Dcommitdiff;h=3D21741f060cab636c=
+04d61ae696cd933adfea6e16
+(it expects a PEB with 0xdeadc0de in place of UBI's magic).
 
-> I prefer not adding the "\n" to my patch unless Artem insists on it.
+I'll try to work on a clean solution when a find a bit of time. I
+still need to learn about fastmap.
 
-I tested a nearly completely automated conversion to use
-functions ad %pV for ubifs_err/ubifs_warn while adding
-'\n' to the uses. (converted ubifs_msg to ubifs_notice too)
-
-It reduces the object size a couple percent.
-(allyesconfig)
-
-$ size fs/ubifs/built-in.o*
-   text	   data	    bss	    dec	    hex	filename
- 335548	  66040	 138064	 539652	  83c04	fs/ubifs/built-in.o.new
- 353362	  65912	 138000	 557274	  880da	fs/ubifs/built-in.o.old
-
-It's not any real quantity of work to redo after you
-post your patch.
-
-There are a few defects today with unnecessary newlines
-with ubifs_<level> uses.
-
-$ git grep -P '\bubifs_\w+\s*.*\\n' 062a08d6ad56da23209083748ea5e0f1ab65a0e7 -- fs/ubifs/
-062a08d6ad56da23209083748ea5e0f1ab65a0e7:fs/ubifs/debug.c:      ubifs_msg("first node at %d:%d\n", zbr1->lnum, zbr1->offs);
-062a08d6ad56da23209083748ea5e0f1ab65a0e7:fs/ubifs/debug.c:      ubifs_msg("second node at %d:%d\n", zbr2->lnum, zbr2->offs);
-062a08d6ad56da23209083748ea5e0f1ab65a0e7:fs/ubifs/debug.c:      ubifs_err("cannot create \"%s\" debugfs file or directory, error %d\n",
-062a08d6ad56da23209083748ea5e0f1ab65a0e7:fs/ubifs/debug.c:      ubifs_err("cannot create \"%s\" debugfs file or directory, error %d\n",
-
-Some with pr_<level> uses too.
+--=20
+Rafa=C5=82
