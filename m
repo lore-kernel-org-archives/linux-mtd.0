@@ -1,16 +1,28 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Huang Shijie <shijie8@gmail.com>
-Subject: [PATCH v4 3/4] mtd: nand: gpmi: add proper raw access support
-Date: Mon, 20 Oct 2014 10:46:16 +0200
-Message-Id: <1413794777-32220-4-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1413794777-32220-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1413794777-32220-1-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Mike Voytovich <mvoytovich@paypal.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Roy Lee <roylee@paypal.com>
+Received: from mdfmta009.mxout.tbr.inty.net ([91.221.168.50]
+ helo=smtp.demon.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xg8np-00016t-G7
+ for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 08:58:58 +0000
+Received: from mdfmta009.tbr.inty.net (unknown [127.0.0.1])
+ by mdfmta009.tbr.inty.net (Postfix) with ESMTP id C508D384091
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2014 09:57:32 +0100 (BST)
+Received: from mdfmta009.tbr.inty.net (unknown [127.0.0.1])
+ by mdfmta009.tbr.inty.net (Postfix) with ESMTP id 7D0FF38408B
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2014 09:57:32 +0100 (BST)
+Received: from [192.168.0.200] (unknown [80.176.156.169])
+ (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mdfmta009.tbr.inty.net (Postfix) with ESMTP
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2014 09:57:32 +0100 (BST)
+Date: Mon, 20 Oct 2014 09:54:18 +0100 (BST)
+From: Steve B <steve@baconbits.demon.co.uk>
+To: linux-mtd@lists.infradead.org
+Subject: Re: UBI/UBFS: ubi_eba_read_leb() reporting unmapped LEB
+In-Reply-To: <alpine.DEB.2.02.1410101444510.2556@ubuntu>
+Message-ID: <alpine.DEB.2.02.1410200953500.2556@ubuntu>
+References: <alpine.DEB.2.02.1410101444510.2556@ubuntu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,200 +32,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Several MTD users (either in user or kernel space) expect a valid raw
-access support to NAND chip devices.
-This is particularly true for testing tools which are often touching the
-data stored in a NAND chip in raw mode to artificially generate errors.
+Hi,
 
-The GPMI drivers do not implemenent raw access functions, and thus rely on
-default HW_ECC scheme implementation.
-The default implementation consider the data and OOB area as properly
-separated in their respective NAND section, which is not true for the GPMI
-controller.
-In this driver/controller some OOB data are stored at the beginning of the
-NAND data area (these data are called metadata in the driver), then ECC
-bytes are interleaved with data chunk (which is similar to the
-HW_ECC_SYNDROME scheme), and eventually the remaining bytes are used as
-OOB data.
+Can anyone help me with this?
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 128 +++++++++++++++++++++++++++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |   2 +
- 2 files changed, 130 insertions(+)
+Thanks,
+Steve
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 959cb9b..bd4dedc 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -791,6 +791,7 @@ static void gpmi_free_dma_buffer(struct gpmi_nand_data *this)
- 					this->page_buffer_phys);
- 	kfree(this->cmd_buffer);
- 	kfree(this->data_buffer_dma);
-+	kfree(this->raw_buffer);
- 
- 	this->cmd_buffer	= NULL;
- 	this->data_buffer_dma	= NULL;
-@@ -837,6 +838,9 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
- 	if (!this->page_buffer_virt)
- 		goto error_alloc;
- 
-+	this->raw_buffer = kzalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
-+	if (!this->raw_buffer)
-+		goto error_alloc;
- 
- 	/* Slice up the page buffer. */
- 	this->payload_virt = this->page_buffer_virt;
-@@ -1347,6 +1351,128 @@ gpmi_ecc_write_oob(struct mtd_info *mtd, struct nand_chip *chip, int page)
- 	return status & NAND_STATUS_FAIL ? -EIO : 0;
- }
- 
-+static int gpmi_ecc_read_page_raw(struct mtd_info *mtd,
-+				  struct nand_chip *chip, uint8_t *buf,
-+				  int oob_required, int page)
-+{
-+	struct gpmi_nand_data *this = chip->priv;
-+	struct bch_geometry *nfc_geo = &this->bch_geometry;
-+	int eccsize = nfc_geo->ecc_chunk_size;
-+	int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
-+	u8 *tmp_buf = this->raw_buffer;
-+	size_t src_bit_off;
-+	size_t oob_bit_off;
-+	size_t oob_byte_off;
-+	uint8_t *oob = chip->oob_poi;
-+	int step;
-+
-+	chip->read_buf(mtd, tmp_buf,
-+		       mtd->writesize + mtd->oobsize);
-+
-+	if (this->swap_block_mark) {
-+		u8 swap = tmp_buf[0];
-+
-+		tmp_buf[0] = tmp_buf[mtd->writesize];
-+		tmp_buf[mtd->writesize] = swap;
-+	}
-+
-+	if (oob_required)
-+		memcpy(oob, tmp_buf, nfc_geo->metadata_size);
-+
-+	oob_bit_off = nfc_geo->metadata_size * 8;
-+	src_bit_off = oob_bit_off;
-+
-+	for (step = 0; step < nfc_geo->ecc_chunk_count; step++) {
-+		if (buf)
-+			gpmi_move_bits(buf, step * eccsize * 8,
-+				       tmp_buf, src_bit_off,
-+				       eccsize * 8);
-+		src_bit_off += eccsize * 8;
-+
-+		if (oob_required)
-+			gpmi_move_bits(oob, oob_bit_off,
-+				       tmp_buf, src_bit_off,
-+				       eccbits);
-+
-+		src_bit_off += eccbits;
-+		oob_bit_off += eccbits;
-+	}
-+
-+	if (oob_required) {
-+		if (oob_bit_off % 8)
-+			oob[oob_bit_off / 8] &= GENMASK(oob_bit_off - 1, 0);
-+
-+		oob_byte_off = DIV_ROUND_UP(oob_bit_off, 8);
-+
-+		if (oob_byte_off  < mtd->oobsize)
-+			memcpy(oob + oob_byte_off,
-+			       tmp_buf + mtd->writesize + oob_byte_off,
-+			       mtd->oobsize - oob_byte_off);
-+	}
-+
-+	return 0;
-+}
-+
-+static int gpmi_ecc_write_page_raw(struct mtd_info *mtd,
-+				   struct nand_chip *chip,
-+				   const uint8_t *buf,
-+				   int oob_required)
-+{
-+	struct gpmi_nand_data *this = chip->priv;
-+	struct bch_geometry *nfc_geo = &this->bch_geometry;
-+	int eccsize = nfc_geo->ecc_chunk_size;
-+	int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
-+	u8 *tmp_buf = this->raw_buffer;
-+	uint8_t *oob = chip->oob_poi;
-+	size_t dst_bit_off;
-+	size_t oob_bit_off;
-+	size_t oob_byte_off;
-+	int step;
-+
-+	if (!buf || !oob_required)
-+		memset(tmp_buf, 0xff, mtd->writesize + mtd->oobsize);
-+
-+	memcpy(tmp_buf, oob, nfc_geo->metadata_size);
-+	oob_bit_off = nfc_geo->metadata_size * 8;
-+	dst_bit_off = oob_bit_off;
-+
-+	for (step = 0; step < nfc_geo->ecc_chunk_count; step++) {
-+		if (buf)
-+			gpmi_move_bits(tmp_buf, dst_bit_off,
-+				       buf, step * eccsize * 8, eccsize * 8);
-+		dst_bit_off += eccsize * 8;
-+
-+		/* Pad last ECC block to align following data on a byte */
-+		if (step == nfc_geo->ecc_chunk_count - 1 &&
-+		    (oob_bit_off + eccbits) % 8)
-+			eccbits += 8 - ((oob_bit_off + eccbits) % 8);
-+
-+		if (oob_required)
-+			gpmi_move_bits(tmp_buf, dst_bit_off,
-+				       oob, oob_bit_off, eccbits);
-+
-+		dst_bit_off += eccbits;
-+		oob_bit_off += eccbits;
-+	}
-+
-+	oob_byte_off = oob_bit_off / 8;
-+
-+	if (oob_required && oob_byte_off < mtd->oobsize)
-+		memcpy(tmp_buf + mtd->writesize + oob_byte_off,
-+		       oob + oob_byte_off, mtd->oobsize - oob_byte_off);
-+
-+	if (this->swap_block_mark) {
-+		u8 swap = tmp_buf[0];
-+
-+		tmp_buf[0] = tmp_buf[mtd->writesize];
-+		tmp_buf[mtd->writesize] = swap;
-+	}
-+
-+	chip->write_buf(mtd, tmp_buf, mtd->writesize + mtd->oobsize);
-+
-+	return 0;
-+}
-+
- static int gpmi_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
-@@ -1664,6 +1790,8 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
- 	ecc->write_page	= gpmi_ecc_write_page;
- 	ecc->read_oob	= gpmi_ecc_read_oob;
- 	ecc->write_oob	= gpmi_ecc_write_oob;
-+	ecc->read_page_raw = gpmi_ecc_read_page_raw;
-+	ecc->write_page_raw = gpmi_ecc_write_page_raw;
- 	ecc->mode	= NAND_ECC_HW;
- 	ecc->size	= bch_geo->ecc_chunk_size;
- 	ecc->strength	= bch_geo->ecc_strength;
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 17d0736..89ab5c8 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -189,6 +189,8 @@ struct gpmi_nand_data {
- 	void			*auxiliary_virt;
- 	dma_addr_t		auxiliary_phys;
- 
-+	void			*raw_buffer;
-+
- 	/* DMA channels */
- #define DMA_CHANS		8
- 	struct dma_chan		*dma_chans[DMA_CHANS];
--- 
-1.9.1
+On Fri, 10 Oct 2014, Steve B wrote:
+
+> Hi All,
+>
+> I've been running a reboot test on 5 devices and after about 7000 reboot 
+> files in
+> one of our UBIFS volumes reports a corruption (SQUASHFS errors). I have been
+> able to extract the mtd partition and pull it into a nandsim instance on my 
+> host
+> machine so I can add some extra debug. Here's the error log when trying to 
+> load
+> the file:
+>
+> [41308.683356] UBI DBG gen (pid 15044): read 4062 bytes from LEB 1:352:0
+> [41308.683358] UBI DBG eba (pid 15044): read 4062 bytes from offset 0 of LEB 
+> 1:352 (unmapped)
+> [41308.683362] UBI DBG gen (pid 15044): read 4062 bytes from LEB 1:352:0
+> [41308.683364] UBI DBG eba (pid 15044): read 4062 bytes from offset 0 of LEB 
+> 1:352 (unmapped)
+> [41308.683368] UBIFS error (pid 15044): ubifs_read_node: bad node type (255 
+> but expected 1)
+> [41308.683373] UBI DBG gen (pid 15044): test LEB 1:352
+> [41308.683377] UBIFS error (pid 15044): ubifs_read_node: bad node at LEB 
+> 352:0, LEB mapping status 0
+> [41308.683381] Not a node, first 24 bytes:
+> [41308.683386] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
+> ff ff ff ff ff ff ff                          ........................
+> [41308.683392] Pid: 15044, comm: md5sum Tainted: GF          O 
+> 3.8.0-29-generic #42~precise1-Ubuntu
+> [41308.683396] Call Trace:
+> [41308.683411]  [<ffffffffa0564a7d>] ubifs_read_node+0x26d/0x2d0 [ubifs]
+> [41308.683419]  [<ffffffffa0583338>] ubifs_tnc_read_node+0x148/0x160 [ubifs]
+> [41308.683426]  [<ffffffffa056816c>] ubifs_tnc_locate+0x1cc/0x1f0 [ubifs]
+> [41308.683431]  [<ffffffffa0559ade>] do_readpage+0x10e/0x410 [ubifs]
+> [41308.683437]  [<ffffffffa055a4ce>] ubifs_readpage+0x5e/0x580 [ubifs]
+> [41308.683441]  [<ffffffff81152de3>] ? __inc_zone_page_state+0x33/0x40
+> [41308.683444]  [<ffffffff81135866>] ? 
+> add_to_page_cache_locked.part.26+0x76/0xd0
+> [41308.683447]  [<ffffffff8113593d>] ? add_to_page_cache_locked+0x7d/0x90
+> [41308.683452]  [<ffffffff81135edd>] 
+> do_generic_file_read.constprop.31+0x10d/0x440
+> [41308.683460]  [<ffffffff81136f01>] generic_file_aio_read+0xe1/0x220
+> [41308.683469]  [<ffffffff8119b0c3>] do_sync_read+0xa3/0xe0
+> [41308.683477]  [<ffffffff8119b800>] vfs_read+0xb0/0x180
+> [41308.683485]  [<ffffffff8119b922>] sys_read+0x52/0xa0
+> [41308.683492]  [<ffffffff816fc8dd>] system_call_fastpath+0x1a/0x1f
+>
+> I have written a small tool to scan the headers in all PEBs and this confirms
+> that LEB 352 doesn't exist for this volume.
+>
+> We are running a Linux kernel based off 3.4.0
+>
+> This issue seems similar to an issue already raised on this mailing list:
+> linux-mtd/2010-September/031837.html
+> subject: ubi_eba_init_scan: cannot reserve enough PEBs
+>
+> I would like to know the best way to debug this issue, does anyone have the 
+> patch
+> mentioned in the issue above to add more debugging in the right places?
+>
+> Our test setup has the facility of pulling the power on the unit if a GPIO 
+> line
+> is toggled, with this we can test sensitive areas of the code, can anyone 
+> suggest
+> where would be a good place to perform this action.
+>
+> Thanks for any help on this,
+> Steve B
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
