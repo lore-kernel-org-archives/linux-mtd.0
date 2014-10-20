@@ -1,22 +1,26 @@
-From: bpqw <bpqw@micron.com>
-To: Marek Vasut <marex@denx.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/1 v3] driver:mtd:spi-nor: Add Micron quad I/O support
-Date: Mon, 20 Oct 2014 01:24:23 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315E7240@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
- <201409251211.57183.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
- <201409261046.07132.marex@denx.de>    
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Mon, 20 Oct 2014 16:02:52 +1100
+Subject: RE: [PATCH v3 0/3] mtd: nand: gpmi: add proper raw access support
+Message-ID: <EACD232272DA4849B060F0828564D13B449961CF27@ntcex01.corp.netcomm.com.au>
+References: <1411481256-29141-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20141008142437.GA9912@localhost.localdomain>
+ <20141008171034.1506550f@bbrezillon>
+ <20141010144248.GA5107@localhost.localdomain>
+ <EACD232272DA4849B060F0828564D13B44955ABE1F@ntcex01.corp.netcomm.com.au>,
+ <20141019022035.GA1412@localhost.localdomain>
+In-Reply-To: <20141019022035.GA1412@localhost.localdomain>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "grmoore@altera.com" <grmoore@altera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie8@gmail.com" <shijie8@gmail.com>,
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Mike Voytovich <mvoytovich@paypal.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,115 +30,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
+On Sun, 19 Oct 2014 13:20:38 +1100 Huang Shijie <shijie8@gmail.com> wrote:=
 
-For Micron SPI NOR flash, enabling or disabling quad I/O protocol is contro=
-lled=20
-by EVCR (Enhanced Volatile Configuration Register), Quad I/O protocol bit 7=
-.=20
-When EVCR bit 7 is reset to 0, the SPI NOR flash will operate in quad I/O m=
-ode.
+> On Tue, Oct 14, 2014 at 04:50:27PM +1100, Iwo Mergler wrote:
+> >=20
+> > >
+> > > No, it doesn't seem to be correct.
+> > > But it's an MLC flash, so you'll most probably need to apply this
+> > > patch to nandbiterrs testsuite:
+> > >
+> > > http://code.bulix.org/f69wuu-87021
+> > >
+> > > This patch is flashing the block between each bitflip insertion to
+> > > avoid multiple write without erasure (which, AFAIK, is not
+> > > supported by MLC flashes).
+> >=20
+> > Hi Huang,
+> >=20
+> >=20
+> > just out of interest, have you tried this on the MLC NAND without
+> > the patch?
+> >=20
+> > I'm aware that MLC says you shouldn't write multiple times, but
+> > that is with a view towards specified data endurance. I would only
+> > expect a few additional bit errors during the test.
+> >=20
+> > Did you try the overwrite test?
+> >=20
+> The following is the test result for overwrite with this MLC patch:
+>=20
+> root@imx6qdlsolo:~# insmod mtd_nandbiterrs.ko dev=3D1 mode=3D1
+> [ =20762.534714]=20
+> [  762.536259] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> [  762.542115] mtd_nandbiterrs: MTD device: 1
+> [  762.546326] mtd_nandbiterrs: MTD device size 16777216,
+> =09eraseblock=3D2097152, page=3D8192, oob=3D744
+> =09[  762.554937] mtd_nandbiterrs: Device uses 1 subpages of 8192
+> =09bytes
+> =09[  762.561059] mtd_nandbiterrs: Using page=3D0, offset=3D0,
+> =09eraseblock=3D0
+> =09[  762.571333] mtd_nandbiterrs: overwrite biterrors test
+> =09[  762.576715] mtd_nandbiterrs: write_page
+> =09[  762.590448] mtd_nandbiterrs: error: read failed at 0x0
+> =09[  762.595650] mtd_nandbiterrs: Read reported error -74
+> =09[  762.600625] mtd_nandbiterrs: Bit error histogram (0
+> =09=09=09operations total):
+> =09[  762.608586] mtd_nandbiterrs: finished successfully.
+> =09[  762.613501]
+> =09=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> =09insmod: ERROR: could not insert module mtd_nandbiterrs.ko:
+> =09Input/output error
+>=20
 
-Signed-off-by: bean huo <beanhuo@micron.com>
-Acked-by: Marek Vasut <marex@denx.de>
----
- v1-v2:modified to that capture wait_till_ready()
-	 return value,if error,directly return its
-	 the value.
- v2-v3:directly use the reurning error value of
-	 read_reg and write_reg,instead of -EINVAL.
+Thanks. If I read this correctly, this means that writing the same data tw=
+ice,
+already generates more bit errors than the ECC can fix.
 
- drivers/mtd/spi-nor/spi-nor.c |   46 +++++++++++++++++++++++++++++++++++++=
-++++
- include/linux/mtd/spi-nor.h   |    6 ++++++
- 2 files changed, 52 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c =
-index b5ad6be..486b167 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -878,6 +878,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
- 	return 0;
- }
-=20
-+static int micron_quad_enable(struct spi_nor *nor) {
-+	int ret, val;
-+
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+
-+	write_enable(nor);
-+
-+	/* set EVCR ,enable quad I/O */
-+	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
-+	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
-+	if (ret < 0) {
-+		dev_err(nor->dev,
-+			"error while writing EVCR register\n");
-+		return ret;
-+	}
-+
-+	ret =3D wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	/* read EVCR and check it */
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+	if (val & EVCR_QUAD_EN_MICRON) {
-+		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)  {
- 	int status;
-@@ -890,6 +929,13 @@ static int set_quad_mode(struct spi_nor *nor, u32 jede=
-c_id)
- 			return -EINVAL;
- 		}
- 		return status;
-+	case CFI_MFR_ST:
-+		status =3D micron_quad_enable(nor);
-+		if (status) {
-+			dev_err(nor->dev, "Micron quad-read not enabled\n");
-+			return -EINVAL;
-+		}
-+		return status;
- 	default:
- 		status =3D spansion_quad_enable(nor);
- 		if (status) {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h inde=
-x 9e6294f..d71b659 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -56,6 +56,10 @@
- /* Used for Spansion flashes only. */
- #define SPINOR_OP_BRWR		0x17	/* Bank register write */
-=20
-+/* Used for Micron flashes only. */
-+#define SPINOR_OP_RD_EVCR	0x65	/* Read EVCR register */
-+#define SPINOR_OP_WD_EVCR	0x61	/* Write EVCR register */
-+
- /* Status Register bits. */
- #define SR_WIP			1	/* Write in progress */
- #define SR_WEL			2	/* Write enable latch */
-@@ -67,6 +71,8 @@
-=20
- #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
-=20
-+#define EVCR_QUAD_EN_MICRON	0x80	/* Micron Quad I/O */
-+
- /* Flag Status Register bits */
- #define FSR_READY		0x80
-=20
---
-1.7.9.5
+Best regards,
+
+Iwo
+
+______________________________________________________________________
+This communication contains information which may be confidential or privi=
+leged. The information is intended solely for the use of the individual or=
+ entity named above.  If you are not the intended recipient, be aware that=
+ any disclosure, copying, distribution or use of the contents of this info=
+rmation is prohibited.  If you have received this communication in error, =
+please notify me by telephone immediately.
+______________________________________________________________________
