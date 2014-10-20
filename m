@@ -1,13 +1,15 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgG57-00040L-JF
- for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 16:45:18 +0000
+ id 1XgG5Z-0005BS-G9
+ for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 16:45:45 +0000
 From: Vinod Koul <vinod.koul@intel.com>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] mtd: atmel_nand: use __iowrite32_copy for 32 bit copy
-Date: Mon, 20 Oct 2014 21:36:12 +0530
-Message-Id: <1413821173-18347-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 2/2] mtd: mxc_nand: use __iowrite32_copy for 32 bit copy
+Date: Mon, 20 Oct 2014 21:36:13 +0530
+Message-Id: <1413821173-18347-2-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1413821173-18347-1-git-send-email-vinod.koul@intel.com>
+References: <1413821173-18347-1-git-send-email-vinod.koul@intel.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>,
  Michael Grzeschik <m.grzeschik@pengutronix.de>, Bo Shen <voice.shen@atmel.com>,
  Wei Yongjun <yongjun_wei@trendmicro.com.cn>, Mark Brown <broonie@linaro.org>,
@@ -35,15 +37,15 @@ we have a kernel API so use that instead
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/mtd/nand/atmel_nand.c |   10 +++-------
+ drivers/mtd/nand/mxc_nand.c |   10 +++-------
  1 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index e321c56..b03e80d 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -265,14 +265,10 @@ static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
- 		*t++ = readl_relaxed(s++);
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index dba262b..3794cd7 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -280,14 +280,10 @@ static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
+ 		*t++ = __raw_readl(s++);
  }
  
 -static void memcpy32_toio(void __iomem *trg, const void *src, int size)
@@ -54,11 +56,11 @@ index e321c56..b03e80d 100644
 -	const u32 *s = src;
 -
 -	for (i = 0; i < (size >> 2); i++)
--		writel_relaxed(*s++, t++);
+-		__raw_writel(*s++, t++);
 +	/* __iowrite32_copy use 32bit size values so divide by 4 */
 +	__iowrite32_copy(trg, src, size/4);
  }
  
- /*
+ static int check_int_v3(struct mxc_nand_host *host)
 -- 
 1.7.0.4
