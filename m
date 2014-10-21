@@ -1,25 +1,27 @@
-Date: Tue, 21 Oct 2014 18:01:03 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ezaul Zillmer <ezaulzillmer@gmail.com>
-Subject: Re: [PATCH v6 2/2] mtd: nand: add sunxi NFC dt bindings doc
-Message-ID: <20141021180103.37ca7357@bbrezillon>
-In-Reply-To: <89bb5f8e-2fb0-4012-a8b2-fdd618da8f11@googlegroups.com>
-References: <1413805520-14947-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413805520-14947-3-git-send-email-boris.brezillon@free-electrons.com>
- <20141021024134.GC1193@ld-irv-0074>
- <20141021145344.575b19e6@bbrezillon>
- <62d54110-9c7f-4342-9201-a1ae23194620@googlegroups.com>
- <20141021155841.180861d0@bbrezillon>
- <89bb5f8e-2fb0-4012-a8b2-fdd618da8f11@googlegroups.com>
+Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgcXb-0002gN-Cv
+ for linux-mtd@lists.infradead.org; Tue, 21 Oct 2014 16:44:11 +0000
+Received: by mail-ig0-f174.google.com with SMTP id a13so1705051igq.7
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Oct 2014 09:43:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- yassinjaffer@gmail.com, linux-sunxi@googlegroups.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, galak@codeaurora.org,
- maxime.ripard@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <29606567142da0d52c462ef0aebacc2b91fe2508.1413891469.git.michal.simek@xilinx.com>
+References: <29606567142da0d52c462ef0aebacc2b91fe2508.1413891469.git.michal.simek@xilinx.com>
+Date: Tue, 21 Oct 2014 18:43:50 +0200
+Message-ID: <CACna6rzp1anqhLc-CfYmD4QA4ghYMWWjXmO9DnHHo824QobaMQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for SST spi flash
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Michal Simek <michal.simek@xilinx.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Marek Vasut <marex@denx.de>, monstr@monstr.eu,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Peter Crosthwaite <peter.crosthwaite@xilinx.com>,
+ Harini Katakam <harini.katakam@xilinx.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,68 +31,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Oct 2014 08:03:57 -0700 (PDT)
-Ezaul Zillmer <ezaulzillmer@gmail.com> wrote:
+On 21 October 2014 13:37, Michal Simek <michal.simek@xilinx.com> wrote:
+> From: Harini Katakam <harini.katakam@xilinx.com>
+>
+> Add sst25wf080 to the spi-nor device id table.
 
-> results 
-> {"K9GBG08U0A 32G 3.3V 8-bit",
-> { .id = {0xec, 0xd7, 0x94, 0x7a, 0x54, 0x43} },
->   SZ_8K, SZ_4K, SZ_1M, 0, 6, 640, NAND_ECC_INFO(24, SZ_1K) },
-> 
-> 
-> Start this in the attached image
-> ..................................................................
-> 
-> [   20.127045] Bad eraseblock 2900 at 0x0000b54fe000
-> [   20.134025] Bad eraseblock 2901 at 0x0000b55fe000
-> [   20.140993] Bad eraseblock 2902 at 0x0000b56fe000
-> [   20.147973] Bad eraseblock 2903 at 0x0000b57fe000
-> [   20.154952] Bad eraseblock 2904 at 0x0000b58fe000
-> [   20.161932] Bad eraseblock 2905 at 0x0000b59fe000
-> [   20.168900] Bad eraseblock 2906 at 0x0000b5afe000
-> [   20.175878] Bad eraseblock 2907 at 0x0000b5bfe000
-> [   20.182861] Bad eraseblock 2908 at 0x0000b5cfe000
-> [   20.189828] Bad eraseblock 2909 at 0x0000b5dfe000
-> [   20.196810] Bad eraseblock 2910 at 0x0000b5efe000
-> [   20.203790] Bad eraseblock 2911 at 0x0000b5ffe000
-> [   20.210758] Bad eraseblock 2912 at 0x0000b60fe000
-> [   20.217742] Bad eraseblock 2913 at 0x0000b61fe000
-> [   20.224723] Bad eraseblock 2914 at 0x0000b62fe000
-> [   20.231702] Bad eraseblock 2915 at 0x0000b63fe000
-> [   20.238669] Bad eraseblock 2916 at 0x0000b64fe000
-> [   20.245649] Bad eraseblock 2917 at 0x0000b65fe000
-> [   20.252618] Bad eraseblock 2918 at 0x0000b66fe000
-> [   20.259585] Bad eraseblock 2919 at 0x0000b67fe000
-> [   20.266565] Bad eraseblock 2920 at 0x0000b68fe000
-> [   20.273546] Bad eraseblock 2921 at 0x0000b69fe000
-> [   20.280512] Bad eraseblock 2922 at 0x0000b6afe000
-> [   20.287490] Bad eraseblock 2923 at 0x0000b6bfe000
-> [   20.294468] Bad eraseblock 2924 at 0x0000b6cfe000
-> [   20.301437] Bad eraseblock 2925 at 0x0000b6dfe000
-> [   20.312741] Bad eraseblock 2928 at 0x000. ok
-> 
-> 
-> I thought this docs of this samsung nand "K9GBG08U0A" that talves be useful 
-> since you have more knowledge about it! so I can help you make the tests of 
-> your support in nand cubieboard2.
-
-
-You have to force bad block erasure to get rid of AW's libnand layout
-(which is overriding bad block markers).
-
-Please follow these steps:
-1) apply this patch [1]
-2) boot on your new kernel and launch
-$ flash_erase /dev/mtd0 0 0
-3) revert the patch
-4) Boot on your new kernel
-
-Most of your bad blocks should be gone after that...
-
-[1]http://code.bulix.org/k2v1hx-87237
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+I guess commit message could include some details. We already support
+plenty of SST flashes without this patch, don't we?
