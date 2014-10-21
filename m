@@ -1,31 +1,25 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgXNh-0001eX-FV
- for linux-mtd@lists.infradead.org; Tue, 21 Oct 2014 11:13:37 +0000
-Date: Tue, 21 Oct 2014 16:05:40 +0530
-From: Vinod Koul <vinod.koul@intel.com>
-To: Herve Codina <herve.codina@celad.com>
-Subject: Re: [PATCH 1/2] mtd: atmel_nand: use __iowrite32_copy for 32 bitcopy
-Message-ID: <20141021103540.GJ28745@intel.com>
-References: <1413821173-18347-1-git-send-email-vinod.koul@intel.com>
- <54462F6C.1030307@atmel.com> <54463356.400@celad.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <54463356.400@celad.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Michael Grzeschik <m.grzeschik@pengutronix.de>, Bo Shen <voice.shen@atmel.com>,
- Wei Yongjun <yongjun_wei@trendmicro.com.cn>, Mark Brown <broonie@linaro.org>,
- HuangShijie <shijie8@gmail.com>, Jingoo Han <jg1.han@samsung.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Josh Wu <josh.wu@atmel.com>,
- BartlomiejZolnierkiewicz <b.zolnierkie@samsung.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- EzequielGarcia <ezequiel.garcia@free-electrons.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- Andrew Morton <akpm@linux-foundation.org>,
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgXlu-0007Cf-Rm
+ for linux-mtd@lists.infradead.org; Tue, 21 Oct 2014 11:38:39 +0000
+Received: by mail-wg0-f49.google.com with SMTP id x12so1114498wgg.20
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Oct 2014 04:38:16 -0700 (PDT)
+Sender: Michal Simek <monstr@monstr.eu>
+From: Michal Simek <michal.simek@xilinx.com>
+To: linux-kernel@vger.kernel.org,
+	monstr@monstr.eu
+Subject: [PATCH] mtd: spi-nor: Add support for SST spi flash
+Date: Tue, 21 Oct 2014 13:37:59 +0200
+Message-Id: <29606567142da0d52c462ef0aebacc2b91fe2508.1413891469.git.michal.simek@xilinx.com>
+Content-Type: multipart/signed;
+ boundary="=_mimegpg-monstr-desktop-32146-1413891479-0001";
+ micalg=pgp-sha1; protocol="application/pgp-signature"
+Cc: Marek Vasut <marex@denx.de>,
+ Peter Crosthwaite <peter.crosthwaite@xilinx.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Harini Katakam <harini.katakam@xilinx.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -37,71 +31,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 21, 2014 at 12:20:06PM +0200, Herve Codina wrote:
-> Hi,
-Please don't top post
-> 
-> I didn't go deeper in atmel_nand.c code to see other accesses but old
-> copy use writel_relaxed which is a macro to __raw_writel((__force u32)
-> cpu_to_le32(v),c)
-> 
-> __iowrite32_copy use directly __raw_writel(*src++, dst++)
-> 
-> So we skip cpu_to_le32. Is it ok for all system using atmel_nand ?
-Also would be a good question if we need barriers as __iowrite32_copy()
-doesn't guarantee any ordering.
+This is a MIME GnuPG-signed message.  If you see this text, it means that
+your E-mail or Usenet software does not support MIME signed messages.
+The Internet standard for MIME PGP messages, RFC 2015, was published in 1996.
+To open this message correctly you will need to install E-mail or Usenet
+software that supports modern Internet standards.
 
--- 
-~Vinod
+--=_mimegpg-monstr-desktop-32146-1413891479-0001
 
-> 
-> Best regards,
-> Herve Codina
-> 
-> 
-> Le 21/10/2014 12:03, Josh Wu a écrit :
-> > Hi, Vinod
-> > 
-> > On 10/21/2014 12:06 AM, Vinod Koul wrote:
-> >> The driver was also using own method to do 32bit copy, turns out
-> >> we have a kernel API so use that instead
-> >>
-> >> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > 
-> > Thanks for the patch.
-> > Acked-by: Josh Wu <josh.wu@atmel.com>
-> > 
-> > BTW, is there any similar kernel API that is for the read from io?
-> > 
-> > Best Regards,
-> > Josh Wu
-> > 
-> >> ---
-> >>   drivers/mtd/nand/atmel_nand.c |   10 +++-------
-> >>   1 files changed, 3 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> >> index e321c56..b03e80d 100644
-> >> --- a/drivers/mtd/nand/atmel_nand.c
-> >> +++ b/drivers/mtd/nand/atmel_nand.c
-> >> @@ -265,14 +265,10 @@ static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
-> >>   		*t++ = readl_relaxed(s++);
-> >>   }
-> >>   
-> >> -static void memcpy32_toio(void __iomem *trg, const void *src, int size)
-> >> +static inline void memcpy32_toio(void __iomem *trg, const void *src, int size)
-> >>   {
-> >> -	int i;
-> >> -	u32 __iomem *t = trg;
-> >> -	const u32 *s = src;
-> >> -
-> >> -	for (i = 0; i < (size >> 2); i++)
-> >> -		writel_relaxed(*s++, t++);
-> >> +	/* __iowrite32_copy use 32bit size values so divide by 4 */
-> >> +	__iowrite32_copy(trg, src, size/4);
-> >>   }
-> >>   
-> >>   /*
-> > 
+From: Harini Katakam <harini.katakam@xilinx.com>
 
--- 
+Add sst25wf080 to the spi-nor device id table.
+
+Signed-off-by: Harini Katakam <harinik@xilinx.com>
+Reviewed-by: Peter Crosthwaite <peter.crosthwaite@xilinx.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
+
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index ae16aa2f6885..0786faac2920 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -575,6 +575,7 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2, SECT_4K | SST_WRITE) },
+ 	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4, SECT_4K | SST_WRITE) },
+ 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
++	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
+
+ 	/* ST Microelectronics -- newer production may have feature updates */
+ 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+--
+1.8.2.3
+
+
+--=_mimegpg-monstr-desktop-32146-1413891479-0001
+Content-Type: application/pgp-signature
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEABECAAYFAlRGRZcACgkQykllyylKDCGz+QCdHSedT8f1J5UpHh7OI8+PKKX/
+1OQAn3/8RcyuNVyd7Gi5Y/BfJTh7tO+L
+=j1Rv
+-----END PGP SIGNATURE-----
+
+--=_mimegpg-monstr-desktop-32146-1413891479-0001--
