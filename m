@@ -1,20 +1,21 @@
-Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
+Received: from mail-qa0-x234.google.com ([2607:f8b0:400d:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgL1K-00034T-Hm
- for linux-mtd@lists.infradead.org; Mon, 20 Oct 2014 22:01:43 +0000
-Received: by mail-wg0-f51.google.com with SMTP id b13so6451907wgh.10
- for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2014 15:01:19 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: print erase size on init
-Date: Tue, 21 Oct 2014 00:01:04 +0200
-Message-Id: <1413842464-18016-1-git-send-email-zajec5@gmail.com>
+ id 1XgMxw-0002Uz-6n
+ for linux-mtd@lists.infradead.org; Tue, 21 Oct 2014 00:06:20 +0000
+Received: by mail-qa0-f52.google.com with SMTP id dc16so90269qab.11
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2014 17:05:56 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20141009161707.GA18921@fifo99.com>
+References: <20141009161707.GA18921@fifo99.com>
+Date: Mon, 20 Oct 2014 17:05:56 -0700
+Message-ID: <CAN8TOE8scDnP74KJHmQcq2sznPmxkfDru7sFE+ByrJ8tKHt9mg@mail.gmail.com>
+Subject: Re: slram on mapped ram areas
+From: Brian Norris <computersforpeace@gmail.com>
+To: dwalker@fifo99.com
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc: Joern Engel <joern@wh.fh-wedel.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jochen Schaeuble <psionic@psionic.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It may be useful info, e.g. if someone wants to use ubinize.
+On Thu, Oct 9, 2014 at 9:17 AM,  <dwalker@fifo99.com> wrote:
+> Hi,
+>
+> It seems that slram was made for access parts of memory not used by the system,
+> or not mapped (right terminology?). I wanted to use it on memory which is mapped
+> or memory that can be used by the system. The problem I have is that the system I
+> work on places a filesystem image in memory someplace, and send the physical address
+> and size of the area as boot parameters. The memory where the images ends up is not
+> special memory.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/nand/nand_base.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I honestly don't know much about the slram.c driver. I doubt it has
+many serious users these days.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 5b5c627..5e9ffbe 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3765,9 +3765,9 @@ ident_done:
- 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
- 				type->name);
- 
--	pr_info("%dMiB, %s, page size: %d, OOB size: %d\n",
-+	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
- 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
--		mtd->writesize, mtd->oobsize);
-+		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
- 	return type;
- }
- 
--- 
-1.8.4.5
+It also seems like you're really trying to use this driver in a way it
+was not designed. Do you really need to access specific kernel memory?
+Or do you just want a RAM-backed MTD? There are other drivers for this
+already (mtdram?).
+
+> I made the following changes to your driver (somewhat condensed),
+>
+> 1) Added memblock_reserve() on the memory region
+> 2) Added an insert_resource() call to the memory
+> 3) Altered the driver to not use ioremap, instead use __va() conditionally.
+
+I see this comment next to the __va() definition for ARM:
+
+/*
+ * Drivers should NOT use these either.
+ */
+
+> This worked. I was able to access the memory via the typical mtd
+> userspace interface.
+>
+> So is this something acceptable to add to the slram driver?
+>
+> Should it go someplace else?
+>
+> Does the functionality to do this exists someplace already ?
+>
+> I just wanted to send out feelers before I send any patches..
+
+Brian
