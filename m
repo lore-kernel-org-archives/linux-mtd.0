@@ -1,23 +1,13 @@
-Date: Tue, 21 Oct 2014 15:48:15 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ezaul Zillmer <ezaulzillmer@gmail.com>
-Subject: Re: [PATCH v6 2/2] mtd: nand: add sunxi NFC dt bindings doc
-Message-ID: <20141021154815.1ae4c879@bbrezillon>
-In-Reply-To: <62d54110-9c7f-4342-9201-a1ae23194620@googlegroups.com>
-References: <1413805520-14947-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413805520-14947-3-git-send-email-boris.brezillon@free-electrons.com>
- <20141021024134.GC1193@ld-irv-0074>
- <20141021145344.575b19e6@bbrezillon>
- <62d54110-9c7f-4342-9201-a1ae23194620@googlegroups.com>
+From: Roger Quadros <rogerq@ti.com>
+To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Subject: [PATCH 0/2] mtd: oobtest: Add parameter to ignore bitflip errors
+ within specified limit
+Date: Tue, 21 Oct 2014 16:53:26 +0300
+Message-ID: <1413899608-3911-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- yassinjaffer@gmail.com, linux-sunxi@googlegroups.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, galak@codeaurora.org,
- maxime.ripard@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: Roger Quadros <rogerq@ti.com>, linux-mtd@lists.infradead.org,
+ akinobu.mita@gmail.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +17,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Oct 2014 06:13:16 -0700 (PDT)
-Ezaul Zillmer <ezaulzillmer@gmail.com> wrote:
+Hi,
 
-> Hello everyone 
-> 
-> Boris Brezillon 
-> 
-> downloaded sunxi-nand-v6 now compiled for Cubieboard2 
-> https://github.com/bbrezillon/linux-sunxi.git sunxi b-nand-v6 
-> 
-> u-boot 
-> git clone https://github.com/jwrdegoede/u-boot-b sunxi.git sunxi-wip 
-> 
-> 
-> [1.143903] nand: Could not find valid JEDEC parameter page; aborting 
-> [1.150369] nand: device found, Manufacturer ID: 0xec, Chip ID: 0xd7 
-> [1.156766] nand: Samsung NAND 4GiB 3.3V 8-bit 
-> [1.161214] nand: 4096MiB, MLC, page size: 8192, OOB size: 640 
-> [1.167167] sunxi_nand 1c03000.nand: ECC init failed: -22 
-> [1.172588] sunxi_nand 1c03000.nand: failed to init nand chips 
-> [1.178502] sunxi_nand: probe of 1c03000.nand failed with error -22 
-> 
-> need some more data?
+The oobtest case uses raw NAND read/writes to OOB area bypassing the error correction
+mechanism and hence is bound to be affected by bitflip errors which are normal
+in NAND memories. (e.g. we can never get DRA7-evm's NAND to fully pass
+mtd_oobtest).
 
-No, this is still the same problem you had last time you asked:
+In these patches we add a module parameter "bitflip_limit" to specify how many
+bitflips per page are tolerable. Not specifiing the parameter defaults to old
+behaviour (i.e. zero bitflips tolerated).
+Specifying bitflip_limit=1 makes us pass on DRA7-evm with 0 errors.
 
-You haven't defined your NAND chip in the nand_ids table, and thus
-strength and size fields of the nand_ecc_ctrl struct are undefined...
+Introduce a new memcmpshow() function that shows the data byte where comparison failed.
+This is useful for debugging. The same function is also used to calculate number of
+bitflip errors over the data block.
 
-You'll have to retrieve the whole READ_ID sequence and add a proper
-entry in the nand_ids table (see [1] for an example).
+cheers,
+-roger
 
-Regards,
+Roger Quadros (2):
+  mtd: mtd_oobtest: Show the verification error location and data
+  mtd: mtd_oobtest: add bitflip_limit parameter
 
-Boris
-
-[1]https://github.com/bbrezillon/linux-sunxi/commit/da96d64e6ece81e717bbdcad28caf0e5a9c40995
+ drivers/mtd/tests/oobtest.c | 77 +++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 64 insertions(+), 13 deletions(-)
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+1.8.3.2
