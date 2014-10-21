@@ -1,31 +1,23 @@
-Received: from nasmtp01.atmel.com ([192.199.1.245]
- helo=DVREDG01.corp.atmel.com)
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgWII-0001It-Pb
- for linux-mtd@lists.infradead.org; Tue, 21 Oct 2014 10:03:59 +0000
-Message-ID: <54462F6C.1030307@atmel.com>
-Date: Tue, 21 Oct 2014 18:03:24 +0800
-From: Josh Wu <josh.wu@atmel.com>
+ id 1XgWVY-0000LX-05
+ for linux-mtd@lists.infradead.org; Tue, 21 Oct 2014 10:17:40 +0000
+Message-ID: <544632B6.60701@atmel.com>
+Date: Tue, 21 Oct 2014 12:17:26 +0200
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-To: Vinod Koul <vinod.koul@intel.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mtd: atmel_nand: use __iowrite32_copy for 32 bit copy
-References: <1413821173-18347-1-git-send-email-vinod.koul@intel.com>
-In-Reply-To: <1413821173-18347-1-git-send-email-vinod.koul@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Michael Grzeschik <m.grzeschik@pengutronix.de>, Bo Shen <voice.shen@atmel.com>,
- Wei Yongjun <yongjun_wei@trendmicro.com.cn>, Mark Brown <broonie@linaro.org>,
- Huang Shijie <shijie8@gmail.com>, Jingoo Han <jg1.han@samsung.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Josh Triplett <josh@joshtriplett.org>,
- Herve Codina <Herve.CODINA@celad.com>, Bartlomiej
- Zolnierkiewicz <b.zolnierkie@samsung.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH 2/2] jffs2: fix buffer dump debug output
+References: <cover.1413878259.git.cyrille.pitchen@atmel.com>		
+ <21ad981db8c65d3f00be3d9a254cae78cf40b96d.1413878259.git.cyrille.pitchen@atmel.com>	
+ <1413879465.12828.1.camel@perches.com> <54462BB6.5020405@atmel.com>
+ <1413885267.7906.426.camel@sauron.fi.intel.com>
+In-Reply-To: <1413885267.7906.426.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Joe Perches <joe@perches.com>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nicolas.ferre@atmel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,45 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Vinod
+Le 21/10/2014 11:54, Artem Bityutskiy a écrit :
+> On Tue, 2014-10-21 at 11:47 +0200, Cyrille Pitchen wrote:
+>> thanks for your comment. Indeed using print_hex_dump() would be a good idea
+>> since it would avoid each driver to implement its own version of buffer dumps.
+>> Reading the source code of print_hex_dump(), the output format would change a
+>> little bit:
+>> the output would no longer be aligned to JFFS2_BUFDUMP_BYTES_PER_LINE boundary
+>> using leading spaces.
+>> If it's ok to change the output format it's good for me as well.
+> 
+> Changing format is OK, this is just a debugging cruft. But it is OK only
+> if you test the changes. If you are unable to test the changes, it is
+> better to avoid doing non-trivial changes.
+> 
+The version provided in this patch was tested. However I don't know how to cope
+with the offs parameter of __jffs2_dbg_dump_buffer() if I replace the current
+source code by a call to print_hex_dump().
+If I use DUMP_PREFIX_ADDRESS as prefix_type value, the printed offsets are
+relative to the address of buf in RAM, not to the hardware offset in my
+dataflash provided by the offs parameter.
+Also, if I use DUMP_PREFIX_OFFSET, the printed offsets start from 0 instead of
+offs value.
 
-On 10/21/2014 12:06 AM, Vinod Koul wrote:
-> The driver was also using own method to do 32bit copy, turns out
-> we have a kernel API so use that instead
->
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-
-Thanks for the patch.
-Acked-by: Josh Wu <josh.wu@atmel.com>
-
-BTW, is there any similar kernel API that is for the read from io?
-
-Best Regards,
-Josh Wu
-
-> ---
->   drivers/mtd/nand/atmel_nand.c |   10 +++-------
->   1 files changed, 3 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index e321c56..b03e80d 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -265,14 +265,10 @@ static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
->   		*t++ = readl_relaxed(s++);
->   }
->   
-> -static void memcpy32_toio(void __iomem *trg, const void *src, int size)
-> +static inline void memcpy32_toio(void __iomem *trg, const void *src, int size)
->   {
-> -	int i;
-> -	u32 __iomem *t = trg;
-> -	const u32 *s = src;
-> -
-> -	for (i = 0; i < (size >> 2); i++)
-> -		writel_relaxed(*s++, t++);
-> +	/* __iowrite32_copy use 32bit size values so divide by 4 */
-> +	__iowrite32_copy(trg, src, size/4);
->   }
->   
->   /*
+I think keeping the right offsets in the output dump is helpfull.
