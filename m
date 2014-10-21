@@ -1,21 +1,29 @@
-Received: from smtprelay0143.hostedemail.com ([216.40.44.143]
- helo=smtprelay.hostedemail.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgUdt-0003vm-RT
- for linux-mtd@lists.infradead.org; Tue, 21 Oct 2014 08:18:10 +0000
-Message-ID: <1413879465.12828.1.camel@perches.com>
-Subject: Re: [PATCH 2/2] jffs2: fix buffer dump debug output
-From: Joe Perches <joe@perches.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Date: Tue, 21 Oct 2014 01:17:45 -0700
-In-Reply-To: <21ad981db8c65d3f00be3d9a254cae78cf40b96d.1413878259.git.cyrille.pitchen@atmel.com>
-References: <cover.1413878259.git.cyrille.pitchen@atmel.com>
- <21ad981db8c65d3f00be3d9a254cae78cf40b96d.1413878259.git.cyrille.pitchen@atmel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, nicolas.ferre@atmel.com
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgV1w-0000Os-Mz
+ for linux-mtd@lists.infradead.org; Tue, 21 Oct 2014 08:43:02 +0000
+From: Jijiagang <jijiagang@hisilicon.com>
+To: Dave Chinner <david@fromorbit.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: RE: UBIFS assert failed in ubifs_set_page_dirty at 1421
+Date: Tue, 21 Oct 2014 08:41:38 +0000
+Message-ID: <BE257DAADD2C0D439647A271332966573949F870@SZXEMA511-MBS.china.huawei.com>
+References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
+ <1413805935.7906.225.camel@sauron.fi.intel.com>
+ <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
+ <1413810719.7906.268.camel@sauron.fi.intel.com>
+ <20141021033847.GS17506@dastard>
+In-Reply-To: <20141021033847.GS17506@dastard>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Caizhiyong <caizhiyong@hisilicon.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "Liuhui \(B\)" <liuhui88.liuhui@hisilicon.com>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "Wanli
+ \(welly\)" <welly.wan@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +33,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-10-21 at 10:05 +0200, Cyrille Pitchen wrote:
-> This patch fixes __jffs2_dbg_dump_buffer(): this function prints a message
-> claiming to dump len bytes. However, depending on the start offset, the former
-> code drops up to 31 (JFFS2_BUFDUMP_BYTES_PER_LINE - 1) bytes.
-> 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> ---
->  fs/jffs2/debug.c | 21 ++++++++-------------
->  1 file changed, 8 insertions(+), 13 deletions(-)
-> 
-> diff --git a/fs/jffs2/debug.c b/fs/jffs2/debug.c
-> index 07bd5bc..1b515b2 100644
-> --- a/fs/jffs2/debug.c
-> +++ b/fs/jffs2/debug.c
-> @@ -736,30 +736,25 @@ void
->  __jffs2_dbg_dump_buffer(unsigned char *buf, int len, uint32_t offs)
->  {
->  	int skip;
-> -	int i;
-> +	int i, pos;
->  
->  	printk(JFFS2_DBG_MSG_PREFIX " dump from offset %#08x to offset %#08x (%x bytes).\n",
->  		offs, offs + len, len);
-> -	i = skip = offs % JFFS2_BUFDUMP_BYTES_PER_LINE;
-> +	i = skip = offs & (JFFS2_BUFDUMP_BYTES_PER_LINE - 1);
->  	offs = offs & ~(JFFS2_BUFDUMP_BYTES_PER_LINE - 1);
->  
-> -	if (skip != 0)
-> -		printk(JFFS2_DBG "%#08x: ", offs);
-> -
-> +	printk(JFFS2_DBG "%#08x: ", offs);
->  	while (skip--)
->  		printk("   ");
->  
-> -	while (i < len) {
-> -		if ((i % JFFS2_BUFDUMP_BYTES_PER_LINE) == 0 && i != len -1) {
-> -			if (i != 0)
-> -				printk("\n");
-> +	for (pos = 0; pos < len; ++pos, ++i) {
-> +		if (i == JFFS2_BUFDUMP_BYTES_PER_LINE) {
->  			offs += JFFS2_BUFDUMP_BYTES_PER_LINE;
-> -			printk(JFFS2_DBG "%0#8x: ", offs);
-> +			printk(JFFS2_DBG "\n%0#8x: ", offs);
-> +			i = 0;
+Dear Dave,
+Thanks for your reply.
+We removed some modules to keep kernel untainted. It still can be reproduce=
+d.
 
-print_hex_dump would be better
+Here is the log:
+UBIFS assert failed in ubifs_set_page_dirty at 1421 (pid 543)
+CPU: 1 PID: 543 Comm: kswapd0 Not tainted 3.10.0_s40 #1
+[<8001d8a0>] (unwind_backtrace+0x0/0x108) from [<80019f44>] (show_stack+0x2=
+0/0x24)
+[<80019f44>] (show_stack+0x20/0x24) from [<80af2ef8>] (dump_stack+0x24/0x2c=
+)
+[<80af2ef8>] (dump_stack+0x24/0x2c) from [<80297234>] (ubifs_set_page_dirty=
++0x54/0x5c)
+[<80297234>] (ubifs_set_page_dirty+0x54/0x5c) from [<800cea60>] (set_page_d=
+irty+0x50/0x78)
+[<800cea60>] (set_page_dirty+0x50/0x78) from [<800f4be4>] (try_to_unmap_one=
++0x1f8/0x3d0)
+[<800f4be4>] (try_to_unmap_one+0x1f8/0x3d0) from [<800f4f44>] (try_to_unmap=
+_file+0x9c/0x740)
+[<800f4f44>] (try_to_unmap_file+0x9c/0x740) from [<800f5678>] (try_to_unmap=
++0x40/0x78)
+[<800f5678>] (try_to_unmap+0x40/0x78) from [<800d6a04>] (shrink_page_list+0=
+x23c/0x884)
+[<800d6a04>] (shrink_page_list+0x23c/0x884) from [<800d76c8>] (shrink_inact=
+ive_list+0x21c/0x3c8)
+[<800d76c8>] (shrink_inactive_list+0x21c/0x3c8) from [<800d7c20>] (shrink_l=
+ruvec+0x3ac/0x524)
+[<800d7c20>] (shrink_lruvec+0x3ac/0x524) from [<800d8970>] (kswapd+0x854/0x=
+dc0)
+[<800d8970>] (kswapd+0x854/0xdc0) from [<80051e28>] (kthread+0xc8/0xcc)
+[<80051e28>] (kthread+0xc8/0xcc) from [<80015198>] (ret_from_fork+0x14/0x20=
+)
+UBIFS assert failed in ubifs_writepage at 1009 (pid 6)
+CPU: 0 PID: 6 Comm: kworker/u8:0 Not tainted 3.10.0_s40 #1
+Workqueue: writeback bdi_writeback_workfn (flush-ubifs_1_0)
+[<8001d8a0>] (unwind_backtrace+0x0/0x108) from [<80019f44>] (show_stack+0x2=
+0/0x24)
+[<80019f44>] (show_stack+0x20/0x24) from [<80af2ef8>] (dump_stack+0x24/0x2c=
+)
+[<80af2ef8>] (dump_stack+0x24/0x2c) from [<80299294>] (ubifs_writepage+0x1d=
+0/0x1dc)
+[<80299294>] (ubifs_writepage+0x1d0/0x1dc) from [<800cefc0>] (__writepage+0=
+x24/0x4c)
+[<800cefc0>] (__writepage+0x24/0x4c) from [<800cf288>] (write_cache_pages+0=
+x1b0/0x408)
+[<800cf288>] (write_cache_pages+0x1b0/0x408) from [<800cf538>] (generic_wri=
+tepages+0x58/0x70)
+[<800cf538>] (generic_writepages+0x58/0x70) from [<800cf594>] (do_writepage=
+s+0x44/0x48)
+[<800cf594>] (do_writepages+0x44/0x48) from [<80139a30>] (__writeback_singl=
+e_inode+0x50/0x238)
+[<80139a30>] (__writeback_single_inode+0x50/0x238) from [<8013ae48>] (write=
+back_sb_inodes+0x264/0x44c)
+[<8013ae48>] (writeback_sb_inodes+0x264/0x44c) from [<8013b0c4>] (__writeba=
+ck_inodes_wb+0x94/0xcc)
+[<8013b0c4>] (__writeback_inodes_wb+0x94/0xcc) from [<8013b3dc>] (wb_writeb=
+ack+0x228/0x2f8)
+[<8013b3dc>] (wb_writeback+0x228/0x2f8) from [<8013b6b4>] (wb_do_writeback+=
+0x208/0x24c)
+[<8013b6b4>] (wb_do_writeback+0x208/0x24c) from [<8013b774>] (bdi_writeback=
+_workfn+0x7c/0x1dc)
+[<8013b774>] (bdi_writeback_workfn+0x7c/0x1dc) from [<8004ac64>] (process_o=
+ne_work+0x160/0x460)
+[<8004ac64>] (process_one_work+0x160/0x460) from [<8004b0ac>] (worker_threa=
+d+0x148/0x49c)
+[<8004b0ac>] (worker_thread+0x148/0x49c) from [<80051e28>] (kthread+0xc8/0x=
+cc)
+[<80051e28>] (kthread+0xc8/0xcc) from [<80015198>] (ret_from_fork+0x14/0x20=
+)
+UBIFS assert failed in do_writepage at 936 (pid 6)
+CPU: 3 PID: 6 Comm: kworker/u8:0 Not tainted 3.10.0_s40 #1
+Workqueue: writeback bdi_writeback_workfn (flush-ubifs_1_0)
+[<8001d8a0>] (unwind_backtrace+0x0/0x108) from [<80019f44>] (show_stack+0x2=
+0/0x24)
+[<80019f44>] (show_stack+0x20/0x24) from [<80af2ef8>] (dump_stack+0x24/0x2c=
+)
+[<80af2ef8>] (dump_stack+0x24/0x2c) from [<802990b8>] (do_writepage+0x1b8/0=
+x1c4)
+[<802990b8>] (do_writepage+0x1b8/0x1c4) from [<802991e8>] (ubifs_writepage+=
+0x124/0x1dc)
+[<802991e8>] (ubifs_writepage+0x124/0x1dc) from [<800cefc0>] (__writepage+0=
+x24/0x4c)
+[<800cefc0>] (__writepage+0x24/0x4c) from [<800cf288>] (write_cache_pages+0=
+x1b0/0x408)
+[<800cf288>] (write_cache_pages+0x1b0/0x408) from [<800cf538>] (generic_wri=
+tepages+0x58/0x70)
+[<800cf538>] (generic_writepages+0x58/0x70) from [<800cf594>] (do_writepage=
+s+0x44/0x48)
+[<800cf594>] (do_writepages+0x44/0x48) from [<80139a30>] (__writeback_singl=
+e_inode+0x50/0x238)
+[<80139a30>] (__writeback_single_inode+0x50/0x238) from [<8013ae48>] (write=
+back_sb_inodes+0x264/0x44c)
+[<8013ae48>] (writeback_sb_inodes+0x264/0x44c) from [<8013b0c4>] (__writeba=
+ck_inodes_wb+0x94/0xcc)
+[<8013b0c4>] (__writeback_inodes_wb+0x94/0xcc) from [<8013b3dc>] (wb_writeb=
+ack+0x228/0x2f8)
+[<8013b3dc>] (wb_writeback+0x228/0x2f8) from [<8013b6b4>] (wb_do_writeback+=
+0x208/0x24c)
+[<8013b6b4>] (wb_do_writeback+0x208/0x24c) from [<8013b774>] (bdi_writeback=
+_workfn+0x7c/0x1dc)
+[<8013b774>] (bdi_writeback_workfn+0x7c/0x1dc) from [<8004ac64>] (process_o=
+ne_work+0x160/0x460)
+[<8004ac64>] (process_one_work+0x160/0x460) from [<8004b0ac>] (worker_threa=
+d+0x148/0x49c)
+[<8004b0ac>] (worker_thread+0x148/0x49c) from [<80051e28>] (kthread+0xc8/0x=
+cc)
+[<80051e28>] (kthread+0xc8/0xcc) from [<80015198>] (ret_from_fork+0x14/0x20=
+)
+UBIFS assert failed in ubifs_release_budget at 567 (pid 6)
+CPU: 3 PID: 6 Comm: kworker/u8:0 Not tainted 3.10.0_s40 #1
+Workqueue: writeback bdi_writeback_workfn (flush-ubifs_1_0)
+
+-----Original Message-----
+From: Dave Chinner [mailto:david@fromorbit.com]=20
+Sent: Tuesday, October 21, 2014 11:39 AM
+To: Artem Bityutskiy
+Cc: Caizhiyong; linux-fsdevel@vger.kernel.org; linux-mm@kvack.org; Jijiagan=
+g; adrian.hunter@intel.com; linux-mtd@lists.infradead.org; Wanli (welly)
+Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
+
+On Mon, Oct 20, 2014 at 04:11:59PM +0300, Artem Bityutskiy wrote:
+> 3. There are exactly 2 places where UBIFS-backed pages may be marked=20
+> as
+> dirty:
+>=20
+>   a) ubifs_write_end() [->wirte_end] - the file write path
+>   b) ubifs_page_mkwrite() [->page_mkwirte] - the file mmap() path
+>=20
+> 4. If anything calls 'ubifs_set_page_dirty()' directly (not through=20
+> write_end()/mkwrite()), and the page was not dirty, UBIFS will=20
+> complain with the assertion that you see.
+>=20
+> > CPU: 3 PID: 543 Comm: kswapd0 Tainted: P           O 3.10.0_s40 #1
+
+Kernel is tainted. Not worth wasting time on unless it can be reproduced on=
+ an untainted kernel...
+
+Cheers,
+
+Dave.
+--
+Dave Chinner
+david@fromorbit.com
