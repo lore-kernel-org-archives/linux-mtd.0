@@ -1,15 +1,23 @@
-From: Roger Quadros <rogerq@ti.com>
-To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-Subject: [PATCH 2/2] mtd: mtd_oobtest: add bitflip_limit parameter
-Date: Tue, 21 Oct 2014 16:53:28 +0300
-Message-ID: <1413899608-3911-3-git-send-email-rogerq@ti.com>
-In-Reply-To: <1413899608-3911-1-git-send-email-rogerq@ti.com>
-References: <1413899608-3911-1-git-send-email-rogerq@ti.com>
+Date: Tue, 21 Oct 2014 15:58:41 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Ezaul Zillmer <ezaulzillmer@gmail.com>
+Subject: Re: [PATCH v6 2/2] mtd: nand: add sunxi NFC dt bindings doc
+Message-ID: <20141021155841.180861d0@bbrezillon>
+In-Reply-To: <62d54110-9c7f-4342-9201-a1ae23194620@googlegroups.com>
+References: <1413805520-14947-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1413805520-14947-3-git-send-email-boris.brezillon@free-electrons.com>
+ <20141021024134.GC1193@ld-irv-0074>
+ <20141021145344.575b19e6@bbrezillon>
+ <62d54110-9c7f-4342-9201-a1ae23194620@googlegroups.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Sekhar Nori <nsekhar@ti.com>, Roger Quadros <rogerq@ti.com>,
- linux-mtd@lists.infradead.org, akinobu.mita@gmail.com,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
+ yassinjaffer@gmail.com, linux-sunxi@googlegroups.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, galak@codeaurora.org,
+ maxime.ripard@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,172 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is common for NAND devices to have bitflip errors.
-Add a bitflip_limit parameter to specify how many bitflips per
-page we can tolerate without flagging an error.
-By default zero bitflips are tolerated.
+On Tue, 21 Oct 2014 06:13:16 -0700 (PDT)
+Ezaul Zillmer <ezaulzillmer@gmail.com> wrote:
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
-Signed-off-by: Sekhar Nori <nsekhar@ti.com>
----
- drivers/mtd/tests/oobtest.c | 65 ++++++++++++++++++++++++++++++++-------------
- 1 file changed, 47 insertions(+), 18 deletions(-)
+> Hello everyone 
+> 
+> Boris Brezillon 
+> 
+> downloaded sunxi-nand-v6 now compiled for Cubieboard2 
+> https://github.com/bbrezillon/linux-sunxi.git sunxi b-nand-v6 
+> 
+> u-boot 
+> git clone https://github.com/jwrdegoede/u-boot-b sunxi.git sunxi-wip 
+> 
+> 
+> [1.143903] nand: Could not find valid JEDEC parameter page; aborting 
+> [1.150369] nand: device found, Manufacturer ID: 0xec, Chip ID: 0xd7 
+> [1.156766] nand: Samsung NAND 4GiB 3.3V 8-bit 
+> [1.161214] nand: 4096MiB, MLC, page size: 8192, OOB size: 640 
+> [1.167167] sunxi_nand 1c03000.nand: ECC init failed: -22 
+> [1.172588] sunxi_nand 1c03000.nand: failed to init nand chips 
+> [1.178502] sunxi_nand: probe of 1c03000.nand failed with error -22 
+> 
+> need some more data?
+> 
 
-diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
-index edd859d..1fd2cda 100644
---- a/drivers/mtd/tests/oobtest.c
-+++ b/drivers/mtd/tests/oobtest.c
-@@ -34,8 +34,11 @@
- #include "mtd_test.h"
- 
- static int dev = -EINVAL;
-+static int bitflip_limit;
- module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
-+module_param(bitflip_limit, int, S_IRUGO);
-+MODULE_PARM_DESC(bitflip_limit, "Max. allowed bitflips per page");
- 
- static struct mtd_info *mtd;
- static unsigned char *readbuf;
-@@ -115,24 +118,27 @@ static int write_whole_device(void)
- 	return 0;
- }
- 
--/* Display the address, offset and data bytes at comparison failure */
--static int memcmpshow(loff_t addr, const void *cs, const void *ct, size_t count)
-+/*
-+ * Display the address, offset and data bytes at comparison failure.
-+ * Return number of bitflips encountered.
-+ */
-+static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t count)
- {
- 	const unsigned char *su1, *su2;
- 	int res;
--	int ret = 0;
- 	size_t i = 0;
-+	size_t bitflips = 0;
- 
- 	for (su1 = cs, su2 = ct; 0 < count; ++su1, ++su2, count--, i++) {
- 		res = *su1 ^ *su2;
- 		if (res) {
- 			pr_info("error @addr[0x%lx:0x%x] 0x%x -> 0x%x diff 0x%x\n",
- 				(unsigned long)addr, i, *su1, *su2, res);
--			ret = 1;
-+			bitflips += hweight8(res);
- 		}
- 	}
- 
--	return ret;
-+	return bitflips;
- }
- 
- static int verify_eraseblock(int ebnum)
-@@ -141,6 +147,7 @@ static int verify_eraseblock(int ebnum)
- 	struct mtd_oob_ops ops;
- 	int err = 0;
- 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
-+	size_t bitflips;
- 
- 	prandom_bytes_state(&rnd_state, writebuf, use_len_max * pgcnt);
- 	for (i = 0; i < pgcnt; ++i, addr += mtd->writesize) {
-@@ -159,9 +166,11 @@ static int verify_eraseblock(int ebnum)
- 			errcnt += 1;
- 			return err ? err : -1;
- 		}
--		if (memcmpshow(addr, readbuf,
--			       writebuf + (use_len_max * i) + use_offset,
--			       use_len)) {
-+
-+		bitflips = memcmpshow(addr, readbuf,
-+				      writebuf + (use_len_max * i) + use_offset,
-+				      use_len);
-+		if (bitflips > bitflip_limit) {
- 			pr_err("error: verify failed at %#llx\n",
- 			       (long long)addr);
- 			errcnt += 1;
-@@ -169,7 +178,10 @@ static int verify_eraseblock(int ebnum)
- 				pr_err("error: too many errors\n");
- 				return -1;
- 			}
-+		} else if (bitflips) {
-+			pr_info("ignoring error as within bitflip_limit\n");
- 		}
-+
- 		if (use_offset != 0 || use_len < mtd->ecclayout->oobavail) {
- 			int k;
- 
-@@ -188,9 +200,10 @@ static int verify_eraseblock(int ebnum)
- 				errcnt += 1;
- 				return err ? err : -1;
- 			}
--			if (memcmpshow(addr, readbuf + use_offset,
--				       writebuf + (use_len_max * i) + use_offset,
--				       use_len)) {
-+			bitflips = memcmpshow(addr, readbuf + use_offset,
-+					      writebuf + (use_len_max * i) + use_offset,
-+					      use_len);
-+			if (bitflips > bitflip_limit) {
- 				pr_err("error: verify failed at %#llx\n",
- 						(long long)addr);
- 				errcnt += 1;
-@@ -198,7 +211,10 @@ static int verify_eraseblock(int ebnum)
- 					pr_err("error: too many errors\n");
- 					return -1;
- 				}
-+			} else if (bitflips) {
-+				pr_info("ignoring error as within bitflip_limit\n");
- 			}
-+
- 			for (k = 0; k < use_offset; ++k)
- 				if (readbuf[k] != 0xff) {
- 					pr_err("error: verify 0xff "
-@@ -237,6 +253,9 @@ static int verify_eraseblock_in_one_go(int ebnum)
- 	int err = 0;
- 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
- 	size_t len = mtd->ecclayout->oobavail * pgcnt;
-+	size_t oobavail = mtd->ecclayout->oobavail;
-+	size_t bitflips;
-+	int i;
- 
- 	prandom_bytes_state(&rnd_state, writebuf, len);
- 	ops.mode      = MTD_OPS_AUTO_OOB;
-@@ -247,6 +266,8 @@ static int verify_eraseblock_in_one_go(int ebnum)
- 	ops.ooboffs   = 0;
- 	ops.datbuf    = NULL;
- 	ops.oobbuf    = readbuf;
-+
-+	/* read entire block's OOB at one go */
- 	err = mtd_read_oob(mtd, addr, &ops);
- 	if (err || ops.oobretlen != len) {
- 		pr_err("error: readoob failed at %#llx\n",
-@@ -254,13 +275,21 @@ static int verify_eraseblock_in_one_go(int ebnum)
- 		errcnt += 1;
- 		return err ? err : -1;
- 	}
--	if (memcmpshow(addr, readbuf, writebuf, len)) {
--		pr_err("error: verify failed at %#llx\n",
--		       (long long)addr);
--		errcnt += 1;
--		if (errcnt > 1000) {
--			pr_err("error: too many errors\n");
--			return -1;
-+
-+	/* verify one page OOB at a time for bitflip per page limit check */
-+	for (i = 0; i < pgcnt; ++i, addr += mtd->writesize) {
-+		bitflips = memcmpshow(addr, readbuf + (i * oobavail),
-+				      writebuf + (i * oobavail), oobavail);
-+		if (bitflips > bitflip_limit) {
-+			pr_err("error: verify failed at %#llx\n",
-+			       (long long)addr);
-+			errcnt += 1;
-+			if (errcnt > 1000) {
-+				pr_err("error: too many errors\n");
-+				return -1;
-+			}
-+		} else if (bitflips) {
-+			pr_info("ignoring error as within bitflip_limit\n");
- 		}
- 	}
- 
+Can you try to apply this patch [1] ?
+
+[1]http://code.bulix.org/26bi35-87234
+
+
+
 -- 
-1.8.3.2
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
