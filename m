@@ -1,21 +1,25 @@
-Date: Mon, 20 Oct 2014 19:41:34 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v6 2/2] mtd: nand: add sunxi NFC dt bindings doc
-Message-ID: <20141021024134.GC1193@ld-irv-0074>
-References: <1413805520-14947-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413805520-14947-3-git-send-email-boris.brezillon@free-electrons.com>
+Received: from ipmail06.adl6.internode.on.net ([150.101.137.145])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgQK0-0001KE-7m
+ for linux-mtd@lists.infradead.org; Tue, 21 Oct 2014 03:41:21 +0000
+Date: Tue, 21 Oct 2014 14:38:47 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
+Message-ID: <20141021033847.GS17506@dastard>
+References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
+ <1413805935.7906.225.camel@sauron.fi.intel.com>
+ <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
+ <1413810719.7906.268.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1413805520-14947-3-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
- linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1413810719.7906.268.camel@sauron.fi.intel.com>
+Cc: Jijiagang <jijiagang@hisilicon.com>, Caizhiyong <caizhiyong@hisilicon.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>, linux-mm@kvack.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "Wanli \(welly\)" <welly.wan@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-On Mon, Oct 20, 2014 at 01:45:20PM +0200, Boris Brezillon wrote:
-> Add the sunxi NAND Flash Controller dt bindings documentation.
+On Mon, Oct 20, 2014 at 04:11:59PM +0300, Artem Bityutskiy wrote:
+> 3. There are exactly 2 places where UBIFS-backed pages may be marked as
+> dirty:
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  .../devicetree/bindings/mtd/sunxi-nand.txt         | 45 ++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+>   a) ubifs_write_end() [->wirte_end] - the file write path
+>   b) ubifs_page_mkwrite() [->page_mkwirte] - the file mmap() path
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-> new file mode 100644
-> index 0000000..0273adb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-> @@ -0,0 +1,45 @@
-> +Allwinner NAND Flash Controller (NFC)
-> +
-> +Required properties:
-> +- compatible : "allwinner,sun4i-a10-nand".
-> +- reg : shall contain registers location and length for data and reg.
-> +- interrupts : shall define the nand controller interrupt.
-> +- #address-cells: shall be set to 1. Encode the nand CS.
-> +- #size-cells : shall be set to 0.
-> +- clocks : shall reference nand controller clocks.
-> +- clock-names : nand controller internal clock names. Shall contain :
-> +    * "ahb" : AHB gating clock
-> +    * "mod" : nand controller clock
-> +
-> +Optional children nodes:
-> +Children nodes represent the available nand chips.
-> +
-> +Optional properties:
-> +- allwinner,rb : shall contain the native Ready/Busy ids.
-> + or
-> +- rb-gpios : shall contain the gpios used as R/B pins.
+> 4. If anything calls 'ubifs_set_page_dirty()' directly (not through
+> write_end()/mkwrite()), and the page was not dirty, UBIFS will complain
+> with the assertion that you see.
+> 
+> > CPU: 3 PID: 543 Comm: kswapd0 Tainted: P           O 3.10.0_s40 #1
 
-I think you're relying on a named GPIO in your driver ("nand-rb"). That
-should be documented here.
+Kernel is tainted. Not worth wasting time on unless it can be
+reproduced on an untainted kernel...
 
-> +- nand-ecc-mode : one of the supported ECC modes ("hw", "hw_syndrome", "soft",
-> +  "soft_bch" or "none")
+Cheers,
 
-I think you're utilizing an undocumented 'nand-name' property for this
-node in your driver too. Please document it. (That also goes for any
-other undocumented properties I may have missed.)
-
-> +
-> +see Documentation/devicetree/mtd/nand.txt for generic bindings.
-> +
-> +
-> +Examples:
-> +nfc: nand@01c03000 {
-> +	compatible = "allwinner,sun4i-a10-nand";
-> +	reg = <0x01c03000 0x1000>;
-> +	interrupts = <0 37 1>;
-> +	clocks = <&ahb_gates 13>, <&nand_clk>;
-> +	clock-names = "ahb", "mod";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&nand_pins_a &nand_cs0_pins_a &nand_rb0_pins_a>;
-> +	status = "okay";
-> +
-> +	nand@0 {
-> +		reg = <0>;
-> +		allwinner,rb = <0>;
-> +		nand-ecc-mode = "soft_bch";
-> +	};
-> +};
-
-Brian
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
