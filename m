@@ -1,20 +1,20 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgrnA-00051O-93
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 09:01:16 +0000
-Received: by mail-pa0-f53.google.com with SMTP id kq14so3271782pab.40
- for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 02:00:54 -0700 (PDT)
-Date: Wed, 22 Oct 2014 02:00:51 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Rob Ward <robert.ward114@googlemail.com>
-Subject: Re: [PATCH] mtd: phram: fix asm/io.h include usage
-Message-ID: <20141022090051.GP16128@brian-ubuntu>
-References: <alpine.DEB.2.10.1410212010210.7838@rob-thinkpad>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
+ Linux)) id 1XgrnK-000533-8k
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 09:01:26 +0000
+Date: Wed, 22 Oct 2014 11:01:02 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 2/2] ubiformat: Leave space for fastmap anchor
+Message-ID: <20141022090102.GY14443@pengutronix.de>
+References: <1413964111-4048-1-git-send-email-s.hauer@pengutronix.de>
+ <1413964111-4048-3-git-send-email-s.hauer@pengutronix.de>
+ <54476785.5020603@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.10.1410212010210.7838@rob-thinkpad>
-Cc: dwmw2@infradead.org, joern@lazybastard.org, linux-kernel@vger.kernel.org,
+In-Reply-To: <54476785.5020603@nod.at>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,16 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 21, 2014 at 08:14:00PM +0100, Rob Ward wrote:
-> From ca36c5ca9adbe1d3c107e5ff22e8d0db5dddb1b9 Mon Sep 17 00:00:00 2001
-> From: Rob Ward <robert.ward114@googlemail.com>
-> Date: Tue, 21 Oct 2014 20:01:09 +0100
-> Subject: [PATCH] mtd: phram: fix asm/io.h include usage
+On Wed, Oct 22, 2014 at 10:15:01AM +0200, Richard Weinberger wrote:
+> Am 22.10.2014 um 09:48 schrieb Sascha Hauer:
+> > The fastmap code needs a free eraseblock in the first 64 erasblocks
+> > to write a fastmap anchor. Since ubiformat continuously writes the
+> > image to the flash the fastmap code won't find a free block and
+> > fastmap will be disabled. 
 > 
-> Modify phram to include <linux/io.h> rather than <asm/io.h>
+> If UBI is unable to write a fastmap it will try again later.
+> So, it will be not disabled.
 > 
-> Signed-off-by: Rob Ward <robert.ward114@googlemail.com>
+> > With this patch ubiformat skips flashing
+> > a block at the beginning thus allowing the fastmap code to write
+> > an anchor.
+> 
+> Hmm, this is a bit hacky. What prevents UBI itself from using this free PEB
+> after the first attach? I.e. if a bitflip happens?
+> The in kernel code has already a mechanism to move used PEBs < 64 to make space
+> for the anchor.
 
-Pushed to l2-mtd.git.
+Ah, indeed. I wasn't aware of this. I think we were confused by not
+having fm_autoconvert enabled in the kernel and using ubiformat and UBI
+from barebox.
+So right now I tested that the kernel makes space for the anchor and
+has fastmap support on the second attach of an mtd device.
 
-Brian
+So it seems my problem is solved without patching ubiformat. Nice ;)
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
