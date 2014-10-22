@@ -1,20 +1,22 @@
-Received: from ec2-54-201-57-178.us-west-2.compute.amazonaws.com
- ([54.201.57.178] helo=ip-172-31-12-36.us-west-2.compute.internal)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgxuK-0007pD-1c
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 15:33:04 +0000
-Date: Wed, 22 Oct 2014 15:32:02 +0000
-From: dwalker@fifo99.com
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: slram on mapped ram areas
-Message-ID: <20141022153202.GA5114@fifo99.com>
-References: <20141009161707.GA18921@fifo99.com>
- <CAN8TOE8scDnP74KJHmQcq2sznPmxkfDru7sFE+ByrJ8tKHt9mg@mail.gmail.com>
+Received: from mail-wg0-x22e.google.com ([2a00:1450:400c:c00::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgyXa-0005Rc-QL
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 16:13:39 +0000
+Received: by mail-wg0-f46.google.com with SMTP id l18so4100774wgh.5
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 09:13:16 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spi-nor: allow NULL as chip name and try to auto detect
+ it
+Date: Wed, 22 Oct 2014 18:05:00 +0200
+Message-Id: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN8TOE8scDnP74KJHmQcq2sznPmxkfDru7sFE+ByrJ8tKHt9mg@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 20, 2014 at 05:05:56PM -0700, Brian Norris wrote:
-> On Thu, Oct 9, 2014 at 9:17 AM,  <dwalker@fifo99.com> wrote:
-> > Hi,
-> >
-> > It seems that slram was made for access parts of memory not used by the system,
-> > or not mapped (right terminology?). I wanted to use it on memory which is mapped
-> > or memory that can be used by the system. The problem I have is that the system I
-> > work on places a filesystem image in memory someplace, and send the physical address
-> > and size of the area as boot parameters. The memory where the images ends up is not
-> > special memory.
-> 
-> I honestly don't know much about the slram.c driver. I doubt it has
-> many serious users these days.
+This will allow spi-nor users to plainly use JEDEC to detect flash chip.
 
-Seems that way since both people I emailed have dead addresses.
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index ee777a4..1facaac 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -937,13 +937,21 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	if (ret)
+ 		return ret;
  
-> It also seems like you're really trying to use this driver in a way it
-> was not designed. Do you really need to access specific kernel memory?
-> Or do you just want a RAM-backed MTD? There are other drivers for this
-> already (mtdram?).
-
-It's not very different from how it's currently used. The only difference is the memory I want to use
-could be used by the kernel at the time I want to use it.
-
-I need to access a specific memory area, no random area will do. I looked at drivers/block/brd.c for example
-it doesn't allow a specific area to be used.
-
-> > I made the following changes to your driver (somewhat condensed),
-> >
-> > 1) Added memblock_reserve() on the memory region
-> > 2) Added an insert_resource() call to the memory
-> > 3) Altered the driver to not use ioremap, instead use __va() conditionally.
-> 
-> I see this comment next to the __va() definition for ARM:
-> 
-> /*
->  * Drivers should NOT use these either.
->  */
-
-That's interesting, there must be an alternative.. I just need a way to convert the address from
-physical to virtual.
-
-Daniel
+-	id = spi_nor_match_id(name);
++	/* Try to auto-detect if chip name wasn't specified */
++	if (!name)
++		id = spi_nor_read_id(nor);
++	else
++		id = spi_nor_match_id(name);
+ 	if (!id)
+ 		return -ENOENT;
+ 
+ 	info = (void *)id->driver_data;
+ 
+-	if (info->jedec_id) {
++	/*
++	 * If caller has specified name of flash model that can normally be
++	 * detected using JEDEC, let's verify it.
++	 */
++	if (name && info->jedec_id) {
+ 		const struct spi_device_id *jid;
+ 
+ 		jid = spi_nor_read_id(nor);
+-- 
+1.8.4.5
