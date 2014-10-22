@@ -1,20 +1,22 @@
-Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
+Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xh5FX-0007U5-F5
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 23:23:28 +0000
-Received: by mail-wg0-f41.google.com with SMTP id b13so193281wgh.0
- for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 16:23:04 -0700 (PDT)
-From: Andrea Adami <andrea.adami@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: cfi_cmdset_0001.c: fix resume for LH28F640BF chips
-Date: Thu, 23 Oct 2014 01:23:01 +0200
-Message-Id: <1414020181-8855-1-git-send-email-andrea.adami@gmail.com>
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Jingoo Han <jg1.han@samsung.com>,
- linux-kernel@vger.kernel.org, Paul Gortmaker <paul.gortmaker@windriver.com>,
- Andrea Adami <andrea.adami@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Christian Riesch <christian.riesch@omicron.at>
+ id 1Xh5Us-0004Vb-7E
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 23:39:18 +0000
+Received: by mail-la0-f47.google.com with SMTP id pv20so3909322lab.34
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 16:38:54 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20141022085910.GO16128@brian-ubuntu>
+References: <1413723867-26767-1-git-send-email-akinobu.mita@gmail.com>
+ <20141022085910.GO16128@brian-ubuntu>
+Date: Thu, 23 Oct 2014 08:38:54 +0900
+Message-ID: <CAC5umygPZSSq1UxU6Z7o_e2DfSZcJopac5o2qdf4V0tj0Gh50g@mail.gmail.com>
+Subject: Re: [PATCH v2] nandsim: add id_bytes module parameter
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After '#echo mem > /sys/power/state' some devices can not be properly resumed
-because apparently the MTD Partition Configuration Register has been reset
-to default thus the rootfs cannot be mounted cleanly on resume.
-An example of this can be found in the SA-1100 Developer's Manual at 9.5.3.3
-where the second step of the Sleep Shutdown Sequence is described:
-"An internal reset is applied to the SA-1100. All units are reset...".
+2014-10-22 17:59 GMT+09:00 Brian Norris <computersforpeace@gmail.com>:
+>> @@ -138,10 +142,11 @@ module_param(cache_file,     charp, 0400);
+>>  module_param(bbt,         uint, 0400);
+>>  module_param(bch,         uint, 0400);
+>>
+>> -MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID' command (manufacturer ID)");
+>> -MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND Flash 'read ID' command (chip ID)");
+>> -MODULE_PARM_DESC(third_id_byte,  "The third byte returned by NAND Flash 'read ID' command");
+>> -MODULE_PARM_DESC(fourth_id_byte, "The fourth byte returned by NAND Flash 'read ID' command");
+>> +MODULE_PARM_DESC(id_bytes,       "The ID bytes returned by NAND Flash 'read ID' command (obsolete)");
+>
+> A little aggressive on marking this one obsolete, eh? :)
 
-As workaround we refresh the PCR value as done initially on chip setup.
-
-This behavior and the fix are confirmed by our tests done on 2 different Zaurus
-collie units with kernel 3.17.
-
-Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0001.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index a7543ba..59e2355 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -2590,6 +2590,8 @@ static void cfi_intelext_resume(struct mtd_info *mtd)
- 
- 		/* Go to known state. Chip may have been power cycled */
- 		if (chip->state == FL_PM_SUSPENDED) {
-+			/* Refresh LH28F640BF Partition Config. Register */
-+			fixup_LH28F640BF(mtd);
- 			map_write(map, CMD(0xFF), cfi->chips[i].start);
- 			chip->oldstate = chip->state = FL_READY;
- 			wake_up(&chip->wq);
--- 
-1.9.1
+Oops.  Good catch.
