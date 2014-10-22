@@ -1,15 +1,17 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgtJ6-0006bz-Ok
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 10:38:22 +0000
-Message-ID: <544788DA.9090401@huawei.com>
-Date: Wed, 22 Oct 2014 18:37:14 +0800
+ id 1XgtLp-000810-Fd
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 10:41:11 +0000
+Message-ID: <5447898B.6050606@huawei.com>
+Date: Wed, 22 Oct 2014 18:40:11 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v5 1/4] ubi-utils: ubidump: add ubifs-media
+Subject: [PATCH v5 2/4] ubi-utils: ubidump: add libdump
+References: <544788DA.9090401@huawei.com>
+In-Reply-To: <544788DA.9090401@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Cc: Richard Weinberger <richard.weinberger@gmail.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  Bill Pringlemeir <bpringlemeir@nbsps.com>
@@ -23,30 +25,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This is a preparatory patch for ubidump, an utility to print on-media
-format of UBIFS partitions. This patch contains only one file named
-ubifs-media.h which is entirely taken from linux kernel. This file
-descibes the on-flash format of UBIFS objects and helps us to analyse
-the data on the media.
+format of UBIFS partitions. This patch includes the library functions
+used by ubidump.
 
-Note, the start up commit of this file is not a completely copy from
-fs/ubifs/ubifs-media.h in kernel. Only the code which is used by
-ubidump is now presented here.
+These functions are taken from linux kernel. Some of them are modified
+to work well in userspace.
 
 
 Signed-off-by: hujianyang <hujianyang@huawei.com>
 ---
- include/mtd/ubifs-media.h |  309 +++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 309 insertions(+), 0 deletions(-)
- create mode 100644 include/mtd/ubifs-media.h
+ ubi-utils/include/libdump.h |   68 +++++++
+ ubi-utils/libdump.c         |  440 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 508 insertions(+), 0 deletions(-)
+ create mode 100644 ubi-utils/include/libdump.h
+ create mode 100644 ubi-utils/libdump.c
 
-diff --git a/include/mtd/ubifs-media.h b/include/mtd/ubifs-media.h
+diff --git a/ubi-utils/include/libdump.h b/ubi-utils/include/libdump.h
 new file mode 100644
-index 0000000..ff109e6
+index 0000000..337bcb4
 --- /dev/null
-+++ b/include/mtd/ubifs-media.h
-@@ -0,0 +1,309 @@
++++ b/ubi-utils/include/libdump.h
+@@ -0,0 +1,68 @@
 +/*
-+ * Copyright (C) 2006-2008 Nokia Corporation.
++ * Copyright (C) 2006-2008 Nokia Corporation
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms of the GNU General Public License version 2 as published by
@@ -60,299 +61,504 @@ index 0000000..ff109e6
 + * You should have received a copy of the GNU General Public License along with
 + * this program; if not, write to the Free Software Foundation, Inc., 51
 + * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-+ *
-+ * Authors: Artem Bityutskiy (?懈???泻懈泄 ????屑)
-+ *          Adrian Hunter
 + */
 +
 +/*
-+ * This file describes UBIFS on-flash format and contains definitions of all the
-+ * relevant data structures and constants.
-+ *
-+ * All UBIFS on-flash objects are stored in the form of nodes. All nodes start
-+ * with the UBIFS node magic number and have the same common header. Nodes
-+ * always sit at 8-byte aligned positions on the media and node header sizes are
-+ * also 8-byte aligned (except for the indexing node and the padding node).
++ * The *scan* part of code was taken from the kernel UBIFS implementation.
 + */
 +
++#ifndef __LIBDUMP_H__
++#define __LIBDUMP_H__
++
++#include <mtd/ubifs-media.h>
++#include <mtd/ubi-media.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
 +/*
-+ * Note, the entire code of this file was taken from linux kernel
-+ * driver/mtd/ubi/ubi-media.h. But not all of the code in kernel was
-+ * copied here because this file is *now* only used by ubidump, only
-+ * the code which is needed by libdump.c is presented.
++ * ubidump - dump ubi/ubifs information
++ * @lnum: logical eraseblock number
++ * @buf: buffer to dump
++ * @leb_size: size of buffer/logical eraseblock size
++ * @info: print NODEs detailed info
++ *
++ * This function dump ubi/ubifs information on the buffer.
 + */
++int ubi_dump(int lnum, void *buf, int leb_size, int info);
 +
-+#ifndef __UBIFS_MEDIA_H__
-+#define __UBIFS_MEDIA_H__
-+
-+#include <asm/byteorder.h>
-+
-+/* UBIFS node magic number (must not have the padding byte first or last) */
-+#define UBIFS_NODE_MAGIC  0x06101831
-+
-+/* UBIFS padding byte pattern (must not be first or last byte of node magic) */
-+#define UBIFS_PADDING_BYTE 0xCE
-+
-+/* Node sizes (N.B. these are guaranteed to be multiples of 8) */
-+#define UBIFS_CH_SZ        sizeof(struct ubifs_ch)
-+#define UBIFS_PAD_NODE_SZ  sizeof(struct ubifs_pad_node)
++/* Taken from kernel UBIFS implementation */
 +
 +/*
-+ * UBIFS node types.
++ * 'ubifs_scan_a_node()' return values.
 + *
-+ * UBIFS_INO_NODE: inode node
-+ * UBIFS_DATA_NODE: data node
-+ * UBIFS_DENT_NODE: directory entry node
-+ * UBIFS_XENT_NODE: extended attribute node
-+ * UBIFS_TRUN_NODE: truncation node
-+ * UBIFS_PAD_NODE: padding node
-+ * UBIFS_SB_NODE: superblock node
-+ * UBIFS_MST_NODE: master node
-+ * UBIFS_REF_NODE: LEB reference node
-+ * UBIFS_IDX_NODE: index node
-+ * UBIFS_CS_NODE: commit start node
-+ * UBIFS_ORPH_NODE: orphan node
-+ * UBIFS_NODE_TYPES_CNT: count of supported node types
++ * SCANNED_GARBAGE:  scanned garbage
++ * SCANNED_EMPTY_SPACE: scanned empty space
++ * SCANNED_A_NODE: scanned a valid node
++ * SCANNED_A_CORRUPT_NODE: scanned a corrupted node
++ * SCANNED_A_BAD_PAD_NODE: scanned a padding node with invalid pad length
 + *
-+ * Note, we index arrays by these numbers, so keep them low and contiguous.
-+ * Node type constants for inodes, direntries and so on have to be the same as
-+ * corresponding key type constants.
++ * Greater than zero means: 'scanned that number of padding bytes'
 + */
 +enum {
-+	UBIFS_INO_NODE,
-+	UBIFS_DATA_NODE,
-+	UBIFS_DENT_NODE,
-+	UBIFS_XENT_NODE,
-+	UBIFS_TRUN_NODE,
-+	UBIFS_PAD_NODE,
-+	UBIFS_SB_NODE,
-+	UBIFS_MST_NODE,
-+	UBIFS_REF_NODE,
-+	UBIFS_IDX_NODE,
-+	UBIFS_CS_NODE,
-+	UBIFS_ORPH_NODE,
-+	UBIFS_NODE_TYPES_CNT,
++	SCANNED_GARBAGE        = 0,
++	SCANNED_EMPTY_SPACE    = -1,
++	SCANNED_A_NODE         = -2,
++	SCANNED_A_CORRUPT_NODE = -3,
++	SCANNED_A_BAD_PAD_NODE = -4,
 +};
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /*!__LIBDUMP_H__ */
+diff --git a/ubi-utils/libdump.c b/ubi-utils/libdump.c
+new file mode 100644
+index 0000000..6bb92e0
+--- /dev/null
++++ b/ubi-utils/libdump.c
+@@ -0,0 +1,440 @@
++/*
++ * Copyright (C) 2006-2008 Nokia Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program; if not, write to the Free Software Foundation, Inc., 51
++ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++ */
 +
 +/*
-+ * Supported key hash functions.
++ * Great deal of the code was taken from kernel UBIFS implementation including
++ * fs/ubifs/scan.c and fs/ubifs/dump.c. There is a little difference in
++ * ubifs_scan(). The struct *ubifs_scan_leb* which contains the list of scanned
++ * NODEs was dropped because we can deal with each NODE directly. We don't need
++ * *corrupt* part of code either. In addition, a new parameter is added to
++ * indicate if ubifs_dump_node() is needed for a scanned NODE.
 + *
-+ * UBIFS_KEY_HASH_R5: R5 hash
-+ * UBIFS_KEY_HASH_TEST: test hash which just returns first 4 bytes of the name
++ * Besides, ubifs_dump_node() can't dump all kinds of NODEs because some of
++ * them contain user data and useless for debugging.
 + */
-+enum {
-+	UBIFS_KEY_HASH_R5,
-+	UBIFS_KEY_HASH_TEST,
-+};
++
++#define PROGRAM_NAME "libdump"
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <libdump.h>
++#include <mtd_swab.h>
++#include "common.h"
++
++static const char *get_key_fmt(int fmt)
++{
++	switch (fmt) {
++	case UBIFS_SIMPLE_KEY_FMT:
++		return "simple";
++	default:
++		return "unknown/invalid format";
++	}
++}
++
++static const char *get_key_hash(int hash)
++{
++	switch (hash) {
++	case UBIFS_KEY_HASH_R5:
++		return "R5";
++	case UBIFS_KEY_HASH_TEST:
++		return "test";
++	default:
++		return "unknown/invalid name hash";
++	}
++}
++
++static const char *node_ntype(int type)
++{
++	switch (type) {
++	case UBIFS_PAD_NODE:
++		return "padding node";
++	case UBIFS_SB_NODE:
++		return "superblock node";
++	case UBIFS_MST_NODE:
++		return "master node";
++	case UBIFS_REF_NODE:
++		return "reference node";
++	case UBIFS_INO_NODE:
++		return "inode node";
++	case UBIFS_DENT_NODE:
++		return "direntry node";
++	case UBIFS_XENT_NODE:
++		return "xentry node";
++	case UBIFS_DATA_NODE:
++		return "data node";
++	case UBIFS_TRUN_NODE:
++		return "truncate node";
++	case UBIFS_IDX_NODE:
++		return "indexing node";
++	case UBIFS_CS_NODE:
++		return "commit start node";
++	case UBIFS_ORPH_NODE:
++		return "orphan node";
++	default:
++		return "unknown node";
++	}
++}
++
++static const char *node_gtype(int type)
++{
++	switch (type) {
++	case UBIFS_NO_NODE_GROUP:
++		return "no node group";
++	case UBIFS_IN_NODE_GROUP:
++		return "in node group";
++	case UBIFS_LAST_OF_NODE_GROUP:
++		return "last of node group";
++	default:
++		return "unknown";
++	}
++}
++
++static void dump_ch(const struct ubifs_ch *ch)
++{
++	printf("\tmagic          %#x\n", le32_to_cpu(ch->magic));
++	printf("\tcrc            %#x\n", le32_to_cpu(ch->crc));
++	printf("\tnode_type      %d (%s)\n", ch->node_type,
++	       node_ntype(ch->node_type));
++	printf("\tgroup_type     %d (%s)\n", ch->group_type,
++	       node_gtype(ch->group_type));
++	printf("\tsqnum          %llu\n",
++	       (unsigned long long)le64_to_cpu(ch->sqnum));
++	printf("\tlen            %u\n", le32_to_cpu(ch->len));
++}
 +
 +/*
-+ * Supported key formats.
++ * This function is copied from linux kernel fs/ubifs/debug.c but
++ * just enable the dumping of PAD_NODE, SB_NODE, MST_NODE, REF_NODE
++ * and CS_NODE.
 + *
-+ * UBIFS_SIMPLE_KEY_FMT: simple key format
++ * One can add more functions by taking the code from kernel and
++ * put the on-media format to include/mtd/ubifs-media.h
 + */
-+enum {
-+	UBIFS_SIMPLE_KEY_FMT,
-+};
++static void ubifs_dump_node(const void *node)
++{
++	const struct ubifs_ch *ch = node;
 +
-+/*
-+ * Node group type (used by recovery to recover whole group or none).
++	if (le32_to_cpu(ch->magic) != UBIFS_NODE_MAGIC) {
++		printf("Not a node, first %zu bytes:\n", UBIFS_CH_SZ);
++		return;
++	}
++
++	dump_ch(node);
++
++	switch (ch->node_type) {
++	case UBIFS_PAD_NODE:
++	{
++		const struct ubifs_pad_node *pad = node;
++
++		printf("\tpad_len        %u\n", le32_to_cpu(pad->pad_len));
++		break;
++	}
++	case UBIFS_SB_NODE:
++	{
++		const struct ubifs_sb_node *sup = node;
++		unsigned int sup_flags = le32_to_cpu(sup->flags);
++
++		printf("\tkey_hash       %d (%s)\n",
++		       (int)sup->key_hash, get_key_hash(sup->key_hash));
++		printf("\tkey_fmt        %d (%s)\n",
++		       (int)sup->key_fmt, get_key_fmt(sup->key_fmt));
++		printf("\tflags          %#x\n", sup_flags);
++		printf("\t  big_lpt      %u\n",
++		       !!(sup_flags & UBIFS_FLG_BIGLPT));
++		printf("\t  space_fixup  %u\n",
++		       !!(sup_flags & UBIFS_FLG_SPACE_FIXUP));
++		printf("\tmin_io_size    %u\n", le32_to_cpu(sup->min_io_size));
++		printf("\tleb_size       %u\n", le32_to_cpu(sup->leb_size));
++		printf("\tleb_cnt        %u\n", le32_to_cpu(sup->leb_cnt));
++		printf("\tmax_leb_cnt    %u\n", le32_to_cpu(sup->max_leb_cnt));
++		printf("\tmax_bud_bytes  %llu\n",
++		       (unsigned long long)le64_to_cpu(sup->max_bud_bytes));
++		printf("\tlog_lebs       %u\n", le32_to_cpu(sup->log_lebs));
++		printf("\tlpt_lebs       %u\n", le32_to_cpu(sup->lpt_lebs));
++		printf("\torph_lebs      %u\n", le32_to_cpu(sup->orph_lebs));
++		printf("\tjhead_cnt      %u\n", le32_to_cpu(sup->jhead_cnt));
++		printf("\tfanout         %u\n", le32_to_cpu(sup->fanout));
++		printf("\tlsave_cnt      %u\n", le32_to_cpu(sup->lsave_cnt));
++		printf("\tdefault_compr  %u\n",
++		       (int)le16_to_cpu(sup->default_compr));
++		printf("\trp_size        %llu\n",
++		       (unsigned long long)le64_to_cpu(sup->rp_size));
++		printf("\trp_uid         %u\n", le32_to_cpu(sup->rp_uid));
++		printf("\trp_gid         %u\n", le32_to_cpu(sup->rp_gid));
++		printf("\tfmt_version    %u\n", le32_to_cpu(sup->fmt_version));
++		printf("\ttime_gran      %u\n", le32_to_cpu(sup->time_gran));
++		printf("\tUUID           %pUB\n", sup->uuid);
++		break;
++	}
++	case UBIFS_MST_NODE:
++	{
++		const struct ubifs_mst_node *mst = node;
++
++		printf("\thighest_inum   %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->highest_inum));
++		printf("\tcommit number  %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->cmt_no));
++		printf("\tflags          %#x\n", le32_to_cpu(mst->flags));
++		printf("\tlog_lnum       %u\n", le32_to_cpu(mst->log_lnum));
++		printf("\troot_lnum      %u\n", le32_to_cpu(mst->root_lnum));
++		printf("\troot_offs      %u\n", le32_to_cpu(mst->root_offs));
++		printf("\troot_len       %u\n", le32_to_cpu(mst->root_len));
++		printf("\tgc_lnum        %u\n", le32_to_cpu(mst->gc_lnum));
++		printf("\tihead_lnum     %u\n", le32_to_cpu(mst->ihead_lnum));
++		printf("\tihead_offs     %u\n", le32_to_cpu(mst->ihead_offs));
++		printf("\tindex_size     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->index_size));
++		printf("\tlpt_lnum       %u\n", le32_to_cpu(mst->lpt_lnum));
++		printf("\tlpt_offs       %u\n", le32_to_cpu(mst->lpt_offs));
++		printf("\tnhead_lnum     %u\n", le32_to_cpu(mst->nhead_lnum));
++		printf("\tnhead_offs     %u\n", le32_to_cpu(mst->nhead_offs));
++		printf("\tltab_lnum      %u\n", le32_to_cpu(mst->ltab_lnum));
++		printf("\tltab_offs      %u\n", le32_to_cpu(mst->ltab_offs));
++		printf("\tlsave_lnum     %u\n", le32_to_cpu(mst->lsave_lnum));
++		printf("\tlsave_offs     %u\n", le32_to_cpu(mst->lsave_offs));
++		printf("\tlscan_lnum     %u\n", le32_to_cpu(mst->lscan_lnum));
++		printf("\tleb_cnt        %u\n", le32_to_cpu(mst->leb_cnt));
++		printf("\tempty_lebs     %u\n", le32_to_cpu(mst->empty_lebs));
++		printf("\tidx_lebs       %u\n", le32_to_cpu(mst->idx_lebs));
++		printf("\ttotal_free     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_free));
++		printf("\ttotal_dirty    %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_dirty));
++		printf("\ttotal_used     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_used));
++		printf("\ttotal_dead     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_dead));
++		printf("\ttotal_dark     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_dark));
++		break;
++	}
++	case UBIFS_REF_NODE:
++	{
++		const struct ubifs_ref_node *ref = node;
++
++		printf("\tlnum           %u\n", le32_to_cpu(ref->lnum));
++		printf("\toffs           %u\n", le32_to_cpu(ref->offs));
++		printf("\tjhead          %u\n", le32_to_cpu(ref->jhead));
++		break;
++	}
++	case UBIFS_CS_NODE:
++		break;
++	case UBIFS_INO_NODE:
++	case UBIFS_DENT_NODE:
++	case UBIFS_XENT_NODE:
++	case UBIFS_DATA_NODE:
++	case UBIFS_TRUN_NODE:
++	case UBIFS_IDX_NODE:
++	case UBIFS_ORPH_NODE:
++		printf("cannot dump node, type not support\n");
++	default:
++		printf("node type %d was not recognized\n",
++		       (int)ch->node_type);
++	}
++}
++
++/**
++ * scan_padding_bytes - scan for padding bytes.
++ * @buf: buffer to scan
++ * @len: length of buffer
 + *
-+ * UBIFS_NO_NODE_GROUP: this node is not part of a group
-+ * UBIFS_IN_NODE_GROUP: this node is a part of a group
-+ * UBIFS_LAST_OF_NODE_GROUP: this node is the last in a group
++ * This function returns the number of padding bytes on success and
++ * %SCANNED_GARBAGE on failure.
 + */
-+enum {
-+	UBIFS_NO_NODE_GROUP = 0,
-+	UBIFS_IN_NODE_GROUP,
-+	UBIFS_LAST_OF_NODE_GROUP,
-+};
++static int scan_padding_bytes(void *buf, int len)
++{
++	int pad_len = 0, max_pad_len = min_t(int, UBIFS_PAD_NODE_SZ, len);
++	uint8_t *p = buf;
 +
-+/*
-+ * Superblock flags.
++	printf("not a node\n");
++
++	while (pad_len < max_pad_len && *p++ == UBIFS_PADDING_BYTE)
++		pad_len += 1;
++
++	if (!pad_len || (pad_len & 7))
++		return SCANNED_GARBAGE;
++
++	printf("%d padding bytes\n", pad_len);
++
++	return pad_len;
++}
++
++/**
++ * ubifs_scan_a_node - scan for a node or padding.
++ * @buf: buffer to scan
++ * @size: logical eraseblock size
++ * @len: length of buffer
++ * @lnum: logical eraseblock number
++ * @offs: offset within the logical eraseblock
 + *
-+ * UBIFS_FLG_BIGLPT: if "big" LPT model is used if set
-+ * UBIFS_FLG_SPACE_FIXUP: first-mount "fixup" of free space within LEBs needed
++ * This function returns a scanning code to indicate what was scanned.
 + */
-+enum {
-+	UBIFS_FLG_BIGLPT = 0x02,
-+	UBIFS_FLG_SPACE_FIXUP = 0x04,
-+};
++static int ubifs_scan_a_node(void *buf, int leb_size, int len, int lnum, int offs)
++{
++	struct ubifs_ch *ch = buf;
++	uint32_t magic;
++
++	magic = le32_to_cpu(ch->magic);
++
++	if (magic == 0xFFFFFFFF) {
++		printf("hit empty space at LEB %d:%d\n", lnum, offs);
++		return SCANNED_EMPTY_SPACE;
++	}
++
++	if (magic != UBIFS_NODE_MAGIC)
++		return scan_padding_bytes(buf, len);
++
++	if (len < UBIFS_CH_SZ)
++		return SCANNED_GARBAGE;
++
++	printf("scanning %s at LEB %d:%d\n",
++	       node_ntype(ch->node_type), lnum, offs);
++
++	/* No ubifs_check_nodei() perform here */
++
++	if (ch->node_type == UBIFS_PAD_NODE) {
++		struct ubifs_pad_node *pad = buf;
++		int pad_len = le32_to_cpu(pad->pad_len);
++		int node_len = le32_to_cpu(ch->len);
++
++		/* Validate the padding node */
++		if (pad_len < 0 ||
++		    offs + node_len + pad_len > leb_size) {
++			printf("bad pad node at LEB %d:%d\n", lnum, offs);
++			ubifs_dump_node(pad);
++			return SCANNED_A_BAD_PAD_NODE;
++		}
++
++		/* Make the node pads to 8-byte boundary */
++		if ((node_len + pad_len) & 7) {
++			printf("bad padding length %d - %d\n",
++			       offs, offs + node_len + pad_len);
++			return SCANNED_A_BAD_PAD_NODE;
++		}
++
++		printf("%d bytes padded at LEB %d:%d, offset now %d\n", pad_len,
++			lnum, offs, ALIGN(offs + node_len + pad_len, 8));
++
++		return node_len + pad_len;
++	}
++
++	return SCANNED_A_NODE;
++}
 +
 +/**
-+ * struct ubifs_ch - common header node.
-+ * @magic: UBIFS node magic number (%UBIFS_NODE_MAGIC)
-+ * @crc: CRC-32 checksum of the node header
-+ * @sqnum: sequence number
-+ * @len: full node length
-+ * @node_type: node type
-+ * @group_type: node group type
-+ * @padding: reserved for future, zeroes
++ * ubifs_scan - scan a logical eraseblock.
++ * @lnum: logical eraseblock number
++ * @sbuf: scan buffer
++ * @size: size of @buf in bytes
++ * @offs: offset to start at (usually zero)
++ * @info: print NODEs detailed info
 + *
-+ * Every UBIFS node starts with this common part. If the node has a key, the
-+ * key always goes next.
++ * This function scans LEB number @lnum and prints complete information about
++ * its contents. If @info is non-zero, this function will print dump messages
++ * of each scanned NODE.
++ *
++ * Note, it's a simplified version of ubifs_scan() in kernel fs/ubifs/scan.c.
++ * The struct *ubifs_scan_leb* is removed, we directly deal with each scanned
++ * NODE. The *corrupt* part of code is removed either because this function
++ * just print the contents of an LEB without checking its correctness. Beside,
++ * a new parameter @info is added for the dumping of NODEs.
 + */
-+struct ubifs_ch {
-+	__le32 magic;
-+	__le32 crc;
-+	__le64 sqnum;
-+	__le32 len;
-+	__u8 node_type;
-+	__u8 group_type;
-+	__u8 padding[2];
-+} __attribute__ ((packed));
++static void ubifs_scan(int lnum, void *sbuf, int leb_size, int offs, int info)
++{
++	void *buf = sbuf + offs;
++	int err, len = leb_size - offs;
++
++	printf("scan LEB %d:%d\n", lnum, offs);
++
++	while (len >= 8) {
++		struct ubifs_ch *ch = buf;
++		int node_len, ret;
++
++		printf("look at LEB %d:%d (%d bytes left)\n",
++		       lnum, offs, len);
++
++		ret = ubifs_scan_a_node(buf, leb_size, len, lnum, offs);
++		if (ret > 0) {
++			/* Padding bytes or a valid padding node */
++			offs += ret;
++			buf += ret;
++			len -= ret;
++			continue;
++		}
++
++		if (ret == SCANNED_EMPTY_SPACE)
++			/* Empty space is checked later */
++			break;
++
++		switch (ret) {
++		case SCANNED_GARBAGE:
++			printf("garbage\n");
++			goto corrupted;
++		case SCANNED_A_NODE:
++			if (info)
++				ubifs_dump_node(buf);
++			break;
++		case SCANNED_A_CORRUPT_NODE:
++		case SCANNED_A_BAD_PAD_NODE:
++			printf("bad node\n");
++			goto corrupted;
++		default:
++			printf("unknown\n");
++			err = -EINVAL;
++			goto error;
++		}
++
++		node_len = ALIGN(le32_to_cpu(ch->len), 8);
++		offs += node_len;
++		buf += node_len;
++		len -= node_len;
++	}
++
++	for (; len > 4; offs += 4, buf = buf + 4, len -= 4)
++		if (*(uint32_t *)buf != 0xffffffff)
++			break;
++	for (; len; offs++, buf++, len--)
++		if (*(uint8_t *)buf != 0xff) {
++			printf("corrupt empty space at LEB %d:%d\n",
++			       lnum, offs);
++			goto corrupted;
++		}
++
++	printf("stop scanning LEB %d at offset %d\n", lnum, offs);
++	return;
++
++corrupted:
++	printf("corruption at LEB %d:%d\n", lnum, offs);
++	err = -EUCLEAN;
++error:
++	printf("LEB %d scanning failed, error %d\n", lnum, err);
++}
 +
 +/**
-+ * struct ubifs_pad_node - padding node.
-+ * @ch: common header
-+ * @pad_len: how many bytes after this node are unused (because padded)
-+ * @padding: reserved for future, zeroes
++ * ubidump - dump ubi/ubifs information
++ * @lnum: logical eraseblock number
++ * @buf: buffer to dump
++ * @leb_size: size of buffer/logical eraseblock size
++ * @info: print NODEs detailed info
++ *
++ * This function dump ubi/ubifs information on the buffer.
 + */
-+struct ubifs_pad_node {
-+	struct ubifs_ch ch;
-+	__le32 pad_len;
-+} __attribute__ ((packed));
-+
-+/**
-+ * struct ubifs_sb_node - superblock node.
-+ * @ch: common header
-+ * @padding: reserved for future, zeroes
-+ * @key_hash: type of hash function used in keys
-+ * @key_fmt: format of the key
-+ * @flags: file-system flags (%UBIFS_FLG_BIGLPT, etc)
-+ * @min_io_size: minimal input/output unit size
-+ * @leb_size: logical eraseblock size in bytes
-+ * @leb_cnt: count of LEBs used by file-system
-+ * @max_leb_cnt: maximum count of LEBs used by file-system
-+ * @max_bud_bytes: maximum amount of data stored in buds
-+ * @log_lebs: log size in logical eraseblocks
-+ * @lpt_lebs: number of LEBs used for lprops table
-+ * @orph_lebs: number of LEBs used for recording orphans
-+ * @jhead_cnt: count of journal heads
-+ * @fanout: tree fanout (max. number of links per indexing node)
-+ * @lsave_cnt: number of LEB numbers in LPT's save table
-+ * @fmt_version: UBIFS on-flash format version
-+ * @default_compr: default compression algorithm (%UBIFS_COMPR_LZO, etc)
-+ * @padding1: reserved for future, zeroes
-+ * @rp_uid: reserve pool UID
-+ * @rp_gid: reserve pool GID
-+ * @rp_size: size of the reserved pool in bytes
-+ * @padding2: reserved for future, zeroes
-+ * @time_gran: time granularity in nanoseconds
-+ * @uuid: UUID generated when the file system image was created
-+ * @ro_compat_version: UBIFS R/O compatibility version
-+ */
-+struct ubifs_sb_node {
-+	struct ubifs_ch ch;
-+	__u8 padding[2];
-+	__u8 key_hash;
-+	__u8 key_fmt;
-+	__le32 flags;
-+	__le32 min_io_size;
-+	__le32 leb_size;
-+	__le32 leb_cnt;
-+	__le32 max_leb_cnt;
-+	__le64 max_bud_bytes;
-+	__le32 log_lebs;
-+	__le32 lpt_lebs;
-+	__le32 orph_lebs;
-+	__le32 jhead_cnt;
-+	__le32 fanout;
-+	__le32 lsave_cnt;
-+	__le32 fmt_version;
-+	__le16 default_compr;
-+	__u8 padding1[2];
-+	__le32 rp_uid;
-+	__le32 rp_gid;
-+	__le64 rp_size;
-+	__le32 time_gran;
-+	__u8 uuid[16];
-+	__le32 ro_compat_version;
-+	__u8 padding2[3968];
-+} __attribute__ ((packed));
-+
-+/**
-+ * struct ubifs_mst_node - master node.
-+ * @ch: common header
-+ * @highest_inum: highest inode number in the committed index
-+ * @cmt_no: commit number
-+ * @flags: various flags (%UBIFS_MST_DIRTY, etc)
-+ * @log_lnum: start of the log
-+ * @root_lnum: LEB number of the root indexing node
-+ * @root_offs: offset within @root_lnum
-+ * @root_len: root indexing node length
-+ * @gc_lnum: LEB reserved for garbage collection (%-1 value means the LEB was
-+ * not reserved and should be reserved on mount)
-+ * @ihead_lnum: LEB number of index head
-+ * @ihead_offs: offset of index head
-+ * @index_size: size of index on flash
-+ * @total_free: total free space in bytes
-+ * @total_dirty: total dirty space in bytes
-+ * @total_used: total used space in bytes (includes only data LEBs)
-+ * @total_dead: total dead space in bytes (includes only data LEBs)
-+ * @total_dark: total dark space in bytes (includes only data LEBs)
-+ * @lpt_lnum: LEB number of LPT root nnode
-+ * @lpt_offs: offset of LPT root nnode
-+ * @nhead_lnum: LEB number of LPT head
-+ * @nhead_offs: offset of LPT head
-+ * @ltab_lnum: LEB number of LPT's own lprops table
-+ * @ltab_offs: offset of LPT's own lprops table
-+ * @lsave_lnum: LEB number of LPT's save table (big model only)
-+ * @lsave_offs: offset of LPT's save table (big model only)
-+ * @lscan_lnum: LEB number of last LPT scan
-+ * @empty_lebs: number of empty logical eraseblocks
-+ * @idx_lebs: number of indexing logical eraseblocks
-+ * @leb_cnt: count of LEBs used by file-system
-+ * @padding: reserved for future, zeroes
-+ */
-+struct ubifs_mst_node {
-+	struct ubifs_ch ch;
-+	__le64 highest_inum;
-+	__le64 cmt_no;
-+	__le32 flags;
-+	__le32 log_lnum;
-+	__le32 root_lnum;
-+	__le32 root_offs;
-+	__le32 root_len;
-+	__le32 gc_lnum;
-+	__le32 ihead_lnum;
-+	__le32 ihead_offs;
-+	__le64 index_size;
-+	__le64 total_free;
-+	__le64 total_dirty;
-+	__le64 total_used;
-+	__le64 total_dead;
-+	__le64 total_dark;
-+	__le32 lpt_lnum;
-+	__le32 lpt_offs;
-+	__le32 nhead_lnum;
-+	__le32 nhead_offs;
-+	__le32 ltab_lnum;
-+	__le32 ltab_offs;
-+	__le32 lsave_lnum;
-+	__le32 lsave_offs;
-+	__le32 lscan_lnum;
-+	__le32 empty_lebs;
-+	__le32 idx_lebs;
-+	__le32 leb_cnt;
-+	__u8 padding[344];
-+} __attribute__ ((packed));
-+
-+/**
-+ * struct ubifs_ref_node - logical eraseblock reference node.
-+ * @ch: common header
-+ * @lnum: the referred logical eraseblock number
-+ * @offs: start offset in the referred LEB
-+ * @jhead: journal head number
-+ * @padding: reserved for future, zeroes
-+ */
-+struct ubifs_ref_node {
-+	struct ubifs_ch ch;
-+	__le32 lnum;
-+	__le32 offs;
-+	__le32 jhead;
-+	__u8 padding[28];
-+} __attribute__ ((packed));
-+
-+#endif /*!__UBIFS_MEDIA_H__ */
++int ubi_dump(int lnum, void *buf, int leb_size, int info)
++{
++	ubifs_scan(lnum, buf, leb_size, 0, info);
++	return 0;
++}
 -- 
 1.6.0.2
