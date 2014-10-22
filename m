@@ -1,23 +1,21 @@
-Received: from [119.145.14.65] (helo=szxga02-in.huawei.com)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgrBu-0002He-CA
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 08:22:47 +0000
-Message-ID: <5447690F.7070607@huawei.com>
-Date: Wed, 22 Oct 2014 16:21:35 +0800
-From: hujianyang <hujianyang@huawei.com>
+ id 1XgrGv-0005AA-5s
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 08:27:57 +0000
+Message-ID: <54476A75.3090505@nod.at>
+Date: Wed, 22 Oct 2014 10:27:33 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
-References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
- <1413805935.7906.225.camel@sauron.fi.intel.com> <544726CD.90902@huawei.com>
- <1413964969.7906.438.camel@sauron.fi.intel.com>
-In-Reply-To: <1413964969.7906.438.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Cc: Caizhiyong <caizhiyong@hisilicon.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- Jijiagang <jijiagang@hisilicon.com>
+To: Tanya Brokhman <tlinder@codeaurora.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/2] ubiformat: Leave space for fastmap anchor
+References: <1413964111-4048-1-git-send-email-s.hauer@pengutronix.de>
+ <1413964111-4048-3-git-send-email-s.hauer@pengutronix.de>
+ <54476785.5020603@nod.at> <544768A5.5000505@codeaurora.org>
+In-Reply-To: <544768A5.5000505@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/10/22 16:02, Artem Bityutskiy wrote:
-> On Wed, 2014-10-22 at 11:38 +0800, hujianyang wrote:
->> On 2014/10/20 19:52, Artem Bityutskiy wrote:
->>> On Thu, 2014-10-09 at 06:48 +0000, Jijiagang wrote:
->>>> Hi Artem and Adrian,
->>>>
->>>> We encountered a “UBIFS assert failed in ubifs_set_page_dirty at 1421
->>>> (pid 543)” problem when running MONKEY test in android platform.
->>>
->>> Hi, yes, this looks like a bug,
->>>
->>> could you please re-send this e-mail in plain test format, because the
->>> MTD mailing list traps HTML e-mails.
->>>
->>> Thanks!
->>>
+Am 22.10.2014 um 10:19 schrieb Tanya Brokhman:
+> On 10/22/2014 11:15 AM, Richard Weinberger wrote:
+>> Am 22.10.2014 um 09:48 schrieb Sascha Hauer:
+>>> The fastmap code needs a free eraseblock in the first 64 erasblocks
+>>> to write a fastmap anchor. Since ubiformat continuously writes the
+>>> image to the flash the fastmap code won't find a free block and
+>>> fastmap will be disabled.
 >>
->> Hi Artem,
+>> If UBI is unable to write a fastmap it will try again later.
+>> So, it will be not disabled.
 >>
->> My colleagues find me and complain about this problem in September. The
->> previous bug I fixed, commit 691a7c6f, didn't fix the problem they
->> tolerate now. It has a different dump stack.
+>>> With this patch ubiformat skips flashing
+>>> a block at the beginning thus allowing the fastmap code to write
+>>> an anchor.
+>>
+>> Hmm, this is a bit hacky. What prevents UBI itself from using this free PEB
+>> after the first attach? I.e. if a bitflip happens?
+>> The in kernel code has already a mechanism to move used PEBs < 64 to make space
+>> for the anchor.
+>> IMHO the only sane approach is to create a fastmap enabled image directly with ubiformat.
+>> While creating the initial fastmap code I had the plan to make mtd-tools fastmap aware
+>> but simply run out of budget and so far nobody cared enough.
 > 
-> Hi, it seems like MM is doing something weird. Please, reply to the
-> e-mail where I CCed the MM mailing list. Getting help from them is our
-> best opportunity. Describe the issue in there.
-> 
-> Artem.
-> 
-> 
+> I care :) Its in my TODO to update ubinize to leave space for fastmap anchor (and perhaps generate a fastmap data as well but this is just a thought).
 
-Oh, I overlooked that, sorry~!
+Good to know. :)
+Please generate the fastmap data such that upon the very first attach fastmap can be used.
+As I said leaving space for fastmap is hacky and still cannot guarantee that fastmap can find
+a free PEB for its anchor.
 
-I think you've clearly described this problem, thanks! I will replay
-that mail if I get something new.
-
-I'd like to suggest them to do the same test with different kernel
-version first to find something useful.
+Thanks,
+//richard
