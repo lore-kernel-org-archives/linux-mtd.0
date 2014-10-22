@@ -1,16 +1,18 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgsKo-0004cN-Vq
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 09:36:03 +0000
-From: Josh Wu <josh.wu@atmel.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] atmel_nand: replace memcpy32_toio/memcpy32_fromio with memcpy
-Date: Wed, 22 Oct 2014 17:35:24 +0800
-Message-ID: <1413970524-18716-1-git-send-email-josh.wu@atmel.com>
+ id 1XgtJ6-0006bz-Ok
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 10:38:22 +0000
+Message-ID: <544788DA.9090401@huawei.com>
+Date: Wed, 22 Oct 2014 18:37:14 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: vinod.koul@intel.com, nicolas.ferre@atmel.com, herve.codina@celad.com,
- Josh Wu <josh.wu@atmel.com>, voice.shen@atmel.com, computersforpeace@gmail.com
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH v5 1/4] ubi-utils: ubidump: add ubifs-media
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,91 +22,337 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is no need to use memcpy32_toio/memcpy32_fromio to transfer data
-between memory and NFC sram. As the NFC sram is a also a memery space
-not a io space.
-So just use memcpy is enough.
+This is a preparatory patch for ubidump, an utility to print on-media
+format of UBIFS partitions. This patch contains only one file named
+ubifs-media.h which is entirely taken from linux kernel. This file
+descibes the on-flash format of UBIFS objects and helps us to analyse
+the data on the media.
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
+Note, the start up commit of this file is not a completely copy from
+fs/ubifs/ubifs-media.h in kernel. Only the code which is used by
+ubidump is now presented here.
+
+
+Signed-off-by: hujianyang <hujianyang@huawei.com>
 ---
- drivers/mtd/nand/atmel_nand.c | 32 ++++++--------------------------
- 1 file changed, 6 insertions(+), 26 deletions(-)
+ include/mtd/ubifs-media.h |  309 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 309 insertions(+), 0 deletions(-)
+ create mode 100644 include/mtd/ubifs-media.h
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 5c1423a..28d452e 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -105,7 +105,7 @@ struct atmel_nfc {
- 	struct completion	comp_xfer_done;
- 
- 	/* Point to the sram bank which include readed data via NFC */
--	void __iomem		*data_in_sram;
-+	void 			*data_in_sram;
- 	bool			will_write_sram;
- };
- static struct atmel_nfc	nand_nfc;
-@@ -257,26 +257,6 @@ static int atmel_nand_set_enable_ready_pins(struct mtd_info *mtd)
- 	return res;
- }
- 
--static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
--{
--	int i;
--	u32 *t = trg;
--	const __iomem u32 *s = src;
--
--	for (i = 0; i < (size >> 2); i++)
--		*t++ = readl_relaxed(s++);
--}
--
--static void memcpy32_toio(void __iomem *trg, const void *src, int size)
--{
--	int i;
--	u32 __iomem *t = trg;
--	const u32 *s = src;
--
--	for (i = 0; i < (size >> 2); i++)
--		writel_relaxed(*s++, t++);
--}
--
- /*
-  * Minimal-overhead PIO for data access.
-  */
-@@ -286,7 +266,7 @@ static void atmel_read_buf8(struct mtd_info *mtd, u8 *buf, int len)
- 	struct atmel_nand_host *host = nand_chip->priv;
- 
- 	if (host->nfc && host->nfc->use_nfc_sram && host->nfc->data_in_sram) {
--		memcpy32_fromio(buf, host->nfc->data_in_sram, len);
-+		memcpy(buf, host->nfc->data_in_sram, len);
- 		host->nfc->data_in_sram += len;
- 	} else {
- 		__raw_readsb(nand_chip->IO_ADDR_R, buf, len);
-@@ -299,7 +279,7 @@ static void atmel_read_buf16(struct mtd_info *mtd, u8 *buf, int len)
- 	struct atmel_nand_host *host = nand_chip->priv;
- 
- 	if (host->nfc && host->nfc->use_nfc_sram && host->nfc->data_in_sram) {
--		memcpy32_fromio(buf, host->nfc->data_in_sram, len);
-+		memcpy(buf, host->nfc->data_in_sram, len);
- 		host->nfc->data_in_sram += len;
- 	} else {
- 		__raw_readsw(nand_chip->IO_ADDR_R, buf, len / 2);
-@@ -1983,14 +1963,14 @@ static int nfc_sram_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (use_dma) {
- 		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) != 0)
- 			/* Fall back to use cpu copy */
--			memcpy32_toio(sram, buf, len);
-+			memcpy(sram, buf, len);
- 	} else {
--		memcpy32_toio(sram, buf, len);
-+		memcpy(sram, buf, len);
- 	}
- 
- 	cfg = nfc_readl(host->nfc->hsmc_regs, CFG);
- 	if (unlikely(raw) && oob_required) {
--		memcpy32_toio(sram + len, chip->oob_poi, mtd->oobsize);
-+		memcpy(sram + len, chip->oob_poi, mtd->oobsize);
- 		len += mtd->oobsize;
- 		nfc_writel(host->nfc->hsmc_regs, CFG, cfg | NFC_CFG_WSPARE);
- 	} else {
+diff --git a/include/mtd/ubifs-media.h b/include/mtd/ubifs-media.h
+new file mode 100644
+index 0000000..ff109e6
+--- /dev/null
++++ b/include/mtd/ubifs-media.h
+@@ -0,0 +1,309 @@
++/*
++ * Copyright (C) 2006-2008 Nokia Corporation.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program; if not, write to the Free Software Foundation, Inc., 51
++ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++ *
++ * Authors: Artem Bityutskiy (?懈???泻懈泄 ????屑)
++ *          Adrian Hunter
++ */
++
++/*
++ * This file describes UBIFS on-flash format and contains definitions of all the
++ * relevant data structures and constants.
++ *
++ * All UBIFS on-flash objects are stored in the form of nodes. All nodes start
++ * with the UBIFS node magic number and have the same common header. Nodes
++ * always sit at 8-byte aligned positions on the media and node header sizes are
++ * also 8-byte aligned (except for the indexing node and the padding node).
++ */
++
++/*
++ * Note, the entire code of this file was taken from linux kernel
++ * driver/mtd/ubi/ubi-media.h. But not all of the code in kernel was
++ * copied here because this file is *now* only used by ubidump, only
++ * the code which is needed by libdump.c is presented.
++ */
++
++#ifndef __UBIFS_MEDIA_H__
++#define __UBIFS_MEDIA_H__
++
++#include <asm/byteorder.h>
++
++/* UBIFS node magic number (must not have the padding byte first or last) */
++#define UBIFS_NODE_MAGIC  0x06101831
++
++/* UBIFS padding byte pattern (must not be first or last byte of node magic) */
++#define UBIFS_PADDING_BYTE 0xCE
++
++/* Node sizes (N.B. these are guaranteed to be multiples of 8) */
++#define UBIFS_CH_SZ        sizeof(struct ubifs_ch)
++#define UBIFS_PAD_NODE_SZ  sizeof(struct ubifs_pad_node)
++
++/*
++ * UBIFS node types.
++ *
++ * UBIFS_INO_NODE: inode node
++ * UBIFS_DATA_NODE: data node
++ * UBIFS_DENT_NODE: directory entry node
++ * UBIFS_XENT_NODE: extended attribute node
++ * UBIFS_TRUN_NODE: truncation node
++ * UBIFS_PAD_NODE: padding node
++ * UBIFS_SB_NODE: superblock node
++ * UBIFS_MST_NODE: master node
++ * UBIFS_REF_NODE: LEB reference node
++ * UBIFS_IDX_NODE: index node
++ * UBIFS_CS_NODE: commit start node
++ * UBIFS_ORPH_NODE: orphan node
++ * UBIFS_NODE_TYPES_CNT: count of supported node types
++ *
++ * Note, we index arrays by these numbers, so keep them low and contiguous.
++ * Node type constants for inodes, direntries and so on have to be the same as
++ * corresponding key type constants.
++ */
++enum {
++	UBIFS_INO_NODE,
++	UBIFS_DATA_NODE,
++	UBIFS_DENT_NODE,
++	UBIFS_XENT_NODE,
++	UBIFS_TRUN_NODE,
++	UBIFS_PAD_NODE,
++	UBIFS_SB_NODE,
++	UBIFS_MST_NODE,
++	UBIFS_REF_NODE,
++	UBIFS_IDX_NODE,
++	UBIFS_CS_NODE,
++	UBIFS_ORPH_NODE,
++	UBIFS_NODE_TYPES_CNT,
++};
++
++/*
++ * Supported key hash functions.
++ *
++ * UBIFS_KEY_HASH_R5: R5 hash
++ * UBIFS_KEY_HASH_TEST: test hash which just returns first 4 bytes of the name
++ */
++enum {
++	UBIFS_KEY_HASH_R5,
++	UBIFS_KEY_HASH_TEST,
++};
++
++/*
++ * Supported key formats.
++ *
++ * UBIFS_SIMPLE_KEY_FMT: simple key format
++ */
++enum {
++	UBIFS_SIMPLE_KEY_FMT,
++};
++
++/*
++ * Node group type (used by recovery to recover whole group or none).
++ *
++ * UBIFS_NO_NODE_GROUP: this node is not part of a group
++ * UBIFS_IN_NODE_GROUP: this node is a part of a group
++ * UBIFS_LAST_OF_NODE_GROUP: this node is the last in a group
++ */
++enum {
++	UBIFS_NO_NODE_GROUP = 0,
++	UBIFS_IN_NODE_GROUP,
++	UBIFS_LAST_OF_NODE_GROUP,
++};
++
++/*
++ * Superblock flags.
++ *
++ * UBIFS_FLG_BIGLPT: if "big" LPT model is used if set
++ * UBIFS_FLG_SPACE_FIXUP: first-mount "fixup" of free space within LEBs needed
++ */
++enum {
++	UBIFS_FLG_BIGLPT = 0x02,
++	UBIFS_FLG_SPACE_FIXUP = 0x04,
++};
++
++/**
++ * struct ubifs_ch - common header node.
++ * @magic: UBIFS node magic number (%UBIFS_NODE_MAGIC)
++ * @crc: CRC-32 checksum of the node header
++ * @sqnum: sequence number
++ * @len: full node length
++ * @node_type: node type
++ * @group_type: node group type
++ * @padding: reserved for future, zeroes
++ *
++ * Every UBIFS node starts with this common part. If the node has a key, the
++ * key always goes next.
++ */
++struct ubifs_ch {
++	__le32 magic;
++	__le32 crc;
++	__le64 sqnum;
++	__le32 len;
++	__u8 node_type;
++	__u8 group_type;
++	__u8 padding[2];
++} __attribute__ ((packed));
++
++/**
++ * struct ubifs_pad_node - padding node.
++ * @ch: common header
++ * @pad_len: how many bytes after this node are unused (because padded)
++ * @padding: reserved for future, zeroes
++ */
++struct ubifs_pad_node {
++	struct ubifs_ch ch;
++	__le32 pad_len;
++} __attribute__ ((packed));
++
++/**
++ * struct ubifs_sb_node - superblock node.
++ * @ch: common header
++ * @padding: reserved for future, zeroes
++ * @key_hash: type of hash function used in keys
++ * @key_fmt: format of the key
++ * @flags: file-system flags (%UBIFS_FLG_BIGLPT, etc)
++ * @min_io_size: minimal input/output unit size
++ * @leb_size: logical eraseblock size in bytes
++ * @leb_cnt: count of LEBs used by file-system
++ * @max_leb_cnt: maximum count of LEBs used by file-system
++ * @max_bud_bytes: maximum amount of data stored in buds
++ * @log_lebs: log size in logical eraseblocks
++ * @lpt_lebs: number of LEBs used for lprops table
++ * @orph_lebs: number of LEBs used for recording orphans
++ * @jhead_cnt: count of journal heads
++ * @fanout: tree fanout (max. number of links per indexing node)
++ * @lsave_cnt: number of LEB numbers in LPT's save table
++ * @fmt_version: UBIFS on-flash format version
++ * @default_compr: default compression algorithm (%UBIFS_COMPR_LZO, etc)
++ * @padding1: reserved for future, zeroes
++ * @rp_uid: reserve pool UID
++ * @rp_gid: reserve pool GID
++ * @rp_size: size of the reserved pool in bytes
++ * @padding2: reserved for future, zeroes
++ * @time_gran: time granularity in nanoseconds
++ * @uuid: UUID generated when the file system image was created
++ * @ro_compat_version: UBIFS R/O compatibility version
++ */
++struct ubifs_sb_node {
++	struct ubifs_ch ch;
++	__u8 padding[2];
++	__u8 key_hash;
++	__u8 key_fmt;
++	__le32 flags;
++	__le32 min_io_size;
++	__le32 leb_size;
++	__le32 leb_cnt;
++	__le32 max_leb_cnt;
++	__le64 max_bud_bytes;
++	__le32 log_lebs;
++	__le32 lpt_lebs;
++	__le32 orph_lebs;
++	__le32 jhead_cnt;
++	__le32 fanout;
++	__le32 lsave_cnt;
++	__le32 fmt_version;
++	__le16 default_compr;
++	__u8 padding1[2];
++	__le32 rp_uid;
++	__le32 rp_gid;
++	__le64 rp_size;
++	__le32 time_gran;
++	__u8 uuid[16];
++	__le32 ro_compat_version;
++	__u8 padding2[3968];
++} __attribute__ ((packed));
++
++/**
++ * struct ubifs_mst_node - master node.
++ * @ch: common header
++ * @highest_inum: highest inode number in the committed index
++ * @cmt_no: commit number
++ * @flags: various flags (%UBIFS_MST_DIRTY, etc)
++ * @log_lnum: start of the log
++ * @root_lnum: LEB number of the root indexing node
++ * @root_offs: offset within @root_lnum
++ * @root_len: root indexing node length
++ * @gc_lnum: LEB reserved for garbage collection (%-1 value means the LEB was
++ * not reserved and should be reserved on mount)
++ * @ihead_lnum: LEB number of index head
++ * @ihead_offs: offset of index head
++ * @index_size: size of index on flash
++ * @total_free: total free space in bytes
++ * @total_dirty: total dirty space in bytes
++ * @total_used: total used space in bytes (includes only data LEBs)
++ * @total_dead: total dead space in bytes (includes only data LEBs)
++ * @total_dark: total dark space in bytes (includes only data LEBs)
++ * @lpt_lnum: LEB number of LPT root nnode
++ * @lpt_offs: offset of LPT root nnode
++ * @nhead_lnum: LEB number of LPT head
++ * @nhead_offs: offset of LPT head
++ * @ltab_lnum: LEB number of LPT's own lprops table
++ * @ltab_offs: offset of LPT's own lprops table
++ * @lsave_lnum: LEB number of LPT's save table (big model only)
++ * @lsave_offs: offset of LPT's save table (big model only)
++ * @lscan_lnum: LEB number of last LPT scan
++ * @empty_lebs: number of empty logical eraseblocks
++ * @idx_lebs: number of indexing logical eraseblocks
++ * @leb_cnt: count of LEBs used by file-system
++ * @padding: reserved for future, zeroes
++ */
++struct ubifs_mst_node {
++	struct ubifs_ch ch;
++	__le64 highest_inum;
++	__le64 cmt_no;
++	__le32 flags;
++	__le32 log_lnum;
++	__le32 root_lnum;
++	__le32 root_offs;
++	__le32 root_len;
++	__le32 gc_lnum;
++	__le32 ihead_lnum;
++	__le32 ihead_offs;
++	__le64 index_size;
++	__le64 total_free;
++	__le64 total_dirty;
++	__le64 total_used;
++	__le64 total_dead;
++	__le64 total_dark;
++	__le32 lpt_lnum;
++	__le32 lpt_offs;
++	__le32 nhead_lnum;
++	__le32 nhead_offs;
++	__le32 ltab_lnum;
++	__le32 ltab_offs;
++	__le32 lsave_lnum;
++	__le32 lsave_offs;
++	__le32 lscan_lnum;
++	__le32 empty_lebs;
++	__le32 idx_lebs;
++	__le32 leb_cnt;
++	__u8 padding[344];
++} __attribute__ ((packed));
++
++/**
++ * struct ubifs_ref_node - logical eraseblock reference node.
++ * @ch: common header
++ * @lnum: the referred logical eraseblock number
++ * @offs: start offset in the referred LEB
++ * @jhead: journal head number
++ * @padding: reserved for future, zeroes
++ */
++struct ubifs_ref_node {
++	struct ubifs_ch ch;
++	__le32 lnum;
++	__le32 offs;
++	__le32 jhead;
++	__u8 padding[28];
++} __attribute__ ((packed));
++
++#endif /*!__UBIFS_MEDIA_H__ */
 -- 
-1.9.1
+1.6.0.2
