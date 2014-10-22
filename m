@@ -1,22 +1,22 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgrSW-0003Ol-1w
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 08:39:56 +0000
-Received: by mail-pa0-f43.google.com with SMTP id lf10so3267499pab.30
- for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 01:39:34 -0700 (PDT)
-Date: Wed, 22 Oct 2014 01:39:31 -0700
+ id 1XgrTh-0004i0-CU
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 08:41:09 +0000
+Received: by mail-pd0-f181.google.com with SMTP id w10so3049175pde.26
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 01:40:48 -0700 (PDT)
+Date: Wed, 22 Oct 2014 01:40:45 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Aaron Sierra <asierra@xes-inc.com>
-Subject: Re: [PATCH] mtd: bfin-async-flash: Remove unused variable
-Message-ID: <20141022083931.GH16128@brian-ubuntu>
-References: <1106241329.302591.1411499010840.JavaMail.zimbra@xes-inc.com>
- <1931039891.303225.1411499244022.JavaMail.zimbra@xes-inc.com>
+To: Fabian Frederick <fabf@skynet.be>
+Subject: Re: [PATCH V2 linux-next] jffs2: fix sparse warning: unexpected unlock
+Message-ID: <20141022084045.GI16128@brian-ubuntu>
+References: <1411932392-7751-1-git-send-email-fabf@skynet.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1931039891.303225.1411499244022.JavaMail.zimbra@xes-inc.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- adi-buildroot-devel@lists.sourceforge.net, Steven Miao <realmz6@gmail.com>
+In-Reply-To: <1411932392-7751-1-git-send-email-fabf@skynet.be>
+Cc: linux-mtd@lists.infradead.org, linux-sparse@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Josh Triplett <josh@joshtriplett.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 23, 2014 at 02:07:24PM -0500, Aaron Sierra wrote:
-> Avoid the following compile warning:
+On Sun, Sep 28, 2014 at 09:26:32PM +0200, Fabian Frederick wrote:
+> fs/jffs2/summary.c:846:5: warning: context imbalance in 'jffs2_sum_write_sumnode' - unexpected unlock
 > 
-> drivers/mtd/maps/bfin-async-flash.c: In function 'bfin_flash_probe':
-> drivers/mtd/maps/bfin-async-flash.c:129: warning: unused variable 'ret'
-> 
-> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+> Suggested-by: Brian Norris <computersforpeace@gmail.com>
+> Suggested-by: Josh Triplett <josh@joshtriplett.org>
+> Signed-off-by: Fabian Frederick <fabf@skynet.be>
+> ---
+> V2: use __must_hold instead of __releases / __acquires
+> (suggested by Brian Norris and Josh Triplett)
 
-Pushed to l2-mtd.git.
+Pushed to l2-mtd.git. Thanks!
 
 Brian
