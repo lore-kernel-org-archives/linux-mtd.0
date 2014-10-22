@@ -1,20 +1,22 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgtSR-0002jf-Gs
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 10:48:00 +0000
-Message-ID: <54478B24.1030208@huawei.com>
-Date: Wed, 22 Oct 2014 18:47:00 +0800
-From: hujianyang <hujianyang@huawei.com>
+ id 1XgtT1-0002xf-E6
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 10:48:35 +0000
+Message-ID: <54478B6A.4020106@codeaurora.org>
+Date: Wed, 22 Oct 2014 13:48:10 +0300
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v5 4/4] ubi-utils: ubidump: compile enable
-References: <544788DA.9090401@huawei.com>
-In-Reply-To: <544788DA.9090401@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+To: Richard Weinberger <richard@nod.at>,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/2] ubiformat: Leave space for fastmap anchor
+References: <1413964111-4048-1-git-send-email-s.hauer@pengutronix.de>
+ <1413964111-4048-3-git-send-email-s.hauer@pengutronix.de>
+ <54476785.5020603@nod.at> <544768A5.5000505@codeaurora.org>
+ <54476C0F.4050603@nod.at>
+In-Reply-To: <54476C0F.4050603@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Bill Pringlemeir <bpringlemeir@nbsps.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch is the last part of ubidump. Enable the compile of this new
-utility.
+On 10/22/2014 11:34 AM, Richard Weinberger wrote:
+> Am 22.10.2014 um 10:19 schrieb Tanya Brokhman:
+>> I care :) Its in my TODO to update ubinize to leave space for fastmap anchor (and perhaps generate a fastmap data as well but this is just a thought).
+>
+> While talking about fastmap TODOs, here you can find my fastmap patch queue:
+> https://git.kernel.org/cgit/linux/kernel/git/rw/misc.git/log/?h=ubi-current
+>
+> These patches are *not* ready for mainline, some of them need a rewrite
+> to meet all design goals of UBI. But maybe the one or other fixes an issue
+> which is on your TODO list. :-)
+>
+> Thanks,
+> //richard
+>
+
+thanks! it's very helpful! and just to combine the reply in one email:
+
+"Please generate the fastmap data such that upon the very first attach 
+fastmap can be used."
+
+This is what I was thinking. Its doable, right? since in ubinize we have 
+all data required for constructing fastmap.
+
+ From all your discussions with Artem I figure we can expect quite a few 
+changes to the fastmap implementation. Is the layout also going to 
+change? I remember you mentioning such idea in one of the emails.
 
 
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- Makefile |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index eade234..9dc9645 100644
---- a/Makefile
-+++ b/Makefile
-@@ -28,7 +28,8 @@ MTD_BINS = \
- 	sumtool jffs2reader
- UBI_BINS = \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
--	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
-+	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock \
-+	ubidump
-
- BINS = $(MTD_BINS)
- BINS += mkfs.ubifs/mkfs.ubifs
-@@ -115,10 +116,12 @@ obj-libiniparser.a = libiniparser.o dictionary.o
- obj-libscan.a      = libscan.o
- obj-libubi.a       = libubi.o
- obj-libubigen.a    = libubigen.o
-+obj-libdump.a      = libdump.o
-
- obj-mtdinfo   = libubigen.a
- obj-ubinize   = libubigen.a libiniparser.a
- obj-ubiformat = libubigen.a libscan.a
-+obj-ubidump   = libdump.a
-
--$(foreach v,libubi.a libubigen.a libiniparser.a libscan.a,$(eval $(call _mkdep,ubi-utils/,$(v))))
-+$(foreach v,libubi.a libubigen.a libiniparser.a libscan.a libdump.a,$(eval $(call _mkdep,ubi-utils/,$(v))))
- $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-common.o)))
+Thanks,
+Tanya Brokhman
 -- 
-1.6.0.2
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
