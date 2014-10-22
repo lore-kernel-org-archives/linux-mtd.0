@@ -1,20 +1,20 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xgta9-0007ej-I4
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 10:56:00 +0000
-Message-ID: <54478A47.3080102@huawei.com>
-Date: Wed, 22 Oct 2014 18:43:19 +0800
-From: hujianyang <hujianyang@huawei.com>
+Received: from ec2-54-201-57-178.us-west-2.compute.amazonaws.com
+ ([54.201.57.178] helo=ip-172-31-12-36.us-west-2.compute.internal)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgxuK-0007pD-1c
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 15:33:04 +0000
+Date: Wed, 22 Oct 2014 15:32:02 +0000
+From: dwalker@fifo99.com
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: slram on mapped ram areas
+Message-ID: <20141022153202.GA5114@fifo99.com>
+References: <20141009161707.GA18921@fifo99.com>
+ <CAN8TOE8scDnP74KJHmQcq2sznPmxkfDru7sFE+ByrJ8tKHt9mg@mail.gmail.com>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v5 3/4] ubi-utils: ubidump: introduce ubidump
-References: <544788DA.9090401@huawei.com>
-In-Reply-To: <544788DA.9090401@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Bill Pringlemeir <bpringlemeir@nbsps.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAN8TOE8scDnP74KJHmQcq2sznPmxkfDru7sFE+ByrJ8tKHt9mg@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,273 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch introude a new utility named ubidump. This utiltiy can dump
-a specific leb to userspace(maybe a arrange of lebs in the future).
+On Mon, Oct 20, 2014 at 05:05:56PM -0700, Brian Norris wrote:
+> On Thu, Oct 9, 2014 at 9:17 AM,  <dwalker@fifo99.com> wrote:
+> > Hi,
+> >
+> > It seems that slram was made for access parts of memory not used by the system,
+> > or not mapped (right terminology?). I wanted to use it on memory which is mapped
+> > or memory that can be used by the system. The problem I have is that the system I
+> > work on places a filesystem image in memory someplace, and send the physical address
+> > and size of the area as boot parameters. The memory where the images ends up is not
+> > special memory.
+> 
+> I honestly don't know much about the slram.c driver. I doubt it has
+> many serious users these days.
 
-We don't have an useful tool to get data from a specified logical erase
-block and to describe what it contains in userspace before. I suppose
-if this utility could help us overcome these problems and give us a new
-way to analyse the behaviour of UBI/UBIFS without changing kernel.
+Seems that way since both people I emailed have dead addresses.
+ 
+> It also seems like you're really trying to use this driver in a way it
+> was not designed. Do you really need to access specific kernel memory?
+> Or do you just want a RAM-backed MTD? There are other drivers for this
+> already (mtdram?).
 
-Artem (dedekind1@gmail.com) and Bill (bpringlemeir@nbsps.com) also
-contribute a lot to this utility. I appreciate their help very much.
+It's not very different from how it's currently used. The only difference is the memory I want to use
+could be used by the kernel at the time I want to use it.
 
-Only the UBIFS level dumping is supported now, we've discussed and tried
-many ways to realize UBI level dumping but didn't reach an agreement.
-I'll keep working on it.
+I need to access a specific memory area, no random area will do. I looked at drivers/block/brd.c for example
+it doesn't allow a specific area to be used.
 
-I think this work is just the beginning of enriching UBI/UBIFS debugging.
+> > I made the following changes to your driver (somewhat condensed),
+> >
+> > 1) Added memblock_reserve() on the memory region
+> > 2) Added an insert_resource() call to the memory
+> > 3) Altered the driver to not use ioremap, instead use __va() conditionally.
+> 
+> I see this comment next to the __va() definition for ARM:
+> 
+> /*
+>  * Drivers should NOT use these either.
+>  */
 
-Changes in v5:
-	- fix copyright of ubifs-media.h
-	
-v1:
-http://lists.infradead.org/pipermail/linux-mtd/2014-July/054541.html
+That's interesting, there must be an alternative.. I just need a way to convert the address from
+physical to virtual.
 
-v2:
-http://lists.infradead.org/pipermail/linux-mtd/2014-July/054831.html
-
-v3:
-http://lists.infradead.org/pipermail/linux-mtd/2014-September/055463.html
-
-v4:
-http://lists.infradead.org/pipermail/linux-mtd/2014-September/055644.html
-
-
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- ubi-utils/ubidump.c |  223 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 223 insertions(+), 0 deletions(-)
- create mode 100644 ubi-utils/ubidump.c
-
-diff --git a/ubi-utils/ubidump.c b/ubi-utils/ubidump.c
-new file mode 100644
-index 0000000..40834dd
---- /dev/null
-+++ b/ubi-utils/ubidump.c
-@@ -0,0 +1,223 @@
-+/*
-+ * Copyright (C) 2008 Nokia Corporation
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ */
-+
-+/*
-+ * An utility to dump UBI/UBIFS format data in eraseblock
-+ *
-+ * Author: Hu Jianyang <hujianyang@huawei.com>
-+ */
-+
-+#define PROGRAM_NAME	"ubidump"
-+
-+#include <stdlib.h>
-+#include <getopt.h>
-+#include <unistd.h>
-+
-+#include <libubi.h>
-+#include <libdump.h>
-+#include <libmtd.h>
-+#include "common.h"
-+#include "ubiutils-common.h"
-+
-+/* The variables below are set by command line arguments */
-+struct args {
-+	const char *vol;
-+	int lnum;
-+	int info:1;
-+};
-+
-+static struct args args =
-+{
-+	.vol	= NULL,
-+	.lnum	= -1,
-+	.info	= 0,
-+};
-+
-+static const char doc[] = PROGRAM_NAME " version " VERSION
-+		" - an utility to dump UBI/UBIFS format data in eraseblock";
-+
-+static const char optionsstr[] =
-+"-h, --help		print help message\n"
-+"-l, --lnum		logic eraseblock num to dump\n"
-+"-i, --info		show explicit information about ubifs-level\n"
-+"-V, --version		print program version";
-+
-+static const char usage[] =
-+"Usage: " PROGRAM_NAME " <UBI volume node file name> [-l <lnum>] [-i]\n"
-+"\t\t\t[--help] [--version]\n\n"
-+"Example 1: " PROGRAM_NAME " /dev/ubi0_1 --lnum 2 - dump leb 2 in volume 1\n"
-+"Example 2: " PROGRAM_NAME " /dev/ubi0_0 -l 1234 -i - dump leb 1234 with explicit info\n";
-+
-+static const struct option long_options[] = {
-+	{ .name = "help",    .has_arg = 0, .flag = NULL, .val = 'h' },
-+	{ .name = "lnum",    .has_arg = 1, .flag = NULL, .val = 'l' },
-+	{ .name = "info",    .has_arg = 0, .flag = NULL, .val = 'i' },
-+	{ .name = "version", .has_arg = 0, .flag = NULL, .val = 'V' },
-+	{ NULL, 0, NULL, 0}
-+};
-+
-+static int parse_opt(int argc, char * const argv[])
-+{
-+	while (1) {
-+		int key, error = 0;
-+
-+		key = getopt_long(argc, argv, "h?il:", long_options, NULL);
-+		if (key == -1)
-+			break;
-+
-+		switch (key) {
-+		case 'l':
-+			args.lnum = simple_strtoul(optarg, &error);
-+			if (error || args.lnum < 0)
-+				return errmsg("bad lnum: \"%s\"", optarg);
-+			break;
-+
-+		case 'i':
-+			args.info = 1;
-+			break;
-+
-+		case 'h':
-+		case '?':
-+			printf("%s\n\n", doc);
-+			printf("%s\n\n", usage);
-+			printf("%s\n", optionsstr);
-+			exit(EXIT_SUCCESS);
-+
-+		case 'V':
-+			common_print_version();
-+			exit(EXIT_SUCCESS);
-+
-+		case ':':
-+			return errmsg("parameter is missing");
-+
-+		default:
-+			fprintf(stderr, "Use -h for help\n");
-+			return -1;
-+		}
-+	}
-+	if (optind == argc)
-+		return errmsg("UBI device name was not specified (use -h for help)");
-+	else if (optind != argc - 1)
-+		return errmsg("more then one UBI device specified (use -h for help)");
-+
-+	args.vol = argv[optind];
-+
-+	if (args.lnum < 0)
-+		return errmsg("lnum was not specified (use -h for help)");
-+
-+	return 0;
-+}
-+
-+static int dump_eraseblock(int fd, struct ubi_vol_info *vol_info)
-+{
-+	int ret, leb_size, lnum;
-+	off_t offs;
-+	char *buf;
-+
-+	leb_size = vol_info->leb_size;
-+	lnum = args.lnum;
-+
-+	ret = ubi_is_mapped(fd, lnum);
-+	if (ret == 0) {
-+		errmsg("lnum %d is not mapped", lnum);
-+		goto out;
-+	} else if (ret < 0) {
-+		sys_errmsg("ubi_is_mapped() failed");
-+		goto out;
-+	}
-+
-+	buf = malloc(leb_size);
-+	if (!buf)
-+		return errmsg("cannot allocate %d bytes of memory",
-+			      leb_size);
-+	offs = lnum * leb_size;
-+
-+	ret = pread(fd, buf, leb_size, offs);
-+	if (ret != leb_size) {
-+		errmsg("cannot read %d bytes at lnum %d, read %d",
-+		       leb_size, lnum, ret);
-+		goto out_free;
-+	}
-+
-+	ret = ubi_dump(lnum, buf, leb_size, args.info);
-+
-+out_free:
-+	free(buf);
-+out:
-+	return ret;
-+}
-+
-+int main(int argc, char * const argv[])
-+{
-+	int err, fd;
-+	libubi_t libubi;
-+	struct ubi_vol_info vol_info;
-+
-+	err = parse_opt(argc, argv);
-+	if (err)
-+		return -1;
-+
-+	libubi = libubi_open();
-+	if (!libubi) {
-+		if (errno == 0)
-+			errmsg("UBI is not present in the system");
-+		else
-+			sys_errmsg("cannot open libubi");
-+		goto out_libubi;
-+	}
-+
-+	err = ubi_probe_node(libubi, args.vol);
-+	if (err == 1) {
-+		errmsg("\"%s\" is an UBI device node, not an UBI volume node",
-+		       args.vol);
-+		goto out_libubi;
-+	} else if (err < 0) {
-+		if (errno == ENODEV)
-+			errmsg("\"%s\" is not an UBI volume node", args.vol);
-+		else
-+			sys_errmsg("error while probing \"%s\"", args.vol);
-+		goto out_libubi;
-+	}
-+
-+	err = ubi_get_vol_info(libubi, args.vol, &vol_info);
-+	if (err) {
-+		sys_errmsg("cannot get information about UBI volume \"%s\"",
-+			   args.vol);
-+		goto out_libubi;
-+	}
-+
-+	fd = open(args.vol, O_RDONLY);
-+	if (fd == -1) {
-+		sys_errmsg("cannot open UBI volume \"%s\"", args.vol);
-+		goto out_libubi;
-+	}
-+
-+	err = dump_eraseblock(fd, &vol_info);
-+	if (err)
-+		goto out_fd;
-+
-+	close(fd);
-+	libubi_close(libubi);
-+	return 0;
-+
-+out_fd:
-+	close(fd);
-+out_libubi:
-+	libubi_close(libubi);
-+	return -1;
-+}
--- 
-1.6.0.2
+Daniel
