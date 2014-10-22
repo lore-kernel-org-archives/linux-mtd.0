@@ -1,21 +1,29 @@
+Received: from mail-ig0-x229.google.com ([2607:f8b0:4001:c05::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xgq7X-00024T-4I
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 07:14:11 +0000
+Received: by mail-ig0-f169.google.com with SMTP id uq10so406116igb.0
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 00:13:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACna6rw8dG4+nBkgNb+A_xfom=4rjh-nXJGeQ=4GgWHcZMJwMA@mail.gmail.com>
-References: <1411993853-6309-1-git-send-email-zajec5@gmail.com>
- <20141022055326.GB16128@brian-ubuntu>
- <CACna6rw8dG4+nBkgNb+A_xfom=4rjh-nXJGeQ=4GgWHcZMJwMA@mail.gmail.com>
-Date: Wed, 22 Oct 2014 08:11:38 +0200
-Message-ID: <CACna6rwA2fhasFmjQaPSOiRuveRG0-63AUbePqicFM=KgdwrsQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: don't set unused name in struct flash_platform_data
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6315E6D82@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315E62CB@NTXXIAMBX02.xacn.micron.com>
+ <201410150045.53976.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315E6D82@NTXXIAMBX02.xacn.micron.com>
+Date: Wed, 22 Oct 2014 09:06:51 +0200
+Message-ID: <CACna6rxGzOVu+PKFxHeD7fnhG__3kcM-vY=q8OgtSVgZuQzGwA@mail.gmail.com>
+Subject: Re: [PATCH 1/1 v2] driver:mtd:spi-nor:fix spi_nor_scan overwrite
+ platform ID point
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
+To: bpqw <bpqw@micron.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Wan ZongShun <mcuos.com@gmail.com>, linux-sh@vger.kernel.org,
- Kevin Hilman <khilman@deeprootsystems.com>,
- Magnus Damm <magnus.damm@gmail.com>, Sekhar Nori <nsekhar@ti.com>,
- Simon Horman <horms@verge.net.au>,
+Cc: Marek Vasut <marex@denx.de>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +33,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 22 October 2014 08:03, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
-> On 22 October 2014 07:53, Brian Norris <computersforpeace@gmail.com> wrot=
-e:
->> On Mon, Sep 29, 2014 at 02:30:53PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
->>> Loading correct SPI driver (m25p80) is handled using modalias from the
->>> struct spi_board_info. There is no point of setting name in the
->>> platform_data, m25p80 ignores it anyway.
->>
->> Wait, is 'name' actually ignored? It looks to me like it sets the MTD
->> name. See the comments in include/linux/spi/flash.h and
->> arch/arm/include/asm/mach/flash.h (BTW, why do we have two definitions
->> for this??):
->>
->>   @name: optional flash device name (eg, as used with mtdparts=3D)
->>
->> And I think it's used for exactly that in m25p80.c:
->>
->>         if (data && data->name)
->>                 flash->mtd.name =3D data->name;
+On 16 October 2014 02:52, bpqw <bpqw@micron.com> wrote:
+> For example:
 >
-> And very few lines later in the m25p80.c you have this:
-> if (data && data->type)
->         id =3D spi_nor_match_id(data->type);
->
-> Code I touched in my patch was using both: name and type. So what you
-> got it "type" took a precedence and "name" value was ignored. It seems
-> like ppl used to use "name" to trigger "m25p80" probe, which isn't
-> needed (it's done by SPI layer).
->
-> Also see my comment about data->type usage I added in:
-> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=
-=3D32f1b7c8352fd33d41bcec3cfb054ccdcfd40a42
+> const struct spi_device_id spi_nor_ids[] = {
+> ......
+> ......
+> ......
+>         { "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0) },
+>         { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },//former right platform point will be overwrote by this data info.
+>         { "n25q128a13",  INFO(0x20bb18, 0x1234, 64 * 1024,  512, SECT_4K) },//this is the right platform data,I want to match this data info.
+>         { "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
+>         { "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
 
-Oh, wait. I just noticed you pointed to the code setting mtd's name,
-not finding a chip name. Sorry, I got a bit confused by so many recent
-changes to the m25p80 and spi-nor.
-So you are right, m25p80 uses this "name" to set the mtd_info's name.
-Will look at this again.
+Your initial commit was really missing some example indeed. It was
+trying to understand it for 10 minutes with no luck (until seeing
+above case) ;)
 
---=20
-Rafa=C5=82
+I see problem in spi-nor that your patch reveals:
+ISSUE: spi-nor accepts any entry from spi_nor_ids with no ext_id
+specified as long as the jedec_id matches
+I guess reason behind this is to support chips with the same
+parameters but different extended IDs. That simplifies the driver and
+support for extra chips but may also cause problems like in your case.
+
+So AFAIU your patch tries to force using specific flash info, because
+JEDEC based detection fails. In general this is what we try to avoid.
+We want to auto-detect flash chips and to relieve platform code / DT.
+
+Could we drop this patch and modify spi-nor to detect your chip
+automatically? That would be much cleaner solution to me.
