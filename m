@@ -1,22 +1,16 @@
-Received: from mail-wg0-x22e.google.com ([2a00:1450:400c:c00::22e])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgyXa-0005Rc-QL
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 16:13:39 +0000
-Received: by mail-wg0-f46.google.com with SMTP id l18so4100774wgh.5
- for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 09:13:16 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: spi-nor: allow NULL as chip name and try to auto detect
- it
-Date: Wed, 22 Oct 2014 18:05:00 +0200
-Message-Id: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+ id 1Xgzdh-0000mj-87
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 17:24:01 +0000
+Received: by mail-pa0-f48.google.com with SMTP id ey11so2107522pad.35
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 10:23:39 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: docg3: fix 'defined but not used' warning
+Date: Wed, 22 Oct 2014 10:23:26 -0700
+Message-Id: <1413998606-9589-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This will allow spi-nor users to plainly use JEDEC to detect flash chip.
+   drivers/mtd/devices/docg3.c:2122:28: warning: 'docg3_dt_ids' defined but not used [-Wunused-variable]
+    static struct of_device_id docg3_dt_ids[] = {
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/mtd/devices/docg3.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index ee777a4..1facaac 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -937,13 +937,21 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index abd94668a05d..0d9d3ee68b61 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -2119,11 +2119,13 @@ static int __exit docg3_release(struct platform_device *pdev)
+ 	return 0;
+ }
  
--	id = spi_nor_match_id(name);
-+	/* Try to auto-detect if chip name wasn't specified */
-+	if (!name)
-+		id = spi_nor_read_id(nor);
-+	else
-+		id = spi_nor_match_id(name);
- 	if (!id)
- 		return -ENOENT;
++#ifdef CONFIG_OF
+ static struct of_device_id docg3_dt_ids[] = {
+ 	{ .compatible = "m-systems,diskonchip-g3" },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, docg3_dt_ids);
++#endif
  
- 	info = (void *)id->driver_data;
- 
--	if (info->jedec_id) {
-+	/*
-+	 * If caller has specified name of flash model that can normally be
-+	 * detected using JEDEC, let's verify it.
-+	 */
-+	if (name && info->jedec_id) {
- 		const struct spi_device_id *jid;
- 
- 		jid = spi_nor_read_id(nor);
+ static struct platform_driver g3_driver = {
+ 	.driver		= {
 -- 
-1.8.4.5
+1.9.1
