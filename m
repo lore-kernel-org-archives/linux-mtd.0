@@ -1,25 +1,25 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgrrT-0007S6-CP
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 09:05:43 +0000
-Received: by mail-pa0-f54.google.com with SMTP id rd3so2597143pab.13
- for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 02:05:21 -0700 (PDT)
-Date: Wed, 22 Oct 2014 02:05:17 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxpart: only register partitions if the trx
- header was filled
-Message-ID: <20141022090517.GQ16128@brian-ubuntu>
-References: <1411338793-21245-1-git-send-email-hauke@hauke-m.de>
- <CACna6rw+DmGzKhg-YKot8n+w-cYt9XoPzcUc5eK42WnDbPU39g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rw+DmGzKhg-YKot8n+w-cYt9XoPzcUc5eK42WnDbPU39g@mail.gmail.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Woodhouse,
- David" <David.Woodhouse@intel.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgsFr-0002jZ-7v
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 09:30:55 +0000
+Message-ID: <1413970231.7906.439.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: hujianyang <hujianyang@huawei.com>
+Date: Wed, 22 Oct 2014 12:30:31 +0300
+In-Reply-To: <5447690F.7070607@huawei.com>
+References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
+ <1413805935.7906.225.camel@sauron.fi.intel.com>
+ <544726CD.90902@huawei.com> <1413964969.7906.438.camel@sauron.fi.intel.com>
+ <5447690F.7070607@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Caizhiyong <caizhiyong@hisilicon.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ Jijiagang <jijiagang@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +29,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 23, 2014 at 02:27:59PM +0200, Rafał Miłecki wrote:
-> On 22 September 2014 00:33, Hauke Mehrtens <hauke@hauke-m.de> wrote:
-> > diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-> > index 8057f52..c3f4454 100644
-> > --- a/drivers/mtd/bcm47xxpart.c
-> > +++ b/drivers/mtd/bcm47xxpart.c
-> > @@ -168,18 +168,22 @@ static int bcm47xxpart_parse(struct mtd_info *master,
-> >                                 i++;
-> >                         }
-> >
-> > -                       bcm47xxpart_add_part(&parts[curr_part++], "linux",
-> > -                                            offset + trx->offset[i], 0);
-> > -                       i++;
-> > +                       if (trx->offset[i]) {
-> > +                               bcm47xxpart_add_part(&parts[curr_part++], "linux",
-> > +                                                    offset + trx->offset[i], 0);
+On Wed, 2014-10-22 at 16:21 +0800, hujianyang wrote:
+> Oh, I overlooked that, sorry~!
 > 
-> You may at least move "linux" to the next line to don't exceed 80
-> chars limit. Same for "rootfs" below.
+> I think you've clearly described this problem, thanks! I will replay
+> that mail if I get something new.
 
-Rewrapped and pushed to l2-mtd.git.
-
-Brian
+It may be helpful if more than one person reports the problem.
