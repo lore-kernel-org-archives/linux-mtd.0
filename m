@@ -1,20 +1,21 @@
-Date: Wed, 22 Oct 2014 01:30:01 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH v2 2/5] spi-nor: Remove spi_nor::read_id operation
-Message-ID: <20141022083001.GE16128@brian-ubuntu>
-References: <1412043222.9388.81.camel@decadent.org.uk>
- <1412043304.9388.83.camel@decadent.org.uk>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XgrNX-0000vv-7n
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 08:34:47 +0000
+Message-ID: <54476C0F.4050603@nod.at>
+Date: Wed, 22 Oct 2014 10:34:23 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1412043304.9388.83.camel@decadent.org.uk>
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Ian Campbell <ijc@hellion.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Huang Shijie <shijie8@gmail.com>, linux-arm-kernel@lists.infradead.org,
- debian-kernel <debian-kernel@lists.debian.org>
+To: Tanya Brokhman <tlinder@codeaurora.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/2] ubiformat: Leave space for fastmap anchor
+References: <1413964111-4048-1-git-send-email-s.hauer@pengutronix.de>
+ <1413964111-4048-3-git-send-email-s.hauer@pengutronix.de>
+ <54476785.5020603@nod.at> <544768A5.5000505@codeaurora.org>
+In-Reply-To: <544768A5.5000505@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 30, 2014 at 03:15:04AM +0100, Ben Hutchings wrote:
-> There is currently no useful way to override the default
-> implementation of this operation.  The returned struct spi_device_id
-> must have a pointer to struct flash_info in its private data, but this
-> structure is defined inside spi-nor.
-> 
-> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Am 22.10.2014 um 10:19 schrieb Tanya Brokhman:
+> I care :) Its in my TODO to update ubinize to leave space for fastmap anchor (and perhaps generate a fastmap data as well but this is just a thought).
 
-Applied this one to l2-mtd.git. Thanks!
+While talking about fastmap TODOs, here you can find my fastmap patch queue:
+https://git.kernel.org/cgit/linux/kernel/git/rw/misc.git/log/?h=ubi-current
 
-Brian
+These patches are *not* ready for mainline, some of them need a rewrite
+to meet all design goals of UBI. But maybe the one or other fixes an issue
+which is on your TODO list. :-)
+
+Thanks,
+//richard
