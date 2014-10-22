@@ -1,21 +1,34 @@
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from nasmtp01.atmel.com ([192.199.1.245]
+ helo=DVREDG01.corp.atmel.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgqR1-0005lD-LS
- for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 07:34:20 +0000
-Received: by mail-wg0-f50.google.com with SMTP id a1so3058599wgh.33
- for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2014 00:33:57 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: spi-nor: prefer more specific entries from chips database
-Date: Wed, 22 Oct 2014 09:33:43 +0200
-Message-Id: <1413963223-6365-1-git-send-email-zajec5@gmail.com>
+ id 1XgqSe-0007QS-EY
+ for linux-mtd@lists.infradead.org; Wed, 22 Oct 2014 07:36:00 +0000
+Message-ID: <54475E41.3030205@atmel.com>
+Date: Wed, 22 Oct 2014 15:35:29 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- Bean Huo <beanhuo@micron.com>
+To: Vinod Koul <vinod.koul@intel.com>, Herve Codina <herve.codina@celad.com>
+Subject: Re: [PATCH 1/2] mtd: atmel_nand: use __iowrite32_copy for 32 bitcopy
+References: <1413821173-18347-1-git-send-email-vinod.koul@intel.com>
+ <54462F6C.1030307@atmel.com> <54463356.400@celad.com>
+ <20141021103540.GJ28745@intel.com>
+In-Reply-To: <20141021103540.GJ28745@intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Michael Grzeschik <m.grzeschik@pengutronix.de>, Bo Shen <voice.shen@atmel.com>,
+ Wei Yongjun <yongjun_wei@trendmicro.com.cn>, Mark Brown <broonie@linaro.org>,
+ HuangShijie <shijie8@gmail.com>, Jingoo Han <jg1.han@samsung.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Josh Triplett <josh@joshtriplett.org>,
+ BartlomiejZolnierkiewicz <b.zolnierkie@samsung.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ EzequielGarcia <ezequiel.garcia@free-electrons.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +38,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With few entries sharing the same JEDEC ID it could happen the less
-specific one would be picked (depending on the order). We should prefer
-entries with extended ID available.
+Hi,
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-Cc: Bean Huo <beanhuo@micron.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+On 10/21/2014 6:35 PM, Vinod Koul wrote:
+> On Tue, Oct 21, 2014 at 12:20:06PM +0200, Herve Codina wrote:
+>> Hi,
+> Please don't top post
+>> I didn't go deeper in atmel_nand.c code to see other accesses but old
+>> copy use writel_relaxed which is a macro to __raw_writel((__force u32)
+>> cpu_to_le32(v),c)
+>>
+>> __iowrite32_copy use directly __raw_writel(*src++, dst++)
+>>
+>> So we skip cpu_to_le32. Is it ok for all system using atmel_nand ?
+> Also would be a good question if we need barriers as __iowrite32_copy()
+> doesn't guarantee any ordering.
+>
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index c51ee52..727ec3c 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -661,13 +661,26 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
- 
- 	ext_jedec = id[3] << 8 | id[4];
- 
--	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
--		info = (void *)spi_nor_ids[tmp].driver_data;
--		if (info->jedec_id == jedec) {
--			if (info->ext_id == 0 || info->ext_id == ext_jedec)
-+	/*
-+	 * First let's look for entries with ext_id only. We don't want some
-+	 * generic entry to take a precedence over more specific ones.
-+	 */
-+	if (ext_jedec) {
-+		for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
-+			info = (void *)spi_nor_ids[tmp].driver_data;
-+			if (info->jedec_id == jedec &&
-+			    info->ext_id == ext_jedec)
- 				return &spi_nor_ids[tmp];
- 		}
- 	}
-+
-+	/* Now check more generic entries (without ext_id) */
-+	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
-+		info = (void *)spi_nor_ids[tmp].driver_data;
-+		if (info->jedec_id == jedec && !info->ext_id)
-+			return &spi_nor_ids[tmp];
-+	}
-+
- 	dev_err(nor->dev, "unrecognized JEDEC id %06x\n", jedec);
- 	return ERR_PTR(-ENODEV);
- }
--- 
-1.8.4.5
+Just diving the code, I found the atmel-nand code use this function to 
+transfer write these buffer to NFC sram.
+And the NFC sram is not io space.
+Also there should has no issue in barriers as it is in a SRAM.
+
+So I think right way is use memcpy function to replace the 
+ioread32/iowrite32. Since we use them for SRAM transfer not IO.
+I'll prepare a new patch which do above replace.
+
+Best Regards,
+Josh Wu
