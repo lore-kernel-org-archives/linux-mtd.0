@@ -1,16 +1,15 @@
-Date: Tue, 21 Oct 2014 23:10:57 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] ARM: don't set unused name in struct flash_platform_data
-Message-ID: <20141022061057.GC16128@brian-ubuntu>
+MIME-Version: 1.0
+In-Reply-To: <CACna6rw8dG4+nBkgNb+A_xfom=4rjh-nXJGeQ=4GgWHcZMJwMA@mail.gmail.com>
 References: <1411993853-6309-1-git-send-email-zajec5@gmail.com>
  <20141022055326.GB16128@brian-ubuntu>
  <CACna6rw8dG4+nBkgNb+A_xfom=4rjh-nXJGeQ=4GgWHcZMJwMA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rw8dG4+nBkgNb+A_xfom=4rjh-nXJGeQ=4GgWHcZMJwMA@mail.gmail.com>
+Date: Wed, 22 Oct 2014 08:11:38 +0200
+Message-ID: <CACna6rwA2fhasFmjQaPSOiRuveRG0-63AUbePqicFM=KgdwrsQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: don't set unused name in struct flash_platform_data
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: Wan ZongShun <mcuos.com@gmail.com>, linux-sh@vger.kernel.org,
  Kevin Hilman <khilman@deeprootsystems.com>,
  Magnus Damm <magnus.damm@gmail.com>, Sekhar Nori <nsekhar@ti.com>,
@@ -26,41 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 22, 2014 at 08:03:45AM +0200, Rafał Miłecki wrote:
-> On 22 October 2014 07:53, Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Mon, Sep 29, 2014 at 02:30:53PM +0200, Rafał Miłecki wrote:
-> >> Loading correct SPI driver (m25p80) is handled using modalias from the
-> >> struct spi_board_info. There is no point of setting name in the
-> >> platform_data, m25p80 ignores it anyway.
-> >
-> > Wait, is 'name' actually ignored? It looks to me like it sets the MTD
-> > name. See the comments in include/linux/spi/flash.h and
-> > arch/arm/include/asm/mach/flash.h (BTW, why do we have two definitions
-> > for this??):
-> >
-> >   @name: optional flash device name (eg, as used with mtdparts=)
-> >
-> > And I think it's used for exactly that in m25p80.c:
-> >
-> >         if (data && data->name)
-> >                 flash->mtd.name = data->name;
-> 
+On 22 October 2014 08:03, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+> On 22 October 2014 07:53, Brian Norris <computersforpeace@gmail.com> wrot=
+e:
+>> On Mon, Sep 29, 2014 at 02:30:53PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+>>> Loading correct SPI driver (m25p80) is handled using modalias from the
+>>> struct spi_board_info. There is no point of setting name in the
+>>> platform_data, m25p80 ignores it anyway.
+>>
+>> Wait, is 'name' actually ignored? It looks to me like it sets the MTD
+>> name. See the comments in include/linux/spi/flash.h and
+>> arch/arm/include/asm/mach/flash.h (BTW, why do we have two definitions
+>> for this??):
+>>
+>>   @name: optional flash device name (eg, as used with mtdparts=3D)
+>>
+>> And I think it's used for exactly that in m25p80.c:
+>>
+>>         if (data && data->name)
+>>                 flash->mtd.name =3D data->name;
+>
 > And very few lines later in the m25p80.c you have this:
 > if (data && data->type)
->         id = spi_nor_match_id(data->type);
-
-How is that relevant to the value of 'flash->mtd.name'?
-
+>         id =3D spi_nor_match_id(data->type);
+>
 > Code I touched in my patch was using both: name and type. So what you
 > got it "type" took a precedence and "name" value was ignored. It seems
 > like ppl used to use "name" to trigger "m25p80" probe, which isn't
 > needed (it's done by SPI layer).
-> 
+>
 > Also see my comment about data->type usage I added in:
-> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=32f1b7c8352fd33d41bcec3cfb054ccdcfd40a42
+> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=
+=3D32f1b7c8352fd33d41bcec3cfb054ccdcfd40a42
 
-But I'm not talking about probing / driver matching. The 'name' field is
-used for assigning the MTD name deterministically. This name is used for
-things like 'mtdparts'.
+Oh, wait. I just noticed you pointed to the code setting mtd's name,
+not finding a chip name. Sorry, I got a bit confused by so many recent
+changes to the m25p80 and spi-nor.
+So you are right, m25p80 uses this "name" to set the mtd_info's name.
+Will look at this again.
 
-Brian
+--=20
+Rafa=C5=82
