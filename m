@@ -1,21 +1,21 @@
-Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XhCxN-0006a7-Jr
- for linux-mtd@lists.infradead.org; Thu, 23 Oct 2014 07:37:14 +0000
-Received: by mail-pd0-f178.google.com with SMTP id y10so553479pdj.23
- for <linux-mtd@lists.infradead.org>; Thu, 23 Oct 2014 00:36:52 -0700 (PDT)
-Date: Thu, 23 Oct 2014 00:36:48 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: Re: [PATCH v3] nandsim: add id_bytes module parameter
-Message-ID: <20141023073648.GR16128@brian-ubuntu>
-References: <1414021304-4644-1-git-send-email-akinobu.mita@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1414021304-4644-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+ id 1XhJ1v-0007YN-2K
+ for linux-mtd@lists.infradead.org; Thu, 23 Oct 2014 14:06:20 +0000
+Received: by mail-pd0-f170.google.com with SMTP id z10so1395956pdj.1
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Oct 2014 07:05:57 -0700 (PDT)
+From: Zhou Wang <wangzhou.bry@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH v2 0/2] mtd: hisilicon: add a new driver for NAND controller
+ of hisilicon hip04 Soc
+Date: Thu, 23 Oct 2014 22:04:43 +0800
+Message-Id: <1414073085-19296-1-git-send-email-wangzhou.bry@gmail.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, Zhou Wang <wangzhou.bry@gmail.com>,
+ linux-kernel@vger.kernel.org, haojian.zhuang@gmail.com,
+ wangzhou1@hisilicon.com, robh+dt@kernel.org, xuwei5@hisilicon.com,
+ galak@codeaurora.org, caizhiyong@huawei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 23, 2014 at 08:41:44AM +0900, Akinobu Mita wrote:
-> nandsim can simulate NAND Flash which returns the ID bytes specified
-> by first_id_byte, ..., fourth_id_byte module parameters.
-> 
-> In order to simulate NAND flash which returns more than four ID bytes,
-> this adds id_bytes module parameter which is specified by the array of
-> byte like this:
-> 
->  # modprobe nandsim id_bytes=0x98,0xdc,0x90,0x26,0x76,0x15,0x01,0x08 bch=1
-> 
-> This doesn't add fifth_id_byte, ..., seventh_id_byte module parameters,
-> because they are redundant.  But the existing first_id_byte, ...,
-> fourth_id_byte module parameters are preserved and add "(obsolete)" to
-> the description.
-> 
-> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-> ---
-> * v3
-> - fix module parameter description for id_bytes, noticed by Brian
+This patchset adds the support for NAND controller of hisilicon hip04 Soc.
+The NAND controller IP was developed by hisilicon and needs a new driver to
+support it. This patchset is based on v3.18-rc1. I have tested that NAND flash
+controller works fine in Hip04 D01 board.
 
-Pushed to l2-mtd.git. Thanks!
+Changes in v2:
+- Remove the patch for device tree, now patchset only has the driver and its
+  device tree binding documentation.
+- Change the file name: hisi_nand.c to hisi504_nand.c.
+Changes in v1:
+- Remove callback functions out of struct hinfc_host, and call them directly
+  in relative functions.
+- Change hinfc_read and hinfc_write from macros to inline functions.
+- Instead of putting pointers, embed struct nand_chip and struct mtd_info in
+  struct hinfc_host directly.
+- rewrite some unclear lines in device tree binding document, correct some
+  code style error.
 
-Brian
+Link on v1:
+- https://lkml.org/lkml/2014/7/15/198
+
+Zhou Wang (2):
+  mtd: hisilicon: add a new NAND controller driver for hisilicon hip04 Soc
+  mtd: hisilicon: add device tree binding documentation
+
+ .../devicetree/bindings/mtd/hisi504-nand.txt       |   40 +
+ drivers/mtd/nand/Kconfig                           |    5 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/hisi504_nand.c                    |  836 ++++++++++++++++++++
+ 4 files changed, 882 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/hisi504-nand.txt
+ create mode 100644 drivers/mtd/nand/hisi504_nand.c
+
+-- 
+1.7.9.5
