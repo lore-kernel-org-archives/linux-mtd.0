@@ -1,23 +1,18 @@
-From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>
-To: Marek Vasut <marex@denx.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/1 v3] driver:mtd:spi-nor: Add Micron quad I/O support
-Date: Fri, 24 Oct 2014 00:31:06 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315E79AA@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
- <201409251211.57183.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
- <201409261046.07132.marex@denx.de>     
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <5449C870.7060509@huawei.com>
+Date: Fri, 24 Oct 2014 11:33:04 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Cc: bpqw <bpqw@micron.com>, "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "grmoore@altera.com" <grmoore@altera.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie8@gmail.com" <shijie8@gmail.com>
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Subject: Re: [PATCH V5] mtd: ubi: Extend UBI layer debug/messaging capabilities
+References: <1413824221-31235-1-git-send-email-tlinder@codeaurora.org>
+In-Reply-To: <1413824221-31235-1-git-send-email-tlinder@codeaurora.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: dedekind1@gmail.com, Richard
+ Weinberger <richard@nod.at>, open list <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, ezequiel.garcia@free-electrons.com,
+ linux-arm-msm@vger.kernel.org, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,115 +22,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
+Hi Tanya,
 
-For Micron SPI NOR flash, enabling or disabling quad I/O protocol is contro=
-lled=20
-by EVCR (Enhanced Volatile Configuration Register), Quad I/O protocol bit 7=
-.=20
-When EVCR bit 7 is reset to 0, the SPI NOR flash will operate in quad I/O m=
-ode.
+When I was trying to push this patch to my product, I reviewed this patch
+and found some small problems. I wish it's not too late to report these.
 
-Signed-off-by: bean huo <beanhuo@micron.com>
-Acked-by: Marek Vasut <marex@denx.de>
----
- v1-v2:modified to that capture wait_till_ready()
-	 return value,if error,directly return its
-	 the value.
- v2-v3:directly use the reurning error value of
-	 read_reg and write_reg,instead of -EINVAL.
+The patch I get from linux-ubifs.git is amended a bit by Artem. I'd like to
+quote your V5 patch for simplification. Some line numbers may mismatching.
 
- drivers/mtd/spi-nor/spi-nor.c |   46 +++++++++++++++++++++++++++++++++++++=
-++++
- include/linux/mtd/spi-nor.h   |    6 ++++++
- 2 files changed, 52 insertions(+)
+> @@ -1408,20 +1416,20 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
+>  		return -EINVAL;
+>
+>  	if (mtd_devs == UBI_MAX_DEVICES) {
+> -		ubi_err("too many parameters, max. is %d\n",
+> +		pr_err("UBI error: too many parameters, max. is %d\n",
+>  			UBI_MAX_DEVICES);
+>  		return -EINVAL;
+>  	}
+>
+>  	len = strnlen(val, MTD_PARAM_LEN_MAX);
+>  	if (len == MTD_PARAM_LEN_MAX) {
+> -		ubi_err("parameter \"%s\" is too long, max. is %d\n",
+> +		pr_err("UBI error: parameter \"%s\" is too long, max. is %d\n",
+>  			val, MTD_PARAM_LEN_MAX);
+>  		return -EINVAL;
+>  	}
+>
+>  	if (len == 0) {
+> -		pr_warn("UBI warning: empty 'mtd=' parameter - ignored\n");
+> +		pr_err("UBI warning: empty 'mtd=' parameter - ignored\n");
+>  		return 0;
+>  	}
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c =
-index b5ad6be..486b167 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -878,6 +878,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
- 	return 0;
- }
-=20
-+static int micron_quad_enable(struct spi_nor *nor) {
-+	int ret, val;
-+
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+
-+	write_enable(nor);
-+
-+	/* set EVCR ,enable quad I/O */
-+	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
-+	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
-+	if (ret < 0) {
-+		dev_err(nor->dev,
-+			"error while writing EVCR register\n");
-+		return ret;
-+	}
-+
-+	ret =3D wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	/* read EVCR and check it */
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+	if (val & EVCR_QUAD_EN_MICRON) {
-+		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)  {
- 	int status;
-@@ -890,6 +929,13 @@ static int set_quad_mode(struct spi_nor *nor, u32 jede=
-c_id)
- 			return -EINVAL;
- 		}
- 		return status;
-+	case CFI_MFR_ST:
-+		status =3D micron_quad_enable(nor);
-+		if (status) {
-+			dev_err(nor->dev, "Micron quad-read not enabled\n");
-+			return -EINVAL;
-+		}
-+		return status;
- 	default:
- 		status =3D spansion_quad_enable(nor);
- 		if (status) {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h inde=
-x 9e6294f..d71b659 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -56,6 +56,10 @@
- /* Used for Spansion flashes only. */
- #define SPINOR_OP_BRWR		0x17	/* Bank register write */
-=20
-+/* Used for Micron flashes only. */
-+#define SPINOR_OP_RD_EVCR	0x65	/* Read EVCR register */
-+#define SPINOR_OP_WD_EVCR	0x61	/* Write EVCR register */
-+
- /* Status Register bits. */
- #define SR_WIP			1	/* Write in progress */
- #define SR_WEL			2	/* Write enable latch */
-@@ -67,6 +71,8 @@
-=20
- #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
-=20
-+#define EVCR_QUAD_EN_MICRON	0x80	/* Micron Quad I/O */
-+
- /* Flag Status Register bits */
- #define FSR_READY		0x80
-=20
---
-1.7.9.5
+Why the last 'pr_warn()' need to be changed into 'pr_err()'? I looked up your
+V1 and V2 patches, I think it's not your purpose.
+
+
+
+> @@ -176,6 +176,7 @@ static int add_corrupted(struct ubi_attach_info *ai, int pnum, int ec)
+>
+>  /**
+>   * validate_vid_hdr - check volume identifier header.
+> + * @ubi: UBI device description object
+>   * @vid_hdr: the volume identifier header to check
+>   * @av: information about the volume this logical eraseblock belongs to
+>   * @pnum: physical eraseblock number the VID header came from
+
+> @@ -48,13 +48,14 @@
+>
+>  /**
+>   * get_exclusive - get exclusive access to an UBI volume.
+> + * @ubi: UBI device description object
+>   * @desc: volume descriptor
+>   *
+>   * This function changes UBI volume open mode to "exclusive". Returns previous
+>   * mode value (positive integer) in case of success and a negative error code
+>   * in case of failure.
+>   */
+
+> @@ -660,13 +660,14 @@ static int init_volumes(struct ubi_device *ubi,
+>
+>  /**
+>   * check_av - check volume attaching information.
+> + * @ubi: UBI device description object
+>   * @vol: UBI volume description object
+>   * @av: volume attaching information
+>   *
+>   * This function returns zero if the volume attaching information is consistent
+>   * to the data read from the volume tabla, and %-EINVAL if not.
+>   */
+> -static int check_av(const struct ubi_volume *vol,
+> +static int check_av(const struct ubi_device *ubi, const struct ubi_volume *vol,
+>  		    const struct ubi_ainf_volume *av)
+>  {
+>  	int err;
+
+This patch add 'struct ubi_device *' for 3 functions. We can get 'ubi_device' from
+'ubi_volume'. So I think it's because when we call these functions, the '->ubi'
+pointer of 'ubi_volume' is not initialized, am I right? This patch use 'vol->ubi'
+to indicate a 'struct ubi_device *' pointer in some places, I think you are sure
+of using them.
+
+
+
+> @@ -1010,28 +1015,28 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+>  	ubi->bgt_thread = kthread_create(ubi_thread, ubi, "%s", ubi->bgt_name);
+>  	if (IS_ERR(ubi->bgt_thread)) {
+>  		err = PTR_ERR(ubi->bgt_thread);
+> -		ubi_err("cannot spawn \"%s\", error %d", ubi->bgt_name,
+> -			err);
+> +		ubi_err(ubi, "cannot spawn \"%s\", error %d",
+> +			ubi->bgt_name, err);
+>  		goto out_debugfs;
+>  	}
+>
+> -	ubi_msg("attached mtd%d (name \"%s\", size %llu MiB) to ubi%d",
+> -		mtd->index, mtd->name, ubi->flash_size >> 20, ubi_num);
+> -	ubi_msg("PEB size: %d bytes (%d KiB), LEB size: %d bytes",
+> +	ubi_msg(ubi, "attached mtd%d (name \"%s\", size %llu MiB)",
+> +		mtd->index, mtd->name, ubi->flash_size >> 20);
+> +	ubi_msg(ubi, "PEB size: %d bytes (%d KiB), LEB size: %d bytes",
+>  		ubi->peb_size, ubi->peb_size >> 10, ubi->leb_size);
+
+We have the parameter 'ubi_num' for log in some functions like 'ubi_attach_mtd_dev'
+before. This patch remove 'ubi_num' in upper changes but keep it in other changes.
+Do we have a discussed rule to deal with this situation? It's not a big problem~
+
+
+
+> @@ -1798,15 +1803,18 @@ int ubi_thread(void *u)
+>  	int failures = 0;
+>  	struct ubi_device *ubi = u;
+>
+> -	ubi_msg("background thread \"%s\" started, PID %d",
+> +	ubi_msg(ubi, "background thread \"%s\" started, PID %d",
+>  		ubi->bgt_name, task_pid_nr(current));
+>
+>  	set_freezable();
+>  	for (;;) {
+>  		int err;
+>
+> -		if (kthread_should_stop())
+> +		if (kthread_should_stop()) {
+> +			ubi_msg(ubi, "background thread \"%s\" should stop, PID %d",
+> +				ubi->bgt_name, task_pid_nr(current));
+>  			break;
+> +		}
+>
+>  		if (try_to_freeze())
+>  			continue;
+
+> @@ -1798,15 +1803,18 @@ int ubi_thread(void *u)
+>  	int failures = 0;
+>  	struct ubi_device *ubi = u;
+>
+> -	ubi_msg("background thread \"%s\" started, PID %d",
+> +	ubi_msg(ubi, "background thread \"%s\" started, PID %d",
+>  		ubi->bgt_name, task_pid_nr(current));
+>
+>  	set_freezable();
+>  	for (;;) {
+>  		int err;
+>
+> -		if (kthread_should_stop())
+> +		if (kthread_should_stop()) {
+> +			ubi_msg(ubi, "background thread \"%s\" should stop, PID %d",
+> +				ubi->bgt_name, task_pid_nr(current));
+>  			break;
+> +		}
+>
+>  		if (try_to_freeze())
+>  			continue;
+
+Here are two new adding messages. Maybe a separate patch is better? Just a
+suggestion.
+
+
+> @@ -1415,8 +1418,9 @@ int ubi_self_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len)
+>  	return 0;
+>
+>  fail:
+> -	ubi_err("self-check failed for PEB %d", pnum);
+> -	ubi_msg("hex dump of the %d-%d region", offset, offset + len);
+> +	ubi_err(ubi, "self-check failed for PEB %d", pnum);
+> +	ubi_msg(ubi, "hex dump of the %d-%d region",
+> +		 offset, offset + len);
+>  	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1, buf, len, 1);
+>  	err = -EINVAL;
+>  error:
+
+Artem, I know you have tried to align the message code in different lines, maybe
+you can check if you lose this one.
+
+
+Thanks~!
+
+Hu
