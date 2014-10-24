@@ -1,28 +1,21 @@
-Received: from mail-wg0-x22e.google.com ([2a00:1450:400c:c00::22e])
+Received: from mail-bn1bon0094.outbound.protection.outlook.com
+ ([157.56.111.94] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XhdKG-0002Ri-T2
- for linux-mtd@lists.infradead.org; Fri, 24 Oct 2014 11:46:38 +0000
-Received: by mail-wg0-f46.google.com with SMTP id l18so901592wgh.5
- for <linux-mtd@lists.infradead.org>; Fri, 24 Oct 2014 04:46:11 -0700 (PDT)
+ id 1XhjkD-0002YS-Fe
+ for linux-mtd@lists.infradead.org; Fri, 24 Oct 2014 18:37:50 +0000
+From: Graham Moore <grmoore@opensource.altera.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [RFC 0/2] mtd: spi-nor: Cadence QSPI Flash Controller driver
+Date: Fri, 24 Oct 2014 13:34:19 -0500
+Message-ID: <1414175661-9249-1-git-send-email-grmoore@opensource.altera.com>
 MIME-Version: 1.0
-In-Reply-To: <1414073085-19296-2-git-send-email-wangzhou.bry@gmail.com>
-References: <1414073085-19296-1-git-send-email-wangzhou.bry@gmail.com>
- <1414073085-19296-2-git-send-email-wangzhou.bry@gmail.com>
-Date: Fri, 24 Oct 2014 19:46:11 +0800
-Message-ID: <CAN1soZz8NYxppaY4cXadqynERZ=6ZRAynDtptGAps+yUJZ0Qsw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: hisilicon: add a new NAND controller driver
- for hisilicon hip04 Soc
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-To: Zhou Wang <wangzhou.bry@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "xuwei \(O\)" <xuwei5@hisilicon.com>, wangzhou1@hisilicon.com,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- galak@codeaurora.org, caizhiyong@huawei.com,
+Content-Type: text/plain
+Cc: Alan Tull <atull@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ linux-kernel@vger.kernel.org, Dinh Nguyen <dinguyen@opensource.altera.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ David Woodhouse <dwmw2@infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,36 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 23, 2014 at 10:04 PM, Zhou Wang <wangzhou.bry@gmail.com> wrote:
-> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
-> ---
->  drivers/mtd/nand/Kconfig        |    5 +
->  drivers/mtd/nand/Makefile       |    1 +
->  drivers/mtd/nand/hisi504_nand.c |  836 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 842 insertions(+)
->  create mode 100644 drivers/mtd/nand/hisi504_nand.c
->
+Hi all,
 
-I think that you need to run scripts/checkpatch.pl. There're some
-warnings reported on this patch.
+Here is a kernel driver for the Cadence QSPI Flash Controller driver
+which uses the spi-nor framework.  I'm putting it out here for 
+comments.
 
-> +
-> +       case NAND_CMD_SEQIN:
-> +               host->offset = column;
-> +
+Here at Altera, we use the Cadence QSPI in our SoCFPGA systems.  We've had
+a spi driver for this IP for some time now, but it needed some patches
+in the spi subsystem. and so was going to be difficult to upstream.
 
-It's better not using waterfall style. Maybe you can write it clearly.
-            case NAND_CMD_SEQIN:
-                    host->offset = column;
-                    set_addr(mtd, column, page_addr);
-                    break;
+I ported it over to the spi-nor framework which got rid of the ugly
+patches, and also got rid of a bunch of spi_transfer code.
 
-> +       chip->ecc.mode = of_get_nand_ecc_mode(np);
-> +       /* read ecc-bits from dts */
-> +       of_property_read_u32(np, "hisi,nand-ecc-bits", &host->ecc_bits);
+It's based on the master branch of l2-mtd.git.  Tested on Altera's
+Cyclone5 dev kit.
 
-Do you need to check the ecc_bits at here? Maybe user inputed the
-wrong ecc_bits in DTS.
+So here it is, let me know what you all think, please.
 
-Best Regards
-Haojian
+Thanks,
+Graham Moore
+
+Graham Moore (2):
+  This is the documentation of the device tree bindings for the    
+    Cadence QSPI Flash Controller driver.
+  This is a kernel driver for the Cadence QSPI Flash     Controller. 
+    It uses the spi-nor framework.
+
+ .../devicetree/bindings/mtd/cadence_quadspi.txt    |   30 +
+ drivers/mtd/spi-nor/Kconfig                        |    6 +
+ drivers/mtd/spi-nor/Makefile                       |    1 +
+ drivers/mtd/spi-nor/cadence-quadspi.c              | 1349 ++++++++++++++++++++
+ 4 files changed, 1386 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/cadence-quadspi.c
+
+-- 
+1.7.9.5
