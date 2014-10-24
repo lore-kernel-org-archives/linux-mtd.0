@@ -1,13 +1,16 @@
 Received: from mail-bn1bon0094.outbound.protection.outlook.com
  ([157.56.111.94] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XhjkD-0002YS-Fe
+ id 1XhjkE-0002YS-7P
  for linux-mtd@lists.infradead.org; Fri, 24 Oct 2014 18:37:50 +0000
 From: Graham Moore <grmoore@opensource.altera.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [RFC 0/2] mtd: spi-nor: Cadence QSPI Flash Controller driver
-Date: Fri, 24 Oct 2014 13:34:19 -0500
-Message-ID: <1414175661-9249-1-git-send-email-grmoore@opensource.altera.com>
+Subject: [RFC 1/2] This is the documentation of the device tree bindings for
+ the Cadence QSPI Flash Controller driver.
+Date: Fri, 24 Oct 2014 13:34:20 -0500
+Message-ID: <1414175661-9249-2-git-send-email-grmoore@opensource.altera.com>
+In-Reply-To: <1414175661-9249-1-git-send-email-grmoore@opensource.altera.com>
+References: <1414175661-9249-1-git-send-email-grmoore@opensource.altera.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Alan Tull <atull@opensource.altera.com>,
@@ -25,40 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-
-Here is a kernel driver for the Cadence QSPI Flash Controller driver
-which uses the spi-nor framework.  I'm putting it out here for 
-comments.
-
-Here at Altera, we use the Cadence QSPI in our SoCFPGA systems.  We've had
-a spi driver for this IP for some time now, but it needed some patches
-in the spi subsystem. and so was going to be difficult to upstream.
-
-I ported it over to the spi-nor framework which got rid of the ugly
-patches, and also got rid of a bunch of spi_transfer code.
-
-It's based on the master branch of l2-mtd.git.  Tested on Altera's
-Cyclone5 dev kit.
-
-So here it is, let me know what you all think, please.
-
-Thanks,
-Graham Moore
-
-Graham Moore (2):
-  This is the documentation of the device tree bindings for the    
-    Cadence QSPI Flash Controller driver.
-  This is a kernel driver for the Cadence QSPI Flash     Controller. 
-    It uses the spi-nor framework.
-
- .../devicetree/bindings/mtd/cadence_quadspi.txt    |   30 +
- drivers/mtd/spi-nor/Kconfig                        |    6 +
- drivers/mtd/spi-nor/Makefile                       |    1 +
- drivers/mtd/spi-nor/cadence-quadspi.c              | 1349 ++++++++++++++++++++
- 4 files changed, 1386 insertions(+)
+Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+---
+ .../devicetree/bindings/mtd/cadence_quadspi.txt    |   30 ++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
- create mode 100644 drivers/mtd/spi-nor/cadence-quadspi.c
 
+diff --git a/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+new file mode 100644
+index 0000000..0064fc3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+@@ -0,0 +1,30 @@
++* Cadence Quad SPI controller
++
++Required properties:
++- compatible : Should be "cdns,qspi-nor".
++- reg : Contains two entries, each of which is a tuple consisting of a
++	physical address and length.  The first entry is the address and
++	length of the controller register set.  The second entry is the
++	address and length of the QSPI Controller data area.
++- interrupts : Unit interrupt specifier for the controller interrupt.
++- ext-decoder : Value of 0 means no external chipselect decoder is
++	connected, 1 means there is an external chipselect decoder connected.
++- num-chipselect : Number of chip select lines.
++- fifo-depth : Size of the data FIFO in words.
++- bus-num : Number of the SPI bus to which the controller is connected.
++
++Example:
++
++	qspi: spi@ff705000 {
++		compatible = "cdns,qspi-nor";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0xff705000 0x1000>,
++			<0xffa00000 0x1000>;
++		interrupts = <0 151 4>;
++		clocks = <&qspi_clk>;
++		ext-decoder = <0>;
++		num-chipselect = <4>;
++		fifo-depth = <128>;
++		bus-num = <2>;
++	}
 -- 
 1.7.9.5
