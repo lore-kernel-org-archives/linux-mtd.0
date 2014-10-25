@@ -1,19 +1,15 @@
-Date: Sat, 25 Oct 2014 11:55:27 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v4 1/4] mtd: nand: provide detailed description for raw
- read/write page methods
-Message-ID: <20141025035524.GA3579@localhost.localdomain>
-References: <1413794777-32220-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413794777-32220-2-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1413794777-32220-2-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xi5OR-0002dd-OK
+ for linux-mtd@lists.infradead.org; Sat, 25 Oct 2014 17:44:48 +0000
+From: Richard Weinberger <richard@nod.at>
+To: dedekind1@gmail.com
+Subject: [PATCH] UBI: vtbl: Use ubi_eba_atomic_leb_change()
+Date: Sat, 25 Oct 2014 19:43:41 +0200
+Message-Id: <1414259021-5691-1-git-send-email-richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +19,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 20, 2014 at 10:46:14AM +0200, Boris Brezillon wrote:
-> read_page_raw and write_page_raw method description is not clear enough.
-> It clearly specifies that ECC correction should not be involved but does
-> not talk about specific layout (by layout I mean where in-band and
-> out-of-band data are stored on the NAND media) used by NAND/ECC
-> controllers.
-> 
-> Those specific layouts might impact MTD users and thus should be hidden (as
-> already done in the standard NAND_ECC_HW_SYNDROME implementation).
-> 
-> Clearly state this constraint in the nand_ecc_ctrl struct documentation.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  include/linux/mtd/nand.h | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index e4d451e..b14d190 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -455,8 +455,21 @@ struct nand_hw_control {
->   *		be provided if an hardware ECC is available
->   * @calculate:	function for ECC calculation or readback from ECC hardware
->   * @correct:	function for ECC correction, matching to ECC generator (sw/hw)
-> - * @read_page_raw:	function to read a raw page without ECC
-> - * @write_page_raw:	function to write a raw page without ECC
-> + * @read_page_raw:	function to read a raw page without ECC. This function
-> + *			should hide the specific layout used by the ECC
-> + *			controller and always return contiguous in-band and
-> + *			out-of-band data even if they're not stored
-> + *			contiguously on the NAND chip (e.g.
-> + *			NAND_ECC_HW_SYNDROME interleaves in-band and
-> + *			out-of-band data).
-> + * @write_page_raw:	function to write a raw page without ECC. This function
-> + *			should hide the specific layout used by the ECC
-> + *			controller and consider the passed data as contiguous
-> + *			in-band and out-of-band data. ECC controller is
-> + *			responsible for doing the appropriate transformations
-> + *			to adapt to its specific layout (e.g.
-> + *			NAND_ECC_HW_SYNDROME interleaves in-band and
-> + *			out-of-band data).
->   * @read_page:	function to read a page according to the ECC generator
->   *		requirements; returns maximum number of bitflips corrected in
->   *		any single ECC step, 0 if bitflips uncorrectable, -EIO hw error
-> -- 
-> 1.9.1
-> 
-thanks for this patch. 
+This is more a cosmetic change than a fix.
+By using ubi_eba_atomic_leb_change()
+we can guarantee that the first VTBL record is always
+correct and we don't really need the second one anymore.
+But we have to keep the second one to not break anything.
 
-hi Brian, what's your opinion about this patch?
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/vtbl.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-thanks
-Huang Shijie
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index 07cac5f..0d26051 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -96,12 +96,8 @@ int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
+ 
+ 	memcpy(&ubi->vtbl[idx], vtbl_rec, sizeof(struct ubi_vtbl_record));
+ 	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
+-		err = ubi_eba_unmap_leb(ubi, layout_vol, i);
+-		if (err)
+-			return err;
+-
+-		err = ubi_eba_write_leb(ubi, layout_vol, i, ubi->vtbl, 0,
+-					ubi->vtbl_size);
++		err = ubi_eba_atomic_leb_change(ubi, layout_vol, i, ubi->vtbl,
++						ubi->vtbl_size);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -148,12 +144,8 @@ int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
+ 
+ 	layout_vol = ubi->volumes[vol_id2idx(ubi, UBI_LAYOUT_VOLUME_ID)];
+ 	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
+-		err = ubi_eba_unmap_leb(ubi, layout_vol, i);
+-		if (err)
+-			return err;
+-
+-		err = ubi_eba_write_leb(ubi, layout_vol, i, ubi->vtbl, 0,
+-					ubi->vtbl_size);
++		err = ubi_eba_atomic_leb_change(ubi, layout_vol, i, ubi->vtbl,
++						ubi->vtbl_size);
+ 		if (err)
+ 			return err;
+ 	}
+-- 
+1.8.4.5
