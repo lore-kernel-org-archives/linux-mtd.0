@@ -1,15 +1,18 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xi5OR-0002dd-OK
- for linux-mtd@lists.infradead.org; Sat, 25 Oct 2014 17:44:48 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH] UBI: vtbl: Use ubi_eba_atomic_leb_change()
-Date: Sat, 25 Oct 2014 19:43:41 +0200
-Message-Id: <1414259021-5691-1-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- Richard Weinberger <richard@nod.at>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XiOCN-00050o-Px
+ for linux-mtd@lists.infradead.org; Sun, 26 Oct 2014 13:49:36 +0000
+From: Tanya Brokhman <tlinder@codeaurora.org>
+To: dedekind1@gmail.com,
+	richard@nod.at
+Subject: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention handling
+Date: Sun, 26 Oct 2014 15:49:02 +0200
+Message-Id: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Tanya Brokhman <tlinder@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,50 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is more a cosmetic change than a fix.
-By using ubi_eba_atomic_leb_change()
-we can guarantee that the first VTBL record is always
-correct and we don't really need the second one anymore.
-But we have to keep the second one to not break anything.
+One of the limitations of the NAND devices is the method used to read
+NAND flash memory may cause bit-flips on the surrounding cells and result
+in uncorrectable ECC errors. This is known as the read disturb or data
+retention.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/vtbl.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+Today’s Linux NAND drivers implementation doesn’t address the read disturb
+and the data retention limitations of the NAND devices. To date these
+issues could be overlooked since the possibility of their occurrence in
+today’s NAND devices is very low. 
 
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 07cac5f..0d26051 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -96,12 +96,8 @@ int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
- 
- 	memcpy(&ubi->vtbl[idx], vtbl_rec, sizeof(struct ubi_vtbl_record));
- 	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
--		err = ubi_eba_unmap_leb(ubi, layout_vol, i);
--		if (err)
--			return err;
--
--		err = ubi_eba_write_leb(ubi, layout_vol, i, ubi->vtbl, 0,
--					ubi->vtbl_size);
-+		err = ubi_eba_atomic_leb_change(ubi, layout_vol, i, ubi->vtbl,
-+						ubi->vtbl_size);
- 		if (err)
- 			return err;
- 	}
-@@ -148,12 +144,8 @@ int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
- 
- 	layout_vol = ubi->volumes[vol_id2idx(ubi, UBI_LAYOUT_VOLUME_ID)];
- 	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
--		err = ubi_eba_unmap_leb(ubi, layout_vol, i);
--		if (err)
--			return err;
--
--		err = ubi_eba_write_leb(ubi, layout_vol, i, ubi->vtbl, 0,
--					ubi->vtbl_size);
-+		err = ubi_eba_atomic_leb_change(ubi, layout_vol, i, ubi->vtbl,
-+						ubi->vtbl_size);
- 		if (err)
- 			return err;
- 	}
+With the evolution of NAND devices and the requirement for a “long life”
+NAND flash, read disturb and data retention can no longer be ignored
+otherwise there will be data loss over time.
+
+The following patch set implements handling of Read-disturb and Data
+retention by the UBI layer.
+
+Changes from V1:
+- Documentation file was added in the first patch that describes the
+  design in general.
+  All other patches were unchanged and resent just for reference. Still
+  working on comments from Richard on fastmap layout.
+  All comments that were made for V1 will be addressed in the next patch
+  set. This version is just for the addition of the documentation file.
+
+Tanya Brokhman (5):
+  mtd: ubi: Read disturb infrastructure
+  mtd: ubi: Fill read disturb statistics
+  mtd: ubi: Make in_wl_tree function public
+  mtd: ubi: Read threshold verification
+  mtd: ubi: Add sysfs entry to force all pebs' scan
+
+ Documentation/mtd/ubi/ubi-read-disturb.txt | 145 ++++++++++++++++
+ drivers/mtd/ubi/attach.c                   | 137 +++++++++++----
+ drivers/mtd/ubi/build.c                    |  81 +++++++++
+ drivers/mtd/ubi/debug.c                    |  11 ++
+ drivers/mtd/ubi/eba.c                      |   7 +-
+ drivers/mtd/ubi/fastmap.c                  | 132 +++++++++++---
+ drivers/mtd/ubi/io.c                       |  28 +++
+ drivers/mtd/ubi/ubi-media.h                |  32 +++-
+ drivers/mtd/ubi/ubi.h                      |  62 ++++++-
+ drivers/mtd/ubi/vtbl.c                     |   6 +-
+ drivers/mtd/ubi/wl.c                       | 270 +++++++++++++++++++++++++++--
+ 11 files changed, 835 insertions(+), 76 deletions(-)
+ create mode 100644 Documentation/mtd/ubi/ubi-read-disturb.txt
+
 -- 
-1.8.4.5
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
