@@ -1,19 +1,15 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XiUb9-0008RO-K3
- for linux-mtd@lists.infradead.org; Sun, 26 Oct 2014 20:39:36 +0000
-Message-ID: <544D5BEC.50802@nod.at>
-Date: Sun, 26 Oct 2014 21:39:08 +0100
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XiXWJ-0001Mt-FU
+ for linux-mtd@lists.infradead.org; Sun, 26 Oct 2014 23:46:48 +0000
 From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
-Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
- handling
-References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
-In-Reply-To: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Cc: linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org
+To: dedekind1@gmail.com
+Subject: [PATCH] UBI: Fix invalid vfree()
+Date: Mon, 27 Oct 2014 00:46:11 +0100
+Message-Id: <1414367171-4657-1-git-send-email-richard@nod.at>
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +19,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 26.10.2014 um 14:49 schrieb Tanya Brokhman:
-> One of the limitations of the NAND devices is the method used to read
-> NAND flash memory may cause bit-flips on the surrounding cells and result
-> in uncorrectable ECC errors. This is known as the read disturb or data
-> retention.
-> 
-> Today’s Linux NAND drivers implementation doesn’t address the read disturb
-> and the data retention limitations of the NAND devices. To date these
-> issues could be overlooked since the possibility of their occurrence in
-> today’s NAND devices is very low. 
-> 
-> With the evolution of NAND devices and the requirement for a “long life”
-> NAND flash, read disturb and data retention can no longer be ignored
-> otherwise there will be data loss over time.
-> 
-> The following patch set implements handling of Read-disturb and Data
-> retention by the UBI layer.
+The logic of vfree()'ing vol->upd_buf is tied to vol->updating.
+In ubi_start_update() vol->updating is set long before vmalloc()'ing
+vol->upd_buf. If we encounter a write failure in ubi_start_update()
+before vmalloc() the UBI device release function will try to vfree()
+vol->upd_buf because vol->updating is set.
+Fix this by allocating vol->upd_buf directly after setting vol->updating.
 
-So, your patch addresses the following issue:
-We need to re-read a PEB after a specific time (to detect bit rot) or after N reads (to detect read disturb issues).
-Is this correct?
+Fixes:
+[   31.559338] UBI warning: vol_cdev_release: update of volume 2 not finished, volume is damaged
+[   31.559340] ------------[ cut here ]------------
+[   31.559343] WARNING: CPU: 1 PID: 2747 at mm/vmalloc.c:1446 __vunmap+0xe3/0x110()
+[   31.559344] Trying to vfree() nonexistent vm area (ffffc90001f2b000)
+[   31.559345] Modules linked in:
+[   31.565620]  0000000000000bba ffff88002a0cbdb0 ffffffff818f0497 ffff88003b9ba148
+[   31.566347]  ffff88002a0cbde0 ffffffff8156f515 ffff88003b9ba148 0000000000000bba
+[   31.567073]  0000000000000000 0000000000000000 ffff88002a0cbe88 ffffffff8156c10a
+[   31.567793] Call Trace:
+[   31.568034]  [<ffffffff818f0497>] dump_stack+0x4e/0x7a
+[   31.568510]  [<ffffffff8156f515>] ubi_io_write_vid_hdr+0x155/0x160
+[   31.569084]  [<ffffffff8156c10a>] ubi_eba_write_leb+0x23a/0x870
+[   31.569628]  [<ffffffff81569b36>] vol_cdev_write+0x226/0x380
+[   31.570155]  [<ffffffff81179265>] vfs_write+0xb5/0x1f0
+[   31.570627]  [<ffffffff81179f8a>] SyS_pwrite64+0x6a/0xa0
+[   31.571123]  [<ffffffff818fde12>] system_call_fastpath+0x16/0x1b
 
-Currently users of UBI do this by having cron jobs which read the complete UBI volume
-and then cause scrub work.
-The draw back of this is that only UBI payload will be read and not all data like EC and VID headers.
-I understand that you want to fix this issue.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/upd.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-According to my opinion it is not a good idea to store read counters and timestamps into the UBI/Fastmap on-disk layout.
-Both the read counters and timestamps don't have to be exact values.
-
-What about this idea?
-Add a userspace interface which allows UBI to expose read counters and last access timestamps.
-A userspace daemon (let's name it ubihealthd) then can decide whether it is time to trigger a re-read of a PEB.
-This daemon can also store and load the timestamp values and counters from and to UBI. If it misses these meta data some times due to a
-power cut it won't hurt.
-We could also add another internal UBI volume which can carry these data.
-
-All in all, I like the idea but changing/extending the on-disk layout is overkill IMHO.
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
+index ec2c2dc..2a1b6e0 100644
+--- a/drivers/mtd/ubi/upd.c
++++ b/drivers/mtd/ubi/upd.c
+@@ -133,6 +133,10 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
+ 	ubi_assert(!vol->updating && !vol->changing_leb);
+ 	vol->updating = 1;
+ 
++	vol->upd_buf = vmalloc(ubi->leb_size);
++	if (!vol->upd_buf)
++		return -ENOMEM;
++
+ 	err = set_update_marker(ubi, vol);
+ 	if (err)
+ 		return err;
+@@ -152,14 +156,12 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		err = clear_update_marker(ubi, vol, 0);
+ 		if (err)
+ 			return err;
++
++		vfree(vol->upd_buf);
+ 		vol->updating = 0;
+ 		return 0;
+ 	}
+ 
+-	vol->upd_buf = vmalloc(ubi->leb_size);
+-	if (!vol->upd_buf)
+-		return -ENOMEM;
+-
+ 	vol->upd_ebs = div_u64(bytes + vol->usable_leb_size - 1,
+ 			       vol->usable_leb_size);
+ 	vol->upd_bytes = bytes;
+-- 
+1.8.4.5
