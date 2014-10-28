@@ -1,26 +1,26 @@
-Received: from cdptpa-outbound-snat.email.rr.com ([107.14.166.230]
+Received: from cdptpa-outbound-snat.email.rr.com ([107.14.166.231]
  helo=cdptpa-oedge-vip.email.rr.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xj8Sd-0004Hh-RE
- for linux-mtd@lists.infradead.org; Tue, 28 Oct 2014 15:13:28 +0000
-Date: Tue, 28 Oct 2014 11:13:01 -0400
+ id 1Xj8ld-0005Ny-Ad
+ for linux-mtd@lists.infradead.org; Tue, 28 Oct 2014 15:33:06 +0000
+Date: Tue, 28 Oct 2014 11:32:40 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 7/7] docg3: Fix miuse of seq_printf return value
-Message-ID: <20141028111301.22481f2a@gandalf.local.home>
-In-Reply-To: <20141022082916.GD16128@brian-ubuntu>
+To: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 0/7] seq_printf cleanups
+Message-ID: <20141028113240.74dbe5c5@gandalf.local.home>
+In-Reply-To: <cover.1412031505.git.joe@perches.com>
 References: <20140929124246.3e39dac8@gandalf.local.home>
  <cover.1412031505.git.joe@perches.com>
- <c1a1138f1b05e87a3fbd8737af2f2c0be6e2724b.1412031505.git.joe@perches.com>
- <20141022082916.GD16128@brian-ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+Cc: linux-doc@vger.kernel.org, netdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.cz>,
+ cluster-devel@redhat.com, coreteam@netfilter.org,
  linux-mtd@lists.infradead.org, Al Viro <viro@ZenIV.linux.org.uk>,
- Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>,
- David Woodhouse <dwmw2@infradead.org>
+ linux-fsdevel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 22 Oct 2014 01:29:16 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+Joe,
 
-> On Mon, Sep 29, 2014 at 04:08:27PM -0700, Joe Perches wrote:
-> > seq_printf doesn't return a useful value, so remove
-> > these misuses.
-> 
-> Good catch. So it looks like this driver always had some form of
-> wrongness (returning a character count) in its debugfs callbacks, but
-> nobody noticed.
-> 
-> Applied to l2-mtd.git. Thanks!
-> 
+If you haven't already done so, can you update checkpatch.pl to
+complain if someone checks the return value of seq_printf(),
+seq_puts(), or seq_putc().
 
-Note, I'm going to be working on changes to remove the return value of
-seq_printf() and friends. I need this change as well. If you
-already applied it to your git tree, if you can still rebase, can you
-make a separate branch off of Linus's tree that I can pull to do work
-on?
-
-Or I can take this patch as well, with your Acked-by.
+It should state that those functions will soon be returning void.
 
 Thanks!
 
