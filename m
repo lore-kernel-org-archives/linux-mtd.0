@@ -1,28 +1,25 @@
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xj7fE-0003hK-Jf
- for linux-mtd@lists.infradead.org; Tue, 28 Oct 2014 14:22:25 +0000
-Received: by mail-wi0-f180.google.com with SMTP id hi2so1752300wib.7
- for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2014 07:22:01 -0700 (PDT)
+Received: from cdptpa-outbound-snat.email.rr.com ([107.14.166.230]
+ helo=cdptpa-oedge-vip.email.rr.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xj8Sd-0004Hh-RE
+ for linux-mtd@lists.infradead.org; Tue, 28 Oct 2014 15:13:28 +0000
+Date: Tue, 28 Oct 2014 11:13:01 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 7/7] docg3: Fix miuse of seq_printf return value
+Message-ID: <20141028111301.22481f2a@gandalf.local.home>
+In-Reply-To: <20141022082916.GD16128@brian-ubuntu>
+References: <20140929124246.3e39dac8@gandalf.local.home>
+ <cover.1412031505.git.joe@perches.com>
+ <c1a1138f1b05e87a3fbd8737af2f2c0be6e2724b.1412031505.git.joe@perches.com>
+ <20141022082916.GD16128@brian-ubuntu>
 MIME-Version: 1.0
-In-Reply-To: <1414493629-12570-2-git-send-email-wangzhou.bry@gmail.com>
-References: <1414493629-12570-1-git-send-email-wangzhou.bry@gmail.com>
- <1414493629-12570-2-git-send-email-wangzhou.bry@gmail.com>
-Date: Tue, 28 Oct 2014 15:22:01 +0100
-Message-ID: <CAH6sp9MuL+AAvMi1VrmOhq5Y-ri2DKO3g0h1hw040h5=CRu6UQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mtd: hisilicon: add a new NAND controller driver
- for hisilicon hip04 Soc
-From: Frans Klaver <fransklaver@gmail.com>
-To: Zhou Wang <wangzhou.bry@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- haojian.zhuang@gmail.com, wangzhou1@hisilicon.com,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- xuwei5@hisilicon.com, Kumar Gala <galak@codeaurora.org>, caizhiyong@huawei.com,
- Brian Norris <computersforpeace@gmail.com>,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.cz>,
+ linux-mtd@lists.infradead.org, Al Viro <viro@ZenIV.linux.org.uk>,
+ Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,60 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 28, 2014 at 11:53 AM, Zhou Wang <wangzhou.bry@gmail.com> wrote:
-> +
-> +static int hisi_nfc_probe(struct platform_device *pdev)
-> +{
-> +       int ret = 0, irq, buswidth, flag, max_chips = HINFC504_MAX_CHIP;
-> +       struct device *dev = &pdev->dev;
-> +       struct hinfc_host *host;
-> +       struct nand_chip  *chip;
-> +       struct mtd_info   *mtd;
-> +       struct resource   *res;
-> +       struct device_node *np = dev->of_node;
-> +       struct mtd_part_parser_data ppdata;
-> +
-> +       host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
-> +       if (!host)
-> +               return -ENOMEM;
-> +       host->dev = dev;
-> +
-> +       platform_set_drvdata(pdev, host);
-> +       chip = &host->chip;
-> +       mtd  = &host->mtd;
-> +
-> +       irq = platform_get_irq(pdev, 0);
-> +       if (irq < 0) {
-> +               dev_err(dev, "no IRQ resource defined\n");
-> +               ret = -ENXIO;
-> +               goto err_res;
-> +       }
-> +
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       host->iobase = devm_ioremap_resource(dev, res);
-> +       if (IS_ERR(host->iobase)) {
-> +               ret = PTR_ERR(host->iobase);
-> +               dev_err(dev, "devm_ioremap_resource[0] fail\n");
-> +               goto err_res;
-> +       }
-> +
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +       chip->IO_ADDR_R = chip->IO_ADDR_W = devm_ioremap_resource(dev, res);
-> +       if (IS_ERR(chip->IO_ADDR_R)) {
-> +               ret = PTR_ERR(chip->IO_ADDR_R);
-> +               dev_err(dev, "devm_ioremap_resource[1] fail\n");
-> +               goto err_res;
-> +       }
-> +
-> +       mtd->priv               = chip;
-> +       mtd->owner              = THIS_MODULE;
-> +       mtd->name               = "hisi_nand";
+On Wed, 22 Oct 2014 01:29:16 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-+ mtd->dev.parent = &pdev->dev;
+> On Mon, Sep 29, 2014 at 04:08:27PM -0700, Joe Perches wrote:
+> > seq_printf doesn't return a useful value, so remove
+> > these misuses.
+> 
+> Good catch. So it looks like this driver always had some form of
+> wrongness (returning a character count) in its debugfs callbacks, but
+> nobody noticed.
+> 
+> Applied to l2-mtd.git. Thanks!
+> 
 
-This is a bug that lives in a bunch of other nand drivers as well.
-add_mtd_device (called by mtd_device_parse_register()) expects
-dev.parent to be set for properly adding a device reference to the
-sysfs node.
+Note, I'm going to be working on changes to remove the return value of
+seq_printf() and friends. I need this change as well. If you
+already applied it to your git tree, if you can still rebase, can you
+make a separate branch off of Linus's tree that I can pull to do work
+on?
 
-Frans
+Or I can take this patch as well, with your Acked-by.
+
+Thanks!
+
+-- Steve
