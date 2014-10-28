@@ -1,32 +1,20 @@
-Received: from smtprelay0032.hostedemail.com ([216.40.44.32]
- helo=smtprelay.hostedemail.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjAj0-0006AI-54
- for linux-mtd@lists.infradead.org; Tue, 28 Oct 2014 17:38:30 +0000
-Message-ID: <1414517881.10912.2.camel@perches.com>
-Subject: Re: [PATCH 7/7] docg3: Fix miuse of seq_printf return value
-From: Joe Perches <joe@perches.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Date: Tue, 28 Oct 2014 10:38:01 -0700
-In-Reply-To: <20141028133253.223e47f7@gandalf.local.home>
-References: <20140929124246.3e39dac8@gandalf.local.home>
- <cover.1412031505.git.joe@perches.com>
- <c1a1138f1b05e87a3fbd8737af2f2c0be6e2724b.1412031505.git.joe@perches.com>
- <20141022082916.GD16128@brian-ubuntu>
- <20141028111301.22481f2a@gandalf.local.home>
- <1414511877.6643.12.camel@perches.com>
- <20141028120552.63c2324c@gandalf.local.home>
- <1414517260.6643.21.camel@perches.com>
- <20141028133253.223e47f7@gandalf.local.home>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.cz>,
- linux-mtd@lists.infradead.org, Al Viro <viro@ZenIV.linux.org.uk>,
- Andrew Morton <akpm@linux-foundation.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Date: Tue, 28 Oct 2014 11:13:11 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v7 1/2] mtd: nand: add sunxi NAND flash controller support
+Message-ID: <20141028181310.GA23619@ld-irv-0074>
+References: <1413896922-11680-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1413896922-11680-2-git-send-email-boris.brezillon@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1413896922-11680-2-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
+ linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,20 +24,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-10-28 at 13:32 -0400, Steven Rostedt wrote:
-> On Tue, 28 Oct 2014 10:27:40 -0700 Joe Perches <joe@perches.com> wrote:
-> > On Tue, 2014-10-28 at 12:05 -0400, Steven Rostedt wrote:
-> > > I would like to get this done before I do my merge of trace_seq and
-> > > seq_file, but I'm thinking I may have to do that in parallel.
-> > 
-> > I think the most important thing is to get the
-> > seq_is_overflown (or seq_has_overflowed or whatever
-> > other name is chosen) function added then the rest
-> > of the patches can be applied whenever maintainers
-> > (or Andrew or trivial or ...) pick them up.
-> 
-> I can get that in without much of an issue. But the merge of trace_seq
-> and seq_file would be easier if I didn't have to worry about return
-> values. Which is why I want to get this in quickly.
+Hi Boris,
 
-What is the issue there?
+On Tue, Oct 21, 2014 at 03:08:41PM +0200, Boris Brezillon wrote:
+> +static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
+> +				       struct nand_ecc_ctrl *ecc,
+> +				       struct device_node *np)
+> +{
+> +	struct nand_ecclayout *layout;
+> +	int i, j;
+> +	int ret;
+> +
+> +	ret = sunxi_nand_hw_common_ecc_ctrl_init(mtd, ecc, np);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ecc->read_page = sunxi_nfc_hw_ecc_read_page;
+> +	ecc->write_page = sunxi_nfc_hw_ecc_write_page;
+> +	layout = ecc->layout;
+> +
+> +	for (i = 0; i < ecc->steps; i++) {
+
+Hmm, did you retest this since changing this to ecc->steps? I think this
+won't work, since ecc->steps is only initialized in nand_scan_tail(),
+which comes after this. I only recommended the change for the
+{read,write}_page() type of functions, not the initialization functions.
+
+[snip the rest]
+
+So I'd suggest the following additional patch, and otherwise, the series
+is fine with me. If you give your ack, I can just squash this in and
+apply it to my tree:
+
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index ea615dc442a4..ccaa8e283388 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -931,6 +931,7 @@ static int sunxi_nand_hw_common_ecc_ctrl_init(struct mtd_info *mtd,
+ 	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
+ 	struct sunxi_nand_hw_ecc *data;
+ 	struct nand_ecclayout *layout;
++	int nsectors;
+ 	int ret;
+ 	int i;
+ 
+@@ -959,13 +960,14 @@ static int sunxi_nand_hw_common_ecc_ctrl_init(struct mtd_info *mtd,
+ 	ecc->bytes = ALIGN(ecc->bytes, 2);
+ 
+ 	layout = &data->layout;
++	nsectors = mtd->writesize / ecc->size;
+ 
+-	if (mtd->oobsize < ((ecc->bytes + 4) * ecc->steps)) {
++	if (mtd->oobsize < ((ecc->bytes + 4) * nsectors)) {
+ 		ret = -EINVAL;
+ 		goto err;
+ 	}
+ 
+-	layout->eccbytes = (ecc->bytes * ecc->steps);
++	layout->eccbytes = (ecc->bytes * nsectors);
+ 
+ 	ecc->layout = layout;
+ 	ecc->priv = data;
+@@ -988,6 +990,7 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
+ 				       struct device_node *np)
+ {
+ 	struct nand_ecclayout *layout;
++	int nsectors;
+ 	int i, j;
+ 	int ret;
+ 
+@@ -998,8 +1001,9 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
+ 	ecc->read_page = sunxi_nfc_hw_ecc_read_page;
+ 	ecc->write_page = sunxi_nfc_hw_ecc_write_page;
+ 	layout = ecc->layout;
++	nsectors = mtd->writesize / ecc->size;
+ 
+-	for (i = 0; i < ecc->steps; i++) {
++	for (i = 0; i < nsectors; i++) {
+ 		if (i) {
+ 			layout->oobfree[i].offset =
+ 				layout->oobfree[i - 1].offset +
+@@ -1022,13 +1026,13 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
+ 					layout->oobfree[i].length + j;
+ 	}
+ 
+-	if (mtd->oobsize > (ecc->bytes + 4) * ecc->steps) {
+-		layout->oobfree[ecc->steps].offset =
+-				layout->oobfree[ecc->steps - 1].offset +
+-				layout->oobfree[ecc->steps - 1].length +
++	if (mtd->oobsize > (ecc->bytes + 4) * nsectors) {
++		layout->oobfree[nsectors].offset =
++				layout->oobfree[nsectors - 1].offset +
++				layout->oobfree[nsectors - 1].length +
+ 				ecc->bytes;
+-		layout->oobfree[ecc->steps].length = mtd->oobsize -
+-				((ecc->bytes + 4) * ecc->steps);
++		layout->oobfree[nsectors].length = mtd->oobsize -
++				((ecc->bytes + 4) * nsectors);
+ 	}
+ 
+ 	return 0;
+@@ -1039,6 +1043,7 @@ static int sunxi_nand_hw_syndrome_ecc_ctrl_init(struct mtd_info *mtd,
+ 						struct device_node *np)
+ {
+ 	struct nand_ecclayout *layout;
++	int nsectors;
+ 	int i;
+ 	int ret;
+ 
+@@ -1051,8 +1056,9 @@ static int sunxi_nand_hw_syndrome_ecc_ctrl_init(struct mtd_info *mtd,
+ 	ecc->write_page = sunxi_nfc_hw_syndrome_ecc_write_page;
+ 
+ 	layout = ecc->layout;
++	nsectors = mtd->writesize / ecc->size;
+ 
+-	for (i = 0; i < (ecc->bytes * ecc->steps); i++)
++	for (i = 0; i < (ecc->bytes * nsectors); i++)
+ 		layout->eccpos[i] = i;
+ 
+ 	layout->oobfree[0].length = mtd->oobsize - i;
