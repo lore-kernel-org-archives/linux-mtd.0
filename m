@@ -1,23 +1,21 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xj4Qe-0006uT-Qn
- for linux-mtd@lists.infradead.org; Tue, 28 Oct 2014 10:55:09 +0000
-Received: by mail-pd0-f171.google.com with SMTP id r10so423773pdi.30
- for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2014 03:54:47 -0700 (PDT)
-From: Zhou Wang <wangzhou.bry@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org
-Subject: [PATCH v3 2/2] mtd: hisilicon: add device tree binding documentation
-Date: Tue, 28 Oct 2014 18:53:49 +0800
-Message-Id: <1414493629-12570-3-git-send-email-wangzhou.bry@gmail.com>
-In-Reply-To: <1414493629-12570-1-git-send-email-wangzhou.bry@gmail.com>
-References: <1414493629-12570-1-git-send-email-wangzhou.bry@gmail.com>
-Cc: mark.rutland@arm.com, Zhou Wang <wangzhou.bry@gmail.com>,
- pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
- linux-kernel@vger.kernel.org, haojian.zhuang@gmail.com,
- wangzhou1@hisilicon.com, robh+dt@kernel.org, xuwei5@hisilicon.com,
- galak@codeaurora.org, caizhiyong@huawei.com
+ id 1Xj4d9-0001YQ-BG
+ for linux-mtd@lists.infradead.org; Tue, 28 Oct 2014 11:08:05 +0000
+Received: by mail-wi0-f175.google.com with SMTP id h11so6923614wiw.2
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2014 04:07:40 -0700 (PDT)
+MIME-Version: 1.0
+Sender: christian.riesch@gmail.com
+In-Reply-To: <1081390030.524273.1414353711820.JavaMail.open-xchange@oxbsltgw08.schlund.de>
+References: <1081390030.524273.1414353711820.JavaMail.open-xchange@oxbsltgw08.schlund.de>
+Date: Tue, 28 Oct 2014 12:07:40 +0100
+Message-ID: <CABkLObrLAdGWA4MHqUR9c2ribZ9E-bM7m7ahSNgb4LMpQC8E8g@mail.gmail.com>
+Subject: Re: Questions about OTP driver
+From: Christian Riesch <christian.riesch@omicron.at>
+To: Stefan Wahren <stefan.wahren@i2se.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Arnd Bergmann <arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
----
- .../devicetree/bindings/mtd/hisi504-nand.txt       |   40 ++++++++++++++++++++
- 1 file changed, 40 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/hisi504-nand.txt
+Hi Stefan,
+I am not an expert in the mtd field, but in the last years I added OTP
+support for the drivers/mtd/chips/cfi_cmdset_0002.c driver and did a
+little cleanup.
 
-diff --git a/Documentation/devicetree/bindings/mtd/hisi504-nand.txt b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
-new file mode 100644
-index 0000000..c8b3988
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
-@@ -0,0 +1,40 @@
-+Hisilicon Hip04 Soc NAND controller DT binding
-+
-+Required properties:
-+- compatible:          Should be "hisilicon,504-nfc".
-+- reg:                 The first contains base physical address and size of
-+                       NAND controller's registers. The second contains base
-+                       physical address and size of NAND controller's buffer.
-+- interrupts:          Interrupt number for nfc.
-+- nand-bus-width:      See nand.txt.
-+- nand-ecc-mode:       See nand.txt.
-+- hisi,nand-ecc-bits:  ECC bits type support.
-+                 <0>:  none ecc
-+                 <1>:  Can correct 1bit per 512byte.
-+                 <6>:  Can correct 16bits per 1K byte.
-+- #address-cells:      partition address, should be set 1.
-+- #size-cells:         partition size, should be set 1.
-+
-+Flash chip may optionally contain additional sub-nodes describing partitions of
-+the address space. See partition.txt for more detail.
-+
-+Example:
-+
-+	nand: nand@4020000 {
-+		compatible = "hisilicon,504-nfc";
-+		reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
-+		interrupts = <0 379 4>;
-+		nand-bus-width = <8>;
-+		nand-ecc-mode = "hw";
-+		hisi,nand-ecc-bits = <1>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		partition@0 {
-+			label = "nand_text";
-+			reg = <0x00000000 0x00400000>;
-+		};
-+
-+		...
-+
-+	};
--- 
-1.7.9.5
+On Sun, Oct 26, 2014 at 9:01 PM, Stefan Wahren <stefan.wahren@i2se.com> wrote:
+> Hi,
+>
+> currently i try to port a driver for One Time Programmable memory pages on
+> Freescale MX23/MX28 (ARM9) SoC.
+> This driver gives readonly access to these memory pages via Sysfs.
+>
+> As i created a patch RFC [1], Arnd Bergmann suggested me to move the driver to
+> MTD.
+>
+> Now i have some questions:
+>
+> 1. What exact directory is suggested for OTP on SoC driver?
+
+drivers/mtd/devices?
+
+> 2. What is a good example implementaton of an OTP driver?
+
+For drivers that support OTP see git grep _read_user_prot_reg. It's
+the cfi_cmdset_0001.c (both from drivers/mtd/chips), the
+cfi_cmdset_0002.c, the drivers/mtd/devices/mtd_dataflash.c, and the
+drivers/mtd/onenand/onenand_base.c. All these devices are memory chips
+that have a little OTP memory in addition to the regular flash memory.
+I am not aware of OTP drivers for SoCs.
+
+The most simple implementation of OTP is probably the one in
+drivers/mtd/devices/mtd_dataflash.c (see the dataflash_get_otp_info
+and dataflash_read_{user,fact}_otp functions). The others are more
+complex since they support several flash devices concatenated, which
+means that there may be several OTP memory blocks. The driver must
+then walk through these blocks.
+
+Regarding your question on the arm kernel mailing list [1]:
+> Does MTD drivers have a readonly text (non binary) user interface?
+
+No, you offer a /dev/mtdX interface, with an ioctl you switch it to
+OTP operation (see flash_otp_dump from mtd-utils[2]). Then the OTP
+memory is offered in binary and can be read using read() etc.
+
+Regards, Christian
+
+[1] http://marc.info/?l=linux-arm-kernel&m=141381928515849&w=2
+[2] http://git.infradead.org/mtd-utils.git/blob/HEAD:/flash_otp_dump.c
