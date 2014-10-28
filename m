@@ -1,21 +1,29 @@
-Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xj4d9-0001YQ-BG
- for linux-mtd@lists.infradead.org; Tue, 28 Oct 2014 11:08:05 +0000
-Received: by mail-wi0-f175.google.com with SMTP id h11so6923614wiw.2
- for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2014 04:07:40 -0700 (PDT)
+ id 1Xj7fE-0003hK-Jf
+ for linux-mtd@lists.infradead.org; Tue, 28 Oct 2014 14:22:25 +0000
+Received: by mail-wi0-f180.google.com with SMTP id hi2so1752300wib.7
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2014 07:22:01 -0700 (PDT)
 MIME-Version: 1.0
-Sender: christian.riesch@gmail.com
-In-Reply-To: <1081390030.524273.1414353711820.JavaMail.open-xchange@oxbsltgw08.schlund.de>
-References: <1081390030.524273.1414353711820.JavaMail.open-xchange@oxbsltgw08.schlund.de>
-Date: Tue, 28 Oct 2014 12:07:40 +0100
-Message-ID: <CABkLObrLAdGWA4MHqUR9c2ribZ9E-bM7m7ahSNgb4LMpQC8E8g@mail.gmail.com>
-Subject: Re: Questions about OTP driver
-From: Christian Riesch <christian.riesch@omicron.at>
-To: Stefan Wahren <stefan.wahren@i2se.com>
+In-Reply-To: <1414493629-12570-2-git-send-email-wangzhou.bry@gmail.com>
+References: <1414493629-12570-1-git-send-email-wangzhou.bry@gmail.com>
+ <1414493629-12570-2-git-send-email-wangzhou.bry@gmail.com>
+Date: Tue, 28 Oct 2014 15:22:01 +0100
+Message-ID: <CAH6sp9MuL+AAvMi1VrmOhq5Y-ri2DKO3g0h1hw040h5=CRu6UQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mtd: hisilicon: add a new NAND controller driver
+ for hisilicon hip04 Soc
+From: Frans Klaver <fransklaver@gmail.com>
+To: Zhou Wang <wangzhou.bry@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ haojian.zhuang@gmail.com, wangzhou1@hisilicon.com,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ xuwei5@hisilicon.com, Kumar Gala <galak@codeaurora.org>, caizhiyong@huawei.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +33,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
-I am not an expert in the mtd field, but in the last years I added OTP
-support for the drivers/mtd/chips/cfi_cmdset_0002.c driver and did a
-little cleanup.
+On Tue, Oct 28, 2014 at 11:53 AM, Zhou Wang <wangzhou.bry@gmail.com> wrote:
+> +
+> +static int hisi_nfc_probe(struct platform_device *pdev)
+> +{
+> +       int ret = 0, irq, buswidth, flag, max_chips = HINFC504_MAX_CHIP;
+> +       struct device *dev = &pdev->dev;
+> +       struct hinfc_host *host;
+> +       struct nand_chip  *chip;
+> +       struct mtd_info   *mtd;
+> +       struct resource   *res;
+> +       struct device_node *np = dev->of_node;
+> +       struct mtd_part_parser_data ppdata;
+> +
+> +       host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
+> +       if (!host)
+> +               return -ENOMEM;
+> +       host->dev = dev;
+> +
+> +       platform_set_drvdata(pdev, host);
+> +       chip = &host->chip;
+> +       mtd  = &host->mtd;
+> +
+> +       irq = platform_get_irq(pdev, 0);
+> +       if (irq < 0) {
+> +               dev_err(dev, "no IRQ resource defined\n");
+> +               ret = -ENXIO;
+> +               goto err_res;
+> +       }
+> +
+> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +       host->iobase = devm_ioremap_resource(dev, res);
+> +       if (IS_ERR(host->iobase)) {
+> +               ret = PTR_ERR(host->iobase);
+> +               dev_err(dev, "devm_ioremap_resource[0] fail\n");
+> +               goto err_res;
+> +       }
+> +
+> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +       chip->IO_ADDR_R = chip->IO_ADDR_W = devm_ioremap_resource(dev, res);
+> +       if (IS_ERR(chip->IO_ADDR_R)) {
+> +               ret = PTR_ERR(chip->IO_ADDR_R);
+> +               dev_err(dev, "devm_ioremap_resource[1] fail\n");
+> +               goto err_res;
+> +       }
+> +
+> +       mtd->priv               = chip;
+> +       mtd->owner              = THIS_MODULE;
+> +       mtd->name               = "hisi_nand";
 
-On Sun, Oct 26, 2014 at 9:01 PM, Stefan Wahren <stefan.wahren@i2se.com> wrote:
-> Hi,
->
-> currently i try to port a driver for One Time Programmable memory pages on
-> Freescale MX23/MX28 (ARM9) SoC.
-> This driver gives readonly access to these memory pages via Sysfs.
->
-> As i created a patch RFC [1], Arnd Bergmann suggested me to move the driver to
-> MTD.
->
-> Now i have some questions:
->
-> 1. What exact directory is suggested for OTP on SoC driver?
++ mtd->dev.parent = &pdev->dev;
 
-drivers/mtd/devices?
+This is a bug that lives in a bunch of other nand drivers as well.
+add_mtd_device (called by mtd_device_parse_register()) expects
+dev.parent to be set for properly adding a device reference to the
+sysfs node.
 
-> 2. What is a good example implementaton of an OTP driver?
-
-For drivers that support OTP see git grep _read_user_prot_reg. It's
-the cfi_cmdset_0001.c (both from drivers/mtd/chips), the
-cfi_cmdset_0002.c, the drivers/mtd/devices/mtd_dataflash.c, and the
-drivers/mtd/onenand/onenand_base.c. All these devices are memory chips
-that have a little OTP memory in addition to the regular flash memory.
-I am not aware of OTP drivers for SoCs.
-
-The most simple implementation of OTP is probably the one in
-drivers/mtd/devices/mtd_dataflash.c (see the dataflash_get_otp_info
-and dataflash_read_{user,fact}_otp functions). The others are more
-complex since they support several flash devices concatenated, which
-means that there may be several OTP memory blocks. The driver must
-then walk through these blocks.
-
-Regarding your question on the arm kernel mailing list [1]:
-> Does MTD drivers have a readonly text (non binary) user interface?
-
-No, you offer a /dev/mtdX interface, with an ioctl you switch it to
-OTP operation (see flash_otp_dump from mtd-utils[2]). Then the OTP
-memory is offered in binary and can be read using read() etc.
-
-Regards, Christian
-
-[1] http://marc.info/?l=linux-arm-kernel&m=141381928515849&w=2
-[2] http://git.infradead.org/mtd-utils.git/blob/HEAD:/flash_otp_dump.c
+Frans
