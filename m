@@ -1,12 +1,13 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSeK-0006TE-KF
+ id 1XjSeK-0006Su-KK
  for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:55 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 13/35] UBI: Fastmap: Wrap fastmap specific function in a ifdef
-Date: Wed, 29 Oct 2014 13:45:36 +0100
-Message-Id: <1414586758-9972-14-git-send-email-richard@nod.at>
+Subject: [PATCH 10/35] UBI: Fastmap: Fix memory leaks while closing the WL
+ sub-system
+Date: Wed, 29 Oct 2014 13:45:33 +0100
+Message-Id: <1414586758-9972-11-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,32 +21,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-...such that we can implement NOP variants of some functions.
-This will help to reduce fastmap specific ifdefs in other c files.
+Add a ubi_fastmap_close() to free all resources used by fastmap
+at WL shutdown.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/ubi.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/ubi/wl.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 5d2e737..0392366 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -866,10 +866,14 @@ int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_ainf_peb *aeb,
- 		      int pnum, const struct ubi_vid_hdr *vid_hdr);
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 0639353..73ff40a 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -2055,6 +2055,23 @@ static void protection_queue_destroy(struct ubi_device *ubi)
+ 	}
+ }
  
- /* fastmap.c */
++static void ubi_fastmap_close(struct ubi_device *ubi)
++{
 +#ifdef CONFIG_MTD_UBI_FASTMAP
- size_t ubi_calc_fm_size(struct ubi_device *ubi);
- int ubi_update_fastmap(struct ubi_device *ubi);
- int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		     int fm_anchor);
-+#else
-+static inline int ubi_update_fastmap(struct ubi_device *ubi) { return 0; }
++	int i;
++
++	flush_work(&ubi->fm_work);
++	return_unused_pool_pebs(ubi, &ubi->fm_pool);
++	return_unused_pool_pebs(ubi, &ubi->fm_wl_pool);
++
++	if (ubi->fm) {
++		for (i = 0; i < ubi->fm->used_blocks; i++)
++			kfree(ubi->fm->e[i]);
++	}
++	kfree(ubi->fm);
 +#endif
- 
- /* block.c */
- #ifdef CONFIG_MTD_UBI_BLOCK
++}
++
+ /**
+  * ubi_wl_close - close the wear-leveling sub-system.
+  * @ubi: UBI device description object
+@@ -2062,9 +2079,7 @@ static void protection_queue_destroy(struct ubi_device *ubi)
+ void ubi_wl_close(struct ubi_device *ubi)
+ {
+ 	dbg_wl("close the WL sub-system");
+-#ifdef CONFIG_MTD_UBI_FASTMAP
+-	flush_work(&ubi->fm_work);
+-#endif
++	ubi_fastmap_close(ubi);
+ 	shutdown_work(ubi);
+ 	protection_queue_destroy(ubi);
+ 	tree_destroy(&ubi->used);
 -- 
 1.8.4.5
