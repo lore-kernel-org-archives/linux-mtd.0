@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSeK-0006TC-K4
- for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:54 +0000
+ id 1XjSeK-0006St-KE
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:57 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 11/35] UBI: Fastmap: Don't allocate new ubi_wl_entry objects
-Date: Wed, 29 Oct 2014 13:45:34 +0100
-Message-Id: <1414586758-9972-12-git-send-email-richard@nod.at>
+Subject: [PATCH 09/35] UBI: Fastmap: Make ubi_refill_pools() fair
+Date: Wed, 29 Oct 2014 13:45:32 +0100
+Message-Id: <1414586758-9972-10-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,115 +20,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is no need to allocate new ones every time, we can reuse
-the existing ones.
-This makes the code cleaner and more easy to follow.
+Currently ubi_refill_pools() first fills the first and then
+the second one.
+If only very few free PEBs are available the second pool can get
+zero PEBs.
+Change ubi_refill_pools() to distribute free PEBs fair between
+all pools.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c | 31 +++++--------------------------
- drivers/mtd/ubi/wl.c      | 11 +++++++----
- 2 files changed, 12 insertions(+), 30 deletions(-)
+ drivers/mtd/ubi/wl.c | 73 ++++++++++++++++++++++++++--------------------------
+ 1 file changed, 36 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 8cce6f8..09a97ad 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1529,19 +1529,6 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 	}
- 
- 	new_fm->used_blocks = ubi->fm_size / ubi->leb_size;
--
--	for (i = 0; i < new_fm->used_blocks; i++) {
--		new_fm->e[i] = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
--		if (!new_fm->e[i]) {
--			while (i--)
--				kfree(new_fm->e[i]);
--
--			kfree(new_fm);
--			mutex_unlock(&ubi->fm_mutex);
--			return -ENOMEM;
--		}
--	}
--
- 	old_fm = ubi->fm;
- 	ubi->fm = NULL;
- 
-@@ -1577,12 +1564,9 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 				ubi_err("could not erase old fastmap PEB");
- 				goto err;
- 			}
--
--			new_fm->e[i]->pnum = old_fm->e[i]->pnum;
--			new_fm->e[i]->ec = old_fm->e[i]->ec;
-+			new_fm->e[i] = old_fm->e[i];
- 		} else {
--			new_fm->e[i]->pnum = tmp_e->pnum;
--			new_fm->e[i]->ec = tmp_e->ec;
-+			new_fm->e[i] = tmp_e;
- 
- 			if (old_fm)
- 				ubi_wl_put_fm_peb(ubi, old_fm->e[i], i,
-@@ -1607,16 +1591,13 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 							  i, 0);
- 				goto err;
- 			}
--
--			new_fm->e[0]->pnum = old_fm->e[0]->pnum;
-+			new_fm->e[0] = old_fm->e[0];
- 			new_fm->e[0]->ec = ret;
- 		} else {
- 			/* we've got a new anchor PEB, return the old one */
- 			ubi_wl_put_fm_peb(ubi, old_fm->e[0], 0,
- 					  old_fm->to_be_tortured[0]);
--
--			new_fm->e[0]->pnum = tmp_e->pnum;
--			new_fm->e[0]->ec = tmp_e->ec;
-+			new_fm->e[0] = tmp_e;
- 		}
- 	} else {
- 		if (!tmp_e) {
-@@ -1629,9 +1610,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 			ret = -ENOSPC;
- 			goto err;
- 		}
--
--		new_fm->e[0]->pnum = tmp_e->pnum;
--		new_fm->e[0]->ec = tmp_e->ec;
-+		new_fm->e[0] = tmp_e;
- 	}
- 
- 	down_write(&ubi->work_sem);
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 73ff40a..ac19f75 100644
+index 95bb12b..0639353 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -995,9 +995,6 @@ int ubi_wl_put_fm_peb(struct ubi_device *ubi, struct ubi_wl_entry *fm_e,
- 		e = fm_e;
- 		ubi_assert(e->ec >= 0);
- 		ubi->lookuptbl[pnum] = e;
--	} else {
--		e->ec = fm_e->ec;
--		kfree(fm_e);
- 	}
+@@ -571,59 +571,58 @@ static void return_unused_pool_pebs(struct ubi_device *ubi,
+ }
  
- 	spin_unlock(&ubi->wl_lock);
-@@ -1999,9 +1996,15 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ /**
+- * refill_wl_pool - refills all the fastmap pool used by the
+- * WL sub-system.
++ * ubi_refill_pools - refills all fastmap PEB pools.
+  * @ubi: UBI device description object
+  */
+-static void refill_wl_pool(struct ubi_device *ubi)
++void ubi_refill_pools(struct ubi_device *ubi)
+ {
++	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
++	struct ubi_fm_pool *pool = &ubi->fm_pool;
+ 	struct ubi_wl_entry *e;
+-	struct ubi_fm_pool *pool = &ubi->fm_wl_pool;
++	int enough;
  
- 	dbg_wl("found %i PEBs", found_pebs);
- 
--	if (ubi->fm)
-+	if (ubi->fm) {
- 		ubi_assert(ubi->good_peb_count == \
- 			   found_pebs + ubi->fm->used_blocks);
++	spin_lock(&ubi->wl_lock);
 +
-+		for (i = 0; i < ubi->fm->used_blocks; i++) {
-+			e = ubi->fm->e[i];
-+			ubi->lookuptbl[e->pnum] = e;
-+		}
-+	}
- 	else
- 		ubi_assert(ubi->good_peb_count == found_pebs);
++	return_unused_pool_pebs(ubi, wl_pool);
+ 	return_unused_pool_pebs(ubi, pool);
+ 
+-	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+-		if (!ubi->free.rb_node ||
+-		   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
+-			break;
++	wl_pool->size = 0;
++	pool->size = 0;
+ 
+-		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
+-		self_check_in_wl_tree(ubi, e, &ubi->free);
+-		rb_erase(&e->u.rb, &ubi->free);
+-		ubi->free_count--;
++	for (;;) {
++		enough = 0;
++		if (pool->size < pool->max_size) {
++			e = wl_get_wle(ubi);
++			if (!e)
++				break;
+ 
+-		pool->pebs[pool->size] = e->pnum;
+-	}
+-	pool->used = 0;
+-}
++			pool->pebs[pool->size] = e->pnum;
++			pool->size++;
++		} else
++			enough++;
+ 
+-/**
+- * refill_wl_user_pool - refills all the fastmap pool used by ubi_wl_get_peb.
+- * @ubi: UBI device description object
+- */
+-static void refill_wl_user_pool(struct ubi_device *ubi)
+-{
+-	struct ubi_fm_pool *pool = &ubi->fm_pool;
++		if (wl_pool->size < wl_pool->max_size) {
++			if (!ubi->free.rb_node ||
++			   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
++				break;
+ 
+-	return_unused_pool_pebs(ubi, pool);
++			e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
++			self_check_in_wl_tree(ubi, e, &ubi->free);
++			rb_erase(&e->u.rb, &ubi->free);
++			ubi->free_count--;
++
++			wl_pool->pebs[wl_pool->size] = e->pnum;
++			wl_pool->size++;
++		} else
++			enough++;
+ 
+-	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+-		pool->pebs[pool->size] = __wl_get_peb(ubi);
+-		if (pool->pebs[pool->size] < 0)
++		if (enough == 2)
+ 			break;
+ 	}
++
++	wl_pool->used = 0;
+ 	pool->used = 0;
+-}
+ 
+-/**
+- * ubi_refill_pools - refills all fastmap PEB pools.
+- * @ubi: UBI device description object
+- */
+-void ubi_refill_pools(struct ubi_device *ubi)
+-{
+-	spin_lock(&ubi->wl_lock);
+-	refill_wl_pool(ubi);
+-	refill_wl_user_pool(ubi);
+ 	spin_unlock(&ubi->wl_lock);
+ }
  
 -- 
 1.8.4.5
