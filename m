@@ -1,16 +1,21 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSei-0003zN-Fl
- for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:47:20 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH 25/35] UBI: Fastmap: Fix race after ubi_wl_get_peb()
-Date: Wed, 29 Oct 2014 13:45:48 +0100
-Message-Id: <1414586758-9972-26-git-send-email-richard@nod.at>
-In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
-References: <1414586758-9972-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, tlinder@codeaurora.org
+Date: Wed, 29 Oct 2014 14:02:51 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v7 1/2] mtd: nand: add sunxi NAND flash controller support
+Message-ID: <20141029140251.142fed10@bbrezillon>
+In-Reply-To: <20141028181310.GA23619@ld-irv-0074>
+References: <1413896922-11680-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1413896922-11680-2-git-send-email-boris.brezillon@free-electrons.com>
+ <20141028181310.GA23619@ld-irv-0074>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
+ linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,210 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubi_wl_get_peb() returns a fresh PEB which can be used by
-user of UBI. Due to the pool logic fastmap will correctly
-map this PEB upon attach time because it will be scanned.
+Hi Brian,
 
-If a new fastmap is written (due to heavy parallel io)
-while the before the fresh PEB is assigned to the EBA table
-it will not be scanned as it is no longer in the pool.
-So, the race window exists between ubi_wl_get_peb()
-and the EBA table assignment.
-We have to make sure that no new fastmap can be written
-while that.
+On Tue, 28 Oct 2014 11:13:11 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-To ensure that ubi_wl_get_peb() will grab ubi->fm_sem in read mode
-and the user of ubi_wl_get_peb() has to release it after the PEB
-got assigned.
+> Hi Boris,
+> 
+> On Tue, Oct 21, 2014 at 03:08:41PM +0200, Boris Brezillon wrote:
+> > +static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
+> > +				       struct nand_ecc_ctrl *ecc,
+> > +				       struct device_node *np)
+> > +{
+> > +	struct nand_ecclayout *layout;
+> > +	int i, j;
+> > +	int ret;
+> > +
+> > +	ret = sunxi_nand_hw_common_ecc_ctrl_init(mtd, ecc, np);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ecc->read_page = sunxi_nfc_hw_ecc_read_page;
+> > +	ecc->write_page = sunxi_nfc_hw_ecc_write_page;
+> > +	layout = ecc->layout;
+> > +
+> > +	for (i = 0; i < ecc->steps; i++) {
+> 
+> Hmm, did you retest this since changing this to ecc->steps? I think this
+> won't work, since ecc->steps is only initialized in nand_scan_tail(),
+> which comes after this. I only recommended the change for the
+> {read,write}_page() type of functions, not the initialization functions.
+> 
+> [snip the rest]
+> 
+> So I'd suggest the following additional patch, and otherwise, the series
+> is fine with me. If you give your ack, I can just squash this in and
+> apply it to my tree:
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/eba.c | 24 ++++++++++++++++++------
- drivers/mtd/ubi/wl.c  |  6 ++++++
- 2 files changed, 24 insertions(+), 6 deletions(-)
+It works, you can squash those changes into my first patch.
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 04abe7f..2f41e53 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -510,6 +510,7 @@ retry:
- 	new_pnum = ubi_wl_get_peb(ubi);
- 	if (new_pnum < 0) {
- 		ubi_free_vid_hdr(ubi, vid_hdr);
-+		up_read(&ubi->fm_sem);
- 		return new_pnum;
- 	}
- 
-@@ -519,13 +520,16 @@ retry:
- 	if (err && err != UBI_IO_BITFLIPS) {
- 		if (err > 0)
- 			err = -EIO;
-+		up_read(&ubi->fm_sem);
- 		goto out_put;
- 	}
- 
- 	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	err = ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
--	if (err)
-+	if (err) {
-+		up_read(&ubi->fm_sem);
- 		goto write_error;
-+	}
- 
- 	data_size = offset + len;
- 	mutex_lock(&ubi->buf_mutex);
-@@ -534,8 +538,10 @@ retry:
- 	/* Read everything before the area where the write failure happened */
- 	if (offset > 0) {
- 		err = ubi_io_read_data(ubi, ubi->peb_buf, pnum, 0, offset);
--		if (err && err != UBI_IO_BITFLIPS)
-+		if (err && err != UBI_IO_BITFLIPS) {
-+			up_read(&ubi->fm_sem);
- 			goto out_unlock;
-+		}
- 	}
- 
- 	memcpy(ubi->peb_buf + offset, buf, len);
-@@ -543,13 +549,13 @@ retry:
- 	err = ubi_io_write_data(ubi, ubi->peb_buf, new_pnum, 0, data_size);
- 	if (err) {
- 		mutex_unlock(&ubi->buf_mutex);
-+		up_read(&ubi->fm_sem);
- 		goto write_error;
- 	}
- 
- 	mutex_unlock(&ubi->buf_mutex);
- 	ubi_free_vid_hdr(ubi, vid_hdr);
- 
--	down_read(&ubi->fm_sem);
- 	vol->eba_tbl[lnum] = new_pnum;
- 	up_read(&ubi->fm_sem);
- 	ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
-@@ -646,6 +652,7 @@ retry:
- 	if (pnum < 0) {
- 		ubi_free_vid_hdr(ubi, vid_hdr);
- 		leb_write_unlock(ubi, vol_id, lnum);
-+		up_read(&ubi->fm_sem);
- 		return pnum;
- 	}
- 
-@@ -656,6 +663,7 @@ retry:
- 	if (err) {
- 		ubi_warn("failed to write VID header to LEB %d:%d, PEB %d",
- 			 vol_id, lnum, pnum);
-+		up_read(&ubi->fm_sem);
- 		goto write_error;
- 	}
- 
-@@ -664,11 +672,11 @@ retry:
- 		if (err) {
- 			ubi_warn("failed to write %d bytes at offset %d of LEB %d:%d, PEB %d",
- 				 len, offset, vol_id, lnum, pnum);
-+			up_read(&ubi->fm_sem);
- 			goto write_error;
- 		}
- 	}
- 
--	down_read(&ubi->fm_sem);
- 	vol->eba_tbl[lnum] = pnum;
- 	up_read(&ubi->fm_sem);
- 
-@@ -767,6 +775,7 @@ retry:
- 	if (pnum < 0) {
- 		ubi_free_vid_hdr(ubi, vid_hdr);
- 		leb_write_unlock(ubi, vol_id, lnum);
-+		up_read(&ubi->fm_sem);
- 		return pnum;
- 	}
- 
-@@ -777,6 +786,7 @@ retry:
- 	if (err) {
- 		ubi_warn("failed to write VID header to LEB %d:%d, PEB %d",
- 			 vol_id, lnum, pnum);
-+		up_read(&ubi->fm_sem);
- 		goto write_error;
- 	}
- 
-@@ -784,11 +794,11 @@ retry:
- 	if (err) {
- 		ubi_warn("failed to write %d bytes of data to PEB %d",
- 			 len, pnum);
-+		up_read(&ubi->fm_sem);
- 		goto write_error;
- 	}
- 
- 	ubi_assert(vol->eba_tbl[lnum] < 0);
--	down_read(&ubi->fm_sem);
- 	vol->eba_tbl[lnum] = pnum;
- 	up_read(&ubi->fm_sem);
- 
-@@ -885,6 +895,7 @@ retry:
- 	pnum = ubi_wl_get_peb(ubi);
- 	if (pnum < 0) {
- 		err = pnum;
-+		up_read(&ubi->fm_sem);
- 		goto out_leb_unlock;
- 	}
- 
-@@ -895,6 +906,7 @@ retry:
- 	if (err) {
- 		ubi_warn("failed to write VID header to LEB %d:%d, PEB %d",
- 			 vol_id, lnum, pnum);
-+		up_read(&ubi->fm_sem);
- 		goto write_error;
- 	}
- 
-@@ -902,10 +914,10 @@ retry:
- 	if (err) {
- 		ubi_warn("failed to write %d bytes of data to PEB %d",
- 			 len, pnum);
-+		up_read(&ubi->fm_sem);
- 		goto write_error;
- 	}
- 
--	down_read(&ubi->fm_sem);
- 	old_pnum = vol->eba_tbl[lnum];
- 	vol->eba_tbl[lnum] = pnum;
- 	up_read(&ubi->fm_sem);
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 44ebefd..fbe9b5c 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -628,6 +628,7 @@ void ubi_refill_pools(struct ubi_device *ubi)
- 
- /* ubi_wl_get_peb - works exaclty like __wl_get_peb but keeps track of
-  * the fastmap pool.
-+ * Returns with ubi->fm_sem held in read mode!
-  */
- int ubi_wl_get_peb(struct ubi_device *ubi)
- {
-@@ -636,15 +637,19 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
- 	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
- 
- again:
-+	down_read(&ubi->fm_sem);
- 	spin_lock(&ubi->wl_lock);
- 	if (!pool->size || !wl_pool->size || pool->used >= pool->size ||
- 	    wl_pool->used >= wl_pool->size) {
- 		spin_unlock(&ubi->wl_lock);
-+		up_read(&ubi->fm_sem);
- 		ret = ubi_update_fastmap(ubi);
- 		if (ret) {
- 			ubi_msg("Unable to write a new fastmap: %i", ret);
-+			down_read(&ubi->fm_sem);
- 			return -ENOSPC;
- 		}
-+		down_read(&ubi->fm_sem);
- 		spin_lock(&ubi->wl_lock);
- 	}
- 
-@@ -721,6 +726,7 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
- 		return err;
- 	}
- 
-+	down_read(&ubi->fm_sem);
- 	return peb;
- }
- #endif
+Thanks,
+
+Boris
+
 -- 
-1.8.4.5
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
