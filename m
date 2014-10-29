@@ -1,16 +1,20 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjUcD-0006Ec-DR
- for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 14:52:50 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH 1/2] UBI: Implement UBI_METAONLY
-Date: Wed, 29 Oct 2014 15:52:17 +0100
-Message-Id: <1414594338-14695-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>,
- Andrew Murray <amurray@embedded-bits.co.uk>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XjV6R-0002Mn-EY
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 15:24:04 +0000
+From: Marek Vasut <marex@denx.de>
+To: Chunhe Lan <Chunhe.Lan@freescale.com>
+Subject: Re: [PATCH] mtd: spi-nor: Move n25q032 entry to Micron devices list
+Date: Wed, 29 Oct 2014 15:05:48 +0100
+References: <1414576675-7792-1-git-send-email-Chunhe.Lan@freescale.com>
+In-Reply-To: <1414576675-7792-1-git-send-email-Chunhe.Lan@freescale.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201410291505.48720.marex@denx.de>
+Cc: Huang Shijie <shijie8@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,151 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UBI_METAONLY is a new open mode for UBI volumes, it indicates
-that only meta data is being changed.
-Meta data in terms of UBI volumes means data which is stored in the
-UBI volume table but not on the volume itself.
-While it does not interfere with UBI_READONLY and UBI_READWRITE
-it is not allowed to use UBI_METAONLY together with UBI_EXCLUSIVE.
+On Wednesday, October 29, 2014 at 10:57:55 AM, Chunhe Lan wrote:
 
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Cc: Andrew Murray <amurray@embedded-bits.co.uk>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/cdev.c  |  8 +++++---
- drivers/mtd/ubi/kapi.c  | 15 +++++++++++++--
- drivers/mtd/ubi/ubi.h   |  5 ++++-
- include/linux/mtd/ubi.h |  4 +++-
- 4 files changed, 25 insertions(+), 7 deletions(-)
+[...]
 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 59de69a..5f01edd 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -60,13 +60,13 @@ static int get_exclusive(struct ubi_volume_desc *desc)
- 	struct ubi_volume *vol = desc->vol;
- 
- 	spin_lock(&vol->ubi->volumes_lock);
--	users = vol->readers + vol->writers + vol->exclusive;
-+	users = vol->readers + vol->writers + vol->exclusive + vol->metaonly;
- 	ubi_assert(users > 0);
- 	if (users > 1) {
- 		ubi_err("%d users for volume %d", users, vol->vol_id);
- 		err = -EBUSY;
- 	} else {
--		vol->readers = vol->writers = 0;
-+		vol->readers = vol->writers = vol->metaonly = 0;
- 		vol->exclusive = 1;
- 		err = desc->mode;
- 		desc->mode = UBI_EXCLUSIVE;
-@@ -86,13 +86,15 @@ static void revoke_exclusive(struct ubi_volume_desc *desc, int mode)
- 	struct ubi_volume *vol = desc->vol;
- 
- 	spin_lock(&vol->ubi->volumes_lock);
--	ubi_assert(vol->readers == 0 && vol->writers == 0);
-+	ubi_assert(vol->readers == 0 && vol->writers == 0 && vol->metaonly == 0);
- 	ubi_assert(vol->exclusive == 1 && desc->mode == UBI_EXCLUSIVE);
- 	vol->exclusive = 0;
- 	if (mode == UBI_READONLY)
- 		vol->readers = 1;
- 	else if (mode == UBI_READWRITE)
- 		vol->writers = 1;
-+	else if (mode == UBI_METAONLY)
-+		vol->metaonly = 1;
- 	else
- 		vol->exclusive = 1;
- 	spin_unlock(&vol->ubi->volumes_lock);
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 3aac1ac..8599690 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -137,7 +137,7 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
- 		return ERR_PTR(-EINVAL);
- 
- 	if (mode != UBI_READONLY && mode != UBI_READWRITE &&
--	    mode != UBI_EXCLUSIVE)
-+	    mode != UBI_EXCLUSIVE && mode != UBI_METAONLY)
- 		return ERR_PTR(-EINVAL);
- 
- 	/*
-@@ -182,10 +182,17 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
- 		break;
- 
- 	case UBI_EXCLUSIVE:
--		if (vol->exclusive || vol->writers || vol->readers)
-+		if (vol->exclusive || vol->writers || vol->readers ||
-+		    vol->metaonly)
- 			goto out_unlock;
- 		vol->exclusive = 1;
- 		break;
-+
-+	case UBI_METAONLY:
-+		if (vol->metaonly || vol->exclusive)
-+			goto out_unlock;
-+		vol->metaonly = 1;
-+		break;
- 	}
- 	get_device(&vol->dev);
- 	vol->ref_count += 1;
-@@ -343,6 +350,10 @@ void ubi_close_volume(struct ubi_volume_desc *desc)
- 		break;
- 	case UBI_EXCLUSIVE:
- 		vol->exclusive = 0;
-+		break;
-+	case UBI_METAONLY:
-+		vol->metaonly = 0;
-+		break;
- 	}
- 	vol->ref_count -= 1;
- 	spin_unlock(&ubi->volumes_lock);
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 320fc38..c991a09 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -260,6 +260,7 @@ struct ubi_fm_pool {
-  * @readers: number of users holding this volume in read-only mode
-  * @writers: number of users holding this volume in read-write mode
-  * @exclusive: whether somebody holds this volume in exclusive mode
-+ * @metaonly: whether somebody is altering only meta data of this volume
-  *
-  * @reserved_pebs: how many physical eraseblocks are reserved for this volume
-  * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
-@@ -308,6 +309,7 @@ struct ubi_volume {
- 	int readers;
- 	int writers;
- 	int exclusive;
-+	int metaonly;
- 
- 	int reserved_pebs;
- 	int vol_type;
-@@ -389,7 +391,8 @@ struct ubi_debug_info {
-  * @volumes_lock: protects @volumes, @rsvd_pebs, @avail_pebs, beb_rsvd_pebs,
-  *                @beb_rsvd_level, @bad_peb_count, @good_peb_count, @vol_count,
-  *                @vol->readers, @vol->writers, @vol->exclusive,
-- *                @vol->ref_count, @vol->mapping and @vol->eba_tbl.
-+ *                @vol->metaonly, @vol->ref_count, @vol->mapping and
-+ *                @vol->eba_tbl.
-  * @ref_count: count of references on the UBI device
-  * @image_seq: image sequence number recorded on EC headers
-  *
-diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-index c3918a0..82b693f 100644
---- a/include/linux/mtd/ubi.h
-+++ b/include/linux/mtd/ubi.h
-@@ -34,11 +34,13 @@
-  * UBI_READONLY: read-only mode
-  * UBI_READWRITE: read-write mode
-  * UBI_EXCLUSIVE: exclusive mode
-+ * UBI_METAONLY: modify voulme meta data only
-  */
- enum {
- 	UBI_READONLY = 1,
- 	UBI_READWRITE,
--	UBI_EXCLUSIVE
-+	UBI_EXCLUSIVE,
-+	UBI_METAONLY
- };
- 
- /**
--- 
-1.8.4.5
+There are problems with this patch. Firstly, it misses any description
+explaining why the change took place at all. From an outside observer
+point of view, this change seems random at best.
+
+Secondly, the change in itself makes no sense -- it just reorders the
+entries in an array. I can only speculate here, that your SPI NOR was
+recognised as some other part, right ? That's why moving the n25q032
+higher resolved the problem for you, right ?
+
+The problem is with the fragility of this code which matches the JEDEC
+ID and type of the SPI NOR. I recall Huang had some patches which tried
+to resolve this, not sure what the status of those patches is though.
+
+> Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Marek Vasut <marex@denx.de>
+> Cc: Huang Shijie <shijie8@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index ae16aa2..1fa5e05 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -530,6 +530,7 @@ const struct spi_device_id spi_nor_ids[] = {
+>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) 
+},
+> 
+>  	/* Micron */
+> +	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, 0) },
+>  	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0) },
+>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
+>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
+> @@ -586,7 +587,6 @@ const struct spi_device_id spi_nor_ids[] = {
+>  	{ "m25p32",  INFO(0x202016,  0,  64 * 1024,  64, 0) },
+>  	{ "m25p64",  INFO(0x202017,  0,  64 * 1024, 128, 0) },
+>  	{ "m25p128", INFO(0x202018,  0, 256 * 1024,  64, 0) },
+> -	{ "n25q032", INFO(0x20ba16,  0,  64 * 1024,  64, 0) },
+> 
+>  	{ "m25p05-nonjedec",  INFO(0, 0,  32 * 1024,   2, 0) },
+>  	{ "m25p10-nonjedec",  INFO(0, 0,  32 * 1024,   4, 0) },
+
+Best regards,
+Marek Vasut
