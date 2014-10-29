@@ -1,13 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSdy-0006QP-Vh
- for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:32 +0000
+ id 1XjSdy-0006QM-Vi
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:33 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 05/35] UBI: Fastmap: Ensure that only one fastmap work is
- scheduled
-Date: Wed, 29 Oct 2014 13:45:28 +0100
-Message-Id: <1414586758-9972-6-git-send-email-richard@nod.at>
+Subject: [PATCH 02/35] UBI: Fix stale pointers in ubi->lookuptbl
+Date: Wed, 29 Oct 2014 13:45:25 +0100
+Message-Id: <1414586758-9972-3-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -21,63 +20,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the WL pool runs out of PEBs we schedule a fastmap write
-to refill it as soon as possible.
-Ensure that only one at a time is scheduled otherwise we might end in
-a fastmap write storm because writing the fastmap can schedule another
-write if bitflips are detected.
+In some error paths the WL sub-system gives up on a PEB
+and frees it's ubi_wl_entry struct but does not set
+the entry in ubi->lookuptbl to NULL.
+Fastmap can stumble over such a stale pointer as it uses
+ubi->lookuptbl to find all PEBs.
+
+Fix this by setting the pointers to free'd ubi_wl_entry to NULL.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/ubi.h | 2 ++
- drivers/mtd/ubi/wl.c  | 8 +++++++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/wl.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index f80a726..5d2e737 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -430,6 +430,7 @@ struct ubi_debug_info {
-  * @fm_size: fastmap size in bytes
-  * @fm_sem: allows ubi_update_fastmap() to block EBA table changes
-  * @fm_work: fastmap work queue
-+ * @fm_work_scheduled: non-zero if fastmap work was scheduled
-  *
-  * @used: RB-tree of used physical eraseblocks
-  * @erroneous: RB-tree of erroneous used physical eraseblocks
-@@ -536,6 +537,7 @@ struct ubi_device {
- 	void *fm_buf;
- 	size_t fm_size;
- 	struct work_struct fm_work;
-+	int fm_work_scheduled;
- 
- 	/* Wear-leveling sub-system's stuff */
- 	struct rb_root used;
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index a12c54b..bd2e8d5 100644
+index 6654f191..a12c54b 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -149,6 +149,9 @@ static void update_fastmap_work_fn(struct work_struct *wrk)
- {
- 	struct ubi_device *ubi = container_of(wrk, struct ubi_device, fm_work);
- 	ubi_update_fastmap(ubi);
-+	spin_lock(&ubi->wl_lock);
-+	ubi->fm_work_scheduled = 0;
-+	spin_unlock(&ubi->wl_lock);
- }
+@@ -1212,9 +1212,12 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
  
- /**
-@@ -657,7 +660,10 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
- 		/* We cannot update the fastmap here because this
- 		 * function is called in atomic context.
- 		 * Let's fail here and refill/update it as soon as possible. */
--		schedule_work(&ubi->fm_work);
-+		if (!ubi->fm_work_scheduled) {
-+			ubi->fm_work_scheduled = 1;
-+			schedule_work(&ubi->fm_work);
+ 	err = do_sync_erase(ubi, e1, vol_id, lnum, 0);
+ 	if (err) {
++		ubi->lookuptbl[e1->pnum] = NULL;
+ 		kmem_cache_free(ubi_wl_entry_slab, e1);
+-		if (e2)
++		if (e2) {
++			ubi->lookuptbl[e2->pnum] = NULL;
+ 			kmem_cache_free(ubi_wl_entry_slab, e2);
 +		}
- 		return NULL;
- 	} else {
- 		pnum = pool->pebs[pool->used++];
+ 		goto out_ro;
+ 	}
+ 
+@@ -1227,6 +1230,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 		       e2->pnum, vol_id, lnum);
+ 		err = do_sync_erase(ubi, e2, vol_id, lnum, 0);
+ 		if (err) {
++			ubi->lookuptbl[e2->pnum] = NULL;
+ 			kmem_cache_free(ubi_wl_entry_slab, e2);
+ 			goto out_ro;
+ 		}
+@@ -1266,6 +1270,7 @@ out_not_moved:
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
+ 	err = do_sync_erase(ubi, e2, vol_id, lnum, torture);
+ 	if (err) {
++		ubi->lookuptbl[e2->pnum] = NULL;
+ 		kmem_cache_free(ubi_wl_entry_slab, e2);
+ 		goto out_ro;
+ 	}
+@@ -1285,6 +1290,8 @@ out_error:
+ 	spin_unlock(&ubi->wl_lock);
+ 
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
++	ubi->lookuptbl[e1->pnum] = NULL;
++	ubi->lookuptbl[e2->pnum] = NULL;
+ 	kmem_cache_free(ubi_wl_entry_slab, e1);
+ 	kmem_cache_free(ubi_wl_entry_slab, e2);
+ 
+@@ -1428,6 +1435,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 	if (shutdown) {
+ 		dbg_wl("cancel erasure of PEB %d EC %d", pnum, e->ec);
+ 		kfree(wl_wrk);
++		ubi->lookuptbl[e->pnum] = NULL;
+ 		kmem_cache_free(ubi_wl_entry_slab, e);
+ 		return 0;
+ 	}
+@@ -1474,6 +1482,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 		return err;
+ 	}
+ 
++	ubi->lookuptbl[e->pnum] = NULL;
+ 	kmem_cache_free(ubi_wl_entry_slab, e);
+ 	if (err != -EIO)
+ 		/*
+@@ -1912,6 +1921,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 		ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
+ 		ubi->lookuptbl[e->pnum] = e;
+ 		if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0)) {
++			ubi->lookuptbl[e->pnum] = NULL;
+ 			kmem_cache_free(ubi_wl_entry_slab, e);
+ 			goto out_free;
+ 		}
 -- 
 1.8.4.5
