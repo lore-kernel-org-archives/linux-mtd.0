@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSeK-0006St-KE
- for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:57 +0000
+ id 1XjSeK-0006Sl-KI
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:56 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 09/35] UBI: Fastmap: Make ubi_refill_pools() fair
-Date: Wed, 29 Oct 2014 13:45:32 +0100
-Message-Id: <1414586758-9972-10-git-send-email-richard@nod.at>
+Subject: [PATCH 08/35] UBI: Split __wl_get_peb()
+Date: Wed, 29 Oct 2014 13:45:31 +0100
+Message-Id: <1414586758-9972-9-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,117 +20,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently ubi_refill_pools() first fills the first and then
-the second one.
-If only very few free PEBs are available the second pool can get
-zero PEBs.
-Change ubi_refill_pools() to distribute free PEBs fair between
-all pools.
+Make it two functions, wl_get_wle() and wl_get_peb().
+wl_get_peb() works exactly like __wl_get_peb() but wl_get_wle()
+does not call produce_free_peb().
+While refilling the fastmap user pool we cannot release ubi->wl_lock
+as produce_free_peb() does.
+Hence the fastmap logic uses now wl_get_wle().
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c | 73 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 36 insertions(+), 37 deletions(-)
+ drivers/mtd/ubi/wl.c | 48 +++++++++++++++++++++++++++---------------------
+ 1 file changed, 27 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 95bb12b..0639353 100644
+index 5f8d2ff..95bb12b 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -571,59 +571,58 @@ static void return_unused_pool_pebs(struct ubi_device *ubi,
- }
- 
- /**
-- * refill_wl_pool - refills all the fastmap pool used by the
-- * WL sub-system.
-+ * ubi_refill_pools - refills all fastmap PEB pools.
-  * @ubi: UBI device description object
+@@ -502,7 +502,30 @@ out:
+  * This function returns a physical eraseblock in case of success and a
+  * negative error code in case of failure.
   */
--static void refill_wl_pool(struct ubi_device *ubi)
-+void ubi_refill_pools(struct ubi_device *ubi)
+-static int __wl_get_peb(struct ubi_device *ubi)
++static struct ubi_wl_entry *wl_get_wle(struct ubi_device *ubi)
++{
++	struct ubi_wl_entry *e;
++
++	e = find_mean_wl_entry(ubi, &ubi->free);
++	if (!e) {
++		ubi_err("no free eraseblocks");
++		return NULL;
++	}
++
++	self_check_in_wl_tree(ubi, e, &ubi->free);
++
++	/*
++	 * Move the physical eraseblock to the protection queue where it will
++	 * be protected from being moved for some time.
++	 */
++	rb_erase(&e->u.rb, &ubi->free);
++	ubi->free_count--;
++	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
++
++	return e;
++}
++
++static int wl_get_peb(struct ubi_device *ubi)
  {
-+	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
-+	struct ubi_fm_pool *pool = &ubi->fm_pool;
+ 	int err;
  	struct ubi_wl_entry *e;
--	struct ubi_fm_pool *pool = &ubi->fm_wl_pool;
-+	int enough;
- 
-+	spin_lock(&ubi->wl_lock);
-+
-+	return_unused_pool_pebs(ubi, wl_pool);
- 	return_unused_pool_pebs(ubi, pool);
- 
--	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
--		if (!ubi->free.rb_node ||
--		   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
--			break;
-+	wl_pool->size = 0;
-+	pool->size = 0;
- 
--		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
--		self_check_in_wl_tree(ubi, e, &ubi->free);
--		rb_erase(&e->u.rb, &ubi->free);
--		ubi->free_count--;
-+	for (;;) {
-+		enough = 0;
-+		if (pool->size < pool->max_size) {
-+			e = wl_get_wle(ubi);
-+			if (!e)
-+				break;
- 
--		pool->pebs[pool->size] = e->pnum;
+@@ -519,29 +542,12 @@ retry:
+ 		if (err < 0)
+ 			return err;
+ 		goto retry;
 -	}
--	pool->used = 0;
--}
-+			pool->pebs[pool->size] = e->pnum;
-+			pool->size++;
-+		} else
-+			enough++;
  
--/**
-- * refill_wl_user_pool - refills all the fastmap pool used by ubi_wl_get_peb.
-- * @ubi: UBI device description object
-- */
--static void refill_wl_user_pool(struct ubi_device *ubi)
--{
--	struct ubi_fm_pool *pool = &ubi->fm_pool;
-+		if (wl_pool->size < wl_pool->max_size) {
-+			if (!ubi->free.rb_node ||
-+			   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
-+				break;
- 
--	return_unused_pool_pebs(ubi, pool);
-+			e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-+			self_check_in_wl_tree(ubi, e, &ubi->free);
-+			rb_erase(&e->u.rb, &ubi->free);
-+			ubi->free_count--;
-+
-+			wl_pool->pebs[wl_pool->size] = e->pnum;
-+			wl_pool->size++;
-+		} else
-+			enough++;
- 
--	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
--		pool->pebs[pool->size] = __wl_get_peb(ubi);
--		if (pool->pebs[pool->size] < 0)
-+		if (enough == 2)
- 			break;
+-	e = find_mean_wl_entry(ubi, &ubi->free);
+-	if (!e) {
+-		ubi_err("no free eraseblocks");
+-		return -ENOSPC;
  	}
-+
-+	wl_pool->used = 0;
- 	pool->used = 0;
--}
  
--/**
-- * ubi_refill_pools - refills all fastmap PEB pools.
-- * @ubi: UBI device description object
-- */
--void ubi_refill_pools(struct ubi_device *ubi)
--{
--	spin_lock(&ubi->wl_lock);
--	refill_wl_pool(ubi);
--	refill_wl_user_pool(ubi);
- 	spin_unlock(&ubi->wl_lock);
+-	self_check_in_wl_tree(ubi, e, &ubi->free);
+-
+-	/*
+-	 * Move the physical eraseblock to the protection queue where it will
+-	 * be protected from being moved for some time.
+-	 */
+-	rb_erase(&e->u.rb, &ubi->free);
+-	ubi->free_count--;
+-	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
+-#ifndef CONFIG_MTD_UBI_FASTMAP
+-	/* We have to enqueue e only if fastmap is disabled,
+-	 * is fastmap enabled prot_queue_add() will be called by
+-	 * ubi_wl_get_peb() after removing e from the pool. */
++	e = wl_get_wle(ubi);
+ 	prot_queue_add(ubi, e);
+-#endif
++
+ 	return e->pnum;
  }
  
+@@ -699,7 +705,7 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
+ 	int peb, err;
+ 
+ 	spin_lock(&ubi->wl_lock);
+-	peb = __wl_get_peb(ubi);
++	peb = wl_get_peb(ubi);
+ 	spin_unlock(&ubi->wl_lock);
+ 
+ 	if (peb < 0)
 -- 
 1.8.4.5
