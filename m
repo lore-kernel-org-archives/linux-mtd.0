@@ -1,12 +1,13 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSeN-0006Su-Po
+ id 1XjSeO-0006Sm-1g
  for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:59 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 26/35] UBI: Fastmap: Set used_ebs only for static volumes
-Date: Wed, 29 Oct 2014 13:45:49 +0100
-Message-Id: <1414586758-9972-27-git-send-email-richard@nod.at>
+Subject: [PATCH 28/35] UBI: Fastmap: Make self_check_eba() depend on fastmap
+ self checking
+Date: Wed, 29 Oct 2014 13:45:51 +0100
+Message-Id: <1414586758-9972-29-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,34 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If we set it for dynamic ones we might confuse various self checks.
+...instead of generic self checking.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/attach.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index af490c3..e563366 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -200,14 +200,15 @@ static struct ubi_ainf_volume *add_vol(struct ubi_attach_info *ai, int vol_id,
- 	if (!av)
- 		goto out;
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 9364348..e36fd2e 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -1454,7 +1454,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 		goto out_wl;
  
--	av->highest_lnum = av->leb_count = 0;
-+	av->highest_lnum = av->leb_count = av->used_ebs = 0;
- 	av->vol_id = vol_id;
--	av->used_ebs = used_ebs;
- 	av->data_pad = data_pad;
- 	av->last_data_size = last_eb_bytes;
- 	av->compat = 0;
- 	av->vol_type = vol_type;
- 	av->root = RB_ROOT;
-+	if (av->vol_type == UBI_STATIC_VOLUME)
-+		av->used_ebs = used_ebs;
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+-	if (ubi->fm && ubi_dbg_chk_gen(ubi)) {
++	if (ubi->fm && ubi_dbg_chk_fastmap(ubi)) {
+ 		struct ubi_attach_info *scan_ai;
  
- 	dbg_bld("found volume (ID %i)", vol_id);
- 
+ 		scan_ai = alloc_ai();
 -- 
 1.8.4.5
