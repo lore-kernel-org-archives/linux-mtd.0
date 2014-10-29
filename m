@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSeN-0006TE-H3
- for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:58 +0000
+ id 1XjSeN-0006Su-Po
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:59 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 23/35] UBI: Fastmap: Add new module parameter fm_debug
-Date: Wed, 29 Oct 2014 13:45:46 +0100
-Message-Id: <1414586758-9972-24-git-send-email-richard@nod.at>
+Subject: [PATCH 26/35] UBI: Fastmap: Set used_ebs only for static volumes
+Date: Wed, 29 Oct 2014 13:45:49 +0100
+Message-Id: <1414586758-9972-27-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,61 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If fm_debug is set fastmap debugging is enabled by default.
-This is useful if one wants to debug fastmap on an UBI device
-with serves the rootfs.
-The the UBI attach mechanism runs long before debugfs can be mounted
-and chk_fastmap set.
+If we set it for dynamic ones we might confuse various self checks.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/build.c | 5 +++++
- drivers/mtd/ubi/debug.h | 5 +++++
- 2 files changed, 10 insertions(+)
+ drivers/mtd/ubi/fastmap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 666b2a0..a047bb4 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -81,6 +81,7 @@ static struct mtd_dev_param __initdata mtd_dev_param[UBI_MAX_DEVICES];
- #ifdef CONFIG_MTD_UBI_FASTMAP
- /* UBI module parameter to enable fastmap automatically on non-fastmap images */
- static bool fm_autoconvert;
-+static bool fm_debug;
- #endif
- /* Root UBI "class" object (corresponds to '/<sysfs>/class/ubi/') */
- struct class *ubi_class;
-@@ -949,6 +950,8 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index af490c3..e563366 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -200,14 +200,15 @@ static struct ubi_ainf_volume *add_vol(struct ubi_attach_info *ai, int vol_id,
+ 	if (!av)
+ 		goto out;
  
- 	ubi->fm_wl_pool.max_size = ubi->fm_pool.max_size / 2;
- 	ubi->fm_disabled = !fm_autoconvert;
-+	if (fm_debug)
-+		ubi_enable_dbg_chk_fastmap(ubi);
+-	av->highest_lnum = av->leb_count = 0;
++	av->highest_lnum = av->leb_count = av->used_ebs = 0;
+ 	av->vol_id = vol_id;
+-	av->used_ebs = used_ebs;
+ 	av->data_pad = data_pad;
+ 	av->last_data_size = last_eb_bytes;
+ 	av->compat = 0;
+ 	av->vol_type = vol_type;
+ 	av->root = RB_ROOT;
++	if (av->vol_type == UBI_STATIC_VOLUME)
++		av->used_ebs = used_ebs;
  
- 	if (!ubi->fm_disabled && (int)mtd_div_by_eb(ubi->mtd->size, ubi->mtd)
- 	    <= UBI_FM_MAX_START) {
-@@ -1495,6 +1498,8 @@ MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: mtd=<name|num|pa
- #ifdef CONFIG_MTD_UBI_FASTMAP
- module_param(fm_autoconvert, bool, 0644);
- MODULE_PARM_DESC(fm_autoconvert, "Set this parameter to enable fastmap automatically on images without a fastmap.");
-+module_param(fm_debug, bool, 0);
-+MODULE_PARM_DESC(fm_debug, "Set this parameter to enable fastmap debugging by default. Warning, this will make fastmap slow!");
- #endif
- MODULE_VERSION(__stringify(UBI_VERSION));
- MODULE_DESCRIPTION("UBI - Unsorted Block Images");
-diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index e99ef37..c6ea443 100644
---- a/drivers/mtd/ubi/debug.h
-+++ b/drivers/mtd/ubi/debug.h
-@@ -132,4 +132,9 @@ static inline int ubi_dbg_chk_fastmap(const struct ubi_device *ubi)
- {
- 	return ubi->dbg.chk_fastmap;
- }
-+
-+static inline void ubi_enable_dbg_chk_fastmap(struct ubi_device *ubi)
-+{
-+	ubi->dbg.chk_fastmap = 1;
-+}
- #endif /* !__UBI_DEBUG_H__ */
+ 	dbg_bld("found volume (ID %i)", vol_id);
+ 
 -- 
 1.8.4.5
