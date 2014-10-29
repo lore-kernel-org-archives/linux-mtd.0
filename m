@@ -1,22 +1,22 @@
-Date: Wed, 29 Oct 2014 10:08:43 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v7 1/2] mtd: nand: add sunxi NAND flash controller support
-Message-ID: <20141029170843.GD23619@ld-irv-0074>
-References: <1413896922-11680-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413896922-11680-2-git-send-email-boris.brezillon@free-electrons.com>
- <20141028181310.GA23619@ld-irv-0074>
- <20141029140251.142fed10@bbrezillon>
+Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XjXF5-0000Pi-Fy
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 17:41:14 +0000
+Received: by mail-ig0-f172.google.com with SMTP id a13so1737227igq.5
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2014 10:40:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20141029140251.142fed10@bbrezillon>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
- linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <201410291505.48720.marex@denx.de>
+References: <1414576675-7792-1-git-send-email-Chunhe.Lan@freescale.com>
+ <201410291505.48720.marex@denx.de>
+Date: Wed, 29 Oct 2014 18:40:46 +0100
+Message-ID: <CACna6ryTfC0c6op+Kv6TU3gFJPHj00nvkMH+T8BL2-=1ffbdww@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: Move n25q032 entry to Micron devices list
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
+ Chunhe Lan <Chunhe.Lan@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 29, 2014 at 02:02:51PM +0100, Boris Brezillon wrote:
-> On Tue, 28 Oct 2014 11:13:11 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Tue, Oct 21, 2014 at 03:08:41PM +0200, Boris Brezillon wrote:
-> > > +static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
-> > > +				       struct nand_ecc_ctrl *ecc,
-> > > +				       struct device_node *np)
-> > > +{
-> > > +	struct nand_ecclayout *layout;
-> > > +	int i, j;
-> > > +	int ret;
-> > > +
-> > > +	ret = sunxi_nand_hw_common_ecc_ctrl_init(mtd, ecc, np);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ecc->read_page = sunxi_nfc_hw_ecc_read_page;
-> > > +	ecc->write_page = sunxi_nfc_hw_ecc_write_page;
-> > > +	layout = ecc->layout;
-> > > +
-> > > +	for (i = 0; i < ecc->steps; i++) {
-> > 
-> > Hmm, did you retest this since changing this to ecc->steps? I think this
-> > won't work, since ecc->steps is only initialized in nand_scan_tail(),
-> > which comes after this. I only recommended the change for the
-> > {read,write}_page() type of functions, not the initialization functions.
-> > 
-> > [snip the rest]
-> > 
-> > So I'd suggest the following additional patch, and otherwise, the series
-> > is fine with me. If you give your ack, I can just squash this in and
-> > apply it to my tree:
-> 
-> It works, you can squash those changes into my first patch.
+On 29 October 2014 15:05, Marek Vasut <marex@denx.de> wrote:
+> On Wednesday, October 29, 2014 at 10:57:55 AM, Chunhe Lan wrote:
+>
+> [...]
+>
+> There are problems with this patch. Firstly, it misses any description
+> explaining why the change took place at all. From an outside observer
+> point of view, this change seems random at best.
 
-OK, pushed both (+ my fixes) to l2-mtd.git. Thanks!
+This looks like a normal cleaning for me.
 
-Brian
+
+> Secondly, the change in itself makes no sense -- it just reorders the
+> entries in an array.
+
+It moves Micron entry to the Micron pseudo-group, which makes sense to me.
+
+
+> I can only speculate here, that your SPI NOR was
+> recognised as some other part, right ? That's why moving the n25q032
+> higher resolved the problem for you, right ?
+>
+> The problem is with the fragility of this code which matches the JEDEC
+> ID and type of the SPI NOR. I recall Huang had some patches which tried
+> to resolve this, not sure what the status of those patches is though.
+
+Wait, what? OK, this makes things tricky. Does this patch really
+change any behavior? How does it happen? I don't see any duplicated
+entry with the same JEDEC ID (0x20ba16).
+
+Could you give us some more details?
