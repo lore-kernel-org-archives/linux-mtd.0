@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSdy-0006QM-Vi
+ id 1XjSdy-0006QL-Vf
  for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:33 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 02/35] UBI: Fix stale pointers in ubi->lookuptbl
-Date: Wed, 29 Oct 2014 13:45:25 +0100
-Message-Id: <1414586758-9972-3-git-send-email-richard@nod.at>
+Subject: [PATCH 01/35] UBI: Add initial support for fastmap self checks
+Date: Wed, 29 Oct 2014 13:45:24 +0100
+Message-Id: <1414586758-9972-2-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,85 +20,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In some error paths the WL sub-system gives up on a PEB
-and frees it's ubi_wl_entry struct but does not set
-the entry in ubi->lookuptbl to NULL.
-Fastmap can stumble over such a stale pointer as it uses
-ubi->lookuptbl to find all PEBs.
-
-Fix this by setting the pointers to free'd ubi_wl_entry to NULL.
+Using this debugfs knob fastmap self checks can be controlled.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/debug.c | 11 +++++++++++
+ drivers/mtd/ubi/debug.h |  5 +++++
+ drivers/mtd/ubi/ubi.h   |  4 ++++
+ 3 files changed, 20 insertions(+)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 6654f191..a12c54b 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1212,9 +1212,12 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 63cb1d7..ea9be20 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -275,6 +275,8 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
+ 		val = d->chk_gen;
+ 	else if (dent == d->dfs_chk_io)
+ 		val = d->chk_io;
++	else if (dent == d->dfs_chk_fastmap)
++		val = d->chk_fastmap;
+ 	else if (dent == d->dfs_disable_bgt)
+ 		val = d->disable_bgt;
+ 	else if (dent == d->dfs_emulate_bitflips)
+@@ -336,6 +338,8 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+ 		d->chk_gen = val;
+ 	else if (dent == d->dfs_chk_io)
+ 		d->chk_io = val;
++	else if (dent == d->dfs_chk_fastmap)
++		d->chk_fastmap = val;
+ 	else if (dent == d->dfs_disable_bgt)
+ 		d->disable_bgt = val;
+ 	else if (dent == d->dfs_emulate_bitflips)
+@@ -406,6 +410,13 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 		goto out_remove;
+ 	d->dfs_chk_io = dent;
  
- 	err = do_sync_erase(ubi, e1, vol_id, lnum, 0);
- 	if (err) {
-+		ubi->lookuptbl[e1->pnum] = NULL;
- 		kmem_cache_free(ubi_wl_entry_slab, e1);
--		if (e2)
-+		if (e2) {
-+			ubi->lookuptbl[e2->pnum] = NULL;
- 			kmem_cache_free(ubi_wl_entry_slab, e2);
-+		}
- 		goto out_ro;
- 	}
- 
-@@ -1227,6 +1230,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 		       e2->pnum, vol_id, lnum);
- 		err = do_sync_erase(ubi, e2, vol_id, lnum, 0);
- 		if (err) {
-+			ubi->lookuptbl[e2->pnum] = NULL;
- 			kmem_cache_free(ubi_wl_entry_slab, e2);
- 			goto out_ro;
- 		}
-@@ -1266,6 +1270,7 @@ out_not_moved:
- 	ubi_free_vid_hdr(ubi, vid_hdr);
- 	err = do_sync_erase(ubi, e2, vol_id, lnum, torture);
- 	if (err) {
-+		ubi->lookuptbl[e2->pnum] = NULL;
- 		kmem_cache_free(ubi_wl_entry_slab, e2);
- 		goto out_ro;
- 	}
-@@ -1285,6 +1290,8 @@ out_error:
- 	spin_unlock(&ubi->wl_lock);
- 
- 	ubi_free_vid_hdr(ubi, vid_hdr);
-+	ubi->lookuptbl[e1->pnum] = NULL;
-+	ubi->lookuptbl[e2->pnum] = NULL;
- 	kmem_cache_free(ubi_wl_entry_slab, e1);
- 	kmem_cache_free(ubi_wl_entry_slab, e2);
- 
-@@ -1428,6 +1435,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 	if (shutdown) {
- 		dbg_wl("cancel erasure of PEB %d EC %d", pnum, e->ec);
- 		kfree(wl_wrk);
-+		ubi->lookuptbl[e->pnum] = NULL;
- 		kmem_cache_free(ubi_wl_entry_slab, e);
- 		return 0;
- 	}
-@@ -1474,6 +1482,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 		return err;
- 	}
- 
-+	ubi->lookuptbl[e->pnum] = NULL;
- 	kmem_cache_free(ubi_wl_entry_slab, e);
- 	if (err != -EIO)
- 		/*
-@@ -1912,6 +1921,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 		ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
- 		ubi->lookuptbl[e->pnum] = e;
- 		if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0)) {
-+			ubi->lookuptbl[e->pnum] = NULL;
- 			kmem_cache_free(ubi_wl_entry_slab, e);
- 			goto out_free;
- 		}
++	fname = "chk_fastmap";
++	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, (void *)ubi_num,
++				   &dfs_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++	d->dfs_chk_fastmap = dent;
++
+ 	fname = "tst_disable_bgt";
+ 	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, (void *)ubi_num,
+ 				   &dfs_fops);
+diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+index cba89fc..e99ef37 100644
+--- a/drivers/mtd/ubi/debug.h
++++ b/drivers/mtd/ubi/debug.h
+@@ -127,4 +127,9 @@ static inline int ubi_dbg_chk_gen(const struct ubi_device *ubi)
+ {
+ 	return ubi->dbg.chk_gen;
+ }
++
++static inline int ubi_dbg_chk_fastmap(const struct ubi_device *ubi)
++{
++	return ubi->dbg.chk_fastmap;
++}
+ #endif /* !__UBI_DEBUG_H__ */
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 320fc38..f80a726 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -352,6 +352,7 @@ struct ubi_wl_entry;
+  *
+  * @chk_gen: if UBI general extra checks are enabled
+  * @chk_io: if UBI I/O extra checks are enabled
++ * @chk_fastmap: if UBI fastmap extra checks are enabled
+  * @disable_bgt: disable the background task for testing purposes
+  * @emulate_bitflips: emulate bit-flips for testing purposes
+  * @emulate_io_failures: emulate write/erase failures for testing purposes
+@@ -359,6 +360,7 @@ struct ubi_wl_entry;
+  * @dfs_dir: direntry object of the UBI device debugfs directory
+  * @dfs_chk_gen: debugfs knob to enable UBI general extra checks
+  * @dfs_chk_io: debugfs knob to enable UBI I/O extra checks
++ * @dfs_chk_fastmap: debugfs knob to enable UBI fastmap extra checks
+  * @dfs_disable_bgt: debugfs knob to disable the background task
+  * @dfs_emulate_bitflips: debugfs knob to emulate bit-flips
+  * @dfs_emulate_io_failures: debugfs knob to emulate write/erase failures
+@@ -366,6 +368,7 @@ struct ubi_wl_entry;
+ struct ubi_debug_info {
+ 	unsigned int chk_gen:1;
+ 	unsigned int chk_io:1;
++	unsigned int chk_fastmap:1;
+ 	unsigned int disable_bgt:1;
+ 	unsigned int emulate_bitflips:1;
+ 	unsigned int emulate_io_failures:1;
+@@ -373,6 +376,7 @@ struct ubi_debug_info {
+ 	struct dentry *dfs_dir;
+ 	struct dentry *dfs_chk_gen;
+ 	struct dentry *dfs_chk_io;
++	struct dentry *dfs_chk_fastmap;
+ 	struct dentry *dfs_disable_bgt;
+ 	struct dentry *dfs_emulate_bitflips;
+ 	struct dentry *dfs_emulate_io_failures;
 -- 
 1.8.4.5
