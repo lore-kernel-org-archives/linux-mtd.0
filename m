@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSeK-0006Sm-Jv
- for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:55 +0000
+ id 1XjSeK-0006TC-K4
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:54 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 07/35] UBI: Fastmap: Fix races in ubi_wl_get_peb()
-Date: Wed, 29 Oct 2014 13:45:30 +0100
-Message-Id: <1414586758-9972-8-git-send-email-richard@nod.at>
+Subject: [PATCH 11/35] UBI: Fastmap: Don't allocate new ubi_wl_entry objects
+Date: Wed, 29 Oct 2014 13:45:34 +0100
+Message-Id: <1414586758-9972-12-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,69 +20,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubi_wl_get_peb() has two problems, it reads the pool
-size and usage counters without any protection.
-While reading one value would be perfectly fine it reads multiple
-values and compares them. This is racy and can lead to incorrect
-pool handling.
-Furthermore ubi_update_fastmap() is called without wl_lock held,
-before incrementing the used counter it needs to be checked again.
-It could happen that another thread consumed all PEBs from the
-pool and the counter goes beyond ->size.
+There is no need to allocate new ones every time, we can reuse
+the existing ones.
+This makes the code cleaner and more easy to follow.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ drivers/mtd/ubi/fastmap.c | 31 +++++--------------------------
+ drivers/mtd/ubi/wl.c      | 11 +++++++----
+ 2 files changed, 12 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index a06e31e..5f8d2ff 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -626,24 +626,34 @@ void ubi_refill_pools(struct ubi_device *ubi)
-  */
- int ubi_wl_get_peb(struct ubi_device *ubi)
- {
--	int ret;
-+	int ret, retried = 0;
- 	struct ubi_fm_pool *pool = &ubi->fm_pool;
- 	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
- 
--	if (!pool->size || !wl_pool->size || pool->used == pool->size ||
--	    wl_pool->used == wl_pool->size)
-+again:
-+	spin_lock(&ubi->wl_lock);
-+	if (!pool->size || !wl_pool->size || pool->used >= pool->size ||
-+	    wl_pool->used >= wl_pool->size) {
-+		spin_unlock(&ubi->wl_lock);
- 		ubi_update_fastmap(ubi);
--
--	/* we got not a single free PEB */
--	if (!pool->size)
--		ret = -ENOSPC;
--	else {
- 		spin_lock(&ubi->wl_lock);
--		ret = pool->pebs[pool->used++];
--		prot_queue_add(ubi, ubi->lookuptbl[ret]);
-+	}
-+
-+	if (pool->used >= pool->size || !pool->size) {
- 		spin_unlock(&ubi->wl_lock);
-+		if (retried) {
-+			ubi_err("Unable to get a free PEB from user WL pool");
-+			ret = -ENOSPC;
-+			goto out;
-+		}
-+		retried = 1;
-+		goto again;
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 8cce6f8..09a97ad 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -1529,19 +1529,6 @@ int ubi_update_fastmap(struct ubi_device *ubi)
  	}
  
-+	ret = pool->pebs[pool->used++];
-+	prot_queue_add(ubi, ubi->lookuptbl[ret]);
-+	spin_unlock(&ubi->wl_lock);
-+out:
- 	return ret;
- }
+ 	new_fm->used_blocks = ubi->fm_size / ubi->leb_size;
+-
+-	for (i = 0; i < new_fm->used_blocks; i++) {
+-		new_fm->e[i] = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
+-		if (!new_fm->e[i]) {
+-			while (i--)
+-				kfree(new_fm->e[i]);
+-
+-			kfree(new_fm);
+-			mutex_unlock(&ubi->fm_mutex);
+-			return -ENOMEM;
+-		}
+-	}
+-
+ 	old_fm = ubi->fm;
+ 	ubi->fm = NULL;
+ 
+@@ -1577,12 +1564,9 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+ 				ubi_err("could not erase old fastmap PEB");
+ 				goto err;
+ 			}
+-
+-			new_fm->e[i]->pnum = old_fm->e[i]->pnum;
+-			new_fm->e[i]->ec = old_fm->e[i]->ec;
++			new_fm->e[i] = old_fm->e[i];
+ 		} else {
+-			new_fm->e[i]->pnum = tmp_e->pnum;
+-			new_fm->e[i]->ec = tmp_e->ec;
++			new_fm->e[i] = tmp_e;
+ 
+ 			if (old_fm)
+ 				ubi_wl_put_fm_peb(ubi, old_fm->e[i], i,
+@@ -1607,16 +1591,13 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+ 							  i, 0);
+ 				goto err;
+ 			}
+-
+-			new_fm->e[0]->pnum = old_fm->e[0]->pnum;
++			new_fm->e[0] = old_fm->e[0];
+ 			new_fm->e[0]->ec = ret;
+ 		} else {
+ 			/* we've got a new anchor PEB, return the old one */
+ 			ubi_wl_put_fm_peb(ubi, old_fm->e[0], 0,
+ 					  old_fm->to_be_tortured[0]);
+-
+-			new_fm->e[0]->pnum = tmp_e->pnum;
+-			new_fm->e[0]->ec = tmp_e->ec;
++			new_fm->e[0] = tmp_e;
+ 		}
+ 	} else {
+ 		if (!tmp_e) {
+@@ -1629,9 +1610,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+ 			ret = -ENOSPC;
+ 			goto err;
+ 		}
+-
+-		new_fm->e[0]->pnum = tmp_e->pnum;
+-		new_fm->e[0]->ec = tmp_e->ec;
++		new_fm->e[0] = tmp_e;
+ 	}
+ 
+ 	down_write(&ubi->work_sem);
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 73ff40a..ac19f75 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -995,9 +995,6 @@ int ubi_wl_put_fm_peb(struct ubi_device *ubi, struct ubi_wl_entry *fm_e,
+ 		e = fm_e;
+ 		ubi_assert(e->ec >= 0);
+ 		ubi->lookuptbl[pnum] = e;
+-	} else {
+-		e->ec = fm_e->ec;
+-		kfree(fm_e);
+ 	}
+ 
+ 	spin_unlock(&ubi->wl_lock);
+@@ -1999,9 +1996,15 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 
+ 	dbg_wl("found %i PEBs", found_pebs);
+ 
+-	if (ubi->fm)
++	if (ubi->fm) {
+ 		ubi_assert(ubi->good_peb_count == \
+ 			   found_pebs + ubi->fm->used_blocks);
++
++		for (i = 0; i < ubi->fm->used_blocks; i++) {
++			e = ubi->fm->e[i];
++			ubi->lookuptbl[e->pnum] = e;
++		}
++	}
+ 	else
+ 		ubi_assert(ubi->good_peb_count == found_pebs);
  
 -- 
 1.8.4.5
