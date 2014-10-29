@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
- by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSei-0003zP-GV
- for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:47:18 +0000
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XjSek-0000mq-AH
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:47:19 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 34/35] UBI: Fastmap: Remove else after return.
-Date: Wed, 29 Oct 2014 13:45:57 +0100
-Message-Id: <1414586758-9972-35-git-send-email-richard@nod.at>
+Subject: [PATCH 16/35] UBI: Fastmap: Fix memory leak while attaching
+Date: Wed, 29 Oct 2014 13:45:39 +0100
+Message-Id: <1414586758-9972-17-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,31 +20,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-checkpatch.pl complains:
-WARNING: else is not generally useful after a break or return
+Currently we leak a few ubi_ainf_pebs while attaching.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap-wl.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/ubi/attach.c  | 61 +++++++++++++++++++++++++----------------------
+ drivers/mtd/ubi/fastmap.c | 13 ----------
+ 2 files changed, 33 insertions(+), 41 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index f7e7ff6..828ea04 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -253,10 +253,10 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
- 			schedule_work(&ubi->fm_work);
- 		}
- 		return NULL;
--	} else {
--		pnum = pool->pebs[pool->used++];
--		return ubi->lookuptbl[pnum];
- 	}
-+
-+	pnum = pool->pebs[pool->used++];
-+	return ubi->lookuptbl[pnum];
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 6f27d9a..d1072bc 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -1297,6 +1297,30 @@ out_ech:
+ 	return err;
  }
  
++static struct ubi_attach_info *alloc_ai(const char *slab_name)
++{
++	struct ubi_attach_info *ai;
++
++	ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
++	if (!ai)
++		return ai;
++
++	INIT_LIST_HEAD(&ai->corr);
++	INIT_LIST_HEAD(&ai->free);
++	INIT_LIST_HEAD(&ai->erase);
++	INIT_LIST_HEAD(&ai->alien);
++	ai->volumes = RB_ROOT;
++	ai->aeb_slab_cache = kmem_cache_create(slab_name,
++					       sizeof(struct ubi_ainf_peb),
++					       0, 0, NULL);
++	if (!ai->aeb_slab_cache) {
++		kfree(ai);
++		ai = NULL;
++	}
++
++	return ai;
++}
++
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+ 
  /**
+@@ -1309,7 +1333,7 @@ out_ech:
+  * UBI_NO_FASTMAP denotes that no fastmap was found.
+  * UBI_BAD_FASTMAP denotes that the found fastmap was invalid.
+  */
+-static int scan_fast(struct ubi_device *ubi, struct ubi_attach_info *ai)
++static int scan_fast(struct ubi_device *ubi, struct ubi_attach_info **ai)
+ {
+ 	int err, pnum, fm_anchor = -1;
+ 	unsigned long long max_sqnum = 0;
+@@ -1330,7 +1354,7 @@ static int scan_fast(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 		cond_resched();
+ 
+ 		dbg_gen("process PEB %d", pnum);
+-		err = scan_peb(ubi, ai, pnum, &vol_id, &sqnum);
++		err = scan_peb(ubi, *ai, pnum, &vol_id, &sqnum);
+ 		if (err < 0)
+ 			goto out_vidh;
+ 
+@@ -1346,7 +1370,12 @@ static int scan_fast(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 	if (fm_anchor < 0)
+ 		return UBI_NO_FASTMAP;
+ 
+-	return ubi_scan_fastmap(ubi, ai, fm_anchor);
++	destroy_ai(*ai);
++	*ai = alloc_ai("ubi_aeb_slab_cache");
++	if (!*ai)
++		return -ENOMEM;
++
++	return ubi_scan_fastmap(ubi, *ai, fm_anchor);
+ 
+ out_vidh:
+ 	ubi_free_vid_hdr(ubi, vidh);
+@@ -1358,30 +1387,6 @@ out:
+ 
+ #endif
+ 
+-static struct ubi_attach_info *alloc_ai(const char *slab_name)
+-{
+-	struct ubi_attach_info *ai;
+-
+-	ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
+-	if (!ai)
+-		return ai;
+-
+-	INIT_LIST_HEAD(&ai->corr);
+-	INIT_LIST_HEAD(&ai->free);
+-	INIT_LIST_HEAD(&ai->erase);
+-	INIT_LIST_HEAD(&ai->alien);
+-	ai->volumes = RB_ROOT;
+-	ai->aeb_slab_cache = kmem_cache_create(slab_name,
+-					       sizeof(struct ubi_ainf_peb),
+-					       0, 0, NULL);
+-	if (!ai->aeb_slab_cache) {
+-		kfree(ai);
+-		ai = NULL;
+-	}
+-
+-	return ai;
+-}
+-
+ /**
+  * ubi_attach - attach an MTD device.
+  * @ubi: UBI device descriptor
+@@ -1409,7 +1414,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 	if (force_scan)
+ 		err = scan_all(ubi, ai, 0);
+ 	else {
+-		err = scan_fast(ubi, ai);
++		err = scan_fast(ubi, &ai);
+ 		if (err > 0) {
+ 			if (err != UBI_NO_FASTMAP) {
+ 				destroy_ai(ai);
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 09a97ad..1654f95 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -625,21 +625,8 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 	INIT_LIST_HEAD(&used);
+ 	INIT_LIST_HEAD(&free);
+ 	INIT_LIST_HEAD(&eba_orphans);
+-	INIT_LIST_HEAD(&ai->corr);
+-	INIT_LIST_HEAD(&ai->free);
+-	INIT_LIST_HEAD(&ai->erase);
+-	INIT_LIST_HEAD(&ai->alien);
+-	ai->volumes = RB_ROOT;
+ 	ai->min_ec = UBI_MAX_ERASECOUNTER;
+ 
+-	ai->aeb_slab_cache = kmem_cache_create("ubi_ainf_peb_slab",
+-					       sizeof(struct ubi_ainf_peb),
+-					       0, 0, NULL);
+-	if (!ai->aeb_slab_cache) {
+-		ret = -ENOMEM;
+-		goto fail;
+-	}
+-
+ 	fmsb = (struct ubi_fm_sb *)(fm_raw);
+ 	ai->max_sqnum = fmsb->sqnum;
+ 	fm_pos += sizeof(struct ubi_fm_sb);
 -- 
 1.8.4.5
