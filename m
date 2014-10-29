@@ -1,20 +1,17 @@
-Message-ID: <5450B545.1050905@ti.com>
-Date: Wed, 29 Oct 2014 11:37:09 +0200
-From: Roger Quadros <rogerq@ti.com>
+Received: from mail-bn1on0722.outbound.protection.outlook.com
+ ([2a01:111:f400:fc10::722] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XjPwh-0004OE-GI
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 09:53:40 +0000
+From: Chunhe Lan <Chunhe.Lan@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: spi-nor: Move n25q032 entry to Micron devices list
+Date: Wed, 29 Oct 2014 17:57:55 +0800
+Message-ID: <1414576675-7792-1-git-send-email-Chunhe.Lan@freescale.com>
 MIME-Version: 1.0
-To: Frans Klaver <fransklaver@gmail.com>, Rostislav Lisovy <lisovy@gmail.com>
-Subject: Re: [PATCH v3 2/2] mtd: nand: omap: Synchronize the access to the
- ECC engine
-References: <542D46A1.9090905@ti.com>	<1412259404-5202-1-git-send-email-lisovy@merica.cz>
- <CAH6sp9M0VaH8-4NXcRNUYQS8Zuzbkra6zmgjSebjv8Awj6i0og@mail.gmail.com>
-In-Reply-To: <CAH6sp9M0VaH8-4NXcRNUYQS8Zuzbkra6zmgjSebjv8Awj6i0og@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Rostislav Lisovy <lisovy@merica.cz>, Tony Lindgren <tony@atomide.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, michal.vokac@comap.cz,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, sojkam1@fel.cvut.cz
+Content-Type: text/plain
+Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
+ Huang Shijie <shijie8@gmail.com>, Chunhe Lan <Chunhe.Lan@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rostislav,
+Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>
+Cc: Huang Shijie <shijie8@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Sorry to miss this one.
-
-On 10/29/2014 11:24 AM, Frans Klaver wrote:
-> On Thu, Oct 2, 2014 at 4:16 PM, Rostislav Lisovy <lisovy@gmail.com> wrote:
->>
->> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
->> index f0dcdb6..dfae46f 100644
->> --- a/drivers/mtd/nand/omap2.c
->> +++ b/drivers/mtd/nand/omap2.c
->> @@ -144,8 +144,13 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
->>         0xac, 0x6b, 0xff, 0x99, 0x7b};
->>  static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
->>
->> +/* Shared among all NAND instances to synchronize the access to the ECC Engine */
->> +struct nand_hw_control omap_gpmc_controller = {
->> +       .lock = __SPIN_LOCK_UNLOCKED(omap_gpmc_controller.lock),
->> +       .wq = __WAIT_QUEUE_HEAD_INITIALIZER(omap_gpmc_controller.wq),
->> +};
->> +
-> 
-> Any reason not to make this one static?
-> 
-Right. Apart from that, this patch looks good for me.
-So after that change you can add my
-
-Acked-by: Roger Quadros <rogerq@ti.com>
-
-cheers,
--roger
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index ae16aa2..1fa5e05 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -530,6 +530,7 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+ 
+ 	/* Micron */
++	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, 0) },
+ 	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0) },
+ 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
+@@ -586,7 +587,6 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "m25p32",  INFO(0x202016,  0,  64 * 1024,  64, 0) },
+ 	{ "m25p64",  INFO(0x202017,  0,  64 * 1024, 128, 0) },
+ 	{ "m25p128", INFO(0x202018,  0, 256 * 1024,  64, 0) },
+-	{ "n25q032", INFO(0x20ba16,  0,  64 * 1024,  64, 0) },
+ 
+ 	{ "m25p05-nonjedec",  INFO(0, 0,  32 * 1024,   2, 0) },
+ 	{ "m25p10-nonjedec",  INFO(0, 0,  32 * 1024,   4, 0) },
+-- 
+1.7.6.5
