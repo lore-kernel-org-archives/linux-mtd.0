@@ -1,21 +1,23 @@
-Date: Wed, 29 Oct 2014 14:02:51 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v7 1/2] mtd: nand: add sunxi NAND flash controller support
-Message-ID: <20141029140251.142fed10@bbrezillon>
-In-Reply-To: <20141028181310.GA23619@ld-irv-0074>
-References: <1413896922-11680-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413896922-11680-2-git-send-email-boris.brezillon@free-electrons.com>
- <20141028181310.GA23619@ld-irv-0074>
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XjTOD-0004k2-MD
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 13:34:18 +0000
+Message-ID: <5450ECC1.10701@ti.com>
+Date: Wed, 29 Oct 2014 15:33:53 +0200
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Frans Klaver <frans.klaver@xsens.com>
+Subject: Re: [PATCH v2] mtd: omap: fix mtd devices not showing up
+References: <1414416749-19598-1-git-send-email-frans.klaver@xsens.com>
+ <1414420445-9020-1-git-send-email-frans.klaver@xsens.com>
+ <544F6611.1000801@ti.com> <20141029113612.GA2499@ci00147.xsens-tech.local>
+In-Reply-To: <20141029113612.GA2499@ci00147.xsens-tech.local>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
- linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: linux-omap@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ =?UTF-8?B?RXplcXVpZWwgR2Fy?= =?UTF-8?B?Y8OtYQ==?=
+ <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-On Tue, 28 Oct 2014 11:13:11 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> Hi Boris,
+On 10/29/2014 01:36 PM, Frans Klaver wrote:
+> On Tue, Oct 28, 2014 at 11:46:57AM +0200, Roger Quadros wrote:
+>> On 10/27/2014 04:34 PM, Frans Klaver wrote:
+>>> Since commit 6d178ef2fd5e ("mtd: nand: Move ELM driver and rename as
+>>> omap_elm"), I don't have any mtd devices present on my am335x. This
+>>> changes the link order of the omap_elm and omap2 objects, causing them
+>>> to probe in the wrong order.
+>>>
+>>> To fix this, make elm_config defer probing until the omap_elm driver is
+>>> actually loaded.
+>>>
+>>> Signed-off-by: Frans Klaver <frans.klaver@xsens.com>
+>>
+>> Acked-by: Roger Quadros <rogerq@ti.com>
 > 
-> On Tue, Oct 21, 2014 at 03:08:41PM +0200, Boris Brezillon wrote:
-> > +static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
-> > +				       struct nand_ecc_ctrl *ecc,
-> > +				       struct device_node *np)
-> > +{
-> > +	struct nand_ecclayout *layout;
-> > +	int i, j;
-> > +	int ret;
-> > +
-> > +	ret = sunxi_nand_hw_common_ecc_ctrl_init(mtd, ecc, np);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ecc->read_page = sunxi_nfc_hw_ecc_read_page;
-> > +	ecc->write_page = sunxi_nfc_hw_ecc_write_page;
-> > +	layout = ecc->layout;
-> > +
-> > +	for (i = 0; i < ecc->steps; i++) {
-> 
-> Hmm, did you retest this since changing this to ecc->steps? I think this
-> won't work, since ecc->steps is only initialized in nand_scan_tail(),
-> which comes after this. I only recommended the change for the
-> {read,write}_page() type of functions, not the initialization functions.
-> 
-> [snip the rest]
-> 
-> So I'd suggest the following additional patch, and otherwise, the series
-> is fine with me. If you give your ack, I can just squash this in and
-> apply it to my tree:
+> Thanks. How about Ezequiel's remark about doing both changes?
 
-It works, you can squash those changes into my first patch.
+I don't have any strong feeling for or against it. We shouldn't be depending on module load order anyways.
 
-Thanks,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+cheers,
+-roger
