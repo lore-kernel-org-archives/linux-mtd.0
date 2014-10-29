@@ -1,12 +1,13 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSdy-0006QL-Vf
- for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:33 +0000
+ id 1XjSeK-0006TB-KJ
+ for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:53 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 01/35] UBI: Add initial support for fastmap self checks
-Date: Wed, 29 Oct 2014 13:45:24 +0100
-Message-Id: <1414586758-9972-2-git-send-email-richard@nod.at>
+Subject: [PATCH 12/35] UBI: Fastmap: Notify user in case of an
+ ubi_update_fastmap() failure
+Date: Wed, 29 Oct 2014 13:45:35 +0100
+Message-Id: <1414586758-9972-13-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,100 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using this debugfs knob fastmap self checks can be controlled.
+If ubi_update_fastmap() fails notify the user.
+This is not a hard error as ubi_update_fastmap() makes sure upon failure that
+the current on-flash fastmap will no be used upon next UBI attach.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/debug.c | 11 +++++++++++
- drivers/mtd/ubi/debug.h |  5 +++++
- drivers/mtd/ubi/ubi.h   |  4 ++++
- 3 files changed, 20 insertions(+)
+ drivers/mtd/ubi/wl.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 63cb1d7..ea9be20 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -275,6 +275,8 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
- 		val = d->chk_gen;
- 	else if (dent == d->dfs_chk_io)
- 		val = d->chk_io;
-+	else if (dent == d->dfs_chk_fastmap)
-+		val = d->chk_fastmap;
- 	else if (dent == d->dfs_disable_bgt)
- 		val = d->disable_bgt;
- 	else if (dent == d->dfs_emulate_bitflips)
-@@ -336,6 +338,8 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
- 		d->chk_gen = val;
- 	else if (dent == d->dfs_chk_io)
- 		d->chk_io = val;
-+	else if (dent == d->dfs_chk_fastmap)
-+		d->chk_fastmap = val;
- 	else if (dent == d->dfs_disable_bgt)
- 		d->disable_bgt = val;
- 	else if (dent == d->dfs_emulate_bitflips)
-@@ -406,6 +410,13 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
- 		goto out_remove;
- 	d->dfs_chk_io = dent;
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index ac19f75..44ebefd 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -640,7 +640,11 @@ again:
+ 	if (!pool->size || !wl_pool->size || pool->used >= pool->size ||
+ 	    wl_pool->used >= wl_pool->size) {
+ 		spin_unlock(&ubi->wl_lock);
+-		ubi_update_fastmap(ubi);
++		ret = ubi_update_fastmap(ubi);
++		if (ret) {
++			ubi_msg("Unable to write a new fastmap: %i", ret);
++			return -ENOSPC;
++		}
+ 		spin_lock(&ubi->wl_lock);
+ 	}
  
-+	fname = "chk_fastmap";
-+	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, (void *)ubi_num,
-+				   &dfs_fops);
-+	if (IS_ERR_OR_NULL(dent))
-+		goto out_remove;
-+	d->dfs_chk_fastmap = dent;
-+
- 	fname = "tst_disable_bgt";
- 	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, (void *)ubi_num,
- 				   &dfs_fops);
-diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index cba89fc..e99ef37 100644
---- a/drivers/mtd/ubi/debug.h
-+++ b/drivers/mtd/ubi/debug.h
-@@ -127,4 +127,9 @@ static inline int ubi_dbg_chk_gen(const struct ubi_device *ubi)
- {
- 	return ubi->dbg.chk_gen;
- }
-+
-+static inline int ubi_dbg_chk_fastmap(const struct ubi_device *ubi)
-+{
-+	return ubi->dbg.chk_fastmap;
-+}
- #endif /* !__UBI_DEBUG_H__ */
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 320fc38..f80a726 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -352,6 +352,7 @@ struct ubi_wl_entry;
-  *
-  * @chk_gen: if UBI general extra checks are enabled
-  * @chk_io: if UBI I/O extra checks are enabled
-+ * @chk_fastmap: if UBI fastmap extra checks are enabled
-  * @disable_bgt: disable the background task for testing purposes
-  * @emulate_bitflips: emulate bit-flips for testing purposes
-  * @emulate_io_failures: emulate write/erase failures for testing purposes
-@@ -359,6 +360,7 @@ struct ubi_wl_entry;
-  * @dfs_dir: direntry object of the UBI device debugfs directory
-  * @dfs_chk_gen: debugfs knob to enable UBI general extra checks
-  * @dfs_chk_io: debugfs knob to enable UBI I/O extra checks
-+ * @dfs_chk_fastmap: debugfs knob to enable UBI fastmap extra checks
-  * @dfs_disable_bgt: debugfs knob to disable the background task
-  * @dfs_emulate_bitflips: debugfs knob to emulate bit-flips
-  * @dfs_emulate_io_failures: debugfs knob to emulate write/erase failures
-@@ -366,6 +368,7 @@ struct ubi_wl_entry;
- struct ubi_debug_info {
- 	unsigned int chk_gen:1;
- 	unsigned int chk_io:1;
-+	unsigned int chk_fastmap:1;
- 	unsigned int disable_bgt:1;
- 	unsigned int emulate_bitflips:1;
- 	unsigned int emulate_io_failures:1;
-@@ -373,6 +376,7 @@ struct ubi_debug_info {
- 	struct dentry *dfs_dir;
- 	struct dentry *dfs_chk_gen;
- 	struct dentry *dfs_chk_io;
-+	struct dentry *dfs_chk_fastmap;
- 	struct dentry *dfs_disable_bgt;
- 	struct dentry *dfs_emulate_bitflips;
- 	struct dentry *dfs_emulate_io_failures;
 -- 
 1.8.4.5
