@@ -1,13 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjSeK-0006Su-KK
+ id 1XjSeK-0006Sm-Jv
  for linux-mtd@lists.infradead.org; Wed, 29 Oct 2014 12:46:55 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 10/35] UBI: Fastmap: Fix memory leaks while closing the WL
- sub-system
-Date: Wed, 29 Oct 2014 13:45:33 +0100
-Message-Id: <1414586758-9972-11-git-send-email-richard@nod.at>
+Subject: [PATCH 07/35] UBI: Fastmap: Fix races in ubi_wl_get_peb()
+Date: Wed, 29 Oct 2014 13:45:30 +0100
+Message-Id: <1414586758-9972-8-git-send-email-richard@nod.at>
 In-Reply-To: <1414586758-9972-1-git-send-email-richard@nod.at>
 References: <1414586758-9972-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -21,52 +20,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a ubi_fastmap_close() to free all resources used by fastmap
-at WL shutdown.
+ubi_wl_get_peb() has two problems, it reads the pool
+size and usage counters without any protection.
+While reading one value would be perfectly fine it reads multiple
+values and compares them. This is racy and can lead to incorrect
+pool handling.
+Furthermore ubi_update_fastmap() is called without wl_lock held,
+before incrementing the used counter it needs to be checked again.
+It could happen that another thread consumed all PEBs from the
+pool and the counter goes beyond ->size.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ drivers/mtd/ubi/wl.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 0639353..73ff40a 100644
+index a06e31e..5f8d2ff 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -2055,6 +2055,23 @@ static void protection_queue_destroy(struct ubi_device *ubi)
+@@ -626,24 +626,34 @@ void ubi_refill_pools(struct ubi_device *ubi)
+  */
+ int ubi_wl_get_peb(struct ubi_device *ubi)
+ {
+-	int ret;
++	int ret, retried = 0;
+ 	struct ubi_fm_pool *pool = &ubi->fm_pool;
+ 	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
+ 
+-	if (!pool->size || !wl_pool->size || pool->used == pool->size ||
+-	    wl_pool->used == wl_pool->size)
++again:
++	spin_lock(&ubi->wl_lock);
++	if (!pool->size || !wl_pool->size || pool->used >= pool->size ||
++	    wl_pool->used >= wl_pool->size) {
++		spin_unlock(&ubi->wl_lock);
+ 		ubi_update_fastmap(ubi);
+-
+-	/* we got not a single free PEB */
+-	if (!pool->size)
+-		ret = -ENOSPC;
+-	else {
+ 		spin_lock(&ubi->wl_lock);
+-		ret = pool->pebs[pool->used++];
+-		prot_queue_add(ubi, ubi->lookuptbl[ret]);
++	}
++
++	if (pool->used >= pool->size || !pool->size) {
+ 		spin_unlock(&ubi->wl_lock);
++		if (retried) {
++			ubi_err("Unable to get a free PEB from user WL pool");
++			ret = -ENOSPC;
++			goto out;
++		}
++		retried = 1;
++		goto again;
  	}
+ 
++	ret = pool->pebs[pool->used++];
++	prot_queue_add(ubi, ubi->lookuptbl[ret]);
++	spin_unlock(&ubi->wl_lock);
++out:
+ 	return ret;
  }
  
-+static void ubi_fastmap_close(struct ubi_device *ubi)
-+{
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+	int i;
-+
-+	flush_work(&ubi->fm_work);
-+	return_unused_pool_pebs(ubi, &ubi->fm_pool);
-+	return_unused_pool_pebs(ubi, &ubi->fm_wl_pool);
-+
-+	if (ubi->fm) {
-+		for (i = 0; i < ubi->fm->used_blocks; i++)
-+			kfree(ubi->fm->e[i]);
-+	}
-+	kfree(ubi->fm);
-+#endif
-+}
-+
- /**
-  * ubi_wl_close - close the wear-leveling sub-system.
-  * @ubi: UBI device description object
-@@ -2062,9 +2079,7 @@ static void protection_queue_destroy(struct ubi_device *ubi)
- void ubi_wl_close(struct ubi_device *ubi)
- {
- 	dbg_wl("close the WL sub-system");
--#ifdef CONFIG_MTD_UBI_FASTMAP
--	flush_work(&ubi->fm_work);
--#endif
-+	ubi_fastmap_close(ubi);
- 	shutdown_work(ubi);
- 	protection_queue_destroy(ubi);
- 	tree_destroy(&ubi->used);
 -- 
 1.8.4.5
