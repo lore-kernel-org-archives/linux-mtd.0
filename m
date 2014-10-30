@@ -1,31 +1,18 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+Received: from mail-bn1bn0107.outbound.protection.outlook.com
+ ([157.56.110.107] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjfUI-0007s0-8U
- for linux-mtd@lists.infradead.org; Thu, 30 Oct 2014 02:29:23 +0000
-Received: by mail-pd0-f174.google.com with SMTP id p10so4157397pdj.19
- for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2014 19:29:00 -0700 (PDT)
-Message-ID: <5451A249.3040909@gmail.com>
-Date: Thu, 30 Oct 2014 10:28:25 +0800
-From: Zhou Wang <wangzhou.bry@gmail.com>
+ id 1XjgLD-0003ZP-VF
+ for linux-mtd@lists.infradead.org; Thu, 30 Oct 2014 03:24:10 +0000
+From: Chunhe Lan <Chunhe.Lan@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2] mtd: spi-nor: Move n25q032 entry to Micron devices list
+Date: Thu, 30 Oct 2014 11:26:12 +0800
+Message-ID: <1414639572-28756-1-git-send-email-Chunhe.Lan@freescale.com>
 MIME-Version: 1.0
-To: Frans Klaver <fransklaver@gmail.com>
-Subject: Re: [PATCH v3 1/2] mtd: hisilicon: add a new NAND controller driver
- for hisilicon hip04 Soc
-References: <1414493629-12570-1-git-send-email-wangzhou.bry@gmail.com>
- <1414493629-12570-2-git-send-email-wangzhou.bry@gmail.com>
- <CAH6sp9MuL+AAvMi1VrmOhq5Y-ri2DKO3g0h1hw040h5=CRu6UQ@mail.gmail.com>
-In-Reply-To: <CAH6sp9MuL+AAvMi1VrmOhq5Y-ri2DKO3g0h1hw040h5=CRu6UQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- haojian.zhuang@gmail.com, wangzhou1@hisilicon.com,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- xuwei5@hisilicon.com, Kumar Gala <galak@codeaurora.org>, caizhiyong@huawei.com,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ zajec5@gmail.com, Huang Shijie <shijie8@gmail.com>,
+ Chunhe Lan <Chunhe.Lan@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,66 +22,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014年10月28日 22:22, Frans Klaver wrote:
-> On Tue, Oct 28, 2014 at 11:53 AM, Zhou Wang <wangzhou.bry@gmail.com> wrote:
->> +
->> +static int hisi_nfc_probe(struct platform_device *pdev)
->> +{
->> +       int ret = 0, irq, buswidth, flag, max_chips = HINFC504_MAX_CHIP;
->> +       struct device *dev = &pdev->dev;
->> +       struct hinfc_host *host;
->> +       struct nand_chip  *chip;
->> +       struct mtd_info   *mtd;
->> +       struct resource   *res;
->> +       struct device_node *np = dev->of_node;
->> +       struct mtd_part_parser_data ppdata;
->> +
->> +       host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
->> +       if (!host)
->> +               return -ENOMEM;
->> +       host->dev = dev;
->> +
->> +       platform_set_drvdata(pdev, host);
->> +       chip = &host->chip;
->> +       mtd  = &host->mtd;
->> +
->> +       irq = platform_get_irq(pdev, 0);
->> +       if (irq < 0) {
->> +               dev_err(dev, "no IRQ resource defined\n");
->> +               ret = -ENXIO;
->> +               goto err_res;
->> +       }
->> +
->> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +       host->iobase = devm_ioremap_resource(dev, res);
->> +       if (IS_ERR(host->iobase)) {
->> +               ret = PTR_ERR(host->iobase);
->> +               dev_err(dev, "devm_ioremap_resource[0] fail\n");
->> +               goto err_res;
->> +       }
->> +
->> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->> +       chip->IO_ADDR_R = chip->IO_ADDR_W = devm_ioremap_resource(dev, res);
->> +       if (IS_ERR(chip->IO_ADDR_R)) {
->> +               ret = PTR_ERR(chip->IO_ADDR_R);
->> +               dev_err(dev, "devm_ioremap_resource[1] fail\n");
->> +               goto err_res;
->> +       }
->> +
->> +       mtd->priv               = chip;
->> +       mtd->owner              = THIS_MODULE;
->> +       mtd->name               = "hisi_nand";
->
-> + mtd->dev.parent = &pdev->dev;
->
-> This is a bug that lives in a bunch of other nand drivers as well.
-> add_mtd_device (called by mtd_device_parse_register()) expects
-> dev.parent to be set for properly adding a device reference to the
-> sysfs node.
->
-> Frans
->
-My mistake, I will add this line. Thanks a lot for your reminding.
+Because n25q032 is the Micron SPI chip, move it to Micron
+devices list group. In order that know which Micron SPI
+chips have been support at a glance. 
 
-Kind regards,
-Zhou Wang
+Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>
+Cc: Huang Shijie <shijie8@gmail.com>
+---
+Changes since v1:
+* Add commit message.
+
+ drivers/mtd/spi-nor/spi-nor.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index ae16aa2..1fa5e05 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -530,6 +530,7 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+ 
+ 	/* Micron */
++	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, 0) },
+ 	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0) },
+ 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
+@@ -586,7 +587,6 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "m25p32",  INFO(0x202016,  0,  64 * 1024,  64, 0) },
+ 	{ "m25p64",  INFO(0x202017,  0,  64 * 1024, 128, 0) },
+ 	{ "m25p128", INFO(0x202018,  0, 256 * 1024,  64, 0) },
+-	{ "n25q032", INFO(0x20ba16,  0,  64 * 1024,  64, 0) },
+ 
+ 	{ "m25p05-nonjedec",  INFO(0, 0,  32 * 1024,   2, 0) },
+ 	{ "m25p10-nonjedec",  INFO(0, 0,  32 * 1024,   4, 0) },
+-- 
+1.7.6.5
