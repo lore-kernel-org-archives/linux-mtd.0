@@ -1,21 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-wg0-x236.google.com ([2a00:1450:400c:c00::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XjgNb-0006Uv-Nx
- for linux-mtd@lists.infradead.org; Thu, 30 Oct 2014 03:26:32 +0000
-From: Marek Vasut <marex@denx.de>
-To: Chunhe Lan <Chunhe.Lan@freescale.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: Move n25q032 entry to Micron devices list
-Date: Thu, 30 Oct 2014 04:26:05 +0100
-References: <1414639572-28756-1-git-send-email-Chunhe.Lan@freescale.com>
-In-Reply-To: <1414639572-28756-1-git-send-email-Chunhe.Lan@freescale.com>
+ id 1Xjioj-0007OF-6Q
+ for linux-mtd@lists.infradead.org; Thu, 30 Oct 2014 06:02:42 +0000
+Received: by mail-wg0-f54.google.com with SMTP id m15so3449393wgh.27
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2014 23:02:19 -0700 (PDT)
+In-Reply-To: <20141030014704.GE23619@ld-irv-0074>
+References: <1414416749-19598-1-git-send-email-frans.klaver@xsens.com>
+ <1414420445-9020-1-git-send-email-frans.klaver@xsens.com>
+ <544F6611.1000801@ti.com> <20141030014704.GE23619@ld-irv-0074>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201410300426.05839.marex@denx.de>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie8@gmail.com>, zajec5@gmail.com,
- linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=UTF-8
+Subject: Re: [PATCH v2] mtd: omap: fix mtd devices not showing up
+From: Frans Klaver <fransklaver@gmail.com>
+Date: Thu, 30 Oct 2014 07:02:11 +0100
+To: Brian Norris <computersforpeace@gmail.com>,Roger Quadros <rogerq@ti.com>
+Message-ID: <D7E4DB5C-45E3-44BE-AD26-41042FD0AAD6@gmail.com>
+Cc: Frans Klaver <frans.klaver@xsens.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ =?ISO-8859-1?Q?Ezequiel_Garc=EDa?= <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, October 30, 2014 at 04:26:12 AM, Chunhe Lan wrote:
-> Because n25q032 is the Micron SPI chip, move it to Micron
-> devices list group. In order that know which Micron SPI
-> chips have been support at a glance.
-> 
-> Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Marek Vasut <marex@denx.de>
-> Cc: Huang Shijie <shijie8@gmail.com>
+On 30 October 2014 02:47:04 CET, Brian Norris <computersforpeace@gmail.com> wrote:
+>On Tue, Oct 28, 2014 at 11:46:57AM +0200, Roger Quadros wrote:
+>> On 10/27/2014 04:34 PM, Frans Klaver wrote:
+>> > Since commit 6d178ef2fd5e ("mtd: nand: Move ELM driver and rename
+>as
+>> > omap_elm"), I don't have any mtd devices present on my am335x. This
+>> > changes the link order of the omap_elm and omap2 objects, causing
+>them
+>> > to probe in the wrong order.
+>> > 
+>> > To fix this, make elm_config defer probing until the omap_elm
+>driver is
+>> > actually loaded.
+>> > 
+>> > Signed-off-by: Frans Klaver <frans.klaver@xsens.com>
+>> 
+>> Acked-by: Roger Quadros <rogerq@ti.com>
+>
+>Pushed to l2-mtd.git/for-3.18. Thanks!
 
-Rafal, you were right :)
+Thanks 
 
-Acked-by: Marek Vasut <marex@denx.de>
+>While this might be considered a link-order bug from long ago, it's not
+>actually important until 3.18-rc1 where we changed the link order,
+>right? So it doesn't need to go to -stable?
 
-Best regards,
-Marek Vasut
+Correct. 
+
+Thanks, 
+Frans 
