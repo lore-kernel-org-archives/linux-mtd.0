@@ -1,14 +1,17 @@
 Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XkHIE-0008EP-RY
- for linux-mtd@lists.infradead.org; Fri, 31 Oct 2014 18:51:27 +0000
+ id 1XkHIJ-0008F3-7J
+ for linux-mtd@lists.infradead.org; Fri, 31 Oct 2014 18:51:31 +0000
 From: Ben Shelton <ben.shelton@ni.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/4] UBIFS: add xattr support for security / SELinux
-Date: Fri, 31 Oct 2014 13:50:27 -0500
-Message-Id: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
-Cc: Ben Shelton <ben.shelton@ni.com>, linux-kernel@vger.kernel.org,
- adrian.hunter@intel.com, dedekind1@gmail.com
+Subject: [PATCH 2/4] UBIFS: Add xattr support for symlinks
+Date: Fri, 31 Oct 2014 13:50:29 -0500
+Message-Id: <1414781431-2911-3-git-send-email-ben.shelton@ni.com>
+In-Reply-To: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
+References: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
+Cc: Subodh Nijsure <snijsure@grid-net.com>, dedekind1@gmail.com,
+ Ben Shelton <ben.shelton@ni.com>, linux-kernel@vger.kernel.org,
+ adrian.hunter@intel.com, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,41 +21,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm reposting the patch series for security xattr / SELinux support on UBIFS
-from Subodh Nijsure and Marc Kleine-Budde [1] in order to restart the process
-of getting this support upstream.
+From: Subodh Nijsure <snijsure@grid-net.com>
 
-Notes:
+Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+Acked-by: Terry Wilcox <terry.wilcox@ni.com>
+Acked-by: Gratian Crisan <gratian.crisan@ni.com>
+---
+ fs/ubifs/file.c  |  4 ++++
+ fs/ubifs/xattr.c | 17 ++++++++++++-----
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
- - I removed 'UBIFS: xattr: protect ui_size and data_len by ui_mutex' because
-   after looking through the comments before the definition of struct
-   ubifs_inode, I'm not sure what this was intended to fix.  It looks like
-   i_size and data_len are not intended to be protected by ui_mutex, and I'm
-   unclear on why ui->ui_size needs to be protected here by host_ui's ui_mutex.
-   CCing Marc -- could you comment on how this is supposed to work?
-
- - I made the suggested locking fixes in [2], with the exception of removing the
-   i_mutex lock/unlock around the call to security_inode_init_security(), which 
-   caused an assert.  With these fixes, I turned on lockdep and ran with SELinux
-   enabled on an ARM-based embedded target using UBIFS, and I saw no lockdep
-   warnings during filesystem labeling and normal operation.
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2013-February/045794.html
-[2] http://lists.infradead.org/pipermail/linux-mtd/2013-February/045871.html
-
-Subodh Nijsure (4):
-  UBIFS: fix a couple bugs in UBIFS xattr length calculation
-  UBIFS: Add xattr support for symlinks
-  UBIFS: Add security.* XATTR support for the UBIFS
-  UBIFS: add ubifs_err() to print error reason
-
- fs/ubifs/dir.c     |  20 +++++++++
- fs/ubifs/file.c    |   4 ++
- fs/ubifs/journal.c |  11 ++++-
- fs/ubifs/super.c   |   1 +
- fs/ubifs/ubifs.h   |   4 ++
- fs/ubifs/xattr.c   | 116 ++++++++++++++++++++++++++++++++++++++++++++++++-----
- 6 files changed, 145 insertions(+), 11 deletions(-)
-
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index b5b593c..4a1d4cf 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1573,6 +1573,10 @@ const struct inode_operations ubifs_symlink_inode_operations = {
+ 	.follow_link = ubifs_follow_link,
+ 	.setattr     = ubifs_setattr,
+ 	.getattr     = ubifs_getattr,
++	.setxattr    = ubifs_setxattr,
++	.getxattr    = ubifs_getxattr,
++	.listxattr   = ubifs_listxattr,
++	.removexattr = ubifs_removexattr,
+ };
+ 
+ const struct file_operations ubifs_file_operations = {
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index 5e0a63b..d0f69c2 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -293,18 +293,16 @@ static struct inode *iget_xattr(struct ubifs_info *c, ino_t inum)
+ 	return ERR_PTR(-EINVAL);
+ }
+ 
+-int ubifs_setxattr(struct dentry *dentry, const char *name,
+-		   const void *value, size_t size, int flags)
++static int __ubifs_setxattr(struct inode *host, const char *name,
++			    const void *value, size_t size, int flags)
+ {
+-	struct inode *inode, *host = dentry->d_inode;
++	struct inode *inode;
+ 	struct ubifs_info *c = host->i_sb->s_fs_info;
+ 	struct qstr nm = QSTR_INIT(name, strlen(name));
+ 	struct ubifs_dent_node *xent;
+ 	union ubifs_key key;
+ 	int err, type;
+ 
+-	dbg_gen("xattr '%s', host ino %lu ('%pd'), size %zd", name,
+-		host->i_ino, dentry, size);
+ 	ubifs_assert(mutex_is_locked(&host->i_mutex));
+ 
+ 	if (size > UBIFS_MAX_INO_DATA)
+@@ -356,6 +354,15 @@ out_free:
+ 	return err;
+ }
+ 
++int ubifs_setxattr(struct dentry *dentry, const char *name,
++		   const void *value, size_t size, int flags)
++{
++	dbg_gen("xattr '%s', host ino %lu ('%pd'), size %zd",
++		name, dentry->d_inode->i_ino, dentry, size);
++
++	return __ubifs_setxattr(dentry->d_inode, name, value, size, flags);
++}
++
+ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
+ 		       size_t size)
+ {
 -- 
 2.1.1
