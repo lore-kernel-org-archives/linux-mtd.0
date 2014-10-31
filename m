@@ -1,17 +1,17 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xk9aM-0000QJ-H0
- for linux-mtd@lists.infradead.org; Fri, 31 Oct 2014 10:37:39 +0000
-Message-ID: <5453663A.8080608@huawei.com>
-Date: Fri, 31 Oct 2014 18:36:42 +0800
+Message-ID: <54536834.1020005@huawei.com>
+Date: Fri, 31 Oct 2014 18:45:08 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Report: mtd-utils: "Floating point exception" with ubiformat
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] UBI: vtbl: Use ubi_eba_atomic_leb_change()
+References: <1414259021-5691-1-git-send-email-richard@nod.at>
+ <1414659349.23185.27.camel@sauron.fi.intel.com> <54530A29.9070208@huawei.com>
+ <545343CA.7080507@nod.at>
+In-Reply-To: <545343CA.7080507@nod.at>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,54 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 2014/10/31 16:09, Richard Weinberger wrote:
+> Hujianyang,
+> 
+> Am 31.10.2014 um 05:03 schrieb hujianyang:
+>> Hi Artem and Richard,
+>>
+>> We are using atomic operation, leb_change(), for master_node
+>> in ubifs-level. We use two lebs for master_node even if they
+>> are changed with atomic operation.
+>>
+>> I think volume_table and master_node play similar roles. Do
+>> you think changing VTBL record into one peb is OK? I just
+>> what to know if I missed something. Could you please take
+>> some time to explain that?
+> 
+> I'm not sure if I correctly understand your question.
+> 
+> If we use only one PEB for the VTBL existing UBI implementations
+> would break as they assume we have two.
+> 
+> Thanks,
+> //richard
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
 
-Here is an interesting problem. I used a nand flash driver with
-wrong partition table and an error like this occurred:
-
-# insmod nandflash.ko
-
-[454096.098834] mtd: partition "ubi1" is out of reach -- disabled
-
-
-The display of /proc/mtd shows the size of mtd1 is zero:
-
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 20000000 00020000 "ubi0"
-mtd1: 00000000 00000000 "ubi1"
-mtd2: 20000000 00020000 "rest"
-
-
-When performing ubiformat with this mtd1, the utility breaks
-down with a message:
-
-# ubiformat /dev/mtd1
-Floating point exception
-
-
-I used to think it is because ubiformat can't deal with a zero
-size MTD device. So I want to add something like a error branch
-for this. But now I find it is because the "erasesize" in
-"/sys/class/mtd/mtd1" is zero.
-
-:/sys/class/mtd/mtd1# cat erasesize
-0
-
-So function mtd_get_dev_info1() in lib/libmtd.c, line 777
+This question is basing on your comment for this patch:
 
 """
-mtd->eb_cnt = mtd->size / mtd->eb_size;
+we can guarantee that the first VTBL record is always
+correct and we don't really need the second one anymore.
 """
 
-will crash the program because mtd->eb_size is zero.
-
-
-Do you think it is a valuable problem to deal with? Keep the
-existing logic is OK. But can we add something in mtd-utils
-to indicate this error than "Floating point exception"?
-
-
-Thanks~!
-
-Hu
+I think that means one PEB is enough in your considering.
+So I want to know if you are sure about this. Because
+we use two leb for master_node in ubifs-level. So maybe
+VTBL is like super_node, not master_node, right?
