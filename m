@@ -1,15 +1,16 @@
-Received: from bay004-omc1s22.hotmail.com ([65.54.190.33])
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XktWe-0006E7-CU
- for linux-mtd@lists.infradead.org; Sun, 02 Nov 2014 11:40:52 +0000
-Message-ID: <BAY176-DS9CAF0187DEFFDC2D1BB65AE980@phx.gbl>
-From: "Roy Yang" <smallboss@outlook.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: JFFS2 deadlock in Linux 2.6.32
-Date: Sun, 2 Nov 2014 19:40:31 +0800
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="gb2312"; reply-type=original
-Content-Transfer-Encoding: 7bit
+ id 1Xkumo-0007NS-RQ
+ for linux-mtd@lists.infradead.org; Sun, 02 Nov 2014 13:01:40 +0000
+From: Richard Weinberger <richard@nod.at>
+To: hch@infradead.org, axboe@fb.com, dedekind1@gmail.com,
+ ezequiel.garcia@free-electrons.com
+Subject: [PATCH] UBI: Block: Add blk-mq support
+Date: Sun,  2 Nov 2014 14:00:55 +0100
+Message-Id: <1414933255-3795-1-git-send-email-richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,89 +20,373 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-   I encountered jffs2 deadlock between jffs2 GC and user space reading 
-process:
+Convert the driver to blk-mq.
 
-  task                        PC stack   pid father
-sync_supers   D ffffffff8011443c     0   131      2 0x00100000
-Stack : 0000000000000000 0000000000000000 0000000000000000 ffffffff8339fe90
-        000000010032377d a800000101146d50 0000000000000001 a80000000c2871c0
-        0000000000000000 0000000000000000 a800000101146d50 ffffffff810055c0
-        000000000007a120 ffffffff8335c480 ffffffff8335b1c0 a80000010137fb50
-        a80000000c288c80 a80000000c288480 a80000010137fbc0 a80000000c2826b8
-        0000000000000002 0000000000000001 ffffffff8034c230 0000000000000002
-        0000000000000001 ffffffff8011443c 0000000000000000 0000000000000000
-        a80000010137fbb0 ffffffff8034c278 a80000010137fbc0 ffffffff80114914
-        0000000000000017 a8000000068f3420 00000000000f7000 00000000000000f7
-        a8000000f58d9bf8 00000000000201da a8000000f58d9ae0 ffffffff804695f8
-        ...
-Call Trace:
-[<ffffffff80113cc0>] schedule+0x2a0/0x9b0
-[<ffffffff8011443c>] io_schedule+0x6c/0xf8
-[<ffffffff8034c278>] sync_page+0x48/0x70
-[<ffffffff80114914>] __wait_on_bit_lock+0xc4/0x138
-[<ffffffff8034c200>] __lock_page+0x50/0x60
-[<ffffffff8034ca34>] do_read_cache_page+0x124/0x1f0
-[<ffffffff80474a9c>] jffs2_gc_fetch_page+0x2c/0xa8
-[<ffffffff804728d8>] jffs2_garbage_collect_pass+0xff0/0x18a0
-[<ffffffff80478424>] jffs2_flush_wbuf_gc+0xa4/0x188
-[<ffffffff8047609c>] jffs2_write_super+0x6c/0x80
-[<ffffffff8038a1f0>] sync_supers+0x138/0x140
-[<ffffffff80361ac4>] bdi_sync_supers+0x44/0x68
-[<ffffffff803273e8>] kthread+0x88/0x90
-[<ffffffff802e4b20>] kernel_thread_helper+0x10/0x18
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/block.c | 241 ++++++++++++++++++++++++++++--------------------
+ 1 file changed, 143 insertions(+), 98 deletions(-)
 
-CPC           D ffffffff80114e4c     0  2104   2085 0x0c100000
-Stack : 0000000000000000 0000000000000001 0000000000000000 0000000000200200
-        00000000ffffa0d5 a8000000f5d9f7d0 0000000000000008 a80000000c2b71c0
-        0000000000000000 0000000000000002 a8000000f5d9f7d0 ffffffff810055c0
-        000000000007a120 ffffffff8335c480 ffffffff8335b1c0 0000000000000001
-        0000000000000001 a8000000f58d9a88 ffffffffffffffff a8000000f58d9a8c
-        a8000000f5d9f540 0000000000000002 a8000000f58d9a90 000000000000bc5a
-        a8000000f58d9c00 ffffffff80114e4c 000000000000001a a8000000f58d9bf8
-        a8000000f58d9a90 a8000000f58d9a90 a8000000f5d9f540 00000000000000f7
-        a8000000f58d9a88 a8000000f58d9a88 000000000000001a a8000000f58d9bf8
-        0000000000100100 0000000000200200 000000000000001a ffffffff80114f70
-        ...
-Call Trace:
-[<ffffffff80113cc0>] schedule+0x2a0/0x9b0
-[<ffffffff80114e4c>] __mutex_lock_slowpath+0x18c/0x258
-[<ffffffff80114f70>] mutex_lock+0x58/0x70
-[<ffffffff80469660>] jffs2_readpage+0x28/0x60
-[<ffffffff80355494>] __do_page_cache_readahead+0x21c/0x238
-[<ffffffff803554d4>] ra_submit+0x24/0x30
-[<ffffffff80355944>] page_cache_async_readahead+0xcc/0x128
-[<ffffffff8034e208>] generic_file_aio_read+0x4b8/0x648
-[<ffffffff80387664>] do_sync_read+0xbc/0x130
-[<ffffffff80388464>] vfs_read+0xbc/0x170
-[<ffffffff8038861c>] SyS_read+0x54/0xb8
-[<ffffffff80102c44>] handle_sys64+0x44/0x64
-
-The deadlock happened as the follow call trace show:
-GC:
-jffs2_garbage_collect_live
-    mutex_lock(&f->sem)                         (Taken: f->sem)
-    jffs2_garbage_collect_dnode [static]
-        jffs2_gc_fetch_page
-            read_cache_page_async
-                do_read_cache_page
-                    lock_page(page) [static]    (Block: page lock )
-
-CPC:
-generic_file_aio_read
-    do_generic_file_read
-        page_cache_async_readahead
-            ra_submit
-            __do_page_cache_readahead          (Taken: page lock)
-            readpage: jffs2_readpage
-               mutex_lock(&f->sem)                   (Block: f->sem)
-
-The targe system is Cavium CN6230 SOC, with 2.6.32 Linux, NAND flash.
-It triggered during the startup just after mounted MTD partitions and
-user application reading big file to memory.
-
-
-Best regards!
-
-Roy Yang 
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 8876c7d..aac956a 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -42,11 +42,12 @@
+ #include <linux/list.h>
+ #include <linux/mutex.h>
+ #include <linux/slab.h>
+-#include <linux/vmalloc.h>
+ #include <linux/mtd/ubi.h>
+ #include <linux/workqueue.h>
+ #include <linux/blkdev.h>
++#include <linux/blk-mq.h>
+ #include <linux/hdreg.h>
++#include <linux/scatterlist.h>
+ #include <asm/div64.h>
+ 
+ #include "ubi-media.h"
+@@ -61,12 +62,25 @@
+ /* Maximum number of comma-separated items in the 'block=' parameter */
+ #define UBIBLOCK_PARAM_COUNT 2
+ 
++#define UBIBLOCK_SG_COUNT 64
++
+ struct ubiblock_param {
+ 	int ubi_num;
+ 	int vol_id;
+ 	char name[UBIBLOCK_PARAM_LEN+1];
+ };
+ 
++struct ubiblock_pdu {
++	struct request *req;
++	sector_t req_sec;
++	int req_len;
++	struct ubiblock *dev;
++	struct work_struct work;
++	int sglist_pos;
++	int sgpage_pos;
++	struct scatterlist sglist[UBIBLOCK_SG_COUNT];
++};
++
+ /* Numbers of elements set in the @ubiblock_param array */
+ static int ubiblock_devs __initdata;
+ 
+@@ -84,11 +98,10 @@ struct ubiblock {
+ 	struct request_queue *rq;
+ 
+ 	struct workqueue_struct *wq;
+-	struct work_struct work;
+ 
+ 	struct mutex dev_mutex;
+-	spinlock_t queue_lock;
+ 	struct list_head list;
++	struct blk_mq_tag_set tag_set;
+ };
+ 
+ /* Linked list of all ubiblock instances */
+@@ -181,28 +194,53 @@ static struct ubiblock *find_dev_nolock(int ubi_num, int vol_id)
+ 	return NULL;
+ }
+ 
+-static int ubiblock_read_to_buf(struct ubiblock *dev, char *buffer,
+-				int leb, int offset, int len)
++static int ubiblock_read_to_sg(struct ubiblock_pdu *pdu, int leb,
++				int leb_offset, int len)
+ {
++	int to_read;
+ 	int ret;
++	struct scatterlist *sg;
++	struct ubiblock *dev = pdu->dev;
++
++	for (;;) {
++		sg = &pdu->sglist[pdu->sglist_pos];
++		if (len < sg->length - pdu->sgpage_pos)
++			to_read = len;
++		else
++			to_read = sg->length - pdu->sgpage_pos;
++
++		ret = ubi_read(dev->desc, leb, sg_virt(sg) + pdu->sgpage_pos,
++			       leb_offset, to_read);
++		if (ret < 0)
++			goto out;
+ 
+-	ret = ubi_read(dev->desc, leb, buffer, offset, len);
+-	if (ret) {
+-		ubi_err("%s: error %d while reading from LEB %d (offset %d, "
+-		        "length %d)", dev->gd->disk_name, ret, leb, offset,
+-			len);
+-		return ret;
++		leb_offset += to_read;
++		len -= to_read;
++		if (!len) {
++			pdu->sgpage_pos += to_read;
++			if (pdu->sgpage_pos == sg->length) {
++				pdu->sglist_pos++;
++				pdu->sgpage_pos = 0;
++			}
++
++			break;
++		}
++
++		pdu->sglist_pos++;
++		pdu->sgpage_pos = 0;
+ 	}
+-	return 0;
++
++out:
++	return ret;
+ }
+ 
+-static int ubiblock_read(struct ubiblock *dev, char *buffer,
+-			 sector_t sec, int len)
++static int ubiblock_read(struct ubiblock_pdu *pdu)
+ {
+ 	int ret, leb, offset;
+-	int bytes_left = len;
+-	int to_read = len;
+-	u64 pos = sec << 9;
++	int bytes_left = pdu->req_len;
++	int to_read = pdu->req_len;
++	struct ubiblock *dev = pdu->dev;
++	u64 pos = pdu->req_sec << 9;
+ 
+ 	/* Get LEB:offset address to read from */
+ 	offset = do_div(pos, dev->leb_size);
+@@ -216,11 +254,10 @@ static int ubiblock_read(struct ubiblock *dev, char *buffer,
+ 		if (offset + to_read > dev->leb_size)
+ 			to_read = dev->leb_size - offset;
+ 
+-		ret = ubiblock_read_to_buf(dev, buffer, leb, offset, to_read);
+-		if (ret)
++		ret = ubiblock_read_to_sg(pdu, leb, offset, to_read);
++		if (ret < 0)
+ 			return ret;
+ 
+-		buffer += to_read;
+ 		bytes_left -= to_read;
+ 		to_read = bytes_left;
+ 		leb += 1;
+@@ -229,79 +266,6 @@ static int ubiblock_read(struct ubiblock *dev, char *buffer,
+ 	return 0;
+ }
+ 
+-static int do_ubiblock_request(struct ubiblock *dev, struct request *req)
+-{
+-	int len, ret;
+-	sector_t sec;
+-
+-	if (req->cmd_type != REQ_TYPE_FS)
+-		return -EIO;
+-
+-	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
+-	    get_capacity(req->rq_disk))
+-		return -EIO;
+-
+-	if (rq_data_dir(req) != READ)
+-		return -ENOSYS; /* Write not implemented */
+-
+-	sec = blk_rq_pos(req);
+-	len = blk_rq_cur_bytes(req);
+-
+-	/*
+-	 * Let's prevent the device from being removed while we're doing I/O
+-	 * work. Notice that this means we serialize all the I/O operations,
+-	 * but it's probably of no impact given the NAND core serializes
+-	 * flash access anyway.
+-	 */
+-	mutex_lock(&dev->dev_mutex);
+-	ret = ubiblock_read(dev, bio_data(req->bio), sec, len);
+-	mutex_unlock(&dev->dev_mutex);
+-
+-	return ret;
+-}
+-
+-static void ubiblock_do_work(struct work_struct *work)
+-{
+-	struct ubiblock *dev =
+-		container_of(work, struct ubiblock, work);
+-	struct request_queue *rq = dev->rq;
+-	struct request *req;
+-	int res;
+-
+-	spin_lock_irq(rq->queue_lock);
+-
+-	req = blk_fetch_request(rq);
+-	while (req) {
+-
+-		spin_unlock_irq(rq->queue_lock);
+-		res = do_ubiblock_request(dev, req);
+-		spin_lock_irq(rq->queue_lock);
+-
+-		/*
+-		 * If we're done with this request,
+-		 * we need to fetch a new one
+-		 */
+-		if (!__blk_end_request_cur(req, res))
+-			req = blk_fetch_request(rq);
+-	}
+-
+-	spin_unlock_irq(rq->queue_lock);
+-}
+-
+-static void ubiblock_request(struct request_queue *rq)
+-{
+-	struct ubiblock *dev;
+-	struct request *req;
+-
+-	dev = rq->queuedata;
+-
+-	if (!dev)
+-		while ((req = blk_fetch_request(rq)) != NULL)
+-			__blk_end_request_all(req, -ENODEV);
+-	else
+-		queue_work(dev->wq, &dev->work);
+-}
+-
+ static int ubiblock_open(struct block_device *bdev, fmode_t mode)
+ {
+ 	struct ubiblock *dev = bdev->bd_disk->private_data;
+@@ -375,6 +339,67 @@ static const struct block_device_operations ubiblock_ops = {
+ 	.getgeo	= ubiblock_getgeo,
+ };
+ 
++static void ubiblock_do_work(struct work_struct *work)
++{
++	int ret;
++	struct ubiblock_pdu *pdu = container_of(work, struct ubiblock_pdu, work);
++
++	ret = ubiblock_read(pdu);
++	blk_mq_end_request(pdu->req, ret ?: 0);
++}
++
++static int ubiblock_queue_rq(struct blk_mq_hw_ctx *hctx, struct request *req,
++			     bool last)
++{
++	int ret;
++	struct ubiblock *dev = hctx->queue->queuedata;
++	struct ubiblock_pdu *pdu = blk_mq_rq_to_pdu(req);
++
++	if (req->cmd_type != REQ_TYPE_FS)
++		return BLK_MQ_RQ_QUEUE_ERROR;
++
++	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
++	    get_capacity(req->rq_disk))
++		return BLK_MQ_RQ_QUEUE_ERROR;
++
++	if (rq_data_dir(req) != READ)
++		return BLK_MQ_RQ_QUEUE_ERROR; /* Write not implemented */
++
++	pdu->req = req;
++	pdu->req_sec = blk_rq_pos(req);
++	pdu->req_len = blk_rq_bytes(req);
++	pdu->dev = dev;
++	pdu->sglist_pos = 0;
++	pdu->sgpage_pos = 0;
++
++	blk_mq_start_request(req);
++	ret = blk_rq_map_sg(hctx->queue, req, pdu->sglist);
++	BUG_ON(ret > UBIBLOCK_SG_COUNT);
++
++	INIT_WORK(&pdu->work, ubiblock_do_work);
++	queue_work(dev->wq, &pdu->work);
++
++	return BLK_MQ_RQ_QUEUE_OK;
++}
++
++static int ubiblock_init_request(void *data, struct request *req,
++				 unsigned int hctx_idx,
++				 unsigned int request_idx,
++				 unsigned int numa_node)
++{
++	struct ubiblock_pdu *pdu = blk_mq_rq_to_pdu(req);
++
++	sg_init_table(pdu->sglist, UBIBLOCK_SG_COUNT);
++
++	return 0;
++}
++
++static struct blk_mq_ops ubiblock_mq_ops = {
++	.queue_rq       = ubiblock_queue_rq,
++	.init_request	= ubiblock_init_request,
++	.map_queue      = blk_mq_map_queue,
++};
++
+ int ubiblock_create(struct ubi_volume_info *vi)
+ {
+ 	struct ubiblock *dev;
+@@ -418,12 +443,25 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	set_capacity(gd, disk_capacity);
+ 	dev->gd = gd;
+ 
+-	spin_lock_init(&dev->queue_lock);
+-	dev->rq = blk_init_queue(ubiblock_request, &dev->queue_lock);
++	dev->tag_set.ops = &ubiblock_mq_ops;
++	dev->tag_set.queue_depth = 64;
++	dev->tag_set.numa_node = NUMA_NO_NODE;
++	dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
++	dev->tag_set.cmd_size = sizeof(struct ubiblock_pdu);
++	dev->tag_set.driver_data = dev;
++	dev->tag_set.nr_hw_queues = 1;
++
++	ret = blk_mq_alloc_tag_set(&dev->tag_set);
++	if (ret) {
++		ubi_err("block: blk_mq_alloc_tag_set failed");
++		goto out_put_disk;
++	}
++
++	dev->rq = blk_mq_init_queue(&dev->tag_set);
+ 	if (!dev->rq) {
+-		ubi_err("block: blk_init_queue failed");
++		ubi_err("block: blk_mq_init_queue failed");
+ 		ret = -ENODEV;
+-		goto out_put_disk;
++		goto out_free_tags;
+ 	}
+ 
+ 	dev->rq->queuedata = dev;
+@@ -438,7 +476,6 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 		ret = -ENOMEM;
+ 		goto out_free_queue;
+ 	}
+-	INIT_WORK(&dev->work, ubiblock_do_work);
+ 
+ 	mutex_lock(&devices_mutex);
+ 	list_add_tail(&dev->list, &ubiblock_devices);
+@@ -452,6 +489,8 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 
+ out_free_queue:
+ 	blk_cleanup_queue(dev->rq);
++out_free_tags:
++	blk_mq_free_tag_set(&dev->tag_set);
+ out_put_disk:
+ 	put_disk(dev->gd);
+ out_free_dev:
+@@ -464,6 +503,7 @@ static void ubiblock_cleanup(struct ubiblock *dev)
+ {
+ 	del_gendisk(dev->gd);
+ 	blk_cleanup_queue(dev->rq);
++	blk_mq_free_tag_set(&dev->tag_set);
+ 	ubi_msg("%s released", dev->gd->disk_name);
+ 	put_disk(dev->gd);
+ }
+@@ -491,6 +531,9 @@ int ubiblock_remove(struct ubi_volume_info *vi)
+ 	list_del(&dev->list);
+ 	mutex_unlock(&devices_mutex);
+ 
++	/* Make sure that no further work is queued */
++	blk_mq_stop_hw_queues(dev->rq);
++
+ 	/* Flush pending work and stop this workqueue */
+ 	destroy_workqueue(dev->wq);
+ 
+@@ -621,6 +664,8 @@ static void ubiblock_remove_all(void)
+ 	struct ubiblock *dev;
+ 
+ 	list_for_each_entry_safe(dev, next, &ubiblock_devices, list) {
++		/* Make sure that no further work is queued */
++		blk_mq_stop_hw_queues(dev->rq);
+ 		/* Flush pending work and stop workqueue */
+ 		destroy_workqueue(dev->wq);
+ 		/* The module is being forcefully removed */
+-- 
+2.1.0
