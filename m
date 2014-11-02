@@ -1,16 +1,15 @@
-Date: Sat, 1 Nov 2014 09:33:15 -0400 (EDT)
-From: Rodrigo Freire <rfreire@redhat.com>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-Message-ID: <2124950018.4236135.1414848795831.JavaMail.zimbra@redhat.com>
-In-Reply-To: <515696553.1577613.1412867251670.JavaMail.zimbra@redhat.com>
-Subject: [RESEND PATCH V2] mtd: block2mtd: Present block2mtd timely on boot
- time
+Received: from bay004-omc1s22.hotmail.com ([65.54.190.33])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XktWe-0006E7-CU
+ for linux-mtd@lists.infradead.org; Sun, 02 Nov 2014 11:40:52 +0000
+Message-ID: <BAY176-DS9CAF0187DEFFDC2D1BB65AE980@phx.gbl>
+From: "Roy Yang" <smallboss@outlook.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 deadlock in Linux 2.6.32
+Date: Sun, 2 Nov 2014 19:40:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; format=flowed; charset="gb2312"; reply-type=original
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Felix Fietkau <nbd@openwrt.org>,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- Herton Krzesinski <hkrzesin@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,203 +19,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Felix Fietkau <nbd@openwrt.org> 
+Hi,
+   I encountered jffs2 deadlock between jffs2 GC and user space reading 
+process:
 
-mtd: block2mtd: Ensure that block2mtd is presented timely on boot time
+  task                        PC stack   pid father
+sync_supers   D ffffffff8011443c     0   131      2 0x00100000
+Stack : 0000000000000000 0000000000000000 0000000000000000 ffffffff8339fe90
+        000000010032377d a800000101146d50 0000000000000001 a80000000c2871c0
+        0000000000000000 0000000000000000 a800000101146d50 ffffffff810055c0
+        000000000007a120 ffffffff8335c480 ffffffff8335b1c0 a80000010137fb50
+        a80000000c288c80 a80000000c288480 a80000010137fbc0 a80000000c2826b8
+        0000000000000002 0000000000000001 ffffffff8034c230 0000000000000002
+        0000000000000001 ffffffff8011443c 0000000000000000 0000000000000000
+        a80000010137fbb0 ffffffff8034c278 a80000010137fbc0 ffffffff80114914
+        0000000000000017 a8000000068f3420 00000000000f7000 00000000000000f7
+        a8000000f58d9bf8 00000000000201da a8000000f58d9ae0 ffffffff804695f8
+        ...
+Call Trace:
+[<ffffffff80113cc0>] schedule+0x2a0/0x9b0
+[<ffffffff8011443c>] io_schedule+0x6c/0xf8
+[<ffffffff8034c278>] sync_page+0x48/0x70
+[<ffffffff80114914>] __wait_on_bit_lock+0xc4/0x138
+[<ffffffff8034c200>] __lock_page+0x50/0x60
+[<ffffffff8034ca34>] do_read_cache_page+0x124/0x1f0
+[<ffffffff80474a9c>] jffs2_gc_fetch_page+0x2c/0xa8
+[<ffffffff804728d8>] jffs2_garbage_collect_pass+0xff0/0x18a0
+[<ffffffff80478424>] jffs2_flush_wbuf_gc+0xa4/0x188
+[<ffffffff8047609c>] jffs2_write_super+0x6c/0x80
+[<ffffffff8038a1f0>] sync_supers+0x138/0x140
+[<ffffffff80361ac4>] bdi_sync_supers+0x44/0x68
+[<ffffffff803273e8>] kthread+0x88/0x90
+[<ffffffff802e4b20>] kernel_thread_helper+0x10/0x18
 
-Currently, a block MTD device is not presented to the system on time, in 
-order to start mounting the filesystems. This patch ensures that block2mtd 
-is presented at the right time, so filesystems can be mounted on boot time. 
-This issue is seen on BCM2835 (Raspberry Pi) systems when mounting JFFS2 
-over block2mtd devices as the root filesystem.
-This patchset also adds a MTD device name and a timeout option to the driver. 
-Original patchset: 
-https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.12/440-block2mtd_init.patch?rev=40444 
-https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.12/441-block2mtd_probe.patch?rev=40444 
+CPC           D ffffffff80114e4c     0  2104   2085 0x0c100000
+Stack : 0000000000000000 0000000000000001 0000000000000000 0000000000200200
+        00000000ffffa0d5 a8000000f5d9f7d0 0000000000000008 a80000000c2b71c0
+        0000000000000000 0000000000000002 a8000000f5d9f7d0 ffffffff810055c0
+        000000000007a120 ffffffff8335c480 ffffffff8335b1c0 0000000000000001
+        0000000000000001 a8000000f58d9a88 ffffffffffffffff a8000000f58d9a8c
+        a8000000f5d9f540 0000000000000002 a8000000f58d9a90 000000000000bc5a
+        a8000000f58d9c00 ffffffff80114e4c 000000000000001a a8000000f58d9bf8
+        a8000000f58d9a90 a8000000f58d9a90 a8000000f5d9f540 00000000000000f7
+        a8000000f58d9a88 a8000000f58d9a88 000000000000001a a8000000f58d9bf8
+        0000000000100100 0000000000200200 000000000000001a ffffffff80114f70
+        ...
+Call Trace:
+[<ffffffff80113cc0>] schedule+0x2a0/0x9b0
+[<ffffffff80114e4c>] __mutex_lock_slowpath+0x18c/0x258
+[<ffffffff80114f70>] mutex_lock+0x58/0x70
+[<ffffffff80469660>] jffs2_readpage+0x28/0x60
+[<ffffffff80355494>] __do_page_cache_readahead+0x21c/0x238
+[<ffffffff803554d4>] ra_submit+0x24/0x30
+[<ffffffff80355944>] page_cache_async_readahead+0xcc/0x128
+[<ffffffff8034e208>] generic_file_aio_read+0x4b8/0x648
+[<ffffffff80387664>] do_sync_read+0xbc/0x130
+[<ffffffff80388464>] vfs_read+0xbc/0x170
+[<ffffffff8038861c>] SyS_read+0x54/0xb8
+[<ffffffff80102c44>] handle_sys64+0x44/0x64
 
-Signed-off-by: Felix Fietkau <nbd@openwrt.org> 
-Signed-off-by: Herton Ronaldo Krzesinski <herton@redhat.com> 
-Signed-off-by: Rodrigo Freire <rfreire@redhat.com> 
---- 
-V2: Uses kstrdup, removed PAGE_MASK. 
---- a/drivers/mtd/devices/block2mtd.c 2014-09-16 21:38:12.543952627 -0300 
-+++ b/drivers/mtd/devices/block2mtd.c 2014-09-17 17:43:21.424944394 -0300 
-@@ -9,7 +9,15 @@ 
+The deadlock happened as the follow call trace show:
+GC:
+jffs2_garbage_collect_live
+    mutex_lock(&f->sem)                         (Taken: f->sem)
+    jffs2_garbage_collect_dnode [static]
+        jffs2_gc_fetch_page
+            read_cache_page_async
+                do_read_cache_page
+                    lock_page(page) [static]    (Block: page lock )
 
-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt 
+CPC:
+generic_file_aio_read
+    do_generic_file_read
+        page_cache_async_readahead
+            ra_submit
+            __do_page_cache_readahead          (Taken: page lock)
+            readpage: jffs2_readpage
+               mutex_lock(&f->sem)                   (Block: f->sem)
 
-+/* 
-+* When the first attempt at device initialization fails, we may need to 
-+* wait a little bit and retry. This timeout, by default 3 seconds, gives 
-+* device time to start up. Required on BCM2835.
-+*/ 
-+#define MTD_DEFAULT_TIMEOUT 3 
-+ 
-#include <linux/module.h> 
-+#include <linux/delay.h> 
-#include <linux/fs.h> 
-#include <linux/blkdev.h> 
-#include <linux/bio.h> 
-@@ -17,6 +25,7 @@ 
-#include <linux/list.h> 
-#include <linux/init.h> 
-#include <linux/mtd/mtd.h> 
-+#include <linux/mtd/partitions.h> 
-#include <linux/mutex.h> 
-#include <linux/mount.h> 
-#include <linux/slab.h> 
-@@ -209,12 +218,14 @@ static void block2mtd_free_device(struct 
-} 
-
-
--static struct block2mtd_dev *add_device(char *devname, int erase_size) 
-+static struct block2mtd_dev *add_device(char *devname, int erase_size, const char *mtdname, int timeout) 
-{ 
-const fmode_t mode = FMODE_READ | FMODE_WRITE | FMODE_EXCL; 
-- struct block_device *bdev; 
-+ struct block_device *bdev = ERR_PTR(-ENODEV); 
-struct block2mtd_dev *dev; 
-+ struct mtd_partition *part; 
-char *name; 
-+ int i; 
-
-if (!devname) 
-return NULL; 
-@@ -225,15 +236,28 @@ static struct block2mtd_dev *add_device( 
-
-/* Get a handle on the device */ 
-bdev = blkdev_get_by_path(devname, mode, dev); 
--#ifndef MODULE 
-- if (IS_ERR(bdev)) { 
-
-- /* We might not have rootfs mounted at this point. Try 
-- to resolve the device name by other means. */ 
-- 
-- dev_t devt = name_to_dev_t(devname); 
-- if (devt) 
-- bdev = blkdev_get_by_dev(devt, mode, dev); 
-+#ifndef MODULE 
-+/* 
-+* We might not have the root device mounted at this point. 
-+* Try to resolve the device name by other means. 
-+*/ 
-+ for (i = 0; IS_ERR(bdev) && i <= timeout; i++) { 
-+ dev_t devt; 
-+ 
-+ if (i) 
-+ /* 
-+ * Calling wait_for_device_probe in the first loop 
-+ * was not enough, sleep for a bit in subsequent 
-+ * go-arounds. 
-+ */ 
-+ msleep(1000); 
-+ wait_for_device_probe(); 
-+ 
-+ devt = name_to_dev_t(devname); 
-+ if (!devt) 
-+ continue; 
-+ bdev = blkdev_get_by_dev(devt, mode, dev); 
-} 
-#endif 
-
-@@ -257,13 +281,14 @@ static struct block2mtd_dev *add_device( 
-
-/* Setup the MTD structure */ 
-/* make the name contain the block device in */ 
-- name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname); 
-+ if (!mtdname) 
-+ mtdname = devname; 
-+ name = kstrdup (mtdname, GFP_KERNEL); 
-if (!name) 
-goto err_destroy_mutex; 
-
-dev->mtd.name = name; 
-- 
-- dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK; 
-+ dev->mtd.size = dev->blkdev->bd_inode->i_size & ~(erase_size - 1); 
-dev->mtd.erasesize = erase_size; 
-dev->mtd.writesize = 1; 
-dev->mtd.writebufsize = PAGE_SIZE; 
-@@ -276,15 +301,19 @@ static struct block2mtd_dev *add_device( 
-dev->mtd.priv = dev; 
-dev->mtd.owner = THIS_MODULE; 
-
-- if (mtd_device_register(&dev->mtd, NULL, 0)) { 
-+ part = kzalloc(sizeof(struct mtd_partition), GFP_KERNEL); 
-+ part->name = name; 
-+ part->offset = 0; 
-+ part->size = dev->mtd.size; 
-+ if (mtd_device_register(&dev->mtd, part, 1)) { 
-/* Device didn't get added, so free the entry */ 
-goto err_destroy_mutex; 
-} 
-+ 
-list_add(&dev->list, &blkmtd_device_list); 
-pr_info("mtd%d: [%s] erase_size = %dKiB [%d]\n", 
-dev->mtd.index, 
-- dev->mtd.name + strlen("block2mtd: "), 
-- dev->mtd.erasesize >> 10, dev->mtd.erasesize); 
-+ mtdname, dev->mtd.erasesize >> 10, dev->mtd.erasesize); 
-return dev; 
-
-err_destroy_mutex: 
-@@ -353,11 +382,12 @@ static char block2mtd_paramline[80 + 12] 
-
-static int block2mtd_setup2(const char *val) 
-{ 
-- char buf[80 + 12]; /* 80 for device, 12 for erase size */ 
-+ char buf[80 + 12 + 80 + 8]; /* 80 for device, 12 for erase size, 80 for name, 8 for timeout */ 
-char *str = buf; 
-- char *token[2]; 
-+ char *token[4]; 
-char *name; 
-size_t erase_size = PAGE_SIZE; 
-+ unsigned long timeout = MTD_DEFAULT_TIMEOUT; 
-int i, ret; 
-
-if (strnlen(val, sizeof(buf)) >= sizeof(buf)) { 
-@@ -368,7 +398,7 @@ static int block2mtd_setup2(const char * 
-strcpy(str, val); 
-kill_final_newline(str); 
-
-- for (i = 0; i < 2; i++) 
-+ for (i = 0; i < 4; i++) 
-token[i] = strsep(&str, ","); 
-
-if (str) { 
-@@ -395,7 +425,13 @@ static int block2mtd_setup2(const char * 
-} 
-} 
-
-- add_device(name, erase_size); 
-+ if (token[2] && (strlen(token[2]) + 1 > 80)) 
-+ pr_err("mtd device name too long"); 
-+ 
-+ 
-+ if (token[3] && kstrtoul(token[3], 0, &timeout)) 
-+ pr_err("invalid timeout"); 
-+ add_device(name, erase_size, token[2], timeout); 
-
-return 0; 
-} 
-@@ -429,7 +465,7 @@ static int block2mtd_setup(const char *v 
+The targe system is Cavium CN6230 SOC, with 2.6.32 Linux, NAND flash.
+It triggered during the startup just after mounted MTD partitions and
+user application reading big file to memory.
 
 
-module_param_call(block2mtd, block2mtd_setup, NULL, NULL, 0200); 
--MODULE_PARM_DESC(block2mtd, "Device to use. \"block2mtd=<dev>[,<erasesize>]\""); 
-+MODULE_PARM_DESC(block2mtd, "Device to use. \"block2mtd=<dev>[,<erasesize>[,<name>[,<timeout>]]]\""); 
+Best regards!
 
-static int __init block2mtd_init(void) 
-{ 
-@@ -463,8 +499,7 @@ static void block2mtd_exit(void) 
-} 
-} 
-
-- 
--module_init(block2mtd_init); 
-+late_initcall(block2mtd_init); 
-module_exit(block2mtd_exit); 
-
-MODULE_LICENSE("GPL"); 
---- 
-1.7.1
+Roy Yang 
