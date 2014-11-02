@@ -1,16 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xkumo-0007NS-RQ
- for linux-mtd@lists.infradead.org; Sun, 02 Nov 2014 13:01:40 +0000
-From: Richard Weinberger <richard@nod.at>
-To: hch@infradead.org, axboe@fb.com, dedekind1@gmail.com,
- ezequiel.garcia@free-electrons.com
-Subject: [PATCH] UBI: Block: Add blk-mq support
-Date: Sun,  2 Nov 2014 14:00:55 +0100
-Message-Id: <1414933255-3795-1-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- Richard Weinberger <richard@nod.at>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xkv8V-0005kH-U3
+ for linux-mtd@lists.infradead.org; Sun, 02 Nov 2014 13:24:04 +0000
+Message-ID: <54563059.1080405@codeaurora.org>
+Date: Sun, 02 Nov 2014 15:23:37 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
+MIME-Version: 1.0
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
+ handling
+References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
+ <544D5BEC.50802@nod.at> <544E052B.1040505@codeaurora.org>
+ <544E08AE.7080506@nod.at> <5450C997.9010205@codeaurora.org>
+ <5450D6C4.4040400@nod.at> <54538ABC.1040605@codeaurora.org>
+ <5453ABF9.4070208@nod.at>
+In-Reply-To: <5453ABF9.4070208@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,373 +27,176 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Convert the driver to blk-mq.
+On 10/31/2014 5:34 PM, Richard Weinberger wrote:
+> Hi Tanya,
+>
+> Am 31.10.2014 um 14:12 schrieb Tanya Brokhman:
+>> Hi Richard
+>>
+>> On 10/29/2014 2:00 PM, Richard Weinberger wrote:
+>>> Tanya,
+>>>
+>>> Am 29.10.2014 um 12:03 schrieb Tanya Brokhman:
+>>>> I'll try to address all you comments in one place.
+>>>> You're right that the read counters don't have to be exact but they do have to reflect the real state.
+>>>
+>>> But it does not really matter if the counters are a way to high or too low?
+>>> It does also not matter if a re-read of adjacent PEBs is issued too often.
+>>> It won't hurt.
+>>>
+>>>> Regarding your idea of saving them to a file, or somehow with userspace involved; This is doable, but such solution will depend on user space implementation:
+>>>> - one need to update kernel with correct read counters (saved somewhere in userspace)
+>>>> - it is required on every boot.
+>>>> - saving the counters back to userspace should be periodically triggered as well.
+>>>> So the minimal workflow for each boot life cycle will be:
+>>>> - on boot: update kernel with correct values from userspace
+>>>
+>>> Correct.
+>>>
+>>>> - kernel updates the counters on each read operation
+>>>
+>>> Yeah, that's a plain simple in kernel counter..
+>>>
+>>>> - on powerdown: save the updated kernel counters back to userspace
+>>>
+>>> Correct. The counters can also be saved once a day by cron.
+>>> If one or two save operations are missed it won't hurt either.
+>>>
+>>>> The read-disturb handling is based on kernel updating and monitoring read counters. Taking this out of the kernel space will result in an incomplete and very fragile solution for
+>>>> the read-disturb problem since the dependency in userspace is just too big.
+>>>
+>>> Why?
+>>> We both agree on the fact that the counters don't have to be exact.
+>>> Maybe I'm wrong but to my understanding they are just a rough indicator that sometime later UBI has to check for bitrot/flips.
+>>
+>> The idea is to prevent data loss, to prevent errors while reading, because we might hit errors we can't fix. So although the read_disturb_threshold is a rough estimation based on
+>> statistics, we can't ignore it and need to stay close to the calculated statistics.
+>>
+>> Its really the same as wear-leveling. You have a limitation that each peb can be erased limited number of times. This erase-limit is also an estimation based on statistics
+>> collected by the card vendor. But you do want to know the exact number of erase counter to prevent erasing the block extensively.
+>
+> So you have to update the EC-Header every time we read a PEB...?
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/block.c | 241 ++++++++++++++++++++++++++++--------------------
- 1 file changed, 143 insertions(+), 98 deletions(-)
+No, I can't save the read-counter as part of the ec_header because of 
+the erase-before-write limitation. Thats why the read-counters are saved 
+only as part of the fastmap data.
+last_erase_timestamp is saved as part of the ec_header and it's updated 
+each erase operation together with the erase counter. For 
+last_erase_timestamp I used the reserved bytes of the ec_header so not 
+much impact here.
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 8876c7d..aac956a 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -42,11 +42,12 @@
- #include <linux/list.h>
- #include <linux/mutex.h>
- #include <linux/slab.h>
--#include <linux/vmalloc.h>
- #include <linux/mtd/ubi.h>
- #include <linux/workqueue.h>
- #include <linux/blkdev.h>
-+#include <linux/blk-mq.h>
- #include <linux/hdreg.h>
-+#include <linux/scatterlist.h>
- #include <asm/div64.h>
- 
- #include "ubi-media.h"
-@@ -61,12 +62,25 @@
- /* Maximum number of comma-separated items in the 'block=' parameter */
- #define UBIBLOCK_PARAM_COUNT 2
- 
-+#define UBIBLOCK_SG_COUNT 64
-+
- struct ubiblock_param {
- 	int ubi_num;
- 	int vol_id;
- 	char name[UBIBLOCK_PARAM_LEN+1];
- };
- 
-+struct ubiblock_pdu {
-+	struct request *req;
-+	sector_t req_sec;
-+	int req_len;
-+	struct ubiblock *dev;
-+	struct work_struct work;
-+	int sglist_pos;
-+	int sgpage_pos;
-+	struct scatterlist sglist[UBIBLOCK_SG_COUNT];
-+};
-+
- /* Numbers of elements set in the @ubiblock_param array */
- static int ubiblock_devs __initdata;
- 
-@@ -84,11 +98,10 @@ struct ubiblock {
- 	struct request_queue *rq;
- 
- 	struct workqueue_struct *wq;
--	struct work_struct work;
- 
- 	struct mutex dev_mutex;
--	spinlock_t queue_lock;
- 	struct list_head list;
-+	struct blk_mq_tag_set tag_set;
- };
- 
- /* Linked list of all ubiblock instances */
-@@ -181,28 +194,53 @@ static struct ubiblock *find_dev_nolock(int ubi_num, int vol_id)
- 	return NULL;
- }
- 
--static int ubiblock_read_to_buf(struct ubiblock *dev, char *buffer,
--				int leb, int offset, int len)
-+static int ubiblock_read_to_sg(struct ubiblock_pdu *pdu, int leb,
-+				int leb_offset, int len)
- {
-+	int to_read;
- 	int ret;
-+	struct scatterlist *sg;
-+	struct ubiblock *dev = pdu->dev;
-+
-+	for (;;) {
-+		sg = &pdu->sglist[pdu->sglist_pos];
-+		if (len < sg->length - pdu->sgpage_pos)
-+			to_read = len;
-+		else
-+			to_read = sg->length - pdu->sgpage_pos;
-+
-+		ret = ubi_read(dev->desc, leb, sg_virt(sg) + pdu->sgpage_pos,
-+			       leb_offset, to_read);
-+		if (ret < 0)
-+			goto out;
- 
--	ret = ubi_read(dev->desc, leb, buffer, offset, len);
--	if (ret) {
--		ubi_err("%s: error %d while reading from LEB %d (offset %d, "
--		        "length %d)", dev->gd->disk_name, ret, leb, offset,
--			len);
--		return ret;
-+		leb_offset += to_read;
-+		len -= to_read;
-+		if (!len) {
-+			pdu->sgpage_pos += to_read;
-+			if (pdu->sgpage_pos == sg->length) {
-+				pdu->sglist_pos++;
-+				pdu->sgpage_pos = 0;
-+			}
-+
-+			break;
-+		}
-+
-+		pdu->sglist_pos++;
-+		pdu->sgpage_pos = 0;
- 	}
--	return 0;
-+
-+out:
-+	return ret;
- }
- 
--static int ubiblock_read(struct ubiblock *dev, char *buffer,
--			 sector_t sec, int len)
-+static int ubiblock_read(struct ubiblock_pdu *pdu)
- {
- 	int ret, leb, offset;
--	int bytes_left = len;
--	int to_read = len;
--	u64 pos = sec << 9;
-+	int bytes_left = pdu->req_len;
-+	int to_read = pdu->req_len;
-+	struct ubiblock *dev = pdu->dev;
-+	u64 pos = pdu->req_sec << 9;
- 
- 	/* Get LEB:offset address to read from */
- 	offset = do_div(pos, dev->leb_size);
-@@ -216,11 +254,10 @@ static int ubiblock_read(struct ubiblock *dev, char *buffer,
- 		if (offset + to_read > dev->leb_size)
- 			to_read = dev->leb_size - offset;
- 
--		ret = ubiblock_read_to_buf(dev, buffer, leb, offset, to_read);
--		if (ret)
-+		ret = ubiblock_read_to_sg(pdu, leb, offset, to_read);
-+		if (ret < 0)
- 			return ret;
- 
--		buffer += to_read;
- 		bytes_left -= to_read;
- 		to_read = bytes_left;
- 		leb += 1;
-@@ -229,79 +266,6 @@ static int ubiblock_read(struct ubiblock *dev, char *buffer,
- 	return 0;
- }
- 
--static int do_ubiblock_request(struct ubiblock *dev, struct request *req)
--{
--	int len, ret;
--	sector_t sec;
--
--	if (req->cmd_type != REQ_TYPE_FS)
--		return -EIO;
--
--	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
--	    get_capacity(req->rq_disk))
--		return -EIO;
--
--	if (rq_data_dir(req) != READ)
--		return -ENOSYS; /* Write not implemented */
--
--	sec = blk_rq_pos(req);
--	len = blk_rq_cur_bytes(req);
--
--	/*
--	 * Let's prevent the device from being removed while we're doing I/O
--	 * work. Notice that this means we serialize all the I/O operations,
--	 * but it's probably of no impact given the NAND core serializes
--	 * flash access anyway.
--	 */
--	mutex_lock(&dev->dev_mutex);
--	ret = ubiblock_read(dev, bio_data(req->bio), sec, len);
--	mutex_unlock(&dev->dev_mutex);
--
--	return ret;
--}
--
--static void ubiblock_do_work(struct work_struct *work)
--{
--	struct ubiblock *dev =
--		container_of(work, struct ubiblock, work);
--	struct request_queue *rq = dev->rq;
--	struct request *req;
--	int res;
--
--	spin_lock_irq(rq->queue_lock);
--
--	req = blk_fetch_request(rq);
--	while (req) {
--
--		spin_unlock_irq(rq->queue_lock);
--		res = do_ubiblock_request(dev, req);
--		spin_lock_irq(rq->queue_lock);
--
--		/*
--		 * If we're done with this request,
--		 * we need to fetch a new one
--		 */
--		if (!__blk_end_request_cur(req, res))
--			req = blk_fetch_request(rq);
--	}
--
--	spin_unlock_irq(rq->queue_lock);
--}
--
--static void ubiblock_request(struct request_queue *rq)
--{
--	struct ubiblock *dev;
--	struct request *req;
--
--	dev = rq->queuedata;
--
--	if (!dev)
--		while ((req = blk_fetch_request(rq)) != NULL)
--			__blk_end_request_all(req, -ENODEV);
--	else
--		queue_work(dev->wq, &dev->work);
--}
--
- static int ubiblock_open(struct block_device *bdev, fmode_t mode)
- {
- 	struct ubiblock *dev = bdev->bd_disk->private_data;
-@@ -375,6 +339,67 @@ static const struct block_device_operations ubiblock_ops = {
- 	.getgeo	= ubiblock_getgeo,
- };
- 
-+static void ubiblock_do_work(struct work_struct *work)
-+{
-+	int ret;
-+	struct ubiblock_pdu *pdu = container_of(work, struct ubiblock_pdu, work);
-+
-+	ret = ubiblock_read(pdu);
-+	blk_mq_end_request(pdu->req, ret ?: 0);
-+}
-+
-+static int ubiblock_queue_rq(struct blk_mq_hw_ctx *hctx, struct request *req,
-+			     bool last)
-+{
-+	int ret;
-+	struct ubiblock *dev = hctx->queue->queuedata;
-+	struct ubiblock_pdu *pdu = blk_mq_rq_to_pdu(req);
-+
-+	if (req->cmd_type != REQ_TYPE_FS)
-+		return BLK_MQ_RQ_QUEUE_ERROR;
-+
-+	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
-+	    get_capacity(req->rq_disk))
-+		return BLK_MQ_RQ_QUEUE_ERROR;
-+
-+	if (rq_data_dir(req) != READ)
-+		return BLK_MQ_RQ_QUEUE_ERROR; /* Write not implemented */
-+
-+	pdu->req = req;
-+	pdu->req_sec = blk_rq_pos(req);
-+	pdu->req_len = blk_rq_bytes(req);
-+	pdu->dev = dev;
-+	pdu->sglist_pos = 0;
-+	pdu->sgpage_pos = 0;
-+
-+	blk_mq_start_request(req);
-+	ret = blk_rq_map_sg(hctx->queue, req, pdu->sglist);
-+	BUG_ON(ret > UBIBLOCK_SG_COUNT);
-+
-+	INIT_WORK(&pdu->work, ubiblock_do_work);
-+	queue_work(dev->wq, &pdu->work);
-+
-+	return BLK_MQ_RQ_QUEUE_OK;
-+}
-+
-+static int ubiblock_init_request(void *data, struct request *req,
-+				 unsigned int hctx_idx,
-+				 unsigned int request_idx,
-+				 unsigned int numa_node)
-+{
-+	struct ubiblock_pdu *pdu = blk_mq_rq_to_pdu(req);
-+
-+	sg_init_table(pdu->sglist, UBIBLOCK_SG_COUNT);
-+
-+	return 0;
-+}
-+
-+static struct blk_mq_ops ubiblock_mq_ops = {
-+	.queue_rq       = ubiblock_queue_rq,
-+	.init_request	= ubiblock_init_request,
-+	.map_queue      = blk_mq_map_queue,
-+};
-+
- int ubiblock_create(struct ubi_volume_info *vi)
- {
- 	struct ubiblock *dev;
-@@ -418,12 +443,25 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 	set_capacity(gd, disk_capacity);
- 	dev->gd = gd;
- 
--	spin_lock_init(&dev->queue_lock);
--	dev->rq = blk_init_queue(ubiblock_request, &dev->queue_lock);
-+	dev->tag_set.ops = &ubiblock_mq_ops;
-+	dev->tag_set.queue_depth = 64;
-+	dev->tag_set.numa_node = NUMA_NO_NODE;
-+	dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
-+	dev->tag_set.cmd_size = sizeof(struct ubiblock_pdu);
-+	dev->tag_set.driver_data = dev;
-+	dev->tag_set.nr_hw_queues = 1;
-+
-+	ret = blk_mq_alloc_tag_set(&dev->tag_set);
-+	if (ret) {
-+		ubi_err("block: blk_mq_alloc_tag_set failed");
-+		goto out_put_disk;
-+	}
-+
-+	dev->rq = blk_mq_init_queue(&dev->tag_set);
- 	if (!dev->rq) {
--		ubi_err("block: blk_init_queue failed");
-+		ubi_err("block: blk_mq_init_queue failed");
- 		ret = -ENODEV;
--		goto out_put_disk;
-+		goto out_free_tags;
- 	}
- 
- 	dev->rq->queuedata = dev;
-@@ -438,7 +476,6 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 		ret = -ENOMEM;
- 		goto out_free_queue;
- 	}
--	INIT_WORK(&dev->work, ubiblock_do_work);
- 
- 	mutex_lock(&devices_mutex);
- 	list_add_tail(&dev->list, &ubiblock_devices);
-@@ -452,6 +489,8 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 
- out_free_queue:
- 	blk_cleanup_queue(dev->rq);
-+out_free_tags:
-+	blk_mq_free_tag_set(&dev->tag_set);
- out_put_disk:
- 	put_disk(dev->gd);
- out_free_dev:
-@@ -464,6 +503,7 @@ static void ubiblock_cleanup(struct ubiblock *dev)
- {
- 	del_gendisk(dev->gd);
- 	blk_cleanup_queue(dev->rq);
-+	blk_mq_free_tag_set(&dev->tag_set);
- 	ubi_msg("%s released", dev->gd->disk_name);
- 	put_disk(dev->gd);
- }
-@@ -491,6 +531,9 @@ int ubiblock_remove(struct ubi_volume_info *vi)
- 	list_del(&dev->list);
- 	mutex_unlock(&devices_mutex);
- 
-+	/* Make sure that no further work is queued */
-+	blk_mq_stop_hw_queues(dev->rq);
-+
- 	/* Flush pending work and stop this workqueue */
- 	destroy_workqueue(dev->wq);
- 
-@@ -621,6 +664,8 @@ static void ubiblock_remove_all(void)
- 	struct ubiblock *dev;
- 
- 	list_for_each_entry_safe(dev, next, &ubiblock_devices, list) {
-+		/* Make sure that no further work is queued */
-+		blk_mq_stop_hw_queues(dev->rq);
- 		/* Flush pending work and stop workqueue */
- 		destroy_workqueue(dev->wq);
- 		/* The module is being forcefully removed */
+>
+>>
+>>>
+>>>> Another issue to consider is that each SW upgrade will result in loosing the counters saved in userspace and reset all. Otherwise, system upgrade process will also have to be
+>>>> updated.
+>>>
+>>> Does it hurt if these counters are lost upon an upgrade?
+>>> Why do we need them for ever?
+>>> If they start after an upgrade from 0 again heavily read PEBs will quickly gain a high counter and will be checked.
+>>
+>> yes, we do need the ACCURATE counters and cant loose them. For example: we have a heavily read block. It was read from 100 times when the read-threshold is 101. Meaning, the 101
+>> read will most probably fail.
+>
+> You are trying me to tell that the NAND is that crappy that it will die after 100 reads? I really hope this was just a bad example.
+
+Of course not :) it was just an example. The actual value for 
+read-disturb is huge and is defined by the NAND manufacturer.
+
+> You *will* loose counters unless you update the EC-Header upon every read, which is also not sane at all.
+>
+>> You do a SW upgrade, and set the read-counter for this block as 0 and don't scrubb it. Next time you try reading from it (since it's heavily read from block), you'll get errors. If
+>> you're lucky, ecc will fx them for you, but its not guarantied.
+>>
+>>>
+>>> And of course these counters can be preserved. One can also place them into a UBI static volume.
+>>> Or use a sane upgrade process...
+>>
+>> "Sane upgrade" means that in order to support read-disturb we twist the users hand into implementing not a trivial logic in userspace.
+>>
+>>>
+>>> As I wrote in my last mail we could also create a new internal UBI volume to store these counters.
+>>> Then you can have the logic in kernel but don't have to change the UBI on-disk layout.
+>>>
+>>>> The read counters are very much like the ec counters used for wear-leveling; One is updated on each erase, other on each read; One is used to handle issues caused by frequent
+>>>> writes (erase operations), the  other handle issues caused by frequent reads.
+>>>> So how are the two different? Why isn't wear-leveling (and erase counters) handled by userspace? My guess that the decision to encapsulate the wear-leveling into the kernel was due
+>>>> to the above mentioned reasons.
+>>>
+>>> The erase counters are crucial for UBI to operate. Even while booting up the kernel and mounting UBIFS the EC counters have to available
+>>> because UBI maybe needs to move LEBs around or has to find free PEBs which are not worn out. I UBI makes here a bad decision things will break.
+>>
+>> Same with read-counters and last_erase_timestamps. If ec counters are lost, we might get with bad blocks (since they are worn out) and have data loss.
+>> If we ignore read-disturb and don't' scrubb heavily read blocks we will have data loss as well.
+>> the only difference between the 2 scenarios is "how long before it happens". Read-disturb wasn't an issue since average lifespan of a nand device was ~5 years. Read-disturb occurs
+>> in a longer lifespan. that's why it's required now: a need for a "long life nand".
+>
+> Okay, read-disturb will only happen if you read blocks *very* often. Do you have numbers, datasheets, etc...?
+
+Yes. In 0001-mtd-ubi-Read-disturb-infrastructure.patch you'll find:
+#define UBI_RD_THRESHOLD 100000
+Can't share more than that. This value is defined by card manufacturer 
+and configurable by this define.
+
+>
+> Let's recap.
+>
+> We need to address two issues:
+> a) If a PEB is ready very often we need to scrub it.
+
+right. this is what the read-counter is for.
+
+> b) PEBs which are not read for a very long time need to be re-read/scrubbed to detect bit-rot
+
+it need to be scrubbed. this is for data retention and these pebs are 
+found by last_erase_timestamp. I referred to them as "pebs that are 
+rarely accessed. "
+
+>
+> Solving b) is easy, just re-read every PEB from time to time. No persistent data at all is needed.
+
+That isn't good enough. Because if we just re-read the peb we will find 
+the "problematic" once only when the read produces ecc errors. But if we 
+relay on that we may be too late because we might hit ecc errors that we 
+just wont be able to fix and data will be lost. So the goal is *to 
+prevent* ecc errors on read. That's why we need both the read-counter 
+(for heavily read pebs) and the last_erase_timestamp (for once that are 
+rarely accessed).
+
+> To solve a) you suggest adding the read-counter to the UBI on-disk layout like the erase-counter values.
+
+No, not on disk layout. You're mixing the read-counter with the 
+last_erase_timestamp.
+read-counter: maintained only at RAM, saved *only* as part of fastmap 
+data. If fastmap data is lost: read counters are lost too
+last-erase-timestamp: part of ec_header, maintained on disk
+
+> I don't think that this is a good solution.
+> We can perfectly fine save the read-counters from time to time and upon detach either to a file on UBIFS
+> or into a new internal value. As read-disturb will only happen after a long time and hence very high read-counters
+> it does not matter if we lose some values upon a powercut. i.e. Such that a counter is 50000 instead of 50500.
+> Btw: We also have to be very careful that reading data will not wear out the flash.
+>
+> So, we need a logic within UBI which counts every read access and persists this data in some way.
+> As suggested in an earlier mail this can also be done purely in userspace.
+> It can also be done within the UBI kernel module. I.e. by storing the counters into a internal volume.
+>
+> My point is that no on-disk layout change at all is needed.
+
+I hope my previous answer addressed the above as well, since you 
+misunderstood where the read-counters will be saved.
+
+BTW, I described it all in the documentation file I added in patch #1 :)
+
+>
+> Thanks,
+> //richard
+>
+
+
+Thanks,
+Tanya Brokhman
 -- 
-2.1.0
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
