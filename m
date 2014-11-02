@@ -1,12 +1,18 @@
 Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XkvAf-00077a-MX
- for linux-mtd@lists.infradead.org; Sun, 02 Nov 2014 13:26:18 +0000
-Message-ID: <545630E1.8020505@codeaurora.org>
-Date: Sun, 02 Nov 2014 15:25:53 +0200
+ id 1XkvFZ-0000Tb-DY
+ for linux-mtd@lists.infradead.org; Sun, 02 Nov 2014 13:31:23 +0000
+Received: from [10.18.168.100] (unknown [185.23.60.4])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ (Authenticated sender: tlinder@smtp.codeaurora.org)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id EA41E13F655
+ for <linux-mtd@lists.infradead.org>; Sun,  2 Nov 2014 13:30:59 +0000 (UTC)
+Message-ID: <54563211.6070409@codeaurora.org>
+Date: Sun, 02 Nov 2014 15:30:57 +0200
 From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+To: linux-mtd@lists.infradead.org
 Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
  handling
 References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
@@ -14,10 +20,10 @@ References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
  <544E08AE.7080506@nod.at> <5450C997.9010205@codeaurora.org>
  <5450D6C4.4040400@nod.at> <54538ABC.1040605@codeaurora.org>
  <5453ABF9.4070208@nod.at> <5453AD4D.2000303@nod.at>
-In-Reply-To: <5453AD4D.2000303@nod.at>
+ <0D23F1ECC880A74392D56535BCADD7351C2D0438@NTXBOIMBX03.micron.com>
+In-Reply-To: <0D23F1ECC880A74392D56535BCADD7351C2D0438@NTXBOIMBX03.micron.com>
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,131 +33,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/31/2014 5:39 PM, Richard Weinberger wrote:
-> Am 31.10.2014 um 16:34 schrieb Richard Weinberger:
->> Hi Tanya,
->>
->> Am 31.10.2014 um 14:12 schrieb Tanya Brokhman:
->>> Hi Richard
->>>
->>> On 10/29/2014 2:00 PM, Richard Weinberger wrote:
->>>> Tanya,
->>>>
->>>> Am 29.10.2014 um 12:03 schrieb Tanya Brokhman:
->>>>> I'll try to address all you comments in one place.
->>>>> You're right that the read counters don't have to be exact but they do have to reflect the real state.
->>>>
->>>> But it does not really matter if the counters are a way to high or too low?
->>>> It does also not matter if a re-read of adjacent PEBs is issued too often.
->>>> It won't hurt.
->>>>
->>>>> Regarding your idea of saving them to a file, or somehow with userspace involved; This is doable, but such solution will depend on user space implementation:
->>>>> - one need to update kernel with correct read counters (saved somewhere in userspace)
->>>>> - it is required on every boot.
->>>>> - saving the counters back to userspace should be periodically triggered as well.
->>>>> So the minimal workflow for each boot life cycle will be:
->>>>> - on boot: update kernel with correct values from userspace
->>>>
->>>> Correct.
->>>>
->>>>> - kernel updates the counters on each read operation
->>>>
->>>> Yeah, that's a plain simple in kernel counter..
->>>>
->>>>> - on powerdown: save the updated kernel counters back to userspace
->>>>
->>>> Correct. The counters can also be saved once a day by cron.
->>>> If one or two save operations are missed it won't hurt either.
->>>>
->>>>> The read-disturb handling is based on kernel updating and monitoring read counters. Taking this out of the kernel space will result in an incomplete and very fragile solution for
->>>>> the read-disturb problem since the dependency in userspace is just too big.
->>>>
->>>> Why?
->>>> We both agree on the fact that the counters don't have to be exact.
->>>> Maybe I'm wrong but to my understanding they are just a rough indicator that sometime later UBI has to check for bitrot/flips.
->>>
->>> The idea is to prevent data loss, to prevent errors while reading, because we might hit errors we can't fix. So although the read_disturb_threshold is a rough estimation based on
->>> statistics, we can't ignore it and need to stay close to the calculated statistics.
->>>
->>> Its really the same as wear-leveling. You have a limitation that each peb can be erased limited number of times. This erase-limit is also an estimation based on statistics
->>> collected by the card vendor. But you do want to know the exact number of erase counter to prevent erasing the block extensively.
->>
->> So you have to update the EC-Header every time we read a PEB...?
->>
->>>
->>>>
->>>>> Another issue to consider is that each SW upgrade will result in loosing the counters saved in userspace and reset all. Otherwise, system upgrade process will also have to be
->>>>> updated.
->>>>
->>>> Does it hurt if these counters are lost upon an upgrade?
->>>> Why do we need them for ever?
->>>> If they start after an upgrade from 0 again heavily read PEBs will quickly gain a high counter and will be checked.
->>>
->>> yes, we do need the ACCURATE counters and cant loose them. For example: we have a heavily read block. It was read from 100 times when the read-threshold is 101. Meaning, the 101
->>> read will most probably fail.
->>
->> You are trying me to tell that the NAND is that crappy that it will die after 100 reads? I really hope this was just a bad example.
->> You *will* loose counters unless you update the EC-Header upon every read, which is also not sane at all.
->>
->>> You do a SW upgrade, and set the read-counter for this block as 0 and don't scrubb it. Next time you try reading from it (since it's heavily read from block), you'll get errors. If
->>> you're lucky, ecc will fx them for you, but its not guarantied.
->>>
->>>>
->>>> And of course these counters can be preserved. One can also place them into a UBI static volume.
->>>> Or use a sane upgrade process...
->>>
->>> "Sane upgrade" means that in order to support read-disturb we twist the users hand into implementing not a trivial logic in userspace.
->>>
->>>>
->>>> As I wrote in my last mail we could also create a new internal UBI volume to store these counters.
->>>> Then you can have the logic in kernel but don't have to change the UBI on-disk layout.
->>>>
->>>>> The read counters are very much like the ec counters used for wear-leveling; One is updated on each erase, other on each read; One is used to handle issues caused by frequent
->>>>> writes (erase operations), the  other handle issues caused by frequent reads.
->>>>> So how are the two different? Why isn't wear-leveling (and erase counters) handled by userspace? My guess that the decision to encapsulate the wear-leveling into the kernel was due
->>>>> to the above mentioned reasons.
->>>>
->>>> The erase counters are crucial for UBI to operate. Even while booting up the kernel and mounting UBIFS the EC counters have to available
->>>> because UBI maybe needs to move LEBs around or has to find free PEBs which are not worn out. I UBI makes here a bad decision things will break.
->>>
->>> Same with read-counters and last_erase_timestamps. If ec counters are lost, we might get with bad blocks (since they are worn out) and have data loss.
->>> If we ignore read-disturb and don't' scrubb heavily read blocks we will have data loss as well.
->>> the only difference between the 2 scenarios is "how long before it happens". Read-disturb wasn't an issue since average lifespan of a nand device was ~5 years. Read-disturb occurs
->>> in a longer lifespan. that's why it's required now: a need for a "long life nand".
->>
->> Okay, read-disturb will only happen if you read blocks *very* often. Do you have numbers, datasheets, etc...?
->>
->> Let's recap.
->>
->> We need to address two issues:
->> a) If a PEB is ready very often we need to scrub it.
->> b) PEBs which are not read for a very long time need to be re-read/scrubbed to detect bit-rot
->>
->> Solving b) is easy, just re-read every PEB from time to time. No persistent data at all is needed.
->> To solve a) you suggest adding the read-counter to the UBI on-disk layout like the erase-counter values.
->> I don't think that this is a good solution.
->> We can perfectly fine save the read-counters from time to time and upon detach either to a file on UBIFS
->> or into a new internal value. As read-disturb will only happen after a long time and hence very high read-counters
->> it does not matter if we lose some values upon a powercut. i.e. Such that a counter is 50000 instead of 50500.
->> Btw: We also have to be very careful that reading data will not wear out the flash.
->>
->> So, we need a logic within UBI which counts every read access and persists this data in some way.
->> As suggested in an earlier mail this can also be done purely in userspace.
->> It can also be done within the UBI kernel module. I.e. by storing the counters into a internal volume.
->
-> Another point:
-> What if we scrub every PEB once a week?
-> Why would that not work?
+On 11/1/2014 12:55 AM, Jeff Lauruhn (jlauruhn) wrote:
+> Hope I'm not over stepping here, but I thought I could help.  I'm a NAND AE.
 
-It will work but it's an overkill because we don't want to scrub (and 
-erase) pebs that don't need this because this way we will ware out the 
-device in terms on wear-leveling.
-Besides, scrubbing all pebs will also be a performance hit.
+Not at all. Thank you very much :)
 
 >
-> Thanks,
-> //richard
+> Are you using NAND or eMMC?
+
+RAW NAND. eMMC is managed NAND so it handles this all for us :)
+
+> If NAND why not use ECC to monitor for disturb?
+
+We don't want just to monitor, we want to prevent cases where ecc cant 
+be fixed. You said it yourself later on "BCH ECC will tell you if bits 
+have changed and will correct up to 5". The goal is to prevent more then 
+5 errors that can't be fixed.
+
+NAND is a great storage unit, but you have to follow the rules.  Please 
+refer to Micron datasheet MT29F2G08ABAEAH4 page 100.  NAND is made up of 
+blocks(2048 in this case), each block has a number of pages.  The block 
+is the smallest erasable unit and the only way to change 0's to 1's. 
+Pages are the smallest programmable unit and can only change 1's to 0's. 
+  P/E cycling (100,000 in this case) wears out the block.  We provide 
+64bytes of spare area for BCH ECC and NAND management.  BCH ECC will 
+tell you if bits have changed and will correct up to 5.
 >
+> Read disturb is a recoverable failure.  It doesn't affect the cells in the page you are reading it affects the cells on either side of the page you are reading.  P/E cycling for this device is 100,000.  You can program once and read many many times.
+>
+> Data retention is the loss of charge on the cells.  Technically you can only change a 0 to 1 by erasing the whole block.  However, data retention is the loss of charge in a cell over time. In this case data retention is 10 years.
+> Data retention gets worse as temperature goes up.
+
+Exactly! We're aware of all you described above. This is exactly why we 
+need to handle both read disturb and data retention.
 
 
 Thanks,
