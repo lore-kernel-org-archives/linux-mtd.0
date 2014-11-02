@@ -1,29 +1,23 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XkvFZ-0000Tb-DY
- for linux-mtd@lists.infradead.org; Sun, 02 Nov 2014 13:31:23 +0000
-Received: from [10.18.168.100] (unknown [185.23.60.4])
- (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- (Authenticated sender: tlinder@smtp.codeaurora.org)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id EA41E13F655
- for <linux-mtd@lists.infradead.org>; Sun,  2 Nov 2014 13:30:59 +0000 (UTC)
-Message-ID: <54563211.6070409@codeaurora.org>
-Date: Sun, 02 Nov 2014 15:30:57 +0200
-From: Tanya Brokhman <tlinder@codeaurora.org>
+ id 1Xkvci-0006o1-8x
+ for linux-mtd@lists.infradead.org; Sun, 02 Nov 2014 13:55:17 +0000
+Message-ID: <545637AA.7080906@nod.at>
+Date: Sun, 02 Nov 2014 14:54:50 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
+To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
 Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
  handling
 References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
  <544D5BEC.50802@nod.at> <544E052B.1040505@codeaurora.org>
  <544E08AE.7080506@nod.at> <5450C997.9010205@codeaurora.org>
  <5450D6C4.4040400@nod.at> <54538ABC.1040605@codeaurora.org>
- <5453ABF9.4070208@nod.at> <5453AD4D.2000303@nod.at>
- <0D23F1ECC880A74392D56535BCADD7351C2D0438@NTXBOIMBX03.micron.com>
-In-Reply-To: <0D23F1ECC880A74392D56535BCADD7351C2D0438@NTXBOIMBX03.micron.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+ <5453ABF9.4070208@nod.at> <54563059.1080405@codeaurora.org>
+In-Reply-To: <54563059.1080405@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,44 +27,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/1/2014 12:55 AM, Jeff Lauruhn (jlauruhn) wrote:
-> Hope I'm not over stepping here, but I thought I could help.  I'm a NAND AE.
+Am 02.11.2014 um 14:23 schrieb Tanya Brokhman:
+>> Okay, read-disturb will only happen if you read blocks *very* often. Do you have numbers, datasheets, etc...?
+> 
+> Yes. In 0001-mtd-ubi-Read-disturb-infrastructure.patch you'll find:
+> #define UBI_RD_THRESHOLD 100000
+> Can't share more than that. This value is defined by card manufacturer and configurable by this define.
 
-Not at all. Thank you very much :)
+Somehow I managed to oversee that value. It is as large as I expected.
+But is is *very* sad that you can't share more details.
+We'd have make this value configurable at runtime.
+Other manufacturers may have other magical values...
 
+>>
+>> Let's recap.
+>>
+>> We need to address two issues:
+>> a) If a PEB is ready very often we need to scrub it.
+> 
+> right. this is what the read-counter is for.
+> 
+>> b) PEBs which are not read for a very long time need to be re-read/scrubbed to detect bit-rot
+> 
+> it need to be scrubbed. this is for data retention and these pebs are found by last_erase_timestamp. I referred to them as "pebs that are rarely accessed. "
+> 
+>>
+>> Solving b) is easy, just re-read every PEB from time to time. No persistent data at all is needed.
+> 
+> That isn't good enough. Because if we just re-read the peb we will find the "problematic" once only when the read produces ecc errors. But if we relay on that we may be too late
+> because we might hit ecc errors that we just wont be able to fix and data will be lost. So the goal is *to prevent* ecc errors on read. That's why we need both the read-counter
+> (for heavily read pebs) and the last_erase_timestamp (for once that are rarely accessed).
+> 
+>> To solve a) you suggest adding the read-counter to the UBI on-disk layout like the erase-counter values.
+> 
+> No, not on disk layout. You're mixing the read-counter with the last_erase_timestamp.
+> read-counter: maintained only at RAM, saved *only* as part of fastmap data. If fastmap data is lost: read counters are lost too
+> last-erase-timestamp: part of ec_header, maintained on disk
+
+You're right I mixed that up. Sorry.
+
+Copy&Pasting from your other mail:
+
+>> Another point:
+>> What if we scrub every PEB once a week?
+>> Why would that not work?
 >
-> Are you using NAND or eMMC?
+> It will work but it's an overkill because we don't want to scrub (and erase) pebs that don't need this because this way we will ware out the device in terms on wear-leveling.
+> Besides, scrubbing all pebs will also be a performance hit.
 
-RAW NAND. eMMC is managed NAND so it handles this all for us :)
+A year has 52 weeks. So, in 10 (!) years we would scrub each PEB only 520 times.
+Even if we scrub every day we'd only scrub each PEB 3650 times in 10 years.
+I don't see any overhead at all. Of course only a stupid implementation would scrub them at once, this would
+be a performance issue.
 
-> If NAND why not use ECC to monitor for disturb?
+Back to topic.
+Storing the read-counters into fastmap also not a good idea because the fastmap can get lost completely (by design).
+Better store the read-counter lazily into a new internal UBI volume (use UBI_COMPAT_PRESERVE).
+This way you can make sure that they are not lost.
 
-We don't want just to monitor, we want to prevent cases where ecc cant 
-be fixed. You said it yourself later on "BCH ECC will tell you if bits 
-have changed and will correct up to 5". The goal is to prevent more then 
-5 errors that can't be fixed.
+I suggest the following:
+a) Maintain the erase-counters in RAM
+b) From time to time write them to an internal UBI volume. (e.g. at detach time and once a day).
+c) Implement a logic in UBI which scrubs a PEB if it got a lot of reads.
+You could do c) even in userspace.
 
-NAND is a great storage unit, but you have to follow the rules.  Please 
-refer to Micron datasheet MT29F2G08ABAEAH4 page 100.  NAND is made up of 
-blocks(2048 in this case), each block has a number of pages.  The block 
-is the smallest erasable unit and the only way to change 0's to 1's. 
-Pages are the smallest programmable unit and can only change 1's to 0's. 
-  P/E cycling (100,000 in this case) wears out the block.  We provide 
-64bytes of spare area for BCH ECC and NAND management.  BCH ECC will 
-tell you if bits have changed and will correct up to 5.
->
-> Read disturb is a recoverable failure.  It doesn't affect the cells in the page you are reading it affects the cells on either side of the page you are reading.  P/E cycling for this device is 100,000.  You can program once and read many many times.
->
-> Data retention is the loss of charge on the cells.  Technically you can only change a 0 to 1 by erasing the whole block.  However, data retention is the loss of charge in a cell over time. In this case data retention is 10 years.
-> Data retention gets worse as temperature goes up.
+And for bit-rot detection you can do the same, but with timestamps instead of read-counters...
 
-Exactly! We're aware of all you described above. This is exactly why we 
-need to handle both read disturb and data retention.
-
+Artem, what do you think?
 
 Thanks,
-Tanya Brokhman
--- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+//richard
