@@ -1,19 +1,19 @@
-Message-ID: <5456D867.5020303@fb.com>
-Date: Sun, 2 Nov 2014 18:20:39 -0700
-From: Jens Axboe <axboe@fb.com>
+Message-ID: <5456F1A6.7010601@huawei.com>
+Date: Mon, 3 Nov 2014 11:08:22 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>,
- <hch@infradead.org>, <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: Block: Add blk-mq support
-References: <1414933255-3795-1-git-send-email-richard@nod.at>
- <5456A787.5060104@free-electrons.com> <5456AE72.1010409@nod.at>
- <5456AFEA.6000507@free-electrons.com> <5456B4F8.1000608@nod.at>
-In-Reply-To: <5456B4F8.1000608@nod.at>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Subject: Re: [PATCH V5] mtd: ubi: Extend UBI layer debug/messaging capabilities
+References: <1413824221-31235-1-git-send-email-tlinder@codeaurora.org>
+ <5449C870.7060509@huawei.com> <54566692.10504@codeaurora.org>
+In-Reply-To: <54566692.10504@codeaurora.org>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Cc: dedekind1@gmail.com, Richard
+ Weinberger <richard@nod.at>, open list <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, ezequiel.garcia@free-electrons.com,
+ linux-arm-msm@vger.kernel.org, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +23,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014-11-02 15:49, Richard Weinberger wrote:
-> AFAICT blk-mq allocates one struct ubiblock_pdu per device.
-> As all IO is done via scattergather the memory footprint should be good.
-> But I'm sure Christoph can tell you the glory details.
+Hi Tanya,
 
-That is true, the request list and pdu is allocated upfront. If that is 
-a problem, the pdu need not be allocated upfront but could be done at IO 
-time instead. With that comes a bit more complicated retry handling, for 
-memory shortage situations.
+On 2014/11/3 1:14, Tanya Brokhman wrote:
+>>
+>> This patch add 'struct ubi_device *' for 3 functions. We can get 'ubi_device' from
+>> 'ubi_volume'. So I think it's because when we call these functions, the '->ubi'
+>> pointer of 'ubi_volume' is not initialized, am I right? This patch use 'vol->ubi'
+>> to indicate a 'struct ubi_device *' pointer in some places, I think you are sure
+>> of using them.
+>>
+> 
+> 1. for validate_vid_hdr() we don;t have a ubi_volume yet since its part of the attach process so we need struct ubi_device
+> 2. for get_exclusive() - you're right. Will fetch dev number from the volume
+> 3. for check_av() - you're right. fixed
+> 
 
--- 
-Jens Axboe
+I'm not sure if 'ubi_volume->ubi' is initialized when we call some kinds of
+ubi_err() to print error messages. The reference to a null pointer, we perform
+'ubi->ubi_num' in ubi_err(), may crash the kernel. So you should be careful
+of these situations not only in above cases but also in other places in your
+patch.
+
+>>
+>> We have the parameter 'ubi_num' for log in some functions like 'ubi_attach_mtd_dev'
+>> before. This patch remove 'ubi_num' in upper changes but keep it in other changes.
+>> Do we have a discussed rule to deal with this situation? It's not a big problem~
+> 
+> I removed it because it made no sense printing it twice:
+> "ubi-0: attached mtd-0 (...) to ubi0"?
+> so I shortned the message:
+> "ubi-0: attched mtd..."
+> All the info is still there....
+> Same for other messages that printed ubi number.
+> 
+
+Could we remove some the 'ubi_num'? I think there are no need to print it
+twice in other places, like:
+
+@@ -921,7 +923,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+
+ 		/* Make sure ubi_num is not busy */
+ 		if (ubi_devices[ubi_num]) {
+-			ubi_err("ubi%d already exists", ubi_num);
++			ubi_err(ubi, "ubi%d already exists", ubi_num);
+ 			return -EEXIST;
+ 		}
+ 	}
+
+and
+
+@@ -970,7 +974,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 	mutex_init(&ubi->fm_mutex);
+ 	init_rwsem(&ubi->fm_sem);
+
+-	ubi_msg("attaching mtd%d to ubi%d", mtd->index, ubi_num);
++	ubi_msg(ubi, "attaching mtd%d to ubi%d", mtd->index, ubi_num);
+
+
+>>> @@ -1415,8 +1418,9 @@ int ubi_self_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len)
+>>>       return 0;
+>>>
+>>>   fail:
+>>> -    ubi_err("self-check failed for PEB %d", pnum);
+>>> -    ubi_msg("hex dump of the %d-%d region", offset, offset + len);
+>>> +    ubi_err(ubi, "self-check failed for PEB %d", pnum);
+>>> +    ubi_msg(ubi, "hex dump of the %d-%d region",
+>>> +         offset, offset + len);
+>>>       print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1, buf, len, 1);
+>>>       err = -EINVAL;
+>>>   error:
+>>
+>> Artem, I know you have tried to align the message code in different lines, maybe
+>> you can check if you lose this one.
+>>
+> 
+> hmmm... not sure I understand what is wrong here....
+> 
+
+Turn
+
++    ubi_msg(ubi, "hex dump of the %d-%d region",
++         offset, offset + len);
+
+to
+
++    ubi_msg(ubi, "hex dump of the %d-%d region",
++            offset, offset + len);
+
+Maybe like this. The next line aligns to the message in first line, not a big problem.
+By the way, I use space in this example, it's wrong. Tab is right.
+
+
+Thanks!
+
+Hu
