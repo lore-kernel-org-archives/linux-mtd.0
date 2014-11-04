@@ -1,20 +1,17 @@
-Received: from mail-bn1bon0139.outbound.protection.outlook.com
- ([157.56.111.139] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-wi0-f179.google.com ([209.85.212.179])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XlQxy-0005zf-Us
- for linux-mtd@lists.infradead.org; Mon, 03 Nov 2014 23:23:20 +0000
-Message-ID: <1415056966.23458.305.camel@snotra.buserror.net>
-Subject: Re: [PATCH 1/1][v2] IFC: Change IO accessor based on endianness
-From: Scott Wood <scottwood@freescale.com>
-To: Jaiprakash Singh <b44839@freescale.com>
-Date: Mon, 3 Nov 2014 17:22:46 -0600
-In-Reply-To: <1413785506-443-1-git-send-email-b44839@freescale.com>
-References: <1413785506-443-1-git-send-email-b44839@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: B07421@freescale.com, linux-mtd@lists.infradead.org, arnd@arndb.de,
- gregkh@linuxfoundation.org
+ id 1XlcNj-0007Aw-6e
+ for linux-mtd@lists.infradead.org; Tue, 04 Nov 2014 11:34:40 +0000
+Received: by mail-wi0-f179.google.com with SMTP id h11so8990698wiw.0
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2014 03:34:17 -0800 (PST)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: physmap_of: add a hook for Versatile write protection
+Date: Tue,  4 Nov 2014 12:34:06 +0100
+Message-Id: <1415100846-31541-1-git-send-email-linus.walleij@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,215 +21,457 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-10-20 at 11:41 +0530, Jaiprakash Singh wrote:
-> From: Jaiprakash Singh <b44839@freescale.com>
-> 
-> IFC registers can be of type Little Endian
-> or big Endian depending upon Freescale SoC.
-> Here SoC defines the register type of
-> IFC IP.So update accessors functions with
-> common IFC accessors functions to take
-> care both type of endianness.
-> 
-> IFC IO accressor are set at run time based
-> on IFC IP registers endianness.IFC node in
-> DTS file contains information about
-> endianness.
-> 
-> Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
-> ---
-> Changes for v2
-> 	- Moved IFC accessor function to fsl_ifc.h
-> 	from fsl_ifc.c and make them inline static
-> 
-> .../bindings/memory-controllers/fsl/ifc.txt        |    2 +
->  drivers/memory/fsl_ifc.c                           |   72 ++++++----
->  drivers/mtd/nand/fsl_ifc_nand.c                    |  151 +++++++++++---------
->  include/linux/fsl_ifc.h                            |   42 ++++++
->  4 files changed, 167 insertions(+), 100 deletions(-)
+In order to support device tree probing of Versatile flash chips,
+there must be a way to add the VPP (write protection) enable/disable
+callback. The register in question is in the system controllers
+of these platforms.
 
-Given that this spans MTD and non-MTD files, whose tree should this go
-through?
+Solve this by adding a arm,versatile-vpp compatibility to the
+device tree node, and look for this. In the driver, add a special
+hook to check for the syscon and register a callback if this
+property is present. Provide a special Kconfig entry for the addon
+hook so it will not be compiled in if the RealView or Integrator
+(or later other Versatile boards) are not supported. Stubs in the
+header file make sure the impact would be zero on other platforms.
 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt b/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
-> index d5e3704..ee6226b 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
-> +++ b/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
-> @@ -18,6 +18,8 @@ Properties:
->                interrupt (NAND_EVTER_STAT).  If there is only one,
->                that interrupt reports both types of event.
->  
-> +- little-endian : If this property is absent, the big-endian mode will
-> +                  be in use as default for registers.
->  
->  - ranges : Each range corresponds to a single chipselect, and covers
->             the entire access window as configured.
-> diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-> index 3d5d792..5689e9b 100644
-> --- a/drivers/memory/fsl_ifc.c
-> +++ b/drivers/memory/fsl_ifc.c
-> @@ -62,7 +62,8 @@ int fsl_ifc_find(phys_addr_t addr_base)
->  		return -ENODEV;
->  
->  	for (i = 0; i < ARRAY_SIZE(fsl_ifc_ctrl_dev->regs->cspr_cs); i++) {
-> -		u32 cspr = in_be32(&fsl_ifc_ctrl_dev->regs->cspr_cs[i].cspr);
-> +		u32 cspr = ifc_in32(
-> +				&fsl_ifc_ctrl_dev->regs->cspr_cs[i].cspr);
->  		if (cspr & CSPR_V && (cspr & CSPR_BA) ==
->  				convert_ifc_address(addr_base))
->  			return i;
-> @@ -79,16 +80,16 @@ static int fsl_ifc_ctrl_init(struct fsl_ifc_ctrl *ctrl)
->  	/*
->  	 * Clear all the common status and event registers
->  	 */
-> -	if (in_be32(&ifc->cm_evter_stat) & IFC_CM_EVTER_STAT_CSER)
-> -		out_be32(&ifc->cm_evter_stat, IFC_CM_EVTER_STAT_CSER);
-> +	if (ifc_in32(&ifc->cm_evter_stat) & IFC_CM_EVTER_STAT_CSER)
-> +		ifc_out32(IFC_CM_EVTER_STAT_CSER, &ifc->cm_evter_stat);
->  
->  	/* enable all error and events */
-> -	out_be32(&ifc->cm_evter_en, IFC_CM_EVTER_EN_CSEREN);
-> +	ifc_out32(IFC_CM_EVTER_EN_CSEREN, &ifc->cm_evter_en);
->  
->  	/* enable all error and event interrupts */
-> -	out_be32(&ifc->cm_evter_intr_en, IFC_CM_EVTER_INTR_EN_CSERIREN);
-> -	out_be32(&ifc->cm_erattr0, 0x0);
-> -	out_be32(&ifc->cm_erattr1, 0x0);
-> +	ifc_out32(IFC_CM_EVTER_INTR_EN_CSERIREN, &ifc->cm_evter_intr_en);
-> +	ifc_out32(0x0, &ifc->cm_erattr0);
-> +	ifc_out32(0x0, &ifc->cm_erattr1);
->  
->  	return 0;
->  }
-> @@ -127,9 +128,9 @@ static u32 check_nand_stat(struct fsl_ifc_ctrl *ctrl)
->  
->  	spin_lock_irqsave(&nand_irq_lock, flags);
->  
-> -	stat = in_be32(&ifc->ifc_nand.nand_evter_stat);
-> +	stat = ifc_in32(&ifc->ifc_nand.nand_evter_stat);
->  	if (stat) {
-> -		out_be32(&ifc->ifc_nand.nand_evter_stat, stat);
-> +		ifc_out32(stat, &ifc->ifc_nand.nand_evter_stat);
->  		ctrl->nand_stat = stat;
->  		wake_up(&ctrl->nand_wait);
->  	}
-> @@ -161,36 +162,37 @@ static irqreturn_t fsl_ifc_ctrl_irq(int irqno, void *data)
->  	irqreturn_t ret = IRQ_NONE;
->  
->  	/* read for chip select error */
-> -	cs_err = in_be32(&ifc->cm_evter_stat);
-> +	cs_err = ifc_in32(&ifc->cm_evter_stat);
->  	if (cs_err) {
-> -		dev_err(ctrl->dev, "transaction sent to IFC is not mapped to"
-> -				"any memory bank 0x%08X\n", cs_err);
-> +		dev_err(ctrl->dev, "transaction sent to IFC is not mapped to");
-> +		dev_err(ctrl->dev, " any memory bank 0x%08X\n", cs_err);
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/mtd/maps/Kconfig                |  10 +
+ drivers/mtd/maps/Makefile               |   1 +
+ drivers/mtd/maps/physmap_of.c           |   5 +
+ drivers/mtd/maps/physmap_of_versatile.c | 334 ++++++++++++++++++++++++++++++++
+ drivers/mtd/maps/physmap_of_versatile.h |  19 ++
+ 5 files changed, 369 insertions(+)
+ create mode 100644 drivers/mtd/maps/physmap_of_versatile.c
+ create mode 100644 drivers/mtd/maps/physmap_of_versatile.h
 
-This is an unrelated and unexplained change.
-
->  		/* clear the chip select error */
-> -		out_be32(&ifc->cm_evter_stat, IFC_CM_EVTER_STAT_CSER);
-> +		ifc_out32(IFC_CM_EVTER_STAT_CSER, &ifc->cm_evter_stat);
->  
->  		/* read error attribute registers print the error information */
-> -		status = in_be32(&ifc->cm_erattr0);
-> -		err_addr = in_be32(&ifc->cm_erattr1);
-> -
-> -		if (status & IFC_CM_ERATTR0_ERTYP_READ)
-> -			dev_err(ctrl->dev, "Read transaction error"
-> -				"CM_ERATTR0 0x%08X\n", status);
-> -		else
-> -			dev_err(ctrl->dev, "Write transaction error"
-> -				"CM_ERATTR0 0x%08X\n", status);
-> -
-> +		status = ifc_in32(&ifc->cm_erattr0);
-> +		err_addr = ifc_in32(&ifc->cm_erattr1);
-> +
-> +		if (status & IFC_CM_ERATTR0_ERTYP_READ) {
-> +			dev_err(ctrl->dev, "Read transaction error");
-> +			dev_err(ctrl->dev, " CM_ERATTR0 0x%08X\n", status);
-> +		} else {
-> +			dev_err(ctrl->dev, "Write transaction error");
-> +			dev_err(ctrl->dev, " CM_ERATTR0 0x%08X\n", status);
-> +		}
->  		err_axiid = (status & IFC_CM_ERATTR0_ERAID) >>
->  					IFC_CM_ERATTR0_ERAID_SHIFT;
-> -		dev_err(ctrl->dev, "AXI ID of the error"
-> -					"transaction 0x%08X\n", err_axiid);
-> +		dev_err(ctrl->dev, "AXI ID of the erro");
-> +		dev_err(ctrl->dev, " transaction 0x%08X\n", err_axiid);
-
-"erro"?
-
-Why are you splitting all of these into two dev_err() calls?  And you
-don't have a newline after the first of each pair, which means the
-device ID prefix is going to go in the middle of the string, without
-even a space after the last word of the previous line -- and then you'll
-have an extra space between the device ID prefix and the second string.
-Did you test this change?
-
-> @@ -302,19 +303,20 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
->  	int i;
->  
->  	/* set the chip select for NAND Transaction */
-> -	iowrite32be(priv->bank << IFC_NAND_CSEL_SHIFT,
-> +	ifc_out32(priv->bank << IFC_NAND_CSEL_SHIFT,
->  		    &ifc->ifc_nand.nand_csel);
-
-The continuation line was aligned with priv->bank -- please preserve
-that after the rename.  Likewise elsewhere.
-
-> @@ -592,15 +596,21 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
->  		 * write-protected, even when it is not.
->  		 */
->  		if (chip->options & NAND_BUSWIDTH_16)
-> -			setbits16(ifc_nand_ctrl->addr, NAND_STATUS_WP);
-> +			ifc_out16(
-> +			(ifc_in16(ifc_nand_ctrl->addr)
-> +			| (NAND_STATUS_WP)),
-> +			ifc_nand_ctrl->addr);
->  		else
-> -			setbits8(ifc_nand_ctrl->addr, NAND_STATUS_WP);
-> +			ifc_out8(
-> +			(ifc_in8(ifc_nand_ctrl->addr)
-> +			| (NAND_STATUS_WP)),
-> +			ifc_nand_ctrl->addr);
-
-Please do something better than this with the whitespace.  Probably
-don't try to keep it all in one statement.
-
-> -	if (ifc_nand_ctrl->index < ifc_nand_ctrl->read_bytes) {
-> -		offset = ifc_nand_ctrl->index++;
-> -		return in_8(ifc_nand_ctrl->addr + offset);
-> -	}
-> +	if (ifc_nand_ctrl->index < ifc_nand_ctrl->read_bytes)
-> +		return ifc_in8(
-> +				&ifc_nand_ctrl->addr[ifc_nand_ctrl->index++]);
-
-Unnecessary newline.
-
->  	dev_err(priv->dev, "%s: beyond end of buffer\n", __func__);
->  	return ERR_BYTE;
-> @@ -681,7 +689,8 @@ static uint8_t fsl_ifc_read_byte16(struct mtd_info *mtd)
->  	 * next byte.
->  	 */
->  	if (ifc_nand_ctrl->index < ifc_nand_ctrl->read_bytes) {
-> -		data = in_be16(ifc_nand_ctrl->addr + ifc_nand_ctrl->index);
-> +		data = ifc_in16((uint16_t __iomem *)&ifc_nand_ctrl->
-> +			       addr[ifc_nand_ctrl->index]);
-
-Why do you need the cast with ifc_in16() but not in_be16()?
-
-> @@ -885,7 +896,8 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
->  
->  	/* fill in nand_chip structure */
->  	/* set up function call table */
-> -	if ((ioread32be(&ifc->cspr_cs[priv->bank].cspr)) & CSPR_PORT_SIZE_16)
-> +	if ((ifc_in32(&ifc->cspr_cs[priv->bank].cspr)) &
-> +			CSPR_PORT_SIZE_16)
->  		chip->read_byte = fsl_ifc_read_byte16;
-
-If this didn't need to be wrapped with the longer name, why are you
-wrapping it now?  Likewise elsewhere.
-
--Scott
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index ba801d2c6dcc..b01cd6e80774 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -74,6 +74,16 @@ config MTD_PHYSMAP_OF
+ 	  physically into the CPU's memory. The mapping description here is
+ 	  taken from OF device tree.
+ 
++config MTD_PHYSMAP_OF_VERSATILE
++	bool "Support ARM Versatile physmap OF"
++	depends on MTD_PHYSMAP_OF
++	depends on MFD_SYSCON
++	default y if (REALVIEW_DT || ARCH_INTEGRATOR)
++	help
++	  This provides some extra DT physmap parsing for the ARM Versatile
++	  platforms, basically to add a VPP (write protection) callback so
++	  the flash can be taken out of write protection.
++
+ config MTD_PMC_MSP_EVM
+ 	tristate "CFI Flash device mapped on PMC-Sierra MSP"
+ 	depends on PMC_MSP && MTD_CFI
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 141c91a5b24c..c60b2b40a592 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -18,6 +18,7 @@ obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+ obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+ obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+ obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
++physmap_of-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
+ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+ obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index c1d21cb501ca..e9b23022ec94 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -24,6 +24,7 @@
+ #include <linux/of_address.h>
+ #include <linux/of_platform.h>
+ #include <linux/slab.h>
++#include "physmap_of_versatile.h"
+ 
+ struct of_flash_list {
+ 	struct mtd_info *mtd;
+@@ -67,6 +68,7 @@ static int of_flash_remove(struct platform_device *dev)
+ 			kfree(info->list[i].res);
+ 		}
+ 	}
++	of_flash_remove_versatile();
+ 	return 0;
+ }
+ 
+@@ -241,6 +243,9 @@ static int of_flash_probe(struct platform_device *dev)
+ 		info->list[i].map.size = res_size;
+ 		info->list[i].map.bankwidth = be32_to_cpup(width);
+ 		info->list[i].map.device_node = dp;
++		err = of_flash_probe_versatile(&dev->dev, &info->list[i].map);
++		if (err)
++			dev_err(&dev->dev, "Can't probe Versatile VPP\n");
+ 
+ 		err = -ENOMEM;
+ 		info->list[i].map.virt = ioremap(info->list[i].map.phys,
+diff --git a/drivers/mtd/maps/physmap_of_versatile.c b/drivers/mtd/maps/physmap_of_versatile.c
+new file mode 100644
+index 000000000000..f5d55cead0ab
+--- /dev/null
++++ b/drivers/mtd/maps/physmap_of_versatile.c
+@@ -0,0 +1,334 @@
++/*
++ * Versatile OF physmap driver add-on
++ *
++ * Copyright (c) 2014, Linaro Limited
++ * Author: Linus Walleij <linus.walleij@linaro.org>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++#include <linux/bitops.h>
++#include <linux/device.h>
++#include <linux/io.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/mtd/map.h>
++#include <linux/mfd/syscon.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include "physmap_of_versatile.h"
++
++/**
++ * struct flashprot_data - per-variant flash protection information
++ * @init: function to call on initialization
++ * @exit: function to call on de-initialization
++ * @set_vpp: function to set the VPP (Voltage for Programming Protection)
++ */
++struct flashprot_data {
++	int (*init)(void);
++	void (*exit)(void);
++	void (*set_vpp)(struct map_info *, int);
++};
++
++struct versatile_flash_prot {
++	struct device *dev;
++	struct regmap *syscon_regmap;
++	struct regmap *ap_ebi_regmap;
++	const struct flashprot_data *fprot;
++};
++
++struct versatile_flash_prot *vprot;
++
++#define INTEGRATOR_SC_CTRLS_OFFSET	0x08 /* For setting bits */
++#define INTEGRATOR_SC_CTRLC_OFFSET	0x0C /* For clearing bits */
++#define INTEGRATOR_SC_CTRL_FLASH_BITS	BIT(1) | BIT(2)
++#define INTEGRATOR_SC_CTRL_nFLVPPEN	BIT(1)
++#define INTEGRATOR_SC_CTRL_nFLWP	BIT(2)
++
++#define INTEGRATOR_EBI_CSR0_OFFSET      0x00
++#define INTEGRATOR_EBI_CSR1_OFFSET      0x04
++#define INTEGRATOR_EBI_CSR2_OFFSET      0x08
++#define INTEGRATOR_EBI_CSR3_OFFSET      0x0C
++#define INTEGRATOR_EBI_LOCK_OFFSET      0x20
++#define INTEGRATOR_EBI_WRITE_ENABLE     BIT(2)
++
++static const struct of_device_id ebi_match[] = {
++	{ .compatible = "arm,external-bus-interface", },
++	{},
++};
++
++static int integrator_ap_vpp_init(void)
++{
++	struct device_node *ebinp;
++	int ret;
++
++	/* Find the EBI regmap */
++	ebinp = of_find_matching_node(NULL, ebi_match);
++	if (!ebinp) {
++		dev_err(vprot->dev, "no EBI node\n");
++		return -ENODEV;
++	}
++
++	vprot->ap_ebi_regmap = syscon_node_to_regmap(ebinp);
++	if (IS_ERR(vprot->ap_ebi_regmap)) {
++		dev_err(vprot->dev, "no EBI regmap\n");
++		return PTR_ERR(vprot->ap_ebi_regmap);
++	}
++
++	/* Disable VPP and set write protection on startup */
++	ret = regmap_write(vprot->syscon_regmap, INTEGRATOR_SC_CTRLC_OFFSET,
++			   INTEGRATOR_SC_CTRL_FLASH_BITS);
++	if (ret) {
++		dev_err(vprot->dev, "failed setting flash protection\n");
++		return ret;
++	}
++
++	/* Unlock EBI */
++	ret = regmap_write(vprot->ap_ebi_regmap, INTEGRATOR_EBI_LOCK_OFFSET,
++			   0xa05f);
++	if (ret) {
++		dev_err(vprot->dev, "failed unlocking EBI\n");
++		return ret;
++	}
++	ret = regmap_update_bits(vprot->ap_ebi_regmap,
++				 INTEGRATOR_EBI_CSR1_OFFSET,
++				 INTEGRATOR_EBI_WRITE_ENABLE,
++				 INTEGRATOR_EBI_WRITE_ENABLE);
++	if (ret)
++		dev_err(vprot->dev, "failed EBI WE CSR1\n");
++
++	/* Lock EBI */
++	ret = regmap_write(vprot->ap_ebi_regmap, INTEGRATOR_EBI_LOCK_OFFSET, 0);
++	if (ret) {
++		dev_err(vprot->dev, "failed locking EBI\n");
++		return ret;
++	}
++	dev_info(vprot->dev, "initialized Integrator/AP flash protection\n");
++
++	return 0;
++}
++
++static void integrator_ap_vpp_exit(void)
++{
++	int ret;
++
++	if (!vprot || !vprot->syscon_regmap || !vprot->ap_ebi_regmap)
++		return;
++
++	/* Disable VPP and set write protection on exit */
++	ret = regmap_write(vprot->syscon_regmap, INTEGRATOR_SC_CTRLC_OFFSET,
++			   INTEGRATOR_SC_CTRL_FLASH_BITS);
++	if (ret)
++		dev_err(vprot->dev, "failed enabling flash protection\n");
++
++	/* Unlock EBI */
++	ret = regmap_write(vprot->ap_ebi_regmap, INTEGRATOR_EBI_LOCK_OFFSET,
++			   0xa05f);
++	if (ret)
++		dev_err(vprot->dev, "failed unlocking EBI\n");
++
++	ret = regmap_update_bits(vprot->ap_ebi_regmap,
++				 INTEGRATOR_EBI_CSR1_OFFSET,
++				 INTEGRATOR_EBI_WRITE_ENABLE,
++				 0);
++	if (ret)
++		dev_err(vprot->dev, "failed EBI WE CSR1\n");
++
++	/* Lock EBI */
++	ret = regmap_write(vprot->ap_ebi_regmap, INTEGRATOR_EBI_LOCK_OFFSET, 0);
++	if (ret)
++		dev_err(vprot->dev, "failed locking EBI\n");
++
++	dev_info(vprot->dev, "enabled flash protection\n");
++}
++
++static void integrator_ap_set_vpp(struct map_info *map, int on)
++{
++	int ret;
++
++	if (on) {
++		ret = regmap_write(vprot->syscon_regmap,
++				   INTEGRATOR_SC_CTRLS_OFFSET,
++				   INTEGRATOR_SC_CTRL_nFLVPPEN);
++		if (ret)
++			dev_err(vprot->dev, "error enable flash VPP\n");
++	} else {
++		ret = regmap_write(vprot->syscon_regmap,
++				   INTEGRATOR_SC_CTRLC_OFFSET,
++				   INTEGRATOR_SC_CTRL_nFLVPPEN);
++		if (ret)
++			dev_err(vprot->dev, "error disable flash VPP");
++	}
++}
++
++struct flashprot_data integrator_ap_flashprot_data = {
++	.init = integrator_ap_vpp_init,
++	.exit = integrator_ap_vpp_exit,
++	.set_vpp = integrator_ap_set_vpp,
++};
++
++#define INTCP_FLASHPROG			0x04
++#define CINTEGRATOR_FLASHPROG_FLVPPEN	BIT(0)
++#define CINTEGRATOR_FLASHPROG_FLWREN	BIT(1)
++#define CINTEGRATOR_FLASHPROG_BITS	BIT(0) | BIT(1)
++
++#define REALVIEW_FLASH_OFFSET 0x4c
++
++static int integrator_cp_vpp_init(void)
++{
++	int ret;
++
++	ret = regmap_update_bits(vprot->ap_ebi_regmap,
++				 INTCP_FLASHPROG,
++				 CINTEGRATOR_FLASHPROG_BITS,
++				 CINTEGRATOR_FLASHPROG_FLWREN);
++	if (ret)
++		dev_err(vprot->dev, "failed flash WE\n");
++
++	dev_info(vprot->dev, "initialized Integrator/CP flash protection\n");
++
++	return 0;
++}
++
++static void integrator_cp_vpp_exit(void)
++{
++	int ret;
++
++	if (!vprot || !vprot->syscon_regmap || !vprot->ap_ebi_regmap)
++		return;
++
++	ret = regmap_update_bits(vprot->ap_ebi_regmap,
++				 INTCP_FLASHPROG,
++				 CINTEGRATOR_FLASHPROG_BITS,
++				 0);
++	if (ret)
++		dev_err(vprot->dev, "failed flash WE\n");
++
++	dev_info(vprot->dev, "enabled flash protection\n");
++}
++
++static void integrator_cp_set_vpp(struct map_info *map, int on)
++{
++	int ret;
++
++	if (on) {
++		ret = regmap_update_bits(vprot->ap_ebi_regmap,
++					 INTCP_FLASHPROG,
++					 CINTEGRATOR_FLASHPROG_FLVPPEN,
++					 CINTEGRATOR_FLASHPROG_FLVPPEN);
++		if (ret)
++			dev_err(vprot->dev, "error enable flash VPP\n");
++	} else {
++		ret = regmap_update_bits(vprot->ap_ebi_regmap,
++					 INTCP_FLASHPROG,
++					 CINTEGRATOR_FLASHPROG_FLVPPEN,
++					 0);
++		if (ret)
++			dev_err(vprot->dev, "error disable flash VPP\n");
++	}
++}
++
++struct flashprot_data integrator_cp_flashprot_data = {
++	.init = integrator_cp_vpp_init,
++	.exit = integrator_cp_vpp_exit,
++	.set_vpp = integrator_cp_set_vpp,
++};
++
++static void realview_set_vpp(struct map_info *map, int on)
++{
++	int ret;
++
++	ret = regmap_update_bits(vprot->syscon_regmap, REALVIEW_FLASH_OFFSET,
++				 0x01, !!on);
++	if (ret)
++		dev_err(vprot->dev, "error setting RealView VPP\n");
++}
++
++struct flashprot_data realview_flashprot_data = {
++	.set_vpp = realview_set_vpp,
++};
++
++static const struct of_device_id syscon_match[] = {
++	{
++		.compatible = "arm,integrator-ap-syscon",
++		.data = &integrator_ap_flashprot_data,
++	},
++	{
++		.compatible = "arm,integrator-cp-syscon",
++		.data = &integrator_cp_flashprot_data,
++	},
++	{
++		.compatible = "arm,realview-pb1176-syscon",
++		.data = &realview_flashprot_data,
++	},
++	{},
++};
++
++int of_flash_probe_versatile(struct device *dev,
++			     struct map_info *map)
++{
++	struct device_node *sysnp;
++	const struct of_device_id *devid;
++	struct regmap *rmap;
++	struct device_node *np = dev->of_node;
++
++	vprot = devm_kzalloc(dev, sizeof(*vprot), GFP_KERNEL);
++	if (!vprot)
++		return -ENOMEM;
++	vprot->dev = dev;
++
++	/* Not all flash chips have to use this protection line */
++	if (!of_device_is_compatible(np, "arm,versatile-flash"))
++		return 0;
++
++	/* For first chip probed, look up the syscon regmap */
++	if (!vprot->syscon_regmap) {
++		int ret;
++
++		sysnp = of_find_matching_node_and_match(NULL,
++							syscon_match,
++							&devid);
++		if (!sysnp) {
++			dev_err(dev, "no syscon match\n");
++			return -ENODEV;
++		}
++
++		rmap = syscon_node_to_regmap(sysnp);
++		if (IS_ERR(rmap)) {
++			dev_err(dev, "no syscon regmap\n");
++			return PTR_ERR(rmap);
++		}
++
++		vprot->syscon_regmap = rmap;
++		vprot->fprot = devid->data;
++
++		if (vprot->fprot->init) {
++			ret = vprot->fprot->init();
++			if (ret)
++				return ret;
++		}
++
++		map->set_vpp = vprot->fprot->set_vpp;
++	}
++	return 0;
++}
++
++void of_flash_remove_versatile(void)
++{
++	if (!vprot || !vprot->fprot || !vprot->fprot->exit)
++		return;
++	vprot->fprot->exit();
++}
+diff --git a/drivers/mtd/maps/physmap_of_versatile.h b/drivers/mtd/maps/physmap_of_versatile.h
+new file mode 100644
+index 000000000000..7d176d313860
+--- /dev/null
++++ b/drivers/mtd/maps/physmap_of_versatile.h
+@@ -0,0 +1,19 @@
++#include <linux/of.h>
++#include <linux/mtd/map.h>
++
++#ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
++int of_flash_probe_versatile(struct device *dev,
++			     struct map_info *map);
++void of_flash_remove_versatile(void);
++#else
++static inline int
++of_flash_probe_versatile(struct device *dev,
++			 struct map_info *map)
++{
++	return 0;
++}
++static inline void
++of_flash_remove_versatile(void)
++{
++}
++#endif
+-- 
+1.9.3
