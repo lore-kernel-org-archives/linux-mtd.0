@@ -1,23 +1,21 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XldY3-0003ty-5q
- for linux-mtd@lists.infradead.org; Tue, 04 Nov 2014 12:49:23 +0000
-Received: by mail-pd0-f169.google.com with SMTP id y10so13662156pdj.28
- for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2014 04:49:02 -0800 (PST)
-From: Zhou Wang <wangzhou.bry@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org
-Subject: [PATCH v4 2/2] mtd: hisilicon: add device tree binding documentation
-Date: Tue,  4 Nov 2014 20:47:01 +0800
-Message-Id: <1415105221-7732-3-git-send-email-wangzhou.bry@gmail.com>
-In-Reply-To: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
-References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
-Cc: mark.rutland@arm.com, Zhou Wang <wangzhou.bry@gmail.com>,
- pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
- linux-kernel@vger.kernel.org, haojian.zhuang@gmail.com,
- wangzhou1@hisilicon.com, robh+dt@kernel.org, xuwei5@hisilicon.com,
- galak@codeaurora.org, caizhiyong@huawei.com
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xle2N-0003CZ-PN
+ for linux-mtd@lists.infradead.org; Tue, 04 Nov 2014 13:20:45 +0000
+Message-ID: <5458D219.4010406@free-electrons.com>
+Date: Tue, 04 Nov 2014 10:18:17 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+MIME-Version: 1.0
+To: Dragan Marinkovic <marinkovic.dragan@gmail.com>
+Subject: Re: squashfs on top of ubi
+References: <CAKNKmJS-vKgzjfU4A9t188HHrTqKBwW_i2D7rm4Jxw2rFUUYZA@mail.gmail.com>
+In-Reply-To: <CAKNKmJS-vKgzjfU4A9t188HHrTqKBwW_i2D7rm4Jxw2rFUUYZA@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="RXv0skpIunbqXXLh8g00nmkRercdBChSp"
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +25,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
----
- .../devicetree/bindings/mtd/hisi504-nand.txt       |   40 ++++++++++++++++++++
- 1 file changed, 40 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/hisi504-nand.txt
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--RXv0skpIunbqXXLh8g00nmkRercdBChSp
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/mtd/hisi504-nand.txt b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
-new file mode 100644
-index 0000000..c8b3988
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
-@@ -0,0 +1,40 @@
-+Hisilicon Hip04 Soc NAND controller DT binding
-+
-+Required properties:
-+- compatible:          Should be "hisilicon,504-nfc".
-+- reg:                 The first contains base physical address and size of
-+                       NAND controller's registers. The second contains base
-+                       physical address and size of NAND controller's buffer.
-+- interrupts:          Interrupt number for nfc.
-+- nand-bus-width:      See nand.txt.
-+- nand-ecc-mode:       See nand.txt.
-+- hisi,nand-ecc-bits:  ECC bits type support.
-+                 <0>:  none ecc
-+                 <1>:  Can correct 1bit per 512byte.
-+                 <6>:  Can correct 16bits per 1K byte.
-+- #address-cells:      partition address, should be set 1.
-+- #size-cells:         partition size, should be set 1.
-+
-+Flash chip may optionally contain additional sub-nodes describing partitions of
-+the address space. See partition.txt for more detail.
-+
-+Example:
-+
-+	nand: nand@4020000 {
-+		compatible = "hisilicon,504-nfc";
-+		reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
-+		interrupts = <0 379 4>;
-+		nand-bus-width = <8>;
-+		nand-ecc-mode = "hw";
-+		hisi,nand-ecc-bits = <1>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		partition@0 {
-+			label = "nand_text";
-+			reg = <0x00000000 0x00400000>;
-+		};
-+
-+		...
-+
-+	};
--- 
-1.7.9.5
+On 11/04/2014 01:12 AM, Dragan Marinkovic wrote:
+[..] I was able to back port the changes =E2=80=8Bto=E2=80=8B Linux 3.4 a=
+nd managed
+> to get ubiblkvol userlan=E2=80=8Bd=E2=80=8B tool up and running. So far=
+, so good.
+>=20
+
+Great! :)
+
+> I have a few questions though=E2=80=8B:
+> * What is the mechanics of actually adding squashfs image on top of UBI=
+ and
+> mount it from userland? I have monolithic kernel.
+>=20
+
+Well, once you have an ubiblock0_0 device it's just like any other block
+device. The raw UBI volume and the block device are 1:1 so you can write
+an image to the ubi0_0 volume and you'll be able to mount through the
+block device:
+
+mount -o,ro /dev/ubiblock0_0 /mnt
+
+I have some notes with a sort of howto here waiting to be published, let
+me see if I can get it in shape.
+
+> * The current version of the driver is RO. I found some of your work fr=
+om
+> 2012 which introduces read-write ubiblock driver (
+> http://lists.infradead.org/pipermail/linux-mtd/2012-December/045274.htm=
+l).
+> Is this something that could be potentially used? There is also
+> http://webcache.googleusercontent.com/search?q=3Dcache:http://patchwork=
+=2Eozlabs.org/patch/323628/
+> which seems to indicate that there are two separate versions of ubi blo=
+ck
+> driver. With the exception of th=E2=80=8Bat=E2=80=8B post, I can't find=
+ any other reference to RW ubiblock driver.
+> Could you shed some light on this?
+>=20
+
+You can find the history and evolution of this driver in this cover lette=
+r:
+
+http://lists.infradead.org/pipermail/linux-mtd/2014-February/052228.html
+
+As you can see at some point we decided to remove write support.
+
+--=20
+Ezequiel Garc=C3=ADa, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
+
+
+--RXv0skpIunbqXXLh8g00nmkRercdBChSp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJUWNIgAAoJEIOKbhOEIHKi8JwQALpBcQZmaBtkgWTRGLt1Y00k
+1x9wyghJk2KYj8Zd+owhV0yRnDlz6duln0uavbFaffIA0TjOfQHK/rwjfCp9MvWl
+y8KQ0FlbGLpYLLDY4/qOHadXWrSWCthQE3bOXAB48flMlxnl9XA2wVQP+jeBhHtu
+k3eWaHR6cq+OXrw8NpOTbt9/WHZ/92o7DzUsGO13ZRSAgrkmOcrS7b2P+Xn39A/X
+IuW+rbMLIsw5rv14WVL9Elk1b+6CcgBHUIbSi314biusKz8ooACN1KuOcbUptuaC
+cNeWd8lDMbABee44E3Ms0JWdn0WeTWoU3+mUg8cocBWz86JpcFjq0tdMv3R4xeM5
+bg7kDj47RWclidB1oIlSHAGTvDSIh6+QhYsQgGIt9FPzvRGtpKqzmMwLCLAGBGvZ
+hDJz2p+fU3E6nE/AM1v+Mo5ZAMxBydfTphBdYHTiYnpkFBGczDdKyFEDQSGYV2UP
+Yv96J/sZmH2CcWAA7J7Plv9HWBPP6W5kbRxMqkkPVWYfisDM7+6FVeV6hHT6qae2
+KFpsRcFsi5WCo1+HJlv8lXf6qIzwFdmkViSkkZuh1V39pzyYSxOhCQO4loc+aIGp
+WJzeLTyf8csPyPJsmMDEpHsyj2on0bhKlLkZyBrM4XjG3Ts2Gw9OUJPUVKGjizE5
+tdYCXfIAFfFob3KwTGKK
+=ldPw
+-----END PGP SIGNATURE-----
+
+--RXv0skpIunbqXXLh8g00nmkRercdBChSp--
