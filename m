@@ -1,23 +1,18 @@
-From: bpqw <bpqw@micron.com>
-To: Marek Vasut <marex@denx.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/1 v4] driver:mtd:spi-nor: Add quad I/O support for Micron
- spi nor
-Date: Tue, 4 Nov 2014 13:25:14 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315E9B48@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
- <201409251211.57183.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
- <201409261046.07132.marex@denx.de>       
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail02.rohde-schwarz.com ([80.246.32.97])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XlgK0-0002ez-TN
+ for linux-mtd@lists.infradead.org; Tue, 04 Nov 2014 15:47:05 +0000
+Received: from rus19.rsint.net ([10.0.33.19])
+ by amu315.rsint.net (Totemo SMTP Server) with SMTP ID 583
+ for <linux-mtd@lists.infradead.org>;
+ Tue, 4 Nov 2014 16:46:07 +0100 (CET)
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Cc: "grmoore@altera.com" <grmoore@altera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie8@gmail.com" <shijie8@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>
+Subject: jffs2: Dirent with empty name
+From: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OFD6C536F5.9EA6C74D-ONC1257D85.0062452C-C1257D86.0056A24A@rohde-schwarz.com>
+Date: Tue, 4 Nov 2014 16:46:16 +0100
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,117 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
+Hello all,
 
-For Micron SPI NOR flash,enabling or disabling quad I/O protocol is control=
-led
-by EVCR (Enhanced Volatile Configuration Register), Quad I/O protocol bit 7=
-.
-When EVCR bit 7 is reset to 0,the SPI NOR flash will operate in quad I/O mo=
-de.
+on two occasions now, one of our devices (linux-3.10.23, busybox-1.22.1) 
+was bricked because jffs2 created a DIRENT node with nsize = 0 (empty 
+name). In one case, the DIRENT referred to an empty directory, in the 
+other case to an empty regular file (in different locations). Eventually, 
+the filesystem failed to mount: "Dirent at %08x has zero at start of name. 
+Aborting mount.".
 
-Signed-off-by: bean huo <beanhuo@micron.com>
-Acked-by: Marek Vasut <marex@denx.de>
----
- v1-v2:modified to that capture wait_till_ready()
-	 return value,if error,directly return its
-	 the value.
- v2-v3:directly use the reurning error value of
-	 read_reg and write_reg,instead of -EINVAL.
- V3-v4:
-	Modify commit logs that wraped into 80 columns=20
+The problem occurred while running repeated tests (for hours) where we cut 
+power in the middle of removing, renaming and writing files in jffs2. The 
+scripts always wrote the same directories and files, and none of them had 
+an empty name. [Anyway, I don't think that a userland program can actually 
+create a directory or file with an empty name -- the path is sanitized 
+long before it reaches jffs2.]
 
- drivers/mtd/spi-nor/spi-nor.c |   46 +++++++++++++++++++++++++++++++++++++=
-++++
- include/linux/mtd/spi-nor.h   |    6 ++++++
- 2 files changed, 52 insertions(+)
+>From the context in the erase block, it looks like the offending DIRENT 
+and INODE nodes were copied by GC from another erase block (which is no 
+longer available), and later summarized. The mount failure only happens 
+after the nodes are summarized. Without summary, the nodes are accepted as 
+they are, and even this can be a bad thing: When there is a subdirectory 
+with an empty name, recursive operations on a directory higher up will 
+fail because they run in a loop (dir/"" being interpreted as dir). In one 
+case, /rw/foo/bar/"" still existed after 'rm -rf /rw/foo', which had some 
+unpleasant consequences.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c =
-index b5ad6be..486b167 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -878,6 +878,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
- 	return 0;
- }
-=20
-+static int micron_quad_enable(struct spi_nor *nor) {
-+	int ret, val;
-+
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+
-+	write_enable(nor);
-+
-+	/* set EVCR ,enable quad I/O */
-+	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
-+	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
-+	if (ret < 0) {
-+		dev_err(nor->dev,
-+			"error while writing EVCR register\n");
-+		return ret;
-+	}
-+
-+	ret =3D wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	/* read EVCR and check it */
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+	if (val & EVCR_QUAD_EN_MICRON) {
-+		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)  {
- 	int status;
-@@ -890,6 +929,13 @@ static int set_quad_mode(struct spi_nor *nor, u32 jede=
-c_id)
- 			return -EINVAL;
- 		}
- 		return status;
-+	case CFI_MFR_ST:
-+		status =3D micron_quad_enable(nor);
-+		if (status) {
-+			dev_err(nor->dev, "Micron quad-read not enabled\n");
-+			return -EINVAL;
-+		}
-+		return status;
- 	default:
- 		status =3D spansion_quad_enable(nor);
- 		if (status) {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h inde=
-x 9e6294f..d71b659 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -56,6 +56,10 @@
- /* Used for Spansion flashes only. */
- #define SPINOR_OP_BRWR		0x17	/* Bank register write */
-=20
-+/* Used for Micron flashes only. */
-+#define SPINOR_OP_RD_EVCR	0x65	/* Read EVCR register */
-+#define SPINOR_OP_WD_EVCR	0x61	/* Write EVCR register */
-+
- /* Status Register bits. */
- #define SR_WIP			1	/* Write in progress */
- #define SR_WEL			2	/* Write enable latch */
-@@ -67,6 +71,8 @@
-=20
- #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
-=20
-+#define EVCR_QUAD_EN_MICRON	0x80	/* Micron Quad I/O */
-+
- /* Flag Status Register bits */
- #define FSR_READY		0x80
-=20
---
-1.7.9.5
+It's not a big issue to write a patch to ignore DIRENT nodes with nsize = 
+0. At the moment, though, I am more concerned about how this DIRENT node 
+came to be in the first place -- I am suspecting some mix-up in GC. Has 
+anybody else observed this kind of problem?
+
+Best regards,
+Thomas Betker
