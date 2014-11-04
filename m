@@ -1,21 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xle2N-0003CZ-PN
- for linux-mtd@lists.infradead.org; Tue, 04 Nov 2014 13:20:45 +0000
-Message-ID: <5458D219.4010406@free-electrons.com>
-Date: Tue, 04 Nov 2014 10:18:17 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+From: bpqw <bpqw@micron.com>
+To: Marek Vasut <marex@denx.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 1/1 v4] driver:mtd:spi-nor: Add quad I/O support for Micron
+ spi nor
+Date: Tue, 4 Nov 2014 13:25:14 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315E9B48@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
+ <201409251211.57183.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
+ <201409261046.07132.marex@denx.de>       
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Dragan Marinkovic <marinkovic.dragan@gmail.com>
-Subject: Re: squashfs on top of ubi
-References: <CAKNKmJS-vKgzjfU4A9t188HHrTqKBwW_i2D7rm4Jxw2rFUUYZA@mail.gmail.com>
-In-Reply-To: <CAKNKmJS-vKgzjfU4A9t188HHrTqKBwW_i2D7rm4Jxw2rFUUYZA@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="RXv0skpIunbqXXLh8g00nmkRercdBChSp"
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,85 +27,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---RXv0skpIunbqXXLh8g00nmkRercdBChSp
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
 
-On 11/04/2014 01:12 AM, Dragan Marinkovic wrote:
-[..] I was able to back port the changes =E2=80=8Bto=E2=80=8B Linux 3.4 a=
-nd managed
-> to get ubiblkvol userlan=E2=80=8Bd=E2=80=8B tool up and running. So far=
-, so good.
->=20
+For Micron SPI NOR flash,enabling or disabling quad I/O protocol is control=
+led
+by EVCR (Enhanced Volatile Configuration Register), Quad I/O protocol bit 7=
+.
+When EVCR bit 7 is reset to 0,the SPI NOR flash will operate in quad I/O mo=
+de.
 
-Great! :)
+Signed-off-by: bean huo <beanhuo@micron.com>
+Acked-by: Marek Vasut <marex@denx.de>
+---
+ v1-v2:modified to that capture wait_till_ready()
+	 return value,if error,directly return its
+	 the value.
+ v2-v3:directly use the reurning error value of
+	 read_reg and write_reg,instead of -EINVAL.
+ V3-v4:
+	Modify commit logs that wraped into 80 columns=20
 
-> I have a few questions though=E2=80=8B:
-> * What is the mechanics of actually adding squashfs image on top of UBI=
- and
-> mount it from userland? I have monolithic kernel.
->=20
+ drivers/mtd/spi-nor/spi-nor.c |   46 +++++++++++++++++++++++++++++++++++++=
+++++
+ include/linux/mtd/spi-nor.h   |    6 ++++++
+ 2 files changed, 52 insertions(+)
 
-Well, once you have an ubiblock0_0 device it's just like any other block
-device. The raw UBI volume and the block device are 1:1 so you can write
-an image to the ubi0_0 volume and you'll be able to mount through the
-block device:
-
-mount -o,ro /dev/ubiblock0_0 /mnt
-
-I have some notes with a sort of howto here waiting to be published, let
-me see if I can get it in shape.
-
-> * The current version of the driver is RO. I found some of your work fr=
-om
-> 2012 which introduces read-write ubiblock driver (
-> http://lists.infradead.org/pipermail/linux-mtd/2012-December/045274.htm=
-l).
-> Is this something that could be potentially used? There is also
-> http://webcache.googleusercontent.com/search?q=3Dcache:http://patchwork=
-=2Eozlabs.org/patch/323628/
-> which seems to indicate that there are two separate versions of ubi blo=
-ck
-> driver. With the exception of th=E2=80=8Bat=E2=80=8B post, I can't find=
- any other reference to RW ubiblock driver.
-> Could you shed some light on this?
->=20
-
-You can find the history and evolution of this driver in this cover lette=
-r:
-
-http://lists.infradead.org/pipermail/linux-mtd/2014-February/052228.html
-
-As you can see at some point we decided to remove write support.
-
---=20
-Ezequiel Garc=C3=ADa, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
-
-
---RXv0skpIunbqXXLh8g00nmkRercdBChSp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJUWNIgAAoJEIOKbhOEIHKi8JwQALpBcQZmaBtkgWTRGLt1Y00k
-1x9wyghJk2KYj8Zd+owhV0yRnDlz6duln0uavbFaffIA0TjOfQHK/rwjfCp9MvWl
-y8KQ0FlbGLpYLLDY4/qOHadXWrSWCthQE3bOXAB48flMlxnl9XA2wVQP+jeBhHtu
-k3eWaHR6cq+OXrw8NpOTbt9/WHZ/92o7DzUsGO13ZRSAgrkmOcrS7b2P+Xn39A/X
-IuW+rbMLIsw5rv14WVL9Elk1b+6CcgBHUIbSi314biusKz8ooACN1KuOcbUptuaC
-cNeWd8lDMbABee44E3Ms0JWdn0WeTWoU3+mUg8cocBWz86JpcFjq0tdMv3R4xeM5
-bg7kDj47RWclidB1oIlSHAGTvDSIh6+QhYsQgGIt9FPzvRGtpKqzmMwLCLAGBGvZ
-hDJz2p+fU3E6nE/AM1v+Mo5ZAMxBydfTphBdYHTiYnpkFBGczDdKyFEDQSGYV2UP
-Yv96J/sZmH2CcWAA7J7Plv9HWBPP6W5kbRxMqkkPVWYfisDM7+6FVeV6hHT6qae2
-KFpsRcFsi5WCo1+HJlv8lXf6qIzwFdmkViSkkZuh1V39pzyYSxOhCQO4loc+aIGp
-WJzeLTyf8csPyPJsmMDEpHsyj2on0bhKlLkZyBrM4XjG3Ts2Gw9OUJPUVKGjizE5
-tdYCXfIAFfFob3KwTGKK
-=ldPw
------END PGP SIGNATURE-----
-
---RXv0skpIunbqXXLh8g00nmkRercdBChSp--
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c =
+index b5ad6be..486b167 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -878,6 +878,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 	return 0;
+ }
+=20
++static int micron_quad_enable(struct spi_nor *nor) {
++	int ret, val;
++
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return ret;
++	}
++
++	write_enable(nor);
++
++	/* set EVCR ,enable quad I/O */
++	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
++	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
++	if (ret < 0) {
++		dev_err(nor->dev,
++			"error while writing EVCR register\n");
++		return ret;
++	}
++
++	ret =3D wait_till_ready(nor);
++	if (ret)
++		return ret;
++
++	/* read EVCR and check it */
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return ret;
++	}
++	if (val & EVCR_QUAD_EN_MICRON) {
++		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)  {
+ 	int status;
+@@ -890,6 +929,13 @@ static int set_quad_mode(struct spi_nor *nor, u32 jede=
+c_id)
+ 			return -EINVAL;
+ 		}
+ 		return status;
++	case CFI_MFR_ST:
++		status =3D micron_quad_enable(nor);
++		if (status) {
++			dev_err(nor->dev, "Micron quad-read not enabled\n");
++			return -EINVAL;
++		}
++		return status;
+ 	default:
+ 		status =3D spansion_quad_enable(nor);
+ 		if (status) {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h inde=
+x 9e6294f..d71b659 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -56,6 +56,10 @@
+ /* Used for Spansion flashes only. */
+ #define SPINOR_OP_BRWR		0x17	/* Bank register write */
+=20
++/* Used for Micron flashes only. */
++#define SPINOR_OP_RD_EVCR	0x65	/* Read EVCR register */
++#define SPINOR_OP_WD_EVCR	0x61	/* Write EVCR register */
++
+ /* Status Register bits. */
+ #define SR_WIP			1	/* Write in progress */
+ #define SR_WEL			2	/* Write enable latch */
+@@ -67,6 +71,8 @@
+=20
+ #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
+=20
++#define EVCR_QUAD_EN_MICRON	0x80	/* Micron Quad I/O */
++
+ /* Flag Status Register bits */
+ #define FSR_READY		0x80
+=20
+--
+1.7.9.5
