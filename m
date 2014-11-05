@@ -1,19 +1,24 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xlw19-00028x-Dx
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 08:32:39 +0000
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.com [10.136.13.65])
- by mail-irva-13.broadcom.com (Postfix) with ESMTP id 1CEBB40FE5	for
- <linux-mtd@lists.infradead.org>;
- Wed,  5 Nov 2014 00:31:59 -0800 (PST)
-Message-ID: <5459E090.1010300@broadcom.com>
-Date: Wed, 5 Nov 2014 00:32:16 -0800
-From: Scott Branden <sbranden@broadcom.com>
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xlw86-0005Wv-Ng
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 08:39:51 +0000
+Received: by mail-pa0-f44.google.com with SMTP id bj1so341490pad.31
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 00:39:28 -0800 (PST)
+Date: Wed, 5 Nov 2014 00:39:25 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Gerhard Sittig <gsi@denx.de>
+Subject: Re: [PATCH v2 1/3] mtd: nand: comment update, the DEPLETE1 command
+ has gone
+Message-ID: <20141105083925.GF22361@norris-Latitude-E6410>
+References: <1396611948-4523-1-git-send-email-gsi@denx.de>
+ <1396611948-4523-2-git-send-email-gsi@denx.de>
 MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>
-Subject: suspect UBIFS async operations causing issues during reboot
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1396611948-4523-2-git-send-email-gsi@denx.de>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Pekon Gupta <pekon@ti.com>, Alexander Shiyan <shc_work@mail.ru>,
+ David Mosberger <davidm@egauge.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We are doing reboot testing with UBIFS on the 3.10 kernel with a new 
-chipset we are working on.
+On Fri, Apr 04, 2014 at 01:45:46PM +0200, Gerhard Sittig wrote:
+> update a comment in nand_command_lp() about specific requirements of
+> individual commands, the DEPLETE1 command was removed in the past and
+> the comment no longer applied
+> 
+> Signed-off-by: Gerhard Sittig <gsi@denx.de>
+> ---
+> changes in v2: none
 
-Over 1000's of reboots we eventually find that the NAND has 
-uncorrectable ECC errors reported on a random page when it is mounted.
+Pushed this patch to l2-mtd.git.
 
-We have found the problem is that a NAND erase operation is in progress 
-when the reboot occurs. Since the NAND is in the middle of the erase 
-operation the page is mostly FF with some random bits not erased when 
-the reboot occurs.
-
-We suspect the problem is the asynchronous nature of the UBIFS 
-operations.  Perhaps the small write buffer that can take 3-5 seconds to 
-be written or some other operation occuring in UBI/UBIFS?  I don't think 
-the shutdown of the filesystem is dealing with all the threads properly.
-
-Log below with printks adding in iproc_nand driver showing erase 
-operations in progress when "Restarting system." happens.
-
-Stopped Setup Virtual Console.
-Stopping Apply Kernel Variables...
-Stopped Apply Kernel Variables.
-Starting Notify Audit System and Update UTMP about System Shutdown...
-Stopping Runtime Directory...
-Stopping Remount API VFS...
-Stopped Remount API VFS.
-Stopping Remount Root FS...
-Stopped Remount Root FS.
-Stopping Collect Read-Ahead Data...
-Stopped Collect Read-Ahead Data.
-Stopping Media Directory...[   18.370000] systemd[1]: Unit 
-systemd-readahead-collect.service entered failed state.
-
-Started Console System Reboot Logging.
-Stopped Runtime Directory.
-Stopped Media Directory.
-[   18.490000] systemd[1]: Shutting down.
-Sending SIGTERM to remaining processes...
-Sending SIGKILL to remaining processes...
-Unmounting file systems.
-[   18.530000] iproc_nand_cmdfunc: cmd 0x60 addr 0x14a40000
-[   18.540000] iproc_nand_waitfunc: native cmd 8 intfc status 0xc00000e0
-[   18.550000] UBIFS: background thread "ubifs_bgt0_0" stops
-Disabling swaps.
-Detaching loop devices.
-Detaching DM devices.
-[   18.560000] iproc_nand_cmdfunc: cmd 0x60 addr 0x18680000
-[   18.570000] iproc_nand_waitfunc: native cmd 8 intfc status 0xc00000e0
-[   18.580000] Restarting system.
-[   18.580000] iproc_nand_cmdfunc: cmd 0x60 addr 0x18700000
-
-<REBOOT happens here with NAND ERASE COMMAND in progress corrupting 
-0x18700000 NAND Addresses!>  Corrupted NAND only happens when erase 
-operation in progress when restarting system happens.
+Brian
