@@ -1,19 +1,19 @@
-Received: from mail-ie0-f170.google.com ([209.85.223.170])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xm42s-0003hg-PX
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 17:06:59 +0000
-Received: by mail-ie0-f170.google.com with SMTP id tp5so1138408ieb.15
- for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 09:06:37 -0800 (PST)
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 09/11] mtd: nand: stm_nand_bch: adding BBT header
-Date: Wed,  5 Nov 2014 16:59:51 +0000
-Message-Id: <1415206793-25670-10-git-send-email-lee.jones@linaro.org>
-In-Reply-To: <1415206793-25670-1-git-send-email-lee.jones@linaro.org>
-References: <1415206793-25670-1-git-send-email-lee.jones@linaro.org>
-Cc: pekon@pek-sem.com, computersforpeace@gmail.com, lee.jones@linaro.org,
- kernel@stlinux.com, linux-mtd@lists.infradead.org
+Received: from mail-gw1-out.broadcom.com ([216.31.210.62])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xm4pD-0002xh-4L
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 17:56:55 +0000
+Message-ID: <545A64CF.20101@broadcom.com>
+Date: Wed, 5 Nov 2014 09:56:31 -0800
+From: Scott Branden <sbranden@broadcom.com>
+MIME-Version: 1.0
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: suspect UBIFS async operations causing issues during reboot
+References: <5459E090.1010300@broadcom.com>
+ <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
+In-Reply-To: <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This header will be used firstly by the BCH main driver, then the
-Bad Block Table (BBT) code which will be added immediately after.
-Doing it this way provides the cleanest method of keeping the
-patch-set bisectable.
+Hi Richard,
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- include/linux/mtd/stm_nand_bbt.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
- create mode 100644 include/linux/mtd/stm_nand_bbt.h
+Thanks for the feedback.  Comments inline.
 
-diff --git a/include/linux/mtd/stm_nand_bbt.h b/include/linux/mtd/stm_nand_bbt.h
-new file mode 100644
-index 0000000..8f5deaa
---- /dev/null
-+++ b/include/linux/mtd/stm_nand_bbt.h
-@@ -0,0 +1,22 @@
-+#ifndef __LINUX_MTD_STM_BBT_H
-+#define __LINUX_MTD_STM_BBT_H
-+
-+#include <linux/mtd/stm_nand.h>
-+
-+/* BCH ECC sizes */
-+static int bch_ecc_sizes[] = {
-+	[BCH_18BIT_ECC] = 32,
-+	[BCH_30BIT_ECC] = 54,
-+	[BCH_NO_ECC] = 0,
-+};
-+
-+#if IS_ENABLED(CONFIG_MTD_NAND_STM_BCH_BBT)
-+extern void nandi_dump_bad_blocks(struct nandi_controller *nandi);
-+extern int bch_scan_bbt(struct mtd_info *mtd);
-+extern int bch_block_isbad(struct mtd_info *mtd, loff_t offs, int getchip);
-+extern int bch_block_markbad(struct mtd_info *mtd, loff_t offs);
-+#else
-+static inline void nandi_dump_bad_blocks(struct nandi_controller *nandi) {}
-+#endif
-+
-+#endif /* __LINUX_MTD_STM_BBT_H */
--- 
-1.9.1
+On 14-11-05 01:22 AM, Richard Weinberger wrote:
+> On Wed, Nov 5, 2014 at 9:32 AM, Scott Branden <sbranden@broadcom.com> wrote:
+>> We are doing reboot testing with UBIFS on the 3.10 kernel with a new chipset
+>> we are working on.
+>>
+>> Over 1000's of reboots we eventually find that the NAND has uncorrectable
+>> ECC errors reported on a random page when it is mounted.
+>>
+>> We have found the problem is that a NAND erase operation is in progress when
+>> the reboot occurs. Since the NAND is in the middle of the erase operation
+>> the page is mostly FF with some random bits not erased when the reboot
+>> occurs.
+>>
+>> We suspect the problem is the asynchronous nature of the UBIFS operations.
+>> Perhaps the small write buffer that can take 3-5 seconds to be written or
+>> some other operation occuring in UBI/UBIFS?  I don't think the shutdown of
+>> the filesystem is dealing with all the threads properly.
+>
+> And what about powercuts?
+powercuts would exhibit the exact same behaviour as we are observing: 
+the erase is interrupted by loss of power so the NAND block being erased 
+would be in a partially erased state.  powercuts have little to do with 
+the reboot sequence I am describing.
+
+> UBI/UBIFS was designed to survive powercuts.
+Yes, this does not cause UBIFS to fail to survive the powercut.  It does 
+cause blocks to not be erased properly.
+
+The block that didn't finish to erase is uncorrectable on next boot-up:
+
+[    1.330000] UBI: attaching mtd7 to ubi0
+[    2.000000] iproc_nand 18046000.nand: uncorrectable error at 0x18700000
+
+This issue is this blocks shouldn't be corrupted in the first place if 
+UBI/UBIFS shut downs properly.
+
+> If your NAND shows strange issues even after a clean reboot something nasty is
+> going on. Does your driver pass all UBI/MTD test?
+>
+We are in the process of running the MTD tests.  But this appears to 
+have nothing to do with a buggy driver or not.  The NAND driver will do 
+what it is told to do.  If it is told to erase a block it will erase a 
+block.  It can't control if the system reboots in the middle of this 
+operation?
+
+This appears to be a UBI/UBIFS issue.  UBI/UBIFS operations are still 
+going on after the filesystem in unmounted.  The shutdown process 
+completes and a reboot happens.  My guess is these operations are due to 
+the asynchronous threads of UBI/UBIFS not being handled properly during 
+the shutdown process?
+
+I have found other people have reported unexplained flash corruption. 
+We back ported this to the 3.10 kernel which solved most of the flash 
+corruption issues:
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/fs/super.c?id=807612db2f9940b9fa6deaef054eb16d51bd3e00
+
+This only remaining flash corruption issue is due to the described issue 
+of reboot happening in the middle of an erase cycle.
