@@ -1,24 +1,22 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xlw86-0005Wv-Ng
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 08:39:51 +0000
-Received: by mail-pa0-f44.google.com with SMTP id bj1so341490pad.31
- for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 00:39:28 -0800 (PST)
-Date: Wed, 5 Nov 2014 00:39:25 -0800
+ id 1Xlwjy-00026f-3i
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 09:18:59 +0000
+Received: by mail-pa0-f52.google.com with SMTP id fa1so422270pad.11
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 01:18:36 -0800 (PST)
+Date: Wed, 5 Nov 2014 01:18:33 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Gerhard Sittig <gsi@denx.de>
-Subject: Re: [PATCH v2 1/3] mtd: nand: comment update, the DEPLETE1 command
- has gone
-Message-ID: <20141105083925.GF22361@norris-Latitude-E6410>
-References: <1396611948-4523-1-git-send-email-gsi@denx.de>
- <1396611948-4523-2-git-send-email-gsi@denx.de>
+To: Michal Sojka <sojkam1@fel.cvut.cz>
+Subject: Re: [PATCH] Update help of CONFIG_MTD_OF_PARTS
+Message-ID: <20141105091833.GG22361@norris-Latitude-E6410>
+References: <1412946377-18933-1-git-send-email-sojkam1@fel.cvut.cz>
+ <20141022053453.GA16128@brian-ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1396611948-4523-2-git-send-email-gsi@denx.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Pekon Gupta <pekon@ti.com>, Alexander Shiyan <shc_work@mail.ru>,
- David Mosberger <davidm@egauge.net>
+In-Reply-To: <20141022053453.GA16128@brian-ubuntu>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 04, 2014 at 01:45:46PM +0200, Gerhard Sittig wrote:
-> update a comment in nand_command_lp() about specific requirements of
-> individual commands, the DEPLETE1 command was removed in the past and
-> the comment no longer applied
+On Tue, Oct 21, 2014 at 10:34:53PM -0700, Brian Norris wrote:
+> On Fri, Oct 10, 2014 at 03:06:17PM +0200, Michal Sojka wrote:
+> > The help text of CONFIG_MTD_OF_PARTS refers to additional documentation
+> > in booting-without-of.txt but this documentation was moved to another
+> > file in commit efcc2da3fd148c9acb7d7cf1d9800e0649f950fc (Stefan Roese:
+> > Factor MTD physmap bindings out of booting-without-of). This updates the
+> > help text to point to the right place.
+> > 
+> > Signed-off-by: Michal Sojka <sojkam1@fel.cvut.cz>
+> > ---
+> >  drivers/mtd/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+> > index 94b8210..fa8371a 100644
+> > --- a/drivers/mtd/Kconfig
+> > +++ b/drivers/mtd/Kconfig
+> > @@ -133,7 +133,7 @@ config MTD_OF_PARTS
+> >  	help
+> >  	  This provides a partition parsing function which derives
+> >  	  the partition map from the children of the flash node,
+> > -	  as described in Documentation/devicetree/booting-without-of.txt.
+> > +	  as described in Documentation/devicetree/bindings/mtd/mtd-physmap.txt.
 > 
-> Signed-off-by: Gerhard Sittig <gsi@denx.de>
-> ---
-> changes in v2: none
+> Did you read this file before sending the patch? I'm pretty sure you're
+> looking for this file instead:
+> 
+>   Documentation/devicetree/bindings/mtd/partition.txt
 
-Pushed this patch to l2-mtd.git.
+Fixed this up and pushed to l2-mtd.git.
 
 Brian
