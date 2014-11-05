@@ -1,16 +1,13 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xlxu4-00046l-Ml
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 10:33:29 +0000
-Received: by mail-pa0-f49.google.com with SMTP id lj1so516477pab.36
- for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 02:33:07 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: spi-nor: improve wait-till-ready timeout loop
-Date: Wed,  5 Nov 2014 02:32:03 -0800
-Message-Id: <1415183523-16265-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie8@gmail.com>
+From: Roger Quadros <rogerq@ti.com>
+To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Subject: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
+Date: Wed, 5 Nov 2014 13:00:58 +0200
+Message-ID: <1415185258-11747-1-git-send-email-rogerq@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: tony@atomide.com, stable@vger.kernel.org, pekon@pek-sem.com,
+ linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
+ linux-omap@vger.kernel.org, Roger Quadros <rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +17,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are a few small issues with the timeout loop in
-spi_nor_wait_till_ready():
+In commit 7d5929c1f343 ("mtd: nand: omap: Revert to using software ECC by default"),
+we switched back to using 1-bit SW ECC scheme by default. However
+commit b491da7233d5 ("mtd: nand: omap: clean-up ecc layout for BCH ecc schemes")
+didn't take into account the 1-bit SW scheme (i.e. OMAP_ECC_HAM1_CODE_SW)
+when checking for small page devices because it was already got rid of
+one commit earlier. Consider OMAP_ECC_HAM1_CODE_SW while deciding
+if we can proceed with small page devices or not.
 
- * The first operation should not be a reschedule; we should check the
-   status register at least once to see if we're complete!
+Fixes: 7d5929c1f34 ("mtd: nand: omap: Revert to using software ECC by default")
 
- * We should check the status register one last time after declaring the
-   deadline has passed, to prevent a premature timeout erro (this is
-   theoretically possible if we sleep for a long time after the previous
-   status register check).
-
- * Add an error message, so it's obvious if we ever hit a timeout.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: <stable@vger.kernel.org>        [3.17+]
+Reported-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/omap2.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 5e3a1d363895..d0dcaa1372ec 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -202,19 +202,24 @@ static int spi_nor_ready(struct spi_nor *nor)
- static int spi_nor_wait_till_ready(struct spi_nor *nor)
- {
- 	unsigned long deadline;
--	int ret;
-+	int timeout = 0, ret;
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 3b357e9..758e594 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1742,7 +1742,8 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	}
  
- 	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
- 
--	do {
--		cond_resched();
-+	while (!timeout) {
-+		if (time_after_eq(jiffies, deadline))
-+			timeout = 1;
- 
- 		ret = spi_nor_ready(nor);
- 		if (ret < 0)
- 			return ret;
- 		if (ret)
- 			return 0;
--	} while (!time_after_eq(jiffies, deadline));
-+
-+		cond_resched();
-+	}
-+
-+	dev_err(nor->dev, "flash operation timed out\n");
- 
- 	return -ETIMEDOUT;
- }
+ 	/* check for small page devices */
+-	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
++	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW) &&
++	    (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_SW)) {
+ 		dev_err(&info->pdev->dev, "small page devices are not supported\n");
+ 		err = -EINVAL;
+ 		goto return_error;
 -- 
-1.9.1
+1.8.3.2
