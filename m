@@ -1,20 +1,24 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from mail-ig0-x229.google.com ([2607:f8b0:4001:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xm80H-00031i-A3
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 21:20:33 +0000
-Received: by mail-pa0-f44.google.com with SMTP id bj1so1589914pad.3
- for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 13:20:12 -0800 (PST)
-Date: Wed, 5 Nov 2014 13:20:08 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] mtd: off by one in INFTL_dumpVUchains()
-Message-ID: <20141105212008.GW23619@ld-irv-0074>
-References: <20141021080637.GA28426@mwanda>
+ id 1Xm8El-0000OL-ER
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 21:35:32 +0000
+Received: by mail-ig0-f169.google.com with SMTP id hn18so9102558igb.2
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 13:35:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20141021080637.GA28426@mwanda>
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+In-Reply-To: <20141105111631.GJ22361@norris-Latitude-E6410>
+References: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
+ <1407804896-1808-2-git-send-email-shijie.huang@intel.com>
+ <20141105111631.GJ22361@norris-Latitude-E6410>
+Date: Wed, 5 Nov 2014 22:35:09 +0100
+Message-ID: <CACna6ryvN_Srwt-JgxWht4aQfjgo0DhjqPicN8kyhJCJ91NUhw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mtd: spi-nor: remove the jedec_id/ext_id
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Huang Shijie <shijie.huang@intel.com>,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,13 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 21, 2014 at 11:08:35AM +0300, Dan Carpenter wrote:
-> The ->PUtable[] array has "->nb_blocks" number of elemetns so this
-> comparison should be ">=" instead of ">".  Otherwise it could result in
-> a minor read beyond the end of an array.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On 5 November 2014 12:16, Brian Norris <computersforpeace@gmail.com> wrote:
+> On Tue, Aug 12, 2014 at 08:54:55AM +0800, Huang Shijie wrote:
+>> The "id" array contains all the information about the JEDEC and the
+>> manufacturer ID info, this patch remove the jedec_id/ext_id from the
+>> flash_info.
+>>
+>> Signed-off-by: Huang Shijie <shijie.huang@intel.com>
+>
+> This patch does not apply any more. Can you rebase?
 
-Pushed to l2-mtd.git.
+Hm, I've just noticed that my patch:
+"prefer more specific entries from chips database"
+http://patchwork.ozlabs.org/patch/401907/
+conflicts with this one.
 
-Brian
+I think the final solution (after somehow applying both patches)
+should be something like:
+for (len =3D 6; i >=3D 4; len--) {
+    for (tmp =3D 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+        if (tmp->id_len =3D=3D len && !strncmp(info->id, id, info->id_len)
+            return &spi_nor_ids[tmp];
+    }
+}
+
+Does it make sense to you?
+
+Huang: I think it'll be the most optimal to me rebase my patch on top
+on your ones.
+
+Btw. I have two comments regarding 1/3 (can't find it to reply properly):
+
+1) Do we need the if (info->id_len) check?
+2) Shouldn't we use memcmp in the if (!strncmp(info->id, id, info->id_len))
+
+--=20
+Rafa=C5=82
