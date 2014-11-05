@@ -1,21 +1,25 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xm5DG-0006Zh-8m
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 18:21:47 +0000
-Message-ID: <545A6AA0.8050901@nod.at>
-Date: Wed, 05 Nov 2014 19:21:20 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1Xm6mL-0007Dx-9K
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 20:02:06 +0000
+Received: by mail-pd0-f178.google.com with SMTP id fp1so1370063pdb.37
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 12:01:44 -0800 (PST)
+Date: Wed, 5 Nov 2014 12:01:40 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Rodrigo Freire <rfreire@redhat.com>
+Subject: Re: [RESEND PATCH V2] mtd: block2mtd: Present block2mtd timely on
+ boot time
+Message-ID: <20141105200140.GM23619@ld-irv-0074>
+References: <1807144344.40128259.1410985683342.JavaMail.zimbra@redhat.com>
+ <515696553.1577613.1412867251670.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-To: Scott Branden <sbranden@broadcom.com>,
- Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: suspect UBIFS async operations causing issues during reboot
-References: <5459E090.1010300@broadcom.com>
- <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
- <545A64CF.20101@broadcom.com>
-In-Reply-To: <545A64CF.20101@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <515696553.1577613.1412867251670.JavaMail.zimbra@redhat.com>
+Cc: Felix Fietkau <nbd@openwrt.org>,
+ =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+ Herton Krzesinski <hkrzesin@redhat.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +29,215 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On Thu, Oct 09, 2014 at 11:07:31AM -0400, Rodrigo Freire wrote:
+> From: Felix Fietkau <nbd@openwrt.org> 
+> 
+> mtd: block2mtd: Ensure that block2mtd is presented in a timely fashion 
+> 
+> Currently, a block MTD device is not presented to the system on time, in 
+> order to start mounting the filesystems. This patch ensures that block2mtd 
+> is presented at the right time, so filesystems can be mounted on boot time. 
+> This issue was seen on BCM2835 (Raspberry Pi) systems when mounting JFFS2 
+> block2mtd filesystems. 
+> This patchset also adds a MTD device name and a timeout option to the driver. 
+> Original patchset: 
+> https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.12/440-block2mtd_init.patch?rev=40444 
+> https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.12/441-block2mtd_probe.patch?rev=40444 
+> 
+> Signed-off-by: Felix Fietkau <nbd@openwrt.org> 
+> Signed-off-by: Rodrigo Freire <rfreire@redhat.com> 
+> Signed-off-by: Herton Krzesinski <herton@redhat.com> 
+> --- 
+> V2: Uses kstrdup, removed PAGE_MASK. 
 
-Am 05.11.2014 um 18:56 schrieb Scott Branden:
-> Hi Richard,
-> 
-> Thanks for the feedback.  Comments inline.
-> 
-> On 14-11-05 01:22 AM, Richard Weinberger wrote:
->> On Wed, Nov 5, 2014 at 9:32 AM, Scott Branden <sbranden@broadcom.com> wrote:
->>> We are doing reboot testing with UBIFS on the 3.10 kernel with a new chipset
->>> we are working on.
->>>
->>> Over 1000's of reboots we eventually find that the NAND has uncorrectable
->>> ECC errors reported on a random page when it is mounted.
->>>
->>> We have found the problem is that a NAND erase operation is in progress when
->>> the reboot occurs. Since the NAND is in the middle of the erase operation
->>> the page is mostly FF with some random bits not erased when the reboot
->>> occurs.
->>>
->>> We suspect the problem is the asynchronous nature of the UBIFS operations.
->>> Perhaps the small write buffer that can take 3-5 seconds to be written or
->>> some other operation occuring in UBI/UBIFS?  I don't think the shutdown of
->>> the filesystem is dealing with all the threads properly.
->>
->> And what about powercuts?
-> powercuts would exhibit the exact same behaviour as we are observing: the erase is interrupted by loss of power so the NAND block being erased would be in a partially erased
-> state.  powercuts have little to do with the reboot sequence I am describing.
-> 
->> UBI/UBIFS was designed to survive powercuts.
-> Yes, this does not cause UBIFS to fail to survive the powercut.  It does cause blocks to not be erased properly.
+FYI, this copy was malformed. All the indentation and formatting is
+wrong, so it doesn't apply. I'll look at the previous copy you sent, but
+please fix this in the future.
 
-Makes sense.
+Brian
 
-> The block that didn't finish to erase is uncorrectable on next boot-up:
+> --- a/drivers/mtd/devices/block2mtd.c 2014-09-16 21:38:12.543952627 -0300 
+> +++ b/drivers/mtd/devices/block2mtd.c 2014-09-17 17:43:21.424944394 -0300 
+> @@ -9,7 +9,15 @@ 
 > 
-> [    1.330000] UBI: attaching mtd7 to ubi0
-> [    2.000000] iproc_nand 18046000.nand: uncorrectable error at 0x18700000
+> #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt 
 > 
-> This issue is this blocks shouldn't be corrupted in the first place if UBI/UBIFS shut downs properly.
+> +/* 
+> +* When the first attempt at device initialization fails, we may need to 
+> +* wait a little bit and retry. This timeout, by default 3 seconds, gives 
+> +* device time to start up. Required on BCM2708 and a few other chipsets. 
+> +*/ 
+> +#define MTD_DEFAULT_TIMEOUT 3 
+> + 
+> #include <linux/module.h> 
+> +#include <linux/delay.h> 
+> #include <linux/fs.h> 
+> #include <linux/blkdev.h> 
+> #include <linux/bio.h> 
+> @@ -17,6 +25,7 @@ 
+> #include <linux/list.h> 
+> #include <linux/init.h> 
+> #include <linux/mtd/mtd.h> 
+> +#include <linux/mtd/partitions.h> 
+> #include <linux/mutex.h> 
+> #include <linux/mount.h> 
+> #include <linux/slab.h> 
+> @@ -209,12 +218,14 @@ static void block2mtd_free_device(struct 
+> } 
 > 
->> If your NAND shows strange issues even after a clean reboot something nasty is
->> going on. Does your driver pass all UBI/MTD test?
->>
-> We are in the process of running the MTD tests.  But this appears to have nothing to do with a buggy driver or not.  The NAND driver will do what it is told to do.  If it is told
-> to erase a block it will erase a block.  It can't control if the system reboots in the middle of this operation?
 > 
-> This appears to be a UBI/UBIFS issue.  UBI/UBIFS operations are still going on after the filesystem in unmounted.  The shutdown process completes and a reboot happens.  My guess is
-> these operations are due to the asynchronous threads of UBI/UBIFS not being handled properly during the shutdown process?
+> -static struct block2mtd_dev *add_device(char *devname, int erase_size) 
+> +static struct block2mtd_dev *add_device(char *devname, int erase_size, const char *mtdname, int timeout) 
+> { 
+> const fmode_t mode = FMODE_READ | FMODE_WRITE | FMODE_EXCL; 
+> - struct block_device *bdev; 
+> + struct block_device *bdev = ERR_PTR(-ENODEV); 
+> struct block2mtd_dev *dev; 
+> + struct mtd_partition *part; 
+> char *name; 
+> + int i; 
 > 
-> I have found other people have reported unexplained flash corruption. We back ported this to the 3.10 kernel which solved most of the flash corruption issues:
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/fs/super.c?id=807612db2f9940b9fa6deaef054eb16d51bd3e00
+> if (!devname) 
+> return NULL; 
+> @@ -225,15 +236,28 @@ static struct block2mtd_dev *add_device( 
 > 
-> This only remaining flash corruption issue is due to the described issue of reboot happening in the middle of an erase cycle.
-
-You can verify your hypothesis easily. Add a printk() to ubi_detach_mtd_dev(). This function shuts down UBI and also the background thread which does
-all erase work.
-
-Thanks,
-//richard
+> /* Get a handle on the device */ 
+> bdev = blkdev_get_by_path(devname, mode, dev); 
+> -#ifndef MODULE 
+> - if (IS_ERR(bdev)) { 
+> 
+> - /* We might not have rootfs mounted at this point. Try 
+> - to resolve the device name by other means. */ 
+> - 
+> - dev_t devt = name_to_dev_t(devname); 
+> - if (devt) 
+> - bdev = blkdev_get_by_dev(devt, mode, dev); 
+> +#ifndef MODULE 
+> +/* 
+> +* We might not have the root device mounted at this point. 
+> +* Try to resolve the device name by other means. 
+> +*/ 
+> + for (i = 0; IS_ERR(bdev) && i <= timeout; i++) { 
+> + dev_t devt; 
+> + 
+> + if (i) 
+> + /* 
+> + * Calling wait_for_device_probe in the first loop 
+> + * was not enough, sleep for a bit in subsequent 
+> + * go-arounds. 
+> + */ 
+> + msleep(1000); 
+> + wait_for_device_probe(); 
+> + 
+> + devt = name_to_dev_t(devname); 
+> + if (!devt) 
+> + continue; 
+> + bdev = blkdev_get_by_dev(devt, mode, dev); 
+> } 
+> #endif 
+> 
+> @@ -257,13 +281,14 @@ static struct block2mtd_dev *add_device( 
+> 
+> /* Setup the MTD structure */ 
+> /* make the name contain the block device in */ 
+> - name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname); 
+> + if (!mtdname) 
+> + mtdname = devname; 
+> + name = kstrdup (mtdname, GFP_KERNEL); 
+> if (!name) 
+> goto err_destroy_mutex; 
+> 
+> dev->mtd.name = name; 
+> - 
+> - dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK; 
+> + dev->mtd.size = dev->blkdev->bd_inode->i_size & ~(erase_size - 1); 
+> dev->mtd.erasesize = erase_size; 
+> dev->mtd.writesize = 1; 
+> dev->mtd.writebufsize = PAGE_SIZE; 
+> @@ -276,15 +301,19 @@ static struct block2mtd_dev *add_device( 
+> dev->mtd.priv = dev; 
+> dev->mtd.owner = THIS_MODULE; 
+> 
+> - if (mtd_device_register(&dev->mtd, NULL, 0)) { 
+> + part = kzalloc(sizeof(struct mtd_partition), GFP_KERNEL); 
+> + part->name = name; 
+> + part->offset = 0; 
+> + part->size = dev->mtd.size; 
+> + if (mtd_device_register(&dev->mtd, part, 1)) { 
+> /* Device didn't get added, so free the entry */ 
+> goto err_destroy_mutex; 
+> } 
+> + 
+> list_add(&dev->list, &blkmtd_device_list); 
+> pr_info("mtd%d: [%s] erase_size = %dKiB [%d]\n", 
+> dev->mtd.index, 
+> - dev->mtd.name + strlen("block2mtd: "), 
+> - dev->mtd.erasesize >> 10, dev->mtd.erasesize); 
+> + mtdname, dev->mtd.erasesize >> 10, dev->mtd.erasesize); 
+> return dev; 
+> 
+> err_destroy_mutex: 
+> @@ -353,11 +382,12 @@ static char block2mtd_paramline[80 + 12] 
+> 
+> static int block2mtd_setup2(const char *val) 
+> { 
+> - char buf[80 + 12]; /* 80 for device, 12 for erase size */ 
+> + char buf[80 + 12 + 80 + 8]; /* 80 for device, 12 for erase size, 80 for name, 8 for timeout */ 
+> char *str = buf; 
+> - char *token[2]; 
+> + char *token[4]; 
+> char *name; 
+> size_t erase_size = PAGE_SIZE; 
+> + unsigned long timeout = MTD_DEFAULT_TIMEOUT; 
+> int i, ret; 
+> 
+> if (strnlen(val, sizeof(buf)) >= sizeof(buf)) { 
+> @@ -368,7 +398,7 @@ static int block2mtd_setup2(const char * 
+> strcpy(str, val); 
+> kill_final_newline(str); 
+> 
+> - for (i = 0; i < 2; i++) 
+> + for (i = 0; i < 4; i++) 
+> token[i] = strsep(&str, ","); 
+> 
+> if (str) { 
+> @@ -395,7 +425,13 @@ static int block2mtd_setup2(const char * 
+> } 
+> } 
+> 
+> - add_device(name, erase_size); 
+> + if (token[2] && (strlen(token[2]) + 1 > 80)) 
+> + pr_err("mtd device name too long"); 
+> + 
+> + 
+> + if (token[3] && kstrtoul(token[3], 0, &timeout)) 
+> + pr_err("invalid timeout"); 
+> + add_device(name, erase_size, token[2], timeout); 
+> 
+> return 0; 
+> } 
+> @@ -429,7 +465,7 @@ static int block2mtd_setup(const char *v 
+> 
+> 
+> module_param_call(block2mtd, block2mtd_setup, NULL, NULL, 0200); 
+> -MODULE_PARM_DESC(block2mtd, "Device to use. \"block2mtd=<dev>[,<erasesize>]\""); 
+> +MODULE_PARM_DESC(block2mtd, "Device to use. \"block2mtd=<dev>[,<erasesize>[,<name>[,<timeout>]]]\""); 
+> 
+> static int __init block2mtd_init(void) 
+> { 
+> @@ -463,8 +499,7 @@ static void block2mtd_exit(void) 
+> } 
+> } 
+> 
+> - 
+> -module_init(block2mtd_init); 
+> +late_initcall(block2mtd_init); 
+> module_exit(block2mtd_exit); 
+> 
+> MODULE_LICENSE("GPL"); 
+> --- 
+> 1.7.1 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
