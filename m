@@ -1,23 +1,26 @@
-Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XlqrF-0002yP-6C
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 03:02:05 +0000
-Received: by mail-pd0-f177.google.com with SMTP id v10so14795173pde.22
- for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2014 19:01:44 -0800 (PST)
-Date: Tue, 4 Nov 2014 19:01:40 -0800
+ id 1XlvSU-0003Ek-PW
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 07:56:51 +0000
+Received: by mail-pa0-f48.google.com with SMTP id ey11so266013pad.35
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2014 23:56:29 -0800 (PST)
+Date: Tue, 4 Nov 2014 23:56:25 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Wei.Yang@windriver.com
-Subject: Re: [PATCH mtd-utils] libmtd: don't ignore "region index" parameter
- in mtd_regioninfo()
-Message-ID: <20141105030140.GL23619@ld-irv-0074>
-References: <1407294015-27884-1-git-send-email-Wei.Yang@windriver.com>
- <20140915173152.GA14832@ld-irv-0074>
- <20140915174821.GB14832@ld-irv-0074>
+To: Gerhard Sittig <gsi@denx.de>
+Subject: Re: [PATCH v1 1/2] devicetree: bindings: improve description for
+ GPIO assisted NAND flash
+Message-ID: <20141105075625.GB22361@norris-Latitude-E6410>
+References: <1407227846-3257-1-git-send-email-gsi@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140915174821.GB14832@ld-irv-0074>
-Cc: linux-mtd@lists.infradead.org, w90p710@gmail.com, dedekind1@gmail.com
+In-Reply-To: <1407227846-3257-1-git-send-email-gsi@denx.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Alexander Shiyan <shc_work@mail.ru>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Mike Rapoport <mike@compulab.co.il>,
+ Jamie Iles <jamie@jamieiles.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 15, 2014 at 10:48:21AM -0700, Brian Norris wrote:
-> ioctl(MEMGETREGIONINFO) has one input parameter (regionindex) and three
-> output parameters (info about the erase region). There are two problems
-> in mtdinfo/libmtd here:
+On Tue, Aug 05, 2014 at 10:37:25AM +0200, Gerhard Sittig wrote:
+> Expand the description of the 'gpios' property in the GPIO assisted
+> NAND flash binding, to explicitly list the required GPIO pin references
+> and their order.
 > 
->  1. mtdinfo.c doesn't initialize its region_info_user struct, instead
->     passing uninitialized data to mtd_regioninfo()
+> Update the example section to individually bracket the GPIO references,
+> and capitalize the signal names for improved readability.
 > 
->  2. mtd_regioninfo() fails to utilize the 'regidx' parameter to fill out
->     the regionindex parameter properly, so the garbage from mtdinfo.c is
->     propagated to the ioctl()
-> 
-> This means that mtdinfo will continuously probe the same (possibly
-> out-of-range) erase region, instead of looping over the valid regions.
-> 
-> Let's fix this in the mtd_regioninfo() helper, and at the same time,
-> let's zero out the mtdinfo.c buffer, as an additional precaution to keep
-> from using uninitialized data.
-> 
-> Initial error report from Yang, when running "mtdinfo /dev/mtd0" on a
-> Cavium 6100 board:
-> 
-> 	root@CN61XX:~# mtdinfo /dev/mtd0
-> 	mtd0
-> 	Name:                           phys_mapped_flash
-> 	Type:                           nor
-> 	Eraseblock size:                65536 bytes, 64.0 KiB
-> 	Amount of eraseblocks:          128 (8388608 bytes, 8.0 MiB)
-> 	Minimum input/output unit size: 1 byte
-> 	Sub-page size:                  1 byte
-> 	Additional erase regions:       0
-> 	Character device major/minor:   90:0
-> 	Bad blocks are allowed:         false
-> 	Device is writable:             true
-> 	libmtd: error!: MEMGETREGIONINFO ioctl failed for erase region 0
-> 	        error 22 (Invalid argument)
-> 	Eraseblock region 0:  info is unavailable
-> 	libmtd: error!: MEMGETREGIONINFO ioctl failed for erase region 1
-> 	        error 22 (Invalid argument)
-> 	Eraseblock region 1:  info is unavailable
-> 
-> Reported-by: Yang Wei <Wei.Yang@windriver.com>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Gerhard Sittig <gsi@denx.de>
 
-Pushed to mtd-utils.git.
+Applied both to l2-mtd.git.
 
 Brian
