@@ -1,21 +1,20 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xm7e0-0000hE-4P
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 20:57:32 +0000
-Received: by mail-pa0-f51.google.com with SMTP id kq14so1524239pab.38
- for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 12:57:10 -0800 (PST)
-Date: Wed, 5 Nov 2014 12:57:06 -0800
+ id 1Xm7eo-0000nw-Vx
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 20:58:23 +0000
+Received: by mail-pa0-f46.google.com with SMTP id lf10so1524085pab.19
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 12:58:02 -0800 (PST)
+Date: Wed, 5 Nov 2014 12:57:59 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Zhi Li <lznuaa@gmail.com>
-Subject: Re: mtd: nand: lock unlock function
-Message-ID: <20141105205706.GP23619@ld-irv-0074>
-References: <CAHrpEqSum1__d5Y1tysEzpa_MGuQSWfOW=m4idSxzCTdGbNKTQ@mail.gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] mtd: dataflash: Remove use of tx_dma
+Message-ID: <20141105205759.GQ23619@ld-irv-0074>
+References: <1414585652-31543-1-git-send-email-broonie@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHrpEqSum1__d5Y1tysEzpa_MGuQSWfOW=m4idSxzCTdGbNKTQ@mail.gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, White Ding <bpqw@micron.com>,
- linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com
+In-Reply-To: <1414585652-31543-1-git-send-email-broonie@kernel.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+
-
-On Wed, Nov 05, 2014 at 02:31:34PM -0600, Zhi Li wrote:
-> Does any know the reason why there are nand_lock and nand_unlock
-> function in nand_base.c, but
+On Wed, Oct 29, 2014 at 12:27:32PM +0000, Mark Brown wrote:
+> We are trying to remove the legacy tx_dma and rx_dma fields from the
+> spi_transfer structure. Currently dataflash uses tx_dma but only to make
+> sure that it's set to 0 so we can remove this use by replacing with a
+> zero initialisation of the entire spi_transfer struct.
 > 
->         mtd->_lock = NULL;
->         mtd->_unlock = NULL;
-> 
-> Not set to nand_lock and nand_unlock?
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Possible answers:
-
- * Lack of testing
-
- * The LOCK/UNLOCK opcodes are not supported by all vendors
-
- * Even the vendors that support them don't do so consistently (not sure
-   about this one; I know Micron supports this in some cases)
-
- * The opcodes aren't even documented (again, I'm not even sure about
-   this one; but many Micron datasheets I see don't mention LOCK/UNLOCK.
-   I recall that other similar lock/protection implementations are
-   secret to some extent, and are intentionally omitted from the
-   datasheets)
-
-I'd be happy to be proven wrong on any of these points.
+Applied to l2-mtd.git. Thanks!
 
 Brian
