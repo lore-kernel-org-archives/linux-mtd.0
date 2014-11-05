@@ -1,13 +1,21 @@
-From: Roger Quadros <rogerq@ti.com>
-To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-Subject: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
-Date: Wed, 5 Nov 2014 13:00:58 +0200
-Message-ID: <1415185258-11747-1-git-send-email-rogerq@ti.com>
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xlya8-00083H-LY
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 11:16:57 +0000
+Received: by mail-pa0-f42.google.com with SMTP id bj1so610287pad.1
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 03:16:35 -0800 (PST)
+Date: Wed, 5 Nov 2014 03:16:31 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <shijie.huang@intel.com>
+Subject: Re: [PATCH 2/3] mtd: spi-nor: remove the jedec_id/ext_id
+Message-ID: <20141105111631.GJ22361@norris-Latitude-E6410>
+References: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
+ <1407804896-1808-2-git-send-email-shijie.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: tony@atomide.com, stable@vger.kernel.org, pekon@pek-sem.com,
- linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
- linux-omap@vger.kernel.org, Roger Quadros <rogerq@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1407804896-1808-2-git-send-email-shijie.huang@intel.com>
+Cc: marex@denx.de, linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,36 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In commit 7d5929c1f343 ("mtd: nand: omap: Revert to using software ECC by default"),
-we switched back to using 1-bit SW ECC scheme by default. However
-commit b491da7233d5 ("mtd: nand: omap: clean-up ecc layout for BCH ecc schemes")
-didn't take into account the 1-bit SW scheme (i.e. OMAP_ECC_HAM1_CODE_SW)
-when checking for small page devices because it was already got rid of
-one commit earlier. Consider OMAP_ECC_HAM1_CODE_SW while deciding
-if we can proceed with small page devices or not.
+On Tue, Aug 12, 2014 at 08:54:55AM +0800, Huang Shijie wrote:
+> The "id" array contains all the information about the JEDEC and the
+> manufacturer ID info, this patch remove the jedec_id/ext_id from the
+> flash_info.
+> 
+> Signed-off-by: Huang Shijie <shijie.huang@intel.com>
 
-Fixes: 7d5929c1f34 ("mtd: nand: omap: Revert to using software ECC by default")
+This patch does not apply any more. Can you rebase?
 
-Cc: <stable@vger.kernel.org>        [3.17+]
-Reported-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- drivers/mtd/nand/omap2.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 3b357e9..758e594 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1742,7 +1742,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	}
- 
- 	/* check for small page devices */
--	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
-+	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW) &&
-+	    (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_SW)) {
- 		dev_err(&info->pdev->dev, "small page devices are not supported\n");
- 		err = -EINVAL;
- 		goto return_error;
--- 
-1.8.3.2
+Brian
