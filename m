@@ -1,26 +1,21 @@
-Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
+Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xm7nM-0005bQ-NA
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 21:07:13 +0000
-Received: by mail-pd0-f175.google.com with SMTP id y13so1482109pdi.34
- for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 13:06:51 -0800 (PST)
-Date: Wed, 5 Nov 2014 13:06:47 -0800
+ id 1Xm7tv-00087N-5Q
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 21:13:59 +0000
+Received: by mail-pd0-f176.google.com with SMTP id ft15so1498584pdb.7
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 13:13:37 -0800 (PST)
+Date: Wed, 5 Nov 2014 13:13:34 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH] mtd: spi-nor: Add support for SST spi flash
-Message-ID: <20141105210647.GU23619@ld-irv-0074>
-References: <29606567142da0d52c462ef0aebacc2b91fe2508.1413891469.git.michal.simek@xilinx.com>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: [PATCH 1/1 RFC] mtd: spi-nor: Fix ID for Spansion s70fl01gs
+Message-ID: <20141105211334.GV23619@ld-irv-0074>
+References: <1411983795-6444-1-git-send-email-alexander.stein@systec-electronic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <29606567142da0d52c462ef0aebacc2b91fe2508.1413891469.git.michal.simek@xilinx.com>
-Cc: Marek Vasut <marex@denx.de>, monstr@monstr.eu,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Peter Crosthwaite <peter.crosthwaite@xilinx.com>, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Harini Katakam <harini.katakam@xilinx.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1411983795-6444-1-git-send-email-alexander.stein@systec-electronic.com>
+Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+ Kevin Cernekee <cernekee@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 21, 2014 at 01:37:59PM +0200, Michal Simek wrote:
-> From: Harini Katakam <harini.katakam@xilinx.com>
+On Mon, Sep 29, 2014 at 11:43:15AM +0200, Alexander Stein wrote:
+> The Device ID is the same as with s25fl512s as stated in datasheet:
+> 6. Identification (RDID)
+> The Read Identification (RDID) command outputs the one-byte manufacturer
+> identification, followed by the two-byte device identification and the
+> bytes for the Common Flash Interface (CFI) tables. Each die of the FL01GS
+> dual die stack will have identical identification data as the FL512S die,
+> with the exception of the CFI data at byte 27h, as shown in Table 6.1.
 > 
-> Add sst25wf080 to the spi-nor device id table.
+> If DT is configured with 's70fl01gs' I get the following warnings (on a 3.12
+> kernel, but that shouldn't matter):
+> m25p80 spi32766.0: found s25fl512s, expected s70fl01gs
+> m25p80 spi32766.1: found s25fl512s, expected s70fl01gs
 > 
-> Signed-off-by: Harini Katakam <harinik@xilinx.com>
-> Reviewed-by: Peter Crosthwaite <peter.crosthwaite@xilinx.com>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+> ---
+> I am aware that there is now an ID conflict. But this is due that the
+> s70fl01gs simply uses two separate chips. How to handle that?
 
-Applied to l2-mtd.git. Thanks!
+Maybe you should just be specifying s25fl512s in your DT instead?
+
+Are we sure there are no s70fl01gs devices which use the current ID? I
+know some manufacturers are prone to doing the stupidest things you can
+think of (like arbitrarily-changing IDs).
+
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index b5ad6be..0c34968 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -551,7 +551,7 @@ const struct spi_device_id spi_nor_ids[] = {
+>  	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
+>  	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> -	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+> +	{ "s70fl01gs",  INFO(0x010220, 0x4d00, 256 * 1024, 256, 0) },
+>  	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+>  	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+>  	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, 0) },
 
 Brian
