@@ -1,24 +1,17 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xm375-0007SC-Oy
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 16:07:16 +0000
-Message-ID: <1415203535.958.137.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 06/35] UBI: Fastmap: Ensure that all fastmap work is
- done upon WL shutdown
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Date: Wed, 05 Nov 2014 18:05:35 +0200
-In-Reply-To: <545A4947.4030403@nod.at>
-References: <1414586758-9972-1-git-send-email-richard@nod.at>
- <1414586758-9972-7-git-send-email-richard@nod.at>
- <1415202307.958.125.camel@sauron.fi.intel.com> <545A46F0.7030805@nod.at>
- <1415202877.958.131.camel@sauron.fi.intel.com> <545A4947.4030403@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- tlinder@codeaurora.org
+Received: from mail-ig0-f174.google.com ([209.85.213.174])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xm3wn-0002mC-EF
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 17:00:42 +0000
+Received: by mail-ig0-f174.google.com with SMTP id hn18so9080865igb.13
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 09:00:19 -0800 (PST)
+From: Lee Jones <lee.jones@linaro.org>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/11] mtd: nand: Support for new DT NAND driver
+Date: Wed,  5 Nov 2014 16:59:42 +0000
+Message-Id: <1415206793-25670-1-git-send-email-lee.jones@linaro.org>
+Cc: pekon@pek-sem.com, computersforpeace@gmail.com, lee.jones@linaro.org,
+ kernel@stlinux.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +21,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-11-05 at 16:59 +0100, Richard Weinberger wrote:
-> Am 05.11.2014 um 16:54 schrieb Artem Bityutskiy:
-> > On Wed, 2014-11-05 at 16:49 +0100, Richard Weinberger wrote:
-> >> If you want I can rebase.
-> > 
-> > That would be very helpful.
-> > 
-> >> I did all fixes first and then the cleanups.
-> > 
-> > Well, the first patch adds debugging stuff - not exactly a fix ;-)
-> 
-> Let's name it robustness stuff. ;)
-> Seriously, I did first all fixes and the code cleanups later to make
-> it easy for others to backport these fixes.
+Hi Brian,
+  
+I believe all of your queries have either been answered or addressed
+and I am hoping this will be the last submission [v2]. :)
 
-Less back-porting efforts is a good goal. But then the robustness patch
-should also come later, I think.
+This is v4 of the squashed submission.  v1 had a small typo which
+prevented the BBT code from being truly configurable, v2 had some
+build issues due to a silly 'post testing' fixup mistake and v3
+suffered with some checkpatch errors which have been rectified and
+some unused/utilised code segments which have now been removed.
+I've also fixed some DMA issues which you spotted and provided a
+more suitable ECC tolerance, which has been coupled with a comment
+which describes our reasons for not taking the OOB area into
+consideration during this operation.
+  
+Also:
+  
+  Builds        Pass
+  Smatch        Pass
+  Sparse        Pass
+  Bisectability Pass
+  NAND Test     Pass
+  UBI Tests     Pass
+  MTD Tests     Pass (accept OOB test which is not applicable with
+                      this controller.  I will rectify this in the
+                      near future though, as it _can be_ useful for
+                      debugging/testing.)
+
+Kind regards,
+Lee
+
+Lee Jones (11):
+  ARM: multi-v7: Enable ST BCH NAND
+  ARM: sti: Add two new clock definitions for use with ST's NAND
+    controllers
+  ARM: sti: Add BCH (NAND Flash) Controller support for STiH41x (Orly)
+    SoCs
+  ARM: sti: Enable BCH NAND for STiH416 B2020-RevE
+  mtd: nand: Add new generic NAND Device Tree property
+    'nand-chip-select'
+  mtd: nand: WARN() if EEC Bytes per page is larger than the OOB
+  mtd: nand: stm_nand_bch: provide Device Tree documentation
+  mtd: nand: stm_nand_bch: add shared register defines for ST's NAND
+    Controller drivers
+  mtd: nand: stm_nand_bch: adding BBT header
+  mtd: nand: stm_nand_bch: add support for ST's BCH NAND controller
+  mtd: nand: stm_nand_bch: provide ST's implementation of Bad Block
+    Table
+
+ Documentation/devicetree/bindings/mtd/nand.txt     |    3 +
+ Documentation/devicetree/bindings/mtd/stm-nand.txt |   74 +
+ arch/arm/boot/dts/stih416-b2020e.dts               |    8 +
+ arch/arm/boot/dts/stih41x-b2020.dtsi               |   35 +
+ arch/arm/configs/multi_v7_defconfig                |    2 +
+ drivers/mtd/nand/Kconfig                           |   15 +
+ drivers/mtd/nand/Makefile                          |    3 +
+ drivers/mtd/nand/nand_base.c                       |    2 +
+ drivers/mtd/nand/stm_nand_bbt.c                    |  619 ++++++++
+ drivers/mtd/nand/stm_nand_bch.c                    | 1645 ++++++++++++++++++++
+ drivers/mtd/nand/stm_nand_regs.h                   |  304 ++++
+ include/dt-bindings/clock/stih416-clks.h           |    2 +
+ include/linux/mtd/stm_nand.h                       |  131 ++
+ include/linux/mtd/stm_nand_bbt.h                   |   22 +
+ 14 files changed, 2865 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/stm-nand.txt
+ create mode 100644 drivers/mtd/nand/stm_nand_bbt.c
+ create mode 100644 drivers/mtd/nand/stm_nand_bch.c
+ create mode 100644 drivers/mtd/nand/stm_nand_regs.h
+ create mode 100644 include/linux/mtd/stm_nand.h
+ create mode 100644 include/linux/mtd/stm_nand_bbt.h
+
+-- 
+1.9.1
