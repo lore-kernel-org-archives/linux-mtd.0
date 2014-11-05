@@ -1,26 +1,22 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XlvSU-0003Ek-PW
- for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 07:56:51 +0000
-Received: by mail-pa0-f48.google.com with SMTP id ey11so266013pad.35
- for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2014 23:56:29 -0800 (PST)
-Date: Tue, 4 Nov 2014 23:56:25 -0800
+ id 1Xlvhv-0001ZM-EA
+ for linux-mtd@lists.infradead.org; Wed, 05 Nov 2014 08:12:47 +0000
+Received: by mail-pd0-f175.google.com with SMTP id y13so285646pdi.34
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 00:12:26 -0800 (PST)
+Date: Wed, 5 Nov 2014 00:12:22 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Gerhard Sittig <gsi@denx.de>
-Subject: Re: [PATCH v1 1/2] devicetree: bindings: improve description for
- GPIO assisted NAND flash
-Message-ID: <20141105075625.GB22361@norris-Latitude-E6410>
-References: <1407227846-3257-1-git-send-email-gsi@denx.de>
+To: Aaron Sierra <asierra@xes-inc.com>
+Subject: Re: [PATCH 1/2] mtd: nand: Base BCH ECC bytes on required strength
+Message-ID: <20141105081222.GC22361@norris-Latitude-E6410>
+References: <930617930.480758.1409098152001.JavaMail.zimbra@xes-inc.com>
+ <677105509.189583.1409161536993.JavaMail.zimbra@xes-inc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1407227846-3257-1-git-send-email-gsi@denx.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Alexander Shiyan <shc_work@mail.ru>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Mike Rapoport <mike@compulab.co.il>,
- Jamie Iles <jamie@jamieiles.com>, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <677105509.189583.1409161536993.JavaMail.zimbra@xes-inc.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Jordan Friendshuh <jfriendshuh@xes-inc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,16 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 05, 2014 at 10:37:25AM +0200, Gerhard Sittig wrote:
-> Expand the description of the 'gpios' property in the GPIO assisted
-> NAND flash binding, to explicitly list the required GPIO pin references
-> and their order.
+On Wed, Aug 27, 2014 at 12:45:36PM -0500, Aaron Sierra wrote:
+> From: Jordan Friendshuh <jfriendshuh@xes-inc.com>
 > 
-> Update the example section to individually bracket the GPIO references,
-> and capitalize the signal names for improved readability.
+> NAND devices with page sizes over 4 KiB require more than 4-bits of ECC
+> coverage. This patch calculates the value of ecc_bytes based on a still
+> assumed 512-byte step size (13-bits) and the ecc_strength.
 > 
-> Signed-off-by: Gerhard Sittig <gsi@denx.de>
+> Example:
+> Micron M73A devices (8 KiB page) require 8-bit ECC per 512-byte
+> 
+> Signed-off-by: Jordan Friendshuh <jfriendshuh@xes-inc.com>
+> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
 
-Applied both to l2-mtd.git.
+Applied to l2-mtd.git.
 
 Brian
