@@ -1,12 +1,12 @@
 Received: from webbox1416.server-home.net ([77.236.96.61])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmH41-0000lT-F9
- for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 07:01:03 +0000
+ id 1XmH43-0000oF-8J
+ for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 07:01:04 +0000
 From: Alexander Stein <alexander.stein@systec-electronic.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH 1/1 RFC] mtd: spi-nor: Fix ID for Spansion s70fl01gs
-Date: Thu, 06 Nov 2014 08:01:35 +0100
-Message-ID: <1680080.dLpxQOxLtG@ws-stein>
+Date: Thu, 06 Nov 2014 08:02:17 +0100
+Message-ID: <41653887.oz5HLbAWvy@ws-stein>
 In-Reply-To: <20141105211334.GV23619@ld-irv-0074>
 References: <1411983795-6444-1-git-send-email-alexander.stein@systec-electronic.com>
  <20141105211334.GV23619@ld-irv-0074>
