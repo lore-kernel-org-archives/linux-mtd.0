@@ -1,22 +1,25 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmBHO-0001xc-HB
- for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 00:50:27 +0000
-Date: Thu, 6 Nov 2014 08:50:37 +0800
+ id 1XmBZd-0007SY-MJ
+ for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 01:09:18 +0000
+Date: Thu, 6 Nov 2014 09:09:20 +0800
 From: Huang Shijie <shijie.huang@intel.com>
-To: Zhi Li <lznuaa@gmail.com>
-Subject: Re: mtd: nand: lock unlock function
-Message-ID: <20141106005036.GA19030@shldeISGChi005.sh.intel.com>
-References: <CAHrpEqSum1__d5Y1tysEzpa_MGuQSWfOW=m4idSxzCTdGbNKTQ@mail.gmail.com>
- <20141105205706.GP23619@ld-irv-0074>
- <CAHrpEqTQQ+YBnBY-fj9uW1bAMn-t_dmdVR9KuJR+2E+uA4vZ2Q@mail.gmail.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH 2/3] mtd: spi-nor: remove the jedec_id/ext_id
+Message-ID: <20141106010920.GA19065@shldeISGChi005.sh.intel.com>
+References: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
+ <1407804896-1808-2-git-send-email-shijie.huang@intel.com>
+ <20141105111631.GJ22361@norris-Latitude-E6410>
+ <CACna6ryvN_Srwt-JgxWht4aQfjgo0DhjqPicN8kyhJCJ91NUhw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHrpEqTQQ+YBnBY-fj9uW1bAMn-t_dmdVR9KuJR+2E+uA4vZ2Q@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, White Ding <bpqw@micron.com>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- boris.brezillon@free-electrons.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACna6ryvN_Srwt-JgxWht4aQfjgo0DhjqPicN8kyhJCJ91NUhw@mail.gmail.com>
+Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +29,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 05, 2014 at 04:00:29PM -0600, Zhi Li wrote:
-> On Wed, Nov 5, 2014 at 2:57 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > +
-> >
-> > On Wed, Nov 05, 2014 at 02:31:34PM -0600, Zhi Li wrote:
-> >> Does any know the reason why there are nand_lock and nand_unlock
-> >> function in nand_base.c, but
+On Wed, Nov 05, 2014 at 10:35:09PM +0100, Rafał Miłecki wrote:
+> On 5 November 2014 12:16, Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Tue, Aug 12, 2014 at 08:54:55AM +0800, Huang Shijie wrote:
+> >> The "id" array contains all the information about the JEDEC and the
+> >> manufacturer ID info, this patch remove the jedec_id/ext_id from the
+> >> flash_info.
 > >>
-> >>         mtd->_lock = NULL;
-> >>         mtd->_unlock = NULL;
-> >>
-> >> Not set to nand_lock and nand_unlock?
+> >> Signed-off-by: Huang Shijie <shijie.huang@intel.com>
 > >
-> > Possible answers:
-> >
-> >  * Lack of testing
-> >
-> >  * The LOCK/UNLOCK opcodes are not supported by all vendors
-> >
-> >  * Even the vendors that support them don't do so consistently (not sure
-> >    about this one; I know Micron supports this in some cases)
-> >
-> >  * The opcodes aren't even documented (again, I'm not even sure about
-> >    this one; but many Micron datasheets I see don't mention LOCK/UNLOCK.
-> >    I recall that other similar lock/protection implementations are
-> >    secret to some extent, and are intentionally omitted from the
-> >    datasheets)
+> > This patch does not apply any more. Can you rebase?
 > 
-> Yes, we recently met a problem with micron flash. Need send unlock command.
-> The datasheet I get from micron
-> MT29F8G08ABACA, MT29F8G16ABACA, MT29F8G08ABBCA,
-> MT29F8G16ABBCA, MT29F16G08ADACA, MT29F16G16ADACA,
-> MT29F16G08ADBCA , MT29F16G16ADBCA
+> Hm, I've just noticed that my patch:
+> "prefer more specific entries from chips database"
+> http://patchwork.ozlabs.org/patch/401907/
+> conflicts with this one.
 > 
-> support it.
-> But not sure if it is public document.
+> I think the final solution (after somehow applying both patches)
+> should be something like:
+> for (len = 6; i >= 4; len--) {
+>     for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+>         if (tmp->id_len == len && !strncmp(info->id, id, info->id_len)
+>             return &spi_nor_ids[tmp];
+>     }
+> }
 > 
-could you please describe what is the problem?
+> Does it make sense to you?
+sorry, I can not understand this code. could you please give me a full
+patch for your idea? thanks
+
+> 
+> Huang: I think it'll be the most optimal to me rebase my patch on top
+> on your ones.
+It is okay. I will CC to you with the new patch.
+> 
+> Btw. I have two comments regarding 1/3 (can't find it to reply properly):
+> 
+> 1) Do we need the if (info->id_len) check?
+yes. some chips may have short info->id_len, some chips may have long
+info->id_len.
+
+> 2) Shouldn't we use memcmp in the if (!strncmp(info->id, id, info->id_len))
+I prefer to memcmp too. But i misused with strncmp.
+You can send a patch to fix it. I can give you my Ack. :)
 
 thanks
-Huang Shijie
+Huang Shiji
