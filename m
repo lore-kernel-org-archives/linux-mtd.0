@@ -1,24 +1,16 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmIHl-0006vk-5h
- for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 08:19:17 +0000
-Message-ID: <1415261925.958.177.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH V5] mtd: ubi: Extend UBI layer debug/messaging capabilities
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Date: Thu, 06 Nov 2014 10:18:45 +0200
-In-Reply-To: <54566692.10504@codeaurora.org>
-References: <1413824221-31235-1-git-send-email-tlinder@codeaurora.org>
- <5449C870.7060509@huawei.com> <54566692.10504@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>,
- open list <linux-kernel@vger.kernel.org>, hujianyang <hujianyang@huawei.com>,
- linux-mtd@lists.infradead.org, ezequiel.garcia@free-electrons.com,
- linux-arm-msm@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from userp1040.oracle.com ([156.151.31.81])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmII5-0006yz-O1
+ for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 08:19:38 +0000
+Date: Thu, 6 Nov 2014 11:19:02 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Artem.Bityutskiy@nokia.com
+Subject: returning custom error codes in ubi_eba_read_leb()
+Message-ID: <20141106081902.GA29928@mwanda>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2014-11-02 at 19:14 +0200, Tanya Brokhman wrote:
-> >> +    ubi_err(ubi, "self-check failed for PEB %d", pnum);
-> >> +    ubi_msg(ubi, "hex dump of the %d-%d region",
-> >> +             offset, offset + len);
-> >>      print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1, buf,
-> len, 1);
-> >>      err = -EINVAL;
-> >>   error:
-> >
-> > Artem, I know you have tried to align the message code in different
-> lines, maybe
-> > you can check if you lose this one.
-> >
-> 
-> hmmm... not sure I understand what is wrong here....
+Hello Artem Bityutskiy,
 
-It is more of a nit-pick, but we try to be consistent. Here is how we
-align split messages:
+The patch 1e51764a3c2a: "UBIFS: add new flash file system" from Jul
+14, 2008, leads to the following static checker warning:
 
-  ubi_msg(ubi, "blah",
-          XYZ)
+	fs/ubifs/scan.c:158 ubifs_start_scan()
+	error: passing non negative 2 to ERR_PTR
 
-and not
+The problem is really in ubi_eba_read_leb().
 
-  ubi_msg(ubi, "blah",
-            XYZ)
+drivers/mtd/ubi/eba.c
+   412                  err = ubi_io_read_vid_hdr(ubi, pnum, vid_hdr, 1);
+   413                  if (err && err != UBI_IO_BITFLIPS) {
+   414                          if (err > 0) {
+   415                                  /*
+   416                                   * The header is either absent or corrupted.
+   417                                   * The former case means there is a bug -
+   418                                   * switch to read-only mode just in case.
+   419                                   * The latter case means a real corruption - we
+   420                                   * may try to recover data. FIXME: but this is
+   421                                   * not implemented.
+   422                                   */
+   423                                  if (err == UBI_IO_BAD_HDR_EBADMSG ||
+   424                                      err == UBI_IO_BAD_HDR) {
+   425                                          ubi_warn("corrupted VID header at PEB %d, LEB %d:%d",
+   426                                                   pnum, vol_id, lnum);
+   427                                          err = -EBADMSG;
+   428                                  } else
+   429                                          ubi_ro_mode(ubi);
 
-So we first use few tabs, and then some spaces to align. You use just
-tabs. Sometimes the second line is aligned, sometimes it goes a bit
-further.
+On this path we return UBI_IO_FF and UBI_IO_FF_BITFLIPS and it
+eventually gets passed to ERR_PTR().  We probably dereference the bad
+pointer and oops.  At that point we've gone read only so it was already
+a bad situation...
+
+   430                          }
+   431                          goto out_free;
+   432                  } else if (err == UBI_IO_BITFLIPS)
+   433                          scrub = 1;
+   434  
+
+regards,
+dan carpenter
