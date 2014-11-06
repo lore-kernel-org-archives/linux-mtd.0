@@ -1,23 +1,16 @@
-From: bpqw <bpqw@micron.com>
-To: Marek Vasut <marex@denx.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [V5 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for Micron
- spi nor
-Date: Thu, 6 Nov 2014 03:09:06 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315EA24E@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
- <201409251211.57183.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
- <201409261046.07132.marex@denx.de>        
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: bpqw <bpqw@micron.com>, "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "grmoore@altera.com" <grmoore@altera.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie8@gmail.com" <shijie8@gmail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmDh6-0003CZ-9k
+ for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 03:25:09 +0000
+From: Huang Shijie <shijie.huang@intel.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd: spi-nor: remove the jedec_id/ext_id
+Date: Thu,  6 Nov 2014 11:24:33 +0800
+Message-Id: <1415244273-8230-1-git-send-email-shijie.huang@intel.com>
+In-Reply-To: <20141105111631.GJ22361@norris-Latitude-E6410>
+References: <20141105111631.GJ22361@norris-Latitude-E6410>
+Cc: marex@denx.de, Huang Shijie <shijie.huang@intel.com>,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org, zajec5@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,123 +20,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
+The "id" array contains all the information about the JEDEC and the
+manufacturer ID info, this patch remove the jedec_id/ext_id from the
+flash_info.
 
-For Micron SPI NOR flash,enabling or disabling quad I/O protocol is control=
-led
-by EVCR (Enhanced Volatile Configuration Register), Quad I/O protocol bit 7=
-.
-When EVCR bit 7 is reset to 0,the SPI NOR flash will operate in quad I/O mo=
-de.
-
-Signed-off-by: bean huo <beanhuo@micron.com>
-Acked-by: Marek Vasut <marex@denx.de>
+Signed-off-by: Huang Shijie <shijie.huang@intel.com>
 ---
- v1-v2:
-	Modified to that capture wait_till_ready()
-	return value,if error,directly return its
-	the value.
- v2-v3:
-	Directly use the reurning error value of
-	read_reg and write_reg,instead of -EINVAL.
- v3-v4:
-	Modify commit logs that wraped into 80 columns=20
- v4-v5:
-	Rebuild new patch based on latest linux-mtd
-
- drivers/mtd/spi-nor/spi-nor.c |   46 +++++++++++++++++++++++++++++++++++++=
-++++
- include/linux/mtd/spi-nor.h   |    6 ++++++
- 2 files changed, 52 insertions(+)
+  rebase this patch on the latest l2-mtd
+---
+ drivers/mtd/spi-nor/spi-nor.c |   98 +++++++++++++++++++----------------------
+ 1 files changed, 45 insertions(+), 53 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index c51ee52..2a31742 100644
+index 8d6b832..182dd42 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -874,6 +874,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
- 	return 0;
+@@ -26,7 +26,38 @@
+ /* Define max times to check status register before we give up. */
+ #define	MAX_READY_WAIT_JIFFIES	(40 * HZ) /* M25P16 specs 40s max chip erase */
+ 
+-#define JEDEC_MFR(_jedec_id)	((_jedec_id) >> 16)
++#define SPI_NOR_MAX_ID_LEN	6
++
++struct flash_info {
++	/*
++	 * This array stores the ID bytes.
++	 * The first three bytes are the JEDIC id.
++	 * JEDEC id zero means "no ID" (most older chips);
++	 */
++	u8		id[SPI_NOR_MAX_ID_LEN];
++	u8		id_len;
++
++	/* The size listed here is what works with SPINOR_OP_SE, which isn't
++	 * necessarily called a "sector" by the vendor.
++	 */
++	unsigned	sector_size;
++	u16		n_sectors;
++
++	u16		page_size;
++	u16		addr_width;
++
++	u16		flags;
++#define	SECT_4K			0x01	/* SPINOR_OP_BE_4K works uniformly */
++#define	SPI_NOR_NO_ERASE	0x02	/* No erase command needed */
++#define	SST_WRITE		0x04	/* use SST byte programming */
++#define	SPI_NOR_NO_FR		0x08	/* Can't do fastread */
++#define	SECT_4K_PMC		0x10	/* SPINOR_OP_BE_4K_PMC works uniformly */
++#define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
++#define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
++#define	USE_FSR			0x80	/* use flag status register */
++};
++
++#define JEDEC_MFR(info)	((info)->id[0])
+ 
+ static const struct spi_device_id *spi_nor_match_id(const char *name);
+ 
+@@ -138,13 +169,14 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
  }
-=20
-+static int micron_quad_enable(struct spi_nor *nor)
-+{
-+	int ret, val;
-+
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+
-+	write_enable(nor);
-+
-+	/* set EVCR ,enable quad I/O */
-+	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
-+	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
-+	if (ret < 0) {
-+		dev_err(nor->dev,
-+			"error while writing EVCR register\n");
-+		return ret;
-+	}
-+
-+	ret =3D wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	/* read EVCR and check it */
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+	if (val & EVCR_QUAD_EN_MICRON) {
-+		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)
+ 
+ /* Enable/disable 4-byte addressing mode. */
+-static inline int set_4byte(struct spi_nor *nor, u32 jedec_id, int enable)
++static inline int
++set_4byte(struct spi_nor *nor, struct flash_info *info, int enable)
  {
  	int status;
-@@ -886,6 +925,13 @@ static int set_quad_mode(struct spi_nor *nor, u32 jede=
-c_id)
- 			return -EINVAL;
- 		}
- 		return status;
-+	case CFI_MFR_ST:
-+		status =3D micron_quad_enable(nor);
-+		if (status) {
-+			dev_err(nor->dev, "Micron quad-read not enabled\n");
-+			return -EINVAL;
-+		}
-+		return status;
- 	default:
- 		status =3D spansion_quad_enable(nor);
+ 	bool need_wren = false;
+ 	u8 cmd;
+ 
+-	switch (JEDEC_MFR(jedec_id)) {
++	switch (JEDEC_MFR(info)) {
+ 	case CFI_MFR_ST: /* Micron, actually */
+ 		/* Some Micron need WREN command; all will accept it */
+ 		need_wren = true;
+@@ -413,49 +445,9 @@ err:
+ 	return ret;
+ }
+ 
+-#define SPI_NOR_MAX_ID_LEN	6
+-
+-struct flash_info {
+-	/* JEDEC id zero means "no ID" (most older chips); otherwise it has
+-	 * a high byte of zero plus three data bytes: the manufacturer id,
+-	 * then a two byte device id.
+-	 */
+-	u32		jedec_id;
+-	u16             ext_id;
+-
+-	/*
+-	 * This array stores the ID bytes.
+-	 * The first three bytes are the JEDIC id.
+-	 * JEDEC id zero means "no ID" (most older chips);
+-	 */
+-	u8		id[SPI_NOR_MAX_ID_LEN];
+-	u8		id_len;
+-
+-	/* The size listed here is what works with SPINOR_OP_SE, which isn't
+-	 * necessarily called a "sector" by the vendor.
+-	 */
+-	unsigned	sector_size;
+-	u16		n_sectors;
+-
+-	u16		page_size;
+-	u16		addr_width;
+-
+-	u16		flags;
+-#define	SECT_4K			0x01	/* SPINOR_OP_BE_4K works uniformly */
+-#define	SPI_NOR_NO_ERASE	0x02	/* No erase command needed */
+-#define	SST_WRITE		0x04	/* use SST byte programming */
+-#define	SPI_NOR_NO_FR		0x08	/* Can't do fastread */
+-#define	SECT_4K_PMC		0x10	/* SPINOR_OP_BE_4K_PMC works uniformly */
+-#define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
+-#define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
+-#define	USE_FSR			0x80	/* use flag status register */
+-};
+-
+ /* Used when the "_ext_id" is two bytes at most */
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+ 	((kernel_ulong_t)&(struct flash_info) {				\
+-		.jedec_id = (_jedec_id),				\
+-		.ext_id = (_ext_id),					\
+ 		.id = {							\
+ 			((_jedec_id) >> 16) & 0xff,			\
+ 			((_jedec_id) >> 8) & 0xff,			\
+@@ -872,11 +864,11 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
+-static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)
++static int set_quad_mode(struct spi_nor *nor, struct flash_info *info)
+ {
+ 	int status;
+ 
+-	switch (JEDEC_MFR(jedec_id)) {
++	switch (JEDEC_MFR(info)) {
+ 	case CFI_MFR_MACRONIX:
+ 		status = macronix_quad_enable(nor);
  		if (status) {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 046a0a2..42e7e37 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -56,6 +56,10 @@
- /* Used for Spansion flashes only. */
- #define SPINOR_OP_BRWR		0x17	/* Bank register write */
-=20
-+/* Used for Micron flashes only. */
-+#define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
-+#define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
-+
- /* Status Register bits. */
- #define SR_WIP			1	/* Write in progress */
- #define SR_WEL			2	/* Write enable latch */
-@@ -67,6 +71,8 @@
-=20
- #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
-=20
-+#define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
-+
- /* Flag Status Register bits */
- #define FSR_READY		0x80
-=20
---=20
-1.7.9.5
+@@ -925,7 +917,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 
+ 	info = (void *)id->driver_data;
+ 
+-	if (info->jedec_id) {
++	if (info->id_len) {
+ 		const struct spi_device_id *jid;
+ 
+ 		jid = spi_nor_read_id(nor);
+@@ -953,9 +945,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	 * up with the software protection bits set
+ 	 */
+ 
+-	if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ATMEL ||
+-	    JEDEC_MFR(info->jedec_id) == CFI_MFR_INTEL ||
+-	    JEDEC_MFR(info->jedec_id) == CFI_MFR_SST) {
++	if (JEDEC_MFR(info) == CFI_MFR_ATMEL ||
++	    JEDEC_MFR(info) == CFI_MFR_INTEL ||
++	    JEDEC_MFR(info) == CFI_MFR_SST) {
+ 		write_enable(nor);
+ 		write_sr(nor, 0);
+ 	}
+@@ -970,7 +962,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	mtd->_read = spi_nor_read;
+ 
+ 	/* nor protection support for STmicro chips */
+-	if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ST) {
++	if (JEDEC_MFR(info) == CFI_MFR_ST) {
+ 		mtd->_lock = spi_nor_lock;
+ 		mtd->_unlock = spi_nor_unlock;
+ 	}
+@@ -1023,7 +1015,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 
+ 	/* Quad/Dual-read mode takes precedence over fast/normal */
+ 	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+-		ret = set_quad_mode(nor, info->jedec_id);
++		ret = set_quad_mode(nor, info);
+ 		if (ret) {
+ 			dev_err(dev, "quad mode not supported\n");
+ 			return ret;
+@@ -1059,7 +1051,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	else if (mtd->size > 0x1000000) {
+ 		/* enable 4-byte addressing if the device exceeds 16MiB */
+ 		nor->addr_width = 4;
+-		if (JEDEC_MFR(info->jedec_id) == CFI_MFR_AMD) {
++		if (JEDEC_MFR(info) == CFI_MFR_AMD) {
+ 			/* Dedicated 4-byte command set */
+ 			switch (nor->flash_read) {
+ 			case SPI_NOR_QUAD:
+@@ -1080,7 +1072,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 			nor->erase_opcode = SPINOR_OP_SE_4B;
+ 			mtd->erasesize = info->sector_size;
+ 		} else
+-			set_4byte(nor, info->jedec_id, 1);
++			set_4byte(nor, info, 1);
+ 	} else {
+ 		nor->addr_width = 3;
+ 	}
+-- 
+1.7.7.6
