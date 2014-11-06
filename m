@@ -1,20 +1,25 @@
-Received: from webbox1416.server-home.net ([77.236.96.61])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmH43-0000oF-8J
- for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 07:01:04 +0000
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/1 RFC] mtd: spi-nor: Fix ID for Spansion s70fl01gs
-Date: Thu, 06 Nov 2014 08:02:17 +0100
-Message-ID: <41653887.oz5HLbAWvy@ws-stein>
-In-Reply-To: <20141105211334.GV23619@ld-irv-0074>
-References: <1411983795-6444-1-git-send-email-alexander.stein@systec-electronic.com>
- <20141105211334.GV23619@ld-irv-0074>
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmH5n-0001PU-Qt
+ for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 07:02:52 +0000
+Received: by mail-wg0-f43.google.com with SMTP id y10so422855wgg.30
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 23:02:29 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH V2] mtd: spi-nor: prefer more specific entries from chips
+ database
+Date: Thu,  6 Nov 2014 08:02:13 +0100
+Message-Id: <1415257333-6488-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1413963223-6365-1-git-send-email-zajec5@gmail.com>
+References: <1413963223-6365-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- Kevin Cernekee <cernekee@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Huang Shijie <shijie.huang@intel.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Bean Huo <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Brian,
+With two entries sharing first ID bytes but one of them having more of
+them, we should prefer the more specific one. Consider following:
+1) n25q128a11 with ID 0x20bb18
+2) n25q128a13 with ID 0x20bb181234
+we should prefer entry with the longer ID.
 
-thanks for replying.
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+Cc: Bean Huo <beanhuo@micron.com>
+Cc: Huang Shijie <shijie.huang@intel.com>
+---
+V2: Rebase on top of Huang patches
+---
+ drivers/mtd/spi-nor/spi-nor.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-On Wednesday 05 November 2014 13:13:34, Brian Norris wrote:
-> On Mon, Sep 29, 2014 at 11:43:15AM +0200, Alexander Stein wrote:
-> > The Device ID is the same as with s25fl512s as stated in datasheet:
-> > 6. Identification (RDID)
-> > The Read Identification (RDID) command outputs the one-byte manufacturer
-> > identification, followed by the two-byte device identification and the
-> > bytes for the Common Flash Interface (CFI) tables. Each die of the FL01GS
-> > dual die stack will have identical identification data as the FL512S die,
-> > with the exception of the CFI data at byte 27h, as shown in Table 6.1.
-> > 
-> > If DT is configured with 's70fl01gs' I get the following warnings (on a 3.12
-> > kernel, but that shouldn't matter):
-> > m25p80 spi32766.0: found s25fl512s, expected s70fl01gs
-> > m25p80 spi32766.1: found s25fl512s, expected s70fl01gs
-> > 
-> > Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
-> > ---
-> > I am aware that there is now an ID conflict. But this is due that the
-> > s70fl01gs simply uses two separate chips. How to handle that?
-> 
-> Maybe you should just be specifying s25fl512s in your DT instead?
-
-This is what I'm doing now. It seems to me that this is currently the only valid solution.
-
-> Are we sure there are no s70fl01gs devices which use the current ID? I
-> know some manufacturers are prone to doing the stupidest things you can
-> think of (like arbitrarily-changing IDs).
-
-To quote from http://www.spansion.com/Support/Datasheets/S70FL01GS.pdf:
-6. Read Identification (RDID)
-The Read Identification (RDID) command outputs the one-byte manufacturer identification, followed by the 
-two-byte device identification and the bytes for the Common Flash Interface (CFI) tables. Each die of the 
-FL01GS dual die stack will have identical identification data as the FL512S die, with the exception of the CFI 
-data at byte 27h, as shown in Table 6.1.
-
-So, AFAICS you can only distinguish two FL512S from a FL01GS by reading this CFI byte which isn't done in linux.
-
-Best regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
-
-SYS TEC electronic GmbH
-Am Windrad 2
-08468 Heinsdorfergrund
-Tel.: 03765 38600-1156
-Fax: 03765 38600-4100
-Email: alexander.stein@systec-electronic.com
-Website: www.systec-electronic.com
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 209e701..80e333f 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -667,6 +667,7 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+ 	int			tmp;
+ 	u8			id[SPI_NOR_MAX_ID_LEN];
+ 	struct flash_info	*info;
++	u8			len;
  
-Managing Director: Dipl.-Phys. Siegmar Schmidt
-Commercial registry: Amtsgericht Chemnitz, HRB 28082
+ 	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
+ 	if (tmp < 0) {
+@@ -674,10 +675,15 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+ 		return ERR_PTR(tmp);
+ 	}
+ 
+-	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+-		info = (void *)spi_nor_ids[tmp].driver_data;
+-		if (info->id_len) {
+-			if (!memcmp(info->id, id, info->id_len))
++	/*
++	 * Start looking for entries with the longest ID, then go to the less
++	 * specific ones.
++	 */
++	for (len = SPI_NOR_MAX_ID_LEN; len > 0; len--) {
++		for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
++			info = (void *)spi_nor_ids[tmp].driver_data;
++			if (info->id_len == len &&
++			    !memcmp(info->id, id, info->id_len))
+ 				return &spi_nor_ids[tmp];
+ 		}
+ 	}
+-- 
+1.8.4.5
