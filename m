@@ -1,25 +1,24 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmBZd-0007SY-MJ
- for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 01:09:18 +0000
-Date: Thu, 6 Nov 2014 09:09:20 +0800
-From: Huang Shijie <shijie.huang@intel.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH 2/3] mtd: spi-nor: remove the jedec_id/ext_id
-Message-ID: <20141106010920.GA19065@shldeISGChi005.sh.intel.com>
-References: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
- <1407804896-1808-2-git-send-email-shijie.huang@intel.com>
- <20141105111631.GJ22361@norris-Latitude-E6410>
- <CACna6ryvN_Srwt-JgxWht4aQfjgo0DhjqPicN8kyhJCJ91NUhw@mail.gmail.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmCsq-0002a1-5q
+ for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 02:33:12 +0000
+From: bpqw <bpqw@micron.com>
+To: Zhi Li <lznuaa@gmail.com>
+Subject: RE: mtd: nand: lock unlock function
+Date: Thu, 6 Nov 2014 02:32:33 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7712E50B@NTXXIAMBX02.xacn.micron.com>
+References: <CAHrpEqSum1__d5Y1tysEzpa_MGuQSWfOW=m4idSxzCTdGbNKTQ@mail.gmail.com>
+ <20141105205706.GP23619@ld-irv-0074>
+ <CAHrpEqTQQ+YBnBY-fj9uW1bAMn-t_dmdVR9KuJR+2E+uA4vZ2Q@mail.gmail.com>
+In-Reply-To: <CAHrpEqTQQ+YBnBY-fj9uW1bAMn-t_dmdVR9KuJR+2E+uA4vZ2Q@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6ryvN_Srwt-JgxWht4aQfjgo0DhjqPicN8kyhJCJ91NUhw@mail.gmail.com>
-Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>,
- David Woodhouse <dwmw2@infradead.org>,
+Cc: Huang Shijie <shijie8@gmail.com>, bpqw <bpqw@micron.com>,
  Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,49 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 05, 2014 at 10:35:09PM +0100, Rafał Miłecki wrote:
-> On 5 November 2014 12:16, Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Tue, Aug 12, 2014 at 08:54:55AM +0800, Huang Shijie wrote:
-> >> The "id" array contains all the information about the JEDEC and the
-> >> manufacturer ID info, this patch remove the jedec_id/ext_id from the
-> >> flash_info.
-> >>
-> >> Signed-off-by: Huang Shijie <shijie.huang@intel.com>
-> >
-> > This patch does not apply any more. Can you rebase?
-> 
-> Hm, I've just noticed that my patch:
-> "prefer more specific entries from chips database"
-> http://patchwork.ozlabs.org/patch/401907/
-> conflicts with this one.
-> 
-> I think the final solution (after somehow applying both patches)
-> should be something like:
-> for (len = 6; i >= 4; len--) {
->     for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
->         if (tmp->id_len == len && !strncmp(info->id, id, info->id_len)
->             return &spi_nor_ids[tmp];
->     }
-> }
-> 
-> Does it make sense to you?
-sorry, I can not understand this code. could you please give me a full
-patch for your idea? thanks
-
-> 
-> Huang: I think it'll be the most optimal to me rebase my patch on top
-> on your ones.
-It is okay. I will CC to you with the new patch.
-> 
-> Btw. I have two comments regarding 1/3 (can't find it to reply properly):
-> 
-> 1) Do we need the if (info->id_len) check?
-yes. some chips may have short info->id_len, some chips may have long
-info->id_len.
-
-> 2) Shouldn't we use memcmp in the if (!strncmp(info->id, id, info->id_len))
-I prefer to memcmp too. But i misused with strncmp.
-You can send a patch to fix it. I can give you my Ack. :)
-
-thanks
-Huang Shiji
+PiBZZXMsIHdlIHJlY2VudGx5IG1ldCBhIHByb2JsZW0gd2l0aCBtaWNyb24gZmxhc2guIE5lZWQg
+c2VuZCB1bmxvY2sNCj4gY29tbWFuZC4NCj4gVGhlIGRhdGFzaGVldCBJIGdldCBmcm9tIG1pY3Jv
+bg0KPiBNVDI5RjhHMDhBQkFDQSwgTVQyOUY4RzE2QUJBQ0EsIE1UMjlGOEcwOEFCQkNBLCBNVDI5
+RjhHMTZBQkJDQSwNCj4gTVQyOUYxNkcwOEFEQUNBLCBNVDI5RjE2RzE2QURBQ0EsIE1UMjlGMTZH
+MDhBREJDQSAsIE1UMjlGMTZHMTZBREJDQQ0KDQpIaSBaaGksDQpUaGVyZSBpcyBhIExPQ0sjIHBp
+biBmb3IgTWljcm9uIE5BTkQgZmxhc2ggZGV2aWNlLCBsb2NrIGZlYXR1cmUgaXMgZGlzYWJsZWQg
+DQppZiB5b3UgbGVhdmUgdGhpcyBMT0NLIyBwaW4gbG93IG9yIHVuY29ubmVjdGVkLiBPbmx5IHdo
+ZW4geW91IHB1bGwgaGlnaCB0aGlzIA0KTE9DSyMgcGluLCBhbGwgTkFORCBmbGFzaCBibG9ja3Mg
+YXJlIGxvY2tlZCBhZnRlciBwb3dlciBvbiwgdXNlcnMgbmVlZCB0byBzZW5kDQpVbmxvY2sgY29t
+bWFuZCB0byB1bmxvY2sgYmxvY2tzLg0KQ2FuIHlvdSBoZWxwIGRlc2NyaXB0IHdoYXQgcHJvYmxl
+bSB5b3UgbWV0Pw0KDQpUaGFua3MNCg==
