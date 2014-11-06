@@ -1,27 +1,24 @@
-Received: from mga14.intel.com ([192.55.52.115])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmGdu-0006sq-Aa
- for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 06:34:02 +0000
-Date: Thu, 6 Nov 2014 14:33:28 +0800
-From: Huang Shijie <shijie.huang@intel.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH 2/3] mtd: spi-nor: remove the jedec_id/ext_id
-Message-ID: <20141106063328.GA29692@shldeISGChi005.sh.intel.com>
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmGeN-0006ut-Ie
+ for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 06:34:32 +0000
+Received: by mail-wi0-f175.google.com with SMTP id ex7so503234wid.2
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2014 22:34:09 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH V2 1/3] mtd: spi-nor: add id/id_len for flash_info{}
+Date: Thu,  6 Nov 2014 07:34:01 +0100
+Message-Id: <1415255641-2289-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
 References: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
- <1407804896-1808-2-git-send-email-shijie.huang@intel.com>
- <20141105111631.GJ22361@norris-Latitude-E6410>
- <CACna6ryvN_Srwt-JgxWht4aQfjgo0DhjqPicN8kyhJCJ91NUhw@mail.gmail.com>
- <20141106010920.GA19065@shldeISGChi005.sh.intel.com>
- <CACna6rzCuZZjarTD+YGVFoUtR-+VhLOVR0UwVroy7s1ZU4hCVQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rzCuZZjarTD+YGVFoUtR-+VhLOVR0UwVroy7s1ZU4hCVQ@mail.gmail.com>
-Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: =?UTF-8?q?Marek=20Va=C5=A1ut?= <marex@denx.de>,
+ Huang Shijie <shijie.huang@intel.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,11 +28,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 06, 2014 at 07:21:22AM +0100, Rafał Miłecki wrote:
-> 
-> Well, you were sending V2 2 hours later anyway... you could fix that in it :|
-okay.
-I will fix it, and send out a new version.
+From: Huang Shijie <shijie.huang@intel.com>
 
-thanks
-Huang Shijie
+This patch adds the id/id_len fields for flash_info{}, and rewrite the
+INFO to fill them. And at last, we read out 6 bytes in the spi_nor_read_id(),
+and we use these new fields to parse out the correct flash_info.
+
+Signed-off-by: Huang Shijie <shijie.huang@intel.com>
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+V2: s/strncmp/memcmp/ as we don't compare strings at all
+---
+ drivers/mtd/spi-nor/spi-nor.c | 39 +++++++++++++++++++++++++--------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index eafaeeb..b49efee 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -413,6 +413,8 @@ err:
+ 	return ret;
+ }
+ 
++#define SPI_NOR_MAX_ID_LEN	6
++
+ struct flash_info {
+ 	/* JEDEC id zero means "no ID" (most older chips); otherwise it has
+ 	 * a high byte of zero plus three data bytes: the manufacturer id,
+@@ -421,6 +423,14 @@ struct flash_info {
+ 	u32		jedec_id;
+ 	u16             ext_id;
+ 
++	/*
++	 * This array stores the ID bytes.
++	 * The first three bytes are the JEDIC id.
++	 * JEDEC id zero means "no ID" (most older chips);
++	 */
++	u8		id[SPI_NOR_MAX_ID_LEN];
++	u8		id_len;
++
+ 	/* The size listed here is what works with SPINOR_OP_SE, which isn't
+ 	 * necessarily called a "sector" by the vendor.
+ 	 */
+@@ -441,10 +451,19 @@ struct flash_info {
+ #define	USE_FSR			0x80	/* use flag status register */
+ };
+ 
++/* Used when the "_ext_id" is two bytes at most */
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+ 	((kernel_ulong_t)&(struct flash_info) {				\
+ 		.jedec_id = (_jedec_id),				\
+ 		.ext_id = (_ext_id),					\
++		.id = {							\
++			((_jedec_id) >> 16) & 0xff,			\
++			((_jedec_id) >> 8) & 0xff,			\
++			(_jedec_id) & 0xff,				\
++			((_ext_id) >> 8) & 0xff,			\
++			(_ext_id) & 0xff,				\
++			},						\
++		.id_len = (!(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0))),	\
+ 		.sector_size = (_sector_size),				\
+ 		.n_sectors = (_n_sectors),				\
+ 		.page_size = 256,					\
+@@ -636,32 +655,24 @@ static const struct spi_device_id spi_nor_ids[] = {
+ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+ {
+ 	int			tmp;
+-	u8			id[5];
+-	u32			jedec;
+-	u16                     ext_jedec;
++	u8			id[SPI_NOR_MAX_ID_LEN];
+ 	struct flash_info	*info;
+ 
+-	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 5);
++	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
+ 	if (tmp < 0) {
+ 		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
+ 		return ERR_PTR(tmp);
+ 	}
+-	jedec = id[0];
+-	jedec = jedec << 8;
+-	jedec |= id[1];
+-	jedec = jedec << 8;
+-	jedec |= id[2];
+-
+-	ext_jedec = id[3] << 8 | id[4];
+ 
+ 	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+ 		info = (void *)spi_nor_ids[tmp].driver_data;
+-		if (info->jedec_id == jedec) {
+-			if (info->ext_id == 0 || info->ext_id == ext_jedec)
++		if (info->id_len) {
++			if (!memcmp(info->id, id, info->id_len))
+ 				return &spi_nor_ids[tmp];
+ 		}
+ 	}
+-	dev_err(nor->dev, "unrecognized JEDEC id %06x\n", jedec);
++	dev_err(nor->dev, "unrecognized JEDEC id bytes: %02x, %2x, %2x\n",
++		id[0], id[1], id[2]);
+ 	return ERR_PTR(-ENODEV);
+ }
+ 
+-- 
+1.8.4.5
