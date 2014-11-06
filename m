@@ -1,30 +1,16 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmISA-0001kY-Vx
- for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 08:30:05 +0000
-From: Jijiagang <jijiagang@hisilicon.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: RE: UBIFS assert failed in ubifs_set_page_dirty at 1421
-Date: Thu, 6 Nov 2014 08:28:24 +0000
-Message-ID: <BE257DAADD2C0D439647A271332966573949FE88@SZXEMA511-MBS.china.huawei.com>
-References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
- <1413805935.7906.225.camel@sauron.fi.intel.com>
- <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
- <1413810719.7906.268.camel@sauron.fi.intel.com>
-In-Reply-To: <1413810719.7906.268.camel@sauron.fi.intel.com>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1XmK2V-0001Mz-Hr
+ for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 10:11:40 +0000
+Date: Thu, 6 Nov 2014 13:09:01 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: potential memory corruption in check_leaf()
+Message-ID: <20141106100901.GA19282@mwanda>
 MIME-Version: 1.0
-Cc: "Zengtao \(B\)" <prime.zeng@hisilicon.com>,
- Caizhiyong <caizhiyong@hisilicon.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- Hujianyang <hujianyang@huawei.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jiangzhonglin <jiangzhonglin@hisilicon.com>, "Wanli
- \(welly\)" <welly.wan@hisilicon.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,117 +20,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RGVhcnMsDQpGb3IgdGhpcyBwcm9ibGVtLCB3ZSBmaW5kIGl0IHJlbGF0ZXMgdG8gTU0gbWlncmF0
-aW9uLg0KSWYgZGlzYWJsZSBtaWdyYXRpb24gaXQgd2lsbCBub3QgaGFwcGVuLg0KDQpUaGUgY2Fs
-bCBzZXF1ZW5jZSBpczoNCmFsbG9jX2NvbnRpZ19yYW5nZSAobW0vcGFnZV9hbGxvYy5jKQ0KIC0+
-IF9fYWxsb2NfY29udGlnX21pZ3JhdGVfcmFuZ2UgKG1tL3BhZ2VfYWxsb2MuYykNCiAgLT5taWdy
-YXRlX3BhZ2VzIChtbS9taWdyYXRlLmMpDQogICAtPnRyeV90b191bm1hcCAobW0vcm1hcC5jKQ0K
-ICAgIC0+dHJ5X3RvX3VubWFwX2ZpbGUgKG1tL3JtYXAuYykNCiAgICAgLT50cnlfdG9fdW5tYXBf
-b25lIChtbS9ybWFwLmMpDQogICAgICAtPnNldF9wYWdlX2RpcnR5IChtbS9wYWdlLXdyaXRlYmFj
-ay5jKQ0KICAgICAgIC0+dWJpZnNfc2V0X3BhZ2VfZGlydHkgKGZzL3ViaWZzL2ZpbGUuYykNClRo
-ZSB1Ymlmc19zZXRfcGFnZV9kaXJ0eSBpcyBwcm92aWRlZCBpbiB1YmlmcywgaXQgd2lsbCBiZSBj
-YWxsZWQgb3V0IG9mIHViaWZzLg0KQW5kIGl0IGp1c3QgbWlncmF0ZSBmaWxlIHBhZ2UgdG8gYW5v
-dGhlciBwYWdlIGluIG1lbW9yeSwgbm90IGluIGZsYXNoLCBpdCBuZWVkbid0IHRvIGJ1ZGdldCBm
-b3IgaXQuDQoNClRoZSBxdWVzdGlvbiBpczoNCjEuIERvZXMgdWJpZnMgc3VwcG9ydCBtaWdyYXRl
-IG9yIG5vdD8NCjIuIE9yIG1tIG5vdCBkbyB0aGUgcmlnaHQgdGhpbmc/DQoNCkNvdWxkIHlvdSBw
-bGVhc2UgZ2l2ZSB1cyBhIGhhbmQgdG8gc29sdmUgaXQ/IEFueSByZXBseSB3aWxsIGJlIGFwcHJl
-Y2lhdGVkLiBUaGFua3MhDQoNCkJlc3QgUmVnYXJkcy4NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3Nh
-Z2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFttYWlsdG86ZGVkZWtpbmQxQGdtYWls
-LmNvbV0NCj4gU2VudDogTW9uZGF5LCBPY3RvYmVyIDIwLCAyMDE0IDk6MTIgUE0NCj4gVG86IENh
-aXpoaXlvbmc7IGxpbnV4LWZzZGV2ZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1tbUBrdmFjay5v
-cmcNCj4gQ2M6IEppamlhZ2FuZzsgYWRyaWFuLmh1bnRlckBpbnRlbC5jb207IGxpbnV4LW10ZEBs
-aXN0cy5pbmZyYWRlYWQub3JnOyBXYW5saQ0KPiAod2VsbHkpDQo+IFN1YmplY3Q6IFJlOiBVQklG
-UyBhc3NlcnQgZmFpbGVkIGluIHViaWZzX3NldF9wYWdlX2RpcnR5IGF0IDE0MjENCj4gDQo+IEhp
-LA0KPiANCj4gZmlyc3Qgb2YgYWxsLCB3aGF0IGlzIHlvdXIgYXJjaGl0ZWN0dXJlPyBBUk0/IEFu
-ZCBob3cgZWFzaWx5IGNhbiB5b3UgcmVwcm9kdWNlDQo+IHRoaXM/IEFuZCBjYW4geW91IHRyeSBh
-IGtlcm5lbCBuZXdlciB0aGFuIDMuMTA/DQo+IA0KPiBBbmQgZm9yIGZzLWRldmVsIGFuZCBtbSBw
-ZW9wbGUsIGhlcmUgaXMgdGhlIGxpbmsgdG8gdGhlIG9yaWdpbmFsIHJlcG9ydDoNCj4gaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDE0LU9jdG9iZXIvMDU1
-OTMwLmh0bWwsDQo+IA0KPiBPbiBNb24sIDIwMTQtMTAtMjAgYXQgMTI6MDEgKzAwMDAsIENhaXpo
-aXlvbmcgd3JvdGU6DQo+ID4gSGVyZSBpcyBwYXJ0IG9mIHRoZSBsb2csIGxpbnV4IHZlcnNpb24g
-My4xMDoNCj4gPiAgICBjYWNoZSAxNjI0MGtCIGlzIGJlbG93IGxpbWl0IDE2Mzg0a0IgZm9yIG9v
-bV9zY29yZV9hZGogNTI5DQo+ID4gICAgRnJlZSBtZW1vcnkgaXMgLTE4MjBrQiBhYm92ZSByZXNl
-cnZlZA0KPiA+IGxvd21lbW9yeWtpbGxlcjogS2lsbGluZyAnLm5ldHdvcmt1cGdyYWRlJyAoNjky
-NCksIGFkaiA3MDUsDQo+ID4gICAgdG8gZnJlZSAyMDk2OGtCIG9uIGJlaGFsZiBvZiAna3N3YXBk
-MCcgKDU0MykgYmVjYXVzZQ0KPiA+ICAgIGNhY2hlIDE2MjQwa0IgaXMgYmVsb3cgbGltaXQgMTYz
-ODRrQiBmb3Igb29tX3Njb3JlX2FkaiA1MjkNCj4gPiAgICBGcmVlIG1lbW9yeSBpcyAtMjE5MmtC
-IGFib3ZlIHJlc2VydmVkDQo+IA0KPiBPSywgbm8gbWVtb3J5IGFuZCBPT00gc3RhcnRzLiBTbyB5
-b3VyIHN5c3RlbSBpcyBpbiB0cm91YmxlIGFueXdheSA6LSkNCj4gDQo+ID4gVUJJRlMgYXNzZXJ0
-IGZhaWxlZCBpbiB1Ymlmc19zZXRfcGFnZV9kaXJ0eSBhdCAxNDIxIChwaWQgNTQzKQ0KPiANCj4g
-VUJJRlMgY29tcGxhaW4gaGVyZSB0aGF0IHNvbWVvbmUgbWFya3MgYSBwYWdlIGFzIGRpcnR5ICJk
-aXJlY3RseSIsIG5vdA0KPiB0aHJvdWdoIG9uZSBvZiB0aGUgVUJJRlMgZnVuY3Rpb25zLiBBbmQg
-dGhhdCBzb21lb25lIGlzIHRoZSBwYWdlIHJlY2xhaW0gcGF0aC4NCj4gDQo+IE5vdywgSSBkbyBu
-b3QgcmVhbGx5IGtub3cgd2hhdCBpcyBnb2luZyBvbiBoZXJlLCBzbyBJIGFtIENDaW5nIGEgY291
-cGxlIG9mDQo+IG1haWxpbmcgbGlzdHMsIG1heSBiZSBzb21lb25lIHdpbGwgaGVscC4NCj4gDQo+
-IEhlcmUgaXMgd2hhdCBJIHNlZSBpcyBnb2luZyBvbi4NCj4gDQo+IDEuIFVCSUZTIHdhbnRzIHRv
-IG1ha2Ugc3VyZSB0aGF0IG5vIG9uZSBtYXJrcyBVQklGUy1iYWNrZWQgcGFnZXMgKGFuZA0KPiBh
-Y3R1YWxseSBpbm9kZXMgdG9vKSBhcyBkaXJ0eSBkaXJlY3RseS4gVUJJRlMgd2FudHMgZXZlcnlv
-bmUgdG8gYXNrIFVCSUZTIHRvIG1hcmsNCj4gYSBwYWdlIGFzIGRpcnR5Lg0KPiANCj4gMi4gVGhp
-cyBpcyBiZWNhdXNlIGZvciBldmVyeSBkaXJ0eSBwYWdlLCBVQklGUyBuZWVkcyB0byByZXNlcnZl
-IGNlcnRhaW4gYW1vdW50IG9mDQo+IHNwYWNlIG9uIHRoZSBmbGFzaCBtZWRpYSwgYmVjYXVzZSBh
-bGwgd3JpdGVzIGFyZSBvdXQtb2YtcGxhY2UsIGV2ZW4gd2hlbiB5b3UNCj4gYXJlIGNoYW5naW5n
-IGFuIGV4aXN0aW5nIGZpbGUuDQo+IA0KPiAzLiBUaGVyZSBhcmUgZXhhY3RseSAyIHBsYWNlcyB3
-aGVyZSBVQklGUy1iYWNrZWQgcGFnZXMgbWF5IGJlIG1hcmtlZCBhcw0KPiBkaXJ0eToNCj4gDQo+
-ICAgYSkgdWJpZnNfd3JpdGVfZW5kKCkgWy0+d2lydGVfZW5kXSAtIHRoZSBmaWxlIHdyaXRlIHBh
-dGgNCj4gICBiKSB1Ymlmc19wYWdlX21rd3JpdGUoKSBbLT5wYWdlX21rd2lydGVdIC0gdGhlIGZp
-bGUgbW1hcCgpIHBhdGgNCj4gDQo+IDQuIElmIGFueXRoaW5nIGNhbGxzICd1Ymlmc19zZXRfcGFn
-ZV9kaXJ0eSgpJyBkaXJlY3RseSAobm90IHRocm91Z2gNCj4gd3JpdGVfZW5kKCkvbWt3cml0ZSgp
-KSwgYW5kIHRoZSBwYWdlIHdhcyBub3QgZGlydHksIFVCSUZTIHdpbGwgY29tcGxhaW4gd2l0aA0K
-PiB0aGUgYXNzZXJ0aW9uIHRoYXQgeW91IHNlZS4NCj4gDQo+ID4gQ1BVOiAzIFBJRDogNTQzIENv
-bW06IGtzd2FwZDAgVGFpbnRlZDogUCAgICAgICAgICAgTyAzLjEwLjBfczQwICMxDQo+ID4gWzw4
-MDAxZDhhMD5dICh1bndpbmRfYmFja3RyYWNlKzB4MC8weDEwOCkgZnJvbSBbPDgwMDE5ZjQ0Pl0N
-Cj4gPiAoc2hvd19zdGFjaysweDIwLzB4MjQpIFs8ODAwMTlmNDQ+XSAoc2hvd19zdGFjaysweDIw
-LzB4MjQpIGZyb20NCj4gPiBbPDgwYWYyZWY4Pl0gKGR1bXBfc3RhY2srMHgyNC8weDJjKSBbPDgw
-YWYyZWY4Pl0NCj4gPiAoZHVtcF9zdGFjaysweDI0LzB4MmMpIGZyb20gWzw4MDI5NzIzND5dDQo+
-ID4gKHViaWZzX3NldF9wYWdlX2RpcnR5KzB4NTQvMHg1YykgWzw4MDI5NzIzND5dDQo+ID4gKHVi
-aWZzX3NldF9wYWdlX2RpcnR5KzB4NTQvMHg1YykgZnJvbSBbPDgwMGNlYTYwPl0NCj4gPiAoc2V0
-X3BhZ2VfZGlydHkrMHg1MC8weDc4KSBbPDgwMGNlYTYwPl0gKHNldF9wYWdlX2RpcnR5KzB4NTAv
-MHg3OCkNCj4gPiBmcm9tIFs8ODAwZjRiZTQ+XSAodHJ5X3RvX3VubWFwX29uZSsweDFmOC8weDNk
-MCkgWzw4MDBmNGJlND5dDQo+ID4gKHRyeV90b191bm1hcF9vbmUrMHgxZjgvMHgzZDApIGZyb20g
-Wzw4MDBmNGY0ND5dDQo+ID4gKHRyeV90b191bm1hcF9maWxlKzB4OWMvMHg3NDApIFs8ODAwZjRm
-NDQ+XQ0KPiA+ICh0cnlfdG9fdW5tYXBfZmlsZSsweDljLzB4NzQwKSBmcm9tIFs8ODAwZjU2Nzg+
-XQ0KPiA+ICh0cnlfdG9fdW5tYXArMHg0MC8weDc4KSBbPDgwMGY1Njc4Pl0gKHRyeV90b191bm1h
-cCsweDQwLzB4NzgpIGZyb20NCj4gPiBbPDgwMGQ2YTA0Pl0gKHNocmlua19wYWdlX2xpc3QrMHgy
-M2MvMHg4ODQpIFs8ODAwZDZhMDQ+XQ0KPiA+IChzaHJpbmtfcGFnZV9saXN0KzB4MjNjLzB4ODg0
-KSBmcm9tIFs8ODAwZDc2Yzg+XQ0KPiA+IChzaHJpbmtfaW5hY3RpdmVfbGlzdCsweDIxYy8weDNj
-OCkNCj4gPiBbPDgwMGQ3NmM4Pl0gKHNocmlua19pbmFjdGl2ZV9saXN0KzB4MjFjLzB4M2M4KSBm
-cm9tIFs8ODAwZDdjMjA+XQ0KPiA+IChzaHJpbmtfbHJ1dmVjKzB4M2FjLzB4NTI0KSBbPDgwMGQ3
-YzIwPl0gKHNocmlua19scnV2ZWMrMHgzYWMvMHg1MjQpDQo+ID4gZnJvbSBbPDgwMGQ4OTcwPl0g
-KGtzd2FwZCsweDg1NC8weGRjMCkgWzw4MDBkODk3MD5dDQo+ID4gKGtzd2FwZCsweDg1NC8weGRj
-MCkgZnJvbSBbPDgwMDUxZTI4Pl0gKGt0aHJlYWQrMHhjOC8weGNjKQ0KPiA+IFs8ODAwNTFlMjg+
-XSAoa3RocmVhZCsweGM4LzB4Y2MpIGZyb20gWzw4MDAxNTE5OD5dDQo+ID4gKHJldF9mcm9tX2Zv
-cmsrMHgxNC8weDIwKQ0KPiANCj4gDQo+IFNvIHRoZSByZWNsYWltIHBhdGggc2VlbXMgdG8gYmUg
-bWFya2luZyBVQklGUy1iYWNrZWQgcGFnZXMgYXMgZGlydHkgZGlyZWN0bHksIEkNCj4gZG8gbm90
-IGtub3cgd2h5LCB0aGUgcmVjbGFpbSBwYXRoIGlzIGV4dHJlbWVseSBjb21wbGV4IGFuZCBJIGFt
-IG5vIGV4cGVydA0KPiB0aGVyZS4gQnV0IG1heSBiZSBzb21lb25lIG9uIHRoZSBNTSBsaXN0IG1h
-eSBoZWxwLg0KPiANCj4gTm90ZSwgdGhpcyB3YXJuaW5nIGlzIG5vdCBuZWNlc3NhcmlseSBmYXRh
-bC4gSXQganVzdCBpbmRpY2F0ZXMgdGhhdCBVQklGUyBzZWVzDQo+IHNvbWV0aGluZyB3aGljaCBp
-dCBiZWxpZXZlcyBzaG91bGQgbm90IGhhcHBlbi4NCj4gDQo+ID4gVUJJRlMgYXNzZXJ0IGZhaWxl
-ZCBpbiBkb193cml0ZXBhZ2UgYXQgOTM2IChwaWQgNTQzKQ0KPiA+IENQVTogMSBQSUQ6IDU0MyBD
-b21tOiBrc3dhcGQwIFRhaW50ZWQ6IFAgICAgICAgICAgIE8gMy4xMC4wX3M0MCAjMQ0KPiA+IFs8
-ODAwMWQ4YTA+XSAodW53aW5kX2JhY2t0cmFjZSsweDAvMHgxMDgpIGZyb20gWzw4MDAxOWY0ND5d
-DQo+ID4gKHNob3dfc3RhY2srMHgyMC8weDI0KSBbPDgwMDE5ZjQ0Pl0gKHNob3dfc3RhY2srMHgy
-MC8weDI0KSBmcm9tDQo+ID4gWzw4MGFmMmVmOD5dIChkdW1wX3N0YWNrKzB4MjQvMHgyYykgWzw4
-MGFmMmVmOD5dDQo+ID4gKGR1bXBfc3RhY2srMHgyNC8weDJjKSBmcm9tIFs8ODAyOTkwYjg+XSAo
-ZG9fd3JpdGVwYWdlKzB4MWI4LzB4MWM0KQ0KPiA+IFs8ODAyOTkwYjg+XSAoZG9fd3JpdGVwYWdl
-KzB4MWI4LzB4MWM0KSBmcm9tIFs8ODAyOTkxZTg+XQ0KPiA+ICh1Ymlmc193cml0ZXBhZ2UrMHgx
-MjQvMHgxZGMpIFs8ODAyOTkxZTg+XQ0KPiA+ICh1Ymlmc193cml0ZXBhZ2UrMHgxMjQvMHgxZGMp
-IGZyb20gWzw4MDBkNmViOD5dDQo+ID4gKHNocmlua19wYWdlX2xpc3QrMHg2ZjAvMHg4ODQpIFs8
-ODAwZDZlYjg+XQ0KPiA+IChzaHJpbmtfcGFnZV9saXN0KzB4NmYwLzB4ODg0KSBmcm9tIFs8ODAw
-ZDc2Yzg+XQ0KPiA+IChzaHJpbmtfaW5hY3RpdmVfbGlzdCsweDIxYy8weDNjOCkNCj4gPiBbPDgw
-MGQ3NmM4Pl0gKHNocmlua19pbmFjdGl2ZV9saXN0KzB4MjFjLzB4M2M4KSBmcm9tIFs8ODAwZDdj
-MjA+XQ0KPiA+IChzaHJpbmtfbHJ1dmVjKzB4M2FjLzB4NTI0KSBbPDgwMGQ3YzIwPl0gKHNocmlu
-a19scnV2ZWMrMHgzYWMvMHg1MjQpDQo+ID4gZnJvbSBbPDgwMGQ4OTcwPl0gKGtzd2FwZCsweDg1
-NC8weGRjMCkgWzw4MDBkODk3MD5dDQo+ID4gKGtzd2FwZCsweDg1NC8weGRjMCkgZnJvbSBbPDgw
-MDUxZTI4Pl0gKGt0aHJlYWQrMHhjOC8weGNjKQ0KPiA+IFs8ODAwNTFlMjg+XSAoa3RocmVhZCsw
-eGM4LzB4Y2MpIGZyb20gWzw4MDAxNTE5OD5dDQo+ID4gKHJldF9mcm9tX2ZvcmsrMHgxNC8weDIw
-KQ0KPiANCj4gQW5kIGhlcmUgVUJJRlMgc2VlcyBhIHBhZ2UgYmVpbmcgd3JpdHRlZCwgYnV0IHRo
-ZXJlIGlzIG5vIGJ1ZGdldCBhbGxvY2F0ZWQgZm9yDQo+IGl0LCBzbyB0aGUgd3JpdGUgbWF5IGZh
-aWwgd2l0aCAtRU5PU1BDIChubyBzcGFjZSksIHdoaWNoIGlzIG5vdCBzdXBwb3NlZCB0byBldmVy
-DQo+IGhhcHBlbi4NCj4gDQo+IFRoaXMgaXMgbm90IG5lY2Vzc2FyaWx5IGZhdGFsIGVpdGhlciwg
-YnV0IGluZGljYXRlcyB0aGF0IFVCSUZTJ3MgYXNzdW1wdGlvbnMgYWJvdXQNCj4gaG93IHRoZSBz
-eXN0ZW0gZnVuY3Rpb25zIGFyZSB3cm9uZy4NCj4gDQo+IE5vdyB0aGUgcXVlc3Rpb24gaXM6IGlz
-IGl0IFVCSUZTIHdoaWNoIGhhcyBpbmNvcnJlY3QgYXNzdW1wdGlvbnMsIG9yIHRoaXMgaXMgdGhl
-DQo+IExpbnV4IE1NIHdoaWNoIGlzIG5vdCBkb2luZyB0aGUgcmlnaHQgdGhpbmc/IEkgZG8gbm90
-IGtub3cgdGhlIGFuc3dlciwgbGV0J3Mgc2VlDQo+IGlmIHRoZSBNTSBsaXN0IG1heSBnaXZlIHVz
-IGEgY2x1ZS4NCj4gDQo+IFRoYW5rcyENCg0K
+Hello Artem Bityutskiy,
+
+The patch 1e51764a3c2a: "UBIFS: add new flash file system" from Jul
+14, 2008, leads to the following static checker warning:
+
+	fs/ubifs/debug.c:2039 check_leaf()
+	warn: is 'node' large enough for 'struct ubifs_data_node'?
+
+fs/ubifs/debug.c
+  1978  static int check_leaf(struct ubifs_info *c, struct ubifs_zbranch *zbr,
+  1979                        void *priv)
+  1980  {
+  1981          ino_t inum;
+  1982          void *node;
+  1983          struct ubifs_ch *ch;
+  1984          int err, type = key_type(c, &zbr->key);
+  1985          struct fsck_inode *fscki;
+  1986  
+  1987          if (zbr->len < UBIFS_CH_SZ) {
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+We check that ->len is at least 24 bytes.
+
+  1988                  ubifs_err("bad leaf length %d (LEB %d:%d)",
+  1989                            zbr->len, zbr->lnum, zbr->offs);
+  1990                  return -EINVAL;
+  1991          }
+  1992  
+  1993          node = kmalloc(zbr->len, GFP_NOFS);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Allocate node.
+
+  1994          if (!node)
+  1995                  return -ENOMEM;
+  1996  
+  1997          err = ubifs_tnc_read_node(c, zbr, node);
+  1998          if (err) {
+  1999                  ubifs_err("cannot read leaf node at LEB %d:%d, error %d",
+  2000                            zbr->lnum, zbr->offs, err);
+  2001                  goto out_free;
+  2002          }
+  2003  
+  2004          /* If this is an inode node, add it to RB-tree of inodes */
+  2005          if (type == UBIFS_INO_KEY) {
+  2006                  fscki = add_inode(c, priv, node);
+  2007                  if (IS_ERR(fscki)) {
+  2008                          err = PTR_ERR(fscki);
+  2009                          ubifs_err("error %d while adding inode node", err);
+  2010                          goto out_dump;
+  2011                  }
+  2012                  goto out;
+  2013          }
+  2014  
+  2015          if (type != UBIFS_DENT_KEY && type != UBIFS_XENT_KEY &&
+  2016              type != UBIFS_DATA_KEY) {
+  2017                  ubifs_err("unexpected node type %d at LEB %d:%d",
+  2018                            type, zbr->lnum, zbr->offs);
+  2019                  err = -EINVAL;
+  2020                  goto out_free;
+  2021          }
+  2022  
+  2023          ch = node;
+                ^^^^^^^^^^
+24 bytes is large enough for "ch".
+
+  2024          if (le64_to_cpu(ch->sqnum) > c->max_sqnum) {
+  2025                  ubifs_err("too high sequence number, max. is %llu",
+  2026                            c->max_sqnum);
+  2027                  err = -EINVAL;
+  2028                  goto out_dump;
+  2029          }
+  2030  
+  2031          if (type == UBIFS_DATA_KEY) {
+  2032                  long long blk_offs;
+  2033                  struct ubifs_data_node *dn = node;
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+But it's not large enough for "dn".
+
+  2034  
+  2035                  /*
+  2036                   * Search the inode node this data node belongs to and insert
+  2037                   * it to the RB-tree of inodes.
+  2038                   */
+  2039                  inum = key_inum_flash(c, &dn->key);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The check waits until we use "dn" before complaining, in case there is
+another size check after the assignment.
+
+Also on the other side of the if statement:
+fs/ubifs/debug.c:2071 check_leaf() warn: is 'node' large enough for 'struct ubifs_dent_node'?
+
+regards,
+dan carpenter
