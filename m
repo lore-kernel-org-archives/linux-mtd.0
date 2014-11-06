@@ -1,23 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmHvf-0005zY-0B
- for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 07:56:27 +0000
-Message-ID: <1415260542.958.161.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 03/35] UBI: Fastmap: Add self check to detect absent PEBs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Date: Thu, 06 Nov 2014 09:55:42 +0200
-In-Reply-To: <545A4ACA.2070402@nod.at>
-References: <1414586758-9972-1-git-send-email-richard@nod.at>
- <1414586758-9972-4-git-send-email-richard@nod.at>
- <1415201029.958.118.camel@sauron.fi.intel.com> <545A48BD.9010904@nod.at>
- <1415203295.958.133.camel@sauron.fi.intel.com> <545A4ACA.2070402@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- tlinder@codeaurora.org
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmI6R-0000tW-FD
+ for linux-mtd@lists.infradead.org; Thu, 06 Nov 2014 08:07:41 +0000
+Message-ID: <545B2C30.2010206@nod.at>
+Date: Thu, 06 Nov 2014 09:07:12 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: The future of ubi_assert()
+References: <545A9E6E.3000208@nod.at>
+ <1415258504.958.151.camel@sauron.fi.intel.com>
+In-Reply-To: <1415258504.958.151.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +23,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-11-05 at 17:05 +0100, Richard Weinberger wrote:
-> Am 05.11.2014 um 17:01 schrieb Artem Bityutskiy:
-> > On Wed, 2014-11-05 at 16:56 +0100, Richard Weinberger wrote:
-> >>  I did that to have alloc and free balanced.
-> >> I.e. to not have a naked kfree(). Always when I see a kfree()
-> >> somewhere
-> >> I'd like to see the k*alloc().
-> > 
-> > OK. Please, just make the comment simpler then. Say that you are freeing
-> > the debugging buffer or something.
+Am 06.11.2014 um 08:21 schrieb Artem Bityutskiy:
+> On Wed, 2014-11-05 at 23:02 +0100, Richard Weinberger wrote:
+>> Artem,
+>>
+>> I'm not happy with ubi_assert().
 > 
-> Will do!
+> Good start of an e-mail, immediately sets the goal - make Richard
+> happy :-)
+> 
+> 
+>> Currently it only prints a warning and a stack trace but execution
+>> continues.
+> 
+> Yeah, that was an idea initially, when this all was in process of
+> creation, and we were testing it a lot, and had problems. We did wanted
+> to see a warning, and then let things continue, and see what happens
+> next. And we put really a lot of them, and often they were bogus, and
+> sometimes it was good for production even, because a bogus assert did
+> not stop the whole thing.
+> 
+>>  In production nobody will notice and while developing turning
+>> it into a plain BUG_ON is most of the time more useful because execution stops
+>> exactly where the boo boo happens one can analyze stack/registers.
+> 
+> Sure, for some of the critical ones it BUG_ON is a better answer.
+> 
+>> I propose splitting ubi_assert() into two new functions.
+>>
+>> 1. ubi_bug_on()
+>> Basically a BUG_ON(), it shall be used for assertions where execution of
+>> UBI cannot proceed and anything we can do is crashing the machine.
+> 
+> Just use plain BUG_ON() then.
 
-I suggest you to prepare a short series of patches and send this out. I
-think I can process them faster then. When you send 35 patches I tend to
-postpone the review because it looks like a a lot of work which needs a
-lot of time. Small series is easier to deal with.
+Fine by me.
 
-So instead of re-sending 35 patches, just send 3 or for good patches,
-I'll pick them much faster, I think.
+>> 2. ubi_warn_on()
+>> This macro shall be used for assertions where further execution is possible
+>> in read-only mode. ubi_warn_on() would be a WARN_ON() plus ubi_ro_mode().
+> 
+> OK, just use plain WARN_ON(). Many asserts can be just removed even, I
+> think.
 
-Artem.
+I think we can do better.
+Think of wl.c, if an ubi_assert() in wl.c does not hold, we can put the UBI device
+into read-only mode and continue execution.
+BUG_ON() would be too much and WARN_ON() would lead to data corruption as the execution
+would go on...
+Something like ext4's errors=remount-ro. :)
+
+>> I'm sure that the vast majority of all ubi_asserts() can be turned into a ubi_warn_on().
+> 
+> The reason we introduced macros, originally, was that we did not want
+> all our asserts to be compiled in. Because we put them nearly
+> everywhere. Wrapping allowed us to compile them off when debugging was
+> disabled.
+
+Makes sense.
+
+> But nowadays many of them can be just killed, and we can use WARN_ON() /
+> BUG_ON() without wrapping them.
+> 
+
+Please see my comment above on wl.c.
+
+Thanks,
+//richard
