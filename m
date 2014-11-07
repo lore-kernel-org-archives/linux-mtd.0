@@ -1,17 +1,20 @@
-Message-ID: <545C97AB.4040402@ti.com>
-Date: Fri, 7 Nov 2014 11:58:03 +0200
-From: Roger Quadros <rogerq@ti.com>
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmgOy-0006P1-TZ
+ for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 10:04:21 +0000
+Message-ID: <545C98DE.3020706@huawei.com>
+Date: Fri, 7 Nov 2014 18:03:10 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: Tony Lindgren <tony@atomide.com>, <pekon@pek-sem.com>
-Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
-References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
- <20141106180333.GZ31454@atomide.com> <545C9267.7060301@ti.com>
-In-Reply-To: <545C9267.7060301@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: <dedekind1@gmail.com>
+Subject: Re: Report: mtd-utils: "Floating point exception" with ubiformat
+References: <5453663A.8080608@huawei.com>
+ <1415353395.958.300.camel@sauron.fi.intel.com>
+In-Reply-To: <1415353395.958.300.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: computersforpeace@gmail.com, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,73 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/07/2014 11:35 AM, Roger Quadros wrote:
-> On 11/06/2014 08:03 PM, Tony Lindgren wrote:
->> * Roger Quadros <rogerq@ti.com> [141105 03:02]:
->>> In commit 7d5929c1f343 ("mtd: nand: omap: Revert to using software ECC by default"),
->>> we switched back to using 1-bit SW ECC scheme by default. However
->>> commit b491da7233d5 ("mtd: nand: omap: clean-up ecc layout for BCH ecc schemes")
->>> didn't take into account the 1-bit SW scheme (i.e. OMAP_ECC_HAM1_CODE_SW)
->>> when checking for small page devices because it was already got rid of
->>> one commit earlier. Consider OMAP_ECC_HAM1_CODE_SW while deciding
->>> if we can proceed with small page devices or not.
->>>
->>> Fixes: 7d5929c1f34 ("mtd: nand: omap: Revert to using software ECC by default")
->>>
->>> Cc: <stable@vger.kernel.org>        [3.17+]
->>> Reported-by: Tony Lindgren <tony@atomide.com>
->>> Signed-off-by: Roger Quadros <rogerq@ti.com>
->>> ---
->>>  drivers/mtd/nand/omap2.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
->>> index 3b357e9..758e594 100644
->>> --- a/drivers/mtd/nand/omap2.c
->>> +++ b/drivers/mtd/nand/omap2.c
->>> @@ -1742,7 +1742,8 @@ static int omap_nand_probe(struct platform_device *pdev)
->>>  	}
->>>  
->>>  	/* check for small page devices */
->>> -	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
->>> +	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW) &&
->>> +	    (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_SW)) {
->>>  		dev_err(&info->pdev->dev, "small page devices are not supported\n");
->>>  		err = -EINVAL;
->>>  		goto return_error;
->>
->> Should this maybe have || instead of && For the OMAP_ECC_HAM1_CODE_SW?
+On 2014/11/7 17:43, Artem Bityutskiy wrote:
+> On Fri, 2014-10-31 at 18:36 +0800, hujianyang wrote:
+>> Do you think it is a valuable problem to deal with? Keep the
+>> existing logic is OK. But can we add something in mtd-utils
+>> to indicate this error than "Floating point exception"?
 > 
-> The code is right.
+> I think a work-around in mtd-utils is needed for sure. Because even if
+> we change the kernel, the change will only affect new kernels.
 > 
-> there is a bug in omap3-ldp.dts.
+> And I think changing the kernel is worthwhile too. It is extremely
+> unlikely, in my opinion, that someone relies on this illogical behavior
+> which happens only for zero-size partitions.  May be we can also
+> disallow zero-size partitions?
 > 
-> there it says 
-> ti,nand-ecc-opt = "bch8";
+> Artem.
 > 
-> This is wrong. OMAP3 doesn't support bch8. I think you should use either "ham1" or "sw"
+> 
+> 
 
-Well I'm wrong about the OMAP3 information. OMAP3 does support BCH4 and BCH8 as well.
+I'm agree with you.
 
-I'm don't thinkg small page check is right. For BCH8 we need 13 bytes per 512 bytes.
-In the LDP case we have page size:1024 and OOB size: 32.
-Thus for BCH8 we need 26 bytes per page. which should fit in 32 bytes OOB.
-So this check is bogus in that case.
+I found another strange thing, also caused by the wrong partition
+table.
 
-Pekon,
+In my board there is only one 512M nand flash. But the partition
+table in nand driver is used for a board with 2G(4*512M) nand flash.
 
-can you please explain why you check for 64 bytes OOB size for all ECC schemes?
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 20000000 00020000 "ubi0"
+mtd1: 00000000 00000000 "ubi1"
+mtd2: 20000000 00020000 "rest"
 
-Tony,
 
-The question for backward compatibility still remains. Even if OMAP3 supports bch8
-do we stick to the scheme that was used in legacy boot or do we switch?
+The /proc/mtd shows there are two 512M nand flash but actually
+they share the same device.
 
-Then there is the question of boot rom compatibility. OMAP3 bootloaders use HAM1 scheme.
-So if you want to be able to flash bootloader from the kernel we have to stick with HAM1.
+If I format mtdblock0 as jffs2 and then, I can mount a jffs2 file
+system from mtdblock2. Very interesting~!
 
-changing the ECC scheme would mean that NAND filesystems created earlier won't work
-and will have to be erased and recreated.
-
-cheers,
--roger
+Hu
