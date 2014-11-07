@@ -1,24 +1,17 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmgHx-0003OC-29
- for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 09:57:05 +0000
-Message-ID: <1415354191.958.307.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: Block: Add blk-mq support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Date: Fri, 07 Nov 2014 11:56:31 +0200
-In-Reply-To: <545C96A1.40304@nod.at>
-References: <1414933255-3795-1-git-send-email-richard@nod.at>
- <20141103081821.GA5261@infradead.org> <54573B72.1060600@nod.at>
- <1415353596.958.302.camel@sauron.fi.intel.com> <545C96A1.40304@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Message-ID: <545C97AB.4040402@ti.com>
+Date: Fri, 7 Nov 2014 11:58:03 +0200
+From: Roger Quadros <rogerq@ti.com>
+MIME-Version: 1.0
+To: Tony Lindgren <tony@atomide.com>, <pekon@pek-sem.com>
+Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
+References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
+ <20141106180333.GZ31454@atomide.com> <545C9267.7060301@ti.com>
+In-Reply-To: <545C9267.7060301@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: axboe@fb.com, linux-kernel@vger.kernel.org,
- Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
- ezequiel.garcia@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Cc: computersforpeace@gmail.com, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +21,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2014-11-07 at 10:53 +0100, Richard Weinberger wrote:
-> Am 07.11.2014 um 10:46 schrieb Artem Bityutskiy:
-> > On Mon, 2014-11-03 at 09:23 +0100, Richard Weinberger wrote:
-> >> Am 03.11.2014 um 09:18 schrieb Christoph Hellwig:
-> >>> On Sun, Nov 02, 2014 at 02:00:55PM +0100, Richard Weinberger wrote:
-> >>>> +#define UBIBLOCK_SG_COUNT 64
-> >>>
-> >>>
-> >>> Can you document why you choose this number? The default nr_request
-> >>> for the old code would be 128.
-> >>
-> >> Is 64 a problem? Beside of the fact that I forgot to set blk_queue_max_segments().
-> >> I used this number because 128 seemed a bit high and my goal was to
-> >> keep the memory footprint small.
-> >> This is also why I've set tag_set.queue_depth to 64.
-> > 
-> > The request was to document, so lets' document the choice.
+On 11/07/2014 11:35 AM, Roger Quadros wrote:
+> On 11/06/2014 08:03 PM, Tony Lindgren wrote:
+>> * Roger Quadros <rogerq@ti.com> [141105 03:02]:
+>>> In commit 7d5929c1f343 ("mtd: nand: omap: Revert to using software ECC by default"),
+>>> we switched back to using 1-bit SW ECC scheme by default. However
+>>> commit b491da7233d5 ("mtd: nand: omap: clean-up ecc layout for BCH ecc schemes")
+>>> didn't take into account the 1-bit SW scheme (i.e. OMAP_ECC_HAM1_CODE_SW)
+>>> when checking for small page devices because it was already got rid of
+>>> one commit earlier. Consider OMAP_ECC_HAM1_CODE_SW while deciding
+>>> if we can proceed with small page devices or not.
+>>>
+>>> Fixes: 7d5929c1f34 ("mtd: nand: omap: Revert to using software ECC by default")
+>>>
+>>> Cc: <stable@vger.kernel.org>        [3.17+]
+>>> Reported-by: Tony Lindgren <tony@atomide.com>
+>>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>>> ---
+>>>  drivers/mtd/nand/omap2.c | 3 ++-
+>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>>> index 3b357e9..758e594 100644
+>>> --- a/drivers/mtd/nand/omap2.c
+>>> +++ b/drivers/mtd/nand/omap2.c
+>>> @@ -1742,7 +1742,8 @@ static int omap_nand_probe(struct platform_device *pdev)
+>>>  	}
+>>>  
+>>>  	/* check for small page devices */
+>>> -	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
+>>> +	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW) &&
+>>> +	    (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_SW)) {
+>>>  		dev_err(&info->pdev->dev, "small page devices are not supported\n");
+>>>  		err = -EINVAL;
+>>>  		goto return_error;
+>>
+>> Should this maybe have || instead of && For the OMAP_ECC_HAM1_CODE_SW?
 > 
-> Of course I'll document it. But so far I had no time to do a
-> v2 of this patch.
+> The code is right.
+> 
+> there is a bug in omap3-ldp.dts.
+> 
+> there it says 
+> ti,nand-ecc-opt = "bch8";
+> 
+> This is wrong. OMAP3 doesn't support bch8. I think you should use either "ham1" or "sw"
 
-Your reply just sounded like you are complaining to the request (starts
-with "is this a problem?"). And it looked like you try to defend the 64
-choice, while no one challenged it.
+Well I'm wrong about the OMAP3 information. OMAP3 does support BCH4 and BCH8 as well.
 
-So my e-mail is to just kindly help you by pointing that the request was
-to only add a piece of doc so far, in case you misinterpreted it.
+I'm don't thinkg small page check is right. For BCH8 we need 13 bytes per 512 bytes.
+In the LDP case we have page size:1024 and OOB size: 32.
+Thus for BCH8 we need 26 bytes per page. which should fit in 32 bytes OOB.
+So this check is bogus in that case.
 
-Artem.
+Pekon,
+
+can you please explain why you check for 64 bytes OOB size for all ECC schemes?
+
+Tony,
+
+The question for backward compatibility still remains. Even if OMAP3 supports bch8
+do we stick to the scheme that was used in legacy boot or do we switch?
+
+Then there is the question of boot rom compatibility. OMAP3 bootloaders use HAM1 scheme.
+So if you want to be able to flash bootloader from the kernel we have to stick with HAM1.
+
+changing the ECC scheme would mean that NAND filesystems created earlier won't work
+and will have to be erased and recreated.
+
+cheers,
+-roger
