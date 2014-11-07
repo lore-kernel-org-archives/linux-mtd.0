@@ -1,29 +1,17 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xmfjz-000358-89
- for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 09:22:00 +0000
-Message-ID: <1415352094.958.294.camel@sauron.fi.intel.com>
-Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
- handling
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Tanya Brokhman <tlinder@codeaurora.org>, "Jeff Lauruhn (jlauruhn)"
- <jlauruhn@micron.com>
-Date: Fri, 07 Nov 2014 11:21:34 +0200
-In-Reply-To: <54563211.6070409@codeaurora.org>
-References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
- <544D5BEC.50802@nod.at> <544E052B.1040505@codeaurora.org>
- <544E08AE.7080506@nod.at> <5450C997.9010205@codeaurora.org>
- <5450D6C4.4040400@nod.at> <54538ABC.1040605@codeaurora.org>
- <5453ABF9.4070208@nod.at> <5453AD4D.2000303@nod.at>
- <0D23F1ECC880A74392D56535BCADD7351C2D0438@NTXBOIMBX03.micron.com>
- <54563211.6070409@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Message-ID: <545C9267.7060301@ti.com>
+Date: Fri, 7 Nov 2014 11:35:35 +0200
+From: Roger Quadros <rogerq@ti.com>
+MIME-Version: 1.0
+To: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
+References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
+ <20141106180333.GZ31454@atomide.com>
+In-Reply-To: <20141106180333.GZ31454@atomide.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>
+Cc: computersforpeace@gmail.com, stable@vger.kernel.org, pekon@pek-sem.com,
+ linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,45 +21,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2014-11-02 at 15:30 +0200, Tanya Brokhman wrote:
-> > If NAND why not use ECC to monitor for disturb?
+On 11/06/2014 08:03 PM, Tony Lindgren wrote:
+> * Roger Quadros <rogerq@ti.com> [141105 03:02]:
+>> In commit 7d5929c1f343 ("mtd: nand: omap: Revert to using software ECC by default"),
+>> we switched back to using 1-bit SW ECC scheme by default. However
+>> commit b491da7233d5 ("mtd: nand: omap: clean-up ecc layout for BCH ecc schemes")
+>> didn't take into account the 1-bit SW scheme (i.e. OMAP_ECC_HAM1_CODE_SW)
+>> when checking for small page devices because it was already got rid of
+>> one commit earlier. Consider OMAP_ECC_HAM1_CODE_SW while deciding
+>> if we can proceed with small page devices or not.
+>>
+>> Fixes: 7d5929c1f34 ("mtd: nand: omap: Revert to using software ECC by default")
+>>
+>> Cc: <stable@vger.kernel.org>        [3.17+]
+>> Reported-by: Tony Lindgren <tony@atomide.com>
+>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>> ---
+>>  drivers/mtd/nand/omap2.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>> index 3b357e9..758e594 100644
+>> --- a/drivers/mtd/nand/omap2.c
+>> +++ b/drivers/mtd/nand/omap2.c
+>> @@ -1742,7 +1742,8 @@ static int omap_nand_probe(struct platform_device *pdev)
+>>  	}
+>>  
+>>  	/* check for small page devices */
+>> -	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
+>> +	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW) &&
+>> +	    (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_SW)) {
+>>  		dev_err(&info->pdev->dev, "small page devices are not supported\n");
+>>  		err = -EINVAL;
+>>  		goto return_error;
 > 
-> We don't want just to monitor, we want to prevent cases where ecc cant 
-> be fixed. You said it yourself later on "BCH ECC will tell you if bits 
-> have changed and will correct up to 5". The goal is to prevent more then 
-> 5 errors that can't be fixed.
+> Should this maybe have || instead of && For the OMAP_ECC_HAM1_CODE_SW?
+
+The code is right.
+
+there is a bug in omap3-ldp.dts.
+
+there it says 
+ti,nand-ecc-opt = "bch8";
+
+This is wrong. OMAP3 doesn't support bch8. I think you should use either "ham1" or "sw"
+
+Ideally we want "ham1" but to be compatible with with NAND partitions created
+using legacy boot we need to stick with "sw"
+
+see board_nand_init() in mach-omap2/board-flash.c
+
+cheers,
+-roger
+
 > 
-> NAND is a great storage unit, but you have to follow the rules.  Please 
-> refer to Micron datasheet MT29F2G08ABAEAH4 page 100.  NAND is made up of 
-> blocks(2048 in this case), each block has a number of pages.  The block 
-> is the smallest erasable unit and the only way to change 0's to 1's. 
-> Pages are the smallest programmable unit and can only change 1's to 0's. 
->   P/E cycling (100,000 in this case) wears out the block.  We provide 
-> 64bytes of spare area for BCH ECC and NAND management.  BCH ECC will 
-> tell you if bits have changed and will correct up to 5.
-> >
-> > Read disturb is a recoverable failure.  It doesn't affect the cells in the page you are reading it affects the cells on either side of the page you are reading.  P/E cycling for this device is 100,000.  You can program once and read many many times.
-> >
-> > Data retention is the loss of charge on the cells.  Technically you can only change a 0 to 1 by erasing the whole block.  However, data retention is the loss of charge in a cell over time. In this case data retention is 10 years.
-> > Data retention gets worse as temperature goes up.
+> With this patch applied on top of the other pending fixes, I still
+> get:
 > 
-> Exactly! We're aware of all you described above. This is exactly why we 
-> need to handle both read disturb and data retention.
-
-Hi Tanya,
-
-just a friendly notice: did you notice that you drop all the CCs in the
-reply? Even the person you replied to was not in "To". I guess it is
-worth checking your e-mail client's settings.
-
-Jeff, my main concern about the patches is whether they really address
-NAND problems, and whether the complexity they introduce are worth it.
-The counter-approach is to just read the entire flash periodically, and
-just scrub the PEBs (physical eraseblocks) which have have enough
-bit-flips (more than a configured threshold per ECC unit, say 1 or 2).
-
-I tried to explain my concerns in here:
-http://lists.infradead.org/pipermail/linux-mtd/2014-November/056385.html
-http://lists.infradead.org/pipermail/linux-mtd/2014-November/056386.html
-
-Thanks!
+> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xba
+> nand: Micron MT29F2G16ABD
+> nand: 128MiB, SLC, page size: 1024, OOB size: 32
+> omap2-nand omap2-nand.0: small page devices are not supported
+> omap2-nand: probe of omap2-nand.0 failed with error -22
+> 
+> Regards,
+> 
+> Tony
+> 
