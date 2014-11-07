@@ -1,14 +1,14 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmfKs-0007z4-Nl
- for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 08:56:03 +0000
-Message-ID: <1415350530.958.282.camel@sauron.fi.intel.com>
+ id 1XmfNq-0008CN-Qa
+ for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 08:59:07 +0000
+Message-ID: <1415350722.958.286.camel@sauron.fi.intel.com>
 Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
  handling
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: Tanya Brokhman <tlinder@codeaurora.org>
-Date: Fri, 07 Nov 2014 10:55:30 +0200
+Date: Fri, 07 Nov 2014 10:58:42 +0200
 In-Reply-To: <545B66BA.4090904@codeaurora.org>
 References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
  <544D5BEC.50802@nod.at> <544E052B.1040505@codeaurora.org>
@@ -32,30 +32,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Thu, 2014-11-06 at 14:16 +0200, Tanya Brokhman wrote:
-> > There is also the "radiation" effect. Say, you have 3 continuous
-> PEBs A,
-> > B, C. And some PEB D which is far away from them. You never change
-> A, C,
-> > and D, you only read them. And you change B many times. IIUC, the
-> > radiation effect is that A and C will accumulate bit-flips earlier
-> than
-> > D, because D is being erased and re-programmed.
-> 
-> I think you got confused with the block-names (A B C D) because it 
-> doesn't make sense :) You said D never changes, just read from.
+> What I'm trying to say - it 
+> may be too late and you may lose data here. "preferred to prevent rather 
+> than cure".
 
-A, C - read, written, erased relatively often.
-B, D - only read with the same rate.
+First of all, just to clarify, I do not have a goal of turning down your
+patches. I just want to understand why this is the best design, and if
+it is helpful to all Linux MTD users.
 
-B will gain bit flips quicker than D due to the radiation effect. On
-some NANDs like MLC a lot quicker.
+Modern flashes have strong ECC codes protecting against many bit-flips.
+MTD even was modified to stop reporting about a single or few bit-flips,
+because those happen too often and they are "harmless", and do not
+require scrubbing. We have the threshold value in MTD for this, which is
+configurable, of course.
 
-Disclaimer: I am not a HW expert, this is my understanding.
+Bit-flips develop slowly over time. If you get one more bit-flips, it is
+not too late yet. You can mitigate the "too late" part by reading more
+often of course.
 
-The patches in question do not cover this "radiation" effect.
+You also may lower the bit-flip threshold when reading for scrubbing.
 
-The "read all periodically and scrub if enough bit-flips" approach
-covers the radiation effect, just like the other NAND effects
-(read-disturb, aging).
+Could you try to "sell" your design in a way that it becomes clear why
+it is better than just reading the entire flash periodically. Some hard
+experimental data would be preferable.
+
+The advantages of the "read all periodically" approach were:
+
+1. Simple, no modifications needed
+2. No need to write if the media is read-only, except when scrubbing
+happens.
+3. Should cover all the NAND effects, including the "radiation" one.
+
+And disadvantages of your design were:
+
+1. Need modifications, rather large, changes binary format, needs more
+ram.
+2. Does not cover all the NAND effects
+3. Is not transparent to the user
+4. If system time is incorrectly set, may cause a storm of I/O
+(scrubbing) and may put the system to it's knees before user-space has a
+chance to fix-up the system time.
+5. Needs more writes on the R/O system (to maintain read counters)
+
+Also, it is not clear if with your design we save energy. Reads a lot
+less need less energy than writes and erases (to maintain read
+counters). May you save energy comparing to the read-all periodically
+approach. May be not.
 
 Artem.
