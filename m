@@ -1,23 +1,26 @@
-Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmpeN-0003Ah-Ky
- for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 19:56:53 +0000
-Date: Fri, 7 Nov 2014 13:56:12 -0600
-From: Ben Shelton <ben.shelton@ni.com>
+ id 1XmpnE-0006w6-9r
+ for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 20:06:01 +0000
+Received: by mail-pa0-f42.google.com with SMTP id bj1so4193660pad.1
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Nov 2014 12:05:38 -0800 (PST)
+Date: Fri, 7 Nov 2014 12:05:28 -0800
+From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/4] UBIFS: fix a couple bugs in UBIFS xattr length
- calculation
-Message-ID: <20141107195612.GA22167@bshelton-desktop>
-References: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
- <1414781431-2911-2-git-send-email-ben.shelton@ni.com>
- <1415356480.958.315.camel@sauron.fi.intel.com>
+Subject: Re: [RESEND PATCH V2] mtd: block2mtd: Present block2mtd timely on
+ boot time
+Message-ID: <20141107200528.GA24946@ld-irv-0074>
+References: <2124950018.4236135.1414848795831.JavaMail.zimbra@redhat.com>
+ <1415353480.958.301.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1415356480.958.315.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
- Subodh Nijsure <snijsure@grid-net.com>, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com, linux-kernel@vger.kernel.org
+In-Reply-To: <1415353480.958.301.camel@sauron.fi.intel.com>
+Cc: Felix Fietkau <nbd@openwrt.org>,
+ =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+ Herton Krzesinski <hkrzesin@redhat.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Rodrigo Freire <rfreire@redhat.com>,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,87 +30,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/07, Artem Bityutskiy wrote:
-> On Fri, 2014-10-31 at 13:50 -0500, Ben Shelton wrote:
-> > From: Subodh Nijsure <snijsure@grid-net.com>
+On Fri, Nov 07, 2014 at 11:44:40AM +0200, Artem Bityutskiy wrote:
+> On Sat, 2014-11-01 at 09:33 -0400, Rodrigo Freire wrote:
+> > From: Felix Fietkau <nbd@openwrt.org> 
 > > 
-> > Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
-> > Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> > Signed-off-by: Ben Shelton <ben.shelton@ni.com>
-> > Acked-by: Brad Mouring <brad.mouring@ni.com>
-> > Acked-by: Gratian Crisan <gratian.crisan@ni.com>
+> > mtd: block2mtd: Ensure that block2mtd is presented timely on boot time
+> > 
+> > Currently, a block MTD device is not presented to the system on time, in 
+> > order to start mounting the filesystems. This patch ensures that block2mtd 
+> > is presented at the right time, so filesystems can be mounted on boot time. 
+> > This issue is seen on BCM2835 (Raspberry Pi) systems when mounting JFFS2 
+> > over block2mtd devices as the root filesystem.
+> > This patchset also adds a MTD device name and a timeout option to the driver. 
+> > Original patchset: 
+> > https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.12/440-block2mtd_init.patch?rev=40444 
+> > https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.12/441-block2mtd_probe.patch?rev=40444 
 > 
-> It looks like these patches are against an old kernel. In the new kernel
-> "dir_ui" was renamed to "host_ui", to show that this is not just a
-> directory inode, but a directory or an xattr inode (we call the "host"
-> inodes, since the "host" the xattr value).
-> 
-> I've pushed this patch in a modified form.
-> 
-> Do you have a possibility to test this series with a newer kernel?
+> I  think you can mount jffs2 using /dev/mtdX, you do not need the block
+> driver.
 
-Thanks for having a look at the patches.
+I realize you acknowledged your misunderstanding here, but for
+posterity -- this point is addressed in the FAQ:
 
-We originally tested the patches against a recent stable 3.14 kernel.
-I'll try to get a more recent kernel running on one of our targets that
-uses UBIFS to test with -- should I use 3.18-rc3 or the latest
-l2-mtd.git master?
+http://www.linux-mtd.infradead.org/faq/jffs2.html#L_mtdblock
 
-Ben
+Last I checked, the statement about busybox is still true. I think the
+rootfs comment may be stale; I think the rootfstype= parameter can help
+you.
 
-> 
-> Here is the patch I pushed:
-> 
-> 
-> From a76284e6f89b2ae37d413fe793752257be01765a Mon Sep 17 00:00:00 2001
-> From: Subodh Nijsure <snijsure@grid-net.com>
-> Date: Fri, 31 Oct 2014 13:50:28 -0500
-> Subject: [PATCH] UBIFS: fix a couple bugs in UBIFS xattr length calculation
-> 
-> The journal update function did not work for extended attributes properly,
-> because extended attribute inodes carry the xattr data, and the size of this
-> data was not taken into account.
-> 
-> Artem: improved commit message, amended the patch a bit.
-> 
-> Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> Signed-off-by: Ben Shelton <ben.shelton@ni.com>
-> Acked-by: Brad Mouring <brad.mouring@ni.com>
-> Acked-by: Gratian Crisan <gratian.crisan@ni.com>
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> ---
->  fs/ubifs/journal.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-> index fb166e2..f6ac3f2 100644
-> --- a/fs/ubifs/journal.c
-> +++ b/fs/ubifs/journal.c
-> @@ -571,7 +571,11 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
->  
->  	aligned_dlen = ALIGN(dlen, 8);
->  	aligned_ilen = ALIGN(ilen, 8);
-> +
->  	len = aligned_dlen + aligned_ilen + UBIFS_INO_NODE_SZ;
-> +	/* Make sure to also account for extended attributes */
-> +	len += host_ui->data_len;
-> +
->  	dent = kmalloc(len, GFP_NOFS);
->  	if (!dent)
->  		return -ENOMEM;
-> @@ -648,7 +652,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
->  
->  	ino_key_init(c, &ino_key, dir->i_ino);
->  	ino_offs += aligned_ilen;
-> -	err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs, UBIFS_INO_NODE_SZ);
-> +	err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs,
-> +			    UBIFS_INO_NODE_SZ + host_ui->data_len);
->  	if (err)
->  		goto out_ro;
->  
-> -- 
-> 1.9.3
-> 
-> Artem.
-> 
+Brian
