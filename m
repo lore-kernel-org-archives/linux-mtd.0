@@ -1,20 +1,21 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xmf48-0000mg-Au
- for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 08:38:45 +0000
-Date: Fri, 7 Nov 2014 09:38:12 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-Subject: RE: jffs2 usage question: nandwrite
-In-Reply-To: <EACD232272DA4849B060F0828564D13B449961CFFA@ntcex01.corp.netcomm.com.au>
-Message-ID: <alpine.DEB.2.02.1411070936460.23184@lnxricardw1.se.axis.com>
-References: <545C32CF.9060502@graphitesystems.com>
- <EACD232272DA4849B060F0828564D13B449961CFFA@ntcex01.corp.netcomm.com.au>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmfAo-0004c6-QZ
+ for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 08:45:40 +0000
+Message-ID: <545C8697.3080403@nod.at>
+Date: Fri, 07 Nov 2014 09:45:11 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
-Cc: K Richard Pixley <rpixley@graphitesystems.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Scott Branden <sbranden@broadcom.com>
+Subject: Re: suspect UBIFS async operations causing issues during reboot
+References: <5459E090.1010300@broadcom.com>
+ <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
+ <545A64CF.20101@broadcom.com> <545A6AA0.8050901@nod.at>
+ <545AAA2B.8090007@broadcom.com> <545BEEA5.7020609@broadcom.com>
+In-Reply-To: <545BEEA5.7020609@broadcom.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Fri, 7 Nov 2014, Iwo Mergler wrote:
-
-> JFFS2 keeps all the relevant information in every block. That is, you 
-> can shuffle the erase blocks any way you like and you still have a valid 
-> file system.
+Am 06.11.2014 um 22:56 schrieb Scott Branden:
+> It looks like the erase happening in the middle of reboot was uncovered in 2009 and never addressed properly?
 > 
-> The holes made by skipping bad blocks are not a problem.
+> https://lkml.org/lkml/2009/6/9/16
+> https://lkml.org/lkml/2010/2/12/144
+> 
+> Was there a proper resolution to this issue?
 
-Additionally, JFFS2 is bad-block-aware, so it knows that there can be bad 
-blocks in a partition on which a file system is mounted, and avoids trying 
-to use them.
+Did you read the threads you've posted?
 
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+There two answers:
+https://lkml.org/lkml/2010/2/12/143
+https://lkml.org/lkml/2010/2/12/144
+
+Thanks,
+//richard
