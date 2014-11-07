@@ -1,16 +1,22 @@
-Received: from mailout06.t-online.de ([194.25.134.19])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmiWJ-0008TS-02
- for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 12:20:04 +0000
+ id 1Xmiiu-0007X0-99
+ for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 12:33:04 +0000
+Message-ID: <545CBBE2.7000205@codeaurora.org>
+Date: Fri, 07 Nov 2014 14:32:34 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-Date: Fri, 07 Nov 2014 13:19:29 +0100
-Reply-To: kimmyhenson01@gmail.com
-To: kimmyhenson01@hotmail.com
-Subject: =?UTF-8?Q?D=C5=AFle=C5=BEit=C3=A9?=
-From: "Kimmy Henson" <immobilien.ternes@t-online.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Message-ID: <1XmiVl-397Ia80@fwd18.aul.t-online.de>
+To: hujianyang <hujianyang@huawei.com>, dedekind1@gmail.com
+Subject: Re: [PATCH V6] UBI: Extend UBI layer debug/messaging capabilities
+References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>
+ <1415201733.958.121.camel@sauron.fi.intel.com> <545C9A1B.6020905@huawei.com>
+In-Reply-To: <545C9A1B.6020905@huawei.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-arm-msm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,11 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Zdravím vás,
+On 11/7/2014 12:08 PM, hujianyang wrote:
+> On 2014/11/5 23:35, Artem Bityutskiy wrote:
+>> On Mon, 2014-11-03 at 15:58 +0200, Tanya Brokhman wrote:
+>>> If there is more then one UBI device mounted, there is no way to
+>>> distinguish between messages from different UBI devices.
+>>> Add device number to all ubi layer message types.
+>>>
+>>> The R/O block driver messages were replaced by pr_* since
+>>> ubi_device structure is not used by it.
+>>>
+>>> Amended a bit by Artem.
+>>>
+>>> Signed-off-by: Tanya Brokhman <tlinder@codeaurora.org>
+>>> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>>
+>> Oh, the entire patch-set again... this means we need to review it again!
+>> Please, have a mercy! :-) It is huge! Please, send a small patch against
+>> the one which I pushed already. Thanks!
+>>
 
-Kontaktoval jsem ti poslední dva týdnů a jsem nedostal žádnou odpověď. Jsem se zmínil o mé pozdní klienta, který má stejné příjmení s vámi. On uložil částku 14,2 milionů eur v jednom z banky tady v naší zemi a oni mě požádali, abych poskytnouta další příbuzní.
+Oh :( and I did that on purpose.... For some reason I thought you would 
+revert that one and push a new and updated one.
+Ok, I'll upload a short version.
 
-Laskavě ukázat svůj zájem pracovat se mnou v mé osobní e-mailovou adresu kimmyhenson01@gmail.com k tomu, aby mi předal podrobnosti o tomto projektu na vás.
+>
+> That means I can't add a Reviewed-by on this huge one...
 
-S pozdravem,
-Kimmy Henson 
+... and then you can add Reviewed-by! :)
+>
+> What a pity~! ^.^
+>
+>
+>> Artem.
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>>
+>
+>
+
+
+Thanks,
+Tanya Brokhman
+-- 
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
