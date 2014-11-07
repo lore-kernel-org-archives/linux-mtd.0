@@ -1,28 +1,17 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmZGK-00028R-IM
- for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 02:26:57 +0000
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Huang Shijie <shijie.huang@intel.com>
-Subject: RE: [PATCH V2] mtd: spi-nor: prefer more specific entries from
- chips database
-Date: Fri, 7 Nov 2014 02:26:32 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315EA714@NTXXIAMBX02.xacn.micron.com>
-References: <1413963223-6365-1-git-send-email-zajec5@gmail.com>
- <1415257333-6488-1-git-send-email-zajec5@gmail.com>
- <20141107012115.GA28978@shldeISGChi005.sh.intel.com>
- <A765B125120D1346A63912DDE6D8B6315EA662@NTXXIAMBX02.xacn.micron.com>
- <20141107020648.GA30266@shldeISGChi005.sh.intel.com>
-In-Reply-To: <20141107020648.GA30266@shldeISGChi005.sh.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1XmZaq-0008Ay-8D
+ for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 02:48:08 +0000
+Received: by mail-pa0-f50.google.com with SMTP id eu11so2546894pac.37
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Nov 2014 18:47:45 -0800 (PST)
+Message-ID: <545C32CF.9060502@graphitesystems.com>
+Date: Thu, 06 Nov 2014 18:47:43 -0800
+From: K Richard Pixley <rpixley@graphitesystems.com>
 MIME-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Rafal Milecki <zajec5@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: jffs2 usage question: nandwrite
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,9 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PlNvbWV0aW1lcywgZml2ZSBieXRlcyBJRCBpcyBub3QgZW5vdWdoLCBwbGVhc2UgcmVhZCB0aGUg
-cGF0Y2g6DQo+CWh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQv
-MjAxNC1BdWd1c3QvMDU1MDE4Lmh0bWwNCg0KPkluIGN1cnJlbnQgdGFibGUsIE1pY3JvbidzIGNo
-aXBzIGRvIG5vdCBoYXZlIGZpdmUgYnl0ZXMgSUQgeWV0Lg0KPkJ1dCBTcGFuc2lvbiBoYXMgYWxy
-ZWFkeSBoYWQgbWFueSBmaXZlIGJ5dGVzIElEIGNoaXBzIG5vdy4NCg0KWWVzLHdlIG5vdyBpbnRl
-bmQgdG8gYWRkIGl0LGFuZCBzdWJtaXQgYSBwYXRjaCBhYm91dCBpdCAuDQoNCkJlYW5IdW8NCg==
+I'm a newbie to flash file systems and I've spent my day reading. 
+However, I seem to be missing something.
+
+Several sets of instructions encourage me to build my file system using 
+mkfs.jffs2, which I understand creates an image, (akin to mkisofs), 
+rather than operating on a device file.  However, once I have the image, 
+they recommend placing the image onto flash using nandwrite.
+
+I can't find any doc on nandwrite, but I'm guessing that it does a "bad 
+block aware" sequential copy, meaning that it simply skips any blocks 
+that it recognizes as bad according to a manufacturer mark. Assuming so, 
+doesn't this hole in my fresh jffs2 file system cause jffs2 grief?  I 
+mean, it would cause most other file systems grief to have an extra 
+block inserted in the middle of their block sequence.
+
+What am I missing?
+
+--rich
