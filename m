@@ -1,22 +1,23 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmnO6-0007wu-D7
- for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 17:31:55 +0000
-Message-ID: <545D01F4.9050005@broadcom.com>
-Date: Fri, 7 Nov 2014 09:31:32 -0800
-From: Scott Branden <sbranden@broadcom.com>
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmpeN-0003Ah-Ky
+ for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 19:56:53 +0000
+Date: Fri, 7 Nov 2014 13:56:12 -0600
+From: Ben Shelton <ben.shelton@ni.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 1/4] UBIFS: fix a couple bugs in UBIFS xattr length
+ calculation
+Message-ID: <20141107195612.GA22167@bshelton-desktop>
+References: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
+ <1414781431-2911-2-git-send-email-ben.shelton@ni.com>
+ <1415356480.958.315.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: suspect UBIFS async operations causing issues during reboot
-References: <5459E090.1010300@broadcom.com>
- <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
- <545A64CF.20101@broadcom.com> <545A6AA0.8050901@nod.at>
- <545AAA2B.8090007@broadcom.com> <545BEEA5.7020609@broadcom.com>
- <545C8697.3080403@nod.at>
-In-Reply-To: <545C8697.3080403@nod.at>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <1415356480.958.315.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+ Subodh Nijsure <snijsure@grid-net.com>, linux-mtd@lists.infradead.org,
+ adrian.hunter@intel.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +27,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14-11-07 12:45 AM, Richard Weinberger wrote:
-> Am 06.11.2014 um 22:56 schrieb Scott Branden:
->> It looks like the erase happening in the middle of reboot was uncovered in 2009 and never addressed properly?
->>
->> https://lkml.org/lkml/2009/6/9/16
->> https://lkml.org/lkml/2010/2/12/144
->>
->> Was there a proper resolution to this issue?
->
-> Did you read the threads you've posted?
->
-> There two answers:
-> https://lkml.org/lkml/2010/2/12/143
-Yes, there is no hardware solution to a reset happening in the middle of 
-an erase operation to NAND.
+On 11/07, Artem Bityutskiy wrote:
+> On Fri, 2014-10-31 at 13:50 -0500, Ben Shelton wrote:
+> > From: Subodh Nijsure <snijsure@grid-net.com>
+> > 
+> > Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
+> > Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> > Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+> > Acked-by: Brad Mouring <brad.mouring@ni.com>
+> > Acked-by: Gratian Crisan <gratian.crisan@ni.com>
+> 
+> It looks like these patches are against an old kernel. In the new kernel
+> "dir_ui" was renamed to "host_ui", to show that this is not just a
+> directory inode, but a directory or an xattr inode (we call the "host"
+> inodes, since the "host" the xattr value).
+> 
+> I've pushed this patch in a modified form.
+> 
+> Do you have a possibility to test this series with a newer kernel?
 
-> https://lkml.org/lkml/2010/2/12/144
-Yes, it appears nobody has ever implemented a reboot notifier in the 
-past 5 years to solve this problem for NAND.
+Thanks for having a look at the patches.
 
-We are experimenting with a notifier in UBI and MTD which is a much 
-cleaner shutdown than just a notifier at the MTD level.  UBI reboot 
-notifier priority needs to be shut down first and have a higher priority 
-than flash device.  Overnight results are looking promising.
->
-> Thanks,
-> //richard
->
+We originally tested the patches against a recent stable 3.14 kernel.
+I'll try to get a more recent kernel running on one of our targets that
+uses UBIFS to test with -- should I use 3.18-rc3 or the latest
+l2-mtd.git master?
+
+Ben
+
+> 
+> Here is the patch I pushed:
+> 
+> 
+> From a76284e6f89b2ae37d413fe793752257be01765a Mon Sep 17 00:00:00 2001
+> From: Subodh Nijsure <snijsure@grid-net.com>
+> Date: Fri, 31 Oct 2014 13:50:28 -0500
+> Subject: [PATCH] UBIFS: fix a couple bugs in UBIFS xattr length calculation
+> 
+> The journal update function did not work for extended attributes properly,
+> because extended attribute inodes carry the xattr data, and the size of this
+> data was not taken into account.
+> 
+> Artem: improved commit message, amended the patch a bit.
+> 
+> Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+> Acked-by: Brad Mouring <brad.mouring@ni.com>
+> Acked-by: Gratian Crisan <gratian.crisan@ni.com>
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> ---
+>  fs/ubifs/journal.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+> index fb166e2..f6ac3f2 100644
+> --- a/fs/ubifs/journal.c
+> +++ b/fs/ubifs/journal.c
+> @@ -571,7 +571,11 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+>  
+>  	aligned_dlen = ALIGN(dlen, 8);
+>  	aligned_ilen = ALIGN(ilen, 8);
+> +
+>  	len = aligned_dlen + aligned_ilen + UBIFS_INO_NODE_SZ;
+> +	/* Make sure to also account for extended attributes */
+> +	len += host_ui->data_len;
+> +
+>  	dent = kmalloc(len, GFP_NOFS);
+>  	if (!dent)
+>  		return -ENOMEM;
+> @@ -648,7 +652,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+>  
+>  	ino_key_init(c, &ino_key, dir->i_ino);
+>  	ino_offs += aligned_ilen;
+> -	err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs, UBIFS_INO_NODE_SZ);
+> +	err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs,
+> +			    UBIFS_INO_NODE_SZ + host_ui->data_len);
+>  	if (err)
+>  		goto out_ro;
+>  
+> -- 
+> 1.9.3
+> 
+> Artem.
+> 
