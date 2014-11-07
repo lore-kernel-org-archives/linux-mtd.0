@@ -1,17 +1,21 @@
-Message-ID: <545C9267.7060301@ti.com>
-Date: Fri, 7 Nov 2014 11:35:35 +0200
-From: Roger Quadros <rogerq@ti.com>
-MIME-Version: 1.0
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
-References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
- <20141106180333.GZ31454@atomide.com>
-In-Reply-To: <20141106180333.GZ31454@atomide.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XmfzK-000157-VG
+ for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 09:37:51 +0000
+Message-ID: <1415353027.958.296.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] UBI: Implement UBI_METAONLY
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 07 Nov 2014 11:37:07 +0200
+In-Reply-To: <1414594338-14695-1-git-send-email-richard@nod.at>
+References: <1414594338-14695-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: computersforpeace@gmail.com, stable@vger.kernel.org, pekon@pek-sem.com,
- linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
+Cc: Andrew Murray <amurray@embedded-bits.co.uk>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,70 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/06/2014 08:03 PM, Tony Lindgren wrote:
-> * Roger Quadros <rogerq@ti.com> [141105 03:02]:
->> In commit 7d5929c1f343 ("mtd: nand: omap: Revert to using software ECC by default"),
->> we switched back to using 1-bit SW ECC scheme by default. However
->> commit b491da7233d5 ("mtd: nand: omap: clean-up ecc layout for BCH ecc schemes")
->> didn't take into account the 1-bit SW scheme (i.e. OMAP_ECC_HAM1_CODE_SW)
->> when checking for small page devices because it was already got rid of
->> one commit earlier. Consider OMAP_ECC_HAM1_CODE_SW while deciding
->> if we can proceed with small page devices or not.
->>
->> Fixes: 7d5929c1f34 ("mtd: nand: omap: Revert to using software ECC by default")
->>
->> Cc: <stable@vger.kernel.org>        [3.17+]
->> Reported-by: Tony Lindgren <tony@atomide.com>
->> Signed-off-by: Roger Quadros <rogerq@ti.com>
->> ---
->>  drivers/mtd/nand/omap2.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
->> index 3b357e9..758e594 100644
->> --- a/drivers/mtd/nand/omap2.c
->> +++ b/drivers/mtd/nand/omap2.c
->> @@ -1742,7 +1742,8 @@ static int omap_nand_probe(struct platform_device *pdev)
->>  	}
->>  
->>  	/* check for small page devices */
->> -	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
->> +	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW) &&
->> +	    (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_SW)) {
->>  		dev_err(&info->pdev->dev, "small page devices are not supported\n");
->>  		err = -EINVAL;
->>  		goto return_error;
-> 
-> Should this maybe have || instead of && For the OMAP_ECC_HAM1_CODE_SW?
+On Wed, 2014-10-29 at 15:52 +0100, Richard Weinberger wrote:
+> + * UBI_METAONLY: modify voulme meta data only
 
-The code is right.
+Can we please have a bit extended comment for this, explaining what
+meta-data is? Like
 
-there is a bug in omap3-ldp.dts.
-
-there it says 
-ti,nand-ecc-opt = "bch8";
-
-This is wrong. OMAP3 doesn't support bch8. I think you should use either "ham1" or "sw"
-
-Ideally we want "ham1" but to be compatible with with NAND partitions created
-using legacy boot we need to stick with "sw"
-
-see board_nand_init() in mach-omap2/board-flash.c
-
-cheers,
--roger
-
-> 
-> With this patch applied on top of the other pending fixes, I still
-> get:
-> 
-> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xba
-> nand: Micron MT29F2G16ABD
-> nand: 128MiB, SLC, page size: 1024, OOB size: 32
-> omap2-nand omap2-nand.0: small page devices are not supported
-> omap2-nand: probe of omap2-nand.0 failed with error -22
-> 
-> Regards,
-> 
-> Tony
-> 
+UBI_METAONLY: modify only the volume meta-data, i.e. the data stored in
+              the volume table, but not in any of volume LEBs.
