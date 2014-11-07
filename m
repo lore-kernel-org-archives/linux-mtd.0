@@ -1,22 +1,23 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-yh0-f42.google.com ([209.85.213.42])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xmiiu-0007X0-99
- for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 12:33:04 +0000
-Message-ID: <545CBBE2.7000205@codeaurora.org>
-Date: Fri, 07 Nov 2014 14:32:34 +0200
-From: Tanya Brokhman <tlinder@codeaurora.org>
+ id 1Xmis0-0003va-GR
+ for linux-mtd@lists.infradead.org; Fri, 07 Nov 2014 12:42:29 +0000
+Received: by mail-yh0-f42.google.com with SMTP id b6so2359595yha.15
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Nov 2014 04:42:06 -0800 (PST)
 MIME-Version: 1.0
-To: hujianyang <hujianyang@huawei.com>, dedekind1@gmail.com
-Subject: Re: [PATCH V6] UBI: Extend UBI layer debug/messaging capabilities
-References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>
- <1415201733.958.121.camel@sauron.fi.intel.com> <545C9A1B.6020905@huawei.com>
-In-Reply-To: <545C9A1B.6020905@huawei.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <54514BF6.1010201@nod.at>
+References: <1414594338-14695-1-git-send-email-richard@nod.at>
+ <CAPcvp5HBnuAHTwFHLJ1Ve6o2MSeQ8Qnn6x7Q0wD2G-yP6p7OLA@mail.gmail.com>
+ <54514BF6.1010201@nod.at>
+Date: Fri, 7 Nov 2014 12:42:06 +0000
+Message-ID: <CAPcvp5Eugd79bLV7e8kOL_Lhut1KeYYu5eZby9kQUee0j5sJqQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] UBI: Implement UBI_METAONLY
+From: Andrew Murray <amurray@embedded-bits.co.uk>
+To: Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,53 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/7/2014 12:08 PM, hujianyang wrote:
-> On 2014/11/5 23:35, Artem Bityutskiy wrote:
->> On Mon, 2014-11-03 at 15:58 +0200, Tanya Brokhman wrote:
->>> If there is more then one UBI device mounted, there is no way to
->>> distinguish between messages from different UBI devices.
->>> Add device number to all ubi layer message types.
+On 29 October 2014 20:20, Richard Weinberger <richard@nod.at> wrote:
+> Am 29.10.2014 um 21:11 schrieb Andrew Murray:
+>> On 29 October 2014 14:52, Richard Weinberger <richard@nod.at> wrote:
+>>> diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+>>> index c3918a0..82b693f 100644
+>>> --- a/include/linux/mtd/ubi.h
+>>> +++ b/include/linux/mtd/ubi.h
+>>> @@ -34,11 +34,13 @@
+>>>   * UBI_READONLY: read-only mode
+>>>   * UBI_READWRITE: read-write mode
+>>>   * UBI_EXCLUSIVE: exclusive mode
+>>> + * UBI_METAONLY: modify voulme meta data only
+>>
+>> Typo - s/voulme/volume/g
+>
+> Thanks. :)
+>
+>>>   */
+>>>  enum {
+>>>         UBI_READONLY = 1,
+>>>         UBI_READWRITE,
+>>> -       UBI_EXCLUSIVE
+>>> +       UBI_EXCLUSIVE,
+>>> +       UBI_METAONLY
+>>>  };
 >>>
->>> The R/O block driver messages were replaced by pr_* since
->>> ubi_device structure is not used by it.
->>>
->>> Amended a bit by Artem.
->>>
->>> Signed-off-by: Tanya Brokhman <tlinder@codeaurora.org>
->>> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 >>
->> Oh, the entire patch-set again... this means we need to review it again!
->> Please, have a mercy! :-) It is huge! Please, send a small patch against
->> the one which I pushed already. Thanks!
+>> Also you may want to add something similar to this:
 >>
+>> --- a/drivers/mtd/ubi/ubi.h
+>> +++ b/drivers/mtd/ubi/ubi.h
+>> @@ -339,7 +339,7 @@ struct ubi_volume {
+>>  /**
+>>   * struct ubi_volume_desc - UBI volume descriptor returned when it is opened.
+>>   * @vol: reference to the corresponding volume description object
+>> - * @mode: open mode (%UBI_READONLY, %UBI_READWRITE, or %UBI_EXCLUSIVE)
+>> + * @mode: open mode (%UBI_READONLY, %UBI_READWRITE, %UBI_EXCLUSIVE or
+>> %UBI_METAONLY)
+>>   */
+>>  struct ubi_volume_desc {
+>>         struct ubi_volume *vol;
+>>
+>> There is also a similar mention in gluebi.c: 'readers/writes/exclusive'.
+>
+> Please send a patch for that. :)
 
-Oh :( and I did that on purpose.... For some reason I thought you would 
-revert that one and push a new and updated one.
-Ok, I'll upload a short version.
+Apologies for the delay - did you just want junk a hunk so you can
+include in your next revision - or did you want me to come up with a
+v2 of your patch?
+
+Andrew Murray
 
 >
-> That means I can't add a Reviewed-by on this huge one...
-
-... and then you can add Reviewed-by! :)
->
-> What a pity~! ^.^
->
->
->> Artem.
->>
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
->>
->
->
-
-
-Thanks,
-Tanya Brokhman
--- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> Thanks,
+> //richard
