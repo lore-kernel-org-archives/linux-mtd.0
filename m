@@ -1,18 +1,14 @@
-Date: Fri, 7 Nov 2014 14:48:32 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
-Message-ID: <20141107224832.GG31454@atomide.com>
-References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
- <20141106180333.GZ31454@atomide.com> <545C9267.7060301@ti.com>
- <545C97AB.4040402@ti.com>
+Date: Sat, 8 Nov 2014 13:11:56 -0600 (CST)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Message-ID: <1854666513.5578.1415473916534.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <71973089.5152.1415472776826.JavaMail.zimbra@xes-inc.com>
+Subject: [PATCH v2] mtd: fsl_upm: Support NAND ECC DTS properties
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <545C97AB.4040402@ti.com>
-Cc: computersforpeace@gmail.com, stable@vger.kernel.org, pekon@pek-sem.com,
- linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Jordan Friendshuh <jfriendshuh@xes-inc.com>, devicetree@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,85 +18,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [141107 01:59]:
-> On 11/07/2014 11:35 AM, Roger Quadros wrote:
-> > On 11/06/2014 08:03 PM, Tony Lindgren wrote:
-> >> * Roger Quadros <rogerq@ti.com> [141105 03:02]:
-> >>> In commit 7d5929c1f343 ("mtd: nand: omap: Revert to using software ECC by default"),
-> >>> we switched back to using 1-bit SW ECC scheme by default. However
-> >>> commit b491da7233d5 ("mtd: nand: omap: clean-up ecc layout for BCH ecc schemes")
-> >>> didn't take into account the 1-bit SW scheme (i.e. OMAP_ECC_HAM1_CODE_SW)
-> >>> when checking for small page devices because it was already got rid of
-> >>> one commit earlier. Consider OMAP_ECC_HAM1_CODE_SW while deciding
-> >>> if we can proceed with small page devices or not.
-> >>>
-> >>> Fixes: 7d5929c1f34 ("mtd: nand: omap: Revert to using software ECC by default")
-> >>>
-> >>> Cc: <stable@vger.kernel.org>        [3.17+]
-> >>> Reported-by: Tony Lindgren <tony@atomide.com>
-> >>> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> >>> ---
-> >>>  drivers/mtd/nand/omap2.c | 3 ++-
-> >>>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> >>> index 3b357e9..758e594 100644
-> >>> --- a/drivers/mtd/nand/omap2.c
-> >>> +++ b/drivers/mtd/nand/omap2.c
-> >>> @@ -1742,7 +1742,8 @@ static int omap_nand_probe(struct platform_device *pdev)
-> >>>  	}
-> >>>  
-> >>>  	/* check for small page devices */
-> >>> -	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
-> >>> +	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW) &&
-> >>> +	    (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_SW)) {
-> >>>  		dev_err(&info->pdev->dev, "small page devices are not supported\n");
-> >>>  		err = -EINVAL;
-> >>>  		goto return_error;
-> >>
-> >> Should this maybe have || instead of && For the OMAP_ECC_HAM1_CODE_SW?
-> > 
-> > The code is right.
-> > 
-> > there is a bug in omap3-ldp.dts.
-> > 
-> > there it says 
-> > ti,nand-ecc-opt = "bch8";
-> > 
-> > This is wrong. OMAP3 doesn't support bch8. I think you should use either "ham1" or "sw"
-> 
-> Well I'm wrong about the OMAP3 information. OMAP3 does support BCH4 and BCH8 as well.
-> 
-> I'm don't thinkg small page check is right. For BCH8 we need 13 bytes per 512 bytes.
-> In the LDP case we have page size:1024 and OOB size: 32.
-> Thus for BCH8 we need 26 bytes per page. which should fit in 32 bytes OOB.
-> So this check is bogus in that case.
-> 
-> Pekon,
-> 
-> can you please explain why you check for 64 bytes OOB size for all ECC schemes?
-> 
-> Tony,
-> 
-> The question for backward compatibility still remains. Even if OMAP3 supports bch8
-> do we stick to the scheme that was used in legacy boot or do we switch?
+From: Jordan Friendshuh <jfriendshuh@xes-inc.com>
 
-Well for the boards that had a standard file system, we should support
-that. But at least for the LDP, there was only the "bootable microSD card"
-AFAIK:
+Support the generic nand-ecc-mode and nand-ecc-strength device-tree
+properties with the Freescale UPM NAND driver.
 
-http://support.logicpd.com/ProductDownloads/LegacyProducts/ZoomOMAP34xMDK.aspx
+This patch preserves the default software ECC mode while adding the
+ability to use BCH ECC for larger NAND devices.
+
+Signed-off-by: Jordan Friendshuh <jfriendshuh@xes-inc.com>
+Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+---
+v2:
+    * Now using ECC mode and strength helpers from of_mtd.h
+    * ECC mode and strength checking is more robust
+
+ .../devicetree/bindings/mtd/fsl-upm-nand.txt       |  2 +
+ drivers/mtd/nand/Kconfig                           |  1 +
+ drivers/mtd/nand/fsl_upm.c                         | 51 +++++++++++++++++++---
+ 3 files changed, 49 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+index fce4894..a9906f6 100644
+--- a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+@@ -18,6 +18,8 @@ Optional properties:
+ - chip-delay : chip dependent delay for transferring data from array to
+ 	read registers (tR). Required if property "gpios" is not used
+ 	(R/B# pins not connected).
++- nand-ecc-mode : as defined by nand.txt ("soft" and "soft_bch", only).
++- nand-ecc-strength : as defined by nand.txt.
  
-> Then there is the question of boot rom compatibility. OMAP3 bootloaders use HAM1 scheme.
-> So if you want to be able to flash bootloader from the kernel we have to stick with HAM1.
-> 
-> changing the ECC scheme would mean that NAND filesystems created earlier won't work
-> and will have to be erased and recreated.
-
-Right. I doubt anybody has bch8 rootfs on LDP.. And considering u-boot
-must be ham1 to boot at all, that's what we should change for the
-devices that do not have not standardized on bch8.
-
-Regards,
-
-Tony
+ Each flash chip described may optionally contain additional sub-nodes
+ describing partitions of the address space. See partition.txt for more
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index f1cf503..85c0243 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -439,6 +439,7 @@ config MTD_NAND_FSL_UPM
+ 	tristate "Support for NAND on Freescale UPM"
+ 	depends on PPC_83xx || PPC_85xx
+ 	select FSL_LBC
++	select MTD_NAND_ECC_BCH
+ 	help
+ 	  Enables support for NAND Flash chips wired onto Freescale PowerPC
+ 	  processor localbus with User-Programmable Machine support.
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+index 4d203e8..8f38447 100644
+--- a/drivers/mtd/nand/fsl_upm.c
++++ b/drivers/mtd/nand/fsl_upm.c
+@@ -18,6 +18,7 @@
+ #include <linux/mtd/nand_ecc.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/of_mtd.h>
+ #include <linux/of_address.h>
+ #include <linux/of_platform.h>
+ #include <linux/of_gpio.h>
+@@ -160,6 +161,11 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 	int ret;
+ 	struct device_node *flash_np;
+ 	struct mtd_part_parser_data ppdata;
++	int mode, strength;
++
++	flash_np = of_get_next_child(upm_np, NULL);
++	if (!flash_np)
++		return -ENODEV;
+ 
+ 	fun->chip.IO_ADDR_R = fun->io_base;
+ 	fun->chip.IO_ADDR_W = fun->io_base;
+@@ -168,7 +174,46 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 	fun->chip.read_byte = fun_read_byte;
+ 	fun->chip.read_buf = fun_read_buf;
+ 	fun->chip.write_buf = fun_write_buf;
+-	fun->chip.ecc.mode = NAND_ECC_SOFT;
++
++	/*
++	 * If nand-ecc-strength < 0, require ECC_SOFT, error otherwise.
++	 * If nand-ecc-strength == 0, error.
++	 * If nand-ecc-strength == 1, require ECC_SOFT, error otherwise.
++	 * If nand-ecc-strength > 1, force ECC_SOFT_BCH (warn on mode mismatch).
++	 */
++	mode = of_get_nand_ecc_mode(flash_np);
++	strength = of_get_nand_ecc_strength(flash_np);
++	if (!of_property_read_bool(flash_np, "nand-ecc-mode")) {
++		dev_info(fun->dev, "ECC mode defaulting to 'soft'");
++		mode = NAND_ECC_SOFT;
++	} else if (mode != NAND_ECC_SOFT && mode != NAND_ECC_SOFT_BCH) {
++		dev_err(fun->dev, "ECC mode in device tree is unsupported");
++		ret = -EINVAL;
++		goto err;
++	}
++
++	/* We know mode is either NAND_ECC_SOFT or NAND_ECC_SOFT_BCH */
++	if (strength < 0 && mode == NAND_ECC_SOFT_BCH) {
++		dev_err(fun->dev,
++			"ECC BCH mode requires nand-ecc-strength property");
++		ret = -EINVAL;
++		goto err;
++	} else if (strength == 0) {
++		dev_err(fun->dev, "ECC strength of 0 bits is unsupported");
++		ret = -EINVAL;
++		goto err;
++	} else if (strength == 1 && mode == NAND_ECC_SOFT_BCH) {
++		dev_err(fun->dev, "ECC BCH mode requires > 1-bit strength");
++		ret = -EINVAL;
++		goto err;
++	} else if (strength > 1 && mode == NAND_ECC_SOFT) {
++		dev_warn(fun->dev,
++			"Forcing ECC BCH due to %d-bit strength\n", strength);
++		mode = NAND_ECC_SOFT_BCH;
++	}
++	fun->chip.ecc.mode = mode;
++	fun->chip.ecc.strength = strength;
++
+ 	if (fun->mchip_count > 1)
+ 		fun->chip.select_chip = fun_select_chip;
+ 
+@@ -178,10 +223,6 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 	fun->mtd.priv = &fun->chip;
+ 	fun->mtd.owner = THIS_MODULE;
+ 
+-	flash_np = of_get_next_child(upm_np, NULL);
+-	if (!flash_np)
+-		return -ENODEV;
+-
+ 	fun->mtd.name = kasprintf(GFP_KERNEL, "0x%llx.%s", (u64)io_res->start,
+ 				  flash_np->name);
+ 	if (!fun->mtd.name) {
+-- 
+1.9.1
