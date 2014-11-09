@@ -1,22 +1,11 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XnPbp-0003e1-9j
- for linux-mtd@lists.infradead.org; Sun, 09 Nov 2014 10:20:38 +0000
-Message-ID: <545F3FD8.6010001@nod.at>
-Date: Sun, 09 Nov 2014 11:20:08 +0100
-From: Richard Weinberger <richard@nod.at>
+Date: Sun, 9 Nov 2014 10:18:42 +0000 (UTC)
+From: Sunny Owo <aabuelezz@nis.sci.eg>
+Message-ID: <698273249.4905.1415528322647.JavaMail.zimbra@nis.sci.eg>
+In-Reply-To: <409413007.4894.1415528319488.JavaMail.zimbra@nis.sci.eg>
+Subject: be informed
 MIME-Version: 1.0
-To: Scott Branden <sbranden@broadcom.com>
-Subject: Re: suspect UBIFS async operations causing issues during reboot
-References: <5459E090.1010300@broadcom.com>
- <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
- <545A64CF.20101@broadcom.com> <545A6AA0.8050901@nod.at>
- <545AAA2B.8090007@broadcom.com> <545BEEA5.7020609@broadcom.com>
- <545C8697.3080403@nod.at> <545D01F4.9050005@broadcom.com>
-In-Reply-To: <545D01F4.9050005@broadcom.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=windows-1256
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +15,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 07.11.2014 um 18:31 schrieb Scott Branden:
-> On 14-11-07 12:45 AM, Richard Weinberger wrote:
->> Am 06.11.2014 um 22:56 schrieb Scott Branden:
->>> It looks like the erase happening in the middle of reboot was uncovered in 2009 and never addressed properly?
->>>
->>> https://lkml.org/lkml/2009/6/9/16
->>> https://lkml.org/lkml/2010/2/12/144
->>>
->>> Was there a proper resolution to this issue?
->>
->> Did you read the threads you've posted?
->>
->> There two answers:
->> https://lkml.org/lkml/2010/2/12/143
-> Yes, there is no hardware solution to a reset happening in the middle of an erase operation to NAND.
+Re: Transfer of Funds to your nominated account.
 
-Well, I agree with David that anything we do in software will only hide the real problem
-or trim down the window.
+Attn:
 
-Thanks,
-//richard
+This is to inform you that our finance company has been mandated by the Presidency of the Republic of South Africa to remit your outstanding Funding that is in a suspense deposit account here. We shall remit your fund in four (4) instrumental phases. The management will also like to Inform you that our remittance department has been receiving different request from different individuals/companies for the claims to the funds and a change to the beneficiary status and account details.
+
+Recently there was a formal request by Mr. Edward C. Ringer of Ringer Company, Tampa Bay, Florida for the change of your account to Terrace Bank through some individuals claiming to be your local representatives here in South Africa.
+
+The management will like you to send the following information for the successful transfer of your funds and also to avoid the transfer of your funds into a different nominated account and wrong beneficiary.
+
+The information required from you is listed below:
+
+1) Your full name and address
+2) Your banking details where your funds will be transferred.
+3) Your telephone and fax number.
+
+You are required to get in touch with Mrs.Vivian Smith who is your payment officer on (vivian.smith59@gmail.com) for further instructions on how your funds will be transferred.
+
+There is an option if you want the funds to be brought to you in your country then you can advise your payment officer on that issue.In regards to the present situation, a lot of people are claiming that you gave them authority over your funds and you are therefore advised in your own interest to cut off all communications between you and your local representatives to avoid the wrongful transfer of your funds into another Persons account.
+
+The Management will like to apologize on behalf of the Government of South Africa for the long delay of the transfer of your funds into your account. On receipt of your mail or phone call to the Payment officer (Ms.Vivian Smith) your funds will be transferred into your account Under 10 working days.
+
+You are advised to adhere to this instruction.
+
+Congratulations.
+
+Yours Sincerely
+Sunny Owo
+ssunnyowo01@gmail.com
