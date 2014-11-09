@@ -1,23 +1,19 @@
-Date: Sun, 9 Nov 2014 07:23:12 -0500 (EST)
-From: Rodrigo Freire <rfreire@redhat.com>
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Message-ID: <1874445287.7454806.1415535792984.JavaMail.zimbra@redhat.com>
-In-Reply-To: <2086372266.7454667.1415535533979.JavaMail.zimbra@redhat.com>
-References: <371358190.34795877.1410204429882.JavaMail.zimbra@redhat.com>
- <1444809468.34812041.1410206680931.JavaMail.zimbra@redhat.com>
- <20140909170231.GA14429@logfs.org>
- <1807144344.40128259.1410985683342.JavaMail.zimbra@redhat.com>
- <20141105202303.GN23619@ld-irv-0074>
- <2086372266.7454667.1415535533979.JavaMail.zimbra@redhat.com>
-Subject: [PATCH v3 3/3] mtd: block2mtd: Removes PAGE_MASK as a index to
- partition size
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XnVIc-0000A0-TU
+ for linux-mtd@lists.infradead.org; Sun, 09 Nov 2014 16:25:12 +0000
+Received: by mail-wi0-f178.google.com with SMTP id bs8so8352584wib.17
+ for <linux-mtd@lists.infradead.org>; Sun, 09 Nov 2014 08:24:48 -0800 (PST)
+From: Rob Ward <robert.ward114@googlemail.com>
+Date: Sun, 9 Nov 2014 16:24:44 +0000 (GMT)
+To: joern@lazybastard.org, dwmw2@infradead.org, computersforpeace@gmail.com
+Subject: [PATCH] mtd: phram: Allow multiple phram devices on cmd line
+In-Reply-To: <alpine.DEB.2.10.1410211859030.7838@rob-thinkpad>
+Message-ID: <alpine.DEB.2.10.1411091618160.7838@rob-thinkpad>
+References: <alpine.DEB.2.10.1410211859030.7838@rob-thinkpad>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: Herton Krzesinski <hkrzesin@redhat.com>,
- =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
- Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org,
- Felix Fietkau <nbd@openwrt.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +23,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Felix Fietkau <nbd@openwrt.org>
+>From 4e9b8ff3a6731a0ac43eac2e8bdf47101ff20ede Mon Sep 17 00:00:00 2001
+From: Rob Ward <robert.ward114@googlemail.com>
+Date: Tue, 21 Oct 2014 17:46:53 +0100
+Subject: [PATCH] mtd: phram: Allow multiple phram devices on cmd line
 
-mtd: block2mtd: Removes PAGE_MASK as a index to partition size
+Allow the phram module the ability to create multiple phram mtd
+devices via the kernel command line.
 
-PAGE_MASK is no longer needed with the new term.
-This patch keeps the device size aligned with the erase_size.
+Currently the phram module only allows a single mtd device to be
+created via the kernel command line. This is due to the phram
+module having to store the values until it is initialised
+later. This storage is done using a single char[] meaning when
+the module_param_call is made the previous value is overidden.
 
-Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-Signed-off-by: Rodrigo Freire <rfreire@redhat.com>
-Signed-off-by: Herton Krzesinski <herton@redhat.com>
+This change modifies the phram system to use a char[][] allowing
+multiple devices to be created.
+
+The array size if controlled using the new config option
+CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS that allows the maximum
+number of devices to be specified. Currently this option
+defaults to a value of 1 leaving the behaviour unchanged.
+
+If the array is full a message is printed to the console and the
+module_param_call returns.
+
+To test, in all cases an area of memory needs to be reserved via
+the command line e.g. memmap=10M$114M
+
+To test with phram build into the kernel on the command line add
+the following:
+
+phram.phram=alpha,114Mi,1Mi phram.phram=beta,115Mi,1Mi
+
+If CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is left as default i.e. 1
+then the first device, alpha will be created only. If the value of
+CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is increased to 2 or more then
+both alpha and beta will be created.
+
+To test phram built as a module insmod with the following arguments:
+
+phram=gamma,114Mi,1Mi phram=delta,115Mi,1Mi
+
+In this case two devices should be created.
+
+Signed-off-by: Rob Ward <robert.ward114@googlemail.com>
 ---
-V3: Separated on a single patch
---- a/drivers/mtd/devices/block2mtd.c	2014-11-07 17:40:58.688747820 -0200
-+++ b/drivers/mtd/devices/block2mtd.c	2014-11-07 17:41:28.054750893 -0200
-@@ -291,8 +291,7 @@ static struct block2mtd_dev *add_device(
- 		goto err_destroy_mutex;
+ drivers/mtd/devices/Kconfig | 12 ++++++++++++
+ drivers/mtd/devices/phram.c | 45 ++++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 52 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index c49d0b1..5fdc80b 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -136,6 +136,18 @@ config MTD_PHRAM
+ 	  doesn't have access to, memory beyond the mem=xxx limit, nvram,
+ 	  memory on the video card, etc...
  
- 	dev->mtd.name = name;
--
--	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
-+	dev->mtd.size = dev->blkdev->bd_inode->i_size & ~(erase_size - 1);
- 	dev->mtd.erasesize = erase_size;
- 	dev->mtd.writesize = 1;
- 	dev->mtd.writebufsize = PAGE_SIZE;
----
-1.7.1
++config MTD_PHRAM_MAX_CMDLINE_ARGS
++	int "Max number of devices via Kernel command line"
++	depends on MTD_PHRAM=y
++	default 1
++	help
++	  Specify the number of phram devices that can be initialised
++	  using the Kernel command line.
++
++	  This option is only applicable when phram is built into the
++	  Kernel. When built as a module many devices can be specified
++	  at module insmod.
++
+ config MTD_LART
+ 	tristate "28F160xx flash driver for LART"
+ 	depends on SA1100_LART
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index effd9a4..223f221 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -212,9 +212,13 @@ static int phram_init_called;
+  * - phram.phram=<device>,<address>,<size> for built-in case
+  * We leave 64 bytes for the device name, 20 for the address and 20 for the
+  * size.
++ *
++ * The maximum number of devices supported is controlled by the
++ * MTD_PHRAM_MAX_CMDLINE_ARGS config option
++ *
+  * Example: phram.phram=rootfs,0xa0000000,512Mi
+  */
+-static char phram_paramline[64 + 20 + 20];
++static char phram_paramline[CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS][64 + 20 + 20];
+ #endif
+ 
+ static int phram_setup(const char *val)
+@@ -271,6 +275,9 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
+ #ifdef MODULE
+ 	return phram_setup(val);
+ #else
++	int paramline_it = 0;
++	int arraysize = 0;
++
+ 	/*
+ 	 * If more parameters are later passed in via
+ 	 * /sys/module/phram/parameters/phram
+@@ -290,9 +297,27 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
+ 	 * phram_setup().
+ 	 */
+ 
+-	if (strlen(val) >= sizeof(phram_paramline))
++	if (strlen(val) >= sizeof(phram_paramline[0]))
+ 		return -ENOSPC;
+-	strcpy(phram_paramline, val);
++
++	arraysize = sizeof(phram_paramline)/sizeof(phram_paramline[0]);
++
++	/*
++	 * Check if any space is left in the array. If no space
++	 * is left then print warning and return 0
++	 */
++
++	if (phram_paramline[arraysize - 1][0]) {
++		pr_warn("exceeded limit via cmd_line - %s ignored", val);
++		return 0;
++	}
++
++	for (paramline_it = 0; paramline_it <= arraysize; paramline_it++) {
++		if (!phram_paramline[paramline_it][0]) {
++			strcpy(phram_paramline[paramline_it], val);
++			break;
++		}
++	}
+ 
+ 	return 0;
+ #endif
+@@ -307,8 +332,18 @@ static int __init init_phram(void)
+ 	int ret = 0;
+ 
+ #ifndef MODULE
+-	if (phram_paramline[0])
+-		ret = phram_setup(phram_paramline);
++	int arraysize = 0;
++	int paramline_it = 0;
++
++	arraysize = sizeof(phram_paramline)/sizeof(phram_paramline[0]);
++
++	for (paramline_it = 0; paramline_it <= arraysize; paramline_it++) {
++		if (phram_paramline[paramline_it][0]) {
++			ret = phram_setup(phram_paramline[paramline_it]);
++			if (ret)
++				break;
++		}
++	}
+ 	phram_init_called = 1;
+ #endif
+ 
+-- 
+2.0.2
