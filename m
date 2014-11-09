@@ -1,19 +1,22 @@
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XnVIc-0000A0-TU
- for linux-mtd@lists.infradead.org; Sun, 09 Nov 2014 16:25:12 +0000
-Received: by mail-wi0-f178.google.com with SMTP id bs8so8352584wib.17
- for <linux-mtd@lists.infradead.org>; Sun, 09 Nov 2014 08:24:48 -0800 (PST)
-From: Rob Ward <robert.ward114@googlemail.com>
-Date: Sun, 9 Nov 2014 16:24:44 +0000 (GMT)
-To: joern@lazybastard.org, dwmw2@infradead.org, computersforpeace@gmail.com
-Subject: [PATCH] mtd: phram: Allow multiple phram devices on cmd line
-In-Reply-To: <alpine.DEB.2.10.1410211859030.7838@rob-thinkpad>
-Message-ID: <alpine.DEB.2.10.1411091618160.7838@rob-thinkpad>
-References: <alpine.DEB.2.10.1410211859030.7838@rob-thinkpad>
+Received: from us2.outbound.mailhostbox.com ([162.210.70.59])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XnYBX-0004zf-Cg
+ for linux-mtd@lists.infradead.org; Sun, 09 Nov 2014 19:30:04 +0000
+Message-ID: <545FC08D.8000008@pek-sem.com>
+Date: Mon, 10 Nov 2014 00:59:17 +0530
+From: pekon <pekon@pek-sem.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>, Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
+References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
+ <20141106180333.GZ31454@atomide.com> <545C9267.7060301@ti.com>
+ <545C97AB.4040402@ti.com> <20141107224832.GG31454@atomide.com>
+In-Reply-To: <20141107224832.GG31454@atomide.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: computersforpeace@gmail.com, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,158 +26,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 4e9b8ff3a6731a0ac43eac2e8bdf47101ff20ede Mon Sep 17 00:00:00 2001
-From: Rob Ward <robert.ward114@googlemail.com>
-Date: Tue, 21 Oct 2014 17:46:53 +0100
-Subject: [PATCH] mtd: phram: Allow multiple phram devices on cmd line
+On Saturday 08 November 2014 04:18 AM, Tony Lindgren wrote:
+> * Roger Quadros <rogerq@ti.com> [141107 01:59]:
+>> On 11/07/2014 11:35 AM, Roger Quadros wrote:
+>>> On 11/06/2014 08:03 PM, Tony Lindgren wrote:
+>>>> * Roger Quadros <rogerq@ti.com> [141105 03:02]:
+>>>>> In commit 7d5929c1f343 ("mtd: nand: omap: Revert to using software ECC by default"),
+>>>>> we switched back to using 1-bit SW ECC scheme by default. However
+>>>>> commit b491da7233d5 ("mtd: nand: omap: clean-up ecc layout for BCH ecc schemes")
+>>>>> didn't take into account the 1-bit SW scheme (i.e. OMAP_ECC_HAM1_CODE_SW)
+>>>>> when checking for small page devices because it was already got rid of
+>>>>> one commit earlier. Consider OMAP_ECC_HAM1_CODE_SW while deciding
+>>>>> if we can proceed with small page devices or not.
+>>>>>
+>>>>> Fixes: 7d5929c1f34 ("mtd: nand: omap: Revert to using software ECC by default")
+>>>>>
+>>>>> Cc: <stable@vger.kernel.org>        [3.17+]
+>>>>> Reported-by: Tony Lindgren <tony@atomide.com>
+>>>>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>>>>> ---
+[...]
+>>
+>> Well I'm wrong about the OMAP3 information. OMAP3 does support BCH4 and BCH8 as well.
+>>
+>> I'm don't thinkg small page check is right. For BCH8 we need 13 bytes per 512 bytes.
+>> In the LDP case we have page size:1024 and OOB size: 32.
+>> Thus for BCH8 we need 26 bytes per page. which should fit in 32 bytes OOB.
+>> So this check is bogus in that case.
+>>
+>> Pekon,
+>>
+>> can you please explain why you check for 64 bytes OOB size for all ECC schemes?
+>>
+Accept this is a bug.
+As I re-review now, small-page check is applicable only for BCH ECC 
+schemes, and not for HAM1.
 
-Allow the phram module the ability to create multiple phram mtd
-devices via the kernel command line.
+>> Tony,
+>>
+>> The question for backward compatibility still remains. Even if OMAP3 supports bch8
+>> do we stick to the scheme that was used in legacy boot or do we switch?
+>
+> Well for the boards that had a standard file system, we should support
+> that. But at least for the LDP, there was only the "bootable microSD card"
+> AFAIK:
+>
+> http://support.logicpd.com/ProductDownloads/LegacyProducts/ZoomOMAP34xMDK.aspx
+>
+OMAP3 supports BCH ECC scheme.
+Document: http://www.ti.com/lit/pdf/spruf98
+(1) GPMC in OMAP3 supports BCH8
+	Section: 11.1.5.14.3.2 BCH Code
+(2) ROM code in GPMC supports BCH (but its not clear whether its BCH4 or 
+BCH8)
+	Section: 25.4.7.4.3 MLC NAND Read Sector Procedure
 
-Currently the phram module only allows a single mtd device to be
-created via the kernel command line. This is due to the phram
-module having to store the values until it is initialised
-later. This storage is done using a single char[] meaning when
-the module_param_call is made the previous value is overidden.
+But I agree that now it doesn't make sense to put effort on OMAP3 for 
+upgrading default ECC schemes. If user has to migrate then there are 
+other easy ways of doing so.
 
-This change modifies the phram system to use a char[][] allowing
-multiple devices to be created.
 
-The array size if controlled using the new config option
-CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS that allows the maximum
-number of devices to be specified. Currently this option
-defaults to a value of 1 leaving the behaviour unchanged.
 
-If the array is full a message is printed to the console and the
-module_param_call returns.
+>> Then there is the question of boot rom compatibility. OMAP3 bootloaders use HAM1 scheme.
+>> So if you want to be able to flash bootloader from the kernel we have to stick with HAM1.
+>>
+>> changing the ECC scheme would mean that NAND filesystems created earlier won't work
+>> and will have to be erased and recreated.
+>
+> Right. I doubt anybody has bch8 rootfs on LDP.. And considering u-boot
+> must be ham1 to boot at all, that's what we should change for the
+> devices that do not have not standardized on bch8.
+>
+My view on this is slightly different:
+- Lately, everyone seems to have migrated to BCH8.
 
-To test, in all cases an area of memory needs to be reserved via
-the command line e.g. memmap=10M$114M
+- Also HAM1 does not have strength to fix bitflips in aging NAND. So if 
+someone already has OMAP3-LDP deployed on field then its NAND would have 
+already aged to such an extend that HAM1 may not be sufficient.
 
-To test with phram build into the kernel on the command line add
-the following:
+My question is..
+Moving back to HAM1 should be decided based on statistics rather than 
+rule of breaking backward compatibility. So please review:
+(1) How many user of OMAP3-Zoom or other old boards complaining about 
+using BCH8 in mainline kernel? OR
+(2) How many users of OMAP3 legacy boards are migrating to newer kernel?
 
-phram.phram=alpha,114Mi,1Mi phram.phram=beta,115Mi,1Mi
+At-least I have not, rather most of the OMAP3 users I interacted via 
+TI's E2E forum wanted to migrate to BCH8 or even BCH16, as HAM1 was not 
+sufficient for their usage.
 
-If CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is left as default i.e. 1
-then the first device, alpha will be created only. If the value of
-CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is increased to 2 or more then
-both alpha and beta will be created.
+So whatever you decide on this topic, please be cautious that you don't 
+re-invent work for yourself, as I did. It took me lot of time and 
+testing effort on multiple boards to migrate HAM1 to BCH8, And add BCH16 
+for newer devices.
 
-To test phram built as a module insmod with the following arguments:
+Also, now I realize u-boot (boot-loaders) are better place for all this 
+migration.
 
-phram=gamma,114Mi,1Mi phram=delta,115Mi,1Mi
 
-In this case two devices should be created.
+> Regards,
+>
+> Tony
+>
 
-Signed-off-by: Rob Ward <robert.ward114@googlemail.com>
----
- drivers/mtd/devices/Kconfig | 12 ++++++++++++
- drivers/mtd/devices/phram.c | 45 ++++++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 52 insertions(+), 5 deletions(-)
+with regards, pekon
 
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index c49d0b1..5fdc80b 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -136,6 +136,18 @@ config MTD_PHRAM
- 	  doesn't have access to, memory beyond the mem=xxx limit, nvram,
- 	  memory on the video card, etc...
- 
-+config MTD_PHRAM_MAX_CMDLINE_ARGS
-+	int "Max number of devices via Kernel command line"
-+	depends on MTD_PHRAM=y
-+	default 1
-+	help
-+	  Specify the number of phram devices that can be initialised
-+	  using the Kernel command line.
-+
-+	  This option is only applicable when phram is built into the
-+	  Kernel. When built as a module many devices can be specified
-+	  at module insmod.
-+
- config MTD_LART
- 	tristate "28F160xx flash driver for LART"
- 	depends on SA1100_LART
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index effd9a4..223f221 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -212,9 +212,13 @@ static int phram_init_called;
-  * - phram.phram=<device>,<address>,<size> for built-in case
-  * We leave 64 bytes for the device name, 20 for the address and 20 for the
-  * size.
-+ *
-+ * The maximum number of devices supported is controlled by the
-+ * MTD_PHRAM_MAX_CMDLINE_ARGS config option
-+ *
-  * Example: phram.phram=rootfs,0xa0000000,512Mi
-  */
--static char phram_paramline[64 + 20 + 20];
-+static char phram_paramline[CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS][64 + 20 + 20];
- #endif
- 
- static int phram_setup(const char *val)
-@@ -271,6 +275,9 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
- #ifdef MODULE
- 	return phram_setup(val);
- #else
-+	int paramline_it = 0;
-+	int arraysize = 0;
-+
- 	/*
- 	 * If more parameters are later passed in via
- 	 * /sys/module/phram/parameters/phram
-@@ -290,9 +297,27 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
- 	 * phram_setup().
- 	 */
- 
--	if (strlen(val) >= sizeof(phram_paramline))
-+	if (strlen(val) >= sizeof(phram_paramline[0]))
- 		return -ENOSPC;
--	strcpy(phram_paramline, val);
-+
-+	arraysize = sizeof(phram_paramline)/sizeof(phram_paramline[0]);
-+
-+	/*
-+	 * Check if any space is left in the array. If no space
-+	 * is left then print warning and return 0
-+	 */
-+
-+	if (phram_paramline[arraysize - 1][0]) {
-+		pr_warn("exceeded limit via cmd_line - %s ignored", val);
-+		return 0;
-+	}
-+
-+	for (paramline_it = 0; paramline_it <= arraysize; paramline_it++) {
-+		if (!phram_paramline[paramline_it][0]) {
-+			strcpy(phram_paramline[paramline_it], val);
-+			break;
-+		}
-+	}
- 
- 	return 0;
- #endif
-@@ -307,8 +332,18 @@ static int __init init_phram(void)
- 	int ret = 0;
- 
- #ifndef MODULE
--	if (phram_paramline[0])
--		ret = phram_setup(phram_paramline);
-+	int arraysize = 0;
-+	int paramline_it = 0;
-+
-+	arraysize = sizeof(phram_paramline)/sizeof(phram_paramline[0]);
-+
-+	for (paramline_it = 0; paramline_it <= arraysize; paramline_it++) {
-+		if (phram_paramline[paramline_it][0]) {
-+			ret = phram_setup(phram_paramline[paramline_it]);
-+			if (ret)
-+				break;
-+		}
-+	}
- 	phram_init_called = 1;
- #endif
- 
--- 
-2.0.2
+------------------------
+Powered by BigRock.com
