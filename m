@@ -1,14 +1,22 @@
-Date: Sat, 8 Nov 2014 13:11:56 -0600 (CST)
-From: Aaron Sierra <asierra@xes-inc.com>
-To: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Message-ID: <1854666513.5578.1415473916534.JavaMail.zimbra@xes-inc.com>
-In-Reply-To: <71973089.5152.1415472776826.JavaMail.zimbra@xes-inc.com>
-Subject: [PATCH v2] mtd: fsl_upm: Support NAND ECC DTS properties
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XnPbp-0003e1-9j
+ for linux-mtd@lists.infradead.org; Sun, 09 Nov 2014 10:20:38 +0000
+Message-ID: <545F3FD8.6010001@nod.at>
+Date: Sun, 09 Nov 2014 11:20:08 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+To: Scott Branden <sbranden@broadcom.com>
+Subject: Re: suspect UBIFS async operations causing issues during reboot
+References: <5459E090.1010300@broadcom.com>
+ <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
+ <545A64CF.20101@broadcom.com> <545A6AA0.8050901@nod.at>
+ <545AAA2B.8090007@broadcom.com> <545BEEA5.7020609@broadcom.com>
+ <545C8697.3080403@nod.at> <545D01F4.9050005@broadcom.com>
+In-Reply-To: <545D01F4.9050005@broadcom.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: Jordan Friendshuh <jfriendshuh@xes-inc.com>, devicetree@vger.kernel.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,133 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jordan Friendshuh <jfriendshuh@xes-inc.com>
+Am 07.11.2014 um 18:31 schrieb Scott Branden:
+> On 14-11-07 12:45 AM, Richard Weinberger wrote:
+>> Am 06.11.2014 um 22:56 schrieb Scott Branden:
+>>> It looks like the erase happening in the middle of reboot was uncovered in 2009 and never addressed properly?
+>>>
+>>> https://lkml.org/lkml/2009/6/9/16
+>>> https://lkml.org/lkml/2010/2/12/144
+>>>
+>>> Was there a proper resolution to this issue?
+>>
+>> Did you read the threads you've posted?
+>>
+>> There two answers:
+>> https://lkml.org/lkml/2010/2/12/143
+> Yes, there is no hardware solution to a reset happening in the middle of an erase operation to NAND.
 
-Support the generic nand-ecc-mode and nand-ecc-strength device-tree
-properties with the Freescale UPM NAND driver.
+Well, I agree with David that anything we do in software will only hide the real problem
+or trim down the window.
 
-This patch preserves the default software ECC mode while adding the
-ability to use BCH ECC for larger NAND devices.
-
-Signed-off-by: Jordan Friendshuh <jfriendshuh@xes-inc.com>
-Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
----
-v2:
-    * Now using ECC mode and strength helpers from of_mtd.h
-    * ECC mode and strength checking is more robust
-
- .../devicetree/bindings/mtd/fsl-upm-nand.txt       |  2 +
- drivers/mtd/nand/Kconfig                           |  1 +
- drivers/mtd/nand/fsl_upm.c                         | 51 +++++++++++++++++++---
- 3 files changed, 49 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-index fce4894..a9906f6 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-@@ -18,6 +18,8 @@ Optional properties:
- - chip-delay : chip dependent delay for transferring data from array to
- 	read registers (tR). Required if property "gpios" is not used
- 	(R/B# pins not connected).
-+- nand-ecc-mode : as defined by nand.txt ("soft" and "soft_bch", only).
-+- nand-ecc-strength : as defined by nand.txt.
- 
- Each flash chip described may optionally contain additional sub-nodes
- describing partitions of the address space. See partition.txt for more
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index f1cf503..85c0243 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -439,6 +439,7 @@ config MTD_NAND_FSL_UPM
- 	tristate "Support for NAND on Freescale UPM"
- 	depends on PPC_83xx || PPC_85xx
- 	select FSL_LBC
-+	select MTD_NAND_ECC_BCH
- 	help
- 	  Enables support for NAND Flash chips wired onto Freescale PowerPC
- 	  processor localbus with User-Programmable Machine support.
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index 4d203e8..8f38447 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -18,6 +18,7 @@
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
-+#include <linux/of_mtd.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
- #include <linux/of_gpio.h>
-@@ -160,6 +161,11 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
- 	int ret;
- 	struct device_node *flash_np;
- 	struct mtd_part_parser_data ppdata;
-+	int mode, strength;
-+
-+	flash_np = of_get_next_child(upm_np, NULL);
-+	if (!flash_np)
-+		return -ENODEV;
- 
- 	fun->chip.IO_ADDR_R = fun->io_base;
- 	fun->chip.IO_ADDR_W = fun->io_base;
-@@ -168,7 +174,46 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
- 	fun->chip.read_byte = fun_read_byte;
- 	fun->chip.read_buf = fun_read_buf;
- 	fun->chip.write_buf = fun_write_buf;
--	fun->chip.ecc.mode = NAND_ECC_SOFT;
-+
-+	/*
-+	 * If nand-ecc-strength < 0, require ECC_SOFT, error otherwise.
-+	 * If nand-ecc-strength == 0, error.
-+	 * If nand-ecc-strength == 1, require ECC_SOFT, error otherwise.
-+	 * If nand-ecc-strength > 1, force ECC_SOFT_BCH (warn on mode mismatch).
-+	 */
-+	mode = of_get_nand_ecc_mode(flash_np);
-+	strength = of_get_nand_ecc_strength(flash_np);
-+	if (!of_property_read_bool(flash_np, "nand-ecc-mode")) {
-+		dev_info(fun->dev, "ECC mode defaulting to 'soft'");
-+		mode = NAND_ECC_SOFT;
-+	} else if (mode != NAND_ECC_SOFT && mode != NAND_ECC_SOFT_BCH) {
-+		dev_err(fun->dev, "ECC mode in device tree is unsupported");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	/* We know mode is either NAND_ECC_SOFT or NAND_ECC_SOFT_BCH */
-+	if (strength < 0 && mode == NAND_ECC_SOFT_BCH) {
-+		dev_err(fun->dev,
-+			"ECC BCH mode requires nand-ecc-strength property");
-+		ret = -EINVAL;
-+		goto err;
-+	} else if (strength == 0) {
-+		dev_err(fun->dev, "ECC strength of 0 bits is unsupported");
-+		ret = -EINVAL;
-+		goto err;
-+	} else if (strength == 1 && mode == NAND_ECC_SOFT_BCH) {
-+		dev_err(fun->dev, "ECC BCH mode requires > 1-bit strength");
-+		ret = -EINVAL;
-+		goto err;
-+	} else if (strength > 1 && mode == NAND_ECC_SOFT) {
-+		dev_warn(fun->dev,
-+			"Forcing ECC BCH due to %d-bit strength\n", strength);
-+		mode = NAND_ECC_SOFT_BCH;
-+	}
-+	fun->chip.ecc.mode = mode;
-+	fun->chip.ecc.strength = strength;
-+
- 	if (fun->mchip_count > 1)
- 		fun->chip.select_chip = fun_select_chip;
- 
-@@ -178,10 +223,6 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
- 	fun->mtd.priv = &fun->chip;
- 	fun->mtd.owner = THIS_MODULE;
- 
--	flash_np = of_get_next_child(upm_np, NULL);
--	if (!flash_np)
--		return -ENODEV;
--
- 	fun->mtd.name = kasprintf(GFP_KERNEL, "0x%llx.%s", (u64)io_res->start,
- 				  flash_np->name);
- 	if (!fun->mtd.name) {
--- 
-1.9.1
+Thanks,
+//richard
