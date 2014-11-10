@@ -1,13 +1,13 @@
 Received: from relay1.mentorg.com ([192.94.38.131])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XnrJh-0005nl-Bc
- for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 15:55:46 +0000
+ id 1XnrJl-0005np-A1
+ for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 15:55:49 +0000
 From: alison_chaiken@mentor.com
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] mtd: m25p80: Add support for serial flash Spansion
- S25FL132K
-Date: Mon, 10 Nov 2014 16:54:53 +0100
-Message-Id: <1415634895-3082-2-git-send-email-alison_chaiken@mentor.com>
+Subject: [PATCH 2/2] MTD: m25p80: fix inconsistency in m25p_ids compared to
+ spi_nor_ids
+Date: Mon, 10 Nov 2014 16:54:54 +0100
+Message-Id: <1415634895-3082-3-git-send-email-alison_chaiken@mentor.com>
 In-Reply-To: <1415634895-3082-1-git-send-email-alison_chaiken@mentor.com>
 References: <1415634895-3082-1-git-send-email-alison_chaiken@mentor.com>
 Cc: shijie8@gmail.com, computersforpeace@gmail.com, ben@decadent.org.uk,
@@ -21,59 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Knut Wohlrab <knut.wohlrab@de.bosch.com>
+From: Alison Chaiken <alison_chaiken@mentor.com>
 
-Signed-off-by: Knut Wohlrab <knut.wohlrab@de.bosch.com>
+As stated in a5b7616c5, "mtd: m25p80,spi-nor: Fix module aliases for
+m25p80", m25p_ids[] in m25p80.c needs to be kept in sync with
+spi_nor_ids[] in spi-nor.c.   The change here corrects a misalignment.
+
+Rebased on linux-next.  Replaces an earlier version with a more terse
+commit message.
 Signed-off-by: Alison Chaiken <alison_chaiken@mentor.com>
 
-Conflicts:
-
-	drivers/mtd/devices/m25p80.c
 ---
- drivers/mtd/devices/m25p80.c  | 4 +---
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/mtd/devices/m25p80.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 35e7e98..2783e94 100644
+index 2783e94..f5cb8d5 100644
 --- a/drivers/mtd/devices/m25p80.c
 +++ b/drivers/mtd/devices/m25p80.c
-@@ -252,7 +252,6 @@ static int m25p_remove(struct spi_device *spi)
- 	return mtd_device_unregister(&flash->mtd);
- }
- 
--
- /*
-  * XXX This needs to be kept in sync with spi_nor_ids.  We can't share
-  * it with spi-nor, because if this is built as a module then modpost
-@@ -279,7 +278,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{"s25fl512s"},	{"s70fl01gs"},	{"s25sl12800"},	{"s25sl12801"},
- 	{"s25fl129p0"},	{"s25fl129p1"},	{"s25sl004a"},	{"s25sl008a"},
- 	{"s25sl016a"},	{"s25sl032a"},	{"s25sl064a"},	{"s25fl008k"},
--	{"s25fl016k"},	{"s25fl064k"},
-+	{"s25fl016k"},	{"s25fl064k"},	{"s25fl132k"},
- 	{"sst25vf040b"},{"sst25vf080b"},{"sst25vf016b"},{"sst25vf032b"},
- 	{"sst25vf064c"},{"sst25wf512"},	{"sst25wf010"},	{"sst25wf020"},
- 	{"sst25wf040"},
-@@ -302,7 +301,6 @@ static const struct spi_device_id m25p_ids[] = {
+@@ -291,11 +291,11 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{"m45pe10"},	{"m45pe80"},	{"m45pe16"},
+ 	{"m25pe20"},	{"m25pe80"},	{"m25pe16"},
+ 	{"m25px16"},	{"m25px32"},	{"m25px32-s0"},	{"m25px32-s1"},
+-	{"m25px64"},
++	{"m25px64"},	{"m25px80"},
+ 	{"w25x10"},	{"w25x20"},	{"w25x40"},	{"w25x80"},
+ 	{"w25x16"},	{"w25x32"},	{"w25q32"},	{"w25q32dw"},
+-	{"w25x64"},	{"w25q64"},	{"w25q128"},	{"w25q80"},
+-	{"w25q80bl"},	{"w25q128"},	{"w25q256"},	{"cat25c11"},
++	{"w25x64"},	{"w25q64"},	{"w25q80"},	{"w25q80bl"},
++	{"w25q128"},	{"w25q256"},	{"cat25c11"},
+ 	{"cat25c03"},	{"cat25c09"},	{"cat25c17"},	{"cat25128"},
+ 	{ },
  };
- MODULE_DEVICE_TABLE(spi, m25p_ids);
- 
--
- static struct spi_driver m25p80_driver = {
- 	.driver = {
- 		.name	= "m25p80",
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index eafaeeb..7b468a6 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -559,6 +559,7 @@ static const struct spi_device_id spi_nor_ids[] = {
- 	{ "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K) },
- 	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K) },
- 	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
-+	{ "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, 0) },
- 
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
- 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
 -- 
 2.1.1
