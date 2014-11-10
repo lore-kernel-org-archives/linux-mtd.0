@@ -1,24 +1,15 @@
-Received: from smtprelay0166.hostedemail.com ([216.40.44.166]
- helo=smtprelay.hostedemail.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XntEH-0006Ac-SD
- for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 17:58:18 +0000
-Message-ID: <1415642273.8868.8.camel@perches.com>
-Subject: Re: [PATCH V6] UBI: Extend UBI layer debug/messaging capabilities
-From: Joe Perches <joe@perches.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Mon, 10 Nov 2014 09:57:53 -0800
-In-Reply-To: <5460F7D8.2030100@nod.at>
-References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>
- <5460F7D8.2030100@nod.at>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, linux-arm-msm@vger.kernel.org,
- Tanya Brokhman <tlinder@codeaurora.org>,
- open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XnwAZ-0004A2-Gu
+ for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 21:06:40 +0000
+Received: by mail-pd0-f180.google.com with SMTP id ft15so8509263pdb.25
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Nov 2014 13:06:15 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: cafe_nand: drop duplicate .write_page implementation
+Date: Mon, 10 Nov 2014 13:06:04 -0800
+Message-Id: <1415653564-23113-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,39 +20,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-11-10 at 18:37 +0100, Richard Weinberger wrote:
-> Am 03.11.2014 um 14:58 schrieb Tanya Brokhman:
-> > If there is more then one UBI device mounted, there is no way to
-> > distinguish between messages from different UBI devices.
-> > Add device number to all ubi layer message types.
+This write_page() function is functionally equivalent to the default in
+nand_base.c. Its only difference is in subpage programming support,
+which cafe_nand.c does not advertise, so the difference is negligible.
 
-Adding "error" and "warning" to the message logs is
-duplicative to the KERN_<LEVEL> logging information.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/cafe_nand.c | 45 --------------------------------------------
+ 1 file changed, 45 deletions(-)
 
-> > Changes from V5:
-> > 	- Added ptr verification @ ubi_err/ubi_msg/ubi_warn
-> > 	Removed extra printing of ubi number
-> > 	Removed new messages.
-
-Did you all ever look at what I posted?
-
-https://lkml.org/lkml/2014/10/14/280
-
-smaller code, consistent prefixing, consistent with
-typical kernel style, etc.
-
-> While testing I noticed that the log output looks quite different.
-> 
-> e.g.
-> [   26.564111] UBI-0: ubi_attach_mtd_dev:default fastmap pool size: 256
-> [   26.565438] UBI-0: ubi_attach_mtd_dev:default fastmap WL pool size: 128
-
-If __func__ is really desired, it's generally better to
-put a space after the "%s:", __func__ so there's visual
-separation between the prefixes and the content.
-
-I agree that emitting function names isn't particularly
-useful.
-
-(and Richard, do please remember to trim your posts,
- you sent > 100KB of unnecessary quoted stuff)
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index 4e66726da9aa..9a0f45f1d932 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -529,50 +529,6 @@ static int cafe_nand_write_page_lowlevel(struct mtd_info *mtd,
+ 	return 0;
+ }
+ 
+-static int cafe_nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+-			uint32_t offset, int data_len, const uint8_t *buf,
+-			int oob_required, int page, int cached, int raw)
+-{
+-	int status;
+-
+-	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+-
+-	if (unlikely(raw))
+-		status = chip->ecc.write_page_raw(mtd, chip, buf, oob_required);
+-	else
+-		status = chip->ecc.write_page(mtd, chip, buf, oob_required);
+-
+-	if (status < 0)
+-		return status;
+-
+-	/*
+-	 * Cached progamming disabled for now, Not sure if its worth the
+-	 * trouble. The speed gain is not very impressive. (2.3->2.6Mib/s)
+-	 */
+-	cached = 0;
+-
+-	if (!cached || !(chip->options & NAND_CACHEPRG)) {
+-
+-		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+-		status = chip->waitfunc(mtd, chip);
+-		/*
+-		 * See if operation failed and additional status checks are
+-		 * available
+-		 */
+-		if ((status & NAND_STATUS_FAIL) && (chip->errstat))
+-			status = chip->errstat(mtd, chip, FL_WRITING, status,
+-					       page);
+-
+-		if (status & NAND_STATUS_FAIL)
+-			return -EIO;
+-	} else {
+-		chip->cmdfunc(mtd, NAND_CMD_CACHEDPROG, -1, -1);
+-		status = chip->waitfunc(mtd, chip);
+-	}
+-
+-	return 0;
+-}
+-
+ static int cafe_nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+ {
+ 	return 0;
+@@ -800,7 +756,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	cafe->nand.ecc.hwctl  = (void *)cafe_nand_bug;
+ 	cafe->nand.ecc.calculate = (void *)cafe_nand_bug;
+ 	cafe->nand.ecc.correct  = (void *)cafe_nand_bug;
+-	cafe->nand.write_page = cafe_nand_write_page;
+ 	cafe->nand.ecc.write_page = cafe_nand_write_page_lowlevel;
+ 	cafe->nand.ecc.write_oob = cafe_nand_write_oob;
+ 	cafe->nand.ecc.read_page = cafe_nand_read_page;
+-- 
+1.9.1
