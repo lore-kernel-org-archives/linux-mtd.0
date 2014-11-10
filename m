@@ -1,29 +1,25 @@
-Received: from mail-wi0-f181.google.com ([209.85.212.181])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XnkqC-00008N-3e
- for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 09:00:53 +0000
-Received: by mail-wi0-f181.google.com with SMTP id n3so9678128wiv.8
- for <linux-mtd@lists.infradead.org>; Mon, 10 Nov 2014 01:00:25 -0800 (PST)
-Message-ID: <54607EA4.6010709@invoxia.com>
-Date: Mon, 10 Nov 2014 10:00:20 +0100
-From: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
+ id 1Xnky9-0004cJ-Gl
+ for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 09:09:06 +0000
+Message-ID: <54608097.5040101@nod.at>
+Date: Mon, 10 Nov 2014 10:08:39 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
- Marek Vasut <marex@denx.de>, dehrenberg@chromium.org,
- linux-mtd@lists.infradead.org, james.hartley@imgtec.com
-Subject: Re: [PATCH 0/2] staging: mtd: Support for GigaDevice SPI NAND flash
-References: <1415289079-16922-1-git-send-email-ionela.voinescu@imgtec.com>
- <20141106160548.GB21363@kroah.com> <545BB0BB.3040905@imgtec.com>
- <20141106174459.GA3945@kroah.com> <545BB7F1.5050400@imgtec.com>
- <545BBB26.2040207@imgtec.com> <20141106192041.GB23619@ld-irv-0074>
-In-Reply-To: <20141106192041.GB23619@ld-irv-0074>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: abrestic@chromium.org, Greg KH <gregkh@linuxfoundation.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Ionela Voinescu <ionela.voinescu@imgtec.com>,
- Kamlakant Patel <kamlakant.patel@broadcom.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: suspect UBIFS async operations causing issues during reboot
+References: <5459E090.1010300@broadcom.com>
+ <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
+ <545A64CF.20101@broadcom.com> <545A6AA0.8050901@nod.at>
+ <545AAA2B.8090007@broadcom.com> <545BEEA5.7020609@broadcom.com>
+ <545C8697.3080403@nod.at> <545D01F4.9050005@broadcom.com>
+ <545F3FD8.6010001@nod.at>
+ <alpine.DEB.2.02.1411100932310.23184@lnxricardw1.se.axis.com>
+In-Reply-To: <alpine.DEB.2.02.1411100932310.23184@lnxricardw1.se.axis.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Scott Branden <sbranden@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,72 +29,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
-
-Le 06/11/2014 20:20, Brian Norris a écrit :
-> On Thu, Nov 06, 2014 at 03:17:10PM -0300, Ezequiel Garcia wrote:
->> How about picking Sourav's v2 as a starting point:
+Am 10.11.2014 um 09:44 schrieb Ricard Wanderlof:
+> 
+> On Sun, 9 Nov 2014, Richard Weinberger wrote:
+> 
+>> Am 07.11.2014 um 18:31 schrieb Scott Branden:
+>>> On 14-11-07 12:45 AM, Richard Weinberger wrote:
+>>>> Am 06.11.2014 um 22:56 schrieb Scott Branden:
+>>>>> It looks like the erase happening in the middle of reboot was uncovered in 2009 and never addressed properly?
+>>>>>
+>>>>> https://lkml.org/lkml/2009/6/9/16
+>>>>> https://lkml.org/lkml/2010/2/12/144
+>>>>>
+>>>>> Was there a proper resolution to this issue?
+>>>>
+>>>> Did you read the threads you've posted?
+>>>>
+>>>> There two answers:
+>>>> https://lkml.org/lkml/2010/2/12/143
+>>> Yes, there is no hardware solution to a reset happening in the middle of an erase operation to NAND.
 >>
->> http://lists.infradead.org/pipermail/linux-mtd/2013-July/047434.html
-> Completely irrelevant, but I found this amusing in that patch, a few
-> lines into spinand.h:
->
-> +/bin/bash: 4: command not found
->
-> :)
->
->> And then try to use that to support Micron's MT29F and Gigadevice's GD5F ?
->>
->> Brian: Any ideas or suggestion on how to proceed?
-> I'm not opposed to trying to build a proper SPI-NAND framework. But the
-> linked v2 patch doesn't provide much to start from. It barely handles
-> anything that is specific to SPI-NAND (pushing the details out to a
-> flash-specific driver), and it doesn't address what I think the biggest
-> question is: how similar will the various SPI-NAND implementations be?
-> I've talked with a few flash vendors and seen that there were some
-> growing pains with developing a first generation de-facto standard, so
-> there is bound to be a bit of incompatibility if we try to support the
-> earliest examples, but it seemed like there was some effort to keep
-> things consistent across different manufacturers. I don't know the
-> progress of any standardization effort there.
-I was playing with spi nand devices (MT29F1G01AAADD and GD5F1GQ4x) 
-starting from the linked v2 patch, and I have a some hardware with such 
-devices.
-As far as I could say, it was not a good idea to start from that patch. 
-I had to rewrite a lot of things to make the devices working 
-correctly... and the result is not very beautiful, despite spi nand is 
-not really complicated.
+>> Well, I agree with David that anything we do in software will only hide the real problem
+>> or trim down the window.
+> 
+> There's something I don't understand here. It could be (and probably will 
+> prove to be) my lack of knowledge on the detailed workings of UBI.
+> 
+> Back in jffs2 days, erased blocks were so indicated by writing a 
+> 'cleanmarker' pattern to the OOB area. Thus, when scanning the flash, if a 
+> block was encountered which appeared erased but lacked the cleanmarker, it 
+> was re-erased just in case the previous erase was interrupted and 
+> therefore did not leave the bits in a properly erased state.
+> 
+> With ubifs, cleanmarkers are not used (partly because MLC flashes wouldn't 
+> support two writes to the OOB area: one for the cleanmarker and one for 
+> the ECC), but there _is_ a header at the start of each PEB. Thus the same 
+> situation really holds, if a (seemingly) erased PEB is encountered with no 
+> EC header, it could be considered the leftover of an unfinished erase 
+> operation. I don't know for a fact if (or how) UBI does this though.
+> 
+> Of course, and interrupted erase operation could leave a block in a 
+> seemingly un-erased state, i.e. the data appears intact (but may not be). 
+> But in that case the block would already be superseded by another block 
+> (i.e. any potential data would have already been copied to another block 
+> with the header infoinvalidating the old one). So in this case the block 
+> would go on an erase list at some point because it is no longer valid.
+> 
+> Since interrupted erase seems to be of so much a concern I've obviously 
+> missed something above. But I can't figure out what.
+> 
+> The only thing that seems relevant among the links above is
+> 
+> https://lkml.org/lkml/2010/2/12/144
+> 
+> which indicates that half-erased blocks might cause problems with certain 
+> boot loaders, but again, that's a problem with the bootloader, not UBI.
 
-Basically, spinand is really more similar to spi nor, than to standard 
-raw nand device.
-I even wonder if it is a good idea or not, to extend the spi nor 
-framework for a spi nand support ... (add bad block scanning, write size 
-different from 1, check the the status for ECC errors or bad blocks ...)
-But I suspect that "spi nor" maintainers will  not be happy to allow 
-such risky modifications.
+Correct. UBI can deal with that, if some component in your "NAND-Chain" does not, it
+needs fixing.
+Changing UBI/MTD in a way to hide such issues in not a good solution IMHO.
+In the old thread the idea was rejected by both the UBI and the MTD maintainer.
 
-If we are going to a specific spinand framework, my advise would be to 
-read again the spi nor framework carefully first, and do something 
-similar (especially for latests work on quad spi)
-
-Arnaud
->
-> Anyway, I think we really should look at whether any of the
-> identification and command sequencing details can be abstracted into a
-> drivers/mtd/spinand/spinand.c, with client drivers mostly handling the
-> transport protocol differences (e.g., interfacing with the SPI layer,
-> similar to what m25p80.c does for SPI NOR).
->
-> I don't have any time to create such a framwork on my own, but I may be
-> able to spare some limited resources for reviewing others' work. I'd
-> really like to see some efforts from a few interested reviewers, as I
-> haven't figured out how to squeeze more hours into my day yet.
->
-> BTW, has there been any progress on whatever TODO items landed
-> mt29f_spinand in staging in the first place?
->
-> Brian
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Thanks,
+//richard
