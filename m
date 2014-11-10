@@ -1,23 +1,26 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XnhFE-0005Qf-TS
- for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 05:10:29 +0000
-Message-ID: <546048AB.6040602@broadcom.com>
-Date: Sun, 9 Nov 2014 21:10:03 -0800
-From: Scott Branden <sbranden@broadcom.com>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xnjew-00078n-3S
+ for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 07:45:10 +0000
+Received: from [10.18.168.100] (unknown [185.23.60.4])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ (Authenticated sender: tlinder@smtp.codeaurora.org)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 54B35140287
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Nov 2014 07:44:47 +0000 (UTC)
+Message-ID: <54606CED.90005@codeaurora.org>
+Date: Mon, 10 Nov 2014 09:44:45 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
 Subject: Re: suspect UBIFS async operations causing issues during reboot
 References: <5459E090.1010300@broadcom.com>
  <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
  <545A64CF.20101@broadcom.com> <545A6AA0.8050901@nod.at>
- <545AAA2B.8090007@broadcom.com> <545BEEA5.7020609@broadcom.com>
- <545C8697.3080403@nod.at> <545D01F4.9050005@broadcom.com>
- <545F3FD8.6010001@nod.at>
-In-Reply-To: <545F3FD8.6010001@nod.at>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+ <545AAA2B.8090007@broadcom.com>
+In-Reply-To: <545AAA2B.8090007@broadcom.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +30,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14-11-09 02:20 AM, Richard Weinberger wrote:
-> Am 07.11.2014 um 18:31 schrieb Scott Branden:
->> On 14-11-07 12:45 AM, Richard Weinberger wrote:
->>> Am 06.11.2014 um 22:56 schrieb Scott Branden:
->>>> It looks like the erase happening in the middle of reboot was uncovered in 2009 and never addressed properly?
->>>>
->>>> https://lkml.org/lkml/2009/6/9/16
->>>> https://lkml.org/lkml/2010/2/12/144
->>>>
->>>> Was there a proper resolution to this issue?
+On 11/6/2014 12:52 AM, Scott Branden wrote:
+> On 14-11-05 10:21 AM, Richard Weinberger wrote:
+>> Hi!
+>>
+>> Am 05.11.2014 um 18:56 schrieb Scott Branden:
+>>> Hi Richard,
 >>>
->>> Did you read the threads you've posted?
+>>> Thanks for the feedback.  Comments inline.
 >>>
->>> There two answers:
->>> https://lkml.org/lkml/2010/2/12/143
->> Yes, there is no hardware solution to a reset happening in the middle of an erase operation to NAND.
+>>> On 14-11-05 01:22 AM, Richard Weinberger wrote:
+>>>> On Wed, Nov 5, 2014 at 9:32 AM, Scott Branden
+>>>> <sbranden@broadcom.com> wrote:
+>>>>> We are doing reboot testing with UBIFS on the 3.10 kernel with a
+>>>>> new chipset
+>>>>> we are working on.
+>>>>>
+>>>>> Over 1000's of reboots we eventually find that the NAND has
+>>>>> uncorrectable
+>>>>> ECC errors reported on a random page when it is mounted.
+>>>>>
+>>>>> We have found the problem is that a NAND erase operation is in
+>>>>> progress when
+>>>>> the reboot occurs. Since the NAND is in the middle of the erase
+>>>>> operation
+>>>>> the page is mostly FF with some random bits not erased when the reboot
+>>>>> occurs.
+>>>>>
+>>>>> We suspect the problem is the asynchronous nature of the UBIFS
+>>>>> operations.
+>>>>> Perhaps the small write buffer that can take 3-5 seconds to be
+>>>>> written or
+>>>>> some other operation occuring in UBI/UBIFS?  I don't think the
+>>>>> shutdown of
+>>>>> the filesystem is dealing with all the threads properly.
+>>>>
+>>>> And what about powercuts?
+>>> powercuts would exhibit the exact same behaviour as we are observing:
+>>> the erase is interrupted by loss of power so the NAND block being
+>>> erased would be in a partially erased
+>>> state.  powercuts have little to do with the reboot sequence I am
+>>> describing.
+>>>
+>>>> UBI/UBIFS was designed to survive powercuts.
+>>> Yes, this does not cause UBIFS to fail to survive the powercut.  It
+>>> does cause blocks to not be erased properly.
+>>
+>> Makes sense.
+>>
+>>> The block that didn't finish to erase is uncorrectable on next boot-up:
+>>>
+>>> [    1.330000] UBI: attaching mtd7 to ubi0
+>>> [    2.000000] iproc_nand 18046000.nand: uncorrectable error at
+>>> 0x18700000
+>>>
+>>> This issue is this blocks shouldn't be corrupted in the first place
+>>> if UBI/UBIFS shut downs properly.
+>>>
+>>>> If your NAND shows strange issues even after a clean reboot
+>>>> something nasty is
+>>>> going on. Does your driver pass all UBI/MTD test?
+>>>>
+>>> We are in the process of running the MTD tests.  But this appears to
+>>> have nothing to do with a buggy driver or not.  The NAND driver will
+>>> do what it is told to do.  If it is told
+>>> to erase a block it will erase a block.  It can't control if the
+>>> system reboots in the middle of this operation?
+>>>
+>>> This appears to be a UBI/UBIFS issue.  UBI/UBIFS operations are still
+>>> going on after the filesystem in unmounted.  The shutdown process
+>>> completes and a reboot happens.  My guess is
+>>> these operations are due to the asynchronous threads of UBI/UBIFS not
+>>> being handled properly during the shutdown process?
+>>>
+>>> I have found other people have reported unexplained flash corruption.
+>>> We back ported this to the 3.10 kernel which solved most of the flash
+>>> corruption issues:
+>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/fs/super.c?id=807612db2f9940b9fa6deaef054eb16d51bd3e00
+>>>
+>>>
+>>> This only remaining flash corruption issue is due to the described
+>>> issue of reboot happening in the middle of an erase cycle.
+>>
+>> You can verify your hypothesis easily. Add a printk() to
+>> ubi_detach_mtd_dev(). This function shuts down UBI and also the
+>> background thread which does
+>> all erase work.
+> Hi Richard,
 >
-> Well, I agree with David that anything we do in software will only hide the real problem
-> or trim down the window.
-Hi Richard,
-
-Currently the NAND does not shut down in a clean manner for a reboot 
-operation.  This is due to the asynchronous ubi_thread make flash erase 
-calls.  unmount is done properly in ubi already and cleanly shuts down. 
-  reboot is not done in a clean manner as there is no reboot_notifier to 
-handle the situation.
-
-This is not hiding a real problem.  It is just shutting down ubi 
-properly rather than pulling the power from it in the middle of operations.
-
-In addition to this - a reboot_notifier needs to be added at the mtd 
-level to shut it down properly as well.
-
-This is not trimming down a window.  It is having the drivers shut down 
-properly so they do not look like a power failure to the NAND device.
-
-There is no solution to the power failure - it will corrupt pages in the 
-middle of erasure.  And you do handle this in UBI/UBIFS.  But why 
-corrupt other erase pages unnecessarily when all that needs to be done 
-is shut down the drivers properly.  I don't know what you are agreeing 
-with David with?  It is not making a window smaller.  It is changing the 
-functionality so that the UBI and MTD drivers are shut down cleanly in 
-reboot situations.  Right now, they are not shut down at all in these 
-situations.
+> The printk never happens.
 >
-> Thanks,
-> //richard
+> I only find ubi_detach_mtd_dev can be called by ubi_exit.   But ubi_exit
+> is only called if it is a module...
+
+ubi_detach_mtd_dev() is also called for UBI_IOCDET IOCTL (look at cdev.c 
+ctrl_cdev_ioctl()). It is triggered by ubidetach.
+We had similar issues that graceful shutdowns/reboots weren't handling 
+UBI shutdown properly. We solved it by calling ubidetach in our 
+reboot/powerdown scripts.
+You're right that the issue will still remain in power cuts, but at 
+least for graceful shutdown it is handled properly.
+
 >
+> static void __exit ubi_exit(void)
+> {
+>      int i;
+>
+>      for (i = 0; i < UBI_MAX_DEVICES; i++)
+>          if (ubi_devices[i]) {
+>              mutex_lock(&ubi_devices_mutex);
+>              ubi_detach_mtd_dev(ubi_devices[i]->ubi_num, 1);
+>              mutex_unlock(&ubi_devices_mutex);
+>          }
+>      ubi_debugfs_exit();
+>      kmem_cache_destroy(ubi_wl_entry_slab);
+>      misc_deregister(&ubi_ctrl_cdev);
+>      class_remove_file(ubi_class, &ubi_version);
+>      class_destroy(ubi_class);
+> }
+> module_exit(ubi_exit);
+>
+>>
+>> Thanks,
+>> //richard
+>>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+Thanks,
+Tanya Brokhman
+-- 
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
