@@ -1,20 +1,23 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XndvR-0000Er-Ds
- for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 01:37:50 +0000
-Message-ID: <546015AE.6060808@huawei.com>
-Date: Mon, 10 Nov 2014 09:32:30 +0800
-From: hujianyang <hujianyang@huawei.com>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XnhFE-0005Qf-TS
+ for linux-mtd@lists.infradead.org; Mon, 10 Nov 2014 05:10:29 +0000
+Message-ID: <546048AB.6040602@broadcom.com>
+Date: Sun, 9 Nov 2014 21:10:03 -0800
+From: Scott Branden <sbranden@broadcom.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: Improve UBIFS nospc_retries
-References: <545C9E75.4050709@huawei.com>
- <1415360519.958.324.camel@sauron.fi.intel.com>
-In-Reply-To: <1415360519.958.324.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: suspect UBIFS async operations causing issues during reboot
+References: <5459E090.1010300@broadcom.com>
+ <CAFLxGvwTLd_uWBrj9RsD6FPFCSGsC_VcOmi_j0VLgVCJ=YVQ9w@mail.gmail.com>
+ <545A64CF.20101@broadcom.com> <545A6AA0.8050901@nod.at>
+ <545AAA2B.8090007@broadcom.com> <545BEEA5.7020609@broadcom.com>
+ <545C8697.3080403@nod.at> <545D01F4.9050005@broadcom.com>
+ <545F3FD8.6010001@nod.at>
+In-Reply-To: <545F3FD8.6010001@nod.at>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: lijinyue@huawei.com, linux-mtd <linux-mtd@lists.infradead.org>,
- yuchangchun1@huawei.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/11/7 19:41, Artem Bityutskiy wrote:
-> On Fri, 2014-11-07 at 18:27 +0800, hujianyang wrote:
->> Hi Artem,
->>
->> I'm puzzling with *nospc_retries* in make_reservation() nowadays.
->> My colleagues in testing department use a less than 20M flash
->> and run lots of processes on it. These processes will read, write,
->> delete from flash and the flash is always in a nearly-full state.
->> The board only has one core.
-> 
-> If it switches to R/O mode, this means that we did not reserve enough
-> space for the operation. Probably we need to reserve more LEBs for
-> deletions.
-> 
->> So, the *nospc_retries* in make_reservation(), line 341 in journal.c
->> will easily reach 2 as we set and turn the filesystem to RO mode.
->>
->> I know we can't perform an infinite loop here. Can we improve it?
->> Not only just turn current *2* to some larger number but also add
->> some useful mechanism to avoid filesystem turning to RO mode.
-> 
-> Did you try to increase it, does it help?
-> 
+On 14-11-09 02:20 AM, Richard Weinberger wrote:
+> Am 07.11.2014 um 18:31 schrieb Scott Branden:
+>> On 14-11-07 12:45 AM, Richard Weinberger wrote:
+>>> Am 06.11.2014 um 22:56 schrieb Scott Branden:
+>>>> It looks like the erase happening in the middle of reboot was uncovered in 2009 and never addressed properly?
+>>>>
+>>>> https://lkml.org/lkml/2009/6/9/16
+>>>> https://lkml.org/lkml/2010/2/12/144
+>>>>
+>>>> Was there a proper resolution to this issue?
+>>>
+>>> Did you read the threads you've posted?
+>>>
+>>> There two answers:
+>>> https://lkml.org/lkml/2010/2/12/143
+>> Yes, there is no hardware solution to a reset happening in the middle of an erase operation to NAND.
+>
+> Well, I agree with David that anything we do in software will only hide the real problem
+> or trim down the window.
+Hi Richard,
 
-Yes, I've increased it to 5, and see it takes a longer time to
-switch to RO. I add some log messages when nospc_retries increase
-to 2 and filesystem will work OK when nospc_retries hits 2. But it
-will turn to RO when nospc_retries equals to 5.
+Currently the NAND does not shut down in a clean manner for a reboot 
+operation.  This is due to the asynchronous ubi_thread make flash erase 
+calls.  unmount is done properly in ubi already and cleanly shuts down. 
+  reboot is not done in a clean manner as there is no reboot_notifier to 
+handle the situation.
 
-> We did not stress-test it for small flash size, because we assumed that
-> JFFS2 would take care of those.
-> 
-> And yes, there may be issues in the "little space left" handling. We
-> tested that, but no too extensively. The I/O becomes extremely slow when
-> there is little space, so we preferred to make sure the FS does not get
-> too full at all by reserving more space for 'root' (UBIFS feature, which
-> makes sure that 'root' can always write even if users consumed all the
-> space).
+This is not hiding a real problem.  It is just shutting down ubi 
+properly rather than pulling the power from it in the middle of operations.
 
-I think you are right. Runing UBIFS on a small flash device will
-waste high percents of space.
+In addition to this - a reboot_notifier needs to be added at the mtd 
+level to shut it down properly as well.
 
-> 
-> You could also experiment by reserving more LEBs for deletions, and see
-> if it helps. Just increase 'UBIFS_MIN_MAIN_LEBS' in ubifs.h and run your
-> test.
-> 
+This is not trimming down a window.  It is having the drivers shut down 
+properly so they do not look like a power failure to the NAND device.
 
-Thanks. I think it will help~! I will try to increase this.
-
-Hu
-
-> 
-> 
-> .
-> 
+There is no solution to the power failure - it will corrupt pages in the 
+middle of erasure.  And you do handle this in UBI/UBIFS.  But why 
+corrupt other erase pages unnecessarily when all that needs to be done 
+is shut down the drivers properly.  I don't know what you are agreeing 
+with David with?  It is not making a window smaller.  It is changing the 
+functionality so that the UBI and MTD drivers are shut down cleanly in 
+reboot situations.  Right now, they are not shut down at all in these 
+situations.
+>
+> Thanks,
+> //richard
+>
