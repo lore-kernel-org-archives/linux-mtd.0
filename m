@@ -1,17 +1,22 @@
-Received: from mail-bl2on0134.outbound.protection.outlook.com ([65.55.169.134]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XoDtR-00070D-KV
- for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 16:02:10 +0000
-From: Fabio Estevam <fabio.estevam@freescale.com>
-To: <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: gpmi: Remove noisy error message
-Date: Tue, 11 Nov 2014 14:01:31 -0200
-Message-ID: <1415721691-14073-1-git-send-email-fabio.estevam@freescale.com>
+ id 1XoDzq-0002AH-FR
+ for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 16:08:46 +0000
+Date: Tue, 11 Nov 2014 10:08:10 -0600
+From: Ben Shelton <ben.shelton@ni.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 4/4] UBIFS: add ubifs_err() to print error reason
+Message-ID: <20141111160809.GA11589@bshelton-desktop>
+References: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
+ <1414781431-2911-5-git-send-email-ben.shelton@ni.com>
+ <1415704235.22887.138.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- shijie8@gmail.com
+In-Reply-To: <1415704235.22887.138.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+ Subodh Nijsure <snijsure@grid-net.com>, linux-mtd@lists.infradead.org,
+ adrian.hunter@intel.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mx28evk board has a socket for NAND flash that comes with no NAND flash
-populated, and then we get this message on every boot:
+On 11/11, Artem Bityutskiy wrote:
+> Pushed this, but made some amendments.
+> 
+> Now all 4 are in the master branch. Would you please re-test them again
+> and confirm that they are fine. Then I'll push them to the linux-next
+> branch, unless you report that my amendments broke something.
+> 
+> Thank you!
+> 
 
-[    1.657603] gpmi-nand 8000c000.gpmi-nand: driver registration failed: -19
+Hi Artem,
 
-,which is not very helpful, so get rid of this error message.
+I pulled the four modified commits into my 3.18-rc3 branch and tested
+with lockdep enabled.  Everything looks good.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 959cb9b..1ecf0e3 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1828,7 +1828,6 @@ static int gpmi_nand_probe(struct platform_device *pdev)
- exit_nfc_init:
- 	release_resources(this);
- exit_acquire_resources:
--	dev_err(this->dev, "driver registration failed: %d\n", ret);
- 
- 	return ret;
- }
--- 
-1.9.1
+Thanks,
+Ben
