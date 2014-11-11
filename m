@@ -1,24 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XoHRZ-0002Ow-Sp
- for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 19:49:40 +0000
-Message-ID: <54626835.40503@nod.at>
-Date: Tue, 11 Nov 2014 20:49:09 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1XoHZe-0007VP-EB
+ for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 19:57:58 +0000
+Received: by mail-lb0-f170.google.com with SMTP id p9so5018993lbv.15
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Nov 2014 11:57:36 -0800 (PST)
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH V6] UBI: Extend UBI layer debug/messaging capabilities
-References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>		
- <5460F7D8.2030100@nod.at> <5461C5AD.5040705@nod.at>	
- <1415707434.22887.158.camel@sauron.fi.intel.com> <5462003C.9090509@nod.at>
- <1415712477.22887.172.camel@sauron.fi.intel.com>
-In-Reply-To: <1415712477.22887.172.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: Tanya Brokhman <tlinder@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <CAFLxGvwgy-+5K63re678JwcSy2-bNRtDHXiW-1Ve+1En5xHFYg@mail.gmail.com>
+References: <1415721691-14073-1-git-send-email-fabio.estevam@freescale.com>
+ <CAFLxGvwgy-+5K63re678JwcSy2-bNRtDHXiW-1Ve+1En5xHFYg@mail.gmail.com>
+Date: Tue, 11 Nov 2014 17:57:36 -0200
+Message-ID: <CAOMZO5A2JJ+HAomy6qDZ6xLf2Bep8R6Jd7O5+N2GkQvtHhm8fg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: gpmi: Remove noisy error message
+From: Fabio Estevam <festevam@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 11.11.2014 um 14:27 schrieb Artem Bityutskiy:
-> On Tue, 2014-11-11 at 13:25 +0100, Richard Weinberger wrote:
->> Am 11.11.2014 um 13:03 schrieb Artem Bityutskiy:
->>> On Tue, 2014-11-11 at 09:15 +0100, Richard Weinberger wrote:
->>>>> Do we really want the function name in every log message?
->>>>> IMHO this is not wise except for pure debug logs.
->>>>
->>>> BTW: Why UBI-X? This looks odd. Either use UBIX or ubiX.
->>>
->>> How about something like this (untested):
->>>
->>>
->>> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->>> Date: Tue, 11 Nov 2014 13:56:34 +0200
->>> Subject: [PATCH] UBI: clean-up printing helpers
->>>
->>> Let's prefix UBI messages with 'ubiX' instead of 'UBI-X' - this is more
->>> consistent with the way we name UBI devices.
->>>
->>> Also, commit "32608703 UBI: Extend UBI layer debug/messaging capabilities"
->>> added the function name print to 'ubi_msg()' - lets revert this change, since
->>> these messages are supposed to be just informative messages, and not debugging
->>> messages.
->>
->> What is the benefit of having the function name still in ubi_warn() and ubi_err()?
-> 
-> The benefit is that it is easier to find the source code where the
-> message comes from. And not necessarily because the message is
-> "cryptic", but because you may want to check the possible reasons of the
-> problem from the code.
-> 
->> e.g.
->> [   95.511825] ubi0 error: ubi_attach_mtd_dev: mtd0 is already attached to ubi0
->>
->> If the log message is so cryptic that you need to lookup it in the source to understand it,
->> we better fix the message.
-> 
-> UBI messages are usually not cryptic, and I think we did try to keep
-> them user-friendly. If you hit a cryptic error or warning message, do
-> not hesitate to improve it please. Debug messages are often cryptic.
+On Tue, Nov 11, 2014 at 5:45 PM, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> On Tue, Nov 11, 2014 at 5:01 PM, Fabio Estevam
+> <fabio.estevam@freescale.com> wrote:
+>> mx28evk board has a socket for NAND flash that comes with no NAND flash
+>
+> Wouldn't it make more sense to fix your board's devicetree/boardfile
+> to not load the gpmi driver?
 
-That's my point. UBI has very good messages. From the message you
-know in most cases exactly what is going on and in what sub-system you
-have to look.
+Then the people who populated the NAND flash in the socket would not
+be able to use the NAND driver.
 
-> I am OK with removing function names from warnings and errors, though.
-> But they were there since the very beginning, and changing this is a
-> separate subject, so I'd prefer someone else to submit a corresponding
-> patch.
-
-If we keep the function names away from ubi_msg() I'm perfectly fine. :-)
-
-Thanks,
-//richard
+In my opinion, removing the error message would be better.
