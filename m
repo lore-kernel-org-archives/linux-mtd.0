@@ -1,22 +1,31 @@
-Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+Received: from mail-bn1on0056.outbound.protection.outlook.com ([157.56.110.56]
+ helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XoDzq-0002AH-FR
- for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 16:08:46 +0000
-Date: Tue, 11 Nov 2014 10:08:10 -0600
-From: Ben Shelton <ben.shelton@ni.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 4/4] UBIFS: add ubifs_err() to print error reason
-Message-ID: <20141111160809.GA11589@bshelton-desktop>
-References: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
- <1414781431-2911-5-git-send-email-ben.shelton@ni.com>
- <1415704235.22887.138.camel@sauron.fi.intel.com>
+ id 1XoHMd-00008q-LL
+ for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 19:44:32 +0000
+Date: Tue, 11 Nov 2014 13:41:09 -0600
+From: Graham Moore <grmoore@opensource.altera.com>
+To: bpqw <bpqw@micron.com>
+Subject: Re: [V5 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
+ Micron spi nor
+In-Reply-To: <54613259.4070903@opensource.altera.com>
+Message-ID: <alpine.DEB.2.02.1411111336010.1356@lava-test-server>
+References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
+ <201409251211.57183.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
+ <201409261046.07132.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315EA24E@NTXXIAMBX02.xacn.micron.com>
+ <54613259.4070903@opensource.altera.com>
 MIME-Version: 1.0
-In-Reply-To: <1415704235.22887.138.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
- Subodh Nijsure <snijsure@grid-net.com>, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Marek Vasut <marex@denx.de>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +35,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/11, Artem Bityutskiy wrote:
-> Pushed this, but made some amendments.
+On 11/05/2014 09:09 PM, bpqw wrote:
+> This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
 > 
-> Now all 4 are in the master branch. Would you please re-test them again
-> and confirm that they are fine. Then I'll push them to the linux-next
-> branch, unless you report that my amendments broke something.
-> 
-> Thank you!
-> 
+> For Micron SPI NOR flash,enabling or disabling quad I/O protocol is
+> controlled
+> by EVCR (Enhanced Volatile Configuration Register), Quad I/O protocol bit 7.
+> When EVCR bit 7 is reset to 0,the SPI NOR flash will operate in quad I/O
+> mode.
 
-Hi Artem,
+Hi, I'm having trouble with this patch using a Cadence QSPI controller and
+Micron n25q00 part.
 
-I pulled the four modified commits into my 3.18-rc3 branch and tested
-with lockdep enabled.  Everything looks good.
+I can use quad commands in Extended SPI mode, but I can't make this EVCR Quad
+mode work.
+
+The Cadence QSPI Controller has fields to configure the quad transfer, and can
+support quad opcode, quad address, and quad data, or some combination.  There
+is a chart in the docs which shows the combinations for various read commands.
+
+Problem is, I've tried all of the combinations and all I get is FF with this
+EVCR patch.
+
+If I don't set the quad mode in the EVCR, then I can use quad read commands no
+problem.
+
+Bottom line, with the Cadence QSPI controller, if I use quad commands in
+Extended SPI mode, then all good.  If I use this EVCR quad mode, then all bad.
+
+Anybody else have a Cadence QSPI controller and using EVCR quad mode
+successfully?
 
 Thanks,
-Ben
+Graham Moore
