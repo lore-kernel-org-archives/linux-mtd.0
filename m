@@ -1,29 +1,32 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-yk0-x22f.google.com ([2607:f8b0:4002:c07::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XoJA8-00042c-OG
- for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 21:39:45 +0000
-Message-ID: <54628207.5030205@nod.at>
-Date: Tue, 11 Nov 2014 22:39:19 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1XoJQ3-0007GA-0e
+ for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 21:56:12 +0000
+Received: by mail-yk0-f175.google.com with SMTP id 9so3809497ykp.20
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Nov 2014 13:55:49 -0800 (PST)
 MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
-Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
- handling
-References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>	
- <544D5BEC.50802@nod.at> <544E052B.1040505@codeaurora.org>	
- <544E08AE.7080506@nod.at> <5450C997.9010205@codeaurora.org>	
- <5450D6C4.4040400@nod.at> <54538ABC.1040605@codeaurora.org>	
- <5453ABF9.4070208@nod.at> <5453AD4D.2000303@nod.at>	
- <545630E1.8020505@codeaurora.org>	
- <1415261234.958.171.camel@sauron.fi.intel.com>	
- <545B66BA.4090904@codeaurora.org>
- <1415350722.958.286.camel@sauron.fi.intel.com>
- <54627350.9080509@codeaurora.org>
-In-Reply-To: <54627350.9080509@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Cc: linux-arm-msm@vger.kernel.org, jlauruhn@micron.com,
- linux-mtd@lists.infradead.org
+In-Reply-To: <alpine.DEB.2.02.1411111336010.1356@lava-test-server>
+References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
+ <201409251211.57183.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
+ <201409261046.07132.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315EA24E@NTXXIAMBX02.xacn.micron.com>
+ <54613259.4070903@opensource.altera.com>
+ <alpine.DEB.2.02.1411111336010.1356@lava-test-server>
+Date: Wed, 12 Nov 2014 03:25:48 +0530
+Message-ID: <CAD6G_RQFV9LfBzVbureBiCneW+PpLzSdUCyz9L6D+EhE4gT+WA@mail.gmail.com>
+Subject: Re: [V5 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
+ Micron spi nor
+From: Jagan Teki <jagannadh.teki@gmail.com>
+To: Graham Moore <grmoore@opensource.altera.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Marek Vasut <marex@denx.de>, bpqw <bpqw@micron.com>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "shijie8@gmail.com" <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,77 +36,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tanya,
-
-Am 11.11.2014 um 21:36 schrieb Tanya Brokhman:
-> Hi Artem,
-> 
-> Hope I didn't drop any ccs this time... Sorry about that. Not on purpose.
-> 
-> On 11/7/2014 10:58 AM, Artem Bityutskiy wrote:
->> On Thu, 2014-11-06 at 14:16 +0200, Tanya Brokhman wrote:
->>> What I'm trying to say - it
->>> may be too late and you may lose data here. "preferred to prevent rather
->>> than cure".
+On 12 November 2014 01:11, Graham Moore <grmoore@opensource.altera.com> wrote:
+> On 11/05/2014 09:09 PM, bpqw wrote:
+>> This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
 >>
->> First of all, just to clarify, I do not have a goal of turning down your
->> patches. I just want to understand why this is the best design, and if
->> it is helpful to all Linux MTD users.
->>
->> Modern flashes have strong ECC codes protecting against many bit-flips.
->> MTD even was modified to stop reporting about a single or few bit-flips,
->> because those happen too often and they are "harmless", and do not
->> require scrubbing. We have the threshold value in MTD for this, which is
->> configurable, of course.
->>
->> Bit-flips develop slowly over time. If you get one more bit-flips, it is
->> not too late yet. You can mitigate the "too late" part by reading more
->> often of course.
->>
->> You also may lower the bit-flip threshold when reading for scrubbing.
->>
->> Could you try to "sell" your design in a way that it becomes clear why
->> it is better than just reading the entire flash periodically.
-> 
-> Please see my "selling" bellow :)
-> 
->  Some hard
->> experimental data would be preferable.
-> 
-> Unfortunately none. This is done for a new device that we received just now. The development was done on a virtual machine with nandsim. Testing was more of stability and regression
-> 
->>
->> The advantages of the "read all periodically" approach were:
->>
->> 1. Simple, no modifications needed
->> 2. No need to write if the media is read-only, except when scrubbing
->> happens.
->> 3. Should cover all the NAND effects, including the "radiation" one.
-> 
-> Disadvantages (as I see it):
-> 1. performance hit: when do you trigger the "read-all"? will effect performance
+>> For Micron SPI NOR flash,enabling or disabling quad I/O protocol is
+>> controlled
+>> by EVCR (Enhanced Volatile Configuration Register), Quad I/O protocol bit 7.
+>> When EVCR bit 7 is reset to 0,the SPI NOR flash will operate in quad I/O
+>> mode.
+>
+> Hi, I'm having trouble with this patch using a Cadence QSPI controller and
+> Micron n25q00 part.
+>
+> I can use quad commands in Extended SPI mode, but I can't make this EVCR Quad
+> mode work.
+>
+> The Cadence QSPI Controller has fields to configure the quad transfer, and can
+> support quad opcode, quad address, and quad data, or some combination.  There
+> is a chart in the docs which shows the combinations for various read commands.
+>
+> Problem is, I've tried all of the combinations and all I get is FF with this
+> EVCR patch.
+>
+> If I don't set the quad mode in the EVCR, then I can use quad read commands no
+> problem.
+>
+> Bottom line, with the Cadence QSPI controller, if I use quad commands in
+> Extended SPI mode, then all good.  If I use this EVCR quad mode, then all bad.
+>
+> Anybody else have a Cadence QSPI controller and using EVCR quad mode
+> successfully?
 
-Only a stupid implementation will re-read/scrub all PEBs at once.
-We can use a low priority thread. We can do this even in userspace.
+I have almost verified all the micros parts for operating quad mode
+and the quad enable bit is
+volatile by default and no need to set it on software.
 
-> 2. finds bitflips only when they are present instead of preventing them from happening
+Why this code is meant for - does micron has changed this bit
+operation on newly added parts?
 
-We can scrub unconditionally.
-Even if we scrub every PEB once a week the erase counters won't go up very much.
-
-> Perhaps our design is an overkill for this and not covering 100% of te usecases. But it was requested by our customers to handle read-disturb and data retention specifically (as in
-> "prevent" and not just "fix"). This is due to a new NAND device that should operate in high temperature and last for ~15-20 years.
-> 
-> But we did rethink this and we're dropping the "last erase timestamp" that was used to handle "data retention". We will force-scrub all PEBs once in a while (triggered by user) as
-> Richard suggested.
-> We're keeping the read counters though. I know that not all "read-disturb" scenarios are covered by this but it's more coverage then we have at the moment. So not 100% perfect
-> solution but better then none.
-> 
-> I will update the implementation and change the fastmap layout (as suggested by Richard earlier) or try using internal UBI volume. Still have some study to do on that...
-
-Please don't (ab)use fastmap. If you really need persistent read-counters use an internal UBI volume.
-But I think that time-based unconditional scrubbing will also do it. As long we don't have sane threshold values
-keeping counters is useless.
-
-Thanks,
-//richard
+thanks!
+-- 
+Jagan.
