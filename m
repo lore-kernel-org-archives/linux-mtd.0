@@ -1,16 +1,16 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xo9Iu-0002Wf-7T
- for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 11:08:08 +0000
-Message-ID: <1415704063.22887.135.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 3/4] UBIFS: Add security.* XATTR support for the UBIFS
+ id 1Xo9Lf-0004s5-5q
+ for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 11:10:59 +0000
+Message-ID: <1415704235.22887.138.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 4/4] UBIFS: add ubifs_err() to print error reason
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: Ben Shelton <ben.shelton@ni.com>
-Date: Tue, 11 Nov 2014 13:07:43 +0200
-In-Reply-To: <1414781431-2911-4-git-send-email-ben.shelton@ni.com>
+Date: Tue, 11 Nov 2014 13:10:35 +0200
+In-Reply-To: <1414781431-2911-5-git-send-email-ben.shelton@ni.com>
 References: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
- <1414781431-2911-4-git-send-email-ben.shelton@ni.com>
+ <1414781431-2911-5-git-send-email-ben.shelton@ni.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -26,40 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Pushed this, but made some amendments.
 
-pushed this patch too, with amendments.
+Now all 4 are in the master branch. Would you please re-test them again
+and confirm that they are fine. Then I'll push them to the linux-next
+branch, unless you report that my amendments broke something.
+
+Thank you!
 
 On Fri, 2014-10-31 at 13:50 -0500, Ben Shelton wrote:
-> @@ -279,6 +283,7 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
->  	err = ubifs_jnl_update(c, dir, &dentry->d_name, inode, 0, 0);
->  	if (err)
->  		goto out_cancel;
-> +
->  	mutex_unlock(&dir_ui->ui_mutex);
+> @@ -100,24 +100,32 @@ static const struct file_operations empty_fops;
+>  static int create_xattr(struct ubifs_info *c, struct inode *host,
+>  			const struct qstr *nm, const void *value, int size)
+>  {
+> -	int err;
+> +	int err, xattr_name_list_size;
 
-Removed this junk newline change here and in other similar places.
-> +size_t ubifs_security_listxattr(struct dentry *d, char *list, size_t list_size,
-> +				const char *name, size_t name_len, int flags)
+Renamed this to a shorter names_len.
 
-Made this to be static, renamed to 'security_listxattr()'.
+> -	if (host_ui->xattr_cnt >= MAX_XATTRS_PER_INODE)
+> +	if (host_ui->xattr_cnt >= MAX_XATTRS_PER_INODE) {
+> +		ubifs_err("ubifs xattr_cnt %d exceeds MAX_XATTR_PER_NODE (%d)",
+> +			  host_ui->xattr_cnt, MAX_XATTRS_PER_INODE);
 
-> +int ubifs_security_getxattr(struct dentry *d, const char *name,
-> +			    void *buffer, size_t size, int flags)
+Improved this message - made it more user-friendly, and print the inode
+number.
 
-Similar: rename + static.
+> +	if (xattr_name_list_size > XATTR_LIST_MAX) {
+> +		ubifs_err("xattr name list too large %d > %d",
+> +			  xattr_name_list_size, XATTR_LIST_MAX);
+>  		return -ENOSPC;
 
-> +int ubifs_security_setxattr(struct dentry *d, const char *name,
-> +			    const void *value, size_t size,
-> +			    int flags, int handler_flags)
-Similar: rename + static.
+Ditto.
+>  
+> +	if (err)
+> +		ubifs_err("cannot initialize extended attribute, error %d",
+> +			  err);
 
-> +struct xattr_handler ubifs_xattr_security_handler = {
+Refactored this message and added the inode number.
 
-Renamed, made static and const too.
-
-> +static int ubifs_initxattrs(struct inode *inode,
-> +			    const struct xattr *xattr_array, void *fs_info)
-
-Renamed to just init_xattrs(), for the consistency reasons, the ones I
-explained in the review to the patch 2/4.
+Artem.
