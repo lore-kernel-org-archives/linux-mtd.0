@@ -1,20 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xo6cS-0002Zm-M0
- for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 08:16:09 +0000
-Message-ID: <5461C5AD.5040705@nod.at>
-Date: Tue, 11 Nov 2014 09:15:41 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1Xo6l6-0005hM-RJ
+ for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 08:25:05 +0000
+Message-ID: <5461C7C6.6060604@codeaurora.org>
+Date: Tue, 11 Nov 2014 10:24:38 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
+To: Joe Perches <joe@perches.com>, Richard Weinberger <richard@nod.at>
 Subject: Re: [PATCH V6] UBI: Extend UBI layer debug/messaging capabilities
-References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>
- <5460F7D8.2030100@nod.at>
-In-Reply-To: <5460F7D8.2030100@nod.at>
-Content-Type: text/plain; charset=iso-8859-15
+References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>	
+ <5460F7D8.2030100@nod.at> <1415642273.8868.8.camel@perches.com>
+In-Reply-To: <1415642273.8868.8.camel@perches.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org,
+Cc: dedekind1@gmail.com, linux-arm-msm@vger.kernel.org,
+ open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
@@ -27,46 +27,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 10.11.2014 um 18:37 schrieb Richard Weinberger:
-> Am 03.11.2014 um 14:58 schrieb Tanya Brokhman:
->> If there is more then one UBI device mounted, there is no way to
->> distinguish between messages from different UBI devices.
->> Add device number to all ubi layer message types.
->>
->> The R/O block driver messages were replaced by pr_* since
->> ubi_device structure is not used by it.
->>
->> Amended a bit by Artem.
->>
->> Signed-off-by: Tanya Brokhman <tlinder@codeaurora.org>
->> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
-> I've rebased my fastmap work to linux-ubifs.git which contains this patch.
-> While testing I noticed that the log output looks quite different.
-> 
-> e.g.
-> [   26.564111] UBI-0: ubi_attach_mtd_dev:default fastmap pool size: 256
-> [   26.565438] UBI-0: ubi_attach_mtd_dev:default fastmap WL pool size: 128
-> [   26.566781] UBI-0: ubi_attach_mtd_dev:attaching mtd0 to ubi0
-> [   26.653704] UBI-0: scan_all:scanning is finished
-> [   26.654379] UBI-0: late_analysis:empty MTD device detected
-> [   26.761154] UBI-0: ubi_attach_mtd_dev:attached mtd0 (name "NAND simulator partition 0", size 128 MiB)
-> [   26.762112] UBI-0: ubi_attach_mtd_dev:PEB size: 16384 bytes (16 KiB), LEB size: 15872 bytes
-> [   26.762933] UBI-0: ubi_attach_mtd_dev:min./max. I/O unit sizes: 512/512, sub-page size 256
-> [   26.763765] UBI-0: ubi_attach_mtd_dev:VID header offset: 256 (aligned 256), data offset: 512
-> [   26.764607] UBI-0: ubi_attach_mtd_dev:good PEBs: 8192, bad PEBs: 0, corrupted PEBs: 0
-> [   26.765394] UBI-0: ubi_attach_mtd_dev:user volume: 0, internal volumes: 1, max. volumes count: 92
-> [   26.766244] UBI-0: ubi_attach_mtd_dev:max/mean erase counter: 0/0, WL threshold: 4096, image sequence number: 3297366243
-> [   26.767287] UBI-0: ubi_attach_mtd_dev:available PEBs: 8014, total reserved PEBs: 178, PEBs reserved for bad PEB handling: 160
-> [   26.769050] UBI-0: ubi_thread:background thread "ubi_bgt0d" started, PID 2686
-> [   29.119991] UBI-0: ubi_detach_mtd_dev:detaching mtd0
-> [   29.121084] UBI-0: ubi_thread:background thread "ubi_bgt0d" should stop, PID 2686
-> [   29.165538] UBI-0: ubi_detach_mtd_dev:mtd0 is detached
-> 
-> Do we really want the function name in every log message?
-> IMHO this is not wise except for pure debug logs.
+On 11/10/2014 7:57 PM, Joe Perches wrote:
+> On Mon, 2014-11-10 at 18:37 +0100, Richard Weinberger wrote:
+>> Am 03.11.2014 um 14:58 schrieb Tanya Brokhman:
+>>> If there is more then one UBI device mounted, there is no way to
+>>> distinguish between messages from different UBI devices.
+>>> Add device number to all ubi layer message types.
+>
+> Adding "error" and "warning" to the message logs is
+> duplicative to the KERN_<LEVEL> logging information.
+>
+>>> Changes from V5:
+>>> 	- Added ptr verification @ ubi_err/ubi_msg/ubi_warn
+>>> 	Removed extra printing of ubi number
+>>> 	Removed new messages.
+>
+> Did you all ever look at what I posted?
 
-BTW: Why UBI-X? This looks odd. Either use UBIX or ubiX.
+I did. Its not my place to re-post your change in my patch. I personally 
+prefer it the way I've done it but it's just a matter of opinion and 
+personal preference. Artem took this one in...
+
+>
+> https://lkml.org/lkml/2014/10/14/280
+>
+> smaller code, consistent prefixing, consistent with
+> typical kernel style, etc.
+>
+>> While testing I noticed that the log output looks quite different.
+>>
+>> e.g.
+>> [   26.564111] UBI-0: ubi_attach_mtd_dev:default fastmap pool size: 256
+>> [   26.565438] UBI-0: ubi_attach_mtd_dev:default fastmap WL pool size: 128
+>
+> If __func__ is really desired, it's generally better to
+> put a space after the "%s:", __func__ so there's visual
+> separation between the prefixes and the content.
+>
+> I agree that emitting function names isn't particularly
+> useful.
+
+I have to disagree here, but again - this is personal preference.
+
+>
+> (and Richard, do please remember to trim your posts,
+>   you sent > 100KB of unnecessary quoted stuff)
+>
+
 
 Thanks,
-//richard
+Tanya Brokhman
+-- 
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
