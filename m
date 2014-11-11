@@ -1,24 +1,18 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xo8Wf-0005BD-J7
- for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 10:18:17 +0000
-Message-ID: <1415701073.22887.126.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/4] UBIFS: Add xattr support for symlinks
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Ben Shelton <ben.shelton@ni.com>
-Date: Tue, 11 Nov 2014 12:17:53 +0200
-In-Reply-To: <20141110171253.GA18047@bshelton-desktop>
-References: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
- <1414781431-2911-3-git-send-email-ben.shelton@ni.com>
- <1415628106.22887.122.camel@sauron.fi.intel.com>
- <20141110171253.GA18047@bshelton-desktop>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Message-ID: <5461E761.5090702@gmail.com>
+Date: Tue, 11 Nov 2014 16:09:29 +0530
+From: Varka Bhadram <varkabhadram@gmail.com>
+MIME-Version: 1.0
+To: Sanjeev Sharma <sanjeev_sharma@mentor.com>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, mcuos.com@gmail.com, ben-linux@fluff.org
+Subject: Re: [PATCH] mtd: remove .owner field for driver using
+ module_platform_driver
+References: <1415701649-25915-1-git-send-email-sanjeev_sharma@mentor.com>
+In-Reply-To: <1415701649-25915-1-git-send-email-sanjeev_sharma@mentor.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
- Subodh Nijsure <snijsure@grid-net.com>, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com, linux-kernel@vger.kernel.org
+Cc: gregkh@linuxfoundation.org, linux-samsung-soc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +22,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-11-10 at 11:12 -0600, Ben Shelton wrote:
-> On 11/10, Artem Bityutskiy wrote:
-> > Could you please re-test this with any kernel and carefully verify
-> > symlinks. I think this should not work, because in case of symlinks we
-> > already store the link target path in the inode, and with this patch the
-> > target patch will be over-written with the SELinux label. I expect this
-> > to be seen easily on testing - symlink targets should be corrupted.
-> > 
-> > Artem.
-> > 
-> 
-> I retested this with a 3.18-rc3 kernel on one of our ARM-based targets.
-> The kernel has patch 1/4 with your changes, plus patches 2/4, 3/4, and
-> 4/4 as posted.
+Hi Sanjeev Sharma,
 
-Ben, thanks for re-testing. And yes, I was wrong. Now I checked again
-and finally remembered how it works.
+On 11/11/2014 03:57 PM, Sanjeev Sharma wrote:
+> This patch removes the .owner field for drivers which use the
+> platform_driver_register api because this is overriden in
+> _platform_driver_register.
+>
+> Signed-off-by: Sanjeev Sharma <Sanjeev_Sharma@mentor.com>
+> ---
+>   drivers/mtd/nand/ams-delta.c     | 1 -
+>   drivers/mtd/nand/atmel_nand.c    | 2 --
+>   drivers/mtd/nand/au1550nd.c      | 1 -
+>   drivers/mtd/nand/bf5xx_nand.c    | 1 -
+>   drivers/mtd/nand/davinci_nand.c  | 1 -
+>   drivers/mtd/nand/denali_dt.c     | 1 -
+>   drivers/mtd/nand/docg4.c         | 1 -
+>   drivers/mtd/nand/fsl_elbc_nand.c | 1 -
+>   drivers/mtd/nand/fsl_ifc_nand.c  | 1 -
+>   drivers/mtd/nand/fsl_upm.c       | 1 -
+>   drivers/mtd/nand/fsmc_nand.c     | 1 -
+>   drivers/mtd/nand/gpio.c          | 1 -
+>   drivers/mtd/nand/jz4740_nand.c   | 1 -
+>   drivers/mtd/nand/lpc32xx_mlc.c   | 1 -
+>   drivers/mtd/nand/lpc32xx_slc.c   | 1 -
+>   drivers/mtd/nand/mpc5121_nfc.c   | 1 -
+>   drivers/mtd/nand/mxc_nand.c      | 1 -
+>   drivers/mtd/nand/ndfc.c          | 1 -
+>   drivers/mtd/nand/nuc900_nand.c   | 1 -
+>   drivers/mtd/nand/omap2.c         | 1 -
+>   drivers/mtd/nand/omap_elm.c      | 1 -
+>   drivers/mtd/nand/orion_nand.c    | 1 -
+>   drivers/mtd/nand/pasemi_nand.c   | 1 -
+>   drivers/mtd/nand/plat_nand.c     | 1 -
+>   drivers/mtd/nand/s3c2410.c       | 1 -
+>   drivers/mtd/nand/sh_flctl.c      | 1 -
+>   drivers/mtd/nand/sharpsl.c       | 1 -
+>   drivers/mtd/nand/socrates_nand.c | 1 -
+>   drivers/mtd/nand/tmio_nand.c     | 1 -
+>   drivers/mtd/nand/txx9ndfmc.c     | 1 -
+>   30 files changed, 31 deletions(-)
 
-So yes, symlink inode has data, and the target is in the data.
+This removal of .owner field should be done for all the platform drivers which are using
+module_platform_driver().
 
-If we add an extattr to a symlink, we create a separate inode for that
-xattr under the symlink inode. Any new xattr gets a new inode.
+Wolfram Sang <wsa@the-dreams.de> working on this change on the all the drivers. Please see [1].
 
-Artem.
+
+[1]:https://git.kernel.org/cgit/linux/kernel/git/wsa/linux.git/log/?h=platform/remove_owner
+
+-- 
+Thanks and Regards,
+Varka Bhadram.
