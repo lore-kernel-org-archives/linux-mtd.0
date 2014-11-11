@@ -1,22 +1,22 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xo9Lf-0004s5-5q
- for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 11:10:59 +0000
-Message-ID: <1415704235.22887.138.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 4/4] UBIFS: add ubifs_err() to print error reason
+ id 1Xo9jk-0001gs-V5
+ for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 11:35:54 +0000
+Message-ID: <1415705730.22887.150.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH V6] UBI: Extend UBI layer debug/messaging capabilities
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Ben Shelton <ben.shelton@ni.com>
-Date: Tue, 11 Nov 2014 13:10:35 +0200
-In-Reply-To: <1414781431-2911-5-git-send-email-ben.shelton@ni.com>
-References: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
- <1414781431-2911-5-git-send-email-ben.shelton@ni.com>
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Date: Tue, 11 Nov 2014 13:35:30 +0200
+In-Reply-To: <5461DCA0.5040108@codeaurora.org>
+References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>
+ <5460F7D8.2030100@nod.at> <1415642273.8868.8.camel@perches.com>
+ <5461C7C6.6060604@codeaurora.org> <1415694886.16070.3.camel@perches.com>
+ <5461CF56.5010407@nod.at> <5461DCA0.5040108@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
- Subodh Nijsure <snijsure@grid-net.com>, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pushed this, but made some amendments.
+On Tue, 2014-11-11 at 11:53 +0200, Tanya Brokhman wrote:
+> Artem - since you're the final call on this please list what you would 
+> like me to upload in regards to this and I'll post another version.
 
-Now all 4 are in the master branch. Would you please re-test them again
-and confirm that they are fine. Then I'll push them to the linux-next
-branch, unless you report that my amendments broke something.
+Let me help you to handle the rest of the public review complexity and
+amend your patch. You did good job, just do not drop the ball so
+quickly.
 
-Thank you!
+And BTW, I hate to say it, but you dropped CCes again, and this is very
+confusing. Would it be fine if asked to either avoid CCing so many
+people, or never drop what you CCed. Or if you drop, explain why,
+because now I do not know did you do it on purpose or by mistake, should
+I wait and let you re-send with all the CCes, or not.
 
-On Fri, 2014-10-31 at 13:50 -0500, Ben Shelton wrote:
-> @@ -100,24 +100,32 @@ static const struct file_operations empty_fops;
->  static int create_xattr(struct ubifs_info *c, struct inode *host,
->  			const struct qstr *nm, const void *value, int size)
->  {
-> -	int err;
-> +	int err, xattr_name_list_size;
-
-Renamed this to a shorter names_len.
-
-> -	if (host_ui->xattr_cnt >= MAX_XATTRS_PER_INODE)
-> +	if (host_ui->xattr_cnt >= MAX_XATTRS_PER_INODE) {
-> +		ubifs_err("ubifs xattr_cnt %d exceeds MAX_XATTR_PER_NODE (%d)",
-> +			  host_ui->xattr_cnt, MAX_XATTRS_PER_INODE);
-
-Improved this message - made it more user-friendly, and print the inode
-number.
-
-> +	if (xattr_name_list_size > XATTR_LIST_MAX) {
-> +		ubifs_err("xattr name list too large %d > %d",
-> +			  xattr_name_list_size, XATTR_LIST_MAX);
->  		return -ENOSPC;
-
-Ditto.
->  
-> +	if (err)
-> +		ubifs_err("cannot initialize extended attribute, error %d",
-> +			  err);
-
-Refactored this message and added the inode number.
-
-Artem.
+Thanks!
