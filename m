@@ -1,22 +1,21 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xo9s5-0004Fp-Hr
- for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 11:44:30 +0000
-Message-ID: <1415706244.22887.156.camel@sauron.fi.intel.com>
+ id 1XoABb-00057f-0v
+ for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 12:04:40 +0000
+Message-ID: <1415707434.22887.158.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH V6] UBI: Extend UBI layer debug/messaging capabilities
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Joe Perches <joe@perches.com>
-Date: Tue, 11 Nov 2014 13:44:04 +0200
-In-Reply-To: <1415642273.8868.8.camel@perches.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Tue, 11 Nov 2014 14:03:54 +0200
+In-Reply-To: <5461C5AD.5040705@nod.at>
 References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>
- <5460F7D8.2030100@nod.at> <1415642273.8868.8.camel@perches.com>
+ <5460F7D8.2030100@nod.at> <5461C5AD.5040705@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Tanya Brokhman <tlinder@codeaurora.org>,
- Richard Weinberger <richard@nod.at>, open list <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+Cc: Tanya Brokhman <tlinder@codeaurora.org>, linux-arm-msm@vger.kernel.org,
+ open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,34 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-11-10 at 09:57 -0800, Joe Perches wrote:
-> On Mon, 2014-11-10 at 18:37 +0100, Richard Weinberger wrote:
-> > Am 03.11.2014 um 14:58 schrieb Tanya Brokhman:
-> > > If there is more then one UBI device mounted, there is no way to
-> > > distinguish between messages from different UBI devices.
-> > > Add device number to all ubi layer message types.
+On Tue, 2014-11-11 at 09:15 +0100, Richard Weinberger wrote:
+> > Do we really want the function name in every log message?
+> > IMHO this is not wise except for pure debug logs.
 > 
-> Adding "error" and "warning" to the message logs is
-> duplicative to the KERN_<LEVEL> logging information.
-> 
-> > > Changes from V5:
-> > > 	- Added ptr verification @ ubi_err/ubi_msg/ubi_warn
-> > > 	Removed extra printing of ubi number
-> > > 	Removed new messages.
-> 
-> Did you all ever look at what I posted?
-> 
-> https://lkml.org/lkml/2014/10/14/280
-> 
-> smaller code, consistent prefixing, consistent with
-> typical kernel style, etc.
+> BTW: Why UBI-X? This looks odd. Either use UBIX or ubiX.
 
-No, I did not, because Tanya is someone who actually using and
-developing that stuff, and you are more of being on the watch for the
-kernel in general. So naturally, I use my limited time to first check
-her stuff. Sorry for this.
+How about something like this (untested):
 
-But Let me change small things in Tanya's patch first. The if you'd be
-kind enough to implement your changes on top of that, that'd be perfect.
 
-Artem.
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date: Tue, 11 Nov 2014 13:56:34 +0200
+Subject: [PATCH] UBI: clean-up printing helpers
+
+Let's prefix UBI messages with 'ubiX' instead of 'UBI-X' - this is more
+consistent with the way we name UBI devices.
+
+Also, commit "32608703 UBI: Extend UBI layer debug/messaging capabilities"
+added the function name print to 'ubi_msg()' - lets revert this change, since
+these messages are supposed to be just informative messages, and not debugging
+messages.
+
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/ubi/ubi.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index f80ffab..7a92283 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -50,13 +50,13 @@
+ #define UBI_NAME_STR "ubi"
+ 
+ /* Normal UBI messages */
+-#define ubi_msg(ubi, fmt, ...) pr_notice("UBI-%d: %s:" fmt "\n", \
+-					 ubi->ubi_num, __func__, ##__VA_ARGS__)
++#define ubi_msg(ubi, fmt, ...) pr_notice("ubi%d: " fmt "\n", \
++					 ubi->ubi_num, ##__VA_ARGS__)
+ /* UBI warning messages */
+-#define ubi_warn(ubi, fmt, ...) pr_warn("UBI-%d warning: %s: " fmt "\n", \
++#define ubi_warn(ubi, fmt, ...) pr_warn("ubi%d warning: %s: " fmt "\n", \
+ 					ubi->ubi_num, __func__, ##__VA_ARGS__)
+ /* UBI error messages */
+-#define ubi_err(ubi, fmt, ...) pr_err("UBI-%d error: %s: " fmt "\n", \
++#define ubi_err(ubi, fmt, ...) pr_err("ubi%d error: %s: " fmt "\n", \
+ 				      ubi->ubi_num, __func__, ##__VA_ARGS__)
+ 
+ /* Background thread name pattern */
+-- 
+1.9.3
