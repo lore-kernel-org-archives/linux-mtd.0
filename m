@@ -1,16 +1,24 @@
-Message-ID: <5461E18A.6000303@ti.com>
-Date: Tue, 11 Nov 2014 12:14:34 +0200
-From: Roger Quadros <rogerq@ti.com>
-MIME-Version: 1.0
-To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-Subject: Re: [PATCH 0/2] mtd: oobtest: Add parameter to ignore bitflip errors
- within specified limit
-References: <1413899608-3911-1-git-send-email-rogerq@ti.com>
-In-Reply-To: <1413899608-3911-1-git-send-email-rogerq@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xo8Wf-0005BD-J7
+ for linux-mtd@lists.infradead.org; Tue, 11 Nov 2014 10:18:17 +0000
+Message-ID: <1415701073.22887.126.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/4] UBIFS: Add xattr support for symlinks
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Ben Shelton <ben.shelton@ni.com>
+Date: Tue, 11 Nov 2014 12:17:53 +0200
+In-Reply-To: <20141110171253.GA18047@bshelton-desktop>
+References: <1414781431-2911-1-git-send-email-ben.shelton@ni.com>
+ <1414781431-2911-3-git-send-email-ben.shelton@ni.com>
+ <1415628106.22887.122.camel@sauron.fi.intel.com>
+ <20141110171253.GA18047@bshelton-desktop>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, akinobu.mita@gmail.com,
- linux-kernel@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+ Subodh Nijsure <snijsure@grid-net.com>, linux-mtd@lists.infradead.org,
+ adrian.hunter@intel.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, 2014-11-10 at 11:12 -0600, Ben Shelton wrote:
+> On 11/10, Artem Bityutskiy wrote:
+> > Could you please re-test this with any kernel and carefully verify
+> > symlinks. I think this should not work, because in case of symlinks we
+> > already store the link target path in the inode, and with this patch the
+> > target patch will be over-written with the SELinux label. I expect this
+> > to be seen easily on testing - symlink targets should be corrupted.
+> > 
+> > Artem.
+> > 
+> 
+> I retested this with a 3.18-rc3 kernel on one of our ARM-based targets.
+> The kernel has patch 1/4 with your changes, plus patches 2/4, 3/4, and
+> 4/4 as posted.
 
-On 10/21/2014 04:53 PM, Roger Quadros wrote:
-> Hi,
-> 
-> The oobtest case uses raw NAND read/writes to OOB area bypassing the error correction
-> mechanism and hence is bound to be affected by bitflip errors which are normal
-> in NAND memories. (e.g. we can never get DRA7-evm's NAND to fully pass
-> mtd_oobtest).
-> 
-> In these patches we add a module parameter "bitflip_limit" to specify how many
-> bitflips per page are tolerable. Not specifiing the parameter defaults to old
-> behaviour (i.e. zero bitflips tolerated).
-> Specifying bitflip_limit=1 makes us pass on DRA7-evm with 0 errors.
-> 
-> Introduce a new memcmpshow() function that shows the data byte where comparison failed.
-> This is useful for debugging. The same function is also used to calculate number of
-> bitflip errors over the data block.
+Ben, thanks for re-testing. And yes, I was wrong. Now I checked again
+and finally remembered how it works.
 
-Any comments on this series?
+So yes, symlink inode has data, and the target is in the data.
 
-cheers,
--roger
+If we add an extattr to a symlink, we create a separate inode for that
+xattr under the symlink inode. Any new xattr gets a new inode.
 
-> 
-> Roger Quadros (2):
->   mtd: mtd_oobtest: Show the verification error location and data
->   mtd: mtd_oobtest: add bitflip_limit parameter
-> 
->  drivers/mtd/tests/oobtest.c | 77 +++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 64 insertions(+), 13 deletions(-)
-> 
+Artem.
