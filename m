@@ -1,10 +1,10 @@
 From: bpqw <bpqw@micron.com>
-To: Graham Moore <grmoore@opensource.altera.com>, Brian Norris
- <computersforpeace@gmail.com>
+To: Jagan Teki <jagannadh.teki@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>
 Subject: RE: [V5 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
  Micron spi nor
-Date: Wed, 12 Nov 2014 00:58:31 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315EB0DA@NTXXIAMBX02.xacn.micron.com>
+Date: Wed, 12 Nov 2014 01:19:18 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315EB0E1@NTXXIAMBX02.xacn.micron.com>
 References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
  <201409251211.57183.marex@denx.de>
  <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
@@ -12,10 +12,11 @@ References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
  <A765B125120D1346A63912DDE6D8B6315EA24E@NTXXIAMBX02.xacn.micron.com>
  <54613259.4070903@opensource.altera.com>
  <alpine.DEB.2.02.1411111336010.1356@lava-test-server>
-In-Reply-To: <alpine.DEB.2.02.1411111336010.1356@lava-test-server>
+ <CAD6G_RQFV9LfBzVbureBiCneW+PpLzSdUCyz9L6D+EhE4gT+WA@mail.gmail.com>
+In-Reply-To: <CAD6G_RQFV9LfBzVbureBiCneW+PpLzSdUCyz9L6D+EhE4gT+WA@mail.gmail.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 Cc: Marek Vasut <marex@denx.de>, bpqw <bpqw@micron.com>,
  "geert+renesas@glider.be" <geert+renesas@glider.be>,
@@ -32,50 +33,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->Hi, I'm having trouble with this patch using a Cadence QSPI controller and=
- Micron n25q00 part.
-
->I can use quad commands in Extended SPI mode, but I can't make this EVCR Q=
-uad mode work.
-
-
-Yes,but if you use quad commands in Extended spi mode,only for Quad command=
-s,the command line is DQ0,
-Address/data line is DQ0,DQ1,DQ2 and DQ3(1-x-4).=20
-But if in Quad I/O mode,for all the commands,the command/address/data line =
-will be 4,they are DQ0,DQ1,DQ2 and DQ3(4-x-4).
-
->The Cadence QSPI Controller has fields to configure the quad transfer, and=
- can support quad opcode,=20
->quad address, and quad data, or some combination.  There is a chart in the=
- docs which shows the combinations for various read commands.
-
->Problem is, I've tried all of the combinations and all I get is FF with th=
-is EVCR patch.
-
-This maybe your spi controller is still extended mode,=20
-Once EVCR bit 7 is set to 0, the spi nor device will operate in quad I/O.Co=
-mmand-address-data line is 4-x-4.
-So after send WRITE EVCR command , spi controller also  must transfer to qu=
-ad I/O Mode,and set its Command-address-data line also
-Should be 4-x-4 .
-
->If I don't set the quad mode in the EVCR, then I can use quad read command=
-s no problem.
-Yes,you don't set the quad mode in the EVCR,you can use quad read commands,=
-but this patch is for enable Micron SPI nor Quad I/O mode,
-If you want to enable it ,you must set EVCR.
-
->Bottom line, with the Cadence QSPI controller, if I use quad commands in E=
-xtended SPI mode, then all good.  If I use this EVCR quad mode, then all ba=
-d.
-
->Anybody else have a Cadence QSPI controller and using EVCR quad mode succe=
-ssfully?
-
->Thanks,
->Graham Moore
-
-Hi,Brian
-
-Whether this patch can be merged?thanks.
+PkkgaGF2ZSBhbG1vc3QgdmVyaWZpZWQgYWxsIHRoZSBtaWNyb3MgcGFydHMgZm9yIG9wZXJhdGlu
+ZyBxdWFkIG1vZGUgYW5kIHRoZSBxdWFkIGVuYWJsZSBiaXQgaXMgDQo+dm9sYXRpbGUgYnkgZGVm
+YXVsdCBhbmQgbm8gbmVlZCB0byBzZXQgaXQgb24gc29mdHdhcmUuDQoNCj5XaHkgdGhpcyBjb2Rl
+IGlzIG1lYW50IGZvciAtIGRvZXMgbWljcm9uIGhhcyBjaGFuZ2VkIHRoaXMgYml0IG9wZXJhdGlv
+biBvbiBuZXdseSBhZGRlZCBwYXJ0cz8NCg0KPnRoYW5rcyENCj4tLQ0KPkphZ2FuLg0KDQpGb3Ig
+TWljcm9uIFNwaSBub3JmbGFzaCxpZiB5b3Ugd2FudCB0byBtYWtlIGl0IHdvcmsgUXVhZCBJL08g
+bW9kZSx5b3UgY2FuIGRvIGl0IGJ5IHNldA0KVHdvIHJlZ2lzdGVycyxOb252b2xhdGlsZSBDb25m
+aWd1cmF0aW9uIHJlc2lzdGVyKE5WQ1IpIGFuZCBFbmhhbmNlZCB2b2xhdGlsZSBjb25mdXJhdGlv
+biByZWdpc3RlcihFVkNSKSwNCmJ1dCBhY2NvcmRpbmcgdG8gc3BpLW5vci5jLGFuZCBtaWNyb24g
+c3BpIG5vcix3ZSByZWNvbW1lbmQgdGhhdCBpZiB3YW50IHRvIGVuYWJsZSBNaWNyb24gc3BpIG5v
+ciBRdWFkIEkvTw0KbW9kZSx0aGUgYmVzdCB3YXkgaXMgdG8gc2V0IEVWQ1IuDQpPZiBjb3Vyc2Us
+eW91IGNhbiB1c2UgUXVhZC9EdWFsIG9wZXJhdGlvbiBjb21tYW5kIHRvIHJlYWQvd3JpdGUgTWlj
+cm9uIHNwaSBub3IgaW4gdGhlIHNwaSBub3IgRXh0ZW5kZWQgSS9PIG1vZGUuDQpCdXQgdGhlaXIg
+Y29tbWFuZC1hZGRyZXNzLWRhdGEgaXMgZGlmZmVyZW50Lg0KDQpUaGUgcHVycG9zZSBvZiB0aGlz
+IHBhdGNoIGlzIG9ubHkgdG8gZW5hYmxlIE1pY3JvbiBzcGkgbm9yIFF1YWQgSS9PIG1vZGUsaWYg
+d2FudCB0byBtYWtlIE1pY3JvbiBzcGkgbm9yIHdvcmsgDQpVbmRlciBRdWFkIEkvTyBtb2RlLg0K
+DQpIaSxCcmlhbg0KDQpIb3cgYWJvdXQgdGhpcyBwYXRjaD9QbGVhc2UgZ2l2ZSBtZSBzb21lIHRp
+cHMsdGhhbmtzLg0K
