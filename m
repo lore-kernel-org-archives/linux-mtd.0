@@ -1,12 +1,8 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XoMxu-00037w-0z
- for linux-mtd@lists.infradead.org; Wed, 12 Nov 2014 01:43:23 +0000
 From: <chenjie6@huawei.com>
 To: <linux-mtd@lists.infradead.org>
 Subject: [PATCH] jffs2: fix soft lockup when read flash error
-Date: Wed, 12 Nov 2014 17:40:48 +0800
-Message-ID: <1415785248-12910-1-git-send-email-chenjie6@huawei.com>
+Date: Wed, 12 Nov 2014 19:01:48 +0800
+Message-ID: <1415790108-17340-1-git-send-email-chenjie6@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: kexing@huawei.com, linux-kernel@vger.kernel.org, gaozhihui@huawei.com,
@@ -79,7 +75,7 @@ jffs2_find_nextblock
                 but jffs2_block_check_erase failed or jffs2_write_nand_cleanmarker failed
 The jffs2_find_nextblock return -EAGAIN ,so soft lockup had occurred
 
-Cc: <stable@vger.kernel.org> # 3.17+ 
+Cc: <stable@vger.kernel.org> 
 Signed-off-by: chenjie <chenjie6@huawei.com>
 
 ---
