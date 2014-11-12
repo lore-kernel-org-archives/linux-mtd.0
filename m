@@ -1,19 +1,30 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XoVyp-00089V-OP
- for linux-mtd@lists.infradead.org; Wed, 12 Nov 2014 11:20:56 +0000
-Message-ID: <1415791229.22887.206.camel@sauron.fi.intel.com>
-Subject: Re: suspect UBIFS async operations causing issues during reboot
+ id 1XoWWZ-0001JY-Tv
+ for linux-mtd@lists.infradead.org; Wed, 12 Nov 2014 11:55:48 +0000
+Message-ID: <1415793323.22887.233.camel@sauron.fi.intel.com>
+Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
+ handling
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Scott Branden <sbranden@broadcom.com>
-Date: Wed, 12 Nov 2014 13:20:29 +0200
-In-Reply-To: <5459E090.1010300@broadcom.com>
-References: <5459E090.1010300@broadcom.com>
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Date: Wed, 12 Nov 2014 13:55:23 +0200
+In-Reply-To: <54627350.9080509@codeaurora.org>
+References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
+ <544D5BEC.50802@nod.at> <544E052B.1040505@codeaurora.org>
+ <544E08AE.7080506@nod.at> <5450C997.9010205@codeaurora.org>
+ <5450D6C4.4040400@nod.at> <54538ABC.1040605@codeaurora.org>
+ <5453ABF9.4070208@nod.at> <5453AD4D.2000303@nod.at>
+ <545630E1.8020505@codeaurora.org>
+ <1415261234.958.171.camel@sauron.fi.intel.com>
+ <545B66BA.4090904@codeaurora.org>
+ <1415350722.958.286.camel@sauron.fi.intel.com>
+ <54627350.9080509@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: richard@nod.at, jlauruhn@micron.com, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +34,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Scott,
+On Tue, 2014-11-11 at 22:36 +0200, Tanya Brokhman wrote:
+> Unfortunately none. This is done for a new device that we received just 
+> now. The development was done on a virtual machine with nandsim. Testing 
+> was more of stability and regression
 
-sorry for late reply, but better later than never.
+OK. So the implementation is theory-driven and misses the experimental
+prove. This means that building a product based on this implementation
+has certain amount of risk involved.
 
-On Wed, 2014-11-05 at 00:32 -0800, Scott Branden wrote:
-> Over 1000's of reboots we eventually find that the NAND has 
-> uncorrectable ECC errors reported on a random page when it is mounted.
+And from where I am, the theoretical base for the solution also does not
+look very strong.
 
-How do you find the uncorrectable errors? Do you scan the entire NAND
-chip after you boot up? Or do you read all files stored in the UBIFS
-file-system, or you do not do anything special, just mount and notice
-ECC error messages in dmesg? Does UBIFS fail to mount?
+> > The advantages of the "read all periodically" approach were:
+> >
+> > 1. Simple, no modifications needed
+> > 2. No need to write if the media is read-only, except when scrubbing
+> > happens.
+> > 3. Should cover all the NAND effects, including the "radiation" one.
+> 
+> Disadvantages (as I see it):
+> 1. performance hit: when do you trigger the "read-all"? will effect 
+> performance
 
-What is the time-window where power cut may lead to problems in your
-NAND. And how these problems are seen by the software? I mean, what
-happens to the data? Can it become "mostly OK", except of one or few
-pages with too many bit-flips? I understand that during erase all 0 bits
-"become 1s", but not instanteneously, so in case of an interrupt they
-may read as 1 or 0 randomly. But the bits which were 1s - nothing
-happens, they stay to be 1s?
+Right. We do not know how often, just like we do not know how often and
+how much (read counter threshold) in your proposal.
 
-> We suspect the problem is the asynchronous nature of the UBIFS 
-> operations.  Perhaps the small write buffer that can take 3-5 seconds to 
-> be written or some other operation occuring in UBI/UBIFS?  I don't think 
-> the shutdown of the filesystem is dealing with all the threads properly.
+Performance - sure, matter of experiment, just like the performance of
+your solution. And as I notice, energy too (read - battery life).
 
-Yes, writes are asynchronous. There is the write-buffer of the NAND page
-size, and there is Linux write-back, which flushes dirty data in
-background (standard stuff for all file-systems)
+In your solution you have to do more work maintaining the counters and
+writing them. With read solution you do more work reading data.
 
-> <REBOOT happens here with NAND ERASE COMMAND in progress corrupting 
-> 0x18700000 NAND Addresses!>  Corrupted NAND only happens when erase 
-> operation in progress when restarting system happens.
+The promise that reading may be done in background, when there is no
+other I/O.
 
-I acknowledge that there may be problems with interrupted erase. We saw
-them in case of NOR, where erase is very slow and it is easy to
-interrupt it. We never saw this for NAND, but I may well imagine that
-this may be an issue in case of NAND.
+> 2. finds bitflips only when they are present instead of preventing them 
+> from happening
 
-For NOR, we mitigated the issue by "invalidating" the PEB before
-erasing. Check the 'nor_erase_prepare()' function in
-'drivers/mtd/ubi/io.c' and its commentaries.
+But is this true? I do not see how is this true in your case. Yo want to
+scrub by threshold, which is a theoretical value with very large
+deviation from the real one. And there may be no real one even - the
+real one depends on the erase block, it depends on the I/O patterns, and
+it depends on the temperature.
 
-The first thing you may try is - add a similar quick hack to UBI and
-invalidate the first NAND page or the first 2 NAND pages (depends on
-whether you use sub-pages or not).
+You will end up scrubbing a lot earlier than needed. Here comes the
+performance loss too (and energy). And you will eventually end up
+scrubbing too late.
 
-You can just write all zeroes. The point is to corrupt data, so that the
-subsequent read results in a CRC check failure.
+I do not see how your solution provides any hard guarantee. Please,
+explain how do you guarantee that my PEB does not bit-rot earlier than
+read counter reaches the threshold? It may bit-rot earlier because it is
+close to be worn out, or because of just higher temperature, or because
+it has a nano-defect.
 
-See what happens.
+> Perhaps our design is an overkill for this and not covering 100% of te 
+> usecases. But it was requested by our customers to handle read-disturb 
+> and data retention specifically (as in "prevent" and not just "fix"). 
+> This is due to a new NAND device that should operate in high temperature 
+> and last for ~15-20 years.
 
-
-Some general notes.
-
-In general, if UBI or UBIFS decided to erase an LEB, the data in there
-are not longer needed. E.g., when GC of UBIFS moves all the valid data
-to another PEB, the older PEB is not needed, it is scheduled for
-erasure. The erasure happens asynchronously. If you have a power cut,
-and the PEB erase operation was interrupted, and you end up with a PEB
-which is "mostly fine", son next time you mount UBIFS it may start
-reading from it (e.g., if this was a journal PEB), and get errors.
-
-Now, my point is that this should not be a fundamental problem for
-UBIFS. This should be fixable. It may need good UBIFS knowledge to fix,
-and time, though.
-
-One way to deal with this is to emulate erase interruptions at UBI
-level. Similarly how we implemented the power cut testing infrastructure
-in UBIFS.
-
-On the other hand, if you can invalidate the PEB before you start
-erasing, this should just solve the problem. So I'd start with this, and
-see what happens. You may have more than one type of issues, so fixing
-the erase interrupt issue this way quickly may let you exlculde this
-type of problems. And generally, I am not opposed to this solution in
-upstream too, if it works for everyone.
+I understand the whole customer orientation concept. But for me so far
+the solution does not feel like something suitable to a customer I could
+imagine. I mean, if I think about me as a potential customer, I would
+just want my data to be safe and covered from all the NAND effects. I
+would not want counters, I'd want the result. And in the proposed
+solution I would not see how I'd get the guaranteed result. But of
+course I do not know the customer requirements that you've got.
