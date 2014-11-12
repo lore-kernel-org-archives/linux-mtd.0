@@ -1,15 +1,15 @@
 Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XoWWZ-0001JY-Tv
- for linux-mtd@lists.infradead.org; Wed, 12 Nov 2014 11:55:48 +0000
-Message-ID: <1415793323.22887.233.camel@sauron.fi.intel.com>
+ id 1XoWiV-0001hx-TZ
+ for linux-mtd@lists.infradead.org; Wed, 12 Nov 2014 12:08:08 +0000
+Message-ID: <1415794063.22887.245.camel@sauron.fi.intel.com>
 Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
  handling
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Date: Wed, 12 Nov 2014 13:55:23 +0200
-In-Reply-To: <54627350.9080509@codeaurora.org>
+To: Richard Weinberger <richard@nod.at>
+Date: Wed, 12 Nov 2014 14:07:43 +0200
+In-Reply-To: <54628207.5030205@nod.at>
 References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
  <544D5BEC.50802@nod.at> <544E052B.1040505@codeaurora.org>
  <544E08AE.7080506@nod.at> <5450C997.9010205@codeaurora.org>
@@ -19,12 +19,12 @@ References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>
  <1415261234.958.171.camel@sauron.fi.intel.com>
  <545B66BA.4090904@codeaurora.org>
  <1415350722.958.286.camel@sauron.fi.intel.com>
- <54627350.9080509@codeaurora.org>
+ <54627350.9080509@codeaurora.org> <54628207.5030205@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: richard@nod.at, jlauruhn@micron.com, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org
+Cc: linux-arm-msm@vger.kernel.org, jlauruhn@micron.com,
+ linux-mtd@lists.infradead.org, Tanya Brokhman <tlinder@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,70 +34,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-11-11 at 22:36 +0200, Tanya Brokhman wrote:
-> Unfortunately none. This is done for a new device that we received just 
-> now. The development was done on a virtual machine with nandsim. Testing 
-> was more of stability and regression
+On Tue, 2014-11-11 at 22:39 +0100, Richard Weinberger wrote:
+> Please don't (ab)use fastmap. If you really need persistent read-counters use an internal UBI volume.
 
-OK. So the implementation is theory-driven and misses the experimental
-prove. This means that building a product based on this implementation
-has certain amount of risk involved.
+Just like you, I do not think the proposed solution is the right answer
+to the problem, at least so far. But if we imagine that Tanya proves
+that the counters is the right thing, storing them in fastmap would be
+the first thing which comes to mind. Just calling this an abuse without
+explaining (even if this is right) is not very collaborative.
 
-And from where I am, the theoretical base for the solution also does not
-look very strong.
+Let me see why would that be an "abuse"... Probably because of the
+nature of the data. Fastmap contains data which only changes in case of
+writes (well, more precisely, erases, but those usually go are related
+to writes). Read counters are completely opposite - they stay constant
+when we write and change when we read.
 
-> > The advantages of the "read all periodically" approach were:
-> >
-> > 1. Simple, no modifications needed
-> > 2. No need to write if the media is read-only, except when scrubbing
-> > happens.
-> > 3. Should cover all the NAND effects, including the "radiation" one.
-> 
-> Disadvantages (as I see it):
-> 1. performance hit: when do you trigger the "read-all"? will effect 
-> performance
+Putting them all to the same on-flash area is possible, but is it
+optimal? I wouldn't be so sure, I see cons. and pros.
 
-Right. We do not know how often, just like we do not know how often and
-how much (read counter threshold) in your proposal.
+Any other reasons?
 
-Performance - sure, matter of experiment, just like the performance of
-your solution. And as I notice, energy too (read - battery life).
-
-In your solution you have to do more work maintaining the counters and
-writing them. With read solution you do more work reading data.
-
-The promise that reading may be done in background, when there is no
-other I/O.
-
-> 2. finds bitflips only when they are present instead of preventing them 
-> from happening
-
-But is this true? I do not see how is this true in your case. Yo want to
-scrub by threshold, which is a theoretical value with very large
-deviation from the real one. And there may be no real one even - the
-real one depends on the erase block, it depends on the I/O patterns, and
-it depends on the temperature.
-
-You will end up scrubbing a lot earlier than needed. Here comes the
-performance loss too (and energy). And you will eventually end up
-scrubbing too late.
-
-I do not see how your solution provides any hard guarantee. Please,
-explain how do you guarantee that my PEB does not bit-rot earlier than
-read counter reaches the threshold? It may bit-rot earlier because it is
-close to be worn out, or because of just higher temperature, or because
-it has a nano-defect.
-
-> Perhaps our design is an overkill for this and not covering 100% of te 
-> usecases. But it was requested by our customers to handle read-disturb 
-> and data retention specifically (as in "prevent" and not just "fix"). 
-> This is due to a new NAND device that should operate in high temperature 
-> and last for ~15-20 years.
-
-I understand the whole customer orientation concept. But for me so far
-the solution does not feel like something suitable to a customer I could
-imagine. I mean, if I think about me as a potential customer, I would
-just want my data to be safe and covered from all the NAND effects. I
-would not want counters, I'd want the result. And in the proposed
-solution I would not see how I'd get the guaranteed result. But of
-course I do not know the customer requirements that you've got.
+Artem.
