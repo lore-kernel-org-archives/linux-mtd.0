@@ -1,19 +1,31 @@
-Date: Wed, 12 Nov 2014 10:02:54 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: pekon <pekon@pek-sem.com>
-Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
-Message-ID: <20141112180253.GJ26481@atomide.com>
-References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
- <20141106180333.GZ31454@atomide.com> <545C9267.7060301@ti.com>
- <545C97AB.4040402@ti.com> <20141107224832.GG31454@atomide.com>
- <545FC08D.8000008@pek-sem.com>
+Received: from mail-yk0-x22e.google.com ([2607:f8b0:4002:c07::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xof14-0005N9-IB
+ for linux-mtd@lists.infradead.org; Wed, 12 Nov 2014 20:59:51 +0000
+Received: by mail-yk0-f174.google.com with SMTP id q9so1424331ykb.19
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Nov 2014 12:59:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <545FC08D.8000008@pek-sem.com>
-Cc: computersforpeace@gmail.com, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
- linux-omap@vger.kernel.org, dwmw2@infradead.org, Roger Quadros <rogerq@ti.com>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6315E7AC2@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
+ <201409251211.57183.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
+ <201409261046.07132.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315E7AC2@NTXXIAMBX02.xacn.micron.com>
+Date: Thu, 13 Nov 2014 02:29:29 +0530
+Message-ID: <CAD6G_RQGsLP35E-ecNUvSZyGht4bta4dmnMwLdg+QbEp0bTGmg@mail.gmail.com>
+Subject: Re: [PATCH 1/1 v3] driver:mtd:spi-nor: Add quad I/O support for
+ Micron spi nor
+From: Jagan Teki <jagannadh.teki@gmail.com>
+To: bpqw <bpqw@micron.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Marek Vasut <marex@denx.de>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +35,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* pekon <pekon@pek-sem.com> [141109 11:31]:
-> On Saturday 08 November 2014 04:18 AM, Tony Lindgren wrote:
-> >
-> >Right. I doubt anybody has bch8 rootfs on LDP.. And considering u-boot
-> >must be ham1 to boot at all, that's what we should change for the
-> >devices that do not have not standardized on bch8.
-> >
-> My view on this is slightly different:
-> - Lately, everyone seems to have migrated to BCH8.
-> 
-> - Also HAM1 does not have strength to fix bitflips in aging NAND. So if
-> someone already has OMAP3-LDP deployed on field then its NAND would have
-> already aged to such an extend that HAM1 may not be sufficient.
+On 27 October 2014 05:39, bpqw <bpqw@micron.com> wrote:
+> This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
+>
+> For Micron SPI NOR flash, enabling or disabling quad I/O protocol is controlled
+> by EVCR (Enhanced Volatile Configuration Register), Quad I/O protocol bit 7.
+> When EVCR bit 7 is reset to 0, the SPI NOR flash will operate in quad I/O mode.
+>
+> Signed-off-by: bean huo <beanhuo@micron.com>
+> Acked-by: Marek Vasut <marex@denx.de>
+> ---
+>  v1-v2:modified to that capture wait_till_ready()
+>          return value,if error,directly return its
+>          the value.
+>  v2-v3:directly use the reurning error value of
+>          read_reg and write_reg,instead of -EINVAL.
+>
+>  drivers/mtd/spi-nor/spi-nor.c |   46 +++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spi-nor.h   |    6 ++++++
+>  2 files changed, 52 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c index b5ad6be..486b167 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -878,6 +878,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
+>         return 0;
+>  }
+>
+> +static int micron_quad_enable(struct spi_nor *nor) {
+> +       int ret, val;
+> +
+> +       ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
+> +       if (ret < 0) {
+> +               dev_err(nor->dev, "error %d reading EVCR\n", ret);
+> +               return ret;
+> +       }
 
-OK so it makes sense to keep it as BCH8 then. Would be nice to get
-the writing u-boot from kernel issue fixed somehow though as people
-are hitting that for sure.
- 
-> My question is..
-> Moving back to HAM1 should be decided based on statistics rather than rule
-> of breaking backward compatibility. So please review:
-> (1) How many user of OMAP3-Zoom or other old boards complaining about using
-> BCH8 in mainline kernel? OR
+Best to define read_evsr()
 
-0
+> +
+> +       write_enable(nor);
+> +
+> +       /* set EVCR ,enable quad I/O */
+> +       nor->cmd_buf[0] = val & ~EVCR_QUAD_EN_MICRON;
+> +       ret = nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
+> +       if (ret < 0) {
+> +               dev_err(nor->dev,
+> +                       "error while writing EVCR register\n");
+> +               return ret;
+> +       }
+> +
+> +       ret = wait_till_ready(nor);
+> +       if (ret)
+> +               return ret;
 
-> (2) How many users of OMAP3 legacy boards are migrating to newer kernel?
+I don't think this will ready w/o wait time or something - may be use
+if (wait_till_ready(nor))
+       return 1;
 
-Quite a few for sure, but are probably also using rootfs on MMC instead.
- 
-> At-least I have not, rather most of the OMAP3 users I interacted via TI's
-> E2E forum wanted to migrate to BCH8 or even BCH16, as HAM1 was not
-> sufficient for their usage.
-> 
-> So whatever you decide on this topic, please be cautious that you don't
-> re-invent work for yourself, as I did. It took me lot of time and testing
-> effort on multiple boards to migrate HAM1 to BCH8, And add BCH16 for newer
-> devices.
+> +
+> +       /* read EVCR and check it */
+> +       ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
+> +       if (ret < 0) {
+> +               dev_err(nor->dev, "error %d reading EVCR\n", ret);
+> +               return ret;
+> +       }
+> +       if (val & EVCR_QUAD_EN_MICRON) {
+> +               dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
+> +               return -EINVAL;
+> +       }
 
-Right no objections to using BCH8 for rootfs, except it stopped working
-over past year or so.
+IMHO, use read_evcr() as defined above and write the finite statement code like
+        ret = read_evcr(nor);
+        if (!(ret > 0 && (ret & EVCR_QUAD_EN_MICRON))) {
+                dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
+                return -EINVAL;
+        }
 
-And it seems the settings should be partition specific because of u-boot
-requiring HAM1.
+> +
+> +       return 0;
+> +}
+> +
+>  static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)  {
+>         int status;
+> @@ -890,6 +929,13 @@ static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)
+>                         return -EINVAL;
+>                 }
+>                 return status;
+> +       case CFI_MFR_ST:
+> +               status = micron_quad_enable(nor);
+> +               if (status) {
+> +                       dev_err(nor->dev, "Micron quad-read not enabled\n");
+> +                       return -EINVAL;
+> +               }
+> +               return status;
+>         default:
+>                 status = spansion_quad_enable(nor);
+>                 if (status) {
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h index 9e6294f..d71b659 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -56,6 +56,10 @@
+>  /* Used for Spansion flashes only. */
+>  #define SPINOR_OP_BRWR         0x17    /* Bank register write */
+>
+> +/* Used for Micron flashes only. */
+> +#define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
+> +#define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
+> +
+>  /* Status Register bits. */
+>  #define SR_WIP                 1       /* Write in progress */
+>  #define SR_WEL                 2       /* Write enable latch */
+> @@ -67,6 +71,8 @@
+>
+>  #define SR_QUAD_EN_MX          0x40    /* Macronix Quad I/O */
+>
+> +#define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
+> +
+>  /* Flag Status Register bits */
+>  #define FSR_READY              0x80
+>
 
-Regards,
-
-Tony
+thanks!
+-- 
+Jagan.
