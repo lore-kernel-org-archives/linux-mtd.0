@@ -1,14 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XofD8-0007Cg-KW
- for linux-mtd@lists.infradead.org; Wed, 12 Nov 2014 21:12:20 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] mtd-www: UBI: Fastmap: Add a notes section
-Date: Wed, 12 Nov 2014 22:11:44 +0100
-Message-Id: <1415826705-7510-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, computersforpeace@gmail.com,
- dwmw2@infradead.org, dedekind1@gmail.com
+Received: from mail-bn1bon0136.outbound.protection.outlook.com
+ ([157.56.111.136] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xonjm-0001Pl-Gb
+ for linux-mtd@lists.infradead.org; Thu, 13 Nov 2014 06:18:35 +0000
+Message-ID: <1415859483.15957.49.camel@freescale.com>
+Subject: Re: [PATCH 1/1][v2] IFC: Change IO accessor based on endianness
+From: Scott Wood <scottwood@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Thu, 13 Nov 2014 00:18:03 -0600
+In-Reply-To: <20141112070737.GC29070@brian-ubuntu>
+References: <1413785506-443-1-git-send-email-b44839@freescale.com>
+ <1415056966.23458.305.camel@snotra.buserror.net>
+ <20141112070737.GC29070@brian-ubuntu>
+Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: B07421@freescale.com, linux-mtd@lists.infradead.org,
+ gregkh@linuxfoundation.org, arnd@arndb.de,
+ Jaiprakash Singh <b44839@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,35 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a notes section to clarify that fastmap is an optional
-feature and it can happen that a full scan is still done if fastmap
-is enabled.
+On Tue, 2014-11-11 at 23:07 -0800, Brian Norris wrote:
+> On Mon, Nov 03, 2014 at 05:22:46PM -0600, Scott Wood wrote:
+> > On Mon, 2014-10-20 at 11:41 +0530, Jaiprakash Singh wrote:
+> > > From: Jaiprakash Singh <b44839@freescale.com>
+> > > 
+> > > IFC registers can be of type Little Endian
+> > > or big Endian depending upon Freescale SoC.
+> > > Here SoC defines the register type of
+> > > IFC IP.So update accessors functions with
+> > > common IFC accessors functions to take
+> > > care both type of endianness.
+> > > 
+> > > IFC IO accressor are set at run time based
+> > > on IFC IP registers endianness.IFC node in
+> > > DTS file contains information about
+> > > endianness.
+> > > 
+> > > Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
+> > > ---
+> > > Changes for v2
+> > > 	- Moved IFC accessor function to fsl_ifc.h
+> > > 	from fsl_ifc.c and make them inline static
+> > > 
+> > > .../bindings/memory-controllers/fsl/ifc.txt        |    2 +
+> > >  drivers/memory/fsl_ifc.c                           |   72 ++++++----
+> > >  drivers/mtd/nand/fsl_ifc_nand.c                    |  151 +++++++++++---------
+> > >  include/linux/fsl_ifc.h                            |   42 ++++++
+> > >  4 files changed, 167 insertions(+), 100 deletions(-)
+> > 
+> > Given that this spans MTD and non-MTD files, whose tree should this go
+> > through?
+> 
+> I already have one patch that touches these same files:
+> 
+>   http://git.infradead.org/l2-mtd.git/commitdiff/096916610f415e07cfe71d71a391011c617be5ed
+> 
+> I don't actually see a MAINTAINERS entry for most of drivers/memory/, so
+> I didn't think that was a problem. If the (fixed) full patch can be
+> based on l2-mtd.git and submitted with linux-mtd@infradead.org in CC, I
+> can consider taking it, pending proper review.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- doc/ubi.xml | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+OK.
 
-diff --git a/doc/ubi.xml b/doc/ubi.xml
-index 393b27b..4bded98 100644
---- a/doc/ubi.xml
-+++ b/doc/ubi.xml
-@@ -1269,6 +1269,16 @@ where a full scan takes too long. E.g. On 4GiB NAND chips a full scan takes
- several seconds whereas a fast attach needs less than one second.</p>
- 
- 
-+<h4><a name="L_fastmap_notes">Notes</a></h4>
-+
-+<p>Enabling fastmap does not guarantee that every attach process can be done
-+in a fast way. In some situations a full scan is still needed.
-+This can happen in two cases, (i) if a power cut occurred while a fastmap was
-+written to the flash or (ii) UBI ran out of PEBs while writing the fastmap.
-+The latter case can happen if a massive amount of IO errors happen while writing
-+and UBI cannot find an usable PEB.
-+</p>
-+
- 
- <h2><a name="L_ubiblock">R/O block devices on top of UBI volumes</a></h2>
- 
--- 
-2.1.0
+-Scott
