@@ -1,24 +1,20 @@
-Received: from mail-yk0-x22c.google.com ([2607:f8b0:4002:c07::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XooIr-0006Fs-Ms
- for linux-mtd@lists.infradead.org; Thu, 13 Nov 2014 06:54:50 +0000
-Received: by mail-yk0-f172.google.com with SMTP id 10so5148022ykt.31
- for <linux-mtd@lists.infradead.org>; Wed, 12 Nov 2014 22:54:27 -0800 (PST)
+Message-ID: <54649612.8090402@ti.com>
+Date: Thu, 13 Nov 2014 13:29:22 +0200
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1415634895-3082-2-git-send-email-alison_chaiken@mentor.com>
-References: <1415634895-3082-1-git-send-email-alison_chaiken@mentor.com>
- <1415634895-3082-2-git-send-email-alison_chaiken@mentor.com>
-Date: Thu, 13 Nov 2014 12:24:27 +0530
-Message-ID: <CAD6G_RRdjjim_H_Vm1=_TaVWCW+S8bTV4Q0mWQeG8fmnQXaeRA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: m25p80: Add support for serial flash Spansion
- S25FL132K
-From: Jagan Teki <jagannadh.teki@gmail.com>
-To: alison_chaiken@mentor.com
-Content-Type: text/plain; charset=UTF-8
-Cc: Huang Shijie <shijie8@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- ben@decadent.org.uk
+To: Tony Lindgren <tony@atomide.com>, pekon <pekon@pek-sem.com>, "Rini, Tom"
+ <trini@ti.com>
+Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
+References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
+ <20141106180333.GZ31454@atomide.com> <545C9267.7060301@ti.com>
+ <545C97AB.4040402@ti.com> <20141107224832.GG31454@atomide.com>
+ <545FC08D.8000008@pek-sem.com> <20141112180253.GJ26481@atomide.com>
+In-Reply-To: <20141112180253.GJ26481@atomide.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: computersforpeace@gmail.com, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,65 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10 November 2014 21:24,  <alison_chaiken@mentor.com> wrote:
-> From: Knut Wohlrab <knut.wohlrab@de.bosch.com>
->
-> Signed-off-by: Knut Wohlrab <knut.wohlrab@de.bosch.com>
-> Signed-off-by: Alison Chaiken <alison_chaiken@mentor.com>
->
-> Conflicts:
->
->         drivers/mtd/devices/m25p80.c
-> ---
->  drivers/mtd/devices/m25p80.c  | 4 +---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  2 files changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 35e7e98..2783e94 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -252,7 +252,6 @@ static int m25p_remove(struct spi_device *spi)
->         return mtd_device_unregister(&flash->mtd);
->  }
->
-> -
->  /*
->   * XXX This needs to be kept in sync with spi_nor_ids.  We can't share
->   * it with spi-nor, because if this is built as a module then modpost
-> @@ -279,7 +278,7 @@ static const struct spi_device_id m25p_ids[] = {
->         {"s25fl512s"},  {"s70fl01gs"},  {"s25sl12800"}, {"s25sl12801"},
->         {"s25fl129p0"}, {"s25fl129p1"}, {"s25sl004a"},  {"s25sl008a"},
->         {"s25sl016a"},  {"s25sl032a"},  {"s25sl064a"},  {"s25fl008k"},
-> -       {"s25fl016k"},  {"s25fl064k"},
-> +       {"s25fl016k"},  {"s25fl064k"},  {"s25fl132k"},
->         {"sst25vf040b"},{"sst25vf080b"},{"sst25vf016b"},{"sst25vf032b"},
->         {"sst25vf064c"},{"sst25wf512"}, {"sst25wf010"}, {"sst25wf020"},
->         {"sst25wf040"},
-> @@ -302,7 +301,6 @@ static const struct spi_device_id m25p_ids[] = {
->  };
->  MODULE_DEVICE_TABLE(spi, m25p_ids);
->
-> -
->  static struct spi_driver m25p80_driver = {
->         .driver = {
->                 .name   = "m25p80",
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index eafaeeb..7b468a6 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -559,6 +559,7 @@ static const struct spi_device_id spi_nor_ids[] = {
->         { "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K) },
->         { "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K) },
->         { "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
-> +       { "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, 0) },
->
->         /* SST -- large erase sizes are "overlays", "sectors" are 4K */
->         { "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
-> --
+On 11/12/2014 08:02 PM, Tony Lindgren wrote:
+> * pekon <pekon@pek-sem.com> [141109 11:31]:
+>> On Saturday 08 November 2014 04:18 AM, Tony Lindgren wrote:
+>>>
+>>> Right. I doubt anybody has bch8 rootfs on LDP.. And considering u-boot
+>>> must be ham1 to boot at all, that's what we should change for the
+>>> devices that do not have not standardized on bch8.
+>>>
+>> My view on this is slightly different:
+>> - Lately, everyone seems to have migrated to BCH8.
+>>
+>> - Also HAM1 does not have strength to fix bitflips in aging NAND. So if
+>> someone already has OMAP3-LDP deployed on field then its NAND would have
+>> already aged to such an extend that HAM1 may not be sufficient.
+> 
+> OK so it makes sense to keep it as BCH8 then. Would be nice to get
+> the writing u-boot from kernel issue fixed somehow though as people
+> are hitting that for sure.
 
-Reviewed-by: Jagannadha Sutradharudu Teki <jagannadh.teki@gmail.com>
+What about performance impact? OMAP3 doesn't have ELM module. So error location
+for BCH8 has to be done in software.
 
-thanks!
--- 
-Jagan.
+>  
+>> My question is..
+>> Moving back to HAM1 should be decided based on statistics rather than rule
+>> of breaking backward compatibility. So please review:
+>> (1) How many user of OMAP3-Zoom or other old boards complaining about using
+>> BCH8 in mainline kernel? OR
+> 
+> 0
+> 
+>> (2) How many users of OMAP3 legacy boards are migrating to newer kernel?
+> 
+> Quite a few for sure, but are probably also using rootfs on MMC instead.
+>  
+>> At-least I have not, rather most of the OMAP3 users I interacted via TI's
+>> E2E forum wanted to migrate to BCH8 or even BCH16, as HAM1 was not
+>> sufficient for their usage.
+>>
+>> So whatever you decide on this topic, please be cautious that you don't
+>> re-invent work for yourself, as I did. It took me lot of time and testing
+>> effort on multiple boards to migrate HAM1 to BCH8, And add BCH16 for newer
+>> devices.
+> 
+> Right no objections to using BCH8 for rootfs, except it stopped working
+> over past year or so.
+
+This would be BCH8-sw on OMAP3 right? AM3xx uses BCH8-hw and that seems to work fine.
+So it seems nobody has used/tested BCH8-sw.
+
+> 
+> And it seems the settings should be partition specific because of u-boot
+> requiring HAM1.
+> 
+I don't think we have partition specific ECC scheme support in u-boot or kernel,
+so it will become messy to manage.
+That means we either stick with HAM1 for all partitions or don't support NAND boot
+at all and go with any other ECC scheme for OMAP3.
+
+cheers,
+-roger
