@@ -1,19 +1,30 @@
-Message-ID: <54649D61.7010803@ti.com>
-Date: Thu, 13 Nov 2014 14:00:33 +0200
-From: Roger Quadros <rogerq@ti.com>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XotHY-0000gg-68
+ for linux-mtd@lists.infradead.org; Thu, 13 Nov 2014 12:13:49 +0000
+Message-ID: <5464A062.7040202@codeaurora.org>
+Date: Thu, 13 Nov 2014 14:13:22 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: pekon <pekon@pek-sem.com>, Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
-References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
- <20141106180333.GZ31454@atomide.com> <545C9267.7060301@ti.com>
- <545C97AB.4040402@ti.com> <20141107224832.GG31454@atomide.com>
- <545FC08D.8000008@pek-sem.com>
-In-Reply-To: <545FC08D.8000008@pek-sem.com>
-Content-Type: text/plain; charset="windows-1252"
+To: dedekind1@gmail.com
+Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
+ handling
+References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>		
+ <544D5BEC.50802@nod.at> <544E052B.1040505@codeaurora.org>		
+ <544E08AE.7080506@nod.at> <5450C997.9010205@codeaurora.org>		
+ <5450D6C4.4040400@nod.at> <54538ABC.1040605@codeaurora.org>		
+ <5453ABF9.4070208@nod.at> <5453AD4D.2000303@nod.at>		
+ <545630E1.8020505@codeaurora.org>		
+ <1415261234.958.171.camel@sauron.fi.intel.com>		
+ <545B66BA.4090904@codeaurora.org>	
+ <1415350722.958.286.camel@sauron.fi.intel.com>	
+ <54627350.9080509@codeaurora.org>
+ <1415793323.22887.233.camel@sauron.fi.intel.com>
+In-Reply-To: <1415793323.22887.233.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: computersforpeace@gmail.com, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
+Cc: richard@nod.at, jlauruhn@micron.com, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,109 +34,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/09/2014 09:29 PM, pekon wrote:
-> On Saturday 08 November 2014 04:18 AM, Tony Lindgren wrote:
->> * Roger Quadros <rogerq@ti.com> [141107 01:59]:
->>> On 11/07/2014 11:35 AM, Roger Quadros wrote:
->>>> On 11/06/2014 08:03 PM, Tony Lindgren wrote:
->>>>> * Roger Quadros <rogerq@ti.com> [141105 03:02]:
->>>>>> In commit 7d5929c1f343 ("mtd: nand: omap: Revert to using software ECC by default"),
->>>>>> we switched back to using 1-bit SW ECC scheme by default. However
->>>>>> commit b491da7233d5 ("mtd: nand: omap: clean-up ecc layout for BCH ecc schemes")
->>>>>> didn't take into account the 1-bit SW scheme (i.e. OMAP_ECC_HAM1_CODE_SW)
->>>>>> when checking for small page devices because it was already got rid of
->>>>>> one commit earlier. Consider OMAP_ECC_HAM1_CODE_SW while deciding
->>>>>> if we can proceed with small page devices or not.
->>>>>>
->>>>>> Fixes: 7d5929c1f34 ("mtd: nand: omap: Revert to using software ECC by default")
->>>>>>
->>>>>> Cc: <stable@vger.kernel.org>        [3.17+]
->>>>>> Reported-by: Tony Lindgren <tony@atomide.com>
->>>>>> Signed-off-by: Roger Quadros <rogerq@ti.com>
->>>>>> ---
-> [...]
+On 11/12/2014 1:55 PM, Artem Bityutskiy wrote:
+> On Tue, 2014-11-11 at 22:36 +0200, Tanya Brokhman wrote:
+>> Unfortunately none. This is done for a new device that we received just
+>> now. The development was done on a virtual machine with nandsim. Testing
+>> was more of stability and regression
+>
+> OK. So the implementation is theory-driven and misses the experimental
+> prove. This means that building a product based on this implementation
+> has certain amount of risk involved.
+>
+> And from where I am, the theoretical base for the solution also does not
+> look very strong.
+>
+>>> The advantages of the "read all periodically" approach were:
 >>>
->>> Well I'm wrong about the OMAP3 information. OMAP3 does support BCH4 and BCH8 as well.
->>>
->>> I'm don't thinkg small page check is right. For BCH8 we need 13 bytes per 512 bytes.
->>> In the LDP case we have page size:1024 and OOB size: 32.
->>> Thus for BCH8 we need 26 bytes per page. which should fit in 32 bytes OOB.
->>> So this check is bogus in that case.
->>>
->>> Pekon,
->>>
->>> can you please explain why you check for 64 bytes OOB size for all ECC schemes?
->>>
-> Accept this is a bug.
-> As I re-review now, small-page check is applicable only for BCH ECC schemes, and not for HAM1.
+>>> 1. Simple, no modifications needed
+>>> 2. No need to write if the media is read-only, except when scrubbing
+>>> happens.
+>>> 3. Should cover all the NAND effects, including the "radiation" one.
+>>
+>> Disadvantages (as I see it):
+>> 1. performance hit: when do you trigger the "read-all"? will effect
+>> performance
+>
+> Right. We do not know how often, just like we do not know how often and
+> how much (read counter threshold) in your proposal.
+>
+> Performance - sure, matter of experiment, just like the performance of
+> your solution. And as I notice, energy too (read - battery life).
+>
+> In your solution you have to do more work maintaining the counters and
+> writing them. With read solution you do more work reading data.
 
-But 32 bytes OOB can accomodate BCH8 codes. right?
+But the maintaining work is minimal here. ++the counter on every read is 
+all that is required and verify it's value. O(1)...
+Saving them on fastmap also doesn't add any more maintenance work. They 
+are saved as part of fastmap. I didn't increase the number of events 
+that trigger saving fastmat to flash. So all is changes is that the 
+number of scubbing events increased
 
-> 
->>> Tony,
->>>
->>> The question for backward compatibility still remains. Even if OMAP3 supports bch8
->>> do we stick to the scheme that was used in legacy boot or do we switch?
->>
->> Well for the boards that had a standard file system, we should support
->> that. But at least for the LDP, there was only the "bootable microSD card"
->> AFAIK:
->>
->> http://support.logicpd.com/ProductDownloads/LegacyProducts/ZoomOMAP34xMDK.aspx
->>
-> OMAP3 supports BCH ECC scheme.
-> Document: http://www.ti.com/lit/pdf/spruf98
-> (1) GPMC in OMAP3 supports BCH8
->     Section: 11.1.5.14.3.2 BCH Code
-> (2) ROM code in GPMC supports BCH (but its not clear whether its BCH4 or BCH8)
->     Section: 25.4.7.4.3 MLC NAND Read Sector Procedure
+>
+> The promise that reading may be done in background, when there is no
+> other I/O.
+>
+>> 2. finds bitflips only when they are present instead of preventing them
+>> from happening
+>
+> But is this true? I do not see how is this true in your case. Yo want to
+> scrub by threshold, which is a theoretical value with very large
+> deviation from the real one. And there may be no real one even - the
+> real one depends on the erase block, it depends on the I/O patterns, and
+> it depends on the temperature.
 
-No, ROM code on OMAP3 doesn't support standard BCH but its own proprietary scheme which combines BCH
-checksum and other redundancy techniques, which means that MLC NAND is not recommended to be used
-as boot media for OMAP3.
+I know... We got the threshold value (that is exposed in my patches as a 
+define you just missed it) from NAND manufacturer asking to take into 
+consideration the temperature the device will operate at. I know its 
+still an estimation but so is the program/erase threshold. Since it was 
+set by manufacturer - I think its the best one we can hope for.
 
-cheers,
--roger
+>
+> You will end up scrubbing a lot earlier than needed. Here comes the
+> performance loss too (and energy). And you will eventually end up
+> scrubbing too late.
 
-> 
-> But I agree that now it doesn't make sense to put effort on OMAP3 for upgrading default ECC schemes. If user has to migrate then there are other easy ways of doing so.
-> 
-> 
-> 
->>> Then there is the question of boot rom compatibility. OMAP3 bootloaders use HAM1 scheme.
->>> So if you want to be able to flash bootloader from the kernel we have to stick with HAM1.
->>>
->>> changing the ECC scheme would mean that NAND filesystems created earlier won't work
->>> and will have to be erased and recreated.
->>
->> Right. I doubt anybody has bch8 rootfs on LDP.. And considering u-boot
->> must be ham1 to boot at all, that's what we should change for the
->> devices that do not have not standardized on bch8.
->>
-> My view on this is slightly different:
-> - Lately, everyone seems to have migrated to BCH8.
-> 
-> - Also HAM1 does not have strength to fix bitflips in aging NAND. So if someone already has OMAP3-LDP deployed on field then its NAND would have already aged to such an extend that HAM1 may not be sufficient.
-> 
-> My question is..
-> Moving back to HAM1 should be decided based on statistics rather than rule of breaking backward compatibility. So please review:
-> (1) How many user of OMAP3-Zoom or other old boards complaining about using BCH8 in mainline kernel? OR
-> (2) How many users of OMAP3 legacy boards are migrating to newer kernel?
-> 
-> At-least I have not, rather most of the OMAP3 users I interacted via TI's E2E forum wanted to migrate to BCH8 or even BCH16, as HAM1 was not sufficient for their usage.
-> 
-> So whatever you decide on this topic, please be cautious that you don't re-invent work for yourself, as I did. It took me lot of time and testing effort on multiple boards to migrate HAM1 to BCH8, And add BCH16 for newer devices.
-> 
-> Also, now I realize u-boot (boot-loaders) are better place for all this migration.
-> 
-> 
->> Regards,
->>
->> Tony
->>
-> 
-> with regards, pekon
-> 
-> ------------------------
-> Powered by BigRock.com
-> 
+I don't see why I would end up scrubbing too late?
+
+>
+> I do not see how your solution provides any hard guarantee. Please,
+> explain how do you guarantee that my PEB does not bit-rot earlier than
+> read counter reaches the threshold? It may bit-rot earlier because it is
+> close to be worn out, or because of just higher temperature, or because
+> it has a nano-defect.
+
+I can't guarantee it wont bit-flip, I don't think any one could but I 
+can say that with my implementation the chance of bit-flip is reduced. 
+Even if not all the scenarios are covered. For example in the bellow 
+case I reduce the chance of data loss:
+
+In an endless loop - read page 3 of PEB-A.
+This will effect near by pages (say 4 and 2 for simplicity). But if I 
+scrub the whole PEB according to read-counter I will save data of pages 
+2 and 4.
+If I do nothing: when reading eventually page 4 it will produce 
+bit-flips that may not be fixable.
+
+>
+>> Perhaps our design is an overkill for this and not covering 100% of te
+>> usecases. But it was requested by our customers to handle read-disturb
+>> and data retention specifically (as in "prevent" and not just "fix").
+>> This is due to a new NAND device that should operate in high temperature
+>> and last for ~15-20 years.
+>
+> I understand the whole customer orientation concept. But for me so far
+> the solution does not feel like something suitable to a customer I could
+> imagine. I mean, if I think about me as a potential customer, I would
+> just want my data to be safe and covered from all the NAND effects.
+
+I'm not sure that at the moment "all NAND effects" can be covered. In 
+our case the result is that we reduce the chance of loosing data. not to 
+0% unfortunately but still reduce.
+And from the tests we ran we didn't observe performance hit with this 
+implementation. And the customer doesn't really care how this was done.
+I do not know about power. Its possible that our implementation will 
+have negative effect on power consumption. I don't have the equipment to 
+verify that unfortunately.
+There are plans to test this implementation in extreme temperature 
+conditions and get some real numbers and statistics on endurance. It 
+wasn't done yet and wont be done by us. When I get the results I'll try 
+to share (if allowed to by legal)
+
+I
+> would not want counters, I'd want the result. And in the proposed
+> solution I would not see how I'd get the guaranteed result. But of
+> course I do not know the customer requirements that you've got.
+>
+>
+
+
+Thanks,
+Tanya Brokhman
+-- 
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
