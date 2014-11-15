@@ -1,19 +1,25 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+Received: from us2.outbound.mailhostbox.com ([162.210.70.52])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XpU4b-0002aT-7a
- for linux-mtd@lists.infradead.org; Sat, 15 Nov 2014 03:30:54 +0000
-Message-ID: <5466C8D5.5060906@broadcom.com>
-Date: Fri, 14 Nov 2014 19:30:29 -0800
-From: Scott Branden <sbranden@broadcom.com>
+ id 1XpbHn-0000Zl-3F
+ for linux-mtd@lists.infradead.org; Sat, 15 Nov 2014 11:12:59 +0000
+Message-ID: <54673511.80205@pek-sem.com>
+Date: Sat, 15 Nov 2014 16:42:17 +0530
+From: pekon <pekon@pek-sem.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: suspect UBIFS async operations causing issues during reboot
-References: <5459E090.1010300@broadcom.com>
- <1415791229.22887.206.camel@sauron.fi.intel.com>
-In-Reply-To: <1415791229.22887.206.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+ "Rini, Tom" <trini@ti.com>
+Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
+References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
+ <20141106180333.GZ31454@atomide.com> <545C9267.7060301@ti.com>
+ <545C97AB.4040402@ti.com> <20141107224832.GG31454@atomide.com>
+ <545FC08D.8000008@pek-sem.com> <20141112180253.GJ26481@atomide.com>
+ <54649612.8090402@ti.com>
+In-Reply-To: <54649612.8090402@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: computersforpeace@gmail.com, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,126 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+Hi,
 
-Thanks for your response.  We have completed our testing and solved the 
-issue by adding a reboot notifier - one was added to 
-chips/cfi_cmdset_0002.c and chips/cfi_cmdset_0001.c to solve the problem 
-5 years ago on NOR devices.
+On Thursday 13 November 2014 04:59 PM, Roger Quadros wrote:
+[...]
+>
+> What about performance impact? OMAP3 doesn't have ELM module. So error location
+> for BCH8 has to be done in software.
+>
 
-See comments inline and proposed fix at bottom - I can then send out an 
-patch for review.
+Performance impact happens only when there are bit-flips in an page.
+- For BCH8_HW ECC schemes
+ELM comes in the picture only when during reads there is an ECC 
+mis-match, if there is no ECC mis-match GPMC engine alone handles all 
+the decoding part.
 
-On 14-11-12 03:20 AM, Artem Bityutskiy wrote:
-> Hi Scott,
->
-> sorry for late reply, but better later than never.
->
-> On Wed, 2014-11-05 at 00:32 -0800, Scott Branden wrote:
->> Over 1000's of reboots we eventually find that the NAND has
->> uncorrectable ECC errors reported on a random page when it is mounted.
->
-> How do you find the uncorrectable errors? Do you scan the entire NAND
-> chip after you boot up? Or do you read all files stored in the UBIFS
-> file-system, or you do not do anything special, just mount and notice
-> ECC error messages in dmesg? Does UBIFS fail to mount?
-We just mount and notice the ECC error messages.  UBIFS does not fail to 
-mount, it handles the situation.  But there shouldn't be error messages 
-generated in the first place due to a reboot.
->
-> What is the time-window where power cut may lead to problems in your
-> NAND. And how these problems are seen by the software? I mean, what
-> happens to the data? Can it become "mostly OK", except of one or few
-> pages with too many bit-flips? I understand that during erase all 0 bits
-> "become 1s", but not instanteneously, so in case of an interrupt they
-> may read as 1 or 0 randomly. But the bits which were 1s - nothing
-> happens, they stay to be 1s?
-Yes, the bits are in the middle of erase so most are 1's and some are 
-still 0.
->
->> We suspect the problem is the asynchronous nature of the UBIFS
->> operations.  Perhaps the small write buffer that can take 3-5 seconds to
->> be written or some other operation occuring in UBI/UBIFS?  I don't think
->> the shutdown of the filesystem is dealing with all the threads properly.
->
-> Yes, writes are asynchronous. There is the write-buffer of the NAND page
-> size, and there is Linux write-back, which flushes dirty data in
-> background (standard stuff for all file-systems)
->
->> <REBOOT happens here with NAND ERASE COMMAND in progress corrupting
->> 0x18700000 NAND Addresses!>  Corrupted NAND only happens when erase
->> operation in progress when restarting system happens.
->
-> I acknowledge that there may be problems with interrupted erase. We saw
-> them in case of NOR, where erase is very slow and it is easy to
-> interrupt it. We never saw this for NAND, but I may well imagine that
-> this may be an issue in case of NAND.
-Yes, we hit the situation.
->
-> For NOR, we mitigated the issue by "invalidating" the PEB before
-> erasing. Check the 'nor_erase_prepare()' function in
-> 'drivers/mtd/ubi/io.c' and its commentaries.
->
-> The first thing you may try is - add a similar quick hack to UBI and
-> invalidate the first NAND page or the first 2 NAND pages (depends on
-> whether you use sub-pages or not).
->
-> You can just write all zeroes. The point is to corrupt data, so that the
-> subsequent read results in a CRC check failure.
->
-> See what happens.
->
->
-> Some general notes.
->
-> In general, if UBI or UBIFS decided to erase an LEB, the data in there
-> are not longer needed. E.g., when GC of UBIFS moves all the valid data
-> to another PEB, the older PEB is not needed, it is scheduled for
-> erasure. The erasure happens asynchronously. If you have a power cut,
-> and the PEB erase operation was interrupted, and you end up with a PEB
-> which is "mostly fine", son next time you mount UBIFS it may start
-> reading from it (e.g., if this was a journal PEB), and get errors.
->
-> Now, my point is that this should not be a fundamental problem for
-> UBIFS. This should be fixable. It may need good UBIFS knowledge to fix,
-> and time, though.
->
-> One way to deal with this is to emulate erase interruptions at UBI
-> level. Similarly how we implemented the power cut testing infrastructure
-> in UBIFS.
->
-> On the other hand, if you can invalidate the PEB before you start
-> erasing, this should just solve the problem. So I'd start with this, and
-> see what happens. You may have more than one type of issues, so fixing
-> the erase interrupt issue this way quickly may let you exlculde this
-> type of problems. And generally, I am not opposed to this solution in
-> upstream too, if it works for everyone.
-We add nand_shutdown to nand_base:
+- For BCH8_SW ECC schemes
+Same-way, lib/bch.8: decode_bch() path is taken only when ECC mismatch 
+is detected on the read path, for normal read/write GPMC engine handles 
+everything.
 
-+/**
-+ * nand_shutdown - [NAND Interface] finish the current nand operation and
-+ *                 prevent further operations
-+ * @mtd: MTD device structure
-+ */
-+int nand_shutdown(struct mtd_info *mtd)
-+{
-+	return nand_get_device(mtd, FL_SHUTDOWN);
-+}
-+EXPORT_SYMBOL_GPL(nand_shutdown);
+Yes, you may argue that with aging of the NAND the occurrence of 
+bit-flips is common. That's true, but for new devices especially for SLC 
+NAND the occurrence is usually rare on fresh parts. Also considering 
+that most SLC are now manufactured in matured technologies.
 
-We call nand_shutdown routine from the reboot notifier we add in our 
-iproc driver (to be upstreamed soon).
+Also, if you are using UBIFS on top of NAND, then it will scrub the data 
+on first detection of bit-flips, thereby reducing the accumulation of 
+bit-flips and thereby conserving read performance.
 
-+static int iproc_nand_reboot_notifier(struct notifier_block *n,
-+				      unsigned long state,
-+				      void *cmd)
-+{
-+	struct mtd_info *mtd;
-+
-+	mtd = container_of(n, struct mtd_info, reboot_notifier);
-+	nand_shutdown(mtd);
-+	return NOTIFY_DONE;
-+}
 
-If the reboot notifier can always be added somewhere in mtd it could be 
-moved out of driver and always called?
+>>
+>>
+[...]
+>> Right no objections to using BCH8 for rootfs, except it stopped working
+>> over past year or so.
+>
+> This would be BCH8-sw on OMAP3 right? AM3xx uses BCH8-hw and that seems to work fine.
+> So it seems nobody has used/tested BCH8-sw.
+>
+I have tested BCH8_SW on both AM335x and later SoC, and checked its 
+compatibility with various combinations of u-boot. [1] should give you 
+some indications of various combinations users can try ..
+
+
+with regards, pekon
+
+[1]
+http://processors.wiki.ti.com/index.php/Linux_Core_NAND_User%27s_Guide#ECC_schemes_support
+
+
+------------------------
+Powered by BigRock.com
