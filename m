@@ -1,25 +1,28 @@
-Received: from us2.outbound.mailhostbox.com ([162.210.70.52])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XpbHn-0000Zl-3F
- for linux-mtd@lists.infradead.org; Sat, 15 Nov 2014 11:12:59 +0000
-Message-ID: <54673511.80205@pek-sem.com>
-Date: Sat, 15 Nov 2014 16:42:17 +0530
-From: pekon <pekon@pek-sem.com>
-MIME-Version: 1.0
-To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
- "Rini, Tom" <trini@ti.com>
-Subject: Re: [PATCH] mtd: nand: omap: Fix NAND enumeration on 3430 LDP
-References: <1415185258-11747-1-git-send-email-rogerq@ti.com>
- <20141106180333.GZ31454@atomide.com> <545C9267.7060301@ti.com>
- <545C97AB.4040402@ti.com> <20141107224832.GG31454@atomide.com>
- <545FC08D.8000008@pek-sem.com> <20141112180253.GJ26481@atomide.com>
- <54649612.8090402@ti.com>
-In-Reply-To: <54649612.8090402@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Received: from plane.gmane.org ([80.91.229.3])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XqLDO-0003uR-Tf
+ for linux-mtd@lists.infradead.org; Mon, 17 Nov 2014 12:15:31 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1XqLCw-0006np-4a
+ for linux-mtd@lists.infradead.org; Mon, 17 Nov 2014 13:15:02 +0100
+Received: from telemedia-smb-146.18.183.122.airtelbroadband.in
+ ([telemedia-smb-146.18.183.122.airtelbroadband.in])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Nov 2014 13:15:02 +0100
+Received: from amrk_ran by telemedia-smb-146.18.183.122.airtelbroadband.in
+ with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Nov 2014 13:15:02 +0100
+To: linux-mtd@lists.infradead.org
+From: Ranjith <amrk_ran@yahoo.co.in>
+Subject: Re: mtdoops: helper application for readout?
+Date: Mon, 17 Nov 2014 11:32:19 +0000 (UTC)
+Message-ID: <loom.20141117T122614-112@post.gmane.org>
+References: <2131687.FmJCQHlDMX@ws-stein>
+ <CAN8TOE-eWhvVF_c48548HeA9OZ4D5Mp0xSLJBz9RsdTYwPRqOg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: computersforpeace@gmail.com, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Brian Norris <computersforpeace <at> gmail.com> writes:
 
-On Thursday 13 November 2014 04:59 PM, Roger Quadros wrote:
-[...]
->
-> What about performance impact? OMAP3 doesn't have ELM module. So error location
-> for BCH8 has to be done in software.
->
-
-Performance impact happens only when there are bit-flips in an page.
-- For BCH8_HW ECC schemes
-ELM comes in the picture only when during reads there is an ECC 
-mis-match, if there is no ECC mis-match GPMC engine alone handles all 
-the decoding part.
-
-- For BCH8_SW ECC schemes
-Same-way, lib/bch.8: decode_bch() path is taken only when ECC mismatch 
-is detected on the read path, for normal read/write GPMC engine handles 
-everything.
-
-Yes, you may argue that with aging of the NAND the occurrence of 
-bit-flips is common. That's true, but for new devices especially for SLC 
-NAND the occurrence is usually rare on fresh parts. Also considering 
-that most SLC are now manufactured in matured technologies.
-
-Also, if you are using UBIFS on top of NAND, then it will scrub the data 
-on first detection of bit-flips, thereby reducing the accumulation of 
-bit-flips and thereby conserving read performance.
-
-
->>
->>
-[...]
->> Right no objections to using BCH8 for rootfs, except it stopped working
->> over past year or so.
->
-> This would be BCH8-sw on OMAP3 right? AM3xx uses BCH8-hw and that seems to work fine.
-> So it seems nobody has used/tested BCH8-sw.
->
-I have tested BCH8_SW on both AM335x and later SoC, and checked its 
-compatibility with various combinations of u-boot. [1] should give you 
-some indications of various combinations users can try ..
+> 
+> On Thu, Feb 14, 2013 at 3:40 AM, Alexander Stein
+> <alexander.stein <at> systec-electronic.com> wrote:
+> > is there already some helper application which can shows the stored 
+oops/panics with mtdoops?
+> 
+> After a bit of googling, it looks like there are scattered URL
+> references to a no-longer-available "oopslog.c", written by the author
+> of mtdoops, Richard Purdie. I CC'd him at his last-known address from
+> the git logs, but he doesn't seem to have touched this in a while.
+> 
+> AFAIK, the output from mtdoops is just plain text data (not
+> compressed), so you can just dump it straight from the /dev/mtdX
+> (where X is the MTD number) with something like 'cat /dev/mtdX'. Of
+> course, that will not account for when the ring buffer wraps around
+> nor if there are bad blocks.
+> 
+> Brian
+> 
+> P.S. With a little more digging, I found a source tarball in the Maemo
+> archives that contains oopslog.c. It's a very simple program, and I
+> haven't tested it. Use at your own risk:
+> 
+> http://maemo.org/packages/view/sp-oops-extract/
+> 
+> http://repository.maemo.org/pool/maemo5.0/free/s/sp-oops-extract/sp-oops-
+extract_0.0.7-1.tar.gz
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
 
-with regards, pekon
 
-[1]
-http://processors.wiki.ti.com/index.php/Linux_Core_NAND_User%27s_Guide#ECC_schemes_support
+Hi Brain,
+Have you changed anything in the mtdoops.c driver and how are running this 
+application ..i have used it as in-build(static driver) module.i dint do any 
+changes and i used the application with ./oops /dev/mtd4.here mtd4 id 
+FLOG(nor memory).Do i need to map with any command or how.can you tell me 
+the procedure for enabling the mtdoops and mapping to Nor flas and how to 
+run the application.
 
+Thanks in Advance.
 
-------------------------
-Powered by BigRock.com
+Ranjith.  
+> 
