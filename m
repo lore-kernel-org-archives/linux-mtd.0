@@ -1,20 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XrReq-0003fB-8i
- for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 13:20:24 +0000
-Message-ID: <546DEA1C.2080805@imgtec.com>
-Date: Thu, 20 Nov 2014 10:18:20 -0300
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Received: from mout.web.de ([212.227.15.3])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XrTxX-0003fn-1l
+ for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 15:47:52 +0000
 MIME-Version: 1.0
-To: bpqw <bpqw@micron.com>, Brian Norris <computersforpeace@gmail.com>,
- "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 0/2] staging: mtd: Support for GigaDevice SPI NAND flash
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A7713208B@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A7713208B@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
-Cc: "ionela.voinescu@imgtec.com" <ionela.voinescu@imgtec.com>
+Message-ID: <trinity-73ac0136-01d6-4251-acb9-e48ca8ce1273-1416498438753@3capp-webde-bs05>
+From: "Roland Kletzing" <devzero@web.de>
+To: linux-mtd@lists.infradead.org
+Subject: please consider removing netsc520 driver from drivers/mtd/maps/
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 20 Nov 2014 16:47:18 +0100
+Content-Transfer-Encoding: quoted-printable
+Cc: fengguang.wu@intel.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +20,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+every now and then i stumble across this "broken" module, and wonder if thi=
+s=20
+cannot be removed in 2014. I`m quite sure nobody will be missing that one =
+in=20
+3.18+ kernels.
 
+it`s still being shipped as a module by popular distros like recent debian=
+ or
+ubuntu. waste of diskspace and compile time, imho.
 
-On 11/20/2014 05:39 AM, bpqw wrote:
-> Hi Brian, Arnaud:
->> If we are going to a specific spinand framework, my advice would be to 
->> read again the spi nor framework carefully first, and do something 
->> similar (especially for latests work on quad spi)
-> 
-> I think above idea is good. 
-> SPI NAND interface and command protocol are similar with SPI NOR, we can 
-> create a SPI NAND folder with similar framework with SPI NOR. But need to duplicate 
-> nand_bbt and nand_bch code into this folder due to SPI NAND still need BBM and ECC.
-> How do you think?
-> 
+there are even chances that these driver being accidentally statically lin=
+ked
+into kernels, e.g. https://lkml.org/lkml/2013/9/25/666 (cc fenguang wu bec=
+ause=20
+of this)
 
-Hm, perhaps it's better to rely in the NAND core code and avoid that BBT
-and ECC code handling duplication?
+also see
 
-Ionela and I are preparing an SPI NAND framework, but it's far from
-ready yet, so if you have something to submit, please do so :)
+https://bugzilla.kernel.org/show_bug.cgi?id=3D10840
+---
+This is a driver for an obscure embedded demonstration board. It's also on=
+e where
+there doesn't seem to be a good way to sanity check before probing. Quite =
+why any
+standard PC distro would ship it is beyond me
+---
 
-Thanks,
--- 
-Ezequiel
+https://bugzilla.kernel.org/show_bug.cgi?id=3D11226
+---
+This is a specific driver for an embedded bosrd without autodetect possibi=
+lities,
+so you shouldn't be loading it on random unrelated hardware.
+---
+
+netsc520.c:
+ * The NetSc520 is a demonstration board for the Elan Sc520 processor avai=
+lable
+ * from AMD.  It has a single back of 16 megs of 32-bit Flash ROM and anot=
+her
+ * 16 megs of SDRAM.
+
+http://sewoon.com/icmaster/Semi/amd/pdf/24323a.pdf
+---
+NetSC520 Demonstration Board User =E2=80=99s Manual
+Demonstration Board Features
+The NetSC520 demonstration board provides the following features. For deta=
+ils see
+Board Functional Description
+*ElanSC520 microcontroller
+*AMD Am79C973 PCnet-FAST III single-chip 10/100 Mbit/s Ethernet controller
+*16 Mbytes SDRAM
+*16 Mbytes XIP Flash memory
+---
+
+regards
+roland
+
+ps:
+not subscribed to this list - hope this list allows for unsubscribed posti=
+ng=20
+like lkml
