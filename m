@@ -1,19 +1,27 @@
-Date: Thu, 20 Nov 2014 10:42:53 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 2/4] mtd: nand: gpmi: add gpmi_move_bits function
-Message-ID: <20141120104253.23b543d8@bbrezillon>
-In-Reply-To: <20141120092209.GD3212@norris-Latitude-E6410>
-References: <1413794777-32220-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413794777-32220-3-git-send-email-boris.brezillon@free-electrons.com>
- <20141120092209.GD3212@norris-Latitude-E6410>
+Received: from mta-out1.inet.fi ([62.71.2.195] helo=jenni1.inet.fi)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XrR3l-0001Gu-Oq
+ for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 12:42:06 +0000
+Date: Thu, 20 Nov 2014 14:30:11 +0200
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: hujianyang <hujianyang@huawei.com>
+Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
+Message-ID: <20141120123011.GA9716@node.dhcp.inet.fi>
+References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
+ <1413805935.7906.225.camel@sauron.fi.intel.com>
+ <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
+ <1413810719.7906.268.camel@sauron.fi.intel.com>
+ <545C2CEE.5020905@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Mike Voytovich <mvoytovich@paypal.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <545C2CEE.5020905@huawei.com>
+Cc: Jijiagang <jijiagang@hisilicon.com>, dedekind1@gmail.com,
+ Caizhiyong <caizhiyong@hisilicon.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>, linux-mm@kvack.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "Wanli \(welly\)" <welly.wan@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,58 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Nov 2014 01:22:09 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> On Mon, Oct 20, 2014 at 10:46:15AM +0200, Boris Brezillon wrote:
-> > Add a new function to move bits (not bytes) from a memory region to
-> > another one.
-> > This function is similar to memmove except it acts at bit level.
-> > This function is needed to implement GPMI raw access functions, given the
-> > fact that ECC engine does not pad ECC bits to the next byte boundary.
+On Fri, Nov 07, 2014 at 10:22:38AM +0800, hujianyang wrote:
+> Hi,
+> 
+> I think we found the cause of this problem. We enable CONFIG_CMA in our
+> config file. This feature seems to allocate a contiguous memory for caller.
+> If some pages in this contiguous area are used by other modules, like UBIFS,
+> CMA will migrate these pages to other place. This operation should be
+> transparent to the user of old pages. But it is *not true* for UBIFS.
+> 
 > > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 129 +++++++++++++++++++++++++++++++++
-> >  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |   4 +
-> >  2 files changed, 133 insertions(+)
+> > 1. UBIFS wants to make sure that no one marks UBIFS-backed pages (and
+> > actually inodes too) as dirty directly. UBIFS wants everyone to ask
+> > UBIFS to mark a page as dirty.
 > > 
-> > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> > index 87e658c..5d4f140 100644
-> > --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> > @@ -1353,3 +1353,132 @@ int gpmi_read_page(struct gpmi_nand_data *this,
-> >  	set_dma_type(this, DMA_FOR_READ_ECC_PAGE);
-> >  	return start_dma_with_bch_irq(this, desc);
-> >  }
-> > +
-> > +void gpmi_move_bits(u8 *dst, size_t dst_bit_off,
-> > +		    const u8 *src, size_t src_bit_off,
-> > +		    size_t nbits)
+> > 2. This is because for every dirty page, UBIFS needs to reserve certain
+> > amount of space on the flash media, because all writes are out-of-place,
+> > even when you are changing an existing file.
+> > 
+> > 3. There are exactly 2 places where UBIFS-backed pages may be marked as
+> > dirty:
+> > 
+> >   a) ubifs_write_end() [->wirte_end] - the file write path
+> >   b) ubifs_page_mkwrite() [->page_mkwirte] - the file mmap() path
 > 
-> Two things:
+> line 1160, func try_to_unmap_one() in mm/rmap.c
 > 
->  1) Yikes! This function is a little hairy.
-
-Yes I know, and if you see a much simpler algorithm to do that, I'm
-really interested :-).
-
+> ""
+>         /* Move the dirty bit to the physical page now the pte is gone. */
+>         if (pte_dirty(pteval))
+>                 set_page_dirty(page);
+> ""
 > 
->  2) This function really deserves a full comment header (kerneldoc?); it
->  needs to have clearly-documented high-level semantics.
+> Here, If the pte of a page is dirty, a directly set_page_dirty() is
+> performed and hurt the internal logic of UBIFS.
 
-I'll add a kernel doc header.
+If the pte is dirty it must be writable too. And to make pte writable
+->page_mkwrite() must be called. So it should work fine..
 
-> 
-> I'm not sure how to address #1, as the complexity is necessary. Did you
-> run this through some unit tests, at least?
-
-No, but I did test it with several ECC configs.
-Anyway, if I develop such unit tests, do you want me to put them in the
-driver code (under an #ifdef section) ?
-
+Could you check if the pteval is pte_write() by the time?
+And could you provide what says dump_page(page) and dump_vma(vma) while
+you are there?
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+ Kirill A. Shutemov
