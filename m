@@ -1,27 +1,37 @@
-Received: from mta-out1.inet.fi ([62.71.2.195] helo=jenni1.inet.fi)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XrR3l-0001Gu-Oq
- for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 12:42:06 +0000
-Date: Thu, 20 Nov 2014 14:30:11 +0200
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
-To: hujianyang <hujianyang@huawei.com>
-Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
-Message-ID: <20141120123011.GA9716@node.dhcp.inet.fi>
-References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
- <1413805935.7906.225.camel@sauron.fi.intel.com>
- <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
- <1413810719.7906.268.camel@sauron.fi.intel.com>
- <545C2CEE.5020905@huawei.com>
+Received: from mout.web.de ([212.227.17.12])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XrRHG-0005mg-UV
+ for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 12:56:03 +0000
+Message-ID: <546DE4BB.3000900@users.sourceforge.net>
+Date: Thu, 20 Nov 2014 13:55:23 +0100
+From: SF Markus Elfring <elfring@users.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <545C2CEE.5020905@huawei.com>
-Cc: Jijiagang <jijiagang@hisilicon.com>, dedekind1@gmail.com,
- Caizhiyong <caizhiyong@hisilicon.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>, linux-mm@kvack.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "Wanli \(welly\)" <welly.wan@hisilicon.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] MTD: Deletion of unnecessary checks before two function
+ calls
+References: <5307CAA2.8060406@users.sourceforge.net>
+ <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
+ <530A086E.8010901@users.sourceforge.net>
+ <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
+ <530A72AA.3000601@users.sourceforge.net>
+ <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
+ <530B5FB6.6010207@users.sourceforge.net>
+ <alpine.DEB.2.10.1402241710370.2074@hadrien>
+ <530C5E18.1020800@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251014170.2080@hadrien>
+ <530CD2C4.4050903@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251840450.7035@hadrien>
+ <530CF8FF.8080600@users.sourceforge.net>
+ <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
+ <530DD06F.4090703@users.sourceforge.net>
+ <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
+ <5317A59D.4@users.sourceforge.net>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Cc: Julia Lawall <julia.lawall@lip6.fr>, kernel-janitors@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +41,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 07, 2014 at 10:22:38AM +0800, hujianyang wrote:
-> Hi,
-> 
-> I think we found the cause of this problem. We enable CONFIG_CMA in our
-> config file. This feature seems to allocate a contiguous memory for caller.
-> If some pages in this contiguous area are used by other modules, like UBIFS,
-> CMA will migrate these pages to other place. This operation should be
-> transparent to the user of old pages. But it is *not true* for UBIFS.
-> 
-> > 
-> > 1. UBIFS wants to make sure that no one marks UBIFS-backed pages (and
-> > actually inodes too) as dirty directly. UBIFS wants everyone to ask
-> > UBIFS to mark a page as dirty.
-> > 
-> > 2. This is because for every dirty page, UBIFS needs to reserve certain
-> > amount of space on the flash media, because all writes are out-of-place,
-> > even when you are changing an existing file.
-> > 
-> > 3. There are exactly 2 places where UBIFS-backed pages may be marked as
-> > dirty:
-> > 
-> >   a) ubifs_write_end() [->wirte_end] - the file write path
-> >   b) ubifs_page_mkwrite() [->page_mkwirte] - the file mmap() path
-> 
-> line 1160, func try_to_unmap_one() in mm/rmap.c
-> 
-> ""
->         /* Move the dirty bit to the physical page now the pte is gone. */
->         if (pte_dirty(pteval))
->                 set_page_dirty(page);
-> ""
-> 
-> Here, If the pte of a page is dirty, a directly set_page_dirty() is
-> performed and hurt the internal logic of UBIFS.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 20 Nov 2014 13:50:43 +0100
 
-If the pte is dirty it must be writable too. And to make pte writable
-->page_mkwrite() must be called. So it should work fine..
+The functions kfree() and pci_dev_put() test whether their argument is NULL
+and then return immediately. Thus the test around the call is not needed.
 
-Could you check if the pteval is pte_write() by the time?
-And could you provide what says dump_page(page) and dump_vma(vma) while
-you are there?
+This issue was detected by using the Coccinelle software.
 
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c | 3 +--
+ drivers/mtd/devices/pmc551.c        | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 3096f3d..286b97a 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2654,8 +2654,7 @@ static void cfi_intelext_destroy(struct mtd_info *mtd)
+ 	kfree(cfi);
+ 	for (i = 0; i < mtd->numeraseregions; i++) {
+ 		region = &mtd->eraseregions[i];
+-		if (region->lockmap)
+-			kfree(region->lockmap);
++		kfree(region->lockmap);
+ 	}
+ 	kfree(mtd->eraseregions);
+ }
+diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
+index f02603e..708b7e8 100644
+--- a/drivers/mtd/devices/pmc551.c
++++ b/drivers/mtd/devices/pmc551.c
+@@ -812,8 +812,7 @@ static int __init init_pmc551(void)
+ 	}
+ 
+ 	/* Exited early, reference left over */
+-	if (PCI_Device)
+-		pci_dev_put(PCI_Device);
++	pci_dev_put(PCI_Device);
+ 
+ 	if (!pmc551list) {
+ 		printk(KERN_NOTICE "pmc551: not detected\n");
 -- 
- Kirill A. Shutemov
+2.1.3
