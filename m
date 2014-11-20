@@ -1,19 +1,20 @@
-Date: Thu, 20 Nov 2014 00:06:27 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v4 1/4] mtd: nand: provide detailed description for raw
- read/write page methods
-Message-ID: <20141120080627.GB3212@norris-Latitude-E6410>
-References: <1413794777-32220-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413794777-32220-2-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XrNI1-000186-SM
+ for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 08:40:34 +0000
+From: bpqw <bpqw@micron.com>
+To: Brian Norris <computersforpeace@gmail.com>, "arnaud.mouiche@invoxia.com"
+ <arnaud.mouiche@invoxia.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH 0/2] staging: mtd: Support for GigaDevice SPI NAND flash
+Date: Thu, 20 Nov 2014 08:39:54 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7713208B@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1413794777-32220-2-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Mike Voytovich <mvoytovich@paypal.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+Cc: "ezequiel.garcia@imgtec.com" <ezequiel.garcia@imgtec.com>,
+ "ionela.voinescu@imgtec.com" <ionela.voinescu@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 20, 2014 at 10:46:14AM +0200, Boris Brezillon wrote:
-> read_page_raw and write_page_raw method description is not clear enough.
-> It clearly specifies that ECC correction should not be involved but does
-> not talk about specific layout (by layout I mean where in-band and
-> out-of-band data are stored on the NAND media) used by NAND/ECC
-> controllers.
-> 
-> Those specific layouts might impact MTD users and thus should be hidden (as
-> already done in the standard NAND_ECC_HW_SYNDROME implementation).
-> 
-> Clearly state this constraint in the nand_ecc_ctrl struct documentation.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Hi Brian, Arnaud:
+> If we are going to a specific spinand framework, my advice would be to=20
+> read again the spi nor framework carefully first, and do something=20
+> similar (especially for latests work on quad spi)
 
-Pushed this patch to l2-mtd.git. Thanks!
+I think above idea is good.=20
+SPI NAND interface and command protocol are similar with SPI NOR, we can=20
+create a SPI NAND folder with similar framework with SPI NOR. But need to d=
+uplicate=20
+nand_bbt and nand_bch code into this folder due to SPI NAND still need BBM =
+and ECC.
+How do you think?
 
-Brian
+I ever compared the SPI NAND command protocol with different vendor, result=
+ is same
+with Ionela's answer. =20
+
+" As far as I've seen from the datasheets I have available (SPI NAND
+GigaDevice 1Gb/2Gb/4Gb, Micron 1Gb/2Gb/4Gb), the command sequencing
+is the same for read/write/erase operations (read: enable ECC, read to cach=
+e,
+wait, read from cache, check for errors, disable ECC; write: enable ECC,
+write enable, program load, program execute, wait, verify, disable ECC;
+erase: write enable, erase block, verify).
+
+Regarding the stream of bytes for each command, the problematic
+commands are the read from cache ones (read, fast read, read x2,
+read x4, read dual read quad) that have different command format
+(additional dummy bytes, a plane select bit to be set).
+Other differences are in the structure of the protection and status registe=
+rs
+(some of them use more ECC and protection bits according to the size
+of the chip). Also, each has a different ECC layout "
+
+If you need my detail comparison table, please let me know.
+
+I already set up platform to support SPI NAND now, if you think the framewo=
+rk I mentioned=20
+above is reasonable, I can start to work on this.
+
+Thanks
+
+Qi Wang
