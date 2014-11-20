@@ -1,37 +1,20 @@
-Received: from mout.web.de ([212.227.17.12])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XrRHG-0005mg-UV
- for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 12:56:03 +0000
-Message-ID: <546DE4BB.3000900@users.sourceforge.net>
-Date: Thu, 20 Nov 2014 13:55:23 +0100
-From: SF Markus Elfring <elfring@users.sourceforge.net>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XrReq-0003fB-8i
+ for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 13:20:24 +0000
+Message-ID: <546DEA1C.2080805@imgtec.com>
+Date: Thu, 20 Nov 2014 10:18:20 -0300
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH 1/1] MTD: Deletion of unnecessary checks before two function
- calls
-References: <5307CAA2.8060406@users.sourceforge.net>
- <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
- <530A086E.8010901@users.sourceforge.net>
- <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
- <530A72AA.3000601@users.sourceforge.net>
- <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
- <530B5FB6.6010207@users.sourceforge.net>
- <alpine.DEB.2.10.1402241710370.2074@hadrien>
- <530C5E18.1020800@users.sourceforge.net>
- <alpine.DEB.2.10.1402251014170.2080@hadrien>
- <530CD2C4.4050903@users.sourceforge.net>
- <alpine.DEB.2.10.1402251840450.7035@hadrien>
- <530CF8FF.8080600@users.sourceforge.net>
- <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
- <530DD06F.4090703@users.sourceforge.net>
- <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
- <5317A59D.4@users.sourceforge.net>
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
-Content-Type: text/plain; charset=utf-8
+To: bpqw <bpqw@micron.com>, Brian Norris <computersforpeace@gmail.com>,
+ "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 0/2] staging: mtd: Support for GigaDevice SPI NAND flash
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A7713208B@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A7713208B@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
-Cc: Julia Lawall <julia.lawall@lip6.fr>, kernel-janitors@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>
+Cc: "ionela.voinescu@imgtec.com" <ionela.voinescu@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,47 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 20 Nov 2014 13:50:43 +0100
 
-The functions kfree() and pci_dev_put() test whether their argument is NULL
-and then return immediately. Thus the test around the call is not needed.
 
-This issue was detected by using the Coccinelle software.
+On 11/20/2014 05:39 AM, bpqw wrote:
+> Hi Brian, Arnaud:
+>> If we are going to a specific spinand framework, my advice would be to 
+>> read again the spi nor framework carefully first, and do something 
+>> similar (especially for latests work on quad spi)
+> 
+> I think above idea is good. 
+> SPI NAND interface and command protocol are similar with SPI NOR, we can 
+> create a SPI NAND folder with similar framework with SPI NOR. But need to duplicate 
+> nand_bbt and nand_bch code into this folder due to SPI NAND still need BBM and ECC.
+> How do you think?
+> 
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- drivers/mtd/chips/cfi_cmdset_0001.c | 3 +--
- drivers/mtd/devices/pmc551.c        | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+Hm, perhaps it's better to rely in the NAND core code and avoid that BBT
+and ECC code handling duplication?
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 3096f3d..286b97a 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -2654,8 +2654,7 @@ static void cfi_intelext_destroy(struct mtd_info *mtd)
- 	kfree(cfi);
- 	for (i = 0; i < mtd->numeraseregions; i++) {
- 		region = &mtd->eraseregions[i];
--		if (region->lockmap)
--			kfree(region->lockmap);
-+		kfree(region->lockmap);
- 	}
- 	kfree(mtd->eraseregions);
- }
-diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
-index f02603e..708b7e8 100644
---- a/drivers/mtd/devices/pmc551.c
-+++ b/drivers/mtd/devices/pmc551.c
-@@ -812,8 +812,7 @@ static int __init init_pmc551(void)
- 	}
- 
- 	/* Exited early, reference left over */
--	if (PCI_Device)
--		pci_dev_put(PCI_Device);
-+	pci_dev_put(PCI_Device);
- 
- 	if (!pmc551list) {
- 		printk(KERN_NOTICE "pmc551: not detected\n");
+Ionela and I are preparing an SPI NAND framework, but it's far from
+ready yet, so if you have something to submit, please do so :)
+
+Thanks,
 -- 
-2.1.3
+Ezequiel
