@@ -1,20 +1,19 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XrWWT-0008L5-3J
- for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 18:32:05 +0000
-Received: by mail-pd0-f182.google.com with SMTP id r10so3515467pdi.41
- for <linux-mtd@lists.infradead.org>; Thu, 20 Nov 2014 10:31:43 -0800 (PST)
-Date: Thu, 20 Nov 2014 10:31:40 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Roland Kletzing <devzero@web.de>
-Subject: Re: please consider removing netsc520 driver from drivers/mtd/maps/
-Message-ID: <20141120183140.GG24364@ld-irv-0074>
-References: <trinity-73ac0136-01d6-4251-acb9-e48ca8ce1273-1416498438753@3capp-webde-bs05>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XrXFR-0001L7-AO
+ for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 19:18:34 +0000
+From: Scott Branden <sbranden@broadcom.com>
+To: Scott Branden <sbranden@broadcom.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: nand: added nand_shutdown
+Date: Thu, 20 Nov 2014 11:18:05 -0800
+Message-ID: <1416511085-3930-1-git-send-email-sbranden@broadcom.com>
+In-Reply-To: <Scott Branden <sbranden@broadcom.com>
+References: <Scott Branden <sbranden@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <trinity-73ac0136-01d6-4251-acb9-e48ca8ce1273-1416498438753@3capp-webde-bs05>
-Cc: dwmw2@infradead.org, fengguang.wu@intel.com, linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Cc: Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 20, 2014 at 04:47:18PM +0100, Roland Kletzing wrote:
-> every now and then i stumble across this "broken" module, and wonder if this 
-> cannot be removed in 2014. I`m quite sure nobody will be missing that one in 
-> 3.18+ kernels.
+Add nand_shutdown to wait for current nand operations to finish and prevent
+further operations by changing the nand flash state to FL_SHUTDOWN.
 
-Probably not.
+This is addressing a problem observed during reboot tests using UBIFS
+root file system: NAND erase operations that are in progress during
+system reboot/shutdown are causing partial erased blocks. Although UBI should
+be able to detect and recover from this error, this change will avoid
+the creation of partial erased blocks on reboot in the middle of a NAND erase
+operation.
 
-> it`s still being shipped as a module by popular distros like recent debian or
-> ubuntu. waste of diskspace and compile time, imho.
+Signed-off-by: Scott Branden <sbranden@broadcom.com>
+---
+ drivers/mtd/nand/nand_base.c | 11 +++++++++++
+ include/linux/mtd/nand.h     |  7 +++++++
+ 2 files changed, 18 insertions(+)
 
-Yep. But that's partly the distro's fault.
-
-> there are even chances that these driver being accidentally statically linked
-> into kernels, e.g. https://lkml.org/lkml/2013/9/25/666 (cc fenguang wu because 
-> of this)
-> 
-> also see
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=10840
-> ---
-> This is a driver for an obscure embedded demonstration board. It's also one where
-> there doesn't seem to be a good way to sanity check before probing. Quite why any
-> standard PC distro would ship it is beyond me
-
-Yeah, this driver sucks and is probably redundant. It looks like you
-could probably just get by with the physmap.c driver instead.
-
-> ps:
-> not subscribed to this list - hope this list allows for unsubscribed posting 
-> like lkml
-
-...
-
-Does this help you?
-
-  https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=3579ad4113dd6102866abb0ac7b8f329e7d41e4e
-
-  commit 3579ad4113dd6102866abb0ac7b8f329e7d41e4e
-  Author: Jean Delvare <jdelvare@suse.de>
-  Date:   Fri Mar 14 18:14:20 2014 +0100
-
-      mtd: Fix Elan SC520 dependencies
-
-It means that most distros should not be shipping it any more, since it
-depends on CONFIG_MELAN.
-
-I'm also not opposed to dropping the driver entirely.
-
-Perhaps we can mark the Kconfig entry CONFIG_BROKEN (i.e., depends on
-BROKEN), and then remove it entirely if no one complains after a while.
-
-I'll take a patch from you that does ths, if you want to write a little
-bit of context in a commit message.
-
-Thanks,
-Brian
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 5b5c627..100a967 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4236,6 +4236,17 @@ void nand_release(struct mtd_info *mtd)
+ }
+ EXPORT_SYMBOL_GPL(nand_release);
+ 
++/**
++ * nand_shutdown - [NAND Interface] finish the current nand operation and
++ *                 prevent further operations
++ * @mtd: MTD device structure
++ */
++int nand_shutdown(struct mtd_info *mtd)
++{
++	return nand_get_device(mtd, FL_SHUTDOWN);
++}
++EXPORT_SYMBOL_GPL(nand_shutdown);
++
+ static int __init nand_base_init(void)
+ {
+ 	led_trigger_register_simple("nand-disk", &nand_led_trigger);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index e4d451e..80e4367 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -48,6 +48,13 @@ extern int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ /* unlocks specified locked blocks */
+ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ 
++/*
++ * Internal helper for board drivers which need to make sure that the current
++ * nand operation is finished and further operations are prevented before
++ * rebooting the system.
++ */
++extern int nand_shutdown(struct mtd_info *mtd);
++
+ /* The maximum number of NAND chips in an array */
+ #define NAND_MAX_CHIPS		8
+ 
+-- 
+2.1.3
