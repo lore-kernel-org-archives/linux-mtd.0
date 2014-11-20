@@ -1,16 +1,20 @@
-Received: from mout.web.de ([212.227.15.3])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XrTxX-0003fn-1l
- for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 15:47:52 +0000
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XrUMJ-00013I-H4
+ for linux-mtd@lists.infradead.org; Thu, 20 Nov 2014 16:13:28 +0000
+Message-ID: <546E1105.3050005@free-electrons.com>
+Date: Thu, 20 Nov 2014 13:04:21 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-Message-ID: <trinity-73ac0136-01d6-4251-acb9-e48ca8ce1273-1416498438753@3capp-webde-bs05>
-From: "Roland Kletzing" <devzero@web.de>
-To: linux-mtd@lists.infradead.org
-Subject: please consider removing netsc520 driver from drivers/mtd/maps/
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 20 Nov 2014 16:47:18 +0100
-Content-Transfer-Encoding: quoted-printable
-Cc: fengguang.wu@intel.com, dwmw2@infradead.org
+To: Richard Koch <n1gp@hotmail.com>
+Subject: Re: Using ubiblock
+References: <BLU180-W42CC73199E7C240289D55A87760@phx.gbl>
+In-Reply-To: <BLU180-W42CC73199E7C240289D55A87760@phx.gbl>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,64 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-every now and then i stumble across this "broken" module, and wonder if thi=
-s=20
-cannot be removed in 2014. I`m quite sure nobody will be missing that one =
-in=20
-3.18+ kernels.
+Hi Richard,
 
-it`s still being shipped as a module by popular distros like recent debian=
- or
-ubuntu. waste of diskspace and compile time, imho.
+(Ccing the rest of the world)
 
-there are even chances that these driver being accidentally statically lin=
-ked
-into kernels, e.g. https://lkml.org/lkml/2013/9/25/666 (cc fenguang wu bec=
-ause=20
-of this)
+On 11/20/2014 12:55 PM, Richard Koch wrote:
+> 
+> I was searching for a way to use squashfs for my read-only root file system
+> and came across your kernel and mtd patches.
+> 
 
-also see
+Nice!
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D10840
----
-This is a driver for an obscure embedded demonstration board. It's also on=
-e where
-there doesn't seem to be a good way to sanity check before probing. Quite =
-why any
-standard PC distro would ship it is beyond me
----
+> I was hoping you could provide me with an example of how to use it. I tried
+> using nandwrite but perhaps thats not the right way?
+> 
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D11226
----
-This is a specific driver for an embedded bosrd without autodetect possibi=
-lities,
-so you shouldn't be loading it on random unrelated hardware.
----
+Sigh, we really need to document this better!
 
-netsc520.c:
- * The NetSc520 is a demonstration board for the Elan Sc520 processor avai=
-lable
- * from AMD.  It has a single back of 16 megs of 32-bit Flash ROM and anot=
-her
- * 16 megs of SDRAM.
+> 
+> / # cat /proc/mtd
+> dev:    size   erasesize  name
+> mtd0: 16c00000 00020000 "nand0.roroot"
+> 
+> / # flash_erase /dev/mtd0 0 0
+> 
+> / # ubiattach /dev/ubi_ctrl -m 0
+> UBI: attaching mtd0 to ubi1
+> UBI: scanning is finished
+> UBI: attached mtd0 (name "nand0.roroot", size 364 MiB) to ubi1
+> UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+> UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+> UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+> UBI: good PEBs: 2909, bad PEBs: 3, corrupted PEBs: 0
+> UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+> UBI: max/mean erase counter: 2/1, WL threshold: 4096, image sequence number: 1217120129
+> UBI: available PEBs: 2747, total reserved PEBs: 162, PEBs reserved for bad PEB handling: 157
+> UBI: background thread "ubi_bgt1d" started, PID 152
+> 
+> / # ubiblock -V
+> ubiblock 1.5.1
+> 
+> / # ubiblock --create /dev/ubi1_0
+> UBI: ubiblock1_0 created from ubi1:0(rootfs)
+> 
+> / # nandwrite -p /dev/ubiblock1_0 rootfs_cm6.sqsh
+> nandwrite: can't open '/dev/ubiblock1_0': Operation not permitted
+> 
 
-http://sewoon.com/icmaster/Semi/amd/pdf/24323a.pdf
----
-NetSC520 Demonstration Board User =E2=80=99s Manual
-Demonstration Board Features
-The NetSC520 demonstration board provides the following features. For deta=
-ils see
-Board Functional Description
-*ElanSC520 microcontroller
-*AMD Am79C973 PCnet-FAST III single-chip 10/100 Mbit/s Ethernet controller
-*16 Mbytes SDRAM
-*16 Mbytes XIP Flash memory
----
+nandwrite is applied on MTD char devices. However, the ubiblock1_0
+device is a regular block device. Moreover, it's read-only so you can't
+write to it.
 
-regards
-roland
+Instead, you need to write to your volume (most likely with
+ubiupdatevol), and then use ubiblock1_0 to mount your filesystem. The
+UBI volume and the UBI block device are 1:1 mapped, which means that:
 
-ps:
-not subscribed to this list - hope this list allows for unsubscribed posti=
-ng=20
-like lkml
+cat /dev/ubiblock1_0 and cat /dev/ubi1_0 should be equal (or we have a
+very nasty bug).
+
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
