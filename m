@@ -1,21 +1,23 @@
-Date: Fri, 21 Nov 2014 09:13:48 +0800
-From: Huang Shijie <shijie.huang@intel.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 1/4] mtd: nand: provide detailed description for raw
- read/write page methods
-Message-ID: <20141121011348.GA28861@shldeISGChi005.sh.intel.com>
-References: <1413794777-32220-1-git-send-email-boris.brezillon@free-electrons.com>
- <1413794777-32220-2-git-send-email-boris.brezillon@free-electrons.com>
- <20141120080627.GB3212@norris-Latitude-E6410>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xrcql-0000Bi-2B
+ for linux-mtd@lists.infradead.org; Fri, 21 Nov 2014 01:17:27 +0000
+From: =?iso-2022-jp?B?UWkgV2FuZyAbJEIyJjUvGyhCIChxaXdhbmcp?=
+ <qiwang@micron.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel.garcia@imgtec.com" <ezequiel.garcia@imgtec.com>,
+ "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: [PATCH 0/2] staging: mtd: Support for GigaDevice SPI NAND flash
+Date: Fri, 21 Nov 2014 01:16:51 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7713225E@NTXXIAMBX02.xacn.micron.com>
+References: <mailman.22397.1416508326.22890.linux-mtd@lists.infradead.org>
+In-Reply-To: <mailman.22397.1416508326.22890.linux-mtd@lists.infradead.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20141120080627.GB3212@norris-Latitude-E6410>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+Cc: "ionela.voinescu@imgtec.com" <ionela.voinescu@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 20, 2014 at 12:06:27AM -0800, Brian Norris wrote:
-> On Mon, Oct 20, 2014 at 10:46:14AM +0200, Boris Brezillon wrote:
-> > read_page_raw and write_page_raw method description is not clear enough.
-> > It clearly specifies that ECC correction should not be involved but does
-> > not talk about specific layout (by layout I mean where in-band and
-> > out-of-band data are stored on the NAND media) used by NAND/ECC
-> > controllers.
-> > 
-> > Those specific layouts might impact MTD users and thus should be hidden (as
-> > already done in the standard NAND_ECC_HW_SYNDROME implementation).
-> > 
-> > Clearly state this constraint in the nand_ecc_ctrl struct documentation.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> 
-> Pushed this patch to l2-mtd.git. Thanks!
-thanks.
+> On 11/20/2014 10:18 AM, Ezequiel Garcia wrote:
+> Hm, perhaps it's better to rely in the NAND core code and avoid that BBT
+> and ECC code handling duplication?
+>=20
+> Ionela and I are preparing an SPI NAND framework, but it's far from
+> ready yet, so if you have something to submit, please do so :)
 
-I am really happy you can merge this patch.
+Yes, duplicate BBT and ECC code from nand code do is not a good idea.
+But SPI NAND framework should be a standalone module in MTD, might cause
+chaos if it still rely on NAND core code, that is my only concern.
+How do you think?
 
-Huang Shijie
+Thanks
+
+Qi Wang
