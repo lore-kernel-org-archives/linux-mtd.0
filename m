@@ -1,26 +1,16 @@
-Received: from mail-wg0-f54.google.com ([74.125.82.54])
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xrmmg-00060I-HB
- for linux-mtd@lists.infradead.org; Fri, 21 Nov 2014 11:53:55 +0000
-Received: by mail-wg0-f54.google.com with SMTP id y10so6315408wgg.13
- for <linux-mtd@lists.infradead.org>; Fri, 21 Nov 2014 03:53:30 -0800 (PST)
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Message-ID: <546F2754.6090509@imgtec.com>
-Date: Fri, 21 Nov 2014 08:51:48 -0300
-MIME-Version: 1.0
-To: =?ISO-2022-JP?B?IlFpIFdhbmcgGyRCMiY1LxsoQiAocWl3YW5nKSI=?=
- <qiwang@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/2] staging: mtd: Support for GigaDevice SPI NAND flash
-References: <mailman.22397.1416508326.22890.linux-mtd@lists.infradead.org>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7713225E@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A7713225E@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Transfer-Encoding: 7bit
-Cc: "ionela.voinescu@imgtec.com" <ionela.voinescu@imgtec.com>,
- James Hartley <james.hartley@imgtec.com>
+ id 1Xrstk-0005m8-ND
+ for linux-mtd@lists.infradead.org; Fri, 21 Nov 2014 18:25:37 +0000
+Received: by mail-pd0-f180.google.com with SMTP id p10so5783312pdj.11
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Nov 2014 10:25:15 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: tests: abort torturetest on erase errors
+Date: Fri, 21 Nov 2014 10:24:29 -0800
+Message-Id: <1416594269-4647-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,46 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The torture test should quit once it actually induces an error in the
+flash. This step was accidentally removed during refactoring.
 
+Without this fix, the torturetest just continues infinitely, or until
+the maximum cycle count is reached. e.g.:
 
-On 11/20/2014 10:16 PM, Qi Wang 王起 (qiwang) wrote:
->> On 11/20/2014 10:18 AM, Ezequiel Garcia wrote:
->> Hm, perhaps it's better to rely in the NAND core code and avoid that BBT
->> and ECC code handling duplication?
->>
->> Ionela and I are preparing an SPI NAND framework, but it's far from
->> ready yet, so if you have something to submit, please do so :)
-> 
-> Yes, duplicate BBT and ECC code from nand code do is not a good idea.
-> But SPI NAND framework should be a standalone module in MTD, might cause
-> chaos if it still rely on NAND core code, that is my only concern.
+   ...
+   [ 7619.218171] mtd_test: error -5 while erasing EB 100
+   [ 7619.297981] mtd_test: error -5 while erasing EB 100
+   [ 7619.377953] mtd_test: error -5 while erasing EB 100
+   [ 7619.457998] mtd_test: error -5 while erasing EB 100
+   [ 7619.537990] mtd_test: error -5 while erasing EB 100
+   ...
 
-Any reasons why you think it should be a standalone MTD driver?
+Fixes: 6cf78358c94f ("mtd: mtd_torturetest: use mtd_test helpers")
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: <stable@vger.kernel.org>
+---
+ drivers/mtd/tests/torturetest.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Why do you say it'd case chaos?
-
-> How do you think?
-> 
-
-Yeah, I've been thinking about this for some time. Right now, I think that
-SPI NAND is just that: a NAND over SPI, so I'm doing some experiments
-around this design:
-
-    Userspace
-  ------------------
-    MTD
-  ------------------
-    NAND core
-  ------------------
-    SPI NAND core
-  ------------------
-    SPI NAND device
-  ------------------
-    SPI core
-  ------------------
-    SPI master
-  ------------------
-    Hardware
-
+diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
+index eeab96973cf0..b55bc52a1340 100644
+--- a/drivers/mtd/tests/torturetest.c
++++ b/drivers/mtd/tests/torturetest.c
+@@ -264,7 +264,9 @@ static int __init tort_init(void)
+ 		int i;
+ 		void *patt;
+ 
+-		mtdtest_erase_good_eraseblocks(mtd, bad_ebs, eb, ebcnt);
++		err = mtdtest_erase_good_eraseblocks(mtd, bad_ebs, eb, ebcnt);
++		if (err)
++			goto out;
+ 
+ 		/* Check if the eraseblocks contain only 0xFF bytes */
+ 		if (check) {
 -- 
-Ezequiel
+1.9.1
