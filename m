@@ -1,23 +1,19 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xrcql-0000Bi-2B
- for linux-mtd@lists.infradead.org; Fri, 21 Nov 2014 01:17:27 +0000
-From: =?iso-2022-jp?B?UWkgV2FuZyAbJEIyJjUvGyhCIChxaXdhbmcp?=
- <qiwang@micron.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel.garcia@imgtec.com" <ezequiel.garcia@imgtec.com>,
- "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: [PATCH 0/2] staging: mtd: Support for GigaDevice SPI NAND flash
-Date: Fri, 21 Nov 2014 01:16:51 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7713225E@NTXXIAMBX02.xacn.micron.com>
-References: <mailman.22397.1416508326.22890.linux-mtd@lists.infradead.org>
-In-Reply-To: <mailman.22397.1416508326.22890.linux-mtd@lists.infradead.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Date: Fri, 21 Nov 2014 09:19:28 +0800
+From: Huang Shijie <shijie.huang@intel.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 0/4] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20141121011928.GB28861@shldeISGChi005.sh.intel.com>
+References: <1413794777-32220-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20141120092336.GE3212@norris-Latitude-E6410>
 MIME-Version: 1.0
-Cc: "ionela.voinescu@imgtec.com" <ionela.voinescu@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20141120092336.GE3212@norris-Latitude-E6410>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
+ Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On 11/20/2014 10:18 AM, Ezequiel Garcia wrote:
-> Hm, perhaps it's better to rely in the NAND core code and avoid that BBT
-> and ECC code handling duplication?
->=20
-> Ionela and I are preparing an SPI NAND framework, but it's far from
-> ready yet, so if you have something to submit, please do so :)
+On Thu, Nov 20, 2014 at 01:23:36AM -0800, Brian Norris wrote:
+> On Mon, Oct 20, 2014 at 10:46:13AM +0200, Boris Brezillon wrote:
+> > This series provides an implementation for raw accesses taking care of
+> > hidding the specific layout used by the GPMI controller.
+> > 
+> > I also updated the nand_ecc_ctrl struct documentation to clearly state that
+> > specific layouts should be hidden when accessing the NAND chip in raw mode.
+> 
+> Can I get any ack's, tested-by's, or reviewed-by's?
+> 
+I will add my tested-by in the Boris's next release.
 
-Yes, duplicate BBT and ECC code from nand code do is not a good idea.
-But SPI NAND framework should be a standalone module in MTD, might cause
-chaos if it still rely on NAND core code, that is my only concern.
-How do you think?
-
-Thanks
-
-Qi Wang
+thanks
+Huang Shijie
