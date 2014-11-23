@@ -1,32 +1,20 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-qg0-f43.google.com ([209.85.192.43])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsSIZ-00043x-1H
- for linux-mtd@lists.infradead.org; Sun, 23 Nov 2014 08:13:35 +0000
-Message-ID: <54719716.9010100@codeaurora.org>
-Date: Sun, 23 Nov 2014 10:13:10 +0200
-From: Tanya Brokhman <tlinder@codeaurora.org>
+ id 1XseYO-00034B-Cu
+ for linux-mtd@lists.infradead.org; Sun, 23 Nov 2014 21:18:45 +0000
+Received: by mail-qg0-f43.google.com with SMTP id q108so5960151qgd.16
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Nov 2014 13:18:22 -0800 (PST)
+Message-ID: <54724EBA.3040904@vanguardiasur.com.ar>
+Date: Sun, 23 Nov 2014 18:16:42 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [RFC/PATCH 0/5 v2] mtd:ubi: Read disturb and Data retention
- handling
-References: <1414331342-27839-1-git-send-email-tlinder@codeaurora.org>			
- <544D5BEC.50802@nod.at> <544E052B.1040505@codeaurora.org>			
- <544E08AE.7080506@nod.at> <5450C997.9010205@codeaurora.org>			
- <5450D6C4.4040400@nod.at> <54538ABC.1040605@codeaurora.org>			
- <5453ABF9.4070208@nod.at> <5453AD4D.2000303@nod.at>			
- <545630E1.8020505@codeaurora.org>			
- <1415261234.958.171.camel@sauron.fi.intel.com>			
- <545B66BA.4090904@codeaurora.org>		
- <1415350722.958.286.camel@sauron.fi.intel.com>		
- <54627350.9080509@codeaurora.org>	
- <1415793323.22887.233.camel@sauron.fi.intel.com>	
- <5464A062.7040202@codeaurora.org>
- <1415885788.22887.326.camel@sauron.fi.intel.com>
-In-Reply-To: <1415885788.22887.326.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: improve wait-till-ready timeout loop
+References: <1415183523-16265-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1415183523-16265-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: richard@nod.at, jlauruhn@micron.com, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,26 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem/Richard
+On 11/05/2014 07:32 AM, Brian Norris wrote:
+> There are a few small issues with the timeout loop in
+> spi_nor_wait_till_ready():
+> 
+>  * The first operation should not be a reschedule; we should check the
+>    status register at least once to see if we're complete!
+> 
+>  * We should check the status register one last time after declaring the
+>    deadline has passed, to prevent a premature timeout erro (this is
+>    theoretically possible if we sleep for a long time after the previous
+>    status register check).
+> 
+>  * Add an error message, so it's obvious if we ever hit a timeout.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 5e3a1d363895..d0dcaa1372ec 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -202,19 +202,24 @@ static int spi_nor_ready(struct spi_nor *nor)
+>  static int spi_nor_wait_till_ready(struct spi_nor *nor)
+>  {
+>  	unsigned long deadline;
+> -	int ret;
+> +	int timeout = 0, ret;
+>  
+>  	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
+>  
+> -	do {
+> -		cond_resched();
+> +	while (!timeout) {
+> +		if (time_after_eq(jiffies, deadline))
+> +			timeout = 1;
+>  
+>  		ret = spi_nor_ready(nor);
+>  		if (ret < 0)
+>  			return ret;
+>  		if (ret)
+>  			return 0;
+> -	} while (!time_after_eq(jiffies, deadline));
+> +
+> +		cond_resched();
+> +	}
+> +
+> +	dev_err(nor->dev, "flash operation timed out\n");
+>  
+>  	return -ETIMEDOUT;
+>  }
+> 
 
-On 11/13/2014 3:36 PM, Artem Bityutskiy wrote:
+Looks good to me.
 
->
-> I explained how I see it above in this e-mail. In short: read all data
-> often enough ("enough" is defined by your product), and you are done.
-> All "NAND effects" lead to bit-flips, you fix bit-flips faster than they
-> become hard errors, and you are done.
->
-
-We decided to drop this solution and stay with "force scrub" all PEBs 
-from time to time, triggered from userspace.
-Thank you all for your inputs and comments! It was very helpful in 
-coming to this decision.
-
-
-Thanks,
-Tanya Brokhman
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 -- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
