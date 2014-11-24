@@ -1,32 +1,17 @@
-Received: from mta-out1.inet.fi ([62.71.2.203] helo=kirsi1.inet.fi)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xstgv-0006V1-SH
- for linux-mtd@lists.infradead.org; Mon, 24 Nov 2014 13:28:35 +0000
-Date: Mon, 24 Nov 2014 15:27:55 +0200
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
-To: Jijiagang <jijiagang@hisilicon.com>
-Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
-Message-ID: <20141124132755.GA3167@node.dhcp.inet.fi>
-References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
- <1413805935.7906.225.camel@sauron.fi.intel.com>
- <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
- <1413810719.7906.268.camel@sauron.fi.intel.com>
- <545C2CEE.5020905@huawei.com>
- <20141120123011.GA9716@node.dhcp.inet.fi>
- <BE257DAADD2C0D439647A27133296657394A65A4@SZXEMA511-MBS.china.huawei.com>
- <20141124091024.GA1190@node.dhcp.inet.fi>
- <BE257DAADD2C0D439647A27133296657394A75F1@SZXEMA511-MBS.china.huawei.com>
+Date: Mon, 24 Nov 2014 09:22:33 -0600 (CST)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Message-ID: <737777710.57195.1416842553156.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <5471308E.908@vanguardiasur.com.ar>
+References: <1854666513.5578.1415473916534.JavaMail.zimbra@xes-inc.com>
+ <5471308E.908@vanguardiasur.com.ar>
+Subject: Re: [PATCH v2] mtd: fsl_upm: Support NAND ECC DTS properties
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BE257DAADD2C0D439647A27133296657394A75F1@SZXEMA511-MBS.china.huawei.com>
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Caizhiyong <caizhiyong@hisilicon.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- Hujianyang <hujianyang@huawei.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "Wanli \(welly\)" <welly.wan@hisilicon.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Jordan Friendshuh <jfriendshuh@xes-inc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,28 +21,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 24, 2014 at 10:20:59AM +0000, Jijiagang wrote:
-> Hi Kirill,
-> I test your patch, bus there's no dump_vma definition.
-> The log is here, hope it will be helpful.
+----- Original Message -----
+> From: "Ezequiel Garcia" <ezequiel@vanguardiasur.com.ar>
+> Sent: Saturday, November 22, 2014 6:55:42 PM
 > 
->  page:817fd7e0 count:3 mapcount:1 mapping:a318bb8c index:0x4
->  page flags: 0xa19(locked|uptodate|dirty|arch_1|private)
->  pte_write: 1
->  page:81441a80 count:3 mapcount:1 mapping:a318bb8c index:0x5
->  page flags: 0x209(locked|uptodate|arch_1)
->  pte_write: 1
+> On 11/08/2014 04:11 PM, Aaron Sierra wrote:
+> > From: Jordan Friendshuh <jfriendshuh@xes-inc.com>
+> > 
+> > Support the generic nand-ecc-mode and nand-ecc-strength device-tree
+> > properties with the Freescale UPM NAND driver.
+> > 
+> > This patch preserves the default software ECC mode while adding the
+> > ability to use BCH ECC for larger NAND devices.
+> > 
+> > Signed-off-by: Jordan Friendshuh <jfriendshuh@xes-inc.com>
+> > Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+> > ---
+> > v2:
+> >     * Now using ECC mode and strength helpers from of_mtd.h
+> >     * ECC mode and strength checking is more robust
+> > 
+> >  .../devicetree/bindings/mtd/fsl-upm-nand.txt       |  2 +
+> >  drivers/mtd/nand/Kconfig                           |  1 +
+> >  drivers/mtd/nand/fsl_upm.c                         | 51
+> >  +++++++++++++++++++---
+> >  3 files changed, 49 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+> > b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+> > index fce4894..a9906f6 100644
+> > --- a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+> > @@ -18,6 +18,8 @@ Optional properties:
+> >  - chip-delay : chip dependent delay for transferring data from array to
+> >  	read registers (tR). Required if property "gpios" is not used
+> >  	(R/B# pins not connected).
+> > +- nand-ecc-mode : as defined by nand.txt ("soft" and "soft_bch", only).
+> > +- nand-ecc-strength : as defined by nand.txt.
+> >  
+> 
+> The nand.txt recommends that each binding documents the way these
+> properties are interpreted.
 
-Okay, pte is writable but page is not dirty and doesn't have private flag
-set.
+Ezequiel,
+I assume you are referring to this statement, "implementations are
+encouraged to further specify the value(s) they support."
 
-I looked through code and don't see how that could happen.
+That is the only statement I found requesting documentation. I believe
+that request is satisfied, since I listed all of the modes that the driver
+would support with my patch applied. I used mxc-nand.txt as a reference.
 
->  UBIFS assert failed in ubifs_set_page_dirty at 1422 (pid 545)
->  CPU: 2 PID: 545 Comm: kswapd0 Tainted: P           O 3.10.0_s40 #19
+> Moreover, there's no nand-ecc-step usage? Are you assuming a 512-byte size?
 
-Is it possible to reproduce the issue on current upstream without any
-patches or third-party modules?
+The ecc.bytes value is currently left to be calculated by the
+NAND_ECC_SOFT_BCH case in nand_base.c. That calculation assumes a 512-byte
+step size.
 
--- 
- Kirill A. Shutemov
+-Aaron
