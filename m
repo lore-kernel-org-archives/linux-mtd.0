@@ -1,23 +1,18 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xt1BN-0001XR-Rh
- for linux-mtd@lists.infradead.org; Mon, 24 Nov 2014 21:28:30 +0000
-Received: by mail-pa0-f42.google.com with SMTP id et14so10291960pad.15
- for <linux-mtd@lists.infradead.org>; Mon, 24 Nov 2014 13:28:08 -0800 (PST)
-Date: Mon, 24 Nov 2014 13:28:04 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: Read-only file systems using NAND/MTD
-Message-ID: <20141124212804.GJ24364@ld-irv-0074>
-References: <006d01d00826$fa33c2a0$ee9b47e0$@TelosAlliance.com>
- <CAFLxGvyV0VYtQSWdnKJDs2choDMYGbR3azajXjd1ut4Emw1KdQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFLxGvyV0VYtQSWdnKJDs2choDMYGbR3azajXjd1ut4Emw1KdQ@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Rod Campbell <rod.campbell@telosalliance.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xt1DV-00045N-6j
+ for linux-mtd@lists.infradead.org; Mon, 24 Nov 2014 21:30:42 +0000
+From: Richard Weinberger <richard@nod.at>
+To: dedekind1@gmail.com
+Subject: [PATCH 2/2] UBI: rename_volumes: Use UBI_METAONLY
+Date: Mon, 24 Nov 2014 22:30:10 +0100
+Message-Id: <1416864610-5751-2-git-send-email-richard@nod.at>
+In-Reply-To: <1416864610-5751-1-git-send-email-richard@nod.at>
+References: <1416864610-5751-1-git-send-email-richard@nod.at>
+Cc: Richard Weinberger <richard@nod.at>,
+ Andrew Murray <amurray@embedded-bits.co.uk>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 24, 2014 at 10:21:16PM +0100, Richard Weinberger wrote:
-> On Mon, Nov 24, 2014 at 9:41 PM, Rod Campbell <rod.campbell@telosalliance.com> wrote:
-> > Hello,
-> >
-> > Is there an update about implementing a read-only file system on NAND?  The
-> > most recent discussion I could find was from May 2012:
-> >
-> > http://lists.infradead.org/pipermail/linux-mtd/2012-May/041200.html
-> >
-> > The conclusion seemed to be to use ubi underneath something like squashfs to
-> > provide bad-block awareness.  Is this still the recommended solution?
-> 
-> Yes. Using the new UBI block driver this is trivial.
+By using UBI_METAONLY in rename_volumes() it is now possible to rename
+an UBI volume atomically while it is mounted.
+This is useful for firmware upgrades.
 
-To expand on that:
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Cc: Andrew Murray <amurray@embedded-bits.co.uk>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/cdev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
-
-Brian
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index f5c715c..286383c 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -736,7 +736,7 @@ static int rename_volumes(struct ubi_device *ubi,
+ 			goto out_free;
+ 		}
+ 
+-		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_READWRITE);
++		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_METAONLY);
+ 		if (IS_ERR(re->desc)) {
+ 			err = PTR_ERR(re->desc);
+ 			ubi_err(ubi, "cannot open volume %d, error %d",
+-- 
+1.8.4.5
