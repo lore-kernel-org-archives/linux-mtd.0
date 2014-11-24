@@ -1,16 +1,32 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from mta-out1.inet.fi ([62.71.2.203] helo=kirsi1.inet.fi)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xsta5-0008Gd-6V
- for linux-mtd@lists.infradead.org; Mon, 24 Nov 2014 13:21:30 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH 5/6] UBI: Split __wl_get_peb()
-Date: Mon, 24 Nov 2014 14:20:35 +0100
-Message-Id: <1416835236-25185-6-git-send-email-richard@nod.at>
-In-Reply-To: <1416835236-25185-1-git-send-email-richard@nod.at>
-References: <1416835236-25185-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ id 1Xstgv-0006V1-SH
+ for linux-mtd@lists.infradead.org; Mon, 24 Nov 2014 13:28:35 +0000
+Date: Mon, 24 Nov 2014 15:27:55 +0200
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: Jijiagang <jijiagang@hisilicon.com>
+Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
+Message-ID: <20141124132755.GA3167@node.dhcp.inet.fi>
+References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
+ <1413805935.7906.225.camel@sauron.fi.intel.com>
+ <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
+ <1413810719.7906.268.camel@sauron.fi.intel.com>
+ <545C2CEE.5020905@huawei.com>
+ <20141120123011.GA9716@node.dhcp.inet.fi>
+ <BE257DAADD2C0D439647A27133296657394A65A4@SZXEMA511-MBS.china.huawei.com>
+ <20141124091024.GA1190@node.dhcp.inet.fi>
+ <BE257DAADD2C0D439647A27133296657394A75F1@SZXEMA511-MBS.china.huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BE257DAADD2C0D439647A27133296657394A75F1@SZXEMA511-MBS.china.huawei.com>
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Caizhiyong <caizhiyong@hisilicon.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ Hujianyang <hujianyang@huawei.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "Wanli \(welly\)" <welly.wan@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,109 +36,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make it two functions, wl_get_wle() and wl_get_peb().
-wl_get_peb() works exactly like __wl_get_peb() but wl_get_wle()
-does not call produce_free_peb().
-While refilling the fastmap user pool we cannot release ubi->wl_lock
-as produce_free_peb() does.
-Hence the fastmap logic uses now wl_get_wle().
+On Mon, Nov 24, 2014 at 10:20:59AM +0000, Jijiagang wrote:
+> Hi Kirill,
+> I test your patch, bus there's no dump_vma definition.
+> The log is here, hope it will be helpful.
+> 
+>  page:817fd7e0 count:3 mapcount:1 mapping:a318bb8c index:0x4
+>  page flags: 0xa19(locked|uptodate|dirty|arch_1|private)
+>  pte_write: 1
+>  page:81441a80 count:3 mapcount:1 mapping:a318bb8c index:0x5
+>  page flags: 0x209(locked|uptodate|arch_1)
+>  pte_write: 1
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/wl.c | 61 ++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 38 insertions(+), 23 deletions(-)
+Okay, pte is writable but page is not dirty and doesn't have private flag
+set.
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 7730b97..f028b68 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -499,13 +499,46 @@ out:
- #endif
- 
- /**
-- * __wl_get_peb - get a physical eraseblock.
-+ * wl_get_wle - get a mean wl entry to be used by wl_get_peb() or
-+ * refill_wl_user_pool().
-+ * @ubi: UBI device description object
-+ *
-+ * This function returns a a wear leveling entry in case of success and
-+ * NULL in case of failure.
-+ */
-+static struct ubi_wl_entry *wl_get_wle(struct ubi_device *ubi)
-+{
-+	struct ubi_wl_entry *e;
-+
-+	e = find_mean_wl_entry(ubi, &ubi->free);
-+	if (!e) {
-+		ubi_err(ubi, "no free eraseblocks");
-+		return NULL;
-+	}
-+
-+	self_check_in_wl_tree(ubi, e, &ubi->free);
-+
-+	/*
-+	 * Move the physical eraseblock to the protection queue where it will
-+	 * be protected from being moved for some time.
-+	 */
-+	rb_erase(&e->u.rb, &ubi->free);
-+	ubi->free_count--;
-+	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
-+
-+	return e;
-+}
-+
-+/**
-+ * wl_get_peb - get a physical eraseblock.
-  * @ubi: UBI device description object
-  *
-  * This function returns a physical eraseblock in case of success and a
-  * negative error code in case of failure.
-+ * It is the low level component of ubi_wl_get_peb() in the non-fastmap
-+ * case.
-  */
--static int __wl_get_peb(struct ubi_device *ubi)
-+static int wl_get_peb(struct ubi_device *ubi)
- {
- 	int err;
- 	struct ubi_wl_entry *e;
-@@ -524,27 +557,9 @@ retry:
- 		goto retry;
- 	}
- 
--	e = find_mean_wl_entry(ubi, &ubi->free);
--	if (!e) {
--		ubi_err(ubi, "no free eraseblocks");
--		return -ENOSPC;
--	}
--
--	self_check_in_wl_tree(ubi, e, &ubi->free);
--
--	/*
--	 * Move the physical eraseblock to the protection queue where it will
--	 * be protected from being moved for some time.
--	 */
--	rb_erase(&e->u.rb, &ubi->free);
--	ubi->free_count--;
--	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
--#ifndef CONFIG_MTD_UBI_FASTMAP
--	/* We have to enqueue e only if fastmap is disabled,
--	 * is fastmap enabled prot_queue_add() will be called by
--	 * ubi_wl_get_peb() after removing e from the pool. */
-+	e = wl_get_wle(ubi);
- 	prot_queue_add(ubi, e);
--#endif
-+
- 	return e->pnum;
- }
- 
-@@ -704,7 +719,7 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
- 	int peb, err;
- 
- 	spin_lock(&ubi->wl_lock);
--	peb = __wl_get_peb(ubi);
-+	peb = wl_get_peb(ubi);
- 	spin_unlock(&ubi->wl_lock);
- 
- 	if (peb < 0)
+I looked through code and don't see how that could happen.
+
+>  UBIFS assert failed in ubifs_set_page_dirty at 1422 (pid 545)
+>  CPU: 2 PID: 545 Comm: kswapd0 Tainted: P           O 3.10.0_s40 #19
+
+Is it possible to reproduce the issue on current upstream without any
+patches or third-party modules?
+
 -- 
-1.8.4.5
+ Kirill A. Shutemov
