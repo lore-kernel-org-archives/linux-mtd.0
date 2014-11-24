@@ -1,23 +1,30 @@
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XspXH-0006Xy-Vh
- for linux-mtd@lists.infradead.org; Mon, 24 Nov 2014 09:02:20 +0000
-Received: by mail-wi0-f172.google.com with SMTP id n3so4853112wiv.17
- for <linux-mtd@lists.infradead.org>; Mon, 24 Nov 2014 01:01:57 -0800 (PST)
-Received: from [192.168.0.2]
- (host15-234-dynamic.54-79-r.retail.telecomitalia.it. [79.54.234.15])
- by mx.google.com with ESMTPSA id cr6sm20049042wjb.44.2014.11.24.01.01.56
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Mon, 24 Nov 2014 01:01:56 -0800 (PST)
-Message-ID: <5472F403.50702@gmail.com>
-Date: Mon, 24 Nov 2014 10:01:55 +0100
-From: Angelo Dureghello <angelo70@gmail.com>
+Received: from mta-out1.inet.fi ([62.71.2.195] helo=jenni1.inet.fi)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XspiQ-0005PK-8n
+ for linux-mtd@lists.infradead.org; Mon, 24 Nov 2014 09:13:51 +0000
+Date: Mon, 24 Nov 2014 11:10:24 +0200
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: Jijiagang <jijiagang@hisilicon.com>
+Subject: Re: UBIFS assert failed in ubifs_set_page_dirty at 1421
+Message-ID: <20141124091024.GA1190@node.dhcp.inet.fi>
+References: <BE257DAADD2C0D439647A271332966573949EFEC@SZXEMA511-MBS.china.huawei.com>
+ <1413805935.7906.225.camel@sauron.fi.intel.com>
+ <C3050A4DBA34F345975765E43127F10F62CC5D9B@SZXEMA512-MBX.china.huawei.com>
+ <1413810719.7906.268.camel@sauron.fi.intel.com>
+ <545C2CEE.5020905@huawei.com>
+ <20141120123011.GA9716@node.dhcp.inet.fi>
+ <BE257DAADD2C0D439647A27133296657394A65A4@SZXEMA511-MBS.china.huawei.com>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: UBI 1MiB size partition
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BE257DAADD2C0D439647A27133296657394A65A4@SZXEMA511-MBS.china.huawei.com>
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Caizhiyong <caizhiyong@hisilicon.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ Hujianyang <hujianyang@huawei.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "Wanli \(welly\)" <welly.wan@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,49 +34,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all,
+On Mon, Nov 24, 2014 at 02:59:51AM +0000, Jijiagang wrote:
+> Hi Kirill,
+> 
+> I add dump_page(page) in function ubifs_set_page_dirty.
+> And get this log when ubifs assert fail. Is it helpful for this problem?
 
-i read UBI faq and surfed the net, but can't find still a clear answer
-to this:
+Not really. It seems you called dump_page() after
+__set_page_dirty_nobuffers() in ubifs_set_page_dirty().
 
+Could you try something like patch below. It assumes ubifs to compiled in
+(not module).
 
-I have a 1MiB partition on a nand flash o would like to format as UBI.
-I already have the rootfs atrtached as UBI0 / UBI0_0, so i am going
-to attach this partition as UBI1.
-
-But with the available ubi commands i am not able. Is this a limitiation
-due to the small partition size ?
-
-[root@barix ~]# flash_erase /dev/mtd5 0 8
-Erasing 128 Kibyte @ e0000 -- 100 % complete
-
-[root@barix ~]# ubiattach -m 5
-UBI: attaching mtd5 to ubi1
-UBI: scanning is finished
-UBI: empty MTD device detected
-UBI warning: print_rsvd_warning: cannot reserve enough PEBs for bad PEB 
-handling, reserved 4, need 20
-UBI: attached mtd5 (name "config", size 1 MiB) to ubi1
-UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
-UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
-UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
-UBI: good PEBs: 8, bad PEBs: 0, corrupted PEBs: 0
-UBI: user volume: 0, internal volumes: 1, max. volumes count: 128
-UBI: max/mean erase counter: 0/0, WL threshold: 4096, image sequence 
-number: 193419012
-UBI: available PEBs: 0, total reserved PEBs: 8, PEBs reserved for bad 
-PEB handling: 4
-UBI: background thread "ubi_bgt1d" started, PID 2686
-UBI device number 1, total 8 LEBs (1015808 bytes, 992.0 KiB), available 
-0 LEBs (0 bytes), LEB size 126976 bytes (124.0 KiB)
-[root@barix ~]#
-
-[root@barix ~]# ubimkvol /dev/ubi1 -N config -m
-ubimkvol: error!: UBI device does not have free logical eraseblocks
-
-As you see, i can't create a volume so i cannot mount.
- From the tools help, seems i cannot set bad PEB handling count.
-
-Every help is very appreciated.
-Thanks
-angelo
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index b5b593c45270..7b4386dd174e 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1531,7 +1531,7 @@ out_unlock:
+        return err;
+ }
+ 
+-static const struct vm_operations_struct ubifs_file_vm_ops = {
++const struct vm_operations_struct ubifs_file_vm_ops = {
+        .fault        = filemap_fault,
+        .map_pages = filemap_map_pages,
+        .page_mkwrite = ubifs_vm_page_mkwrite,
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 19886fb2f13a..343c4571df68 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1171,8 +1171,15 @@ static int try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
+        pteval = ptep_clear_flush(vma, address, pte);
+ 
+        /* Move the dirty bit to the physical page now the pte is gone. */
+-       if (pte_dirty(pteval))
++       if (pte_dirty(pteval)) {
++               extern const struct vm_operations_struct ubifs_file_vm_ops;
++               if (vma->vm_ops == &ubifs_file_vm_ops) {
++                       dump_vma(vma);
++                       dump_page(page, __func__);
++                       pr_emerg("pte_write: %d\n", pte_write(pteval));
++               }
+                set_page_dirty(page);
++       }
+ 
+        /* Update high watermark before we lower rss */
+        update_hiwater_rss(mm);
+-- 
+ Kirill A. Shutemov
