@@ -1,17 +1,15 @@
-Date: Mon, 24 Nov 2014 09:22:33 -0600 (CST)
-From: Aaron Sierra <asierra@xes-inc.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Message-ID: <737777710.57195.1416842553156.JavaMail.zimbra@xes-inc.com>
-In-Reply-To: <5471308E.908@vanguardiasur.com.ar>
-References: <1854666513.5578.1415473916534.JavaMail.zimbra@xes-inc.com>
- <5471308E.908@vanguardiasur.com.ar>
-Subject: Re: [PATCH v2] mtd: fsl_upm: Support NAND ECC DTS properties
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Jordan Friendshuh <jfriendshuh@xes-inc.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xsw8T-0006s0-Qn
+ for linux-mtd@lists.infradead.org; Mon, 24 Nov 2014 16:05:10 +0000
+From: Richard Weinberger <richard@nod.at>
+To: dedekind1@gmail.com
+Subject: UBI: Add support for scatter gather and blk-mq
+Date: Mon, 24 Nov 2014 17:04:38 +0100
+Message-Id: <1416845080-16663-1-git-send-email-richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ ezequiel.garcia@free-electrons.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,60 +19,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------ Original Message -----
-> From: "Ezequiel Garcia" <ezequiel@vanguardiasur.com.ar>
-> Sent: Saturday, November 22, 2014 6:55:42 PM
-> 
-> On 11/08/2014 04:11 PM, Aaron Sierra wrote:
-> > From: Jordan Friendshuh <jfriendshuh@xes-inc.com>
-> > 
-> > Support the generic nand-ecc-mode and nand-ecc-strength device-tree
-> > properties with the Freescale UPM NAND driver.
-> > 
-> > This patch preserves the default software ECC mode while adding the
-> > ability to use BCH ECC for larger NAND devices.
-> > 
-> > Signed-off-by: Jordan Friendshuh <jfriendshuh@xes-inc.com>
-> > Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
-> > ---
-> > v2:
-> >     * Now using ECC mode and strength helpers from of_mtd.h
-> >     * ECC mode and strength checking is more robust
-> > 
-> >  .../devicetree/bindings/mtd/fsl-upm-nand.txt       |  2 +
-> >  drivers/mtd/nand/Kconfig                           |  1 +
-> >  drivers/mtd/nand/fsl_upm.c                         | 51
-> >  +++++++++++++++++++---
-> >  3 files changed, 49 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-> > b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-> > index fce4894..a9906f6 100644
-> > --- a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-> > @@ -18,6 +18,8 @@ Optional properties:
-> >  - chip-delay : chip dependent delay for transferring data from array to
-> >  	read registers (tR). Required if property "gpios" is not used
-> >  	(R/B# pins not connected).
-> > +- nand-ecc-mode : as defined by nand.txt ("soft" and "soft_bch", only).
-> > +- nand-ecc-strength : as defined by nand.txt.
-> >  
-> 
-> The nand.txt recommends that each binding documents the way these
-> properties are interpreted.
+This two patches implement blk-mq support for the UBI block driver.
+As the scatter gather part is rather generic I've moved it directl
+into UBI such that it can be reused later.
+So far only reading data into a scatter gather list is possible.
+After implementing  ubi_eba_read_leb_sg() we could slowly start
+removing a bunch of vmalloc() from the UBI core code and use scatter gather.
+This should lower the memory footprint of UBI.
 
-Ezequiel,
-I assume you are referring to this statement, "implementations are
-encouraged to further specify the value(s) they support."
+[PATCH 1/2] UBI: Add initial support for scatter gather
+[PATCH 2/2] UBI: Block: Add blk-mq support
 
-That is the only statement I found requesting documentation. I believe
-that request is satisfied, since I listed all of the modes that the driver
-would support with my patch applied. I used mxc-nand.txt as a reference.
-
-> Moreover, there's no nand-ecc-step usage? Are you assuming a 512-byte size?
-
-The ecc.bytes value is currently left to be calculated by the
-NAND_ECC_SOFT_BCH case in nand_base.c. That calculation assumes a 512-byte
-step size.
-
--Aaron
+Thanks,
+//richard
