@@ -1,22 +1,22 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtJUD-0001m2-RL
- for linux-mtd@lists.infradead.org; Tue, 25 Nov 2014 17:01:10 +0000
-Message-ID: <5474B554.5070206@imgtec.com>
-Date: Tue, 25 Nov 2014 13:59:00 -0300
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Received: from mail-wi0-f169.google.com ([209.85.212.169])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XtMS1-0006An-Kb
+ for linux-mtd@lists.infradead.org; Tue, 25 Nov 2014 20:11:10 +0000
+Received: by mail-wi0-f169.google.com with SMTP id r20so13253360wiv.2
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2014 12:10:42 -0800 (PST)
+Message-ID: <5474E1DB.1090207@vanguardiasur.com.ar>
+Date: Tue, 25 Nov 2014 17:08:59 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-To: bpqw <bpqw@micron.com>, Brian Norris <computersforpeace@gmail.com>,
- "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 0/2] staging: mtd: Support for GigaDevice SPI NAND flash
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A7713208B@NTXXIAMBX02.xacn.micron.com>
- <546DEA1C.2080805@imgtec.com>
- <87F60714EC601C4C83DFF1D2E3D390A049D3E5@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A049D3E5@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset="gbk"
+To: Aaron Sierra <asierra@xes-inc.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2] mtd: fsl_upm: Support NAND ECC DTS properties
+References: <1854666513.5578.1415473916534.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <1854666513.5578.1415473916534.JavaMail.zimbra@xes-inc.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: "ionela.voinescu@imgtec.com" <ionela.voinescu@imgtec.com>
+Cc: Jordan Friendshuh <jfriendshuh@xes-inc.com>, devicetree@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 11/08/2014 04:11 PM, Aaron Sierra wrote:
+[..]
+> +
+> +	/* We know mode is either NAND_ECC_SOFT or NAND_ECC_SOFT_BCH */
+> +	if (strength < 0 && mode == NAND_ECC_SOFT_BCH) {
+> +		dev_err(fun->dev,
+> +			"ECC BCH mode requires nand-ecc-strength property");
+> +		ret = -EINVAL;
+> +		goto err;
+> +	} else if (strength == 0) {
+> +		dev_err(fun->dev, "ECC strength of 0 bits is unsupported");
+> +		ret = -EINVAL;
+> +		goto err;
+> +	} else if (strength == 1 && mode == NAND_ECC_SOFT_BCH) {
+> +		dev_err(fun->dev, "ECC BCH mode requires > 1-bit strength");
+> +		ret = -EINVAL;
+> +		goto err;
+> +	} else if (strength > 1 && mode == NAND_ECC_SOFT) {
+> +		dev_warn(fun->dev,
+> +			"Forcing ECC BCH due to %d-bit strength\n", strength);
+> +		mode = NAND_ECC_SOFT_BCH;
+> +	}
+> +	fun->chip.ecc.mode = mode;
+> +	fun->chip.ecc.strength = strength;
+> +
 
+Aside from my comment about the lack of ECC specification in the
+binding, I think the above is wrong.
 
-On 11/25/2014 04:02 AM, bpqw wrote:
->> Yeah, I've been thinking about this for some time. Right now, I think that
->> SPI NAND is just that: a NAND over SPI, so I'm doing some experiments
->> around this design:
->>
->>    Userspace
->>  ------------------
->>    MTD
->>  ------------------
->>    NAND core
->>  ------------------
->>    SPI NAND core
->>  ------------------
->>    SPI NAND device
->>  ------------------
->>    SPI core
->>  ------------------
->>    SPI master
->>  ------------------
->>    Hardware
-> 
-> I have finished a initial version of SPI-NAND framework based on drivers/staging/
-> mt29f_spinand/mt29f_spinand.c . The structure is the same as yours, just treate SPI
-> NAND as a NAND over SPI, put SPI NAND core under NAND core. Do you think it is a
-> good structure to start with? Because it is a quick product, I even do not finish
-> the unregisger function. So just care about the structure. Any suggestion about the
-> patch is welcomed.
-> 
+You don't have hardware ECC, but software ECC (either hamming or BCH).
+So, you don't need to specify any nand_ecc_ctrl.strength (i.e.
+ecc.strength above).
 
-Hm.. interesting. Ionela and I have started a similar work. However,
-we've splitted the code in two: spi-nand-base.c and spi-nand-device.c.
-The former handles the NAND logic, and the latter implements the
-specific SPI commands.
+It'll be set by the NAND core and override any value you set
+See nand_scan_tail.
 
-The idea behind this separation is to allow for better evolution of the
-code, given we are not sure the direction the SPI NAND devices will take.
+So, I'd say you just need to specify the nand-ecc-mode in the devicetree
+binding.
 
-I'm not sure how to handle a parallel effort like this and I don't want
-to stop you from working. I'll have some code submitted by this week.
-
-Maybe we can discuss it as well?
+The nand-ecc-strength and nand-ecc-step-size are meant for controllers
+with hardware ECC support.
 -- 
-Ezequiel
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
