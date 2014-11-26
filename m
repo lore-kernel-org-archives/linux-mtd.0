@@ -1,32 +1,25 @@
-Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
+Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtTu3-000131-IN
- for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 04:08:32 +0000
-Received: by mail-pd0-f173.google.com with SMTP id ft15so1957382pdb.4
- for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2014 20:08:09 -0800 (PST)
-Date: Tue, 25 Nov 2014 20:06:42 -0800
+ id 1XtTyL-0002iZ-MJ
+ for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 04:12:58 +0000
+Received: by mail-pd0-f179.google.com with SMTP id w10so1955636pde.38
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2014 20:12:36 -0800 (PST)
+Received: from ld-irv-0074 (5520-maca-inet1-outside.broadcom.com.
+ [216.31.211.11])
+ by mx.google.com with ESMTPSA id j10sm2825352pdr.92.2014.11.25.20.12.35
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
+ Tue, 25 Nov 2014 20:12:35 -0800 (PST)
+Date: Tue, 25 Nov 2014 20:12:33 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: bpqw <bpqw@micron.com>
-Subject: Re: [V5 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
- Micron spi nor
-Message-ID: <20141126040642.GA21347@ld-irv-0074>
-References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
- <201409251211.57183.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
- <201409261046.07132.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315EA24E@NTXXIAMBX02.xacn.micron.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: add ATC manufacturer info
+Message-ID: <20141126041233.GB21347@ld-irv-0074>
+References: <1415129565-26791-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6315EA24E@NTXXIAMBX02.xacn.micron.com>
-Cc: Marek Vasut <marex@denx.de>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "grmoore@altera.com" <grmoore@altera.com>,
- "shijie8@gmail.com" <shijie8@gmail.com>
+In-Reply-To: <1415129565-26791-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,42 +29,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 06, 2014 at 03:09:06AM +0000, bpqw wrote:
-> This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
+On Tue, Nov 04, 2014 at 11:32:45AM -0800, Brian Norris wrote:
+> Tested with ATC AFND1G08U3, 128MiB NAND.
 > 
-> For Micron SPI NOR flash,enabling or disabling quad I/O protocol is controlled
-> by EVCR (Enhanced Volatile Configuration Register), Quad I/O protocol bit 7.
-> When EVCR bit 7 is reset to 0,the SPI NOR flash will operate in quad I/O mode.
-> 
-> Signed-off-by: bean huo <beanhuo@micron.com>
-> Acked-by: Marek Vasut <marex@denx.de>
-> ---
->  v1-v2:
-> 	Modified to that capture wait_till_ready()
-> 	return value,if error,directly return its
-> 	the value.
->  v2-v3:
-> 	Directly use the reurning error value of
-> 	read_reg and write_reg,instead of -EINVAL.
->  v3-v4:
-> 	Modify commit logs that wraped into 80 columns 
->  v4-v5:
-> 	Rebuild new patch based on latest linux-mtd
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-You probably aren't based on l2-mtd.git. Your patch still doesn't build.
-I can fix it up if it's easy, but FYI. Still reviewing...
+Wow, I got the name wrong. It's ATO, not ATC.
 
-drivers/mtd/spi-nor/spi-nor.c: In function ‘micron_quad_enable’:
-drivers/mtd/spi-nor/spi-nor.c:874:2: warning: passing argument 3 of ‘nor->read_reg’ from incompatible pointer type [enabled by default]
-  ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-  ^
-drivers/mtd/spi-nor/spi-nor.c:874:2: note: expected ‘u8 *’ but argument is of type ‘int *’
-drivers/mtd/spi-nor/spi-nor.c:891:2: error: implicit declaration of function ‘wait_till_ready’ [-Werror=implicit-function-declaration]
-  ret = wait_till_ready(nor);
-  ^
-drivers/mtd/spi-nor/spi-nor.c:896:2: warning: passing argument 3 of ‘nor->read_reg’ from incompatible pointer type [enabled by default]
-  ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-  ^
-drivers/mtd/spi-nor/spi-nor.c:896:2: note: expected ‘u8 *’ but argument is of type ‘int *’
+Fixed and pushed to l2-mtd.git.
 
 Brian
