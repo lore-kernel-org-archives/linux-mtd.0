@@ -1,28 +1,28 @@
-Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtT7v-00028y-NV
- for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 03:18:48 +0000
-Received: by mail-pd0-f180.google.com with SMTP id p10so1882774pdj.11
- for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2014 19:18:27 -0800 (PST)
-Date: Tue, 25 Nov 2014 19:18:23 -0800
+ id 1XtTM9-0000DX-Fa
+ for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 03:33:30 +0000
+Received: by mail-pd0-f182.google.com with SMTP id r10so1869724pdi.41
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2014 19:33:07 -0800 (PST)
+Date: Tue, 25 Nov 2014 19:33:04 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] mtd: gpmi: Remove noisy error message
-Message-ID: <20141126031823.GQ24364@ld-irv-0074>
-References: <1415721691-14073-1-git-send-email-fabio.estevam@freescale.com>
- <CAFLxGvwgy-+5K63re678JwcSy2-bNRtDHXiW-1Ve+1En5xHFYg@mail.gmail.com>
- <CAOMZO5A2JJ+HAomy6qDZ6xLf2Bep8R6Jd7O5+N2GkQvtHhm8fg@mail.gmail.com>
- <54626AF4.4090306@nod.at>
- <CAOMZO5AXMjTPPnQtnZUxRmBezoq32wLSCX0iJ30PWa1dZhJ7qQ@mail.gmail.com>
- <54626D23.1080003@nod.at>
- <CAOMZO5C3STv-ZsTyXhxs2rhUMM7nu+kuzdAtV_Fo9c5azdeAuA@mail.gmail.com>
+To: Rodrigo Freire <rfreire@redhat.com>
+Subject: Re: [PATCH V2] mtd: block2mtd: Present block2mtd timely on boot time
+Message-ID: <20141126033304.GR24364@ld-irv-0074>
+References: <371358190.34795877.1410204429882.JavaMail.zimbra@redhat.com>
+ <1444809468.34812041.1410206680931.JavaMail.zimbra@redhat.com>
+ <20140909170231.GA14429@logfs.org>
+ <1807144344.40128259.1410985683342.JavaMail.zimbra@redhat.com>
+ <20141105202303.GN23619@ld-irv-0074>
+ <9691395.7454649.1415535485079.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOMZO5C3STv-ZsTyXhxs2rhUMM7nu+kuzdAtV_Fo9c5azdeAuA@mail.gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Richard Weinberger <richard@nod.at>, Huang Shijie <shijie8@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <9691395.7454649.1415535485079.JavaMail.zimbra@redhat.com>
+Cc: Felix Fietkau <nbd@openwrt.org>,
+ =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+ Herton Krzesinski <hkrzesin@redhat.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +32,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 11, 2014 at 06:16:29PM -0200, Fabio Estevam wrote:
-> BTW, I don't see any other nand driver that prints error on the probe
-> error path like this one.
+On Sun, Nov 09, 2014 at 07:18:05AM -0500, Rodrigo Freire wrote:
+> > From: "Brian Norris" <computersforpeace@gmail.com>
+> > Sent: Wednesday, November 5, 2014 6:23:03 PM
+> 
+> > This still seems like a bad idea (using a block device + block2mtd +
+> > JFFS2). Why are you doing this? See comments here:
+> > http://www.linux-mtd.infradead.org/faq/jffs2.html#L_hdd_jffs2
+> 
+> As Felix stated on a previous message to the thread, I am using JFFS2 over
+> block2mtd where regular filesystems failed to do so well. There are several
+> [1] threads pointing this issue, and JFFS2 over block2mtd works like a charm
+> on more harsh scenarios.
+[...]
+> [1] - http://bit.ly/1smGvwa
 
-You're probably still going to see failure prints like
+OK, so there are definitely problems with cheap SD card power cut
+tolerance. That's not news. But that doesn't mean block2mtd + JFFS2 is a
+good solution. In fact, when I add 'jffs2' to your Google search query
+of 'raspberry pi corrupt sd card', the only mentions I see are those who
+agree that this is not the right choice.
 
-  nand: No NAND device found
-
-in nand_scan_ident(), right? Or does driver probe fail earlier than that
-somehow?
-
-In general, I don't think you can expect non-discoverable hardware types
-not to complain at all when you falsely declare them as "present" in the
-device tree.
-
-If this is really the only thing being printed though, I can apply the
-patch. It's not worth too much more discussion anyway, IMO.
-
-(BTW, one thing you have going for you; you *do* print something when
-you successfully probe. The absence of such a message in your log tells
-you almost as much as the failure print you're trying to remove does.)
+But anyway, we can look at supporting block2mtd (since you provided the
+patches), even if we don't agree how it should be used. And in fact, I
+might argue there are no good (production) uses for block2mtd, so I
+suppose I don't have much stake in it :)
 
 Brian
