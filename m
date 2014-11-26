@@ -1,22 +1,20 @@
-Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtWmM-0006hE-7A
- for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 07:12:46 +0000
-Received: by mail-pd0-f172.google.com with SMTP id y13so2236441pdi.31
- for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2014 23:12:25 -0800 (PST)
-Date: Tue, 25 Nov 2014 23:12:21 -0800
+ id 1XtWnv-0006zx-KU
+ for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 07:14:24 +0000
+Received: by mail-pa0-f54.google.com with SMTP id fb1so2271718pad.41
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2014 23:14:02 -0800 (PST)
+Date: Tue, 25 Nov 2014 23:13:59 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: alison_chaiken@mentor.com
-Subject: Re: [PATCH 1/2] mtd: m25p80: Add support for serial flash Spansion
- S25FL132K
-Message-ID: <20141126071221.GM3212@norris-Latitude-E6410>
-References: <1415634895-3082-1-git-send-email-alison_chaiken@mentor.com>
- <1415634895-3082-2-git-send-email-alison_chaiken@mentor.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: cafe_nand: drop duplicate .write_page implementation
+Message-ID: <20141126071359.GN3212@norris-Latitude-E6410>
+References: <1415653564-23113-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1415634895-3082-2-git-send-email-alison_chaiken@mentor.com>
-Cc: ben@decadent.org.uk, linux-mtd@lists.infradead.org, shijie8@gmail.com
+In-Reply-To: <1415653564-23113-1-git-send-email-computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 10, 2014 at 04:54:53PM +0100, alison_chaiken@mentor.com wrote:
-> From: Knut Wohlrab <knut.wohlrab@de.bosch.com>
+On Mon, Nov 10, 2014 at 01:06:04PM -0800, Brian Norris wrote:
+> This write_page() function is functionally equivalent to the default in
+> nand_base.c. Its only difference is in subpage programming support,
+> which cafe_nand.c does not advertise, so the difference is negligible.
 > 
-> Signed-off-by: Knut Wohlrab <knut.wohlrab@de.bosch.com>
-> Signed-off-by: Alison Chaiken <alison_chaiken@mentor.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
 Applied to l2-mtd.git.
-
-> Conflicts:
-> 
-> 	drivers/mtd/devices/m25p80.c
-
-You might want to trim this in the future.
 
 Brian
