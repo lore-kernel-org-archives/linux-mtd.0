@@ -1,28 +1,28 @@
-Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtSst-0002iD-NW
- for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 03:03:16 +0000
-Received: by mail-pd0-f172.google.com with SMTP id y13so1844764pdi.31
- for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2014 19:02:53 -0800 (PST)
-Date: Tue, 25 Nov 2014 19:02:50 -0800
+ id 1XtT7v-00028y-NV
+ for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 03:18:48 +0000
+Received: by mail-pd0-f180.google.com with SMTP id p10so1882774pdj.11
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2014 19:18:27 -0800 (PST)
+Date: Tue, 25 Nov 2014 19:18:23 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH] mtd: nand: print erase size on init
-Message-ID: <20141126030250.GP24364@ld-irv-0074>
-References: <1413842464-18016-1-git-send-email-zajec5@gmail.com>
- <5448344C.8020402@vanguardiasur.com.ar>
- <1414654390.23185.1.camel@sauron.fi.intel.com>
- <CACna6rzwerRpX=o4RarRnGg-FeiZpDoowqXpFM2GFz9OifOb9A@mail.gmail.com>
- <54712F77.9000200@vanguardiasur.com.ar>
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] mtd: gpmi: Remove noisy error message
+Message-ID: <20141126031823.GQ24364@ld-irv-0074>
+References: <1415721691-14073-1-git-send-email-fabio.estevam@freescale.com>
+ <CAFLxGvwgy-+5K63re678JwcSy2-bNRtDHXiW-1Ve+1En5xHFYg@mail.gmail.com>
+ <CAOMZO5A2JJ+HAomy6qDZ6xLf2Bep8R6Jd7O5+N2GkQvtHhm8fg@mail.gmail.com>
+ <54626AF4.4090306@nod.at>
+ <CAOMZO5AXMjTPPnQtnZUxRmBezoq32wLSCX0iJ30PWa1dZhJ7qQ@mail.gmail.com>
+ <54626D23.1080003@nod.at>
+ <CAOMZO5C3STv-ZsTyXhxs2rhUMM7nu+kuzdAtV_Fo9c5azdeAuA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <54712F77.9000200@vanguardiasur.com.ar>
-Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <CAOMZO5C3STv-ZsTyXhxs2rhUMM7nu+kuzdAtV_Fo9c5azdeAuA@mail.gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Richard Weinberger <richard@nod.at>, Huang Shijie <shijie8@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,36 +32,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Nov 22, 2014 at 09:51:03PM -0300, Ezequiel Garcia wrote:
-> On 10/30/2014 09:35 AM, Rafał Miłecki wrote:
-> > On 30 October 2014 08:33, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> >> On Wed, 2014-10-22 at 19:48 -0300, Ezequiel Garcia wrote:
-> >>> Moreover, you have a /proc and a /sysfs interface to retrieve the erasesize:
-> >>>
-> >>> What's wrong with using any of the currently available interfaces:
-> >>>
-> >>> $ cat /sys/class/mtd/mtd0/erasesize
-> >>> 131072
-> >>>
-> >>> $ cat /proc/mtd | grep mtd0 | awk '{print $3}'
-> >>> 00020000
-> >>>
-> >>> Any reason why you want the info in the kernel log?
-> >>
-> >> When people ask for help and send their logs, it is very handy to have
-> >> this information there.
-> > 
-> > Oops, forgot to reply. There are two reasons for this:
-> > 1) It's easier to get erasesize from users/reporters when it simply
-> > appears in the boot log.
-> > 2) If user space breaks (e.g. because of wrong UBI image) we can't use
-> > "cat" to read the erasesize
-> > 
-> 
-> Hm.. OK. Those sound like good reasons.
+On Tue, Nov 11, 2014 at 06:16:29PM -0200, Fabio Estevam wrote:
+> BTW, I don't see any other nand driver that prints error on the probe
+> error path like this one.
 
-Glad we can agree on this important issue :)
+You're probably still going to see failure prints like
 
-Pushed to l2-mtd.git.
+  nand: No NAND device found
+
+in nand_scan_ident(), right? Or does driver probe fail earlier than that
+somehow?
+
+In general, I don't think you can expect non-discoverable hardware types
+not to complain at all when you falsely declare them as "present" in the
+device tree.
+
+If this is really the only thing being printed though, I can apply the
+patch. It's not worth too much more discussion anyway, IMO.
+
+(BTW, one thing you have going for you; you *do* print something when
+you successfully probe. The absence of such a message in your log tells
+you almost as much as the failure print you're trying to remove does.)
 
 Brian
