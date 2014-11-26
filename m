@@ -1,28 +1,25 @@
-Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xtb1Z-0002G5-HK
- for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 11:44:46 +0000
-Received: by mail-lb0-f182.google.com with SMTP id f15so2509056lbj.13
- for <linux-mtd@lists.infradead.org>; Wed, 26 Nov 2014 03:44:23 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20141126031823.GQ24364@ld-irv-0074>
-References: <1415721691-14073-1-git-send-email-fabio.estevam@freescale.com>
- <CAFLxGvwgy-+5K63re678JwcSy2-bNRtDHXiW-1Ve+1En5xHFYg@mail.gmail.com>
- <CAOMZO5A2JJ+HAomy6qDZ6xLf2Bep8R6Jd7O5+N2GkQvtHhm8fg@mail.gmail.com>
- <54626AF4.4090306@nod.at>
- <CAOMZO5AXMjTPPnQtnZUxRmBezoq32wLSCX0iJ30PWa1dZhJ7qQ@mail.gmail.com>
- <54626D23.1080003@nod.at>
- <CAOMZO5C3STv-ZsTyXhxs2rhUMM7nu+kuzdAtV_Fo9c5azdeAuA@mail.gmail.com>
- <20141126031823.GQ24364@ld-irv-0074>
-Date: Wed, 26 Nov 2014 09:44:23 -0200
-Message-ID: <CAOMZO5C_9er34oqGCYWfhe3NvmJXfqC21s_Uiset7_y7NKHXXA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: gpmi: Remove noisy error message
-From: Fabio Estevam <festevam@gmail.com>
+Date: Wed, 26 Nov 2014 08:19:32 -0500 (EST)
+From: Rodrigo Freire <rfreire@redhat.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Richard Weinberger <richard@nod.at>, Huang Shijie <shijie8@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-ID: <1417070032.4547583.1417007972343.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20141126072147.GO3212@norris-Latitude-E6410>
+References: <371358190.34795877.1410204429882.JavaMail.zimbra@redhat.com>
+ <1444809468.34812041.1410206680931.JavaMail.zimbra@redhat.com>
+ <20140909170231.GA14429@logfs.org>
+ <1807144344.40128259.1410985683342.JavaMail.zimbra@redhat.com>
+ <20141105202303.GN23619@ld-irv-0074>
+ <2086372266.7454667.1415535533979.JavaMail.zimbra@redhat.com>
+ <1874445287.7454806.1415535792984.JavaMail.zimbra@redhat.com>
+ <20141126072147.GO3212@norris-Latitude-E6410>
+Subject: Re: [PATCH v3 3/3] mtd: block2mtd: Removes PAGE_MASK as a index to
+ partition size
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Felix Fietkau <nbd@openwrt.org>,
+ =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+ Herton Krzesinski <hkrzesin@redhat.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,24 +29,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 26, 2014 at 1:18 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Tue, Nov 11, 2014 at 06:16:29PM -0200, Fabio Estevam wrote:
->> BTW, I don't see any other nand driver that prints error on the probe
->> error path like this one.
->
-> You're probably still going to see failure prints like
->
->   nand: No NAND device found
->
-> in nand_scan_ident(), right? Or does driver probe fail earlier than that
-> somehow?
+From: "Brian Norris" <computersforpeace@gmail.com>
+Sent: Wednesday, November 26, 2014 5:21:47 AM
+Subject: Re: [PATCH v3 3/3] mtd: block2mtd: Removes PAGE_MASK as a index to
+partition size
 
-Yes, this is what I get currently:
+> On Sun, Nov 09, 2014 at 07:23:12AM -0500, Rodrigo Freire wrote:
+> > PAGE_MASK is no longer needed with the new term.
 
-[    1.645433] nand: No NAND device found
-[    1.650372] gpmi-nand 8000c000.gpmi-nand: driver registration failed: -19
+> This isn't too descriptive. What you probably mean is that we assume the
+> erase size is always larger than PAGE_SIZE.
 
-In my opinion the "No NAND device found" is enough.
+> > This patch keeps the device size aligned with the erase_size.
+> >
+> > Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+> > Signed-off-by: Rodrigo Freire <rfreire@redhat.com>
+> > Signed-off-by: Herton Krzesinski <herton@redhat.com>
+> > ---
+> > V3: Separated on a single patch
+> > --- a/drivers/mtd/devices/block2mtd.c 2014-11-07 17:40:58.688747820 -02=
+00
+> > +++ b/drivers/mtd/devices/block2mtd.c 2014-11-07 17:41:28.054750893 -02=
+00
+> > @@ -291,8 +291,7 @@ static struct block2mtd_dev *add_device(
+> > goto err_destroy_mutex;
+> >
+> > dev->mtd.name =3D name;
+> > -
+> > - dev->mtd.size =3D dev->blkdev->bd_inode->i_size & PAGE_MASK;
+> > + dev->mtd.size =3D dev->blkdev->bd_inode->i_size & ~(erase_size - 1);
 
-Thanks
+> You never guaranteed that erase_size is a power of two, so this doesn't
+> necessarily mask the way you'd like...
+
+> But also, why is this even necessary? I see that we should already have
+> errored out if this was actually significant, since we have above:
+
+> if ((long)dev->blkdev->bd_inode->i_size % erase_size) {
+> pr_err("erasesize must be a divisor of device size\n");
+> goto err_free_block2mtd;
+> }
+
+Hello Brian, and thanks for the review.
+
+Honestly, I'd leave that untouched, but J=C3=B6rn pointed that it could be =
+a issue at https://lkml.org/lkml/2014/9/9/680
+
+I'd happily let it go without this patch 3, unless J=C3=B6rg wants to state=
+ otherwise.
