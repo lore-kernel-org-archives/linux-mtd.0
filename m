@@ -1,22 +1,17 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xtckv-0006U0-Fa
- for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 13:35:44 +0000
-Message-ID: <5475D713.9050101@nod.at>
-Date: Wed, 26 Nov 2014 14:35:15 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1XtcmR-0007CF-SK
+ for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 13:37:17 +0000
+From: zhangxingcai <zhangxingcai@huawei.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>
+Subject: [PATCH 3/3] [PATCH] mtd: fix concurrent access to mtd->usecount
+Date: Wed, 26 Nov 2014 21:36:30 +0800
+Message-ID: <1417008990-24413-1-git-send-email-zhangxingcai@huawei.com>
 MIME-Version: 1.0
-To: Fabio Estevam <festevam@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: gpmi: Remove noisy error message
-References: <1415721691-14073-1-git-send-email-fabio.estevam@freescale.com>	<CAFLxGvwgy-+5K63re678JwcSy2-bNRtDHXiW-1Ve+1En5xHFYg@mail.gmail.com>	<CAOMZO5A2JJ+HAomy6qDZ6xLf2Bep8R6Jd7O5+N2GkQvtHhm8fg@mail.gmail.com>	<54626AF4.4090306@nod.at>	<CAOMZO5AXMjTPPnQtnZUxRmBezoq32wLSCX0iJ30PWa1dZhJ7qQ@mail.gmail.com>	<54626D23.1080003@nod.at>	<CAOMZO5C3STv-ZsTyXhxs2rhUMM7nu+kuzdAtV_Fo9c5azdeAuA@mail.gmail.com>	<20141126031823.GQ24364@ld-irv-0074>
- <CAOMZO5C_9er34oqGCYWfhe3NvmJXfqC21s_Uiset7_y7NKHXXA@mail.gmail.com>
-In-Reply-To: <CAOMZO5C_9er34oqGCYWfhe3NvmJXfqC21s_Uiset7_y7NKHXXA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Huang Shijie <shijie8@gmail.com>
+Content-Type: text/plain
+Cc: zhangxingcai@huawei.com, fengfuqiu@huawei.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ tanhaijun@huawei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +21,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 26.11.2014 um 12:44 schrieb Fabio Estevam:
-> On Wed, Nov 26, 2014 at 1:18 AM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
->> On Tue, Nov 11, 2014 at 06:16:29PM -0200, Fabio Estevam wrote:
->>> BTW, I don't see any other nand driver that prints error on the probe
->>> error path like this one.
->>
->> You're probably still going to see failure prints like
->>
->>   nand: No NAND device found
->>
->> in nand_scan_ident(), right? Or does driver probe fail earlier than that
->> somehow?
-> 
-> Yes, this is what I get currently:
-> 
-> [    1.645433] nand: No NAND device found
-> [    1.650372] gpmi-nand 8000c000.gpmi-nand: driver registration failed: -19
-> 
-> In my opinion the "No NAND device found" is enough.
+__get_mtd_device() is called to increment mtd->usecount when we access
+mtd via /dev/mtd1 or /dev/mtdblock1, but mtd_table_mutex lock is used in the former
+via get_mtd_device(), while &dev->lock lock is used in the latter.  Therefore mtd->usecount is
+not properly protected if we access /dev/mtd1 and /dev/mtdblock1 at the same time.
 
-If we remove the said log message and one really has a NAND installed which fails
-to probe will he notice that and get the correct error code printed?
-If yes, the removal won't hurt.
+call graph as follows:
+/dev/mtd1 --> mtdchar_open() --> get_mtd_device() --> <hold mtd_table_mutex> --> __get_mtd_device() --> <increment mtd->usecount>
+/dev/mtdblock1 --> blktrans_open() --><hold &dev->lock> --> __get_mtd_device() --> <increment mtd->usecount>
 
-My point is that having non-existing hardware in the device does not make much sense.
-Lot's of DTs are very generic and carry a lot of unused stuff with them,
-but this is not a good practice as DTs should describe the actual hardware and not
-all possible board variants.
+Actually we triggerd the BUG_ON in put_mtd_device() on 2.6.34 kernel
+due to this race.
 
-Thanks,
-//richard
+To fix this convert mtd->usecount from int to atomic_t.
+
+<0>------------[ cut here ]------------
+<2>kernel BUG at drivers/mtd/mtdcore.c:565!
+Oops: Exception in kernel mode, sig: 5 [#1]
+PREEMPT SMP NR_CPUS=4 LTT NESTING LEVEL : 0
+P2041 RDB
+<0>last sysfs file: /sys/mbe_detect/ecc_mbe_detect
+...
+NIP [c037a808] put_mtd_device+0x58/0x80
+LR [c037a808] put_mtd_device+0x58/0x80
+Call Trace:
+[ca453e90] [c037a808] put_mtd_device+0x58/0x80 (unreliable)
+[ca453eb0] [c037ced8] mtd_close+0x48/0x70
+[ca453ed0] [c0119078] __fput+0xe8/0x220
+[ca453ef0] [c01144fc] filp_close+0x6c/0xb0
+[ca453f10] [c01145fc] sys_close+0xbc/0x180
+[ca453f40] [c0010ae8] ret_from_syscall+0x0/0x4
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Zhang Xingcai <zhangxingcai@huawei.com>
+---
+ drivers/mtd/maps/vmu-flash.c |  2 +-
+ drivers/mtd/mtdcore.c        | 12 ++++++------
+ include/linux/mtd/mtd.h      |  2 +-
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
+index 6b223cf..0a10779 100644
+--- a/drivers/mtd/maps/vmu-flash.c
++++ b/drivers/mtd/maps/vmu-flash.c
+@@ -721,7 +721,7 @@ static int vmu_can_unload(struct maple_device *mdev)
+ 	card = maple_get_drvdata(mdev);
+ 	for (x = 0; x < card->partitions; x++) {
+ 		mtd = &((card->mtd)[x]);
+-		if (mtd->usecount > 0)
++		if (atomic_read(&mtd->usecount) > 0)
+ 			return 0;
+ 	}
+ 	return 1;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 4c61187..95e7cfc 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -402,7 +402,7 @@ int add_mtd_device(struct mtd_info *mtd)
+ 		goto fail_locked;
+ 
+ 	mtd->index = i;
+-	mtd->usecount = 0;
++	atomic_set(&mtd->usecount, 0);
+ 
+ 	/* default value if not set by driver */
+ 	if (mtd->bitflip_threshold == 0)
+@@ -492,9 +492,9 @@ int del_mtd_device(struct mtd_info *mtd)
+ 	list_for_each_entry(not, &mtd_notifiers, list)
+ 		not->remove(mtd);
+ 
+-	if (mtd->usecount) {
++	if (atomic_read(&mtd->usecount)) {
+ 		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
+-		       mtd->index, mtd->name, mtd->usecount);
++		       mtd->index, mtd->name, atomic_read(&mtd->usecount));
+ 		ret = -EBUSY;
+ 	} else {
+ 		device_unregister(&mtd->dev);
+@@ -702,7 +702,7 @@ int __get_mtd_device(struct mtd_info *mtd)
+ 			return err;
+ 		}
+ 	}
+-	mtd->usecount++;
++	atomic_inc(&mtd->usecount);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(__get_mtd_device);
+@@ -756,8 +756,8 @@ EXPORT_SYMBOL_GPL(put_mtd_device);
+ 
+ void __put_mtd_device(struct mtd_info *mtd)
+ {
+-	--mtd->usecount;
+-	BUG_ON(mtd->usecount < 0);
++	atomic_dec(&mtd->usecount);
++	BUG_ON(atomic_read(&mtd->usecount) < 0);
+ 
+ 	if (mtd->_put_device)
+ 		mtd->_put_device(mtd);
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 031ff3a..af98132 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -250,7 +250,7 @@ struct mtd_info {
+ 
+ 	struct module *owner;
+ 	struct device dev;
+-	int usecount;
++	atomic_t usecount;
+ };
+ 
+ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr);
+-- 
+2.1.3
