@@ -1,27 +1,28 @@
-Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
+Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtYrX-0000cQ-2P
- for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 09:26:15 +0000
-Received: by mail-pd0-f178.google.com with SMTP id g10so2484159pdj.9
- for <linux-mtd@lists.infradead.org>; Wed, 26 Nov 2014 01:25:53 -0800 (PST)
-Date: Wed, 26 Nov 2014 01:25:50 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: suspect UBIFS async operations causing issues during reboot
-Message-ID: <20141126092550.GS3212@norris-Latitude-E6410>
-References: <545A64CF.20101@broadcom.com> <545A6AA0.8050901@nod.at>
- <545AAA2B.8090007@broadcom.com> <545BEEA5.7020609@broadcom.com>
- <545C8697.3080403@nod.at> <545D01F4.9050005@broadcom.com>
- <545F3FD8.6010001@nod.at> <546048AB.6040602@broadcom.com>
- <20141126081732.GQ3212@norris-Latitude-E6410>
- <54758F99.6010502@nod.at>
+ id 1Xtb1Z-0002G5-HK
+ for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 11:44:46 +0000
+Received: by mail-lb0-f182.google.com with SMTP id f15so2509056lbj.13
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Nov 2014 03:44:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54758F99.6010502@nod.at>
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Scott Branden <sbranden@broadcom.com>
+In-Reply-To: <20141126031823.GQ24364@ld-irv-0074>
+References: <1415721691-14073-1-git-send-email-fabio.estevam@freescale.com>
+ <CAFLxGvwgy-+5K63re678JwcSy2-bNRtDHXiW-1Ve+1En5xHFYg@mail.gmail.com>
+ <CAOMZO5A2JJ+HAomy6qDZ6xLf2Bep8R6Jd7O5+N2GkQvtHhm8fg@mail.gmail.com>
+ <54626AF4.4090306@nod.at>
+ <CAOMZO5AXMjTPPnQtnZUxRmBezoq32wLSCX0iJ30PWa1dZhJ7qQ@mail.gmail.com>
+ <54626D23.1080003@nod.at>
+ <CAOMZO5C3STv-ZsTyXhxs2rhUMM7nu+kuzdAtV_Fo9c5azdeAuA@mail.gmail.com>
+ <20141126031823.GQ24364@ld-irv-0074>
+Date: Wed, 26 Nov 2014 09:44:23 -0200
+Message-ID: <CAOMZO5C_9er34oqGCYWfhe3NvmJXfqC21s_Uiset7_y7NKHXXA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: gpmi: Remove noisy error message
+From: Fabio Estevam <festevam@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Richard Weinberger <richard@nod.at>, Huang Shijie <shijie8@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,20 +32,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 26, 2014 at 09:30:17AM +0100, Richard Weinberger wrote:
-> If there is a solution which makes Artem and David happy, I'm perfectly fine. :)
+On Wed, Nov 26, 2014 at 1:18 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Tue, Nov 11, 2014 at 06:16:29PM -0200, Fabio Estevam wrote:
+>> BTW, I don't see any other nand driver that prints error on the probe
+>> error path like this one.
+>
+> You're probably still going to see failure prints like
+>
+>   nand: No NAND device found
+>
+> in nand_scan_ident(), right? Or does driver probe fail earlier than that
+> somehow?
 
-Artem already commented [1]:
+Yes, this is what I get currently:
 
-"And generally, I am not opposed to this solution in
-upstream too, if it works for everyone."
+[    1.645433] nand: No NAND device found
+[    1.650372] gpmi-nand 8000c000.gpmi-nand: driver registration failed: -19
 
-And he seemed agreeable to handling it in MTD (not UBI) on the thread
-from a few years ago too.
+In my opinion the "No NAND device found" is enough.
 
-David hasn't been too vocal recently, so I wouldn't bet on getting a
-comment out of him. I'd be happy to proven wrong.
-
-Brian
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2014-November/056500.html
+Thanks
