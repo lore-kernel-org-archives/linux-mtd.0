@@ -1,21 +1,19 @@
-Date: Wed, 26 Nov 2014 08:19:32 -0500 (EST)
+Date: Wed, 26 Nov 2014 08:32:16 -0500 (EST)
 From: Rodrigo Freire <rfreire@redhat.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Message-ID: <1417070032.4547583.1417007972343.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20141126072147.GO3212@norris-Latitude-E6410>
+Message-ID: <1754439525.4551871.1417008736061.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20141126033304.GR24364@ld-irv-0074>
 References: <371358190.34795877.1410204429882.JavaMail.zimbra@redhat.com>
  <1444809468.34812041.1410206680931.JavaMail.zimbra@redhat.com>
  <20140909170231.GA14429@logfs.org>
  <1807144344.40128259.1410985683342.JavaMail.zimbra@redhat.com>
  <20141105202303.GN23619@ld-irv-0074>
- <2086372266.7454667.1415535533979.JavaMail.zimbra@redhat.com>
- <1874445287.7454806.1415535792984.JavaMail.zimbra@redhat.com>
- <20141126072147.GO3212@norris-Latitude-E6410>
-Subject: Re: [PATCH v3 3/3] mtd: block2mtd: Removes PAGE_MASK as a index to
- partition size
+ <9691395.7454649.1415535485079.JavaMail.zimbra@redhat.com>
+ <20141126033304.GR24364@ld-irv-0074>
+Subject: Re: [PATCH V2] mtd: block2mtd: Present block2mtd timely on boot time
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Cc: Felix Fietkau <nbd@openwrt.org>,
  =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
  Herton Krzesinski <hkrzesin@redhat.com>, linux-kernel@vger.kernel.org,
@@ -30,50 +28,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: "Brian Norris" <computersforpeace@gmail.com>
-Sent: Wednesday, November 26, 2014 5:21:47 AM
-Subject: Re: [PATCH v3 3/3] mtd: block2mtd: Removes PAGE_MASK as a index to
-partition size
+Sent: Wednesday, November 26, 2014 1:33:04 AM
+Subject: Re: [PATCH V2] mtd: block2mtd: Present block2mtd timely on boot time
 
-> On Sun, Nov 09, 2014 at 07:23:12AM -0500, Rodrigo Freire wrote:
-> > PAGE_MASK is no longer needed with the new term.
-
-> This isn't too descriptive. What you probably mean is that we assume the
-> erase size is always larger than PAGE_SIZE.
-
-> > This patch keeps the device size aligned with the erase_size.
+> On Sun, Nov 09, 2014 at 07:18:05AM -0500, Rodrigo Freire wrote:
+> > > From: "Brian Norris" <computersforpeace@gmail.com>
+> > > Sent: Wednesday, November 5, 2014 6:23:03 PM
 > >
-> > Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-> > Signed-off-by: Rodrigo Freire <rfreire@redhat.com>
-> > Signed-off-by: Herton Krzesinski <herton@redhat.com>
-> > ---
-> > V3: Separated on a single patch
-> > --- a/drivers/mtd/devices/block2mtd.c 2014-11-07 17:40:58.688747820 -02=
-00
-> > +++ b/drivers/mtd/devices/block2mtd.c 2014-11-07 17:41:28.054750893 -02=
-00
-> > @@ -291,8 +291,7 @@ static struct block2mtd_dev *add_device(
-> > goto err_destroy_mutex;
+> > > This still seems like a bad idea (using a block device + block2mtd +
+> > > JFFS2). Why are you doing this? See comments here:
+> > > http://www.linux-mtd.infradead.org/faq/jffs2.html#L_hdd_jffs2
 > >
-> > dev->mtd.name =3D name;
-> > -
-> > - dev->mtd.size =3D dev->blkdev->bd_inode->i_size & PAGE_MASK;
-> > + dev->mtd.size =3D dev->blkdev->bd_inode->i_size & ~(erase_size - 1);
+> > As Felix stated on a previous message to the thread, I am using JFFS2 over
+> > block2mtd where regular filesystems failed to do so well. There are several
+> > [1] threads pointing this issue, and JFFS2 over block2mtd works like a
+> > charm
+> > on more harsh scenarios.
+> [...]
+> > [1] - http://bit.ly/1smGvwa
 
-> You never guaranteed that erase_size is a power of two, so this doesn't
-> necessarily mask the way you'd like...
+> OK, so there are definitely problems with cheap SD card power cut
+> tolerance. That's not news. But that doesn't mean block2mtd + JFFS2 is a
+> good solution. In fact, when I add 'jffs2' to your Google search query
+> of 'raspberry pi corrupt sd card', the only mentions I see are those who
+> agree that this is not the right choice.
 
-> But also, why is this even necessary? I see that we should already have
-> errored out if this was actually significant, since we have above:
+> But anyway, we can look at supporting block2mtd (since you provided the
+> patches), even if we don't agree how it should be used. And in fact, I
+> might argue there are no good (production) uses for block2mtd, so I
+> suppose I don't have much stake in it :)
 
-> if ((long)dev->blkdev->bd_inode->i_size % erase_size) {
-> pr_err("erasesize must be a divisor of device size\n");
-> goto err_free_block2mtd;
-> }
+Hi there Brian,
 
-Hello Brian, and thanks for the review.
+This patchset primarily aims to fix a block2mtd behavior, and not introduce new features (well, the device name and a timeout option are indeed new options, but they're actually enhancements). block2mtd already exists, works nicely as boot root device on several architectures, but fails on BCM2835 arch. Our patchset only aims to get it fixed. We just want to block2mtd work on BCM2835 the way it works on different architectures. So, this is a fix.
 
-Honestly, I'd leave that untouched, but J=C3=B6rn pointed that it could be =
-a issue at https://lkml.org/lkml/2014/9/9/680
+As a side note, WRT the SD card corruption; it also happens on good quality SD cards too. The main culprit for the corruption is bad mains / power supply issues / abrupt poweroff.
 
-I'd happily let it go without this patch 3, unless J=C3=B6rg wants to state=
- otherwise.
+Thanks for the thorough review.
+
+Looking forward for the ACK ;-)
+
+My best regards,
+
+- RF.
