@@ -1,22 +1,23 @@
-Received: from mail-wg0-x22e.google.com ([2a00:1450:400c:c00::22e])
+Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtYND-0003w0-Cg
- for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 08:54:56 +0000
-Received: by mail-wg0-f46.google.com with SMTP id x12so3055957wgg.19
- for <linux-mtd@lists.infradead.org>; Wed, 26 Nov 2014 00:54:32 -0800 (PST)
-From: Rob Ward <robert.ward114@googlemail.com>
-Date: Wed, 26 Nov 2014 08:54:20 +0000 (GMT)
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: phram: Allow multiple phram devices on cmd line
-In-Reply-To: <20141126063256.GH3212@norris-Latitude-E6410>
-Message-ID: <alpine.DEB.2.10.1411260853070.7838@rob-thinkpad>
-References: <alpine.DEB.2.10.1410211859030.7838@rob-thinkpad>
- <alpine.DEB.2.10.1411091618160.7838@rob-thinkpad>
- <20141126063256.GH3212@norris-Latitude-E6410>
+ id 1XtYcc-0007Vc-9E
+ for linux-mtd@lists.infradead.org; Wed, 26 Nov 2014 09:10:51 +0000
+Received: by mail-pd0-f179.google.com with SMTP id w10so2414207pde.24
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Nov 2014 01:10:19 -0800 (PST)
+Date: Wed, 26 Nov 2014 01:10:15 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Scott Branden <sbranden@broadcom.com>
+Subject: Re: [PATCH] mtd: nand: added nand_shutdown
+Message-ID: <20141126091015.GR3212@norris-Latitude-E6410>
+References: <sbranden@broadcom.com>
+ <1416511085-3930-1-git-send-email-sbranden@broadcom.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, joern@lazybastard.org,
- linux-kernel@vger.kernel.org, Rob Ward <robert.ward114@googlemail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1416511085-3930-1-git-send-email-sbranden@broadcom.com>
+Cc: Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,251 +27,176 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Nov 20, 2014 at 11:18:05AM -0800, Scott Branden wrote:
+> Add nand_shutdown to wait for current nand operations to finish and prevent
+> further operations by changing the nand flash state to FL_SHUTDOWN.
+> 
+> This is addressing a problem observed during reboot tests using UBIFS
+> root file system: NAND erase operations that are in progress during
+> system reboot/shutdown are causing partial erased blocks. Although UBI should
+> be able to detect and recover from this error, this change will avoid
+> the creation of partial erased blocks on reboot in the middle of a NAND erase
+> operation.
+[...]
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index e4d451e..80e4367 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -48,6 +48,13 @@ extern int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+>  /* unlocks specified locked blocks */
+>  extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+>  
+> +/*
+> + * Internal helper for board drivers which need to make sure that the current
+> + * nand operation is finished and further operations are prevented before
+> + * rebooting the system.
+> + */
+> +extern int nand_shutdown(struct mtd_info *mtd);
 
-On Tue, 25 Nov 2014, Brian Norris wrote:
+I don't think we should push this out to the board drivers. And I
+definitely don't want to merge this function without any user. It'd turn
+out like our useless nand_lock() and nand_unlock() functions.
 
-> On Sun, Nov 09, 2014 at 04:24:44PM +0000, Rob Ward wrote:
-> > From 4e9b8ff3a6731a0ac43eac2e8bdf47101ff20ede Mon Sep 17 00:00:00 2001
-> > From: Rob Ward <robert.ward114@googlemail.com>
-> > Date: Tue, 21 Oct 2014 17:46:53 +0100
-> > Subject: [PATCH] mtd: phram: Allow multiple phram devices on cmd line
-> > 
-> > Allow the phram module the ability to create multiple phram mtd
-> > devices via the kernel command line.
-> 
-> Is the sysfs module parameter option not sufficient?
->
-While using the sysfs would work in most situations there are times when 
-it is less than ideal. An example is where the information regarding the
-locations of filesystems within RAM is not know by the kernel and needs to 
-be passed from the bootloader. This can be acheived a number of ways
-but passing via the cmdline and having phram understand multiple options
-is a nicer and consistent solution.
-> 
->   /sys/module/phram/parameters/phram
-> 
-> It looks like it should be reusable for multiple device creations.
-> 
-> Notably, we use 000 permissions for module_param_call(), so the
-> parameter doesn't even show up by default AFAICT. I had to hack it to
-> 0600 or similar.
-> 
-> > Currently the phram module only allows a single mtd device to be
-> > created via the kernel command line. This is due to the phram
-> > module having to store the values until it is initialised
-> > later. This storage is done using a single char[] meaning when
-> > the module_param_call is made the previous value is overidden.
-> > 
-> > This change modifies the phram system to use a char[][] allowing
-> > multiple devices to be created.
-> > 
-> > The array size if controlled using the new config option
-> > CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS that allows the maximum
-> > number of devices to be specified. Currently this option
-> > defaults to a value of 1 leaving the behaviour unchanged.
-> > 
-> > If the array is full a message is printed to the console and the
-> > module_param_call returns.
-> > 
-> > To test, in all cases an area of memory needs to be reserved via
-> > the command line e.g. memmap=10M$114M
-> > 
-> > To test with phram build into the kernel on the command line add
-> > the following:
-> > 
-> > phram.phram=alpha,114Mi,1Mi phram.phram=beta,115Mi,1Mi
-> > 
-> > If CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is left as default i.e. 1
-> > then the first device, alpha will be created only. If the value of
-> > CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is increased to 2 or more then
-> > both alpha and beta will be created.
-> 
-> I really don't think we want this to be a Kconfig option. We can
-> dynamically allocate and use a linked list instead, which would be more
-> flexible and avoid making a fixed compile-time choice.
->
-My first thought was to implement a linked list, however in the phram code
-there is a comment:
+> +
+>  /* The maximum number of NAND chips in an array */
+>  #define NAND_MAX_CHIPS		8
+>  
 
-	phram_param_call() is called so early that it
-	is not possible to resolve the device (even
-	kmalloc() fails). Defer that work to phram_setup().
+So, to do this right, I think maybe we should add an (optional)
+reboot_notifier field to struct mtd_info, and use it to register a
+system reboot notifier on behalf of the lower layers. We can do the
+registration in mtd_device_parse_register(), I think, and any
+unregistration in mtd_device_unregister().
 
-To test I modify the current phram code to include a kmalloc:
+With this approach, we can actually move the cfi_cmdset_000{1,2}.c
+reboot notifiers over to the same common code. They just will have to
+fill out their mtd->reboot_notifier field.
 
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index effd9a4..93b3cd9 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -271,6 +271,7 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
- #ifdef MODULE
- 	return phram_setup(val);
- #else
-+	char* fred = kmalloc(100, GFP_KERNEL);
+How about the following two untested patches?
+
+From: Brian Norris <computersforpeace@gmail.com>
+
+cfi_cmdset_000{1,2}.c already implement their own reboot notifiers, and
+we're going to add one for NAND. Let's put the boilerplate in one place.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/mtdcore.c   | 20 ++++++++++++++++++++
+ include/linux/mtd/mtd.h |  1 +
+ 2 files changed, 21 insertions(+)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 4c611871d7e6..b80d44f9751d 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -37,6 +37,7 @@
+ #include <linux/backing-dev.h>
+ #include <linux/gfp.h>
+ #include <linux/slab.h>
++#include <linux/reboot.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -365,6 +366,17 @@ static struct device_type mtd_devtype = {
+ 	.release	= mtd_release,
+ };
+ 
++static int mtd_reboot_notifier(struct notifier_block *n, unsigned long state,
++			       void *cmd)
++{
++       struct mtd_info *mtd;
++
++       mtd = container_of(n, struct mtd_info, reboot_notifier);
++       mtd->_reboot(mtd);
++
++       return NOTIFY_DONE;
++}
++
+ /**
+  *	add_mtd_device - register an MTD device
+  *	@mtd: pointer to new MTD device info structure
+@@ -565,6 +577,11 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 			err = -ENODEV;
+ 	}
+ 
++	if (mtd->_reboot) {
++		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
++		register_reboot_notifier(&mtd->reboot_notifier);
++	}
++
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(mtd_device_parse_register);
+@@ -579,6 +596,9 @@ int mtd_device_unregister(struct mtd_info *master)
+ {
+ 	int err;
+ 
++	if (master->_reboot)
++		unregister_reboot_notifier(&master->reboot_notifier);
++
+ 	err = del_mtd_partitions(master);
+ 	if (err)
+ 		return err;
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 031ff3a9a0bd..c06f5373d870 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -227,6 +227,7 @@ struct mtd_info {
+ 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
+ 	int (*_suspend) (struct mtd_info *mtd);
+ 	void (*_resume) (struct mtd_info *mtd);
++	void (*_reboot) (struct mtd_info *mtd);
  	/*
- 	 * If more parameters are later passed in via
- 	 * /sys/module/phram/parameters/phram
+ 	 * If the driver is something smart, like UBI, it may need to maintain
+ 	 * its own reference counting. The below functions are only for driver.
+-- 
 
-then when the kernel is booted(qemu in my case) using the following 
-command:
 
-qemu-system-x86_64 -kernel arch/x86/boot/bzImage -append "console=ttyAMA0 
-console=ttyS0 phram.phram=alpha,114Mi,1Mi memmap=10M\$114M" -serial stdio
+From: Scott Branden <sbranden@broadcom.com>
 
-the the kernel will not boot.
+Add nand_shutdown to wait for current nand operations to finish and prevent
+further operations by changing the nand flash state to FL_SHUTDOWN.
 
-If I remove the phram option so it doesn't go through the 
-phram_param_call() and no kmalloc is called then the kernel boots fine.
+This is addressing a problem observed during reboot tests using UBIFS
+root file system: NAND erase operations that are in progress during
+system reboot/shutdown are causing partial erased blocks. Although UBI should
+be able to detect and recover from this error, this change will avoid
+the creation of partial erased blocks on reboot in the middle of a NAND erase
+operation.
 
-I couldn't think of a nicer solution than using a Kconfig option other 
-than hard coding a value which I don't personally like, I am however happy 
-to change it if there is a better solution I haven't thought of.
+Signed-off-by: Scott Branden <sbranden@broadcom.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-> > To test phram built as a module insmod with the following arguments:
-> > 
-> > phram=gamma,114Mi,1Mi phram=delta,115Mi,1Mi
-> > 
-> > In this case two devices should be created.
-> > 
-> > Signed-off-by: Rob Ward <robert.ward114@googlemail.com>
-> > ---
-> >  drivers/mtd/devices/Kconfig | 12 ++++++++++++
-> >  drivers/mtd/devices/phram.c | 45 ++++++++++++++++++++++++++++++++++++++++-----
-> >  2 files changed, 52 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-> > index c49d0b1..5fdc80b 100644
-> > --- a/drivers/mtd/devices/Kconfig
-> > +++ b/drivers/mtd/devices/Kconfig
-> > @@ -136,6 +136,18 @@ config MTD_PHRAM
-> >  	  doesn't have access to, memory beyond the mem=xxx limit, nvram,
-> >  	  memory on the video card, etc...
-> >  
-> > +config MTD_PHRAM_MAX_CMDLINE_ARGS
-> > +	int "Max number of devices via Kernel command line"
-> > +	depends on MTD_PHRAM=y
-> > +	default 1
-> > +	help
-> > +	  Specify the number of phram devices that can be initialised
-> > +	  using the Kernel command line.
-> > +
-> > +	  This option is only applicable when phram is built into the
-> > +	  Kernel. When built as a module many devices can be specified
-> > +	  at module insmod.
-> > +
-> >  config MTD_LART
-> >  	tristate "28F160xx flash driver for LART"
-> >  	depends on SA1100_LART
-> > diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-> > index effd9a4..223f221 100644
-> > --- a/drivers/mtd/devices/phram.c
-> > +++ b/drivers/mtd/devices/phram.c
-> > @@ -212,9 +212,13 @@ static int phram_init_called;
-> >   * - phram.phram=<device>,<address>,<size> for built-in case
-> >   * We leave 64 bytes for the device name, 20 for the address and 20 for the
-> >   * size.
-> > + *
-> > + * The maximum number of devices supported is controlled by the
-> > + * MTD_PHRAM_MAX_CMDLINE_ARGS config option
-> > + *
-> >   * Example: phram.phram=rootfs,0xa0000000,512Mi
-> >   */
-> > -static char phram_paramline[64 + 20 + 20];
-> > +static char phram_paramline[CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS][64 + 20 + 20];
-> >  #endif
-> >  
-> >  static int phram_setup(const char *val)
-> > @@ -271,6 +275,9 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
-> >  #ifdef MODULE
-> >  	return phram_setup(val);
-> >  #else
-> > +	int paramline_it = 0;
-> > +	int arraysize = 0;
-> 
-> Neither of these need to be initialized here. And can you shorten the
-> long-ish names? We don't need an "iterator" -- it's just and index 'i'.
-> 
-> > +
-> >  	/*
-> >  	 * If more parameters are later passed in via
-> >  	 * /sys/module/phram/parameters/phram
-> > @@ -290,9 +297,27 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
-> >  	 * phram_setup().
-> >  	 */
-> >  
-> > -	if (strlen(val) >= sizeof(phram_paramline))
-> > +	if (strlen(val) >= sizeof(phram_paramline[0]))
-> >  		return -ENOSPC;
-> > -	strcpy(phram_paramline, val);
-> > +
-> > +	arraysize = sizeof(phram_paramline)/sizeof(phram_paramline[0]);
-> 
-> Coccinelle complains:
-> 
-> drivers/mtd/devices/phram.c:303:35-36: WARNING: Use ARRAY_SIZE
-> 
-> > +
-> > +	/*
-> > +	 * Check if any space is left in the array. If no space
-> > +	 * is left then print warning and return 0
-> > +	 */
-> > +
-> > +	if (phram_paramline[arraysize - 1][0]) {
-> > +		pr_warn("exceeded limit via cmd_line - %s ignored", val);
-> > +		return 0;
-> > +	}
-> > +
-> > +	for (paramline_it = 0; paramline_it <= arraysize; paramline_it++) {
-> 
-> Use '<' not '<='. You're overflowing the array.
-> 
-> > +		if (!phram_paramline[paramline_it][0]) {
-> > +			strcpy(phram_paramline[paramline_it], val);
-> > +			break;
-> > +		}
-> > +	}
-> >  
-> >  	return 0;
-> >  #endif
-> > @@ -307,8 +332,18 @@ static int __init init_phram(void)
-> >  	int ret = 0;
-> >  
-> >  #ifndef MODULE
-> > -	if (phram_paramline[0])
-> > -		ret = phram_setup(phram_paramline);
-> > +	int arraysize = 0;
-> > +	int paramline_it = 0;
-> 
-> Same comments as above. Neither of these need to be initialized here,
-> and shorten the name.
-> 
-> > +
-> > +	arraysize = sizeof(phram_paramline)/sizeof(phram_paramline[0]);
-> 
-> drivers/mtd/devices/phram.c:338:35-36: WARNING: Use ARRAY_SIZE
-> 
-> > +
-> > +	for (paramline_it = 0; paramline_it <= arraysize; paramline_it++) {
-> 
-> You're off-by-one; use '<', not '<='. So this line could just be:
-> 
-> 	for (i = 0; i < ARRAY_SIZE(phram_paramline); i++) {
-> 
-> (But then, we can avoid this by just allocating and appending to a
-> linked list.)
-> 
-> > +		if (phram_paramline[paramline_it][0]) {
-> > +			ret = phram_setup(phram_paramline[paramline_it]);
-> > +			if (ret)
-> > +				break;
-> > +		}
-> > +	}
-> >  	phram_init_called = 1;
-> >  #endif
-> >  
-> 
-> Brian
-> 
-Cheers,
-
-Rob
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 4cbd14552d48..06ae96834063 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2944,6 +2944,16 @@ static void nand_resume(struct mtd_info *mtd)
+ 			__func__);
+ }
+ 
++/**
++ * nand_shutdown - [MTD Interface] Finish the current NAND operation and
++ *                 prevent further operations
++ * @mtd: MTD device structure
++ */
++static int nand_shutdown(struct mtd_info *mtd)
++{
++	return nand_get_device(mtd, FL_SHUTDOWN);
++}
++
+ /* Set default functions */
+ static void nand_set_defaults(struct nand_chip *chip, int busw)
+ {
+@@ -4146,6 +4156,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->_unlock = NULL;
+ 	mtd->_suspend = nand_suspend;
+ 	mtd->_resume = nand_resume;
++	mtd->_reboot = nand_shutdown;
+ 	mtd->_block_isreserved = nand_block_isreserved;
+ 	mtd->_block_isbad = nand_block_isbad;
+ 	mtd->_block_markbad = nand_block_markbad;
+-- 
