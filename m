@@ -1,16 +1,15 @@
-Received: from es-mailhost2.delta-es.com ([80.150.85.162])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtyVY-0007li-1z
- for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 12:49:21 +0000
-From: Anton Habegger <Anton.Habegger@delta-es.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: UBIFS corruption after power cut
-Date: Thu, 27 Nov 2014 12:48:17 +0000
-Message-ID: <150521CB44B50A4A98049E9C7BAFB0F30D9A823E@DETENEXMB01.delta.corp>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+ id 1Xtz8g-0003Pr-5o
+ for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 13:29:44 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] nand: add nandflipbits tool
+Date: Thu, 27 Nov 2014 14:29:18 +0100
+Message-Id: <1417094958-20360-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,648 +19,376 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello =
+The nandflipbits tool is intended to be used when one need to flip one or
+several specific bits on a NAND media.
+It can be useful to manually recover from an unexpected bit flip on a flash
+device, though the main purpose of this tool is to provide a way to test
+ECC algorithms robustness.
 
+One typical example I used this tool for is testing HW ECC engines behavior
+when bitflips occur in an erased page: most HW engines do not correctly
+handle this case, because, most of the time, ECC bits generated for an
+empty page are not all 1s, and, empty page detection embedded in such
+engines is only validating that all bits are set to 1s (which is not true
+when a bit-flip has occurred).
 
-We got an unrecoverable UBI file system after power cut. It happens only on=
-es and it is not reproducible yet. =
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ Makefile       |   2 +-
+ nandflipbits.c | 332 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 333 insertions(+), 1 deletion(-)
+ create mode 100644 nandflipbits.c
 
-U-Boot is able to load a file from this file system, but the recovering par=
-t on linux fails.
-The corruption occurs on a powerpc device (mpc5125) with kernel 2.6.34. =
-
-I tried to overcome this issue with the more recent back port repository fr=
-om http://git.infradead.org/users/dedekind/ubifs-v2.6.34.git and I also emu=
-lated an MTD device with mtdram module on kernel 3.13 (Ubuntu 14.4). Unfort=
-unately both versions aren't able to recover the image.
-
-I see following scenarios:
-- An UBI image created with 2.6.34 can became corrupted with power cuts due=
- to open bugs at this time. This image will be never recoverable. Is this p=
-ossible?
-- There is a misconfiguration somewhere
-- There is a bug in the 3.13
-- Anything else..  =
-
-
-Dmesg on kernel 3.13 on X86_64 with emulated device:
-[88784.920976] UBIFS: recovery needed
-[88784.921518] UBIFS error (pid 24455): ubifs_check_node: bad node type 255
-[88784.921525] UBIFS error (pid 24455): ubifs_check_node: bad node at LEB 9=
-0:65656
-[88784.921548] 	magic          0x6101831
-[88784.921551] 	crc            0x6d37b9e0
-[88784.921552] 	node_type      255 (unknown node)
-[88784.921554] 	group_type     255 (unknown)
-[88784.921556] 	sqnum          18446744073709551615
-[88784.921557] 	len            4294967295
-[88784.921562] node type 255 was not recognized
-[88784.921570] CPU: 0 PID: 24455 Comm: mount Tainted: GF          O 3.13.0-=
-35-generic #62-Ubuntu
-[88784.921572] Hardware name: VMware, Inc. VMware Virtual Platform/440BX De=
-sktop Reference Platform, BIOS 6.00 07/31/2013
-[88784.921577]  ffff880036081000 ffff880224709bb8 ffffffff8171e320 00000000=
-00010078
-[88784.921583]  ffff880224709bf8 ffffffffa0529779 00000000a05290a1 ffffc900=
-091ac078
-[88784.921586]  0000000000000000 0000000000000000 0000000000010078 ffff8800=
-36081000
-[88784.921590] Call Trace:
-[88784.921626]  [<ffffffff8171e320>] dump_stack+0x45/0x56
-[88784.921674]  [<ffffffffa0529779>] ubifs_check_node+0x1a9/0x300 [ubifs]
-[88784.921707]  [<ffffffffa0531d56>] ubifs_scan_a_node+0x76/0x320 [ubifs]
-[88784.921720]  [<ffffffffa0532461>] ubifs_scan+0x81/0x340 [ubifs]
-[88784.921730]  [<ffffffffa0532db9>] ubifs_replay_journal+0x3b9/0x1790 [ubi=
-fs]
-[88784.921740]  [<ffffffffa052ad4f>] ? ubifs_write_node+0xcf/0x250 [ubifs]
-[88784.921752]  [<ffffffffa05422a0>] ? ubifs_lpt_init+0x220/0x9b0 [ubifs]
-[88784.921760]  [<ffffffffa0526c86>] ubifs_mount+0x1326/0x1e60 [ubifs]
-[88784.921864]  [<ffffffff811c1079>] mount_fs+0x39/0x1b0
-[88784.921893]  [<ffffffff8116f7e0>] ? __alloc_percpu+0x10/0x20
-[88784.921902]  [<ffffffff811dc357>] vfs_kern_mount+0x67/0x110
-[88784.921907]  [<ffffffff811debb4>] do_mount+0x244/0xb20
-[88784.921911]  [<ffffffff8116a7cb>] ? strndup_user+0x4b/0xf0
-[88784.921917]  [<ffffffff811df783>] SyS_mount+0x83/0xc0
-[88784.921922]  [<ffffffff8172ed6d>] system_call_fastpath+0x1a/0x1f
-[88784.921928] UBIFS error (pid 24455): ubifs_scan: bad node
-[88784.921930] UBIFS error (pid 24455): ubifs_scanned_corruption: corruptio=
-n at LEB 90:65656
-[88784.921933] UBIFS error (pid 24455): ubifs_scanned_corruption: first 819=
-2 bytes from LEB 90:65656
-[88784.921938] 00000000: 06101831 6d37b9e0 ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  1.....7m........................
-[88784.921942] 00000020: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.921946] 00000040: ffffffff ffffffff 50112f5e 00000000 00000000 00000=
-000 00000000 00000001  ........^/.P....................
-[88784.921949] 00000060: 00000000 00000000 00008000 00000001 00000000 00000=
-000 00000000 00000000  ................................
-[88784.921953] 00000080: 00000000 00000001 ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.921956] 000000a0: ffff1831 ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  1...............................
-[88784.921960] 000000c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.921963] 000000e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.921966] 00000100: ffffffff ffffffff 00008000 00000001 00000000 00000=
-000 00000000 00000000  ................................
-[88784.921970] 00000120: 00000000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000000  ................................
-[88784.921973] 00000140: 06101831 2e85d076 ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  1...v...........................
-[88784.921977] 00000160: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff 06101831 73e15390  ........................1....S.s
-[88784.921980] 00000180: ffffffff ffffffff 000000a0 00000200 00000043 00000=
-000 00000000 00000000  ................C...............
-[88784.921984] 000001a0: 00000b33 00000000 ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  3...............................
-[88784.921988] 000001c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.921991] 000001e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.921994] 00000200: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.921998] 00000220: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922001] 00000240: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922005] 00000260: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922008] 00000280: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922011] 000002a0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922015] 000002c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922018] 000002e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922022] 00000300: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922025] 00000320: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922029] 00000340: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922032] 00000360: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922037] 00000380: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922041] 000003a0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922045] 000003c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922048] 000003e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922052] 00000400: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922055] 00000420: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922058] 00000440: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922062] 00000460: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922065] 00000480: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922069] 000004a0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922072] 000004c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922075] 000004e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922079] 00000500: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922082] 00000520: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922086] 00000540: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922089] 00000560: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922092] 00000580: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922096] 000005a0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922099] 000005c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922102] 000005e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922106] 00000600: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922109] 00000620: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922113] 00000640: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922116] 00000660: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922119] 00000680: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922123] 000006a0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922126] 000006c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922129] 000006e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922133] 00000700: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922136] 00000720: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922140] 00000740: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922145] 00000760: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922149] 00000780: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922153] 000007a0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922156] 000007c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922159] 000007e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922163] 00000800: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922166] 00000820: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922170] 00000840: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922173] 00000860: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922176] 00000880: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922180] 000008a0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922183] 000008c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922187] 000008e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922190] 00000900: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922193] 00000920: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922197] 00000940: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922200] 00000960: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922204] 00000980: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922207] 000009a0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922210] 000009c0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922214] 000009e0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922217] 00000a00: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922221] 00000a20: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922224] 00000a40: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922227] 00000a60: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922231] 00000a80: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922234] 00000aa0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922238] 00000ac0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922241] 00000ae0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922244] 00000b00: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922248] 00000b20: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922253] 00000b40: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922257] 00000b60: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922260] 00000b80: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922264] 00000ba0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922267] 00000bc0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922270] 00000be0: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff ffffffff ffffffff  ................................
-[88784.922274] 00000c00: ffffffff ffffffff ffffffff ffffffff ffffffff fffff=
-fff 06ff18ff 0189b0ff  ................................
-[88784.922277] 00000c20: 00ff1a8e 00ff00ff 00ff00a0 00ff02ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922281] 00000c40: 00ff19f6 00ff00ff 00ff05ff 00ff00ff 50ffa1ff 00ff0=
-0ff 50ff30ff 00ff00ff  ...................P.....0.P....
-[88784.922284] 00000c60: 50ff30ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  .0.P............................
-[88784.922287] 00000c80: 00ff80ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922291] 00000ca0: 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 06ff18ff 6af404ff  ...............................j
-[88784.922294] 00000cc0: 00ff1a90 00ff00ff 00ff00a0 00ff02ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922298] 00000ce0: 00ff19f6 00ff00ff 00ff05ff 00ff00ff 50ffa1ff 00ff0=
-0ff 50ff30ff 00ff00ff  ...................P.....0.P....
-[88784.922301] 00000d00: 50ff30ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  .0.P............................
-[88784.922304] 00000d20: 00ff80ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922308] 00000d40: 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 06ff18ff 90fa96f9  ................................
-[88784.922311] 00000d60: 00ff1a92 00ff00ff 00ff00a0 00ff02ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922314] 00000d80: 00ff19f6 00ff00ff 00ff0592 00ff00ff 50ffa1ff 00ff0=
-0ff 50ff30ff 00ff00ff  ...................P.....0.P....
-[88784.922318] 00000da0: 50ff30ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  .0.P............................
-[88784.922321] 00000dc0: 00ff80ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922325] 00000de0: 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 06ff18ff 9bcdf8c1  ................................
-[88784.922328] 00000e00: 00ff1a94 00ff00ff 00ff00a0 00ff02ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922331] 00000e20: 00ff19f6 00ff00ff 00ff05ba 00ff00ff 50ffa1ff 00ff0=
-0ff 50ff30ff 00ff00ff  ...................P.....0.P....
-[88784.922335] 00000e40: 50ff30ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  .0.P............................
-[88784.922338] 00000e60: 00ff80ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922341] 00000e80: 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 06ff18ff 0fa3caff  ................................
-[88784.922345] 00000ea0: 00ff1a96 00ff00ff 00ff00a0 00ff02ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922348] 00000ec0: 00ff19f6 00ff00ff 00ff05d9 00ff00ff 50ffa1ff 00ff0=
-0ff 50ff3083 00ff00ff  ...................P.....0.P....
-[88784.922352] 00000ee0: 50ff3083 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  .0.P............................
-[88784.922355] 00000f00: 00ff80ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922360] 00000f20: 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 06ff18ff 83ff46fc  .............................F..
-[88784.922364] 00000f40: 00ff1a98 00ff00ff 00ff00a0 00ff02ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922368] 00000f60: 00ff19f6 00ff00ff 00ff05fd 00ff00ff 50ffa1ff 00ff0=
-0ff 50ff3087 00ff00ff  ...................P.....0.P....
-[88784.922371] 00000f80: 50ff3087 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  .0.P............................
-[88784.922375] 00000fa0: 00ff80ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922378] 00000fc0: 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 06ff18ff 6df3ca96  ...............................m
-[88784.922381] 00000fe0: 00ff1a9a 00ff00ff 00ff00a0 00ff02ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922385] 00001000: 00ff19f6 00ff00ff 00ff06ff 00ff00ff 50ffa1ff 00ff0=
-0ff 50ff30bd 00ff00ff  ...................P.....0.P....
-[88784.922388] 00001020: 50ff30bd 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  .0.P............................
-[88784.922392] 00001040: 00ff80ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 00ff00ff 00ff00ff  ................................
-[88784.922395] 00001060: 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff00ff 00ff0=
-0ff 06101831 735f4bab  ........................1....K_s
-[88784.922399] 00001080: 00001a9c 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922402] 000010a0: 000019f6 00000000 0000064e 00000000 5008a137 00000=
-000 501130dd 00000000  ........N.......7..P.....0.P....
-[88784.922406] 000010c0: 501130dd 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .0.P............................
-[88784.922409] 000010e0: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922412] 00001100: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 25b6c9f2  ........................1......%
-[88784.922416] 00001120: 00001a9e 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922419] 00001140: 000019f6 00000000 00000674 00000000 5008a137 00000=
-000 501130ee 00000000  ........t.......7..P.....0.P....
-[88784.922422] 00001160: 501130ee 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .0.P............................
-[88784.922426] 00001180: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922429] 000011a0: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 27070d45  ........................1...E..'
-[88784.922432] 000011c0: 00001aa0 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922436] 000011e0: 000019f6 00000000 0000069f 00000000 5008a137 00000=
-000 5011310e 00000000  ................7..P.....1.P....
-[88784.922439] 00001200: 5011310e 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .1.P............................
-[88784.922442] 00001220: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922446] 00001240: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 25b15e37  ........................1...7^.%
-[88784.922449] 00001260: 00001aa2 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922452] 00001280: 000019f6 00000000 000006c5 00000000 5008a137 00000=
-000 50113134 00000000  ................7..P....41.P....
-[88784.922456] 000012a0: 50113134 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  41.P............................
-[88784.922459] 000012c0: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922462] 000012e0: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 b8d543d2  ........................1....C..
-[88784.922468] 00001300: 00001aa4 00000000 000000a0 00000200 00000048 00000=
-000 00000000 00000000  ................H...............
-[88784.922472] 00001320: 00001a1d 00000000 00000143 00000000 5008a179 00000=
-000 50113179 00000000  ........C.......y..P....y1.P....
-[88784.922475] 00001340: 50113179 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  y1.P............................
-[88784.922478] 00001360: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922482] 00001380: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 6abc8dc4  ........................1......j
-[88784.922485] 000013a0: 00001aa6 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922489] 000013c0: 000019f6 00000000 000006e7 00000000 5008a137 00000=
-000 5011318d 00000000  ................7..P.....1.P....
-[88784.922492] 000013e0: 5011318d 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .1.P............................
-[88784.922495] 00001400: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922498] 00001420: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 d87524c3  ........................1....$u.
-[88784.922502] 00001440: 00001aa8 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922505] 00001460: 000019f6 00000000 0000070a 00000000 5008a137 00000=
-000 5011318d 00000000  ................7..P.....1.P....
-[88784.922509] 00001480: 5011318d 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .1.P............................
-[88784.922512] 000014a0: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922515] 000014c0: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 0eea31c7  ........................1....1..
-[88784.922519] 000014e0: 00001aaa 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922522] 00001500: 000019f6 00000000 0000072c 00000000 5008a137 00000=
-000 5011318d 00000000  ........,.......7..P.....1.P....
-[88784.922525] 00001520: 5011318d 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .1.P............................
-[88784.922529] 00001540: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922532] 00001560: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 aa0558ac  ........................1....X..
-[88784.922535] 00001580: 00001aac 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922539] 000015a0: 000019f6 00000000 00000753 00000000 5008a137 00000=
-000 501131ae 00000000  ........S.......7..P.....1.P....
-[88784.922542] 000015c0: 501131ae 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .1.P............................
-[88784.922545] 000015e0: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922549] 00001600: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 8c3a6a93  ........................1....j:.
-[88784.922552] 00001620: 00001aae 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922555] 00001640: 000019f6 00000000 0000077b 00000000 5008a137 00000=
-000 501131ae 00000000  ........{.......7..P.....1.P....
-[88784.922559] 00001660: 501131ae 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .1.P............................
-[88784.922562] 00001680: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922565] 000016a0: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 fb5eb40d  ........................1.....^.
-[88784.922569] 000016c0: 00001ab0 00000000 000000a0 00000200 00000047 00000=
-000 00000000 00000000  ................G...............
-[88784.922574] 000016e0: 000019f6 00000000 000007a2 00000000 5008a137 00000=
-000 501131ae 00000000  ................7..P.....1.P....
-[88784.922578] 00001700: 501131ae 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .1.P............................
-[88784.922581] 00001720: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922585] 00001740: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 0d5bb71f  ........................1.....[.
-[88784.922588] 00001760: 00001ab2 00000000 000000a0 00000100 00000043 00000=
-000 00000000 00000000  ................C...............
-[88784.922591] 00001780: 00000b33 00000000 00000000 00000000 0000004d 00000=
-000 501131ec 00000000  3...............M........1.P....
-[88784.922595] 000017a0: 501131ec 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  .1.P............................
-[88784.922598] 000017c0: 00008000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000001  ................................
-[88784.922601] 000017e0: 00000000 00000000 00000000 00000000 00000000 00000=
-000 06101831 c001744e  ........................1...Nt..
-[88784.922604] 00001800: 00001ab3 00000000 00000038 00000204 00000043 00000=
-000 00000000 00000000  ........8.......C...............
-[88784.922608] 00001820: 00000454 00000000 00000000 00000000 06101831 44b1a=
-0fa 00001ab4 00000000  T...............1......D........
-[88784.922611] 00001840: 000000a0 00000200 00000043 00000000 00000000 00000=
-000 00000b33 00000000  ........C...............3.......
-[88784.922615] 00001860: 00000454 00000000 0000004d 00000000 501131ec 00000=
-000 501131ec 00000000  T.......M........1.P.....1.P....
-[88784.922618] 00001880: 00000000 00000000 00000000 00000001 00000000 00000=
-000 00008000 00000001  ................................
-[88784.922621] 000018a0: 00000000 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  ................................
-[88784.922625] 000018c0: 00000000 00000000 00000000 00000000 06101831 93fbb=
-055 00001ab6 00000000  ................1...U...........
-[88784.922628] 000018e0: 000000a0 00000200 00000047 00000000 00000000 00000=
-000 000019f6 00000000  ........G.......................
-[88784.922631] 00001900: 000007c4 00000000 5008a137 00000000 501131ff 00000=
-000 501131ff 00000000  ........7..P.....1.P.....1.P....
-[88784.922635] 00001920: 00000000 00000000 00000000 00000001 00000000 00000=
-000 00008000 00000001  ................................
-[88784.922638] 00001940: 00000000 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  ................................
-[88784.922641] 00001960: 00000000 00000000 00000000 00000000 06101831 c464b=
-19b 00001ab8 00000000  ................1.....d.........
-[88784.922645] 00001980: 000000a0 00000200 00000047 00000000 00000000 00000=
-000 000019f6 00000000  ........G.......................
-[88784.922648] 000019a0: 000007e7 00000000 5008a137 00000000 501131ff 00000=
-000 501131ff 00000000  ........7..P.....1.P.....1.P....
-[88784.922652] 000019c0: 00000000 00000000 00000000 00000001 00000000 00000=
-000 00008000 00000001  ................................
-[88784.922655] 000019e0: 00000000 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  ................................
-[88784.922658] 00001a00: 00000000 00000000 00000000 00000000 06101831 fc09d=
-344 00001aba 00000000  ................1...D...........
-[88784.922662] 00001a20: 000000a0 00000200 00000047 00000000 00000000 00000=
-000 000019f6 00000000  ........G.......................
-[88784.922665] 00001a40: 00000809 00000000 5008a137 00000000 501131ff 00000=
-000 501131ff 00000000  ........7..P.....1.P.....1.P....
-[88784.922668] 00001a60: 00000000 00000000 00000000 00000001 00000000 00000=
-000 00008000 00000001  ................................
-[88784.922671] 00001a80: 00000000 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  ................................
-[88784.922675] 00001aa0: 00000000 00000000 00000000 00000000 06101831 2eefb=
-1e2 00001abc 00000000  ................1...............
-[88784.922681] 00001ac0: 000000a0 00000200 00000047 00000000 00000000 00000=
-000 000019f6 00000000  ........G.......................
-[88784.922685] 00001ae0: 00000830 00000000 5008a137 00000000 5011321e 00000=
-000 5011321e 00000000  0.......7..P.....2.P.....2.P....
-[88784.922688] 00001b00: 00000000 00000000 00000000 00000001 00000000 00000=
-000 00008000 00000001  ................................
-[88784.922692] 00001b20: 00000000 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  ................................
-[88784.922695] 00001b40: 00000000 00000000 00000000 00000000 06101831 c0c7b=
-4d6 00001abe 00000000  ................1...............
-[88784.922698] 00001b60: 000000a0 00000200 00000047 00000000 00000000 00000=
-000 000019f6 00000000  ........G.......................
-[88784.922702] 00001b80: 00000858 00000000 5008a137 00000000 5011321e 00000=
-000 5011321e 00000000  X.......7..P.....2.P.....2.P....
-[88784.922705] 00001ba0: 00000000 00000000 00000000 00000001 00000000 00000=
-000 00008000 00000001  ................................
-[88784.922708] 00001bc0: 00000000 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  ................................
-[88784.922712] 00001be0: 00000000 00000000 00000000 00000000 06101831 eabc2=
-932 00001ac0 00000000  ................1...2)..........
-[88784.922715] 00001c00: 000000a0 00000200 00000047 00000000 00000000 00000=
-000 000019f6 00000000  ........G.......................
-[88784.922718] 00001c20: 0000087f 00000000 5008a137 00000000 5011321e 00000=
-000 5011321e 00000000  ........7..P.....2.P.....2.P....
-[88784.922722] 00001c40: 00000000 00000000 00000000 00000001 00000000 00000=
-000 00008000 00000001  ................................
-[88784.922725] 00001c60: 00000000 00000000 00000000 00000000 00000000 00000=
-001 00000000 00000000  ................................
-[88784.922728] 00001c80: 00000000 00000000 00000000 00000000 06101831 09c97=
-38e 00001ac3 00000000  ................1....s..........
-[88784.922732] 00001ca0: 0000004d 00000102 00000001 573cb74d 00000000 00000=
-000 00000049 00000000  M...........M.<W........I.......
-[88784.922735] 00001cc0: 00140000 00000000 5f474f4c 75626544 30305f67 31303=
-030 7673632e 00000000  ........LOG_Debug_000001.csv....
-[88784.922739] 00001ce0: 06101831 11df14dc 00001ac4 00000000 000000a0 00000=
-100 00000049 00000000  1.......................I.......
-[88784.922742] 00001d00: 00000000 00000000 00001ac2 00000000 00000000 00000=
-000 50113220 00000000  ........................ 2.P....
-[88784.922745] 00001d20: 50113220 00000000 50113220 00000000 00000000 00000=
-000 00000000 00000001   2.P.... 2.P....................
-[88784.922749] 00001d40: 00000000 00000000 00008000 00000001 00000000 00000=
-000 00000000 00000000  ................................
-[88784.922752] 00001d60: 00000000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000000  ................................
-[88784.922755] 00001d80: 06101831 a178b611 00001ac5 00000000 000000a0 00000=
-200 00000001 00000000  1.....x.........................
-[88784.922759] 00001da0: 00000000 00000000 00000001 00000000 000002c0 00000=
-000 4f1ecfc0 00000000  ...........................O....
-[88784.922762] 00001dc0: 50113220 00000000 50113220 00000000 00000000 00000=
-000 00000000 00000002   2.P.... 2.P....................
-[88784.922765] 00001de0: 00000073 0000fffe 000041c0 00000001 00000000 00000=
-000 00000000 00000000  s........A......................
-[88784.922769] 00001e00: 00000000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000000  ................................
-[88784.922772] 00001e20: 06101831 aa903799 00001ac6 00000000 000000a0 00000=
-200 00000049 00000000  1....7..................I.......
-[88784.922775] 00001e40: 00000000 00000000 00001ac2 00000000 00000024 00000=
-000 50113220 00000000  ................$....... 2.P....
-[88784.922779] 00001e60: 50113220 00000000 50113220 00000000 00000000 00000=
-000 00000000 00000001   2.P.... 2.P....................
-[88784.922782] 00001e80: 00000000 00000000 00008000 00000001 00000000 00000=
-000 00000000 00000000  ................................
-[88784.922787] 00001ea0: 00000000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000000  ................................
-[88784.922791] 00001ec0: 06101831 0f29496b 00001ac8 00000000 000000a0 00000=
-200 00000049 00000000  1...kI).................I.......
-[88784.922795] 00001ee0: 00000000 00000000 00001ac2 00000000 0000005b 00000=
-000 50113220 00000000  ................[....... 2.P....
-[88784.922798] 00001f00: 50113220 00000000 50113220 00000000 00000000 00000=
-000 00000000 00000001   2.P.... 2.P....................
-[88784.922801] 00001f20: 00000000 00000000 00008000 00000001 00000000 00000=
-000 00000000 00000000  ................................
-[88784.922805] 00001f40: 00000000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000000  ................................
-[88784.922808] 00001f60: 06101831 354ba41b 00001aca 00000000 000000a0 00000=
-200 00000049 00000000  1.....K5................I.......
-[88784.922812] 00001f80: 00000000 00000000 00001ac2 00000000 00000092 00000=
-000 50113220 00000000  ........................ 2.P....
-[88784.922815] 00001fa0: 50113235 00000000 50113235 00000000 00000000 00000=
-000 00000000 00000001  52.P....52.P....................
-[88784.922818] 00001fc0: 00000000 00000000 00008000 00000001 00000000 00000=
-000 00000000 00000000  ................................
-[88784.922821] 00001fe0: 00000000 00000001 00000000 00000000 00000000 00000=
-000 00000000 00000000  ................................
-[88784.922824] UBIFS error (pid 24455): ubifs_scan: LEB 90 scanning failed
-[88784.922971] UBIFS: background thread "ubifs_bgt0_0" stops
-
- =
-
-Kernel 2.6.34 on powepc 32 (mpc5125) include all patches from http://git.in=
-fradead.org/users/dedekind/ubifs-v2.6.34.git
-UBI: attaching mtd0 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    130944 bytes
-UBI: smallest flash I/O unit:    1
-UBI: VID header offset:          64 (aligned 64)
-UBI: data offset:                128
-UBI: attached mtd0 to ubi0
-UBI: MTD device name:            "fs"
-UBI: MTD device size:            63 MiB
-UBI: number of good PEBs:        504
-UBI: number of bad PEBs:         0
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     1
-UBI: available PEBs:             0
-UBI: total number of reserved PEBs: 504
-UBI: number of PEBs reserved for bad PEB handling: 0
-UBI: max/mean erase counter: 2/1
-UBI: image sequence number: 2041090957
-UBI: background thread "ubi_bgt0d" started, PID 99
-UBIFS: recovery needed
-UBIFS error (pid 100): ubifs_check_node: bad node type 255
-UBIFS error (pid 100): ubifs_check_node: bad node at LEB 90:65656
-UBIFS error (pid 100): ubifs_scanned_corruption: corruption at LEB 90:65656
-UBIFS error (pid 100): ubifs_recover_leb: LEB 90 scanning failed
-mount: mounting ubi0:flash on /mnt/flash failed
-
-~ # mtdinfo /dev/mtd0
-mtd0
-Name:                           fs
-Type:                           nor
-Eraseblock size:                131072 bytes, 128.0 KiB
-Amount of eraseblocks:          504 (66060288 bytes, 63.0 MiB)
-Minimum input/output unit size: 1 byte
-Sub-page size:                  1 byte
-Character device major/minor:   90:0
-Bad blocks are allowed:         false
-Device is writable:             true
-
-Thank you very much for the help!
-
-Toni
-
-***************************************************************************=
-*****************************************************
-This email message, including any attachments, is for the sole use of the i=
-ntended recipient(s) and may contain =
-
-confidential and privileged information. Any unauthorized review, use, disc=
-losure or distribution is prohibited. =
-
-If you are not the intended recipient, please contact the sender by reply e=
--mail and destroy all copies of the original message. =
-
-[Delta Energy Systems]
-***************************************************************************=
-*****************************************************
+diff --git a/Makefile b/Makefile
+index eade234..55252f8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -20,7 +20,7 @@ MTD_BINS = \
+ 	ftl_format flash_erase nanddump doc_loadbios \
+ 	ftl_check mkfs.jffs2 flash_lock flash_unlock \
+ 	flash_otp_info flash_otp_dump flash_otp_lock flash_otp_write \
+-	mtd_debug flashcp nandwrite nandtest \
++	mtd_debug flashcp nandwrite nandtest nandflipbits \
+ 	jffs2dump \
+ 	nftldump nftl_format docfdisk \
+ 	rfddump rfdformat \
+diff --git a/nandflipbits.c b/nandflipbits.c
+new file mode 100644
+index 0000000..9ec39cf
+--- /dev/null
++++ b/nandflipbits.c
+@@ -0,0 +1,332 @@
++/*
++ *  nandflipbits.c
++ *
++ *  Copyright (C) 2014 Free Electrons
++ *
++ *  Author: Boris Brezillon <boris.brezillon@free-electrons.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Overview:
++ *   This utility manually flip specified bits in a NAND flash.
++ *
++ */
++
++#define PROGRAM_NAME "nandwrite"
++
++#include <ctype.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <stdbool.h>
++#include <stddef.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <time.h>
++#include <unistd.h>
++#include <sys/stat.h>
++#include <sys/ioctl.h>
++#include <sys/types.h>
++#include <getopt.h>
++
++#include <asm/types.h>
++#include "mtd/mtd-user.h"
++#include "common.h"
++#include <libmtd.h>
++
++struct bit_flip {
++	int block;
++	off_t offset;
++	int bit;
++	bool done;
++};
++
++static void display_help(int status)
++{
++	fprintf(status == EXIT_SUCCESS ? stdout : stderr,
++"Usage: nandflipbits [OPTION] MTD_DEVICE <bit>@<address>[:<bit>@<address>]\n"
++"Writes to the specified MTD device.\n"
++"\n"
++"  -o, --oob               Provided addresses take OOB area into account\n"
++"  -q, --quiet             Don't display progress messages\n"
++"  -h, --help              Display this help and exit\n"
++"      --version           Output version information and exit\n"
++	);
++	exit(status);
++}
++
++static void display_version(void)
++{
++	printf("%1$s " VERSION "\n"
++			"\n"
++			"Copyright (C) 2014 Free Electrons \n"
++			"\n"
++			"%1$s comes with NO WARRANTY\n"
++			"to the extent permitted by law.\n"
++			"\n"
++			"You may redistribute copies of %1$s\n"
++			"under the terms of the GNU General Public Licence.\n"
++			"See the file `COPYING' for more information.\n",
++			PROGRAM_NAME);
++	exit(EXIT_SUCCESS);
++}
++
++static const char	*mtd_device;
++static bool		quiet = false;
++static bool		oob_mode = false;
++static struct bit_flip	*bits_to_flip;
++static int		nbits_to_flip = 0;
++
++static void process_options(int argc, char * const argv[])
++{
++	char *bits_to_flip_iter;
++	int bit_idx = 0;
++	int error = 0;
++
++	for (;;) {
++		int option_index = 0;
++		static const char short_options[] = "hoq";
++		static const struct option long_options[] = {
++			/* Order of these args with val==0 matters; see option_index. */
++			{"version", no_argument, 0, 0},
++			{"help", no_argument, 0, 'h'},
++			{"oob", no_argument, 0, 'o'},
++			{"quiet", no_argument, 0, 'q'},
++			{0, 0, 0, 0},
++		};
++
++		int c = getopt_long(argc, argv, short_options,
++				long_options, &option_index);
++		if (c == EOF)
++			break;
++
++		switch (c) {
++		case 0:
++			if (!option_index) {
++				display_version();
++				break;
++			}
++			break;
++		case 'q':
++			quiet = true;
++			break;
++		case 'o':
++			oob_mode = true;
++			break;
++		case 'h':
++			display_help(EXIT_SUCCESS);
++			break;
++		case '?':
++			error++;
++			break;
++		}
++	}
++
++	argc -= optind;
++	argv += optind;
++
++	/*
++	 * There must be at least the MTD device node path argument remaining
++	 * and the 'bits-to-flip' description.
++	 */
++
++	if (argc != 2 || error)
++		display_help(EXIT_FAILURE);
++
++	mtd_device = argv[0];
++	bits_to_flip_iter = argv[1];
++	do {
++		nbits_to_flip++;
++		bits_to_flip_iter = strstr(bits_to_flip_iter, ":");
++		if (bits_to_flip_iter)
++			bits_to_flip_iter++;
++	} while (bits_to_flip_iter);
++
++	bits_to_flip = xmalloc(sizeof(*bits_to_flip) * nbits_to_flip);
++	bits_to_flip_iter = argv[1];
++
++	do {
++		struct bit_flip	*bit_to_flip = &bits_to_flip[bit_idx++];
++
++		bit_to_flip->bit = strtol(bits_to_flip_iter,
++					  &bits_to_flip_iter, 0);
++		if (errno || bit_to_flip->bit > 7)
++			goto err_invalid_bit_desc;
++
++		if (!bits_to_flip_iter || *bits_to_flip_iter++ != '@')
++			goto err_invalid_bit_desc;
++
++		bit_to_flip->offset = strtol(bits_to_flip_iter,
++					     &bits_to_flip_iter, 0);
++
++		if (!bits_to_flip_iter || errno)
++			goto err_invalid_bit_desc;
++
++		bits_to_flip_iter = strstr(bits_to_flip_iter, ":");
++		if (bits_to_flip_iter)
++			bits_to_flip_iter++;
++	} while (bits_to_flip_iter);
++
++	return;
++
++err_invalid_bit_desc:
++	fprintf(stderr, "Invalid bit description\n");
++	exit(EXIT_FAILURE);
++}
++int main(int argc, char **argv)
++{
++	libmtd_t mtd_desc;
++	struct mtd_dev_info mtd;
++	int pagelen;
++	int pages_per_blk;
++	size_t blklen;
++	long long mtdlen;
++	int fd;
++	int ret;
++	uint8_t *buffer;
++	int i;
++
++	process_options(argc, argv);
++
++	/* Open the device */
++	if ((fd = open(mtd_device, O_RDWR)) == -1)
++		sys_errmsg_die("%s", mtd_device);
++
++	mtd_desc = libmtd_open();
++	if (!mtd_desc)
++		errmsg_die("can't initialize libmtd");
++
++	ret = ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_RAW);
++	if (ret) {
++		printf("Failed to set MTD in raw access mode\n");
++		return -errno;
++	}
++
++	/* Fill in MTD device capability structure */
++	if (mtd_get_dev_info(mtd_desc, mtd_device, &mtd) < 0)
++		errmsg_die("mtd_get_dev_info failed");
++
++	/* Select OOB write mode */
++	ret = ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_RAW);
++	if (ret) {
++		switch (errno) {
++		case ENOTTY:
++			errmsg_die("ioctl MTDFILEMODE is missing");
++		default:
++			sys_errmsg_die("MTDFILEMODE");
++		}
++	}
++
++	pagelen = mtd.min_io_size + (oob_mode ? mtd.oob_size : 0);
++	pages_per_blk = mtd.eb_size / mtd.min_io_size;
++	blklen = pages_per_blk * pagelen;
++	mtdlen = blklen * mtd.eb_cnt;
++	buffer = xmalloc((mtd.min_io_size + mtd.oob_size) * pages_per_blk);
++
++	for (i = 0; i < nbits_to_flip; i++) {
++		int page;
++
++		if (bits_to_flip[i].offset >= mtdlen)
++			errmsg_die("Invalid bit offset");
++
++		bits_to_flip[i].block = bits_to_flip[i].offset / blklen;
++		bits_to_flip[i].offset %= blklen;
++		page = bits_to_flip[i].offset / pagelen;
++		bits_to_flip[i].offset = (page *
++					  (mtd.min_io_size + mtd.oob_size)) +
++					 (bits_to_flip[i].offset % pagelen);
++
++	}
++
++	while (1) {
++		struct bit_flip	*bit_to_flip = NULL;
++		int blkoffs;
++		int bufoffs;
++
++		for (i = 0; i < nbits_to_flip; i++) {
++			if (bits_to_flip[i].done == false) {
++				bit_to_flip = &bits_to_flip[i];
++				break;
++			}
++		}
++
++		if (!bit_to_flip)
++			break;
++
++		blkoffs = 0;
++		bufoffs = 0;
++		for (i = 0; i < pages_per_blk; i++) {
++			ret = mtd_read(&mtd, fd, bit_to_flip->block, blkoffs,
++				       buffer + bufoffs, mtd.min_io_size);
++			if (ret) {
++				sys_errmsg("%s: MTD Read failure", mtd_device);
++				goto closeall;
++			}
++
++			bufoffs += mtd.min_io_size;
++
++			ret = mtd_read_oob(mtd_desc, &mtd, fd, blkoffs,
++					   mtd.oob_size, buffer + bufoffs);
++			if (ret) {
++				sys_errmsg("%s: MTD Read OOB failure", mtd_device);
++				goto closeall;
++			}
++
++			bufoffs += mtd.oob_size;
++			blkoffs += mtd.min_io_size;
++		}
++
++		for (i = 0; i < nbits_to_flip; i++) {
++			unsigned char val, mask;
++
++			if (bits_to_flip[i].block != bit_to_flip->block)
++				continue;
++
++			mask = 1 << bits_to_flip[i].bit;
++			val = buffer[bits_to_flip[i].offset] & mask;
++			if (val)
++				buffer[bits_to_flip[i].offset] &= ~mask;
++			else
++				buffer[bits_to_flip[i].offset] |= mask;
++		}
++
++		ret = mtd_erase(mtd_desc, &mtd, fd, bit_to_flip->block);
++		if (ret) {
++			sys_errmsg("%s: MTD Erase failure", mtd_device);
++			goto closeall;
++		}
++
++		blkoffs = 0;
++		bufoffs = 0;
++		for (i = 0; i < pages_per_blk; i++) {
++			ret = mtd_write(mtd_desc, &mtd, fd, bit_to_flip->block,
++					blkoffs, buffer + bufoffs, mtd.min_io_size,
++					buffer + bufoffs + mtd.min_io_size,
++					mtd.oob_size,
++					MTD_OPS_RAW);
++			if (ret) {
++				sys_errmsg("%s: MTD Write failure", mtd_device);
++				goto closeall;
++			}
++
++			blkoffs += mtd.min_io_size;
++			bufoffs += mtd.min_io_size + mtd.oob_size;
++		}
++
++		for (i = 0; i < nbits_to_flip; i++) {
++			if (bits_to_flip[i].block == bit_to_flip->block)
++				bits_to_flip[i].done = true;
++		}
++	}
++
++	return 0;
++
++closeall:
++	libmtd_close(mtd_desc);
++	close(fd);
++	free(buffer);
++	exit(EXIT_FAILURE);
++}
+-- 
+1.9.1
