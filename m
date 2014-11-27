@@ -1,19 +1,19 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xu2F0-0003Af-0t
- for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 16:48:26 +0000
-Message-ID: <1417106877.5858.133.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 3/6] UBI: Fastmap: Ensure that all fastmap work is done
- upon WL shutdown
+ id 1Xu2Gl-0004QX-TI
+ for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 16:50:17 +0000
+Message-ID: <1417106992.5858.135.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/6] UBI: Fastmap: Ensure that only one fastmap work is
+ scheduled
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: Richard Weinberger <richard@nod.at>
-Date: Thu, 27 Nov 2014 18:47:57 +0200
-In-Reply-To: <547752D1.6040000@nod.at>
+Date: Thu, 27 Nov 2014 18:49:52 +0200
+In-Reply-To: <547753C0.6050604@nod.at>
 References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <1416835236-25185-4-git-send-email-richard@nod.at>
- <1417102739.5858.112.camel@sauron.fi.intel.com> <54774C71.50807@nod.at>
- <1417105793.5858.117.camel@sauron.fi.intel.com> <547752D1.6040000@nod.at>
+ <1416835236-25185-3-git-send-email-richard@nod.at>
+ <1417102042.5858.102.camel@sauron.fi.intel.com> <54774DB7.5090200@nod.at>
+ <1417106151.5858.122.camel@sauron.fi.intel.com> <547753C0.6050604@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -27,53 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2014-11-27 at 17:35 +0100, Richard Weinberger wrote:
-> Am 27.11.2014 um 17:29 schrieb Artem Bityutskiy:
-> > On Thu, 2014-11-27 at 17:08 +0100, Richard Weinberger wrote:
-> >>> Obviously, there is some misunderstanding. This looks like lack of
-> >>> separation and misuse of layering. I am missing explanations why I am
-> >>> wrong...
-> >>
-> >> So you want me to use the UBI WL background thread for the scheduled fastmap work?
+On Thu, 2014-11-27 at 17:39 +0100, Richard Weinberger wrote:
+> > So the background thread would first check this flag, and if it is set -
+> > call the fastmap stuff. The go do the WL works.
 > > 
-> > No. It is more like either use it or do not use it.
+> > Just off-the top of my head, take with grain of salt.
 > 
-> Sorry, I don't understand.
-> What do you want to do to?
-
-Just keep the code structured. I am just asking questions and trying to
-to analyze your patches. If at some point I would like you to do
-something specific, I clearly state this. In this case I was complaining
-about fastmap specifics in an unrelated file, so basically the wish is
-to have it go away. How exactly - not specified, up to you :-) Or, this
-means just telling me why it is this way, justify.
-
-When I was working with this code, I did give people specific
-suggestions, line-by-line. Now I am more doing more of a sanity check,
-looking after the bigger picture.
-
-I understand that this is not a picture of an ideal maintainer, and I am
-not anymore an ideal maintainer for this stuff (I think I used to,
-though), simply because of lack of time. Doing the best effort job now.
-
-> >> I didn't do it that way because you said more than once that fastmap is fastmap and
-> >> WL is WL. Therefore I've separated it.
-> > 
-> > And "separated" meaning adding this code to wl.c?
-> > 
-> > +#ifdef CONFIG_MTD_UBI_FASTMAP
-> > +       flush_work(&ubi->fm_work);
-> > +#endif
-> > 
-> > Could it be separated some more then?
-> > 
+> So you want me to redesign it?
+> IMHO this is just a matter of taste.
 > 
-> Of course, commit "UBI: Move fastmap specific functions out of wl.c" does.
+> Face it, my brain does not work like yours. I design things differently.
 
-I did not see it in this series. So you could tell this earlier, not
-after 2 e-mail exchanges. Do not assume I remember the details of our
-previous discussion. Assume I forgot everything :-)
-
-> But this commit is *bugfix* commit.
-
-I thought adding an close function to fastmap.c is a simple task.
+OK.
