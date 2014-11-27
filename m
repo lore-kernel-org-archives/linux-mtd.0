@@ -1,33 +1,15 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtvAS-0007Ro-51
- for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 09:15:17 +0000
-Received: by mail-pa0-f53.google.com with SMTP id kq14so4656866pab.40
- for <linux-mtd@lists.infradead.org>; Thu, 27 Nov 2014 01:14:52 -0800 (PST)
-Date: Thu, 27 Nov 2014 01:14:48 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: bpqw <bpqw@micron.com>
-Subject: Re: [V5 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
- Micron spi nor
-Message-ID: <20141127091448.GU3212@norris-Latitude-E6410>
-References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
- <201409251211.57183.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
- <201409261046.07132.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315EA24E@NTXXIAMBX02.xacn.micron.com>
- <20141126211240.GD21347@ld-irv-0074>
- <A765B125120D1346A63912DDE6D8B6315EE059@NTXXIAMBX02.xacn.micron.com>
+Received: from blu004-omc1s33.hotmail.com ([65.55.116.44])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xtvrb-0001Fc-8v
+ for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 09:59:51 +0000
+Message-ID: <BLU171-W77C69784D46C17C50C23B4C2710@phx.gbl>
+From: William Smith <terminalnt@outlook.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: nand_do_read_oob() has a bug?
+Date: Thu, 27 Nov 2014 09:59:29 +0000
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6315EE059@NTXXIAMBX02.xacn.micron.com>
-Cc: Marek Vasut <marex@denx.de>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "grmoore@altera.com" <grmoore@altera.com>,
- "shijie8@gmail.com" <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,51 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 27, 2014 at 05:55:43AM +0000, bpqw wrote:
- 
-> >What's the difference between using EVCR and the ENTER QUAD I/O MODE
-> >(35h) command I see in some of your datasheets? Are both supported on all Micron quad I/O SPI NOR flash?
-> 
-> There is no difference between using EVCR and the ENTER QUAD I/O MODE command.
-> But, for some Micron spi nor, there no ENTER Quad I/O command(35h),such as n25q064.
-> for all current Micron spi nor, if it support quad I/O mode, Using EVCR definitely be supported.
-> So, we recommend that enable QUAD I/O mode by writing ECVR.
-
-Good to know. Thanks for the info. Maybe you can note this somewhere in
-your next version, like a comment in the commit description.
-
-> >Also, which SPI NOR is this enabled for? I don't see any Micron entries in spi_nor_ids[] which contain the SPI_NOR_QUAD_READ flag.
-> 
-> Yes, we now don't see any Micron entries in spi_nor_ids[] which
-> contain the SPI_NOR_QUAD_READ flag. But Micron spi nor in
-> spi_nor_ids[] all support Quad I/O mode.
-
-Then add them! At least, for flash that support them (for all packages
-that might share the same ID).
-
-> maybe customer want to use default mode(extended I/O mode),
-> When submitted relevant patch, they didn't SPI_NOR_QUAD_READ flag in the spi_nor_ids[].
-
-The flag may have been omitted because it didn't exist at the time. Or
-it didn't get tested.
-
-Regardless, just because you enable this flag in spi_nor_ids[] doesn't
-mean that it will enable Quad I/O for users that can't support it; board
-files / DT descriptions still have to opt in by advertising hardware
-support for Quad I/O.
-
-See, for example, spi-tx-bus-width and spi-rx-bus-width properties in
-Documentation/devicetree/bindings/spi/spi-bus.txt.
-
-> This patch is just for wanting to enable Micron Quad I/O mode.
-
-That's fine. But I'd welcome any follow-up patch to add the QUAD flag to
-the right Micron table entries. Otherwise, this patch doesn't actually
-help anyone.
-
-BTW, given that you aren't changing any entries to spi_nor_ids[] yet,
-have you actually tested this patch? Or are you only working off the
-specifications / datasheets?
-
-Thanks,
-Brian
+Linux3.18-rc6=2C nand_base.c=0A=
+=0A=
+In nand_do_read_oob()=2C there's a while() loop to deal with continuous mul=
+tiple oob read operation.=0A=
+=0A=
+Assume that:=0A=
+=A0 =A0 ops->mode =3D MTD_OPS_PLACE_OOB=3B=0A=
+=A0 =A0 ops->ooblen> mtd->oobsize=3B=0A=
+=A0 =A0 ops->ooboffs !=3D 0=3B=0A=
+then:=0A=
+=A0 =A0 len =3D mtd->oobsize=3B=0A=
+=0A=
+in while() loop:=0A=
+=A0 =A0 len =3D min(len=2C readlen)=3B // here=2C len =3D mtd->oobsize=0A=
+=A0 =A0 buf =3D nand_transfer_oob(chip=2C buf=2C ops=2C len)=3B=0A=
+in function nand_transfer_oob():=0A=
+=A0 =A0 memcpy(oob=2C chip->oob_poi + ops->ooboffs=2C len)=3B // here=2C le=
+n =3D mtd->oobsize=0A=
+=0A=
+If the ops->ooboffs is none zero=2C then the copy operation will exceed the=
+ (chip->oob_poi + mtd->oobsize)=2C some useless bytes will be copy into buf=
+=2C right?=0A=
+Is this a bug?=0A=
+=0A=
+ 		 	   		  =
