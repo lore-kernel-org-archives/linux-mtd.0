@@ -1,15 +1,16 @@
-Received: from blu004-omc1s33.hotmail.com ([65.55.116.44])
+Received: from albert.telenet-ops.be ([195.130.137.90])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xtvrb-0001Fc-8v
- for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 09:59:51 +0000
-Message-ID: <BLU171-W77C69784D46C17C50C23B4C2710@phx.gbl>
-From: William Smith <terminalnt@outlook.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: nand_do_read_oob() has a bug?
-Date: Thu, 27 Nov 2014 09:59:29 +0000
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1Xtwtq-0005OE-9j
+ for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 11:06:15 +0000
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Jiri Kosina <trivial@kernel.org>
+Subject: [PATCH/TRIVIAL 4/4] jffs2: Drop bogus if in comment
+Date: Thu, 27 Nov 2014 12:05:46 +0100
+Message-Id: <1417086346-23698-4-git-send-email-geert+renesas@glider.be>
+In-Reply-To: <1417086346-23698-1-git-send-email-geert+renesas@glider.be>
+References: <1417086346-23698-1-git-send-email-geert+renesas@glider.be>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,28 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linux3.18-rc6=2C nand_base.c=0A=
-=0A=
-In nand_do_read_oob()=2C there's a while() loop to deal with continuous mul=
-tiple oob read operation.=0A=
-=0A=
-Assume that:=0A=
-=A0 =A0 ops->mode =3D MTD_OPS_PLACE_OOB=3B=0A=
-=A0 =A0 ops->ooblen> mtd->oobsize=3B=0A=
-=A0 =A0 ops->ooboffs !=3D 0=3B=0A=
-then:=0A=
-=A0 =A0 len =3D mtd->oobsize=3B=0A=
-=0A=
-in while() loop:=0A=
-=A0 =A0 len =3D min(len=2C readlen)=3B // here=2C len =3D mtd->oobsize=0A=
-=A0 =A0 buf =3D nand_transfer_oob(chip=2C buf=2C ops=2C len)=3B=0A=
-in function nand_transfer_oob():=0A=
-=A0 =A0 memcpy(oob=2C chip->oob_poi + ops->ooboffs=2C len)=3B // here=2C le=
-n =3D mtd->oobsize=0A=
-=0A=
-If the ops->ooboffs is none zero=2C then the copy operation will exceed the=
- (chip->oob_poi + mtd->oobsize)=2C some useless bytes will be copy into buf=
-=2C right?=0A=
-Is this a bug?=0A=
-=0A=
- 		 	   		  =
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/jffs2/readinode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 386303dca382e636..dddbde4f56f4e32a 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -224,7 +224,7 @@ static int jffs2_add_tn_to_tree(struct jffs2_sb_info *c,
+ 
+ 	dbg_readinode("insert fragment %#04x-%#04x, ver %u at %08x\n", tn->fn->ofs, fn_end, tn->version, ref_offset(tn->fn->raw));
+ 
+-	/* If a node has zero dsize, we only have to keep if it if it might be the
++	/* If a node has zero dsize, we only have to keep it if it might be the
+ 	   node with highest version -- i.e. the one which will end up as f->metadata.
+ 	   Note that such nodes won't be REF_UNCHECKED since there are no data to
+ 	   check anyway. */
+-- 
+1.9.1
