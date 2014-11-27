@@ -1,17 +1,17 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xu0yw-00072e-V2
- for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 15:27:47 +0000
-Message-ID: <1417102042.5858.102.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/6] UBI: Fastmap: Ensure that only one fastmap work is
- scheduled
+ id 1Xu1AB-0007Kb-Be
+ for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 15:39:23 +0000
+Message-ID: <1417102739.5858.112.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 3/6] UBI: Fastmap: Ensure that all fastmap work is done
+ upon WL shutdown
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: Richard Weinberger <richard@nod.at>
-Date: Thu, 27 Nov 2014 17:27:22 +0200
-In-Reply-To: <1416835236-25185-3-git-send-email-richard@nod.at>
+Date: Thu, 27 Nov 2014 17:38:59 +0200
+In-Reply-To: <1416835236-25185-4-git-send-email-richard@nod.at>
 References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <1416835236-25185-3-git-send-email-richard@nod.at>
+ <1416835236-25185-4-git-send-email-richard@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -26,15 +26,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Mon, 2014-11-24 at 14:20 +0100, Richard Weinberger wrote:
-> If the WL pool runs out of PEBs we schedule a fastmap write
-> to refill it as soon as possible.
-> Ensure that only one at a time is scheduled otherwise we might end in
-> a fastmap write storm because writing the fastmap can schedule another
-> write if bitflips are detected.
+> ...otherwise the deferred work might run after datastructures
+> got freed and corrupt memory.
+> 
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/ubi/wl.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+> index 7f135df..cb2e571 100644
+> --- a/drivers/mtd/ubi/wl.c
+> +++ b/drivers/mtd/ubi/wl.c
+> @@ -2041,6 +2041,9 @@ static void protection_queue_destroy(struct ubi_device *ubi)
+>  void ubi_wl_close(struct ubi_device *ubi)
+>  {
+>  	dbg_wl("close the WL sub-system");
+> +#ifdef CONFIG_MTD_UBI_FASTMAP
+> +	flush_work(&ubi->fm_work);
+> +#endif
 
-Could you please provide some more details about the "write storm". Does
-it happen when there are 2 fastmap works in the queue? Or if they run
-simultaneously? Why the storm happens and white kind of "writes" it
-consists of?
+If you are using the work infrastructure implemented in wl.c, then
+fastmap work should be no different to any other work. And we do flush
+all works in 'shutdown_work()'. The fastmap work should be flushed there
+too.
 
-Thanks!
+I think we discussed this already - there should be one single queue of
+works, managed by the same set of functions, all flushed in the same
+place, one-by-one...
+
+Obviously, there is some misunderstanding. This looks like lack of
+separation and misuse of layering. I am missing explanations why I am
+wrong...
