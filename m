@@ -1,21 +1,27 @@
-From: bpqw <bpqw@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [V5 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XtvAS-0007Ro-51
+ for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 09:15:17 +0000
+Received: by mail-pa0-f53.google.com with SMTP id kq14so4656866pab.40
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Nov 2014 01:14:52 -0800 (PST)
+Date: Thu, 27 Nov 2014 01:14:48 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: bpqw <bpqw@micron.com>
+Subject: Re: [V5 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
  Micron spi nor
-Date: Thu, 27 Nov 2014 05:55:43 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315EE059@NTXXIAMBX02.xacn.micron.com>
+Message-ID: <20141127091448.GU3212@norris-Latitude-E6410>
 References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
  <201409251211.57183.marex@denx.de>
  <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
  <201409261046.07132.marex@denx.de>
  <A765B125120D1346A63912DDE6D8B6315EA24E@NTXXIAMBX02.xacn.micron.com>
  <20141126211240.GD21347@ld-irv-0074>
-In-Reply-To: <20141126211240.GD21347@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+ <A765B125120D1346A63912DDE6D8B6315EE059@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
-Cc: Marek Vasut <marex@denx.de>, bpqw <bpqw@micron.com>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6315EE059@NTXXIAMBX02.xacn.micron.com>
+Cc: Marek Vasut <marex@denx.de>,
  "geert+renesas@glider.be" <geert+renesas@glider.be>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -31,108 +37,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->First of all, can you fix your mail so that you have a proper 'From'?
->That should be your real name (not bpqw), so that it gives a proper patch =
-author.=20
->If you can't get your mail header to have the right 'From:' line, then it =
-also works to begin your mail with:
+On Thu, Nov 27, 2014 at 05:55:43AM +0000, bpqw wrote:
+ 
+> >What's the difference between using EVCR and the ENTER QUAD I/O MODE
+> >(35h) command I see in some of your datasheets? Are both supported on all Micron quad I/O SPI NOR flash?
+> 
+> There is no difference between using EVCR and the ENTER QUAD I/O MODE command.
+> But, for some Micron spi nor, there no ENTER Quad I/O command(35h),such as n25q064.
+> for all current Micron spi nor, if it support quad I/O mode, Using EVCR definitely be supported.
+> So, we recommend that enable QUAD I/O mode by writing ECVR.
 
-Sorry for this confusion. This bpqw email is our software public mailbox de=
-dicated to submit linux patch.
-Because our personal email title include Chinese name, this will result to =
-messy code in from item.
-I have ever submit one patch many times by my personal mail, but I always d=
-idn't accept maintainer's response.
-So I think, maybe my patch with Chinese name has been moved into maintainer=
-'s junk folder.
+Good to know. Thanks for the info. Maybe you can note this somewhere in
+your next version, like a comment in the commit description.
 
-I don't know my mail from-field with Chinese name can or not be accepted, i=
-f can,=20
-I will submit next version patch by my personal mail.
-=20
->> This patch adds code which enables Quad I/O mode on Micron SPI NOR flash=
-es.
->>=20
->> For Micron SPI NOR flash,enabling or disabling quad I/O protocol is=20
->> controlled by EVCR (Enhanced Volatile Configuration Register), Quad I/O =
-protocol bit 7.
->> When EVCR bit 7 is reset to 0,the SPI NOR flash will operate in quad I/O=
- mode.
+> >Also, which SPI NOR is this enabled for? I don't see any Micron entries in spi_nor_ids[] which contain the SPI_NOR_QUAD_READ flag.
+> 
+> Yes, we now don't see any Micron entries in spi_nor_ids[] which
+> contain the SPI_NOR_QUAD_READ flag. But Micron spi nor in
+> spi_nor_ids[] all support Quad I/O mode.
 
->What's the difference between using EVCR and the ENTER QUAD I/O MODE
->(35h) command I see in some of your datasheets? Are both supported on all =
-Micron quad I/O SPI NOR flash?
+Then add them! At least, for flash that support them (for all packages
+that might share the same ID).
 
-There is no difference between using EVCR and the ENTER QUAD I/O MODE comma=
-nd.
-But, for some Micron spi nor, there no ENTER Quad I/O command(35h),such as =
-n25q064.
-for all current Micron spi nor, if it support quad I/O mode, Using EVCR def=
-initely be supported.
-So, we recommend that enable QUAD I/O mode by writing ECVR.
- =20
+> maybe customer want to use default mode(extended I/O mode),
+> When submitted relevant patch, they didn't SPI_NOR_QUAD_READ flag in the spi_nor_ids[].
 
->Also, which SPI NOR is this enabled for? I don't see any Micron entries in=
- spi_nor_ids[] which contain the SPI_NOR_QUAD_READ flag.
+The flag may have been omitted because it didn't exist at the time. Or
+it didn't get tested.
 
-Yes, we now don't see any Micron entries in spi_nor_ids[] which contain the=
- SPI_NOR_QUAD_READ flag.
-But Micron spi nor in spi_nor_ids[] all support Quad I/O mode. maybe custom=
-er want to use default mode(extended I/O mode),
-When submitted relevant patch, they didn't SPI_NOR_QUAD_READ flag in the sp=
-i_nor_ids[].
-This patch is just for wanting to enable Micron Quad I/O mode.
+Regardless, just because you enable this flag in spi_nor_ids[] doesn't
+mean that it will enable Quad I/O for users that can't support it; board
+files / DT descriptions still have to opt in by advertising hardware
+support for Quad I/O.
 
+See, for example, spi-tx-bus-width and spi-rx-bus-width properties in
+Documentation/devicetree/bindings/spi/spi-bus.txt.
 
->> Signed-off-by: bean huo <beanhuo@micron.com>
->> Acked-by: Marek Vasut <marex@denx.de>
->> ---
->>  v1-v2:
->> 	Modified to that capture wait_till_ready()
->> 	return value,if error,directly return its
->> 	the value.
->>  v2-v3:
->> 	Directly use the reurning error value of
->> 	read_reg and write_reg,instead of -EINVAL.
->>  v3-v4:
->> 	Modify commit logs that wraped into 80 columns
->>  v4-v5:
->> 	Rebuild new patch based on latest linux-mtd
+> This patch is just for wanting to enable Micron Quad I/O mode.
 
->Please rebase on l2-mtd.git. Sorry if that wasn't clear earlier.
+That's fine. But I'd welcome any follow-up patch to add the QUAD flag to
+the right Micron table entries. Otherwise, this patch doesn't actually
+help anyone.
 
-OK,I will rebase it and sumbit a new version. Thanks for your suggestion.
+BTW, given that you aren't changing any entries to spi_nor_ids[] yet,
+have you actually tested this patch? Or are you only working off the
+specifications / datasheets?
 
->> +		dev_err(nor->dev,
->> +			"error while writing EVCR register\n");
-
->Join the above two lines?
-
-Will be fixed it in the next version.
-
->> +		return ret;
->> +	}
->> +
->> +	ret =3D wait_till_ready(nor);
-
->It's spi_nor_wait_till_ready(), now.
-
-OK, will be fixed it.
-
->> =20
->>  #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
->> =20
->> +#define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
-
->Like with other register bitfields (SR, FSR), please place a comment above=
- to describe the register, like:
-
-
-OK, will be fixed it.
-
->Brian
-
-All in all ,thanks for your response and valuable suggestions.
-I will rebuild a new version, and submit it .
-
----Bean Huo---
+Thanks,
+Brian
