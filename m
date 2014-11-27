@@ -1,20 +1,15 @@
-Received: from mail-vc0-x231.google.com ([2607:f8b0:400c:c03::231])
+Received: from mo6-p04-ob.smtp.rzone.de ([2a01:238:20a:202:5304::5])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xtzm5-0007sI-FK
- for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 14:10:26 +0000
-Received: by mail-vc0-f177.google.com with SMTP id ij19so2212473vcb.36
- for <linux-mtd@lists.infradead.org>; Thu, 27 Nov 2014 06:10:03 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <150521CB44B50A4A98049E9C7BAFB0F30D9A823E@DETENEXMB01.delta.corp>
-References: <150521CB44B50A4A98049E9C7BAFB0F30D9A823E@DETENEXMB01.delta.corp>
-Date: Thu, 27 Nov 2014 15:10:03 +0100
-Message-ID: <CAFLxGvzuz7FyDoOsVtHg20XDkaT4N=_oOeMTSRsXr9bZtCW8uQ@mail.gmail.com>
-Subject: Re: UBIFS corruption after power cut
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Anton Habegger <Anton.Habegger@delta-es.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1Xtzum-0005Fz-2N
+ for linux-mtd@lists.infradead.org; Thu, 27 Nov 2014 14:19:25 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: gpmi: Remove "We support only one NAND chip" from
+ bindings doc
+Date: Thu, 27 Nov 2014 15:18:49 +0100
+Message-Id: <1417097929-17832-1-git-send-email-sr@denx.de>
+Cc: devicetree@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +19,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 27, 2014 at 1:48 PM, Anton Habegger
-<Anton.Habegger@delta-es.com> wrote:
-> Hello
->
-> We got an unrecoverable UBI file system after power cut. It happens only =
-ones and it is not reproducible yet.
-> U-Boot is able to load a file from this file system, but the recovering p=
-art on linux fails.
-> The corruption occurs on a powerpc device (mpc5125) with kernel 2.6.34.
+This sentence "We support only one NAND chip now" is not true any more.
+Multiple chips are supported. So lets remove this sentence to not
+confuse anyone.
 
-IIRC mainline 2.6.34 has no drivers for the mpc5125.
-The board support drivers from Freescale I've seen are in a bad shape.
-So I'd first investigate into that.
-Does your board pass both UBI and MTD tests?
+Signed-off-by: Stefan Roese <sr@denx.de>
+Cc: Huang Shijie <b32955@freescale.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+---
+ Documentation/devicetree/bindings/mtd/gpmi-nand.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I tried to overcome this issue with the more recent back port repository =
-from http://git.infradead.org/users/dedekind/ubifs-v2.6.34.git and I also e=
-mulated an MTD device with mtdram module on kernel 3.13 (Ubuntu 14.4). Unfo=
-rtunately both versions aren't able to recover the image.
->
-> I see following scenarios:
-> - An UBI image created with 2.6.34 can became corrupted with power cuts d=
-ue to open bugs at this time. This image will be never recoverable. Is this=
- possible?
-
-If UBI did a boo boo the image is corrupted.
-Maybe manual recover is possible.
-
-> - There is a misconfiguration somewhere
-> - There is a bug in the 3.13
-
-Why a bug in 3.13?
-
-> - Anything else..
-
-Most UBI issues I've seen are related to MTD driver issues.
-
---=20
-Thanks,
-//richard
+diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+index a011fdf..d02acaf 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+@@ -1,7 +1,7 @@
+ * Freescale General-Purpose Media Interface (GPMI)
+ 
+ The GPMI nand controller provides an interface to control the
+-NAND flash chips. We support only one NAND chip now.
++NAND flash chips.
+ 
+ Required properties:
+   - compatible : should be "fsl,<chip>-gpmi-nand"
+-- 
+2.2.0
