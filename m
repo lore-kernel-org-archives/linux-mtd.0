@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xv2z8-0003Vq-Qq
- for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 11:48:15 +0000
+ id 1Xv2z8-0003Vo-Qr
+ for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 11:48:16 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 3/6] UBI: Fastmap: Remove bogus ubi_assert()
-Date: Sun, 30 Nov 2014 12:47:43 +0100
-Message-Id: <1417348066-7043-4-git-send-email-richard@nod.at>
+Subject: [PATCH 2/6] UBI: Fastmap: Fix race in ubi_eba_atomic_leb_change()
+Date: Sun, 30 Nov 2014 12:47:42 +0100
+Message-Id: <1417348066-7043-3-git-send-email-richard@nod.at>
 In-Reply-To: <1417348066-7043-1-git-send-email-richard@nod.at>
 References: <1417348066-7043-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,30 +20,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is legal to have PEBs left in the used list.
-This can happen if UBI copies a PEB and a powercut happens
-between writing a new fastmap and adding this PEB into the EBA table.
-In this case the old PEB will be used.
+This function a) requests a new PEB, b) writes data to it,
+c) returns the old PEB and d) registers the new PEB in the EBA table.
+
+For the non-fastmap case this works perfectly fine and is powercut safe.
+Is fastmap enabled this can lead to issues.
+If a new fastmap is written between a) and c) the freshly requested PEB
+is no longer in a pool and will not be scanned upon attaching.
+If now a powercut happens between c) and d) the freshly requested PEB
+will not be scanned and the old one got already scheduled for erase.
+After attaching the EBA table will point to a erased PEB.
+
+Fix this issue by swapping steps c) and d).
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/eba.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 600c4f9..9858bfb 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -814,7 +814,9 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list)
- 		list_move_tail(&tmp_aeb->u.list, &ai->free);
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index a40020c..4164a5c 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -843,7 +843,7 @@ write_error:
+ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
+ 			      int lnum, const void *buf, int len)
+ {
+-	int err, pnum, tries = 0, vol_id = vol->vol_id;
++	int err, pnum, old_pnum, tries = 0, vol_id = vol->vol_id;
+ 	struct ubi_vid_hdr *vid_hdr;
+ 	uint32_t crc;
  
--	ubi_assert(list_empty(&used));
-+	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list)
-+		list_move_tail(&tmp_aeb->u.list, &ai->erase);
+@@ -906,16 +906,17 @@ retry:
+ 		goto write_error;
+ 	}
+ 
+-	if (vol->eba_tbl[lnum] >= 0) {
+-		err = ubi_wl_put_peb(ubi, vol_id, lnum, vol->eba_tbl[lnum], 0);
+-		if (err)
+-			goto out_leb_unlock;
+-	}
+-
+ 	down_read(&ubi->fm_sem);
++	old_pnum = vol->eba_tbl[lnum];
+ 	vol->eba_tbl[lnum] = pnum;
+ 	up_read(&ubi->fm_sem);
+ 
++	if (old_pnum >= 0) {
++		err = ubi_wl_put_peb(ubi, vol_id, lnum, old_pnum, 0);
++		if (err)
++			goto out_leb_unlock;
++	}
 +
- 	ubi_assert(list_empty(&eba_orphans));
- 	ubi_assert(list_empty(&free));
- 
+ out_leb_unlock:
+ 	leb_write_unlock(ubi, vol_id, lnum);
+ out_mutex:
 -- 
 1.8.4.5
