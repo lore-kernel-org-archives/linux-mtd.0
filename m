@@ -1,13 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xv3Pv-0002Pe-Ll
- for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 12:15:56 +0000
+ id 1Xv3Pv-0002Q9-Lj
+ for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 12:15:57 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: Fastmap update v2 (pile 5)
-Date: Sun, 30 Nov 2014 13:15:22 +0100
-Message-Id: <1417349728-9070-1-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/6] UBI: Fastmap: Enhance fastmap checking
+Date: Sun, 30 Nov 2014 13:15:24 +0100
+Message-Id: <1417349728-9070-3-git-send-email-richard@nod.at>
+In-Reply-To: <1417349728-9070-1-git-send-email-richard@nod.at>
+References: <1417349728-9070-1-git-send-email-richard@nod.at>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,16 +20,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem,
+Don't update the fastmap upon detach if fastmap checking is enabled.
+This is poor men's power cut testing feature. :-)
 
-this is pile 5 of 7.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/build.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-[PATCH 1/6] UBI: Add initial support for fastmap self checks
-[PATCH 2/6] UBI: Fastmap: Enhance fastmap checking
-[PATCH 3/6] UBI: Fix stale pointers in ubi->lookuptbl
-[PATCH 4/6] UBI: Fastmap: Add self check to detect absent PEBs
-[PATCH 5/6] UBI: Fastmap: Make self_check_eba() depend on fastmap
-[PATCH 6/6] UBI: Fastmap: Add new module parameter fm_debug
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 3c999e5..12f4776 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1114,8 +1114,11 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ 	ubi_msg(ubi, "detaching mtd%d", ubi->mtd->index);
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+ 	/* If we don't write a new fastmap at detach time we lose all
+-	 * EC updates that have been made since the last written fastmap. */
+-	ubi_update_fastmap(ubi);
++	 * EC updates that have been made since the last written fastmap.
++	 * In case of fastmap debugging we omit the update to simulate an
++	 * unclean shutdown. */
++	if (!ubi_dbg_chk_fastmap(ubi))
++		ubi_update_fastmap(ubi);
+ #endif
+ 	/*
+ 	 * Before freeing anything, we have to stop the background thread to
+-- 
+1.8.4.5
