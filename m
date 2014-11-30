@@ -1,15 +1,15 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xv0Ji-0000yo-UR
- for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 08:57:19 +0000
-Received: by mail-pd0-f181.google.com with SMTP id v10so3622438pde.26
- for <linux-mtd@lists.infradead.org>; Sun, 30 Nov 2014 00:56:58 -0800 (PST)
-Date: Sun, 30 Nov 2014 00:56:54 -0800
+ id 1Xv0No-00034D-6a
+ for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 09:01:32 +0000
+Received: by mail-pa0-f42.google.com with SMTP id et14so9192314pad.1
+ for <linux-mtd@lists.infradead.org>; Sun, 30 Nov 2014 01:01:10 -0800 (PST)
+Date: Sun, 30 Nov 2014 01:01:06 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Zhou Wang <wangzhou.bry@gmail.com>
 Subject: Re: [PATCH v4 2/2] mtd: hisilicon: add device tree binding
  documentation
-Message-ID: <20141130085654.GE3608@norris-Latitude-E6410>
+Message-ID: <20141130090106.GF3608@norris-Latitude-E6410>
 References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
  <1415105221-7732-3-git-send-email-wangzhou.bry@gmail.com>
 MIME-Version: 1.0
@@ -30,13 +30,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+One more thing:
+
 On Tue, Nov 04, 2014 at 08:47:01PM +0800, Zhou Wang wrote:
-> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
-> ---
->  .../devicetree/bindings/mtd/hisi504-nand.txt       |   40 ++++++++++++++++++++
->  1 file changed, 40 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/hisi504-nand.txt
-> 
 > diff --git a/Documentation/devicetree/bindings/mtd/hisi504-nand.txt b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
 > new file mode 100644
 > index 0000000..c8b3988
@@ -47,52 +43,13 @@ On Tue, Nov 04, 2014 at 08:47:01PM +0800, Zhou Wang wrote:
 > +
 > +Required properties:
 > +- compatible:          Should be "hisilicon,504-nfc".
-> +- reg:                 The first contains base physical address and size of
-> +                       NAND controller's registers. The second contains base
-> +                       physical address and size of NAND controller's buffer.
-> +- interrupts:          Interrupt number for nfc.
-> +- nand-bus-width:      See nand.txt.
-> +- nand-ecc-mode:       See nand.txt.
 
-Do you support all modes, or just "hw"? Might be worth noting here.
+I notice you use "NFC" naming throughout. I know others have had
+complaints about overloading the acronym NFC which sometimes means "Near
+Field Communication", instead of the intended "NAND Flash Controller."
+Is there any kind of naming convention within Hisilicon documentation
+that insists on calling this NFC, or can we avoid that confusing name?
 
-> +- hisi,nand-ecc-bits:  ECC bits type support.
-> +                 <0>:  none ecc
-> +                 <1>:  Can correct 1bit per 512byte.
-> +                 <6>:  Can correct 16bits per 1K byte.
-
-You should re-use the nand-ecc-strength and nand-ecc-step-size
-properties here. So you'll support these options:
-
-  nand-ecc-strength=0  nand-ecc-step-size=<don't care>
-  nand-ecc-strength=1  nand-ecc-step-size=512
-  nand-ecc-strength=16 nand-ecc-step-size=1024
-
-> +- #address-cells:      partition address, should be set 1.
-> +- #size-cells:         partition size, should be set 1.
-> +
-> +Flash chip may optionally contain additional sub-nodes describing partitions of
-> +the address space. See partition.txt for more detail.
-> +
-> +Example:
-> +
-> +	nand: nand@4020000 {
-> +		compatible = "hisilicon,504-nfc";
-> +		reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
-> +		interrupts = <0 379 4>;
-> +		nand-bus-width = <8>;
-> +		nand-ecc-mode = "hw";
-> +		hisi,nand-ecc-bits = <1>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		partition@0 {
-> +			label = "nand_text";
-> +			reg = <0x00000000 0x00400000>;
-> +		};
-> +
-> +		...
-> +
-> +	};
+If possible, I'd suggest "hisilicon,504-nand" as an alternative.
 
 Brian
