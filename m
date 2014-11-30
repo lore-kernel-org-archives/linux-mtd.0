@@ -1,17 +1,13 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xv2zU-0003Zp-9c
- for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 11:48:37 +0000
+ id 1Xv3FP-0004We-Fa
+ for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 12:05:04 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 5/6] UBI: Fastmap: Switch to ro mode if invalidate_fastmap()
- fails
-Date: Sun, 30 Nov 2014 12:47:45 +0100
-Message-Id: <1417348066-7043-6-git-send-email-richard@nod.at>
-In-Reply-To: <1417348066-7043-1-git-send-email-richard@nod.at>
-References: <1417348066-7043-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Subject: Fastmap update v2 (pile 4)
+Date: Sun, 30 Nov 2014 13:04:24 +0100
+Message-Id: <1417349070-8894-1-git-send-email-richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +17,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We have to switch to ro mode to guarantee that upon next UBI attach
-all data is consistent.
+Artem,
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/fastmap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+this is pile 4 of 7.
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 8b95c48..3d913f5 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1466,8 +1466,10 @@ err:
- 	ret = 0;
- 	if (old_fm) {
- 		ret = invalidate_fastmap(ubi, old_fm);
--		if (ret < 0)
-+		if (ret < 0) {
- 			ubi_err(ubi, "Unable to invalidiate current fastmap!");
-+			ubi_ro_mode(ubi);
-+		}
- 		else if (ret)
- 			ret = 0;
- 	}
--- 
-1.8.4.5
+[PATCH 1/6] UBI: Fastmap: Fix leb_count unbalance
+[PATCH 2/6] UBI: Fastmap: Fix race after ubi_wl_get_peb()
+[PATCH 3/6] UBI: Fastmap: Set used_ebs only for static volumes
+[PATCH 4/6] UBI: Fastmap: Locking updates
+[PATCH 5/6] UBI: Fastmap: Prepare for variable sized fastmaps
+[PATCH 6/6] UBI: Fastmap: Rework fastmap error paths
+
+Thanks,
+//richard
