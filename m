@@ -1,20 +1,26 @@
-Date: Sun, 30 Nov 2014 09:55:00 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v5 1/3] mtd: nand: gpmi: add gpmi_move_bits function
-Message-ID: <20141130095500.16f75e05@bbrezillon>
-In-Reply-To: <20141130081110.GC3608@norris-Latitude-E6410>
-References: <1417020793-3354-1-git-send-email-boris.brezillon@free-electrons.com>
- <1417020793-3354-2-git-send-email-boris.brezillon@free-electrons.com>
- <20141126175708.1acb90ac@bbrezillon>
- <20141130081110.GC3608@norris-Latitude-E6410>
+Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xv0Ji-0000yo-UR
+ for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 08:57:19 +0000
+Received: by mail-pd0-f181.google.com with SMTP id v10so3622438pde.26
+ for <linux-mtd@lists.infradead.org>; Sun, 30 Nov 2014 00:56:58 -0800 (PST)
+Date: Sun, 30 Nov 2014 00:56:54 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Zhou Wang <wangzhou.bry@gmail.com>
+Subject: Re: [PATCH v4 2/2] mtd: hisilicon: add device tree binding
+ documentation
+Message-ID: <20141130085654.GE3608@norris-Latitude-E6410>
+References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
+ <1415105221-7732-3-git-send-email-wangzhou.bry@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Mike Voytovich <mvoytovich@paypal.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1415105221-7732-3-git-send-email-wangzhou.bry@gmail.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
+ haojian.zhuang@gmail.com, wangzhou1@hisilicon.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
+ caizhiyong@huawei.com, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +30,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-On Sun, 30 Nov 2014 00:11:10 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> On Wed, Nov 26, 2014 at 05:57:08PM +0100, Boris Brezillon wrote:
-> > On Wed, 26 Nov 2014 17:53:11 +0100 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> > > +/**
-> > > + * gpmi_move_bits - move bits from one memory region to another
-> > > + * @dst: destination buffer
-> > > + * @dst_bit_off: bit offset we're starting to write at
-> > > + * @src: source buffer
-> > > + * @src_bit_off: bit offset we're starting to read from
-> > > + * @nbits: number of bits to copy
-> > > + *
-> > > + * This functions copies bits from one memory region to another, and is used by
-> > > + * the GPMI driver to copy ECC sections which are not guaranteed to be byte
-> > > + * aligned.
-> > 
-> > I forgot to add that src and dst should not overlap, otherwise it won't
-> > work...
+On Tue, Nov 04, 2014 at 08:47:01PM +0800, Zhou Wang wrote:
+> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
+> ---
+>  .../devicetree/bindings/mtd/hisi504-nand.txt       |   40 ++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/hisi504-nand.txt
 > 
-> Hmm, normally that's implied for copy-like operations. But since you
-> named this function "move" (rather than "copy" or "cpy"), that's a
-> little less clear.
+> diff --git a/Documentation/devicetree/bindings/mtd/hisi504-nand.txt b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
+> new file mode 100644
+> index 0000000..c8b3988
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
+> @@ -0,0 +1,40 @@
+> +Hisilicon Hip04 Soc NAND controller DT binding
+> +
+> +Required properties:
+> +- compatible:          Should be "hisilicon,504-nfc".
+> +- reg:                 The first contains base physical address and size of
+> +                       NAND controller's registers. The second contains base
+> +                       physical address and size of NAND controller's buffer.
+> +- interrupts:          Interrupt number for nfc.
+> +- nand-bus-width:      See nand.txt.
+> +- nand-ecc-mode:       See nand.txt.
 
-Indeed, that's a good point.
+Do you support all modes, or just "hw"? Might be worth noting here.
 
-> 
-> Did you have a good reason for the "move" name? If not, maybe it's worth
-> changing.
+> +- hisi,nand-ecc-bits:  ECC bits type support.
+> +                 <0>:  none ecc
+> +                 <1>:  Can correct 1bit per 512byte.
+> +                 <6>:  Can correct 16bits per 1K byte.
 
-No, I don't, and I'd prefer changing the name than implementing a non
-destructive move function.
+You should re-use the nand-ecc-strength and nand-ecc-step-size
+properties here. So you'll support these options:
 
-I'll send a new version with this change.
+  nand-ecc-strength=0  nand-ecc-step-size=<don't care>
+  nand-ecc-strength=1  nand-ecc-step-size=512
+  nand-ecc-strength=16 nand-ecc-step-size=1024
 
-Thanks,
+> +- #address-cells:      partition address, should be set 1.
+> +- #size-cells:         partition size, should be set 1.
+> +
+> +Flash chip may optionally contain additional sub-nodes describing partitions of
+> +the address space. See partition.txt for more detail.
+> +
+> +Example:
+> +
+> +	nand: nand@4020000 {
+> +		compatible = "hisilicon,504-nfc";
+> +		reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
+> +		interrupts = <0 379 4>;
+> +		nand-bus-width = <8>;
+> +		nand-ecc-mode = "hw";
+> +		hisi,nand-ecc-bits = <1>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		partition@0 {
+> +			label = "nand_text";
+> +			reg = <0x00000000 0x00400000>;
+> +		};
+> +
+> +		...
+> +
+> +	};
 
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Brian
