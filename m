@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xv3Pv-0002QO-Ln
+ id 1Xv3Pv-0002Qr-Li
  for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 12:15:58 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 3/6] UBI: Fix stale pointers in ubi->lookuptbl
-Date: Sun, 30 Nov 2014 13:15:25 +0100
-Message-Id: <1417349728-9070-4-git-send-email-richard@nod.at>
+Subject: [PATCH 4/6] UBI: Fastmap: Add self check to detect absent PEBs
+Date: Sun, 30 Nov 2014 13:15:26 +0100
+Message-Id: <1417349728-9070-5-git-send-email-richard@nod.at>
 In-Reply-To: <1417349728-9070-1-git-send-email-richard@nod.at>
 References: <1417349728-9070-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,149 +20,193 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In some error paths the WL sub-system gives up on a PEB
-and frees it's ubi_wl_entry struct but does not set
-the entry in ubi->lookuptbl to NULL.
-Fastmap can stumble over such a stale pointer as it uses
-ubi->lookuptbl to find all PEBs.
-
-Fix this by introducing a new helper function which free()s
-a WL entry and removes the reference from the lookup table.
+This self check allows Fastmap to detect absent PEBs while
+writing a new fastmap to the MTD device.
+It will help to find implementation issues in Fastmap.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c | 47 +++++++++++++++++++++++++++++++----------------
- 1 file changed, 31 insertions(+), 16 deletions(-)
+ drivers/mtd/ubi/fastmap.c | 86 +++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 84 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 4565419..b122bdb 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -216,6 +216,20 @@ static void wl_tree_add(struct ubi_wl_entry *e, struct rb_root *root)
- }
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index db2625d..0c1e2c3 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (c) 2012 Linutronix GmbH
++ * Copyright (c) 2014 sigma star gmbh
+  * Author: Richard Weinberger <richard@nod.at>
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -17,6 +18,69 @@
+ #include "ubi.h"
  
  /**
-+ * wl_tree_destroy - destroy a wear-leveling entry.
++ * init_seen - allocate memory for used for debugging.
 + * @ubi: UBI device description object
-+ * @e: the wear-leveling entry to add
-+ *
-+ * This function destroys a wear leveling entry and removes
-+ * the reference from the lookup table.
 + */
-+static void wl_entry_destroy(struct ubi_device *ubi, struct ubi_wl_entry *e)
++static inline int *init_seen(struct ubi_device *ubi)
 +{
-+	ubi->lookuptbl[e->pnum] = NULL;
-+	kmem_cache_free(ubi_wl_entry_slab, e);
++	int *ret;
++
++	if (!ubi_dbg_chk_fastmap(ubi))
++		return NULL;
++
++	ret = kcalloc(ubi->peb_count, sizeof(int), GFP_KERNEL);
++	if (!ret)
++		return ERR_PTR(-ENOMEM);
++
++	return ret;
 +}
 +
 +/**
-  * do_work - do one pending work.
-  * @ubi: UBI device description object
-  *
-@@ -1261,7 +1275,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 	err = do_sync_erase(ubi, e1, vol_id, lnum, 0);
- 	if (err) {
- 		if (e2)
--			kmem_cache_free(ubi_wl_entry_slab, e2);
-+			wl_entry_destroy(ubi, e2);
- 		goto out_ro;
- 	}
- 
-@@ -1329,8 +1343,8 @@ out_error:
- 	spin_unlock(&ubi->wl_lock);
- 
- 	ubi_free_vid_hdr(ubi, vid_hdr);
--	kmem_cache_free(ubi_wl_entry_slab, e1);
--	kmem_cache_free(ubi_wl_entry_slab, e2);
-+	wl_entry_destroy(ubi, e1);
-+	wl_entry_destroy(ubi, e2);
- 
- out_ro:
- 	ubi_ro_mode(ubi);
-@@ -1472,7 +1486,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 	if (shutdown) {
- 		dbg_wl("cancel erasure of PEB %d EC %d", pnum, e->ec);
- 		kfree(wl_wrk);
--		kmem_cache_free(ubi_wl_entry_slab, e);
-+		wl_entry_destroy(ubi, e);
- 		return 0;
- 	}
- 
-@@ -1518,7 +1532,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 		return err;
- 	}
- 
--	kmem_cache_free(ubi_wl_entry_slab, e);
-+	wl_entry_destroy(ubi, e);
- 	if (err != -EIO)
- 		/*
- 		 * If this is not %-EIO, we have no idea what to do. Scheduling
-@@ -1810,9 +1824,10 @@ int ubi_wl_flush(struct ubi_device *ubi, int vol_id, int lnum)
- 
- /**
-  * tree_destroy - destroy an RB-tree.
++ * free_seen - free the seen logic integer array.
++ * @seen: integer array of @ubi->peb_count size
++ */
++static inline void free_seen(int *seen)
++{
++	kfree(seen);
++}
++
++/**
++ * set_seen - mark a PEB as seen.
 + * @ubi: UBI device description object
-  * @root: the root of the tree to destroy
++ * @pnum: The PEB to be makred as seen
++ * @seen: integer array of @ubi->peb_count size
++ */
++static inline void set_seen(struct ubi_device *ubi, int pnum, int *seen)
++{
++	if (!ubi_dbg_chk_fastmap(ubi) || !seen)
++		return;
++
++	seen[pnum] = 1;
++}
++
++/**
++ * self_check_seen - check whether all PEB have been seen by fastmap.
++ * @ubi: UBI device description object
++ * @seen: integer array of @ubi->peb_count size
++ */
++static int self_check_seen(struct ubi_device *ubi, int *seen)
++{
++	int pnum, ret = 0;
++
++	if (!ubi_dbg_chk_fastmap(ubi) || !seen)
++		return 0;
++
++	for (pnum = 0; pnum < ubi->peb_count; pnum++) {
++		if (!seen[pnum] && ubi->lookuptbl[pnum]) {
++			ubi_err(ubi, "self-check failed for PEB %d, fastmap didn't see it", pnum);
++			ret = -EINVAL;
++		}
++	}
++
++	return ret;
++}
++
++/**
+  * ubi_calc_fm_size - calculates the fastmap size in bytes for an UBI device.
+  * @ubi: UBI device description object
   */
--static void tree_destroy(struct rb_root *root)
-+static void tree_destroy(struct ubi_device *ubi, struct rb_root *root)
- {
- 	struct rb_node *rb;
- 	struct ubi_wl_entry *e;
-@@ -1834,7 +1849,7 @@ static void tree_destroy(struct rb_root *root)
- 					rb->rb_right = NULL;
- 			}
+@@ -1030,6 +1094,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 	struct ubi_work *ubi_wrk;
+ 	int ret, i, j, free_peb_count, used_peb_count, vol_count;
+ 	int scrub_peb_count, erase_peb_count;
++	int *seen_pebs = NULL;
  
--			kmem_cache_free(ubi_wl_entry_slab, e);
-+			wl_entry_destroy(ubi, e);
- 		}
+ 	fm_raw = ubi->fm_buf;
+ 	memset(ubi->fm_buf, 0, ubi->fm_size);
+@@ -1046,6 +1111,12 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 		goto out_kfree;
  	}
- }
-@@ -1965,7 +1980,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 		ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
- 		ubi->lookuptbl[e->pnum] = e;
- 		if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0)) {
--			kmem_cache_free(ubi_wl_entry_slab, e);
-+			wl_entry_destroy(ubi, e);
- 			goto out_free;
- 		}
  
-@@ -2059,9 +2074,9 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
++	seen_pebs = init_seen(ubi);
++	if (IS_ERR(seen_pebs)) {
++		ret = PTR_ERR(seen_pebs);
++		goto out_kfree;
++	}
++
+ 	spin_lock(&ubi->volumes_lock);
+ 	spin_lock(&ubi->wl_lock);
  
- out_free:
- 	shutdown_work(ubi);
--	tree_destroy(&ubi->used);
--	tree_destroy(&ubi->free);
--	tree_destroy(&ubi->scrub);
-+	tree_destroy(ubi, &ubi->used);
-+	tree_destroy(ubi, &ubi->free);
-+	tree_destroy(ubi, &ubi->scrub);
- 	kfree(ubi->lookuptbl);
- 	return err;
- }
-@@ -2078,7 +2093,7 @@ static void protection_queue_destroy(struct ubi_device *ubi)
- 	for (i = 0; i < UBI_PROT_QUEUE_LEN; ++i) {
- 		list_for_each_entry_safe(e, tmp, &ubi->pq[i], u.list) {
- 			list_del(&e->u.list);
--			kmem_cache_free(ubi_wl_entry_slab, e);
-+			wl_entry_destroy(ubi, e);
- 		}
+@@ -1076,8 +1147,10 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 	fmpl1->size = cpu_to_be16(ubi->fm_pool.size);
+ 	fmpl1->max_size = cpu_to_be16(ubi->fm_pool.max_size);
+ 
+-	for (i = 0; i < ubi->fm_pool.size; i++)
++	for (i = 0; i < ubi->fm_pool.size; i++) {
+ 		fmpl1->pebs[i] = cpu_to_be32(ubi->fm_pool.pebs[i]);
++		set_seen(ubi, ubi->fm_pool.pebs[i], seen_pebs);
++	}
+ 
+ 	fmpl2 = (struct ubi_fm_scan_pool *)(fm_raw + fm_pos);
+ 	fm_pos += sizeof(*fmpl2);
+@@ -1085,14 +1158,17 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 	fmpl2->size = cpu_to_be16(ubi->fm_wl_pool.size);
+ 	fmpl2->max_size = cpu_to_be16(ubi->fm_wl_pool.max_size);
+ 
+-	for (i = 0; i < ubi->fm_wl_pool.size; i++)
++	for (i = 0; i < ubi->fm_wl_pool.size; i++) {
+ 		fmpl2->pebs[i] = cpu_to_be32(ubi->fm_wl_pool.pebs[i]);
++		set_seen(ubi, ubi->fm_wl_pool.pebs[i], seen_pebs);
++	}
+ 
+ 	for (node = rb_first(&ubi->free); node; node = rb_next(node)) {
+ 		wl_e = rb_entry(node, struct ubi_wl_entry, u.rb);
+ 		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
+ 
+ 		fec->pnum = cpu_to_be32(wl_e->pnum);
++		set_seen(ubi, wl_e->pnum, seen_pebs);
+ 		fec->ec = cpu_to_be32(wl_e->ec);
+ 
+ 		free_peb_count++;
+@@ -1106,6 +1182,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
+ 
+ 		fec->pnum = cpu_to_be32(wl_e->pnum);
++		set_seen(ubi, wl_e->pnum, seen_pebs);
+ 		fec->ec = cpu_to_be32(wl_e->ec);
+ 
+ 		used_peb_count++;
+@@ -1132,6 +1209,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
+ 
+ 		fec->pnum = cpu_to_be32(wl_e->pnum);
++		set_seen(ubi, wl_e->pnum, seen_pebs);
+ 		fec->ec = cpu_to_be32(wl_e->ec);
+ 
+ 		scrub_peb_count++;
+@@ -1149,6 +1227,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 			fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
+ 
+ 			fec->pnum = cpu_to_be32(wl_e->pnum);
++			set_seen(ubi, wl_e->pnum, seen_pebs);
+ 			fec->ec = cpu_to_be32(wl_e->ec);
+ 
+ 			erase_peb_count++;
+@@ -1208,6 +1287,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 
+ 	for (i = 0; i < new_fm->used_blocks; i++) {
+ 		fmsb->block_loc[i] = cpu_to_be32(new_fm->e[i]->pnum);
++		set_seen(ubi, new_fm->e[i]->pnum, seen_pebs);
+ 		fmsb->block_ec[i] = cpu_to_be32(new_fm->e[i]->ec);
  	}
- }
-@@ -2110,10 +2125,10 @@ void ubi_wl_close(struct ubi_device *ubi)
- 	ubi_fastmap_close(ubi);
- 	shutdown_work(ubi);
- 	protection_queue_destroy(ubi);
--	tree_destroy(&ubi->used);
--	tree_destroy(&ubi->erroneous);
--	tree_destroy(&ubi->free);
--	tree_destroy(&ubi->scrub);
-+	tree_destroy(ubi, &ubi->used);
-+	tree_destroy(ubi, &ubi->erroneous);
-+	tree_destroy(ubi, &ubi->free);
-+	tree_destroy(ubi, &ubi->scrub);
- 	kfree(ubi->lookuptbl);
- }
  
+@@ -1241,11 +1321,13 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 	ubi_assert(new_fm);
+ 	ubi->fm = new_fm;
+ 
++	ret = self_check_seen(ubi, seen_pebs);
+ 	dbg_bld("fastmap written!");
+ 
+ out_kfree:
+ 	ubi_free_vid_hdr(ubi, avhdr);
+ 	ubi_free_vid_hdr(ubi, dvhdr);
++	free_seen(seen_pebs);
+ out:
+ 	return ret;
+ }
 -- 
 1.8.4.5
