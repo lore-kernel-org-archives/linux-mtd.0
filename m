@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xv3U9-0005aY-Px
- for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 12:20:20 +0000
+ id 1Xv3U9-0005a6-Pu
+ for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 12:20:21 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 5/6] UBI: Fastmap: Introduce may_reserve_for_fm()
-Date: Sun, 30 Nov 2014 13:19:47 +0100
-Message-Id: <1417349988-9238-6-git-send-email-richard@nod.at>
+Subject: [PATCH 3/6] UBI: Fastmap: Wire up WL accessor functions
+Date: Sun, 30 Nov 2014 13:19:45 +0100
+Message-Id: <1417349988-9238-4-git-send-email-richard@nod.at>
 In-Reply-To: <1417349988-9238-1-git-send-email-richard@nod.at>
 References: <1417349988-9238-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -20,87 +20,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-...and kill another #ifdef.
+Use the new WL accessor functions in fastmap.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap-wl.c | 19 +++++++++++++++++++
- drivers/mtd/ubi/wl.c         |  7 +------
- drivers/mtd/ubi/wl.h         |  8 ++++++++
- 3 files changed, 28 insertions(+), 6 deletions(-)
+ drivers/mtd/ubi/fastmap.c | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 88a400c..c471753 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -359,3 +359,22 @@ static void ubi_fastmap_close(struct ubi_device *ubi)
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 0c1e2c3..a6cc951 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -1087,11 +1087,11 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 	struct ubi_fm_ec *fec;
+ 	struct ubi_fm_volhdr *fvh;
+ 	struct ubi_fm_eba *feba;
+-	struct rb_node *node;
+ 	struct ubi_wl_entry *wl_e;
+ 	struct ubi_volume *vol;
+ 	struct ubi_vid_hdr *avhdr, *dvhdr;
+ 	struct ubi_work *ubi_wrk;
++	struct rb_node *tmp_rb;
+ 	int ret, i, j, free_peb_count, used_peb_count, vol_count;
+ 	int scrub_peb_count, erase_peb_count;
+ 	int *seen_pebs = NULL;
+@@ -1163,8 +1163,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 		set_seen(ubi, ubi->fm_wl_pool.pebs[i], seen_pebs);
  	}
- 	kfree(ubi->fm);
- }
-+
-+/**
-+ * may_reserve_for_fm - tests whether a PEB shall be reserved for fastmap.
-+ * See find_mean_wl_entry()
-+ *
-+ * @ubi: UBI device description object
-+ * @e: physical eraseblock to return
-+ * @root: RB tree to test against.
-+ */
-+static struct ubi_wl_entry *may_reserve_for_fm(struct ubi_device *ubi,
-+					   struct ubi_wl_entry *e,
-+					   struct rb_root *root) {
-+	if (e && !ubi->fm_disabled && !ubi->fm &&
-+	    e->pnum < UBI_FM_MAX_START)
-+		e = rb_entry(rb_next(root->rb_node),
-+			     struct ubi_wl_entry, u.rb);
-+
-+	return e;
-+}
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index d84546b..c51c4e8 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -361,15 +361,10 @@ static struct ubi_wl_entry *find_mean_wl_entry(struct ubi_device *ubi,
- 	if (last->ec - first->ec < WL_FREE_MAX_DIFF) {
- 		e = rb_entry(root->rb_node, struct ubi_wl_entry, u.rb);
  
--#ifdef CONFIG_MTD_UBI_FASTMAP
- 		/* If no fastmap has been written and this WL entry can be used
- 		 * as anchor PEB, hold it back and return the second best
- 		 * WL entry such that fastmap can use the anchor PEB later. */
--		if (e && !ubi->fm_disabled && !ubi->fm &&
--		    e->pnum < UBI_FM_MAX_START)
--			e = rb_entry(rb_next(root->rb_node),
--				     struct ubi_wl_entry, u.rb);
--#endif
-+		e = may_reserve_for_fm(ubi, e, root);
- 	} else
- 		e = find_wl_entry(ubi, root, WL_FREE_MAX_DIFF/2);
+-	for (node = rb_first(&ubi->free); node; node = rb_next(node)) {
+-		wl_e = rb_entry(node, struct ubi_wl_entry, u.rb);
++	ubi_for_each_free_peb(ubi, wl_e, tmp_rb) {
+ 		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
  
-diff --git a/drivers/mtd/ubi/wl.h b/drivers/mtd/ubi/wl.h
-index 4046ccf..fbc2d8e 100644
---- a/drivers/mtd/ubi/wl.h
-+++ b/drivers/mtd/ubi/wl.h
-@@ -13,6 +13,9 @@ static inline void ubi_fastmap_init(struct ubi_device *ubi, int *count)
- 	*count += (ubi->fm_size / ubi->leb_size) * 2;
- 	INIT_WORK(&ubi->fm_work, update_fastmap_work_fn);
- }
-+static struct ubi_wl_entry *may_reserve_for_fm(struct ubi_device *ubi,
-+					       struct ubi_wl_entry *e,
-+					       struct rb_root *root);
- #else /* !CONFIG_MTD_UBI_FASTMAP */
- static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi);
- static inline int is_fm_block(struct ubi_device *ubi, int pnum)
-@@ -21,5 +24,10 @@ static inline int is_fm_block(struct ubi_device *ubi, int pnum)
- }
- static inline void ubi_fastmap_close(struct ubi_device *ubi) { }
- static inline void ubi_fastmap_init(struct ubi_device *ubi, int *count) { }
-+static struct ubi_wl_entry *may_reserve_for_fm(struct ubi_device *ubi,
-+					       struct ubi_wl_entry *e,
-+					       struct rb_root *root) {
-+	return e;
-+}
- #endif /* CONFIG_MTD_UBI_FASTMAP */
- #endif /* UBI_WL_H */
+ 		fec->pnum = cpu_to_be32(wl_e->pnum);
+@@ -1177,8 +1176,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 	}
+ 	fmh->free_peb_count = cpu_to_be32(free_peb_count);
+ 
+-	for (node = rb_first(&ubi->used); node; node = rb_next(node)) {
+-		wl_e = rb_entry(node, struct ubi_wl_entry, u.rb);
++	ubi_for_each_used_peb(ubi, wl_e, tmp_rb) {
+ 		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
+ 
+ 		fec->pnum = cpu_to_be32(wl_e->pnum);
+@@ -1190,22 +1188,20 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 		ubi_assert(fm_pos <= ubi->fm_size);
+ 	}
+ 
+-	for (i = 0; i < UBI_PROT_QUEUE_LEN; i++) {
+-		list_for_each_entry(wl_e, &ubi->pq[i], u.list) {
+-			fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
++	ubi_for_each_protected_peb(ubi, i, wl_e) {
++		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
+ 
+-			fec->pnum = cpu_to_be32(wl_e->pnum);
+-			fec->ec = cpu_to_be32(wl_e->ec);
++		fec->pnum = cpu_to_be32(wl_e->pnum);
++		set_seen(ubi, wl_e->pnum, seen_pebs);
++		fec->ec = cpu_to_be32(wl_e->ec);
+ 
+-			used_peb_count++;
+-			fm_pos += sizeof(*fec);
+-			ubi_assert(fm_pos <= ubi->fm_size);
+-		}
++		used_peb_count++;
++		fm_pos += sizeof(*fec);
++		ubi_assert(fm_pos <= ubi->fm_size);
+ 	}
+ 	fmh->used_peb_count = cpu_to_be32(used_peb_count);
+ 
+-	for (node = rb_first(&ubi->scrub); node; node = rb_next(node)) {
+-		wl_e = rb_entry(node, struct ubi_wl_entry, u.rb);
++	ubi_for_each_scrub_peb(ubi, wl_e, tmp_rb) {
+ 		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
+ 
+ 		fec->pnum = cpu_to_be32(wl_e->pnum);
 -- 
 1.8.4.5
