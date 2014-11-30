@@ -1,21 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xv5xM-0003jy-Op
- for linux-mtd@lists.infradead.org; Sun, 30 Nov 2014 14:58:37 +0000
-Message-ID: <547B3078.4020905@nod.at>
-Date: Sun, 30 Nov 2014 15:58:00 +0100
-From: Richard Weinberger <richard@nod.at>
+Date: Sun, 30 Nov 2014 23:39:26 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v5 1/3] mtd: nand: gpmi: add gpmi_move_bits function
+Message-ID: <20141130153918.GA14834@localhost.localdomain>
+References: <1417020793-3354-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1417020793-3354-2-git-send-email-boris.brezillon@free-electrons.com>
+ <20141126175708.1acb90ac@bbrezillon>
+ <20141130081110.GC3608@norris-Latitude-E6410>
+ <20141130095500.16f75e05@bbrezillon>
 MIME-Version: 1.0
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 2/6] UBI: Add accessor functions for WL data structures
-References: <1417349988-9238-1-git-send-email-richard@nod.at>	<1417349988-9238-3-git-send-email-richard@nod.at>
- <CAOMZO5BVewD==3dDLBD_AwrffMBih5EG3YYfYBAfH=+wDpV=3Q@mail.gmail.com>
-In-Reply-To: <CAOMZO5BVewD==3dDLBD_AwrffMBih5EG3YYfYBAfH=+wDpV=3Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20141130095500.16f75e05@bbrezillon>
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 30.11.2014 um 15:55 schrieb Fabio Estevam:
-> On Sun, Nov 30, 2014 at 10:19 AM, Richard Weinberger <richard@nod.at> wrote:
+On Sun, Nov 30, 2014 at 09:55:00AM +0100, Boris Brezillon wrote:
+> Hi Brian,
 > 
->> +/*
->> + * ubi_for_each_free_peb - walk the UBI free RB tree.
->> + * @ubi: UBI device description object
->> + * @e: a pointer to a ubi_wl_entry to use as cursor
->> + * @pos: a pointer to RB-tree entry type to use as a loop counter
+> On Sun, 30 Nov 2014 00:11:10 -0800
+> Brian Norris <computersforpeace@gmail.com> wrote:
 > 
-> tmp_rb instead?
+> > On Wed, Nov 26, 2014 at 05:57:08PM +0100, Boris Brezillon wrote:
+> > > On Wed, 26 Nov 2014 17:53:11 +0100 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> > > > +/**
+> > > > + * gpmi_move_bits - move bits from one memory region to another
+> > > > + * @dst: destination buffer
+> > > > + * @dst_bit_off: bit offset we're starting to write at
+> > > > + * @src: source buffer
+> > > > + * @src_bit_off: bit offset we're starting to read from
+> > > > + * @nbits: number of bits to copy
+> > > > + *
+> > > > + * This functions copies bits from one memory region to another, and is used by
+> > > > + * the GPMI driver to copy ECC sections which are not guaranteed to be byte
+> > > > + * aligned.
+> > > 
+> > > I forgot to add that src and dst should not overlap, otherwise it won't
+> > > work...
+> > 
+> > Hmm, normally that's implied for copy-like operations. But since you
+> > named this function "move" (rather than "copy" or "cpy"), that's a
+> > little less clear.
 > 
->> + */
->> +#define ubi_for_each_free_peb(ubi, e, tmp_rb)  \
->> +       ubi_rb_for_each_entry((tmp_rb), (e), &(ubi)->free, u.rb)
->> +
->> +/*
->> + * ubi_for_each_used_peb - walk the UBI used RB tree.
->> + * @ubi: UBI device description object
->> + * @e: a pointer to a ubi_wl_entry to use as cursor
->> + * @pos: a pointer to RB-tree entry type to use as a loop counter
->> + */
+> Indeed, that's a good point.
 > 
-> tmp_rb instead?
+> > 
+> > Did you have a good reason for the "move" name? If not, maybe it's worth
+> > changing.
+> 
+> No, I don't, and I'd prefer changing the name than implementing a non
+> destructive move function.
+> 
+> I'll send a new version with this change.
+Please add my tested-by.
 
-Correct. I need a generator script for such stuff. :)
-
-Thanks,
-//richard
+Tested-by: Huang Shijie <shijie8@gmail.com>
