@@ -1,26 +1,25 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvNEv-0001Gw-Gi
- for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 09:25:53 +0000
-Received: by mail-pa0-f45.google.com with SMTP id lj1so10755445pab.32
- for <linux-mtd@lists.infradead.org>; Mon, 01 Dec 2014 01:25:32 -0800 (PST)
-Date: Mon, 1 Dec 2014 01:25:29 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Zhou Wang <wangzhou.bry@gmail.com>
-Subject: Re: [PATCH v4 1/2] mtd: hisilicon: add a new NAND controller driver
- for hisilicon hip04 Soc
-Message-ID: <20141201092529.GM29070@brian-ubuntu>
-References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
- <1415105221-7732-2-git-send-email-wangzhou.bry@gmail.com>
+ id 1XvNc6-0005D5-0G
+ for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 09:49:50 +0000
+Received: by mail-ie0-f175.google.com with SMTP id x19so3987408ier.34
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Dec 2014 01:49:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1415105221-7732-2-git-send-email-wangzhou.bry@gmail.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- haojian.zhuang@gmail.com, wangzhou1@hisilicon.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
- caizhiyong@huawei.com, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20141201084023.GH29070@brian-ubuntu>
+References: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
+ <20141201084023.GH29070@brian-ubuntu>
+Date: Mon, 1 Dec 2014 10:49:28 +0100
+Message-ID: <CACna6rwBOux=V-12eTTYBSEzgfQ4v=4HJx8iQGz2OkzzA+LnLA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: allow NULL as chip name and try to auto
+ detect it
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,57 +29,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I forgot to mention these comments:
+On 1 December 2014 at 09:40, Brian Norris <computersforpeace@gmail.com> wro=
+te:
+> On Wed, Oct 22, 2014 at 06:05:00PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> This will allow spi-nor users to plainly use JEDEC to detect flash chip.
+>>
+>> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+>>
+> I think this is a good time to consider this question: how do we
+> *really* want a SPI NOR driver to interact with spi-nor.c, regarding
+> device detection? I like how this patch removes the string-matching
+> requirement, so we can just auto-detect by JEDEC RDID alone. But I don't
+> like how it leaves around the function parameter 'name', which really
+> we should really be moving to deprecate if possible.
+>
+> Anyway, I can take a rebased version of this patch. But I'd like to
+> encourage more thought here for the future. I don't yet have a specific
+> proposal, so any thoughts are welcome.
 
-On Tue, Nov 04, 2014 at 08:47:00PM +0800, Zhou Wang wrote:
-> +static int hisi_nfc_remove(struct platform_device *pdev)
-> +{
-> +	struct hinfc_host *host = platform_get_drvdata(pdev);
-> +	struct mtd_info *mtd = &host->mtd;
-> +
-> +	nand_release(mtd);
-> +	dma_free_coherent(&pdev->dev, mtd->writesize + mtd->oobsize,
-> +			  host->buffer, host->dma_buffer);
-> +
-> +	return 0;
-> +}
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +static int hisi_nfc_suspend(struct platform_device *pdev,
-> +			       pm_message_t state)
+My purpose is to make use of auto-detect by RDID wherever possible. As
+you noticed, it's the first step. Now we should modify m25p80 to use
+it when possible.
 
-This is the wrong prototype. See struct dev_pm_ops.
+The case with non-DT platforms is simple. There is
+struct flash_platform_data
+which contains "type". I was thinking about Introducing new type like
+"m25p80-rdid". What do you think about this?
 
-> +{
-> +	struct hinfc_host *host = platform_get_drvdata(pdev);
-> +
-> +	while ((hinfc_read(host, HINFC504_STATUS) & 0x1) == 0x0)
-> +		;
-> +
-> +	while ((hinfc_read(host, HINFC504_DMA_CTRL))
-> +		& HINFC504_DMA_CTRL_DMA_START)
-> +		_cond_resched();
-> +
-> +	return 0;
-> +}
-> +
-> +static int hisi_nfc_resume(struct platform_device *pdev)
+I'm not exactly sure how m25p80 is handled when used in DT. Does
+anyone know that? m25p80 itself doesn't register as DT driver. So I
+guess there is some code translating DT m25p80 entries into platform
+data. Is that right? Where is this code located?
 
-Same here.
-
-> +{
-> +	int cs;
-> +	struct hinfc_host *host = platform_get_drvdata(pdev);
-> +	struct nand_chip *chip = &host->chip;
-> +
-> +	for (cs = 0; cs < chip->numchips; cs++)
-> +		hisi_nfc_send_cmd_reset(host, cs);
-> +	hinfc_write(host, SET_HINFC504_PWIDTH(HINFC504_W_LATCH,
-> +		    HINFC504_R_LATCH, HINFC504_RW_LATCH), HINFC504_PWIDTH);
-> +
-> +	return 0;
-> +}
-> +#endif
-> +static SIMPLE_DEV_PM_OPS(hisi_nfc_pm_ops, hisi_nfc_suspend, hisi_nfc_resume);
-
-Brian
+--=20
+Rafa=C5=82
