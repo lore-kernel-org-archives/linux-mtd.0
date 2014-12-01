@@ -1,24 +1,17 @@
-Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvMZG-0008UA-15
- for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 08:42:50 +0000
-Received: by mail-wg0-f41.google.com with SMTP id y19so13431159wgg.28
- for <linux-mtd@lists.infradead.org>; Mon, 01 Dec 2014 00:42:27 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH V2] mtd: spi-nor: allow NULL as chip name and try to auto
- detect it
-Date: Mon,  1 Dec 2014 09:42:16 +0100
-Message-Id: <1417423336-15255-1-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
-References: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
+Date: Mon, 1 Dec 2014 00:47:09 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v6 0/3] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20141201084709.GI29070@brian-ubuntu>
+References: <1417371030-24015-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1417371030-24015-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
+ Mike Voytovich <mvoytovich@paypal.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This will allow spi-nor users to plainly use JEDEC to detect flash chip.
+On Sun, Nov 30, 2014 at 07:10:27PM +0100, Boris Brezillon wrote:
+> Hello,
+> 
+> This series provides an implementation for raw accesses taking care of
+> hidding the specific layout used by the GPMI controller.
+> 
+> Best Regards,
+> 
+> Boris
+> 
+> Changes since v5:
+>  - rename gpmi_move_bits into gpmi_copy_bits
+> 
+> Changes since v4:
+>  - fixed a few corner cases in gpmi_move_bits (tested it with:
+>    https://github.com/bbrezillon/gpmi-move-bits-test/blob/master/gpmi-move-bits-test.c)
+>  - add documentation and comments for the new gpmi functions
+> 
+> Changes since v3:
+>  - add comments to the gpmi_move_bits function
+>  - extend raw read/write documentation
+>  - move last part of the raw_page_read function into a conditional block
+> 
+> Changes since v2:
+>  - fixed a bug in gpmi_move_bits
+>  - add a raw_buffer field to be used when using raw access methods
+>    (experienced memory corruptions when directly using page_buffer_virt
+>    buffer)
+>  - add raw OOB access functions
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
-V2: Rebase on top of:
-6d7604e mtd: spi-nor: add support for s25fl128s
-d928a25 mtd: spi-nor: remove the jedec_id/ext_id
-09ffafb mtd: spi-nor: add id/id_len for flash_info{}
----
- drivers/mtd/spi-nor/spi-nor.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+Applied the series. Thanks!
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 0f4f2ba..afc58da 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -938,13 +938,21 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 	if (ret)
- 		return ret;
- 
--	id = spi_nor_match_id(name);
-+	/* Try to auto-detect if chip name wasn't specified */
-+	if (!name)
-+		id = spi_nor_read_id(nor);
-+	else
-+		id = spi_nor_match_id(name);
- 	if (!id)
- 		return -ENOENT;
- 
- 	info = (void *)id->driver_data;
- 
--	if (info->id_len) {
-+	/*
-+	 * If caller has specified name of flash model that can normally be
-+	 * detected using JEDEC, let's verify it.
-+	 */
-+	if (name && info->id_len) {
- 		const struct spi_device_id *jid;
- 
- 		jid = spi_nor_read_id(nor);
--- 
-1.8.4.5
+Out of curiosity, what tests does gpmi-nand.c now pass/fail?
+
+Also, is it time to yank / fixup some of these comments from
+gpmi-nand.c?
+
+ ...
+ * FIXME: The following paragraph is incorrect, now that there exist
+ * ecc.read_oob_raw and ecc.write_oob_raw functions.
+ *
+ * Since MTD assumes the OOB is not covered by ECC, there is no pair of
+ * ECC-based/raw functions for reading or or writing the OOB. The fact that the
+ * caller wants an ECC-based or raw view of the page is not propagated down to
+ * this driver.
+ */
+
+Brian
