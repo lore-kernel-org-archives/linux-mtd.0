@@ -1,24 +1,16 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::1])
+Received: from nm44-vm9.bullet.mail.gq1.yahoo.com ([67.195.87.214])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvNki-0000jZ-M7
- for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 09:58:45 +0000
-Message-ID: <547C3BB9.1010706@denx.de>
-Date: Mon, 01 Dec 2014 10:58:17 +0100
-From: Stefan Roese <sr@denx.de>
+ id 1XvOAs-0006zR-0h
+ for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 10:25:46 +0000
+Message-ID: <1417429343.96345.YahooMailBasic@web194003.mail.sg3.yahoo.com>
+Date: Mon, 1 Dec 2014 18:22:23 +0800
+From: Meeme Lukas <meeme_lukas@yahoo.in>
+Subject: Re: Compliments of the season
+To: Meeme Lukas <meeme_lukas@yahoo.in>
+In-Reply-To: <1417367078.20306.YahooMailBasic@web194006.mail.sg3.yahoo.com>
 MIME-Version: 1.0
-To: Huang Shijie <shijie8@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: gpmi: Remove "We support only one NAND chip" from
- bindings doc
-References: <1417097929-17832-1-git-send-email-sr@denx.de>
- <20141128014832.GA3113@localhost.localdomain> <54781DD5.5030801@denx.de>
- <20141129024047.GA5056@localhost.localdomain>
- <20141130065326.GB3608@norris-Latitude-E6410>
- <20141130154255.GB14834@localhost.localdomain>
-In-Reply-To: <20141130154255.GB14834@localhost.localdomain>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,56 +20,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 30.11.2014 16:42, Huang Shijie wrote:
-> On Sat, Nov 29, 2014 at 10:53:26PM -0800, Brian Norris wrote:
->> On Sat, Nov 29, 2014 at 10:40:50AM +0800, Huang Shijie wrote:
->>> On Fri, Nov 28, 2014 at 08:01:41AM +0100, Stefan Roese wrote:
->>>> On 28.11.2014 02:48, Huang Shijie wrote:
->>>>> On Thu, Nov 27, 2014 at 03:18:49PM +0100, Stefan Roese wrote:
->>>>>> This sentence "We support only one NAND chip now" is not true any more.
->>>>>> Multiple chips are supported. So lets remove this sentence to not
->>>>>
->>>>> The gpmi can only supports one chip. Of course, there are maybe two dies
->>>>> in this single chip.
->>>>
->>>> Now I'm a bit confused. The i.MX6 supports 4 chips select signals. And isn't
->>>> "two dies in this single chip" not practically the same as connecting 2 (or
->>>> more) chips (same device) to multiple chip selects of the SoC? Where is the
->>>> difference here?
->>> The "one chip" here is means the "one package" (TSOP or BGA ....).
->>
->> Then why is this even in the DT binding doc? Isn't that a board-level
->> constraint (and not a chip property) which should be obvious to the
->> user? If so, then should we just drop the language? Or at a minimum,
->> make it more specific so it doesn't confuse readers.
-> 
-> yes. It is okay to send a patch to make it more clear.
-> 
->>
->>> (In logic, "two dies in this single chip" is same as connecting 2 chips
->>> to the gpmi.)
->>
->> ...which means that logically, you can connect more than one chip to the
->> GPMI, right?
-> The gpmi can only connect with one physical chip now, but there maybe
-> two DIEs in this chip.
+Dear Sir,
+Compliments of the season.
+How are you doing, i hope it's well with you,  I am writing to inform you o=
+f my intension to exterblish a business project in your country, i am using=
+ this opportunity to solicite for your co-  operation, i beleive that your =
+particicpation as my partner will gaurantee  the success of this business, =
+please get back to me for more details,if my proposal is accepted.
 
-I really fail to see why you make this distinction between two chips on a die
-and two external chips. For the SoC this should really look identical, right?
-
-Please explain again, why exactly only two chips on one die are supported.
-
-BTW: We have a custom i.MX6DL based board with 2 NAND chips connected. And
-Linux seems to support both chips just fine. Here the boot log:
-
-[    1.085812] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
-[    1.092218] nand: Micron MT29F4G08ABADAH4
-[    1.096245] nand: 512MiB, SLC, page size: 2048, OOB size: 64
-[    1.102171] nand: 2 chips detected
-[    1.106156] gpmi-nand 112000.gpmi-nand: enable the asynchronous EDO mode 5
-[    1.113094] Scanning device for bad blocks
-
-Comments welcome...
-
-Thanks,
-Stefan
+Regards.
+MEEME..
