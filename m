@@ -1,18 +1,26 @@
-Date: Mon, 1 Dec 2014 09:58:58 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v6 0/3] mtd: nand: gpmi: add proper raw access support
-Message-ID: <20141201095858.75ac3889@bbrezillon>
-In-Reply-To: <20141201084709.GI29070@brian-ubuntu>
-References: <1417371030-24015-1-git-send-email-boris.brezillon@free-electrons.com>
- <20141201084709.GI29070@brian-ubuntu>
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XvNEv-0001Gw-Gi
+ for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 09:25:53 +0000
+Received: by mail-pa0-f45.google.com with SMTP id lj1so10755445pab.32
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Dec 2014 01:25:32 -0800 (PST)
+Date: Mon, 1 Dec 2014 01:25:29 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Zhou Wang <wangzhou.bry@gmail.com>
+Subject: Re: [PATCH v4 1/2] mtd: hisilicon: add a new NAND controller driver
+ for hisilicon hip04 Soc
+Message-ID: <20141201092529.GM29070@brian-ubuntu>
+References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
+ <1415105221-7732-2-git-send-email-wangzhou.bry@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Mike Voytovich <mvoytovich@paypal.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1415105221-7732-2-git-send-email-wangzhou.bry@gmail.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
+ haojian.zhuang@gmail.com, wangzhou1@hisilicon.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
+ caizhiyong@huawei.com, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,80 +30,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+I forgot to mention these comments:
 
-On Mon, 1 Dec 2014 00:47:09 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
+On Tue, Nov 04, 2014 at 08:47:00PM +0800, Zhou Wang wrote:
+> +static int hisi_nfc_remove(struct platform_device *pdev)
+> +{
+> +	struct hinfc_host *host = platform_get_drvdata(pdev);
+> +	struct mtd_info *mtd = &host->mtd;
+> +
+> +	nand_release(mtd);
+> +	dma_free_coherent(&pdev->dev, mtd->writesize + mtd->oobsize,
+> +			  host->buffer, host->dma_buffer);
+> +
+> +	return 0;
+> +}
+> +
+> +#ifdef CONFIG_PM_SLEEP
+> +static int hisi_nfc_suspend(struct platform_device *pdev,
+> +			       pm_message_t state)
 
-> On Sun, Nov 30, 2014 at 07:10:27PM +0100, Boris Brezillon wrote:
-> > Hello,
-> > 
-> > This series provides an implementation for raw accesses taking care of
-> > hidding the specific layout used by the GPMI controller.
-> > 
-> > Best Regards,
-> > 
-> > Boris
-> > 
-> > Changes since v5:
-> >  - rename gpmi_move_bits into gpmi_copy_bits
-> > 
-> > Changes since v4:
-> >  - fixed a few corner cases in gpmi_move_bits (tested it with:
-> >    https://github.com/bbrezillon/gpmi-move-bits-test/blob/master/gpmi-move-bits-test.c)
-> >  - add documentation and comments for the new gpmi functions
-> > 
-> > Changes since v3:
-> >  - add comments to the gpmi_move_bits function
-> >  - extend raw read/write documentation
-> >  - move last part of the raw_page_read function into a conditional block
-> > 
-> > Changes since v2:
-> >  - fixed a bug in gpmi_move_bits
-> >  - add a raw_buffer field to be used when using raw access methods
-> >    (experienced memory corruptions when directly using page_buffer_virt
-> >    buffer)
-> >  - add raw OOB access functions
-> 
-> Applied the series. Thanks!
-> 
-> Out of curiosity, what tests does gpmi-nand.c now pass/fail?
+This is the wrong prototype. See struct dev_pm_ops.
 
-The oobtest is still failing. I started to debug it, but didn't have
-enough time to make it work.
+> +{
+> +	struct hinfc_host *host = platform_get_drvdata(pdev);
+> +
+> +	while ((hinfc_read(host, HINFC504_STATUS) & 0x1) == 0x0)
+> +		;
+> +
+> +	while ((hinfc_read(host, HINFC504_DMA_CTRL))
+> +		& HINFC504_DMA_CTRL_DMA_START)
+> +		_cond_resched();
+> +
+> +	return 0;
+> +}
+> +
+> +static int hisi_nfc_resume(struct platform_device *pdev)
 
-The nandbiterrs test is working, though I didn't manage to make the
-incremental test fail (writing the same pattern 10000 times without
-erasing the block between each write does not generate any bit flips) on
-my SLC NAND: MT29F2G08ABAEAH4.
-Can someone with another SLC NAND chip try it ?
+Same here.
 
-> 
-> Also, is it time to yank / fixup some of these comments from
-> gpmi-nand.c?
+> +{
+> +	int cs;
+> +	struct hinfc_host *host = platform_get_drvdata(pdev);
+> +	struct nand_chip *chip = &host->chip;
+> +
+> +	for (cs = 0; cs < chip->numchips; cs++)
+> +		hisi_nfc_send_cmd_reset(host, cs);
+> +	hinfc_write(host, SET_HINFC504_PWIDTH(HINFC504_W_LATCH,
+> +		    HINFC504_R_LATCH, HINFC504_RW_LATCH), HINFC504_PWIDTH);
+> +
+> +	return 0;
+> +}
+> +#endif
+> +static SIMPLE_DEV_PM_OPS(hisi_nfc_pm_ops, hisi_nfc_suspend, hisi_nfc_resume);
 
-I was asking myself the same question...
-
-> 
->  ...
->  * FIXME: The following paragraph is incorrect, now that there exist
->  * ecc.read_oob_raw and ecc.write_oob_raw functions.
->  *
->  * Since MTD assumes the OOB is not covered by ECC, there is no pair of
->  * ECC-based/raw functions for reading or or writing the OOB. The fact that the
->  * caller wants an ECC-based or raw view of the page is not propagated down to
->  * this driver.
->  */
-
-I guess we can remove them.
-Huang can you confirm that the raw access functions introduced in this
-series are covering what's described here ?
-
-Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Brian
