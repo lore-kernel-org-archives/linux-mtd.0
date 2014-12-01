@@ -1,25 +1,24 @@
-Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvNc6-0005D5-0G
- for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 09:49:50 +0000
-Received: by mail-ie0-f175.google.com with SMTP id x19so3987408ier.34
- for <linux-mtd@lists.infradead.org>; Mon, 01 Dec 2014 01:49:28 -0800 (PST)
+ id 1XvNki-0000jZ-M7
+ for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 09:58:45 +0000
+Message-ID: <547C3BB9.1010706@denx.de>
+Date: Mon, 01 Dec 2014 10:58:17 +0100
+From: Stefan Roese <sr@denx.de>
 MIME-Version: 1.0
-In-Reply-To: <20141201084023.GH29070@brian-ubuntu>
-References: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
- <20141201084023.GH29070@brian-ubuntu>
-Date: Mon, 1 Dec 2014 10:49:28 +0100
-Message-ID: <CACna6rwBOux=V-12eTTYBSEzgfQ4v=4HJx8iQGz2OkzzA+LnLA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: allow NULL as chip name and try to auto
- detect it
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: gpmi: Remove "We support only one NAND chip" from
+ bindings doc
+References: <1417097929-17832-1-git-send-email-sr@denx.de>
+ <20141128014832.GA3113@localhost.localdomain> <54781DD5.5030801@denx.de>
+ <20141129024047.GA5056@localhost.localdomain>
+ <20141130065326.GB3608@norris-Latitude-E6410>
+ <20141130154255.GB14834@localhost.localdomain>
+In-Reply-To: <20141130154255.GB14834@localhost.localdomain>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,37 +28,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 1 December 2014 at 09:40, Brian Norris <computersforpeace@gmail.com> wro=
-te:
-> On Wed, Oct 22, 2014 at 06:05:00PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
->> This will allow spi-nor users to plainly use JEDEC to detect flash chip.
+On 30.11.2014 16:42, Huang Shijie wrote:
+> On Sat, Nov 29, 2014 at 10:53:26PM -0800, Brian Norris wrote:
+>> On Sat, Nov 29, 2014 at 10:40:50AM +0800, Huang Shijie wrote:
+>>> On Fri, Nov 28, 2014 at 08:01:41AM +0100, Stefan Roese wrote:
+>>>> On 28.11.2014 02:48, Huang Shijie wrote:
+>>>>> On Thu, Nov 27, 2014 at 03:18:49PM +0100, Stefan Roese wrote:
+>>>>>> This sentence "We support only one NAND chip now" is not true any more.
+>>>>>> Multiple chips are supported. So lets remove this sentence to not
+>>>>>
+>>>>> The gpmi can only supports one chip. Of course, there are maybe two dies
+>>>>> in this single chip.
+>>>>
+>>>> Now I'm a bit confused. The i.MX6 supports 4 chips select signals. And isn't
+>>>> "two dies in this single chip" not practically the same as connecting 2 (or
+>>>> more) chips (same device) to multiple chip selects of the SoC? Where is the
+>>>> difference here?
+>>> The "one chip" here is means the "one package" (TSOP or BGA ....).
 >>
->> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+>> Then why is this even in the DT binding doc? Isn't that a board-level
+>> constraint (and not a chip property) which should be obvious to the
+>> user? If so, then should we just drop the language? Or at a minimum,
+>> make it more specific so it doesn't confuse readers.
+> 
+> yes. It is okay to send a patch to make it more clear.
+> 
 >>
-> I think this is a good time to consider this question: how do we
-> *really* want a SPI NOR driver to interact with spi-nor.c, regarding
-> device detection? I like how this patch removes the string-matching
-> requirement, so we can just auto-detect by JEDEC RDID alone. But I don't
-> like how it leaves around the function parameter 'name', which really
-> we should really be moving to deprecate if possible.
->
-> Anyway, I can take a rebased version of this patch. But I'd like to
-> encourage more thought here for the future. I don't yet have a specific
-> proposal, so any thoughts are welcome.
+>>> (In logic, "two dies in this single chip" is same as connecting 2 chips
+>>> to the gpmi.)
+>>
+>> ...which means that logically, you can connect more than one chip to the
+>> GPMI, right?
+> The gpmi can only connect with one physical chip now, but there maybe
+> two DIEs in this chip.
 
-My purpose is to make use of auto-detect by RDID wherever possible. As
-you noticed, it's the first step. Now we should modify m25p80 to use
-it when possible.
+I really fail to see why you make this distinction between two chips on a die
+and two external chips. For the SoC this should really look identical, right?
 
-The case with non-DT platforms is simple. There is
-struct flash_platform_data
-which contains "type". I was thinking about Introducing new type like
-"m25p80-rdid". What do you think about this?
+Please explain again, why exactly only two chips on one die are supported.
 
-I'm not exactly sure how m25p80 is handled when used in DT. Does
-anyone know that? m25p80 itself doesn't register as DT driver. So I
-guess there is some code translating DT m25p80 entries into platform
-data. Is that right? Where is this code located?
+BTW: We have a custom i.MX6DL based board with 2 NAND chips connected. And
+Linux seems to support both chips just fine. Here the boot log:
 
---=20
-Rafa=C5=82
+[    1.085812] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
+[    1.092218] nand: Micron MT29F4G08ABADAH4
+[    1.096245] nand: 512MiB, SLC, page size: 2048, OOB size: 64
+[    1.102171] nand: 2 chips detected
+[    1.106156] gpmi-nand 112000.gpmi-nand: enable the asynchronous EDO mode 5
+[    1.113094] Scanning device for bad blocks
+
+Comments welcome...
+
+Thanks,
+Stefan
