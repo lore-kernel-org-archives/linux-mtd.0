@@ -1,13 +1,19 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: gpmi: properly handle bitflips in erased pages
-Date: Mon,  1 Dec 2014 20:12:39 +0100
-Message-Id: <1417461159-2972-1-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
- Roy Lee <roylee@paypal.com>, Huang Shijie <shijie8@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-vc0-x233.google.com ([2607:f8b0:400c:c03::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XvWSW-0000qt-JP
+ for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 19:16:33 +0000
+Received: by mail-vc0-f179.google.com with SMTP id le20so5050503vcb.10
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Dec 2014 11:16:10 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CAF3KAoTMWCiAfHhNd_OR3QAteYC8vBLL=W_SUR28iCTOz+YbiA@mail.gmail.com>
+References: <CAF3KAoTMWCiAfHhNd_OR3QAteYC8vBLL=W_SUR28iCTOz+YbiA@mail.gmail.com>
+Date: Mon, 1 Dec 2014 20:16:10 +0100
+Message-ID: <CAFLxGvzOR92mqxqC-dzgr4SDke+K=NfC7mi4kZHi3KrBiVfcNQ@mail.gmail.com>
+Subject: Re: Building nandsim for Fedora
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Bruno Vernay <brunovern.a@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,187 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The hardware ECC engine embedded in freescale SoCs can fix a few bitflips
-in written pages.
-In the other hand, erased pages are filled with ones, and, as the ECC
-engine does not generate all one ECC bits for this pattern, it considers
-an empty page as uncorrectable (too many bitflips to be  corrected).
+On Mon, Dec 1, 2014 at 6:23 PM, Bruno Vernay <brunovern.a@gmail.com> wrote:
+> Hi,
+>
+> I would like to mount a UBI  image, and for this I need "nandsim", but
+> it is not available on Fedora.
+> I can't even find a RPM for the sources.
+>
+> I would like to get the sources for nandsim, it seems that the repository is
+> http://git.infradead.org/linux-mtd.git/tree/HEAD:/drivers/mtd/nand
+>
+> But I am not even sure, if it is the right place to start ???
 
-To address this, the NAND controller test for empty page pattern (page
-filled with 0xff) before enabling the ECC engine.
-While this work in most cases, it fails when at least one bit flip occurred
-in an erased page (because the controller consider it as not empty/erased).
+nandsim is a Linux kernel module.
 
-This patch read the NAND page in raw mode if the controller has returned
-an UNCORRECTABLE status, and, if the page looks like an empty page with a
-few bitflips (less than the ECC strength), fixes those bitflips instead of
-returning an error.
-
-Reported-by: Elie De Brauwer <eliedebrauwer@gmail.com>
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
-Hi Brian, Huang,
-
-I'm reviving the 'fix bitflips in erased pages' patch (I've experienced such
-bitflips on an SLC NAND).
-
-I've mixed both of your implementations to make this patch, hence the SoB tags
-(maybe I should even keep one of you in author...).
-
-Brian, I really like the idea of having a generic implementation for this
-feature (using read_page_raw) as you suggested here [1], but this implies
-having a temporary buffer to store the page read in raw mode and keep the page
-read in normal (HW ECC engine eanbled) mode, and I'm not sure we want to
-allocate more buffers than we already have.
-
-Huang, I remember you wanted to limit the bitflips strength on erased pages
-compared to the normal ECC strength.
-This version just consider it can fix up to ECC strength bits, but I can change
-that to something else (ecc_strength / 2 ?).
-
-Feel free to suggest any alternative, to this implementation.
-
-Best Regards,
-
-Boris
-
-[1]http://article.gmane.org/gmane.linux.drivers.mtd/52183/raw
-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 108 ++++++++++++++++++++++++++++++++-
- 1 file changed, 106 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 4f3851a..647b28b 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -991,6 +991,69 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
- 	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
- }
- 
-+/*
-+ * Check a page to see if it is erased (w/ bitflips) after an uncorrectable ECC
-+ * error
-+ *
-+ * On a real error, return a negative error code (-EBADMSG for ECC error).
-+ * Otherwise, fill chunk with 0xff and return the number of corrected
-+ * bitflips.
-+ *
-+ */
-+static int gpmi_verify_erased_page(struct gpmi_nand_data *this,
-+				   unsigned int chunk)
-+{
-+	struct bch_geometry *nfc_geo = &this->bch_geometry;
-+	int eccsize = nfc_geo->ecc_chunk_size;
-+	int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
-+	unsigned int bitflips = 0;
-+	unsigned char *data = this->raw_buffer;
-+	unsigned int threshold = nfc_geo->ecc_strength;
-+	int data_nbits, bit_off;
-+	int i;
-+
-+	data_nbits = (eccsize * 8) + eccbits;
-+	bit_off = chunk * data_nbits;
-+
-+	/* First chunk also embeds metadata */
-+	if (!chunk)
-+		data_nbits += (nfc_geo->metadata_size * 8);
-+	else
-+		bit_off += (nfc_geo->metadata_size * 8);
-+
-+	data = this->raw_buffer + (bit_off % 8);
-+	if (bit_off % 8) {
-+		bitflips += hweight8(~(*data | GENMASK(bit_off - 1, 0)));
-+		if (bitflips > threshold)
-+			return -EBADMSG;
-+
-+		data_nbits -= bit_off;
-+	}
-+
-+	for (i = 0; i < data_nbits / 8; i++) {
-+		bitflips += hweight8(~data[i]);
-+		if (bitflips > threshold)
-+			return -EBADMSG;
-+	}
-+
-+	data_nbits %= 8;
-+	data += data_nbits / 8;
-+	if (data_nbits) {
-+		bitflips += hweight8(~(*data | GENMASK(7, data_nbits)));
-+		if (bitflips > threshold)
-+			return -EBADMSG;
-+	}
-+
-+	memset(this->payload_virt + (chunk * eccsize), 0xff, eccsize);
-+
-+	if (!chunk)
-+		memset(this->auxiliary_virt, 0xff, nfc_geo->metadata_size);
-+
-+	pr_debug("correcting %u bitflips in erased page\n", bitflips);
-+
-+	return bitflips;
-+}
-+
- static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
- {
-@@ -1036,13 +1099,54 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
- 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
-+		bool raw_read_done = false;
-+
- 		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
- 			continue;
- 
- 		if (*status == STATUS_UNCORRECTABLE) {
--			mtd->ecc_stats.failed++;
--			continue;
-+			if (!raw_read_done) {
-+				bool direct_dma_map_ok;
-+
-+				/*
-+				 * Reading a page will override the current
-+				 * direct_dma_map_ok field.
-+				 * Save direct_dma_map_ok and restore it after
-+				 * raw page read has completed.
-+				 */
-+				direct_dma_map_ok = this->direct_dma_map_ok;
-+				chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-+				chip->read_buf(mtd, this->raw_buffer,
-+					       mtd->writesize + mtd->oobsize);
-+				this->direct_dma_map_ok = direct_dma_map_ok;
-+
-+				/*
-+				 * Swap bad block marker if needed.
-+				 */
-+				if (this->swap_block_mark) {
-+					u8 *raw_buf = this->raw_buffer;
-+					u8 swap = raw_buf[0];
-+
-+					raw_buf[0] = raw_buf[mtd->writesize];
-+					raw_buf[mtd->writesize] = swap;
-+				}
-+
-+				raw_read_done = true;
-+			}
-+
-+			/*
-+			 * Analyse the current chunk to handle the "bitflips in
-+			 * erased page" case.
-+			 */
-+			ret = gpmi_verify_erased_page(this, i);
-+			if (ret < 0) {
-+				mtd->ecc_stats.failed++;
-+				continue;
-+			}
-+
-+			*status = ret;
- 		}
-+
- 		mtd->ecc_stats.corrected += *status;
- 		max_bitflips = max_t(unsigned int, max_bitflips, *status);
- 	}
 -- 
-1.9.1
+Thanks,
+//richard
