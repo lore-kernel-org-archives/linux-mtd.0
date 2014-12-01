@@ -1,19 +1,17 @@
-Received: from mail-vc0-x233.google.com ([2607:f8b0:400c:c03::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvWSW-0000qt-JP
- for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 19:16:33 +0000
-Received: by mail-vc0-f179.google.com with SMTP id le20so5050503vcb.10
- for <linux-mtd@lists.infradead.org>; Mon, 01 Dec 2014 11:16:10 -0800 (PST)
+Date: Mon, 1 Dec 2014 11:41:39 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: gpmi: properly handle bitflips in erased pages
+Message-ID: <20141201194139.GI21347@ld-irv-0074>
+References: <1417461159-2972-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <CAF3KAoTMWCiAfHhNd_OR3QAteYC8vBLL=W_SUR28iCTOz+YbiA@mail.gmail.com>
-References: <CAF3KAoTMWCiAfHhNd_OR3QAteYC8vBLL=W_SUR28iCTOz+YbiA@mail.gmail.com>
-Date: Mon, 1 Dec 2014 20:16:10 +0100
-Message-ID: <CAFLxGvzOR92mqxqC-dzgr4SDke+K=NfC7mi4kZHi3KrBiVfcNQ@mail.gmail.com>
-Subject: Re: Building nandsim for Fedora
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Bruno Vernay <brunovern.a@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1417461159-2972-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
+ Mike Voytovich <mvoytovich@paypal.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 1, 2014 at 6:23 PM, Bruno Vernay <brunovern.a@gmail.com> wrote:
-> Hi,
->
-> I would like to mount a UBI  image, and for this I need "nandsim", but
-> it is not available on Fedora.
-> I can't even find a RPM for the sources.
->
-> I would like to get the sources for nandsim, it seems that the repository is
-> http://git.infradead.org/linux-mtd.git/tree/HEAD:/drivers/mtd/nand
->
-> But I am not even sure, if it is the right place to start ???
+Hi Boris,
 
-nandsim is a Linux kernel module.
+On Mon, Dec 01, 2014 at 08:12:39PM +0100, Boris Brezillon wrote:
+> Brian, I really like the idea of having a generic implementation for this
+> feature (using read_page_raw) as you suggested here [1], but this implies
+> having a temporary buffer to store the page read in raw mode and keep the page
+> read in normal (HW ECC engine eanbled) mode, and I'm not sure we want to
+> allocate more buffers than we already have.
 
--- 
-Thanks,
-//richard
+Why does this require an additional buffer? If we've already noticed an
+ECC error, we're expected to return raw data anyway, so what's the
+problem with clobbering the original data with a raw version of the
+data?
+
+I really *really* do not want to merge another one-off attempt at
+"solving" this problem in the low-level driver, if at all possible.
+
+Brian
+
+P.S. Sorry for not following up on my last attempt of a generic
+solution. I don't think I got enough constructive feedback, other than
+"this does not work for me", so I didn't pursue it further. If we have
+the attention of more than one driver developer here (i.e., at least you
+and me), then I'd really like to finish this off for good (?).
