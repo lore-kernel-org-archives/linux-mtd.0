@@ -1,17 +1,25 @@
-Date: Mon, 1 Dec 2014 00:47:09 -0800
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XvMkJ-00060N-GQ
+ for linux-mtd@lists.infradead.org; Mon, 01 Dec 2014 08:54:16 +0000
+Received: by mail-pa0-f45.google.com with SMTP id lj1so10641237pab.18
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Dec 2014 00:53:54 -0800 (PST)
+Date: Mon, 1 Dec 2014 00:53:51 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v6 0/3] mtd: nand: gpmi: add proper raw access support
-Message-ID: <20141201084709.GI29070@brian-ubuntu>
-References: <1417371030-24015-1-git-send-email-boris.brezillon@free-electrons.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH V2] mtd: spi-nor: allow NULL as chip name and try to auto
+ detect it
+Message-ID: <20141201085351.GJ29070@brian-ubuntu>
+References: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
+ <1417423336-15255-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1417371030-24015-1-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Mike Voytovich <mvoytovich@paypal.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1417423336-15255-1-git-send-email-zajec5@gmail.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,51 +29,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 30, 2014 at 07:10:27PM +0100, Boris Brezillon wrote:
-> Hello,
+On Mon, Dec 01, 2014 at 09:42:16AM +0100, Rafał Miłecki wrote:
+> This will allow spi-nor users to plainly use JEDEC to detect flash chip.
 > 
-> This series provides an implementation for raw accesses taking care of
-> hidding the specific layout used by the GPMI controller.
-> 
-> Best Regards,
-> 
-> Boris
-> 
-> Changes since v5:
->  - rename gpmi_move_bits into gpmi_copy_bits
-> 
-> Changes since v4:
->  - fixed a few corner cases in gpmi_move_bits (tested it with:
->    https://github.com/bbrezillon/gpmi-move-bits-test/blob/master/gpmi-move-bits-test.c)
->  - add documentation and comments for the new gpmi functions
-> 
-> Changes since v3:
->  - add comments to the gpmi_move_bits function
->  - extend raw read/write documentation
->  - move last part of the raw_page_read function into a conditional block
-> 
-> Changes since v2:
->  - fixed a bug in gpmi_move_bits
->  - add a raw_buffer field to be used when using raw access methods
->    (experienced memory corruptions when directly using page_buffer_virt
->    buffer)
->  - add raw OOB access functions
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+> ---
+> V2: Rebase on top of:
+> 6d7604e mtd: spi-nor: add support for s25fl128s
+> d928a25 mtd: spi-nor: remove the jedec_id/ext_id
+> 09ffafb mtd: spi-nor: add id/id_len for flash_info{}
 
-Applied the series. Thanks!
-
-Out of curiosity, what tests does gpmi-nand.c now pass/fail?
-
-Also, is it time to yank / fixup some of these comments from
-gpmi-nand.c?
-
- ...
- * FIXME: The following paragraph is incorrect, now that there exist
- * ecc.read_oob_raw and ecc.write_oob_raw functions.
- *
- * Since MTD assumes the OOB is not covered by ECC, there is no pair of
- * ECC-based/raw functions for reading or or writing the OOB. The fact that the
- * caller wants an ECC-based or raw view of the page is not propagated down to
- * this driver.
- */
+Applied, thanks!
 
 Brian
