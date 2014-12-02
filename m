@@ -1,20 +1,25 @@
-Received: from mail-by2on0113.outbound.protection.outlook.com
- ([207.46.100.113] helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvffH-0000Bs-VE
- for linux-mtd@lists.infradead.org; Tue, 02 Dec 2014 05:06:20 +0000
-Message-ID: <1417496750.15957.212.camel@freescale.com>
-Subject: Re: [PATCH 1/1][v3] IFC: Change IO accessor based on endianness
-From: Scott Wood <scottwood@freescale.com>
-To: Jaiprakash Singh <b44839@freescale.com>
-Date: Mon, 1 Dec 2014 23:05:50 -0600
-In-Reply-To: <1417432523-2573-1-git-send-email-b44839@freescale.com>
-References: <1417432523-2573-1-git-send-email-b44839@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
+ id 1Xvht2-0006zi-PO
+ for linux-mtd@lists.infradead.org; Tue, 02 Dec 2014 07:28:42 +0000
+Message-ID: <547D6A0A.70409@denx.de>
+Date: Tue, 02 Dec 2014 08:28:10 +0100
+From: Stefan Roese <sr@denx.de>
 MIME-Version: 1.0
+To: Huang Shijie <shijie.huang@intel.com>
+Subject: Re: [PATCH] mtd: gpmi: Remove "We support only one NAND chip" from
+ bindings doc
+References: <1417097929-17832-1-git-send-email-sr@denx.de>
+ <20141128014832.GA3113@localhost.localdomain> <54781DD5.5030801@denx.de>
+ <20141129024047.GA5056@localhost.localdomain>
+ <20141130065326.GB3608@norris-Latitude-E6410>
+ <20141130154255.GB14834@localhost.localdomain> <547C3BB9.1010706@denx.de>
+ <20141202003840.GA11370@shldeISGChi005.sh.intel.com>
+In-Reply-To: <20141202003840.GA11370@shldeISGChi005.sh.intel.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: B07421@freescale.com, B32579@freescale.com, linux-mtd@lists.infradead.org,
- arnd@arndb.de, gregkh@linuxfoundation.org
+Cc: devicetree@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +29,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-12-01 at 16:45 +0530, Jaiprakash Singh wrote:
-> @@ -377,31 +377,31 @@ static void fsl_ifc_do_read(struct nand_chip *chip,
->  
->  	/* Program FIR/IFC_NAND_FCR0 for Small/Large page */
->  	if (mtd->writesize > 512) {
-> -		iowrite32be((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
-> +		ifc_out32((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
->  			    (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
->  			    (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
->  			    (IFC_FIR_OP_CMD1 << IFC_NAND_FIR0_OP3_SHIFT) |
->  			    (IFC_FIR_OP_RBCD << IFC_NAND_FIR0_OP4_SHIFT),
->  			    &ifc->ifc_nand.nand_fir0);
+On 02.12.2014 01:38, Huang Shijie wrote:
+> On Mon, Dec 01, 2014 at 10:58:17AM +0100, Stefan Roese wrote:
+>> On 30.11.2014 16:42, Huang Shijie wrote:
+>>> On Sat, Nov 29, 2014 at 10:53:26PM -0800, Brian Norris wrote:
+>>>> On Sat, Nov 29, 2014 at 10:40:50AM +0800, Huang Shijie wrote:
+>>>>> On Fri, Nov 28, 2014 at 08:01:41AM +0100, Stefan Roese wrote:
+>>>>>> On 28.11.2014 02:48, Huang Shijie wrote:
+>>>>>>> On Thu, Nov 27, 2014 at 03:18:49PM +0100, Stefan Roese wrote:
+>>>>>>>> This sentence "We support only one NAND chip now" is not true any more.
+>>>>>>>> Multiple chips are supported. So lets remove this sentence to not
+>>>>>>>
+>>>>>>> The gpmi can only supports one chip. Of course, there are maybe two dies
+>>>>>>> in this single chip.
+>>>>>>
+>>>>>> Now I'm a bit confused. The i.MX6 supports 4 chips select signals. And isn't
+>>>>>> "two dies in this single chip" not practically the same as connecting 2 (or
+>>>>>> more) chips (same device) to multiple chip selects of the SoC? Where is the
+>>>>>> difference here?
+>>>>> The "one chip" here is means the "one package" (TSOP or BGA ....).
+>>>>
+>>>> Then why is this even in the DT binding doc? Isn't that a board-level
+>>>> constraint (and not a chip property) which should be obvious to the
+>>>> user? If so, then should we just drop the language? Or at a minimum,
+>>>> make it more specific so it doesn't confuse readers.
+>>>
+>>> yes. It is okay to send a patch to make it more clear.
+>>>
+>>>>
+>>>>> (In logic, "two dies in this single chip" is same as connecting 2 chips
+>>>>> to the gpmi.)
+>>>>
+>>>> ...which means that logically, you can connect more than one chip to the
+>>>> GPMI, right?
+>>> The gpmi can only connect with one physical chip now, but there maybe
+>>> two DIEs in this chip.
+>>
+>> I really fail to see why you make this distinction between two chips on a die
+>> and two external chips. For the SoC this should really look identical, right?
+>>
+>> Please explain again, why exactly only two chips on one die are supported.
+> There are only 8 data lines for gpmi.  I guess there may bugs in the
+> gpmi driver to support the two external chips in such case:
+>          Two different processes access different NAND chips at the same
+> 	time.
 
-You're still breaking continuation line alignment, here and elsewhere...
+I don't see why this should be a problem. All SoC's that support multiple
+NAND chips (I've seen so far) only use 8 data lines for this.
 
-> +		addr = ifc_nand_ctrl->addr;
->  		if (chip->options & NAND_BUSWIDTH_16)
-> -			setbits16(ifc_nand_ctrl->addr, NAND_STATUS_WP);
-> +			ifc_out16((ifc_in16(addr) | (NAND_STATUS_WP)), addr);
->  		else
-> -			setbits8(ifc_nand_ctrl->addr, NAND_STATUS_WP);
-> +			ifc_out8((ifc_in8(addr) | (NAND_STATUS_WP)), addr);
->  		return;
+> I even did not have enough time to test the "two chips on a die" case very carefully before
+> I left freescale.
 
-Unnecessary parentheses
+I see. Thanks for the hint. But this "two chips on a die" scenario did
+pass some basic tests, no?
+ 
+>>
+>> BTW: We have a custom i.MX6DL based board with 2 NAND chips connected. And
+> 
+> Very good. Please test this board with the UBIFS in the multi processes
+> case. (I ever used the bonnie++)
 
--Scott
+We'll do that.
+ 
+>> Linux seems to support both chips just fine. Here the boot log:
+>>
+>> [    1.085812] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
+>> [    1.092218] nand: Micron MT29F4G08ABADAH4
+>> [    1.096245] nand: 512MiB, SLC, page size: 2048, OOB size: 64
+>> [    1.102171] nand: 2 chips detected
+>> [    1.106156] gpmi-nand 112000.gpmi-nand: enable the asynchronous EDO mode 5
+>> [    1.113094] Scanning device for bad blocks
+> could you please post more log?
+
+Sure.
+
+...
+[    1.068580] loop: module loaded
+[    1.085966] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
+[    1.092372] nand: Micron MT29F4G08ABADAH4
+[    1.096401] nand: 512MiB, SLC, page size: 2048, OOB size: 64
+[    1.102331] nand: 2 chips detected
+[    1.106342] gpmi-nand 112000.gpmi-nand: enable the asynchronous EDO mode 5
+[    1.113279] Scanning device for bad blocks
+[    1.126196] Bad eraseblock 58 at 0x000000740000
+[    1.131074] Bad eraseblock 60 at 0x000000780000
+[    1.515182] random: nonblocking pool is initialized
+[    2.331738] 10 cmdlinepart partitions found on MTD device gpmi-nand
+[    2.338028] Creating 10 MTD partitions on "gpmi-nand":
+[    2.343210] 0x000000000000-0x000000e00000 : "spl"
+[    2.351695] 0x000000e00000-0x000001000000 : "uboot"
+[    2.359015] 0x000001000000-0x000001080000 : "env1"
+[    2.366272] 0x000001080000-0x000001100000 : "env2"
+[    2.373508] 0x000001100000-0x000020000000 : "ubi0"
+[    2.381521] 0x000020000000-0x000020e00000 : "res0"
+[    2.388781] 0x000020e00000-0x000021000000 : "res1"
+[    2.396131] 0x000021000000-0x000021080000 : "res2"
+[    2.403458] 0x000021080000-0x000021100000 : "res3"
+[    2.410657] 0x000021100000-0x000040000000 : "ubi1"
+[    2.418572] gpmi-nand 112000.gpmi-nand: driver registered.
+[    2.428911] spi_imx 2008000.ecspi: probed
+...
+
+Thanks,
+Stefan
