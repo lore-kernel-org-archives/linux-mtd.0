@@ -1,20 +1,20 @@
-Date: Tue, 2 Dec 2014 09:21:50 +0100
+Date: Tue, 2 Dec 2014 09:28:58 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Huang Shijie <shijie.huang@intel.com>
-Subject: Re: [PATCH v6 0/3] mtd: nand: gpmi: add proper raw access support
-Message-ID: <20141202092150.738a53bb@bbrezillon>
-In-Reply-To: <20141202004743.GB11370@shldeISGChi005.sh.intel.com>
-References: <1417371030-24015-1-git-send-email-boris.brezillon@free-electrons.com>
- <20141201084709.GI29070@brian-ubuntu>
- <20141201095858.75ac3889@bbrezillon>
- <20141202004743.GB11370@shldeISGChi005.sh.intel.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: gpmi: properly handle bitflips in erased pages
+Message-ID: <20141202092858.57341105@bbrezillon>
+In-Reply-To: <20141201233748.GJ21347@ld-irv-0074>
+References: <1417461159-2972-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20141201194139.GI21347@ld-irv-0074>
+ <20141201211818.4e97f2e2@bbrezillon>
+ <20141201233748.GJ21347@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+ Mike Voytovich <mvoytovich@paypal.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,82 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2 Dec 2014 08:47:43 +0800
-Huang Shijie <shijie.huang@intel.com> wrote:
+On Mon, 1 Dec 2014 15:37:48 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-> On Mon, Dec 01, 2014 at 09:58:58AM +0100, Boris Brezillon wrote:
-> > Hi Brian,
-> > 
-> > On Mon, 1 Dec 2014 00:47:09 -0800
-> > Brian Norris <computersforpeace@gmail.com> wrote:
-> > 
-> > > On Sun, Nov 30, 2014 at 07:10:27PM +0100, Boris Brezillon wrote:
-> > > > Hello,
-> > > > 
-> > > > This series provides an implementation for raw accesses taking care of
-> > > > hidding the specific layout used by the GPMI controller.
-> > > > 
-> > > > Best Regards,
-> > > > 
-> > > > Boris
-> > > > 
-> > > > Changes since v5:
-> > > >  - rename gpmi_move_bits into gpmi_copy_bits
-> > > > 
-> > > > Changes since v4:
-> > > >  - fixed a few corner cases in gpmi_move_bits (tested it with:
-> > > >    https://github.com/bbrezillon/gpmi-move-bits-test/blob/master/gpmi-move-bits-test.c)
-> > > >  - add documentation and comments for the new gpmi functions
-> > > > 
-> > > > Changes since v3:
-> > > >  - add comments to the gpmi_move_bits function
-> > > >  - extend raw read/write documentation
-> > > >  - move last part of the raw_page_read function into a conditional block
-> > > > 
-> > > > Changes since v2:
-> > > >  - fixed a bug in gpmi_move_bits
-> > > >  - add a raw_buffer field to be used when using raw access methods
-> > > >    (experienced memory corruptions when directly using page_buffer_virt
-> > > >    buffer)
-> > > >  - add raw OOB access functions
+> On Mon, Dec 01, 2014 at 09:18:18PM +0100, Boris Brezillon wrote:
+> > On Mon, 1 Dec 2014 11:41:39 -0800 Brian Norris <computersforpeace@gmail.com> wrote:
+> > > On Mon, Dec 01, 2014 at 08:12:39PM +0100, Boris Brezillon wrote:
+> > > > Brian, I really like the idea of having a generic implementation for this
+> > > > feature (using read_page_raw) as you suggested here [1], but this implies
+> > > > having a temporary buffer to store the page read in raw mode and keep the page
+> > > > read in normal (HW ECC engine eanbled) mode, and I'm not sure we want to
+> > > > allocate more buffers than we already have.
 > > > 
-> > > Applied the series. Thanks!
-> > > 
-> > > Out of curiosity, what tests does gpmi-nand.c now pass/fail?
+> > > Why does this require an additional buffer? If we've already noticed an
+> > > ECC error, we're expected to return raw data anyway, so what's the
+> > > problem with clobbering the original data with a raw version of the
+> > > data?
 > > 
-> > The oobtest is still failing. I started to debug it, but didn't have
-> > enough time to make it work.
-> > 
-> > The nandbiterrs test is working, though I didn't manage to make the
-> > incremental test fail (writing the same pattern 10000 times without
-> > erasing the block between each write does not generate any bit flips) on
-> > my SLC NAND: MT29F2G08ABAEAH4.
-> > Can someone with another SLC NAND chip try it ?
-> > 
-> > > 
-> > > Also, is it time to yank / fixup some of these comments from
-> > > gpmi-nand.c?
-> > 
-> > I was asking myself the same question...
-> > 
-> > > 
-> > >  ...
-> > >  * FIXME: The following paragraph is incorrect, now that there exist
-> > >  * ecc.read_oob_raw and ecc.write_oob_raw functions.
-> > >  *
-> > >  * Since MTD assumes the OOB is not covered by ECC, there is no pair of
-> > >  * ECC-based/raw functions for reading or or writing the OOB. The fact that the
-> > >  * caller wants an ECC-based or raw view of the page is not propagated down to
-> > >  * this driver.
-> > >  */
-> > 
-> > I guess we can remove them.
-> > Huang can you confirm that the raw access functions introduced in this
-> > series are covering what's described here ?
-> I think we can remove these comments now.
+> > Well in the GPMI particular case (and more generally all NAND
+> > controllers which do not support subpage write) this is true, but if you
+> > can do subpage write, then you might have a bit flip in a specific
+> > chunk which is still empty, while other chunks are written and are
+> > expecting standard ECC correction.
+> > In this case you want to keep the 3 chunks with  standard ECC correction
+> > and only one in raw mode with 'erased page bitflips' fixed.
+> 
+> So the problem's not really with subpage write, exactly; the problem is
+> for drivers that support subpage write, we don't have a way to perform a
+> raw subpage read without touching the other subpages.
 
-Brian, do you want me to send this patch or are you taking care of it ?
-
+Yes, that's what I was trying to explain :-), and the only solution I
+see to address that is to have 2 buffers and then pick the most
+appropriate data for a given chunk.
+Do you think we should focus on support for "non subpage write"
+controllers first, and then find an alternative for these controllers
+if someone really needs it ?
 
 -- 
 Boris Brezillon, Free Electrons
