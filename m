@@ -1,19 +1,18 @@
-Received: from mail-pa0-f42.google.com ([209.85.220.42])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvlYE-0001yd-Eq
- for linux-mtd@lists.infradead.org; Tue, 02 Dec 2014 11:23:26 +0000
-Received: by mail-pa0-f42.google.com with SMTP id et14so13228542pad.15
- for <linux-mtd@lists.infradead.org>; Tue, 02 Dec 2014 03:23:04 -0800 (PST)
-From: Chunyan Zhang <zhang.chunyan@linaro.org>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Subject: [PATCH v2] mtd: test: Replace timeval with ktime_t in speedtest.c and
- torturetest.c
-Date: Tue,  2 Dec 2014 19:22:34 +0800
-Message-Id: <1417519354-25794-1-git-send-email-zhang.chunyan@linaro.org>
-In-Reply-To: <mtdtest>
-References: <mtdtest>
-Cc: john.stultz@linaro.org, linux-mtd@lists.infradead.org, arnd@linaro.org
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xvn4o-0003I6-0E
+ for linux-mtd@lists.infradead.org; Tue, 02 Dec 2014 13:01:13 +0000
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+To: Andrew Bresticker <abrestic@chromium.org>, Ionela Voinescu
+ <ionela.voinescu@imgtec.com>, James Hartley <james.hartley@imgtec.com>, Brian
+ Norris <computersforpeace@gmail.com>, <bpqw@micron.com>,
+ <arnaud.mouiche@invoxia.com>, <frankliu@micron.com>
+Subject: [PATCH 0/6] SPI NAND for everyone
+Date: Tue, 2 Dec 2014 09:58:50 -0300
+Message-ID: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Ezequiel Garcia <ezequiel.garcia@imgtec.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,115 +22,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch changes the 32-bit time type (timeval) to the 64-bit one
-(ktime_t), since 32-bit time types will break in the year 2038.
+During the discussion of Ionela Voinescu's patch to support GD5F SPI NAND
+devices [1], it was decided that a proper SPI NAND framework was needed
+to support the mt29f device (driver currently in staging area) and the new
+gd5f.
 
-I use ktime_t instead of timeval to define 'start' and 'finish'
-which are used to get the time for tow points.
+This patchset is a first attempt to address this.
 
-This patch also changes do_gettimeofday() to ktime_get() accordingly,
-since ktime_get returns a ktime_t, but do_gettimeofday returns a
-struct timeval, and the other reason is that ktime_get() uses
-the monotonic clock.
+The SPI NAND framework allows devices to register as NAND drivers. This is
+useful to take advantage of the bad block management code. Given the
+SPI NAND and the bare NAND commands are different, the SPI NAND framework
+implements its own .cmdfunc callback, which is in charge of calling
+device-specific hooks for each of the flash operations (read, program, erase,
+etc).
 
-Signed-off-by: Chunyan Zhang <zhang.chunyan@linaro.org>
----
-Changes since v1:
- - Add including <linux/ktime.h> in torturetest.c
----
- drivers/mtd/tests/speedtest.c   |   10 +++++-----
- drivers/mtd/tests/torturetest.c |   10 +++++-----
- 2 files changed, 10 insertions(+), 10 deletions(-)
+The SPI NAND framework does not deal with SPI transactions per-se. Instead,
+the SPI messages should be prepared by the users of the SPI NAND framework
+(those that implement the device-specific hooks).
 
-diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
-index 5ee9f70..322925f 100644
---- a/drivers/mtd/tests/speedtest.c
-+++ b/drivers/mtd/tests/speedtest.c
-@@ -22,6 +22,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/init.h>
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/err.h>
-@@ -49,7 +50,7 @@ static int pgsize;
- static int ebcnt;
- static int pgcnt;
- static int goodebcnt;
--static struct timeval start, finish;
-+static ktime_t start, finish;
- 
- static int multiblock_erase(int ebnum, int blocks)
- {
-@@ -168,12 +169,12 @@ static int read_eraseblock_by_2pages(int ebnum)
- 
- static inline void start_timing(void)
- {
--	do_gettimeofday(&start);
-+	start = ktime_get();
- }
- 
- static inline void stop_timing(void)
- {
--	do_gettimeofday(&finish);
-+	finish = ktime_get();
- }
- 
- static long calc_speed(void)
-@@ -181,8 +182,7 @@ static long calc_speed(void)
- 	uint64_t k;
- 	long ms;
- 
--	ms = (finish.tv_sec - start.tv_sec) * 1000 +
--	     (finish.tv_usec - start.tv_usec) / 1000;
-+	ms = ktime_to_ms(ktime_sub(finish, start));
- 	if (ms == 0)
- 		return 0;
- 	k = goodebcnt * (mtd->erasesize / 1024) * 1000;
-diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
-index eeab969..96da5d5 100644
---- a/drivers/mtd/tests/torturetest.c
-+++ b/drivers/mtd/tests/torturetest.c
-@@ -26,6 +26,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/init.h>
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/err.h>
-@@ -79,18 +80,18 @@ static unsigned char *check_buf;
- static unsigned int erase_cycles;
- 
- static int pgsize;
--static struct timeval start, finish;
-+static ktime_t start, finish;
- 
- static void report_corrupt(unsigned char *read, unsigned char *written);
- 
- static inline void start_timing(void)
- {
--	do_gettimeofday(&start);
-+	start = ktime_get();
- }
- 
- static inline void stop_timing(void)
- {
--	do_gettimeofday(&finish);
-+	finish = ktime_get();
- }
- 
- /*
-@@ -322,8 +323,7 @@ static int __init tort_init(void)
- 			long ms;
- 
- 			stop_timing();
--			ms = (finish.tv_sec - start.tv_sec) * 1000 +
--			     (finish.tv_usec - start.tv_usec) / 1000;
-+			ms = ktime_to_ms(ktime_sub(finish, start));
- 			pr_info("%08u erase cycles done, took %lu "
- 			       "milliseconds (%lu seconds)\n",
- 			       erase_cycles, ms, ms / 1000);
+The result can be expressed in the following hierarchy:
+
+    Userspace
+  ------------------
+    MTD
+  ------------------
+    NAND core
+  ------------------
+    SPI NAND core
+  ------------------
+    SPI NAND device
+  ------------------
+    SPI core
+  ------------------
+    SPI master
+  ------------------
+    Hardware
+
+Notice there was a previous attempt to propose an SPI NAND framework,
+by Sourav Poddar and Mona Anonuevo. We didn't find this proposal suitable,
+so this series is a completely new work.
+
+This series is based on v3.18-rc7. Tests have been performed with a Gigadevice
+GD5F 4 Gbit device, including nandtest runs and filesystem testing on top
+of UBI. I don't have MT29F devices yet, but the amount of changes required to
+support it should be fairly small.
+
+I don't intend this first proposal to be complete, but I hope it's a good
+starting point to support SPI NAND properly.
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2014-November/056364.html
+[2] https://lkml.org/lkml/2013/6/26/83
+
+Ezequiel Garcia (6):
+  mtd: nand: Check length of ID before reading bits per cell
+  mtd: nand: Add JEDEC manufacturer ID for Gigadevice
+  mtd: nand: Allow to set a per-device ECC layout
+  mtd: Introduce SPI NAND framework
+  mtd: spi-nand: Add devicetree binding
+  mtd: spi-nand: Support common SPI NAND devices
+
+ Documentation/devicetree/bindings/mtd/spi-nand.txt |  21 +
+ drivers/mtd/Kconfig                                |   2 +
+ drivers/mtd/Makefile                               |   1 +
+ drivers/mtd/nand/nand_base.c                       |   4 +-
+ drivers/mtd/nand/nand_ids.c                        |   1 +
+ drivers/mtd/spi-nand/Kconfig                       |  18 +
+ drivers/mtd/spi-nand/Makefile                      |   2 +
+ drivers/mtd/spi-nand/spi-nand-base.c               | 530 +++++++++++++++++++++
+ drivers/mtd/spi-nand/spi-nand-device.c             | 500 +++++++++++++++++++
+ include/linux/mtd/nand.h                           |   3 +
+ include/linux/mtd/spi-nand.h                       |  54 +++
+ 11 files changed, 1135 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+ create mode 100644 drivers/mtd/spi-nand/Kconfig
+ create mode 100644 drivers/mtd/spi-nand/Makefile
+ create mode 100644 drivers/mtd/spi-nand/spi-nand-base.c
+ create mode 100644 drivers/mtd/spi-nand/spi-nand-device.c
+ create mode 100644 include/linux/mtd/spi-nand.h
+
 -- 
-1.7.9.5
+2.1.0
