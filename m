@@ -1,21 +1,24 @@
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xw4M6-0008Mp-MX
- for linux-mtd@lists.infradead.org; Wed, 03 Dec 2014 07:28:11 +0000
-Received: by mail-wi0-f176.google.com with SMTP id ex7so30342678wid.15
- for <linux-mtd@lists.infradead.org>; Tue, 02 Dec 2014 23:27:47 -0800 (PST)
-From: Rob Ward <robert.ward114@googlemail.com>
-Date: Wed, 3 Dec 2014 07:27:36 +0000 (GMT)
-To: joern@lazybastard.org, dwmw2@infradead.org, computersforpeace@gmail.com
-Subject: Re: [PATCH V3] mtd: phram: Allow multiple phram devices on cmd
- line
-In-Reply-To: <alpine.DEB.2.10.1411091618160.7838@rob-thinkpad>
-Message-ID: <alpine.DEB.2.10.1412030722110.7838@rob-thinkpad>
-References: <alpine.DEB.2.10.1410211859030.7838@rob-thinkpad>
- <alpine.DEB.2.10.1411091618160.7838@rob-thinkpad>
+ id 1Xw6dJ-0007Pd-G5
+ for linux-mtd@lists.infradead.org; Wed, 03 Dec 2014 09:54:06 +0000
+From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
+To: "ezequiel.garcia@imgtec.com" <ezequiel.garcia@imgtec.com>, Brian Norris
+ <computersforpeace@gmail.com>, "abrestic@chromium.org"
+ <abrestic@chromium.org>, "ionela.voinescu@imgtec.com"
+ <ionela.voinescu@imgtec.com>, James Hartley <james.hartley@imgtec.com>,
+ "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH 6/6] mtd: spi-nand: Support common SPI NAND devices
+Date: Wed, 3 Dec 2014 09:52:17 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A77136EBD@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: =?gb2312?B?RnJhbmsgTGl1IMH1yLogKGZyYW5rbGl1KQ==?= <frankliu@micron.com>,
+ =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,152 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 900dbad52b2cc88b46c5716b1afd22698f6d83aa Mon Sep 17 00:00:00 2001
-From: Rob Ward <robert.ward114@googlemail.com>
-Date: Tue, 21 Oct 2014 17:46:53 +0100
-Subject: [PATCH] mtd: phram: Allow multiple phram devices on cmd line
-
-Allow the phram module the ability to create multiple phram mtd
-devices via the kernel command line.
-
-Currently the phram module only allows a single mtd device to be
-created via the kernel command line. This is due to the phram
-module having to store the values until it is initialised
-later. This storage is done using a single char[] meaning when
-the module_param_call is made the previous value is overidden.
-
-This change modifies the phram system to use a char[][] allowing
-multiple devices to be created.
-
-The array size if controlled using the new config option
-CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS that allows the maximum
-number of devices to be specified. Currently this option
-defaults to a value of 1 leaving the behaviour unchanged.
-
-If the array is full a message is printed to the console and the
-module_param_call returns.
-
-To test, in all cases an area of memory needs to be reserved via
-the command line e.g. memmap=10M$114M
-
-To test with phram build into the kernel on the command line add
-the following:
-
-phram.phram=alpha,114Mi,1Mi phram.phram=beta,115Mi,1Mi
-
-If CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is left as default i.e. 1
-then the first device, alpha will be created only. If the value of
-CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is increased to 2 or more then
-both alpha and beta will be created.
-
-To test phram built as a module insmod with the following arguments:
-
-phram=gamma,114Mi,1Mi phram=delta,115Mi,1Mi
-
-In this case two devices should be created.
-
-Signed-off-by: Rob Ward <robert.ward114@googlemail.com>
----
- drivers/mtd/devices/Kconfig | 12 ++++++++++++
- drivers/mtd/devices/phram.c | 39 ++++++++++++++++++++++++++++++++++-----
- 2 files changed, 46 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index c49d0b1..5fdc80b 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -136,6 +136,18 @@ config MTD_PHRAM
- 	  doesn't have access to, memory beyond the mem=xxx limit, nvram,
- 	  memory on the video card, etc...
- 
-+config MTD_PHRAM_MAX_CMDLINE_ARGS
-+	int "Max number of devices via Kernel command line"
-+	depends on MTD_PHRAM=y
-+	default 1
-+	help
-+	  Specify the number of phram devices that can be initialised
-+	  using the Kernel command line.
-+
-+	  This option is only applicable when phram is built into the
-+	  Kernel. When built as a module many devices can be specified
-+	  at module insmod.
-+
- config MTD_LART
- 	tristate "28F160xx flash driver for LART"
- 	depends on SA1100_LART
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index effd9a4..b42678e 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -212,9 +212,13 @@ static int phram_init_called;
-  * - phram.phram=<device>,<address>,<size> for built-in case
-  * We leave 64 bytes for the device name, 20 for the address and 20 for the
-  * size.
-+ *
-+ * The maximum number of devices supported is controlled by the
-+ * MTD_PHRAM_MAX_CMDLINE_ARGS config option
-+ *
-  * Example: phram.phram=rootfs,0xa0000000,512Mi
-  */
--static char phram_paramline[64 + 20 + 20];
-+static char phram_paramline[CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS][64 + 20 + 20];
- #endif
- 
- static int phram_setup(const char *val)
-@@ -271,6 +275,8 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
- #ifdef MODULE
- 	return phram_setup(val);
- #else
-+	int i;
-+
- 	/*
- 	 * If more parameters are later passed in via
- 	 * /sys/module/phram/parameters/phram
-@@ -290,9 +296,25 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
- 	 * phram_setup().
- 	 */
- 
--	if (strlen(val) >= sizeof(phram_paramline))
-+	if (strlen(val) >= sizeof(phram_paramline[0]))
- 		return -ENOSPC;
--	strcpy(phram_paramline, val);
-+
-+	/*
-+	 * Check if any space is left in the array. If no space
-+	 * is left then print warning and return 0
-+	 */
-+
-+	if (phram_paramline[ARRAY_SIZE(phram_paramline) - 1][0]) {
-+		pr_warn("exceeded limit via cmd_line - %s ignored", val);
-+		return 0;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(phram_paramline); i++) {
-+		if (!phram_paramline[i][0]) {
-+			strcpy(phram_paramline[i], val);
-+			break;
-+		}
-+	}
- 
- 	return 0;
- #endif
-@@ -307,8 +329,15 @@ static int __init init_phram(void)
- 	int ret = 0;
- 
- #ifndef MODULE
--	if (phram_paramline[0])
--		ret = phram_setup(phram_paramline);
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(phram_paramline); i++) {
-+		if (phram_paramline[i][0]) {
-+			ret = phram_setup(phram_paramline[i]);
-+			if (ret)
-+				break;
-+		}
-+	}
- 	phram_init_called = 1;
- #endif
- 
--- 
-2.0.2
+SGkgRXplcXVpZWwsIEJyaWFuDQoNCj4gKw0KPiArc3RhdGljIHN0cnVjdCBuYW5kX2VjY2xheW91
+dCBlY2NfbGF5b3V0X2dkNWYgPSB7DQo+ICsJLmVjY2J5dGVzID0gMTI4LA0KPiArCS5lY2Nwb3Mg
+PSB7DQo+ICsJCTEyOCwgMTI5LCAxMzAsIDEzMSwgMTMyLCAxMzMsIDEzNCwgMTM1LA0KPiArCQkx
+MzYsIDEzNywgMTM4LCAxMzksIDE0MCwgMTQxLCAxNDIsIDE0MywNCj4gKwkJMTQ0LCAxNDUsIDE0
+NiwgMTQ3LCAxNDgsIDE0OSwgMTUwLCAxNTEsDQo+ICsJCTE1MiwgMTUzLCAxNTQsIDE1NSwgMTU2
+LCAxNTcsIDE1OCwgMTU5LA0KPiArCQkxNjAsIDE2MSwgMTYyLCAxNjMsIDE2NCwgMTY1LCAxNjYs
+IDE2NywNCj4gKwkJMTY4LCAxNjksIDE3MCwgMTcxLCAxNzIsIDE3MywgMTc0LCAxNzUsDQo+ICsJ
+CTE3NiwgMTc3LCAxNzgsIDE3OSwgMTgwLCAxODEsIDE4MiwgMTgzLA0KPiArCQkxODQsIDE4NSwg
+MTg2LCAxODcsIDE4OCwgMTg5LCAxOTAsIDE5MSwNCj4gKwkJMTkyLCAxOTMsIDE5NCwgMTk1LCAx
+OTYsIDE5NywgMTk4LCAxOTksDQo+ICsJCTIwMCwgMjAxLCAyMDIsIDIwMywgMjA0LCAyMDUsIDIw
+NiwgMjA3LA0KPiArCQkyMDgsIDIwOSwgMjEwLCAyMTEsIDIxMiwgMjEzLCAyMTQsIDIxNSwNCj4g
+KwkJMjE2LCAyMTcsIDIxOCwgMjE5LCAyMjAsIDIyMSwgMjIyLCAyMjMsDQo+ICsJCTIyNCwgMjI1
+LCAyMjYsIDIyNywgMjI4LCAyMjksIDIzMCwgMjMxLA0KPiArCQkyMzIsIDIzMywgMjM0LCAyMzUs
+IDIzNiwgMjM3LCAyMzgsIDIzOSwNCj4gKwkJMjQwLCAyNDEsIDI0MiwgMjQzLCAyNDQsIDI0NSwg
+MjQ2LCAyNDcsDQo+ICsJCTI0OCwgMjQ5LCAyNTAsIDI1MSwgMjUyLCAyNTMsIDI1NCwgMjU1DQo+
+ICsJfSwNCj4gKwkub29iZnJlZSA9IHsgezEsIDEyN30gfQ0KPiArfTsNCj4gKw0KPiArc3RhdGlj
+IHN0cnVjdCBuYW5kX2VjY2xheW91dCBlY2NfbGF5b3V0X210MjlmID0gew0KPiArCS5lY2NieXRl
+cyA9IDMyLA0KPiArCS5lY2Nwb3MgPSB7DQo+ICsJCTgsIDksIDEwLCAxMSwgMTIsIDEzLCAxNCwg
+MTUsDQo+ICsJCTI0LCAyNSwgMjYsIDI3LCAyOCwgMjksIDMwLCAzMSwNCj4gKwkJNDAsIDQxLCA0
+MiwgNDMsIDQ0LCA0NSwgNDYsIDQ3LA0KPiArCQk1NiwgNTcsIDU4LCA1OSwgNjAsIDYxLCA2Miwg
+NjMsDQo+ICsJIH0sDQo+ICt9Ow0KPiArDQoNCkFzIHRoZXkgYXJlIHVzaW5nIE9uIGRpZSBlY2Ms
+IG9vYiBsYXlvdXQgZGVmaW5pdGlvbiBpcyBkZWZpbmVkIGJ5IFNQSSBOQU5EIHZlbmRvcnMuIA0K
+UGFydCBvZiBvb2IgaXMgcHJvdGVjdGVkIGJ5IGVjYywgYW5kIHRoZSByZXN0IGlzIHVucHJvdGVj
+dC4NCkkgYW0gdGhpbmtpbmcgaWYgd2UgY2FuIGRlZmluZSBhIHZhcmlhYmxlIHRvIGluZGljYXRl
+IHRoZSByYW5nZSwgd2hhdCBpcyBwcm90ZWN0LCANCmFuZCB3aGF0IGlzIHVucHJvdGVjdC4gDQpU
+aGlzIHdvdWxkIGJlIHZlcnkgdXNlZnVsIGZvciBmaWxlc3lzdGVtLCB3aGljaCB3YW50IHRvIHdy
+aXRlIGRhdGEgaW50byBPT0IuDQoNCkZvciBleGFtcGxlLCBKZmZzMiBwcm9ncmFtIGNsZWFuIG1h
+cmtlciBkYXRhIHRvIG9vYiBmaXJzdCB3aGVuIGZvcm1hdCBvcGVyYXRpb24sIA0KdGhlbiB3aWxs
+IHByb2dyYW0gbWFpbiBkYXRhIGludG8gTkFORCBmbGFzaCBtYWluIGFyZWEgd2hlbiBub3JtYWwg
+d3JpdGUgb3BlcmF0aW9uLiANClRoYXQgbWVhbiBKRkZTMiBjYW4gb25seSBzdG9yZSBjbGVhbiBt
+YXJrZXIgaW50byB1bnByb3RlY3QgYXJlYSBvZiBvb2IuIA0KQnV0IGZvciBZQUZGUzIsIGl0IHBy
+b2dyYW0gbWFpbiBkYXRhIGFuZCBzcGFyZSBhcmVhIGRhdGEgdG9nZXRoZXIgaW50byBOQU5EIGZs
+YXNoLCB0aGVuDQpZQUZGUzIgY2FuIHN0b3JlIGRhdGEgaW50byBwcm90ZWN0IGFyZWEgb2YgT09C
+Lg0KSG93IGRvIHlvdSB0aGluaz8NCg0KVGhhbmtzDQogDQoNCg0KDQoNCg0K
