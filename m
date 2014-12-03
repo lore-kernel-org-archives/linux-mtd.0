@@ -1,20 +1,21 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvznP-00039X-0j
- for linux-mtd@lists.infradead.org; Wed, 03 Dec 2014 02:36:03 +0000
-Message-ID: <547E7357.9040606@cn.fujitsu.com>
-Date: Wed, 3 Dec 2014 10:20:07 +0800
-From: Gu Zheng <guz.fnst@cn.fujitsu.com>
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xw4M6-0008Mp-MX
+ for linux-mtd@lists.infradead.org; Wed, 03 Dec 2014 07:28:11 +0000
+Received: by mail-wi0-f176.google.com with SMTP id ex7so30342678wid.15
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Dec 2014 23:27:47 -0800 (PST)
+From: Rob Ward <robert.ward114@googlemail.com>
+Date: Wed, 3 Dec 2014 07:27:36 +0000 (GMT)
+To: joern@lazybastard.org, dwmw2@infradead.org, computersforpeace@gmail.com
+Subject: Re: [PATCH V3] mtd: phram: Allow multiple phram devices on cmd
+ line
+In-Reply-To: <alpine.DEB.2.10.1411091618160.7838@rob-thinkpad>
+Message-ID: <alpine.DEB.2.10.1412030722110.7838@rob-thinkpad>
+References: <alpine.DEB.2.10.1410211859030.7838@rob-thinkpad>
+ <alpine.DEB.2.10.1411091618160.7838@rob-thinkpad>
 MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>
-Subject: [RESEND PATCH 2/3] mtd: move the enum definition out of struct
- mtdblk_dev
-References: <1417052709-22026-1-git-send-email-guz.fnst@cn.fujitsu.com>
-In-Reply-To: <1417052709-22026-1-git-send-email-guz.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Gu Zheng <guz.fnst@cn.fujitsu.com>, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +25,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move the enum definition out of struct mtdblk_dev, just cleanup.
+>From 900dbad52b2cc88b46c5716b1afd22698f6d83aa Mon Sep 17 00:00:00 2001
+From: Rob Ward <robert.ward114@googlemail.com>
+Date: Tue, 21 Oct 2014 17:46:53 +0100
+Subject: [PATCH] mtd: phram: Allow multiple phram devices on cmd line
 
-Signed-off-by: Gu Zheng <guz.fnst@cn.fujitsu.com>
+Allow the phram module the ability to create multiple phram mtd
+devices via the kernel command line.
+
+Currently the phram module only allows a single mtd device to be
+created via the kernel command line. This is due to the phram
+module having to store the values until it is initialised
+later. This storage is done using a single char[] meaning when
+the module_param_call is made the previous value is overidden.
+
+This change modifies the phram system to use a char[][] allowing
+multiple devices to be created.
+
+The array size if controlled using the new config option
+CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS that allows the maximum
+number of devices to be specified. Currently this option
+defaults to a value of 1 leaving the behaviour unchanged.
+
+If the array is full a message is printed to the console and the
+module_param_call returns.
+
+To test, in all cases an area of memory needs to be reserved via
+the command line e.g. memmap=10M$114M
+
+To test with phram build into the kernel on the command line add
+the following:
+
+phram.phram=alpha,114Mi,1Mi phram.phram=beta,115Mi,1Mi
+
+If CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is left as default i.e. 1
+then the first device, alpha will be created only. If the value of
+CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS is increased to 2 or more then
+both alpha and beta will be created.
+
+To test phram built as a module insmod with the following arguments:
+
+phram=gamma,114Mi,1Mi phram=delta,115Mi,1Mi
+
+In this case two devices should be created.
+
+Signed-off-by: Rob Ward <robert.ward114@googlemail.com>
 ---
- drivers/mtd/mtdblock.c |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
+ drivers/mtd/devices/Kconfig | 12 ++++++++++++
+ drivers/mtd/devices/phram.c | 39 ++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 46 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index bb4c14f..acc00f1 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -34,6 +34,11 @@
- #include <linux/mutex.h>
- #include <linux/major.h>
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index c49d0b1..5fdc80b 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -136,6 +136,18 @@ config MTD_PHRAM
+ 	  doesn't have access to, memory beyond the mem=xxx limit, nvram,
+ 	  memory on the video card, etc...
  
-+enum CACHE_STATES {
-+	STATE_EMPTY,
-+	STATE_CLEAN,
-+	STATE_DIRTY
-+};
++config MTD_PHRAM_MAX_CMDLINE_ARGS
++	int "Max number of devices via Kernel command line"
++	depends on MTD_PHRAM=y
++	default 1
++	help
++	  Specify the number of phram devices that can be initialised
++	  using the Kernel command line.
++
++	  This option is only applicable when phram is built into the
++	  Kernel. When built as a module many devices can be specified
++	  at module insmod.
++
+ config MTD_LART
+ 	tristate "28F160xx flash driver for LART"
+ 	depends on SA1100_LART
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index effd9a4..b42678e 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -212,9 +212,13 @@ static int phram_init_called;
+  * - phram.phram=<device>,<address>,<size> for built-in case
+  * We leave 64 bytes for the device name, 20 for the address and 20 for the
+  * size.
++ *
++ * The maximum number of devices supported is controlled by the
++ * MTD_PHRAM_MAX_CMDLINE_ARGS config option
++ *
+  * Example: phram.phram=rootfs,0xa0000000,512Mi
+  */
+-static char phram_paramline[64 + 20 + 20];
++static char phram_paramline[CONFIG_MTD_PHRAM_MAX_CMDLINE_ARGS][64 + 20 + 20];
+ #endif
  
- struct mtdblk_dev {
- 	struct mtd_blktrans_dev mbd;
-@@ -42,7 +47,7 @@ struct mtdblk_dev {
- 	unsigned char *cache_data;
- 	unsigned long cache_offset;
- 	unsigned int cache_size;
--	enum { STATE_EMPTY, STATE_CLEAN, STATE_DIRTY } cache_state;
-+	enum CACHE_STATES cache_state;
- };
+ static int phram_setup(const char *val)
+@@ -271,6 +275,8 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
+ #ifdef MODULE
+ 	return phram_setup(val);
+ #else
++	int i;
++
+ 	/*
+ 	 * If more parameters are later passed in via
+ 	 * /sys/module/phram/parameters/phram
+@@ -290,9 +296,25 @@ static int phram_param_call(const char *val, struct kernel_param *kp)
+ 	 * phram_setup().
+ 	 */
  
- /*
+-	if (strlen(val) >= sizeof(phram_paramline))
++	if (strlen(val) >= sizeof(phram_paramline[0]))
+ 		return -ENOSPC;
+-	strcpy(phram_paramline, val);
++
++	/*
++	 * Check if any space is left in the array. If no space
++	 * is left then print warning and return 0
++	 */
++
++	if (phram_paramline[ARRAY_SIZE(phram_paramline) - 1][0]) {
++		pr_warn("exceeded limit via cmd_line - %s ignored", val);
++		return 0;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(phram_paramline); i++) {
++		if (!phram_paramline[i][0]) {
++			strcpy(phram_paramline[i], val);
++			break;
++		}
++	}
+ 
+ 	return 0;
+ #endif
+@@ -307,8 +329,15 @@ static int __init init_phram(void)
+ 	int ret = 0;
+ 
+ #ifndef MODULE
+-	if (phram_paramline[0])
+-		ret = phram_setup(phram_paramline);
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(phram_paramline); i++) {
++		if (phram_paramline[i][0]) {
++			ret = phram_setup(phram_paramline[i]);
++			if (ret)
++				break;
++		}
++	}
+ 	phram_init_called = 1;
+ #endif
+ 
 -- 
-1.7.7
-
-.
+2.0.2
