@@ -1,26 +1,27 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xw8kT-0003S5-3t
- for linux-mtd@lists.infradead.org; Wed, 03 Dec 2014 12:09:37 +0000
-From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
-To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>, Brian Norris
- <computersforpeace@gmail.com>, "abrestic@chromium.org"
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XwGPM-0006w2-1k
+ for linux-mtd@lists.infradead.org; Wed, 03 Dec 2014 20:20:21 +0000
+Message-ID: <547F6FFE.6070000@imgtec.com>
+Date: Wed, 3 Dec 2014 17:18:06 -0300
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+MIME-Version: 1.0
+To: =?gbk?Q?=22Qi_Wang_=CD=F5=C6=F0_=28qiwang=29=22?= <qiwang@micron.com>,
+ Brian Norris <computersforpeace@gmail.com>, "abrestic@chromium.org"
  <abrestic@chromium.org>, "ionela.voinescu@imgtec.com"
  <ionela.voinescu@imgtec.com>, James Hartley <james.hartley@imgtec.com>,
  "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH 6/6] mtd: spi-nand: Support common SPI NAND devices
-Date: Wed, 3 Dec 2014 12:08:54 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A77136F67@NTXXIAMBX02.xacn.micron.com>
+Subject: Re: [PATCH 6/6] mtd: spi-nand: Support common SPI NAND devices
 References: <71CF8D7F32C5C24C9CD1D0E02D52498A77136EBD@NTXXIAMBX02.xacn.micron.com>
  <547EF06A.4020706@imgtec.com>
-In-Reply-To: <547EF06A.4020706@imgtec.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: =?gb2312?B?RnJhbmsgTGl1IMH1yLogKGZyYW5rbGl1KQ==?= <frankliu@micron.com>,
- =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ <71CF8D7F32C5C24C9CD1D0E02D52498A77136F67@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A77136F67@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+Cc: =?gbk?Q?=22Frank_Liu_=C1=F5=C8=BA_=28frankliu=29=22?=
+ <frankliu@micron.com>,
+ =?gbk?Q?=22Peter_Pan_=C5=CB=B6=B0_=28peterp?= =?gbk?Q?andong=29=22?=
  <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,69 +32,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMTIvMDMvMjAxNCAwNzoxNCBBTSwgRXplcXVpZWwgR2FyY2lhIHdyb3RlOg0KPiANCj4gT24g
-MTIvMDMvMjAxNCAwNjo1MiBBTSwgUWkgV2FuZyDN9cbwIChxaXdhbmcpIHdyb3RlOg0KPiA+PiAr
-DQo+ID4+ICtzdGF0aWMgc3RydWN0IG5hbmRfZWNjbGF5b3V0IGVjY19sYXlvdXRfZ2Q1ZiA9IHsN
-Cj4gPj4gKwkuZWNjYnl0ZXMgPSAxMjgsDQo+ID4+ICsJLmVjY3BvcyA9IHsNCj4gPj4gKwkJMTI4
-LCAxMjksIDEzMCwgMTMxLCAxMzIsIDEzMywgMTM0LCAxMzUsDQo+ID4+ICsJCTEzNiwgMTM3LCAx
-MzgsIDEzOSwgMTQwLCAxNDEsIDE0MiwgMTQzLA0KPiA+PiArCQkxNDQsIDE0NSwgMTQ2LCAxNDcs
-IDE0OCwgMTQ5LCAxNTAsIDE1MSwNCj4gPj4gKwkJMTUyLCAxNTMsIDE1NCwgMTU1LCAxNTYsIDE1
-NywgMTU4LCAxNTksDQo+ID4+ICsJCTE2MCwgMTYxLCAxNjIsIDE2MywgMTY0LCAxNjUsIDE2Niwg
-MTY3LA0KPiA+PiArCQkxNjgsIDE2OSwgMTcwLCAxNzEsIDE3MiwgMTczLCAxNzQsIDE3NSwNCj4g
-Pj4gKwkJMTc2LCAxNzcsIDE3OCwgMTc5LCAxODAsIDE4MSwgMTgyLCAxODMsDQo+ID4+ICsJCTE4
-NCwgMTg1LCAxODYsIDE4NywgMTg4LCAxODksIDE5MCwgMTkxLA0KPiA+PiArCQkxOTIsIDE5Mywg
-MTk0LCAxOTUsIDE5NiwgMTk3LCAxOTgsIDE5OSwNCj4gPj4gKwkJMjAwLCAyMDEsIDIwMiwgMjAz
-LCAyMDQsIDIwNSwgMjA2LCAyMDcsDQo+ID4+ICsJCTIwOCwgMjA5LCAyMTAsIDIxMSwgMjEyLCAy
-MTMsIDIxNCwgMjE1LA0KPiA+PiArCQkyMTYsIDIxNywgMjE4LCAyMTksIDIyMCwgMjIxLCAyMjIs
-IDIyMywNCj4gPj4gKwkJMjI0LCAyMjUsIDIyNiwgMjI3LCAyMjgsIDIyOSwgMjMwLCAyMzEsDQo+
-ID4+ICsJCTIzMiwgMjMzLCAyMzQsIDIzNSwgMjM2LCAyMzcsIDIzOCwgMjM5LA0KPiA+PiArCQky
-NDAsIDI0MSwgMjQyLCAyNDMsIDI0NCwgMjQ1LCAyNDYsIDI0NywNCj4gPj4gKwkJMjQ4LCAyNDks
-IDI1MCwgMjUxLCAyNTIsIDI1MywgMjU0LCAyNTUNCj4gPj4gKwl9LA0KPiA+PiArCS5vb2JmcmVl
-ID0geyB7MSwgMTI3fSB9DQo+ID4+ICt9Ow0KPiA+PiArDQo+ID4+ICtzdGF0aWMgc3RydWN0IG5h
-bmRfZWNjbGF5b3V0IGVjY19sYXlvdXRfbXQyOWYgPSB7DQo+ID4+ICsJLmVjY2J5dGVzID0gMzIs
-DQo+ID4+ICsJLmVjY3BvcyA9IHsNCj4gPj4gKwkJOCwgOSwgMTAsIDExLCAxMiwgMTMsIDE0LCAx
-NSwNCj4gPj4gKwkJMjQsIDI1LCAyNiwgMjcsIDI4LCAyOSwgMzAsIDMxLA0KPiA+PiArCQk0MCwg
-NDEsIDQyLCA0MywgNDQsIDQ1LCA0NiwgNDcsDQo+ID4+ICsJCTU2LCA1NywgNTgsIDU5LCA2MCwg
-NjEsIDYyLCA2MywNCj4gPj4gKwkgfSwNCj4gPj4gK307DQo+ID4+ICsNCj4gPg0KPiA+IEFzIHRo
-ZXkgYXJlIHVzaW5nIE9uIGRpZSBlY2MsIG9vYiBsYXlvdXQgZGVmaW5pdGlvbiBpcyBkZWZpbmVk
-IGJ5IFNQSQ0KPiBOQU5EIHZlbmRvcnMuDQo+ID4gUGFydCBvZiBvb2IgaXMgcHJvdGVjdGVkIGJ5
-IGVjYywgYW5kIHRoZSByZXN0IGlzIHVucHJvdGVjdC4NCj4gPiBJIGFtIHRoaW5raW5nIGlmIHdl
-IGNhbiBkZWZpbmUgYSB2YXJpYWJsZSB0byBpbmRpY2F0ZSB0aGUgcmFuZ2UsIHdoYXQNCj4gPiBp
-cyBwcm90ZWN0LCBhbmQgd2hhdCBpcyB1bnByb3RlY3QuDQo+IA0KPiBZZXMsIHdlIHNob3VsZCBh
-ZGQgdGhlIGZyZWUgb3V0LW9mLWJhbmQgcmVnaW9ucy4NCg0KU29ycnksIHByb2JhYmx5IEkgZGlk
-bid0IGV4cGxhaW4gY2xlYXJseS4gDQpJIG1lYW4gaWYgd2UgY2FuIGRlZmluZSBvb2IgZnJlZSBh
-cmVhIGxpa2UgdGhpczoNCi5vb2JmcmVlX3VucHJvdGVjdCA9IHsgezEsIDYzfSB9LA0KLm9vYmZy
-ZWVfcHJvdGVjdCA9IHsgezY0LCAxMjd9IH0sDQpUbyBkaWZmZXJlbnRpYXRlIHRoZSB3aGljaCBP
-T0IgYXJlYSBpcyBwcm90ZWN0ZWQsIHdoaWNoIGlzbid0IHByb3RlY3RlZC4NCg0KPiA+IFRoaXMg
-d291bGQgYmUgdmVyeSB1c2VmdWwgZm9yIGZpbGVzeXN0ZW0sIHdoaWNoIHdhbnQgdG8gd3JpdGUg
-ZGF0YSBpbnRvDQo+IE9PQi4NCj4gPg0KPiA+IEZvciBleGFtcGxlLCBKZmZzMiBwcm9ncmFtIGNs
-ZWFuIG1hcmtlciBkYXRhIHRvIG9vYiBmaXJzdCB3aGVuIGZvcm1hdA0KPiA+IG9wZXJhdGlvbiwg
-dGhlbiB3aWxsIHByb2dyYW0gbWFpbiBkYXRhIGludG8gTkFORCBmbGFzaCBtYWluIGFyZWEgd2hl
-bg0KPiBub3JtYWwgd3JpdGUgb3BlcmF0aW9uLg0KPiA+IFRoYXQgbWVhbiBKRkZTMiBjYW4gb25s
-eSBzdG9yZSBjbGVhbiBtYXJrZXIgaW50byB1bnByb3RlY3QgYXJlYSBvZiBvb2IuDQo+IA0KPiBZ
-ZWFoLCBidXQgYXJlIHRoZXNlIGRldmljZXMgY2FwYWJsZSBvZiB3cml0aW5nIHRvIHRoZSBPT0Ig
-cmVnaW9uIG9ubHkNCj4gKHdpdGhvdXQgbWVzc2luZyB3aXRoIHRoZSBkYXRhKSA/DQoNClllcywg
-U1BJIE5BTkQgaGF2ZSB0aGlzIGNhcGFiaWxpdHkuIFNQSSBOQU5EIGFsc28gaGF2ZSBkZWZpbml0
-aW9uIGZvciBOT1AsDQpqdXN0IHNpbWlsYXIgd2l0aCBQYXJhbGxlbCBOQU5ELCBmaWxsIDB4RkYg
-dG8gdGhlIGFyZWEgdGhhdCBkb24ndCB3YW50IHRvIA0Kd3JpdGUgYW55dGhpbmcgaXMgb2suDQoN
-Cj4gSWYgSSB1bmRlcnN0YW5kIHRoaXMgY29ycmVjdGx5LCBzdXBwb3J0aW5nIEpGRlMyIHdvdWxk
-IG1lYW4gaW1wbGVtZW50aW5nIGENCj4gc29ydCBvZiByZWFkLW1vZGlmeS13cml0ZSBvcGVyYXRp
-b24gdG8gYmUgYWJsZSB0byB3cml0ZSB0aGUgT09CIHdpdGhvdXQNCj4gdG91Y2hpbmcgdGhlIG1h
-aW4gYXJlYSwgYW5kIHZpY2V2ZXJzYS4NCg0KWWVzLCBqdXN0IGxpa2UgdGhpcyBvcGVyYXRpb24s
-IGJ1dCBKRkZTMiB3cml0ZSBPT0IgYXJlYSBmaXJzdCwgdGhlbiBtYWluIGFyZWEuDQpTbyBKRkZT
-MiBzaG91bGQgd3JpdGUgZGF0YSBpbnRvIHVucHJvdGVjdCBhcmVhIGluIE9PQiwgdGhlbiB3cml0
-ZSBtYWluIGRhdGEsDQpSaWdodD8gQmVjYXVzZSBpZiB3cml0ZSBkYXRhIGludG8gT09CIHByb3Rl
-Y3QgYXJlYSwgb24gZGllIGVjYyB3aWxsIGdlbmVyYXRlDQphIGVjYyBjb2RlIGFuZCB3cml0ZSBp
-bnRvIGVjY3BvcyBhcmVhLiBXaGVuIEpGRlMyIHdyaXRlIG1haW4gZGF0YSwgYSBuZXcgZWNjIA0K
-Y29kZSB3aWxsIGdlbmVyYXRlLCBhbmQgd2lsbCBjYXVzZSBjb25mbGljdCB3aXRoIG9sZCBvbmUu
-ICANCg0KPiBJJ2Qgc2F5IEpGRlMyIGlzIG5vdCB0aGUgdGFyZ2V0IGZpbGVzeXN0ZW0gZm9yIHRo
-ZXNlIFNQSSBOQU5EIGRldmljZXMsIGFuZA0KPiBVQkktYmFzZWQgZmlsZXN5c3RlbXMgc2hvdWxk
-IGJlIHVzZWQgaW5zdGVhZCAoVUJJIGRvbid0IHVzZSBPT0IpLg0KPiANCj4gPiBCdXQgZm9yIFlB
-RkZTMiwgaXQgcHJvZ3JhbSBtYWluIGRhdGEgYW5kIHNwYXJlIGFyZWEgZGF0YSB0b2dldGhlciBp
-bnRvDQo+ID4gTkFORCBmbGFzaCwgdGhlbg0KPiA+IFlBRkZTMiBjYW4gc3RvcmUgZGF0YSBpbnRv
-IHByb3RlY3QgYXJlYSBvZiBPT0IuDQo+IA0KPiBXZWxsLCBmcmFua2x5LCBJJ20gbm90IHRvbyB3
-b3JyaWVkIGFib3V0IFlBRkZTMi4gSXQgd2FzIG5ldmVyIG1haW5saW5lZCwNCj4gYW5kIHByb2Jh
-Ymx5IGl0IHdpbGwgbmV2ZXIgYmUuDQo+IA0KPiBEbyB5b3UgaGF2ZSBhbnkgcmVhc29uIGZvciAq
-bm90KiB1c2luZyBhIFVCSS1iYXNlZCBGUz8NCg0KSSBhZ3JlZSB3aXRoIHlvdSwgSSBqdXN0IGNv
-bnNpZGVyZWQgc29tZSBsZWdhY3kgdXNlcnMgY3VzdG9tZXIgc3RpbGwgdXNpbmcgSkZGUzIuDQoN
-ClRoYW5rcyAgIA0K
+
+
+On 12/03/2014 09:08 AM, Qi Wang ÍõÆð (qiwang) wrote:
+[..]
+>>> For example, Jffs2 program clean marker data to oob first when format
+>>> operation, then will program main data into NAND flash main area when
+>> normal write operation.
+>>> That mean JFFS2 can only store clean marker into unprotect area of oob.
+>>
+>> Yeah, but are these devices capable of writing to the OOB region only
+>> (without messing with the data) ?
+> 
+> Yes, SPI NAND have this capability. SPI NAND also have definition for NOP,
+> just similar with Parallel NAND, fill 0xFF to the area that don't want to 
+> write anything is ok.
+> 
+
+Which SPI NAND command allows to do this?
+
+AFAICS, you need to issue the following sequence to be able to write to
+only the main area, or only the OOB area:
+
+1. Read page to cache
+2. Write to cache
+3. Write page from cache
+
+So it doesn't seem to support it natively, but through a workaround.
+Doesn't this hurt JFFS2 performance a lot?
+
+[..]
+>>
+>> Do you have any reason for *not* using a UBI-based FS?
+> 
+> I agree with you, I just considered some legacy users customer still using JFFS2.
+> 
+
+Hm.. right. It's important to support legacy users, but I'd say it's not
+our primary goal.
+
+-- 
+Ezequiel
