@@ -1,16 +1,16 @@
-Received: from mail-qa0-x22c.google.com ([2607:f8b0:400d:c00::22c])
+Received: from mail-qc0-x234.google.com ([2607:f8b0:400d:c01::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xwejp-0005Zo-1S
- for linux-mtd@lists.infradead.org; Thu, 04 Dec 2014 22:19:06 +0000
-Received: by mail-qa0-f44.google.com with SMTP id i13so12440059qae.17
- for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 14:18:42 -0800 (PST)
+ id 1Xwel3-0005rI-I6
+ for linux-mtd@lists.infradead.org; Thu, 04 Dec 2014 22:20:23 +0000
+Received: by mail-qc0-f180.google.com with SMTP id i8so13353532qcq.39
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 14:20:00 -0800 (PST)
 From: Fabio Estevam <festevam@gmail.com>
 To: computersforpeace@gmail.com
 Subject: [RFC] mtd: fsl-quadspi: Allow driver to probe
-Date: Thu,  4 Dec 2014 20:18:18 -0200
-Message-Id: <1417731498-13962-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
- linux-mtd@lists.infradead.org
+Date: Thu,  4 Dec 2014 20:19:51 -0200
+Message-Id: <1417731591-14017-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
+ shijie8@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
