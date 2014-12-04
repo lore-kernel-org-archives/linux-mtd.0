@@ -1,16 +1,16 @@
-Received: from mail-yk0-f169.google.com ([209.85.160.169])
+Received: from mail-yk0-f173.google.com ([209.85.160.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XwTYK-00041N-PC
- for linux-mtd@lists.infradead.org; Thu, 04 Dec 2014 10:22:30 +0000
-Received: by mail-yk0-f169.google.com with SMTP id 79so7813979ykr.14
- for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 02:22:06 -0800 (PST)
+ id 1XwTYM-00045Y-Q0
+ for linux-mtd@lists.infradead.org; Thu, 04 Dec 2014 10:22:31 +0000
+Received: by mail-yk0-f173.google.com with SMTP id 19so7798708ykq.32
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 02:22:09 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 RESEND 02/11] mtd: st_spi_fsm: Obtain and use EMI clock if
- provided
-Date: Thu,  4 Dec 2014 10:21:43 +0000
-Message-Id: <1417688512-7644-3-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v2 RESEND 03/11] mtd: st_spi_fsm: Fix [-Wsign-compare] build
+ warning
+Date: Thu,  4 Dec 2014 10:21:44 +0000
+Message-Id: <1417688512-7644-4-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1417688512-7644-1-git-send-email-lee.jones@linaro.org>
 References: <1417688512-7644-1-git-send-email-lee.jones@linaro.org>
 Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
@@ -24,106 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ST's Common Clk Framework is now available. This patch ensures the FSM
-makes use of it by obtaining and enabling the EMI clock if provided. If
-system fails to provide the EMI clock FSM uses its original default
-rate.
+drivers/mtd/devices/st_spi_fsm.c:1647:17:
+  warning: comparison between signed and unsigned integer expressions
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 45 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 43 insertions(+), 2 deletions(-)
+ drivers/mtd/devices/st_spi_fsm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 6e4d3bfe..ddb659f 100644
+index ddb659f..35eb475 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -24,6 +24,7 @@
- #include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/of.h>
-+#include <linux/clk.h>
+@@ -1586,11 +1586,11 @@ static int stfsm_write(struct stfsm *fsm, const uint8_t *buf,
+ 	uint32_t size_lb;
+ 	uint32_t size_mop;
+ 	uint32_t tmp[4];
++	uint32_t i;
+ 	uint32_t page_buf[FLASH_PAGESIZE_32];
+ 	uint8_t *t = (uint8_t *)&tmp;
+ 	const uint8_t *p;
+ 	int ret;
+-	int i;
  
- #include "serial_flash_cmds.h"
+ 	dev_dbg(fsm->dev, "writing %d bytes to 0x%08x\n", size, offset);
  
-@@ -262,6 +263,7 @@ struct stfsm {
- 	struct mtd_info		mtd;
- 	struct mutex		lock;
- 	struct flash_info       *info;
-+	struct clk              *clk;
- 
- 	uint32_t                configuration;
- 	uint32_t                fifo_dir_delay;
-@@ -1906,8 +1908,13 @@ static void stfsm_set_freq(struct stfsm *fsm, uint32_t spi_freq)
- 	uint32_t emi_freq;
- 	uint32_t clk_div;
- 
--	/* TODO: Make this dynamic */
--	emi_freq = STFSM_DEFAULT_EMI_FREQ;
-+	if (!fsm->clk) {
-+		dev_warn(fsm->dev,
-+			 "No EMI clock available. Using default 100MHz.\n");
-+
-+		emi_freq = STFSM_DEFAULT_EMI_FREQ;
-+	} else
-+		emi_freq = clk_get_rate(fsm->clk);
- 
- 	/*
- 	 * Calculate clk_div - values between 2 and 128
-@@ -2057,6 +2064,15 @@ static int stfsm_probe(struct platform_device *pdev)
- 		return PTR_ERR(fsm->base);
- 	}
- 
-+	fsm->clk = devm_clk_get(&pdev->dev, "emi_clk");
-+	if (IS_ERR(fsm->clk)) {
-+		dev_warn(fsm->dev, "Couldn't find EMI clock.\n");
-+		fsm->clk = NULL;
-+	} else if (clk_prepare_enable(fsm->clk)) {
-+		dev_warn(fsm->dev, "Failed to enable EMI clock.\n");
-+		fsm->clk = NULL;
-+	}
-+
- 	mutex_init(&fsm->lock);
- 
- 	ret = stfsm_init(fsm);
-@@ -2121,6 +2137,30 @@ static int stfsm_remove(struct platform_device *pdev)
- 	return mtd_device_unregister(&fsm->mtd);
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int stfsmfsm_suspend(struct device *dev)
-+{
-+	struct stfsm *fsm = dev_get_drvdata(dev);
-+
-+	if (fsm->clk)
-+		clk_disable_unprepare(fsm->clk);
-+
-+	return 0;
-+}
-+
-+static int stfsmfsm_resume(struct device *dev)
-+{
-+	struct stfsm *fsm = dev_get_drvdata(dev);
-+
-+	if (fsm->clk)
-+		clk_prepare_enable(fsm->clk);
-+
-+	return 0;
-+}
-+#endif
-+
-+static SIMPLE_DEV_PM_OPS(stfsm_pm_ops, stfsmfsm_suspend, stfsmfsm_resume);
-+
- static const struct of_device_id stfsm_match[] = {
- 	{ .compatible = "st,spi-fsm", },
- 	{},
-@@ -2134,6 +2174,7 @@ static struct platform_driver stfsm_driver = {
- 		.name	= "st-spi-fsm",
- 		.owner	= THIS_MODULE,
- 		.of_match_table = stfsm_match,
-+		.pm     = &stfsm_pm_ops,
- 	},
- };
- module_platform_driver(stfsm_driver);
 -- 
 1.9.1
