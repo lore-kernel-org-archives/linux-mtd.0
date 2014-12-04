@@ -1,20 +1,20 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Josh Wu <josh.wu@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Andrew Victor <linux@maxim.org.za>
-Subject: [PATCH 4/4] ARM: at91/dt: sama5: move NAND nodes into board dts/dtsi
-Date: Thu,  4 Dec 2014 23:30:14 +0100
-Message-Id: <1417732214-3292-5-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1417732214-3292-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1417732214-3292-1-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xwf2C-0000ZK-2l
+ for linux-mtd@lists.infradead.org; Thu, 04 Dec 2014 22:38:04 +0000
+From: Scott Branden <sbranden@broadcom.com>
+To: Scott Branden <sbranden@broadcom.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: add reboot notifier to mtdcore and register
+ nand_shutdown with notifier
+Date: Thu, 4 Dec 2014 14:37:38 -0800
+Message-ID: <1417732658-4563-1-git-send-email-sbranden@broadcom.com>
+In-Reply-To: <Scott Branden <sbranden@broadcom.com>
+References: <Scott Branden <sbranden@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,185 +24,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-sama5d3 and sama5d4 SoCs provides several CS to interface with external
-memories, and in particular NAND chips.
-The NAND flash controller embedded in the these SoCs can connect to any of
-the available CS (each CS is assigned a memory range, hence the nand@xxx
-you're seeing in the DT), thus the NAND chip definition should be part of
-the board description because we cannot guess at the SoC level which CS
-will be chosen by the board designer.
+add (optional) reboot notifier field to struct mtd_info, and use it to
+register a system reboot notifier on behalf of the lower layers.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Add nand_shutdown to wait for current nand operations to finish and prevent
+further operations by changing the nand flash state to FL_SHUTDOWN.
+Register the nand_shutdown with the reboot notifier in nand_base.c
+
+This is addressing a problem observed during reboot tests using UBIFS
+root file system: NAND erase operations that are in progress during
+system reboot/shutdown are causing partial erased blocks. Although UBI should
+be able to detect and recover from this error, this change will avoid
+the creation of partial erased blocks on reboot in the middle of a NAND erase
+operation.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Corneliu Doban <cdoban@broadcom.com>
+Signed-off-by: Scott Branden <sbranden@broadcom.com>
 ---
- arch/arm/boot/dts/at91-sama5d3_xplained.dts | 18 +++++++++++++++++-
- arch/arm/boot/dts/at91-sama5d4ek.dts        | 16 +++++++++++++++-
- arch/arm/boot/dts/sama5d3.dtsi              | 21 ---------------------
- arch/arm/boot/dts/sama5d3xcm.dtsi           | 18 +++++++++++++++++-
- arch/arm/boot/dts/sama5d4.dtsi              | 19 -------------------
- 5 files changed, 49 insertions(+), 43 deletions(-)
+ drivers/mtd/mtdcore.c        | 20 ++++++++++++++++++++
+ drivers/mtd/nand/nand_base.c | 11 +++++++++++
+ include/linux/mtd/mtd.h      |  1 +
+ 3 files changed, 32 insertions(+)
 
-diff --git a/arch/arm/boot/dts/at91-sama5d3_xplained.dts b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-index fec1fca..860258b 100644
---- a/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-+++ b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-@@ -213,13 +213,29 @@
- 		};
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 4c61187..b80d44f 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -37,6 +37,7 @@
+ #include <linux/backing-dev.h>
+ #include <linux/gfp.h>
+ #include <linux/slab.h>
++#include <linux/reboot.h>
  
- 		nand0: nand@60000000 {
-+			compatible = "atmel,at91rm9200-nand";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+			reg = <	0x60000000 0x01000000	/* EBI CS3 */
-+				0xffffc070 0x00000490	/* SMC PMECC regs */
-+				0xffffc500 0x00000100	/* SMC PMECC Error Location regs */
-+				0x00110000 0x00018000	/* ROM code */
-+				>;
-+			interrupts = <5 IRQ_TYPE_LEVEL_HIGH 6>;
-+			atmel,nand-addr-offset = <21>;
-+			atmel,nand-cmd-offset = <22>;
-+			atmel,nand-has-dma;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_nand0_ale_cle>;
-+			atmel,pmecc-lookup-table-offset = <0x0 0x8000>;
-+			atmel,nfc = <&nfc>;
- 			nand-bus-width = <8>;
- 			nand-ecc-mode = "hw";
- 			atmel,has-pmecc;
- 			atmel,pmecc-cap = <4>;
- 			atmel,pmecc-sector-size = <512>;
- 			nand-on-flash-bbt;
--			status = "okay";
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -365,6 +366,17 @@ static struct device_type mtd_devtype = {
+ 	.release	= mtd_release,
+ };
  
- 			at91bootstrap@0 {
- 				label = "at91bootstrap";
-diff --git a/arch/arm/boot/dts/at91-sama5d4ek.dts b/arch/arm/boot/dts/at91-sama5d4ek.dts
-index b5b8400..5de0d2d 100644
---- a/arch/arm/boot/dts/at91-sama5d4ek.dts
-+++ b/arch/arm/boot/dts/at91-sama5d4ek.dts
-@@ -204,11 +204,25 @@
- 		};
++static int mtd_reboot_notifier(struct notifier_block *n, unsigned long state,
++			       void *cmd)
++{
++       struct mtd_info *mtd;
++
++       mtd = container_of(n, struct mtd_info, reboot_notifier);
++       mtd->_reboot(mtd);
++
++       return NOTIFY_DONE;
++}
++
+ /**
+  *	add_mtd_device - register an MTD device
+  *	@mtd: pointer to new MTD device info structure
+@@ -565,6 +577,11 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 			err = -ENODEV;
+ 	}
  
- 		nand0: nand@80000000 {
-+			compatible = "atmel,at91rm9200-nand";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+			reg = <	0x80000000 0x08000000	/* EBI CS3 */
-+				0xfc05c070 0x00000490	/* SMC PMECC regs */
-+				0xfc05c500 0x00000100	/* SMC PMECC Error Location regs */
-+				>;
-+			interrupts = <22 IRQ_TYPE_LEVEL_HIGH 6>;
-+			atmel,nand-addr-offset = <21>;
-+			atmel,nand-cmd-offset = <22>;
-+			atmel,nand-has-dma;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_nand>;
-+			atmel,nfc = <&nfc>;
- 			nand-bus-width = <8>;
- 			nand-ecc-mode = "hw";
- 			nand-on-flash-bbt;
- 			atmel,has-pmecc;
--			status = "okay";
++	if (mtd->_reboot) {
++		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
++		register_reboot_notifier(&mtd->reboot_notifier);
++	}
++
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(mtd_device_parse_register);
+@@ -579,6 +596,9 @@ int mtd_device_unregister(struct mtd_info *master)
+ {
+ 	int err;
  
- 			at91bootstrap@0 {
- 				label = "at91bootstrap";
-diff --git a/arch/arm/boot/dts/sama5d3.dtsi b/arch/arm/boot/dts/sama5d3.dtsi
-index 1749853..0a944e0 100644
---- a/arch/arm/boot/dts/sama5d3.dtsi
-+++ b/arch/arm/boot/dts/sama5d3.dtsi
-@@ -1397,27 +1397,6 @@
- 			status = "disabled";
- 		};
++	if (master->_reboot)
++		unregister_reboot_notifier(&master->reboot_notifier);
++
+ 	err = del_mtd_partitions(master);
+ 	if (err)
+ 		return err;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 5b5c627..e18165b 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2944,6 +2944,16 @@ static void nand_resume(struct mtd_info *mtd)
+ 			__func__);
+ }
  
--		nand0: nand@60000000 {
--			compatible = "atmel,at91rm9200-nand";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges;
--			reg = <	0x60000000 0x01000000	/* EBI CS3 */
--				0xffffc070 0x00000490	/* SMC PMECC regs */
--				0xffffc500 0x00000100	/* SMC PMECC Error Location regs */
--				0x00110000 0x00018000	/* ROM code */
--				>;
--			interrupts = <5 IRQ_TYPE_LEVEL_HIGH 6>;
--			atmel,nand-addr-offset = <21>;
--			atmel,nand-cmd-offset = <22>;
--			atmel,nand-has-dma;
--			pinctrl-names = "default";
--			pinctrl-0 = <&pinctrl_nand0_ale_cle>;
--			atmel,pmecc-lookup-table-offset = <0x0 0x8000>;
--			atmel,nfc = <&nfc>;
--			status = "disabled";
--		};
--
- 		nfc: nfc@70000000 {
- 			compatible = "atmel,sama5d3-nfc";
- 			reg = <0x70000000 0x10000000	/* NFC Command Registers */
-diff --git a/arch/arm/boot/dts/sama5d3xcm.dtsi b/arch/arm/boot/dts/sama5d3xcm.dtsi
-index cfcd200..e6c2aec 100644
---- a/arch/arm/boot/dts/sama5d3xcm.dtsi
-+++ b/arch/arm/boot/dts/sama5d3xcm.dtsi
-@@ -76,13 +76,29 @@
- 		};
- 
- 		nand0: nand@60000000 {
-+			compatible = "atmel,at91rm9200-nand";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+			reg = <	0x60000000 0x01000000	/* EBI CS3 */
-+				0xffffc070 0x00000490	/* SMC PMECC regs */
-+				0xffffc500 0x00000100	/* SMC PMECC Error Location regs */
-+				0x00110000 0x00018000	/* ROM code */
-+				>;
-+			interrupts = <5 IRQ_TYPE_LEVEL_HIGH 6>;
-+			atmel,nand-addr-offset = <21>;
-+			atmel,nand-cmd-offset = <22>;
-+			atmel,nand-has-dma;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_nand0_ale_cle>;
-+			atmel,pmecc-lookup-table-offset = <0x0 0x8000>;
-+			atmel,nfc = <&nfc>;
- 			nand-bus-width = <8>;
- 			nand-ecc-mode = "hw";
- 			atmel,has-pmecc;
- 			atmel,pmecc-cap = <4>;
- 			atmel,pmecc-sector-size = <512>;
- 			nand-on-flash-bbt;
--			status = "okay";
- 
- 			at91bootstrap@0 {
- 				label = "at91bootstrap";
-diff --git a/arch/arm/boot/dts/sama5d4.dtsi b/arch/arm/boot/dts/sama5d4.dtsi
-index 3b5e9f1..8647eb3 100644
---- a/arch/arm/boot/dts/sama5d4.dtsi
-+++ b/arch/arm/boot/dts/sama5d4.dtsi
-@@ -265,25 +265,6 @@
- 			cache-level = <2>;
- 		};
- 
--		nand0: nand@80000000 {
--			compatible = "atmel,at91rm9200-nand";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges;
--			reg = <	0x80000000 0x08000000	/* EBI CS3 */
--				0xfc05c070 0x00000490	/* SMC PMECC regs */
--				0xfc05c500 0x00000100	/* SMC PMECC Error Location regs */
--				>;
--			interrupts = <22 IRQ_TYPE_LEVEL_HIGH 6>;
--			atmel,nand-addr-offset = <21>;
--			atmel,nand-cmd-offset = <22>;
--			atmel,nand-has-dma;
--			pinctrl-names = "default";
--			pinctrl-0 = <&pinctrl_nand>;
--			atmel,nfc = <&nfc>;
--			status = "disabled";
--		};
--
- 		nfc: nfc@90000000 {
- 			compatible = "atmel,sama5d3-nfc";
- 			reg = <0x90000000 0x10000000	/* NFC Command Registers */
++/**
++ * nand_shutdown - [MTD Interface] Finish the current NAND operation and
++ *                 prevent further operations
++ * @mtd: MTD device structure
++ */
++static void nand_shutdown(struct mtd_info *mtd)
++{
++	nand_get_device(mtd, FL_SHUTDOWN);
++}
++
+ /* Set default functions */
+ static void nand_set_defaults(struct nand_chip *chip, int busw)
+ {
+@@ -4146,6 +4156,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->_unlock = NULL;
+ 	mtd->_suspend = nand_suspend;
+ 	mtd->_resume = nand_resume;
++	mtd->_reboot = nand_shutdown;
+ 	mtd->_block_isreserved = nand_block_isreserved;
+ 	mtd->_block_isbad = nand_block_isbad;
+ 	mtd->_block_markbad = nand_block_markbad;
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 031ff3a..c06f537 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -227,6 +227,7 @@ struct mtd_info {
+ 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
+ 	int (*_suspend) (struct mtd_info *mtd);
+ 	void (*_resume) (struct mtd_info *mtd);
++	void (*_reboot) (struct mtd_info *mtd);
+ 	/*
+ 	 * If the driver is something smart, like UBI, it may need to maintain
+ 	 * its own reference counting. The below functions are only for driver.
 -- 
-1.9.1
+2.2.0
