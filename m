@@ -1,20 +1,21 @@
-Received: from mail-yk0-f173.google.com ([209.85.160.173])
+Received: from mail-yk0-f181.google.com ([209.85.160.181])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XwTYb-0004Ex-87
- for linux-mtd@lists.infradead.org; Thu, 04 Dec 2014 10:22:46 +0000
-Received: by mail-yk0-f173.google.com with SMTP id 19so7762599ykq.18
- for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 02:22:26 -0800 (PST)
+ id 1XwTYg-0004Gz-TS
+ for linux-mtd@lists.infradead.org; Thu, 04 Dec 2014 10:22:51 +0000
+Received: by mail-yk0-f181.google.com with SMTP id 142so7699539ykq.26
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 02:22:28 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 RESEND 09/11] mtd: st_spi_fsm: Provide documentation for
- boot device mask property
-Date: Thu,  4 Dec 2014 10:21:50 +0000
-Message-Id: <1417688512-7644-10-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v2 RESEND 10/11] mtd: st_spi_fsm: Provide mask to obtain
+ correct boot device pins
+Date: Thu,  4 Dec 2014 10:21:51 +0000
+Message-Id: <1417688512-7644-11-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1417688512-7644-1-git-send-email-lee.jones@linaro.org>
 References: <1417688512-7644-1-git-send-email-lee.jones@linaro.org>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- lee.jones@linaro.org, kernel@stlinux.com, devicetree@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org,
+ Christophe Kerello <christophe.kerello@st.com>, computersforpeace@gmail.com,
+ lee.jones@linaro.org, kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The system configuration registers which display which device the system
-booted on are in the same place on all boards which support the FSM.
-However, the bits do shift every so slightly.  To combat these we're
-adding a new property which supplies the necessary mask used to abstract
-the required information.
+From: Christophe Kerello <christophe.kerello@st.com>
 
-Cc: devicetree@vger.kernel.org
+This patch adds a mask to be able to get the right boot device selection.
+
+For example:
+    for STiH415, value = SYSTEM_STATUS398[4:0]
+    for STiH416, value = SYSTEM_STATUS2598[4:0]
+    for STiH407, value = SYSTEM_STATUS5561[6:2]
+
+Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- Documentation/devicetree/bindings/mtd/st-fsm.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/st-fsm.txt b/Documentation/devicetree/bindings/mtd/st-fsm.txt
-index c248939..2ef9710 100644
---- a/Documentation/devicetree/bindings/mtd/st-fsm.txt
-+++ b/Documentation/devicetree/bindings/mtd/st-fsm.txt
-@@ -11,6 +11,10 @@ Optional properties:
-   - st,syscfg          : Phandle to boot-device system configuration registers
-   - st,boot-device-reg : Address of the aforementioned boot-device register(s)
-   - st,boot-device-spi : Expected boot-device value if booted via this device
-+  - st,boot-device-msk : Mask to use when extracting boot device from the
-+			 above system config registers
-+  NB: If any of the st,boot-device-* properties are missing, the driver falls
-+  back to the default assumption of 'booted from SPI'.
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index 18f6f0b..f992f00 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -2123,6 +2123,7 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
+ 	struct regmap *regmap;
+ 	uint32_t boot_device_reg;
+ 	uint32_t boot_device_spi;
++	uint32_t boot_device_msk;
+ 	uint32_t boot_device;     /* Value we read from *boot_device_reg */
+ 	int ret;
  
- Example:
- 	spifsm: spifsm@fe902000{
+@@ -2147,10 +2148,17 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
+ 	if (ret)
+ 		goto boot_device_fail;
+ 
++	/* Mask to apply on boot_device_reg */
++	ret = of_property_read_u32(np, "st,boot-device-msk", &boot_device_msk);
++	if (ret)
++		goto boot_device_fail;
++
+ 	ret = regmap_read(regmap, boot_device_reg, &boot_device);
+ 	if (ret)
+ 		goto boot_device_fail;
+ 
++	boot_device &= boot_device_msk;
++
+ 	if (boot_device != boot_device_spi)
+ 		fsm->booted_from_spi = false;
+ 
 -- 
 1.9.1
