@@ -1,19 +1,19 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xwwta-0002YE-Hu
- for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 17:42:23 +0000
-Message-ID: <5481EE65.1090705@codeaurora.org>
-Date: Fri, 05 Dec 2014 19:41:57 +0200
-From: Tanya Brokhman <tlinder@codeaurora.org>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XwwyY-0006qb-Qt
+ for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 17:47:31 +0000
+Message-ID: <5481EF9B.8070601@broadcom.com>
+Date: Fri, 5 Dec 2014 09:47:07 -0800
+From: Scott Branden <sbranden@broadcom.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
-Subject: Re: [PATCH 5/6] UBI: Split __wl_get_peb()
-References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <1416835236-25185-6-git-send-email-richard@nod.at>
-In-Reply-To: <1416835236-25185-6-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 2/3] mtd: nand: added nand_shutdown
+References: <1417746968-28747-1-git-send-email-computersforpeace@gmail.com>
+ <1417746968-28747-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1417746968-28747-2-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: cdoban@broadcom.com, rjui@broadcom.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,127 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/24/2014 3:20 PM, Richard Weinberger wrote:
-> Make it two functions, wl_get_wle() and wl_get_peb().
-> wl_get_peb() works exactly like __wl_get_peb() but wl_get_wle()
-> does not call produce_free_peb().
-> While refilling the fastmap user pool we cannot release ubi->wl_lock
-> as produce_free_peb() does.
-> Hence the fastmap logic uses now wl_get_wle().
-
-hmmm... confused... I don't see fastmap code changed
-
+On 14-12-04 06:36 PM, Brian Norris wrote:
+> From: Scott Branden <sbranden@broadcom.com>
 >
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Add nand_shutdown to wait for current nand operations to finish and prevent
+> further operations by changing the nand flash state to FL_SHUTDOWN.
+>
+> This is addressing a problem observed during reboot tests using UBIFS
+> root file system: NAND erase operations that are in progress during
+> system reboot/shutdown are causing partial erased blocks. Although UBI should
+> be able to detect and recover from this error, this change will avoid
+> the creation of partial erased blocks on reboot in the middle of a NAND erase
+> operation.
+>
+> Signed-off-by: Scott Branden <sbranden@broadcom.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > ---
->   drivers/mtd/ubi/wl.c | 61 ++++++++++++++++++++++++++++++++--------------------
->   1 file changed, 38 insertions(+), 23 deletions(-)
+> Modified to use the new mtd->_reboot hook
 >
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 7730b97..f028b68 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -499,13 +499,46 @@ out:
->   #endif
+> Not tested yet
+Tested by: Scott Branden <sbranden@broadcom.com>
 >
->   /**
-> - * __wl_get_peb - get a physical eraseblock.
-> + * wl_get_wle - get a mean wl entry to be used by wl_get_peb() or
-> + * refill_wl_user_pool().
-> + * @ubi: UBI device description object
-> + *
-> + * This function returns a a wear leveling entry in case of success and
-
-If you upload a new version, you have a double "a" here: "returns a a 
-wear leveling"
-
-> + * NULL in case of failure.
-> + */
-> +static struct ubi_wl_entry *wl_get_wle(struct ubi_device *ubi)
-> +{
-> +	struct ubi_wl_entry *e;
-> +
-> +	e = find_mean_wl_entry(ubi, &ubi->free);
-> +	if (!e) {
-> +		ubi_err(ubi, "no free eraseblocks");
-> +		return NULL;
-> +	}
-> +
-> +	self_check_in_wl_tree(ubi, e, &ubi->free);
-> +
-> +	/*
-> +	 * Move the physical eraseblock to the protection queue where it will
-> +	 * be protected from being moved for some time.
-> +	 */
-
-I don't think this comment is valid anymore....
-
-> +	rb_erase(&e->u.rb, &ubi->free);
-> +	ubi->free_count--;
-> +	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
-> +
-> +	return e;
-> +}
-> +
-> +/**
-> + * wl_get_peb - get a physical eraseblock.
->    * @ubi: UBI device description object
->    *
->    * This function returns a physical eraseblock in case of success and a
->    * negative error code in case of failure.
-> + * It is the low level component of ubi_wl_get_peb() in the non-fastmap
-> + * case.
->    */
-> -static int __wl_get_peb(struct ubi_device *ubi)
-> +static int wl_get_peb(struct ubi_device *ubi)
->   {
->   	int err;
->   	struct ubi_wl_entry *e;
-> @@ -524,27 +557,9 @@ retry:
->   		goto retry;
->   	}
+>   drivers/mtd/nand/nand_base.c | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
 >
-> -	e = find_mean_wl_entry(ubi, &ubi->free);
-> -	if (!e) {
-> -		ubi_err(ubi, "no free eraseblocks");
-> -		return -ENOSPC;
-> -	}
-> -
-> -	self_check_in_wl_tree(ubi, e, &ubi->free);
-> -
-> -	/*
-> -	 * Move the physical eraseblock to the protection queue where it will
-> -	 * be protected from being moved for some time.
-> -	 */
-> -	rb_erase(&e->u.rb, &ubi->free);
-> -	ubi->free_count--;
-> -	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
-> -#ifndef CONFIG_MTD_UBI_FASTMAP
-> -	/* We have to enqueue e only if fastmap is disabled,
-> -	 * is fastmap enabled prot_queue_add() will be called by
-> -	 * ubi_wl_get_peb() after removing e from the pool. */
-> +	e = wl_get_wle(ubi);
->   	prot_queue_add(ubi, e);
-> -#endif
-> +
->   	return e->pnum;
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 41585dfb206f..382354b5547b 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2944,6 +2944,16 @@ static void nand_resume(struct mtd_info *mtd)
+>   			__func__);
 >   }
 >
-> @@ -704,7 +719,7 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
->   	int peb, err;
+> +/**
+> + * nand_shutdown - [MTD Interface] Finish the current NAND operation and
+> + *                 prevent further operations
+> + * @mtd: MTD device structure
+> + */
+> +static void nand_shutdown(struct mtd_info *mtd)
+> +{
+> +	nand_get_device(mtd, FL_SHUTDOWN);
+> +}
+> +
+>   /* Set default functions */
+>   static void nand_set_defaults(struct nand_chip *chip, int busw)
+>   {
+> @@ -4146,6 +4156,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+>   	mtd->_unlock = NULL;
+>   	mtd->_suspend = nand_suspend;
+>   	mtd->_resume = nand_resume;
+> +	mtd->_reboot = nand_shutdown;
+>   	mtd->_block_isreserved = nand_block_isreserved;
+>   	mtd->_block_isbad = nand_block_isbad;
+>   	mtd->_block_markbad = nand_block_markbad;
 >
->   	spin_lock(&ubi->wl_lock);
-> -	peb = __wl_get_peb(ubi);
-> +	peb = wl_get_peb(ubi);
->   	spin_unlock(&ubi->wl_lock);
->
->   	if (peb < 0)
->
-
-
-Thanks,
-Tanya Brokhman
--- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
