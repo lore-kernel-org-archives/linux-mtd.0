@@ -1,18 +1,22 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xwmgk-0002Yh-Rw
- for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 06:48:27 +0000
-Message-ID: <54815522.6000004@broadcom.com>
-Date: Thu, 4 Dec 2014 22:48:02 -0800
-From: Scott Branden <sbranden@broadcom.com>
+From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>
+Subject: [V6 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for Micron
+ spi nor
+Date: Fri, 5 Dec 2014 07:09:59 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315EF2C5@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 1/3] mtd: implement common reboot notifier boilerplate
-References: <1417746968-28747-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1417746968-28747-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: cdoban@broadcom.com, rjui@broadcom.com
+Cc: "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,84 +26,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-You need to change some spaces to tabs in the patch.
+This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
 
-Tested-by: Scott Branden <sbranden@broadcom.com>
+For Micron SPI NOR flash,enabling or disabling quad I/O protocol can be don=
+e
+By two methods, which are to use EVCR(Enhanced Volatile Configuration Regis=
+ter)
+and the ENTER QUAD I/O MODE command.There is no difference between these tw=
+o
+methods.Unfortunately,for some Micron spi nor flashes,there no ENTER Quad I=
+/O
+command(35h),such as n25q064.But for all current Micron spi nor,if it suppo=
+rt
+quad I/O mode,using EVCR definitely be supported.It is a recommended method=
+ to
+enable Quad I/O mode by EVCR,Quad I/O protocol bit 7.When EVCR bit 7 is res=
+et
+to 0,the SPI NOR flash will operate in quad I/O mode.
 
-On 14-12-04 06:36 PM, Brian Norris wrote:
-> cfi_cmdset_000{1,2}.c already implement their own reboot notifiers, and
-> we're going to add one for NAND. Let's put the boilerplate in one place.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->   drivers/mtd/mtdcore.c   | 20 ++++++++++++++++++++
->   include/linux/mtd/mtd.h |  1 +
->   2 files changed, 21 insertions(+)
->
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 4c611871d7e6..b80d44f9751d 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -37,6 +37,7 @@
->   #include <linux/backing-dev.h>
->   #include <linux/gfp.h>
->   #include <linux/slab.h>
-> +#include <linux/reboot.h>
->
->   #include <linux/mtd/mtd.h>
->   #include <linux/mtd/partitions.h>
-> @@ -365,6 +366,17 @@ static struct device_type mtd_devtype = {
->   	.release	= mtd_release,
->   };
->
-> +static int mtd_reboot_notifier(struct notifier_block *n, unsigned long state,
-> +			       void *cmd)
-> +{
-> +       struct mtd_info *mtd;
-You need tabs here instead of spaces to pass checkpatch
-> +
-> +       mtd = container_of(n, struct mtd_info, reboot_notifier);
-> +       mtd->_reboot(mtd);
-> +
-> +       return NOTIFY_DONE;
-> +}
-> +
->   /**
->    *	add_mtd_device - register an MTD device
->    *	@mtd: pointer to new MTD device info structure
-> @@ -565,6 +577,11 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
->   			err = -ENODEV;
->   	}
->
-> +	if (mtd->_reboot) {
-> +		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
-> +		register_reboot_notifier(&mtd->reboot_notifier);
-> +	}
-You need tabs here instead of spaces to pass checkpatch
-> +
->   	return err;
->   }
->   EXPORT_SYMBOL_GPL(mtd_device_parse_register);
-> @@ -579,6 +596,9 @@ int mtd_device_unregister(struct mtd_info *master)
->   {
->   	int err;
->
-> +	if (master->_reboot)
-> +		unregister_reboot_notifier(&master->reboot_notifier);
-> +
->   	err = del_mtd_partitions(master);
->   	if (err)
->   		return err;
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 031ff3a9a0bd..c06f5373d870 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -227,6 +227,7 @@ struct mtd_info {
->   	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
->   	int (*_suspend) (struct mtd_info *mtd);
->   	void (*_resume) (struct mtd_info *mtd);
-> +	void (*_reboot) (struct mtd_info *mtd);
->   	/*
->   	 * If the driver is something smart, like UBI, it may need to maintain
->   	 * its own reference counting. The below functions are only for driver.
->
+This patch has been tested on N25Q512A and MT25TL256BAA1ESF.Micron spi nor =
+of=20
+spi_nor_ids[] table all support this method.
+
+Signed-off-by: bean huo <beanhuo@micron.com>
+Acked-by: Marek Vasut <marex@denx.de>
+---
+v1-v2:
+	Modified to that capture wait_till_ready()
+	return value,if error,directly return its
+	the value.
+ v2-v3:
+	Directly use the reurning error value of
+	read_reg and write_reg,instead of -EINVAL.
+ v3-v4:
+	Modify commit logs that wraped into 80 columns.
+ v4-v5:
+	Rebuild new patch based on latest linux-mtd.
+ v5-v6:
+	Rebuild patch based on latest l2-mtd.
+	add some comments.
+	Add SPI_NOR_QUAD_READ flag in the spi_nor_ids[] for Micron spi nor.
+
+ drivers/mtd/spi-nor/spi-nor.c |   61 +++++++++++++++++++++++++++++++++++--=
+----
+ include/linux/mtd/spi-nor.h   |    7 +++++
+ 2 files changed, 60 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 0f8ec3c..128941e 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -560,14 +560,14 @@ static const struct spi_device_id spi_nor_ids[] =3D {
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+=20
+ 	/* Micron */
+-	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, 0) },
+-	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0) },
+-	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
+-	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
+-	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
+-	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
+-	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
+-	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR) },
++	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
++	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SPI_NOR_QUAD_READ) },
++	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
++	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
++	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUA=
+D_READ) },
++	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | S=
+PI_NOR_QUAD_READ) },
++	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | S=
+PI_NOR_QUAD_READ) },
++	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | S=
+PI_NOR_QUAD_READ) },
+=20
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+@@ -891,6 +891,44 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 	return 0;
+ }
+=20
++static int micron_quad_enable(struct spi_nor *nor)
++{
++	int ret, val;
++
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return ret;
++	}
++
++	write_enable(nor);
++
++	/* set EVCR ,enable quad I/O */
++	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
++	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
++	if (ret < 0) {
++		dev_err(nor->dev, "error while writing EVCR register\n");
++		return ret;
++	}
++
++	ret =3D spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++
++	/* read EVCR and check it */
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return ret;
++	}
++	if (val & EVCR_QUAD_EN_MICRON) {
++		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int set_quad_mode(struct spi_nor *nor, struct flash_info *info)
+ {
+ 	int status;
+@@ -903,6 +941,13 @@ static int set_quad_mode(struct spi_nor *nor, struct f=
+lash_info *info)
+ 			return -EINVAL;
+ 		}
+ 		return status;
++	case CFI_MFR_ST:
++		status =3D micron_quad_enable(nor);
++		if (status) {
++			dev_err(nor->dev, "Micron quad-read not enabled\n");
++			return -EINVAL;
++		}
++		return status;
+ 	default:
+ 		status =3D spansion_quad_enable(nor);
+ 		if (status) {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 63aeccf..4720b86 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -56,6 +56,10 @@
+ /* Used for Spansion flashes only. */
+ #define SPINOR_OP_BRWR		0x17	/* Bank register write */
+=20
++/* Used for Micron flashes only. */
++#define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
++#define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
++
+ /* Status Register bits. */
+ #define SR_WIP			1	/* Write in progress */
+ #define SR_WEL			2	/* Write enable latch */
+@@ -67,6 +71,9 @@
+=20
+ #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
+=20
++/* Enhanced Volatile Configuration Register bits */
++#define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
++
+ /* Flag Status Register bits */
+ #define FSR_READY		0x80
+=20
+--=20
+1.7.9.5
