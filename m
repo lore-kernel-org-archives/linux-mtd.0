@@ -1,21 +1,16 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-qc0-x229.google.com ([2607:f8b0:400d:c01::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xx07H-0006kn-N4
- for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 21:08:44 +0000
-Message-ID: <54821EC3.3030107@nod.at>
-Date: Fri, 05 Dec 2014 22:08:19 +0100
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
-Subject: Re: [PATCH 4/6] UBI: Fastmap: Fix races in ubi_wl_get_peb()
-References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <1416835236-25185-5-git-send-email-richard@nod.at>
- <5481AE79.1090900@codeaurora.org> <5481B120.5020409@nod.at>
- <5481E336.8090303@codeaurora.org>
-In-Reply-To: <5481E336.8090303@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+ id 1Xx0Dk-0000nG-5f
+ for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 21:15:24 +0000
+Received: by mail-qc0-f169.google.com with SMTP id w7so1137067qcr.28
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Dec 2014 13:15:02 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH] mtd: fsl-quadspi: Fix module unbound
+Date: Fri,  5 Dec 2014 19:14:46 -0200
+Message-Id: <1417814086-30512-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Frank.Li@freescale.com,
+ shijie8@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,129 +20,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tanya,
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Am 05.12.2014 um 17:54 schrieb Tanya Brokhman:
-> Hi Richard
-> 
-> On 12/5/2014 3:20 PM, Richard Weinberger wrote:
->> Tanya,
->>
->> Am 05.12.2014 um 14:09 schrieb Tanya Brokhman:
->>> On 11/24/2014 3:20 PM, Richard Weinberger wrote:
->>>> ubi_wl_get_peb() has two problems, it reads the pool
->>>> size and usage counters without any protection.
->>>> While reading one value would be perfectly fine it reads multiple
->>>> values and compares them. This is racy and can lead to incorrect
->>>> pool handling.
->>>> Furthermore ubi_update_fastmap() is called without wl_lock held,
->>>> before incrementing the used counter it needs to be checked again.
->>>
->>> I didn't see where you fixed the ubi_update_fastmap issue you just mentioned.
->>
->> This is exactly what you're questioning below.
->> We have to recheck as the pool counter could have changed.
->>
-> 
-> Oh, I understood the commit msg a bit differently, but now I see that it was my mistake. thanks!
-> 
->>>> It could happen that another thread consumed all PEBs from the
->>>> pool and the counter goes beyond ->size.
->>>>
->>>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>>> ---
->>>>    drivers/mtd/ubi/ubi.h |  3 ++-
->>>>    drivers/mtd/ubi/wl.c  | 34 +++++++++++++++++++++++-----------
->>>>    2 files changed, 25 insertions(+), 12 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
->>>> index 04c4c05..d672412 100644
->>>> --- a/drivers/mtd/ubi/ubi.h
->>>> +++ b/drivers/mtd/ubi/ubi.h
->>>> @@ -439,7 +439,8 @@ struct ubi_debug_info {
->>>>     * @pq_head: protection queue head
->>>>     * @wl_lock: protects the @used, @free, @pq, @pq_head, @lookuptbl, @move_from,
->>>>     *         @move_to, @move_to_put @erase_pending, @wl_scheduled, @works,
->>>> - *         @erroneous, @erroneous_peb_count, and @fm_work_scheduled fields
->>>> + *         @erroneous, @erroneous_peb_count, @fm_work_scheduled, @fm_pool,
->>>> + *         and @fm_wl_pool fields
->>>>     * @move_mutex: serializes eraseblock moves
->>>>     * @work_sem: used to wait for all the scheduled works to finish and prevent
->>>>     * new works from being submitted
->>>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
->>>> index cb2e571..7730b97 100644
->>>> --- a/drivers/mtd/ubi/wl.c
->>>> +++ b/drivers/mtd/ubi/wl.c
->>>> @@ -629,24 +629,36 @@ void ubi_refill_pools(struct ubi_device *ubi)
->>>>     */
->>>>    int ubi_wl_get_peb(struct ubi_device *ubi)
->>>>    {
->>>> -    int ret;
->>>> +    int ret, retried = 0;
->>>>        struct ubi_fm_pool *pool = &ubi->fm_pool;
->>>>        struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
->>>>
->>>> -    if (!pool->size || !wl_pool->size || pool->used == pool->size ||
->>>> -        wl_pool->used == wl_pool->size)
->>>> +again:
->>>> +    spin_lock(&ubi->wl_lock);
->>>> +    /* We check here also for the WL pool because at this point we can
->>>> +     * refill the WL pool synchronous. */
->>>> +    if (pool->used == pool->size || wl_pool->used == wl_pool->size) {
->>>> +        spin_unlock(&ubi->wl_lock);
->>>>            ubi_update_fastmap(ubi);
->>>> -
->>>> -    /* we got not a single free PEB */
->>>> -    if (!pool->size)
->>>> -        ret = -ENOSPC;
->>>> -    else {
->>>>            spin_lock(&ubi->wl_lock);
->>>> -        ret = pool->pebs[pool->used++];
->>>> -        prot_queue_add(ubi, ubi->lookuptbl[ret]);
->>>> +    }
->>>> +
->>>> +    if (pool->used == pool->size) {
->>>
->>> Im confused about this "if" condition. You just tested pool->used == pool->size in the previous "if". If in the previous if pool->used != pool->size and wl_pool->used !=
->>> wl_pool->size, you didn't enter, the lock is still held so pool->used != pool->size still. If in the previos "if" wl_pool->used == wl_pool->size was true nd tou released the lock,
->>> ubi_update_fastmap(ubi) was called, which refills the pools. So again, if pools were refilled pool->used would be 0 here and pool->size > 0.
->>>
->>> So in both cases I don't see how at this point pool->used == pool->size could ever be true?
->>
->> If we enter the "if (pool->used == pool->size || wl_pool->used == wl_pool->size) {" branch we unlock wl_lock and call ubi_update_fastmap().
->> Another thread can enter ubi_wl_get_peb() and alter the pool counter. So we have to recheck the counter after taking wl_lock again.
-> 
-> hmmm... ok. Perhaps a comment could be added in the code to explain this case in a few words?
-> 
+When removing the fsl-quadspi module and running 'cat /proc/mtd' afterwards,
+we see garbage data like:
 
-Makes sense, I'll add a comment.
+$ rmmod  fsl-quadspi
+$ cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00000000 00000000 "(null)"
+mtd0: 00000000 00000000 "(null)"
+mtd0: 00000000 00000000 "(null)"
+...
+mtd0: a22296c6c756e28 00000000 "(null)"
+mtd0: a22296c6c756e28 3064746d "(null)"
 
->>>>            spin_unlock(&ubi->wl_lock);
->>>> +        if (retried) {
->>>> +            ubi_err(ubi, "Unable to get a free PEB from user WL pool");
->>>> +            ret = -ENOSPC;
->>>> +            goto out;
->>>> +        }
->>>> +        retried = 1;
->>>
->>> Why did you decide to retry in this function? and why only 1 retry attempt? I'm not against it, trying to understand the logic.
->>
->> Because failing immediately with -ENOSPC is not nice.
-> 
-> Why not? this is what was done before....
+The reason for this is due to the wrong mtd index used in
+mtd_device_unregister() in the remove function.
 
-The behavior from before was not good.
-If we return here a -ENOSPC it is not because we ran out of free PEBs, it is because the pool contains
-no free PEBs and needs refilling.
-As between refilling the pool and requesting a fresh PEB from it another thread could "steal" all PEBs
-we retry.
+We need to keep the mtd index aligned with the one used in the probe function,
+which means we need to take into account the 'has_second_chip' property.
 
-> I think what I really bothers me in this case is that you don't sleep, you branch immediately to retry again, so the chances that there will be context switch and free pebs appear
-> aren't that high.
-> I'm used to functions using some sort of "retry" logic to sleep before retrying. Of course sleeping isn't a good idea here. That's why the "retry" bugs me a bit.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-You mean a cond_resched()?
-This retry-logic is common pattern in UBI. For exmaple see ubi_wl_put_peb().
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 39763b9..4b468a9 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -227,6 +227,7 @@ struct fsl_qspi {
+ 	u32 nor_num;
+ 	u32 clk_rate;
+ 	unsigned int chip_base_addr; /* We may support two chips. */
++	bool has_second_chip;
+ };
+ 
+ static inline int is_vybrid_qspi(struct fsl_qspi *q)
+@@ -783,7 +784,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	struct spi_nor *nor;
+ 	struct mtd_info *mtd;
+ 	int ret, i = 0;
+-	bool has_second_chip = false;
+ 	const struct of_device_id *of_id =
+ 			of_match_device(fsl_qspi_dt_ids, &pdev->dev);
+ 
+@@ -860,14 +860,14 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		goto irq_failed;
+ 
+ 	if (of_get_property(np, "fsl,qspi-has-second-chip", NULL))
+-		has_second_chip = true;
++		q->has_second_chip = true;
+ 
+ 	/* iterate the subnodes. */
+ 	for_each_available_child_of_node(dev->of_node, np) {
+ 		char modalias[40];
+ 
+ 		/* skip the holes */
+-		if (!has_second_chip)
++		if (!q->has_second_chip)
+ 			i *= 2;
+ 
+ 		nor = &q->nor[i];
+@@ -943,9 +943,12 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ last_init_failed:
+-	for (i = 0; i < q->nor_num; i++)
++	for (i = 0; i < q->nor_num; i++) {
++		/* skip the holes */
++		if (!q->has_second_chip)
++			i *= 2;
+ 		mtd_device_unregister(&q->mtd[i]);
+-
++	}
+ irq_failed:
+ 	clk_disable_unprepare(q->clk);
+ clk_failed:
+@@ -960,8 +963,12 @@ static int fsl_qspi_remove(struct platform_device *pdev)
+ 	struct fsl_qspi *q = platform_get_drvdata(pdev);
+ 	int i;
+ 
+-	for (i = 0; i < q->nor_num; i++)
++	for (i = 0; i < q->nor_num; i++) {
++		/* skip the holes */
++		if (!q->has_second_chip)
++			i *= 2;
+ 		mtd_device_unregister(&q->mtd[i]);
++	}
+ 
+ 	/* disable the hardware */
+ 	writel(QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
+-- 
+1.9.1
