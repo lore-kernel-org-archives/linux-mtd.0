@@ -1,15 +1,19 @@
-From: Roger Quadros <rogerq@ti.com>
-To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-Subject: [PATCH 2/2] mtd: mtd_oobtest: Fix the address offset with vary_offset
- case
-Date: Fri, 5 Dec 2014 17:18:40 +0200
-Message-ID: <1417792720-3017-3-git-send-email-rogerq@ti.com>
-In-Reply-To: <1417792720-3017-1-git-send-email-rogerq@ti.com>
-References: <1417792720-3017-1-git-send-email-rogerq@ti.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xwujd-0005pV-M6
+ for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 15:23:58 +0000
+Message-ID: <5481CDF4.3060706@nod.at>
+Date: Fri, 05 Dec 2014 16:23:32 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Roger Quadros <rogerq@ti.com>, linux-mtd@lists.infradead.org,
- akinobu.mita@gmail.com, linux-kernel@vger.kernel.org
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 4/4] UBI: Fastmap: Optimize anchor PEB search
+References: <1417350157-9373-1-git-send-email-richard@nod.at>
+ <1417350157-9373-5-git-send-email-richard@nod.at>
+In-Reply-To: <1417350157-9373-5-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,69 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When vary_offset is set (e.g. test case 3), the offset is not always
-zero so memcmpshow() will show the wrong offset in the print message.
-To fix this we introduce a new function memcmpshowoffset() which takes
-offset as a parameter and displays the right offset and use it in
-the case where offset is non zero.
+Am 30.11.2014 um 13:22 schrieb Richard Weinberger:
+> The UBI RB trees are sorted by the PEB number, hence
+> we don't have to traverse the whole tree because ubi_rb_for_each_entry()
+> walks the tree in sort order.
+> 
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-The old memcmpshow() functionality is preserved by converting it into
-a macro with offset preset to 0.
+Please ignore this patch. It is horrible wrong.
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- drivers/mtd/tests/oobtest.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
-index 4da877b..0d5e85d 100644
---- a/drivers/mtd/tests/oobtest.c
-+++ b/drivers/mtd/tests/oobtest.c
-@@ -122,7 +122,8 @@ static int write_whole_device(void)
-  * Display the address, offset and data bytes at comparison failure.
-  * Return number of bitflips encountered.
-  */
--static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t count)
-+static size_t memcmpshowoffset(loff_t addr, loff_t offset, const void *cs,
-+			       const void *ct, size_t count)
- {
- 	const unsigned char *su1, *su2;
- 	int res;
-@@ -132,8 +133,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
- 	for (su1 = cs, su2 = ct; 0 < count; ++su1, ++su2, count--, i++) {
- 		res = *su1 ^ *su2;
- 		if (res) {
--			pr_info("error @addr[0x%lx:0x%x] 0x%x -> 0x%x diff 0x%x\n",
--				(unsigned long)addr, i, *su1, *su2, res);
-+			pr_info("error @addr[0x%lx:0x%lx] 0x%x -> 0x%x diff 0x%x\n",
-+				(unsigned long)addr, (unsigned long)offset + i,
-+				*su1, *su2, res);
- 			bitflips += hweight8(res);
- 		}
- 	}
-@@ -141,6 +143,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
- 	return bitflips;
- }
- 
-+#define memcmpshow(addr, cs, ct, count) memcmpshowoffset((addr), 0, (cs), (ct),\
-+							 (count))
-+
- /*
-  * Compare with 0xff and show the address, offset and data bytes at
-  * comparison failure. Return number of bitflips encountered.
-@@ -224,9 +229,10 @@ static int verify_eraseblock(int ebnum)
- 				errcnt += 1;
- 				return err ? err : -1;
- 			}
--			bitflips = memcmpshow(addr, readbuf + use_offset,
--					      writebuf + (use_len_max * i) + use_offset,
--					      use_len);
-+			bitflips = memcmpshowoffset(addr, use_offset,
-+						    readbuf + use_offset,
-+						    writebuf + (use_len_max * i) + use_offset,
-+						    use_len);
- 
- 			/* verify pre-offset area for 0xff */
- 			bitflips += memffshow(addr, 0, readbuf, use_offset);
--- 
-2.1.0
+*facepalm*,
+//richard
