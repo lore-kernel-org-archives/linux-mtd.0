@@ -1,14 +1,15 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XwilB-0005RU-9V
- for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 02:36:46 +0000
-Received: by mail-pa0-f46.google.com with SMTP id lj1so19128368pab.19
- for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 18:36:25 -0800 (PST)
+ id 1XwilD-0005Rt-LP
+ for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 02:36:48 +0000
+Received: by mail-pa0-f54.google.com with SMTP id fb1so19320695pad.13
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 18:36:26 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/3] mtd: nand: added nand_shutdown
-Date: Thu,  4 Dec 2014 18:36:07 -0800
-Message-Id: <1417746968-28747-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/3] mtd: cfi_cmdset_{0001,
+ 0002}: use common MTD reboot boilerplate
+Date: Thu,  4 Dec 2014 18:36:08 -0800
+Message-Id: <1417746968-28747-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1417746968-28747-1-git-send-email-computersforpeace@gmail.com>
 References: <1417746968-28747-1-git-send-email-computersforpeace@gmail.com>
 Cc: cdoban@broadcom.com, rjui@broadcom.com,
@@ -22,56 +23,177 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Scott Branden <sbranden@broadcom.com>
+We don't have to implement this glue code in the chip driver any more.
 
-Add nand_shutdown to wait for current nand operations to finish and prevent
-further operations by changing the nand flash state to FL_SHUTDOWN.
-
-This is addressing a problem observed during reboot tests using UBIFS
-root file system: NAND erase operations that are in progress during
-system reboot/shutdown are causing partial erased blocks. Although UBI should
-be able to detect and recover from this error, this change will avoid
-the creation of partial erased blocks on reboot in the middle of a NAND erase
-operation.
-
-Signed-off-by: Scott Branden <sbranden@broadcom.com>
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-Modified to use the new mtd->_reboot hook
-
 Not tested yet
 
- drivers/mtd/nand/nand_base.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/mtd/chips/cfi_cmdset_0001.c | 22 +++-------------------
+ drivers/mtd/chips/cfi_cmdset_0002.c | 22 +++-------------------
+ 2 files changed, 6 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 41585dfb206f..382354b5547b 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2944,6 +2944,16 @@ static void nand_resume(struct mtd_info *mtd)
- 			__func__);
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 286b97a304cf..3df9744496b2 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -28,7 +28,6 @@
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+-#include <linux/reboot.h>
+ #include <linux/bitmap.h>
+ #include <linux/mtd/xip.h>
+ #include <linux/mtd/map.h>
+@@ -80,7 +79,7 @@ static int cfi_intelext_get_user_prot_info(struct mtd_info *, size_t,
+ #endif
+ static int cfi_intelext_suspend (struct mtd_info *);
+ static void cfi_intelext_resume (struct mtd_info *);
+-static int cfi_intelext_reboot (struct notifier_block *, unsigned long, void *);
++static void cfi_intelext_reset(struct mtd_info *);
+ 
+ static void cfi_intelext_destroy(struct mtd_info *);
+ 
+@@ -486,13 +485,12 @@ struct mtd_info *cfi_cmdset_0001(struct map_info *map, int primary)
+ 	mtd->_is_locked = cfi_intelext_is_locked;
+ 	mtd->_suspend = cfi_intelext_suspend;
+ 	mtd->_resume  = cfi_intelext_resume;
++	mtd->_reboot  = cfi_intelext_reset;
+ 	mtd->flags   = MTD_CAP_NORFLASH;
+ 	mtd->name    = map->name;
+ 	mtd->writesize = 1;
+ 	mtd->writebufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
+ 
+-	mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
+-
+ 	if (cfi->cfi_mode == CFI_MODE_CFI) {
+ 		/*
+ 		 * It's a real CFI chip, not one for which the probe
+@@ -646,7 +644,6 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
+ 		goto setup_err;
+ 
+ 	__module_get(THIS_MODULE);
+-	register_reboot_notifier(&mtd->reboot_notifier);
+ 	return mtd;
+ 
+  setup_err:
+@@ -2605,7 +2602,7 @@ static void cfi_intelext_resume(struct mtd_info *mtd)
+ 		cfi_intelext_restore_locks(mtd);
  }
  
-+/**
-+ * nand_shutdown - [MTD Interface] Finish the current NAND operation and
-+ *                 prevent further operations
-+ * @mtd: MTD device structure
-+ */
-+static void nand_shutdown(struct mtd_info *mtd)
-+{
-+	nand_get_device(mtd, FL_SHUTDOWN);
-+}
-+
- /* Set default functions */
- static void nand_set_defaults(struct nand_chip *chip, int busw)
+-static int cfi_intelext_reset(struct mtd_info *mtd)
++static void cfi_intelext_reset(struct mtd_info *mtd)
  {
-@@ -4146,6 +4156,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	mtd->_unlock = NULL;
- 	mtd->_suspend = nand_suspend;
- 	mtd->_resume = nand_resume;
-+	mtd->_reboot = nand_shutdown;
- 	mtd->_block_isreserved = nand_block_isreserved;
- 	mtd->_block_isbad = nand_block_isbad;
- 	mtd->_block_markbad = nand_block_markbad;
+ 	struct map_info *map = mtd->priv;
+ 	struct cfi_private *cfi = map->fldrv_priv;
+@@ -2626,18 +2623,6 @@ static int cfi_intelext_reset(struct mtd_info *mtd)
+ 		}
+ 		mutex_unlock(&chip->mutex);
+ 	}
+-
+-	return 0;
+-}
+-
+-static int cfi_intelext_reboot(struct notifier_block *nb, unsigned long val,
+-			       void *v)
+-{
+-	struct mtd_info *mtd;
+-
+-	mtd = container_of(nb, struct mtd_info, reboot_notifier);
+-	cfi_intelext_reset(mtd);
+-	return NOTIFY_DONE;
+ }
+ 
+ static void cfi_intelext_destroy(struct mtd_info *mtd)
+@@ -2647,7 +2632,6 @@ static void cfi_intelext_destroy(struct mtd_info *mtd)
+ 	struct mtd_erase_region_info *region;
+ 	int i;
+ 	cfi_intelext_reset(mtd);
+-	unregister_reboot_notifier(&mtd->reboot_notifier);
+ 	kfree(cfi->cmdset_priv);
+ 	kfree(cfi->cfiq);
+ 	kfree(cfi->chips[0].priv);
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index c50d8cf0f60d..c4f63482cf96 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -31,7 +31,6 @@
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+-#include <linux/reboot.h>
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/mtd/map.h>
+@@ -57,7 +56,7 @@ static int cfi_amdstd_erase_varsize(struct mtd_info *, struct erase_info *);
+ static void cfi_amdstd_sync (struct mtd_info *);
+ static int cfi_amdstd_suspend (struct mtd_info *);
+ static void cfi_amdstd_resume (struct mtd_info *);
+-static int cfi_amdstd_reboot(struct notifier_block *, unsigned long, void *);
++static void cfi_amdstd_reset(struct mtd_info *);
+ static int cfi_amdstd_get_fact_prot_info(struct mtd_info *, size_t,
+ 					 size_t *, struct otp_info *);
+ static int cfi_amdstd_get_user_prot_info(struct mtd_info *, size_t,
+@@ -529,6 +528,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ 	mtd->_sync    = cfi_amdstd_sync;
+ 	mtd->_suspend = cfi_amdstd_suspend;
+ 	mtd->_resume  = cfi_amdstd_resume;
++	mtd->_reboot  = cfi_amdstd_reset;
+ 	mtd->_read_user_prot_reg = cfi_amdstd_read_user_prot_reg;
+ 	mtd->_read_fact_prot_reg = cfi_amdstd_read_fact_prot_reg;
+ 	mtd->_get_fact_prot_info = cfi_amdstd_get_fact_prot_info;
+@@ -544,7 +544,6 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ 			mtd->writebufsize);
+ 
+ 	mtd->_panic_write = cfi_amdstd_panic_write;
+-	mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
+ 
+ 	if (cfi->cfi_mode==CFI_MODE_CFI){
+ 		unsigned char bootloc;
+@@ -717,7 +716,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+ 	}
+ 
+ 	__module_get(THIS_MODULE);
+-	register_reboot_notifier(&mtd->reboot_notifier);
+ 	return mtd;
+ 
+  setup_err:
+@@ -2871,7 +2869,7 @@ static void cfi_amdstd_resume(struct mtd_info *mtd)
+  * the flash is in query/program/erase mode will prevent the CPU from
+  * fetching the bootloader code, requiring a hard reset or power cycle.
+  */
+-static int cfi_amdstd_reset(struct mtd_info *mtd)
++static void cfi_amdstd_reset(struct mtd_info *mtd)
+ {
+ 	struct map_info *map = mtd->priv;
+ 	struct cfi_private *cfi = map->fldrv_priv;
+@@ -2893,19 +2891,6 @@ static int cfi_amdstd_reset(struct mtd_info *mtd)
+ 
+ 		mutex_unlock(&chip->mutex);
+ 	}
+-
+-	return 0;
+-}
+-
+-
+-static int cfi_amdstd_reboot(struct notifier_block *nb, unsigned long val,
+-			       void *v)
+-{
+-	struct mtd_info *mtd;
+-
+-	mtd = container_of(nb, struct mtd_info, reboot_notifier);
+-	cfi_amdstd_reset(mtd);
+-	return NOTIFY_DONE;
+ }
+ 
+ 
+@@ -2915,7 +2900,6 @@ static void cfi_amdstd_destroy(struct mtd_info *mtd)
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 
+ 	cfi_amdstd_reset(mtd);
+-	unregister_reboot_notifier(&mtd->reboot_notifier);
+ 	kfree(cfi->cmdset_priv);
+ 	kfree(cfi->cfiq);
+ 	kfree(cfi);
 -- 
 1.9.1
