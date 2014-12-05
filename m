@@ -1,17 +1,18 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xx023-00043w-Cf
- for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 21:03:20 +0000
-Message-ID: <54821D80.50703@nod.at>
-Date: Fri, 05 Dec 2014 22:02:56 +0100
+ id 1Xx07H-0006kn-N4
+ for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 21:08:44 +0000
+Message-ID: <54821EC3.3030107@nod.at>
+Date: Fri, 05 Dec 2014 22:08:19 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
-Subject: Re: [PATCH 5/6] UBI: Split __wl_get_peb()
+Subject: Re: [PATCH 4/6] UBI: Fastmap: Fix races in ubi_wl_get_peb()
 References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <1416835236-25185-6-git-send-email-richard@nod.at>
- <5481EE65.1090705@codeaurora.org>
-In-Reply-To: <5481EE65.1090705@codeaurora.org>
+ <1416835236-25185-5-git-send-email-richard@nod.at>
+ <5481AE79.1090900@codeaurora.org> <5481B120.5020409@nod.at>
+ <5481E336.8090303@codeaurora.org>
+In-Reply-To: <5481E336.8090303@codeaurora.org>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -26,68 +27,127 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Tanya,
 
-Am 05.12.2014 um 18:41 schrieb Tanya Brokhman:
-> On 11/24/2014 3:20 PM, Richard Weinberger wrote:
->> Make it two functions, wl_get_wle() and wl_get_peb().
->> wl_get_peb() works exactly like __wl_get_peb() but wl_get_wle()
->> does not call produce_free_peb().
->> While refilling the fastmap user pool we cannot release ubi->wl_lock
->> as produce_free_peb() does.
->> Hence the fastmap logic uses now wl_get_wle().
+Am 05.12.2014 um 17:54 schrieb Tanya Brokhman:
+> Hi Richard
 > 
-> hmmm... confused... I don't see fastmap code changed
-
-It will be used in ubi_refill_pools() later.
-Patch 6/6 does this.
-I'll fix the commit message.
-
+> On 12/5/2014 3:20 PM, Richard Weinberger wrote:
+>> Tanya,
 >>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->> ---
->>   drivers/mtd/ubi/wl.c | 61 ++++++++++++++++++++++++++++++++--------------------
->>   1 file changed, 38 insertions(+), 23 deletions(-)
+>> Am 05.12.2014 um 14:09 schrieb Tanya Brokhman:
+>>> On 11/24/2014 3:20 PM, Richard Weinberger wrote:
+>>>> ubi_wl_get_peb() has two problems, it reads the pool
+>>>> size and usage counters without any protection.
+>>>> While reading one value would be perfectly fine it reads multiple
+>>>> values and compares them. This is racy and can lead to incorrect
+>>>> pool handling.
+>>>> Furthermore ubi_update_fastmap() is called without wl_lock held,
+>>>> before incrementing the used counter it needs to be checked again.
+>>>
+>>> I didn't see where you fixed the ubi_update_fastmap issue you just mentioned.
 >>
->> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
->> index 7730b97..f028b68 100644
->> --- a/drivers/mtd/ubi/wl.c
->> +++ b/drivers/mtd/ubi/wl.c
->> @@ -499,13 +499,46 @@ out:
->>   #endif
+>> This is exactly what you're questioning below.
+>> We have to recheck as the pool counter could have changed.
 >>
->>   /**
->> - * __wl_get_peb - get a physical eraseblock.
->> + * wl_get_wle - get a mean wl entry to be used by wl_get_peb() or
->> + * refill_wl_user_pool().
->> + * @ubi: UBI device description object
->> + *
->> + * This function returns a a wear leveling entry in case of success and
 > 
-> If you upload a new version, you have a double "a" here: "returns a a wear leveling"
-
-Thx!
-
->> + * NULL in case of failure.
->> + */
->> +static struct ubi_wl_entry *wl_get_wle(struct ubi_device *ubi)
->> +{
->> +    struct ubi_wl_entry *e;
->> +
->> +    e = find_mean_wl_entry(ubi, &ubi->free);
->> +    if (!e) {
->> +        ubi_err(ubi, "no free eraseblocks");
->> +        return NULL;
->> +    }
->> +
->> +    self_check_in_wl_tree(ubi, e, &ubi->free);
->> +
->> +    /*
->> +     * Move the physical eraseblock to the protection queue where it will
->> +     * be protected from being moved for some time.
->> +     */
+> Oh, I understood the commit msg a bit differently, but now I see that it was my mistake. thanks!
 > 
-> I don't think this comment is valid anymore....
+>>>> It could happen that another thread consumed all PEBs from the
+>>>> pool and the counter goes beyond ->size.
+>>>>
+>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>>>> ---
+>>>>    drivers/mtd/ubi/ubi.h |  3 ++-
+>>>>    drivers/mtd/ubi/wl.c  | 34 +++++++++++++++++++++++-----------
+>>>>    2 files changed, 25 insertions(+), 12 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+>>>> index 04c4c05..d672412 100644
+>>>> --- a/drivers/mtd/ubi/ubi.h
+>>>> +++ b/drivers/mtd/ubi/ubi.h
+>>>> @@ -439,7 +439,8 @@ struct ubi_debug_info {
+>>>>     * @pq_head: protection queue head
+>>>>     * @wl_lock: protects the @used, @free, @pq, @pq_head, @lookuptbl, @move_from,
+>>>>     *         @move_to, @move_to_put @erase_pending, @wl_scheduled, @works,
+>>>> - *         @erroneous, @erroneous_peb_count, and @fm_work_scheduled fields
+>>>> + *         @erroneous, @erroneous_peb_count, @fm_work_scheduled, @fm_pool,
+>>>> + *         and @fm_wl_pool fields
+>>>>     * @move_mutex: serializes eraseblock moves
+>>>>     * @work_sem: used to wait for all the scheduled works to finish and prevent
+>>>>     * new works from being submitted
+>>>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+>>>> index cb2e571..7730b97 100644
+>>>> --- a/drivers/mtd/ubi/wl.c
+>>>> +++ b/drivers/mtd/ubi/wl.c
+>>>> @@ -629,24 +629,36 @@ void ubi_refill_pools(struct ubi_device *ubi)
+>>>>     */
+>>>>    int ubi_wl_get_peb(struct ubi_device *ubi)
+>>>>    {
+>>>> -    int ret;
+>>>> +    int ret, retried = 0;
+>>>>        struct ubi_fm_pool *pool = &ubi->fm_pool;
+>>>>        struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
+>>>>
+>>>> -    if (!pool->size || !wl_pool->size || pool->used == pool->size ||
+>>>> -        wl_pool->used == wl_pool->size)
+>>>> +again:
+>>>> +    spin_lock(&ubi->wl_lock);
+>>>> +    /* We check here also for the WL pool because at this point we can
+>>>> +     * refill the WL pool synchronous. */
+>>>> +    if (pool->used == pool->size || wl_pool->used == wl_pool->size) {
+>>>> +        spin_unlock(&ubi->wl_lock);
+>>>>            ubi_update_fastmap(ubi);
+>>>> -
+>>>> -    /* we got not a single free PEB */
+>>>> -    if (!pool->size)
+>>>> -        ret = -ENOSPC;
+>>>> -    else {
+>>>>            spin_lock(&ubi->wl_lock);
+>>>> -        ret = pool->pebs[pool->used++];
+>>>> -        prot_queue_add(ubi, ubi->lookuptbl[ret]);
+>>>> +    }
+>>>> +
+>>>> +    if (pool->used == pool->size) {
+>>>
+>>> Im confused about this "if" condition. You just tested pool->used == pool->size in the previous "if". If in the previous if pool->used != pool->size and wl_pool->used !=
+>>> wl_pool->size, you didn't enter, the lock is still held so pool->used != pool->size still. If in the previos "if" wl_pool->used == wl_pool->size was true nd tou released the lock,
+>>> ubi_update_fastmap(ubi) was called, which refills the pools. So again, if pools were refilled pool->used would be 0 here and pool->size > 0.
+>>>
+>>> So in both cases I don't see how at this point pool->used == pool->size could ever be true?
+>>
+>> If we enter the "if (pool->used == pool->size || wl_pool->used == wl_pool->size) {" branch we unlock wl_lock and call ubi_update_fastmap().
+>> Another thread can enter ubi_wl_get_peb() and alter the pool counter. So we have to recheck the counter after taking wl_lock again.
+> 
+> hmmm... ok. Perhaps a comment could be added in the code to explain this case in a few words?
+> 
 
-Correct, will update!
+Makes sense, I'll add a comment.
+
+>>>>            spin_unlock(&ubi->wl_lock);
+>>>> +        if (retried) {
+>>>> +            ubi_err(ubi, "Unable to get a free PEB from user WL pool");
+>>>> +            ret = -ENOSPC;
+>>>> +            goto out;
+>>>> +        }
+>>>> +        retried = 1;
+>>>
+>>> Why did you decide to retry in this function? and why only 1 retry attempt? I'm not against it, trying to understand the logic.
+>>
+>> Because failing immediately with -ENOSPC is not nice.
+> 
+> Why not? this is what was done before....
+
+The behavior from before was not good.
+If we return here a -ENOSPC it is not because we ran out of free PEBs, it is because the pool contains
+no free PEBs and needs refilling.
+As between refilling the pool and requesting a fresh PEB from it another thread could "steal" all PEBs
+we retry.
+
+> I think what I really bothers me in this case is that you don't sleep, you branch immediately to retry again, so the chances that there will be context switch and free pebs appear
+> aren't that high.
+> I'm used to functions using some sort of "retry" logic to sleep before retrying. Of course sleeping isn't a good idea here. That's why the "retry" bugs me a bit.
+
+You mean a cond_resched()?
+This retry-logic is common pattern in UBI. For exmaple see ubi_wl_put_peb().
 
 Thanks,
 //richard
