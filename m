@@ -1,17 +1,17 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xwzvj-00025H-JZ
- for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 20:56:48 +0000
-Message-ID: <54821BF6.8010000@nod.at>
-Date: Fri, 05 Dec 2014 21:56:22 +0100
+ id 1Xx023-00043w-Cf
+ for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 21:03:20 +0000
+Message-ID: <54821D80.50703@nod.at>
+Date: Fri, 05 Dec 2014 22:02:56 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
-Subject: Re: [PATCH 6/6] UBI: Fastmap: Make ubi_refill_pools() fair
+Subject: Re: [PATCH 5/6] UBI: Split __wl_get_peb()
 References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <1416835236-25185-7-git-send-email-richard@nod.at>
- <5481F1A1.50609@codeaurora.org>
-In-Reply-To: <5481F1A1.50609@codeaurora.org>
+ <1416835236-25185-6-git-send-email-richard@nod.at>
+ <5481EE65.1090705@codeaurora.org>
+In-Reply-To: <5481EE65.1090705@codeaurora.org>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -26,112 +26,68 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Tanya,
 
-Am 05.12.2014 um 18:55 schrieb Tanya Brokhman:
-> Hi Richard,
-> 
+Am 05.12.2014 um 18:41 schrieb Tanya Brokhman:
 > On 11/24/2014 3:20 PM, Richard Weinberger wrote:
->> Currently ubi_refill_pools() first fills the first and then
->> the second one.
->> If only very few free PEBs are available the second pool can get
->> zero PEBs.
->> Change ubi_refill_pools() to distribute free PEBs fair between
->> all pools.
+>> Make it two functions, wl_get_wle() and wl_get_peb().
+>> wl_get_peb() works exactly like __wl_get_peb() but wl_get_wle()
+>> does not call produce_free_peb().
+>> While refilling the fastmap user pool we cannot release ubi->wl_lock
+>> as produce_free_peb() does.
+>> Hence the fastmap logic uses now wl_get_wle().
+> 
+> hmmm... confused... I don't see fastmap code changed
+
+It will be used in ubi_refill_pools() later.
+Patch 6/6 does this.
+I'll fix the commit message.
+
 >>
 >> Signed-off-by: Richard Weinberger <richard@nod.at>
 >> ---
->>   drivers/mtd/ubi/wl.c | 77 +++++++++++++++++++++++++++-------------------------
->>   1 file changed, 40 insertions(+), 37 deletions(-)
+>>   drivers/mtd/ubi/wl.c | 61 ++++++++++++++++++++++++++++++++--------------------
+>>   1 file changed, 38 insertions(+), 23 deletions(-)
 >>
 >> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
->> index f028b68..c2822f7 100644
+>> index 7730b97..f028b68 100644
 >> --- a/drivers/mtd/ubi/wl.c
 >> +++ b/drivers/mtd/ubi/wl.c
->> @@ -583,59 +583,62 @@ static void return_unused_pool_pebs(struct ubi_device *ubi,
->>   }
+>> @@ -499,13 +499,46 @@ out:
+>>   #endif
 >>
 >>   /**
->> - * refill_wl_pool - refills all the fastmap pool used by the
->> - * WL sub-system.
->> + * ubi_refill_pools - refills all fastmap PEB pools.
->>    * @ubi: UBI device description object
->>    */
->> -static void refill_wl_pool(struct ubi_device *ubi)
->> +void ubi_refill_pools(struct ubi_device *ubi)
->>   {
->> +    struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
->> +    struct ubi_fm_pool *pool = &ubi->fm_pool;
->>       struct ubi_wl_entry *e;
->> -    struct ubi_fm_pool *pool = &ubi->fm_wl_pool;
->> +    int enough;
->>
->> +    spin_lock(&ubi->wl_lock);
+>> - * __wl_get_peb - get a physical eraseblock.
+>> + * wl_get_wle - get a mean wl entry to be used by wl_get_peb() or
+>> + * refill_wl_user_pool().
+>> + * @ubi: UBI device description object
+>> + *
+>> + * This function returns a a wear leveling entry in case of success and
+> 
+> If you upload a new version, you have a double "a" here: "returns a a wear leveling"
+
+Thx!
+
+>> + * NULL in case of failure.
+>> + */
+>> +static struct ubi_wl_entry *wl_get_wle(struct ubi_device *ubi)
+>> +{
+>> +    struct ubi_wl_entry *e;
 >> +
->> +    return_unused_pool_pebs(ubi, wl_pool);
->>       return_unused_pool_pebs(ubi, pool);
->>
->> -    for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
->> -        if (!ubi->free.rb_node ||
->> -           (ubi->free_count - ubi->beb_rsvd_pebs < 5))
->> -            break;
->> +    wl_pool->size = 0;
->> +    pool->size = 0;
->>
->> -        e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
->> -        self_check_in_wl_tree(ubi, e, &ubi->free);
->> -        rb_erase(&e->u.rb, &ubi->free);
->> -        ubi->free_count--;
->> +    for (;;) {
+>> +    e = find_mean_wl_entry(ubi, &ubi->free);
+>> +    if (!e) {
+>> +        ubi_err(ubi, "no free eraseblocks");
+>> +        return NULL;
+>> +    }
+>> +
+>> +    self_check_in_wl_tree(ubi, e, &ubi->free);
+>> +
+>> +    /*
+>> +     * Move the physical eraseblock to the protection queue where it will
+>> +     * be protected from being moved for some time.
+>> +     */
 > 
-> You loop for max(pool->max_size, wl_pool->max_size) itterations. IMO, the code will be more clear if you use for(i=0; i<max(pool->max_size, wl_pool->max_size); i++) instead of "int
-> enough".
-> This is just coding style preference of course. I personally don't like for(;;) that much.... Just a suggestion. :)
+> I don't think this comment is valid anymore....
 
-I agree that it's a matter of taste. :)
-
->> +        enough = 0;
->> +        if (pool->size < pool->max_size) {
->> +            if (!ubi->free.rb_node ||
->> +               (ubi->free_count - ubi->beb_rsvd_pebs < 5))
->> +                break;
->>
->> -        pool->pebs[pool->size] = e->pnum;
->> -    }
->> -    pool->used = 0;
->> -}
->> +            e = wl_get_wle(ubi);
->> +            if (!e)
->> +                break;
->>
->> -/**
->> - * refill_wl_user_pool - refills all the fastmap pool used by ubi_wl_get_peb.
->> - * @ubi: UBI device description object
->> - */
->> -static void refill_wl_user_pool(struct ubi_device *ubi)
->> -{
->> -    struct ubi_fm_pool *pool = &ubi->fm_pool;
->> +            pool->pebs[pool->size] = e->pnum;
->> +            pool->size++;
->> +        } else
->> +            enough++;
->>
->> -    return_unused_pool_pebs(ubi, pool);
->> +        if (wl_pool->size < wl_pool->max_size) {
->> +            if (!ubi->free.rb_node ||
->> +               (ubi->free_count - ubi->beb_rsvd_pebs < 5))
->> +                break;
->>
->> -    for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
->> -        pool->pebs[pool->size] = __wl_get_peb(ubi);
->> -        if (pool->pebs[pool->size] < 0)
->> +            e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
->> +            self_check_in_wl_tree(ubi, e, &ubi->free);
->> +            rb_erase(&e->u.rb, &ubi->free);
->> +            ubi->free_count--;
-> 
-> why don't you use wl_get_peb() here?
-
-Because wl_get_peb() is not equivalent to the above code.
-We want a PEB to be used for wear-leveling not for "end users" like UBIFS.
+Correct, will update!
 
 Thanks,
 //richard
