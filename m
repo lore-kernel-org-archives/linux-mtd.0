@@ -1,25 +1,16 @@
-Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XwigK-0002eI-Db
- for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 02:31:45 +0000
-Received: by mail-pd0-f170.google.com with SMTP id v10so3772070pde.15
- for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 18:31:22 -0800 (PST)
-Date: Thu, 4 Dec 2014 18:31:19 -0800
+ id 1XwilB-0005RG-9T
+ for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 02:36:46 +0000
+Received: by mail-pa0-f46.google.com with SMTP id lj1so19085359pab.5
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Dec 2014 18:36:24 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Scott Branden <sbranden@broadcom.com>
-Subject: Re: [PATCH] mtd: add reboot notifier to mtdcore and register
- nand_shutdown with notifier
-Message-ID: <20141205023119.GM21347@ld-irv-0074>
-References: <sbranden@broadcom.com>
- <1417732658-4563-1-git-send-email-sbranden@broadcom.com>
- <5480F88D.4090707@broadcom.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5480F88D.4090707@broadcom.com>
-Cc: Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/3] mtd: implement common reboot notifier boilerplate
+Date: Thu,  4 Dec 2014 18:36:06 -0800
+Message-Id: <1417746968-28747-1-git-send-email-computersforpeace@gmail.com>
+Cc: cdoban@broadcom.com, rjui@broadcom.com,
+ Brian Norris <computersforpeace@gmail.com>, sbranden@broadcom.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +20,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 04, 2014 at 04:13:01PM -0800, Scott Branden wrote:
-> Apologies:  patch fails checkpatch due to spaces instead of tabs
-> during cut and paste.
-> 
-> But, please comment on this patch before I create a new version.
+cfi_cmdset_000{1,2}.c already implement their own reboot notifiers, and
+we're going to add one for NAND. Let's put the boilerplate in one place.
 
-I'd prefer the separation to be as I sent in the first place; one patch
-to add a generic hook for all MTD's, and one to implement the hook in
-NAND.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/mtdcore.c   | 20 ++++++++++++++++++++
+ include/linux/mtd/mtd.h |  1 +
+ 2 files changed, 21 insertions(+)
 
-I can just resend my patch (fixed up to compile correctly; I had an
-error previously), then you can just add your Tested-by.
-
-Brian
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 4c611871d7e6..b80d44f9751d 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -37,6 +37,7 @@
+ #include <linux/backing-dev.h>
+ #include <linux/gfp.h>
+ #include <linux/slab.h>
++#include <linux/reboot.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -365,6 +366,17 @@ static struct device_type mtd_devtype = {
+ 	.release	= mtd_release,
+ };
+ 
++static int mtd_reboot_notifier(struct notifier_block *n, unsigned long state,
++			       void *cmd)
++{
++       struct mtd_info *mtd;
++
++       mtd = container_of(n, struct mtd_info, reboot_notifier);
++       mtd->_reboot(mtd);
++
++       return NOTIFY_DONE;
++}
++
+ /**
+  *	add_mtd_device - register an MTD device
+  *	@mtd: pointer to new MTD device info structure
+@@ -565,6 +577,11 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 			err = -ENODEV;
+ 	}
+ 
++	if (mtd->_reboot) {
++		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
++		register_reboot_notifier(&mtd->reboot_notifier);
++	}
++
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(mtd_device_parse_register);
+@@ -579,6 +596,9 @@ int mtd_device_unregister(struct mtd_info *master)
+ {
+ 	int err;
+ 
++	if (master->_reboot)
++		unregister_reboot_notifier(&master->reboot_notifier);
++
+ 	err = del_mtd_partitions(master);
+ 	if (err)
+ 		return err;
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 031ff3a9a0bd..c06f5373d870 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -227,6 +227,7 @@ struct mtd_info {
+ 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
+ 	int (*_suspend) (struct mtd_info *mtd);
+ 	void (*_resume) (struct mtd_info *mtd);
++	void (*_reboot) (struct mtd_info *mtd);
+ 	/*
+ 	 * If the driver is something smart, like UBI, it may need to maintain
+ 	 * its own reference counting. The below functions are only for driver.
+-- 
+1.9.1
