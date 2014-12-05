@@ -1,21 +1,19 @@
-Message-ID: <5481E63C.5020208@atmel.com>
-Date: Fri, 5 Dec 2014 18:07:08 +0100
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xwwta-0002YE-Hu
+ for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 17:42:23 +0000
+Message-ID: <5481EE65.1090705@codeaurora.org>
+Date: Fri, 05 Dec 2014 19:41:57 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>, Josh Wu
- <josh.wu@atmel.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH 0/4] mtd: nand: atmel: Rework DT representation of NFC/NAND
-References: <1417732214-3292-1-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1417732214-3292-1-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: [PATCH 5/6] UBI: Split __wl_get_peb()
+References: <1416835236-25185-1-git-send-email-richard@nod.at>
+ <1416835236-25185-6-git-send-email-richard@nod.at>
+In-Reply-To: <1416835236-25185-6-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +23,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 04/12/2014 23:30, Boris Brezillon a écrit :
-> Hello,
-> 
-> While working on the EBI driver [1] I noticed that the relationship between
-> the NFC (NAND Flash Controller) and the NAND chip it is attached to would
-> make things harder to represent when moving the NAND node under the EBI bus
-> (another useless 'ranges' definition).
-> 
-> Actually this representation might be even more problematic if one wants
-> decide to connect two NAND chips on his sama5 based board, because the NFC
-> node is a child of the NAND chip node, and thus can only be attached to a
-> single NAND chip.
-> 
-> To address this problem the current series moves the NFC node outside of
-> the NAND chip device which then reference the NFC using the "atmel,nfc"
-> property.
-> 
-> The series does not implement multi-chip support, but at least the new
-> representation should make it possible.
-> 
-> Best Regards,
-> 
-> Boris
-> 
-> [1]https://lkml.org/lkml/2014/12/3/806
+On 11/24/2014 3:20 PM, Richard Weinberger wrote:
+> Make it two functions, wl_get_wle() and wl_get_peb().
+> wl_get_peb() works exactly like __wl_get_peb() but wl_get_wle()
+> does not call produce_free_peb().
+> While refilling the fastmap user pool we cannot release ubi->wl_lock
+> as produce_free_peb() does.
+> Hence the fastmap logic uses now wl_get_wle().
 
-Boris,
+hmmm... confused... I don't see fastmap code changed
 
-It sounds promising and for sure we have to think about a way to deal
-with SMC (EBI interface) and the NAND controller with its attributes
-(PMECC) or flavors (plain SMC or NFC).
+>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>   drivers/mtd/ubi/wl.c | 61 ++++++++++++++++++++++++++++++++--------------------
+>   1 file changed, 38 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+> index 7730b97..f028b68 100644
+> --- a/drivers/mtd/ubi/wl.c
+> +++ b/drivers/mtd/ubi/wl.c
+> @@ -499,13 +499,46 @@ out:
+>   #endif
+>
+>   /**
+> - * __wl_get_peb - get a physical eraseblock.
+> + * wl_get_wle - get a mean wl entry to be used by wl_get_peb() or
+> + * refill_wl_user_pool().
+> + * @ubi: UBI device description object
+> + *
+> + * This function returns a a wear leveling entry in case of success and
 
-Let's consider this as a RFC and discuss how to deal with the DT
-modifications and the representation hierarchy all together.
+If you upload a new version, you have a double "a" here: "returns a a 
+wear leveling"
 
-Thanks, bye.
+> + * NULL in case of failure.
+> + */
+> +static struct ubi_wl_entry *wl_get_wle(struct ubi_device *ubi)
+> +{
+> +	struct ubi_wl_entry *e;
+> +
+> +	e = find_mean_wl_entry(ubi, &ubi->free);
+> +	if (!e) {
+> +		ubi_err(ubi, "no free eraseblocks");
+> +		return NULL;
+> +	}
+> +
+> +	self_check_in_wl_tree(ubi, e, &ubi->free);
+> +
+> +	/*
+> +	 * Move the physical eraseblock to the protection queue where it will
+> +	 * be protected from being moved for some time.
+> +	 */
 
-> Boris Brezillon (4):
->   mtd: nand: atmel: Rework driver to separate nfc and nand nodes
->   mtd: nand: atmel: Update DT documentation after splitting NFC and NAND
->   ARM: at91/dt: sama5: move NFC nodes outside of NAND nodes
->   ARM: at91/dt: sama5: move NAND nodes into board dts/dtsi
-> 
->  .../devicetree/bindings/mtd/atmel-nand.txt         | 46 +++++++------
->  arch/arm/boot/dts/at91-sama5d3_xplained.dts        | 18 ++++-
->  arch/arm/boot/dts/at91-sama5d4ek.dts               | 16 ++++-
->  arch/arm/boot/dts/sama5d3.dtsi                     | 36 ++--------
->  arch/arm/boot/dts/sama5d3xcm.dtsi                  | 18 ++++-
->  arch/arm/boot/dts/sama5d4.dtsi                     | 36 ++--------
->  drivers/mtd/nand/atmel_nand.c                      | 76 +++++++++++++++++-----
->  7 files changed, 149 insertions(+), 97 deletions(-)
-> 
+I don't think this comment is valid anymore....
+
+> +	rb_erase(&e->u.rb, &ubi->free);
+> +	ubi->free_count--;
+> +	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
+> +
+> +	return e;
+> +}
+> +
+> +/**
+> + * wl_get_peb - get a physical eraseblock.
+>    * @ubi: UBI device description object
+>    *
+>    * This function returns a physical eraseblock in case of success and a
+>    * negative error code in case of failure.
+> + * It is the low level component of ubi_wl_get_peb() in the non-fastmap
+> + * case.
+>    */
+> -static int __wl_get_peb(struct ubi_device *ubi)
+> +static int wl_get_peb(struct ubi_device *ubi)
+>   {
+>   	int err;
+>   	struct ubi_wl_entry *e;
+> @@ -524,27 +557,9 @@ retry:
+>   		goto retry;
+>   	}
+>
+> -	e = find_mean_wl_entry(ubi, &ubi->free);
+> -	if (!e) {
+> -		ubi_err(ubi, "no free eraseblocks");
+> -		return -ENOSPC;
+> -	}
+> -
+> -	self_check_in_wl_tree(ubi, e, &ubi->free);
+> -
+> -	/*
+> -	 * Move the physical eraseblock to the protection queue where it will
+> -	 * be protected from being moved for some time.
+> -	 */
+> -	rb_erase(&e->u.rb, &ubi->free);
+> -	ubi->free_count--;
+> -	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
+> -#ifndef CONFIG_MTD_UBI_FASTMAP
+> -	/* We have to enqueue e only if fastmap is disabled,
+> -	 * is fastmap enabled prot_queue_add() will be called by
+> -	 * ubi_wl_get_peb() after removing e from the pool. */
+> +	e = wl_get_wle(ubi);
+>   	prot_queue_add(ubi, e);
+> -#endif
+> +
+>   	return e->pnum;
+>   }
+>
+> @@ -704,7 +719,7 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
+>   	int peb, err;
+>
+>   	spin_lock(&ubi->wl_lock);
+> -	peb = __wl_get_peb(ubi);
+> +	peb = wl_get_peb(ubi);
+>   	spin_unlock(&ubi->wl_lock);
+>
+>   	if (peb < 0)
+>
 
 
+Thanks,
+Tanya Brokhman
 -- 
-Nicolas Ferre
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
