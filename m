@@ -1,20 +1,24 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-oi0-x229.google.com ([2607:f8b0:4003:c06::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xww9Q-0000Ct-C4
- for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 16:54:41 +0000
-Message-ID: <5481E336.8090303@codeaurora.org>
-Date: Fri, 05 Dec 2014 18:54:14 +0200
-From: Tanya Brokhman <tlinder@codeaurora.org>
+ id 1XwwFq-0004Mc-BL
+ for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 17:01:19 +0000
+Received: by mail-oi0-f41.google.com with SMTP id a3so723463oib.14
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Dec 2014 09:00:57 -0800 (PST)
+Received: from [10.81.16.218] (gate-tx3.freescale.com. [192.88.168.1])
+ by mx.google.com with ESMTPSA id s4sm3347125oep.17.2014.12.05.09.00.56
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 05 Dec 2014 09:00:56 -0800 (PST)
+Message-ID: <5481E4C7.5010507@gmail.com>
+Date: Fri, 05 Dec 2014 11:00:55 -0600
+From: gmail <xhnjupt@gmail.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
-Subject: Re: [PATCH 4/6] UBI: Fastmap: Fix races in ubi_wl_get_peb()
-References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <1416835236-25185-5-git-send-email-richard@nod.at>
- <5481AE79.1090900@codeaurora.org> <5481B120.5020409@nod.at>
-In-Reply-To: <5481B120.5020409@nod.at>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+To: linux-mtd@lists.infradead.org
+Subject: Re: MTD Read OOB Question
+References: <54812742.8050407@gmail.com>
+In-Reply-To: <54812742.8050407@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,130 +28,172 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard
+Hi,
 
-On 12/5/2014 3:20 PM, Richard Weinberger wrote:
-> Tanya,
+Too clarify my question, test log was attached. The data in brackets are 
+the first 10 bytes of OOB and the first data is for badblock pattern 
+check. The log shows the inconsistency of raw read OOB data. Please 
+check the block 2716 in first round and the block 4131 in second round.
+
+The first round test:
+===========================================================
+nand: Micron MT29F128G08CFAABWP
+nand: 8192MiB, MLC, page size: 8192, OOB size: 448
+nand: 2 chips detected
+gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
+Scanning device for bad blocks
+Bad eraseblock 90 at 0x00000b400000    [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 91 at 0x00000b600000    [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 279 at 0x000022e00000   [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 708 at 0x000058800000   [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 805 at 0x000064a00000   [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 897 at 0x000070200000   [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 990 at 0x00007bc00000   [f7 ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 1217 at 0x000098200000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 1337 at 0x0000a7200000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 1671 at 0x0000d0e00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 1756 at 0x0000db800000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 1790 at 0x0000dfc00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 2432 at 0x000130000000  [ef ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 2463 at 0x000133e00000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 2611 at 0x000146600000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 2716 at 0x000153800000  [fb ff ff ff ff ff ff ff ff ff]  
+<-- Does _NOT_ appear in other rounds
+Bad eraseblock 3436 at 0x0001ad800000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 3584 at 0x0001c0000000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 3667 at 0x0001ca600000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 3772 at 0x0001d7800000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 3974 at 0x0001f0c00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4058 at 0x0001fb400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4131 at 0x000204600000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 4135 at 0x000204e00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4186 at 0x00020b400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4187 at 0x00020b600000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4871 at 0x000260e00000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 4952 at 0x00026b000000  [f7 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5010 at 0x000272400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5018 at 0x000273400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5114 at 0x00027f400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5358 at 0x00029dc00000  [bf 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5712 at 0x0002ca000000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 6017 at 0x0002f0200000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 6066 at 0x0002f6400000  [fb 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 6225 at 0x00030a200000  [ef ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 6806 at 0x000352c00000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 7105 at 0x000378200000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 7536 at 0x0003ae000000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 7906 at 0x0003dc400000  [bf 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 7935 at 0x0003dfe00000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 8139 at 0x0003f9600000  [bf 00 00 00 00 00 00 00 00 00]
+
+The second round test:
+===========================================================
+nand: Micron MT29F128G08CFAABWP
+nand: 8192MiB, MLC, page size: 8192, OOB size: 448
+nand: 2 chips detected
+gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
+Scanning device for bad blocks
+Bad eraseblock 90 at 0x00000b400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 91 at 0x00000b600000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 279 at 0x000022e00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 708 at 0x000058800000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 805 at 0x000064a00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 897 at 0x000070200000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 990 at 0x00007bc00000  [f7 ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 1217 at 0x000098200000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 1337 at 0x0000a7200000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 1671 at 0x0000d0e00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 1756 at 0x0000db800000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 1790 at 0x0000dfc00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 2432 at 0x000130000000  [ef ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 2463 at 0x000133e00000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 2611 at 0x000146600000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 3436 at 0x0001ad800000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 3584 at 0x0001c0000000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 3667 at 0x0001ca600000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 3772 at 0x0001d7800000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 3974 at 0x0001f0c00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4058 at 0x0001fb400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4131 at 0x000204600000  [bf ff ff ff ff ff ff ff ff ff]  
+<-- Does _NOT_ appear in third round
+Bad eraseblock 4135 at 0x000204e00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4186 at 0x00020b400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4187 at 0x00020b600000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4871 at 0x000260e00000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 4952 at 0x00026b000000  [f7 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5010 at 0x000272400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5018 at 0x000273400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5114 at 0x00027f400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5358 at 0x00029dc00000  [bf 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5712 at 0x0002ca000000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 6017 at 0x0002f0200000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 6066 at 0x0002f6400000  [fb 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 6225 at 0x00030a200000  [ef ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 6806 at 0x000352c00000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 7105 at 0x000378200000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 7536 at 0x0003ae000000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 7906 at 0x0003dc400000  [bf 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 7935 at 0x0003dfe00000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 8139 at 0x0003f9600000  [bf 00 00 00 00 00 00 00 00 00]
+
+The third round test:
+===========================================================
+nand: Micron MT29F128G08CFAABWP
+nand: 8192MiB, MLC, page size: 8192, OOB size: 448
+nand: 2 chips detected
+gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
+Scanning device for bad blocks
+Bad eraseblock 90 at 0x00000b400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 91 at 0x00000b600000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 279 at 0x000022e00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 708 at 0x000058800000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 805 at 0x000064a00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 897 at 0x000070200000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 990 at 0x00007bc00000  [f7 ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 1217 at 0x000098200000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 1337 at 0x0000a7200000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 1671 at 0x0000d0e00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 1756 at 0x0000db800000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 1790 at 0x0000dfc00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 2432 at 0x000130000000  [ef ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 2463 at 0x000133e00000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 2611 at 0x000146600000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 3436 at 0x0001ad800000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 3584 at 0x0001c0000000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 3667 at 0x0001ca600000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 3772 at 0x0001d7800000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 3974 at 0x0001f0c00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4058 at 0x0001fb400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4135 at 0x000204e00000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4186 at 0x00020b400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4187 at 0x00020b600000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 4871 at 0x000260e00000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 4952 at 0x00026b000000  [f7 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5010 at 0x000272400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5018 at 0x000273400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5114 at 0x00027f400000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5358 at 0x00029dc00000  [bf 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 5712 at 0x0002ca000000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 6017 at 0x0002f0200000  [00 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 6066 at 0x0002f6400000  [fb 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 6225 at 0x00030a200000  [ef ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 6806 at 0x000352c00000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 7105 at 0x000378200000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 7536 at 0x0003ae000000  [fb ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 7906 at 0x0003dc400000  [bf 00 00 00 00 00 00 00 00 00]
+Bad eraseblock 7935 at 0x0003dfe00000  [bf ff ff ff ff ff ff ff ff ff]
+Bad eraseblock 8139 at 0x0003f9600000  [bf 00 00 00 00 00 00 00 00 00]
+
+On 12/4/2014 9:32 PM, gmail wrote:
+> Hi,
 >
-> Am 05.12.2014 um 14:09 schrieb Tanya Brokhman:
->> On 11/24/2014 3:20 PM, Richard Weinberger wrote:
->>> ubi_wl_get_peb() has two problems, it reads the pool
->>> size and usage counters without any protection.
->>> While reading one value would be perfectly fine it reads multiple
->>> values and compares them. This is racy and can lead to incorrect
->>> pool handling.
->>> Furthermore ubi_update_fastmap() is called without wl_lock held,
->>> before incrementing the used counter it needs to be checked again.
->>
->> I didn't see where you fixed the ubi_update_fastmap issue you just mentioned.
+> I have a question about how mtd read OOB. Does MTD assume the OOB is not
+> covered by ECC? I think if raw read the OOB data, it hardly to guarantee
+> the data consistency. I met this issue when system scans BBT, the BBT 
+> list
+> changes in each time.
 >
-> This is exactly what you're questioning below.
-> We have to recheck as the pool counter could have changed.
+> Is that a general problem? Any comments for it? Thanks.
 >
-
-Oh, I understood the commit msg a bit differently, but now I see that it 
-was my mistake. thanks!
-
->>> It could happen that another thread consumed all PEBs from the
->>> pool and the counter goes beyond ->size.
->>>
->>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>> ---
->>>    drivers/mtd/ubi/ubi.h |  3 ++-
->>>    drivers/mtd/ubi/wl.c  | 34 +++++++++++++++++++++++-----------
->>>    2 files changed, 25 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
->>> index 04c4c05..d672412 100644
->>> --- a/drivers/mtd/ubi/ubi.h
->>> +++ b/drivers/mtd/ubi/ubi.h
->>> @@ -439,7 +439,8 @@ struct ubi_debug_info {
->>>     * @pq_head: protection queue head
->>>     * @wl_lock: protects the @used, @free, @pq, @pq_head, @lookuptbl, @move_from,
->>>     *         @move_to, @move_to_put @erase_pending, @wl_scheduled, @works,
->>> - *         @erroneous, @erroneous_peb_count, and @fm_work_scheduled fields
->>> + *         @erroneous, @erroneous_peb_count, @fm_work_scheduled, @fm_pool,
->>> + *         and @fm_wl_pool fields
->>>     * @move_mutex: serializes eraseblock moves
->>>     * @work_sem: used to wait for all the scheduled works to finish and prevent
->>>     * new works from being submitted
->>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
->>> index cb2e571..7730b97 100644
->>> --- a/drivers/mtd/ubi/wl.c
->>> +++ b/drivers/mtd/ubi/wl.c
->>> @@ -629,24 +629,36 @@ void ubi_refill_pools(struct ubi_device *ubi)
->>>     */
->>>    int ubi_wl_get_peb(struct ubi_device *ubi)
->>>    {
->>> -    int ret;
->>> +    int ret, retried = 0;
->>>        struct ubi_fm_pool *pool = &ubi->fm_pool;
->>>        struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
->>>
->>> -    if (!pool->size || !wl_pool->size || pool->used == pool->size ||
->>> -        wl_pool->used == wl_pool->size)
->>> +again:
->>> +    spin_lock(&ubi->wl_lock);
->>> +    /* We check here also for the WL pool because at this point we can
->>> +     * refill the WL pool synchronous. */
->>> +    if (pool->used == pool->size || wl_pool->used == wl_pool->size) {
->>> +        spin_unlock(&ubi->wl_lock);
->>>            ubi_update_fastmap(ubi);
->>> -
->>> -    /* we got not a single free PEB */
->>> -    if (!pool->size)
->>> -        ret = -ENOSPC;
->>> -    else {
->>>            spin_lock(&ubi->wl_lock);
->>> -        ret = pool->pebs[pool->used++];
->>> -        prot_queue_add(ubi, ubi->lookuptbl[ret]);
->>> +    }
->>> +
->>> +    if (pool->used == pool->size) {
->>
->> Im confused about this "if" condition. You just tested pool->used == pool->size in the previous "if". If in the previous if pool->used != pool->size and wl_pool->used !=
->> wl_pool->size, you didn't enter, the lock is still held so pool->used != pool->size still. If in the previos "if" wl_pool->used == wl_pool->size was true nd tou released the lock,
->> ubi_update_fastmap(ubi) was called, which refills the pools. So again, if pools were refilled pool->used would be 0 here and pool->size > 0.
->>
->> So in both cases I don't see how at this point pool->used == pool->size could ever be true?
+> Han Xu
 >
-> If we enter the "if (pool->used == pool->size || wl_pool->used == wl_pool->size) {" branch we unlock wl_lock and call ubi_update_fastmap().
-> Another thread can enter ubi_wl_get_peb() and alter the pool counter. So we have to recheck the counter after taking wl_lock again.
-
-hmmm... ok. Perhaps a comment could be added in the code to explain this 
-case in a few words?
-
->
->>>            spin_unlock(&ubi->wl_lock);
->>> +        if (retried) {
->>> +            ubi_err(ubi, "Unable to get a free PEB from user WL pool");
->>> +            ret = -ENOSPC;
->>> +            goto out;
->>> +        }
->>> +        retried = 1;
->>
->> Why did you decide to retry in this function? and why only 1 retry attempt? I'm not against it, trying to understand the logic.
->
-> Because failing immediately with -ENOSPC is not nice.
-
-Why not? this is what was done before....
-I think what I really bothers me in this case is that you don't sleep, 
-you branch immediately to retry again, so the chances that there will be 
-context switch and free pebs appear aren't that high.
-I'm used to functions using some sort of "retry" logic to sleep before 
-retrying. Of course sleeping isn't a good idea here. That's why the 
-"retry" bugs me a bit.
-
-Before we do that I'll give UBI a second chance to produce a free PEB.
->
-> Thanks,
-> //richard
->
-
-
-Thanks,
-Tanya Brokhman
--- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
