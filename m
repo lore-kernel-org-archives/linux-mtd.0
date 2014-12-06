@@ -1,29 +1,23 @@
-Received: from mail-ie0-x22b.google.com ([2607:f8b0:4001:c03::22b])
+Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xx1OI-0003nw-9z
- for linux-mtd@lists.infradead.org; Fri, 05 Dec 2014 22:30:22 +0000
-Received: by mail-ie0-f171.google.com with SMTP id rl12so1604577iec.16
- for <linux-mtd@lists.infradead.org>; Fri, 05 Dec 2014 14:30:01 -0800 (PST)
+ id 1Xx6WJ-0006Ic-75
+ for linux-mtd@lists.infradead.org; Sat, 06 Dec 2014 03:58:59 +0000
+Received: by mail-ig0-f179.google.com with SMTP id r2so347631igi.0
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Dec 2014 19:58:38 -0800 (PST)
+Received: from [192.168.0.50]
+ (CPE0026f3330aca-CM0026f3330ac6.cpe.net.cable.rogers.com. [99.231.92.7])
+ by mx.google.com with ESMTPSA id l7sm241449igv.12.2014.12.05.19.58.36
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 05 Dec 2014 19:58:37 -0800 (PST)
+Message-ID: <54827EEB.7030305@gmail.com>
+Date: Fri, 05 Dec 2014 22:58:35 -0500
+From: nick <xerofoify@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1417808133-20719-3-git-send-email-grmoore@opensource.altera.com>
-References: <1417808133-20719-1-git-send-email-grmoore@opensource.altera.com>
- <1417808133-20719-3-git-send-email-grmoore@opensource.altera.com>
-Date: Fri, 5 Dec 2014 23:30:00 +0100
-Message-ID: <CACna6ry0WBwcqH74sub-C=e0oGsPEoqXZ4O7uAwGcJC9Zc2zJw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
- Controller.
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Graham Moore <grmoore@opensource.altera.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Alan Tull <atull@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: What does oob stand for in mtd.h?
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,31 +27,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5 December 2014 at 20:35, Graham Moore <grmoore@opensource.altera.com> w=
-rote:
-> +               if (of_modalias_node(np, modalias, sizeof(modalias)) < 0)
-> +                       goto probe_failed;
-> +
-> +               ret =3D spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
-> +               if (ret)
-> +                       goto probe_failed;
-> (...)
-> +
-> +static struct of_device_id cqspi_dt_ids[] =3D {
-> +       {.compatible =3D "cdns,qspi-nor",},
-> +       { /* end of table */ }
-> +};
-
-AFAIU of_modalias_node will give you "qspi-nor" string. Second
-argument passed to the spi_nor_scan is a chip name you expect on the
-device. Of course passing "qspi-nor" (if I'm right about
-of_modalias_node) doesn't make any sense.
-
-Since my commit
-mtd: spi-nor: allow NULL as chip name and try to auto detect it
-second argument is optional.
-
-Can you simply pass NULL instead of modalias?
-
---=20
-Rafa=C5=82
+Greetings MTD subsystem developers,
+I am wondering what oob stands for in mtd.h as a lot of functions are using it in their names. This would greatly need in me understanding the core of this subsystem if something points out what this stands for.
+Regards and Thanks,
+Nick 
