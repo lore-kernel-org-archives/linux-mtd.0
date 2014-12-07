@@ -1,21 +1,17 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XxcAv-0000uk-UD
- for linux-mtd@lists.infradead.org; Sun, 07 Dec 2014 13:47:03 +0000
-Message-ID: <54845A3B.6020607@nod.at>
-Date: Sun, 07 Dec 2014 14:46:35 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1XxcE9-0001i6-Dd
+ for linux-mtd@lists.infradead.org; Sun, 07 Dec 2014 13:50:21 +0000
+Message-ID: <54845B03.6080706@codeaurora.org>
+Date: Sun, 07 Dec 2014 15:49:55 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
-Subject: Re: [PATCH 1/6] UBI: Fastmap: Fix memory leaks while closing the
- WL sub-system
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: [PATCH 2/6] UBI: Fastmap: Don't allocate new ubi_wl_entry objects
 References: <1417347340-6872-1-git-send-email-richard@nod.at>
- <1417347340-6872-2-git-send-email-richard@nod.at>
- <54840C44.4090406@codeaurora.org> <548423E3.8010106@nod.at>
- <54843AE2.6070608@codeaurora.org> <54843B48.6020701@nod.at>
- <5484559D.8070407@codeaurora.org>
-In-Reply-To: <5484559D.8070407@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252
+ <1417347340-6872-3-git-send-email-richard@nod.at>
+In-Reply-To: <1417347340-6872-3-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,12 +23,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 07.12.2014 um 14:26 schrieb Tanya Brokhman:
-> you're right, found it at ubi_detach_mtd_dev() several lines after calling ubi_wl_close(). But if you're creating a fastmap-close dedicated function, fm_buf should be freed in it
-> as it is fastmap related.
+On 11/30/2014 1:35 PM, Richard Weinberger wrote:
+> There is no need to allocate new ones every time, we can reuse
+> the existing ones.
+> This makes the code cleaner and more easy to follow.
+>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-The idea was to have WL related stuff in this function.
-But I can add more into it in a subsequent patch.
+Reviewed-by: Tanya Brokhman <tlinder@codeaurora.org>
+
+> ---
+>   drivers/mtd/ubi/fastmap.c | 31 +++++--------------------------
+>   drivers/mtd/ubi/wl.c      | 11 +++++++----
+>   2 files changed, 12 insertions(+), 30 deletions(-)
+>
+> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+> index db3defd..9507702 100644
+> --- a/drivers/mtd/ubi/fastmap.c
+> +++ b/drivers/mtd/ubi/fastmap.c
+> @@ -1446,19 +1446,6 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+>   	}
+>
+>   	new_fm->used_blocks = ubi->fm_size / ubi->leb_size;
+> -
+> -	for (i = 0; i < new_fm->used_blocks; i++) {
+> -		new_fm->e[i] = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
+> -		if (!new_fm->e[i]) {
+> -			while (i--)
+> -				kfree(new_fm->e[i]);
+> -
+> -			kfree(new_fm);
+> -			mutex_unlock(&ubi->fm_mutex);
+> -			return -ENOMEM;
+> -		}
+> -	}
+> -
+>   	old_fm = ubi->fm;
+>   	ubi->fm = NULL;
+>
+> @@ -1494,12 +1481,9 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+>   				ubi_err(ubi, "could not erase old fastmap PEB");
+>   				goto err;
+>   			}
+> -
+> -			new_fm->e[i]->pnum = old_fm->e[i]->pnum;
+> -			new_fm->e[i]->ec = old_fm->e[i]->ec;
+> +			new_fm->e[i] = old_fm->e[i];
+>   		} else {
+> -			new_fm->e[i]->pnum = tmp_e->pnum;
+> -			new_fm->e[i]->ec = tmp_e->ec;
+> +			new_fm->e[i] = tmp_e;
+>
+>   			if (old_fm)
+>   				ubi_wl_put_fm_peb(ubi, old_fm->e[i], i,
+> @@ -1524,16 +1508,13 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+>   							  i, 0);
+>   				goto err;
+>   			}
+> -
+> -			new_fm->e[0]->pnum = old_fm->e[0]->pnum;
+> +			new_fm->e[0] = old_fm->e[0];
+>   			new_fm->e[0]->ec = ret;
+>   		} else {
+>   			/* we've got a new anchor PEB, return the old one */
+>   			ubi_wl_put_fm_peb(ubi, old_fm->e[0], 0,
+>   					  old_fm->to_be_tortured[0]);
+> -
+> -			new_fm->e[0]->pnum = tmp_e->pnum;
+> -			new_fm->e[0]->ec = tmp_e->ec;
+> +			new_fm->e[0] = tmp_e;
+>   		}
+>   	} else {
+>   		if (!tmp_e) {
+> @@ -1546,9 +1527,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+>   			ret = -ENOSPC;
+>   			goto err;
+>   		}
+> -
+> -		new_fm->e[0]->pnum = tmp_e->pnum;
+> -		new_fm->e[0]->ec = tmp_e->ec;
+> +		new_fm->e[0] = tmp_e;
+>   	}
+>
+>   	down_write(&ubi->work_sem);
+> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+> index 47b215f..523d8a4 100644
+> --- a/drivers/mtd/ubi/wl.c
+> +++ b/drivers/mtd/ubi/wl.c
+> @@ -1014,9 +1014,6 @@ int ubi_wl_put_fm_peb(struct ubi_device *ubi, struct ubi_wl_entry *fm_e,
+>   		e = fm_e;
+>   		ubi_assert(e->ec >= 0);
+>   		ubi->lookuptbl[pnum] = e;
+> -	} else {
+> -		e->ec = fm_e->ec;
+> -		kfree(fm_e);
+>   	}
+>
+>   	spin_unlock(&ubi->wl_lock);
+> @@ -2008,9 +2005,15 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+>
+>   	dbg_wl("found %i PEBs", found_pebs);
+>
+> -	if (ubi->fm)
+> +	if (ubi->fm) {
+>   		ubi_assert(ubi->good_peb_count == \
+>   			   found_pebs + ubi->fm->used_blocks);
+> +
+> +		for (i = 0; i < ubi->fm->used_blocks; i++) {
+> +			e = ubi->fm->e[i];
+> +			ubi->lookuptbl[e->pnum] = e;
+> +		}
+> +	}
+>   	else
+>   		ubi_assert(ubi->good_peb_count == found_pebs);
+>
+>
+
 
 Thanks,
-//richard
+Tanya Brokhman
+-- 
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
