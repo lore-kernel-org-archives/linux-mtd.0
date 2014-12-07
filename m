@@ -1,22 +1,22 @@
-Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xxbok-0001uT-71
- for linux-mtd@lists.infradead.org; Sun, 07 Dec 2014 13:24:06 +0000
-Received: by mail-ig0-f175.google.com with SMTP id h15so1519966igd.14
- for <linux-mtd@lists.infradead.org>; Sun, 07 Dec 2014 05:23:41 -0800 (PST)
-Message-ID: <548454DA.9060902@gmail.com>
-Date: Sun, 07 Dec 2014 08:23:38 -0500
-From: nick <xerofoify@gmail.com>
+ id 1Xxbrp-0003HE-Nc
+ for linux-mtd@lists.infradead.org; Sun, 07 Dec 2014 13:27:18 +0000
+Message-ID: <5484559D.8070407@codeaurora.org>
+Date: Sun, 07 Dec 2014 15:26:53 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: What does oob stand for in mtd.h?
-References: <54827EEB.7030305@gmail.com>	<CAFLxGvyzcdwfNs6DJC4XT_yFH4yJBiqV_UV-JCavmcCeSdCd4w@mail.gmail.com>	<5483B0C5.9080703@gmail.com>
- <CACna6rxHgwa8A+om-yhcGU9gr+RjauqJu_SpTuUn1_sY+OqNQA@mail.gmail.com>
-In-Reply-To: <CACna6rxHgwa8A+om-yhcGU9gr+RjauqJu_SpTuUn1_sY+OqNQA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: [PATCH 1/6] UBI: Fastmap: Fix memory leaks while closing the
+ WL sub-system
+References: <1417347340-6872-1-git-send-email-richard@nod.at>
+ <1417347340-6872-2-git-send-email-richard@nod.at>
+ <54840C44.4090406@codeaurora.org> <548423E3.8010106@nod.at>
+ <54843AE2.6070608@codeaurora.org> <54843B48.6020701@nod.at>
+In-Reply-To: <54843B48.6020701@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rafal,
-Clearly you did not read the logs more carefully. My patch was accepted for x86 kvm subsystem.
-Regards Nick
+On 12/7/2014 1:34 PM, Richard Weinberger wrote:
+> Am 07.12.2014 um 12:32 schrieb Tanya Brokhman:
+>> On 12/7/2014 11:54 AM, Richard Weinberger wrote:
+>>> Am 07.12.2014 um 09:13 schrieb Tanya Brokhman:
+>>>> On 11/30/2014 1:35 PM, Richard Weinberger wrote:
+>>>>> Add a ubi_fastmap_close() to free all resources used by fastmap
+>>>>> at WL shutdown.
+>>>>>
+>>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>>>>> ---
+>>>>>     drivers/mtd/ubi/wl.c | 21 ++++++++++++++++++---
+>>>>>     1 file changed, 18 insertions(+), 3 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+>>>>> index c2822f7..47b215f 100644
+>>>>> --- a/drivers/mtd/ubi/wl.c
+>>>>> +++ b/drivers/mtd/ubi/wl.c
+>>>>> @@ -2064,6 +2064,23 @@ static void protection_queue_destroy(struct ubi_device *ubi)
+>>>>>         }
+>>>>>     }
+>>>>>
+>>>>> +static void ubi_fastmap_close(struct ubi_device *ubi)
+>>>>> +{
+>>>>> +#ifdef CONFIG_MTD_UBI_FASTMAP
+>>>>> +    int i;
+>>>>> +
+>>>>> +    flush_work(&ubi->fm_work);
+>>>>> +    return_unused_pool_pebs(ubi, &ubi->fm_pool);
+>>>>> +    return_unused_pool_pebs(ubi, &ubi->fm_wl_pool);
+>>>>> +
+>>>>> +    if (ubi->fm) {
+>>>>> +        for (i = 0; i < ubi->fm->used_blocks; i++)
+>>>>> +            kfree(ubi->fm->e[i]);
+>>>>> +    }
+>>>>> +    kfree(ubi->fm);
+>>>>
+>>>> kfree(ubi->fm_buf)?
+>>>
+>>> No this is not a typo, I kfree() here ubi->fm by design.
+>>> What am I missing? :)
+>>
+>> I think you missed freeing ubi->fm_buf, before (not instead) you free ubi->fm :)
+>
+> No. fm_buf is vfree()d upon detach time.
 
-On 2014-12-07 05:36 AM, Rafał Miłecki wrote:
-> On 7 December 2014 at 02:43, nick <xerofoify@gmail.com> wrote:
->> I do understand your concern and if you look at the logs for lkml, I have  got two patches accepted into the mainline.
->> If there are any other ways I can prove that I am changed my attitude please let me known.
-> 
-> Your reputation seems to be known for months and only recently you
-> tried to fool us (me) with your b43 patch
-> [PATCH] drivers:net:wireless: Add mutex locking for function,
-> b43_op_beacon_set_time in main.c
-> 
-> I don't think anything has changed in the last 9 days (since b43 patch).
-> 
+you're right, found it at ubi_detach_mtd_dev() several lines after 
+calling ubi_wl_close(). But if you're creating a fastmap-close dedicated 
+function, fm_buf should be freed in it as it is fastmap related.
+
+>
+> Thanks,
+> //richard
+>
+
+
+Thanks,
+Tanya Brokhman
+-- 
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
