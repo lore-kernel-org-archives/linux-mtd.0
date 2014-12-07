@@ -1,21 +1,16 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xxcji-0005Wo-9J
- for linux-mtd@lists.infradead.org; Sun, 07 Dec 2014 14:22:59 +0000
-Message-ID: <548462A8.2010107@nod.at>
-Date: Sun, 07 Dec 2014 15:22:32 +0100
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
-Subject: Re: [PATCH 3/6] UBI: Fastmap: Notify user in case of an
- ubi_update_fastmap() failure
-References: <1417347340-6872-1-git-send-email-richard@nod.at>
- <1417347340-6872-4-git-send-email-richard@nod.at>
- <54845D53.1070903@codeaurora.org>
-In-Reply-To: <54845D53.1070903@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+To: Kukjin Kim <kgene@kernel.org>
+Subject: [PATCH 1/20] mtd: s3c2410: fix misspelling of current function in
+ string
+Date: Sun,  7 Dec 2014 20:20:43 +0100
+Message-Id: <1417980062-25151-2-git-send-email-Julia.Lawall@lip6.fr>
+In-Reply-To: <1417980062-25151-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1417980062-25151-1-git-send-email-Julia.Lawall@lip6.fr>
+Cc: linux-samsung-soc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, joe@perches.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 07.12.2014 um 14:59 schrieb Tanya Brokhman:
-> Hi Richard,
-> 
-> On 11/30/2014 1:35 PM, Richard Weinberger wrote:
->> If ubi_update_fastmap() fails notify the user.
->> This is not a hard error as ubi_update_fastmap() makes sure that upon failure
->> the current on-flash fastmap will no be used upon next UBI attach.
->>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->> ---
->>   drivers/mtd/ubi/wl.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
->> index 523d8a4..7821342 100644
->> --- a/drivers/mtd/ubi/wl.c
->> +++ b/drivers/mtd/ubi/wl.c
->> @@ -657,7 +657,11 @@ again:
->>        * refill the WL pool synchronous. */
->>       if (pool->used == pool->size || wl_pool->used == wl_pool->size) {
->>           spin_unlock(&ubi->wl_lock);
->> -        ubi_update_fastmap(ubi);
->> +        ret = ubi_update_fastmap(ubi);
->> +        if (ret) {
->> +            ubi_msg(ubi, "Unable to write a new fastmap: %i", ret);
->> +            return -ENOSPC;
-> 
-> Why do you fail the whole function (ubi_wl_get_peb) if fastmap update failed? Its possible that the fm_pools were refilled correctly, and the actual fastmap_write failed, so there
-> is nothing preventing the user to get peb allocated and continue working. You invalidate the fastmap, so if powercut occurs a full scan will be performed. So its possible to
-> allocate from fm_pools (although fastmap is not valid on disc) and try writing fastmap again when the pools filled up.
-> I'm for the ubi_msg but against "return -ENOSPC;"
+Replace a misspelled function name by %s and then __func__.
 
-Maybe the case you've described is powercut safe, but there can be other unsafe cases.
-Let's stay on the safe side and be paranoid, it does not hurt.
-If fastmap has proven stable we can start with tricky optimizations.
+s3c2410 is the name of the file, but using the exact function name should
+make it easier to connect the error message to the code.
 
-Thanks,
-//richard
+This was done using Coccinelle, including the use of Levenshtein distance,
+as proposed by Rasmus Villemoes.
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+
+---
+The semantic patch is difficult to summarize, but is available in the cover
+letter of this patch series.
+
+ drivers/mtd/nand/s3c2410.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 35aef5e..0a9c41f 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -948,7 +948,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 
+ 	cpu_type = platform_get_device_id(pdev)->driver_data;
+ 
+-	pr_debug("s3c2410_nand_probe(%p)\n", pdev);
++	pr_debug("%s(%p)\n", __func__, pdev);
+ 
+ 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+ 	if (info == NULL) {
