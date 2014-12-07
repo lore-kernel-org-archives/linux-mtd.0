@@ -1,21 +1,21 @@
-Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XxQtA-0002Zd-Rp
- for linux-mtd@lists.infradead.org; Sun, 07 Dec 2014 01:43:57 +0000
-Received: by mail-ig0-f176.google.com with SMTP id l13so1251685iga.3
- for <linux-mtd@lists.infradead.org>; Sat, 06 Dec 2014 17:43:35 -0800 (PST)
-Message-ID: <5483B0C5.9080703@gmail.com>
-Date: Sat, 06 Dec 2014 20:43:33 -0500
-From: nick <xerofoify@gmail.com>
+ id 1XxWOs-0007Gg-PV
+ for linux-mtd@lists.infradead.org; Sun, 07 Dec 2014 07:37:03 +0000
+Message-ID: <54840385.5040305@codeaurora.org>
+Date: Sun, 07 Dec 2014 09:36:37 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: What does oob stand for in mtd.h?
-References: <54827EEB.7030305@gmail.com>
- <CAFLxGvyzcdwfNs6DJC4XT_yFH4yJBiqV_UV-JCavmcCeSdCd4w@mail.gmail.com>
-In-Reply-To: <CAFLxGvyzcdwfNs6DJC4XT_yFH4yJBiqV_UV-JCavmcCeSdCd4w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: [PATCH 4/6] UBI: Fastmap: Fix races in ubi_wl_get_peb()
+References: <1416835236-25185-1-git-send-email-richard@nod.at>
+ <1416835236-25185-5-git-send-email-richard@nod.at>
+ <5481AE79.1090900@codeaurora.org> <5481B120.5020409@nod.at>
+ <5481E336.8090303@codeaurora.org> <54821EC3.3030107@nod.at>
+In-Reply-To: <54821EC3.3030107@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greetings Richard,
-I do understand your concern and if you look at the logs for lkml, I have  got two patches accepted into the mainline.
-If there are any other ways I can prove that I am changed my attitude please let me known.
+On 12/5/2014 11:08 PM, Richard Weinberger wrote:
 
-On 2014-12-06 05:55 AM, Richard Weinberger wrote:
-> On Sat, Dec 6, 2014 at 4:58 AM, nick <xerofoify@gmail.com> wrote:
->> Greetings MTD subsystem developers,
->> I am wondering what oob stands for in mtd.h as a lot of functions are using it in their names. This would greatly need in me understanding the core of this subsystem if something points out what this stands for.
->> Regards and Thanks,
->> Nick
-> 
-> BTW: I'll NACK every single patch from you which touches MTD until you
-> prove that you have a setup to test
-> your patches and completely changed your attitude.
-> 
-> http://news.softpedia.com/news/Malevolent-Developer-Trolls-Linux-Kernel-Development-with-Lots-of-Broken-Patches-453709.shtml
-> 
+>
+>>>>>             spin_unlock(&ubi->wl_lock);
+>>>>> +        if (retried) {
+>>>>> +            ubi_err(ubi, "Unable to get a free PEB from user WL pool");
+>>>>> +            ret = -ENOSPC;
+>>>>> +            goto out;
+>>>>> +        }
+>>>>> +        retried = 1;
+>>>>
+>>>> Why did you decide to retry in this function? and why only 1 retry attempt? I'm not against it, trying to understand the logic.
+>>>
+>>> Because failing immediately with -ENOSPC is not nice.
+>>
+>> Why not? this is what was done before....
+>
+> The behavior from before was not good.
+> If we return here a -ENOSPC it is not because we ran out of free PEBs, it is because the pool contains
+> no free PEBs and needs refilling.
+> As between refilling the pool and requesting a fresh PEB from it another thread could "steal" all PEBs
+> we retry.
+>
+>> I think what I really bothers me in this case is that you don't sleep, you branch immediately to retry again, so the chances that there will be context switch and free pebs appear
+>> aren't that high.
+>> I'm used to functions using some sort of "retry" logic to sleep before retrying. Of course sleeping isn't a good idea here. That's why the "retry" bugs me a bit.
+>
+> You mean a cond_resched()?
+> This retry-logic is common pattern in UBI. For exmaple see ubi_wl_put_peb().
+
+you're right. didn't pay much attention to ubi_wl_put_peb() before. 
+don't like it there either :)
+perhaps we can rethink this later for both cases.
+
+>
+> Thanks,
+> //richard
+>
+
+
+Thanks,
+Tanya Brokhman
+-- 
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
