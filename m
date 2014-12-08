@@ -1,21 +1,23 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XxsHq-0001Bp-LE
- for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 06:59:15 +0000
-Message-ID: <54854C28.4050107@codeaurora.org>
-Date: Mon, 08 Dec 2014 08:58:48 +0200
-From: Tanya Brokhman <tlinder@codeaurora.org>
+Date: Mon, 8 Dec 2014 08:11:48 +0100 (CET)
+From: Julia Lawall <julia.lawall@lip6.fr>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: [PATCH 1/20] mtd: s3c2410: fix misspelling of current function
+ in string
+In-Reply-To: <CAFLxGvyiqxQ6U6p-A-JW8Nv8OvXFGsna93afUu-Gek0EV3gATA@mail.gmail.com>
+Message-ID: <alpine.DEB.2.02.1412080809400.2100@localhost6.localdomain6>
+References: <1417980062-25151-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1417980062-25151-2-git-send-email-Julia.Lawall@lip6.fr>
+ <CAFLxGvyiqxQ6U6p-A-JW8Nv8OvXFGsna93afUu-Gek0EV3gATA@mail.gmail.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
-Subject: Re: [PATCH 3/6] UBI: Fastmap: Notify user in case of an
- ubi_update_fastmap() failure
-References: <1417347340-6872-1-git-send-email-richard@nod.at>
- <1417347340-6872-4-git-send-email-richard@nod.at>
- <54845D53.1070903@codeaurora.org> <548462A8.2010107@nod.at>
-In-Reply-To: <548462A8.2010107@nod.at>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-samsung-soc@vger.kernel.org, linux@rasmusvillemoes.dk,
+ "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, Julia Lawall <Julia.Lawall@lip6.fr>,
+ Kukjin Kim <kgene@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Joe Perches <joe@perches.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/7/2014 4:22 PM, Richard Weinberger wrote:
-> Am 07.12.2014 um 14:59 schrieb Tanya Brokhman:
->> Hi Richard,
->>
->> On 11/30/2014 1:35 PM, Richard Weinberger wrote:
->>> If ubi_update_fastmap() fails notify the user.
->>> This is not a hard error as ubi_update_fastmap() makes sure that upon failure
->>> the current on-flash fastmap will no be used upon next UBI attach.
->>>
->>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>> ---
->>>    drivers/mtd/ubi/wl.c | 6 +++++-
->>>    1 file changed, 5 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
->>> index 523d8a4..7821342 100644
->>> --- a/drivers/mtd/ubi/wl.c
->>> +++ b/drivers/mtd/ubi/wl.c
->>> @@ -657,7 +657,11 @@ again:
->>>         * refill the WL pool synchronous. */
->>>        if (pool->used == pool->size || wl_pool->used == wl_pool->size) {
->>>            spin_unlock(&ubi->wl_lock);
->>> -        ubi_update_fastmap(ubi);
->>> +        ret = ubi_update_fastmap(ubi);
->>> +        if (ret) {
->>> +            ubi_msg(ubi, "Unable to write a new fastmap: %i", ret);
->>> +            return -ENOSPC;
->>
->> Why do you fail the whole function (ubi_wl_get_peb) if fastmap update failed? Its possible that the fm_pools were refilled correctly, and the actual fastmap_write failed, so there
->> is nothing preventing the user to get peb allocated and continue working. You invalidate the fastmap, so if powercut occurs a full scan will be performed. So its possible to
->> allocate from fm_pools (although fastmap is not valid on disc) and try writing fastmap again when the pools filled up.
->> I'm for the ubi_msg but against "return -ENOSPC;"
->
-> Maybe the case you've described is powercut safe, but there can be other unsafe cases.
-> Let's stay on the safe side and be paranoid, it does not hurt.
-> If fastmap has proven stable we can start with tricky optimizations.
+> > diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> > index 35aef5e..0a9c41f 100644
+> > --- a/drivers/mtd/nand/s3c2410.c
+> > +++ b/drivers/mtd/nand/s3c2410.c
+> > @@ -948,7 +948,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+> >
+> >         cpu_type = platform_get_device_id(pdev)->driver_data;
+> >
+> > -       pr_debug("s3c2410_nand_probe(%p)\n", pdev);
+> > +       pr_debug("%s(%p)\n", __func__, pdev);
+> 
+> I think we can drop the line completely.
+> We have ftrace to trace function calls...
 
-I'm sorry that I'm being petty here but the commit msg states that you 
-"notify the user in case of update fastamap failure". It says nothing 
-about you failing ubi_wl_get_peb as well. And this is a major change. At 
-least divide this into 2 patches (so I can disagree to the function 
-failing and agree to the msg to user :) )
+Should the "initialised ok" at the end of the function be remove as well?
 
+Will it be confusing if this cleanup is done in this function, but not in 
+others where it may be useful?  Perhaps s3c2410_nand_update_chip, for 
+example?
 
-> Thanks,
-> //richard
->
-
-
-Thanks,
-Tanya Brokhman
--- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+julia
