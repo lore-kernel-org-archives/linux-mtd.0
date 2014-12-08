@@ -1,14 +1,20 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XxuU5-00039R-0j
- for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 09:20:02 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH] UBI: Fastmap: Fix possible fastmap inconsistency
-Date: Mon,  8 Dec 2014 10:19:26 +0100
-Message-Id: <1418030366-9192-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, tlinder@codeaurora.org
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XxulK-00047q-1W
+ for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 09:37:50 +0000
+Message-ID: <54857155.3040801@codeaurora.org>
+Date: Mon, 08 Dec 2014 11:37:25 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
+MIME-Version: 1.0
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: [PATCH 2/6] UBI: Fastmap: Don't allocate new ubi_wl_entry objects
+References: <1417347340-6872-1-git-send-email-richard@nod.at>
+ <1417347340-6872-3-git-send-email-richard@nod.at>
+ <54856305.2070408@codeaurora.org> <54856BE6.5090003@nod.at>
+In-Reply-To: <54856BE6.5090003@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,95 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently we call ubi_refill_pools() before all UBI meta data
-is collected for the fastmap on-flash data structure.
-It can happen that a second thread requests a new PEB and returns
-it immediately to the free list between ubi_refill_pools()
-and collecting meta data.
-In this case the same PEB will be in the free list and a fastmap
-pool.
-Upon attach time fastmap is able to detect that inconsistency
-and will fall back to scanning mode.
-But we can do better.
+On 12/8/2014 11:14 AM, Richard Weinberger wrote:
+> Am 08.12.2014 um 09:36 schrieb Tanya Brokhman:
+>> On 11/30/2014 1:35 PM, Richard Weinberger wrote:
+>>> There is no need to allocate new ones every time, we can reuse
+>>> the existing ones.
+>>> This makes the code cleaner and more easy to follow.
+>>>
+>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>>> ---
+>>>    drivers/mtd/ubi/fastmap.c | 31 +++++--------------------------
+>>>    drivers/mtd/ubi/wl.c      | 11 +++++++----
+>>>    2 files changed, 12 insertions(+), 30 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+>>> index db3defd..9507702 100644
+>>> --- a/drivers/mtd/ubi/fastmap.c
+>>> +++ b/drivers/mtd/ubi/fastmap.c
+>>> @@ -1446,19 +1446,6 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+>>>        }
+>>>
+>>>        new_fm->used_blocks = ubi->fm_size / ubi->leb_size;
+>>
+>> Not related to this patch, but looking at this function it got me thinking: why do we need to re-calculate new_fm->used_blocks (and check calculated value) each time? fm_size
+>> doesn't changed at runtime. leb_size sure does not, so fm->used_blocks can be ubi device parameter and calculated & tested only once, and not each time we write fastmap. Correct?
+>
+> If you dig deeper into the patch set you'll notice that the fastmap size can change. :-)
+>
 
-To bypass the issue just call ubi_refill_pools() under the same
-wl_lock as the meta data collecting happens.
-If fastmap is disabled we can still call ubi_refill_pools() early.
+oh, ok. sorry, still in the middle of the review.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/fastmap-wl.c |  4 ----
- drivers/mtd/ubi/fastmap.c    | 17 +++++++++--------
- 2 files changed, 9 insertions(+), 12 deletions(-)
+> Thanks,
+> //richard
+>
 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 8f109cc..6883146 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -226,8 +226,6 @@ void ubi_refill_pools(struct ubi_device *ubi)
- 	struct ubi_wl_entry *e;
- 	int enough;
- 
--	spin_lock(&ubi->wl_lock);
--
- 	return_unused_pool_pebs(ubi, wl_pool);
- 	return_unused_pool_pebs(ubi, pool);
- 
-@@ -270,8 +268,6 @@ void ubi_refill_pools(struct ubi_device *ubi)
- 
- 	wl_pool->used = 0;
- 	pool->used = 0;
--
--	spin_unlock(&ubi->wl_lock);
- }
- 
- /**
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 976e498..05b3c00 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1121,6 +1121,8 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 	spin_lock(&ubi->volumes_lock);
- 	spin_lock(&ubi->wl_lock);
- 
-+	ubi_refill_pools(ubi);
-+
- 	fmsb = (struct ubi_fm_sb *)fm_raw;
- 	fm_pos += sizeof(*fmsb);
- 	ubi_assert(fm_pos <= ubi->fm_size);
-@@ -1477,19 +1479,14 @@ int ubi_update_fastmap(struct ubi_device *ubi, struct ubi_wl_entry **forced_anch
- 
- 	down_write(&ubi->fm_protect);
- 
--	ubi_refill_pools(ubi);
--
- 	if (ubi->ro_mode || ubi->fm_disabled) {
-+		spin_lock(&ubi->wl_lock);
-+		ubi_refill_pools(ubi);
-+		spin_unlock(&ubi->wl_lock);
- 		up_write(&ubi->fm_protect);
- 		return 0;
- 	}
- 
--	ret = ubi_ensure_anchor_pebs(ubi);
--	if (ret) {
--		up_write(&ubi->fm_protect);
--		return ret;
--	}
--
- 	new_fm = kzalloc(sizeof(*new_fm), GFP_KERNEL);
- 	if (!new_fm) {
- 		up_write(&ubi->fm_protect);
-@@ -1614,6 +1611,10 @@ int ubi_update_fastmap(struct ubi_device *ubi, struct ubi_wl_entry **forced_anch
- 	if (ret)
- 		goto err;
- 
-+	ret = ubi_ensure_anchor_pebs(ubi);
-+	if (ret)
-+		goto err;
-+
- out_unlock:
- 	up_write(&ubi->fm_protect);
- 	kfree(old_fm);
+
+Thanks,
+Tanya Brokhman
 -- 
-1.8.4.5
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
