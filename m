@@ -1,20 +1,29 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XxuOs-0000B4-OA
- for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 09:14:39 +0000
-Message-ID: <54856BE6.5090003@nod.at>
-Date: Mon, 08 Dec 2014 10:14:14 +0100
+ id 1XxuRD-0001t1-Ey
+ for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 09:17:04 +0000
+Message-ID: <54856C75.1050309@nod.at>
+Date: Mon, 08 Dec 2014 10:16:37 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
-Subject: Re: [PATCH 2/6] UBI: Fastmap: Don't allocate new ubi_wl_entry objects
-References: <1417347340-6872-1-git-send-email-richard@nod.at>
- <1417347340-6872-3-git-send-email-richard@nod.at>
- <54856305.2070408@codeaurora.org>
-In-Reply-To: <54856305.2070408@codeaurora.org>
+To: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH 1/20] mtd: s3c2410: fix misspelling of current function
+ in string
+References: <1417980062-25151-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1417980062-25151-2-git-send-email-Julia.Lawall@lip6.fr>
+ <CAFLxGvyiqxQ6U6p-A-JW8Nv8OvXFGsna93afUu-Gek0EV3gATA@mail.gmail.com>
+ <alpine.DEB.2.02.1412080809400.2100@localhost6.localdomain6>
+In-Reply-To: <alpine.DEB.2.02.1412080809400.2100@localhost6.localdomain6>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-samsung-soc@vger.kernel.org,
+ "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+ linux@rasmusvillemoes.dk, LKML <linux-kernel@vger.kernel.org>,
+ Kukjin Kim <kgene@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Joe Perches <joe@perches.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +33,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 08.12.2014 um 09:36 schrieb Tanya Brokhman:
-> On 11/30/2014 1:35 PM, Richard Weinberger wrote:
->> There is no need to allocate new ones every time, we can reuse
->> the existing ones.
->> This makes the code cleaner and more easy to follow.
+Am 08.12.2014 um 08:11 schrieb Julia Lawall:
+>>> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+>>> index 35aef5e..0a9c41f 100644
+>>> --- a/drivers/mtd/nand/s3c2410.c
+>>> +++ b/drivers/mtd/nand/s3c2410.c
+>>> @@ -948,7 +948,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+>>>
+>>>         cpu_type = platform_get_device_id(pdev)->driver_data;
+>>>
+>>> -       pr_debug("s3c2410_nand_probe(%p)\n", pdev);
+>>> +       pr_debug("%s(%p)\n", __func__, pdev);
 >>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->> ---
->>   drivers/mtd/ubi/fastmap.c | 31 +++++--------------------------
->>   drivers/mtd/ubi/wl.c      | 11 +++++++----
->>   2 files changed, 12 insertions(+), 30 deletions(-)
->>
->> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
->> index db3defd..9507702 100644
->> --- a/drivers/mtd/ubi/fastmap.c
->> +++ b/drivers/mtd/ubi/fastmap.c
->> @@ -1446,19 +1446,6 @@ int ubi_update_fastmap(struct ubi_device *ubi)
->>       }
->>
->>       new_fm->used_blocks = ubi->fm_size / ubi->leb_size;
+>> I think we can drop the line completely.
+>> We have ftrace to trace function calls...
 > 
-> Not related to this patch, but looking at this function it got me thinking: why do we need to re-calculate new_fm->used_blocks (and check calculated value) each time? fm_size
-> doesn't changed at runtime. leb_size sure does not, so fm->used_blocks can be ubi device parameter and calculated & tested only once, and not each time we write fastmap. Correct?
+> Should the "initialised ok" at the end of the function be remove as well?
+> 
+> Will it be confusing if this cleanup is done in this function, but not in 
+> others where it may be useful?  Perhaps s3c2410_nand_update_chip, for 
+> example?
 
-If you dig deeper into the patch set you'll notice that the fastmap size can change. :-)
+Hmm, this driver seems to have a lot of debugging printks().
+IMHO we can remove them.
+Let's see what Brain says.
 
 Thanks,
 //richard
