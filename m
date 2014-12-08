@@ -1,9 +1,9 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xxy2I-0005oy-Gi
- for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 13:07:35 +0000
-Message-ID: <5485A27B.5060409@nod.at>
-Date: Mon, 08 Dec 2014 14:07:07 +0100
+ id 1XxyF4-0004G1-HZ
+ for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 13:20:47 +0000
+Message-ID: <5485A596.3020304@nod.at>
+Date: Mon, 08 Dec 2014 14:20:22 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
@@ -28,6 +28,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Am 08.12.2014 um 14:00 schrieb Tanya Brokhman:
+>>>>> Why do you fail the whole function (ubi_wl_get_peb) if fastmap update failed? Its possible that the fm_pools were refilled correctly, and the actual fastmap_write failed, so
+>>>>> there
+>>>>> is nothing preventing the user to get peb allocated and continue working. You invalidate the fastmap, so if powercut occurs a full scan will be performed. So its possible to
+>>>>> allocate from fm_pools (although fastmap is not valid on disc) and try writing fastmap again when the pools filled up.
+>>>>> I'm for the ubi_msg but against "return -ENOSPC;"
+>>>>
 >>>> Maybe the case you've described is powercut safe, but there can be other unsafe cases.
 >>>> Let's stay on the safe side and be paranoid, it does not hurt.
 >>>> If fastmap has proven stable we can start with tricky optimizations.
@@ -40,8 +46,9 @@ Am 08.12.2014 um 14:00 schrieb Tanya Brokhman:
 > I still don't like it.
 > Leaving this one for Artem... sorry
 
-As I said, as soon we all consider fastmap mature and stable we can start with optimizations.
-But as of now I want all logic to be on the safe side. This is how all fastmap code is designed.
+BTW: With my latest patch applied "[PATCH] UBI: Fastmap: Fix possible fastmap inconsistency" your assumption that we
+can have the pools refilled in case if an ubi_update_fastmap() error is no longer correct.
+Before my patch ubi_update_fastmap() the pools have been refilled much too early, this is an bug and got fixed.
 
 Thanks,
 //richard
