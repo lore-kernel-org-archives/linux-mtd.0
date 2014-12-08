@@ -1,24 +1,29 @@
-Received: from mail-wi0-f182.google.com ([209.85.212.182])
+Received: from mail-by2on0065.outbound.protection.outlook.com ([207.46.100.65]
+ helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XxzXX-0006lD-CX
- for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 14:43:56 +0000
-Received: by mail-wi0-f182.google.com with SMTP id h11so4964891wiw.15
- for <linux-mtd@lists.infradead.org>; Mon, 08 Dec 2014 06:43:32 -0800 (PST)
-Date: Mon, 8 Dec 2014 14:43:28 +0000
-From: Peter Griffin <peter.griffin@linaro.org>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [STLinux Kernel] [PATCH v2 RESEND 10/11] mtd: st_spi_fsm:
- Provide mask to obtain correct boot device pins
-Message-ID: <20141208144328.GA1104@griffinp-ThinkPad-X1-Carbon-2nd>
-References: <1417688512-7644-1-git-send-email-lee.jones@linaro.org>
- <1417688512-7644-11-git-send-email-lee.jones@linaro.org>
+ id 1Xy1cd-0005tU-Bz
+ for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 16:57:20 +0000
+Message-ID: <5485D7B5.2@opensource.altera.com>
+Date: Mon, 8 Dec 2014 10:54:13 -0600
+From: Graham Moore <grmoore@opensource.altera.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1417688512-7644-11-git-send-email-lee.jones@linaro.org>
-Cc: Christophe Kerello <christophe.kerello@st.com>, kernel@stlinux.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, linux-arm-kernel@lists.infradead.org
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
+ Controller.
+References: <1417808133-20719-1-git-send-email-grmoore@opensource.altera.com>
+ <1417808133-20719-3-git-send-email-grmoore@opensource.altera.com>
+ <CACna6ry0WBwcqH74sub-C=e0oGsPEoqXZ4O7uAwGcJC9Zc2zJw@mail.gmail.com>
+In-Reply-To: <CACna6ry0WBwcqH74sub-C=e0oGsPEoqXZ4O7uAwGcJC9Zc2zJw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Alan Tull <atull@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +33,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lee,
 
-On Thu, 04 Dec 2014, Lee Jones wrote:
 
-> From: Christophe Kerello <christophe.kerello@st.com>
-> 
-> This patch adds a mask to be able to get the right boot device selection.
+On 12/05/2014 04:30 PM, Rafał Miłecki wrote:
+> Since my commit
+> mtd: spi-nor: allow NULL as chip name and try to auto detect it
+> second argument is optional.
+>
+> Can you simply pass NULL instead of modalias?
+>
 
-Have you seen this series I posted https://lkml.org/lkml/2014/11/19/71?
+OK, passing NULL.  Works fine for me, thanks.
 
-It is trying to consolodate the way the various STI drivers are handling syscfg
-registers in the upstream kernel. Now this series came about mainly due to the mixing of address
-spaces in the reg property, but the overall aim was to get all STI drivers handling
-syscfg registers in a uniform way.
-
-Sadly it seems this driver uses another approach for syscfg handling with extra
-DT properties encoding the offset and mask.
-
-IMHO I don't think it makes sense to add more DT properties for doing this. We should consider
-migrating this over to using the interface provided in the series above, and for the mask I
-would suggest implementing it in a similar way to the code in drivers/phy/phy-stih41x-usb.c 
-which solves much the same problem by statically encoding the information in the driver
-and making a decision based on the compatible flag.
-
-regards,
-
-Peter.
+-Graham
