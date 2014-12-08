@@ -1,29 +1,21 @@
-Received: from mail-by2on0065.outbound.protection.outlook.com ([207.46.100.65]
- helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xy1cd-0005tU-Bz
- for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 16:57:20 +0000
-Message-ID: <5485D7B5.2@opensource.altera.com>
-Date: Mon, 8 Dec 2014 10:54:13 -0600
-From: Graham Moore <grmoore@opensource.altera.com>
+ id 1Xy2NL-0004Ue-BG
+ for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 17:45:36 +0000
+Received: by mail-wg0-f52.google.com with SMTP id x12so4282295wgg.39
+ for <linux-mtd@lists.infradead.org>; Mon, 08 Dec 2014 09:45:10 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: bcm47xxpart: lower minimal blocksize to 4Ki (from 64Ki)
+Date: Mon,  8 Dec 2014 18:45:00 +0100
+Message-Id: <1418060700-1977-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
- Controller.
-References: <1417808133-20719-1-git-send-email-grmoore@opensource.altera.com>
- <1417808133-20719-3-git-send-email-grmoore@opensource.altera.com>
- <CACna6ry0WBwcqH74sub-C=e0oGsPEoqXZ4O7uAwGcJC9Zc2zJw@mail.gmail.com>
-In-Reply-To: <CACna6ry0WBwcqH74sub-C=e0oGsPEoqXZ4O7uAwGcJC9Zc2zJw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Alan Tull <atull@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,16 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Some devices like Netgear WNR1000v3 or WGR614v10 have partitions aligned
+to 0x1000. Using bigger blocksize stopped us from detecting some parts.
 
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/mtd/bcm47xxpart.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-On 12/05/2014 04:30 PM, Rafał Miłecki wrote:
-> Since my commit
-> mtd: spi-nor: allow NULL as chip name and try to auto detect it
-> second argument is optional.
->
-> Can you simply pass NULL instead of modalias?
->
-
-OK, passing NULL.  Works fine for me, thanks.
-
--Graham
+diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+index 26a4a4a..4ad3928 100644
+--- a/drivers/mtd/bcm47xxpart.c
++++ b/drivers/mtd/bcm47xxpart.c
+@@ -94,8 +94,12 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 	int last_trx_part = -1;
+ 	int possible_nvram_sizes[] = { 0x8000, 0xF000, 0x10000, };
+ 
+-	if (blocksize <= 0x10000)
+-		blocksize = 0x10000;
++	/*
++	 * Some really old flashes (like AT45DB*) had smaller erasesize-s, but
++	 * partitions were aligned to at least 0x1000 anyway.
++	 */
++	if (blocksize < 0x1000)
++		blocksize = 0x1000;
+ 
+ 	/* Alloc */
+ 	parts = kzalloc(sizeof(struct mtd_partition) * BCM47XXPART_MAX_PARTS,
+-- 
+1.8.4.5
