@@ -1,23 +1,21 @@
-Date: Mon, 8 Dec 2014 07:43:16 +0100 (CET)
-From: Julia Lawall <julia.lawall@lip6.fr>
-To: Julian Calaby <julian.calaby@gmail.com>
-Subject: Re: [PATCH 0/20] fix misspelling of current function in string
-In-Reply-To: <CAGRGNgWDJqV=XD+6q26Ma=m1sEi1kvLWsjq6=RjRVSFTxow0Qg@mail.gmail.com>
-Message-ID: <alpine.DEB.2.02.1412080738210.2100@localhost6.localdomain6>
-References: <1417980062-25151-1-git-send-email-Julia.Lawall@lip6.fr>
- <CAGRGNgWDJqV=XD+6q26Ma=m1sEi1kvLWsjq6=RjRVSFTxow0Qg@mail.gmail.com>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XxsHq-0001Bp-LE
+ for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 06:59:15 +0000
+Message-ID: <54854C28.4050107@codeaurora.org>
+Date: Mon, 08 Dec 2014 08:58:48 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
- linux-samsung-soc@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
- linux@rasmusvillemoes.dk, linux-wireless <linux-wireless@vger.kernel.org>,
- intel-gfx@lists.freedesktop.org, linux-usb@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- dri-devel@lists.freedesktop.org, Julia Lawall <Julia.Lawall@lip6.fr>,
- netdev <netdev@vger.kernel.org>, linux-mtd@lists.infradead.org,
- linux-pci@vger.kernel.org, Joe Perches <joe@perches.com>, "Mailing List,
- Arm" <linux-arm-kernel@lists.infradead.org>
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: [PATCH 3/6] UBI: Fastmap: Notify user in case of an
+ ubi_update_fastmap() failure
+References: <1417347340-6872-1-git-send-email-richard@nod.at>
+ <1417347340-6872-4-git-send-email-richard@nod.at>
+ <54845D53.1070903@codeaurora.org> <548462A8.2010107@nod.at>
+In-Reply-To: <548462A8.2010107@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +25,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 8 Dec 2014, Julian Calaby wrote:
+On 12/7/2014 4:22 PM, Richard Weinberger wrote:
+> Am 07.12.2014 um 14:59 schrieb Tanya Brokhman:
+>> Hi Richard,
+>>
+>> On 11/30/2014 1:35 PM, Richard Weinberger wrote:
+>>> If ubi_update_fastmap() fails notify the user.
+>>> This is not a hard error as ubi_update_fastmap() makes sure that upon failure
+>>> the current on-flash fastmap will no be used upon next UBI attach.
+>>>
+>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>>> ---
+>>>    drivers/mtd/ubi/wl.c | 6 +++++-
+>>>    1 file changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+>>> index 523d8a4..7821342 100644
+>>> --- a/drivers/mtd/ubi/wl.c
+>>> +++ b/drivers/mtd/ubi/wl.c
+>>> @@ -657,7 +657,11 @@ again:
+>>>         * refill the WL pool synchronous. */
+>>>        if (pool->used == pool->size || wl_pool->used == wl_pool->size) {
+>>>            spin_unlock(&ubi->wl_lock);
+>>> -        ubi_update_fastmap(ubi);
+>>> +        ret = ubi_update_fastmap(ubi);
+>>> +        if (ret) {
+>>> +            ubi_msg(ubi, "Unable to write a new fastmap: %i", ret);
+>>> +            return -ENOSPC;
+>>
+>> Why do you fail the whole function (ubi_wl_get_peb) if fastmap update failed? Its possible that the fm_pools were refilled correctly, and the actual fastmap_write failed, so there
+>> is nothing preventing the user to get peb allocated and continue working. You invalidate the fastmap, so if powercut occurs a full scan will be performed. So its possible to
+>> allocate from fm_pools (although fastmap is not valid on disc) and try writing fastmap again when the pools filled up.
+>> I'm for the ubi_msg but against "return -ENOSPC;"
+>
+> Maybe the case you've described is powercut safe, but there can be other unsafe cases.
+> Let's stay on the safe side and be paranoid, it does not hurt.
+> If fastmap has proven stable we can start with tricky optimizations.
 
-> Hi Julia,
-> 
-> On Mon, Dec 8, 2014 at 6:20 AM, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
-> > These patches replace what appears to be a reference to the name of the
-> > current function but is misspelled in some way by either the name of the
-> > function itself, or by %s and then __func__ in an argument list.
-> 
-> Would there be any value in doing this for _all_ cases where the
-> function name is written in a format string?
+I'm sorry that I'm being petty here but the commit msg states that you 
+"notify the user in case of update fastamap failure". It says nothing 
+about you failing ubi_wl_get_peb as well. And this is a major change. At 
+least divide this into 2 patches (so I can disagree to the function 
+failing and agree to the msg to user :) )
 
-Probably.  But there are a lot of them.  Even for the misspellings, I have 
-only don about 1/3 of the cases.
 
-On the other hand, the misspelling have to be checked carefully, because a 
-misspelling of one thing could be the correct spelling of the thing thst 
-was actually intended.
+> Thanks,
+> //richard
+>
 
-Joe, however, points out that a lot of these prints are just for function 
-tracing, and could be removed.  I worked on another semantic patch that 
-tries to do that.  It might be better to remove those prints completely, 
-rather than sending one patch to transform them and then one patch to 
-remove them after that.  That is why for this series I did only the ones 
-where there was actually a problem.
 
-julia
+Thanks,
+Tanya Brokhman
+-- 
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
