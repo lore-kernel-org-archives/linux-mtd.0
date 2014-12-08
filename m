@@ -1,19 +1,24 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XxtoF-0000aX-RX
- for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 08:36:48 +0000
-Message-ID: <54856305.2070408@codeaurora.org>
-Date: Mon, 08 Dec 2014 10:36:21 +0200
-From: Tanya Brokhman <tlinder@codeaurora.org>
+From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>
+Subject: RE: [V6 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
+ Micron spi nor
+Date: Mon, 8 Dec 2014 08:50:39 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315F03C4@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315EF2C5@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6315EF2C5@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
-Subject: Re: [PATCH 2/6] UBI: Fastmap: Don't allocate new ubi_wl_entry objects
-References: <1417347340-6872-1-git-send-email-richard@nod.at>
- <1417347340-6872-3-git-send-email-richard@nod.at>
-In-Reply-To: <1417347340-6872-3-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,55 +28,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/30/2014 1:35 PM, Richard Weinberger wrote:
-> There is no need to allocate new ones every time, we can reuse
-> the existing ones.
-> This makes the code cleaner and more easy to follow.
->
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->   drivers/mtd/ubi/fastmap.c | 31 +++++--------------------------
->   drivers/mtd/ubi/wl.c      | 11 +++++++----
->   2 files changed, 12 insertions(+), 30 deletions(-)
->
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> index db3defd..9507702 100644
-> --- a/drivers/mtd/ubi/fastmap.c
-> +++ b/drivers/mtd/ubi/fastmap.c
-> @@ -1446,19 +1446,6 @@ int ubi_update_fastmap(struct ubi_device *ubi)
->   	}
->
->   	new_fm->used_blocks = ubi->fm_size / ubi->leb_size;
+>This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes=
+.
 
-Not related to this patch, but looking at this function it got me 
-thinking: why do we need to re-calculate new_fm->used_blocks (and check 
-calculated value) each time? fm_size doesn't changed at runtime. 
-leb_size sure does not, so fm->used_blocks can be ubi device parameter 
-and calculated & tested only once, and not each time we write fastmap. 
-Correct?
+>For Micron SPI NOR flash,enabling or disabling quad I/O protocol can be do=
+ne By two methods, which are to=20
+>use EVCR(Enhanced Volatile Configuration Register) and the ENTER QUAD I/O =
+MODE command.There is no=20
+>difference between these two methods.Unfortunately,for some Micron spi nor=
+ flashes,there no ENTER Quad=20
+>I/O command(35h),such as n25q064.But for all current Micron spi nor,if it =
+support quad I/O mode,using=20
+>EVCR definitely be supported.It is a recommended method to enable Quad I/O=
+ mode by EVCR,Quad I/O protocol=20
+>bit 7.When EVCR bit 7 is reset to 0,the SPI NOR flash will operate in quad=
+ I/O mode.
 
+>This patch has been tested on N25Q512A and MT25TL256BAA1ESF.Micron spi nor=
+ of spi_nor_ids[] table all=20
+>support this method.
 
-> -
-> -	for (i = 0; i < new_fm->used_blocks; i++) {
-> -		new_fm->e[i] = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
-> -		if (!new_fm->e[i]) {
-> -			while (i--)
-> -				kfree(new_fm->e[i]);
-> -
-> -			kfree(new_fm);
-> -			mutex_unlock(&ubi->fm_mutex);
-> -			return -ENOMEM;
-> -		}
-> -	}
-> -
->   	old_fm = ubi->fm;
->   	ubi->fm = NULL;
->
+>Signed-off-by: bean huo <beanhuo@micron.com>
+>Acked-by: Marek Vasut <marex@denx.de>
+>---
+>v1-v2:
+>	Modified to that capture wait_till_ready()
+>	return value,if error,directly return its
+>	the value.
+ >v2-v3:
+>	Directly use the reurning error value of
+>	read_reg and write_reg,instead of -EINVAL.
+> v3-v4:
+>	Modify commit logs that wraped into 80 columns.
+> v4-v5:
+>	Rebuild new patch based on latest linux-mtd.
+> v5-v6:
+>	Rebuild patch based on latest l2-mtd.
+>	add some comments.
+>	Add SPI_NOR_QUAD_READ flag in the spi_nor_ids[] for Micron spi nor.
 
+Hi,Brian
 
-Thanks,
-Tanya Brokhman
--- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+This patch is based on the latest l2-mtd,I don't know if can pass?
+I have one question is that about following code.
+I have added our Mciron quad flag into spi_nor_ids[] table,but line over 80=
+ characters,
+If I divided one line into two lines,this will make spi_nor_ids[] table loo=
+k ugly.I also find that
+There are other venders configure line that also over 80 characters,such as=
+ Spansion,Catalyst.
+So I don't divide my following configure line into two two lines,I don't kn=
+ow if this can=20
+Be accepted?
+=20
++	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUA=
+D_READ) },
++	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | S=
+PI_NOR_QUAD_READ) },
++	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | S=
+PI_NOR_QUAD_READ) },
++	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | S=
+PI_NOR_QUAD_READ) },
+=20
