@@ -1,19 +1,22 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XyLlx-0004JU-92
- for linux-mtd@lists.infradead.org; Tue, 09 Dec 2014 14:28:18 +0000
-Date: Tue, 9 Dec 2014 15:27:42 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Oleksij Rempel <linux@rempel-privat.de>
-Subject: Re: [PATCH RFC]: mtd: nand: Driver for Evatronix NAND flash controller
-In-Reply-To: <54840DE3.90705@rempel-privat.de>
-Message-ID: <alpine.DEB.2.02.1412091517090.8366@lnxricardw1.se.axis.com>
-References: <54840DE3.90705@rempel-privat.de>
+Received: from mail-qa0-f43.google.com ([209.85.216.43])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XyMC7-0000Do-Qv
+ for linux-mtd@lists.infradead.org; Tue, 09 Dec 2014 14:55:20 +0000
+Received: by mail-qa0-f43.google.com with SMTP id bm13so481086qab.30
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Dec 2014 06:54:57 -0800 (PST)
+Date: Tue, 9 Dec 2014 14:54:50 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/11] mtd: nand: Support for new DT NAND driver
+Message-ID: <20141209145450.GB3951@x1>
+References: <1415206793-25670-1-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
-Cc: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1415206793-25670-1-git-send-email-lee.jones@linaro.org>
+Cc: pekon@pek-sem.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +26,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 05 Nov 2014, Lee Jones wrote:
 
-On Sun, 7 Dec 2014, Oleksij Rempel wrote:
-
-> > From: Ricard Wanderlof <ricardw at axis.com>
-> > 
-> > This is a request for comments for a driver for the Evatronix 
-> > NANDFLASH-CTRL IP (version 1.15). It is designed to be applied to 
-> > Linux 3.16 or the current linux-mtd tree.
+> Hi Brian,
+>   
+> I believe all of your queries have either been answered or addressed
+> and I am hoping this will be the last submission [v2]. :)
 > 
-> it looks like we are working on a driver for same IP core. I have working 
-> HW, and working driver which need need reworking. Both driver are not 
-> upstream ready. So it will be good if we collaborate with each other :)
+> This is v4 of the squashed submission.  v1 had a small typo which
+> prevented the BBT code from being truly configurable, v2 had some
+> build issues due to a silly 'post testing' fixup mistake and v3
+> suffered with some checkpatch errors which have been rectified and
+> some unused/utilised code segments which have now been removed.
+> I've also fixed some DMA issues which you spotted and provided a
+> more suitable ECC tolerance, which has been coupled with a comment
+> which describes our reasons for not taking the OOB area into
+> consideration during this operation.
+>   
+> Also:
+>   
+>   Builds        Pass
+>   Smatch        Pass
+>   Sparse        Pass
+>   Bisectability Pass
+>   NAND Test     Pass
+>   UBI Tests     Pass
+>   MTD Tests     Pass (accept OOB test which is not applicable with
+>                       this controller.  I will rectify this in the
+>                       near future though, as it _can be_ useful for
+>                       debugging/testing.)
 
-After an off-list discussion between Oleksij and myself it seems that 
-while the NAND flash controller in the SoC Oleksij is using (Alphascale 
-ASM9260T) and the one I wrote the driver for above come from a common 
-origin, they are fairly different when it comes to detail.
+7 week poke.
 
-Looking at the documentation, the names of registers and bit fields etc 
-clearly show a common origin, but there are a lot of details which differ 
-as well, including the actual presence of certain registers, register 
-offsets, bitfield locations within registers, the interpretation of 
-bitfields with the same name, etc. It is also not clear from a cursory 
-glance how much the underlying implementation differs between the IP 
-versions.
+> Lee Jones (11):
+>   ARM: multi-v7: Enable ST BCH NAND
+>   ARM: sti: Add two new clock definitions for use with ST's NAND
+>     controllers
+>   ARM: sti: Add BCH (NAND Flash) Controller support for STiH41x (Orly)
+>     SoCs
+>   ARM: sti: Enable BCH NAND for STiH416 B2020-RevE
+>   mtd: nand: Add new generic NAND Device Tree property
+>     'nand-chip-select'
+>   mtd: nand: WARN() if EEC Bytes per page is larger than the OOB
+>   mtd: nand: stm_nand_bch: provide Device Tree documentation
+>   mtd: nand: stm_nand_bch: add shared register defines for ST's NAND
+>     Controller drivers
+>   mtd: nand: stm_nand_bch: adding BBT header
+>   mtd: nand: stm_nand_bch: add support for ST's BCH NAND controller
+>   mtd: nand: stm_nand_bch: provide ST's implementation of Bad Block
+>     Table
+> 
+>  Documentation/devicetree/bindings/mtd/nand.txt     |    3 +
+>  Documentation/devicetree/bindings/mtd/stm-nand.txt |   74 +
+>  arch/arm/boot/dts/stih416-b2020e.dts               |    8 +
+>  arch/arm/boot/dts/stih41x-b2020.dtsi               |   35 +
+>  arch/arm/configs/multi_v7_defconfig                |    2 +
+>  drivers/mtd/nand/Kconfig                           |   15 +
+>  drivers/mtd/nand/Makefile                          |    3 +
+>  drivers/mtd/nand/nand_base.c                       |    2 +
+>  drivers/mtd/nand/stm_nand_bbt.c                    |  619 ++++++++
+>  drivers/mtd/nand/stm_nand_bch.c                    | 1645 ++++++++++++++++++++
+>  drivers/mtd/nand/stm_nand_regs.h                   |  304 ++++
+>  include/dt-bindings/clock/stih416-clks.h           |    2 +
+>  include/linux/mtd/stm_nand.h                       |  131 ++
+>  include/linux/mtd/stm_nand_bbt.h                   |   22 +
+>  14 files changed, 2865 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/stm-nand.txt
+>  create mode 100644 drivers/mtd/nand/stm_nand_bbt.c
+>  create mode 100644 drivers/mtd/nand/stm_nand_bch.c
+>  create mode 100644 drivers/mtd/nand/stm_nand_regs.h
+>  create mode 100644 include/linux/mtd/stm_nand.h
+>  create mode 100644 include/linux/mtd/stm_nand_bbt.h
+> 
 
-Consequently we've decided that it at this time we cannot coordinate these 
-two drivers.
-
-/Ricard
 -- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org â”‚ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
