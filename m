@@ -1,20 +1,19 @@
-Received: from mail-bn1bon0137.outbound.protection.outlook.com
- ([157.56.111.137] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xy7Ea-0002Oz-S8
- for linux-mtd@lists.infradead.org; Mon, 08 Dec 2014 22:56:53 +0000
-Message-ID: <1418079383.5581.14.camel@freescale.com>
-Subject: Re: [PATCH 1/1][v4] IFC: Change IO accessor based on endianness
-From: Scott Wood <scottwood@freescale.com>
-To: Jaiprakash Singh <b44839@freescale.com>
-Date: Mon, 8 Dec 2014 16:56:23 -0600
-In-Reply-To: <1418017580-2749-1-git-send-email-b44839@freescale.com>
-References: <1418017580-2749-1-git-send-email-b44839@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XyLlx-0004JU-92
+ for linux-mtd@lists.infradead.org; Tue, 09 Dec 2014 14:28:18 +0000
+Date: Tue, 9 Dec 2014 15:27:42 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Oleksij Rempel <linux@rempel-privat.de>
+Subject: Re: [PATCH RFC]: mtd: nand: Driver for Evatronix NAND flash controller
+In-Reply-To: <54840DE3.90705@rempel-privat.de>
+Message-ID: <alpine.DEB.2.02.1412091517090.8366@lnxricardw1.se.axis.com>
+References: <54840DE3.90705@rempel-privat.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: B07421@freescale.com, B32579@freescale.com, linux-mtd@lists.infradead.org,
- arnd@arndb.de, gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
+Cc: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-12-08 at 11:16 +0530, Jaiprakash Singh wrote:
-> From: Jaiprakash Singh <b44839@freescale.com>
-> 
-> IFC IO accressor are set at run time based
-> on IFC IP registers endianness.IFC node in
-> DTS file contains information about
-> endianness.
-> 
-> Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
-> ---
-> Changes for v4
-> 	- Review rework as per Scott's comments
-> 	- Tested on B4860QDS board
-> ---
->  .../bindings/memory-controllers/fsl/ifc.txt        |    3 +
->  drivers/memory/fsl_ifc.c                           |   34 ++-
->  drivers/mtd/nand/fsl_ifc_nand.c                    |  260 ++++++++++----------
->  include/linux/fsl_ifc.h                            |   50 ++++
->  4 files changed, 205 insertions(+), 142 deletions(-)
 
-Acked-by: Scott Wood <scottwood@freescale.com>
+On Sun, 7 Dec 2014, Oleksij Rempel wrote:
 
--Scott
+> > From: Ricard Wanderlof <ricardw at axis.com>
+> > 
+> > This is a request for comments for a driver for the Evatronix 
+> > NANDFLASH-CTRL IP (version 1.15). It is designed to be applied to 
+> > Linux 3.16 or the current linux-mtd tree.
+> 
+> it looks like we are working on a driver for same IP core. I have working 
+> HW, and working driver which need need reworking. Both driver are not 
+> upstream ready. So it will be good if we collaborate with each other :)
+
+After an off-list discussion between Oleksij and myself it seems that 
+while the NAND flash controller in the SoC Oleksij is using (Alphascale 
+ASM9260T) and the one I wrote the driver for above come from a common 
+origin, they are fairly different when it comes to detail.
+
+Looking at the documentation, the names of registers and bit fields etc 
+clearly show a common origin, but there are a lot of details which differ 
+as well, including the actual presence of certain registers, register 
+offsets, bitfield locations within registers, the interpretation of 
+bitfields with the same name, etc. It is also not clear from a cursory 
+glance how much the underlying implementation differs between the IP 
+versions.
+
+Consequently we've decided that it at this time we cannot coordinate these 
+two drivers.
+
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
