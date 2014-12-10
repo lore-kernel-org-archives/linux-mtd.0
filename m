@@ -1,22 +1,21 @@
-Received: from mail-qa0-f43.google.com ([209.85.216.43])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XyMC7-0000Do-Qv
- for linux-mtd@lists.infradead.org; Tue, 09 Dec 2014 14:55:20 +0000
-Received: by mail-qa0-f43.google.com with SMTP id bm13so481086qab.30
- for <linux-mtd@lists.infradead.org>; Tue, 09 Dec 2014 06:54:57 -0800 (PST)
-Date: Tue, 9 Dec 2014 14:54:50 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/11] mtd: nand: Support for new DT NAND driver
-Message-ID: <20141209145450.GB3951@x1>
-References: <1415206793-25670-1-git-send-email-lee.jones@linaro.org>
+Received: from mail-gw1-out.broadcom.com ([216.31.210.62])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XyUjx-0006yt-Qf
+ for linux-mtd@lists.infradead.org; Wed, 10 Dec 2014 00:02:50 +0000
+Message-ID: <54878D8B.70205@broadcom.com>
+Date: Tue, 9 Dec 2014 16:02:19 -0800
+From: Scott Branden <sbranden@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1415206793-25670-1-git-send-email-lee.jones@linaro.org>
-Cc: pekon@pek-sem.com, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, kernel@stlinux.com
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/3] mtd: implement common reboot notifier boilerplate
+References: <1417746968-28747-1-git-send-email-computersforpeace@gmail.com>
+ <54815522.6000004@broadcom.com> <20141205180726.GN21347@ld-irv-0074>
+In-Reply-To: <20141205180726.GN21347@ld-irv-0074>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: ricard.wanderlof@axis.com, Artem Bityutskiy <dedekind1@gmail.com>,
+ cdoban@broadcom.com, rjui@broadcom.com, richard.weinberger@gmail.com,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,81 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 05 Nov 2014, Lee Jones wrote:
+Hi Brian,
 
-> Hi Brian,
->   
-> I believe all of your queries have either been answered or addressed
-> and I am hoping this will be the last submission [v2]. :)
-> 
-> This is v4 of the squashed submission.  v1 had a small typo which
-> prevented the BBT code from being truly configurable, v2 had some
-> build issues due to a silly 'post testing' fixup mistake and v3
-> suffered with some checkpatch errors which have been rectified and
-> some unused/utilised code segments which have now been removed.
-> I've also fixed some DMA issues which you spotted and provided a
-> more suitable ECC tolerance, which has been coupled with a comment
-> which describes our reasons for not taking the OOB area into
-> consideration during this operation.
->   
-> Also:
->   
->   Builds        Pass
->   Smatch        Pass
->   Sparse        Pass
->   Bisectability Pass
->   NAND Test     Pass
->   UBI Tests     Pass
->   MTD Tests     Pass (accept OOB test which is not applicable with
->                       this controller.  I will rectify this in the
->                       near future though, as it _can be_ useful for
->                       debugging/testing.)
+I guess I'll leave this in your hands now unless there's anything else 
+you need help will.
 
-7 week poke.
+I don't see how this is controversial.  It is simply adding a reboot 
+notifier so the MTD devices are shut down gracefully.  You already added 
+it to NOR.  We're now just adding it generically for NAND and NOR.
 
-> Lee Jones (11):
->   ARM: multi-v7: Enable ST BCH NAND
->   ARM: sti: Add two new clock definitions for use with ST's NAND
->     controllers
->   ARM: sti: Add BCH (NAND Flash) Controller support for STiH41x (Orly)
->     SoCs
->   ARM: sti: Enable BCH NAND for STiH416 B2020-RevE
->   mtd: nand: Add new generic NAND Device Tree property
->     'nand-chip-select'
->   mtd: nand: WARN() if EEC Bytes per page is larger than the OOB
->   mtd: nand: stm_nand_bch: provide Device Tree documentation
->   mtd: nand: stm_nand_bch: add shared register defines for ST's NAND
->     Controller drivers
->   mtd: nand: stm_nand_bch: adding BBT header
->   mtd: nand: stm_nand_bch: add support for ST's BCH NAND controller
->   mtd: nand: stm_nand_bch: provide ST's implementation of Bad Block
->     Table
-> 
->  Documentation/devicetree/bindings/mtd/nand.txt     |    3 +
->  Documentation/devicetree/bindings/mtd/stm-nand.txt |   74 +
->  arch/arm/boot/dts/stih416-b2020e.dts               |    8 +
->  arch/arm/boot/dts/stih41x-b2020.dtsi               |   35 +
->  arch/arm/configs/multi_v7_defconfig                |    2 +
->  drivers/mtd/nand/Kconfig                           |   15 +
->  drivers/mtd/nand/Makefile                          |    3 +
->  drivers/mtd/nand/nand_base.c                       |    2 +
->  drivers/mtd/nand/stm_nand_bbt.c                    |  619 ++++++++
->  drivers/mtd/nand/stm_nand_bch.c                    | 1645 ++++++++++++++++++++
->  drivers/mtd/nand/stm_nand_regs.h                   |  304 ++++
->  include/dt-bindings/clock/stih416-clks.h           |    2 +
->  include/linux/mtd/stm_nand.h                       |  131 ++
->  include/linux/mtd/stm_nand_bbt.h                   |   22 +
->  14 files changed, 2865 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/stm-nand.txt
->  create mode 100644 drivers/mtd/nand/stm_nand_bbt.c
->  create mode 100644 drivers/mtd/nand/stm_nand_bch.c
->  create mode 100644 drivers/mtd/nand/stm_nand_regs.h
->  create mode 100644 include/linux/mtd/stm_nand.h
->  create mode 100644 include/linux/mtd/stm_nand_bbt.h
-> 
+Thanks,
+  Scott
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+On 14-12-05 10:07 AM, Brian Norris wrote:
+> On Thu, Dec 04, 2014 at 10:48:02PM -0800, Scott Branden wrote:
+>> You need to change some spaces to tabs in the patch.
+>
+> Wow, sorry. I'm being very dense. I'll be sure to fix these up before
+> applying.
+>
+>> Tested-by: Scott Branden <sbranden@broadcom.com>
+>
+> Thanks! I'll leave this for others to comment on, since this was
+> seemingly controversial. Plus, I have plenty of other things to review
+> for (maybe) 3.19 that have been around a lot longer than this, so these
+> may delay until 3.20, given the nearness of the 3.19 merge window.
+>
+> Regards,
+> Brian
+>
