@@ -1,24 +1,20 @@
+Received: from mail-vc0-x229.google.com ([2607:f8b0:400c:c03::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XycWa-0004SY-8F
+ for linux-mtd@lists.infradead.org; Wed, 10 Dec 2014 08:21:32 +0000
+Received: by mail-vc0-f169.google.com with SMTP id hy10so1178605vcb.14
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Dec 2014 00:21:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.02.1412080738210.2100@localhost6.localdomain6>
-References: <1417980062-25151-1-git-send-email-Julia.Lawall@lip6.fr>
- <CAGRGNgWDJqV=XD+6q26Ma=m1sEi1kvLWsjq6=RjRVSFTxow0Qg@mail.gmail.com>
- <alpine.DEB.2.02.1412080738210.2100@localhost6.localdomain6>
-From: Julian Calaby <julian.calaby@gmail.com>
-Date: Wed, 10 Dec 2014 13:56:23 +1100
-Message-ID: <CAGRGNgVGEo8qqpjDvYOJRBtEjXsKmFtXSQrS_Q+tDEYS+nAQqA@mail.gmail.com>
-Subject: Re: [PATCH 0/20] fix misspelling of current function in string
-To: Julia Lawall <julia.lawall@lip6.fr>
+In-Reply-To: <1416835236-25185-1-git-send-email-richard@nod.at>
+References: <1416835236-25185-1-git-send-email-richard@nod.at>
+Date: Wed, 10 Dec 2014 09:21:10 +0100
+Message-ID: <CAFLxGvwpyapTJKDrgtfy=qMW7u9hjXB9zRq+EkgE3zCummc7rw@mail.gmail.com>
+Subject: Re: Fastmap update v2 (pile 1)
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Richard Weinberger <richard@nod.at>
 Content-Type: text/plain; charset=UTF-8
-Cc: "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
- linux-samsung-soc@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
- linux-pci@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>,
- intel-gfx@lists.freedesktop.org, linux-usb@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- dri-devel@lists.freedesktop.org, netdev <netdev@vger.kernel.org>,
- linux-mtd@lists.infradead.org, linux@rasmusvillemoes.dk,
- Joe Perches <joe@perches.com>, "Mailing List,
- Arm" <linux-arm-kernel@lists.infradead.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Julia,
-
-On Mon, Dec 8, 2014 at 5:43 PM, Julia Lawall <julia.lawall@lip6.fr> wrote:
-> On Mon, 8 Dec 2014, Julian Calaby wrote:
+On Mon, Nov 24, 2014 at 2:20 PM, Richard Weinberger <richard@nod.at> wrote:
+> Artem,
 >
->> Hi Julia,
->>
->> On Mon, Dec 8, 2014 at 6:20 AM, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
->> > These patches replace what appears to be a reference to the name of the
->> > current function but is misspelled in some way by either the name of the
->> > function itself, or by %s and then __func__ in an argument list.
->>
->> Would there be any value in doing this for _all_ cases where the
->> function name is written in a format string?
->
-> Probably.  But there are a lot of them.  Even for the misspellings, I have
-> only don about 1/3 of the cases.
->
-> On the other hand, the misspelling have to be checked carefully, because a
-> misspelling of one thing could be the correct spelling of the thing thst
-> was actually intended.
->
-> Joe, however, points out that a lot of these prints are just for function
-> tracing, and could be removed.  I worked on another semantic patch that
-> tries to do that.  It might be better to remove those prints completely,
-> rather than sending one patch to transform them and then one patch to
-> remove them after that.  That is why for this series I did only the ones
-> where there was actually a problem.
+> as requested I'm resending my fastmap work in smaller pieces.
+> This is pile 1 of 7.
+> Rebasing my patches to ubifs.git was a massive PITA because the
+> logging style changes touched a lot of code and almost every patch
+> failed to apply and needed inspection by hand.
+> The first patches are bug fixes, the latter introduce cleanups
+> and new features.
+> After all bugfixes are mainline I'll make sure that all needed
+> fixes go into -stable.
 
-Ok, that makes sense.
+Artem,
 
-Either way though, this is a really interesting application of the
-semantic patching. Nice work!
+how shall we proceed?
+Currently around 45 of my patches are in flight.
+Some got comments, some not. If it helps I can address these comments
+immediately
+and resend the individual patches. The vast majority of all comments
+are trivial to fix (typos, style, etc..)
+Initially I hoped that all patches will get comments such that I can
+do a v3 which can be merged
+in 3.19-rc1. :-\
 
-Thanks,
+In my local queue even more patches wait to be submitted.
 
 -- 
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+Thanks,
+//richard
