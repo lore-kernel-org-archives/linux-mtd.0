@@ -1,20 +1,19 @@
-Received: from mail-bl2on0093.outbound.protection.outlook.com ([65.55.169.93]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xyh2U-0003ic-Ki
- for linux-mtd@lists.infradead.org; Wed, 10 Dec 2014 13:10:47 +0000
-From: Yan Kong <ykong@sierrawireless.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 10 Dec 2014 05:10:15 -0800
-Subject: RE: UBI errors when "ls -l"
-Message-ID: <740E8392C144C64FA5300E5E696A179BB97FEBB16F@carmd-exchmb01.sierrawireless.local>
+ id 1XyhG8-0003Vm-Bo
+ for linux-mtd@lists.infradead.org; Wed, 10 Dec 2014 13:24:53 +0000
+Message-ID: <5488498B.4030902@nod.at>
+Date: Wed, 10 Dec 2014 14:24:27 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: Yan Kong <ykong@sierrawireless.com>
+Subject: Re: UBI errors when "ls -l"
 References: <loom.20141210T102753-582@post.gmane.org>
  <CAFLxGvwqdi6T9zg_QH5Uw3D7R0dUPbX0G-7wDX6p47RBWoSdFw@mail.gmail.com>
-In-Reply-To: <CAFLxGvwqdi6T9zg_QH5Uw3D7R0dUPbX0G-7wDX6p47RBWoSdFw@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ <740E8392C144C64FA5300E5E696A179BB97FEBB16F@carmd-exchmb01.sierrawireless.local>
+In-Reply-To: <740E8392C144C64FA5300E5E696A179BB97FEBB16F@carmd-exchmb01.sierrawireless.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,98 +24,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIFJpY2hhcmQsDQoNCllvdXIgcXVlc3Rpb24sDQpJcyB0aGlzIGEgdmFuaWxsYSBrZXJuZWwg
-b3IgZG9lcyBpdCBjYXJyeSB0b25zIG9mIHZlbmRvciBwYXRjaGVzPw0KLS0tIEkgdXNlIHRoZSBL
-ZXJuZWwgYmFzZWQgb24gWW9jdG8gMS42LCBidXQgaW5jbHVkZXMgbG90cyBRdWFsY29tbSBwYXRj
-aGVzLg0KDQo+IHViaWF0dGFjaCAvZGV2L3ViaV9jdHJsIC1tIDMgLU8gNDA5Ng0KDQpXaHkgZG8g
-eW91IG5lZWQgLU8/DQotLS0gSSBhbHNvIHRyaWVkIHdpdGhvdXQgLU8uIEJ1dCB0aGUgcmVzdWx0
-IGlzIHRoZSBzYW1lLg0KDQpQbGVhc2UgdXNlIHViaSB0b29scyB0byBmbGFzaCB0aGUgaW1hZ2Uu
-DQooZGQgc2hvdWxkIHdvcmssIGJ1dCBqdXN0IGluIGNhc2UuLi4pDQotLS0gSSBldmVyIHRyaWVk
-ICIgdWJpZm9ybWF0IC9kZXYvbXRkNyAtZiB1YmkuaW1nIC1zIDQwOTYiLCB0aGUgc2FtZSBlcnJv
-ciA6KC4NCg0KV2hhdCBpcyBsaW5lIDIxMyBpbiB5b3VyIGRyaXZlcnMvbXRzL3ViaS9pby5jPw0K
-LS0tIEkgbWFya2VkIGxpbmUgMjEzIGFzIGZvbGxvdywgdGhhbmsgeW91Lg0KDQppbnQgdWJpX2lv
-X3JlYWQoY29uc3Qgc3RydWN0IHViaV9kZXZpY2UgKnViaSwgdm9pZCAqYnVmLCBpbnQgcG51bSwg
-aW50IG9mZnNldCwNCgkJaW50IGxlbikNCnsNCglpbnQgZXJyLCByZXRyaWVzID0gMDsNCglzaXpl
-X3QgcmVhZDsNCglsb2ZmX3QgYWRkcjsNCg0KCWRiZ19pbygicmVhZCAlZCBieXRlcyBmcm9tIFBF
-QiAlZDolZCIsIGxlbiwgcG51bSwgb2Zmc2V0KTsNCg0KCXViaV9hc3NlcnQocG51bSA+PSAwICYm
-IHBudW0gPCB1YmktPnBlYl9jb3VudCk7DQoJdWJpX2Fzc2VydChvZmZzZXQgPj0gMCAmJiBvZmZz
-ZXQgKyBsZW4gPD0gdWJpLT5wZWJfc2l6ZSk7DQoJdWJpX2Fzc2VydChsZW4gPiAwKTsNCg0KCWVy
-ciA9IHBhcmFub2lkX2NoZWNrX25vdF9iYWQodWJpLCBwbnVtKTsNCglpZiAoZXJyKQ0KCQlyZXR1
-cm4gZXJyOw0KDQoJLyoNCgkgKiBEZWxpYmVyYXRlbHkgY29ycnVwdCB0aGUgYnVmZmVyIHRvIGlt
-cHJvdmUgcm9idXN0bmVzcy4gSW5kZWVkLCBpZiB3ZQ0KCSAqIGRvIG5vdCBkbyB0aGlzLCB0aGUg
-Zm9sbG93aW5nIG1heSBoYXBwZW46DQoJICogMS4gVGhlIGJ1ZmZlciBjb250YWlucyBkYXRhIGZy
-b20gcHJldmlvdXMgb3BlcmF0aW9uLCBlLmcuLCByZWFkIGZyb20NCgkgKiAgICBhbm90aGVyIFBF
-QiBwcmV2aW91c2x5LiBUaGUgZGF0YSBsb29rcyBsaWtlIGV4cGVjdGVkLCBlLmcuLCBpZiB3ZQ0K
-CSAqICAgIGp1c3QgZG8gbm90IHJlYWQgYW55dGhpbmcgYW5kIHJldHVybiAtIHRoZSBjYWxsZXIg
-d291bGQgbm90DQoJICogICAgbm90aWNlIHRoaXMuIEUuZy4sIGlmIHdlIGFyZSByZWFkaW5nIGEg
-VklEIGhlYWRlciwgdGhlIGJ1ZmZlciBtYXkNCgkgKiAgICBjb250YWluIGEgdmFsaWQgVklEIGhl
-YWRlciBmcm9tIGFub3RoZXIgUEVCLg0KCSAqIDIuIFRoZSBkcml2ZXIgaXMgYnVnZ3kgYW5kIHJl
-dHVybnMgdXMgc3VjY2VzcyBvciAtRUJBRE1TRyBvcg0KCSAqICAgIC1FVUNMRUFOLCBidXQgaXQg
-ZG9lcyBub3QgYWN0dWFsbHkgcHV0IGFueSBkYXRhIHRvIHRoZSBidWZmZXIuDQoJICoNCgkgKiBU
-aGlzIG1heSBjb25mdXNlIFVCSSBvciB1cHBlciBsYXllcnMgLSB0aGV5IG1heSB0aGluayB0aGUg
-YnVmZmVyDQoJICogY29udGFpbnMgdmFsaWQgZGF0YSB3aGlsZSBpbiBmYWN0IGl0IGlzIGp1c3Qg
-b2xkIGRhdGEuIFRoaXMgaXMNCgkgKiBlc3BlY2lhbGx5IHBvc3NpYmxlIGJlY2F1c2UgVUJJIChh
-bmQgVUJJRlMpIHJlbGllcyBvbiBDUkMsIGFuZA0KCSAqIHRyZWF0cyBkYXRhIGFzIGNvcnJlY3Qg
-ZXZlbiBpbiBjYXNlIG9mIEVDQyBlcnJvcnMgaWYgdGhlIENSQyBpcw0KCSAqIGNvcnJlY3QuDQoJ
-ICoNCgkgKiBUcnkgdG8gcHJldmVudCB0aGlzIHNpdHVhdGlvbiBieSBjaGFuZ2luZyB0aGUgZmly
-c3QgYnl0ZSBvZiB0aGUNCgkgKiBidWZmZXIuDQoJICovDQoJKigodWludDhfdCAqKWJ1ZikgXj0g
-MHhGRjsNCg0KCWFkZHIgPSAobG9mZl90KXBudW0gKiB1YmktPnBlYl9zaXplICsgb2Zmc2V0Ow0K
-cmV0cnk6DQoJZXJyID0gbXRkX3JlYWQodWJpLT5tdGQsIGFkZHIsIGxlbiwgJnJlYWQsIGJ1Zik7
-DQoJaWYgKGVycikgew0KCQljb25zdCBjaGFyICplcnJzdHIgPSBtdGRfaXNfZWNjZXJyKGVycikg
-PyAiIChFQ0MgZXJyb3IpIiA6ICIiOw0KDQoJCWlmIChtdGRfaXNfYml0ZmxpcChlcnIpKSB7DQoJ
-CQkvKg0KCQkJICogLUVVQ0xFQU4gaXMgcmVwb3J0ZWQgaWYgdGhlcmUgd2FzIGEgYml0LWZsaXAg
-d2hpY2gNCgkJCSAqIHdhcyBjb3JyZWN0ZWQsIHNvIHRoaXMgaXMgaGFybWxlc3MuDQoJCQkgKg0K
-CQkJICogV2UgZG8gbm90IHJlcG9ydCBhYm91dCBpdCBoZXJlIHVubGVzcyBkZWJ1Z2dpbmcgaXMN
-CgkJCSAqIGVuYWJsZWQuIEEgY29ycmVzcG9uZGluZyBtZXNzYWdlIHdpbGwgYmUgcHJpbnRlZA0K
-CQkJICogbGF0ZXIsIHdoZW4gaXQgaXMgaGFzIGJlZW4gc2NydWJiZWQuDQoJCQkgKi8NCgkJCWRi
-Z19tc2coImZpeGFibGUgYml0LWZsaXAgZGV0ZWN0ZWQgYXQgUEVCICVkIiwgcG51bSk7DQoJCQl1
-YmlfYXNzZXJ0KGxlbiA9PSByZWFkKTsNCgkJCXJldHVybiBVQklfSU9fQklURkxJUFM7DQoJCX0N
-Cg0KCQlpZiAocmV0cmllcysrIDwgVUJJX0lPX1JFVFJJRVMpIHsNCgkJCWRiZ19pbygiZXJyb3Ig
-JWQlcyB3aGlsZSByZWFkaW5nICVkIGJ5dGVzIGZyb20gUEVCICINCgkJCSAgICAgICAiJWQ6JWQs
-IHJlYWQgb25seSAlemQgYnl0ZXMsIHJldHJ5IiwNCgkJCSAgICAgICBlcnIsIGVycnN0ciwgbGVu
-LCBwbnVtLCBvZmZzZXQsIHJlYWQpOw0KCQkJeWllbGQoKTsNCgkJCWdvdG8gcmV0cnk7DQoJCX0N
-Cg0KCQl1YmlfZXJyKCJlcnJvciAlZCVzIHdoaWxlIHJlYWRpbmcgJWQgYnl0ZXMgZnJvbSBQRUIg
-JWQ6JWQsICINCgkJCSJyZWFkICV6ZCBieXRlcyIsIGVyciwgZXJyc3RyLCBsZW4sIHBudW0sIG9m
-ZnNldCwgcmVhZCk7DQoJCXViaV9kYmdfZHVtcF9zdGFjaygpOw0KDQoJCS8qDQoJCSAqIFRoZSBk
-cml2ZXIgc2hvdWxkIG5ldmVyIHJldHVybiAtRUJBRE1TRyBpZiBpdCBmYWlsZWQgdG8gcmVhZA0K
-CQkgKiBhbGwgdGhlIHJlcXVlc3RlZCBkYXRhLiBCdXQgc29tZSBidWdneSBkcml2ZXJzIG1pZ2h0
-IGRvDQoJCSAqIHRoaXMsIHNvIHdlIGNoYW5nZSBpdCB0byAtRUlPLg0KCQkgKi8NCgkJaWYgKHJl
-YWQgIT0gbGVuICYmIG10ZF9pc19lY2NlcnIoZXJyKSkgew0KCQkJdWJpX2Fzc2VydCgwKTsNCgkJ
-CWVyciA9IC1FSU87DQoJCX0NCgl9IGVsc2Ugew0KCQl1YmlfYXNzZXJ0KGxlbiA9PSByZWFkKTsg
-ICAgICA8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIGxpbmUgMjEzDQoNCgkJaWYg
-KHViaV9kYmdfaXNfYml0ZmxpcCh1YmkpKSB7DQoJCQlkYmdfZ2VuKCJiaXQtZmxpcCAoZW11bGF0
-ZWQpIik7DQoJCQllcnIgPSBVQklfSU9fQklURkxJUFM7DQoJCX0NCgl9DQoNCglyZXR1cm4gZXJy
-Ow0KfQ0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFJpY2hhcmQgV2VpbmJlcmdl
-ciBbbWFpbHRvOnJpY2hhcmQud2VpbmJlcmdlckBnbWFpbC5jb21dIA0KU2VudDogMjAxNOW5tDEy
-5pyIMTDml6UgMTg6NDANClRvOiBZYW4gS29uZw0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRl
-YWQub3JnDQpTdWJqZWN0OiBSZTogVUJJIGVycm9ycyB3aGVuICJscyAtbCINCg0KT24gV2VkLCBE
-ZWMgMTAsIDIwMTQgYXQgMTA6MzQgQU0sIFlhbiA8eWtvbmdAc2llcnJhd2lyZWxlc3MuY29tPiB3
-cm90ZToNCj4gTXkgS2VybmVsIHZlcnNpb24gaXM6DQo+IExpbnV4IHN3aS1tZG05eDE1IDMuNC45
-MS15b2N0by1zdGFuZGFyZCAjNyBQUkVFTVBUIFdlZCBEZWMgMTAgMTc6Mzk6MDIgDQo+IEhLVCAy
-MDE0IGFybXY3bCBHTlUvTGludXgNCg0KSXMgdGhpcyBhIHZhbmlsbGEga2VybmVsIG9yIGRvZXMg
-aXQgY2FycnkgdG9ucyBvZiB2ZW5kb3IgcGF0Y2hlcz8NCg0KPiBJIGFtIHRyeWluZyB0byBtb3Vu
-dCB1Ymlmcy4gSXQgc2VlbXMgbW91bnQgdWJpZnMgaW1hZ2Ugc3VjY2Vzc2Z1bGx5LCANCj4gYnV0
-IHdoZW4gYWNjZXNzIHViaWZzLCBpdCB3aWxsIHByaW50IG91dCBsb3RzIG9mIGVycm9yIG1zZ3Mu
-DQo+IFRoaXMgaXMgc3RlcHMgSSBkbzoNCj4gKDEpbWFrZSB1Ymlmcy5pbWFnZS4gSSBtYWtlIHVi
-aWZzIGltYWdlIGZyb20gKi5jb25mIChJIHRyaWVkIHVzZSAibWtmcy51YmlmcyINCj4gYW5kICJ1
-YmluaXplIiB0byBtYWtlIGltYWdlIGRpcmVjdGx5LCB0aGUgc2FtZSBlcnJvciBtc2dzICkuDQo+
-IElNQUdFX0ZTVFlQRVMgKz0gInViaSINCj4gTUtVQklGU19BUkdTID0gIi1tIDQwOTYgLWUgMjUz
-OTUyIC1jIDIwNDciDQo+IFVCSU5JWkVfQVJHUyA9ICItbSA0MDk2IC1wIDI1NktpQiAtcyA0MDk2
-Ig0KPg0KPiAoMiltb3VudCB1YmlmcyBJbiBMaW51eCBzaGVsbC4NCj4gbWtkaXIgLXAgL21udC91
-Ymlmcw0KPiBmbGFzaF9lcmFzZSAvZGV2L210ZDMgMCAwIC1ODQo+IGRkIGlmPS9tbnQvZmxhc2gv
-dWJpLmltZyBvZj0vZGV2L210ZDMgYnM9NDA5Ng0KDQpQbGVhc2UgdXNlIHViaSB0b29scyB0byBm
-bGFzaCB0aGUgaW1hZ2UuDQooZGQgc2hvdWxkIHdvcmssIGJ1dCBqdXN0IGluIGNhc2UuLi4pDQoN
-Cj4gdWJpYXR0YWNoIC9kZXYvdWJpX2N0cmwgLW0gMyAtTyA0MDk2DQoNCldoeSBkbyB5b3UgbmVl
-ZCAtTz8NCkxvb2tzIGZpc2h5Lg0KDQo+IHViaWJsa3ZvbCAtYSAvZGV2L3ViaTBfMA0KPiBtb3Vu
-dCAtdCB1YmlmcyB1YmkwOnN3aS1tZG05eDE1LXJvb3RmcyAvbW50L3ViaWZzDQo+DQo+ICgzKUFm
-dGVyIHN0ZXAgKDIpLCB1YmlmcyBjYW4gYmUgbW91bnRlZCBzdWNjZXNzZnVsbHkuIEJ1dCB3aGVu
-IEkgDQo+IGFjY2VzcyB1Ymlmcywgc3VjaCBhcyB3aGVuIEkgaW5wdXQgImxzIiwgaXQgd2lsbCBz
-aG93IGxvdHMgb2YgZXJyb3IgDQo+IG1zZ3MuIEJ1dCBhZnRlciBwcmludGluZyBvdXQgZXJyb3Ig
-bXNncywgZmluYWxseSBpdCB3aWxsIHNob3cgZGlyZWN0b3J5Lg0KPiBCeSB0aGUgd2F5LCBJIHRy
-aWVkIHRvIHVzZSBuYW5kc2ltIHRvIGRlYnVnIHRoZSB1YmkgaW1hZ2UgaW4gVWJ1bnR1LCBpdCBp
-cyBPSy4NCj4gSSB0aGluayB0aGVyZSBpcyBzb21ldGhpbmcgd3JvbmcgaW4gS2VybmVsIGNvbmZp
-Z3VyYXRpb24uDQo+IENvdWxkIHlvdSBwbGVhc2UgaGVscCBtZT8gVGhhbmsgeW91IHZlcnkgbXVj
-aCENCj4gRXJyb3IgbXNncyBhbmQgS2VybmVsIGNvbmZpZ3VyYXRpb24gYXR0YWNoZWQuDQo+DQo+
-IGVycm9yIG1zZ3M6DQo+IFsgMTEyNi4yNzAzNDldIFVCSSBhc3NlcnQgZmFpbGVkIGluIHViaV9p
-b19yZWFkIGF0IDIxMyAocGlkIDQyNykNCg0KV2hhdCBpcyBsaW5lIDIxMyBpbiB5b3VyIGRyaXZl
-cnMvbXRzL3ViaS9pby5jPw0KDQotLQ0KVGhhbmtzLA0KLy9yaWNoYXJkDQo=
+Am 10.12.2014 um 14:10 schrieb Yan Kong:
+> Hi, Richard,
+> 
+> Your question,
+> Is this a vanilla kernel or does it carry tons of vendor patches?
+> --- I use the Kernel based on Yocto 1.6, but includes lots Qualcomm patches.
+> 
+>> ubiattach /dev/ubi_ctrl -m 3 -O 4096
+> 
+> Why do you need -O?
+> --- I also tried without -O. But the result is the same.
+> 
+> Please use ubi tools to flash the image.
+> (dd should work, but just in case...)
+> --- I ever tried " ubiformat /dev/mtd7 -f ubi.img -s 4096", the same error :(.
+> 
+> What is line 213 in your drivers/mts/ubi/io.c?
+> --- I marked line 213 as follow, thank you.
+> 
+> int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
+> 		int len)
+> {
+> 	int err, retries = 0;
+> 	size_t read;
+> 	loff_t addr;
+> 
+> 	dbg_io("read %d bytes from PEB %d:%d", len, pnum, offset);
+> 
+> 	ubi_assert(pnum >= 0 && pnum < ubi->peb_count);
+> 	ubi_assert(offset >= 0 && offset + len <= ubi->peb_size);
+> 	ubi_assert(len > 0);
+> 
+> 	err = paranoid_check_not_bad(ubi, pnum);
+> 	if (err)
+> 		return err;
+> 
+> 	/*
+> 	 * Deliberately corrupt the buffer to improve robustness. Indeed, if we
+> 	 * do not do this, the following may happen:
+> 	 * 1. The buffer contains data from previous operation, e.g., read from
+> 	 *    another PEB previously. The data looks like expected, e.g., if we
+> 	 *    just do not read anything and return - the caller would not
+> 	 *    notice this. E.g., if we are reading a VID header, the buffer may
+> 	 *    contain a valid VID header from another PEB.
+> 	 * 2. The driver is buggy and returns us success or -EBADMSG or
+> 	 *    -EUCLEAN, but it does not actually put any data to the buffer.
+> 	 *
+> 	 * This may confuse UBI or upper layers - they may think the buffer
+> 	 * contains valid data while in fact it is just old data. This is
+> 	 * especially possible because UBI (and UBIFS) relies on CRC, and
+> 	 * treats data as correct even in case of ECC errors if the CRC is
+> 	 * correct.
+> 	 *
+> 	 * Try to prevent this situation by changing the first byte of the
+> 	 * buffer.
+> 	 */
+> 	*((uint8_t *)buf) ^= 0xFF;
+> 
+> 	addr = (loff_t)pnum * ubi->peb_size + offset;
+> retry:
+> 	err = mtd_read(ubi->mtd, addr, len, &read, buf);
+> 	if (err) {
+> 		const char *errstr = mtd_is_eccerr(err) ? " (ECC error)" : "";
+> 
+> 		if (mtd_is_bitflip(err)) {
+> 			/*
+> 			 * -EUCLEAN is reported if there was a bit-flip which
+> 			 * was corrected, so this is harmless.
+> 			 *
+> 			 * We do not report about it here unless debugging is
+> 			 * enabled. A corresponding message will be printed
+> 			 * later, when it is has been scrubbed.
+> 			 */
+> 			dbg_msg("fixable bit-flip detected at PEB %d", pnum);
+> 			ubi_assert(len == read);
+> 			return UBI_IO_BITFLIPS;
+> 		}
+> 
+> 		if (retries++ < UBI_IO_RETRIES) {
+> 			dbg_io("error %d%s while reading %d bytes from PEB "
+> 			       "%d:%d, read only %zd bytes, retry",
+> 			       err, errstr, len, pnum, offset, read);
+> 			yield();
+> 			goto retry;
+> 		}
+> 
+> 		ubi_err("error %d%s while reading %d bytes from PEB %d:%d, "
+> 			"read %zd bytes", err, errstr, len, pnum, offset, read);
+> 		ubi_dbg_dump_stack();
+> 
+> 		/*
+> 		 * The driver should never return -EBADMSG if it failed to read
+> 		 * all the requested data. But some buggy drivers might do
+> 		 * this, so we change it to -EIO.
+> 		 */
+> 		if (read != len && mtd_is_eccerr(err)) {
+> 			ubi_assert(0);
+> 			err = -EIO;
+> 		}
+> 	} else {
+> 		ubi_assert(len == read);      <--------------------------------- line 213
+
+Looks much like a broken MTD driver.
+mtd_read() returned less than requested bytes.
+Please make sure that both UBI and MTD tests pass.
+
+Thanks,
+//richard
