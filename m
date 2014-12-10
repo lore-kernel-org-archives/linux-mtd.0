@@ -1,18 +1,20 @@
-Received: from mail-vc0-x232.google.com ([2607:f8b0:400c:c03::232])
+Received: from mail-bl2on0093.outbound.protection.outlook.com ([65.55.169.93]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xyeh9-00081o-2i
- for linux-mtd@lists.infradead.org; Wed, 10 Dec 2014 10:40:36 +0000
-Received: by mail-vc0-f178.google.com with SMTP id hq11so1255026vcb.37
- for <linux-mtd@lists.infradead.org>; Wed, 10 Dec 2014 02:40:11 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <loom.20141210T102753-582@post.gmane.org>
+ id 1Xyh2U-0003ic-Ki
+ for linux-mtd@lists.infradead.org; Wed, 10 Dec 2014 13:10:47 +0000
+From: Yan Kong <ykong@sierrawireless.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 10 Dec 2014 05:10:15 -0800
+Subject: RE: UBI errors when "ls -l"
+Message-ID: <740E8392C144C64FA5300E5E696A179BB97FEBB16F@carmd-exchmb01.sierrawireless.local>
 References: <loom.20141210T102753-582@post.gmane.org>
-Date: Wed, 10 Dec 2014 11:40:11 +0100
-Message-ID: <CAFLxGvwqdi6T9zg_QH5Uw3D7R0dUPbX0G-7wDX6p47RBWoSdFw@mail.gmail.com>
-Subject: Re: UBI errors when "ls -l"
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Yan <ykong@sierrawireless.com>
-Content-Type: text/plain; charset=UTF-8
+ <CAFLxGvwqdi6T9zg_QH5Uw3D7R0dUPbX0G-7wDX6p47RBWoSdFw@mail.gmail.com>
+In-Reply-To: <CAFLxGvwqdi6T9zg_QH5Uw3D7R0dUPbX0G-7wDX6p47RBWoSdFw@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,51 +25,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 10, 2014 at 10:34 AM, Yan <ykong@sierrawireless.com> wrote:
-> My Kernel version is:
-> Linux swi-mdm9x15 3.4.91-yocto-standard #7 PREEMPT Wed Dec 10 17:39:02 HKT 2014
-> armv7l GNU/Linux
-
-Is this a vanilla kernel or does it carry tons of vendor patches?
-
-> I am trying to mount ubifs. It seems mount ubifs image successfully, but when
-> access ubifs, it will print out lots of error msgs.
-> This is steps I do:
-> (1)make ubifs.image. I make ubifs image from *.conf (I tried use "mkfs.ubifs"
-> and "ubinize" to make image directly, the same error msgs ).
-> IMAGE_FSTYPES += "ubi"
-> MKUBIFS_ARGS = "-m 4096 -e 253952 -c 2047"
-> UBINIZE_ARGS = "-m 4096 -p 256KiB -s 4096"
->
-> (2)mount ubifs In Linux shell.
-> mkdir -p /mnt/ubifs
-> flash_erase /dev/mtd3 0 0 -N
-> dd if=/mnt/flash/ubi.img of=/dev/mtd3 bs=4096
-
-Please use ubi tools to flash the image.
-(dd should work, but just in case...)
-
-> ubiattach /dev/ubi_ctrl -m 3 -O 4096
-
-Why do you need -O?
-Looks fishy.
-
-> ubiblkvol -a /dev/ubi0_0
-> mount -t ubifs ubi0:swi-mdm9x15-rootfs /mnt/ubifs
->
-> (3)After step (2), ubifs can be mounted successfully. But when I access ubifs,
-> such as when I input "ls", it will show lots of error msgs. But after printing
-> out error msgs, finally it will show directory.
-> By the way, I tried to use nandsim to debug the ubi image in Ubuntu, it is OK.
-> I think there is something wrong in Kernel configuration.
-> Could you please help me? Thank you very much!
-> Error msgs and Kernel configuration attached.
->
-> error msgs:
-> [ 1126.270349] UBI assert failed in ubi_io_read at 213 (pid 427)
-
-What is line 213 in your drivers/mts/ubi/io.c?
-
--- 
-Thanks,
-//richard
+SGksIFJpY2hhcmQsDQoNCllvdXIgcXVlc3Rpb24sDQpJcyB0aGlzIGEgdmFuaWxsYSBrZXJuZWwg
+b3IgZG9lcyBpdCBjYXJyeSB0b25zIG9mIHZlbmRvciBwYXRjaGVzPw0KLS0tIEkgdXNlIHRoZSBL
+ZXJuZWwgYmFzZWQgb24gWW9jdG8gMS42LCBidXQgaW5jbHVkZXMgbG90cyBRdWFsY29tbSBwYXRj
+aGVzLg0KDQo+IHViaWF0dGFjaCAvZGV2L3ViaV9jdHJsIC1tIDMgLU8gNDA5Ng0KDQpXaHkgZG8g
+eW91IG5lZWQgLU8/DQotLS0gSSBhbHNvIHRyaWVkIHdpdGhvdXQgLU8uIEJ1dCB0aGUgcmVzdWx0
+IGlzIHRoZSBzYW1lLg0KDQpQbGVhc2UgdXNlIHViaSB0b29scyB0byBmbGFzaCB0aGUgaW1hZ2Uu
+DQooZGQgc2hvdWxkIHdvcmssIGJ1dCBqdXN0IGluIGNhc2UuLi4pDQotLS0gSSBldmVyIHRyaWVk
+ICIgdWJpZm9ybWF0IC9kZXYvbXRkNyAtZiB1YmkuaW1nIC1zIDQwOTYiLCB0aGUgc2FtZSBlcnJv
+ciA6KC4NCg0KV2hhdCBpcyBsaW5lIDIxMyBpbiB5b3VyIGRyaXZlcnMvbXRzL3ViaS9pby5jPw0K
+LS0tIEkgbWFya2VkIGxpbmUgMjEzIGFzIGZvbGxvdywgdGhhbmsgeW91Lg0KDQppbnQgdWJpX2lv
+X3JlYWQoY29uc3Qgc3RydWN0IHViaV9kZXZpY2UgKnViaSwgdm9pZCAqYnVmLCBpbnQgcG51bSwg
+aW50IG9mZnNldCwNCgkJaW50IGxlbikNCnsNCglpbnQgZXJyLCByZXRyaWVzID0gMDsNCglzaXpl
+X3QgcmVhZDsNCglsb2ZmX3QgYWRkcjsNCg0KCWRiZ19pbygicmVhZCAlZCBieXRlcyBmcm9tIFBF
+QiAlZDolZCIsIGxlbiwgcG51bSwgb2Zmc2V0KTsNCg0KCXViaV9hc3NlcnQocG51bSA+PSAwICYm
+IHBudW0gPCB1YmktPnBlYl9jb3VudCk7DQoJdWJpX2Fzc2VydChvZmZzZXQgPj0gMCAmJiBvZmZz
+ZXQgKyBsZW4gPD0gdWJpLT5wZWJfc2l6ZSk7DQoJdWJpX2Fzc2VydChsZW4gPiAwKTsNCg0KCWVy
+ciA9IHBhcmFub2lkX2NoZWNrX25vdF9iYWQodWJpLCBwbnVtKTsNCglpZiAoZXJyKQ0KCQlyZXR1
+cm4gZXJyOw0KDQoJLyoNCgkgKiBEZWxpYmVyYXRlbHkgY29ycnVwdCB0aGUgYnVmZmVyIHRvIGlt
+cHJvdmUgcm9idXN0bmVzcy4gSW5kZWVkLCBpZiB3ZQ0KCSAqIGRvIG5vdCBkbyB0aGlzLCB0aGUg
+Zm9sbG93aW5nIG1heSBoYXBwZW46DQoJICogMS4gVGhlIGJ1ZmZlciBjb250YWlucyBkYXRhIGZy
+b20gcHJldmlvdXMgb3BlcmF0aW9uLCBlLmcuLCByZWFkIGZyb20NCgkgKiAgICBhbm90aGVyIFBF
+QiBwcmV2aW91c2x5LiBUaGUgZGF0YSBsb29rcyBsaWtlIGV4cGVjdGVkLCBlLmcuLCBpZiB3ZQ0K
+CSAqICAgIGp1c3QgZG8gbm90IHJlYWQgYW55dGhpbmcgYW5kIHJldHVybiAtIHRoZSBjYWxsZXIg
+d291bGQgbm90DQoJICogICAgbm90aWNlIHRoaXMuIEUuZy4sIGlmIHdlIGFyZSByZWFkaW5nIGEg
+VklEIGhlYWRlciwgdGhlIGJ1ZmZlciBtYXkNCgkgKiAgICBjb250YWluIGEgdmFsaWQgVklEIGhl
+YWRlciBmcm9tIGFub3RoZXIgUEVCLg0KCSAqIDIuIFRoZSBkcml2ZXIgaXMgYnVnZ3kgYW5kIHJl
+dHVybnMgdXMgc3VjY2VzcyBvciAtRUJBRE1TRyBvcg0KCSAqICAgIC1FVUNMRUFOLCBidXQgaXQg
+ZG9lcyBub3QgYWN0dWFsbHkgcHV0IGFueSBkYXRhIHRvIHRoZSBidWZmZXIuDQoJICoNCgkgKiBU
+aGlzIG1heSBjb25mdXNlIFVCSSBvciB1cHBlciBsYXllcnMgLSB0aGV5IG1heSB0aGluayB0aGUg
+YnVmZmVyDQoJICogY29udGFpbnMgdmFsaWQgZGF0YSB3aGlsZSBpbiBmYWN0IGl0IGlzIGp1c3Qg
+b2xkIGRhdGEuIFRoaXMgaXMNCgkgKiBlc3BlY2lhbGx5IHBvc3NpYmxlIGJlY2F1c2UgVUJJIChh
+bmQgVUJJRlMpIHJlbGllcyBvbiBDUkMsIGFuZA0KCSAqIHRyZWF0cyBkYXRhIGFzIGNvcnJlY3Qg
+ZXZlbiBpbiBjYXNlIG9mIEVDQyBlcnJvcnMgaWYgdGhlIENSQyBpcw0KCSAqIGNvcnJlY3QuDQoJ
+ICoNCgkgKiBUcnkgdG8gcHJldmVudCB0aGlzIHNpdHVhdGlvbiBieSBjaGFuZ2luZyB0aGUgZmly
+c3QgYnl0ZSBvZiB0aGUNCgkgKiBidWZmZXIuDQoJICovDQoJKigodWludDhfdCAqKWJ1ZikgXj0g
+MHhGRjsNCg0KCWFkZHIgPSAobG9mZl90KXBudW0gKiB1YmktPnBlYl9zaXplICsgb2Zmc2V0Ow0K
+cmV0cnk6DQoJZXJyID0gbXRkX3JlYWQodWJpLT5tdGQsIGFkZHIsIGxlbiwgJnJlYWQsIGJ1Zik7
+DQoJaWYgKGVycikgew0KCQljb25zdCBjaGFyICplcnJzdHIgPSBtdGRfaXNfZWNjZXJyKGVycikg
+PyAiIChFQ0MgZXJyb3IpIiA6ICIiOw0KDQoJCWlmIChtdGRfaXNfYml0ZmxpcChlcnIpKSB7DQoJ
+CQkvKg0KCQkJICogLUVVQ0xFQU4gaXMgcmVwb3J0ZWQgaWYgdGhlcmUgd2FzIGEgYml0LWZsaXAg
+d2hpY2gNCgkJCSAqIHdhcyBjb3JyZWN0ZWQsIHNvIHRoaXMgaXMgaGFybWxlc3MuDQoJCQkgKg0K
+CQkJICogV2UgZG8gbm90IHJlcG9ydCBhYm91dCBpdCBoZXJlIHVubGVzcyBkZWJ1Z2dpbmcgaXMN
+CgkJCSAqIGVuYWJsZWQuIEEgY29ycmVzcG9uZGluZyBtZXNzYWdlIHdpbGwgYmUgcHJpbnRlZA0K
+CQkJICogbGF0ZXIsIHdoZW4gaXQgaXMgaGFzIGJlZW4gc2NydWJiZWQuDQoJCQkgKi8NCgkJCWRi
+Z19tc2coImZpeGFibGUgYml0LWZsaXAgZGV0ZWN0ZWQgYXQgUEVCICVkIiwgcG51bSk7DQoJCQl1
+YmlfYXNzZXJ0KGxlbiA9PSByZWFkKTsNCgkJCXJldHVybiBVQklfSU9fQklURkxJUFM7DQoJCX0N
+Cg0KCQlpZiAocmV0cmllcysrIDwgVUJJX0lPX1JFVFJJRVMpIHsNCgkJCWRiZ19pbygiZXJyb3Ig
+JWQlcyB3aGlsZSByZWFkaW5nICVkIGJ5dGVzIGZyb20gUEVCICINCgkJCSAgICAgICAiJWQ6JWQs
+IHJlYWQgb25seSAlemQgYnl0ZXMsIHJldHJ5IiwNCgkJCSAgICAgICBlcnIsIGVycnN0ciwgbGVu
+LCBwbnVtLCBvZmZzZXQsIHJlYWQpOw0KCQkJeWllbGQoKTsNCgkJCWdvdG8gcmV0cnk7DQoJCX0N
+Cg0KCQl1YmlfZXJyKCJlcnJvciAlZCVzIHdoaWxlIHJlYWRpbmcgJWQgYnl0ZXMgZnJvbSBQRUIg
+JWQ6JWQsICINCgkJCSJyZWFkICV6ZCBieXRlcyIsIGVyciwgZXJyc3RyLCBsZW4sIHBudW0sIG9m
+ZnNldCwgcmVhZCk7DQoJCXViaV9kYmdfZHVtcF9zdGFjaygpOw0KDQoJCS8qDQoJCSAqIFRoZSBk
+cml2ZXIgc2hvdWxkIG5ldmVyIHJldHVybiAtRUJBRE1TRyBpZiBpdCBmYWlsZWQgdG8gcmVhZA0K
+CQkgKiBhbGwgdGhlIHJlcXVlc3RlZCBkYXRhLiBCdXQgc29tZSBidWdneSBkcml2ZXJzIG1pZ2h0
+IGRvDQoJCSAqIHRoaXMsIHNvIHdlIGNoYW5nZSBpdCB0byAtRUlPLg0KCQkgKi8NCgkJaWYgKHJl
+YWQgIT0gbGVuICYmIG10ZF9pc19lY2NlcnIoZXJyKSkgew0KCQkJdWJpX2Fzc2VydCgwKTsNCgkJ
+CWVyciA9IC1FSU87DQoJCX0NCgl9IGVsc2Ugew0KCQl1YmlfYXNzZXJ0KGxlbiA9PSByZWFkKTsg
+ICAgICA8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIGxpbmUgMjEzDQoNCgkJaWYg
+KHViaV9kYmdfaXNfYml0ZmxpcCh1YmkpKSB7DQoJCQlkYmdfZ2VuKCJiaXQtZmxpcCAoZW11bGF0
+ZWQpIik7DQoJCQllcnIgPSBVQklfSU9fQklURkxJUFM7DQoJCX0NCgl9DQoNCglyZXR1cm4gZXJy
+Ow0KfQ0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFJpY2hhcmQgV2VpbmJlcmdl
+ciBbbWFpbHRvOnJpY2hhcmQud2VpbmJlcmdlckBnbWFpbC5jb21dIA0KU2VudDogMjAxNOW5tDEy
+5pyIMTDml6UgMTg6NDANClRvOiBZYW4gS29uZw0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRl
+YWQub3JnDQpTdWJqZWN0OiBSZTogVUJJIGVycm9ycyB3aGVuICJscyAtbCINCg0KT24gV2VkLCBE
+ZWMgMTAsIDIwMTQgYXQgMTA6MzQgQU0sIFlhbiA8eWtvbmdAc2llcnJhd2lyZWxlc3MuY29tPiB3
+cm90ZToNCj4gTXkgS2VybmVsIHZlcnNpb24gaXM6DQo+IExpbnV4IHN3aS1tZG05eDE1IDMuNC45
+MS15b2N0by1zdGFuZGFyZCAjNyBQUkVFTVBUIFdlZCBEZWMgMTAgMTc6Mzk6MDIgDQo+IEhLVCAy
+MDE0IGFybXY3bCBHTlUvTGludXgNCg0KSXMgdGhpcyBhIHZhbmlsbGEga2VybmVsIG9yIGRvZXMg
+aXQgY2FycnkgdG9ucyBvZiB2ZW5kb3IgcGF0Y2hlcz8NCg0KPiBJIGFtIHRyeWluZyB0byBtb3Vu
+dCB1Ymlmcy4gSXQgc2VlbXMgbW91bnQgdWJpZnMgaW1hZ2Ugc3VjY2Vzc2Z1bGx5LCANCj4gYnV0
+IHdoZW4gYWNjZXNzIHViaWZzLCBpdCB3aWxsIHByaW50IG91dCBsb3RzIG9mIGVycm9yIG1zZ3Mu
+DQo+IFRoaXMgaXMgc3RlcHMgSSBkbzoNCj4gKDEpbWFrZSB1Ymlmcy5pbWFnZS4gSSBtYWtlIHVi
+aWZzIGltYWdlIGZyb20gKi5jb25mIChJIHRyaWVkIHVzZSAibWtmcy51YmlmcyINCj4gYW5kICJ1
+YmluaXplIiB0byBtYWtlIGltYWdlIGRpcmVjdGx5LCB0aGUgc2FtZSBlcnJvciBtc2dzICkuDQo+
+IElNQUdFX0ZTVFlQRVMgKz0gInViaSINCj4gTUtVQklGU19BUkdTID0gIi1tIDQwOTYgLWUgMjUz
+OTUyIC1jIDIwNDciDQo+IFVCSU5JWkVfQVJHUyA9ICItbSA0MDk2IC1wIDI1NktpQiAtcyA0MDk2
+Ig0KPg0KPiAoMiltb3VudCB1YmlmcyBJbiBMaW51eCBzaGVsbC4NCj4gbWtkaXIgLXAgL21udC91
+Ymlmcw0KPiBmbGFzaF9lcmFzZSAvZGV2L210ZDMgMCAwIC1ODQo+IGRkIGlmPS9tbnQvZmxhc2gv
+dWJpLmltZyBvZj0vZGV2L210ZDMgYnM9NDA5Ng0KDQpQbGVhc2UgdXNlIHViaSB0b29scyB0byBm
+bGFzaCB0aGUgaW1hZ2UuDQooZGQgc2hvdWxkIHdvcmssIGJ1dCBqdXN0IGluIGNhc2UuLi4pDQoN
+Cj4gdWJpYXR0YWNoIC9kZXYvdWJpX2N0cmwgLW0gMyAtTyA0MDk2DQoNCldoeSBkbyB5b3UgbmVl
+ZCAtTz8NCkxvb2tzIGZpc2h5Lg0KDQo+IHViaWJsa3ZvbCAtYSAvZGV2L3ViaTBfMA0KPiBtb3Vu
+dCAtdCB1YmlmcyB1YmkwOnN3aS1tZG05eDE1LXJvb3RmcyAvbW50L3ViaWZzDQo+DQo+ICgzKUFm
+dGVyIHN0ZXAgKDIpLCB1YmlmcyBjYW4gYmUgbW91bnRlZCBzdWNjZXNzZnVsbHkuIEJ1dCB3aGVu
+IEkgDQo+IGFjY2VzcyB1Ymlmcywgc3VjaCBhcyB3aGVuIEkgaW5wdXQgImxzIiwgaXQgd2lsbCBz
+aG93IGxvdHMgb2YgZXJyb3IgDQo+IG1zZ3MuIEJ1dCBhZnRlciBwcmludGluZyBvdXQgZXJyb3Ig
+bXNncywgZmluYWxseSBpdCB3aWxsIHNob3cgZGlyZWN0b3J5Lg0KPiBCeSB0aGUgd2F5LCBJIHRy
+aWVkIHRvIHVzZSBuYW5kc2ltIHRvIGRlYnVnIHRoZSB1YmkgaW1hZ2UgaW4gVWJ1bnR1LCBpdCBp
+cyBPSy4NCj4gSSB0aGluayB0aGVyZSBpcyBzb21ldGhpbmcgd3JvbmcgaW4gS2VybmVsIGNvbmZp
+Z3VyYXRpb24uDQo+IENvdWxkIHlvdSBwbGVhc2UgaGVscCBtZT8gVGhhbmsgeW91IHZlcnkgbXVj
+aCENCj4gRXJyb3IgbXNncyBhbmQgS2VybmVsIGNvbmZpZ3VyYXRpb24gYXR0YWNoZWQuDQo+DQo+
+IGVycm9yIG1zZ3M6DQo+IFsgMTEyNi4yNzAzNDldIFVCSSBhc3NlcnQgZmFpbGVkIGluIHViaV9p
+b19yZWFkIGF0IDIxMyAocGlkIDQyNykNCg0KV2hhdCBpcyBsaW5lIDIxMyBpbiB5b3VyIGRyaXZl
+cnMvbXRzL3ViaS9pby5jPw0KDQotLQ0KVGhhbmtzLA0KLy9yaWNoYXJkDQo=
