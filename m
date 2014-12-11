@@ -1,27 +1,21 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xz2SF-0006Lj-70
- for linux-mtd@lists.infradead.org; Thu, 11 Dec 2014 12:02:48 +0000
-Received: by mail-pa0-f48.google.com with SMTP id rd3so4929348pab.21
- for <linux-mtd@lists.infradead.org>; Thu, 11 Dec 2014 04:02:25 -0800 (PST)
-Message-ID: <548987D3.3060407@gmail.com>
-Date: Thu, 11 Dec 2014 20:02:27 +0800
-From: Zhou Wang <wangzhou.bry@gmail.com>
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: Stefan Agner <stefan@agner.ch>
+Subject: Re: [RFC 2/5] mtd:fsl_nfc: Add hardware 45 byte BHC-ECC support for
+ 24 bit corrections.
+References: <87siupheou.fsf@nbsps.com>
+ <1389222441-4322-1-git-send-email-bpringlemeir@nbsps.com>
+ <1389222441-4322-3-git-send-email-bpringlemeir@nbsps.com>
+ <127db6b73356442d2ba12e8c011038cc@agner.ch> <87r3zaxgtr.fsf@nbsps.com>
+ <c444059de888a661fadf3d6be598a98d@agner.ch> <87lhphyjkg.fsf@nbsps.com>
+ <0bc8cec13bcf5b9cbea9cd3345815e4a@agner.ch>
+Date: Thu, 11 Dec 2014 11:44:30 -0500
+In-Reply-To: <0bc8cec13bcf5b9cbea9cd3345815e4a@agner.ch> (Stefan Agner's
+ message of "Wed, 10 Dec 2014 15:56:39 +0100")
+Message-ID: <8761dit9u9.fsf@nbsps.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 0/2] mtd: hisilicon: add a new driver for NAND
- controller of hisilicon hip04 Soc
-References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
- <20141130090853.GG3608@norris-Latitude-E6410>
-In-Reply-To: <20141130090853.GG3608@norris-Latitude-E6410>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, liguozhu@hisilicon.com,
- haojian.zhuang@gmail.com, wangzhou1@hisilicon.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
- caizhiyong@huawei.com, yubingxu@hisilicon.com,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: b21989@freescale.com, linux-mtd@lists.infradead.org,
+ Jason.jin@freescale.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,67 +25,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014年11月30日 17:08, Brian Norris wrote:
-> On Tue, Nov 04, 2014 at 08:46:59PM +0800, Zhou Wang wrote:
->> This patchset adds the support for NAND controller of hisilicon hip04 Soc.
->> The NAND controller IP was developed by hisilicon and needs a new driver to
->> support it. This patchset is based on v3.18-rc1. I have tested that NAND flash
->> controller works fine in Hip04 D01 board.
+
+>>>> On 17 Sep 2014, stefan@agner.ch wrote:
+
+>>> Yes, we are using Macronix SLC NAND.
+
+>>>> On 17 Sep 2014, stefan@agner.ch wrote:
+
+>>> This is a new device, but its one out of several dozens. The device
+>>> had two factory marked bad page. This four page would then be 6 bad
+>>> pages. I would say that your guess is probably the case at hand
+>>> (should be considered bad, but were marked by factory).
+
+On 10 Dec 2014, stefan@agner.ch wrote:
+
+> What I currently did, is just accept strength / 2 bits. This is not a
+> clean solution since it will also count the ECC bits, but it works for
+> now:
+> --- a/drivers/mtd/nand/fsl_nfc.c
+> +++ b/drivers/mtd/nand/fsl_nfc.c
+> @@ -524,7 +524,7 @@ static int nfc_correct_data(struct mtd_info *mtd,
+> u_char *dat,
+> flip = count_written_bits(dat, nfc->chip.ecc.size, ecc_count);
 >
-> Have you tested on the MTD test modules (drivers/mtd/tests/*)? This is
-> important, as we seem to regularly get UBIFS bug reports from users
-> whose drivers have not even passed some of the simple tests.
+> /* ECC failed. */
+> -       if (flip > ecc_count)
+> +       if (flip > ecc_count && flip > (nfc->chip.ecc.strength / 2))
+> return -1;
 >
-> Also, it might be worth testing out the UBI tests found in the mtd-utils
-> package.
->
-> Brian
->
+> /* Erased page. */
 
-Hi Brian,
+> I think we are facing multiple issues here. One might contain general
+> software/hardware issues (non bit-flip related). I had this issue
+> again on a different module with 3.18-rc5 (without the "fix"
+> above). The kernel output looks like this:
 
-I have tested this NAND controller driver on the MTD test modules
-(drivers/mtd/tests/*). All tests passed except mtd_nandbiterrs.ko.
+[snip]
 
-Here is the test log for mtd_nandbiterrs:
-/home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
-[  100.484995]
-[  100.490082] ==================================================
-[  100.509657] mtd_nandbiterrs: MTD device: 2
-[  100.523413] mtd_nandbiterrs: MTD device size 8388608, 
-eraseblock=131072, page=2048, oob=64
-[  100.551134] mtd_nandbiterrs: Device uses 2 subpages of 1024 bytes
-[  100.571585] mtd_nandbiterrs: Using page=1, offset=2048, eraseblock=0
-[  104.431136] mtd_nandbiterrs: incremental biterrors test
-[  104.448872] mtd_nandbiterrs: write_page
-[  104.463193] mtd_nandbiterrs: rewrite page
-[  104.477620] mtd_nandbiterrs: read_page
-[  104.490898] mtd_nandbiterrs: verify_page
-[  104.504338] mtd_nandbiterrs: Successfully corrected 0 bit errors per 
-subpage
-[  104.527985] mtd_nandbiterrs: Inserted biterror @ 0/5
-[  104.544673] mtd_nandbiterrs: Inserted biterror @ 1024/2
-[  104.562197] mtd_nandbiterrs: rewrite page
-[  104.576766] mtd_nandbiterrs: read_page
-[  104.590052] mtd_nandbiterrs: verify_page
-[  104.603252] mtd_nandbiterrs: Error: page offset 0, expected 23, got 03
-[  104.625203] mtd_nandbiterrs: Error: page offset 1024, expected 06, got 02
-[  104.648056] mtd_nandbiterrs: ECC failure, read data is incorrect 
-despite read success
-insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+> Interesting is that this error happens every second PEB (every 128
+> page, but erase block size is 64) and it is always the second page. On
+> that device, this is completely reproduceable, e.g. I can erase
+> everything and flash it again, the same happens.
 
-The reason for above failure is that:
-In ECC mode, when rewriting page data to NAND flash, the NAND controller 
-will also produce ECC code and write them to NAND flash as well. So when 
-we read data from NAND flash, there is no need to correct the error bit. 
-We read what we write to the flash.
+> I dumped the block in question:
 
-In mtd_nandbiterrs test, We call nand_write_page_raw indeed to perform
-rewrite operation. My question is that: in this NAND controller hardware
-design, it is hard to implement hardware specific write_page_raw to 
-write page data without producing ECC code, will this bring some bad 
-effects somewhere? It will be very nice if you and anyone can give me 
-some advice.
+> Page 00240800 dump:
+> ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+> ....
+> ff ff ff ff ff ff ff ff  f7 ff ff ff ff ff ff ff
+> ....
+> ff ff ff ff ff ff ff ff  ff ff fb ff ff ff ff ff
+> ....
+> ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff f7
+> ....
 
-Thanks,
-Zhou Wang
+> I also printed flip count and ecc_count the values for all those pages
+> are: flip 3, ecc_count 2
+
+> Now the interesting part: When I erase the block, and dump that page
+> again, it is completely empty! No flips, no ecc_count anymore! UBI
+> attach writes something into the first page, hence it looks like this
+> write into the first page influences the values of the second
+> page... I verified this behavior this using U-Boot and the Linux
+> kernel.
+
+> I digged a bit deeper, and wrote just zeros into the first page. In
+> the second page some bits are flipped. However, writing into the
+> second page does not influence the third page. But a bit in the first
+> page is flipped. And the third page influences the forth page. It
+> looks like the pages behave in pairs.... Any idea what kind of issue
+> we are facing here?
+
+Hmm.  It sounds like MLC flash, but you say you have SLC.  It could be
+that some bus signalling is marginal?  Could you reduce the clocks a bit
+on this device and see if the behaviour changes?  I am pretty sure that
+stuck-at-zero errors will stay that way.
+
+I would love to get back to this controller code to fix some issues you
+noted and bring in the changes to the u-boot review.  Unfortunately, I
+keep getting stuck with legacy hw issues.
+
+fwiw,
+Bill.
