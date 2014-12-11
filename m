@@ -1,21 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XylIS-00065Y-Uk
- for linux-mtd@lists.infradead.org; Wed, 10 Dec 2014 17:43:33 +0000
-Message-ID: <548885BB.8050105@imgtec.com>
-Date: Wed, 10 Dec 2014 14:41:15 -0300
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Received: from nm8-vm11.bullet.mail.tp2.yahoo.com ([203.188.201.25])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XywG1-0000Qn-Hk
+ for linux-mtd@lists.infradead.org; Thu, 11 Dec 2014 05:25:46 +0000
+Date: Thu, 11 Dec 2014 05:25:20 +0000 (UTC)
+From: kinghongkimo <kinghongkimo@yahoo.com.tw>
+Reply-To: kinghongkimo <kinghongkimo@yahoo.com.tw>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-ID: <632511317.25977.1418275520540.JavaMail.yahoo@jws11014.mail.tw1.yahoo.com>
+Subject: Jffs2 losing nvram per day as soon as kernel report Newly-erased
+ block contained word with Spansion SPI flash
 MIME-Version: 1.0
-To: Andrew Bresticker <abrestic@chromium.org>, Ionela Voinescu
- <ionela.voinescu@imgtec.com>, James Hartley <james.hartley@imgtec.com>, Brian
- Norris <computersforpeace@gmail.com>, <bpqw@micron.com>,
- <arnaud.mouiche@invoxia.com>, <frankliu@micron.com>
-Subject: Re: [PATCH 0/6] SPI NAND for everyone
-References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
-In-Reply-To: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,64 +22,74 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi all,
+        I am running an embedded system with Linux Kerel 2.6.39.3, my system using spansion S25FL064P SPI Flash 
 
-On 12/02/2014 09:58 AM, Ezequiel Garcia wrote:
-> During the discussion of Ionela Voinescu's patch to support GD5F SPI NAND
-> devices [1], it was decided that a proper SPI NAND framework was needed
-> to support the mt29f device (driver currently in staging area) and the new
-> gd5f.
-> 
-> This patchset is a first attempt to address this.
-> 
-> The SPI NAND framework allows devices to register as NAND drivers. This is
-> useful to take advantage of the bad block management code. Given the
-> SPI NAND and the bare NAND commands are different, the SPI NAND framework
-> implements its own .cmdfunc callback, which is in charge of calling
-> device-specific hooks for each of the flash operations (read, program, erase,
-> etc).
-> 
-> The SPI NAND framework does not deal with SPI transactions per-se. Instead,
-> the SPI messages should be prepared by the users of the SPI NAND framework
-> (those that implement the device-specific hooks).
-> 
-> The result can be expressed in the following hierarchy:
-> 
->     Userspace
->   ------------------
->     MTD
->   ------------------
->     NAND core
->   ------------------
->     SPI NAND core
->   ------------------
->     SPI NAND device
->   ------------------
->     SPI core
->   ------------------
->     SPI master
->   ------------------
->     Hardware
-> 
-> Notice there was a previous attempt to propose an SPI NAND framework,
-> by Sourav Poddar and Mona Anonuevo. We didn't find this proposal suitable,
-> so this series is a completely new work.
-> 
-> This series is based on v3.18-rc7. Tests have been performed with a Gigadevice
-> GD5F 4 Gbit device, including nandtest runs and filesystem testing on top
-> of UBI. I don't have MT29F devices yet, but the amount of changes required to
-> support it should be fairly small.
-> 
-> I don't intend this first proposal to be complete, but I hope it's a good
-> starting point to support SPI NAND properly.
-> 
+The kernel will mount /dev/mtdblock7  with jffs2 in rcS at startup.
+mount -t jffs2 /dev/mtdblock7 /nvram
 
-I'm aware we are in the middle of the merge window, and probably
-everyone is getting ready for Christmas and holidays.
 
-However, if anyone can take a look at the proposal, and in particular at
-the SPI NAND framework API, it would be awesome to move forward wit this
-discussion so we can get mt29f out of staging and support gd5f.
+The mtd partition is as below
+# cat /proc/mtd 
+dev:    size   erasesize  name
+mtd0: 00020000 00010000 "U-Boot"
+mtd1: 00010000 00010000 "env1"
+mtd2: 00010000 00010000 "env2"
+mtd3: 003a0000 00010000 "UBFI1"
+mtd4: 003a0000 00010000 "UBFI2"
+mtd5: 000cf6f4 00010000 "Kernel"
+mtd6: 002cc800 00010000 "RootFileSystem"
+mtd7: 00070000 00010000 "nvram"
 
-Thanks a lot!
--- 
-Ezequiel
+I found after some times(around 1 time per days),  the kernel will print out below message  (Newly-erased block contained word ....)
+[2014-12-09 08:23:33,428]# df
+[2014-12-09 08:23:33,438]Filesystem           1024-blocks    Used Available Use% Mounted on
+[2014-12-09 08:23:33,438]rootfs                    2944      2944         0 100% /
+[2014-12-09 08:23:33,448]/dev/root                 2944      2944         0 100% /
+[2014-12-09 08:23:33,448]tmpfs                    31188        12     31176   0% /dev
+[2014-12-09 08:23:33,453]/dev/mtdblock7             448       264       184  59% /nvram
+[2014-12-09 08:24:11,414]# Newly-erased block contained word 0x1e53dc76 at offset 0x00000780
+[2014-12-09 08:25:33,025]# 
+[2014-12-09 08:25:33,045]# df
+[2014-12-09 08:25:33,045]ls * -al /Filesystem           1024-blocks    Used Available Use% Mounted on
+[2014-12-09 08:25:33,045]nvram
+[2014-12-09 08:25:33,055]rootfs                    2944      2944         0 100% /
+[2014-12-09 08:25:33,055]/dev/root                 2944      2944         0 100% /
+[2014-12-09 08:25:33,065]tmpfs                    31188        12     31176   0% /dev
+[2014-12-09 08:25:33,070]/dev/mtdblock7             448       284       164  63% /nvram
+
+NVRAM will losing around 14%(64k) once this message print out,  and around 3 days(after happens 3 times),   the nvram will occupy around 91% and the jffs2 will full.
+
+After that the nvram can't write anymore. Only reboot will recover. 
+
+After checking, I found my system have is a process "PowerOnTime" that writing a file descriptor to /nvram/tmp_file  every 5 seconds that may trigger the issues,
+there may also some other process that accessing nvram folder but not list here. 
+
+
+#define TMP_FILE_PATH               "/nvram/tmp_file" 
+
+PowerOnTime{ 
+..... 
+
+fq = fopen( tMP_FILE_PATH, "r+"); 
+while(1) 
+{ 
+lastupTime = lastupTime+5; 
+sprintf(line_last, "%d", lastupTime); 
+rewind(fq); 
+fputs(line_last, fq); 
+sleep(5); 
+} 
+}
+
+
+My questions is 
+1. why below process will cause the jffs happens this errors,  I assume the jffs2 driver should allow process to writing nvram safety without any issues. 
+It seem the jffs found the block not erase properly when doing jffs2_block_check_erase Please comment what will be the root cause of the issues? Will this a SPI driver issues?
+2 Can you comment if there is a way to recover this without reboot?
+
+Please advice, I appreciate for your Help!!!
+
+
+
+Best regards
+James
