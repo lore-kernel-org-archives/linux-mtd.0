@@ -1,24 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-la0-f42.google.com ([209.85.215.42])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XzLUB-0001eA-1W
- for linux-mtd@lists.infradead.org; Fri, 12 Dec 2014 08:22:04 +0000
-Message-ID: <548AA590.7060200@nod.at>
-Date: Fri, 12 Dec 2014 09:21:36 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1XzSy9-0002nW-Ty
+ for linux-mtd@lists.infradead.org; Fri, 12 Dec 2014 16:21:31 +0000
+Received: by mail-la0-f42.google.com with SMTP id gd6so6463204lab.15
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2014 08:21:07 -0800 (PST)
 MIME-Version: 1.0
-To: Yan Kong <ykong@sierrawireless.com>
-Subject: Re: UBI errors when "ls -l"
-References: <loom.20141210T102753-582@post.gmane.org>
- <CAFLxGvwqdi6T9zg_QH5Uw3D7R0dUPbX0G-7wDX6p47RBWoSdFw@mail.gmail.com>
- <740E8392C144C64FA5300E5E696A179BB97FEBB16F@carmd-exchmb01.sierrawireless.local>
- <5488498B.4030902@nod.at>
- <740E8392C144C64FA5300E5E696A179BB97FEBB176@carmd-exchmb01.sierrawireless.local>
- <548850C3.8000204@nod.at>
- <740E8392C144C64FA5300E5E696A179BB97FEBB85C@carmd-exchmb01.sierrawireless.local>
-In-Reply-To: <740E8392C144C64FA5300E5E696A179BB97FEBB85C@carmd-exchmb01.sierrawireless.local>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <1417351863-3812-1-git-send-email-ard.biesheuvel@linaro.org>
+References: <1417351863-3812-1-git-send-email-ard.biesheuvel@linaro.org>
+Date: Fri, 12 Dec 2014 17:21:06 +0100
+Message-ID: <CAKv+Gu_qWrH77Yk1=Kuo5gMJ70PCYfVM6P3N=KZ2BvwaAqQB-w@mail.gmail.com>
+Subject: Re: [PATCH] mtd: physmap_of: fix potential NULL dereference
+From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +24,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On 30 November 2014 at 13:51, Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
+> On device remove, when testing the cmtd field of an of_flash
+> struct to decide whether it is a concatenated device or not,
+> we get a false positive on cmtd == NULL, and dereference it
+> subsequently. This may occur if of_flash_remove() is called
+> from the cleanup path of of_flash_probe().
+>
+> Instead, test for NULL first, and only then perform the test
+> for a concatenated device.
+>
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> ---
+>  drivers/mtd/maps/physmap_of.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
 
-Am 12.12.2014 um 09:03 schrieb Yan Kong:
-> Hi Richard,
-> 
-> I have ran "mtd_oobtest" for mtd3, failed.....
-> (I erase mtd3 before I run the test, by "flash_erase /dev/mtd3 0 0 -N").
-> Do you know is it the mtd driver issue or hardware issue?
+Ping?
 
-mtd_oobtest is failing because this test cannot work with your driver
-as it does not implement all MTD functions.
 
-Thanks,
-//richard
+> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+> index c1d21cb501ca..e48930424091 100644
+> --- a/drivers/mtd/maps/physmap_of.c
+> +++ b/drivers/mtd/maps/physmap_of.c
+> @@ -47,14 +47,12 @@ static int of_flash_remove(struct platform_device *dev)
+>                 return 0;
+>         dev_set_drvdata(&dev->dev, NULL);
+>
+> -       if (info->cmtd != info->list[0].mtd) {
+> +       if (info->cmtd) {
+>                 mtd_device_unregister(info->cmtd);
+> -               mtd_concat_destroy(info->cmtd);
+> +               if (info->cmtd != info->list[0].mtd)
+> +                       mtd_concat_destroy(info->cmtd);
+>         }
+>
+> -       if (info->cmtd)
+> -               mtd_device_unregister(info->cmtd);
+> -
+>         for (i = 0; i < info->list_size; i++) {
+>                 if (info->list[i].mtd)
+>                         map_destroy(info->list[i].mtd);
+> --
+> 1.8.3.2
+>
