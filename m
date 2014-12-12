@@ -1,21 +1,25 @@
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-To: Stefan Agner <stefan@agner.ch>
-Subject: Re: [RFC 2/5] mtd:fsl_nfc: Add hardware 45 byte BHC-ECC support for
- 24 bit corrections.
-References: <87siupheou.fsf@nbsps.com>
- <1389222441-4322-1-git-send-email-bpringlemeir@nbsps.com>
- <1389222441-4322-3-git-send-email-bpringlemeir@nbsps.com>
- <127db6b73356442d2ba12e8c011038cc@agner.ch> <87r3zaxgtr.fsf@nbsps.com>
- <c444059de888a661fadf3d6be598a98d@agner.ch> <87lhphyjkg.fsf@nbsps.com>
- <0bc8cec13bcf5b9cbea9cd3345815e4a@agner.ch>
-Date: Thu, 11 Dec 2014 11:44:30 -0500
-In-Reply-To: <0bc8cec13bcf5b9cbea9cd3345815e4a@agner.ch> (Stefan Agner's
- message of "Wed, 10 Dec 2014 15:56:39 +0100")
-Message-ID: <8761dit9u9.fsf@nbsps.com>
+Received: from mail-bn1on0064.outbound.protection.outlook.com ([157.56.110.64]
+ helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XzLCH-0001dC-WB
+ for linux-mtd@lists.infradead.org; Fri, 12 Dec 2014 08:03:35 +0000
+From: Yan Kong <ykong@sierrawireless.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 12 Dec 2014 00:03:02 -0800
+Subject: RE: UBI errors when "ls -l"
+Message-ID: <740E8392C144C64FA5300E5E696A179BB97FEBB85C@carmd-exchmb01.sierrawireless.local>
+References: <loom.20141210T102753-582@post.gmane.org>
+ <CAFLxGvwqdi6T9zg_QH5Uw3D7R0dUPbX0G-7wDX6p47RBWoSdFw@mail.gmail.com>
+ <740E8392C144C64FA5300E5E696A179BB97FEBB16F@carmd-exchmb01.sierrawireless.local>
+ <5488498B.4030902@nod.at>
+ <740E8392C144C64FA5300E5E696A179BB97FEBB176@carmd-exchmb01.sierrawireless.local>
+ <548850C3.8000204@nod.at>
+In-Reply-To: <548850C3.8000204@nod.at>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: b21989@freescale.com, linux-mtd@lists.infradead.org,
- Jason.jin@freescale.com, linux-arm-kernel@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,85 +29,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
->>>> On 17 Sep 2014, stefan@agner.ch wrote:
-
->>> Yes, we are using Macronix SLC NAND.
-
->>>> On 17 Sep 2014, stefan@agner.ch wrote:
-
->>> This is a new device, but its one out of several dozens. The device
->>> had two factory marked bad page. This four page would then be 6 bad
->>> pages. I would say that your guess is probably the case at hand
->>> (should be considered bad, but were marked by factory).
-
-On 10 Dec 2014, stefan@agner.ch wrote:
-
-> What I currently did, is just accept strength / 2 bits. This is not a
-> clean solution since it will also count the ECC bits, but it works for
-> now:
-> --- a/drivers/mtd/nand/fsl_nfc.c
-> +++ b/drivers/mtd/nand/fsl_nfc.c
-> @@ -524,7 +524,7 @@ static int nfc_correct_data(struct mtd_info *mtd,
-> u_char *dat,
-> flip = count_written_bits(dat, nfc->chip.ecc.size, ecc_count);
->
-> /* ECC failed. */
-> -       if (flip > ecc_count)
-> +       if (flip > ecc_count && flip > (nfc->chip.ecc.strength / 2))
-> return -1;
->
-> /* Erased page. */
-
-> I think we are facing multiple issues here. One might contain general
-> software/hardware issues (non bit-flip related). I had this issue
-> again on a different module with 3.18-rc5 (without the "fix"
-> above). The kernel output looks like this:
-
-[snip]
-
-> Interesting is that this error happens every second PEB (every 128
-> page, but erase block size is 64) and it is always the second page. On
-> that device, this is completely reproduceable, e.g. I can erase
-> everything and flash it again, the same happens.
-
-> I dumped the block in question:
-
-> Page 00240800 dump:
-> ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-> ....
-> ff ff ff ff ff ff ff ff  f7 ff ff ff ff ff ff ff
-> ....
-> ff ff ff ff ff ff ff ff  ff ff fb ff ff ff ff ff
-> ....
-> ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff f7
-> ....
-
-> I also printed flip count and ecc_count the values for all those pages
-> are: flip 3, ecc_count 2
-
-> Now the interesting part: When I erase the block, and dump that page
-> again, it is completely empty! No flips, no ecc_count anymore! UBI
-> attach writes something into the first page, hence it looks like this
-> write into the first page influences the values of the second
-> page... I verified this behavior this using U-Boot and the Linux
-> kernel.
-
-> I digged a bit deeper, and wrote just zeros into the first page. In
-> the second page some bits are flipped. However, writing into the
-> second page does not influence the third page. But a bit in the first
-> page is flipped. And the third page influences the forth page. It
-> looks like the pages behave in pairs.... Any idea what kind of issue
-> we are facing here?
-
-Hmm.  It sounds like MLC flash, but you say you have SLC.  It could be
-that some bus signalling is marginal?  Could you reduce the clocks a bit
-on this device and see if the behaviour changes?  I am pretty sure that
-stuck-at-zero errors will stay that way.
-
-I would love to get back to this controller code to fix some issues you
-noted and bring in the changes to the u-boot review.  Unfortunately, I
-keep getting stuck with legacy hw issues.
-
-fwiw,
-Bill.
+SGkgUmljaGFyZCwNCg0KSSBoYXZlIHJhbiAibXRkX29vYnRlc3QiIGZvciBtdGQzLCBmYWlsZWQu
+Li4uLg0KKEkgZXJhc2UgbXRkMyBiZWZvcmUgSSBydW4gdGhlIHRlc3QsIGJ5ICJmbGFzaF9lcmFz
+ZSAvZGV2L210ZDMgMCAwIC1OIikuDQpEbyB5b3Uga25vdyBpcyBpdCB0aGUgbXRkIGRyaXZlciBp
+c3N1ZSBvciBoYXJkd2FyZSBpc3N1ZT8NCkl0IHNlZW1zIG90aGVyIG10ZCB0ZXN0cyBjYW4gYmUg
+cGFzc2VkLg0KVGhhbmsgeW91IQ0KDQpbICAzMjkuMTcxMTU4XSANClsgIDMyOS4xNzE3OTldID09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NClsgIDMyOS4x
+ODQyMjBdIG10ZF9vb2J0ZXN0OiBNVEQgZGV2aWNlOiAzDQpbICAzMjkuMTg3MTIwXSBtdGRfb29i
+dGVzdDogTVREIGRldmljZSBzaXplIDQxNjgwODk2LCBlcmFzZWJsb2NrIHNpemUgMjYyMTQ0LCBw
+YWdlIHNpemUgNDA5NiwgY291bnQgb2YgZXJhc2VibG9ja3MgMTU5LCBwYWdlcyBwZXIgZXJhc2Vi
+bG9jayA2NCwgT09CIHNpemUgMjI0DQpbICAzMjkuMjAwODg1XSBtdGRfb29idGVzdDogc2Nhbm5p
+bmcgZm9yIGJhZCBlcmFzZWJsb2Nrcw0KWyAgMzI5LjIyMjQ2Ml0gbXRkX29vYnRlc3Q6IHNjYW5u
+ZWQgMTU5IGVyYXNlYmxvY2tzLCAwIGFyZSBiYWQNClsgIDMyOS4yMjcxNjNdIG10ZF9vb2J0ZXN0
+OiB0ZXN0IDEgb2YgNQ0KWyAgMzI5LjIzMDU4MV0gbXRkX29vYnRlc3Q6IGVyYXNpbmcgd2hvbGUg
+ZGV2aWNlDQpbICAzMjkuNTA4OTI3XSBtdGRfb29idGVzdDogZXJhc2VkIDE1OSBlcmFzZWJsb2Nr
+cw0KWyAgMzI5LjUxMjQzN10gbXRkX29vYnRlc3Q6IHdyaXRpbmcgT09CcyBvZiB3aG9sZSBkZXZp
+Y2UNClsgIDMyOS41MTk3NjFdIG1zbV9uYW5kX3dyaXRlX29vYjogdW5zdXBwb3J0ZWQgb3BzLT5k
+YXRidWYgPT0gTlVMTA0KWyAgMzI5LjUyNjk2NF0gbXRkX29vYnRlc3Q6IGVycm9yOiB3cml0ZW9v
+YiBmYWlsZWQgYXQgMHgwDQpbICAzMjkuNTMxMDg0XSBtdGRfb29idGVzdDogZXJyb3I6IHVzZV9s
+ZW4gMzIsIHVzZV9vZmZzZXQgMA0KWyAgMzI5LjUzNjQ1Nl0gbXRkX29vYnRlc3Q6IGVycm9yIC0y
+MiBvY2N1cnJlZA0KWyAgMzI5LjU0MDU0Nl0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PQ0KaW5zbW9kOiBjYW4ndCBpbnNlcnQgJ210ZF9vb2J0ZXN0Lmtv
+JzogaW52YWxpZCBwYXJhbWV0ZXINCg0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpG
+cm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJkQG5vZC5hdF0gDQpTZW50OiAy
+MDE05bm0MTLmnIgxMOaXpSAyMTo1NQ0KVG86IFlhbiBLb25nDQpDYzogbGludXgtbXRkQGxpc3Rz
+LmluZnJhZGVhZC5vcmcNClN1YmplY3Q6IFJlOiBVQkkgZXJyb3JzIHdoZW4gImxzIC1sIg0KDQpI
+aSENCg0KQW0gMTAuMTIuMjAxNCB1bSAxNDo1MSBzY2hyaWViIFlhbiBLb25nOg0KPiBIaSBSaWNo
+YXJkLA0KPiANCj4gQ291bGQgeW91IHBsZWFzZSBnaXZlIG1lIHNvbWUgbWFudWFscyBmb3IgVUJJ
+IGFuZCBNVEQgdGVzdD8NCg0KUGxlYXNlIHNlZSB0aGUgTVREIHdlYnNpdGU6DQpodHRwOi8vd3d3
+LmxpbnV4LW10ZC5pbmZyYWRlYWQub3JnL2RvYy9nZW5lcmFsLmh0bWwNCg0KVUJJIHRlc3RzIGFy
+ZSBwYXJ0IG9mIHRoZSBtdGQtdXRpbHMgc291cmNlIHBhY2thZ2UuDQoNClRoYW5rcywNCi8vcmlj
+aGFyZA0KDQo+IFRoYW5rIHlvdSB2ZXJ5IG11Y2ghDQo+IA0KPiAtLS0tLU9yaWdpbmFsIE1lc3Nh
+Z2UtLS0tLQ0KPiBGcm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJkQG5vZC5h
+dF0gDQo+IFNlbnQ6IDIwMTTlubQxMuaciDEw5pelIDIxOjI0DQo+IFRvOiBZYW4gS29uZw0KPiBD
+YzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogUmU6IFVCSSBlcnJv
+cnMgd2hlbiAibHMgLWwiDQo+IA0KPiBBbSAxMC4xMi4yMDE0IHVtIDE0OjEwIHNjaHJpZWIgWWFu
+IEtvbmc6DQo+PiBIaSwgUmljaGFyZCwNCj4+DQo+PiBZb3VyIHF1ZXN0aW9uLA0KPj4gSXMgdGhp
+cyBhIHZhbmlsbGEga2VybmVsIG9yIGRvZXMgaXQgY2FycnkgdG9ucyBvZiB2ZW5kb3IgcGF0Y2hl
+cz8NCj4+IC0tLSBJIHVzZSB0aGUgS2VybmVsIGJhc2VkIG9uIFlvY3RvIDEuNiwgYnV0IGluY2x1
+ZGVzIGxvdHMgUXVhbGNvbW0gcGF0Y2hlcy4NCj4+DQo+Pj4gdWJpYXR0YWNoIC9kZXYvdWJpX2N0
+cmwgLW0gMyAtTyA0MDk2DQo+Pg0KPj4gV2h5IGRvIHlvdSBuZWVkIC1PPw0KPj4gLS0tIEkgYWxz
+byB0cmllZCB3aXRob3V0IC1PLiBCdXQgdGhlIHJlc3VsdCBpcyB0aGUgc2FtZS4NCj4+DQo+PiBQ
+bGVhc2UgdXNlIHViaSB0b29scyB0byBmbGFzaCB0aGUgaW1hZ2UuDQo+PiAoZGQgc2hvdWxkIHdv
+cmssIGJ1dCBqdXN0IGluIGNhc2UuLi4pDQo+PiAtLS0gSSBldmVyIHRyaWVkICIgdWJpZm9ybWF0
+IC9kZXYvbXRkNyAtZiB1YmkuaW1nIC1zIDQwOTYiLCB0aGUgc2FtZSBlcnJvciA6KC4NCj4+DQo+
+PiBXaGF0IGlzIGxpbmUgMjEzIGluIHlvdXIgZHJpdmVycy9tdHMvdWJpL2lvLmM/DQo+PiAtLS0g
+SSBtYXJrZWQgbGluZSAyMTMgYXMgZm9sbG93LCB0aGFuayB5b3UuDQo+Pg0KPj4gaW50IHViaV9p
+b19yZWFkKGNvbnN0IHN0cnVjdCB1YmlfZGV2aWNlICp1YmksIHZvaWQgKmJ1ZiwgaW50IHBudW0s
+IGludCBvZmZzZXQsDQo+PiAJCWludCBsZW4pDQo+PiB7DQo+PiAJaW50IGVyciwgcmV0cmllcyA9
+IDA7DQo+PiAJc2l6ZV90IHJlYWQ7DQo+PiAJbG9mZl90IGFkZHI7DQo+Pg0KPj4gCWRiZ19pbygi
+cmVhZCAlZCBieXRlcyBmcm9tIFBFQiAlZDolZCIsIGxlbiwgcG51bSwgb2Zmc2V0KTsNCj4+DQo+
+PiAJdWJpX2Fzc2VydChwbnVtID49IDAgJiYgcG51bSA8IHViaS0+cGViX2NvdW50KTsNCj4+IAl1
+YmlfYXNzZXJ0KG9mZnNldCA+PSAwICYmIG9mZnNldCArIGxlbiA8PSB1YmktPnBlYl9zaXplKTsN
+Cj4+IAl1YmlfYXNzZXJ0KGxlbiA+IDApOw0KPj4NCj4+IAllcnIgPSBwYXJhbm9pZF9jaGVja19u
+b3RfYmFkKHViaSwgcG51bSk7DQo+PiAJaWYgKGVycikNCj4+IAkJcmV0dXJuIGVycjsNCj4+DQo+
+PiAJLyoNCj4+IAkgKiBEZWxpYmVyYXRlbHkgY29ycnVwdCB0aGUgYnVmZmVyIHRvIGltcHJvdmUg
+cm9idXN0bmVzcy4gSW5kZWVkLCBpZiB3ZQ0KPj4gCSAqIGRvIG5vdCBkbyB0aGlzLCB0aGUgZm9s
+bG93aW5nIG1heSBoYXBwZW46DQo+PiAJICogMS4gVGhlIGJ1ZmZlciBjb250YWlucyBkYXRhIGZy
+b20gcHJldmlvdXMgb3BlcmF0aW9uLCBlLmcuLCByZWFkIGZyb20NCj4+IAkgKiAgICBhbm90aGVy
+IFBFQiBwcmV2aW91c2x5LiBUaGUgZGF0YSBsb29rcyBsaWtlIGV4cGVjdGVkLCBlLmcuLCBpZiB3
+ZQ0KPj4gCSAqICAgIGp1c3QgZG8gbm90IHJlYWQgYW55dGhpbmcgYW5kIHJldHVybiAtIHRoZSBj
+YWxsZXIgd291bGQgbm90DQo+PiAJICogICAgbm90aWNlIHRoaXMuIEUuZy4sIGlmIHdlIGFyZSBy
+ZWFkaW5nIGEgVklEIGhlYWRlciwgdGhlIGJ1ZmZlciBtYXkNCj4+IAkgKiAgICBjb250YWluIGEg
+dmFsaWQgVklEIGhlYWRlciBmcm9tIGFub3RoZXIgUEVCLg0KPj4gCSAqIDIuIFRoZSBkcml2ZXIg
+aXMgYnVnZ3kgYW5kIHJldHVybnMgdXMgc3VjY2VzcyBvciAtRUJBRE1TRyBvcg0KPj4gCSAqICAg
+IC1FVUNMRUFOLCBidXQgaXQgZG9lcyBub3QgYWN0dWFsbHkgcHV0IGFueSBkYXRhIHRvIHRoZSBi
+dWZmZXIuDQo+PiAJICoNCj4+IAkgKiBUaGlzIG1heSBjb25mdXNlIFVCSSBvciB1cHBlciBsYXll
+cnMgLSB0aGV5IG1heSB0aGluayB0aGUgYnVmZmVyDQo+PiAJICogY29udGFpbnMgdmFsaWQgZGF0
+YSB3aGlsZSBpbiBmYWN0IGl0IGlzIGp1c3Qgb2xkIGRhdGEuIFRoaXMgaXMNCj4+IAkgKiBlc3Bl
+Y2lhbGx5IHBvc3NpYmxlIGJlY2F1c2UgVUJJIChhbmQgVUJJRlMpIHJlbGllcyBvbiBDUkMsIGFu
+ZA0KPj4gCSAqIHRyZWF0cyBkYXRhIGFzIGNvcnJlY3QgZXZlbiBpbiBjYXNlIG9mIEVDQyBlcnJv
+cnMgaWYgdGhlIENSQyBpcw0KPj4gCSAqIGNvcnJlY3QuDQo+PiAJICoNCj4+IAkgKiBUcnkgdG8g
+cHJldmVudCB0aGlzIHNpdHVhdGlvbiBieSBjaGFuZ2luZyB0aGUgZmlyc3QgYnl0ZSBvZiB0aGUN
+Cj4+IAkgKiBidWZmZXIuDQo+PiAJICovDQo+PiAJKigodWludDhfdCAqKWJ1ZikgXj0gMHhGRjsN
+Cj4+DQo+PiAJYWRkciA9IChsb2ZmX3QpcG51bSAqIHViaS0+cGViX3NpemUgKyBvZmZzZXQ7DQo+
+PiByZXRyeToNCj4+IAllcnIgPSBtdGRfcmVhZCh1YmktPm10ZCwgYWRkciwgbGVuLCAmcmVhZCwg
+YnVmKTsNCj4+IAlpZiAoZXJyKSB7DQo+PiAJCWNvbnN0IGNoYXIgKmVycnN0ciA9IG10ZF9pc19l
+Y2NlcnIoZXJyKSA/ICIgKEVDQyBlcnJvcikiIDogIiI7DQo+Pg0KPj4gCQlpZiAobXRkX2lzX2Jp
+dGZsaXAoZXJyKSkgew0KPj4gCQkJLyoNCj4+IAkJCSAqIC1FVUNMRUFOIGlzIHJlcG9ydGVkIGlm
+IHRoZXJlIHdhcyBhIGJpdC1mbGlwIHdoaWNoDQo+PiAJCQkgKiB3YXMgY29ycmVjdGVkLCBzbyB0
+aGlzIGlzIGhhcm1sZXNzLg0KPj4gCQkJICoNCj4+IAkJCSAqIFdlIGRvIG5vdCByZXBvcnQgYWJv
+dXQgaXQgaGVyZSB1bmxlc3MgZGVidWdnaW5nIGlzDQo+PiAJCQkgKiBlbmFibGVkLiBBIGNvcnJl
+c3BvbmRpbmcgbWVzc2FnZSB3aWxsIGJlIHByaW50ZWQNCj4+IAkJCSAqIGxhdGVyLCB3aGVuIGl0
+IGlzIGhhcyBiZWVuIHNjcnViYmVkLg0KPj4gCQkJICovDQo+PiAJCQlkYmdfbXNnKCJmaXhhYmxl
+IGJpdC1mbGlwIGRldGVjdGVkIGF0IFBFQiAlZCIsIHBudW0pOw0KPj4gCQkJdWJpX2Fzc2VydChs
+ZW4gPT0gcmVhZCk7DQo+PiAJCQlyZXR1cm4gVUJJX0lPX0JJVEZMSVBTOw0KPj4gCQl9DQo+Pg0K
+Pj4gCQlpZiAocmV0cmllcysrIDwgVUJJX0lPX1JFVFJJRVMpIHsNCj4+IAkJCWRiZ19pbygiZXJy
+b3IgJWQlcyB3aGlsZSByZWFkaW5nICVkIGJ5dGVzIGZyb20gUEVCICINCj4+IAkJCSAgICAgICAi
+JWQ6JWQsIHJlYWQgb25seSAlemQgYnl0ZXMsIHJldHJ5IiwNCj4+IAkJCSAgICAgICBlcnIsIGVy
+cnN0ciwgbGVuLCBwbnVtLCBvZmZzZXQsIHJlYWQpOw0KPj4gCQkJeWllbGQoKTsNCj4+IAkJCWdv
+dG8gcmV0cnk7DQo+PiAJCX0NCj4+DQo+PiAJCXViaV9lcnIoImVycm9yICVkJXMgd2hpbGUgcmVh
+ZGluZyAlZCBieXRlcyBmcm9tIFBFQiAlZDolZCwgIg0KPj4gCQkJInJlYWQgJXpkIGJ5dGVzIiwg
+ZXJyLCBlcnJzdHIsIGxlbiwgcG51bSwgb2Zmc2V0LCByZWFkKTsNCj4+IAkJdWJpX2RiZ19kdW1w
+X3N0YWNrKCk7DQo+Pg0KPj4gCQkvKg0KPj4gCQkgKiBUaGUgZHJpdmVyIHNob3VsZCBuZXZlciBy
+ZXR1cm4gLUVCQURNU0cgaWYgaXQgZmFpbGVkIHRvIHJlYWQNCj4+IAkJICogYWxsIHRoZSByZXF1
+ZXN0ZWQgZGF0YS4gQnV0IHNvbWUgYnVnZ3kgZHJpdmVycyBtaWdodCBkbw0KPj4gCQkgKiB0aGlz
+LCBzbyB3ZSBjaGFuZ2UgaXQgdG8gLUVJTy4NCj4+IAkJICovDQo+PiAJCWlmIChyZWFkICE9IGxl
+biAmJiBtdGRfaXNfZWNjZXJyKGVycikpIHsNCj4+IAkJCXViaV9hc3NlcnQoMCk7DQo+PiAJCQll
+cnIgPSAtRUlPOw0KPj4gCQl9DQo+PiAJfSBlbHNlIHsNCj4+IAkJdWJpX2Fzc2VydChsZW4gPT0g
+cmVhZCk7ICAgICAgPC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSBsaW5lIDIxMw0K
+PiANCj4gTG9va3MgbXVjaCBsaWtlIGEgYnJva2VuIE1URCBkcml2ZXIuDQo+IG10ZF9yZWFkKCkg
+cmV0dXJuZWQgbGVzcyB0aGFuIHJlcXVlc3RlZCBieXRlcy4NCj4gUGxlYXNlIG1ha2Ugc3VyZSB0
+aGF0IGJvdGggVUJJIGFuZCBNVEQgdGVzdHMgcGFzcy4NCj4gDQo+IFRoYW5rcywNCj4gLy9yaWNo
+YXJkDQo+IA0K
