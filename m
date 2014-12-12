@@ -1,20 +1,18 @@
-Received: from mail-la0-f42.google.com ([209.85.215.42])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XzSy9-0002nW-Ty
- for linux-mtd@lists.infradead.org; Fri, 12 Dec 2014 16:21:31 +0000
-Received: by mail-la0-f42.google.com with SMTP id gd6so6463204lab.15
- for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2014 08:21:07 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1417351863-3812-1-git-send-email-ard.biesheuvel@linaro.org>
-References: <1417351863-3812-1-git-send-email-ard.biesheuvel@linaro.org>
-Date: Fri, 12 Dec 2014 17:21:06 +0100
-Message-ID: <CAKv+Gu_qWrH77Yk1=Kuo5gMJ70PCYfVM6P3N=KZ2BvwaAqQB-w@mail.gmail.com>
-Subject: Re: [PATCH] mtd: physmap_of: fix potential NULL dereference
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XzT58-0005lF-5w
+ for linux-mtd@lists.infradead.org; Fri, 12 Dec 2014 16:28:42 +0000
+Message-ID: <1418401440.30433.20.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBI/UBIFS updates 3.19-rc1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 12 Dec 2014 18:24:00 +0200
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +22,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 30 November 2014 at 13:51, Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
-> On device remove, when testing the cmtd field of an of_flash
-> struct to decide whether it is a concatenated device or not,
-> we get a false positive on cmtd == NULL, and dereference it
-> subsequently. This may occur if of_flash_remove() is called
-> from the cleanup path of of_flash_probe().
->
-> Instead, test for NULL first, and only then perform the test
-> for a concatenated device.
->
-> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> ---
->  drivers/mtd/maps/physmap_of.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
+Hi Linus,
 
-Ping?
+The following changes since commit 0df1f2487d2f0d04703f142813d53615d62a1da4:
 
+  Linux 3.18-rc3 (2014-11-02 15:01:51 -0800)
 
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-> index c1d21cb501ca..e48930424091 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -47,14 +47,12 @@ static int of_flash_remove(struct platform_device *dev)
->                 return 0;
->         dev_set_drvdata(&dev->dev, NULL);
->
-> -       if (info->cmtd != info->list[0].mtd) {
-> +       if (info->cmtd) {
->                 mtd_device_unregister(info->cmtd);
-> -               mtd_concat_destroy(info->cmtd);
-> +               if (info->cmtd != info->list[0].mtd)
-> +                       mtd_concat_destroy(info->cmtd);
->         }
->
-> -       if (info->cmtd)
-> -               mtd_device_unregister(info->cmtd);
-> -
->         for (i = 0; i < info->list_size; i++) {
->                 if (info->list[i].mtd)
->                         map_destroy(info->list[i].mtd);
-> --
-> 1.8.3.2
->
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.19-rc1
+
+for you to fetch changes up to f38aed975c0c3645bbdfc5ebe35726e64caaf588:
+
+  UBI: Fix invalid vfree() (2014-11-07 15:14:09 +0200)
+
+----------------------------------------------------------------
+This pull request includes the following UBI/UBIFS changes:
+* UBI debug messages now include the UBI device number. This change
+  is responsible for the big diffstat since it touched every debugging
+  print statement.
+* An Xattr bug-fix which fixes SELinux support
+* Several error path fixes in UBI/UBIFS
+
+----------------------------------------------------------------
+Artem Bityutskiy (1):
+      UBIFS: fix budget leak in error path
+
+Richard Weinberger (3):
+      UBI: vtbl: Use ubi_eba_atomic_leb_change()
+      UBI: Fix double free after do_sync_erase()
+      UBI: Fix invalid vfree()
+
+Subodh Nijsure (1):
+      UBIFS: fix a couple bugs in UBIFS xattr length calculation
+
+Tanya Brokhman (1):
+      UBI: Extend UBI layer debug/messaging capabilities
+
+ drivers/mtd/ubi/attach.c  | 126 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------------------
+ drivers/mtd/ubi/block.c   |  41 ++++++++++++++++++++---------------------
+ drivers/mtd/ubi/build.c   | 126 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------------------------------
+ drivers/mtd/ubi/cdev.c    |  36 +++++++++++++++++++-----------------
+ drivers/mtd/ubi/debug.c   |  10 +++++-----
+ drivers/mtd/ubi/eba.c     |  53 +++++++++++++++++++++++++++--------------------------
+ drivers/mtd/ubi/fastmap.c |  96 ++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------
+ drivers/mtd/ubi/io.c      | 150 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------------------------------------------------------
+ drivers/mtd/ubi/kapi.c    |   6 +++---
+ drivers/mtd/ubi/misc.c    |   4 ++--
+ drivers/mtd/ubi/ubi.h     |  13 +++++++------
+ drivers/mtd/ubi/upd.c     |  10 ++++++----
+ drivers/mtd/ubi/vmt.c     |  69 ++++++++++++++++++++++++++++++++++++---------------------------------
+ drivers/mtd/ubi/vtbl.c    |  71 ++++++++++++++++++++++++++++++++++-------------------------------------
+ drivers/mtd/ubi/wl.c      |  80 ++++++++++++++++++++++++++++++++++++++++++--------------------------------------
+ fs/ubifs/file.c           |   1 +
+ fs/ubifs/journal.c        |   7 ++++++-
+ 17 files changed, 466 insertions(+), 433 deletions(-)
+
+--
+Artem
