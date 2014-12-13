@@ -1,20 +1,20 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XzdNw-0008MB-7l
- for linux-mtd@lists.infradead.org; Sat, 13 Dec 2014 03:28:48 +0000
-Received: by mail-pa0-f52.google.com with SMTP id eu11so8320377pac.25
- for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2014 19:28:27 -0800 (PST)
-Date: Fri, 12 Dec 2014 19:28:24 -0800
+ id 1XzdOg-0008Sf-0h
+ for linux-mtd@lists.infradead.org; Sat, 13 Dec 2014 03:29:34 +0000
+Received: by mail-pd0-f179.google.com with SMTP id fp1so8315534pdb.38
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2014 19:29:13 -0800 (PST)
+Date: Fri, 12 Dec 2014 19:29:10 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: Re: [PATCH] mtd: physmap_of: fix potential NULL dereference
-Message-ID: <20141213032824.GR21347@ld-irv-0074>
-References: <1417351863-3812-1-git-send-email-ard.biesheuvel@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: tests: abort torturetest on erase errors
+Message-ID: <20141213032910.GS21347@ld-irv-0074>
+References: <1416594269-4647-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1417351863-3812-1-git-send-email-ard.biesheuvel@linaro.org>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+In-Reply-To: <1416594269-4647-1-git-send-email-computersforpeace@gmail.com>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 30, 2014 at 01:51:03PM +0100, Ard Biesheuvel wrote:
-> On device remove, when testing the cmtd field of an of_flash
-> struct to decide whether it is a concatenated device or not,
-> we get a false positive on cmtd == NULL, and dereference it
-> subsequently. This may occur if of_flash_remove() is called
-> from the cleanup path of of_flash_probe().
+On Fri, Nov 21, 2014 at 10:24:29AM -0800, Brian Norris wrote:
+> The torture test should quit once it actually induces an error in the
+> flash. This step was accidentally removed during refactoring.
 > 
-> Instead, test for NULL first, and only then perform the test
-> for a concatenated device.
+> Without this fix, the torturetest just continues infinitely, or until
+> the maximum cycle count is reached. e.g.:
 > 
-> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+>    ...
+>    [ 7619.218171] mtd_test: error -5 while erasing EB 100
+>    [ 7619.297981] mtd_test: error -5 while erasing EB 100
+>    [ 7619.377953] mtd_test: error -5 while erasing EB 100
+>    [ 7619.457998] mtd_test: error -5 while erasing EB 100
+>    [ 7619.537990] mtd_test: error -5 while erasing EB 100
+>    ...
+> 
+> Fixes: 6cf78358c94f ("mtd: mtd_torturetest: use mtd_test helpers")
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Akinobu Mita <akinobu.mita@gmail.com>
+> Cc: <stable@vger.kernel.org>
 
-Applied to l2-mtd.git. Thanks!
+Applied to l2-mtd.git.
 
 Brian
