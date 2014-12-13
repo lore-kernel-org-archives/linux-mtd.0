@@ -1,17 +1,18 @@
-Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XzauK-0005lV-23
- for linux-mtd@lists.infradead.org; Sat, 13 Dec 2014 00:50:04 +0000
-Received: by mail-ig0-f177.google.com with SMTP id z20so2417307igj.16
- for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2014 16:49:42 -0800 (PST)
+ id 1Xzava-0006xO-OS
+ for linux-mtd@lists.infradead.org; Sat, 13 Dec 2014 00:51:23 +0000
+Received: by mail-ig0-f176.google.com with SMTP id l13so2566187iga.3
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2014 16:51:01 -0800 (PST)
 MIME-Version: 1.0
 Sender: dehrenberg@google.com
-In-Reply-To: <1417525136-25731-3-git-send-email-ezequiel.garcia@imgtec.com>
+In-Reply-To: <1417525136-25731-2-git-send-email-ezequiel.garcia@imgtec.com>
 References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
- <1417525136-25731-3-git-send-email-ezequiel.garcia@imgtec.com>
-Date: Fri, 12 Dec 2014 16:49:41 -0800
-Message-ID: <CAAK6Zt1ncdnibAYu25vOLF1uqycD+kgwXMtK8f0BOSCfoQvXWA@mail.gmail.com>
-Subject: Re: [PATCH 2/6] mtd: nand: Add JEDEC manufacturer ID for Gigadevice
+ <1417525136-25731-2-git-send-email-ezequiel.garcia@imgtec.com>
+Date: Fri, 12 Dec 2014 16:51:01 -0800
+Message-ID: <CAAK6Zt3v5pebUbftcwAsf_aWao0B-ZfiU06nv5GLtatMQxNafg@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mtd: nand: Check length of ID before reading bits per
+ cell
 From: Daniel Ehrenberg <dehrenberg@chromium.org>
 To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 Content-Type: text/plain; charset=UTF-8
@@ -31,7 +32,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Tue, Dec 2, 2014 at 4:58 AM, Ezequiel Garcia
 <ezequiel.garcia@imgtec.com> wrote:
-> This commit adds Gigadevice to the list of manufacturer ID and name strings.
+> The table-based NAND identification currently reads the number
+> of bits per cell from the 3rd byte of the extended ID. This is done
+> for the so-called 'full ID' devices; i.e. devices that have a known
+> length ID.
+>
+> However, if the ID length is shorter than three, there's no 3rd byte,
+> and so it's wrong to read the bits per cell from there. Fix this by
+> adding a check for the ID length.
 >
 > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 
