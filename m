@@ -1,25 +1,20 @@
-Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XzbVH-0000xN-7v
- for linux-mtd@lists.infradead.org; Sat, 13 Dec 2014 01:28:15 +0000
-Received: by mail-ie0-f177.google.com with SMTP id rd18so7938972iec.22
- for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2014 17:27:54 -0800 (PST)
+ id 1Xzd7w-00030b-Ts
+ for linux-mtd@lists.infradead.org; Sat, 13 Dec 2014 03:12:20 +0000
+Received: by mail-pa0-f52.google.com with SMTP id eu11so8408546pac.39
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2014 19:11:54 -0800 (PST)
+Date: Fri, 12 Dec 2014 19:11:51 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Subject: Re: [PATCH] mtd: physmap_of: fix potential NULL dereference
+Message-ID: <20141213031151.GP21347@ld-irv-0074>
+References: <1417351863-3812-1-git-send-email-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
-Sender: dehrenberg@google.com
-In-Reply-To: <1417525136-25731-6-git-send-email-ezequiel.garcia@imgtec.com>
-References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
- <1417525136-25731-6-git-send-email-ezequiel.garcia@imgtec.com>
-Date: Fri, 12 Dec 2014 17:27:53 -0800
-Message-ID: <CAAK6Zt3DX0=cE0mvALRDhxDFqRzrDstSokzCTqEKmAT+qsm00A@mail.gmail.com>
-Subject: Re: [PATCH 5/6] mtd: spi-nand: Add devicetree binding
-From: Daniel Ehrenberg <dehrenberg@chromium.org>
-To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: bpqw@micron.com, Ionela Voinescu <ionela.voinescu@imgtec.com>,
- frankliu@micron.com, Andrew Bresticker <abrestic@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- arnaud.mouiche@invoxia.com, Brian Norris <computersforpeace@gmail.com>,
- James Hartley <james.hartley@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1417351863-3812-1-git-send-email-ard.biesheuvel@linaro.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,11 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 2, 2014 at 4:58 AM, Ezequiel Garcia
-<ezequiel.garcia@imgtec.com> wrote:
-> This commit adds the devicetree binding document that specifies the
-> SPI NAND devices support.
->
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+On Sun, Nov 30, 2014 at 01:51:03PM +0100, Ard Biesheuvel wrote:
+> On device remove, when testing the cmtd field of an of_flash
+> struct to decide whether it is a concatenated device or not,
+> we get a false positive on cmtd == NULL, and dereference it
+> subsequently. This may occur if of_flash_remove() is called
+> from the cleanup path of of_flash_probe().
 
-Reviewed-by: Dan Ehrenberg <dehrenberg@chromium.org>
+Did you catch this on real hardware, or just by inspection? Just
+wondering if this should be marked for -stable.
+
+> Instead, test for NULL first, and only then perform the test
+> for a concatenated device.
+> 
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> ---
+>  drivers/mtd/maps/physmap_of.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+> index c1d21cb501ca..e48930424091 100644
+> --- a/drivers/mtd/maps/physmap_of.c
+> +++ b/drivers/mtd/maps/physmap_of.c
+> @@ -47,14 +47,12 @@ static int of_flash_remove(struct platform_device *dev)
+>  		return 0;
+>  	dev_set_drvdata(&dev->dev, NULL);
+>  
+> -	if (info->cmtd != info->list[0].mtd) {
+> +	if (info->cmtd) {
+>  		mtd_device_unregister(info->cmtd);
+> -		mtd_concat_destroy(info->cmtd);
+> +		if (info->cmtd != info->list[0].mtd)
+> +			mtd_concat_destroy(info->cmtd);
+>  	}
+>  
+> -	if (info->cmtd)
+> -		mtd_device_unregister(info->cmtd);
+> -
+>  	for (i = 0; i < info->list_size; i++) {
+>  		if (info->list[i].mtd)
+>  			map_destroy(info->list[i].mtd);
+
+Brian
