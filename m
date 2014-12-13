@@ -1,20 +1,19 @@
-Received: from mail-la0-f54.google.com ([209.85.215.54])
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XzgYq-0004YQ-AU
- for linux-mtd@lists.infradead.org; Sat, 13 Dec 2014 06:52:17 +0000
-Received: by mail-la0-f54.google.com with SMTP id pv20so7144323lab.27
- for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2014 22:51:53 -0800 (PST)
+ id 1XzoBz-000583-D1
+ for linux-mtd@lists.infradead.org; Sat, 13 Dec 2014 15:01:12 +0000
+Received: by mail-wg0-f52.google.com with SMTP id x12so11225912wgg.11
+ for <linux-mtd@lists.infradead.org>; Sat, 13 Dec 2014 07:00:47 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] ubinfo: allow passing MTD device number
+Date: Sat, 13 Dec 2014 16:00:28 +0100
+Message-Id: <1418482828-21290-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20141213031151.GP21347@ld-irv-0074>
-References: <1417351863-3812-1-git-send-email-ard.biesheuvel@linaro.org>
- <20141213031151.GP21347@ld-irv-0074>
-Date: Sat, 13 Dec 2014 07:44:51 +0100
-Message-ID: <CAKv+Gu_gpS6e_wuE-Jj19dq52mZJpUf6fgxJXTmHjOcXTo+1+A@mail.gmail.com>
-Subject: Re: [PATCH] mtd: physmap_of: fix potential NULL dereference
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 8bit
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +23,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 13 December 2014 at 04:11, Brian Norris <computersforpeace@gmail.com> wrote:
-> On Sun, Nov 30, 2014 at 01:51:03PM +0100, Ard Biesheuvel wrote:
->> On device remove, when testing the cmtd field of an of_flash
->> struct to decide whether it is a concatenated device or not,
->> we get a false positive on cmtd == NULL, and dereference it
->> subsequently. This may occur if of_flash_remove() is called
->> from the cleanup path of of_flash_probe().
->
-> Did you catch this on real hardware, or just by inspection? Just
-> wondering if this should be marked for -stable.
->
+This provides a nice way to find if and which UBI device is attached to
+the MTD.
 
-I am not aware of this issue occurring in the field, but I caught it
-while working on the EFI support for arm64 in the kernel. One of the
-changes I am making is ensuring all iomem ranges owned by the firmware
-are properly marked as busy in the iomem resource map. Once the NOR
-flash holding the EFI variable store is reserved in the iomem resource
-map, this issue will be triggered because the probe fails and has to
-clean up after itself. Those changes are aimed for 3.20, so it would
-be nice if this fix could have made it in by then.
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ ubi-utils/ubinfo.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-Cheers,
-Ard.
-
->> Instead, test for NULL first, and only then perform the test
->> for a concatenated device.
->>
->> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
->> ---
->>  drivers/mtd/maps/physmap_of.c | 8 +++-----
->>  1 file changed, 3 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
->> index c1d21cb501ca..e48930424091 100644
->> --- a/drivers/mtd/maps/physmap_of.c
->> +++ b/drivers/mtd/maps/physmap_of.c
->> @@ -47,14 +47,12 @@ static int of_flash_remove(struct platform_device *dev)
->>               return 0;
->>       dev_set_drvdata(&dev->dev, NULL);
->>
->> -     if (info->cmtd != info->list[0].mtd) {
->> +     if (info->cmtd) {
->>               mtd_device_unregister(info->cmtd);
->> -             mtd_concat_destroy(info->cmtd);
->> +             if (info->cmtd != info->list[0].mtd)
->> +                     mtd_concat_destroy(info->cmtd);
->>       }
->>
->> -     if (info->cmtd)
->> -             mtd_device_unregister(info->cmtd);
->> -
->>       for (i = 0; i < info->list_size; i++) {
->>               if (info->list[i].mtd)
->>                       map_destroy(info->list[i].mtd);
->
-> Brian
+diff --git a/ubi-utils/ubinfo.c b/ubi-utils/ubinfo.c
+index cb88f53..1499d0a 100644
+--- a/ubi-utils/ubinfo.c
++++ b/ubi-utils/ubinfo.c
+@@ -36,6 +36,7 @@
+ /* The variables below are set by command line arguments */
+ struct args {
+ 	int devn;
++	int mtdn;
+ 	int vol_id;
+ 	int all;
+ 	const char *node;
+@@ -45,6 +46,7 @@ struct args {
+ static struct args args = {
+ 	.vol_id = -1,
+ 	.devn = -1,
++	.mtdn = -1,
+ 	.all = 0,
+ 	.node = NULL,
+ 	.vol_name = NULL,
+@@ -55,6 +57,7 @@ static const char doc[] = PROGRAM_NAME " version " VERSION
+ 
+ static const char optionsstr[] =
+ "-d, --devn=<UBI device number>  UBI device number to get information about\n"
++"-m, --mtdn=<MTD device number>  or alternatively, MTD device number\n"
+ "-n, --vol_id=<volume ID>        ID of UBI volume to print information about\n"
+ "-N, --name=<volume name>        name of UBI volume to print information about\n"
+ "-a, --all                       print information about all devices and volumes,\n"
+@@ -77,6 +80,7 @@ static const char usage[] =
+ 
+ static const struct option long_options[] = {
+ 	{ .name = "devn",      .has_arg = 1, .flag = NULL, .val = 'd' },
++	{ .name = "mtdn",      .has_arg = 1, .flag = NULL, .val = 'm' },
+ 	{ .name = "vol_id",    .has_arg = 1, .flag = NULL, .val = 'n' },
+ 	{ .name = "name",      .has_arg = 1, .flag = NULL, .val = 'N' },
+ 	{ .name = "all",       .has_arg = 0, .flag = NULL, .val = 'a' },
+@@ -90,7 +94,7 @@ static int parse_opt(int argc, char * const argv[])
+ 	while (1) {
+ 		int key, error = 0;
+ 
+-		key = getopt_long(argc, argv, "an:N:d:hV", long_options, NULL);
++		key = getopt_long(argc, argv, "an:N:d:m:hV", long_options, NULL);
+ 		if (key == -1)
+ 			break;
+ 
+@@ -116,6 +120,13 @@ static int parse_opt(int argc, char * const argv[])
+ 
+ 			break;
+ 
++		case 'm':
++			args.mtdn = simple_strtoul(optarg, &error);
++			if (error || args.mtdn < 0)
++				return errmsg("bad MTD device number: \"%s\"", optarg);
++
++			break;
++
+ 		case 'h':
+ 			printf("%s\n\n", doc);
+ 			printf("%s\n\n", usage);
+@@ -390,6 +401,15 @@ int main(int argc, char * const argv[])
+ 		return sys_errmsg("cannot open libubi");
+ 	}
+ 
++	if (args.mtdn >= 0) {
++		err = mtd_num2ubi_dev(libubi, args.mtdn, &args.devn);
++		if (err) {
++			sys_errmsg("cannot find UBI device attached to the MTD %d",
++				   args.mtdn);
++			goto out_libubi;
++		}
++	}
++
+ 	if (args.node) {
+ 		/*
+ 		 * A character device was specified, translate this into UBI
+-- 
+1.8.4.5
