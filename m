@@ -1,9 +1,9 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y09jI-0008La-Sj
- for linux-mtd@lists.infradead.org; Sun, 14 Dec 2014 14:01:02 +0000
-Message-ID: <548D9802.1030300@nod.at>
-Date: Sun, 14 Dec 2014 15:00:34 +0100
+ id 1Y0HcU-0000K3-QL
+ for linux-mtd@lists.infradead.org; Sun, 14 Dec 2014 22:26:32 +0000
+Message-ID: <548E0E7B.1000008@nod.at>
+Date: Sun, 14 Dec 2014 23:26:03 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, dedekind1@gmail.com
@@ -42,11 +42,15 @@ Am 14.12.2014 um 13:43 schrieb Ezequiel Garcia:
 > 
 > Tried to apply these to take a look and run some tests, but 2/2 got
 > rejected. Which tag did you base them?
+> 
 
-Which hunk does not apply?
-What tree are you using?
+As discussed on IRC, blk-mq saw an update in -next.
+The interface as changed bit, I've adopted my patches and pushed them to:
+git://git.kernel.org/pub/scm/linux/kernel/git/rw/misc.git ubiblock-mq
+This tree is linux-ubifs.git plus linux-block.git for-next.
 
-Here it applies fine Linus' tree as of today and linux-ubifs.git.
+I'll resend this updated patches after the merge window has closed.
+Happy testing. :-)
 
 Thanks,
 //richard
