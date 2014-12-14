@@ -1,17 +1,16 @@
-Received: from mail-wi0-f176.google.com ([209.85.212.176])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y08YU-0007uy-5b
- for linux-mtd@lists.infradead.org; Sun, 14 Dec 2014 12:45:46 +0000
-Received: by mail-wi0-f176.google.com with SMTP id ex7so6469851wid.3
- for <linux-mtd@lists.infradead.org>; Sun, 14 Dec 2014 04:45:20 -0800 (PST)
-Message-ID: <548D85F1.5080606@vanguardiasur.com.ar>
-Date: Sun, 14 Dec 2014 09:43:29 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+ id 1Y09jI-0008La-Sj
+ for linux-mtd@lists.infradead.org; Sun, 14 Dec 2014 14:01:02 +0000
+Message-ID: <548D9802.1030300@nod.at>
+Date: Sun, 14 Dec 2014 15:00:34 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, dedekind1@gmail.com
 Subject: Re: UBI: Add support for scatter gather and blk-mq
 References: <1416845080-16663-1-git-send-email-richard@nod.at>
-In-Reply-To: <1416845080-16663-1-git-send-email-richard@nod.at>
+ <548D85F1.5080606@vanguardiasur.com.ar>
+In-Reply-To: <548D85F1.5080606@vanguardiasur.com.ar>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
@@ -25,24 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hey Richard,
-
-On 11/24/2014 01:04 PM, Richard Weinberger wrote:
-> This two patches implement blk-mq support for the UBI block driver.
-> As the scatter gather part is rather generic I've moved it directl
-> into UBI such that it can be reused later.
-> So far only reading data into a scatter gather list is possible.
-> After implementing  ubi_eba_read_leb_sg() we could slowly start
-> removing a bunch of vmalloc() from the UBI core code and use scatter gather.
-> This should lower the memory footprint of UBI.
+Am 14.12.2014 um 13:43 schrieb Ezequiel Garcia:
+> Hey Richard,
 > 
-> [PATCH 1/2] UBI: Add initial support for scatter gather
-> [PATCH 2/2] UBI: Block: Add blk-mq support
+> On 11/24/2014 01:04 PM, Richard Weinberger wrote:
+>> This two patches implement blk-mq support for the UBI block driver.
+>> As the scatter gather part is rather generic I've moved it directl
+>> into UBI such that it can be reused later.
+>> So far only reading data into a scatter gather list is possible.
+>> After implementing  ubi_eba_read_leb_sg() we could slowly start
+>> removing a bunch of vmalloc() from the UBI core code and use scatter gather.
+>> This should lower the memory footprint of UBI.
+>>
+>> [PATCH 1/2] UBI: Add initial support for scatter gather
+>> [PATCH 2/2] UBI: Block: Add blk-mq support
+>>
 > 
+> Tried to apply these to take a look and run some tests, but 2/2 got
+> rejected. Which tag did you base them?
 
-Tried to apply these to take a look and run some tests, but 2/2 got
-rejected. Which tag did you base them?
+Which hunk does not apply?
+What tree are you using?
 
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+Here it applies fine Linus' tree as of today and linux-ubifs.git.
+
+Thanks,
+//richard
