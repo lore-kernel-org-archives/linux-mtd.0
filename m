@@ -1,23 +1,21 @@
-Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
+Received: from mail-wi0-f176.google.com ([209.85.212.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y08QR-0003oa-Rf
- for linux-mtd@lists.infradead.org; Sun, 14 Dec 2014 12:37:28 +0000
-Received: by mail-ig0-f176.google.com with SMTP id l13so3982009iga.3
- for <linux-mtd@lists.infradead.org>; Sun, 14 Dec 2014 04:37:06 -0800 (PST)
+ id 1Y08YU-0007uy-5b
+ for linux-mtd@lists.infradead.org; Sun, 14 Dec 2014 12:45:46 +0000
+Received: by mail-wi0-f176.google.com with SMTP id ex7so6469851wid.3
+ for <linux-mtd@lists.infradead.org>; Sun, 14 Dec 2014 04:45:20 -0800 (PST)
+Message-ID: <548D85F1.5080606@vanguardiasur.com.ar>
+Date: Sun, 14 Dec 2014 09:43:29 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvw1YpX+wYDVjQ-_xfLNvo8OaL5dJQGNymQft56oCiFbYQ@mail.gmail.com>
-References: <1418482828-21290-1-git-send-email-zajec5@gmail.com>
- <CAFLxGvw1YpX+wYDVjQ-_xfLNvo8OaL5dJQGNymQft56oCiFbYQ@mail.gmail.com>
-Date: Sun, 14 Dec 2014 13:37:05 +0100
-Message-ID: <CACna6rzGQtgJqG5XX=hefSzbmrv=2bt6gjdyOzPH-2bgqrhUsg@mail.gmail.com>
-Subject: Re: [PATCH] ubinfo: allow passing MTD device number
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: UBI: Add support for scatter gather and blk-mq
+References: <1416845080-16663-1-git-send-email-richard@nod.at>
+In-Reply-To: <1416845080-16663-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 13 December 2014 at 20:05, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
-> On Sat, Dec 13, 2014 at 4:00 PM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.co=
-m> wrote:
->> This provides a nice way to find if and which UBI device is attached to
->> the MTD.
->
-> Is it really worth adding this functionality to ubinfo?
-> One can check /sys/class/ubi/ubiX/mtd_num.
+Hey Richard,
 
-I didn't know about it when asking the questions, should be enough for
-me, thanks.
+On 11/24/2014 01:04 PM, Richard Weinberger wrote:
+> This two patches implement blk-mq support for the UBI block driver.
+> As the scatter gather part is rather generic I've moved it directl
+> into UBI such that it can be reused later.
+> So far only reading data into a scatter gather list is possible.
+> After implementing  ubi_eba_read_leb_sg() we could slowly start
+> removing a bunch of vmalloc() from the UBI core code and use scatter gather.
+> This should lower the memory footprint of UBI.
+> 
+> [PATCH 1/2] UBI: Add initial support for scatter gather
+> [PATCH 2/2] UBI: Block: Add blk-mq support
+> 
 
---=20
-Rafa=C5=82
+Tried to apply these to take a look and run some tests, but 2/2 got
+rejected. Which tag did you base them?
+
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
