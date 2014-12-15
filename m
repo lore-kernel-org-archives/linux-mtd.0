@@ -1,24 +1,23 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0XpA-00005g-6v
- for linux-mtd@lists.infradead.org; Mon, 15 Dec 2014 15:44:41 +0000
-Received: from localhost.localdomain ([127.0.0.1]:47356 "EHLO linux-mips.org"
- rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
- id S27008822AbaLOPoTIzaGY (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Mon, 15 Dec 2014 16:44:19 +0100
-Date: Mon, 15 Dec 2014 16:44:08 +0100
-From: Ralf Baechle <ralf@linux-mips.org>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] mtd: nand: jz4740: Convert to GPIO descriptor API
-Message-ID: <20141215154408.GD9382@linux-mips.org>
-References: <1417549706-28420-1-git-send-email-lars@metafoo.de>
+Received: from mail-qc0-f169.google.com ([209.85.216.169])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y0Y52-0000uC-UR
+ for linux-mtd@lists.infradead.org; Mon, 15 Dec 2014 16:01:05 +0000
+Received: by mail-qc0-f169.google.com with SMTP id w7so8765307qcr.0
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Dec 2014 08:00:36 -0800 (PST)
+Message-ID: <548F0538.2080003@vanguardiasur.com.ar>
+Date: Mon, 15 Dec 2014 12:58:48 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1417549706-28420-1-git-send-email-lars@metafoo.de>
-Cc: linux-mips@linux-mips.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: UBI: Add support for scatter gather and blk-mq
+References: <1416845080-16663-1-git-send-email-richard@nod.at>
+ <548D85F1.5080606@vanguardiasur.com.ar> <548E0E7B.1000008@nod.at>
+In-Reply-To: <548E0E7B.1000008@nod.at>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ =?windows-1252?Q?Guido_Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 02, 2014 at 08:48:26PM +0100, Lars-Peter Clausen wrote:
 
-> Use the GPIO descriptor API instead of the deprecated legacy GPIO API to
-> manage the busy GPIO.
+
+On 12/14/2014 07:26 PM, Richard Weinberger wrote:
+> Am 14.12.2014 um 13:43 schrieb Ezequiel Garcia:
+>> Hey Richard,
+>>
+>> On 11/24/2014 01:04 PM, Richard Weinberger wrote:
+>>> This two patches implement blk-mq support for the UBI block driver.
+>>> As the scatter gather part is rather generic I've moved it directl
+>>> into UBI such that it can be reused later.
+>>> So far only reading data into a scatter gather list is possible.
+>>> After implementing  ubi_eba_read_leb_sg() we could slowly start
+>>> removing a bunch of vmalloc() from the UBI core code and use scatter gather.
+>>> This should lower the memory footprint of UBI.
+>>>
+>>> [PATCH 1/2] UBI: Add initial support for scatter gather
+>>> [PATCH 2/2] UBI: Block: Add blk-mq support
+>>>
+>>
+>> Tried to apply these to take a look and run some tests, but 2/2 got
+>> rejected. Which tag did you base them?
+>>
 > 
-> The patch updates both the jz4740 nand driver and the only user of the driver
-> the qi-lb60 board driver.
+> As discussed on IRC, blk-mq saw an update in -next.
+> The interface as changed bit, I've adopted my patches and pushed them to:
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/misc.git ubiblock-mq
+> This tree is linux-ubifs.git plus linux-block.git for-next.
 > 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
-> This patch should preferably be merged through the MTD tree with Ralf's ack for
-> the MIPS bits.
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
+Great.
 
-Though in my experience MIPS-specific patches to non-arch/mips code receive
-best testing in the MIPS tree.
+> I'll resend this updated patches after the merge window has closed.
+> Happy testing. :-)
+> 
 
-Cheers,
-
-  Ralf
+Thanks for the update :)
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
