@@ -1,20 +1,27 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-by2on0076.outbound.protection.outlook.com ([207.46.100.76]
+ helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0HcU-0000K3-QL
- for linux-mtd@lists.infradead.org; Sun, 14 Dec 2014 22:26:32 +0000
-Message-ID: <548E0E7B.1000008@nod.at>
-Date: Sun, 14 Dec 2014 23:26:03 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1Y0MN4-00074E-3Y
+ for linux-mtd@lists.infradead.org; Mon, 15 Dec 2014 03:30:55 +0000
+From: Yan Kong <ykong@sierrawireless.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Sun, 14 Dec 2014 19:30:24 -0800
+Subject: RE: UBI errors when "ls -l"
+Message-ID: <740E8392C144C64FA5300E5E696A179BB97FEBBAE9@carmd-exchmb01.sierrawireless.local>
+References: <loom.20141210T102753-582@post.gmane.org>
+ <CAFLxGvwqdi6T9zg_QH5Uw3D7R0dUPbX0G-7wDX6p47RBWoSdFw@mail.gmail.com>
+ <740E8392C144C64FA5300E5E696A179BB97FEBB16F@carmd-exchmb01.sierrawireless.local>
+ <5488498B.4030902@nod.at>
+ <740E8392C144C64FA5300E5E696A179BB97FEBB176@carmd-exchmb01.sierrawireless.local>
+ <548850C3.8000204@nod.at>
+ <740E8392C144C64FA5300E5E696A179BB97FEBB85C@carmd-exchmb01.sierrawireless.local>
+ <548AA590.7060200@nod.at>
+In-Reply-To: <548AA590.7060200@nod.at>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, dedekind1@gmail.com
-Subject: Re: UBI: Add support for scatter gather and blk-mq
-References: <1416845080-16663-1-git-send-email-richard@nod.at>
- <548D85F1.5080606@vanguardiasur.com.ar>
-In-Reply-To: <548D85F1.5080606@vanguardiasur.com.ar>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +31,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 14.12.2014 um 13:43 schrieb Ezequiel Garcia:
-> Hey Richard,
-> 
-> On 11/24/2014 01:04 PM, Richard Weinberger wrote:
->> This two patches implement blk-mq support for the UBI block driver.
->> As the scatter gather part is rather generic I've moved it directl
->> into UBI such that it can be reused later.
->> So far only reading data into a scatter gather list is possible.
->> After implementing  ubi_eba_read_leb_sg() we could slowly start
->> removing a bunch of vmalloc() from the UBI core code and use scatter gather.
->> This should lower the memory footprint of UBI.
->>
->> [PATCH 1/2] UBI: Add initial support for scatter gather
->> [PATCH 2/2] UBI: Block: Add blk-mq support
->>
-> 
-> Tried to apply these to take a look and run some tests, but 2/2 got
-> rejected. Which tag did you base them?
-> 
-
-As discussed on IRC, blk-mq saw an update in -next.
-The interface as changed bit, I've adopted my patches and pushed them to:
-git://git.kernel.org/pub/scm/linux/kernel/git/rw/misc.git ubiblock-mq
-This tree is linux-ubifs.git plus linux-block.git for-next.
-
-I'll resend this updated patches after the merge window has closed.
-Happy testing. :-)
-
-Thanks,
-//richard
+SGkgUmljaGFyZCwNCg0KVGhlIEZBRSB0ZWxsIG1lIHRoYXQgbm93IG10ZCBkcml2ZXIgZG9lc24n
+dCBzdXBwb3J0IG9ubHkgd3JpdGUgT09CIGFyZWEsIGJ1dCBub3Qgd3JpdGUgZGF0YSBhcmVhLiBT
+byBtdGRfb29idGVzdC4NCkJ1dCB0aGV5IGFyZSBub3Qgc3VyZSBpZiBpdCBpcyByZWxhdGVkIHRv
+IHRoZSBVQkkgZXJyb3IuIFdoYXQgZG8geW91IHRoaW5rIGFib3V0IGl0Pw0KDQpBbm90aGVyIHRo
+aW5nIGlzIHRoYXQsIEkgdHJpZWQgdG8gZW5hYmxlIG5hbmRzaW0gaW4gbXkgS2VybmVsLCBidXQg
+c2F3IHRoYXQgIlN1Yi1wYWdlIHNpemUiIGFuZCAiT09CIHNpemUiIG9mIG5hbmRzaW0gcGFydGl0
+aW9uIGFyZSBkaWZmZXJlbnQgZnJvbSBsb2NhbCBtdGQgcGFydGl0aW9uJ3MuDQpUaGUgcGFyYW1l
+dGVyIG9mIG5hbmRzaW0gYXJlIGFzIGZvbGxvd3MsIHdoaWNoIGlzIGNvcGllZCBmcm9tIGJvb3Qg
+dXAgbG9ncy4NCkNvbW1hbmQgb2YgaW5zbW9kIG5hbmRzaW0gaXM6DQptb2Rwcm9iZSBuYW5kc2lt
+IGZpcnN0X2lkX2J5dGU9MHgyYyBzZWNvbmRfaWRfYnl0ZT0weGFjIHRoaXJkX2lkX2J5dGU9MHg5
+MCBmb3VydGhfaWRfYnl0ZT0weDI2DQpJcyB0aGUgcGFyYW1ldGVyIEkgdXNlZCB3cm9uZz8NClRo
+YW5rIHlvdSB2ZXJ5IG11Y2ghDQoNCmJvb3QgdXAgbG9nczoNClsgICAgMi4wMDQ0MjVdIG1zbV9u
+YW5kX3Byb2JlOiBwaHlzIGFkZHIgMHgxYjQwMDAwMA0KWyAgICAyLjAwODMzMl0gbXNtX25hbmRf
+cHJvYmU6IGRtYWMgMHgzDQpbICAgIDIuMDExOTk0XSBtc21fbmFuZF9wcm9iZTogYWxsb2NhdGVk
+IGRtYSBidWZmZXIgYXQgZDAwNzQwMDAsIGRtYV9hZGRyIDRmMDc4MDAwDQpbICAgIDIuMDE5ODA3
+XSBzdGF0dXM6IGMwMDAyMA0KWyAgICAyLjAyMTg1Ml0gbmFuZGlkOiAyNjkwYWMyYyBtYWtlciAy
+YyBkZXZpY2UgYWMNClsgICAgMi4wMjYzNjldIE9ORkkgcHJvYmUgOiBGb3VuZCBhbiBPTkZJIGNv
+bXBsaWFudCBkZXZpY2UgTVQyOUY0RzA4QUJCRUEzVyAgICAsDQpbICAgIDIuMDMzNTQxXSBTZXR0
+aW5nIG10ZC0+d3JpdGVidWZzaXplIHRvIDB4MTAwMA0KWyAgICAyLjAzODAyOF0gRm91bmQgc3Vw
+cG9ydGVkIE5BTkQgZGV2aWNlIGZvciA4Yml0IEVDQw0KWyAgICAyLjA0Mjk3Ml0gTkFORCBDb250
+cm9sbGVyIElEIDogMHg0MDMwDQpbICAgIDIuMDQ2NzU3XSBOQU5EIERldmljZSBJRCAgOiAweDI2
+OTBhYzJjICAgICAgICAgICAgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLT4gSSB1c2UgaXQgYXMgbmFuZHNpbSBp
+bnB1dCBwYXJhbWV0ZXJzLCB0aGVzZSBsb2dzIGFyZSBjYW1lIGZyb20gYm9vdCB1cA0KWyAgICAy
+LjA1MDY5NF0gQnVzd2lkdGggOiA4IEJpdHMNClsgICAgMi4wNTM2MjRdIERlbnNpdHkgIDogNTEy
+IE1CeXRlDQpbICAgIDIuMDU2ODI4XSBQYWdlc2l6ZSA6IDQwOTYgQnl0ZXMNClsgICAgMi4wNjAx
+NTVdIEVyYXNlc2l6ZTogMjYyMTQ0IEJ5dGVzDQpbICAgIDIuMDYzNjA0XSBPb2JzaXplICA6IDIy
+NCBCeXRlcw0KWyAgICAyLjA2NjgwOV0gQ0ZHMCBJbml0ICA6IDB4YTk1NDA5YzANClsgICAgMi4w
+NzAzMThdIENGRzEgSW5pdCAgOiAweDA4MDQ1ZDVjDQpbICAgIDIuMDczNzY3XSBFQ0NCVUZDRkcg
+IDogMHgwMDAwMDIwMw0KWyAgICAyLjA3Nzc2NV0gQ3JlYXRpbmcgNyBNVEQgcGFydGl0aW9ucyBv
+biAibXNtX25hbmQiOg0KWyAgICAyLjA4MjMxM10gMHgwMDAwMGVhMDAwMDAtMHgwMDAwMGViMDAw
+MDAgOiAiYm9vdGxvYWRlciINClsgICAgMi4wODk1NzddIDB4MDAwMDBlYjAwMDAwLTB4MDAwMDBm
+ZjQwMDAwIDogImtlcm5lbCINCg0KTXRkaW5mbzoNCm10ZDYNCk5hbWU6ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgdXNlcjMNClR5cGU6ICAgICAgICAgICAgICAgICAgICAgICAgICAgbmFuZA0K
+RXJhc2VibG9jayBzaXplOiAgICAgICAgICAgICAgICAyNjIxNDQgYnl0ZXMsIDI1Ni4wIEtpQg0K
+QW1vdW50IG9mIGVyYXNlYmxvY2tzOiAgICAgICAgICA5ICgyMzU5Mjk2IGJ5dGVzLCAyLjIgTWlC
+KQ0KTWluaW11bSBpbnB1dC9vdXRwdXQgdW5pdCBzaXplOiA0MDk2IGJ5dGVzDQpTdWItcGFnZSBz
+aXplOiAgICAgICAgICAgICAgICAgIDQwOTYgYnl0ZXMgICAgICAgICAgICAgICAgLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLT4gbG9jYWwgbXRkNiwgc3ViLXBh
+Z2Ugc2l6ZQ0KT09CIHNpemU6ICAgICAgICAgICAgICAgICAgICAgICAyMjQgYnl0ZXMgICAgICAg
+ICAgICAgICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLT4g
+bG9jYWwgbXRkNiwgT09CIHNpemUNCkNoYXJhY3RlciBkZXZpY2UgbWFqb3IvbWlub3I6ICAgOTA6
+MTINCkJhZCBibG9ja3MgYXJlIGFsbG93ZWQ6ICAgICAgICAgdHJ1ZQ0KRGV2aWNlIGlzIHdyaXRh
+YmxlOiAgICAgICAgICAgICB0cnVlDQoNCm10ZDcNCk5hbWU6ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgTkFORCBzaW11bGF0b3IgcGFydGl0aW9uIDANClR5cGU6ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgbmFuZA0KRXJhc2VibG9jayBzaXplOiAgICAgICAgICAgICAgICAyNjIxNDQgYnl0
+ZXMsIDI1Ni4wIEtpQg0KQW1vdW50IG9mIGVyYXNlYmxvY2tzOiAgICAgICAgICAyMDQ4ICg1MzY4
+NzA5MTIgYnl0ZXMsIDUxMi4wIE1pQikNCk1pbmltdW0gaW5wdXQvb3V0cHV0IHVuaXQgc2l6ZTog
+NDA5NiBieXRlcw0KU3ViLXBhZ2Ugc2l6ZTogICAgICAgICAgICAgICAgICAxMDI0IGJ5dGVzICAg
+ICAgICAgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0+IG5hbmRzaW0gcGFydGl0aW9uLCBTdWItcGFnZSBzaXplIGlzIGRpZmZl
+cmVudCBmcm9tIGxvY2FsIG10ZDYNCk9PQiBzaXplOiAgICAgICAgICAgICAgICAgICAgICAgMTI4
+IGJ5dGVzICAgICAgICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLT4gbmFuZHNpbSBwYXJ0aXRpb24sIE9PQiBzaXplIGlzIGRp
+ZmZlcmVudCBmcm9tIGxvY2FsIG10ZDYNCkNoYXJhY3RlciBkZXZpY2UgbWFqb3IvbWlub3I6ICAg
+OTA6MTQNCkJhZCBibG9ja3MgYXJlIGFsbG93ZWQ6ICAgICAgICAgdHJ1ZQ0KRGV2aWNlIGlzIHdy
+aXRhYmxlOiAgICAgICAgICAgICB0cnVlDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
+CkZyb206IFJpY2hhcmQgV2VpbmJlcmdlciBbbWFpbHRvOnJpY2hhcmRAbm9kLmF0XSANClNlbnQ6
+IDIwMTTlubQxMuaciDEy5pelIDE2OjIyDQpUbzogWWFuIEtvbmcNCkNjOiBsaW51eC1tdGRAbGlz
+dHMuaW5mcmFkZWFkLm9yZw0KU3ViamVjdDogUmU6IFVCSSBlcnJvcnMgd2hlbiAibHMgLWwiDQoN
+CkhpIQ0KDQpBbSAxMi4xMi4yMDE0IHVtIDA5OjAzIHNjaHJpZWIgWWFuIEtvbmc6DQo+IEhpIFJp
+Y2hhcmQsDQo+IA0KPiBJIGhhdmUgcmFuICJtdGRfb29idGVzdCIgZm9yIG10ZDMsIGZhaWxlZC4u
+Li4uDQo+IChJIGVyYXNlIG10ZDMgYmVmb3JlIEkgcnVuIHRoZSB0ZXN0LCBieSAiZmxhc2hfZXJh
+c2UgL2Rldi9tdGQzIDAgMCAtTiIpLg0KPiBEbyB5b3Uga25vdyBpcyBpdCB0aGUgbXRkIGRyaXZl
+ciBpc3N1ZSBvciBoYXJkd2FyZSBpc3N1ZT8NCg0KbXRkX29vYnRlc3QgaXMgZmFpbGluZyBiZWNh
+dXNlIHRoaXMgdGVzdCBjYW5ub3Qgd29yayB3aXRoIHlvdXIgZHJpdmVyIGFzIGl0IGRvZXMgbm90
+IGltcGxlbWVudCBhbGwgTVREIGZ1bmN0aW9ucy4NCg0KVGhhbmtzLA0KLy9yaWNoYXJkDQo=
