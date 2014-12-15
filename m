@@ -1,25 +1,24 @@
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Rafal Milecki <zajec5@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: RE: [V6 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
- Micron spi nor
-Date: Mon, 15 Dec 2014 14:24:44 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315F15FC@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315EF2C5@NTXXIAMBX02.xacn.micron.com>
- <A765B125120D1346A63912DDE6D8B6315F03C4@NTXXIAMBX02.xacn.micron.com>
- <CACna6rz8K1PcfPXCogbWtGd=zS9cRCEZVZ=wC_dUYHO1S5S28w@mail.gmail.com>
-In-Reply-To: <CACna6rz8K1PcfPXCogbWtGd=zS9cRCEZVZ=wC_dUYHO1S5S28w@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y0XpA-00005g-6v
+ for linux-mtd@lists.infradead.org; Mon, 15 Dec 2014 15:44:41 +0000
+Received: from localhost.localdomain ([127.0.0.1]:47356 "EHLO linux-mips.org"
+ rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+ id S27008822AbaLOPoTIzaGY (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Mon, 15 Dec 2014 16:44:19 +0100
+Date: Mon, 15 Dec 2014 16:44:08 +0100
+From: Ralf Baechle <ralf@linux-mips.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] mtd: nand: jz4740: Convert to GPIO descriptor API
+Message-ID: <20141215154408.GD9382@linux-mips.org>
+References: <1417549706-28420-1-git-send-email-lars@metafoo.de>
 MIME-Version: 1.0
-Cc: Marek Vasut <marex@denx.de>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "grmoore@altera.com" <grmoore@altera.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie8@gmail.com" <shijie8@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1417549706-28420-1-git-send-email-lars@metafoo.de>
+Cc: linux-mips@linux-mips.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,19 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pj4gKyAgICAgICB7ICJuMjVxMjU2YSIsICAgIElORk8oMHgyMGJhMTksIDAsIDY0ICogMTAyNCwg
-IDUxMiwgU0VDVF80SyB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPj4gKyAgICAgICB7ICJuMjVx
-NTEyYSIsICAgIElORk8oMHgyMGJiMjAsIDAsIDY0ICogMTAyNCwgMTAyNCwgU0VDVF80SyB8IFVT
-RV9GU1IgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4+ICsgICAgICAgeyAibjI1cTUxMmF4MyIs
-ICBJTkZPKDB4MjBiYTIwLCAwLCA2NCAqIDEwMjQsIDEwMjQsIFNFQ1RfNEsgfCBVU0VfRlNSIHwg
-U1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+PiArICAgICAgIHsgIm4yNXEwMCIsICAgICAgSU5GTygw
-eDIwYmEyMSwgMCwgNjQgKiAxMDI0LCAyMDQ4LCBTRUNUXzRLIHwgVVNFX0ZTUiB8IFNQSV9OT1Jf
-UVVBRF9SRUFEKSB9LA0KDQo+RXZlbiB0aGUgQ29kaW5nU3R5bGUgc2F5cyBleGNlZWRpbmcgODAg
-Y29sdW1ucyBjYW4gYmUgYWNjZXB0ZWQ6DQoNCj4+IFN0YXRlbWVudHMgbG9uZ2VyIHRoYW4gODAg
-Y29sdW1ucyB3aWxsIGJlIGJyb2tlbiBpbnRvIHNlbnNpYmxlIGNodW5rcywgDQo+PiB1bmxlc3Mg
-ZXhjZWVkaW5nIDgwIGNvbHVtbnMgc2lnbmlmaWNhbnRseSBpbmNyZWFzZXMgcmVhZGFiaWxpdHkg
-YW5kIA0KPj4gZG9lcyBub3QgaGlkZSBpbmZvcm1hdGlvbi4NCg0KPiBWYXJpb3VzIGhhcmR3YXJl
-IHRhYmxlcyBvZnRlbiBoYXBwZW4gdG8gdXNlIG1vcmUgY2hhcnMvbGluZS4NCg0KVGhhbmtzIGZv
-ciByZXNwb25zZS4NCg0KRGVhciBNVEQgbWFpbnRhaW5lcjoNCg0KSG93IGFib3V0IHRoaXMgcGF0
-Y2g/IEFuZCBpdCBoYXMgdXBkYXRlZCB0byBzaXh0aCB2ZXJzaW9uLg0KSXMgdGhlcmUgb3RoZXIg
-c3BhY2VzIHRvIGJlIHVwZGF0ZWQ/DQoNCg==
+On Tue, Dec 02, 2014 at 08:48:26PM +0100, Lars-Peter Clausen wrote:
+
+> Use the GPIO descriptor API instead of the deprecated legacy GPIO API to
+> manage the busy GPIO.
+> 
+> The patch updates both the jz4740 nand driver and the only user of the driver
+> the qi-lb60 board driver.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+> This patch should preferably be merged through the MTD tree with Ralf's ack for
+> the MIPS bits.
+
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
+
+Though in my experience MIPS-specific patches to non-arch/mips code receive
+best testing in the MIPS tree.
+
+Cheers,
+
+  Ralf
