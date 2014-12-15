@@ -1,19 +1,19 @@
-Received: from mail-yk0-f169.google.com ([209.85.160.169])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0UJw-0004PY-Vg
- for linux-mtd@lists.infradead.org; Mon, 15 Dec 2014 12:00:13 +0000
-Received: by mail-yk0-f169.google.com with SMTP id 79so4889567ykr.28
- for <linux-mtd@lists.infradead.org>; Mon, 15 Dec 2014 03:59:48 -0800 (PST)
+Received: from mail-yk0-f178.google.com ([209.85.160.178])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y0UK0-0000b5-GC
+ for linux-mtd@lists.infradead.org; Mon, 15 Dec 2014 12:00:17 +0000
+Received: by mail-yk0-f178.google.com with SMTP id 20so4843028yks.37
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Dec 2014 03:59:55 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  computersforpeace@gmail.com, linux-mtd@lists.infradead.org
-Subject: [PATCH v3 09/13] mtd: st_spi_fsm: Update Spansion device entries
-Date: Mon, 15 Dec 2014 11:59:16 +0000
-Message-Id: <1418644760-18773-10-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v3 12/13] ARM: STi: stih416: Use new platform specific
+ compatible string
+Date: Mon, 15 Dec 2014 11:59:19 +0000
+Message-Id: <1418644760-18773-13-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1418644760-18773-1-git-send-email-lee.jones@linaro.org>
 References: <1418644760-18773-1-git-send-email-lee.jones@linaro.org>
-Cc: Angus Clark <angus.clark@st.com>, lee.jones@linaro.org, kernel@stlinux.com,
- Carmelo Amoroso <carmelo.amoroso@st.com>
+Cc: lee.jones@linaro.org, kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,68 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Angus Clark <angus.clark@st.com>
+The FSM SPI NOR driver now obtains syscfg particulars using DT match. In
+order for this to happen each platform is required to supply their own
+specific compatible string.
 
-This patch updates various Spansion device entries in the flash_types[] table:
-  - Define full 6-byte READIDs for S25FL128Sx devices (and fix the 4th
-    byte). This allows us to differentiate between S25FL129P and S25FL128S
-    devices.
-  - Add S25FL128Px device entries.
+We're also remove the old, now unused vendor properties from the node.
 
-Signed-off-by: Angus Clark <angus.clark@st.com>
-Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/stih416.dtsi | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 949745a..7c024ec 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -483,6 +483,7 @@ static struct flash_info flash_types[] = {
- 	/*
- 	 * Spansion S25FLxxxP
- 	 *     - 256KiB and 64KiB sector variants (identified by ext. JEDEC)
-+	 *     - S25FL128Px devices do not support DUAL or QUAD I/O
- 	 */
- #define S25FLXXXP_FLAG (FLASH_FLAG_READ_WRITE  |	\
- 			FLASH_FLAG_READ_1_1_2   |	\
-@@ -493,6 +494,12 @@ static struct flash_info flash_types[] = {
- 			FLASH_FLAG_READ_FAST)
- 	RDID_INFO("s25fl032p", RDID({0x01, 0x02, 0x15, 0x4d, 0x00}), 5,
- 		  64 * 1024,  64, S25FLXXXP_FLAG, 80, stfsm_s25fl_config),
-+	RDID_INFO("s25fl128p1", RDID({0x01, 0x20, 0x18, 0x03, 0x00}), 5,
-+		  256 * 1024, 64,
-+		  (FLASH_FLAG_READ_WRITE | FLASH_FLAG_READ_FAST), 104, NULL),
-+	RDID_INFO("s25fl128p0", RDID({0x01, 0x20, 0x18, 0x03, 0x01}), 5,
-+		  64 * 1024, 256,
-+		  (FLASH_FLAG_READ_WRITE | FLASH_FLAG_READ_FAST), 104, NULL),
- 	RDID_INFO("s25fl129p0", RDID({0x01, 0x20, 0x18, 0x4d, 0x00}), 5,
- 		  256 * 1024,  64, S25FLXXXP_FLAG, 80, stfsm_s25fl_config),
- 	RDID_INFO("s25fl129p1", RDID({0x01, 0x20, 0x18, 0x4d, 0x01}), 5,
-@@ -506,17 +513,18 @@ static struct flash_info flash_types[] = {
- 	 *       so this information is captured in the board's flags.
- 	 *     - Supports 'DYB' sector protection. Depending on variant, sectors
- 	 *       may default to locked state on power-on.
-+	 *     - S25FL127Sx handled as S25FL128Sx
- 	 */
- #define S25FLXXXS_FLAG (S25FLXXXP_FLAG         |	\
- 			FLASH_FLAG_RESET        |	\
- 			FLASH_FLAG_DYB_LOCKING)
--	RDID_INFO("s25fl128s0", RDID({0x01, 0x20, 0x18, 0x03, 0x00}), 5,
-+	RDID_INFO("s25fl128s0", RDID({0x01, 0x20, 0x18, 0x4d, 0x00, 0x80}), 6,
- 		  256 * 1024, 64, S25FLXXXS_FLAG, 80, stfsm_s25fl_config),
--	RDID_INFO("s25fl128s1", RDID({0x01, 0x20, 0x18, 0x03, 0x01}), 5,
-+	RDID_INFO("s25fl128s1", RDID({0x01, 0x20, 0x18, 0x4d, 0x01, 0x80}), 6,
- 		  64 * 1024, 256, S25FLXXXS_FLAG, 80, stfsm_s25fl_config),
--	RDID_INFO("s25fl256s0", RDID({0x01, 0x02, 0x19, 0x4d, 0x00}), 5,
-+	RDID_INFO("s25fl256s0", RDID({0x01, 0x02, 0x19, 0x4d, 0x00, 0x80}), 6,
- 		  256 * 1024, 128, S25FLXXXS_FLAG, 80, stfsm_s25fl_config),
--	RDID_INFO("s25fl256s1", RDID({0x01, 0x02, 0x19, 0x4d, 0x01}), 5,
-+	RDID_INFO("s25fl256s1", RDID({0x01, 0x02, 0x19, 0x4d, 0x01, 0x80}), 6,
- 		  64 * 1024, 512, S25FLXXXS_FLAG, 80, stfsm_s25fl_config),
+diff --git a/arch/arm/boot/dts/stih416.dtsi b/arch/arm/boot/dts/stih416.dtsi
+index 84758d7..dec546e 100644
+--- a/arch/arm/boot/dts/stih416.dtsi
++++ b/arch/arm/boot/dts/stih416.dtsi
+@@ -214,13 +214,11 @@
  
- #define W25X_FLAG (FLASH_FLAG_READ_WRITE       |	\
+ 		/* FSM */
+ 		spifsm: spifsm@fe902000 {
+-			compatible	   = "st,spi-fsm";
++			compatible	   = "st,stih416-spi-fsm";
+ 			reg		   = <0xfe902000 0x1000>;
+ 			pinctrl-0	   = <&pinctrl_fsm>;
+ 
+ 			st,syscfg	   = <&syscfg_rear>;
+-			st,boot-device-reg = <0x958>;
+-			st,boot-device-spi = <0x1a>;
+ 
+ 			status = "disabled";
+ 		};
 -- 
 1.9.1
