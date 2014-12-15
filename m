@@ -1,13 +1,13 @@
-Received: from mail-by2on0076.outbound.protection.outlook.com ([207.46.100.76]
- helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0MN4-00074E-3Y
- for linux-mtd@lists.infradead.org; Mon, 15 Dec 2014 03:30:55 +0000
-From: Yan Kong <ykong@sierrawireless.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Sun, 14 Dec 2014 19:30:24 -0800
-Subject: RE: UBI errors when "ls -l"
-Message-ID: <740E8392C144C64FA5300E5E696A179BB97FEBBAE9@carmd-exchmb01.sierrawireless.local>
+ id 1Y0R9a-00068m-FY
+ for linux-mtd@lists.infradead.org; Mon, 15 Dec 2014 08:37:19 +0000
+Message-ID: <548E9DA0.8070407@nod.at>
+Date: Mon, 15 Dec 2014 09:36:48 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: Yan Kong <ykong@sierrawireless.com>
+Subject: Re: UBI errors when "ls -l"
 References: <loom.20141210T102753-582@post.gmane.org>
  <CAFLxGvwqdi6T9zg_QH5Uw3D7R0dUPbX0G-7wDX6p47RBWoSdFw@mail.gmail.com>
  <740E8392C144C64FA5300E5E696A179BB97FEBB16F@carmd-exchmb01.sierrawireless.local>
@@ -16,11 +16,10 @@ References: <loom.20141210T102753-582@post.gmane.org>
  <548850C3.8000204@nod.at>
  <740E8392C144C64FA5300E5E696A179BB97FEBB85C@carmd-exchmb01.sierrawireless.local>
  <548AA590.7060200@nod.at>
-In-Reply-To: <548AA590.7060200@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ <740E8392C144C64FA5300E5E696A179BB97FEBBAE9@carmd-exchmb01.sierrawireless.local>
+In-Reply-To: <740E8392C144C64FA5300E5E696A179BB97FEBBAE9@carmd-exchmb01.sierrawireless.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,70 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCwNCg0KVGhlIEZBRSB0ZWxsIG1lIHRoYXQgbm93IG10ZCBkcml2ZXIgZG9lc24n
-dCBzdXBwb3J0IG9ubHkgd3JpdGUgT09CIGFyZWEsIGJ1dCBub3Qgd3JpdGUgZGF0YSBhcmVhLiBT
-byBtdGRfb29idGVzdC4NCkJ1dCB0aGV5IGFyZSBub3Qgc3VyZSBpZiBpdCBpcyByZWxhdGVkIHRv
-IHRoZSBVQkkgZXJyb3IuIFdoYXQgZG8geW91IHRoaW5rIGFib3V0IGl0Pw0KDQpBbm90aGVyIHRo
-aW5nIGlzIHRoYXQsIEkgdHJpZWQgdG8gZW5hYmxlIG5hbmRzaW0gaW4gbXkgS2VybmVsLCBidXQg
-c2F3IHRoYXQgIlN1Yi1wYWdlIHNpemUiIGFuZCAiT09CIHNpemUiIG9mIG5hbmRzaW0gcGFydGl0
-aW9uIGFyZSBkaWZmZXJlbnQgZnJvbSBsb2NhbCBtdGQgcGFydGl0aW9uJ3MuDQpUaGUgcGFyYW1l
-dGVyIG9mIG5hbmRzaW0gYXJlIGFzIGZvbGxvd3MsIHdoaWNoIGlzIGNvcGllZCBmcm9tIGJvb3Qg
-dXAgbG9ncy4NCkNvbW1hbmQgb2YgaW5zbW9kIG5hbmRzaW0gaXM6DQptb2Rwcm9iZSBuYW5kc2lt
-IGZpcnN0X2lkX2J5dGU9MHgyYyBzZWNvbmRfaWRfYnl0ZT0weGFjIHRoaXJkX2lkX2J5dGU9MHg5
-MCBmb3VydGhfaWRfYnl0ZT0weDI2DQpJcyB0aGUgcGFyYW1ldGVyIEkgdXNlZCB3cm9uZz8NClRo
-YW5rIHlvdSB2ZXJ5IG11Y2ghDQoNCmJvb3QgdXAgbG9nczoNClsgICAgMi4wMDQ0MjVdIG1zbV9u
-YW5kX3Byb2JlOiBwaHlzIGFkZHIgMHgxYjQwMDAwMA0KWyAgICAyLjAwODMzMl0gbXNtX25hbmRf
-cHJvYmU6IGRtYWMgMHgzDQpbICAgIDIuMDExOTk0XSBtc21fbmFuZF9wcm9iZTogYWxsb2NhdGVk
-IGRtYSBidWZmZXIgYXQgZDAwNzQwMDAsIGRtYV9hZGRyIDRmMDc4MDAwDQpbICAgIDIuMDE5ODA3
-XSBzdGF0dXM6IGMwMDAyMA0KWyAgICAyLjAyMTg1Ml0gbmFuZGlkOiAyNjkwYWMyYyBtYWtlciAy
-YyBkZXZpY2UgYWMNClsgICAgMi4wMjYzNjldIE9ORkkgcHJvYmUgOiBGb3VuZCBhbiBPTkZJIGNv
-bXBsaWFudCBkZXZpY2UgTVQyOUY0RzA4QUJCRUEzVyAgICAsDQpbICAgIDIuMDMzNTQxXSBTZXR0
-aW5nIG10ZC0+d3JpdGVidWZzaXplIHRvIDB4MTAwMA0KWyAgICAyLjAzODAyOF0gRm91bmQgc3Vw
-cG9ydGVkIE5BTkQgZGV2aWNlIGZvciA4Yml0IEVDQw0KWyAgICAyLjA0Mjk3Ml0gTkFORCBDb250
-cm9sbGVyIElEIDogMHg0MDMwDQpbICAgIDIuMDQ2NzU3XSBOQU5EIERldmljZSBJRCAgOiAweDI2
-OTBhYzJjICAgICAgICAgICAgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLT4gSSB1c2UgaXQgYXMgbmFuZHNpbSBp
-bnB1dCBwYXJhbWV0ZXJzLCB0aGVzZSBsb2dzIGFyZSBjYW1lIGZyb20gYm9vdCB1cA0KWyAgICAy
-LjA1MDY5NF0gQnVzd2lkdGggOiA4IEJpdHMNClsgICAgMi4wNTM2MjRdIERlbnNpdHkgIDogNTEy
-IE1CeXRlDQpbICAgIDIuMDU2ODI4XSBQYWdlc2l6ZSA6IDQwOTYgQnl0ZXMNClsgICAgMi4wNjAx
-NTVdIEVyYXNlc2l6ZTogMjYyMTQ0IEJ5dGVzDQpbICAgIDIuMDYzNjA0XSBPb2JzaXplICA6IDIy
-NCBCeXRlcw0KWyAgICAyLjA2NjgwOV0gQ0ZHMCBJbml0ICA6IDB4YTk1NDA5YzANClsgICAgMi4w
-NzAzMThdIENGRzEgSW5pdCAgOiAweDA4MDQ1ZDVjDQpbICAgIDIuMDczNzY3XSBFQ0NCVUZDRkcg
-IDogMHgwMDAwMDIwMw0KWyAgICAyLjA3Nzc2NV0gQ3JlYXRpbmcgNyBNVEQgcGFydGl0aW9ucyBv
-biAibXNtX25hbmQiOg0KWyAgICAyLjA4MjMxM10gMHgwMDAwMGVhMDAwMDAtMHgwMDAwMGViMDAw
-MDAgOiAiYm9vdGxvYWRlciINClsgICAgMi4wODk1NzddIDB4MDAwMDBlYjAwMDAwLTB4MDAwMDBm
-ZjQwMDAwIDogImtlcm5lbCINCg0KTXRkaW5mbzoNCm10ZDYNCk5hbWU6ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgdXNlcjMNClR5cGU6ICAgICAgICAgICAgICAgICAgICAgICAgICAgbmFuZA0K
-RXJhc2VibG9jayBzaXplOiAgICAgICAgICAgICAgICAyNjIxNDQgYnl0ZXMsIDI1Ni4wIEtpQg0K
-QW1vdW50IG9mIGVyYXNlYmxvY2tzOiAgICAgICAgICA5ICgyMzU5Mjk2IGJ5dGVzLCAyLjIgTWlC
-KQ0KTWluaW11bSBpbnB1dC9vdXRwdXQgdW5pdCBzaXplOiA0MDk2IGJ5dGVzDQpTdWItcGFnZSBz
-aXplOiAgICAgICAgICAgICAgICAgIDQwOTYgYnl0ZXMgICAgICAgICAgICAgICAgLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLT4gbG9jYWwgbXRkNiwgc3ViLXBh
-Z2Ugc2l6ZQ0KT09CIHNpemU6ICAgICAgICAgICAgICAgICAgICAgICAyMjQgYnl0ZXMgICAgICAg
-ICAgICAgICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLT4g
-bG9jYWwgbXRkNiwgT09CIHNpemUNCkNoYXJhY3RlciBkZXZpY2UgbWFqb3IvbWlub3I6ICAgOTA6
-MTINCkJhZCBibG9ja3MgYXJlIGFsbG93ZWQ6ICAgICAgICAgdHJ1ZQ0KRGV2aWNlIGlzIHdyaXRh
-YmxlOiAgICAgICAgICAgICB0cnVlDQoNCm10ZDcNCk5hbWU6ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgTkFORCBzaW11bGF0b3IgcGFydGl0aW9uIDANClR5cGU6ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgbmFuZA0KRXJhc2VibG9jayBzaXplOiAgICAgICAgICAgICAgICAyNjIxNDQgYnl0
-ZXMsIDI1Ni4wIEtpQg0KQW1vdW50IG9mIGVyYXNlYmxvY2tzOiAgICAgICAgICAyMDQ4ICg1MzY4
-NzA5MTIgYnl0ZXMsIDUxMi4wIE1pQikNCk1pbmltdW0gaW5wdXQvb3V0cHV0IHVuaXQgc2l6ZTog
-NDA5NiBieXRlcw0KU3ViLXBhZ2Ugc2l6ZTogICAgICAgICAgICAgICAgICAxMDI0IGJ5dGVzICAg
-ICAgICAgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0+IG5hbmRzaW0gcGFydGl0aW9uLCBTdWItcGFnZSBzaXplIGlzIGRpZmZl
-cmVudCBmcm9tIGxvY2FsIG10ZDYNCk9PQiBzaXplOiAgICAgICAgICAgICAgICAgICAgICAgMTI4
-IGJ5dGVzICAgICAgICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLT4gbmFuZHNpbSBwYXJ0aXRpb24sIE9PQiBzaXplIGlzIGRp
-ZmZlcmVudCBmcm9tIGxvY2FsIG10ZDYNCkNoYXJhY3RlciBkZXZpY2UgbWFqb3IvbWlub3I6ICAg
-OTA6MTQNCkJhZCBibG9ja3MgYXJlIGFsbG93ZWQ6ICAgICAgICAgdHJ1ZQ0KRGV2aWNlIGlzIHdy
-aXRhYmxlOiAgICAgICAgICAgICB0cnVlDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
-CkZyb206IFJpY2hhcmQgV2VpbmJlcmdlciBbbWFpbHRvOnJpY2hhcmRAbm9kLmF0XSANClNlbnQ6
-IDIwMTTlubQxMuaciDEy5pelIDE2OjIyDQpUbzogWWFuIEtvbmcNCkNjOiBsaW51eC1tdGRAbGlz
-dHMuaW5mcmFkZWFkLm9yZw0KU3ViamVjdDogUmU6IFVCSSBlcnJvcnMgd2hlbiAibHMgLWwiDQoN
-CkhpIQ0KDQpBbSAxMi4xMi4yMDE0IHVtIDA5OjAzIHNjaHJpZWIgWWFuIEtvbmc6DQo+IEhpIFJp
-Y2hhcmQsDQo+IA0KPiBJIGhhdmUgcmFuICJtdGRfb29idGVzdCIgZm9yIG10ZDMsIGZhaWxlZC4u
-Li4uDQo+IChJIGVyYXNlIG10ZDMgYmVmb3JlIEkgcnVuIHRoZSB0ZXN0LCBieSAiZmxhc2hfZXJh
-c2UgL2Rldi9tdGQzIDAgMCAtTiIpLg0KPiBEbyB5b3Uga25vdyBpcyBpdCB0aGUgbXRkIGRyaXZl
-ciBpc3N1ZSBvciBoYXJkd2FyZSBpc3N1ZT8NCg0KbXRkX29vYnRlc3QgaXMgZmFpbGluZyBiZWNh
-dXNlIHRoaXMgdGVzdCBjYW5ub3Qgd29yayB3aXRoIHlvdXIgZHJpdmVyIGFzIGl0IGRvZXMgbm90
-IGltcGxlbWVudCBhbGwgTVREIGZ1bmN0aW9ucy4NCg0KVGhhbmtzLA0KLy9yaWNoYXJkDQo=
+Hi!
+
+Am 15.12.2014 um 04:30 schrieb Yan Kong:
+> Hi Richard,
+> 
+> The FAE tell me that now mtd driver doesn't support only write OOB area, but not write data area. So mtd_oobtest.
+
+This sentence does not parse.
+
+> But they are not sure if it is related to the UBI error. What do you think about it?
+
+Fact is that mtd_read() returns less bytes than requested. This must not happen and is most
+likely a driver issue.
+I'd start investigating here.
+Almost all "UBI issues" I inspect for customers turn out to be plain mtd driver bugs.
+
+> Another thing is that, I tried to enable nandsim in my Kernel, but saw that "Sub-page size" and "OOB size" of nandsim partition are different from local mtd partition's.
+> The parameter of nandsim are as follows, which is copied from boot up logs.
+> Command of insmod nandsim is:
+> modprobe nandsim first_id_byte=0x2c second_id_byte=0xac third_id_byte=0x90 fourth_id_byte=0x26
+> Is the parameter I used wrong?
+
+If the ID bytes are correct everything work fine.
+
+Thanks,
+//richard
