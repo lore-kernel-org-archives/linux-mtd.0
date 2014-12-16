@@ -1,23 +1,18 @@
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0nqN-0000sc-1L
- for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 08:50:59 +0000
-Received: by mail-wi0-f181.google.com with SMTP id r20so11710725wiv.2
- for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 00:50:37 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH V2] mtd: bcm47xxpart: support SquashFS with an original magic
-Date: Tue, 16 Dec 2014 09:50:25 +0100
-Message-Id: <1418719825-21314-1-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1418715606-18949-1-git-send-email-zajec5@gmail.com>
-References: <1418715606-18949-1-git-send-email-zajec5@gmail.com>
+ id 1Y0nxi-0003Yf-G3
+ for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 08:58:35 +0000
+Message-ID: <548FF41F.3030902@nod.at>
+Date: Tue, 16 Dec 2014 09:58:07 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: hujianyang <hujianyang@huawei.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBI: add ubi_err() to report the failure of leb read
+References: <548FE51D.60707@huawei.com>
+In-Reply-To: <548FE51D.60707@huawei.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SquashFS is supposed to use magic defined as SQUASHFS_MAGIC. What we
-were supporting so far (SQSH_MAGIC) is something ZTE specific.
-This patch adds support for Xiaomi R1D.
+Am 16.12.2014 um 08:54 schrieb hujianyang:
+> If an error occur while reading from PEBs, for example, an ECC error,
+> ubi_io_read() will print some error messages. But it's not enough for
+> debugging. These messages don't show the mapping info for a read from
+> UBIFS layer.
+> 
+> Although UBIFS will soon print its error messages after catching the
+> return value from UBI layer,  multi-path reading will confuse the
+> relationship between LEBs and PEBs showed by these messages.
+> 
+> This patch adds an ubi_err() to report reading errors in the function
+> ubi_eba_read_leb(). The mapping info of LEB and PEB is showed by
+> this error message.
+> 
+> Signed-off-by: hujianyang <hujianyang@huawei.com>
+> ---
+>  drivers/mtd/ubi/eba.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+> index b698534..b4e69e1 100644
+> --- a/drivers/mtd/ubi/eba.c
+> +++ b/drivers/mtd/ubi/eba.c
+> @@ -477,6 +477,8 @@ out_free:
+>  	ubi_free_vid_hdr(ubi, vid_hdr);
+>  out_unlock:
+>  	leb_read_unlock(ubi, vol_id, lnum);
+> +	ubi_err(ubi, "err %d while reading %d bytes from offset %d of LEB %d:%d, PEB %d",
+> +		err, len, offset, vol_id, lnum, pnum);
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
-V2: s/SQSH/SHSQ/ to emphase this weird endianness
----
- drivers/mtd/bcm47xxpart.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+This label will also be reached if we run out of memory.
+Please make sure that the new ubi_err() can only be reached in case of an MTD error.
+Also make sure that the function prints only one message and not two.
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 4ad3928..c0720c1 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -15,6 +15,8 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- 
-+#include <uapi/linux/magic.h>
-+
- /*
-  * NAND flash on Netgear R6250 was verified to contain 15 partitions.
-  * This will result in allocating too big array for some old devices, but the
-@@ -39,7 +41,7 @@
- #define ML_MAGIC1			0x39685a42
- #define ML_MAGIC2			0x26594131
- #define TRX_MAGIC			0x30524448
--#define SQSH_MAGIC			0x71736873	/* shsq */
-+#define SHSQ_MAGIC			0x71736873	/* shsq (weird ZTE H218N endianness) */
- #define UBI_EC_MAGIC			0x23494255	/* UBI# */
- 
- struct trx_header {
-@@ -233,7 +235,8 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		}
- 
- 		/* Squashfs on devices not using TRX */
--		if (buf[0x000 / 4] == SQSH_MAGIC) {
-+		if (le32_to_cpu(buf[0x000 / 4]) == SQUASHFS_MAGIC ||
-+		    buf[0x000 / 4] == SHSQ_MAGIC) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "rootfs",
- 					     offset, 0);
- 			continue;
--- 
-1.8.4.5
+Thanks,
+//richard
