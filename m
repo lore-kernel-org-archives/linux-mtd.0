@@ -1,16 +1,18 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0p8Q-0004TT-6X
- for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 10:13:43 +0000
-Message-ID: <5490059F.903@huawei.com>
-Date: Tue, 16 Dec 2014 18:12:47 +0800
+ id 1Y0pZ0-0004yB-G2
+ for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 10:41:11 +0000
+Message-ID: <54900AB1.30005@huawei.com>
+Date: Tue, 16 Dec 2014 18:34:25 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
 To: Richard Weinberger <richard@nod.at>
 Subject: Re: [PATCH] UBI: add ubi_err() to report the failure of leb read
-References: <548FE51D.60707@huawei.com> <548FF41F.3030902@nod.at>
-In-Reply-To: <548FF41F.3030902@nod.at>
-Content-Type: text/plain; charset="windows-1252"
+References: <548FE51D.60707@huawei.com> <548FE72D.5040803@huawei.com>
+ <548FF98E.5000503@nod.at> <549000C1.4090709@huawei.com>
+ <549001FC.10008@nod.at>
+In-Reply-To: <549001FC.10008@nod.at>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
  Artem Bityutskiy <dedekind1@gmail.com>
@@ -23,55 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/12/16 16:58, Richard Weinberger wrote:
-> Am 16.12.2014 um 08:54 schrieb hujianyang:
->> If an error occur while reading from PEBs, for example, an ECC error,
->> ubi_io_read() will print some error messages. But it's not enough for
->> debugging. These messages don't show the mapping info for a read from
->> UBIFS layer.
->>
->> Although UBIFS will soon print its error messages after catching the
->> return value from UBI layer,  multi-path reading will confuse the
->> relationship between LEBs and PEBs showed by these messages.
->>
->> This patch adds an ubi_err() to report reading errors in the function
->> ubi_eba_read_leb(). The mapping info of LEB and PEB is showed by
->> this error message.
->>
->> Signed-off-by: hujianyang <hujianyang@huawei.com>
->> ---
->>  drivers/mtd/ubi/eba.c |    2 ++
->>  1 files changed, 2 insertions(+), 0 deletions(-)
->>
->> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
->> index b698534..b4e69e1 100644
->> --- a/drivers/mtd/ubi/eba.c
->> +++ b/drivers/mtd/ubi/eba.c
->> @@ -477,6 +477,8 @@ out_free:
->>  	ubi_free_vid_hdr(ubi, vid_hdr);
->>  out_unlock:
->>  	leb_read_unlock(ubi, vol_id, lnum);
->> +	ubi_err(ubi, "err %d while reading %d bytes from offset %d of LEB %d:%d, PEB %d",
->> +		err, len, offset, vol_id, lnum, pnum);
+On 2014/12/16 17:57, Richard Weinberger wrote:
+> Then every single embedded vendor will use this flag to keep the broken MTD/UBI/UBIFS setups running
+> as long as possible no mater of how corrupted the data is. :-)
+> IIRC UBIFS will either mount and work correctly as expected or fail hard.
+
+You are right~!
+
+Maybe we can set filesystem to RO if it is mounted with --force, and
+allow users to copy their data to other place.
+
+How about this?
+
 > 
-> This label will also be reached if we run out of memory.
+>>> You can dump the raw data and inspect the corrupted data.
+>>> Maybe you can fix it by hand.
+>>
+>> Yes, I want a try~! If we have to introduce a new feature or new mount
+>> option. So would you like to help me? Do you think it's a valuable
+>> work?
+> 
+> I'm not a fan of such a mount option.
+> What we really need is a fsck.ubifs and a ubifs dump tool to fix and recover
+> broken UBIFS images.
 
-Yes, but I think it's OK. Because a read operation is really failed
-by some errors. We can print these errors not only in case of MTD
-errors but also in case of CRC errors, ENOMEM or others.
+I think it's better, but a bit harder. As I know, my UBIDUMP is far
+from what you expect. I should spend more time on it.
 
-> Please make sure that the new ubi_err() can only be reached in case of an MTD error.
-> Also make sure that the function prints only one message and not two.
+After all, I was asked to fix this error. My plan is do something
+after an ECC error is detected, not directly breakout to allow
+this partition to be mounted. I don't think this solution will be
+easily accept by mainline.
 
-Er, At first, I want to print just MTD error, perform ubi_err() in
-mtd_is_eccerr() case, for example. But I found it's not easy to print
-it only once. The *retry* label makes it difficulty to determine when
-this function, ubi_eba_read_leb() returns, this message will print
-two times or none.
+However, I'd like to show my work if I succeed.
 
-So at last, I move this ubi_err() to the end of error handling path
-for easy. ^.^
-
-What's your opinion?
+Thanks~!
 
 Hu
