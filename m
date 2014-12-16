@@ -1,23 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0fj4-00034h-Sx
- for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 00:10:55 +0000
-Message-ID: <548F7805.3020708@imgtec.com>
-Date: Mon, 15 Dec 2014 21:08:37 -0300
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y0jNs-000822-RK
+ for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 04:05:18 +0000
+Received: by mail-pa0-f42.google.com with SMTP id et14so13280210pad.1
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Dec 2014 20:04:53 -0800 (PST)
+Date: Mon, 15 Dec 2014 20:04:49 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] MTD updates for 3.19
+Message-ID: <20141216040449.GE9759@ld-irv-0074>
 MIME-Version: 1.0
-To: Daniel Ehrenberg <dehrenberg@google.com>
-Subject: Re: [PATCH 4/6] mtd: Introduce SPI NAND framework
-References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>	<1417525136-25731-5-git-send-email-ezequiel.garcia@imgtec.com>
- <CAAK6Zt0q=uFMzYtdu-G1mk8Ao4KTaBuYU74hy3x8bBy39BD1TA@mail.gmail.com>
-In-Reply-To: <CAAK6Zt0q=uFMzYtdu-G1mk8Ao4KTaBuYU74hy3x8bBy39BD1TA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: bpqw@micron.com, Ionela Voinescu <ionela.voinescu@imgtec.com>,
- frankliu@micron.com, Andrew Bresticker <abrestic@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- arnaud.mouiche@invoxia.com, Brian Norris <computersforpeace@gmail.com>,
- James Hartley <james.hartley@imgtec.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +25,255 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Linus,
 
+The following changes since commit f114040e3ea6e07372334ade75d1ee0775c355e1:
 
-On 12/15/2014 06:18 PM, Daniel Ehrenberg wrote:
-> On Tue, Dec 2, 2014 at 4:58 AM, Ezequiel Garcia
-> <ezequiel.garcia@imgtec.com> wrote:
->> +static int spi_nand_read_page(struct spi_nand *snand, unsigned int page_addr,
->> +                             unsigned int page_offset, size_t length)
->> +{
->> +       unsigned int corrected = 0, ecc_error = 0;
->> +       int ret;
->> +
->> +       /* Load a page into the cache register */
->> +       ret = snand->load_page(snand, page_addr);
->> +       if (ret < 0) {
->> +               dev_err(snand->dev, "error %d loading page 0x%x to cache\n",
->> +                       ret, page_addr);
->> +               return ret;
->> +       }
->> +
->> +       ret = spi_nand_wait_till_ready(snand);
->> +       if (ret < 0)
->> +               return ret;
->> +
->> +       if (snand->ecc) {
->> +               snand->get_ecc_status(ret, &corrected, &ecc_error);
->> +               snand->bitflips = corrected;
->> +
->> +               /*
->> +                * If there's an ECC error, print a message and notify MTD
->> +                * about it. Then complete the read, to load actual data on
->> +                * the buffer (instead of the status result).
->> +                */
->> +               if (ecc_error) {
->> +                       dev_err(snand->dev,
->> +                               "internal ECC error reading page 0x%x\n",
->> +                               page_addr);
->> +                       snand->mtd.ecc_stats.failed++;
->> +               }
->> +       }
->> +
->> +       /* Get page from the device cache into our internal buffer */
->> +       ret = snand->read_cache(snand, page_offset, length, snand->data_buf);
->> +       if (ret < 0) {
->> +               dev_err(snand->dev, "error %d reading page 0x%x from cache\n",
->> +                       ret, page_addr);
->> +               return ret;
->> +       }
->> +       return 0;
->> +}
-> 
-> Should you increment snand->mtd.corrected by corrected in this function?
-> 
+  Linux 3.18-rc1 (2014-10-19 18:08:38 -0700)
 
-Yes, it looks like I missed that.
+are available in the git repository at:
 
-Thanks for the feedback,
--- 
-Ezequiel
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20141215
+
+for you to fetch changes up to 68f29815034e9dc9ed53cad85946c32b07adc8cc:
+
+  mtd: tests: abort torturetest on erase errors (2014-12-12 19:28:43 -0800)
+
+Note that my changelog reflects only the changes that didn't make it
+into 3.18, but the diffstat generated by git is for all changes since
+3.18-rc1. I couldn't figure out the incantation to get git to give me a
+better request-pull splat, while satisfying these requirements:
+
+1) Don't merge in random points from your tree (e.g., whenever you
+   merged my post-3.18-rc1 fixes)
+
+2) Merge in all post-3.18-rc1 development to my for-3.19 branch
+
+3) Avoid listing 3.18 material in the 3.19 pull request
+
+So, I opted to compromise on #3 this time. Please enlighten if you have
+suggestions for improvement here.
+
+Also, there's a small conflict on Wolfram Sang's '.owner = THIS_MODULE'
+driver cleanup. I trust you can handle it with ease.
+
+----------------------------------------------------------------
+MTD updates for 3.19:
+
+ * Add device tree support for DoC3
+
+ * SPI NOR:
+
+    Refactoring, for better layering between spi-nor.c and its driver users
+    (e.g., m25p80.c)
+
+    New flash device support
+
+    Support 6-byte ID strings
+
+ * NAND
+
+    New NAND driver for Allwinner SoC's (sunxi)
+
+    GPMI NAND: add support for raw (no ECC) access, for testing purposes
+
+    Add ATO manufacturer ID
+
+    A few odd driver fixes
+
+ * MTD tests:
+
+    Allow testers to compensate for OOB bitflips in oobtest
+
+    Fix a torturetest regression
+
+ * nandsim: Support longer ID byte strings
+
+And more.
+
+----------------------------------------------------------------
+Aaron Sierra (2):
+      mtd: bfin-async-flash: Remove unused variable
+      fsl_ifc: Support all 8 IFC chip selects
+
+Akinobu Mita (1):
+      nandsim: add id_bytes module parameter
+
+Alison Chaiken (1):
+      MTD: m25p80: fix inconsistency in m25p_ids compared to spi_nor_ids
+
+Ard Biesheuvel (1):
+      mtd: physmap_of: fix potential NULL dereference
+
+Ben Hutchings (3):
+      mtd: spi-nor: make spi_nor_scan() take a chip type name, not spi_device_id
+      mtd: m25p80,spi-nor: Fix module aliases for m25p80
+      spi-nor: Remove spi_nor::read_id operation
+
+Boris BREZILLON (6):
+      mtd: nand: add sunxi NAND flash controller support
+      mtd: nand: add sunxi NFC dt bindings doc
+      mtd: nand: provide detailed description for raw read/write page methods
+      mtd: nand: gpmi: add gpmi_copy_bits function
+      mtd: nand: gpmi: add proper raw access support
+      mtd: nand: gpmi: add raw oob access functions
+
+Brian Norris (15):
+      MTD: merge 3.18 development into -next development
+      mtd: docg3: fix 'defined but not used' warning
+      MTD: merge 3.18 development into -next development
+      mtd: spi-nor: eliminate duplicate spi_nor_wait_till_{, fsr}_ready() code
+      mtd: spi-nor: handle timeout errors in spi_nor_write()
+      mtd: spi-nor: move "wait-till-ready" checks into erase/write functions
+      mtd: m25p80: drop wait-till-ready checks
+      mtd: fsl-quadspi: drop wait-till-ready checks
+      mtd: spi-nor: drop replaceable wait-till-ready function pointer
+      mtd: oobtest: correct printf() format specifier for 'size_t'
+      mtd: nand: add ATO manufacturer info
+      mtd: spi-nor: improve wait-till-ready timeout loop
+      mtd: cafe_nand: drop duplicate .write_page implementation
+      mtd: spi-nor: factor out write_enable() for erase commands
+      mtd: tests: abort torturetest on erase errors
+
+Chunhe Lan (1):
+      mtd: spi-nor: Move n25q032 entry to Micron devices list
+
+Dan Carpenter (1):
+      mtd: intflmount: fix off by one error in INFTL_dumpVUchains()
+
+Dmitry Eremin-Solenikov (1):
+      mtd: cfi_cmdset_0001.c: fix resume for LH28F640BF chips
+
+Fabian Frederick (1):
+      jffs2: fix sparse warning: unexpected unlock
+
+Fabio Estevam (2):
+      mtd: fsl-quadspi: Propagate the error from of_modalias_node()
+      mtd: fsl-quadspi: Let the clocks error path be clearer
+
+Frans Klaver (1):
+      mtd: omap: fix mtd devices not showing up
+
+Geert Uytterhoeven (1):
+      jffs2: Drop bogus if in comment
+
+Gerhard Sittig (3):
+      devicetree: bindings: improve description for GPIO assisted NAND flash
+      mtd: nand: gpio: improve comments about GPIO assisted operation
+      mtd: nand: comment update, the DEPLETE1 command has gone
+
+Gu Zheng (1):
+      mtd: nand: correct the comment of function nand_block_isreserved()
+
+Harini Katakam (1):
+      mtd: spi-nor: Add support for SST spi flash
+
+Hauke Mehrtens (1):
+      mtd: bcm47xxpart: only register partitions if the trx header was filled
+
+Huang Shijie (4):
+      mtd: spi-nor: fix the wrong dummy value
+      mtd: spi-nor: add id/id_len for flash_info{}
+      mtd: spi-nor: remove the jedec_id/ext_id
+      mtd: spi-nor: add support for s25fl128s
+
+Joe Perches (1):
+      docg3: Fix miuse of seq_printf return value
+
+Jordan Friendshuh (1):
+      mtd: nand: Base BCH ECC bytes on required strength
+
+Josh Wu (1):
+      mtd: atmel_nand: make PMECC lookup table and offset property optional
+
+Knut Wohlrab (1):
+      mtd: m25p80: Add support for serial flash Spansion S25FL132K
+
+Koul, Vinod (1):
+      mtd: mxc_nand: use __iowrite32_copy for 32 bit copy
+
+Mark Brown (1):
+      mtd: dataflash: Remove use of tx_dma
+
+Markus Elfring (1):
+      mtd: delete unnecessary checks before two function calls
+
+Michael Opdenacker (1):
+      mtd: orion_nand: fix error code path in probe
+
+Michal Sojka (1):
+      mtd: update help of CONFIG_MTD_OF_PARTS
+
+Rafał Miłecki (4):
+      mtd: m25p80: get rid of spi_get_device_id
+      mtd: bcm47xxpart: alloc memory for more partitions
+      mtd: nand: print erase size on init
+      mtd: spi-nor: allow NULL as chip name and try to auto detect it
+
+Rob Ward (1):
+      mtd: phram: fix asm/io.h include usage
+
+Robert Jarzmik (2):
+      mtd: docg3: add device-tree support
+      mtd: docg3: add device-tree documentation
+
+Roger Quadros (3):
+      mtd: mtd_oobtest: Show the verification error location and data
+      mtd: mtd_oobtest: add bitflip_limit parameter
+      mtd: nand: omap: Fix NAND enumeration on 3430 LDP
+
+Rostislav Lisovy (3):
+      mtd: nand: omap: Do not use global variables
+      mtd: nand: omap: Synchronize the access to the ECC engine
+      mtd: spi-nor: Add support for Fujitsu MB85RS1MT FRAM
+
+Wu, Josh (1):
+      mtd: atmel_nand: replace memcpy32_toio/memcpy32_fromio with memcpy
+
+ .../devicetree/bindings/mtd/atmel-nand.txt         |    6 +-
+ .../devicetree/bindings/mtd/diskonchip.txt         |   15 +
+ .../devicetree/bindings/mtd/gpio-control-nand.txt  |   14 +-
+ .../devicetree/bindings/mtd/sunxi-nand.txt         |   45 +
+ drivers/memory/fsl_ifc.c                           |   13 +-
+ drivers/mtd/Kconfig                                |    2 +-
+ drivers/mtd/bcm47xxpart.c                          |   28 +-
+ drivers/mtd/chips/cfi_cmdset_0001.c                |    5 +-
+ drivers/mtd/devices/docg3.c                        |  122 +-
+ drivers/mtd/devices/m25p80.c                       |   82 +-
+ drivers/mtd/devices/mtd_dataflash.c                |    6 +-
+ drivers/mtd/devices/phram.c                        |    2 +-
+ drivers/mtd/devices/pmc551.c                       |    3 +-
+ drivers/mtd/inftlmount.c                           |    2 +-
+ drivers/mtd/maps/bfin-async-flash.c                |    1 -
+ drivers/mtd/maps/physmap_of.c                      |    8 +-
+ drivers/mtd/nand/Kconfig                           |   12 +-
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/atmel_nand.c                      |  120 +-
+ drivers/mtd/nand/atmel_nand_ecc.h                  |    4 +
+ drivers/mtd/nand/cafe_nand.c                       |   45 -
+ drivers/mtd/nand/fsl_ifc_nand.c                    |   10 +-
+ drivers/mtd/nand/gpio.c                            |    4 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |  153 +++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |  201 +++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    6 +
+ drivers/mtd/nand/mxc_nand.c                        |   10 +-
+ drivers/mtd/nand/nand_base.c                       |   12 +-
+ drivers/mtd/nand/nand_ids.c                        |    1 +
+ drivers/mtd/nand/nandsim.c                         |   42 +-
+ drivers/mtd/nand/omap2.c                           |   24 +-
+ drivers/mtd/nand/omap_elm.c                        |    2 +-
+ drivers/mtd/nand/orion_nand.c                      |   39 +-
+ drivers/mtd/nand/sunxi_nand.c                      | 1432 ++++++++++++++++++++
+ drivers/mtd/spi-nor/fsl-quadspi.c                  |   30 +-
+ drivers/mtd/spi-nor/spi-nor.c                      |  325 ++---
+ drivers/mtd/tests/oobtest.c                        |   77 +-
+ drivers/mtd/tests/torturetest.c                    |    4 +-
+ fs/jffs2/readinode.c                               |    2 +-
+ fs/jffs2/summary.c                                 |    1 +
+ include/linux/fsl_ifc.h                            |   21 +-
+ include/linux/mtd/nand.h                           |   18 +-
+ include/linux/mtd/spi-nor.h                        |   32 +-
+ 43 files changed, 2479 insertions(+), 503 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/diskonchip.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+ create mode 100644 drivers/mtd/nand/sunxi_nand.c
