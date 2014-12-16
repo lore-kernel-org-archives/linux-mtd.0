@@ -1,19 +1,23 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0n6r-0002WS-Cc
- for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 08:03:58 +0000
-Message-ID: <548FE72D.5040803@huawei.com>
-Date: Tue, 16 Dec 2014 16:02:53 +0800
-From: hujianyang <hujianyang@huawei.com>
+ id 1Y0nqN-0000sc-1L
+ for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 08:50:59 +0000
+Received: by mail-wi0-f181.google.com with SMTP id r20so11710725wiv.2
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 00:50:37 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH V2] mtd: bcm47xxpart: support SquashFS with an original magic
+Date: Tue, 16 Dec 2014 09:50:25 +0100
+Message-Id: <1418719825-21314-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1418715606-18949-1-git-send-email-zajec5@gmail.com>
+References: <1418715606-18949-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: add ubi_err() to report the failure of leb read
-References: <548FE51D.60707@huawei.com>
-In-Reply-To: <548FE51D.60707@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,55 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/12/16 15:54, hujianyang wrote:
-> If an error occur while reading from PEBs, for example, an ECC error,
-> ubi_io_read() will print some error messages. But it's not enough for
-> debugging. These messages don't show the mapping info for a read from
-> UBIFS layer.
-> 
-> Although UBIFS will soon print its error messages after catching the
-> return value from UBI layer,  multi-path reading will confuse the
-> relationship between LEBs and PEBs showed by these messages.
-> 
-> This patch adds an ubi_err() to report reading errors in the function
-> ubi_eba_read_leb(). The mapping info of LEB and PEB is showed by
-> this error message.
-> 
-> Signed-off-by: hujianyang <hujianyang@huawei.com>
-> ---
->  drivers/mtd/ubi/eba.c |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-> index b698534..b4e69e1 100644
-> --- a/drivers/mtd/ubi/eba.c
-> +++ b/drivers/mtd/ubi/eba.c
-> @@ -477,6 +477,8 @@ out_free:
->  	ubi_free_vid_hdr(ubi, vid_hdr);
->  out_unlock:
->  	leb_read_unlock(ubi, vol_id, lnum);
-> +	ubi_err(ubi, "err %d while reading %d bytes from offset %d of LEB %d:%d, PEB %d",
-> +		err, len, offset, vol_id, lnum, pnum);
->  	return err;
->  }
-> 
+SquashFS is supposed to use magic defined as SQUASHFS_MAGIC. What we
+were supporting so far (SQSH_MAGIC) is something ZTE specific.
+This patch adds support for Xiaomi R1D.
 
-Hi,
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+V2: s/SQSH/SHSQ/ to emphase this weird endianness
+---
+ drivers/mtd/bcm47xxpart.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-I met a problem that I was failed to mount a UBIFS partition.
-
-[   38.442770] UBI error: ubi_io_read: error -74 (ECC error) while reading 26624 bytes from PEB 54:104448, read 26624 bytes
-[   38.852461] UBI error: ubi_io_read: error -74 (ECC error) while reading 77824 bytes from PEB 346:53248, read 77824 bytes
-[   38.864142] UBIFS error (pid 1444): ubifs_recover_leb: corruption -3
-[   38.870487] UBIFS error (pid 1444): ubifs_scanned_corruption: corruption at LEB 928:55280
-[   38.878625] UBIFS error (pid 1444): ubifs_scanned_corruption: first 8192 bytes from LEB 928:55280
-[   38.892117] UBIFS error (pid 1444): ubifs_recover_leb: LEB 928 scanning failed
-mount: mounting ubi1:bak on /HFFS2: failed: Structure needs cleaning
-
-I think it is caused by an ECC error of nand flash. Do we have some methods
-to mount this partition? Data losing is acceptable.
-
-
-Thanks,
-
-Hu
+diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+index 4ad3928..c0720c1 100644
+--- a/drivers/mtd/bcm47xxpart.c
++++ b/drivers/mtd/bcm47xxpart.c
+@@ -15,6 +15,8 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ 
++#include <uapi/linux/magic.h>
++
+ /*
+  * NAND flash on Netgear R6250 was verified to contain 15 partitions.
+  * This will result in allocating too big array for some old devices, but the
+@@ -39,7 +41,7 @@
+ #define ML_MAGIC1			0x39685a42
+ #define ML_MAGIC2			0x26594131
+ #define TRX_MAGIC			0x30524448
+-#define SQSH_MAGIC			0x71736873	/* shsq */
++#define SHSQ_MAGIC			0x71736873	/* shsq (weird ZTE H218N endianness) */
+ #define UBI_EC_MAGIC			0x23494255	/* UBI# */
+ 
+ struct trx_header {
+@@ -233,7 +235,8 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 		}
+ 
+ 		/* Squashfs on devices not using TRX */
+-		if (buf[0x000 / 4] == SQSH_MAGIC) {
++		if (le32_to_cpu(buf[0x000 / 4]) == SQUASHFS_MAGIC ||
++		    buf[0x000 / 4] == SHSQ_MAGIC) {
+ 			bcm47xxpart_add_part(&parts[curr_part++], "rootfs",
+ 					     offset, 0);
+ 			continue;
+-- 
+1.8.4.5
