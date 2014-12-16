@@ -1,23 +1,21 @@
-Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0vlt-0007Qo-Pd
- for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 17:18:54 +0000
-Received: by mail-ig0-f181.google.com with SMTP id l13so7916292iga.14
- for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 09:18:31 -0800 (PST)
-Message-ID: <54906964.9020309@gmail.com>
-Date: Tue, 16 Dec 2014 12:18:28 -0500
-From: nick <xerofoify@gmail.com>
+ id 1Y0zxt-0005cq-Uz
+ for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 21:47:34 +0000
+Received: by mail-wi0-f174.google.com with SMTP id h11so13707889wiw.13
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 13:47:11 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spi-nor: support for (GigaDevice) GD25Q128B
+Date: Tue, 16 Dec 2014 22:46:56 +0100
+Message-Id: <1418766416-6446-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Cannot find jffs2_commit_write
-References: <548F086B.3090607@gmail.com>
- <CAMuHMdU1DQBcq5AiVYaT8m3b7x_HFa6SMy-KOw5m7W=S8LPrJw@mail.gmail.com>
-In-Reply-To: <CAMuHMdU1DQBcq5AiVYaT8m3b7x_HFa6SMy-KOw5m7W=S8LPrJw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks Geert,
-I am wondering then why do we still have this message in the TODO file for jffs2,
-- disable compression in commit_write()?. If anyone can explain why this is still
-needed I will gladly look into it, otherwise I am sending a patch to remove this
-TODO for jffs2.
-Regards Nick
-P.S. I do am linus's tree cloned, I am using lxr only for searching the recent tree.
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-On 2014-12-16 05:57 AM, Geert Uytterhoeven wrote:
-> Hi Nick,
-> 
-> On Mon, Dec 15, 2014 at 5:12 PM, nick <xerofoify@gmail.com> wrote:
->> I seem to not be able to locate jffs2_commit_write by searching with lxr. If someone can tell me what file the function is located in that would be greatly appreciated.
-> 
-> That's because it does not exist. Presumably someone forgot to update
-> an error message when it was renamed (before it entered mainline in ... 2002!
-> 
-> BTW, please clone Linus' git tree instead of lurking in lxr for real development
-> (I assume that's what you want to do? ;-)
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 0f8ec3c..ebcc97a 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -538,6 +538,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	/* GigaDevice */
+ 	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
++	{ "gd25q128",	INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
+ 
+ 	/* Intel/Numonyx -- xxxs33b */
+ 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+-- 
+1.8.4.5
