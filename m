@@ -1,15 +1,15 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0nxi-0003Yf-G3
- for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 08:58:35 +0000
-Message-ID: <548FF41F.3030902@nod.at>
-Date: Tue, 16 Dec 2014 09:58:07 +0100
+ id 1Y0oK9-00021W-UD
+ for linux-mtd@lists.infradead.org; Tue, 16 Dec 2014 09:21:46 +0000
+Message-ID: <548FF98E.5000503@nod.at>
+Date: Tue, 16 Dec 2014 10:21:18 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: hujianyang <hujianyang@huawei.com>, Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: [PATCH] UBI: add ubi_err() to report the failure of leb read
-References: <548FE51D.60707@huawei.com>
-In-Reply-To: <548FE51D.60707@huawei.com>
+References: <548FE51D.60707@huawei.com> <548FE72D.5040803@huawei.com>
+In-Reply-To: <548FE72D.5040803@huawei.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
@@ -22,39 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 16.12.2014 um 08:54 schrieb hujianyang:
-> If an error occur while reading from PEBs, for example, an ECC error,
-> ubi_io_read() will print some error messages. But it's not enough for
-> debugging. These messages don't show the mapping info for a read from
-> UBIFS layer.
+Am 16.12.2014 um 09:02 schrieb hujianyang:
+> Hi,
 > 
-> Although UBIFS will soon print its error messages after catching the
-> return value from UBI layer,  multi-path reading will confuse the
-> relationship between LEBs and PEBs showed by these messages.
+> I met a problem that I was failed to mount a UBIFS partition.
 > 
-> This patch adds an ubi_err() to report reading errors in the function
-> ubi_eba_read_leb(). The mapping info of LEB and PEB is showed by
-> this error message.
+> [   38.442770] UBI error: ubi_io_read: error -74 (ECC error) while reading 26624 bytes from PEB 54:104448, read 26624 bytes
+> [   38.852461] UBI error: ubi_io_read: error -74 (ECC error) while reading 77824 bytes from PEB 346:53248, read 77824 bytes
+> [   38.864142] UBIFS error (pid 1444): ubifs_recover_leb: corruption -3
+> [   38.870487] UBIFS error (pid 1444): ubifs_scanned_corruption: corruption at LEB 928:55280
+> [   38.878625] UBIFS error (pid 1444): ubifs_scanned_corruption: first 8192 bytes from LEB 928:55280
+> [   38.892117] UBIFS error (pid 1444): ubifs_recover_leb: LEB 928 scanning failed
+> mount: mounting ubi1:bak on /HFFS2: failed: Structure needs cleaning
 > 
-> Signed-off-by: hujianyang <hujianyang@huawei.com>
-> ---
->  drivers/mtd/ubi/eba.c |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-> index b698534..b4e69e1 100644
-> --- a/drivers/mtd/ubi/eba.c
-> +++ b/drivers/mtd/ubi/eba.c
-> @@ -477,6 +477,8 @@ out_free:
->  	ubi_free_vid_hdr(ubi, vid_hdr);
->  out_unlock:
->  	leb_read_unlock(ubi, vol_id, lnum);
-> +	ubi_err(ubi, "err %d while reading %d bytes from offset %d of LEB %d:%d, PEB %d",
-> +		err, len, offset, vol_id, lnum, pnum);
+> I think it is caused by an ECC error of nand flash. Do we have some methods
+> to mount this partition? Data losing is acceptable.
 
-This label will also be reached if we run out of memory.
-Please make sure that the new ubi_err() can only be reached in case of an MTD error.
-Also make sure that the function prints only one message and not two.
+I don't think that UBIFS has such a mount option.
+You can dump the raw data and inspect the corrupted data.
+Maybe you can fix it by hand.
 
 Thanks,
 //richard
