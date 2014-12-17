@@ -1,23 +1,28 @@
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [V6 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for
- Micron spi nor
-Date: Wed, 17 Dec 2014 04:47:11 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315F1993@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315EF2C5@NTXXIAMBX02.xacn.micron.com>
- <20141217032952.GV9759@ld-irv-0074>
-In-Reply-To: <20141217032952.GV9759@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y16p0-00065h-Dr
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 05:06:51 +0000
+Received: by mail-pa0-f42.google.com with SMTP id et14so15639075pad.1
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 21:06:28 -0800 (PST)
+Message-ID: <54910F5D.4090705@gmail.com>
+Date: Wed, 17 Dec 2014 13:06:37 +0800
+From: Zhou Wang <wangzhou.bry@gmail.com>
 MIME-Version: 1.0
-Cc: Marek Vasut <marex@denx.de>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "grmoore@altera.com" <grmoore@altera.com>,
- "shijie8@gmail.com" <shijie8@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 0/2] mtd: hisilicon: add a new driver for NAND
+ controller of hisilicon hip04 Soc
+References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
+ <20141130090853.GG3608@norris-Latitude-E6410> <548987D3.3060407@gmail.com>
+ <20141217010358.GM9759@ld-irv-0074>
+In-Reply-To: <20141217010358.GM9759@ld-irv-0074>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, liguozhu@hisilicon.com,
+ haojian.zhuang@gmail.com, wangzhou1@hisilicon.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
+ caizhiyong@huawei.com, yubingxu@hisilicon.com,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +32,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pj4gKwl7ICJuMjVxMDMyIiwJIElORk8oMHgyMGJhMTYsIDAsIDY0ICogMTAyNCwgICA2NCwgU1BJ
-X05PUl9RVUFEX1JFQUQpIH0sDQo+PiArCXsgIm4yNXEwNjQiLCAgICAgSU5GTygweDIwYmExNywg
-MCwgNjQgKiAxMDI0LCAgMTI4LCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4+ICsJeyAibjI1cTEy
-OGExMSIsICBJTkZPKDB4MjBiYjE4LCAwLCA2NCAqIDEwMjQsICAyNTYsIFNQSV9OT1JfUVVBRF9S
-RUFEKSB9LA0KPj4gKwl7ICJuMjVxMTI4YTEzIiwgIElORk8oMHgyMGJhMTgsIDAsIDY0ICogMTAy
-NCwgIDI1NiwgU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+PiArCXsgIm4yNXEyNTZhIiwgICAgSU5G
-TygweDIwYmExOSwgMCwgNjQgKiAxMDI0LCAgNTEyLCBTRUNUXzRLIHwgU1BJX05PUl9RVUFEX1JF
-QUQpIH0sDQo+PiArCXsgIm4yNXE1MTJhIiwgICAgSU5GTygweDIwYmIyMCwgMCwgNjQgKiAxMDI0
-LCAxMDI0LCBTRUNUXzRLIHwgVVNFX0ZTUiB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPj4gKwl7
-ICJuMjVxNTEyYXgzIiwgIElORk8oMHgyMGJhMjAsIDAsIDY0ICogMTAyNCwgMTAyNCwgU0VDVF80
-SyB8IFVTRV9GU1IgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4+ICsJeyAibjI1cTAwIiwgICAg
-ICBJTkZPKDB4MjBiYTIxLCAwLCA2NCAqIDEwMjQsIDIwNDgsIFNFQ1RfNEsgfCBVU0VfRlNSIHwg
-U1BJX05PUl9RVUFEX1JFQUQpIH0sDQoNCj5BcmUgeW91IHN1cmUgKmFsbCogb2YgdGhlc2Ugc3Vw
-cG9ydCBxdWFkIG1vZGU/IEkga25vdyBzb21lIG1hbnVmYWN0dXJlcnMNCj5oYXZlIGJlZW4ga25v
-d24gdG8gcmV1c2UgSURzLCBhbmQgSSB3b3VsZG4ndCB3YW50IGEgZmFsc2UgcG9zaXRpdmUgdG8g
-c2xpcA0KPmluIGhlcmUsIHdoZXJlIGFuIG9sZCBwYXJ0IG1pZ2h0IG5vdCBzdXBwb3J0IGl0IGJ1
-dCB0aGUgbmV3IG9uZSBkb2VzLi4uDQoNClllcyxJIGFtIHN1cmUgdGhhdCBhbGwgTWljcm9uIHNw
-aSBub3IgaW4gYWJvdmUgdGFibGUgc3VwcG9ydCBxdWFkIG1vZGUsdGhleSBhcmUNCmFsbCBOMjVR
-IHNlcmlhbCBzcGkgbm9yLkFzIGZvciBvdXIgTWljcm9uIHNwaSBub3Igd2l0aG91dCBxdWFkIG1v
-ZGUsIA0KSSBkb24ndCBhZGQgdGhlbSBpbiB0aGUgYWJvdmUgdGFibGUsYW5kIHRoZXkgaGF2ZSBk
-aWZmZXJlbnQgSUQgd2l0aCBhYm92ZSBkZXZpY2UuDQoNCg0KPldpdGggaW50IHZzLiB1OCBmaXhl
-ZCB1cCwgdGhpcyBsb29rcyBnb29kLiBIb3BlZnVsbHkgSSBjYW4gdGFrZSB2NyENCg0KVGhhbmtz
-ICxpdCdzIHZlcnkgbmljZSBvZiB5b3UuDQoNCj5UaGFua3MsDQo+QnJpYW4NCg==
+On 2014年12月17日 09:03, Brian Norris wrote:
+> On Thu, Dec 11, 2014 at 08:02:27PM +0800, Zhou Wang wrote:
+>> On 2014年11月30日 17:08, Brian Norris wrote:
+>>> Have you tested on the MTD test modules (drivers/mtd/tests/*)? This is
+>>> important, as we seem to regularly get UBIFS bug reports from users
+>>> whose drivers have not even passed some of the simple tests.
+>>>
+>>> Also, it might be worth testing out the UBI tests found in the mtd-utils
+>>> package.
+>>
+>> I have tested this NAND controller driver on the MTD test modules
+>> (drivers/mtd/tests/*). All tests passed except mtd_nandbiterrs.ko.
+>>
+>> Here is the test log for mtd_nandbiterrs:
+>> /home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
+>> [  100.484995]
+>> [  100.490082] ==================================================
+>> [  100.509657] mtd_nandbiterrs: MTD device: 2
+>> [  100.523413] mtd_nandbiterrs: MTD device size 8388608,
+>> eraseblock=131072, page=2048, oob=64
+>> [  100.551134] mtd_nandbiterrs: Device uses 2 subpages of 1024 bytes
+>> [  100.571585] mtd_nandbiterrs: Using page=1, offset=2048, eraseblock=0
+>> [  104.431136] mtd_nandbiterrs: incremental biterrors test
+>> [  104.448872] mtd_nandbiterrs: write_page
+>> [  104.463193] mtd_nandbiterrs: rewrite page
+>> [  104.477620] mtd_nandbiterrs: read_page
+>> [  104.490898] mtd_nandbiterrs: verify_page
+>> [  104.504338] mtd_nandbiterrs: Successfully corrected 0 bit errors
+>> per subpage
+>> [  104.527985] mtd_nandbiterrs: Inserted biterror @ 0/5
+>> [  104.544673] mtd_nandbiterrs: Inserted biterror @ 1024/2
+>> [  104.562197] mtd_nandbiterrs: rewrite page
+>> [  104.576766] mtd_nandbiterrs: read_page
+>> [  104.590052] mtd_nandbiterrs: verify_page
+>> [  104.603252] mtd_nandbiterrs: Error: page offset 0, expected 23, got 03
+>> [  104.625203] mtd_nandbiterrs: Error: page offset 1024, expected 06, got 02
+>> [  104.648056] mtd_nandbiterrs: ECC failure, read data is incorrect
+>> despite read success
+>> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+>>
+>> The reason for above failure is that:
+>> In ECC mode, when rewriting page data to NAND flash, the NAND
+>> controller will also produce ECC code and write them to NAND flash
+>> as well. So when we read data from NAND flash, there is no need to
+>> correct the error bit. We read what we write to the flash.
+>>
+>> In mtd_nandbiterrs test, We call nand_write_page_raw indeed to perform
+>> rewrite operation. My question is that: in this NAND controller hardware
+>> design, it is hard to implement hardware specific write_page_raw to
+>> write page data without producing ECC code, will this bring some bad
+>> effects somewhere? It will be very nice if you and anyone can give
+>> me some advice.
+>
+> As of now, read_page_raw()/write_page_raw() are not required for any
+> normal operation. They are useful for debugging and testing though, with
+> tests like this one.
+>
+> In the future, we might use read_page_raw() for implementing (optional)
+> software-based detection of blank/erased pages that have bitflips in
+> them -- i.e., all 0xff but with a few bitflips. See:
+>
+>    http://lists.infradead.org/pipermail/linux-mtd/2014-December/056749.html
+>    http://article.gmane.org/gmane.linux.drivers.mtd/52183/
+>
+> Brian
+>
+
+Got it, thanks for your explanation, Brian. I will resend the new
+version of patchset based on v3.19-rc1 later.
+
+Regards,
+Zhou
