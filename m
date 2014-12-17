@@ -1,20 +1,21 @@
-From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: [V7 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for Micron
- spi nor
-Date: Wed, 17 Dec 2014 07:35:45 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315F19EB@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y1B3c-0007g4-UP
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 09:38:13 +0000
+Date: Wed, 17 Dec 2014 10:37:42 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 2/2] mtd: map_rom: Support UBI on ROM
+In-Reply-To: <20141217023344.GS9759@ld-irv-0074>
+Message-ID: <alpine.DEB.2.02.1412171034350.8366@lnxricardw1.se.axis.com>
+References: <1683475520.65208.1411665491176.JavaMail.zimbra@xes-inc.com>
+ <673100209.65720.1411665624206.JavaMail.zimbra@xes-inc.com>
+ <20141217023344.GS9759@ld-irv-0074>
 MIME-Version: 1.0
-Cc: "grmoore@altera.com" <grmoore@altera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie8@gmail.com" <shijie8@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Aaron Sierra <asierra@xes-inc.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,170 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
 
-For Micron SPI NOR flash, enabling or disabling quad I/O protocol can be do=
-ne
-By two methods, which are to use EVCR(Enhanced Volatile Configuration Regis=
-ter)
-and the ENTER QUAD I/O MODE command. There is no difference between these t=
-wo
-methods. Unfortunately, for some Micron spi nor flashes, there no ENTER Qua=
-d I/O
-command(35h),such as n25q064.But for all current Micron spi nor, if it supp=
-ort
-quad I/O mode, using EVCR definitely be supported. It is a recommended meth=
-od to
-enable Quad I/O mode by EVCR, Quad I/O protocol bit 7.When EVCR bit 7 is re=
-set
-to 0,the SPI NOR flash will operate in quad I/O mode.
+On Wed, 17 Dec 2014, Brian Norris wrote:
 
-This patch has been tested on N25Q512A and MT25TL256BAA1ESF.Micron spi nor =
-of
-spi_nor_ids[] table all support this method.
+> But then I'm curious: how do you get anything useful out of using UBI on
+> a read-only device? You don't need to (and can't) handle anything like
+> read disturb, and there's no write wear that needs to be leveled.
 
-Signed-off-by: bean huo <beanhuo@micron.com>
-Acked-by: Marek Vasut <marex@denx.de>
----
-v1-v2:
-	Modified to that capture wait_till_ready()
-	return value,if error,directly return its
-	the value.
- v2-v3:
-	Directly use the reurning error value of
-	read_reg and write_reg,instead of -EINVAL.
- v3-v4:
-	Modify commit logs that wraped into 80 columns.
- v4-v5:
-	Rebuild new patch based on latest linux-mtd.
- v5-v6:
-	Rebuild patch based on latest l2-mtd.
-	add some comments.
-	Add SPI_NOR_QUAD_READ flag in the spi_nor_ids[] for Micron spi nor.
- V6-v7:
-	Fixed up val with u8 in micron_quad_enable().
-=09
-drivers/mtd/spi-nor/spi-nor.c |   62 +++++++++++++++++++++++++++++++++++---=
----
- include/linux/mtd/spi-nor.h   |    7 +++++
- 2 files changed, 61 insertions(+), 8 deletions(-)
+Don't know about this particular case, but in some cases it can be an 
+advantage to be able to use the same file system image in both a read-only 
+and a writable environment.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 0f8ec3c..ea196c1 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -560,14 +560,14 @@ static const struct spi_device_id spi_nor_ids[] =3D {
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
-=20
- 	/* Micron */
--	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, 0) },
--	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0) },
--	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
--	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
--	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
--	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
--	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
--	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR) },
-+	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
-+	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SPI_NOR_QUAD_READ) },
-+	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
-+	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
-+	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUA=
-D_READ) },
-+	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | S=
-PI_NOR_QUAD_READ) },
-+	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | S=
-PI_NOR_QUAD_READ) },
-+	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | S=
-PI_NOR_QUAD_READ) },
-=20
- 	/* PMC */
- 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-@@ -891,6 +891,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
- 	return 0;
- }
-=20
-+static int micron_quad_enable(struct spi_nor *nor)
-+{
-+	int ret;
-+	u8 val;
-+
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+
-+	write_enable(nor);
-+
-+	/* set EVCR, enable quad I/O */
-+	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
-+	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error while writing EVCR register\n");
-+		return ret;
-+	}
-+
-+	ret =3D spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	/* read EVCR and check it */
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+	if (val & EVCR_QUAD_EN_MICRON) {
-+		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int set_quad_mode(struct spi_nor *nor, struct flash_info *info)
- {
- 	int status;
-@@ -903,6 +942,13 @@ static int set_quad_mode(struct spi_nor *nor, struct f=
-lash_info *info)
- 			return -EINVAL;
- 		}
- 		return status;
-+	case CFI_MFR_ST:
-+		status =3D micron_quad_enable(nor);
-+		if (status) {
-+			dev_err(nor->dev, "Micron quad-read not enabled\n");
-+			return -EINVAL;
-+		}
-+		return status;
- 	default:
- 		status =3D spansion_quad_enable(nor);
- 		if (status) {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 63aeccf..4720b86 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -56,6 +56,10 @@
- /* Used for Spansion flashes only. */
- #define SPINOR_OP_BRWR		0x17	/* Bank register write */
-=20
-+/* Used for Micron flashes only. */
-+#define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
-+#define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
-+
- /* Status Register bits. */
- #define SR_WIP			1	/* Write in progress */
- #define SR_WEL			2	/* Write enable latch */
-@@ -67,6 +71,9 @@
-=20
- #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
-=20
-+/* Enhanced Volatile Configuration Register bits */
-+#define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
-+
- /* Flag Status Register bits */
- #define FSR_READY		0x80
-=20
---=20
-1.7.9.5
+Say you have some form of ROM device with no bit flips, but occasionally 
+(e.g. during development) you want to use the same file system image in a 
+flash. While the same thing can be accomplished by using seperate file 
+systems which share the same content, it can simplify the whole system if 
+only one file system image is needed which can reside in multiple types of 
+media.
+
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
