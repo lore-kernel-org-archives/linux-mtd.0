@@ -1,31 +1,23 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y13Ft-0008Ok-Qr
- for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 01:18:22 +0000
-Received: by mail-pa0-f41.google.com with SMTP id rd3so15267123pab.28
- for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 17:18:01 -0800 (PST)
-Date: Tue, 16 Dec 2014 17:17:57 -0800
+ id 1Y13Nr-00042U-MK
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 01:26:36 +0000
+Received: by mail-pd0-f177.google.com with SMTP id ft15so14973275pdb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 17:26:13 -0800 (PST)
+Date: Tue, 16 Dec 2014 17:26:10 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <shijie.huang@intel.com>
-Subject: Re: [PATCH] mtd: gpmi: Remove "We support only one NAND chip" from
- bindings doc
-Message-ID: <20141217011757.GO9759@ld-irv-0074>
-References: <1417097929-17832-1-git-send-email-sr@denx.de>
- <20141128014832.GA3113@localhost.localdomain>
- <54781DD5.5030801@denx.de>
- <20141129024047.GA5056@localhost.localdomain>
- <20141130065326.GB3608@norris-Latitude-E6410>
- <20141130154255.GB14834@localhost.localdomain>
- <547C3BB9.1010706@denx.de>
- <20141202003840.GA11370@shldeISGChi005.sh.intel.com>
- <547D6A0A.70409@denx.de>
- <20141203003542.GA7895@shldeISGChi005.sh.intel.com>
+To: Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH 1/1][v4] IFC: Change IO accessor based on endianness
+Message-ID: <20141217012610.GP9759@ld-irv-0074>
+References: <1418017580-2749-1-git-send-email-b44839@freescale.com>
+ <1418079383.5581.14.camel@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20141203003542.GA7895@shldeISGChi005.sh.intel.com>
-Cc: devicetree@vger.kernel.org, Stefan Roese <sr@denx.de>,
- Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <1418079383.5581.14.camel@freescale.com>
+Cc: B07421@freescale.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+ linux-mtd@lists.infradead.org, B32579@freescale.com,
+ Jaiprakash Singh <b44839@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,35 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 03, 2014 at 08:35:42AM +0800, Huang Shijie wrote:
-> On Tue, Dec 02, 2014 at 08:28:10AM +0100, Stefan Roese wrote:
-> > On 02.12.2014 01:38, Huang Shijie wrote:
-> > > On Mon, Dec 01, 2014 at 10:58:17AM +0100, Stefan Roese wrote:
-> > >> On 30.11.2014 16:42, Huang Shijie wrote:
-> > >>> On Sat, Nov 29, 2014 at 10:53:26PM -0800, Brian Norris wrote:
-> > >>>> On Sat, Nov 29, 2014 at 10:40:50AM +0800, Huang Shijie wrote:
-> > >>>>> On Fri, Nov 28, 2014 at 08:01:41AM +0100, Stefan Roese wrote:
-> > >>>>>> On 28.11.2014 02:48, Huang Shijie wrote:
-> > >>>>>>> On Thu, Nov 27, 2014 at 03:18:49PM +0100, Stefan Roese wrote:
-> > >>>>>>>> This sentence "We support only one NAND chip now" is not true any more.
-> > >>>>>>>> Multiple chips are supported. So lets remove this sentence to not
-> > >>>>>>>
-> > >>>>>>> The gpmi can only supports one chip. Of course, there are maybe two dies
-> > >>>>>>> in this single chip.
-[...]
-> If your test result can prove that the gpmi can support two chips.
-> 
-> I can ack this patch. (I ever thought the gpmi needs an extra patch to
-> support the multiple chips)
-> 
+On Mon, Dec 08, 2014 at 04:56:23PM -0600, Scott Wood wrote:
+> On Mon, 2014-12-08 at 11:16 +0530, Jaiprakash Singh wrote:
+> > From: Jaiprakash Singh <b44839@freescale.com>
 > > 
-> > > I even did not have enough time to test the "two chips on a die" case very carefully before
-> > > I left freescale.
+> > IFC IO accressor are set at run time based
+> > on IFC IP registers endianness.IFC node in
+> > DTS file contains information about
+> > endianness.
 > > 
-> > I see. Thanks for the hint. But this "two chips on a die" scenario did
-> > pass some basic tests, no?
-> yes. It passed the bonnie++ test.
+> > Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
+> > ---
+> > Changes for v4
+> > 	- Review rework as per Scott's comments
+> > 	- Tested on B4860QDS board
+> > ---
+> >  .../bindings/memory-controllers/fsl/ifc.txt        |    3 +
+> >  drivers/memory/fsl_ifc.c                           |   34 ++-
+> >  drivers/mtd/nand/fsl_ifc_nand.c                    |  260 ++++++++++----------
+> >  include/linux/fsl_ifc.h                            |   50 ++++
+> >  4 files changed, 205 insertions(+), 142 deletions(-)
+> 
+> Acked-by: Scott Wood <scottwood@freescale.com>
 
-If there are no more concrete objections, I'll apply this patch.
+I can't locate a patch for this. Did linux-mtd get CC'd? (Or, did any
+mailing list get CC'd? I don't see it on any search engines.)
 
 Brian
