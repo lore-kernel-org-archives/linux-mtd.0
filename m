@@ -1,21 +1,25 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y14UO-0005q7-BV
- for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 02:37:24 +0000
-Received: by mail-pa0-f53.google.com with SMTP id kq14so15326644pab.12
- for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 18:37:03 -0800 (PST)
-Date: Tue, 16 Dec 2014 18:37:00 -0800
+ id 1Y14XE-0006ZG-15
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 02:40:20 +0000
+Received: by mail-pa0-f52.google.com with SMTP id eu11so15227194pac.25
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 18:39:59 -0800 (PST)
+Date: Tue, 16 Dec 2014 18:39:56 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Aaron Sierra <asierra@xes-inc.com>
-Subject: Re: [PATCH 1/2] mtd: physmap_of: Add read-only fallback
-Message-ID: <20141217023700.GT9759@ld-irv-0074>
-References: <103889901.65008.1411665422229.JavaMail.zimbra@xes-inc.com>
- <2002674283.65675.1411665608272.JavaMail.zimbra@xes-inc.com>
+To: Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH 1/1][v4] IFC: Change IO accessor based on endianness
+Message-ID: <20141217023956.GU9759@ld-irv-0074>
+References: <1418017580-2749-1-git-send-email-b44839@freescale.com>
+ <1418079383.5581.14.camel@freescale.com>
+ <20141217012610.GP9759@ld-irv-0074>
+ <1418779984.5581.109.camel@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2002674283.65675.1411665608272.JavaMail.zimbra@xes-inc.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+In-Reply-To: <1418779984.5581.109.camel@freescale.com>
+Cc: B07421@freescale.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+ linux-mtd@lists.infradead.org, B32579@freescale.com,
+ Jaiprakash Singh <b44839@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An old one, but I'm curious...
-
-On Thu, Sep 25, 2014 at 12:20:08PM -0500, Aaron Sierra wrote:
-> From: Joe Schultz <jschultz@xes-inc.com>
+On Tue, Dec 16, 2014 at 07:33:04PM -0600, Scott Wood wrote:
+> On Tue, 2014-12-16 at 17:26 -0800, Brian Norris wrote:
+> > On Mon, Dec 08, 2014 at 04:56:23PM -0600, Scott Wood wrote:
+> > > On Mon, 2014-12-08 at 11:16 +0530, Jaiprakash Singh wrote:
+> > > > From: Jaiprakash Singh <b44839@freescale.com>
+> > > > 
+> > > > IFC IO accressor are set at run time based
+> > > > on IFC IP registers endianness.IFC node in
+> > > > DTS file contains information about
+> > > > endianness.
+> > > > 
+> > > > Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
+> > > > ---
+> > > > Changes for v4
+> > > > 	- Review rework as per Scott's comments
+> > > > 	- Tested on B4860QDS board
+> > > > ---
+> > > >  .../bindings/memory-controllers/fsl/ifc.txt        |    3 +
+> > > >  drivers/memory/fsl_ifc.c                           |   34 ++-
+> > > >  drivers/mtd/nand/fsl_ifc_nand.c                    |  260 ++++++++++----------
+> > > >  include/linux/fsl_ifc.h                            |   50 ++++
+> > > >  4 files changed, 205 insertions(+), 142 deletions(-)
+> > > 
+> > > Acked-by: Scott Wood <scottwood@freescale.com>
+> > 
+> > I can't locate a patch for this. Did linux-mtd get CC'd? (Or, did any
+> > mailing list get CC'd? I don't see it on any search engines.)
 > 
-> Previously, when probing a CFI chip which was write-protected at the
-> hardware level, the probe would fail due to the fact it could not put
-> the chip into QUERY mode. This would result in no MTD devices being
-> created.
-> 
-> Add a fallback to probe using the map_rom driver if the user-selected
-> probe fails.
+> linux-mtd was CCed, but I don't see this or v3 or anything else from
+> Jaiprakash in the archives.  
 
-Why can't the user just select map_rom instead?
+Perhaps Jaiprakash missed some bounce emails? I don't have list
+moderator access, so I can't check up on this.
+
+Jaiprakash, when resending, please confirm that you don't receive any
+bounce emails from the list server and that your patch shows up here:
+
+  http://lists.infradead.org/pipermail/linux-mtd/
 
 Brian
-
-> Signed-off-by: Joe Schultz <jschultz@xes-inc.com>
-> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
-> ---
->  drivers/mtd/maps/physmap_of.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-> index c62e1c3..efbf416 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -272,6 +272,16 @@ static int of_flash_probe(struct platform_device *dev)
->  			info->list[i].mtd = obsolete_probe(dev,
->  							   &info->list[i].map);
->  		}
-> +
-> +		/* Fall back to mapping region as ROM */
-> +		if (!info->list[i].mtd) {
-> +			dev_warn(&dev->dev,
-> +				"do_map_probe() failed for type %s\n",
-> +				 probe_type);
-> +
-> +			info->list[i].mtd = do_map_probe("map_rom",
-> +							 &info->list[i].map);
-> +		}
->  		mtd_list[i] = info->list[i].mtd;
->  
->  		err = -ENXIO;
-> -- 
-> 1.9.1
-> 
