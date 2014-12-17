@@ -1,21 +1,29 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1B3c-0007g4-UP
- for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 09:38:13 +0000
-Date: Wed, 17 Dec 2014 10:37:42 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: map_rom: Support UBI on ROM
-In-Reply-To: <20141217023344.GS9759@ld-irv-0074>
-Message-ID: <alpine.DEB.2.02.1412171034350.8366@lnxricardw1.se.axis.com>
-References: <1683475520.65208.1411665491176.JavaMail.zimbra@xes-inc.com>
- <673100209.65720.1411665624206.JavaMail.zimbra@xes-inc.com>
- <20141217023344.GS9759@ld-irv-0074>
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y1CQR-00061I-Q0
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 11:05:52 +0000
+Received: by mail-pa0-f49.google.com with SMTP id eu11so15948948pac.8
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2014 03:05:30 -0800 (PST)
+Message-ID: <5491638B.5090403@gmail.com>
+Date: Wed, 17 Dec 2014 19:05:47 +0800
+From: Zhou Wang <wangzhou.bry@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Aaron Sierra <asierra@xes-inc.com>, David Woodhouse <dwmw2@infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 0/2] mtd: hisilicon: add a new driver for NAND
+ controller of hisilicon hip04 Soc
+References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
+ <20141130090853.GG3608@norris-Latitude-E6410> <548987D3.3060407@gmail.com>
+ <20141217062333.GD7112@brian-ubuntu>
+In-Reply-To: <20141217062333.GD7112@brian-ubuntu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ Iwo Mergler <Iwo.Mergler@netcommwireless.com>, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, liguozhu@hisilicon.com,
+ haojian.zhuang@gmail.com, wangzhou1@hisilicon.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
+ caizhiyong@huawei.com, yubingxu@hisilicon.com,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +33,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 2014年12月17日 14:23, Brian Norris wrote:
+> On Thu, Dec 11, 2014 at 08:02:27PM +0800, Zhou Wang wrote:
+>> I have tested this NAND controller driver on the MTD test modules
+>> (drivers/mtd/tests/*). All tests passed except mtd_nandbiterrs.ko.
+>>
+>> Here is the test log for mtd_nandbiterrs:
+>> /home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
+>> [  100.484995]
+>> [  100.490082] ==================================================
+>> [  100.509657] mtd_nandbiterrs: MTD device: 2
+>> [  100.523413] mtd_nandbiterrs: MTD device size 8388608,
+>> eraseblock=131072, page=2048, oob=64
+>> [  100.551134] mtd_nandbiterrs: Device uses 2 subpages of 1024 bytes
+>> [  100.571585] mtd_nandbiterrs: Using page=1, offset=2048, eraseblock=0
+>> [  104.431136] mtd_nandbiterrs: incremental biterrors test
+>> [  104.448872] mtd_nandbiterrs: write_page
+>> [  104.463193] mtd_nandbiterrs: rewrite page
+>> [  104.477620] mtd_nandbiterrs: read_page
+>> [  104.490898] mtd_nandbiterrs: verify_page
+>> [  104.504338] mtd_nandbiterrs: Successfully corrected 0 bit errors
+>> per subpage
+>> [  104.527985] mtd_nandbiterrs: Inserted biterror @ 0/5
+>> [  104.544673] mtd_nandbiterrs: Inserted biterror @ 1024/2
+>> [  104.562197] mtd_nandbiterrs: rewrite page
+>> [  104.576766] mtd_nandbiterrs: read_page
+>> [  104.590052] mtd_nandbiterrs: verify_page
+>> [  104.603252] mtd_nandbiterrs: Error: page offset 0, expected 23, got 03
+>> [  104.625203] mtd_nandbiterrs: Error: page offset 1024, expected 06, got 02
+>> [  104.648056] mtd_nandbiterrs: ECC failure, read data is incorrect
+>> despite read success
+>> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+>>
+>> The reason for above failure is that:
+>> In ECC mode, when rewriting page data to NAND flash, the NAND
+>> controller will also produce ECC code and write them to NAND flash
+>> as well. So when we read data from NAND flash, there is no need to
+>> correct the error bit. We read what we write to the flash.
+>
+> BTW, your explanation doesn't seem quite right. The problem is that
+> even though mtd_read() didn't report errors, the data doesn't match
+> what's written. It's not that there was "no need to correct the error
+> bit".
 
-On Wed, 17 Dec 2014, Brian Norris wrote:
+Maybe I did not express clearly. In the nandbiterrs test, firstly
+write data to flash with ECC code in oob area, then change some bits
+and rewrite data to flash with old ECC code in oob area, at last read
+data out with ECC to test if the "error bits" can be corrected. My
+explanation is that in rewriting process NAND controller also produces
+new ECC code of the data and write both data and new ECC code to flash.
+So in next step we will get what was writen without "correction".
 
-> But then I'm curious: how do you get anything useful out of using UBI on
-> a read-only device? You don't need to (and can't) handle anything like
-> read disturb, and there's no write wear that needs to be leveled.
+>
+> I'd recommend digging a little more to figure out what's wrong here. You
+> might need to instrument the nandbiterrs test. This is possibly
 
-Don't know about this particular case, but in some cases it can be an 
-advantage to be able to use the same file system image in both a read-only 
-and a writable environment.
+Thanks, I will do it.
 
-Say you have some form of ROM device with no bit flips, but occasionally 
-(e.g. during development) you want to use the same file system image in a 
-flash. While the same thing can be accomplished by using seperate file 
-systems which share the same content, it can simplify the whole system if 
-only one file system image is needed which can reside in multiple types of 
-media.
+> highlighting a driver bug [1].
+>
+> Brian
+>
+> [1] Besised simply that you didn't implement write_page_raw(). The
+> default nand_write_page_raw() implementation looks just like your
+> non-raw version.
 
-/Ricard
--- 
-Ricard Wolf Wanderl�f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Yes. In ECC mode, as the NAND controller must write page as a whole
+with ECC code, the default nand_write_page_raw() looks just like
+non-raw version.
+
+Thanks a lot,
+Zhou
+
+>
