@@ -1,16 +1,24 @@
-Date: Wed, 17 Dec 2014 10:19:15 -0600 (CST)
-From: Aaron Sierra <asierra@xes-inc.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Message-ID: <491796879.22168.1418833155194.JavaMail.zimbra@xes-inc.com>
-In-Reply-To: <20141217023700.GT9759@ld-irv-0074>
-References: <103889901.65008.1411665422229.JavaMail.zimbra@xes-inc.com>
- <2002674283.65675.1411665608272.JavaMail.zimbra@xes-inc.com>
- <20141217023700.GT9759@ld-irv-0074>
-Subject: Re: [PATCH 1/2] mtd: physmap_of: Add read-only fallback
+Received: from mail-qc0-f176.google.com ([209.85.216.176])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y1IjY-0005EQ-UG
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 17:50:01 +0000
+Received: by mail-qc0-f176.google.com with SMTP id i17so12423330qcy.21
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2014 09:49:39 -0800 (PST)
+Date: Wed, 17 Dec 2014 14:49:30 -0300
+From: Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 2/2] UBI: rename_volumes: Use UBI_METAONLY
+Message-ID: <20141217174930.GA3400@fox>
+References: <1416864610-5751-1-git-send-email-richard@nod.at>
+ <1416864610-5751-2-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1416864610-5751-2-git-send-email-richard@nod.at>
+Cc: Andrew Murray <amurray@embedded-bits.co.uk>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------ Original Message -----
-> From: "Brian Norris" <computersforpeace@gmail.com>
-> Sent: Tuesday, December 16, 2014 8:37:00 PM
-> 
-> An old one, but I'm curious...
-> 
-> On Thu, Sep 25, 2014 at 12:20:08PM -0500, Aaron Sierra wrote:
-> > From: Joe Schultz <jschultz@xes-inc.com>
-> > 
-> > Previously, when probing a CFI chip which was write-protected at the
-> > hardware level, the probe would fail due to the fact it could not put
-> > the chip into QUERY mode. This would result in no MTD devices being
-> > created.
-> > 
-> > Add a fallback to probe using the map_rom driver if the user-selected
-> > probe fails.
-> 
-> Why can't the user just select map_rom instead?
+On Mon, Nov 24, 2014 at 10:30:10PM +0100, Richard Weinberger wrote:
+> By using UBI_METAONLY in rename_volumes() it is now possible to rename
+> an UBI volume atomically while it is mounted.
+> This is useful for firmware upgrades.
+Minor nitpick: should this say 'while it is open for writing' or 'an
+UBIFS volume'? Renaming volumes opened for read-only (with ubiblock on
+top for example) was already supported.
 
-Brian, that isn't an ideal requirement in our situation. Our single-board
-computers can become read-only for all onboard non-volatile storage based
-on a signal from the outside world (a backplane most often). We find it
-helpful to be able to use a single device tree that works in read-write
-and read-only environments.
+Regardless:
 
--Aaron
+Tested name swapping mounted UBIFS volumes and read-only ubiblocks, as
+well as UBI volumes opened for writing (not updating).
 
-> > Signed-off-by: Joe Schultz <jschultz@xes-inc.com>
-> > Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
-> > ---
-> >  drivers/mtd/maps/physmap_of.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-> > index c62e1c3..efbf416 100644
-> > --- a/drivers/mtd/maps/physmap_of.c
-> > +++ b/drivers/mtd/maps/physmap_of.c
-> > @@ -272,6 +272,16 @@ static int of_flash_probe(struct platform_device *dev)
-> >  			info->list[i].mtd = obsolete_probe(dev,
-> >  							   &info->list[i].map);
-> >  		}
-> > +
-> > +		/* Fall back to mapping region as ROM */
-> > +		if (!info->list[i].mtd) {
-> > +			dev_warn(&dev->dev,
-> > +				"do_map_probe() failed for type %s\n",
-> > +				 probe_type);
-> > +
-> > +			info->list[i].mtd = do_map_probe("map_rom",
-> > +							 &info->list[i].map);
-> > +		}
-> >  		mtd_list[i] = info->list[i].mtd;
-> >  
-> >  		err = -ENXIO;
-> > --
-> > 1.9.1
-> > 
+(for both patches)
+Tested-by: Guido Martínez <guido@vanguardiasur.com.ar>
+Reviewed-by: Guido Martínez <guido@vanguardiasur.com.ar>
+
+I'm not sure if we could now make the handler for UBI_IOCVOLUP take
+read-write access instead of exclusive, but that's material for another
+patch. Also I can't really think of a use case for that...
+
+
+> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Cc: Andrew Murray <amurray@embedded-bits.co.uk>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/ubi/cdev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+> index f5c715c..286383c 100644
+> --- a/drivers/mtd/ubi/cdev.c
+> +++ b/drivers/mtd/ubi/cdev.c
+> @@ -736,7 +736,7 @@ static int rename_volumes(struct ubi_device *ubi,
+>  			goto out_free;
+>  		}
+>  
+> -		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_READWRITE);
+> +		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_METAONLY);
+>  		if (IS_ERR(re->desc)) {
+>  			err = PTR_ERR(re->desc);
+>  			ubi_err(ubi, "cannot open volume %d, error %d",
+> -- 
+> 1.8.4.5
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+
+-- 
+Guido Martínez, VanguardiaSur
+www.vanguardiasur.com.ar
