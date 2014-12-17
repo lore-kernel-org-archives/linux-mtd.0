@@ -1,29 +1,29 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y181f-0000s4-6o
- for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 06:24:00 +0000
-Received: by mail-pd0-f174.google.com with SMTP id fp1so15434318pdb.19
- for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 22:23:37 -0800 (PST)
-Date: Tue, 16 Dec 2014 22:23:33 -0800
+ id 1Y18RI-000461-Lf
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 06:50:29 +0000
+Received: by mail-pa0-f47.google.com with SMTP id kq14so15671507pab.6
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 22:50:07 -0800 (PST)
+Date: Tue, 16 Dec 2014 22:50:01 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Zhou Wang <wangzhou.bry@gmail.com>
-Subject: Re: [PATCH v4 0/2] mtd: hisilicon: add a new driver for NAND
- controller of hisilicon hip04 Soc
-Message-ID: <20141217062333.GD7112@brian-ubuntu>
-References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
- <20141130090853.GG3608@norris-Latitude-E6410>
- <548987D3.3060407@gmail.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: allow NULL as chip name and try to auto
+ detect it
+Message-ID: <20141217065001.GE7112@brian-ubuntu>
+References: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
+ <20141201084023.GH29070@brian-ubuntu>
+ <CACna6rwBOux=V-12eTTYBSEzgfQ4v=4HJx8iQGz2OkzzA+LnLA@mail.gmail.com>
+ <20141217011511.GN9759@ld-irv-0074>
+ <CACna6rxmagC5wyGR=pL9=G3Yrihk7tvOkBXcR2wXCSuhEeOA5Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <548987D3.3060407@gmail.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- Iwo Mergler <Iwo.Mergler@netcommwireless.com>, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, liguozhu@hisilicon.com,
- haojian.zhuang@gmail.com, wangzhou1@hisilicon.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
- caizhiyong@huawei.com, yubingxu@hisilicon.com,
- David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACna6rxmagC5wyGR=pL9=G3Yrihk7tvOkBXcR2wXCSuhEeOA5Q@mail.gmail.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,54 +33,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 11, 2014 at 08:02:27PM +0800, Zhou Wang wrote:
-> I have tested this NAND controller driver on the MTD test modules
-> (drivers/mtd/tests/*). All tests passed except mtd_nandbiterrs.ko.
+On Wed, Dec 17, 2014 at 07:19:58AM +0100, Rafał Miłecki wrote:
+> On 17 December 2014 at 02:15, Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Mon, Dec 01, 2014 at 10:49:28AM +0100, Rafał Miłecki wrote:
+> >> The case with non-DT platforms is simple. There is
+> >> struct flash_platform_data
+> >> which contains "type". I was thinking about Introducing new type like
+> >> "m25p80-rdid". What do you think about this?
+> >
+> > It should reflect "JEDEC RDID" in the name; it means the flash supports
+> > the JEDEC opcode (0x9F), unlike some of the SST flash you've looked at.
+> > I'm also not sure why it should still be tied to the m25p80 name. How
+> > about "spi-nor,jedec-id" or "spi-flash,jedec-id"?
 > 
-> Here is the test log for mtd_nandbiterrs:
-> /home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
-> [  100.484995]
-> [  100.490082] ==================================================
-> [  100.509657] mtd_nandbiterrs: MTD device: 2
-> [  100.523413] mtd_nandbiterrs: MTD device size 8388608,
-> eraseblock=131072, page=2048, oob=64
-> [  100.551134] mtd_nandbiterrs: Device uses 2 subpages of 1024 bytes
-> [  100.571585] mtd_nandbiterrs: Using page=1, offset=2048, eraseblock=0
-> [  104.431136] mtd_nandbiterrs: incremental biterrors test
-> [  104.448872] mtd_nandbiterrs: write_page
-> [  104.463193] mtd_nandbiterrs: rewrite page
-> [  104.477620] mtd_nandbiterrs: read_page
-> [  104.490898] mtd_nandbiterrs: verify_page
-> [  104.504338] mtd_nandbiterrs: Successfully corrected 0 bit errors
-> per subpage
-> [  104.527985] mtd_nandbiterrs: Inserted biterror @ 0/5
-> [  104.544673] mtd_nandbiterrs: Inserted biterror @ 1024/2
-> [  104.562197] mtd_nandbiterrs: rewrite page
-> [  104.576766] mtd_nandbiterrs: read_page
-> [  104.590052] mtd_nandbiterrs: verify_page
-> [  104.603252] mtd_nandbiterrs: Error: page offset 0, expected 23, got 03
-> [  104.625203] mtd_nandbiterrs: Error: page offset 1024, expected 06, got 02
-> [  104.648056] mtd_nandbiterrs: ECC failure, read data is incorrect
-> despite read success
-> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+> OK on "jedec-id".
 > 
-> The reason for above failure is that:
-> In ECC mode, when rewriting page data to NAND flash, the NAND
-> controller will also produce ECC code and write them to NAND flash
-> as well. So when we read data from NAND flash, there is no need to
-> correct the error bit. We read what we write to the flash.
+> However I'm not sure about this "spi-nor," because spi-not is a
+> framework and it doesn't support all needed ops by itself.
 
-BTW, your explanation doesn't seem quite right. The problem is that
-even though mtd_read() didn't report errors, the data doesn't match
-what's written. It's not that there was "no need to correct the error
-bit".
+No, SPI NOR is a (moderately) specific type of SPI device. It also
+happens to be the name of the framework / library in
+drivers/mtd/spi-nor/spi-nor.c and include/linux/mtd/spi-nor.h.
 
-I'd recommend digging a little more to figure out what's wrong here. You
-might need to instrument the nandbiterrs test. This is possibly
-highlighting a driver bug [1].
+The point is that the name is descriptive of exactly what we expect of
+it; it operates on the SPI bus, it's a NOR flash, and it supports the
+JEDEC read ID command.
+
+> And it
+> wouldn't be clear if "spi-nor,jedec-id" should be handled by m25p80,
+> fsl-quadspi, or even some different spi-nor driver.
+
+fsl-quadspi (and other non-SPI flash drivers that may plug into
+spi-nor.c) is not probed on a per flash device basis; it's probed based
+on the controller compatibility (i.e., the "fsl,vf610-qspi" DT binding).
+The driver then happens to use flash names when it calls into the SPI
+NOR library.
+
+As I see it, we only need to worry about true SPI devices when
+considering this name. We'd need to be able to differentiate the kinds
+of SPI devices which cannot be handled by m25p80.c + spi-nor.c. And as
+far as I can see, that will only happen for devices which don't support
+the JEDEC RDID opcode.
 
 Brian
-
-[1] Besised simply that you didn't implement write_page_raw(). The
-default nand_write_page_raw() implementation looks just like your
-non-raw version.
