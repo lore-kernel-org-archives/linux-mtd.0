@@ -1,27 +1,31 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y13DE-00083k-5A
- for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 01:15:36 +0000
-Received: by mail-pd0-f181.google.com with SMTP id v10so15062691pde.40
- for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 17:15:14 -0800 (PST)
-Date: Tue, 16 Dec 2014 17:15:11 -0800
+ id 1Y13Ft-0008Ok-Qr
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 01:18:22 +0000
+Received: by mail-pa0-f41.google.com with SMTP id rd3so15267123pab.28
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 17:18:01 -0800 (PST)
+Date: Tue, 16 Dec 2014 17:17:57 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: allow NULL as chip name and try to auto
- detect it
-Message-ID: <20141217011511.GN9759@ld-irv-0074>
-References: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
- <20141201084023.GH29070@brian-ubuntu>
- <CACna6rwBOux=V-12eTTYBSEzgfQ4v=4HJx8iQGz2OkzzA+LnLA@mail.gmail.com>
+To: Huang Shijie <shijie.huang@intel.com>
+Subject: Re: [PATCH] mtd: gpmi: Remove "We support only one NAND chip" from
+ bindings doc
+Message-ID: <20141217011757.GO9759@ld-irv-0074>
+References: <1417097929-17832-1-git-send-email-sr@denx.de>
+ <20141128014832.GA3113@localhost.localdomain>
+ <54781DD5.5030801@denx.de>
+ <20141129024047.GA5056@localhost.localdomain>
+ <20141130065326.GB3608@norris-Latitude-E6410>
+ <20141130154255.GB14834@localhost.localdomain>
+ <547C3BB9.1010706@denx.de>
+ <20141202003840.GA11370@shldeISGChi005.sh.intel.com>
+ <547D6A0A.70409@denx.de>
+ <20141203003542.GA7895@shldeISGChi005.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rwBOux=V-12eTTYBSEzgfQ4v=4HJx8iQGz2OkzzA+LnLA@mail.gmail.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20141203003542.GA7895@shldeISGChi005.sh.intel.com>
+Cc: devicetree@vger.kernel.org, Stefan Roese <sr@denx.de>,
+ Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +35,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 01, 2014 at 10:49:28AM +0100, Rafał Miłecki wrote:
-> On 1 December 2014 at 09:40, Brian Norris <computersforpeace@gmail.com> wrote:
-> > I think this is a good time to consider this question: how do we
-> > *really* want a SPI NOR driver to interact with spi-nor.c, regarding
-> > device detection? I like how this patch removes the string-matching
-> > requirement, so we can just auto-detect by JEDEC RDID alone. But I don't
-> > like how it leaves around the function parameter 'name', which really
-> > we should really be moving to deprecate if possible.
-> >
-> > Anyway, I can take a rebased version of this patch. But I'd like to
-> > encourage more thought here for the future. I don't yet have a specific
-> > proposal, so any thoughts are welcome.
+On Wed, Dec 03, 2014 at 08:35:42AM +0800, Huang Shijie wrote:
+> On Tue, Dec 02, 2014 at 08:28:10AM +0100, Stefan Roese wrote:
+> > On 02.12.2014 01:38, Huang Shijie wrote:
+> > > On Mon, Dec 01, 2014 at 10:58:17AM +0100, Stefan Roese wrote:
+> > >> On 30.11.2014 16:42, Huang Shijie wrote:
+> > >>> On Sat, Nov 29, 2014 at 10:53:26PM -0800, Brian Norris wrote:
+> > >>>> On Sat, Nov 29, 2014 at 10:40:50AM +0800, Huang Shijie wrote:
+> > >>>>> On Fri, Nov 28, 2014 at 08:01:41AM +0100, Stefan Roese wrote:
+> > >>>>>> On 28.11.2014 02:48, Huang Shijie wrote:
+> > >>>>>>> On Thu, Nov 27, 2014 at 03:18:49PM +0100, Stefan Roese wrote:
+> > >>>>>>>> This sentence "We support only one NAND chip now" is not true any more.
+> > >>>>>>>> Multiple chips are supported. So lets remove this sentence to not
+> > >>>>>>>
+> > >>>>>>> The gpmi can only supports one chip. Of course, there are maybe two dies
+> > >>>>>>> in this single chip.
+[...]
+> If your test result can prove that the gpmi can support two chips.
 > 
-> My purpose is to make use of auto-detect by RDID wherever possible. As
-> you noticed, it's the first step. Now we should modify m25p80 to use
-> it when possible.
+> I can ack this patch. (I ever thought the gpmi needs an extra patch to
+> support the multiple chips)
 > 
-> The case with non-DT platforms is simple. There is
-> struct flash_platform_data
-> which contains "type". I was thinking about Introducing new type like
-> "m25p80-rdid". What do you think about this?
+> > 
+> > > I even did not have enough time to test the "two chips on a die" case very carefully before
+> > > I left freescale.
+> > 
+> > I see. Thanks for the hint. But this "two chips on a die" scenario did
+> > pass some basic tests, no?
+> yes. It passed the bonnie++ test.
 
-It should reflect "JEDEC RDID" in the name; it means the flash supports
-the JEDEC opcode (0x9F), unlike some of the SST flash you've looked at.
-I'm also not sure why it should still be tied to the m25p80 name. How
-about "spi-nor,jedec-id" or "spi-flash,jedec-id"?
-
-> I'm not exactly sure how m25p80 is handled when used in DT. Does
-> anyone know that? m25p80 itself doesn't register as DT driver. So I
-> guess there is some code translating DT m25p80 entries into platform
-> data. Is that right? Where is this code located?
-
-m25p80.c is a SPI device driver, and it gets probed via the kernel bus
-infrastructure. See spi_match_device().
+If there are no more concrete objections, I'll apply this patch.
 
 Brian
