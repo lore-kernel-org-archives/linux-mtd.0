@@ -1,24 +1,16 @@
-Received: from mail-qg0-f43.google.com ([209.85.192.43])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1Knb-0004P5-8H
- for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 20:02:21 +0000
-Received: by mail-qg0-f43.google.com with SMTP id z107so1408649qgd.30
- for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2014 12:01:57 -0800 (PST)
-Date: Wed, 17 Dec 2014 17:01:47 -0300
-From: Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 1/6] UBI: Fastmap: Fix memory leaks while closing the WL
- sub-system
-Message-ID: <20141217200147.GA11301@fox>
-References: <1417347340-6872-1-git-send-email-richard@nod.at>
- <1417347340-6872-2-git-send-email-richard@nod.at>
+Date: Wed, 17 Dec 2014 14:13:55 -0600 (CST)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Message-ID: <173348604.130724.1418847235940.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <20141217023344.GS9759@ld-irv-0074>
+References: <1683475520.65208.1411665491176.JavaMail.zimbra@xes-inc.com>
+ <673100209.65720.1411665624206.JavaMail.zimbra@xes-inc.com>
+ <20141217023344.GS9759@ld-irv-0074>
+Subject: Re: [PATCH 2/2] mtd: map_rom: Support UBI on ROM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1417347340-6872-2-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,62 +20,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 30, 2014 at 12:35:35PM +0100, Richard Weinberger wrote:
-> Add a ubi_fastmap_close() to free all resources used by fastmap
-> at WL shutdown.
+Brian, I have responses to your questions inline below.
+
+----- Original Message -----
+> From: "Brian Norris" <computersforpeace@gmail.com>
+> Sent: Tuesday, December 16, 2014 8:33:44 PM
 > 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-
-Either for this patch, or for a v3 if you move the
--flush_work/+ubi_fastmap_close to shutdown_work:
-
-Tested-by: Guido Martínez <guido@vanguardiasur.com.ar>
-Reviewed-by: Guido Martínez <guido@vanguardiasur.com.ar>
-
-> ---
->  drivers/mtd/ubi/wl.c | 21 ++++++++++++++++++---
->  1 file changed, 18 insertions(+), 3 deletions(-)
+> Hi Aaron,
 > 
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index c2822f7..47b215f 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -2064,6 +2064,23 @@ static void protection_queue_destroy(struct ubi_device *ubi)
->  	}
->  }
->  
-> +static void ubi_fastmap_close(struct ubi_device *ubi)
-> +{
-> +#ifdef CONFIG_MTD_UBI_FASTMAP
-> +	int i;
-> +
-> +	flush_work(&ubi->fm_work);
-> +	return_unused_pool_pebs(ubi, &ubi->fm_pool);
-> +	return_unused_pool_pebs(ubi, &ubi->fm_wl_pool);
-> +
-> +	if (ubi->fm) {
-> +		for (i = 0; i < ubi->fm->used_blocks; i++)
-> +			kfree(ubi->fm->e[i]);
-> +	}
-> +	kfree(ubi->fm);
-> +#endif
-> +}
-> +
->  /**
->   * ubi_wl_close - close the wear-leveling sub-system.
->   * @ubi: UBI device description object
-> @@ -2071,9 +2088,7 @@ static void protection_queue_destroy(struct ubi_device *ubi)
->  void ubi_wl_close(struct ubi_device *ubi)
->  {
->  	dbg_wl("close the WL sub-system");
-> -#ifdef CONFIG_MTD_UBI_FASTMAP
-> -	flush_work(&ubi->fm_work);
-> -#endif
-> +	ubi_fastmap_close(ubi);
->  	shutdown_work(ubi);
->  	protection_queue_destroy(ubi);
->  	tree_destroy(&ubi->used);
+> I see this has been sitting around way too long...
+> 
+> On Thu, Sep 25, 2014 at 12:20:24PM -0500, Aaron Sierra wrote:
+> > UBI needs to know the physical erase block size, even on read-only
+> > devices, since it defines the on-device layout. Use a device-tree
+> > provided value to support previously written UBI on read-only NOR.
+> > 
+> > UBI also needs a non-zero writebufsize, so we set it to one.
+> 
+> Hmm, this one is a pretty big bug IIRC (don't you get an OOPS or
+> BUG()?). Do you think it might be worth splitting into a separate patch
+> and sending to stable?
 
--- 
-Guido Martínez, VanguardiaSur
-www.vanguardiasur.com.ar
+The following assumes an initially unpatched map_rom.c.
+
+Attempting to ubiattach a ROM partition (/dev/mtd5) with the default
+map_rom writebufsize set to zero, I get the following error in the kernel
+log:
+
+UBI: attaching mtd5 to ubi0
+UBI error: io_init: bad write buffer size 0 for 1 min. I/O unit
+ubiattach: error!: cannot attach "/dev/mtd5"
+           error 22 (Invalid argument)
+
+After assigning writebufsize to one and recompiling, attempting to
+ubiattach without specifying an erase-size in the device-tree results
+in the following error in the kernel log:
+
+UBI: attaching mtd5 to ubi0
+UBI: MTD device 5 is write-protected, attach in read-only mode
+UBI: scanning is finished
+UBI: empty MTD device detected
+UBI error: ubi_early_get_peb: no free eraseblocks
+UBI error: ubi_attach_mtd_dev: failed to attach mtd5, error -28
+ubiattach: error!: cannot attach "/dev/mtd5"
+           error 28 (No space left on device)
+
+Neither of those errors are horrible, but both result in an inaccessible
+read-only UBIFS.
+
+> > 
+> > Note: This was implemented because hardware write-protected CFI
+> >       NOR cannot be probed for the physical erase block size.
+> > 
+> > Signed-off-by: Joe Schultz <jschultz@xes-inc.ccom>
+> > Signed-off-by: Aaron Sierra <asierra@xes-inc.ccom>
+> > ---
+> >  Documentation/devicetree/bindings/mtd/mtd-physmap.txt |  5 +++++
+> >  drivers/mtd/chips/map_rom.c                           | 13 ++++++++++++-
+> >  2 files changed, 17 insertions(+), 1 deletion(-)
+> > 
+
+[ snip ]
+
+> > +static unsigned int default_erasesize(struct map_info *map)
+> > +{
+> > +	const __be32 *erase_size = NULL;
+> > +#ifdef CONFIG_OF
+> > +	erase_size = of_get_property(map->device_node, "erase-size", NULL);
+> > +#endif
+> 
+> I think you can just drop the #ifdef and have the same effect, no?
+
+Yes, you are correct. I was being too cautious.
+
+-Aaron
