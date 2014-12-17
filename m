@@ -1,29 +1,20 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y18RI-000461-Lf
- for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 06:50:29 +0000
-Received: by mail-pa0-f47.google.com with SMTP id kq14so15671507pab.6
- for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 22:50:07 -0800 (PST)
-Date: Tue, 16 Dec 2014 22:50:01 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: allow NULL as chip name and try to auto
- detect it
-Message-ID: <20141217065001.GE7112@brian-ubuntu>
-References: <1413993900-23155-1-git-send-email-zajec5@gmail.com>
- <20141201084023.GH29070@brian-ubuntu>
- <CACna6rwBOux=V-12eTTYBSEzgfQ4v=4HJx8iQGz2OkzzA+LnLA@mail.gmail.com>
- <20141217011511.GN9759@ld-irv-0074>
- <CACna6rxmagC5wyGR=pL9=G3Yrihk7tvOkBXcR2wXCSuhEeOA5Q@mail.gmail.com>
+From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
+To: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: [V7 PATCH 1/1] driver:mtd:spi-nor: Add quad I/O support for Micron
+ spi nor
+Date: Wed, 17 Dec 2014 07:35:45 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315F19EB@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rxmagC5wyGR=pL9=G3Yrihk7tvOkBXcR2wXCSuhEeOA5Q@mail.gmail.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+Cc: "grmoore@altera.com" <grmoore@altera.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,46 +24,170 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 17, 2014 at 07:19:58AM +0100, Rafał Miłecki wrote:
-> On 17 December 2014 at 02:15, Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Mon, Dec 01, 2014 at 10:49:28AM +0100, Rafał Miłecki wrote:
-> >> The case with non-DT platforms is simple. There is
-> >> struct flash_platform_data
-> >> which contains "type". I was thinking about Introducing new type like
-> >> "m25p80-rdid". What do you think about this?
-> >
-> > It should reflect "JEDEC RDID" in the name; it means the flash supports
-> > the JEDEC opcode (0x9F), unlike some of the SST flash you've looked at.
-> > I'm also not sure why it should still be tied to the m25p80 name. How
-> > about "spi-nor,jedec-id" or "spi-flash,jedec-id"?
-> 
-> OK on "jedec-id".
-> 
-> However I'm not sure about this "spi-nor," because spi-not is a
-> framework and it doesn't support all needed ops by itself.
+This patch adds code which enables Quad I/O mode on Micron SPI NOR flashes.
 
-No, SPI NOR is a (moderately) specific type of SPI device. It also
-happens to be the name of the framework / library in
-drivers/mtd/spi-nor/spi-nor.c and include/linux/mtd/spi-nor.h.
+For Micron SPI NOR flash, enabling or disabling quad I/O protocol can be do=
+ne
+By two methods, which are to use EVCR(Enhanced Volatile Configuration Regis=
+ter)
+and the ENTER QUAD I/O MODE command. There is no difference between these t=
+wo
+methods. Unfortunately, for some Micron spi nor flashes, there no ENTER Qua=
+d I/O
+command(35h),such as n25q064.But for all current Micron spi nor, if it supp=
+ort
+quad I/O mode, using EVCR definitely be supported. It is a recommended meth=
+od to
+enable Quad I/O mode by EVCR, Quad I/O protocol bit 7.When EVCR bit 7 is re=
+set
+to 0,the SPI NOR flash will operate in quad I/O mode.
 
-The point is that the name is descriptive of exactly what we expect of
-it; it operates on the SPI bus, it's a NOR flash, and it supports the
-JEDEC read ID command.
+This patch has been tested on N25Q512A and MT25TL256BAA1ESF.Micron spi nor =
+of
+spi_nor_ids[] table all support this method.
 
-> And it
-> wouldn't be clear if "spi-nor,jedec-id" should be handled by m25p80,
-> fsl-quadspi, or even some different spi-nor driver.
+Signed-off-by: bean huo <beanhuo@micron.com>
+Acked-by: Marek Vasut <marex@denx.de>
+---
+v1-v2:
+	Modified to that capture wait_till_ready()
+	return value,if error,directly return its
+	the value.
+ v2-v3:
+	Directly use the reurning error value of
+	read_reg and write_reg,instead of -EINVAL.
+ v3-v4:
+	Modify commit logs that wraped into 80 columns.
+ v4-v5:
+	Rebuild new patch based on latest linux-mtd.
+ v5-v6:
+	Rebuild patch based on latest l2-mtd.
+	add some comments.
+	Add SPI_NOR_QUAD_READ flag in the spi_nor_ids[] for Micron spi nor.
+ V6-v7:
+	Fixed up val with u8 in micron_quad_enable().
+=09
+drivers/mtd/spi-nor/spi-nor.c |   62 +++++++++++++++++++++++++++++++++++---=
+---
+ include/linux/mtd/spi-nor.h   |    7 +++++
+ 2 files changed, 61 insertions(+), 8 deletions(-)
 
-fsl-quadspi (and other non-SPI flash drivers that may plug into
-spi-nor.c) is not probed on a per flash device basis; it's probed based
-on the controller compatibility (i.e., the "fsl,vf610-qspi" DT binding).
-The driver then happens to use flash names when it calls into the SPI
-NOR library.
-
-As I see it, we only need to worry about true SPI devices when
-considering this name. We'd need to be able to differentiate the kinds
-of SPI devices which cannot be handled by m25p80.c + spi-nor.c. And as
-far as I can see, that will only happen for devices which don't support
-the JEDEC RDID opcode.
-
-Brian
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 0f8ec3c..ea196c1 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -560,14 +560,14 @@ static const struct spi_device_id spi_nor_ids[] =3D {
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+=20
+ 	/* Micron */
+-	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, 0) },
+-	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0) },
+-	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
+-	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
+-	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
+-	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
+-	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
+-	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR) },
++	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
++	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SPI_NOR_QUAD_READ) },
++	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
++	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
++	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUA=
+D_READ) },
++	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | S=
+PI_NOR_QUAD_READ) },
++	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | S=
+PI_NOR_QUAD_READ) },
++	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | S=
+PI_NOR_QUAD_READ) },
+=20
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+@@ -891,6 +891,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 	return 0;
+ }
+=20
++static int micron_quad_enable(struct spi_nor *nor)
++{
++	int ret;
++	u8 val;
++
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return ret;
++	}
++
++	write_enable(nor);
++
++	/* set EVCR, enable quad I/O */
++	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
++	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
++	if (ret < 0) {
++		dev_err(nor->dev, "error while writing EVCR register\n");
++		return ret;
++	}
++
++	ret =3D spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++
++	/* read EVCR and check it */
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return ret;
++	}
++	if (val & EVCR_QUAD_EN_MICRON) {
++		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int set_quad_mode(struct spi_nor *nor, struct flash_info *info)
+ {
+ 	int status;
+@@ -903,6 +942,13 @@ static int set_quad_mode(struct spi_nor *nor, struct f=
+lash_info *info)
+ 			return -EINVAL;
+ 		}
+ 		return status;
++	case CFI_MFR_ST:
++		status =3D micron_quad_enable(nor);
++		if (status) {
++			dev_err(nor->dev, "Micron quad-read not enabled\n");
++			return -EINVAL;
++		}
++		return status;
+ 	default:
+ 		status =3D spansion_quad_enable(nor);
+ 		if (status) {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 63aeccf..4720b86 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -56,6 +56,10 @@
+ /* Used for Spansion flashes only. */
+ #define SPINOR_OP_BRWR		0x17	/* Bank register write */
+=20
++/* Used for Micron flashes only. */
++#define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
++#define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
++
+ /* Status Register bits. */
+ #define SR_WIP			1	/* Write in progress */
+ #define SR_WEL			2	/* Write enable latch */
+@@ -67,6 +71,9 @@
+=20
+ #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
+=20
++/* Enhanced Volatile Configuration Register bits */
++#define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
++
+ /* Flag Status Register bits */
+ #define FSR_READY		0x80
+=20
+--=20
+1.7.9.5
