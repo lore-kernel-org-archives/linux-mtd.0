@@ -1,23 +1,18 @@
-Received: from mail-qc0-f180.google.com ([209.85.216.180])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1Gqb-0004UK-PX
- for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 15:49:10 +0000
-Received: by mail-qc0-f180.google.com with SMTP id i8so12381271qcq.11
- for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2014 07:48:47 -0800 (PST)
-Date: Wed, 17 Dec 2014 12:48:37 -0300
-From: Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 6/6] UBI: Fastmap: Make ubi_refill_pools() fair
-Message-ID: <20141217154837.GA2049@fox>
-References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <1416835236-25185-7-git-send-email-richard@nod.at>
+Date: Wed, 17 Dec 2014 10:04:24 -0600 (CST)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>
+Message-ID: <488523809.20376.1418832264672.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <alpine.DEB.2.02.1412171034350.8366@lnxricardw1.se.axis.com>
+References: <1683475520.65208.1411665491176.JavaMail.zimbra@xes-inc.com>
+ <673100209.65720.1411665624206.JavaMail.zimbra@xes-inc.com>
+ <20141217023344.GS9759@ld-irv-0074>
+ <alpine.DEB.2.02.1412171034350.8366@lnxricardw1.se.axis.com>
+Subject: Re: [PATCH 2/2] mtd: map_rom: Support UBI on ROM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1416835236-25185-7-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,136 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
-
-On Mon, Nov 24, 2014 at 02:20:36PM +0100, Richard Weinberger wrote:
-> Currently ubi_refill_pools() first fills the first and then
-> the second one.
-> If only very few free PEBs are available the second pool can get
-> zero PEBs.
-> Change ubi_refill_pools() to distribute free PEBs fair between
-> all pools.
+----- Original Message -----
+> From: "Ricard Wanderlof" <ricard.wanderlof@axis.com>
+> Sent: Wednesday, December 17, 2014 3:37:42 AM
 > 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-Reviewed-by: Guido Martínez <guido@vanguardiasur.com.ar>
-
-> ---
->  drivers/mtd/ubi/wl.c | 77 +++++++++++++++++++++++++++-------------------------
->  1 file changed, 40 insertions(+), 37 deletions(-)
+> On Wed, 17 Dec 2014, Brian Norris wrote:
 > 
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index f028b68..c2822f7 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -583,59 +583,62 @@ static void return_unused_pool_pebs(struct ubi_device *ubi,
->  }
->  
->  /**
-> - * refill_wl_pool - refills all the fastmap pool used by the
-> - * WL sub-system.
-> + * ubi_refill_pools - refills all fastmap PEB pools.
->   * @ubi: UBI device description object
->   */
-> -static void refill_wl_pool(struct ubi_device *ubi)
-> +void ubi_refill_pools(struct ubi_device *ubi)
->  {
-> +	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
-> +	struct ubi_fm_pool *pool = &ubi->fm_pool;
->  	struct ubi_wl_entry *e;
-> -	struct ubi_fm_pool *pool = &ubi->fm_wl_pool;
-> +	int enough;
->  
-> +	spin_lock(&ubi->wl_lock);
-> +
-> +	return_unused_pool_pebs(ubi, wl_pool);
->  	return_unused_pool_pebs(ubi, pool);
->  
-> -	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
-> -		if (!ubi->free.rb_node ||
-> -		   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
-> -			break;
-> +	wl_pool->size = 0;
-> +	pool->size = 0;
->  
-> -		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-> -		self_check_in_wl_tree(ubi, e, &ubi->free);
-> -		rb_erase(&e->u.rb, &ubi->free);
-> -		ubi->free_count--;
-> +	for (;;) {
-> +		enough = 0;
-> +		if (pool->size < pool->max_size) {
-> +			if (!ubi->free.rb_node ||
-> +			   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
-> +				break;
->  
-> -		pool->pebs[pool->size] = e->pnum;
-> -	}
-> -	pool->used = 0;
-> -}
-> +			e = wl_get_wle(ubi);
-> +			if (!e)
-> +				break;
->  
-> -/**
-> - * refill_wl_user_pool - refills all the fastmap pool used by ubi_wl_get_peb.
-> - * @ubi: UBI device description object
-> - */
-> -static void refill_wl_user_pool(struct ubi_device *ubi)
-> -{
-> -	struct ubi_fm_pool *pool = &ubi->fm_pool;
-> +			pool->pebs[pool->size] = e->pnum;
-> +			pool->size++;
-> +		} else
-> +			enough++;
->  
-> -	return_unused_pool_pebs(ubi, pool);
-> +		if (wl_pool->size < wl_pool->max_size) {
-> +			if (!ubi->free.rb_node ||
-> +			   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
-> +				break;
->  
-> -	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
-> -		pool->pebs[pool->size] = __wl_get_peb(ubi);
-> -		if (pool->pebs[pool->size] < 0)
-> +			e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-> +			self_check_in_wl_tree(ubi, e, &ubi->free);
-> +			rb_erase(&e->u.rb, &ubi->free);
-> +			ubi->free_count--;
-> +
-> +			wl_pool->pebs[wl_pool->size] = e->pnum;
-> +			wl_pool->size++;
-> +		} else
-> +			enough++;
-> +
-> +		if (enough == 2)
->  			break;
->  	}
-> +
-> +	wl_pool->used = 0;
->  	pool->used = 0;
-> -}
->  
-> -/**
-> - * ubi_refill_pools - refills all fastmap PEB pools.
-> - * @ubi: UBI device description object
-> - */
-> -void ubi_refill_pools(struct ubi_device *ubi)
-> -{
-> -	spin_lock(&ubi->wl_lock);
-> -	refill_wl_pool(ubi);
-> -	refill_wl_user_pool(ubi);
->  	spin_unlock(&ubi->wl_lock);
->  }
->  
-> -- 
-> 1.8.4.5
+> > But then I'm curious: how do you get anything useful out of using UBI on
+> > a read-only device? You don't need to (and can't) handle anything like
+> > read disturb, and there's no write wear that needs to be leveled.
 > 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+> Don't know about this particular case, but in some cases it can be an
+> advantage to be able to use the same file system image in both a read-only
+> and a writable environment.
+>
+> Say you have some form of ROM device with no bit flips, but occasionally
+> (e.g. during development) you want to use the same file system image in a
+> flash. While the same thing can be accomplished by using seperate file
+> systems which share the same content, it can simplify the whole system if
+> only one file system image is needed which can reside in multiple types of
+> media.
 
--- 
-Guido Martínez, VanguardiaSur
-www.vanguardiasur.com.ar
+Thanks Ricard, you have touched on the scenario that I am concerned
+about. The environment in our case is a single-board computer that can
+become read-only based on a hardware jumper or signal from a backplane.
+It would be tedious to _have_ to prepare a separate image in order to
+install the SBC into a backplane that forces the NOR into read-only
+operation. Instead, we find it advantageous to be able to simply freeze
+the state of the UBI filesytem until the SBC is moved back to a
+read-write environment for further development.
+
+-Aaron
