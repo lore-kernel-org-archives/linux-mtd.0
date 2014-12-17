@@ -1,18 +1,20 @@
-Date: Tue, 16 Dec 2014 14:49:42 -0800
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y12TG-0006yo-52
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 00:28:06 +0000
+Received: by mail-pa0-f54.google.com with SMTP id fb1so15111394pad.41
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Dec 2014 16:27:45 -0800 (PST)
+Date: Tue, 16 Dec 2014 16:27:42 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v4 11/11] mtd: nand: stm_nand_bch: provide ST's
- implementation of Bad Block Table
-Message-ID: <20141216224942.GH9759@ld-irv-0074>
-References: <1415206793-25670-1-git-send-email-lee.jones@linaro.org>
- <1415206793-25670-12-git-send-email-lee.jones@linaro.org>
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Subject: Re: [PATCH] mtd: gpmi: Remove noisy error message
+Message-ID: <20141217002742.GJ9759@ld-irv-0074>
+References: <1415721691-14073-1-git-send-email-fabio.estevam@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1415206793-25670-12-git-send-email-lee.jones@linaro.org>
-Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kernel@stlinux.com
+In-Reply-To: <1415721691-14073-1-git-send-email-fabio.estevam@freescale.com>
+Cc: linux-mtd@lists.infradead.org, shijie8@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 05, 2014 at 04:59:53PM +0000, Lee Jones wrote:
-> This is the BBT format ST use internally.  It has to be used on boards
-> which were flashed with or actively use ST's tooling and boards which
-> are booted using ST's bootloaders.
+On Tue, Nov 11, 2014 at 02:01:31PM -0200, Fabio Estevam wrote:
+> mx28evk board has a socket for NAND flash that comes with no NAND flash
+> populated, and then we get this message on every boot:
 > 
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mtd/nand/Kconfig        |   8 +
->  drivers/mtd/nand/Makefile       |   4 +-
->  drivers/mtd/nand/stm_nand_bbt.c | 619 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 630 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/nand/stm_nand_bbt.c
+> [    1.657603] gpmi-nand 8000c000.gpmi-nand: driver registration failed: -19
 > 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 2738eec..040374d 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -520,4 +520,12 @@ config MTD_NAND_STM_BCH
->  	help
->  	  Adds support for the STMicroelectronics NANDi BCH Controller.
->  
-> +config MTD_NAND_STM_BCH_BBT
-> +	bool "STMicroelectronics: NANDi BCH Controller Bad Block Table support"
-> +	default y if MTD_NAND_STM_BCH=y || MTD_NAND_STM_BCH=m
+> ,which is not very helpful, so get rid of this error message.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-This line could be simplified. But it's also weird now that you can
-select CONFIG_MTD_NAND_STM_BCH_BBT, but that won't build the BBT code if
-MTD_NAND_STM_BCH=n. So I'd suggest the following instead:
+Enough pointless discussion has been had. There's enough other context
+for most errors, I think.
 
-	depends on MTD_NAND_STM_BCH
-	default y
-
-Or maybe this could be more explicit about the default:
-
-	depends on MTD_NAND_STM_BCH
-	default MTD_NAND_STM_BCH
-
-> +	help
-> +	  Adds support for the STMicroelectronics Bad Block Table support.
-> +	  If you are using a device which has has already been initialised
-> +	  by ST or using their tooling/bootloaders, leave this enabled.
-> +
->  endif # MTD_NAND
-> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> index 6044e0a..e342c91 100644
-> --- a/drivers/mtd/nand/Makefile
-> +++ b/drivers/mtd/nand/Makefile
-> @@ -41,7 +41,9 @@ obj-$(CONFIG_MTD_NAND_MLC_LPC32XX)      += lpc32xx_mlc.o
->  obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
->  obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
->  obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
-> -obj-$(CONFIG_MTD_NAND_STM_BCH)		+= stm_nand_bch.o
-> +obj-$(CONFIG_MTD_NAND_STM_BCH)		+= stm-nand.o
-> +stm-nand-y				+= stm_nand_bch.o
-> +stm-nand-$(CONFIG_MTD_NAND_STM_BCH_BBT)	+= stm_nand_bbt.o
->  obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
->  obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
->  obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
-
-[...]
+Applied to l2-mtd.git/next.
 
 Brian
