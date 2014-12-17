@@ -1,24 +1,20 @@
-Received: from mail-qc0-f180.google.com ([209.85.216.180])
+Received: from mout.gmx.net ([212.227.15.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1FZL-00006k-8o
- for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 14:27:15 +0000
-Received: by mail-qc0-f180.google.com with SMTP id i8so12239502qcq.11
- for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2014 06:26:53 -0800 (PST)
-Date: Wed, 17 Dec 2014 11:26:44 -0300
-From: Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 3/6] UBI: Fastmap: Ensure that all fastmap work is done
- upon WL shutdown
-Message-ID: <20141217142644.GB19525@fox>
-References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <1416835236-25185-4-git-send-email-richard@nod.at>
+ id 1Y1Fj2-0005hf-8h
+ for linux-mtd@lists.infradead.org; Wed, 17 Dec 2014 14:37:17 +0000
+Message-ID: <54919501.3020100@rempel-privat.de>
+Date: Wed, 17 Dec 2014 15:36:49 +0100
+From: Oleksij Rempel <linux@rempel-privat.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1416835236-25185-4-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- dedekind1@gmail.com
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH RFC] Alphascale ASM9260 NAND controller driver
+References: <1418816718-29764-1-git-send-email-linux@rempel-privat.de>
+ <20141217142455.5970987e@bbrezillon>
+In-Reply-To: <20141217142455.5970987e@bbrezillon>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="t9d6S3m8ThTq0DglmNWNEKUQfg9al2l9X"
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +24,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 24, 2014 at 02:20:33PM +0100, Richard Weinberger wrote:
-> ...otherwise the deferred work might run after datastructures
-> got freed and corrupt memory.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--t9d6S3m8ThTq0DglmNWNEKUQfg9al2l9X
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-After moving it to shutdown_work():
+Am 17.12.2014 um 14:24 schrieb Boris Brezillon:
+> Hi Oleksij,
+>=20
+> On Wed, 17 Dec 2014 12:45:17 +0100
+> Oleksij Rempel <linux@rempel-privat.de> wrote:
+>=20
+>> I collected some questions with this driver. It will be great if you
+>> can help me:
+>> * Do HW_ECC driver should provideo option for SW_ECC?
+>=20
+> This is not mandatory. I did it in the sunxi driver for testing
+> purpose, but it should work fine without it.
+>=20
+>> * My HW do ECC correction for n-bits per 512B, it mean it will
+>> split block in 512B parts. If one of part has uncorrectable error, com=
+plete block will be
+>> reported as failed. Are there any way for partial recovery?
+>=20
+> I think what you're calling block here is actually a page.
+> Regarding your question, there is no way to recover part of a page, but=
 
-Reviewed-by: Guido Martínez <guido@vanguardiasur.com.ar>
+> each ECC block should be tested and max_bitflip should be returned
+> (even if some ECC blocks contains too many errors to be corrected).
+> Take a look at [1] for an example.
 
-> ---
->  drivers/mtd/ubi/wl.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 7f135df..cb2e571 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -2041,6 +2041,9 @@ static void protection_queue_destroy(struct ubi_device *ubi)
->  void ubi_wl_close(struct ubi_device *ubi)
->  {
->  	dbg_wl("close the WL sub-system");
-> +#ifdef CONFIG_MTD_UBI_FASTMAP
-> +	flush_work(&ubi->fm_work);
-> +#endif
->  	shutdown_work(ubi);
->  	protection_queue_destroy(ubi);
->  	tree_destroy(&ubi->used);
-> -- 
-> 1.8.4.5
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+=46rom Flash point of view block or part which i mean !=3D page. In my ca=
+se
+it is TOSHIBA TC58NVG0S3ETA00, organized as (2048 + 64) bytes =C3=97 64 p=
+ages
+=C3=97 1024blocks. The NFC will split each each 2048B page to 512B
+blocks/???/parts/sub_page/ecc_step/better_name.
 
--- 
-Guido Martínez, VanguardiaSur
-www.vanguardiasur.com.ar
+HW_ECC provide bit_flip counter for each sub_page. If all sub_pages are
+recovered, there is no problem. Beside the question, how many bit should
+be counted. Right now max_bitflips =3D sum(all_sub_pages).
+
+Second problem which i have is that, there is only one ecc_error flag
+for all sub_pages. If one sub_page filed, i don't know which one. Ecc
+erroc counter register can't help here. Only way is to reread complete
+page with SW_ECC.
+
+>> * This HW reports count of ECC bitflips for each part. Do i need to re=
+turn count of errors on
+>> all parts for one block?
+>=20
+> Again: block =3D=3D page, and no, you should only return the maximum
+> corrected bitflips (same example [1]).
+>=20
+>=20
+>> * If HW_ECC different stranges, how it should be configured? With DT o=
+r automatically
+>> calculated?
+>=20
+> I don't get that one...
+> Are you talking about ECC requirements (ECC strength and steps) ?
+
+Yes. Well, i can't choice ECC step(it is 512B on this HW), only strange.
+
+> Best Regards,
+>=20
+> Boris
+>=20
+> [1]http://lxr.free-electrons.com/source/drivers/mtd/nand/nand_base.c#L1=
+157
+>=20
+
+
+--=20
+Regards,
+Oleksij
+
+
+--t9d6S3m8ThTq0DglmNWNEKUQfg9al2l9X
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iF4EAREIAAYFAlSRlQEACgkQHwImuRkmbWlizwD+JQ7pXGVCSr/pT5iF1kgtp/l8
+YNC2aMyC0H4ZItxwmoYBAJqEX49P5W9ZABn/nUzRqhlbi7vy2YrqQyzhpI9J8IlR
+=hl8O
+-----END PGP SIGNATURE-----
+
+--t9d6S3m8ThTq0DglmNWNEKUQfg9al2l9X--
