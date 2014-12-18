@@ -1,23 +1,20 @@
-Received: from mail-pa0-f54.google.com ([209.85.220.54])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1Zm9-0006M3-R5
- for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 12:01:50 +0000
-Received: by mail-pa0-f54.google.com with SMTP id fb1so1291438pad.27
- for <linux-mtd@lists.infradead.org>; Thu, 18 Dec 2014 04:01:28 -0800 (PST)
-From: Chunyan Zhang <zhang.chunyan@linaro.org>
-To: m.chehab@samsung.com, david@hardeman.nu, uli-lirc@uli-eckhardt.de,
- hans.verkuil@cisco.com, julia.lawall@lip6.fr, himangi774@gmail.com,
- khoroshilov@ispras.ru, joe@perches.com, dborkman@redhat.com,
- john.stultz@linaro.org, tglx@linutronix.de, davem@davemloft.net,
- dwmw2@infradead.org, computersforpeace@gmail.com, arnd@linaro.org
-Subject: [PATCH 3/3] media: rc: Replace timeval with ktime_t in imon.c
-Date: Thu, 18 Dec 2014 19:52:02 +0800
-Message-Id: <1418903522-19137-4-git-send-email-zhang.chunyan@linaro.org>
-In-Reply-To: <1418903522-19137-1-git-send-email-zhang.chunyan@linaro.org>
-References: <ktime-mtd-rc-v1>
- <1418903522-19137-1-git-send-email-zhang.chunyan@linaro.org>
-Cc: zhang.lyra@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+ id 1Y1cSx-0003GU-Kf
+ for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 14:54:13 +0000
+Message-ID: <5492EA79.7070107@codeaurora.org>
+Date: Thu, 18 Dec 2014 16:53:45 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
+MIME-Version: 1.0
+To: Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Dolev Raviv <draviv@codeaurora.org>
+Subject: Re: Synchronization in UBIFS (zero length files)
+References: <5492918F.2060704@codeaurora.org> <5492B6B8.5010705@nod.at>
+In-Reply-To: <5492B6B8.5010705@nod.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,124 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch changes the 32-bit time type (timeval) to the 64-bit one
-(ktime_t), since 32-bit time types will break in the year 2038.
+Hi Richard,
 
-I use ktime_t instead of all uses of timeval in imon.c
+On 12/18/2014 1:12 PM, Richard Weinberger wrote:
+> Tanya,
+>
+> Am 18.12.2014 um 09:34 schrieb Tanya Brokhman:
+>> Hi Artem/Richard
+>>
+>> I've been looking into the "zero length files" issue in UBIFS and came across "Synchronization exceptions for buggy applications" @
+>> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_sync_semantics. This section concludes with:
+>>
+>> "We have plans to implement these features in UBIFS, but this has not been done yet. The problem is that UBI/MTD are fully synchronous and we cannot initiate asynchronous
+>> write-out, so we'd have to synchronously write files on close/rename, which is slow. So implementing these features would require implementing asynchronous I/O in UBI, which is a
+>> big job. But feel free to do this :-)."
+>>
+>> So two questions:
+>> 1. was anything done in ubifs to handle file truncation and rename similar to ext4? Didn't find anything but afraid I might be missing something
+>
+> I don't think so.
+>
+>> 2. Not sure I understand why "implementing these features would require implementing asynchronous I/O in UBI". Could you please elaborate on this?
+>
+> If we'd do it synchronous it would horrible slow down UBIFS. That's why ext4 is doing it async.
 
-This patch also changes do_gettimeofday() to ktime_get() accordingly,
-since ktime_get returns a ktime_t, but do_gettimeofday returns a
-struct timeval, and the other reason is that ktime_get() uses
-the monotonic clock.
+Regarding EXT4. In Theodore Tso article about this 
+(http://thunk.org/tytso/blog/2009/03/12/delayed-allocation-and-the-zero-length-file-problem/) 
+he mentioned 3 ext4 patches that are handling this issue but I can't 
+find them by their git id:
+"These three patches (with git id’s bf1b69c0, f32b730a, and 8411e347) 
+will cause a file to have any delayed allocation blocks to be allocated 
+immediately when a file is replaced."
+Are you familiar with the patches in question?
 
-This patch will use a new function 'ktime_ms_delta' which is introduced
-in 1/3 of this patch-set to get the millisecond time difference.
+> Having async IO for UBI is not trivial. Especially because of powercut safety.
 
-Signed-off-by: Chunyan Zhang <zhang.chunyan@linaro.org>
-Acked-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
----
- drivers/media/rc/imon.c |   49 +++++++++++++----------------------------------
- 1 file changed, 13 insertions(+), 36 deletions(-)
+Is it even doable? It seems to me that if we add async functionality to 
+ubi it will become not power-cut tolerant, unless we implement a journal 
+there (really don't want to do that....)
 
-diff --git a/drivers/media/rc/imon.c b/drivers/media/rc/imon.c
-index b8837dd..a1e91d5 100644
---- a/drivers/media/rc/imon.c
-+++ b/drivers/media/rc/imon.c
-@@ -31,6 +31,7 @@
- #include <linux/errno.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/uaccess.h>
-@@ -41,7 +42,6 @@
- #include <linux/usb/input.h>
- #include <media/rc-core.h>
- 
--#include <linux/time.h>
- #include <linux/timer.h>
- 
- #define MOD_AUTHOR	"Jarod Wilson <jarod@wilsonet.com>"
-@@ -1158,29 +1158,6 @@ out:
- 	return retval;
- }
- 
--static inline int tv2int(const struct timeval *a, const struct timeval *b)
--{
--	int usecs = 0;
--	int sec   = 0;
--
--	if (b->tv_usec > a->tv_usec) {
--		usecs = 1000000;
--		sec--;
--	}
--
--	usecs += a->tv_usec - b->tv_usec;
--
--	sec += a->tv_sec - b->tv_sec;
--	sec *= 1000;
--	usecs /= 1000;
--	sec += usecs;
--
--	if (sec < 0)
--		sec = 1000;
--
--	return sec;
--}
--
- /**
-  * The directional pad behaves a bit differently, depending on whether this is
-  * one of the older ffdc devices or a newer device. Newer devices appear to
-@@ -1191,16 +1168,16 @@ static inline int tv2int(const struct timeval *a, const struct timeval *b)
-  */
- static int stabilize(int a, int b, u16 timeout, u16 threshold)
- {
--	struct timeval ct;
--	static struct timeval prev_time = {0, 0};
--	static struct timeval hit_time  = {0, 0};
-+	ktime_t ct;
-+	static ktime_t prev_time;
-+	static ktime_t hit_time;
- 	static int x, y, prev_result, hits;
- 	int result = 0;
--	int msec, msec_hit;
-+	long msec, msec_hit;
- 
--	do_gettimeofday(&ct);
--	msec = tv2int(&ct, &prev_time);
--	msec_hit = tv2int(&ct, &hit_time);
-+	ct = ktime_get();
-+	msec = ktime_ms_delta(ct, prev_time);
-+	msec_hit = ktime_ms_delta(ct, hit_time);
- 
- 	if (msec > 100) {
- 		x = 0;
-@@ -1596,9 +1573,9 @@ static void imon_incoming_packet(struct imon_context *ictx,
- 	int i;
- 	u64 scancode;
- 	int press_type = 0;
--	int msec;
--	struct timeval t;
--	static struct timeval prev_time = { 0, 0 };
-+	long msec;
-+	ktime_t t;
-+	static ktime_t prev_time;
- 	u8 ktype;
- 
- 	/* filter out junk data on the older 0xffdc imon devices */
-@@ -1692,10 +1669,10 @@ static void imon_incoming_packet(struct imon_context *ictx,
- 	/* Only panel type events left to process now */
- 	spin_lock_irqsave(&ictx->kc_lock, flags);
- 
--	do_gettimeofday(&t);
-+	t = ktime_get();
- 	/* KEY_MUTE repeats from knob need to be suppressed */
- 	if (ictx->kc == KEY_MUTE && ictx->kc == ictx->last_keycode) {
--		msec = tv2int(&t, &prev_time);
-+		msec = ktime_ms_delta(t, prev_time);
- 		if (msec < ictx->idev->rep[REP_DELAY]) {
- 			spin_unlock_irqrestore(&ictx->kc_lock, flags);
- 			return;
+Another idea: from what I've read on the subject so far (this is new to 
+me so be patient), zero-length files can result due to several use cases 
+one of them is renaming files in the following scheme:
+1. write to temp file A - written to cache
+2. rename A to B - written directly to disk
+3. eventually data is flashed to disk
+If power cut occurs between #2 and #3 we end up with empty file B. But 
+what if we call fdatasync on A as part of the rename operation?
+More specifically: I'm looking @ fs/ubifs/dir.c-ubifs_rename(). What if 
+we force sync of old_inode by:
+1. err = old_inode->i_sb->s_op->write_inode(old_inode, NULL);
+2. err = ubifs_sync_wbufs_by_inode(c, old_inode);
+If I understand the code correctly it is basically the same as adding 
+fsync() in userspace after #2 above.
+
+What do you think?
+
+>
+> Thanks,
+> //richard
+>
+
+
+Thanks,
+Tanya Brokhman
 -- 
-1.7.9.5
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
