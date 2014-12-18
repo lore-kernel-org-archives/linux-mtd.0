@@ -1,23 +1,22 @@
-Received: from mail-qc0-f169.google.com ([209.85.216.169])
+Received: from mail-pd0-f172.google.com ([209.85.192.172])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1ZFV-0004mO-0K
- for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 11:28:05 +0000
-Received: by mail-qc0-f169.google.com with SMTP id w7so673889qcr.0
- for <linux-mtd@lists.infradead.org>; Thu, 18 Dec 2014 03:27:42 -0800 (PST)
-Message-ID: <5492B9C0.2060904@vanguardiasur.com.ar>
-Date: Thu, 18 Dec 2014 08:25:52 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-MIME-Version: 1.0
-To: Daniel Ehrenberg <dehrenberg@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] UBI: block: Continue creating ubiblocks after an
- initialization error
-References: <CAAK6Zt2dbK1EayqrvNWsZQxiCJ97YidHYGLs-DC8pv3Ggitz1w@mail.gmail.com>
-In-Reply-To: <CAAK6Zt2dbK1EayqrvNWsZQxiCJ97YidHYGLs-DC8pv3Ggitz1w@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: grundler@chromium.org, Richard Weinberger <richard@nod.at>,
- Gwendal Grignou <gwendal@chromium.org>
+ id 1Y1Zdn-0007sv-DT
+ for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 11:53:11 +0000
+Received: by mail-pd0-f172.google.com with SMTP id y13so1275846pdi.31
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Dec 2014 03:52:48 -0800 (PST)
+From: Chunyan Zhang <zhang.chunyan@linaro.org>
+To: m.chehab@samsung.com, david@hardeman.nu, uli-lirc@uli-eckhardt.de,
+ hans.verkuil@cisco.com, julia.lawall@lip6.fr, himangi774@gmail.com,
+ khoroshilov@ispras.ru, joe@perches.com, dborkman@redhat.com,
+ john.stultz@linaro.org, tglx@linutronix.de, davem@davemloft.net,
+ dwmw2@infradead.org, computersforpeace@gmail.com, arnd@linaro.org
+Subject: [PATCH 0/3] Changes the time type 'timeval' to 'Ktime'
+Date: Thu, 18 Dec 2014 19:51:59 +0800
+Message-Id: <1418903522-19137-1-git-send-email-zhang.chunyan@linaro.org>
+In-Reply-To: <ktime-mtd-rc-v1>
+References: <ktime-mtd-rc-v1>
+Cc: zhang.lyra@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/17/2014 08:16 PM, Daniel Ehrenberg wrote:
-> If one ubi volume is corrupted but another is not, it should be
-> possible to initialize that ubiblock from a kernel commandline which
-> includes both of them. This patch changes the error handling behavior
-> in initializing ubiblock to ensure that all parameters are attempted
-> even if one fails. If there is a failure, it returns one of the
-> error status codes. It also makes error messages more descriptive
-> by including the name of the UBI volume that failed.
-> 
-> Tested: Formatted ubi volume /dev/ubi5_0 in a corrupt way and
-> dev/ubi3_0 properly and included "ubi.block=5,0 ubi.block=3,0" on
-> the kernel command line. At boot, I see the following in the console:
-> [   21.082420] UBI error: ubiblock_create_from_param: block: can't
-> open volume on ubi5_0, err=-19
-> [   21.084268] UBI: ubiblock3_0 created from ubi3:0(rootfs)
-> 
-> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
-> ---
->  drivers/mtd/ubi/block.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-> index 8876c7d..32eeeee 100644
-> --- a/drivers/mtd/ubi/block.c
-> +++ b/drivers/mtd/ubi/block.c
-> @@ -596,10 +596,11 @@ static int __init ubiblock_create_from_param(void)
->
+This patch-set changes the 32-bit time type (timeval) to the 64-bit one
+(ktime_t) in imon.c, speedtest.c and torturetest.c, since 32-bit time
+types will break in the year 2038.
 
-Do you think we can add a comment here to explain how errors are treated?
+This patch-set also introduces a reusable time difference function which
+returns the difference in millisecond in ktime.h. The last two patches
+of this patch-set will use this function, so they are dependent on the
+first one. 
 
->                 desc = open_volume_desc(p->name, p->ubi_num, p->vol_id);
->                 if (IS_ERR(desc)) {
-> -                       ubi_err("block: can't open volume, err=%ld\n",
-> -                               PTR_ERR(desc));
-> +                       ubi_err(
-> +                               "block: can't open volume on ubi%d_%d, err=%ld",
-> +                               p->ubi_num, p->vol_id, PTR_ERR(desc));
+Chunyan Zhang (3):
+  ktime.h: Introduce ktime_ms_delta
+  mtd: test: Replace timeval with ktime_t in speedtest.c and torturetest.c
+  media: rc: Replace timeval with ktime_t in imon.c
 
-Is it me, or this line break is unneeded here?
-
-Also, it seems something is wrong with the patch format. Patchwork shows
-some oddities:
-
-http://patchwork.ozlabs.org/patch/422408/
+ drivers/media/rc/imon.c         |   49 +++++++++++----------------------------
+ drivers/mtd/tests/speedtest.c   |   10 ++++----
+ drivers/mtd/tests/torturetest.c |   10 ++++----
+ include/linux/ktime.h           |    5 ++++
+ 4 files changed, 28 insertions(+), 46 deletions(-)
 
 -- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+1.7.9.5
