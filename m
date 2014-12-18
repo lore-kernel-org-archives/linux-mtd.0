@@ -1,16 +1,20 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from mail-pa0-f53.google.com ([209.85.220.53])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1RZf-0006TI-NK
- for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 03:16:24 +0000
-From: <chenjie6@huawei.com>
-To: <linux-mtd@lists.infradead.org>, <David.Woodhouse@intel.com>
-Subject: [PATCH] [RESEND] jffs2: bugfix of summary length
-Date: Thu, 18 Dec 2014 19:04:48 +0800
-Message-ID: <1418900688-21760-1-git-send-email-chenjie6@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: computersforpeace@gmail.com, akpm@linux-foundation.org, lizefan@huawei.com,
- zengweilin@huawei.com
+ id 1Y1RhT-0000eP-Mr
+ for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 03:24:30 +0000
+Received: by mail-pa0-f53.google.com with SMTP id kq14so456728pab.26
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2014 19:24:05 -0800 (PST)
+From: Chunyan Zhang <zhang.chunyan@linaro.org>
+To: dwmw2@infradead.org,
+	computersforpeace@gmail.com
+Subject: [PATCH v3] mtd: test: Replace timeval with ktime_t in speedtest.c and
+ torturetest.c
+Date: Thu, 18 Dec 2014 11:23:31 +0800
+Message-Id: <1418873011-4974-1-git-send-email-zhang.chunyan@linaro.org>
+In-Reply-To: <mtdtestv3>
+References: <mtdtestv3>
+Cc: linux-mtd@lists.infradead.org, john.stultz@linaro.org, arnd@linaro.org,
+ zhang.lyra@gmail.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +24,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Chen Jie <chenjie6@huawei.com>
+This patch changes the 32-bit time type (timeval) to the 64-bit one
+(ktime_t), since 32-bit time types will break in the year 2038.
 
-sm->offset maybe wrong but magic maybe right, the offset 
-do not have CRC.
+I use ktime_t instead of timeval to define 'start' and 'finish'
+which are used to get the time for tow points.
 
-------------[ cut here ]------------
-Badness at c00c7580 [verbose debug info unavailable]
-NIP: c00c7580 LR: c00c718c CTR: 00000014
-REGS: df07bb40 TRAP: 0700   Not tainted  (2.6.34.13-WR4.3.0.0_standard)
-MSR: 00029000 <EE,ME,CE>  CR: 22084f84  XER: 00000000
-TASK = df84d6e0[908] 'mount' THREAD: df07a000
-GPR00: 00000001 df07bbf0 df84d6e0 00000000 00000001 00000000 df07bb58 00000041
-GPR08: 00000041 c0638860 00000000 00000010 22084f88 100636c8 df814ff8 00000000
-GPR16: df84d6e0 dfa558cc c05adb90 00000048 c0452d30 00000000 000240d0 000040d0
-GPR24: 00000014 c05ae734 c05be2e0 00000000 00000001 00000000 00000000 c05ae730
-NIP [c00c7580] __alloc_pages_nodemask+0x4d0/0x638
-LR [c00c718c] __alloc_pages_nodemask+0xdc/0x638
-Call Trace:
-[df07bbf0] [c00c718c] __alloc_pages_nodemask+0xdc/0x638 (unreliable)
-[df07bc90] [c00c7708] __get_free_pages+0x20/0x48
-[df07bca0] [c00f4a40] __kmalloc+0x15c/0x1ec
-[df07bcd0] [c01fc880] jffs2_scan_medium+0xa58/0x14d0
-[df07bd70] [c01ff38c] jffs2_do_mount_fs+0x1f4/0x6b4
-[df07bdb0] [c020144c] jffs2_do_fill_super+0xa8/0x260
-[df07bdd0] [c020230c] jffs2_fill_super+0x104/0x184
-[df07be00] [c0335814] get_sb_mtd_aux+0x9c/0xec
-[df07be20] [c033596c] get_sb_mtd+0x84/0x1e8
-[df07be60] [c0201ed0] jffs2_get_sb+0x1c/0x2c
-[df07be70] [c0103898] vfs_kern_mount+0x78/0x1e8
-[df07bea0] [c0103a58] do_kern_mount+0x40/0x100
-[df07bec0] [c011fe90] do_mount+0x240/0x890
-[df07bf10] [c0120570] sys_mount+0x90/0xd8
-[df07bf40] [c00110d8] ret_from_syscall+0x0/0x4
---- Exception: c01 at 0xff61a34
-    LR = 0x100135f0
-Instruction dump:
-38800005 38600000 48010f41 4bfffe1c 4bfc2d15 4bfffe8c 72e90200 4082fc28
-3d20c064 39298860 8809000d 68000001 <0f000000> 2f800000 419efc0c 38000001
-mount: mounting /dev/mtdblock3 on /common failed: Input/output error
+This patch also changes do_gettimeofday() to ktime_get() accordingly,
+since ktime_get returns a ktime_t, but do_gettimeofday returns a
+struct timeval, and the other reason is that ktime_get() uses
+the monotonic clock.
 
+This patch is based on another patch which privides a millisecond
+time difference function 'ktime_ms_delta' in ktime.h
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Chen Jie <chenjie6@huawei.com>
+http://lkml.iu.edu//hypermail/linux/kernel/1412.2/00625.html
 
+Signed-off-by: Chunyan Zhang <zhang.chunyan@linaro.org>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/jffs2/scan.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Changes since v2:
+ - Use the new function ktime_ms_delta which is added in another
+   patch listed up.
 
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index 7654e87..ba978363 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -509,6 +509,10 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 			if (je32_to_cpu(sm->magic) == JFFS2_SUM_MAGIC) {
- 				sumlen = c->sector_size - je32_to_cpu(sm->offset);
- 				sumptr = buf + buf_size - sumlen;
-+
-+				/* sm->offset maybe wrong but MAGIC maybe right */
-+				if (sumlen > c->sector_size)
-+					goto full_scan;
+Changes since v1:
+ - Add including <linux/ktime.h> in torturetest.c
+---
+ drivers/mtd/tests/speedtest.c   |   10 +++++-----
+ drivers/mtd/tests/torturetest.c |   10 +++++-----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
+index 5ee9f70..87a6e25 100644
+--- a/drivers/mtd/tests/speedtest.c
++++ b/drivers/mtd/tests/speedtest.c
+@@ -22,6 +22,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
- 				/* Now, make sure the summary itself is available */
- 				if (sumlen > buf_size) {
-@@ -544,6 +548,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 		}
- 	}
+ #include <linux/init.h>
++#include <linux/ktime.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/err.h>
+@@ -49,7 +50,7 @@ static int pgsize;
+ static int ebcnt;
+ static int pgcnt;
+ static int goodebcnt;
+-static struct timeval start, finish;
++static ktime_t start, finish;
  
-+full_scan:
- 	buf_ofs = jeb->offset;
+ static int multiblock_erase(int ebnum, int blocks)
+ {
+@@ -168,12 +169,12 @@ static int read_eraseblock_by_2pages(int ebnum)
  
- 	if (!buf_size) {
+ static inline void start_timing(void)
+ {
+-	do_gettimeofday(&start);
++	start = ktime_get();
+ }
+ 
+ static inline void stop_timing(void)
+ {
+-	do_gettimeofday(&finish);
++	finish = ktime_get();
+ }
+ 
+ static long calc_speed(void)
+@@ -181,8 +182,7 @@ static long calc_speed(void)
+ 	uint64_t k;
+ 	long ms;
+ 
+-	ms = (finish.tv_sec - start.tv_sec) * 1000 +
+-	     (finish.tv_usec - start.tv_usec) / 1000;
++	ms = ktime_ms_delta(finish, start);
+ 	if (ms == 0)
+ 		return 0;
+ 	k = goodebcnt * (mtd->erasesize / 1024) * 1000;
+diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
+index eeab969..7e77ed4 100644
+--- a/drivers/mtd/tests/torturetest.c
++++ b/drivers/mtd/tests/torturetest.c
+@@ -26,6 +26,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/init.h>
++#include <linux/ktime.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/err.h>
+@@ -79,18 +80,18 @@ static unsigned char *check_buf;
+ static unsigned int erase_cycles;
+ 
+ static int pgsize;
+-static struct timeval start, finish;
++static ktime_t start, finish;
+ 
+ static void report_corrupt(unsigned char *read, unsigned char *written);
+ 
+ static inline void start_timing(void)
+ {
+-	do_gettimeofday(&start);
++	start = ktime_get();
+ }
+ 
+ static inline void stop_timing(void)
+ {
+-	do_gettimeofday(&finish);
++	finish = ktime_get();
+ }
+ 
+ /*
+@@ -322,8 +323,7 @@ static int __init tort_init(void)
+ 			long ms;
+ 
+ 			stop_timing();
+-			ms = (finish.tv_sec - start.tv_sec) * 1000 +
+-			     (finish.tv_usec - start.tv_usec) / 1000;
++			ms = ktime_ms_delta(finish, start);
+ 			pr_info("%08u erase cycles done, took %lu "
+ 			       "milliseconds (%lu seconds)\n",
+ 			       erase_cycles, ms, ms / 1000);
 -- 
-1.8.0
+1.7.9.5
