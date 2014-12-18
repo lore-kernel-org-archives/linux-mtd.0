@@ -1,20 +1,23 @@
-Received: from mail-ob0-x233.google.com ([2607:f8b0:4003:c01::233])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1jNu-0000lL-Dh
- for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 22:17:27 +0000
-Received: by mail-ob0-f179.google.com with SMTP id va2so6343623obc.10
- for <linux-mtd@lists.infradead.org>; Thu, 18 Dec 2014 14:17:03 -0800 (PST)
+Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y1jOA-000313-4f
+ for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 22:17:42 +0000
+Received: by mail-ob0-f173.google.com with SMTP id uy5so6401478obc.4
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Dec 2014 14:17:20 -0800 (PST)
 MIME-Version: 1.0
-Sender: dehrenberg@google.com
-Date: Thu, 18 Dec 2014 14:17:03 -0800
-Message-ID: <CAAK6Zt17YHYpXy5XWiMAcK95VXqMVkS0rg9e-TPO=QDvGF=XrQ@mail.gmail.com>
-Subject: [PATCH v2] UBI: block: Continue creating ubiblocks after an
+In-Reply-To: <5492B9C0.2060904@vanguardiasur.com.ar>
+References: <CAAK6Zt2dbK1EayqrvNWsZQxiCJ97YidHYGLs-DC8pv3Ggitz1w@mail.gmail.com>
+ <5492B9C0.2060904@vanguardiasur.com.ar>
+Date: Thu, 18 Dec 2014 14:17:20 -0800
+Message-ID: <CAAK6Zt1h0Xy5DOR9tqtEUE7SXiNfLYSQfpaY8mW=FRf3-jEEBA@mail.gmail.com>
+Subject: Re: [PATCH] UBI: block: Continue creating ubiblocks after an
  initialization error
-From: Daniel Ehrenberg <dehrenberg@chromium.org>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gwendal Grignou <gwendal@chromium.org>,
- ezequiel@vanguardiasur.com.ar, grundler@chromium.org
+From: Daniel Ehrenberg <dehrenberg@google.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 Content-Type: text/plain; charset=UTF-8
+Cc: grundler@chromium.org, Richard Weinberger <richard@nod.at>,
+ Gwendal Grignou <gwendal@chromium.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,120 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If one ubi volume is corrupted but another is not, it should be
-possible to initialize that ubiblock from a kernel commandline which
-includes both of them. This patch changes the error handling behavior
-in initializing ubiblock to ensure that all parameters are attempted
-even if one fails. If there is a failure, it is logged on dmesg.
-It also makes error messages more descriptive by including the
-name of the UBI volume that failed.
+On Thu, Dec 18, 2014 at 3:25 AM, Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
+> On 12/17/2014 08:16 PM, Daniel Ehrenberg wrote:
+>> If one ubi volume is corrupted but another is not, it should be
+>> possible to initialize that ubiblock from a kernel commandline which
+>> includes both of them. This patch changes the error handling behavior
+>> in initializing ubiblock to ensure that all parameters are attempted
+>> even if one fails. If there is a failure, it returns one of the
+>> error status codes. It also makes error messages more descriptive
+>> by including the name of the UBI volume that failed.
+>>
+>> Tested: Formatted ubi volume /dev/ubi5_0 in a corrupt way and
+>> dev/ubi3_0 properly and included "ubi.block=5,0 ubi.block=3,0" on
+>> the kernel command line. At boot, I see the following in the console:
+>> [   21.082420] UBI error: ubiblock_create_from_param: block: can't
+>> open volume on ubi5_0, err=-19
+>> [   21.084268] UBI: ubiblock3_0 created from ubi3:0(rootfs)
+>>
+>> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+>> ---
+>>  drivers/mtd/ubi/block.c | 14 ++++++++------
+>>  1 file changed, 8 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+>> index 8876c7d..32eeeee 100644
+>> --- a/drivers/mtd/ubi/block.c
+>> +++ b/drivers/mtd/ubi/block.c
+>> @@ -596,10 +596,11 @@ static int __init ubiblock_create_from_param(void)
+>>
+>
+> Do you think we can add a comment here to explain how errors are treated?
 
-Tested: Formatted ubi volume /dev/ubi5_0 in a corrupt way and
-dev/ubi3_0 properly and included "ubi.block=5,0 ubi.block=3,0" on
-the kernel command line. At boot, I see the following in the console:
-[   21.082420] UBI error: ubiblock_create_from_param: block: can't
-open volume on ubi5_0, err=-19
-[   21.084268] UBI: ubiblock3_0 created from ubi3:0(rootfs)
+Sent a v2 with that comment and another change.
+>
+>>                 desc = open_volume_desc(p->name, p->ubi_num, p->vol_id);
+>>                 if (IS_ERR(desc)) {
+>> -                       ubi_err("block: can't open volume, err=%ld\n",
+>> -                               PTR_ERR(desc));
+>> +                       ubi_err(
+>> +                               "block: can't open volume on ubi%d_%d, err=%ld",
+>> +                               p->ubi_num, p->vol_id, PTR_ERR(desc));
+>
+> Is it me, or this line break is unneeded here?
 
-Changes in v2:
-- Added comments in the code explaning the intent of the error
-  handling strategy.
-- Fixed the code surrounding ubiblock initialization to not
-  shut down the block devices after starting them up. In my
-  test case, the initialization happened to not get called
-  because the return value happened to be overwritten by the
-  second successful case, but if the cases were reversed it
-  would be removed. In the new code, ubiblock_create_from_param
-  is simply a void function because no caller cares if one of
-  the blocks failed to initialize.
+checkpatch.pl mandates that (a) strings must not be broken onto
+multiple lines, even if that makes the line longer than 80 characters
+(b) if a string exceeds 80 characters, it has to be the first thing
+besides whitespace on that line.
+>
+> Also, it seems something is wrong with the patch format. Patchwork shows
+> some oddities:
+>
+> http://patchwork.ozlabs.org/patch/422408/
 
-Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
----
- drivers/mtd/ubi/block.c | 37 ++++++++++++++++++++++---------------
- 1 file changed, 22 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 8876c7d..f9fd9048 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -584,22 +584,28 @@ open_volume_desc(const char *name, int ubi_num,
-int vol_id)
-                return ubi_open_volume(ubi_num, vol_id, UBI_READONLY);
- }
-
--static int __init ubiblock_create_from_param(void)
-+static void __init ubiblock_create_from_param(void)
- {
--       int i, ret;
-+       int i, ret = 0;
-        struct ubiblock_param *p;
-        struct ubi_volume_desc *desc;
-        struct ubi_volume_info vi;
-
-+       /*
-+        * If there is an error creating one of the ubiblocks, continue on to
-+        * create the following ubiblocks. This helps in a circumstance where
-+        * the kernel command-line specifies multiple block devices and some
-+        * may be broken, but we still want the working ones to come up.
-+        */
-        for (i = 0; i < ubiblock_devs; i++) {
-                p = &ubiblock_param[i];
-
-                desc = open_volume_desc(p->name, p->ubi_num, p->vol_id);
-                if (IS_ERR(desc)) {
--                       ubi_err("block: can't open volume, err=%ld\n",
--                               PTR_ERR(desc));
--                       ret = PTR_ERR(desc);
--                       break;
-+                       ubi_err(
-+                               "block: can't open volume on ubi%d_%d, err=%ld",
-+                               p->ubi_num, p->vol_id, PTR_ERR(desc));
-+                       continue;
-                }
-
-                ubi_get_volume_info(desc, &vi);
-@@ -607,12 +613,12 @@ static int __init ubiblock_create_from_param(void)
-
-                ret = ubiblock_create(&vi);
-                if (ret) {
--                       ubi_err("block: can't add '%s' volume, err=%d\n",
--                               vi.name, ret);
--                       break;
-+                       ubi_err(
-+                               "block: can't add '%s' volume on
-ubi%d_%d, err=%d",
-+                               vi.name, p->ubi_num, p->vol_id, ret);
-+                       continue;
-                }
-        }
--       return ret;
- }
-
- static void ubiblock_remove_all(void)
-@@ -640,10 +646,12 @@ int __init ubiblock_init(void)
-        if (ubiblock_major < 0)
-                return ubiblock_major;
-
--       /* Attach block devices from 'block=' module param */
--       ret = ubiblock_create_from_param();
--       if (ret)
--               goto err_remove;
-+       /*
-+        * Attach block devices from 'block=' module param.
-+        * Even if one block device in the param list fails to come up,
-+        * still allow the module to load and leave any others up.
-+        */
-+       ubiblock_create_from_param();
-
-        /*
-         * Block devices are only created upon user requests, so we ignore
-@@ -656,7 +664,6 @@ int __init ubiblock_init(void)
-
- err_unreg:
-        unregister_blkdev(ubiblock_major, "ubiblock");
--err_remove:
-        ubiblock_remove_all();
-        return ret;
- }
---
-2.2.0.rc0.207.ga3a616c
+What oddity do you see there? Looks like it wraps my long string
+around, but it's not wrapped in my email (is it?).
+>
+> --
+> Ezequiel Garcia, VanguardiaSur
+> www.vanguardiasur.com.ar
