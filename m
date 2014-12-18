@@ -1,20 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-qc0-f169.google.com ([209.85.216.169])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1Z1H-0007P3-GP
- for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 11:13:24 +0000
-Message-ID: <5492B6B8.5010705@nod.at>
-Date: Thu, 18 Dec 2014 12:12:56 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1Y1ZFV-0004mO-0K
+ for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 11:28:05 +0000
+Received: by mail-qc0-f169.google.com with SMTP id w7so673889qcr.0
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Dec 2014 03:27:42 -0800 (PST)
+Message-ID: <5492B9C0.2060904@vanguardiasur.com.ar>
+Date: Thu, 18 Dec 2014 08:25:52 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Dolev Raviv <draviv@codeaurora.org>
-Subject: Re: Synchronization in UBIFS (zero length files)
-References: <5492918F.2060704@codeaurora.org>
-In-Reply-To: <5492918F.2060704@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
+To: Daniel Ehrenberg <dehrenberg@chromium.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] UBI: block: Continue creating ubiblocks after an
+ initialization error
+References: <CAAK6Zt2dbK1EayqrvNWsZQxiCJ97YidHYGLs-DC8pv3Ggitz1w@mail.gmail.com>
+In-Reply-To: <CAAK6Zt2dbK1EayqrvNWsZQxiCJ97YidHYGLs-DC8pv3Ggitz1w@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
+Cc: grundler@chromium.org, Richard Weinberger <richard@nod.at>,
+ Gwendal Grignou <gwendal@chromium.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tanya,
-
-Am 18.12.2014 um 09:34 schrieb Tanya Brokhman:
-> Hi Artem/Richard
+On 12/17/2014 08:16 PM, Daniel Ehrenberg wrote:
+> If one ubi volume is corrupted but another is not, it should be
+> possible to initialize that ubiblock from a kernel commandline which
+> includes both of them. This patch changes the error handling behavior
+> in initializing ubiblock to ensure that all parameters are attempted
+> even if one fails. If there is a failure, it returns one of the
+> error status codes. It also makes error messages more descriptive
+> by including the name of the UBI volume that failed.
 > 
-> I've been looking into the "zero length files" issue in UBIFS and came across "Synchronization exceptions for buggy applications" @
-> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_sync_semantics. This section concludes with:
+> Tested: Formatted ubi volume /dev/ubi5_0 in a corrupt way and
+> dev/ubi3_0 properly and included "ubi.block=5,0 ubi.block=3,0" on
+> the kernel command line. At boot, I see the following in the console:
+> [   21.082420] UBI error: ubiblock_create_from_param: block: can't
+> open volume on ubi5_0, err=-19
+> [   21.084268] UBI: ubiblock3_0 created from ubi3:0(rootfs)
 > 
-> "We have plans to implement these features in UBIFS, but this has not been done yet. The problem is that UBI/MTD are fully synchronous and we cannot initiate asynchronous
-> write-out, so we'd have to synchronously write files on close/rename, which is slow. So implementing these features would require implementing asynchronous I/O in UBI, which is a
-> big job. But feel free to do this :-)."
+> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+> ---
+>  drivers/mtd/ubi/block.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
 > 
-> So two questions:
-> 1. was anything done in ubifs to handle file truncation and rename similar to ext4? Didn't find anything but afraid I might be missing something
+> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+> index 8876c7d..32eeeee 100644
+> --- a/drivers/mtd/ubi/block.c
+> +++ b/drivers/mtd/ubi/block.c
+> @@ -596,10 +596,11 @@ static int __init ubiblock_create_from_param(void)
+>
 
-I don't think so.
+Do you think we can add a comment here to explain how errors are treated?
 
-> 2. Not sure I understand why "implementing these features would require implementing asynchronous I/O in UBI". Could you please elaborate on this?
+>                 desc = open_volume_desc(p->name, p->ubi_num, p->vol_id);
+>                 if (IS_ERR(desc)) {
+> -                       ubi_err("block: can't open volume, err=%ld\n",
+> -                               PTR_ERR(desc));
+> +                       ubi_err(
+> +                               "block: can't open volume on ubi%d_%d, err=%ld",
+> +                               p->ubi_num, p->vol_id, PTR_ERR(desc));
 
-If we'd do it synchronous it would horrible slow down UBIFS. That's why ext4 is doing it async.
-Having async IO for UBI is not trivial. Especially because of powercut safety.
+Is it me, or this line break is unneeded here?
 
-Thanks,
-//richard
+Also, it seems something is wrong with the patch format. Patchwork shows
+some oddities:
+
+http://patchwork.ozlabs.org/patch/422408/
+
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
