@@ -1,25 +1,22 @@
-Received: from mail-qa0-f49.google.com ([209.85.216.49])
+Received: from mail-vc0-x232.google.com ([2607:f8b0:400c:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1kUW-0001dS-L8
- for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 23:28:21 +0000
-Received: by mail-qa0-f49.google.com with SMTP id s7so1534748qap.36
- for <linux-mtd@lists.infradead.org>; Thu, 18 Dec 2014 15:27:58 -0800 (PST)
-Message-ID: <54936290.3090500@vanguardiasur.com.ar>
-Date: Thu, 18 Dec 2014 20:26:08 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+ id 1Y1kYF-000412-Nc
+ for linux-mtd@lists.infradead.org; Thu, 18 Dec 2014 23:32:13 +0000
+Received: by mail-vc0-f178.google.com with SMTP id hq11so657047vcb.23
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Dec 2014 15:31:50 -0800 (PST)
 MIME-Version: 1.0
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: GPMC clock question
-References: <54933CC1.9010301@vanguardiasur.com.ar>
- <20141218210653.GI23854@atomide.com>
-In-Reply-To: <20141218210653.GI23854@atomide.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: linux-omap@vger.kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?windows-1252?Q?Guido_Mart=EDnez?= <guido@vanguardiasur.com.ar>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Roger Quadros <rogerq@ti.com>
+In-Reply-To: <1418942386-19076-1-git-send-email-dehrenberg@chromium.org>
+References: <1418942386-19076-1-git-send-email-dehrenberg@chromium.org>
+Date: Fri, 19 Dec 2014 00:31:49 +0100
+Message-ID: <CAFLxGvx795JLiEDQPjBxhRz0jpNOSczTHB4tLsEDpOpDgkwxQA@mail.gmail.com>
+Subject: Re: [PATCH v3] UBI: block: Continue creating ubiblocks after an
+ initialization error
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Dan Ehrenberg <dehrenberg@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Grant Grundler <grundler@chromium.org>,
+ Gwendal Grignou <gwendal@chromium.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,64 +26,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Dec 18, 2014 at 11:39 PM, Dan Ehrenberg <dehrenberg@chromium.org> wrote:
+> If one ubi volume is corrupted but another is not, it should be
+> possible to initialize that ubiblock from a kernel commandline which
+> includes both of them. This patch changes the error handling behavior
+> in initializing ubiblock to ensure that all parameters are attempted
+> even if one fails. If there is a failure, it is logged on dmesg.
+> It also makes error messages more descriptive by including the
+> name of the UBI volume that failed.
+>
+> Tested: Formatted ubi volume /dev/ubi5_0 in a corrupt way and
+> dev/ubi3_0 properly and included "ubi.block=5,0 ubi.block=3,0" on
+> the kernel command line. At boot, I see the following in the console:
+> [   21.082420] UBI error: ubiblock_create_from_param: block: can't open volume on ubi5_0, err=-19
+> [   21.084268] UBI: ubiblock3_0 created from ubi3:0(rootfs)
+>
+> Change-Id: I85a5e756429314f317174efe4beee2f2532e8b73
+
+Please remove this line.
+
+> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+> ---
+> Changes in v2:
+> - Added comments in the code explaning the intent of the error
+>   handling strategy.
+> - Fixed the code surrounding ubiblock initialization to not
+>   shut down the block devices after starting them up. In my
+>   test case, the initialization happened to not get called
+>   because the return value happened to be overwritten by the
+>   second successful case, but if the cases were reversed it
+>   would be removed. In the new code, ubiblock_create_from_param
+>   is simply a void function because no caller cares if one of
+>   the blocks failed to initialize.
+> Changes in v3:
+> - Tried to fix the wraparound in sending the email
+> - Moved the 'changes' section to below the ---
+>
+>  drivers/mtd/ubi/block.c | 37 ++++++++++++++++++++++---------------
+>  1 file changed, 22 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+> index 8876c7d..f9fd9048 100644
+> --- a/drivers/mtd/ubi/block.c
+> +++ b/drivers/mtd/ubi/block.c
+> @@ -584,22 +584,28 @@ open_volume_desc(const char *name, int ubi_num, int vol_id)
+>                 return ubi_open_volume(ubi_num, vol_id, UBI_READONLY);
+>  }
+>
+> -static int __init ubiblock_create_from_param(void)
+> +static void __init ubiblock_create_from_param(void)
+>  {
+> -       int i, ret;
+> +       int i, ret = 0;
+>         struct ubiblock_param *p;
+>         struct ubi_volume_desc *desc;
+>         struct ubi_volume_info vi;
+>
+> +       /*
+> +        * If there is an error creating one of the ubiblocks, continue on to
+> +        * create the following ubiblocks. This helps in a circumstance where
+> +        * the kernel command-line specifies multiple block devices and some
+> +        * may be broken, but we still want the working ones to come up.
+> +        */
+>         for (i = 0; i < ubiblock_devs; i++) {
+>                 p = &ubiblock_param[i];
+>
+>                 desc = open_volume_desc(p->name, p->ubi_num, p->vol_id);
+>                 if (IS_ERR(desc)) {
+> -                       ubi_err("block: can't open volume, err=%ld\n",
+> -                               PTR_ERR(desc));
+> -                       ret = PTR_ERR(desc);
+> -                       break;
+> +                       ubi_err(
+> +                               "block: can't open volume on ubi%d_%d, err=%ld",
+> +                               p->ubi_num, p->vol_id, PTR_ERR(desc));
+> +                       continue;
+>                 }
+>
+>                 ubi_get_volume_info(desc, &vi);
+> @@ -607,12 +613,12 @@ static int __init ubiblock_create_from_param(void)
+>
+>                 ret = ubiblock_create(&vi);
+>                 if (ret) {
+> -                       ubi_err("block: can't add '%s' volume, err=%d\n",
+> -                               vi.name, ret);
+> -                       break;
+> +                       ubi_err(
+> +                               "block: can't add '%s' volume on ubi%d_%d, err=%d",
+> +                               vi.name, p->ubi_num, p->vol_id, ret);
+> +                       continue;
+>                 }
+>         }
+> -       return ret;
+>  }
+>
+>  static void ubiblock_remove_all(void)
+> @@ -640,10 +646,12 @@ int __init ubiblock_init(void)
+>         if (ubiblock_major < 0)
+>                 return ubiblock_major;
+>
+> -       /* Attach block devices from 'block=' module param */
+> -       ret = ubiblock_create_from_param();
+> -       if (ret)
+> -               goto err_remove;
+> +       /*
+> +        * Attach block devices from 'block=' module param.
+> +        * Even if one block device in the param list fails to come up,
+> +        * still allow the module to load and leave any others up.
+> +        */
+> +       ubiblock_create_from_param();
+>
+>         /*
+>          * Block devices are only created upon user requests, so we ignore
+> @@ -656,7 +664,6 @@ int __init ubiblock_init(void)
+>
+>  err_unreg:
+>         unregister_blkdev(ubiblock_major, "ubiblock");
+> -err_remove:
+>         ubiblock_remove_all();
+>         return ret;
+>  }
+> --
+> 2.2.0.rc0.207.ga3a616c
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
-On 12/18/2014 06:06 PM, Tony Lindgren wrote:
-> * Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> [141218 12:49]:
->> Tony, Roger:
->>
->> As far as I can see, the GPMC interface clock (GPMC_FCLK) is not
->> properly modeled in the devicetree. Instead, hwmod magic seems to be used.
-> 
-> I guess you mean the functional clock not interface clock?
->  
->> arch/arm/mach-omap2/omap_hwmod_33xx_43xx_interconnect_data.c:
->> struct omap_hwmod_ocp_if am33xx_l3_s__gpmc = {
->>         .master         = &am33xx_l3_s_hwmod,
->>         .slave          = &am33xx_gpmc_hwmod,
->>         .clk            = "l3s_gclk",
->>         .addr           = am33xx_gpmc_addr_space,
->>         .user           = OCP_USER_MPU,
->> };
->>
->> I'd like to know what would be the appropriate DT model for this clock.
->> Perhaps, as child of CORE_M4_CLK, divided by 2:
->>
->> gpmc_fclk: gpmc_fclk {
->>                 #clock-cells = <0>;
->>                 compatible = "fixed-factor-clock";
->>                 clocks = <&dpll_core_m4_ck>;
->>                 clock-mult = <1>;
->>                 clock-div = <2>;
->>         };
->>
->> How does it look? Also, I'm wondering if this works OK when used with
->> the hwmod stuff.
-> 
-> Hmm we do have clocks or aliases for l3s_gclk, so it's there as otherwise
-> the GPMC would not work at all :) Sure with device tree only systems we
-> should have the clock phandle directly available though.
-> 
 
-Right.
-
-> Note that the hwmod code takes care of runtime PM clock gating for the
-> drivers.
-
-Not entirely sure how that works, but I'll take a look.
-
-> But the clock entry for am33xx_l3_s__gpmc should be coming
-> from .dts.
-
-Right.
-
-> Please also check out the hwmod dts related changes Felipe
-> posted last week, that might allow populating .clk from .dts already.
-> 
-
-Ah, nice. I'll take a look.
-
-Thanks Tony!
 -- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+Thanks,
+//richard
