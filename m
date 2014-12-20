@@ -1,18 +1,18 @@
-Received: from mout.gmx.net ([212.227.17.22])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y2FdF-0003JI-LK
- for linux-mtd@lists.infradead.org; Sat, 20 Dec 2014 08:43:26 +0000
-Message-ID: <54953675.1020102@rempel-privat.de>
-Date: Sat, 20 Dec 2014 09:42:29 +0100
-From: Oleksij Rempel <linux@rempel-privat.de>
+ id 1Y2GK4-0000GS-MZ
+ for linux-mtd@lists.infradead.org; Sat, 20 Dec 2014 09:27:42 +0000
+Message-ID: <549540F1.4040107@nod.at>
+Date: Sat, 20 Dec 2014 10:27:13 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org,
- "boris.brezillon@free-electrons.com >> Boris Brezillon"
- <boris.brezillon@free-electrons.com>, computersforpeace@gmail.com
-Subject: should nand driver create ECC for a page after ERASE cmd?
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="WO9M6jHT7Lxrurs8hOcUUX6AL6vcJn8We"
+To: t kevin <kevint324@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: Get error -74 (ECC error) during ubiattach
+References: <CAOx4H9CgOoxu82M9cpmFcRdfn=n7mQOwOVzVqvhdUiyzddEPSw@mail.gmail.com>	<CAFLxGvx=a89_B-rAjwLT6esMzYgJ5E=t24wP3Yo_8w=9x52HVQ@mail.gmail.com>
+ <CAOx4H9Ds5_ZSwwKRGcEzJc_k+CTeGyeeWRWAyo5mHV5rVEnSCA@mail.gmail.com>
+In-Reply-To: <CAOx4H9Ds5_ZSwwKRGcEzJc_k+CTeGyeeWRWAyo5mHV5rVEnSCA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WO9M6jHT7Lxrurs8hOcUUX6AL6vcJn8We
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi!
 
-Hello all,
+Am 20.12.2014 um 04:43 schrieb t kevin:
+> So for uncorrectable ECC error ( e.g., bad block) the only way out is
+> to do a fresh ubiformat?
+> For device like harddisk you get bad blocks all the time, if it is not
+> in the critical sector things can be fixed as much as possible by fsck
+> so I was looking for something like fsck.ubifs.
 
-i'm trying to pass mtd/tests for my driver.. on pagetest i fail on this
-place:
-http://lxr.free-electrons.com/source/drivers/mtd/tests/pagetest.c#L311
+An uncorrectable ECC error means that more bits flipped than your ECC
+algorithm can fix.
 
-after ERASE cmd this test trying to read same page. Driver will report
-ECC error on read, because erased page has no ECC data in OOB.
+All you can do is trying to erase the block and hoping that it will
+work again.
 
-What is correct way to handle it?
+>>> Is it because the background thread "ubi_bgt2d" has not started yet so
+>>> no one could do the data scrubbing during ubiattach stage?
+>>
+>> UBI does scrubbing if it faces bit-flips (correctable ECC errors).
+>>
+>>> Is it possible to do something like a fsck.ubifs to fix this issue?
+>>
+>> No. PEB 404 is bad.
+>> Is it always the same block?
+> 
+> Yes, it is always the same block. What got me confused is below
+> message telling bad PEBs is still 0.
+> UBI: number of good PEBs:        1920
+> UBI: number of bad PEBs:         0
+> UBI: number of corrupted PEBs:   0
 
-Right now i think about fallowing scenarios:
-- nand should write page filled with 0xFFs, to generate ECC. (i think it
-is wrong)
-- nand should check if ECC =3D=3D 0xFF.. and return other error number. (=
-not
-really good)
-- write some oob filed to mark erased page?
-- other variants?
+I agree that this is a bit strange.
+UBI treats a block as bad if it has a bad block marker or it detects
+so while scrubbing.
 
-in all cases it looks like it should be task of mtd or nand layer to
-send needed request and not the task of a driver.
+But it can also happen that you get a block with bad ECC if a powercut happened
+while erasing it.
+This is why UBI does not automatically mark it as bad while scanning.
+Such a block will be erased.
 
-PS: i think it is a cause of "error -74 (ECC error) during ubiattach" in
-my case.
-
---=20
-Regards,
-Oleksij
-
-
---WO9M6jHT7Lxrurs8hOcUUX6AL6vcJn8We
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iF4EAREIAAYFAlSVNnUACgkQHwImuRkmbWkZugD9G9ufqVJAc3Sm8K12zki8pJ6j
-xPXzcSuxjfvAikwz+DgBAIgpQP2ZjBZB/Ww/RSzBR8iZJiqEVYoNmAm84OrNPcDP
-=d7ic
------END PGP SIGNATURE-----
-
---WO9M6jHT7Lxrurs8hOcUUX6AL6vcJn8We--
+Thanks,
+//richard
