@@ -1,22 +1,19 @@
-Received: from mout.gmx.net ([212.227.17.22])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y2hGm-0001X0-Tq
- for linux-mtd@lists.infradead.org; Sun, 21 Dec 2014 14:14:05 +0000
-Message-ID: <5496D585.8070605@rempel-privat.de>
-Date: Sun, 21 Dec 2014 15:13:25 +0100
-From: Oleksij Rempel <linux@rempel-privat.de>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- linux-mtd@lists.infradead.org,
- "boris.brezillon@free-electrons.com >> Boris Brezillon"
- <boris.brezillon@free-electrons.com>, computersforpeace@gmail.com
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y2jN9-000106-G7
+ for linux-mtd@lists.infradead.org; Sun, 21 Dec 2014 16:28:48 +0000
+Date: Sun, 21 Dec 2014 17:28:06 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Oleksij Rempel <linux@rempel-privat.de>
 Subject: Re: should nand driver create ECC for a page after ERASE cmd?
+Message-ID: <20141221172806.4fb64605@bbrezillon>
+In-Reply-To: <54953675.1020102@rempel-privat.de>
 References: <54953675.1020102@rempel-privat.de>
- <54962684.9040003@vanguardiasur.com.ar>
-In-Reply-To: <54962684.9040003@vanguardiasur.com.ar>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="rfHuSPnI0heGdsCTdRrTo6EdRR0V7dVTL"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,53 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rfHuSPnI0heGdsCTdRrTo6EdRR0V7dVTL
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi Oleksij,
 
-Am 21.12.2014 um 02:46 schrieb Ezequiel Garcia:
-> On 12/20/2014 05:42 AM, Oleksij Rempel wrote:
->> Hello all,
->>
->> i'm trying to pass mtd/tests for my driver.. on pagetest i fail on thi=
-s
->> place:
->> http://lxr.free-electrons.com/source/drivers/mtd/tests/pagetest.c#L311=
+On Sat, 20 Dec 2014 09:42:29 +0100
+Oleksij Rempel <linux@rempel-privat.de> wrote:
 
->>
->> after ERASE cmd this test trying to read same page. Driver will report=
+> Hello all,
+> 
+> i'm trying to pass mtd/tests for my driver.. on pagetest i fail on this
+> place:
+> http://lxr.free-electrons.com/source/drivers/mtd/tests/pagetest.c#L311
+> 
+> after ERASE cmd this test trying to read same page. Driver will report
+> ECC error on read, because erased page has no ECC data in OOB.
+> 
+> What is correct way to handle it?
 
->> ECC error on read, because erased page has no ECC data in OOB.
->>
->> What is correct way to handle it?
->>
-> [..]
->=20
-> This might help, although I'm not sure it's the best solution.
->=20
-> $ git grep is_buf_blank drivers/mtd/nand/pxa3xx_nand.c
->=20
+Well, actually it depends on your NAND/ECC controller capabilities (but
+given your discussion with Richard on IRC, I guess you already
+understood that ;-))
 
-Thank you! It should be good starting point.
+1) Wiser controllers are generating 0xff ECC bytes for a data chunk
+(chunk == ECC step size) filled with 0xff. With BCH algorithms this is
+easily done by XORing the ECC bytes with the appropriate pattern (see
+soft BCH implementation)
+2) Some controller just verify if the data chunk + ECC bytes are all
+0xff before passing it to the ECC engine. If they are filled with 0xff
+the ECC correction is bypassed.
+This method has one drawback: it does not properly handle bitflips
+occurring in erased pages (if one bitflip occurs the NAND controller
+consider the chunk as not empty, and pass it to the BCH engine).
+3) The controller does not handle erased pages at all, and in this case
+you'll have to manually test it (as Ezequiel suggested) when you
+encounter an ECC error.
 
-
---=20
 Regards,
-Oleksij
 
+Boris
 
---rfHuSPnI0heGdsCTdRrTo6EdRR0V7dVTL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iF4EAREIAAYFAlSW1YYACgkQHwImuRkmbWld4gD/QlWcLlyh1mpXAZZqimpqWa9d
-Nzt4GCmKWMmhrtjyvKkA/jpkcbiAGhSHM0jmhlzCPLdXlL4EB+1w8alidhsc+QQ1
-=MfSP
------END PGP SIGNATURE-----
-
---rfHuSPnI0heGdsCTdRrTo6EdRR0V7dVTL--
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
