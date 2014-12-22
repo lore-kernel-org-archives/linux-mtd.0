@@ -1,26 +1,25 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y2uiI-000410-Kc
- for linux-mtd@lists.infradead.org; Mon, 22 Dec 2014 04:35:23 +0000
-From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
-To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 6/6] mtd: spi-nand: Support common SPI NAND devices
-Date: Mon, 22 Dec 2014 04:34:48 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7713CD3C@NTXXIAMBX02.xacn.micron.com>
-References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
- <1417525136-25731-7-git-send-email-ezequiel.garcia@imgtec.com>
- <87F60714EC601C4C83DFF1D2E3D390A049EE65@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A049EE65@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y35Bz-0000Ds-5T
+ for linux-mtd@lists.infradead.org; Mon, 22 Dec 2014 15:46:43 +0000
+Message-ID: <54983C57.6070403@imgtec.com>
+Date: Mon, 22 Dec 2014 12:44:23 -0300
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-Cc: Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
- Brian Norris <computersforpeace@gmail.com>,
+To: =?gbk?Q?=22Qi_Wang_=CD=F5=C6=F0_=28qiwang=29=22?= <qiwang@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 4/6] mtd: Introduce SPI NAND framework
+References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
+ <1417525136-25731-5-git-send-email-ezequiel.garcia@imgtec.com>
+ <87F60714EC601C4C83DFF1D2E3D390A049EE77@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7713CD34@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A7713CD34@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+Cc: Brian Norris <computersforpeace@gmail.com>,
  James Hartley <james.hartley@imgtec.com>,
  "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>,
- =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ =?gbk?Q?=22Pe?= =?gbk?Q?ter_Pan_=C5=CB=B6=B0_=28peterpandong=29=22?=
  <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,52 +30,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgRXplcXVpZWwsDQoNCj4gK3N0YXRpYyBzdHJ1Y3QgbmFuZF9lY2NsYXlvdXQgZWNjX2xheW91
-dF9tdDI5ZiA9IHsNCj4gKwkuZWNjYnl0ZXMgPSAzMiwNCj4gKwkuZWNjcG9zID0gew0KPiArCQk4
-LCA5LCAxMCwgMTEsIDEyLCAxMywgMTQsIDE1LA0KPiArCQkyNCwgMjUsIDI2LCAyNywgMjgsIDI5
-LCAzMCwgMzEsDQo+ICsJCTQwLCA0MSwgNDIsIDQzLCA0NCwgNDUsIDQ2LCA0NywNCj4gKwkJNTYs
-IDU3LCA1OCwgNTksIDYwLCA2MSwgNjIsIDYzLA0KPiArCSB9LA0KDQpTZWVtcyAiT09CIGZyZWUi
-IHZhcmlhYmxlIGlzIG1pc3NlZC4gQXMgYmVsb3c6DQoNCi5vb2JmcmVlID0gew0KeyAub2Zmc2V0
-ID0gMiwgLmxlbmd0aCA9IDYgfSwNCnsgLm9mZnNldCA9IDE2LCAubGVuZ3RoID0gOCB9LA0KeyAu
-b2Zmc2V0ID0gMzIsIC5sZW5ndGggPSA4IH0sDQp7IC5vZmZzZXQgPSA0OCwgLmxlbmd0aCA9IDgg
-fSwNCn0sDQoNCg0KPiArc3RhdGljIGludCBzcGlfbmFuZF9zZW5kX2NvbW1hbmQoc3RydWN0IHNw
-aV9kZXZpY2UgKnNwaSwgaW50IGNvbW1hbmQsDQo+ICsJCQkJIHN0cnVjdCBzcGlfbmFuZF9kZXZp
-Y2VfY21kICpjbWQpIHsNCj4gKwlzdHJ1Y3Qgc3BpX21lc3NhZ2UgbWVzc2FnZTsNCj4gKwlzdHJ1
-Y3Qgc3BpX3RyYW5zZmVyIHhbNF07DQo+ICsNCj4gKwlzcGlfbWVzc2FnZV9pbml0KCZtZXNzYWdl
-KTsNCj4gKwltZW1zZXQoeCwgMCwgc2l6ZW9mKHgpKTsNCj4gKw0KPiArCS8qIENvbW1hbmQgKi8N
-Cj4gKwljbWQtPmNtZCA9IGNvbW1hbmQ7DQo+ICsJeFswXS5sZW4gPSAxOw0KPiArCXhbMF0udHhf
-YnVmID0gJmNtZC0+Y21kOw0KPiArCXNwaV9tZXNzYWdlX2FkZF90YWlsKCZ4WzBdLCAmbWVzc2Fn
-ZSk7DQo+ICsNCj4gKwkvKiBBZGRyZXNzICovDQo+ICsJaWYgKGNtZC0+bl9hZGRyKSB7DQo+ICsJ
-CXhbMV0ubGVuID0gY21kLT5uX2FkZHI7DQo+ICsJCXhbMV0udHhfYnVmID0gY21kLT5hZGRyOw0K
-PiArCQlzcGlfbWVzc2FnZV9hZGRfdGFpbCgmeFsxXSwgJm1lc3NhZ2UpOw0KPiArCX0NCj4gKw0K
-PiArCS8qIERhdGEgdG8gYmUgdHJhbnNtaXR0ZWQgKi8NCj4gKwlpZiAoY21kLT5uX3R4KSB7DQo+
-ICsJCXhbM10ubGVuID0gY21kLT5uX3R4Ow0KPiArCQl4WzNdLnR4X2J1ZiA9IGNtZC0+dHhfYnVm
-Ow0KPiArCQlzcGlfbWVzc2FnZV9hZGRfdGFpbCgmeFszXSwgJm1lc3NhZ2UpOw0KPiArCX0NCj4g
-Kw0KPiArCS8qIERhdGEgdG8gYmUgcmVjZWl2ZWQgKi8NCj4gKwlpZiAoY21kLT5uX3J4KSB7DQo+
-ICsJCXhbM10ubGVuID0gY21kLT5uX3J4Ow0KPiArCQl4WzNdLnJ4X2J1ZiA9IGNtZC0+cnhfYnVm
-Ow0KPiArCQlzcGlfbWVzc2FnZV9hZGRfdGFpbCgmeFszXSwgJm1lc3NhZ2UpOw0KPiArCX0NCg0K
-T25seSB4WzNdIGlzIHVzZWQgaW4gYWJvdmUgY29kZSwgSSBzdWdnZXN0IHRvIHNlcGFyYXRlIHRy
-YW5zZmVyIGFuZCByZWNlaXZlZCANCkZvciB4WzJdIGFuZCB4WzNdLCBpbiBjYXNlIHNvbWUgY29t
-bWFuZCBuZWVkIHRvIHNlbmQgZHVtbXkgYnl0ZSBiZWZvcmUgcmVjZWl2ZWQgYW55IGRhdGEuDQoN
-Cj4gK3N0YXRpYyBpbnQgc3BpX25hbmRfZGV2aWNlX2Jsb2NrX2VyYXNlKHN0cnVjdCBzcGlfbmFu
-ZCAqc25hbmQsDQo+IHVuc2lnbmVkDQo+ICtpbnQgcGFnZV9hZGRyKSB7DQo+ICsJc3RydWN0IHNw
-aV9uYW5kX2RldmljZSAqc25hbmRfZGV2ID0gc25hbmQtPnByaXY7DQo+ICsJc3RydWN0IHNwaV9u
-YW5kX2RldmljZV9jbWQgKmNtZCA9ICZzbmFuZF9kZXYtPmNtZDsNCj4gKw0KPiArCW1lbXNldChj
-bWQsIDAsIHNpemVvZihzdHJ1Y3Qgc3BpX25hbmRfZGV2aWNlX2NtZCkpOw0KPiArCWNtZC0+bl9h
-ZGRyID0gMzsNCj4gKwljbWQtPmFkZHJbMF0gPSAwOw0KDQpQYWdlIGFkZHJlc3MgbWF5IGJleW9u
-ZCAxNiBiaXQgaW4gbGFyZ2UgZGVuc2l0eSBwcm9kdWN0LiANClNvIEkgZG9uJ3QgdGhpbmsgYWRk
-clswXSBjYW4gYmUgZm9yY2VkIHRvIGJlIHNldCAwDQoNCg0KPiArc3RhdGljIGludCBzcGlfbmFu
-ZF9tdDI5Zl9yZWFkX2lkKHN0cnVjdCBzcGlfbmFuZCAqc25hbmQsIHU4ICpidWYpIHsNCj4gKwlz
-dHJ1Y3Qgc3BpX25hbmRfZGV2aWNlICpzbmFuZF9kZXYgPSBzbmFuZC0+cHJpdjsNCj4gKwlzdHJ1
-Y3Qgc3BpX25hbmRfZGV2aWNlX2NtZCAqY21kID0gJnNuYW5kX2Rldi0+Y21kOw0KPiArDQo+ICsJ
-bWVtc2V0KGNtZCwgMCwgc2l6ZW9mKHN0cnVjdCBzcGlfbmFuZF9kZXZpY2VfY21kKSk7DQo+ICsJ
-Y21kLT5uX3J4ID0gU1BJX05BTkRfTVQyOUZfUkVBRElEX0xFTjsNCj4gKwljbWQtPnJ4X2J1ZiA9
-IGJ1ZjsNCj4gKw0KDQpNaWNyb24gU1BJIE5BTkQgbmVlZCAxIG1vcmUgZHVtbXkgYnl0ZSBiZWZv
-cmUgcmVjZWl2ZWQgSUQgZGF0YS4NCkNvZGUgZm9yIG10MjlmX3JlYWRfaWQgc2hvdWxkIGJlIGxp
-a2UgdGhpczoNCg0Kc3RhdGljIGludCBzcGlfbmFuZF9tdDI5Zl9yZWFkX2lkKHN0cnVjdCBzcGlf
-bmFuZCAqc25hbmQsIHU4ICpidWYpIHsNCglzdHJ1Y3Qgc3BpX25hbmRfZGV2aWNlICpzbmFuZF9k
-ZXYgPSBzbmFuZC0+cHJpdjsNCglzdHJ1Y3Qgc3BpX25hbmRfZGV2aWNlX2NtZCAqY21kID0gJnNu
-YW5kX2Rldi0+Y21kOw0KCXU4IGR1bW15ID0gMDsNCgltZW1zZXQoY21kLCAwLCBzaXplb2Yoc3Ry
-dWN0IHNwaV9uYW5kX2RldmljZV9jbWQpKTsNCiINCgljbWQtPm5fdHggPSAxOw0KCWNtZC0+dHhf
-YnVmID0gJmR1bW15Ow0KIg0KCWNtZC0+bl9yeCA9IFNQSV9OQU5EX01UMjlGX1JFQURJRF9MRU47
-DQoJY21kLT5yeF9idWYgPSBidWY7DQoNClRoYW5rcw0KUWkgV2FuZw0KDQo=
+Dear Qi Wang,
+
+Thanks for the review,
+
+On 12/22/2014 01:34 AM, Qi Wang ÍõÆð (qiwang) wrote:
+> Hi Ezequiel,
+> 
+>> +/*
+>> + * Wait until the status register busy bit is cleared.
+>> + * Returns a negatie errno on error or time out, and a non-negative
+>> +status
+>> + * value if the device is ready.
+>> + */
+>> +static int spi_nand_wait_till_ready(struct spi_nand *snand) {
+>> +	unsigned long deadline = jiffies + msecs_to_jiffies(100);
+> 
+> 100ms will be applied to all operation, but I think it would be more
+> make sense to use different timeout value for different operation, 
+> just like Parallel NAND as below:
+> "
+
+Yes, indeed. You are right. Now we need to find out the appropriate
+value in each case. Any suggestions?
+
+> static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+> {
+> 
+> 	int status, state = chip->state;
+> 	unsigned long timeo = (state == FL_ERASING ? 400 : 20);
+> "	
+> 
+> 
+>> +static int spi_nand_write(struct spi_nand *snand) {
+>> +	int ret;
+>> +
+>> +	/* Store the page to cache */
+>> +	ret = snand->store_cache(snand, 0, snand->buf_size, snand-
+>>> data_buf);
+>> +	if (ret < 0) {
+>> +		dev_err(snand->dev, "error %d storing page 0x%x to cache\n",
+>> +			ret, snand->page_addr);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = spi_nand_wait_till_ready(snand);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = snand->write_enable(snand);
+>> +	if (ret < 0) {
+>> +		dev_err(snand->dev, "write enable command failed\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Get page from the device cache into our internal buffer */
+>> +	ret = snand->write_page(snand, snand->page_addr);
+> 
+> 
+> The page program sequence in datasheet is write_enable->program_load->
+> program_execute->read_status. Seems different with the procedure in 
+> your code.
+> 	
+
+Right. I thought calling write_enable() before actually programming the
+page would be enough. Do you think we should do it before the cache
+programming instead?
+
+And what happens if it fails, will we need to call write_disable explicitly?
+
+-- 
+Ezequiel
