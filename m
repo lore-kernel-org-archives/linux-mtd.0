@@ -1,20 +1,21 @@
-Received: from mail-qg0-x22a.google.com ([2607:f8b0:400d:c04::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y3Tzl-0000ss-Sz
- for linux-mtd@lists.infradead.org; Tue, 23 Dec 2014 18:15:46 +0000
-Received: by mail-qg0-f42.google.com with SMTP id q108so4935103qgd.15
- for <linux-mtd@lists.infradead.org>; Tue, 23 Dec 2014 10:15:22 -0800 (PST)
+Received: from mx5.zte.com.cn ([63.217.80.70])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y3avX-0002p8-8i
+ for linux-mtd@lists.infradead.org; Wed, 24 Dec 2014 01:39:52 +0000
+Received: from mse01.zte.com.cn (unknown [10.30.3.20])
+ by Websense Email Security Gateway with ESMTPS id 0C8E63BFBF070
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Dec 2014 09:39:25 +0800 (CST)
+Received: from notes_smtp.zte.com.cn ([10.30.1.239])
+ by mse01.zte.com.cn with ESMTP id sBO1cRSE029272
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Dec 2014 09:38:36 +0800 (GMT-8)
+ (envelope-from liu.song11@zte.com.cn)
+Subject: fix spelling mistake in ubifs.h
+Cc: linux-mtd@lists.infradead.org
+Message-ID: <OFC9D6133D.097A1410-ON48257DB8.0008AFFC-48257DB8.0008ED1F@zte.com.cn>
+From: liu.song11@zte.com.cn
+Date: Wed, 24 Dec 2014 09:38:46 +0800
 MIME-Version: 1.0
-Date: Tue, 23 Dec 2014 23:45:22 +0530
-Message-ID: <CAGnW=BbmpJqvbuznhxXsfZYz0wWMOQ851f+E3hWrAawOSZWtpQ@mail.gmail.com>
-Subject: nand ecc
-From: punnaiah choudary kalluri <kalluripunnaiahchoudary@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Cc: Punnaiah Choudary <kpc528@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-  I have the following confusions regarding the nand ecc algorithms:
-Haming and BCH
+maybe there is a spelling mistake.fix it or ignore it seems both ok, lol.
+---
+ fs/ubifs/ubifs.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Request your help to clarify the below concerns.
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index a06e8d7..fe53006 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -157,7 +157,7 @@
+ #define WORST_COMPR_FACTOR 2
 
-Hamming  Mode:
-   What will happen if the data has more than two bit errors for codeword?
-   Will the nand_correct_data() function returns uncorrectable ecc error ?
+ /*
+- * How much memory is needed for a buffer where we comress a data node.
++ * How much memory is needed for a buffer where we compress a data node.
+  */
+ #define COMPRESSED_DATA_NODE_BUF_SZ \
+ 	(UBIFS_DATA_NODE_SZ + UBIFS_BLOCK_SIZE * WORST_COMPR_FACTOR)
+--
 
-BCH mode:
- Assume that the BCH block can correct upto 24bit errors. what will
-happen if the data
-has more than 24 bit errors?
-Will the nand_bch_correct_data() function returns uncorrectable ecc error?
-
-
-Regards,
-Punnaiah
+--------------------------------------------------------
+ZTE Information Security Notice: The information contained in this mail (and any attachment transmitted herewith) is privileged and confidential and is intended for the exclusive use of the addressee(s).  If you are not an intended recipient, any disclosure, reproduction, distribution or other dissemination or use of the information contained is strictly prohibited.  If you have received this mail in error, please delete it and notify us immediately.
