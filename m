@@ -1,21 +1,12 @@
-Received: from mx5.zte.com.cn ([63.217.80.70])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y3avX-0002p8-8i
- for linux-mtd@lists.infradead.org; Wed, 24 Dec 2014 01:39:52 +0000
-Received: from mse01.zte.com.cn (unknown [10.30.3.20])
- by Websense Email Security Gateway with ESMTPS id 0C8E63BFBF070
- for <linux-mtd@lists.infradead.org>; Wed, 24 Dec 2014 09:39:25 +0800 (CST)
-Received: from notes_smtp.zte.com.cn ([10.30.1.239])
- by mse01.zte.com.cn with ESMTP id sBO1cRSE029272
- for <linux-mtd@lists.infradead.org>; Wed, 24 Dec 2014 09:38:36 +0800 (GMT-8)
- (envelope-from liu.song11@zte.com.cn)
-Subject: fix spelling mistake in ubifs.h
-Cc: linux-mtd@lists.infradead.org
-Message-ID: <OFC9D6133D.097A1410-ON48257DB8.0008AFFC-48257DB8.0008ED1F@zte.com.cn>
-From: liu.song11@zte.com.cn
-Date: Wed, 24 Dec 2014 09:38:46 +0800
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+From: Zhou Wang <wangzhou.bry@gmail.com>
+To: haojian.zhuang@gmail.com, xuwei5@hisilicon.com,
+ Brian Norris <computersforpeace@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v2] mtd: hisilicon: add device tree node for NAND controller
+Date: Wed, 24 Dec 2014 17:31:19 +0800
+Message-Id: <1419413479-32083-1-git-send-email-wangzhou.bry@gmail.com>
+Cc: devicetree@vger.kernel.org, Zhou Wang <wangzhou.bry@gmail.com>,
+ wangzhou1@hisilicon.com, linux-mtd@lists.infradead.org, liguozhu@hisilicon.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +16,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch add dts support for NAND flash controller of Hisilicon Soc Hip04
 
-maybe there is a spelling mistake.fix it or ignore it seems both ok, lol.
+Changes in v2:
+- Base on v3.19-rc1
+- Use nand-ecc-strength, nand-ecc-step-size to replace hisi,nand-ecc-bits
+Changes in v1:
+- Move partition and other board related information into board dts file:
+  hip04-d01.dts
+
+Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
 ---
- fs/ubifs/ubifs.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ arch/arm/boot/dts/hip04-d01.dts |   27 +++++++++++++++++++++++++++
+ arch/arm/boot/dts/hip04.dtsi    |    7 +++++++
+ 2 files changed, 34 insertions(+)
 
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index a06e8d7..fe53006 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -157,7 +157,7 @@
- #define WORST_COMPR_FACTOR 2
-
- /*
-- * How much memory is needed for a buffer where we comress a data node.
-+ * How much memory is needed for a buffer where we compress a data node.
-  */
- #define COMPRESSED_DATA_NODE_BUF_SZ \
- 	(UBIFS_DATA_NODE_SZ + UBIFS_BLOCK_SIZE * WORST_COMPR_FACTOR)
---
-
---------------------------------------------------------
-ZTE Information Security Notice: The information contained in this mail (and any attachment transmitted herewith) is privileged and confidential and is intended for the exclusive use of the addressee(s).  If you are not an intended recipient, any disclosure, reproduction, distribution or other dissemination or use of the information contained is strictly prohibited.  If you have received this mail in error, please delete it and notify us immediately.
+diff --git a/arch/arm/boot/dts/hip04-d01.dts b/arch/arm/boot/dts/hip04-d01.dts
+index 40a9e33..ba04dd5 100644
+--- a/arch/arm/boot/dts/hip04-d01.dts
++++ b/arch/arm/boot/dts/hip04-d01.dts
+@@ -28,5 +28,32 @@
+ 		uart0: uart@4007000 {
+ 			status = "ok";
+ 		};
++
++		nand: nand@4020000 {
++			nand-bus-width = <8>;
++			nand-ecc-mode = "hw";
++			nand-ecc-strength = <16>;
++			nand-ecc-step-size = <1024>;
++
++			partition@0 {
++				label = "nand_text";
++				reg = <0x00000000 0x00400000>;
++			};
++
++			partition@00400000 {
++				label = "nand_monitor";
++				reg = <0x00400000 0x00400000>;
++			};
++
++			partition@00800000 {
++				label = "nand_kernel";
++				reg = <0x00800000 0x00800000>;
++			};
++
++			partition@01000000 {
++				label = "nand_fs";
++				reg = <0x01000000 0x1f000000>;
++			};
++		};
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
+index 2388145..ac32fce 100644
+--- a/arch/arm/boot/dts/hip04.dtsi
++++ b/arch/arm/boot/dts/hip04.dtsi
+@@ -269,6 +269,13 @@
+ 			interrupts = <0 372 4>;
+ 		};
+ 
++		nand: nand@4020000 {
++			compatible = "hisilicon,504-nfc";
++			reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
++			interrupts = <0 379 4>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++		};
+ 	};
+ 
+ 	etb@0,e3c42000 {
+-- 
+1.7.9.5
