@@ -1,13 +1,15 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y481G-0005Si-07
- for linux-mtd@lists.infradead.org; Thu, 25 Dec 2014 12:59:59 +0000
-Message-ID: <549C0A10.3000201@huawei.com>
-Date: Thu, 25 Dec 2014 20:58:56 +0800
+ id 1Y48CP-0002Hb-4K
+ for linux-mtd@lists.infradead.org; Thu, 25 Dec 2014 13:11:29 +0000
+Message-ID: <549C0CC4.9050703@huawei.com>
+Date: Thu, 25 Dec 2014 21:10:28 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH RFC 1/2] UBIFS: fix empty log leb error
+Subject: [PATCH RFC 2/2] UBIFS: scan all log lebs during log replay
+References: <549C0A10.3000201@huawei.com>
+In-Reply-To: <549C0A10.3000201@huawei.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>, shengyong1@huawei.com
@@ -20,38 +22,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If first log leb which is indicated by @log_lnum in mst_node
-is empty, current UBIFS will stop finding cs_node and directly
-mount the partition.
+UBIFS suppose no more log lebs need to be scanned when
+replay_log_leb() return %1. But it is not true because
+some log lebs maybe incorrectly empty and the next leb
+of this empty one may contain valid filesystem data.
 
-This patch fix this problem by checking c->cs_sqnum to
-guarantee the empty leb is not first log leb and return an
-error if the first log leb is incorrectly empty.
+This patch scan all the log lebs during log replaying
+to guarantee these log lebs are in normal state.
+
+I'm not sure if it is a valuable problem and don't know
+if this patch gives a good way to solve this problem
+either.
 
 Signed-off-by: hujianyang <hujianyang@huawei.com>
 ---
- fs/ubifs/replay.c |    9 ++++++++-
- 1 files changed, 8 insertions(+), 1 deletions(-)
+ fs/ubifs/replay.c |   23 +++++++++++++++++++----
+ 1 files changed, 19 insertions(+), 4 deletions(-)
 
 diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 3187925..f13f4b2 100644
+index f13f4b2..5537b90 100644
 --- a/fs/ubifs/replay.c
 +++ b/fs/ubifs/replay.c
-@@ -846,7 +846,14 @@ static int replay_log_leb(struct ubifs_info *c, int lnum, int offs, void *sbuf)
- 	}
+@@ -1014,7 +1014,7 @@ out:
+  */
+ int ubifs_replay_journal(struct ubifs_info *c)
+ {
+-	int err, lnum, free;
++	int err, lnum, free, end;
 
- 	if (sleb->nodes_cnt == 0) {
--		err = 1;
-+		if (unlikely(c->cs_sqnum == 0)) {
-+			/* This is the first log LEB, should not be empty */
-+			ubifs_err("first log leb LEB %d:%d is empty, no CS node exist",
-+				  lnum, offs);
+ 	BUILD_BUG_ON(UBIFS_TRUN_KEY > 5);
+
+@@ -1032,13 +1032,28 @@ int ubifs_replay_journal(struct ubifs_info *c)
+ 	dbg_mnt("start replaying the journal");
+ 	c->replaying = 1;
+ 	lnum = c->ltail_lnum = c->lhead_lnum;
++	end = 0;
+
+ 	do {
+ 		err = replay_log_leb(c, lnum, 0, c->sbuf);
+-		if (err == 1)
++
++		/*
++		 * If @end is set, residual log lebs should be empty or
++		 * contain older ref_nodes. replay_log_leb() must return %1.
++		 */
++		if (unlikely(!err && end)) {
++			ubifs_err("LEB %d is valid but considered to be empty",
++				  lnum);
 +			err = -EINVAL;
-+		} else {
-+			err = 1;
++			goto out;
 +		}
- 		goto out;
- 	}
-
++
++		if (err == 1 && !end) {
+ 			/* We hit the end of the log */
+-			break;
+-		if (err)
++			end = 1;
++		}
++
++		if (err < 0)
+ 			goto out;
+ 		lnum = ubifs_next_log_lnum(c, lnum);
+ 	} while (lnum != c->ltail_lnum);
 -- 
 1.6.0.2
