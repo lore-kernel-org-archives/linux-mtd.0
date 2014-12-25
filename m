@@ -1,19 +1,16 @@
 Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y40HK-0001ev-Pc
- for linux-mtd@lists.infradead.org; Thu, 25 Dec 2014 04:44:04 +0000
-Message-ID: <549B95D6.2070100@huawei.com>
-Date: Thu, 25 Dec 2014 12:43:02 +0800
+ id 1Y481G-0005Si-07
+ for linux-mtd@lists.infradead.org; Thu, 25 Dec 2014 12:59:59 +0000
+Message-ID: <549C0A10.3000201@huawei.com>
+Date: Thu, 25 Dec 2014 20:58:56 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: ubi_check_volume() hung on a single core system
-References: <549AAD57.8020307@huawei.com> <549ABF9D.6030901@nod.at>
-In-Reply-To: <549ABF9D.6030901@nod.at>
-Content-Type: text/plain; charset="windows-1252"
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH RFC 1/2] UBIFS: fix empty log leb error
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, shengyong1@huawei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/12/24 21:29, Richard Weinberger wrote:
-> Am 24.12.2014 um 13:11 schrieb hujianyang:
->> Hi,
->>
->> When I was running mtd-utils/tests/ubi-tests/io_basic.c on a
->> single core system, watchdog reset the OS and printed:
->>
->> ERR:The task of feeding senior watchdog overtimes, system will reset!
->>
->> io_basic.c tests the UBI_IOCVOLUP feature of UBI driver. UBI
->> will perform ubi_check_volume() after updating operation is
->> finished. The used ebs will be scanned for a static volume in
->> this function.
->>
->> If I run schedule() in the loop of eraseblock scanning, the
->> *reset* not happen and the system works in right condition.
->>
->> diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
->> index dbda77e..f4f478c 100644
->> --- a/drivers/mtd/ubi/misc.c
->> +++ b/drivers/mtd/ubi/misc.c
->> @@ -74,6 +74,9 @@ int ubi_check_volume(struct ubi_device *ubi, int vol_id)
->>         for (i = 0; i < vol->used_ebs; i++) {
->>                 int size;
->>
->> +               set_current_state(TASK_UNINTERRUPTIBLE);
->> +               schedule_timeout(HZ/10);
-> 
-> cond_resched() please.
-> 
->>                 if (i == vol->used_ebs - 1)
->>                         size = vol->last_eb_bytes;
->>                 else
->>
->>
->>
->> I think this error can't be re-created on a multi-core system.
->> It can only happen on a single core system. This directly
->> schedule I modified would hurt the performance of volume check.
->>
->> Does anyone interested in this issue?
-> 
-> Of course!
-> 
-> Thanks,
-> //richard
-> 
-> .
-> 
+If first log leb which is indicated by @log_lnum in mst_node
+is empty, current UBIFS will stop finding cs_node and directly
+mount the partition.
 
-Hi Richard,
+This patch fix this problem by checking c->cs_sqnum to
+guarantee the empty leb is not first log leb and return an
+error if the first log leb is incorrectly empty.
 
-Thanks for your suggestion. I've tested it and achieve much better
-performance. Certainly, fix this issue.
+Signed-off-by: hujianyang <hujianyang@huawei.com>
+---
+ fs/ubifs/replay.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
 
-I'd like to send a patch about this problem. Do you think it is
-necessary to fix this in mainline?
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 3187925..f13f4b2 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -846,7 +846,14 @@ static int replay_log_leb(struct ubifs_info *c, int lnum, int offs, void *sbuf)
+ 	}
 
-Thanks,
-Hu
+ 	if (sleb->nodes_cnt == 0) {
+-		err = 1;
++		if (unlikely(c->cs_sqnum == 0)) {
++			/* This is the first log LEB, should not be empty */
++			ubifs_err("first log leb LEB %d:%d is empty, no CS node exist",
++				  lnum, offs);
++			err = -EINVAL;
++		} else {
++			err = 1;
++		}
+ 		goto out;
+ 	}
+
+-- 
+1.6.0.2
