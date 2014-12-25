@@ -1,18 +1,19 @@
-Received: from mx5.zte.com.cn ([63.217.80.70])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y3wsV-0001My-FS
- for linux-mtd@lists.infradead.org; Thu, 25 Dec 2014 01:06:13 +0000
-In-Reply-To: <CAFLxGvw-0o3fMg2VCYT8_6=5zH879QQ8Xaza5vTC_tHcqt-dLA@mail.gmail.com>
-References: <OFC9D6133D.097A1410-ON48257DB8.0008AFFC-48257DB8.0008ED1F@zte.com.cn>
- <CAFLxGvw-0o3fMg2VCYT8_6=5zH879QQ8Xaza5vTC_tHcqt-dLA@mail.gmail.com>
-Subject: [PATCH]Re: fix spelling mistake in ubifs.h
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Message-ID: <OFE5169C5A.1E766A7F-ON48257DB9.0002ABF0-48257DB9.0005E4E5@zte.com.cn>
-From: liu.song11@zte.com.cn
-Date: Thu, 25 Dec 2014 09:05:15 +0800
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y40HK-0001ev-Pc
+ for linux-mtd@lists.infradead.org; Thu, 25 Dec 2014 04:44:04 +0000
+Message-ID: <549B95D6.2070100@huawei.com>
+Date: Thu, 25 Dec 2014 12:43:02 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: ubi_check_volume() hung on a single core system
+References: <549AAD57.8020307@huawei.com> <549ABF9D.6030901@nod.at>
+In-Reply-To: <549ABF9D.6030901@nod.at>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,86 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Richard.
+On 2014/12/24 21:29, Richard Weinberger wrote:
+> Am 24.12.2014 um 13:11 schrieb hujianyang:
+>> Hi,
+>>
+>> When I was running mtd-utils/tests/ubi-tests/io_basic.c on a
+>> single core system, watchdog reset the OS and printed:
+>>
+>> ERR:The task of feeding senior watchdog overtimes, system will reset!
+>>
+>> io_basic.c tests the UBI_IOCVOLUP feature of UBI driver. UBI
+>> will perform ubi_check_volume() after updating operation is
+>> finished. The used ebs will be scanned for a static volume in
+>> this function.
+>>
+>> If I run schedule() in the loop of eraseblock scanning, the
+>> *reset* not happen and the system works in right condition.
+>>
+>> diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
+>> index dbda77e..f4f478c 100644
+>> --- a/drivers/mtd/ubi/misc.c
+>> +++ b/drivers/mtd/ubi/misc.c
+>> @@ -74,6 +74,9 @@ int ubi_check_volume(struct ubi_device *ubi, int vol_id)
+>>         for (i = 0; i < vol->used_ebs; i++) {
+>>                 int size;
+>>
+>> +               set_current_state(TASK_UNINTERRUPTIBLE);
+>> +               schedule_timeout(HZ/10);
+> 
+> cond_resched() please.
+> 
+>>                 if (i == vol->used_ebs - 1)
+>>                         size = vol->last_eb_bytes;
+>>                 else
+>>
+>>
+>>
+>> I think this error can't be re-created on a multi-core system.
+>> It can only happen on a single core system. This directly
+>> schedule I modified would hurt the performance of volume check.
+>>
+>> Does anyone interested in this issue?
+> 
+> Of course!
+> 
+> Thanks,
+> //richard
+> 
+> .
+> 
 
-Thanks for your suggestion. At first I was thought this spelling mistake is just a little mistake,
-because we could easily know the right word by the context.However,little things should also be
-taken seriously, then I revise the description of this patch.
+Hi Richard,
 
-Regards
--------------------------------------------------------------------------------------------------
+Thanks for your suggestion. I've tested it and achieve much better
+performance. Certainly, fix this issue.
 
-When reading the code, I found there is a spelling mistake in ubifs.h, maybe we could fix it.
+I'd like to send a patch about this problem. Do you think it is
+necessary to fix this in mainline?
 
-Signed-off-by: Liu Song <liu.song11@zte.com.cn>
----
- fs/ubifs/ubifs.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index a06e8d7..fe53006 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -157,7 +157,7 @@
- #define WORST_COMPR_FACTOR 2
-
- /*
-- * How much memory is needed for a buffer where we comress a data node.
-+ * How much memory is needed for a buffer where we compress a data node.
-  */
- #define COMPRESSED_DATA_NODE_BUF_SZ \
- 	(UBIFS_DATA_NODE_SZ + UBIFS_BLOCK_SIZE * WORST_COMPR_FACTOR)
---
-
-
-
-
-From:	Richard Weinberger <richard.weinberger@gmail.com>
-To:	liu.song11@zte.com.cn,
-Cc:	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date:	2014-12-25 03:44
-Subject:	Re: fix spelling mistake in ubifs.h
-
-
-
-On Wed, Dec 24, 2014 at 2:38 AM,  <liu.song11@zte.com.cn> wrote:
->
-> maybe there is a spelling mistake.fix it or ignore it seems both ok, lol.
-
-This is not a valid patch description.
-
-> ---
->  fs/ubifs/ubifs.h |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-> index a06e8d7..fe53006 100644
-> --- a/fs/ubifs/ubifs.h
-> +++ b/fs/ubifs/ubifs.h
-> @@ -157,7 +157,7 @@
->  #define WORST_COMPR_FACTOR 2
->
->  /*
-> - * How much memory is needed for a buffer where we comress a data node.
-> + * How much memory is needed for a buffer where we compress a data node.
->   */
->  #define COMPRESSED_DATA_NODE_BUF_SZ \
->         (UBIFS_DATA_NODE_SZ + UBIFS_BLOCK_SIZE * WORST_COMPR_FACTOR)
-> --
->
-> --------------------------------------------------------
-> ZTE Information Security Notice: The information contained in this mail (and any attachment transmitted herewith) is privileged and confidential and is intended for the exclusive use of the addressee(s).  If you are not an intended recipient, any disclosure, reproduction, distribution or other dissemination or use of the information contained is strictly prohibited.  If you have received this mail in error, please delete it and notify us immediately.
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
---
 Thanks,
-//richard
-
-
---------------------------------------------------------
-ZTE Information Security Notice: The information contained in this mail (and any attachment transmitted herewith) is privileged and confidential and is intended for the exclusive use of the addressee(s).  If you are not an intended recipient, any disclosure, reproduction, distribution or other dissemination or use of the information contained is strictly prohibited.  If you have received this mail in error, please delete it and notify us immediately.
+Hu
