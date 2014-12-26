@@ -1,18 +1,23 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y48CP-0002Hb-4K
- for linux-mtd@lists.infradead.org; Thu, 25 Dec 2014 13:11:29 +0000
-Message-ID: <549C0CC4.9050703@huawei.com>
-Date: Thu, 25 Dec 2014 21:10:28 +0800
-From: hujianyang <hujianyang@huawei.com>
+Message-ID: <549D2A28.7000606@atmel.com>
+Date: Fri, 26 Dec 2014 17:28:08 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH RFC 2/2] UBIFS: scan all log lebs during log replay
-References: <549C0A10.3000201@huawei.com>
-In-Reply-To: <549C0A10.3000201@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Andrew Victor <linux@maxim.org.za>
+Subject: Re: [PATCH 1/4] mtd: nand: atmel: Rework driver to separate nfc and
+ nand nodes
+References: <1417732214-3292-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1417732214-3292-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1417732214-3292-2-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, shengyong1@huawei.com
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +27,178 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UBIFS suppose no more log lebs need to be scanned when
-replay_log_leb() return %1. But it is not true because
-some log lebs maybe incorrectly empty and the next leb
-of this empty one may contain valid filesystem data.
+Hi, Boris
 
-This patch scan all the log lebs during log replaying
-to guarantee these log lebs are in normal state.
+On 12/5/2014 6:30 AM, Boris Brezillon wrote:
+> mtd: nand: atmel: Update DT documentation after splitting NFC and NAND
+>
+> The NAND and NFC (NAND Flash Controller) were linked together with a
+> parent <-> child relationship.
+>
+> This model has several drawbacks:
+> - it does not allow for multiple NAND chip handling while the controller
+>    support multi-chip (even though the driver is not ready yet)
+> - it mixes NAND partitions and NFC nodes at the same level (which is a bit
+>    disturbing)
+> - the introduction of the EBI bus implies defining NAND chips under the
+>    EBI node, and the ranges available under the EBI node should be
+>    restricted to EBI address space, while the NFC references several
+>    registers outside of these EBI ranges.
+>
+> Move the NFC node outside of the NAND node, to get a more future-proof
+> DT representation.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+I'm fine with this patch.
+Acked-by: Josh Wu <josh.wu@atmel.com>
 
-I'm not sure if it is a valuable problem and don't know
-if this patch gives a good way to solve this problem
-either.
+Best Regards,
+Josh Wu
 
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- fs/ubifs/replay.c |   23 +++++++++++++++++++----
- 1 files changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index f13f4b2..5537b90 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -1014,7 +1014,7 @@ out:
-  */
- int ubifs_replay_journal(struct ubifs_info *c)
- {
--	int err, lnum, free;
-+	int err, lnum, free, end;
-
- 	BUILD_BUG_ON(UBIFS_TRUN_KEY > 5);
-
-@@ -1032,13 +1032,28 @@ int ubifs_replay_journal(struct ubifs_info *c)
- 	dbg_mnt("start replaying the journal");
- 	c->replaying = 1;
- 	lnum = c->ltail_lnum = c->lhead_lnum;
-+	end = 0;
-
- 	do {
- 		err = replay_log_leb(c, lnum, 0, c->sbuf);
--		if (err == 1)
-+
-+		/*
-+		 * If @end is set, residual log lebs should be empty or
-+		 * contain older ref_nodes. replay_log_leb() must return %1.
-+		 */
-+		if (unlikely(!err && end)) {
-+			ubifs_err("LEB %d is valid but considered to be empty",
-+				  lnum);
-+			err = -EINVAL;
-+			goto out;
-+		}
-+
-+		if (err == 1 && !end) {
- 			/* We hit the end of the log */
--			break;
--		if (err)
-+			end = 1;
-+		}
-+
-+		if (err < 0)
- 			goto out;
- 		lnum = ubifs_next_log_lnum(c, lnum);
- 	} while (lnum != c->ltail_lnum);
--- 
-1.6.0.2
+> ---
+>   drivers/mtd/nand/atmel_nand.c | 76 ++++++++++++++++++++++++++++++++++---------
+>   1 file changed, 61 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index 19d1e9d..0239fe6 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -123,6 +123,7 @@ struct atmel_nand_host {
+>   	struct dma_chan		*dma_chan;
+>   
+>   	struct atmel_nfc	*nfc;
+> +	bool			wait_for_nfc;
+>   
+>   	bool			has_pmecc;
+>   	u8			pmecc_corr_cap;
+> @@ -1423,6 +1424,12 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
+>   		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
+>   }
+>   
+> +static const struct of_device_id atmel_nand_nfc_match[] = {
+> +	{ .compatible = "atmel,sama5d3-nfc" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, atmel_nand_nfc_match);
+> +
+>   static int atmel_of_init_port(struct atmel_nand_host *host,
+>   			      struct device_node *np)
+>   {
+> @@ -1431,6 +1438,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+>   	int ecc_mode;
+>   	struct atmel_nand_data *board = &host->board;
+>   	enum of_gpio_flags flags = 0;
+> +	struct device_node *child;
+>   
+>   	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
+>   		if (val >= 32) {
+> @@ -1467,8 +1475,30 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+>   
+>   	host->has_pmecc = of_property_read_bool(np, "atmel,has-pmecc");
+>   
+> -	/* load the nfc driver if there is */
+> -	of_platform_populate(np, NULL, NULL, host->dev);
+> +	/*
+> +	 * Backward compatibility with DTs defining the NFC node as their
+> +	 * child.
+> +	 * The new model reference the NFC so that we can define several
+> +	 * chip controlled by the same controller.
+> +	 */
+> +	for_each_available_child_of_node(np, child) {
+> +		/*
+> +		 * If we find an NFC node under the NAND node, then populate
+> +		 * the device so that it can be probed, and wait for it.
+> +		 */
+> +		if (of_match_node(atmel_nand_nfc_match, child)) {
+> +			of_platform_populate(np, NULL, NULL, host->dev);
+> +			host->wait_for_nfc = true;
+> +			break;
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * If there's an atmel,nfc property we should access the NAND
+> +	 * through the NFC.
+> +	 */
+> +	if (of_property_read_bool(np, "atmel,nfc"))
+> +		host->wait_for_nfc = true;
+>   
+>   	if (!(board->ecc_mode == NAND_ECC_HW) || !host->has_pmecc)
+>   		return 0;	/* Not using PMECC */
+> @@ -2032,10 +2062,6 @@ static int atmel_nand_probe(struct platform_device *pdev)
+>   	if (!host)
+>   		return -ENOMEM;
+>   
+> -	res = platform_driver_register(&atmel_nand_nfc_driver);
+> -	if (res)
+> -		dev_err(&pdev->dev, "atmel_nand: can't register NFC driver\n");
+> -
+>   	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>   	host->io_base = devm_ioremap_resource(&pdev->dev, mem);
+>   	if (IS_ERR(host->io_base)) {
+> @@ -2089,6 +2115,13 @@ static int atmel_nand_probe(struct platform_device *pdev)
+>   			goto err_nand_ioremap;
+>   		}
+>   	} else {
+> +		/*
+> +		 * If the NFC is not initialized (or not probed) and the device
+> +		 * is asking to be accessed through the NFC then defer the
+> +		 * probe.
+> +		 */
+> +		if (host->wait_for_nfc)
+> +			return -EPROBE_DEFER;
+>   		res = atmel_nand_set_enable_ready_pins(mtd);
+>   		if (res)
+>   			goto err_nand_ioremap;
+> @@ -2230,8 +2263,6 @@ static int atmel_nand_remove(struct platform_device *pdev)
+>   	if (host->dma_chan)
+>   		dma_release_channel(host->dma_chan);
+>   
+> -	platform_driver_unregister(&atmel_nand_nfc_driver);
+> -
+>   	return 0;
+>   }
+>   
+> @@ -2303,12 +2334,6 @@ static int atmel_nand_nfc_remove(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   
+> -static const struct of_device_id atmel_nand_nfc_match[] = {
+> -	{ .compatible = "atmel,sama5d3-nfc" },
+> -	{ /* sentinel */ }
+> -};
+> -MODULE_DEVICE_TABLE(of, atmel_nand_nfc_match);
+> -
+>   static struct platform_driver atmel_nand_nfc_driver = {
+>   	.driver = {
+>   		.name = "atmel_nand_nfc",
+> @@ -2329,7 +2354,28 @@ static struct platform_driver atmel_nand_driver = {
+>   	},
+>   };
+>   
+> -module_platform_driver(atmel_nand_driver);
+> +static int __init atmel_nand_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = platform_driver_register(&atmel_nand_nfc_driver);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = platform_driver_register(&atmel_nand_driver);
+> +	if (ret)
+> +		platform_driver_unregister(&atmel_nand_nfc_driver);
+> +
+> +	return ret;
+> +}
+> +module_init(atmel_nand_init);
+> +
+> +static void __exit atmel_nand_exit(void)
+> +{
+> +	platform_driver_unregister(&atmel_nand_driver);
+> +	platform_driver_unregister(&atmel_nand_nfc_driver);
+> +}
+> +module_exit(atmel_nand_exit);
+>   
+>   MODULE_LICENSE("GPL");
+>   MODULE_AUTHOR("Rick Bronson");
