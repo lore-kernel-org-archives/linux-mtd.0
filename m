@@ -1,25 +1,23 @@
-Date: Mon, 29 Dec 2014 13:30:59 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH 2/4] mtd: nand: atmel: Update DT documentation after
- splitting NFC and NAND
-Message-ID: <20141229133059.1c3c6a6e@bbrezillon>
-In-Reply-To: <549D2A9D.50407@atmel.com>
-References: <1417732214-3292-1-git-send-email-boris.brezillon@free-electrons.com>
- <1417732214-3292-3-git-send-email-boris.brezillon@free-electrons.com>
- <549D2A9D.50407@atmel.com>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y5b7J-0007JM-F9
+ for linux-mtd@lists.infradead.org; Mon, 29 Dec 2014 14:16:17 +0000
+Message-ID: <54A16217.1060006@codeaurora.org>
+Date: Mon, 29 Dec 2014 16:15:51 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: hujianyang <hujianyang@huawei.com>
+Subject: Re: [PATCH V6] UBI: Extend UBI layer debug/messaging capabilities
+References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>
+ <54A0C70D.7040706@huawei.com>
+In-Reply-To: <54A0C70D.7040706@huawei.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- David Woodhouse <dwmw2@infradead.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
+Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 26 Dec 2014 17:30:05 +0800
-Josh Wu <josh.wu@atmel.com> wrote:
+Hi Hu,
 
-> Hi, Boris
-> 
-> Thanks for the patch.
-> 
-> You need to rebase on the top of current mtd-l2 git tree. As I had some 
-> change on the binding document.
+On 12/29/2014 5:14 AM, hujianyang wrote:
+> On 2014/11/3 21:58, Tanya Brokhman wrote:
+>> If there is more then one UBI device mounted, there is no way to
+>> distinguish between messages from different UBI devices.
+>> Add device number to all ubi layer message types.
+>>
+>> The R/O block driver messages were replaced by pr_* since
+>> ubi_device structure is not used by it.
+>>
+>> Amended a bit by Artem.
+>>
+>> Signed-off-by: Tanya Brokhman <tlinder@codeaurora.org>
+>> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>> ---
+>> Changes from V1:
+>
+>
+> Hi Artem and Tanya,
+>
+> Do you think the similar effort is worth to be done on ubifs-level?
 
-Sure, I'll do it, but I'd like to have feedback from Nicolas, Brian and
-at least one DT maintainer first.
+We already did this for UBIFS as well and have been working with this 
+patch for some time now. Its in our todo to share it, just got pulled 
+into some urgent staff unfortunately.
+
 
 Thanks,
-
-Boris
-
+Tanya Brokhman
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
