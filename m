@@ -1,17 +1,12 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y5nvu-0004yx-D7
- for linux-mtd@lists.infradead.org; Tue, 30 Dec 2014 03:57:23 +0000
-Message-ID: <54A22259.3000608@huawei.com>
-Date: Tue, 30 Dec 2014 11:56:09 +0800
-From: hujianyang <hujianyang@huawei.com>
-MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBI: fix soft lockup in ubi_check_volume()
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>, morgan.wang@huawei.com
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@fb.com>
+Subject: [PATCH 2/8] fs: kill BDI_CAP_SWAP_BACKED
+Date: Tue, 30 Dec 2014 09:57:33 +0100
+Message-Id: <1419929859-24427-3-git-send-email-hch@lst.de>
+In-Reply-To: <1419929859-24427-1-git-send-email-hch@lst.de>
+References: <1419929859-24427-1-git-send-email-hch@lst.de>
+Cc: David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-mm@kvack.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +16,207 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Running mtd-utils/tests/ubi-tests/io_basic.c could cause
-soft lockup or watchdog reset. It is because *updatevol*
-will perform ubi_check_volume() after updating finish
-and this function will full scan the updated lebs if the
-volume is initialized as STATIC_VOLUME.
+This bdi flag isn't too useful - we can determine that a vma is backed by
+either swap or shmem trivially in the caller.
 
-This patch adds *cond_resched()* in the loop of lebs scan
-to avoid soft lockup.
+This also allows removing the backing_dev_info instaces for swap and shmem
+in favor of noop_backing_dev_info.
 
-Helped by Richard Weinberger <richard@nod.at>
-
-[ 2158.067096] INFO: rcu_sched self-detected stall on CPU { 1}  (t=2101 jiffies g=1606 c=1605 q=56)
-[ 2158.172867] CPU: 1 PID: 2073 Comm: io_basic Tainted: G           O 3.10.53 #21
-[ 2158.172898] [<c000f624>] (unwind_backtrace+0x0/0x120) from [<c000c294>] (show_stack+0x10/0x14)
-[ 2158.172918] [<c000c294>] (show_stack+0x10/0x14) from [<c008ac3c>] (rcu_check_callbacks+0x1c0/0x660)
-[ 2158.172936] [<c008ac3c>] (rcu_check_callbacks+0x1c0/0x660) from [<c002b480>] (update_process_times+0x38/0x64)
-[ 2158.172953] [<c002b480>] (update_process_times+0x38/0x64) from [<c005ff38>] (tick_sched_handle+0x54/0x60)
-[ 2158.172966] [<c005ff38>] (tick_sched_handle+0x54/0x60) from [<c00601ac>] (tick_sched_timer+0x44/0x74)
-[ 2158.172978] [<c00601ac>] (tick_sched_timer+0x44/0x74) from [<c003f348>] (__run_hrtimer+0xc8/0x1b8)
-[ 2158.172992] [<c003f348>] (__run_hrtimer+0xc8/0x1b8) from [<c003fd9c>] (hrtimer_interrupt+0x128/0x2a4)
-[ 2158.173007] [<c003fd9c>] (hrtimer_interrupt+0x128/0x2a4) from [<c0246f1c>] (arch_timer_handler_virt+0x28/0x30)
-[ 2158.173022] [<c0246f1c>] (arch_timer_handler_virt+0x28/0x30) from [<c0086214>] (handle_percpu_devid_irq+0x9c/0x124)
-[ 2158.173036] [<c0086214>] (handle_percpu_devid_irq+0x9c/0x124) from [<c0082bd8>] (generic_handle_irq+0x20/0x30)
-[ 2158.173049] [<c0082bd8>] (generic_handle_irq+0x20/0x30) from [<c000969c>] (handle_IRQ+0x64/0x8c)
-[ 2158.173060] [<c000969c>] (handle_IRQ+0x64/0x8c) from [<c0008544>] (gic_handle_irq+0x3c/0x60)
-[ 2158.173074] [<c0008544>] (gic_handle_irq+0x3c/0x60) from [<c02f0f80>] (__irq_svc+0x40/0x50)
-[ 2158.173083] Exception stack(0xc4043c98 to 0xc4043ce0)
-[ 2158.173092] 3c80:                                                       c4043ce4 00000019
-[ 2158.173102] 3ca0: 1f8a865f c050ad10 1f8a864c 00000031 c04b5970 0003ebce 00000000 f3550000
-[ 2158.173113] 3cc0: bf00bc68 00000800 0003ebce c4043ce0 c0186d14 c0186cb8 80000013 ffffffff
-[ 2158.173130] [<c02f0f80>] (__irq_svc+0x40/0x50) from [<c0186cb8>] (read_current_timer+0x4/0x38)
-[ 2158.173145] [<c0186cb8>] (read_current_timer+0x4/0x38) from [<1f8a865f>] (0x1f8a865f)
-[ 2183.927097] BUG: soft lockup - CPU#1 stuck for 22s! [io_basic:2073]
-[ 2184.002229] Modules linked in: nandflash(O) [last unloaded: nandflash]
-
-Signed-off-by: Wang Kai <morgan.wang@huawei.com>
-Signed-off-by: hujianyang <hujianyang@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/mtd/ubi/misc.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ include/linux/backing-dev.h | 13 -------------
+ mm/madvise.c                | 19 +++++++++++--------
+ mm/shmem.c                  | 25 +++++++------------------
+ mm/swap.c                   |  2 --
+ mm/swap_state.c             |  7 +------
+ 5 files changed, 19 insertions(+), 47 deletions(-)
 
-diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
-index dbda77e..2a45ac2 100644
---- a/drivers/mtd/ubi/misc.c
-+++ b/drivers/mtd/ubi/misc.c
-@@ -74,6 +74,8 @@ int ubi_check_volume(struct ubi_device *ubi, int vol_id)
- 	for (i = 0; i < vol->used_ebs; i++) {
- 		int size;
-
-+		cond_resched();
-+
- 		if (i == vol->used_ebs - 1)
- 			size = vol->last_eb_bytes;
- 		else
+diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+index 5da6012..e936cea 100644
+--- a/include/linux/backing-dev.h
++++ b/include/linux/backing-dev.h
+@@ -238,8 +238,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+  * BDI_CAP_WRITE_MAP:      Can be mapped for writing
+  * BDI_CAP_EXEC_MAP:       Can be mapped for execution
+  *
+- * BDI_CAP_SWAP_BACKED:    Count shmem/tmpfs objects as swap-backed.
+- *
+  * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
+  */
+ #define BDI_CAP_NO_ACCT_DIRTY	0x00000001
+@@ -250,7 +248,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+ #define BDI_CAP_WRITE_MAP	0x00000020
+ #define BDI_CAP_EXEC_MAP	0x00000040
+ #define BDI_CAP_NO_ACCT_WB	0x00000080
+-#define BDI_CAP_SWAP_BACKED	0x00000100
+ #define BDI_CAP_STABLE_WRITES	0x00000200
+ #define BDI_CAP_STRICTLIMIT	0x00000400
+ 
+@@ -329,11 +326,6 @@ static inline bool bdi_cap_account_writeback(struct backing_dev_info *bdi)
+ 				      BDI_CAP_NO_WRITEBACK));
+ }
+ 
+-static inline bool bdi_cap_swap_backed(struct backing_dev_info *bdi)
+-{
+-	return bdi->capabilities & BDI_CAP_SWAP_BACKED;
+-}
+-
+ static inline bool mapping_cap_writeback_dirty(struct address_space *mapping)
+ {
+ 	return bdi_cap_writeback_dirty(mapping->backing_dev_info);
+@@ -344,11 +336,6 @@ static inline bool mapping_cap_account_dirty(struct address_space *mapping)
+ 	return bdi_cap_account_dirty(mapping->backing_dev_info);
+ }
+ 
+-static inline bool mapping_cap_swap_backed(struct address_space *mapping)
+-{
+-	return bdi_cap_swap_backed(mapping->backing_dev_info);
+-}
+-
+ static inline int bdi_sched_wait(void *word)
+ {
+ 	schedule();
+diff --git a/mm/madvise.c b/mm/madvise.c
+index a271adc..073b41a 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -222,19 +222,22 @@ static long madvise_willneed(struct vm_area_struct *vma,
+ 	struct file *file = vma->vm_file;
+ 
+ #ifdef CONFIG_SWAP
+-	if (!file || mapping_cap_swap_backed(file->f_mapping)) {
++	if (!file) {
+ 		*prev = vma;
+-		if (!file)
+-			force_swapin_readahead(vma, start, end);
+-		else
+-			force_shm_swapin_readahead(vma, start, end,
+-						file->f_mapping);
++		force_swapin_readahead(vma, start, end);
+ 		return 0;
+ 	}
+-#endif
+-
++	
++	if (shmem_mapping(file->f_mapping)) {
++		*prev = vma;
++		force_shm_swapin_readahead(vma, start, end,
++					file->f_mapping);
++		return 0;
++	}
++#else
+ 	if (!file)
+ 		return -EBADF;
++#endif
+ 
+ 	if (file->f_mapping->a_ops->get_xip_mem) {
+ 		/* no bad return value, but ignore advice */
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 73ba1df..1b77eaf 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -191,11 +191,6 @@ static const struct inode_operations shmem_dir_inode_operations;
+ static const struct inode_operations shmem_special_inode_operations;
+ static const struct vm_operations_struct shmem_vm_ops;
+ 
+-static struct backing_dev_info shmem_backing_dev_info  __read_mostly = {
+-	.ra_pages	= 0,	/* No readahead */
+-	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK | BDI_CAP_SWAP_BACKED,
+-};
+-
+ static LIST_HEAD(shmem_swaplist);
+ static DEFINE_MUTEX(shmem_swaplist_mutex);
+ 
+@@ -765,11 +760,11 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
+ 		goto redirty;
+ 
+ 	/*
+-	 * shmem_backing_dev_info's capabilities prevent regular writeback or
+-	 * sync from ever calling shmem_writepage; but a stacking filesystem
+-	 * might use ->writepage of its underlying filesystem, in which case
+-	 * tmpfs should write out to swap only in response to memory pressure,
+-	 * and not for the writeback threads or sync.
++	 * Our capabilities prevent regular writeback or sync from ever calling
++	 * shmem_writepage; but a stacking filesystem might use ->writepage of
++	 * its underlying filesystem, in which case tmpfs should write out to
++	 * swap only in response to memory pressure, and not for the writeback
++	 * threads or sync.
+ 	 */
+ 	if (!wbc->for_reclaim) {
+ 		WARN_ON_ONCE(1);	/* Still happens? Tell us about it! */
+@@ -1415,7 +1410,7 @@ static struct inode *shmem_get_inode(struct super_block *sb, const struct inode
+ 		inode->i_ino = get_next_ino();
+ 		inode_init_owner(inode, dir, mode);
+ 		inode->i_blocks = 0;
+-		inode->i_mapping->backing_dev_info = &shmem_backing_dev_info;
++		inode->i_mapping->backing_dev_info = &noop_backing_dev_info;
+ 		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+ 		inode->i_generation = get_seconds();
+ 		info = SHMEM_I(inode);
+@@ -1461,7 +1456,7 @@ static struct inode *shmem_get_inode(struct super_block *sb, const struct inode
+ 
+ bool shmem_mapping(struct address_space *mapping)
+ {
+-	return mapping->backing_dev_info == &shmem_backing_dev_info;
++	return mapping->host->i_sb->s_op == &shmem_ops;
+ }
+ 
+ #ifdef CONFIG_TMPFS
+@@ -3226,10 +3221,6 @@ int __init shmem_init(void)
+ 	if (shmem_inode_cachep)
+ 		return 0;
+ 
+-	error = bdi_init(&shmem_backing_dev_info);
+-	if (error)
+-		goto out4;
+-
+ 	error = shmem_init_inodecache();
+ 	if (error)
+ 		goto out3;
+@@ -3253,8 +3244,6 @@ out1:
+ out2:
+ 	shmem_destroy_inodecache();
+ out3:
+-	bdi_destroy(&shmem_backing_dev_info);
+-out4:
+ 	shm_mnt = ERR_PTR(error);
+ 	return error;
+ }
+diff --git a/mm/swap.c b/mm/swap.c
+index 8a12b33..4e0109a 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -1138,8 +1138,6 @@ void __init swap_setup(void)
+ #ifdef CONFIG_SWAP
+ 	int i;
+ 
+-	if (bdi_init(swapper_spaces[0].backing_dev_info))
+-		panic("Failed to init swap bdi");
+ 	for (i = 0; i < MAX_SWAPFILES; i++) {
+ 		spin_lock_init(&swapper_spaces[i].tree_lock);
+ 		INIT_LIST_HEAD(&swapper_spaces[i].i_mmap_nonlinear);
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 9711342..1c137b6 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -32,17 +32,12 @@ static const struct address_space_operations swap_aops = {
+ #endif
+ };
+ 
+-static struct backing_dev_info swap_backing_dev_info = {
+-	.name		= "swap",
+-	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK | BDI_CAP_SWAP_BACKED,
+-};
+-
+ struct address_space swapper_spaces[MAX_SWAPFILES] = {
+ 	[0 ... MAX_SWAPFILES - 1] = {
+ 		.page_tree	= RADIX_TREE_INIT(GFP_ATOMIC|__GFP_NOWARN),
+ 		.i_mmap_writable = ATOMIC_INIT(0),
+ 		.a_ops		= &swap_aops,
+-		.backing_dev_info = &swap_backing_dev_info,
++		.backing_dev_info = &noop_backing_dev_info,
+ 	}
+ };
+ 
 -- 
-1.6.0.2
+1.9.1
