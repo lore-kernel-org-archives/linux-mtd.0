@@ -1,19 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y61vt-0007zf-EO
- for linux-mtd@lists.infradead.org; Tue, 30 Dec 2014 18:54:18 +0000
-Date: Tue, 30 Dec 2014 19:53:49 +0100
+ id 1Y62BE-0005Lt-WA
+ for linux-mtd@lists.infradead.org; Tue, 30 Dec 2014 19:10:10 +0000
+Date: Tue, 30 Dec 2014 20:09:46 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Oleksij Rempel <linux@rempel-privat.de>
-Subject: Re: [PATCH] nand: add Types of controllers from ECC point of view
-Message-ID: <20141230195349.12cafd01@bbrezillon>
-In-Reply-To: <1419677195-4900-1-git-send-email-linux@rempel-privat.de>
-References: <1419677195-4900-1-git-send-email-linux@rempel-privat.de>
+Subject: Re: [PATCH RFC v2] mtd: nand: add asm9260 NFC driver
+Message-ID: <20141230200946.277c56c0@bbrezillon>
+In-Reply-To: <1419962972-5845-1-git-send-email-linux@rempel-privat.de>
+References: <20141217171552.27fb9ce8@bbrezillon>
+ <1419962972-5845-1-git-send-email-linux@rempel-privat.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,79 +26,116 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Oleksij,
 
-On Sat, 27 Dec 2014 11:46:35 +0100
+I haven't reviewed the driver code yet, but highlighted warnings
+reported by checkpatch.
+I'll try to give a full review soon.
+
+On Tue, 30 Dec 2014 19:09:32 +0100
 Oleksij Rempel <linux@rempel-privat.de> wrote:
 
-> it is mostly copy&paste of Boris Brezillons answer on linux-mtd list.
+> Add driver for Nand Flash Controller used on Alphascales ASM9260 chips.
+> The IP core of this controller has some similarities with
+> Evatronix NANDFLASH-CTRL IP (unkown revision), so probably it can be reused
 
-Please describe what your patch does, not where it comes from.
-If I wanted I'd ask you to add my SoB...
+WARNING: 'unkown' may be misspelled - perhaps 'unknown'?
+#20: 
+Evatronix NANDFLASH-CTRL IP (unkown revision), so probably it can be
+reused
 
+> by some other SoCs.
 > 
 > Signed-off-by: Oleksij Rempel <linux@rempel-privat.de>
 > ---
->  doc/nand.xml | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+>  drivers/mtd/nand/Kconfig        |   7 +
+>  drivers/mtd/nand/Makefile       |   1 +
+>  drivers/mtd/nand/asm9260_nand.c | 989 ++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 997 insertions(+)
+>  create mode 100644 drivers/mtd/nand/asm9260_nand.c
 > 
-> diff --git a/doc/nand.xml b/doc/nand.xml
-> index 281e0e0..197241c 100644
-> --- a/doc/nand.xml
-> +++ b/doc/nand.xml
-> @@ -113,6 +113,21 @@ protection or connected to VCC to enable writes unconditionally. As NAND flash u
->  a command driven programming and erasing, an  accidental write or erase is not 
->  likely to happen. The Ready / Busy output is not necessary for operation, 
->   but it can be tied to a GPIO or an interrupt line. </p>
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index dd10646..580a608 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -41,6 +41,13 @@ config MTD_SM_COMMON
+>  	tristate
+>  	default n
+>  
+> +config MTD_NAND_ASM9260
+> +	tristate "NFC support for ASM9260 SoC"
+> +	depends on OF
+> +	default n
+> +	help
+> +	  Enable support for the NAND controller found on Alphascale ASM9260 SoC.
 > +
-> +<h3>Types of controllers from ECC point of view</h3>
+>  config MTD_NAND_DENALI
+>          tristate "Support Denali NAND controller"
+>          depends on HAS_DMA
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index 9c847e4..08d660a 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
 
-This paragraph has nothing to do with NAND Filesystems and thus should
-be placed in its own section.
-Moreover, I'm not sure the title is clear enough. How about
+[...]
 
-<h2>ECC controllers</h3>
+> +
+> +static int __init asm9260_nand_cached_config(struct asm9260_nand_priv *priv)
+> +{
+> +	struct nand_chip *nand = &priv->nand;
+> +	struct mtd_info *mtd = &priv->mtd;
+> +	u32 addr_cycles, col_cycles, pages_per_block;
+> +
+> +	pages_per_block = mtd->erasesize / mtd->writesize;
+> +	/* max 256P, min 32P */
+> +	if (pages_per_block & ~(0x000001e0)) {
+> +		dev_err(priv->dev, "Unsuported erasesize 0x%x\n",
 
-<!--description of what ECC controllers are-->
+WARNING: 'Unsuported' may be misspelled - perhaps 'Unsupported'?
+#732: FILE: drivers/mtd/nand/asm9260_nand.c:666:
++		dev_err(priv->dev, "Unsuported erasesize 0x%x\n",
 
-<!--other stuff related to ECC-->
+> +				mtd->erasesize);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* max 32K, min 256. */
+> +	if (mtd->writesize & ~(0x0000ff00)) {
+> +		dev_err(priv->dev, "Unsuported writesize 0x%x\n",
 
-<h3>BCH Algorithm</h3>
+Ditto
 
-<!--description of BCH algorithm -->
+> +				mtd->erasesize);
+> +		return -EINVAL;
+> +	}
+> +
 
-<h4>ECC bytes for empty pages (filled with 0xff)</h4>
+[...]
 
-<!-- put some context here -->
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id asm9260_nand_match[] = {
+> +	{
+> +		.compatible   = "alphascale,asm9260-nand",
 
-<!-- then the description below (not sure you should directly reuse
-my words though) -->
+WARNING: DT compatible string "alphascale,asm9260-nand" appears
+un-documented -- check ./Documentation/devicetree/bindings/ #1036:
+FILE: drivers/mtd/nand/asm9260_nand.c:970:
++		.compatible   = "alphascale,asm9260-nand",
 
-> +<p>1) Wiser controllers are generating 0xff ECC bytes for a data chunk
-> +(chunk == ECC step size) filled with 0xff. With BCH algorithms this is
-> +easily done by XORing the ECC bytes with the appropriate pattern (see
-> +soft BCH implementation)</p>
-> +<p>2) Some controller just verify if the data chunk + ECC bytes are all
-> +0xff before passing it to the ECC engine. If they are filled with 0xff
-> +the ECC correction is bypassed.</p>
-> +<p>This method has one drawback: it does not properly handle bitflips
-> +occurring in erased pages (if one bitflip occurs the NAND controller
-> +consider the chunk as not empty, and pass it to the BCH engine).</p>
-> +<p>3) The controller does not handle erased pages at all, and in this case
-> +you'll have to manually test it (see is_buf_blank in drivers/mtd/nand/pxa3xx_nand.c) when you
-> +encounter an ECC error.</p>
 
-Please use:
+Add a patch documenting the DT bindings used by your driver.
 
-<ol>
-<li>Wiser controllers are generating 0xff ECC bytes for a data
-chunk...</li>
-<li>...</li>
-</ol>
+
+WARNING: DT compatible string vendor "alphascale" appears un-documented
+-- check ./Documentation/devicetree/bindings/vendor-prefixes.txt #1036:
+FILE: drivers/mtd/nand/asm9260_nand.c:970:
++		.compatible   = "alphascale,asm9260-nand",
 
 
 Regards,
 
 Boris
-
 -- 
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
