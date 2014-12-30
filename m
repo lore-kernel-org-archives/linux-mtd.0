@@ -1,23 +1,17 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y5lcD-0007Yd-7O
- for linux-mtd@lists.infradead.org; Tue, 30 Dec 2014 01:28:54 +0000
-Message-ID: <54A1FF8D.4010301@huawei.com>
-Date: Tue, 30 Dec 2014 09:27:41 +0800
+ id 1Y5nvu-0004yx-D7
+ for linux-mtd@lists.infradead.org; Tue, 30 Dec 2014 03:57:23 +0000
+Message-ID: <54A22259.3000608@huawei.com>
+Date: Tue, 30 Dec 2014 11:56:09 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Subject: Re: [PATCH V6] UBI: Extend UBI layer debug/messaging capabilities
-References: <1415023112-21704-1-git-send-email-tlinder@codeaurora.org>
- <54A0C70D.7040706@huawei.com> <54A16217.1060006@codeaurora.org>
-In-Reply-To: <54A16217.1060006@codeaurora.org>
-Content-Type: text/plain; charset="windows-1252"
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] UBI: fix soft lockup in ubi_check_volume()
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>, morgan.wang@huawei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +21,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/12/29 22:15, Tanya Brokhman wrote:
-> Hi Hu,
-> 
-> On 12/29/2014 5:14 AM, hujianyang wrote:
->> On 2014/11/3 21:58, Tanya Brokhman wrote:
->>> If there is more then one UBI device mounted, there is no way to
->>> distinguish between messages from different UBI devices.
->>> Add device number to all ubi layer message types.
->>>
->>> The R/O block driver messages were replaced by pr_* since
->>> ubi_device structure is not used by it.
->>>
->>> Amended a bit by Artem.
->>>
->>> Signed-off-by: Tanya Brokhman <tlinder@codeaurora.org>
->>> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->>> ---
->>> Changes from V1:
->>
->>
->> Hi Artem and Tanya,
->>
->> Do you think the similar effort is worth to be done on ubifs-level?
-> 
-> We already did this for UBIFS as well and have been working with this patch for some time now. Its in our todo to share it, just got pulled into some urgent staff unfortunately.
-> 
+Running mtd-utils/tests/ubi-tests/io_basic.c could cause
+soft lockup or watchdog reset. It is because *updatevol*
+will perform ubi_check_volume() after updating finish
+and this function will full scan the updated lebs if the
+volume is initialized as STATIC_VOLUME.
 
-Got it~!
+This patch adds *cond_resched()* in the loop of lebs scan
+to avoid soft lockup.
 
-I'd like to wait for your patch, thanks for your work.
+Helped by Richard Weinberger <richard@nod.at>
 
-Hu
+[ 2158.067096] INFO: rcu_sched self-detected stall on CPU { 1}  (t=2101 jiffies g=1606 c=1605 q=56)
+[ 2158.172867] CPU: 1 PID: 2073 Comm: io_basic Tainted: G           O 3.10.53 #21
+[ 2158.172898] [<c000f624>] (unwind_backtrace+0x0/0x120) from [<c000c294>] (show_stack+0x10/0x14)
+[ 2158.172918] [<c000c294>] (show_stack+0x10/0x14) from [<c008ac3c>] (rcu_check_callbacks+0x1c0/0x660)
+[ 2158.172936] [<c008ac3c>] (rcu_check_callbacks+0x1c0/0x660) from [<c002b480>] (update_process_times+0x38/0x64)
+[ 2158.172953] [<c002b480>] (update_process_times+0x38/0x64) from [<c005ff38>] (tick_sched_handle+0x54/0x60)
+[ 2158.172966] [<c005ff38>] (tick_sched_handle+0x54/0x60) from [<c00601ac>] (tick_sched_timer+0x44/0x74)
+[ 2158.172978] [<c00601ac>] (tick_sched_timer+0x44/0x74) from [<c003f348>] (__run_hrtimer+0xc8/0x1b8)
+[ 2158.172992] [<c003f348>] (__run_hrtimer+0xc8/0x1b8) from [<c003fd9c>] (hrtimer_interrupt+0x128/0x2a4)
+[ 2158.173007] [<c003fd9c>] (hrtimer_interrupt+0x128/0x2a4) from [<c0246f1c>] (arch_timer_handler_virt+0x28/0x30)
+[ 2158.173022] [<c0246f1c>] (arch_timer_handler_virt+0x28/0x30) from [<c0086214>] (handle_percpu_devid_irq+0x9c/0x124)
+[ 2158.173036] [<c0086214>] (handle_percpu_devid_irq+0x9c/0x124) from [<c0082bd8>] (generic_handle_irq+0x20/0x30)
+[ 2158.173049] [<c0082bd8>] (generic_handle_irq+0x20/0x30) from [<c000969c>] (handle_IRQ+0x64/0x8c)
+[ 2158.173060] [<c000969c>] (handle_IRQ+0x64/0x8c) from [<c0008544>] (gic_handle_irq+0x3c/0x60)
+[ 2158.173074] [<c0008544>] (gic_handle_irq+0x3c/0x60) from [<c02f0f80>] (__irq_svc+0x40/0x50)
+[ 2158.173083] Exception stack(0xc4043c98 to 0xc4043ce0)
+[ 2158.173092] 3c80:                                                       c4043ce4 00000019
+[ 2158.173102] 3ca0: 1f8a865f c050ad10 1f8a864c 00000031 c04b5970 0003ebce 00000000 f3550000
+[ 2158.173113] 3cc0: bf00bc68 00000800 0003ebce c4043ce0 c0186d14 c0186cb8 80000013 ffffffff
+[ 2158.173130] [<c02f0f80>] (__irq_svc+0x40/0x50) from [<c0186cb8>] (read_current_timer+0x4/0x38)
+[ 2158.173145] [<c0186cb8>] (read_current_timer+0x4/0x38) from [<1f8a865f>] (0x1f8a865f)
+[ 2183.927097] BUG: soft lockup - CPU#1 stuck for 22s! [io_basic:2073]
+[ 2184.002229] Modules linked in: nandflash(O) [last unloaded: nandflash]
 
-> 
-> Thanks,
-> Tanya Brokhman
+Signed-off-by: Wang Kai <morgan.wang@huawei.com>
+Signed-off-by: hujianyang <hujianyang@huawei.com>
+---
+ drivers/mtd/ubi/misc.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
+index dbda77e..2a45ac2 100644
+--- a/drivers/mtd/ubi/misc.c
++++ b/drivers/mtd/ubi/misc.c
+@@ -74,6 +74,8 @@ int ubi_check_volume(struct ubi_device *ubi, int vol_id)
+ 	for (i = 0; i < vol->used_ebs; i++) {
+ 		int size;
+
++		cond_resched();
++
+ 		if (i == vol->used_ebs - 1)
+ 			size = vol->last_eb_bytes;
+ 		else
+-- 
+1.6.0.2
