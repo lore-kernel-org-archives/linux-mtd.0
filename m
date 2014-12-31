@@ -1,13 +1,13 @@
-Received: from mout.gmx.net ([212.227.17.21])
+Received: from mout.gmx.net ([212.227.15.18])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y6IrZ-0003aO-EC
- for linux-mtd@lists.infradead.org; Wed, 31 Dec 2014 12:59:00 +0000
+ id 1Y6IsE-0003ec-Df
+ for linux-mtd@lists.infradead.org; Wed, 31 Dec 2014 12:59:41 +0000
 From: Oleksij Rempel <linux@rempel-privat.de>
 To: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
  computersforpeace@gmail.com
 Subject: [PATCH v3 1/3] mtd: nand: add asm9260 NFC driver
-Date: Wed, 31 Dec 2014 13:58:16 +0100
-Message-Id: <1420030698-10331-1-git-send-email-linux@rempel-privat.de>
+Date: Wed, 31 Dec 2014 13:58:51 +0100
+Message-Id: <1420030733-10374-1-git-send-email-linux@rempel-privat.de>
 In-Reply-To: <20141230200946.277c56c0@bbrezillon>
 References: <20141230200946.277c56c0@bbrezillon>
 Cc: Oleksij Rempel <linux@rempel-privat.de>
