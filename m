@@ -1,17 +1,15 @@
-Received: from mout.gmx.net ([212.227.15.19])
+Received: from mail-qc0-x229.google.com ([2607:f8b0:400d:c01::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y6IsJ-0003f1-OQ
- for linux-mtd@lists.infradead.org; Wed, 31 Dec 2014 12:59:44 +0000
-From: Oleksij Rempel <linux@rempel-privat.de>
-To: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com
-Subject: [PATCH v3 3/3] mtd: nand: add Toshiba TC58NVG0S3E to nand_ids table
-Date: Wed, 31 Dec 2014 13:58:53 +0100
-Message-Id: <1420030733-10374-3-git-send-email-linux@rempel-privat.de>
-In-Reply-To: <1420030733-10374-1-git-send-email-linux@rempel-privat.de>
-References: <20141230200946.277c56c0@bbrezillon>
- <1420030733-10374-1-git-send-email-linux@rempel-privat.de>
-Cc: Oleksij Rempel <linux@rempel-privat.de>
+ id 1Y6Kjs-0004MS-Vj
+ for linux-mtd@lists.infradead.org; Wed, 31 Dec 2014 14:59:09 +0000
+Received: by mail-qc0-f169.google.com with SMTP id w7so11693995qcr.28
+ for <linux-mtd@lists.infradead.org>; Wed, 31 Dec 2014 06:58:47 -0800 (PST)
+From: Joe Balough <jbb5044@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/2] mtd: ubiformat: Add support for image confirmation
+Date: Wed, 31 Dec 2014 09:58:43 -0500
+Message-Id: <1420037925-31156-1-git-send-email-jbb5044@gmail.com>
+Cc: Joe Balough <jbb5044@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +19,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the full description of the Toshiba TC58NVG0S3E NAND chip in the
-nand_ids table so that we can later use the NAND ECC infos and ONFI timings
-mode in controller drivers.
+Working with ubi images being flashed to NAND using ubiformat, I
+found it desirable to ensure that the data that has been flashed is 
+properly written to the device using a readback mechanism.
 
-Tested with asm9260_nand driver.
+These patches add a -c, --confirm argument to ubiformat that will
+cause the program to read back the eraseblock written in the
+flash_image function, then use a memcmp to verify it was written
+correctly. 
 
-Signed-off-by: Oleksij Rempel <linux@rempel-privat.de>
----
- drivers/mtd/nand/nand_ids.c | 4 ++++
- 1 file changed, 4 insertions(+)
+This is my first patch and I am happy to make any requested changes.
 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index fbde8910..47b5cdf 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -31,6 +31,10 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	 * listed by full ID. We list them first so that we can easily identify
- 	 * the most specific match.
- 	 */
-+	{"TC58NVG0S3E 1G 3.3V 8-bit",
-+		{ .id = {0x98, 0xd1, 0x90, 0x15, 0x76, 0x14, 0x01, 0x00} },
-+		  SZ_2K, SZ_128, SZ_128K, 0, 8, 64, NAND_ECC_INFO(1, SZ_512),
-+		  2 },
- 	{"TC58NVG2S0F 4G 3.3V 8-bit",
- 		{ .id = {0x98, 0xdc, 0x90, 0x26, 0x76, 0x15, 0x01, 0x08} },
- 		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224, NAND_ECC_INFO(4, SZ_512) },
+Joe Balough (2):
+  mtd: ubiformat: Add --confirm argument
+  mtd: ubiformat: Add confirmation fail exit
+
+ ubi-utils/ubiformat.c | 40 +++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
+
 -- 
-1.9.1
+2.1.3
