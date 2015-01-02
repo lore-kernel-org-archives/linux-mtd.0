@@ -1,20 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y6n56-0002Dm-Pg
- for linux-mtd@lists.infradead.org; Thu, 01 Jan 2015 21:14:57 +0000
-Date: Thu, 1 Jan 2015 22:14:33 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Oleksij Rempel <linux@rempel-privat.de>
-Subject: Re: [PATCH v3 1/3] mtd: nand: add asm9260 NFC driver
-Message-ID: <20150101221433.46e25a37@bbrezillon>
-In-Reply-To: <1420030733-10374-1-git-send-email-linux@rempel-privat.de>
-References: <20141230200946.277c56c0@bbrezillon>
- <1420030733-10374-1-git-send-email-linux@rempel-privat.de>
+Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y76d2-0000r8-VD
+ for linux-mtd@lists.infradead.org; Fri, 02 Jan 2015 18:07:17 +0000
+Received: by mail-ig0-f181.google.com with SMTP id l13so16765574iga.8
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Jan 2015 10:06:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org
+In-Reply-To: <54A359AE.3080105@atmel.com>
+References: <CALupW3Dv=OvY-5y_ScG1St8HUBYfXYpTnYAWDt_GJ+3+7KmC9Q@mail.gmail.com>
+ <54A359AE.3080105@atmel.com>
+Date: Fri, 2 Jan 2015 10:06:54 -0800
+Message-ID: <CALupW3D=q9wSTUxCAp9EVDjd5LwPOhJOYbV9OL0QVJd4G1nH2A@mail.gmail.com>
+Subject: Re: Does UBIFS NAND ECC info get stored in OOB?
+From: Steve deRosier <derosier@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,143 +24,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 Dec 2014 13:58:51 +0100
-Oleksij Rempel <linux@rempel-privat.de> wrote:
-
-> Add driver for Nand Flash Controller used on Alphascales ASM9260 chips.
-> The IP core of this controller has some similarities with
-> Evatronix NANDFLASH-CTRL IP (unknown revision), so probably it can be reused
-> by some other SoCs.
-> 
-> Signed-off-by: Oleksij Rempel <linux@rempel-privat.de>
-> ---
->  drivers/mtd/nand/Kconfig        |   7 +
->  drivers/mtd/nand/Makefile       |   1 +
->  drivers/mtd/nand/asm9260_nand.c | 989 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 997 insertions(+)
->  create mode 100644 drivers/mtd/nand/asm9260_nand.c
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index dd10646..580a608 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -41,6 +41,13 @@ config MTD_SM_COMMON
->  	tristate
->  	default n
-
-[...]
-
-> +
-> +static void asm9260_nand_command_lp(struct mtd_info *mtd,
-> +		unsigned int command, int column, int page_addr)
-> +{
-> +	struct asm9260_nand_priv *priv = mtd_to_priv(mtd);
-> +
-> +	switch (command) {
-> +	case NAND_CMD_RESET:
-> +		asm9260_nand_cmd_prep(priv, NAND_CMD_RESET, 0, 0, SEQ0);
-> +		asm9260_nand_cmd_comp(mtd, 0);
-> +		break;
-> +
-> +	case NAND_CMD_READID:
-> +		iowrite32(1, priv->base + HW_FIFO_INIT);
-> +		iowrite32((ADDR_CYCLE_1 << BM_CTRL_ADDR_CYCLE1_S)
-> +			| BM_CTRL_CUSTOM_PAGE_SIZE
-> +			| (PAGE_SIZE_4096B << BM_CTRL_PAGE_SIZE_S)
-> +			| (BLOCK_SIZE_32P << BM_CTRL_BLOCK_SIZE_S)
-> +			| BM_CTRL_INT_EN
-> +			| (ADDR_CYCLE_1 << BM_CTRL_ADDR_CYCLE0_S),
-> +			priv->base + HW_CTRL);
-> +
-> +		iowrite32(8, priv->base + HW_DATA_SIZE);
-> +		iowrite32(column, priv->base + HW_ADDR0_0);
-> +		asm9260_nand_cmd_prep(priv, NAND_CMD_READID, 0, 0, SEQ1);
-> +
-> +		priv->read_cache_cnt = 0;
-> +		break;
-> +
-> +	case NAND_CMD_READOOB:
-> +		column += mtd->writesize;
-> +		command = NAND_CMD_READ0;
-> +	case NAND_CMD_READ0:
-> +		iowrite32(1, priv->base + HW_FIFO_INIT);
-> +
-> +		if (column == 0) {
-> +			asm9260_nand_ctrl(priv, 0);
-> +			iowrite32(priv->spare_size, priv->base + HW_SPARE_SIZE);
-> +		} else if (column == mtd->writesize) {
-> +			asm9260_nand_ctrl(priv, BM_CTRL_CUSTOM_PAGE_SIZE);
-> +			iowrite32(mtd->oobsize, priv->base + HW_SPARE_SIZE);
-> +			iowrite32(mtd->oobsize, priv->base + HW_DATA_SIZE);
-> +		} else {
-> +			dev_err(priv->dev, "Couldn't support the column\n");
-> +			break;
-> +		}
-> +
-> +		asm9260_nand_set_addr(priv, page_addr, column);
-> +
-> +		asm9260_nand_cmd_prep(priv, NAND_CMD_READ0,
-> +				NAND_CMD_READSTART, 0, SEQ10);
-> +
-> +		priv->read_cache_cnt = 0;
-> +		break;
-> +	case NAND_CMD_SEQIN:
-> +		iowrite32(1, priv->base + HW_FIFO_INIT);
-> +
-> +		if (column == 0) {
-> +			priv->page_cache = page_addr;
-> +			asm9260_nand_ctrl(priv, 0);
-> +			iowrite32(priv->spare_size, priv->base + HW_SPARE_SIZE);
-> +		} else if (column == mtd->writesize) {
-> +			asm9260_nand_ctrl(priv, BM_CTRL_CUSTOM_PAGE_SIZE);
-> +			iowrite32(mtd->oobsize, priv->base + HW_DATA_SIZE);
-> +		}
-> +
-> +		asm9260_nand_set_addr(priv, page_addr, column);
-> +
-> +		asm9260_nand_cmd_prep(priv, NAND_CMD_SEQIN, NAND_CMD_PAGEPROG,
-> +			0, SEQ12);
-> +
-> +		break;
-> +	case NAND_CMD_STATUS:
-> +		iowrite32(1, priv->base + HW_FIFO_INIT);
-> +		asm9260_nand_ctrl(priv, BM_CTRL_CUSTOM_PAGE_SIZE);
-> +
-> +		/*
-> +		 * Workaround for status bug.
-> +		 * Instead of SEQ4 we need to use SEQ1 here, which will
-> +		 * send cmd with address. For this case we need to make sure
-> +		 * ADDR == 0.
-> +		 */
-> +		asm9260_nand_set_addr(priv, 0, 0);
-> +		iowrite32(4, priv->base + HW_DATA_SIZE);
-> +		asm9260_nand_cmd_prep(priv, NAND_CMD_STATUS, 0, 0, SEQ1);
-> +
-> +		priv->read_cache_cnt = 0;
-> +		break;
-> +
-> +	case NAND_CMD_ERASE1:
-> +		priv->wait_time = 400;
-> +		asm9260_nand_set_addr(priv, page_addr, column);
-> +
-> +		asm9260_nand_ctrl(priv, 0);
-> +
-> +		/*
-> +		 * Prepare and send command now. We don't need to split it in
-> +		 * two stages.
-> +		 */
-> +		asm9260_nand_cmd_prep(priv, NAND_CMD_ERASE1, NAND_CMD_ERASE2,
-> +				0, SEQ14);
-> +		asm9260_nand_cmd_comp(mtd, 0);
-> +		break;
-> +	default:
-> +		break;
-
-You should support other NAND commands (like the ONFI related ones)
-instead of silently ignoring them.
+Hi Josh,
 
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+On Tue, Dec 30, 2014 at 6:04 PM, Josh Wu <josh.wu@atmel.com> wrote:
+> Hi, Steve
+>
+> On 12/31/2014 3:44 AM, Steve deRosier wrote:
+>>
+>>   Hi All,
+>>
+>> Sorry if this is a stupid question, but I found a number of old
+>> archived messages that explicitly state that UBIFS (actually, probably
+>> UBI) doesn't utilize the OOB of a NAND flash at all for storing the
+>> ECC information.
+>
+> Could you list out these UBI/UBIFS messages so that people can help?
+>
+
+Sorry, I found them about a month ago and have already cleared the
+tabs.  But one clear version of it is directly on the pages at the MTD
+site:
+
+http://www.linux-mtd.infradead.org/doc/ubifs.html  under the title
+"UBIFS and MLC NAND flash": "because neither UBIFS nor UBI use OOB
+area;"
+and here:
+http://www.linux-mtd.infradead.org/faq/ubi.html#L_why_no_oob
+
+The list messages were from ~5 years ago or so from Artem IIRC.
+
+
+
+>
+> Does your system can boot up correctly and work sometime? or you cannot
+> mount your UBI filesystem at all?
+> Could get me a system boot log about your corruption, and another boot log
+> without corruption?
+
+Our system actually works 99.999% of the time. Which is why it's been
+so difficult finding the problem. It's not so much a mount or
+boot-time problem, though it happens sometimes then.  The system
+usually works fine for a while, then you set it on a shelf for a
+couple of weeks and when you bring it back up, it then randomly fails.
+Sometimes at boot, sometimes when reading or running a specific file.
+Sometimes the error message is an LZO muckup one, sometimes it's a bad
+data node.  Typical:
+
+UBIFS error (pid 919): read_block: bad data node (block 290, inode 67)
+     magic          0x6101831
+     crc            0x92684951
+     node_type      1 (data node)
+     group_type     0 (no node group)
+     sqnum          297
+     len            2152
+     key            (67, data, 290)
+     size           4096
+     compr_typ      1
+     data size      2104
+     data:
+     00000000: 2f 04 88 05 87 06 86 07 85 08 84 09 46 0e 58 00 00 24
+00 00 00 cc 4f 00 00 f8 f1 fb ff 38 01 50
+ ...
+     00000820: 5d 02 92 5d 01 d1 4d 04 e4 4d 03 0a 7c 03 4d 03 bd ec
+44 cc 6f 11 00 00
+UBIFS error (pid 919): do_readpage: cannot read page 290 of inode 67, error -22
+
+I think I've tracked it down to one of our junior engineers choosing
+to use `nandwrite -n` in an update script he wrote. This results in
+lack of ECC information being created on flashing it.  Not to mention
+the writing of 0xffs and killing of the UBI ECs.  His tool then goes
+further and ubiattaches the system, which then corrects the UBI
+metadata, including writing the ECC data.  Which results in a weird
+situation where a quick look at the flash data shows ECC data there,
+but if you dig deeper, it's missing on the data nodes further on in
+the system.
+
+So, the rewrite of the UBI metadata with the ECC info obfuscated the
+problem. It looks like we're not writing the ECC data on most of the
+data. It works fine, then a bit-flips and then it fails later.
+Unfortunately, waiting for bitflips is random and not terribly
+testable. Knowing what I know now, I am able to update it with the old
+script, manually cause a bitflip and see the exact same symptoms. And
+with the rewritten version with ubiformat, I can do the same test and
+it works fully.
+
+
+>
+> So could give me some configuration about your PMECC?
+> 4 bits correction in 512 bytes or else? What is your nand flash ecc minimal
+> requirement?
+>
+
+4 bits, yes.  And the requirement is 4bits.  For clarity, here's the
+relevant chunk from the devicetree:
+
+    nand0: nand@40000000 {
+        nand-bus-width = <8>;
+        nand-ecc-mode = "hw";
+        atmel,has-pmecc; /* enable PMECC */
+        atmel,pmecc-cap = <4>;
+        atmel,pmecc-sector-size = <512>;
+        atmel,pmecc-lookup-table-offset = <0x8000 0x10000>;
+        nand-on-flash-bbt;
+        status = "okay";
+
+Thanks,
+- Steve
