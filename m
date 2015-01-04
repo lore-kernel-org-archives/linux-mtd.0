@@ -1,16 +1,16 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y7azB-000136-RJ
- for linux-mtd@lists.infradead.org; Sun, 04 Jan 2015 02:32:11 +0000
-Message-ID: <54A8A5EB.6060204@huawei.com>
-Date: Sun, 4 Jan 2015 10:31:07 +0800
+ id 1Y7b6A-000345-Ix
+ for linux-mtd@lists.infradead.org; Sun, 04 Jan 2015 02:39:23 +0000
+Message-ID: <54A8A7A1.8060802@huawei.com>
+Date: Sun, 4 Jan 2015 10:38:25 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
 To: Joe Balough <jbb5044@gmail.com>
-Subject: Re: [PATCH 1/2] mtd: ubiformat: Add --confirm argument
+Subject: Re: [PATCH 2/2] mtd: ubiformat: Add confirmation fail exit
 References: <1420037925-31156-1-git-send-email-jbb5044@gmail.com>
- <1420037925-31156-2-git-send-email-jbb5044@gmail.com>
-In-Reply-To: <1420037925-31156-2-git-send-email-jbb5044@gmail.com>
+ <1420037925-31156-3-git-send-email-jbb5044@gmail.com>
+In-Reply-To: <1420037925-31156-3-git-send-email-jbb5044@gmail.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -24,108 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Joe,
-
 On 2014/12/31 22:58, Joe Balough wrote:
-> Add support for an argument to ubiformat that will read back every
-> written eraseblock and verify the read data matches the written data.
+> If flashing fails, ubiformat will exit with the value of 1.
+> If confirmation fails, ubiformat will exit with the value of 2.
 > 
 > Signed-off-by: Joe Balough <jbb5044@gmail.com>
 > ---
->  ubi-utils/ubiformat.c | 27 ++++++++++++++++++++++++---
->  1 file changed, 24 insertions(+), 3 deletions(-)
+>  ubi-utils/ubiformat.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
 > 
 > diff --git a/ubi-utils/ubiformat.c b/ubi-utils/ubiformat.c
-> index 21409ca..4129404 100644
+> index 4129404..3b8a22e 100644
 > --- a/ubi-utils/ubiformat.c
 > +++ b/ubi-utils/ubiformat.c
-> @@ -49,6 +49,7 @@
+> @@ -548,7 +548,7 @@ static int flash_image(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+>  			err = mtd_read(mtd, args.node_fd, eb, 0, read_buf, new_len);
+>  			if (err) {
+>  				sys_errmsg("cannot readback eraseblock %d for confirmation", eb);
+> -				goto out_close;
+> +				goto out_confirm_fail;
+>  			}
+>  			
+>  			if (memcmp(buf, read_buf, new_len) != 0) {
+> @@ -568,6 +568,10 @@ static int flash_image(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+>  out_close:
+>  	close(fd);
+>  	return -1;
+> +	
+> +out_confirm_fail:
+> +	close(fd);
+> +	return -2;
+>  }
 >  
->  /* The variables below are set by command line arguments */
->  struct args {
-> +	unsigned int confirm:1;
->  	unsigned int yes:1;
->  	unsigned int quiet:1;
->  	unsigned int verbose:1;
-> @@ -93,6 +94,7 @@ static const char optionsstr[] =
->  "                             (default is 1)\n"
->  "-Q, --image-seq=<num>        32-bit UBI image sequence number to use\n"
->  "                             (by default a random number is picked)\n"
-> +"-c, --confirm                Read back written value and verify it matches\n"
->  "-y, --yes                    assume the answer is \"yes\" for all question\n"
->  "                             this program would otherwise ask\n"
->  "-q, --quiet                  suppress progress percentage information\n"
-> @@ -105,8 +107,8 @@ static const char usage[] =
->  "\t\t\t[-Q <num>] [-f <file>] [-S <bytes>] [-e <value>] [-x <num>] [-y] [-q] [-v] [-h]\n"
->  "\t\t\t[--sub-page-size=<bytes>] [--vid-hdr-offset=<offs>] [--no-volume-table]\n"
->  "\t\t\t[--flash-image=<file>] [--image-size=<bytes>] [--erase-counter=<value>]\n"
-> -"\t\t\t[--image-seq=<num>] [--ubi-ver=<num>] [--yes] [--quiet] [--verbose]\n"
-> -"\t\t\t[--help] [--version]\n\n"
-> +"\t\t\t[--image-seq=<num>] [--ubi-ver=<num>] [--confirm] [--yes] [--quiet]\n"
-> +"\t\t\t[--verbose] [--help] [--version]\n\n"
->  "Example 1: " PROGRAM_NAME " /dev/mtd0 -y - format MTD device number 0 and do\n"
->  "           not ask questions.\n"
->  "Example 2: " PROGRAM_NAME " /dev/mtd0 -q -e 0 - format MTD device number 0,\n"
-> @@ -118,6 +120,7 @@ static const struct option long_options[] = {
->  	{ .name = "no-volume-table", .has_arg = 0, .flag = NULL, .val = 'n' },
->  	{ .name = "flash-image",     .has_arg = 1, .flag = NULL, .val = 'f' },
->  	{ .name = "image-size",      .has_arg = 1, .flag = NULL, .val = 'S' },
-> +	{ .name = "confirm",         .has_arg = 0, .flag = NULL, .val = 'c' },
->  	{ .name = "yes",             .has_arg = 0, .flag = NULL, .val = 'y' },
->  	{ .name = "erase-counter",   .has_arg = 1, .flag = NULL, .val = 'e' },
->  	{ .name = "quiet",           .has_arg = 0, .flag = NULL, .val = 'q' },
-> @@ -137,7 +140,7 @@ static int parse_opt(int argc, char * const argv[])
->  		int key, error = 0;
->  		unsigned long int image_seq;
+>  static int format(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+> @@ -702,7 +706,7 @@ out_free:
 >  
-> -		key = getopt_long(argc, argv, "nh?Vyqve:x:s:O:f:S:", long_options, NULL);
-> +		key = getopt_long(argc, argv, "nh?Vycqve:x:s:O:f:S:", long_options, NULL);
->  		if (key == -1)
->  			break;
+>  int main(int argc, char * const argv[])
+>  {
+> -	int err, verbose;
+> +	int err, verbose, confirm_fail = 0;
+>  	libmtd_t libmtd;
+>  	struct mtd_info mtd_info;
+>  	struct mtd_dev_info mtd;
+> @@ -932,6 +936,8 @@ int main(int argc, char * const argv[])
 >  
-> @@ -178,6 +181,10 @@ static int parse_opt(int argc, char * const argv[])
->  		case 'n':
->  			args.novtbl = 1;
->  			break;
-> +			
-> +		case 'c':
-> +			args.confirm = 1;
-> +			break;
+>  	if (args.image) {
+>  		err = flash_image(libmtd, &mtd, &ui, si);
+> +		if (err == -2)
+> +			confirm_fail = 1;
+>  		if (err < 0)
+>  			goto out_free;
 >  
->  		case 'y':
->  			args.yes = 1;
-
-This option 'c' seems only use when *flash-image* is specified. So maybe you
-can check the validity of this option depending on *args.image* in parse_opt().
-
-> @@ -535,6 +542,20 @@ static int flash_image(libmtd_t libmtd, const struct mtd_dev_info *mtd,
->  			skip_data_read = 1;
->  			continue;
->  		}
-> +		
-> +		if (args.confirm) {
-> +			char read_buf[mtd->eb_size];
-> +			err = mtd_read(mtd, args.node_fd, eb, 0, read_buf, new_len);
-> +			if (err) {
-> +				sys_errmsg("cannot readback eraseblock %d for confirmation", eb);
-> +				goto out_close;
-> +			}
-> +			
-> +			if (memcmp(buf, read_buf, new_len) != 0) {
-> +				sys_errmsg("readback failed on eraseblock %d", eb);
-> +			}
-> +		}
-> +		
->  		if (++written_ebs >= img_ebs)
->  			break;
->  	}
+> @@ -955,5 +961,8 @@ out_close:
+>  	close(args.node_fd);
+>  out_close_mtd:
+>  	libmtd_close(libmtd);
+> -	return -1;
+> +	if (confirm_fail)
+> +		return 2;
+> +	else
+> +		return 1;
+>  }
 > 
 
-Do we have a function like *mtd_write_and_check()*? I think the operation
-first write and then check it by reading may be used in many cases.
+There is not need to return different values for any error cases, and a
+positive return value is not proper for a aborted case.
 
-It's worthy to check the writing data of the *flash-image* without any
-additional options in my considering.
-
-Thanks,
-Hu
+Just print a error message at failure happening is enough, I think.
