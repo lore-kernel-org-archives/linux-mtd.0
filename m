@@ -1,16 +1,20 @@
-Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y7EYT-0006Wj-DU
- for linux-mtd@lists.infradead.org; Sat, 03 Jan 2015 02:35:06 +0000
-Received: by mail-ie0-f179.google.com with SMTP id rp18so16734226iec.24
- for <linux-mtd@lists.infradead.org>; Fri, 02 Jan 2015 18:34:44 -0800 (PST)
+ id 1Y7azB-000136-RJ
+ for linux-mtd@lists.infradead.org; Sun, 04 Jan 2015 02:32:11 +0000
+Message-ID: <54A8A5EB.6060204@huawei.com>
+Date: Sun, 4 Jan 2015 10:31:07 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Date: Fri, 2 Jan 2015 18:34:44 -0800
-Message-ID: <CALupW3DMys5qLTw_3t9P0JG64oPgQXa4Lh9M7X5_0yUmLhqGdg@mail.gmail.com>
-Subject: help with mtd-test failures?
-From: Steve deRosier <derosier@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+To: Joe Balough <jbb5044@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: ubiformat: Add --confirm argument
+References: <1420037925-31156-1-git-send-email-jbb5044@gmail.com>
+ <1420037925-31156-2-git-send-email-jbb5044@gmail.com>
+In-Reply-To: <1420037925-31156-2-git-send-email-jbb5044@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,135 +24,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi Joe,
 
-In doing my due dillegence on my system, I decided to run the
-mtd-tests. I'm getting a few failures that I'd like your help in
-understanding.
+On 2014/12/31 22:58, Joe Balough wrote:
+> Add support for an argument to ubiformat that will read back every
+> written eraseblock and verify the read data matches the written data.
+> 
+> Signed-off-by: Joe Balough <jbb5044@gmail.com>
+> ---
+>  ubi-utils/ubiformat.c | 27 ++++++++++++++++++++++++---
+>  1 file changed, 24 insertions(+), 3 deletions(-)
+> 
+> diff --git a/ubi-utils/ubiformat.c b/ubi-utils/ubiformat.c
+> index 21409ca..4129404 100644
+> --- a/ubi-utils/ubiformat.c
+> +++ b/ubi-utils/ubiformat.c
+> @@ -49,6 +49,7 @@
+>  
+>  /* The variables below are set by command line arguments */
+>  struct args {
+> +	unsigned int confirm:1;
+>  	unsigned int yes:1;
+>  	unsigned int quiet:1;
+>  	unsigned int verbose:1;
+> @@ -93,6 +94,7 @@ static const char optionsstr[] =
+>  "                             (default is 1)\n"
+>  "-Q, --image-seq=<num>        32-bit UBI image sequence number to use\n"
+>  "                             (by default a random number is picked)\n"
+> +"-c, --confirm                Read back written value and verify it matches\n"
+>  "-y, --yes                    assume the answer is \"yes\" for all question\n"
+>  "                             this program would otherwise ask\n"
+>  "-q, --quiet                  suppress progress percentage information\n"
+> @@ -105,8 +107,8 @@ static const char usage[] =
+>  "\t\t\t[-Q <num>] [-f <file>] [-S <bytes>] [-e <value>] [-x <num>] [-y] [-q] [-v] [-h]\n"
+>  "\t\t\t[--sub-page-size=<bytes>] [--vid-hdr-offset=<offs>] [--no-volume-table]\n"
+>  "\t\t\t[--flash-image=<file>] [--image-size=<bytes>] [--erase-counter=<value>]\n"
+> -"\t\t\t[--image-seq=<num>] [--ubi-ver=<num>] [--yes] [--quiet] [--verbose]\n"
+> -"\t\t\t[--help] [--version]\n\n"
+> +"\t\t\t[--image-seq=<num>] [--ubi-ver=<num>] [--confirm] [--yes] [--quiet]\n"
+> +"\t\t\t[--verbose] [--help] [--version]\n\n"
+>  "Example 1: " PROGRAM_NAME " /dev/mtd0 -y - format MTD device number 0 and do\n"
+>  "           not ask questions.\n"
+>  "Example 2: " PROGRAM_NAME " /dev/mtd0 -q -e 0 - format MTD device number 0,\n"
+> @@ -118,6 +120,7 @@ static const struct option long_options[] = {
+>  	{ .name = "no-volume-table", .has_arg = 0, .flag = NULL, .val = 'n' },
+>  	{ .name = "flash-image",     .has_arg = 1, .flag = NULL, .val = 'f' },
+>  	{ .name = "image-size",      .has_arg = 1, .flag = NULL, .val = 'S' },
+> +	{ .name = "confirm",         .has_arg = 0, .flag = NULL, .val = 'c' },
+>  	{ .name = "yes",             .has_arg = 0, .flag = NULL, .val = 'y' },
+>  	{ .name = "erase-counter",   .has_arg = 1, .flag = NULL, .val = 'e' },
+>  	{ .name = "quiet",           .has_arg = 0, .flag = NULL, .val = 'q' },
+> @@ -137,7 +140,7 @@ static int parse_opt(int argc, char * const argv[])
+>  		int key, error = 0;
+>  		unsigned long int image_seq;
+>  
+> -		key = getopt_long(argc, argv, "nh?Vyqve:x:s:O:f:S:", long_options, NULL);
+> +		key = getopt_long(argc, argv, "nh?Vycqve:x:s:O:f:S:", long_options, NULL);
+>  		if (key == -1)
+>  			break;
+>  
+> @@ -178,6 +181,10 @@ static int parse_opt(int argc, char * const argv[])
+>  		case 'n':
+>  			args.novtbl = 1;
+>  			break;
+> +			
+> +		case 'c':
+> +			args.confirm = 1;
+> +			break;
+>  
+>  		case 'y':
+>  			args.yes = 1;
 
-The one that worries me comes from mtd_oobtest:
+This option 'c' seems only use when *flash-image* is specified. So maybe you
+can check the validity of this option depending on *args.image* in parse_opt().
 
-    # modprobe mtd_oobtest dev=7
-    mtd_oobtest: error: verify failed at 0x880000
-    mtd_oobtest: error: verify failed at 0xe80000
+> @@ -535,6 +542,20 @@ static int flash_image(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+>  			skip_data_read = 1;
+>  			continue;
+>  		}
+> +		
+> +		if (args.confirm) {
+> +			char read_buf[mtd->eb_size];
+> +			err = mtd_read(mtd, args.node_fd, eb, 0, read_buf, new_len);
+> +			if (err) {
+> +				sys_errmsg("cannot readback eraseblock %d for confirmation", eb);
+> +				goto out_close;
+> +			}
+> +			
+> +			if (memcmp(buf, read_buf, new_len) != 0) {
+> +				sys_errmsg("readback failed on eraseblock %d", eb);
+> +			}
+> +		}
+> +		
+>  		if (++written_ebs >= img_ebs)
+>  			break;
+>  	}
+> 
 
-The most worrysome thing about this is the fact that the result isn't
-consistant. sometimes I get no failures, and sometimes they're at
-different spots. I'll put the kmesg output later.
+Do we have a function like *mtd_write_and_check()*? I think the operation
+first write and then check it by reading may be used in many cases.
 
-The other one is less concerning, but what do these failures from
-mtd_nandecctest indicate?
-
-    mtd_nandecctest: ok - no-bit-error-256
-    mtd_nandecctest: ok - single-bit-error-in-data-correct-256
-    mtd_nandecctest: ok - single-bit-error-in-ecc-correct-256
-    uncorrectable error :
-    mtd_nandecctest: ok - double-bit-error-in-data-detect-256
-    uncorrectable error :
-    mtd_nandecctest: ok - single-bit-error-in-data-and-ecc-detect-256
-    uncorrectable error :
-    mtd_nandecctest: ok - double-bit-error-in-ecc-detect-256
-    mtd_nandecctest: ok - no-bit-error-512
-    mtd_nandecctest: ok - single-bit-error-in-data-correct-512
-    mtd_nandecctest: ok - single-bit-error-in-ecc-correct-512
-    uncorrectable error :
-    mtd_nandecctest: ok - double-bit-error-in-data-detect-512
-    uncorrectable error :
-    mtd_nandecctest: ok - single-bit-error-in-data-and-ecc-detect-512
-    uncorrectable error :
-    mtd_nandecctest: ok - double-bit-error-in-ecc-detect-512
-
-I'm not very concerned because I believe from looking at the comments
-that this doesn't actually utilize my hardware but is a software ECC
-test and I'm using a hardware-based ECC.
-
-My kernel version is 3.8.  I'm running on an Atmel SAM9G25 processor
-with a Micron MT29F1G08ABBEAH4 SLC NAND.
-
-All of the rest of the tests ran perfectly. And, are there any other
-tests I should run to validate my hardware, kernel/driver setup, or
-UBIFS?
-
-The kmesg for the mtd_oobtest:
-
-    =================================================
-    mtd_oobtest: MTD device: 7
-    mtd_oobtest: MTD device size 39845888, eraseblock size 131072,
-page size 2048, count of eraseblocks 304, pages per eraseblock 64, OOB
-size 64
-    mtd_oobtest: scanning for bad eraseblocks
-    mtd_oobtest: scanned 304 eraseblocks, 0 are bad
-    mtd_oobtest: test 1 of 5
-    mtd_oobtest: erasing whole device
-    mtd_oobtest: erased 304 eraseblocks
-    mtd_oobtest: writing OOBs of whole device
-    mtd_oobtest: written up to eraseblock 0
-    mtd_oobtest: written up to eraseblock 256
-    mtd_oobtest: written 304 eraseblocks
-    mtd_oobtest: verifying all eraseblocks
-    mtd_oobtest: verified up to eraseblock 0
-    mtd_oobtest: verified up to eraseblock 256
-    mtd_oobtest: verified 304 eraseblocks
-    mtd_oobtest: test 2 of 5
-    mtd_oobtest: erasing whole device
-    mtd_oobtest: erased 304 eraseblocks
-    mtd_oobtest: writing OOBs of whole device
-    mtd_oobtest: written up to eraseblock 0
-    mtd_oobtest: written up to eraseblock 256
-    mtd_oobtest: written 304 eraseblocks
-    mtd_oobtest: verifying all eraseblocks
-    mtd_oobtest: verified up to eraseblock 0
-    mtd_oobtest: error: verify failed at 0x880000
-    mtd_oobtest: error: verify failed at 0xe80000
-    mtd_oobtest: verified up to eraseblock 256
-    mtd_oobtest: verified 304 eraseblocks
-    mtd_oobtest: test 3 of 5
-    mtd_oobtest: erasing whole device
-    mtd_oobtest: erased 304 eraseblocks
-    mtd_oobtest: writing OOBs of whole device
-    mtd_oobtest: written up to eraseblock 0
-    mtd_oobtest: written up to eraseblock 256
-    mtd_oobtest: written 304 eraseblocks
-    mtd_oobtest: verifying all eraseblocks
-    mtd_oobtest: verified up to eraseblock 0
-    mtd_oobtest: verified up to eraseblock 256
-    mtd_oobtest: verified 304 eraseblocks
-    mtd_oobtest: test 4 of 5
-    mtd_oobtest: erasing whole device
-    mtd_oobtest: erased 304 eraseblocks
-    mtd_oobtest: attempting to start write past end of OOB
-    mtd_oobtest: an error is expected...
-    mtd_oobtest: error occurred as expected
-    mtd_oobtest: attempting to start read past end of OOB
-    mtd_oobtest: an error is expected...
-    mtd_oobtest: error occurred as expected
-    mtd_oobtest: attempting to write past end of device
-    mtd_oobtest: an error is expected...
-    mtd_oobtest: error occurred as expected
-    mtd_oobtest: attempting to read past end of device
-    mtd_oobtest: an error is expected...
-    mtd_oobtest: error occurred as expected
-    mtd_oobtest: attempting to write past end of device
-    mtd_oobtest: an error is expected...
-    mtd_oobtest: error occurred as expected
-    mtd_oobtest: attempting to read past end of device
-    mtd_oobtest: an error is expected...
-    mtd_oobtest: error occurred as expected
-    mtd_oobtest: test 5 of 5
-    mtd_oobtest: erasing whole device
-    mtd_oobtest: erased 304 eraseblocks
-    mtd_oobtest: writing OOBs of whole device
-    mtd_oobtest: written up to eraseblock 0
-    mtd_oobtest: written up to eraseblock 0
-    mtd_oobtest: written up to eraseblock 256
-    mtd_oobtest: written up to eraseblock 256
-    mtd_oobtest: written 303 eraseblocks
-    mtd_oobtest: verifying all eraseblocks
-    mtd_oobtest: verified up to eraseblock 0
-    mtd_oobtest: verified up to eraseblock 256
-    mtd_oobtest: verified 303 eraseblocks
-    mtd_oobtest: finished with 2 errors
-    =================================================
+It's worthy to check the writing data of the *flash-image* without any
+additional options in my considering.
 
 Thanks,
-- Steve
+Hu
