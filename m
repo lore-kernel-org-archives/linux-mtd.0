@@ -1,18 +1,24 @@
-Received: from nasmtp01.atmel.com ([192.199.1.245]
- helo=DVREDG01.corp.atmel.com)
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y7gMZ-0003Rs-Ta
- for linux-mtd@lists.infradead.org; Sun, 04 Jan 2015 08:16:40 +0000
-Message-ID: <54A8F6BE.50708@atmel.com>
-Date: Sun, 4 Jan 2015 16:15:58 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>
-Subject: Re: help with mtd-test failures?
-References: <CALupW3DMys5qLTw_3t9P0JG64oPgQXa4Lh9M7X5_0yUmLhqGdg@mail.gmail.com>
-In-Reply-To: <CALupW3DMys5qLTw_3t9P0JG64oPgQXa4Lh9M7X5_0yUmLhqGdg@mail.gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+ id 1Y7gOv-0003hC-LC
+ for linux-mtd@lists.infradead.org; Sun, 04 Jan 2015 08:19:06 +0000
+Received: by mail-pa0-f51.google.com with SMTP id ey11so26654198pad.38
+ for <linux-mtd@lists.infradead.org>; Sun, 04 Jan 2015 00:18:43 -0800 (PST)
+Sender: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Sun, 04 Jan 2015 17:18:38 +0900 (JST)
+Message-Id: <20150104.171838.243342727322803372.konishi.ryusuke@lab.ntt.co.jp>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 6/8] nilfs2: set up s_bdi like the generic mount_bdev code
+From: Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
+In-Reply-To: <1419929859-24427-7-git-send-email-hch@lst.de>
+References: <1419929859-24427-1-git-send-email-hch@lst.de>
+ <1419929859-24427-7-git-send-email-hch@lst.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Cc: Jens Axboe <axboe@fb.com>, David Howells <dhowells@redhat.com>,
+ linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mm@kvack.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,158 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Steve
+On Tue, 30 Dec 2014 09:57:37 +0100, Christoph Hellwig <hch@lst.de> wrote:
+> mapping->backing_dev_info will go away, so don't rely on it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-On 1/3/2015 10:34 AM, Steve deRosier wrote:
-> Hi all,
->
-> In doing my due dillegence on my system, I decided to run the
-> mtd-tests. I'm getting a few failures that I'd like your help in
-> understanding.
->
-> The one that worries me comes from mtd_oobtest:
->
->      # modprobe mtd_oobtest dev=7
->      mtd_oobtest: error: verify failed at 0x880000
->      mtd_oobtest: error: verify failed at 0xe80000
->
-> The most worrysome thing about this is the fact that the result isn't
-> consistant. sometimes I get no failures, and sometimes they're at
-> different spots.
-I think this should be related with nand flash's bitflips. As atmel nand 
-driver just use standard oob write/read functions from nand_base.c.
-That means there is no ecc protection for mtd_oobtest.
-So if there has any nand bitflip happens in the oob area, then 
-mtd-oobtest will be failed.
+Looks good for me.
 
-How often does the failures comes?
-I tested on my at91sam9g25ek board (nand is: 29F2G08AAD) about 20 times, 
-no error happened.
+Acked-by: Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
 
-> I'll put the kmesg output later.
->
-> The other one is less concerning, but what do these failures from
-> mtd_nandecctest indicate?
->
->      mtd_nandecctest: ok - no-bit-error-256
->      mtd_nandecctest: ok - single-bit-error-in-data-correct-256
->      mtd_nandecctest: ok - single-bit-error-in-ecc-correct-256
->      uncorrectable error :
->      mtd_nandecctest: ok - double-bit-error-in-data-detect-256
->      uncorrectable error :
->      mtd_nandecctest: ok - single-bit-error-in-data-and-ecc-detect-256
->      uncorrectable error :
->      mtd_nandecctest: ok - double-bit-error-in-ecc-detect-256
->      mtd_nandecctest: ok - no-bit-error-512
->      mtd_nandecctest: ok - single-bit-error-in-data-correct-512
->      mtd_nandecctest: ok - single-bit-error-in-ecc-correct-512
->      uncorrectable error :
->      mtd_nandecctest: ok - double-bit-error-in-data-detect-512
->      uncorrectable error :
->      mtd_nandecctest: ok - single-bit-error-in-data-and-ecc-detect-512
->      uncorrectable error :
->      mtd_nandecctest: ok - double-bit-error-in-ecc-detect-512
->
-> I'm not very concerned because I believe from looking at the comments
-> that this doesn't actually utilize my hardware but is a software ECC
-> test and I'm using a hardware-based ECC.
-yes, this one is a software ecc test.
-
-Best Regards,
-Josh Wu
-
->
-> My kernel version is 3.8.  I'm running on an Atmel SAM9G25 processor
-> with a Micron MT29F1G08ABBEAH4 SLC NAND.
->
-> All of the rest of the tests ran perfectly. And, are there any other
-> tests I should run to validate my hardware, kernel/driver setup, or
-> UBIFS?
->
-> The kmesg for the mtd_oobtest:
->
->      =================================================
->      mtd_oobtest: MTD device: 7
->      mtd_oobtest: MTD device size 39845888, eraseblock size 131072,
-> page size 2048, count of eraseblocks 304, pages per eraseblock 64, OOB
-> size 64
->      mtd_oobtest: scanning for bad eraseblocks
->      mtd_oobtest: scanned 304 eraseblocks, 0 are bad
->      mtd_oobtest: test 1 of 5
->      mtd_oobtest: erasing whole device
->      mtd_oobtest: erased 304 eraseblocks
->      mtd_oobtest: writing OOBs of whole device
->      mtd_oobtest: written up to eraseblock 0
->      mtd_oobtest: written up to eraseblock 256
->      mtd_oobtest: written 304 eraseblocks
->      mtd_oobtest: verifying all eraseblocks
->      mtd_oobtest: verified up to eraseblock 0
->      mtd_oobtest: verified up to eraseblock 256
->      mtd_oobtest: verified 304 eraseblocks
->      mtd_oobtest: test 2 of 5
->      mtd_oobtest: erasing whole device
->      mtd_oobtest: erased 304 eraseblocks
->      mtd_oobtest: writing OOBs of whole device
->      mtd_oobtest: written up to eraseblock 0
->      mtd_oobtest: written up to eraseblock 256
->      mtd_oobtest: written 304 eraseblocks
->      mtd_oobtest: verifying all eraseblocks
->      mtd_oobtest: verified up to eraseblock 0
->      mtd_oobtest: error: verify failed at 0x880000
->      mtd_oobtest: error: verify failed at 0xe80000
->      mtd_oobtest: verified up to eraseblock 256
->      mtd_oobtest: verified 304 eraseblocks
->      mtd_oobtest: test 3 of 5
->      mtd_oobtest: erasing whole device
->      mtd_oobtest: erased 304 eraseblocks
->      mtd_oobtest: writing OOBs of whole device
->      mtd_oobtest: written up to eraseblock 0
->      mtd_oobtest: written up to eraseblock 256
->      mtd_oobtest: written 304 eraseblocks
->      mtd_oobtest: verifying all eraseblocks
->      mtd_oobtest: verified up to eraseblock 0
->      mtd_oobtest: verified up to eraseblock 256
->      mtd_oobtest: verified 304 eraseblocks
->      mtd_oobtest: test 4 of 5
->      mtd_oobtest: erasing whole device
->      mtd_oobtest: erased 304 eraseblocks
->      mtd_oobtest: attempting to start write past end of OOB
->      mtd_oobtest: an error is expected...
->      mtd_oobtest: error occurred as expected
->      mtd_oobtest: attempting to start read past end of OOB
->      mtd_oobtest: an error is expected...
->      mtd_oobtest: error occurred as expected
->      mtd_oobtest: attempting to write past end of device
->      mtd_oobtest: an error is expected...
->      mtd_oobtest: error occurred as expected
->      mtd_oobtest: attempting to read past end of device
->      mtd_oobtest: an error is expected...
->      mtd_oobtest: error occurred as expected
->      mtd_oobtest: attempting to write past end of device
->      mtd_oobtest: an error is expected...
->      mtd_oobtest: error occurred as expected
->      mtd_oobtest: attempting to read past end of device
->      mtd_oobtest: an error is expected...
->      mtd_oobtest: error occurred as expected
->      mtd_oobtest: test 5 of 5
->      mtd_oobtest: erasing whole device
->      mtd_oobtest: erased 304 eraseblocks
->      mtd_oobtest: writing OOBs of whole device
->      mtd_oobtest: written up to eraseblock 0
->      mtd_oobtest: written up to eraseblock 0
->      mtd_oobtest: written up to eraseblock 256
->      mtd_oobtest: written up to eraseblock 256
->      mtd_oobtest: written 303 eraseblocks
->      mtd_oobtest: verifying all eraseblocks
->      mtd_oobtest: verified up to eraseblock 0
->      mtd_oobtest: verified up to eraseblock 256
->      mtd_oobtest: verified 303 eraseblocks
->      mtd_oobtest: finished with 2 errors
->      =================================================
->
-> Thanks,
-> - Steve
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> ---
+>  fs/nilfs2/super.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
+> index 2e5b3ec..3d4bbac 100644
+> --- a/fs/nilfs2/super.c
+> +++ b/fs/nilfs2/super.c
+> @@ -1057,7 +1057,6 @@ nilfs_fill_super(struct super_block *sb, void *data, int silent)
+>  {
+>  	struct the_nilfs *nilfs;
+>  	struct nilfs_root *fsroot;
+> -	struct backing_dev_info *bdi;
+>  	__u64 cno;
+>  	int err;
+>  
+> @@ -1077,8 +1076,7 @@ nilfs_fill_super(struct super_block *sb, void *data, int silent)
+>  	sb->s_time_gran = 1;
+>  	sb->s_max_links = NILFS_LINK_MAX;
+>  
+> -	bdi = sb->s_bdev->bd_inode->i_mapping->backing_dev_info;
+> -	sb->s_bdi = bdi ? : &default_backing_dev_info;
+> +	sb->s_bdi = &bdev_get_queue(sb->s_bdev)->backing_dev_info;
+>  
+>  	err = load_nilfs(nilfs, sb);
+>  	if (err)
+> -- 
+> 1.9.1
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-fsdevel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
