@@ -1,21 +1,25 @@
-Received: from mail-vc0-x22e.google.com ([2607:f8b0:400c:c03::22e])
+Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y852Y-0008C0-9d
- for linux-mtd@lists.infradead.org; Mon, 05 Jan 2015 10:37:39 +0000
-Received: by mail-vc0-f174.google.com with SMTP id id10so8244563vcb.33
- for <linux-mtd@lists.infradead.org>; Mon, 05 Jan 2015 02:37:16 -0800 (PST)
+ id 1Y8EQ4-00072e-KS
+ for linux-mtd@lists.infradead.org; Mon, 05 Jan 2015 20:38:33 +0000
+Received: by mail-pd0-f175.google.com with SMTP id g10so28749112pdj.6
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Jan 2015 12:38:11 -0800 (PST)
+Date: Mon, 5 Jan 2015 12:38:08 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Subject: Re: [PATCH 1/6] mtd: nand: Check length of ID before reading bits
+ per cell
+Message-ID: <20150105203808.GE9759@ld-irv-0074>
+References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
+ <1417525136-25731-2-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvwpyapTJKDrgtfy=qMW7u9hjXB9zRq+EkgE3zCummc7rw@mail.gmail.com>
-References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <CAFLxGvwpyapTJKDrgtfy=qMW7u9hjXB9zRq+EkgE3zCummc7rw@mail.gmail.com>
-Date: Mon, 5 Jan 2015 11:37:16 +0100
-Message-ID: <CAFLxGvyN=0JjGOEGvKgeJNFbg5L=-b971XSuMyuJVW-Tv34R2A@mail.gmail.com>
-Subject: Re: Fastmap update v2 (pile 1)
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1417525136-25731-2-git-send-email-ezequiel.garcia@imgtec.com>
+Cc: bpqw@micron.com, Ionela Voinescu <ionela.voinescu@imgtec.com>,
+ frankliu@micron.com, Andrew Bresticker <abrestic@chromium.org>,
+ linux-mtd@lists.infradead.org, arnaud.mouiche@invoxia.com,
+ Huang Shijie <shijie8@gmail.com>, James Hartley <james.hartley@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 10, 2014 at 9:21 AM, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
-> On Mon, Nov 24, 2014 at 2:20 PM, Richard Weinberger <richard@nod.at> wrote:
->> Artem,
->>
->> as requested I'm resending my fastmap work in smaller pieces.
->> This is pile 1 of 7.
->> Rebasing my patches to ubifs.git was a massive PITA because the
->> logging style changes touched a lot of code and almost every patch
->> failed to apply and needed inspection by hand.
->> The first patches are bug fixes, the latter introduce cleanups
->> and new features.
->> After all bugfixes are mainline I'll make sure that all needed
->> fixes go into -stable.
->
-> Artem,
->
-> how shall we proceed?
-> Currently around 45 of my patches are in flight.
-> Some got comments, some not. If it helps I can address these comments
-> immediately
-> and resend the individual patches. The vast majority of all comments
-> are trivial to fix (typos, style, etc..)
-> Initially I hoped that all patches will get comments such that I can
-> do a v3 which can be merged
-> in 3.19-rc1. :-\
->
-> In my local queue even more patches wait to be submitted.
+A little tangential to the big-picture discussion, but I'll get this out
+there:
 
-*ping*
+On Tue, Dec 02, 2014 at 09:58:51AM -0300, Ezequiel Garcia wrote:
+> The table-based NAND identification currently reads the number
+> of bits per cell from the 3rd byte of the extended ID. This is done
+> for the so-called 'full ID' devices; i.e. devices that have a known
+> length ID.
+> 
+> However, if the ID length is shorter than three, there's no 3rd byte,
+> and so it's wrong to read the bits per cell from there. Fix this by
+> adding a check for the ID length.
 
-Artem, I really want to proceed.
+You're right about the problem, but I'm not sure about the fix. I
+actually don't know why we are using the ID bytes to guess at the number
+of bits per cell here; the point of the full-id checks is that with some
+NAND, we just can't decode all the information reliably from the ID.
 
--- 
-Thanks,
-//richard
+I'd kinda rather just see bits-per-cell represented as a separate bit;
+either a new field, or in the 'options' field.
+
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 5b5c627..a4c9cee 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3589,7 +3589,8 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+>  		mtd->erasesize = type->erasesize;
+>  		mtd->oobsize = type->oobsize;
+>  
+> -		chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
+> +		if (type->id_len > 2)
+> +			chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
+>  		chip->chipsize = (uint64_t)type->chipsize << 20;
+>  		chip->options |= type->options;
+>  		chip->ecc_strength_ds = NAND_ECC_STRENGTH(type);
+
+Brian
