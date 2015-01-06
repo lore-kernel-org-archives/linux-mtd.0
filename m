@@ -1,29 +1,32 @@
-Received: from mail-bl2on0100.outbound.protection.outlook.com ([65.55.169.100]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8YIM-0004hC-Rs
- for linux-mtd@lists.infradead.org; Tue, 06 Jan 2015 17:51:56 +0000
-From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
- <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, <rob@landley.net>,
- <michal.simek@xilinx.com>, <grant.likely@linaro.org>,
- <gregkh@linuxfoundation.org>, <jason@lakedaemon.net>,
- <ezequiel.garcia@free-electrons.com>, <arnd@arndb.de>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
- <pekon@ti.com>, <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>,
- <ivan.khoronzhuk@ti.com>, <joern@logfs.org>
-Subject: [PATCH v5 3/3] Documentation: nand: pl353: Add documentation for
- controller and driver
-Date: Tue, 6 Jan 2015 23:21:12 +0530
-In-Reply-To: <1420566672-6870-1-git-send-email-punnaia@xilinx.com>
-References: <1420566672-6870-1-git-send-email-punnaia@xilinx.com>
-Message-ID: <66c2f1c72cc848d1bd89adad8f0c608d@BY2FFO11FD025.protection.gbl>
+Received: from mail-wi0-f176.google.com ([209.85.212.176])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y8Yt8-0001RK-VA
+ for linux-mtd@lists.infradead.org; Tue, 06 Jan 2015 18:30:00 +0000
+Received: by mail-wi0-f176.google.com with SMTP id ex7so5943796wid.3
+ for <linux-mtd@lists.infradead.org>; Tue, 06 Jan 2015 10:29:32 -0800 (PST)
+Message-ID: <54AC290B.5000606@vanguardiasur.com.ar>
+Date: Tue, 06 Jan 2015 15:27:23 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+To: Lucas Stach <dev@lynxeye.de>, Brian Norris <computersforpeace@gmail.com>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Alexandre Courbot <gnurou@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>
+Subject: Re: [PATCH 1/4] mtd: nand: add NVIDIA Tegra NAND Flash controller
+ driver
+References: <1420403960-26626-1-git-send-email-dev@lynxeye.de>
+In-Reply-To: <1420403960-26626-1-git-send-email-dev@lynxeye.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Thierry Reding <thierry.reding@avionic-design.de>,
+ linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,116 +36,951 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added notes about the controller and driver
+On 01/04/2015 05:39 PM, Lucas Stach wrote:
 
-Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
----
-Changes in v5:
-- Fixed the review comments
-Changes in v4:
-- None
----
- Documentation/mtd/nand/pl353-nand.txt |   92 +++++++++++++++++++++++++++++++++
- 1 files changed, 92 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/mtd/nand/pl353-nand.txt
+Hi Lucas,
 
-diff --git a/Documentation/mtd/nand/pl353-nand.txt b/Documentation/mtd/nand/pl353-nand.txt
-new file mode 100644
-index 0000000..4deac94
---- /dev/null
-+++ b/Documentation/mtd/nand/pl353-nand.txt
-@@ -0,0 +1,92 @@
-+This documents provides some notes about the ARM pl353 smc controller used in
-+Zynq SOC and confined to NAND specific details.
-+
-+Overview of the controller
-+==========================
-+	The SMC (PL353) supports two memory interfaces:
-+	Interface 0 type SRAM.
-+	Interface 1 type NAND.
-+	This configuration supports the following configurable options:
-+	   . 32-bit or 64-bit AXI data width
-+	   . 8-bit, 16-bit, or 32-bit memory data width for interface 0
-+	   . 8-bit, or 16-bit memory data width for interface 1
-+	   . 1-4 chip selects on each interface
-+	   . SLC ECC block for interface 1
-+
-+For more information, refer the below link for TRM
-+http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
-+DDI0380G_smc_pl350_series_r2p1_trm.pdf
-+
-+NAND memory accesses
-+====================
-+	. Two phase NAND accesses
-+	. NAND command phase transfers
-+	. NAND data phase transfers
-+
-+Two phase NAND accesses
-+	The SMC defines two phases of commands when transferring data to or from
-+NAND flash.
-+
-+Command phase
-+	Commands and optional address information are written to the NAND flash.
-+The command and address can be associated with either a data phase operation to
-+write to or read from the array, or a status/ID register transfer.
-+
-+Data phase
-+ Data is either written to or read from the NAND flash. This data can be either
-+data transferred to or from the array, or status/ID register information.
-+
-+NAND AXI address setup
-+       AXI address      Command phase      Data phase
-+	[31:24]         Chip address       Chip address
-+	[23]            NoOfAddCycles_2    Reserved
-+	[22]            NoOfAddCycles_1    Reserved
-+	[21]            NoOfAddCycles_0    ClearCS
-+	[20]            End command valid  End command valid
-+	[19]            0                  1
-+	[18:11]         End command        End command
-+	[10:3]          Start command      [10] ECC Last
-+					   [9:3] Reserved
-+	[2:0]           Reserved           Reserved
-+
-+ECC
-+===
-+    It operates on a number of 512 byte blocks of NAND memory and can be
-+programmed to store the ECC codes after the data in memory. For writes,
-+the ECC is written to the spare area of the page. For reads, the result of
-+a block ECC check are made available to the device driver.
-+
-+------------------------------------------------------------------------
-+|               n * 512 blocks                  | extra  | ecc    |     |
-+|                                               | block  | codes  |     |
-+------------------------------------------------------------------------
-+
-+The ECC calculation uses a simple Hamming code, using 1-bit correction 2-bit
-+detection. It starts when a valid read or write command with a 512 byte aligned
-+address is detected on the memory interface.
-+
-+Driver details
-+==============
-+	The NAND driver has dependancy with the pl353_smc memory controller
-+driver for intializing the nand timing parameters, bus width, ECC modes,
-+control and status information.
-+
-+Since the controller expects that the chipselect bit should be cleared for the
-+last data transfer i.e last 4 data bytes, the existing nandbase page
-+read/write routines for soft ecc and ecc none modes will not work. So, inorder
-+to make this driver work, it always updates the ecc mode as HW ECC and
-+implemented the page read/write functions for supporting the SW ECC.
-+
-+HW ECC mode:
-+	Upto 2K page size is supported and beyond that it retuns
-+-ENOSUPPORT error. If the flsh has ONDIE ecc controller then the
-+priority has given to the ONDIE ecc controller. Also the current
-+implementation has support for upto 64 byte oob area
-+
-+SW ECC mode:
-+	It supports all the pgae sizes. But since, zynq soc bootrom uses
-+HW ECC for the devices that have pgae size <=2K so, to avoid any ecc related
-+issues during boot, prefer HW ECC over SW ECC.
-+
-+For devicetree binding information please refer the below dt binding file
-+Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+The driver looks mostly good. Just a few comments on my side.
+
+> Add support for the NAND flash controller found on NVIDIA
+> Tegra 2/3 SoCs. This is a largely reworked version of the driver
+> started by Thierry.
+> 
+> Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
+> Signed-off-by: Lucas Stach <dev@lynxeye.de>
+> ---
+> I've tested this driver with the in-kernel mtd-tests and some
+> realworld workloads on a Colibri T20 module.
+> ---
+>  .../bindings/mtd/nvidia,tegra20-nand.txt           |  30 +
+>  MAINTAINERS                                        |   6 +
+>  drivers/mtd/nand/Kconfig                           |   6 +
+>  drivers/mtd/nand/Makefile                          |   1 +
+>  drivers/mtd/nand/tegra_nand.c                      | 794 +++++++++++++++++++++
+>  5 files changed, 837 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+>  create mode 100644 drivers/mtd/nand/tegra_nand.c
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+> new file mode 100644
+> index 0000000..088223c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+> @@ -0,0 +1,30 @@
+> +NVIDIA Tegra NAND Flash controller
+> +
+> +Required properties:
+> +- compatible: Must be one of:
+> +  - "nvidia,tegra20-nand"
+> +  - "nvidia,tegra30-nand"
+> +- reg: MMIO address range
+> +- interrupts: interrupt output of the NFC controller
+> +- clocks: Must contain an entry for each entry in clock-names.
+> +  See ../clocks/clock-bindings.txt for details.
+> +- clock-names: Must include the following entries:
+> +  - nand
+> +- resets: Must contain an entry for each entry in reset-names.
+> +  See ../reset/reset.txt for details.
+> +- reset-names: Must include the following entries:
+> +  - nand
+> +
+> +Optional properties:
+> +- nvidia,wp-gpios: GPIO used to disable write protection of the flash
+> +
+> +  Example:
+> +	nand@70008000 {
+> +		compatible = "nvidia,tegra20-nand";
+> +		reg = <0x70008000 0x100>;
+> +		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
+> +		clock-names = "nand";
+> +		resets = <&tegra_car 13>;
+> +		reset-names = "nand";
+> +	};
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ddb9ac8..972e31d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9459,6 +9459,12 @@ M:	Laxman Dewangan <ldewangan@nvidia.com>
+>  S:	Supported
+>  F:	drivers/input/keyboard/tegra-kbc.c
+>  
+> +TEGRA NAND DRIVER
+> +M:	Lucas Stach <dev@lynxeye.de>
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+> +F:	drivers/mtd/nand/tegra_nand.c
+> +
+>  TEGRA PWM DRIVER
+>  M:	Thierry Reding <thierry.reding@gmail.com>
+>  S:	Supported
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 7d0150d..1eafd4e 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -524,4 +524,10 @@ config MTD_NAND_SUNXI
+>  	help
+>  	  Enables support for NAND Flash chips on Allwinner SoCs.
+>  
+> +config MTD_NAND_TEGRA
+> +	tristate "Support for NAND on NVIDIA Tegra"
+> +	depends on ARCH_TEGRA || COMPILE_TEST
+> +	help
+> +	  Enables support for NAND flash on NVIDIA Tegra SoC based boards.
+> +
+>  endif # MTD_NAND
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index bd38f21..58399ce 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -51,5 +51,6 @@ obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
+>  obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
+>  obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
+>  obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
+> +obj-$(CONFIG_MTD_NAND_TEGRA)		+= tegra_nand.o
+>  
+>  nand-objs := nand_base.o nand_bbt.o nand_timings.o
+> diff --git a/drivers/mtd/nand/tegra_nand.c b/drivers/mtd/nand/tegra_nand.c
+> new file mode 100644
+> index 0000000..b919a6e
+> --- /dev/null
+> +++ b/drivers/mtd/nand/tegra_nand.c
+> @@ -0,0 +1,794 @@
+> +/*
+> + * Copyright (C) 2014-2015 Lucas Stach <dev@lynxeye.de>
+> + * Copyright (C) 2012 Avionic Design GmbH
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/completion.h>
+> +#include <linux/delay.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/err.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/mtd/nand.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/of_mtd.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/reset.h>
+> +
+> +#define CMD				0x00
+> +#define   CMD_GO			(1 << 31)
+> +#define   CMD_CLE			(1 << 30)
+> +#define   CMD_ALE			(1 << 29)
+> +#define   CMD_PIO			(1 << 28)
+> +#define   CMD_TX			(1 << 27)
+> +#define   CMD_RX			(1 << 26)
+
+How about using BIT() ?
+
+> +#define   CMD_SEC_CMD			(1 << 25)
+> +#define   CMD_AFT_DAT			(1 << 24)
+> +#define   CMD_TRANS_SIZE(x)		(((x) & 0xf) << 20)
+> +#define   CMD_A_VALID			(1 << 19)
+> +#define   CMD_B_VALID			(1 << 18)
+> +#define   CMD_RD_STATUS_CHK		(1 << 17)
+> +#define   CMD_RBSY_CHK			(1 << 16)
+> +#define   CMD_CE(x)			(1 << (8 + ((x) & 0x7)))
+> +#define   CMD_CLE_SIZE(x)		(((x) & 0x3) << 4)
+> +#define   CMD_ALE_SIZE(x)		(((x) & 0xf) << 0)
+> +
+> +#define STATUS				0x04
+> +
+> +#define ISR				0x08
+> +#define   ISR_UND			(1 << 7)
+> +#define   ISR_OVR			(1 << 6)
+> +#define   ISR_CMD_DONE			(1 << 5)
+> +#define   ISR_ECC_ERR			(1 << 4)
+> +
+> +#define IER				0x0c
+> +#define   IER_ERR_TRIG_VAL(x)		(((x) & 0xf) << 16)
+> +#define   IER_UND			(1 << 7)
+> +#define   IER_OVR			(1 << 6)
+> +#define   IER_CMD_DONE			(1 << 5)
+> +#define   IER_ECC_ERR			(1 << 4)
+> +#define   IER_GIE			(1 << 0)
+> +
+> +#define CFG				0x10
+> +#define   CFG_HW_ECC			(1 << 31)
+> +#define   CFG_ECC_SEL			(1 << 30)
+> +#define   CFG_ERR_COR			(1 << 29)
+> +#define   CFG_PIPE_EN			(1 << 28)
+> +#define   CFG_TVAL_4			(0 << 24)
+> +#define   CFG_TVAL_6			(1 << 24)
+> +#define   CFG_TVAL_8			(2 << 24)
+> +#define   CFG_SKIP_SPARE		(1 << 23)
+> +#define   CFG_BUS_WIDTH_8		(0 << 21)
+> +#define   CFG_BUS_WIDTH_16		(1 << 21)
+> +#define   CFG_COM_BSY			(1 << 20)
+> +#define   CFG_PS_256			(0 << 16)
+> +#define   CFG_PS_512			(1 << 16)
+> +#define   CFG_PS_1024			(2 << 16)
+> +#define   CFG_PS_2048			(3 << 16)
+> +#define   CFG_PS_4096			(4 << 16)
+> +#define   CFG_SKIP_SPARE_SIZE_4		(0 << 14)
+> +#define   CFG_SKIP_SPARE_SIZE_8		(1 << 14)
+> +#define   CFG_SKIP_SPARE_SIZE_12	(2 << 14)
+> +#define   CFG_SKIP_SPARE_SIZE_16	(3 << 14)
+> +#define   CFG_TAG_BYTE_SIZE(x)		((x) & 0xff)
+> +
+> +#define TIMING_1			0x14
+> +#define   TIMING_TRP_RESP(x)		(((x) & 0xf) << 28)
+> +#define   TIMING_TWB(x)			(((x) & 0xf) << 24)
+> +#define   TIMING_TCR_TAR_TRR(x)		(((x) & 0xf) << 20)
+> +#define   TIMING_TWHR(x)		(((x) & 0xf) << 16)
+> +#define   TIMING_TCS(x)			(((x) & 0xc) << 14)
+> +#define   TIMING_TWH(x)			(((x) & 0x3) << 12)
+> +#define   TIMING_TWP(x)			(((x) & 0xf) <<  8)
+> +#define   TIMING_TRH(x)			(((x) & 0xf) <<  4)
+> +#define   TIMING_TRP(x)			(((x) & 0xf) <<  0)
+> +
+> +#define RESP				0x18
+> +
+> +#define TIMING_2			0x1c
+> +#define   TIMING_TADL(x)		((x) & 0xf)
+> +
+> +#define CMD_1				0x20
+> +#define CMD_2				0x24
+> +#define ADDR_1				0x28
+> +#define ADDR_2				0x2c
+> +
+> +#define DMA_CTRL			0x30
+> +#define   DMA_CTRL_GO			(1 << 31)
+> +#define   DMA_CTRL_IN			(0 << 30)
+> +#define   DMA_CTRL_OUT			(1 << 30)
+> +#define   DMA_CTRL_PERF_EN		(1 << 29)
+> +#define   DMA_CTRL_IE_DONE		(1 << 28)
+> +#define   DMA_CTRL_REUSE		(1 << 27)
+> +#define   DMA_CTRL_BURST_1		(2 << 24)
+> +#define   DMA_CTRL_BURST_4		(3 << 24)
+> +#define   DMA_CTRL_BURST_8		(4 << 24)
+> +#define   DMA_CTRL_BURST_16		(5 << 24)
+> +#define   DMA_CTRL_IS_DONE		(1 << 20)
+> +#define   DMA_CTRL_EN_A			(1 <<  2)
+> +#define   DMA_CTRL_EN_B			(1 <<  1)
+> +
+> +#define DMA_CFG_A			0x34
+> +#define DMA_CFG_B			0x38
+> +
+> +#define FIFO_CTRL			0x3c
+> +#define   FIFO_CTRL_CLR_ALL		(1 << 3)
+> +
+> +#define DATA_PTR			0x40
+> +#define TAG_PTR				0x44
+> +#define ECC_PTR				0x48
+> +
+> +#define HWSTATUS_CMD			0x50
+> +#define HWSTATUS_MASK			0x54
+> +#define   HWSTATUS_RDSTATUS_MASK(x)	(((x) & 0xff) << 24)
+> +#define   HWSTATUS_RDSTATUS_VALUE(x)	(((x) & 0xff) << 16)
+> +#define   HWSTATUS_RBSY_MASK(x)		(((x) & 0xff) << 8)
+> +#define   HWSTATUS_RBSY_VALUE(x)	(((x) & 0xff) << 0)
+> +
+> +#define DEC_RESULT			0xd0
+> +#define   DEC_RESULT_CORRFAIL		(1 << 8)
+> +
+> +#define DEC_STATUS_BUF			0xd4
+> +#define   DEC_STATUS_BUF_FAIL_SEC_FLAG(x)	((x) & (0xff << 24))
+> +#define   DEC_STATUS_BUF_CORR_SEC_FLAG(x)	((x) & (0xff << 16))
+> +#define   DEC_STATUS_BUF_MAX_CORR_CNT(x)	(((x) & 0xf00) >> 8)
+> +
+> +struct tegra_nand {
+> +	void __iomem *regs;
+> +	int irq;
+
+Seems like you don't need to store irq.
+
+> +	struct clk *clk;
+> +	struct reset_control *rst;
+> +	int wp_gpio;
+> +	int buswidth;
+
+And also you don't seem to need either wp_gpio or buswidth stored
+in the struct. You only use them at probe time.
+
+> +
+> +	struct nand_chip chip;
+> +	struct mtd_info mtd;
+> +	struct device *dev;
+> +
+> +	struct completion command_complete;
+> +	struct completion dma_complete;
+> +
+> +	dma_addr_t data_dma;
+> +	void *data_buf;
+> +	dma_addr_t oob_dma;
+> +	void *oob_buf;
+> +
+> +	int cur_chip;
+> +};
+> +
+> +static inline struct tegra_nand *to_tegra_nand(struct mtd_info *mtd)
+> +{
+> +	return container_of(mtd, struct tegra_nand, mtd);
+> +}
+> +
+> +static struct nand_ecclayout tegra_nand_oob_16 = {
+> +	.eccbytes = 4,
+> +	.eccpos = { 3, 4, 5, 6 },
+> +	.oobfree = {
+> +		{ .offset = 8, . length = 8 }
+> +	}
+> +};
+> +
+> +static struct nand_ecclayout tegra_nand_oob_64 = {
+> +	.eccbytes = 36,
+> +	.eccpos = {
+> +		 3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+> +		19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+> +		35, 36, 37, 38, 39
+> +	},
+> +	.oobfree = {
+> +		{ .offset = 40, .length = 20 }
+> +	}
+> +};
+> +
+> +static struct nand_ecclayout tegra_nand_oob_128 = {
+> +	.eccbytes = 72,
+> +	.eccpos = {
+> +		 3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+> +		19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+> +		35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+> +		51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66,
+> +		67, 68, 69, 70, 71, 72, 73, 74, 75
+> +	},
+> +	.oobfree = {
+> +		{ .offset = 76, .length = 52 }
+> +	}
+> +};
+> +
+> +static struct nand_ecclayout tegra_nand_oob_224 = {
+> +	.eccbytes = 144,
+> +	.eccpos = {
+> +		  3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,
+> +		 15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,
+> +		 27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,
+> +		 39,  40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,
+> +		 51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,
+> +		 63,  64,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,
+> +		 75,  76,  77,  78,  79,  80,  81,  82,  83,  84,  85,  86,
+> +		 87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,  98,
+> +		 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110,
+> +		111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+> +		123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134,
+> +		135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146,
+> +		147
+> +	},
+> +	.oobfree = {
+> +		{ .offset = 148, .length = 76 }
+> +	}
+> +};
+> +
+> +static irqreturn_t tegra_nand_irq(int irq, void *data)
+> +{
+> +	struct tegra_nand *nand = data;
+> +	irqreturn_t ret = IRQ_HANDLED;
+> +	u32 isr, dma;
+> +
+> +	isr = readl(nand->regs + ISR);
+> +	dma = readl(nand->regs + DMA_CTRL);
+> +
+> +	if (!isr && !(dma & DMA_CTRL_IS_DONE)) {
+> +		ret = IRQ_NONE;
+> +		goto out;
+> +	}
+> +
+> +	if (isr & ISR_CMD_DONE)
+> +		complete(&nand->command_complete);
+> +
+> +	if (isr & ISR_UND)
+> +		dev_dbg(nand->dev, "  FIFO underrun\n");
+> +
+> +	if (isr & ISR_OVR)
+> +		dev_dbg(nand->dev, "  FIFO overrun\n");
+> +
+> +	/* handle DMA interrupts */
+> +	if (dma & DMA_CTRL_IS_DONE) {
+> +		writel(dma, nand->regs + DMA_CTRL);
+> +		complete(&nand->dma_complete);
+> +	}
+> +
+> +	/* clear interrupts */
+> +	writel(isr, nand->regs + ISR);
+> +
+> +out:
+> +	return ret;
+> +}
+> +
+> +static void tegra_nand_command(struct mtd_info *mtd, unsigned int command,
+> +			       int column, int page_addr)
+> +{
+> +	struct tegra_nand *nand = to_tegra_nand(mtd);
+> +	u32 value;
+> +
+> +	switch (command) {
+> +	case NAND_CMD_READOOB:
+> +		column += mtd->writesize;
+> +		/* fall-through */
+> +
+> +	case NAND_CMD_READ0:
+> +		writel(NAND_CMD_READ0, nand->regs + CMD_1);
+> +		writel(NAND_CMD_READSTART, nand->regs + CMD_2);
+> +
+> +		value = (page_addr << 16) | (column & 0xffff);
+> +		writel(value, nand->regs + ADDR_1);
+> +
+> +		value = page_addr >> 16;
+> +		writel(value, nand->regs + ADDR_2);
+> +
+> +		value = CMD_CLE | CMD_ALE | CMD_ALE_SIZE(4) | CMD_SEC_CMD |
+> +			CMD_RBSY_CHK | CMD_CE(nand->cur_chip) | CMD_GO;
+> +		writel(value, nand->regs + CMD);
+> +		break;
+> +
+> +	case NAND_CMD_SEQIN:
+> +		writel(NAND_CMD_SEQIN, nand->regs + CMD_1);
+> +
+> +		value = (page_addr << 16) | (column & 0xffff);
+> +		writel(value, nand->regs + ADDR_1);
+> +
+> +		value = page_addr >> 16;
+> +		writel(value, nand->regs + ADDR_2);
+> +
+> +		value = CMD_CLE | CMD_ALE | CMD_ALE_SIZE(4) |
+> +			CMD_CE(nand->cur_chip) | CMD_GO;
+> +		writel(value, nand->regs + CMD);
+> +		break;
+> +
+> +	case NAND_CMD_PAGEPROG:
+> +		writel(NAND_CMD_PAGEPROG, nand->regs + CMD_1);
+> +
+> +		value = CMD_CLE | CMD_CE(nand->cur_chip) | CMD_GO;
+> +		writel(value, nand->regs + CMD);
+> +		break;
+> +
+> +	case NAND_CMD_READID:
+> +		writel(NAND_CMD_READID, nand->regs + CMD_1);
+> +		writel(column & 0xff, nand->regs + ADDR_1);
+> +
+> +		value = CMD_GO | CMD_CLE | CMD_ALE | CMD_CE(nand->cur_chip);
+> +		writel(value, nand->regs + CMD);
+> +		break;
+> +
+> +	case NAND_CMD_ERASE1:
+> +		writel(NAND_CMD_ERASE1, nand->regs + CMD_1);
+> +		writel(NAND_CMD_ERASE2, nand->regs + CMD_2);
+> +		writel(page_addr, nand->regs + ADDR_1);
+> +
+> +		value = CMD_GO | CMD_CLE | CMD_ALE | CMD_ALE_SIZE(2) |
+> +			CMD_SEC_CMD | CMD_RBSY_CHK | CMD_CE(nand->cur_chip);
+> +		writel(value, nand->regs + CMD);
+> +		break;
+> +
+> +	case NAND_CMD_ERASE2:
+> +		return;
+> +
+> +	case NAND_CMD_STATUS:
+> +		writel(NAND_CMD_STATUS, nand->regs + CMD_1);
+> +
+> +		value = CMD_GO | CMD_CLE | CMD_CE(nand->cur_chip);
+> +		writel(value, nand->regs + CMD);
+> +		break;
+> +
+> +	case NAND_CMD_PARAM:
+> +		writel(NAND_CMD_PARAM, nand->regs + CMD_1);
+> +		writel(column & 0xff, nand->regs + ADDR_1);
+> +		value = CMD_GO | CMD_CLE | CMD_ALE | CMD_CE(nand->cur_chip);
+> +		writel(value, nand->regs + CMD);
+> +		break;
+> +
+> +	case NAND_CMD_RESET:
+> +		writel(NAND_CMD_RESET, nand->regs + CMD_1);
+> +
+> +		value = CMD_GO | CMD_CLE | CMD_CE(nand->cur_chip);
+> +		writel(value, nand->regs + CMD);
+> +		break;
+> +
+> +	default:
+> +		dev_warn(nand->dev, "unsupported command: %x\n", command);
+> +		return;
+> +	}
+> +
+> +	wait_for_completion(&nand->command_complete);
+> +}
+> +
+> +static void tegra_nand_select_chip(struct mtd_info *mtd, int chip)
+> +{
+> +	struct tegra_nand *nand = to_tegra_nand(mtd);
+> +
+> +	nand->cur_chip = chip;
+> +}
+> +
+> +static uint8_t tegra_nand_read_byte(struct mtd_info *mtd)
+> +{
+> +	struct tegra_nand *nand = to_tegra_nand(mtd);
+> +	u32 value;
+> +
+> +	value = CMD_TRANS_SIZE(0) | CMD_CE(nand->cur_chip) |
+> +		CMD_PIO | CMD_RX | CMD_A_VALID | CMD_GO;
+> +
+> +	writel(value, nand->regs + CMD);
+> +	wait_for_completion(&nand->command_complete);
+> +
+> +	return readl(nand->regs + RESP) & 0xff;
+> +}
+> +
+> +static void tegra_nand_read_buf(struct mtd_info *mtd, uint8_t *buffer,
+> +				int length)
+> +{
+> +	struct tegra_nand *nand = to_tegra_nand(mtd);
+> +	size_t i;
+> +
+> +	for (i = 0; i < length; i += 4) {
+> +		u32 value;
+> +		size_t n = min_t(size_t, length - i, 4);
+> +
+> +		value = CMD_GO | CMD_PIO | CMD_RX | CMD_A_VALID |
+> +			CMD_CE(nand->cur_chip) | CMD_TRANS_SIZE(n - 1);
+> +
+> +		writel(value, nand->regs + CMD);
+> +		wait_for_completion(&nand->command_complete);
+> +
+> +		value = readl(nand->regs + RESP);
+> +		memcpy(buffer + i, &value, n);
+> +	}
+> +}
+> +
+> +static void tegra_nand_write_buf(struct mtd_info *mtd, const uint8_t *buffer,
+> +				 int length)
+> +{
+> +	struct tegra_nand *nand = to_tegra_nand(mtd);
+> +	size_t i;
+> +
+> +	for (i = 0; i < length; i += 4) {
+> +		u32 value;
+> +		size_t n = min_t(size_t, length - i, 4);
+> +
+> +		memcpy(&value, buffer + i, n);
+> +		writel(value, nand->regs + RESP);
+> +
+> +		value = CMD_GO | CMD_PIO | CMD_TX | CMD_A_VALID |
+> +			CMD_CE(nand->cur_chip) | CMD_TRANS_SIZE(n - 1);
+> +
+> +		writel(value, nand->regs + CMD);
+> +		wait_for_completion(&nand->command_complete);
+> +	}
+> +}
+> +
+> +static int tegra_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+> +				uint8_t *buf, int oob_required, int page)
+> +{
+> +	struct tegra_nand *nand = to_tegra_nand(mtd);
+> +	u32 value;
+> +
+> +	writel(mtd->writesize - 1, nand->regs + DMA_CFG_A);
+> +	writel(nand->data_dma, nand->regs + DATA_PTR);
+> +
+> +	if (oob_required) {
+> +		writel(mtd->oobsize - 1, nand->regs + DMA_CFG_B);
+> +		writel(nand->oob_dma, nand->regs + TAG_PTR);
+> +	} else {
+> +		writel(0, nand->regs + DMA_CFG_B);
+> +		writel(0, nand->regs + TAG_PTR);
+> +	}
+> +
+> +	value = DMA_CTRL_GO | DMA_CTRL_IN | DMA_CTRL_PERF_EN |
+> +		DMA_CTRL_REUSE | DMA_CTRL_IE_DONE | DMA_CTRL_IS_DONE |
+> +		DMA_CTRL_BURST_8 | DMA_CTRL_EN_A;
+> +
+> +	if (oob_required)
+> +		value |= DMA_CTRL_EN_B;
+> +
+> +	writel(value, nand->regs + DMA_CTRL);
+> +
+> +	value = CMD_GO | CMD_RX | CMD_TRANS_SIZE(8) |
+> +		CMD_A_VALID | CMD_CE(nand->cur_chip);
+> +	if (oob_required)
+> +		value |= CMD_B_VALID;
+> +	writel(value, nand->regs + CMD);
+> +
+> +	wait_for_completion(&nand->command_complete);
+> +	wait_for_completion(&nand->dma_complete);
+> +
+> +	if (oob_required)
+> +		memcpy(chip->oob_poi, nand->oob_buf, mtd->oobsize);
+> +	memcpy(buf, nand->data_buf, mtd->writesize);
+> +
+> +	value = readl(nand->regs + DEC_RESULT);
+> +	if (value & DEC_RESULT_CORRFAIL) {
+> +		value = readl(nand->regs + DEC_STATUS_BUF);
+> +
+> +		if (DEC_STATUS_BUF_FAIL_SEC_FLAG(value))
+> +			return -1;
+> +
+> +		if (DEC_STATUS_BUF_CORR_SEC_FLAG(value))
+> +			return DEC_STATUS_BUF_MAX_CORR_CNT(value);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra_nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+> +				 const uint8_t *buf, int oob_required)
+> +{
+> +	struct tegra_nand *nand = to_tegra_nand(mtd);
+> +	unsigned long value;
+> +	int ret = 0;
+> +
+> +	memcpy(nand->data_buf, buf, mtd->writesize);
+> +
+> +	writel(mtd->writesize - 1, nand->regs + DMA_CFG_A);
+> +	writel(nand->data_dma, nand->regs + DATA_PTR);
+> +
+> +	writel(0, nand->regs + DMA_CFG_B);
+> +	writel(0, nand->regs + TAG_PTR);
+> +
+> +	value = DMA_CTRL_GO | DMA_CTRL_OUT | DMA_CTRL_PERF_EN |
+> +		DMA_CTRL_IE_DONE | DMA_CTRL_IS_DONE |
+> +		DMA_CTRL_BURST_8 | DMA_CTRL_EN_A;
+> +	writel(value, nand->regs + DMA_CTRL);
+> +
+> +	value = CMD_GO | CMD_TX | CMD_A_VALID | CMD_TRANS_SIZE(8) |
+> +		CMD_CE(nand->cur_chip);
+> +	writel(value, nand->regs + CMD);
+> +
+> +	wait_for_completion(&nand->command_complete);
+> +	wait_for_completion(&nand->dma_complete);
+> +
+> +	return ret;
+> +}
+> +
+> +static void tegra_nand_setup_timing(struct tegra_nand *nand, int mode)
+> +{
+> +	unsigned long rate = clk_get_rate(nand->clk) / 1000000;
+> +	unsigned long period = 1000000 / rate;
+> +	const struct nand_sdr_timings *timings;
+> +	u32 val, reg = 0;
+> +
+> +	timings = onfi_async_timing_mode_to_sdr_timings(mode);
+> +
+> +	val = max3(timings->tAR_min, timings->tRR_min,
+> +		   timings->tRC_min) / period;
+> +	if (val > 2)
+> +		val -= 2;
+> +	reg |= TIMING_TCR_TAR_TRR(val);
+> +
+> +	val = max(max(timings->tCS_min, timings->tCH_min),
+> +		  max(timings->tALS_min, timings->tALH_min)) / period;
+> +	if (val > 1)
+> +		val -= 1;
+> +	reg |= TIMING_TCS(val);
+> +
+> +	val = max(timings->tRP_min, timings->tREA_max) + 6000;
+> +	reg |= TIMING_TRP(val / 1000);
+> +	reg |= TIMING_TRP_RESP(val / period);
+> +
+> +	reg |= TIMING_TWB(timings->tWB_max / period);
+> +	reg |= TIMING_TWHR(timings->tWHR_min / period);
+> +	reg |= TIMING_TWH(timings->tWH_min / 1000);
+> +	reg |= TIMING_TWP(timings->tWP_min / 1000);
+> +	reg |= TIMING_TRH(timings->tRHW_min / 1000);
+> +
+> +	writel(reg, nand->regs + TIMING_1);
+> +
+> +	val = timings->tADL_min / period;
+> +	if (val > 2)
+> +		val -= 2;
+> +	reg = TIMING_TADL(val);
+> +
+> +	writel(reg, nand->regs + TIMING_2);
+> +}
+> +
+> +static void tegra_nand_setup_chiptiming(struct tegra_nand *nand)
+> +{
+> +	struct nand_chip *chip = &nand->chip;
+> +	int mode;
+> +
+> +	mode = onfi_get_async_timing_mode(chip);
+> +	if (mode == ONFI_TIMING_MODE_UNKNOWN)
+> +		mode = chip->onfi_timing_mode_default;
+> +	else
+> +		mode = fls(mode);
+> +
+> +	tegra_nand_setup_timing(nand, mode);
+> +}
+> +
+> +static int tegra_nand_parse_dt(struct device_node *node,
+> +			       struct tegra_nand *nand)
+> +{
+> +	enum of_gpio_flags flags;
+> +
+> +	nand->wp_gpio = of_get_named_gpio_flags(node, "nvidia,wp-gpios", 0,
+> +						 &flags);
+> +	if (nand->wp_gpio < 0)
+> +		nand->wp_gpio = 0;
+> +
+> +	nand->buswidth = of_get_nand_bus_width(node);
+> +	if (nand->buswidth < 0)
+> +		return nand->buswidth;
+> +
+
+I believe you should set NAND_BUSWIDTH_16 flag in nand_chip.options,
+before calling nand_scan_ident?
+
+Also, if you just access the of_get_nand_bus_width before nand_scan_ident
+you can drop the nand->buswidth field.
+
+Same goes for wp_gpio.
+
+> +	return 0;
+> +}
+> +
+> +static const char * const part_probes[] = {
+> +	"cmdlinepart", "ofpart", NULL };
+> +
+> +static int tegra_nand_probe(struct platform_device *pdev)
+> +{
+> +	struct tegra_nand *nand;
+> +	struct nand_chip *chip;
+> +	struct mtd_info *mtd;
+> +	struct resource *res;
+> +	unsigned long value;
+> +	int err = 0;
+> +
+> +	nand = devm_kzalloc(&pdev->dev, sizeof(*nand), GFP_KERNEL);
+> +	if (!nand)
+> +		return -ENOMEM;
+> +
+> +	nand->dev = &pdev->dev;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	nand->regs = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(nand->regs))
+> +		return PTR_ERR(nand->regs);
+> +
+> +	nand->irq  = platform_get_irq(pdev, 0);
+> +	err = devm_request_irq(&pdev->dev, nand->irq, tegra_nand_irq, 0,
+> +			       dev_name(&pdev->dev), nand);
+> +	if (err)
+> +		return err;
+> +
+> +	nand->rst = devm_reset_control_get(&pdev->dev, "nand");
+> +	if (IS_ERR(nand->rst))
+> +		return PTR_ERR(nand->rst);
+> +
+> +	nand->clk = devm_clk_get(&pdev->dev, "nand");
+> +	if (IS_ERR(nand->clk))
+> +		return PTR_ERR(nand->clk);
+> +
+> +	err = tegra_nand_parse_dt(pdev->dev.of_node, nand);
+> +	if (err)
+> +		return err;
+> +
+> +	err = clk_prepare_enable(nand->clk);
+> +	if (err)
+> +		return err;
+> +
+> +	reset_control_assert(nand->rst);
+> +	udelay(2);
+> +	reset_control_deassert(nand->rst);
+> +
+> +	if (gpio_is_valid(nand->wp_gpio)) {
+> +		err = devm_gpio_request_one(&pdev->dev, nand->wp_gpio,
+> +				GPIOF_OUT_INIT_HIGH, "tegra-nand-wp");
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	value = HWSTATUS_RDSTATUS_MASK(1) | HWSTATUS_RDSTATUS_VALUE(0) |
+> +		HWSTATUS_RBSY_MASK(NAND_STATUS_READY) |
+> +		HWSTATUS_RBSY_VALUE(NAND_STATUS_READY);
+> +	writel(NAND_CMD_STATUS, nand->regs + HWSTATUS_CMD);
+> +	writel(value, nand->regs + HWSTATUS_MASK);
+> +
+> +	init_completion(&nand->command_complete);
+> +	init_completion(&nand->dma_complete);
+> +
+> +	mtd = &nand->mtd;
+> +	mtd->name = dev_name(&pdev->dev);
+> +	mtd->owner = THIS_MODULE;
+> +	mtd->priv = &nand->chip;
+> +
+> +	mtd->type = MTD_NANDFLASH;
+> +	mtd->flags = MTD_CAP_NANDFLASH;
+> +
+> +	/* clear interrupts */
+> +	value = readl(nand->regs + ISR);
+> +	writel(value, nand->regs + ISR);
+> +
+> +	writel(DMA_CTRL_IS_DONE, nand->regs + DMA_CTRL);
+> +
+> +	/* enable interrupts */
+> +	value = IER_UND | IER_OVR | IER_CMD_DONE | IER_ECC_ERR | IER_GIE;
+> +	writel(value, nand->regs + IER);
+> +
+> +	chip = &nand->chip;
+> +	chip->cmdfunc = tegra_nand_command;
+> +	chip->select_chip = tegra_nand_select_chip;
+> +	chip->read_byte = tegra_nand_read_byte;
+> +	chip->read_buf = tegra_nand_read_buf;
+> +	chip->write_buf = tegra_nand_write_buf;
+> +
+> +	tegra_nand_setup_timing(nand, 0);
+> +
+> +	err = nand_scan_ident(mtd, 1, NULL);
+> +	if (err)
+> +		return err;
+> +
+> +	nand->data_buf = dmam_alloc_coherent(&pdev->dev, mtd->writesize,
+> +					    &nand->data_dma, GFP_KERNEL);
+> +	if (!nand->data_buf)
+> +		return -ENOMEM;
+> +
+> +	nand->oob_buf = dmam_alloc_coherent(&pdev->dev, mtd->oobsize,
+> +					    &nand->oob_dma, GFP_KERNEL);
+> +	if (!nand->oob_buf)
+> +		return -ENOMEM;
+> +
+> +	chip->ecc.mode = NAND_ECC_HW;
+> +	chip->ecc.size = 512;
+> +	chip->ecc.bytes = mtd->oobsize;
+> +	chip->ecc.read_page = tegra_nand_read_page;
+> +	chip->ecc.write_page = tegra_nand_write_page;
+> +
+> +	value = CFG_HW_ECC | CFG_ECC_SEL | CFG_ERR_COR | CFG_PIPE_EN |
+> +		CFG_TVAL_8 | CFG_SKIP_SPARE | CFG_SKIP_SPARE_SIZE_4;
+> +
+> +	switch (mtd->oobsize) {
+> +	case 16:
+> +		chip->ecc.layout = &tegra_nand_oob_16;
+> +		chip->ecc.strength = 1;
+> +		value |= CFG_TAG_BYTE_SIZE(4);
+> +		break;
+> +	case 64:
+> +		chip->ecc.layout = &tegra_nand_oob_64;
+> +		chip->ecc.strength = 8;
+> +		value |= CFG_TAG_BYTE_SIZE(36);
+> +		break;
+> +	case 128:
+> +		chip->ecc.layout = &tegra_nand_oob_128;
+> +		chip->ecc.strength = 8;
+> +		value |= CFG_TAG_BYTE_SIZE(72);
+> +		break;
+> +	case 224:
+> +		chip->ecc.layout = &tegra_nand_oob_224;
+> +		chip->ecc.strength = 8;
+> +		value |= CFG_TAG_BYTE_SIZE(144);
+> +		break;
+> +	default:
+> +		dev_err(&pdev->dev, "unhandled OOB size %d\n", mtd->oobsize);
+> +		return -ENODEV;
+> +	}
+> +
+> +	switch (mtd->writesize) {
+> +	case 256:
+> +		value |= CFG_PS_256;
+> +		break;
+> +	case 512:
+> +		value |= CFG_PS_512;
+> +		break;
+> +	case 1024:
+> +		value |= CFG_PS_1024;
+> +		break;
+> +	case 2048:
+> +		value |= CFG_PS_2048;
+> +		break;
+> +	case 4096:
+
+Nit: we have macros for these values (SZ_256, ..., SZ_4K).
+
+> +		value |= CFG_PS_4096;
+> +		break;
+> +	default:
+> +		dev_err(&pdev->dev, "unhandled writesize %d\n", mtd->writesize);
+> +		return -ENODEV;
+> +	}
+> +
+> +	if (nand->buswidth == 16)
+> +		value |= CFG_BUS_WIDTH_16;
+> +
+> +	writel(value, nand->regs + CFG);
+> +
+> +	tegra_nand_setup_chiptiming(nand);
+> +
+> +	err = nand_scan_tail(mtd);
+> +	if (err)
+> +		return err;
+> +
+> +	mtd_device_parse_register(mtd, NULL,
+> +				  &(struct mtd_part_parser_data) {
+> +					.of_node = pdev->dev.of_node,
+> +				  },
+> +				  NULL, 0);
+> +
+> +	platform_set_drvdata(pdev, nand);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra_nand_remove(struct platform_device *pdev)
+> +{
+> +	struct tegra_nand *nand = platform_get_drvdata(pdev);
+> +
+> +	nand_release(&nand->mtd);
+> +
+> +	clk_disable_unprepare(nand->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id tegra_nand_of_match[] = {
+> +	{ .compatible = "nvidia,tegra20-nand" },
+> +	{ .compatible = "nvidia,tegra30-nand" },
+
+AFAIK, having two compatible strings, but making no distinction between
+them is typically frowned upon by devicetree maintainers.
+
+Is the controller any different in tegra20 and tegra30?
+
+If you are not sure about the controllers being different, you can
+try the following approach. The devicetree is written like this:
+
+nand@foo {
+   compatible = "nvidia,tegra20-nand", "nvidia,tegra-nand";
+};
+
+So you only deal with "nvidia,tegra-nand" in the driver, yet the
+devicetree files are prepared to deal with a difference.
+
+> +	{ }
+> +};
+> +
+> +static struct platform_driver tegra_nand_driver = {
+> +	.driver = {
+> +		.name = "tegra-nand",
+> +		.of_match_table = tegra_nand_of_match,
+> +	},
+> +	.probe = tegra_nand_probe,
+> +	.remove = tegra_nand_remove,
+> +};
+> +module_platform_driver(tegra_nand_driver);
+> +
+> +MODULE_DESCRIPTION("NVIDIA Tegra NAND driver");
+> +MODULE_AUTHOR("Thierry Reding <thierry.reding@avionic-design.de");
+> +MODULE_AUTHOR("Lucas Stach <dev@lynxeye.de");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DEVICE_TABLE(of, tegra_nand_of_match);
+> 
+
+Regards,
 -- 
-1.7.4
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
