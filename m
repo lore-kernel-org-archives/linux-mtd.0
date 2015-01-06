@@ -1,25 +1,26 @@
-Received: from mail-by2on0069.outbound.protection.outlook.com ([207.46.100.69]
- helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-bn1on0064.outbound.protection.outlook.com ([157.56.110.64]
+ helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8Xfx-0005WV-M3
- for linux-mtd@lists.infradead.org; Tue, 06 Jan 2015 17:12:14 +0000
-From: Graham Moore <grmoore@opensource.altera.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH V2 2/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
-Date: Tue, 6 Jan 2015 11:08:13 -0600
-Message-ID: <1420564094-1086-2-git-send-email-grmoore@opensource.altera.com>
-In-Reply-To: <1420564094-1086-1-git-send-email-grmoore@opensource.altera.com>
-References: <1420564094-1086-1-git-send-email-grmoore@opensource.altera.com>
+ id 1Y8YGL-0006Rm-9t
+ for linux-mtd@lists.infradead.org; Tue, 06 Jan 2015 17:49:50 +0000
+From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
+To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, <rob@landley.net>,
+ <michal.simek@xilinx.com>, <grant.likely@linaro.org>,
+ <gregkh@linuxfoundation.org>, <jason@lakedaemon.net>,
+ <ezequiel.garcia@free-electrons.com>, <arnd@arndb.de>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
+ <pekon@ti.com>, <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>,
+ <ivan.khoronzhuk@ti.com>, <joern@logfs.org>
+Subject: [PATCH v5 0/2] Add arm pl353 smc driver for xilinx zynq soc
+Date: Tue, 6 Jan 2015 23:19:15 +0530
+Message-ID: <5f8185b5a31b4a49b33e7eb511fcf93b@BN1BFFO11FD009.protection.gbl>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Alan Tull <atull@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- linux-kernel@vger.kernel.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Graham Moore <grmoore@opensource.altera.com>
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +30,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
----
- .../devicetree/bindings/mtd/cadence_quadspi.txt    |   50 ++++++++++++++++++++
- 1 file changed, 50 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+The following patches add arm pl353 static memory controller driver for
+xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
+nor/sram memory interfaces. The current implementation supports only a
+single SMC instance and nand specific configuration.
 
-diff --git a/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-new file mode 100644
-index 0000000..3a8ea1c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-@@ -0,0 +1,50 @@
-+* Cadence Quad SPI controller
-+
-+Required properties:
-+- compatible : Should be "cdns,qspi-nor".
-+- reg : Contains two entries, each of which is a tuple consisting of a
-+	physical address and length.  The first entry is the address and
-+	length of the controller register set.  The second entry is the
-+	address and length of the QSPI Controller data area.
-+- interrupts : Unit interrupt specifier for the controller interrupt.
-+- clocks : phandle to the Quad SPI clock.
-+- ext-decoder : Value of 0 means no external chipselect decoder is
-+	connected, 1 means there is an external chipselect decoder connected.
-+- fifo-depth : Size of the data FIFO in words.
-+- bus-num : Number of the SPI bus to which the controller is connected.
-+
-+Optional subnodes:
-+Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
-+custom properties:
-+- cdns,page-size : Size, in bytes, of the device's write page
-+- cdns,block-size : Size of the device's erase block
-+- cdns,read-delay : Selay for read capture logic, in clock cycles
-+- cdns,tshsl-ns : Delay in master reference clocks for the length that the master mode chip select outputs are de-asserted between transactions.
-+- cdns,tsd2d-ns : Delay in master reference clocks between one chip select being de-activated and the activation of another.
-+- cdns,tchsh-ns : Delay in master reference clocks between last bit of current transaction and deasserting the device chip select (qspi_n_ss_out).
-+- cdns,tslch-ns : Delay in master reference clocks between setting qspi_n_ss_out low and first bit transfer.
-+
-+Example:
-+
-+	qspi: spi@ff705000 {
-+		compatible = "cdns,qspi-nor";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0xff705000 0x1000>,
-+			<0xffa00000 0x1000>;
-+		interrupts = <0 151 4>;
-+		clocks = <&qspi_clk>;
-+		ext-decoder = <0>;
-+		fifo-depth = <128>;
-+
-+		flash0: n25q00@0 {
-+			...
-+			cdns,page-size = <256>;
-+			cdns,block-size = <16>;
-+			cdns,read-delay = <4>;
-+			cdns,tshsl-ns = <50>;
-+			cdns,tsd2d-ns = <50>;
-+			cdns,tchsh-ns = <4>;
-+			cdns,tslch-ns = <4>;
-+		}
-+	}
+xilinx zynq TRM link:
+http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
+
+ARM pl353 smc TRM link:
+http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
+DDI0380G_smc_pl350_series_r2p1_trm.pdf
+
+Punnaiah Choudary Kalluri (2):
+  Devicetree: Add pl353 smc controller devicetree binding information
+  memory: pl353: Add driver for arm pl353 static memory controller
+
+ .../bindings/memory-controllers/pl353-smc.txt      |   37 ++
+ drivers/memory/Kconfig                             |    6 +
+ drivers/memory/Makefile                            |    1 +
+ drivers/memory/pl353-smc.c                         |  525 ++++++++++++++++++++
+ include/linux/memory/pl353-smc.h                   |   37 ++
+ 5 files changed, 606 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+ create mode 100644 drivers/memory/pl353-smc.c
+ create mode 100644 include/linux/memory/pl353-smc.h
+
 -- 
-1.7.9.5
+1.7.4
