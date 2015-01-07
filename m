@@ -1,32 +1,27 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8qWv-0004XJ-Pf
- for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 13:20:11 +0000
-Received: by mail-wi0-f177.google.com with SMTP id l15so1564897wiw.16
- for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 05:19:47 -0800 (PST)
-Message-ID: <54AD31F8.4050100@vanguardiasur.com.ar>
-Date: Wed, 07 Jan 2015 10:17:44 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date: Wed, 7 Jan 2015 14:45:47 +0100
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Lucas Stach <dev@lynxeye.de>
+Subject: Re: [PATCH 1/4] mtd: nand: add NVIDIA Tegra NAND Flash controller
+ driver
+Message-ID: <20150107134545.GC6988@ulmo>
+References: <1420403960-26626-1-git-send-email-dev@lynxeye.de>
+ <54AC290B.5000606@vanguardiasur.com.ar>
+ <1420590278.25483.14.camel@lynxeye.de>
 MIME-Version: 1.0
-To: Graham Moore <grmoore@opensource.altera.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH V2 2/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
-References: <1420564094-1086-1-git-send-email-grmoore@opensource.altera.com>
- <1420564094-1086-2-git-send-email-grmoore@opensource.altera.com>
-In-Reply-To: <1420564094-1086-2-git-send-email-grmoore@opensource.altera.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Alan Tull <atull@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Kumar Gala <galak@codeaurora.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="PuGuTyElPB9bOcsM"
+Content-Disposition: inline
+In-Reply-To: <1420590278.25483.14.camel@lynxeye.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Thierry Reding <thierry.reding@avionic-design.de>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, linux-tegra@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,84 +31,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(CCing DT mailing list and DT binding maintainers)
 
-On 01/06/2015 02:08 PM, Graham Moore wrote:
-> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> ---
->  .../devicetree/bindings/mtd/cadence_quadspi.txt    |   50 ++++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-> new file mode 100644
-> index 0000000..3a8ea1c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-> @@ -0,0 +1,50 @@
-> +* Cadence Quad SPI controller
-> +
-> +Required properties:
-> +- compatible : Should be "cdns,qspi-nor".
-> +- reg : Contains two entries, each of which is a tuple consisting of a
-> +	physical address and length.  The first entry is the address and
-> +	length of the controller register set.  The second entry is the
-> +	address and length of the QSPI Controller data area.
-> +- interrupts : Unit interrupt specifier for the controller interrupt.
-> +- clocks : phandle to the Quad SPI clock.
-> +- ext-decoder : Value of 0 means no external chipselect decoder is
-> +	connected, 1 means there is an external chipselect decoder connected.
+--PuGuTyElPB9bOcsM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As I already said in the driver patch, I think this property should be
-boolean and have a vendor prefix.
+On Wed, Jan 07, 2015 at 01:24:38AM +0100, Lucas Stach wrote:
+> Am Dienstag, den 06.01.2015, 15:27 -0300 schrieb Ezequiel Garcia:
+> > On 01/04/2015 05:39 PM, Lucas Stach wrote:
+[...]
+> > > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> > > index 7d0150d..1eafd4e 100644
+> > > --- a/drivers/mtd/nand/Kconfig
+> > > +++ b/drivers/mtd/nand/Kconfig
+> > > @@ -524,4 +524,10 @@ config MTD_NAND_SUNXI
+> > >  	help
+> > >  	  Enables support for NAND Flash chips on Allwinner SoCs.
+> > > =20
+> > > +config MTD_NAND_TEGRA
+> > > +	tristate "Support for NAND on NVIDIA Tegra"
+> > > +	depends on ARCH_TEGRA || COMPILE_TEST
 
-> +- fifo-depth : Size of the data FIFO in words.
+I think you're going to need a bunch more dependencies if you use
+COMPILE_TEST. Otherwise we're going to get all kinds of build failure
+reports.
 
-This one looks generic enough to leave it as it is, without any vendor
-prefix.
+> > > diff --git a/drivers/mtd/nand/tegra_nand.c b/drivers/mtd/nand/tegra_n=
+and.c
+[...]
+> > > +struct tegra_nand {
+> > > +	void __iomem *regs;
+> > > +	int irq;
+> >=20
+> > Seems like you don't need to store irq.
+> >=20
+> > > +	struct clk *clk;
+> > > +	struct reset_control *rst;
+> > > +	int wp_gpio;
+> > > +	int buswidth;
+> >=20
+> > And also you don't seem to need either wp_gpio or buswidth stored
+> > in the struct. You only use them at probe time.
+> >=20
+>=20
+> I'll keep the wp_gpio, as I still hope to use this to WP the NAND when
+> no write is pending. I'll fix the others.
 
-> +- bus-num : Number of the SPI bus to which the controller is connected.
-> +
+Maybe use the gpiod_*() API since the old one is new deprecated?
 
-I think you forgot to remove bus-num here.
+> > > +static const struct of_device_id tegra_nand_of_match[] =3D {
+> > > +	{ .compatible =3D "nvidia,tegra20-nand" },
+> > > +	{ .compatible =3D "nvidia,tegra30-nand" },
+> >=20
+> > AFAIK, having two compatible strings, but making no distinction between
+> > them is typically frowned upon by devicetree maintainers.
+> >=20
+> > Is the controller any different in tegra20 and tegra30?
+> >=20
+> > If you are not sure about the controllers being different, you can
+> > try the following approach. The devicetree is written like this:
+> >=20
+> > nand@foo {
+> >    compatible =3D "nvidia,tegra20-nand", "nvidia,tegra-nand";
+> > };
+> >=20
+> > So you only deal with "nvidia,tegra-nand" in the driver, yet the
+> > devicetree files are prepared to deal with a difference.
 
-> +Optional subnodes:
-> +Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
-> +custom properties:
-> +- cdns,page-size : Size, in bytes, of the device's write page
-> +- cdns,block-size : Size of the device's erase block
-> +- cdns,read-delay : Selay for read capture logic, in clock cycles
-> +- cdns,tshsl-ns : Delay in master reference clocks for the length that the master mode chip select outputs are de-asserted between transactions.
-> +- cdns,tsd2d-ns : Delay in master reference clocks between one chip select being de-activated and the activation of another.
-> +- cdns,tchsh-ns : Delay in master reference clocks between last bit of current transaction and deasserting the device chip select (qspi_n_ss_out).
-> +- cdns,tslch-ns : Delay in master reference clocks between setting qspi_n_ss_out low and first bit transfer.
-> +
-> +Example:
-> +
-> +	qspi: spi@ff705000 {
-> +		compatible = "cdns,qspi-nor";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		reg = <0xff705000 0x1000>,
-> +			<0xffa00000 0x1000>;
-> +		interrupts = <0 151 4>;
-> +		clocks = <&qspi_clk>;
-> +		ext-decoder = <0>;
-> +		fifo-depth = <128>;
-> +
-> +		flash0: n25q00@0 {
-> +			...
-> +			cdns,page-size = <256>;
-> +			cdns,block-size = <16>;
-> +			cdns,read-delay = <4>;
-> +			cdns,tshsl-ns = <50>;
-> +			cdns,tsd2d-ns = <50>;
-> +			cdns,tchsh-ns = <4>;
-> +			cdns,tslch-ns = <4>;
-> +		}
-> +	}
-> 
+I think it's been more common to have something like this:
 
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+	tegra20.dtsi:
+
+		nand-controller@70008000 {
+			compatible =3D "nvidia,tegra20-nand";
+			...
+		};
+
+	tegra30.dtsi:
+
+		nand-controller@70008000 {
+			compatible =3D "nvidia,tegra30-nand", "nvidia,tegra20-nand";
+			...
+		};
+
+The idea being that if the Tegra30 variant is indeed compatible with the
+Tegra20 variant, the driver can match on "nvidia,tegra20-nand". But at
+the same time the DTB has the more specific compatible in case the
+driver ever needs to handle generation-specific quirks, or implement any
+additional functionality added in Tegra30 that wasn't available in early
+generations.
+
+> I believe that tegra30-nand is actually a bit different from tegra20 (at
+> least on more clock I know about), but obviously this driver doesn't
+> handle those differences and I don't know if I ever get to see Tegra30
+> hardware with NAND. Given that I think it's best to just remove the
+> tegra30-nand compatible for now and add it back if someone has hardware
+> to test with.
+
+Yes, that sounds like the best option for now.
+
+Thierry
+
+--PuGuTyElPB9bOcsM
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJUrTiJAAoJEN0jrNd/PrOhFjQP/1KGx087z3ndzd7vWdqL5kvS
+a/2DNzDhC6qheZzE8K3JLOHHsonQr+kM4sbzApamdA0DxHwEtMUuvTBvERnmywSV
+Uu8iTN7MGpZETfQm7T+yU9j7P4vjoetAwozv7kF+RZIMo9hwxdmTh7quFaM6xRVU
+WNV0ZhL9bFXNHsrDmOA1z3AisaMpbt3fCbqC+oIksWcxVQ3jImoSqvzeiEvqf5l5
+cKNO7E3v3sCG9pahlhKMczDdXL4I6zYr1qaNT4v9C4YcJj2RoqAyOxX78++wf8MR
+dLdQEfZfXs+ItFunv5CR7wd6Sh+1pz+z/srXKjWoBCKmm8akyTF5JNcvid836Fia
+DnnUycuvtFwOA+RdlzO2+wNQOl4KPY8z8afmJdElC+eezfaIZPXL/T7J+eraf9B/
+kNlQYAhZhNPokDR4AuRaZKlVFNBlGwGlS2rxET4rUEpxRptfJPUN1r0o95eggiaQ
+69XBePgZYlEyusmZ8wavyiKpXOYT0s9wnHT4WmdLgieNN1Xtl7e8ENWun1aqc1FO
+kXaNTO0S+sxiN4m8x+Hp0G6vB2joFCoXgAJ5fvtVmznySzcrdhg6ALIRpV+dUkCj
+nBOIbrCd7x65EuVv3ATqZtVshOQKM7HAXNBrUBESnm+Y7nhP9pKj/kMkVSm7hDzi
+bGoNd/s8wCFjaYYtfTK7
+=ypgE
+-----END PGP SIGNATURE-----
+
+--PuGuTyElPB9bOcsM--
