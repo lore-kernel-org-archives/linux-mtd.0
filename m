@@ -1,24 +1,28 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8eir-0005Ik-Kz
- for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 00:43:42 +0000
-Received: by mail-pa0-f45.google.com with SMTP id lf10so1169964pab.4
- for <linux-mtd@lists.infradead.org>; Tue, 06 Jan 2015 16:43:19 -0800 (PST)
-Date: Tue, 6 Jan 2015 16:43:16 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] mtd: fsl-quadspi: Fix module unbound
-Message-ID: <20150107004316.GI9759@ld-irv-0074>
-References: <1417814086-30512-1-git-send-email-festevam@gmail.com>
- <20150106064931.GB13447@norris-Latitude-E6410>
- <CAOMZO5B7=zgxUU1RGm_YpfGU4yBGD529DogeoGYa-CX4yPv8hA@mail.gmail.com>
+ id 1Y8evi-0004XV-IJ
+ for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 00:57:02 +0000
+From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: RE: [PATCH 0/6] SPI NAND for everyone
+Date: Wed, 7 Jan 2015 00:55:19 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7714D979@NTXXIAMBX02.xacn.micron.com>
+References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
+ <20150106033012.GH9759@ld-irv-0074> <54AC4D9D.2050900@imgtec.com>
+In-Reply-To: <54AC4D9D.2050900@imgtec.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5B7=zgxUU1RGm_YpfGU4yBGD529DogeoGYa-CX4yPv8hA@mail.gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Frank Li <Frank.Li@freescale.com>, Huang Shijie <shijie8@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Ionela Voinescu <ionela.voinescu@imgtec.com>,
+ =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
+ Andrew Bresticker <abrestic@chromium.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>,
+ James Hartley <james.hartley@imgtec.com>,
+ =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +32,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 06, 2015 at 10:52:00AM -0200, Fabio Estevam wrote:
-> On Tue, Jan 6, 2015 at 4:49 AM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> 
-> > Huh? Why was this property even needed in the first place? It seems
-> > oddly specific, without actually being very explanatory/descriptive.
-> 
-> Huang, care to comment as you were the one that added it?
-> 
-> >
-> >> -             has_second_chip = true;
-> >> +             q->has_second_chip = true;
-> >>
-> >>       /* iterate the subnodes. */
-> >>       for_each_available_child_of_node(dev->of_node, np) {
-> >>               char modalias[40];
-> >>
-> >>               /* skip the holes */
-> >> -             if (!has_second_chip)
-> >> +             if (!q->has_second_chip)
-> >>                       i *= 2;
-> >
-> > Why do you need to "skip" anything here? It doesn't really look like
-> > you're skpping anything functionally, as this indexing is purely
-> > artificial. So you're just jumping through hoops for no reason.
-> >
-> > Can this just be more straightforward by dropping 'has_second_chip' and
-> > indexing straightforwardly? e.g. this patch:
-> 
-> With your proposed patch I get probe failure:
-> 
-> root@freescale /$ dmesg | grep qspi
-> [    1.688344] fsl-quadspi 21e4000.qspi: s25fl128s (16384 Kbytes)
-> [    1.698146] fsl-quadspi 21e4000.qspi: unrecognized JEDEC id bytes: ff, ff, ff
-> [    1.705350] fsl-quadspi 21e4000.qspi: Freescale QuadSPI probe failed
-
-I think there was one more subtle piece to this driver; it relies on the
-implicit layout of the nor[] array for determining a MMIO offset in
-fsl_qspi_set_base_addr(). It seems like it would be clearer to avoid
-this pointer subtraction.
-
-Brian
+SGkgQnJpYW4gYW5kIEV6ZXF1aWVsLA0KDQpPbiAwMS8wNy8yMDE1IDU6MDMgQU0sIEV6ZXF1aWVs
+IEdhcmNpYSB3cm90ZToNCj4NCj4NCj5PbiAwMS8wNi8yMDE1IDEyOjMwIEFNLCBCcmlhbiBOb3Jy
+aXMgd3JvdGU6DQo+DQo+Pj4gVGhlIFNQSSBOQU5EIGZyYW1ld29yayBhbGxvd3MgZGV2aWNlcyB0
+byByZWdpc3RlciBhcyBOQU5EIGRyaXZlcnMuIFRoaXMNCj5pcw0KPj4+IHVzZWZ1bCB0byB0YWtl
+IGFkdmFudGFnZSBvZiB0aGUgYmFkIGJsb2NrIG1hbmFnZW1lbnQgY29kZS4NCj4+DQo+PiBJJ20g
+bm90IHNvIHN1cmUgYWJvdXQgdGhpcyBjaG9pY2UsIGJ1dCB0aGVuIEknbSBub3Qgc28gc3VyZSBh
+Ym91dCB0aGUNCj4+IGFsdGVybmF0aXZlcyBlYXJsaWVyLiBJIHVuZGVyc3RhbmQgdGhhdCB5b3Ug
+YW5kIFFpIFdhbmcgbWlnaHQgaGF2ZSBoYWQNCj4+IHNvbWUgZGlzY3Vzc2lvbiBvZmYtbGlzdCAo
+cGxlYXNlIGZlZWwgZnJlZSB0byBmaWxsIG1lIGFuZCBvdGhlcnMgaW4NCj4+IGhlcmUsIGFuZCBJ
+IGNhbiBhZGQgbXkgdGhvdWdodHMpLg0KPj4NCj4NCj5JbmRlZWQsIEkgYmVsaWV2ZSBRaSBXYW5n
+IGhhdmUgdGhlc2Ugc2FtZSBjb25jZXJucy4NCg0KWWVzLCBJIGFsc28gY29uc2lkZXIgdGhpcyBh
+IGxvdC4gQWN0dWFsbHksIEkgYWxyZWFkeSBjb21wbGV0ZSBhIG5ldyBTUEkgTkFORA0KRnJhbWV3
+b3JrIHRvIGltcGxlbWVudCBTUEkgTkFORCBjb2RlIGluZGVwZW5kZW50IHdpdGggUGFyYWxsZWwg
+TkFORC4NClRlc3Rpbmcgb24gTWljcm9uIERldmljZSBpcyBmaW5pc2hlZCwgbXkgY29sbGVhZ3Vl
+IHdpbGwgc2VuZCBvdXQgdGhpcyANCnBhdGNoIHRvIGNvbW11bml0eSBzb29uIGZvciBib3RoIHlv
+dSByZXZpZXcuDQoNClRoYW5rcw0KDQpRaSBXYW5nDQo=
