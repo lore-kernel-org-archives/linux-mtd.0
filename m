@@ -1,27 +1,22 @@
-Date: Wed, 7 Jan 2015 14:45:47 +0100
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Lucas Stach <dev@lynxeye.de>
-Subject: Re: [PATCH 1/4] mtd: nand: add NVIDIA Tegra NAND Flash controller
- driver
-Message-ID: <20150107134545.GC6988@ulmo>
-References: <1420403960-26626-1-git-send-email-dev@lynxeye.de>
- <54AC290B.5000606@vanguardiasur.com.ar>
- <1420590278.25483.14.camel@lynxeye.de>
+Received: from mail-yk0-x22d.google.com ([2607:f8b0:4002:c07::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y8vUP-0008Ol-EJ
+ for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 18:37:54 +0000
+Received: by mail-yk0-f173.google.com with SMTP id 19so847092ykq.32
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 10:37:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="PuGuTyElPB9bOcsM"
-Content-Disposition: inline
-In-Reply-To: <1420590278.25483.14.camel@lynxeye.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
- Prashant Gaikwad <pgaikwad@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Thierry Reding <thierry.reding@avionic-design.de>,
- Peter De Schrijver <pdeschrijver@nvidia.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, linux-tegra@vger.kernel.org,
+In-Reply-To: <1420394662-20011-1-git-send-email-me@mortis.eu>
+References: <1420394662-20011-1-git-send-email-me@mortis.eu>
+Date: Wed, 7 Jan 2015 20:37:29 +0200
+Message-ID: <CAHp75VeZnmsRLV6_gg9Wci03ZEJCk=dRDEkp7DsEubypVvCi3A@mail.gmail.com>
+Subject: Re: [PATCH] Fix error-code overwrite bug
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Giel van Schijndel <me@mortis.eu>
+Content-Type: text/plain; charset=UTF-8
+Cc: "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,127 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, Jan 4, 2015 at 8:04 PM, Giel van Schijndel <me@mortis.eu> wrote:
+> Don't overwrite the returned error code with the boolean test used by
+> the if-statement (otherwise it'd be 1 or 0 always, 1 in the if-block).
+> ---
+>  drivers/mtd/nftlmount.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+> index 51b9d6a..1cbeb6b 100644
+> --- a/drivers/mtd/nftlmount.c
+> +++ b/drivers/mtd/nftlmount.c
+> @@ -91,7 +91,7 @@ static int find_boot_record(struct NFTLrecord *nftl)
+>                 /* To be safer with BIOS, also use erase mark as discriminant */
+>                 if ((ret = nftl_read_oob(mtd, block * nftl->EraseSize +
+>                                          SECTORSIZE + 8, 8, &retlen,
+> -                                        (char *)&h1) < 0)) {
+> +                                        (char *)&h1)) < 0) {
 
---PuGuTyElPB9bOcsM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Better to move ret = x(); outside of condition. See here:
+http://permalink.gmane.org/gmane.linux.drivers.mtd/56922
 
-On Wed, Jan 07, 2015 at 01:24:38AM +0100, Lucas Stach wrote:
-> Am Dienstag, den 06.01.2015, 15:27 -0300 schrieb Ezequiel Garcia:
-> > On 01/04/2015 05:39 PM, Lucas Stach wrote:
-[...]
-> > > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> > > index 7d0150d..1eafd4e 100644
-> > > --- a/drivers/mtd/nand/Kconfig
-> > > +++ b/drivers/mtd/nand/Kconfig
-> > > @@ -524,4 +524,10 @@ config MTD_NAND_SUNXI
-> > >  	help
-> > >  	  Enables support for NAND Flash chips on Allwinner SoCs.
-> > > =20
-> > > +config MTD_NAND_TEGRA
-> > > +	tristate "Support for NAND on NVIDIA Tegra"
-> > > +	depends on ARCH_TEGRA || COMPILE_TEST
+P.S.If you are going to fix more, may you talk to me via some channel
+like irc, jabber, etc?
 
-I think you're going to need a bunch more dependencies if you use
-COMPILE_TEST. Otherwise we're going to get all kinds of build failure
-reports.
 
-> > > diff --git a/drivers/mtd/nand/tegra_nand.c b/drivers/mtd/nand/tegra_n=
-and.c
-[...]
-> > > +struct tegra_nand {
-> > > +	void __iomem *regs;
-> > > +	int irq;
-> >=20
-> > Seems like you don't need to store irq.
-> >=20
-> > > +	struct clk *clk;
-> > > +	struct reset_control *rst;
-> > > +	int wp_gpio;
-> > > +	int buswidth;
-> >=20
-> > And also you don't seem to need either wp_gpio or buswidth stored
-> > in the struct. You only use them at probe time.
-> >=20
->=20
-> I'll keep the wp_gpio, as I still hope to use this to WP the NAND when
-> no write is pending. I'll fix the others.
+>                         printk(KERN_WARNING "ANAND header found at 0x%x in mtd%d, but OOB data read failed (err %d)\n",
+>                                block * nftl->EraseSize, nftl->mbd.mtd->index, ret);
+>                         continue;
+> --
+> 2.1.4
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
 
-Maybe use the gpiod_*() API since the old one is new deprecated?
 
-> > > +static const struct of_device_id tegra_nand_of_match[] =3D {
-> > > +	{ .compatible =3D "nvidia,tegra20-nand" },
-> > > +	{ .compatible =3D "nvidia,tegra30-nand" },
-> >=20
-> > AFAIK, having two compatible strings, but making no distinction between
-> > them is typically frowned upon by devicetree maintainers.
-> >=20
-> > Is the controller any different in tegra20 and tegra30?
-> >=20
-> > If you are not sure about the controllers being different, you can
-> > try the following approach. The devicetree is written like this:
-> >=20
-> > nand@foo {
-> >    compatible =3D "nvidia,tegra20-nand", "nvidia,tegra-nand";
-> > };
-> >=20
-> > So you only deal with "nvidia,tegra-nand" in the driver, yet the
-> > devicetree files are prepared to deal with a difference.
 
-I think it's been more common to have something like this:
-
-	tegra20.dtsi:
-
-		nand-controller@70008000 {
-			compatible =3D "nvidia,tegra20-nand";
-			...
-		};
-
-	tegra30.dtsi:
-
-		nand-controller@70008000 {
-			compatible =3D "nvidia,tegra30-nand", "nvidia,tegra20-nand";
-			...
-		};
-
-The idea being that if the Tegra30 variant is indeed compatible with the
-Tegra20 variant, the driver can match on "nvidia,tegra20-nand". But at
-the same time the DTB has the more specific compatible in case the
-driver ever needs to handle generation-specific quirks, or implement any
-additional functionality added in Tegra30 that wasn't available in early
-generations.
-
-> I believe that tegra30-nand is actually a bit different from tegra20 (at
-> least on more clock I know about), but obviously this driver doesn't
-> handle those differences and I don't know if I ever get to see Tegra30
-> hardware with NAND. Given that I think it's best to just remove the
-> tegra30-nand compatible for now and add it back if someone has hardware
-> to test with.
-
-Yes, that sounds like the best option for now.
-
-Thierry
-
---PuGuTyElPB9bOcsM
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJUrTiJAAoJEN0jrNd/PrOhFjQP/1KGx087z3ndzd7vWdqL5kvS
-a/2DNzDhC6qheZzE8K3JLOHHsonQr+kM4sbzApamdA0DxHwEtMUuvTBvERnmywSV
-Uu8iTN7MGpZETfQm7T+yU9j7P4vjoetAwozv7kF+RZIMo9hwxdmTh7quFaM6xRVU
-WNV0ZhL9bFXNHsrDmOA1z3AisaMpbt3fCbqC+oIksWcxVQ3jImoSqvzeiEvqf5l5
-cKNO7E3v3sCG9pahlhKMczDdXL4I6zYr1qaNT4v9C4YcJj2RoqAyOxX78++wf8MR
-dLdQEfZfXs+ItFunv5CR7wd6Sh+1pz+z/srXKjWoBCKmm8akyTF5JNcvid836Fia
-DnnUycuvtFwOA+RdlzO2+wNQOl4KPY8z8afmJdElC+eezfaIZPXL/T7J+eraf9B/
-kNlQYAhZhNPokDR4AuRaZKlVFNBlGwGlS2rxET4rUEpxRptfJPUN1r0o95eggiaQ
-69XBePgZYlEyusmZ8wavyiKpXOYT0s9wnHT4WmdLgieNN1Xtl7e8ENWun1aqc1FO
-kXaNTO0S+sxiN4m8x+Hp0G6vB2joFCoXgAJ5fvtVmznySzcrdhg6ALIRpV+dUkCj
-nBOIbrCd7x65EuVv3ATqZtVshOQKM7HAXNBrUBESnm+Y7nhP9pKj/kMkVSm7hDzi
-bGoNd/s8wCFjaYYtfTK7
-=ypgE
------END PGP SIGNATURE-----
-
---PuGuTyElPB9bOcsM--
+-- 
+With Best Regards,
+Andy Shevchenko
