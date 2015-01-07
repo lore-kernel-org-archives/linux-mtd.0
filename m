@@ -1,15 +1,21 @@
-Received: from gw02.mail.saunalahti.fi ([195.197.172.116])
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8xMY-0005wY-DN
- for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 20:37:56 +0000
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH v2] mtd: nftl: reorganize operations in condition check
-Date: Wed,  7 Jan 2015 22:37:20 +0200
-Message-Id: <1420663040-3857-1-git-send-email-andy.shevchenko@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
- Dimitri Gorokhovik <dimitri.gorokhovik@free.fr>,
- Giel van Schijndel <me@mortis.eu>
+ id 1Y8xhn-0002JQ-RH
+ for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 20:59:53 +0000
+Received: by mail-pa0-f44.google.com with SMTP id et14so7207131pad.3
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 12:59:30 -0800 (PST)
+Date: Wed, 7 Jan 2015 12:59:26 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Gu Zheng <guz.fnst@cn.fujitsu.com>
+Subject: Re: [RESEND PATCH 1/3] mtd:mtdblock: remove the needless mtdblks_lock
+Message-ID: <20150107205926.GO9759@ld-irv-0074>
+References: <547E7348.5020204@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <547E7348.5020204@cn.fujitsu.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,61 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We need to compare ret variable for negative value. The current code
-assigns the boolean to the ret and prints it wrongly in the warning
-message.
+On Wed, Dec 03, 2014 at 10:19:52AM +0800, Gu Zheng wrote:
+> The global lock mtdblks_lock was used to protect the original mtdblks
+> array to avoid race conditions. As the mtdblks array was already gone,
+> but the mtdblks_lock is left, and it causes latency when open/release dev.
+> So we need to remove it here.
+> 
+> Signed-off-by: Gu Zheng <guz.fnst@cn.fujitsu.com>
 
-Reported-by: Andrey Karpov <karpov@viva64.com>
-Cc: Giel van Schijndel <me@mortis.eu>
-Cc: Dimitri Gorokhovik <dimitri.gorokhovik@free.fr>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/mtd/nftlmount.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Pushed this first patch to l2-mtd.git. Thanks!
 
-diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-index 51b9d6a..a5dfbfb 100644
---- a/drivers/mtd/nftlmount.c
-+++ b/drivers/mtd/nftlmount.c
-@@ -89,9 +89,10 @@ static int find_boot_record(struct NFTLrecord *nftl)
- 		}
- 
- 		/* To be safer with BIOS, also use erase mark as discriminant */
--		if ((ret = nftl_read_oob(mtd, block * nftl->EraseSize +
-+		ret = nftl_read_oob(mtd, block * nftl->EraseSize +
- 					 SECTORSIZE + 8, 8, &retlen,
--					 (char *)&h1) < 0)) {
-+					 (char *)&h1);
-+		if (ret < 0) {
- 			printk(KERN_WARNING "ANAND header found at 0x%x in mtd%d, but OOB data read failed (err %d)\n",
- 			       block * nftl->EraseSize, nftl->mbd.mtd->index, ret);
- 			continue;
-@@ -109,8 +110,9 @@ static int find_boot_record(struct NFTLrecord *nftl)
- 		}
- 
- 		/* Finally reread to check ECC */
--		if ((ret = mtd->read(mtd, block * nftl->EraseSize, SECTORSIZE,
--				     &retlen, buf) < 0)) {
-+		ret = mtd->read(mtd, block * nftl->EraseSize, SECTORSIZE,
-+				&retlen, buf);
-+		if (ret < 0) {
- 			printk(KERN_NOTICE "ANAND header found at 0x%x in mtd%d, but ECC read failed (err %d)\n",
- 			       block * nftl->EraseSize, nftl->mbd.mtd->index, ret);
- 			continue;
-@@ -228,9 +230,11 @@ device is already correct.
- The new DiskOnChip driver already scanned the bad block table.  Just query it.
- 			if ((i & (SECTORSIZE - 1)) == 0) {
- 				/* read one sector for every SECTORSIZE of blocks */
--				if ((ret = mtd->read(nftl->mbd.mtd, block * nftl->EraseSize +
--						     i + SECTORSIZE, SECTORSIZE, &retlen,
--						     buf)) < 0) {
-+				ret = mtd->read(nftl->mbd.mtd,
-+						block * nftl->EraseSize + i +
-+						SECTORSIZE, SECTORSIZE,
-+						&retlen, buf);
-+				if (ret < 0) {
- 					printk(KERN_NOTICE "Read of bad sector table failed (err %d)\n",
- 					       ret);
- 					kfree(nftl->ReplUnitTable);
--- 
-1.8.3.101.g727a46b
+I'm kinda ambivalent about the next two. They don't seem like necessary
+cleanups, really. With the third patch, I think it's actually pretty
+important that the caller understand that it's using container_of(). I
+could be convinced otherwise though...
+
+Brian
