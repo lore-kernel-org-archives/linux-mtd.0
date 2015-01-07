@@ -1,19 +1,15 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-vc0-x232.google.com ([2607:f8b0:400c:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8mFC-0005JS-Cl
- for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 08:45:34 +0000
-Received: by mail-pa0-f52.google.com with SMTP id eu11so3457683pac.11
- for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 00:45:13 -0800 (PST)
-Date: Wed, 7 Jan 2015 00:45:10 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v2] mtd: fsl-quadspi: Fix module unbound
-Message-ID: <20150107084510.GK7112@brian-ubuntu>
-References: <1420599927-32385-1-git-send-email-festevam@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1420599927-32385-1-git-send-email-festevam@gmail.com>
+ id 1Y8nuy-0003aO-O5
+ for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 10:32:49 +0000
+Received: by mail-vc0-f178.google.com with SMTP id hq11so353181vcb.23
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 02:32:26 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH v3 1/2] mtd: fsl-quadspi: Call fsl_qspi_set_base_addr after
+ nor_size is set
+Date: Wed,  7 Jan 2015 08:32:06 -0200
+Message-Id: <1420626727-6929-1-git-send-email-festevam@gmail.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
  shijie8@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,27 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 07, 2015 at 01:05:27AM -0200, Fabio Estevam wrote:
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 39763b9..8cdd73f 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-...
-> @@ -661,7 +661,7 @@ MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
->  
->  static void fsl_qspi_set_base_addr(struct fsl_qspi *q, struct spi_nor *nor)
->  {
-> -	q->chip_base_addr = q->nor_size * (nor - q->nor);
-> +	q->chip_base_addr += (q->nor_size * 2);
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-This doesn't look right to me...
+fsl_qspi_set_base_addr() uses nor_size information, but it is called prior to
+the initialization of nor_size.
 
-Recall there is one struct fsl_qspi that maps to several struct spi_nor.
-This function gets called several times, so it'll be incrementing this
-every time. It probably just happens to work once for you.
+Fix it by calling fsl_qspi_set_base_addr() after nor_size is configured.
 
->  }
->  
->  static int fsl_qspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+Changes since v2:
+- Newly introduced in this version
 
-Brian
+ drivers/mtd/spi-nor/fsl-quadspi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 39763b9..20cffd2 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -897,9 +897,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		if (ret < 0)
+ 			goto map_failed;
+ 
+-		/* set the chip address for READID */
+-		fsl_qspi_set_base_addr(q, nor);
+-
+ 		ret = spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
+ 		if (ret)
+ 			goto map_failed;
+@@ -917,6 +914,9 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 			fsl_qspi_set_map_addr(q);
+ 		}
+ 
++		/* set the chip address for READID */
++		fsl_qspi_set_base_addr(q, nor);
++
+ 		/*
+ 		 * The TX FIFO is 64 bytes in the Vybrid, but the Page Program
+ 		 * may writes 265 bytes per time. The write is working in the
+-- 
+1.9.1
