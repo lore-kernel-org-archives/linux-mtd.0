@@ -1,28 +1,21 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8evi-0004XV-IJ
- for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 00:57:02 +0000
-From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH 0/6] SPI NAND for everyone
-Date: Wed, 7 Jan 2015 00:55:19 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7714D979@NTXXIAMBX02.xacn.micron.com>
-References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
- <20150106033012.GH9759@ld-irv-0074> <54AC4D9D.2050900@imgtec.com>
-In-Reply-To: <54AC4D9D.2050900@imgtec.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y8fD3-0004tw-4L
+ for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 01:14:53 +0000
+Date: Wed, 7 Jan 2015 09:12:42 +0800
+From: Huang Shijie <shijie.huang@intel.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: fsl-quadspi: Fix module unbound
+Message-ID: <20150107011242.GA30740@shldeISGChi005.sh.intel.com>
+References: <1417814086-30512-1-git-send-email-festevam@gmail.com>
+ <20150106064931.GB13447@norris-Latitude-E6410>
 MIME-Version: 1.0
-Cc: Ionela Voinescu <ionela.voinescu@imgtec.com>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- Andrew Bresticker <abrestic@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>,
- James Hartley <james.hartley@imgtec.com>,
- =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150106064931.GB13447@norris-Latitude-E6410>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Frank.Li@freescale.com,
+ linux-mtd@lists.infradead.org, Fabio Estevam <festevam@gmail.com>,
+ shijie8@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,19 +25,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQnJpYW4gYW5kIEV6ZXF1aWVsLA0KDQpPbiAwMS8wNy8yMDE1IDU6MDMgQU0sIEV6ZXF1aWVs
-IEdhcmNpYSB3cm90ZToNCj4NCj4NCj5PbiAwMS8wNi8yMDE1IDEyOjMwIEFNLCBCcmlhbiBOb3Jy
-aXMgd3JvdGU6DQo+DQo+Pj4gVGhlIFNQSSBOQU5EIGZyYW1ld29yayBhbGxvd3MgZGV2aWNlcyB0
-byByZWdpc3RlciBhcyBOQU5EIGRyaXZlcnMuIFRoaXMNCj5pcw0KPj4+IHVzZWZ1bCB0byB0YWtl
-IGFkdmFudGFnZSBvZiB0aGUgYmFkIGJsb2NrIG1hbmFnZW1lbnQgY29kZS4NCj4+DQo+PiBJJ20g
-bm90IHNvIHN1cmUgYWJvdXQgdGhpcyBjaG9pY2UsIGJ1dCB0aGVuIEknbSBub3Qgc28gc3VyZSBh
-Ym91dCB0aGUNCj4+IGFsdGVybmF0aXZlcyBlYXJsaWVyLiBJIHVuZGVyc3RhbmQgdGhhdCB5b3Ug
-YW5kIFFpIFdhbmcgbWlnaHQgaGF2ZSBoYWQNCj4+IHNvbWUgZGlzY3Vzc2lvbiBvZmYtbGlzdCAo
-cGxlYXNlIGZlZWwgZnJlZSB0byBmaWxsIG1lIGFuZCBvdGhlcnMgaW4NCj4+IGhlcmUsIGFuZCBJ
-IGNhbiBhZGQgbXkgdGhvdWdodHMpLg0KPj4NCj4NCj5JbmRlZWQsIEkgYmVsaWV2ZSBRaSBXYW5n
-IGhhdmUgdGhlc2Ugc2FtZSBjb25jZXJucy4NCg0KWWVzLCBJIGFsc28gY29uc2lkZXIgdGhpcyBh
-IGxvdC4gQWN0dWFsbHksIEkgYWxyZWFkeSBjb21wbGV0ZSBhIG5ldyBTUEkgTkFORA0KRnJhbWV3
-b3JrIHRvIGltcGxlbWVudCBTUEkgTkFORCBjb2RlIGluZGVwZW5kZW50IHdpdGggUGFyYWxsZWwg
-TkFORC4NClRlc3Rpbmcgb24gTWljcm9uIERldmljZSBpcyBmaW5pc2hlZCwgbXkgY29sbGVhZ3Vl
-IHdpbGwgc2VuZCBvdXQgdGhpcyANCnBhdGNoIHRvIGNvbW11bml0eSBzb29uIGZvciBib3RoIHlv
-dSByZXZpZXcuDQoNClRoYW5rcw0KDQpRaSBXYW5nDQo=
+On Mon, Jan 05, 2015 at 10:49:31PM -0800, Brian Norris wrote:
+> Hi,
+> 
+> On Fri, Dec 05, 2014 at 07:14:46PM -0200, Fabio Estevam wrote:
+> > From: Fabio Estevam <fabio.estevam@freescale.com>
+> > 
+> > When removing the fsl-quadspi module and running 'cat /proc/mtd' afterwards,
+> > we see garbage data like:
+> > 
+> > $ rmmod  fsl-quadspi
+> > $ cat /proc/mtd
+> > dev:    size   erasesize  name
+> > mtd0: 00000000 00000000 "(null)"
+> > mtd0: 00000000 00000000 "(null)"
+> > mtd0: 00000000 00000000 "(null)"
+> > ...
+> > mtd0: a22296c6c756e28 00000000 "(null)"
+> > mtd0: a22296c6c756e28 3064746d "(null)"
+> > 
+> > The reason for this is due to the wrong mtd index used in
+> > mtd_device_unregister() in the remove function.
+> > 
+> > We need to keep the mtd index aligned with the one used in the probe function,
+> > which means we need to take into account the 'has_second_chip' property.
+> > 
+> > Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> > ---
+> >  drivers/mtd/spi-nor/fsl-quadspi.c | 19 +++++++++++++------
+> >  1 file changed, 13 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> > index 39763b9..4b468a9 100644
+> > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> > @@ -227,6 +227,7 @@ struct fsl_qspi {
+> >  	u32 nor_num;
+> >  	u32 clk_rate;
+> >  	unsigned int chip_base_addr; /* We may support two chips. */
+> > +	bool has_second_chip;
+> >  };
+> >  
+> >  static inline int is_vybrid_qspi(struct fsl_qspi *q)
+> > @@ -783,7 +784,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+> >  	struct spi_nor *nor;
+> >  	struct mtd_info *mtd;
+> >  	int ret, i = 0;
+> > -	bool has_second_chip = false;
+> >  	const struct of_device_id *of_id =
+> >  			of_match_device(fsl_qspi_dt_ids, &pdev->dev);
+> >  
+> > @@ -860,14 +860,14 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+> >  		goto irq_failed;
+> >  
+> >  	if (of_get_property(np, "fsl,qspi-has-second-chip", NULL))
+> 
+> Huh? Why was this property even needed in the first place? It seems
+> oddly specific, without actually being very explanatory/descriptive.
+The qspi controller can connect with two SPI flashes at the same time.
+Most of the time, we only connect one flash to it.
+
+Use this property can makes the DTS file simple. If we remove this
+propery, we have to add a long same child node for the qspi. 
+
+But i think it is ok to remove it, if Brian thinks it is odd.
+
+Hi Fabio, could you please create a correct patch based on Brian's sample patch?
+
+If you do not have time, please tell me. :)
+
+thanks
+Huang Shijie
