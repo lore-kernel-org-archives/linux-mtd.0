@@ -1,9 +1,8 @@
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@fb.com>
-Subject: [PATCH 05/12] block_dev: get bdev inode bdi directly from the block
- device
-Date: Thu,  8 Jan 2015 18:45:26 +0100
-Message-Id: <1420739133-27514-6-git-send-email-hch@lst.de>
+Subject: [PATCH 06/12] nilfs2: set up s_bdi like the generic mount_bdev code
+Date: Thu,  8 Jan 2015 18:45:27 +0100
+Message-Id: <1420739133-27514-7-git-send-email-hch@lst.de>
 In-Reply-To: <1420739133-27514-1-git-send-email-hch@lst.de>
 References: <1420739133-27514-1-git-send-email-hch@lst.de>
 Cc: linux-nfs@vger.kernel.org, linux-mm@kvack.org,
@@ -19,31 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Directly grab the backing_dev_info from the request_queue instead of
-detouring through the address_space.
+mapping->backing_dev_info will go away, so don't rely on it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
 ---
- fs/fs-writeback.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/nilfs2/super.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 2d609a5..e8116a4 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -69,10 +69,10 @@ EXPORT_SYMBOL(writeback_in_progress);
- static inline struct backing_dev_info *inode_to_bdi(struct inode *inode)
+diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
+index 2e5b3ec..3d4bbac 100644
+--- a/fs/nilfs2/super.c
++++ b/fs/nilfs2/super.c
+@@ -1057,7 +1057,6 @@ nilfs_fill_super(struct super_block *sb, void *data, int silent)
  {
- 	struct super_block *sb = inode->i_sb;
--
-+#ifdef CONFIG_BLOCK
- 	if (sb_is_blkdev_sb(sb))
--		return inode->i_mapping->backing_dev_info;
--
-+		return blk_get_backing_dev_info(I_BDEV(inode));
-+#endif
- 	return sb->s_bdi;
- }
+ 	struct the_nilfs *nilfs;
+ 	struct nilfs_root *fsroot;
+-	struct backing_dev_info *bdi;
+ 	__u64 cno;
+ 	int err;
  
+@@ -1077,8 +1076,7 @@ nilfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_time_gran = 1;
+ 	sb->s_max_links = NILFS_LINK_MAX;
+ 
+-	bdi = sb->s_bdev->bd_inode->i_mapping->backing_dev_info;
+-	sb->s_bdi = bdi ? : &default_backing_dev_info;
++	sb->s_bdi = &bdev_get_queue(sb->s_bdev)->backing_dev_info;
+ 
+ 	err = load_nilfs(nilfs, sb);
+ 	if (err)
 -- 
 1.9.1
