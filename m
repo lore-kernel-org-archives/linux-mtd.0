@@ -1,16 +1,25 @@
-Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+Received: from mail-qg0-x22a.google.com ([2607:f8b0:400d:c04::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9HNH-00060n-Jw
- for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 18:00:00 +0000
-Received: by mail-ig0-f177.google.com with SMTP id z20so4119855igj.4
- for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 09:59:37 -0800 (PST)
+ id 1Y9IHq-0000au-8N
+ for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 18:58:27 +0000
+Received: by mail-qg0-f42.google.com with SMTP id q108so3994069qgd.1
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 10:58:02 -0800 (PST)
+Date: Thu, 8 Jan 2015 10:57:58 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Steve deRosier <derosier@gmail.com>
+Subject: Re: NAND ECC capabilities
+Message-ID: <20150108185758.GS9759@ld-irv-0074>
+References: <CALupW3DF2BmHBjm11yiBMLFSwX-yNFeW3q_EDyEWsBQrFPU-xw@mail.gmail.com>
+ <54AE04ED.8080002@vanguardiasur.com.ar>
+ <CALupW3BrZpq1GwJL1VRw8adPUdhR8SmprveTtEOHAiG==AQ=Qw@mail.gmail.com>
+ <0D23F1ECC880A74392D56535BCADD73526C0EA9A@NTXBOIMBX03.micron.com>
+ <CALupW3BC1PE8hAGxsfZ4ABUy35vZeHxt6Kkq_yK=aoq9LV=cNQ@mail.gmail.com>
 MIME-Version: 1.0
-Date: Thu, 8 Jan 2015 09:59:37 -0800
-Message-ID: <CALupW3AMWWs57nKEy1OsP_3ZLLH_US1ZPua+s8-qOWLVcnRd_g@mail.gmail.com>
-Subject: WP# line on flash chip?
-From: Steve deRosier <derosier@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALupW3BC1PE8hAGxsfZ4ABUy35vZeHxt6Kkq_yK=aoq9LV=cNQ@mail.gmail.com>
+Cc: "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
+ linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +29,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Our flash chip has an active-low write-protect line controlled via a
-GPIO. It's out-of-band of everything, the interface still has CS and
-other normal signals and those are connected to the NAND controller
-pins on our controller.  This pin isn't controlled by the controller,
-it's a GPIO activated pin. It's also out-of-band of the various LOCK
-commands that can be sent.
+On Thu, Jan 08, 2015 at 09:09:20AM -0800, Steve deRosier wrote:
+> On Thu, Jan 8, 2015 at 8:38 AM, Jeff Lauruhn (jlauruhn)
+> <jlauruhn@micron.com> wrote:
+> > You might find this interesting http://www.cyclicdesign.com/index.php/ecc-trends-in-nand-flash.
 
-The datasheet basically says it locks down the chip so that random
-data on the bus doesn't cause erase or programs.  Micron is telling us
-that we really should keep it asserted and only deassert it when we
-want to erase/write the device.  Right now, we deassert it shortly
-after boot.
-
-I can't find any way to add this pin to our device tree, nor do I see
-any evidence for support in either our atmel_nand driver or in
-higher-level MTD stuff like nand_base.
-
-Does the support for this exist and am I simply missing finding it, or
-is it not there at all (expected)?
-
-Assuming it's not there, and assuming I actually add it, is this a
-feature that the MTD maintainers would allow to go upstream? I'm
-assuming it's not a unique feature to this chip and that other chips
-may have it.
-
-Thanks,
-- Steve
+Either Jeff sent this privately, or his mail is getting bounced by the
+mailing list.
