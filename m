@@ -1,21 +1,22 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8xhn-0002JQ-RH
- for linux-mtd@lists.infradead.org; Wed, 07 Jan 2015 20:59:53 +0000
-Received: by mail-pa0-f44.google.com with SMTP id et14so7207131pad.3
- for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 12:59:30 -0800 (PST)
-Date: Wed, 7 Jan 2015 12:59:26 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Gu Zheng <guz.fnst@cn.fujitsu.com>
-Subject: Re: [RESEND PATCH 1/3] mtd:mtdblock: remove the needless mtdblks_lock
-Message-ID: <20150107205926.GO9759@ld-irv-0074>
-References: <547E7348.5020204@cn.fujitsu.com>
+From: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ <peterpandong@micron.com>
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Subject: [PATCH 0/3] An alternative to SPI NAND
+Date: Thu, 8 Jan 2015 00:47:24 +0000
+Message-ID: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <547E7348.5020204@cn.fujitsu.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?gb2312?B?RnJhbmsgTGl1IMH1yLogKGZyYW5rbGl1KQ==?= <frankliu@micron.com>,
+ =?gb2312?B?TWVsYW5pZSBaaGFuZyDVxdHgIChtZWxhbmllemhhbmcp?=
+ <melaniezhang@micron.com>,
+ =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 03, 2014 at 10:19:52AM +0800, Gu Zheng wrote:
-> The global lock mtdblks_lock was used to protect the original mtdblks
-> array to avoid race conditions. As the mtdblks array was already gone,
-> but the mtdblks_lock is left, and it causes latency when open/release dev.
-> So we need to remove it here.
-> 
-> Signed-off-by: Gu Zheng <guz.fnst@cn.fujitsu.com>
-
-Pushed this first patch to l2-mtd.git. Thanks!
-
-I'm kinda ambivalent about the next two. They don't seem like necessary
-cleanups, really. With the third patch, I think it's actually pretty
-important that the caller understand that it's using container_of(). I
-could be convinced otherwise though...
-
-Brian
+VGhpcyBwYXRjaHNldCBpcyBhbiBhbHRlcm5hdGl2ZSB0byBFemVxdWllbCdzIHNlcmllc1sxXS4N
+Cg0KVGhpcyBwYXRjaHNldCBzZXBhcmF0ZSBTUEkgTkFORCBjb2RlIGFuZCBQYXJhbGxlbCBOQU5E
+IGNvZGUsIG1ha2UgU1BJIE5BTkQgaGF2ZQ0KaXRzIG93biBzcGlfbmFuZF9zY2FuLCByZWFkLCB3
+cml0ZSwgQkJNIG1lY2hhbmlzbSwgc28gdGhhdCBpdCB3b3VsZCBiZSBiZXR0ZXINCmZvciBjb2Rl
+IG1haW50ZW5hbmNlIGluIHRoZSBmdXR1cmUuICAgDQoNClRPRE8gLSANCiAgICAgIDEuIFRoaXMg
+cGF0Y2hzZXQgaXMgdmFsaWRhdGVkIG9ubHkgb24gTWljcm9uIFNQSSBOQU5EIGRldmljZSBNVDI5
+RjJHMDFBQUFFRA0KICAgICAgYnkgcnVuIG10ZHRlc3QgcHJvZ3JhbSwgYW5kIG1vdW50IFVCSUZT
+IG9uIFNQSSBOQU5ELCBmdXJ0aGVyIHRlc3Rpbmcgb24gDQogICAgICBvdGhlciBNYW51ZmFjdG9y
+eSBTUEkgTkFORCBpcyBuZWVkZWQuDQogICAgICAyLiBBbHRob3VnaCB0aGlzIHBhdGNoc2V0J3Mg
+ZnJhbWV3b3JrIHNlcGFyYXRlIFNQSSBOQU5EIGFuZCBQYXJhbGwgTkFORCBjb2RlLCANCiAgICAg
+IHNvbWUgY29kZSBkbyBpcyBjb21tb24gdGhhdCBjYW4gc2hhcmUgYnkgU1BJIE5BTkQgYW5kIFBh
+cmFsbGVsIE5BTkQgYXQgc2FtZSANCiAgICAgIHRpbWUuIEZvciB2aWV3IHRoZSBjb2RlIHN0cnVj
+dHVyZSBtaWdodCBiZSBtb3JlIG1ha2Ugc2Vuc2UgYXMgYmVsb3cgZGlhZ3JhbSwgDQogICAgICBz
+byB0aGF0IFNQSSBOQU5EIGFuZCBQYXJhbGxlbCBOQU5EIGNhbiBoYXZlIHRoZWlyIG93biBzcGVj
+aWZpYyBjb2RlIGFuZCBtZWFud2hpbGUgDQogICAgICBjYW4gc2hhcmUgQ29tbW9uIGNvZGUuIEJ1
+dCBtYXkgYnJpbmcgYSBsb3QgY2hhbmdlIGZvciBjdXJyZW50IGNvZGUsIEkgYW0gZ2xhZCANCiAg
+ICAgIHRvIGRpc2N1c3MgdGhpcyBzdHJ1Y3R1cmUgaWYgYW55IGd1eXMgYXJlIGludGVyZXN0ZWQu
+DQoNCiAgICAgIHwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS18DQogICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgIE1U
+RC9OQU5EIGZvbGRlciAgICAgICAgICAgICAgICAgICAgICAgICB8DQogICAgICB8IHwtLS0tLS0t
+LS0tLS0tfCAgfC0tLS0tLS0tLS0tLS0tLXwgIHwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfCAg
+fA0KICAgICAgfCB8IENvbW1vbiBjb2RlIHwgIHwgU1BJIE5BTkQgY29kZSB8ICB8ICBQYXJhbGxl
+bCBOQU5EIGNvZGUgICAgIHwgIHwNCiAgICAgIHwgfC0tLS0tLS0tLS0tLS18ICB8IC0tLS0tLS0t
+LS0tLS0tfCAgfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18ICB8DQogICAgICB8IHwgTmFuZF9i
+Y2guYyAgfCAgfHNwaV9uYW5kX2Jhc2UuY3wgIHwgIHBhcmFsbGVsX25hbmRfYmFzZS5jICAgfCAg
+fCAgDQogICAgICB8IHwgTmFuZF9lY2MuYyAgfCAgfCAgIC4uLi4uLi4uLiAgIHwgIHxzcGVjaWZp
+YyBjb250cm9sbGVycyBjb2RlfCAgfA0KICAgICAgfCB8IE5hbmRfYmJ0LmMgIHwgIHwgICAgICAg
+ICAgICAgICB8ICB8ICAgICAgICAgICAgICAgICAgICAgICAgIHwgIHwNCiAgICAgIHwtLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS18DQoNCg0KVGhpcyBzZXJpZXMgaXMgYmFzZWQgb24gdjMuMTktcmMxLg0KWzFdIGh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxNC1EZWNlbWJlci8wNTY3
+NjMuaHRtbA0KDQpQZXRlciBQYW4gKDMpOg0KICBtdGQ6IHNwaS1uYW5kIGZyYW1ld29yayAgICAg
+ICAgICAgICAgICAgICANCiAgbXRkOiBzcGktbmFuZDogc3VwcG9ydCBzcGktbmFuZCBkZXZpY2Vz
+DQogIG10ZDogc3BpLW5hbmQ6IGFkZCBkZXZpY2V0cmVlIGJpbmRpbmcNCg0KRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9zcGktbmFuZC50eHQgfCAgIDIyICsNCmRyaXZlcnMv
+bXRkL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiArDQpkcml2
+ZXJzL210ZC9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDEgKw0K
+ZHJpdmVycy9tdGQvc3BpLW5hbmQvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgfCAgICA3
+ICsNCmRyaXZlcnMvbXRkL3NwaS1uYW5kL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAgMyArDQpkcml2ZXJzL210ZC9zcGktbmFuZC9zcGktbmFuZC1iYXNlLmMgICAgICAgICAgICAg
+ICB8IDIwMzQgKysrKysrKysrKysrKysrKysrKysNCmRyaXZlcnMvbXRkL3NwaS1uYW5kL3NwaS1u
+YW5kLWJidC5jICAgICAgICAgICAgICAgIHwgMTI3OSArKysrKysrKysrKysNCmRyaXZlcnMvbXRk
+L3NwaS1uYW5kL3NwaS1uYW5kLWRldmljZS5jICAgICAgICAgICAgIHwgIDI4MSArKysNCmluY2x1
+ZGUvbGludXgvbXRkL3NwaS1uYW5kLmggICAgICAgICAgICAgICAgICAgICAgIHwgIDMxNyArKysN
+CjkgZmlsZXMgY2hhbmdlZCwgMzk0NiBpbnNlcnRpb25zKCspDQpjcmVhdGUgbW9kZSAxMDA2NDQg
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9zcGktbmFuZC50eHQNCmNyZWF0
+ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9zcGktbmFuZC9LY29uZmlnDQpjcmVhdGUgbW9kZSAx
+MDA2NDQgZHJpdmVycy9tdGQvc3BpLW5hbmQvTWFrZWZpbGUNCmNyZWF0ZSBtb2RlIDEwMDY0NCBk
+cml2ZXJzL210ZC9zcGktbmFuZC9zcGktbmFuZC1iYXNlLmMNCmNyZWF0ZSBtb2RlIDEwMDY0NCBk
+cml2ZXJzL210ZC9zcGktbmFuZC9zcGktbmFuZC1iYnQuYw0KY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
+aXZlcnMvbXRkL3NwaS1uYW5kL3NwaS1uYW5kLWRldmljZS5jDQpjcmVhdGUgbW9kZSAxMDA2NDQg
+aW5jbHVkZS9saW51eC9tdGQvc3BpLW5hbmQuaA0KDQotLSANCjEuOS4xDQo=
