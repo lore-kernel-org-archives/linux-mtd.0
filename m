@@ -1,25 +1,27 @@
 Received: from mailapp01.imgtec.com ([195.59.15.196])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y93ah-0007HP-5o
- for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 03:16:55 +0000
-Message-ID: <54ADF60F.9070300@imgtec.com>
-Date: Thu, 8 Jan 2015 00:14:23 -0300
+ id 1Y93mw-0006y1-AE
+ for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 03:29:35 +0000
+Message-ID: <54ADF90B.1070800@imgtec.com>
+Date: Thu, 8 Jan 2015 00:27:07 -0300
 From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-To: =?gbk?Q?=22Peter_Pan_=C5=CB=B6=B0_=28peterpandong=29=22?=
- <peterpandong@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "Brian Norris" <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/3] mtd: spi-nand framework
-References: <87F60714EC601C4C83DFF1D2E3D390A04AB404@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A04AB404@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset="gbk"
+To: =?UTF-8?B?IlFpIFdhbmcg546L6LW3IChxaXdhbmcpIg==?= <qiwang@micron.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/3] An alternative to SPI NAND
+References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
+ <20150108010257.GP9759@ld-irv-0074>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: =?gbk?Q?=22Melanie_Zhang_=D5=C5=D1=E0_=28me?= =?gbk?Q?laniezhang=29=22?=
- <melaniezhang@micron.com>,
- =?gbk?Q?=22Qi_Wang_=CD=F5=C6=F0_=28qiwang=29=22?= <qiwang@micron.com>,
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- =?gbk?Q?=22Frank_Liu_=C1=F5=C8=BA_=28frankliu=29=22?= <frankliu@micron.com>
+ =?UTF-8?B?IkZyYW5rIExpdSDliJjnvqQgKGZyYW5rbGl1KSI=?= <frankliu@micron.com>,
+ =?UTF-8?B?Ik1lbGFuaWUgWmhhbmcg5byg54eVIChtZWxhbmll?= =?UTF-8?B?emhhbmcpIg==?=
+ <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ =?UTF-8?B?IlBldGVyIFA=?= =?UTF-8?B?YW4g5r2Y5qCLIChwZXRlcnBhbmRvbmcpIg==?=
+ <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Qi Wang,
 
+On 01/07/2015 11:45 PM, Qi Wang 王起 (qiwang) wrote:
+> Hi Brian,
+> 
+> On Thu, Jan 08, 2015 at 9:03:24AM +0000, Brian Norris wrote:
+>>
+>> On Thu, Jan 08, 2015 at 12:47:24AM +0000, Peter Pan 潘栋 (peterpandong)
+>> wrote:
+>>> Documentation/devicetree/bindings/mtd/spi-nand.txt |   22 +
+>>> drivers/mtd/Kconfig                                |    2 +
+>>> drivers/mtd/Makefile                               |    1 +
+>>> drivers/mtd/spi-nand/Kconfig                       |    7 +
+>>> drivers/mtd/spi-nand/Makefile                      |    3 +
+>>> drivers/mtd/spi-nand/spi-nand-base.c               | 2034
+>> ++++++++++++++++++++
+>>> drivers/mtd/spi-nand/spi-nand-bbt.c                | 1279 ++++++++++++
+>>
+>> I can already tell by the diffstat that I don't like this. We probably
+>> don't need 3000 new lines of code for this, but we especially don't want
+>> to duplicate nand_bbt.c. It won't take a lot of work to augment
+>> nand_bbt.c to make it shareable. (I can whip that patch up if needed.)
+> 
+> Yes, I agree with you, Nand_bbt.c do can be shared by Parallel NAND and
+> SPI NAND. Actually, we are working at this now. Will send patches to you
+> Once we finished it.
+> 
 
-On 01/07/2015 09:48 PM, Peter Pan �˶� (peterpandong) wrote:
-[..]
-> +
-> +static void spi_nand_set_defaults(struct spi_nand_chip *chip)
-> +{
-> +	struct spi_device *spi = chip->spi;
-> +
-> +	if (spi->mode & SPI_RX_QUAD)
-> +		chip->read_cache = spi_nand_read_from_cache_x4;
-> +	else if (spi->mode & SPI_RX_DUAL)
-> +		chip->read_cache = spi_nand_read_from_cache_x2;
-> +	else
-> +		chip->read_cache = spi_nand_read_from_cache;
-> +
-> +	if (!chip->reset)
-> +		chip->reset = spi_nand_reset;
-> +	if (!chip->erase_block)
-> +		chip->erase_block = spi_nand_erase_block;
-> +	if (!chip->load_page)
-> +		chip->load_page = spi_nand_read_page_to_cache;
-> +	if (!chip->store_cache)
-> +		chip->store_cache = spi_nand_program_data_to_cache;
+Thanks for the quick submission!
 
-IMO, this is a mistake and one of the reasons why this whole file is so big.
+However, Brian is right, this code duplication is a no go.
 
-Do you have any reason for keeping the SPI commands (read page to cache,
-program data to cache, etc.) in the spi-nand-base.c ?
+Perhaps a more valid approach would be to first identify the code that
+needs to be shared in nand_bbt.c and nand_base.c, and export those
+symbols (or maybe do the required refactor).
 
-This shouldn't belong to the framework, but to some spi-nand-device.c
-implementing the SPI NAND commands for the devices we have seen so far.
-In fact, I don't think you should inherit this "default" hook stuff from
-NAND, it only makes the code more obscure.
+Then, separate the SPI NAND upper and lower logic (in a similar to my
+proposal, which I still consider turned out to be clean).
 
-As Brian noted, such a separation would be benefitial to support a
-potential SPI-NAND-specific controller.
-
-However, I think the stronger reason is that it results in a much
-simpler and clean initial code.
+These two things would lead to a simpler and smaller patchset. I also
+suggest to cut off everything that we don't utterly need on a first
+submission, so it's easier to review.
 -- 
 Ezequiel
