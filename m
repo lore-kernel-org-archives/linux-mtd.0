@@ -1,23 +1,16 @@
-From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH 0/3] An alternative to SPI NAND
-Date: Thu, 8 Jan 2015 02:45:01 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
-References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
- <20150108010257.GP9759@ld-irv-0074>
-In-Reply-To: <20150108010257.GP9759@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y93VB-00042y-2y
+ for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 03:11:13 +0000
+Received: by mail-ig0-f172.google.com with SMTP id hl2so840943igb.5
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 19:10:50 -0800 (PST)
 MIME-Version: 1.0
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
- =?utf-8?B?TWVsYW5pZSBaaGFuZyDlvKDnh5UgKG1lbGFuaWV6aGFuZyk=?=
- <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
+Date: Wed, 7 Jan 2015 19:10:50 -0800
+Message-ID: <CALupW3DF2BmHBjm11yiBMLFSwX-yNFeW3q_EDyEWsBQrFPU-xw@mail.gmail.com>
+Subject: NAND ECC capabilities
+From: Steve deRosier <derosier@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +20,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQnJpYW4sDQoNCk9uIFRodSwgSmFuIDA4LCAyMDE1IGF0IDk6MDM6MjRBTSArMDAwMCwgQnJp
-YW4gTm9ycmlzIHdyb3RlOg0KPg0KPk9uIFRodSwgSmFuIDA4LCAyMDE1IGF0IDEyOjQ3OjI0QU0g
-KzAwMDAsIFBldGVyIFBhbiDmvZjmoIsgKHBldGVycGFuZG9uZykNCj53cm90ZToNCj4+IERvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0IHwgICAyMiArDQo+
-PiBkcml2ZXJzL210ZC9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
-IDIgKw0KPj4gZHJpdmVycy9tdGQvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAgICAxICsNCj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL0tjb25maWcgICAgICAgICAgICAg
-ICAgICAgICAgIHwgICAgNyArDQo+PiBkcml2ZXJzL210ZC9zcGktbmFuZC9NYWtlZmlsZSAgICAg
-ICAgICAgICAgICAgICAgICB8ICAgIDMgKw0KPj4gZHJpdmVycy9tdGQvc3BpLW5hbmQvc3BpLW5h
-bmQtYmFzZS5jICAgICAgICAgICAgICAgfCAyMDM0DQo+KysrKysrKysrKysrKysrKysrKysNCj4+
-IGRyaXZlcnMvbXRkL3NwaS1uYW5kL3NwaS1uYW5kLWJidC5jICAgICAgICAgICAgICAgIHwgMTI3
-OSArKysrKysrKysrKysNCj4NCj5JIGNhbiBhbHJlYWR5IHRlbGwgYnkgdGhlIGRpZmZzdGF0IHRo
-YXQgSSBkb24ndCBsaWtlIHRoaXMuIFdlIHByb2JhYmx5DQo+ZG9uJ3QgbmVlZCAzMDAwIG5ldyBs
-aW5lcyBvZiBjb2RlIGZvciB0aGlzLCBidXQgd2UgZXNwZWNpYWxseSBkb24ndCB3YW50DQo+dG8g
-ZHVwbGljYXRlIG5hbmRfYmJ0LmMuIEl0IHdvbid0IHRha2UgYSBsb3Qgb2Ygd29yayB0byBhdWdt
-ZW50DQo+bmFuZF9iYnQuYyB0byBtYWtlIGl0IHNoYXJlYWJsZS4gKEkgY2FuIHdoaXAgdGhhdCBw
-YXRjaCB1cCBpZiBuZWVkZWQuKQ0KDQpZZXMsIEkgYWdyZWUgd2l0aCB5b3UsIE5hbmRfYmJ0LmMg
-ZG8gY2FuIGJlIHNoYXJlZCBieSBQYXJhbGxlbCBOQU5EIGFuZA0KU1BJIE5BTkQuIEFjdHVhbGx5
-LCB3ZSBhcmUgd29ya2luZyBhdCB0aGlzIG5vdy4gV2lsbCBzZW5kIHBhdGNoZXMgdG8geW91DQpP
-bmNlIHdlIGZpbmlzaGVkIGl0Lg0KDQpCdXQgZm9yIHRoZSAyMDAwIG5ldyBsaW5lcyBjb2RlIGlu
-IHNwaS1uYW5kLWJhc2UuYywgZnJhbmtseSBzcGVha2luZywgSSANCnN0aWxsIG5vIGlkZWEgaG93
-IHRvIGRlY3JlYXNlIHRoZSBjb2RlIGxpbmVzLiANCg0KSSBzZXBhcmF0ZSBjb2RlIG9mIHRoZSBT
-UEkgTkFORCBhbmQgUGFyYWxsZWwgTkFORCB0aGF0IGRpZmZlcmVudCB3aXRoIA0KRXplcXVpZWwg
-R2FyY2lhIHBhdGNoZXMsIGJlY2F1c2UgSSB0aGluayB0aGlzIGZyYW1ld29yayBjb3VsZCBiZSBl
-YXNpZXIgDQp0byBtYWludGFpbiBpdCwgaW4gdGhlIGZ1dHVyZSwgU1BJIE5BTkQgbWF5IGhhdmUg
-bW9yZSBzcGVjaWZpYyBmZWF0dXJlcyANCnRoYXQgd2lsbCBiZSBkaWZmaWN1bHQgdG8gcmV1c2Ug
-dGhlIGNvZGUgb2YgTmFuZF9iYXNlLmMgYnV0IGp1c3QgcmVtYXAgDQpjb21tYW5kIHRvIFNQSSBO
-QU5EIGZyb20gUGFyYWxsZWwgTkFORC4NCg0KU28gd2Ugd3JpdGUgYSBuZXcgc3BpLW5hbmQtYmFz
-ZS5jLCB0byBpbXBsZW1lbnQgcmVhZC93cml0ZS9lcmFzZSBmdW5jdGlvbiwNCnRoYXQgd2lsbCBj
-YXVzZSBtYW55IGNvZGUgbGluZXMgYXMgeW91IHNlZS4gSWYgeW91IGhhdmUgb3RoZXIgc3VnZ2Vz
-dGlvbiwgDQpwbGVhc2UgbGV0IG1lIGtub3cuIA0KDQo+DQo+SSdsbCBzdGlsbCB0YWtlIGEgbG9v
-ayBhdCB0aGUgcmVzdCBvZiB0aGUgY29kZSBldmVudHVhbGx5LCBidXQganVzdA0KPndhbnRlZCB0
-byBnaXZlIG15IDIgY2VudHMgdXAgZnJvbnQuDQo+DQo+PiBkcml2ZXJzL210ZC9zcGktbmFuZC9z
-cGktbmFuZC1kZXZpY2UuYyAgICAgICAgICAgICB8ICAyODEgKysrDQo+PiBpbmNsdWRlL2xpbnV4
-L210ZC9zcGktbmFuZC5oICAgICAgICAgICAgICAgICAgICAgICB8ICAzMTcgKysrDQo+PiA5IGZp
-bGVzIGNoYW5nZWQsIDM5NDYgaW5zZXJ0aW9ucygrKQ0KPj4gY3JlYXRlIG1vZGUgMTAwNjQ0IERv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0DQo+PiBjcmVh
-dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvc3BpLW5hbmQvS2NvbmZpZw0KPj4gY3JlYXRlIG1v
-ZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL3NwaS1uYW5kL01ha2VmaWxlDQo+PiBjcmVhdGUgbW9kZSAx
-MDA2NDQgZHJpdmVycy9tdGQvc3BpLW5hbmQvc3BpLW5hbmQtYmFzZS5jDQo+PiBjcmVhdGUgbW9k
-ZSAxMDA2NDQgZHJpdmVycy9tdGQvc3BpLW5hbmQvc3BpLW5hbmQtYmJ0LmMNCj4+IGNyZWF0ZSBt
-b2RlIDEwMDY0NCBkcml2ZXJzL210ZC9zcGktbmFuZC9zcGktbmFuZC1kZXZpY2UuYw0KPj4gY3Jl
-YXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvbXRkL3NwaS1uYW5kLmgNCj4NCg0KUWkgV2Fu
-Zw0K
+So, doing further experiments and I wondered if someone could confirm
+this finding.
+
+With atmel_nand, we're setup for 4-bit ECC on 512 sectors with a 2k
+page.  I was thinking about this a bit and realized that there's 4 of
+these sectors per page, and this implies then that we can detect and
+correct 4 bad bits _per_ each sector.  Assuming that they're evenly
+spread, that's up to 16 bad bits per page.  Obviously in practice,
+that assumption wouldn't hold...
+
+So, is my understanding correct?
+
+I took it further and decided to play with this experimentally. On my
+UBIFS rootfs, I flipped 3 bits in the first sector of a page and then
+3 more in the second sector.  From my kernel log I got this:
+
+[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
+[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
+[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
+[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
+[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 530, bit_pos: 5, 0xce -> 0xee
+[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
+[   78.304687] UBI: fixable bit-flip detected at PEB 20
+[   78.304687] UBI: schedule PEB 20 for scrubbing
+[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
+[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
+[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
+[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
+[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 530, bit_pos: 5, 0xce -> 0xee
+[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
+[   78.343750] UBI: fixable bit-flip detected at PEB 20
+[   78.382812] UBI: scrubbed PEB 20 (LEB 0:18), data moved to PEB 250
+
+So, my takeaway from this is a couple of things:
+
+1. Yes, it can correct more than 4 bits per page as long as those are
+on different sectors of the page.
+2. My test of 6 bits hit the 4 bit threshold setting and at that point
+UBI decided that maybe something is wrong with that PEB.
+3. When it did, UBI corrected the data and copied it elsewhere
+4. Then UBI scrubbed. I assume it then did the torture test. Since I
+manually made a flip, it found it was fine once it erased it, so it
+didn't mark it as bad.  I checked my BBT and it's not marked. So I
+assume it's erased and ready for use again.
+
+Is my general understanding correct?
+
+Thanks,
+- Steve
