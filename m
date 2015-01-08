@@ -1,24 +1,14 @@
-Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9GrZ-0005Vx-I8
- for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 17:27:14 +0000
-Received: by mail-ie0-f177.google.com with SMTP id rd18so10572210iec.8
- for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 09:26:52 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <54AEB38D.4030403@vanguardiasur.com.ar>
-References: <CALupW3DF2BmHBjm11yiBMLFSwX-yNFeW3q_EDyEWsBQrFPU-xw@mail.gmail.com>
- <alpine.DEB.2.02.1501080927090.27318@lnxricardw1.se.axis.com>
- <54AEB38D.4030403@vanguardiasur.com.ar>
-Date: Thu, 8 Jan 2015 09:26:52 -0800
-Message-ID: <CALupW3BVmLG_LDF=ZjMX-UvpiazbO+Z3ArPAGEuiRO=WMiA7cw@mail.gmail.com>
-Subject: Re: NAND ECC capabilities
-From: Steve deRosier <derosier@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>, Huang Shijie <shijie8@gmail.com>,
- Richard Weinberger <richard@nod.at>
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@fb.com>
+Subject: [PATCH 01/12] fs: deduplicate noop_backing_dev_info
+Date: Thu,  8 Jan 2015 18:45:22 +0100
+Message-Id: <1420739133-27514-2-git-send-email-hch@lst.de>
+In-Reply-To: <1420739133-27514-1-git-send-email-hch@lst.de>
+References: <1420739133-27514-1-git-send-email-hch@lst.de>
+Cc: linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+ David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Tejun Heo <tj@kernel.org>,
+ ceph-devel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,127 +18,193 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 8, 2015 at 8:42 AM, Ezequiel Garcia
-<ezequiel@vanguardiasur.com.ar> wrote:
-> (Adding a few MTD folks)
->
-> On 01/08/2015 05:32 AM, Ricard Wanderlof wrote:
->>
->> On Thu, 8 Jan 2015, Steve deRosier wrote:
->>
->>> So, doing further experiments and I wondered if someone could confirm
->>> this finding.
->>>
->>> With atmel_nand, we're setup for 4-bit ECC on 512 sectors with a 2k
->>> page.  I was thinking about this a bit and realized that there's 4 of
->>> these sectors per page, and this implies then that we can detect and
->>> correct 4 bad bits _per_ each sector.  Assuming that they're evenly
->>> spread, that's up to 16 bad bits per page.  Obviously in practice,
->>> that assumption wouldn't hold...
->>>
->>> So, is my understanding correct?
->>>
->>> I took it further and decided to play with this experimentally. On my
->>> UBIFS rootfs, I flipped 3 bits in the first sector of a page and then
->>> 3 more in the second sector.  From my kernel log I got this:
->>>
->>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
->>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
->>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
->>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
->>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 530, bit_pos: 5, 0xce -> 0xee
->>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
->>> [   78.304687] UBI: fixable bit-flip detected at PEB 20
->>> [   78.304687] UBI: schedule PEB 20 for scrubbing
->>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
->>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
->>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
->>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
->>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 530, bit_pos: 5, 0xce -> 0xee
->>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->>> byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
->>> [   78.343750] UBI: fixable bit-flip detected at PEB 20
->>> [   78.382812] UBI: scrubbed PEB 20 (LEB 0:18), data moved to PEB 250
->>>
->>> So, my takeaway from this is a couple of things:
->>>
->>> 1. Yes, it can correct more than 4 bits per page as long as those are
->>> on different sectors of the page.
->>> 2. My test of 6 bits hit the 4 bit threshold setting and at that point
->>> UBI decided that maybe something is wrong with that PEB.
->>> 3. When it did, UBI corrected the data and copied it elsewhere
->>> 4. Then UBI scrubbed. I assume it then did the torture test. Since I
->>> manually made a flip, it found it was fine once it erased it, so it
->>> didn't mark it as bad.  I checked my BBT and it's not marked. So I
->>> assume it's erased and ready for use again.
->>>
->>> Is my general understanding correct?
->>
->> I'd say yes, but the ECC threshold should be per 512 byte ECC block (which
->> seems to be the correct term rather than 'sector'), rather than per page.
->> Are you sure that the threshold is set to 4 (see
->> /sys/devices/virtual/mtd/mtd<n>/bitflip_threshold )?
->>
->> Normally the threshold is set below the ECC correction capability, so that
->> bit scrubbing has a chance to occur before the bits rot too far. Say you
->> have the threshold set at 4 bits, and you have 3 bits that have flipped.
->> If another bit flips, the block would be scrubbed, but say that two bits
->> flipped before you read the data the next time. You would have lost your
->> chance of recovery, so it makes sense to have the threshold lower than the
->> ECC capability. I would say 3/4 of the ECC capability would be a
->> reasonable value.
->>
->
-> This makes a lot of sense. However, do we have any way of telling if the
-> bitflips where produced on the same ECC sector?
->
-> From a cursory look to the code, I'd say there's no such feature with
-> the current MTD/NAND design. So, if an mtd_read reports 3 bitflips you
-> have no way of telling they happened on the same sector or not, so you
-> can't implement your idea.
+hugetlbfs, kernfs and dlmfs can simply use noop_backing_dev_info instead
+of creating a local duplicate.
 
-I'm not sure anyone proposed an idea, but to further an interesting
-discussion, I wonder if we should implement a per-ECC-sector
-threashold?  On devices where the sector size == the page size the two
-parameters would be identical, but I'd be interested in my case of a
-bitflip-sector-threshold == 3 and bitflip-page-threshold == 12. In my
-basic logic, we'd trigger the same threashold event we currently do if
-either total across the page is > 12 or any single sector is > 3.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/hugetlbfs/inode.c        | 14 +-------------
+ fs/kernfs/inode.c           | 14 +-------------
+ fs/kernfs/kernfs-internal.h |  1 -
+ fs/kernfs/mount.c           |  1 -
+ fs/ocfs2/dlmfs/dlmfs.c      | 16 ++--------------
+ 5 files changed, 4 insertions(+), 42 deletions(-)
 
-I know it seems possible to detect in the atmel-nand code specifically
-which sector the flip is in (otherwise it wouldn't be possible to
-correct it), so it should be possible to pull that higher up and have
-the dual threasholds work.  The problem I see is the ECC sector is a
-lower level MTD device detail, and we'd want the higher level to deal
-with an abstraction.  I don't have time in the next two weeks due to
-travel, but I'd be willing to give it a try after that if anyone is
-actually interested in such a feature.
-
->
-> I'm curious about what ECC threshold is typically used in production.
-> Obviously a too big or too small values have deadly consequences, so
-> this doesn't seem like a minor issue.
-
-In my experience with embedded Linux in general, most people usually
-go into production with the defaults that are in place already unless
-they've explicitly encountered a problem and have developed the domain
-knowledge.  The default on my platform is 4.  Which is the max setting
-also for the ECC, so by the time bit 5 flips in the same sector and we
-notice and run the scrub, it's already too late for the data.  Ouch!
-
-I'm thinking like Ricard, that I should set to 3 in my case.  I'm
-wondering if all defaults across the board should be set to either
-max-1 or 3/4 as Ricard suggests.
-
-- Steve
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 5eba47f..de7c95c 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -62,12 +62,6 @@ static inline struct hugetlbfs_inode_info *HUGETLBFS_I(struct inode *inode)
+ 	return container_of(inode, struct hugetlbfs_inode_info, vfs_inode);
+ }
+ 
+-static struct backing_dev_info hugetlbfs_backing_dev_info = {
+-	.name		= "hugetlbfs",
+-	.ra_pages	= 0,	/* No readahead */
+-	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
+-};
+-
+ int sysctl_hugetlb_shm_group;
+ 
+ enum {
+@@ -498,7 +492,7 @@ static struct inode *hugetlbfs_get_inode(struct super_block *sb,
+ 		lockdep_set_class(&inode->i_mapping->i_mmap_rwsem,
+ 				&hugetlbfs_i_mmap_rwsem_key);
+ 		inode->i_mapping->a_ops = &hugetlbfs_aops;
+-		inode->i_mapping->backing_dev_info =&hugetlbfs_backing_dev_info;
++		inode->i_mapping->backing_dev_info = &noop_backing_dev_info;
+ 		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+ 		inode->i_mapping->private_data = resv_map;
+ 		info = HUGETLBFS_I(inode);
+@@ -1032,10 +1026,6 @@ static int __init init_hugetlbfs_fs(void)
+ 		return -ENOTSUPP;
+ 	}
+ 
+-	error = bdi_init(&hugetlbfs_backing_dev_info);
+-	if (error)
+-		return error;
+-
+ 	error = -ENOMEM;
+ 	hugetlbfs_inode_cachep = kmem_cache_create("hugetlbfs_inode_cache",
+ 					sizeof(struct hugetlbfs_inode_info),
+@@ -1071,7 +1061,6 @@ static int __init init_hugetlbfs_fs(void)
+  out:
+ 	kmem_cache_destroy(hugetlbfs_inode_cachep);
+  out2:
+-	bdi_destroy(&hugetlbfs_backing_dev_info);
+ 	return error;
+ }
+ 
+@@ -1091,7 +1080,6 @@ static void __exit exit_hugetlbfs_fs(void)
+ 	for_each_hstate(h)
+ 		kern_unmount(hugetlbfs_vfsmount[i++]);
+ 	unregister_filesystem(&hugetlbfs_fs_type);
+-	bdi_destroy(&hugetlbfs_backing_dev_info);
+ }
+ 
+ module_init(init_hugetlbfs_fs)
+diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
+index 9852176..06f0688 100644
+--- a/fs/kernfs/inode.c
++++ b/fs/kernfs/inode.c
+@@ -24,12 +24,6 @@ static const struct address_space_operations kernfs_aops = {
+ 	.write_end	= simple_write_end,
+ };
+ 
+-static struct backing_dev_info kernfs_bdi = {
+-	.name		= "kernfs",
+-	.ra_pages	= 0,	/* No readahead */
+-	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
+-};
+-
+ static const struct inode_operations kernfs_iops = {
+ 	.permission	= kernfs_iop_permission,
+ 	.setattr	= kernfs_iop_setattr,
+@@ -40,12 +34,6 @@ static const struct inode_operations kernfs_iops = {
+ 	.listxattr	= kernfs_iop_listxattr,
+ };
+ 
+-void __init kernfs_inode_init(void)
+-{
+-	if (bdi_init(&kernfs_bdi))
+-		panic("failed to init kernfs_bdi");
+-}
+-
+ static struct kernfs_iattrs *kernfs_iattrs(struct kernfs_node *kn)
+ {
+ 	static DEFINE_MUTEX(iattr_mutex);
+@@ -298,7 +286,7 @@ static void kernfs_init_inode(struct kernfs_node *kn, struct inode *inode)
+ 	kernfs_get(kn);
+ 	inode->i_private = kn;
+ 	inode->i_mapping->a_ops = &kernfs_aops;
+-	inode->i_mapping->backing_dev_info = &kernfs_bdi;
++	inode->i_mapping->backing_dev_info = &noop_backing_dev_info;
+ 	inode->i_op = &kernfs_iops;
+ 
+ 	set_default_inode_attr(inode, kn->mode);
+diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
+index dc84a3e..af9fa74 100644
+--- a/fs/kernfs/kernfs-internal.h
++++ b/fs/kernfs/kernfs-internal.h
+@@ -88,7 +88,6 @@ int kernfs_iop_removexattr(struct dentry *dentry, const char *name);
+ ssize_t kernfs_iop_getxattr(struct dentry *dentry, const char *name, void *buf,
+ 			    size_t size);
+ ssize_t kernfs_iop_listxattr(struct dentry *dentry, char *buf, size_t size);
+-void kernfs_inode_init(void);
+ 
+ /*
+  * dir.c
+diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+index f973ae9..8eaf417 100644
+--- a/fs/kernfs/mount.c
++++ b/fs/kernfs/mount.c
+@@ -246,5 +246,4 @@ void __init kernfs_init(void)
+ 	kernfs_node_cache = kmem_cache_create("kernfs_node_cache",
+ 					      sizeof(struct kernfs_node),
+ 					      0, SLAB_PANIC, NULL);
+-	kernfs_inode_init();
+ }
+diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
+index 57c40e3..6000d30 100644
+--- a/fs/ocfs2/dlmfs/dlmfs.c
++++ b/fs/ocfs2/dlmfs/dlmfs.c
+@@ -390,12 +390,6 @@ clear_fields:
+ 	ip->ip_conn = NULL;
+ }
+ 
+-static struct backing_dev_info dlmfs_backing_dev_info = {
+-	.name		= "ocfs2-dlmfs",
+-	.ra_pages	= 0,	/* No readahead */
+-	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
+-};
+-
+ static struct inode *dlmfs_get_root_inode(struct super_block *sb)
+ {
+ 	struct inode *inode = new_inode(sb);
+@@ -404,7 +398,7 @@ static struct inode *dlmfs_get_root_inode(struct super_block *sb)
+ 	if (inode) {
+ 		inode->i_ino = get_next_ino();
+ 		inode_init_owner(inode, NULL, mode);
+-		inode->i_mapping->backing_dev_info = &dlmfs_backing_dev_info;
++		inode->i_mapping->backing_dev_info = &noop_backing_dev_info;
+ 		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+ 		inc_nlink(inode);
+ 
+@@ -428,7 +422,7 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
+ 
+ 	inode->i_ino = get_next_ino();
+ 	inode_init_owner(inode, parent, mode);
+-	inode->i_mapping->backing_dev_info = &dlmfs_backing_dev_info;
++	inode->i_mapping->backing_dev_info = &noop_backing_dev_info;
+ 	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+ 
+ 	ip = DLMFS_I(inode);
+@@ -643,10 +637,6 @@ static int __init init_dlmfs_fs(void)
+ 	int status;
+ 	int cleanup_inode = 0, cleanup_worker = 0;
+ 
+-	status = bdi_init(&dlmfs_backing_dev_info);
+-	if (status)
+-		return status;
+-
+ 	dlmfs_inode_cache = kmem_cache_create("dlmfs_inode_cache",
+ 				sizeof(struct dlmfs_inode_private),
+ 				0, (SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT|
+@@ -673,7 +663,6 @@ bail:
+ 			kmem_cache_destroy(dlmfs_inode_cache);
+ 		if (cleanup_worker)
+ 			destroy_workqueue(user_dlm_worker);
+-		bdi_destroy(&dlmfs_backing_dev_info);
+ 	} else
+ 		printk("OCFS2 User DLM kernel interface loaded\n");
+ 	return status;
+@@ -693,7 +682,6 @@ static void __exit exit_dlmfs_fs(void)
+ 	rcu_barrier();
+ 	kmem_cache_destroy(dlmfs_inode_cache);
+ 
+-	bdi_destroy(&dlmfs_backing_dev_info);
+ }
+ 
+ MODULE_AUTHOR("Oracle");
+-- 
+1.9.1
