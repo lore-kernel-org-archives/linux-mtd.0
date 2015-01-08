@@ -1,19 +1,25 @@
-Received: from mx0a-00116901.pphosted.com ([67.231.145.58])
+Received: from mail-wg0-f50.google.com ([74.125.82.50])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9G1q-0000uk-VP
- for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 16:33:48 +0000
-Received: from pps.filterd (m0046982.ppops.net [127.0.0.1])
- by mx0a-00116901.pphosted.com (8.14.5/8.14.5) with SMTP id t08GV0oF013734
- for <linux-mtd@lists.infradead.org>; Thu, 8 Jan 2015 08:33:24 -0800
-Message-Id: <201501081633.t08GV0oF013734@mx0a-00116901.pphosted.com>
-From: "Winchenbach, Samuel" <Samuel-Winchenbach@idexx.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: One bad PEB causes WL to run of PEBs
-Date: Thu, 8 Jan 2015 16:33:19 +0000
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1Y9GD6-0000qK-AN
+ for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 16:45:26 +0000
+Received: by mail-wg0-f50.google.com with SMTP id a1so3631297wgh.9
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 08:44:58 -0800 (PST)
+Message-ID: <54AEB38D.4030403@vanguardiasur.com.ar>
+Date: Thu, 08 Jan 2015 13:42:53 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Steve deRosier <derosier@gmail.com>
+Subject: Re: NAND ECC capabilities
+References: <CALupW3DF2BmHBjm11yiBMLFSwX-yNFeW3q_EDyEWsBQrFPU-xw@mail.gmail.com>
+ <alpine.DEB.2.02.1501080927090.27318@lnxricardw1.se.axis.com>
+In-Reply-To: <alpine.DEB.2.02.1501080927090.27318@lnxricardw1.se.axis.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <shijie8@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,123 +29,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,=0A=
-=0A=
-I am working on an instrument with uboot v2013.01.  This instrument experie=
-nced a nand corruption on one of the blocks (incrementing the bad PEB count=
- to 1) when someone pulled the power plug.  When the instrument booted ubi_=
-wl_init_scan had an error because avail_pebs was 0 and 1 was needed.   We a=
-dded a bunch of debug prints and this is what it looks like (good and bad):=
-=0A=
-=0A=
-=3D=3D=3D=3D=3D GOOD (BEFORE GETTING A BAD PEB) =3D=3D=3D=3D=3D=0A=
-idexx> ubi part nand-rootfs=0A=
-UBI: mtd1 is detached from ubi0=0A=
-Creating 1 MTD partitions on "nand0":=0A=
-0x000001500000-0x000020000000 : "mtd=3D5"=0A=
-UBI: attaching mtd1 to ubi0=0A=
-UBI: physical eraseblock size:   131072 bytes (128 KiB)=0A=
-UBI: logical eraseblock size:    129024 bytes=0A=
-UBI: smallest flash I/O unit:    2048=0A=
-UBI: sub-page size:              512=0A=
-UBI: VID header offset:          512 (aligned 512)=0A=
-UBI: data offset:                2048=0A=
-UBI error: process_eb: DEBUG! found volume table at peb: 3926=0A=
-=0A=
-UBI error: process_eb: DEBUG! found volume table at peb: 3927=0A=
-=0A=
-UBI error: attach_by_scanning: DEBUG! peb_count: 3928 bad_peb_count: 0=0A=
-=0A=
-UBI error: ubi_read_volume_table: DEBUG!=0A=
-        reserved_pebs: 755957760=0A=
-        alignment: 16777216=0A=
-        data_pad: 0=0A=
-        vol_type: 1=0A=
-        upd_marker: 0=0A=
-        name_len: 2816=0A=
-        name: nand-rootfs=0A=
-        flags: 0=0A=
-=0A=
-UBI error: ubi_read_volume_table: DEBUG!: setting avail_pebs =3D 3928=0A=
-UBI error: init_volumes: DEBUG! subtracting 3887 from avail_pebs.  Now 41=
-=0A=
-UBI error: ubi_eba_init_scan: DEBUG! subtracting 1 from avail_pebs.  Now 40=
-=0A=
-UBI error: ubi_eba_init_scan: DEBUG! subtracting 39 from avail_pebs.  Now 1=
-=0A=
-UBI error: ubi_wl_init_scan: DEBUG! subtracting 1 from avail_pebs.  Now 0=
-=0A=
-UBI: attached mtd1 to ubi0=0A=
-UBI: MTD device name:            "mtd=3D5"=0A=
-UBI: MTD device size:            491 MiB=0A=
-UBI: number of good PEBs:        3928=0A=
-UBI: number of bad PEBs:         0=0A=
-UBI: max. allowed volumes:       128=0A=
-UBI: wear-leveling threshold:    4096=0A=
-UBI: number of internal volumes: 1=0A=
-UBI: number of user volumes:     1=0A=
-UBI: available PEBs:             0=0A=
-UBI: total number of reserved PEBs: 3928=0A=
-UBI: number of PEBs reserved for bad PEB handling: 39=0A=
-UBI: max/mean erase counter: 21/10=0A=
-=0A=
-=0A=
-=0A=
-=3D=3D=3D=3D=3D BAD (AFTER GETTING A BAD PEB) =3D=3D=3D=3D=3D=0A=
-idexx> ubi part nand-rootfs=0A=
-Creating 1 MTD partitions on "nand0":=0A=
-0x000001500000-0x000020000000 : "mtd=3D5"=0A=
-UBI: attaching mtd1 to ubi0=0A=
-UBI: physical eraseblock size:   131072 bytes (128 KiB)=0A=
-UBI: logical eraseblock size:    129024 bytes=0A=
-UBI: smallest flash I/O unit:    2048=0A=
-UBI: sub-page size:              512=0A=
-UBI: VID header offset:          512 (aligned 512)=0A=
-UBI: data offset:                2048=0A=
-UBI error: process_eb: DEBUG! found volume table at peb: 3926=0A=
-=0A=
-UBI error: process_eb: DEBUG! found volume table at peb: 3927=0A=
-=0A=
-UBI error: attach_by_scanning: DEBUG! peb_count: 3928 bad_peb_count: 1=0A=
-=0A=
-UBI error: ubi_read_volume_table: DEBUG!=0A=
-        reserved_pebs: 755957760=0A=
-        alignment: 16777216=0A=
-        data_pad: 0=0A=
-        vol_type: 1=0A=
-        upd_marker: 0=0A=
-        name_len: 2816=0A=
-        name: nand-rootfs=0A=
-        flags: 0=0A=
-=0A=
-UBI error: ubi_read_volume_table: DEBUG!: setting avail_pebs =3D 3927=0A=
-UBI error: init_volumes: DEBUG! subtracting 3887 from avail_pebs.  Now 40=
-=0A=
-UBI error: ubi_eba_init_scan: DEBUG! subtracting 1 from avail_pebs.  Now 39=
-=0A=
-UBI error: ubi_eba_init_scan: DEBUG! subtracting 39 from avail_pebs.  Now 0=
-=0A=
-UBI error: ubi_wl_init_scan: no enough physical eraseblocks (0, need 1)=0A=
-UBI error: ubi_init: cannot attach mtd1=0A=
-UBI error: ubi_init: UBI error: cannot initialize UBI, error -12=0A=
-UBI init error 12=0A=
-idexx> nand bad=0A=
-=0A=
-Device 0 bad blocks:=0A=
-  05f40000=0A=
-  2c120000=0A=
-  3ff80000=0A=
-  3ffa0000=0A=
-  3ffc0000=0A=
-  3ffe0000=0A=
-idexx> =0A=
-=0A=
-=0A=
-=0A=
-Why (seeing there is a bad PEB does eba_init_scan still allocate 39 PEBs fo=
-r bad blocks?   Shouldn't one of those be consumed by the bad PEB?    Do yo=
-u see anything else that might point to this being a bug vs. incorrect usag=
-e?=0A=
-=0A=
-Thanks for your help,=0A=
-Sam=
+(Adding a few MTD folks)
+
+On 01/08/2015 05:32 AM, Ricard Wanderlof wrote:
+> 
+> On Thu, 8 Jan 2015, Steve deRosier wrote:
+> 
+>> So, doing further experiments and I wondered if someone could confirm
+>> this finding.
+>>
+>> With atmel_nand, we're setup for 4-bit ECC on 512 sectors with a 2k
+>> page.  I was thinking about this a bit and realized that there's 4 of
+>> these sectors per page, and this implies then that we can detect and
+>> correct 4 bad bits _per_ each sector.  Assuming that they're evenly
+>> spread, that's up to 16 bad bits per page.  Obviously in practice,
+>> that assumption wouldn't hold...
+>>
+>> So, is my understanding correct?
+>>
+>> I took it further and decided to play with this experimentally. On my
+>> UBIFS rootfs, I flipped 3 bits in the first sector of a page and then
+>> 3 more in the second sector.  From my kernel log I got this:
+>>
+>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
+>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
+>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
+>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
+>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 530, bit_pos: 5, 0xce -> 0xee
+>> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
+>> [   78.304687] UBI: fixable bit-flip detected at PEB 20
+>> [   78.304687] UBI: schedule PEB 20 for scrubbing
+>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
+>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
+>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
+>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
+>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 530, bit_pos: 5, 0xce -> 0xee
+>> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
+>> byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
+>> [   78.343750] UBI: fixable bit-flip detected at PEB 20
+>> [   78.382812] UBI: scrubbed PEB 20 (LEB 0:18), data moved to PEB 250
+>>
+>> So, my takeaway from this is a couple of things:
+>>
+>> 1. Yes, it can correct more than 4 bits per page as long as those are
+>> on different sectors of the page.
+>> 2. My test of 6 bits hit the 4 bit threshold setting and at that point
+>> UBI decided that maybe something is wrong with that PEB.
+>> 3. When it did, UBI corrected the data and copied it elsewhere
+>> 4. Then UBI scrubbed. I assume it then did the torture test. Since I
+>> manually made a flip, it found it was fine once it erased it, so it
+>> didn't mark it as bad.  I checked my BBT and it's not marked. So I
+>> assume it's erased and ready for use again.
+>>
+>> Is my general understanding correct?
+> 
+> I'd say yes, but the ECC threshold should be per 512 byte ECC block (which 
+> seems to be the correct term rather than 'sector'), rather than per page. 
+> Are you sure that the threshold is set to 4 (see 
+> /sys/devices/virtual/mtd/mtd<n>/bitflip_threshold )?
+> 
+> Normally the threshold is set below the ECC correction capability, so that 
+> bit scrubbing has a chance to occur before the bits rot too far. Say you 
+> have the threshold set at 4 bits, and you have 3 bits that have flipped. 
+> If another bit flips, the block would be scrubbed, but say that two bits 
+> flipped before you read the data the next time. You would have lost your 
+> chance of recovery, so it makes sense to have the threshold lower than the 
+> ECC capability. I would say 3/4 of the ECC capability would be a 
+> reasonable value.
+> 
+
+This makes a lot of sense. However, do we have any way of telling if the
+bitflips where produced on the same ECC sector?
+
+>From a cursory look to the code, I'd say there's no such feature with
+the current MTD/NAND design. So, if an mtd_read reports 3 bitflips you
+have no way of telling they happened on the same sector or not, so you
+can't implement your idea.
+
+I'm curious about what ECC threshold is typically used in production.
+Obviously a too big or too small values have deadly consequences, so
+this doesn't seem like a minor issue.
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
