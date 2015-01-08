@@ -1,21 +1,28 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-qa0-x234.google.com ([2607:f8b0:400d:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y91Uq-0001V3-Mz
- for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 01:02:45 +0000
-Received: from mail.micron.com (ntxboicas04.micron.com [137.201.20.214])
- by mailout.micron.com (8.14.4/8.14.6) with ESMTP id t0812M4h006164
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
- for <linux-mtd@lists.infradead.org>; Wed, 7 Jan 2015 18:02:22 -0700
-From: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ id 1Y91Vz-0002MI-O7
+ for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 01:03:56 +0000
+Received: by mail-qa0-f52.google.com with SMTP id x12so454324qac.11
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 17:03:34 -0800 (PST)
+Date: Wed, 7 Jan 2015 17:03:29 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Peter Pan =?utf-8?B?5r2Y5qCLIChwZXRlcnBhbmRvbmcp?=
  <peterpandong@micron.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 3/3] mtd: spi-nand: add devicetree binding
-Date: Thu, 8 Jan 2015 01:02:20 +0000
-Message-ID: <87F60714EC601C4C83DFF1D2E3D390A04AB458@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH 0/3] An alternative to SPI NAND
+Message-ID: <20150108010257.GP9759@ld-irv-0074>
+References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
+Cc: Qi Wang =?utf-8?B?546L6LW3IChxaXdhbmcp?= <qiwang@micron.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Frank Liu =?utf-8?B?5YiY576kIChmcmFua2xpdSk=?= <frankliu@micron.com>,
+ Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
+ Melanie Zhang =?utf-8?B?5byg54eVIChtZWxhbmllemhhbmcp?=
+ <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +32,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhpcyBjb21taXQgYWRkcyB0aGUgZGV2aWNldHJlZSBiaW5kaW5nIGRvY3VtZW50IHRoYXQgc3Bl
-Y2lmaWVzIHRoZQ0Kc3BpIG5hbmQgZGV2aWNlcyBzdXBwb3J0Lg0KDQpTaWduZWQtb2ZmLWJ5OiBQ
-ZXRlciBQYW4gPHBldGVycGFuZG9uZ0BtaWNyb24uY29tPg0KLS0tDQogRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9zcGktbmFuZC50eHQgfCAyMiArKysrKysrKysrKysrKysr
-KysrKysrDQogMSBmaWxlIGNoYW5nZWQsIDIyIGluc2VydGlvbnMoKykNCiBjcmVhdGUgbW9kZSAx
-MDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9zcGktbmFuZC50eHQN
-Cg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3Bp
-LW5hbmQudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9zcGktbmFu
-ZC50eHQNCm5ldyBmaWxlIG1vZGUgMTAwNjQ0DQppbmRleCAwMDAwMDAwLi45ZGQzZWZkDQotLS0g
-L2Rldi9udWxsDQorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Nw
-aS1uYW5kLnR4dA0KQEAgLTAsMCArMSwyMiBAQA0KKyogTkFORCBkcml2ZXIgZm9yIE1UMjlGLCBH
-RDVGIGFuZCBzaW1pbGFyIFNQSSBOQU5EIGZsYXNoIGNoaXBzDQorDQorUmVxdWlyZWQgcHJvcGVy
-dGllczoNCistICNhZGRyZXNzLWNlbGxzLCAjc2l6ZS1jZWxscyA6IE11c3QgYmUgcHJlc2VudCBp
-ZiB0aGUgZGV2aWNlIGhhcyBzdWItbm9kZXMNCisgIHJlcHJlc2VudGluZyBwYXJ0aXRpb25zLg0K
-Ky0gY29tcGF0aWJsZSA6IFNob3VsZCBiZSB0aGUgbWFudWZhY3R1cmVyIGFuZCB0aGUgbmFtZSBv
-ZiB0aGUgY2hpcC4gQmVhciBpbiBtaW5kDQorICAgICAgICAgICAgICAgdGhlIERUIGJpbmRpbmcg
-aXMgbm90IExpbnV4LW9ubHksIGJ1dCBpbiBjYXNlIG9mIExpbnV4LCBzZWUgdGhlDQorICAgICAg
-ICAgICAgICAgInNwaV9uYW5kX2lkX3RhYmxlIiBhcnJheSBpbiBkcml2ZXJzL210ZC9zcGktbmFu
-ZC9zcGktbmFuZC1kZXZpY2UuYw0KKyAgICAgICAgICAgICAgIGZvciB0aGUgbGlzdCBvZiBzdXBw
-b3J0ZWQgY2hpcHMuDQorLSByZWcgOiBDaGlwLVNlbGVjdCBudW1iZXINCistIHNwaS1tYXgtZnJl
-cXVlbmN5IDogTWF4aW11bSBmcmVxdWVuY3kgb2YgdGhlIFNQSSBidXMgdGhlIGNoaXAgY2FuIG9w
-ZXJhdGUgYXQNCisNCitFeGFtcGxlOg0KKw0KKwlmbGFzaDogZmxhc2hAMCB7DQorCQkjYWRkcmVz
-cy1jZWxscyA9IDwxPjsNCisJCSNzaXplLWNlbGxzID0gPDE+Ow0KKwkJY29tcGF0aWJsZSA9ICJt
-aWNyb24sbXQyOWYiOw0KKwkJcmVnID0gPDA+Ow0KKwkJc3BpLW1heC1mcmVxdWVuY3kgPSA8NTAw
-MDAwMDA+Ow0KKwl9Ow0KKw0KLS0gDQoxLjkuMQ0K
+On Thu, Jan 08, 2015 at 12:47:24AM +0000, Peter Pan 潘栋 (peterpandong) wrote:
+> Documentation/devicetree/bindings/mtd/spi-nand.txt |   22 +
+> drivers/mtd/Kconfig                                |    2 +
+> drivers/mtd/Makefile                               |    1 +
+> drivers/mtd/spi-nand/Kconfig                       |    7 +
+> drivers/mtd/spi-nand/Makefile                      |    3 +
+> drivers/mtd/spi-nand/spi-nand-base.c               | 2034 ++++++++++++++++++++
+> drivers/mtd/spi-nand/spi-nand-bbt.c                | 1279 ++++++++++++
+
+I can already tell by the diffstat that I don't like this. We probably
+don't need 3000 new lines of code for this, but we especially don't want
+to duplicate nand_bbt.c. It won't take a lot of work to augment
+nand_bbt.c to make it shareable. (I can whip that patch up if needed.)
+
+I'll still take a look at the rest of the code eventually, but just
+wanted to give my 2 cents up front.
+
+> drivers/mtd/spi-nand/spi-nand-device.c             |  281 +++
+> include/linux/mtd/spi-nand.h                       |  317 +++
+> 9 files changed, 3946 insertions(+)
+> create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+> create mode 100644 drivers/mtd/spi-nand/Kconfig
+> create mode 100644 drivers/mtd/spi-nand/Makefile
+> create mode 100644 drivers/mtd/spi-nand/spi-nand-base.c
+> create mode 100644 drivers/mtd/spi-nand/spi-nand-bbt.c
+> create mode 100644 drivers/mtd/spi-nand/spi-nand-device.c
+> create mode 100644 include/linux/mtd/spi-nand.h
+
+Brian
