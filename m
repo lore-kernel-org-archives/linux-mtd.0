@@ -1,25 +1,23 @@
-Received: from mail-wg0-f50.google.com ([74.125.82.50])
+Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9GD6-0000qK-AN
- for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 16:45:26 +0000
-Received: by mail-wg0-f50.google.com with SMTP id a1so3631297wgh.9
- for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 08:44:58 -0800 (PST)
-Message-ID: <54AEB38D.4030403@vanguardiasur.com.ar>
-Date: Thu, 08 Jan 2015 13:42:53 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+ id 1Y9Gae-0004gr-BP
+ for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 17:09:49 +0000
+Received: by mail-ie0-f169.google.com with SMTP id y20so10564977ier.0
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 09:09:20 -0800 (PST)
 MIME-Version: 1.0
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Steve deRosier <derosier@gmail.com>
-Subject: Re: NAND ECC capabilities
+In-Reply-To: <0D23F1ECC880A74392D56535BCADD73526C0EA9A@NTXBOIMBX03.micron.com>
 References: <CALupW3DF2BmHBjm11yiBMLFSwX-yNFeW3q_EDyEWsBQrFPU-xw@mail.gmail.com>
- <alpine.DEB.2.02.1501080927090.27318@lnxricardw1.se.axis.com>
-In-Reply-To: <alpine.DEB.2.02.1501080927090.27318@lnxricardw1.se.axis.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <shijie8@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>
+ <54AE04ED.8080002@vanguardiasur.com.ar>
+ <CALupW3BrZpq1GwJL1VRw8adPUdhR8SmprveTtEOHAiG==AQ=Qw@mail.gmail.com>
+ <0D23F1ECC880A74392D56535BCADD73526C0EA9A@NTXBOIMBX03.micron.com>
+Date: Thu, 8 Jan 2015 09:09:20 -0800
+Message-ID: <CALupW3BC1PE8hAGxsfZ4ABUy35vZeHxt6Kkq_yK=aoq9LV=cNQ@mail.gmail.com>
+Subject: Re: NAND ECC capabilities
+From: Steve deRosier <derosier@gmail.com>
+To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,97 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Adding a few MTD folks)
+On Thu, Jan 8, 2015 at 8:38 AM, Jeff Lauruhn (jlauruhn)
+<jlauruhn@micron.com> wrote:
+> You might find this interesting http://www.cyclicdesign.com/index.php/ecc-trends-in-nand-flash.
+>
+>
 
-On 01/08/2015 05:32 AM, Ricard Wanderlof wrote:
-> 
-> On Thu, 8 Jan 2015, Steve deRosier wrote:
-> 
->> So, doing further experiments and I wondered if someone could confirm
->> this finding.
->>
->> With atmel_nand, we're setup for 4-bit ECC on 512 sectors with a 2k
->> page.  I was thinking about this a bit and realized that there's 4 of
->> these sectors per page, and this implies then that we can detect and
->> correct 4 bad bits _per_ each sector.  Assuming that they're evenly
->> spread, that's up to 16 bad bits per page.  Obviously in practice,
->> that assumption wouldn't hold...
->>
->> So, is my understanding correct?
->>
->> I took it further and decided to play with this experimentally. On my
->> UBIFS rootfs, I flipped 3 bits in the first sector of a page and then
->> 3 more in the second sector.  From my kernel log I got this:
->>
->> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
->> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
->> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
->> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
->> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 530, bit_pos: 5, 0xce -> 0xee
->> [   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
->> [   78.304687] UBI: fixable bit-flip detected at PEB 20
->> [   78.304687] UBI: schedule PEB 20 for scrubbing
->> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
->> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
->> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
->> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
->> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 530, bit_pos: 5, 0xce -> 0xee
->> [   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
->> byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
->> [   78.343750] UBI: fixable bit-flip detected at PEB 20
->> [   78.382812] UBI: scrubbed PEB 20 (LEB 0:18), data moved to PEB 250
->>
->> So, my takeaway from this is a couple of things:
->>
->> 1. Yes, it can correct more than 4 bits per page as long as those are
->> on different sectors of the page.
->> 2. My test of 6 bits hit the 4 bit threshold setting and at that point
->> UBI decided that maybe something is wrong with that PEB.
->> 3. When it did, UBI corrected the data and copied it elsewhere
->> 4. Then UBI scrubbed. I assume it then did the torture test. Since I
->> manually made a flip, it found it was fine once it erased it, so it
->> didn't mark it as bad.  I checked my BBT and it's not marked. So I
->> assume it's erased and ready for use again.
->>
->> Is my general understanding correct?
-> 
-> I'd say yes, but the ECC threshold should be per 512 byte ECC block (which 
-> seems to be the correct term rather than 'sector'), rather than per page. 
-> Are you sure that the threshold is set to 4 (see 
-> /sys/devices/virtual/mtd/mtd<n>/bitflip_threshold )?
-> 
-> Normally the threshold is set below the ECC correction capability, so that 
-> bit scrubbing has a chance to occur before the bits rot too far. Say you 
-> have the threshold set at 4 bits, and you have 3 bits that have flipped. 
-> If another bit flips, the block would be scrubbed, but say that two bits 
-> flipped before you read the data the next time. You would have lost your 
-> chance of recovery, so it makes sense to have the threshold lower than the 
-> ECC capability. I would say 3/4 of the ECC capability would be a 
-> reasonable value.
-> 
+Jeff,
 
-This makes a lot of sense. However, do we have any way of telling if the
-bitflips where produced on the same ECC sector?
+Thanks for that.  The diagram on page 7 actually illustrates exactly
+what I was getting at.  In my case, the ECC can handle 4-bits on each
+512 sector, yet since the increment we handle in the higher levels is
+per-page, we really need to set the threshold at a max of 4 (probably
+3 as Richard points out) for the page.
 
->From a cursory look to the code, I'd say there's no such feature with
-the current MTD/NAND design. So, if an mtd_read reports 3 bitflips you
-have no way of telling they happened on the same sector or not, so you
-can't implement your idea.
-
-I'm curious about what ECC threshold is typically used in production.
-Obviously a too big or too small values have deadly consequences, so
-this doesn't seem like a minor issue.
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+- Steve
