@@ -1,8 +1,8 @@
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@fb.com>
-Subject: [PATCH 10/12] nfs: don't call bdi_unregister
-Date: Thu,  8 Jan 2015 18:45:31 +0100
-Message-Id: <1420739133-27514-11-git-send-email-hch@lst.de>
+Subject: [PATCH 12/12] fs: remove default_backing_dev_info
+Date: Thu,  8 Jan 2015 18:45:33 +0100
+Message-Id: <1420739133-27514-13-git-send-email-hch@lst.de>
 In-Reply-To: <1420739133-27514-1-git-send-email-hch@lst.de>
 References: <1420739133-27514-1-git-send-email-hch@lst.de>
 Cc: linux-nfs@vger.kernel.org, linux-mm@kvack.org,
@@ -18,107 +18,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-bdi_destroy already does all the work, and if we delay freeing the
-anon bdev we can get away with just that single call.
+Now that default_backing_dev_info is not used for writeback purposes we can
+git rid of it easily:
 
-Addintionally remove the call during mount failure, as
-deactivate_super_locked will already call ->kill_sb and clean up
-the bdi for us.
+ - instead of using it's name for tracing unregistered bdi we just use
+   "unknown"
+ - btrfs and ceph can just assign the default read ahead window themselves
+   like several other filesystems already do.
+ - we can assign noop_backing_dev_info as the default one in alloc_super.
+   All filesystems already either assigned their own or
+   noop_backing_dev_info.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/nfs/internal.h  |  1 -
- fs/nfs/nfs4super.c |  1 -
- fs/nfs/super.c     | 24 ++++++------------------
- 3 files changed, 6 insertions(+), 20 deletions(-)
+ fs/btrfs/disk-io.c               | 2 +-
+ fs/ceph/super.c                  | 2 +-
+ fs/super.c                       | 8 ++------
+ include/linux/backing-dev.h      | 1 -
+ include/trace/events/writeback.h | 6 ++----
+ mm/backing-dev.c                 | 9 ---------
+ 6 files changed, 6 insertions(+), 22 deletions(-)
 
-diff --git a/fs/nfs/internal.h b/fs/nfs/internal.h
-index efaa31c..f519d41 100644
---- a/fs/nfs/internal.h
-+++ b/fs/nfs/internal.h
-@@ -416,7 +416,6 @@ int  nfs_show_options(struct seq_file *, struct dentry *);
- int  nfs_show_devname(struct seq_file *, struct dentry *);
- int  nfs_show_path(struct seq_file *, struct dentry *);
- int  nfs_show_stats(struct seq_file *, struct dentry *);
--void nfs_put_super(struct super_block *);
- int nfs_remount(struct super_block *sb, int *flags, char *raw_data);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 1ec872e..1afb182 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1719,7 +1719,7 @@ static int setup_bdi(struct btrfs_fs_info *info, struct backing_dev_info *bdi)
+ 	if (err)
+ 		return err;
  
- /* write.c */
-diff --git a/fs/nfs/nfs4super.c b/fs/nfs/nfs4super.c
-index 6f340f0..ab30a3a 100644
---- a/fs/nfs/nfs4super.c
-+++ b/fs/nfs/nfs4super.c
-@@ -53,7 +53,6 @@ static const struct super_operations nfs4_sops = {
- 	.destroy_inode	= nfs_destroy_inode,
- 	.write_inode	= nfs4_write_inode,
- 	.drop_inode	= nfs_drop_inode,
--	.put_super	= nfs_put_super,
- 	.statfs		= nfs_statfs,
- 	.evict_inode	= nfs4_evict_inode,
- 	.umount_begin	= nfs_umount_begin,
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index 31a11b0..6ec4fe2 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -311,7 +311,6 @@ const struct super_operations nfs_sops = {
- 	.destroy_inode	= nfs_destroy_inode,
- 	.write_inode	= nfs_write_inode,
- 	.drop_inode	= nfs_drop_inode,
--	.put_super	= nfs_put_super,
- 	.statfs		= nfs_statfs,
- 	.evict_inode	= nfs_evict_inode,
- 	.umount_begin	= nfs_umount_begin,
-@@ -2569,7 +2568,7 @@ struct dentry *nfs_fs_mount_common(struct nfs_server *server,
- 		error = nfs_bdi_register(server);
- 		if (error) {
- 			mntroot = ERR_PTR(error);
--			goto error_splat_bdi;
-+			goto error_splat_super;
- 		}
- 		server->super = s;
+-	bdi->ra_pages	= default_backing_dev_info.ra_pages;
++	bdi->ra_pages = VM_MAX_READAHEAD * 1024 / PAGE_CACHE_SIZE;
+ 	bdi->congested_fn	= btrfs_congested_fn;
+ 	bdi->congested_data	= info;
+ 	return 0;
+diff --git a/fs/ceph/super.c b/fs/ceph/super.c
+index e350cc1..5ae6258 100644
+--- a/fs/ceph/super.c
++++ b/fs/ceph/super.c
+@@ -899,7 +899,7 @@ static int ceph_register_bdi(struct super_block *sb,
+ 			>> PAGE_SHIFT;
+ 	else
+ 		fsc->backing_dev_info.ra_pages =
+-			default_backing_dev_info.ra_pages;
++			VM_MAX_READAHEAD * 1024 / PAGE_CACHE_SIZE;
+ 
+ 	err = bdi_register(&fsc->backing_dev_info, NULL, "ceph-%ld",
+ 			   atomic_long_inc_return(&bdi_seq));
+diff --git a/fs/super.c b/fs/super.c
+index eae088f..3b4dada 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -185,8 +185,8 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags)
  	}
-@@ -2601,9 +2600,6 @@ error_splat_root:
- 	dput(mntroot);
- 	mntroot = ERR_PTR(error);
- error_splat_super:
--	if (server && !s->s_root)
--		bdi_unregister(&server->backing_dev_info);
--error_splat_bdi:
- 	deactivate_locked_super(s);
- 	goto out;
- }
-@@ -2651,27 +2647,19 @@ out:
- EXPORT_SYMBOL_GPL(nfs_fs_mount);
+ 	init_waitqueue_head(&s->s_writers.wait);
+ 	init_waitqueue_head(&s->s_writers.wait_unfrozen);
++	s->s_bdi = &noop_backing_dev_info;
+ 	s->s_flags = flags;
+-	s->s_bdi = &default_backing_dev_info;
+ 	INIT_HLIST_NODE(&s->s_instances);
+ 	INIT_HLIST_BL_HEAD(&s->s_anon);
+ 	INIT_LIST_HEAD(&s->s_inodes);
+@@ -863,10 +863,7 @@ EXPORT_SYMBOL(free_anon_bdev);
  
- /*
-- * Ensure that we unregister the bdi before kill_anon_super
-- * releases the device name
-- */
--void nfs_put_super(struct super_block *s)
--{
--	struct nfs_server *server = NFS_SB(s);
--
--	bdi_unregister(&server->backing_dev_info);
--}
--EXPORT_SYMBOL_GPL(nfs_put_super);
--
--/*
-  * Destroy an NFS2/3 superblock
-  */
- void nfs_kill_super(struct super_block *s)
+ int set_anon_super(struct super_block *s, void *data)
  {
- 	struct nfs_server *server = NFS_SB(s);
-+	dev_t dev = s->s_dev;
-+
-+	generic_shutdown_super(s);
- 
--	kill_anon_super(s);
- 	nfs_fscache_release_super_cookie(s);
-+
- 	nfs_free_server(server);
-+	free_anon_bdev(dev);
+-	int error = get_anon_bdev(&s->s_dev);
+-	if (!error)
+-		s->s_bdi = &noop_backing_dev_info;
+-	return error;
++	return get_anon_bdev(&s->s_dev);
  }
- EXPORT_SYMBOL_GPL(nfs_kill_super);
  
+ EXPORT_SYMBOL(set_anon_super);
+@@ -1111,7 +1108,6 @@ mount_fs(struct file_system_type *type, int flags, const char *name, void *data)
+ 	sb = root->d_sb;
+ 	BUG_ON(!sb);
+ 	WARN_ON(!sb->s_bdi);
+-	WARN_ON(sb->s_bdi == &default_backing_dev_info);
+ 	sb->s_flags |= MS_BORN;
+ 
+ 	error = security_sb_kern_mount(sb, flags, secdata);
+diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+index ed59dee..d94077f 100644
+--- a/include/linux/backing-dev.h
++++ b/include/linux/backing-dev.h
+@@ -241,7 +241,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+ #define BDI_CAP_NO_ACCT_AND_WRITEBACK \
+ 	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY | BDI_CAP_NO_ACCT_WB)
+ 
+-extern struct backing_dev_info default_backing_dev_info;
+ extern struct backing_dev_info noop_backing_dev_info;
+ 
+ int writeback_in_progress(struct backing_dev_info *bdi);
+diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
+index 74f5207..0e93109 100644
+--- a/include/trace/events/writeback.h
++++ b/include/trace/events/writeback.h
+@@ -156,10 +156,8 @@ DECLARE_EVENT_CLASS(writeback_work_class,
+ 		__field(int, reason)
+ 	),
+ 	TP_fast_assign(
+-		struct device *dev = bdi->dev;
+-		if (!dev)
+-			dev = default_backing_dev_info.dev;
+-		strncpy(__entry->name, dev_name(dev), 32);
++		strncpy(__entry->name,
++			bdi->dev ? dev_name(bdi->dev) : "(unknown)", 32);
+ 		__entry->nr_pages = work->nr_pages;
+ 		__entry->sb_dev = work->sb ? work->sb->s_dev : 0;
+ 		__entry->sync_mode = work->sync_mode;
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index 3ebba25..c49026d 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -14,12 +14,6 @@
+ 
+ static atomic_long_t bdi_seq = ATOMIC_LONG_INIT(0);
+ 
+-struct backing_dev_info default_backing_dev_info = {
+-	.name		= "default",
+-	.ra_pages	= VM_MAX_READAHEAD * 1024 / PAGE_CACHE_SIZE,
+-};
+-EXPORT_SYMBOL_GPL(default_backing_dev_info);
+-
+ struct backing_dev_info noop_backing_dev_info = {
+ 	.name		= "noop",
+ 	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
+@@ -250,9 +244,6 @@ static int __init default_bdi_init(void)
+ 	if (!bdi_wq)
+ 		return -ENOMEM;
+ 
+-	err = bdi_init(&default_backing_dev_info);
+-	if (!err)
+-		bdi_register(&default_backing_dev_info, NULL, "default");
+ 	err = bdi_init(&noop_backing_dev_info);
+ 
+ 	return err;
 -- 
 1.9.1
