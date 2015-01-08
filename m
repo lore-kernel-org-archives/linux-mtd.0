@@ -1,16 +1,25 @@
-Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y93VB-00042y-2y
- for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 03:11:13 +0000
-Received: by mail-ig0-f172.google.com with SMTP id hl2so840943igb.5
- for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 19:10:50 -0800 (PST)
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y93ah-0007HP-5o
+ for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 03:16:55 +0000
+Message-ID: <54ADF60F.9070300@imgtec.com>
+Date: Thu, 8 Jan 2015 00:14:23 -0300
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-Date: Wed, 7 Jan 2015 19:10:50 -0800
-Message-ID: <CALupW3DF2BmHBjm11yiBMLFSwX-yNFeW3q_EDyEWsBQrFPU-xw@mail.gmail.com>
-Subject: NAND ECC capabilities
-From: Steve deRosier <derosier@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+To: =?gbk?Q?=22Peter_Pan_=C5=CB=B6=B0_=28peterpandong=29=22?=
+ <peterpandong@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "Brian Norris" <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/3] mtd: spi-nand framework
+References: <87F60714EC601C4C83DFF1D2E3D390A04AB404@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A04AB404@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+Cc: =?gbk?Q?=22Melanie_Zhang_=D5=C5=D1=E0_=28me?= =?gbk?Q?laniezhang=29=22?=
+ <melaniezhang@micron.com>,
+ =?gbk?Q?=22Qi_Wang_=CD=F5=C6=F0_=28qiwang=29=22?= <qiwang@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ =?gbk?Q?=22Frank_Liu_=C1=F5=C8=BA_=28frankliu=29=22?= <frankliu@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,64 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-So, doing further experiments and I wondered if someone could confirm
-this finding.
 
-With atmel_nand, we're setup for 4-bit ECC on 512 sectors with a 2k
-page.  I was thinking about this a bit and realized that there's 4 of
-these sectors per page, and this implies then that we can detect and
-correct 4 bad bits _per_ each sector.  Assuming that they're evenly
-spread, that's up to 16 bad bits per page.  Obviously in practice,
-that assumption wouldn't hold...
 
-So, is my understanding correct?
+On 01/07/2015 09:48 PM, Peter Pan ÅË¶° (peterpandong) wrote:
+[..]
+> +
+> +static void spi_nand_set_defaults(struct spi_nand_chip *chip)
+> +{
+> +	struct spi_device *spi = chip->spi;
+> +
+> +	if (spi->mode & SPI_RX_QUAD)
+> +		chip->read_cache = spi_nand_read_from_cache_x4;
+> +	else if (spi->mode & SPI_RX_DUAL)
+> +		chip->read_cache = spi_nand_read_from_cache_x2;
+> +	else
+> +		chip->read_cache = spi_nand_read_from_cache;
+> +
+> +	if (!chip->reset)
+> +		chip->reset = spi_nand_reset;
+> +	if (!chip->erase_block)
+> +		chip->erase_block = spi_nand_erase_block;
+> +	if (!chip->load_page)
+> +		chip->load_page = spi_nand_read_page_to_cache;
+> +	if (!chip->store_cache)
+> +		chip->store_cache = spi_nand_program_data_to_cache;
 
-I took it further and decided to play with this experimentally. On my
-UBIFS rootfs, I flipped 3 bits in the first sector of a page and then
-3 more in the second sector.  From my kernel log I got this:
+IMO, this is a mistake and one of the reasons why this whole file is so big.
 
-[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
-[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
-[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
-[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
-[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 530, bit_pos: 5, 0xce -> 0xee
-[   78.304687] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
-[   78.304687] UBI: fixable bit-flip detected at PEB 20
-[   78.304687] UBI: schedule PEB 20 for scrubbing
-[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 98, bit_pos: 3, 0x31 -> 0x39
-[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 98, bit_pos: 2, 0x39 -> 0x3d
-[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 98, bit_pos: 1, 0x3d -> 0x3f
-[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 530, bit_pos: 6, 0x8e -> 0xce
-[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 530, bit_pos: 5, 0xce -> 0xee
-[   78.328125] atmel_nand 40000000.nand: Bit flip in data area,
-byte_pos: 530, bit_pos: 4, 0xee -> 0xfe
-[   78.343750] UBI: fixable bit-flip detected at PEB 20
-[   78.382812] UBI: scrubbed PEB 20 (LEB 0:18), data moved to PEB 250
+Do you have any reason for keeping the SPI commands (read page to cache,
+program data to cache, etc.) in the spi-nand-base.c ?
 
-So, my takeaway from this is a couple of things:
+This shouldn't belong to the framework, but to some spi-nand-device.c
+implementing the SPI NAND commands for the devices we have seen so far.
+In fact, I don't think you should inherit this "default" hook stuff from
+NAND, it only makes the code more obscure.
 
-1. Yes, it can correct more than 4 bits per page as long as those are
-on different sectors of the page.
-2. My test of 6 bits hit the 4 bit threshold setting and at that point
-UBI decided that maybe something is wrong with that PEB.
-3. When it did, UBI corrected the data and copied it elsewhere
-4. Then UBI scrubbed. I assume it then did the torture test. Since I
-manually made a flip, it found it was fine once it erased it, so it
-didn't mark it as bad.  I checked my BBT and it's not marked. So I
-assume it's erased and ready for use again.
+As Brian noted, such a separation would be benefitial to support a
+potential SPI-NAND-specific controller.
 
-Is my general understanding correct?
-
-Thanks,
-- Steve
+However, I think the stronger reason is that it results in a much
+simpler and clean initial code.
+-- 
+Ezequiel
