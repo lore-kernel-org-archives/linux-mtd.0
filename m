@@ -1,20 +1,23 @@
-Received: from mail-qa0-x22a.google.com ([2607:f8b0:400d:c00::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y92Mp-00038i-8S
- for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 01:58:31 +0000
-Received: by mail-qa0-f42.google.com with SMTP id n8so5525620qaq.1
- for <linux-mtd@lists.infradead.org>; Wed, 07 Jan 2015 17:58:08 -0800 (PST)
-Date: Wed, 7 Jan 2015 17:58:03 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/3] mtd: implement common reboot notifier boilerplate
-Message-ID: <20150108015803.GR9759@ld-irv-0074>
-References: <1417746968-28747-1-git-send-email-computersforpeace@gmail.com>
+From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: RE: [PATCH 0/3] An alternative to SPI NAND
+Date: Thu, 8 Jan 2015 02:45:01 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
+References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
+ <20150108010257.GP9759@ld-irv-0074>
+In-Reply-To: <20150108010257.GP9759@ld-irv-0074>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1417746968-28747-1-git-send-email-computersforpeace@gmail.com>
-Cc: cdoban@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
+ Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
+ =?utf-8?B?TWVsYW5pZSBaaGFuZyDlvKDnh5UgKG1lbGFuaWV6aGFuZyk=?=
+ <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 04, 2014 at 06:36:06PM -0800, Brian Norris wrote:
-> cfi_cmdset_000{1,2}.c already implement their own reboot notifiers, and
-> we're going to add one for NAND. Let's put the boilerplate in one place.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-
-Pushed the first 2 (with a whitespace fixup) to l2-mtd.git. The third
-patch could use some testing, but I don't have an applicable system on
-me at the moment.
-
-Brian
+SGkgQnJpYW4sDQoNCk9uIFRodSwgSmFuIDA4LCAyMDE1IGF0IDk6MDM6MjRBTSArMDAwMCwgQnJp
+YW4gTm9ycmlzIHdyb3RlOg0KPg0KPk9uIFRodSwgSmFuIDA4LCAyMDE1IGF0IDEyOjQ3OjI0QU0g
+KzAwMDAsIFBldGVyIFBhbiDmvZjmoIsgKHBldGVycGFuZG9uZykNCj53cm90ZToNCj4+IERvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0IHwgICAyMiArDQo+
+PiBkcml2ZXJzL210ZC9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
+IDIgKw0KPj4gZHJpdmVycy9tdGQvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgfCAgICAxICsNCj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL0tjb25maWcgICAgICAgICAgICAg
+ICAgICAgICAgIHwgICAgNyArDQo+PiBkcml2ZXJzL210ZC9zcGktbmFuZC9NYWtlZmlsZSAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgIDMgKw0KPj4gZHJpdmVycy9tdGQvc3BpLW5hbmQvc3BpLW5h
+bmQtYmFzZS5jICAgICAgICAgICAgICAgfCAyMDM0DQo+KysrKysrKysrKysrKysrKysrKysNCj4+
+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL3NwaS1uYW5kLWJidC5jICAgICAgICAgICAgICAgIHwgMTI3
+OSArKysrKysrKysrKysNCj4NCj5JIGNhbiBhbHJlYWR5IHRlbGwgYnkgdGhlIGRpZmZzdGF0IHRo
+YXQgSSBkb24ndCBsaWtlIHRoaXMuIFdlIHByb2JhYmx5DQo+ZG9uJ3QgbmVlZCAzMDAwIG5ldyBs
+aW5lcyBvZiBjb2RlIGZvciB0aGlzLCBidXQgd2UgZXNwZWNpYWxseSBkb24ndCB3YW50DQo+dG8g
+ZHVwbGljYXRlIG5hbmRfYmJ0LmMuIEl0IHdvbid0IHRha2UgYSBsb3Qgb2Ygd29yayB0byBhdWdt
+ZW50DQo+bmFuZF9iYnQuYyB0byBtYWtlIGl0IHNoYXJlYWJsZS4gKEkgY2FuIHdoaXAgdGhhdCBw
+YXRjaCB1cCBpZiBuZWVkZWQuKQ0KDQpZZXMsIEkgYWdyZWUgd2l0aCB5b3UsIE5hbmRfYmJ0LmMg
+ZG8gY2FuIGJlIHNoYXJlZCBieSBQYXJhbGxlbCBOQU5EIGFuZA0KU1BJIE5BTkQuIEFjdHVhbGx5
+LCB3ZSBhcmUgd29ya2luZyBhdCB0aGlzIG5vdy4gV2lsbCBzZW5kIHBhdGNoZXMgdG8geW91DQpP
+bmNlIHdlIGZpbmlzaGVkIGl0Lg0KDQpCdXQgZm9yIHRoZSAyMDAwIG5ldyBsaW5lcyBjb2RlIGlu
+IHNwaS1uYW5kLWJhc2UuYywgZnJhbmtseSBzcGVha2luZywgSSANCnN0aWxsIG5vIGlkZWEgaG93
+IHRvIGRlY3JlYXNlIHRoZSBjb2RlIGxpbmVzLiANCg0KSSBzZXBhcmF0ZSBjb2RlIG9mIHRoZSBT
+UEkgTkFORCBhbmQgUGFyYWxsZWwgTkFORCB0aGF0IGRpZmZlcmVudCB3aXRoIA0KRXplcXVpZWwg
+R2FyY2lhIHBhdGNoZXMsIGJlY2F1c2UgSSB0aGluayB0aGlzIGZyYW1ld29yayBjb3VsZCBiZSBl
+YXNpZXIgDQp0byBtYWludGFpbiBpdCwgaW4gdGhlIGZ1dHVyZSwgU1BJIE5BTkQgbWF5IGhhdmUg
+bW9yZSBzcGVjaWZpYyBmZWF0dXJlcyANCnRoYXQgd2lsbCBiZSBkaWZmaWN1bHQgdG8gcmV1c2Ug
+dGhlIGNvZGUgb2YgTmFuZF9iYXNlLmMgYnV0IGp1c3QgcmVtYXAgDQpjb21tYW5kIHRvIFNQSSBO
+QU5EIGZyb20gUGFyYWxsZWwgTkFORC4NCg0KU28gd2Ugd3JpdGUgYSBuZXcgc3BpLW5hbmQtYmFz
+ZS5jLCB0byBpbXBsZW1lbnQgcmVhZC93cml0ZS9lcmFzZSBmdW5jdGlvbiwNCnRoYXQgd2lsbCBj
+YXVzZSBtYW55IGNvZGUgbGluZXMgYXMgeW91IHNlZS4gSWYgeW91IGhhdmUgb3RoZXIgc3VnZ2Vz
+dGlvbiwgDQpwbGVhc2UgbGV0IG1lIGtub3cuIA0KDQo+DQo+SSdsbCBzdGlsbCB0YWtlIGEgbG9v
+ayBhdCB0aGUgcmVzdCBvZiB0aGUgY29kZSBldmVudHVhbGx5LCBidXQganVzdA0KPndhbnRlZCB0
+byBnaXZlIG15IDIgY2VudHMgdXAgZnJvbnQuDQo+DQo+PiBkcml2ZXJzL210ZC9zcGktbmFuZC9z
+cGktbmFuZC1kZXZpY2UuYyAgICAgICAgICAgICB8ICAyODEgKysrDQo+PiBpbmNsdWRlL2xpbnV4
+L210ZC9zcGktbmFuZC5oICAgICAgICAgICAgICAgICAgICAgICB8ICAzMTcgKysrDQo+PiA5IGZp
+bGVzIGNoYW5nZWQsIDM5NDYgaW5zZXJ0aW9ucygrKQ0KPj4gY3JlYXRlIG1vZGUgMTAwNjQ0IERv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0DQo+PiBjcmVh
+dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvc3BpLW5hbmQvS2NvbmZpZw0KPj4gY3JlYXRlIG1v
+ZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL3NwaS1uYW5kL01ha2VmaWxlDQo+PiBjcmVhdGUgbW9kZSAx
+MDA2NDQgZHJpdmVycy9tdGQvc3BpLW5hbmQvc3BpLW5hbmQtYmFzZS5jDQo+PiBjcmVhdGUgbW9k
+ZSAxMDA2NDQgZHJpdmVycy9tdGQvc3BpLW5hbmQvc3BpLW5hbmQtYmJ0LmMNCj4+IGNyZWF0ZSBt
+b2RlIDEwMDY0NCBkcml2ZXJzL210ZC9zcGktbmFuZC9zcGktbmFuZC1kZXZpY2UuYw0KPj4gY3Jl
+YXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvbXRkL3NwaS1uYW5kLmgNCj4NCg0KUWkgV2Fu
+Zw0K
