@@ -1,20 +1,34 @@
-Received: from mail-vc0-x235.google.com ([2607:f8b0:400c:c03::235])
+Received: from mail-we0-x22c.google.com ([2a00:1450:400c:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9L1z-0008Oz-NI
- for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 21:54:16 +0000
-Received: by mail-vc0-f181.google.com with SMTP id le20so2073761vcb.12
- for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 13:53:53 -0800 (PST)
+ id 1Y9LbN-0001VR-9e
+ for linux-mtd@lists.infradead.org; Thu, 08 Jan 2015 22:30:50 +0000
+Received: by mail-we0-f172.google.com with SMTP id k11so4965209wes.3
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 14:30:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <201501081633.t08GV0oF013734@mx0a-00116901.pphosted.com>
-References: <201501081633.t08GV0oF013734@mx0a-00116901.pphosted.com>
-Date: Thu, 8 Jan 2015 22:53:53 +0100
-Message-ID: <CAFLxGvyGv8zZYdUgU26LT7t7LGVd9c-bkykVy4JS8cPpdzOqfw@mail.gmail.com>
-Subject: Re: One bad PEB causes WL to run of PEBs
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: "Winchenbach, Samuel" <Samuel-Winchenbach@idexx.com>
+In-Reply-To: <54AD31F8.4050100@vanguardiasur.com.ar>
+References: <1420564094-1086-1-git-send-email-grmoore@opensource.altera.com>
+ <1420564094-1086-2-git-send-email-grmoore@opensource.altera.com>
+ <54AD31F8.4050100@vanguardiasur.com.ar>
+From: Rob Herring <robherring2@gmail.com>
+Date: Thu, 8 Jan 2015 16:30:06 -0600
+Message-ID: <CAL_Jsq+nbZMnJZ=Wm--DODWRXm5aqEJ_7BVDuET9oSXJaJtWug@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Alan Tull <atull@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Kumar Gala <galak@codeaurora.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,131 +38,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 8, 2015 at 5:33 PM, Winchenbach, Samuel
-<Samuel-Winchenbach@idexx.com> wrote:
-> Hi All,
+On Wed, Jan 7, 2015 at 7:17 AM, Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
+> (CCing DT mailing list and DT binding maintainers)
 >
-> I am working on an instrument with uboot v2013.01.  This instrument exper=
-ienced a nand corruption on one of the blocks (incrementing the bad PEB cou=
-nt to 1) when someone pulled the power plug.  When the instrument booted ub=
-i_wl_init_scan had an error because avail_pebs was 0 and 1 was needed.   We=
- added a bunch of debug prints and this is what it looks like (good and bad=
-):
->
-> =3D=3D=3D=3D=3D GOOD (BEFORE GETTING A BAD PEB) =3D=3D=3D=3D=3D
-> idexx> ubi part nand-rootfs
-> UBI: mtd1 is detached from ubi0
-> Creating 1 MTD partitions on "nand0":
-> 0x000001500000-0x000020000000 : "mtd=3D5"
-> UBI: attaching mtd1 to ubi0
-> UBI: physical eraseblock size:   131072 bytes (128 KiB)
-> UBI: logical eraseblock size:    129024 bytes
-> UBI: smallest flash I/O unit:    2048
-> UBI: sub-page size:              512
-> UBI: VID header offset:          512 (aligned 512)
-> UBI: data offset:                2048
-> UBI error: process_eb: DEBUG! found volume table at peb: 3926
->
-> UBI error: process_eb: DEBUG! found volume table at peb: 3927
->
-> UBI error: attach_by_scanning: DEBUG! peb_count: 3928 bad_peb_count: 0
->
-> UBI error: ubi_read_volume_table: DEBUG!
->         reserved_pebs: 755957760
+> On 01/06/2015 02:08 PM, Graham Moore wrote:
+>> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+>> ---
+>>  .../devicetree/bindings/mtd/cadence_quadspi.txt    |   50 ++++++++++++++++++++
+>>  1 file changed, 50 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+>> new file mode 100644
+>> index 0000000..3a8ea1c
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+>> @@ -0,0 +1,50 @@
+>> +* Cadence Quad SPI controller
+>> +
+>> +Required properties:
+>> +- compatible : Should be "cdns,qspi-nor".
 
-huh?
+This controller only works with flash devices and is different than this one:?
 
->         alignment: 16777216
->         data_pad: 0
->         vol_type: 1
->         upd_marker: 0
->         name_len: 2816
->         name: nand-rootfs
->         flags: 0
->
-> UBI error: ubi_read_volume_table: DEBUG!: setting avail_pebs =3D 3928
-> UBI error: init_volumes: DEBUG! subtracting 3887 from avail_pebs.  Now 41
-> UBI error: ubi_eba_init_scan: DEBUG! subtracting 1 from avail_pebs.  Now =
-40
-> UBI error: ubi_eba_init_scan: DEBUG! subtracting 39 from avail_pebs.  Now=
- 1
-> UBI error: ubi_wl_init_scan: DEBUG! subtracting 1 from avail_pebs.  Now 0
-> UBI: attached mtd1 to ubi0
-> UBI: MTD device name:            "mtd=3D5"
-> UBI: MTD device size:            491 MiB
-> UBI: number of good PEBs:        3928
-> UBI: number of bad PEBs:         0
-> UBI: max. allowed volumes:       128
-> UBI: wear-leveling threshold:    4096
-> UBI: number of internal volumes: 1
-> UBI: number of user volumes:     1
-> UBI: available PEBs:             0
-> UBI: total number of reserved PEBs: 3928
-> UBI: number of PEBs reserved for bad PEB handling: 39
-> UBI: max/mean erase counter: 21/10
->
->
->
-> =3D=3D=3D=3D=3D BAD (AFTER GETTING A BAD PEB) =3D=3D=3D=3D=3D
-> idexx> ubi part nand-rootfs
-> Creating 1 MTD partitions on "nand0":
-> 0x000001500000-0x000020000000 : "mtd=3D5"
-> UBI: attaching mtd1 to ubi0
-> UBI: physical eraseblock size:   131072 bytes (128 KiB)
-> UBI: logical eraseblock size:    129024 bytes
-> UBI: smallest flash I/O unit:    2048
-> UBI: sub-page size:              512
-> UBI: VID header offset:          512 (aligned 512)
-> UBI: data offset:                2048
-> UBI error: process_eb: DEBUG! found volume table at peb: 3926
->
-> UBI error: process_eb: DEBUG! found volume table at peb: 3927
->
-> UBI error: attach_by_scanning: DEBUG! peb_count: 3928 bad_peb_count: 1
->
-> UBI error: ubi_read_volume_table: DEBUG!
->         reserved_pebs: 755957760
->         alignment: 16777216
->         data_pad: 0
->         vol_type: 1
->         upd_marker: 0
->         name_len: 2816
->         name: nand-rootfs
->         flags: 0
->
-> UBI error: ubi_read_volume_table: DEBUG!: setting avail_pebs =3D 3927
-> UBI error: init_volumes: DEBUG! subtracting 3887 from avail_pebs.  Now 40
-> UBI error: ubi_eba_init_scan: DEBUG! subtracting 1 from avail_pebs.  Now =
-39
-> UBI error: ubi_eba_init_scan: DEBUG! subtracting 39 from avail_pebs.  Now=
- 0
-> UBI error: ubi_wl_init_scan: no enough physical eraseblocks (0, need 1)
-> UBI error: ubi_init: cannot attach mtd1
-> UBI error: ubi_init: UBI error: cannot initialize UBI, error -12
-> UBI init error 12
-> idexx> nand bad
->
-> Device 0 bad blocks:
->   05f40000
->   2c120000
->   3ff80000
->   3ffa0000
->   3ffc0000
->   3ffe0000
-> idexx>
->
->
->
-> Why (seeing there is a bad PEB does eba_init_scan still allocate 39 PEBs =
-for bad blocks?   Shouldn't one of those be consumed by the bad PEB?    Do =
-you see anything else that might point to this being a bug vs. incorrect us=
-age?
+Documentation/devicetree/bindings/spi/spi-cadence.txt
 
-I'd like to know how many PEBs are reserved for bad block handling.
-On Linux you can query this using /sys/class/ubi/ubiX/reserved_for_bad
+>> +- reg : Contains two entries, each of which is a tuple consisting of a
+>> +     physical address and length.  The first entry is the address and
+>> +     length of the controller register set.  The second entry is the
+>> +     address and length of the QSPI Controller data area.
+>> +- interrupts : Unit interrupt specifier for the controller interrupt.
+>> +- clocks : phandle to the Quad SPI clock.
+>> +- ext-decoder : Value of 0 means no external chipselect decoder is
+>> +     connected, 1 means there is an external chipselect decoder connected.
+>
+> As I already said in the driver patch, I think this property should be
+> boolean and have a vendor prefix.
 
-To me this looks like you've reserved too few PEBs.
+The above binding already uses "is-decoded-cs". Let's not invent something new.
 
---=20
-Thanks,
-//richard
+>> +- fifo-depth : Size of the data FIFO in words.
+>
+> This one looks generic enough to leave it as it is, without any vendor
+> prefix.
+
+All sorts of properties with fifo in them... Nothing is particularly
+dominate, so this is fine.
+
+>> +- bus-num : Number of the SPI bus to which the controller is connected.
+>> +
+>
+> I think you forgot to remove bus-num here.
+>
+>> +Optional subnodes:
+>> +Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
+>> +custom properties:
+>> +- cdns,page-size : Size, in bytes, of the device's write page
+>> +- cdns,block-size : Size of the device's erase block
+>> +- cdns,read-delay : Selay for read capture logic, in clock cycles
+
+s/Selay/Delay/
+
+>> +- cdns,tshsl-ns : Delay in master reference clocks for the length that the master mode chip select outputs are de-asserted between transactions.
+>> +- cdns,tsd2d-ns : Delay in master reference clocks between one chip select being de-activated and the activation of another.
+>> +- cdns,tchsh-ns : Delay in master reference clocks between last bit of current transaction and deasserting the device chip select (qspi_n_ss_out).
+>> +- cdns,tslch-ns : Delay in master reference clocks between setting qspi_n_ss_out low and first bit transfer.
+
+Aren't these properties probeable at all? We really should have
+standard bindings for this. It seems spi NOR flash devices have gone
+somewhat undocumented, but it is not hard to find examples already in
+use.
+
+Is it master reference clocks or nanoseconds for the units?
+
+Rob
+
+>> +
+>> +Example:
+>> +
+>> +     qspi: spi@ff705000 {
+>> +             compatible = "cdns,qspi-nor";
+>> +             #address-cells = <1>;
+>> +             #size-cells = <0>;
+>> +             reg = <0xff705000 0x1000>,
+>> +                     <0xffa00000 0x1000>;
+>> +             interrupts = <0 151 4>;
+>> +             clocks = <&qspi_clk>;
+>> +             ext-decoder = <0>;
+>> +             fifo-depth = <128>;
+>> +
+>> +             flash0: n25q00@0 {
+>> +                     ...
+>> +                     cdns,page-size = <256>;
+>> +                     cdns,block-size = <16>;
+>> +                     cdns,read-delay = <4>;
+>> +                     cdns,tshsl-ns = <50>;
+>> +                     cdns,tsd2d-ns = <50>;
+>> +                     cdns,tchsh-ns = <4>;
+>> +                     cdns,tslch-ns = <4>;
+>> +             }
+>> +     }
+>>
+>
+> --
+> Ezequiel Garcia, VanguardiaSur
+> www.vanguardiasur.com.ar
