@@ -1,19 +1,22 @@
-Received: from mail-bn1on0623.outbound.protection.outlook.com
- ([2a01:111:f400:fc10::623] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-qc0-x233.google.com ([2607:f8b0:400d:c01::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9bcs-00029K-P7
- for linux-mtd@lists.infradead.org; Fri, 09 Jan 2015 15:37:27 +0000
-From: <dinguyen@opensource.altera.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH] mtd: denali: fix incorrect bitmask error in denali_setup_dma
-Date: Fri, 9 Jan 2015 09:32:35 -0600
-Message-ID: <1420817555-22828-1-git-send-email-dinguyen@opensource.altera.com>
+ id 1Y9foo-0002aW-3h
+ for linux-mtd@lists.infradead.org; Fri, 09 Jan 2015 20:06:02 +0000
+Received: by mail-qc0-f179.google.com with SMTP id c9so10646911qcz.10
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Jan 2015 12:05:39 -0800 (PST)
+Date: Fri, 9 Jan 2015 12:05:35 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH] mtd: nand: jz4740: Convert to GPIO descriptor API
+Message-ID: <20150109200535.GV9759@ld-irv-0074>
+References: <1417549706-28420-1-git-send-email-lars@metafoo.de>
+ <20141215154408.GD9382@linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: dinh.linux@gmail.com, josh@joshtriplett.org, linux-kernel@vger.kernel.org,
- yamada.m@jp.panasonic.com, linux-mtd@lists.infradead.org,
- Dinh Nguyen <dinguyen@opensource.altera.com>, computersforpeace@gmail.com,
- shijie8@gmail.com, Graham Moore <grmoore@opensource.altera.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20141215154408.GD9382@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Lars-Peter Clausen <lars@metafoo.de>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Graham Moore <grmoore@opensource.altera.com>
+On Mon, Dec 15, 2014 at 04:44:08PM +0100, Ralf Baechle wrote:
+> On Tue, Dec 02, 2014 at 08:48:26PM +0100, Lars-Peter Clausen wrote:
+> 
+> > Use the GPIO descriptor API instead of the deprecated legacy GPIO API to
+> > manage the busy GPIO.
+> > 
+> > The patch updates both the jz4740 nand driver and the only user of the driver
+> > the qi-lb60 board driver.
+> > 
+> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > ---
+> > This patch should preferably be merged through the MTD tree with Ralf's ack for
+> > the MIPS bits.
+> 
+> Acked-by: Ralf Baechle <ralf@linux-mips.org>
 
-commit "3157d1ed2309 mtd: denali: remove unnecessary casts" introduced
-an error by using a wrong bitmask.
+For MTD stuff:
 
-A uint16_t cast was replaced with & 0xff, should be & 0xffff.
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-Signed-off-by: Dinh Nguyen <dinguyen@opensource.altera.com>
----
- drivers/mtd/nand/denali.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Though in my experience MIPS-specific patches to non-arch/mips code receive
+> best testing in the MIPS tree.
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index b3b7ca1..5e397fb 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1041,7 +1041,7 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
- 	index_addr(denali, mode | ((addr >> 16) << 8), 0x2200);
- 
- 	/* 3. set memory low address bits 23:8 */
--	index_addr(denali, mode | ((addr & 0xff) << 8), 0x2300);
-+	index_addr(denali, mode | ((addr & 0xffff) << 8), 0x2300);
- 
- 	/* 4. interrupt when complete, burst len = 64 bytes */
- 	index_addr(denali, mode | 0x14000, 0x2400);
--- 
-1.7.9.5
+I don't mind this going in the MIPS tree. I doubt this driver will get
+much other activity in MTD soon, and you're likely quite right about
+MIPS testing.
+
+Let me know if you'd like to take it. If I don't hear back in a week or
+two, I'll take it via MTD.
+
+Brian
