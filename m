@@ -1,23 +1,21 @@
-Received: from mail-wi0-f170.google.com ([209.85.212.170])
+Received: from mail-we0-f173.google.com ([74.125.82.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9gxL-0006Xj-4l
- for linux-mtd@lists.infradead.org; Fri, 09 Jan 2015 21:18:57 +0000
-Received: by mail-wi0-f170.google.com with SMTP id bs8so4635637wib.1
- for <linux-mtd@lists.infradead.org>; Fri, 09 Jan 2015 13:18:32 -0800 (PST)
-Message-ID: <54B04529.8060705@vanguardiasur.com.ar>
-Date: Fri, 09 Jan 2015 18:16:25 -0300
+ id 1Y9h3q-0003UP-DZ
+ for linux-mtd@lists.infradead.org; Fri, 09 Jan 2015 21:25:39 +0000
+Received: by mail-we0-f173.google.com with SMTP id q58so10108336wes.4
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Jan 2015 13:25:13 -0800 (PST)
+Message-ID: <54B046BC.8060802@vanguardiasur.com.ar>
+Date: Fri, 09 Jan 2015 18:23:08 -0300
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-To: Dan Ehrenberg <dehrenberg@chromium.org>,
- ezequiel@vanguardiasur.com.ar, richard.weinberger@gmail.com,
- gwendal@chromium.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v5] UBI: block: Continue creating ubiblocks after an
- initialization error
-References: <1419017238-28809-1-git-send-email-dehrenberg@chromium.org>
-In-Reply-To: <1419017238-28809-1-git-send-email-dehrenberg@chromium.org>
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: [PATCH 1/6] UBI: Fastmap: Care about the protection queue
+References: <1416835236-25185-1-git-send-email-richard@nod.at>
+ <1416835236-25185-2-git-send-email-richard@nod.at>
+In-Reply-To: <1416835236-25185-2-git-send-email-richard@nod.at>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: grundler@chromium.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/19/2014 04:27 PM, Dan Ehrenberg wrote:
-> If one ubi volume is corrupted but another is not, it should be
-> possible to initialize that ubiblock from a kernel commandline which
-> includes both of them. This patch changes the error handling behavior
-> in initializing ubiblock to ensure that all parameters are attempted
-> even if one fails. If there is a failure, it is logged on dmesg.
-> It also makes error messages more descriptive by including the
-> name of the UBI volume that failed.
-> 
-> Tested: Formatted ubi volume /dev/ubi5_0 in a corrupt way and
-> dev/ubi3_0 properly and included "ubi.block=5,0 ubi.block=3,0" on
-> the kernel command line. At boot, I see the following in the console:
-> [   21.082420] UBI error: ubiblock_create_from_param: block: can't open volume on ubi5_0, err=-19
-> [   21.084268] UBI: ubiblock3_0 created from ubi3:0(rootfs)
-> 
-> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+On 11/24/2014 10:20 AM, Richard Weinberger wrote:
+> Fastmap can miss a PEB if it is in the protection queue
+> and not jet in the used tree.
 
-Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+s/jet/yet
+
+> Treat every protected PEB as used.
+> 
+
+I'm wondering if we can have a detailed description of the issues this
+commit fixes (if any?). In other words, what's the result of *not*
+having the patch?
+
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/ubi/fastmap.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+> index b56672b..db3defd 100644
+> --- a/drivers/mtd/ubi/fastmap.c
+> +++ b/drivers/mtd/ubi/fastmap.c
+> @@ -1196,6 +1196,19 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+>  		fm_pos += sizeof(*fec);
+>  		ubi_assert(fm_pos <= ubi->fm_size);
+>  	}
+> +
+> +	for (i = 0; i < UBI_PROT_QUEUE_LEN; i++) {
+> +		list_for_each_entry(wl_e, &ubi->pq[i], u.list) {
+> +			fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
+> +
+> +			fec->pnum = cpu_to_be32(wl_e->pnum);
+> +			fec->ec = cpu_to_be32(wl_e->ec);
+> +
+> +			used_peb_count++;
+> +			fm_pos += sizeof(*fec);
+> +			ubi_assert(fm_pos <= ubi->fm_size);
+> +		}
+> +	}
+>  	fmh->used_peb_count = cpu_to_be32(used_peb_count);
+>  
+>  	for (node = rb_first(&ubi->scrub); node; node = rb_next(node)) {
+> 
+
+
 -- 
 Ezequiel Garcia, VanguardiaSur
 www.vanguardiasur.com.ar
