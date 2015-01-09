@@ -1,20 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9hvE-0002Re-5s
- for linux-mtd@lists.infradead.org; Fri, 09 Jan 2015 22:20:48 +0000
-Message-ID: <54B05428.60303@nod.at>
-Date: Fri, 09 Jan 2015 23:20:24 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1Y9i2b-0006Bh-JS
+ for linux-mtd@lists.infradead.org; Fri, 09 Jan 2015 22:28:26 +0000
+Received: by mail-pd0-f172.google.com with SMTP id y13so19799884pdi.3
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Jan 2015 14:28:04 -0800 (PST)
+Date: Fri, 9 Jan 2015 14:28:01 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+Subject: Re: [PATCH] mtd: spi-nor: don't return found by JEDEC ID a non-JEDEC
+ flash
+Message-ID: <20150109222310.GY9759@ld-irv-0074>
+References: <1418511647-24736-1-git-send-email-vladimir_zapolskiy@mentor.com>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, dedekind1@gmail.com
-Subject: Re: Fastmap update v2 (pile 1)
-References: <1416835236-25185-1-git-send-email-richard@nod.at>
- <54B04A50.8040307@vanguardiasur.com.ar> <54B04E65.60306@nod.at>
- <54B051B3.3050308@vanguardiasur.com.ar>
-In-Reply-To: <54B051B3.3050308@vanguardiasur.com.ar>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1418511647-24736-1-git-send-email-vladimir_zapolskiy@mentor.com>
+Cc: Huang Shijie <b32955@freescale.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 09.01.2015 um 23:09 schrieb Ezequiel Garcia:
->> All of Pile1, 2, 3 and 4. :-)
->> One or tow patches are preparations for the real fix but obviously you'll need them
->> too.
->> The rest are enhancements and cleanups.
+On Sun, Dec 14, 2014 at 01:00:47AM +0200, Vladimir Zapolskiy wrote:
+> In attempt to spi_nor_scan() for an expected JEDEC compliant device by
+> reading RDID register don't return the first found non-JEDEC device
+> entry from spi_nor_ids[] table, if RDID is zero.
 > 
-> What do you mean by "the rest"?
-
-Pile 5, 6, and 7.
-
->> As I wrote before I've structured the patch set in a way to make backporting easy.
->>
->>> For bugfixes, having a detailed explanation of the problem the commit is
->>> meant to fix would be better as well.
->>
->> Okay, I'll add the horror stories to these patches.
->>
+> First of all zeroes in RDID may be evidence for not correctly working
+> SPI, secondly empty RDID can not be used to select a particular JEDEC
+> non-compliant device correctly.
 > 
-> I know it's a real pain, but if you can add a Fixes: tag, it would
-> certainly help Artem track down the bug. The good thing is that you get
-> the -stable hassle for free.
-
-We cannot tag these as stable, first I have to inject old fastamp fixes
-into -stable.
-Two years ago Artem and I decided that fastmap as experimental feature does
-not need -stable backports. It turned out that this was horrible wrong
-and stupid.
-
->>> This patchset seems to have stalled, so perhaps having this information
->>> would help Artem to pick the ones that you point as fixes, before we
->>> miss another cycle.
->>
->> The question is, shall I wait for Artem or resend again?
+> The best possible solution is
+> * not to rely on spi_nor_read_id(), if expected device is non-JEDEC,
+> * not to substitute an expected JEDEC device with some arbitrary
+>   chosen non-JEDEC device, if RDID is zero.
 > 
-> Hm, well, given we are just a handful of developers, and we are all time
-> constrained, maybe we could focus on the first two piles for now:
+> Signed-off-by: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+
+This patch doesn't apply to the latest tree. I think this commit
+probably already fixes your issue:
+
+  https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=09ffafb6977dc930770af2910edc3b469651131d
+
+  commit 09ffafb6977dc930770af2910edc3b469651131d
+  Author: Huang Shijie <shijie.huang@intel.com>
+  Date:   Thu Nov 6 07:34:01 2014 +0100
+
+      mtd: spi-nor: add id/id_len for flash_info{}
+
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c |    6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> Pile 1, November 24, https://lkml.org/lkml/2014/11/24/324
-> Pile 2, November 30, https://lkml.org/lkml/2014/11/30/50
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index c51ee52..119ace9 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -661,6 +661,12 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+>  
+>  	ext_jedec = id[3] << 8 | id[4];
+>  
+> +	/* Non-JEDEC flash memory can not be detected correctly */
+> +	if (!jedec && !ext_jedec) {
+> +		dev_err(nor->dev, "JEDEC compliant device is not found\n");
+> +		return ERR_PTR(-ENODEV);
+> +	}
+> +
+>  	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+>  		info = (void *)spi_nor_ids[tmp].driver_data;
+>  		if (info->jedec_id == jedec) {
 
-Hmm, I'm not sure whether it is a good idea to resend Pile1 and Pile2.
-I've currently around 50 patches on linux-mtd floating around (nett, without resends).
-I fear it will just increase the mess we already have.
-
-I really would like to hear what Artems plans are.
-Actually I resent and split up the first series upon his request.
-
-Thanks,
-//richard
+Brian
