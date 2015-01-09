@@ -1,19 +1,22 @@
-Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
+Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9Rlt-0002TK-5R
- for linux-mtd@lists.infradead.org; Fri, 09 Jan 2015 05:06:05 +0000
-Received: by mail-ie0-f181.google.com with SMTP id rl12so13274950iec.12
- for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 21:05:43 -0800 (PST)
+ id 1Y9Rlv-0002UE-Dn
+ for linux-mtd@lists.infradead.org; Fri, 09 Jan 2015 05:06:08 +0000
+Received: by mail-ie0-f169.google.com with SMTP id y20so13344727ier.0
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Jan 2015 21:05:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <54A8F6BE.50708@atmel.com>
-References: <CALupW3DMys5qLTw_3t9P0JG64oPgQXa4Lh9M7X5_0yUmLhqGdg@mail.gmail.com>
- <54A8F6BE.50708@atmel.com>
-Date: Thu, 8 Jan 2015 21:05:41 -0800
-Message-ID: <CALupW3ALswbKCPJGbzefQidPfWE0xM0DwY83-CRT1+pNTZe_iQ@mail.gmail.com>
-Subject: Re: help with mtd-test failures?
+In-Reply-To: <54A8B91B.1090604@atmel.com>
+References: <CALupW3Dv=OvY-5y_ScG1St8HUBYfXYpTnYAWDt_GJ+3+7KmC9Q@mail.gmail.com>
+ <54A359AE.3080105@atmel.com>
+ <CALupW3D=q9wSTUxCAp9EVDjd5LwPOhJOYbV9OL0QVJd4G1nH2A@mail.gmail.com>
+ <54A8B91B.1090604@atmel.com>
+Date: Thu, 8 Jan 2015 21:05:45 -0800
+Message-ID: <CALupW3B13bd+oPgXL2oZ7ECTjYE0-q6uj8Y-WZA-ggjwLtCgoQ@mail.gmail.com>
+Subject: Re: Does UBIFS NAND ECC info get stored in OOB?
 From: Steve deRosier <derosier@gmail.com>
 To: Josh Wu <josh.wu@atmel.com>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,49 +27,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks Josh,
+Hi Josh,
 
-
-On Sun, Jan 4, 2015 at 12:15 AM, Josh Wu <josh.wu@atmel.com> wrote:
+On Sat, Jan 3, 2015 at 7:52 PM, Josh Wu <josh.wu@atmel.com> wrote:
 > Hi, Steve
 >
-> On 1/3/2015 10:34 AM, Steve deRosier wrote:
+> On 1/3/2015 2:06 AM, Steve deRosier wrote:
 >>
->> Hi all,
->>
->> In doing my due dillegence on my system, I decided to run the
->> mtd-tests. I'm getting a few failures that I'd like your help in
->> understanding.
->>
->> The one that worries me comes from mtd_oobtest:
->>
->>      # modprobe mtd_oobtest dev=7
->>      mtd_oobtest: error: verify failed at 0x880000
->>      mtd_oobtest: error: verify failed at 0xe80000
->>
->> The most worrysome thing about this is the fact that the result isn't
->> consistant. sometimes I get no failures, and sometimes they're at
->> different spots.
 >
-> I think this should be related with nand flash's bitflips. As atmel nand
-> driver just use standard oob write/read functions from nand_base.c.
-> That means there is no ecc protection for mtd_oobtest.
-> So if there has any nand bitflip happens in the oob area, then mtd-oobtest
-> will be failed.
+> There seems has some UBI fix on 3.8.x stable tree. It is better if you ca=
+n
+> apply these fixes.
 >
-> How often does the failures comes?
-> I tested on my at91sam9g25ek board (nand is: 29F2G08AAD) about 20 times, no
-> error happened.
+> =E2=9E=9C  mainline git:(99f3cd5) =E2=9C=97  git log --oneline v3.8..v3.8=
+.13 | grep -i UBI
+> 1afae69 UBIFS: make space fixup work in the remount case
+> d90dc15 UBIFS: fix double free of ubifs_orphan objects
+> ce7f4e8 UBIFS: fix use of freed ubifs_orphan objects
+
+Will do!  I had pulled in a number of other upstreamed fixes but these
+must be newer than last time I looked. Thanks!
+
+
+
+>
+> For at91sam9x5ek PMECC, we cannot do pmecc correction for the erased
+> page(all 0xff) if there has some bit flips.
+> The reason is 9x5ek PMECC will generate non-0xff ecc code for the erased
+> page(all 0xff in the page).
+>
+> This will case issues:
+> 1. if there is any bitflip happen in erased page's oob area, that will ca=
+use
+> PMECC error.
+> 2. if there is any bitflip happen in erased pages' data area, This bitfli=
+p
+> cannot be correct. And driver won't report any ECC error. I am not sure
+> whether this can cause problem? As the UBI  may record the erased page, s=
+o
+> the data corruption maybe doesn't matter. When UBI write data to this
+> bitfliped erased page, as the PMECC code will write correctly into oob ar=
+ea.
+> So this bitflip can be corrected by PMECC hardware.
+>
+> I think you can manually insert bitflip into the erased page to see wheth=
+er
+> this cause your issue.
+
+Well, our issue is clearly caused by the use of `nandflash -n`.
+Moving to ubiformat fixes it.
+
+But, what you pointed out made me interested in a few more problem scenario=
+s:
+
+1. Bitflip in ECC data of a valid data page
+2. Bitflip in data area of an erased page
+3. Bitflip in the ECC data of an erased page.
+
+So I tried them.  I was hoping for the best and fearing the worst.
+Thankfully I effectively got the best.
+1. This was the scary one for me. But, it seems that this is handled
+nicely by the ECC process. dmesg printed:
+    atmel_nand 40000000.nand: Bit flip in OOB, oob_byte_pos: 48,
+bit_pos: 0, 0xec -> 0xed
+This is awesome, it found the flip, identified where it was and fixed it. Y=
+ay.
+
+Both 2 and 3 were non-events.  As near as I could tell, UBIFS and the
+MTD system ignored those. I have some special code that noticed it,
+but none of the stock stuff did.  Writing and reading data there
+worked fine.  And, I'd expect that if the flip caused a flip in data
+that was written and later corrected, it would be fine.
+
+>
+> These seems ok.
+> Be caution: if you use 1024 as sector size, you need apply the fix:
+> 2fa831f9db1f <mtd: atmel_nand: pmecc: fix failure to correct bit error in
+> 1024-bytes sector>
 >
 
-On our board, it happens more or less every other run.  0x880000 is
-most frequent, followed by a few others at random times.
-
-Your other email and this one made me worry about bitflips in the OOB
-area, so I decided to test those.  The results are on the other
-thread, but the important one here is the checking what happens to a
-bit flip on the ECC data.  I did this manually and the ECC code was
-able to successfully correct for this problem. I'm calling that good!
+Thanks for the heads up on this fix.  We're using 512, but after
+reading some stuff, I'm thinking that going to 1024 might make some
+sense, so I might need that.
 
 Thanks,
 - Steve
