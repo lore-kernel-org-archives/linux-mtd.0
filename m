@@ -1,23 +1,23 @@
-Date: Sat, 10 Jan 2015 19:20:25 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Lucas Stach <dev@lynxeye.de>
-Subject: Re: [PATCH 1/4] mtd: nand: add NVIDIA Tegra NAND Flash controller
- driver
-Message-ID: <20150110192025.78c763e9@bbrezillon>
-In-Reply-To: <1420403960-26626-1-git-send-email-dev@lynxeye.de>
-References: <1420403960-26626-1-git-send-email-dev@lynxeye.de>
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YA0n9-0000cV-Ph
+ for linux-mtd@lists.infradead.org; Sat, 10 Jan 2015 18:29:44 +0000
+Received: by mail-pa0-f41.google.com with SMTP id rd3so24598996pab.0
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Jan 2015 10:29:22 -0800 (PST)
+Date: Sat, 10 Jan 2015 10:29:10 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+Subject: Re: [PATCH] mtd: spi-nor: don't return found by JEDEC ID a non-JEDEC
+ flash
+Message-ID: <20150110182910.GA3268@brian-ubuntu>
+References: <1418511647-24736-1-git-send-email-vladimir_zapolskiy@mentor.com>
+ <20150109222310.GY9759@ld-irv-0074> <54B13D13.6020406@mentor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
- Prashant Gaikwad <pgaikwad@nvidia.com>, Stephen Warren <swarren@wwwdotorg.org>,
- Thierry Reding <thierry.reding@avionic-design.de>,
- Peter De Schrijver <pdeschrijver@nvidia.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>,
- devicetree@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
- linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54B13D13.6020406@mentor.com>
+Cc: Huang Shijie <shijie.huang@intel.com>, dwmw2@infradead.org,
+ zajec5@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,163 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun,  4 Jan 2015 21:39:17 +0100
-Lucas Stach <dev@lynxeye.de> wrote:
-
-> Add support for the NAND flash controller found on NVIDIA
-> Tegra 2/3 SoCs. This is a largely reworked version of the driver
-> started by Thierry.
+On Sat, Jan 10, 2015 at 04:54:11PM +0200, Vladimir Zapolskiy wrote:
+> On 10.01.2015 00:28, Brian Norris wrote:
+> > On Sun, Dec 14, 2014 at 01:00:47AM +0200, Vladimir Zapolskiy wrote:
+> >> In attempt to spi_nor_scan() for an expected JEDEC compliant device by
+> >> reading RDID register don't return the first found non-JEDEC device
+> >> entry from spi_nor_ids[] table, if RDID is zero.
+> >>
+> >> First of all zeroes in RDID may be evidence for not correctly working
+> >> SPI, secondly empty RDID can not be used to select a particular JEDEC
+> >> non-compliant device correctly.
+> >>
+> >> The best possible solution is
+> >> * not to rely on spi_nor_read_id(), if expected device is non-JEDEC,
+> >> * not to substitute an expected JEDEC device with some arbitrary
+> >>   chosen non-JEDEC device, if RDID is zero.
+> >>
+> >> Signed-off-by: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+> > 
+> > This patch doesn't apply to the latest tree. I think this commit
+> > probably already fixes your issue:
+> > 
+> >   https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=09ffafb6977dc930770af2910edc3b469651131d
+> > 
+> >   commit 09ffafb6977dc930770af2910edc3b469651131d
+> >   Author: Huang Shijie <shijie.huang@intel.com>
+> >   Date:   Thu Nov 6 07:34:01 2014 +0100
+> > 
+> >       mtd: spi-nor: add id/id_len for flash_info{}
 > 
-> Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
-> Signed-off-by: Lucas Stach <dev@lynxeye.de>
-> ---
-> I've tested this driver with the in-kernel mtd-tests and some
-> realworld workloads on a Colibri T20 module.
-> ---
->  .../bindings/mtd/nvidia,tegra20-nand.txt           |  30 +
->  MAINTAINERS                                        |   6 +
->  drivers/mtd/nand/Kconfig                           |   6 +
->  drivers/mtd/nand/Makefile                          |   1 +
->  drivers/mtd/nand/tegra_nand.c                      | 794 +++++++++++++++++++++
->  5 files changed, 837 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
->  create mode 100644 drivers/mtd/nand/tegra_nand.c
+> thank you for review.
 > 
+> 09ffafb69 fixes my problem (and more), however regarding to my problem
+> it does it in non-optimal way. If read JDID is zero, then there is no
+> need to iterate over spi_nor_ids array to return ERR_PTR(-ENODEV).
 
-[...]
+I'm not too worried about spinning a few extra cycles here. What makes
+this particular special case different than a system where we don't
+support the flash? We'll still likely have to scan through the whole
+array just to end up witih -ENODEV.
 
-> +
-> +static const char * const part_probes[] = {
-> +	"cmdlinepart", "ofpart", NULL };
+> Assuming that zero JEDEC ID is a relatively rare situation, do you think
+> it makes sense to add a preceding check for such case before entering
+> the loop like it is done in my patch?
 
-Where is part_probe referenced in this driver ?
+As long as the current driver actually fails gracefully on a zero ID, I
+think we're OK without special case conditions.
 
-> +
-> +static int tegra_nand_probe(struct platform_device *pdev)
-> +{
-> +	struct tegra_nand *nand;
-> +	struct nand_chip *chip;
-> +	struct mtd_info *mtd;
-> +	struct resource *res;
-> +	unsigned long value;
-> +	int err = 0;
-> +
-> +	nand = devm_kzalloc(&pdev->dev, sizeof(*nand), GFP_KERNEL);
-> +	if (!nand)
-> +		return -ENOMEM;
-> +
-> +	nand->dev = &pdev->dev;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	nand->regs = devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(nand->regs))
-> +		return PTR_ERR(nand->regs);
-> +
-> +	nand->irq  = platform_get_irq(pdev, 0);
-> +	err = devm_request_irq(&pdev->dev, nand->irq, tegra_nand_irq, 0,
-> +			       dev_name(&pdev->dev), nand);
-> +	if (err)
-> +		return err;
-> +
-> +	nand->rst = devm_reset_control_get(&pdev->dev, "nand");
-> +	if (IS_ERR(nand->rst))
-> +		return PTR_ERR(nand->rst);
-> +
-> +	nand->clk = devm_clk_get(&pdev->dev, "nand");
-> +	if (IS_ERR(nand->clk))
-> +		return PTR_ERR(nand->clk);
-> +
-> +	err = tegra_nand_parse_dt(pdev->dev.of_node, nand);
-> +	if (err)
-> +		return err;
-> +
-> +	err = clk_prepare_enable(nand->clk);
-> +	if (err)
-> +		return err;
-> +
-> +	reset_control_assert(nand->rst);
-> +	udelay(2);
-> +	reset_control_deassert(nand->rst);
-> +
-> +	if (gpio_is_valid(nand->wp_gpio)) {
-> +		err = devm_gpio_request_one(&pdev->dev, nand->wp_gpio,
-> +				GPIOF_OUT_INIT_HIGH, "tegra-nand-wp");
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	value = HWSTATUS_RDSTATUS_MASK(1) | HWSTATUS_RDSTATUS_VALUE(0) |
-> +		HWSTATUS_RBSY_MASK(NAND_STATUS_READY) |
-> +		HWSTATUS_RBSY_VALUE(NAND_STATUS_READY);
-> +	writel(NAND_CMD_STATUS, nand->regs + HWSTATUS_CMD);
-> +	writel(value, nand->regs + HWSTATUS_MASK);
-> +
-> +	init_completion(&nand->command_complete);
-> +	init_completion(&nand->dma_complete);
-> +
-> +	mtd = &nand->mtd;
-> +	mtd->name = dev_name(&pdev->dev);
-> +	mtd->owner = THIS_MODULE;
-> +	mtd->priv = &nand->chip;
-> +
-> +	mtd->type = MTD_NANDFLASH;
-> +	mtd->flags = MTD_CAP_NANDFLASH;
-> +
-> +	/* clear interrupts */
-> +	value = readl(nand->regs + ISR);
-> +	writel(value, nand->regs + ISR);
-> +
-> +	writel(DMA_CTRL_IS_DONE, nand->regs + DMA_CTRL);
-> +
-> +	/* enable interrupts */
-> +	value = IER_UND | IER_OVR | IER_CMD_DONE | IER_ECC_ERR | IER_GIE;
-> +	writel(value, nand->regs + IER);
-> +
-> +	chip = &nand->chip;
-> +	chip->cmdfunc = tegra_nand_command;
-> +	chip->select_chip = tegra_nand_select_chip;
-> +	chip->read_byte = tegra_nand_read_byte;
-> +	chip->read_buf = tegra_nand_read_buf;
-> +	chip->write_buf = tegra_nand_write_buf;
-> +
-> +	tegra_nand_setup_timing(nand, 0);
-> +
-> +	err = nand_scan_ident(mtd, 1, NULL);
-> +	if (err)
-> +		return err;
-> +
-> +	nand->data_buf = dmam_alloc_coherent(&pdev->dev, mtd->writesize,
-> +					    &nand->data_dma, GFP_KERNEL);
-> +	if (!nand->data_buf)
-> +		return -ENOMEM;
-> +
-> +	nand->oob_buf = dmam_alloc_coherent(&pdev->dev, mtd->oobsize,
-> +					    &nand->oob_dma, GFP_KERNEL);
-> +	if (!nand->oob_buf)
-> +		return -ENOMEM;
-> +
-> +	chip->ecc.mode = NAND_ECC_HW;
-> +	chip->ecc.size = 512;
-> +	chip->ecc.bytes = mtd->oobsize;
-> +	chip->ecc.read_page = tegra_nand_read_page;
-> +	chip->ecc.write_page = tegra_nand_write_page;
+> If no, I'm fine, if yes, I'll rebase the change.
 
-Just a nit, but I would rename those read/write_page functions into
-tegra_nand_hwecc_xxx_page to clearly state that HW ECC is involved
-here.
-
-> +
-> +	value = CFG_HW_ECC | CFG_ECC_SEL | CFG_ERR_COR | CFG_PIPE_EN |
-> +		CFG_TVAL_8 | CFG_SKIP_SPARE | CFG_SKIP_SPARE_SIZE_4;
-
-Can you move the CFG_HW_ECC flags setting into tegra_nand_read_page
-(setting them at entry and clearing them at exit).
-This is really important to be able to access the NAND in raw mode
-(i.e. without involving ECC), and you seem to force HW ECC for
-all accesses, which means ecc.read/write_page_raw are probably not
-working correctly.
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+Brian
