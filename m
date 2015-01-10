@@ -1,17 +1,24 @@
-Date: Sat, 10 Jan 2015 10:58:51 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 2/2] UBI: Block: Add blk-mq support
-Message-ID: <20150110185851.GA3945@infradead.org>
-References: <1420900188-15781-1-git-send-email-richard@nod.at>
- <1420900188-15781-2-git-send-email-richard@nod.at>
+Received: from khitomer.mortis.eu ([185.27.175.75])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YA2Ns-0002rQ-Pp
+ for linux-mtd@lists.infradead.org; Sat, 10 Jan 2015 20:11:46 +0000
+Date: Sat, 10 Jan 2015 21:11:13 +0100
+From: Giel van Schijndel <me@mortis.eu>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2] mtd: nftl: reorganize operations in condition check
+Message-ID: <20150110201113.GA7918@salidar.dom.custoft.eu>
+References: <1420663040-3857-1-git-send-email-andy.shevchenko@gmail.com>
+ <20150109232900.GB9759@ld-irv-0074>
+ <CAHp75VdBuqdFYTuQuSPY7QUpL0p7Ku1n7=t7aT+QP=d17ndwHw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
 Content-Disposition: inline
-In-Reply-To: <1420900188-15781-2-git-send-email-richard@nod.at>
-Cc: axboe@fb.com, dedekind1@gmail.com, tom.leiming@gmail.com,
- linux-kernel@vger.kernel.org, hch@infradead.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
+In-Reply-To: <CAHp75VdBuqdFYTuQuSPY7QUpL0p7Ku1n7=t7aT+QP=d17ndwHw@mail.gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Dimitri Gorokhovik <dimitri.gorokhovik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> +struct ubiblock_pdu {
-> +	struct request *req;
 
-No need to store the request, you can trivially get at it using
-blk_mq_rq_from_pdu().
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +	struct ubiblock *dev;
+On Sat, Jan 10, 2015 at 14:56:32 +0200, Andy Shevchenko wrote:
+> On Sat, Jan 10, 2015 at 1:29 AM, Brian Norris <computersforpeace@gmail.co=
+m> wrote:
+>> On Wed, Jan 07, 2015 at 10:37:20PM +0200, Andy Shevchenko wrote:
+>>> We need to compare ret variable for negative value. The current code
+>>> assigns the boolean to the ret and prints it wrongly in the warning
+>>> message.
+>>>
+>>> Reported-by: Andrey Karpov <karpov@viva64.com>
+>>> Cc: Giel van Schijndel <me@mortis.eu>
+>>> Cc: Dimitri Gorokhovik <dimitri.gorokhovik@free.fr>
+>>> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>>
+>> To be clear, this touches some commented out code (yuck). I think you
+>> noted this previously.
+>=20
+> It had been proposed by Giel.
 
-Why do you need the dev pointer?  You can always trivially get
-it using req->queuedata.
+Yes, and I suspect (and hope) Brian's referring to the existence of
+commented-out code as "yuck", not the removal of bugs from it.
 
-> +static void ubiblock_do_work(struct work_struct *work)
-> +{
-> +	int ret;
-> +	struct ubiblock_pdu *pdu = container_of(work, struct ubiblock_pdu, work);
-> +
-> +	ret = ubiblock_read(pdu);
-> +	blk_mq_end_request(pdu->req, ret ?: 0);
+>> For my reference, are you actually testing this driver?
+>=20
+> Not a real testing. Only compilation on x86_32.
 
-Why not just pass ret as-is?
+Combined with review I think that's enough given the nature of this
+change.
 
-> +	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
-> +	    get_capacity(req->rq_disk))
-> +		return BLK_MQ_RQ_QUEUE_ERROR;
+--=20
+Met vriendelijke groet,
+With kind regards,
+Giel van Schijndel
 
-The upper layers take are of this check.
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +	pdu->usgl.list_pos = 0;
-> +	pdu->usgl.page_pos = 0;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Having a helper to initialize a ubi_sgl would be nicer than having
-to open code it ike here.
+iEYEARECAAYFAlSxh18ACgkQZBYm/87l50K8CwCfTI25llHhEyICgfZZDgkeHo9X
+2XAAoIzKPkoF8INzf0UiZYT2kK9q/Qzt
+=Qs4Z
+-----END PGP SIGNATURE-----
 
-> +
-> +	blk_mq_start_request(req);
-> +	ret = blk_rq_map_sg(hctx->queue, req, pdu->usgl.sg);
-> +
-> +	queue_work(dev->wq, &pdu->work);
-
-Why don't you move these calls into the work queue as well?  The
-queue_rq call would literally just become a queue_work call.
-
-And given that this is a fairly common patter this should allow
-us to refactor / optimize this case a bit later on.
+--YiEDa0DAkWCtVeE4--
