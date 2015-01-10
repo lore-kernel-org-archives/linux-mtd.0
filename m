@@ -1,15 +1,18 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YA3xa-0006jp-6s
- for linux-mtd@lists.infradead.org; Sat, 10 Jan 2015 21:52:52 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH 1/2 v2] UBI: Add initial support for scatter gather
-Date: Sat, 10 Jan 2015 22:52:13 +0100
-Message-Id: <1420926734-16417-1-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- Richard Weinberger <richard@nod.at>
+Message-ID: <54B1B6BB.2080302@mentor.com>
+Date: Sun, 11 Jan 2015 01:33:15 +0200
+From: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: don't return found by JEDEC ID a non-JEDEC
+ flash
+References: <1418511647-24736-1-git-send-email-vladimir_zapolskiy@mentor.com>
+ <20150109222310.GY9759@ld-irv-0074> <54B13D13.6020406@mentor.com>
+ <20150110182910.GA3268@brian-ubuntu>
+In-Reply-To: <20150110182910.GA3268@brian-ubuntu>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <shijie.huang@intel.com>, linux-mtd@lists.infradead.org,
+ zajec5@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,303 +22,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adds a new set of functions to deal with scatter gather.
-ubi_eba_read_leb_sg() will read from a LEB into a scatter gather list.
-The new data structure struct ubi_sgl will be used within UBI to
-hold the scatter gather list itself and metadata to have a cursor
-within the list.
+On 10.01.2015 20:29, Brian Norris wrote:
+> On Sat, Jan 10, 2015 at 04:54:11PM +0200, Vladimir Zapolskiy wrote:
+>> On 10.01.2015 00:28, Brian Norris wrote:
+>>> On Sun, Dec 14, 2014 at 01:00:47AM +0200, Vladimir Zapolskiy wrote:
+>>>> In attempt to spi_nor_scan() for an expected JEDEC compliant device by
+>>>> reading RDID register don't return the first found non-JEDEC device
+>>>> entry from spi_nor_ids[] table, if RDID is zero.
+>>>>
+>>>> First of all zeroes in RDID may be evidence for not correctly working
+>>>> SPI, secondly empty RDID can not be used to select a particular JEDEC
+>>>> non-compliant device correctly.
+>>>>
+>>>> The best possible solution is
+>>>> * not to rely on spi_nor_read_id(), if expected device is non-JEDEC,
+>>>> * not to substitute an expected JEDEC device with some arbitrary
+>>>>   chosen non-JEDEC device, if RDID is zero.
+>>>>
+>>>> Signed-off-by: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+>>>
+>>> This patch doesn't apply to the latest tree. I think this commit
+>>> probably already fixes your issue:
+>>>
+>>>   https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=09ffafb6977dc930770af2910edc3b469651131d
+>>>
+>>>   commit 09ffafb6977dc930770af2910edc3b469651131d
+>>>   Author: Huang Shijie <shijie.huang@intel.com>
+>>>   Date:   Thu Nov 6 07:34:01 2014 +0100
+>>>
+>>>       mtd: spi-nor: add id/id_len for flash_info{}
+>>
+>> thank you for review.
+>>
+>> 09ffafb69 fixes my problem (and more), however regarding to my problem
+>> it does it in non-optimal way. If read JDID is zero, then there is no
+>> need to iterate over spi_nor_ids array to return ERR_PTR(-ENODEV).
+> 
+> I'm not too worried about spinning a few extra cycles here. What makes
+> this particular special case different than a system where we don't
+> support the flash? We'll still likely have to scan through the whole
+> array just to end up witih -ENODEV.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
- drivers/mtd/ubi/eba.c   | 56 +++++++++++++++++++++++++++++
- drivers/mtd/ubi/kapi.c  | 95 +++++++++++++++++++++++++++++++++++++++++--------
- drivers/mtd/ubi/ubi.h   |  3 ++
- include/linux/mtd/ubi.h | 46 ++++++++++++++++++++++++
- 4 files changed, 185 insertions(+), 15 deletions(-)
+The difference is pretty visible, if JDID is zero, then it is known in
+advance that looking for a proper flash device from spi_nor_ids is
+fruitless and therefore can be omitted.
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index b698534..0aaf707 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -481,6 +481,62 @@ out_unlock:
- }
- 
- /**
-+ * ubi_eba_read_leb_sg - read data into a scatter gather list.
-+ * @ubi: UBI device description object
-+ * @vol: volume description object
-+ * @lnum: logical eraseblock number
-+ * @sgl: UBI scatter gather list to store the read data
-+ * @offset: offset from where to read
-+ * @len: how many bytes to read
-+ * @check: data CRC check flag
-+ *
-+ * This function works exactly like ubi_eba_read_leb(). But instead of
-+ * storing the read data into a buffer it writes to an UBI scatter gather
-+ * list.
-+ */
-+int ubi_eba_read_leb_sg(struct ubi_device *ubi, struct ubi_volume *vol,
-+			struct ubi_sgl *sgl, int lnum, int offset, int len,
-+			int check)
-+{
-+	int to_read;
-+	int ret;
-+	struct scatterlist *sg;
-+
-+	for (;;) {
-+		ubi_assert(sgl->list_pos < UBI_MAX_SG_COUNT);
-+		sg = &sgl->sg[sgl->list_pos];
-+		if (len < sg->length - sgl->page_pos)
-+			to_read = len;
-+		else
-+			to_read = sg->length - sgl->page_pos;
-+
-+		ret = ubi_eba_read_leb(ubi, vol, lnum,
-+				       sg_virt(sg) + sgl->page_pos, offset,
-+				       to_read, check);
-+		if (ret < 0)
-+			goto out;
-+
-+		offset += to_read;
-+		len -= to_read;
-+		if (!len) {
-+			sgl->page_pos += to_read;
-+			if (sgl->page_pos == sg->length) {
-+				sgl->list_pos++;
-+				sgl->page_pos = 0;
-+			}
-+
-+			break;
-+		}
-+
-+		sgl->list_pos++;
-+		sgl->page_pos = 0;
-+	}
-+
-+out:
-+	return ret;
-+}
-+
-+/**
-  * recover_peb - recover from write failure.
-  * @ubi: UBI device description object
-  * @pnum: the physical eraseblock to recover
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index f3bab66..d0055a2 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -355,6 +355,43 @@ void ubi_close_volume(struct ubi_volume_desc *desc)
- EXPORT_SYMBOL_GPL(ubi_close_volume);
- 
- /**
-+ * leb_read_sanity_check - does sanity checks on read requests.
-+ * @desc: volume descriptor
-+ * @lnum: logical eraseblock number to read from
-+ * @offset: offset within the logical eraseblock to read from
-+ * @len: how many bytes to read
-+ *
-+ * This function is used by ubi_leb_read() and ubi_leb_read_sg()
-+ * to perfrom sanity checks.
-+ */
-+static int leb_read_sanity_check(struct ubi_volume_desc *desc, int lnum,
-+				 int offset, int len)
-+{
-+	struct ubi_volume *vol = desc->vol;
-+	struct ubi_device *ubi = vol->ubi;
-+	int vol_id = vol->vol_id;
-+
-+	if (vol_id < 0 || vol_id >= ubi->vtbl_slots || lnum < 0 ||
-+	    lnum >= vol->used_ebs || offset < 0 || len < 0 ||
-+	    offset + len > vol->usable_leb_size)
-+		return -EINVAL;
-+
-+	if (vol->vol_type == UBI_STATIC_VOLUME) {
-+		if (vol->used_ebs == 0)
-+			/* Empty static UBI volume */
-+			return 0;
-+		if (lnum == vol->used_ebs - 1 &&
-+		    offset + len > vol->last_eb_bytes)
-+			return -EINVAL;
-+	}
-+
-+	if (vol->upd_marker)
-+		return -EBADF;
-+
-+	return 0;
-+}
-+
-+/**
-  * ubi_leb_read - read data.
-  * @desc: volume descriptor
-  * @lnum: logical eraseblock number to read from
-@@ -390,22 +427,10 @@ int ubi_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
- 
- 	dbg_gen("read %d bytes from LEB %d:%d:%d", len, vol_id, lnum, offset);
- 
--	if (vol_id < 0 || vol_id >= ubi->vtbl_slots || lnum < 0 ||
--	    lnum >= vol->used_ebs || offset < 0 || len < 0 ||
--	    offset + len > vol->usable_leb_size)
--		return -EINVAL;
--
--	if (vol->vol_type == UBI_STATIC_VOLUME) {
--		if (vol->used_ebs == 0)
--			/* Empty static UBI volume */
--			return 0;
--		if (lnum == vol->used_ebs - 1 &&
--		    offset + len > vol->last_eb_bytes)
--			return -EINVAL;
--	}
-+	err = leb_read_sanity_check(desc, lnum, offset, len);
-+	if (err < 0)
-+		return err;
- 
--	if (vol->upd_marker)
--		return -EBADF;
- 	if (len == 0)
- 		return 0;
- 
-@@ -419,6 +444,46 @@ int ubi_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
- }
- EXPORT_SYMBOL_GPL(ubi_leb_read);
- 
-+
-+/**
-+ * ubi_leb_read_sg - read data into a scatter gather list.
-+ * @desc: volume descriptor
-+ * @lnum: logical eraseblock number to read from
-+ * @buf: buffer where to store the read data
-+ * @offset: offset within the logical eraseblock to read from
-+ * @len: how many bytes to read
-+ * @check: whether UBI has to check the read data's CRC or not.
-+ *
-+ * This function works exactly like ubi_leb_read_sg(). But instead of
-+ * storing the read data into a buffer it writes to an UBI scatter gather
-+ * list.
-+ */
-+int ubi_leb_read_sg(struct ubi_volume_desc *desc, int lnum, struct ubi_sgl *sgl,
-+		    int offset, int len, int check)
-+{
-+	struct ubi_volume *vol = desc->vol;
-+	struct ubi_device *ubi = vol->ubi;
-+	int err, vol_id = vol->vol_id;
-+
-+	dbg_gen("read %d bytes from LEB %d:%d:%d", len, vol_id, lnum, offset);
-+
-+	err = leb_read_sanity_check(desc, lnum, offset, len);
-+	if (err < 0)
-+		return err;
-+
-+	if (len == 0)
-+		return 0;
-+
-+	err = ubi_eba_read_leb_sg(ubi, vol, sgl, lnum, offset, len, check);
-+	if (err && mtd_is_eccerr(err) && vol->vol_type == UBI_STATIC_VOLUME) {
-+		ubi_warn(ubi, "mark volume %d as corrupted", vol_id);
-+		vol->corrupted = 1;
-+	}
-+
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(ubi_leb_read_sg);
-+
- /**
-  * ubi_leb_write - write data.
-  * @desc: volume descriptor
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index ee7ac0b..a5283cf 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -791,6 +791,9 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
- 		      int lnum);
- int ubi_eba_read_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
- 		     void *buf, int offset, int len, int check);
-+int ubi_eba_read_leb_sg(struct ubi_device *ubi, struct ubi_volume *vol,
-+			struct ubi_sgl *sgl, int lnum, int offset, int len,
-+			int check);
- int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
- 		      const void *buf, int offset, int len);
- int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
-diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-index c3918a0..3d5916d 100644
---- a/include/linux/mtd/ubi.h
-+++ b/include/linux/mtd/ubi.h
-@@ -23,11 +23,16 @@
- 
- #include <linux/ioctl.h>
- #include <linux/types.h>
-+#include <linux/scatterlist.h>
- #include <mtd/ubi-user.h>
- 
- /* All voumes/LEBs */
- #define UBI_ALL -1
- 
-+/* Maximum number of scatter gather list entries,
-+ * we use only 64 to have a lower memory foot print. */
-+#define UBI_MAX_SG_COUNT 64
-+
- /*
-  * enum ubi_open_mode - UBI volume open mode constants.
-  *
-@@ -116,6 +121,35 @@ struct ubi_volume_info {
- };
- 
- /**
-+ * struct ubi_sgl - UBI scatter gather list data structure.
-+ * @list_pos: current position in @sg[]
-+ * @page_pos: current position in @sg[@list_pos]
-+ * @sg: the scatter gather list itself
-+ *
-+ * ubi_sgl is a wrapper around a scatter list which keeps track of the
-+ * current position in the list and the current list item such that
-+ * it can be used across multiple ubi_leb_read_sg() calls.
-+ */
-+struct ubi_sgl {
-+	int list_pos;
-+	int page_pos;
-+	struct scatterlist sg[UBI_MAX_SG_COUNT];
-+};
-+
-+/**
-+ * ubi_sgl_init - initialize an UBI scatter gather list data structure.
-+ * @usgl: the UBI scatter gather struct itself
-+ *
-+ * Please note that you still have to use sg_init_table() or any adequate
-+ * function to initialize the unterlaying struct scatterlist.
-+ */
-+static inline void ubi_sgl_init(struct ubi_sgl *usgl)
-+{
-+	usgl->list_pos = 0;
-+	usgl->page_pos = 0;
-+}
-+
-+/**
-  * struct ubi_device_info - UBI device description data structure.
-  * @ubi_num: ubi device number
-  * @leb_size: logical eraseblock size on this UBI device
-@@ -210,6 +244,8 @@ int ubi_unregister_volume_notifier(struct notifier_block *nb);
- void ubi_close_volume(struct ubi_volume_desc *desc);
- int ubi_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
- 		 int len, int check);
-+int ubi_leb_read_sg(struct ubi_volume_desc *desc, int lnum, struct ubi_sgl *sgl,
-+		   int offset, int len, int check);
- int ubi_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
- 		  int offset, int len);
- int ubi_leb_change(struct ubi_volume_desc *desc, int lnum, const void *buf,
-@@ -230,4 +266,14 @@ static inline int ubi_read(struct ubi_volume_desc *desc, int lnum, char *buf,
- {
- 	return ubi_leb_read(desc, lnum, buf, offset, len, 0);
- }
-+
-+/*
-+ * This function is the same as the 'ubi_leb_read_sg()' function, but it does
-+ * not provide the checking capability.
-+ */
-+static inline int ubi_read_sg(struct ubi_volume_desc *desc, int lnum,
-+			      struct ubi_sgl *sgl, int offset, int len)
-+{
-+	return ubi_leb_read_sg(desc, lnum, sgl, offset, len, 0);
-+}
- #endif /* !__LINUX_UBI_H__ */
--- 
-1.8.4.5
+>> Assuming that zero JEDEC ID is a relatively rare situation, do you think
+>> it makes sense to add a preceding check for such case before entering
+>> the loop like it is done in my patch?
+> 
+> As long as the current driver actually fails gracefully on a zero ID, I
+> think we're OK without special case conditions.
+
+No objections, the optimization on error path may be considered as
+redundant.
+
+>> If no, I'm fine, if yes, I'll rebase the change.
+> 
+
+--
+With best wishes,
+Vladimir
