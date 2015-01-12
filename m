@@ -1,25 +1,20 @@
-From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
-To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: [PATCH 0/3] An alternative to SPI NAND
-Date: Mon, 12 Jan 2015 15:10:55 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
-References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
- <20150108010257.GP9759@ld-irv-0074>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
- <54ADF90B.1070800@imgtec.com>
-In-Reply-To: <54ADF90B.1070800@imgtec.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-vc0-x230.google.com ([2607:f8b0:400c:c03::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YAhMH-0000o6-AX
+ for linux-mtd@lists.infradead.org; Mon, 12 Jan 2015 15:56:50 +0000
+Received: by mail-vc0-f176.google.com with SMTP id hq12so6844349vcb.7
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Jan 2015 07:56:26 -0800 (PST)
 MIME-Version: 1.0
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- =?utf-8?B?TWVsYW5pZSBaaGFuZyDlvKDnh5UgKG1lbGFuaWV6aGFuZyk=?=
- <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
+In-Reply-To: <1420994209-20980-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+References: <1420994209-20980-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Date: Mon, 12 Jan 2015 16:56:26 +0100
+Message-ID: <CAFLxGvxBbnKugf49_7TtdLh-7QB3Hmv_iqjMqPFbGUDXBcy3yA@mail.gmail.com>
+Subject: Re: [PATCH] jffs2: compr_rubin: Remove unused function
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgRXplcXVpZWwsDQoNCk9uIDAxLzA4LzIwMTUgMTE6MjcgQU0sIEV6ZXF1aWVsIEdhcmNpYSB3
-cm90ZToNCj4NCj5IaSBRaSBXYW5nLA0KPg0KPk9uIDAxLzA3LzIwMTUgMTE6NDUgUE0sIFFpIFdh
-bmcg546L6LW3IChxaXdhbmcpIHdyb3RlOg0KPj4gSGkgQnJpYW4sDQo+Pg0KPj4gT24gVGh1LCBK
-YW4gMDgsIDIwMTUgYXQgOTowMzoyNEFNICswMDAwLCBCcmlhbiBOb3JyaXMgd3JvdGU6DQo+Pj4N
-Cj4+PiBPbiBUaHUsIEphbiAwOCwgMjAxNSBhdCAxMjo0NzoyNEFNICswMDAwLCBQZXRlciBQYW4g
-5r2Y5qCLIChwZXRlcnBhbmRvbmcpDQo+Pj4gd3JvdGU6DQo+Pj4+IERvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0IHwgICAyMiArDQo+Pj4+IGRyaXZlcnMv
-bXRkL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiArDQo+Pj4+
-IGRyaXZlcnMvbXRkL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAg
-MSArDQo+Pj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL0tjb25maWcgICAgICAgICAgICAgICAgICAg
-ICAgIHwgICAgNyArDQo+Pj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL01ha2VmaWxlICAgICAgICAg
-ICAgICAgICAgICAgIHwgICAgMyArDQo+Pj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL3NwaS1uYW5k
-LWJhc2UuYyAgICAgICAgICAgICAgIHwgMjAzNA0KPj4+ICsrKysrKysrKysrKysrKysrKysrDQo+
-Pj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL3NwaS1uYW5kLWJidC5jICAgICAgICAgICAgICAgIHwg
-MTI3OSArKysrKysrKysrKysNCj4+Pg0KPj4+IEkgY2FuIGFscmVhZHkgdGVsbCBieSB0aGUgZGlm
-ZnN0YXQgdGhhdCBJIGRvbid0IGxpa2UgdGhpcy4gV2UgcHJvYmFibHkNCj4+PiBkb24ndCBuZWVk
-IDMwMDAgbmV3IGxpbmVzIG9mIGNvZGUgZm9yIHRoaXMsIGJ1dCB3ZSBlc3BlY2lhbGx5IGRvbid0
-IHdhbnQNCj4+PiB0byBkdXBsaWNhdGUgbmFuZF9iYnQuYy4gSXQgd29uJ3QgdGFrZSBhIGxvdCBv
-ZiB3b3JrIHRvIGF1Z21lbnQNCj4+PiBuYW5kX2JidC5jIHRvIG1ha2UgaXQgc2hhcmVhYmxlLiAo
-SSBjYW4gd2hpcCB0aGF0IHBhdGNoIHVwIGlmIG5lZWRlZC4pDQo+Pg0KPj4gWWVzLCBJIGFncmVl
-IHdpdGggeW91LCBOYW5kX2JidC5jIGRvIGNhbiBiZSBzaGFyZWQgYnkgUGFyYWxsZWwgTkFORCBh
-bmQNCj4+IFNQSSBOQU5ELiBBY3R1YWxseSwgd2UgYXJlIHdvcmtpbmcgYXQgdGhpcyBub3cuIFdp
-bGwgc2VuZCBwYXRjaGVzIHRvIHlvdQ0KPj4gT25jZSB3ZSBmaW5pc2hlZCBpdC4NCj4+DQo+DQo+
-VGhhbmtzIGZvciB0aGUgcXVpY2sgc3VibWlzc2lvbiENCj4NCj5Ib3dldmVyLCBCcmlhbiBpcyBy
-aWdodCwgdGhpcyBjb2RlIGR1cGxpY2F0aW9uIGlzIGEgbm8gZ28uDQo+DQo+UGVyaGFwcyBhIG1v
-cmUgdmFsaWQgYXBwcm9hY2ggd291bGQgYmUgdG8gZmlyc3QgaWRlbnRpZnkgdGhlIGNvZGUgdGhh
-dA0KPm5lZWRzIHRvIGJlIHNoYXJlZCBpbiBuYW5kX2JidC5jIGFuZCBuYW5kX2Jhc2UuYywgYW5k
-IGV4cG9ydCB0aG9zZQ0KPnN5bWJvbHMgKG9yIG1heWJlIGRvIHRoZSByZXF1aXJlZCByZWZhY3Rv
-cikuDQoNClllcywgSSBhZ3JlZSBCcmlhbidzIHN1Z2dlc3Rpb24gaW4gYW5vdGhlciBtYWlsLiAN
-Cg0KIiBUaGUgQkJUIGNvZGUgaXMgc29tZXRoaW5nIHdlIGRlZmluaXRlbHkgd2FudCB0byBzaGFy
-ZSwgYnV0IGl0J3MgYWN0dWFsbHkNCm5vdCB2ZXJ5IGNsb3NlbHkgdGllZCB0byBuYW5kX2Jhc2Uu
-YywgYW5kIGl0IGxvb2tzIHByZXR0eSBlYXN5IHRvIGFkYXB0DQp0byBhbnkgTVREIHRoYXQgaW1w
-bGVtZW50cyBtdGRfcmVhZF9vb2IoKS9tdGRfd3JpdGVfb29iKCkuIFdlJ2QganVzdA0KbmVlZCB0
-byBwYXJhbWV0ZXJpemUgYSBmZXcgcmVsZXZhbnQgZGV2aWNlIGRldGFpbHMgaW50byBhIG5ldyBu
-YW5kX2JidA0Kc3RydWN0LCByYXRoZXIgdGhhbiB1c2luZyBzdHJ1Y3QgbmFuZF9jaGlwIGRpcmVj
-dGx5LiINCg0KVG8gYWJzdHJhY3QgYSBuZXcgbmFuZF9iYnQgc3RydWN0IGluc3RlYWQgb2YgbmFu
-ZF9jaGlwIHRvIG1ha2UgU1BJIE5BTkQgDQphbmQgcGFyYWxsZWwgTkFORCBjYW4gc2hhcmUgbmFu
-ZF9iYnQuYyBmaWxlLCBJIGFscmVhZHkgYmVnaW4gdG8gd29yayBvbiANCnRoaXMuDQoNCkZvciBj
-b2RlIHNoYXJlZCBpbiBuYW5kX2Jhc2UuYywgSSBhZ3JlZSBpdCB3b3VsZCBiZSBiZXR0ZXIgaWYg
-d2UgY2FuIGZpbmQNCmEgZ29vZCBtZXRob2QgdG8gc2hhcmUgbmFuZF9iYXNlLmMgY29kZSBiZXR3
-ZWVuIHNwaSBuYW5kIGFuZCBwYXJhbGxlbCBuYW5kLg0KQnV0IGZyYW5rbHkgc3BlYWtpbmcsIEkn
-bSBub3Qgc2F0aXNmaWVkIGZvciB0aGUgcmVtYXAgY29tbWFuZCBtZXRob2QuIFRoaXMNCm1ldGhv
-ZCBtYWtlIGNvZGUgZGlmZmljdWx0IHRvIG1haW50YWluIHdoZW4gU1BJIE5BTkQgYW5kIFBhcmFs
-bGVsIE5BTkQgDQpldm9sdmUgbXVjaCBkaWZmZXJlbnRseSBpbiB0aGUgZnV0dXJlLg0KDQpUYWtl
-IHNvbWUgZXhhbXBsZSwgDQpJZiBvbmUgbmV3IGNvbW1hbmQgKGNhY2hlIG9wZXJhdGlvbiwgbXVs
-dGlwbGUgcGxhbmUgb3BlcmF0aW9uKSBpbXBsZW1lbnRlZCANCmluIHBhcmFsbGVsIE5BTkQgY29k
-ZSwgYW5kIGlzIHVzZWQgaW4gbmFuZF9yZWFkIG9yIG5hbmRfd3JpdGUsIHRoYXQgd2lsbCANCmNh
-dXNlIG1haW50YWluZXIgdG8gbW9kaWZ5IFNQSSBOQU5EIGNvZGUgdG8gcmVtYXAgdGhpcyBuZXcg
-Y29tbWFuZCwgdGhvdWdoIA0KdGhpcyBtb2RpZmljYXRpb24gcHJvYmFibHkgY291bGQgYmUgc2xp
-Z2h0LiBUaGF0IG1lYW5zIG1vZGlmaWNhdGlvbiBvbiANClBhcmFsbGVsIE5BTkQgZmxhc2ggbmVl
-ZCB0byBjb25zaWRlciBTUEkgTkFORCBhcyB3ZWxsLiANCg0KSG93IGRvIHlvdSB0aGluayBhYm91
-dCB0aGlzPw0KDQpGb3IgUGV0ZXIgUGFuJ3MgcGF0Y2hzZXQsIGlmIHdlIGRvIHNvbWUgbW9kaWZp
-Y2F0aW9uIHRvIG1ha2UgbmFuZF9iYnQuYyB0bw0KbWFrZSBpdCBzaGFyZWFibGUgZm9yIFBhcmFs
-bGVsIGFuZCBTUEkgTkFORC4gVGhlIGNvZGUgbGluZSBzaG91bGQgYmUgMjAwMC4NCkkgYmVsaWV2
-ZSBJIGNhbiByZXZpZXcgdGhpcyBzcGktbmFuZC1iYXNlLmMgdG8gcmVtb3ZlIHNvbWUgcmVkdW5k
-YW50IGNvZGUNCnRoYXQgbWF5IGh1bmRyZWRzIGxpbmUuIElzIDE3MDAgb3IgMTgwMCBjb2RlIGxp
-bmUgaXMgbW9yZSBhY2NlcHRhYmxlPw0KDQpMZXQgbWUga25vdyB5b3VyIG9waW5pb25zLg0KDQo+
-DQo+VGhlbiwgc2VwYXJhdGUgdGhlIFNQSSBOQU5EIHVwcGVyIGFuZCBsb3dlciBsb2dpYyAoaW4g
-YSBzaW1pbGFyIHRvIG15DQo+cHJvcG9zYWwsIHdoaWNoIEkgc3RpbGwgY29uc2lkZXIgdHVybmVk
-IG91dCB0byBiZSBjbGVhbikuDQo+DQo+VGhlc2UgdHdvIHRoaW5ncyB3b3VsZCBsZWFkIHRvIGEg
-c2ltcGxlciBhbmQgc21hbGxlciBwYXRjaHNldC4gSSBhbHNvDQo+c3VnZ2VzdCB0byBjdXQgb2Zm
-IGV2ZXJ5dGhpbmcgdGhhdCB3ZSBkb24ndCB1dHRlcmx5IG5lZWQgb24gYSBmaXJzdA0KPnN1Ym1p
-c3Npb24sIHNvIGl0J3MgZWFzaWVyIHRvIHJldmlldy4NCj4tLQ0KPkV6ZXF1aWVsDQoNCg0KLS0N
-ClFpIFdhbmcNCg==
+On Sun, Jan 11, 2015 at 5:36 PM, Rickard Strandqvist
+<rickard_strandqvist@spectrumdigital.se> wrote:
+> Remove the function pulledbits() that is not used anywhere.
+>
+> This was partially found by using a static code analysis program called cppcheck.
+>
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+
+Looks good to me.
+Reviewed-by: Richard Weinberger <richard@nod.at>
+
+
+-- 
+Thanks,
+//richard
