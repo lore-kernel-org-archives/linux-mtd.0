@@ -1,23 +1,17 @@
-Received: from mail-yk0-x22e.google.com ([2607:f8b0:4002:c07::22e])
+Received: from mail-bn1bon0113.outbound.protection.outlook.com
+ ([157.56.111.113] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAlyK-0002fW-39
- for linux-mtd@lists.infradead.org; Mon, 12 Jan 2015 20:52:24 +0000
-Received: by mail-yk0-f174.google.com with SMTP id 10so10265538ykt.5
- for <linux-mtd@lists.infradead.org>; Mon, 12 Jan 2015 12:52:01 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: nand: default bitflip-reporting threshold to 75% of
- correction strength
-Date: Mon, 12 Jan 2015 12:51:29 -0800
-Message-Id: <1421095889-12717-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <54B38745.70007@atmel.com>
-References: <54B38745.70007@atmel.com>
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Richard Weinberger <richard@nod.at>, Steve deRosier <derosier@gmail.com>,
- Josh Wu <josh.wu@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Huang Shijie <shijie8@gmail.com>
+ id 1YAmdh-0007sx-0Z
+ for linux-mtd@lists.infradead.org; Mon, 12 Jan 2015 21:35:09 +0000
+From: <Frank.Li@freescale.com>
+To: <computersforpeace@gmail.com>, <shijie8@gmail.com>, <lznuaa@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/1] mtd: spi-nor: fsl-qspi: support DSM fro imx6 sx chip
+Date: Tue, 13 Jan 2015 04:24:48 +0800
+Message-ID: <1421094288-24750-1-git-send-email-Frank.Li@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Allen Xu <b45815@freescale.com>, Frank Li <Frank.Li@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +21,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The MTD API reports -EUCLEAN only if the maximum number of bitflips
-found in any ECC block exceeds a certain threshold. This is done to
-avoid excessive -EUCLEAN reports to MTD users, which may induce
-additional scrubbing of data, even when the ECC algorithm in use is
-perfectly capable of handling the bitflips.
+From: Allen Xu <b45815@freescale.com>
 
-This threshold can be controlled by user-space (via sysfs), to allow
-users to determine what they are willing to tolerate in their
-application. But it still helps to have sane defaults.
+i.mx6 sx support turn off fastmix and megamix power.
+qpsi controller status will lost when suspen/resume.
+add suspend/resume functions and reset qspi controller
+when resume.
 
-In recent discussion [1], it was pointed out that our default threshold
-is equal to the correction strength. That means that we won't actually
-report any -EUCLEAN (i.e., "bitflips were corrected") errors until there
-are almost too many to handle. It was determined that 3/4 of the
-correction strength is probably a better default.
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2015-January/057259.html
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Allen Xu <b45815@freescale.com>
+Signed-off-by: Frank Li <Frank.Li@freescale.com>
 ---
- drivers/mtd/nand/nand_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 816b5c1fd416..3f24b587304f 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4171,7 +4171,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	 * properly set.
- 	 */
- 	if (!mtd->bitflip_threshold)
--		mtd->bitflip_threshold = mtd->ecc_strength;
-+		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3, 4);
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 39763b9..9d608007 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -972,6 +972,22 @@ static int fsl_qspi_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
- 	/* Check, if we should skip the bad block table scan */
- 	if (chip->options & NAND_SKIP_BBTSCAN)
++static int fsl_qspi_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	return 0;
++}
++
++static int fsl_qspi_resume(struct platform_device *pdev)
++{
++	struct fsl_qspi *q = platform_get_drvdata(pdev);
++
++	fsl_qspi_nor_setup(q);
++	fsl_qspi_set_map_addr(q);
++	fsl_qspi_nor_setup_last(q);
++
++	return 0;
++}
++
+ static struct platform_driver fsl_qspi_driver = {
+ 	.driver = {
+ 		.name	= "fsl-quadspi",
+@@ -980,6 +996,8 @@ static struct platform_driver fsl_qspi_driver = {
+ 	},
+ 	.probe          = fsl_qspi_probe,
+ 	.remove		= fsl_qspi_remove,
++	.suspend	= fsl_qspi_suspend,
++	.resume		= fsl_qspi_resume,
+ };
+ module_platform_driver(fsl_qspi_driver);
+ 
 -- 
 1.9.1
