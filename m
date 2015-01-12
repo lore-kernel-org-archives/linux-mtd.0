@@ -1,24 +1,25 @@
-Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAeEU-0005OF-NT
- for linux-mtd@lists.infradead.org; Mon, 12 Jan 2015 12:36:35 +0000
-Date: Mon, 12 Jan 2015 13:36:06 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 07/12] fs: export inode_to_bdi and use it in favor of
- mapping->backing_dev_info
-Message-ID: <20150112123606.GB29325@lst.de>
-References: <1420739133-27514-1-git-send-email-hch@lst.de>
- <1420739133-27514-8-git-send-email-hch@lst.de>
- <20150111181651.GN25319@htj.dyndns.org>
+From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: [PATCH 0/3] An alternative to SPI NAND
+Date: Mon, 12 Jan 2015 15:10:55 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
+References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
+ <20150108010257.GP9759@ld-irv-0074>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
+ <54ADF90B.1070800@imgtec.com>
+In-Reply-To: <54ADF90B.1070800@imgtec.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150111181651.GN25319@htj.dyndns.org>
-Cc: David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
- Jens Axboe <axboe@fb.com>, linux-mm@kvack.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, ceph-devel@vger.kernel.org,
- Christoph Hellwig <hch@lst.de>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
+ =?utf-8?B?TWVsYW5pZSBaaGFuZyDlvKDnh5UgKG1lbGFuaWV6aGFuZyk=?=
+ <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +29,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 11, 2015 at 01:16:51PM -0500, Tejun Heo wrote:
-> > +struct backing_dev_info *inode_to_bdi(struct inode *inode)
-> >  {
-> >  	struct super_block *sb = inode->i_sb;
-> >  #ifdef CONFIG_BLOCK
-> > @@ -75,6 +75,7 @@ static inline struct backing_dev_info *inode_to_bdi(struct inode *inode)
-> >  #endif
-> >  	return sb->s_bdi;
-> >  }
-> > +EXPORT_SYMBOL_GPL(inode_to_bdi);
-> 
-> This is rather trivial.  Maybe we wanna make this an inline function?
-
-Without splitting backing-dev.h this leads recursive includes.  With
-the split of that file in your series we could make it inline again.
-
-Another thing I've through of would be to always dynamically allocate
-bdis instead of embedding them.  This would stop the need to have
-backing-dev.h included in blkdev.h and would greatly simply the filesystems
-that allocated bdis on their own.
+SGkgRXplcXVpZWwsDQoNCk9uIDAxLzA4LzIwMTUgMTE6MjcgQU0sIEV6ZXF1aWVsIEdhcmNpYSB3
+cm90ZToNCj4NCj5IaSBRaSBXYW5nLA0KPg0KPk9uIDAxLzA3LzIwMTUgMTE6NDUgUE0sIFFpIFdh
+bmcg546L6LW3IChxaXdhbmcpIHdyb3RlOg0KPj4gSGkgQnJpYW4sDQo+Pg0KPj4gT24gVGh1LCBK
+YW4gMDgsIDIwMTUgYXQgOTowMzoyNEFNICswMDAwLCBCcmlhbiBOb3JyaXMgd3JvdGU6DQo+Pj4N
+Cj4+PiBPbiBUaHUsIEphbiAwOCwgMjAxNSBhdCAxMjo0NzoyNEFNICswMDAwLCBQZXRlciBQYW4g
+5r2Y5qCLIChwZXRlcnBhbmRvbmcpDQo+Pj4gd3JvdGU6DQo+Pj4+IERvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0IHwgICAyMiArDQo+Pj4+IGRyaXZlcnMv
+bXRkL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiArDQo+Pj4+
+IGRyaXZlcnMvbXRkL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAg
+MSArDQo+Pj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL0tjb25maWcgICAgICAgICAgICAgICAgICAg
+ICAgIHwgICAgNyArDQo+Pj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL01ha2VmaWxlICAgICAgICAg
+ICAgICAgICAgICAgIHwgICAgMyArDQo+Pj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL3NwaS1uYW5k
+LWJhc2UuYyAgICAgICAgICAgICAgIHwgMjAzNA0KPj4+ICsrKysrKysrKysrKysrKysrKysrDQo+
+Pj4+IGRyaXZlcnMvbXRkL3NwaS1uYW5kL3NwaS1uYW5kLWJidC5jICAgICAgICAgICAgICAgIHwg
+MTI3OSArKysrKysrKysrKysNCj4+Pg0KPj4+IEkgY2FuIGFscmVhZHkgdGVsbCBieSB0aGUgZGlm
+ZnN0YXQgdGhhdCBJIGRvbid0IGxpa2UgdGhpcy4gV2UgcHJvYmFibHkNCj4+PiBkb24ndCBuZWVk
+IDMwMDAgbmV3IGxpbmVzIG9mIGNvZGUgZm9yIHRoaXMsIGJ1dCB3ZSBlc3BlY2lhbGx5IGRvbid0
+IHdhbnQNCj4+PiB0byBkdXBsaWNhdGUgbmFuZF9iYnQuYy4gSXQgd29uJ3QgdGFrZSBhIGxvdCBv
+ZiB3b3JrIHRvIGF1Z21lbnQNCj4+PiBuYW5kX2JidC5jIHRvIG1ha2UgaXQgc2hhcmVhYmxlLiAo
+SSBjYW4gd2hpcCB0aGF0IHBhdGNoIHVwIGlmIG5lZWRlZC4pDQo+Pg0KPj4gWWVzLCBJIGFncmVl
+IHdpdGggeW91LCBOYW5kX2JidC5jIGRvIGNhbiBiZSBzaGFyZWQgYnkgUGFyYWxsZWwgTkFORCBh
+bmQNCj4+IFNQSSBOQU5ELiBBY3R1YWxseSwgd2UgYXJlIHdvcmtpbmcgYXQgdGhpcyBub3cuIFdp
+bGwgc2VuZCBwYXRjaGVzIHRvIHlvdQ0KPj4gT25jZSB3ZSBmaW5pc2hlZCBpdC4NCj4+DQo+DQo+
+VGhhbmtzIGZvciB0aGUgcXVpY2sgc3VibWlzc2lvbiENCj4NCj5Ib3dldmVyLCBCcmlhbiBpcyBy
+aWdodCwgdGhpcyBjb2RlIGR1cGxpY2F0aW9uIGlzIGEgbm8gZ28uDQo+DQo+UGVyaGFwcyBhIG1v
+cmUgdmFsaWQgYXBwcm9hY2ggd291bGQgYmUgdG8gZmlyc3QgaWRlbnRpZnkgdGhlIGNvZGUgdGhh
+dA0KPm5lZWRzIHRvIGJlIHNoYXJlZCBpbiBuYW5kX2JidC5jIGFuZCBuYW5kX2Jhc2UuYywgYW5k
+IGV4cG9ydCB0aG9zZQ0KPnN5bWJvbHMgKG9yIG1heWJlIGRvIHRoZSByZXF1aXJlZCByZWZhY3Rv
+cikuDQoNClllcywgSSBhZ3JlZSBCcmlhbidzIHN1Z2dlc3Rpb24gaW4gYW5vdGhlciBtYWlsLiAN
+Cg0KIiBUaGUgQkJUIGNvZGUgaXMgc29tZXRoaW5nIHdlIGRlZmluaXRlbHkgd2FudCB0byBzaGFy
+ZSwgYnV0IGl0J3MgYWN0dWFsbHkNCm5vdCB2ZXJ5IGNsb3NlbHkgdGllZCB0byBuYW5kX2Jhc2Uu
+YywgYW5kIGl0IGxvb2tzIHByZXR0eSBlYXN5IHRvIGFkYXB0DQp0byBhbnkgTVREIHRoYXQgaW1w
+bGVtZW50cyBtdGRfcmVhZF9vb2IoKS9tdGRfd3JpdGVfb29iKCkuIFdlJ2QganVzdA0KbmVlZCB0
+byBwYXJhbWV0ZXJpemUgYSBmZXcgcmVsZXZhbnQgZGV2aWNlIGRldGFpbHMgaW50byBhIG5ldyBu
+YW5kX2JidA0Kc3RydWN0LCByYXRoZXIgdGhhbiB1c2luZyBzdHJ1Y3QgbmFuZF9jaGlwIGRpcmVj
+dGx5LiINCg0KVG8gYWJzdHJhY3QgYSBuZXcgbmFuZF9iYnQgc3RydWN0IGluc3RlYWQgb2YgbmFu
+ZF9jaGlwIHRvIG1ha2UgU1BJIE5BTkQgDQphbmQgcGFyYWxsZWwgTkFORCBjYW4gc2hhcmUgbmFu
+ZF9iYnQuYyBmaWxlLCBJIGFscmVhZHkgYmVnaW4gdG8gd29yayBvbiANCnRoaXMuDQoNCkZvciBj
+b2RlIHNoYXJlZCBpbiBuYW5kX2Jhc2UuYywgSSBhZ3JlZSBpdCB3b3VsZCBiZSBiZXR0ZXIgaWYg
+d2UgY2FuIGZpbmQNCmEgZ29vZCBtZXRob2QgdG8gc2hhcmUgbmFuZF9iYXNlLmMgY29kZSBiZXR3
+ZWVuIHNwaSBuYW5kIGFuZCBwYXJhbGxlbCBuYW5kLg0KQnV0IGZyYW5rbHkgc3BlYWtpbmcsIEkn
+bSBub3Qgc2F0aXNmaWVkIGZvciB0aGUgcmVtYXAgY29tbWFuZCBtZXRob2QuIFRoaXMNCm1ldGhv
+ZCBtYWtlIGNvZGUgZGlmZmljdWx0IHRvIG1haW50YWluIHdoZW4gU1BJIE5BTkQgYW5kIFBhcmFs
+bGVsIE5BTkQgDQpldm9sdmUgbXVjaCBkaWZmZXJlbnRseSBpbiB0aGUgZnV0dXJlLg0KDQpUYWtl
+IHNvbWUgZXhhbXBsZSwgDQpJZiBvbmUgbmV3IGNvbW1hbmQgKGNhY2hlIG9wZXJhdGlvbiwgbXVs
+dGlwbGUgcGxhbmUgb3BlcmF0aW9uKSBpbXBsZW1lbnRlZCANCmluIHBhcmFsbGVsIE5BTkQgY29k
+ZSwgYW5kIGlzIHVzZWQgaW4gbmFuZF9yZWFkIG9yIG5hbmRfd3JpdGUsIHRoYXQgd2lsbCANCmNh
+dXNlIG1haW50YWluZXIgdG8gbW9kaWZ5IFNQSSBOQU5EIGNvZGUgdG8gcmVtYXAgdGhpcyBuZXcg
+Y29tbWFuZCwgdGhvdWdoIA0KdGhpcyBtb2RpZmljYXRpb24gcHJvYmFibHkgY291bGQgYmUgc2xp
+Z2h0LiBUaGF0IG1lYW5zIG1vZGlmaWNhdGlvbiBvbiANClBhcmFsbGVsIE5BTkQgZmxhc2ggbmVl
+ZCB0byBjb25zaWRlciBTUEkgTkFORCBhcyB3ZWxsLiANCg0KSG93IGRvIHlvdSB0aGluayBhYm91
+dCB0aGlzPw0KDQpGb3IgUGV0ZXIgUGFuJ3MgcGF0Y2hzZXQsIGlmIHdlIGRvIHNvbWUgbW9kaWZp
+Y2F0aW9uIHRvIG1ha2UgbmFuZF9iYnQuYyB0bw0KbWFrZSBpdCBzaGFyZWFibGUgZm9yIFBhcmFs
+bGVsIGFuZCBTUEkgTkFORC4gVGhlIGNvZGUgbGluZSBzaG91bGQgYmUgMjAwMC4NCkkgYmVsaWV2
+ZSBJIGNhbiByZXZpZXcgdGhpcyBzcGktbmFuZC1iYXNlLmMgdG8gcmVtb3ZlIHNvbWUgcmVkdW5k
+YW50IGNvZGUNCnRoYXQgbWF5IGh1bmRyZWRzIGxpbmUuIElzIDE3MDAgb3IgMTgwMCBjb2RlIGxp
+bmUgaXMgbW9yZSBhY2NlcHRhYmxlPw0KDQpMZXQgbWUga25vdyB5b3VyIG9waW5pb25zLg0KDQo+
+DQo+VGhlbiwgc2VwYXJhdGUgdGhlIFNQSSBOQU5EIHVwcGVyIGFuZCBsb3dlciBsb2dpYyAoaW4g
+YSBzaW1pbGFyIHRvIG15DQo+cHJvcG9zYWwsIHdoaWNoIEkgc3RpbGwgY29uc2lkZXIgdHVybmVk
+IG91dCB0byBiZSBjbGVhbikuDQo+DQo+VGhlc2UgdHdvIHRoaW5ncyB3b3VsZCBsZWFkIHRvIGEg
+c2ltcGxlciBhbmQgc21hbGxlciBwYXRjaHNldC4gSSBhbHNvDQo+c3VnZ2VzdCB0byBjdXQgb2Zm
+IGV2ZXJ5dGhpbmcgdGhhdCB3ZSBkb24ndCB1dHRlcmx5IG5lZWQgb24gYSBmaXJzdA0KPnN1Ym1p
+c3Npb24sIHNvIGl0J3MgZWFzaWVyIHRvIHJldmlldy4NCj4tLQ0KPkV6ZXF1aWVsDQoNCg0KLS0N
+ClFpIFdhbmcNCg==
