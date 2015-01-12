@@ -1,20 +1,23 @@
-Message-ID: <54B3916E.4040906@hisilicon.com>
-Date: Mon, 12 Jan 2015 17:18:38 +0800
-From: Zhou Wang <wangzhou1@hisilicon.com>
+Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YAeCM-0003EV-H0
+ for linux-mtd@lists.infradead.org; Mon, 12 Jan 2015 12:34:23 +0000
+Date: Mon, 12 Jan 2015 13:33:51 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 04/12] block_dev: only write bdev inode on close
+Message-ID: <20150112123351.GA29325@lst.de>
+References: <1420739133-27514-1-git-send-email-hch@lst.de>
+ <1420739133-27514-5-git-send-email-hch@lst.de>
+ <20150111173209.GK25319@htj.dyndns.org>
 MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v6 1/2] mtd: hisilicon: add a new NAND controller driver
- for hisilicon hip04 Soc
-References: <1421047734-30818-1-git-send-email-wangzhou1@hisilicon.com>
- <1421047734-30818-2-git-send-email-wangzhou1@hisilicon.com>
- <5265608.Ut8IQVYZc5@wuerfel>
-In-Reply-To: <5265608.Ut8IQVYZc5@wuerfel>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, liguozhu@hisilicon.com, xuwei5@hisilicon.com,
- linux-mtd@lists.infradead.org, haojian.zhuang@gmail.com, caizhiyong@huawei.com,
- yubingxu@hisilicon.com, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150111173209.GK25319@htj.dyndns.org>
+Cc: David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
+ Jens Axboe <axboe@fb.com>, linux-mm@kvack.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, ceph-devel@vger.kernel.org,
+ Christoph Hellwig <hch@lst.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +27,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/1/12 16:21, Arnd Bergmann wrote:
-> On Monday 12 January 2015 15:28:53 Zhou Wang wrote:
->> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
->> ---
-> 
-> I haven't looked at earlier versions, but it looks very good to
-> me overall. Just add a patch description above please.
+On Sun, Jan 11, 2015 at 12:32:09PM -0500, Tejun Heo wrote:
+> Is this an optimization or something necessary for the following
+> changes?  If latter, maybe it's a good idea to state why this is
+> necessary in the description?  Otherwise,
 
-Hi Arnd,
-
-The earlier version is same with this one, just change E-mail
-address here. Will add a patch description in next version. Thanks!
-
-> 
-> One tiny detail:
-> 
->> +static const struct of_device_id nfc_id_table[] = {
->> +	{ .compatible = "hisilicon,504-nfc" },
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(of, nfc_id_table);
->> +
->> +static struct platform_driver hisi_nfc_driver = {
->> +	.driver = {
->> +		.name  = "hisi_nand",
->> +		.of_match_table = of_match_ptr(nfc_id_table),
->> +		.pm = &hisi_nfc_pm_ops,
->> +	},
->> +	.probe		= hisi_nfc_probe,
->> +	.remove		= hisi_nfc_remove,
->> +};
-> 
-> Remove the of_match_ptr() macro here to avoid a warning when
-> CONFIG_OF is not set.
-
-Will remove the macro here, thanks!
-
-Best regards,
-Zhou Wang
-
-> 
-> 	Arnd
-> 
-> .
-> 
+It gets rid of a bdi reassignment, and thus makes life a lot simpler.
+I'll update the commit message.
