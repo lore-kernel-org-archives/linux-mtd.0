@@ -1,17 +1,20 @@
-Received: from mail-bn1bon0113.outbound.protection.outlook.com
- ([157.56.111.113] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-yk0-x22e.google.com ([2607:f8b0:4002:c07::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAmdh-0007sx-0Z
- for linux-mtd@lists.infradead.org; Mon, 12 Jan 2015 21:35:09 +0000
-From: <Frank.Li@freescale.com>
-To: <computersforpeace@gmail.com>, <shijie8@gmail.com>, <lznuaa@gmail.com>,
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/1] mtd: spi-nor: fsl-qspi: support DSM fro imx6 sx chip
-Date: Tue, 13 Jan 2015 04:24:48 +0800
-Message-ID: <1421094288-24750-1-git-send-email-Frank.Li@freescale.com>
+ id 1YAmsV-0007IW-BK
+ for linux-mtd@lists.infradead.org; Mon, 12 Jan 2015 21:50:28 +0000
+Received: by mail-yk0-f174.google.com with SMTP id 10so10395456ykt.5
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Jan 2015 13:50:06 -0800 (PST)
+Date: Mon, 12 Jan 2015 13:50:02 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Steve deRosier <derosier@gmail.com>
+Subject: Re: WP# line on flash chip?
+Message-ID: <20150112215002.GF9759@ld-irv-0074>
+References: <CALupW3AMWWs57nKEy1OsP_3ZLLH_US1ZPua+s8-qOWLVcnRd_g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Allen Xu <b45815@freescale.com>, Frank Li <Frank.Li@freescale.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALupW3AMWWs57nKEy1OsP_3ZLLH_US1ZPua+s8-qOWLVcnRd_g@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,54 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Allen Xu <b45815@freescale.com>
+On Thu, Jan 08, 2015 at 09:59:37AM -0800, Steve deRosier wrote:
+> I can't find any way to add this pin to our device tree, nor do I see
+> any evidence for support in either our atmel_nand driver or in
+> higher-level MTD stuff like nand_base.
+> 
+> Does the support for this exist and am I simply missing finding it, or
+> is it not there at all (expected)?
 
-i.mx6 sx support turn off fastmix and megamix power.
-qpsi controller status will lost when suspen/resume.
-add suspend/resume functions and reset qspi controller
-when resume.
+I believe it does not exist yet.
 
-Signed-off-by: Allen Xu <b45815@freescale.com>
-Signed-off-by: Frank Li <Frank.Li@freescale.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+I've seen a driver for a controller which has WP# control built directly
+into its register space. This driver would just toggle WP# before/after
+each PROGRAM_PAGE and ERASE operation. Not beautiful, but it works. I'd
+expect this might be nicer to do with larger granularity -- i.e., only
+toggle twice per mtd_write() even for larger transfers, in nand_base.c.
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 39763b9..9d608007 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -972,6 +972,22 @@ static int fsl_qspi_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int fsl_qspi_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+	return 0;
-+}
-+
-+static int fsl_qspi_resume(struct platform_device *pdev)
-+{
-+	struct fsl_qspi *q = platform_get_drvdata(pdev);
-+
-+	fsl_qspi_nor_setup(q);
-+	fsl_qspi_set_map_addr(q);
-+	fsl_qspi_nor_setup_last(q);
-+
-+	return 0;
-+}
-+
- static struct platform_driver fsl_qspi_driver = {
- 	.driver = {
- 		.name	= "fsl-quadspi",
-@@ -980,6 +996,8 @@ static struct platform_driver fsl_qspi_driver = {
- 	},
- 	.probe          = fsl_qspi_probe,
- 	.remove		= fsl_qspi_remove,
-+	.suspend	= fsl_qspi_suspend,
-+	.resume		= fsl_qspi_resume,
- };
- module_platform_driver(fsl_qspi_driver);
- 
--- 
-1.9.1
+> Assuming it's not there, and assuming I actually add it, is this a
+> feature that the MTD maintainers would allow to go upstream? I'm
+> assuming it's not a unique feature to this chip and that other chips
+> may have it.
+
+We don't often get asked for permission here, but I appreciate the
+sentiment :)
+
+The idea sounds fine to me. One obstacle is that we don't have a
+standardized "NAND" device tree node that nand_base can use. We have a
+few standardized properties, but they're mostly handled per-driver. But
+anything done to improve that is welcome.
+
+Regards,
+Brian
