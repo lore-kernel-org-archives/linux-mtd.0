@@ -1,18 +1,16 @@
-Received: from mail-bn1on0116.outbound.protection.outlook.com
- ([157.56.110.116] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAn8W-00018p-Q8
- for linux-mtd@lists.infradead.org; Mon, 12 Jan 2015 22:07:01 +0000
-From: <Frank.Li@freescale.com>
-To: <computersforpeace@gmail.com>, <shijie8@gmail.com>, <lznuaa@gmail.com>,
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/1 v2] mtd: spi-nor: fsl-qspi: support deep sleep mode for
- imx6 sx chip
-Date: Tue, 13 Jan 2015 04:56:40 +0800
-Message-ID: <1421096200-28174-1-git-send-email-Frank.Li@freescale.com>
+Date: Mon, 12 Jan 2015 18:35:55 -0600 (CST)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Message-ID: <889558859.110937.1421109355675.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <2021171878.109755.1421108768347.JavaMail.zimbra@xes-inc.com>
+Subject: [PATCH 1/2] nand_base: SOFT_BCH: Request strength over bytes
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Allen Xu <b45815@freescale.com>, Frank Li <Frank.Li@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +20,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Allen Xu <b45815@freescale.com>
+Previously, we requested that drivers pass ecc.size and ecc.bytes when
+using NAND_ECC_SOFT_BCH. However, a driver is likely to only know the ECC
+strength required for its NAND, so each driver would need to perform a
+strength-to-bytes calculation.
 
-i.mx6 sx support turn off fastmix and megamix power.
-qpsi controller can be turned off and all status lost when suspend/resume.
-add suspend/resume functions and reset qspi controller when resume.
+Avoid duplicating this calculation in each driver by asking drivers to
+pass ecc.size and ecc.strength so that the strength-to-bytes calculation
+need only be implemented once.
 
-Signed-off-by: Allen Xu <b45815@freescale.com>
-Signed-off-by: Frank Li <Frank.Li@freescale.com>
+This reverts/generalizes this commit:
+    mtd: nand: Base BCH ECC bytes on required strength
+
+Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
 ---
-Change from v1 to v2
-	- fix typo fro
-	- remove term DSM. 
+ drivers/mtd/nand/nand_base.c  | 21 +++++++++++++++------
+ drivers/mtd/nand/sunxi_nand.c |  2 --
+ 2 files changed, 15 insertions(+), 8 deletions(-)
 
- drivers/mtd/spi-nor/fsl-quadspi.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 39763b9..9d608007 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -972,6 +972,22 @@ static int fsl_qspi_remove(struct platform_device *pdev)
- 	return 0;
- }
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 41585df..993612c 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4028,22 +4028,31 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		ecc->read_oob = nand_read_oob_std;
+ 		ecc->write_oob = nand_write_oob_std;
+ 		/*
+-		 * Board driver should supply ecc.size and ecc.bytes values to
+-		 * select how many bits are correctable; see nand_bch_init()
+-		 * for details. Otherwise, default to 4 bits for large page
+-		 * devices.
++		 * Board driver should supply ecc.size and ecc.strength values
++		 * to select how many bits are correctable. Otherwise, default
++		 * to 4 bits for large page devices.
+ 		 */
+ 		if (!ecc->size && (mtd->oobsize >= 64)) {
+ 			ecc->size = 512;
+-			ecc->bytes = DIV_ROUND_UP(13 * ecc->strength, 8);
++			ecc->strength = 4;
+ 		}
++
++		/*
++		 * We previously recommended drivers pass ecc.size and
++		 * ecc.bytes. Continue to support drivers that do.
++		 * See nand_bch_init() for details.
++		 */
++		if (ecc->bytes && !ecc->strength)
++			ecc->strength = ecc->bytes * 8 / fls(8 * ecc->size);
++
++		ecc->bytes = DIV_ROUND_UP(
++				ecc->strength * fls(8 * ecc->size), 8);
+ 		ecc->priv = nand_bch_init(mtd, ecc->size, ecc->bytes,
+ 					       &ecc->layout);
+ 		if (!ecc->priv) {
+ 			pr_warn("BCH ECC initialization failed!\n");
+ 			BUG();
+ 		}
+-		ecc->strength = ecc->bytes * 8 / fls(8 * ecc->size);
+ 		break;
  
-+static int fsl_qspi_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+	return 0;
-+}
-+
-+static int fsl_qspi_resume(struct platform_device *pdev)
-+{
-+	struct fsl_qspi *q = platform_get_drvdata(pdev);
-+
-+	fsl_qspi_nor_setup(q);
-+	fsl_qspi_set_map_addr(q);
-+	fsl_qspi_nor_setup_last(q);
-+
-+	return 0;
-+}
-+
- static struct platform_driver fsl_qspi_driver = {
- 	.driver = {
- 		.name	= "fsl-quadspi",
-@@ -980,6 +996,8 @@ static struct platform_driver fsl_qspi_driver = {
- 	},
- 	.probe          = fsl_qspi_probe,
- 	.remove		= fsl_qspi_remove,
-+	.suspend	= fsl_qspi_suspend,
-+	.resume		= fsl_qspi_resume,
- };
- module_platform_driver(fsl_qspi_driver);
+ 	case NAND_ECC_NONE:
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index ccaa8e2..6f93b29 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -1110,8 +1110,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
  
+ 	switch (ecc->mode) {
+ 	case NAND_ECC_SOFT_BCH:
+-		ecc->bytes = DIV_ROUND_UP(ecc->strength * fls(8 * ecc->size),
+-					  8);
+ 		break;
+ 	case NAND_ECC_HW:
+ 		ret = sunxi_nand_hw_ecc_ctrl_init(mtd, ecc, np);
 -- 
 1.9.1
