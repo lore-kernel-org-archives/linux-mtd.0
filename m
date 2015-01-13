@@ -1,23 +1,17 @@
-Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB3VB-0007hD-21
- for linux-mtd@lists.infradead.org; Tue, 13 Jan 2015 15:35:29 +0000
-Received: by mail-la0-f54.google.com with SMTP id pv20so3216810lab.13
- for <linux-mtd@lists.infradead.org>; Tue, 13 Jan 2015 07:35:03 -0800 (PST)
+Date: Tue, 13 Jan 2015 08:25:53 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 2/2 v2] UBI: Block: Add blk-mq support
+Message-ID: <20150113162553.GA24351@infradead.org>
+References: <1420926734-16417-1-git-send-email-richard@nod.at>
+ <1420926734-16417-2-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <20150109201743.GW9759@ld-irv-0074>
-References: <1420626727-6929-1-git-send-email-festevam@gmail.com>
- <1420626727-6929-2-git-send-email-festevam@gmail.com>
- <20150109201743.GW9759@ld-irv-0074>
-Date: Tue, 13 Jan 2015 13:35:02 -0200
-Message-ID: <CAOMZO5BaEyU=qJfCsng+kPBcWSxb6wgJzzahgYvHn5Fqi_uoWA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] mtd: fsl-quadspi: Fix module unbound
-From: Fabio Estevam <festevam@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Huang Shijie <shijie8@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1420926734-16417-2-git-send-email-richard@nod.at>
+Cc: axboe@fb.com, dedekind1@gmail.com, tom.leiming@gmail.com,
+ linux-kernel@vger.kernel.org, hch@infradead.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +21,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+> +	struct ubi_sgl usgl;
 
-On Fri, Jan 9, 2015 at 6:17 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> OK, I still don't think you've got things right here.
->
-> Are you testing this with a two-flash system? What sort of tests?
+Btw, what's in struct ubi_sgl?  Can't find that in my tree.
 
-Yes, there are two qspi flashes on imx6sx-sdb board.
+> +static void ubiblock_do_work(struct work_struct *work)
+> +{
+> +	int ret;
+> +	struct ubiblock_pdu *pdu = container_of(work, struct ubiblock_pdu, work);
+> +	struct request *req = blk_mq_rq_from_pdu(pdu);
+> +
+> +	blk_mq_start_request(req);
+> +	blk_rq_map_sg(req->q, req, pdu->usgl.sg);
 
-The test I do are:
-
-- module unload/load - When I was adding dts support for imx6sx-sdb I
-would like to be able to load/unload the qspi driver. This is not
-possible currently, and this was the motivation for this series.
-
-- Read the two flashes.
-
-root@freescale /$ dd if=/dev/mtd0 of=/dev/null bs=1M count=1
-1+0 records in
-1+0 records out
-1048576 bytes (1.0MB) copied, 0.047851 seconds, 20.9MB/s
-
-root@freescale /$ dd if=/dev/mtd1 of=/dev/null bs=1M count=1
-1+0 records in
-1+0 records out
-1048576 bytes (1.0MB) copied, 0.052515 seconds, 19.0MB/s
-
-Not sure what is the correct way to fix this though.
-
-Regards,
-
-Fabio Estevam
+blk_rq_map_sg returns the number of entries actually mapped, which
+might be smaller than the number passed in due to merging.
