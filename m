@@ -1,21 +1,18 @@
-Received: from mail-yh0-x235.google.com ([2607:f8b0:4002:c01::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAtHf-0006vT-Ey
- for linux-mtd@lists.infradead.org; Tue, 13 Jan 2015 04:40:52 +0000
-Received: by mail-yh0-f53.google.com with SMTP id i57so441428yha.12
- for <linux-mtd@lists.infradead.org>; Mon, 12 Jan 2015 20:40:30 -0800 (PST)
-Date: Mon, 12 Jan 2015 20:40:26 -0800
+Date: Mon, 12 Jan 2015 20:55:11 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: Re: [PATCH] jffs2: compr_rubin: Remove unused function
-Message-ID: <20150113044026.GN9759@ld-irv-0074>
-References: <1420994209-20980-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v3 04/13] mtd: st_spi_fsm: Fetch boot device locations
+ from DT match tables
+Message-ID: <20150113045511.GO9759@ld-irv-0074>
+References: <1418644760-18773-1-git-send-email-lee.jones@linaro.org>
+ <1418644760-18773-5-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1420994209-20980-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+In-Reply-To: <1418644760-18773-5-git-send-email-lee.jones@linaro.org>
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +22,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 11, 2015 at 05:36:48PM +0100, Rickard Strandqvist wrote:
-> Remove the function pulledbits() that is not used anywhere.
-> 
-> This was partially found by using a static code analysis program called cppcheck.
-> 
-> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
++ devicetree
 
-Pushed to l2-mtd.git. Thanks.
+On Mon, Dec 15, 2014 at 11:59:11AM +0000, Lee Jones wrote:
+> To trim down on the amount of properties used by this driver and to conform
+> to the newly agreed method of acquiring syscfg registers/offsets, we now
+> obtain this information using match tables.
+> 
+> In the process we are deprecating the old generic compatible string and
+> providing 3 shiny new ones for each of the support platforms.  The
+> deprecated compatible string will be removed in due course.
+
+I'm not sure how this agreement was done, but by default, we expect not
+to break backwards compatibility. This patch does just that.
+
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mtd/devices/st_spi_fsm.c | 75 ++++++++++++++++++++++++++++++----------
+>  1 file changed, 57 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+> index fac0fe9..d82394a 100644
+> --- a/drivers/mtd/devices/st_spi_fsm.c
+> +++ b/drivers/mtd/devices/st_spi_fsm.c
+> @@ -29,6 +29,21 @@
+>  #include "serial_flash_cmds.h"
+>  
+>  /*
+> + * FSM SPI Boot Mode Registers/Masks
+> + */
+> +#define STID127_SYSCON_BOOT_DEV_REG	0x0D8
+> +#define STID127_SYSCON_BOOT_DEV_SPI	0x068
+> +#define STID127_SYSCON_BOOT_DEV_MASK	0x07C
+> +
+> +#define STIH407_SYSCON_BOOT_DEV_REG	0x8C4
+> +#define STIH407_SYSCON_BOOT_DEV_SPI	0x068
+> +#define STIH407_SYSCON_BOOT_DEV_MASK	0x07C
+> +
+> +#define STIH416_SYSCON_BOOT_DEV_REG	0x958
+> +#define STIH416_SYSCON_BOOT_DEV_SPI	0x01A
+> +#define STIH416_SYSCON_BOOT_DEV_MASK	0x01F
+> +
+> +/*
+>   * FSM SPI Controller Registers
+>   */
+>  #define SPI_CLOCKDIV			0x0010
+> @@ -288,6 +303,12 @@ struct seq_rw_config {
+>  	uint8_t         dummy_cycles;   /* No. of DUMMY cycles */
+>  };
+>  
+> +struct stfsm_boot_dev {
+> +	uint32_t		reg;
+> +	uint32_t		spi;
+> +	uint32_t		mask;
+> +};
+> +
+>  /* SPI Flash Device Table */
+>  struct flash_info {
+>  	char            *name;
+> @@ -313,6 +334,24 @@ struct flash_info {
+>  	int             (*config)(struct stfsm *);
+>  };
+>  
+> +static struct stfsm_boot_dev stfsm_stid127_data = {
+> +	.reg  = STID127_SYSCON_BOOT_DEV_REG,
+> +	.spi  = STID127_SYSCON_BOOT_DEV_SPI,
+> +	.mask = STID127_SYSCON_BOOT_DEV_MASK,
+> +};
+> +
+> +static struct stfsm_boot_dev stfsm_stih407_data = {
+> +	.reg  = STIH407_SYSCON_BOOT_DEV_REG,
+> +	.spi  = STIH407_SYSCON_BOOT_DEV_SPI,
+> +	.mask = STIH407_SYSCON_BOOT_DEV_MASK,
+> +};
+> +
+> +static struct stfsm_boot_dev stfsm_stih416_data = {
+> +	.reg  = STIH416_SYSCON_BOOT_DEV_REG,
+> +	.spi  = STIH416_SYSCON_BOOT_DEV_SPI,
+> +	.mask = STIH416_SYSCON_BOOT_DEV_MASK,
+> +};
+> +
+>  static int stfsm_n25q_config(struct stfsm *fsm);
+>  static int stfsm_mx25_config(struct stfsm *fsm);
+>  static int stfsm_s25fl_config(struct stfsm *fsm);
+> @@ -1977,14 +2016,23 @@ static int stfsm_init(struct stfsm *fsm)
+>  	return 0;
+>  }
+>  
+> +static const struct of_device_id stfsm_match[] = {
+> +	{ .compatible = "st,spi-fsm" }, /* DEPRECATED */
+> +	{ .compatible = "st,stid127-spi-fsm", .data = &stfsm_stid127_data },
+> +	{ .compatible = "st,stih407-spi-fsm", .data = &stfsm_stih407_data },
+> +	{ .compatible = "st,stih416-spi-fsm", .data = &stfsm_stih416_data },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, stfsm_match);
+> +
+>  static void stfsm_fetch_platform_configs(struct platform_device *pdev)
+>  {
+>  	struct stfsm *fsm = platform_get_drvdata(pdev);
+>  	struct device_node *np = pdev->dev.of_node;
+> +	const struct stfsm_boot_dev *boot_dev;
+> +	const struct of_device_id *match;
+>  	struct regmap *regmap;
+> -	uint32_t boot_device_reg;
+> -	uint32_t boot_device_spi;
+> -	uint32_t boot_device;     /* Value we read from *boot_device_reg */
+> +	uint32_t boot_device;    /* Value we read from the boot dev mode pins */
+>  	int ret;
+>  
+>  	/* Booting from SPI NOR Flash is the default */
+> @@ -1998,21 +2046,18 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
+>  
+>  	fsm->reset_por = of_property_read_bool(np, "st,reset-por");
+>  
+> -	/* Where in the syscon the boot device information lives */
+> -	ret = of_property_read_u32(np, "st,boot-device-reg", &boot_device_reg);
+> -	if (ret)
+> +	match = of_match_node(stfsm_match, np);
+> +	if (!match)
+>  		goto boot_device_fail;
+> +	boot_dev = match->data;
+>  
+> -	/* Boot device value when booted from SPI NOR */
+> -	ret = of_property_read_u32(np, "st,boot-device-spi", &boot_device_spi);
+> +	ret = regmap_read(regmap, boot_dev->reg, &boot_device);
+
+
+^^^ NULL pointer dereference for any existing DTB that uses the
+"st,spi-fsm" compatible string. So I'll NAK this patch as-is. Either we
+need to completely drop the "deprecated" compatible property (what's the
+point binding to it, if we're going to OOPS on it anyway), or else we
+need to maintain both methods (at least for whatever deprecation period
+is deemed acceptable).
+
+>  	if (ret)
+>  		goto boot_device_fail;
+>  
+> -	ret = regmap_read(regmap, boot_device_reg, &boot_device);
+> -	if (ret)
+> -		goto boot_device_fail;
+> +	boot_device &= boot_dev->mask;
+>  
+> -	if (boot_device != boot_device_spi)
+> +	if (boot_device != boot_dev->spi)
+>  		fsm->booted_from_spi = false;
+>  
+>  	return;
+> @@ -2156,12 +2201,6 @@ static int stfsmfsm_resume(struct device *dev)
+>  
+>  static SIMPLE_DEV_PM_OPS(stfsm_pm_ops, stfsmfsm_suspend, stfsmfsm_resume);
+>  
+> -static const struct of_device_id stfsm_match[] = {
+> -	{ .compatible = "st,spi-fsm", },
+> -	{},
+> -};
+> -MODULE_DEVICE_TABLE(of, stfsm_match);
+> -
+>  static struct platform_driver stfsm_driver = {
+>  	.probe		= stfsm_probe,
+>  	.remove		= stfsm_remove,
 
 Brian
