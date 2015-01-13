@@ -1,18 +1,27 @@
-Received: from mail-by2on0102.outbound.protection.outlook.com
- ([207.46.100.102] helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-yk0-x22b.google.com ([2607:f8b0:4002:c07::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB5R1-0001IH-De
- for linux-mtd@lists.infradead.org; Tue, 13 Jan 2015 17:39:20 +0000
-From: <Frank.Li@freescale.com>
-To: <computersforpeace@gmail.com>, <shijie8@gmail.com>, <lznuaa@gmail.com>,
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/1] mtd: fsl-quadspi: improve read performance by increase
- AHB transfer size
-Date: Wed, 14 Jan 2015 00:28:56 +0800
-Message-ID: <1421166536-13601-1-git-send-email-Frank.Li@freescale.com>
+ id 1YB6Vz-0000go-5t
+ for linux-mtd@lists.infradead.org; Tue, 13 Jan 2015 18:48:32 +0000
+Received: by mail-yk0-f171.google.com with SMTP id 142so2183158ykq.2
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Jan 2015 10:48:09 -0800 (PST)
+Date: Tue, 13 Jan 2015 10:48:05 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd: nand: default bitflip-reporting threshold to 75% of
+ correction strength
+Message-ID: <20150113184805.GS9759@ld-irv-0074>
+References: <54B38745.70007@atmel.com>
+ <1421095889-12717-1-git-send-email-computersforpeace@gmail.com>
+ <54B51CCA.1090707@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Allen Xu <b45815@freescale.com>, Frank Li <Frank.Li@freescale.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54B51CCA.1090707@nod.at>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Steve deRosier <derosier@gmail.com>, Josh Wu <josh.wu@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,86 +31,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Allen Xu <b45815@freescale.com>
+Hi Richard,
 
-Set AHB transfer size to 1K which improved the read performance.
+On Tue, Jan 13, 2015 at 02:25:30PM +0100, Richard Weinberger wrote:
+> Am 12.01.2015 um 21:51 schrieb Brian Norris:
+> > The MTD API reports -EUCLEAN only if the maximum number of bitflips
+> > found in any ECC block exceeds a certain threshold. This is done to
+> > avoid excessive -EUCLEAN reports to MTD users, which may induce
+> > additional scrubbing of data, even when the ECC algorithm in use is
+> > perfectly capable of handling the bitflips.
+> > 
+> > This threshold can be controlled by user-space (via sysfs), to allow
+> > users to determine what they are willing to tolerate in their
+> > application. But it still helps to have sane defaults.
+> > 
+> > In recent discussion [1], it was pointed out that our default threshold
+> > is equal to the correction strength. That means that we won't actually
+> > report any -EUCLEAN (i.e., "bitflips were corrected") errors until there
+> > are almost too many to handle. It was determined that 3/4 of the
+> > correction strength is probably a better default.
+> > 
+> > [1] http://lists.infradead.org/pipermail/linux-mtd/2015-January/057259.html
+> 
+> I like this change but I have one question.
+> 
+> UBI will treat a block as bad if it shows bitflips (EUCLEAN) right
+> after erasure.
 
-Add ahb_buf_size field in fsl_qspi_devtype_data to denote the size for
-different SoC.
+Can you elaborate? When "after erasure"? The closest I see is that UBI
+will mark a block bad if it sees an -EIO failure from sync_erase() in
+erase_worker(). If you have extra debug checks on, then
+ubi_self_check_all_ff() could potentially give you bitflip problems
+after the erase, but that's an odd corner case anyway, which many
+drivers have been handling in hacked together ad-hoc ways anyway (search
+for "bitflips in erase pages").
 
-Before:
+So I can't pinpoint what you're talking about, exactly.
 
-root@imx6qdlsolo:~# dd if=/dev/mtd1 of=/dev/null bs=1M count=16
-16+0 records in
-16+0 records out
-16777216 bytes (17 MB) copied, 0.472183 s, 25.1 MB/s
+> For SLC NAND this works very well.
+> Does this also hold for MLC NAND? If one or two bit flips are okay
+> even for a freshly erased MLC NAND this change could cause UBI to
+> mark good blocks as bad depending on the ECC strength.
 
-After:
+I would typically assume that MLC NAND users must be using significantly
+stronger ECC (e.g., 12-bit / 512-byte, at least), so "one or two
+bitflips" would still fall well under 75% of 12 bits.
 
-root@imx6qdlsolo:~# dd if=/dev/mtd1 of=/dev/null bs=1M count=16
-16+0 records in
-16+0 records out
-16777216 bytes (17 MB) copied, 0.369439 s, 29.5 MB/s
-
-Signed-off-by: Allen Xu <b45815@freescale.com>
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
-Signed-off-by: Frank Li <Frank.Li@freescale.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 9d608007..75d6898 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -57,7 +57,9 @@
- 
- #define QUADSPI_BUF3CR			0x1c
- #define QUADSPI_BUF3CR_ALLMST_SHIFT	31
--#define QUADSPI_BUF3CR_ALLMST		(1 << QUADSPI_BUF3CR_ALLMST_SHIFT)
-+#define QUADSPI_BUF3CR_ALLMST_MASK	(1 << QUADSPI_BUF3CR_ALLMST_SHIFT)
-+#define QUADSPI_BUF3CR_ADATSZ_SHIFT		8
-+#define QUADSPI_BUF3CR_ADATSZ_MASK	(0xFF << QUADSPI_BUF3CR_ADATSZ_SHIFT)
- 
- #define QUADSPI_BFGENCR			0x20
- #define QUADSPI_BFGENCR_PAR_EN_SHIFT	16
-@@ -198,18 +200,21 @@ struct fsl_qspi_devtype_data {
- 	enum fsl_qspi_devtype devtype;
- 	int rxfifo;
- 	int txfifo;
-+	int ahb_buf_size;
- };
- 
- static struct fsl_qspi_devtype_data vybrid_data = {
- 	.devtype = FSL_QUADSPI_VYBRID,
- 	.rxfifo = 128,
--	.txfifo = 64
-+	.txfifo = 64,
-+	.ahb_buf_size = 1024
- };
- 
- static struct fsl_qspi_devtype_data imx6sx_data = {
- 	.devtype = FSL_QUADSPI_IMX6SX,
- 	.rxfifo = 128,
--	.txfifo = 512
-+	.txfifo = 512,
-+	.ahb_buf_size = 1024
- };
- 
- #define FSL_QSPI_MAX_CHIP	4
-@@ -583,7 +588,12 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
- 	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF0CR);
- 	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF1CR);
- 	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF2CR);
--	writel(QUADSPI_BUF3CR_ALLMST, base + QUADSPI_BUF3CR);
-+	/*
-+	 * Set ADATSZ with the maximum AHB buffer size to improve the
-+	 * read performance.
-+	 */
-+	writel(QUADSPI_BUF3CR_ALLMST_MASK | ((q->devtype_data->ahb_buf_size / 8)
-+			<< QUADSPI_BUF3CR_ADATSZ_SHIFT), base + QUADSPI_BUF3CR);
- 
- 	/* We only use the buffer3 */
- 	writel(0, base + QUADSPI_BUF0IND);
--- 
-1.9.1
+Brian
