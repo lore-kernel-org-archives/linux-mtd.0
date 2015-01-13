@@ -1,29 +1,16 @@
-Received: from mail-bn1bon0133.outbound.protection.outlook.com
- ([157.56.111.133] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-qc0-x231.google.com ([2607:f8b0:400d:c01::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB9b0-00013p-BG
- for linux-mtd@lists.infradead.org; Tue, 13 Jan 2015 22:05:55 +0000
-From: "Frank.Li@freescale.com" <Frank.Li@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>, Fabio Estevam
- <festevam@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>
-Subject: RE: [PATCH v3 2/2] mtd: fsl-quadspi: Fix module unbound
-Date: Tue, 13 Jan 2015 22:05:29 +0000
-Message-ID: <BY1PR0301MB12213C4577DB849CA161F51482400@BY1PR0301MB1221.namprd03.prod.outlook.com>
-References: <1420626727-6929-1-git-send-email-festevam@gmail.com>
- <1420626727-6929-2-git-send-email-festevam@gmail.com>
- <20150109201743.GW9759@ld-irv-0074>
- <CAOMZO5BaEyU=qJfCsng+kPBcWSxb6wgJzzahgYvHn5Fqi_uoWA@mail.gmail.com>
- <20150113185153.GT9759@ld-irv-0074>
- <CAOMZO5Cy39iC0CpvO0H6i6rX6YVyns-2tZi5-vU28hCM6kgu-w@mail.gmail.com>
- <20150113215817.GW9759@ld-irv-0074>
-In-Reply-To: <20150113215817.GW9759@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Huang Shijie <shijie8@gmail.com>
+ id 1YB9jf-0005He-VC
+ for linux-mtd@lists.infradead.org; Tue, 13 Jan 2015 22:14:52 +0000
+Received: by mail-qc0-f177.google.com with SMTP id x3so4653256qcv.8
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Jan 2015 14:14:30 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH RESEND] mtd: fsl-quadspi: Fix module unbound
+Date: Tue, 13 Jan 2015 20:14:15 -0200
+Message-Id: <1421187255-20618-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Frank.Li@freescale.com,
+ shijie8@gmail.com, han.xu@freescale.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,60 +20,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-> Hi Fabio,
->=20
-> On Tue, Jan 13, 2015 at 07:45:22PM -0200, Fabio Estevam wrote:
-> > On Tue, Jan 13, 2015 at 4:51 PM, Brian Norris
-> > <computersforpeace@gmail.com> wrote:
-> >
-> > >> - Read the two flashes.
-> > >
-> > > Are you doing any verification to make sure you're reading the
-> > > *correct* data? I'd imagine from some what I see in your patches,
-> > > that you might actually be reading from the wrong flash.
-> >
-> > Yes, you are right. Just confirmed that with this v3 applied I erased
-> > /dev/mtd0, but that also incorrectly erased /dev/mtd1.
-> >
-> > Now I came back to the original v1 patch: isn't it the simpler
-> > approach for fixing the module load/unload crash problem?
-> >
-> > It only keeps the mtd unregistration index in sync with registration
-> > and doesn't touch other areas of the driver.
-> >
-> > IMHO it is an improvement over the current situation.
->=20
-> Right, I thought your original patch was an improvement, but it did still=
- leave
-> some of the error path broken. And as Huang mentioned, multiple devices
-> were never actually *properly* supported, so there were problems there.
->=20
-> > I agree that this driver needs more rework, but I am not able to put
-> > it on such good state.
->=20
-> I might be OK with taking v1 if we can do the following:
->=20
-> (1) Identify who will take responsibility for testing and improving this =
-driver.
-> We might even add a MAINTAINERS entry
+When removing the fsl-quadspi module and running 'cat /proc/mtd' afterwards,
+we see garbage data like:
 
-Our QSPI driver owner Xu han (han.xu@freescale.com) will take responsibilit=
-y to test and improve
-This driver.  I will help him to be familiar with linux kernel community wo=
-rk.=20
+$ rmmod  fsl-quadspi
+$ cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00000000 00000000 "(null)"
+mtd0: 00000000 00000000 "(null)"
+mtd0: 00000000 00000000 "(null)"
+...
+mtd0: a22296c6c756e28 00000000 "(null)"
+mtd0: a22296c6c756e28 3064746d "(null)"
 
-Best regards
-Frank Li
+If we continue doing multiple module load/unload operations, then it will also 
+lead to a kernel crash.
 
->=20
-> (2) Get an 'ack' from said person
->=20
-> (3) Document the known issues with this driver; add some TODO/FIXME
-> comments, and maybe disable potentially broken features until they get
-> fixed (e.g., only probe up to 1 flash, leaving the second flash
-> disabled)
->=20
-> Huang mentioned that Frank may be interested in (1).
->=20
-> Brian
+The reason for this is due to the wrong mtd index used in
+mtd_device_unregister() in the remove function.
+
+We need to keep the mtd unregister index aligned with the one used in the probe
+function, which means we need to take into account the 'has_second_chip'
+property. By doing so we can guarantee that the mtd index is the same in the
+registration and unregistration functions.
+
+With this patch applied we can load/unload the fsl-quadspi driver several times
+and it will result in no crash.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 39763b9..4b468a9 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -227,6 +227,7 @@ struct fsl_qspi {
+ 	u32 nor_num;
+ 	u32 clk_rate;
+ 	unsigned int chip_base_addr; /* We may support two chips. */
++	bool has_second_chip;
+ };
+ 
+ static inline int is_vybrid_qspi(struct fsl_qspi *q)
+@@ -783,7 +784,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	struct spi_nor *nor;
+ 	struct mtd_info *mtd;
+ 	int ret, i = 0;
+-	bool has_second_chip = false;
+ 	const struct of_device_id *of_id =
+ 			of_match_device(fsl_qspi_dt_ids, &pdev->dev);
+ 
+@@ -860,14 +860,14 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		goto irq_failed;
+ 
+ 	if (of_get_property(np, "fsl,qspi-has-second-chip", NULL))
+-		has_second_chip = true;
++		q->has_second_chip = true;
+ 
+ 	/* iterate the subnodes. */
+ 	for_each_available_child_of_node(dev->of_node, np) {
+ 		char modalias[40];
+ 
+ 		/* skip the holes */
+-		if (!has_second_chip)
++		if (!q->has_second_chip)
+ 			i *= 2;
+ 
+ 		nor = &q->nor[i];
+@@ -943,9 +943,12 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ last_init_failed:
+-	for (i = 0; i < q->nor_num; i++)
++	for (i = 0; i < q->nor_num; i++) {
++		/* skip the holes */
++		if (!q->has_second_chip)
++			i *= 2;
+ 		mtd_device_unregister(&q->mtd[i]);
+-
++	}
+ irq_failed:
+ 	clk_disable_unprepare(q->clk);
+ clk_failed:
+@@ -960,8 +963,12 @@ static int fsl_qspi_remove(struct platform_device *pdev)
+ 	struct fsl_qspi *q = platform_get_drvdata(pdev);
+ 	int i;
+ 
+-	for (i = 0; i < q->nor_num; i++)
++	for (i = 0; i < q->nor_num; i++) {
++		/* skip the holes */
++		if (!q->has_second_chip)
++			i *= 2;
+ 		mtd_device_unregister(&q->mtd[i]);
++	}
+ 
+ 	/* disable the hardware */
+ 	writel(QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
+-- 
+1.9.1
