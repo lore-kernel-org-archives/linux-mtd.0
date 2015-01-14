@@ -1,18 +1,19 @@
 Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBON1-0000Hd-DB
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 13:52:29 +0000
-Date: Wed, 14 Jan 2015 14:51:58 +0100
+ id 1YBOU0-0006xZ-Qj
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 13:59:41 +0000
+Date: Wed, 14 Jan 2015 14:59:14 +0100
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 10/12] nfs: don't call bdi_unregister
-Message-ID: <20150114135158.GK10215@quack.suse.cz>
+Subject: Re: [PATCH 11/12] fs: don't reassign dirty inodes to
+ default_backing_dev_info
+Message-ID: <20150114135914.GL10215@quack.suse.cz>
 References: <1421228561-16857-1-git-send-email-hch@lst.de>
- <1421228561-16857-11-git-send-email-hch@lst.de>
+ <1421228561-16857-12-git-send-email-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1421228561-16857-11-git-send-email-hch@lst.de>
+In-Reply-To: <1421228561-16857-12-git-send-email-hch@lst.de>
 Cc: David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
  linux-mm@kvack.org, Jens Axboe <axboe@fb.com>, linux-fsdevel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Tejun Heo <tj@kernel.org>,
@@ -26,121 +27,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 14-01-15 10:42:39, Christoph Hellwig wrote:
-> bdi_destroy already does all the work, and if we delay freeing the
-> anon bdev we can get away with just that single call.
+On Wed 14-01-15 10:42:40, Christoph Hellwig wrote:
+> If we have dirty inodes we need to call the filesystem for it, even if the
+> device has been removed and the filesystem will error out early.  The
+> current code does that by reassining all dirty inodes to the default
+> backing_dev_info when a bdi is unlinked, but that's pretty pointless given
+> that the bdi must always outlive the super block.
 > 
-> Addintionally remove the call during mount failure, as
-> deactivate_super_locked will already call ->kill_sb and clean up
-> the bdi for us.
+> Instead of stopping writeback at unregister time and moving inodes to the
+> default bdi just keep the current bdi alive until it is destroyed.  The
+> containing objects of the bdi ensure this doesn't happen until all
+> writeback has finished by erroring out.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Tejun Heo <tj@kernel.org>
   Looks good. You can add:
 Reviewed-by: Jan Kara <jack@suse.cz>
 
-								Honza
+One nit below:
 
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
 > ---
->  fs/nfs/internal.h  |  1 -
->  fs/nfs/nfs4super.c |  1 -
->  fs/nfs/super.c     | 24 ++++++------------------
->  3 files changed, 6 insertions(+), 20 deletions(-)
+>  mm/backing-dev.c | 91 +++++++++++++++-----------------------------------------
+>  1 file changed, 24 insertions(+), 67 deletions(-)
 > 
-> diff --git a/fs/nfs/internal.h b/fs/nfs/internal.h
-> index efaa31c..f519d41 100644
-> --- a/fs/nfs/internal.h
-> +++ b/fs/nfs/internal.h
-> @@ -416,7 +416,6 @@ int  nfs_show_options(struct seq_file *, struct dentry *);
->  int  nfs_show_devname(struct seq_file *, struct dentry *);
->  int  nfs_show_path(struct seq_file *, struct dentry *);
->  int  nfs_show_stats(struct seq_file *, struct dentry *);
-> -void nfs_put_super(struct super_block *);
->  int nfs_remount(struct super_block *sb, int *flags, char *raw_data);
->  
->  /* write.c */
-> diff --git a/fs/nfs/nfs4super.c b/fs/nfs/nfs4super.c
-> index 6f340f0..ab30a3a 100644
-> --- a/fs/nfs/nfs4super.c
-> +++ b/fs/nfs/nfs4super.c
-> @@ -53,7 +53,6 @@ static const struct super_operations nfs4_sops = {
->  	.destroy_inode	= nfs_destroy_inode,
->  	.write_inode	= nfs4_write_inode,
->  	.drop_inode	= nfs_drop_inode,
-> -	.put_super	= nfs_put_super,
->  	.statfs		= nfs_statfs,
->  	.evict_inode	= nfs4_evict_inode,
->  	.umount_begin	= nfs_umount_begin,
-> diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-> index 31a11b0..6ec4fe2 100644
-> --- a/fs/nfs/super.c
-> +++ b/fs/nfs/super.c
-> @@ -311,7 +311,6 @@ const struct super_operations nfs_sops = {
->  	.destroy_inode	= nfs_destroy_inode,
->  	.write_inode	= nfs_write_inode,
->  	.drop_inode	= nfs_drop_inode,
-> -	.put_super	= nfs_put_super,
->  	.statfs		= nfs_statfs,
->  	.evict_inode	= nfs_evict_inode,
->  	.umount_begin	= nfs_umount_begin,
-> @@ -2569,7 +2568,7 @@ struct dentry *nfs_fs_mount_common(struct nfs_server *server,
->  		error = nfs_bdi_register(server);
->  		if (error) {
->  			mntroot = ERR_PTR(error);
-> -			goto error_splat_bdi;
-> +			goto error_splat_super;
->  		}
->  		server->super = s;
->  	}
-> @@ -2601,9 +2600,6 @@ error_splat_root:
->  	dput(mntroot);
->  	mntroot = ERR_PTR(error);
->  error_splat_super:
-> -	if (server && !s->s_root)
-> -		bdi_unregister(&server->backing_dev_info);
-> -error_splat_bdi:
->  	deactivate_locked_super(s);
->  	goto out;
->  }
-> @@ -2651,27 +2647,19 @@ out:
->  EXPORT_SYMBOL_GPL(nfs_fs_mount);
->  
->  /*
-> - * Ensure that we unregister the bdi before kill_anon_super
-> - * releases the device name
-> - */
-> -void nfs_put_super(struct super_block *s)
-> -{
-> -	struct nfs_server *server = NFS_SB(s);
-> -
-> -	bdi_unregister(&server->backing_dev_info);
-> -}
-> -EXPORT_SYMBOL_GPL(nfs_put_super);
-> -
-> -/*
->   * Destroy an NFS2/3 superblock
->   */
->  void nfs_kill_super(struct super_block *s)
+> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> index 52e0c76..3ebba25 100644
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+...
+> @@ -471,37 +445,20 @@ void bdi_destroy(struct backing_dev_info *bdi)
 >  {
->  	struct nfs_server *server = NFS_SB(s);
-> +	dev_t dev = s->s_dev;
-> +
-> +	generic_shutdown_super(s);
+>  	int i;
 >  
-> -	kill_anon_super(s);
->  	nfs_fscache_release_super_cookie(s);
-> +
->  	nfs_free_server(server);
-> +	free_anon_bdev(dev);
->  }
->  EXPORT_SYMBOL_GPL(nfs_kill_super);
+> -	/*
+> -	 * Splice our entries to the default_backing_dev_info.  This
+> -	 * condition shouldn't happen.  @wb must be empty at this point and
+> -	 * dirty inodes on it might cause other issues.  This workaround is
+> -	 * added by ce5f8e779519 ("writeback: splice dirty inode entries to
+> -	 * default bdi on bdi_destroy()") without root-causing the issue.
+> -	 *
+> -	 * http://lkml.kernel.org/g/1253038617-30204-11-git-send-email-jens.axboe@oracle.com
+> -	 * http://thread.gmane.org/gmane.linux.file-systems/35341/focus=35350
+> -	 *
+> -	 * We should probably add WARN_ON() to find out whether it still
+> -	 * happens and track it down if so.
+> -	 */
+> -	if (bdi_has_dirty_io(bdi)) {
+> -		struct bdi_writeback *dst = &default_backing_dev_info.wb;
+> -
+> -		bdi_lock_two(&bdi->wb, dst);
+> -		list_splice(&bdi->wb.b_dirty, &dst->b_dirty);
+> -		list_splice(&bdi->wb.b_io, &dst->b_io);
+> -		list_splice(&bdi->wb.b_more_io, &dst->b_more_io);
+> -		spin_unlock(&bdi->wb.list_lock);
+> -		spin_unlock(&dst->list_lock);
+> -	}
+> -
+> -	bdi_unregister(bdi);
+> +	bdi_wb_shutdown(bdi);
 >  
-> -- 
-> 1.9.1
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-fsdevel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> +	WARN_ON(!list_empty(&bdi->work_list));
+> +	WARN_ON(delayed_work_pending(&bdi->wb.dwork));
+>  	WARN_ON(delayed_work_pending(&bdi->wb.dwork));
+  You have the warning twice here...
+
+								Honza
 -- 
 Jan Kara <jack@suse.cz>
 SUSE Labs, CR
