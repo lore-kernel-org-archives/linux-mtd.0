@@ -1,24 +1,24 @@
-Received: from mail-we0-f170.google.com ([74.125.82.170])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBJCZ-0007lO-Rn
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 08:21:21 +0000
-Received: by mail-we0-f170.google.com with SMTP id w61so7331168wes.1
- for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 00:20:56 -0800 (PST)
+ id 1YBJUD-0001r2-KQ
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 08:39:35 +0000
+Message-ID: <54B62B2A.7010109@nod.at>
+Date: Wed, 14 Jan 2015 09:39:06 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <20150108012616.GQ9759@ld-irv-0074>
-References: <1418873011-4974-1-git-send-email-zhang.chunyan@linaro.org>
- <4170676.z5yoWA4Rtc@wuerfel> <20150108012616.GQ9759@ld-irv-0074>
-Date: Wed, 14 Jan 2015 16:20:56 +0800
-Message-ID: <CAG2=9p-CJyFiid2=eA5cOi7zt9oSxScfsox5YVNngfN9nQz8-Q@mail.gmail.com>
-Subject: Re: [PATCH v3] mtd: test: Replace timeval with ktime_t in speedtest.c
- and torturetest.c
-From: Chunyan Zhang <zhang.chunyan@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Lyra Zhang <zhang.lyra@gmail.com>, linux-kernel@vger.kernel.org,
- John Stultz <john.stultz@linaro.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Arnd Bergmann <arnd@linaro.org>
+To: Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 2/2 v2] UBI: Block: Add blk-mq support
+References: <1420926734-16417-1-git-send-email-richard@nod.at>
+ <1420926734-16417-2-git-send-email-richard@nod.at>
+ <20150113162553.GA24351@infradead.org> <54B5A188.2000001@nod.at>
+ <54B5A213.1090502@fb.com> <54B5A77C.9040405@nod.at> <54B5AA84.9010306@fb.com>
+ <54B5AC10.6070102@nod.at> <54B5B6E4.4020400@fb.com>
+In-Reply-To: <54B5B6E4.4020400@fb.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: dedekind1@gmail.com, tom.leiming@gmail.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Brian
-
-Thank you so much !
-
-Best regards,
-Chunyan
-
-On Thu, Jan 8, 2015 at 9:26 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Thu, Dec 18, 2014 at 08:53:10AM +0100, Arnd Bergmann wrote:
->> On Thursday 18 December 2014 11:23:31 Chunyan Zhang wrote:
->> > This patch changes the 32-bit time type (timeval) to the 64-bit one
->> > (ktime_t), since 32-bit time types will break in the year 2038.
->> >
->> > I use ktime_t instead of timeval to define 'start' and 'finish'
->> > which are used to get the time for tow points.
->> >
->> > This patch also changes do_gettimeofday() to ktime_get() accordingly,
->> > since ktime_get returns a ktime_t, but do_gettimeofday returns a
->> > struct timeval, and the other reason is that ktime_get() uses
->> > the monotonic clock.
->> >
->> > This patch is based on another patch which privides a millisecond
->> > time difference function 'ktime_ms_delta' in ktime.h
->> >
->> > http://lkml.iu.edu//hypermail/linux/kernel/1412.2/00625.html
->> >
->> > Signed-off-by: Chunyan Zhang <zhang.chunyan@linaro.org>
->> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
->> >
+Am 14.01.2015 um 01:23 schrieb Jens Axboe:
+> On 01/13/2015 04:36 PM, Richard Weinberger wrote:
 >>
->> The new version still looks good to me, but as there is now a
->> dependency on another patch, I'd suggest we queue this up in the
->> y2038 branch together with the patch that introduces ktime_ms_delta.
 >>
->> David or Brian, can you provide an Ack for this, or do you have
->> any objections?
->
-> I just tested v2, which doesn't have this dependency and has only a
-> trivial difference from v3. Seems to work OK. So:
->
-> Tested-by: Brian Norris <computersforpeace@gmail.com>
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
->
-> Feel free to queue it in the dependent branch.
->
-> Thanks,
-> Brian
+>> Am 14.01.2015 um 00:30 schrieb Jens Axboe:
+>>>> If I understand you correctly it can happen that blk_rq_bytes() returns
+>>>> more bytes than blk_rq_map_sg() allocated, right?
+>>>
+>>> No, the number of bytes will be the same, no magic is involved :-)
+>>
+>> Good to know. :)
+>>
+>>> But lets say the initial request has 4 bios, with each 2 pages, for a
+>>> total of 8 segments. Lets further assume that the pages in each bio are
+>>> contiguous, so that blk_rq_map_sg() will map this to 4 sg elements, each
+>>> 2xpages long.
+>>>
+>>> Now, this may already be handled just fine, and you don't need to
+>>> update/store the actual sg count. I just looked at the source, and I'm
+>>> assuming it'll do the right thing (ubi_read_sg() will bump the active sg
+>>> element, when that size has been consumed), but I don't have
+>>> ubi_read_sg() in my tree to verify.
+>>
+>> Currently the sg count is hard coded to UBI_MAX_SG_COUNT.
+> 
+> The max count doesn't matter, that just provides you a guarantee that
+> you'll never receive a request that maps to more than that. The point
+> I'm trying to make is that if you receive 8 segments and it maps to 4,
+> then you better not look at segments 5..8 after it being mapped.
+> Whatever the max is, doesn't matter in this conversation.
+> 
+>> I'm sorry, I forgot to CC you and hch to this patch:
+> 
+> Which is as I suspected, you'll do each segment to the length specified,
+> hence you don't need to track the returned count from blk_rq_map_sg().
+
+Thanks a lot for the kind explanation, Jens!
+I'll add a comment the usage of blk_rq_map_sg() to avoid further confusion.
+Am I allowed to add your Reviewed-by too?
+
+Thanks,
+//richard
