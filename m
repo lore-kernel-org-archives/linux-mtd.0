@@ -1,19 +1,26 @@
-Received: from mail-bn1bon0096.outbound.protection.outlook.com
- ([157.56.111.96] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBQ6d-0001fG-NN
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 15:43:40 +0000
-From: <dinguyen@opensource.altera.com>
-To: <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: denali: Disable sub-page writes in Denali NAND driver
-Date: Wed, 14 Jan 2015 09:38:50 -0600
-Message-ID: <1421249930-21229-1-git-send-email-dinguyen@opensource.altera.com>
+ id 1YBSNV-0006P7-FL
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 18:09:14 +0000
+Received: by mail-ig0-f173.google.com with SMTP id r10so10718069igi.0
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 10:08:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: dinh.linux@gmail.com, josh@joshtriplett.org, linux-kernel@vger.kernel.org,
- yamada.m@jp.panasonic.com, linux-mtd@lists.infradead.org,
- Dinh Nguyen <dinguyen@opensource.altera.com>, dwmw2@infradead.org,
- Graham Moore <grmoore@opensource.altera.com>
+In-Reply-To: <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
+References: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
+ <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
+Date: Wed, 14 Jan 2015 10:08:51 -0800
+Message-ID: <CAAK6Zt29rv0CSC42BbpULP=rwzSGUWcxBC=ewg5aX03JoCjzCg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: Add config option to skip scanning bad blocks in
+ partitions
+From: Daniel Ehrenberg <dehrenberg@google.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "grundler@chromium.org" <grundler@chromium.org>,
+ "gwendal@chromium.org" <gwendal@chromium.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +30,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Graham Moore <grmoore@opensource.altera.com>
+To initialize the partitions, it takes me 3.5s with this config option
+turned on and .2s with the config option turned off. So a large
+proportion of the NAND startup time (not counting ubi coming up) is
+comes from this bad block scan. It takes about 1.87s to scan over the
+device, and I have my partitioning set up so there's an extra
+partition covering the whole device in addition to the individual
+partitions.
 
-The Denali Controller IP does not support sub-page writes.
+Dan
 
-Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-Signed-off-by: Dinh Nguyen <dinguyen@opensource.altera.com>
----
- drivers/mtd/nand/denali.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index b3b7ca1..b16b040 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1565,6 +1565,9 @@ int denali_init(struct denali_nand_info *denali)
- 	denali->nand.options |= NAND_SKIP_BBTSCAN;
- 	denali->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
- 
-+	/* no subpage writes on denali */
-+	denali->nand.options |= NAND_NO_SUBPAGE_WRITE;
-+
- 	/*
- 	 * Denali Controller only support 15bit and 8bit ECC in MRST,
- 	 * so just let controller do 15bit ECC for MLC and 8bit ECC for
--- 
-2.2.1
+On Tue, Jan 13, 2015 at 11:47 PM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+>
+> On Wed, 14 Jan 2015, Dan Ehrenberg wrote:
+>
+>> Each partition on a device with bad blocks iterates over its erase
+>> blocks to find an accurate count of bad blocks. The iteration can take
+>> some time, especially on devices with many erase blocks which are
+>> configured to use the OOB area to detect if the block is bad. This
+>> patch makes a config option, MTD_PART_BAD_BLOCK_COUNT, which can
+>> be turned off to skip the initial scan and forgo an accurate count.
+>
+> How much time would you actually save? Sure, there number of blocks in a
+> modern flash is in the thousands, but one only has to read the OOB of the
+> first page to find the bad block marker, so scanning through the whole
+> flash does not take long.
+>
+> /Ricard
+> --
+> Ricard Wolf Wanderl=C3=B6f                           ricardw(at)axis.com
+> Axis Communications AB, Lund, Sweden            www.axis.com
+> Phone +46 46 272 2016                           Fax +46 46 13 61 30
