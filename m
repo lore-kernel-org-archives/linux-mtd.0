@@ -1,24 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBJUD-0001r2-KQ
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 08:39:35 +0000
-Message-ID: <54B62B2A.7010109@nod.at>
-Date: Wed, 14 Jan 2015 09:39:06 +0100
-From: Richard Weinberger <richard@nod.at>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YBKMV-0004jp-BL
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 09:35:40 +0000
+Date: Wed, 14 Jan 2015 10:34:49 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Aaron Sierra <asierra@xes-inc.com>
+Subject: Re: [PATCH 1/2] nand_base: SOFT_BCH: Request strength over bytes
+Message-ID: <20150114103449.331342ba@bbrezillon>
+In-Reply-To: <889558859.110937.1421109355675.JavaMail.zimbra@xes-inc.com>
+References: <2021171878.109755.1421108768347.JavaMail.zimbra@xes-inc.com>
+ <889558859.110937.1421109355675.JavaMail.zimbra@xes-inc.com>
 MIME-Version: 1.0
-To: Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 2/2 v2] UBI: Block: Add blk-mq support
-References: <1420926734-16417-1-git-send-email-richard@nod.at>
- <1420926734-16417-2-git-send-email-richard@nod.at>
- <20150113162553.GA24351@infradead.org> <54B5A188.2000001@nod.at>
- <54B5A213.1090502@fb.com> <54B5A77C.9040405@nod.at> <54B5AA84.9010306@fb.com>
- <54B5AC10.6070102@nod.at> <54B5B6E4.4020400@fb.com>
-In-Reply-To: <54B5B6E4.4020400@fb.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, tom.leiming@gmail.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +26,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 14.01.2015 um 01:23 schrieb Jens Axboe:
-> On 01/13/2015 04:36 PM, Richard Weinberger wrote:
->>
->>
->> Am 14.01.2015 um 00:30 schrieb Jens Axboe:
->>>> If I understand you correctly it can happen that blk_rq_bytes() returns
->>>> more bytes than blk_rq_map_sg() allocated, right?
->>>
->>> No, the number of bytes will be the same, no magic is involved :-)
->>
->> Good to know. :)
->>
->>> But lets say the initial request has 4 bios, with each 2 pages, for a
->>> total of 8 segments. Lets further assume that the pages in each bio are
->>> contiguous, so that blk_rq_map_sg() will map this to 4 sg elements, each
->>> 2xpages long.
->>>
->>> Now, this may already be handled just fine, and you don't need to
->>> update/store the actual sg count. I just looked at the source, and I'm
->>> assuming it'll do the right thing (ubi_read_sg() will bump the active sg
->>> element, when that size has been consumed), but I don't have
->>> ubi_read_sg() in my tree to verify.
->>
->> Currently the sg count is hard coded to UBI_MAX_SG_COUNT.
-> 
-> The max count doesn't matter, that just provides you a guarantee that
-> you'll never receive a request that maps to more than that. The point
-> I'm trying to make is that if you receive 8 segments and it maps to 4,
-> then you better not look at segments 5..8 after it being mapped.
-> Whatever the max is, doesn't matter in this conversation.
-> 
->> I'm sorry, I forgot to CC you and hch to this patch:
-> 
-> Which is as I suspected, you'll do each segment to the length specified,
-> hence you don't need to track the returned count from blk_rq_map_sg().
+Hi Aaron,
 
-Thanks a lot for the kind explanation, Jens!
-I'll add a comment the usage of blk_rq_map_sg() to avoid further confusion.
-Am I allowed to add your Reviewed-by too?
+On Mon, 12 Jan 2015 18:35:55 -0600 (CST)
+Aaron Sierra <asierra@xes-inc.com> wrote:
 
-Thanks,
-//richard
+> Previously, we requested that drivers pass ecc.size and ecc.bytes when
+> using NAND_ECC_SOFT_BCH. However, a driver is likely to only know the ECC
+> strength required for its NAND, so each driver would need to perform a
+> strength-to-bytes calculation.
+> 
+> Avoid duplicating this calculation in each driver by asking drivers to
+> pass ecc.size and ecc.strength so that the strength-to-bytes calculation
+> need only be implemented once.
+> 
+> This reverts/generalizes this commit:
+>     mtd: nand: Base BCH ECC bytes on required strength
+
+Apart from the nit below, you can add my:
+
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+> 
+> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+> ---
+>  drivers/mtd/nand/nand_base.c  | 21 +++++++++++++++------
+>  drivers/mtd/nand/sunxi_nand.c |  2 --
+>  2 files changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 41585df..993612c 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4028,22 +4028,31 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  		ecc->read_oob = nand_read_oob_std;
+>  		ecc->write_oob = nand_write_oob_std;
+>  		/*
+> -		 * Board driver should supply ecc.size and ecc.bytes values to
+> -		 * select how many bits are correctable; see nand_bch_init()
+> -		 * for details. Otherwise, default to 4 bits for large page
+> -		 * devices.
+> +		 * Board driver should supply ecc.size and ecc.strength values
+> +		 * to select how many bits are correctable. Otherwise, default
+> +		 * to 4 bits for large page devices.
+>  		 */
+>  		if (!ecc->size && (mtd->oobsize >= 64)) {
+>  			ecc->size = 512;
+> -			ecc->bytes = DIV_ROUND_UP(13 * ecc->strength, 8);
+> +			ecc->strength = 4;
+>  		}
+> +
+> +		/*
+> +		 * We previously recommended drivers pass ecc.size and
+> +		 * ecc.bytes. Continue to support drivers that do.
+> +		 * See nand_bch_init() for details.
+> +		 */
+> +		if (ecc->bytes && !ecc->strength)
+> +			ecc->strength = ecc->bytes * 8 / fls(8 * ecc->size);
+
+How about fixing all NAND_ECC_SOFT_BCH users (AFAICT the only remaining
+one is nandsim, since you fixed sunxi_nand) instead of keeping this
+backward compat code.
+
+
+Best Regards,
+
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
