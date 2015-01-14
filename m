@@ -1,20 +1,15 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBWuv-0000FC-Af
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 23:00:02 +0000
-Date: Wed, 14 Jan 2015 23:59:34 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: Flash filesystem questions
-In-Reply-To: <CAFLxGvwaqLfshJGHT=tfwh=SFt4nRBTPpMBVyE9DMxkhyWr-Wg@mail.gmail.com>
-Message-ID: <alpine.DEB.2.02.1501142353210.5742@lnxricardw1.se.axis.com>
-References: <CAGgu=sBpckw_J1sMcQi+Df8N8=sVjaeLZCLL9bVqEm_uHMB-5Q@mail.gmail.com>
- <CAFLxGvwaqLfshJGHT=tfwh=SFt4nRBTPpMBVyE9DMxkhyWr-Wg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
-Cc: Erik Ekman <erik@kryo.se>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-pd0-f175.google.com ([209.85.192.175])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YBXV3-0005ar-C4
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 23:37:22 +0000
+Received: by mail-pd0-f175.google.com with SMTP id g10so12636299pdj.6
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 15:36:59 -0800 (PST)
+From: alison@she-devel.com
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] i.MX6-SabreAuto: EIM: pull PAD_EIM_D18 low for NOR probe
+Date: Wed, 14 Jan 2015 15:36:49 -0800
+Message-Id: <1421278609-8446-1-git-send-email-alison_chaiken@mentor.com>
+Cc: computersforpeace@gmail.com, shijie8@gmail.com, alison_chaiken@mentor.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,75 +19,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Alison Chaiken <alison_chaiken@mentor.com>
 
-On Wed, 14 Jan 2015, Richard Weinberger wrote:
+PAD_EIM_D18 must be pulled low at boot in order for the parallel NOR
+connected to the EIM switch to probe properly.  Otherwise
+cfi_qry_present() may return "U-V-]" rather than "Q-R-Y" if the
+PAD_EIM_D18 is high.  Add a nor-gpios property to the nor node in the
+SabreAuto device-tree and add a function to the imx-weim probe to set
+GPIO5 to drive the pad.
 
-> On Wed, Jan 14, 2015 at 9:21 PM, Erik Ekman <erik@kryo.se> wrote:
-> > Hi all,
-> >
-> > I am working on a Linux driver for the Intel Turbo Memory Controller (8086:444e)
-> > PCIe device. It was sold as a card to speed up the boot and operation of Vista
-> > computers a few years ago.
-> > More info at http://en.wikipedia.org/wiki/Intel_Turbo_Memory
-> >
-> > I expected it to have a flash translation layer and expose a block device, but
-> > instead I found access to raw flash operations (read, write & erase). I have
-> > not found any way to access the OOB data, that is probably handled inside the
-> > controller chip.  I have it basically working now, with 4kB pages and 128kB
-> > erase blocks, and nandtest runs without errors.
-> >
-> > The code is here: https://github.com/yarrick/turbomem
-> >
-> > I am now trying to run a filesystem on top. JFFS2 was not happy with no OOB.
-> > I found that the flash in the device only allows one write cycle per erase
-> > (which seems normal according to YAFFS2 docs). ubiformat succeeded but then
-> > ubiattach fails for me with an assert:
-> >
-> > UBI: attaching mtd0 to ubi0
-> > UBI: scanning is finished
-> > UBI assert failed in ubi_io_read at 206 (pid 2743)
-> > CPU: 1 PID: 2743 Comm: ubiattach Tainted: G       OE  3.17.7-300.fc21.x
-> > Hardware name: LENOVO 7454GKU/7454GKU, BIOS 6DET64WW (3.14 ) 06/23/2010
-> >  0000000000000000 000000003491b1e7 ffff880062b43ca0 ffffffff817401ea
-> >  ffff880087c78000 ffff880062b43d10 ffffffffa08117fe 8000000000000163
-> >  ffff880098163c00 ffffc90004806000 0000000000002000 0000000000006000
-> > Call Trace:
-> >  [<ffffffff817401ea>] dump_stack+0x45/0x56
-> >  [<ffffffffa08117fe>] ubi_io_read+0x35e/0x3f0 [ubi]
-> >  [<ffffffffa08069ff>] ubi_read_volume_table+0x11f/0xb90 [ubi]
-> >  [<ffffffff8173ea9d>] ? printk+0x72/0x8e
-> >  [<ffffffffa08181db>] ubi_attach+0xa4b/0x1470 [ubi]
-> >  [<ffffffff811d28cf>] ? __vmalloc_node_range+0x1bf/0x290
-> >  [<ffffffffa080aca0>] ubi_attach_mtd_dev+0x890/0x1010 [ubi]
-> >  [<ffffffffa07f6c6d>] ? __get_mtd_device+0x1d/0x80 [mtd]
-> >  [<ffffffff81745062>] ? mutex_lock+0x12/0x30
-> >  [<ffffffffa080bd03>] ctrl_cdev_ioctl+0xc3/0x1f0 [ubi]
-> >  [<ffffffff81220ff0>] do_vfs_ioctl+0x2d0/0x4b0
-> >  [<ffffffff81221251>] SyS_ioctl+0x81/0xa0
-> >  [<ffffffff81135d96>] ? __audit_syscall_exit+0x1f6/0x2a0
-> >  [<ffffffff817473a9>] system_call_fastpath+0x16/0x1b
-> >
-> > Could this problem be because of my driver? Is there some way to configure UBI
-> > for to only write once per flash block or is that the default?
-> 
-> You can a block only write once. Then you have to erase it again.
+Signed-off-by: Alison Chaiken <alison_chaiken@mentor.com>
+---
+ arch/arm/boot/dts/imx6qdl-sabreauto.dtsi |  1 +
+ drivers/bus/imx-weim.c                   | 43 ++++++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+)
 
-When I read Erik's original post I interpreted the 'write once per flash 
-block' to mean that you can do a single write per block, and that's it.
-Given the usage as a speedup component, it would make sense to copy the 
-relevant data in one go, since no read/write file system would be 
-implemented on the device, there would be no need for page based writes. 
-The flash memory most likely doesn't have this limitation but the 
-controller could I suppose.
-
-Erik, was that in fact what you meant?
-
-None of the Linux-based read/write file systems can handle the case of 
-only being able to do a single write operation to a block. They are all 
-based on the fact that you normally can write a page of data at a time.
-
-/Ricard
+diff --git a/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi b/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi
+index 009abd6..dd5e3bc 100644
+--- a/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi
+@@ -454,5 +454,6 @@
+ 		bank-width = <2>;
+ 		fsl,weim-cs-timing = <0x00620081 0x00000001 0x1c022000
+ 				0x0000c000 0x1404a38e 0x00000000>;
++		nor-gpios = <&gpio5 4 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+diff --git a/drivers/bus/imx-weim.c b/drivers/bus/imx-weim.c
+index 0958b69..b3c2ca6 100644
+--- a/drivers/bus/imx-weim.c
++++ b/drivers/bus/imx-weim.c
+@@ -14,6 +14,8 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
+ #include <linux/regmap.h>
++#include <linux/of_gpio.h>
++#include <linux/gpio.h>
+ 
+ struct imx_weim_devtype {
+ 	unsigned int	cs_count;
+@@ -108,6 +110,40 @@ err:
+ 	return -EINVAL;
+ }
+ 
++/* set the GPIO to control PAD_EIM_D18 so cfi_qry_present() works properly */
++static int __init nor_gpio_setup(struct device_node *np, struct device *parent)
++{
++	unsigned nor_gpio, level;
++	enum of_gpio_flags of_flags;
++	int ret;
++
++	nor_gpio = of_get_named_gpio_flags(np, "nor-gpios", 0, &of_flags);
++
++	/* this child is not a NOR chip */
++	if (!nor_gpio)
++		return 0;
++
++	if (gpio_is_valid(nor_gpio)) {
++		ret = devm_gpio_request_one(parent, nor_gpio,
++					GPIOF_DIR_OUT, "nor-gpio");
++	} else {
++		ret = -ENODEV;
++		goto out;
++	}
++
++	if (ret < 0)
++		goto out;
++
++	level = ((of_flags == OF_GPIO_ACTIVE_LOW) ? 0 : 1);
++
++	gpio_set_value(nor_gpio, level);
++
++	return 0;
++out:
++	dev_err(parent, "Unable to request EIM_D18 GPIO for NOR.\n");
++	return ret;
++}
++
+ /* Parse and set the timing for this device. */
+ static int __init weim_timing_setup(struct device_node *np, void __iomem *base,
+ 				    const struct imx_weim_devtype *devtype)
+@@ -160,6 +196,13 @@ static int __init weim_parse_dt(struct platform_device *pdev,
+ 				child->full_name);
+ 			return ret;
+ 		}
++
++		ret = nor_gpio_setup(child, &pdev->dev);
++		if (ret) {
++			dev_err(&pdev->dev, "%s gpios setup failed.\n",
++				child->full_name);
++			return ret;
++		}
+ 	}
+ 
+ 	ret = of_platform_populate(pdev->dev.of_node,
 -- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+2.1.4
