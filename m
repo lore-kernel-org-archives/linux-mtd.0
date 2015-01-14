@@ -1,20 +1,21 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBCQj-0002x1-07
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 01:07:29 +0000
-Date: Wed, 14 Jan 2015 09:04:59 +0800
+ id 1YBCfd-0001Wz-NV
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 01:22:54 +0000
+Date: Wed, 14 Jan 2015 09:20:35 +0800
 From: Huang Shijie <shijie.huang@intel.com>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH RESEND] mtd: fsl-quadspi: Fix module unbound
-Message-ID: <20150114010459.GB10784@hsj.sh.intel.com>
-References: <1421187255-20618-1-git-send-email-festevam@gmail.com>
+To: Frank.Li@freescale.com
+Subject: Re: [PATCH 1/1] mtd: fsl-quadspi: improve read performance by
+ increase AHB transfer size
+Message-ID: <20150114012035.GA11245@hsj.sh.intel.com>
+References: <1421166536-13601-1-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1421187255-20618-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Frank.Li@freescale.com,
- linux-mtd@lists.infradead.org, han.xu@freescale.com,
- computersforpeace@gmail.com, shijie8@gmail.com
+In-Reply-To: <1421166536-13601-1-git-send-email-Frank.Li@freescale.com>
+Cc: lznuaa@gmail.com, linux-mtd@lists.infradead.org,
+ Allen Xu <b45815@freescale.com>, computersforpeace@gmail.com,
+ shijie8@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 13, 2015 at 08:14:15PM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
+On Wed, Jan 14, 2015 at 12:28:56AM +0800, Frank.Li@freescale.com wrote:
+> From: Allen Xu <b45815@freescale.com>
 > 
-> When removing the fsl-quadspi module and running 'cat /proc/mtd' afterwards,
-> we see garbage data like:
+> Set AHB transfer size to 1K which improved the read performance.
 > 
-> $ rmmod  fsl-quadspi
-> $ cat /proc/mtd
-> dev:    size   erasesize  name
-> mtd0: 00000000 00000000 "(null)"
-> mtd0: 00000000 00000000 "(null)"
-> mtd0: 00000000 00000000 "(null)"
-> ...
-> mtd0: a22296c6c756e28 00000000 "(null)"
-> mtd0: a22296c6c756e28 3064746d "(null)"
+> Add ahb_buf_size field in fsl_qspi_devtype_data to denote the size for
+> different SoC.
 > 
-> If we continue doing multiple module load/unload operations, then it will also 
-> lead to a kernel crash.
+> Before:
 > 
-> The reason for this is due to the wrong mtd index used in
-> mtd_device_unregister() in the remove function.
+> root@imx6qdlsolo:~# dd if=/dev/mtd1 of=/dev/null bs=1M count=16
+> 16+0 records in
+> 16+0 records out
+> 16777216 bytes (17 MB) copied, 0.472183 s, 25.1 MB/s
 > 
-> We need to keep the mtd unregister index aligned with the one used in the probe
-> function, which means we need to take into account the 'has_second_chip'
-> property. By doing so we can guarantee that the mtd index is the same in the
-> registration and unregistration functions.
+> After:
 > 
-> With this patch applied we can load/unload the fsl-quadspi driver several times
-> and it will result in no crash.
+> root@imx6qdlsolo:~# dd if=/dev/mtd1 of=/dev/null bs=1M count=16
+> 16+0 records in
+> 16+0 records out
+> 16777216 bytes (17 MB) copied, 0.369439 s, 29.5 MB/s
 > 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-ok. Let this patch in.
+> Signed-off-by: Allen Xu <b45815@freescale.com>
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+> Signed-off-by: Frank Li <Frank.Li@freescale.com>
+This is a very good patch.
 
+This patch has my signed-off, but if it is needed, please add my ack:
 Acked-by: Huang Shijie <shijie.huang@intel.com>
