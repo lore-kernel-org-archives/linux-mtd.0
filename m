@@ -1,17 +1,16 @@
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBXaN-0000O3-SA
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 23:42:52 +0000
-Received: by mail-ig0-f173.google.com with SMTP id r10so12184829igi.0
- for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 15:42:29 -0800 (PST)
-Sender: Daniel Ehrenberg <dehrenberg@google.com>
-From: Dan Ehrenberg <dehrenberg@chromium.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] UBI: block: Export ubiblock major number
-Date: Wed, 14 Jan 2015 15:42:07 -0800
-Message-Id: <1421278927-3237-1-git-send-email-dehrenberg@chromium.org>
-Cc: grundler@chromium.org, gwendal@chromium.org, linux-mtd@lists.infradead.org,
- ezequiel@vanguardiasur.com.ar, Dan Ehrenberg <dehrenberg@chromium.org>
+Date: Wed, 14 Jan 2015 17:41:31 -0600 (CST)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Message-ID: <1048272995.147101.1421278891164.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <20150114103449.331342ba@bbrezillon>
+Subject: [PATCH 1/2 v2] nand_base: SOFT_BCH: Request strength over bytes
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,41 +20,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch exports the ubiblock major number so that it is usable from
-other pieces of kernel code. This is useful, for example, if you have
-another piece of kernel code which wants to determine whether a block
-device is an ubiblock device or not.
+Previously, we requested that drivers pass ecc.size and ecc.bytes when
+using NAND_ECC_SOFT_BCH. However, a driver is likely to only know the ECC
+strength required for its NAND, so each driver would need to perform a
+strength-to-bytes calculation.
 
-Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+Avoid duplicating this calculation in each driver by asking drivers to
+pass ecc.size and ecc.strength so that the strength-to-bytes calculation
+need only be implemented once.
+
+This reverts/generalizes this commit:
+    mtd: nand: Base BCH ECC bytes on required strength
+
+Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/ubi/block.c | 3 ++-
- include/linux/mtd/ubi.h | 2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+v2:
+    * nandsim: Set ECC strength to chip->ecc.strength
+    * nand_base: Don't provide ECC bytes-to-strength backward compat
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 6c8333d..faf35d4 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -94,7 +94,8 @@ struct ubiblock {
- /* Linked list of all ubiblock instances */
- static LIST_HEAD(ubiblock_devices);
- static DEFINE_MUTEX(devices_mutex);
--static int ubiblock_major;
-+int ubiblock_major;
-+EXPORT_SYMBOL(ubiblock_major);
- 
- static int __init ubiblock_set_param(const char *val,
- 				     const struct kernel_param *kp)
-diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-index c3918a0..8603d87 100644
---- a/include/linux/mtd/ubi.h
-+++ b/include/linux/mtd/ubi.h
-@@ -230,4 +230,6 @@ static inline int ubi_read(struct ubi_volume_desc *desc, int lnum, char *buf,
- {
- 	return ubi_leb_read(desc, lnum, buf, offset, len, 0);
- }
+ drivers/mtd/nand/nand_base.c  | 14 ++++++++------
+ drivers/mtd/nand/nandsim.c    |  1 +
+ drivers/mtd/nand/sunxi_nand.c |  2 --
+ 3 files changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 41585df..2f9c0bf 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4028,22 +4028,24 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		ecc->read_oob = nand_read_oob_std;
+ 		ecc->write_oob = nand_write_oob_std;
+ 		/*
+-		 * Board driver should supply ecc.size and ecc.bytes values to
+-		 * select how many bits are correctable; see nand_bch_init()
+-		 * for details. Otherwise, default to 4 bits for large page
+-		 * devices.
++		 * Board driver should supply ecc.size and ecc.strength values
++		 * to select how many bits are correctable. Otherwise, default
++		 * to 4 bits for large page devices.
+ 		 */
+ 		if (!ecc->size && (mtd->oobsize >= 64)) {
+ 			ecc->size = 512;
+-			ecc->bytes = DIV_ROUND_UP(13 * ecc->strength, 8);
++			ecc->strength = 4;
+ 		}
 +
-+extern int ubiblock_major;
- #endif /* !__LINUX_UBI_H__ */
++		/* See nand_bch_init() for details. */
++		ecc->bytes = DIV_ROUND_UP(
++				ecc->strength * fls(8 * ecc->size), 8);
+ 		ecc->priv = nand_bch_init(mtd, ecc->size, ecc->bytes,
+ 					       &ecc->layout);
+ 		if (!ecc->priv) {
+ 			pr_warn("BCH ECC initialization failed!\n");
+ 			BUG();
+ 		}
+-		ecc->strength = ecc->bytes * 8 / fls(8 * ecc->size);
+ 		break;
+ 
+ 	case NAND_ECC_NONE:
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index ab5bbf5..0ed1464 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -2343,6 +2343,7 @@ static int __init ns_init_module(void)
+ 		}
+ 		chip->ecc.mode = NAND_ECC_SOFT_BCH;
+ 		chip->ecc.size = 512;
++		chip->ecc.strength = bch;
+ 		chip->ecc.bytes = eccbytes;
+ 		NS_INFO("using %u-bit/%u bytes BCH ECC\n", bch, chip->ecc.size);
+ 	}
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index ccaa8e2..6f93b29 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -1110,8 +1110,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+ 
+ 	switch (ecc->mode) {
+ 	case NAND_ECC_SOFT_BCH:
+-		ecc->bytes = DIV_ROUND_UP(ecc->strength * fls(8 * ecc->size),
+-					  8);
+ 		break;
+ 	case NAND_ECC_HW:
+ 		ret = sunxi_nand_hw_ecc_ctrl_init(mtd, ecc, np);
 -- 
-2.2.0.rc0.207.ga3a616c
+1.9.1
