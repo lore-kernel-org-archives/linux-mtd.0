@@ -1,19 +1,25 @@
-Received: from mail-vc0-x233.google.com ([2607:f8b0:400c:c03::233])
+Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBUss-000114-Sa
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 20:49:47 +0000
-Received: by mail-vc0-f179.google.com with SMTP id le20so3644758vcb.10
- for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 12:49:24 -0800 (PST)
+ id 1YBUtr-00037l-Qq
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 20:50:48 +0000
+Received: by mail-lb0-f170.google.com with SMTP id 10so10062473lbg.1
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 12:50:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAGgu=sBpckw_J1sMcQi+Df8N8=sVjaeLZCLL9bVqEm_uHMB-5Q@mail.gmail.com>
-References: <CAGgu=sBpckw_J1sMcQi+Df8N8=sVjaeLZCLL9bVqEm_uHMB-5Q@mail.gmail.com>
-Date: Wed, 14 Jan 2015 21:49:24 +0100
-Message-ID: <CAFLxGvwaqLfshJGHT=tfwh=SFt4nRBTPpMBVyE9DMxkhyWr-Wg@mail.gmail.com>
-Subject: Re: Flash filesystem questions
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Erik Ekman <erik@kryo.se>
+In-Reply-To: <20150114010459.GB10784@hsj.sh.intel.com>
+References: <1421187255-20618-1-git-send-email-festevam@gmail.com>
+ <20150114010459.GB10784@hsj.sh.intel.com>
+Date: Wed, 14 Jan 2015 14:50:25 -0600
+Message-ID: <CAHrpEqSxs_-dOqT6JpJGcTC5r7wF8-b2nrS30OS2DLC8z1nAqw@mail.gmail.com>
+Subject: Re: [PATCH RESEND] mtd: fsl-quadspi: Fix module unbound
+From: Zhi Li <lznuaa@gmail.com>
+To: Huang Shijie <shijie.huang@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ "Frank.Li@freescale.com" <Frank.Li@freescale.com>,
+ Huang Shijie <shijie8@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ han.xu@freescale.com, Brian Norris <computersforpeace@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 14, 2015 at 9:21 PM, Erik Ekman <erik@kryo.se> wrote:
-> Hi all,
+On Tue, Jan 13, 2015 at 7:04 PM, Huang Shijie <shijie.huang@intel.com> wrote:
+> On Tue, Jan 13, 2015 at 08:14:15PM -0200, Fabio Estevam wrote:
+>> From: Fabio Estevam <fabio.estevam@freescale.com>
+>>
+>> When removing the fsl-quadspi module and running 'cat /proc/mtd' afterwards,
+>> we see garbage data like:
+>>
+>> $ rmmod  fsl-quadspi
+>> $ cat /proc/mtd
+>> dev:    size   erasesize  name
+>> mtd0: 00000000 00000000 "(null)"
+>> mtd0: 00000000 00000000 "(null)"
+>> mtd0: 00000000 00000000 "(null)"
+>> ...
+>> mtd0: a22296c6c756e28 00000000 "(null)"
+>> mtd0: a22296c6c756e28 3064746d "(null)"
+>>
+>> If we continue doing multiple module load/unload operations, then it will also
+>> lead to a kernel crash.
+>>
+>> The reason for this is due to the wrong mtd index used in
+>> mtd_device_unregister() in the remove function.
+>>
+>> We need to keep the mtd unregister index aligned with the one used in the probe
+>> function, which means we need to take into account the 'has_second_chip'
+>> property. By doing so we can guarantee that the mtd index is the same in the
+>> registration and unregistration functions.
+>>
+>> With this patch applied we can load/unload the fsl-quadspi driver several times
+>> and it will result in no crash.
+>>
+>> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ok. Let this patch in.
 >
-> I am working on a Linux driver for the Intel Turbo Memory Controller (8086:444e)
-> PCIe device. It was sold as a card to speed up the boot and operation of Vista
-> computers a few years ago.
-> More info at http://en.wikipedia.org/wiki/Intel_Turbo_Memory
->
-> I expected it to have a flash translation layer and expose a block device, but
-> instead I found access to raw flash operations (read, write & erase). I have
-> not found any way to access the OOB data, that is probably handled inside the
-> controller chip.  I have it basically working now, with 4kB pages and 128kB
-> erase blocks, and nandtest runs without errors.
->
-> The code is here: https://github.com/yarrick/turbomem
->
-> I am now trying to run a filesystem on top. JFFS2 was not happy with no OOB.
-> I found that the flash in the device only allows one write cycle per erase
-> (which seems normal according to YAFFS2 docs). ubiformat succeeded but then
-> ubiattach fails for me with an assert:
->
-> UBI: attaching mtd0 to ubi0
-> UBI: scanning is finished
-> UBI assert failed in ubi_io_read at 206 (pid 2743)
-> CPU: 1 PID: 2743 Comm: ubiattach Tainted: G       OE  3.17.7-300.fc21.x
-> Hardware name: LENOVO 7454GKU/7454GKU, BIOS 6DET64WW (3.14 ) 06/23/2010
->  0000000000000000 000000003491b1e7 ffff880062b43ca0 ffffffff817401ea
->  ffff880087c78000 ffff880062b43d10 ffffffffa08117fe 8000000000000163
->  ffff880098163c00 ffffc90004806000 0000000000002000 0000000000006000
-> Call Trace:
->  [<ffffffff817401ea>] dump_stack+0x45/0x56
->  [<ffffffffa08117fe>] ubi_io_read+0x35e/0x3f0 [ubi]
->  [<ffffffffa08069ff>] ubi_read_volume_table+0x11f/0xb90 [ubi]
->  [<ffffffff8173ea9d>] ? printk+0x72/0x8e
->  [<ffffffffa08181db>] ubi_attach+0xa4b/0x1470 [ubi]
->  [<ffffffff811d28cf>] ? __vmalloc_node_range+0x1bf/0x290
->  [<ffffffffa080aca0>] ubi_attach_mtd_dev+0x890/0x1010 [ubi]
->  [<ffffffffa07f6c6d>] ? __get_mtd_device+0x1d/0x80 [mtd]
->  [<ffffffff81745062>] ? mutex_lock+0x12/0x30
->  [<ffffffffa080bd03>] ctrl_cdev_ioctl+0xc3/0x1f0 [ubi]
->  [<ffffffff81220ff0>] do_vfs_ioctl+0x2d0/0x4b0
->  [<ffffffff81221251>] SyS_ioctl+0x81/0xa0
->  [<ffffffff81135d96>] ? __audit_syscall_exit+0x1f6/0x2a0
->  [<ffffffff817473a9>] system_call_fastpath+0x16/0x1b
->
-> Could this problem be because of my driver? Is there some way to configure UBI
-> for to only write once per flash block or is that the default?
+> Acked-by: Huang Shijie <shijie.huang@intel.com>
 
-You can a block only write once. Then you have to erase it again.
+Tested-by: Frank Li <Frank.Li@freescale.com>
 
-> Will UBI or any other flash filesystem work properly without access to OOB data?
-> Is it worth to try YAFFS2?
-
-UBI will never use OOB.
-
-Please run MTD tests on your driver and then UBI tests.
-MTD test are part of the kernel, UBI tests are in the mtd-utils source package.
-
--- 
-Thanks,
-//richard
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
