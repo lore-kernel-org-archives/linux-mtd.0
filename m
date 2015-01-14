@@ -1,17 +1,29 @@
-Received: from mail-qg0-f52.google.com ([209.85.192.52])
+Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBURt-0004bZ-0b
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 20:21:54 +0000
-Received: by mail-qg0-f52.google.com with SMTP id i50so8751837qgf.11
- for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 12:21:30 -0800 (PST)
+ id 1YBUWs-0000B9-4J
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 20:27:02 +0000
+Received: by mail-la0-f41.google.com with SMTP id hv19so10195835lab.0
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 12:26:38 -0800 (PST)
 MIME-Version: 1.0
-Sender: root@kryo.se
-Date: Wed, 14 Jan 2015 21:21:30 +0100
-Message-ID: <CAGgu=sBpckw_J1sMcQi+Df8N8=sVjaeLZCLL9bVqEm_uHMB-5Q@mail.gmail.com>
-Subject: Flash filesystem questions
-From: Erik Ekman <erik@kryo.se>
-To: linux-mtd@lists.infradead.org
+In-Reply-To: <BY1PR0301MB12213C4577DB849CA161F51482400@BY1PR0301MB1221.namprd03.prod.outlook.com>
+References: <1420626727-6929-1-git-send-email-festevam@gmail.com>
+ <1420626727-6929-2-git-send-email-festevam@gmail.com>
+ <20150109201743.GW9759@ld-irv-0074>
+ <CAOMZO5BaEyU=qJfCsng+kPBcWSxb6wgJzzahgYvHn5Fqi_uoWA@mail.gmail.com>
+ <20150113185153.GT9759@ld-irv-0074>
+ <CAOMZO5Cy39iC0CpvO0H6i6rX6YVyns-2tZi5-vU28hCM6kgu-w@mail.gmail.com>
+ <20150113215817.GW9759@ld-irv-0074>
+ <BY1PR0301MB12213C4577DB849CA161F51482400@BY1PR0301MB1221.namprd03.prod.outlook.com>
+Date: Wed, 14 Jan 2015 18:26:38 -0200
+Message-ID: <CAOMZO5Cfe8rmsQPg1xdwwrQxsesqd1k1E80oKuiG78P77CYBcw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] mtd: fsl-quadspi: Fix module unbound
+From: Fabio Estevam <festevam@gmail.com>
+To: "Frank.Li@freescale.com" <Frank.Li@freescale.com>,
+ "han.xu@freescale.com" <han.xu@freescale.com>
 Content-Type: text/plain; charset=UTF-8
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +33,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi Xu Han,
 
-I am working on a Linux driver for the Intel Turbo Memory Controller (8086:444e)
-PCIe device. It was sold as a card to speed up the boot and operation of Vista
-computers a few years ago.
-More info at http://en.wikipedia.org/wiki/Intel_Turbo_Memory
+On Tue, Jan 13, 2015 at 8:05 PM, Frank.Li@freescale.com
+<Frank.Li@freescale.com> wrote:
 
-I expected it to have a flash translation layer and expose a block device, but
-instead I found access to raw flash operations (read, write & erase). I have
-not found any way to access the OOB data, that is probably handled inside the
-controller chip.  I have it basically working now, with 4kB pages and 128kB
-erase blocks, and nandtest runs without errors.
+> Our QSPI driver owner Xu han (han.xu@freescale.com) will take responsibility to test and improve
+> This driver.  I will help him to be familiar with linux kernel community work.
 
-The code is here: https://github.com/yarrick/turbomem
+That's great!
 
-I am now trying to run a filesystem on top. JFFS2 was not happy with no OOB.
-I found that the flash in the device only allows one write cycle per erase
-(which seems normal according to YAFFS2 docs). ubiformat succeeded but then
-ubiattach fails for me with an assert:
+Could you please send a patch adding yourself as the maintainer for
+the fsl-quadspi driver?
 
-UBI: attaching mtd0 to ubi0
-UBI: scanning is finished
-UBI assert failed in ubi_io_read at 206 (pid 2743)
-CPU: 1 PID: 2743 Comm: ubiattach Tainted: G       OE  3.17.7-300.fc21.x
-Hardware name: LENOVO 7454GKU/7454GKU, BIOS 6DET64WW (3.14 ) 06/23/2010
- 0000000000000000 000000003491b1e7 ffff880062b43ca0 ffffffff817401ea
- ffff880087c78000 ffff880062b43d10 ffffffffa08117fe 8000000000000163
- ffff880098163c00 ffffc90004806000 0000000000002000 0000000000006000
-Call Trace:
- [<ffffffff817401ea>] dump_stack+0x45/0x56
- [<ffffffffa08117fe>] ubi_io_read+0x35e/0x3f0 [ubi]
- [<ffffffffa08069ff>] ubi_read_volume_table+0x11f/0xb90 [ubi]
- [<ffffffff8173ea9d>] ? printk+0x72/0x8e
- [<ffffffffa08181db>] ubi_attach+0xa4b/0x1470 [ubi]
- [<ffffffff811d28cf>] ? __vmalloc_node_range+0x1bf/0x290
- [<ffffffffa080aca0>] ubi_attach_mtd_dev+0x890/0x1010 [ubi]
- [<ffffffffa07f6c6d>] ? __get_mtd_device+0x1d/0x80 [mtd]
- [<ffffffff81745062>] ? mutex_lock+0x12/0x30
- [<ffffffffa080bd03>] ctrl_cdev_ioctl+0xc3/0x1f0 [ubi]
- [<ffffffff81220ff0>] do_vfs_ioctl+0x2d0/0x4b0
- [<ffffffff81221251>] SyS_ioctl+0x81/0xa0
- [<ffffffff81135d96>] ? __audit_syscall_exit+0x1f6/0x2a0
- [<ffffffff817473a9>] system_call_fastpath+0x16/0x1b
+Regards,
 
-Could this problem be because of my driver? Is there some way to configure UBI
-for to only write once per flash block or is that the default?
-Will UBI or any other flash filesystem work properly without access to OOB data?
-Is it worth to try YAFFS2?
-
-I am using Fedora 21 and kernel 3.17.7-300.fc21.x86_64 now.
-
-Thanks,
-
-Erik
+Fabio Estevam
