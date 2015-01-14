@@ -1,13 +1,23 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: <linux-mtd@lists.infradead.org>, <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: atmel_nand: return max bitflips in all sectors in
- pmecc_correction()
-Date: Wed, 14 Jan 2015 11:50:46 +0800
-Message-ID: <1421207446-16973-1-git-send-email-josh.wu@atmel.com>
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YBIgQ-0004Tl-6Z
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 07:48:06 +0000
+Date: Wed, 14 Jan 2015 08:47:37 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Dan Ehrenberg <dehrenberg@chromium.org>
+Subject: Re: [PATCH] mtd: Add config option to skip scanning bad blocks in
+ partitions
+In-Reply-To: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
+Message-ID: <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
+References: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: derosier@gmail.com, Josh Wu <josh.wu@atmel.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
+Cc: "grundler@chromium.org" <grundler@chromium.org>,
+ "gwendal@chromium.org" <gwendal@chromium.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,49 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-atmel_nand_pmecc_read_page() will return the total bitflips in this
-page. This is incorrect.
 
-As one nand page includes multiple ecc sectors, that will cause the
-returned total bitflips exceed ecc capablity.
+On Wed, 14 Jan 2015, Dan Ehrenberg wrote:
 
-So this patch will make pmecc_correct() return the max bitflips of all
-sectors in the page. That also makes atmel_nand_pmecc_read_page() return
-the max bitflips.
+> Each partition on a device with bad blocks iterates over its erase
+> blocks to find an accurate count of bad blocks. The iteration can take
+> some time, especially on devices with many erase blocks which are
+> configured to use the OOB area to detect if the block is bad. This
+> patch makes a config option, MTD_PART_BAD_BLOCK_COUNT, which can
+> be turned off to skip the initial scan and forgo an accurate count.
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
----
- drivers/mtd/nand/atmel_nand.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+How much time would you actually save? Sure, there number of blocks in a 
+modern flash is in the thousands, but one only has to read the OOB of the 
+first page to find the bad block marker, so scanning through the whole 
+flash does not take long.
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index a345e7b..7346d16 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -847,7 +847,7 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
- 	struct atmel_nand_host *host = nand_chip->priv;
- 	int i, err_nbr;
- 	uint8_t *buf_pos;
--	int total_err = 0;
-+	int max_bitflips = 0;
- 
- 	for (i = 0; i < nand_chip->ecc.total; i++)
- 		if (ecc[i] != 0xff)
-@@ -874,13 +874,13 @@ normal_check:
- 				pmecc_correct_data(mtd, buf_pos, ecc, i,
- 					nand_chip->ecc.bytes, err_nbr);
- 				mtd->ecc_stats.corrected += err_nbr;
--				total_err += err_nbr;
-+				max_bitflips = max_t(int, max_bitflips, err_nbr);
- 			}
- 		}
- 		pmecc_stat >>= 1;
- 	}
- 
--	return total_err;
-+	return max_bitflips;
- }
- 
- static void pmecc_enable(struct atmel_nand_host *host, int ecc_op)
+/Ricard
 -- 
-1.9.1
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
