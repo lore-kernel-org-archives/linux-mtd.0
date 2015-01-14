@@ -1,31 +1,19 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBWov-0005UG-8L
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 22:53:49 +0000
-Received: by mail-pa0-f52.google.com with SMTP id eu11so13326133pac.11
- for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 14:53:27 -0800 (PST)
-Date: Wed, 14 Jan 2015 14:53:23 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v3 2/2] mtd: fsl-quadspi: Fix module unbound
-Message-ID: <20150114225323.GZ9759@ld-irv-0074>
-References: <1420626727-6929-1-git-send-email-festevam@gmail.com>
- <1420626727-6929-2-git-send-email-festevam@gmail.com>
- <20150109201743.GW9759@ld-irv-0074>
- <CAOMZO5BaEyU=qJfCsng+kPBcWSxb6wgJzzahgYvHn5Fqi_uoWA@mail.gmail.com>
- <20150113185153.GT9759@ld-irv-0074>
- <CAOMZO5Cy39iC0CpvO0H6i6rX6YVyns-2tZi5-vU28hCM6kgu-w@mail.gmail.com>
- <20150113215817.GW9759@ld-irv-0074>
- <BY1PR0301MB12213C4577DB849CA161F51482400@BY1PR0301MB1221.namprd03.prod.outlook.com>
- <CAOMZO5Cfe8rmsQPg1xdwwrQxsesqd1k1E80oKuiG78P77CYBcw@mail.gmail.com>
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YBWuv-0000FC-Af
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 23:00:02 +0000
+Date: Wed, 14 Jan 2015 23:59:34 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: Flash filesystem questions
+In-Reply-To: <CAFLxGvwaqLfshJGHT=tfwh=SFt4nRBTPpMBVyE9DMxkhyWr-Wg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.02.1501142353210.5742@lnxricardw1.se.axis.com>
+References: <CAGgu=sBpckw_J1sMcQi+Df8N8=sVjaeLZCLL9bVqEm_uHMB-5Q@mail.gmail.com>
+ <CAFLxGvwaqLfshJGHT=tfwh=SFt4nRBTPpMBVyE9DMxkhyWr-Wg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5Cfe8rmsQPg1xdwwrQxsesqd1k1E80oKuiG78P77CYBcw@mail.gmail.com>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>,
- Huang Shijie <shijie8@gmail.com>,
- "Frank.Li@freescale.com" <Frank.Li@freescale.com>,
- "han.xu@freescale.com" <han.xu@freescale.com>,
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
+Cc: Erik Ekman <erik@kryo.se>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,25 +24,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 14, 2015 at 06:26:38PM -0200, Fabio Estevam wrote:
-> On Tue, Jan 13, 2015 at 8:05 PM, Frank.Li@freescale.com
-> <Frank.Li@freescale.com> wrote:
+
+On Wed, 14 Jan 2015, Richard Weinberger wrote:
+
+> On Wed, Jan 14, 2015 at 9:21 PM, Erik Ekman <erik@kryo.se> wrote:
+> > Hi all,
+> >
+> > I am working on a Linux driver for the Intel Turbo Memory Controller (8086:444e)
+> > PCIe device. It was sold as a card to speed up the boot and operation of Vista
+> > computers a few years ago.
+> > More info at http://en.wikipedia.org/wiki/Intel_Turbo_Memory
+> >
+> > I expected it to have a flash translation layer and expose a block device, but
+> > instead I found access to raw flash operations (read, write & erase). I have
+> > not found any way to access the OOB data, that is probably handled inside the
+> > controller chip.  I have it basically working now, with 4kB pages and 128kB
+> > erase blocks, and nandtest runs without errors.
+> >
+> > The code is here: https://github.com/yarrick/turbomem
+> >
+> > I am now trying to run a filesystem on top. JFFS2 was not happy with no OOB.
+> > I found that the flash in the device only allows one write cycle per erase
+> > (which seems normal according to YAFFS2 docs). ubiformat succeeded but then
+> > ubiattach fails for me with an assert:
+> >
+> > UBI: attaching mtd0 to ubi0
+> > UBI: scanning is finished
+> > UBI assert failed in ubi_io_read at 206 (pid 2743)
+> > CPU: 1 PID: 2743 Comm: ubiattach Tainted: G       OE  3.17.7-300.fc21.x
+> > Hardware name: LENOVO 7454GKU/7454GKU, BIOS 6DET64WW (3.14 ) 06/23/2010
+> >  0000000000000000 000000003491b1e7 ffff880062b43ca0 ffffffff817401ea
+> >  ffff880087c78000 ffff880062b43d10 ffffffffa08117fe 8000000000000163
+> >  ffff880098163c00 ffffc90004806000 0000000000002000 0000000000006000
+> > Call Trace:
+> >  [<ffffffff817401ea>] dump_stack+0x45/0x56
+> >  [<ffffffffa08117fe>] ubi_io_read+0x35e/0x3f0 [ubi]
+> >  [<ffffffffa08069ff>] ubi_read_volume_table+0x11f/0xb90 [ubi]
+> >  [<ffffffff8173ea9d>] ? printk+0x72/0x8e
+> >  [<ffffffffa08181db>] ubi_attach+0xa4b/0x1470 [ubi]
+> >  [<ffffffff811d28cf>] ? __vmalloc_node_range+0x1bf/0x290
+> >  [<ffffffffa080aca0>] ubi_attach_mtd_dev+0x890/0x1010 [ubi]
+> >  [<ffffffffa07f6c6d>] ? __get_mtd_device+0x1d/0x80 [mtd]
+> >  [<ffffffff81745062>] ? mutex_lock+0x12/0x30
+> >  [<ffffffffa080bd03>] ctrl_cdev_ioctl+0xc3/0x1f0 [ubi]
+> >  [<ffffffff81220ff0>] do_vfs_ioctl+0x2d0/0x4b0
+> >  [<ffffffff81221251>] SyS_ioctl+0x81/0xa0
+> >  [<ffffffff81135d96>] ? __audit_syscall_exit+0x1f6/0x2a0
+> >  [<ffffffff817473a9>] system_call_fastpath+0x16/0x1b
+> >
+> > Could this problem be because of my driver? Is there some way to configure UBI
+> > for to only write once per flash block or is that the default?
 > 
-> > Our QSPI driver owner Xu han (han.xu@freescale.com) will take responsibility to test and improve
-> > This driver.  I will help him to be familiar with linux kernel community work.
-> 
-> That's great!
+> You can a block only write once. Then you have to erase it again.
 
-Yes, it'll be great to be sure there is at least one "owner" who gets
-CC'd on these types of patches.
+When I read Erik's original post I interpreted the 'write once per flash 
+block' to mean that you can do a single write per block, and that's it.
+Given the usage as a speedup component, it would make sense to copy the 
+relevant data in one go, since no read/write file system would be 
+implemented on the device, there would be no need for page based writes. 
+The flash memory most likely doesn't have this limitation but the 
+controller could I suppose.
 
-> Could you please send a patch adding yourself as the maintainer for
-> the fsl-quadspi driver?
+Erik, was that in fact what you meant?
 
-I'd be OK with multiple developers as reviewers if more desire to do so,
-given that Xu sounds to be new to our development model. Mainly I'm
-interested in at least one developer who has access to and knowledge of
-the hardware, and who can test, review, and ack/nak patches. I'll still
-handle merging the patches, of course.
+None of the Linux-based read/write file systems can handle the case of 
+only being able to do a single write operation to a block. They are all 
+based on the fact that you normally can write a page of data at a time.
 
-Brian
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
