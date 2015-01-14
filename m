@@ -1,22 +1,20 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBNGY-0007MG-KX
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 12:41:43 +0000
-Date: Wed, 14 Jan 2015 13:41:13 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 01/12] fs: deduplicate noop_backing_dev_info
-Message-ID: <20150114124113.GD10215@quack.suse.cz>
-References: <1421228561-16857-1-git-send-email-hch@lst.de>
- <1421228561-16857-2-git-send-email-hch@lst.de>
+Message-ID: <54B664D1.6060508@hisilicon.com>
+Date: Wed, 14 Jan 2015 20:45:05 +0800
+From: Zhou Wang <wangzhou1@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1421228561-16857-2-git-send-email-hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
- linux-mm@kvack.org, Jens Axboe <axboe@fb.com>, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Tejun Heo <tj@kernel.org>,
- ceph-devel@vger.kernel.org
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v6 1/2] mtd: hisilicon: add a new NAND controller driver
+ for hisilicon hip04 Soc
+References: <1421047734-30818-1-git-send-email-wangzhou1@hisilicon.com>
+ <1421047734-30818-2-git-send-email-wangzhou1@hisilicon.com>
+ <20150113040254.GK9759@ld-irv-0074>
+In-Reply-To: <20150113040254.GK9759@ld-irv-0074>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, liguozhu@hisilicon.com, xuwei5@hisilicon.com,
+ linux-mtd@lists.infradead.org, haojian.zhuang@gmail.com, caizhiyong@huawei.com,
+ yubingxu@hisilicon.com, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,207 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 14-01-15 10:42:30, Christoph Hellwig wrote:
-> hugetlbfs, kernfs and dlmfs can simply use noop_backing_dev_info instead
-> of creating a local duplicate.
-  Looks good.
-Reviewed-by: Jan Kara <jack@suse.cz>
+On 2015/1/13 12:02, Brian Norris wrote:
+> One more thing:
+> 
+> On Mon, Jan 12, 2015 at 03:28:53PM +0800, Zhou Wang wrote:
+>> diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
+>> new file mode 100644
+>> index 0000000..2000f21
+>> --- /dev/null
+>> +++ b/drivers/mtd/nand/hisi504_nand.c
+> ...
+>> +static int hisi_nand_read_page_hwecc(struct mtd_info *mtd,
+>> +	struct nand_chip *chip, uint8_t *buf, int oob_required, int page)
+>> +{
+>> +	struct hinfc_host *host = chip->priv;
+>> +	int max_bitflips = 0, stat = 0, stat_max, status_ecc;
+> 
+>     drivers/mtd/nand/hisi504_nand.c:547:34: warning: ‘stat_max’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+>       int max_bitflips = 0, stat = 0, stat_max, status_ecc;
 
-								Honza
+In fact, there is no chance to run "default case" there as hisi_nfc_ecc_probe
+will check this and print error.
+I will initialize stat_max with 0 to eliminate this warning.
+
+>                                       ^
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Tejun Heo <tj@kernel.org>
-> ---
->  fs/hugetlbfs/inode.c        | 14 +-------------
->  fs/kernfs/inode.c           | 14 +-------------
->  fs/kernfs/kernfs-internal.h |  1 -
->  fs/kernfs/mount.c           |  1 -
->  fs/ocfs2/dlmfs/dlmfs.c      | 16 ++--------------
->  5 files changed, 4 insertions(+), 42 deletions(-)
+>> +	int stat_1, stat_2;
+>> +
+>> +	chip->read_buf(mtd, buf, mtd->writesize);
+>> +	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>> +
+>> +	/* errors which can not be corrected by ECC */
+>> +	if (host->irq_status & HINFC504_INTS_UE) {
+>> +		mtd->ecc_stats.failed++;
+>> +	} else if (host->irq_status & HINFC504_INTS_CE) {
+>> +		/* TODO: need add other ECC modes! */
 > 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index 5eba47f..de7c95c 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -62,12 +62,6 @@ static inline struct hugetlbfs_inode_info *HUGETLBFS_I(struct inode *inode)
->  	return container_of(inode, struct hugetlbfs_inode_info, vfs_inode);
->  }
->  
-> -static struct backing_dev_info hugetlbfs_backing_dev_info = {
-> -	.name		= "hugetlbfs",
-> -	.ra_pages	= 0,	/* No readahead */
-> -	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
-> -};
-> -
->  int sysctl_hugetlb_shm_group;
->  
->  enum {
-> @@ -498,7 +492,7 @@ static struct inode *hugetlbfs_get_inode(struct super_block *sb,
->  		lockdep_set_class(&inode->i_mapping->i_mmap_rwsem,
->  				&hugetlbfs_i_mmap_rwsem_key);
->  		inode->i_mapping->a_ops = &hugetlbfs_aops;
-> -		inode->i_mapping->backing_dev_info =&hugetlbfs_backing_dev_info;
-> +		inode->i_mapping->backing_dev_info = &noop_backing_dev_info;
->  		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
->  		inode->i_mapping->private_data = resv_map;
->  		info = HUGETLBFS_I(inode);
-> @@ -1032,10 +1026,6 @@ static int __init init_hugetlbfs_fs(void)
->  		return -ENOTSUPP;
->  	}
->  
-> -	error = bdi_init(&hugetlbfs_backing_dev_info);
-> -	if (error)
-> -		return error;
-> -
->  	error = -ENOMEM;
->  	hugetlbfs_inode_cachep = kmem_cache_create("hugetlbfs_inode_cache",
->  					sizeof(struct hugetlbfs_inode_info),
-> @@ -1071,7 +1061,6 @@ static int __init init_hugetlbfs_fs(void)
->   out:
->  	kmem_cache_destroy(hugetlbfs_inode_cachep);
->   out2:
-> -	bdi_destroy(&hugetlbfs_backing_dev_info);
->  	return error;
->  }
->  
-> @@ -1091,7 +1080,6 @@ static void __exit exit_hugetlbfs_fs(void)
->  	for_each_hstate(h)
->  		kern_unmount(hugetlbfs_vfsmount[i++]);
->  	unregister_filesystem(&hugetlbfs_fs_type);
-> -	bdi_destroy(&hugetlbfs_backing_dev_info);
->  }
->  
->  module_init(init_hugetlbfs_fs)
-> diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-> index 9852176..06f0688 100644
-> --- a/fs/kernfs/inode.c
-> +++ b/fs/kernfs/inode.c
-> @@ -24,12 +24,6 @@ static const struct address_space_operations kernfs_aops = {
->  	.write_end	= simple_write_end,
->  };
->  
-> -static struct backing_dev_info kernfs_bdi = {
-> -	.name		= "kernfs",
-> -	.ra_pages	= 0,	/* No readahead */
-> -	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
-> -};
-> -
->  static const struct inode_operations kernfs_iops = {
->  	.permission	= kernfs_iop_permission,
->  	.setattr	= kernfs_iop_setattr,
-> @@ -40,12 +34,6 @@ static const struct inode_operations kernfs_iops = {
->  	.listxattr	= kernfs_iop_listxattr,
->  };
->  
-> -void __init kernfs_inode_init(void)
-> -{
-> -	if (bdi_init(&kernfs_bdi))
-> -		panic("failed to init kernfs_bdi");
-> -}
-> -
->  static struct kernfs_iattrs *kernfs_iattrs(struct kernfs_node *kn)
->  {
->  	static DEFINE_MUTEX(iattr_mutex);
-> @@ -298,7 +286,7 @@ static void kernfs_init_inode(struct kernfs_node *kn, struct inode *inode)
->  	kernfs_get(kn);
->  	inode->i_private = kn;
->  	inode->i_mapping->a_ops = &kernfs_aops;
-> -	inode->i_mapping->backing_dev_info = &kernfs_bdi;
-> +	inode->i_mapping->backing_dev_info = &noop_backing_dev_info;
->  	inode->i_op = &kernfs_iops;
->  
->  	set_default_inode_attr(inode, kn->mode);
-> diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
-> index dc84a3e..af9fa74 100644
-> --- a/fs/kernfs/kernfs-internal.h
-> +++ b/fs/kernfs/kernfs-internal.h
-> @@ -88,7 +88,6 @@ int kernfs_iop_removexattr(struct dentry *dentry, const char *name);
->  ssize_t kernfs_iop_getxattr(struct dentry *dentry, const char *name, void *buf,
->  			    size_t size);
->  ssize_t kernfs_iop_listxattr(struct dentry *dentry, char *buf, size_t size);
-> -void kernfs_inode_init(void);
->  
->  /*
->   * dir.c
-> diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-> index f973ae9..8eaf417 100644
-> --- a/fs/kernfs/mount.c
-> +++ b/fs/kernfs/mount.c
-> @@ -246,5 +246,4 @@ void __init kernfs_init(void)
->  	kernfs_node_cache = kmem_cache_create("kernfs_node_cache",
->  					      sizeof(struct kernfs_node),
->  					      0, SLAB_PANIC, NULL);
-> -	kernfs_inode_init();
->  }
-> diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
-> index 57c40e3..6000d30 100644
-> --- a/fs/ocfs2/dlmfs/dlmfs.c
-> +++ b/fs/ocfs2/dlmfs/dlmfs.c
-> @@ -390,12 +390,6 @@ clear_fields:
->  	ip->ip_conn = NULL;
->  }
->  
-> -static struct backing_dev_info dlmfs_backing_dev_info = {
-> -	.name		= "ocfs2-dlmfs",
-> -	.ra_pages	= 0,	/* No readahead */
-> -	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
-> -};
-> -
->  static struct inode *dlmfs_get_root_inode(struct super_block *sb)
->  {
->  	struct inode *inode = new_inode(sb);
-> @@ -404,7 +398,7 @@ static struct inode *dlmfs_get_root_inode(struct super_block *sb)
->  	if (inode) {
->  		inode->i_ino = get_next_ino();
->  		inode_init_owner(inode, NULL, mode);
-> -		inode->i_mapping->backing_dev_info = &dlmfs_backing_dev_info;
-> +		inode->i_mapping->backing_dev_info = &noop_backing_dev_info;
->  		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
->  		inc_nlink(inode);
->  
-> @@ -428,7 +422,7 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
->  
->  	inode->i_ino = get_next_ino();
->  	inode_init_owner(inode, parent, mode);
-> -	inode->i_mapping->backing_dev_info = &dlmfs_backing_dev_info;
-> +	inode->i_mapping->backing_dev_info = &noop_backing_dev_info;
->  	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
->  
->  	ip = DLMFS_I(inode);
-> @@ -643,10 +637,6 @@ static int __init init_dlmfs_fs(void)
->  	int status;
->  	int cleanup_inode = 0, cleanup_worker = 0;
->  
-> -	status = bdi_init(&dlmfs_backing_dev_info);
-> -	if (status)
-> -		return status;
-> -
->  	dlmfs_inode_cache = kmem_cache_create("dlmfs_inode_cache",
->  				sizeof(struct dlmfs_inode_private),
->  				0, (SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT|
-> @@ -673,7 +663,6 @@ bail:
->  			kmem_cache_destroy(dlmfs_inode_cache);
->  		if (cleanup_worker)
->  			destroy_workqueue(user_dlm_worker);
-> -		bdi_destroy(&dlmfs_backing_dev_info);
->  	} else
->  		printk("OCFS2 User DLM kernel interface loaded\n");
->  	return status;
-> @@ -693,7 +682,6 @@ static void __exit exit_dlmfs_fs(void)
->  	rcu_barrier();
->  	kmem_cache_destroy(dlmfs_inode_cache);
->  
-> -	bdi_destroy(&dlmfs_backing_dev_info);
->  }
->  
->  MODULE_AUTHOR("Oracle");
-> -- 
-> 1.9.1
+> You may want a 'default' case that sets stat_max to zero, then.
 > 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-fsdevel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
--- 
-Jan Kara <jack@suse.cz>
-SUSE Labs, CR
+>> +		switch (chip->ecc.strength) {
+>> +		case 1:
+>> +			stat = hweight8(hinfc_read(host, HINFC504_ECC_STATUS)>>
+>> +						HINFC504_ECC_1_BIT_SHIFT);
+>> +			stat_max = 1;
+>> +			break;
+>> +		case 16:
+>> +			status_ecc = hinfc_read(host, HINFC504_ECC_STATUS) >>
+>> +					HINFC504_ECC_16_BIT_SHIFT & 0x0fff;
+>> +			stat_2 = status_ecc & 0x3f;
+>> +			stat_1 = status_ecc >> 6 & 0x3f;
+>> +			stat = stat_1 + stat_2;
+>> +			stat_max = max_t(int, stat_1, stat_2);
+>> +		}
+>> +		mtd->ecc_stats.corrected += stat;
+>> +		max_bitflips = max_t(int, max_bitflips, stat_max);
+>> +	}
+>> +	host->irq_status = 0;
+>> +
+>> +	return max_bitflips;
+>> +}
+> 
+> Brian
+
+Thanks for your comment!
+Zhou Wang
+> 
+> .
+> 
