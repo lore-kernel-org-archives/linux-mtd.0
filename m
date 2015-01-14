@@ -1,23 +1,24 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBIgQ-0004Tl-6Z
- for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 07:48:06 +0000
-Date: Wed, 14 Jan 2015 08:47:37 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Dan Ehrenberg <dehrenberg@chromium.org>
-Subject: Re: [PATCH] mtd: Add config option to skip scanning bad blocks in
- partitions
-In-Reply-To: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
-Message-ID: <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
-References: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
+Received: from mail-we0-f170.google.com ([74.125.82.170])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YBJCZ-0007lO-Rn
+ for linux-mtd@lists.infradead.org; Wed, 14 Jan 2015 08:21:21 +0000
+Received: by mail-we0-f170.google.com with SMTP id w61so7331168wes.1
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Jan 2015 00:20:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
-Cc: "grundler@chromium.org" <grundler@chromium.org>,
- "gwendal@chromium.org" <gwendal@chromium.org>,
- Brian Norris <computersforpeace@gmail.com>,
+In-Reply-To: <20150108012616.GQ9759@ld-irv-0074>
+References: <1418873011-4974-1-git-send-email-zhang.chunyan@linaro.org>
+ <4170676.z5yoWA4Rtc@wuerfel> <20150108012616.GQ9759@ld-irv-0074>
+Date: Wed, 14 Jan 2015 16:20:56 +0800
+Message-ID: <CAG2=9p-CJyFiid2=eA5cOi7zt9oSxScfsox5YVNngfN9nQz8-Q@mail.gmail.com>
+Subject: Re: [PATCH v3] mtd: test: Replace timeval with ktime_t in speedtest.c
+ and torturetest.c
+From: Chunyan Zhang <zhang.chunyan@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Lyra Zhang <zhang.lyra@gmail.com>, linux-kernel@vger.kernel.org,
+ John Stultz <john.stultz@linaro.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
+ David Woodhouse <dwmw2@infradead.org>, Arnd Bergmann <arnd@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +28,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi, Brian
 
-On Wed, 14 Jan 2015, Dan Ehrenberg wrote:
+Thank you so much !
 
-> Each partition on a device with bad blocks iterates over its erase
-> blocks to find an accurate count of bad blocks. The iteration can take
-> some time, especially on devices with many erase blocks which are
-> configured to use the OOB area to detect if the block is bad. This
-> patch makes a config option, MTD_PART_BAD_BLOCK_COUNT, which can
-> be turned off to skip the initial scan and forgo an accurate count.
+Best regards,
+Chunyan
 
-How much time would you actually save? Sure, there number of blocks in a 
-modern flash is in the thousands, but one only has to read the OOB of the 
-first page to find the bad block marker, so scanning through the whole 
-flash does not take long.
-
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+On Thu, Jan 8, 2015 at 9:26 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Thu, Dec 18, 2014 at 08:53:10AM +0100, Arnd Bergmann wrote:
+>> On Thursday 18 December 2014 11:23:31 Chunyan Zhang wrote:
+>> > This patch changes the 32-bit time type (timeval) to the 64-bit one
+>> > (ktime_t), since 32-bit time types will break in the year 2038.
+>> >
+>> > I use ktime_t instead of timeval to define 'start' and 'finish'
+>> > which are used to get the time for tow points.
+>> >
+>> > This patch also changes do_gettimeofday() to ktime_get() accordingly,
+>> > since ktime_get returns a ktime_t, but do_gettimeofday returns a
+>> > struct timeval, and the other reason is that ktime_get() uses
+>> > the monotonic clock.
+>> >
+>> > This patch is based on another patch which privides a millisecond
+>> > time difference function 'ktime_ms_delta' in ktime.h
+>> >
+>> > http://lkml.iu.edu//hypermail/linux/kernel/1412.2/00625.html
+>> >
+>> > Signed-off-by: Chunyan Zhang <zhang.chunyan@linaro.org>
+>> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+>> >
+>>
+>> The new version still looks good to me, but as there is now a
+>> dependency on another patch, I'd suggest we queue this up in the
+>> y2038 branch together with the patch that introduces ktime_ms_delta.
+>>
+>> David or Brian, can you provide an Ack for this, or do you have
+>> any objections?
+>
+> I just tested v2, which doesn't have this dependency and has only a
+> trivial difference from v3. Seems to work OK. So:
+>
+> Tested-by: Brian Norris <computersforpeace@gmail.com>
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
+>
+> Feel free to queue it in the dependent branch.
+>
+> Thanks,
+> Brian
