@@ -1,13 +1,17 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: atmel_nand: check NFC busy flag by HSMC_SR instead of
- NFC cmd regs
-Date: Thu, 15 Jan 2015 18:45:53 +0800
-Message-ID: <1421318753-14960-1-git-send-email-josh.wu@atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org, Josh Wu <josh.wu@atmel.com>
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YBhxt-0000hs-6M
+ for linux-mtd@lists.infradead.org; Thu, 15 Jan 2015 10:47:49 +0000
+Received: by mail-pa0-f41.google.com with SMTP id rd3so16833051pab.0
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 02:47:27 -0800 (PST)
+From: Masanari Iida <standby24x7@gmail.com>
+To: kamlakant.patel@broadcom.com, gregkh@linuxfoundation.org,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] staging: mt29f_spinand: Fix typo in Kconfig
+Date: Thu, 15 Jan 2015 19:47:24 +0900
+Message-Id: <1421318844-18203-1-git-send-email-standby24x7@gmail.com>
+Cc: devel@driverdev.osuosl.org, Masanari Iida <standby24x7@gmail.com>,
+ manonuevo@micron.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,46 +21,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently the driver read NFC command registers to get NFC busy flag.
-Actually this flag also can be get by reading HSMC_SR register.
+This patch fix a spelling typo in Kconfig.
 
-Use the read NFC command registers need mapping a huge memory region.
-To save the mapped memory region, we change to check NFC busy flag by
-reading HSMC_SR register.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Acked-by: Josh Wu <josh.wu@atmel.com>
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
 ---
+ drivers/staging/mt29f_spinand/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/mtd/nand/atmel_nand.c     | 3 +--
- drivers/mtd/nand/atmel_nand_nfc.h | 1 +
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 3853597..125330b 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1699,8 +1699,7 @@ static int nfc_send_command(struct atmel_nand_host *host,
- 		cmd, addr, cycle0);
- 
- 	timeout = jiffies + msecs_to_jiffies(NFC_TIME_OUT_MS);
--	while (nfc_cmd_readl(NFCADDR_CMD_NFCBUSY, host->nfc->base_cmd_regs)
--			& NFCADDR_CMD_NFCBUSY) {
-+	while (nfc_readl(host->nfc->hsmc_regs, SR) & NFC_SR_BUSY) {
- 		if (time_after(jiffies, timeout)) {
- 			dev_err(host->dev,
- 				"Time out to wait CMD_NFCBUSY ready!\n");
-diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
-index 85b8ca6..4d5d262 100644
---- a/drivers/mtd/nand/atmel_nand_nfc.h
-+++ b/drivers/mtd/nand/atmel_nand_nfc.h
-@@ -35,6 +35,7 @@
- #define		NFC_CTRL_DISABLE	(1 << 1)
- 
- #define ATMEL_HSMC_NFC_SR	0x08		/* NFC Status Register */
-+#define		NFC_SR_BUSY		(1 << 8)
- #define		NFC_SR_XFR_DONE		(1 << 16)
- #define		NFC_SR_CMD_DONE		(1 << 17)
- #define		NFC_SR_DTOE		(1 << 20)
+diff --git a/drivers/staging/mt29f_spinand/Kconfig b/drivers/staging/mt29f_spinand/Kconfig
+index 4031748..f3f9cb3 100644
+--- a/drivers/staging/mt29f_spinand/Kconfig
++++ b/drivers/staging/mt29f_spinand/Kconfig
+@@ -12,5 +12,5 @@ config MTD_SPINAND_ONDIEECC
+ 	bool "Use SPINAND internal ECC"
+ 	depends on MTD_SPINAND_MT29F
+ 	help
+-	  Internel ECC.
++	  Internal ECC.
+ 	  Enables Hardware ECC support for Micron SPI NAND.
 -- 
-1.9.1
+2.3.0.rc0
