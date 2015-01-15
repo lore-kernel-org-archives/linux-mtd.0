@@ -1,11 +1,11 @@
-Received: from mail-qg0-x231.google.com ([2607:f8b0:400d:c04::231])
+Received: from mail-qg0-x22f.google.com ([2607:f8b0:400d:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBmd8-0006L4-5O
- for linux-mtd@lists.infradead.org; Thu, 15 Jan 2015 15:46:42 +0000
-Received: by mail-qg0-f49.google.com with SMTP id f51so12164469qge.8
- for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 07:46:20 -0800 (PST)
+ id 1YBnNv-0005oo-UD
+ for linux-mtd@lists.infradead.org; Thu, 15 Jan 2015 16:35:04 +0000
+Received: by mail-qg0-f47.google.com with SMTP id q108so12464997qgd.6
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 08:34:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20150114225323.GZ9759@ld-irv-0074>
+In-Reply-To: <20150113215817.GW9759@ld-irv-0074>
 References: <1420626727-6929-1-git-send-email-festevam@gmail.com>
  <1420626727-6929-2-git-send-email-festevam@gmail.com>
  <20150109201743.GW9759@ld-irv-0074>
@@ -13,21 +13,16 @@ References: <1420626727-6929-1-git-send-email-festevam@gmail.com>
  <20150113185153.GT9759@ld-irv-0074>
  <CAOMZO5Cy39iC0CpvO0H6i6rX6YVyns-2tZi5-vU28hCM6kgu-w@mail.gmail.com>
  <20150113215817.GW9759@ld-irv-0074>
- <BY1PR0301MB12213C4577DB849CA161F51482400@BY1PR0301MB1221.namprd03.prod.outlook.com>
- <CAOMZO5Cfe8rmsQPg1xdwwrQxsesqd1k1E80oKuiG78P77CYBcw@mail.gmail.com>
- <20150114225323.GZ9759@ld-irv-0074>
-Date: Thu, 15 Jan 2015 09:46:19 -0600
-Message-ID: <CA+EcR20v_k6DGFyb9yCvyLDnGXk9JSC+9odGfiWV65x7g527JA@mail.gmail.com>
+Date: Thu, 15 Jan 2015 10:34:42 -0600
+Message-ID: <CA+EcR22dnA8a+uL+6Np+V6A2QHwTFjyhxUOzVJ0hiuB2U-9C4w@mail.gmail.com>
 Subject: Re: [PATCH v3 2/2] mtd: fsl-quadspi: Fix module unbound
 From: Han Xu <xhnjupt@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>,
- "Frank.Li@freescale.com" <Frank.Li@freescale.com>,
- Fabio Estevam <festevam@gmail.com>,
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "han.xu@freescale.com" <han.xu@freescale.com>,
- Huang Shijie <shijie8@gmail.com>
+ Fabio Estevam <festevam@gmail.com>, Huang Shijie <shijie8@gmail.com>,
+ "Frank.Li@freescale.com" <Frank.Li@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,32 +32,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 14, 2015 at 4:53 PM, Brian Norris
+On Tue, Jan 13, 2015 at 3:58 PM, Brian Norris
 <computersforpeace@gmail.com> wrote:
-> On Wed, Jan 14, 2015 at 06:26:38PM -0200, Fabio Estevam wrote:
->> On Tue, Jan 13, 2015 at 8:05 PM, Frank.Li@freescale.com
->> <Frank.Li@freescale.com> wrote:
+> Hi Fabio,
+>
+> On Tue, Jan 13, 2015 at 07:45:22PM -0200, Fabio Estevam wrote:
+>> On Tue, Jan 13, 2015 at 4:51 PM, Brian Norris
+>> <computersforpeace@gmail.com> wrote:
 >>
->> > Our QSPI driver owner Xu han (han.xu@freescale.com) will take responsibility to test and improve
->> > This driver.  I will help him to be familiar with linux kernel community work.
+>> >> - Read the two flashes.
+>> >
+>> > Are you doing any verification to make sure you're reading the *correct*
+>> > data? I'd imagine from some what I see in your patches, that you might
+>> > actually be reading from the wrong flash.
 >>
->> That's great!
+>> Yes, you are right. Just confirmed that with this v3 applied I erased
+>> /dev/mtd0, but that also incorrectly erased /dev/mtd1.
+>>
+>> Now I came back to the original v1 patch: isn't it the simpler
+>> approach for fixing the module load/unload crash problem?
+>>
+>> It only keeps the mtd unregistration index in sync with registration
+>> and doesn't touch other areas of the driver.
+>>
+>> IMHO it is an improvement over the current situation.
 >
-> Yes, it'll be great to be sure there is at least one "owner" who gets
-> CC'd on these types of patches.
+> Right, I thought your original patch was an improvement, but it did
+> still leave some of the error path broken. And as Huang mentioned,
+> multiple devices were never actually *properly* supported, so there were
+> problems there.
 >
->> Could you please send a patch adding yourself as the maintainer for
->> the fsl-quadspi driver?
+>> I agree that this driver needs more rework, but I am not able to put
+>> it on such good state.
 >
-> I'd be OK with multiple developers as reviewers if more desire to do so,
-> given that Xu sounds to be new to our development model. Mainly I'm
+> I might be OK with taking v1 if we can do the following:
+>
+> (1) Identify who will take responsibility for testing and improving this
+> driver. We might even add a MAINTAINERS entry
 
-OK for me. I would love to maintain freescale qspi module and continue
-improve it.
-
-> interested in at least one developer who has access to and knowledge of
-> the hardware, and who can test, review, and ack/nak patches. I'll still
-> handle merging the patches, of course.
+I will send a patch to add myself as freescale qspi maintainer, but
+don't know the
+patch should be send to whom and cc to which maillist?
+>
+> (2) Get an 'ack' from said person
+>
+> (3) Document the known issues with this driver; add some TODO/FIXME
+> comments, and maybe disable potentially broken features until they get
+> fixed (e.g., only probe up to 1 flash, leaving the second flash
+> disabled)
+>
+> Huang mentioned that Frank may be interested in (1).
 >
 > Brian
 >
