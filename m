@@ -1,27 +1,23 @@
-Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
+Received: from mail-qc0-f180.google.com ([209.85.216.180])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBoE9-0004FT-CZ
- for linux-mtd@lists.infradead.org; Thu, 15 Jan 2015 17:29:02 +0000
-Received: by mail-ie0-f180.google.com with SMTP id rp18so16110688iec.11
- for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 09:28:38 -0800 (PST)
+ id 1YBoXz-0003ZS-9g
+ for linux-mtd@lists.infradead.org; Thu, 15 Jan 2015 17:49:31 +0000
+Received: by mail-qc0-f180.google.com with SMTP id r5so7184500qcx.11
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 09:49:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20150114191907.GX9759@ld-irv-0074>
-References: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
- <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
- <CAAK6Zt29rv0CSC42BbpULP=rwzSGUWcxBC=ewg5aX03JoCjzCg@mail.gmail.com>
- <20150114191907.GX9759@ld-irv-0074>
-Date: Thu, 15 Jan 2015 09:28:38 -0800
-Message-ID: <CAAK6Zt3suTh9=GpYP8CYooqOsq6xFnLOUAPk=o4N2dnL7P-sgg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: Add config option to skip scanning bad blocks in
- partitions
-From: Daniel Ehrenberg <dehrenberg@google.com>
-To: Brian Norris <computersforpeace@gmail.com>
+Sender: root@kryo.se
+In-Reply-To: <alpine.DEB.2.02.1501142353210.5742@lnxricardw1.se.axis.com>
+References: <CAGgu=sBpckw_J1sMcQi+Df8N8=sVjaeLZCLL9bVqEm_uHMB-5Q@mail.gmail.com>
+ <CAFLxGvwaqLfshJGHT=tfwh=SFt4nRBTPpMBVyE9DMxkhyWr-Wg@mail.gmail.com>
+ <alpine.DEB.2.02.1501142353210.5742@lnxricardw1.se.axis.com>
+Date: Thu, 15 Jan 2015 18:49:09 +0100
+Message-ID: <CAGgu=sBM=vaVi52yGP6+QzUAdeG7yhuzry0DHndm6Zgtjhh2nw@mail.gmail.com>
+Subject: Re: Flash filesystem questions
+From: Erik Ekman <erik@kryo.se>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: "grundler@chromium.org" <grundler@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "gwendal@chromium.org" <gwendal@chromium.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,53 +27,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 14, 2015 at 11:19 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Wed, Jan 14, 2015 at 10:08:51AM -0800, Daniel Ehrenberg wrote:
->> To initialize the partitions, it takes me 3.5s with this config option
->> turned on and .2s with the config option turned off. So a large
->> proportion of the NAND startup time (not counting ubi coming up) is
->> comes from this bad block scan. It takes about 1.87s to scan over the
->> device, and I have my partitioning set up so there's an extra
->> partition covering the whole device in addition to the individual
->> partitions.
+On Wed, Jan 14, 2015 at 11:59 PM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
 >
-> Why don't you have BBT enabled? Even if it's just in-memory (not
-> on-flash), you should only have to scan the entire flash once (not once
-> for each partition), after which every subsequent lookup should only be
-> a memory access. That'd cut your time in half already, I expect. But if
-> you use the on-flash BBT (NAND_BBT_USE_FLASH), then you should only have
-> to scan the flash once per flash lifetime, after which the bad block
-> information will be stored in just a few pages, and should take only a
-> millisecond or two to read.
+> On Wed, 14 Jan 2015, Richard Weinberger wrote:
 >
-> (There are other reasons for using on-flash BBT, but I won't detail them
-> here.)
+>> On Wed, Jan 14, 2015 at 9:21 PM, Erik Ekman <erik@kryo.se> wrote:
+>> > Hi all,
+>> >
+[...]
+>> >
+>> > Could this problem be because of my driver? Is there some way to configure UBI
+>> > for to only write once per flash block or is that the default?
+>>
+>> You can a block only write once. Then you have to erase it again.
 >
-> I also recall the bad block scanning process will read not just the
-> spare area, but actually the full 1st page. So that might cause a little
-> unnecessary slowness.
+> When I read Erik's original post I interpreted the 'write once per flash
+> block' to mean that you can do a single write per block, and that's it.
+> Given the usage as a speedup component, it would make sense to copy the
+> relevant data in one go, since no read/write file system would be
+> implemented on the device, there would be no need for page based writes.
+> The flash memory most likely doesn't have this limitation but the
+> controller could I suppose.
 >
-> All in all, I think it's highly unlikely that your patch is necessary.
-> There are much better ways to get you a faster boot time.
+> Erik, was that in fact what you meant?
 >
-> Brian
+> None of the Linux-based read/write file systems can handle the case of
+> only being able to do a single write operation to a block. They are all
+> based on the fact that you normally can write a page of data at a time.
 
-Thanks for the suggestions. I'm new and I definitely want to do things
-the right way, if there's a better way that doesn't need all these
-modifications.
+I meant that each 4kB sector within in erase block can only be written
+once per erase.
+In the SoC flashes I have run into at work you can usually write many
+times (only clearing
+bits of course, not setting them) to the same sector. What I see when
+I try is that the writes
+complete without problem but the next read of the same sector returns an error.
 
-I'm using UBI, so I thought an on-device BBT is redundant and would be
-ignored by UBI. Also, I couldn't figure out how I'm supposed to to
-enable it--the out-of-tree driver I'm using isn't really based on
-nand_base.c; correct me if I'm wrong, but it looks like that's a
-requirement for using the nand_bbt code. Cutting my time in half
-wouldn't be all that great since that's still almost 2 seconds of
-useless work.
+My code only read up to 4kB in one read command. It seems the kernel
+part attaching ubi
+did not like not getting all data in one operation. After fixing long
+reads I no longer get any
+asserts in the log. ubiattach does still not work though, but now I
+get a more normal CRC error:
 
-Where can I read about the other advantages of on-flash BBT when using
-UBI? Maybe I can use this technique for other devices I'm working on
-where nand_bbt could be used.
+[  834.723114] UBI: attaching mtd0 to ubi0
+[  841.609879] UBI: scanning is finished
+[  841.612442] UBI error: vtbl_check: bad CRC at record 23:
+0xf116c36b, not 0x000000
+[  841.612450] Volume table record 23 dump:
+[  841.612453] reserved_pebs   0
+[  841.612456] alignment       0
+[  841.612459] data_pad        0
+[  841.612462] vol_type        0
+[  841.612465] upd_marker      0
+[  841.612468] name_len        0
+[  841.612470] name            NULL
+[  841.612501] UBI error: vtbl_check: bad CRC at record 23:
+0xf116c36b, not 0x000000
+[  841.612504] Volume table record 23 dump:
+[  841.612507] reserved_pebs   0
+[  841.612510] alignment       0
+[  841.612513] data_pad        0
+[  841.612515] vol_type        0
+[  841.612518] upd_marker      0
+[  841.612521] name_len        0
+[  841.612523] name            NULL
+[  841.612527] UBI error: process_lvol: both volume tables are corrupted
+[  841.615924] UBI error: ubi_attach_mtd_dev: failed to attach mtd0, error -22
 
-Thanks,
-Dan
+I will try with the tests and investigate more.
+
+Thanks for the help,
+
+Erik
