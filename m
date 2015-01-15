@@ -1,16 +1,20 @@
-Date: Wed, 14 Jan 2015 16:03:34 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: alison@she-devel.com
-Subject: Re: [PATCH] i.MX6-SabreAuto: EIM: pull PAD_EIM_D18 low for NOR probe
-Message-ID: <20150115000334.GA9759@ld-irv-0074>
-References: <1421278609-8446-1-git-send-email-alison_chaiken@mentor.com>
+Message-ID: <54B71772.9080601@hisilicon.com>
+Date: Thu, 15 Jan 2015 09:27:14 +0800
+From: Zhou Wang <wangzhou1@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1421278609-8446-1-git-send-email-alison_chaiken@mentor.com>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>,
- shijie8@gmail.com, alison_chaiken@mentor.com,
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v6 1/2] mtd: hisilicon: add a new NAND controller driver
+ for hisilicon hip04 Soc
+References: <1421047734-30818-1-git-send-email-wangzhou1@hisilicon.com>
+ <1421047734-30818-2-git-send-email-wangzhou1@hisilicon.com>
+ <20150113035844.GJ9759@ld-irv-0074> <54B6625F.8060607@hisilicon.com>
+ <20150114192510.GY9759@ld-irv-0074>
+In-Reply-To: <20150114192510.GY9759@ld-irv-0074>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, liguozhu@hisilicon.com, xuwei5@hisilicon.com,
+ linux-mtd@lists.infradead.org, haojian.zhuang@gmail.com, caizhiyong@huawei.com,
+ yubingxu@hisilicon.com, David Woodhouse <dwmw2@infradead.org>,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,113 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ linux-arm-kernel, maintainers, devicetree
-
-Shawn, Sascha: should this driver be listed under the Freescale IMX
-MAINTAINERS entry?
-
-On Wed, Jan 14, 2015 at 03:36:49PM -0800, alison@she-devel.com wrote:
-> From: Alison Chaiken <alison_chaiken@mentor.com>
+On 2015/1/15 3:25, Brian Norris wrote:
+> On Wed, Jan 14, 2015 at 08:34:39PM +0800, Zhou Wang wrote:
+>> On 2015/1/13 11:58, Brian Norris wrote:
+>>> On Mon, Jan 12, 2015 at 03:28:53PM +0800, Zhou Wang wrote:
+>>>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+>>>> +	chip->IO_ADDR_R = chip->IO_ADDR_W = devm_ioremap_resource(dev, res);
+>>>
+>>> Hmm, do you really have to reuse IO_ADDR_{R,W} here? Those are only
+>>> targeted for NAND systems which have a direct MMIO mapping to the NAND
+>>> I/O pins. See nand_base's {read,write}_buf() and read_{byte,word}()
+>>> implementations. But you override those.
+>>
+>> There is a hardware buffer in this NAND controller, and the buffer can be
+>> accessed as MMIO.
 > 
-> PAD_EIM_D18 must be pulled low at boot in order for the parallel NOR
-> connected to the EIM switch to probe properly.  Otherwise
-> cfi_qry_present() may return "U-V-]" rather than "Q-R-Y" if the
-> PAD_EIM_D18 is high.  Add a nor-gpios property to the nor node in the
-> SabreAuto device-tree and add a function to the imx-weim probe to set
-> GPIO5 to drive the pad.
+> Sure.
 > 
-> Signed-off-by: Alison Chaiken <alison_chaiken@mentor.com>
-> ---
->  arch/arm/boot/dts/imx6qdl-sabreauto.dtsi |  1 +
->  drivers/bus/imx-weim.c                   | 43 ++++++++++++++++++++++++++++++++
->  2 files changed, 44 insertions(+)
+>> IO_ADDR_R/W just indicates the base address of this buffer.
 > 
-> diff --git a/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi b/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi
-> index 009abd6..dd5e3bc 100644
-> --- a/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi
-> +++ b/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi
-> @@ -454,5 +454,6 @@
->  		bank-width = <2>;
->  		fsl,weim-cs-timing = <0x00620081 0x00000001 0x1c022000
->  				0x0000c000 0x1404a38e 0x00000000>;
-> +		nor-gpios = <&gpio5 4 GPIO_ACTIVE_LOW>;
+> But I was noting that IO_ADDR_{R,W} actually serve a very particular
+> purpose in nand_base.c, which seems distinct from your HW buffer.
+> 
+>> Maybe I need to use a void __iomem pointer stored in my host struct to use
+>> this buffer instead of IO_ADDR_R/W as you said below here?
+> 
+> Yes, I think that would be better.
 
-Such a binding needs to be documented. Also, if it's going to be named
-generically like that, it needs to be generically useful and supported
-under MTD code, not platform-specific bus code.
+OK, I will do as this in next version, Thanks!
 
-So what pin is this, exactly? A write-protect pin? An address pin? A
-toaster control, where the toaster is keeping the flash too hot?
+> 
+>>> It's best if it's obvious if nand_base is somehow inadvertently using
+>>> these pointers. So leaving them NULL is helpful.
+>>>
+>>> As an alternative, you can just stash another private void __iomem
+>>> pointer in you your host struct.
+> 
+> Thanks,
+> Brian
 
->  	};
->  };
-> diff --git a/drivers/bus/imx-weim.c b/drivers/bus/imx-weim.c
-> index 0958b69..b3c2ca6 100644
-> --- a/drivers/bus/imx-weim.c
-> +++ b/drivers/bus/imx-weim.c
-> @@ -14,6 +14,8 @@
->  #include <linux/mfd/syscon.h>
->  #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
->  #include <linux/regmap.h>
-> +#include <linux/of_gpio.h>
-> +#include <linux/gpio.h>
->  
->  struct imx_weim_devtype {
->  	unsigned int	cs_count;
-> @@ -108,6 +110,40 @@ err:
->  	return -EINVAL;
->  }
->  
-> +/* set the GPIO to control PAD_EIM_D18 so cfi_qry_present() works properly */
-> +static int __init nor_gpio_setup(struct device_node *np, struct device *parent)
-> +{
-> +	unsigned nor_gpio, level;
-> +	enum of_gpio_flags of_flags;
-> +	int ret;
-> +
-> +	nor_gpio = of_get_named_gpio_flags(np, "nor-gpios", 0, &of_flags);
-> +
-> +	/* this child is not a NOR chip */
-> +	if (!nor_gpio)
-> +		return 0;
-> +
-> +	if (gpio_is_valid(nor_gpio)) {
-> +		ret = devm_gpio_request_one(parent, nor_gpio,
-> +					GPIOF_DIR_OUT, "nor-gpio");
-> +	} else {
-> +		ret = -ENODEV;
-> +		goto out;
-> +	}
-> +
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	level = ((of_flags == OF_GPIO_ACTIVE_LOW) ? 0 : 1);
-> +
-> +	gpio_set_value(nor_gpio, level);
-> +
-> +	return 0;
-> +out:
-> +	dev_err(parent, "Unable to request EIM_D18 GPIO for NOR.\n");
-> +	return ret;
-> +}
-> +
->  /* Parse and set the timing for this device. */
->  static int __init weim_timing_setup(struct device_node *np, void __iomem *base,
->  				    const struct imx_weim_devtype *devtype)
-> @@ -160,6 +196,13 @@ static int __init weim_parse_dt(struct platform_device *pdev,
->  				child->full_name);
->  			return ret;
->  		}
-> +
-> +		ret = nor_gpio_setup(child, &pdev->dev);
-> +		if (ret) {
-> +			dev_err(&pdev->dev, "%s gpios setup failed.\n",
-> +				child->full_name);
-> +			return ret;
-> +		}
->  	}
->  
->  	ret = of_platform_populate(pdev->dev.of_node,
+Thanks for your reply!
+Zhou Wang
 
-Brian
+> 
+> .
+> 
