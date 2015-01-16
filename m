@@ -1,22 +1,22 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBxjY-0008J4-A5
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 03:38:05 +0000
-Received: by mail-pa0-f41.google.com with SMTP id rd3so21613997pab.0
- for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 19:37:43 -0800 (PST)
-Date: Thu, 15 Jan 2015 19:37:40 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: Re: [PATCH] nandsim: remove unused STATE_DATAOUT_STATUS_M and
- OPT_SMARTMEDIA
-Message-ID: <20150116033740.GF9759@ld-irv-0074>
-References: <1420981668-16545-1-git-send-email-akinobu.mita@gmail.com>
+ id 1YBy6k-0006Rw-QT
+ for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 04:02:04 +0000
+Received: by mail-ie0-f174.google.com with SMTP id at20so18837549iec.5
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 20:01:40 -0800 (PST)
+Message-ID: <54B88D21.5040002@gmail.com>
+Date: Thu, 15 Jan 2015 23:01:37 -0500
+From: nick <xerofoify@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1420981668-16545-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+To: hujianyang <hujianyang@huawei.com>
+Subject: Re: Patch Issues
+References: <54B874F6.6090405@gmail.com> <54B87F96.9040804@huawei.com>
+ <54B88732.8010709@gmail.com>
+In-Reply-To: <54B88732.8010709@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +26,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 11, 2015 at 10:07:48PM +0900, Akinobu Mita wrote:
-> There is no path to switch to STATE_DATAOUT_STATUS_M state, and
-> OPT_SMARTMEDIA is unused.
-> 
-> This is leftover from commit 0be718e5525a73557e76ea1c05b8001dde507049
-> ("mtd: nand: remove a bunch of unused commands").
-> 
-> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: linux-mtd@lists.infradead.org
+Hujuianyang,
+Also if I remove the function,check_free_sectors it gives me even more errors.
+I tried in a second patch as part of a series.
+Nick
 
-Pushed to l2-mtd.git. Thanks.
-
-Brian
+On 2015-01-15 10:36 PM, nick wrote:
+> Hujuianyang,
+> Thanks for the reply. I will get around to this tomorrow.
+> Nick
+> 
+> On 2015-01-15 10:03 PM, hujianyang wrote:
+>> Hi Nick,
+>>
+>> I'm not quite sure about if it is a correct modification. But,
+>>
+>> On 2015/1/16 10:18, nick wrote:
+>>> drivers/mtd/inftlmount.c:336:12: warning: ‘check_free_sectors’ defined but not used [-Wunused-function]
+>>
+>> check if this function is still called by other functions, if it
+>> is not, just remove it in your patch.
+>>
+>>>  static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
+>>>             ^
+>>> drivers/mtd/inftlmount.c: In function ‘INFTL_formatblock’:
+>>> drivers/mtd/inftlmount.c:781:1: warning: control reaches end of non-void function [-Wreturn-type]
+>>>  }
+>>> Patch:
+>>> From 6b481c8f5030da2e9616bd038193d68340c0b5d0 Mon Sep 17 00:00:00 2001
+>>>   2 From: Nicholas Krause <xerofoify@gmail.com>
+>>>   3 Date: Thu, 15 Jan 2015 20:10:37 -0500
+>>>   4 Subject: [PATCH] mtd: Remove unneeded call to check_free_sectors in the
+>>>   5  function,INFTL_formatblock
+>>>   6 
+>>>   7 Removes unneeded call to check_free_sectors internally in the function,INFTL_formatblock.
+>>>   8 This call is no longer needed due to us checking to see if erasing the block against the
+>>>   9 structure pointer passed to the function,inftl internal variable state is equal to the
+>>>  10 macro,MTD_ERASE_FAILED to see if the block has failed in being erased successfully.Due
+>>>  11 to this we can remove the no longer needed check to check_free_sectors and comments
+>>>  12 related to questioning the reason for it's use with the check against MTD_ERASE_FAILED
+>>>  13 for inftl's state variable already checking for successfully erasing of the mtd block.
+>>>  14 
+>>>  15 Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
+>>>  16 ---
+>>>  17  drivers/mtd/inftlmount.c | 10 ----------
+>>>  18  1 file changed, 10 deletions(-)
+>>>  19 
+>>>  20 diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+>>>  21 index 1388c8d..def5cea 100644
+>>>  22 --- a/drivers/mtd/inftlmount.c
+>>>  23 +++ b/drivers/mtd/inftlmount.c
+>>>  24 @@ -367,7 +367,6 @@ static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
+>>>  25   *
+>>>  26   * Return: 0 when succeed, -1 on error.
+>>>  27   *
+>>>  28 - * ToDo: 1. Is it necessary to check_free_sector after erasing ??
+>>>  29   */
+>>>  30  int INFTL_formatblock(struct INFTLrecord *inftl, int block)
+>>>  31  {
+>>>  32 @@ -401,15 +400,6 @@ int INFTL_formatblock(struct INFTLrecord *inftl, int block)
+>>>  33                         goto fail;
+>>>  34                 }
+>>>  35 
+>>>  36 -               /*
+>>>  37 -                * Check the "freeness" of Erase Unit before updating metadata.
+>>>  38 -                * FixMe: is this check really necessary? Since we have check
+>>>  39 -                * the return code after the erase operation.
+>>>  40 -                */
+>>>  41 -               if (check_free_sectors(inftl, instr->addr, instr->len, 1) != 0)
+>>>  42 -                       goto fail;
+>>>  43 -       }
+>>
+>> You should keep this '}'.
+>>
+>>>  44 -
+>>>  45         uci.EraseMark = cpu_to_le16(ERASE_MARK);
+>>>  46         uci.EraseMark1 = cpu_to_le16(ERASE_MARK);
+>>>  47         uci.Reserved[0] = 0;
+>>>  48 -- 
+>>>  49 2.1.0
+>>>  50 
+>>>
+>>> ______________________________________________________
+>>> Linux MTD discussion mailing list
+>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>
+>>
+>>
