@@ -1,22 +1,21 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-ie0-x22b.google.com ([2607:f8b0:4001:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBxfo-0004rs-Pd
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 03:34:14 +0000
-Received: by mail-pa0-f46.google.com with SMTP id lf10so21569571pab.5
- for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 19:33:50 -0800 (PST)
-Date: Thu, 15 Jan 2015 19:33:47 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: Re: [PATCH] mtd: nand: ams-delta: fix overwritten mtd_info->owner in
- initialization
-Message-ID: <20150116033347.GE9759@ld-irv-0074>
-References: <1420981640-16495-1-git-send-email-akinobu.mita@gmail.com>
+ id 1YBxiF-0007s0-Pm
+ for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 03:36:44 +0000
+Received: by mail-ie0-f171.google.com with SMTP id ar1so18799867iec.2
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 19:36:21 -0800 (PST)
+Message-ID: <54B88732.8010709@gmail.com>
+Date: Thu, 15 Jan 2015 22:36:18 -0500
+From: nick <xerofoify@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1420981640-16495-1-git-send-email-akinobu.mita@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Jonathan McDowell <noodles@earth.li>,
- linux-mtd@lists.infradead.org
+To: hujianyang <hujianyang@huawei.com>
+Subject: Re: Patch Issues
+References: <54B874F6.6090405@gmail.com> <54B87F96.9040804@huawei.com>
+In-Reply-To: <54B87F96.9040804@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +25,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 11, 2015 at 10:07:20PM +0900, Akinobu Mita wrote:
-> In initialization routine, mtd_info->owner is overwritten by memset()
-> just after being initialized.  This can be fixed by moving memset() calls
-> to just before setting mtd_info->owner.  But the memory region is allocated
-> by kmalloc, so we can fix it by using kzalloc instead of kmalloc.
+Hujuianyang,
+Thanks for the reply. I will get around to this tomorrow.
+Nick
+
+On 2015-01-15 10:03 PM, hujianyang wrote:
+> Hi Nick,
 > 
-> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-> Cc: Jonathan McDowell <noodles@earth.li>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: linux-mtd@lists.infradead.org
-
-Pushed to l2-mtd.git. Thanks!
-
-Brian
+> I'm not quite sure about if it is a correct modification. But,
+> 
+> On 2015/1/16 10:18, nick wrote:
+>> drivers/mtd/inftlmount.c:336:12: warning: ‘check_free_sectors’ defined but not used [-Wunused-function]
+> 
+> check if this function is still called by other functions, if it
+> is not, just remove it in your patch.
+> 
+>>  static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
+>>             ^
+>> drivers/mtd/inftlmount.c: In function ‘INFTL_formatblock’:
+>> drivers/mtd/inftlmount.c:781:1: warning: control reaches end of non-void function [-Wreturn-type]
+>>  }
+>> Patch:
+>> From 6b481c8f5030da2e9616bd038193d68340c0b5d0 Mon Sep 17 00:00:00 2001
+>>   2 From: Nicholas Krause <xerofoify@gmail.com>
+>>   3 Date: Thu, 15 Jan 2015 20:10:37 -0500
+>>   4 Subject: [PATCH] mtd: Remove unneeded call to check_free_sectors in the
+>>   5  function,INFTL_formatblock
+>>   6 
+>>   7 Removes unneeded call to check_free_sectors internally in the function,INFTL_formatblock.
+>>   8 This call is no longer needed due to us checking to see if erasing the block against the
+>>   9 structure pointer passed to the function,inftl internal variable state is equal to the
+>>  10 macro,MTD_ERASE_FAILED to see if the block has failed in being erased successfully.Due
+>>  11 to this we can remove the no longer needed check to check_free_sectors and comments
+>>  12 related to questioning the reason for it's use with the check against MTD_ERASE_FAILED
+>>  13 for inftl's state variable already checking for successfully erasing of the mtd block.
+>>  14 
+>>  15 Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
+>>  16 ---
+>>  17  drivers/mtd/inftlmount.c | 10 ----------
+>>  18  1 file changed, 10 deletions(-)
+>>  19 
+>>  20 diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+>>  21 index 1388c8d..def5cea 100644
+>>  22 --- a/drivers/mtd/inftlmount.c
+>>  23 +++ b/drivers/mtd/inftlmount.c
+>>  24 @@ -367,7 +367,6 @@ static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
+>>  25   *
+>>  26   * Return: 0 when succeed, -1 on error.
+>>  27   *
+>>  28 - * ToDo: 1. Is it necessary to check_free_sector after erasing ??
+>>  29   */
+>>  30  int INFTL_formatblock(struct INFTLrecord *inftl, int block)
+>>  31  {
+>>  32 @@ -401,15 +400,6 @@ int INFTL_formatblock(struct INFTLrecord *inftl, int block)
+>>  33                         goto fail;
+>>  34                 }
+>>  35 
+>>  36 -               /*
+>>  37 -                * Check the "freeness" of Erase Unit before updating metadata.
+>>  38 -                * FixMe: is this check really necessary? Since we have check
+>>  39 -                * the return code after the erase operation.
+>>  40 -                */
+>>  41 -               if (check_free_sectors(inftl, instr->addr, instr->len, 1) != 0)
+>>  42 -                       goto fail;
+>>  43 -       }
+> 
+> You should keep this '}'.
+> 
+>>  44 -
+>>  45         uci.EraseMark = cpu_to_le16(ERASE_MARK);
+>>  46         uci.EraseMark1 = cpu_to_le16(ERASE_MARK);
+>>  47         uci.Reserved[0] = 0;
+>>  48 -- 
+>>  49 2.1.0
+>>  50 
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+> 
+> 
