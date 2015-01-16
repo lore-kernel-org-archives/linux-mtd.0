@@ -1,20 +1,31 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-ig0-x229.google.com ([2607:f8b0:4001:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YCEst-00083d-9k
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 21:56:51 +0000
-Message-ID: <54B9890C.2080506@codeaurora.org>
-Date: Fri, 16 Jan 2015 13:56:28 -0800
-From: Stephen Boyd <sboyd@codeaurora.org>
+ id 1YCFAk-0005fR-TY
+ for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 22:15:19 +0000
+Received: by mail-ig0-f169.google.com with SMTP id z20so5882622igj.0
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Jan 2015 14:14:55 -0800 (PST)
 MIME-Version: 1.0
-To: Archit Taneja <architt@codeaurora.org>,
- linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/5] clk: qcom: Add EBI2 clocks for IPQ806x
-References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
- <1421419702-17812-2-git-send-email-architt@codeaurora.org>
-In-Reply-To: <1421419702-17812-2-git-send-email-architt@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: galak@codeaurora.org, linux-kernel@vger.kernel.org, agross@codeaurora.org
+In-Reply-To: <alpine.DEB.2.02.1501161938150.16829@lnxricardw1.se.axis.com>
+References: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
+ <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
+ <CAAK6Zt29rv0CSC42BbpULP=rwzSGUWcxBC=ewg5aX03JoCjzCg@mail.gmail.com>
+ <20150114191907.GX9759@ld-irv-0074>
+ <CAAK6Zt3suTh9=GpYP8CYooqOsq6xFnLOUAPk=o4N2dnL7P-sgg@mail.gmail.com>
+ <alpine.DEB.2.02.1501160954560.27318@lnxricardw1.se.axis.com>
+ <CAAK6Zt3mWvNwDnVU0oORTDC1Es_0jyvNqNyQPxqEjsgJJETiFw@mail.gmail.com>
+ <alpine.DEB.2.02.1501161938150.16829@lnxricardw1.se.axis.com>
+Date: Fri, 16 Jan 2015 14:14:55 -0800
+Message-ID: <CAAK6Zt1a1qAtv1z6gZ663=PaARDD9T-m54eqJc2n_omVmGCbhw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: Add config option to skip scanning bad blocks in
+ partitions
+From: Daniel Ehrenberg <dehrenberg@google.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "grundler@chromium.org" <grundler@chromium.org>,
+ "gwendal@chromium.org" <gwendal@chromium.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/16/2015 06:48 AM, Archit Taneja wrote:
-> The NAND controller within EBI2 requires EBI2_CLK and EBI2_ALWAYS_ON_CLK clocks.
-> Create structs for these clocks so that they can be used by the NAND controller
-> driver. Add an entry for EBI2_AON_CLK in the gcc-ipq806x DT binding document.
+On Fri, Jan 16, 2015 at 10:53 AM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
 >
-> Cc: Stephen Boyd <sboyd@codeaurora.org>
-> Signed-off-by: Archit Taneja <architt@codeaurora.org>
-
-Looks ok. I couldn't find this used in the downstream sources though.
-Can you point me to it? I'm mostly worried that this is a shared
-resource that never should be turned off, so exposing it to drivers may
-not be the right idea.
-
-> +static struct clk_branch ebi2_aon_clk = {
-> +	.hwcg_reg = 0x3b00,
-> +	.hwcg_bit = 6,
-> +	.halt_reg = 0x2fcc,
-> +	.halt_bit = 0,
-> +	.clkr = {
-> +		.enable_reg = 0x3b00,
-> +		.enable_mask = BIT(8),
-> +		.hw.init = &(struct clk_init_data){
-> +			.name = "ebi2_always_on_clk",
+> On Fri, 16 Jan 2015, Daniel Ehrenberg wrote:
 >
+> Are you and Erik Ekman on this list working on the same thing, he is also
+> using an out-of-tree NAND driver?
 
-Can this be ebi2_aon_clk to match the macro?
+No, I'm not working with him.
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> The conclusion as far as I'm concerned is to use a BBT in a production
+> code so that the flash is only ever read in its entirety (i.e. with
+> badblocks) once, in order to generate the BBT. In our R&D department,
+> especially in departments where they just want a unit to work and aren't
+> testing or developing flash code, we can be more leniant and have even
+> erased factory-marked bad blocks in some cases (when possible). In the
+> unlikely event that a memory chip starts behaving erratically (which
+> hasn't happened yet) we'd just replace it. In the field such a situation
+> would be harder to diagnose so we want to avoid that as far as possible.
+
+Thanks for this explanation. I'll work on adding a bad block table to
+how I'm using NAND. I don't know what got into my head to think that
+UBI was going to do all this for me. I guess the original patch at the
+head of this thread isn't so useful for that use case.
+
+Dan
