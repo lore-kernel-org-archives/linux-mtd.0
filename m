@@ -1,22 +1,25 @@
-Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
+Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBy6k-0006Rw-QT
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 04:02:04 +0000
-Received: by mail-ie0-f174.google.com with SMTP id at20so18837549iec.5
- for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 20:01:40 -0800 (PST)
-Message-ID: <54B88D21.5040002@gmail.com>
-Date: Thu, 15 Jan 2015 23:01:37 -0500
-From: nick <xerofoify@gmail.com>
+ id 1YByBR-0002AI-Qu
+ for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 04:06:56 +0000
+Received: by mail-pd0-f181.google.com with SMTP id z10so8802532pdj.12
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 20:06:31 -0800 (PST)
+Date: Thu, 15 Jan 2015 20:06:28 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 03/12] fs: introduce f_op->mmap_capabilities for nommu
+ mmap support
+Message-ID: <20150116040628.GG9759@ld-irv-0074>
+References: <1421228561-16857-1-git-send-email-hch@lst.de>
+ <1421228561-16857-4-git-send-email-hch@lst.de>
 MIME-Version: 1.0
-To: hujianyang <hujianyang@huawei.com>
-Subject: Re: Patch Issues
-References: <54B874F6.6090405@gmail.com> <54B87F96.9040804@huawei.com>
- <54B88732.8010709@gmail.com>
-In-Reply-To: <54B88732.8010709@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1421228561-16857-4-git-send-email-hch@lst.de>
+Cc: David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
+ Jens Axboe <axboe@fb.com>, linux-mm@kvack.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+ ceph-devel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,90 +29,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hujuianyang,
-Also if I remove the function,check_free_sectors it gives me even more errors.
-I tried in a second patch as part of a series.
-Nick
++ dwmw2
 
-On 2015-01-15 10:36 PM, nick wrote:
-> Hujuianyang,
-> Thanks for the reply. I will get around to this tomorrow.
-> Nick
+On Wed, Jan 14, 2015 at 10:42:32AM +0100, Christoph Hellwig wrote:
+> Since "BDI: Provide backing device capability information [try #3]" the
+> backing_dev_info structure also provides flags for the kind of mmap
+> operation available in a nommu environment, which is entirely unrelated
+> to it's original purpose.
 > 
-> On 2015-01-15 10:03 PM, hujianyang wrote:
->> Hi Nick,
->>
->> I'm not quite sure about if it is a correct modification. But,
->>
->> On 2015/1/16 10:18, nick wrote:
->>> drivers/mtd/inftlmount.c:336:12: warning: ‘check_free_sectors’ defined but not used [-Wunused-function]
->>
->> check if this function is still called by other functions, if it
->> is not, just remove it in your patch.
->>
->>>  static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
->>>             ^
->>> drivers/mtd/inftlmount.c: In function ‘INFTL_formatblock’:
->>> drivers/mtd/inftlmount.c:781:1: warning: control reaches end of non-void function [-Wreturn-type]
->>>  }
->>> Patch:
->>> From 6b481c8f5030da2e9616bd038193d68340c0b5d0 Mon Sep 17 00:00:00 2001
->>>   2 From: Nicholas Krause <xerofoify@gmail.com>
->>>   3 Date: Thu, 15 Jan 2015 20:10:37 -0500
->>>   4 Subject: [PATCH] mtd: Remove unneeded call to check_free_sectors in the
->>>   5  function,INFTL_formatblock
->>>   6 
->>>   7 Removes unneeded call to check_free_sectors internally in the function,INFTL_formatblock.
->>>   8 This call is no longer needed due to us checking to see if erasing the block against the
->>>   9 structure pointer passed to the function,inftl internal variable state is equal to the
->>>  10 macro,MTD_ERASE_FAILED to see if the block has failed in being erased successfully.Due
->>>  11 to this we can remove the no longer needed check to check_free_sectors and comments
->>>  12 related to questioning the reason for it's use with the check against MTD_ERASE_FAILED
->>>  13 for inftl's state variable already checking for successfully erasing of the mtd block.
->>>  14 
->>>  15 Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
->>>  16 ---
->>>  17  drivers/mtd/inftlmount.c | 10 ----------
->>>  18  1 file changed, 10 deletions(-)
->>>  19 
->>>  20 diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
->>>  21 index 1388c8d..def5cea 100644
->>>  22 --- a/drivers/mtd/inftlmount.c
->>>  23 +++ b/drivers/mtd/inftlmount.c
->>>  24 @@ -367,7 +367,6 @@ static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
->>>  25   *
->>>  26   * Return: 0 when succeed, -1 on error.
->>>  27   *
->>>  28 - * ToDo: 1. Is it necessary to check_free_sector after erasing ??
->>>  29   */
->>>  30  int INFTL_formatblock(struct INFTLrecord *inftl, int block)
->>>  31  {
->>>  32 @@ -401,15 +400,6 @@ int INFTL_formatblock(struct INFTLrecord *inftl, int block)
->>>  33                         goto fail;
->>>  34                 }
->>>  35 
->>>  36 -               /*
->>>  37 -                * Check the "freeness" of Erase Unit before updating metadata.
->>>  38 -                * FixMe: is this check really necessary? Since we have check
->>>  39 -                * the return code after the erase operation.
->>>  40 -                */
->>>  41 -               if (check_free_sectors(inftl, instr->addr, instr->len, 1) != 0)
->>>  42 -                       goto fail;
->>>  43 -       }
->>
->> You should keep this '}'.
->>
->>>  44 -
->>>  45         uci.EraseMark = cpu_to_le16(ERASE_MARK);
->>>  46         uci.EraseMark1 = cpu_to_le16(ERASE_MARK);
->>>  47         uci.Reserved[0] = 0;
->>>  48 -- 
->>>  49 2.1.0
->>>  50 
->>>
->>> ______________________________________________________
->>> Linux MTD discussion mailing list
->>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>>
->>
->>
+> Introduce a new nommu-only file operation to provide this information to
+> the nommu mmap code instead.  Splitting this from the backing_dev_info
+> structure allows to remove lots of backing_dev_info instance that aren't
+> otherwise needed, and entirely gets rid of the concept of providing a
+> backing_dev_info for a character device.  It also removes the need for
+> the mtd_inodefs filesystem.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Tejun Heo <tj@kernel.org>
+> ---
+>  Documentation/nommu-mmap.txt                    |  8 +--
+>  block/blk-core.c                                |  2 +-
+>  drivers/char/mem.c                              | 64 ++++++++++----------
+>  drivers/mtd/mtdchar.c                           | 72 ++++------------------
+>  drivers/mtd/mtdconcat.c                         | 10 ----
+>  drivers/mtd/mtdcore.c                           | 80 +++++++------------------
+>  drivers/mtd/mtdpart.c                           |  1 -
+
+There's a small conflict in mtdcore.c with some stuff I have queued up
+for MTD in linux-next. Should be trivial to resolve later.
+
+I don't have a test platform for nommu, and I'll admit I'm not too
+familiar with this code, but it looks OK to me. So FWIW, for the MTD
+parts:
+
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+
+>  drivers/staging/lustre/lustre/llite/llite_lib.c |  2 +-
+>  fs/9p/v9fs.c                                    |  2 +-
+>  fs/afs/volume.c                                 |  2 +-
+>  fs/aio.c                                        | 14 +----
+>  fs/btrfs/disk-io.c                              |  3 +-
+>  fs/char_dev.c                                   | 24 --------
+>  fs/cifs/connect.c                               |  2 +-
+>  fs/coda/inode.c                                 |  2 +-
+>  fs/configfs/configfs_internal.h                 |  2 -
+>  fs/configfs/inode.c                             | 18 +-----
+>  fs/configfs/mount.c                             | 11 +---
+>  fs/ecryptfs/main.c                              |  2 +-
+>  fs/exofs/super.c                                |  2 +-
+>  fs/ncpfs/inode.c                                |  2 +-
+>  fs/ramfs/file-nommu.c                           |  7 +++
+>  fs/ramfs/inode.c                                | 22 +------
+>  fs/romfs/mmap-nommu.c                           | 10 ++++
+>  fs/ubifs/super.c                                |  2 +-
+>  include/linux/backing-dev.h                     | 33 ++--------
+>  include/linux/cdev.h                            |  2 -
+>  include/linux/fs.h                              | 23 +++++++
+>  include/linux/mtd/mtd.h                         |  2 +
+>  mm/backing-dev.c                                |  7 +--
+>  mm/nommu.c                                      | 69 ++++++++++-----------
+>  security/security.c                             | 13 ++--
+>  32 files changed, 169 insertions(+), 346 deletions(-)
+[...]
+
+Brian
