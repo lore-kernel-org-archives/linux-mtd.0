@@ -1,27 +1,23 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
+Received: from bes.se.axis.com ([195.60.68.10])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YC3G0-00046n-Ny
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 09:31:58 +0000
-Date: Fri, 16 Jan 2015 10:31:27 +0100
+ id 1YC3IA-00061R-AI
+ for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 09:34:11 +0000
+Date: Fri, 16 Jan 2015 10:33:47 +0100
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Daniel Ehrenberg <dehrenberg@google.com>
-Subject: Re: [PATCH] mtd: Add config option to skip scanning bad blocks in
- partitions
-In-Reply-To: <CAAK6Zt3suTh9=GpYP8CYooqOsq6xFnLOUAPk=o4N2dnL7P-sgg@mail.gmail.com>
-Message-ID: <alpine.DEB.2.02.1501160954560.27318@lnxricardw1.se.axis.com>
-References: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
- <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
- <CAAK6Zt29rv0CSC42BbpULP=rwzSGUWcxBC=ewg5aX03JoCjzCg@mail.gmail.com>
- <20150114191907.GX9759@ld-irv-0074>
- <CAAK6Zt3suTh9=GpYP8CYooqOsq6xFnLOUAPk=o4N2dnL7P-sgg@mail.gmail.com>
+To: Erik Ekman <erik@kryo.se>
+Subject: Re: Flash filesystem questions
+In-Reply-To: <CAGgu=sBLzZa=iWjo39fcrx1ph-WjErg6FuxQqBMZaF1=1gcJ0Q@mail.gmail.com>
+Message-ID: <alpine.DEB.2.02.1501161031561.27318@lnxricardw1.se.axis.com>
+References: <CAGgu=sBpckw_J1sMcQi+Df8N8=sVjaeLZCLL9bVqEm_uHMB-5Q@mail.gmail.com>
+ <CAFLxGvwaqLfshJGHT=tfwh=SFt4nRBTPpMBVyE9DMxkhyWr-Wg@mail.gmail.com>
+ <alpine.DEB.2.02.1501142353210.5742@lnxricardw1.se.axis.com>
+ <CAGgu=sBM=vaVi52yGP6+QzUAdeG7yhuzry0DHndm6Zgtjhh2nw@mail.gmail.com>
+ <CAGgu=sBLzZa=iWjo39fcrx1ph-WjErg6FuxQqBMZaF1=1gcJ0Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8BIT
-Cc: "grundler@chromium.org" <grundler@chromium.org>,
- "gwendal@chromium.org" <gwendal@chromium.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,47 +28,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Thu, 15 Jan 2015, Daniel Ehrenberg wrote:
+On Thu, 15 Jan 2015, Erik Ekman wrote:
 
-> I'm using UBI, so I thought an on-device BBT is redundant and would be
-> ignored by UBI. Also, I couldn't figure out how I'm supposed to to
-> enable it--the out-of-tree driver I'm using isn't really based on
-> nand_base.c; correct me if I'm wrong, but it looks like that's a
-> requirement for using the nand_bbt code. Cutting my time in half
-> wouldn't be all that great since that's still almost 2 seconds of
-> useless work.
+> Next problem is bad blocks. I have not found anything in the hardware 
+> that keeps track of them. I am thinking about using the first two 
+> working blocks as maps, one u8 per erase block. Since I only have 8k, 
+> 16k or 32k erase blocks it should not wear them out too much during 
+> updates.
 
-What kind of driver are you using? I always though UBI essentially needed 
-an mtd device, meaning that if you're using a NAND flash, nand_base.c 
-comes in to play, along with a board (hardware) specific driver of course.
+Normally flashes never keep track of bad blocks themselves, except that 
+bad blocks are usually marked as such during the manufacturing process, 
+but it is completely up to software to make use of the that information.
 
-The bad block handling mechanism is basically hidden away inside mtd, 
-there are mtd API calls to determine if a block is bad or not, and mtd 
-handles that according to the configuration for the specific driver, 
-either by reading from the flash every time, or using a BBT.
+> Is this a valid strategy or is there a common smart solution?
 
-> Where can I read about the other advantages of on-flash BBT when using
-> UBI? Maybe I can use this technique for other devices I'm working on
-> where nand_bbt could be used.
-
-There are no specific specific UBI-related advantages when using a BBT 
-that I know of.
-
-One turning point for me was the realization that at least for some NAND 
-chips, it is out of spec to read bad blocks except once, to determine 
-which ones are bad by looking at the bad block markers in the individual 
-blocks. Hence, using a BBT is a way of fulfilling that requirement. In 
-practice, though, the flashes I've come in contact with (SLC up to say 2 
-Gbit) don't seem to have any problems in this regard.
-
-Another advantage in a development environment, especially when working 
-with upgrade software, is that if something goes wrong that causes blocks 
-to be marked bad spuriously, if not using a BBT the new bad blocks are 
-marked as such in the same way as factory bad blocks, making it impossible 
-to separate the two and undo the bad block markings and revert to the 
-factory condition. When using a BBT, new bad blocks are marked in the BBT 
-only, so by erasing the BBT and rescanning the bad block markers in the 
-OOBs of the blocks the flash can be reset to a known state.
+The mtd driver layer has a bad block table mechanism which does all this 
+for you. (see nand_bbt.c). It just has to be enabled using a flag in the 
+board driver.
 
 /Ricard
 -- 
