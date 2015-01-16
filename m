@@ -1,28 +1,18 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YC5xu-0006Nh-5z
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 12:25:27 +0000
-Date: Fri, 16 Jan 2015 13:25:01 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Erik Ekman <erik@kryo.se>
-Subject: Re: Flash filesystem questions
-In-Reply-To: <CAGgu=sB54RE4SreSuHti+TpAXshqvrU=F=f-DyEnqBQg0oVRZA@mail.gmail.com>
-Message-ID: <alpine.DEB.2.02.1501161314110.27318@lnxricardw1.se.axis.com>
-References: <CAGgu=sBpckw_J1sMcQi+Df8N8=sVjaeLZCLL9bVqEm_uHMB-5Q@mail.gmail.com>
- <CAFLxGvwaqLfshJGHT=tfwh=SFt4nRBTPpMBVyE9DMxkhyWr-Wg@mail.gmail.com>
- <alpine.DEB.2.02.1501142353210.5742@lnxricardw1.se.axis.com>
- <CAGgu=sBM=vaVi52yGP6+QzUAdeG7yhuzry0DHndm6Zgtjhh2nw@mail.gmail.com>
- <CAGgu=sBLzZa=iWjo39fcrx1ph-WjErg6FuxQqBMZaF1=1gcJ0Q@mail.gmail.com>
- <alpine.DEB.2.02.1501161031561.27318@lnxricardw1.se.axis.com>
- <CAGgu=sAtqj-Jj3xqsSkuzUXeUwbztKbYLqavhoN1MhzszE=7tA@mail.gmail.com>
- <alpine.DEB.2.02.1501161050150.27318@lnxricardw1.se.axis.com>
- <CAGgu=sB54RE4SreSuHti+TpAXshqvrU=F=f-DyEnqBQg0oVRZA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- =?ISO-8859-15?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YC8Ck-0000aJ-BB
+ for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 14:48:55 +0000
+From: Archit Taneja <architt@codeaurora.org>
+To: linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org
+Subject: [PATCH 1/5] clk: qcom: Add EBI2 clocks for IPQ806x
+Date: Fri, 16 Jan 2015 20:18:18 +0530
+Message-Id: <1421419702-17812-2-git-send-email-architt@codeaurora.org>
+In-Reply-To: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
+References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
+Cc: Archit Taneja <architt@codeaurora.org>, galak@codeaurora.org,
+ Stephen Boyd <sboyd@codeaurora.org>, linux-kernel@vger.kernel.org,
+ agross@codeaurora.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,50 +22,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The NAND controller within EBI2 requires EBI2_CLK and EBI2_ALWAYS_ON_CLK clocks.
+Create structs for these clocks so that they can be used by the NAND controller
+driver. Add an entry for EBI2_AON_CLK in the gcc-ipq806x DT binding document.
 
-On Fri, 16 Jan 2015, Erik Ekman wrote:
+Cc: Stephen Boyd <sboyd@codeaurora.org>
+Signed-off-by: Archit Taneja <architt@codeaurora.org>
+---
+ drivers/clk/qcom/gcc-ipq806x.c               | 34 ++++++++++++++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-ipq806x.h |  1 +
+ 2 files changed, 35 insertions(+)
 
-> It does not use the nand layer at all.
-> ...
-> The device does not give access to the raw nand. The driver creates transfer
-> commands by writing address, number of sectors and a dma bus address
-> of the source/destination data to a buffer. The bus address of that command
-> buffer is then written to a register on the PCI device and an interrupt is
-> received when the transfer is done. Had it not been for the erase command
-> and some restrictions on sector count and alignment would it have been a
-> perfect block device interface.
-> 
-> The OOB data/ECC handling is hidden, and the only operations
-> possible are read, write and erase of sectors. This fits well with the
-> MTD interface (struct mtd_info) so I was planning to add my driver to
-> /drivers/mtd/devices instead of under the /drivers/mtd/nand directory more
-> commonly used for nand controllers.
-
-I see.
-
-> I have looked at nand.h and its structs but since I cannot get access to the
-> raw NAND chips I didn't feel those interfaces helped me in any way.
-
-Well, one advantage to using the NAND layer is that you'd get access to 
-the NAND BBT management. However, to scan the device it needs to have 
-access to the OOB to read the bad block markers. If OOB data is hidden, 
-how do you determine if a block is bad? In a previous post you said that 
-read returns no error when reading a bad block, but that write and erase 
-do. Does that mean that the only way to determine if a block is bad is by 
-attempting to write or erase it?
-
-I suppose one way to handle this would be to implement a fake oob read 
-function which would always return an all-erased (i.e. good block) state. 
-As time goes and writes and erase operations fail, the block can be marked 
-bad on the fly, and the information kept in a BBT.
-
-Your other suggestion of implementing a general BBT functionality which is 
-not NAND-dependent would work too, but it seems like a lot of work to 
-acheive what can be done in other ways, especially if no other mtd related 
-technology needs a BBT so there would basically only be your use case.
-
-/Ricard
+diff --git a/drivers/clk/qcom/gcc-ipq806x.c b/drivers/clk/qcom/gcc-ipq806x.c
+index afed5eb..7db54c8 100644
+--- a/drivers/clk/qcom/gcc-ipq806x.c
++++ b/drivers/clk/qcom/gcc-ipq806x.c
+@@ -2159,6 +2159,38 @@ static struct clk_branch usb_fs1_h_clk = {
+ 	},
+ };
+ 
++static struct clk_branch ebi2_clk = {
++	.hwcg_reg = 0x3b00,
++	.hwcg_bit = 6,
++	.halt_reg = 0x2fcc,
++	.halt_bit = 1,
++	.clkr = {
++		.enable_reg = 0x3b00,
++		.enable_mask = BIT(4),
++		.hw.init = &(struct clk_init_data){
++			.name = "ebi2_clk",
++			.ops = &clk_branch_ops,
++			.flags = CLK_IS_ROOT,
++		},
++	},
++};
++
++static struct clk_branch ebi2_aon_clk = {
++	.hwcg_reg = 0x3b00,
++	.hwcg_bit = 6,
++	.halt_reg = 0x2fcc,
++	.halt_bit = 0,
++	.clkr = {
++		.enable_reg = 0x3b00,
++		.enable_mask = BIT(8),
++		.hw.init = &(struct clk_init_data){
++			.name = "ebi2_always_on_clk",
++			.ops = &clk_branch_ops,
++			.flags = CLK_IS_ROOT,
++		},
++	},
++};
++
+ static struct clk_regmap *gcc_ipq806x_clks[] = {
+ 	[PLL0] = &pll0.clkr,
+ 	[PLL0_VOTE] = &pll0_vote,
+@@ -2261,6 +2293,8 @@ static struct clk_regmap *gcc_ipq806x_clks[] = {
+ 	[USB_FS1_XCVR_SRC] = &usb_fs1_xcvr_clk_src.clkr,
+ 	[USB_FS1_XCVR_CLK] = &usb_fs1_xcvr_clk.clkr,
+ 	[USB_FS1_SYSTEM_CLK] = &usb_fs1_sys_clk.clkr,
++	[EBI2_CLK] = &ebi2_clk.clkr,
++	[EBI2_AON_CLK] = &ebi2_aon_clk.clkr,
+ };
+ 
+ static const struct qcom_reset_map gcc_ipq806x_resets[] = {
+diff --git a/include/dt-bindings/clock/qcom,gcc-ipq806x.h b/include/dt-bindings/clock/qcom,gcc-ipq806x.h
+index b857cad..858a47f 100644
+--- a/include/dt-bindings/clock/qcom,gcc-ipq806x.h
++++ b/include/dt-bindings/clock/qcom,gcc-ipq806x.h
+@@ -289,5 +289,6 @@
+ #define UBI32_CORE2_CLK_SRC			278
+ #define UBI32_CORE1_CLK				279
+ #define UBI32_CORE2_CLK				280
++#define EBI2_AON_CLK				281
+ 
+ #endif
 -- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+hosted by The Linux Foundation
