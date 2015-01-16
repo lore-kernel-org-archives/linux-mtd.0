@@ -1,19 +1,30 @@
-Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
+Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YCBHj-0001hu-Lx
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 18:06:16 +0000
-Received: by mail-ig0-f176.google.com with SMTP id hl2so2937207igb.3
- for <linux-mtd@lists.infradead.org>; Fri, 16 Jan 2015 10:05:54 -0800 (PST)
-From: Nicholas Krause <xerofoify@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH 2/2] mtd: Remove the no longer need functions,
- check_free_sectors and  memcmpb
-Date: Fri, 16 Jan 2015 13:05:45 -0500
-Message-Id: <1421431545-7883-2-git-send-email-xerofoify@gmail.com>
-In-Reply-To: <1421431545-7883-1-git-send-email-xerofoify@gmail.com>
-References: <1421431545-7883-1-git-send-email-xerofoify@gmail.com>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ id 1YCBK1-0002iN-EB
+ for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 18:08:38 +0000
+Received: by mail-ig0-f174.google.com with SMTP id hn15so4764370igb.1
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Jan 2015 10:08:15 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.02.1501160954560.27318@lnxricardw1.se.axis.com>
+References: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
+ <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
+ <CAAK6Zt29rv0CSC42BbpULP=rwzSGUWcxBC=ewg5aX03JoCjzCg@mail.gmail.com>
+ <20150114191907.GX9759@ld-irv-0074>
+ <CAAK6Zt3suTh9=GpYP8CYooqOsq6xFnLOUAPk=o4N2dnL7P-sgg@mail.gmail.com>
+ <alpine.DEB.2.02.1501160954560.27318@lnxricardw1.se.axis.com>
+Date: Fri, 16 Jan 2015 10:08:15 -0800
+Message-ID: <CAAK6Zt3mWvNwDnVU0oORTDC1Es_0jyvNqNyQPxqEjsgJJETiFw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: Add config option to skip scanning bad blocks in
+ partitions
+From: Daniel Ehrenberg <dehrenberg@google.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "grundler@chromium.org" <grundler@chromium.org>,
+ "gwendal@chromium.org" <gwendal@chromium.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +34,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The functions,check_free_sectors and memcmpb are no longer needed due to
-removing the only caller for both functions in check_free_sectors for
-memcmpb and in INFTL_formatblock for check_free_sectors respectfully.
+On Fri, Jan 16, 2015 at 1:31 AM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+> What kind of driver are you using? I always though UBI essentially needed
+> an mtd device, meaning that if you're using a NAND flash, nand_base.c
+> comes in to play, along with a board (hardware) specific driver of course=
+.
+>
+> The bad block handling mechanism is basically hidden away inside mtd,
+> there are mtd API calls to determine if a block is bad or not, and mtd
+> handles that according to the configuration for the specific driver,
+> either by reading from the flash every time, or using a BBT.
 
-Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
----
- drivers/mtd/inftlmount.c | 40 ----------------------------------------
- 1 file changed, 40 deletions(-)
+I'm currently using an out-of-tree NAND driver which is not based on
+nand_base.c.
+>
+>> Where can I read about the other advantages of on-flash BBT when using
+>> UBI? Maybe I can use this technique for other devices I'm working on
+>> where nand_bbt could be used.
+>
+> There are no specific specific UBI-related advantages when using a BBT
+> that I know of.
+>
+> One turning point for me was the realization that at least for some NAND
+> chips, it is out of spec to read bad blocks except once, to determine
+> which ones are bad by looking at the bad block markers in the individual
+> blocks. Hence, using a BBT is a way of fulfilling that requirement. In
+> practice, though, the flashes I've come in contact with (SLC up to say 2
+> Gbit) don't seem to have any problems in this regard.
 
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index f5808ad..d0a7b7c 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -319,46 +319,6 @@ static int find_boot_record(struct INFTLrecord *inftl)
- 	return -1;
- }
- 
--static int memcmpb(void *a, int c, int n)
--{
--	int i;
--	for (i = 0; i < n; i++) {
--		if (c != ((unsigned char *)a)[i])
--			return 1;
--	}
--	return 0;
--}
--
--/*
-- * check_free_sector: check if a free sector is actually FREE,
-- *	i.e. All 0xff in data and oob area.
-- */
--static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
--	int len, int check_oob)
--{
--	u8 buf[SECTORSIZE + inftl->mbd.mtd->oobsize];
--	struct mtd_info *mtd = inftl->mbd.mtd;
--	size_t retlen;
--	int i;
--
--	for (i = 0; i < len; i += SECTORSIZE) {
--		if (mtd_read(mtd, address, SECTORSIZE, &retlen, buf))
--			return -1;
--		if (memcmpb(buf, 0xff, SECTORSIZE) != 0)
--			return -1;
--
--		if (check_oob) {
--			if(inftl_read_oob(mtd, address, mtd->oobsize,
--					  &retlen, &buf[SECTORSIZE]) < 0)
--				return -1;
--			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
--				return -1;
--		}
--		address += SECTORSIZE;
--	}
--
--	return 0;
--}
- 
- /*
-  * INFTL_format: format a Erase Unit by erasing ALL Erase Zones in the Erase
--- 
-2.1.0
+Does UBI not satisfy this requirement itself by its own bad block managemen=
+t?
+>
+> Another advantage in a development environment, especially when working
+> with upgrade software, is that if something goes wrong that causes blocks
+> to be marked bad spuriously, if not using a BBT the new bad blocks are
+> marked as such in the same way as factory bad blocks, making it impossibl=
+e
+> to separate the two and undo the bad block markings and revert to the
+> factory condition. When using a BBT, new bad blocks are marked in the BBT
+> only, so by erasing the BBT and rescanning the bad block markers in the
+> OOBs of the blocks the flash can be reset to a known state.
+>
+> /Ricard
+
+But when I'm using UBI, will the bad block table ever be read by
+anyone other than this startup scan to count the number of bad blocks
+in the partition?
+
+Dan
+> --
+> Ricard Wolf Wanderl=C3=B6f                           ricardw(at)axis.com
+> Axis Communications AB, Lund, Sweden            www.axis.com
+> Phone +46 46 272 2016                           Fax +46 46 13 61 30
