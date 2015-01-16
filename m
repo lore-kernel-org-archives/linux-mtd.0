@@ -1,25 +1,27 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YByBR-0002AI-Qu
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 04:06:56 +0000
-Received: by mail-pd0-f181.google.com with SMTP id z10so8802532pdj.12
- for <linux-mtd@lists.infradead.org>; Thu, 15 Jan 2015 20:06:31 -0800 (PST)
-Date: Thu, 15 Jan 2015 20:06:28 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 03/12] fs: introduce f_op->mmap_capabilities for nommu
- mmap support
-Message-ID: <20150116040628.GG9759@ld-irv-0074>
-References: <1421228561-16857-1-git-send-email-hch@lst.de>
- <1421228561-16857-4-git-send-email-hch@lst.de>
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YC3G0-00046n-Ny
+ for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 09:31:58 +0000
+Date: Fri, 16 Jan 2015 10:31:27 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Daniel Ehrenberg <dehrenberg@google.com>
+Subject: Re: [PATCH] mtd: Add config option to skip scanning bad blocks in
+ partitions
+In-Reply-To: <CAAK6Zt3suTh9=GpYP8CYooqOsq6xFnLOUAPk=o4N2dnL7P-sgg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.02.1501160954560.27318@lnxricardw1.se.axis.com>
+References: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
+ <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
+ <CAAK6Zt29rv0CSC42BbpULP=rwzSGUWcxBC=ewg5aX03JoCjzCg@mail.gmail.com>
+ <20150114191907.GX9759@ld-irv-0074>
+ <CAAK6Zt3suTh9=GpYP8CYooqOsq6xFnLOUAPk=o4N2dnL7P-sgg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1421228561-16857-4-git-send-email-hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
- Jens Axboe <axboe@fb.com>, linux-mm@kvack.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
- ceph-devel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Cc: "grundler@chromium.org" <grundler@chromium.org>,
+ "gwendal@chromium.org" <gwendal@chromium.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +31,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ dwmw2
 
-On Wed, Jan 14, 2015 at 10:42:32AM +0100, Christoph Hellwig wrote:
-> Since "BDI: Provide backing device capability information [try #3]" the
-> backing_dev_info structure also provides flags for the kind of mmap
-> operation available in a nommu environment, which is entirely unrelated
-> to it's original purpose.
-> 
-> Introduce a new nommu-only file operation to provide this information to
-> the nommu mmap code instead.  Splitting this from the backing_dev_info
-> structure allows to remove lots of backing_dev_info instance that aren't
-> otherwise needed, and entirely gets rid of the concept of providing a
-> backing_dev_info for a character device.  It also removes the need for
-> the mtd_inodefs filesystem.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Tejun Heo <tj@kernel.org>
-> ---
->  Documentation/nommu-mmap.txt                    |  8 +--
->  block/blk-core.c                                |  2 +-
->  drivers/char/mem.c                              | 64 ++++++++++----------
->  drivers/mtd/mtdchar.c                           | 72 ++++------------------
->  drivers/mtd/mtdconcat.c                         | 10 ----
->  drivers/mtd/mtdcore.c                           | 80 +++++++------------------
->  drivers/mtd/mtdpart.c                           |  1 -
+On Thu, 15 Jan 2015, Daniel Ehrenberg wrote:
 
-There's a small conflict in mtdcore.c with some stuff I have queued up
-for MTD in linux-next. Should be trivial to resolve later.
+> I'm using UBI, so I thought an on-device BBT is redundant and would be
+> ignored by UBI. Also, I couldn't figure out how I'm supposed to to
+> enable it--the out-of-tree driver I'm using isn't really based on
+> nand_base.c; correct me if I'm wrong, but it looks like that's a
+> requirement for using the nand_bbt code. Cutting my time in half
+> wouldn't be all that great since that's still almost 2 seconds of
+> useless work.
 
-I don't have a test platform for nommu, and I'll admit I'm not too
-familiar with this code, but it looks OK to me. So FWIW, for the MTD
-parts:
+What kind of driver are you using? I always though UBI essentially needed 
+an mtd device, meaning that if you're using a NAND flash, nand_base.c 
+comes in to play, along with a board (hardware) specific driver of course.
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+The bad block handling mechanism is basically hidden away inside mtd, 
+there are mtd API calls to determine if a block is bad or not, and mtd 
+handles that according to the configuration for the specific driver, 
+either by reading from the flash every time, or using a BBT.
 
->  drivers/staging/lustre/lustre/llite/llite_lib.c |  2 +-
->  fs/9p/v9fs.c                                    |  2 +-
->  fs/afs/volume.c                                 |  2 +-
->  fs/aio.c                                        | 14 +----
->  fs/btrfs/disk-io.c                              |  3 +-
->  fs/char_dev.c                                   | 24 --------
->  fs/cifs/connect.c                               |  2 +-
->  fs/coda/inode.c                                 |  2 +-
->  fs/configfs/configfs_internal.h                 |  2 -
->  fs/configfs/inode.c                             | 18 +-----
->  fs/configfs/mount.c                             | 11 +---
->  fs/ecryptfs/main.c                              |  2 +-
->  fs/exofs/super.c                                |  2 +-
->  fs/ncpfs/inode.c                                |  2 +-
->  fs/ramfs/file-nommu.c                           |  7 +++
->  fs/ramfs/inode.c                                | 22 +------
->  fs/romfs/mmap-nommu.c                           | 10 ++++
->  fs/ubifs/super.c                                |  2 +-
->  include/linux/backing-dev.h                     | 33 ++--------
->  include/linux/cdev.h                            |  2 -
->  include/linux/fs.h                              | 23 +++++++
->  include/linux/mtd/mtd.h                         |  2 +
->  mm/backing-dev.c                                |  7 +--
->  mm/nommu.c                                      | 69 ++++++++++-----------
->  security/security.c                             | 13 ++--
->  32 files changed, 169 insertions(+), 346 deletions(-)
-[...]
+> Where can I read about the other advantages of on-flash BBT when using
+> UBI? Maybe I can use this technique for other devices I'm working on
+> where nand_bbt could be used.
 
-Brian
+There are no specific specific UBI-related advantages when using a BBT 
+that I know of.
+
+One turning point for me was the realization that at least for some NAND 
+chips, it is out of spec to read bad blocks except once, to determine 
+which ones are bad by looking at the bad block markers in the individual 
+blocks. Hence, using a BBT is a way of fulfilling that requirement. In 
+practice, though, the flashes I've come in contact with (SLC up to say 2 
+Gbit) don't seem to have any problems in this regard.
+
+Another advantage in a development environment, especially when working 
+with upgrade software, is that if something goes wrong that causes blocks 
+to be marked bad spuriously, if not using a BBT the new bad blocks are 
+marked as such in the same way as factory bad blocks, making it impossible 
+to separate the two and undo the bad block markings and revert to the 
+factory condition. When using a BBT, new bad blocks are marked in the BBT 
+only, so by erasing the BBT and rescanning the bad block markers in the 
+OOBs of the blocks the flash can be reset to a known state.
+
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
