@@ -1,19 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBuz2-0007Xx-1B
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 00:41:52 +0000
-Date: Fri, 16 Jan 2015 08:39:35 +0800
+ id 1YBuzq-0007iu-7i
+ for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 00:42:42 +0000
+Date: Fri, 16 Jan 2015 08:40:31 +0800
 From: Huang Shijie <shijie.huang@intel.com>
 To: Han Xu <han.xu@freescale.com>
-Subject: Re: [PATCH] MAINTAINERS: add maintainer entry for FREESCALE QUAD SPI
- driver
-Message-ID: <20150116003935.GA17777@hsj.sh.intel.com>
-References: <1421350157-13490-1-git-send-email-han.xu@freescale.com>
+Subject: Re: [PATCH] mtd: fsl-quadspi: Access multiple chips simultaneously
+Message-ID: <20150116004031.GB17777@hsj.sh.intel.com>
+References: <1421364415-13865-1-git-send-email-han.xu@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1421350157-13490-1-git-send-email-han.xu@freescale.com>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org
+In-Reply-To: <1421364415-13865-1-git-send-email-han.xu@freescale.com>
+Cc: shijie8@gmail.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 16, 2015 at 03:29:17AM +0800, Han Xu wrote:
-> Add a maintainer entry for FREESCALE QUAD SPI driver and add myself as a
-> maintainer.
+On Fri, Jan 16, 2015 at 07:26:55AM +0800, Han Xu wrote:
+> Add supports for simultaneous access to multiple chips. Need to lock
+> the mutex before any quad spi operations and unlock the mutex after
+> operations complete.
 > 
 > Signed-off-by: Han Xu <han.xu@freescale.com>
 > ---
->  MAINTAINERS |    6 ++++++
->  1 files changed, 6 insertions(+), 0 deletions(-)
+>  drivers/mtd/spi-nor/fsl-quadspi.c |    7 +++++++
+>  1 files changed, 7 insertions(+), 0 deletions(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index dbc17b3..f6f6e58 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4032,6 +4032,12 @@ S:	Maintained
->  F:	include/linux/platform_data/video-imxfb.h
->  F:	drivers/video/fbdev/imxfb.c
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 39763b9..7964511 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/mtd/spi-nor.h>
+> +#include <linux/mutex.h>
 >  
-> +FREESCALE QUAD SPI DRIVER
-> +M:	Han Xu <han.xu@freescale.com>
-> +L:	linux-mtd@lists.infradead.org
-> +S:	Maintained
-> +F:	drivers/mtd/spi-nor/fsl-quadspi.c
+>  /* The registers */
+>  #define QUADSPI_MCR			0x00
+> @@ -227,6 +228,7 @@ struct fsl_qspi {
+>  	u32 nor_num;
+>  	u32 clk_rate;
+>  	unsigned int chip_base_addr; /* We may support two chips. */
+> +	struct mutex lock;
+>  };
+>  
+>  static inline int is_vybrid_qspi(struct fsl_qspi *q)
+> @@ -751,6 +753,8 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+>  	struct fsl_qspi *q = nor->priv;
+>  	int ret;
+>  
+> +	mutex_lock(&q->lock);
 > +
->  FREESCALE SOC FS_ENET DRIVER
->  M:	Pantelis Antoniou <pantelis.antoniou@gmail.com>
->  M:	Vitaly Bordug <vbordug@ru.mvista.com>
+>  	ret = clk_enable(q->clk_en);
+>  	if (ret)
+>  		return ret;
+> @@ -771,6 +775,7 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+>  
+>  	clk_disable(q->clk);
+>  	clk_disable(q->clk_en);
+> +	mutex_unlock(&q->lock);
+>  }
+>  
+>  static int fsl_qspi_probe(struct platform_device *pdev)
+> @@ -862,6 +867,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  	if (of_get_property(np, "fsl,qspi-has-second-chip", NULL))
+>  		has_second_chip = true;
+>  
+> +	mutex_init(&q->lock);
+> +
+>  	/* iterate the subnodes. */
+>  	for_each_available_child_of_node(dev->of_node, np) {
+>  		char modalias[40];
 > -- 
+
 Acked-by: Huang Shijie <shijie.huang@intel.com>
-
-great!
-
-I can take my rest since now. I am happy you can take over this driver.
-
-Huang Shijie
