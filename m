@@ -1,31 +1,26 @@
-Received: from mail-ig0-x229.google.com ([2607:f8b0:4001:c05::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YCFAk-0005fR-TY
- for linux-mtd@lists.infradead.org; Fri, 16 Jan 2015 22:15:19 +0000
-Received: by mail-ig0-f169.google.com with SMTP id z20so5882622igj.0
- for <linux-mtd@lists.infradead.org>; Fri, 16 Jan 2015 14:14:55 -0800 (PST)
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YCYdG-00038u-1K
+ for linux-mtd@lists.infradead.org; Sat, 17 Jan 2015 19:02:03 +0000
+Date: Sat, 17 Jan 2015 20:01:37 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: default bitflip-reporting threshold to 75%
+ of correction strength
+Message-ID: <20150117200137.71c1aca0@bbrezillon>
+In-Reply-To: <1421095889-12717-1-git-send-email-computersforpeace@gmail.com>
+References: <54B38745.70007@atmel.com>
+ <1421095889-12717-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.02.1501161938150.16829@lnxricardw1.se.axis.com>
-References: <1421206498-28826-1-git-send-email-dehrenberg@chromium.org>
- <alpine.DEB.2.02.1501140846310.27318@lnxricardw1.se.axis.com>
- <CAAK6Zt29rv0CSC42BbpULP=rwzSGUWcxBC=ewg5aX03JoCjzCg@mail.gmail.com>
- <20150114191907.GX9759@ld-irv-0074>
- <CAAK6Zt3suTh9=GpYP8CYooqOsq6xFnLOUAPk=o4N2dnL7P-sgg@mail.gmail.com>
- <alpine.DEB.2.02.1501160954560.27318@lnxricardw1.se.axis.com>
- <CAAK6Zt3mWvNwDnVU0oORTDC1Es_0jyvNqNyQPxqEjsgJJETiFw@mail.gmail.com>
- <alpine.DEB.2.02.1501161938150.16829@lnxricardw1.se.axis.com>
-Date: Fri, 16 Jan 2015 14:14:55 -0800
-Message-ID: <CAAK6Zt1a1qAtv1z6gZ663=PaARDD9T-m54eqJc2n_omVmGCbhw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: Add config option to skip scanning bad blocks in
- partitions
-From: Daniel Ehrenberg <dehrenberg@google.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "grundler@chromium.org" <grundler@chromium.org>,
- "gwendal@chromium.org" <gwendal@chromium.org>,
- Brian Norris <computersforpeace@gmail.com>,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Richard Weinberger <richard@nod.at>, Steve deRosier <derosier@gmail.com>,
+ Josh Wu <josh.wu@atmel.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,29 +30,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 16, 2015 at 10:53 AM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
->
-> On Fri, 16 Jan 2015, Daniel Ehrenberg wrote:
->
-> Are you and Erik Ekman on this list working on the same thing, he is also
-> using an out-of-tree NAND driver?
+Hi Brian,
 
-No, I'm not working with him.
+On Mon, 12 Jan 2015 12:51:29 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-> The conclusion as far as I'm concerned is to use a BBT in a production
-> code so that the flash is only ever read in its entirety (i.e. with
-> badblocks) once, in order to generate the BBT. In our R&D department,
-> especially in departments where they just want a unit to work and aren't
-> testing or developing flash code, we can be more leniant and have even
-> erased factory-marked bad blocks in some cases (when possible). In the
-> unlikely event that a memory chip starts behaving erratically (which
-> hasn't happened yet) we'd just replace it. In the field such a situation
-> would be harder to diagnose so we want to avoid that as far as possible.
+> The MTD API reports -EUCLEAN only if the maximum number of bitflips
+> found in any ECC block exceeds a certain threshold. This is done to
+> avoid excessive -EUCLEAN reports to MTD users, which may induce
+> additional scrubbing of data, even when the ECC algorithm in use is
+> perfectly capable of handling the bitflips.
+> 
+> This threshold can be controlled by user-space (via sysfs), to allow
+> users to determine what they are willing to tolerate in their
+> application. But it still helps to have sane defaults.
+> 
+> In recent discussion [1], it was pointed out that our default threshold
+> is equal to the correction strength. That means that we won't actually
+> report any -EUCLEAN (i.e., "bitflips were corrected") errors until there
+> are almost too many to handle. It was determined that 3/4 of the
+> correction strength is probably a better default.
+> 
+> [1] http://lists.infradead.org/pipermail/linux-mtd/2015-January/057259.html
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 816b5c1fd416..3f24b587304f 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4171,7 +4171,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  	 * properly set.
+>  	 */
+>  	if (!mtd->bitflip_threshold)
+> -		mtd->bitflip_threshold = mtd->ecc_strength;
+> +		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3, 4);
 
-Thanks for this explanation. I'll work on adding a bad block table to
-how I'm using NAND. I don't know what got into my head to think that
-UBI was going to do all this for me. I guess the original patch at the
-head of this thread isn't so useful for that use case.
+Just sharing my experience with MLC NANDs requiring read-retry: the
+number of reported bitflips often raise ecc_strength value (at least
+with the current read-retry approach).
+This patch will definitely make UBI move NAND blocks over and over
+again considering the threshold has been raised and the block is not
+reliable anymore.
 
-Dan
+While I like the idea of limiting the threshold to something smaller
+than what's recommended on the datasheet (or reported by ONFI) I wonder
+if it won't make things worst in some cases.
+
+Regarding the read-retry code, it currently stops retrying reading the
+page once the page has been successfully retrieved (or in other terms
+all bitflips have been fixed). But it might stop to soon, because by
+changing the bit level threshold (in other term retrying one more time)
+it might successfully read the page with less bitflips than the
+previous attempt (these are just supposition, I haven't tested it yet).
+If we can achieve that we could retry until we reach something below
+the bitflips threshold value, and if we fail to find any, just consider
+the lower number of bitflips found during those read-retry operations.
+
+Best Regards,
+
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
