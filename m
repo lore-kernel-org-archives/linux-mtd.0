@@ -1,21 +1,24 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YD9dN-000365-L7
- for linux-mtd@lists.infradead.org; Mon, 19 Jan 2015 10:32:38 +0000
-Message-ID: <54BCDD2A.90208@codeaurora.org>
-Date: Mon, 19 Jan 2015 16:02:10 +0530
-From: Archit Taneja <architt@codeaurora.org>
+ id 1YDE62-00022s-9h
+ for linux-mtd@lists.infradead.org; Mon, 19 Jan 2015 15:18:31 +0000
+Received: by mail-la0-f43.google.com with SMTP id q1so14096305lam.2
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Jan 2015 07:18:06 -0800 (PST)
 MIME-Version: 1.0
-To: Stephen Boyd <sboyd@codeaurora.org>, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/5] clk: qcom: Add EBI2 clocks for IPQ806x
-References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
- <1421419702-17812-2-git-send-email-architt@codeaurora.org>
- <54B9890C.2080506@codeaurora.org>
-In-Reply-To: <54B9890C.2080506@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: agross@codeaurora.org, linux-kernel@vger.kernel.org, galak@codeaurora.org
+In-Reply-To: <1418766416-6446-1-git-send-email-zajec5@gmail.com>
+References: <1418766416-6446-1-git-send-email-zajec5@gmail.com>
+Date: Mon, 19 Jan 2015 16:18:05 +0100
+Message-ID: <CACna6rxh_Y2+tY3mea2NDXq7nd3TZ85Q0CZv1Om3xkoVbUp42A@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: support for (GigaDevice) GD25Q128B
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On 01/17/2015 03:26 AM, Stephen Boyd wrote:
-> On 01/16/2015 06:48 AM, Archit Taneja wrote:
->> The NAND controller within EBI2 requires EBI2_CLK and EBI2_ALWAYS_ON_CLK clocks.
->> Create structs for these clocks so that they can be used by the NAND controller
->> driver. Add an entry for EBI2_AON_CLK in the gcc-ipq806x DT binding document.
->>
->> Cc: Stephen Boyd <sboyd@codeaurora.org>
->> Signed-off-by: Archit Taneja <architt@codeaurora.org>
+On 16 December 2014 at 22:46, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wr=
+ote:
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> Looks ok. I couldn't find this used in the downstream sources though.
-> Can you point me to it? I'm mostly worried that this is a shared
-> resource that never should be turned off, so exposing it to drivers may
-> not be the right idea.
-
-I'll share the sources.
-
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.=
+c
+> index 0f8ec3c..ebcc97a 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -538,6 +538,7 @@ static const struct spi_device_id spi_nor_ids[] =3D {
+>         /* GigaDevice */
+>         { "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
+>         { "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+> +       { "gd25q128",   INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
 >
->> +static struct clk_branch ebi2_aon_clk = {
->> +	.hwcg_reg = 0x3b00,
->> +	.hwcg_bit = 6,
->> +	.halt_reg = 0x2fcc,
->> +	.halt_bit = 0,
->> +	.clkr = {
->> +		.enable_reg = 0x3b00,
->> +		.enable_mask = BIT(8),
->> +		.hw.init = &(struct clk_init_data){
->> +			.name = "ebi2_always_on_clk",
->>
->
-> Can this be ebi2_aon_clk to match the macro?
->
+>         /* Intel/Numonyx -- xxxs33b */
+>         { "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+> --
+> 1.8.4.5
 
-I'll fix this.
+Hey Brian,
 
-Thanks,
-Archit
+Could I bring a bit of your attention to this trivial patch, please? :)
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+--=20
+Rafa=C5=82
