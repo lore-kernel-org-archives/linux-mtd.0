@@ -1,21 +1,21 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: [PATCH 2/2] ARM: at91: sama5d4: dts: change the nand compatible string
-Date: Mon, 19 Jan 2015 16:33:07 +0800
-Message-ID: <1421656387-12538-2-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1421656387-12538-1-git-send-email-josh.wu@atmel.com>
-References: <1421656387-12538-1-git-send-email-josh.wu@atmel.com>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YD9dN-000365-L7
+ for linux-mtd@lists.infradead.org; Mon, 19 Jan 2015 10:32:38 +0000
+Message-ID: <54BCDD2A.90208@codeaurora.org>
+Date: Mon, 19 Jan 2015 16:02:10 +0530
+From: Archit Taneja <architt@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Pawel Moll <pawel.moll@arm.com>, devicetree@vger.kernel.org,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Josh Wu <josh.wu@atmel.com>, Rob
- Herring <robh+dt@kernel.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- linux-arm-kernel@lists.infradead.org
+To: Stephen Boyd <sboyd@codeaurora.org>, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/5] clk: qcom: Add EBI2 clocks for IPQ806x
+References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
+ <1421419702-17812-2-git-send-email-architt@codeaurora.org>
+ <54B9890C.2080506@codeaurora.org>
+In-Reply-To: <54B9890C.2080506@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: agross@codeaurora.org, linux-kernel@vger.kernel.org, galak@codeaurora.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As we introduce a new "atmel,sama5d4-nand" compatible string for sama5d4,
-so we need to apply it for sama5d4 chip.
+Hi,
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
----
+On 01/17/2015 03:26 AM, Stephen Boyd wrote:
+> On 01/16/2015 06:48 AM, Archit Taneja wrote:
+>> The NAND controller within EBI2 requires EBI2_CLK and EBI2_ALWAYS_ON_CLK clocks.
+>> Create structs for these clocks so that they can be used by the NAND controller
+>> driver. Add an entry for EBI2_AON_CLK in the gcc-ipq806x DT binding document.
+>>
+>> Cc: Stephen Boyd <sboyd@codeaurora.org>
+>> Signed-off-by: Archit Taneja <architt@codeaurora.org>
+>
+> Looks ok. I couldn't find this used in the downstream sources though.
+> Can you point me to it? I'm mostly worried that this is a shared
+> resource that never should be turned off, so exposing it to drivers may
+> not be the right idea.
 
- arch/arm/boot/dts/sama5d4.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'll share the sources.
 
-diff --git a/arch/arm/boot/dts/sama5d4.dtsi b/arch/arm/boot/dts/sama5d4.dtsi
-index 1b0f30c..02d67c2 100644
---- a/arch/arm/boot/dts/sama5d4.dtsi
-+++ b/arch/arm/boot/dts/sama5d4.dtsi
-@@ -267,7 +267,7 @@
- 		};
- 
- 		nand0: nand@80000000 {
--			compatible = "atmel,at91rm9200-nand";
-+			compatible = "atmel,sama5d4-nand";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges;
+>
+>> +static struct clk_branch ebi2_aon_clk = {
+>> +	.hwcg_reg = 0x3b00,
+>> +	.hwcg_bit = 6,
+>> +	.halt_reg = 0x2fcc,
+>> +	.halt_bit = 0,
+>> +	.clkr = {
+>> +		.enable_reg = 0x3b00,
+>> +		.enable_mask = BIT(8),
+>> +		.hw.init = &(struct clk_init_data){
+>> +			.name = "ebi2_always_on_clk",
+>>
+>
+> Can this be ebi2_aon_clk to match the macro?
+>
+
+I'll fix this.
+
+Thanks,
+Archit
+
 -- 
-1.9.1
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
