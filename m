@@ -1,37 +1,20 @@
-Received: from mout.web.de ([212.227.17.12])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YCtLQ-0002zi-MG
- for linux-mtd@lists.infradead.org; Sun, 18 Jan 2015 17:09:01 +0000
-Message-ID: <54BBE87C.9020705@users.sourceforge.net>
-Date: Sun, 18 Jan 2015 18:08:12 +0100
-From: SF Markus Elfring <elfring@users.sourceforge.net>
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: [PATCH 1/2] mtd: atmel_nand: introduce a new compatible string for
+ sama5d4 chip
+Date: Mon, 19 Jan 2015 16:33:06 +0800
+Message-ID: <1421656387-12538-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: Deletion of checks before the function call "iounmap"
-References: <5307CAA2.8060406@users.sourceforge.net>
- <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
- <530A086E.8010901@users.sourceforge.net>
- <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
- <530A72AA.3000601@users.sourceforge.net>
- <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
- <530B5FB6.6010207@users.sourceforge.net>
- <alpine.DEB.2.10.1402241710370.2074@hadrien>
- <530C5E18.1020800@users.sourceforge.net>
- <alpine.DEB.2.10.1402251014170.2080@hadrien>
- <530CD2C4.4050903@users.sourceforge.net>
- <alpine.DEB.2.10.1402251840450.7035@hadrien>
- <530CF8FF.8080600@users.sourceforge.net>
- <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
- <530DD06F.4090703@users.sourceforge.net>
- <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
- <5317A59D.4@users.sourceforge.net>
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: Julia Lawall <julia.lawall@lip6.fr>, kernel-janitors@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Pawel Moll <pawel.moll@arm.com>, devicetree@vger.kernel.org,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Josh Wu <josh.wu@atmel.com>, Rob
+ Herring <robh+dt@kernel.org>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,213 +24,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 18 Jan 2015 17:30:23 +0100
+Since in SAMA5D4 chip, the PMECC can correct bit flips in erased page.
+So we add a DT property to indicate this hardware character.
 
-The iounmap() function performs also input parameter validation.
-Thus the test around the call is not needed.
+If the PMECC support correct bitflip erased page (all data are 0xff).
+Then we can use the PMECC correct the page and skip the erased page
+check.
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
 ---
- drivers/mtd/maps/latch-addr-flash.c |  3 +--
- drivers/mtd/maps/pci.c              |  6 ++----
- drivers/mtd/maps/physmap_of.c       |  3 +--
- drivers/mtd/maps/plat-ram.c         |  3 +--
- drivers/mtd/maps/pxa2xx-flash.c     |  6 ++----
- drivers/mtd/maps/sa1100-flash.c     |  3 +--
- drivers/mtd/nand/fsl_elbc_nand.c    |  3 +--
- drivers/mtd/nand/fsl_ifc_nand.c     |  3 +--
- drivers/mtd/nand/mpc5121_nfc.c      |  3 +--
- drivers/mtd/onenand/samsung.c       | 12 ++++--------
- 10 files changed, 15 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/mtd/maps/latch-addr-flash.c b/drivers/mtd/maps/latch-addr-flash.c
-index cadfbe0..60496cd 100644
---- a/drivers/mtd/maps/latch-addr-flash.c
-+++ b/drivers/mtd/maps/latch-addr-flash.c
-@@ -109,8 +109,7 @@ static int latch_addr_flash_remove(struct platform_device *dev)
- 		map_destroy(info->mtd);
- 	}
+ .../devicetree/bindings/mtd/atmel-nand.txt         |  2 +-
+ drivers/mtd/nand/atmel_nand.c                      | 25 +++++++++++++++++++++-
+ 2 files changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+index 1fe6dde..7d4c8eb 100644
+--- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+@@ -1,7 +1,7 @@
+ Atmel NAND flash
  
--	if (info->map.virt != NULL)
--		iounmap(info->map.virt);
-+	iounmap(info->map.virt);
+ Required properties:
+-- compatible : "atmel,at91rm9200-nand".
++- compatible : should be "atmel,at91rm9200-nand" or "atmel,sama5d4-nand".
+ - reg : should specify localbus address and size used for the chip,
+ 	and hardware ECC controller if available.
+ 	If the hardware ECC is PMECC, it should contain address and size for
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 044c9d1..8d5b008 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -63,6 +63,10 @@ module_param(on_flash_bbt, int, 0);
+ #include "atmel_nand_ecc.h"	/* Hardware ECC registers */
+ #include "atmel_nand_nfc.h"	/* Nand Flash Controller definition */
  
- 	if (info->res != NULL)
- 		release_mem_region(info->res->start, resource_size(info->res));
-diff --git a/drivers/mtd/maps/pci.c b/drivers/mtd/maps/pci.c
-index eb0242e..0006794 100644
---- a/drivers/mtd/maps/pci.c
-+++ b/drivers/mtd/maps/pci.c
-@@ -118,8 +118,7 @@ intel_iq80310_init(struct pci_dev *dev, struct map_pci_info *map)
- static void
- intel_iq80310_exit(struct pci_dev *dev, struct map_pci_info *map)
- {
--	if (map->base)
--		iounmap(map->base);
-+	iounmap(map->base);
- 	pci_write_config_dword(dev, 0x44, map->map.map_priv_2);
++struct atmel_nand_caps {
++	bool pmecc_correct_erase_page;
++};
++
+ /* oob layout for large page size
+  * bad block info is on bytes 0 and 1
+  * the bytes have to be consecutives to avoid
+@@ -124,6 +128,7 @@ struct atmel_nand_host {
+ 
+ 	struct atmel_nfc	*nfc;
+ 
++	struct atmel_nand_caps	*caps;
+ 	bool			has_pmecc;
+ 	u8			pmecc_corr_cap;
+ 	u16			pmecc_sector_size;
+@@ -849,6 +854,10 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
+ 	uint8_t *buf_pos;
+ 	int max_bitflips = 0;
+ 
++	/* If can correct bitfilps from erased page, do the normal check */
++	if (host->caps->pmecc_correct_erase_page)
++		goto normal_check;
++
+ 	for (i = 0; i < nand_chip->ecc.total; i++)
+ 		if (ecc[i] != 0xff)
+ 			goto normal_check;
+@@ -1474,6 +1483,8 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
+ 		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
  }
  
-@@ -202,8 +201,7 @@ intel_dc21285_init(struct pci_dev *dev, struct map_pci_info *map)
- static void
- intel_dc21285_exit(struct pci_dev *dev, struct map_pci_info *map)
++static const struct of_device_id atmel_nand_dt_ids[];
++
+ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 			      struct device_node *np)
  {
--	if (map->base)
--		iounmap(map->base);
-+	iounmap(map->base);
+@@ -1483,6 +1494,9 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 	struct atmel_nand_data *board = &host->board;
+ 	enum of_gpio_flags flags = 0;
  
- 	/*
- 	 * We need to undo the PCI BAR2/PCI ROM BAR address alteration.
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index f35cd20..89f5d42 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -57,8 +57,7 @@ static int of_flash_remove(struct platform_device *dev)
- 		if (info->list[i].mtd)
- 			map_destroy(info->list[i].mtd);
- 
--		if (info->list[i].map.virt)
--			iounmap(info->list[i].map.virt);
-+		iounmap(info->list[i].map.virt);
- 
- 		if (info->list[i].res) {
- 			release_resource(info->list[i].res);
-diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
-index 4b65c08..da09274 100644
---- a/drivers/mtd/maps/plat-ram.c
-+++ b/drivers/mtd/maps/plat-ram.c
-@@ -104,8 +104,7 @@ static int platram_remove(struct platform_device *pdev)
- 		kfree(info->area);
- 	}
- 
--	if (info->map.virt != NULL)
--		iounmap(info->map.virt);
-+	iounmap(info->map.virt);
- 
- 	kfree(info);
- 
-diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
-index 12fa75d..a5f27b9 100644
---- a/drivers/mtd/maps/pxa2xx-flash.c
-+++ b/drivers/mtd/maps/pxa2xx-flash.c
-@@ -89,8 +89,7 @@ static int pxa2xx_flash_probe(struct platform_device *pdev)
- 
- 	if (!info->mtd) {
- 		iounmap((void *)info->map.virt);
--		if (info->map.cached)
--			iounmap(info->map.cached);
-+		iounmap(info->map.cached);
- 		return -EIO;
- 	}
- 	info->mtd->owner = THIS_MODULE;
-@@ -110,8 +109,7 @@ static int pxa2xx_flash_remove(struct platform_device *dev)
- 
- 	map_destroy(info->mtd);
- 	iounmap(info->map.virt);
--	if (info->map.cached)
--		iounmap(info->map.cached);
-+	iounmap(info->map.cached);
- 	kfree(info);
++	host->caps = (struct atmel_nand_caps *)
++		of_match_device(atmel_nand_dt_ids, host->dev)->data;
++
+ 	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
+ 		if (val >= 32) {
+ 			dev_err(host->dev, "invalid addr-offset %u\n", val);
+@@ -2287,8 +2301,17 @@ static int atmel_nand_remove(struct platform_device *pdev)
  	return 0;
  }
-diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
-index ea69720..22e5d7d 100644
---- a/drivers/mtd/maps/sa1100-flash.c
-+++ b/drivers/mtd/maps/sa1100-flash.c
-@@ -58,8 +58,7 @@ static void sa1100_destroy_subdev(struct sa_subdev_info *subdev)
- {
- 	if (subdev->mtd)
- 		map_destroy(subdev->mtd);
--	if (subdev->map.virt)
--		iounmap(subdev->map.virt);
-+	iounmap(subdev->map.virt);
- 	release_mem_region(subdev->map.phys, subdev->map.size);
- }
  
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 04b22fd..a0f2a91 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -801,8 +801,7 @@ static int fsl_elbc_chip_remove(struct fsl_elbc_mtd *priv)
++static struct atmel_nand_caps at91rm9200_caps = {
++	.pmecc_correct_erase_page = false,
++};
++
++static struct atmel_nand_caps sama5d4_caps = {
++	.pmecc_correct_erase_page = true,
++};
++
+ static const struct of_device_id atmel_nand_dt_ids[] = {
+-	{ .compatible = "atmel,at91rm9200-nand" },
++	{ .compatible = "atmel,at91rm9200-nand", .data = &at91rm9200_caps },
++	{ .compatible = "atmel,sama5d4-nand", .data = &sama5d4_caps },
+ 	{ /* sentinel */ }
+ };
  
- 	kfree(priv->mtd.name);
- 
--	if (priv->vbase)
--		iounmap(priv->vbase);
-+	iounmap(priv->vbase);
- 
- 	elbc_fcm_ctrl->chips[priv->bank] = NULL;
- 	kfree(priv);
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 4c05f4f..360d9a3 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -995,8 +995,7 @@ static int fsl_ifc_chip_remove(struct fsl_ifc_mtd *priv)
- 
- 	kfree(priv->mtd.name);
- 
--	if (priv->vbase)
--		iounmap(priv->vbase);
-+	iounmap(priv->vbase);
- 
- 	ifc_nand_ctrl->chips[priv->bank] = NULL;
- 
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index 1f12e5b..34fa6db 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -621,8 +621,7 @@ static void mpc5121_nfc_free(struct device *dev, struct mtd_info *mtd)
- 	if (prv->clk)
- 		clk_disable_unprepare(prv->clk);
- 
--	if (prv->csreg)
--		iounmap(prv->csreg);
-+	iounmap(prv->csreg);
- }
- 
- static int mpc5121_nfc_probe(struct platform_device *op)
-diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-index 19cfb97..24ac4cb 100644
---- a/drivers/mtd/onenand/samsung.c
-+++ b/drivers/mtd/onenand/samsung.c
-@@ -1001,8 +1001,7 @@ static int s3c_onenand_probe(struct platform_device *pdev)
- 	return 0;
- 
- scan_failed:
--	if (onenand->dma_addr)
--		iounmap(onenand->dma_addr);
-+	iounmap(onenand->dma_addr);
- dma_ioremap_failed:
- 	if (onenand->dma_res)
- 		release_mem_region(onenand->dma_res->start,
-@@ -1011,8 +1010,7 @@ dma_ioremap_failed:
- oob_buf_fail:
- 	kfree(onenand->page_buf);
- page_buf_fail:
--	if (onenand->ahb_addr)
--		iounmap(onenand->ahb_addr);
-+	iounmap(onenand->ahb_addr);
- ahb_ioremap_failed:
- 	if (onenand->ahb_res)
- 		release_mem_region(onenand->ahb_res->start,
-@@ -1036,13 +1034,11 @@ static int s3c_onenand_remove(struct platform_device *pdev)
- 	struct mtd_info *mtd = platform_get_drvdata(pdev);
- 
- 	onenand_release(mtd);
--	if (onenand->ahb_addr)
--		iounmap(onenand->ahb_addr);
-+	iounmap(onenand->ahb_addr);
- 	if (onenand->ahb_res)
- 		release_mem_region(onenand->ahb_res->start,
- 				   resource_size(onenand->ahb_res));
--	if (onenand->dma_addr)
--		iounmap(onenand->dma_addr);
-+	iounmap(onenand->dma_addr);
- 	if (onenand->dma_res)
- 		release_mem_region(onenand->dma_res->start,
- 				   resource_size(onenand->dma_res));
 -- 
-2.2.2
+1.9.1
