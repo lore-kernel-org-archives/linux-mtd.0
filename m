@@ -1,24 +1,31 @@
-Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
+Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDE62-00022s-9h
- for linux-mtd@lists.infradead.org; Mon, 19 Jan 2015 15:18:31 +0000
-Received: by mail-la0-f43.google.com with SMTP id q1so14096305lam.2
- for <linux-mtd@lists.infradead.org>; Mon, 19 Jan 2015 07:18:06 -0800 (PST)
+ id 1YDGbN-0002L8-Ah
+ for linux-mtd@lists.infradead.org; Mon, 19 Jan 2015 17:59:02 +0000
+Received: by mail-pd0-f173.google.com with SMTP id fp1so12942427pdb.4
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Jan 2015 09:58:39 -0800 (PST)
+Date: Mon, 19 Jan 2015 09:58:35 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: Re: [PATCH] MTD: Deletion of checks before the function call "iounmap"
+Message-ID: <20150119175835.GH9759@ld-irv-0074>
+References: <530C5E18.1020800@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251014170.2080@hadrien>
+ <530CD2C4.4050903@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251840450.7035@hadrien>
+ <530CF8FF.8080600@users.sourceforge.net>
+ <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
+ <530DD06F.4090703@users.sourceforge.net>
+ <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
+ <5317A59D.4@users.sourceforge.net>
+ <54BBE87C.9020705@users.sourceforge.net>
 MIME-Version: 1.0
-In-Reply-To: <1418766416-6446-1-git-send-email-zajec5@gmail.com>
-References: <1418766416-6446-1-git-send-email-zajec5@gmail.com>
-Date: Mon, 19 Jan 2015 16:18:05 +0100
-Message-ID: <CACna6rxh_Y2+tY3mea2NDXq7nd3TZ85Q0CZv1Om3xkoVbUp42A@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: support for (GigaDevice) GD25Q128B
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54BBE87C.9020705@users.sourceforge.net>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Julia Lawall <julia.lawall@lip6.fr>, Kyungmin Park <kyungmin.park@samsung.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +35,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 16 December 2014 at 22:46, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wr=
-ote:
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.=
-c
-> index 0f8ec3c..ebcc97a 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -538,6 +538,7 @@ static const struct spi_device_id spi_nor_ids[] =3D {
->         /* GigaDevice */
->         { "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
->         { "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
-> +       { "gd25q128",   INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
->
->         /* Intel/Numonyx -- xxxs33b */
->         { "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
-> --
-> 1.8.4.5
+On Sun, Jan 18, 2015 at 06:08:12PM +0100, SF Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Sun, 18 Jan 2015 17:30:23 +0100
+> 
+> The iounmap() function performs also input parameter validation.
+> Thus the test around the call is not needed.
 
-Hey Brian,
+Is this guaranteed for all arch'es? I expect that it would be, but I see
+that, for instance, ARM allows replaceable iounmap() for
+subarchitectures. Also, I see checks for various sorts of static
+mappings in ARM and x86; these likely (always?) cover the NULL case, but
+they're not always straightforward.
 
-Could I bring a bit of your attention to this trivial patch, please? :)
+Anyway, I'm essentially saying that I'd like to be 100% sure we have a
+guarantee before dropping all these.
 
---=20
-Rafa=C5=82
+> This issue was detected by using the Coccinelle software.
+
+What script? Hand-rolled I guess?
+
+Brian
