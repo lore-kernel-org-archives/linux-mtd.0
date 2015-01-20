@@ -1,16 +1,27 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDZ1b-0000hT-Sr
- for linux-mtd@lists.infradead.org; Tue, 20 Jan 2015 13:39:21 +0000
-From: Niklas Cassel <niklas.cassel@axis.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH] mtd: nand: use hrtimer to measure timeout in nand_wait{_ready}
-Date: Tue, 20 Jan 2015 14:38:04 +0100
-Message-ID: <1421761084-3825-1-git-send-email-niklass@axis.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Niklas Cassel <niklass@axis.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YDepD-0008VG-Ju
+ for linux-mtd@lists.infradead.org; Tue, 20 Jan 2015 19:50:56 +0000
+Received: by mail-we0-f174.google.com with SMTP id x3so6598883wes.5
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Jan 2015 11:50:32 -0800 (PST)
+Message-ID: <1421783425.1601.21.camel@googlemail.com>
+Subject: Re: [PATCH 2/2] UBI: rename_volumes: Use UBI_METAONLY
+From: Christoph Fritz <chf.fritz@googlemail.com>
+Reply-To: chf.fritz@googlemail.com
+To: Guido =?ISO-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>,
+ Richard Weinberger <richard@nod.at>
+Date: Tue, 20 Jan 2015 20:50:25 +0100
+In-Reply-To: <20141217174930.GA3400@fox>
+References: <1416864610-5751-1-git-send-email-richard@nod.at>
+ <1416864610-5751-2-git-send-email-richard@nod.at>
+ <20141217174930.GA3400@fox>
+Content-Type: text/plain; charset="ISO-8859-1"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Andrew Murray <amurray@embedded-bits.co.uk>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,109 +31,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Previous, jiffy-based, implementation had three issues:
+On Wed, 2014-12-17 at 14:49 -0300, Guido Martínez wrote:
+> 
+> (for both patches)
+> Tested-by: Guido Martínez <guido@vanguardiasur.com.ar>
 
-1. For low HZ values (<100 and >=50) the timeout would be 1 jiffy,
-   which can cause premature timeouts if a timer interrupt happens
-   right after the "timeo" value is assigned.
-2. For very low HZ values the timeout is 0 jiffies, which also causes
-   premature timeouts.
-3. The jiffies counter is not reliable on multicore systems when
-   interrupts are disabled for long times (a couple of timer interrupt
-   periods). For example with excessive printk and serial output in
-   interrupt context. The jiffies counting stops during the period
-   with disabled interrupts and recovers by counting up all lost jiffy
-   increments very, very fast when interrupts are later enabled. This,
-   together with bad luck, can cause a third type of premature
-   timeouts.
+here too,
+Tested-by: Christoph Fritz <chf.fritz@googlemail.com>
 
-All three issues can cause good blocks being marked bad.
-
-Signed-off-by: Niklas Cassel <niklass@axis.com>
----
- drivers/mtd/nand/nand_base.c | 34 ++++++++++++++++++++++++++++++----
- 1 file changed, 30 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 816b5c1..2fe1992 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -47,6 +47,7 @@
- #include <linux/bitops.h>
- #include <linux/leds.h>
- #include <linux/io.h>
-+#include <linux/hrtimer.h>
- #include <linux/mtd/partitions.h>
- 
- /* Define default oob placement schemes for large and small page devices */
-@@ -544,23 +545,41 @@ static void panic_nand_wait_ready(struct mtd_info *mtd, unsigned long timeo)
- 	}
- }
- 
-+/**
-+ * nand_wait_timeout_callback - Called when timeout expires, do nothing.
-+ */
-+static enum hrtimer_restart nand_wait_timeout_callback(struct hrtimer *timer)
-+{
-+	return HRTIMER_NORESTART;
-+}
-+
- /* Wait for the ready pin, after a command. The timeout is caught later. */
- void nand_wait_ready(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd->priv;
--	unsigned long timeo = jiffies + msecs_to_jiffies(20);
-+	struct hrtimer timer;
- 
- 	/* 400ms timeout */
- 	if (in_interrupt() || oops_in_progress)
- 		return panic_nand_wait_ready(mtd, 400);
- 
- 	led_trigger_event(nand_led_trigger, LED_FULL);
-+
-+	/* Arm timeout timer for 20ms timeout */
-+	hrtimer_init(&timer, CLOCK_REALTIME, HRTIMER_MODE_REL);
-+	timer.function = nand_wait_timeout_callback;
-+	hrtimer_start(&timer, ns_to_ktime(20 * 1000 * 1000),
-+		      HRTIMER_MODE_REL);
-+
- 	/* Wait until command is processed or timeout occurs */
- 	do {
- 		if (chip->dev_ready(mtd))
- 			break;
- 		touch_softlockup_watchdog();
--	} while (time_before(jiffies, timeo));
-+	} while (ktime_to_ns(hrtimer_expires_remaining(&timer)) > 0);
-+
-+	hrtimer_cancel(&timer);
-+
- 	led_trigger_event(nand_led_trigger, LED_OFF);
- }
- EXPORT_SYMBOL_GPL(nand_wait_ready);
-@@ -890,8 +909,14 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	if (in_interrupt() || oops_in_progress)
- 		panic_nand_wait(mtd, chip, timeo);
- 	else {
--		timeo = jiffies + msecs_to_jiffies(timeo);
--		while (time_before(jiffies, timeo)) {
-+		struct hrtimer timer;
-+
-+		hrtimer_init(&timer, CLOCK_REALTIME, HRTIMER_MODE_REL);
-+		timer.function = nand_wait_timeout_callback;
-+		hrtimer_start(&timer, ns_to_ktime(timeo * 1000 * 1000),
-+			      HRTIMER_MODE_REL);
-+
-+		while (ktime_to_ns(hrtimer_expires_remaining(&timer)) > 0) {
- 			if (chip->dev_ready) {
- 				if (chip->dev_ready(mtd))
- 					break;
-@@ -901,6 +926,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 			}
- 			cond_resched();
- 		}
-+		hrtimer_cancel(&timer);
- 	}
- 	led_trigger_event(nand_led_trigger, LED_OFF);
- 
--- 
-2.1.4
+By the way, when will this patch get merged?
