@@ -1,21 +1,21 @@
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDg2Y-0006FD-PF
- for linux-mtd@lists.infradead.org; Tue, 20 Jan 2015 21:08:48 +0000
-Message-ID: <54BEC3C2.7080906@fb.com>
-Date: Tue, 20 Jan 2015 14:08:18 -0700
-From: Jens Axboe <axboe@fb.com>
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YDgDE-0003az-F2
+ for linux-mtd@lists.infradead.org; Tue, 20 Jan 2015 21:19:49 +0000
+Date: Wed, 21 Jan 2015 05:19:03 +0800
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] staging: mt29f_spinand: Fix typo in Kconfig
+Message-ID: <20150120211903.GA13903@kroah.com>
+References: <1421318844-18203-1-git-send-email-standby24x7@gmail.com>
+ <20150120203443.GO9759@ld-irv-0074>
 MIME-Version: 1.0
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: backing_dev_info cleanups & lifetime rule fixes V2
-References: <1421228561-16857-1-git-send-email-hch@lst.de>
-In-Reply-To: <1421228561-16857-1-git-send-email-hch@lst.de>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-nfs@vger.kernel.org, linux-mm@kvack.org,
- David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Tejun Heo <tj@kernel.org>,
- ceph-devel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150120203443.GO9759@ld-irv-0074>
+Cc: Masanari Iida <standby24x7@gmail.com>, devel@driverdev.osuosl.org,
+ linux-mtd@lists.infradead.org, kamlakant.patel@broadcom.com,
+ manonuevo@micron.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/14/2015 02:42 AM, Christoph Hellwig wrote:
-> The first 8 patches are unchanged from the series posted a week ago and
-> cleans up how we use the backing_dev_info structure in preparation for
-> fixing the life time rules for it.  The most important change is to
-> split the unrelated nommu mmap flags from it, but it also remove a
-> backing_dev_info pointer from the address_space (and thus the inode)
-> and cleans up various other minor bits.
->
-> The remaining patches sort out the issues around bdi_unlink and now
-> let the bdi life until it's embedding structure is freed, which must
-> be equal or longer than the superblock using the bdi for writeback,
-> and thus gets rid of the whole mess around reassining inodes to new
-> bdis.
->
-> Changes since V1:
->   - various minor documentation updates based on Feedback from Tejun
+On Tue, Jan 20, 2015 at 12:34:43PM -0800, Brian Norris wrote:
+> On Thu, Jan 15, 2015 at 07:47:24PM +0900, Masanari Iida wrote:
+> > This patch fix a spelling typo in Kconfig.
+> > 
+> > Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+> 
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
+> 
+> Greg, do you take these patches, or should they go through me?
 
-I applied this to for-3.20/bdi, only making the change (noticed by Jan) 
-to kill the extra WARN_ON() in patch #11.
+I can take them directly, and add your ack.  No need for you to do
+anything else here, thanks.
 
+> FWIW, we have high hopes to kill and replace this driver soon, as there
+> have been some better spi-nand patches floating around linux-mtd.
 
--- 
-Jens Axboe
+Wonderful, let me know when you want me to delete these, I like deleting
+code :)
+
+thanks,
+
+greg k-h
