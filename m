@@ -1,23 +1,16 @@
-From: =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH 0/3] An alternative to SPI NAND
-Date: Tue, 20 Jan 2015 06:15:14 +0000
-Message-ID: <87F60714EC601C4C83DFF1D2E3D390A04AD5FC@NTXXIAMBX02.xacn.micron.com>
-References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
- <20150108010257.GP9759@ld-irv-0074>
-In-Reply-To: <20150108010257.GP9759@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YDVFc-0004Hx-1X
+ for linux-mtd@lists.infradead.org; Tue, 20 Jan 2015 09:37:33 +0000
+From: Niklas Cassel <niklas.cassel@axis.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd: update ops->oobretlen in concat_write_oob
+Date: Tue, 20 Jan 2015 10:35:32 +0100
+Message-ID: <1421746532-25547-1-git-send-email-niklass@axis.com>
 MIME-Version: 1.0
-Cc: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
- =?utf-8?B?TWVsYW5pZSBaaGFuZyDlvKDnh5UgKG1lbGFuaWV6aGFuZyk=?=
- <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: Niklas Cassel <niklass@axis.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBUaHUsIEphbiAwOCwgMjAxNSBhdCAxMjo0NzoyNEFNICswMDAwLCBQZXRlciBQYW4g5r2Y
-5qCLIChwZXRlcnBhbmRvbmcpDQo+IHdyb3RlOg0KPiA+IERvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0IHwgICAyMiArDQo+ID4gZHJpdmVycy9tdGQvS2Nv
-bmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAyICsNCj4gPiBkcml2ZXJz
-L210ZC9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDEgKw0KPiA+
-IGRyaXZlcnMvbXRkL3NwaS1uYW5kL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgIHwgICAg
-NyArDQo+ID4gZHJpdmVycy9tdGQvc3BpLW5hbmQvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAg
-ICAgfCAgICAzICsNCj4gPiBkcml2ZXJzL210ZC9zcGktbmFuZC9zcGktbmFuZC1iYXNlLmMgICAg
-ICAgICAgICAgICB8IDIwMzQNCj4gKysrKysrKysrKysrKysrKysrKysNCj4gPiBkcml2ZXJzL210
-ZC9zcGktbmFuZC9zcGktbmFuZC1iYnQuYyAgICAgICAgICAgICAgICB8IDEyNzkNCj4gKysrKysr
-KysrKysrDQo+IA0KPiBJIGNhbiBhbHJlYWR5IHRlbGwgYnkgdGhlIGRpZmZzdGF0IHRoYXQgSSBk
-b24ndCBsaWtlIHRoaXMuIFdlIHByb2JhYmx5DQo+IGRvbid0IG5lZWQgMzAwMCBuZXcgbGluZXMg
-b2YgY29kZSBmb3IgdGhpcywgYnV0IHdlIGVzcGVjaWFsbHkgZG9uJ3QNCj4gd2FudA0KPiB0byBk
-dXBsaWNhdGUgbmFuZF9iYnQuYy4gSXQgd29uJ3QgdGFrZSBhIGxvdCBvZiB3b3JrIHRvIGF1Z21l
-bnQNCj4gbmFuZF9iYnQuYyB0byBtYWtlIGl0IHNoYXJlYWJsZS4gKEkgY2FuIHdoaXAgdGhhdCBw
-YXRjaCB1cCBpZiBuZWVkZWQuKQ0KDQpRaSBXYW5nIGFuZCBJIGhhdmUgc3RhcnRlZCB0byB3b3Jr
-IG9uIG1ha2UgbmFuZF9iYnQuYyBzaGFyZWFibGUuDQpuYW5kX2JidC5jIG5lZWQgc29tZSBtZW1i
-ZXIgb2YgbmFuZF9jaGlwLiBMaWtlIHdoYXQgeW91IHNhaWQsIGlmIHdlIHdhbnQNCnRvIHJlbW92
-ZSBuYW5kX2NoaXAgZnJvbSBuYW5kX2JidC5jLCAiV2UnZCBqdXN0IG5lZWQgdG8gcGFyYW1ldGVy
-aXplIGEgZmV3DQpyZWxldmFudCBkZXZpY2UgZGV0YWlscyBpbnRvIGEgbmV3IG5hbmRfYmJ0IHN0
-cnVjdCwgcmF0aGVyIHRoYW4gdXNpbmcNCnN0cnVjdCBuYW5kX2NoaXAgZGlyZWN0bHkuIg0KDQpX
-ZSBjYW4gcHV0IHN0cnVjdCBuYW5kX2JidCBwb2ludGVyIGluIGVpdGhlciBuYW5kX2NoaXAgb3Ig
-bXRkX2luZm8gc3RydWN0dXJlLg0KSWYgcHV0IG5hbmRfYmJ0IGluIG5hbmRfY2hpcCwgd2UgbmVl
-ZCB0byBjaGFuZ2UgdGhlIHBhcmFtZXRlciBvZiBuYW5kX2NoaXAtPnNjYW5fYmJ0DQpmdW5jdGlv
-biBmcm9tIG10ZF9pbmZvIHRvIG5hbmRfYmJ0LiBVc2luZyBuYW5kX2JidCBzdHJ1Y3Qgd2lsbCBj
-YXVzZSBzb21lIG1lbWJlcg0KaW4gYm90aCBuYW5kX2NoaXAgYW5kIG5hbmRfYmJ0IHN0cnVjdC4N
-Cg0KQnJhaW4sIGRvIHlvdSBoYXZlIGFueSBzdWdnZXN0IGFib3V0IHRoaXM/DQo+IA0KPiBJJ2xs
-IHN0aWxsIHRha2UgYSBsb29rIGF0IHRoZSByZXN0IG9mIHRoZSBjb2RlIGV2ZW50dWFsbHksIGJ1
-dCBqdXN0DQo+IHdhbnRlZCB0byBnaXZlIG15IDIgY2VudHMgdXAgZnJvbnQuDQo+IA0KPiA+IGRy
-aXZlcnMvbXRkL3NwaS1uYW5kL3NwaS1uYW5kLWRldmljZS5jICAgICAgICAgICAgIHwgIDI4MSAr
-KysNCj4gPiBpbmNsdWRlL2xpbnV4L210ZC9zcGktbmFuZC5oICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAzMTcgKysrDQo+ID4gOSBmaWxlcyBjaGFuZ2VkLCAzOTQ2IGluc2VydGlvbnMoKykNCj4g
-PiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210
-ZC9zcGktbmFuZC50eHQNCj4gPiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvc3BpLW5h
-bmQvS2NvbmZpZw0KPiA+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9zcGktbmFuZC9N
-YWtlZmlsZQ0KPiA+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9zcGktbmFuZC9zcGkt
-bmFuZC1iYXNlLmMNCj4gPiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvc3BpLW5hbmQv
-c3BpLW5hbmQtYmJ0LmMNCj4gPiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvc3BpLW5h
-bmQvc3BpLW5hbmQtZGV2aWNlLmMNCj4gPiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51
-eC9tdGQvc3BpLW5hbmQuaA0KPiANCj4gQnJpYW4NCg==
+In concat_read_oob both retlen and oobretlen is updated.
+concat_write_oob previously only updated retlen.
+
+Signed-off-by: Niklas Cassel <niklass@axis.com>
+---
+ drivers/mtd/mtdconcat.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index b900056..d85c946 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -311,7 +311,8 @@ concat_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
+ 			devops.len = subdev->size - to;
+ 
+ 		err = mtd_write_oob(subdev, to, &devops);
+-		ops->retlen += devops.oobretlen;
++		ops->retlen += devops.retlen;
++		ops->oobretlen += devops.oobretlen;
+ 		if (err)
+ 			return err;
+ 
+-- 
+2.1.4
