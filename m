@@ -1,26 +1,17 @@
-Received: from mail-ie0-f180.google.com ([209.85.223.180])
+Received: from mail-ie0-f175.google.com ([209.85.223.175])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDuvY-0007nG-18
- for linux-mtd@lists.infradead.org; Wed, 21 Jan 2015 13:02:33 +0000
-Received: by mail-ie0-f180.google.com with SMTP id rl12so7898144iec.11
- for <linux-mtd@lists.infradead.org>; Wed, 21 Jan 2015 05:02:10 -0800 (PST)
-Date: Wed, 21 Jan 2015 13:02:04 +0000
+ id 1YDx9R-00086K-PK
+ for linux-mtd@lists.infradead.org; Wed, 21 Jan 2015 15:25:03 +0000
+Received: by mail-ie0-f175.google.com with SMTP id ar1so11168096iec.6
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Jan 2015 07:24:40 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 08/13] mtd: st_spi_fsm: Update the JEDEC probe to
- handle extended READIDs
-Message-ID: <20150121130204.GC22024@x1>
-References: <1418644760-18773-1-git-send-email-lee.jones@linaro.org>
- <1418644760-18773-9-git-send-email-lee.jones@linaro.org>
- <20150113050715.GQ9759@ld-irv-0074>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150113050715.GQ9759@ld-irv-0074>
-Cc: Angus Clark <angus.clark@st.com>, kernel@stlinux.com,
- linux-kernel@vger.kernel.org, Carmelo Amoroso <carmelo.amoroso@st.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/10] mtd: st_spi_fsm: Align with ST's internal development
+Date: Wed, 21 Jan 2015 15:24:18 +0000
+Message-Id: <1421853868-8262-1-git-send-email-lee.jones@linaro.org>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ lee.jones@linaro.org, kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,35 +21,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Jan 2015, Brian Norris wrote:
+Hi Brian, all,
+  
+ [x] Bulid test
+ [x] Bisectable
+ [x] Smatch
+ [x] Sparse
 
-> On Mon, Dec 15, 2014 at 11:59:15AM +0000, Lee Jones wrote:
-> > The previous code was based on 3-byte JEDEC IDs, with a possible 2-byte
-> > extension.  However, devices are now emerging that return 6 or more bytes of
-> > READID data and the additional bytes are required to differentiate between
-> > variants or generations of similar devices.
-> > 
-> > This patch refactors the device table and JEDEC probe code to handle arbitrary
-> > length READIDs, with the standard JEDEC definition now becoming a special case.
-> > Functionally, there should be no change in behaviour.  A subsequent patch will
-> > update the table with extended READIDs where applicable.
-> 
-> BTW, how's that promise going, where you work on adapting this driver to
-> the spi-nor framework? We've already done some of this same work there.
+v4:
+  Fully deprecated/removed the old all encompassing compatible string.
+  Perfectly reasonable considering this driver is not in use by anyone
+  and therefore the binding is not yet considered ABI.  There are also
+  some checkpatch warning fixes in the "tidy-up" patch.  All patches
+  have been rebased onto l2-mtd.git, as requested.
+  
+v3:
+  Further aligned with upstream changes as suggested by Peter Griffin.
+  The clk_ignore_unused kernel command line parameter is due to be turned
+  off on STiH4* platforms, so we no longer give the driver the chance to
+  opt-out of fetching the EMI clock.  We also now provide syscfg offsets
+  inside the driver, as it's simpler and reduces the cost of having lots
+  of extra DT properties.
+  
+v2:
+  These are the last remaining patches in the set, all rebased and
+  with the DT documentation requested after the last submission.
+  
+v1:
+  This patch-set updates ST's FSM SPI-NOR driver with all the internal
+  goodness which has happened since the initial (now upstreamed) snapshot
+  was taken. It covers just over 6 months worth of internal development
+  and bug-fixes. A final whitespace clean-up is also appended to the set
+  - to make it look pretty and stuff. :)
 
-I have pushed this point within ST and someone has agreed to do the
-work.  Last I heard it relied on these patches, but I'll ask again.
+Angus Clark (3):
+  mtd: st_spi_fsm: Add support for N25Q512 and N25Q00A devices
+  mtd: st_spi_fsm: Update Spansion device entries
+  mtd: st_spi_fsm: Improve busy wait handling
 
-> > +#define RDID(...) __VA_ARGS__  /* Dummy macro to protect array argument. */
-> 
-> What? What needs "protected"?
+Lee Jones (6):
+  mtd: st_spi_fsm: dt-bindings: Deprecate generic compatible string
+  mtd: st_spi_fsm: Fetch boot device locations from DT match tables
+  mtd: st_spi_fsm: Update the JEDEC probe to handle extended READIDs
+  mtd: st_spi_fsm: General tidy-up
+  ARM: STi: stih416: Use new platform specific compatible string
+  ARM: STi: stih416: Supply EMI clock reference to FSM SPI NOR
 
-You're asking me questions I can't answer I'm afraid and Angus has now
-left the building.  I guess he thinks __VA_ARGS__ will prevent some
-kind of overflow?
+Nunzio Raciti (1):
+  mtd: st_spi_fsm: Add support for Micron N25Q512A
+
+ Documentation/devicetree/bindings/mtd/st-fsm.txt |  19 +-
+ arch/arm/boot/dts/stih416.dtsi                   |   6 +-
+ drivers/mtd/devices/st_spi_fsm.c                 | 627 ++++++++++++++---------
+ include/dt-bindings/clock/stih416-clks.h         |   1 +
+ 4 files changed, 408 insertions(+), 245 deletions(-)
 
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+1.9.1
