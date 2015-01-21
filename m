@@ -1,17 +1,26 @@
-Received: from smtp.ispras.ru ([83.149.199.79])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDtIL-0008BW-05
- for linux-mtd@lists.infradead.org; Wed, 21 Jan 2015 11:17:57 +0000
+Received: from mail-ie0-f179.google.com ([209.85.223.179])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YDujQ-0007CM-7L
+ for linux-mtd@lists.infradead.org; Wed, 21 Jan 2015 12:50:01 +0000
+Received: by mail-ie0-f179.google.com with SMTP id x19so7851211ier.10
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Jan 2015 04:49:38 -0800 (PST)
+Date: Wed, 21 Jan 2015 12:49:30 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 00/13] mtd: st_spi_fsm: Align with ST's internal
+ development
+Message-ID: <20150121124930.GA22024@x1>
+References: <1418644760-18773-1-git-send-email-lee.jones@linaro.org>
+ <20150113051452.GR9759@ld-irv-0074>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="=_61ee8a927c2a454bf0ecf69a816f6e88"
-Date: Wed, 21 Jan 2015 14:17:33 +0300
-From: koloskov <koloskov@ispras.ru>
-To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: jffs2: Do not rewrite =?UTF-8?Q?posix=5Facl=5Fequiv=5Fmode=28=29?=
- =?UTF-8?Q?=20result=20in=20=20jffs=32=5Fset=5Facl=28=29?=
-Message-ID: <f75d56ff5d79c7a3b16e3579ed10ca4c@ispras.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150113051452.GR9759@ld-irv-0074>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ kernel@stlinux.com, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,43 +30,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---=_61ee8a927c2a454bf0ecf69a816f6e88
-Content-Transfer-Encoding: base64
-Content-Type: text/x-mail;
- name=0001-jffs2-Do-not-rewrite-posix_acl_equiv_mode-result-in.patch
-Content-Disposition: attachment;
- filename=0001-jffs2-Do-not-rewrite-posix_acl_equiv_mode-result-in.patch;
- size=1747
+On Mon, 12 Jan 2015, Brian Norris wrote:
+> On Mon, Dec 15, 2014 at 11:59:07AM +0000, Lee Jones wrote:
+> > Hi Brian, all,
+> >  
+> >  [x] Bulid test
+> >  [x] Bisectable
+> >  [x] Smatch
+> >  [x] Sparse
+> 
+> Picked patches 1, 2, and 5 to l2-mtd.git. I requested changes to patch 3
+> and possibly 4. The rest look OK, but I don't want to futz with patch
+> conflicts on the remaining. Please rebase to l2-mtd.git if/when you
+> resend.
 
-RnJvbSBhZDAzZmU3NDM5NTljMDRhOWU3ZDYxMWMwMjZjMjAxYTE0Y2UwZWQ2IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBBbmRyZXkgS29sb3Nrb3YgPGtvbG9za292QGlzcHJhcy5ydT4K
-VG86IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4KQ2M6IGxpbnV4LW10ZEBs
-aXN0cy5pbmZyYWRlYWQub3JnCkNjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCgpEYXRl
-OiBUdWUsIDEzIEphbiAyMDE1IDE0OjM3OjE4ICswNDAwClN1YmplY3Q6IFtQQVRDSF0gamZmczI6
-IERvIG5vdCByZXdyaXRlIHBvc2l4X2FjbF9lcXVpdl9tb2RlKCkgcmVzdWx0IGluCiBqZmZzMl9z
-ZXRfYWNsKCkKClJlc3VsdCBvZiBwb3NpeF9hY2xfZXF1aXZfbW9kZSgpIGlzIHJld3JpdHRlbiB3
-aXRoIG9uZSBvZiBqZmZzMl9kb19zZXRhdHRyKCksCnNvIGl0IGlzIGFsd2F5cyBhc3N1bWVkIHRo
-YXQgYWNsIGNhbiBiZSBleGFjdGx5IHJlcHJlc2VudGVkIGJ5IHRoZQp0cmFkaXRpb25hbCBmaWxl
-IG1vZGUgcGVybWlzc2lvbiBiaXRzLgoKVGhlIHBhdGNoIGFkZHMgYSBuZXcgdmFyaWFibGUgZm9y
-IHN0b3JlIHJlc3VsdCBvZiBwb3NpeF9hY2xfZXF1aXZfbW9kZSgpLgoKRm91bmQgYnkgTGludXgg
-RmlsZSBTeXN0ZW0gVmVyaWZpY2F0aW9uIHByb2plY3QgKGxpbnV4dGVzdGluZy5vcmcpLgoKU2ln
-bmVkLW9mZi1ieTogQW5kcmV5IEtvbG9za292IDxrb2xvc2tvdkBpc3ByYXMucnU+Ci0tLQogZnMv
-amZmczIvYWNsLmMgfCAgIDEwICsrKysrLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlv
-bnMoKyksIDUgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZnMvamZmczIvYWNsLmMgYi9mcy9q
-ZmZzMi9hY2wuYwppbmRleCAyZjdhM2MwLi42MzcwNWJkIDEwMDY0NAotLS0gYS9mcy9qZmZzMi9h
-Y2wuYworKysgYi9mcy9qZmZzMi9hY2wuYwpAQCAtMjI5LDE2ICsyMjksMTYgQEAgc3RhdGljIGlu
-dCBfX2pmZnMyX3NldF9hY2woc3RydWN0IGlub2RlICppbm9kZSwgaW50IHhwcmVmaXgsIHN0cnVj
-dCBwb3NpeF9hY2wgKmEKIAogaW50IGpmZnMyX3NldF9hY2woc3RydWN0IGlub2RlICppbm9kZSwg
-c3RydWN0IHBvc2l4X2FjbCAqYWNsLCBpbnQgdHlwZSkKIHsKLQlpbnQgcmMsIHhwcmVmaXg7CisJ
-aW50IHJjLCB4cHJlZml4LCBub3RfZXF1aXY7CiAKIAlzd2l0Y2ggKHR5cGUpIHsKIAljYXNlIEFD
-TF9UWVBFX0FDQ0VTUzoKIAkJeHByZWZpeCA9IEpGRlMyX1hQUkVGSVhfQUNMX0FDQ0VTUzsKIAkJ
-aWYgKGFjbCkgewogCQkJdW1vZGVfdCBtb2RlID0gaW5vZGUtPmlfbW9kZTsKLQkJCXJjID0gcG9z
-aXhfYWNsX2VxdWl2X21vZGUoYWNsLCAmbW9kZSk7Ci0JCQlpZiAocmMgPCAwKQotCQkJCXJldHVy
-biByYzsKKwkJCW5vdF9lcXVpdiA9IHBvc2l4X2FjbF9lcXVpdl9tb2RlKGFjbCwgJm1vZGUpOwor
-CQkJaWYgKG5vdF9lcXVpdiA8IDApCisJCQkJcmV0dXJuIG5vdF9lcXVpdjsKIAkJCWlmIChpbm9k
-ZS0+aV9tb2RlICE9IG1vZGUpIHsKIAkJCQlzdHJ1Y3QgaWF0dHIgYXR0cjsKIApAQCAtMjQ5LDcg
-KzI0OSw3IEBAIGludCBqZmZzMl9zZXRfYWNsKHN0cnVjdCBpbm9kZSAqaW5vZGUsIHN0cnVjdCBw
-b3NpeF9hY2wgKmFjbCwgaW50IHR5cGUpCiAJCQkJaWYgKHJjIDwgMCkKIAkJCQkJcmV0dXJuIHJj
-OwogCQkJfQotCQkJaWYgKHJjID09IDApCisJCQlpZiAobm90X2VxdWl2ID09IDApCiAJCQkJYWNs
-ID0gTlVMTDsKIAkJfQogCQlicmVhazsKLS0gCjEuNy45LjUKCg==
---=_61ee8a927c2a454bf0ecf69a816f6e88--
+Sure.  I'll get on to that now.
+
+> > v3:
+> >   Further aligned with upstream changes as suggested by Peter Griffin.
+> >   The clk_ignore_unused kernel command line parameter is due to be turned
+> >   off on STiH4* platforms, so we no longer give the driver the chance to
+> >   opt-out of fetching the EMI clock.  We also now provide syscfg offsets
+> >   inside the driver, as it's simpler and reduces the cost of having lots
+> >   of extra DT properties.
+> 
+> Typically "simpler" and "reducing the cost of having lots of extra DT
+> properties" aren't good enough reasons for immediately breaking an
+> existing DT binding. We usually expect to support both for some period
+> of time.
+
+Only once a binding has became ABI.  As there are no users of this
+driver yet (this will change after this sync'ing patch-set has been
+applied), so we can safely consider this binding to be in-progress and
+as such, not yet ABI, thus we can do this ol' switch-aroo without the
+usual 6 month deprecation period.
+
+> > v2:
+> >   These are the last remaining patches in the set, all rebased and
+> >   with the DT documentation requested after the last submission.
+> >  
+> > v1:
+> >   This patch-set updates ST's FSM SPI-NOR driver with all the internal
+> >   goodness which has happened since the initial (now upstreamed) snapshot
+> >   was taken. It covers just over 6 months worth of internal development
+> >   and bug-fixes. A final whitespace clean-up is also appended to the set
+> >   - to make it look pretty and stuff. :)
+> > 
+> > Angus Clark (3):
+> >   mtd: st_spi_fsm: Add support for N25Q512 and N25Q00A devices
+> >   mtd: st_spi_fsm: Update Spansion device entries
+> >   mtd: st_spi_fsm: Improve busy wait handling
+> > 
+> > Lee Jones (9):
+> >   mtd: st_spi_fsm: Extend fsm_clear_fifo to handle unwanted bytes
+> >   mtd: st_spi_fsm: Obtain and use EMI clock
+> >   mtd: st_spi_fsm: dt-bindings: Deprecate generic compatible string
+> >   mtd: st_spi_fsm: Fetch boot device locations from DT match tables
+> >   mtd: st_spi_fsm: Fix [-Wsign-compare] build warning
+> >   mtd: st_spi_fsm: Update the JEDEC probe to handle extended READIDs
+> >   mtd: st_spi_fsm: General tidy-up
+> >   ARM: STi: stih416: Use new platform specific compatible string
+> >   ARM: STi: stih416: Supply EMI clock reference to FSM SPI NOR
+> > 
+> > Nunzio Raciti (1):
+> >   mtd: st_spi_fsm: Add support for Micron N25Q512A
+> > 
+> >  Documentation/devicetree/bindings/mtd/st-fsm.txt |  20 +-
+> >  arch/arm/boot/dts/stih416.dtsi                   |   6 +-
+> >  drivers/mtd/devices/st_spi_fsm.c                 | 747 +++++++++++++++--------
+> >  include/dt-bindings/clock/stih416-clks.h         |   1 +
+> >  4 files changed, 519 insertions(+), 255 deletions(-)
+> > 
+> 
+> Brian
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
