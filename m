@@ -1,27 +1,17 @@
-From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
-To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH 0/3] An alternative to SPI NAND
-Date: Wed, 21 Jan 2015 02:11:27 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A77151E62@NTXXIAMBX02.xacn.micron.com>
-References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
- <20150108010257.GP9759@ld-irv-0074>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
- <54ADF90B.1070800@imgtec.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
- <54BE2F7B.60003@imgtec.com>
-In-Reply-To: <54BE2F7B.60003@imgtec.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Message-ID: <54BF2110.7070008@atmel.com>
+Date: Wed, 21 Jan 2015 11:46:24 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- =?utf-8?B?TWVsYW5pZSBaaGFuZyDlvKDnh5UgKG1lbGFuaWV6aGFuZyk=?=
- <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: atmel_nand: check NFC busy flag by HSMC_SR instead
+ of NFC cmd regs
+References: <1421318753-14960-1-git-send-email-josh.wu@atmel.com>
+ <20150120203144.GN9759@ld-irv-0074>
+In-Reply-To: <20150120203144.GN9759@ld-irv-0074>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,73 +21,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMDEvMjAvMjAxNSA2OjM2IFBNLCBFemVxdWllbCBHYXJjaWEgd3JvdGU6DQo+DQo+T24gMDEv
-MTIvMjAxNSAxMjoxMCBQTSwgUWkgV2FuZyDnjovotbcgKHFpd2FuZykgd3JvdGU6DQo+PiBIaSBF
-emVxdWllbCwNCj4+DQo+PiBPbiAwMS8wOC8yMDE1IDExOjI3IEFNLCBFemVxdWllbCBHYXJjaWEg
-d3JvdGU6DQo+Pj4NCj4+PiBIaSBRaSBXYW5nLA0KPj4+DQo+Pj4gT24gMDEvMDcvMjAxNSAxMTo0
-NSBQTSwgUWkgV2FuZyDnjovotbcgKHFpd2FuZykgd3JvdGU6DQo+Pj4+IEhpIEJyaWFuLA0KPj4+
-Pg0KPj4+PiBPbiBUaHUsIEphbiAwOCwgMjAxNSBhdCA5OjAzOjI0QU0gKzAwMDAsIEJyaWFuIE5v
-cnJpcyB3cm90ZToNCj4+Pj4+DQo+Pj4+PiBPbiBUaHUsIEphbiAwOCwgMjAxNSBhdCAxMjo0Nzoy
-NEFNICswMDAwLCBQZXRlciBQYW4g5r2Y5qCLIChwZXRlcnBhbmRvbmcpDQo+Pj4+PiB3cm90ZToN
-Cj4+Pj4+PiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3NwaS1uYW5kLnR4
-dCB8ICAgMjIgKw0KPj4+Pj4+IGRyaXZlcnMvbXRkL0tjb25maWcgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgICAgMiArDQo+Pj4+Pj4gZHJpdmVycy9tdGQvTWFrZWZpbGUgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAxICsNCj4+Pj4+PiBkcml2ZXJzL210ZC9zcGkt
-bmFuZC9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDcgKw0KPj4+Pj4+IGRyaXZl
-cnMvbXRkL3NwaS1uYW5kL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgIHwgICAgMyArDQo+
-Pj4+Pj4gZHJpdmVycy9tdGQvc3BpLW5hbmQvc3BpLW5hbmQtYmFzZS5jICAgICAgICAgICAgICAg
-fCAyMDM0DQo+Pj4+PiArKysrKysrKysrKysrKysrKysrKw0KPj4+Pj4+IGRyaXZlcnMvbXRkL3Nw
-aS1uYW5kL3NwaS1uYW5kLWJidC5jICAgICAgICAgICAgICAgIHwgMTI3OQ0KPisrKysrKysrKysr
-Kw0KPj4+Pj4NCj4+Pj4+IEkgY2FuIGFscmVhZHkgdGVsbCBieSB0aGUgZGlmZnN0YXQgdGhhdCBJ
-IGRvbid0IGxpa2UgdGhpcy4gV2UgcHJvYmFibHkNCj4+Pj4+IGRvbid0IG5lZWQgMzAwMCBuZXcg
-bGluZXMgb2YgY29kZSBmb3IgdGhpcywgYnV0IHdlIGVzcGVjaWFsbHkgZG9uJ3QNCj53YW50DQo+
-Pj4+PiB0byBkdXBsaWNhdGUgbmFuZF9iYnQuYy4gSXQgd29uJ3QgdGFrZSBhIGxvdCBvZiB3b3Jr
-IHRvIGF1Z21lbnQNCj4+Pj4+IG5hbmRfYmJ0LmMgdG8gbWFrZSBpdCBzaGFyZWFibGUuIChJIGNh
-biB3aGlwIHRoYXQgcGF0Y2ggdXAgaWYgbmVlZGVkLikNCj4+Pj4NCj4+Pj4gWWVzLCBJIGFncmVl
-IHdpdGggeW91LCBOYW5kX2JidC5jIGRvIGNhbiBiZSBzaGFyZWQgYnkgUGFyYWxsZWwgTkFORCBh
-bmQNCj4+Pj4gU1BJIE5BTkQuIEFjdHVhbGx5LCB3ZSBhcmUgd29ya2luZyBhdCB0aGlzIG5vdy4g
-V2lsbCBzZW5kIHBhdGNoZXMgdG8NCj55b3UNCj4+Pj4gT25jZSB3ZSBmaW5pc2hlZCBpdC4NCj4+
-Pj4NCj4+Pg0KPj4+IFRoYW5rcyBmb3IgdGhlIHF1aWNrIHN1Ym1pc3Npb24hDQo+Pj4NCj4+PiBI
-b3dldmVyLCBCcmlhbiBpcyByaWdodCwgdGhpcyBjb2RlIGR1cGxpY2F0aW9uIGlzIGEgbm8gZ28u
-DQo+Pj4NCj4+PiBQZXJoYXBzIGEgbW9yZSB2YWxpZCBhcHByb2FjaCB3b3VsZCBiZSB0byBmaXJz
-dCBpZGVudGlmeSB0aGUgY29kZSB0aGF0DQo+Pj4gbmVlZHMgdG8gYmUgc2hhcmVkIGluIG5hbmRf
-YmJ0LmMgYW5kIG5hbmRfYmFzZS5jLCBhbmQgZXhwb3J0IHRob3NlDQo+Pj4gc3ltYm9scyAob3Ig
-bWF5YmUgZG8gdGhlIHJlcXVpcmVkIHJlZmFjdG9yKS4NCj4+DQo+PiBZZXMsIEkgYWdyZWUgQnJp
-YW4ncyBzdWdnZXN0aW9uIGluIGFub3RoZXIgbWFpbC4NCj4+DQo+PiAiIFRoZSBCQlQgY29kZSBp
-cyBzb21ldGhpbmcgd2UgZGVmaW5pdGVseSB3YW50IHRvIHNoYXJlLCBidXQgaXQncw0KPmFjdHVh
-bGx5DQo+PiBub3QgdmVyeSBjbG9zZWx5IHRpZWQgdG8gbmFuZF9iYXNlLmMsIGFuZCBpdCBsb29r
-cyBwcmV0dHkgZWFzeSB0byBhZGFwdA0KPj4gdG8gYW55IE1URCB0aGF0IGltcGxlbWVudHMgbXRk
-X3JlYWRfb29iKCkvbXRkX3dyaXRlX29vYigpLiBXZSdkIGp1c3QNCj4+IG5lZWQgdG8gcGFyYW1l
-dGVyaXplIGEgZmV3IHJlbGV2YW50IGRldmljZSBkZXRhaWxzIGludG8gYSBuZXcgbmFuZF9iYnQN
-Cj4+IHN0cnVjdCwgcmF0aGVyIHRoYW4gdXNpbmcgc3RydWN0IG5hbmRfY2hpcCBkaXJlY3RseS4i
-DQo+Pg0KPj4gVG8gYWJzdHJhY3QgYSBuZXcgbmFuZF9iYnQgc3RydWN0IGluc3RlYWQgb2YgbmFu
-ZF9jaGlwIHRvIG1ha2UgU1BJIE5BTkQNCj4+IGFuZCBwYXJhbGxlbCBOQU5EIGNhbiBzaGFyZSBu
-YW5kX2JidC5jIGZpbGUsIEkgYWxyZWFkeSBiZWdpbiB0byB3b3JrIG9uDQo+PiB0aGlzLg0KPj4N
-Cj4+IEZvciBjb2RlIHNoYXJlZCBpbiBuYW5kX2Jhc2UuYywgSSBhZ3JlZSBpdCB3b3VsZCBiZSBi
-ZXR0ZXIgaWYgd2UgY2FuIGZpbmQNCj4+IGEgZ29vZCBtZXRob2QgdG8gc2hhcmUgbmFuZF9iYXNl
-LmMgY29kZSBiZXR3ZWVuIHNwaSBuYW5kIGFuZCBwYXJhbGxlbA0KPm5hbmQuDQo+PiBCdXQgZnJh
-bmtseSBzcGVha2luZywgSSdtIG5vdCBzYXRpc2ZpZWQgZm9yIHRoZSByZW1hcCBjb21tYW5kIG1l
-dGhvZC4NCj5UaGlzDQo+PiBtZXRob2QgbWFrZSBjb2RlIGRpZmZpY3VsdCB0byBtYWludGFpbiB3
-aGVuIFNQSSBOQU5EIGFuZCBQYXJhbGxlbCBOQU5EDQo+PiBldm9sdmUgbXVjaCBkaWZmZXJlbnRs
-eSBpbiB0aGUgZnV0dXJlLg0KPj4NCj4+IFRha2Ugc29tZSBleGFtcGxlLA0KPj4gSWYgb25lIG5l
-dyBjb21tYW5kIChjYWNoZSBvcGVyYXRpb24sIG11bHRpcGxlIHBsYW5lIG9wZXJhdGlvbikNCj5p
-bXBsZW1lbnRlZA0KPj4gaW4gcGFyYWxsZWwgTkFORCBjb2RlLCBhbmQgaXMgdXNlZCBpbiBuYW5k
-X3JlYWQgb3IgbmFuZF93cml0ZSwgdGhhdCB3aWxsDQo+PiBjYXVzZSBtYWludGFpbmVyIHRvIG1v
-ZGlmeSBTUEkgTkFORCBjb2RlIHRvIHJlbWFwIHRoaXMgbmV3IGNvbW1hbmQsDQo+dGhvdWdoDQo+
-PiB0aGlzIG1vZGlmaWNhdGlvbiBwcm9iYWJseSBjb3VsZCBiZSBzbGlnaHQuIFRoYXQgbWVhbnMg
-bW9kaWZpY2F0aW9uIG9uDQo+PiBQYXJhbGxlbCBOQU5EIGZsYXNoIG5lZWQgdG8gY29uc2lkZXIg
-U1BJIE5BTkQgYXMgd2VsbC4NCj4+DQo+PiBIb3cgZG8geW91IHRoaW5rIGFib3V0IHRoaXM/DQo+
-Pg0KPj4gRm9yIFBldGVyIFBhbidzIHBhdGNoc2V0LCBpZiB3ZSBkbyBzb21lIG1vZGlmaWNhdGlv
-biB0byBtYWtlIG5hbmRfYmJ0LmMNCj50bw0KPj4gbWFrZSBpdCBzaGFyZWFibGUgZm9yIFBhcmFs
-bGVsIGFuZCBTUEkgTkFORC4gVGhlIGNvZGUgbGluZSBzaG91bGQgYmUgMjAwMC4NCj4+IEkgYmVs
-aWV2ZSBJIGNhbiByZXZpZXcgdGhpcyBzcGktbmFuZC1iYXNlLmMgdG8gcmVtb3ZlIHNvbWUgcmVk
-dW5kYW50IGNvZGUNCj4+IHRoYXQgbWF5IGh1bmRyZWRzIGxpbmUuIElzIDE3MDAgb3IgMTgwMCBj
-b2RlIGxpbmUgaXMgbW9yZSBhY2NlcHRhYmxlPw0KPj4NCj4+IExldCBtZSBrbm93IHlvdXIgb3Bp
-bmlvbnMuDQo+Pg0KPg0KPlNvdW5kcyBnb29kLg0KPg0KPkRvIHlvdSBzdGlsbCBwbGFuIHRvIG1h
-aW50YWluIHRoZSBzcGktbmFuZC1iYXNlLmMgYW5kIHNwaS1uYW5kLWRldmljZS5jDQo+c2VwYXJh
-dGlvbj8JDQoNClllcywgc3RpbGwgcGxhbiB0byBtYWludGFpbiB0aGUgc3BpLW5hbmQtYmFzZS5j
-IGFuZCBzcGktbmFuZC1kZXZpY2UuYw0Kc2VwYXJhdGlvbi4gQWJzdHJhY3QgY29tbW9uIGNvZGUg
-dG8gc3BpLW5hbmQtYmFzZS5jLCBhbmQgc3BpLW5hbmQtZGV2aWNlLmMgaXMNCnVzZWQgZm9yIHJl
-YWxpemUgdGhlIGRpZmZlcmVudCBmdW5jdGlvbiBmb3IgZGlmZmVyZW50IFNQSSBOQU5ELCBzdWNo
-IGFzIGVjYw0KbGF5b3V0LCByZWFkIElEIGV0Yy4NCg0KVGhhbmtzDQotLQ0KUWkgV2FuZw0KDQoN
-Cg==
+Hi, Brain
+
+On 1/21/2015 4:31 AM, Brian Norris wrote:
+> On Thu, Jan 15, 2015 at 06:45:53PM +0800, Josh Wu wrote:
+>
+> Was this written by Boris?
+yes, Boris write the code snippet. I taken it and format it as a patch.
+
+> If so, then it needs a 'From:' line at the
+> start of the body. (Make sure 'Author' is correct in git, then
+> git-format-patch/git-send-email will get it right for you.)
+sounds the proper way. I will do that.
+
+>
+>> Currently the driver read NFC command registers to get NFC busy flag.
+>> Actually this flag also can be get by reading HSMC_SR register.
+>>
+>> Use the read NFC command registers need mapping a huge memory region.
+>> To save the mapped memory region, we change to check NFC busy flag by
+>> reading HSMC_SR register.
+> Are we actually saving anything yet? You didn't change the requested
+> region yet.
+After this patch is applied, then we can apply following patch for NFC's 
+dts,
+
+                                 reg = <
+-                                       0x90000000 0x10000000   /* NFC 
+Command Registers */
++                                      0x90000000 0x08000000   /* NFC 
+Command Registers */
+                                         0xfc05c000 0x00000070   /* NFC 
+HSMC regs */
+                                         0x00100000 0x00100000   /* NFC 
+SRAM banks */
+                                          >;
+                                 clocks = <&hsmc_clk>;
+
+But as this change should go to the at91-dt, so I would like make the 
+nand driver patch is accepted first. Then send out the dts changes.
+
+>
+>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> Acked-by: Josh Wu <josh.wu@atmel.com>
+> Since this is passing through your hands, Josh, it should be
+> 'Signed-off-by' not 'Acked-by'.
+sure, I will change this.
+
+>
+>> ---
+>>
+>>   drivers/mtd/nand/atmel_nand.c     | 3 +--
+>>   drivers/mtd/nand/atmel_nand_nfc.h | 1 +
+>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+>> index 3853597..125330b 100644
+>> --- a/drivers/mtd/nand/atmel_nand.c
+>> +++ b/drivers/mtd/nand/atmel_nand.c
+>> @@ -1699,8 +1699,7 @@ static int nfc_send_command(struct atmel_nand_host *host,
+>>   		cmd, addr, cycle0);
+>>   
+>>   	timeout = jiffies + msecs_to_jiffies(NFC_TIME_OUT_MS);
+>> -	while (nfc_cmd_readl(NFCADDR_CMD_NFCBUSY, host->nfc->base_cmd_regs)
+>> -			& NFCADDR_CMD_NFCBUSY) {
+>> +	while (nfc_readl(host->nfc->hsmc_regs, SR) & NFC_SR_BUSY) {
+>>   		if (time_after(jiffies, timeout)) {
+>>   			dev_err(host->dev,
+>>   				"Time out to wait CMD_NFCBUSY ready!\n");
+> Change the timeout text?
+I would change this to:
+
+"Time out to wait for NFC ready!\n");
+
+
+>
+>> diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
+>> index 85b8ca6..4d5d262 100644
+>> --- a/drivers/mtd/nand/atmel_nand_nfc.h
+>> +++ b/drivers/mtd/nand/atmel_nand_nfc.h
+>> @@ -35,6 +35,7 @@
+>>   #define		NFC_CTRL_DISABLE	(1 << 1)
+>>   
+>>   #define ATMEL_HSMC_NFC_SR	0x08		/* NFC Status Register */
+>> +#define		NFC_SR_BUSY		(1 << 8)
+>>   #define		NFC_SR_XFR_DONE		(1 << 16)
+>>   #define		NFC_SR_CMD_DONE		(1 << 17)
+>>   #define		NFC_SR_DTOE		(1 << 20)
+> Brian
+
+Thanks.
+Best Regards,
+Josh Wu
