@@ -1,28 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from smtp.ispras.ru ([83.149.199.79])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDqsk-0008LV-P9
- for linux-mtd@lists.infradead.org; Wed, 21 Jan 2015 08:43:24 +0000
-Date: Wed, 21 Jan 2015 09:42:57 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: default bitflip-reporting threshold to 75%
- of correction strength
-Message-ID: <20150121094257.6c9d6214@bbrezillon>
-In-Reply-To: <20150121082257.GB5273@norris-Latitude-E6410>
-References: <54B38745.70007@atmel.com>
- <1421095889-12717-1-git-send-email-computersforpeace@gmail.com>
- <20150117200137.71c1aca0@bbrezillon>
- <20150121082257.GB5273@norris-Latitude-E6410>
+ id 1YDtIL-0008BW-05
+ for linux-mtd@lists.infradead.org; Wed, 21 Jan 2015 11:17:57 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Richard Weinberger <richard@nod.at>, Steve deRosier <derosier@gmail.com>,
- Josh Wu <josh.wu@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Huang Shijie <shijie8@gmail.com>
+Content-Type: multipart/mixed;
+ boundary="=_61ee8a927c2a454bf0ecf69a816f6e88"
+Date: Wed, 21 Jan 2015 14:17:33 +0300
+From: koloskov <koloskov@ispras.ru>
+To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: jffs2: Do not rewrite =?UTF-8?Q?posix=5Facl=5Fequiv=5Fmode=28=29?=
+ =?UTF-8?Q?=20result=20in=20=20jffs=32=5Fset=5Facl=28=29?=
+Message-ID: <f75d56ff5d79c7a3b16e3579ed10ca4c@ispras.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,162 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+--=_61ee8a927c2a454bf0ecf69a816f6e88
+Content-Transfer-Encoding: base64
+Content-Type: text/x-mail;
+ name=0001-jffs2-Do-not-rewrite-posix_acl_equiv_mode-result-in.patch
+Content-Disposition: attachment;
+ filename=0001-jffs2-Do-not-rewrite-posix_acl_equiv_mode-result-in.patch;
+ size=1747
 
-On Wed, 21 Jan 2015 00:22:57 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> I'm sorry, I just noticed your reply as I was applying the patch. I can
-> back it out if we find a real objection.
-
-No, I'm fine with this patch, I was just trying to draw attention on
-several problems I noticed while working on MLC NANDs.
-We'll need to sort this out at some point, but I won't prevent sane
-SLC/MLC NANDs from having this ECC threshold changed for something that
-is not well supported yet ;-).
-
-> 
-> On Sat, Jan 17, 2015 at 08:01:37PM +0100, Boris Brezillon wrote:
-> > On Mon, 12 Jan 2015 12:51:29 -0800
-> > Brian Norris <computersforpeace@gmail.com> wrote:
-> > > The MTD API reports -EUCLEAN only if the maximum number of bitflips
-> > > found in any ECC block exceeds a certain threshold. This is done to
-> > > avoid excessive -EUCLEAN reports to MTD users, which may induce
-> > > additional scrubbing of data, even when the ECC algorithm in use is
-> > > perfectly capable of handling the bitflips.
-> > > 
-> > > This threshold can be controlled by user-space (via sysfs), to allow
-> > > users to determine what they are willing to tolerate in their
-> > > application. But it still helps to have sane defaults.
-> > > 
-> > > In recent discussion [1], it was pointed out that our default threshold
-> > > is equal to the correction strength. That means that we won't actually
-> > > report any -EUCLEAN (i.e., "bitflips were corrected") errors until there
-> > > are almost too many to handle. It was determined that 3/4 of the
-> > > correction strength is probably a better default.
-> > > 
-> > > [1] http://lists.infradead.org/pipermail/linux-mtd/2015-January/057259.html
-> > > 
-> > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > > ---
-> > >  drivers/mtd/nand/nand_base.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > > index 816b5c1fd416..3f24b587304f 100644
-> > > --- a/drivers/mtd/nand/nand_base.c
-> > > +++ b/drivers/mtd/nand/nand_base.c
-> > > @@ -4171,7 +4171,7 @@ int nand_scan_tail(struct mtd_info *mtd)
-> > >  	 * properly set.
-> > >  	 */
-> > >  	if (!mtd->bitflip_threshold)
-> > > -		mtd->bitflip_threshold = mtd->ecc_strength;
-> > > +		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3, 4);
-> > 
-> > Just sharing my experience with MLC NANDs requiring read-retry: the
-> > number of reported bitflips often raise ecc_strength value (at least
-> > with the current read-retry approach).
-> 
-> I did not have fun when testing a few MLC NAND which required read
-> retry. I ended up recommending that most of our customers move off of it
-> onto another solution where possible. But yes, I can understand your
-> issue.
-
-Neither did I, but that's the world we live in, and I guess board
-manufacturers will keep using crapy MLC chips so this is definitely
-something we have to work on.
-
-> 
-> > This patch will definitely make UBI move NAND blocks over and over
-> > again considering the threshold has been raised and the block is not
-> > reliable anymore.
-> 
-> Personally, we found that we just needed to lower the
-> MTD_UBI_WL_THRESHOLD and let UBI move away from blocks with high bitflip
-> counts. I suppose we essentially treat the block as bad.
-
-The problem I have is that a lot of them reach this ECC threshold limit
-(at least with the current implementation).
-
-> 
-> > While I like the idea of limiting the threshold to something smaller
-> > than what's recommended on the datasheet (or reported by ONFI) I wonder
-> > if it won't make things worst in some cases.
-> 
-> I wouldn't exactly say that there is any threshold recommended on the
-> datasheet or in ONFI. They simply specify a required correction
-> strength,
-
-Yes, that's what I was talking about.
-
-> with no word about any intermediate handling -- what do they
-> expect software to do when bitflips exceed the ECC strength? We
-> immediately lose data. So we need to preemptively move such data.
-
-Yep, I agree.
-
-> 
-> So I don't think it's a good idea at all to say that
-> threshold == ecc_strength. That renders your ECC nearly useless w.r.t.
-> the original design of UBI. UBI intends to use -EUCLEAN as a signal that
-> high # of bitflips. I would suggest that 23 bitflips on a 24-bit
-> correction algorithm is a "high # of bitflips." So as I see it, this
-> patch is just restoring that UBI assumption.
-
-Yes.
-
-> 
-> > Regarding the read-retry code, it currently stops retrying reading the
-> > page once the page has been successfully retrieved (or in other terms
-> > all bitflips have been fixed). But it might stop to soon, because by
-> > changing the bit level threshold (in other term retrying one more time)
-> > it might successfully read the page with less bitflips than the
-> > previous attempt (these are just supposition, I haven't tested it yet).
-> > If we can achieve that we could retry until we reach something below
-> > the bitflips threshold value, and if we fail to find any, just consider
-> > the lower number of bitflips found during those read-retry operations.
-> 
-> I believe I suggested scenarios like this to some flash vendors when
-> speaking to reps in person, but they didn't seem to consider that
-> likely. I think they were implying that there would be only one read
-> retry mode that gives a reasonable result. I'm not sure if they were
-> really the experts on that particular topic, though, or if they were
-> just giving me an answer to make me happy.
-
-Okay, good to know. I'll try to do some more testing to verify that.
-
-> 
-> Honestly, there's a lot of work that goes into MLC NAND for use by
-> serious applications. For instance, SSD controller vendors, and even
-> eMMC makers, use plenty of low-level knowledge that we simply do not
-> have. From whatever I've gleaned about Toshiba MLC NAND (I don't think
-> they even try to sell much raw NAND outside of eMMC and SSD solutions),
-> they actually expose fine-grained voltage threshold controls through
-> their (non-standard, obviously) command interface, and their clients
-> likely use this to chart a targeted plan on how to adjust thresholds
-> over the lifetime of a block, rather than just using a dumb sequential
-> search like we do.
-
-Yep, but they do sell these unreliable MLC chips (at least Micron and
-Hynix do) to board manufacturers, and a lot of people would really like
-to use a mainline kernel on these boards.
-
-> 
-> So anyway, that drifted a little away from the topic at hand. Are you
-> suggesting that we should not change this default in nand_base, because
-> of potential issues with highly-unreliable NAND that need read-retry? I
-> can back out the patch while we finish this discussion, although I'm not
-> very convinced so far.
-
-As I said I don't expect you to back it out, just discussing the MLC
-chip problems in an almost unrelated thread ;-).
-
-Best Regards,
-
-Boris
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+RnJvbSBhZDAzZmU3NDM5NTljMDRhOWU3ZDYxMWMwMjZjMjAxYTE0Y2UwZWQ2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBBbmRyZXkgS29sb3Nrb3YgPGtvbG9za292QGlzcHJhcy5ydT4K
+VG86IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4KQ2M6IGxpbnV4LW10ZEBs
+aXN0cy5pbmZyYWRlYWQub3JnCkNjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCgpEYXRl
+OiBUdWUsIDEzIEphbiAyMDE1IDE0OjM3OjE4ICswNDAwClN1YmplY3Q6IFtQQVRDSF0gamZmczI6
+IERvIG5vdCByZXdyaXRlIHBvc2l4X2FjbF9lcXVpdl9tb2RlKCkgcmVzdWx0IGluCiBqZmZzMl9z
+ZXRfYWNsKCkKClJlc3VsdCBvZiBwb3NpeF9hY2xfZXF1aXZfbW9kZSgpIGlzIHJld3JpdHRlbiB3
+aXRoIG9uZSBvZiBqZmZzMl9kb19zZXRhdHRyKCksCnNvIGl0IGlzIGFsd2F5cyBhc3N1bWVkIHRo
+YXQgYWNsIGNhbiBiZSBleGFjdGx5IHJlcHJlc2VudGVkIGJ5IHRoZQp0cmFkaXRpb25hbCBmaWxl
+IG1vZGUgcGVybWlzc2lvbiBiaXRzLgoKVGhlIHBhdGNoIGFkZHMgYSBuZXcgdmFyaWFibGUgZm9y
+IHN0b3JlIHJlc3VsdCBvZiBwb3NpeF9hY2xfZXF1aXZfbW9kZSgpLgoKRm91bmQgYnkgTGludXgg
+RmlsZSBTeXN0ZW0gVmVyaWZpY2F0aW9uIHByb2plY3QgKGxpbnV4dGVzdGluZy5vcmcpLgoKU2ln
+bmVkLW9mZi1ieTogQW5kcmV5IEtvbG9za292IDxrb2xvc2tvdkBpc3ByYXMucnU+Ci0tLQogZnMv
+amZmczIvYWNsLmMgfCAgIDEwICsrKysrLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlv
+bnMoKyksIDUgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZnMvamZmczIvYWNsLmMgYi9mcy9q
+ZmZzMi9hY2wuYwppbmRleCAyZjdhM2MwLi42MzcwNWJkIDEwMDY0NAotLS0gYS9mcy9qZmZzMi9h
+Y2wuYworKysgYi9mcy9qZmZzMi9hY2wuYwpAQCAtMjI5LDE2ICsyMjksMTYgQEAgc3RhdGljIGlu
+dCBfX2pmZnMyX3NldF9hY2woc3RydWN0IGlub2RlICppbm9kZSwgaW50IHhwcmVmaXgsIHN0cnVj
+dCBwb3NpeF9hY2wgKmEKIAogaW50IGpmZnMyX3NldF9hY2woc3RydWN0IGlub2RlICppbm9kZSwg
+c3RydWN0IHBvc2l4X2FjbCAqYWNsLCBpbnQgdHlwZSkKIHsKLQlpbnQgcmMsIHhwcmVmaXg7CisJ
+aW50IHJjLCB4cHJlZml4LCBub3RfZXF1aXY7CiAKIAlzd2l0Y2ggKHR5cGUpIHsKIAljYXNlIEFD
+TF9UWVBFX0FDQ0VTUzoKIAkJeHByZWZpeCA9IEpGRlMyX1hQUkVGSVhfQUNMX0FDQ0VTUzsKIAkJ
+aWYgKGFjbCkgewogCQkJdW1vZGVfdCBtb2RlID0gaW5vZGUtPmlfbW9kZTsKLQkJCXJjID0gcG9z
+aXhfYWNsX2VxdWl2X21vZGUoYWNsLCAmbW9kZSk7Ci0JCQlpZiAocmMgPCAwKQotCQkJCXJldHVy
+biByYzsKKwkJCW5vdF9lcXVpdiA9IHBvc2l4X2FjbF9lcXVpdl9tb2RlKGFjbCwgJm1vZGUpOwor
+CQkJaWYgKG5vdF9lcXVpdiA8IDApCisJCQkJcmV0dXJuIG5vdF9lcXVpdjsKIAkJCWlmIChpbm9k
+ZS0+aV9tb2RlICE9IG1vZGUpIHsKIAkJCQlzdHJ1Y3QgaWF0dHIgYXR0cjsKIApAQCAtMjQ5LDcg
+KzI0OSw3IEBAIGludCBqZmZzMl9zZXRfYWNsKHN0cnVjdCBpbm9kZSAqaW5vZGUsIHN0cnVjdCBw
+b3NpeF9hY2wgKmFjbCwgaW50IHR5cGUpCiAJCQkJaWYgKHJjIDwgMCkKIAkJCQkJcmV0dXJuIHJj
+OwogCQkJfQotCQkJaWYgKHJjID09IDApCisJCQlpZiAobm90X2VxdWl2ID09IDApCiAJCQkJYWNs
+ID0gTlVMTDsKIAkJfQogCQlicmVhazsKLS0gCjEuNy45LjUKCg==
+--=_61ee8a927c2a454bf0ecf69a816f6e88--
