@@ -1,22 +1,21 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YEBNo-0002dW-Ll
- for linux-mtd@lists.infradead.org; Thu, 22 Jan 2015 06:36:49 +0000
-Message-ID: <54C09A65.9090809@codeaurora.org>
-Date: Thu, 22 Jan 2015 12:06:21 +0530
-From: Archit Taneja <architt@codeaurora.org>
+ id 1YED8e-0002EC-Eh
+ for linux-mtd@lists.infradead.org; Thu, 22 Jan 2015 08:29:17 +0000
+Received: by mail-pa0-f50.google.com with SMTP id bj1so361104pad.9
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Jan 2015 00:28:54 -0800 (PST)
+Date: Thu, 22 Jan 2015 00:28:51 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Viet Nga Dao <vndao@altera.com>
+Subject: Re: [PATCH mtd] mtd:devices: Add Altera EPCQ Driver
+Message-ID: <20150122082851.GB3268@brian-ubuntu>
+References: <CAN1oZWxB5N=YMQcsJppZgp7TXodcR4tKZM+LNFXS7PSx3F-Yag@mail.gmail.com>
 MIME-Version: 1.0
-To: Daniel Ehrenberg <dehrenberg@google.com>
-Subject: Re: [PATCH 2/5] mtd: nand: Add qcom nand controller driver
-References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
- <1421419702-17812-3-git-send-email-architt@codeaurora.org>
- <CAAK6Zt0xAY=kD68y1vQP1-AoEHdmyjuzsMTCSQyykPnuwbZLJA@mail.gmail.com>
-In-Reply-To: <CAAK6Zt0xAY=kD68y1vQP1-AoEHdmyjuzsMTCSQyykPnuwbZLJA@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, agross@codeaurora.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-kernel@vger.kernel.org, galak@codeaurora.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAN1oZWxB5N=YMQcsJppZgp7TXodcR4tKZM+LNFXS7PSx3F-Yag@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, nga_chi86 <ngachi86@gmail.com>,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,141 +25,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Viet,
 
-On 01/21/2015 06:24 AM, Daniel Ehrenberg wrote:
-> On Fri, Jan 16, 2015 at 6:48 AM, Archit Taneja <architt@codeaurora.org> wrote:
->> +/*
->> + * the bad block marker is readable only when we read the page with ECC
->> + * disabled. all the read/write commands like NAND_CMD_READOOB, NAND_CMD_READ0
->> + * and NAND_CMD_PAGEPROG are executed in the driver with ECC enabled. therefore,
->> + * the default nand helper functions to detect a bad block or mark a bad block
->> + * can't be used.
->> + */
->> +static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
->> +{
->> +       int page, r, mark, bad = 0;
->> +       struct nand_chip *chip = mtd->priv;
->> +       struct nand_ecc_ctrl *ecc = &chip->ecc;
->> +       int cwperpage = ecc->steps;
->> +       struct qcom_nandc_data *this = chip->priv;
->> +       u32 flash_status;
->> +
->> +       pre_command(this, NAND_CMD_NONE);
->> +
->> +       page = (int)(ofs >> chip->page_shift) & chip->pagemask;
->> +
->> +       /*
->> +        * configure registers for a raw page read, the address is set to the
->> +        * beginning of the last codeword
->> +        */
->> +       this->use_ecc = false;
->> +       set_address(this, this->cw_size * (cwperpage - 1), page);
->> +
->> +       /* we just read one codeword that contains the bad block marker */
->> +       update_rw_regs(this, 1, true);
->> +
->> +       read_cw(this, this->cw_size, 0);
->> +
->> +       r = submit_descs(this);
->> +       if (r) {
->> +               dev_err(this->dev, "error submitting descs\n");
->> +               goto err;
->> +       }
->> +
->> +       flash_status = this->reg_read_buf[0];
->> +
->> +       /*
->> +        * unable to read the marker successfully, is that sufficient to report
->> +        * the block as bad?
->> +        */
->> +       if (flash_status & (FS_OP_ERR | FS_MPU_ERR)) {
->> +               dev_warn(this->dev, "error while reading bad block mark\n");
->> +               goto err;
->> +       }
->> +
->> +       mark = mtd->writesize - (this->cw_size * (cwperpage - 1));
->> +
->> +       if (chip->options & NAND_BUSWIDTH_16)
->> +               bad = this->data_buffer[mark] != 0xff ||
->> +                       this->data_buffer[mark + 1] != 0xff;
->> +
->> +       bad = this->data_buffer[mark] != 0xff;
->> +err:
->> +       free_descs(this);
->> +
->> +       return bad;
->> +}
->> +
->> +static int qcom_nandc_block_markbad(struct mtd_info *mtd, loff_t ofs)
->> +{
->> +       int page, r;
->> +       struct nand_chip *chip = mtd->priv;
->> +       struct nand_ecc_ctrl *ecc = &chip->ecc;
->> +       int cwperpage = ecc->steps;
->> +       struct qcom_nandc_data *this = chip->priv;
->> +       u32 flash_status;
->> +
->> +       pre_command(this, NAND_CMD_NONE);
->> +
->> +       /* fill our internal buffer's oob area with 0's */
->> +       memset(this->data_buffer, 0x00, mtd->writesize + mtd->oobsize);
->> +
->> +       page = (int)(ofs >> chip->page_shift) & chip->pagemask;
->> +
->> +       this->use_ecc = false;
->> +       set_address(this, this->cw_size * (cwperpage - 1), page);
->> +
->> +       /* we just write to one codeword that contains the bad block marker*/
->> +       update_rw_regs(this, 1, false);
->> +
->> +       /*
->> +        * overwrite the last codeword with 0s, this will result in setting
->> +        * the bad block marker to 0 too
->> +        */
->> +       write_cw(this, this->cw_size, 0);
->> +
->> +       r = submit_descs(this);
->> +       if (r) {
->> +               dev_err(this->dev, "error submitting descs\n");
->> +               r = -EIO;
->> +               goto err;
->> +       }
->> +
->> +       flash_status = this->reg_read_buf[0];
->> +
->> +       if (flash_status & (FS_OP_ERR | FS_MPU_ERR))
->> +               r = -EIO;
->> +
->> +err:
->> +       free_descs(this);
->> +
->> +       return r;
->> +}
->
-> Looks like this code marks block bad and reads bad block information
-> based on information in the OOB area. And in qcom_nandc_init,
-> NAND_SKIP_BBTSCAN is set, meaning that this is the code used in
-> practice on the chip in the mtd_block_isbad path. Can this driver be
-> used with an on-flash OOB table by editing the init function's chip
-> flags, or would it need more significant changes to allow that?
+On Thu, Jan 15, 2015 at 05:27:10PM +0800, Viet Nga Dao wrote:
+> On Tue, Jan 13, 2015 at 11:33 AM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+> > On Thu, Dec 18, 2014 at 12:23:16AM -0800, vndao@altera.com wrote:
+> >> From: Viet Nga Dao <vndao@altera.com>
+> >>
+> >> Altera EPCQ Controller is a soft IP which enables access to Altera EPCQ and
+> >> EPCS flash chips. This patch adds driver for these devices.
+> >>
+> >> Signed-off-by: Viet Nga Dao <vndao@altera.com>
+> >
+> > This drivers seems awfully similar to (and so I infer it is likely
+> > copy-and-pasted from) m25p80.c / spi-nor.c. Do you think it can be
+> > rewritten as a SPI NOR driver, under drivers/mtd/spi-nor/ ? It looks
+> > like these flash share most (all?) the same basic opcodes.
+> >
+> For Altera EPCQ flashes, almost operations are performed underline
+> hardware.
 
-The code doesn't exactly read the OOB area. When the ECC HW block is 
-enabled, the bad block isn't in either oob or data area! We can access 
-it only when ECC is disabled. With ECC disabled, the bad block marker 
-lies in the last codeword somewhere in the middle of the user data. For 
-the mtd_read_oob()/write_oob() functions, we have the ECC always 
-enabled, hence, we never access the bad block marker through them at all.
+Right, that's understandable. But that's what spi-nor.c was designed
+for: implementing hardware-specific functionality that is targeted
+directly at SPI flash. Did you take a look at the callbacks available in
+'struct spi_nor'?
 
-Creating an on-flash bad block table won't work right now. The reason is 
-that the nand_bbt library assumes that it can find the bad block marker 
-by reading oob. While creating a bbt in memory, it scans the device for 
-bad blocks using the function scan_block_fast(). This would currently 
-result in not reading the bad block marker, and therefore break things.
+> Software only able to perform the following through
+> registers:
+>  -  read status register
+>  -  read id
+>  -  write status registers bit SR_BP0,SR_BP1, SR_BP2,SR_BP3, SR_TB
+> (http://www.altera.com.my/literature/hb/cfg/cfg_cf52012.pdf)
 
-I'm trying to find out if there is a way by which the controller can 
-access the bad block marker with ECC HW enabled. If that works, we can 
-use the nand_bbt helper as is. For now, I wanted to get the driver 
-upstream without the BBT functionality.
+OK.
 
-Archit
+> For read/write data: all the operations like QUAD_READ/WRITE,
+> FAST_READ/WRITE are handled by hardware as well. From software point
+> of view, there is no difference between these 2 modes.
+
+OK, so you don't have to hook up the dual/quad mode infrastructure. And
+you'd just implement dead-simple spi_nor.{read,write,erase}() callbacks.
+
+> That is why if rewrite the drivers to follow spi-nor structure, it
+> will require extra decoding works for the only few used opcodes.
+
+I think you'd only have some very trivial work here.
+
+There would be some small work to reintroduce a properly-replaceable ID
+table, and callbacks like ->lock() and ->unlock(), but those should be
+implemented in spi-nor.c sooner or later anyway.
+
+Anyway, if you take another look at spi-nor.{c,h} and determine that
+it's too difficult, then I suppose I don't mind accepting your driver
+under its current design. Your hardware is pretty esoteric anyway, the
+driver is still pretty simple, and it'll never be supporting any common
+SPI NOR vendors (right?), so it's not too big of a maintenance problem,
+I expect. But I do want to make sure that we don't copy/paste to repeat
+the mistakes of old drivers. As I noted already, your driver inherited
+some of the quirks of the old m25p80.c code.
+
+So please, give drivers/mtd/spi-nor/ another look, and then we can
+resume this discussion.
+
+[Snip the rest; please don't forget to address these comments in your
+next patch revision. BTW, I recall you sent me some other replies to my
+code review comments in personal email. Please reply to the mailing list
+for all code review.]
+
+Brian
