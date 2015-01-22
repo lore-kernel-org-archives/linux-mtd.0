@@ -1,24 +1,14 @@
-Message-ID: <54C0D872.6010005@atmel.com>
-Date: Thu, 22 Jan 2015 12:01:06 +0100
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] ARM: at91: sama5d4: dts: change the nand compatible
- string
-References: <1421656387-12538-2-git-send-email-josh.wu@atmel.com>
- <1421923305-10088-1-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1421923305-10088-1-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob
- Herring <robh+dt@kernel.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- linux-arm-kernel@lists.infradead.org
+Received: from guitar.tcltek.co.il ([192.115.133.116] helo=mx.tkos.co.il)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YEHjp-00050s-Ay
+ for linux-mtd@lists.infradead.org; Thu, 22 Jan 2015 13:23:58 +0000
+From: Baruch Siach <baruch@tkos.co.il>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: nand: remove redundant local variable
+Date: Thu, 22 Jan 2015 15:23:05 +0200
+Message-Id: <ef5edcf3dae1786e22b006e854b955bfd3a57307.1421932985.git.baruch@tkos.co.il>
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 22/01/2015 11:41, Josh Wu a écrit :
-> As we introduce a new "atmel,sama5d4-nand" compatible string for sama5d4,
-> so we need to apply it for sama5d4 chip.
-> 
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+---
+ drivers/mtd/nand/nand_base.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-
-Brian,
-I suppose that it makes sense to keep this patch with the previous one.
-So, can you take it in your tree?
-
-Otherwise, it can take the at91 -> arm-soc route.
-
-Bye,
-
-> ---
-> 
-> Changes in v2:
-> - still keep the old rm9200 nand compatible string for compatible old driver.
-> 
->  arch/arm/boot/dts/sama5d4.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/sama5d4.dtsi b/arch/arm/boot/dts/sama5d4.dtsi
-> index 1b0f30c..e40b1da 100644
-> --- a/arch/arm/boot/dts/sama5d4.dtsi
-> +++ b/arch/arm/boot/dts/sama5d4.dtsi
-> @@ -267,7 +267,7 @@
->  		};
->  
->  		nand0: nand@80000000 {
-> -			compatible = "atmel,at91rm9200-nand";
-> +			compatible = "atmel,sama5d4-nand", "atmel,at91rm9200-nand";
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			ranges;
-> 
-
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 7bfa519588a4..31e252a5ce9c 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1750,11 +1750,10 @@ static int nand_read_oob_std(struct mtd_info *mtd, struct nand_chip *chip,
+ static int nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ 				  int page)
+ {
+-	uint8_t *buf = chip->oob_poi;
+ 	int length = mtd->oobsize;
+ 	int chunk = chip->ecc.bytes + chip->ecc.prepad + chip->ecc.postpad;
+ 	int eccsize = chip->ecc.size;
+-	uint8_t *bufpoi = buf;
++	uint8_t *bufpoi = chip->oob_poi;
+ 	int i, toread, sndrnd = 0, pos;
+ 
+ 	chip->cmdfunc(mtd, NAND_CMD_READ0, chip->ecc.size, page);
 -- 
-Nicolas Ferre
+2.1.4
