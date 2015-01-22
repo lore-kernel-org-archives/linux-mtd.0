@@ -1,19 +1,13 @@
-Received: from mga14.intel.com ([192.55.52.115])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YEE1y-0001HI-DP
- for linux-mtd@lists.infradead.org; Thu, 22 Jan 2015 09:26:26 +0000
-Received: from [10.237.72.162] (sauron.fi.intel.com [10.237.72.162])
- by linux.intel.com (Postfix) with ESMTP id 6D17F2C8002
- for <linux-mtd@lists.infradead.org>; Thu, 22 Jan 2015 01:25:58 -0800 (PST)
-Message-ID: <1421918762.8637.162.camel@sauron.fi.intel.com>
-Subject: new UBI co-maintainer
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Reply-To: artem.bityutskiy@linux.intel.com
-To: linux-mtd@lists.infradead.org
-Date: Thu, 22 Jan 2015 11:26:02 +0200
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v2] mtd: atmel_nand: check NFC busy flag by HSMC_SR instead of
+ NFC cmd regs
+Date: Thu, 22 Jan 2015 18:21:30 +0800
+Message-ID: <1421922090-8803-1-git-send-email-josh.wu@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org, Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +17,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-I'd like to give Richard Weinberger UBI tree push rights, so that he
-could help us improving the QoS.
+Currently the driver read NFC command registers to get NFC busy flag.
+Actually this flag also can be get by reading HSMC_SR register.
 
-If no one objects, lets make it effective.
+Use the read NFC command registers need mapping a huge memory region.
+To save the mapped memory region, we change to check NFC busy flag by
+reading HSMC_SR register.
 
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+
+Changes in v2:
+- Change me to signed-off-by.
+- modify the error log.
+
+ drivers/mtd/nand/atmel_nand.c     | 5 ++---
+ drivers/mtd/nand/atmel_nand_nfc.h | 1 +
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index d93c849..336cc2d 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1752,11 +1752,10 @@ static int nfc_send_command(struct atmel_nand_host *host,
+ 		cmd, addr, cycle0);
+ 
+ 	timeout = jiffies + msecs_to_jiffies(NFC_TIME_OUT_MS);
+-	while (nfc_cmd_readl(NFCADDR_CMD_NFCBUSY, host->nfc->base_cmd_regs)
+-			& NFCADDR_CMD_NFCBUSY) {
++	while (nfc_readl(host->nfc->hsmc_regs, SR) & NFC_SR_BUSY) {
+ 		if (time_after(jiffies, timeout)) {
+ 			dev_err(host->dev,
+-				"Time out to wait CMD_NFCBUSY ready!\n");
++				"Time out to wait for NFC ready!\n");
+ 			return -ETIMEDOUT;
+ 		}
+ 	}
+diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
+index 85b8ca6..4d5d262 100644
+--- a/drivers/mtd/nand/atmel_nand_nfc.h
++++ b/drivers/mtd/nand/atmel_nand_nfc.h
+@@ -35,6 +35,7 @@
+ #define		NFC_CTRL_DISABLE	(1 << 1)
+ 
+ #define ATMEL_HSMC_NFC_SR	0x08		/* NFC Status Register */
++#define		NFC_SR_BUSY		(1 << 8)
+ #define		NFC_SR_XFR_DONE		(1 << 16)
+ #define		NFC_SR_CMD_DONE		(1 << 17)
+ #define		NFC_SR_DTOE		(1 << 20)
 -- 
-Best Regards,
-Artem Bityutskiy
+1.9.1
