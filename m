@@ -1,17 +1,19 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: Brian Norris <computersforpeace@gmail.com>, Nicolas Ferre
- <nicolas.ferre@atmel.com>
-Subject: [PATCH v2] ARM: at91: sama5d4: dts: change the nand compatible string
-Date: Thu, 22 Jan 2015 18:41:45 +0800
-Message-ID: <1421923305-10088-1-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1421656387-12538-2-git-send-email-josh.wu@atmel.com>
-References: <1421656387-12538-2-git-send-email-josh.wu@atmel.com>
+Message-ID: <54C0D872.6010005@atmel.com>
+Date: Thu, 22 Jan 2015 12:01:06 +0100
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: Josh Wu <josh.wu@atmel.com>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2] ARM: at91: sama5d4: dts: change the nand compatible
+ string
+References: <1421656387-12538-2-git-send-email-josh.wu@atmel.com>
+ <1421923305-10088-1-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1421923305-10088-1-git-send-email-josh.wu@atmel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  Pawel Moll <pawel.moll@arm.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Josh Wu <josh.wu@atmel.com>, Rob
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob
  Herring <robh+dt@kernel.org>,
  Alexandre Belloni <alexandre.belloni@free-electrons.com>,
  linux-mtd@lists.infradead.org,
@@ -26,30 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As we introduce a new "atmel,sama5d4-nand" compatible string for sama5d4,
-so we need to apply it for sama5d4 chip.
+Le 22/01/2015 11:41, Josh Wu a écrit :
+> As we introduce a new "atmel,sama5d4-nand" compatible string for sama5d4,
+> so we need to apply it for sama5d4 chip.
+> 
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
----
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-Changes in v2:
-- still keep the old rm9200 nand compatible string for compatible old driver.
+Brian,
+I suppose that it makes sense to keep this patch with the previous one.
+So, can you take it in your tree?
 
- arch/arm/boot/dts/sama5d4.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Otherwise, it can take the at91 -> arm-soc route.
 
-diff --git a/arch/arm/boot/dts/sama5d4.dtsi b/arch/arm/boot/dts/sama5d4.dtsi
-index 1b0f30c..e40b1da 100644
---- a/arch/arm/boot/dts/sama5d4.dtsi
-+++ b/arch/arm/boot/dts/sama5d4.dtsi
-@@ -267,7 +267,7 @@
- 		};
- 
- 		nand0: nand@80000000 {
--			compatible = "atmel,at91rm9200-nand";
-+			compatible = "atmel,sama5d4-nand", "atmel,at91rm9200-nand";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges;
+Bye,
+
+> ---
+> 
+> Changes in v2:
+> - still keep the old rm9200 nand compatible string for compatible old driver.
+> 
+>  arch/arm/boot/dts/sama5d4.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/sama5d4.dtsi b/arch/arm/boot/dts/sama5d4.dtsi
+> index 1b0f30c..e40b1da 100644
+> --- a/arch/arm/boot/dts/sama5d4.dtsi
+> +++ b/arch/arm/boot/dts/sama5d4.dtsi
+> @@ -267,7 +267,7 @@
+>  		};
+>  
+>  		nand0: nand@80000000 {
+> -			compatible = "atmel,at91rm9200-nand";
+> +			compatible = "atmel,sama5d4-nand", "atmel,at91rm9200-nand";
+>  			#address-cells = <1>;
+>  			#size-cells = <1>;
+>  			ranges;
+> 
+
+
 -- 
-1.9.1
+Nicolas Ferre
