@@ -1,13 +1,22 @@
 From: Josh Wu <josh.wu@atmel.com>
-To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2] mtd: atmel_nand: check NFC busy flag by HSMC_SR instead of
- NFC cmd regs
-Date: Thu, 22 Jan 2015 18:21:30 +0800
-Message-ID: <1421922090-8803-1-git-send-email-josh.wu@atmel.com>
+To: Brian Norris <computersforpeace@gmail.com>, Nicolas Ferre
+ <nicolas.ferre@atmel.com>
+Subject: [PATCH v2] ARM: at91: sama5d4: dts: change the nand compatible string
+Date: Thu, 22 Jan 2015 18:41:45 +0800
+Message-ID: <1421923305-10088-1-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1421656387-12538-2-git-send-email-josh.wu@atmel.com>
+References: <1421656387-12538-2-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org, Josh Wu <josh.wu@atmel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Josh Wu <josh.wu@atmel.com>, Rob
+ Herring <robh+dt@kernel.org>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,56 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+As we introduce a new "atmel,sama5d4-nand" compatible string for sama5d4,
+so we need to apply it for sama5d4 chip.
 
-Currently the driver read NFC command registers to get NFC busy flag.
-Actually this flag also can be get by reading HSMC_SR register.
-
-Use the read NFC command registers need mapping a huge memory region.
-To save the mapped memory region, we change to check NFC busy flag by
-reading HSMC_SR register.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Josh Wu <josh.wu@atmel.com>
 ---
 
 Changes in v2:
-- Change me to signed-off-by.
-- modify the error log.
+- still keep the old rm9200 nand compatible string for compatible old driver.
 
- drivers/mtd/nand/atmel_nand.c     | 5 ++---
- drivers/mtd/nand/atmel_nand_nfc.h | 1 +
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/sama5d4.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index d93c849..336cc2d 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1752,11 +1752,10 @@ static int nfc_send_command(struct atmel_nand_host *host,
- 		cmd, addr, cycle0);
+diff --git a/arch/arm/boot/dts/sama5d4.dtsi b/arch/arm/boot/dts/sama5d4.dtsi
+index 1b0f30c..e40b1da 100644
+--- a/arch/arm/boot/dts/sama5d4.dtsi
++++ b/arch/arm/boot/dts/sama5d4.dtsi
+@@ -267,7 +267,7 @@
+ 		};
  
- 	timeout = jiffies + msecs_to_jiffies(NFC_TIME_OUT_MS);
--	while (nfc_cmd_readl(NFCADDR_CMD_NFCBUSY, host->nfc->base_cmd_regs)
--			& NFCADDR_CMD_NFCBUSY) {
-+	while (nfc_readl(host->nfc->hsmc_regs, SR) & NFC_SR_BUSY) {
- 		if (time_after(jiffies, timeout)) {
- 			dev_err(host->dev,
--				"Time out to wait CMD_NFCBUSY ready!\n");
-+				"Time out to wait for NFC ready!\n");
- 			return -ETIMEDOUT;
- 		}
- 	}
-diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
-index 85b8ca6..4d5d262 100644
---- a/drivers/mtd/nand/atmel_nand_nfc.h
-+++ b/drivers/mtd/nand/atmel_nand_nfc.h
-@@ -35,6 +35,7 @@
- #define		NFC_CTRL_DISABLE	(1 << 1)
- 
- #define ATMEL_HSMC_NFC_SR	0x08		/* NFC Status Register */
-+#define		NFC_SR_BUSY		(1 << 8)
- #define		NFC_SR_XFR_DONE		(1 << 16)
- #define		NFC_SR_CMD_DONE		(1 << 17)
- #define		NFC_SR_DTOE		(1 << 20)
+ 		nand0: nand@80000000 {
+-			compatible = "atmel,at91rm9200-nand";
++			compatible = "atmel,sama5d4-nand", "atmel,at91rm9200-nand";
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+ 			ranges;
 -- 
 1.9.1
