@@ -1,21 +1,32 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YED8e-0002EC-Eh
- for linux-mtd@lists.infradead.org; Thu, 22 Jan 2015 08:29:17 +0000
-Received: by mail-pa0-f50.google.com with SMTP id bj1so361104pad.9
- for <linux-mtd@lists.infradead.org>; Thu, 22 Jan 2015 00:28:54 -0800 (PST)
-Date: Thu, 22 Jan 2015 00:28:51 -0800
+ id 1YEDOk-0002Ft-HA
+ for linux-mtd@lists.infradead.org; Thu, 22 Jan 2015 08:45:55 +0000
+Received: by mail-pd0-f172.google.com with SMTP id v10so444854pde.3
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Jan 2015 00:45:33 -0800 (PST)
+Date: Thu, 22 Jan 2015 00:45:29 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Viet Nga Dao <vndao@altera.com>
-Subject: Re: [PATCH mtd] mtd:devices: Add Altera EPCQ Driver
-Message-ID: <20150122082851.GB3268@brian-ubuntu>
-References: <CAN1oZWxB5N=YMQcsJppZgp7TXodcR4tKZM+LNFXS7PSx3F-Yag@mail.gmail.com>
+To: Zhou Wang <wangzhou1@hisilicon.com>
+Subject: Re: [PATCH v4 0/2] mtd: hisilicon: add a new driver for NAND
+ controller of hisilicon hip04 Soc
+Message-ID: <20150122084529.GC3268@brian-ubuntu>
+References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
+ <20141130090853.GG3608@norris-Latitude-E6410>
+ <548987D3.3060407@gmail.com> <20141217062333.GD7112@brian-ubuntu>
+ <5491638B.5090403@gmail.com> <20150113041701.GM9759@ld-irv-0074>
+ <54C06E05.9050205@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAN1oZWxB5N=YMQcsJppZgp7TXodcR4tKZM+LNFXS7PSx3F-Yag@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, nga_chi86 <ngachi86@gmail.com>,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <54C06E05.9050205@hisilicon.com>
+Cc: mark.rutland@arm.com, Zhou Wang <wangzhou.bry@gmail.com>,
+ Iwo Mergler <Iwo.Mergler@netcommwireless.com>, pawel.moll@arm.com,
+ devicetree@vger.kernel.org, liguozhu@hisilicon.com,
+ ijc+devicetree@hellion.org.uk, haojian.zhuang@gmail.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
+ caizhiyong@huawei.com, yubingxu@hisilicon.com,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,72 +36,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Viet,
+Hi Zhou,
 
-On Thu, Jan 15, 2015 at 05:27:10PM +0800, Viet Nga Dao wrote:
-> On Tue, Jan 13, 2015 at 11:33 AM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > On Thu, Dec 18, 2014 at 12:23:16AM -0800, vndao@altera.com wrote:
-> >> From: Viet Nga Dao <vndao@altera.com>
-> >>
-> >> Altera EPCQ Controller is a soft IP which enables access to Altera EPCQ and
-> >> EPCS flash chips. This patch adds driver for these devices.
-> >>
-> >> Signed-off-by: Viet Nga Dao <vndao@altera.com>
-> >
-> > This drivers seems awfully similar to (and so I infer it is likely
-> > copy-and-pasted from) m25p80.c / spi-nor.c. Do you think it can be
-> > rewritten as a SPI NOR driver, under drivers/mtd/spi-nor/ ? It looks
-> > like these flash share most (all?) the same basic opcodes.
-> >
-> For Altera EPCQ flashes, almost operations are performed underline
-> hardware.
+On Thu, Jan 22, 2015 at 11:27:01AM +0800, Zhou Wang wrote:
+> Very sorry for late, I made tests again and also had a talk with the
+> NAND controller hardware colleague. Please find my reply below.
 
-Right, that's understandable. But that's what spi-nor.c was designed
-for: implementing hardware-specific functionality that is targeted
-directly at SPI flash. Did you take a look at the callbacks available in
-'struct spi_nor'?
+No problem. Glad to hear you followed through on this one, as the
+results were curious.
 
-> Software only able to perform the following through
-> registers:
->  -  read status register
->  -  read id
->  -  write status registers bit SR_BP0,SR_BP1, SR_BP2,SR_BP3, SR_TB
-> (http://www.altera.com.my/literature/hb/cfg/cfg_cf52012.pdf)
+> On 2015/1/13 12:17, Brian Norris wrote:
+> > On Wed, Dec 17, 2014 at 07:05:47PM +0800, Zhou Wang wrote:
+> >> On 2014年12月17日 14:23, Brian Norris wrote:
+> > [...]
+> >>>> [  104.648056] mtd_nandbiterrs: ECC failure, read data is incorrect
+> >>>> despite read success
+> >>>> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+[...]
+> I made testes again in 1bit/ECC and 16bit/ECC modes using 2K(page)+64B(oob)
+> NAND flash. here are the logs, I also printed ECC code in OOB area.
+> 
+> Results are:
+> 1. in 16bit/ECC, it will return -EBADMSG as the ECC codes have been broken.
+> 2. in 1bit/ECC, it will not reture -EBADMSG because a hardware design problem.
+>    I will explain the detail below.
+> 
+> Test logs:
+> 1. in 16bit/ECC(print ECC codes):
+> 
+> /home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
 
-OK.
+...
 
-> For read/write data: all the operations like QUAD_READ/WRITE,
-> FAST_READ/WRITE are handled by hardware as well. From software point
-> of view, there is no difference between these 2 modes.
+> mtd_nandbiterrs: error: read failed at 0x800
+> mtd_nandbiterrs: After 1 biterrors per subpage, read reported error -74
 
-OK, so you don't have to hook up the dual/quad mode infrastructure. And
-you'd just implement dead-simple spi_nor.{read,write,erase}() callbacks.
+^^^ Ah, that's what I would expect from a driver that doesn't implement
+the raw() functions.
 
-> That is why if rewrite the drivers to follow spi-nor structure, it
-> will require extra decoding works for the only few used opcodes.
+> mtd_nandbiterrs: finished successfully.
+> ==================================================
+> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+> 
+> 2. in 1bit/ECC(print ECC codes):
+> /home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
 
-I think you'd only have some very trivial work here.
+...
 
-There would be some small work to reintroduce a properly-replaceable ID
-table, and callbacks like ->lock() and ->unlock(), but those should be
-implemented in spi-nor.c sooner or later anyway.
+> mtd_nandbiterrs: ECC failure, read data is incorrect despite read success
+> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+> 
+> Reason about above 1bit/ECC test result:
 
-Anyway, if you take another look at spi-nor.{c,h} and determine that
-it's too difficult, then I suppose I don't mind accepting your driver
-under its current design. Your hardware is pretty esoteric anyway, the
-driver is still pretty simple, and it'll never be supporting any common
-SPI NOR vendors (right?), so it's not too big of a maintenance problem,
-I expect. But I do want to make sure that we don't copy/paste to repeat
-the mistakes of old drivers. As I noted already, your driver inherited
-some of the quirks of the old m25p80.c code.
+...
 
-So please, give drivers/mtd/spi-nor/ another look, and then we can
-resume this discussion.
+> It can not correct this kind of 2bit errors in 1bit/ECC mode in this NAND
+> controller, however, it will trigger a correctable interrupt. As a result,
+> software can not find this 1bit error in page data.
 
-[Snip the rest; please don't forget to address these comments in your
-next patch revision. BTW, I recall you sent me some other replies to my
-code review comments in personal email. Please reply to the mailing list
-for all code review.]
+IOW, uncorrectable errors are getting reported as corrected bitflips?
+That does sound bad.
+
+> This is a hardware problem of this NAND controller.
+> I plan to remove the 1bit/ECC mode support in patch of next version.
+
+OK, sounds good. 1-bit HW ECC is not really very useful these days
+anyway, if your higher-bit ECC can serve to replace it. Can the ECC
+bytes still fit in the same spare area, though?
+
+> > Are you saying you cannot implement the raw() hooks for this IP? Or just
+> > that you haven't yet? The latter is probably OK for now (I'd recommend
+> > doing this, or at least mark a TODO in the code), but the former is a
+> > little disturbing.
+> 
+> The function of raw() hooks is just writing the page data to flash, is this right?
+
+Right, just data (and OOB, if calling the _oob_ functions) without any
+ECC parity bytes.
+
+> In none ECC mode, it can write page date alone to flash. But in ECC mode, NAND
+> controller will produce related ECC code automatically, write page data and ECC code
+> to flash. In ECC mode, it can not write page date alone to flash for this NAND controller.
+
+Perhaps you can switch between ECC mode and non-ECC mode?
+
+At any rate, this isn't absolutely required.
+
+> As a result, the nandbiterrs test can not pass.
+> 
+> I don't know if I have explained these two problems clearly. If still have something
+> confused, please let me know.
 
 Brian
