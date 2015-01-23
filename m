@@ -1,14 +1,14 @@
-Received: from mail-qg0-x236.google.com ([2607:f8b0:400d:c04::236])
+Received: from mail-qg0-x22c.google.com ([2607:f8b0:400d:c04::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YESLq-0001St-Ac
- for linux-mtd@lists.infradead.org; Fri, 23 Jan 2015 00:43:54 +0000
-Received: by mail-qg0-f54.google.com with SMTP id q108so3998156qgd.13
- for <linux-mtd@lists.infradead.org>; Thu, 22 Jan 2015 16:43:32 -0800 (PST)
+ id 1YESLt-0001Sw-GM
+ for linux-mtd@lists.infradead.org; Fri, 23 Jan 2015 00:43:58 +0000
+Received: by mail-qg0-f44.google.com with SMTP id l89so4027846qgf.3
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Jan 2015 16:43:36 -0800 (PST)
 From: Fabio Estevam <festevam@gmail.com>
 To: computersforpeace@gmail.com
-Subject: [PATCH 2/3] mtd: fsl-quadspi: Remove unneeded success/error messages
-Date: Thu, 22 Jan 2015 22:43:06 -0200
-Message-Id: <1421973787-3240-2-git-send-email-festevam@gmail.com>
+Subject: [PATCH 3/3] mtd: fsl-quadspi: Remove unnecessary 'map_failed' label
+Date: Thu, 22 Jan 2015 22:43:07 -0200
+Message-Id: <1421973787-3240-3-git-send-email-festevam@gmail.com>
 In-Reply-To: <1421973787-3240-1-git-send-email-festevam@gmail.com>
 References: <1421973787-3240-1-git-send-email-festevam@gmail.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
@@ -24,39 +24,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Fabio Estevam <fabio.estevam@freescale.com>
 
-When the driver successfully probe we already have messages like:
-
-[    1.140989] fsl-quadspi 21e4000.qspi: s25fl128s (16384 Kbytes)               
-[    1.150902] fsl-quadspi 21e4000.qspi: s25fl128s (16384 Kbytes)
-
-Or in case of error:
-
-[    1.175920] fsl-quadspi: probe of 21e4000.qspi failed with error -12
-
-, so remove the unneeded success/error messages.
+There is no need to keep the 'map_failed' label. We can simply return the error
+code directly and let the code shorter and cleaner.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- drivers/mtd/spi-nor/fsl-quadspi.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 28 ++++++++++------------------
+ 1 file changed, 10 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index a733bd2..1c0572a 100644
+index 1c0572a..b1cc182 100644
 --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -939,7 +939,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+@@ -798,37 +798,30 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	/* find the resources */
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "QuadSPI");
+ 	q->iobase = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(q->iobase)) {
+-		ret = PTR_ERR(q->iobase);
+-		goto map_failed;
+-	}
++	if (IS_ERR(q->iobase))
++		return PTR_ERR(q->iobase);
  
- 	clk_disable(q->clk);
- 	clk_disable(q->clk_en);
--	dev_info(dev, "QuadSPI SPI NOR flash driver\n");
- 	return 0;
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+ 					"QuadSPI-memory");
+ 	q->ahb_base = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(q->ahb_base)) {
+-		ret = PTR_ERR(q->ahb_base);
+-		goto map_failed;
+-	}
++	if (IS_ERR(q->ahb_base))
++		return PTR_ERR(q->ahb_base);
++
+ 	q->memmap_phy = res->start;
  
- last_init_failed:
-@@ -954,7 +953,6 @@ irq_failed:
+ 	/* find the clocks */
+ 	q->clk_en = devm_clk_get(dev, "qspi_en");
+-	if (IS_ERR(q->clk_en)) {
+-		ret = PTR_ERR(q->clk_en);
+-		goto map_failed;
+-	}
++	if (IS_ERR(q->clk_en))
++		return PTR_ERR(q->clk_en);
+ 
+ 	q->clk = devm_clk_get(dev, "qspi");
+-	if (IS_ERR(q->clk)) {
+-		ret = PTR_ERR(q->clk);
+-		goto map_failed;
+-	}
++	if (IS_ERR(q->clk))
++		return PTR_ERR(q->clk);
+ 
+ 	ret = clk_prepare_enable(q->clk_en);
+ 	if (ret) {
+ 		dev_err(dev, "can not enable the qspi_en clock\n");
+-		goto map_failed;
++		return ret;
+ 	}
+ 
+ 	ret = clk_prepare_enable(q->clk);
+@@ -952,7 +945,6 @@ irq_failed:
+ 	clk_disable_unprepare(q->clk);
  clk_failed:
  	clk_disable_unprepare(q->clk_en);
- map_failed:
--	dev_err(dev, "Freescale QuadSPI probe failed\n");
+-map_failed:
  	return ret;
  }
  
