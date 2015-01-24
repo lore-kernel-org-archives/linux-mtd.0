@@ -1,24 +1,25 @@
-Received: from mail-qc0-x235.google.com ([2607:f8b0:400d:c01::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YEk3o-0001au-4b
- for linux-mtd@lists.infradead.org; Fri, 23 Jan 2015 19:38:28 +0000
-Received: by mail-qc0-f181.google.com with SMTP id l6so7934222qcy.12
- for <linux-mtd@lists.infradead.org>; Fri, 23 Jan 2015 11:38:06 -0800 (PST)
+Message-ID: <54C3A5D2.4010402@free-electrons.com>
+Date: Sat, 24 Jan 2015 11:01:54 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <1421973787-3240-3-git-send-email-festevam@gmail.com>
-References: <1421973787-3240-1-git-send-email-festevam@gmail.com>
- <1421973787-3240-3-git-send-email-festevam@gmail.com>
-Date: Fri, 23 Jan 2015 13:38:06 -0600
-Message-ID: <CA+EcR21JmFozncx2XWbejTpkp-sLPuRjseU__PDQWe4khXwYaA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mtd: fsl-quadspi: Remove unnecessary 'map_failed'
- label
-From: Han Xu <xhnjupt@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Huang Shijie <shijie8@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "han.xu@freescale.com" <han.xu@freescale.com>
+To: Gregory CLEMENT <gregory.clement@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
+References: <1422027703-3763-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1422027703-3763-2-git-send-email-maxime.ripard@free-electrons.com>
+ <54C26FCA.5050600@free-electrons.com>
+In-Reply-To: <54C26FCA.5050600@free-electrons.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
+ Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,84 +29,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 22, 2015 at 6:43 PM, Fabio Estevam <festevam@gmail.com> wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->
-> There is no need to keep the 'map_failed' label. We can simply return the error
-> code directly and let the code shorter and cleaner.
->
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+On 01/23/2015 12:59 PM, Gregory CLEMENT wrote:
+> On 23/01/2015 16:41, Maxime Ripard wrote:
+>> The NDDB register holds the data that are needed by the read and write
+>> commands.
+>>
+>> However, during a read PIO access, the datasheet specifies that after each 32
+>> bits read in that register, when BCH is enabled, we have to make sure that the
+>> RDDREQ bit is set in the NDSR register.
+>>
+>> This fixes an issue that was seen on the Armada 385, and presumably other mvebu
+>> SoCs, when a read on a newly erased page would end up in the driver reporting a
+>> timeout from the NAND.
+>>
+>> Cc: <stable@vger.kernel.org>
+> 
+> It would help the stable maintainer if you could indicate since which commit or
+> kernel release this fix should be applied.
+> 
 
-Acked-by: Han Xu <han.xu@freescale.com>
+This is a fix for the BCH support, namely commit 43bcfd2bb24a
+"mtd: nand: pxa3xx: Add driver-specific ECC BCH support". The commit was merged
+in v3.14.
 
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 28 ++++++++++------------------
->  1 file changed, 10 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 1c0572a..b1cc182 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -798,37 +798,30 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->         /* find the resources */
->         res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "QuadSPI");
->         q->iobase = devm_ioremap_resource(dev, res);
-> -       if (IS_ERR(q->iobase)) {
-> -               ret = PTR_ERR(q->iobase);
-> -               goto map_failed;
-> -       }
-> +       if (IS_ERR(q->iobase))
-> +               return PTR_ERR(q->iobase);
->
->         res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
->                                         "QuadSPI-memory");
->         q->ahb_base = devm_ioremap_resource(dev, res);
-> -       if (IS_ERR(q->ahb_base)) {
-> -               ret = PTR_ERR(q->ahb_base);
-> -               goto map_failed;
-> -       }
-> +       if (IS_ERR(q->ahb_base))
-> +               return PTR_ERR(q->ahb_base);
-> +
->         q->memmap_phy = res->start;
->
->         /* find the clocks */
->         q->clk_en = devm_clk_get(dev, "qspi_en");
-> -       if (IS_ERR(q->clk_en)) {
-> -               ret = PTR_ERR(q->clk_en);
-> -               goto map_failed;
-> -       }
-> +       if (IS_ERR(q->clk_en))
-> +               return PTR_ERR(q->clk_en);
->
->         q->clk = devm_clk_get(dev, "qspi");
-> -       if (IS_ERR(q->clk)) {
-> -               ret = PTR_ERR(q->clk);
-> -               goto map_failed;
-> -       }
-> +       if (IS_ERR(q->clk))
-> +               return PTR_ERR(q->clk);
->
->         ret = clk_prepare_enable(q->clk_en);
->         if (ret) {
->                 dev_err(dev, "can not enable the qspi_en clock\n");
-> -               goto map_failed;
-> +               return ret;
->         }
->
->         ret = clk_prepare_enable(q->clk);
-> @@ -952,7 +945,6 @@ irq_failed:
->         clk_disable_unprepare(q->clk);
->  clk_failed:
->         clk_disable_unprepare(q->clk_en);
-> -map_failed:
->         return ret;
->  }
->
-> --
-> 1.9.1
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+However, this patch won't apply directly there. It will apply on commit
+fa543bef72d6 "mtd: nand: pxa3xx: Add a read/write buffers markers"; which
+was also merged in v3.14.
+
+Therefore, I guess it's OK to say
+
+Cc: <stable@vger.kernel.org> # v3.14.x
+
+>> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+>> ---
+>>  drivers/mtd/nand/pxa3xx_nand.c | 36 ++++++++++++++++++++++++++++++------
+>>  1 file changed, 30 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+>> index 96b0b1d27df1..320c2ab14d4e 100644
+>> --- a/drivers/mtd/nand/pxa3xx_nand.c
+>> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+>> @@ -480,6 +480,30 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
+>>  	nand_writel(info, NDCR, ndcr | int_mask);
+>>  }
+>>  
+>> +static void drain_fifo(struct pxa3xx_nand_info *info,
+>> +		       void *data,
+>> +		       int len)
+
+^^
+You don't need to split that line, it seems to fit 80 characters as is.
+
+>> +{
+>> +	u32 *dst = (u32 *)data;
+>> +
+>> +	if (info->ecc_bch) {
+>> +		while (len--) {
+>> +			*dst++ = nand_readl(info, NDDB);
+>> +
+>> +			/*
+>> +			 * According to the datasheet, when reading
+>> +			 * from NDDB with BCH enabled, after each 32
+>> +			 * bits reads, we have to make sure that the
+>> +			 * NDSR.RDDREQ bit is set
+>> +			 */
+>> +			while (!(nand_readl(info, NDSR) & NDSR_RDDREQ))
+>> +				cpu_relax();
+> 
+> Are we sure that we won't be blocked here?
+> If not, what about adding a timeout?
+> 
+
+Definitely. I think we shouldn't have an infinite loop, no matter what the hw specs say.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
