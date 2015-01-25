@@ -1,25 +1,17 @@
-Message-ID: <54C4A71F.30200@hisilicon.com>
-Date: Sun, 25 Jan 2015 16:19:43 +0800
 From: Zhou Wang <wangzhou1@hisilicon.com>
+To: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, <haojian.zhuang@gmail.com>,
+ <xuwei5@hisilicon.com>, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v8 2/2] mtd: hisilicon: add device tree binding documentation
+Date: Sun, 25 Jan 2015 18:53:14 +0800
+Message-ID: <1422183194-10148-3-git-send-email-wangzhou1@hisilicon.com>
+In-Reply-To: <1422183194-10148-1-git-send-email-wangzhou1@hisilicon.com>
+References: <1422183194-10148-1-git-send-email-wangzhou1@hisilicon.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 0/2] mtd: hisilicon: add a new driver for NAND
- controller of hisilicon hip04 Soc
-References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
- <20141130090853.GG3608@norris-Latitude-E6410> <548987D3.3060407@gmail.com>
- <20141217062333.GD7112@brian-ubuntu> <5491638B.5090403@gmail.com>
- <20150113041701.GM9759@ld-irv-0074> <54C06E05.9050205@hisilicon.com>
- <20150122084529.GC3268@brian-ubuntu>
-In-Reply-To: <20150122084529.GC3268@brian-ubuntu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Cc: mark.rutland@arm.com, Zhou Wang <wangzhou.bry@gmail.com>,
- Iwo Mergler <Iwo.Mergler@netcommwireless.com>, pawel.moll@arm.com,
- devicetree@vger.kernel.org, liguozhu@hisilicon.com,
- ijc+devicetree@hellion.org.uk, haojian.zhuang@gmail.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
- caizhiyong@huawei.com, yubingxu@hisilicon.com,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, Zhou Wang <wangzhou1@hisilicon.com>,
+ linux-mtd@lists.infradead.org, caizhiyong@huawei.com, yubingxu@hisilicon.com,
+ liguozhu@hisilicon.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,120 +21,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/1/22 16:45, Brian Norris wrote:
-> Hi Zhou,
-> 
-> On Thu, Jan 22, 2015 at 11:27:01AM +0800, Zhou Wang wrote:
->> Very sorry for late, I made tests again and also had a talk with the
->> NAND controller hardware colleague. Please find my reply below.
-> 
-> No problem. Glad to hear you followed through on this one, as the
-> results were curious.
-> 
->> On 2015/1/13 12:17, Brian Norris wrote:
->>> On Wed, Dec 17, 2014 at 07:05:47PM +0800, Zhou Wang wrote:
->>>> On 2014年12月17日 14:23, Brian Norris wrote:
->>> [...]
->>>>>> [  104.648056] mtd_nandbiterrs: ECC failure, read data is incorrect
->>>>>> despite read success
->>>>>> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
-> [...]
->> I made testes again in 1bit/ECC and 16bit/ECC modes using 2K(page)+64B(oob)
->> NAND flash. here are the logs, I also printed ECC code in OOB area.
->>
->> Results are:
->> 1. in 16bit/ECC, it will return -EBADMSG as the ECC codes have been broken.
->> 2. in 1bit/ECC, it will not reture -EBADMSG because a hardware design problem.
->>    I will explain the detail below.
->>
->> Test logs:
->> 1. in 16bit/ECC(print ECC codes):
->>
->> /home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
-> 
-> ...
-> 
->> mtd_nandbiterrs: error: read failed at 0x800
->> mtd_nandbiterrs: After 1 biterrors per subpage, read reported error -74
-> 
-> ^^^ Ah, that's what I would expect from a driver that doesn't implement
-> the raw() functions.
-> 
->> mtd_nandbiterrs: finished successfully.
->> ==================================================
->> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
->>
->> 2. in 1bit/ECC(print ECC codes):
->> /home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
-> 
-> ...
-> 
->> mtd_nandbiterrs: ECC failure, read data is incorrect despite read success
->> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
->>
->> Reason about above 1bit/ECC test result:
-> 
-> ...
-> 
->> It can not correct this kind of 2bit errors in 1bit/ECC mode in this NAND
->> controller, however, it will trigger a correctable interrupt. As a result,
->> software can not find this 1bit error in page data.
-> 
-> IOW, uncorrectable errors are getting reported as corrected bitflips?
-> That does sound bad.
+This patch adds the related dts binding document for Hisilicon 504 NAND
+controller.
 
-Yes, so I will not support 1bit ECC mode in patch of next version.
+Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+---
+ .../devicetree/bindings/mtd/hisi504-nand.txt       | 47 ++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/hisi504-nand.txt
 
-> 
->> This is a hardware problem of this NAND controller.
->> I plan to remove the 1bit/ECC mode support in patch of next version.
-> 
-> OK, sounds good. 1-bit HW ECC is not really very useful these days
-> anyway, if your higher-bit ECC can serve to replace it. Can the ECC
-> bytes still fit in the same spare area, though?
->
-
-No, different ECC modes have different ECC layouts in oob area.
-
->>> Are you saying you cannot implement the raw() hooks for this IP? Or just
->>> that you haven't yet? The latter is probably OK for now (I'd recommend
->>> doing this, or at least mark a TODO in the code), but the former is a
->>> little disturbing.
->>
->> The function of raw() hooks is just writing the page data to flash, is this right?
-> 
-> Right, just data (and OOB, if calling the _oob_ functions) without any
-> ECC parity bytes.
-> 
->> In none ECC mode, it can write page date alone to flash. But in ECC mode, NAND
->> controller will produce related ECC code automatically, write page data and ECC code
->> to flash. In ECC mode, it can not write page date alone to flash for this NAND controller.
-> 
-> Perhaps you can switch between ECC mode and non-ECC mode?
-
-I also tried to swith to non-ECC mode to implement raw_write, and it is easy to do this.
-
-But, event we do this, it will bring me little help. The reason to implement raw_write is to
-run mtd_nandbiterrs correctly as the discussion above. However, this NAND controller writes
-data and ECC code to flash using different layouts in different modes. So we should also read data
-and ECC code from flash, change related bits, then rewrite the data and ECC code to flash in none-ECC
-mode to run mtd_nandbiterrs. It is not easy to do this.
-
-So my plan is not to implement raw_write hook if this function is just used in test.
-
-Many thanks for your reply,
-Zhou Wang
-
-.
-> 
-> At any rate, this isn't absolutely required.
-> 
->> As a result, the nandbiterrs test can not pass.
->>
->> I don't know if I have explained these two problems clearly. If still have something
->> confused, please let me know.
-> 
-> Brian
-> 
-> .
-> 
+diff --git a/Documentation/devicetree/bindings/mtd/hisi504-nand.txt b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
+new file mode 100644
+index 0000000..2e35f06
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
+@@ -0,0 +1,47 @@
++Hisilicon Hip04 Soc NAND controller DT binding
++
++Required properties:
++
++- compatible:          Should be "hisilicon,504-nfc".
++- reg:                 The first contains base physical address and size of
++                       NAND controller's registers. The second contains base
++                       physical address and size of NAND controller's buffer.
++- interrupts:          Interrupt number for nfc.
++- nand-bus-width:      See nand.txt.
++- nand-ecc-mode:       Support none and hw ecc mode.
++- #address-cells:      Partition address, should be set 1.
++- #size-cells:         Partition size, should be set 1.
++
++Optional properties:
++
++- nand-ecc-strength:   Number of bits to correct per ECC step.
++- nand-ecc-step-size:  Number of data bytes covered by a single ECC step.
++
++The following ECC strength and step size are currently supported:
++
++ - nand-ecc-strength = <16>, nand-ecc-step-size = <1024>
++
++Flash chip may optionally contain additional sub-nodes describing partitions of
++the address space. See partition.txt for more detail.
++
++Example:
++
++	nand: nand@4020000 {
++		compatible = "hisilicon,504-nfc";
++		reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
++		interrupts = <0 379 4>;
++		nand-bus-width = <8>;
++		nand-ecc-mode = "hw";
++		nand-ecc-strength = <16>;
++		nand-ecc-step-size = <1024>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		partition@0 {
++			label = "nand_text";
++			reg = <0x00000000 0x00400000>;
++		};
++
++		...
++
++	};
+-- 
+1.9.1
