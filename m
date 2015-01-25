@@ -1,31 +1,25 @@
-Received: from exprod5og108.obsmtp.com ([64.18.0.186])
- by bombadil.infradead.org with smtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YF7jL-00085c-IS
- for linux-mtd@lists.infradead.org; Sat, 24 Jan 2015 20:54:56 +0000
-Received: by mail-la0-f47.google.com with SMTP id hz20so2622097lab.6
- for <linux-mtd@lists.infradead.org>; Sat, 24 Jan 2015 12:54:29 -0800 (PST)
+Message-ID: <54C4A71F.30200@hisilicon.com>
+Date: Sun, 25 Jan 2015 16:19:43 +0800
+From: Zhou Wang <wangzhou1@hisilicon.com>
 MIME-Version: 1.0
-Reply-To: semen.protsenko@globallogic.com
-In-Reply-To: <1422118156.27947.7.camel@x220>
-References: <1422117213-3130-1-git-send-email-semen.protsenko@globallogic.com>
- <1422118156.27947.7.camel@x220>
-Date: Sat, 24 Jan 2015 22:54:28 +0200
-Message-ID: <CAJOTznWHpRh8ysVxwSWyvZL1UAe-G9A64j=M6z0+zPeoycgkDg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] defconfigs: cleanup obsolete MTD configs
-From: Sam Protsenko <semen.protsenko@globallogic.com>
-To: Paul Bolle <pebolle@tiscali.nl>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mips@linux-mips.org, Brian Norris <computersforpeace@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, linux-sh@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linuxppc-dev@lists.ozlabs.org,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- adi-buildroot-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
- linux-mtd@lists.infradead.org, Guan Xuetao <gxt@mprc.pku.edu.cn>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
- Haavard Skinnemoen <hskinnemoen@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 0/2] mtd: hisilicon: add a new driver for NAND
+ controller of hisilicon hip04 Soc
+References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
+ <20141130090853.GG3608@norris-Latitude-E6410> <548987D3.3060407@gmail.com>
+ <20141217062333.GD7112@brian-ubuntu> <5491638B.5090403@gmail.com>
+ <20150113041701.GM9759@ld-irv-0074> <54C06E05.9050205@hisilicon.com>
+ <20150122084529.GC3268@brian-ubuntu>
+In-Reply-To: <20150122084529.GC3268@brian-ubuntu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: mark.rutland@arm.com, Zhou Wang <wangzhou.bry@gmail.com>,
+ Iwo Mergler <Iwo.Mergler@netcommwireless.com>, pawel.moll@arm.com,
+ devicetree@vger.kernel.org, liguozhu@hisilicon.com,
+ ijc+devicetree@hellion.org.uk, haojian.zhuang@gmail.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
+ caizhiyong@huawei.com, yubingxu@hisilicon.com,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,25 +29,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> That's news for me. I thought they are silently ignored. Do you have an
-> example of such a warning?
+On 2015/1/22 16:45, Brian Norris wrote:
+> Hi Zhou,
+> 
+> On Thu, Jan 22, 2015 at 11:27:01AM +0800, Zhou Wang wrote:
+>> Very sorry for late, I made tests again and also had a talk with the
+>> NAND controller hardware colleague. Please find my reply below.
+> 
+> No problem. Glad to hear you followed through on this one, as the
+> results were curious.
+> 
+>> On 2015/1/13 12:17, Brian Norris wrote:
+>>> On Wed, Dec 17, 2014 at 07:05:47PM +0800, Zhou Wang wrote:
+>>>> On 2014年12月17日 14:23, Brian Norris wrote:
+>>> [...]
+>>>>>> [  104.648056] mtd_nandbiterrs: ECC failure, read data is incorrect
+>>>>>> despite read success
+>>>>>> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+> [...]
+>> I made testes again in 1bit/ECC and 16bit/ECC modes using 2K(page)+64B(oob)
+>> NAND flash. here are the logs, I also printed ECC code in OOB area.
+>>
+>> Results are:
+>> 1. in 16bit/ECC, it will return -EBADMSG as the ECC codes have been broken.
+>> 2. in 1bit/ECC, it will not reture -EBADMSG because a hardware design problem.
+>>    I will explain the detail below.
+>>
+>> Test logs:
+>> 1. in 16bit/ECC(print ECC codes):
+>>
+>> /home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
+> 
+> ...
+> 
+>> mtd_nandbiterrs: error: read failed at 0x800
+>> mtd_nandbiterrs: After 1 biterrors per subpage, read reported error -74
+> 
+> ^^^ Ah, that's what I would expect from a driver that doesn't implement
+> the raw() functions.
+> 
+>> mtd_nandbiterrs: finished successfully.
+>> ==================================================
+>> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+>>
+>> 2. in 1bit/ECC(print ECC codes):
+>> /home # insmod mtd_nandbiterrs.ko dev=2 page_offset=1 seed=110 mode=0
+> 
+> ...
+> 
+>> mtd_nandbiterrs: ECC failure, read data is incorrect despite read success
+>> insmod: can't insert 'mtd_nandbiterrs.ko': Input/output error
+>>
+>> Reason about above 1bit/ECC test result:
+> 
+> ...
+> 
+>> It can not correct this kind of 2bit errors in 1bit/ECC mode in this NAND
+>> controller, however, it will trigger a correctable interrupt. As a result,
+>> software can not find this 1bit error in page data.
+> 
+> IOW, uncorrectable errors are getting reported as corrected bitflips?
+> That does sound bad.
 
-Not really. It was just assumption. It seems you are right, they are just
-ignored silently. But item 2 is still relevant and it was actually confused
-me when I tried to figure out MTD configuration for my platform.
-Anyway, garbage should be taken out from time to time.
+Yes, so I will not support 1bit ECC mode in patch of next version.
 
-> Seems like the kind of change that can only be reviewed by a script.
+> 
+>> This is a hardware problem of this NAND controller.
+>> I plan to remove the 1bit/ECC mode support in patch of next version.
+> 
+> OK, sounds good. 1-bit HW ECC is not really very useful these days
+> anyway, if your higher-bit ECC can serve to replace it. Can the ECC
+> bytes still fit in the same spare area, though?
+>
 
-Good point. Because these patches were done by script to start with.
-Anyway, I reviewed result patches manually to be completely sure.
-You can write verifying script though, if you need to, it wouldn't take
-more than 2 minutes (it takes one-liner, actually).
+No, different ECC modes have different ECC layouts in oob area.
 
-> I seem to remember Greg stating that defconfig files are on their way
-> out. Did I remember that correctly?
+>>> Are you saying you cannot implement the raw() hooks for this IP? Or just
+>>> that you haven't yet? The latter is probably OK for now (I'd recommend
+>>> doing this, or at least mark a TODO in the code), but the former is a
+>>> little disturbing.
+>>
+>> The function of raw() hooks is just writing the page data to flash, is this right?
+> 
+> Right, just data (and OOB, if calling the _oob_ functions) without any
+> ECC parity bytes.
+> 
+>> In none ECC mode, it can write page date alone to flash. But in ECC mode, NAND
+>> controller will produce related ECC code automatically, write page data and ECC code
+>> to flash. In ECC mode, it can not write page date alone to flash for this NAND controller.
+> 
+> Perhaps you can switch between ECC mode and non-ECC mode?
 
-Maybe they are. But they still in place, and why it's so, we should
-maintain them up-to-date. Ideally, this kind of work should be done by
-someone who introduces changes into Kconfig files. So I just fixed
-that oversight.
+I also tried to swith to non-ECC mode to implement raw_write, and it is easy to do this.
+
+But, event we do this, it will bring me little help. The reason to implement raw_write is to
+run mtd_nandbiterrs correctly as the discussion above. However, this NAND controller writes
+data and ECC code to flash using different layouts in different modes. So we should also read data
+and ECC code from flash, change related bits, then rewrite the data and ECC code to flash in none-ECC
+mode to run mtd_nandbiterrs. It is not easy to do this.
+
+So my plan is not to implement raw_write hook if this function is just used in test.
+
+Many thanks for your reply,
+Zhou Wang
+
+.
+> 
+> At any rate, this isn't absolutely required.
+> 
+>> As a result, the nandbiterrs test can not pass.
+>>
+>> I don't know if I have explained these two problems clearly. If still have something
+>> confused, please let me know.
+> 
+> Brian
+> 
+> .
+> 
