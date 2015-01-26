@@ -1,27 +1,21 @@
-Received: from mail-qc0-x229.google.com ([2607:f8b0:400d:c01::229])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YFqr9-0000fJ-6N
- for linux-mtd@lists.infradead.org; Mon, 26 Jan 2015 21:06:00 +0000
-Received: by mail-qc0-f169.google.com with SMTP id b13so9094833qcw.0
- for <linux-mtd@lists.infradead.org>; Mon, 26 Jan 2015 13:05:36 -0800 (PST)
+ id 1YFtTV-00036n-DF
+ for linux-mtd@lists.infradead.org; Mon, 26 Jan 2015 23:53:46 +0000
+Message-ID: <54C6D36F.1090509@nod.at>
+Date: Tue, 27 Jan 2015 00:53:19 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <54C09A65.9090809@codeaurora.org>
-References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
- <1421419702-17812-3-git-send-email-architt@codeaurora.org>
- <CAAK6Zt0xAY=kD68y1vQP1-AoEHdmyjuzsMTCSQyykPnuwbZLJA@mail.gmail.com>
- <54C09A65.9090809@codeaurora.org>
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Mon, 26 Jan 2015 13:05:16 -0800
-Message-ID: <CAJiQ=7B+2xp_XPA6_nieG30+dQUSxQeLGN=xBX0e3zQqgiPqNA@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mtd: nand: Add qcom nand controller driver
-To: Archit Taneja <architt@codeaurora.org>,
- Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Daniel Ehrenberg <dehrenberg@google.com>, linux-arm-msm@vger.kernel.org,
- agross@codeaurora.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- galak@codeaurora.org
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 1/2 v2] UBI: Add initial support for scatter gather
+References: <1420926734-16417-1-git-send-email-richard@nod.at>
+In-Reply-To: <1420926734-16417-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, computersforpeace@gmail.com,
+ dwmw2@infradead.org,
+ =?ISO-8859-15?Q?Guido_Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,184 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 21, 2015 at 10:36 PM, Archit Taneja <architt@codeaurora.org> wrote:
-> On 01/21/2015 06:24 AM, Daniel Ehrenberg wrote:
->> On Fri, Jan 16, 2015 at 6:48 AM, Archit Taneja <architt@codeaurora.org>
->> wrote:
->>>
->>> +/*
->>> + * the bad block marker is readable only when we read the page with ECC
->>> + * disabled. all the read/write commands like NAND_CMD_READOOB,
->>> NAND_CMD_READ0
->>> + * and NAND_CMD_PAGEPROG are executed in the driver with ECC enabled.
->>> therefore,
->>> + * the default nand helper functions to detect a bad block or mark a bad
->>> block
->>> + * can't be used.
->>> + */
->>> +static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs, int
->>> getchip)
->>> +{
->>> +       int page, r, mark, bad = 0;
->>> +       struct nand_chip *chip = mtd->priv;
->>> +       struct nand_ecc_ctrl *ecc = &chip->ecc;
->>> +       int cwperpage = ecc->steps;
->>> +       struct qcom_nandc_data *this = chip->priv;
->>> +       u32 flash_status;
->>> +
->>> +       pre_command(this, NAND_CMD_NONE);
->>> +
->>> +       page = (int)(ofs >> chip->page_shift) & chip->pagemask;
->>> +
->>> +       /*
->>> +        * configure registers for a raw page read, the address is set to
->>> the
->>> +        * beginning of the last codeword
->>> +        */
->>> +       this->use_ecc = false;
->>> +       set_address(this, this->cw_size * (cwperpage - 1), page);
->>> +
->>> +       /* we just read one codeword that contains the bad block marker
->>> */
->>> +       update_rw_regs(this, 1, true);
->>> +
->>> +       read_cw(this, this->cw_size, 0);
->>> +
->>> +       r = submit_descs(this);
->>> +       if (r) {
->>> +               dev_err(this->dev, "error submitting descs\n");
->>> +               goto err;
->>> +       }
->>> +
->>> +       flash_status = this->reg_read_buf[0];
->>> +
->>> +       /*
->>> +        * unable to read the marker successfully, is that sufficient to
->>> report
->>> +        * the block as bad?
->>> +        */
->>> +       if (flash_status & (FS_OP_ERR | FS_MPU_ERR)) {
->>> +               dev_warn(this->dev, "error while reading bad block
->>> mark\n");
->>> +               goto err;
->>> +       }
->>> +
->>> +       mark = mtd->writesize - (this->cw_size * (cwperpage - 1));
->>> +
->>> +       if (chip->options & NAND_BUSWIDTH_16)
->>> +               bad = this->data_buffer[mark] != 0xff ||
->>> +                       this->data_buffer[mark + 1] != 0xff;
->>> +
->>> +       bad = this->data_buffer[mark] != 0xff;
->>> +err:
->>> +       free_descs(this);
->>> +
->>> +       return bad;
->>> +}
->>> +
->>> +static int qcom_nandc_block_markbad(struct mtd_info *mtd, loff_t ofs)
->>> +{
->>> +       int page, r;
->>> +       struct nand_chip *chip = mtd->priv;
->>> +       struct nand_ecc_ctrl *ecc = &chip->ecc;
->>> +       int cwperpage = ecc->steps;
->>> +       struct qcom_nandc_data *this = chip->priv;
->>> +       u32 flash_status;
->>> +
->>> +       pre_command(this, NAND_CMD_NONE);
->>> +
->>> +       /* fill our internal buffer's oob area with 0's */
->>> +       memset(this->data_buffer, 0x00, mtd->writesize + mtd->oobsize);
->>> +
->>> +       page = (int)(ofs >> chip->page_shift) & chip->pagemask;
->>> +
->>> +       this->use_ecc = false;
->>> +       set_address(this, this->cw_size * (cwperpage - 1), page);
->>> +
->>> +       /* we just write to one codeword that contains the bad block
->>> marker*/
->>> +       update_rw_regs(this, 1, false);
->>> +
->>> +       /*
->>> +        * overwrite the last codeword with 0s, this will result in
->>> setting
->>> +        * the bad block marker to 0 too
->>> +        */
->>> +       write_cw(this, this->cw_size, 0);
->>> +
->>> +       r = submit_descs(this);
->>> +       if (r) {
->>> +               dev_err(this->dev, "error submitting descs\n");
->>> +               r = -EIO;
->>> +               goto err;
->>> +       }
->>> +
->>> +       flash_status = this->reg_read_buf[0];
->>> +
->>> +       if (flash_status & (FS_OP_ERR | FS_MPU_ERR))
->>> +               r = -EIO;
->>> +
->>> +err:
->>> +       free_descs(this);
->>> +
->>> +       return r;
->>> +}
+Am 10.01.2015 um 22:52 schrieb Richard Weinberger:
+> Adds a new set of functions to deal with scatter gather.
+> ubi_eba_read_leb_sg() will read from a LEB into a scatter gather list.
+> The new data structure struct ubi_sgl will be used within UBI to
+> hold the scatter gather list itself and metadata to have a cursor
+> within the list.
+> 
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
-Would it be possible to refactor this code so that it implements
-generic read_oob_raw() and write_oob_raw() callbacks, which can
-read/write arbitrary uncorrected OOB bytes instead of just the BBI?
-Or is the controller limited in which OOB bytes can be directly
-accessed?
+Can I please get a Reviewed-by for this patch?
 
-One advantage of implementing the generic raw read/write callbacks is
-that the MTD subsystem already has logic to handle old NAND chips with
-different BBI positions, bitflips in the BBI, and other corner cases.
-
->> Looks like this code marks block bad and reads bad block information
->> based on information in the OOB area. And in qcom_nandc_init,
->> NAND_SKIP_BBTSCAN is set, meaning that this is the code used in
->> practice on the chip in the mtd_block_isbad path. Can this driver be
->> used with an on-flash OOB table by editing the init function's chip
->> flags, or would it need more significant changes to allow that?
->
->
-> The code doesn't exactly read the OOB area. When the ECC HW block is
-> enabled, the bad block isn't in either oob or data area! We can access it
-> only when ECC is disabled. With ECC disabled, the bad block marker lies in
-> the last codeword somewhere in the middle of the user data. For the
-> mtd_read_oob()/write_oob() functions, we have the ECC always enabled, hence,
-> we never access the bad block marker through them at all.
->
-> Creating an on-flash bad block table won't work right now. The reason is
-> that the nand_bbt library assumes that it can find the bad block marker by
-> reading oob. While creating a bbt in memory, it scans the device for bad
-> blocks using the function scan_block_fast(). This would currently result in
-> not reading the bad block marker, and therefore break things.
->
-> I'm trying to find out if there is a way by which the controller can access
-> the bad block marker with ECC HW enabled. If that works, we can use the
-> nand_bbt helper as is. For now, I wanted to get the driver upstream without
-> the BBT functionality.
-
-So, back in commit a7e68834fc2739 ("mtd: nand: use ECC, if present,
-when scanning OOB"), the BBT code was changed to use MTD_OPS_PLACE_OOB
-instead of MTD_OPS_RAW, because some controllers offer the ability to
-provide corrected OOB data and we wanted to use it if possible.  The
-changelog notes that many existing drivers still disabled ECC when
-reading OOB in MTD_OPS_PLACE_OOB mode.
-
-Now it sounds like the qcom_nandc controller can either provide access
-to some corrected OOB bytes (not including the BBI) when
-MTD_OPS_PLACE_OOB is used, or all (?) uncorrected OOB bytes (including
-the BBI) when MTD_OPS_RAW is used.
-
-Two possible options are:
-
-1) qcom_nandc should just disable ECC when performing OOB reads/writes
-in MTD_OPS_PLACE_OOB mode
-
-2) MTD should be made aware of whether the controller can access the
-BBI in MTD_OPS_PLACE_OOB mode, and fall back to MTD_OPS_RAW mode if
-the hardware cannot do so
-
-Any thoughts?
+Thanks,
+//richard
