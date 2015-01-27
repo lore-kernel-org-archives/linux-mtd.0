@@ -1,19 +1,21 @@
-Date: Tue, 27 Jan 2015 16:50:47 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Antoine Tenart <antoine.tenart@free-electrons.com>
-Subject: Re: [PATCH 2/9] mtd: pxa3xx_nand: add a non mandatory ECC clock
-Message-ID: <20150127155047.GB16546@lunn.ch>
-References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
- <1422367816-4257-3-git-send-email-antoine.tenart@free-electrons.com>
+Received: from mail-wg0-f47.google.com ([74.125.82.47])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YGFii-0006mr-Uc
+ for linux-mtd@lists.infradead.org; Tue, 27 Jan 2015 23:38:58 +0000
+Received: by mail-wg0-f47.google.com with SMTP id n12so17596395wgh.6
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2015 15:38:33 -0800 (PST)
+Message-ID: <54C820F9.6060602@vanguardiasur.com.ar>
+Date: Tue, 27 Jan 2015 20:36:25 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1422367816-4257-3-git-send-email-antoine.tenart@free-electrons.com>
-Cc: thomas.petazzoni@free-electrons.com, zmxu@marvell.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- ezequiel.garcia@free-electrons.com, jszhang@marvell.com,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: [PATCH 1/2 v2] UBI: Add initial support for scatter gather
+References: <1420926734-16417-1-git-send-email-richard@nod.at>
+In-Reply-To: <1420926734-16417-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +25,328 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 27, 2015 at 03:10:09PM +0100, Antoine Tenart wrote:
-> Some controllers (as the coming Berlin nand controller) need to enable
-> an ECC clock. Add support for this clock in the pxa3xx nand driver, and
-> leave it as non mandatory.
 
-Hi Antoine
 
-It would be good to document this clock in the device tree binding.
-
-> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c | 26 +++++++++++++++++++-------
->  1 file changed, 19 insertions(+), 7 deletions(-)
+On 01/10/2015 06:52 PM, Richard Weinberger wrote:
+> Adds a new set of functions to deal with scatter gather.
+> ubi_eba_read_leb_sg() will read from a LEB into a scatter gather list.
+> The new data structure struct ubi_sgl will be used within UBI to
+> hold the scatter gather list itself and metadata to have a cursor
+> within the list.
 > 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index d00ac392d1c4..2681ec4abafa 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -180,7 +180,7 @@ struct pxa3xx_nand_info {
->  	struct nand_hw_control	controller;
->  	struct platform_device	 *pdev;
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+
+Three nitpicks below, and my
+
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+
+> ---
+>  drivers/mtd/ubi/eba.c   | 56 +++++++++++++++++++++++++++++
+>  drivers/mtd/ubi/kapi.c  | 95 +++++++++++++++++++++++++++++++++++++++++--------
+>  drivers/mtd/ubi/ubi.h   |  3 ++
+>  include/linux/mtd/ubi.h | 46 ++++++++++++++++++++++++
+>  4 files changed, 185 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+> index b698534..0aaf707 100644
+> --- a/drivers/mtd/ubi/eba.c
+> +++ b/drivers/mtd/ubi/eba.c
+> @@ -481,6 +481,62 @@ out_unlock:
+>  }
 >  
-> -	struct clk		*clk;
-> +	struct clk		*clk, *ecc_clk;
->  	void __iomem		*mmio_base;
->  	unsigned long		mmio_phys;
->  	struct completion	cmd_complete, dev_ready;
-> @@ -1608,7 +1608,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+>  /**
+> + * ubi_eba_read_leb_sg - read data into a scatter gather list.
+> + * @ubi: UBI device description object
+> + * @vol: volume description object
+> + * @lnum: logical eraseblock number
+> + * @sgl: UBI scatter gather list to store the read data
+> + * @offset: offset from where to read
+> + * @len: how many bytes to read
+> + * @check: data CRC check flag
+> + *
+> + * This function works exactly like ubi_eba_read_leb(). But instead of
+> + * storing the read data into a buffer it writes to an UBI scatter gather
+> + * list.
+> + */
+> +int ubi_eba_read_leb_sg(struct ubi_device *ubi, struct ubi_volume *vol,
+> +			struct ubi_sgl *sgl, int lnum, int offset, int len,
+> +			int check)
+> +{
+> +	int to_read;
+> +	int ret;
+> +	struct scatterlist *sg;
+> +
+> +	for (;;) {
+> +		ubi_assert(sgl->list_pos < UBI_MAX_SG_COUNT);
+> +		sg = &sgl->sg[sgl->list_pos];
+> +		if (len < sg->length - sgl->page_pos)
+> +			to_read = len;
+> +		else
+> +			to_read = sg->length - sgl->page_pos;
+> +
+> +		ret = ubi_eba_read_leb(ubi, vol, lnum,
+> +				       sg_virt(sg) + sgl->page_pos, offset,
+> +				       to_read, check);
+> +		if (ret < 0)
+> +			goto out;
+
+Matter of taste, but isn't it better to just return here?
+
+> +
+> +		offset += to_read;
+> +		len -= to_read;
+> +		if (!len) {
+> +			sgl->page_pos += to_read;
+> +			if (sgl->page_pos == sg->length) {
+> +				sgl->list_pos++;
+> +				sgl->page_pos = 0;
+> +			}
+> +
+> +			break;
+> +		}
+> +
+> +		sgl->list_pos++;
+> +		sgl->page_pos = 0;
+> +	}
+> +
+> +out:
+> +	return ret;
+> +}
+> +
+> +/**
+>   * recover_peb - recover from write failure.
+>   * @ubi: UBI device description object
+>   * @pnum: the physical eraseblock to recover
+> diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+> index f3bab66..d0055a2 100644
+> --- a/drivers/mtd/ubi/kapi.c
+> +++ b/drivers/mtd/ubi/kapi.c
+> @@ -355,6 +355,43 @@ void ubi_close_volume(struct ubi_volume_desc *desc)
+>  EXPORT_SYMBOL_GPL(ubi_close_volume);
 >  
->  	spin_lock_init(&chip->controller->lock);
->  	init_waitqueue_head(&chip->controller->wq);
-> -	info->clk = devm_clk_get(&pdev->dev, NULL);
-> +	info->clk = devm_clk_get(&pdev->dev, "nfc");
+>  /**
+> + * leb_read_sanity_check - does sanity checks on read requests.
+> + * @desc: volume descriptor
+> + * @lnum: logical eraseblock number to read from
+> + * @offset: offset within the logical eraseblock to read from
+> + * @len: how many bytes to read
+> + *
+> + * This function is used by ubi_leb_read() and ubi_leb_read_sg()
+> + * to perfrom sanity checks.
 
-Does this keep backwards compatibility? Not all the existing users
-have there clocks named. What i think happens here is that
-of_clk_get_by_name() calls of_property_match_string(np, "clock-names",
-name); That returns -EINVAL, and then we ask of_clk_get() to get the
--EINVAL'th clock. I don't think that is going to end well.
+s/perfrom/perform
 
-I think you need to keep the NULL here, but should use "ecc" for the
-second clock and require the use of the clock-names property when an
-ecc clock is required.
+> + */
+> +static int leb_read_sanity_check(struct ubi_volume_desc *desc, int lnum,
+> +				 int offset, int len)
+> +{
+> +	struct ubi_volume *vol = desc->vol;
+> +	struct ubi_device *ubi = vol->ubi;
+> +	int vol_id = vol->vol_id;
+> +
+> +	if (vol_id < 0 || vol_id >= ubi->vtbl_slots || lnum < 0 ||
+> +	    lnum >= vol->used_ebs || offset < 0 || len < 0 ||
+> +	    offset + len > vol->usable_leb_size)
+> +		return -EINVAL;
+> +
+> +	if (vol->vol_type == UBI_STATIC_VOLUME) {
+> +		if (vol->used_ebs == 0)
+> +			/* Empty static UBI volume */
+> +			return 0;
+> +		if (lnum == vol->used_ebs - 1 &&
+> +		    offset + len > vol->last_eb_bytes)
+> +			return -EINVAL;
+> +	}
+> +
+> +	if (vol->upd_marker)
+> +		return -EBADF;
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+>   * ubi_leb_read - read data.
+>   * @desc: volume descriptor
+>   * @lnum: logical eraseblock number to read from
+> @@ -390,22 +427,10 @@ int ubi_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
+>  
+>  	dbg_gen("read %d bytes from LEB %d:%d:%d", len, vol_id, lnum, offset);
+>  
+> -	if (vol_id < 0 || vol_id >= ubi->vtbl_slots || lnum < 0 ||
+> -	    lnum >= vol->used_ebs || offset < 0 || len < 0 ||
+> -	    offset + len > vol->usable_leb_size)
+> -		return -EINVAL;
+> -
+> -	if (vol->vol_type == UBI_STATIC_VOLUME) {
+> -		if (vol->used_ebs == 0)
+> -			/* Empty static UBI volume */
+> -			return 0;
+> -		if (lnum == vol->used_ebs - 1 &&
+> -		    offset + len > vol->last_eb_bytes)
+> -			return -EINVAL;
+> -	}
+> +	err = leb_read_sanity_check(desc, lnum, offset, len);
+> +	if (err < 0)
+> +		return err;
+>  
+> -	if (vol->upd_marker)
+> -		return -EBADF;
+>  	if (len == 0)
+>  		return 0;
+>  
+> @@ -419,6 +444,46 @@ int ubi_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
+>  }
+>  EXPORT_SYMBOL_GPL(ubi_leb_read);
+>  
+> +
+> +/**
+> + * ubi_leb_read_sg - read data into a scatter gather list.
+> + * @desc: volume descriptor
+> + * @lnum: logical eraseblock number to read from
+> + * @buf: buffer where to store the read data
+> + * @offset: offset within the logical eraseblock to read from
+> + * @len: how many bytes to read
+> + * @check: whether UBI has to check the read data's CRC or not.
+> + *
+> + * This function works exactly like ubi_leb_read_sg(). But instead of
+> + * storing the read data into a buffer it writes to an UBI scatter gather
+> + * list.
+> + */
+> +int ubi_leb_read_sg(struct ubi_volume_desc *desc, int lnum, struct ubi_sgl *sgl,
+> +		    int offset, int len, int check)
+> +{
+> +	struct ubi_volume *vol = desc->vol;
+> +	struct ubi_device *ubi = vol->ubi;
+> +	int err, vol_id = vol->vol_id;
+> +
+> +	dbg_gen("read %d bytes from LEB %d:%d:%d", len, vol_id, lnum, offset);
+> +
+> +	err = leb_read_sanity_check(desc, lnum, offset, len);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	if (len == 0)
+> +		return 0;
+> +
+> +	err = ubi_eba_read_leb_sg(ubi, vol, sgl, lnum, offset, len, check);
+> +	if (err && mtd_is_eccerr(err) && vol->vol_type == UBI_STATIC_VOLUME) {
+> +		ubi_warn(ubi, "mark volume %d as corrupted", vol_id);
+> +		vol->corrupted = 1;
+> +	}
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(ubi_leb_read_sg);
+> +
+>  /**
+>   * ubi_leb_write - write data.
+>   * @desc: volume descriptor
+> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+> index ee7ac0b..a5283cf 100644
+> --- a/drivers/mtd/ubi/ubi.h
+> +++ b/drivers/mtd/ubi/ubi.h
+> @@ -791,6 +791,9 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+>  		      int lnum);
+>  int ubi_eba_read_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+>  		     void *buf, int offset, int len, int check);
+> +int ubi_eba_read_leb_sg(struct ubi_device *ubi, struct ubi_volume *vol,
+> +			struct ubi_sgl *sgl, int lnum, int offset, int len,
+> +			int check);
+>  int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+>  		      const void *buf, int offset, int len);
+>  int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
+> diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+> index c3918a0..3d5916d 100644
+> --- a/include/linux/mtd/ubi.h
+> +++ b/include/linux/mtd/ubi.h
+> @@ -23,11 +23,16 @@
+>  
+>  #include <linux/ioctl.h>
+>  #include <linux/types.h>
+> +#include <linux/scatterlist.h>
+>  #include <mtd/ubi-user.h>
+>  
+>  /* All voumes/LEBs */
+>  #define UBI_ALL -1
+>  
+> +/* Maximum number of scatter gather list entries,
+> + * we use only 64 to have a lower memory foot print. */
 
-    Andrew
+Multilines comments style is:
+
+/*
+ *
+ */
+
+> +#define UBI_MAX_SG_COUNT 64
+> +
+>  /*
+>   * enum ubi_open_mode - UBI volume open mode constants.
+>   *
+> @@ -116,6 +121,35 @@ struct ubi_volume_info {
+>  };
+>  
+>  /**
+> + * struct ubi_sgl - UBI scatter gather list data structure.
+> + * @list_pos: current position in @sg[]
+> + * @page_pos: current position in @sg[@list_pos]
+> + * @sg: the scatter gather list itself
+> + *
+> + * ubi_sgl is a wrapper around a scatter list which keeps track of the
+> + * current position in the list and the current list item such that
+> + * it can be used across multiple ubi_leb_read_sg() calls.
+> + */
+> +struct ubi_sgl {
+> +	int list_pos;
+> +	int page_pos;
+> +	struct scatterlist sg[UBI_MAX_SG_COUNT];
+> +};
+> +
+> +/**
+> + * ubi_sgl_init - initialize an UBI scatter gather list data structure.
+> + * @usgl: the UBI scatter gather struct itself
+> + *
+> + * Please note that you still have to use sg_init_table() or any adequate
+> + * function to initialize the unterlaying struct scatterlist.
+> + */
+> +static inline void ubi_sgl_init(struct ubi_sgl *usgl)
+> +{
+> +	usgl->list_pos = 0;
+> +	usgl->page_pos = 0;
+> +}
+> +
+> +/**
+>   * struct ubi_device_info - UBI device description data structure.
+>   * @ubi_num: ubi device number
+>   * @leb_size: logical eraseblock size on this UBI device
+> @@ -210,6 +244,8 @@ int ubi_unregister_volume_notifier(struct notifier_block *nb);
+>  void ubi_close_volume(struct ubi_volume_desc *desc);
+>  int ubi_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
+>  		 int len, int check);
+> +int ubi_leb_read_sg(struct ubi_volume_desc *desc, int lnum, struct ubi_sgl *sgl,
+> +		   int offset, int len, int check);
+>  int ubi_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
+>  		  int offset, int len);
+>  int ubi_leb_change(struct ubi_volume_desc *desc, int lnum, const void *buf,
+> @@ -230,4 +266,14 @@ static inline int ubi_read(struct ubi_volume_desc *desc, int lnum, char *buf,
+>  {
+>  	return ubi_leb_read(desc, lnum, buf, offset, len, 0);
+>  }
+> +
+> +/*
+> + * This function is the same as the 'ubi_leb_read_sg()' function, but it does
+> + * not provide the checking capability.
+> + */
+> +static inline int ubi_read_sg(struct ubi_volume_desc *desc, int lnum,
+> +			      struct ubi_sgl *sgl, int offset, int len)
+> +{
+> +	return ubi_leb_read_sg(desc, lnum, sgl, offset, len, 0);
+> +}
+>  #endif /* !__LINUX_UBI_H__ */
+> 
+
+
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
