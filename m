@@ -1,9 +1,10 @@
 From: Antoine Tenart <antoine.tenart@free-electrons.com>
 To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
  dwmw2@infradead.org, computersforpeace@gmail.com
-Subject: [PATCH 4/9] mtd: pxa3xx_nand: add a default chunk size
-Date: Tue, 27 Jan 2015 15:10:11 +0100
-Message-Id: <1422367816-4257-5-git-send-email-antoine.tenart@free-electrons.com>
+Subject: [PATCH 6/9] Documentation: bindings: add the Berlin nand controller
+ compatible
+Date: Tue, 27 Jan 2015 15:10:13 +0100
+Message-Id: <1422367816-4257-7-git-send-email-antoine.tenart@free-electrons.com>
 In-Reply-To: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
 References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
 Cc: thomas.petazzoni@free-electrons.com, zmxu@marvell.com,
@@ -19,26 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a default chunk size of 512 in the pxa3xx nand driver.
+The Berlin nand controller support was introduced using the existing
+pxa3xx nand driver. Add the Berlin specific compatible into the
+documentation.
 
 Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 782ae24d6b7d..b2783b1f663c 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1430,6 +1430,9 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
- 		goto KEEP_CONFIG;
- 
-+	/* Set a default chunk size */
-+	info->chunk_size = 512;
-+
- 	ret = pxa3xx_nand_sensing(info);
- 	if (ret) {
- 		dev_info(&info->pdev->dev, "There is no chip on cs %d!\n",
+diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+index de8b517a5521..c76281c1f442 100644
+--- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+@@ -5,6 +5,7 @@ Required properties:
+  - compatible:		Should be set to one of the following:
+ 			marvell,pxa3xx-nand
+ 			marvell,armada370-nand
++			marvell,berlin2-nand
+  - reg: 		The register base for the controller
+  - interrupts:		The interrupt to map
+  - #address-cells:	Set to <1> if the node includes partitions
 -- 
 2.2.2
