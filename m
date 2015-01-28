@@ -1,13 +1,19 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGQnp-0005UJ-HK
- for linux-mtd@lists.infradead.org; Wed, 28 Jan 2015 11:28:58 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH] Add myself as UBI co-maintainer
-Date: Wed, 28 Jan 2015 12:28:24 +0100
-Message-Id: <1422444504-17217-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+ id 1YGSQk-0001US-Jt
+ for linux-mtd@lists.infradead.org; Wed, 28 Jan 2015 13:13:15 +0000
+Message-ID: <1422450757.8637.237.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] Add myself as UBI co-maintainer
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>
+Date: Wed, 28 Jan 2015 15:12:37 +0200
+In-Reply-To: <1422444504-17217-1-git-send-email-richard@nod.at>
+References: <1422444504-17217-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,40 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-...and set the state to "Supported" as UBI is part
-of my day job.
+On Wed, 2015-01-28 at 12:28 +0100, Richard Weinberger wrote:
+> ...and set the state to "Supported" as UBI is part
+> of my day job.
+> 
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- MAINTAINERS | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2ebb056..6417fed 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9891,20 +9891,15 @@ F:	drivers/scsi/ufs/
- 
- UNSORTED BLOCK IMAGES (UBI)
- M:	Artem Bityutskiy <dedekind1@gmail.com>
-+M:	Richard Weinberger <richard@nod.at>
- W:	http://www.linux-mtd.infradead.org/
- L:	linux-mtd@lists.infradead.org
- T:	git git://git.infradead.org/ubifs-2.6.git
--S:	Maintained
-+S:	Supported
- F:	drivers/mtd/ubi/
- F:	include/linux/mtd/ubi.h
- F:	include/uapi/mtd/ubi-user.h
- 
--UNSORTED BLOCK IMAGES (UBI) Fastmap
--M:	Richard Weinberger <richard@nod.at>
--L:	linux-mtd@lists.infradead.org
--S:	Maintained
--F:	drivers/mtd/ubi/fastmap.c
--
- USB ACM DRIVER
- M:	Oliver Neukum <oliver@neukum.org>
- L:	linux-usb@vger.kernel.org
--- 
-2.2.2
+Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
