@@ -1,20 +1,23 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGIe2-0005UG-M6
- for linux-mtd@lists.infradead.org; Wed, 28 Jan 2015 02:46:19 +0000
-Message-ID: <54C84CC2.6060708@huawei.com>
-Date: Wed, 28 Jan 2015 10:43:14 +0800
-From: hujianyang <hujianyang@huawei.com>
+Date: Wed, 28 Jan 2015 11:35:52 +0800
+From: Jisheng Zhang <jszhang@marvell.com>
+To: Antoine Tenart <antoine.tenart@free-electrons.com>
+Subject: Re: [PATCH 2/9] mtd: pxa3xx_nand: add a non mandatory ECC clock
+Message-ID: <20150128113552.5dd3edc4@xhacker>
+In-Reply-To: <1422367816-4257-3-git-send-email-antoine.tenart@free-electrons.com>
+References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1422367816-4257-3-git-send-email-antoine.tenart@free-electrons.com>
 MIME-Version: 1.0
-To: <artem.bityutskiy@linux.intel.com>
-Subject: Current linux-next status of UBI/UBIFS? Re: new UBI co-maintainer
-References: <1421918762.8637.162.camel@sauron.fi.intel.com>
-In-Reply-To: <1421918762.8637.162.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>, Li Zefan <lizefan@huawei.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Sheng Yong <shengyong1@huawei.com>
+Cc: "thomas.petazzoni@free-electrons.com"
+ <thomas.petazzoni@free-electrons.com>, Jimmy Xu <zmxu@marvell.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +27,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/1/22 17:26, Artem Bityutskiy wrote:
-> Hi,
+Dear Antoine,
+
+On Tue, 27 Jan 2015 06:10:09 -0800
+Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
+
+> Some controllers (as the coming Berlin nand controller) need to enable
+> an ECC clock. Add support for this clock in the pxa3xx nand driver, and
+> leave it as non mandatory.
 > 
-> I'd like to give Richard Weinberger UBI tree push rights, so that he
-> could help us improving the QoS.
+> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 26 +++++++++++++++++++-------
+>  1 file changed, 19 insertions(+), 7 deletions(-)
 > 
-> If no one objects, lets make it effective.
-> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index d00ac392d1c4..2681ec4abafa 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -180,7 +180,7 @@ struct pxa3xx_nand_info {
+>  	struct nand_hw_control	controller;
+>  	struct platform_device	 *pdev;
+>  
+> -	struct clk		*clk;
+> +	struct clk		*clk, *ecc_clk;
+>  	void __iomem		*mmio_base;
+>  	unsigned long		mmio_phys;
+>  	struct completion	cmd_complete, dev_ready;
+> @@ -1608,7 +1608,7 @@ static int alloc_nand_resource(struct platform_device
+> *pdev) 
+>  	spin_lock_init(&chip->controller->lock);
+>  	init_waitqueue_head(&chip->controller->wq);
+> -	info->clk = devm_clk_get(&pdev->dev, NULL);
+> +	info->clk = devm_clk_get(&pdev->dev, "nfc");
+>  	if (IS_ERR(info->clk)) {
 
-Hi Artem,
+Do we need to fall back to unnamed clock here? Otherwise I guess it will break
+other platforms.
 
-First, thank Richard for his contributions to UBI/UBIFS.
+>  		dev_err(&pdev->dev, "failed to get nand clock\n");
+>  		return PTR_ERR(info->clk);
+> @@ -1617,6 +1617,13 @@ static int alloc_nand_resource(struct
+> platform_device *pdev) if (ret < 0)
+>  		return ret;
+>  
+> +	info->ecc_clk = devm_clk_get(&pdev->dev, "ecc");
+> +	if (!IS_ERR(info->ecc_clk)) {
+> +		ret = clk_prepare_enable(info->ecc_clk);
+> +		if (ret < 0)
+> +			goto fail_disable_clk;
+> +	}
+> +
+>  	if (use_dma) {
+>  		/*
+>  		 * This is a dirty hack to make this driver work from
+> @@ -1633,7 +1640,7 @@ static int alloc_nand_resource(struct platform_device
+> *pdev) dev_err(&pdev->dev,
+>  					"no resource defined for data
+> DMA\n"); ret = -ENXIO;
+> -				goto fail_disable_clk;
+> +				goto fail_disable_ecc_clk;
+>  			}
+>  			info->drcmr_dat = r->start;
+>  
+> @@ -1642,7 +1649,7 @@ static int alloc_nand_resource(struct platform_device
+> *pdev) dev_err(&pdev->dev,
+>  					"no resource defined for cmd
+> DMA\n"); ret = -ENXIO;
+> -				goto fail_disable_clk;
+> +				goto fail_disable_ecc_clk;
+>  			}
+>  			info->drcmr_cmd = r->start;
+>  		}
+> @@ -1652,14 +1659,14 @@ static int alloc_nand_resource(struct
+> platform_device *pdev) if (irq < 0) {
+>  		dev_err(&pdev->dev, "no IRQ resource defined\n");
+>  		ret = -ENXIO;
+> -		goto fail_disable_clk;
+> +		goto fail_disable_ecc_clk;
+>  	}
+>  
+>  	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	info->mmio_base = devm_ioremap_resource(&pdev->dev, r);
+>  	if (IS_ERR(info->mmio_base)) {
+>  		ret = PTR_ERR(info->mmio_base);
+> -		goto fail_disable_clk;
+> +		goto fail_disable_ecc_clk;
+>  	}
+>  	info->mmio_phys = r->start;
+>  
+> @@ -1668,7 +1675,7 @@ static int alloc_nand_resource(struct platform_device
+> *pdev) info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
+>  	if (info->data_buff == NULL) {
+>  		ret = -ENOMEM;
+> -		goto fail_disable_clk;
+> +		goto fail_disable_ecc_clk;
+>  	}
+>  
+>  	/* initialize all interrupts to be disabled */
+> @@ -1687,6 +1694,9 @@ static int alloc_nand_resource(struct platform_device
+> *pdev) fail_free_buf:
+>  	free_irq(irq, info);
+>  	kfree(info->data_buff);
+> +fail_disable_ecc_clk:
+> +	if (!IS_ERR(info->ecc_clk))
+> +		clk_disable_unprepare(info->ecc_clk);
 
+we can remove the IS_ERR check to simplify this error path since commit
+63589e92c2d9("clk: Ignore error and NULL pointers passed to clk_{unprepare, disable}()")
 
-I regret to say the updating of UBI/UBIFS was blocked about 2 months.
-So Richard could help us maintaining the improvement of UBIFS next?
+>  fail_disable_clk:
+>  	clk_disable_unprepare(info->clk);
+>  	return ret;
+> @@ -1709,6 +1719,8 @@ static int pxa3xx_nand_remove(struct platform_device
+> *pdev) pxa3xx_nand_free_buff(info);
+>  
+>  	clk_disable_unprepare(info->clk);
+> +	if (!IS_ERR(info->ecc_clk))
+> +		clk_disable_unprepare(info->ecc_clk);
 
-I've sent some patches to MTD list these days, what's the opinion of
-you and Richard about these pacthes?
+we can remove the IS_ERR check too.
 
-   [PATCH] UBI: add ubi_err() to report the failure of leb read
-   [PATCH RFC 1/2] UBIFS: fix empty log leb error
-   [PATCH] UBI: fix soft lockup in ubi_check_volume()
-
-   and ubidump v6
-
-The patch "UBI: fix soft lockup in ubi_check_volume()" solves a really
-important problem, I wish it could be merged into stable soon.
-
-I've discussed with Richard about the recovery of an corrupted UBIFS
-image, for example, ECC error. And actually my colleagues and I had
-worked out some features to improve the reliability of UBIFS. We are
-happy to share our design and greatly aspire the help from community.
-
-Also, I think we could start to add more functions to my ubidump to
-make it a useful tool.
-
-I think the updating of UBI/UBIFS will re-start soon, am I right?
-
-BR,
-Hu
+>  
+>  	for (cs = 0; cs < pdata->num_cs; cs++)
+>  		nand_release(info->host[cs]->mtd);
