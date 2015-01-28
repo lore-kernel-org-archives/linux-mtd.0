@@ -1,26 +1,23 @@
-Message-ID: <1422407074.32234.2.camel@ellerman.id.au>
-Subject: Re: [PATCH 0/4] defconfigs: cleanup obsolete MTD configs
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: semen.protsenko@globallogic.com
-Date: Wed, 28 Jan 2015 12:04:34 +1100
-In-Reply-To: <CAJOTznWHpRh8ysVxwSWyvZL1UAe-G9A64j=M6z0+zPeoycgkDg@mail.gmail.com>
-References: <1422117213-3130-1-git-send-email-semen.protsenko@globallogic.com>
- <1422118156.27947.7.camel@x220>
- <CAJOTznWHpRh8ysVxwSWyvZL1UAe-G9A64j=M6z0+zPeoycgkDg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mips@linux-mips.org, Paul Bolle <pebolle@tiscali.nl>,
- linux-am33-list@redhat.com, Russell King <linux@arm.linux.org.uk>,
- linux-sh@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- adi-buildroot-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- Haavard Skinnemoen <hskinnemoen@gmail.com>, linux-m68k@lists.linux-m68k.org,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
- Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>, linuxppc-dev@lists.ozlabs.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Message-ID: <54C8440F.3090906@free-electrons.com>
+Date: Tue, 27 Jan 2015 23:06:07 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+MIME-Version: 1.0
+To: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 2/2] ARM: mvebu: a385-db-ap: Enable the NAND
+References: <1422284164-16867-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1422284164-16867-3-git-send-email-maxime.ripard@free-electrons.com>
+In-Reply-To: <1422284164-16867-3-git-send-email-maxime.ripard@free-electrons.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
+ linux-kernel@vger.kernel.org, Sudhakar Gundubogula <sudhakar@marvell.com>,
+ Nadav Haklai <nadavh@marvell.com>, Boris Brezillon <boris@free-electrons.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,19 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2015-01-24 at 22:54 +0200, Sam Protsenko wrote:
-> > That's news for me. I thought they are silently ignored. Do you have an
-> > example of such a warning?
+On 01/26/2015 11:56 AM, Maxime Ripard wrote:
+> The Armada 385 Access Point Development Board has a 1GB NAND SLC chip from
+> Micron as its main storage. Enable it.
 > 
-> Not really. It was just assumption. It seems you are right, they are just
-> ignored silently. But item 2 is still relevant and it was actually confused
-> me when I tried to figure out MTD configuration for my platform.
-> Anyway, garbage should be taken out from time to time.
+> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> ---
+>  arch/arm/boot/dts/armada-385-db-ap.dts | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/armada-385-db-ap.dts b/arch/arm/boot/dts/armada-385-db-ap.dts
+> index b891b4c897f5..ee648fb19075 100644
+> --- a/arch/arm/boot/dts/armada-385-db-ap.dts
+> +++ b/arch/arm/boot/dts/armada-385-db-ap.dts
+> @@ -130,6 +130,19 @@
+>  				phy-mode = "rgmii-id";
+>  			};
+>  
+> +			nfc: flash@d0000 {
 
-The usual way that this gets dealt with is that arch maintainers (ir)regularly
-run make savedefconfig on all their defconfigs.
+I don't think you need to have this phandle here.
 
-As it happens we've done that on powerpc just recently, if you rebase onto next
-you should see that, so you can drop the powerpc hunks from your patches. 
+In any case, for both patches:
 
-cheers
+Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
