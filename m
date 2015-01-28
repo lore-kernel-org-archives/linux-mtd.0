@@ -1,26 +1,20 @@
-Received: from mail.powercomputers.net ([41.77.194.66])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGZzo-0005wK-K5
- for linux-mtd@lists.infradead.org; Wed, 28 Jan 2015 21:17:57 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by mail.powercomputers.net (Postfix) with ESMTP id 39B99199837D
- for <linux-mtd@lists.infradead.org>; Wed, 28 Jan 2015 23:48:28 +0300 (EAT)
-Received: from mail.powercomputers.net ([127.0.0.1])
- by localhost (mail.powercomputers.net [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id r1qpY-tYhU2M for <linux-mtd@lists.infradead.org>;
- Wed, 28 Jan 2015 23:48:28 +0300 (EAT)
-Received: from [192.168.50.250] (unknown [5.11.39.240])
- by mail.powercomputers.net (Postfix) with ESMTPA id 21ECE199834D
- for <linux-mtd@lists.infradead.org>; Wed, 28 Jan 2015 23:48:26 +0300 (EAT)
-Message-Id: <pz29lhoKUVhbQnjjKI5CFUbXW0w3ORPzVkemtRWHkOzp@yahoo.pt>
-Mime-Version: 1.0
-From: Alisha Macleod <alishamacleod996@yahoo.pt>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Reply-To: alishamcld@gmail.com
-Subject: URGENT
-Date: Wed, 28 Jan 2015 22:09:05 +0100
-Content-type: multipart/mixed;
- Boundary="--=BOUNDARY_128229_QMYN_CNSN_XFHW_NEXG"
+Received: from mail-vc0-x236.google.com ([2607:f8b0:400c:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YGcHT-0000cv-9J
+ for linux-mtd@lists.infradead.org; Wed, 28 Jan 2015 23:44:22 +0000
+Received: by mail-vc0-f182.google.com with SMTP id kv19so7807038vcb.13
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Jan 2015 15:43:57 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1422439995-25745-1-git-send-email-david.oberhollenzer@sigma-star.at>
+References: <1422439995-25745-1-git-send-email-david.oberhollenzer@sigma-star.at>
+Date: Thu, 29 Jan 2015 00:43:57 +0100
+Message-ID: <CAFLxGvy6bnPnzZyGXiAN8Jq54E7CDpF5CmvLzkAuuMn8jdUbmQ@mail.gmail.com>
+Subject: Re: [PATCH] UBI: power cut emulation for testing
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: david.oberhollenzer@sigma-star.at
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,185 +24,276 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Questo messaggio è in formato MIME. Poichè il tuo programma di posta non comprendequesto formato, una porta o tutto il messaggio potrebbe non essere leggibile.
+On Wed, Jan 28, 2015 at 11:13 AM,  <david.oberhollenzer@sigma-star.at> wrote:
+> From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+>
+> Emulate random power cuts by switching device to ro after a number of
+> writes to allow simple power cut testing with nand-sim.
+>
+> Maximum and minimum number of successful writes before power cut and
+> what kind of writes (EC header, VID header or none) to interrupt
+> configurable via debugfs.
+>
+> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> ---
+>  drivers/mtd/ubi/debug.c | 93 +++++++++++++++++++++++++++++++++++++++++++++++--
+>  drivers/mtd/ubi/debug.h |  2 ++
+>  drivers/mtd/ubi/io.c    |  6 ++++
+>  drivers/mtd/ubi/ubi.h   | 25 +++++++++++++
+>  4 files changed, 124 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+> index 7335c9f..ad164cc 100644
+> --- a/drivers/mtd/ubi/debug.c
+> +++ b/drivers/mtd/ubi/debug.c
+> @@ -263,7 +263,7 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
+>         struct dentry *dent = file->f_path.dentry;
+>         struct ubi_device *ubi;
+>         struct ubi_debug_info *d;
+> -       char buf[3];
+> +       char buf[8];
+>         int val;
+>
+>         ubi = ubi_get_device(ubi_num);
+> @@ -281,6 +281,22 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
+>                 val = d->emulate_bitflips;
+>         else if (dent == d->dfs_emulate_io_failures)
+>                 val = d->emulate_io_failures;
+> +       else if (dent == d->dfs_emulate_power_cut) {
+> +               snprintf(buf, sizeof(buf), "%u\n", d->emulate_power_cut);
+> +               count = simple_read_from_buffer(user_buf, count, ppos,
+> +                                               buf, strlen(buf));
+> +               goto out;
+> +       } else if (dent == d->dfs_power_cut_min) {
+> +               snprintf(buf, sizeof(buf), "%u\n", d->power_cut_min);
+> +               count = simple_read_from_buffer(user_buf, count, ppos,
+> +                                               buf, strlen(buf));
+> +               goto out;
+> +       } else if (dent == d->dfs_power_cut_max) {
+> +               snprintf(buf, sizeof(buf), "%u\n", d->power_cut_max);
+> +               count = simple_read_from_buffer(user_buf, count, ppos,
+> +                                               buf, strlen(buf));
+> +               goto out;
+> +       }
+>         else {
+>                 count = -EINVAL;
+>                 goto out;
+> @@ -309,7 +325,7 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+>         struct ubi_device *ubi;
+>         struct ubi_debug_info *d;
+>         size_t buf_size;
+> -       char buf[8];
+> +       char buf[8]={0};
 
-----=BOUNDARY_128229_QMYN_CNSN_XFHW_NEXG
-Content-type: text/plain; charset=iso-8859-1; format=flowed
-Content-transfer-encoding: quoted-printable
+Spaces, please. checkpatch.pl will tell you. :)
+
+>         int val;
+>
+>         ubi = ubi_get_device(ubi_num);
+> @@ -323,6 +339,21 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+>                 goto out;
+>         }
+>
+> +       if (dent == d->dfs_power_cut_min) {
+> +               if (kstrtouint(buf, 0, &d->power_cut_min) != 0)
+> +                       count = -EINVAL;
+> +               goto out;
+> +       } else if (dent == d->dfs_power_cut_max) {
+> +               if (kstrtouint(buf, 0, &d->power_cut_max) != 0)
+> +                       count = -EINVAL;
+> +               goto out;
+> +       } else if (dent == d->dfs_emulate_power_cut) {
+> +               if (kstrtoint(buf, 0, &val) != 0)
+> +                       count = -EINVAL;
+> +               d->emulate_power_cut = val;
+> +               goto out;
+> +       }
+> +
+>         if (buf[0] == '1')
+>                 val = 1;
+>         else if (buf[0] == '0')
+> @@ -427,6 +458,27 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+>                 goto out_remove;
+>         d->dfs_emulate_io_failures = dent;
+>
+> +       fname = "tst_emulate_power_cut";
+> +       dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, (void *)ubi_num,
+> +                                  &dfs_fops);
+> +       if (IS_ERR_OR_NULL(dent))
+> +               goto out_remove;
+> +       d->dfs_emulate_power_cut = dent;
+> +
+> +       fname = "tst_emulate_power_cut_min";
+> +       dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, (void *)ubi_num,
+> +                                  &dfs_fops);
+> +       if (IS_ERR_OR_NULL(dent))
+> +               goto out_remove;
+> +       d->dfs_power_cut_min = dent;
+> +
+> +       fname = "tst_emulate_power_cut_max";
+> +       dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, (void *)ubi_num,
+> +                                  &dfs_fops);
+> +       if (IS_ERR_OR_NULL(dent))
+> +               goto out_remove;
+> +       d->dfs_power_cut_max = dent;
+> +
+>         return 0;
+>
+>  out_remove:
+> @@ -447,3 +499,40 @@ void ubi_debugfs_exit_dev(struct ubi_device *ubi)
+>         if (IS_ENABLED(CONFIG_DEBUG_FS))
+>                 debugfs_remove_recursive(ubi->dbg.dfs_dir);
+>  }
+> +
+> +/**
+> + * ubi_dbg_power_cut - emulate a power cut if it is time to do so
+> + * @ubi: UBI device description object
+> + * @caller: Flags set to indicate from where the function is being called
+> + *
+> + * Returns non-zero if a power cut was emulated, zero if not.
+> + */
+> +int ubi_dbg_power_cut(struct ubi_device *ubi, int caller)
+> +{
+> +       unsigned int range;
+> +
+> +       if (!ubi || ubi->dbg.power_cut_counter < 0)
+>
+
+No need to check for !ubi.
+
+ +               return 0;
+> +
+> +       if ((ubi->dbg.emulate_power_cut & caller) == 0)
+> +               return 0;
+> +
+> +       if (ubi->dbg.power_cut_counter == 0) {
+> +               ubi->dbg.power_cut_counter = ubi->dbg.power_cut_min;
+> +
+> +               if (ubi->dbg.power_cut_max > ubi->dbg.power_cut_min) {
+> +                       range = ubi->dbg.power_cut_max - ubi->dbg.power_cut_min;
+> +                       ubi->dbg.power_cut_counter += prandom_u32() % range;
+> +               }
+> +               return 0;
+> +       }
+> +
+> +       ubi->dbg.power_cut_counter--;
+> +       if (ubi->dbg.power_cut_counter)
+> +               return 0;
+> +
+> +       ubi->dbg.power_cut_counter = -1;
+> +       ubi_msg(ubi,"XXXXXXXXXXXXXXXXX emulating a power cut XXXXXXXXXXXXXXXXXX");
+> +       ubi_ro_mode(ubi);
+> +       return 1;
+> +}
+> diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+> index cba89fc..d74b339 100644
+> --- a/drivers/mtd/ubi/debug.h
+> +++ b/drivers/mtd/ubi/debug.h
+> @@ -127,4 +127,6 @@ static inline int ubi_dbg_chk_gen(const struct ubi_device *ubi)
+>  {
+>         return ubi->dbg.chk_gen;
+>  }
+> +
+> +int ubi_dbg_power_cut(struct ubi_device *ubi, int caller);
+>  #endif /* !__UBI_DEBUG_H__ */
+> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+> index 396aaa5..f77de8e 100644
+> --- a/drivers/mtd/ubi/io.c
+> +++ b/drivers/mtd/ubi/io.c
+> @@ -859,6 +859,9 @@ int ubi_io_write_ec_hdr(struct ubi_device *ubi, int pnum,
+>         if (err)
+>                 return err;
+>
+> +       if (ubi_dbg_power_cut(ubi, POWER_CUT_EC_WRITE))
+> +               return -EROFS;
+> +
+>         err = ubi_io_write(ubi, ec_hdr, pnum, 0, ubi->ec_hdr_alsize);
+>         return err;
+>  }
+> @@ -1106,6 +1109,9 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
+>         if (err)
+>                 return err;
+>
+> +       if (ubi_dbg_power_cut(ubi, POWER_CUT_VID_WRITE))
+> +               return -EROFS;
+> +
+>         p = (char *)vid_hdr - ubi->vid_hdr_shift;
+>         err = ubi_io_write(ubi, p, pnum, ubi->vid_hdr_aloffset,
+>                            ubi->vid_hdr_alsize);
+> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+> index f80ffab..3886fdc 100644
+> --- a/drivers/mtd/ubi/ubi.h
+> +++ b/drivers/mtd/ubi/ubi.h
+> @@ -151,6 +151,17 @@ enum {
+>         UBI_BAD_FASTMAP,
+>  };
+>
+> +/*
+> + * Flags for emulate_power_cut in ubi_debug_info
+> + *
+> + * POWER_CUT_EC_WRITE: Emulate a power cut when writing an EC header
+> + * POWER_CUT_VID_WRITE: Emulate a power cut when writing a VID header
+> + */
+> +enum {
+> +       POWER_CUT_EC_WRITE = 0x01,
+> +       POWER_CUT_VID_WRITE = 0x02,
+> +};
+> +
+>  /**
+>   * struct ubi_wl_entry - wear-leveling entry.
+>   * @u.rb: link in the corresponding (free/used) RB-tree
+> @@ -356,6 +367,10 @@ struct ubi_wl_entry;
+>   * @disable_bgt: disable the background task for testing purposes
+>   * @emulate_bitflips: emulate bit-flips for testing purposes
+>   * @emulate_io_failures: emulate write/erase failures for testing purposes
+> + * @emulate_power_cut: emulate power cut for testing purposes
+> + * @power_cut_counter: count down for writes left until emulated power cut
+> + * @power_cut_min: minimum number of writes before emulating a power cut
+> + * @power_cut_max: maximum number of writes until emulating a power cut
+>   * @dfs_dir_name: name of debugfs directory containing files of this UBI device
+>   * @dfs_dir: direntry object of the UBI device debugfs directory
+>   * @dfs_chk_gen: debugfs knob to enable UBI general extra checks
+> @@ -363,6 +378,9 @@ struct ubi_wl_entry;
+>   * @dfs_disable_bgt: debugfs knob to disable the background task
+>   * @dfs_emulate_bitflips: debugfs knob to emulate bit-flips
+>   * @dfs_emulate_io_failures: debugfs knob to emulate write/erase failures
+> + * @dfs_emulate_power_cut: debugfs knob to emulate power cuts
+> + * @dfs_power_cut_min: debugfs knob for minimum writes before power cut
+> + * @dfs_power_cut_max: debugfs knob for maximum writes until power cut
+>   */
+>  struct ubi_debug_info {
+>         unsigned int chk_gen:1;
+> @@ -370,6 +388,10 @@ struct ubi_debug_info {
+>         unsigned int disable_bgt:1;
+>         unsigned int emulate_bitflips:1;
+>         unsigned int emulate_io_failures:1;
+> +       unsigned int emulate_power_cut:2;
+> +       unsigned int power_cut_counter;
+> +       unsigned int power_cut_min;
+> +       unsigned int power_cut_max;
+>         char dfs_dir_name[UBI_DFS_DIR_LEN + 1];
+>         struct dentry *dfs_dir;
+>         struct dentry *dfs_chk_gen;
+> @@ -377,6 +399,9 @@ struct ubi_debug_info {
+>         struct dentry *dfs_disable_bgt;
+>         struct dentry *dfs_emulate_bitflips;
+>         struct dentry *dfs_emulate_io_failures;
+> +       struct dentry *dfs_emulate_power_cut;
+> +       struct dentry *dfs_power_cut_min;
+> +       struct dentry *dfs_power_cut_max;
+>  };
+>
+>  /**
+> --
+> 2.2.2
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
 
-----=BOUNDARY_128229_QMYN_CNSN_XFHW_NEXG
-Content-Disposition: attachment;
-     filename="Outstanding Inheritance.pdf"
-Content-transfer-encoding: base64
-Content-type: application/pdf;
-     x-mac-type="3F3F3F3F";
-     x-mac-creator="3F3F3F3F"
-     name="Outstanding Inheritance.pdf";
-
-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
-ago2IDAgb2JqCjYzMDEKZW5kb2JqCjQgMCBvYmoKPDwvVHlwZS9QYWdlL01lZGlhQm94IFswIDAg
-NTk1IDg0Ml0KL1JvdGF0ZSAwL1BhcmVudCAzIDAgUgovUmVzb3VyY2VzPDwvUHJvY1NldFsvUERG
-IC9UZXh0XQovRm9udCA4IDAgUgo+PgovQ29udGVudHMgNSAwIFIKPj4KZW5kb2JqCjMgMCBvYmoK
-PDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFsKNCAwIFIKXSAvQ291bnQgMQo+PgplbmRvYmoKMSAwIG9i
-ago8PC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAzIDAgUgovTWV0YWRhdGEgOSAwIFIKPj4KZW5kb2Jq
-CjggMCBvYmoKPDwvUjcKNyAwIFI+PgplbmRvYmoKNyAwIG9iago8PC9CYXNlRm9udC9UaW1lcy1S
-b21hbi9UeXBlL0ZvbnQKL1N1YnR5cGUvVHlwZTE+PgplbmRvYmoKOSAwIG9iago8PC9UeXBlL01l
-dGFkYXRhCi9TdWJ0eXBlL1hNTC9MZW5ndGggMTU2Nj4+c3RyZWFtCjw/eHBhY2tldCBiZWdpbj0n
-77u/JyBpZD0nVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkJz8+Cjw/YWRvYmUteGFwLWZpbHRlcnMg
-ZXNjPSJDUkxGIj8+Cjx4OnhtcG1ldGEgeG1sbnM6eD0nYWRvYmU6bnM6bWV0YS8nIHg6eG1wdGs9
-J1hNUCB0b29sa2l0IDIuOS4xLTEzLCBmcmFtZXdvcmsgMS42Jz4KPHJkZjpSREYgeG1sbnM6cmRm
-PSdodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjJyB4bWxuczppWD0n
-aHR0cDovL25zLmFkb2JlLmNvbS9pWC8xLjAvJz4KPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9
-J3V1aWQ6YWM0YTNkYjYtYTY1MS0xMWU0LTAwMDAtYjcxNzhjNzZhMzhhJyB4bWxuczpwZGY9J2h0
-dHA6Ly9ucy5hZG9iZS5jb20vcGRmLzEuMy8nPjxwZGY6UHJvZHVjZXI+R1BMIEdob3N0c2NyaXB0
-IDkuMDU8L3BkZjpQcm9kdWNlcj4KPHBkZjpLZXl3b3Jkcz4oKTwvcGRmOktleXdvcmRzPgo8L3Jk
-ZjpEZXNjcmlwdGlvbj4KPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9J3V1aWQ6YWM0YTNkYjYt
-YTY1MS0xMWU0LTAwMDAtYjcxNzhjNzZhMzhhJyB4bWxuczp4bXA9J2h0dHA6Ly9ucy5hZG9iZS5j
-b20veGFwLzEuMC8nPjx4bXA6TW9kaWZ5RGF0ZT4yMDE1LTAxLTI0VDE5OjIyOjQ4KzAxOjAwPC94
-bXA6TW9kaWZ5RGF0ZT4KPHhtcDpDcmVhdGVEYXRlPjIwMTUtMDEtMjRUMTk6MjI6NDgrMDE6MDA8
-L3htcDpDcmVhdGVEYXRlPgo8eG1wOkNyZWF0b3JUb29sPlBERkNyZWF0b3IgVmVyc2lvbiAxLjMu
-MjwveG1wOkNyZWF0b3JUb29sPjwvcmRmOkRlc2NyaXB0aW9uPgo8cmRmOkRlc2NyaXB0aW9uIHJk
-ZjphYm91dD0ndXVpZDphYzRhM2RiNi1hNjUxLTExZTQtMDAwMC1iNzE3OGM3NmEzOGEnIHhtbG5z
-OnhhcE1NPSdodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vJyB4YXBNTTpEb2N1bWVudElE
-PSd1dWlkOmFjNGEzZGI2LWE2NTEtMTFlNC0wMDAwLWI3MTc4Yzc2YTM4YScvPgo8cmRmOkRlc2Ny
-aXB0aW9uIHJkZjphYm91dD0ndXVpZDphYzRhM2RiNi1hNjUxLTExZTQtMDAwMC1iNzE3OGM3NmEz
-OGEnIHhtbG5zOmRjPSdodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLycgZGM6Zm9ybWF0
-PSdhcHBsaWNhdGlvbi9wZGYnPjxkYzp0aXRsZT48cmRmOkFsdD48cmRmOmxpIHhtbDpsYW5nPSd4
-LWRlZmF1bHQnPk91dHN0YW5kaW5nIEluaGVyaXRhbmNlPC9yZGY6bGk+PC9yZGY6QWx0PjwvZGM6
-dGl0bGU+PGRjOmNyZWF0b3I+PHJkZjpTZXE+PHJkZjpsaT5tb25pY2E8L3JkZjpsaT48L3JkZjpT
-ZXE+PC9kYzpjcmVhdG9yPjxkYzpkZXNjcmlwdGlvbj48cmRmOlNlcT48cmRmOmxpPigpPC9yZGY6
-bGk+PC9yZGY6U2VxPjwvZGM6ZGVzY3JpcHRpb24+PC9yZGY6RGVzY3JpcHRpb24+CjwvcmRmOlJE
-Rj4KPC94OnhtcG1ldGE+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKPD94cGFja2V0
-IGVuZD0ndyc/PgplbmRzdHJlYW0KZW5kb2JqCjIgMCBvYmoKPDwvUHJvZHVjZXIoR1BMIEdob3N0
-c2NyaXB0IDkuMDUpCi9DcmVhdGlvbkRhdGUoRDoyMDE1MDEyNDE5MjI0OCswMScwMCcpCi9Nb2RE
-YXRlKEQ6MjAxNTAxMjQxOTIyNDgrMDEnMDAnKQovVGl0bGUoXDM3NlwzNzdcMDAwT1wwMDB1XDAw
-MHRcMDAwc1wwMDB0XDAwMGFcMDAwblwwMDBkXDAwMGlcMDAwblwwMDBnXDAwMCBcMDAwSVwwMDBu
-XDAwMGhcMDAwZVwwMDByXDAwMGlcMDAwdFwwMDBhXDAwMG5cMDAwY1wwMDBlKQovQ3JlYXRvcihc
-Mzc2XDM3N1wwMDBQXDAwMERcMDAwRlwwMDBDXDAwMHJcMDAwZVwwMDBhXDAwMHRcMDAwb1wwMDBy
-XDAwMCBcMDAwVlwwMDBlXDAwMHJcMDAwc1wwMDBpXDAwMG9cMDAwblwwMDAgXDAwMDFcMDAwLlww
-MDAzXDAwMC5cMDAwMikKL0F1dGhvcihcMzc2XDM3N1wwMDBtXDAwMG9cMDAwblwwMDBpXDAwMGNc
-MDAwYSkKL0tleXdvcmRzKCkKL1N1YmplY3QoKT4+ZW5kb2JqCnhyZWYKMCAxMAowMDAwMDAwMDAw
-IDY1NTM1IGYgCjAwMDAwMDY2MDYgMDAwMDAgbiAKMDAwMDAwODQwNyAwMDAwMCBuIAowMDAwMDA2
-NTQ3IDAwMDAwIG4gCjAwMDAwMDY0MDYgMDAwMDAgbiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAw
-MDA2Mzg2IDAwMDAwIG4gCjAwMDAwMDY2OTkgMDAwMDAgbiAKMDAwMDAwNjY3MCAwMDAwMCBuIAow
-MDAwMDA2NzY1IDAwMDAwIG4gCnRyYWlsZXIKPDwgL1NpemUgMTAgL1Jvb3QgMSAwIFIgL0luZm8g
-MiAwIFIKL0lEIFs8QjI3QTI3MURGNEIxRTczRjkwQTU3QjEyMTI1QzU3MjA+PEIyN0EyNzFERjRC
-MUU3M0Y5MEE1N0IxMjEyNUM1NzIwPl0KPj4Kc3RhcnR4cmVmCjg4NzIKJSVFT0YK
-
-
-----=BOUNDARY_128229_QMYN_CNSN_XFHW_NEXG--
+-- 
+Thanks,
+//richard
