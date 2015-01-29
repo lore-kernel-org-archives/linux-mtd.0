@@ -1,22 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGl5b-0000kU-8K
- for linux-mtd@lists.infradead.org; Thu, 29 Jan 2015 09:08:39 +0000
-Message-ID: <54C9F87F.6070807@nod.at>
-Date: Thu, 29 Jan 2015 10:08:15 +0100
-From: Richard Weinberger <richard@nod.at>
+Date: Thu, 29 Jan 2015 10:40:53 -0600 (CST)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Message-ID: <8497653.67473.1422549653131.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <20150129012042.GX9759@ld-irv-0074>
+References: <1136776275.110939.1421109367310.JavaMail.zimbra@xes-inc.com>
+ <447095612.147126.1421278909058.JavaMail.zimbra@xes-inc.com>
+ <20150123083026.GE3268@brian-ubuntu>
+ <1309767342.94086.1422491856685.JavaMail.zimbra@xes-inc.com>
+ <20150129012042.GX9759@ld-irv-0074>
+Subject: Re: [PATCH 2/2 v3 RESEND] mtd: fsl_upm: Support NAND ECC DTS
+ properties
 MIME-Version: 1.0
-To: hujianyang <hujianyang@huawei.com>
-Subject: Re: Current linux-next status of UBI/UBIFS? Re: new UBI co-maintainer
-References: <1421918762.8637.162.camel@sauron.fi.intel.com>
- <54C84CC2.6060708@huawei.com> <54C90484.4050001@nod.at>
- <54C9A8D2.8020403@huawei.com>
-In-Reply-To: <54C9A8D2.8020403@huawei.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>,
- artem.bityutskiy@linux.intel.com, Li Zefan <lizefan@huawei.com>,
- linux-mtd@lists.infradead.org, Sheng Yong <shengyong1@huawei.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, devicetree@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,65 +24,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 29.01.2015 um 04:28 schrieb hujianyang:
-> I wish it could be soon, because there are some other patches about
-> mounting reliability improvement I want to send. Could I send them
-> together? But I haven't finished this work, so I think one by one
-> is the best way, and I can discuss the designing with you and Artem
-> in time.
-
-Please send them and describe the issues in details, provide a test case, etc...
-It is also important to tell us *how* this bug can happen.
-
->>>    [PATCH] UBI: fix soft lockup in ubi_check_volume()
->>
->> I'm also fine with that.
->>
->>>    and ubidump v6
->>
->> For ubidump I have to read the whole thread again as I got lost in it. :)
->>
->>> The patch "UBI: fix soft lockup in ubi_check_volume()" solves a really
->>> important problem, I wish it could be merged into stable soon.
->>
->> Yes.
->>
->>> I've discussed with Richard about the recovery of an corrupted UBIFS
->>> image, for example, ECC error. And actually my colleagues and I had
->>> worked out some features to improve the reliability of UBIFS. We are
->>> happy to share our design and greatly aspire the help from community.
->>
->> Nice.
->>
->>> Also, I think we could start to add more functions to my ubidump to
->>> make it a useful tool.
->>
->> I have to look at ubidump in detail but it sounds good.
->> To debug fastmap issues I have also a tool to analyze UBI images.
->> Maybe we can merge. First I have to shape it up.
->>
+----- Original Message -----
+> From: "Brian Norris" <computersforpeace@gmail.com>
+> Sent: Wednesday, January 28, 2015 7:20:42 PM
 > 
-> I'm glad with it. I was using ubidump for debugging these days,
-> but I'm not sure if this v6 is OK. I'd fixed some tiny issues
-> after v5 so I don't know if there are still other issues left.
-> Thanks for your reviewing.
+> On Wed, Jan 28, 2015 at 06:37:36PM -0600, Aaron Sierra wrote:
+> > ----- Original Message -----
+> > > From: "Brian Norris" <computersforpeace@gmail.com>
 > 
-> I see ubifastmap is marked as "Experimental feature" now and
-> you'd introduced multi-queue for ubiblock. I think some works,
-> e.g. testing, are really needed before importing these feature
-> into our products.
+> > > I was thinking about this a bit more, and it seems like we could really
+> > > just factor this all into the core nand_base code with something like
+> > > the following patch. It could possibly use some smarter logic to rule
+> > > out certain combinations (but some of those are already caught in
+> > > nand_scan_tail() anyway). What do you think?
+> > 
+> > Brian,
+> > If the NAND device tree property fetching were moved out of fsl_upm,
+> > I think it should not be called within nand_scan(). I think that
+> > it's imperative that each driver be able to access these properties
+> > before handing off to nand_scan(), since there are hardware ECC
+> > modes that only drivers will know how to error check.
+> 
+> That's why nand_scan() is broken into nand_scan_ident() and
+> nand_scan_tail() functions which can be called individually. This allows
+> drivers to do the up-front initialization in nand_scan_ident(), do their
+> own error checking and handling of these parameters, and then call
+> nand_scan_tail(). See, for example, drivers/mtd/nand/omap2.c.
 
-Fastmap is experimental for good reasons. :)
-With my current patches nobody was able to kill it, so maybe I'll
-remove the experimental tag in v3.25.
+Thanks for pointing that out; I'll take a look.
+ 
+> > Also, catching errors in nand_scan_tail() tends to result in BUG()s.
+> 
+> Well, some of those can be changed. Feel free to propose changes. I'd
+> prefer to make nand_scan_tail() play nicer than to compensate in
+> individual drivers.
+> 
+> > That said, this could be useful as a publicly exported function that
+> > individual drivers are responsible for calling (maybe in of_mtd.c).
+> 
+> I don't think of_mtd.c should really contain a lot of mtd_info /
+> nand_chip knowledge, if we can avoid it.
+>
+> I really do think that the nand_scan() option is a better idea, if we
+> can work out the other details (BUG(), error checking, and keeping it
+> flexible enough). I think it provides the best place to flesh out any
+> other common DT handling for all NAND drivers.
+> 
+> Related: I believe the question came up recently about how to support a
+> generic DT binding for using a GPIO as a NAND write-protect line. This
+> would be another candidate for handling transparently in
+> nand_scan_ident() and would then immediately apply to all NAND drivers,
+> not just those that were rewritten to call another specialized init
+> function.
+> 
+> I really don't want to encourage the anti-pattern of each driver
+> reimplementing code that might as well be shared, if at all possible.
+> Adding more decentralized helpers to of_mtd.c does not really help that
+> cause.
 
-> By the way, I found some products in my company are using
-> MTD_UBI_GLUEBI to implement a squashfs on top of UBI device.
-> UBI_GLUEBI or UBI_BLOCK, which is better in your considering,
-> and why?
+Understood.
 
-UBI Block, it was designed for that case.
-Just compare the number of layers. :)
+[ snipped function prototype discussion ]
 
-Thanks,
-//richard
+> > You hinted at implementing stronger error checking. If we went
+> > this route, would it make sense to only error check the software
+> > ECC modes?
+> 
+> Yes. I just elided some of the details for now, since it's not actually
+> necessary to do some of it (many other drivers can use SW ECC without
+> the extra error checks).
+
+OK, I'll rework the fsl_upm patch to work with your proposed patch.
+
+-Aaron
