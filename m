@@ -1,20 +1,19 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGiN9-00007m-8S
- for linux-mtd@lists.infradead.org; Thu, 29 Jan 2015 06:14:38 +0000
-Message-ID: <54C9CF88.1080208@huawei.com>
-Date: Thu, 29 Jan 2015 14:13:28 +0800
-From: hujianyang <hujianyang@huawei.com>
+ id 1YGkxG-0004oz-Hw
+ for linux-mtd@lists.infradead.org; Thu, 29 Jan 2015 09:00:03 +0000
+Message-ID: <54C9F676.9080100@nod.at>
+Date: Thu, 29 Jan 2015 09:59:34 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
+To: hujianyang <hujianyang@huawei.com>
 Subject: Re: [PATCH] Add myself as UBI co-maintainer
 References: <1422444504-17217-1-git-send-email-richard@nod.at>
  <54C9ACE7.9060904@huawei.com>
- <CAF4G-tLhD2TS_XssaiK85ucZEdd9GsS77Z838qw8sC-Or=8xcw@mail.gmail.com>
-In-Reply-To: <CAF4G-tLhD2TS_XssaiK85ucZEdd9GsS77Z838qw8sC-Or=8xcw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <54C9ACE7.9060904@huawei.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/1/29 13:59, Artem Bityutskiy wrote:
-> The master branch is a superset of next. Master may have stuff not ready for next. Patches go first to master, then to next. Simple ones go to both. Next is pulled to linux-next tree, master is not.
-> Master may be rebased, next never gets rebaised.
+Am 29.01.2015 um 04:45 schrieb hujianyang:
+> On 2015/1/28 19:28, Richard Weinberger wrote:
+>> ...and set the state to "Supported" as UBI is part
+>> of my day job.
+>>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>> ---
+>>  MAINTAINERS | 9 ++-------
+>>  1 file changed, 2 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 2ebb056..6417fed 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -9891,20 +9891,15 @@ F:	drivers/scsi/ufs/
+>>  
+>>  UNSORTED BLOCK IMAGES (UBI)
+>>  M:	Artem Bityutskiy <dedekind1@gmail.com>
+>> +M:	Richard Weinberger <richard@nod.at>
+>>  W:	http://www.linux-mtd.infradead.org/
+>>  L:	linux-mtd@lists.infradead.org
+>>  T:	git git://git.infradead.org/ubifs-2.6.git
+>> -S:	Maintained
+>> +S:	Supported
+>>  F:	drivers/mtd/ubi/
+>>  F:	include/linux/mtd/ubi.h
+>>  F:	include/uapi/mtd/ubi-user.h
+>>  
+>> -UNSORTED BLOCK IMAGES (UBI) Fastmap
+>> -M:	Richard Weinberger <richard@nod.at>
+>> -L:	linux-mtd@lists.infradead.org
+>> -S:	Maintained
+>> -F:	drivers/mtd/ubi/fastmap.c
+>> -
+>>  USB ACM DRIVER
+>>  M:	Oliver Neukum <oliver@neukum.org>
+>>  L:	linux-usb@vger.kernel.org
+>>
 > 
-> Sent from my Android phone.
+> Seems this patch is pushed into "linux-next" but "master" is
+> the merging branch used by Artem before.
 > 
-> Best Regards,
-> Artem BItyutskiy
-> 
+> Just want to make sure you didn't miss the recent patch in
+> branch "master". I should say sorry if my last mail misleading
+> you.
 
-Got it!
+No need to worry.
+All patches from master are already in my local -next tree, build tests are running
+and I'll push in jiffy.
 
-Thanks~!
+Thanks,
+//richard
