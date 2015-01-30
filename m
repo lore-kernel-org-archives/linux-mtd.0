@@ -1,20 +1,34 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mailapp01.imgtec.com ([195.59.15.196])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YH7xU-0002QD-B7
- for linux-mtd@lists.infradead.org; Fri, 30 Jan 2015 09:33:48 +0000
-Message-ID: <1422610403.8637.275.camel@sauron.fi.intel.com>
-Subject: Re: UBI on top of a smaller portion of a bigger MTD device
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Nam Nguyen <namnguyen@chromium.org>
-Date: Fri, 30 Jan 2015 11:33:23 +0200
-In-Reply-To: <CA+YNSmW28UAqJsfXrdDd=sHmaL5Gk_yuHRhxB-2ydnKEX5Gnww@mail.gmail.com>
-References: <CA+YNSmW28UAqJsfXrdDd=sHmaL5Gk_yuHRhxB-2ydnKEX5Gnww@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Mike Frysinger <vapier@chromium.org>, linux-mtd@lists.infradead.org,
- dehrenberg@chromium.org
+ id 1YHA5N-0000Vp-OA
+ for linux-mtd@lists.infradead.org; Fri, 30 Jan 2015 11:50:07 +0000
+Message-ID: <54CB6F51.2070403@imgtec.com>
+Date: Fri, 30 Jan 2015 08:47:29 -0300
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+MIME-Version: 1.0
+To: =?UTF-8?B?IlBldGVyIFBhbiDmvZjmoIsgKHBldGVycGFuZG9uZyki?=
+ <peterpandong@micron.com>, =?UTF-8?B?IlFpIFdhbmcg546L6LW3IChxaXdhbmcpIg==?=
+ <qiwang@micron.com>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/3] An alternative to SPI NAND
+References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
+ <20150108010257.GP9759@ld-irv-0074>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
+ <54ADF90B.1070800@imgtec.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
+ <54BE2F7B.60003@imgtec.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A77151E62@NTXXIAMBX02.xacn.micron.com>
+ <54CA75F6.5020803@imgtec.com>
+ <87F60714EC601C4C83DFF1D2E3D390A04AE751@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A04AE751@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Andrew Bresticker <abrestic@chromium.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?UTF-8?B?IkZyYW5rIExpdSDliJjnvqQgKGZyYW5rbGl1KSI=?= <frankliu@micron.com>,
+ =?UTF-8?B?Ik1lbGFuaWUgWmhhbmcg5byg54eVIChtZWxhbmll?= =?UTF-8?B?emhhbmcpIg==?=
+ <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ James Hartley <james.hartley@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +38,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2015-01-29 at 16:58 -0800, Nam Nguyen wrote:
-> In recovery mode, however, the firmware does not read anything from
-> the (writable) NOR flash for fear of grabbing garbage values and
-> bricking the device. Hence the kernel has no info about any MTD
-> partition. Yet the recovery USB stick does have such information on
-> its rootfs. So we were thinking maybe we could augment ubi-utils with
-> where the partition starts, where it ends, to work with the raw NAND
-> device.
 
-Hi, I did not read the whole conversation, so I am sorry if my comment
-is not 100% relevant.
 
-But it sounds that what you actually want is repartitioning on demand.
+On 01/29/2015 09:57 PM, Peter Pan 潘栋 (peterpandong) wrote:
+[..]
+> 
+> Currently, we are working on sharing the bbt code. I think your and Brain's suggestion
+> will be very helpful.
+> 
+> There are two options. We can put struct nand_bbt pointer in either nand_chip
+> or mtd_info structure.
 
-IOW, you want an ioctl, which you will use to tell MTD what are the
-partition boundaries.
+I'm sorry, you lost me here. Do you mean struct nand_bbt_descr ?
 
-In this case the SW from the USB stick will just do that. You'll get the
-right MTD devices.
+> If put nand_bbt in nand_chip, we need to change the
 
-I do not think it would be a clean architecture to teach UBI tools to
-work with offsets instead of /dev/mtdX partitions.
+I thought the plan was NOT to base spi-nand on nand, so you can't put
+this in nand_chip, can you?
 
-Artem.
+Also: After looking at the nand_bbt.c file, I'm wondering how promising
+is to separate it from NAND. It seems the BBT code is quite attached to
+NAND!
+
+Are you planning to do this in just one patch? Maybe it's better to
+start simple and prepare small patches that gradually make the
+nand_base.c and nand_bbt.c files less dependent.
+
+For instance, you can get rid of the memory release in a first patch:
+
+        /* Free bad block table memory */
+        kfree(chip->bbt);
+        if (!(chip->options & NAND_OWN_BUFFERS))
+                kfree(chip->buffers);
+
+        /* Free bad block descriptor memory */
+        if (chip->badblock_pattern && chip->badblock_pattern->options
+                        & NAND_BBT_DYNAMICSTRUCT)
+                kfree(chip->badblock_pattern);
+
+by moving it to some nand_bbt_release() function.
+
+I might be pushing some patches to do this, as I think it can be useful
+in general to clean this code.
+-- 
+Ezequiel
