@@ -1,22 +1,20 @@
-Received: from mail-vc0-x235.google.com ([2607:f8b0:400c:c03::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YH7LB-0007u8-8O
- for linux-mtd@lists.infradead.org; Fri, 30 Jan 2015 08:54:13 +0000
-Received: by mail-vc0-f181.google.com with SMTP id id10so10409096vcb.12
- for <linux-mtd@lists.infradead.org>; Fri, 30 Jan 2015 00:53:51 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CAAK6Zt3YV_x8_iCpZqrZ6_xWhkPqtBCXG=+mEEV4OEcDYJZRTA@mail.gmail.com>
-References: <CA+YNSmW28UAqJsfXrdDd=sHmaL5Gk_yuHRhxB-2ydnKEX5Gnww@mail.gmail.com>
- <CAAK6Zt1oKBEwJkF6pUvsOvKUG7e0GXef8AxgXqPfgoBqmBWxhg@mail.gmail.com>
- <CAAK6Zt3YV_x8_iCpZqrZ6_xWhkPqtBCXG=+mEEV4OEcDYJZRTA@mail.gmail.com>
-Date: Fri, 30 Jan 2015 09:53:50 +0100
-Message-ID: <CAFLxGvztjiS92k9tYi1GgEUxAKPD1A1pBfTxzbSFkdiYy_judg@mail.gmail.com>
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YH7xU-0002QD-B7
+ for linux-mtd@lists.infradead.org; Fri, 30 Jan 2015 09:33:48 +0000
+Message-ID: <1422610403.8637.275.camel@sauron.fi.intel.com>
 Subject: Re: UBI on top of a smaller portion of a bigger MTD device
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Daniel Ehrenberg <dehrenberg@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Cc: Nam Nguyen <namnguyen@chromium.org>, Mike Frysinger <vapier@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Nam Nguyen <namnguyen@chromium.org>
+Date: Fri, 30 Jan 2015 11:33:23 +0200
+In-Reply-To: <CA+YNSmW28UAqJsfXrdDd=sHmaL5Gk_yuHRhxB-2ydnKEX5Gnww@mail.gmail.com>
+References: <CA+YNSmW28UAqJsfXrdDd=sHmaL5Gk_yuHRhxB-2ydnKEX5Gnww@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Mike Frysinger <vapier@chromium.org>, linux-mtd@lists.infradead.org,
+ dehrenberg@chromium.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 30, 2015 at 2:37 AM, Daniel Ehrenberg
-<dehrenberg@chromium.org> wrote:
-> On Thu, Jan 29, 2015 at 5:16 PM, Daniel Ehrenberg
-> <dehrenberg@chromium.org> wrote:
->> - Implement a dynamic MTD partitioning mechanism.
->
-> Oh, my mistake, that's already there, just learned about the
-> BLKPG_ADD_PARTITION ioctl and the fact that it works on mtd!
->
-> We are always partitioning our NAND with mtd0 standing in for the
-> whole device and further partitions for part of the device. Would it
-> be possible to delete all partitions but mtd0 and then add the
-> partitions that we want? It looks like BLKPG_ADD_PARTITION only works
-> if it's called against an unpartitioned device--in this case, it'd be
-> a partition whose size is size of the whole device and with offset 0.
-> How would you feel about a patch to relax this constraint for just
-> that type of partition? This way, if we had to repartition the device
-> (in a third mode that I didn't mention, where the partitions are read
-> from NOR but we're still booting from USB and reinstalling) we don't
-> have to ask the user to reboot halfway through to get the partition
-> table reflected.
+On Thu, 2015-01-29 at 16:58 -0800, Nam Nguyen wrote:
+> In recovery mode, however, the firmware does not read anything from
+> the (writable) NOR flash for fear of grabbing garbage values and
+> bricking the device. Hence the kernel has no info about any MTD
+> partition. Yet the recovery USB stick does have such information on
+> its rootfs. So we were thinking maybe we could augment ubi-utils with
+> where the partition starts, where it ends, to work with the raw NAND
+> device.
 
-As I explained on IRC to Nam UBI works only on mtd partitions and magic
-offset games are something we definitely don't want.
+Hi, I did not read the whole conversation, so I am sorry if my comment
+is not 100% relevant.
 
-With your mails the use case makes more sense, I agree that you
-need some way to partition the mtd at run-time.
-If we BLKPG ioctl() does not offer all the functionality you need I don't
-you can extend it. Patches are welcome!
+But it sounds that what you actually want is repartitioning on demand.
 
--- 
-Thanks,
-//richard
+IOW, you want an ioctl, which you will use to tell MTD what are the
+partition boundaries.
+
+In this case the SW from the USB stick will just do that. You'll get the
+right MTD devices.
+
+I do not think it would be a clean architecture to teach UBI tools to
+work with offsets instead of /dev/mtdX partitions.
+
+Artem.
