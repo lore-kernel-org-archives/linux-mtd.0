@@ -1,20 +1,16 @@
-Received: from mail-yk0-x234.google.com ([2607:f8b0:4002:c07::234])
+Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHYQH-0006VG-2s
- for linux-mtd@lists.infradead.org; Sat, 31 Jan 2015 13:49:17 +0000
-Received: by mail-yk0-f180.google.com with SMTP id 131so19053986ykp.11
- for <linux-mtd@lists.infradead.org>; Sat, 31 Jan 2015 05:48:54 -0800 (PST)
-From: Kevin Hao <haokexin@gmail.com>
-To: linuxppc-dev@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 12/15] mtd: kconfig: replace PPC_OF with PPC
-Date: Sat, 31 Jan 2015 21:47:42 +0800
-Message-Id: <1422712065-9403-13-git-send-email-haokexin@gmail.com>
-In-Reply-To: <1422712065-9403-1-git-send-email-haokexin@gmail.com>
-References: <1422712065-9403-1-git-send-email-haokexin@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>, Kevin Hao <haokexin@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ id 1YHdT1-0004sp-AZ
+ for linux-mtd@lists.infradead.org; Sat, 31 Jan 2015 19:12:27 +0000
+Received: by mail-ie0-f179.google.com with SMTP id x19so10075033ier.10
+ for <linux-mtd@lists.infradead.org>; Sat, 31 Jan 2015 11:12:03 -0800 (PST)
+From: Nicholas Krause <xerofoify@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] jffs2:Remove no longer needed fix me comment for the function,
+ jffs2_do_readpage_nolock
+Date: Sat, 31 Jan 2015 14:11:58 -0500
+Message-Id: <1422731518-17649-1-git-send-email-xerofoify@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The PPC_OF is a ppc specific option which is used to mean that the
-firmware device tree access functions are available. Since all the
-ppc platforms have a device tree, it is aways set to 'y' for ppc.
-So it makes no sense to keep a such option in the current kernel.
-Replace it with PPC.
+This fix me comment is no longer needed due to kmap not being able to fail and always
+returning a address mapped in high memory as required for this function. There for
+this fix me can now be removed as kmap always succeeds and there is no reason to
+check if it fails.
 
-Signed-off-by: Kevin Hao <haokexin@gmail.com>
+Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
 ---
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jffs2/file.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 7d0150d20432..ceade0448025 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -421,7 +421,7 @@ config MTD_NAND_ORION
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index 64989ca..84a2f7b 100644
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -94,7 +94,6 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
+ 	BUG_ON(!PageLocked(pg));
  
- config MTD_NAND_FSL_ELBC
- 	tristate "NAND support for Freescale eLBC controllers"
--	depends on PPC_OF
-+	depends on PPC
- 	select FSL_LBC
- 	help
- 	  Various Freescale chips, including the 8313, include a NAND Flash
+ 	pg_buf = kmap(pg);
+-	/* FIXME: Can kmap fail? */
+ 
+ 	ret = jffs2_read_inode_range(c, f, pg_buf, pg->index << PAGE_CACHE_SHIFT, PAGE_CACHE_SIZE);
+ 
 -- 
-1.9.3
+2.1.0
