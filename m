@@ -1,24 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHXcN-0006BW-Ae
- for linux-mtd@lists.infradead.org; Sat, 31 Jan 2015 12:57:43 +0000
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-To: "tlinder@codeaurora.org" <tlinder@codeaurora.org>
-Subject: Re: Synchronization in UBIFS (zero length files)
-Date: Sat, 31 Jan 2015 12:57:13 +0000
-Message-ID: <1422709032.8637.337.camel@sauron.fi.intel.com>
-References: <5492918F.2060704@codeaurora.org>
- <1422708775.8637.333.camel@sauron.fi.intel.com>
-In-Reply-To: <1422708775.8637.333.camel@sauron.fi.intel.com>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <49191D9DF9967C46AACEF6E7AD0447CC@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Cc: "draviv@codeaurora.org" <draviv@codeaurora.org>,
- "richard@nod.at" <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-yk0-x234.google.com ([2607:f8b0:4002:c07::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YHYQH-0006VG-2s
+ for linux-mtd@lists.infradead.org; Sat, 31 Jan 2015 13:49:17 +0000
+Received: by mail-yk0-f180.google.com with SMTP id 131so19053986ykp.11
+ for <linux-mtd@lists.infradead.org>; Sat, 31 Jan 2015 05:48:54 -0800 (PST)
+From: Kevin Hao <haokexin@gmail.com>
+To: linuxppc-dev@lists.ozlabs.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH 12/15] mtd: kconfig: replace PPC_OF with PPC
+Date: Sat, 31 Jan 2015 21:47:42 +0800
+Message-Id: <1422712065-9403-13-git-send-email-haokexin@gmail.com>
+In-Reply-To: <1422712065-9403-1-git-send-email-haokexin@gmail.com>
+References: <1422712065-9403-1-git-send-email-haokexin@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, Kevin Hao <haokexin@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gU2F0LCAyMDE1LTAxLTMxIGF0IDE0OjUyICswMjAwLCBBcnRlbSBCaXR5dXRza2l5IHdyb3Rl
-Og0KPiBXZWxsLCB0aGUgaWRlYSB3YXMgdG8gaW1wbGVtZW50IHNvbWV0aGluZyBsaWtlIEJJTyBm
-b3IgVUJJRlMuDQoNCkZvciBVQkksIG9mIGNvdXJzZS4gV2UgZXZlbiBzdGFydGVkIGRvaW5nIHRo
-aXMgYXQgc29tZSBwb2ludCwgYnV0IHRoZW4NCnN0b3BwZWQuIEF0IHRoYXQgdGltZSBJIHdhcyBj
-b25maWRlbnQgd2UgY291bGQgZG8gaXQuDQoNClRoZSB3b3JrcXVldWUgc3VnZ2VzdGlvbiBJIGdh
-dmUgbWF5IG9yIG1heSBub3Qgd29yay4gSXQgZmVlbHMgZWFzaWVyIHRvDQppbXBsZW1lbnQgYW5k
-IGxlc3MgaW50cnVzaXZlLiBCdXQgeW91IG5ldmVyIGtub3cgYmVmb3JlIHlvdSB0cnkuDQoNCi0t
-IA0KQmVzdCBSZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tpeQ0KLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkludGVsIEZp
-bmxhbmQgT3kKUmVnaXN0ZXJlZCBBZGRyZXNzOiBQTCAyODEsIDAwMTgxIEhlbHNpbmtpIApCdXNp
-bmVzcyBJZGVudGl0eSBDb2RlOiAwMzU3NjA2IC0gNCAKRG9taWNpbGVkIGluIEhlbHNpbmtpIAoK
-VGhpcyBlLW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwg
-bWF0ZXJpYWwgZm9yCnRoZSBzb2xlIHVzZSBvZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50KHMpLiBB
-bnkgcmV2aWV3IG9yIGRpc3RyaWJ1dGlvbgpieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJvaGliaXRl
-ZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkCnJlY2lwaWVudCwgcGxlYXNlIGNvbnRhY3Qg
-dGhlIHNlbmRlciBhbmQgZGVsZXRlIGFsbCBjb3BpZXMuCg==
+The PPC_OF is a ppc specific option which is used to mean that the
+firmware device tree access functions are available. Since all the
+ppc platforms have a device tree, it is aways set to 'y' for ppc.
+So it makes no sense to keep a such option in the current kernel.
+Replace it with PPC.
+
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+---
+ drivers/mtd/nand/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 7d0150d20432..ceade0448025 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -421,7 +421,7 @@ config MTD_NAND_ORION
+ 
+ config MTD_NAND_FSL_ELBC
+ 	tristate "NAND support for Freescale eLBC controllers"
+-	depends on PPC_OF
++	depends on PPC
+ 	select FSL_LBC
+ 	help
+ 	  Various Freescale chips, including the 8313, include a NAND Flash
+-- 
+1.9.3
