@@ -1,34 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHA5N-0000Vp-OA
- for linux-mtd@lists.infradead.org; Fri, 30 Jan 2015 11:50:07 +0000
-Message-ID: <54CB6F51.2070403@imgtec.com>
-Date: Fri, 30 Jan 2015 08:47:29 -0300
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YHOzM-0003Ma-Bw
+ for linux-mtd@lists.infradead.org; Sat, 31 Jan 2015 03:44:53 +0000
+Message-ID: <54CC4F77.1000801@huawei.com>
+Date: Sat, 31 Jan 2015 11:43:51 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?IlBldGVyIFBhbiDmvZjmoIsgKHBldGVycGFuZG9uZyki?=
- <peterpandong@micron.com>, =?UTF-8?B?IlFpIFdhbmcg546L6LW3IChxaXdhbmcpIg==?=
- <qiwang@micron.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/3] An alternative to SPI NAND
-References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
- <20150108010257.GP9759@ld-irv-0074>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
- <54ADF90B.1070800@imgtec.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
- <54BE2F7B.60003@imgtec.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A77151E62@NTXXIAMBX02.xacn.micron.com>
- <54CA75F6.5020803@imgtec.com>
- <87F60714EC601C4C83DFF1D2E3D390A04AE751@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A04AE751@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Andrew Bresticker <abrestic@chromium.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?IkZyYW5rIExpdSDliJjnvqQgKGZyYW5rbGl1KSI=?= <frankliu@micron.com>,
- =?UTF-8?B?Ik1lbGFuaWUgWmhhbmcg5byg54eVIChtZWxhbmll?= =?UTF-8?B?emhhbmcpIg==?=
- <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- James Hartley <james.hartley@imgtec.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH resend] UBIFS: return -EINVAL if first log leb is empty
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,47 +20,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+CS node is recognized as a sign in UBIFS log replay mechanism.
+Log relaying during mount should find the CS node in first log
+leb at beginning and then replay the following uncommitted
+buds.
 
+Here is a bug in log replay path: If first log leb, which is
+indicated by @log_lnum in mst_node, is empty, current UBIFS
+replay nothing and directly mount the partition without any
+warning. This action will put filesystem in an abnormal state,
+e.g. space management in LPT area is incorrect to the real
+space usage in main area.
 
-On 01/29/2015 09:57 PM, Peter Pan 潘栋 (peterpandong) wrote:
-[..]
-> 
-> Currently, we are working on sharing the bbt code. I think your and Brain's suggestion
-> will be very helpful.
-> 
-> There are two options. We can put struct nand_bbt pointer in either nand_chip
-> or mtd_info structure.
+We reproduced this bug by fault injection: turn first log leb
+into all 0xFF. UBIFS driver mount the polluted partition
+normally. But errors occur while running fs_stress on this
+mount:
 
-I'm sorry, you lost me here. Do you mean struct nand_bbt_descr ?
+[89068.055183] UBI error: ubi_io_read: error -74 (ECC error) while reading 59 bytes from PEB 711:33088, read 59 bytes
+[89068.179877] UBIFS error (pid 10517): ubifs_check_node: bad magic 0x101031, expected 0x6101831
+[89068.179882] UBIFS error (pid 10517): ubifs_check_node: bad node at LEB 591:28992
+[89068.179891] Not a node, first 24 bytes:
+[89068.179892] 00000000: 31 10 10 00 37 84 64 04 10 04 00 00 00 00 00 00 20 00 00 00 02 01 00 00                          1...7.d......... .......
+[89068.180282] UBIFS error (pid 10517): ubifs_read_node: expected node type 2
 
-> If put nand_bbt in nand_chip, we need to change the
+This patch fix the problem by checking c->cs_sqnum to
+guarantee the empty leb is not first log leb and return an
+error if the first log leb is incorrectly empty. After this,
+we could catch *first log empty* error in place.
 
-I thought the plan was NOT to base spi-nand on nand, so you can't put
-this in nand_chip, can you?
+Signed-off-by: hujianyang <hujianyang@huawei.com>
+---
+ fs/ubifs/replay.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
 
-Also: After looking at the nand_bbt.c file, I'm wondering how promising
-is to separate it from NAND. It seems the BBT code is quite attached to
-NAND!
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 3187925..f13f4b2 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -846,7 +846,14 @@ static int replay_log_leb(struct ubifs_info *c, int lnum, int offs, void *sbuf)
+ 	}
 
-Are you planning to do this in just one patch? Maybe it's better to
-start simple and prepare small patches that gradually make the
-nand_base.c and nand_bbt.c files less dependent.
+ 	if (sleb->nodes_cnt == 0) {
+-		err = 1;
++		if (unlikely(c->cs_sqnum == 0)) {
++			/* This is the first log LEB, should not be empty */
++			ubifs_err("first log leb LEB %d:%d is empty, no CS node exist",
++				  lnum, offs);
++			err = -EINVAL;
++		} else {
++			err = 1;
++		}
+ 		goto out;
+ 	}
 
-For instance, you can get rid of the memory release in a first patch:
-
-        /* Free bad block table memory */
-        kfree(chip->bbt);
-        if (!(chip->options & NAND_OWN_BUFFERS))
-                kfree(chip->buffers);
-
-        /* Free bad block descriptor memory */
-        if (chip->badblock_pattern && chip->badblock_pattern->options
-                        & NAND_BBT_DYNAMICSTRUCT)
-                kfree(chip->badblock_pattern);
-
-by moving it to some nand_bbt_release() function.
-
-I might be pushing some patches to do this, as I think it can be useful
-in general to clean this code.
 -- 
-Ezequiel
+1.6.0.2
