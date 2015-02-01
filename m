@@ -1,23 +1,22 @@
-Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHo4V-0005mA-Bl
- for linux-mtd@lists.infradead.org; Sun, 01 Feb 2015 06:31:52 +0000
-Date: Sun, 1 Feb 2015 06:31:16 +0000
-From: Al Viro <viro@ZenIV.linux.org.uk>
-To: Jens Axboe <axboe@fb.com>
-Subject: Re: backing_dev_info cleanups & lifetime rule fixes V2
-Message-ID: <20150201063116.GP29656@ZenIV.linux.org.uk>
-References: <1421228561-16857-1-git-send-email-hch@lst.de>
- <54BEC3C2.7080906@fb.com>
+ id 1YHq4u-0001ls-PT
+ for linux-mtd@lists.infradead.org; Sun, 01 Feb 2015 08:40:25 +0000
+Message-ID: <54CDE65E.2000002@codeaurora.org>
+Date: Sun, 01 Feb 2015 10:39:58 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54BEC3C2.7080906@fb.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-Cc: linux-nfs@vger.kernel.org, linux-mm@kvack.org,
- David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Tejun Heo <tj@kernel.org>,
- ceph-devel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Subject: Re: Synchronization in UBIFS (zero length files)
+References: <5492918F.2060704@codeaurora.org>	
+ <1422708775.8637.333.camel@sauron.fi.intel.com>
+ <1422709032.8637.337.camel@sauron.fi.intel.com>
+In-Reply-To: <1422709032.8637.337.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "draviv@codeaurora.org" <draviv@codeaurora.org>,
+ "richard@nod.at" <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,63 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 20, 2015 at 02:08:18PM -0700, Jens Axboe wrote:
-> On 01/14/2015 02:42 AM, Christoph Hellwig wrote:
-> >The first 8 patches are unchanged from the series posted a week ago and
-> >cleans up how we use the backing_dev_info structure in preparation for
-> >fixing the life time rules for it.  The most important change is to
-> >split the unrelated nommu mmap flags from it, but it also remove a
-> >backing_dev_info pointer from the address_space (and thus the inode)
-> >and cleans up various other minor bits.
-> >
-> >The remaining patches sort out the issues around bdi_unlink and now
-> >let the bdi life until it's embedding structure is freed, which must
-> >be equal or longer than the superblock using the bdi for writeback,
-> >and thus gets rid of the whole mess around reassining inodes to new
-> >bdis.
-> >
-> >Changes since V1:
-> >  - various minor documentation updates based on Feedback from Tejun
-> 
-> I applied this to for-3.20/bdi, only making the change (noticed by
-> Jan) to kill the extra WARN_ON() in patch #11.
+Hi Artem
 
-And at that point we finally can make sb_lock and super_blocks static in
-fs/super.c.  Do you want that in your tree, or would you rather have it
-done via vfs.git during the merge window after your tree goes in?  It's
-as trivial as this:
+On 1/31/2015 2:57 PM, Bityutskiy, Artem wrote:
+> On Sat, 2015-01-31 at 14:52 +0200, Artem Bityutskiy wrote:
+>> Well, the idea was to implement something like BIO for UBIFS.
+>
+> For UBI, of course. We even started doing this at some point, but then
+> stopped. At that time I was confident we could do it.
+>
+> The workqueue suggestion I gave may or may not work. It feels easier to
+> implement and less intrusive. But you never know before you try.
+>
 
-Make super_blocks and sb_lock static
+Thanks for the explanation!
+This was a while back and the task already completed :) I found a long 
+long discussion you had with the community back in 2009 when Ted Ts'o 
+implemented the sync-on-rename/truncate hack for ext4. You were asking 
+the developers opinion on whether same should be done for ubifs or the 
+sync should remain the user responsibility. The conclusion was that it's 
+user responsibility to sync before renaming so nothing was done for ubifs.
+Unfortunately our customer thought differently so I had to go through 
+with adding this hack to ubifs. Not the most elegant solution to the 
+zero-length-files problem, but the quickest and the safest for the moment.
 
-The only user outside of fs/super.c is gone now
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
-diff --git a/fs/super.c b/fs/super.c
-index eae088f..91badbb 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -36,8 +36,8 @@
- #include "internal.h"
- 
- 
--LIST_HEAD(super_blocks);
--DEFINE_SPINLOCK(sb_lock);
-+static LIST_HEAD(super_blocks);
-+static DEFINE_SPINLOCK(sb_lock);
- 
- static char *sb_writers_name[SB_FREEZE_LEVELS] = {
- 	"sb_writers",
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 1f3c439..efc384e 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1184,8 +1184,6 @@ struct mm_struct;
- #define UMOUNT_NOFOLLOW	0x00000008	/* Don't follow symlink on umount */
- #define UMOUNT_UNUSED	0x80000000	/* Flag guaranteed to be unused */
- 
--extern struct list_head super_blocks;
--extern spinlock_t sb_lock;
- 
- /* Possible states of 'frozen' field */
- enum {
+Thanks,
+Tanya Brokhman
+-- 
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
