@@ -1,14 +1,11 @@
 From: Nicholas Mc Guire <hofrat@osadl.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] spi: fsl-quadspi: cleanup wait_for_completion return handling
-Date: Sun,  1 Feb 2015 06:15:46 -0500
-Message-Id: <1422789346-16954-1-git-send-email-hofrat@osadl.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Marek Vasut <marex@denx.de>,
- linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- Allen Xu <b45815@freescale.com>, linux-mtd@lists.infradead.org,
- Nicholas Mc Guire <hofrat@osadl.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Ben Hutchings <ben@decadent.org.uk>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: [PATCH] mtd: pxa3xx_nand: cleanup wait_for_completion handling
+Date: Sun,  1 Feb 2015 11:55:37 -0500
+Message-Id: <1422809737-3991-1-git-send-email-hofrat@osadl.org>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Nicholas Mc Guire <hofrat@osadl.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +17,101 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 return type of wait_for_completion_timeout is unsigned long not int, this
 patch uses the return value of wait_for_completion_timeout in the condition
-directly rather than adding a additional appropriately typed variable.
+directly rather than assigning it to an incorrect type variable.
+
+The timeout declaration cleanup is just for readability
 
 Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 ---
 
-As the returnvalue of wait_for_completion_timeout is logically treated here
-as a boolean (timeout occured or not) it can be wrapped into the if condition
-directly and no additional variable is needed.
+The variable used for handling the return of wait_for_cmpletion_timeout
+was int but should be unsigned long, where it was not in use for anything
+else and the return value in case of completion (>0) is not used it was
+removed and wait_for_completion_timeout() used directly in the if condition.
 
-This patch was only compile tested with imx_v6_v7_defconfig
-(implies CONFIG_SPI_FSL_QUADSPI=y)
+To make the timeout values a bit simpler to read and also handle all of
+the corner cases correctly the declarations are moved to msecs_to_jiffies().
 
-Patch is against 3.19.0-rc6 -next-20150130
+This patch was only compile tested for pxa3xx_defconfig 
+(implies CONFIG_MTD_NAND_PXA3xx=y)
 
- drivers/mtd/spi-nor/fsl-quadspi.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Patch is against 3.0.19-rc6 -next-20150130 
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index a46bea3..2543b5c 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -455,8 +455,7 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
- 	writel((seqid << QUADSPI_IPCR_SEQID_SHIFT) | len, base + QUADSPI_IPCR);
+ drivers/mtd/nand/pxa3xx_nand.c |   24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 96b0b1d..ef6545b 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -38,8 +38,8 @@
  
- 	/* Wait for the interrupt. */
--	err = wait_for_completion_timeout(&q->c, msecs_to_jiffies(1000));
--	if (!err) {
-+	if (!wait_for_completion_timeout(&q->c, msecs_to_jiffies(1000))) {
- 		dev_err(q->dev,
- 			"cmd 0x%.2x timeout, addr@%.8x, FR:0x%.8x, SR:0x%.8x\n",
- 			cmd, addr, readl(base + QUADSPI_FR),
+ #include <linux/platform_data/mtd-nand-pxa3xx.h>
+ 
+-#define	CHIP_DELAY_TIMEOUT	(2 * HZ/10)
+-#define NAND_STOP_DELAY		(2 * HZ/50)
++#define	CHIP_DELAY_TIMEOUT	msecs_to_jiffies(200)
++#define NAND_STOP_DELAY		msecs_to_jiffies(40)
+ #define PAGE_CHUNK_SIZE		(2048)
+ 
+ /*
+@@ -915,7 +915,7 @@ static void nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+ {
+ 	struct pxa3xx_nand_host *host = mtd->priv;
+ 	struct pxa3xx_nand_info *info = host->info_data;
+-	int ret, exec_cmd;
++	int exec_cmd;
+ 
+ 	/*
+ 	 * if this is a x16 device ,then convert the input
+@@ -947,9 +947,8 @@ static void nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+ 		info->need_wait = 1;
+ 		pxa3xx_nand_start(info);
+ 
+-		ret = wait_for_completion_timeout(&info->cmd_complete,
+-				CHIP_DELAY_TIMEOUT);
+-		if (!ret) {
++		if (!wait_for_completion_timeout(&info->cmd_complete,
++		    CHIP_DELAY_TIMEOUT)) {
+ 			dev_err(&info->pdev->dev, "Wait time out!!!\n");
+ 			/* Stop State Machine for next command cycle */
+ 			pxa3xx_nand_stop(info);
+@@ -964,7 +963,7 @@ static void nand_cmdfunc_extended(struct mtd_info *mtd,
+ {
+ 	struct pxa3xx_nand_host *host = mtd->priv;
+ 	struct pxa3xx_nand_info *info = host->info_data;
+-	int ret, exec_cmd, ext_cmd_type;
++	int exec_cmd, ext_cmd_type;
+ 
+ 	/*
+ 	 * if this is a x16 device then convert the input
+@@ -1027,9 +1026,8 @@ static void nand_cmdfunc_extended(struct mtd_info *mtd,
+ 		init_completion(&info->cmd_complete);
+ 		pxa3xx_nand_start(info);
+ 
+-		ret = wait_for_completion_timeout(&info->cmd_complete,
+-				CHIP_DELAY_TIMEOUT);
+-		if (!ret) {
++		if (!wait_for_completion_timeout(&info->cmd_complete,
++		    CHIP_DELAY_TIMEOUT)) {
+ 			dev_err(&info->pdev->dev, "Wait time out!!!\n");
+ 			/* Stop State Machine for next command cycle */
+ 			pxa3xx_nand_stop(info);
+@@ -1162,13 +1160,11 @@ static int pxa3xx_nand_waitfunc(struct mtd_info *mtd, struct nand_chip *this)
+ {
+ 	struct pxa3xx_nand_host *host = mtd->priv;
+ 	struct pxa3xx_nand_info *info = host->info_data;
+-	int ret;
+ 
+ 	if (info->need_wait) {
+-		ret = wait_for_completion_timeout(&info->dev_ready,
+-				CHIP_DELAY_TIMEOUT);
+ 		info->need_wait = 0;
+-		if (!ret) {
++		if (!wait_for_completion_timeout(&info->dev_ready,
++		    CHIP_DELAY_TIMEOUT)) {
+ 			dev_err(&info->pdev->dev, "Ready time out!!!\n");
+ 			return NAND_STATUS_FAIL;
+ 		}
 -- 
 1.7.10.4
