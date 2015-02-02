@@ -1,18 +1,17 @@
-Received: from mail-am1on0773.outbound.protection.outlook.com
- ([2a01:111:f400:fe00::773]
- helo=emea01-am1-obe.outbound.protection.outlook.com)
+Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIHUV-0001MD-SQ
- for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 13:56:40 +0000
-From: "Sharma, Abhishek (A.)" <asharm14@visteon.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Regarding integck failure
-Date: Mon, 2 Feb 2015 13:55:55 +0000
-Message-ID: <DB4PR06MB0160562E38A78408A7CF5CDC83C0@DB4PR06MB016.eurprd06.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1YIJm5-0002Sg-AW
+ for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 16:22:58 +0000
+Received: by mail-la0-f45.google.com with SMTP id gd6so42436953lab.4
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Feb 2015 08:22:34 -0800 (PST)
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: Expose partition offset to the drivers
+Date: Mon,  2 Feb 2015 17:22:32 +0100
+Message-Id: <1422894152-29362-1-git-send-email-ricardo.ribalda@gmail.com>
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,70 +21,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Currently, there is no way to find out the offset of an mtd partition by
+a driver. This might be needed by external hardware.
 
-I am running the integck test on a UBIFS file system with power cut enabled=
-.
-Below steps were followed:
+For example, a flash containing the firmware of an external device that
+is also accessible by the main cpu/kernel.
 
-1. enabling the power cut after every minute using echo 1 > /sys/kernel/deb=
-ug/ubifs/ubi2_0/tst_recovery
-2. run the integck with -p option. (integck -p /meta  where meta is a UBIFS=
- partition)
+The flash is big enough to have two partitions with 2 versions of the
+firmware, so we can have a safe upgrade.
 
-After around 4 hours the integck stops with the following error message
+Once the flash has been updated we need the real offset, so we can write
+it on the external device registers.
 
-UBIFS error (pid 594): ubifs_scan: bad node
-UBIFS error (pid 594): ubifs_scanned_corruption: corruption at LEB 187:2652=
-16
-UBIFS error (pid 594): ubifs_scanned_corruption: first 8192 bytes from LEB =
-187:265216
-UBIFS error (pid 594): ubifs_scan: LEB 187 scanning failed
-UBIFS error (pid 594): ubifs_dump_leb: scan error -117
-UBIFS error (pid 594): do_writepage: cannot write page 11769 of inode 7424,=
- error -30
-UBIFS error (pid 1413): make_reservation: cannot reserve 4144 bytes in jhea=
-d 2, error -30
-UBIFS error (pid 1413): do_writepage: cannot write page 11770 of inode 7424=
-, error -30
-UBIFS error (pid 1413): make_reservation: cannot reserve 160 bytes in jhead=
- 1, error -30
-UBIFS error (pid 1413): ubifs_write_inode: can't write inode 7424, error -3=
-0
+Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+---
+ drivers/mtd/mtdpart.c          | 8 ++++++++
+ include/linux/mtd/partitions.h | 1 +
+ 2 files changed, 9 insertions(+)
 
-
-
-UBIFS error (pid 2116): ubifs_leb_write: writing 4096 bytes to LEB 190:4915=
-20 failed, error -30
-UBIFS error (pid 637): make_reservation: cannot reserve 4144 bytes in jhead=
- 2, error -30
-UBIFS error (pid 594): make_reservation: cannot reserve 4144 bytes in jhead=
- 2, error -30
-UBIFS error (pid 594): do_writepage: cannot write page 16125 of inode 7518,=
- error -30
-UBIFS error (pid 2116): do_commit: commit failed, error -30
-UBIFS error (pid 637): do_writepage: cannot write page 564 of inode 7526, e=
-rror -30
-UBIFS error (pid 637): make_reservation: cannot reserve 160 bytes in jhead =
-1, error -30
-UBIFS error (pid 637): ubifs_write_inode: can't write inode 7526, error -30
-UBIFS error (pid 2129): ubifs_leb_write: writing 4096 bytes to LEB 598:4915=
-2 failed, error -30
-UBIFS error (pid 1413): make_reservation: cannot reserve 4144 bytes in jhea=
-d 2, error -30
-UBIFS error (pid 1413): do_writepage: cannot write page 2638 of inode 7613,=
- error -30
-UBIFS error (pid 2129): do_commit: commit failed, error -30
-UBIFS error (pid 1413): make_reservation: cannot reserve 160 bytes in jhead=
- 1, error -30
-UBIFS error (pid 1413): ubifs_write_inode: can't write inode 7613, error -3=
-0
-integck: error!: cannot open file /meta/integck_test_dir_594/605695
-         error 2 (No such file or directory)
-integck: error!: condition '0' failed in file_check() at integck.c:1568
-integck: error 2 (No such file or directory)
-
-Please let me know if it is a valid failure or I am missing something.
-
-Thanks
-Abhishek
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index a3e3a7d..8047e74 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -784,3 +784,11 @@ uint64_t mtd_get_device_size(const struct mtd_info *mtd)
+ 	return PART(mtd)->master->size;
+ }
+ EXPORT_SYMBOL_GPL(mtd_get_device_size);
++
++uint64_t mtd_get_device_offset(const struct mtd_info *mtd){
++	if (!mtd_is_partition(mtd))
++		return 0;
++
++	return PART(mtd)->offset;
++}
++EXPORT_SYMBOL_GPL(mtd_get_device_offset);
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 6a35e6d..2b953b4 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -84,5 +84,6 @@ int mtd_add_partition(struct mtd_info *master, const char *name,
+ 		      long long offset, long long length);
+ int mtd_del_partition(struct mtd_info *master, int partno);
+ uint64_t mtd_get_device_size(const struct mtd_info *mtd);
++uint64_t mtd_get_device_offset(const struct mtd_info *mtd);
+ 
+ #endif
+-- 
+2.1.4
