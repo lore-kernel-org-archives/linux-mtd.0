@@ -1,33 +1,19 @@
-From: =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
- <ezequiel.garcia@imgtec.com>
-Subject: RE: [PATCH 0/3] An alternative to SPI NAND
-Date: Mon, 2 Feb 2015 01:53:49 +0000
-Message-ID: <87F60714EC601C4C83DFF1D2E3D390A04AEA93@NTXXIAMBX02.xacn.micron.com>
-References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
- <20150108010257.GP9759@ld-irv-0074>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
- <54ADF90B.1070800@imgtec.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
- <54BE2F7B.60003@imgtec.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A77151E62@NTXXIAMBX02.xacn.micron.com>
- <54CA75F6.5020803@imgtec.com>
- <87F60714EC601C4C83DFF1D2E3D390A04AE751@NTXXIAMBX02.xacn.micron.com>
- <54CB6F51.2070403@imgtec.com> <20150131070204.GA3692@norris-Latitude-E6410>
-In-Reply-To: <20150131070204.GA3692@norris-Latitude-E6410>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YI76F-0000i8-9e
+ for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 02:50:57 +0000
+Message-ID: <54CEE5D0.7060003@huawei.com>
+Date: Mon, 2 Feb 2015 10:49:52 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Cc: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>, Andrew
- Bresticker <abrestic@chromium.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- =?utf-8?B?TWVsYW5pZSBaaGFuZyDlvKDnh5UgKG1lbGFuaWV6aGFuZyk=?=
- <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- James Hartley <james.hartley@imgtec.com>
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH RFC 2/2] UBIFS: scan all log lebs during log replay
+References: <549C0A10.3000201@huawei.com> <549C0CC4.9050703@huawei.com>
+ <1422708415.8637.328.camel@sauron.fi.intel.com>
+In-Reply-To: <1422708415.8637.328.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, shengyong1@huawei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,101 +23,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gU2F0LCBKYW4gMzEsIDIwMTUgYXQgMTU6MDI6MjlBTSAtMDMwMCwgQnJpYW4gTm9ycmlzIHdy
-b3RlOg0KPiANCj4gT24gRnJpLCBKYW4gMzAsIDIwMTUgYXQgMDg6NDc6MjlBTSAtMDMwMCwgRXpl
-cXVpZWwgR2FyY2lhIHdyb3RlOg0KPiA+IE9uIDAxLzI5LzIwMTUgMDk6NTcgUE0sIFBldGVyIFBh
-biDmvZjmoIsgKHBldGVycGFuZG9uZykgd3JvdGU6DQo+ID4gWy4uXQ0KPiA+ID4NCj4gPiA+IEN1
-cnJlbnRseSwgd2UgYXJlIHdvcmtpbmcgb24gc2hhcmluZyB0aGUgYmJ0IGNvZGUuIEkgdGhpbmsg
-eW91ciBhbmQNCj4gQnJhaW4ncyBzdWdnZXN0aW9uDQo+ID4gPiB3aWxsIGJlIHZlcnkgaGVscGZ1
-bC4NCj4gPiA+DQo+ID4gPiBUaGVyZSBhcmUgdHdvIG9wdGlvbnMuIFdlIGNhbiBwdXQgc3RydWN0
-IG5hbmRfYmJ0IHBvaW50ZXIgaW4gZWl0aGVyDQo+IG5hbmRfY2hpcA0KPiA+ID4gb3IgbXRkX2lu
-Zm8gc3RydWN0dXJlLg0KPiA+DQo+ID4gSSdtIHNvcnJ5LCB5b3UgbG9zdCBtZSBoZXJlLiBEbyB5
-b3UgbWVhbiBzdHJ1Y3QgbmFuZF9iYnRfZGVzY3IgPw0KPiANCj4gSSdtIGFzc3VtaW5nIGhlJ3Mg
-c3VnZ2VzdGluZyBhIG5ldyBzdHJ1Y3QgdGhhdCBoZSdzIGNhbGxpbmcgbmFuZF9iYnQuDQo+IA0K
-PiA+ID4gSWYgcHV0IG5hbmRfYmJ0IGluIG5hbmRfY2hpcCwgd2UgbmVlZCB0byBjaGFuZ2UgdGhl
-DQo+ID4NCj4gPiBJIHRob3VnaHQgdGhlIHBsYW4gd2FzIE5PVCB0byBiYXNlIHNwaS1uYW5kIG9u
-IG5hbmQsIHNvIHlvdSBjYW4ndCBwdXQNCj4gPiB0aGlzIGluIG5hbmRfY2hpcCwgY2FuIHlvdT8N
-Cj4gDQo+IFlvdSBjb3VsZC4gSXQncyBqdXN0IGEgbWF0dGVyIG9mIHdobyBkb2VzIHRoZSBwb2lu
-dGVyIGNoYXNpbmcuIChJdCdzDQo+IGp1c3QgaW1wb3J0YW50IHRoYXQgbmFuZF9iYnQuYyBkb2Vz
-bid0ICphc3N1bWUqIHRoYXQgaXQgaGFzIG5hbmRfY2hpcA0KPiBhcw0KPiBhIHBhcmVudC4pDQo+
-IA0KPiBJZiBzdHJ1Y3QgbmFuZF9iYnQgaXMgZW1iZWRkZWQgZGlyZWN0bHkgaW4gc3RydWN0IG10
-ZF9pbmZvLCB0aGVuDQo+IG5hbmRfYmJ0LmMgY291bGQgaW1wbGVtZW50IGZ1bmN0aW9ucyBzdWNo
-IHRoYXQgaXRzIHVzZXJzIGNhbiBqdXN0IGRvDQo+IHRoaXM6DQo+IA0KPiAJbXRkLT5fYmxvY2tf
-aXNiYWQgPSBuYW5kX2JidF9ibG9ja2lzYmFkOw0KPiANCj4gQnV0IGlmIHlvdSBkb24ndCAoYW5k
-IGluc3RlYWQgZW1iZWQgaXQgaW4gYSBjdXN0b20gbG9jYXRpb24gbGlrZQ0KPiBuYW5kX2NoaXAp
-LCB3ZSdkIGhhdmUgdG8gd3JpdGUgd3JhcHBlcnMgdGhhdCBjYWxsIHRoZSBuYW5kX2JidF8qDQo+
-IGZ1bmN0aW9ucyAobGlrZSBuYW5kX2Jhc2UgZG9lcyB0b2RheSkuIGUuZy46DQo+IA0KPiAJbXRk
-LT5fYmxvY2tfaXNiYWQgPSBzcGlfbmFuZF9ibG9ja2lzYmFkOw0KPiANCj4gaW50IHNwaV9uYW5k
-X2Jsb2NrX2lzYmFkKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3Qgb2ZmcykNCj4gew0KPiAJ
-c3RydWN0IHNwaV9uYW5kX2NoaXAgKmNoaXAgPSBtdGQtPnByaXY7DQo+IAlzdHJ1Y3QgbmFuZF9i
-YnQgKmJidCA9IGNoaXAtPmJidDsNCj4gDQo+IAlyZXR1cm4gbmFuZF9iYnRfYmxvY2tpc2JhZChi
-YnQsIG9mZnMpOw0KPiB9DQo+IA0KPiBBbnl3YXksIEkgdGhpbmsgaXQncyB3b3J0aCBsYXlpbmcg
-b3V0IGV4YWN0bHkgd2hlcmUgdGhlIHBpZWNlcyBhcmUNCj4gZ29pbmcNCj4gdG8gZml0IGhlcmUu
-IEkgcmVja29uIHdlIG5lZWQgdGhlIGZvbGxvd2luZzoNCj4gDQo+ICAxLiBhIHNob3J0IGxpc3Qg
-b2YgcGFyYW1ldGVycyB0aGF0IG5hbmRfYmJ0IG5lZWRzIGZyb20gdGhlIE5BTkQNCj4gIGltcGxl
-bWVudGF0aW9uIChlaXRoZXIgbmFuZF9iYXNlIG9yIHNwaS1uYW5kLSopDQo+IA0KPiAgMi4gYSBs
-aXN0IG9mIHBhcmFtZXRlcnMgdGhhdCBuZWVkIHRvIGJlIGtlcHQgYXJvdW5kIGZvciBuYW5kX2Ji
-dA0KPiAgYm9va2tlZXBpbmcgLyBoYW5kbGluZw0KPiANCj4gIDMuIGFuIGluaXQgZnVuY3Rpb24g
-KG5hbmRfYmJ0X2luaXQoKT8pIHRoYXQgdGFrZXMgIzEgYW5kIGNvbXB1dGVzICMyDQo+IA0KPiAg
-MyhhKSBhIGNvcnJlc3BvbmRpbmcgcmVsZWFzZSBmdW5jdGlvbg0KPiANCj4gIDQuIGEgc2V0IG9m
-IGZ1bmN0aW9ucyB0aGF0LCBnaXZlbiBvbmx5IGEgZmV3IG9idmlvdXMgcGFyYW1ldGVycyAoZS5n
-LiwNCj4gIGJsb2NrIG9mZnNldHMpIGFuZCBhIHN0cnVjdCB0aGF0IGhvbGRzICMyLCBoYW5kbGUg
-YWxsIEJCVCBuZWVkcyAoZS5nLiwNCj4gIGJhZCBibG9jayBsb29rdXAsIGJhZCBibG9jayBzY2Fu
-bmluZywgbWFya2luZyBuZXcgYmFkIGJsb2NrcykNCj4gDQo+IFNpbmNlIEkgc2VlICMxIGFuZCAj
-MiBvdmVybGFwcGluZyBxdWl0ZSBhIGJpdCwgd2UgbWlnaHQgY29tYmluZSB0aGVtLA0KPiB3aGVy
-ZSBzZXZlcmFsIHBhcmFtZXRlcnMgYXJlIGV4cGVjdGVkIHRvIGJlIHNldCBieSB0aGUgbmFuZF9i
-YnQgdXNlcg0KPiAoZWl0aGVyIG5hbmRfYmFzZS5jIG9yIG5hbmRfYmJ0LmMpLCBhbmQgYSBmZXcg
-YXJlIGNvbnNpZGVyZWQgcHJpdmF0ZSB0bw0KPiBuYW5kX2JidC4NCj4gDQo+IHN0cnVjdCBuYW5k
-X2JidCB7DQo+IAlzdHJ1Y3QgbXRkX2luZm8gKm10ZDsNCj4gDQo+IAkvKg0KPiAJICogVGhpcyBp
-cyBpbXBvcnRhbnQgdG8gYWJzdHJhY3Qgb3V0IG9mIG5hbmRfYmJ0LmMgYW5kIHByb3ZpZGUNCj4g
-CSAqIHNlcGFyYXRlbHkgaW4gbmFuZF9iYXNlLmMgYW5kIHNwaS1uYW5kLWJhc2UuYyAtLSBpdCdz
-IHNvcnQgb2YNCj4gCSAqIGR1cGxpY2F0ZWQgaW4gbmFuZF9ibG9ja19iYWQoKSAobmFuZF9iYXNl
-KSBhbmQNCj4gCSAqIHNjYW5fYmxvY2tfZmFzdCgpIChuYW5kX2JidCkgcmlnaHQgbm93DQo+IAkg
-Kg0KPiAJICogTm90ZSB0aGF0IHRoaXMgYWxzbyBtZWFucyBuYW5kX2NoaXAuYmFkYmxvY2tfcGF0
-dGVybiBzaG91bGQNCj4gCSAqIGJlIHJlbW92ZWQgZnJvbSBuYW5kX2JidC5jDQo+IAkgKi8NCj4g
-CWludCAoKmlzX2JhZF9iYm0pKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3Qgb2ZzKTsNCj4g
-DQo+IAkvKiBPbmx5IHJlcXVpcmVkIGlmIHRoZSBkcml2ZXIgd2FudHMgdG8gYXR0ZW1wdCB0byBw
-cm9ncmFtIG5ldw0KPiAJICogYmFkIGJsb2NrIG1hcmtlcnMgdGhhdCBpbWl0YXRlIHRoZSBmYWN0
-b3J5LW1hcmtlZCBCQk1zICovDQo+IAlpbnQgKCptYXJrX2JhZF9iYm0pKHN0cnVjdCBtdGRfaW5m
-byAqbXRkLCBsb2ZmX3Qgb2ZzKTsNCj4gDQo+IAl1bnNpZ25lZCBpbnQgYmJ0X29wdGlvbnM7DQo+
-IA0KPiAJLyogT25seSByZXF1aXJlZCBmb3IgTkFORF9CQlRfUEVSQ0hJUCAqLw0KPiAJaW50IG51
-bWNoaXBzOw0KPiANCj4gCS8qIERpc2NvdXJhZ2UgbmV3IGN1c3RvbWVyIHVzYWdlcyBoZXJlOyBz
-dWdnZXN0IHVzYWdlIG9mIHRoZQ0KPiAJICogcmVsZXZhbnQgTkFORF9CQlRfKiBvcHRpb25zIGlu
-c3RlYWQgKi8NCj4gCXN0cnVjdCBuYW5kX2JidF9kZXNjciAqYmJ0X3RkOw0KPiAJc3RydWN0IG5h
-bmRfYmJ0X2Rlc2NyICpiYnRfbWQ7DQo+IA0KPiAJLyogVGhlIHJlc3QgYXJlIGZpbGxlZCBpbiBi
-eSBuYW5kX2JidF9pbml0KCkgKi8NCj4gDQo+IAlpbnQgYmJ0X2VyYXNlX3NoaWZ0Ow0KPiAJaW50
-IHBhZ2Vfc2hpZnQ7DQo+IA0KPiAJdTggKmJidDsNCj4gfTsNCj4gDQo+ICMzIG1pZ2h0IHNpbXBs
-eSBsb29rIGxpa2U6DQo+IA0KPiBpbnQgbmFuZF9iYnRfaW5pdChzdHJ1Y3QgbmFuZF9iYnQgKmJi
-dCk7DQo+IHZvaWQgbmFuZF9iYnRfcmVsZWFzZShzdHJ1Y3QgbmFuZF9iYnQgKmJidCk7DQo+IA0K
-PiAjNCBtaWdodCBsb29rIGxpa2UgdGhlIGZvbGxvd2luZyBBUElzIGZvciBuYW5kX2JidC5jIChu
-b3QgdG9vIGRpZmZlcmVudA0KPiB0aGFuIHdlIGhhdmUgbm93KToNCj4gDQo+IGludCBuYW5kX2Ji
-dF9pbml0KHN0cnVjdCBuYW5kX2JidCAqYmJ0KTsgLyogaW5pdCArIHNjYW4/ICovDQo+IGludCBu
-YW5kX2JidF9tYXJrYmFkKHN0cnVjdCBuYW5kX2JidCAqYmJ0LCBsb2ZmX3Qgb2Zmcyk7DQo+IGlu
-dCBuYW5kX2JidF9pc3Jlc2VydmVkKHN0cnVjdCBuYW5kX2JidCAqYmJ0LCBsb2ZmX3Qgb2Zmcyk7
-DQo+IGludCBuYW5kX2JidF9pc2JhZChzdHJ1Y3QgbmFuZF9iYnQgKmJidCwgbG9mZl90IG9mZnMp
-Ow0KPiANCj4gKFRoZSBhYm92ZSBhbGxvd3MgZm9yIG5hbmRfYmJ0IHRvIGJlIGVtYmVkZGVkIGFu
-eXdoZXJlOyB3ZSBjb3VsZCBtb2RpZnkNCj4gdGhpcyBBUEkgdG8gYmUgZHJvcC1pbiByZXBsYWNl
-bWVudHMgZm9yIHRoZSBtdGRfaW5mbyBjYWxsYmFja3MgaWYgd2UNCj4gZW1iZWQgc3RydWN0IG5h
-bmRfYmJ0IGluIG10ZF9pbmZvLikNCj4gDQo+ID4gQWxzbzogQWZ0ZXIgbG9va2luZyBhdCB0aGUg
-bmFuZF9iYnQuYyBmaWxlLCBJJ20gd29uZGVyaW5nIGhvdw0KPiBwcm9taXNpbmcNCj4gPiBpcyB0
-byBzZXBhcmF0ZSBpdCBmcm9tIE5BTkQuIEl0IHNlZW1zIHRoZSBCQlQgY29kZSBpcyBxdWl0ZSBh
-dHRhY2hlZA0KPiB0bw0KPiA+IE5BTkQhDQo+IA0KPiBUaGVyZSB3aWxsIGJlIHF1aXRlIGEgYml0
-IG9mIGNodXJuLCBidXQgSSBkb24ndCB0aGluayB0aGF0IGl0IGlzIHRvbw0KPiBzdHJvbmdseSBh
-dHRhY2hlZC4NCj4gDQo+ID4gQXJlIHlvdSBwbGFubmluZyB0byBkbyB0aGlzIGluIGp1c3Qgb25l
-IHBhdGNoPyBNYXliZSBpdCdzIGJldHRlciB0bw0KPiA+IHN0YXJ0IHNpbXBsZSBhbmQgcHJlcGFy
-ZSBzbWFsbCBwYXRjaGVzIHRoYXQgZ3JhZHVhbGx5IG1ha2UgdGhlDQo+ID4gbmFuZF9iYXNlLmMg
-YW5kIG5hbmRfYmJ0LmMgZmlsZXMgbGVzcyBkZXBlbmRlbnQuDQo+IA0KPiBZZWFoLCBhIHNlcmll
-cyBvZiBwYXRjaGVzIHdvdWxkIGJlIGJlc3QuIEFuZCBtYXliZSBzdGFydCBzbWFsbGVyLg0KPiAN
-Cj4gSWYgdGhlIG5hbmRfYmJ0IHN0dWZmIHJlYWxseSBzbG93cyBzb21lb25lIGRvd24sIHdlIG1p
-Z2h0IHdhbnQgdG8ganVzdA0KPiBhZ3JlZSBvbiBhbiBBUEkgc2ltaWxhciB0byB0aGUgYWJvdmUg
-YW5kIHRoZW4gd29yayBvbiB0aGUgcmVzdCBvZiB0aGUNCj4gU1BJIE5BTkQgZGV0YWlscywgYXNz
-dW1pbmcgc29tZW9uZSAoZS5nLiwgbWUpIHdyaXRlcyB0aGUgaW1wbGVtZW50YXRpb24NCj4gKGFu
-ZCB0cmFuc2l0aW9ucyBvdGhlciBkcml2ZXJzIHRvIGRvIHRoaXMpLg0KPiANCj4gVW5sZXNzIHNv
-bWVvbmUgZWxzZSB0aGlua3MgdGhleSBoYXZlIGFuIGV4Y2VsbGVudCBoYW5kbGUgb24gdGhlIGFi
-b3ZlLA0KPiBJJ2xsIHRha2UgYSBzdGFiIGF0IGRvaW5nIHRoaXMuIEkgYWN0dWFsbHkgaGF2ZSBh
-IGZldyBwYXRjaGVzIHRoYXQgaGF2ZQ0KPiBodW5nIGFyb3VuZCBhIHdoaWxlICh3aXRoIGxpdHRs
-ZSBpbmNlbnRpdmUgdG8gZmluaXNoIHRoZW0pIHRoYXQgZG8NCj4gcGFydHMNCj4gb2Ygd2hhdCBJ
-J20gc3VnZ2VzdGluZyBhYm92ZS4NCj4gDQoNCkknbSBnbGFkIHRvIGhlYXIgdGhhdCB0aGVyZSBh
-cmUgYWxyZWFkeSBzb21lIHBhdGNoZXMgYWJvdXQgeW91ciBzdWdnZXN0aW9uDQphYm92ZS4gSSBr
-bm93IHlvdSBhcmUgcXVpdGUgYnVzeS4gTWF5YmUgSSBjYW4gZG8gc29tZSBoZWxwIGlmIHlvdSBu
-ZWVkLg0KDQpQZXRlcg0KDQo=
+On 2015/1/31 20:46, Artem Bityutskiy wrote:
+> On Thu, 2014-12-25 at 21:10 +0800, hujianyang wrote:
+>> UBIFS suppose no more log lebs need to be scanned when
+>> replay_log_leb() return %1. But it is not true because
+>> some log lebs maybe incorrectly empty and the next leb
+>> of this empty one may contain valid filesystem data.
+> 
+>>From your other e-mail, I understood that you are doing fuzzing. That
+> is, you take a valid file-system, then you corrupt it (e.g., erase one
+> LEB), and then you try to mount it.
+> 
+> This is a great test, I never saw anyone doing it for UBIFS, so I expect
+> there may be issues.
+
+Yes, it is.
+
+One of production teams using UBI/UBIFS met an ECC error during log
+replay and current UBIFS refuse to mount. This implement is unacceptable
+for them. I was asked to solve this problem.
+
+My partner Sheng Yong and I focus on log replay first, although other
+parts of UBIFS may suffer ECC errors which could lead to other kinds of
+problems.
+
+We separate *ECC error during log replay* into two parts:
+
+1) ECC error on log lebs
+2) ECC error on buds
+
+Current implement directly return an error if there is any unrecoverable
+corrupt. Log area contains uncommitted data and the data losing of this
+area is acceptable as you said. But here is a problem: log replay not
+only update TNC tree but also update LPT area. That means, directly discard
+corrupt data may put this partition into a unstable state, and lead to
+a problem I described in my last patch:
+
+   [PATCH resend] UBIFS: return -EINVAL if first log leb is empty
+
+
+Since the log of UBIFS is multi-heads, It not easy to judge which log
+should be kept, which log should be discard when an ECC error occur.
+So we decide to discard all journals with LPT updating -- mark the used
+buds as dirty.
+
+It's easy for the second problem *2) ECC error on buds* to achieve
+this implement. But hard for *1) ECC error on log lebs*, because
+we don't know which leb contains buds in this case, seems a whole scan
+is needed. So we just solve the second problem but the first one is
+still pending. I'd like to show you the code this week.
+
+> 
+> Let's agree on expectations.
+> 
+> What do we expect UBIFS to do when we give it a corrupted image? I think
+> we expect it to either reject it, or accept, but some files may be lost
+> or corrupted.
+> 
+> And we for sure do not expect UBIFS to crash the kernel, or corrupt the
+> file-system even more (still good data should not become corrupted).
+> 
+> Now, what this patch does, it essentially it fixes the following UBIFS
+> behavior.
+> 
+> UBIFS replies the log. It meets empty LEB (this is our injected
+> corruption), and it believes this is the end of the log. It proceeds and
+> mounts the FS.
+> 
+> Nothing wrong so far, IMO.
+> 
+> However, the LEBs we missed contain valid data. And what will happen to
+> them once we start writing to the FS? Right - they'll be erased, and
+> good data disappears. However, this will be the data that was not
+> committed, which means this will be something written to the file-system
+> just before the power cut. And I think it is expected that this data may
+> disappear. So this is not that bad.
+>
+> The other _potential_ problem is that the "skipping one LEB" scenario
+> has never been really tested, and there may be bugs which may lead to
+> kernel crashes or data loss.
+>
+
+Sure. But current embedded system usually store their rootfs on a
+NOR flash partition. And we just lose new adding things, it's no
+harm for a local system, I see.
+
+
+> Therefore, while I acknowledge the problem, I do not think this patch is
+> the right answer to the problem.
+> 
+> The easiest solution is to do nothing. Just let the rest of the log go
+> away. Does not look big deal to me.
+> 
+> The more difficult thing to do is to start analyzing the log further,
+> see what's in there, and keep replying if we are sure this is our stuff.
+> But I cannot come up with a reliable algorithm for this off the top of
+> my head.
+> 
+
+Agree with you.
+
+So I didn't resend this patch. I need some time to reconsidering this
+problem. I want to discuss with you and others when I sent this patch,
+and need to make sure it is a right way I'm walking forward.
+
+Your replaying give me confidence to keep on working for reliable
+problems.
+
+Could you please discuss more with me when I send out the implement
+which recover a *buds ECC error* image?
+
+
+Thanks~!
+Hu
