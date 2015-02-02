@@ -1,23 +1,17 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YI9Jj-0002lR-MT
- for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 05:13:00 +0000
-Received: by mail-pa0-f50.google.com with SMTP id rd3so77550902pab.9
- for <linux-mtd@lists.infradead.org>; Sun, 01 Feb 2015 21:12:37 -0800 (PST)
-Date: Sun, 1 Feb 2015 21:12:28 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Aaron Sierra <asierra@xes-inc.com>
-Subject: Re: [PATCH 1/2 v2] nand_base: SOFT_BCH: Request strength over bytes
-Message-ID: <20150202051228.GB3523@norris-Latitude-E6410>
-References: <1048272995.147101.1421278891164.JavaMail.zimbra@xes-inc.com>
- <391096737.68264.1422549968500.JavaMail.zimbra@xes-inc.com>
+ id 1YIAgA-0008Lb-GX
+ for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 06:40:16 +0000
+Message-ID: <54CF1B76.7030207@huawei.com>
+Date: Mon, 2 Feb 2015 14:38:46 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <391096737.68264.1422549968500.JavaMail.zimbra@xes-inc.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, linux-mtd@lists.infradead.org
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH resend V2] UBIFS: return -EINVAL if log head is empty
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +21,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 29, 2015 at 10:46:08AM -0600, Aaron Sierra wrote:
-> ----- Original Message -----
-> > From: "Aaron Sierra" <asierra@xes-inc.com>
-> > Sent: Wednesday, January 14, 2015 5:41:31 PM
-> > 
-> > Previously, we requested that drivers pass ecc.size and ecc.bytes when
-> > using NAND_ECC_SOFT_BCH. However, a driver is likely to only know the ECC
-> > strength required for its NAND, so each driver would need to perform a
-> > strength-to-bytes calculation.
-> > 
-> > Avoid duplicating this calculation in each driver by asking drivers to
-> > pass ecc.size and ecc.strength so that the strength-to-bytes calculation
-> > need only be implemented once.
-> > 
-> > This reverts/generalizes this commit:
-> >     mtd: nand: Base BCH ECC bytes on required strength
-> > 
-> > Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
-> > Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> > v2:
-> >     * nandsim: Set ECC strength to chip->ecc.strength
-> >     * nand_base: Don't provide ECC bytes-to-strength backward compat
-> > 
-> >  drivers/mtd/nand/nand_base.c  | 14 ++++++++------
-> >  drivers/mtd/nand/nandsim.c    |  1 +
-> >  drivers/mtd/nand/sunxi_nand.c |  2 --
-> >  3 files changed, 9 insertions(+), 8 deletions(-)
-> > 
-> 
-> Is this patch still being considered despite the changes requested for
-> the 2nd patch in this series?
+CS node is recognized as a sign in UBIFS log replay mechanism.
+Log relaying during mount should find the CS node in log head
+at beginning and then replay the following uncommitted buds.
 
-Sorry, I thought I had queued it up. Pushed this patch to l2-mtd.git
-now. Thanks.
+Here is a bug in log replay path: If the log head, which is
+indicated by @log_lnum in mst_node, is empty, current UBIFS
+replay nothing and directly mount the partition without any
+warning. This action will put filesystem in an abnormal state,
+e.g. space management in LPT area is incorrect to the real
+space usage in main area.
 
-Brian
+We reproduced this bug by fault injection: turn log head leb
+into all 0xFF. UBIFS driver mount the polluted partition
+normally. But errors occur while running fs_stress on this
+mount:
+
+[89068.055183] UBI error: ubi_io_read: error -74 (ECC error) while reading 59 bytes from PEB 711:33088, read 59 bytes
+[89068.179877] UBIFS error (pid 10517): ubifs_check_node: bad magic 0x101031, expected 0x6101831
+[89068.179882] UBIFS error (pid 10517): ubifs_check_node: bad node at LEB 591:28992
+[89068.179891] Not a node, first 24 bytes:
+[89068.179892] 00000000: 31 10 10 00 37 84 64 04 10 04 00 00 00 00 00 00 20 00 00 00 02 01 00 00                          1...7.d......... .......
+[89068.180282] UBIFS error (pid 10517): ubifs_read_node: expected node type 2
+
+This patch fix the problem by checking *lnum* to guarantee
+the empty leb is not log head leb and return an error if the
+log head leb is incorrectly empty. After this, we could catch
+*log head empty* error in place.
+
+Changes in V2, suggested by Artem:
+	- use 'log head' term instead of 'first log LEB' for
+	  consistency.
+	- catch this error by checking 'lnum' in 'ubifs_replay
+	  _journal' instead of checking 'c->cs_sqnum' for better
+	  understanding.
+	- expand comments and phrase error message properly.
+
+Signed-off-by: hujianyang <hujianyang@huawei.com>
+---
+ fs/ubifs/replay.c |   19 ++++++++++++++++---
+ 1 files changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 3187925..88e41a9 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -1028,9 +1028,22 @@ int ubifs_replay_journal(struct ubifs_info *c)
+
+ 	do {
+ 		err = replay_log_leb(c, lnum, 0, c->sbuf);
+-		if (err == 1)
+-			/* We hit the end of the log */
+-			break;
++		if (err == 1) {
++			if (lnum != c->lhead_lnum)
++				/* We hit the end of the log */
++				break;
++
++			/*
++			 * The head of the log must always start with the
++			 * "commit start" node on a properly formatted UBIFS.
++			 * But we found no nodes at all, which means that
++			 * someting went wrong and we cannot proceed mounting
++			 * the file-system.
++			 */
++			ubifs_err("no UBIFS nodes found at the log head LEB %d:%d, possibly corrupted\n",
++				  lnum, 0);
++			err = -EINVAL;
++		}
+ 		if (err)
+ 			goto out;
+ 		lnum = ubifs_next_log_lnum(c, lnum);
+-- 
+1.6.0.2
