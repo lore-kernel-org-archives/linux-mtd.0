@@ -1,17 +1,23 @@
-Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIJm5-0002Sg-AW
- for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 16:22:58 +0000
-Received: by mail-la0-f45.google.com with SMTP id gd6so42436953lab.4
- for <linux-mtd@lists.infradead.org>; Mon, 02 Feb 2015 08:22:34 -0800 (PST)
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: Expose partition offset to the drivers
-Date: Mon,  2 Feb 2015 17:22:32 +0100
-Message-Id: <1422894152-29362-1-git-send-email-ricardo.ribalda@gmail.com>
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YIKUL-0002tN-Nl
+ for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 17:08:42 +0000
+Message-ID: <54CFAF1C.4050104@fb.com>
+Date: Mon, 2 Feb 2015 10:08:44 -0700
+From: Jens Axboe <axboe@fb.com>
+MIME-Version: 1.0
+To: Christoph Hellwig <hch@lst.de>, Al Viro <viro@ZenIV.linux.org.uk>
+Subject: Re: backing_dev_info cleanups & lifetime rule fixes V2
+References: <1421228561-16857-1-git-send-email-hch@lst.de>
+ <54BEC3C2.7080906@fb.com> <20150201063116.GP29656@ZenIV.linux.org.uk>
+ <20150202080635.GB9851@lst.de>
+In-Reply-To: <20150202080635.GB9851@lst.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Cc: linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+ David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Tejun Heo <tj@kernel.org>,
+ ceph-devel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,50 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, there is no way to find out the offset of an mtd partition by
-a driver. This might be needed by external hardware.
+On 02/02/2015 01:06 AM, Christoph Hellwig wrote:
+> On Sun, Feb 01, 2015 at 06:31:16AM +0000, Al Viro wrote:
+>> And at that point we finally can make sb_lock and super_blocks static in
+>> fs/super.c.  Do you want that in your tree, or would you rather have it
+>> done via vfs.git during the merge window after your tree goes in?  It's
+>> as trivial as this:
+>>
+>> Make super_blocks and sb_lock static
+>>
+>> The only user outside of fs/super.c is gone now
+>>
+>> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> 
+> I'd say merge it through the block tree..
+> 
+> Acked-by: Christoph Hellwig <hch@lst.de>
 
-For example, a flash containing the firmware of an external device that
-is also accessible by the main cpu/kernel.
+Added to for-3.20/bdi
 
-The flash is big enough to have two partitions with 2 versions of the
-firmware, so we can have a safe upgrade.
 
-Once the flash has been updated we need the real offset, so we can write
-it on the external device registers.
-
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
----
- drivers/mtd/mtdpart.c          | 8 ++++++++
- include/linux/mtd/partitions.h | 1 +
- 2 files changed, 9 insertions(+)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index a3e3a7d..8047e74 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -784,3 +784,11 @@ uint64_t mtd_get_device_size(const struct mtd_info *mtd)
- 	return PART(mtd)->master->size;
- }
- EXPORT_SYMBOL_GPL(mtd_get_device_size);
-+
-+uint64_t mtd_get_device_offset(const struct mtd_info *mtd){
-+	if (!mtd_is_partition(mtd))
-+		return 0;
-+
-+	return PART(mtd)->offset;
-+}
-+EXPORT_SYMBOL_GPL(mtd_get_device_offset);
-diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index 6a35e6d..2b953b4 100644
---- a/include/linux/mtd/partitions.h
-+++ b/include/linux/mtd/partitions.h
-@@ -84,5 +84,6 @@ int mtd_add_partition(struct mtd_info *master, const char *name,
- 		      long long offset, long long length);
- int mtd_del_partition(struct mtd_info *master, int partno);
- uint64_t mtd_get_device_size(const struct mtd_info *mtd);
-+uint64_t mtd_get_device_offset(const struct mtd_info *mtd);
- 
- #endif
 -- 
-2.1.4
+Jens Axboe
