@@ -1,26 +1,22 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIDBP-0005Yx-EF
- for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 09:20:40 +0000
-Received: by mail-pa0-f54.google.com with SMTP id eu11so80110821pac.13
- for <linux-mtd@lists.infradead.org>; Mon, 02 Feb 2015 01:20:17 -0800 (PST)
-Date: Mon, 2 Feb 2015 01:20:13 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH] mtd: avoid registering reboot notifier twice
-Message-ID: <20150202092013.GG3523@norris-Latitude-E6410>
-References: <1422752930-696-1-git-send-email-nks@flawful.org>
- <20150201230723.GA3523@norris-Latitude-E6410>
- <54CF2261.1040707@flawful.org>
- <alpine.DEB.2.02.1502020958310.11532@lnxricardw1.se.axis.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.02.1502020958310.11532@lnxricardw1.se.axis.com>
-Cc: Niklas Cassel <nks@flawful.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: from mga14.intel.com ([192.55.52.115])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YIDOF-0003UP-Cw
+ for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 09:33:56 +0000
+Message-ID: <1422869610.8637.352.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS: Is it possible to get the compressed size of a file?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: "markus.heininger@online.de" <markus.heininger@online.de>
+Date: Mon, 02 Feb 2015 11:33:30 +0200
+In-Reply-To: <trinity-03861656-4f4e-47fd-bcc5-aa493202c0bd-1418900934280@3capp-1and1-bs05>
+References: <trinity-a1228aa8-8eaa-4950-9c14-5d6b6db5f3d7-1418371801058@3capp-1and1-bs02>
+ , <54912109.50505@huawei.com>
+ <trinity-03861656-4f4e-47fd-bcc5-aa493202c0bd-1418900934280@3capp-1and1-bs05>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ hujianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 02, 2015 at 10:01:51AM +0100, Ricard Wanderlof wrote:
+Hi Markus,
+
+On Thu, 2014-12-18 at 12:08 +0100, markus.heininger@online.de wrote:
+> in our system we´re using ring buffers where it is necessary to
+> remove old files from certain directories when the physical usage
+> of each directory is above a certain level which is different for each 
+> folder.
 > 
-> > On 02/02/2015 12:07 AM, Brian Norris wrote:
-> > >
-> > > No driver should be calling mtd_device_parse_register() multiple times
-> > > on the same mtd_info. Under what context do you see this? What driver?
-> > arch/cris/arch-v32/drivers/axisflashmap.c
+> Evaluating the output of "df" after write access might be difficult
+> since there are several concurrent writing processes.
 > 
-> Looking at it another way, why should it not be allowed, if the only 
-> thing stopping it from working is Niklas' fix below?
+> But many thanks for your answer, it seems that there is no easy
+> way to get the information needed and we must investigate further on
+> our own.
 
-It severely breaks the way that normal MTD partition parsers work, for
-one. cmdlineparts could never be sanely applied here, for instance.
+Yes, no easy way, but I think implementing what you need is possible. I
+do not have plans and time to work on this, but I can help by giving
+advises and review.
 
-> If there are multiple 
-> ways a driver can acquire partitioning information, it is handy to be able 
-> to do mtd_device_parse_register() several times, rather than collecting 
-> all the partitioning information in one place and doing the call there, 
-> which I suppose would be the alternative.
+The question has 2 major parts.
 
-It may be handy, but it breaks the abstraction that is established in
-most every other case, that partitions are determined by exactly one
-source: a single list from platform data, device tree, the kernel
-command line, or an on-flash parser (e.g., RedBoot, bcm47xxpart, etc.).
+1. The interface
+2. The implementation
 
-> I've noted that mtd/nand/diskonchip.c does it too:
-> 
->         mtd_device_register(mtd, NULL, 0);
->         if (!no_autopart)
->                 mtd_device_register(mtd, parts, numparts);
-> 
-> but this driver might be essentially deprecated, I don't know.
 
-Yeah, I just noticed that one too.
+For the former, one need to carefully investigate if there is something
+like this already implemented for other file-systems. I think btrfs may
+have it. If it is, then UBIFS should use similar interface, probably.
 
-TBH, I'm not sure the reboot notifier patch places that code in the best
-place anyway. There really is no central initialization code for the
-'master' mtd_info struct, as this initialization is handled ad-hoc in
-every single MTD driver. It just happens that the partition
-parsing/registration function fit nicely as the one place that (almost)
-all MTD master devices got registered. But this just exposed yet another
-instance where my assumptions are challenged.
+And whatever is the interface choice, it should be discussed in the
+linux-fsdevel@vger.kernel.org mailing list, which I am CCing.
 
-There's so much legacy crap in MTD that sometimes I wonder why I even
-bother...
 
-Brian
+For the latter, I'd suggest to try this.
+
+a. 'struct ubifs_ino_node' has unused space, use it to add the
+compressed size field.
+b. maintain this field
+c. this field will only be correct for the part of the file which are on
+the media. The dirty data in the page cache has not yet been compressed,
+so we do not know its compressed size yet.
+e. when user asks for the compressed size, you have to sync the inode
+first, in order to make sure the compressed size is correct.
+
+And the implementation should be backward-compatible. That is, if new
+driver mounts the old media, you return something predicatable. I guess
+uncompressed size could be it.
+
+
+Hope this helps,
+Artem.
