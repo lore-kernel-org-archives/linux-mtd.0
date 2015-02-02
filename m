@@ -1,21 +1,22 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YICtL-0002JD-MJ
- for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 09:02:00 +0000
-Message-ID: <54CF3C9F.2010502@huawei.com>
-Date: Mon, 2 Feb 2015 17:00:15 +0800
-From: hujianyang <hujianyang@huawei.com>
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YICte-0002Tb-VS
+ for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 09:02:20 +0000
+Date: Mon, 2 Feb 2015 10:01:51 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: avoid registering reboot notifier twice
+In-Reply-To: <54CF2261.1040707@flawful.org>
+Message-ID: <alpine.DEB.2.02.1502020958310.11532@lnxricardw1.se.axis.com>
+References: <1422752930-696-1-git-send-email-nks@flawful.org>
+ <20150201230723.GA3523@norris-Latitude-E6410> <54CF2261.1040707@flawful.org>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH resend] UBIFS: return -EINVAL if first log leb is empty
-References: <54CC4F77.1000801@huawei.com>
- <1422697906.8637.295.camel@sauron.fi.intel.com> <54CCAFB4.3060705@huawei.com>
- <1422706597.8637.311.camel@sauron.fi.intel.com> <54CEEAC1.2080403@huawei.com>
- <54CF3333.7050909@nod.at>
-In-Reply-To: <54CF3333.7050909@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, dedekind1@gmail.com
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
+Cc: Niklas Cassel <nks@flawful.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
 
-On 2015/2/2 16:20, Richard Weinberger wrote:
-> Am 02.02.2015 um 04:10 schrieb hujianyang:
->> Another problem. Someone <markus.heininger@online.de> asked:
->>
->> "UBIFS: Is it possible to get the compressed size of a file?"
->>
->> I think it's an interesting problem. Actually we used to separate an UBI
->> device into several volumes for space management reason. So could we
->> realize the compressed size getting mechanism and import *quota* to UBIFS
->> itself.
-> 
-> You can get the actual size by accumulating the UBIFS data node sizes.
+> On 02/02/2015 12:07 AM, Brian Norris wrote:
+> >
+> > No driver should be calling mtd_device_parse_register() multiple times
+> > on the same mtd_info. Under what context do you see this? What driver?
+> arch/cris/arch-v32/drivers/axisflashmap.c
 
-and xattr node sizes too? may store in another variable.
+Looking at it another way, why should it not be allowed, if the only 
+thing stopping it from working is Niklas' fix below? If there are multiple 
+ways a driver can acquire partitioning information, it is handy to be able 
+to do mtd_device_parse_register() several times, rather than collecting 
+all the partitioning information in one place and doing the call there, 
+which I suppose would be the alternative.
 
-> But this means that you have to load the actual data node which is rather
-> expensive. I had a short chat with Artem on this, we agreed that a nice solution
-> would be to store the actual size in an inode. But that is a non-trivial change
-> to UBIFS.
-> 
+I've noted that mtd/nand/diskonchip.c does it too:
 
-Yes, old images may not store the actual size and it's hard to
-get compressed size from this kind of images by a new driver.
+        mtd_device_register(mtd, NULL, 0);
+        if (!no_autopart)
+                mtd_device_register(mtd, parts, numparts);
 
-Users may get actual size from an ioctl call and maybe we could
-return an error if this feature is not supported. How about
-increasing file-system driver version and applying actual size
-support in a higher version? or mark this feature as a flag
-in super_node?
+but this driver might be essentially deprecated, I don't know.
 
-Another 'expensive' implement is whole scan the partition to
-get the actual size of a required file in the old images.
+> >> Signed-off-by: Niklas Cassel <nks@flawful.org>
+> >> ---
+> >>  drivers/mtd/mtdcore.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> >> index de79576..98efc1e 100644
+> >> --- a/drivers/mtd/mtdcore.c
+> >> +++ b/drivers/mtd/mtdcore.c
+> >> @@ -556,7 +556,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+> >>  			err = -ENODEV;
+> >>  	}
+> >>  
+> >> -	if (mtd->_reboot) {
+> >> +	if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
+> >>  		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
+> >>  		register_reboot_notifier(&mtd->reboot_notifier);
+> >>  	}
 
-What's your plan after that chat?
-
-
-BR,
-Hu
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
