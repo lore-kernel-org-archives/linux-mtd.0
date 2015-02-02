@@ -1,22 +1,20 @@
-Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIC2F-0007mO-2K
- for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 08:07:07 +0000
-Date: Mon, 2 Feb 2015 09:06:35 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: Re: backing_dev_info cleanups & lifetime rule fixes V2
-Message-ID: <20150202080635.GB9851@lst.de>
-References: <1421228561-16857-1-git-send-email-hch@lst.de>
- <54BEC3C2.7080906@fb.com> <20150201063116.GP29656@ZenIV.linux.org.uk>
+ id 1YICFE-0006nF-4t
+ for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 08:20:33 +0000
+Message-ID: <54CF3333.7050909@nod.at>
+Date: Mon, 02 Feb 2015 09:20:03 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150201063116.GP29656@ZenIV.linux.org.uk>
-Cc: David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
- linux-mm@kvack.org, Jens Axboe <axboe@fb.com>, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Tejun Heo <tj@kernel.org>,
- ceph-devel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+To: hujianyang <hujianyang@huawei.com>, dedekind1@gmail.com
+Subject: Re: [PATCH resend] UBIFS: return -EINVAL if first log leb is empty
+References: <54CC4F77.1000801@huawei.com>
+ <1422697906.8637.295.camel@sauron.fi.intel.com> <54CCAFB4.3060705@huawei.com>
+ <1422706597.8637.311.camel@sauron.fi.intel.com> <54CEEAC1.2080403@huawei.com>
+In-Reply-To: <54CEEAC1.2080403@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Feb 01, 2015 at 06:31:16AM +0000, Al Viro wrote:
-> And at that point we finally can make sb_lock and super_blocks static in
-> fs/super.c.  Do you want that in your tree, or would you rather have it
-> done via vfs.git during the merge window after your tree goes in?  It's
-> as trivial as this:
+Am 02.02.2015 um 04:10 schrieb hujianyang:
+> Another problem. Someone <markus.heininger@online.de> asked:
 > 
-> Make super_blocks and sb_lock static
+> "UBIFS: Is it possible to get the compressed size of a file?"
 > 
-> The only user outside of fs/super.c is gone now
-> 
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> I think it's an interesting problem. Actually we used to separate an UBI
+> device into several volumes for space management reason. So could we
+> realize the compressed size getting mechanism and import *quota* to UBIFS
+> itself.
 
-I'd say merge it through the block tree..
+You can get the actual size by accumulating the UBIFS data node sizes.
+But this means that you have to load the actual data node which is rather
+expensive. I had a short chat with Artem on this, we agreed that a nice solution
+would be to store the actual size in an inode. But that is a non-trivial change
+to UBIFS.
 
-Acked-by: Christoph Hellwig <hch@lst.de>
+Thanks,
+//richard
