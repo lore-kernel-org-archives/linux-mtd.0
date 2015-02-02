@@ -1,17 +1,18 @@
-Received: from mail-vc0-x230.google.com ([2607:f8b0:400c:c03::230])
+Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIMVo-0006Jb-JL
- for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 19:18:21 +0000
-Received: by mail-vc0-f176.google.com with SMTP id kv7so15334033vcb.7
- for <linux-mtd@lists.infradead.org>; Mon, 02 Feb 2015 11:17:58 -0800 (PST)
+ id 1YIMlD-0005xJ-HF
+ for linux-mtd@lists.infradead.org; Mon, 02 Feb 2015 19:34:16 +0000
+Received: by mail-la0-f43.google.com with SMTP id q1so44473118lam.2
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Feb 2015 11:33:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1422894152-29362-1-git-send-email-ricardo.ribalda@gmail.com>
+In-Reply-To: <CAFLxGvzdAFUFU2=ySRMdtAk=7hKvuHixrvPX0X+T533VPu=4dg@mail.gmail.com>
 References: <1422894152-29362-1-git-send-email-ricardo.ribalda@gmail.com>
-Date: Mon, 2 Feb 2015 20:17:58 +0100
-Message-ID: <CAFLxGvzdAFUFU2=ySRMdtAk=7hKvuHixrvPX0X+T533VPu=4dg@mail.gmail.com>
+ <CAFLxGvzdAFUFU2=ySRMdtAk=7hKvuHixrvPX0X+T533VPu=4dg@mail.gmail.com>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Mon, 2 Feb 2015 20:33:32 +0100
+Message-ID: <CAPybu_3D1cG3YpB8Y6h+UX2V7NN5Z9+BmDABt4J=6++KS=E8PQ@mail.gmail.com>
 Subject: Re: [PATCH] mtd: Expose partition offset to the drivers
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -25,23 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 2, 2015 at 5:22 PM, Ricardo Ribalda Delgado
-<ricardo.ribalda@gmail.com> wrote:
-> Currently, there is no way to find out the offset of an mtd partition by
-> a driver. This might be needed by external hardware.
->
-> For example, a flash containing the firmware of an external device that
-> is also accessible by the main cpu/kernel.
->
-> The flash is big enough to have two partitions with 2 versions of the
-> firmware, so we can have a safe upgrade.
->
-> Once the flash has been updated we need the real offset, so we can write
-> it on the external device registers.
+Hello
 
-Can you please also send a patch which shows the usage of this new function
-by a driver?
+On Mon, Feb 2, 2015 at 8:17 PM, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> On Mon, Feb 2, 2015 at 5:22 PM, Ricardo Ribalda Delgado
+>
+> Can you please also send a patch which shows the usage of this new function
+> by a driver?
+
+It is currently out of tree, but here you can see the relevant code:
+
+mtd_offset=mtd_get_device_offset(mtd);
+put_mtd_device(mtd);
+if (do_jmp){
+    ret=qt5023_hwicap_reset(head,mtd_offset);
+    if (ret){
+        dev_err(&head->pci_dev->dev,"error: Failed to jump to new bitfile\n");
+        vfree(buffer);
+        release_firmware(firmware);
+        return -EIO;
+    }
+    qt5023_spi_restart(head);
+}
+
+Thanks
 
 -- 
-Thanks,
-//richard
+Ricardo Ribalda
