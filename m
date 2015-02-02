@@ -1,21 +1,33 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YI3cN-0007FH-4S
- for linux-mtd@lists.infradead.org; Sun, 01 Feb 2015 23:07:52 +0000
-Received: by mail-pa0-f51.google.com with SMTP id fb1so74715169pad.10
- for <linux-mtd@lists.infradead.org>; Sun, 01 Feb 2015 15:07:29 -0800 (PST)
-Date: Sun, 1 Feb 2015 15:07:23 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Niklas Cassel <nks@flawful.org>
-Subject: Re: [PATCH] mtd: avoid registering reboot notifier twice
-Message-ID: <20150201230723.GA3523@norris-Latitude-E6410>
-References: <1422752930-696-1-git-send-email-nks@flawful.org>
+From: =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>
+To: Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
+ <ezequiel.garcia@imgtec.com>
+Subject: RE: [PATCH 0/3] An alternative to SPI NAND
+Date: Mon, 2 Feb 2015 01:53:49 +0000
+Message-ID: <87F60714EC601C4C83DFF1D2E3D390A04AEA93@NTXXIAMBX02.xacn.micron.com>
+References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
+ <20150108010257.GP9759@ld-irv-0074>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
+ <54ADF90B.1070800@imgtec.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
+ <54BE2F7B.60003@imgtec.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A77151E62@NTXXIAMBX02.xacn.micron.com>
+ <54CA75F6.5020803@imgtec.com>
+ <87F60714EC601C4C83DFF1D2E3D390A04AE751@NTXXIAMBX02.xacn.micron.com>
+ <54CB6F51.2070403@imgtec.com> <20150131070204.GA3692@norris-Latitude-E6410>
+In-Reply-To: <20150131070204.GA3692@norris-Latitude-E6410>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1422752930-696-1-git-send-email-nks@flawful.org>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org
+Cc: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>, Andrew
+ Bresticker <abrestic@chromium.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
+ =?utf-8?B?TWVsYW5pZSBaaGFuZyDlvKDnh5UgKG1lbGFuaWV6aGFuZyk=?=
+ <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ James Hartley <james.hartley@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +37,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Feb 01, 2015 at 02:08:50AM +0100, Niklas Cassel wrote:
-> Calling mtd_device_parse_register with the same mtd_info
-> (e.g. registering several partitions on a single device)
-> would add the same reboot notifier twice, causing an
-> infinte loop in notifier_chain_register during boot up.
-
-No driver should be calling mtd_device_parse_register() multiple times
-on the same mtd_info. Under what context do you see this? What driver?
-
-> Signed-off-by: Niklas Cassel <nks@flawful.org>
-> ---
->  drivers/mtd/mtdcore.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index de79576..98efc1e 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -556,7 +556,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
->  			err = -ENODEV;
->  	}
->  
-> -	if (mtd->_reboot) {
-> +	if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
->  		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
->  		register_reboot_notifier(&mtd->reboot_notifier);
->  	}
-
-Brian
+T24gU2F0LCBKYW4gMzEsIDIwMTUgYXQgMTU6MDI6MjlBTSAtMDMwMCwgQnJpYW4gTm9ycmlzIHdy
+b3RlOg0KPiANCj4gT24gRnJpLCBKYW4gMzAsIDIwMTUgYXQgMDg6NDc6MjlBTSAtMDMwMCwgRXpl
+cXVpZWwgR2FyY2lhIHdyb3RlOg0KPiA+IE9uIDAxLzI5LzIwMTUgMDk6NTcgUE0sIFBldGVyIFBh
+biDmvZjmoIsgKHBldGVycGFuZG9uZykgd3JvdGU6DQo+ID4gWy4uXQ0KPiA+ID4NCj4gPiA+IEN1
+cnJlbnRseSwgd2UgYXJlIHdvcmtpbmcgb24gc2hhcmluZyB0aGUgYmJ0IGNvZGUuIEkgdGhpbmsg
+eW91ciBhbmQNCj4gQnJhaW4ncyBzdWdnZXN0aW9uDQo+ID4gPiB3aWxsIGJlIHZlcnkgaGVscGZ1
+bC4NCj4gPiA+DQo+ID4gPiBUaGVyZSBhcmUgdHdvIG9wdGlvbnMuIFdlIGNhbiBwdXQgc3RydWN0
+IG5hbmRfYmJ0IHBvaW50ZXIgaW4gZWl0aGVyDQo+IG5hbmRfY2hpcA0KPiA+ID4gb3IgbXRkX2lu
+Zm8gc3RydWN0dXJlLg0KPiA+DQo+ID4gSSdtIHNvcnJ5LCB5b3UgbG9zdCBtZSBoZXJlLiBEbyB5
+b3UgbWVhbiBzdHJ1Y3QgbmFuZF9iYnRfZGVzY3IgPw0KPiANCj4gSSdtIGFzc3VtaW5nIGhlJ3Mg
+c3VnZ2VzdGluZyBhIG5ldyBzdHJ1Y3QgdGhhdCBoZSdzIGNhbGxpbmcgbmFuZF9iYnQuDQo+IA0K
+PiA+ID4gSWYgcHV0IG5hbmRfYmJ0IGluIG5hbmRfY2hpcCwgd2UgbmVlZCB0byBjaGFuZ2UgdGhl
+DQo+ID4NCj4gPiBJIHRob3VnaHQgdGhlIHBsYW4gd2FzIE5PVCB0byBiYXNlIHNwaS1uYW5kIG9u
+IG5hbmQsIHNvIHlvdSBjYW4ndCBwdXQNCj4gPiB0aGlzIGluIG5hbmRfY2hpcCwgY2FuIHlvdT8N
+Cj4gDQo+IFlvdSBjb3VsZC4gSXQncyBqdXN0IGEgbWF0dGVyIG9mIHdobyBkb2VzIHRoZSBwb2lu
+dGVyIGNoYXNpbmcuIChJdCdzDQo+IGp1c3QgaW1wb3J0YW50IHRoYXQgbmFuZF9iYnQuYyBkb2Vz
+bid0ICphc3N1bWUqIHRoYXQgaXQgaGFzIG5hbmRfY2hpcA0KPiBhcw0KPiBhIHBhcmVudC4pDQo+
+IA0KPiBJZiBzdHJ1Y3QgbmFuZF9iYnQgaXMgZW1iZWRkZWQgZGlyZWN0bHkgaW4gc3RydWN0IG10
+ZF9pbmZvLCB0aGVuDQo+IG5hbmRfYmJ0LmMgY291bGQgaW1wbGVtZW50IGZ1bmN0aW9ucyBzdWNo
+IHRoYXQgaXRzIHVzZXJzIGNhbiBqdXN0IGRvDQo+IHRoaXM6DQo+IA0KPiAJbXRkLT5fYmxvY2tf
+aXNiYWQgPSBuYW5kX2JidF9ibG9ja2lzYmFkOw0KPiANCj4gQnV0IGlmIHlvdSBkb24ndCAoYW5k
+IGluc3RlYWQgZW1iZWQgaXQgaW4gYSBjdXN0b20gbG9jYXRpb24gbGlrZQ0KPiBuYW5kX2NoaXAp
+LCB3ZSdkIGhhdmUgdG8gd3JpdGUgd3JhcHBlcnMgdGhhdCBjYWxsIHRoZSBuYW5kX2JidF8qDQo+
+IGZ1bmN0aW9ucyAobGlrZSBuYW5kX2Jhc2UgZG9lcyB0b2RheSkuIGUuZy46DQo+IA0KPiAJbXRk
+LT5fYmxvY2tfaXNiYWQgPSBzcGlfbmFuZF9ibG9ja2lzYmFkOw0KPiANCj4gaW50IHNwaV9uYW5k
+X2Jsb2NrX2lzYmFkKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3Qgb2ZmcykNCj4gew0KPiAJ
+c3RydWN0IHNwaV9uYW5kX2NoaXAgKmNoaXAgPSBtdGQtPnByaXY7DQo+IAlzdHJ1Y3QgbmFuZF9i
+YnQgKmJidCA9IGNoaXAtPmJidDsNCj4gDQo+IAlyZXR1cm4gbmFuZF9iYnRfYmxvY2tpc2JhZChi
+YnQsIG9mZnMpOw0KPiB9DQo+IA0KPiBBbnl3YXksIEkgdGhpbmsgaXQncyB3b3J0aCBsYXlpbmcg
+b3V0IGV4YWN0bHkgd2hlcmUgdGhlIHBpZWNlcyBhcmUNCj4gZ29pbmcNCj4gdG8gZml0IGhlcmUu
+IEkgcmVja29uIHdlIG5lZWQgdGhlIGZvbGxvd2luZzoNCj4gDQo+ICAxLiBhIHNob3J0IGxpc3Qg
+b2YgcGFyYW1ldGVycyB0aGF0IG5hbmRfYmJ0IG5lZWRzIGZyb20gdGhlIE5BTkQNCj4gIGltcGxl
+bWVudGF0aW9uIChlaXRoZXIgbmFuZF9iYXNlIG9yIHNwaS1uYW5kLSopDQo+IA0KPiAgMi4gYSBs
+aXN0IG9mIHBhcmFtZXRlcnMgdGhhdCBuZWVkIHRvIGJlIGtlcHQgYXJvdW5kIGZvciBuYW5kX2Ji
+dA0KPiAgYm9va2tlZXBpbmcgLyBoYW5kbGluZw0KPiANCj4gIDMuIGFuIGluaXQgZnVuY3Rpb24g
+KG5hbmRfYmJ0X2luaXQoKT8pIHRoYXQgdGFrZXMgIzEgYW5kIGNvbXB1dGVzICMyDQo+IA0KPiAg
+MyhhKSBhIGNvcnJlc3BvbmRpbmcgcmVsZWFzZSBmdW5jdGlvbg0KPiANCj4gIDQuIGEgc2V0IG9m
+IGZ1bmN0aW9ucyB0aGF0LCBnaXZlbiBvbmx5IGEgZmV3IG9idmlvdXMgcGFyYW1ldGVycyAoZS5n
+LiwNCj4gIGJsb2NrIG9mZnNldHMpIGFuZCBhIHN0cnVjdCB0aGF0IGhvbGRzICMyLCBoYW5kbGUg
+YWxsIEJCVCBuZWVkcyAoZS5nLiwNCj4gIGJhZCBibG9jayBsb29rdXAsIGJhZCBibG9jayBzY2Fu
+bmluZywgbWFya2luZyBuZXcgYmFkIGJsb2NrcykNCj4gDQo+IFNpbmNlIEkgc2VlICMxIGFuZCAj
+MiBvdmVybGFwcGluZyBxdWl0ZSBhIGJpdCwgd2UgbWlnaHQgY29tYmluZSB0aGVtLA0KPiB3aGVy
+ZSBzZXZlcmFsIHBhcmFtZXRlcnMgYXJlIGV4cGVjdGVkIHRvIGJlIHNldCBieSB0aGUgbmFuZF9i
+YnQgdXNlcg0KPiAoZWl0aGVyIG5hbmRfYmFzZS5jIG9yIG5hbmRfYmJ0LmMpLCBhbmQgYSBmZXcg
+YXJlIGNvbnNpZGVyZWQgcHJpdmF0ZSB0bw0KPiBuYW5kX2JidC4NCj4gDQo+IHN0cnVjdCBuYW5k
+X2JidCB7DQo+IAlzdHJ1Y3QgbXRkX2luZm8gKm10ZDsNCj4gDQo+IAkvKg0KPiAJICogVGhpcyBp
+cyBpbXBvcnRhbnQgdG8gYWJzdHJhY3Qgb3V0IG9mIG5hbmRfYmJ0LmMgYW5kIHByb3ZpZGUNCj4g
+CSAqIHNlcGFyYXRlbHkgaW4gbmFuZF9iYXNlLmMgYW5kIHNwaS1uYW5kLWJhc2UuYyAtLSBpdCdz
+IHNvcnQgb2YNCj4gCSAqIGR1cGxpY2F0ZWQgaW4gbmFuZF9ibG9ja19iYWQoKSAobmFuZF9iYXNl
+KSBhbmQNCj4gCSAqIHNjYW5fYmxvY2tfZmFzdCgpIChuYW5kX2JidCkgcmlnaHQgbm93DQo+IAkg
+Kg0KPiAJICogTm90ZSB0aGF0IHRoaXMgYWxzbyBtZWFucyBuYW5kX2NoaXAuYmFkYmxvY2tfcGF0
+dGVybiBzaG91bGQNCj4gCSAqIGJlIHJlbW92ZWQgZnJvbSBuYW5kX2JidC5jDQo+IAkgKi8NCj4g
+CWludCAoKmlzX2JhZF9iYm0pKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3Qgb2ZzKTsNCj4g
+DQo+IAkvKiBPbmx5IHJlcXVpcmVkIGlmIHRoZSBkcml2ZXIgd2FudHMgdG8gYXR0ZW1wdCB0byBw
+cm9ncmFtIG5ldw0KPiAJICogYmFkIGJsb2NrIG1hcmtlcnMgdGhhdCBpbWl0YXRlIHRoZSBmYWN0
+b3J5LW1hcmtlZCBCQk1zICovDQo+IAlpbnQgKCptYXJrX2JhZF9iYm0pKHN0cnVjdCBtdGRfaW5m
+byAqbXRkLCBsb2ZmX3Qgb2ZzKTsNCj4gDQo+IAl1bnNpZ25lZCBpbnQgYmJ0X29wdGlvbnM7DQo+
+IA0KPiAJLyogT25seSByZXF1aXJlZCBmb3IgTkFORF9CQlRfUEVSQ0hJUCAqLw0KPiAJaW50IG51
+bWNoaXBzOw0KPiANCj4gCS8qIERpc2NvdXJhZ2UgbmV3IGN1c3RvbWVyIHVzYWdlcyBoZXJlOyBz
+dWdnZXN0IHVzYWdlIG9mIHRoZQ0KPiAJICogcmVsZXZhbnQgTkFORF9CQlRfKiBvcHRpb25zIGlu
+c3RlYWQgKi8NCj4gCXN0cnVjdCBuYW5kX2JidF9kZXNjciAqYmJ0X3RkOw0KPiAJc3RydWN0IG5h
+bmRfYmJ0X2Rlc2NyICpiYnRfbWQ7DQo+IA0KPiAJLyogVGhlIHJlc3QgYXJlIGZpbGxlZCBpbiBi
+eSBuYW5kX2JidF9pbml0KCkgKi8NCj4gDQo+IAlpbnQgYmJ0X2VyYXNlX3NoaWZ0Ow0KPiAJaW50
+IHBhZ2Vfc2hpZnQ7DQo+IA0KPiAJdTggKmJidDsNCj4gfTsNCj4gDQo+ICMzIG1pZ2h0IHNpbXBs
+eSBsb29rIGxpa2U6DQo+IA0KPiBpbnQgbmFuZF9iYnRfaW5pdChzdHJ1Y3QgbmFuZF9iYnQgKmJi
+dCk7DQo+IHZvaWQgbmFuZF9iYnRfcmVsZWFzZShzdHJ1Y3QgbmFuZF9iYnQgKmJidCk7DQo+IA0K
+PiAjNCBtaWdodCBsb29rIGxpa2UgdGhlIGZvbGxvd2luZyBBUElzIGZvciBuYW5kX2JidC5jIChu
+b3QgdG9vIGRpZmZlcmVudA0KPiB0aGFuIHdlIGhhdmUgbm93KToNCj4gDQo+IGludCBuYW5kX2Ji
+dF9pbml0KHN0cnVjdCBuYW5kX2JidCAqYmJ0KTsgLyogaW5pdCArIHNjYW4/ICovDQo+IGludCBu
+YW5kX2JidF9tYXJrYmFkKHN0cnVjdCBuYW5kX2JidCAqYmJ0LCBsb2ZmX3Qgb2Zmcyk7DQo+IGlu
+dCBuYW5kX2JidF9pc3Jlc2VydmVkKHN0cnVjdCBuYW5kX2JidCAqYmJ0LCBsb2ZmX3Qgb2Zmcyk7
+DQo+IGludCBuYW5kX2JidF9pc2JhZChzdHJ1Y3QgbmFuZF9iYnQgKmJidCwgbG9mZl90IG9mZnMp
+Ow0KPiANCj4gKFRoZSBhYm92ZSBhbGxvd3MgZm9yIG5hbmRfYmJ0IHRvIGJlIGVtYmVkZGVkIGFu
+eXdoZXJlOyB3ZSBjb3VsZCBtb2RpZnkNCj4gdGhpcyBBUEkgdG8gYmUgZHJvcC1pbiByZXBsYWNl
+bWVudHMgZm9yIHRoZSBtdGRfaW5mbyBjYWxsYmFja3MgaWYgd2UNCj4gZW1iZWQgc3RydWN0IG5h
+bmRfYmJ0IGluIG10ZF9pbmZvLikNCj4gDQo+ID4gQWxzbzogQWZ0ZXIgbG9va2luZyBhdCB0aGUg
+bmFuZF9iYnQuYyBmaWxlLCBJJ20gd29uZGVyaW5nIGhvdw0KPiBwcm9taXNpbmcNCj4gPiBpcyB0
+byBzZXBhcmF0ZSBpdCBmcm9tIE5BTkQuIEl0IHNlZW1zIHRoZSBCQlQgY29kZSBpcyBxdWl0ZSBh
+dHRhY2hlZA0KPiB0bw0KPiA+IE5BTkQhDQo+IA0KPiBUaGVyZSB3aWxsIGJlIHF1aXRlIGEgYml0
+IG9mIGNodXJuLCBidXQgSSBkb24ndCB0aGluayB0aGF0IGl0IGlzIHRvbw0KPiBzdHJvbmdseSBh
+dHRhY2hlZC4NCj4gDQo+ID4gQXJlIHlvdSBwbGFubmluZyB0byBkbyB0aGlzIGluIGp1c3Qgb25l
+IHBhdGNoPyBNYXliZSBpdCdzIGJldHRlciB0bw0KPiA+IHN0YXJ0IHNpbXBsZSBhbmQgcHJlcGFy
+ZSBzbWFsbCBwYXRjaGVzIHRoYXQgZ3JhZHVhbGx5IG1ha2UgdGhlDQo+ID4gbmFuZF9iYXNlLmMg
+YW5kIG5hbmRfYmJ0LmMgZmlsZXMgbGVzcyBkZXBlbmRlbnQuDQo+IA0KPiBZZWFoLCBhIHNlcmll
+cyBvZiBwYXRjaGVzIHdvdWxkIGJlIGJlc3QuIEFuZCBtYXliZSBzdGFydCBzbWFsbGVyLg0KPiAN
+Cj4gSWYgdGhlIG5hbmRfYmJ0IHN0dWZmIHJlYWxseSBzbG93cyBzb21lb25lIGRvd24sIHdlIG1p
+Z2h0IHdhbnQgdG8ganVzdA0KPiBhZ3JlZSBvbiBhbiBBUEkgc2ltaWxhciB0byB0aGUgYWJvdmUg
+YW5kIHRoZW4gd29yayBvbiB0aGUgcmVzdCBvZiB0aGUNCj4gU1BJIE5BTkQgZGV0YWlscywgYXNz
+dW1pbmcgc29tZW9uZSAoZS5nLiwgbWUpIHdyaXRlcyB0aGUgaW1wbGVtZW50YXRpb24NCj4gKGFu
+ZCB0cmFuc2l0aW9ucyBvdGhlciBkcml2ZXJzIHRvIGRvIHRoaXMpLg0KPiANCj4gVW5sZXNzIHNv
+bWVvbmUgZWxzZSB0aGlua3MgdGhleSBoYXZlIGFuIGV4Y2VsbGVudCBoYW5kbGUgb24gdGhlIGFi
+b3ZlLA0KPiBJJ2xsIHRha2UgYSBzdGFiIGF0IGRvaW5nIHRoaXMuIEkgYWN0dWFsbHkgaGF2ZSBh
+IGZldyBwYXRjaGVzIHRoYXQgaGF2ZQ0KPiBodW5nIGFyb3VuZCBhIHdoaWxlICh3aXRoIGxpdHRs
+ZSBpbmNlbnRpdmUgdG8gZmluaXNoIHRoZW0pIHRoYXQgZG8NCj4gcGFydHMNCj4gb2Ygd2hhdCBJ
+J20gc3VnZ2VzdGluZyBhYm92ZS4NCj4gDQoNCkknbSBnbGFkIHRvIGhlYXIgdGhhdCB0aGVyZSBh
+cmUgYWxyZWFkeSBzb21lIHBhdGNoZXMgYWJvdXQgeW91ciBzdWdnZXN0aW9uDQphYm92ZS4gSSBr
+bm93IHlvdSBhcmUgcXVpdGUgYnVzeS4gTWF5YmUgSSBjYW4gZG8gc29tZSBoZWxwIGlmIHlvdSBu
+ZWVkLg0KDQpQZXRlcg0KDQo=
