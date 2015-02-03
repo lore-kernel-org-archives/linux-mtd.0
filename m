@@ -1,24 +1,26 @@
-Message-ID: <54D08AD7.3050209@atmel.com>
-Date: Tue, 3 Feb 2015 16:46:15 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/4] mtd: nand: atmel: Update DT documentation after
- splitting NFC and NAND
-References: <1417732214-3292-1-git-send-email-boris.brezillon@free-electrons.com>	<1417732214-3292-3-git-send-email-boris.brezillon@free-electrons.com>	<20150202075737.GC3523@norris-Latitude-E6410>
- <20150202104236.649f99ad@bbrezillon>
-In-Reply-To: <20150202104236.649f99ad@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YIZSN-0001PJ-FM
+ for linux-mtd@lists.infradead.org; Tue, 03 Feb 2015 09:07:39 +0000
+Message-ID: <1422954434.8637.372.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS: Is it possible to get the compressed size of a file?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Andreas Dilger <adilger@dilger.ca>
+Date: Tue, 03 Feb 2015 11:07:14 +0200
+In-Reply-To: <7B8DF06B-EBC8-4C85-AEEA-C2C6A52B8789@dilger.ca>
+References: <trinity-a1228aa8-8eaa-4950-9c14-5d6b6db5f3d7-1418371801058@3capp-1and1-bs02>
+ <,> <54912109.50505@huawei.com>
+ <trinity-03861656-4f4e-47fd-bcc5-aa493202c0bd-1418900934280@3capp-1and1-bs05>
+ <1422869610.8637.352.camel@sauron.fi.intel.com>
+ <7B8DF06B-EBC8-4C85-AEEA-C2C6A52B8789@dilger.ca>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- David Woodhouse <dwmw2@infradead.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
+Cc: Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, David Sterba <dsterba@suse.cz>,
+ "markus.heininger@online.de" <markus.heininger@online.de>,
+ hujianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,138 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Boris, Brian
+On Mon, 2015-02-02 at 22:45 -0700, Andreas Dilger wrote:
+> I think FIEMAP would be a good userspace API to get this kind of
+> low-level allocation information about the compressed size of data.
+> For most files it would probably only need a single fiemap_extent
+> to return the allocation data.
 
-On 2/2/2015 5:42 PM, Boris Brezillon wrote:
-> Hi Brian,
->
-> On Sun, 1 Feb 2015 23:57:37 -0800
-> Brian Norris <computersforpeace@gmail.com> wrote:
->
->> Hi Boris,
->>
->> BTW, this series has a few conflicts with other things I have queued, so
->> you'll need to refresh.
-> Yes, that's not a problem, but I'd like to be sure this is the way we
-> want to go before rebasing this series.
->
->> On Thu, Dec 04, 2014 at 11:30:12PM +0100, Boris Brezillon wrote:
->>> The NAND and NFC (NAND Flash Controller) were linked together with a
->>> parent <-> child relationship.
->>>
->>> This model has several drawbacks:
->>> - it does not allow for multiple NAND chip handling while the controller
->>>    support multi-chip (even though the driver is not ready yet)
->>> - it mixes NAND partitions and NFC nodes at the same level (which is a bit
->>>    disturbing)
->> I agree that this is disturbing. (FWIW, it also seems a bit disturbing
->> that atmel_nand.c actually registers two different drivers and the tries
->> to synchronize them; this seems like it could be handled better, but I'm
->> not sure how at the moment.)
-> Yep, that's my feeling too, but I'm not sure how this could/should be
-> done.
-> My problem here is that the pinmux should be requested by the EBI
-> device because the EBI manages several type of devices and the data and
-> address signals are shared by all the devices, hence the idea of
-> defining the nand chip node under the EBI node.
-> In the other hand, the NFC is not part of the EBI bus, and thus should
-> not be defined under the EBI node.
->
-> This might lead to the NFC device being probed before the NAND chip,
-> hence the need for this synchronization.
+Thanks Andreas,
 
-OMHO, there is another way, which is change the NFC node to many NFC 
-properties, just like PMECC.
-As NFC, PMECC or hamming ecc HW could be part of current NAND node (in 
-sama5, HSMC maybe a better name for this node. )
+indeed FIEMAP sounds like a good answer to the problem.
 
-And this change can avoid the sync problem and avoid two drivers in 
-atmel_nand.c.
-
->
->>> - the introduction of the EBI bus implies defining NAND chips under the
->>>    EBI node, and the ranges available under the EBI node should be
->>>    restricted to EBI address space, while the NFC references several
->>>    registers outside of these EBI ranges.
->> That's an interesting bit. I've actually run across this sort of problem
->> on other SoCs, where we have a relationship between two pieces of
->> hardware--the NAND chip and the NAND controller--where the former might
->> be on one bus (like your EBI bus, with chip selects), and the latter is
->> part of the top-level MMIO register space.
->>
->> But can you elaborate here a bit more? Does the NAND chip actually need
->> to be represented under your EBI bus?
-> Yes, as said above this is all about pinmux conflicts, the NAND
-> controller has to request the appropriate pinmux for its NAND chips but
-> it will conflict with the pinmux requested by the EBI bus (data and
-> address signals are shared by all the devices connected on the EBI).
->
->>> Move the NFC node outside of the NAND node, to get a more future-proof
->>> model.
->> I'm curious if an alternative solution might work, maybe one like the
->> Allwiner NAND (sunxi-nand) DT, which just reverses the roles; the 'NFC'
->> is the parent of the NAND chip(s). We've seen this pattern in other
->> contexts too.
-
-I also prefer this. Then the dt node should looks like finally:
-
-nand (SMC may be more correct) node {
-     PMECC properties
-     NFC properties --> we can make the NFC not a node, just many NFC 
-properties.
-
-     pinctrl-nand0
-     nand chip 0: {
-         partitions...
-     }
-
-     pinctrl-nand1
-     nand chip 1: {
-         partitions...
-     }
-}
-
-> I would have preferred this solution too, but the EBI/pinmux constraint
-> explained above prevents this approach.
-I am not very clear about the pinmux constraint.
-Maybe we just leave one DT node (either EBI or current nand node) to 
-take care the pins.
-
-> What I can do though, is reverse the referencing: reference nand chips
-> from the nand controller node.
-
-I guess the dt looks like: (correct me if I am wrong)
-
-EBI node {
-     pinctrl-nand0
-     nand chip 0: {
-         partitions...
-     }
-
-     pinctrl-nand1
-     nand chip 1: {
-         partitions...
-     }
-}
-
-nand (SMC/HSMC may be more correct) node {
-     PMECC properties
-     NFC properties --> we can make the NFC not a node, just many NFC 
-properties.
-
-     &nand chip0
-     &nand chip1
-}
-
-This is still looks nice to me.
-
->
-> Josh, Brian, any idea to solve this EBI/nand-chip/nand-controller
-> dependency problem is welcome.
->
-> Best Regards,
->
-> Boris
->
-Best Regards,
-Josh Wu
+Artem.
