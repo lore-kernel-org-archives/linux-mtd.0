@@ -1,18 +1,25 @@
-Received: from mail-ob0-x230.google.com ([2607:f8b0:4003:c01::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YImYZ-0005UQ-VF
- for linux-mtd@lists.infradead.org; Tue, 03 Feb 2015 23:06:56 +0000
-Received: by mail-ob0-f176.google.com with SMTP id wo20so16498583obc.7
- for <linux-mtd@lists.infradead.org>; Tue, 03 Feb 2015 15:06:33 -0800 (PST)
-Sender: Rob Herring <robherring2@gmail.com>
-From: Rob Herring <robh@kernel.org>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: nand: pxa3xx: fix build on ARM64
-Date: Tue,  3 Feb 2015 17:06:16 -0600
-Message-Id: <1423004776-17825-1-git-send-email-robh@kernel.org>
-Cc: Rob Herring <robh@kernel.org>, linux-mtd@lists.infradead.org
+Date: Wed, 4 Feb 2015 10:13:17 +0100
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
+Message-ID: <20150204091317.GA5492@lukather>
+References: <1422284164-16867-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
+Content-Disposition: inline
+In-Reply-To: <1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
+ Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,81 +29,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In preparation to enable ARCH_MMP on ARM64, a couple of fixes are needed
-to build the pxa3xx_nand driver:
 
-Legacy DMA will only used on ARM, so also make it condtional on
-CONFIG_ARM.
-__raw_{read,write}sl are not available on ARM64 or generically, so use
-the readsl/writesl variants instead.
+--mYCpIKhGyMATD0i+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Rob Herring <robh@kernel.org>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/nand/pxa3xx_nand.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+Hi Brian,
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 96b0b1d..404d390 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -28,7 +28,7 @@
- #include <linux/of_device.h>
- #include <linux/of_mtd.h>
- 
--#if defined(CONFIG_ARCH_PXA) || defined(CONFIG_ARCH_MMP)
-+#if defined(CONFIG_ARM) && (defined(CONFIG_ARCH_PXA) || defined(CONFIG_ARCH_MMP))
- #define ARCH_HAS_DMA
- #endif
- 
-@@ -486,24 +486,24 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
- 
- 	switch (info->state) {
- 	case STATE_PIO_WRITING:
--		__raw_writesl(info->mmio_base + NDDB,
--			      info->data_buff + info->data_buff_pos,
--			      DIV_ROUND_UP(do_bytes, 4));
-+		writesl(info->mmio_base + NDDB,
-+			info->data_buff + info->data_buff_pos,
-+			DIV_ROUND_UP(do_bytes, 4));
- 
- 		if (info->oob_size > 0)
--			__raw_writesl(info->mmio_base + NDDB,
--				      info->oob_buff + info->oob_buff_pos,
--				      DIV_ROUND_UP(info->oob_size, 4));
-+			writesl(info->mmio_base + NDDB,
-+				info->oob_buff + info->oob_buff_pos,
-+				DIV_ROUND_UP(info->oob_size, 4));
- 		break;
- 	case STATE_PIO_READING:
--		__raw_readsl(info->mmio_base + NDDB,
--			     info->data_buff + info->data_buff_pos,
--			     DIV_ROUND_UP(do_bytes, 4));
-+		readsl(info->mmio_base + NDDB,
-+		       info->data_buff + info->data_buff_pos,
-+		       DIV_ROUND_UP(do_bytes, 4));
- 
- 		if (info->oob_size > 0)
--			__raw_readsl(info->mmio_base + NDDB,
--				     info->oob_buff + info->oob_buff_pos,
--				     DIV_ROUND_UP(info->oob_size, 4));
-+			readsl(info->mmio_base + NDDB,
-+			       info->oob_buff + info->oob_buff_pos,
-+			       DIV_ROUND_UP(info->oob_size, 4));
- 		break;
- 	default:
- 		dev_err(&info->pdev->dev, "%s: invalid state %d\n", __func__,
-@@ -1580,7 +1580,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 	info->pdev = pdev;
- 	info->variant = pxa3xx_nand_get_variant(pdev);
- 	for (cs = 0; cs < pdata->num_cs; cs++) {
--		mtd = (struct mtd_info *)((unsigned int)&info[1] +
-+		mtd = (struct mtd_info *)((void *)&info[1] +
- 		      (sizeof(*mtd) + sizeof(*host)) * cs);
- 		chip = (struct nand_chip *)(&mtd[1]);
- 		host = (struct pxa3xx_nand_host *)chip;
--- 
-2.1.0
+On Mon, Jan 26, 2015 at 03:56:03PM +0100, Maxime Ripard wrote:
+> The NDDB register holds the data that are needed by the read and write
+> commands.
+>=20
+> However, during a read PIO access, the datasheet specifies that after eac=
+h 32
+> bits read in that register, when BCH is enabled, we have to make sure tha=
+t the
+> RDDREQ bit is set in the NDSR register.
+>=20
+> This fixes an issue that was seen on the Armada 385, and presumably other=
+ mvebu
+> SoCs, when a read on a newly erased page would end up in the driver repor=
+ting a
+> timeout from the NAND.
+>=20
+> Cc: <stable@vger.kernel.org> # v3.14
+> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+
+Any chance for this fix to come in 3.19?
+
+Thanks,
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+
+--mYCpIKhGyMATD0i+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJU0eKtAAoJEBx+YmzsjxAgE80P/Ro/RhYd06mjCQjvSJqtVvzF
+5QVjcd3TRmoMyb8my51xTM0QdGQN7nTQ9k9C4E9h6m1FIWs5RmJth43RRgnMt4Dg
+ca8pb9YLaGf05Xcdi7wiVnZdSCC0/KpwBpbK/2pmkeemiSMRGEehsqEcsyEEU98I
+qHZSvitHz+WzHt44ARNPD+kuxM6fUn3nW1SSI9dyduyxMYbrmOEKeR/nmUVdiDnm
+wdzmq1Qy8zgmXumWJL4Xgg0RshVdTJCN48IWLKZZW87DF8DOo/RXDDge4iRD1c8S
+UmfEPEBkFSQNWJ9z02ge/3gxjeU930t/w8nb5tjxY6Lmkp2Wshrk0CcQk4/j59YZ
+PU87Vzz15fkGvN0ziJ60PYh15Io50qSbFs4SxQiVR3BFNmG3hnduTwfWm6N3/3YH
+uf/98IvFcjDM8ZQBAp05Iw93VXpMOdeP7otqiFWsaH25/lJ7pZc7zyqwnRbUCNZB
+LgdWzEg/pAzBG7iUNig9UEnLiM7YB5uY+9E6dLfRu7s49BEG7woIimaCDxkiapmd
+D2Pfs+OKFhaHcohmIYwASUcaeSpqnIzkbxrU7Clh9A31M5CV0CHnNaqekHF0fZMh
+FV0NKV5opS9Scqw1+LWVeMPOV2W1J4rhUfal7ZXZP0BmlDk7e5uSPGbAnRymfzrM
+JGwa/3cjhmt/arP6YDMN
+=dOAh
+-----END PGP SIGNATURE-----
+
+--mYCpIKhGyMATD0i+--
