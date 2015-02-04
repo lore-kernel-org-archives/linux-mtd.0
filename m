@@ -1,25 +1,13 @@
-Date: Wed, 4 Feb 2015 10:13:17 +0100
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
-Message-ID: <20150204091317.GA5492@lukather>
-References: <1422284164-16867-1-git-send-email-maxime.ripard@free-electrons.com>
- <1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
-Content-Disposition: inline
-In-Reply-To: <1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
- Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+From: Nicholas Mc Guire <hofrat@osadl.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: nand: omap: conditions with no effect
+Date: Wed,  4 Feb 2015 04:27:39 -0500
+Message-Id: <1423042059-22416-1-git-send-email-hofrat@osadl.org>
+Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+ linux-kernel@vger.kernel.org, Rostislav Lisovy <lisovy@gmail.com>,
+ linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Nicholas Mc Guire <hofrat@osadl.org>,
+ Brian Norris <computersforpeace@gmail.com>, pekon gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,63 +17,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The if and the else branch code are identical - so the condition has no
+effect on the effective code - this patch removes the condition and the
+duplicated code.
 
---mYCpIKhGyMATD0i+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+---
 
-Hi Brian,
+The conditions in the OMAP_ECC_BCH8_CODE_HW_DETECTION_SW and
+OMAP_ECC_BCH4_CODE_HW_DETECTION_SW case have no effect and can
+be removed. As there are no comments it is not possible to say
+if this is the correct solution or if this is actually a bug and
+the two branches should be different.
 
-On Mon, Jan 26, 2015 at 03:56:03PM +0100, Maxime Ripard wrote:
-> The NDDB register holds the data that are needed by the read and write
-> commands.
->=20
-> However, during a read PIO access, the datasheet specifies that after eac=
-h 32
-> bits read in that register, when BCH is enabled, we have to make sure tha=
-t the
-> RDDREQ bit is set in the NDSR register.
->=20
-> This fixes an issue that was seen on the Armada 385, and presumably other=
- mvebu
-> SoCs, when a read on a newly erased page would end up in the driver repor=
-ting a
-> timeout from the NAND.
->=20
-> Cc: <stable@vger.kernel.org> # v3.14
-> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+This patch needs a review by someone who knows the details of the driver
 
-Any chance for this fix to come in 3.19?
+Patch was only compile tested with arm-linux-gnueabi-4.7-, current
+crosstool-ng did no not seem to compile omap2 properly.
+Config is omap2plus_defconfig which implies CONFIG_MTD_NAND_OMAP2=y.
 
-Thanks,
-Maxime
+Patch is against 3.19.0-rc6 (localversion-next is -next-20150203)
 
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+ drivers/mtd/nand/omap2.c |   24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
 
---mYCpIKhGyMATD0i+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJU0eKtAAoJEBx+YmzsjxAgE80P/Ro/RhYd06mjCQjvSJqtVvzF
-5QVjcd3TRmoMyb8my51xTM0QdGQN7nTQ9k9C4E9h6m1FIWs5RmJth43RRgnMt4Dg
-ca8pb9YLaGf05Xcdi7wiVnZdSCC0/KpwBpbK/2pmkeemiSMRGEehsqEcsyEEU98I
-qHZSvitHz+WzHt44ARNPD+kuxM6fUn3nW1SSI9dyduyxMYbrmOEKeR/nmUVdiDnm
-wdzmq1Qy8zgmXumWJL4Xgg0RshVdTJCN48IWLKZZW87DF8DOo/RXDDge4iRD1c8S
-UmfEPEBkFSQNWJ9z02ge/3gxjeU930t/w8nb5tjxY6Lmkp2Wshrk0CcQk4/j59YZ
-PU87Vzz15fkGvN0ziJ60PYh15Io50qSbFs4SxQiVR3BFNmG3hnduTwfWm6N3/3YH
-uf/98IvFcjDM8ZQBAp05Iw93VXpMOdeP7otqiFWsaH25/lJ7pZc7zyqwnRbUCNZB
-LgdWzEg/pAzBG7iUNig9UEnLiM7YB5uY+9E6dLfRu7s49BEG7woIimaCDxkiapmd
-D2Pfs+OKFhaHcohmIYwASUcaeSpqnIzkbxrU7Clh9A31M5CV0CHnNaqekHF0fZMh
-FV0NKV5opS9Scqw1+LWVeMPOV2W1J4rhUfal7ZXZP0BmlDk7e5uSPGbAnRymfzrM
-JGwa/3cjhmt/arP6YDMN
-=dOAh
------END PGP SIGNATURE-----
-
---mYCpIKhGyMATD0i+--
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 63f858e..5bcdd66 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1071,15 +1071,9 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+ 		bch_type = 0;
+ 		nsectors = 1;
+-		if (mode == NAND_ECC_READ) {
+-			wr_mode	  = BCH_WRAPMODE_6;
+-			ecc_size0 = BCH_ECC_SIZE0;
+-			ecc_size1 = BCH_ECC_SIZE1;
+-		} else {
+-			wr_mode   = BCH_WRAPMODE_6;
+-			ecc_size0 = BCH_ECC_SIZE0;
+-			ecc_size1 = BCH_ECC_SIZE1;
+-		}
++		wr_mode	  = BCH_WRAPMODE_6;
++		ecc_size0 = BCH_ECC_SIZE0;
++		ecc_size1 = BCH_ECC_SIZE1;
+ 		break;
+ 	case OMAP_ECC_BCH4_CODE_HW:
+ 		bch_type = 0;
+@@ -1097,15 +1091,9 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
+ 		bch_type = 1;
+ 		nsectors = 1;
+-		if (mode == NAND_ECC_READ) {
+-			wr_mode	  = BCH_WRAPMODE_6;
+-			ecc_size0 = BCH_ECC_SIZE0;
+-			ecc_size1 = BCH_ECC_SIZE1;
+-		} else {
+-			wr_mode   = BCH_WRAPMODE_6;
+-			ecc_size0 = BCH_ECC_SIZE0;
+-			ecc_size1 = BCH_ECC_SIZE1;
+-		}
++		wr_mode	  = BCH_WRAPMODE_6;
++		ecc_size0 = BCH_ECC_SIZE0;
++		ecc_size1 = BCH_ECC_SIZE1;
+ 		break;
+ 	case OMAP_ECC_BCH8_CODE_HW:
+ 		bch_type = 1;
+-- 
+1.7.10.4
