@@ -1,13 +1,25 @@
-From: Nicholas Mc Guire <hofrat@osadl.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: nand: omap: conditions with no effect
-Date: Wed,  4 Feb 2015 04:27:39 -0500
-Message-Id: <1423042059-22416-1-git-send-email-hofrat@osadl.org>
-Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
- linux-kernel@vger.kernel.org, Rostislav Lisovy <lisovy@gmail.com>,
- linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Nicholas Mc Guire <hofrat@osadl.org>,
- Brian Norris <computersforpeace@gmail.com>, pekon gupta <pekon@ti.com>
+Date: Wed, 4 Feb 2015 11:10:28 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH v2 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
+Message-ID: <20150204111028.2f0bd376@bbrezillon>
+In-Reply-To: <1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>
+References: <1422284164-16867-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
+ Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,71 +29,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The if and the else branch code are identical - so the condition has no
-effect on the effective code - this patch removes the condition and the
-duplicated code.
+Hi Maxime,
 
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
+On Mon, 26 Jan 2015 15:56:03 +0100
+Maxime Ripard <maxime.ripard@free-electrons.com> wrote:
 
-The conditions in the OMAP_ECC_BCH8_CODE_HW_DETECTION_SW and
-OMAP_ECC_BCH4_CODE_HW_DETECTION_SW case have no effect and can
-be removed. As there are no comments it is not possible to say
-if this is the correct solution or if this is actually a bug and
-the two branches should be different.
+> The NDDB register holds the data that are needed by the read and write
+> commands.
+> 
+> However, during a read PIO access, the datasheet specifies that after each 32
+> bits read in that register, when BCH is enabled, we have to make sure that the
+> RDDREQ bit is set in the NDSR register.
+> 
+> This fixes an issue that was seen on the Armada 385, and presumably other mvebu
+> SoCs, when a read on a newly erased page would end up in the driver reporting a
+> timeout from the NAND.
+> 
+> Cc: <stable@vger.kernel.org> # v3.14
+> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 45 ++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 39 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 96b0b1d27df1..e6918befb951 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/io.h>
+>  #include <linux/irq.h>
+> +#include <linux/jiffies.h>
+>  #include <linux/slab.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> @@ -480,6 +481,38 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
+>  	nand_writel(info, NDCR, ndcr | int_mask);
+>  }
+>  
+> +static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
+> +{
+> +	u32 *dst = (u32 *)data;
+> +
+> +	if (info->ecc_bch) {
+> +		while (len--) {
+> +			u32 timeout;
+> +
+> +			*dst++ = nand_readl(info, NDDB);
+> +
+> +			/*
+> +			 * According to the datasheet, when reading
+> +			 * from NDDB with BCH enabled, after each 32
+> +			 * bits reads, we have to make sure that the
+> +			 * NDSR.RDDREQ bit is set
+> +			 */
 
-This patch needs a review by someone who knows the details of the driver
+I know the datasheet says this bit should be checked after each
+transfer, but I wonder if we shouldn't check it before reading the data.
+What happens if you drain all the data available in the FIFO ? Is the
+controller still setting the RDDREQ bit ?
 
-Patch was only compile tested with arm-linux-gnueabi-4.7-, current
-crosstool-ng did no not seem to compile omap2 properly.
-Config is omap2plus_defconfig which implies CONFIG_MTD_NAND_OMAP2=y.
+Moreover, the datasheet says this RDDREQ bit should be checked after
+each 32 bytes (not 32 bits) transfer.
+Testing it after each readl call shouldn't hurt though.
 
-Patch is against 3.19.0-rc6 (localversion-next is -next-20150203)
+Best Regards,
 
- drivers/mtd/nand/omap2.c |   24 ++++++------------------
- 1 file changed, 6 insertions(+), 18 deletions(-)
+Boris
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 63f858e..5bcdd66 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1071,15 +1071,9 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
- 	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
- 		bch_type = 0;
- 		nsectors = 1;
--		if (mode == NAND_ECC_READ) {
--			wr_mode	  = BCH_WRAPMODE_6;
--			ecc_size0 = BCH_ECC_SIZE0;
--			ecc_size1 = BCH_ECC_SIZE1;
--		} else {
--			wr_mode   = BCH_WRAPMODE_6;
--			ecc_size0 = BCH_ECC_SIZE0;
--			ecc_size1 = BCH_ECC_SIZE1;
--		}
-+		wr_mode	  = BCH_WRAPMODE_6;
-+		ecc_size0 = BCH_ECC_SIZE0;
-+		ecc_size1 = BCH_ECC_SIZE1;
- 		break;
- 	case OMAP_ECC_BCH4_CODE_HW:
- 		bch_type = 0;
-@@ -1097,15 +1091,9 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
- 	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
- 		bch_type = 1;
- 		nsectors = 1;
--		if (mode == NAND_ECC_READ) {
--			wr_mode	  = BCH_WRAPMODE_6;
--			ecc_size0 = BCH_ECC_SIZE0;
--			ecc_size1 = BCH_ECC_SIZE1;
--		} else {
--			wr_mode   = BCH_WRAPMODE_6;
--			ecc_size0 = BCH_ECC_SIZE0;
--			ecc_size1 = BCH_ECC_SIZE1;
--		}
-+		wr_mode	  = BCH_WRAPMODE_6;
-+		ecc_size0 = BCH_ECC_SIZE0;
-+		ecc_size1 = BCH_ECC_SIZE1;
- 		break;
- 	case OMAP_ECC_BCH8_CODE_HW:
- 		bch_type = 1;
 -- 
-1.7.10.4
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
