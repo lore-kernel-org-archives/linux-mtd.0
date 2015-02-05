@@ -1,19 +1,27 @@
-Received: from mail-we0-x233.google.com ([2a00:1450:400c:c03::233])
+Received: from mail-wg0-f45.google.com ([74.125.82.45])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJDpG-00023P-HX
- for linux-mtd@lists.infradead.org; Thu, 05 Feb 2015 04:14:00 +0000
-Received: by mail-we0-f179.google.com with SMTP id q59so5390452wes.10
- for <linux-mtd@lists.infradead.org>; Wed, 04 Feb 2015 20:13:35 -0800 (PST)
+ id 1YJDqe-0002B5-Nd
+ for linux-mtd@lists.infradead.org; Thu, 05 Feb 2015 04:15:25 +0000
+Received: by mail-wg0-f45.google.com with SMTP id x12so5362970wgg.4
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Feb 2015 20:15:01 -0800 (PST)
+Received: from mail-we0-f175.google.com (mail-we0-f175.google.com.
+ [74.125.82.175])
+ by mx.google.com with ESMTPSA id li10sm5967996wic.10.2015.02.04.20.15.00
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 04 Feb 2015 20:15:01 -0800 (PST)
+Received: by mail-we0-f175.google.com with SMTP id p10so5424457wes.6
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Feb 2015 20:15:00 -0800 (PST)
 MIME-Version: 1.0
 In-Reply-To: <20150204203710.GC4434@norris-Latitude-E6410>
 References: <CAN1oZWxB5N=YMQcsJppZgp7TXodcR4tKZM+LNFXS7PSx3F-Yag@mail.gmail.com>
  <CAN1oZWzeev-1uE7gxPnJA=L4Th65CRj8C_LQ7hMJLPHGssDjNQ@mail.gmail.com>
  <CAN1oZWzOfUrYSBEx=M0p0Dz4HHcaz-FtYOF5ON12oeG_WHPa-g@mail.gmail.com>
  <20150204203710.GC4434@norris-Latitude-E6410>
-Date: Thu, 5 Feb 2015 12:13:35 +0800
-Message-ID: <CAN1oZWw=vvAy07VUGoJg8VHeZ7J7ESwK_-UE-Vox5xMy6oijmg@mail.gmail.com>
+Date: Thu, 5 Feb 2015 12:15:00 +0800
+Message-ID: <CAN1oZWxxg-q9VACZkqiPxXGi_SO8HyA0YXqDVPy7zypaQVmX3g@mail.gmail.com>
 Subject: Re: [PATCH mtd] mtd:devices: Add Altera EPCQ Driver
-From: Nga Chi <ngachi86@gmail.com>
+From: Viet Nga Dao <vndao@altera.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Cc: Viet Nga Dao <vndao@altera.com>, linux-mtd@lists.infradead.org,
@@ -62,7 +70,9 @@ On Thu, Feb 5, 2015 at 4:37 AM, Brian Norris
 > Some of the existing code should move into their own spi_nor_st_lock() /
 > spi_nor_st_unlock() functions.
 >
-When this will be implemented? For this time being, what i should do then?
+
+When this will be implemented? As for time being, what should i do for
+these 2 functions?
 
 >> >>>> diff --git a/Documentation/devicetree/bindings/mtd/altera_epcq.txt b/Documentation/devicetree/bindings/mtd/altera_epcq.txt
 >> >>>> new file mode 100644
@@ -185,8 +195,3 @@ When this will be implemented? For this time being, what i should do then?
 >> >>>> +}
 >
 > Brian
-
-
-
--- 
-Nga
