@@ -1,15 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJPVK-0004Hu-W7
- for linux-mtd@lists.infradead.org; Thu, 05 Feb 2015 16:42:11 +0000
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJRQR-00063Y-Na
+ for linux-mtd@lists.infradead.org; Thu, 05 Feb 2015 18:45:16 +0000
+Received: by mail-pa0-f42.google.com with SMTP id bj1so11758700pad.1
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Feb 2015 10:44:53 -0800 (PST)
+From: Jim Kuo <jimtingkuo@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/2] spi-nor: Add support for Winbond w25q64dw serial flash
-Date: Thu,  5 Feb 2015 18:39:02 +0200
-Message-Id: <1423154343-189674-1-git-send-email-mika.westerberg@linux.intel.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-mtd@lists.infradead.org
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ Huang Shijie <b32955@freescale.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Ben Hutchings <ben@decadent.org.uk>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 0/2] m25p80, spi-nor: Add SFDP detect method for Macronix chips
+Date: Fri,  6 Feb 2015 02:44:03 +0800
+Message-Id: <1423161845-24282-1-git-send-email-jimtingkuo@gmail.com>
+Cc: Jim Kuo <jimtingkuo@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,24 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Winbond (w25q64dw) 8MB flash to the list of supported chips.
+Hi linux-pm,
 
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+The serial flash discoverable parameters (SFDP) is needed to
+spi nor devices for some specific features. I added some sfdp
+structure and detect method. I have separated the chip IDs and
+sfdp detect method to two patches.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 0f8ec3c2d015..bf4966e77e84 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -657,6 +657,7 @@ static const struct spi_device_id spi_nor_ids[] = {
- 	{ "w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "w25q64dw", INFO(0xef6017, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+Patch 1 (m25p80, spi-nor: Update id list of Macronix chips)
+mainly updates the id table to support Macronix chips. Patch 2
+includes the main sfdp functions and Macronix commands.
+
+The code have been tested on lower version Linux and can
+successfully work with Macronix chips.
+
+Thanks for review!
+
+Jim Kuo (2):
+  m25p80, spi-nor: Update id list of Macronix chips
+  spi-nor: Add SFDP detect method
+
+ drivers/mtd/devices/m25p80.c  |  83 ++++-
+ drivers/mtd/spi-nor/Kconfig   |  11 +
+ drivers/mtd/spi-nor/spi-nor.c | 774 +++++++++++++++++++++++++++++++++++++++---
+ include/linux/mtd/spi-nor.h   | 201 +++++++++++
+ 4 files changed, 1009 insertions(+), 60 deletions(-)
+
 -- 
-2.1.4
+1.9.1
