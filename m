@@ -1,24 +1,22 @@
-Received: from mail-pd0-f178.google.com ([209.85.192.178])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJ6hc-0002Eb-4k
- for linux-mtd@lists.infradead.org; Wed, 04 Feb 2015 20:37:37 +0000
-Received: by pdev10 with SMTP id v10so2928898pde.3
- for <linux-mtd@lists.infradead.org>; Wed, 04 Feb 2015 12:37:14 -0800 (PST)
-Date: Wed, 4 Feb 2015 12:37:10 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Viet Nga Dao <vndao@altera.com>
-Subject: Re: [PATCH mtd] mtd:devices: Add Altera EPCQ Driver
-Message-ID: <20150204203710.GC4434@norris-Latitude-E6410>
-References: <CAN1oZWxB5N=YMQcsJppZgp7TXodcR4tKZM+LNFXS7PSx3F-Yag@mail.gmail.com>
- <CAN1oZWzeev-1uE7gxPnJA=L4Th65CRj8C_LQ7hMJLPHGssDjNQ@mail.gmail.com>
- <CAN1oZWzOfUrYSBEx=M0p0Dz4HHcaz-FtYOF5ON12oeG_WHPa-g@mail.gmail.com>
+Received: from us2.outbound.mailhostbox.com ([162.210.70.52])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJC4F-0006zS-LE
+ for linux-mtd@lists.infradead.org; Thu, 05 Feb 2015 02:21:20 +0000
+Message-ID: <54D2D36A.4030800@pek-sem.com>
+Date: Thu, 05 Feb 2015 07:50:26 +0530
+From: pekon <pekon@pek-sem.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN1oZWzOfUrYSBEx=M0p0Dz4HHcaz-FtYOF5ON12oeG_WHPa-g@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, nga_chi86 <ngachi86@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
+To: Nicholas Mc Guire <hofrat@osadl.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2] mtd: nand: omap: drop condition with no effect
+References: <1423070646-12906-1-git-send-email-hofrat@osadl.org>
+In-Reply-To: <1423070646-12906-1-git-send-email-hofrat@osadl.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: pekon gupta <pekon@ti.com>, Tony Lindgren <tony@atomide.com>,
+ linux-kernel@vger.kernel.org, Rostislav Lisovy <lisovy@gmail.com>,
+ linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Brian Norris <computersforpeace@gmail.com>, Roger Quadros <rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,156 +26,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 27, 2015 at 02:53:59PM +0800, Viet Nga Dao wrote:
-> On Tue, Jan 20, 2015 at 10:05 AM, Viet Nga Dao <vndao@altera.com> wrote:
-> > On Thu, Jan 15, 2015 at 5:27 PM, Viet Nga Dao <vndao@altera.com> wrote:
-> >> On Tue, Jan 13, 2015 at 11:33 AM, Brian Norris
-> >> <computersforpeace@gmail.com> wrote:
-> >>> On Thu, Dec 18, 2014 at 12:23:16AM -0800, vndao@altera.com wrote:
-> >>>> From: Viet Nga Dao <vndao@altera.com>
+On Wednesday 04 February 2015 10:54 PM, Nicholas Mc Guire wrote:
+> The if and the else branch code are identical - so the condition has no
+> effect on the effective code. This patch removes the condition and the
+> duplicated code and updates the documentation as suggested by
+> Roger Quadros <rogerq@ti.com>.
+>
+> Acked-by: Roger Quadros <rogerq@ti.com>
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> ---
+>
+> v2: Confirmation of proposed patch and update of the related documentation
+>      as provided by Roger Quadros <rogerq@ti.com>
+>
+> The conditions in the OMAP_ECC_BCH8_CODE_HW_DETECTION_SW and
+> OMAP_ECC_BCH4_CODE_HW_DETECTION_SW case have no effect and can
+> be removed.
+>
+> Patch was only compile tested with arm-linux-gnueabi-4.7-, current
+> crosstool-ng did not seem to build omap2 properly.
+> Config is omap2plus_defconfig which implies CONFIG_MTD_NAND_OMAP2=y.
+>
+> Patch is against 3.19.0-rc7 (localversion-next is -next-20150204)
+>
+>   drivers/mtd/nand/omap2.c |   31 +++++++++----------------------
+>   1 file changed, 9 insertions(+), 22 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 63f858e..60fa899 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1048,10 +1048,9 @@ static int omap_dev_ready(struct mtd_info *mtd)
+>    * @mtd: MTD device structure
+>    * @mode: Read/Write mode
+>    *
+> - * When using BCH, sector size is hardcoded to 512 bytes.
+> - * Using wrapping mode 6 both for reading and writing if ELM module not uses
+> - * for error correction.
+> - * On writing,
+> + * When using BCH with SW correction (i.e. no ELM), sector size is set
+> + * to 512 bytes and we use BCH_WRAPMODE_6 wrapping mode
+> + * for both reading and writing with:
+>    * eccsize0 = 0  (no additional protected byte in spare area)
+>    * eccsize1 = 32 (skip 32 nibbles = 16 bytes per sector in spare area)
+>    */
+> @@ -1071,15 +1070,9 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+>   	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+>   		bch_type = 0;
+>   		nsectors = 1;
+> -		if (mode == NAND_ECC_READ) {
+> -			wr_mode	  = BCH_WRAPMODE_6;
+> -			ecc_size0 = BCH_ECC_SIZE0;
+> -			ecc_size1 = BCH_ECC_SIZE1;
+> -		} else {
+> -			wr_mode   = BCH_WRAPMODE_6;
+> -			ecc_size0 = BCH_ECC_SIZE0;
+> -			ecc_size1 = BCH_ECC_SIZE1;
+> -		}
+> +		wr_mode	  = BCH_WRAPMODE_6;
+> +		ecc_size0 = BCH_ECC_SIZE0;
+> +		ecc_size1 = BCH_ECC_SIZE1;
+>   		break;
+>   	case OMAP_ECC_BCH4_CODE_HW:
+>   		bch_type = 0;
+> @@ -1097,15 +1090,9 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+>   	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
+>   		bch_type = 1;
+>   		nsectors = 1;
+> -		if (mode == NAND_ECC_READ) {
+> -			wr_mode	  = BCH_WRAPMODE_6;
+> -			ecc_size0 = BCH_ECC_SIZE0;
+> -			ecc_size1 = BCH_ECC_SIZE1;
+> -		} else {
+> -			wr_mode   = BCH_WRAPMODE_6;
+> -			ecc_size0 = BCH_ECC_SIZE0;
+> -			ecc_size1 = BCH_ECC_SIZE1;
+> -		}
+> +		wr_mode	  = BCH_WRAPMODE_6;
+> +		ecc_size0 = BCH_ECC_SIZE0;
+> +		ecc_size1 = BCH_ECC_SIZE1;
+>   		break;
+>   	case OMAP_ECC_BCH8_CODE_HW:
+>   		bch_type = 1;
+>
+Thanks for the clean-up ..
+Reviewed-by: Pekon Gupta <pekon@pek-sem.com>
 
-> >> That is why if rewrite the drivers to follow spi-nor structure, it
-> >> will require extra decoding works for the only few used opcodes.
-> >>
-> >I think you'd only have some very trivial work here.
-> >
-> >There would be some small work to reintroduce a properly-replaceable ID
-> >table, and callbacks like ->lock() and ->unlock(), but those should be
-> >implemented in spi-nor.c sooner or later anyway.
-> >
-> 
-> I am trying to modify the code to follow your recommendation. However,
-> for lock and unlock functions, i have to implement it in spi_nor.c ,
-> am i right? If yes, currently we already have existing spi_nor_lock
-> and spi_nor_unlock functions but they could not apply for my driver.
-> Should i create a new functions named altera_epcq_lock and unlock and
-> then map it to callback functions or i should the put  those code
-> sunder existing spi_nor_lock/unlock?
+with regards, pekon
 
-We probably want a replaceable spi_nor callback that does the
-flash-specific unlock. spi_nor_lock/unlock would then call the
-nor->unlock() / nor->lock() functions for you, when present.
-Some of the existing code should move into their own spi_nor_st_lock() /
-spi_nor_st_unlock() functions.
-
-> >>>> diff --git a/Documentation/devicetree/bindings/mtd/altera_epcq.txt b/Documentation/devicetree/bindings/mtd/altera_epcq.txt
-> >>>> new file mode 100644
-> >>>> index 0000000..d14f50e
-> >>>> --- /dev/null
-> >>>> +++ b/Documentation/devicetree/bindings/mtd/altera_epcq.txt
-> >>>> @@ -0,0 +1,45 @@
-> >>>> +* MTD Altera EPCQ driver
-> >>>> +
-> >>>> +Required properties:
-> >>>> +- compatible: Should be "altr,epcq-1.0"
-> >>>> +- reg: Address and length of the register set  for the device. It contains
-> >>>> +  the information of registers in the same order as described by reg-names
-> >>>> +- reg-names: Should contain the reg names
-> >>>> +  "csr_base": Should contain the register configuration base address
-> >>>> +  "data_base": Should contain the data base address
-> >>>> +- is-epcs: boolean type.
-> >>>> +             If present, the device contains EPCS flashes.
-> >>>> +             Otherwise, it contains EPCQ flashes.
-> >>>> +- #address-cells: Must be <1>.
-> >>>> +- #size-cells: Must be <0>.
-> >>>> +- flash device tree subnode, there must be a node with the following fields:
-> >>>
-> >>> These subnodes definitely require a 'compatible' string. Perhaps they
-> >>> should be used to differentiate EPCS vs. EPCQ. Does "is-epcs" really
-> >>> need to be in the top-level controller node?
-> >>>
-> >>>> +     - reg: Should contain the flash id
-> >>>
-> >>> Should, or must? (This question is relevant, because you seem to make it
-> >>> optional in your code.) And what does the "flash ID" mean? It seems like
-> >>> you're using as a chip-select or bank index.
-> >>>
-> Yes, this is used for chip select. It is required, not optional. This
-> to ID for each flash in the device
-
-OK, so correct the language here and enforce this in your driver. Right
-now, you don't fail gracefully if this is missing.
-
-> >>>> +             if (sector_start < num_sectors-(num_sectors / 4))
-> >>>> +                     sr_bp = __ilog2_u32(num_sectors);
-> >>>> +             else if (sector_start < num_sectors-(num_sectors / 8))
-> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 1;
-> >>>> +             else if (sector_start < num_sectors-(num_sectors / 16))
-> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 2;
-> >>>> +             else if (sector_start < num_sectors-(num_sectors / 32))
-> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 3;
-> >>>> +             else if (sector_start < num_sectors-(num_sectors / 64))
-> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 4;
-> >>>> +             else if (sector_start < num_sectors-(num_sectors / 128))
-> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 5;
-> >>>> +             else if (sector_start < num_sectors-(num_sectors / 256))
-> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 6;
-> >>>> +             else if (sector_start < num_sectors-(num_sectors / 512))
-> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 7;
-> >>>> +             else if (sector_start < num_sectors-(num_sectors / 1024))
-> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 8;
-> >>>> +             else
-> >>>> +                     sr_bp = 0;  /* non area protected */
-> >>>
-> >>> Yikes, that's ugly! And I'm not sure it matches the EPCQ doc I found.
-> >>> I'm pretty sure you can rewrite this if/else-if/else block in about 1
-> >>> line though.
-> >>>
-> Yes, i understand that it looks ugly. But it is the best i can do
-> since this function has to satisfy for all the supported devices
-> (http://www.altera.com.my/literature/hb/cfg/cfg_cf52012.pdf, start
-> from page 19)
-
-Did you even try? It was possible to simplify the other case, and I'm
-pretty sure this case can be simplified too. How about this? I hacked
-this together and it seems to match:
-
-        if (sector_start <= num_sectors / 2)
-		sr_bp = __ilog2_u32(num_sectors);
-	else
-		sr_bp = fls(num_sectors - 1 - sector_start) + 1;
-
-> >>>> +
-> >>>> +             if (sr_bp < 0) {
-> >>>
-> >>> sr_bp is unsigned, so this is never true.
-> >>>
-> Ok.  I will change to int type.
-
-Are there ever negative values?
-
-> >>>> +static int altera_epcq_probe_config_dt(struct platform_device *pdev,
-> >>>> +                                    struct device_node *np,
-> >>>> +                                    struct altera_epcq_plat_data *pdata)
-> >>>> +{
-> >>>> +     struct device_node *pp = NULL;
-> >>>> +     struct resource *epcq_res;
-> >>>> +     int i = 0;
-> >>>> +     u32 id;
-...
-> >>>> +             pdata->np[i] = pp;
-> >>>> +
-> >>>> +             /* Read bank id from DT */
-> >>>> +             if (of_get_property(pp, "reg", &id))
-
-I just realized; you're not using this correctly. of_get_property()
-returns the *length* in the third parameter, so you're not actually
-saving the bank ID here. You probably want of_property_read_u32()
-instead.
-
-> >>>
-> >>> Is this property optional? Your DT binding doc doesn't make it clear,
-> >>> but it seems like a property which would be wise to require (i.e., not
-> >>> optional).
-
-^^^ so there should be a failure case, where you return failure if the
-property is missing.
-
-> >>>> +                     pdata->board_flash_info[i].bank = id;
-> >>>> +             i++;
-> >>>> +     }
-> >>>> +     pdata->num_flashes = i;
-> >>>> +     return 0;
-> >>>> +}
-
-Brian
+------------------------
+Powered by BigRock.com
