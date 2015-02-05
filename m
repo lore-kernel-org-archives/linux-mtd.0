@@ -1,26 +1,17 @@
-Received: from mail-bn1bon0099.outbound.protection.outlook.com
- ([157.56.111.99] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJPBM-0004ts-QM
- for linux-mtd@lists.infradead.org; Thu, 05 Feb 2015 16:21:33 +0000
-Message-ID: <54D397C8.808@opensource.altera.com>
-Date: Thu, 5 Feb 2015 10:18:16 -0600
-From: Graham Moore <grmoore@opensource.altera.com>
-MIME-Version: 1.0
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: [PATCH] mtd: denali: Disable sub-page writes in Denali NAND driver
-References: <1421249930-21229-1-git-send-email-dinguyen@opensource.altera.com>
- <CADhT+weaYA1cSQCNP98Ta0ChgxymbBbwtRikdUdcbL2pQB-TXQ@mail.gmail.com>
- <CAFLxGvynJFPECTG5f_ZN_VpgkiZE01MUiJh4Yvj-Pf8MuOit7g@mail.gmail.com>
-In-Reply-To: <CAFLxGvynJFPECTG5f_ZN_VpgkiZE01MUiJh4Yvj-Pf8MuOit7g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Dinh Nguyen <dinh.linux@gmail.com>, Josh Triplett <josh@joshtriplett.org>,
- Linux List <linux-kernel@vger.kernel.org>, yamada.m@jp.panasonic.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJPVK-0004Hu-I7
+ for linux-mtd@lists.infradead.org; Thu, 05 Feb 2015 16:42:10 +0000
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 2/2] spi-nor: Add support for Macronix mx25u6435f serial flash
+Date: Thu,  5 Feb 2015 18:39:03 +0200
+Message-Id: <1423154343-189674-2-git-send-email-mika.westerberg@linux.intel.com>
+In-Reply-To: <1423154343-189674-1-git-send-email-mika.westerberg@linux.intel.com>
+References: <1423154343-189674-1-git-send-email-mika.westerberg@linux.intel.com>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,40 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add Macronix (mx25u6435f) 8MB flash to the list of supported chips.
 
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 02/03/2015 04:23 PM, Richard Weinberger wrote:
-...
-
->
-> So this driver never worked?
-> If it worked for some users we have to make sure that your change does not break
-> existing setups.
-> /me thinks of UBI.
->
-
-Actually, we made this change to make UBIFS work.  So, yes, the driver 
-never worked for UBI.  Worked fine for JFFS2, raw data.
-
-A customer reported an issue with ECC errors when using UBIFS on NAND 
-flash with Altera SoC.
-
-We debugged it and found the ECC errors occur because the UBI subsystem 
-is trying to write sub-pages in the NAND, but neither the NAND chip 
-itself nor the Denali NAND controller support sub-page writes.
-
-In more detail, the UBIFS tries to write a sub-page, but the controller 
-writes a whole page instead.  The controller's buffer is initialized to 
-FF, so all the data outside the subpage is FF.
-
-But in this case, part of the page in the device is already non-FF.  And 
-that data does not change when FF is written to it.
-
-The Denali controller calculates ECC on the data written, but that data 
-will not match the data in the device, and so the ECC is incorrect.
-
-When a subsequent read occurs, the ECC will not match and an error will 
-occur.
-
-Thanks,
-Graham Moore
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index bf4966e77e84..1ee09772d981 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -552,6 +552,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
+ 	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
++	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+-- 
+2.1.4
