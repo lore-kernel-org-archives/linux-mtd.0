@@ -1,21 +1,32 @@
-Date: Thu, 5 Feb 2015 17:25:28 -0800
+Received: from mail-pd0-f180.google.com ([209.85.192.180])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJXnw-0006Ft-OJ
+ for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 01:33:57 +0000
+Received: by pdbft15 with SMTP id ft15so11307570pdb.11
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Feb 2015 17:33:35 -0800 (PST)
+Date: Thu, 5 Feb 2015 17:33:31 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 5/9] mtd: pxa3xx_nand: add support for the Marvell Berlin
- nand controller
-Message-ID: <20150206012528.GD30781@ld-irv-0074>
-References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
- <1422367816-4257-6-git-send-email-antoine.tenart@free-electrons.com>
- <54C7A3C0.6020507@free-electrons.com>
+To: Zhou Wang <wangzhou1@hisilicon.com>
+Subject: Re: [PATCH v4 0/2] mtd: hisilicon: add a new driver for NAND
+ controller of hisilicon hip04 Soc
+Message-ID: <20150206013331.GE30781@ld-irv-0074>
+References: <1415105221-7732-1-git-send-email-wangzhou.bry@gmail.com>
+ <20141130090853.GG3608@norris-Latitude-E6410>
+ <548987D3.3060407@gmail.com> <20141217062333.GD7112@brian-ubuntu>
+ <5491638B.5090403@gmail.com> <20150113041701.GM9759@ld-irv-0074>
+ <54C06E05.9050205@hisilicon.com>
+ <20150122084529.GC3268@brian-ubuntu> <54C4A71F.30200@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <54C7A3C0.6020507@free-electrons.com>
-Cc: thomas.petazzoni@free-electrons.com, zmxu@marvell.com,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- jszhang@marvell.com, dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org,
- sebastian.hesselbarth@gmail.com
+In-Reply-To: <54C4A71F.30200@hisilicon.com>
+Cc: mark.rutland@arm.com, Zhou Wang <wangzhou.bry@gmail.com>,
+ Iwo Mergler <Iwo.Mergler@netcommwireless.com>, pawel.moll@arm.com,
+ devicetree@vger.kernel.org, liguozhu@hisilicon.com,
+ ijc+devicetree@hellion.org.uk, haojian.zhuang@gmail.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, xuwei5@hisilicon.com, galak@codeaurora.org,
+ caizhiyong@huawei.com, yubingxu@hisilicon.com,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +36,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 27, 2015 at 11:42:08AM -0300, Ezequiel Garcia wrote:
-> On 01/27/2015 11:10 AM, Antoine Tenart wrote:
-> > --- a/drivers/mtd/nand/pxa3xx_nand.c
-> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-...
-> > @@ -244,10 +254,13 @@ module_param(use_dma, bool, 0444);
-> >  MODULE_PARM_DESC(use_dma, "enable DMA for data transferring to/from NAND HW");
-> >  
-> >  static struct pxa3xx_nand_timing timing[] = {
-> > -	{ 40, 80, 60, 100, 80, 100, 90000, 400, 40, },
-> > -	{ 10,  0, 20,  40, 30,  40, 11123, 110, 10, },
-> > -	{ 10, 25, 15,  25, 15,  30, 25000,  60, 10, },
-> > -	{ 10, 35, 15,  25, 15,  25, 25000,  60, 10, },
-> > +	{ 40, 80, 60, 100, 80, 100,  90000, 400, 40, },
-> > +	{ 10,  0, 20,  40, 30,  40,  11123, 110, 10, },
-> > +	{ 10, 25, 15,  25, 15,  30,  25000,  60, 10, },
-> > +	{ 10, 35, 15,  25, 15,  25,  25000,  60, 10, },
-> > +	{  5, 20, 10,  12, 10,  12,  60000,  60, 10, },
-> > +	{  5, 20, 10,  12, 10,  12, 200000, 120, 10, },
-> > +	{  5, 15, 10,  15, 10,  15,  60000,  60, 10, },
-> >  };
-> >  
-> >  static struct pxa3xx_nand_flash builtin_flash_types[] = {
-> > @@ -260,6 +273,20 @@ static struct pxa3xx_nand_flash builtin_flash_types[] = {
-> >  { "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096, &timing[2] },
-> >  { "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &timing[2] },
-> >  { "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, &timing[3] },
-> > +{ },
-> > +};
-> > +
-> > +static struct pxa3xx_nand_flash berlin_builtin_flash_types[] = {
-> > +{ "2GiB 8-bit",    0xd5ec, 128, 8192,  8,  8, 2048, &timing[4] },
-> > +{ "2GiB 8-bit",    0xd598, 128, 8192,  8,  8, 2048, &timing[5] },
-> > +{ "2GiB 8-bit",    0x482c, 256, 4096,  8,  8, 2048, &timing[6] },
-> > +{ "4GiB 8-bit",    0xd7ec, 128, 8192,  8,  8, 4096, &timing[5] },
-> > +{ "8GiB 8-bit",    0xdeec, 128, 8192,  8,  8, 4096, &timing[5] },
-> > +{ "4GiB 8-bit",    0xd7ad, 256, 8192,  8,  8, 2048, &timing[5] },
-> > +{ "4GiB 8-bit",    0x682c, 256, 4096,  8,  8, 4096, &timing[6] },
-> > +{ "8GiB 8-bit",    0x882c, 256, 8192,  8,  8, 4096, &timing[6] },
-> > +{ "8GiB 8-bit",    0xdead, 256, 8192,  8,  8, 4096, &timing[6] },
-> > +{ },
-> >  };
-> >  
+On Sun, Jan 25, 2015 at 04:19:43PM +0800, Zhou Wang wrote:
+> On 2015/1/22 16:45, Brian Norris wrote:
+> > Perhaps you can switch between ECC mode and non-ECC mode?
 > 
-> IMO, this sucks. I was hoping to see this old style probing go away,
-> instead of be augmented.
+> I also tried to swith to non-ECC mode to implement raw_write, and it is easy to do this.
 > 
-> There are proper ways to set timings.
+> But, event we do this, it will bring me little help. The reason to implement raw_write is to
+> run mtd_nandbiterrs correctly as the discussion above. However, this NAND controller writes
+> data and ECC code to flash using different layouts in different modes.
 
-Agreed. I'm not taking any additions to this table. Please rewrite the
-code to use the onfi_async_timing_mode_to_sdr_timings() helpers.
+Ugh, that's no fun. GPMI seems to do a similarly silly thing.
+
+> So we should also read data
+> and ECC code from flash, change related bits, then rewrite the data and ECC code to flash in none-ECC
+> mode to run mtd_nandbiterrs. It is not easy to do this.
+> 
+> So my plan is not to implement raw_write hook if this function is just used in test.
+
+OK. There may eventually be good reasons to do this still, but it's not
+important right now.
 
 Brian
