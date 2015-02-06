@@ -1,16 +1,20 @@
-Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJlrL-0004Ch-EL
- for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 16:34:24 +0000
-Received: by mail-ig0-f172.google.com with SMTP id l13so3843297iga.5
- for <linux-mtd@lists.infradead.org>; Fri, 06 Feb 2015 08:34:01 -0800 (PST)
-From: namnguyen@chromium.org
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-utils: Add nandpart to add/delete partition
-Date: Fri,  6 Feb 2015 08:33:55 -0800
-Message-Id: <1423240435-30206-1-git-send-email-namnguyen@chromium.org>
-Cc: "Nam T. Nguyen" <namnguyen@chromium.org>, vapier@chromium.org,
- dehrenberg@chromium.org
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJmK4-0003Mx-CE
+ for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 17:04:05 +0000
+Message-ID: <1423242166.8637.566.camel@sauron.fi.intel.com>
+Subject: Re: [RFC] UBIFS recovery
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: hujianyang <hujianyang@huawei.com>
+Date: Fri, 06 Feb 2015 19:02:46 +0200
+In-Reply-To: <54D33C36.9060805@huawei.com>
+References: <54D33C36.9060805@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Sheng Yong <shengyong1@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,214 +24,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Nam T. Nguyen" <namnguyen@chromium.org>
+Hi Hujianyang,
 
-Add a simple utility to exercise BLKPG ioctl.
+On Thu, 2015-02-05 at 17:47 +0800, hujianyang wrote:
+> Current UBIFS is lack of recovery method, that means, once a UBIFS
+> partition refuse to mount, all data on that partition may lose.
+> The default recovery mechanism in UBIFS now can deal with corruption
+> on master node or power cut cleanup. But it's not enough. UBIFS
+> on flash may suffer different kinds of data corrupted, the most
+> common case, ECC error.
 
-Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
----
- Makefile   |   2 +-
- nandpart.c | 179 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 180 insertions(+), 1 deletion(-)
- create mode 100644 nandpart.c
+First of all, it is important to agree on terminology.
 
-diff --git a/Makefile b/Makefile
-index eade234..712ff14 100644
---- a/Makefile
-+++ b/Makefile
-@@ -20,7 +20,7 @@ MTD_BINS = \
- 	ftl_format flash_erase nanddump doc_loadbios \
- 	ftl_check mkfs.jffs2 flash_lock flash_unlock \
- 	flash_otp_info flash_otp_dump flash_otp_lock flash_otp_write \
--	mtd_debug flashcp nandwrite nandtest \
-+	mtd_debug flashcp nandwrite nandtest nandpart \
- 	jffs2dump \
- 	nftldump nftl_format docfdisk \
- 	rfddump rfdformat \
-diff --git a/nandpart.c b/nandpart.c
-new file mode 100644
-index 0000000..ff84a69
---- /dev/null
-+++ b/nandpart.c
-@@ -0,0 +1,179 @@
-+/*
-+ *  nandpart.c
-+ *
-+ *  Copyright (C) 2015 Nam T. Nguyen (namnguyen@chromium.org)
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ *  Overview:
-+ *   This utility adds or removes a partition from an MTD device.
-+ */
-+
-+#define PROGRAM_NAME "nandpart"
-+
-+#include <fcntl.h>
-+#include <getopt.h>
-+#include <linux/blkpg.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+#include "common.h"
-+
-+static void display_help(int status)
-+{
-+	fprintf(status == EXIT_SUCCESS ? stdout : stderr,
-+"Usage: " PROGRAM_NAME " add MTD-device part-name start size\n"
-+"       " PROGRAM_NAME " del MTD-device part-number\n"
-+"Adds a partition to an MTD device, or remove an existing partition from it.\n"
-+"\n"
-+"-h         --help               Display this help and exit\n"
-+"           --version            Output version information and exit\n"
-+"\n"
-+"start location and size of the partition are in bytes. They should align on\n"
-+"eraseblock size.\n"
-+	);
-+	exit(status);
-+}
-+
-+static void display_version(void)
-+{
-+	printf("%1$s " VERSION "\n"
-+			"\n"
-+			"%1$s comes with NO WARRANTY\n"
-+			"to the extent permitted by law.\n"
-+			"\n"
-+			"You may redistribute copies of %1$s\n"
-+			"under the terms of the GNU General Public Licence.\n"
-+			"See the file `COPYING' for more information.\n",
-+			PROGRAM_NAME);
-+	exit(EXIT_SUCCESS);
-+}
-+
-+// Command arguments
-+
-+typedef enum {
-+	add_partition,
-+	del_partition
-+} command_type;
-+
-+static command_type		command;		// add or del
-+static const char		*mtddev;		// mtd device name
-+static const char		*part_name;		// partition name
-+static unsigned long		part_no;		// partition number
-+static unsigned long long	start_addr;		// start address
-+static unsigned long long	length;			// partition size
-+
-+static void process_options(int argc, char * const argv[])
-+{
-+	int error = 0;
-+
-+	for (;;) {
-+		int option_index = 0;
-+		static const char short_options[] = "h";
-+		static const struct option long_options[] = {
-+			{"version", no_argument, 0, 0},
-+			{"help", no_argument, 0, 'h'},
-+			{0, 0, 0, 0},
-+		};
-+
-+		int c = getopt_long(argc, argv, short_options,
-+				long_options, &option_index);
-+		if (c == EOF) {
-+			break;
-+		}
-+
-+		switch (c) {
-+			case 0:
-+				display_version();
-+				break;
-+			case 'h':
-+				display_help(EXIT_SUCCESS);
-+				break;
-+			case '?':
-+				error++;
-+				break;
-+		}
-+	}
-+
-+	if ((argc - optind) < 3 || error)
-+		display_help(EXIT_FAILURE);
-+
-+	const char *s_command = argv[optind++];
-+	mtddev = argv[optind++];
-+
-+	if (strcmp(s_command, "del") == 0 && (argc - optind) == 1) {
-+		const char *s_part_no = argv[optind++];
-+
-+		part_no = simple_strtoul(s_part_no, &error);
-+		command = del_partition;
-+	} else if (strcmp(s_command, "add") == 0 && (argc - optind) == 3) {
-+		part_name = argv[optind++];
-+		const char *s_start = argv[optind++];
-+		const char *s_length = argv[optind++];
-+
-+		start_addr = simple_strtoull(s_start, &error);
-+		length = simple_strtoull(s_length, &error);
-+		command = add_partition;
-+	} else
-+		display_help(EXIT_FAILURE);
-+
-+	if (error)
-+		display_help(EXIT_FAILURE);
-+}
-+
-+
-+/*
-+ * Main program
-+ */
-+int main(int argc, char * const argv[])
-+{
-+	process_options(argc, argv);
-+
-+	/* Open MTD device */
-+	int fd;
-+	if ((fd = open(mtddev, O_RDWR)) == -1) {
-+		perror(mtddev);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	struct blkpg_partition part;
-+	memset(&part, 0, sizeof(part));
-+
-+	struct blkpg_ioctl_arg arg;
-+	memset(&arg, 0, sizeof(arg));
-+	arg.datalen = sizeof(part);
-+	arg.data = &part;
-+
-+	switch (command) {
-+		case add_partition:
-+			part.start = start_addr;
-+			part.length = length;
-+			strncpy(part.devname, part_name, sizeof(part.devname));
-+			arg.op = BLKPG_ADD_PARTITION;
-+			break;
-+		case del_partition:
-+			part.pno = part_no;
-+			arg.op = BLKPG_DEL_PARTITION;
-+			break;
-+	}
-+
-+	if (ioctl(fd, BLKPG, &arg)) {
-+		perror("ioctl");
-+		goto closeall;
-+	}
-+
-+	close(fd);
-+
-+	/* Exit happy */
-+	return EXIT_SUCCESS;
-+
-+closeall:
-+	close(fd);
-+	exit(EXIT_FAILURE);
-+}
--- 
-2.2.0.rc0.207.ga3a616c
+I think I understand what you mean in this paragraph, but other people
+may get wrong impression. Simply because "UBIFS has no recovery" is
+_absolutely_ not True. UBIFS has _a lot_ of recovery, just check
+'recovery.c' :-)
+
+But I understand that this is not the recovery you mean. And I
+understand that it may be difficult to express things in English.
+And good terminology will help - let's introduce it and and stick to it.
+
+Here is what UBIFS "things" about file-system recovery.
+
+There are 2 types of recovery:
+
+1. Power-cut recovery
+2. Corruption recovery.
+
+"Power-cut recovery" is, obviously, recovering from power cuts. Indeed,
+power-cuts may happen in the middle of write or erase operations and
+cause rubbish on the flash media. Cleaning up this rubbish at mount time
+is the power-cut recovery.
+
+"Corruption recovery" is recovery from media corruptions. E.g., the
+flash is just too worn-out and does not keep data, or part of the flash
+is erased and part of the UBIFS meta-data and data are gone.
+
+And these are 2 completely different cases, right?
+
+Now, UBIFS _does_ support power-cut recovery. In practice this means
+that you should always be able to mount the file-system after a power
+cut. All the garbage caused by the power cut should go away. No data
+which were on the flash media before the power cut should be lost. Any
+file which was fsync()'ed be before the power cut should be stay intact.
+
+And this is not a trivial task. Power cuts may happen during garbage
+collecting, during commit. There may be a sequence of power cut:
+power-cut -> mount proces -> another power cut while we are recovering
+from the previous one -> and again and again.
+
+UBIFS tries hard to provide power-cut recovery. There may be issues, and
+if there are, they are bugs which should be fixed.
+
+The _corruption recovery_, on the other hand, is not implemented in the
+driver. And yes, there is not user-space tool. If UBIFS sees that some
+data structure is missing or corrupted, and at the same time UBIFS
+"knows" that this can't be because of a power cut - UBIFS refuses to
+mount the file-system or switches to R/O mode.
+
+UBIFS does not make any attempt to do corruption recovery.
+
+UBIFS authors believed it is simply impossible to do inside the driver
+for the generic case. E.g., what do you do if the LEB which should
+contain the UBIFS index now contains "rubbish"? Will you erase it? If
+yes, what if this turns out to be my favorite cat's picture? Or will you
+move it? If yes, what if there is no space to move to?
+
+User-space tools may start asking user questions, etc. Kernel driver
+can't. User-space tools may copy the "rubbish" somewhere so that users
+had chance to recover the picture of the beloved animal.
+
+> I've scanned the archive of maillist and found the recovery method
+> was once requested(Sorry, I can't find the link). Artem suggested
+> we could introduce a new repairing mount option instead of working
+> on a new userspace repairing tool. But seems no more efforts had
+> been done so far.
+
+I do not remember what I suggested, but I do not think corruption
+recover is possible to implement in the driver.
+
+But I can imagine that there may be some specific cases which could be
+covered. If there is good justification for that, I am fine.
+
+> +	/*
+> +	 * If an error occur during buds replay, try to revert filesystem
+> +	 * to last commit state. Should not apply corrupt replay list.
+> +	 */
+> +	if (!replay_buds(c)) {
+> +		err = apply_replay_list(c);
+> +		if (err)
+> +			goto out;
+> +	}
+
+Reverting to the last committed state _may_ make sense. Probably this
+could be a mount option. In this case, though, UBIFS should periodically
+commit, say, every 5-10 seconds.
+
+Thanks!
