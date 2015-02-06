@@ -1,21 +1,22 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-pd0-f179.google.com ([209.85.192.179])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJa9t-0005Bb-O6
- for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 04:04:46 +0000
-Received: by mail-pa0-f53.google.com with SMTP id lf10so6943786pab.12
- for <linux-mtd@lists.infradead.org>; Thu, 05 Feb 2015 20:04:24 -0800 (PST)
-Date: Thu, 5 Feb 2015 20:04:21 -0800
+ id 1YJaAo-00074f-Sa
+ for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 04:05:43 +0000
+Received: by pdjg10 with SMTP id g10so5933026pdj.1
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Feb 2015 20:05:22 -0800 (PST)
+Date: Thu, 5 Feb 2015 20:05:18 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 1/3] mtd: fsl-quadspi: Fix the error paths
-Message-ID: <20150206040421.GD18140@ld-irv-0074>
-References: <1421973787-3240-1-git-send-email-festevam@gmail.com>
+To: Frank.Li@freescale.com
+Subject: Re: [PATCH 1/1] mtd: fsl-quadspi: improve read performance by
+ increase AHB transfer size
+Message-ID: <20150206040518.GE18140@ld-irv-0074>
+References: <1421166536-13601-1-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1421973787-3240-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- shijie8@gmail.com, han.xu@freescale.com
+In-Reply-To: <1421166536-13601-1-git-send-email-Frank.Li@freescale.com>
+Cc: lznuaa@gmail.com, linux-mtd@lists.infradead.org,
+ Allen Xu <b45815@freescale.com>, shijie8@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 22, 2015 at 10:43:05PM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
+On Wed, Jan 14, 2015 at 12:28:56AM +0800, Frank.Li@freescale.com wrote:
+> From: Allen Xu <b45815@freescale.com>
 > 
-> Jumping to 'map_failed' label is not correct at these points, as it misses to
-> disable the clocks that were previously enabled.
+> Set AHB transfer size to 1K which improved the read performance.
 > 
-> Jump to 'irq_failed' label instead that will correctly disable the clocks.
+> Add ahb_buf_size field in fsl_qspi_devtype_data to denote the size for
+> different SoC.
 > 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> Before:
+> 
+> root@imx6qdlsolo:~# dd if=/dev/mtd1 of=/dev/null bs=1M count=16
+> 16+0 records in
+> 16+0 records out
+> 16777216 bytes (17 MB) copied, 0.472183 s, 25.1 MB/s
+> 
+> After:
+> 
+> root@imx6qdlsolo:~# dd if=/dev/mtd1 of=/dev/null bs=1M count=16
+> 16+0 records in
+> 16+0 records out
+> 16777216 bytes (17 MB) copied, 0.369439 s, 29.5 MB/s
+> 
+> Signed-off-by: Allen Xu <b45815@freescale.com>
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+> Signed-off-by: Frank Li <Frank.Li@freescale.com>
 
-Applied all 3 to l2-mtd.git, thanks.
-
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index a46bea3..a733bd2 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -890,24 +890,24 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  
->  		ret = of_modalias_node(np, modalias, sizeof(modalias));
->  		if (ret < 0)
-> -			goto map_failed;
-> +			goto irq_failed;
->  
->  		ret = of_property_read_u32(np, "spi-max-frequency",
->  				&q->clk_rate);
->  		if (ret < 0)
-> -			goto map_failed;
-> +			goto irq_failed;
->  
->  		/* set the chip address for READID */
->  		fsl_qspi_set_base_addr(q, nor);
->  
->  		ret = spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
->  		if (ret)
-> -			goto map_failed;
-> +			goto irq_failed;
->  
->  		ppdata.of_node = np;
->  		ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
->  		if (ret)
-> -			goto map_failed;
-> +			goto irq_failed;
->  
->  		/* Set the correct NOR size now. */
->  		if (q->nor_size == 0) {
-
-FYI, the error handling is still wrong here (it's just less wrong). If
-the second device fails to scan for some reason, you aren't
-unregistering the first. This will leave an MTD around that has no
-driver backing it.
+Pushed to l2-mtd.git. Thanks.
 
 Brian
