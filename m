@@ -1,19 +1,26 @@
-Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJjkw-0005dI-UV
- for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 14:19:39 +0000
-Received: by mail-lb0-f178.google.com with SMTP id b6so11730340lbj.9
- for <linux-mtd@lists.infradead.org>; Fri, 06 Feb 2015 06:19:15 -0800 (PST)
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] fs: jffs2: Remove utf8 from printk string
-Date: Fri,  6 Feb 2015 15:19:03 +0100
-Message-Id: <1423232343-26438-1-git-send-email-linux@rasmusvillemoes.dk>
+Message-ID: <54D4CCEB.5090009@free-electrons.com>
+Date: Fri, 06 Feb 2015 11:17:15 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
+References: <1422284164-16867-1-git-send-email-maxime.ripard@free-electrons.com>	<1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>	<20150204111028.2f0bd376@bbrezillon>	<20150206010835.GB30781@ld-irv-0074>
+ <20150206091307.1162b123@bbrezillon>
+In-Reply-To: <20150206091307.1162b123@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- linux-kernel@vger.kernel.org
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Rob Herring <robh@kernel.org>, Thomas Petazzoni <thomas@free-electrons.com>,
+ Seif Mazareeb <seif@marvell.com>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Sudhakar Gundubogula <sudhakar@marvell.com>,
+ Nadav Haklai <nadavh@marvell.com>, Boris Brezillon <boris@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +30,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Any non-ascii characters are escaped before being show to user-space,
-so this shows up as
+On 02/06/2015 05:13 AM, Boris Brezillon wrote:
+> Hi Brian,
+> 
+> On Thu, 5 Feb 2015 17:08:35 -0800
+> Brian Norris <computersforpeace@gmail.com> wrote:
+> 
+>> + Rob
+>>
+>> This patch has conflicts with an ARM64-preparation from Rob. I'd like to
+>> get this patch in first, as it's a bugfix. But I'd like to settle
+>> Boris's comments first.
+>>
+>> (Regarding the request to get this into 3.19: not likely. Judging by the
+>> age of the "bug", it's not massively critical, and we have no time. It
+>> can get out through -stable once it's gotten proper review and testing.)
+>>
+>> On Wed, Feb 04, 2015 at 11:10:28AM +0100, Boris Brezillon wrote:
+>>> On Mon, 26 Jan 2015 15:56:03 +0100
+>>> Maxime Ripard <maxime.ripard@free-electrons.com> wrote:
+>>>
+>>>> The NDDB register holds the data that are needed by the read and write
+>>>> commands.
+>>>>
+>>>> However, during a read PIO access, the datasheet specifies that after each 32
+>>>> bits read in that register, when BCH is enabled, we have to make sure that the
+>>>> RDDREQ bit is set in the NDSR register.
+>>>>
+>>>> This fixes an issue that was seen on the Armada 385, and presumably other mvebu
+>>>> SoCs, when a read on a newly erased page would end up in the driver reporting a
+>>>> timeout from the NAND.
+>>>>
+>>>> Cc: <stable@vger.kernel.org> # v3.14
+>>>> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+>>>> ---
+>>>>  drivers/mtd/nand/pxa3xx_nand.c | 45 ++++++++++++++++++++++++++++++++++++------
+>>>>  1 file changed, 39 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+>>>> index 96b0b1d27df1..e6918befb951 100644
+>>>> --- a/drivers/mtd/nand/pxa3xx_nand.c
+>>>> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+>>>> @@ -23,6 +23,7 @@
+>>>>  #include <linux/mtd/partitions.h>
+>>>>  #include <linux/io.h>
+>>>>  #include <linux/irq.h>
+>>>> +#include <linux/jiffies.h>
+>>>>  #include <linux/slab.h>
+>>>>  #include <linux/of.h>
+>>>>  #include <linux/of_device.h>
+>>>> @@ -480,6 +481,38 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
+>>>>  	nand_writel(info, NDCR, ndcr | int_mask);
+>>>>  }
+>>>>  
+>>>> +static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
+>>>> +{
+>>>> +	u32 *dst = (u32 *)data;
+>>>> +
+>>>> +	if (info->ecc_bch) {
+>>>> +		while (len--) {
+>>>> +			u32 timeout;
+>>>> +
+>>>> +			*dst++ = nand_readl(info, NDDB);
+>>>> +
+>>>> +			/*
+>>>> +			 * According to the datasheet, when reading
+>>>> +			 * from NDDB with BCH enabled, after each 32
+>>>> +			 * bits reads, we have to make sure that the
+>>>> +			 * NDSR.RDDREQ bit is set
+>>>> +			 */
+>>>
+>>> I know the datasheet says this bit should be checked after each
+>>> transfer, but I wonder if we shouldn't check it before reading the data.
+>>> What happens if you drain all the data available in the FIFO ? Is the
+>>> controller still setting the RDDREQ bit ?
+>>>
+>>> Moreover, the datasheet says this RDDREQ bit should be checked after
+>>> each 32 bytes (not 32 bits) transfer.
+>>> Testing it after each readl call shouldn't hurt though.
+>>
+>> Seems like that could quite possibly kill performance unnecessarily,
+>> couldn't it? But then, PIO is probably not that fast in the first
+>> place...
+> 
+> Absolutety, my point was, it shouldn't hurt from a functional POV, but
+> yes it will definitely impact performances.
+> But that's not the first thing I would rework of if you're concerned
+> about performances: when doing PIO read/write, the page read/write
+> operations (I mean the part reading the internal fifo) are all done in
+> interrupt context (called from pxa3xx_nand_irq), and doing this will
+> prevent any other interrupt from taking place while you are
+> draining/filling the FIFO :-(.
 
-jffs2: version 2.2. (NAND) \xffffffc2\xffffffa9\xffffffa9 2001-2006 Red Hat, Inc.
+But NAND operations are serialized, and there won't be any other
+interrupt for the controller until it's has drained the FIFO. So this
+doesn't really seem to hit performance to me.
 
-(I have no idea why the second byte is repeated.) Replace with a
-widely used ascii replacement.
+Or am I missing anything here?
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
-Actually, I don't see the value in printing a copyright notice to the
-kernel log, especially since it's out-of-sync with the one at the top
-of the file.
+> An alternative would be to move this part into the read/write_buf
+> functions, but that's a lot of work...
+> 
 
- fs/jffs2/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah, indeed. This also has other benefits. As we discussed on IRC, it
+would allow to support raw writes (i.e. ECC off).
 
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 0918f0e2e266..471b674b6f8a 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -382,7 +382,7 @@ static int __init init_jffs2_fs(void)
- #ifdef CONFIG_JFFS2_SUMMARY
- 	       " (SUMMARY) "
- #endif
--	       " Â© 2001-2006 Red Hat, Inc.\n");
-+	       " (c) 2001-2006 Red Hat, Inc.\n");
- 
- 	jffs2_inode_cachep = kmem_cache_create("jffs2_i",
- 					     sizeof(struct jffs2_inode_info),
 -- 
-2.1.3
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
