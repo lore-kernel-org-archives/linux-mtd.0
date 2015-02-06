@@ -1,25 +1,19 @@
-Date: Fri, 6 Feb 2015 03:28:45 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 1/20] mtd: s3c2410: fix misspelling of current function
- in string
-Message-ID: <20150206112845.GF4434@norris-Latitude-E6410>
-References: <1417980062-25151-1-git-send-email-Julia.Lawall@lip6.fr>
- <1417980062-25151-2-git-send-email-Julia.Lawall@lip6.fr>
- <CAFLxGvyiqxQ6U6p-A-JW8Nv8OvXFGsna93afUu-Gek0EV3gATA@mail.gmail.com>
- <alpine.DEB.2.02.1412080809400.2100@localhost6.localdomain6>
- <54856C75.1050309@nod.at>
+Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJjkw-0005dI-UV
+ for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 14:19:39 +0000
+Received: by mail-lb0-f178.google.com with SMTP id b6so11730340lbj.9
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Feb 2015 06:19:15 -0800 (PST)
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] fs: jffs2: Remove utf8 from printk string
+Date: Fri,  6 Feb 2015 15:19:03 +0100
+Message-Id: <1423232343-26438-1-git-send-email-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54856C75.1050309@nod.at>
-Cc: linux-samsung-soc@vger.kernel.org, linux@rasmusvillemoes.dk,
- "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Julia Lawall <julia.lawall@lip6.fr>,
- Kukjin Kim <kgene@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Joe Perches <joe@perches.com>, David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,68 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 08, 2014 at 10:16:37AM +0100, Richard Weinberger wrote:
-> Am 08.12.2014 um 08:11 schrieb Julia Lawall:
-> >>> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-> >>> index 35aef5e..0a9c41f 100644
-> >>> --- a/drivers/mtd/nand/s3c2410.c
-> >>> +++ b/drivers/mtd/nand/s3c2410.c
-> >>> @@ -948,7 +948,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
-> >>>
-> >>>         cpu_type = platform_get_device_id(pdev)->driver_data;
-> >>>
-> >>> -       pr_debug("s3c2410_nand_probe(%p)\n", pdev);
-> >>> +       pr_debug("%s(%p)\n", __func__, pdev);
-> >>
-> >> I think we can drop the line completely.
-> >> We have ftrace to trace function calls...
-> > 
-> > Should the "initialised ok" at the end of the function be remove as well?
-> > 
-> > Will it be confusing if this cleanup is done in this function, but not in 
-> > others where it may be useful?  Perhaps s3c2410_nand_update_chip, for 
-> > example?
-> 
-> Hmm, this driver seems to have a lot of debugging printks().
-> IMHO we can remove them.
-> Let's see what Brain says.
+Any non-ascii characters are escaped before being show to user-space,
+so this shows up as
 
-I'm a little late for this one, but I can apply this instead:
+jffs2: version 2.2. (NAND) \xffffffc2\xffffffa9\xffffffa9 2001-2006 Red Hat, Inc.
 
-From: Brian Norris <computersforpeace@gmail.com>
-Date: Fri, 6 Feb 2015 03:25:28 -0800
-Subject: [PATCH] mtd: s3c2410: drop useless / misspelled debug prints
+(I have no idea why the second byte is repeated.) Replace with a
+widely used ascii replacement.
 
-s3c2410_nand_probe is not the name of the function.
-
-These prints have little utility, so let's just kill them.
-
-Reported-by: Julia Lawall <Julia.Lawall@lip6.fr>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 ---
- drivers/mtd/nand/s3c2410.c | 3 ---
- 1 file changed, 3 deletions(-)
+Actually, I don't see the value in printing a copyright notice to the
+kernel log, especially since it's out-of-sync with the one at the top
+of the file.
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 35aef5edb588..0e02be47ce1d 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -948,8 +948,6 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ fs/jffs2/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 0918f0e2e266..471b674b6f8a 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -382,7 +382,7 @@ static int __init init_jffs2_fs(void)
+ #ifdef CONFIG_JFFS2_SUMMARY
+ 	       " (SUMMARY) "
+ #endif
+-	       " © 2001-2006 Red Hat, Inc.\n");
++	       " (c) 2001-2006 Red Hat, Inc.\n");
  
- 	cpu_type = platform_get_device_id(pdev)->driver_data;
- 
--	pr_debug("s3c2410_nand_probe(%p)\n", pdev);
--
- 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
- 	if (info == NULL) {
- 		err = -ENOMEM;
-@@ -1045,7 +1043,6 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
- 	}
- 
--	pr_debug("initialised ok\n");
- 	return 0;
- 
-  exit_error:
+ 	jffs2_inode_cachep = kmem_cache_create("jffs2_i",
+ 					     sizeof(struct jffs2_inode_info),
 -- 
-2.3.0
+2.1.3
