@@ -1,20 +1,21 @@
-Received: from mga14.intel.com ([192.55.52.115])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJmj9-0007Gh-6m
- for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 17:29:59 +0000
-Message-ID: <1423243771.8637.581.camel@sauron.fi.intel.com>
-Subject: Re: [RFC PATCH] ubifs: do not write master node if recovery needed
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Sheng Yong <shengyong1@huawei.com>
-Date: Fri, 06 Feb 2015 19:29:31 +0200
-In-Reply-To: <1423130080-79705-2-git-send-email-shengyong1@huawei.com>
-References: <1423130080-79705-1-git-send-email-shengyong1@huawei.com>
- <1423130080-79705-2-git-send-email-shengyong1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJmnI-0000hU-Dj
+ for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 17:34:17 +0000
+Message-ID: <54D4FAFD.9000009@nod.at>
+Date: Fri, 06 Feb 2015 18:33:49 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: dedekind1@gmail.com, Steve deRosier <derosier@gmail.com>
+Subject: Re: [RFC] UBIFS recovery
+References: <54D33C36.9060805@huawei.com>	
+ <CALupW3CQ3YCvdx_tNeDGVo9cVTcmACyqsMRpr8+P2_4jwGgZMQ@mail.gmail.com>
+ <1423243571.8637.579.camel@sauron.fi.intel.com>
+In-Reply-To: <1423243571.8637.579.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: richard@nod.at, linux-mtd@lists.infradead.org, hujianyang@huawei.com
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Sheng Yong <shengyong1@huawei.com>, hujianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2015-02-05 at 09:54 +0000, Sheng Yong wrote:
-> If unclean umount happens, ubifs may fail when mounting. Trying to mount
-> it will write new master nodes on the flash. This is useless but wasting
-> space and increasing sqnum. So check need_recovery before writing master
-> node, and don't create new master node if filesystem needs recovery.
+Am 06.02.2015 um 18:26 schrieb Artem Bityutskiy:
+> On Thu, 2015-02-05 at 07:08 -0800, Steve deRosier wrote:
+>> I hear (and agree with) several valid arguments for a tool in
+>> userspace. And I'd like to throw my support towards an in-driver
+>> solution. Flash filesystems are different than on-disk filesystems, in
+>> particular in their usecase: they're generally both critical and
+>> exclusive to embedded systems. As such, the entire filesystem might be
+>> on the corrupted UBIFS, so even if the filesystem is recoverable, if
+>> we can't mount it and get at the userspace tool, then we're toast.
+>> Often the kernel itself is stored in a separate read-only partition as
+>> a blob directly on the flash, and thus the kernel itself would be
+>> fine. The better UBI & UBIFS can recover to a usable state in-kernel,
+>> the better off we are I think.
+> 
+> Yes, being able to mount a corrupted FS R/O sounds like a good goal. We
+> are not speaking of recovery here, just about mounting R/O and providing
+> access to as much uncorrupted data as we can.
+> 
+> If FS index is not corrupted, this sounds quite doable. If the index is
+> corrupted, though, this requires full scan and index rebuild. Other wise
+> we'd mount and show empty file-system.
 
-Looks like you caught a bug, thanks, but I need to check the code a bit
-more carefully. So when will the master not be updated then, if you do
-not mark it dirty now?
+While I agree that mounting RO to get access to data is a feasible goal
+I really think that this is the job of a debugfs.ubifs tool.
+The kernel cannot ask questions, such a tool can.
 
-Artem.
+Thanks,
+//richard
