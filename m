@@ -1,28 +1,29 @@
-Date: Fri, 6 Feb 2015 09:13:07 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
-Message-ID: <20150206091307.1162b123@bbrezillon>
-In-Reply-To: <20150206010835.GB30781@ld-irv-0074>
-References: <1422284164-16867-1-git-send-email-maxime.ripard@free-electrons.com>
- <1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>
- <20150204111028.2f0bd376@bbrezillon>
- <20150206010835.GB30781@ld-irv-0074>
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJeIg-00029K-7k
+ for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 08:30:07 +0000
+Date: Fri, 6 Feb 2015 09:29:40 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Graham Moore <grmoore@opensource.altera.com>
+Subject: Re: [PATCH] mtd: denali: Disable sub-page writes in Denali NAND driver
+In-Reply-To: <54D397C8.808@opensource.altera.com>
+Message-ID: <alpine.DEB.2.02.1502060925000.11532@lnxricardw1.se.axis.com>
+References: <1421249930-21229-1-git-send-email-dinguyen@opensource.altera.com>
+ <CADhT+weaYA1cSQCNP98Ta0ChgxymbBbwtRikdUdcbL2pQB-TXQ@mail.gmail.com>
+ <CAFLxGvynJFPECTG5f_ZN_VpgkiZE01MUiJh4Yvj-Pf8MuOit7g@mail.gmail.com>
+ <54D397C8.808@opensource.altera.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Rob Herring <robh@kernel.org>, Thomas Petazzoni <thomas@free-electrons.com>,
- Seif Mazareeb <seif@marvell.com>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Sudhakar Gundubogula <sudhakar@marvell.com>,
- Nadav Haklai <nadavh@marvell.com>, Boris Brezillon <boris@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
+Cc: Dinh Nguyen <dinh.linux@gmail.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Josh Triplett <josh@joshtriplett.org>,
+ Linux List <linux-kernel@vger.kernel.org>,
+ "yamada.m@jp.panasonic.com" <yamada.m@jp.panasonic.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,104 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
 
-On Thu, 5 Feb 2015 17:08:35 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
+On Thu, 5 Feb 2015, Graham Moore wrote:
 
-> + Rob
+> Actually, we made this change to make UBIFS work.  So, yes, the driver 
+> never worked for UBI.  Worked fine for JFFS2, raw data.
 > 
-> This patch has conflicts with an ARM64-preparation from Rob. I'd like to
-> get this patch in first, as it's a bugfix. But I'd like to settle
-> Boris's comments first.
+> A customer reported an issue with ECC errors when using UBIFS on NAND 
+> flash with Altera SoC.
 > 
-> (Regarding the request to get this into 3.19: not likely. Judging by the
-> age of the "bug", it's not massively critical, and we have no time. It
-> can get out through -stable once it's gotten proper review and testing.)
-> 
-> On Wed, Feb 04, 2015 at 11:10:28AM +0100, Boris Brezillon wrote:
-> > On Mon, 26 Jan 2015 15:56:03 +0100
-> > Maxime Ripard <maxime.ripard@free-electrons.com> wrote:
-> > 
-> > > The NDDB register holds the data that are needed by the read and write
-> > > commands.
-> > > 
-> > > However, during a read PIO access, the datasheet specifies that after each 32
-> > > bits read in that register, when BCH is enabled, we have to make sure that the
-> > > RDDREQ bit is set in the NDSR register.
-> > > 
-> > > This fixes an issue that was seen on the Armada 385, and presumably other mvebu
-> > > SoCs, when a read on a newly erased page would end up in the driver reporting a
-> > > timeout from the NAND.
-> > > 
-> > > Cc: <stable@vger.kernel.org> # v3.14
-> > > Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-> > > ---
-> > >  drivers/mtd/nand/pxa3xx_nand.c | 45 ++++++++++++++++++++++++++++++++++++------
-> > >  1 file changed, 39 insertions(+), 6 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> > > index 96b0b1d27df1..e6918befb951 100644
-> > > --- a/drivers/mtd/nand/pxa3xx_nand.c
-> > > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> > > @@ -23,6 +23,7 @@
-> > >  #include <linux/mtd/partitions.h>
-> > >  #include <linux/io.h>
-> > >  #include <linux/irq.h>
-> > > +#include <linux/jiffies.h>
-> > >  #include <linux/slab.h>
-> > >  #include <linux/of.h>
-> > >  #include <linux/of_device.h>
-> > > @@ -480,6 +481,38 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
-> > >  	nand_writel(info, NDCR, ndcr | int_mask);
-> > >  }
-> > >  
-> > > +static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
-> > > +{
-> > > +	u32 *dst = (u32 *)data;
-> > > +
-> > > +	if (info->ecc_bch) {
-> > > +		while (len--) {
-> > > +			u32 timeout;
-> > > +
-> > > +			*dst++ = nand_readl(info, NDDB);
-> > > +
-> > > +			/*
-> > > +			 * According to the datasheet, when reading
-> > > +			 * from NDDB with BCH enabled, after each 32
-> > > +			 * bits reads, we have to make sure that the
-> > > +			 * NDSR.RDDREQ bit is set
-> > > +			 */
-> > 
-> > I know the datasheet says this bit should be checked after each
-> > transfer, but I wonder if we shouldn't check it before reading the data.
-> > What happens if you drain all the data available in the FIFO ? Is the
-> > controller still setting the RDDREQ bit ?
-> > 
-> > Moreover, the datasheet says this RDDREQ bit should be checked after
-> > each 32 bytes (not 32 bits) transfer.
-> > Testing it after each readl call shouldn't hurt though.
-> 
-> Seems like that could quite possibly kill performance unnecessarily,
-> couldn't it? But then, PIO is probably not that fast in the first
-> place...
+> We debugged it and found the ECC errors occur because the UBI subsystem 
+> is trying to write sub-pages in the NAND, but neither the NAND chip 
+> itself nor the Denali NAND controller support sub-page writes.
 
-Absolutety, my point was, it shouldn't hurt from a functional POV, but
-yes it will definitely impact performances.
-But that's not the first thing I would rework of if you're concerned
-about performances: when doing PIO read/write, the page read/write
-operations (I mean the part reading the internal fifo) are all done in
-interrupt context (called from pxa3xx_nand_irq), and doing this will
-prevent any other interrupt from taking place while you are
-draining/filling the FIFO :-(.
-An alternative would be to move this part into the read/write_buf
-functions, but that's a lot of work...
+Just a bit curious.
 
-Best Regards,
+It is not uncommon for controllers or chips not to support sub-page 
+writes. In that case however, the partition(s) used by UBI should be 
+formatted accordingly, i.e. using the appropriate --sub-page-size argument 
+to ubiformat (when formatting partitions on the system itself), or the 
+corresponding argument to ubinize (when preparing images offline).
 
-Boris
+If that is done correctly, then the lack of subpage write capability is 
+not a problem per se (of course, the UBI EC and VID headers then take up 
+more space so less space is available for user data; on a flash with 2k 
+pages it is only 2k bytes per LEB that is lost however).
 
+/Ricard
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
