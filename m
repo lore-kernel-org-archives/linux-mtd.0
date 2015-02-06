@@ -1,21 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pd0-f178.google.com ([209.85.192.178])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJVyM-0004LK-Rr
- for linux-mtd@lists.infradead.org; Thu, 05 Feb 2015 23:36:36 +0000
-Message-ID: <54D3FE65.5030008@nod.at>
-Date: Fri, 06 Feb 2015 00:36:05 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1YJX8v-0005rl-K2
+ for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 00:51:34 +0000
+Received: by pdbfl12 with SMTP id fl12so11069387pdb.6
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Feb 2015 16:51:12 -0800 (PST)
+Date: Thu, 5 Feb 2015 16:51:01 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] mtd: nand: pxa3xx: fix build on ARM64
+Message-ID: <20150206005101.GA30781@ld-irv-0074>
+References: <1423004776-17825-1-git-send-email-robh@kernel.org>
 MIME-Version: 1.0
-To: Steve deRosier <derosier@gmail.com>,
- hujianyang <hujianyang@huawei.com>
-Subject: Re: [RFC] UBIFS recovery
-References: <54D33C36.9060805@huawei.com>
- <CALupW3CQ3YCvdx_tNeDGVo9cVTcmACyqsMRpr8+P2_4jwGgZMQ@mail.gmail.com>
-In-Reply-To: <CALupW3CQ3YCvdx_tNeDGVo9cVTcmACyqsMRpr8+P2_4jwGgZMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Sheng Yong <shengyong1@huawei.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1423004776-17825-1-git-send-email-robh@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +26,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 05.02.2015 um 16:08 schrieb Steve deRosier:
-> On Thu, Feb 5, 2015 at 1:47 AM, hujianyang <hujianyang@huawei.com> wrote:
->> There are two ways for UBIFS recovery. One is repairing UBIFS image
->> in userspace via UBI interfaces, the other is repairing the corrupted
->> data during mount by default or via a special mount option.
->>
->> The userspace tool is the most effective way to repair a partition.
->> It could have enough time and resource to whole scan the target and
->> cleanup the corrupted while the file-system offline. But it's hard
->> to program: many structures and functions in kernel need to be copied
->> into this utility, current ubi-utils focus mostly on UBI device, not
->> UBIFS, and the subsequent updating of file-system should consider the
->> userspace tool. It's too complicated.
->>
+On Tue, Feb 03, 2015 at 05:06:16PM -0600, Rob Herring wrote:
+> In preparation to enable ARCH_MMP on ARM64, a couple of fixes are needed
+> to build the pxa3xx_nand driver:
 > 
-> I hear (and agree with) several valid arguments for a tool in
-> userspace. And I'd like to throw my support towards an in-driver
-> solution. Flash filesystems are different than on-disk filesystems, in
-> particular in their usecase: they're generally both critical and
-> exclusive to embedded systems. As such, the entire filesystem might be
-> on the corrupted UBIFS, so even if the filesystem is recoverable, if
-> we can't mount it and get at the userspace tool, then we're toast.
+> Legacy DMA will only used on ARM, so also make it condtional on
+> CONFIG_ARM.
+> __raw_{read,write}sl are not available on ARM64 or generically, so use
+> the readsl/writesl variants instead.
 
-No, embedded is not per se an excuse for doing bad/stupid things.
-Embedded is *not* special.
-There are folks out there that want a "force" mount option for UBIFS
-to mount it in any case no matter in how bad shape it is.
-But this will make the situation much worse as you'll get silent data
-corruption/loss.
-It is as stupid as running a "fsck -y /dev/sdXY" at every boot on a
-regular disk filesystem.
+Hmm, why the non __raw naming? I seems a little misleading that all the
+other (non-raw) {read,write}{w,l}() helpers have endian swapping and
+barriers, but this helper has neither.
 
-UBIFS can only fully automatically recover *iff* it can guarantee that it
-will be consistent after recovery and does not lose data.
-If not is has to fail at mount time.
-What does it help if UBIFS successfully mounts but /sbin/init is damaged or
-the permissions of /etc/shadow are corrupted?
-On the other hand, if UBIFS can do a better job at automatically and safe
-recovery, lets improve it.
+Anyway, I think the patch looks good. Thomas or Ezequiel, can I get an
+ack?
 
-But what we really need is a fsck.ubifs and a debugfs.ubifs.
-In-kernel recovery cannot replace a fsck as in-kernel will always be non-interactive.
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: linux-mtd@lists.infradead.org
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 96b0b1d..404d390 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -28,7 +28,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/of_mtd.h>
+>  
+> -#if defined(CONFIG_ARCH_PXA) || defined(CONFIG_ARCH_MMP)
+> +#if defined(CONFIG_ARM) && (defined(CONFIG_ARCH_PXA) || defined(CONFIG_ARCH_MMP))
+>  #define ARCH_HAS_DMA
+>  #endif
+>  
+> @@ -486,24 +486,24 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
+>  
+>  	switch (info->state) {
+>  	case STATE_PIO_WRITING:
+> -		__raw_writesl(info->mmio_base + NDDB,
+> -			      info->data_buff + info->data_buff_pos,
+> -			      DIV_ROUND_UP(do_bytes, 4));
+> +		writesl(info->mmio_base + NDDB,
+> +			info->data_buff + info->data_buff_pos,
+> +			DIV_ROUND_UP(do_bytes, 4));
+>  
+>  		if (info->oob_size > 0)
+> -			__raw_writesl(info->mmio_base + NDDB,
+> -				      info->oob_buff + info->oob_buff_pos,
+> -				      DIV_ROUND_UP(info->oob_size, 4));
+> +			writesl(info->mmio_base + NDDB,
+> +				info->oob_buff + info->oob_buff_pos,
+> +				DIV_ROUND_UP(info->oob_size, 4));
+>  		break;
+>  	case STATE_PIO_READING:
+> -		__raw_readsl(info->mmio_base + NDDB,
+> -			     info->data_buff + info->data_buff_pos,
+> -			     DIV_ROUND_UP(do_bytes, 4));
+> +		readsl(info->mmio_base + NDDB,
+> +		       info->data_buff + info->data_buff_pos,
+> +		       DIV_ROUND_UP(do_bytes, 4));
+>  
+>  		if (info->oob_size > 0)
+> -			__raw_readsl(info->mmio_base + NDDB,
+> -				     info->oob_buff + info->oob_buff_pos,
+> -				     DIV_ROUND_UP(info->oob_size, 4));
+> +			readsl(info->mmio_base + NDDB,
+> +			       info->oob_buff + info->oob_buff_pos,
+> +			       DIV_ROUND_UP(info->oob_size, 4));
+>  		break;
+>  	default:
+>  		dev_err(&info->pdev->dev, "%s: invalid state %d\n", __func__,
+> @@ -1580,7 +1580,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+>  	info->pdev = pdev;
+>  	info->variant = pxa3xx_nand_get_variant(pdev);
+>  	for (cs = 0; cs < pdata->num_cs; cs++) {
+> -		mtd = (struct mtd_info *)((unsigned int)&info[1] +
+> +		mtd = (struct mtd_info *)((void *)&info[1] +
+>  		      (sizeof(*mtd) + sizeof(*host)) * cs);
+>  		chip = (struct nand_chip *)(&mtd[1]);
+>  		host = (struct pxa3xx_nand_host *)chip;
 
-> Often the kernel itself is stored in a separate read-only partition as
-> a blob directly on the flash, and thus the kernel itself would be
-> fine. The better UBI & UBIFS can recover to a usable state in-kernel,
-> the better off we are I think.
-
-Using an initramfs you can have an fsck.ubifs without a mounted root.
-
-Thanks,
-//richard
+Brian
