@@ -1,15 +1,27 @@
-Message-ID: <1423232860.26461.93.camel@infradead.org>
-Subject: Re: [PATCH] fs: jffs2: Remove utf8 from printk string
-From: David Woodhouse <dwmw2@infradead.org>
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Date: Fri, 06 Feb 2015 14:27:40 +0000
-In-Reply-To: <1423232343-26438-1-git-send-email-linux@rasmusvillemoes.dk>
-References: <1423232343-26438-1-git-send-email-linux@rasmusvillemoes.dk>
-Content-Type: multipart/signed; micalg="sha-1";
- protocol="application/x-pkcs7-signature";
- boundary="=-AQAXD8BuYD4BEnZSjm82"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mail-qa0-x231.google.com ([2607:f8b0:400d:c00::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJjyh-00064h-Gw
+ for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 14:33:52 +0000
+Received: by mail-qa0-f49.google.com with SMTP id v8so10952267qal.8
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Feb 2015 06:33:29 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20150206011857.GC30781@ld-irv-0074>
+References: <1423161845-24282-1-git-send-email-jimtingkuo@gmail.com>
+ <1423161845-24282-2-git-send-email-jimtingkuo@gmail.com>
+ <20150206011857.GC30781@ld-irv-0074>
+Date: Fri, 6 Feb 2015 22:33:29 +0800
+Message-ID: <CAHgCKdUq8o3hc0FeShtn6JPSk7U59Y1Hy-Tsq4MnRbNEhgv3dA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] m25p80, spi-nor: Update id list of Macronix chips
+From: Jim-Ting Kuo <jimtingkuo@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Marek Vasut <marex@denx.de>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Ben Hutchings <ben@decadent.org.uk>,
+ =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
+ linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,140 +31,243 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Feb 6, 2015 at 9:18 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Fri, Feb 06, 2015 at 02:44:04AM +0800, Jim Kuo wrote:
+>> Update the Macronix chip IDs. And add two functions to m25p80.c to
+>> support some undefined read/write actions.
+>>
+>> Signed-off-by: Jim Kuo <jimtingkuo@gmail.com>
+>> ---
+>>  drivers/mtd/devices/m25p80.c  | 83 ++++++++++++++++++++++++++++++++++++++++---
+>>  drivers/mtd/spi-nor/spi-nor.c | 44 ++++++++++++++++-------
+>>  2 files changed, 110 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>> index 85e35467..731f568 100644
+>> --- a/drivers/mtd/devices/m25p80.c
+>> +++ b/drivers/mtd/devices/m25p80.c
+>> @@ -170,6 +170,74 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
+>>       return 0;
+>>  }
+>>
+>> +static int m25p80_write_xfer(struct spi_nor *nor,
+>> +             struct spi_nor_xfer_cfg *cfg, u8 *buf, size_t len)
+>> +{
+>> +     struct m25p *flash = nor->priv;
+>> +     struct spi_device *spi = flash->spi;
+>> +     struct spi_transfer t[2] = {};
+>> +     struct spi_message m;
+>> +     unsigned int dummy = cfg->dummy_cycles;
+>> +     int ret;
+>> +
+>> +     dummy /= 8;
+>> +
+>> +     if (cfg->wren) {
+>> +             ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0, 0);
+>> +             if (ret)
+>> +                     return ret;
+>> +     }
+>> +
+>> +     spi_message_init(&m);
+>> +
+>> +     flash->command[0] = cfg->cmd;
+>> +     m25p_addr2cmd(nor, cfg->addr, flash->command);
+>> +
+>> +     t[0].tx_buf = flash->command;
+>> +     t[0].len = cfg->cmd_pins + cfg->addr_pins + dummy;
+>> +     spi_message_add_tail(&t[0], &m);
+>> +
+>> +     t[1].tx_buf = buf;
+>> +     t[1].tx_nbits = cfg->mode_pins;
+>> +     t[1].len = len;
+>> +     spi_message_add_tail(&t[1], &m);
+>> +
+>> +     spi_sync(spi, &m);
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static int m25p80_read_xfer(struct spi_nor *nor,
+>> +             struct spi_nor_xfer_cfg *cfg, u8 *buf, size_t len)
+>> +{
+>> +     struct m25p *flash = nor->priv;
+>> +     struct spi_device *spi = flash->spi;
+>> +     struct spi_transfer t[2];
+>> +     struct spi_message m;
+>> +     unsigned int dummy = cfg->dummy_cycles;
+>> +
+>> +     dummy /= 8;
+>> +
+>> +     spi_message_init(&m);
+>> +     memset(t, 0, sizeof(t));
+>> +
+>> +     flash->command[0] = cfg->cmd;
+>> +     m25p_addr2cmd(nor, cfg->addr, flash->command);
+>> +
+>> +     t[0].tx_buf = flash->command;
+>> +     t[0].len = cfg->cmd_pins + cfg->addr_pins + dummy;
+>> +     spi_message_add_tail(&t[0], &m);
+>> +
+>> +     t[1].rx_buf = buf;
+>> +     t[1].rx_nbits = cfg->mode_pins;
+>> +     t[1].len = len;
+>> +     spi_message_add_tail(&t[1], &m);
+>> +
+>> +     spi_sync(spi, &m);
+>> +
+>> +     return 0;
+>> +}
+>> +
+>
+> All of the above is pointless. The write_xfer/read_xfer functions are
+> not even used. (They should probably just be dropped, since they're
+> doing nothing as-is.)
+>
+>>  /*
+>>   * board specific setup should have ensured the SPI clock used here
+>>   * matches what the READ command supports, at least until this driver
+>> @@ -199,6 +267,8 @@ static int m25p_probe(struct spi_device *spi)
+>>       nor->erase = m25p80_erase;
+>>       nor->write_reg = m25p80_write_reg;
+>>       nor->read_reg = m25p80_read_reg;
+>> +     nor->write_xfer = m25p80_write_xfer;
+>> +     nor->read_xfer = m25p80_read_xfer;
+>>
+>>       nor->dev = &spi->dev;
+>>       nor->mtd = &flash->mtd;
+>> @@ -261,10 +331,15 @@ static const struct spi_device_id m25p_ids[] = {
+>>       {"mr25h256"},   {"mr25h10"},
+>>       {"gd25q32"},    {"gd25q64"},
+>>       {"160s33b"},    {"320s33b"},    {"640s33b"},
+>> -     {"mx25l2005a"}, {"mx25l4005a"}, {"mx25l8005"},  {"mx25l1606e"},
+>> -     {"mx25l3205d"}, {"mx25l3255e"}, {"mx25l6405d"}, {"mx25l12805d"},
+>> -     {"mx25l12855e"},{"mx25l25635e"},{"mx25l25655e"},{"mx66l51235l"},
+>> -     {"mx66l1g55g"},
+>> +     {"mx25l512e"},  {"mx25l5121e"}, {"mx25l1006e"}, {"mx25l1021e"},
+>> +     {"mx25l2006e"}, {"mx25l4006e"}, {"mx25u4035"},  {"mx25v4035"},
+>> +     {"mx25l8006e"}, {"mx25u8035"},  {"mx25v8035"},  {"mx25l1606e"},
+>> +     {"mx25l1633e"}, {"mx25l1635e"}, {"mx25u1635e"}, {"mx25l3206e"},
+>> +     {"mx25l3239e"}, {"mx25l3225d"}, {"mx25l3255e"}, {"mx25l6406e"},
+>> +     {"mx25l6439e"}, {"mx25l12839f"},        {"mx25l12855e"},
+>> +     {"mx25u12835f"},        {"mx25l25635e"},        {"mx25l25655e"},
+>> +     {"mx25u25635f"},        {"mx66l51235f"},        {"mx66u51235f"},
+>> +     {"mx66l1g45g"}, {"mx66l1g55g"},
+>>       {"n25q064"},    {"n25q128a11"}, {"n25q128a13"}, {"n25q256a"},
+>>       {"n25q512a"},   {"n25q512ax3"}, {"n25q00"},
+>>       {"pm25lv512"},  {"pm25lv010"},  {"pm25lq032"},
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 0f8ec3c..a6c7337 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -545,19 +545,37 @@ static const struct spi_device_id spi_nor_ids[] = {
+>>       { "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 0) },
+>>
+>>       /* Macronix */
+>> -     { "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
+>
+> Nak.
+>
+>> -     { "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
+>
+> Nak.
+>
+>> -     { "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
+>
+> Nak.
+>
+> (you get the picture)
+>
+>> -     { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
+>> -     { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
+>> -     { "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+>> -     { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
+>> -     { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+>> -     { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>> -     { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+>> -     { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>> -     { "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+>> -     { "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+>
+> This is a load of junk. You can't just remove table entries that already
+> have a name entry. It's not my fault that flash vendors continuously
+> output new flash generations that reuse IDs from the previous. We need
+> name stability, for anyone who might be using these name strings to bind
+> to the m25p80 driver.
+>
+>> +     { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,    1, SECT_4K) },
+>> +     { "mx25l5121e",  INFO(0xc22210, 0, 64 * 1024,    1, SECT_4K) },
+>> +     { "mx25l1006e",  INFO(0xc22011, 0, 64 * 1024,    2, SECT_4K) },
+>> +     { "mx25l1021e",  INFO(0xc22211, 0, 64 * 1024,    2, SECT_4K) },
+>> +     { "mx25l2006e",  INFO(0xc22012, 0, 64 * 1024,    4, SECT_4K) },
+>> +     { "mx25l4006e",  INFO(0xc22013, 0, 64 * 1024,    8, SECT_4K) },
+>> +     { "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,    8, SECT_4K) },
+>> +     { "mx25v4035",   INFO(0xc22553, 0, 64 * 1024,    8, SECT_4K) },
+>> +     { "mx25l8006e",  INFO(0xc22014, 0, 64 * 1024,   16, 0) },
+>> +     { "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,   16, 0) },
+>> +     { "mx25v8035",   INFO(0xc22554, 0, 64 * 1024,   16, 0) },
+>> +     { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,   32, SECT_4K) },
+>> +     { "mx25l1633e",  INFO(0xc22415, 0, 64 * 1024,   32, 0) },
+>> +     { "mx25l1635e",  INFO(0xc22515, 0, 64 * 1024,   32, 0) },
+>> +     { "mx25u1635e",  INFO(0xc22535, 0, 64 * 1024,   32, 0) },
+>> +     { "mx25l3206e",  INFO(0xc22016, 0, 64 * 1024,   64, 0) },
+>> +     { "mx25l3239e",  INFO(0xc22536, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+>> +     { "mx25l3225d",  INFO(0xc25e16, 0, 64 * 1024,   64, 0) },
+>> +     { "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,   64, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx25l6406e",  INFO(0xc22017, 0, 64 * 1024,  128, 0) },
+>> +     { "mx25l6439e",  INFO(0xc22537, 0, 64 * 1024,  128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx25l12839f", INFO(0xc22018, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
+>> +     { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024,  256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx25u12835f", INFO(0xc22538, 0, 64 * 1024,  256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024,  512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024,  512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx25u25635f", INFO(0xc22539, 0, 64 * 1024,  512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx66l51235f", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +     { "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>
+> You need to do a lot better job of documenting your patches (i.e.,
+> describe why you're doing these things) if you want me to take them.
+>
+> What's more, the SFDP support you're trying to add should be done in a
+> way where you *don't* need to muck with the ID table every time. With
+> SFDP you can get most/all this information anyway, and devices should
+> just be able to bind to this driver using a generic name like
+> "spi-nor,sfdp" or something like that, instead of having to expand this
+> table.
+>
+>>
+>>       /* Micron */
+>>       { "n25q032",     INFO(0x20ba16, 0, 64 * 1024,   64, 0) },
+>
+> Brian
 
---=-AQAXD8BuYD4BEnZSjm82
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Brian,
+Thanks for your review and comments.
 
-On Fri, 2015-02-06 at 15:19 +0100, Rasmus Villemoes wrote:
-> Any non-ascii characters are escaped before being show to user-space,
-> so this shows up as
->=20
-> jffs2: version 2.2. (NAND) \xffffffc2\xffffffa9\xffffffa9 2001-2006
-> Red Hat, Inc.
->=20
-> (I have no idea why the second byte is repeated.) Replace with a
-> widely used ascii replacement.
+The write_xfer/read_xfer functions actually are used in patch 2.
+ - read_xfer:  for macronix_block_lock function.
+ - write_xfer:  for sfdp_read, macronix_read_lock_status function.
+Original read/write fcuntions can only support one type transfer I/O (such as
+FAST_READ, DUAL_READ or QUAD_READ which was detected at begin),
+and they also only support fixed cycle of dummy (bind with transfer command).
+So the commands not related to data transfer, such as sfdp read, lock/unlock
+are hard to use original read/write. That's why I built these two of functions.
+I thought they are suitable for this condition.
 
-Nah. Fix the bug, don't apply a crappy workaround. This is the 21st
-century.
+Second, sorry that I directly delete original chip IDs. Some chips are not
+supported by Macronix anymore, so I change the name to a more popular one
+and keep the original device ID. I also add lots of new devices to the table.
+I forgot that the name might still be needed by someone.
+And you're right, the sfdp detection is no need to read IDs. I'll remove these
+part of modifications in the next version. I hope this way can make my patch
+function more simple.
 
-> Actually, I don't see the value in printing a copyright notice to the
-> kernel log, especially since it's out-of-sync with the one at the top
-> of the file.
+Summary for next version:
+- Document the patch better and more detail.
+- Remove the part of ID modifications.
+Please let me know if there are any other suggestions.
 
-Agreed. Removing it would be better than the crappy workaround. But
-let's use it as a test case to fix the *real* bug first.
-
---=20
-dwmw2
-
---=-AQAXD8BuYD4BEnZSjm82
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIISxDCCBjQw
-ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
-Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
-BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
-DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
-KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
-dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
-75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
-+y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
-z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
-/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
-ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
-fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
-MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
-aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
-Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
-b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
-dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
-c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
-XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
-UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
-HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
-sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
-sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
-+n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
-zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
-Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
-9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIGQjCCBSqg
-AwIBAgIDCdkyMA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
-b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
-A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
-MTQwNTA0MTczMDIyWhcNMTUwNTA0MjM0MTAxWjBdMRkwFwYDVQQNExAzODNCMTVkSHFQSUR0cDZO
-MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
-YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy7K+t+REIdZGFUfgR8Io
-QrJ/VLZil9I00JcwqTo8BiGy1dqSIB2y923siya5SDKMh1YurtCPsX96cNzwPmmN2cs0MKeVPQWz
-iQhHk3uKcB6LvvS7pzTahRWMRmTyW3CH+RphRM9plvyClY23GEeEnpBnGz4GaJJiPcJjGgzyZ/tI
-q473pOlSrDPZnZk43vt/5CJN46nIZOZ2I+PzlgINI+EbiwsXVn3VohHB7nVTwGaRLk5oywGt8ZT7
-tDdxn3BQ3inO1sr5MtkV1o2cHlenIC8mlU8nL/mrqqVve7Vib1YQUycW+Pj4CBYm4FTeuctAvNzK
-U/daeBclOZ8ofgQe2wIDAQABo4IC2TCCAtUwCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBRAjCSCV70BpLBeXge5DXi+mPhHTTAf
-BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
-YWQub3JnMIIBTAYDVR0gBIIBQzCCAT8wggE7BgsrBgEEAYG1NwECAzCCASowLgYIKwYBBQUHAgEW
-Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0
-YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdh
-cyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRz
-IG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRl
-ZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMu
-MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmww
-gY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9z
-dWIvY2xhc3MxL2NsaWVudC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20v
-Y2VydHMvc3ViLmNsYXNzMS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3Rh
-cnRzc2wuY29tLzANBgkqhkiG9w0BAQUFAAOCAQEAWS2KNN7O3vZVtNHXVqgbmijeptKwt+8b6yiF
-wT3kJoywInPl5U+OeKRZfQKTHghM4Ohof6lF244ZMxhir/xp7l/zkZ/BUbxLwp6kIL27Gi5pgP4D
-KLnTZheQL9N5Yi/vMONxMWcpcW+ZNv5hnDCfEsfVcLXC8sNLPjx2ezfMIhSSPwBuJpmOun70te4E
-P0YBqjSalPfvc5fC5KgaYtqTDFwo9Mw25X5HHDC0r6BK5aNrF1nD/xYTX7cdvZZWl7cUApr4PCrn
-uI2DEn7OWQ/rY407ytV1c5pjvmuv/IT/ZUb/kXV6Q47UvrJp2Ifi2VhsBcnHHasKavjtRCmpDsGM
-rTCCBkIwggUqoAMCAQICAwnZMjANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNV
-BAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
-Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xp
-ZW50IENBMB4XDTE0MDUwNDE3MzAyMloXDTE1MDUwNDIzNDEwMVowXTEZMBcGA1UEDRMQMzgzQjE1
-ZEhxUElEdHA2TjEcMBoGA1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYT
-ZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMuyvrfk
-RCHWRhVH4EfCKEKyf1S2YpfSNNCXMKk6PAYhstXakiAdsvdt7IsmuUgyjIdWLq7Qj7F/enDc8D5p
-jdnLNDCnlT0Fs4kIR5N7inAei770u6c02oUVjEZk8ltwh/kaYUTPaZb8gpWNtxhHhJ6QZxs+BmiS
-Yj3CYxoM8mf7SKuO96TpUqwz2Z2ZON77f+QiTeOpyGTmdiPj85YCDSPhG4sLF1Z91aIRwe51U8Bm
-kS5OaMsBrfGU+7Q3cZ9wUN4pztbK+TLZFdaNnB5XpyAvJpVPJy/5q6qlb3u1Ym9WEFMnFvj4+AgW
-JuBU3rnLQLzcylP3WngXJTmfKH4EHtsCAwEAAaOCAtkwggLVMAkGA1UdEwQCMAAwCwYDVR0PBAQD
-AgSwMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUQIwkgle9AaSwXl4H
-uQ14vpj4R00wHwYDVR0jBBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdt
-dzJAaW5mcmFkZWFkLm9yZzCCAUwGA1UdIASCAUMwggE/MIIBOwYLKwYBBAGBtTcBAgMwggEqMC4G
-CCsGAQUFBwIBFiJodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMIH3BggrBgEFBQcC
-AjCB6jAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0
-aWZpY2F0ZSB3YXMgaXNzdWVkIGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJl
-cXVpcmVtZW50cyBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0
-aGUgaW50ZW5kZWQgcHVycG9zZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9i
-bGlnYXRpb25zLjA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1
-MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkGCCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFy
-dHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2EwQgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3Rh
-cnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xpZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRw
-Oi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcNAQEFBQADggEBAFktijTezt72VbTR11aoG5oo
-3qbSsLfvG+sohcE95CaMsCJz5eVPjnikWX0Ckx4ITODoaH+pRduOGTMYYq/8ae5f85GfwVG8S8Ke
-pCC9uxouaYD+Ayi502YXkC/TeWIv7zDjcTFnKXFvmTb+YZwwnxLH1XC1wvLDSz48dns3zCIUkj8A
-biaZjrp+9LXuBD9GAao0mpT373OXwuSoGmLakwxcKPTMNuV+RxwwtK+gSuWjaxdZw/8WE1+3Hb2W
-Vpe3FAKa+Dwq57iNgxJ+zlkP62ONO8rVdXOaY75rr/yE/2VG/5F1ekOO1L6yadiH4tlYbAXJxx2r
-Cmr47UQpqQ7BjK0xggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
-Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
-BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMJ
-2TIwCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTUwMjA2MTQyNzQwWjAjBgkqhkiG9w0BCQQxFgQUu7QxHGaQ3Caoh5HCklsbaUIs/98wgaUG
-CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
-KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
-YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMJ2TIwgacGCyqG
-SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
-MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
-cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwnZMjANBgkqhkiG
-9w0BAQEFAASCAQCzFDsQC/76uY1gU4C/nSXcxnsq1GiNAHcjFWa7cUo0SZlmQC07rn/Knrw0TD0M
-rMjO8AP2b9qrpYhs6ngvRQnXFhSd9eCFBk1ZkUYQ5CpfTwq0mdQOXo2KhldkfXHXUVSqcwzm6TT1
-sjahpferaS90ydlpGqhsid8AoAN7wFSO1ULy+ozJwL6DKrfhx0KGMjyg77fvuP1/0GfWenc+R8OZ
-V5zC7ew1pl9l9NRlKm2syKldKA0KnwBG7bJw7EZ7/YiM1SrNrlU1BcOpqB1nqOrkztgP0qjSVDuq
-FpHo6abKaR1zLqlzod6qkHT2YzNhMxdLYnrmws6SRqin59T6fLE1AAAAAAAA
-
-
---=-AQAXD8BuYD4BEnZSjm82--
+Thanks again!
+Jim Kuo
