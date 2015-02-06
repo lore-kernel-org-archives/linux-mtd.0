@@ -1,29 +1,25 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJfE3-00071p-Ue
- for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 09:29:25 +0000
-Message-ID: <54D48955.40700@nod.at>
-Date: Fri, 06 Feb 2015 10:28:53 +0100
-From: Richard Weinberger <richard@nod.at>
+Date: Fri, 6 Feb 2015 03:28:45 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 1/20] mtd: s3c2410: fix misspelling of current function
+ in string
+Message-ID: <20150206112845.GF4434@norris-Latitude-E6410>
+References: <1417980062-25151-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1417980062-25151-2-git-send-email-Julia.Lawall@lip6.fr>
+ <CAFLxGvyiqxQ6U6p-A-JW8Nv8OvXFGsna93afUu-Gek0EV3gATA@mail.gmail.com>
+ <alpine.DEB.2.02.1412080809400.2100@localhost6.localdomain6>
+ <54856C75.1050309@nod.at>
 MIME-Version: 1.0
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Graham Moore <grmoore@opensource.altera.com>
-Subject: Re: [PATCH] mtd: denali: Disable sub-page writes in Denali NAND driver
-References: <1421249930-21229-1-git-send-email-dinguyen@opensource.altera.com>
- <CADhT+weaYA1cSQCNP98Ta0ChgxymbBbwtRikdUdcbL2pQB-TXQ@mail.gmail.com>
- <CAFLxGvynJFPECTG5f_ZN_VpgkiZE01MUiJh4Yvj-Pf8MuOit7g@mail.gmail.com>
- <54D397C8.808@opensource.altera.com>
- <alpine.DEB.2.02.1502060925000.11532@lnxricardw1.se.axis.com>
-In-Reply-To: <alpine.DEB.2.02.1502060925000.11532@lnxricardw1.se.axis.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
-Cc: Dinh Nguyen <dinh.linux@gmail.com>, Josh Triplett <josh@joshtriplett.org>,
- Linux List <linux-kernel@vger.kernel.org>,
- "yamada.m@jp.panasonic.com" <yamada.m@jp.panasonic.com>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54856C75.1050309@nod.at>
+Cc: linux-samsung-soc@vger.kernel.org, linux@rasmusvillemoes.dk,
+ "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, Julia Lawall <julia.lawall@lip6.fr>,
+ Kukjin Kim <kgene@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ Joe Perches <joe@perches.com>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,36 +29,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 06.02.2015 um 09:29 schrieb Ricard Wanderlof:
+On Mon, Dec 08, 2014 at 10:16:37AM +0100, Richard Weinberger wrote:
+> Am 08.12.2014 um 08:11 schrieb Julia Lawall:
+> >>> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> >>> index 35aef5e..0a9c41f 100644
+> >>> --- a/drivers/mtd/nand/s3c2410.c
+> >>> +++ b/drivers/mtd/nand/s3c2410.c
+> >>> @@ -948,7 +948,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+> >>>
+> >>>         cpu_type = platform_get_device_id(pdev)->driver_data;
+> >>>
+> >>> -       pr_debug("s3c2410_nand_probe(%p)\n", pdev);
+> >>> +       pr_debug("%s(%p)\n", __func__, pdev);
+> >>
+> >> I think we can drop the line completely.
+> >> We have ftrace to trace function calls...
+> > 
+> > Should the "initialised ok" at the end of the function be remove as well?
+> > 
+> > Will it be confusing if this cleanup is done in this function, but not in 
+> > others where it may be useful?  Perhaps s3c2410_nand_update_chip, for 
+> > example?
 > 
-> On Thu, 5 Feb 2015, Graham Moore wrote:
-> 
->> Actually, we made this change to make UBIFS work.  So, yes, the driver 
->> never worked for UBI.  Worked fine for JFFS2, raw data.
->>
->> A customer reported an issue with ECC errors when using UBIFS on NAND 
->> flash with Altera SoC.
->>
->> We debugged it and found the ECC errors occur because the UBI subsystem 
->> is trying to write sub-pages in the NAND, but neither the NAND chip 
->> itself nor the Denali NAND controller support sub-page writes.
-> 
-> Just a bit curious.
-> 
-> It is not uncommon for controllers or chips not to support sub-page 
-> writes. In that case however, the partition(s) used by UBI should be 
-> formatted accordingly, i.e. using the appropriate --sub-page-size argument 
-> to ubiformat (when formatting partitions on the system itself), or the 
-> corresponding argument to ubinize (when preparing images offline).
-> 
-> If that is done correctly, then the lack of subpage write capability is 
-> not a problem per se (of course, the UBI EC and VID headers then take up 
-> more space so less space is available for user data; on a flash with 2k 
-> pages it is only 2k bytes per LEB that is lost however).
+> Hmm, this driver seems to have a lot of debugging printks().
+> IMHO we can remove them.
+> Let's see what Brain says.
 
-Yeah, but UBI automatically will use subpages unless you specify
-use the vid_hdr_offs parameter.
-IOW, if the driver advertises subpages UBI will use them.
+I'm a little late for this one, but I can apply this instead:
 
-Thanks,
-//richard
+From: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 6 Feb 2015 03:25:28 -0800
+Subject: [PATCH] mtd: s3c2410: drop useless / misspelled debug prints
+
+s3c2410_nand_probe is not the name of the function.
+
+These prints have little utility, so let's just kill them.
+
+Reported-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/s3c2410.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 35aef5edb588..0e02be47ce1d 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -948,8 +948,6 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 
+ 	cpu_type = platform_get_device_id(pdev)->driver_data;
+ 
+-	pr_debug("s3c2410_nand_probe(%p)\n", pdev);
+-
+ 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+ 	if (info == NULL) {
+ 		err = -ENOMEM;
+@@ -1045,7 +1043,6 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
+ 	}
+ 
+-	pr_debug("initialised ok\n");
+ 	return 0;
+ 
+  exit_error:
+-- 
+2.3.0
