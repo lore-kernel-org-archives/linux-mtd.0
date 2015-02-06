@@ -1,28 +1,30 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJoIB-0004VW-Lr
- for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 19:10:16 +0000
-Received: by mail-pa0-f44.google.com with SMTP id rd3so19107069pab.3
- for <linux-mtd@lists.infradead.org>; Fri, 06 Feb 2015 11:09:54 -0800 (PST)
-Date: Fri, 6 Feb 2015 11:09:50 -0800
+Date: Fri, 6 Feb 2015 11:38:59 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Jim-Ting Kuo <jimtingkuo@gmail.com>
-Subject: Re: [PATCH 1/2] m25p80, spi-nor: Update id list of Macronix chips
-Message-ID: <20150206190950.GN18140@ld-irv-0074>
-References: <1423161845-24282-1-git-send-email-jimtingkuo@gmail.com>
- <1423161845-24282-2-git-send-email-jimtingkuo@gmail.com>
- <20150206011857.GC30781@ld-irv-0074>
- <CAHgCKdUq8o3hc0FeShtn6JPSk7U59Y1Hy-Tsq4MnRbNEhgv3dA@mail.gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v2 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
+Message-ID: <20150206193859.GP18140@ld-irv-0074>
+References: <1422284164-16867-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>
+ <20150204111028.2f0bd376@bbrezillon>
+ <20150206010835.GB30781@ld-irv-0074>
+ <20150206091307.1162b123@bbrezillon>
+ <54D4CCEB.5090009@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHgCKdUq8o3hc0FeShtn6JPSk7U59Y1Hy-Tsq4MnRbNEhgv3dA@mail.gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Geert Uytterhoeven <geert+renesas@glider.be>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- David Woodhouse <dwmw2@infradead.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Huang Shijie <shijie.huang@intel.com>, Ben Hutchings <ben@decadent.org.uk>
+In-Reply-To: <54D4CCEB.5090009@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Andrew Lunn <andrew@lunn.ch>, Thomas Petazzoni <thomas@free-electrons.com>,
+ Seif Mazareeb <seif@marvell.com>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Sudhakar Gundubogula <sudhakar@marvell.com>,
+ Nadav Haklai <nadavh@marvell.com>, Boris Brezillon <boris@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Rob Herring <robh@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,158 +34,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(fixed Huang's current email)
-
-Hi,
-
-On Fri, Feb 06, 2015 at 10:33:29PM +0800, Jim-Ting Kuo wrote:
-> On Fri, Feb 6, 2015 at 9:18 AM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > On Fri, Feb 06, 2015 at 02:44:04AM +0800, Jim Kuo wrote:
-> >> --- a/drivers/mtd/devices/m25p80.c
-> >> +++ b/drivers/mtd/devices/m25p80.c
-> >> @@ -170,6 +170,74 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
-> >>       return 0;
-> >>  }
+On Fri, Feb 06, 2015 at 11:17:15AM -0300, Ezequiel Garcia wrote:
+> On 02/06/2015 05:13 AM, Boris Brezillon wrote:
+> > On Thu, 5 Feb 2015 17:08:35 -0800
+> > Brian Norris <computersforpeace@gmail.com> wrote:
+> >> On Wed, Feb 04, 2015 at 11:10:28AM +0100, Boris Brezillon wrote:
+> >>> I know the datasheet says this bit should be checked after each
+> >>> transfer, but I wonder if we shouldn't check it before reading the data.
+> >>> What happens if you drain all the data available in the FIFO ? Is the
+> >>> controller still setting the RDDREQ bit ?
+> >>>
+> >>> Moreover, the datasheet says this RDDREQ bit should be checked after
+> >>> each 32 bytes (not 32 bits) transfer.
+> >>> Testing it after each readl call shouldn't hurt though.
 > >>
-> >> +static int m25p80_write_xfer(struct spi_nor *nor,
-> >> +             struct spi_nor_xfer_cfg *cfg, u8 *buf, size_t len)
-> >> +{
-...
-> >> +}
-> >> +
-> >> +static int m25p80_read_xfer(struct spi_nor *nor,
-> >> +             struct spi_nor_xfer_cfg *cfg, u8 *buf, size_t len)
-> >> +{
-...
-> >> +}
-> >> +
-> >
-> > All of the above is pointless. The write_xfer/read_xfer functions are
-> > not even used. (They should probably just be dropped, since they're
-> > doing nothing as-is.)
-> >
-> >>  /*
-> >>   * board specific setup should have ensured the SPI clock used here
-> >>   * matches what the READ command supports, at least until this driver
-> >> @@ -199,6 +267,8 @@ static int m25p_probe(struct spi_device *spi)
-> >>       nor->erase = m25p80_erase;
-> >>       nor->write_reg = m25p80_write_reg;
-> >>       nor->read_reg = m25p80_read_reg;
-> >> +     nor->write_xfer = m25p80_write_xfer;
-> >> +     nor->read_xfer = m25p80_read_xfer;
-> >>
-> >>       nor->dev = &spi->dev;
-> >>       nor->mtd = &flash->mtd;
-> >> @@ -261,10 +331,15 @@ static const struct spi_device_id m25p_ids[] = {
-> >>       {"mr25h256"},   {"mr25h10"},
-> >>       {"gd25q32"},    {"gd25q64"},
-> >>       {"160s33b"},    {"320s33b"},    {"640s33b"},
-> >> -     {"mx25l2005a"}, {"mx25l4005a"}, {"mx25l8005"},  {"mx25l1606e"},
-> >> -     {"mx25l3205d"}, {"mx25l3255e"}, {"mx25l6405d"}, {"mx25l12805d"},
-> >> -     {"mx25l12855e"},{"mx25l25635e"},{"mx25l25655e"},{"mx66l51235l"},
-> >> -     {"mx66l1g55g"},
-> >> +     {"mx25l512e"},  {"mx25l5121e"}, {"mx25l1006e"}, {"mx25l1021e"},
-> >> +     {"mx25l2006e"}, {"mx25l4006e"}, {"mx25u4035"},  {"mx25v4035"},
-> >> +     {"mx25l8006e"}, {"mx25u8035"},  {"mx25v8035"},  {"mx25l1606e"},
-> >> +     {"mx25l1633e"}, {"mx25l1635e"}, {"mx25u1635e"}, {"mx25l3206e"},
-> >> +     {"mx25l3239e"}, {"mx25l3225d"}, {"mx25l3255e"}, {"mx25l6406e"},
-> >> +     {"mx25l6439e"}, {"mx25l12839f"},        {"mx25l12855e"},
-> >> +     {"mx25u12835f"},        {"mx25l25635e"},        {"mx25l25655e"},
-> >> +     {"mx25u25635f"},        {"mx66l51235f"},        {"mx66u51235f"},
-> >> +     {"mx66l1g45g"}, {"mx66l1g55g"},
-> >>       {"n25q064"},    {"n25q128a11"}, {"n25q128a13"}, {"n25q256a"},
-> >>       {"n25q512a"},   {"n25q512ax3"}, {"n25q00"},
-> >>       {"pm25lv512"},  {"pm25lv010"},  {"pm25lq032"},
-> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> >> index 0f8ec3c..a6c7337 100644
-> >> --- a/drivers/mtd/spi-nor/spi-nor.c
-> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> >> @@ -545,19 +545,37 @@ static const struct spi_device_id spi_nor_ids[] = {
-> >>       { "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 0) },
-> >>
-> >>       /* Macronix */
-> >> -     { "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
-> >
-> > Nak.
-> >
-> >> -     { "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
-> >
-> > Nak.
-> >
-> >> -     { "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
-> >
-> > Nak.
-> >
-> > (you get the picture)
-> >
-[...]
-> >
-> > You need to do a lot better job of documenting your patches (i.e.,
-> > describe why you're doing these things) if you want me to take them.
-> >
-> > What's more, the SFDP support you're trying to add should be done in a
-> > way where you *don't* need to muck with the ID table every time. With
-> > SFDP you can get most/all this information anyway, and devices should
-> > just be able to bind to this driver using a generic name like
-> > "spi-nor,sfdp" or something like that, instead of having to expand this
-> > table.
+> >> Seems like that could quite possibly kill performance unnecessarily,
+> >> couldn't it? But then, PIO is probably not that fast in the first
+> >> place...
+> > 
+> > Absolutety, my point was, it shouldn't hurt from a functional POV, but
+> > yes it will definitely impact performances.
+> > But that's not the first thing I would rework of if you're concerned
+> > about performances: when doing PIO read/write, the page read/write
+> > operations (I mean the part reading the internal fifo) are all done in
+> > interrupt context (called from pxa3xx_nand_irq), and doing this will
+> > prevent any other interrupt from taking place while you are
+> > draining/filling the FIFO :-(.
 > 
-> The write_xfer/read_xfer functions actually are used in patch 2.
->  - read_xfer:  for macronix_block_lock function.
->  - write_xfer:  for sfdp_read, macronix_read_lock_status function.
-> Original read/write fcuntions can only support one type transfer I/O (such as
-> FAST_READ, DUAL_READ or QUAD_READ which was detected at begin),
-> and they also only support fixed cycle of dummy (bind with transfer command).
-> So the commands not related to data transfer, such as sfdp read, lock/unlock
-> are hard to use original read/write. That's why I built these two of functions.
-> I thought they are suitable for this condition.
-
-OK, I suppose that's a little more reasonable. But I want to make sure
-this is actually necessary. I suppose we can't get this functionality
-with the existing read_reg()/write_reg() ops, can we?
-
-I'm not actually sure the exact purpose of the read_xfer()/write_xfer()
-functions as originally defined. They obviously weren't used yet.
-Perhaps Huang can comment here?
-
-But this also suggests that you really need to split your patches more.
-You're doing many unrelated things in each patch, and you provide no
-rationale for much of it.
-
-> Second, sorry that I directly delete original chip IDs. Some chips are not
-> supported by Macronix anymore, so I change the name to a more popular one
-> and keep the original device ID. I also add lots of new devices to the table.
-> I forgot that the name might still be needed by someone.
-> And you're right, the sfdp detection is no need to read IDs. I'll remove these
-> part of modifications in the next version. I hope this way can make my patch
-> function more simple.
+> But NAND operations are serialized, and there won't be any other
+> interrupt for the controller until it's has drained the FIFO. So this
+> doesn't really seem to hit performance to me.
 > 
-> Summary for next version:
-> - Document the patch better and more detail.
+> Or am I missing anything here?
 
-Definitely.
+I think we're talking about two things:
 
-> - Remove the part of ID modifications.
+1. The $subject patch is probably adding too many extra register reads
+   (8 times too many?). In the grand scheme of things, this probably
+   isn't significant.
 
-Yes. Or at least, don't remove/rename old entries. If new flash with
-names are compatible with old names, just use the old name.
+2. The driver as already written is doing too much in its interrupt
+   handler; this is bad practice in general and can hurt the
+   responsiveness of the system. And particularly here, we also have the
+   problem of a potential lockup, since the new timeout loop is waiting
+   on jiffies, which will not be updated.
 
-If you need to add any information to existing entries, note why. And if
-you need to add new entries, make these a separate patch.
+> > An alternative would be to move this part into the read/write_buf
+> > functions, but that's a lot of work...
+> > 
+> 
+> Yeah, indeed. This also has other benefits. As we discussed on IRC, it
+> would allow to support raw writes (i.e. ECC off).
 
-> Please let me know if there are any other suggestions.
+OK. This is probably a good work item for later. But let's get back on
+point.
 
-Big goal: make your patches smaller, so that they encapsulate only a
-single thought and can be easily described by you and
-understood/reviewed by others.
+I'd like to see version 2 with the following:
 
-You might also strip down your patches to just what's necessary to
-detect a flash using only SFDP (not binding to a particular name/ID in
-the spi_nor_ids[] table). Worrying about the OTP, lock/unlock, etc.,
-that you loaded into patch 2 will more likely bog down your review. Or
-at least, make these changes into an atomic patch (or patch set) that's
-at the end of the series, so we can tackle the more important chunks
-first.
+1. For sure the jiffies loop needs to be rewritten
+
+2. Optionally, the RDDREQ bit should be checked less often, per the
+   datasheet and Boris's comments
+
+Maxime, would that be OK?
+
+Then maybe I can get this into 3.20. Maybe not in my primary -rc1
+pullreq, if we haven't had enough time to look at and test v2, but ASAP.
+Only after than am I likely to take Rob's ARM64 cleanup.
 
 Brian
