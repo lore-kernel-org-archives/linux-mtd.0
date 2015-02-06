@@ -1,18 +1,20 @@
-Date: Fri, 6 Feb 2015 11:38:59 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Fri, 6 Feb 2015 21:33:46 +0100
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH v2 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
-Message-ID: <20150206193859.GP18140@ld-irv-0074>
+Message-ID: <20150206203346.GI2079@lukather>
 References: <1422284164-16867-1-git-send-email-maxime.ripard@free-electrons.com>
  <1422284164-16867-2-git-send-email-maxime.ripard@free-electrons.com>
  <20150204111028.2f0bd376@bbrezillon>
  <20150206010835.GB30781@ld-irv-0074>
  <20150206091307.1162b123@bbrezillon>
  <54D4CCEB.5090009@free-electrons.com>
+ <20150206193859.GP18140@ld-irv-0074>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="svExV93C05KqedWb"
 Content-Disposition: inline
-In-Reply-To: <54D4CCEB.5090009@free-electrons.com>
+In-Reply-To: <20150206193859.GP18140@ld-irv-0074>
 Cc: Lior Amsalem <alior@marvell.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
@@ -21,8 +23,8 @@ Cc: Lior Amsalem <alior@marvell.com>,
  stable@vger.kernel.org, Sudhakar Gundubogula <sudhakar@marvell.com>,
  Nadav Haklai <nadavh@marvell.com>, Boris Brezillon <boris@free-electrons.com>,
  linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Gregory Clement <gregory.clement@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
  Rob Herring <robh@kernel.org>, linux-arm-kernel@lists.infradead.org,
  Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,72 +36,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 06, 2015 at 11:17:15AM -0300, Ezequiel Garcia wrote:
-> On 02/06/2015 05:13 AM, Boris Brezillon wrote:
-> > On Thu, 5 Feb 2015 17:08:35 -0800
-> > Brian Norris <computersforpeace@gmail.com> wrote:
-> >> On Wed, Feb 04, 2015 at 11:10:28AM +0100, Boris Brezillon wrote:
-> >>> I know the datasheet says this bit should be checked after each
-> >>> transfer, but I wonder if we shouldn't check it before reading the data.
-> >>> What happens if you drain all the data available in the FIFO ? Is the
-> >>> controller still setting the RDDREQ bit ?
-> >>>
-> >>> Moreover, the datasheet says this RDDREQ bit should be checked after
-> >>> each 32 bytes (not 32 bits) transfer.
-> >>> Testing it after each readl call shouldn't hurt though.
-> >>
-> >> Seems like that could quite possibly kill performance unnecessarily,
-> >> couldn't it? But then, PIO is probably not that fast in the first
-> >> place...
-> > 
-> > Absolutety, my point was, it shouldn't hurt from a functional POV, but
-> > yes it will definitely impact performances.
-> > But that's not the first thing I would rework of if you're concerned
-> > about performances: when doing PIO read/write, the page read/write
-> > operations (I mean the part reading the internal fifo) are all done in
-> > interrupt context (called from pxa3xx_nand_irq), and doing this will
-> > prevent any other interrupt from taking place while you are
-> > draining/filling the FIFO :-(.
-> 
-> But NAND operations are serialized, and there won't be any other
-> interrupt for the controller until it's has drained the FIFO. So this
-> doesn't really seem to hit performance to me.
-> 
-> Or am I missing anything here?
 
-I think we're talking about two things:
+--svExV93C05KqedWb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-1. The $subject patch is probably adding too many extra register reads
-   (8 times too many?). In the grand scheme of things, this probably
-   isn't significant.
+On Fri, Feb 06, 2015 at 11:38:59AM -0800, Brian Norris wrote:
+> > > An alternative would be to move this part into the read/write_buf
+> > > functions, but that's a lot of work...
+> > >=20
+> >=20
+> > Yeah, indeed. This also has other benefits. As we discussed on IRC, it
+> > would allow to support raw writes (i.e. ECC off).
+>=20
+> OK. This is probably a good work item for later. But let's get back on
+> point.
+>=20
+> I'd like to see version 2 with the following:
+>=20
+> 1. For sure the jiffies loop needs to be rewritten
+>=20
+> 2. Optionally, the RDDREQ bit should be checked less often, per the
+>    datasheet and Boris's comments
+>=20
+> Maxime, would that be OK?
 
-2. The driver as already written is doing too much in its interrupt
-   handler; this is bad practice in general and can hurt the
-   responsiveness of the system. And particularly here, we also have the
-   problem of a potential lockup, since the new timeout loop is waiting
-   on jiffies, which will not be updated.
+Yep. I actually worked on these two issues just today.
 
-> > An alternative would be to move this part into the read/write_buf
-> > functions, but that's a lot of work...
-> > 
-> 
-> Yeah, indeed. This also has other benefits. As we discussed on IRC, it
-> would allow to support raw writes (i.e. ECC off).
+It looks like I blew my boards' bootloader in the process, so it might
+take so time.
 
-OK. This is probably a good work item for later. But let's get back on
-point.
+> Then maybe I can get this into 3.20. Maybe not in my primary -rc1
+> pullreq, if we haven't had enough time to look at and test v2, but ASAP.
+> Only after than am I likely to take Rob's ARM64 cleanup.
 
-I'd like to see version 2 with the following:
+Sounds good, thanks!
 
-1. For sure the jiffies loop needs to be rewritten
+Maxime
 
-2. Optionally, the RDDREQ bit should be checked less often, per the
-   datasheet and Boris's comments
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
 
-Maxime, would that be OK?
+--svExV93C05KqedWb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Then maybe I can get this into 3.20. Maybe not in my primary -rc1
-pullreq, if we haven't had enough time to look at and test v2, but ASAP.
-Only after than am I likely to take Rob's ARM64 cleanup.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Brian
+iQIcBAEBAgAGBQJU1SUqAAoJEBx+YmzsjxAgYbUQAJCitdtmdvnyH+xDwvxLUpqa
+uuCMdqUBKVh16OP4agaLMmx1Q66+qG9ckrEATOJFOIqDw6aC2P0qjMQ5U6RLuc2x
+ACBhZJwW/JWPkvvZU4ghk5ZnDALgF7NLF9biCZb5uu3UpAqH6l6oJSTdmQTyw+gW
+CzaIkBk78cwYo7rNdGAqkPaWUv4c5+F8LRZPYgTjVfk4w3CGE2kykR16cqdgqDYX
+bH5ViYoPp3x4AxGW3FNc2Dq2GZx0ic1VaZ0Sifh+sodDK+QUKb/HSx2B3G76PYYt
+nx3tbQ5Jm+85kgB2HUgv81zd7KjLSSPBKJy8f8hP9vRDtUKJ+TIserHNSKOlgdVy
+kgshP0ClOHAA2FWuOndDoE5G659zzi13JksFwiY9P2cYQgO4a2G8djHXNgLo13x9
+VTaow12cNfXMmkpgUZlKSld8syHCoui2osW7eL5zT/LwCaKEr1kYiWVjRKV4VXO5
+CHTAE8ye3XJJnmvatjhjhsjYNJcGB63YM8CReo/5cd8okMb2uxhzEJg4UjgwxIDq
+Ze7R/p/MaaOPQadLMZ8QcjvTliKtu8nPBrMlgiO7g0AeibuITT+5qHPMiVLWEyPW
+gWskf0/Tm1bCFCT/78W89JBGp/OctFnjWG20P5FlqmRa7CjW/jUYWZ/cmhrKLiG0
+c9E+zPO2VL4a0bfBcPNZ
+=txUN
+-----END PGP SIGNATURE-----
+
+--svExV93C05KqedWb--
