@@ -1,19 +1,23 @@
-Date: Thu, 5 Feb 2015 18:11:29 -0800
+Received: from mail-pd0-f179.google.com ([209.85.192.179])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJa7c-0004Wy-8j
+ for linux-mtd@lists.infradead.org; Fri, 06 Feb 2015 04:02:24 +0000
+Received: by pdbfl12 with SMTP id fl12so12042873pdb.6
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Feb 2015 20:02:02 -0800 (PST)
+Date: Thu, 5 Feb 2015 20:01:58 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 08/13] mtd: st_spi_fsm: Update the JEDEC probe to
- handle extended READIDs
-Message-ID: <20150206021129.GB18140@ld-irv-0074>
-References: <1418644760-18773-1-git-send-email-lee.jones@linaro.org>
- <1418644760-18773-9-git-send-email-lee.jones@linaro.org>
- <20150113050715.GQ9759@ld-irv-0074> <20150121130204.GC22024@x1>
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Subject: Re: [PATCH v2] mtd: nand: omap: drop condition with no effect
+Message-ID: <20150206040158.GC18140@ld-irv-0074>
+References: <1423070646-12906-1-git-send-email-hofrat@osadl.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20150121130204.GC22024@x1>
-Cc: Angus Clark <angus.clark@st.com>, kernel@stlinux.com,
- linux-kernel@vger.kernel.org, Carmelo Amoroso <carmelo.amoroso@st.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1423070646-12906-1-git-send-email-hofrat@osadl.org>
+Cc: Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+ Rostislav Lisovy <lisovy@gmail.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Roger Quadros <rogerq@ti.com>,
+ David Woodhouse <dwmw2@infradead.org>, pekon gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 21, 2015 at 01:02:04PM +0000, Lee Jones wrote:
-> On Mon, 12 Jan 2015, Brian Norris wrote:
-> > On Mon, Dec 15, 2014 at 11:59:15AM +0000, Lee Jones wrote:
-> > > The previous code was based on 3-byte JEDEC IDs, with a possible 2-byte
-> > > extension.  However, devices are now emerging that return 6 or more bytes of
-> > > READID data and the additional bytes are required to differentiate between
-> > > variants or generations of similar devices.
-> > > 
-> > > This patch refactors the device table and JEDEC probe code to handle arbitrary
-> > > length READIDs, with the standard JEDEC definition now becoming a special case.
-> > > Functionally, there should be no change in behaviour.  A subsequent patch will
-> > > update the table with extended READIDs where applicable.
-> > 
-> > BTW, how's that promise going, where you work on adapting this driver to
-> > the spi-nor framework? We've already done some of this same work there.
+On Wed, Feb 04, 2015 at 12:24:06PM -0500, Nicholas Mc Guire wrote:
+> The if and the else branch code are identical - so the condition has no
+> effect on the effective code. This patch removes the condition and the
+> duplicated code and updates the documentation as suggested by 
+> Roger Quadros <rogerq@ti.com>.
 > 
-> I have pushed this point within ST and someone has agreed to do the
-> work.  Last I heard it relied on these patches, but I'll ask again.
+> Acked-by: Roger Quadros <rogerq@ti.com>
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 
-OK.
+Applied to l2-mtd.git.
 
-> > > +#define RDID(...) __VA_ARGS__  /* Dummy macro to protect array argument. */
-> > 
-> > What? What needs "protected"?
-> 
-> You're asking me questions I can't answer I'm afraid and Angus has now
-> left the building.  I guess he thinks __VA_ARGS__ will prevent some
-> kind of overflow?
-
-If you don't understand your own code, how can I be expected to maintain
-it? This one's pretty trivial and harmless, but an accumulation of
-answers like this don't exactly put me in a good mood.
-
-FWIW, I expect the comment has nothing to do with the __VA_ARGS__; it's
-just commenting that he has placed a macro around the array just in case
-somebody needs/wants to rearrange formats later. That way, we don't
-necessarily have to rewrite the whole table, but can just change the
-macros.
-
-So the __VA_ARGS__ is just there to make the compiler happy (it thinks
-an array argument to a macro actually looks like more than one
-argument), and the comment is only mildly descriptive of its purpose.
-
+Thanks,
 Brian
