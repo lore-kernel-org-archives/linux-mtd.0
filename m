@@ -1,20 +1,15 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from mail-qa0-f47.google.com ([209.85.216.47])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJubC-00043a-C5
- for linux-mtd@lists.infradead.org; Sat, 07 Feb 2015 01:54:19 +0000
-Message-ID: <54D57006.2040107@huawei.com>
-Date: Sat, 7 Feb 2015 09:53:10 +0800
-From: shengyong <shengyong1@huawei.com>
-MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [RFC PATCH] ubifs: do not write master node if recovery needed
-References: <1423130080-79705-1-git-send-email-shengyong1@huawei.com>	
- <1423130080-79705-2-git-send-email-shengyong1@huawei.com>
- <1423243771.8637.581.camel@sauron.fi.intel.com>
-In-Reply-To: <1423243771.8637.581.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: richard@nod.at, linux-mtd@lists.infradead.org, hujianyang@huawei.com
+ id 1YK9Qg-0006Vi-DV
+ for linux-mtd@lists.infradead.org; Sat, 07 Feb 2015 17:44:27 +0000
+Received: by mail-qa0-f47.google.com with SMTP id n8so15570065qaq.6
+ for <linux-mtd@lists.infradead.org>; Sat, 07 Feb 2015 09:44:03 -0800 (PST)
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
+Subject: [RFC/PATCH] mtd: nand: Move the BBT interface to the BBM header
+Date: Sat,  7 Feb 2015 14:41:44 -0300
+Message-Id: <1423330904-20029-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +19,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+In order to have a clear separatation between the NAND core and
+the NAND Bad Block Management, let's move the NAND BBT interface
+to the bbm.h header.
 
+Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+---
+ drivers/mtd/nand/diskonchip.c | 1 +
+ drivers/mtd/nand/nand_base.c  | 1 +
+ include/linux/mtd/bbm.h       | 7 +++++++
+ include/linux/mtd/nand.h      | 7 -------
+ 4 files changed, 9 insertions(+), 7 deletions(-)
 
-在 2015/2/7 1:29, Artem Bityutskiy 写道:
-> On Thu, 2015-02-05 at 09:54 +0000, Sheng Yong wrote:
->> If unclean umount happens, ubifs may fail when mounting. Trying to mount
->> it will write new master nodes on the flash. This is useless but wasting
->> space and increasing sqnum. So check need_recovery before writing master
->> node, and don't create new master node if filesystem needs recovery.
-> 
-> Looks like you caught a bug, thanks, but I need to check the code a bit
-> more carefully. So when will the master not be updated then, if you do
-> not mark it dirty now?
-AFAIK, if the need_recovery is set after reading master and before writing
-master, the master is always marked dirty by last mount (if unclean umount
-happend), and each committing will update master later, with dirty flag set.
-This is same as normal mount procedure. So I don't think we need to mark it
-dirty here, and only if the recovery fails, the master will not be updated.
-
-thanks,
-Sheng
-> 
-> Artem.
-> 
-> 
-> 
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index f68a7bc..1693d8d 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -27,6 +27,7 @@
+ #include <asm/io.h>
+ 
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/bbm.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/doc2000.h>
+ #include <linux/mtd/partitions.h>
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index f6af969..c0c9772 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -40,6 +40,7 @@
+ #include <linux/mm.h>
+ #include <linux/types.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/bbm.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/nand_ecc.h>
+ #include <linux/mtd/nand_bch.h>
+diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
+index 36bb6a5..4ad7d35 100644
+--- a/include/linux/mtd/bbm.h
++++ b/include/linux/mtd/bbm.h
+@@ -165,6 +165,13 @@ struct bbm_info {
+ 	void *priv;
+ };
+ 
++/* NAND BBT interface */
++extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
++extern int nand_default_bbt(struct mtd_info *mtd);
++extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
++extern int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
++extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
++
+ /* OneNAND BBT interface */
+ extern int onenand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
+ extern int onenand_default_bbt(struct mtd_info *mtd);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 3d4ea7e..fdc8b57 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -833,15 +833,8 @@ struct nand_manufacturers {
+ extern struct nand_flash_dev nand_flash_ids[];
+ extern struct nand_manufacturers nand_manuf_ids[];
+ 
+-extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
+-extern int nand_default_bbt(struct mtd_info *mtd);
+-extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
+-extern int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
+-extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
+ extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 			   int allowbbt);
+-extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
+-			size_t *retlen, uint8_t *buf);
+ 
+ /**
+  * struct platform_nand_chip - chip level device structure
+-- 
+2.2.1
