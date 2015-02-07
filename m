@@ -1,14 +1,14 @@
-Received: from mail-qa0-f47.google.com ([209.85.216.47])
+Received: from mail-qc0-f178.google.com ([209.85.216.178])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YK9Qg-0006Vi-DV
- for linux-mtd@lists.infradead.org; Sat, 07 Feb 2015 17:44:27 +0000
-Received: by mail-qa0-f47.google.com with SMTP id n8so15570065qaq.6
- for <linux-mtd@lists.infradead.org>; Sat, 07 Feb 2015 09:44:03 -0800 (PST)
+ id 1YK9TF-0007nK-Nw
+ for linux-mtd@lists.infradead.org; Sat, 07 Feb 2015 17:47:06 +0000
+Received: by mail-qc0-f178.google.com with SMTP id b13so16875781qcw.9
+ for <linux-mtd@lists.infradead.org>; Sat, 07 Feb 2015 09:46:43 -0800 (PST)
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: [RFC/PATCH] mtd: nand: Move the BBT interface to the BBM header
-Date: Sat,  7 Feb 2015 14:41:44 -0300
-Message-Id: <1423330904-20029-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+Subject: [RFC/PATCH v2] mtd: nand: Move the BBT interface to the BBM header
+Date: Sat,  7 Feb 2015 14:44:27 -0300
+Message-Id: <1423331067-20147-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,8 +23,14 @@ In order to have a clear separatation between the NAND core and
 the NAND Bad Block Management, let's move the NAND BBT interface
 to the bbm.h header.
 
+While at it, remove the nand_do_read() function prototype from nand.h.
+This function no longer exists.
+
 Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 ---
+Changes from v1:
+  * Mention the nand_do_read declaration remove in the commit log.
+
  drivers/mtd/nand/diskonchip.c | 1 +
  drivers/mtd/nand/nand_base.c  | 1 +
  include/linux/mtd/bbm.h       | 7 +++++++
