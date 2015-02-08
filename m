@@ -1,15 +1,21 @@
-Received: from mail-qc0-f178.google.com ([209.85.216.178])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YK9TF-0007nK-Nw
- for linux-mtd@lists.infradead.org; Sat, 07 Feb 2015 17:47:06 +0000
-Received: by mail-qc0-f178.google.com with SMTP id b13so16875781qcw.9
- for <linux-mtd@lists.infradead.org>; Sat, 07 Feb 2015 09:46:43 -0800 (PST)
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: [RFC/PATCH v2] mtd: nand: Move the BBT interface to the BBM header
-Date: Sat,  7 Feb 2015 14:44:27 -0300
-Message-Id: <1423331067-20147-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+ id 1YKLqr-0003rD-8J
+ for linux-mtd@lists.infradead.org; Sun, 08 Feb 2015 07:00:19 +0000
+Received: by mail-pa0-f48.google.com with SMTP id eu11so4697399pac.7
+ for <linux-mtd@lists.infradead.org>; Sat, 07 Feb 2015 22:59:55 -0800 (PST)
+Date: Sat, 7 Feb 2015 22:59:52 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Niklas Cassel <nks@flawful.org>
+Subject: Re: [PATCH] mtd: avoid registering reboot notifier twice
+Message-ID: <20150208065952.GC3670@norris-Latitude-E6410>
+References: <1422752930-696-1-git-send-email-nks@flawful.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1422752930-696-1-git-send-email-nks@flawful.org>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,85 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In order to have a clear separatation between the NAND core and
-the NAND Bad Block Management, let's move the NAND BBT interface
-to the bbm.h header.
+On Sun, Feb 01, 2015 at 02:08:50AM +0100, Niklas Cassel wrote:
+> Calling mtd_device_parse_register with the same mtd_info
+> (e.g. registering several partitions on a single device)
+> would add the same reboot notifier twice, causing an
+> infinte loop in notifier_chain_register during boot up.
+> 
+> Signed-off-by: Niklas Cassel <nks@flawful.org>
 
-While at it, remove the nand_do_read() function prototype from nand.h.
-This function no longer exists.
+Begrudgingly applied to l2-mtd.git. It's better to fix this bug than for
+me just to complain about badly written board files and drivers...
 
-Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
-Changes from v1:
-  * Mention the nand_do_read declaration remove in the commit log.
+> ---
+>  drivers/mtd/mtdcore.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index de79576..98efc1e 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -556,7 +556,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+>  			err = -ENODEV;
+>  	}
+>  
 
- drivers/mtd/nand/diskonchip.c | 1 +
- drivers/mtd/nand/nand_base.c  | 1 +
- include/linux/mtd/bbm.h       | 7 +++++++
- include/linux/mtd/nand.h      | 7 -------
- 4 files changed, 9 insertions(+), 7 deletions(-)
+Also added a FIXME comment here to note that some drivers are doing odd
+things to require this workaround.
 
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index f68a7bc..1693d8d 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -27,6 +27,7 @@
- #include <asm/io.h>
- 
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/bbm.h>
- #include <linux/mtd/nand.h>
- #include <linux/mtd/doc2000.h>
- #include <linux/mtd/partitions.h>
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index f6af969..c0c9772 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -40,6 +40,7 @@
- #include <linux/mm.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/bbm.h>
- #include <linux/mtd/nand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/nand_bch.h>
-diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
-index 36bb6a5..4ad7d35 100644
---- a/include/linux/mtd/bbm.h
-+++ b/include/linux/mtd/bbm.h
-@@ -165,6 +165,13 @@ struct bbm_info {
- 	void *priv;
- };
- 
-+/* NAND BBT interface */
-+extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
-+extern int nand_default_bbt(struct mtd_info *mtd);
-+extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
-+extern int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
-+extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
-+
- /* OneNAND BBT interface */
- extern int onenand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
- extern int onenand_default_bbt(struct mtd_info *mtd);
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 3d4ea7e..fdc8b57 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -833,15 +833,8 @@ struct nand_manufacturers {
- extern struct nand_flash_dev nand_flash_ids[];
- extern struct nand_manufacturers nand_manuf_ids[];
- 
--extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
--extern int nand_default_bbt(struct mtd_info *mtd);
--extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
--extern int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
--extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
- extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 			   int allowbbt);
--extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
--			size_t *retlen, uint8_t *buf);
- 
- /**
-  * struct platform_nand_chip - chip level device structure
--- 
-2.2.1
+> -	if (mtd->_reboot) {
+> +	if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
+>  		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
+>  		register_reboot_notifier(&mtd->reboot_notifier);
+>  	}
+
+Brian
