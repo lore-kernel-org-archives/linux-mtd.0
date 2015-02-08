@@ -1,19 +1,14 @@
-Date: Sun, 8 Feb 2015 00:42:25 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Zhou Wang <wangzhou1@hisilicon.com>
-Subject: Re: [PATCH v8 1/2] mtd: hisilicon: add a new NAND controller driver
- for hisilicon hip04 Soc
-Message-ID: <20150208084225.GE3670@norris-Latitude-E6410>
-References: <1422183194-10148-1-git-send-email-wangzhou1@hisilicon.com>
- <1422183194-10148-2-git-send-email-wangzhou1@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1422183194-10148-2-git-send-email-wangzhou1@hisilicon.com>
-Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- liguozhu@hisilicon.com, xuwei5@hisilicon.com, linux-mtd@lists.infradead.org,
- haojian.zhuang@gmail.com, caizhiyong@huawei.com, yubingxu@hisilicon.com,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+From: Nicholas Mc Guire <hofrat@osadl.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: nand: gpmi: fixup return type of
+ wait_for_completion_timeout
+Date: Sun,  8 Feb 2015 11:37:33 -0500
+Message-Id: <1423413453-5254-1-git-send-email-hofrat@osadl.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, Nicholas Mc Guire <hofrat@osadl.org>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,199 +18,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Zhou,
+return type of wait_for_completion_timeout is unsigned long not int. The
+return variable is renamed to reflect its use and the type adjusted to
+unsigned long.
 
-On Sun, Jan 25, 2015 at 06:53:13PM +0800, Zhou Wang wrote:
-> diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
-> new file mode 100644
-> index 0000000..484e1db
-> --- /dev/null
-> +++ b/drivers/mtd/nand/hisi504_nand.c
-...
-> +static uint8_t hisi_nfc_read_byte(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct hinfc_host *host = chip->priv;
-> +
-> +	if (host->command == NAND_CMD_STATUS)
-> +		return *(uint8_t *)(host->mmio);
-> +
-> +	host->offset++;
-> +
-> +	if (host->command == NAND_CMD_READID)
-> +		return *(uint8_t *)(host->mmio + host->offset - 1);
-> +
-> +	return *(uint8_t *)(host->buffer + host->offset - 1);
-> +}
-> +
-> +static u16 hisi_nfc_read_word(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct hinfc_host *host = chip->priv;
-> +
-> +	host->offset += 2;
-> +	return *(u16 *)(host->buffer + host->offset - 2);
-> +}
-> +
-> +static void
-> +hisi_nfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct hinfc_host *host = chip->priv;
-> +
-> +	memcpy(host->buffer + host->offset, buf, len);
-> +	host->offset += len;
-> +}
-> +
-> +static void hisi_nfc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct hinfc_host *host = chip->priv;
-> +
-> +	memcpy(buf, host->buffer + host->offset, len);
-> +	host->offset += len;
-> +}
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+---
 
-...
+Patch was only compile tested with imx_v6_v7_defconfig
+(implies CONFIG_MTD_NAND_GPMI_NAND=y)
 
-> +static int hisi_nfc_probe(struct platform_device *pdev)
-> +{
-> +	int ret = 0, irq, buswidth, flag, max_chips = HINFC504_MAX_CHIP;
-> +	struct device *dev = &pdev->dev;
-> +	struct hinfc_host *host;
-> +	struct nand_chip  *chip;
-> +	struct mtd_info   *mtd;
-> +	struct resource	  *res;
-> +	struct device_node *np = dev->of_node;
-> +	struct mtd_part_parser_data ppdata;
-> +
-> +	host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
-> +	if (!host)
-> +		return -ENOMEM;
-> +	host->dev = dev;
-> +
-> +	platform_set_drvdata(pdev, host);
-> +	chip = &host->chip;
-> +	mtd  = &host->mtd;
-> +
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq < 0) {
-> +		dev_err(dev, "no IRQ resource defined\n");
-> +		ret = -ENXIO;
-> +		goto err_res;
-> +	}
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	host->iobase = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(host->iobase)) {
-> +		ret = PTR_ERR(host->iobase);
-> +		goto err_res;
-> +	}
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +	host->mmio = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(host->mmio)) {
-> +		ret = PTR_ERR(host->mmio);
-> +		dev_err(dev, "devm_ioremap_resource[1] fail\n");
-> +		goto err_res;
-> +	}
-> +
-> +	mtd->priv		= chip;
-> +	mtd->owner		= THIS_MODULE;
-> +	mtd->name		= "hisi_nand";
-> +	mtd->dev.parent         = &pdev->dev;
-> +
-> +	chip->priv		= host;
-> +	chip->cmdfunc		= hisi_nfc_cmdfunc;
-> +	chip->select_chip	= hisi_nfc_select_chip;
-> +	chip->read_byte		= hisi_nfc_read_byte;
-> +	chip->read_word		= hisi_nfc_read_word;
-> +	chip->write_buf		= hisi_nfc_write_buf;
-> +	chip->read_buf		= hisi_nfc_read_buf;
-> +	chip->chip_delay	= HINFC504_CHIP_DELAY;
-> +
-> +	chip->ecc.mode = of_get_nand_ecc_mode(np);
-> +
-> +	buswidth = of_get_nand_bus_width(np);
-> +	if (buswidth == 16)
-> +		chip->options |= NAND_BUSWIDTH_16;
-> +
-> +	hisi_nfc_host_init(host);
-> +
-> +	ret = devm_request_irq(dev, irq, hinfc_irq_handle, IRQF_DISABLED,
-> +				"nandc", host);
-> +	if (ret) {
-> +		dev_err(dev, "failed to request IRQ\n");
-> +		goto err_res;
-> +	}
-> +
-> +	ret = nand_scan_ident(mtd, max_chips, NULL);
-> +	if (ret) {
-> +		ret = -ENODEV;
-> +		goto err_res;
-> +	}
-> +
-> +	host->buffer = dmam_alloc_coherent(dev, mtd->writesize + mtd->oobsize,
-> +		&host->dma_buffer, GFP_KERNEL);
+Patch is against 3.19.0-rc7 (localversion-next is -next-20150204)
 
-You allocate this buffer after nand_scan_ident() (which is necessary, if
-you want to use the page and OOB size), but note that this buffer is
-used for everything but the READ_ID and STATUS commands, right? So there
-is some potential for a NULL dereference in read_byte/read_buf, above.
-Fortunately, there aren't many other commands used in nand_scan_ident(),
-but I think you might run across one problem; what if an ONFI or JEDEC
-compatible NAND is used? Then nand_scan_ident() might run a
-PARAMETER_READ command.
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Anyway, I see that PARAMETER_READ is not implemented in this driver, so
-I guess that's not a big deal. Just FYI.
-
-> +	if (!host->buffer) {
-> +		ret = -ENOMEM;
-> +		goto err_res;
-> +	}
-> +
-> +	host->dma_oob = host->dma_buffer + mtd->writesize;
-> +	memset(host->buffer, 0xff, mtd->writesize + mtd->oobsize);
-> +
-> +	flag = hinfc_read(host, HINFC504_CON);
-> +	flag &= ~(HINFC504_CON_PAGESIZE_MASK << HINFC504_CON_PAGEISZE_SHIFT);
-> +	switch (mtd->writesize) {
-> +	case 2048:
-> +		flag |= (0x001 << HINFC504_CON_PAGEISZE_SHIFT); break;
-> +	/*
-> +	 * TODO: add more pagesize support,
-> +	 * default pagesize has been set in hisi_nfc_host_init
-> +	 */
-> +	default:
-> +		dev_err(dev, "NON-2KB page size nand flash\n");
-> +		ret = -EINVAL;
-> +		goto err_res;
-> +	}
-> +	hinfc_write(host, flag, HINFC504_CON);
-> +
-> +	if (chip->ecc.mode == NAND_ECC_HW)
-> +		hisi_nfc_ecc_probe(host);
-> +
-> +	ret = nand_scan_tail(mtd);
-> +	if (ret) {
-> +		dev_err(dev, "nand_scan_tail failed: %d\n", ret);
-> +		goto err_res;
-> +	}
-> +
-> +	ppdata.of_node = np;
-> +	ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
-> +	if (ret) {
-> +		dev_err(dev, "Err MTD partition=%d\n", ret);
-> +		goto err_mtd;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_mtd:
-> +	nand_release(mtd);
-> +err_res:
-> +	return ret;
-> +}
-
-Brian
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 33f3c3c..6e44d32 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -446,7 +446,7 @@ int start_dma_without_bch_irq(struct gpmi_nand_data *this,
+ 				struct dma_async_tx_descriptor *desc)
+ {
+ 	struct completion *dma_c = &this->dma_done;
+-	int err;
++	unsigned long timeout;
+ 
+ 	init_completion(dma_c);
+ 
+@@ -456,8 +456,8 @@ int start_dma_without_bch_irq(struct gpmi_nand_data *this,
+ 	dma_async_issue_pending(get_dma_chan(this));
+ 
+ 	/* Wait for the interrupt from the DMA block. */
+-	err = wait_for_completion_timeout(dma_c, msecs_to_jiffies(1000));
+-	if (!err) {
++	timeout = wait_for_completion_timeout(dma_c, msecs_to_jiffies(1000));
++	if (!timeout) {
+ 		dev_err(this->dev, "DMA timeout, last DMA :%d\n",
+ 			this->last_dma_type);
+ 		gpmi_dump_info(this);
+@@ -477,7 +477,7 @@ int start_dma_with_bch_irq(struct gpmi_nand_data *this,
+ 			struct dma_async_tx_descriptor *desc)
+ {
+ 	struct completion *bch_c = &this->bch_done;
+-	int err;
++	unsigned long timeout;
+ 
+ 	/* Prepare to receive an interrupt from the BCH block. */
+ 	init_completion(bch_c);
+@@ -486,8 +486,8 @@ int start_dma_with_bch_irq(struct gpmi_nand_data *this,
+ 	start_dma_without_bch_irq(this, desc);
+ 
+ 	/* Wait for the interrupt from the BCH block. */
+-	err = wait_for_completion_timeout(bch_c, msecs_to_jiffies(1000));
+-	if (!err) {
++	timeout = wait_for_completion_timeout(bch_c, msecs_to_jiffies(1000));
++	if (!timeout) {
+ 		dev_err(this->dev, "BCH timeout, last DMA :%d\n",
+ 			this->last_dma_type);
+ 		gpmi_dump_info(this);
+-- 
+1.7.10.4
