@@ -1,23 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKW8Y-0006Tn-4j
- for linux-mtd@lists.infradead.org; Sun, 08 Feb 2015 17:59:14 +0000
-Date: Sun, 8 Feb 2015 18:58:50 +0100
+Date: Sun, 8 Feb 2015 20:55:05 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: Re: [PATCH] mtd: nand: gpmi: fixup return type of
- wait_for_completion_timeout
-Message-ID: <20150208185850.750af67d@bbrezillon>
-In-Reply-To: <1423413453-5254-1-git-send-email-hofrat@osadl.org>
-References: <1423413453-5254-1-git-send-email-hofrat@osadl.org>
+To: Antoine Tenart <antoine.tenart@free-electrons.com>
+Subject: Re: [PATCH 2/9] mtd: pxa3xx_nand: add a non mandatory ECC clock
+Message-ID: <20150208205505.316f2624@bbrezillon>
+In-Reply-To: <20150128141451.GA11705@kwain>
+References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1422367816-4257-3-git-send-email-antoine.tenart@free-electrons.com>
+ <20150127155047.GB16546@lunn.ch> <20150128141451.GA11705@kwain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: thomas.petazzoni@free-electrons.com, Andrew Lunn <andrew@lunn.ch>,
+ linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
+ ezequiel.garcia@free-electrons.com, jszhang@marvell.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,73 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun,  8 Feb 2015 11:37:33 -0500
-Nicholas Mc Guire <hofrat@osadl.org> wrote:
+Hi Antoine,
 
-> return type of wait_for_completion_timeout is unsigned long not int. The
-> return variable is renamed to reflect its use and the type adjusted to
-> unsigned long.
-> 
-> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+On Wed, 28 Jan 2015 15:14:51 +0100
+Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Hi Andrew,
+> 
+> On Tue, Jan 27, 2015 at 04:50:47PM +0100, Andrew Lunn wrote:
+> > On Tue, Jan 27, 2015 at 03:10:09PM +0100, Antoine Tenart wrote:
+> > > Some controllers (as the coming Berlin nand controller) need to enable
+> > > an ECC clock. Add support for this clock in the pxa3xx nand driver, and
+> > > leave it as non mandatory.
+> > 
+> > It would be good to document this clock in the device tree binding.
+> 
+> Yes! I'll add the ECC clock into the documentation.
+> 
+> > 
+> > > Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+> > > ---
+> > >  drivers/mtd/nand/pxa3xx_nand.c | 26 +++++++++++++++++++-------
+> > >  1 file changed, 19 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> > > index d00ac392d1c4..2681ec4abafa 100644
+> > > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> > > @@ -180,7 +180,7 @@ struct pxa3xx_nand_info {
+> > >  	struct nand_hw_control	controller;
+> > >  	struct platform_device	 *pdev;
+> > >  
+> > > -	struct clk		*clk;
+> > > +	struct clk		*clk, *ecc_clk;
+> > >  	void __iomem		*mmio_base;
+> > >  	unsigned long		mmio_phys;
+> > >  	struct completion	cmd_complete, dev_ready;
+> > > @@ -1608,7 +1608,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+> > >  
+> > >  	spin_lock_init(&chip->controller->lock);
+> > >  	init_waitqueue_head(&chip->controller->wq);
+> > > -	info->clk = devm_clk_get(&pdev->dev, NULL);
+> > > +	info->clk = devm_clk_get(&pdev->dev, "nfc");
+> > 
+> > Does this keep backwards compatibility? Not all the existing users
+> > have there clocks named. What i think happens here is that
+> > of_clk_get_by_name() calls of_property_match_string(np, "clock-names",
+> > name); That returns -EINVAL, and then we ask of_clk_get() to get the
+> > -EINVAL'th clock. I don't think that is going to end well.
+> > 
+> > I think you need to keep the NULL here, but should use "ecc" for the
+> > second clock and require the use of the clock-names property when an
+> > ecc clock is required.
+> 
+> I agree, I'll go back to NULL in v2.
 
-> ---
-> 
-> Patch was only compile tested with imx_v6_v7_defconfig
-> (implies CONFIG_MTD_NAND_GPMI_NAND=y)
-> 
-> Patch is against 3.19.0-rc7 (localversion-next is -next-20150204)
-> 
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 33f3c3c..6e44d32 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -446,7 +446,7 @@ int start_dma_without_bch_irq(struct gpmi_nand_data *this,
->  				struct dma_async_tx_descriptor *desc)
->  {
->  	struct completion *dma_c = &this->dma_done;
-> -	int err;
-> +	unsigned long timeout;
->  
->  	init_completion(dma_c);
->  
-> @@ -456,8 +456,8 @@ int start_dma_without_bch_irq(struct gpmi_nand_data *this,
->  	dma_async_issue_pending(get_dma_chan(this));
->  
->  	/* Wait for the interrupt from the DMA block. */
-> -	err = wait_for_completion_timeout(dma_c, msecs_to_jiffies(1000));
-> -	if (!err) {
-> +	timeout = wait_for_completion_timeout(dma_c, msecs_to_jiffies(1000));
-> +	if (!timeout) {
->  		dev_err(this->dev, "DMA timeout, last DMA :%d\n",
->  			this->last_dma_type);
->  		gpmi_dump_info(this);
-> @@ -477,7 +477,7 @@ int start_dma_with_bch_irq(struct gpmi_nand_data *this,
->  			struct dma_async_tx_descriptor *desc)
->  {
->  	struct completion *bch_c = &this->bch_done;
-> -	int err;
-> +	unsigned long timeout;
->  
->  	/* Prepare to receive an interrupt from the BCH block. */
->  	init_completion(bch_c);
-> @@ -486,8 +486,8 @@ int start_dma_with_bch_irq(struct gpmi_nand_data *this,
->  	start_dma_without_bch_irq(this, desc);
->  
->  	/* Wait for the interrupt from the BCH block. */
-> -	err = wait_for_completion_timeout(bch_c, msecs_to_jiffies(1000));
-> -	if (!err) {
-> +	timeout = wait_for_completion_timeout(bch_c, msecs_to_jiffies(1000));
-> +	if (!timeout) {
->  		dev_err(this->dev, "BCH timeout, last DMA :%d\n",
->  			this->last_dma_type);
->  		gpmi_dump_info(this);
+I'd rather try with "nfc", and if it fails try with NULL as the name
+argument, because passing NULL in all cases will enforce the clock
+declaration order (which is not something we usually do when naming
+clocks).
+If you keep the NULL name, please document the clock order in your DT
+documentation.
 
+Best Regards,
 
+Boris
 
 -- 
 Boris Brezillon, Free Electrons
