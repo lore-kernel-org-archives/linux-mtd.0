@@ -1,25 +1,22 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKjgA-00085m-8a
- for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 08:26:50 +0000
-Message-ID: <1423470384.2573.18.camel@sauron.fi.intel.com>
-Subject: Re: [RFC] UBIFS recovery
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YKlkk-0007Yh-UO
+ for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 10:39:43 +0000
+Message-ID: <54D88E31.10402@huawei.com>
+Date: Mon, 9 Feb 2015 18:38:41 +0800
+From: hujianyang <hujianyang@huawei.com>
+MIME-Version: 1.0
 To: Richard Weinberger <richard@nod.at>
-Date: Mon, 09 Feb 2015 10:26:24 +0200
-In-Reply-To: <54D86819.90803@nod.at>
-References: <54D33C36.9060805@huawei.com>
- <CALupW3CQ3YCvdx_tNeDGVo9cVTcmACyqsMRpr8+P2_4jwGgZMQ@mail.gmail.com>
- <1423243571.8637.579.camel@sauron.fi.intel.com> <54D4FAFD.9000009@nod.at>
- <1423244437.8637.587.camel@sauron.fi.intel.com> <54D4FD5C.1040909@nod.at>
- <54D822B0.8020605@huawei.com> <54D86819.90803@nod.at>
+Subject: Re: [RFC] UBIFS recovery
+References: <54D33C36.9060805@huawei.com>	
+ <1423242166.8637.566.camel@sauron.fi.intel.com>	
+ <54D81C9B.8070500@huawei.com> <1423468308.2573.4.camel@sauron.fi.intel.com>
+ <54D86858.2070705@nod.at>
+In-Reply-To: <54D86858.2070705@nod.at>
 Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Steve deRosier <derosier@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Sheng Yong <shengyong1@huawei.com>,
- hujianyang <hujianyang@huawei.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, Sheng
+ Yong <shengyong1@huawei.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,47 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2015-02-09 at 08:56 +0100, Richard Weinberger wrote:
-> Am 09.02.2015 um 04:00 schrieb hujianyang:
-> >> This is what fsck.ubifs should to. I was talking about a debugfs.ubifs which
-> >> is able to extract files, ask questions, and tell the user what exactly is going
-> >> wrong. Like "yes, I can dump you file /foo/bar.dat but rage 5m to 10m maybe be corrupted and the xattrs are gone".
-> >>
-> > 
-> > Er, maybe I know what you mean.
-> > 
-> > So you think by debugfs.ubifs, we could get wanted file out from a partition
-> > without mounting it? and do other things like (?)
+Hi Artem and Richard,
+
+On 2015/2/9 15:57, Richard Weinberger wrote:
+> Am 09.02.2015 um 08:51 schrieb Artem Bityutskiy:
+>> On Mon, 2015-02-09 at 10:34 +0800, hujianyang wrote:
+>>> Good suggestions. I will try to realize periodically commit first. But I
+>>> don't know if this feature is really needed. Switch to R/O and revert to
+>>> last comitted state? But we just consider about log before, never think
+>>> about index.
+>>
+>> I think the right way to approach this problem is to come up with a high
+>> level summary of the problems we are trying to solve, and the solutions,
+>> along with some analysis of the solutions. This does not have to be very
+>> detailed, but it should put everyone involved into the same page.
 > 
-> This is the use case of a debugfs. See debugfs.ext2/3/4, etc...
-> You can debug (analyze, get files your, etc...) from a broken filesystem
-> without mounting it.
+> Agreed. I fear we're talking about different things. :)
+> 
 
-Lets consider hypothetical 2 gadgets using UBIFS: R-gadget and H-gadget.
+I'm afraid I didn't express the use case of the corruption recovery feature.
+UBIFS is used mostly in embedded environment. After products selling out,
+it's hard to debug it. So the production team may consider any failure that
+could happen and put the recovery method into their operation scripts/utilities.
 
-1. R-gadget has UBIFS which refuses to mount whenever there is any
-unexpected corruption.
-2. H-gadget tries hard to mount in R/O mode and let the rest of the SW
-stack have a file-system.
+Flash corruption is a problem they need to care about. Using high quality
+cell is not enough, ECC error could not be avoid. So a recovery method which
+is provided by filesystem itself is required. This feature is not used by
+us, the developer of kernel, but the production team. They know little about
+linux kernel. So the easier interface we provide, the much effective recovery
+method of the products they could make. So, Artem, I'm agree with your another
+email mail about R-gadget and H-gadget.
 
-H-gadget is resilient. When things go wrong with the storage, it still
-manages to boot, show a dialog explaining that there is a problem, let
-users fetch all the important files, and then either reset to factory
-defaults, or bring the device to the service point.
+I think mount R/O is a good beginning. We don't need consider much about how
+to recover but can provide a usable(in some cases) file-system. And a R/O
+mount means we could do some cleanup to revert to this R/O state. This R/O
+mount should be provided by driver itself without any userspace tools.
 
-R-gadget, on the opposite, just does not boot when there are issues.
-Users see nothing on the screen. When they google for "R-gadget does not
-boot", they hit some forum discussions, very technical, talking about
-some "debugfs", which is very confusing.
-
-The new generation of R-gadget, however, does better job. Unlike the
-first generation, shipped under tight TTM requirements, the second
-generation gave the vendor a bit more time to polish it. So the vendor
-managed to use "debugfs" stuff, and now R-gadget. But unfortunately,
-this feature stopped working after first system upgrade, because of a
-bug (probably not enough testing). The R-gadgets was asking strange
-question about moving some "inodes" from a broken "bud". But the input
-did not work, and users anyway had hard time understanding "inodes" and
-"buds" (they thought and inoed is some kind of flower).
-
-Anyway, the message is: I'd prefer H-gadget :-)
+Thanks,
+Hu
