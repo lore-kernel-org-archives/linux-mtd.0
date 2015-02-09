@@ -1,21 +1,32 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from mail-wg0-f43.google.com ([74.125.82.43])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKejl-0000cs-Os
- for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 03:10:14 +0000
-Message-ID: <54D824D7.90902@huawei.com>
-Date: Mon, 9 Feb 2015 11:09:11 +0800
-From: hujianyang <hujianyang@huawei.com>
+ id 1YKi3B-0003iJ-MO
+ for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 06:42:30 +0000
+Received: by mail-wg0-f43.google.com with SMTP id n12so3256342wgh.2
+ for <linux-mtd@lists.infradead.org>; Sun, 08 Feb 2015 22:42:06 -0800 (PST)
+Received: from mail-we0-f180.google.com (mail-we0-f180.google.com.
+ [74.125.82.180])
+ by mx.google.com with ESMTPSA id z6sm13005310wix.20.2015.02.08.22.42.05
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Sun, 08 Feb 2015 22:42:06 -0800 (PST)
+Received: by mail-we0-f180.google.com with SMTP id m14so24801673wev.11
+ for <linux-mtd@lists.infradead.org>; Sun, 08 Feb 2015 22:42:05 -0800 (PST)
 MIME-Version: 1.0
-To: Steve deRosier <derosier@gmail.com>
-Subject: Re: [RFC] UBIFS recovery
-References: <54D33C36.9060805@huawei.com>
- <CALupW3CQ3YCvdx_tNeDGVo9cVTcmACyqsMRpr8+P2_4jwGgZMQ@mail.gmail.com>
-In-Reply-To: <CALupW3CQ3YCvdx_tNeDGVo9cVTcmACyqsMRpr8+P2_4jwGgZMQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>, Sheng Yong <shengyong1@huawei.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20150204203710.GC4434@norris-Latitude-E6410>
+References: <CAN1oZWxB5N=YMQcsJppZgp7TXodcR4tKZM+LNFXS7PSx3F-Yag@mail.gmail.com>
+ <CAN1oZWzeev-1uE7gxPnJA=L4Th65CRj8C_LQ7hMJLPHGssDjNQ@mail.gmail.com>
+ <CAN1oZWzOfUrYSBEx=M0p0Dz4HHcaz-FtYOF5ON12oeG_WHPa-g@mail.gmail.com>
+ <20150204203710.GC4434@norris-Latitude-E6410>
+Date: Mon, 9 Feb 2015 14:42:05 +0800
+Message-ID: <CAN1oZWyhDwK4M05RDcHyC=TGj1EFti8f1QNWvetwGo+yp+Otsw@mail.gmail.com>
+Subject: Re: [PATCH mtd] mtd:devices: Add Altera EPCQ Driver
+From: Viet Nga Dao <vndao@altera.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Viet Nga Dao <vndao@altera.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +36,182 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Steve,
+Please ignore previous 2 emails of mine ^^
 
-On 2015/2/5 23:08, Steve deRosier wrote:
-> On Thu, Feb 5, 2015 at 1:47 AM, hujianyang <hujianyang@huawei.com> wrote:
->> There are two ways for UBIFS recovery. One is repairing UBIFS image
->> in userspace via UBI interfaces, the other is repairing the corrupted
->> data during mount by default or via a special mount option.
+On Thu, Feb 5, 2015 at 4:37 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Tue, Jan 27, 2015 at 02:53:59PM +0800, Viet Nga Dao wrote:
+>> On Tue, Jan 20, 2015 at 10:05 AM, Viet Nga Dao <vndao@altera.com> wrote:
+>> > On Thu, Jan 15, 2015 at 5:27 PM, Viet Nga Dao <vndao@altera.com> wrote:
+>> >> On Tue, Jan 13, 2015 at 11:33 AM, Brian Norris
+>> >> <computersforpeace@gmail.com> wrote:
+>> >>> On Thu, Dec 18, 2014 at 12:23:16AM -0800, vndao@altera.com wrote:
+>> >>>> From: Viet Nga Dao <vndao@altera.com>
+>
+>> >> That is why if rewrite the drivers to follow spi-nor structure, it
+>> >> will require extra decoding works for the only few used opcodes.
+>> >>
+>> >I think you'd only have some very trivial work here.
+>> >
+>> >There would be some small work to reintroduce a properly-replaceable ID
+>> >table, and callbacks like ->lock() and ->unlock(), but those should be
+>> >implemented in spi-nor.c sooner or later anyway.
+>> >
 >>
->> The userspace tool is the most effective way to repair a partition.
->> It could have enough time and resource to whole scan the target and
->> cleanup the corrupted while the file-system offline. But it's hard
->> to program: many structures and functions in kernel need to be copied
->> into this utility, current ubi-utils focus mostly on UBI device, not
->> UBIFS, and the subsequent updating of file-system should consider the
->> userspace tool. It's too complicated.
->>
-> 
-> I hear (and agree with) several valid arguments for a tool in
-> userspace. And I'd like to throw my support towards an in-driver
-> solution. 
+>> I am trying to modify the code to follow your recommendation. However,
+>> for lock and unlock functions, i have to implement it in spi_nor.c ,
+>> am i right? If yes, currently we already have existing spi_nor_lock
+>> and spi_nor_unlock functions but they could not apply for my driver.
+>> Should i create a new functions named altera_epcq_lock and unlock and
+>> then map it to callback functions or i should the put  those code
+>> sunder existing spi_nor_lock/unlock?
+>
+> We probably want a replaceable spi_nor callback that does the
+> flash-specific unlock. spi_nor_lock/unlock would then call the
+> nor->unlock() / nor->lock() functions for you, when present.
+> Some of the existing code should move into their own spi_nor_st_lock() /
+> spi_nor_st_unlock() functions.
+>
 
-Thanks~!
+This changes will be made by me or maintainers? If current this
+functions are not supported, i decide not to implement my lock, unlock
+function as well.
 
-> Flash filesystems are different than on-disk filesystems, in
-> particular in their usecase: they're generally both critical and
-> exclusive to embedded systems. As such, the entire filesystem might be
-> on the corrupted UBIFS, so even if the filesystem is recoverable, if
-> we can't mount it and get at the userspace tool, then we're toast.
-> Often the kernel itself is stored in a separate read-only partition as
-> a blob directly on the flash, and thus the kernel itself would be
-> fine. The better UBI & UBIFS can recover to a usable state in-kernel,
-> the better off we are I think.
-> 
-> Just my thoughts on the matter.
-> 
-> - Steve
-> 
-> .
-> 
+>> >>>> diff --git a/Documentation/devicetree/bindings/mtd/altera_epcq.txt b/Documentation/devicetree/bindings/mtd/altera_epcq.txt
+>> >>>> new file mode 100644
+>> >>>> index 0000000..d14f50e
+>> >>>> --- /dev/null
+>> >>>> +++ b/Documentation/devicetree/bindings/mtd/altera_epcq.txt
+>> >>>> @@ -0,0 +1,45 @@
+>> >>>> +* MTD Altera EPCQ driver
+>> >>>> +
+>> >>>> +Required properties:
+>> >>>> +- compatible: Should be "altr,epcq-1.0"
+>> >>>> +- reg: Address and length of the register set  for the device. It contains
+>> >>>> +  the information of registers in the same order as described by reg-names
+>> >>>> +- reg-names: Should contain the reg names
+>> >>>> +  "csr_base": Should contain the register configuration base address
+>> >>>> +  "data_base": Should contain the data base address
+>> >>>> +- is-epcs: boolean type.
+>> >>>> +             If present, the device contains EPCS flashes.
+>> >>>> +             Otherwise, it contains EPCQ flashes.
+>> >>>> +- #address-cells: Must be <1>.
+>> >>>> +- #size-cells: Must be <0>.
+>> >>>> +- flash device tree subnode, there must be a node with the following fields:
+>> >>>
+>> >>> These subnodes definitely require a 'compatible' string. Perhaps they
+>> >>> should be used to differentiate EPCS vs. EPCQ. Does "is-epcs" really
+>> >>> need to be in the top-level controller node?
+>> >>>
+>> >>>> +     - reg: Should contain the flash id
+>> >>>
+>> >>> Should, or must? (This question is relevant, because you seem to make it
+>> >>> optional in your code.) And what does the "flash ID" mean? It seems like
+>> >>> you're using as a chip-select or bank index.
+>> >>>
+>> Yes, this is used for chip select. It is required, not optional. This
+>> to ID for each flash in the device
+>
+> OK, so correct the language here and enforce this in your driver. Right
+> now, you don't fail gracefully if this is missing.
+>
 
-I think it's a good standpoint you are providing. It's a problem like
-filesystem dirver and filesystem partition. But it may not only exit
-in UBIFS. A good user configuration is always needed to solve problems
-like this.
+Sorry, you are right. This field is unnecessary for my driver.
+Instead, compatible is replaced. I will update it with 2nd version.
 
-Maybe an acceptable solution is mount the filesystem R/O first and then
-perform other recoveries.
+>> >>>> +             if (sector_start < num_sectors-(num_sectors / 4))
+>> >>>> +                     sr_bp = __ilog2_u32(num_sectors);
+>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 8))
+>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 1;
+>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 16))
+>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 2;
+>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 32))
+>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 3;
+>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 64))
+>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 4;
+>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 128))
+>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 5;
+>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 256))
+>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 6;
+>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 512))
+>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 7;
+>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 1024))
+>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 8;
+>> >>>> +             else
+>> >>>> +                     sr_bp = 0;  /* non area protected */
+>> >>>
+>> >>> Yikes, that's ugly! And I'm not sure it matches the EPCQ doc I found.
+>> >>> I'm pretty sure you can rewrite this if/else-if/else block in about 1
+>> >>> line though.
+>> >>>
+>> Yes, i understand that it looks ugly. But it is the best i can do
+>> since this function has to satisfy for all the supported devices
+>> (http://www.altera.com.my/literature/hb/cfg/cfg_cf52012.pdf, start
+>> from page 19)
+>
+> Did you even try? It was possible to simplify the other case, and I'm
+> pretty sure this case can be simplified too. How about this? I hacked
+> this together and it seems to match:
+>
+>         if (sector_start <= num_sectors / 2)
+>                 sr_bp = __ilog2_u32(num_sectors);
+>         else
+>                 sr_bp = fls(num_sectors - 1 - sector_start) + 1;
+>
 
-Thanks,
-Hu
+Umm. This does not seem right to me. Just look at sector_start <
+number_sector / 2. From the altera EPCQ datasheet
+(http://www.altera.com.my/literature/hb/cfg/cfg_cf52012.pdf), such as
+EPCQ16 (page 19,20). Sector start <number_sector/2 is the case where
+TB = 1 (table 17). In this table we have few options and sr_bp =
+__ilog2_u32(num_sectors) is only cover for the sector from 0 to 15 to
+be protected.
+
+
+>> >>>> +
+>> >>>> +             if (sr_bp < 0) {
+>> >>>
+>> >>> sr_bp is unsigned, so this is never true.
+>> >>>
+>> Ok.  I will change to int type.
+>
+> Are there ever negative values?
+>
+>> >>>> +static int altera_epcq_probe_config_dt(struct platform_device *pdev,
+>> >>>> +                                    struct device_node *np,
+>> >>>> +                                    struct altera_epcq_plat_data *pdata)
+>> >>>> +{
+>> >>>> +     struct device_node *pp = NULL;
+>> >>>> +     struct resource *epcq_res;
+>> >>>> +     int i = 0;
+>> >>>> +     u32 id;
+> ...
+>> >>>> +             pdata->np[i] = pp;
+>> >>>> +
+>> >>>> +             /* Read bank id from DT */
+>> >>>> +             if (of_get_property(pp, "reg", &id))
+>
+> I just realized; you're not using this correctly. of_get_property()
+> returns the *length* in the third parameter, so you're not actually
+> saving the bank ID here. You probably want of_property_read_u32()
+> instead.
+>
+
+I will remove this since it is unnecessary.
+
+>> >>>
+>> >>> Is this property optional? Your DT binding doc doesn't make it clear,
+>> >>> but it seems like a property which would be wise to require (i.e., not
+>> >>> optional).
+>
+> ^^^ so there should be a failure case, where you return failure if the
+> property is missing.
+>
+>> >>>> +                     pdata->board_flash_info[i].bank = id;
+>> >>>> +             i++;
+>> >>>> +     }
+>> >>>> +     pdata->num_flashes = i;
+>> >>>> +     return 0;
+>> >>>> +}
+>
+> Brian
