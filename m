@@ -1,22 +1,24 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKm9e-0002MV-Sv
- for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 11:05:27 +0000
-Message-ID: <54D8945E.4060807@nod.at>
-Date: Mon, 09 Feb 2015 12:05:02 +0100
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: hujianyang <hujianyang@huawei.com>
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YKmN2-0002jD-AZ
+ for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 11:19:16 +0000
+Message-ID: <1423480731.2573.40.camel@sauron.fi.intel.com>
 Subject: Re: [RFC] UBIFS recovery
-References: <54D33C36.9060805@huawei.com>	
- <1423242166.8637.566.camel@sauron.fi.intel.com>	
- <54D81C9B.8070500@huawei.com> <1423468308.2573.4.camel@sauron.fi.intel.com>
- <54D86858.2070705@nod.at> <54D88E31.10402@huawei.com>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: hujianyang <hujianyang@huawei.com>
+Date: Mon, 09 Feb 2015 13:18:51 +0200
 In-Reply-To: <54D88E31.10402@huawei.com>
-Content-Type: text/plain; charset=utf-8
+References: <54D33C36.9060805@huawei.com>
+ <1423242166.8637.566.camel@sauron.fi.intel.com>
+ <54D81C9B.8070500@huawei.com>
+ <1423468308.2573.4.camel@sauron.fi.intel.com> <54D86858.2070705@nod.at>
+ <54D88E31.10402@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Sheng Yong <shengyong1@huawei.com>, dedekind1@gmail.com
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Sheng Yong <shengyong1@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +28,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 09.02.2015 um 11:38 schrieb hujianyang:
-> Hi Artem and Richard,
-> 
-> On 2015/2/9 15:57, Richard Weinberger wrote:
->> Am 09.02.2015 um 08:51 schrieb Artem Bityutskiy:
->>> On Mon, 2015-02-09 at 10:34 +0800, hujianyang wrote:
->>>> Good suggestions. I will try to realize periodically commit first. But I
->>>> don't know if this feature is really needed. Switch to R/O and revert to
->>>> last comitted state? But we just consider about log before, never think
->>>> about index.
->>>
->>> I think the right way to approach this problem is to come up with a high
->>> level summary of the problems we are trying to solve, and the solutions,
->>> along with some analysis of the solutions. This does not have to be very
->>> detailed, but it should put everyone involved into the same page.
->>
->> Agreed. I fear we're talking about different things. :)
->>
-> 
-> I'm afraid I didn't express the use case of the corruption recovery feature.
-> UBIFS is used mostly in embedded environment. After products selling out,
-> it's hard to debug it. So the production team may consider any failure that
-> could happen and put the recovery method into their operation scripts/utilities.
-> 
-> Flash corruption is a problem they need to care about. Using high quality
-> cell is not enough, ECC error could not be avoid. So a recovery method which
-> is provided by filesystem itself is required. This feature is not used by
-> us, the developer of kernel, but the production team. They know little about
-> linux kernel. So the easier interface we provide, the much effective recovery
-> method of the products they could make. So, Artem, I'm agree with your another
-> email mail about R-gadget and H-gadget.
-> 
+On Mon, 2015-02-09 at 18:38 +0800, hujianyang wrote:
 > I think mount R/O is a good beginning. We don't need consider much about how
 > to recover but can provide a usable(in some cases) file-system. And a R/O
 > mount means we could do some cleanup to revert to this R/O state. This R/O
 > mount should be provided by driver itself without any userspace tools.
 
-So, at the end of the day you want an UBIFS that can deal with randomly failed PEBs?
+I guess if we decompose the problem this way it will also be helpful (to
+you and the readers).
 
-Thanks,
-//richard
+1. There are types of corruptions when UBIFS mounts the file-system just
+fine. For example, a committed data node is currupted. You will only
+notice this when you read the corresponding file, and this is the point
+when the file-system becomes read-only.
+
+
+2. There are types of corruptions when UBIFS refuses to mount. These are
+related to the replay process. Whenever there is a corrupted node which
+does not look like a result of power-cut, UBIFS refuses to mount.
+
+
+It appears to me that you are after nailing down the problem #2. You
+want UBIFS to still mount the FS, and stay R/O. Is this correct?
+
+
+I would like you to consider problem #1 too. Consider cases like: a data
+node is corrupted, an inode is corrupted (both directory and
+non-directory), a dentry is corrupted, an index node is corrupted, an
+LPT are is corrupted.
+
+What happens in each of these cases? Are you OK with that or you'd like
+to change that? What the product team does in these cases?
+
+You do not have to answer these questions in this e-mail. You can, but
+these are mostly for you, so that you see the bigger picture.
+
+
+Now, regarding problem #2.
+
+
+There are multiple cases here too: master nodes are corrupted, a
+corruption in the log, and corruption in the journal (buds), a
+corruption in the LPT area, a corruption in the index.
+
+I'd like you to think about all these cases. Again, just for yourself,
+to understand the broader picture.
+
+
+It looks like you are focusing on corruptions in buds, right? Is it
+because this is the most probable situation, or is this something which
+show problems in the field/testing?
+
+
+You suggest that in case of a corrupted bud, you just try to go back to
+the previous commited state.
+
+
+This sounds rational to me. As I described, though, the problem is that
+'fsync()' does not mean 'commit'. So what this means is that, say, mysql
+fsync()'s its database, and believes it is now on the media. But then
+there is a problem in the journal, in some LEB which is not related to
+the fsync()'ed mysql database at all, and you drop the database changes.
+
+
+So the better thing to do is to try dropping just the corrupted nodes,
+not the entire journal. It does not sound too hard - you just keep
+scanning and skip corrupted nodes. Replay as usual. Just mark the FS as
+R/O if corruptions were not power-cut-related.
