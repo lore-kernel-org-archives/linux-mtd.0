@@ -1,21 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKntD-0001ik-Qz
- for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 12:56:36 +0000
-Message-ID: <54D8ADD9.4030506@free-electrons.com>
-Date: Mon, 09 Feb 2015 09:53:45 -0300
+ id 1YKnzq-0004vx-6h
+ for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 13:03:27 +0000
+Message-ID: <54D8AF6D.3080001@free-electrons.com>
+Date: Mon, 09 Feb 2015 10:00:29 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: pxa3xx_nand: fix driver when num_cs is 0
-References: <1423425729-20671-1-git-send-email-robert.jarzmik@free.fr>
-In-Reply-To: <1423425729-20671-1-git-send-email-robert.jarzmik@free.fr>
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Subject: Re: [PATCH] mtd: pxa3xx_nand: cleanup wait_for_completion handling
+References: <1422809737-3991-1-git-send-email-hofrat@osadl.org>
+In-Reply-To: <1422809737-3991-1-git-send-email-hofrat@osadl.org>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,74 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/08/2015 05:02 PM, Robert Jarzmik wrote:
-> As the devicetree binding doesn't require num_cs to exist or be strictly
-> positive, and neither does the platform data case, a bug appear when
-> num_cs is set to 0 and panics the kernel.
+On 02/01/2015 01:55 PM, Nicholas Mc Guire wrote:
+> return type of wait_for_completion_timeout is unsigned long not int, this
+> patch uses the return value of wait_for_completion_timeout in the condition
+> directly rather than assigning it to an incorrect type variable.
 > 
-> The issue is that in alloc_nand_resource(), chip is dereferenced without
-> having a value assigned when num_cs == 0.
+> The timeout declaration cleanup is just for readability
 > 
-> Fix this by returning ENODEV is num_cs == 0.
-> 
-> The panic seen is :
-> Unable to handle kernel NULL pointer dereference at virtual address 000002b8
-> pgd = c0004000
-> [000002b8] *pgd=00000000
-> Internal error: Oops: 5 [#1] PREEMPT ARM
-> Modules linked in:
-> Hardware name: Marvell PXA3xx (Device Tree Support)
-> task: c3822aa0 ti: c3826000 task.ti: c3826000
-> PC is at alloc_nand_resource+0x180/0x4a8
-> LR is at alloc_nand_resource+0xa0/0x4a8
-> pc : [<c0275b90>]    lr : [<c0275ab0>]    psr: 68000013
-> sp : c3827d90  ip : 00000000  fp : 00000000
-> r10: c3862200  r9 : 0000005e  r8 : 00000000
-> r7 : c3865610  r6 : c3862210  r5 : c3924210  r4 : c3862200
-> r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : 00000000
-> Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
-> Control: 0000397f  Table: 80004018  DAC: 00000035
-> Process swapper (pid: 1, stack limit = 0xc3826198)
-> Stack: (0xc3827d90 to 0xc3828000)
-> ...zip...
-> [<c0275b90>] (alloc_nand_resource) from [<c0275ff8>] (pxa3xx_nand_probe+0x140/0x978)
-> [<c0275ff8>] (pxa3xx_nand_probe) from [<c0258c40>] (platform_drv_probe+0x48/0xa4)
-> [<c0258c40>] (platform_drv_probe) from [<c0257650>] (driver_probe_device+0x80/0x21c)
-> [<c0257650>] (driver_probe_device) from [<c0257878>] (__driver_attach+0x8c/0x90)
-> [<c0257878>] (__driver_attach) from [<c0255ec4>] (bus_for_each_dev+0x58/0x88)
-> [<c0255ec4>] (bus_for_each_dev) from [<c0256ec8>] (bus_add_driver+0xd8/0x1d4)
-> [<c0256ec8>] (bus_add_driver) from [<c0257f14>] (driver_register+0x78/0xf4)
-> [<c0257f14>] (driver_register) from [<c00088a8>] (do_one_initcall+0x80/0x1e4)
-> [<c00088a8>] (do_one_initcall) from [<c048ed08>] (kernel_init_freeable+0xec/0x1b4)
-> [<c048ed08>] (kernel_init_freeable) from [<c0377d8c>] (kernel_init+0x8/0xe4)
-> [<c0377d8c>] (kernel_init) from [<c00095f8>] (ret_from_fork+0x14/0x3c)
-> Code: e503b234 e5953008 e1530001 caffffd1 (e59002b8)
-> ---[ end trace a5770060c8441895 ]---
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 > ---
->  drivers/mtd/nand/pxa3xx_nand.c | 2 ++
->  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 96b0b1d..4a2df63 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1572,6 +1572,8 @@ static int alloc_nand_resource(struct platform_device *pdev)
->  	int ret, irq, cs;
->  
->  	pdata = dev_get_platdata(&pdev->dev);
-> +	if (pdata->num_cs <= 0)
-> +		return -ENODEV;
->  	info = devm_kzalloc(&pdev->dev, sizeof(*info) + (sizeof(*mtd) +
->  			    sizeof(*host)) * pdata->num_cs, GFP_KERNEL);
->  	if (!info)
+> The variable used for handling the return of wait_for_cmpletion_timeout
+> was int but should be unsigned long, where it was not in use for anything
+> else and the return value in case of completion (>0) is not used it was
+> removed and wait_for_completion_timeout() used directly in the if condition.
+> 
+> To make the timeout values a bit simpler to read and also handle all of
+> the corner cases correctly the declarations are moved to msecs_to_jiffies().
 > 
 
-Looks good,
+Not sure why you decided to put this explanation outside of the commit log.
+It looks useful so I'd move it up.
 
-Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> This patch was only compile tested for pxa3xx_defconfig 
+> (implies CONFIG_MTD_NAND_PXA3xx=y)
+> 
 
+The change looks good, but I would like someone to test it on real hardware.
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
