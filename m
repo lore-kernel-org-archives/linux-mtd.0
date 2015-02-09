@@ -1,23 +1,26 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKmSB-0005TQ-Qo
- for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 11:24:37 +0000
-Message-ID: <54D898B9.50404@huawei.com>
-Date: Mon, 9 Feb 2015 19:23:37 +0800
-From: hujianyang <hujianyang@huawei.com>
-MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YKmeO-00045H-9N
+ for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 11:37:14 +0000
+Message-ID: <1423481807.2573.56.camel@sauron.fi.intel.com>
 Subject: Re: [RFC] UBIFS recovery
-References: <54D33C36.9060805@huawei.com>	
- <1423242166.8637.566.camel@sauron.fi.intel.com>	
- <54D81C9B.8070500@huawei.com> <1423468308.2573.4.camel@sauron.fi.intel.com>
- <54D86858.2070705@nod.at> <54D88E31.10402@huawei.com>
- <54D8945E.4060807@nod.at>
-In-Reply-To: <54D8945E.4060807@nod.at>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>
+Date: Mon, 09 Feb 2015 13:36:47 +0200
+In-Reply-To: <54D89420.7060109@nod.at>
+References: <54D33C36.9060805@huawei.com>
+ <CALupW3CQ3YCvdx_tNeDGVo9cVTcmACyqsMRpr8+P2_4jwGgZMQ@mail.gmail.com>
+ <1423243571.8637.579.camel@sauron.fi.intel.com> <54D4FAFD.9000009@nod.at>
+ <1423244437.8637.587.camel@sauron.fi.intel.com> <54D4FD5C.1040909@nod.at>
+ <54D822B0.8020605@huawei.com> <54D86819.90803@nod.at>
+ <1423470384.2573.18.camel@sauron.fi.intel.com> <54D89420.7060109@nod.at>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, Sheng
- Yong <shengyong1@huawei.com>, dedekind1@gmail.com
+Cc: Steve deRosier <derosier@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Sheng Yong <shengyong1@huawei.com>,
+ hujianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/2/9 19:05, Richard Weinberger wrote:
-> Am 09.02.2015 um 11:38 schrieb hujianyang:
->> Hi Artem and Richard,
->>
->> On 2015/2/9 15:57, Richard Weinberger wrote:
->>> Am 09.02.2015 um 08:51 schrieb Artem Bityutskiy:
->>>> On Mon, 2015-02-09 at 10:34 +0800, hujianyang wrote:
->>>>> Good suggestions. I will try to realize periodically commit first. But I
->>>>> don't know if this feature is really needed. Switch to R/O and revert to
->>>>> last comitted state? But we just consider about log before, never think
->>>>> about index.
->>>>
->>>> I think the right way to approach this problem is to come up with a high
->>>> level summary of the problems we are trying to solve, and the solutions,
->>>> along with some analysis of the solutions. This does not have to be very
->>>> detailed, but it should put everyone involved into the same page.
->>>
->>> Agreed. I fear we're talking about different things. :)
->>>
->>
->> I'm afraid I didn't express the use case of the corruption recovery feature.
->> UBIFS is used mostly in embedded environment. After products selling out,
->> it's hard to debug it. So the production team may consider any failure that
->> could happen and put the recovery method into their operation scripts/utilities.
->>
->> Flash corruption is a problem they need to care about. Using high quality
->> cell is not enough, ECC error could not be avoid. So a recovery method which
->> is provided by filesystem itself is required. This feature is not used by
->> us, the developer of kernel, but the production team. They know little about
->> linux kernel. So the easier interface we provide, the much effective recovery
->> method of the products they could make. So, Artem, I'm agree with your another
->> email mail about R-gadget and H-gadget.
->>
->> I think mount R/O is a good beginning. We don't need consider much about how
->> to recover but can provide a usable(in some cases) file-system. And a R/O
->> mount means we could do some cleanup to revert to this R/O state. This R/O
->> mount should be provided by driver itself without any userspace tools.
-> 
-> So, at the end of the day you want an UBIFS that can deal with randomly failed PEBs?
-> 
+Richard,
 
-It depends. We know we can't deal with all kinds of failure. So in my considering,
-We should first list the error type.
+On Mon, 2015-02-09 at 12:04 +0100, Richard Weinberger wrote:
+> My points are:
+> - If UBIFS can do a better job in dealing with corruptions, fix/improve it.
 
-If log is corrupted, we could discard them, just revert to last commit state.
-If index is corrupted, we could scan the whole partition and rebuild the index.
-and so on.
+Right.
 
-There must be some cases we can't achieve our expect. What can we do at that
-situation? Mount failed or mount an empty R/O partition? We could make a discussion
-on it.
+> - Having a debugfs/fsck would be a good tool for people like me that have to analyze/fix UBI/UBIFS failures.
 
-Recovery is hard, but mount R/O is much easier, I think. For recovery case, we may
-need some kinds of userspace tools, but it's a much complex work. This tool is
-different with any thing we already have. We should be cautious to start at that
-point.
+Right. I think no one denies this. Correct, and I agree on this.
 
-Thanks,
-Hu
+> - Having an UBIFS "force" mode *will* be abused in horrid ways.
+
+I did not see anyone suggesting this. Was this suggested?
+
+As I read it, Steve just expressed a high-level user standpoint: the
+more you can do without external tools the better. I did not see him
+suggesting "just mount at any price".
+
+Artem.
