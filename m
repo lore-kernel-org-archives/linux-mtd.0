@@ -1,24 +1,21 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKncZ-0002tg-U9
- for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 12:39:25 +0000
-Message-ID: <54D8AA35.5040203@huawei.com>
-Date: Mon, 9 Feb 2015 20:38:13 +0800
-From: hujianyang <hujianyang@huawei.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YKntD-0001ik-Qz
+ for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 12:56:36 +0000
+Message-ID: <54D8ADD9.4030506@free-electrons.com>
+Date: Mon, 09 Feb 2015 09:53:45 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [RFC] UBIFS recovery
-References: <54D33C36.9060805@huawei.com>
- <1423242166.8637.566.camel@sauron.fi.intel.com> <54D81C9B.8070500@huawei.com>
- <1423468308.2573.4.camel@sauron.fi.intel.com> <54D86858.2070705@nod.at>
- <54D88E31.10402@huawei.com>
- <alpine.DEB.2.02.1502091301520.17631@lnxricardw1.se.axis.com>
-In-Reply-To: <alpine.DEB.2.02.1502091301520.17631@lnxricardw1.se.axis.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>, Sheng Yong <shengyong1@huawei.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: pxa3xx_nand: fix driver when num_cs is 0
+References: <1423425729-20671-1-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <1423425729-20671-1-git-send-email-robert.jarzmik@free.fr>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,78 +25,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/2/9 20:12, Ricard Wanderlof wrote:
+On 02/08/2015 05:02 PM, Robert Jarzmik wrote:
+> As the devicetree binding doesn't require num_cs to exist or be strictly
+> positive, and neither does the platform data case, a bug appear when
+> num_cs is set to 0 and panics the kernel.
 > 
-> On Mon, 9 Feb 2015, hujianyang wrote:
+> The issue is that in alloc_nand_resource(), chip is dereferenced without
+> having a value assigned when num_cs == 0.
 > 
->> Hi Artem and Richard,
->>
->> On 2015/2/9 15:57, Richard Weinberger wrote:
->>> Am 09.02.2015 um 08:51 schrieb Artem Bityutskiy:
->>>> On Mon, 2015-02-09 at 10:34 +0800, hujianyang wrote:
->>>>> Good suggestions. I will try to realize periodically commit first. But I
->>>>> don't know if this feature is really needed. Switch to R/O and revert to
->>>>> last comitted state? But we just consider about log before, never think
->>>>> about index.
->>>>
->>>> I think the right way to approach this problem is to come up with a high
->>>> level summary of the problems we are trying to solve, and the solutions,
->>>> along with some analysis of the solutions. This does not have to be very
->>>> detailed, but it should put everyone involved into the same page.
->>>
->>> Agreed. I fear we're talking about different things. :)
->>>
->>
->> I'm afraid I didn't express the use case of the corruption recovery feature.
->> UBIFS is used mostly in embedded environment. After products selling out,
->> it's hard to debug it. So the production team may consider any failure that
->> could happen and put the recovery method into their operation scripts/utilities.
->>
->> Flash corruption is a problem they need to care about. Using high quality
->> cell is not enough, ECC error could not be avoid. So a recovery method which
->> is provided by filesystem itself is required.
+> Fix this by returning ENODEV is num_cs == 0.
 > 
-> Isn't this a bit backward? Given a certain acceptable failure rate for a 
-> product, select an appropriate flash chip in combination with a reasonable 
-> amount of ECC to get a medium that has a low enough error rate so that 
-> higher levels do not need to concern themselves. If a high level of 
-> reliability is needed, then some other form of nonvolatile storage should 
-> be selected.
+> The panic seen is :
+> Unable to handle kernel NULL pointer dereference at virtual address 000002b8
+> pgd = c0004000
+> [000002b8] *pgd=00000000
+> Internal error: Oops: 5 [#1] PREEMPT ARM
+> Modules linked in:
+> Hardware name: Marvell PXA3xx (Device Tree Support)
+> task: c3822aa0 ti: c3826000 task.ti: c3826000
+> PC is at alloc_nand_resource+0x180/0x4a8
+> LR is at alloc_nand_resource+0xa0/0x4a8
+> pc : [<c0275b90>]    lr : [<c0275ab0>]    psr: 68000013
+> sp : c3827d90  ip : 00000000  fp : 00000000
+> r10: c3862200  r9 : 0000005e  r8 : 00000000
+> r7 : c3865610  r6 : c3862210  r5 : c3924210  r4 : c3862200
+> r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : 00000000
+> Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
+> Control: 0000397f  Table: 80004018  DAC: 00000035
+> Process swapper (pid: 1, stack limit = 0xc3826198)
+> Stack: (0xc3827d90 to 0xc3828000)
+> ...zip...
+> [<c0275b90>] (alloc_nand_resource) from [<c0275ff8>] (pxa3xx_nand_probe+0x140/0x978)
+> [<c0275ff8>] (pxa3xx_nand_probe) from [<c0258c40>] (platform_drv_probe+0x48/0xa4)
+> [<c0258c40>] (platform_drv_probe) from [<c0257650>] (driver_probe_device+0x80/0x21c)
+> [<c0257650>] (driver_probe_device) from [<c0257878>] (__driver_attach+0x8c/0x90)
+> [<c0257878>] (__driver_attach) from [<c0255ec4>] (bus_for_each_dev+0x58/0x88)
+> [<c0255ec4>] (bus_for_each_dev) from [<c0256ec8>] (bus_add_driver+0xd8/0x1d4)
+> [<c0256ec8>] (bus_add_driver) from [<c0257f14>] (driver_register+0x78/0xf4)
+> [<c0257f14>] (driver_register) from [<c00088a8>] (do_one_initcall+0x80/0x1e4)
+> [<c00088a8>] (do_one_initcall) from [<c048ed08>] (kernel_init_freeable+0xec/0x1b4)
+> [<c048ed08>] (kernel_init_freeable) from [<c0377d8c>] (kernel_init+0x8/0xe4)
+> [<c0377d8c>] (kernel_init) from [<c00095f8>] (ret_from_fork+0x14/0x3c)
+> Code: e503b234 e5953008 e1530001 caffffd1 (e59002b8)
+> ---[ end trace a5770060c8441895 ]---
 > 
-> The only high level function should be some sort of periodic scrubbing of 
-> NAND flash blocks to ensure the error rate does not rise too fast 
-> unnoticed.
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Having UBIFS manage random corruptions would seem hopeful at best, if some 
-> critical file is corrupted then the system can't start anyway.
-> 
-> In any system all components have a failure rate, so it's a question of 
-> getting the failure rate of the NAND subsystem on par with the failure 
-> rate of other components. Just because there is a theoretical possibility 
-> of fixing an UBIFS problem does not really make the system more reliable 
-> per se. What if you get a fault in a RAM chip? The CPU? The PSU? In all 
-> those cases the product will be simply "broken", and we can handle 
-> defective flash the same way. A transistor in the PSU blew or the NAND 
-> flash happened to be the the one-in-a-million part that keeps loosing 
-> bits. Same result, product dead, repair or replace it.
-> 
-> /Ricard
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 96b0b1d..4a2df63 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -1572,6 +1572,8 @@ static int alloc_nand_resource(struct platform_device *pdev)
+>  	int ret, irq, cs;
+>  
+>  	pdata = dev_get_platdata(&pdev->dev);
+> +	if (pdata->num_cs <= 0)
+> +		return -ENODEV;
+>  	info = devm_kzalloc(&pdev->dev, sizeof(*info) + (sizeof(*mtd) +
+>  			    sizeof(*host)) * pdata->num_cs, GFP_KERNEL);
+>  	if (!info)
 > 
 
-Hi Ricard,
+Looks good,
 
-Yes, that's true. We can't deal with any kinds of problem. And at worst
-case, we could re-format the partition.
+Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-But we could do something when data corruptions occur during mount or
-during IO. For mount case, actually current driver make no effort if
-an none power-cut corruption occur. It could be improved in my considering.
-
-I think the improvement is worth to be done than just say "It's broken,
-you need a new one". We can come up with some solutions for small cases
-now. But the problem is the definition of what kinds of problems we can
-fix. I don't want to make a unachievable plan. But I really think we
-could do something, just in kernel, to improve, in any side.
-
-Thanks,
-Hu
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
