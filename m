@@ -1,16 +1,17 @@
-Received: from mail-ig0-x236.google.com ([2607:f8b0:4001:c05::236])
+Received: from mail-ie0-f181.google.com ([209.85.223.181])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLJmE-0003c9-N0
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 22:59:31 +0000
-Received: by mail-ig0-f182.google.com with SMTP id h15so894223igd.3
- for <linux-mtd@lists.infradead.org>; Tue, 10 Feb 2015 14:59:09 -0800 (PST)
+ id 1YLK9k-0005Qx-Au
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 23:23:48 +0000
+Received: by iebtr6 with SMTP id tr6so180107ieb.2
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Feb 2015 15:23:27 -0800 (PST)
 Sender: Daniel Ehrenberg <dehrenberg@google.com>
 From: Dan Ehrenberg <dehrenberg@chromium.org>
 To: linux-mtd@lists.infradead.org, richard.weinberger@gmail.com,
  ezequiel.garcia@imgtec.com
-Subject: [PATCH v2 2/3] mtdpart: Remove partition overlap checks
-Date: Tue, 10 Feb 2015 14:58:57 -0800
-Message-Id: <1423609138-19321-2-git-send-email-dehrenberg@chromium.org>
+Subject: [PATCH v2 3/3] mtdpart: Allow deleting a partition with another
+ partition as master
+Date: Tue, 10 Feb 2015 14:58:58 -0800
+Message-Id: <1423609138-19321-3-git-send-email-dehrenberg@chromium.org>
 In-Reply-To: <1423609138-19321-1-git-send-email-dehrenberg@chromium.org>
 References: <1423609138-19321-1-git-send-email-dehrenberg@chromium.org>
 Cc: namnguyen@chromium.org, grundler@chromium.org, gwendal@chromium.org,
@@ -24,58 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes MTD dynamic partitioning more flexible by removing
-overlap checks for dynamic partitions. I don't see any  particular
-reason why overlapping dynamic partitions should be prohibited while
-static partitions are allowed to overlap freely, and this is useful
-for users who want one additional partition to span over the whole
-device.
+This patch makes MTD dynamic partitioning more flexible by allowing
+partitions to be deleted by referencing any partition with the same
+master. For example, if you have /dev/mtd0 and /dev/mtd1 both
+partitions on the same underlying device, then you can call
+BLKPG_DEL_PARTITION with an fd of /dev/mtd0 and pno of 1, and
+/dev/mtd1 will be deleted (as opposed to returning EINVAL to signal a
+missing partition, which it did previously).
 
 Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
 ---
- drivers/mtd/mtdpart.c | 17 +----------------
- 1 file changed, 1 insertion(+), 16 deletions(-)
+ drivers/mtd/mtdpart.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 7c6f526..7eb9083 100644
+index 7eb9083..7874bbd 100644
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
-@@ -551,7 +551,7 @@ int mtd_add_partition(struct mtd_info *master, const char *name,
- 		      long long offset, long long length)
- {
- 	struct mtd_partition part;
--	struct mtd_part *p, *new;
-+	struct mtd_part *new;
- 	uint64_t start, end;
- 	int ret = 0;
+@@ -600,6 +600,15 @@ int mtd_del_partition(struct mtd_info *master, int partno)
+ 	struct mtd_part *slave, *next;
+ 	int ret = -EINVAL;
  
-@@ -586,27 +586,12 @@ int mtd_add_partition(struct mtd_info *master, const char *name,
- 	end = offset + length;
- 
++	/* If del_partition was called as a partition, just treat
++	 * this as if it were called on its master. This is a harmless
++	 * generalization and lets partitions be deleted in a system
++	 * where they are sometimes already present on boot */
++	if (mtd_is_partition(master)) {
++		struct mtd_part *master_partition = PART(master);
++		master = master_partition->master;
++	}
++
  	mutex_lock(&mtd_partitions_mutex);
--	list_for_each_entry(p, &mtd_partitions, list)
--		if (p->master == master) {
--			if ((start >= p->offset) &&
--			    (start < (p->offset + p->mtd.size)))
--				goto err_inv;
--
--			if ((end >= p->offset) &&
--			    (end < (p->offset + p->mtd.size)))
--				goto err_inv;
--		}
--
- 	list_add(&new->list, &mtd_partitions);
- 	mutex_unlock(&mtd_partitions_mutex);
- 
- 	add_mtd_device(&new->mtd);
- 
- 	return ret;
--err_inv:
--	mutex_unlock(&mtd_partitions_mutex);
--	free_partition(new);
--	return -EINVAL;
- }
- EXPORT_SYMBOL_GPL(mtd_add_partition);
- 
+ 	list_for_each_entry_safe(slave, next, &mtd_partitions, list)
+ 		if ((slave->master == master) &&
 -- 
 2.2.0.rc0.207.ga3a616c
