@@ -1,20 +1,27 @@
-Received: from [2001:6f8:1178:4:290:27ff:fe1d:cc33]
- (helo=metis.ext.pengutronix.de)
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLG3N-0005Fn-7n
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:01:05 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/6] mtd: mxc-nand: Allow to use column addresses different
- from 0
-Date: Tue, 10 Feb 2015 19:59:58 +0100
-Message-Id: <1423594800-24214-5-git-send-email-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YLGq2-0007l0-5V
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:51:15 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH 5/9] mtd: pxa3xx_nand: add support for the Marvell Berlin
+ nand controller
+References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1422367816-4257-6-git-send-email-antoine.tenart@free-electrons.com>
+ <20150209005503.3fad39c7@bbrezillon>
+Date: Tue, 10 Feb 2015 20:50:41 +0100
+In-Reply-To: <20150209005503.3fad39c7@bbrezillon> (Boris Brezillon's message
+ of "Mon, 9 Feb 2015 00:55:03 +0100")
+Message-ID: <871tlx7dgu.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+Content-Type: text/plain
+Cc: thomas.petazzoni@free-electrons.com, zmxu@marvell.com,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ ezequiel.garcia@free-electrons.com, jszhang@marvell.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,124 +31,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The mxc-nand controller works pagewise and so usually only sends
-commands to the flash chip with column == 0. A request with column != 0
-from the upper layer is then fulfilled by indexing appropriately into the
-device's RAM buffer.
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-To be able to access the ONFI marker at offset 0x20 in reply to the
-READID command however it's invalid to read 32 bytes starting from
-column 0.
+> On Tue, 27 Jan 2015 15:10:12 +0100
+> Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
+>
+>> The nand controller on Marvell Berlin SoC reuse the pxa3xx nand driver
+>> as it quite close. The process of sending commands can be compared to
+>> the one of the Marvell armada 370: read and write commands are done in
+>> chunks.
+>> 
+>> But the Berlin nand controller has some other specificities which
+>> require some modifications of the pxa3xx nand driver:
+>> - there are no IRQ available so we need to poll the status register: we
+>>   have to use our own cmdfunc Berlin function, and early on the probing
+>>   function.
+>> - PAGEPROG are very different from the one used in the pxa3xx driver,
+>>   so we're using a specific process for this one
+>> - the SEQIN command is equivalent to a READ0 command
+>> - the RNDOUT command must be used to perform a read operation, and the
+>>   command is not NAND_CMD_RNDOUT
+>> - the ERASE1 command is specific (0xd060)
+>> 
+>> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 
-So let the function used to send the address cycles send the column
-address actually passed instead of 0 and fix all callers to pass 0
-instead appropriately. Also add some warnings in case this patch changes
-the drivers semantics.
+Given all the differences, the PIO mode instead of the current interrupt model,
+and the berlin specific functions (nand_start, ...), wouldn't it be an idea to :
+ - extract the common functions to mrvl-nand-lib.c
+ - the remaining would be in pxa3xx_nand.c
+ - the new code will be in berlin_nand.c
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/mtd/nand/mxc_nand.c | 40 +++++++++++++++++++++++++++++-----------
- 1 file changed, 29 insertions(+), 11 deletions(-)
+All these ifs per variant will add complexity to the current driver, won't they
+?
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index aa98a0dddcfb..0afe5904a337 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -836,6 +836,12 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom)
- 	}
- }
- 
-+/*
-+ * MXC NANDFC can only perform full page+spare or spare-only read/write.  When
-+ * the upper layers perform a read/write buf operation, the saved column address
-+ * is used to index into the full page. So usually this function is called with
-+ * column == 0 (unless no column cycle is needed indicated by column == -1)
-+ */
- static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
- {
- 	struct nand_chip *nand_chip = mtd->priv;
-@@ -843,16 +849,13 @@ static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
- 
- 	/* Write out column address, if necessary */
- 	if (column != -1) {
--		/*
--		 * MXC NANDFC can only perform full page+spare or
--		 * spare-only read/write.  When the upper layers
--		 * perform a read/write buf operation, the saved column
--		  * address is used to index into the full page.
--		 */
--		host->devtype_data->send_addr(host, 0, page_addr == -1);
-+		host->devtype_data->send_addr(host, column & 0xff,
-+					      page_addr == -1);
- 		if (mtd->writesize > 512)
- 			/* another col addr cycle for 2k page */
--			host->devtype_data->send_addr(host, 0, false);
-+			host->devtype_data->send_addr(host,
-+						      (column >> 8) & 0xff,
-+						      false);
- 	}
- 
- 	/* Write out page address, if necessary */
-@@ -1077,6 +1080,9 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		host->status_request = true;
- 
- 		host->devtype_data->send_cmd(host, command, true);
-+		WARN_ONCE(column != -1 || page_addr != -1,
-+			  "Unexpected column/row value (cmd=%u, col=%d, row=%d)\n",
-+			  command, column, page_addr);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
- 		break;
- 
-@@ -1090,7 +1096,10 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		command = NAND_CMD_READ0; /* only READ0 is valid */
- 
- 		host->devtype_data->send_cmd(host, command, false);
--		mxc_do_addr_cycle(mtd, column, page_addr);
-+		WARN_ONCE(column < 0,
-+			  "Unexpected column/row value (cmd=%u, col=%d, row=%d)\n",
-+			  command, column, page_addr);
-+		mxc_do_addr_cycle(mtd, 0, page_addr);
- 
- 		if (mtd->writesize > 512)
- 			host->devtype_data->send_cmd(host,
-@@ -1111,7 +1120,10 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		host->buf_start = column;
- 
- 		host->devtype_data->send_cmd(host, command, false);
--		mxc_do_addr_cycle(mtd, column, page_addr);
-+		WARN_ONCE(column < -1,
-+			  "Unexpected column/row value (cmd=%u, col=%d, row=%d)\n",
-+			  command, column, page_addr);
-+		mxc_do_addr_cycle(mtd, 0, page_addr);
- 		break;
- 
- 	case NAND_CMD_PAGEPROG:
-@@ -1119,6 +1131,9 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		copy_spare(mtd, false);
- 		host->devtype_data->send_page(mtd, NFC_INPUT);
- 		host->devtype_data->send_cmd(host, command, true);
-+		WARN_ONCE(column != -1 || page_addr != -1,
-+			  "Unexpected column/row value (cmd=%u, col=%d, row=%d)\n",
-+			  command, column, page_addr);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
- 		break;
- 
-@@ -1126,12 +1141,15 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		host->devtype_data->send_cmd(host, command, true);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
- 		host->devtype_data->send_read_id(host);
--		host->buf_start = column;
-+		host->buf_start = 0;
- 		break;
- 
- 	case NAND_CMD_ERASE1:
- 	case NAND_CMD_ERASE2:
- 		host->devtype_data->send_cmd(host, command, false);
-+		WARN_ONCE(column != -1,
-+			  "Unexpected column value (cmd=%u, col=%d)\n",
-+			  command, column);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
- 
- 		break;
--- 
-2.1.4
+Cheers.
+
+--
+Robert
