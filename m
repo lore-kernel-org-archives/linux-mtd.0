@@ -1,20 +1,27 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YL5r4-0004Nn-HY
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 08:07:35 +0000
-Message-ID: <1423555627.2573.64.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH V3] UBIFS: return -EINVAL if log head is empty
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: hujianyang <hujianyang@huawei.com>
-Date: Tue, 10 Feb 2015 10:07:07 +0200
-In-Reply-To: <54D97AF9.8040407@huawei.com>
-References: <54D97AF9.8040407@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>, Sheng Yong <shengyong1@huawei.com>
+Received: from mail-pd0-f182.google.com ([209.85.192.182])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YL6kj-0003QK-RO
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 09:05:07 +0000
+Received: by pdbnh10 with SMTP id nh10so35169159pdb.12
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Feb 2015 01:04:44 -0800 (PST)
+Date: Tue, 10 Feb 2015 17:04:33 +0800
+From: Lee Jones <lee.jones@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 08/13] mtd: st_spi_fsm: Update the JEDEC probe to
+ handle extended READIDs
+Message-ID: <20150210090433.GE8020@x1>
+References: <1418644760-18773-1-git-send-email-lee.jones@linaro.org>
+ <1418644760-18773-9-git-send-email-lee.jones@linaro.org>
+ <20150113050715.GQ9759@ld-irv-0074> <20150121130204.GC22024@x1>
+ <20150206021129.GB18140@ld-irv-0074>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150206021129.GB18140@ld-irv-0074>
+Cc: Angus Clark <angus.clark@st.com>, kernel@stlinux.com,
+ linux-kernel@vger.kernel.org, Carmelo Amoroso <carmelo.amoroso@st.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +31,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2015-02-10 at 11:28 +0800, hujianyang wrote:
-> CS node is recognized as a sign in UBIFS log replay mechanism.
-> Log relaying during mount should find the CS node in log head
-> at beginning and then replay the following uncommitted buds.
-> 
-> Here is a bug in log replay path: If the log head, which is
-> indicated by @log_lnum in mst_node, is empty, current UBIFS
-> replay nothing and directly mount the partition without any
-> warning. This action will put filesystem in an abnormal state,
-> e.g. space management in LPT area is incorrect to the real
-> space usage in main area.
-> 
-> We reproduced this bug by fault injection: turn log head leb
-> into all 0xFF. UBIFS driver mount the polluted partition
-> normally. But errors occur while running fs_stress on this
-> mount:
-> 
-> [89068.055183] UBI error: ubi_io_read: error -74 (ECC error) while reading 59 bytes from PEB 711:33088, read 59 bytes
-> [89068.179877] UBIFS error (pid 10517): ubifs_check_node: bad magic 0x101031, expected 0x6101831
-> [89068.179882] UBIFS error (pid 10517): ubifs_check_node: bad node at LEB 591:28992
-> [89068.179891] Not a node, first 24 bytes:
-> [89068.179892] 00000000: 31 10 10 00 37 84 64 04 10 04 00 00 00 00 00 00 20 00 00 00 02 01 00 00                          1...7.d......... .......
-> [89068.180282] UBIFS error (pid 10517): ubifs_read_node: expected node type 2
-> 
-> This patch fix the problem by checking *lnum* to guarantee
-> the empty leb is not log head leb and return an error if the
-> log head leb is incorrectly empty. After this, we could catch
-> *log head empty* error in place.
+On Thu, 05 Feb 2015, Brian Norris wrote:
 
-Pushed to linux-ubifs.git, thank you!
+> On Wed, Jan 21, 2015 at 01:02:04PM +0000, Lee Jones wrote:
+> > On Mon, 12 Jan 2015, Brian Norris wrote:
+> > > On Mon, Dec 15, 2014 at 11:59:15AM +0000, Lee Jones wrote:
+> > > > The previous code was based on 3-byte JEDEC IDs, with a possible 2-byte
+> > > > extension.  However, devices are now emerging that return 6 or more bytes of
+> > > > READID data and the additional bytes are required to differentiate between
+> > > > variants or generations of similar devices.
+> > > > 
+> > > > This patch refactors the device table and JEDEC probe code to handle arbitrary
+> > > > length READIDs, with the standard JEDEC definition now becoming a special case.
+> > > > Functionally, there should be no change in behaviour.  A subsequent patch will
+> > > > update the table with extended READIDs where applicable.
+> > > 
+> > > BTW, how's that promise going, where you work on adapting this driver to
+> > > the spi-nor framework? We've already done some of this same work there.
+> > 
+> > I have pushed this point within ST and someone has agreed to do the
+> > work.  Last I heard it relied on these patches, but I'll ask again.
+> 
+> OK.
+> 
+> > > > +#define RDID(...) __VA_ARGS__  /* Dummy macro to protect array argument. */
+> > > 
+> > > What? What needs "protected"?
+> > 
+> > You're asking me questions I can't answer I'm afraid and Angus has now
+> > left the building.  I guess he thinks __VA_ARGS__ will prevent some
+> > kind of overflow?
+> 
+> If you don't understand your own code, how can I be expected to maintain
+> it? This one's pretty trivial and harmless, but an accumulation of
+> answers like this don't exactly put me in a good mood.
 
-Artem.
+I have never written a line of code that I didn't understand and I
+think you are quite aware that this has never been my 'own code'.
+
+With regards to the previous accumulation of 'answers like this'; I
+have never been, nor have any desire to be an expert on Memory
+Technology Devices.  I was asked to upstream ST's NAND and NOR drivers
+with support of the local expert and author; however, for reasons not
+under neither of our controls, he has now left the company.  With him
+went all of the historical reasoning for all for the questions you've
+asked.  This is not my domain and have found it pretty tough to keep
+up with all of your demands, both on this and the NAND driver but I
+have been pretty subservient and keep up with them I have.  I am not
+privy to any of the author's thoughts or reasons for any decisions
+taken.  I can only hope that his comments might have some meaning to a
+like minded 'expert' such as yourself.  If you don't know something,
+then the chances are slight that I will be able to answer your query.
+
+> FWIW, I expect the comment has nothing to do with the __VA_ARGS__; it's
+> just commenting that he has placed a macro around the array just in case
+> somebody needs/wants to rearrange formats later. That way, we don't
+> necessarily have to rewrite the whole table, but can just change the
+> macros.
+> 
+> So the __VA_ARGS__ is just there to make the compiler happy (it thinks
+> an array argument to a macro actually looks like more than one
+> argument), and the comment is only mildly descriptive of its purpose.
+
+I was present Passing Variable Arguments 101, so I'm aware of what
+__VA_ARGS__ and "..." do at a functional level.
+
+So it looks like you had a better idea of what Angus was trying to
+achieve than I do.  Perhaps your question should have been more
+specific.  I guess it's just the comment that you are unhappy with.  I
+can remove it if it makes you happy.
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
