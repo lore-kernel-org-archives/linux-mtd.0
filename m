@@ -1,14 +1,14 @@
 Received: from [2001:6f8:1178:4:290:27ff:fe1d:cc33]
  (helo=metis.ext.pengutronix.de)
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLG3N-0005Fl-7j
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:01:01 +0000
+ id 1YLG3N-0005Fn-7n
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:01:05 +0000
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/6] mtd: mxc-nand: Only enable hardware checksumming for
- fully detected flashes
-Date: Tue, 10 Feb 2015 19:59:56 +0100
-Message-Id: <1423594800-24214-3-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 4/6] mtd: mxc-nand: Allow to use column addresses different
+ from 0
+Date: Tue, 10 Feb 2015 19:59:58 +0100
+Message-Id: <1423594800-24214-5-git-send-email-u.kleine-koenig@pengutronix.de>
 In-Reply-To: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
 References: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
@@ -24,73 +24,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-At least on i.MX25 (i.e. NFCv2) preset_v2 is called with mtd->writesize
-== 0 that is before the connect flash chip is detected. It then
-configures for 8 bit ECC mode which needs 26 bytes of OOB per 512 bytes
-main section. For flashes with a smaller OOB area issuing a read page
-command makes the controller stuck with this config.
+The mxc-nand controller works pagewise and so usually only sends
+commands to the flash chip with column == 0. A request with column != 0
+from the upper layer is then fulfilled by indexing appropriately into the
+device's RAM buffer.
 
-Note that this currently doesn't hurt because the first read page
-command is issued only after detection is complete and preset is called
-once more.
+To be able to access the ONFI marker at offset 0x20 in reply to the
+READID command however it's invalid to read 32 bytes starting from
+column 0.
+
+So let the function used to send the address cycles send the column
+address actually passed instead of 0 and fix all callers to pass 0
+instead appropriately. Also add some warnings in case this patch changes
+the drivers semantics.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/mxc_nand.c | 40 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 29 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 27ba07c07966..d9637ae34719 100644
+index aa98a0dddcfb..0afe5904a337 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -928,7 +928,7 @@ static void preset_v1(struct mtd_info *mtd)
- 	struct mxc_nand_host *host = nand_chip->priv;
- 	uint16_t config1 = 0;
+@@ -836,6 +836,12 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom)
+ 	}
+ }
  
--	if (nand_chip->ecc.mode == NAND_ECC_HW)
-+	if (nand_chip->ecc.mode == NAND_ECC_HW && mtd->writesize)
- 		config1 |= NFC_V1_V2_CONFIG1_ECC_EN;
++/*
++ * MXC NANDFC can only perform full page+spare or spare-only read/write.  When
++ * the upper layers perform a read/write buf operation, the saved column address
++ * is used to index into the full page. So usually this function is called with
++ * column == 0 (unless no column cycle is needed indicated by column == -1)
++ */
+ static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+@@ -843,16 +849,13 @@ static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
  
- 	if (!host->devtype_data->irqpending_quirk)
-@@ -956,9 +956,6 @@ static void preset_v2(struct mtd_info *mtd)
- 	struct mxc_nand_host *host = nand_chip->priv;
- 	uint16_t config1 = 0;
- 
--	if (nand_chip->ecc.mode == NAND_ECC_HW)
--		config1 |= NFC_V1_V2_CONFIG1_ECC_EN;
--
- 	config1 |= NFC_V2_CONFIG1_FP_INT;
- 
- 	if (!host->devtype_data->irqpending_quirk)
-@@ -967,6 +964,9 @@ static void preset_v2(struct mtd_info *mtd)
- 	if (mtd->writesize) {
- 		uint16_t pages_per_block = mtd->erasesize / mtd->writesize;
- 
-+		if (nand_chip->ecc.mode == NAND_ECC_HW)
-+			config1 |= NFC_V1_V2_CONFIG1_ECC_EN;
-+
- 		host->eccsize = get_eccsize(mtd);
- 		if (host->eccsize == 4)
- 			config1 |= NFC_V2_CONFIG1_ECC_MODE_4;
-@@ -1024,9 +1024,6 @@ static void preset_v3(struct mtd_info *mtd)
- 		NFC_V3_CONFIG2_INT_MSK |
- 		NFC_V3_CONFIG2_NUM_ADDR_PHASE0;
- 
--	if (chip->ecc.mode == NAND_ECC_HW)
--		config2 |= NFC_V3_CONFIG2_ECC_EN;
--
- 	addr_phases = fls(chip->pagemask) >> 3;
- 
- 	if (mtd->writesize == 2048) {
-@@ -1041,6 +1038,9 @@ static void preset_v3(struct mtd_info *mtd)
+ 	/* Write out column address, if necessary */
+ 	if (column != -1) {
+-		/*
+-		 * MXC NANDFC can only perform full page+spare or
+-		 * spare-only read/write.  When the upper layers
+-		 * perform a read/write buf operation, the saved column
+-		  * address is used to index into the full page.
+-		 */
+-		host->devtype_data->send_addr(host, 0, page_addr == -1);
++		host->devtype_data->send_addr(host, column & 0xff,
++					      page_addr == -1);
+ 		if (mtd->writesize > 512)
+ 			/* another col addr cycle for 2k page */
+-			host->devtype_data->send_addr(host, 0, false);
++			host->devtype_data->send_addr(host,
++						      (column >> 8) & 0xff,
++						      false);
  	}
  
- 	if (mtd->writesize) {
-+		if (chip->ecc.mode == NAND_ECC_HW)
-+			config2 |= NFC_V3_CONFIG2_ECC_EN;
-+
- 		config2 |= NFC_V3_CONFIG2_PPB(
- 				ffs(mtd->erasesize / mtd->writesize) - 6,
- 				host->devtype_data->ppb_shift);
+ 	/* Write out page address, if necessary */
+@@ -1077,6 +1080,9 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		host->status_request = true;
+ 
+ 		host->devtype_data->send_cmd(host, command, true);
++		WARN_ONCE(column != -1 || page_addr != -1,
++			  "Unexpected column/row value (cmd=%u, col=%d, row=%d)\n",
++			  command, column, page_addr);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		break;
+ 
+@@ -1090,7 +1096,10 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		command = NAND_CMD_READ0; /* only READ0 is valid */
+ 
+ 		host->devtype_data->send_cmd(host, command, false);
+-		mxc_do_addr_cycle(mtd, column, page_addr);
++		WARN_ONCE(column < 0,
++			  "Unexpected column/row value (cmd=%u, col=%d, row=%d)\n",
++			  command, column, page_addr);
++		mxc_do_addr_cycle(mtd, 0, page_addr);
+ 
+ 		if (mtd->writesize > 512)
+ 			host->devtype_data->send_cmd(host,
+@@ -1111,7 +1120,10 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		host->buf_start = column;
+ 
+ 		host->devtype_data->send_cmd(host, command, false);
+-		mxc_do_addr_cycle(mtd, column, page_addr);
++		WARN_ONCE(column < -1,
++			  "Unexpected column/row value (cmd=%u, col=%d, row=%d)\n",
++			  command, column, page_addr);
++		mxc_do_addr_cycle(mtd, 0, page_addr);
+ 		break;
+ 
+ 	case NAND_CMD_PAGEPROG:
+@@ -1119,6 +1131,9 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		copy_spare(mtd, false);
+ 		host->devtype_data->send_page(mtd, NFC_INPUT);
+ 		host->devtype_data->send_cmd(host, command, true);
++		WARN_ONCE(column != -1 || page_addr != -1,
++			  "Unexpected column/row value (cmd=%u, col=%d, row=%d)\n",
++			  command, column, page_addr);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		break;
+ 
+@@ -1126,12 +1141,15 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		host->devtype_data->send_cmd(host, command, true);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		host->devtype_data->send_read_id(host);
+-		host->buf_start = column;
++		host->buf_start = 0;
+ 		break;
+ 
+ 	case NAND_CMD_ERASE1:
+ 	case NAND_CMD_ERASE2:
+ 		host->devtype_data->send_cmd(host, command, false);
++		WARN_ONCE(column != -1,
++			  "Unexpected column value (cmd=%u, col=%d)\n",
++			  command, column);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+ 
+ 		break;
 -- 
 2.1.4
