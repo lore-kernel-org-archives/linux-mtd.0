@@ -1,20 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-la0-f45.google.com ([209.85.215.45])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YL8no-0007o3-HB
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 11:16:25 +0000
-From: Marek Vasut <marex@denx.de>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: m25p80 spi1.0: unrecognized JEDEC id
-Date: Tue, 10 Feb 2015 11:55:44 +0100
+ id 1YLAF2-0001A4-71
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 12:48:36 +0000
+Received: by labgd6 with SMTP id gd6so10889161lab.7
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Feb 2015 04:48:11 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <201502101155.44137.marex@denx.de>
 References: <CAOMZO5BgY1YXdnoKpZJW6k9AdrDFZH=6mdCfuB=9aSVZukAV8A@mail.gmail.com>
  <20150209221859.GS18140@ld-irv-0074>
  <CAOMZO5BMrA1HGXXoriwbAk53Kmkr8GcQbEt75CuT_voeqW3s6Q@mail.gmail.com>
-In-Reply-To: <CAOMZO5BMrA1HGXXoriwbAk53Kmkr8GcQbEt75CuT_voeqW3s6Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201502101155.44137.marex@denx.de>
+ <201502101155.44137.marex@denx.de>
+Date: Tue, 10 Feb 2015 10:48:11 -0200
+Message-ID: <CAOMZO5A8rj5z5=xStGpfCyhXtoCOU6BsB5gbbiPJjQzfd1jmXQ@mail.gmail.com>
+Subject: Re: m25p80 spi1.0: unrecognized JEDEC id
+From: Fabio Estevam <festevam@gmail.com>
+To: Marek Vasut <marex@denx.de>, Stefan Wahren <stefan.wahren@i2se.com>
+Content-Type: text/plain; charset=UTF-8
 Cc: Huang Shijie <shijie8@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
@@ -27,28 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, February 10, 2015 at 12:39:22 AM, Fabio Estevam wrote:
-> On Mon, Feb 9, 2015 at 8:18 PM, Brian Norris
-> 
-> <computersforpeace@gmail.com> wrote:
-> > On Mon, Feb 09, 2015 at 08:09:02PM -0200, Fabio Estevam wrote:
-> >> Hi,
-> >> 
-> >> Running linux-next 20150209 on a mx28evk I see that m25p80 is not
-> >> detected correctly:
-> >> 
-> >> m25p80 spi1.0: unrecognized JEDEC id bytes: bf, 24, 40
-> > 
-> > That's not good. I don't see anything in MTD's -next that should cause
-> > that though.
-> 
-> Yes, I have just tested other platform (mx6) with linux-next and
-> m25p80 can be probed.
-> 
-> Looks like the issue is mxs specific and comes from other area (spi
-> driver, dma, clocks, etc).
+Hi Marek,
 
-Was the clock patch mucking with FRAC0 and FRAC1 merged by any chance?
+On Tue, Feb 10, 2015 at 8:55 AM, Marek Vasut <marex@denx.de> wrote:
+> On Tuesday, February 10, 2015 at 12:39:22 AM, Fabio Estevam wrote:
 
-Best regards,
-Marek Vasut
+> Was the clock patch mucking with FRAC0 and FRAC1 merged by any chance?
+
+Thanks for your suggestion! You are right: If I revert Stefan's patch:
+
+commit 039e5970750775f102b255de9bf914e04955c6da ("clk: mxs: Fix
+invalid 32-bit access to frac registers")
+
+then the SPI NOR flash is probed correctly on mx28evk.
+
+Stefan,
+
+Could you please take a look?
+
+Thanks,
+
+Fabio Estevam
