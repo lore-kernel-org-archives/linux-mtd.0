@@ -1,20 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YL5pf-0003do-M8
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 08:06:08 +0000
-Message-ID: <1423555541.2573.63.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: improve messages in ubi_eba_read_leb()
+ id 1YL5r4-0004Nn-HY
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 08:07:35 +0000
+Message-ID: <1423555627.2573.64.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH V3] UBIFS: return -EINVAL if log head is empty
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: hujianyang <hujianyang@huawei.com>
-Date: Tue, 10 Feb 2015 10:05:41 +0200
-In-Reply-To: <54D97D9E.3040606@huawei.com>
-References: <54D97D9E.3040606@huawei.com>
+Date: Tue, 10 Feb 2015 10:07:07 +0200
+In-Reply-To: <54D97AF9.8040407@huawei.com>
+References: <54D97AF9.8040407@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>
+ linux-mtd <linux-mtd@lists.infradead.org>, Sheng Yong <shengyong1@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2015-02-10 at 11:40 +0800, hujianyang wrote:
-> If an error occur while reading from PEBs, for example, an ECC error,
-> ubi_io_read() will print some error messages. But it's not enough for
-> debugging. These messages don't show the mapping info for a read from
-> UBIFS layer.
+On Tue, 2015-02-10 at 11:28 +0800, hujianyang wrote:
+> CS node is recognized as a sign in UBIFS log replay mechanism.
+> Log relaying during mount should find the CS node in log head
+> at beginning and then replay the following uncommitted buds.
 > 
-> Although UBIFS will soon print its error messages after catching the
-> return value from UBI layer,  multi-path reading will confuse the
-> relationship between LEBs and PEBs showed by these messages, like:
+> Here is a bug in log replay path: If the log head, which is
+> indicated by @log_lnum in mst_node, is empty, current UBIFS
+> replay nothing and directly mount the partition without any
+> warning. This action will put filesystem in an abnormal state,
+> e.g. space management in LPT area is incorrect to the real
+> space usage in main area.
 > 
-> [   38.442770] UBI error: ubi_io_read: error -74 (ECC error) while reading 26624 bytes from PEB 54:104448, read 26624 bytes
-> [   38.852461] UBI error: ubi_io_read: error -74 (ECC error) while reading 77824 bytes from PEB 346:53248, read 77824 bytes
-> [   38.864142] UBIFS error (pid 1444): ubifs_recover_leb: corruption -3
-> [   38.870487] UBIFS error (pid 1444): ubifs_scanned_corruption: corruption at LEB 928:55280
-> [   38.878625] UBIFS error (pid 1444): ubifs_scanned_corruption: first 8192 bytes from LEB 928:55280
-> [   38.892117] UBIFS error (pid 1444): ubifs_recover_leb: LEB 928 scanning failed
-> mount: mounting ubi1:bak on /mountpoint: failed: Structure needs cleaning
+> We reproduced this bug by fault injection: turn log head leb
+> into all 0xFF. UBIFS driver mount the polluted partition
+> normally. But errors occur while running fs_stress on this
+> mount:
 > 
-> This patch improve the output of ubi_eba_read_leb() by printing the
-> mapping of LEB and PEB if an ECC error occur. And also, print PEB
-> and LEB number if a CRC error occur.
+> [89068.055183] UBI error: ubi_io_read: error -74 (ECC error) while reading 59 bytes from PEB 711:33088, read 59 bytes
+> [89068.179877] UBIFS error (pid 10517): ubifs_check_node: bad magic 0x101031, expected 0x6101831
+> [89068.179882] UBIFS error (pid 10517): ubifs_check_node: bad node at LEB 591:28992
+> [89068.179891] Not a node, first 24 bytes:
+> [89068.179892] 00000000: 31 10 10 00 37 84 64 04 10 04 00 00 00 00 00 00 20 00 00 00 02 01 00 00                          1...7.d......... .......
+> [89068.180282] UBIFS error (pid 10517): ubifs_read_node: expected node type 2
 > 
-> Signed-off-by: hujianyang <hujianyang@huawei.com>
+> This patch fix the problem by checking *lnum* to guarantee
+> the empty leb is not log head leb and return an error if the
+> log head leb is incorrectly empty. After this, we could catch
+> *log head empty* error in place.
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Pushed to linux-ubifs.git, thank you!
+
+Artem.
