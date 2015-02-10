@@ -1,12 +1,14 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLG37-0002cR-Em
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:00:43 +0000
+Received: from [2001:6f8:1178:4:290:27ff:fe1d:cc33]
+ (helo=metis.ext.pengutronix.de)
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YLG3N-0005Fl-7j
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:01:01 +0000
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 5/6] mtd: mxc-nand: Implement support for PARAM command
-Date: Tue, 10 Feb 2015 19:59:59 +0100
-Message-Id: <1423594800-24214-6-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 2/6] mtd: mxc-nand: Only enable hardware checksumming for
+ fully detected flashes
+Date: Tue, 10 Feb 2015 19:59:56 +0100
+Message-Id: <1423594800-24214-3-git-send-email-u.kleine-koenig@pengutronix.de>
 In-Reply-To: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
 References: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
@@ -22,46 +24,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The mxc-nand driver never supported the PARAM command to read out the
-ONFI parameter page and so always relied on probing my manufacturer and
-device id (as provided by the READID command).
+At least on i.MX25 (i.e. NFCv2) preset_v2 is called with mtd->writesize
+== 0 that is before the connect flash chip is detected. It then
+configures for 8 bit ECC mode which needs 26 bytes of OOB per 512 bytes
+main section. For flashes with a smaller OOB area issuing a read page
+command makes the controller stuck with this config.
 
-This patch implements reading out the first parameter page copy at least
-which should be good enough in practise.
-
-This makes the boot log change from
-
-	nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xb1
-	nand: Micron NAND 128MiB 1,8V 16-bit
-
-to
-	nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xb1
-	nand: Micron MT29F1G16ABBDAH4
-
-on my machine.
+Note that this currently doesn't hurt because the first read page
+command is issued only after detection is complete and preset is called
+once more.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mtd/nand/mxc_nand.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 0afe5904a337..0083b4ee4f33 100644
+index 27ba07c07966..d9637ae34719 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1153,6 +1153,13 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		mxc_do_addr_cycle(mtd, column, page_addr);
+@@ -928,7 +928,7 @@ static void preset_v1(struct mtd_info *mtd)
+ 	struct mxc_nand_host *host = nand_chip->priv;
+ 	uint16_t config1 = 0;
  
- 		break;
-+	case NAND_CMD_PARAM:
-+		host->devtype_data->send_cmd(host, command, false);
-+		mxc_do_addr_cycle(mtd, column, page_addr);
-+		host->devtype_data->send_page(mtd, NFC_OUTPUT);
-+		memcpy32_fromio(host->data_buf, host->main_area0, 512);
-+		host->buf_start = 0;
-+		break;
+-	if (nand_chip->ecc.mode == NAND_ECC_HW)
++	if (nand_chip->ecc.mode == NAND_ECC_HW && mtd->writesize)
+ 		config1 |= NFC_V1_V2_CONFIG1_ECC_EN;
+ 
+ 	if (!host->devtype_data->irqpending_quirk)
+@@ -956,9 +956,6 @@ static void preset_v2(struct mtd_info *mtd)
+ 	struct mxc_nand_host *host = nand_chip->priv;
+ 	uint16_t config1 = 0;
+ 
+-	if (nand_chip->ecc.mode == NAND_ECC_HW)
+-		config1 |= NFC_V1_V2_CONFIG1_ECC_EN;
+-
+ 	config1 |= NFC_V2_CONFIG1_FP_INT;
+ 
+ 	if (!host->devtype_data->irqpending_quirk)
+@@ -967,6 +964,9 @@ static void preset_v2(struct mtd_info *mtd)
+ 	if (mtd->writesize) {
+ 		uint16_t pages_per_block = mtd->erasesize / mtd->writesize;
+ 
++		if (nand_chip->ecc.mode == NAND_ECC_HW)
++			config1 |= NFC_V1_V2_CONFIG1_ECC_EN;
++
+ 		host->eccsize = get_eccsize(mtd);
+ 		if (host->eccsize == 4)
+ 			config1 |= NFC_V2_CONFIG1_ECC_MODE_4;
+@@ -1024,9 +1024,6 @@ static void preset_v3(struct mtd_info *mtd)
+ 		NFC_V3_CONFIG2_INT_MSK |
+ 		NFC_V3_CONFIG2_NUM_ADDR_PHASE0;
+ 
+-	if (chip->ecc.mode == NAND_ECC_HW)
+-		config2 |= NFC_V3_CONFIG2_ECC_EN;
+-
+ 	addr_phases = fls(chip->pagemask) >> 3;
+ 
+ 	if (mtd->writesize == 2048) {
+@@ -1041,6 +1038,9 @@ static void preset_v3(struct mtd_info *mtd)
  	}
- }
  
+ 	if (mtd->writesize) {
++		if (chip->ecc.mode == NAND_ECC_HW)
++			config2 |= NFC_V3_CONFIG2_ECC_EN;
++
+ 		config2 |= NFC_V3_CONFIG2_PPB(
+ 				ffs(mtd->erasesize / mtd->writesize) - 6,
+ 				host->devtype_data->ppb_shift);
 -- 
 2.1.4
