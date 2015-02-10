@@ -1,12 +1,14 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1YLG2w-0008K7-11
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:00:37 +0000
+ Linux)) id 1YLG2z-00009M-7b
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:00:38 +0000
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/6] mtd: teach mxc-nand about ONFI probing
-Date: Tue, 10 Feb 2015 19:59:54 +0100
-Message-Id: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 1/6] mtd: mxc-nand: Add a timeout when waiting for interrupt
+Date: Tue, 10 Feb 2015 19:59:55 +0100
+Message-Id: <1423594800-24214-2-git-send-email-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -20,42 +22,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+While extending the mxc-nand driver it happend to me a few times that
+the device was stuck and this made the machine hang during boot. So
+implement a timeout and print a stack trace the first time this happens
+to make it debuggable. The return type of the waiting function is also
+changed to int to be able to handle the timeout in the caller.
 
-this series implements support for ONFI probing in mxc-nand.
-Before a PARAM command was just ignored and the following read_bytes
-read whatever then happened to be available from the controller's RAM.
-But actually this wasn't that bad because the driver already failed to
-read the ONFI marker at offset 32 in response to the READID command and
-so the PARAM command wasn't issued at all :-)
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c | 47 ++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 36 insertions(+), 11 deletions(-)
 
-Patch 1 is a robustness fix. Patch 2 is necessary to not make the
-controller stuck when the READPAGE command is issued before the flash
-chip is identified. Patch 3 is needed to be able to read more than 6
-bytes in the read_byte callback. Finally patch 4 fixes the driver to
-allow reading out the READID ONFI marker and patch 5 implements support
-for the PARAM command.
-
-Patch 6 implements a WARN that triggers when the core requests an
-unknown command from the driver. In the case of missing PARAM support it
-wouldn't have triggered because READID at offset 0x20 failed, too, but
-it might be worthwhile anyhow; I'm not sure though, so I marked it RFC.
-Not sure the set of commands will grow in the near future ...
-
-Best regards
-Uwe
-
-Uwe Kleine-König (6):
-  mtd: mxc-nand: Add a timeout when waiting for interrupt
-  mtd: mxc-nand: Only enable hardware checksumming for fully detected
-    flashes
-  mtd: mxc-nand: Do the word to byte mangling in the read_byte callback
-  mtd: mxc-nand: Allow to use column addresses different from 0
-  mtd: mxc-nand: Implement support for PARAM command
-  [RFC] mtd: mxc-nand: Warn on unimplemented commands
-
- drivers/mtd/nand/mxc_nand.c | 146 ++++++++++++++++++++++++++++----------------
- 1 file changed, 93 insertions(+), 53 deletions(-)
-
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index a8f550fec35e..27ba07c07966 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -386,26 +386,51 @@ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
+ /* This function polls the NANDFC to wait for the basic operation to
+  * complete by checking the INT bit of config2 register.
+  */
+-static void wait_op_done(struct mxc_nand_host *host, int useirq)
++static int wait_op_done(struct mxc_nand_host *host, int useirq)
+ {
+-	int max_retries = 8000;
++	int ret = 0;
++
++	/*
++	 * If operation is already complete, don't bother to setup an irq or a
++	 * loop.
++	 */
++	if (host->devtype_data->check_int(host))
++		return 0;
+ 
+ 	if (useirq) {
+-		if (!host->devtype_data->check_int(host)) {
+-			reinit_completion(&host->op_completion);
+-			irq_control(host, 1);
+-			wait_for_completion(&host->op_completion);
++		unsigned long timeout;
++
++		reinit_completion(&host->op_completion);
++
++		irq_control(host, 1);
++
++		timeout = wait_for_completion_timeout(&host->op_completion, HZ);
++		if (!timeout && !host->devtype_data->check_int(host)) {
++			dev_dbg(host->dev, "timeout waiting for irq\n");
++			ret = -ETIMEDOUT;
+ 		}
+ 	} else {
+-		while (max_retries-- > 0) {
+-			if (host->devtype_data->check_int(host))
+-				break;
++		int max_retries = 8000;
++		int done;
+ 
++		do {
+ 			udelay(1);
++
++			done = host->devtype_data->check_int(host);
++			if (done)
++				break;
++
++		} while (--max_retries);
++
++		if (!done) {
++			dev_dbg(host->dev, "timeout polling for completion\n");
++			ret = -ETIMEDOUT;
+ 		}
+-		if (max_retries < 0)
+-			pr_debug("%s: INT not set\n", __func__);
+ 	}
++
++	WARN_ONCE(ret < 0, "timeout! useirq=%d\n", useirq);
++
++	return ret;
+ }
+ 
+ static void send_cmd_v3(struct mxc_nand_host *host, uint16_t cmd, int useirq)
 -- 
 2.1.4
