@@ -1,22 +1,17 @@
-Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKxvc-0005hF-Id
- for linux-mtd@lists.infradead.org; Mon, 09 Feb 2015 23:39:45 +0000
-Received: by mail-lb0-f179.google.com with SMTP id w7so8875633lbi.10
- for <linux-mtd@lists.infradead.org>; Mon, 09 Feb 2015 15:39:22 -0800 (PST)
+ id 1YL1WT-0006N8-K7
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 03:30:03 +0000
+Message-ID: <54D97AF9.8040407@huawei.com>
+Date: Tue, 10 Feb 2015 11:28:57 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20150209221859.GS18140@ld-irv-0074>
-References: <CAOMZO5BgY1YXdnoKpZJW6k9AdrDFZH=6mdCfuB=9aSVZukAV8A@mail.gmail.com>
- <20150209221859.GS18140@ld-irv-0074>
-Date: Mon, 9 Feb 2015 21:39:22 -0200
-Message-ID: <CAOMZO5BMrA1HGXXoriwbAk53Kmkr8GcQbEt75CuT_voeqW3s6Q@mail.gmail.com>
-Subject: Re: m25p80 spi1.0: unrecognized JEDEC id
-From: Fabio Estevam <festevam@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
- Huang Shijie <shijie8@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH V3] UBIFS: return -EINVAL if log head is empty
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Sheng Yong <shengyong1@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +21,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 9, 2015 at 8:18 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Mon, Feb 09, 2015 at 08:09:02PM -0200, Fabio Estevam wrote:
->> Hi,
->>
->> Running linux-next 20150209 on a mx28evk I see that m25p80 is not
->> detected correctly:
->>
->> m25p80 spi1.0: unrecognized JEDEC id bytes: bf, 24, 40
->
-> That's not good. I don't see anything in MTD's -next that should cause
-> that though.
+CS node is recognized as a sign in UBIFS log replay mechanism.
+Log relaying during mount should find the CS node in log head
+at beginning and then replay the following uncommitted buds.
 
-Yes, I have just tested other platform (mx6) with linux-next and
-m25p80 can be probed.
+Here is a bug in log replay path: If the log head, which is
+indicated by @log_lnum in mst_node, is empty, current UBIFS
+replay nothing and directly mount the partition without any
+warning. This action will put filesystem in an abnormal state,
+e.g. space management in LPT area is incorrect to the real
+space usage in main area.
 
-Looks like the issue is mxs specific and comes from other area (spi
-driver, dma, clocks, etc).
+We reproduced this bug by fault injection: turn log head leb
+into all 0xFF. UBIFS driver mount the polluted partition
+normally. But errors occur while running fs_stress on this
+mount:
 
-Regards,
+[89068.055183] UBI error: ubi_io_read: error -74 (ECC error) while reading 59 bytes from PEB 711:33088, read 59 bytes
+[89068.179877] UBIFS error (pid 10517): ubifs_check_node: bad magic 0x101031, expected 0x6101831
+[89068.179882] UBIFS error (pid 10517): ubifs_check_node: bad node at LEB 591:28992
+[89068.179891] Not a node, first 24 bytes:
+[89068.179892] 00000000: 31 10 10 00 37 84 64 04 10 04 00 00 00 00 00 00 20 00 00 00 02 01 00 00                          1...7.d......... .......
+[89068.180282] UBIFS error (pid 10517): ubifs_read_node: expected node type 2
 
-Fabio Estevam
+This patch fix the problem by checking *lnum* to guarantee
+the empty leb is not log head leb and return an error if the
+log head leb is incorrectly empty. After this, we could catch
+*log head empty* error in place.
+
+Changes in V3:
+	- remove additional '\n' in ubifs_err().
+
+Changes in V2, suggested by Artem:
+	- use 'log head' term instead of 'first log LEB' for
+	  consistency.
+	- catch this error by checking 'lnum' in 'ubifs_replay
+	  _journal' instead of checking 'c->cs_sqnum' for better
+	  understanding.
+	- expand comments and phrase error message properly.
+
+Signed-off-by: hujianyang <hujianyang@huawei.com>
+---
+ fs/ubifs/replay.c |   19 ++++++++++++++++---
+ 1 files changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 3187925..9b40a1c 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -1028,9 +1028,22 @@ int ubifs_replay_journal(struct ubifs_info *c)
+
+ 	do {
+ 		err = replay_log_leb(c, lnum, 0, c->sbuf);
+-		if (err == 1)
+-			/* We hit the end of the log */
+-			break;
++		if (err == 1) {
++			if (lnum != c->lhead_lnum)
++				/* We hit the end of the log */
++				break;
++
++			/*
++			 * The head of the log must always start with the
++			 * "commit start" node on a properly formatted UBIFS.
++			 * But we found no nodes at all, which means that
++			 * someting went wrong and we cannot proceed mounting
++			 * the file-system.
++			 */
++			ubifs_err("no UBIFS nodes found at the log head LEB %d:%d, possibly corrupted",
++				  lnum, 0);
++			err = -EINVAL;
++		}
+ 		if (err)
+ 			goto out;
+ 		lnum = ubifs_next_log_lnum(c, lnum);
+-- 
+1.6.0.2
