@@ -1,33 +1,19 @@
-Received: from mail-wg0-f41.google.com ([74.125.82.41])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YL2Y7-0008Ga-Do
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 04:35:49 +0000
-Received: by mail-wg0-f41.google.com with SMTP id b13so11016294wgh.0
- for <linux-mtd@lists.infradead.org>; Mon, 09 Feb 2015 20:35:24 -0800 (PST)
-Received: from mail-we0-f170.google.com (mail-we0-f170.google.com.
- [74.125.82.170])
- by mx.google.com with ESMTPSA id fa3sm17040925wib.17.2015.02.09.20.35.23
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 09 Feb 2015 20:35:24 -0800 (PST)
-Received: by mail-we0-f170.google.com with SMTP id q59so22315524wes.1
- for <linux-mtd@lists.infradead.org>; Mon, 09 Feb 2015 20:35:23 -0800 (PST)
+From: Josh Wu <josh.wu@atmel.com>
+To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/3] mtd: atmel_nand: move the hsmc_clk from nfc node to nand
+ node
+Date: Tue, 10 Feb 2015 14:14:43 +0800
+Message-ID: <1423548885-27589-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAN1oZWyhDwK4M05RDcHyC=TGj1EFti8f1QNWvetwGo+yp+Otsw@mail.gmail.com>
-References: <CAN1oZWxB5N=YMQcsJppZgp7TXodcR4tKZM+LNFXS7PSx3F-Yag@mail.gmail.com>
- <CAN1oZWzeev-1uE7gxPnJA=L4Th65CRj8C_LQ7hMJLPHGssDjNQ@mail.gmail.com>
- <CAN1oZWzOfUrYSBEx=M0p0Dz4HHcaz-FtYOF5ON12oeG_WHPa-g@mail.gmail.com>
- <20150204203710.GC4434@norris-Latitude-E6410>
- <CAN1oZWyhDwK4M05RDcHyC=TGj1EFti8f1QNWvetwGo+yp+Otsw@mail.gmail.com>
-Date: Tue, 10 Feb 2015 12:35:23 +0800
-Message-ID: <CAN1oZWwMH=s2JYB3ZfoeW68OqBOOcVJvqYQgBztCWXMmu5=WcQ@mail.gmail.com>
-Subject: Re: [PATCH mtd] mtd:devices: Add Altera EPCQ Driver
-From: Viet Nga Dao <vndao@altera.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Viet Nga Dao <vndao@altera.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
+Content-Type: text/plain
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Pawel Moll <pawel.moll@arm.com>, devicetree@vger.kernel.org,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, Josh Wu <josh.wu@atmel.com>, Rob
+ Herring <robh+dt@kernel.org>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>, Jean-Christophe
+ Plagniol-Villard <plagnioj@jcrosoft.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,261 +23,189 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry for multiple emails.
+Also add a new sama5d3_nand compatiable string for sama5d3 nand.
 
-On Mon, Feb 9, 2015 at 2:42 PM, Viet Nga Dao <vndao@altera.com> wrote:
-> Please ignore previous 2 emails of mine ^^
->
-> On Thu, Feb 5, 2015 at 4:37 AM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
->> On Tue, Jan 27, 2015 at 02:53:59PM +0800, Viet Nga Dao wrote:
->>> On Tue, Jan 20, 2015 at 10:05 AM, Viet Nga Dao <vndao@altera.com> wrote:
->>> > On Thu, Jan 15, 2015 at 5:27 PM, Viet Nga Dao <vndao@altera.com> wrote:
->>> >> On Tue, Jan 13, 2015 at 11:33 AM, Brian Norris
->>> >> <computersforpeace@gmail.com> wrote:
->>> >>> On Thu, Dec 18, 2014 at 12:23:16AM -0800, vndao@altera.com wrote:
->>> >>>> From: Viet Nga Dao <vndao@altera.com>
->>
->>> >> That is why if rewrite the drivers to follow spi-nor structure, it
->>> >> will require extra decoding works for the only few used opcodes.
->>> >>
->>> >I think you'd only have some very trivial work here.
->>> >
->>> >There would be some small work to reintroduce a properly-replaceable ID
->>> >table, and callbacks like ->lock() and ->unlock(), but those should be
->>> >implemented in spi-nor.c sooner or later anyway.
->>> >
->>>
->>> I am trying to modify the code to follow your recommendation. However,
->>> for lock and unlock functions, i have to implement it in spi_nor.c ,
->>> am i right? If yes, currently we already have existing spi_nor_lock
->>> and spi_nor_unlock functions but they could not apply for my driver.
->>> Should i create a new functions named altera_epcq_lock and unlock and
->>> then map it to callback functions or i should the put  those code
->>> sunder existing spi_nor_lock/unlock?
->>
->> We probably want a replaceable spi_nor callback that does the
->> flash-specific unlock. spi_nor_lock/unlock would then call the
->> nor->unlock() / nor->lock() functions for you, when present.
->> Some of the existing code should move into their own spi_nor_st_lock() /
->> spi_nor_st_unlock() functions.
->>
->
-> This changes will be made by me or maintainers? If current this
-> functions are not supported, i decide not to implement my lock, unlock
-> function as well.
->
+For sama5d3, sama5d4 chip, the pmecc became part of HSMC, they need the
+HSMC clock enabled to work.
+The NFC is a sub feature for current nand driver, it can be disabled.
+But if HSMC clock is controlled by NFC, so disable NFC will also disable
+the HSMC clock. then, it will make the PMECC fail to work.
 
-I made the changes at my side here. However, there are something i
-want to confirm with you:
- - in spi-nor.h, i add 2 functions. _lock and _unlock instead of lock
-and unlock. It is because we already have struct mutex lock with the
-same name.
-    int (*_lock)(struct spi_nor *nor, loff_t offs, uint64_t len);
-    int (*_unlock)(struct spi_nor *nor, loff_t offs, uint64_t len);
-- in spi-nor.c, i change the current spi_nor_lock and spi_nor_unlock
-to stmicro_spi_nor_lock and stmirco_spi_nor_unlock
-- in spi-nor.c, i add 2 functions:
+So the solution is move the HSMC clock out of NFC to nand node. When
+nand driver probed, it will check whether the chip has HSMC, if yes then
+it will require a HSMC clock.
 
-static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-{
-    struct spi_nor *nor = mtd_to_spi_nor(mtd);
-    int ret = 0;
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
 
-    ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_LOCK);
-    if (ret)
-        return ret;
+ .../devicetree/bindings/mtd/atmel-nand.txt         |  4 +-
+ drivers/mtd/nand/atmel_nand.c                      | 49 ++++++++++++----------
+ 2 files changed, 28 insertions(+), 25 deletions(-)
 
-    /* Wait until finished previous command */
-    ret = wait_till_ready(nor);
-    if (ret)
-        goto err;
-
-    ret = nor->_lock(nor, ofs, len);
-
-err:
-    spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK);
-    return ret;
-}
-
-static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-{
-    struct spi_nor *nor = mtd_to_spi_nor(mtd);
-    int ret = 0;
-
-    ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_LOCK);
-    if (ret)
-        return ret;
-
-    /* Wait until finished previous command */
-    ret = wait_till_ready(nor);
-    if (ret)
-        goto err;
-
-    ret = nor->_unlock(nor, ofs, len);
-
-err:
-    spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK);
-    return ret;
-}
-
-- Then under spi_nor_scan function, i add these few lines:
-    /* nor protection support for STmicro chips */
-    if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ST) {
-        mtd->_lock = stmicro_spi_nor_lock;
-        mtd->_unlock = stmicro_spi_nor_unlock;
-    } else {
-        mtd->_lock = spi_nor_lock;
-        mtd->_unlock = spi_nor_unlock;
-    }
-
-What is your comment?
-
->>> >>>> diff --git a/Documentation/devicetree/bindings/mtd/altera_epcq.txt b/Documentation/devicetree/bindings/mtd/altera_epcq.txt
->>> >>>> new file mode 100644
->>> >>>> index 0000000..d14f50e
->>> >>>> --- /dev/null
->>> >>>> +++ b/Documentation/devicetree/bindings/mtd/altera_epcq.txt
->>> >>>> @@ -0,0 +1,45 @@
->>> >>>> +* MTD Altera EPCQ driver
->>> >>>> +
->>> >>>> +Required properties:
->>> >>>> +- compatible: Should be "altr,epcq-1.0"
->>> >>>> +- reg: Address and length of the register set  for the device. It contains
->>> >>>> +  the information of registers in the same order as described by reg-names
->>> >>>> +- reg-names: Should contain the reg names
->>> >>>> +  "csr_base": Should contain the register configuration base address
->>> >>>> +  "data_base": Should contain the data base address
->>> >>>> +- is-epcs: boolean type.
->>> >>>> +             If present, the device contains EPCS flashes.
->>> >>>> +             Otherwise, it contains EPCQ flashes.
->>> >>>> +- #address-cells: Must be <1>.
->>> >>>> +- #size-cells: Must be <0>.
->>> >>>> +- flash device tree subnode, there must be a node with the following fields:
->>> >>>
->>> >>> These subnodes definitely require a 'compatible' string. Perhaps they
->>> >>> should be used to differentiate EPCS vs. EPCQ. Does "is-epcs" really
->>> >>> need to be in the top-level controller node?
->>> >>>
->>> >>>> +     - reg: Should contain the flash id
->>> >>>
->>> >>> Should, or must? (This question is relevant, because you seem to make it
->>> >>> optional in your code.) And what does the "flash ID" mean? It seems like
->>> >>> you're using as a chip-select or bank index.
->>> >>>
->>> Yes, this is used for chip select. It is required, not optional. This
->>> to ID for each flash in the device
->>
->> OK, so correct the language here and enforce this in your driver. Right
->> now, you don't fail gracefully if this is missing.
->>
->
-> Sorry, you are right. This field is unnecessary for my driver.
-> Instead, compatible is replaced. I will update it with 2nd version.
->
->>> >>>> +             if (sector_start < num_sectors-(num_sectors / 4))
->>> >>>> +                     sr_bp = __ilog2_u32(num_sectors);
->>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 8))
->>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 1;
->>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 16))
->>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 2;
->>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 32))
->>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 3;
->>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 64))
->>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 4;
->>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 128))
->>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 5;
->>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 256))
->>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 6;
->>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 512))
->>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 7;
->>> >>>> +             else if (sector_start < num_sectors-(num_sectors / 1024))
->>> >>>> +                     sr_bp = __ilog2_u32(num_sectors) - 8;
->>> >>>> +             else
->>> >>>> +                     sr_bp = 0;  /* non area protected */
->>> >>>
->>> >>> Yikes, that's ugly! And I'm not sure it matches the EPCQ doc I found.
->>> >>> I'm pretty sure you can rewrite this if/else-if/else block in about 1
->>> >>> line though.
->>> >>>
->>> Yes, i understand that it looks ugly. But it is the best i can do
->>> since this function has to satisfy for all the supported devices
->>> (http://www.altera.com.my/literature/hb/cfg/cfg_cf52012.pdf, start
->>> from page 19)
->>
->> Did you even try? It was possible to simplify the other case, and I'm
->> pretty sure this case can be simplified too. How about this? I hacked
->> this together and it seems to match:
->>
->>         if (sector_start <= num_sectors / 2)
->>                 sr_bp = __ilog2_u32(num_sectors);
->>         else
->>                 sr_bp = fls(num_sectors - 1 - sector_start) + 1;
->>
->
-> Umm. This does not seem right to me. Just look at sector_start <
-> number_sector / 2. From the altera EPCQ datasheet
-> (http://www.altera.com.my/literature/hb/cfg/cfg_cf52012.pdf), such as
-> EPCQ16 (page 19,20). Sector start <number_sector/2 is the case where
-> TB = 1 (table 17). In this table we have few options and sr_bp =
-> __ilog2_u32(num_sectors) is only cover for the sector from 0 to 15 to
-> be protected.
->
-
-I think the code should be like this:
-
-    if (sector_start >= num_sectors / 2)
-        sr_bp = fls(num_sectors - 1 - sector_start) + 1;
-    else if ((sector_end < num_sectors / 2)
-        sr_bp = fls(sector_end) + 1;
-    else
-        sr_bp = 16; /* lock all areas */
-
-
->>> >>>> +
->>> >>>> +             if (sr_bp < 0) {
->>> >>>
->>> >>> sr_bp is unsigned, so this is never true.
->>> >>>
->>> Ok.  I will change to int type.
->>
->> Are there ever negative values?
->>
->>> >>>> +static int altera_epcq_probe_config_dt(struct platform_device *pdev,
->>> >>>> +                                    struct device_node *np,
->>> >>>> +                                    struct altera_epcq_plat_data *pdata)
->>> >>>> +{
->>> >>>> +     struct device_node *pp = NULL;
->>> >>>> +     struct resource *epcq_res;
->>> >>>> +     int i = 0;
->>> >>>> +     u32 id;
->> ...
->>> >>>> +             pdata->np[i] = pp;
->>> >>>> +
->>> >>>> +             /* Read bank id from DT */
->>> >>>> +             if (of_get_property(pp, "reg", &id))
->>
->> I just realized; you're not using this correctly. of_get_property()
->> returns the *length* in the third parameter, so you're not actually
->> saving the bank ID here. You probably want of_property_read_u32()
->> instead.
->>
->
-> I will remove this since it is unnecessary.
->
->>> >>>
->>> >>> Is this property optional? Your DT binding doc doesn't make it clear,
->>> >>> but it seems like a property which would be wise to require (i.e., not
->>> >>> optional).
->>
->> ^^^ so there should be a failure case, where you return failure if the
->> property is missing.
->>
->>> >>>> +                     pdata->board_flash_info[i].bank = id;
->>> >>>> +             i++;
->>> >>>> +     }
->>> >>>> +     pdata->num_flashes = i;
->>> >>>> +     return 0;
->>> >>>> +}
->>
->> Brian
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+index 7d4c8eb..955a793 100644
+--- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+@@ -12,6 +12,7 @@ Required properties:
+ - atmel,nand-cmd-offset : offset for the command latch.
+ - #address-cells, #size-cells : Must be present if the device has sub-nodes
+   representing partitions.
++- clocks: phandle to the peripheral clock
+ 
+ - gpios : specifies the gpio pins to control the NAND device. detect is an
+   optional gpio and may be set to 0 if not present.
+@@ -38,7 +39,6 @@ Optional properties:
+     - reg : should specify the address and size used for NFC command registers,
+             NFC registers and NFC Sram. NFC Sram address and size can be absent
+             if don't want to use it.
+-    - clocks: phandle to the peripheral clock
+   - Optional properties:
+     - atmel,write-by-sram: boolean to enable NFC write by sram.
+ 
+@@ -95,13 +95,13 @@ nand0: nand@40000000 {
+ 	compatible = "atmel,at91rm9200-nand";
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
++	clocks = <&hsmc_clk>
+ 	ranges;
+         ...
+         nfc@70000000 {
+ 		compatible = "atmel,sama5d3-nfc";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		clocks = <&hsmc_clk>
+ 		reg = <
+ 			0x70000000 0x10000000	/* NFC Command Registers */
+ 			0xffffc000 0x00000070	/* NFC HSMC regs */
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 336cc2d..9de9952 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -65,6 +65,7 @@ module_param(on_flash_bbt, int, 0);
+ 
+ struct atmel_nand_caps {
+ 	bool pmecc_correct_erase_page;
++	bool has_hsmc_clk;
+ };
+ 
+ /* oob layout for large page size
+@@ -101,8 +102,6 @@ struct atmel_nfc {
+ 	bool			use_nfc_sram;
+ 	bool			write_by_sram;
+ 
+-	struct clk		*clk;
+-
+ 	bool			is_initialized;
+ 	struct completion	comp_ready;
+ 	struct completion	comp_cmd_done;
+@@ -127,6 +126,7 @@ struct atmel_nand_host {
+ 	struct dma_chan		*dma_chan;
+ 
+ 	struct atmel_nfc	*nfc;
++	struct clk		*clk;
+ 
+ 	struct atmel_nand_caps	*caps;
+ 	bool			has_pmecc;
+@@ -2131,6 +2131,19 @@ static int atmel_nand_probe(struct platform_device *pdev)
+ 	nand_chip->IO_ADDR_R = host->io_base;
+ 	nand_chip->IO_ADDR_W = host->io_base;
+ 
++	if (host->caps->has_hsmc_clk) {
++		host->clk = devm_clk_get(&pdev->dev, NULL);
++		if (IS_ERR(host->clk)) {
++			dev_err(&pdev->dev, "HSMC clock is missing, update your Device Tree");
++			res = PTR_ERR(host->clk);
++			goto err_nand_ioremap;
++		}
++
++		res = clk_prepare_enable(host->clk);
++		if (res)
++			goto err_nand_ioremap;
++	}
++
+ 	if (nand_nfc.is_initialized) {
+ 		/* NFC driver is probed and initialized */
+ 		host->nfc = &nand_nfc;
+@@ -2296,6 +2309,9 @@ static int atmel_nand_remove(struct platform_device *pdev)
+ 	if (host->dma_chan)
+ 		dma_release_channel(host->dma_chan);
+ 
++	if (!IS_ERR(host->clk))
++		clk_disable_unprepare(host->clk);
++
+ 	platform_driver_unregister(&atmel_nand_nfc_driver);
+ 
+ 	return 0;
+@@ -2303,14 +2319,22 @@ static int atmel_nand_remove(struct platform_device *pdev)
+ 
+ static struct atmel_nand_caps at91rm9200_caps = {
+ 	.pmecc_correct_erase_page = false,
++	.has_hsmc_clk = false,
++};
++
++static struct atmel_nand_caps sama5d3_caps = {
++	.pmecc_correct_erase_page = false,
++	.has_hsmc_clk = true,
+ };
+ 
+ static struct atmel_nand_caps sama5d4_caps = {
+ 	.pmecc_correct_erase_page = true,
++	.has_hsmc_clk = true,
+ };
+ 
+ static const struct of_device_id atmel_nand_dt_ids[] = {
+ 	{ .compatible = "atmel,at91rm9200-nand", .data = &at91rm9200_caps },
++	{ .compatible = "atmel,sama5d3-nand", .data = &sama5d3_caps },
+ 	{ .compatible = "atmel,sama5d4-nand", .data = &sama5d4_caps },
+ 	{ /* sentinel */ }
+ };
+@@ -2321,7 +2345,6 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ {
+ 	struct atmel_nfc *nfc = &nand_nfc;
+ 	struct resource *nfc_cmd_regs, *nfc_hsmc_regs, *nfc_sram;
+-	int ret;
+ 
+ 	nfc_cmd_regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	nfc->base_cmd_regs = devm_ioremap_resource(&pdev->dev, nfc_cmd_regs);
+@@ -2354,31 +2377,12 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ 	nfc_writel(nfc->hsmc_regs, IDR, 0xffffffff);
+ 	nfc_readl(nfc->hsmc_regs, SR);	/* clear the NFC_SR */
+ 
+-	nfc->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (!IS_ERR(nfc->clk)) {
+-		ret = clk_prepare_enable(nfc->clk);
+-		if (ret)
+-			return ret;
+-	} else {
+-		dev_warn(&pdev->dev, "NFC clock missing, update your Device Tree");
+-	}
+-
+ 	nfc->is_initialized = true;
+ 	dev_info(&pdev->dev, "NFC is probed.\n");
+ 
+ 	return 0;
+ }
+ 
+-static int atmel_nand_nfc_remove(struct platform_device *pdev)
+-{
+-	struct atmel_nfc *nfc = &nand_nfc;
+-
+-	if (!IS_ERR(nfc->clk))
+-		clk_disable_unprepare(nfc->clk);
+-
+-	return 0;
+-}
+-
+ static const struct of_device_id atmel_nand_nfc_match[] = {
+ 	{ .compatible = "atmel,sama5d3-nfc" },
+ 	{ /* sentinel */ }
+@@ -2391,7 +2395,6 @@ static struct platform_driver atmel_nand_nfc_driver = {
+ 		.of_match_table = of_match_ptr(atmel_nand_nfc_match),
+ 	},
+ 	.probe = atmel_nand_nfc_probe,
+-	.remove = atmel_nand_nfc_remove,
+ };
+ 
+ static struct platform_driver atmel_nand_driver = {
+-- 
+1.9.1
