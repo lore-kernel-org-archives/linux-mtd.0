@@ -1,27 +1,16 @@
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
- helo=smtp.smtpout.orange.fr)
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLGq2-0007l0-5V
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:51:15 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 5/9] mtd: pxa3xx_nand: add support for the Marvell Berlin
- nand controller
-References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
- <1422367816-4257-6-git-send-email-antoine.tenart@free-electrons.com>
- <20150209005503.3fad39c7@bbrezillon>
-Date: Tue, 10 Feb 2015 20:50:41 +0100
-In-Reply-To: <20150209005503.3fad39c7@bbrezillon> (Boris Brezillon's message
- of "Mon, 9 Feb 2015 00:55:03 +0100")
-Message-ID: <871tlx7dgu.fsf@free.fr>
+ id 1YLHl5-00062P-RJ
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 20:50:12 +0000
+Date: Tue, 10 Feb 2015 12:49:48 -0800
+From: akpm@linux-foundation.org
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ akpm@linux-foundation.org, chenjie6@huawei.com, stable@vger.kernel.org
+Subject: [patch 1/1] jffs2: fix handling of corrupted summary length
+Message-ID: <54da6eec.gh8OMi3PE2ER1FFi%akpm@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: thomas.petazzoni@free-electrons.com, zmxu@marvell.com,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- ezequiel.garcia@free-electrons.com, jszhang@marvell.com,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,40 +20,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+From: Chen Jie <chenjie6@huawei.com>
+Subject: jffs2: fix handling of corrupted summary length
 
-> On Tue, 27 Jan 2015 15:10:12 +0100
-> Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
->
->> The nand controller on Marvell Berlin SoC reuse the pxa3xx nand driver
->> as it quite close. The process of sending commands can be compared to
->> the one of the Marvell armada 370: read and write commands are done in
->> chunks.
->> 
->> But the Berlin nand controller has some other specificities which
->> require some modifications of the pxa3xx nand driver:
->> - there are no IRQ available so we need to poll the status register: we
->>   have to use our own cmdfunc Berlin function, and early on the probing
->>   function.
->> - PAGEPROG are very different from the one used in the pxa3xx driver,
->>   so we're using a specific process for this one
->> - the SEQIN command is equivalent to a READ0 command
->> - the RNDOUT command must be used to perform a read operation, and the
->>   command is not NAND_CMD_RNDOUT
->> - the ERASE1 command is specific (0xd060)
->> 
->> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+sm->offset maybe wrong but magic maybe right, the offset do not have CRC.
 
-Given all the differences, the PIO mode instead of the current interrupt model,
-and the berlin specific functions (nand_start, ...), wouldn't it be an idea to :
- - extract the common functions to mrvl-nand-lib.c
- - the remaining would be in pxa3xx_nand.c
- - the new code will be in berlin_nand.c
+Badness at c00c7580 [verbose debug info unavailable]
+NIP: c00c7580 LR: c00c718c CTR: 00000014
+REGS: df07bb40 TRAP: 0700   Not tainted  (2.6.34.13-WR4.3.0.0_standard)
+MSR: 00029000 <EE,ME,CE>  CR: 22084f84  XER: 00000000
+TASK = df84d6e0[908] 'mount' THREAD: df07a000
+GPR00: 00000001 df07bbf0 df84d6e0 00000000 00000001 00000000 df07bb58 00000041
+GPR08: 00000041 c0638860 00000000 00000010 22084f88 100636c8 df814ff8 00000000
+GPR16: df84d6e0 dfa558cc c05adb90 00000048 c0452d30 00000000 000240d0 000040d0
+GPR24: 00000014 c05ae734 c05be2e0 00000000 00000001 00000000 00000000 c05ae730
+NIP [c00c7580] __alloc_pages_nodemask+0x4d0/0x638
+LR [c00c718c] __alloc_pages_nodemask+0xdc/0x638
+Call Trace:
+[df07bbf0] [c00c718c] __alloc_pages_nodemask+0xdc/0x638 (unreliable)
+[df07bc90] [c00c7708] __get_free_pages+0x20/0x48
+[df07bca0] [c00f4a40] __kmalloc+0x15c/0x1ec
+[df07bcd0] [c01fc880] jffs2_scan_medium+0xa58/0x14d0
+[df07bd70] [c01ff38c] jffs2_do_mount_fs+0x1f4/0x6b4
+[df07bdb0] [c020144c] jffs2_do_fill_super+0xa8/0x260
+[df07bdd0] [c020230c] jffs2_fill_super+0x104/0x184
+[df07be00] [c0335814] get_sb_mtd_aux+0x9c/0xec
+[df07be20] [c033596c] get_sb_mtd+0x84/0x1e8
+[df07be60] [c0201ed0] jffs2_get_sb+0x1c/0x2c
+[df07be70] [c0103898] vfs_kern_mount+0x78/0x1e8
+[df07bea0] [c0103a58] do_kern_mount+0x40/0x100
+[df07bec0] [c011fe90] do_mount+0x240/0x890
+[df07bf10] [c0120570] sys_mount+0x90/0xd8
+[df07bf40] [c00110d8] ret_from_syscall+0x0/0x4
+=== Exception: c01 at 0xff61a34
+    LR = 0x100135f0
+Instruction dump:
+38800005 38600000 48010f41 4bfffe1c 4bfc2d15 4bfffe8c 72e90200 4082fc28
+3d20c064 39298860 8809000d 68000001 <0f000000> 2f800000 419efc0c 38000001
+mount: mounting /dev/mtdblock3 on /common failed: Input/output error
 
-All these ifs per variant will add complexity to the current driver, won't they
-?
+Signed-off-by: Chen Jie <chenjie6@huawei.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
 
-Cheers.
+ fs/jffs2/scan.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---
-Robert
+diff -puN fs/jffs2/scan.c~jffs2-bugfix-of-summary-length fs/jffs2/scan.c
+--- a/fs/jffs2/scan.c~jffs2-bugfix-of-summary-length
++++ a/fs/jffs2/scan.c
+@@ -510,6 +510,10 @@ static int jffs2_scan_eraseblock (struct
+ 				sumlen = c->sector_size - je32_to_cpu(sm->offset);
+ 				sumptr = buf + buf_size - sumlen;
+ 
++				/* sm->offset maybe wrong but MAGIC maybe right */
++				if (sumlen > c->sector_size)
++					goto full_scan;
++
+ 				/* Now, make sure the summary itself is available */
+ 				if (sumlen > buf_size) {
+ 					/* Need to kmalloc for this. */
+@@ -544,6 +548,7 @@ static int jffs2_scan_eraseblock (struct
+ 		}
+ 	}
+ 
++full_scan:
+ 	buf_ofs = jeb->offset;
+ 
+ 	if (!buf_size) {
+_
