@@ -1,30 +1,18 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLBDj-0008Ix-RM
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 13:51:20 +0000
-Date: Tue, 10 Feb 2015 14:50:30 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: default bitflip-reporting threshold to 75%
- of correction strength
-Message-ID: <20150210145030.5987fa63@bbrezillon>
-In-Reply-To: <20150121094257.6c9d6214@bbrezillon>
-References: <54B38745.70007@atmel.com>
- <1421095889-12717-1-git-send-email-computersforpeace@gmail.com>
- <20150117200137.71c1aca0@bbrezillon>
- <20150121082257.GB5273@norris-Latitude-E6410>
- <20150121094257.6c9d6214@bbrezillon>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
+ Linux)) id 1YLG2w-0008KC-1H
+ for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 19:00:33 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 6/6] [RFC] mtd: mxc-nand: Warn on unimplemented commands
+Date: Tue, 10 Feb 2015 20:00:00 +0100
+Message-Id: <1423594800-24214-7-git-send-email-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Richard Weinberger <richard@nod.at>, Steve deRosier <derosier@gmail.com>,
- Josh Wu <josh.wu@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Huang Shijie <shijie8@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,56 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 21 Jan 2015 09:42:57 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+The PARAM command was long unimplemented and it probably wasn't
+noticed because chip probing using only the few bytes returned by the
+READID command are good enough in most cases to determine the chip in
+use.
 
-> Hi Brian,
-> 
-> On Wed, 21 Jan 2015 00:22:57 -0800
-> Brian Norris <computersforpeace@gmail.com> wrote:
+Still to notice such a shortcoming earlier in the future would be nice
+in case it's something more vital.
 
-[...]
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> 
-> > 
-> > > Regarding the read-retry code, it currently stops retrying reading the
-> > > page once the page has been successfully retrieved (or in other terms
-> > > all bitflips have been fixed). But it might stop to soon, because by
-> > > changing the bit level threshold (in other term retrying one more time)
-> > > it might successfully read the page with less bitflips than the
-> > > previous attempt (these are just supposition, I haven't tested it yet).
-> > > If we can achieve that we could retry until we reach something below
-> > > the bitflips threshold value, and if we fail to find any, just consider
-> > > the lower number of bitflips found during those read-retry operations.
-> > 
-> > I believe I suggested scenarios like this to some flash vendors when
-> > speaking to reps in person, but they didn't seem to consider that
-> > likely. I think they were implying that there would be only one read
-> > retry mode that gives a reasonable result. I'm not sure if they were
-> > really the experts on that particular topic, though, or if they were
-> > just giving me an answer to make me happy.
-> 
-> Okay, good to know. I'll try to do some more testing to verify that.
-
-I did some more test on my cubietruck, trying other read-retry if the
-threshold limit is reached (here is the code [1]), and it seems that
-better read-retry mode are found in most cases (actually in all the
-cases I encountered: see those traces [2]).
-
-Note that I configured the bitflips_threshold to 3/4 of the
-ecc-strength (exactly what you're doing in this patch).
-
-Given these results I really think we should consider testing other
-'read modes' if the succeeding one exceed the threshold value.
-
-Best Regards,
-
-Boris
-
-[1]http://code.bulix.org/lvcs9x-87859
-[2]http://code.bulix.org/xii8nw-87860
-
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 0083b4ee4f33..372e0e38f59b 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1160,6 +1160,10 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		memcpy32_fromio(host->data_buf, host->main_area0, 512);
+ 		host->buf_start = 0;
+ 		break;
++	default:
++		WARN_ONCE(1, "Unimplemented command (cmd=%u)\n",
++			  command);
++		break;
+ 	}
+ }
+ 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.1.4
