@@ -1,20 +1,21 @@
-Date: Wed, 11 Feb 2015 17:31:19 +0100
+Date: Wed, 11 Feb 2015 17:33:43 +0100
 From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
 Subject: Re: [PATCH 5/9] mtd: pxa3xx_nand: add support for the Marvell Berlin
  nand controller
-Message-ID: <20150211163119.GG11169@kwain>
+Message-ID: <20150211163343.GH11169@kwain>
 References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
  <1422367816-4257-6-git-send-email-antoine.tenart@free-electrons.com>
- <20150209005503.3fad39c7@bbrezillon>
+ <20150209005503.3fad39c7@bbrezillon> <871tlx7dgu.fsf@free.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150209005503.3fad39c7@bbrezillon>
-Cc: thomas.petazzoni@free-electrons.com, zmxu@marvell.com,
+In-Reply-To: <871tlx7dgu.fsf@free.fr>
+Cc: thomas.petazzoni@free-electrons.com,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
  Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
  ezequiel.garcia@free-electrons.com, jszhang@marvell.com,
  computersforpeace@gmail.com, dwmw2@infradead.org,
  linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
@@ -27,85 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris,
+Robert,
 
-On Mon, Feb 09, 2015 at 12:55:03AM +0100, Boris Brezillon wrote:
-> On Tue, 27 Jan 2015 15:10:12 +0100
-> Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
+On Tue, Feb 10, 2015 at 08:50:41PM +0100, Robert Jarzmik wrote:
+> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+> > On Tue, 27 Jan 2015 15:10:12 +0100
+> > Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
+> >
+> >> The nand controller on Marvell Berlin SoC reuse the pxa3xx nand driver
+> >> as it quite close. The process of sending commands can be compared to
+> >> the one of the Marvell armada 370: read and write commands are done in
+> >> chunks.
+> >> 
+> >> But the Berlin nand controller has some other specificities which
+> >> require some modifications of the pxa3xx nand driver:
+> >> - there are no IRQ available so we need to poll the status register: we
+> >>   have to use our own cmdfunc Berlin function, and early on the probing
+> >>   function.
+> >> - PAGEPROG are very different from the one used in the pxa3xx driver,
+> >>   so we're using a specific process for this one
+> >> - the SEQIN command is equivalent to a READ0 command
+> >> - the RNDOUT command must be used to perform a read operation, and the
+> >>   command is not NAND_CMD_RNDOUT
+> >> - the ERASE1 command is specific (0xd060)
+> >> 
+> >> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 > 
-> >  
-> > +		if (info->variant == PXA3XX_NAND_VARIANT_BERLIN2 &&
-> > +				info->ndcb0 & NDCB0_LEN_OVRD)
-> > +			nand_writel(info, NDCB0,
-> > +					info->chunk_size + info->oob_size);
-> > +
+> Given all the differences, the PIO mode instead of the current interrupt model,
+> and the berlin specific functions (nand_start, ...), wouldn't it be an idea to :
+>  - extract the common functions to mrvl-nand-lib.c
+>  - the remaining would be in pxa3xx_nand.c
+>  - the new code will be in berlin_nand.c
 > 
-> Why don't you reuse the following if statement (which is doing the
-> exact same thing, except for the size being stored in ndbc3 when
-> the command is created).
+> All these ifs per variant will add complexity to the current driver, won't they
+> ?
 
-I'll update to reuse this!
-
-> Moreover, I'm pretty sure you don't want to add oob_size on the 2nd
-> chunk, but only on the last one.
-> Doing that will only work for 4K pages (2 * max_chunk_size), and you
-> add support for 8K pages NANDs in this patch.
-
-Yep. As a matter of fact, oob_size was equl to 0 in this case because of
-some dirty hacks. I'll remove them and will send a v2 with a proper
-solution.
-
-> >  
-> > +	if (info->variant == PXA3XX_NAND_VARIANT_BERLIN2)
-> > +		chip->cmdfunc = nand_cmdfunc_berlin;
-> 
-> Your cmdfunc looks like the nand_cmdfunc_extended one, and this one is
-> only used for NAND chips that have writesize > PAGE_CHUNK_SIZE.
-> 
-> Is your cmdfunc supporting accesses to NAND chips with smaller pages ?
-> If you're unsure, maybe you should add a check here, and refuse to
-> probe such NAND chips.
-
-I currently have no idea, so I'll add a check here.
-
-> >  
-> > -	num = ARRAY_SIZE(builtin_flash_types) + pdata->num_flash - 1;
-> > -	for (i = 0; i < num; i++) {
-> > -		if (i < pdata->num_flash)
-> > -			f = pdata->flash + i;
-> > -		else
-> > -			f = &builtin_flash_types[i - pdata->num_flash + 1];
-> > +	if (info->variant == PXA3XX_NAND_VARIANT_BERLIN2)
-> > +		flash_types = berlin_builtin_flash_types;
-> > +	else
-> > +		flash_types = builtin_flash_types;
-> >  
-> > -		/* find the chip in default list */
-> > +	for (i = 0; (f = &flash_types[i]); i++)
-> >  		if (f->chip_id == id)
-> >  			break;
-> > +
-> > +	if (f == NULL) {
-> > +		for (i = 0; i < pdata->num_flash; i++) {
-> > +			f = pdata->flash + i;
-> > +			if (f->chip_id == id)
-> > +				break;
-> > +		}
-> >  	}
-> 
-> You're changing the matching order here, the initial order was:
-> 
-> 1/ pdata definition
-> 2/ builtin types
-> 
-> and you're now doing:
-> 
-> 1/ builtin types
-> 2/ pdata definition
-
-Oops...
-
-Thanks for the review!
+Given the current state of this driver I believe this would be a better
+idea to first rework it to use the nand framework properly. Then it will
+be possible to have a look on what we have, to decide whether or not a
+mrvl-nand-lib is needed.
 
 Antoine
 
