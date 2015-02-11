@@ -1,16 +1,22 @@
-Date: Wed, 11 Feb 2015 09:42:56 +0100
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
+ Linux)) id 1YLTA0-00078U-4j
+ for linux-mtd@lists.infradead.org; Wed, 11 Feb 2015 09:00:42 +0000
+Date: Wed, 11 Feb 2015 10:00:17 +0100
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 Subject: Re: [PATCH 6/6] [RFC] mtd: mxc-nand: Warn on unimplemented commands
-Message-ID: <20150211094256.2ef2805b@ipc1.ka-ro>
-In-Reply-To: <1423594800-24214-7-git-send-email-u.kleine-koenig@pengutronix.de>
+Message-ID: <20150211090017.GW10842@pengutronix.de>
 References: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
  <1423594800-24214-7-git-send-email-u.kleine-koenig@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org
+ <20150211094256.2ef2805b@ipc1.ka-ro>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150211094256.2ef2805b@ipc1.ka-ro>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello Lothar,
 
-Uwe Kleine-K=C3=B6nig wrote:
-> The PARAM command was long unimplemented and it probably wasn't
-> noticed because chip probing using only the few bytes returned by the
-> READID command are good enough in most cases to determine the chip in
-> use.
->=20
-> Still to notice such a shortcoming earlier in the future would be nice
-> in case it's something more vital.
->=20
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> ---
->  drivers/mtd/nand/mxc_nand.c | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 0083b4ee4f33..372e0e38f59b 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -1160,6 +1160,10 @@ static void mxc_nand_command(struct mtd_info *mtd,=
- unsigned command,
->  		memcpy32_fromio(host->data_buf, host->main_area0, 512);
->  		host->buf_start =3D 0;
->  		break;
-> +	default:
-> +		WARN_ONCE(1, "Unimplemented command (cmd=3D%u)\n",
-> +			  command);
-> +		break;
->  	}
-useless break;
+On Wed, Feb 11, 2015 at 09:42:56AM +0100, Lothar Waßmann wrote:
+> > diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> > index 0083b4ee4f33..372e0e38f59b 100644
+> > --- a/drivers/mtd/nand/mxc_nand.c
+> > +++ b/drivers/mtd/nand/mxc_nand.c
+> > @@ -1160,6 +1160,10 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+> >  		memcpy32_fromio(host->data_buf, host->main_area0, 512);
+> >  		host->buf_start = 0;
+> >  		break;
+> > +	default:
+> > +		WARN_ONCE(1, "Unimplemented command (cmd=%u)\n",
+> > +			  command);
+> > +		break;
+> >  	}
+> useless break;
+Do you mean the line break? That's right, I fixed it here for a later
+v2. But I guess you mean the (literal) break here. Right, it could be
+dropped without change in semantic, but I thought adding it matches the
+usually recommended style?!
 
+Best regards
+Uwe
 
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
