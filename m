@@ -1,17 +1,17 @@
-Date: Wed, 11 Feb 2015 17:27:02 +0100
+Date: Wed, 11 Feb 2015 17:31:19 +0100
 From: Antoine Tenart <antoine.tenart@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Subject: Re: [PATCH 5/9] mtd: pxa3xx_nand: add support for the Marvell Berlin
  nand controller
-Message-ID: <20150211162702.GF11169@kwain>
+Message-ID: <20150211163119.GG11169@kwain>
 References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
  <1422367816-4257-6-git-send-email-antoine.tenart@free-electrons.com>
- <20150208220633.5d2c7008@bbrezillon>
+ <20150209005503.3fad39c7@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150208220633.5d2c7008@bbrezillon>
+In-Reply-To: <20150209005503.3fad39c7@bbrezillon>
 Cc: thomas.petazzoni@free-electrons.com, zmxu@marvell.com,
  Antoine Tenart <antoine.tenart@free-electrons.com>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
@@ -27,146 +27,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Boris,
 
-On Sun, Feb 08, 2015 at 10:06:33PM +0100, Boris Brezillon wrote:
+On Mon, Feb 09, 2015 at 12:55:03AM +0100, Boris Brezillon wrote:
 > On Tue, 27 Jan 2015 15:10:12 +0100
 > Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
-> > +
-> > +#define BERLIN_NAND_CMD_RNDOUT		0x3000
 > 
-> Your specific RNDOUT command looks like a regular READ0 (0x0) +
-> READSTART (0x30) sequence, I think this is why you need to do a RNDOUT
-> to read your page ;-).
-
-You're right :)
-
-> 
-> > +#define BERLIN_NAND_CMD_ERASE1		0xd060
-> 
-> Ditto, it's a regular ERASE command sequence: ERASE1 (0x60) + ERASE2
-> (0xd0).
-
-Yep, I'll update.
-
 > >  
-> >  static struct pxa3xx_nand_timing timing[] = {
-> > -	{ 40, 80, 60, 100, 80, 100, 90000, 400, 40, },
-> > -	{ 10,  0, 20,  40, 30,  40, 11123, 110, 10, },
-> > -	{ 10, 25, 15,  25, 15,  30, 25000,  60, 10, },
-> > -	{ 10, 35, 15,  25, 15,  25, 25000,  60, 10, },
-> > +	{ 40, 80, 60, 100, 80, 100,  90000, 400, 40, },
-> > +	{ 10,  0, 20,  40, 30,  40,  11123, 110, 10, },
-> > +	{ 10, 25, 15,  25, 15,  30,  25000,  60, 10, },
-> > +	{ 10, 35, 15,  25, 15,  25,  25000,  60, 10, },
-> > +	{  5, 20, 10,  12, 10,  12,  60000,  60, 10, },
-> > +	{  5, 20, 10,  12, 10,  12, 200000, 120, 10, },
-> > +	{  5, 15, 10,  15, 10,  15,  60000,  60, 10, },
-> >  };
-> >  
-> >  static struct pxa3xx_nand_flash builtin_flash_types[] = {
-> > @@ -260,6 +273,20 @@ static struct pxa3xx_nand_flash builtin_flash_types[] = {
-> >  { "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096, &timing[2] },
-> >  { "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &timing[2] },
-> >  { "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, &timing[3] },
-> > +{ },
-> > +};
-> > +
-> > +static struct pxa3xx_nand_flash berlin_builtin_flash_types[] = {
-> > +{ "2GiB 8-bit",    0xd5ec, 128, 8192,  8,  8, 2048, &timing[4] },
-> > +{ "2GiB 8-bit",    0xd598, 128, 8192,  8,  8, 2048, &timing[5] },
-> > +{ "2GiB 8-bit",    0x482c, 256, 4096,  8,  8, 2048, &timing[6] },
-> > +{ "4GiB 8-bit",    0xd7ec, 128, 8192,  8,  8, 4096, &timing[5] },
-> > +{ "8GiB 8-bit",    0xdeec, 128, 8192,  8,  8, 4096, &timing[5] },
-> > +{ "4GiB 8-bit",    0xd7ad, 256, 8192,  8,  8, 2048, &timing[5] },
-> > +{ "4GiB 8-bit",    0x682c, 256, 4096,  8,  8, 4096, &timing[6] },
-> > +{ "8GiB 8-bit",    0x882c, 256, 8192,  8,  8, 4096, &timing[6] },
-> > +{ "8GiB 8-bit",    0xdead, 256, 8192,  8,  8, 4096, &timing[6] },
-> > +{ },
-> >  };
-> 
-> As already stated by Brian and Ezequiel, this should be handled with
-> the new API for timing retrieval.
-> However, IMHO, this should be part of another series reworking the pxa
-> driver, and I know you plan to do that, so I don't mind if this
-> table is added to support your IP (as long as you're taking care of
-> reworking that ;-)).
-
-Yep, that's the plan.
-
-> >  
-> > +static struct nand_ecclayout ecc_layout_oob_128 = {
-> > +        .eccbytes = 48,
-> > +        .eccpos = {
-> > +                   80, 81, 82, 83, 84, 85, 86, 87,
-> > +                   88, 89, 90, 91, 92, 93, 94, 95,
-> > +                   96, 97, 98, 99, 100, 101, 102, 103,
-> > +                   104, 105, 106, 107, 108, 109, 110, 111,
-> > +                   112, 113, 114, 115, 116, 117, 118, 119,
-> > +                   120, 121, 122, 123, 124, 125, 126, 127},
-> > +        .oobfree = { {.offset = 2, .length = 78} }
-> > +};
+> > +		if (info->variant == PXA3XX_NAND_VARIANT_BERLIN2 &&
+> > +				info->ndcb0 & NDCB0_LEN_OVRD)
+> > +			nand_writel(info, NDCB0,
+> > +					info->chunk_size + info->oob_size);
 > > +
 > 
-> Okay, this is only my opinion, but I think all the ECC layouts defined
-> in this driver should be built dynamically (depending on the requested
-> ECC strength/block-size).
-> Take a look at the sunxi driver if you need an example.
-> 
-> Again, these are mid term changes, and I won't ask you to change that
-> in this series.
+> Why don't you reuse the following if statement (which is doing the
+> exact same thing, except for the size being stored in ndbc3 when
+> the command is created).
 
-Also part of the plan :)
+I'll update to reuse this!
+
+> Moreover, I'm pretty sure you don't want to add oob_size on the 2nd
+> chunk, but only on the last one.
+> Doing that will only work for 4K pages (2 * max_chunk_size), and you
+> add support for 8K pages NANDs in this patch.
+
+Yep. As a matter of fact, oob_size was equl to 0 in this case because of
+some dirty hacks. I'll remove them and will send a v2 with a proper
+solution.
 
 > >  
-> > +	/* Berlin specific */
-> > +	if (info->variant == PXA3XX_NAND_VARIANT_BERLIN2) {
-> > +		if (command == NAND_CMD_READ0 || command == NAND_CMD_READOOB)
-> > +			exec_cmd = 0;
+> > +	if (info->variant == PXA3XX_NAND_VARIANT_BERLIN2)
+> > +		chip->cmdfunc = nand_cmdfunc_berlin;
+> 
+> Your cmdfunc looks like the nand_cmdfunc_extended one, and this one is
+> only used for NAND chips that have writesize > PAGE_CHUNK_SIZE.
+> 
+> Is your cmdfunc supporting accesses to NAND chips with smaller pages ?
+> If you're unsure, maybe you should add a check here, and refuse to
+> probe such NAND chips.
+
+I currently have no idea, so I'll add a check here.
+
+> >  
+> > -	num = ARRAY_SIZE(builtin_flash_types) + pdata->num_flash - 1;
+> > -	for (i = 0; i < num; i++) {
+> > -		if (i < pdata->num_flash)
+> > -			f = pdata->flash + i;
+> > -		else
+> > -			f = &builtin_flash_types[i - pdata->num_flash + 1];
+> > +	if (info->variant == PXA3XX_NAND_VARIANT_BERLIN2)
+> > +		flash_types = berlin_builtin_flash_types;
+> > +	else
+> > +		flash_types = builtin_flash_types;
+> >  
+> > -		/* find the chip in default list */
+> > +	for (i = 0; (f = &flash_types[i]); i++)
+> >  		if (f->chip_id == id)
+> >  			break;
 > > +
-> > +		if (command == NAND_CMD_SEQIN)
-> > +			command = NAND_CMD_READ0;
-> > +		else if (command == NAND_CMD_RNDOUT)
-> > +			command = BERLIN_NAND_CMD_RNDOUT;
+> > +	if (f == NULL) {
+> > +		for (i = 0; i < pdata->num_flash; i++) {
+> > +			f = pdata->flash + i;
+> > +			if (f->chip_id == id)
+> > +				break;
+> > +		}
+> >  	}
 > 
-> As stated above your BERLIN_NAND_CMD_RNDOUT is just a regular READ0 +
-> READSTART command, are there any differences between a RNDOUT and a
-> regular READ in your driver ?
-
-There isn't and I'll update to use the regular READ0 command.
-
-> >  
-> >  	case NAND_CMD_ERASE1:
-> > +	case BERLIN_NAND_CMD_ERASE1:
-> >  		info->ndcb0 |= NDCB0_CMD_TYPE(2)
-> >  				| NDCB0_AUTO_RS
-> >  				| NDCB0_ADDR_CYC(3)
-> >  				| NDCB0_DBC
-> > -				| (NAND_CMD_ERASE2 << 8)
-> > -				| NAND_CMD_ERASE1;
-> > +				| command;
-> >  		info->ndcb1 = page_addr;
-> >  		info->ndcb2 = 0;
-> >  
-> > +		if (command == NAND_CMD_ERASE1)
-> > +			info->ndcb0 |= (NAND_CMD_ERASE2 << 8);
-> > +
+> You're changing the matching order here, the initial order was:
 > 
-> I don't see any difference with the old version:
-> you previously set command to BERLIN_NAND_CMD_ERASE1, which, according
-> to your definition, is equal to
-> (NAND_CMD_ERASE1 | (NAND_CMD_ERASE2 << 8))
+> 1/ pdata definition
+> 2/ builtin types
 > 
-> Right ?
+> and you're now doing:
 > 
-> Am I missing something obvious ?
+> 1/ builtin types
+> 2/ pdata definition
 
-Nope, I'll fix this.
+Oops...
 
-> 
-> That's all for now :-).
-
-Thanks!
+Thanks for the review!
 
 Antoine
 
