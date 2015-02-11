@@ -1,21 +1,25 @@
-Received: from mail-ie0-f181.google.com ([209.85.223.181])
+Received: from mail-qg0-x231.google.com ([2607:f8b0:400d:c04::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLK9k-0005Qx-Au
- for linux-mtd@lists.infradead.org; Tue, 10 Feb 2015 23:23:48 +0000
-Received: by iebtr6 with SMTP id tr6so180107ieb.2
- for <linux-mtd@lists.infradead.org>; Tue, 10 Feb 2015 15:23:27 -0800 (PST)
-Sender: Daniel Ehrenberg <dehrenberg@google.com>
-From: Dan Ehrenberg <dehrenberg@chromium.org>
-To: linux-mtd@lists.infradead.org, richard.weinberger@gmail.com,
- ezequiel.garcia@imgtec.com
-Subject: [PATCH v2 3/3] mtdpart: Allow deleting a partition with another
- partition as master
-Date: Tue, 10 Feb 2015 14:58:58 -0800
-Message-Id: <1423609138-19321-3-git-send-email-dehrenberg@chromium.org>
-In-Reply-To: <1423609138-19321-1-git-send-email-dehrenberg@chromium.org>
-References: <1423609138-19321-1-git-send-email-dehrenberg@chromium.org>
-Cc: namnguyen@chromium.org, grundler@chromium.org, gwendal@chromium.org,
- Dan Ehrenberg <dehrenberg@chromium.org>
+ id 1YLOTQ-000274-2b
+ for linux-mtd@lists.infradead.org; Wed, 11 Feb 2015 04:00:24 +0000
+Received: by mail-qg0-f49.google.com with SMTP id q107so903208qgd.8
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Feb 2015 20:00:01 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1422789346-16954-1-git-send-email-hofrat@osadl.org>
+References: <1422789346-16954-1-git-send-email-hofrat@osadl.org>
+Date: Tue, 10 Feb 2015 22:00:01 -0600
+Message-ID: <CA+EcR23aNNaOEk8kmw7S1MX1uzVdZ=At1q2aAtJh3jNLnyOk7Q@mail.gmail.com>
+Subject: Re: [PATCH] spi: fsl-quadspi: cleanup wait_for_completion return
+ handling
+From: Han Xu <xhnjupt@gmail.com>
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Marek Vasut <marex@denx.de>,
+ Ben Hutchings <ben@decadent.org.uk>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, Allen Xu <b45815@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +29,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes MTD dynamic partitioning more flexible by allowing
-partitions to be deleted by referencing any partition with the same
-master. For example, if you have /dev/mtd0 and /dev/mtd1 both
-partitions on the same underlying device, then you can call
-BLKPG_DEL_PARTITION with an fd of /dev/mtd0 and pno of 1, and
-/dev/mtd1 will be deleted (as opposed to returning EINVAL to signal a
-missing partition, which it did previously).
+On Sun, Feb 1, 2015 at 5:15 AM, Nicholas Mc Guire <hofrat@osadl.org> wrote:
+> return type of wait_for_completion_timeout is unsigned long not int, this
+> patch uses the return value of wait_for_completion_timeout in the condition
+> directly rather than adding a additional appropriately typed variable.
+>
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> ---
+>
+> As the returnvalue of wait_for_completion_timeout is logically treated here
+> as a boolean (timeout occured or not) it can be wrapped into the if condition
+> directly and no additional variable is needed.
+>
+> This patch was only compile tested with imx_v6_v7_defconfig
+> (implies CONFIG_SPI_FSL_QUADSPI=y)
+>
+> Patch is against 3.19.0-rc6 -next-20150130
+>
+>  drivers/mtd/spi-nor/fsl-quadspi.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index a46bea3..2543b5c 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -455,8 +455,7 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
+>         writel((seqid << QUADSPI_IPCR_SEQID_SHIFT) | len, base + QUADSPI_IPCR);
+>
+>         /* Wait for the interrupt. */
+> -       err = wait_for_completion_timeout(&q->c, msecs_to_jiffies(1000));
+> -       if (!err) {
+> +       if (!wait_for_completion_timeout(&q->c, msecs_to_jiffies(1000))) {
+>                 dev_err(q->dev,
+>                         "cmd 0x%.2x timeout, addr@%.8x, FR:0x%.8x, SR:0x%.8x\n",
+>                         cmd, addr, readl(base + QUADSPI_FR),
+> --
+> 1.7.10.4
+>
 
-Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
----
- drivers/mtd/mtdpart.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Acked-by: Han Xu <han.xu@freescale.com>
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 7eb9083..7874bbd 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -600,6 +600,15 @@ int mtd_del_partition(struct mtd_info *master, int partno)
- 	struct mtd_part *slave, *next;
- 	int ret = -EINVAL;
- 
-+	/* If del_partition was called as a partition, just treat
-+	 * this as if it were called on its master. This is a harmless
-+	 * generalization and lets partitions be deleted in a system
-+	 * where they are sometimes already present on boot */
-+	if (mtd_is_partition(master)) {
-+		struct mtd_part *master_partition = PART(master);
-+		master = master_partition->master;
-+	}
-+
- 	mutex_lock(&mtd_partitions_mutex);
- 	list_for_each_entry_safe(slave, next, &mtd_partitions, list)
- 		if ((slave->master == master) &&
--- 
-2.2.0.rc0.207.ga3a616c
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
