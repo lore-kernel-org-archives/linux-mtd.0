@@ -1,20 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLeQE-00035f-4v
- for linux-mtd@lists.infradead.org; Wed, 11 Feb 2015 21:02:10 +0000
-Date: Wed, 11 Feb 2015 22:01:40 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH] mtd: nand: sunxi: fix generic nand binding reference
-Message-ID: <20150211220140.71eb9804@bbrezillon>
-In-Reply-To: <302c93d229b98702db0c96bca0216a3c948fe092.1423666867.git.baruch@tkos.co.il>
-References: <302c93d229b98702db0c96bca0216a3c948fe092.1423666867.git.baruch@tkos.co.il>
+Received: from guitar.tcltek.co.il ([192.115.133.116] helo=mx.tkos.co.il)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YLrcq-0005O1-Jm
+ for linux-mtd@lists.infradead.org; Thu, 12 Feb 2015 11:08:07 +0000
+From: Baruch Siach <baruch@tkos.co.il>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: nand: increase tWB to 200ns
+Date: Thu, 12 Feb 2015 13:06:22 +0200
+Message-Id: <c6ed3415192689588a77277dca1fdf174f87b244.1423739182.git.baruch@tkos.co.il>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 11 Feb 2015 17:01:07 +0200
-Baruch Siach <baruch@tkos.co.il> wrote:
+ONFI spec (version 4.0, §4.18.1) sets tWB to max 200ns for SDR mode 0.
 
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+---
+ drivers/mtd/nand/nand_base.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-> ---
->  Documentation/devicetree/bindings/mtd/sunxi-nand.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-> index 0273adb8638c..086d6f44c4b9 100644
-> --- a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-> @@ -21,7 +21,7 @@ Optional properties:
->  - nand-ecc-mode : one of the supported ECC modes ("hw", "hw_syndrome", "soft",
->    "soft_bch" or "none")
->  
-> -see Documentation/devicetree/mtd/nand.txt for generic bindings.
-> +see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
->  
->  
->  Examples:
-
-
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 31e252a5ce9c..ebb7749247d5 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -662,7 +662,7 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
+ 	 * Apply this short delay always to ensure that we do wait tWB in
+ 	 * any case on any machine.
+ 	 */
+-	ndelay(100);
++	ndelay(200);
+ 
+ 	nand_wait_ready(mtd);
+ }
+@@ -774,7 +774,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 	 * Apply this short delay always to ensure that we do wait tWB in
+ 	 * any case on any machine.
+ 	 */
+-	ndelay(100);
++	ndelay(200);
+ 
+ 	nand_wait_ready(mtd);
+ }
+@@ -883,7 +883,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 	 * Apply this short delay always to ensure that we do wait tWB in any
+ 	 * case on any machine.
+ 	 */
+-	ndelay(100);
++	ndelay(200);
+ 
+ 	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+ 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.1.4
