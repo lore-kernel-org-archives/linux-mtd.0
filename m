@@ -1,21 +1,24 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-vc0-x234.google.com ([2607:f8b0:400c:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YM2M8-0007E4-VF
- for linux-mtd@lists.infradead.org; Thu, 12 Feb 2015 22:35:34 +0000
-Message-ID: <54DD2A95.3090702@nod.at>
-Date: Thu, 12 Feb 2015 23:35:01 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1YM2P1-0008QY-8I
+ for linux-mtd@lists.infradead.org; Thu, 12 Feb 2015 22:38:32 +0000
+Received: by mail-vc0-f180.google.com with SMTP id im6so4811850vcb.11
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Feb 2015 14:38:09 -0800 (PST)
 MIME-Version: 1.0
-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [patch] UBI: block: checking for NULL instead of IS_ERR()
-References: <20150205073819.GB27855@mwanda>
-In-Reply-To: <20150205073819.GB27855@mwanda>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <54B04529.8060705@vanguardiasur.com.ar>
+References: <1419017238-28809-1-git-send-email-dehrenberg@chromium.org>
+ <54B04529.8060705@vanguardiasur.com.ar>
+Date: Thu, 12 Feb 2015 23:38:09 +0100
+Message-ID: <CAFLxGvxq46LZXhXGvNSXV0PvrLxvbFPp0f-weKJRweeEbOyV-A@mail.gmail.com>
+Subject: Re: [PATCH v5] UBI: block: Continue creating ubiblocks after an
+ initialization error
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Content-Type: text/plain; charset=UTF-8
+Cc: Grant Grundler <grundler@chromium.org>,
+ Gwendal Grignou <gwendal@chromium.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Dan Ehrenberg <dehrenberg@chromium.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 05.02.2015 um 08:38 schrieb Dan Carpenter:
-> We recently switched from allocating ->rq using blk_init_queue() to
-> use blk_mq_init_queue() so we need to update the error handling to
-> check for IS_ERR() instead of NULL.
-> 
-> Fixes: ff1f48ee3bb3 ('UBI: Block: Add blk-mq support')
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-> index 995e61c..d0a9349 100644
-> --- a/drivers/mtd/ubi/block.c
-> +++ b/drivers/mtd/ubi/block.c
-> @@ -409,9 +409,9 @@ int ubiblock_create(struct ubi_volume_info *vi)
->  	}
->  
->  	dev->rq = blk_mq_init_queue(&dev->tag_set);
-> -	if (!dev->rq) {
-> +	if (IS_ERR(dev->rq)) {
->  		dev_err(disk_to_dev(gd), "blk_mq_init_queue failed");
-> -		ret = -ENODEV;
-> +		ret = PTR_ERR(dev->rq);
->  		goto out_free_tags;
->  	}
->  	blk_queue_max_segments(dev->rq, UBI_MAX_SG_COUNT);
+On Fri, Jan 9, 2015 at 10:16 PM, Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
+> On 12/19/2014 04:27 PM, Dan Ehrenberg wrote:
+>> If one ubi volume is corrupted but another is not, it should be
+>> possible to initialize that ubiblock from a kernel commandline which
+>> includes both of them. This patch changes the error handling behavior
+>> in initializing ubiblock to ensure that all parameters are attempted
+>> even if one fails. If there is a failure, it is logged on dmesg.
+>> It also makes error messages more descriptive by including the
+>> name of the UBI volume that failed.
+>>
+>> Tested: Formatted ubi volume /dev/ubi5_0 in a corrupt way and
+>> dev/ubi3_0 properly and included "ubi.block=5,0 ubi.block=3,0" on
+>> the kernel command line. At boot, I see the following in the console:
+>> [   21.082420] UBI error: ubiblock_create_from_param: block: can't open volume on ubi5_0, err=-19
+>> [   21.084268] UBI: ubiblock3_0 created from ubi3:0(rootfs)
+>>
+>> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+>
+> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
-Applied. Thanks Dan!
+Applied, thank you Daniel and Ezequiel!
+
+-- 
+Thanks,
+//richard
