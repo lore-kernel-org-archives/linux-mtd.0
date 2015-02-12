@@ -1,19 +1,25 @@
-Date: Thu, 12 Feb 2015 16:22:47 +0100
-From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v2 05/10] mtd: pxa3xx_nand: add a default chunk size
-Message-ID: <20150212152247.GJ11169@kwain>
-References: <1423752816-26219-1-git-send-email-antoine.tenart@free-electrons.com>
- <1423752816-26219-6-git-send-email-antoine.tenart@free-electrons.com>
- <20150212161732.7542331b@bbrezillon>
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YLwbF-0004f8-FR
+ for linux-mtd@lists.infradead.org; Thu, 12 Feb 2015 16:26:46 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Antoine Tenart <antoine.tenart@free-electrons.com>
+Subject: Re: [PATCH 5/9] mtd: pxa3xx_nand: add support for the Marvell Berlin
+ nand controller
+References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1422367816-4257-6-git-send-email-antoine.tenart@free-electrons.com>
+ <20150209005503.3fad39c7@bbrezillon> <871tlx7dgu.fsf@free.fr>
+ <20150211163343.GH11169@kwain>
+Date: Thu, 12 Feb 2015 17:26:20 +0100
+In-Reply-To: <20150211163343.GH11169@kwain> (Antoine Tenart's message of "Wed,
+ 11 Feb 2015 17:33:43 +0100")
+Message-ID: <87k2zn5c5v.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150212161732.7542331b@bbrezillon>
-Cc: thomas.petazzoni@free-electrons.com, zmxu@marvell.com,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+Content-Type: text/plain
+Cc: thomas.petazzoni@free-electrons.com,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
  ezequiel.garcia@free-electrons.com, jszhang@marvell.com,
  computersforpeace@gmail.com, dwmw2@infradead.org,
  linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
@@ -26,46 +32,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 12, 2015 at 04:17:32PM +0100, Boris Brezillon wrote:
-> On Thu, 12 Feb 2015 15:53:31 +0100
-> Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
-> 
-> > Add a default chunk size of 512 in the pxa3xx nand driver.
-> > 
-> > Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/pxa3xx_nand.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> > index 64628bff3fa5..8ed045195d31 100644
-> > --- a/drivers/mtd/nand/pxa3xx_nand.c
-> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> > @@ -1430,6 +1430,9 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
-> >  	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
-> >  		goto KEEP_CONFIG;
-> >  
-> > +	/* Set a default chunk size */
-> 
-> Ditto => no explanation about why you do that.
+Antoine Tenart <antoine.tenart@free-electrons.com> writes:
 
-Will do.
+>> All these ifs per variant will add complexity to the current driver, won't they
+>> ?
+>
+> Given the current state of this driver I believe this would be a better
+> idea to first rework it to use the nand framework properly. Then it will
+> be possible to have a look on what we have, to decide whether or not a
+> mrvl-nand-lib is needed.
 
-> 
-> > +	info->chunk_size = 512;
-> > +
-> >  	ret = pxa3xx_nand_sensing(info);
-> >  	if (ret) {
-> >  		dev_info(&info->pdev->dev, "There is no chip on cs %d!\n",
-> 
-> 
-> 
-> -- 
-> Boris Brezillon, Free Electrons
-> Embedded Linux and Kernel engineering
-> http://free-electrons.com
+I don't fully agree to delay.
+You're taking code, making sometimes copy-paste, for the berlin specific
+functions, and I think you're taking the bugs as well, which duplicates the fix
+effort.
+
+For example, in nand_cmdfunc_berlin():
++	if (info->reg_ndcr & NDCR_DWIDTH_M)
++		column /= 2;
+
+This is I think a copy-paste from its twin nand_cmdfunc(). Now consider what
+happens if the command is _not_ a read command, but an ONFI READID command
+(ONFI being specified by column=0x20 if memory serves me well).
+
+This is the reason I don't really like this patch. And this is also the reason
+why I believe you're in a perfect timing to improve things, by grouping the
+common function, and keeping the bugs in only one place, not many.
+
+Cheers.
 
 -- 
-Antoine Ténart, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+Robert
