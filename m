@@ -1,12 +1,11 @@
-Date: Thu, 12 Feb 2015 16:16:16 +0100
+Date: Thu, 12 Feb 2015 16:17:32 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Antoine Tenart <antoine.tenart@free-electrons.com>
-Subject: Re: [PATCH v2 04/10] mtd: pxa3xx_nand: set NDCR_PG_PER_BLK if page
- per block is 128
-Message-ID: <20150212161616.184481ea@bbrezillon>
-In-Reply-To: <1423752816-26219-5-git-send-email-antoine.tenart@free-electrons.com>
+Subject: Re: [PATCH v2 05/10] mtd: pxa3xx_nand: add a default chunk size
+Message-ID: <20150212161732.7542331b@bbrezillon>
+In-Reply-To: <1423752816-26219-6-git-send-email-antoine.tenart@free-electrons.com>
 References: <1423752816-26219-1-git-send-email-antoine.tenart@free-electrons.com>
- <1423752816-26219-5-git-send-email-antoine.tenart@free-electrons.com>
+ <1423752816-26219-6-git-send-email-antoine.tenart@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,30 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 12 Feb 2015 15:53:30 +0100
+On Thu, 12 Feb 2015 15:53:31 +0100
 Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
 
-Hm, still no commit message here ;-)
-
+> Add a default chunk size of 512 in the pxa3xx nand driver.
+> 
 > Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 > ---
->  drivers/mtd/nand/pxa3xx_nand.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/pxa3xx_nand.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
 > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 55fce9527c2e..64628bff3fa5 100644
+> index 64628bff3fa5..8ed045195d31 100644
 > --- a/drivers/mtd/nand/pxa3xx_nand.c
 > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1216,7 +1216,8 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
+> @@ -1430,6 +1430,9 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+>  	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
+>  		goto KEEP_CONFIG;
 >  
->  	ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
->  	ndcr |= (host->col_addr_cycles == 2) ? NDCR_RA_START : 0;
-> -	ndcr |= (f->page_per_block == 64) ? NDCR_PG_PER_BLK : 0;
-> +	ndcr |= (f->page_per_block == 64 || f->page_per_block == 128) ?
-> +		NDCR_PG_PER_BLK : 0;
->  	ndcr |= (f->page_size == 2048) ? NDCR_PAGE_SZ : 0;
->  	ndcr |= (f->flash_width == 16) ? NDCR_DWIDTH_M : 0;
->  	ndcr |= (f->dfc_width == 16) ? NDCR_DWIDTH_C : 0;
+> +	/* Set a default chunk size */
+
+Ditto => no explanation about why you do that.
+
+> +	info->chunk_size = 512;
+> +
+>  	ret = pxa3xx_nand_sensing(info);
+>  	if (ret) {
+>  		dev_info(&info->pdev->dev, "There is no chip on cs %d!\n",
 
 
 
