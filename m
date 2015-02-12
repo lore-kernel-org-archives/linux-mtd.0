@@ -1,21 +1,21 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YM1SZ-0006CO-PE
- for linux-mtd@lists.infradead.org; Thu, 12 Feb 2015 21:38:08 +0000
-Received: by mail-pa0-f44.google.com with SMTP id kq14so14089751pab.3
- for <linux-mtd@lists.infradead.org>; Thu, 12 Feb 2015 13:37:45 -0800 (PST)
-Date: Thu, 12 Feb 2015 13:37:40 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] mtd: hisilicon: && vs & typo
-Message-ID: <20150212213740.GA18140@ld-irv-0074>
-References: <20150211102509.GB18515@mwanda>
+ id 1YM2M8-0007E4-VF
+ for linux-mtd@lists.infradead.org; Thu, 12 Feb 2015 22:35:34 +0000
+Message-ID: <54DD2A95.3090702@nod.at>
+Date: Thu, 12 Feb 2015 23:35:01 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150211102509.GB18515@mwanda>
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
- Zhou Wang <wangzhou1@hisilicon.com>, David Woodhouse <dwmw2@infradead.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [patch] UBI: block: checking for NULL instead of IS_ERR()
+References: <20150205073819.GB27855@mwanda>
+In-Reply-To: <20150205073819.GB27855@mwanda>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Wed, Feb 11, 2015 at 01:25:09PM +0300, Dan Carpenter wrote:
-> The intent was to mask away some bits here, not to test true or false.
+Am 05.02.2015 um 08:38 schrieb Dan Carpenter:
+> We recently switched from allocating ->rq using blk_init_queue() to
+> use blk_mq_init_queue() so we need to update the error handling to
+> check for IS_ERR() instead of NULL.
 > 
-> Fix: 54f531f6e332 ('mtd: hisilicon: add a new NAND controller driver for hisilicon hip04 Soc')
+> Fixes: ff1f48ee3bb3 ('UBI: Block: Add blk-mq support')
 > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
-> diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
-> index 484e1db..289ad3a 100644
-> --- a/drivers/mtd/nand/hisi504_nand.c
-> +++ b/drivers/mtd/nand/hisi504_nand.c
-> @@ -495,7 +495,7 @@ static void hisi_nfc_cmdfunc(struct mtd_info *mtd, unsigned command, int column,
->  		flag = hinfc_read(host, HINFC504_CON);
->  		if (chip->ecc.mode == NAND_ECC_HW)
->  			hinfc_write(host,
-> -				    flag && ~(HINFC504_CON_ECCTYPE_MASK <<
-> +				    flag & ~(HINFC504_CON_ECCTYPE_MASK <<
-
-Looks good to me. Zhou, can I get an ack?
-
->  				    HINFC504_CON_ECCTYPE_SHIFT), HINFC504_CON);
+> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+> index 995e61c..d0a9349 100644
+> --- a/drivers/mtd/ubi/block.c
+> +++ b/drivers/mtd/ubi/block.c
+> @@ -409,9 +409,9 @@ int ubiblock_create(struct ubi_volume_info *vi)
+>  	}
 >  
->  		host->offset = 0;
+>  	dev->rq = blk_mq_init_queue(&dev->tag_set);
+> -	if (!dev->rq) {
+> +	if (IS_ERR(dev->rq)) {
+>  		dev_err(disk_to_dev(gd), "blk_mq_init_queue failed");
+> -		ret = -ENODEV;
+> +		ret = PTR_ERR(dev->rq);
+>  		goto out_free_tags;
+>  	}
+>  	blk_queue_max_segments(dev->rq, UBI_MAX_SG_COUNT);
 
-Brian
+Applied. Thanks Dan!
