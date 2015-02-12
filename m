@@ -1,28 +1,23 @@
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLwbF-0004f8-FR
- for linux-mtd@lists.infradead.org; Thu, 12 Feb 2015 16:26:46 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Antoine Tenart <antoine.tenart@free-electrons.com>
-Subject: Re: [PATCH 5/9] mtd: pxa3xx_nand: add support for the Marvell Berlin
- nand controller
-References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
- <1422367816-4257-6-git-send-email-antoine.tenart@free-electrons.com>
- <20150209005503.3fad39c7@bbrezillon> <871tlx7dgu.fsf@free.fr>
- <20150211163343.GH11169@kwain>
-Date: Thu, 12 Feb 2015 17:26:20 +0100
-In-Reply-To: <20150211163343.GH11169@kwain> (Antoine Tenart's message of "Wed,
- 11 Feb 2015 17:33:43 +0100")
-Message-ID: <87k2zn5c5v.fsf@free.fr>
+Received: from mail-pd0-f172.google.com ([209.85.192.172])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YM1Re-00061N-Ts
+ for linux-mtd@lists.infradead.org; Thu, 12 Feb 2015 21:37:11 +0000
+Received: by pdbnh10 with SMTP id nh10so10449775pdb.11
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Feb 2015 13:36:49 -0800 (PST)
+Date: Thu, 12 Feb 2015 13:36:45 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: kbuild test robot <fengguang.wu@intel.com>,
+ Zhou Wang <wangzhou1@hisilicon.com>
+Subject: Re: [next:master 8896/9415] drivers/mtd/nand/hisi504_nand.c:375:26:
+ sparse: cast removes address space of expression
+Message-ID: <20150212213645.GZ18140@ld-irv-0074>
+References: <201502111555.q8V9IcSN%fengguang.wu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: thomas.petazzoni@free-electrons.com,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
- ezequiel.garcia@free-electrons.com, jszhang@marvell.com,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201502111555.q8V9IcSN%fengguang.wu@intel.com>
+Cc: Zhou Wang <wangzhou1@hisilicon.com>, linux-mtd@lists.infradead.org,
+ kbuild-all@01.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,34 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Antoine Tenart <antoine.tenart@free-electrons.com> writes:
++ linux-mtd
 
->> All these ifs per variant will add complexity to the current driver, won't they
->> ?
->
-> Given the current state of this driver I believe this would be a better
-> idea to first rework it to use the nand framework properly. Then it will
-> be possible to have a look on what we have, to decide whether or not a
-> mrvl-nand-lib is needed.
+Hi,
 
-I don't fully agree to delay.
-You're taking code, making sometimes copy-paste, for the berlin specific
-functions, and I think you're taking the bugs as well, which duplicates the fix
-effort.
+On Wed, Feb 11, 2015 at 03:49:56PM +0800, kbuild test robot wrote:
+> tree:   git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> head:   5721f7f0f14b682d2e86e9a4aa9025acaf69399d
+> commit: 54f531f6e332875bd8a604871532f7f1174adc0e [8896/9415] mtd: hisilicon: add a new NAND controller driver for hisilicon hip04 Soc
+> reproduce:
+>   # apt-get install sparse
+>   git checkout 54f531f6e332875bd8a604871532f7f1174adc0e
+>   make ARCH=x86_64 allmodconfig
+>   make C=1 CF=-D__CHECK_ENDIAN__
+> 
+> 
+> sparse warnings: (new ones prefixed by >>)
+> 
+> >> drivers/mtd/nand/hisi504_nand.c:375:26: sparse: cast removes address space of expression
+> >> drivers/mtd/nand/hisi504_nand.c:380:26: sparse: cast removes address space of expression
+>    drivers/mtd/nand/hisi504_nand.c:490:28: sparse: incorrect type in argument 1 (different address spaces)
+>    drivers/mtd/nand/hisi504_nand.c:490:28:    expected void *s
+>    drivers/mtd/nand/hisi504_nand.c:490:28:    got void [noderef] <asn:2>*mmio
+>    drivers/mtd/nand/hisi504_nand.c:502:28: sparse: incorrect type in argument 1 (different address spaces)
+>    drivers/mtd/nand/hisi504_nand.c:502:28:    expected void *s
+>    drivers/mtd/nand/hisi504_nand.c:502:28:    got void [noderef] <asn:2>*mmio
+>    drivers/mtd/nand/hisi504_nand.c:625:20: sparse: incorrect type in argument 1 (different address spaces)
+>    drivers/mtd/nand/hisi504_nand.c:625:20:    expected void *s
+>    drivers/mtd/nand/hisi504_nand.c:625:20:    got void [noderef] <asn:2>*mmio
+>    drivers/mtd/nand/hisi504_nand.c:890:1: sparse: symbol '__UNIQUE_ID_author__COUNTER__' has multiple initializers (originally initialized at drivers/mtd/nand/hisi504_nand.c:889)
+> 
+> vim +375 drivers/mtd/nand/hisi504_nand.c
+> 
+>    369	static uint8_t hisi_nfc_read_byte(struct mtd_info *mtd)
+>    370	{
+>    371		struct nand_chip *chip = mtd->priv;
+>    372		struct hinfc_host *host = chip->priv;
+>    373	
+>    374		if (host->command == NAND_CMD_STATUS)
+>  > 375			return *(uint8_t *)(host->mmio);
 
-For example, in nand_cmdfunc_berlin():
-+	if (info->reg_ndcr & NDCR_DWIDTH_M)
-+		column /= 2;
+Yeah, this probably should be readb() or __raw_readb().
 
-This is I think a copy-paste from its twin nand_cmdfunc(). Now consider what
-happens if the command is _not_ a read command, but an ONFI READID command
-(ONFI being specified by column=0x20 if memory serves me well).
+Zhou, why did you change this, again? I believe you made this change
+somewhere in the several revisions of your driver. I'm inclined to patch
+this before sending a pullreq to Linus.
 
-This is the reason I don't really like this patch. And this is also the reason
-why I believe you're in a perfect timing to improve things, by grouping the
-common function, and keeping the bugs in only one place, not many.
+>    376	
+>    377		host->offset++;
+>    378	
+>    379		if (host->command == NAND_CMD_READID)
+>  > 380			return *(uint8_t *)(host->mmio + host->offset - 1);
 
-Cheers.
+Same here.
 
--- 
-Robert
+>    381	
+>    382		return *(uint8_t *)(host->buffer + host->offset - 1);
+>    383	}
+> 
+
+Brian
