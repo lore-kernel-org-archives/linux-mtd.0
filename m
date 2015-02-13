@@ -1,19 +1,15 @@
-Message-ID: <1423826881.5969.33.camel@infradead.org>
-Subject: Re: [PATCH]jffs2:bugfix for should not appeared directory hard link
+Message-ID: <1423847343.5969.54.camel@infradead.org>
+Subject: Re: [patch 1/1] jffs2: fix handling of corrupted summary length
 From: David Woodhouse <dwmw2@infradead.org>
-To: liu.song11@zte.com.cn
-Date: Fri, 13 Feb 2015 11:28:01 +0000
-In-Reply-To: <1423822421.5969.11.camel@infradead.org>
-References: <OFA26F19B7.DF3A70A5-ON48257D7B.00265361-48257D7B.0033C198@zte.com.cn>
- <1423748599.15180.10.camel@infradead.org>
- <OF4EF0DB08.789494F2-ON48257DEB.0016B74A-48257DEB.0016DF0F@zte.com.cn>
- <1423822421.5969.11.camel@infradead.org>
+To: akpm@linux-foundation.org
+Date: Fri, 13 Feb 2015 17:09:03 +0000
+In-Reply-To: <54da6eec.gh8OMi3PE2ER1FFi%akpm@linux-foundation.org>
+References: <54da6eec.gh8OMi3PE2ER1FFi%akpm@linux-foundation.org>
 Content-Type: multipart/signed; micalg="sha-1";
  protocol="application/x-pkcs7-signature";
- boundary="=-wqNEMhNnSFARD3/SHy6f"
+ boundary="=-duXLCx7/vhocDRa7drpb"
 Mime-Version: 1.0
-Cc: jiang.xuexin@zte.com.cn, wang.bo116@zte.com.cn,
- linux-mtd@lists.infradead.org, deng.chao1@zte.com.cn, cui.yunfeng@zte.com.cn
+Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org, chenjie6@huawei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,212 +20,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-wqNEMhNnSFARD3/SHy6f
+--=-duXLCx7/vhocDRa7drpb
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2015-02-13 at 10:13 +0000, David Woodhouse wrote:
+On Tue, 2015-02-10 at 12:49 -0800, akpm@linux-foundation.org wrote:
+> From: Chen Jie <chenjie6@huawei.com>
+> Subject: jffs2: fix handling of corrupted summary length
 >=20
-> If <ino#71> is somehow ending up linked as /mnt/foo again when it should
-> have been unlinked, *that* is the problem we need to be looking at. The
-> zombie *children* of <ino#71> are just a symptom of its reincarnation.
+> sm->offset maybe wrong but magic maybe right, the offset do not have
+> CRC.
 
-Ah, I think I understand a little better.
-
-At the time the problem happens, it's too *early* in the scan/build
-process. We don't yet *know* that ino#71 is dead, because we haven't yet
-scanned the whole flash looking for dirents that might point to it.
-
-In the problematic case, the directory SW1<#2> is first discovered when
-we see its dirent from the *dead* directory <#71>, and we fill in
-ic<2>->pino_nlink =3D 71.
-
-And then *later* we find the *real* dirent which links SW1<#2> from the
-root directory, and we hit that 'appears to be a hard link' message in
-jffs2_build_inode_pass1().
-
-The problem really comes when we *later* kill ino#71 because we realise
-it doesn't have any valid dirents keeping it alive, and we *also* kill
-all its children. Some of which weren't *really* supposed to be its
-children :)
-
-If we happened to hit the real dirent for SW1<#2> *first*, and the
-dirent linking it from <#71> *later*, then we'd be OK.
-
-This is all because of the NFS export support, which means we have to
-know the parent inode# for directories. If we were still storing nlink
-for directories as we do for plain files, we could fix this fairly
-easily.
-
-Your approach is to fix the garbage collection, to ensure that the old
-deletion dirents "unlinking" SW1<#2> from the dead <ino#71> aren't
-actually allowed to expire until all previous *positive* dirents linking
-it into that dead parent directory have also expired =E2=80=94 much like we
-already do for garbage collection of deletion dirents in a live
-directory.
-
-That makes sense, but I'm not sure I like it very much. It's complex,
-and it really does violate my sense of decency a little =E2=80=94 if <ino#7=
-1> is
-dead when it should *stay* dead, and not return to bother us.
-
-I'll see if I can come up with a simpler solution purely within the scan
-code. Can you test this, please?
-
-diff --git a/fs/jffs2/build.c b/fs/jffs2/build.c
-index a3750f9..f5a9b0e 100644
---- a/fs/jffs2/build.c
-+++ b/fs/jffs2/build.c
-@@ -49,7 +49,8 @@ next_inode(int *i, struct jffs2_inode_cache *ic, struct j=
-ffs2_sb_info *c)
-=20
-=20
- static void jffs2_build_inode_pass1(struct jffs2_sb_info *c,
--				    struct jffs2_inode_cache *ic)
-+				    struct jffs2_inode_cache *ic,
-+				    int *dir_hardlinks)
- {
- 	struct jffs2_full_dirent *fd;
-=20
-@@ -71,16 +72,16 @@ static void jffs2_build_inode_pass1(struct jffs2_sb_inf=
-o *c,
- 			continue;
- 		}
-=20
-+		/* From this point, fd->raw is no longer used so we can set fd->ic */
-+		fd->ic =3D child_ic;
-+		child_ic->pino_nlink++;
-+		/* If we appear (at this stage) to have hard-linked directories,
-+		 * set a flag to trigger a scan later */
- 		if (fd->type =3D=3D DT_DIR) {
--			if (child_ic->pino_nlink) {
--				JFFS2_ERROR("child dir \"%s\" (ino #%u) of dir ino #%u appears to be a=
- hard link\n",
--					    fd->name, fd->ino, ic->ino);
--				/* TODO: What do we do about it? */
--			} else {
--				child_ic->pino_nlink =3D ic->ino;
--			}
--		} else
--			child_ic->pino_nlink++;
-+			child_ic->flags |=3D INO_FLAGS_IS_DIR;
-+			if (child_ic->pino_nlink > 1)
-+				*dir_hardlinks =3D 1;
-+		}
-=20
- 		dbg_fsbuild("increased nlink for child \"%s\" (ino #%u)\n", fd->name, fd=
-->ino);
- 		/* Can't free scan_dents so far. We might need them in pass 2 */
-@@ -94,8 +95,7 @@ static void jffs2_build_inode_pass1(struct jffs2_sb_info =
-*c,
- */
- static int jffs2_build_filesystem(struct jffs2_sb_info *c)
- {
--	int ret;
--	int i;
-+	int ret, i, dir_hardlinks =3D 0;
- 	struct jffs2_inode_cache *ic;
- 	struct jffs2_full_dirent *fd;
- 	struct jffs2_full_dirent *dead_fds =3D NULL;
-@@ -119,7 +119,7 @@ static int jffs2_build_filesystem(struct jffs2_sb_info =
-*c)
- 	/* Now scan the directory tree, increasing nlink according to every diren=
-t found. */
- 	for_each_inode(i, c, ic) {
- 		if (ic->scan_dents) {
--			jffs2_build_inode_pass1(c, ic);
-+			jffs2_build_inode_pass1(c, ic, &dir_hardlinks);
- 			cond_resched();
- 		}
- 	}
-@@ -155,6 +155,20 @@ static int jffs2_build_filesystem(struct jffs2_sb_info=
- *c)
- 	}
-=20
- 	dbg_fsbuild("pass 2a complete\n");
-+
-+	if (dir_hardlinks) {
-+		/* If we detected directory hardlinks earlier, *hopefully*
-+		 * they are gone now because some of the links were from
-+		 * dead directories which still had some old dirents lying
-+		 * around and not yet garbage-collected, but which have
-+		 * been discarded above. So clear the pino_nlink field
-+		 * in each directory, so that the final scan below can
-+		 * print appropriate warnings. */
-+		for_each_inode(i, c, ic) {
-+			if (ic->flags & INO_FLAGS_IS_DIR)
-+				ic->pino_nlink =3D 0;
-+		}
-+	}
- 	dbg_fsbuild("freeing temporary data structures\n");
-=20
- 	/* Finally, we can scan again and free the dirent structs */
-@@ -162,6 +176,18 @@ static int jffs2_build_filesystem(struct jffs2_sb_info=
- *c)
- 		while(ic->scan_dents) {
- 			fd =3D ic->scan_dents;
- 			ic->scan_dents =3D fd->next;
-+			/* We do use the pino_nlink field to count nlink of
-+			 * directories during fs build, so set it to the
-+			 * parent ino# now. Now that there's hopefully only
-+			 * one. */
-+			if (fd->type =3D=3D DT_DIR) {
-+				if (dir_hardlinks && fd->ic->pino_nlink) {
-+					JFFS2_ERROR("child dir \"%s\" (ino #%u) of dir ino #%u is also hard l=
-inked from dir ino #%u\n",
-+						    fd->name, fd->ino, ic->ino, fd->ic->pino_nlink);
-+					/* Should we unlink it from its previous parent? */
-+				}
-+				fd->ic->pino_nlink =3D ic->ino;
-+			}
- 			jffs2_free_full_dirent(fd);
- 		}
- 		ic->scan_dents =3D NULL;
-@@ -240,11 +266,7 @@ static void jffs2_build_remove_unlinked_inode(struct j=
-ffs2_sb_info *c,
-=20
- 			/* Reduce nlink of the child. If it's now zero, stick it on the
- 			   dead_fds list to be cleaned up later. Else just free the fd */
--
--			if (fd->type =3D=3D DT_DIR)
--				child_ic->pino_nlink =3D 0;
--			else
--				child_ic->pino_nlink--;
-+			child_ic->pino_nlink--;
-=20
- 			if (!child_ic->pino_nlink) {
- 				dbg_fsbuild("inode #%u (\"%s\") now has no links; adding to dead_fds l=
-ist.\n",
-diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
-index fa35ff7..0637271 100644
---- a/fs/jffs2/nodelist.h
-+++ b/fs/jffs2/nodelist.h
-@@ -194,6 +194,7 @@ struct jffs2_inode_cache {
- #define INO_STATE_CLEARING	6	/* In clear_inode() */
-=20
- #define INO_FLAGS_XATTR_CHECKED	0x01	/* has no duplicate xattr_ref */
-+#define INO_FLAGS_IS_DIR	0x02	/* is a directory */
-=20
- #define RAWNODE_CLASS_INODE_CACHE	0
- #define RAWNODE_CLASS_XATTR_DATUM	1
-@@ -249,7 +250,10 @@ struct jffs2_readinode_info
-=20
- struct jffs2_full_dirent
- {
--	struct jffs2_raw_node_ref *raw;
-+	union {
-+		struct jffs2_raw_node_ref *raw;
-+		struct jffs2_inode_cache *ic; /* Just during part of build */
-+	};
- 	struct jffs2_full_dirent *next;
- 	uint32_t version;
- 	uint32_t ino; /* =3D=3D zero for unlink */
-
+Applied; thanks.
 
 --=20
-dwmw2
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
 
---=-wqNEMhNnSFARD3/SHy6f
+--=-duXLCx7/vhocDRa7drpb
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -323,18 +131,18 @@ Cmr47UQpqQ7BjK0xggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
 Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
 BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMJ
 2TIwCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTUwMjEzMTEyODAxWjAjBgkqhkiG9w0BCQQxFgQUBYy7WCt9/dX6j7LUmxku4AYobyowgaUG
+DxcNMTUwMjEzMTcwOTAzWjAjBgkqhkiG9w0BCQQxFgQUVabB0FvBZzvkXOUgCOpU6C374qUwgaUG
 CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
 KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
 YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMJ2TIwgacGCyqG
 SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
 cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwnZMjANBgkqhkiG
-9w0BAQEFAASCAQA/uweEhi6MP5+1O1XjGHclTDoSio7mWa9aWhqIsWDe/2MzabAKasoYJ8fR++Di
-Qo0PGDHm1XPRLgssaxot0iK87UvZHn2BaYqFOR7ihb7pQRAJkn5MN8FaDBAF1spnKX+UFSFcRKCQ
-s0QUg04xxg1cF7jMKf6v8LuFKDTspnbTDl4wypLZxSCmg/9m4voqBHO7nd9y7ony9Sql1tORnR9Z
-f7brUtg5er0naFLWmmj62qJyG9QT6SBNWAapYgbebSUNtDlKLfXllVqviH/UOfc+VtT1+3kSeEt+
-eXJLt2Lb9r7aYD806uAbvb537PrEcb1p4MLSJoypBCdFEjwXleUcAAAAAAAA
+9w0BAQEFAASCAQDJrz7zkomIhvrGbOh5xg1rb3rrsxaUhjO9ejmzHT6EW9wQsePa+IUbagJyCz7O
+ZSc2ooq1gg0DOiQFygoTPnha1+51ukXpJIH0FDypSkQrHT9I+SJewDchoHQSFzF37UqqDVLVh8DM
+s1XkzKV06khgwxJ6NwzDCCJcKWsKaOIgOwnfl8z6aQGw/4AAIiv2sqanjyPu+ERIAbbV6O4ofp0k
+S1VMUQiJIl6m4lOcvWu4hQWx+Ak/TlBeqPxvydkHr9c+z17gKbJln5c+ICYdZgbwPbLyqHetEacw
+XYnzFOUPOLjFf39FP1XFp2ic9aN78OjwpldTs4lJYGGUB91uO9qLAAAAAAAA
 
 
---=-wqNEMhNnSFARD3/SHy6f--
+--=-duXLCx7/vhocDRa7drpb--
