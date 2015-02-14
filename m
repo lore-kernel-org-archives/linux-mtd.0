@@ -1,15 +1,16 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YMcqG-0003Ff-8b
- for linux-mtd@lists.infradead.org; Sat, 14 Feb 2015 13:33:08 +0000
+ id 1YMcqG-0003Fg-8d
+ for linux-mtd@lists.infradead.org; Sat, 14 Feb 2015 13:33:09 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 0/3] mtd: nand: provide a clear separation of chip and
- controller ops
-Date: Sat, 14 Feb 2015 14:32:35 +0100
-Message-Id: <1423920758-1556-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [RFC PATCH 1/3] mtd: nand: introduce NAND controller ops
+Date: Sat, 14 Feb 2015 14:32:36 +0100
+Message-Id: <1423920758-1556-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1423920758-1556-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1423920758-1556-1-git-send-email-boris.brezillon@free-electrons.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,91 +21,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Currently all NAND operations are attached to the NAND chip itself (
+struct nand_chip).
+While this makes sense for some of them, like setup_read_retry or cmdfunc
+because they depend on the discovered chip, most of them can be shared
+across all chips attached to the NAND controller.
 
-I'm pretty sure I'm starting a controversial discussion here, but that's
-something I am thinking about for quite a while now, and instead of working
-on my own to provide a full solution I thought this would be good to share
-my vision and hopefully get feedback from other developers (including
-maintainers ;-)).
+This would not only clean the nand_chip struct but also add a clear
+separation between what's controller specific and what's chip specific.
 
-This patch series is an attempt to define a clear separation between NAND
-chip methods (those that are really dependent on the discovered NAND chip),
-and NAND controller merhods (those generic enough to access any NAND chip
-connected to a NAND controller).
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 23 +++++++++++++++++++++++
+ include/linux/mtd/nand.h     | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 60 insertions(+)
 
-This separation is motivated by several things.
-
-The first one being my current attempt to support MLC chips. These chips
-need some extra care (like read-retry or paired pages detection to avoid
-any data loss, and obviously other things I'm not yet aware of).
-MLC vendors each implement these features in a non standard way,
-meaning that NAND core (or, as I see it, vendor specific code) has to fill
-those function pointers accordingly.
-While the kernel documentation tries to specify which function should be
-filled by the controller part, and which one should be filled by NAND core,
-providing a clear separation would makes things even clearer.
-
-The second aspect, which IHMO is less important, is that NAND controller
-drivers that deal with multiple chips won't have to fill the chip
-function each time they add one, and it would even save some space in this
-case (though I don't know any board embedding several NAND chips yet :-().
-
-There surely is other pros and cons to this approach, and I'm pretty sure
-you will point plenty of them.
-
-I'd like to discuss another thing, not directly related to the controller
-ops separation: the automatic assignment of default methods done in by
-the core.
-I've done a few reviews and worked on a few NAND drivers lately, and I
-noticed that a lot of them do not implement the raw access functions
-(write/read_page_raw in nand_ecc_ctrl).
-It's obviously a bad thing, but that's not my point :-).
-Actually they all leave the read/write_page_raw unassigned and let NAND
-core assign default values which will obviously not do what's expected
-at all.
-My point is, maybe we should provide default implementations to all drivers
-(export GPL symbols) and let them fill their function pointer instead of
-guessing what they want to do.
-This way we would easily detect offending drivers and complain before they
-can even register a NAND chip.
-
-
-Now, let's talk about the implementation proposed in this RFC. It's not
-complete yet, since the methods in nand_chip are still there (and
-assigned to the NAND controller ops one), but my goal is to eventually
-remove them.
-Anyway, this implies modifying all the drivers and I'm not inclined to do
-that until every body has agreed on something.
-
-I've only extracted methods I was pretty sure they were related to the NAND
-controller, but there may be other methods that could be moved out (or I
-might have wrongly assumed some of them were related to NAND controllers).
-Please share your opinion on that point.
-
-The sunxi nand driver has been patched to make use of this new approach and
-can be considered as a reference implementation.
-
-
-That's all I got for now.
-I'm waiting for your feedback.
-
-Thanks.
-
-Best Regards,
-
-Boris
-
-Boris Brezillon (3):
-  mtd: nand: introduce NAND controller ops
-  mtd: nand: export nand_wait so that NAND controller driver can use it
-  mtd: nand: sunxi: define NAND controller ops instead of assigning chip
-    functions
-
- drivers/mtd/nand/nand_base.c  | 26 +++++++++++++++++++++++++-
- drivers/mtd/nand/sunxi_nand.c | 15 ++++++++++-----
- include/linux/mtd/nand.h      | 42 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 77 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 41585df..e36ec5e 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2944,9 +2944,32 @@ static void nand_resume(struct mtd_info *mtd)
+ 			__func__);
+ }
+ 
++static void nand_set_controller_ops(struct nand_chip *chip)
++{
++	const struct nand_controller_ops *ops = chip->controller->ops;
++
++	if (!ops)
++		return;
++
++	chip->read_byte = ops->read_byte;
++	chip->read_word = ops->read_word;
++	chip->write_byte = ops->write_byte;
++	chip->write_buf = ops->write_buf;
++	chip->read_buf = ops->read_buf;
++	chip->select_chip = ops->select_chip;
++	chip->cmd_ctrl = ops->cmd_ctrl;
++	chip->init_size = ops->init_size;
++	chip->waitfunc = ops->waitfunc;
++	chip->erase = ops->erase;
++	chip->write_page = ops->write_page;
++}
++
+ /* Set default functions */
+ static void nand_set_defaults(struct nand_chip *chip, int busw)
+ {
++	/* assing chip callbacks to controller ops functions if available */
++	nand_set_controller_ops(chip);
++
+ 	/* check for proper chip_delay setup, set 20us if not */
+ 	if (!chip->chip_delay)
+ 		chip->chip_delay = 20;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 3d4ea7e..6c0aadc 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -426,17 +426,54 @@ struct nand_jedec_params {
+ } __packed;
+ 
+ /**
++ * struct nand_controller_ops - NAND Controller operations
++ * @read_byte:		read one byte from the chip
++ * @read_word:		read one word from the chip
++ * @write_byte:		write a single byte to the chip on the low 8 I/O lines
++ * @write_buf:		write data from the buffer to the chip
++ * @read_buf:		read data from the chip into the buffer
++ * @select_chip:	select chip nr
++ * @cmd_ctrl:		hardwarespecific function for controlling ALE/CLE/nCE.
++ *			Also used to write command and address
++ * @init_size:		hardwarespecific function for setting mtd->oobsize,
++ *			mtd->writesize and so on.
++ *			@id_data contains the 8 bytes values of NAND_CMD_READID.
++ *			Return with the bus width.
++ * @waitfunc:		hardwarespecific function for wait on ready.
++ * @erase:		erase function
++ * @write_page:		High-level page write function
++ */
++struct nand_controller_ops {
++	uint8_t (*read_byte)(struct mtd_info *mtd);
++	u16 (*read_word)(struct mtd_info *mtd);
++	void (*write_byte)(struct mtd_info *mtd, uint8_t byte);
++	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
++	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
++	void (*select_chip)(struct mtd_info *mtd, int chip);
++	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
++	int (*init_size)(struct mtd_info *mtd, struct nand_chip *this,
++			 u8 *id_data);
++	int(*waitfunc)(struct mtd_info *mtd, struct nand_chip *this);
++	int (*erase)(struct mtd_info *mtd, int page);
++	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
++			  uint32_t offset, int data_len, const uint8_t *buf,
++			  int oob_required, int page, int cached, int raw);
++};
++
++/**
+  * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
+  * @lock:               protection lock
+  * @active:		the mtd device which holds the controller currently
+  * @wq:			wait queue to sleep on if a NAND operation is in
+  *			progress used instead of the per chip wait queue
+  *			when a hw controller is available.
++ * @ops:		controller operations
+  */
+ struct nand_hw_control {
+ 	spinlock_t lock;
+ 	struct nand_chip *active;
+ 	wait_queue_head_t wq;
++	const struct nand_controller_ops *ops;
+ };
+ 
+ /**
 -- 
 1.9.1
