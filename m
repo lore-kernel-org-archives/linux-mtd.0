@@ -1,15 +1,15 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YMcqG-0003Fh-8a
+ id 1YMcqG-0003Fc-8f
  for linux-mtd@lists.infradead.org; Sat, 14 Feb 2015 13:33:06 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 3/3] mtd: nand: sunxi: define NAND controller ops instead
- of assigning chip functions
-Date: Sat, 14 Feb 2015 14:32:38 +0100
-Message-Id: <1423920758-1556-4-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [RFC PATCH 2/3] mtd: nand: export nand_wait so that NAND controller
+ driver can use it
+Date: Sat, 14 Feb 2015 14:32:37 +0100
+Message-Id: <1423920758-1556-3-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1423920758-1556-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1423920758-1556-1-git-send-email-boris.brezillon@free-electrons.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
@@ -22,54 +22,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that we have NAND controller operations we can assign them once in
-the NAND controller probe function and rely on these ops for all NAND
-chips attached to this controller.
+Export this function for NAND controller that which to use this default
+implementation as their waitfunc method.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/sunxi_nand.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/nand_base.c | 3 ++-
+ include/linux/mtd/nand.h     | 5 +++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index ccaa8e2..43fb2ab 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -1235,11 +1235,6 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
- 	/* Default tR value specified in the ONFI spec (chapter 4.15.1) */
- 	nand->chip_delay = 200;
- 	nand->controller = &nfc->controller;
--	nand->select_chip = sunxi_nfc_select_chip;
--	nand->cmd_ctrl = sunxi_nfc_cmd_ctrl;
--	nand->read_buf = sunxi_nfc_read_buf;
--	nand->write_buf = sunxi_nfc_write_buf;
--	nand->read_byte = sunxi_nfc_read_byte;
- 
- 	if (of_get_nand_on_flash_bbt(np))
- 		nand->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
-@@ -1317,6 +1312,15 @@ static void sunxi_nand_chips_cleanup(struct sunxi_nfc *nfc)
- 	}
- }
- 
-+static const struct nand_controller_ops sunxi_nfc_ops = {
-+	.select_chip = sunxi_nfc_select_chip,
-+	.cmd_ctrl = sunxi_nfc_cmd_ctrl,
-+	.read_buf = sunxi_nfc_read_buf,
-+	.write_buf = sunxi_nfc_write_buf,
-+	.read_byte = sunxi_nfc_read_byte,
-+	.waitfunc = nand_wait,
-+};
-+
- static int sunxi_nfc_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index e36ec5e..63bf2ba 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -872,7 +872,7 @@ static void panic_nand_wait(struct mtd_info *mtd, struct nand_chip *chip,
+  * take up to 400ms and program up to 20ms according to general NAND and
+  * SmartMedia specs.
+  */
+-static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
++int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
  {
- 	struct device *dev = &pdev->dev;
-@@ -1330,6 +1334,7 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
  
- 	nfc->dev = dev;
-+	nfc->controller.ops = &sunxi_nfc_ops;
- 	spin_lock_init(&nfc->controller.lock);
- 	init_waitqueue_head(&nfc->controller.wq);
- 	INIT_LIST_HEAD(&nfc->chips);
+ 	int status, state = chip->state;
+@@ -910,6 +910,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 	WARN_ON(!(status & NAND_STATUS_READY));
+ 	return status;
+ }
++EXPORT_SYMBOL_GPL(nand_wait);
+ 
+ /**
+  * __nand_unlock - [REPLACEABLE] unlocks specified locked blocks
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 6c0aadc..30f8aa1 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -26,6 +26,8 @@
+ 
+ struct mtd_info;
+ struct nand_flash_dev;
++struct nand_chip;
++
+ /* Scan and identify a NAND device */
+ extern int nand_scan(struct mtd_info *mtd, int max_chips);
+ /*
+@@ -42,6 +44,9 @@ extern void nand_release(struct mtd_info *mtd);
+ /* Internal helper for board drivers which need to override command function */
+ extern void nand_wait_ready(struct mtd_info *mtd);
+ 
++/* Internal helper for drivers which rely on the default nand_wait func */
++int nand_wait(struct mtd_info *mtd, struct nand_chip *chip);
++
+ /* locks all blocks present in the device */
+ extern int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ 
 -- 
 1.9.1
