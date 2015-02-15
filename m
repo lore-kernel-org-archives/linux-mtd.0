@@ -1,22 +1,21 @@
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YMkX9-0007GI-AK
- for linux-mtd@lists.infradead.org; Sat, 14 Feb 2015 21:45:52 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: pxa3xx_nand: fix driver when num_cs is 0
-References: <1423425729-20671-1-git-send-email-robert.jarzmik@free.fr>
- <54D8ADD9.4030506@free-electrons.com>
-Date: Sat, 14 Feb 2015 22:45:28 +0100
-In-Reply-To: <54D8ADD9.4030506@free-electrons.com> (Ezequiel Garcia's message
- of "Mon, 09 Feb 2015 09:53:45 -0300")
-Message-ID: <874mqob213.fsf@free.fr>
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YMvBC-0007Xm-FA
+ for linux-mtd@lists.infradead.org; Sun, 15 Feb 2015 09:07:55 +0000
+Received: by mail-pa0-f45.google.com with SMTP id rd3so21680443pab.4
+ for <linux-mtd@lists.infradead.org>; Sun, 15 Feb 2015 01:07:32 -0800 (PST)
+Date: Sun, 15 Feb 2015 01:07:11 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch] mtd: hisilicon: && vs & typo
+Message-ID: <20150215090711.GA8351@norris-Latitude-E6410>
+References: <20150211102509.GB18515@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150211102509.GB18515@mwanda>
+Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Zhou Wang <wangzhou1@hisilicon.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel Garcia <ezequiel.garcia@free-electrons.com> writes:
+On Wed, Feb 11, 2015 at 01:25:09PM +0300, Dan Carpenter wrote:
+> The intent was to mask away some bits here, not to test true or false.
+> 
+> Fix: 54f531f6e332 ('mtd: hisilicon: add a new NAND controller driver for hisilicon hip04 Soc')
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-> On 02/08/2015 05:02 PM, Robert Jarzmik wrote:
->> As the devicetree binding doesn't require num_cs to exist or be strictly
->> positive, and neither does the platform data case, a bug appear when
->> num_cs is set to 0 and panics the kernel.
-...
->> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> Looks good,
->
-> Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Pushed to l2-mtd.git. Thanks.
 
-Brian, David, would queue that up in your for-next tree please ?
-
-Cheers.
-
--- 
-Robert
+Brian
