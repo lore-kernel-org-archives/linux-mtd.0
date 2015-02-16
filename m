@@ -4,9 +4,11 @@ To: Gregory Clement <gregory.clement@free-electrons.com>,
  Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v3 0/2] ARM: mvebu: a385-db-ap: Enable the NAND controller
-Date: Mon, 16 Feb 2015 13:51:10 +0100
-Message-Id: <1424091072-7738-1-git-send-email-maxime.ripard@free-electrons.com>
+Subject: [PATCH v3 2/2] ARM: mvebu: a385-db-ap: Enable the NAND
+Date: Mon, 16 Feb 2015 13:51:12 +0100
+Message-Id: <1424091072-7738-3-git-send-email-maxime.ripard@free-electrons.com>
+In-Reply-To: <1424091072-7738-1-git-send-email-maxime.ripard@free-electrons.com>
+References: <1424091072-7738-1-git-send-email-maxime.ripard@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
  Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
  linux-kernel@vger.kernel.org, Sudhakar Gundubogula <sudhakar@marvell.com>,
@@ -23,38 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+The Armada 385 Access Point Development Board has a 1GB NAND SLC chip from
+Micron as its main storage. Enable it.
 
-This patch serie enable the NAND support on the Armada 385 Access
-Point DB.
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+---
+ arch/arm/boot/dts/armada-385-db-ap.dts | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-In the process, some timeouts were found when we were accessing a
-freshly erased NAND page, which turned out to be an issue when
-draining the read FIFO where we were not following the datasheet.
-
-This has been fixed with the first patch, with stable CC'd. The second
-patch just enables the NAND controller in the DT.
-
-Thanks,
-Maxime
-
-Changes from v2:
-  - Read the status bits only every 32 bytes read, and not 32 bits
-    like was done before.
-  - Changed the timeout routine code not use the jiffies that won't
-    change in an interrupt context.
-
-Changes from v1:
-  - Added a timeout to the busy waiting loop for RDDREQ
-
-
-Maxime Ripard (2):
-  mtd: nand: pxa3xx: Fix PIO FIFO draining
-  ARM: mvebu: a385-db-ap: Enable the NAND
-
- arch/arm/boot/dts/armada-385-db-ap.dts | 13 ++++++++++
- drivers/mtd/nand/pxa3xx_nand.c         | 47 +++++++++++++++++++++++++++++-----
- 2 files changed, 54 insertions(+), 6 deletions(-)
-
+diff --git a/arch/arm/boot/dts/armada-385-db-ap.dts b/arch/arm/boot/dts/armada-385-db-ap.dts
+index b891b4c897f5..ee648fb19075 100644
+--- a/arch/arm/boot/dts/armada-385-db-ap.dts
++++ b/arch/arm/boot/dts/armada-385-db-ap.dts
+@@ -130,6 +130,19 @@
+ 				phy-mode = "rgmii-id";
+ 			};
+ 
++			nfc: flash@d0000 {
++				status = "okay";
++				#address-cells = <1>;
++				#size-cells = <1>;
++
++				num-cs = <1>;
++				nand-ecc-strength = <4>;
++				nand-ecc-step-size = <512>;
++				marvell,nand-keep-config;
++				marvell,nand-enable-arbiter;
++				nand-on-flash-bbt;
++			};
++
+ 			usb3@f0000 {
+ 				status = "okay";
+ 				usb-phy = <&usb3_phy>;
 -- 
 2.3.0
