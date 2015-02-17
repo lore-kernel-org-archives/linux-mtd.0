@@ -1,28 +1,25 @@
-Date: Tue, 17 Feb 2015 10:47:44 +0100
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Date: Tue, 17 Feb 2015 10:52:39 +0100
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
 To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v3 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
-Message-ID: <20150217094744.GI25269@lukather>
-References: <1424091072-7738-1-git-send-email-maxime.ripard@free-electrons.com>
- <1424091072-7738-2-git-send-email-maxime.ripard@free-electrons.com>
- <87oaotaa6r.fsf@free.fr> <20150216205825.GG25269@lukather>
- <87k2zha69p.fsf@free.fr>
+Subject: Re: [PATCH 5/9] mtd: pxa3xx_nand: add support for the Marvell Berlin
+ nand controller
+Message-ID: <20150217095239.GD4507@kwain>
+References: <1422367816-4257-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1422367816-4257-6-git-send-email-antoine.tenart@free-electrons.com>
+ <20150209005503.3fad39c7@bbrezillon> <871tlx7dgu.fsf@free.fr>
+ <20150211163343.GH11169@kwain> <87k2zn5c5v.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="2nTeH+t2PBomgucg"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87k2zha69p.fsf@free.fr>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
- Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87k2zn5c5v.fsf@free.fr>
+Cc: thomas.petazzoni@free-electrons.com,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
+ ezequiel.garcia@free-electrons.com, jszhang@marvell.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,143 +29,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Robert,
 
---2nTeH+t2PBomgucg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 16, 2015 at 10:36:02PM +0100, Robert Jarzmik wrote:
-> Maxime Ripard <maxime.ripard@free-electrons.com> writes:
->=20
-> >> I don't think an mdelay(256) is acceptable.
+On Thu, Feb 12, 2015 at 05:26:20PM +0100, Robert Jarzmik wrote:
+> Antoine Tenart <antoine.tenart@free-electrons.com> writes:
+> 
+> >> All these ifs per variant will add complexity to the current driver, won't they
+> >> ?
 > >
-> > That's very true that this driver would need some love, but
-> > valentine's day was last week.
->
-> That doesn't cope with the 256ms mdelay. And a potential big mdelay
-> is not what I'd call a bug fix, see below.
+> > Given the current state of this driver I believe this would be a better
+> > idea to first rework it to use the nand framework properly. Then it will
+> > be possible to have a look on what we have, to decide whether or not a
+> > mrvl-nand-lib is needed.
+> 
+> I don't fully agree to delay.
 
-I really don't care about the delay itself, really.
+And sorry, but I don't think reworking the pxa3xx driver this way is a
+good idea. As I was saying, I'd like to rework it and doing this would
+be useless once the rework is done.
 
-Just splitting the readsl into several chunks seems to slow the FIFO
-draining enough so that we don't even need to poll the RDDREQ bit.
+> You're taking code, making sometimes copy-paste, for the berlin specific
+> functions, and I think you're taking the bugs as well, which duplicates the fix
+> effort.
+> 
+> For example, in nand_cmdfunc_berlin():
+> +	if (info->reg_ndcr & NDCR_DWIDTH_M)
+> +		column /= 2;
+> 
+> This is I think a copy-paste from its twin nand_cmdfunc(). Now consider what
+> happens if the command is _not_ a read command, but an ONFI READID command
+> (ONFI being specified by column=0x20 if memory serves me well).
 
-I was asked (rightfully) for a timeout, and since there's no
-particular indication in the datasheet on this, I came up with a
-totally random and made-up number. If you want to suggest any other
-random number, I'd be happy to use it.
+In the Berlin specific cmdfunc we have ~10 lines copied from the others
+cmd functions. That's not much. The pxa3xx driver is already factorized
+and not a lot of functions are SoC-specific, except the cmdfunc which is
+not that long. So you would want me to move all the driver to
+mrvl-nand-lib and have a berlin_nand.c file with less than 100 lines
+(i.e only its cmdfunc)? Thant would introduce small specific probing
+functions and driver definitions and increase the code size, wouldn't
+it?
 
-Plus, saying that this is strictly equivalent to mdelay(256) is just
-bad faith. It is a (very very very unlikely) worst case scenario.
-During my tests, I've never experienced even a single delay being
-used, let alone every single reads needing to poll the bit for 5ms,
-always succeeding at the last attempt.
+> This is the reason I don't really like this patch. And this is also the reason
+> why I believe you're in a perfect timing to improve things, by grouping the
+> common function, and keeping the bugs in only one place, not many.
 
-If we really care about this, we might as well start caring about
-other theoretically possible situations, such as the NAND chip being
-ripped off the board by an asteroid.
+Well, I think that would not be the refactoring needed for this driver.
 
-> > I'm sorry, but this is a patch targeted for stable. This is a pure
-> > bugfix. I won't rewrite the whole driver solely to make the driver
-> > better, especially since that would make such a patch (or more likely
-> > a whole serie) unsuitable for stable.
->=20
-> This is the rewrite I was asking for (not tested), consider it against yo=
-ur
-> "rewrite the whole driver" :
->=20
-> 	Modified   drivers/mtd/nand/pxa3xx_nand.c
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
-d.c
-> index e512902..6e569e9 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -576,11 +576,20 @@ static void start_data_dma(struct pxa3xx_nand_info =
-*info)
->  {}
->  #endif
-> =20
-> +static irqreturn_t pxa3xx_nand_irq_thread(int irq, void *data)
-> +{
-> +	struct pxa3xx_nand_info *info =3D data;
-> +
-> +	handle_data_pio(info);
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
->  {
->  	struct pxa3xx_nand_info *info =3D devid;
->  	unsigned int status, is_completed =3D 0, is_ready =3D 0;
->  	unsigned int ready, cmd_done;
-> +	irqreturn_t ret =3D IRQ_HANDLED;
-> =20
->  	if (info->cs =3D=3D 0) {
->  		ready           =3D NDSR_FLASH_RDY;
-> @@ -622,7 +631,7 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *dev=
-id)
->  		} else {
->  			info->state =3D (status & NDSR_RDDREQ) ?
->  				      STATE_PIO_READING : STATE_PIO_WRITING;
-> -			handle_data_pio(info);
-> +			ret =3D IRQ_WAKE_THREAD;
->  		}
->  	}
->  	if (status & cmd_done) {
-> @@ -663,7 +672,7 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *dev=
-id)
->  	if (is_ready)
->  		complete(&info->dev_ready);
->  NORMAL_IRQ_EXIT:
-> -	return IRQ_HANDLED;
-> +	return ret;
->  }
-> =20
->  static inline int is_buf_blank(uint8_t *buf, size_t len)
-> @@ -1688,7 +1697,8 @@ static int alloc_nand_resource(struct platform_devi=
-ce *pdev)
->  	/* initialize all interrupts to be disabled */
->  	disable_int(info, NDSR_MASK);
-> =20
-> -	ret =3D request_irq(irq, pxa3xx_nand_irq, 0, pdev->name, info);
-> +	ret =3D request_threaded_irq(irq, pxa3xx_nand_irq,
-> +				   pxa3xx_nand_irq_thread, 0, pdev->name, info);
->  	if (ret < 0) {
->  		dev_err(&pdev->dev, "failed to request IRQ\n");
->  		goto fail_free_buf;
+I may have been missing something. If so, please explain me which
+code part is not factorized (except for the first 10 lines of the
+cmd functions, which I can factorize if you really want it) and how the
+driver would benefit from this?
 
-While I agree that this change would be needed, it is still not stable
-material, so both patches will have to go through separate ways (and
-one will live without the other).
+Thanks,
 
-Maxime
+Antoine
 
---=20
-Maxime Ripard, Free Electrons
+-- 
+Antoine Ténart, Free Electrons
 Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
-
---2nTeH+t2PBomgucg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJU4w5AAAoJEBx+YmzsjxAgb60QAKJUjWGw+TTJCz938czgKuy/
-+7zJxcz/OlWIEx+4IVpa2bQwkJOffvem6CQ4Si0VBTjKJdIXfm3C/rqoLE3zLjvP
-AzfOgkMvCxgYTS2Cr/6v2ONCimiWgBwQN5mZ/BQ8+hZHwKYmDjuEBqajndK9OloT
-7vqmgQxNGp2O/ZyyECCCYNBtyiPGIjlhVX0jIg+enutGP5zG8VmCo+aMIhBxZbtB
-gssff1Qvjqv6Y4pz3XEKJQSMpUDWewtz2ROw2zrHHZ21avQOfQnWNqpPWZpAWGOz
-rEZFvMGFYwJW2cxt2vsXDnSqkVXoGIo8WUb3nklr4TAo/2GpA6UXx76b334az+zM
-j4yn1LoBZM04O0R+97pcgljfqrKi+GxA/VvOd91k6hx4RXOa8fpmNePDn5T+M1Ld
-ZAPymZbNixELGJVDtg6AKazI5yGKeAbMuGV444M5Qrvc+hsDwHGiZtTGU5b/hHF+
-EmA/64aMegE5rlBaR9Irh/8PoQ6pirBp8nejvEm7wMVOTKEDwthh+wdxt6VwtAKu
-ldJ4t855V2n7Jh12qLKSyfhah3+hvCQ7GQLNi9/tBRXSM7/foyqHTODI9vB2tPz2
-yql1IhhYa1Ecc8e2oaCTjc0T0HfLesSCJdZHf83Za8aLT7xcPd1ghmGgKqyYVDvN
-c51LdsxSqx2+NLpMrXNo
-=4Xsu
------END PGP SIGNATURE-----
-
---2nTeH+t2PBomgucg--
