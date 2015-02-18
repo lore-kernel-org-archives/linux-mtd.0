@@ -1,21 +1,22 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-To: Gregory Clement <gregory.clement@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v4 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
-Date: Wed, 18 Feb 2015 11:32:07 +0100
-Message-Id: <1424255528-1717-2-git-send-email-maxime.ripard@free-electrons.com>
-In-Reply-To: <1424255528-1717-1-git-send-email-maxime.ripard@free-electrons.com>
-References: <1424255528-1717-1-git-send-email-maxime.ripard@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
- Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
- Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YO34U-0006yV-9t
+ for linux-mtd@lists.infradead.org; Wed, 18 Feb 2015 11:45:38 +0000
+Message-ID: <54E47ABF.8070306@free-electrons.com>
+Date: Wed, 18 Feb 2015 08:42:55 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+MIME-Version: 1.0
+To: Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH] mtd: pxa3xx-nand: handle PIO in threaded interrupt
+References: <1424203617-29431-1-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <1424203617-29431-1-git-send-email-robert.jarzmik@free.fr>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,90 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NDDB register holds the data that are needed by the read and write
-commands.
+On 02/17/2015 05:06 PM, Robert Jarzmik wrote:
+> Change the handling of the data stage in the driver : don't pump data in
+> the top-half interrupt, but rather schedule a thread for non dma cases.
+> 
+> This will enable latencies in the data pumping, especially if delays are
+> required. Moreover platform shall be more reactive as other interrupts
+> can be served while pumping data.
+> 
+> No throughput degradation was observed, at least on the zylonite
+> platform, while a slight degradation was being expected.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 23 ++++++++++++++++++++---
+>  1 file changed, 20 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 96b0b1d..237c92c 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -569,11 +569,25 @@ static void start_data_dma(struct pxa3xx_nand_info *info)
+>  {}
+>  #endif
+>  
+> +static irqreturn_t pxa3xx_nand_irq_thread(int irq, void *data)
+> +{
+> +	struct pxa3xx_nand_info *info = data;
+> +
+> +	handle_data_pio(info);
+> +
+> +	info->state = STATE_CMD_DONE;
 
-However, during a read PIO access, the datasheet specifies that after each 32
-bytes read in that register, when BCH is enabled, we have to make sure that the
-RDDREQ bit is set in the NDSR register.
-
-This fixes an issue that was seen on the Armada 385, and presumably other mvebu
-SoCs, when a read on a newly erased page would end up in the driver reporting a
-timeout from the NAND.
-
-Cc: <stable@vger.kernel.org> # v3.14
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 48 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 96b0b1d27df1..bc677362bc73 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -480,6 +480,42 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
- 	nand_writel(info, NDCR, ndcr | int_mask);
- }
- 
-+static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
-+{
-+	if (info->ecc_bch) {
-+		int timeout;
-+
-+		/*
-+		 * According to the datasheet, when reading from NDDB
-+		 * with BCH enabled, after each 32 bytes reads, we
-+		 * have to make sure that the NDSR.RDDREQ bit is set.
-+		 *
-+		 * Drain the FIFO 8 32 bits reads at a time, and skip
-+		 * the polling on the last read.
-+		 */
-+		while (len > 8) {
-+			__raw_readsl(info->mmio_base + NDDB, data, 8);
-+
-+			for (timeout = 0;
-+			     !(nand_readl(info, NDSR) & NDSR_RDDREQ);
-+			     timeout++) {
-+				if (timeout >= 5) {
-+					dev_err(&info->pdev->dev,
-+						"Timeout on RDDREQ while draining the FIFO\n");
-+					return;
-+				}
-+
-+				mdelay(1);
-+			}
-+
-+			data += 32;
-+			len -= 8;
-+		}
-+	}
-+
-+	__raw_readsl(info->mmio_base + NDDB, data, len);
-+}
-+
- static void handle_data_pio(struct pxa3xx_nand_info *info)
- {
- 	unsigned int do_bytes = min(info->data_size, info->chunk_size);
-@@ -496,14 +532,14 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
- 				      DIV_ROUND_UP(info->oob_size, 4));
- 		break;
- 	case STATE_PIO_READING:
--		__raw_readsl(info->mmio_base + NDDB,
--			     info->data_buff + info->data_buff_pos,
--			     DIV_ROUND_UP(do_bytes, 4));
-+		drain_fifo(info,
-+			   info->data_buff + info->data_buff_pos,
-+			   DIV_ROUND_UP(do_bytes, 4));
- 
- 		if (info->oob_size > 0)
--			__raw_readsl(info->mmio_base + NDDB,
--				     info->oob_buff + info->oob_buff_pos,
--				     DIV_ROUND_UP(info->oob_size, 4));
-+			drain_fifo(info,
-+				   info->oob_buff + info->oob_buff_pos,
-+				   DIV_ROUND_UP(info->oob_size, 4));
- 		break;
- 	default:
- 		dev_err(&info->pdev->dev, "%s: invalid state %d\n", __func__,
+Are you sure you need to set the state here?
 -- 
-2.3.0
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
