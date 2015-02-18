@@ -1,18 +1,18 @@
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YNoQZ-0003Nj-Rn
- for linux-mtd@lists.infradead.org; Tue, 17 Feb 2015 20:07:28 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH] mtd: pxa3xx-nand: handle PIO in threaded interrupt
-Date: Tue, 17 Feb 2015 21:06:57 +0100
-Message-Id: <1424203617-29431-1-git-send-email-robert.jarzmik@free.fr>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YNxkB-0001K4-3s
+ for linux-mtd@lists.infradead.org; Wed, 18 Feb 2015 06:04:20 +0000
+Message-ID: <54E42B47.1020807@codeaurora.org>
+Date: Wed, 18 Feb 2015 11:33:51 +0530
+From: Archit Taneja <architt@codeaurora.org>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 0/5] mtd: Qualcomm NAND controller driver
+References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
+In-Reply-To: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: galak@codeaurora.org, linux-kernel@vger.kernel.org, agross@codeaurora.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,82 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Change the handling of the data stage in the driver : don't pump data in
-the top-half interrupt, but rather schedule a thread for non dma cases.
+Hi,
 
-This will enable latencies in the data pumping, especially if delays are
-required. Moreover platform shall be more reactive as other interrupts
-can be served while pumping data.
+On 01/16/2015 08:18 PM, Archit Taneja wrote:
+> Add support for the NAND controller driver for SoC's that contain EBI2. For now,
+> the only SoC upstream that has EBI2 is IPQ806x.
+>
+> The patchset requires the ADM dmaengine patches posted by Andy:
+>
+> http://thread.gmane.org/gmane.linux.ports.arm.msm/11136
 
-No throughput degradation was observed, at least on the zylonite
-platform, while a slight degradation was being expected.
+I'd really appreciate if I could get some reviews on this driver from 
+the mtd community.
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
- drivers/mtd/nand/pxa3xx_nand.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+Please let me know if I need to do anything to make it easier to review.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 96b0b1d..237c92c 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -569,11 +569,25 @@ static void start_data_dma(struct pxa3xx_nand_info *info)
- {}
- #endif
- 
-+static irqreturn_t pxa3xx_nand_irq_thread(int irq, void *data)
-+{
-+	struct pxa3xx_nand_info *info = data;
-+
-+	handle_data_pio(info);
-+
-+	info->state = STATE_CMD_DONE;
-+	nand_writel(info, NDSR, NDSR_WRDREQ | NDSR_RDDREQ);
-+	enable_int(info, NDCR_INT_MASK);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
- {
- 	struct pxa3xx_nand_info *info = devid;
- 	unsigned int status, is_completed = 0, is_ready = 0;
- 	unsigned int ready, cmd_done;
-+	irqreturn_t ret = IRQ_HANDLED;
- 
- 	if (info->cs == 0) {
- 		ready           = NDSR_FLASH_RDY;
-@@ -613,9 +627,11 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
- 			start_data_dma(info);
- 			goto NORMAL_IRQ_EXIT;
- 		} else {
-+			disable_int(info, NDCR_INT_MASK);
- 			info->state = (status & NDSR_RDDREQ) ?
- 				      STATE_PIO_READING : STATE_PIO_WRITING;
--			handle_data_pio(info);
-+			ret = IRQ_WAKE_THREAD;
-+			goto NORMAL_IRQ_EXIT;
- 		}
- 	}
- 	if (status & cmd_done) {
-@@ -656,7 +672,7 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
- 	if (is_ready)
- 		complete(&info->dev_ready);
- NORMAL_IRQ_EXIT:
--	return IRQ_HANDLED;
-+	return ret;
- }
- 
- static inline int is_buf_blank(uint8_t *buf, size_t len)
-@@ -1672,7 +1688,8 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 	/* initialize all interrupts to be disabled */
- 	disable_int(info, NDSR_MASK);
- 
--	ret = request_irq(irq, pxa3xx_nand_irq, 0, pdev->name, info);
-+	ret = request_threaded_irq(irq, pxa3xx_nand_irq,
-+				   pxa3xx_nand_irq_thread, 0, pdev->name, info);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to request IRQ\n");
- 		goto fail_free_buf;
+Thanks,
+Archit
+
+>
+> Archit Taneja (5):
+>    clk: qcom: Add EBI2 clocks for IPQ806x
+>    mtd: nand: Add qcom nand controller driver
+>    Documentaion: dt: add DT bindings for Qualcomm NAND controller
+>    arm: qcom: dts: Add NAND controller node for ipq806x
+>    arm: qcom: dts: Enale NAND node on IPQ8064 AP148 pplatform
+>
+>   .../devicetree/bindings/mtd/qcom_nandc.txt         |   48 +
+>   arch/arm/boot/dts/qcom-ipq8064-ap148.dts           |   32 +
+>   arch/arm/boot/dts/qcom-ipq8064.dtsi                |   19 +-
+>   drivers/clk/qcom/gcc-ipq806x.c                     |   34 +
+>   drivers/mtd/nand/Kconfig                           |    7 +
+>   drivers/mtd/nand/Makefile                          |    1 +
+>   drivers/mtd/nand/qcom_nandc.c                      | 1995 ++++++++++++++++++++
+>   include/dt-bindings/clock/qcom,gcc-ipq806x.h       |    1 +
+>   8 files changed, 2136 insertions(+), 1 deletion(-)
+>   create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+>   create mode 100644 drivers/mtd/nand/qcom_nandc.c
+>
+
 -- 
-2.1.0
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
