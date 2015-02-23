@@ -1,16 +1,19 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQ0EM-0002e2-4r
- for linux-mtd@lists.infradead.org; Mon, 23 Feb 2015 21:07:54 +0000
-Received: by padfb1 with SMTP id fb1so30441509pad.8
- for <linux-mtd@lists.infradead.org>; Mon, 23 Feb 2015 13:07:32 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
-Subject: [PATCH] UBI: fix missing brace control flow
-Date: Mon, 23 Feb 2015 13:07:22 -0800
-Message-Id: <1424725642-26270-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Dan Carpenter <dan.carpenter@oracle.com>
+ id 1YQ0SK-0000yH-PX
+ for linux-mtd@lists.infradead.org; Mon, 23 Feb 2015 21:22:22 +0000
+Message-ID: <54EB99F1.4040608@nod.at>
+Date: Mon, 23 Feb 2015 22:21:53 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBI: fix missing brace control flow
+References: <1424725642-26270-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1424725642-26270-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-commit 0e707ae79ba3 ("UBI: do propagate positive error codes up") seems
-to have produced an unintended change in the control flow here.
+Am 23.02.2015 um 22:07 schrieb Brian Norris:
+> commit 0e707ae79ba3 ("UBI: do propagate positive error codes up") seems
+> to have produced an unintended change in the control flow here.
+> 
+> Completely untested, but it looks obvious.
+> 
+> Caught by Coverity, which didn't like the indentation. CID 1271184.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+> Should go into 4.0, I expect.
 
-Completely untested, but it looks obvious.
+Good catch, patch tested and applied!
 
-Caught by Coverity, which didn't like the indentation. CID 1271184.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
----
-Should go into 4.0, I expect.
-
- drivers/mtd/ubi/eba.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index da4c79259f67..16e34b37d134 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -425,9 +425,10 @@ retry:
- 					ubi_warn(ubi, "corrupted VID header at PEB %d, LEB %d:%d",
- 						 pnum, vol_id, lnum);
- 					err = -EBADMSG;
--				} else
-+				} else {
- 					err = -EINVAL;
- 					ubi_ro_mode(ubi);
-+				}
- 			}
- 			goto out_free;
- 		} else if (err == UBI_IO_BITFLIPS)
--- 
-1.9.1
+Thank you Brian!
+//richard
