@@ -1,13 +1,36 @@
-From: Roger Quadros <rogerq@ti.com>
-To: <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: nand: Prevent possible kernel lockup in nand_command()
-Date: Mon, 23 Feb 2015 17:26:39 +0200
-Message-ID: <1424705199-11337-1-git-send-email-rogerq@ti.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YPv2m-0004cL-7R
+ for linux-mtd@lists.infradead.org; Mon, 23 Feb 2015 15:35:36 +0000
+Message-ID: <54EB481A.8080606@imgtec.com>
+Date: Mon, 23 Feb 2015 12:32:42 -0300
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: nm@ti.com, nsekhar@ti.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, ezequiel.garcia@free-electrons.com,
- dwmw2@infradead.org, Roger Quadros <rogerq@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/3] An alternative to SPI NAND
+References: <87F60714EC601C4C83DFF1D2E3D390A04AB3F3@NTXXIAMBX02.xacn.micron.com>
+ <20150108010257.GP9759@ld-irv-0074>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
+ <54ADF90B.1070800@imgtec.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
+ <54BE2F7B.60003@imgtec.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A77151E62@NTXXIAMBX02.xacn.micron.com>
+ <54CA75F6.5020803@imgtec.com>
+ <87F60714EC601C4C83DFF1D2E3D390A04AE751@NTXXIAMBX02.xacn.micron.com>
+ <54CB6F51.2070403@imgtec.com> <20150131070204.GA3692@norris-Latitude-E6410>
+In-Reply-To: <20150131070204.GA3692@norris-Latitude-E6410>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: =?UTF-8?B?IlFpIFdhbmcg546L6LW3IChxaXdhbmcpIg==?= <qiwang@micron.com>,
+ Andrew Bresticker <abrestic@chromium.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?UTF-8?B?IkZyYW5rIExpdSDliJjnvqQgKGZyYW5rbGl1KSI=?= <frankliu@micron.com>,
+ =?UTF-8?B?Ik1lbGFuaWUgWmhhbmcg5byg54eVIChtZWxhbmll?= =?UTF-8?B?emhhbmcpIg==?=
+ <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ James Hartley <james.hartley@imgtec.com>,
+ =?UTF-8?B?IlBldGVyIFBhbiDmvZjmoIsgKHBldGVycGFuZG9uZyki?=
+ <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,73 +40,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If a NAND device is not really present or pin muxes are not correctly
-configured we can lock up the kernel waiting infinitely for NAND_STATUS
-to be ready.
+Brian,
 
-This can be easily reproduced on TI's DRA7-evm board by booting it
-without NAND support in u-boot and disabling NAND pin muxes in the kernel.
+On 01/31/2015 04:02 AM, Brian Norris wrote:
+> Unless someone else thinks they have an excellent handle on the above,
+> I'll take a stab at doing this. I actually have a few patches that have
+> hung around a while (with little incentive to finish them) that do parts
+> of what I'm suggesting above.
 
-Add timeout when waiting for NAND_CMD_RESET completion. As per ONFi v4.0
-tRST can be upto 250ms for EZ-NAND and 5ms for raw NAND.
+Any progress with this?
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
-Tested-by: Nishanth Menon <nm@ti.com>
----
- drivers/mtd/nand/nand_base.c | 27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
+You outlined the plan quite clearly, so perhaps I can help you by
+putting together some patches? If you have some work-in-progress stuff,
+I can even start there.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index df7eb4f..d1e6695 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -566,6 +566,25 @@ void nand_wait_ready(struct mtd_info *mtd)
- EXPORT_SYMBOL_GPL(nand_wait_ready);
- 
- /**
-+ * nand_wait_status_ready - [GENERIC] Wait for the ready status after commands.
-+ * @mtd: MTD device structure
-+ * @timeo: Timeout in ms
-+ *
-+ * Wait for status ready (i.e. command done) or timeout.
-+ */
-+static void nand_wait_status_ready(struct mtd_info *mtd, unsigned long timeo)
-+{
-+	register struct nand_chip *chip = mtd->priv;
-+
-+	timeo = jiffies + msecs_to_jiffies(timeo);
-+	do {
-+		if ((chip->read_byte(mtd) & NAND_STATUS_READY))
-+			break;
-+		touch_softlockup_watchdog();
-+	} while (time_before(jiffies, timeo));
-+};
-+
-+/**
-  * nand_command - [DEFAULT] Send command to NAND device
-  * @mtd: MTD device structure
-  * @command: the command to be sent
-@@ -643,8 +662,8 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 			       NAND_CTRL_CLE | NAND_CTRL_CHANGE);
- 		chip->cmd_ctrl(mtd,
- 			       NAND_CMD_NONE, NAND_NCE | NAND_CTRL_CHANGE);
--		while (!(chip->read_byte(mtd) & NAND_STATUS_READY))
--				;
-+		/* EZ-NAND can take upto 250ms as per ONFi v4.0 */
-+		nand_wait_status_ready(mtd, 250);
- 		return;
- 
- 		/* This applies to read commands */
-@@ -740,8 +759,8 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
- 		chip->cmd_ctrl(mtd, NAND_CMD_NONE,
- 			       NAND_NCE | NAND_CTRL_CHANGE);
--		while (!(chip->read_byte(mtd) & NAND_STATUS_READY))
--				;
-+		/* EZ-NAND can take upto 250ms as per ONFi v4.0 */
-+		nand_wait_status_ready(mtd, 250);
- 		return;
- 
- 	case NAND_CMD_RNDOUT:
 -- 
-2.1.0
+Ezequiel
