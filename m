@@ -1,27 +1,28 @@
-Received: from mail-wg0-f45.google.com ([74.125.82.45])
+Received: from mail-we0-f182.google.com ([74.125.82.182])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQBzq-0006VF-DH
- for linux-mtd@lists.infradead.org; Tue, 24 Feb 2015 09:41:43 +0000
-Received: by wghk14 with SMTP id k14so4052478wgh.4
- for <linux-mtd@lists.infradead.org>; Tue, 24 Feb 2015 01:41:17 -0800 (PST)
-Date: Tue, 24 Feb 2015 09:41:10 +0000
+ id 1YQCWA-0000et-PP
+ for linux-mtd@lists.infradead.org; Tue, 24 Feb 2015 10:15:08 +0000
+Received: by wevk48 with SMTP id k48so24193788wev.3
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Feb 2015 02:14:44 -0800 (PST)
+Date: Tue, 24 Feb 2015 10:14:37 +0000
 From: Lee Jones <lee.jones@linaro.org>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 02/10] mtd: st_spi_fsm: Fetch boot device locations
- from DT match tables
-Message-ID: <20150224094110.GA20969@x1>
-References: <1421853868-8262-1-git-send-email-lee.jones@linaro.org>
- <1421853868-8262-3-git-send-email-lee.jones@linaro.org>
- <20150206042744.GK18140@ld-irv-0074> <20150210074634.GD8020@x1>
- <20150224050452.GG18140@ld-irv-0074>
+Subject: Re: [PATCH v3 08/13] mtd: st_spi_fsm: Update the JEDEC probe to
+ handle extended READIDs
+Message-ID: <20150224101437.GA20979@x1>
+References: <1418644760-18773-1-git-send-email-lee.jones@linaro.org>
+ <1418644760-18773-9-git-send-email-lee.jones@linaro.org>
+ <20150113050715.GQ9759@ld-irv-0074> <20150121130204.GC22024@x1>
+ <20150206021129.GB18140@ld-irv-0074> <20150210090433.GE8020@x1>
+ <20150224044436.GF18140@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150224050452.GG18140@ld-irv-0074>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kernel@stlinux.com
+In-Reply-To: <20150224044436.GF18140@ld-irv-0074>
+Cc: Angus Clark <angus.clark@st.com>, kernel@stlinux.com,
+ linux-kernel@vger.kernel.org, Carmelo Amoroso <carmelo.amoroso@st.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,148 +33,127 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Mon, 23 Feb 2015, Brian Norris wrote:
-
-> On Tue, Feb 10, 2015 at 03:46:34PM +0800, Lee Jones wrote:
+> On Tue, Feb 10, 2015 at 05:04:33PM +0800, Lee Jones wrote:
 > > On Thu, 05 Feb 2015, Brian Norris wrote:
-> > > On Wed, Jan 21, 2015 at 03:24:20PM +0000, Lee Jones wrote:
-> > > > To trim down on the amount of properties used by this driver and to conform
-> > > > to the newly agreed method of acquiring syscfg registers/offsets, we now
-> > > > obtain this information using match tables.
+> > > On Wed, Jan 21, 2015 at 01:02:04PM +0000, Lee Jones wrote:
+> > > > On Mon, 12 Jan 2015, Brian Norris wrote:
+> > > > > On Mon, Dec 15, 2014 at 11:59:15AM +0000, Lee Jones wrote:
+> > > > > > +#define RDID(...) __VA_ARGS__  /* Dummy macro to protect array argument. */
+> > > > > 
+> > > > > What? What needs "protected"?
+> > > > 
+> > > > You're asking me questions I can't answer I'm afraid and Angus has now
+> > > > left the building.  I guess he thinks __VA_ARGS__ will prevent some
+> > > > kind of overflow?
 > > > 
-> > > Where did this agreement happen? Are you only referring to the previous
-> > > patch?
+> > > If you don't understand your own code, how can I be expected to maintain
+> > > it? This one's pretty trivial and harmless, but an accumulation of
+> > > answers like this don't exactly put me in a good mood.
 > > 
-> > I think your interpretation of the above text and my intentions are
-> > not the same.
+> > I have never written a line of code that I didn't understand and I
+> > think you are quite aware that this has never been my 'own code'.
 > 
-> To be clear: I'm simply asking what do you mean by "agreed method". I
-> never agreed to syscfg registers/offsets. So who did? Are you agreeing
-> with yourself?
+> Stop deflecting. I don't care that you didn't write this code. If you're
+> asking me to apply this upstream, then you own it. 
 
-Look:
+Okay, I own it.  And I have a good grasp of how most of the driver
+operates.  However, it is unreasonable to request that someone who
+conducts Mainlining activities who is not the author to understand
+every single line.
 
-> The description above is pertaining to the
-> different/new way in which we obtain and request syscfg registers.
+It's now commonplace for an 'author' and 'submitter' to be different
+people.  The only difference is that normally the author is still
+around to provide support.  Or at least the submitter has access to a
+team who have in-depth knowledge of the hardware/driver.
 
-When I say "agreed method", I mean the way in which we obtain syscfg
-registers/offsets, not the reason for using them.  How is that not
-clear in the commit log, "agreed method of acquiring syscfg registers/
-offsets"?
+I have submitted drivers and fixes all over the kernel tree and have a
+fairly good knowledge of each of the subsystems, but to ask that I
+become an expert in all of them -- especially subsystems as complex as
+MTD is idealistic and unrealistic at best.
 
-And no, you never agreed to that.  You weren't part of the
-conversation.  For your own reference one of the first patches which
-deals with this "newly agreed method" and supplies a succinct
-explanation can be found here:
+> Or else, hire another expert who is willing to own your drivers.
 
-  https://lkml.org/lkml/2014/11/19/78
+Silicon chip vendors do not have limitless resources to hire or train
+experts to conduct all their upstreaming activities?  These guys are
+almost always focused on customer projects/requests and have little
+time for upstreaming.  It's people like us to advocate and encourage
+pushing code into Mainline, as the cost of upstreaming is usually
+dwarfed by the cost of migrating a huge delta to a more recent code
+base.  This activity however, has not a good example of that.
 
-> > The description above is pertaining to the
-> > different/new way in which we obtain and request syscfg registers.
+> > With regards to the previous accumulation of 'answers like this'; I
+> > have never been, nor have any desire to be an expert on Memory
+> > Technology Devices.  I was asked to upstream ST's NAND and NOR drivers
+> > with support of the local expert and author; however, for reasons not
+> > under neither of our controls, he has now left the company.  With him
+> > went all of the historical reasoning for all for the questions you've
+> > asked.  This is not my domain and have found it pretty tough to keep
+> > up with all of your demands, both on this and the NAND driver but I
+> > have been pretty subservient and keep up with them I have.  I am not
+> > privy to any of the author's thoughts or reasons for any decisions
+> > taken.  I can only hope that his comments might have some meaning to a
+> > like minded 'expert' such as yourself.  If you don't know something,
+> > then the chances are slight that I will be able to answer your query.
 > 
-> OK. So you're dealing with the "how" but not the "why."
-
-I'm dealing with answering the question that was asked.  You mentioned
-that you did not "agree" to using the boot devices in this way and I
-was explaining that when I said "agreed", I was talking about
-something else.
-
-> That is not a reasonable way to develop good code.
-
-I'm not entirely sure what you're talking about.  This patch was
-designed to introduce a clean way to extract important values from
-syscfg to be used with functionality written by our local MTD expert.
-I don't know about you, but I believe that identifying a need, setting
-an aim and successfully achieving that aim is a great way to code.
-
-Unless of course you re you insinuating that I should have been aware
-of conversations which you previously had with other parties about
-resilience to mode setting over reset/power-outage?
-
-> > I have no idea why there is a different configuration
-> > depending on if we booted from SPI NOR or not and hence can not answer
-> > your query below.
+> Well, I think we have a fundamentally different view of what upstream
+> development means, then. My job is not to worry about your company's
+> internal problems. My job is not to worry about your company's
+> development schedules. My job is not to be your on-call MTD expert.
 > 
-> Seriously? That's all you can come up with? Sheesh. And you wonder why I
-> called you out on not understanding the code that you're sending me.
-
-I already explained to you that I am not an MTD expert and still you
-cut me no slack.  At one time I was supported by someone who can
-answer all of these questions; however, as you well know, this is no
-longer the case.  The company does have people that specialise in MTD,
-but they are so busy with customer projects that they have no time to
-support these endeavours.  So I am on my own!
-
-Everything that I know now, I have learned from you.  So please don't
-act so surprised when I struggle to answer all these new questions
-you're posing.
-
-> > In previous incarnations of this patchset, we were defining new vendor
-> > specific properties in order to request and register and the mask:
-> > 
-> >   st,boot-device-reg = <0x958>;
-> >   st,boot-device-spi = <0x1a>;
-> > 
-> > ... this is not optimal, as DT properties should only be created if
-> > there are no other way to obtain platform specific information.  As
-> > there are few supported platforms and this configuration does not
-> > change through variants, we are now supplying it via static tables,
-> > which can be obtained easily using the DT match framework.
+> My job is to make sure that upstream MTD contains relatively clean,
+> maintainable code, and to accept patches that generally improve the
+> codebase (i.e., bug fixes, refactoring, feature improvements).
 > 
-> I understand what you're doing with syscfg and these register offsets.
-> But if you follow the code as to what they're actually producing, you
-> see that it yields the 'booted_from_spi' boolean. That's a pretty simple
-> concept.
-> 
-> Now, unless you were able to provide an additional enlightening
-> viewpoint, then the following paragraph likely all holds true:
-> 
-> > > Also, I realized that all this boot device / syscfg gymnastics is just
-> > > for one simple fact; your driver is trying to hide the fact that your
-> > > system can't reliably handle 4-byte addressing for the boot device. Even
-> > > if you try your best at toggling 4-byte addressing before/after each
-> > > read/write/erase, you still are vulnerable to power cuts during the
-> > > operation. This is a bad design, and we have consistently agreed that we
-> > > aren't going to work around that in Linux.
+> Recall that at least one prominent kernel developer has suggested that
+> it's actually not in a maintainer's interests to accept random
+> contributors' code. The contributor's job is to give the maintainer no
+> reason to reject his or her code. When you repeatedly claim to not
+> understand the code you're sending me, that sets off warning bells that
+> make it significantly harder to handle your code.
+
+At the moment, what you're saying is; if your NOR Contreoller is not
+exactly the same as all the others and doesn't fit inside our
+mega-driver, it's not welcome.
+
+> Perhaps we'd all be better off if I simply removed your driver from
+> upstream, and you can convince your company to hire an MTD expert to
+> handle your upstreaming efforts.
+
+See my point above about the lack of limitless funds.
+
+> > > FWIW, I expect the comment has nothing to do with the __VA_ARGS__; it's
+> > > just commenting that he has placed a macro around the array just in case
+> > > somebody needs/wants to rearrange formats later. That way, we don't
+> > > necessarily have to rewrite the whole table, but can just change the
+> > > macros.
 > > > 
-> > > Better solutions: hook up a reset line to your flash; improve your boot
-> > > ROM / bootloader to handle 4-byte addressing for large flash.
-
-Okay, I'm re-read the code and have a new understanding about the
-boot-from-spi 'gymnastics'. 
-
-There is a separate controller on the platform which acts as a boot
-device and makes the NOR chip appear as though it is memory mapped.
-This expects the NOR Controller to be in its default state [24-bit
-addressing] on boot.  The issue arises if a warm-reset occurs and the
-device is still in 32-bit addressing mode.  To minimise the risk, the
-controller attempts to stay in 24-bit addressing mode for as long as
-possible.
-
-You mentioned power-cuts.  I do not believe this to be an issue, as
-when the power is completely removed the controller will reset back
-into default state.  Only warm-resets are an issue.
-
-> And so we have also reached the boundaries of my willingness to review
-> your code. There's a significant technical point here that drove you to
-> define several new DT compatible strings. I propose (and am now more
-> convinced) that this is not actually necessary. But apparently you are
-> not equipped to have a discussion about this.
+> > > So the __VA_ARGS__ is just there to make the compiler happy (it thinks
+> > > an array argument to a macro actually looks like more than one
+> > > argument), and the comment is only mildly descriptive of its purpose.
+> > 
+> > I was present Passing Variable Arguments 101, so I'm aware of what
+> > __VA_ARGS__ and "..." do at a functional level.
 > 
-> I'm tempted to:
+> But this is not a '101' use case, exactly. It's there because of the
+> peculiarities of macros, it seems. And don't pretend to understand when
+> you clearly did not when I first asked. (And to be clear: I did not
+> understand either. That's why I asked.)
+
+Stop twisting things.  You (unnecessarily) explained to me what
+va_args was.  I was saying that I know what it is and how to declare
+functions with variable arguments.  Not that I knew what the MACRO was
+doing.
+
+> > So it looks like you had a better idea of what Angus was trying to
+> > achieve than I do.  Perhaps your question should have been more
+> > specific.  I guess it's just the comment that you are unhappy with.  I
+> > can remove it if it makes you happy.
 > 
->   git rm drivers/mtd/devices/st_spi_fsm.c
-> 
-> (Along with the appropriate Kconfig and Makefile entries, of course.)
+> No, the comment wasn't the problem, exactly. I was a bit confused, and I
+> wrongly assumed that you understood what you're sending me. Apparently
+> that was too much to assume.
 
-That would be very immature indeed.
-
-> > > What's the possibility of dropping all this 4-byte address toggling
-> > > shenanigans? This will be a blocker to merging with spi-nor.c.
-
-We wouldn't be able to remove this code without significantly
-weakening resilience to warm-reset mishaps, and changing the hardware
-design for devices which have already been released is obviously out
-of the question.
+Refer to my points above.
 
 -- 
 Lee Jones
