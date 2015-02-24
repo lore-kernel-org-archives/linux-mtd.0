@@ -1,19 +1,27 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQ0SK-0000yH-PX
- for linux-mtd@lists.infradead.org; Mon, 23 Feb 2015 21:22:22 +0000
-Message-ID: <54EB99F1.4040608@nod.at>
-Date: Mon, 23 Feb 2015 22:21:53 +0100
-From: Richard Weinberger <richard@nod.at>
+Date: Mon, 23 Feb 2015 19:45:48 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v3 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
+Message-ID: <20150224034548.GC18140@ld-irv-0074>
+References: <1424091072-7738-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1424091072-7738-2-git-send-email-maxime.ripard@free-electrons.com>
+ <87oaotaa6r.fsf@free.fr> <20150216205825.GG25269@lukather>
+ <87k2zha69p.fsf@free.fr> <20150217103740.GK25269@lukather>
+ <877fvga2mb.fsf@free.fr> <54E3777B.20607@free-electrons.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: fix missing brace control flow
-References: <1424725642-26270-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1424725642-26270-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54E3777B.20607@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
+ Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 23.02.2015 um 22:07 schrieb Brian Norris:
-> commit 0e707ae79ba3 ("UBI: do propagate positive error codes up") seems
-> to have produced an unintended change in the control flow here.
+On Tue, Feb 17, 2015 at 02:16:43PM -0300, Ezequiel Garcia wrote:
+> On 02/17/2015 02:07 PM, Robert Jarzmik wrote:
+> > It will be Brian choice eventually, but if you say that you will submit that
+> > approach for next cycle, and yours for stable, and that for next you'll convert
+> > mdelay() to msleep(), I'll stop arguing.
 > 
-> Completely untested, but it looks obvious.
-> 
-> Caught by Coverity, which didn't like the indentation. CID 1271184.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> Should go into 4.0, I expect.
+> How about you push a proper patchset with this alternative (and a nice
+> cover letter explaining the need for a threaded irq) so we can discuss
+> properly this new turn?
 
-Good catch, patch tested and applied!
+I think both Maxime's change (polling a new HW bit) and Robert J's
+change (move to a threaded IRQ) are good. I'll take another look, but I
+expect I'll take Maxime's v4 for the 4.0 cycle, and Robert J's v2 for
+4.1 (or will we just jump straight to 5.0? I never know). Will I see a
+patch to convert to msleep() and/or a jiffies timeout in the near
+future?
 
-Thank you Brian!
-//richard
+Brian
