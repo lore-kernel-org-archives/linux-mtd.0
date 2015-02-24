@@ -1,38 +1,24 @@
-Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQ6Zn-0003fp-Fy
- for linux-mtd@lists.infradead.org; Tue, 24 Feb 2015 03:54:27 +0000
-Received: by pdjp10 with SMTP id p10so30362661pdj.3
- for <linux-mtd@lists.infradead.org>; Mon, 23 Feb 2015 19:54:06 -0800 (PST)
-Date: Mon, 23 Feb 2015 19:54:02 -0800
+ id 1YQ6fU-0006JL-Ih
+ for linux-mtd@lists.infradead.org; Tue, 24 Feb 2015 04:00:21 +0000
+Received: by pabkx10 with SMTP id kx10so32739643pab.13
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Feb 2015 19:59:59 -0800 (PST)
+Date: Mon, 23 Feb 2015 19:59:56 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: Re: [PATCH 0/3] An alternative to SPI NAND
-Message-ID: <20150224035402.GD18140@ld-irv-0074>
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
- <54ADF90B.1070800@imgtec.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
- <54BE2F7B.60003@imgtec.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A77151E62@NTXXIAMBX02.xacn.micron.com>
- <54CA75F6.5020803@imgtec.com>
- <87F60714EC601C4C83DFF1D2E3D390A04AE751@NTXXIAMBX02.xacn.micron.com>
- <54CB6F51.2070403@imgtec.com>
- <20150131070204.GA3692@norris-Latitude-E6410>
- <54EB481A.8080606@imgtec.com>
+To: Viet Nga Dao <vndao@altera.com>
+Subject: Re: [PATCH v2] mtd:spi-nor: Add Altera EPCQ Driver
+Message-ID: <20150224035956.GE18140@ld-irv-0074>
+References: <CAN1oZWykZk13yCajiZc-xb5h372MrEP9iOWUqzhrt-feG6pkLQ@mail.gmail.com>
+ <CAN1oZWwHsm1i2Ap6LJwd5u=1ySokzA6DZCFAqK6wkPCz_P3XMA@mail.gmail.com>
+ <CAN1oZWyM8HVuXuCyVankDvZb7JGOg5ysuTz7YwTOGHL89vY9dg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <54EB481A.8080606@imgtec.com>
-Cc: =?utf-8?B?IlFpIFdhbmcg546L6LW3IChxaXdhbmcpIg==?= <qiwang@micron.com>,
- Andrew Bresticker <abrestic@chromium.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?IkZyYW5rIExpdSDliJjnvqQgKGZyYW5rbGl1KSI=?= <frankliu@micron.com>,
- =?utf-8?B?Ik1lbGFuaWUgWmhhbmcg5byg54eVIChtZWxhbmllemhhbmcpIg==?=
- <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- James Hartley <james.hartley@imgtec.com>,
- =?utf-8?B?IlBldGVyIFBhbiDmvZjmoIsgKHBldGVycGFuZG9uZyki?=
- <peterpandong@micron.com>
+In-Reply-To: <CAN1oZWyM8HVuXuCyVankDvZb7JGOg5ysuTz7YwTOGHL89vY9dg@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, nga_chi86 <ngachi86@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,29 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 23, 2015 at 12:32:42PM -0300, Ezequiel Garcia wrote:
-> On 01/31/2015 04:02 AM, Brian Norris wrote:
-> > Unless someone else thinks they have an excellent handle on the above,
-> > I'll take a stab at doing this. I actually have a few patches that have
-> > hung around a while (with little incentive to finish them) that do parts
-> > of what I'm suggesting above.
-> 
-> Any progress with this?
-> 
-> You outlined the plan quite clearly, so perhaps I can help you by
-> putting together some patches? If you have some work-in-progress stuff,
-> I can even start there.
+On Mon, Feb 23, 2015 at 09:30:09AM +0800, Viet Nga Dao wrote:
+> Hi,
+> It has been nearly 2 weeks since i submitted this patch.  Could you
+> please help to review?
 
-I did quite a decent chunk of work a few weeks back, but I didn't have
-time to finish it in my free time. The day job has distracted me from my
-less urgent tasks.
+Those two weeks were during the merge window, so I wasn't queueing
+anything up. And there are things that have waited longer, anyway. My
+time is unfortunately finite.
 
-Anyway, I had queued up stuff here:
+I'll get to your patch eventually.
 
-http://git.infradead.org/users/norris/linux-mtd.git/shortlog/refs/heads/nand-bbt
-
-Take a look if you'd like. I could post the first couple, I guess, but
-the last is definitely not complete. I can flesh out the TODO list a bit
-better, if you really want to pick it up.
+> On Tue, Feb 17, 2015 at 9:33 AM, Viet Nga Dao <vndao@altera.com> wrote:
+> > Hi Brian,
+> > Could you please help me to review through this 2nd version?
+> >
+> > On Wed, Feb 11, 2015 at 12:53 PM, Viet Nga Dao <vndao@altera.com> wrote:
+> >> From: Viet Nga Dao <vndao@altera.com>
+> >>
+> >> Altera EPCQ Controller is a soft IP which enables access to Altera EPCQ and
+> >> EPCS flash chips. This patch adds driver for these devices.
+> >>
+> >> Signed-off-by: VIET NGA DAO <vndao@altera.com>
+> >>
+> >> ---
+> >> v2:
+> >> - Change to spi_nor structure
+> >> - Add lock and unlock functions for spi_nor
+> >> - Simplify the altera_epcq_lock function
+> >> - Replace reg by compatible in device tree
+...
 
 Brian
