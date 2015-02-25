@@ -1,14 +1,21 @@
-Date: Wed, 25 Feb 2015 16:15:58 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [patch] mtd: cfi: clean up some indenting
-Message-ID: <20150225131558.GD19745@mwanda>
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YQe8S-0004Fb-Oo
+ for linux-mtd@lists.infradead.org; Wed, 25 Feb 2015 15:44:29 +0000
+Received: by pablf10 with SMTP id lf10so6078354pab.6
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Feb 2015 07:44:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Jingoo Han <jg1.han@samsung.com>, kernel-janitors@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Paul Gortmaker <paul.gortmaker@windriver.com>
+Sender: kalluripunnaiahchoudary@gmail.com
+Date: Wed, 25 Feb 2015 21:14:06 +0530
+Message-ID: <CAGnW=BbyGzQwpb0BvdNVnK+ZFfMmnKjLBmRHzTBMzJ8Vq9FDag@mail.gmail.com>
+Subject: [RFC] How to configure nand address cycles in a generic way
+From: punnaiah choudary kalluri <punnaia@xilinx.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ michals@xilinx.com, pcrost@xilinx.com,
+ sivadur@xilinx.com, Punnaiah Choudary <kpc528@gmail.com>,
+ kalluripunnaiahchoudary@gmail.com, "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,50 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These lines were all indented one tab more than they should be.
+Hi,
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+  We are using pl353 smc controller in our zynq soc and currently the
+patches for this driver
+are under review. Till now we have tested various nand parts (micron
+and spansion)
+and all these devices require five address cycles for read/write
+operations (3 row and 2 column address cycles).Even in our driver the
+address cycles value is hard coded to five.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
-index 423666b..9a1a6ff 100644
---- a/drivers/mtd/chips/cfi_cmdset_0020.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0020.c
-@@ -206,23 +206,23 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
- 			mtd->eraseregions[(j*cfi->cfiq->NumEraseRegions)+i].numblocks = ernum;
- 		}
- 		offset += (ersize * ernum);
--		}
-+	}
- 
--		if (offset != devsize) {
--			/* Argh */
--			printk(KERN_WARNING "Sum of regions (%lx) != total size of set of interleaved chips (%lx)\n", offset, devsize);
--			kfree(mtd->eraseregions);
--			kfree(cfi->cmdset_priv);
--			kfree(mtd);
--			return NULL;
--		}
-+	if (offset != devsize) {
-+		/* Argh */
-+		printk(KERN_WARNING "Sum of regions (%lx) != total size of set of interleaved chips (%lx)\n", offset, devsize);
-+		kfree(mtd->eraseregions);
-+		kfree(cfi->cmdset_priv);
-+		kfree(mtd);
-+		return NULL;
-+	}
- 
--		for (i=0; i<mtd->numeraseregions;i++){
--			printk(KERN_DEBUG "%d: offset=0x%llx,size=0x%x,blocks=%d\n",
--			       i, (unsigned long long)mtd->eraseregions[i].offset,
--			       mtd->eraseregions[i].erasesize,
--			       mtd->eraseregions[i].numblocks);
--		}
-+	for (i=0; i<mtd->numeraseregions;i++){
-+		printk(KERN_DEBUG "%d: offset=0x%llx,size=0x%x,blocks=%d\n",
-+		       i, (unsigned long long)mtd->eraseregions[i].offset,
-+		       mtd->eraseregions[i].erasesize,
-+		       mtd->eraseregions[i].numblocks);
-+	}
- 
- 	/* Also select the correct geometry setup too */
- 	mtd->_erase = cfi_staa_erase_varsize;
+   Recently we come across testing the new part i.e Spansion S34ML01G
+and this devices requires four address cycles( 2 row and 2 column
+cycles) so, now we want to generalize this by reading the address
+cycles information from the onfi parameter page.
+
+ I see that the controller driver can retrieve the address cycles
+information from the nand_onfi_params structure. But the number of
+address cycles to be configured is different for different commands.
+like
+ Page read/write operation: row + col address cycles
+ Block erase                    : row address cycles
+ onfi parameter page         : one address cycles.
+
+Currently in our driver we are reading the address cycles information
+from the nand_onfi_params structure and deriving the required address
+cycles based on the given command. Ideally this information should
+come from the nand core. So, one way i thought that the core should
+pass the
+required address cycles using the cmdfuncion as below. so the
+controller driver can blindly program this information to the
+controller.
+
+void (*cmdfunc)(struct mtd_info *mtd, unsigned command, int column,
+                             int page_addr, int address_cycles);
+
+Please suggest is there any better solution to handle this case ?
+
+
+Regards,
+Punnaiah
