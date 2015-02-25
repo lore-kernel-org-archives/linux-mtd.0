@@ -1,20 +1,14 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQWQF-0002hw-3r
- for linux-mtd@lists.infradead.org; Wed, 25 Feb 2015 07:30:19 +0000
-Message-ID: <54ED79F1.4080300@codeaurora.org>
-Date: Wed, 25 Feb 2015 09:29:53 +0200
-From: Tanya Brokhman <tlinder@codeaurora.org>
+Date: Wed, 25 Feb 2015 16:15:58 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [patch] mtd: cfi: clean up some indenting
+Message-ID: <20150225131558.GD19745@mwanda>
 MIME-Version: 1.0
-To: Richard Weinberger <richard.weinberger@gmail.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: fastmap support in ubinize?
-References: <alpine.DEB.2.02.1502190954020.17631@lnxricardw1.se.axis.com>
- <CAFLxGvz24i87Y-phXizLUebBkkJWdhTiw6m_8xmF5b5_tSP87A@mail.gmail.com>
-In-Reply-To: <CAFLxGvz24i87Y-phXizLUebBkkJWdhTiw6m_8xmF5b5_tSP87A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: Jingoo Han <jg1.han@samsung.com>, kernel-janitors@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Paul Gortmaker <paul.gortmaker@windriver.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +18,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2/19/2015 4:05 PM, Richard Weinberger wrote:
-> On Thu, Feb 19, 2015 at 9:57 AM, Ricard Wanderlof
-> <ricard.wanderlof@axis.com> wrote:
->>
->> Was flashmap support ever added to ubinize ? I can't see any reference to
->> it in the code, unless it is implicit somehow.
->
-> No.
->
-> I hope Tanya is allowed to share her code soon such that I can review it.
+These lines were all indented one tab more than they should be.
 
-in the middle of getting legal approval. hoping it will be resolved soon.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-> Adding fastmap to ubinize is not trivial as you can run into problems
-> when your flash has bad blocks.
-> i.e, If fastmap refers to PEB XY but PEB XY is bad. Then the flasher
-> would have to be a) UBI aware and b) had to fixup the fastmap on-fly.
->
-
-
-Thanks,
-Tanya Brokhman
--- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
+index 423666b..9a1a6ff 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0020.c
++++ b/drivers/mtd/chips/cfi_cmdset_0020.c
+@@ -206,23 +206,23 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
+ 			mtd->eraseregions[(j*cfi->cfiq->NumEraseRegions)+i].numblocks = ernum;
+ 		}
+ 		offset += (ersize * ernum);
+-		}
++	}
+ 
+-		if (offset != devsize) {
+-			/* Argh */
+-			printk(KERN_WARNING "Sum of regions (%lx) != total size of set of interleaved chips (%lx)\n", offset, devsize);
+-			kfree(mtd->eraseregions);
+-			kfree(cfi->cmdset_priv);
+-			kfree(mtd);
+-			return NULL;
+-		}
++	if (offset != devsize) {
++		/* Argh */
++		printk(KERN_WARNING "Sum of regions (%lx) != total size of set of interleaved chips (%lx)\n", offset, devsize);
++		kfree(mtd->eraseregions);
++		kfree(cfi->cmdset_priv);
++		kfree(mtd);
++		return NULL;
++	}
+ 
+-		for (i=0; i<mtd->numeraseregions;i++){
+-			printk(KERN_DEBUG "%d: offset=0x%llx,size=0x%x,blocks=%d\n",
+-			       i, (unsigned long long)mtd->eraseregions[i].offset,
+-			       mtd->eraseregions[i].erasesize,
+-			       mtd->eraseregions[i].numblocks);
+-		}
++	for (i=0; i<mtd->numeraseregions;i++){
++		printk(KERN_DEBUG "%d: offset=0x%llx,size=0x%x,blocks=%d\n",
++		       i, (unsigned long long)mtd->eraseregions[i].offset,
++		       mtd->eraseregions[i].erasesize,
++		       mtd->eraseregions[i].numblocks);
++	}
+ 
+ 	/* Also select the correct geometry setup too */
+ 	mtd->_erase = cfi_staa_erase_varsize;
