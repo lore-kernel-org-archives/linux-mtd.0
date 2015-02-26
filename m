@@ -1,22 +1,21 @@
-Date: Thu, 26 Feb 2015 10:18:57 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH 1/3] mtd: atmel_nand: move the hsmc_clk from nfc node to
- nand node
-Message-ID: <20150226101857.59104e97@bbrezillon>
-In-Reply-To: <1423548885-27589-1-git-send-email-josh.wu@atmel.com>
-References: <1423548885-27589-1-git-send-email-josh.wu@atmel.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YQuc6-0004wj-Rf
+ for linux-mtd@lists.infradead.org; Thu, 26 Feb 2015 09:20:12 +0000
+Message-ID: <54EEE52D.9000906@nod.at>
+Date: Thu, 26 Feb 2015 10:19:41 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: hujianyang <hujianyang@huawei.com>, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] UBI: Use static class and attribute groups
+References: <1423057871-9928-1-git-send-email-tiwai@suse.de>
+ <54EEE32F.2000001@huawei.com>
+In-Reply-To: <54EEE32F.2000001@huawei.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Rob
- Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Josh,
-
-On Tue, 10 Feb 2015 14:14:43 +0800
-Josh Wu <josh.wu@atmel.com> wrote:
-
-> Also add a new sama5d3_nand compatiable string for sama5d3 nand.
+Am 26.02.2015 um 10:11 schrieb hujianyang:
+> Hi Takashi,
 > 
-> For sama5d3, sama5d4 chip, the pmecc became part of HSMC, they need the
-> HSMC clock enabled to work.
-> The NFC is a sub feature for current nand driver, it can be disabled.
-> But if HSMC clock is controlled by NFC, so disable NFC will also disable
-> the HSMC clock. then, it will make the PMECC fail to work.
+> I think it's a good attempt. Did you test this patch on your environment
+> or just changing the code?
 > 
-> So the solution is move the HSMC clock out of NFC to nand node. When
-> nand driver probed, it will check whether the chip has HSMC, if yes then
-> it will require a HSMC clock.
+> How do you feel about this patch, Richard?
 
-Do you plan to use the NAND chip without the NFC (I mean, is there a
-reason for not using the NFC to access the NAND ?) ?
-If you don't, why don't you just wait for the NFC before probing the
-NAND chip it is attached to, so that the hmsc clk is properly claimed.
+I like the patch but had no time to look at it in detail and test it but this will happen soon. :)
 
-I'm not convinced that moving a clk reference out of the controller
-node can address the fact that the nand/nand-controller DT
-representation is inappropriate (your embedding controller specific
-information in your NAND chip definition).
-I think we should reconsider this problem with a controller/chip
-approach:
-- which parts are representing the NAND controller: the PMECC engine,
-  the NFC if available, ...
-- which parts are representing the NAND chip: the EBI mem range, the
-  R/B pin, the ALE/CLE information, ...
-
-And of course, we should take the EBI/SMC rework into account ;-).
-
-Best Regards,
-
-Boris
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+//richard
