@@ -1,23 +1,35 @@
-Date: Thu, 26 Feb 2015 13:57:15 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH 1/3] mtd: atmel_nand: move the hsmc_clk from nfc node to
- nand node
-Message-ID: <20150226135715.7e6c199c@bbrezillon>
-In-Reply-To: <C9CC8708-B99A-47F4-AC57-1A92B302E1C9@jcrosoft.com>
-References: <1423548885-27589-1-git-send-email-josh.wu@atmel.com>
- <20150226101857.59104e97@bbrezillon>
- <C9CC8708-B99A-47F4-AC57-1A92B302E1C9@jcrosoft.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YR3No-0003qt-IC
+ for linux-mtd@lists.infradead.org; Thu, 26 Feb 2015 18:42:01 +0000
+Message-ID: <54EF684B.4000604@imgtec.com>
+Date: Thu, 26 Feb 2015 15:39:07 -0300
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/3] An alternative to SPI NAND
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A7714DD2A@NTXXIAMBX02.xacn.micron.com>
+ <54ADF90B.1070800@imgtec.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7714F043@NTXXIAMBX02.xacn.micron.com>
+ <54BE2F7B.60003@imgtec.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A77151E62@NTXXIAMBX02.xacn.micron.com>
+ <54CA75F6.5020803@imgtec.com>
+ <87F60714EC601C4C83DFF1D2E3D390A04AE751@NTXXIAMBX02.xacn.micron.com>
+ <54CB6F51.2070403@imgtec.com> <20150131070204.GA3692@norris-Latitude-E6410>
+ <54EB481A.8080606@imgtec.com> <20150224035402.GD18140@ld-irv-0074>
+In-Reply-To: <20150224035402.GD18140@ld-irv-0074>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Nicolas FERRE <nicolas.ferre@atmel.com>, Josh Wu <josh.wu@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: =?UTF-8?B?IlFpIFdhbmcg546L6LW3IChxaXdhbmcpIg==?= <qiwang@micron.com>,
+ Andrew Bresticker <abrestic@chromium.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?UTF-8?B?IkZyYW5rIExpdSDliJjnvqQgKGZyYW5rbGl1KSI=?= <frankliu@micron.com>,
+ =?UTF-8?B?Ik1lbGFuaWUgWmhhbmcg5byg54eVIChtZWxhbmll?= =?UTF-8?B?emhhbmcpIg==?=
+ <melaniezhang@micron.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ James Hartley <james.hartley@imgtec.com>,
+ =?UTF-8?B?IlBldGVyIFBhbiDmvZjmoIsgKHBldGVycGFuZG9uZyki?=
+ <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +39,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jean-Christophe,
 
-On Thu, 26 Feb 2015 19:49:09 +0800
-Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com> wrote:
 
+On 02/24/2015 12:54 AM, Brian Norris wrote:
+> On Mon, Feb 23, 2015 at 12:32:42PM -0300, Ezequiel Garcia wrote:
+>> On 01/31/2015 04:02 AM, Brian Norris wrote:
+>>> Unless someone else thinks they have an excellent handle on the above,
+>>> I'll take a stab at doing this. I actually have a few patches that have
+>>> hung around a while (with little incentive to finish them) that do parts
+>>> of what I'm suggesting above.
+>>
+>> Any progress with this?
+>>
+>> You outlined the plan quite clearly, so perhaps I can help you by
+>> putting together some patches? If you have some work-in-progress stuff,
+>> I can even start there.
 > 
-> > On Feb 26, 2015, at 5:18 PM, Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> > 
-> > Hi Josh,
-> > 
-> > On Tue, 10 Feb 2015 14:14:43 +0800
-> > Josh Wu <josh.wu@atmel.com> wrote:
-> > 
-> >> Also add a new sama5d3_nand compatiable string for sama5d3 nand.
-> >> 
-> >> For sama5d3, sama5d4 chip, the pmecc became part of HSMC, they need the
-> >> HSMC clock enabled to work.
-> >> The NFC is a sub feature for current nand driver, it can be disabled.
-> >> But if HSMC clock is controlled by NFC, so disable NFC will also disable
-> >> the HSMC clock. then, it will make the PMECC fail to work.
-> >> 
-> >> So the solution is move the HSMC clock out of NFC to nand node. When
-> >> nand driver probed, it will check whether the chip has HSMC, if yes then
-> >> it will require a HSMC clock.
-> > 
-> > Do you plan to use the NAND chip without the NFC (I mean, is there a
-> > reason for not using the NFC to access the NAND ?) ?
-> > If you don't, why don't you just wait for the NFC before probing the
-> > NAND chip it is attached to, so that the hmsc clk is properly claimed.
-> you can as you can have 2 Nand on the d3 but only 1 NFC
+> I did quite a decent chunk of work a few weeks back, but I didn't have
+> time to finish it in my free time. The day job has distracted me from my
+> less urgent tasks.
+> 
+> Anyway, I had queued up stuff here:
+> 
+> http://git.infradead.org/users/norris/linux-mtd.git/shortlog/refs/heads/nand-bbt
+> 
+> Take a look if you'd like. I could post the first couple, I guess, but
+> the last is definitely not complete. I can flesh out the TODO list a bit
+> better, if you really want to pick it up.
+>
 
-I don't get your point ?
-You can control several NAND chips with the same NFC.
+I think the first four patches are nice cleanups, so if you can submit
+them it would be great.
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Ezequiel
