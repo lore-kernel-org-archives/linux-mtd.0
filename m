@@ -1,19 +1,18 @@
-Received: from smtp.ispras.ru ([83.149.199.79])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJHpW-0005XE-6I
- for linux-mtd@lists.infradead.org; Thu, 05 Feb 2015 08:30:30 +0000
+Received: from nm50-vm6.bullet.mail.bf1.yahoo.com ([216.109.115.237])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YRKTW-0007QY-8z
+ for linux-mtd@lists.infradead.org; Fri, 27 Feb 2015 12:57:03 +0000
+From: Instigate | Narine Hovhannisyan <narine@instigatedesign.com>
+Reply-To: Instigate | Narine Hovhannisyan <narine@instigatedesign.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-ID: <1632876944.1769841.1425041798415.JavaMail.yahoo@mail.yahoo.com>
+In-Reply-To: <793411697.1734417.1425041462753.JavaMail.yahoo@mail.yahoo.com>
+References: <770859846.1704718.1425039219150.JavaMail.yahoo@mail.yahoo.com>
+ <793411697.1734417.1425041462753.JavaMail.yahoo@mail.yahoo.com>
+Subject: nand_do_write_ops: attempt to write non page aligned data
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-From: koloskov <koloskov@ispras.ru>
-To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: jffs2: Do not rewrite =?UTF-8?Q?posix=5Facl=5Fequiv=5Fmode=28=29?=
- =?UTF-8?Q?=20result=20in=20=20jffs=32=5Fset=5Facl=28=29?=
-In-Reply-To: <f75d56ff5d79c7a3b16e3579ed10ca4c@ispras.ru>
-References: <f75d56ff5d79c7a3b16e3579ed10ca4c@ispras.ru>
-Message-ID: <028837a9a50ec9241d93c26d2daba477@ispras.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,69 +21,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Thu, 05 Feb 2015 08:30:31 -0000
+Date: Fri, 27 Feb 2015 12:57:03 -0000
 
- From ad03fe743959c04a9e7d611c026c201a14ce0ed6 Mon Sep 17 00:00:00 2001
- From: Andrey Koloskov <koloskov@ispras.ru>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
+Hello Everyone,
 
-Date: Tue, 13 Jan 2015 14:37:18 +0400
-Subject: [PATCH] jffs2: Do not rewrite posix_acl_equiv_mode() result in
-  jffs2_set_acl()
 
-Result of posix_acl_equiv_mode() is rewritten with one of 
-jffs2_do_setattr(),
-so it is always assumed that acl can be exactly represented by the
-traditional file mode permission bits.
+I have a question about writing data to NAND flash device and will appreciate
+your comments about it.
 
-The patch adds a new variable for store result of 
-posix_acl_equiv_mode().
+Our device has NAND Flash type memory and we are able to mount the flash (as
+/dev/mtd4) with jffs2.  
+We are able to erase the flash using flash_eraseall without any errors. 
+But when we try to write data on it, we get the following error:
 
-Found by Linux File System Verification project (linuxtesting.org).
+> cat uImage > /dev/mtd4
+nand_do_write_ops: attempt to write non page aligned data
+cat: write error: Invalid argument
 
-Signed-off-by: Andrey Koloskov <koloskov@ispras.ru>
----
-  fs/jffs2/acl.c |   10 +++++-----
-  1 file changed, 5 insertions(+), 5 deletions(-)
+The goal is to write the uBoot image to the mtdchar device directly without mounting it as file system. 
 
-diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
-index 2f7a3c0..63705bd 100644
---- a/fs/jffs2/acl.c
-+++ b/fs/jffs2/acl.c
-@@ -229,16 +229,16 @@ static int __jffs2_set_acl(struct inode *inode, 
-int xprefix, struct posix_acl *a
+In our case the last block of the data is not aligned to page size (4096).
+As I understand I need to pad the image with some garbage to align it to 4K
+border. And if I add padding to the image (e.g. with dd), the command works
+fine.
 
-  int jffs2_set_acl(struct inode *inode, struct posix_acl *acl, int 
-type)
-  {
--	int rc, xprefix;
-+	int rc, xprefix, not_equiv;
+However I did take a look at kernel sources and found the following lines:
 
-  	switch (type) {
-  	case ACL_TYPE_ACCESS:
-  		xprefix = JFFS2_XPREFIX_ACL_ACCESS;
-  		if (acl) {
-  			umode_t mode = inode->i_mode;
--			rc = posix_acl_equiv_mode(acl, &mode);
--			if (rc < 0)
--				return rc;
-+			not_equiv = posix_acl_equiv_mode(acl, &mode);
-+			if (not_equiv < 0)
-+				return not_equiv;
-  			if (inode->i_mode != mode) {
-  				struct iattr attr;
+drivers/mtd/nand/nand_base.c:
 
-@@ -249,7 +249,7 @@ int jffs2_set_acl(struct inode *inode, struct 
-posix_acl *acl, int type)
-  				if (rc < 0)
-  					return rc;
-  			}
--			if (rc == 0)
-+			if (not_equiv == 0)
-  				acl = NULL;
-  		}
-  		break;
--- 
-1.7.9.5
+
+    /* Reject writes, whichare not page aligned */
+    if (NOTALIGNED(to) || NOTALIGNED(ops->len)) {
+        pr_notice("%s: attempt to write non page aligned data\n", __func__);
+
+        return -EINVAL;
+    }
+
+that's the place, where I assume the error comes from.
+
+Below the check I see the code which handles the partial page write 
+(fills the page with 0xFFs and then writes the data).
+
+
+    /* Partial page write? */    if (unlikely(column || writelen < (mtd->writesize - 1))) {
+        cached = 0;
+        bytes = min_t(int, bytes - column, (int) writelen);
+        chip->pagebuf = -1;
+        memset(chip->buffers->databuf, 0xff, mtd->writesize);
+        memcpy(&chip->buffers->databuf[column], buf, bytes);
+        wbuf = chip->buffers->databuf;
+    }
+
+So I'd expect that this part should handle the partial page write. Also I tried
+to remove the above check of NOTALIGNED(ops->len) data and it worked fine.
+
+Can please someone describe the intention of the check and handling of partial
+page write? Can I just remove the NOTALIGNED(ops->len) check and leave the
+padding to kernel? What is the risk in this case?
+
+Thanks,
+Narine.
