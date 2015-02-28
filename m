@@ -1,18 +1,17 @@
 Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YReEy-00009J-N9
- for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:03:21 +0000
-Received: by pdev10 with SMTP id v10so26947680pde.10
- for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:02:58 -0800 (PST)
+ id 1YReEy-0000B5-Mr
+ for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:03:23 +0000
+Received: by pdbnh10 with SMTP id nh10so1152742pdb.4
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:03:01 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 5/7] mtd: nand: denali: drop dead code
-Date: Sat, 28 Feb 2015 02:02:28 -0800
-Message-Id: <1425117750-22298-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 7/7] mtd: nand: fully initialize mtd_oob_ops
+Date: Sat, 28 Feb 2015 02:02:30 -0800
+Message-Id: <1425117750-22298-8-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
 References: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
-Cc: Masahiro Yamada <yamada.m@jp.panasonic.com>,
- Brian Norris <computersforpeace@gmail.com>, kernel-janitors@vger.kernel.org,
+Cc: Brian Norris <computersforpeace@gmail.com>, kernel-janitors@vger.kernel.org,
  linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,36 +22,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-TclsRising is always 1.
+We're not initializing the ooblen field. Our users don't care, since
+they check that oobbuf == NULL first, but it's good practice to zero
+unused fields out.
 
-Caught by Coverity.
+We can drop the NULL initializations since we're memset()ing the whole
+thing.
+
+Noticed by Coverity, CID #200821, #200822
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Masahiro Yamada <yamada.m@jp.panasonic.com>
 ---
- drivers/mtd/nand/denali.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/mtd/nand/nand_base.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index f44c6061536a..09f51395f2c0 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -225,7 +225,6 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
- 	uint16_t Twhr[6] = {120, 80, 80, 60, 60, 60};
- 	uint16_t Tcs[6] = {70, 35, 25, 25, 20, 15};
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 5488a7ad63e7..d4cec2f8a016 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -386,7 +386,7 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	uint8_t buf[2] = { 0, 0 };
+ 	int ret = 0, res, i = 0;
  
--	uint16_t TclsRising = 1;
- 	uint16_t data_invalid_rhoh, data_invalid_rloh, data_invalid;
- 	uint16_t dv_window = 0;
- 	uint16_t en_lo, en_hi;
-@@ -276,8 +275,6 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
- 	re_2_re = CEIL_DIV(Trhz[mode], CLK_X);
- 	we_2_re = CEIL_DIV(Twhr[mode], CLK_X);
- 	cs_cnt = CEIL_DIV((Tcs[mode] - Trp[mode]), CLK_X);
--	if (!TclsRising)
--		cs_cnt = CEIL_DIV(Tcs[mode], CLK_X);
- 	if (cs_cnt == 0)
- 		cs_cnt = 1;
+-	ops.datbuf = NULL;
++	memset(&ops, 0, sizeof(ops));
+ 	ops.oobbuf = buf;
+ 	ops.ooboffs = chip->badblockpos;
+ 	if (chip->options & NAND_BUSWIDTH_16) {
+@@ -1716,9 +1716,9 @@ static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	int ret;
  
+ 	nand_get_device(mtd, FL_READING);
++	memset(&ops, 0, sizeof(ops));
+ 	ops.len = len;
+ 	ops.datbuf = buf;
+-	ops.oobbuf = NULL;
+ 	ops.mode = MTD_OPS_PLACE_OOB;
+ 	ret = nand_do_read_ops(mtd, from, &ops);
+ 	*retlen = ops.retlen;
+@@ -2508,9 +2508,9 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	/* Grab the device */
+ 	panic_nand_get_device(chip, mtd, FL_WRITING);
+ 
++	memset(&ops, 0, sizeof(ops));
+ 	ops.len = len;
+ 	ops.datbuf = (uint8_t *)buf;
+-	ops.oobbuf = NULL;
+ 	ops.mode = MTD_OPS_PLACE_OOB;
+ 
+ 	ret = nand_do_write_ops(mtd, to, &ops);
+@@ -2536,9 +2536,9 @@ static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	int ret;
+ 
+ 	nand_get_device(mtd, FL_WRITING);
++	memset(&ops, 0, sizeof(ops));
+ 	ops.len = len;
+ 	ops.datbuf = (uint8_t *)buf;
+-	ops.oobbuf = NULL;
+ 	ops.mode = MTD_OPS_PLACE_OOB;
+ 	ret = nand_do_write_ops(mtd, to, &ops);
+ 	*retlen = ops.retlen;
 -- 
 2.1.0
