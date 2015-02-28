@@ -1,18 +1,15 @@
-Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YReEy-0000B5-Mr
- for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:03:23 +0000
-Received: by pdbnh10 with SMTP id nh10so1152742pdb.4
- for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:03:01 -0800 (PST)
+ id 1YReGd-0001Hm-IM
+ for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:05:05 +0000
+Received: by padfb1 with SMTP id fb1so29266107pad.8
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:04:41 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 7/7] mtd: nand: fully initialize mtd_oob_ops
-Date: Sat, 28 Feb 2015 02:02:30 -0800
-Message-Id: <1425117750-22298-8-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
-References: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nand: fix spelling of REPLACEABLE
+Date: Sat, 28 Feb 2015 02:04:18 -0800
+Message-Id: <1425117858-23071-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +19,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We're not initializing the ooblen field. Our users don't care, since
-they check that oobbuf == NULL first, but it's good practice to zero
-unused fields out.
-
-We can drop the NULL initializations since we're memset()ing the whole
-thing.
-
-Noticed by Coverity, CID #200821, #200822
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/nand_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 5488a7ad63e7..d4cec2f8a016 100644
+index d4cec2f8a016..ff5652211607 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -386,7 +386,7 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	uint8_t buf[2] = { 0, 0 };
- 	int ret = 0, res, i = 0;
+@@ -2124,7 +2124,7 @@ static int nand_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
  
--	ops.datbuf = NULL;
-+	memset(&ops, 0, sizeof(ops));
- 	ops.oobbuf = buf;
- 	ops.ooboffs = chip->badblockpos;
- 	if (chip->options & NAND_BUSWIDTH_16) {
-@@ -1716,9 +1716,9 @@ static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	int ret;
  
- 	nand_get_device(mtd, FL_READING);
-+	memset(&ops, 0, sizeof(ops));
- 	ops.len = len;
- 	ops.datbuf = buf;
--	ops.oobbuf = NULL;
- 	ops.mode = MTD_OPS_PLACE_OOB;
- 	ret = nand_do_read_ops(mtd, from, &ops);
- 	*retlen = ops.retlen;
-@@ -2508,9 +2508,9 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	/* Grab the device */
- 	panic_nand_get_device(chip, mtd, FL_WRITING);
- 
-+	memset(&ops, 0, sizeof(ops));
- 	ops.len = len;
- 	ops.datbuf = (uint8_t *)buf;
--	ops.oobbuf = NULL;
- 	ops.mode = MTD_OPS_PLACE_OOB;
- 
- 	ret = nand_do_write_ops(mtd, to, &ops);
-@@ -2536,9 +2536,9 @@ static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	int ret;
- 
- 	nand_get_device(mtd, FL_WRITING);
-+	memset(&ops, 0, sizeof(ops));
- 	ops.len = len;
- 	ops.datbuf = (uint8_t *)buf;
--	ops.oobbuf = NULL;
- 	ops.mode = MTD_OPS_PLACE_OOB;
- 	ret = nand_do_write_ops(mtd, to, &ops);
- 	*retlen = ops.retlen;
+ /**
+- * nand_write_subpage_hwecc - [REPLACABLE] hardware ECC based subpage write
++ * nand_write_subpage_hwecc - [REPLACEABLE] hardware ECC based subpage write
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @offset:	column address of subpage within the page
 -- 
 2.1.0
