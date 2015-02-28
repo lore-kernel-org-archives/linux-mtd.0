@@ -1,24 +1,23 @@
-Date: Sat, 28 Feb 2015 01:01:22 -0800
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YRdVf-0000o5-UQ
+ for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 09:16:32 +0000
+Received: by pdjg10 with SMTP id g10so26866102pdj.1
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 01:16:10 -0800 (PST)
+Date: Sat, 28 Feb 2015 01:15:52 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v4 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
-Message-ID: <20150228090122.GA11148@brian-ubuntu>
-References: <1424255528-1717-1-git-send-email-maxime.ripard@free-electrons.com>
- <1424255528-1717-2-git-send-email-maxime.ripard@free-electrons.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH v2] mtd: pxa3xx-nand: handle PIO in threaded interrupt
+Message-ID: <20150228091552.GA12966@brian-ubuntu>
+References: <1424457403-6669-1-git-send-email-robert.jarzmik@free.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1424255528-1717-2-git-send-email-maxime.ripard@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
- Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+In-Reply-To: <1424457403-6669-1-git-send-email-robert.jarzmik@free.fr>
+Cc: linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 18, 2015 at 11:32:07AM +0100, Maxime Ripard wrote:
-> The NDDB register holds the data that are needed by the read and write
-> commands.
+On Fri, Feb 20, 2015 at 07:36:43PM +0100, Robert Jarzmik wrote:
+> Change the handling of the data stage in the driver : don't pump data in
+> the top-half interrupt, but rather schedule a thread for non dma cases.
 > 
-> However, during a read PIO access, the datasheet specifies that after each 32
-> bytes read in that register, when BCH is enabled, we have to make sure that the
-> RDDREQ bit is set in the NDSR register.
+> This will enable latencies in the data pumping, especially if delays are
+> required. Moreover platform shall be more reactive as other interrupts
+> can be served while pumping data.
 > 
-> This fixes an issue that was seen on the Armada 385, and presumably other mvebu
-> SoCs, when a read on a newly erased page would end up in the driver reporting a
-> timeout from the NAND.
+> No throughput degradation was observed, at least on the zylonite
+> platform, while a slight degradation was being expected.
 > 
-> Cc: <stable@vger.kernel.org> # v3.14
-> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Tested-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> ---
+> Since v1: use IRQF_ONESHOT per Maxime's comment
 
-Pushed this one to linux-mtd.git. I'll try to get it out in the 4.0
-cycle. I assume patch 2 (the DT addition) will go through arm-soc.
+Pushed to l2-mtd.git. Thanks.
 
 Brian
