@@ -1,20 +1,16 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YRePo-0007zo-Gr
- for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:14:33 +0000
-Received: by padet14 with SMTP id et14so3420900pad.0
- for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:14:11 -0800 (PST)
+ id 1YRedl-0007oj-K7
+ for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:28:58 +0000
+Received: by pdjy10 with SMTP id y10so27090381pdj.6
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:28:36 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 5/5] mtd: nand_bbt: fix theoretical integer overflow in BBT
- write
-Date: Sat, 28 Feb 2015 02:13:13 -0800
-Message-Id: <1425118393-25179-6-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1425118393-25179-1-git-send-email-computersforpeace@gmail.com>
-References: <1425118393-25179-1-git-send-email-computersforpeace@gmail.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Alexander Shiyan <shc_work@mail.ru>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH 0/5] UBI: Coverity-inspired fixes
+Date: Sat, 28 Feb 2015 02:23:24 -0800
+Message-Id: <1425119009-28634-1-git-send-email-computersforpeace@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This statement was written with a cast-to-loff_t to be sure to have a
-full 64-bit mask. However, we don't account for the fact that
-'1 << this->bbt_erase_shift' might already overflow.
+Except for the last one, these were inspired by Coverity Scan results.
 
-This will not be a problem in practice, since eraseblocks should never
-be anywhere near 4GiB. But we can do this for completeness, and quiet
-Coverity in the meantime. CID #1226806.
+These fixes have barely been tested, but they are pretty straightforward
+logically. As they've been sitting in my dust pile too long, I thought I'd at
+least get them out there.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/nand_bbt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Brian Norris (5):
+  UBI: account for bitflips in both the VID header and data
+  UBI: fix out of bounds write
+  UBI: initialize LEB number variable
+  UBI: fix check for "too many bytes"
+  UBI: align comment for readability
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 516db2c4524b..2c4fa1a17031 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -719,7 +719,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
- 		/* Must we save the block contents? */
- 		if (td->options & NAND_BBT_SAVECONTENT) {
- 			/* Make it block aligned */
--			to &= ~((loff_t)((1 << this->bbt_erase_shift) - 1));
-+			to &= ~(((loff_t)1 << this->bbt_erase_shift) - 1);
- 			len = 1 << this->bbt_erase_shift;
- 			res = mtd_read(mtd, to, len, &retlen, buf);
- 			if (res < 0) {
+ drivers/mtd/ubi/attach.c | 2 +-
+ drivers/mtd/ubi/cdev.c   | 2 +-
+ drivers/mtd/ubi/eba.c    | 3 ++-
+ drivers/mtd/ubi/ubi.h    | 2 +-
+ drivers/mtd/ubi/wl.c     | 2 +-
+ 5 files changed, 6 insertions(+), 5 deletions(-)
+
 -- 
 2.1.0
