@@ -1,19 +1,24 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YRdCV-0008JJ-TV
- for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 08:56:44 +0000
-Message-ID: <54F18281.6020502@huawei.com>
-Date: Sat, 28 Feb 2015 16:55:29 +0800
-From: hujianyang <hujianyang@huawei.com>
+Date: Sat, 28 Feb 2015 01:01:22 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH v4 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
+Message-ID: <20150228090122.GA11148@brian-ubuntu>
+References: <1424255528-1717-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1424255528-1717-2-git-send-email-maxime.ripard@free-electrons.com>
 MIME-Version: 1.0
-To: Nam Nguyen <namnguyen@google.com>
-Subject: Re: Unbounded update to a UBI volume
-References: <CA+YNSmVuL+xRd5X0NWj_VCgPBDq9=7mZcqhRaNR1PmRrYL3szg@mail.gmail.com>
-In-Reply-To: <CA+YNSmVuL+xRd5X0NWj_VCgPBDq9=7mZcqhRaNR1PmRrYL3szg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1424255528-1717-2-git-send-email-maxime.ripard@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
+ Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/2/27 7:30, Nam Nguyen wrote:
-> Hello list,
+On Wed, Feb 18, 2015 at 11:32:07AM +0100, Maxime Ripard wrote:
+> The NDDB register holds the data that are needed by the read and write
+> commands.
 > 
-> The argument to IOCVOLUP is the size of the update.  In case of an
-> update from a stream, such as from a BZip'ed source, this size is
-> often not known ahead of time.  Is there a way to programmatically
-> clear the update marker, without having to pad the volume up to its
-> size, hence saving unnecessary writes?
+> However, during a read PIO access, the datasheet specifies that after each 32
+> bytes read in that register, when BCH is enabled, we have to make sure that the
+> RDDREQ bit is set in the NDSR register.
 > 
-> Thanks,
-> Nam
+> This fixes an issue that was seen on the Armada 385, and presumably other mvebu
+> SoCs, when a read on a newly erased page would end up in the driver reporting a
+> timeout from the NAND.
+> 
+> Cc: <stable@vger.kernel.org> # v3.14
+> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 
-Hi Nam,
+Pushed this one to linux-mtd.git. I'll try to get it out in the 4.0
+cycle. I assume patch 2 (the DT addition) will go through arm-soc.
 
-I don't think we need an additional way to clear the update marker.
-I'm not sure of your use case, I think UBI is mostly used for UBIFS.
-We use *ubiupdatevol* which updating the UBIFS image across IOCVOLUP
-ioctl. The argument of ubiupdatevol must be a valid UBIFS image, not
-a compressed file.
-
-You can first decompress the file and then update the volume.
-
-And actually we have three ways to change an existing volume. Ordinary
-write, leb change and updatevol. If updatevol is not suitable for you,
-you could try another two ways, I think.
-
-I think in most cases, we could use all of these three ways to write
-to a volume except of the static volume, we can only use updatevol to
-update it. Is there any other exception?
-
-Thanks,
-Hu
+Brian
