@@ -1,17 +1,18 @@
-Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YReEx-0000AL-P1
- for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:03:20 +0000
-Received: by pdno5 with SMTP id o5so26966586pdn.8
- for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:03:00 -0800 (PST)
+ id 1YReEy-00009J-N9
+ for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:03:21 +0000
+Received: by pdev10 with SMTP id v10so26947680pde.10
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:02:58 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 6/7] mtd: blkdevs: remove dead code
-Date: Sat, 28 Feb 2015 02:02:29 -0800
-Message-Id: <1425117750-22298-7-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 5/7] mtd: nand: denali: drop dead code
+Date: Sat, 28 Feb 2015 02:02:28 -0800
+Message-Id: <1425117750-22298-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
 References: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, kernel-janitors@vger.kernel.org,
+Cc: Masahiro Yamada <yamada.m@jp.panasonic.com>,
+ Brian Norris <computersforpeace@gmail.com>, kernel-janitors@vger.kernel.org,
  linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,29 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The only exit (break) from the preceding loop is nested within a
-condition which yields req == NULL. This code is dead.
+TclsRising is always 1.
 
-Coverity CID #752669
+Caught by Coverity.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Masahiro Yamada <yamada.m@jp.panasonic.com>
 ---
- drivers/mtd/mtd_blkdevs.c | 3 ---
+ drivers/mtd/nand/denali.c | 3 ---
  1 file changed, 3 deletions(-)
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index d08229eb44d8..2b0c52870999 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -171,9 +171,6 @@ static void mtd_blktrans_work(struct work_struct *work)
- 		background_done = 0;
- 	}
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index f44c6061536a..09f51395f2c0 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -225,7 +225,6 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
+ 	uint16_t Twhr[6] = {120, 80, 80, 60, 60, 60};
+ 	uint16_t Tcs[6] = {70, 35, 25, 25, 20, 15};
  
--	if (req)
--		__blk_end_request_all(req, -EIO);
--
- 	spin_unlock_irq(rq->queue_lock);
- }
+-	uint16_t TclsRising = 1;
+ 	uint16_t data_invalid_rhoh, data_invalid_rloh, data_invalid;
+ 	uint16_t dv_window = 0;
+ 	uint16_t en_lo, en_hi;
+@@ -276,8 +275,6 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
+ 	re_2_re = CEIL_DIV(Trhz[mode], CLK_X);
+ 	we_2_re = CEIL_DIV(Twhr[mode], CLK_X);
+ 	cs_cnt = CEIL_DIV((Tcs[mode] - Trp[mode]), CLK_X);
+-	if (!TclsRising)
+-		cs_cnt = CEIL_DIV(Tcs[mode], CLK_X);
+ 	if (cs_cnt == 0)
+ 		cs_cnt = 1;
  
 -- 
 2.1.0
