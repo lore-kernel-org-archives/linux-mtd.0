@@ -1,20 +1,18 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YReEs-00006G-Ag
+ id 1YReEt-00006w-9f
  for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:03:15 +0000
-Received: by pdjz10 with SMTP id z10so27050808pdj.0
- for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:02:52 -0800 (PST)
+Received: by pdbft15 with SMTP id ft15so1150733pdb.2
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:02:53 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 0/7] mtd: various fixes caught by Coverity
-Date: Sat, 28 Feb 2015 02:02:23 -0800
-Message-Id: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- Akinobu Mita <akinobu.mita@gmail.com>,
- Masahiro Yamada <yamada.m@jp.panasonic.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH 1/7] mtd: docg3: drop dead code
+Date: Sat, 28 Feb 2015 02:02:24 -0800
+Message-Id: <1425117750-22298-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
+References: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
+Cc: Joe Perches <joe@perches.com>, Brian Norris <computersforpeace@gmail.com>,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Several unrelated MTD fixes inspired by Coverity Scan results. I couldn't test
-all of them, but they're all pretty obvious.
+If no devices were found, we would already have skipped over this code.
 
-Brian Norris (7):
-  mtd: docg3: drop dead code
-  mtd: onenand: drop dead code
-  mtd: tests: fix more potential integer overflows
-  mtd: nand: fixup bounds checks for nand_{lock,unlock}()
-  mtd: nand: denali: drop dead code
-  mtd: blkdevs: remove dead code
-  mtd: nand: fully initialize mtd_oob_ops
+Detected by Coverity, CID #744270
 
- drivers/mtd/devices/docg3.c        |  2 --
- drivers/mtd/mtd_blkdevs.c          |  3 ---
- drivers/mtd/nand/denali.c          |  3 ---
- drivers/mtd/nand/nand_base.c       | 12 ++++++------
- drivers/mtd/onenand/onenand_base.c | 12 +++---------
- drivers/mtd/tests/oobtest.c        |  2 +-
- drivers/mtd/tests/speedtest.c      |  2 +-
- drivers/mtd/tests/stresstest.c     |  4 ++--
- drivers/mtd/tests/subpagetest.c    |  4 ++--
- drivers/mtd/tests/torturetest.c    |  8 ++++----
- 10 files changed, 19 insertions(+), 33 deletions(-)
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/devices/docg3.c | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index 448ce42f951e..01eddea1f0d9 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -2079,8 +2079,6 @@ static int __init docg3_probe(struct platform_device *pdev)
+ 	ret = doc_register_sysfs(pdev, cascade);
+ 	if (ret)
+ 		goto err_probe;
+-	if (!found)
+-		goto notfound;
+ 
+ 	platform_set_drvdata(pdev, cascade);
+ 	doc_dbg_register(cascade->floors[0]->priv);
 -- 
 2.1.0
