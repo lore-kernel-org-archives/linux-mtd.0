@@ -1,16 +1,19 @@
-Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YRdel-0005ao-Ek
- for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 09:25:56 +0000
-Received: by pdbnh10 with SMTP id nh10so1014297pdb.4
- for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 01:25:34 -0800 (PST)
+Date: Sat, 28 Feb 2015 01:28:08 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] Documentation: devicetree: fix spelling in pxa3xx-nand binding
-Date: Sat, 28 Feb 2015 01:25:17 -0800
-Message-Id: <1425115517-4411-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Antoine Tenart <antoine.tenart@free-electrons.com>
+Subject: Re: [PATCH v2 01/10] mtd: pxa3xx_nand: initialiaze pxa3xx_flash_ids
+ to 0
+Message-ID: <20150228092808.GC12966@brian-ubuntu>
+References: <1423752816-26219-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1423752816-26219-2-git-send-email-antoine.tenart@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1423752816-26219-2-git-send-email-antoine.tenart@free-electrons.com>
+Cc: thomas.petazzoni@free-electrons.com, boris.brezillon@free-electrons.com,
+ linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
+ ezequiel.garcia@free-electrons.com, jszhang@marvell.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Feb 12, 2015 at 03:53:27PM +0100, Antoine Tenart wrote:
+> pxa3xx_flash_ids wasn't initialized to 0, which in certain cases could
+> end up containing corrupted values in its members. Fix this to avoid
+> possible issues.
+> 
+> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 
-diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-index de8b517a5521..4f833e3c4f51 100644
---- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-@@ -14,7 +14,7 @@ Optional properties:
-  - marvell,nand-enable-arbiter:	Set to enable the bus arbiter
-  - marvell,nand-keep-config:	Set to keep the NAND controller config as set
- 				by the bootloader
-- - num-cs:			Number of chipselect lines to usw
-+ - num-cs:			Number of chipselect lines to use
-  - nand-on-flash-bbt: 		boolean to enable on flash bbt option if
- 				not present false
-  - nand-ecc-strength:           number of bits to correct per ECC step
--- 
-2.1.0
+Applied this patch to l2-mtd.git. The others are TBD still. (Haven't
+examined all of them too closely.)
+
+Brian
