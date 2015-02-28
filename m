@@ -1,14 +1,14 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YRedt-0007pm-ER
- for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:29:05 +0000
-Received: by pablf10 with SMTP id lf10so29309529pab.12
- for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:28:44 -0800 (PST)
+ id 1YRedu-0007pw-FZ
+ for linux-mtd@lists.infradead.org; Sat, 28 Feb 2015 10:29:07 +0000
+Received: by pdno5 with SMTP id o5so27063543pdn.8
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Feb 2015 02:28:45 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 2/5] UBI: fix out of bounds write
-Date: Sat, 28 Feb 2015 02:23:26 -0800
-Message-Id: <1425119009-28634-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/5] UBI: initialize LEB number variable
+Date: Sat, 28 Feb 2015 02:23:27 -0800
+Message-Id: <1425119009-28634-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1425119009-28634-1-git-send-email-computersforpeace@gmail.com>
 References: <1425119009-28634-1-git-send-email-computersforpeace@gmail.com>
 Cc: kernel-janitors@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
@@ -22,29 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If aeb->len >= vol->reserved_pebs, we should not be writing aeb into the
-PEB->LEB mapping.
+In some of the 'out_not_moved' error paths, lnum may be used
+uninitialized. Don't ignore the warning; let's fix it.
 
-Caught by Coverity, CID #711212.
+This uninitialized variable doesn't have much visible effect in the end,
+since we just schedule the PEB for erasure, and its LEB number doesn't
+really matter (it just gets printed in debug messages). But let's get it
+straight anyway.
+
+Coverity CID #113449
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/ubi/eba.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/wl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index da4c79259f67..6442d3fbcb73 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -1418,7 +1418,8 @@ int ubi_eba_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 				 * during re-size.
- 				 */
- 				ubi_move_aeb_to_list(av, aeb, &ai->erase);
--			vol->eba_tbl[aeb->lnum] = aeb->pnum;
-+			else
-+				vol->eba_tbl[aeb->lnum] = aeb->pnum;
- 		}
- 	}
- 
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 8f7bde6a85d6..0bd92d816391 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1002,7 +1002,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 				int shutdown)
+ {
+ 	int err, scrubbing = 0, torture = 0, protect = 0, erroneous = 0;
+-	int vol_id = -1, uninitialized_var(lnum);
++	int vol_id = -1, lnum = -1;
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+ 	int anchor = wrk->anchor;
+ #endif
 -- 
 2.1.0
