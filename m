@@ -1,25 +1,22 @@
-Message-ID: <54F49553.2020307@free-electrons.com>
-Date: Mon, 02 Mar 2015 17:52:35 +0100
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
+Message-ID: <54F4D8A5.7020500@tastycactus.com>
+Date: Mon, 02 Mar 2015 14:39:49 -0700
+From: Aaron Brice <aaron@tastycactus.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v4 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
-References: <1424255528-1717-1-git-send-email-maxime.ripard@free-electrons.com>
- <1424255528-1717-2-git-send-email-maxime.ripard@free-electrons.com>
- <20150228090122.GA11148@brian-ubuntu>
-In-Reply-To: <20150228090122.GA11148@brian-ubuntu>
-Content-Type: text/plain; charset=windows-1252
+To: Bill Pringlemeir <bpringlemeir@nbsps.com>, Stefan Agner <stefan@agner.ch>
+Subject: Re: [RFC 2/5] mtd:fsl_nfc: Add hardware 45 byte BHC-ECC support for
+ 24 bit corrections.
+References: <87siupheou.fsf@nbsps.com>
+ <1389222441-4322-1-git-send-email-bpringlemeir@nbsps.com>
+ <1389222441-4322-3-git-send-email-bpringlemeir@nbsps.com>
+ <127db6b73356442d2ba12e8c011038cc@agner.ch> <87r3zaxgtr.fsf@nbsps.com>
+ <c444059de888a661fadf3d6be598a98d@agner.ch> <87lhphyjkg.fsf@nbsps.com>
+ <0bc8cec13bcf5b9cbea9cd3345815e4a@agner.ch> <8761dit9u9.fsf@nbsps.com>
+ <f3bc6eda0c826601e136f3dad91d9674@agner.ch> <87k2yzqw1r.fsf@nbsps.com>
+In-Reply-To: <87k2yzqw1r.fsf@nbsps.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
- Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ Jason.jin@freescale.com, b21989@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28/02/2015 10:01, Brian Norris wrote:
-> On Wed, Feb 18, 2015 at 11:32:07AM +0100, Maxime Ripard wrote:
->> The NDDB register holds the data that are needed by the read and write
->> commands.
->>
->> However, during a read PIO access, the datasheet specifies that after each 32
->> bytes read in that register, when BCH is enabled, we have to make sure that the
->> RDDREQ bit is set in the NDSR register.
->>
->> This fixes an issue that was seen on the Armada 385, and presumably other mvebu
->> SoCs, when a read on a newly erased page would end up in the driver reporting a
->> timeout from the NAND.
->>
->> Cc: <stable@vger.kernel.org> # v3.14
->> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-> 
-> Pushed this one to linux-mtd.git. I'll try to get it out in the 4.0
-> cycle. I assume patch 2 (the DT addition) will go through arm-soc.
+On 03/02/2015 08:05 AM, Bill Pringlemeir wrote:
+> On 28 Feb 2015, stefan@agner.ch wrote:
+>
+>> The flash chip mentioned above requires 8-bit error correction per 512
+>> byte block, hence I increased the ECC to the maximum available level
+>> (60-byte ECC, see page below). One thing which is not very nice, in
+>> order to fit the 60-byte ECC into the 64-byte OOB, I had to shorten
+>> the BBT pattern and set it at the very beginning of the page. This
+>> works fine, however this basically sets the page also to factory bad,
+>> I'm not sure if this is ok? Otherwise, we also could use a BBT pattern
+>> of length 1 (used by cafe_nand.c too).
+> I guess that is a DT option?  I wouldn't be an expert on this.  So
+> submitting it to the linux-mtd is good.
+>
+> I am also not sure if the HW ECC will work with 'sub-pages'.  I think a
+> college of your at Toradex submitted a patch to the u-boot.  I am pretty
+> sure that it could work with software ECC, but maybe disabling it is
+> easiest.
+>
+>> What do you think? I would like to respin the NFC patch, with my
+>> U-Boot changes and this change included...
+> Please go ahead.  Markus M <marb@ixxat.de> is also using the fsl_nfc
+> driver on a Freescale MPC5125 board, so it is probably good to copy your
+> patches to him.  At least, he can test on a BE platform.
+>
+> People also complained about JFFS and this version of the driver.  I
+> didn't investigate that.
 
-Yes, now that you took the driver part,  I will apply it on mvebu and then push it
-to arm-soc.
-
-Thanks,
-
-Gregory
-
-
-> 
-> Brian
-> 
-
-
--- 
-Gregory Clement, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+I also noticed a problem with JFFS2 and the driver, where fs changes 
+were lost after reboot.  Didn't investigate, switched to UBIFS..
