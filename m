@@ -1,20 +1,19 @@
-Received: from nasmtp02.atmel.com ([204.2.163.16] helo=SJOEDG01.corp.atmel.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSEkU-0002QK-5J
- for linux-mtd@lists.infradead.org; Mon, 02 Mar 2015 01:02:18 +0000
-Message-ID: <54F3B66A.7040100@atmel.com>
-Date: Mon, 2 Mar 2015 09:01:30 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: Colin King <colin.king@canonical.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: atmel_nand: fix typo in dev_err error message
-References: <1425155276-8039-1-git-send-email-colin.king@canonical.com>
-In-Reply-To: <1425155276-8039-1-git-send-email-colin.king@canonical.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Received: from mga14.intel.com ([192.55.52.115])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YSL35-00085W-Us
+ for linux-mtd@lists.infradead.org; Mon, 02 Mar 2015 07:45:56 +0000
+Message-ID: <1425282331.26652.23.camel@sauron.fi.intel.com>
+Subject: Re: Unbounded update to a UBI volume
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Nam Nguyen <namnguyen@google.com>
+Date: Mon, 02 Mar 2015 09:45:31 +0200
+In-Reply-To: <CA+YNSmVuL+xRd5X0NWj_VCgPBDq9=7mZcqhRaNR1PmRrYL3szg@mail.gmail.com>
+References: <CA+YNSmVuL+xRd5X0NWj_VCgPBDq9=7mZcqhRaNR1PmRrYL3szg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Colin
+On Thu, 2015-02-26 at 15:30 -0800, Nam Nguyen wrote:
+> Hello list,
+> 
+> The argument to IOCVOLUP is the size of the update.  In case of an
+> update from a stream, such as from a BZip'ed source, this size is
+> often not known ahead of time.  Is there a way to programmatically
+> clear the update marker, without having to pad the volume up to its
+> size, hence saving unnecessary writes?
 
-On 3/1/2015 4:27 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Fix typo, "Unkown" -> "Unknown"
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-
-Thanks for the patch.
-Acked-by: Josh Wu <josh.wu@atmel.com>
-
-> ---
->   drivers/mtd/nand/atmel_nand.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index d93c849..1310450 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -1719,7 +1719,7 @@ static int nfc_wait_interrupt(struct atmel_nand_host *host, u32 flag)
->   		comp[index++] = &host->nfc->comp_cmd_done;
->   
->   	if (index == 0) {
-> -		dev_err(host->dev, "Unkown interrupt flag: 0x%08x\n", flag);
-> +		dev_err(host->dev, "Unknown interrupt flag: 0x%08x\n", flag);
->   		return -EINVAL;
->   	}
->   
-Best Regards,
-Josh Wu
+I guess you'd need to implement a separate interface for this. It would
+work a bit differently, and it would not work for static volumes.
