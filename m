@@ -1,17 +1,20 @@
-Date: Mon, 2 Mar 2015 13:24:46 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH v2 1/2] mtd: nand: dt binding documentation for
- digicolor NFC
-Message-ID: <20150302132446.5ee40c87@bbrezillon>
-In-Reply-To: <fb9907fecb8b57d1b44ce03b97eb62225555de9f.1425295703.git.baruch@tkos.co.il>
-References: <fb9907fecb8b57d1b44ce03b97eb62225555de9f.1425295703.git.baruch@tkos.co.il>
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: Stefan Agner <stefan@agner.ch>
+Subject: Re: [RFC 2/5] mtd:fsl_nfc: Add hardware 45 byte BHC-ECC support for
+ 24 bit corrections.
+References: <87siupheou.fsf@nbsps.com>
+ <1389222441-4322-1-git-send-email-bpringlemeir@nbsps.com>
+ <1389222441-4322-3-git-send-email-bpringlemeir@nbsps.com>
+ <127db6b73356442d2ba12e8c011038cc@agner.ch> <87r3zaxgtr.fsf@nbsps.com>
+ <c444059de888a661fadf3d6be598a98d@agner.ch> <87lhphyjkg.fsf@nbsps.com>
+ <0bc8cec13bcf5b9cbea9cd3345815e4a@agner.ch> <8761dit9u9.fsf@nbsps.com>
+ <f3bc6eda0c826601e136f3dad91d9674@agner.ch>
+Date: Mon, 02 Mar 2015 10:05:36 -0500
+Message-ID: <87k2yzqw1r.fsf@nbsps.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org
+Content-Type: text/plain
+Cc: b21989@freescale.com, linux-mtd@lists.infradead.org,
+ Jason.jin@freescale.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,65 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Baruch,
 
-On Mon,  2 Mar 2015 13:28:22 +0200
-Baruch Siach <baruch@tkos.co.il> wrote:
+On 28 Feb 2015, stefan@agner.ch wrote:
 
-> The CX92755 SoC is one of Conexant Digicolor series of SoCs. This devicetree
-> binding document describes the NAND flash controller the is shared by some SoCs
-> in the Digicolor series.
-> 
-> Not all of the properties are currently actually used by the driver.
-> Specifically, the driver doesn't make use of interrupts. This may change in the
-> future.
-> 
-> Also worth noting that the only supported ECC mode is "hw_syndrome". In the
-> future the driver may add support for additional modes.
-> 
-> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> ---
->  .../devicetree/bindings/mtd/digicolor-nand.txt     | 71 ++++++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/digicolor-nand.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/digicolor-nand.txt b/Documentation/devicetree/bindings/mtd/digicolor-nand.txt
-> new file mode 100644
-> index 000000000000..60e2d9085b7a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/digicolor-nand.txt
-> @@ -0,0 +1,71 @@
-> +Conexant Digicolor NAND Flash Controller (NFC)
-> +
-> +Required properties:
-> +- compatible : "cnxt,cx92755-nfc".
-> +- reg : shall contain registers location and length for data and reg.
-> +- interrupts : shall define the nand controller interrupt.
-> +- #address-cells: shall be set to 1. Encode the nand CS.
-> +- #size-cells : shall be set to 0.
-> +- clocks : shall reference nand controller clocks.
-> +
-> +Optional children nodes:
-> +Children nodes represent the available nand chips.
-> +
-> +Required children properties:
-> +- nand-ecc-mode : must be "hw_syndrome".
+> The flash chip mentioned above requires 8-bit error correction per 512
+> byte block, hence I increased the ECC to the maximum available level
+> (60-byte ECC, see page below). One thing which is not very nice, in
+> order to fit the 60-byte ECC into the 64-byte OOB, I had to shorten
+> the BBT pattern and set it at the very beginning of the page. This
+> works fine, however this basically sets the page also to factory bad,
+> I'm not sure if this is ok? Otherwise, we also could use a BBT pattern
+> of length 1 (used by cafe_nand.c too).
 
-You could fallback to hw_syndrome when this property is not provided.
-That would make it optional (and if you ever want to support other
-modes, you'll just have to explicitly specify nand-ecc-mode).
+I guess that is a DT option?  I wouldn't be an expert on this.  So
+submitting it to the linux-mtd is good.  
 
-> +- nand-ecc-strength : must be one of 6, 7, 8, 24, 28, 30.
-> +- nand-ecc-step-size : must be either 512 or 1024.
+I am also not sure if the HW ECC will work with 'sub-pages'.  I think a
+college of your at Toradex submitted a patch to the u-boot.  I am pretty
+sure that it could work with software ECC, but maybe disabling it is
+easiest.
 
-Those 2 properties are no longer mandatory (you fallback to values
-stored in _ds if they are missing).
+> What do you think? I would like to respin the NFC patch, with my
+> U-Boot changes and this change included...
 
-Best Regards,
+Please go ahead.  Markus M <marb@ixxat.de> is also using the fsl_nfc
+driver on a Freescale MPC5125 board, so it is probably good to copy your
+patches to him.  At least, he can test on a BE platform.
 
-Boris
+People also complained about JFFS and this version of the driver.  I
+didn't investigate that.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+Bill Pringlemeir.
