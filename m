@@ -1,16 +1,25 @@
-Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSTOH-000308-RL
- for linux-mtd@lists.infradead.org; Mon, 02 Mar 2015 16:40:22 +0000
-Received: by iecrl12 with SMTP id rl12so49274681iec.4
- for <linux-mtd@lists.infradead.org>; Mon, 02 Mar 2015 08:39:59 -0800 (PST)
+Message-ID: <54F49553.2020307@free-electrons.com>
+Date: Mon, 02 Mar 2015 17:52:35 +0100
+From: Gregory CLEMENT <gregory.clement@free-electrons.com>
 MIME-Version: 1.0
-Date: Mon, 2 Mar 2015 08:39:59 -0800
-Message-ID: <CALupW3CugdN+cwMZzePAhZSHbGhd9gfjk==DH=7Ezu54Y1BXUA@mail.gmail.com>
-Subject: "corrupt empty space" error on boot?!?
-From: Steve deRosier <derosier@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+To: Brian Norris <computersforpeace@gmail.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH v4 1/2] mtd: nand: pxa3xx: Fix PIO FIFO draining
+References: <1424255528-1717-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1424255528-1717-2-git-send-email-maxime.ripard@free-electrons.com>
+ <20150228090122.GA11148@brian-ubuntu>
+In-Reply-To: <20150228090122.GA11148@brian-ubuntu>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Sudhakar Gundubogula <sudhakar@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
+ Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+On 28/02/2015 10:01, Brian Norris wrote:
+> On Wed, Feb 18, 2015 at 11:32:07AM +0100, Maxime Ripard wrote:
+>> The NDDB register holds the data that are needed by the read and write
+>> commands.
+>>
+>> However, during a read PIO access, the datasheet specifies that after each 32
+>> bytes read in that register, when BCH is enabled, we have to make sure that the
+>> RDDREQ bit is set in the NDSR register.
+>>
+>> This fixes an issue that was seen on the Armada 385, and presumably other mvebu
+>> SoCs, when a read on a newly erased page would end up in the driver reporting a
+>> timeout from the NAND.
+>>
+>> Cc: <stable@vger.kernel.org> # v3.14
+>> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> 
+> Pushed this one to linux-mtd.git. I'll try to get it out in the 4.0
+> cycle. I assume patch 2 (the DT addition) will go through arm-soc.
 
-So, after torturing one of our devices by rebooting it for a few
-hundred iterations, we ran across a situation where the system fails
-to boot due to a corrupt empty space error:
-
-    Starting kernel ...
-
-    Uncompressing Linux... done, booting the kernel.
-    UBIFS error (pid 1): ubifs_scan: corrupt empty space at LEB 4:3918
-    UBIFS error (pid 1): ubifs_scanned_corruption: corruption at LEB 4:398
-    UBIFS error (pid 1): ubifs_scanned_corruption: first 8192 bytes from 8
-    UBIFS error (pid 1): ubifs_scan: LEB 4 scanning failed
-    Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-b)
-
-This is on kernel v3.8, atmel_nand diver.  In earlier discussions, it
-was suggested that the driver would encounter this sort of problem
-because the driver/chip can't do ECC in erased pages so a bitflip
-there could be an issue.  This is the first time I've seen this
-problem in the wild though.
-
-1. Is this likely what I'm seeing?
-2. Will moving to a recent kernel help (we're currently updating our
-mainline to bleeding-edge 4.0)?
-3. How can I programmatically recover from this situation?
-
-Logically, it seems to me that a non ecc protected bit-flip in an
-empty page should be a non-issue. UBI should be able to move the
-block, erase the block, torture/return-to-service and move on with
-it's life.  No data is destroyed or even affected.
-
-A unit not mounting the rootfs because of a bit-flip in _empty_space_
-is unacceptable to us, so I've got to figure out a way to deal with
-this rare event.
-
-Any help would be appreciated.
+Yes, now that you took the driver part,  I will apply it on mvebu and then push it
+to arm-soc.
 
 Thanks,
-- Steve
+
+Gregory
+
+
+> 
+> Brian
+> 
+
+
+-- 
+Gregory Clement, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
