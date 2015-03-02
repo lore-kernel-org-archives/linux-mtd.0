@@ -1,19 +1,12 @@
-Received: from atl4mhob10.myregisteredsite.com ([209.17.115.48])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSMdi-0001U4-Eu
- for linux-mtd@lists.infradead.org; Mon, 02 Mar 2015 09:27:51 +0000
-Received: from mailpod.hostingplatform.com ([10.30.71.203])
- by atl4mhob10.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id
- t229RFR2032716
- for <linux-mtd@lists.infradead.org>; Mon, 2 Mar 2015 04:27:15 -0500
-From: Mike Looijmans <mike.looijmans@topic.nl>
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- computersforpeace@gmail.com
-Subject: [PATCH] MTD: m25p80: fix inconsistency in m25p_ids for Micron devices
-Date: Mon,  2 Mar 2015 10:26:51 +0100
-Message-Id: <1425288411-6888-1-git-send-email-mike.looijmans@topic.nl>
-Cc: Mike Looijmans <mike.looijmans@topic.nl>, michal.simek@xilinx.com,
- linux-kernel@vger.kernel.org
+From: Baruch Siach <baruch@tkos.co.il>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v2 1/2] mtd: nand: dt binding documentation for digicolor NFC
+Date: Mon,  2 Mar 2015 13:28:22 +0200
+Message-Id: <fb9907fecb8b57d1b44ce03b97eb62225555de9f.1425295703.git.baruch@tkos.co.il>
+Cc: devicetree@vger.kernel.org, Baruch Siach <baruch@tkos.co.il>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +16,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As stated in a5b7616c5, "mtd: m25p80,spi-nor: Fix module aliases for
-m25p80", m25p_ids[] in m25p80.c needs to be kept in sync with
-spi_nor_ids[] in spi-nor.c.
+The CX92755 SoC is one of Conexant Digicolor series of SoCs. This devicetree
+binding document describes the NAND flash controller the is shared by some SoCs
+in the Digicolor series.
 
-This patch fixes the mismatches for the Micron devices, the
-"n25q256a" and "n25q512a" do not exist in the spi_nor_ids, so
-replace them with the correct names for these chips.
+Not all of the properties are currently actually used by the driver.
+Specifically, the driver doesn't make use of interrupts. This may change in the
+future.
 
-This repairs the disappearance of NOR flash on the Miami boards since 3.18.
+Also worth noting that the only supported ECC mode is "hw_syndrome". In the
+future the driver may add support for additional modes.
 
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
 ---
- drivers/mtd/devices/m25p80.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/mtd/digicolor-nand.txt     | 71 ++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/digicolor-nand.txt
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index b2b33e4..402172c 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -280,8 +280,11 @@ static const struct spi_device_id m25p_ids[] = {
- 	{"mx25l3205d"},	{"mx25l3255e"},	{"mx25l6405d"},	{"mx25l12805d"},
- 	{"mx25l12855e"},{"mx25l25635e"},{"mx25l25655e"},{"mx66l51235l"},
- 	{"mx66l1g55g"},
--	{"n25q064"},	{"n25q128a11"},	{"n25q128a13"},	{"n25q256a"},
--	{"n25q512a"},	{"n25q512ax3"},	{"n25q00"},
-+	{"n25q064"},
-+	{"n25q128a11"},	{"n25q128a13"},
-+	{"n25q256a11"},	{"n25q256a13"},
-+	{"n25q512a11"},	{"n25q512a13"},	{"n25q512ax3"},
-+	{"n25q00"},
- 	{"pm25lv512"},	{"pm25lv010"},	{"pm25lq032"},
- 	{"s25sl032p"},	{"s25sl064p"},	{"s25fl256s0"},	{"s25fl256s1"},
- 	{"s25fl512s"},	{"s70fl01gs"},	{"s25sl12800"},	{"s25sl12801"},
+diff --git a/Documentation/devicetree/bindings/mtd/digicolor-nand.txt b/Documentation/devicetree/bindings/mtd/digicolor-nand.txt
+new file mode 100644
+index 000000000000..60e2d9085b7a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/digicolor-nand.txt
+@@ -0,0 +1,71 @@
++Conexant Digicolor NAND Flash Controller (NFC)
++
++Required properties:
++- compatible : "cnxt,cx92755-nfc".
++- reg : shall contain registers location and length for data and reg.
++- interrupts : shall define the nand controller interrupt.
++- #address-cells: shall be set to 1. Encode the nand CS.
++- #size-cells : shall be set to 0.
++- clocks : shall reference nand controller clocks.
++
++Optional children nodes:
++Children nodes represent the available nand chips.
++
++Required children properties:
++- nand-ecc-mode : must be "hw_syndrome".
++- nand-ecc-strength : must be one of 6, 7, 8, 24, 28, 30.
++- nand-ecc-step-size : must be either 512 or 1024.
++
++see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
++
++Each nand chip child node may optionally have partition sub-nodes. See
++Documentation/devicetree/bindings/mtd/partition.txt for partitions binding.
++
++Example:
++nfc: nfc@f00a4000 {
++	compatible = "cnxt,cx92755-nfc";
++	reg = <0xf00a4000 0x200>;
++	interrupts = <26>;
++	clocks = <&main_clk>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	nand@0 {
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		nand-ecc-mode = "hw_syndrome";
++		nand-ecc-step-size = <1024>;
++		nand-ecc-strength = <28>;
++
++		partition@0 {
++			label = "boot";
++			reg = <0x00000000 0x00700000>;
++		};
++
++		partition@700000 {
++			label = "splash";
++			reg = <0x00700000 0x00500000>;
++		};
++
++		partition@c00000 {
++			label = "maint";
++			reg = <0x00c00000 0x00500000>;
++		};
++
++		partition@1100000 {
++			label = "kernel";
++			reg = <0x01100000 0x00500000>;
++		};
++
++		partition@1600000 {
++			label = "rootfs";
++			reg = <0x01600000 0x18000000>;
++		};
++
++		partition@19600000 {
++			label = "data1";
++			reg = <0x19600000 0x66a00000>;
++		};
++	};
++};
 -- 
-1.9.1
+2.1.4
