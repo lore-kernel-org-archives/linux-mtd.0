@@ -1,16 +1,20 @@
-Received: from xavier.telenet-ops.be ([195.130.132.52])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YS0IV-0007KQ-Gu
- for linux-mtd@lists.infradead.org; Sun, 01 Mar 2015 09:36:28 +0000
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Zhou Wang <wangzhou1@hisilicon.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: nand: MTD_NAND_HISI504 should depend on HAS_DMA
-Date: Sun,  1 Mar 2015 10:35:52 +0100
-Message-Id: <1425202552-27125-1-git-send-email-geert@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Received: from nasmtp02.atmel.com ([204.2.163.16] helo=SJOEDG01.corp.atmel.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YSEkU-0002QK-5J
+ for linux-mtd@lists.infradead.org; Mon, 02 Mar 2015 01:02:18 +0000
+Message-ID: <54F3B66A.7040100@atmel.com>
+Date: Mon, 2 Mar 2015 09:01:30 +0800
+From: Josh Wu <josh.wu@atmel.com>
+MIME-Version: 1.0
+To: Colin King <colin.king@canonical.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: atmel_nand: fix typo in dev_err error message
+References: <1425155276-8039-1-git-send-email-colin.king@canonical.com>
+In-Reply-To: <1425155276-8039-1-git-send-email-colin.king@canonical.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If NO_DMA=y:
+Hi, Colin
 
-    drivers/built-in.o: In function `hisi_nfc_probe':
-    hisi504_nand.c:(.text+0x23e646): undefined reference to `dmam_alloc_coherent'
+On 3/1/2015 4:27 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Fix typo, "Unkown" -> "Unknown"
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/mtd/nand/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for the patch.
+Acked-by: Josh Wu <josh.wu@atmel.com>
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 5b76a173cd95d6d5..5897d8d8fa5a962d 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -526,6 +526,7 @@ config MTD_NAND_SUNXI
- 
- config MTD_NAND_HISI504
- 	tristate "Support for NAND controller on Hisilicon SoC Hip04"
-+	depends on HAS_DMA
- 	help
- 	  Enables support for NAND controller on Hisilicon SoC Hip04.
- 
--- 
-1.9.1
+> ---
+>   drivers/mtd/nand/atmel_nand.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index d93c849..1310450 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -1719,7 +1719,7 @@ static int nfc_wait_interrupt(struct atmel_nand_host *host, u32 flag)
+>   		comp[index++] = &host->nfc->comp_cmd_done;
+>   
+>   	if (index == 0) {
+> -		dev_err(host->dev, "Unkown interrupt flag: 0x%08x\n", flag);
+> +		dev_err(host->dev, "Unknown interrupt flag: 0x%08x\n", flag);
+>   		return -EINVAL;
+>   	}
+>   
+Best Regards,
+Josh Wu
