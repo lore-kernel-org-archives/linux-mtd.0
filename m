@@ -1,20 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1YSTFn-0007Ua-41
- for linux-mtd@lists.infradead.org; Mon, 02 Mar 2015 16:31:36 +0000
-Date: Mon, 2 Mar 2015 17:31:12 +0100
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/6] mtd: teach mxc-nand about ONFI probing
-Message-ID: <20150302163112.GF7865@pengutronix.de>
-References: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YSTOH-000308-RL
+ for linux-mtd@lists.infradead.org; Mon, 02 Mar 2015 16:40:22 +0000
+Received: by iecrl12 with SMTP id rl12so49274681iec.4
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Mar 2015 08:39:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
-Cc: kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Date: Mon, 2 Mar 2015 08:39:59 -0800
+Message-ID: <CALupW3CugdN+cwMZzePAhZSHbGhd9gfjk==DH=7Ezu54Y1BXUA@mail.gmail.com>
+Subject: "corrupt empty space" error on boot?!?
+From: Steve deRosier <derosier@gmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi All,
 
-On Tue, Feb 10, 2015 at 07:59:54PM +0100, Uwe Kleine-König wrote:
-> this series implements support for ONFI probing in mxc-nand.
-> Before a PARAM command was just ignored and the following read_bytes
-> read whatever then happened to be available from the controller's RAM.
-> But actually this wasn't that bad because the driver already failed to
-> read the ONFI marker at offset 32 in response to the READID command and
-> so the PARAM command wasn't issued at all :-)
-> 
-> Patch 1 is a robustness fix. Patch 2 is necessary to not make the
-> controller stuck when the READPAGE command is issued before the flash
-> chip is identified. Patch 3 is needed to be able to read more than 6
-> bytes in the read_byte callback. Finally patch 4 fixes the driver to
-> allow reading out the READID ONFI marker and patch 5 implements support
-> for the PARAM command.
-> 
-> Patch 6 implements a WARN that triggers when the core requests an
-> unknown command from the driver. In the case of missing PARAM support it
-> wouldn't have triggered because READID at offset 0x20 failed, too, but
-> it might be worthwhile anyhow; I'm not sure though, so I marked it RFC.
-> Not sure the set of commands will grow in the near future ...
-> 
-> Best regards
-> Uwe
-> 
-> Uwe Kleine-König (6):
->   mtd: mxc-nand: Add a timeout when waiting for interrupt
->   mtd: mxc-nand: Only enable hardware checksumming for fully detected
->     flashes
->   mtd: mxc-nand: Do the word to byte mangling in the read_byte callback
->   mtd: mxc-nand: Allow to use column addresses different from 0
->   mtd: mxc-nand: Implement support for PARAM command
->   [RFC] mtd: mxc-nand: Warn on unimplemented commands
-I think this series if fine to go into 4.1-rc1. If so it would be great
-to get it into next in the near future. David? Brian? Any feedback?
+So, after torturing one of our devices by rebooting it for a few
+hundred iterations, we ran across a situation where the system fails
+to boot due to a corrupt empty space error:
 
-Thanks
-Uwe
+    Starting kernel ...
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+    Uncompressing Linux... done, booting the kernel.
+    UBIFS error (pid 1): ubifs_scan: corrupt empty space at LEB 4:3918
+    UBIFS error (pid 1): ubifs_scanned_corruption: corruption at LEB 4:398
+    UBIFS error (pid 1): ubifs_scanned_corruption: first 8192 bytes from 8
+    UBIFS error (pid 1): ubifs_scan: LEB 4 scanning failed
+    Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-b)
+
+This is on kernel v3.8, atmel_nand diver.  In earlier discussions, it
+was suggested that the driver would encounter this sort of problem
+because the driver/chip can't do ECC in erased pages so a bitflip
+there could be an issue.  This is the first time I've seen this
+problem in the wild though.
+
+1. Is this likely what I'm seeing?
+2. Will moving to a recent kernel help (we're currently updating our
+mainline to bleeding-edge 4.0)?
+3. How can I programmatically recover from this situation?
+
+Logically, it seems to me that a non ecc protected bit-flip in an
+empty page should be a non-issue. UBI should be able to move the
+block, erase the block, torture/return-to-service and move on with
+it's life.  No data is destroyed or even affected.
+
+A unit not mounting the rootfs because of a bit-flip in _empty_space_
+is unacceptable to us, so I've got to figure out a way to deal with
+this rare event.
+
+Any help would be appreciated.
+
+Thanks,
+- Steve
