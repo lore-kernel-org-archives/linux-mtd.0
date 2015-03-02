@@ -1,15 +1,15 @@
-Received: from smtprelay02.ispgateway.de ([80.67.31.40])
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yd3je-0007Ny-DW
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 21:30:13 +0000
-From: Christian Riesch <christian.riesch@omicron.at>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: cfi_cmdset_0002: Initialize datum before calling
- map_word_load_partial
-Date: Tue, 31 Mar 2015 23:29:22 +0200
-Message-Id: <1427837363-2782-1-git-send-email-christian.riesch@omicron.at>
-Cc: Christian Riesch <christian.riesch@omicron.at>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+ id 1YSTRT-0005U6-1o
+ for linux-mtd@lists.infradead.org; Mon, 02 Mar 2015 16:43:39 +0000
+Received: by iecvy18 with SMTP id vy18so49291053iec.6
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Mar 2015 08:43:17 -0800 (PST)
+MIME-Version: 1.0
+Message-ID: <CALupW3DX6G9eKSc9Q9mhfSgD2D=ZOXBMxJgXVz4+CVLn5resSg@mail.gmail.com>
+Subject: set bitflip_threshold on boot?
+From: Steve deRosier <derosier@gmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,28 +18,14 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Mon, 02 Mar 2015 16:43:39 -0000
 
-In do_otp_write we must initialize the variable datum before calling
-map_word_load_partial. Otherwise the upper bits of datum may be undefined,
-which later causes problems in chip_good called by do_write_oneword.
+Hi All,
 
-Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I know I can change bitflip_threshold via the sysfs interface.  Is
+there any way to do this earlier?  I want to set it either by the
+devicetree, or via kernel commandline.  I haven't found an obvious way
+to do it, but I'm sure I'm missing something trivial.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index c50d8cf..c3624eb 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1295,7 +1295,7 @@ static int do_otp_write(struct map_info *map, struct flchip *chip, loff_t adr,
- 		unsigned long bus_ofs = adr & ~(map_bankwidth(map)-1);
- 		int gap = adr - bus_ofs;
- 		int n = min_t(int, len, map_bankwidth(map) - gap);
--		map_word datum;
-+		map_word datum = map_word_ff(map);
- 
- 		if (n != map_bankwidth(map)) {
- 			/* partial write of a word, load old contents */
--- 
-1.7.9.5
+Thanks,
+- Steve
