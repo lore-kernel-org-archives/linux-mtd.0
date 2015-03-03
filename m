@@ -1,14 +1,14 @@
-Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
+Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaV-0004xK-Vp
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:48 +0000
-Received: by wghb13 with SMTP id b13so42785631wgh.0
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:26 -0800 (PST)
+ id 1YSuaV-0004x8-3x
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:47 +0000
+Received: by wevl61 with SMTP id l61so5641425wev.0
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:25 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 50/60] mtd: nand: sh_flctl: show device in sysfs
-Date: Tue,  3 Mar 2015 22:40:34 +0100
-Message-Id: <1425418844-25177-51-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 49/60] mtd: nand: s3c2410: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:33 +0100
+Message-Id: <1425418844-25177-50-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -24,22 +24,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Fix a bug where devices aren't shown in sysfs.
 
+While at it, make use of the default owner set by mtdcore.
+
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/sh_flctl.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/s3c2410.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index a21c378..19135b4 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -1125,6 +1125,7 @@ static int flctl_probe(struct platform_device *pdev)
- 	flctl_mtd = &flctl->mtd;
- 	nand = &flctl->chip;
- 	flctl_mtd->priv = nand;
-+	flctl_mtd->dev.parent = &pdev->dev;
- 	flctl->pdev = pdev;
- 	flctl->hwecc = pdata->has_hwecc;
- 	flctl->holden = pdata->use_holden;
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 35aef5e..6db6126 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -832,7 +832,6 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+ 
+ 	nmtd->info	   = info;
+ 	nmtd->mtd.priv	   = chip;
+-	nmtd->mtd.owner    = THIS_MODULE;
+ 	nmtd->set	   = set;
+ 
+ #ifdef CONFIG_MTD_NAND_S3C2410_HWECC
+@@ -1018,6 +1017,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 		pr_debug("initialising set %d (%p, info %p)\n",
+ 			 setno, nmtd, info);
+ 
++		nmtd->mtd.dev.parent = &pdev->dev;
+ 		s3c2410_nand_init_chip(info, nmtd, sets);
+ 
+ 		nmtd->scan_res = nand_scan_ident(&nmtd->mtd,
 -- 
 2.2.2
