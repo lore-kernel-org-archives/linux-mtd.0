@@ -1,15 +1,14 @@
-Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
+Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuZo-00037E-2Y
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:07 +0000
-Received: by wggx13 with SMTP id x13so2613473wgg.4
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:40 -0800 (PST)
+ id 1YSuZp-00037Y-IC
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:08 +0000
+Received: by wggy19 with SMTP id y19so42752683wgg.10
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:43 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 01/60] mtd: core: tone down suggestion that dev.parent should
- be set
-Date: Tue,  3 Mar 2015 22:39:45 +0100
-Message-Id: <1425418844-25177-2-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 03/60] mtd: devices: bcm47xxflash: show device in sysfs
+Date: Tue,  3 Mar 2015 22:39:47 +0100
+Message-Id: <1425418844-25177-4-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -23,33 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add_mtd_device() has a comment suggesting that the caller should have
-set dev.parent. This is required to have the device show up in sysfs,
-but not for proper operation of the mtd device itself. Currently we have
-five drivers registering mtd devices during module initialization, so
-they don't actually provide a parent device to link to. That means we
-cannot WARN_ON() here, as it would trigger false positives.
+Fix a bug where mtd devices aren't shown in sysfs.
 
-Make the comment a bit less firm in its assertion that dev.parent should
-be set.
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/mtdcore.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/devices/bcm47xxsflash.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 11883bd..2093676 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -422,7 +422,7 @@ int add_mtd_device(struct mtd_info *mtd)
- 	}
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 3d008a9..347bb83 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -237,13 +237,14 @@ static int bcm47xxsflash_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return 0;
+ }
  
- 	/* Caller should have set dev.parent to match the
--	 * physical device.
-+	 * physical device, if appropriate.
- 	 */
- 	mtd->dev.type = &mtd_devtype;
- 	mtd->dev.class = &mtd_class;
+-static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
++static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s,
++				   struct device *dev)
+ {
+ 	struct mtd_info *mtd = &b47s->mtd;
+ 
+ 	mtd->priv = b47s;
++	mtd->dev.parent = dev;
+ 	mtd->name = "bcm47xxsflash";
+-	mtd->owner = THIS_MODULE;
+ 
+ 	mtd->type = MTD_NORFLASH;
+ 	mtd->flags = MTD_CAP_NORFLASH;
+@@ -300,7 +301,7 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 	b47s->blocksize = sflash->blocksize;
+ 	b47s->numblocks = sflash->numblocks;
+ 	b47s->size = sflash->size;
+-	bcm47xxsflash_fill_mtd(b47s);
++	bcm47xxsflash_fill_mtd(b47s, &pdev->dev);
+ 
+ 	err = mtd_device_parse_register(&b47s->mtd, probes, NULL, NULL, 0);
+ 	if (err) {
 -- 
 2.2.2
