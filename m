@@ -1,19 +1,24 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YShJR-0004mL-Fr
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 07:32:17 +0000
-Message-ID: <1425367912.26652.47.camel@sauron.fi.intel.com>
-Subject: Re: "corrupt empty space" error on boot?!?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Steve deRosier <derosier@gmail.com>
-Date: Tue, 03 Mar 2015 09:31:52 +0200
-In-Reply-To: <CALupW3CugdN+cwMZzePAhZSHbGhd9gfjk==DH=7Ezu54Y1BXUA@mail.gmail.com>
-References: <CALupW3CugdN+cwMZzePAhZSHbGhd9gfjk==DH=7Ezu54Y1BXUA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Message-ID: <54F56C67.7070404@free-electrons.com>
+Date: Tue, 03 Mar 2015 09:10:15 +0100
+From: Gregory CLEMENT <gregory.clement@free-electrons.com>
+MIME-Version: 1.0
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH v4 2/2] ARM: mvebu: a385-db-ap: Enable the NAND
+References: <1424255528-1717-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1424255528-1717-3-git-send-email-maxime.ripard@free-electrons.com>
+In-Reply-To: <1424255528-1717-3-git-send-email-maxime.ripard@free-electrons.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
+ linux-kernel@vger.kernel.org, Sudhakar Gundubogula <sudhakar@marvell.com>,
+ Nadav Haklai <nadavh@marvell.com>, Boris Brezillon <boris@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +28,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2015-03-02 at 08:39 -0800, Steve deRosier wrote:
-> Logically, it seems to me that a non ecc protected bit-flip in an
-> empty page should be a non-issue. UBI should be able to move the
-> block, erase the block, torture/return-to-service and move on with
-> it's life.  No data is destroyed or even affected.
+Hi Maxime,
 
-Yes, you are right, if there is a corruption, UBIFS can:
+On 18/02/2015 11:32, Maxime Ripard wrote:
+> The Armada 385 Access Point Development Board has a 1GB NAND SLC chip from
+> Micron as its main storage. Enable it.
 
-1. Try to understand if this is a corruption in empty space or not.
-2. If yes, recover the LEB.
+I wanted applying your patch but it failed. Actually it depends on your
+other patch "ARM: mvebu: armada-385-ap: Enable USB3 port" and this patch
+depend on an other patch "usb: xhci: plat: Add USB phy support" which
+hadn't been merged.
 
-But this is not implemented. People keep hitting this issue, but no one
-contributed fixes yet.
+So either you send a new version which apply on 4.0-rc1, or we can wait for
+that "usb: xhci: plat: Add USB phy support" will be merged then I will be able
+applying "ARM: mvebu: armada-385-ap: Enable USB3 port" and finally this patch.
+As you want.
 
-> A unit not mounting the rootfs because of a bit-flip in _empty_space_
-> is unacceptable to us, so I've got to figure out a way to deal with
-> this rare event.
 
-Well, improving UBIFS would be one of the possible solutions.
+Thanks,
 
-Artem.
+Gregory
+
+
+> 
+> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> ---
+>  arch/arm/boot/dts/armada-385-db-ap.dts | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/armada-385-db-ap.dts b/arch/arm/boot/dts/armada-385-db-ap.dts
+> index b891b4c897f5..ee648fb19075 100644
+> --- a/arch/arm/boot/dts/armada-385-db-ap.dts
+> +++ b/arch/arm/boot/dts/armada-385-db-ap.dts
+> @@ -130,6 +130,19 @@
+>  				phy-mode = "rgmii-id";
+>  			};
+>  
+> +			nfc: flash@d0000 {
+> +				status = "okay";
+> +				#address-cells = <1>;
+> +				#size-cells = <1>;
+> +
+> +				num-cs = <1>;
+> +				nand-ecc-strength = <4>;
+> +				nand-ecc-step-size = <512>;
+> +				marvell,nand-keep-config;
+> +				marvell,nand-enable-arbiter;
+> +				nand-on-flash-bbt;
+> +			};
+> +
+>  			usb3@f0000 {
+>  				status = "okay";
+>  				usb-phy = <&usb3_phy>;
+> 
+
+
+-- 
+Gregory Clement, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
