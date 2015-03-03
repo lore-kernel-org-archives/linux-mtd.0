@@ -1,14 +1,14 @@
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuZv-00073W-TC
+ id 1YSuZw-00073x-IF
  for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:13 +0000
-Received: by wiwl15 with SMTP id l15so26121425wiw.3
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:50 -0800 (PST)
+Received: by wggx12 with SMTP id x12so42789298wgg.6
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:56 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 11/60] mtd: maps: gpio-addr-flash: show device in sysfs
-Date: Tue,  3 Mar 2015 22:39:55 +0100
-Message-Id: <1425418844-25177-12-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 17/60] mtd: maps: physmap_of: drop owner assignment
+Date: Tue,  3 Mar 2015 22:40:01 +0100
+Message-Id: <1425418844-25177-18-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,25 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where mtd devices aren't shown in sysfs.
+Owner is automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/maps/gpio-addr-flash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/maps/physmap_of.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 2fb3460..385305e 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -266,7 +266,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 		kfree(state);
- 		return -ENXIO;
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index ff26e97..10954f7 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -288,7 +288,6 @@ static int of_flash_probe(struct platform_device *dev)
+ 		} else {
+ 			info->list_size++;
+ 		}
+-		info->list[i].mtd->owner = THIS_MODULE;
+ 		info->list[i].mtd->dev.parent = &dev->dev;
  	}
--
-+	state->mtd->dev.parent = &pdev->dev;
  
- 	mtd_device_parse_register(state->mtd, part_probe_types, NULL,
- 				  pdata->parts, pdata->nr_parts);
 -- 
 2.2.2
