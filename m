@@ -1,14 +1,14 @@
-Received: from mail-wg0-f50.google.com ([74.125.82.50])
+Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuZt-00038t-7P
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:10 +0000
-Received: by wggz12 with SMTP id z12so5614674wgg.9
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:46 -0800 (PST)
+ id 1YSuZy-0003AT-2X
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:14 +0000
+Received: by wesw62 with SMTP id w62so42579984wes.9
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:52 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 07/60] mtd: devices: spear_smi: show device in sysfs
-Date: Tue,  3 Mar 2015 22:39:51 +0100
-Message-Id: <1425418844-25177-8-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 13/60] mtd: maps: ixp4xx: show device in sysfs
+Date: Tue,  3 Mar 2015 22:39:57 +0100
+Message-Id: <1425418844-25177-14-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -24,22 +24,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Fix a bug where mtd devices aren't shown in sysfs.
 
+While at it, make use of the default owner value set by mtdcore.
+
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/devices/spear_smi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/maps/ixp4xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 508bab3..015a1cf 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -854,6 +854,7 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
- 	else
- 		flash->mtd.name = flash_devices[flash_index].name;
+diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
+index b443074..e3180d5 100644
+--- a/drivers/mtd/maps/ixp4xx.c
++++ b/drivers/mtd/maps/ixp4xx.c
+@@ -226,7 +226,7 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
+ 		err = -ENXIO;
+ 		goto Error;
+ 	}
+-	info->mtd->owner = THIS_MODULE;
++	info->mtd->dev.parent = &dev->dev;
  
-+	flash->mtd.dev.parent = &pdev->dev;
- 	flash->mtd.type = MTD_NORFLASH;
- 	flash->mtd.writesize = 1;
- 	flash->mtd.flags = MTD_CAP_NORFLASH;
+ 	/* Use the fast version */
+ 	info->map.write = ixp4xx_write16;
 -- 
 2.2.2
