@@ -1,14 +1,14 @@
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuZx-0004rZ-UJ
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:14 +0000
-Received: by wiwl15 with SMTP id l15so26286454wiw.5
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:48 -0800 (PST)
+Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YSuaI-00076i-2b
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:35 +0000
+Received: by wggy19 with SMTP id y19so42754961wgg.10
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:12 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 09/60] mtd: lpddr: show device in sysfs
-Date: Tue,  3 Mar 2015 22:39:53 +0100
-Message-Id: <1425418844-25177-10-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 35/60] mtd: nand: gpmi-nand: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:19 +0100
+Message-Id: <1425418844-25177-36-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,24 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where mtd devices aren't shown in sysfs.
+Fix a bug where devices aren't shown in sysfs.
+
+While at it, make use of the default owner set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/lpddr/lpddr2_nvm.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
-index 063cec4..2342277 100644
---- a/drivers/mtd/lpddr/lpddr2_nvm.c
-+++ b/drivers/mtd/lpddr/lpddr2_nvm.c
-@@ -460,6 +460,7 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 33f3c3c..f287690 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1897,7 +1897,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	/* init the MTD data structures */
+ 	mtd->priv		= chip;
+ 	mtd->name		= "gpmi-nand";
+-	mtd->owner		= THIS_MODULE;
++	mtd->dev.parent		= this->dev;
  
- 	/* Populate mtd_info data structure */
- 	*mtd = (struct mtd_info) {
-+		.dev		= { .parent = &pdev->dev },
- 		.name		= pdev->dev.init_name,
- 		.type		= MTD_RAM,
- 		.priv		= map,
+ 	/* init the nand_chip{}, we don't support a 16-bit NAND Flash bus. */
+ 	chip->priv		= this;
 -- 
 2.2.2
