@@ -1,14 +1,14 @@
-Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuac-0003S7-7P
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:55 +0000
-Received: by wghl18 with SMTP id l18so42769240wgh.7
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:32 -0800 (PST)
+ id 1YSuab-0003Qf-EZ
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:54 +0000
+Received: by wivz2 with SMTP id z2so6855528wiv.0
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:30 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 57/60] mtd: onenand: omap2: drop owner and name assignment
-Date: Tue,  3 Mar 2015 22:40:41 +0100
-Message-Id: <1425418844-25177-58-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 55/60] mtd: nand: txx9ndfmc: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:39 +0100
+Message-Id: <1425418844-25177-56-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,26 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Owner and name are automatically set by mtdcore. Make use of that.
+Fix a bug where devices aren't shown in sysfs.
+
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/onenand/omap2.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/nand/txx9ndfmc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 646ddd6..3e02856 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -710,9 +710,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 		 c->onenand.base, c->freq);
+diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
+index 9c0bc45..8572519 100644
+--- a/drivers/mtd/nand/txx9ndfmc.c
++++ b/drivers/mtd/nand/txx9ndfmc.c
+@@ -323,7 +323,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 			continue;
+ 		chip = &txx9_priv->chip;
+ 		mtd = &txx9_priv->mtd;
+-		mtd->owner = THIS_MODULE;
++		mtd->dev.parent = &dev->dev;
  
- 	c->pdev = pdev;
--	c->mtd.name = dev_name(&pdev->dev);
- 	c->mtd.priv = &c->onenand;
--	c->mtd.owner = THIS_MODULE;
- 
- 	c->mtd.dev.parent = &pdev->dev;
+ 		mtd->priv = chip;
  
 -- 
 2.2.2
