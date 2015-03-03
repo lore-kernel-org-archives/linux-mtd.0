@@ -1,14 +1,14 @@
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSua8-0004sB-9x
+ id 1YSua8-0004sG-CE
  for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:25 +0000
-Received: by wibhm9 with SMTP id hm9so2965930wib.2
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:01 -0800 (PST)
+Received: by wesw55 with SMTP id w55so42545371wes.4
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:05 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 23/60] mtd: nand: au1550nd: show device in sysfs
-Date: Tue,  3 Mar 2015 22:40:07 +0100
-Message-Id: <1425418844-25177-24-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 27/60] mtd: nand: davinci_nand: drop owner and name assignment
+Date: Tue,  3 Mar 2015 22:40:11 +0100
+Message-Id: <1425418844-25177-28-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,27 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where devices aren't shown in sysfs.
-
-While at it, make use of the default owner value set by mtdcore.
+Owner and name are automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/au1550nd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/davinci_nand.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
-index c0c3be1..08a130f 100644
---- a/drivers/mtd/nand/au1550nd.c
-+++ b/drivers/mtd/nand/au1550nd.c
-@@ -439,7 +439,7 @@ static int au1550nd_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index feb6d18..78e0c4d 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -657,9 +657,6 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 	info->vaddr		= vaddr;
  
- 	this = &ctx->chip;
- 	ctx->info.priv = this;
--	ctx->info.owner = THIS_MODULE;
-+	ctx->info.dev.parent = &pdev->dev;
+ 	info->mtd.priv		= &info->chip;
+-	info->mtd.name		= dev_name(&pdev->dev);
+-	info->mtd.owner		= THIS_MODULE;
+-
+ 	info->mtd.dev.parent	= &pdev->dev;
  
- 	/* figure out which CS# r->start belongs to */
- 	cs = find_nand_cs(r->start);
+ 	info->chip.IO_ADDR_R	= vaddr;
 -- 
 2.2.2
