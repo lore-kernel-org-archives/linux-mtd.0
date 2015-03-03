@@ -1,24 +1,13 @@
-Message-ID: <54F56C67.7070404@free-electrons.com>
-Date: Tue, 03 Mar 2015 09:10:15 +0100
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
-MIME-Version: 1.0
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v4 2/2] ARM: mvebu: a385-db-ap: Enable the NAND
-References: <1424255528-1717-1-git-send-email-maxime.ripard@free-electrons.com>
- <1424255528-1717-3-git-send-email-maxime.ripard@free-electrons.com>
-In-Reply-To: <1424255528-1717-3-git-send-email-maxime.ripard@free-electrons.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Thomas Petazzoni <thomas@free-electrons.com>, Seif Mazareeb <seif@marvell.com>,
- linux-kernel@vger.kernel.org, Sudhakar Gundubogula <sudhakar@marvell.com>,
- Nadav Haklai <nadavh@marvell.com>, Boris Brezillon <boris@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: nand: pxa3xx: Switch FIFO draining to jiffies-based
+ timeout
+Date: Tue,  3 Mar 2015 10:55:29 +0100
+Message-Id: <1425376529-1860-1-git-send-email-maxime.ripard@free-electrons.com>
+Cc: Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,63 +17,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Maxime,
+Now that the driver handles the FIFO draining in a threaded interrupt, we can
+base our timeout on jiffies and sleeping, instead of using mdelay.
 
-On 18/02/2015 11:32, Maxime Ripard wrote:
-> The Armada 385 Access Point Development Board has a 1GB NAND SLC chip from
-> Micron as its main storage. Enable it.
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-I wanted applying your patch but it failed. Actually it depends on your
-other patch "ARM: mvebu: armada-385-ap: Enable USB3 port" and this patch
-depend on an other patch "usb: xhci: plat: Add USB phy support" which
-hadn't been merged.
-
-So either you send a new version which apply on 4.0-rc1, or we can wait for
-that "usb: xhci: plat: Add USB phy support" will be merged then I will be able
-applying "ARM: mvebu: armada-385-ap: Enable USB3 port" and finally this patch.
-As you want.
-
-
-Thanks,
-
-Gregory
-
-
-> 
-> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-> ---
->  arch/arm/boot/dts/armada-385-db-ap.dts | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/armada-385-db-ap.dts b/arch/arm/boot/dts/armada-385-db-ap.dts
-> index b891b4c897f5..ee648fb19075 100644
-> --- a/arch/arm/boot/dts/armada-385-db-ap.dts
-> +++ b/arch/arm/boot/dts/armada-385-db-ap.dts
-> @@ -130,6 +130,19 @@
->  				phy-mode = "rgmii-id";
->  			};
->  
-> +			nfc: flash@d0000 {
-> +				status = "okay";
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +
-> +				num-cs = <1>;
-> +				nand-ecc-strength = <4>;
-> +				nand-ecc-step-size = <512>;
-> +				marvell,nand-keep-config;
-> +				marvell,nand-enable-arbiter;
-> +				nand-on-flash-bbt;
-> +			};
-> +
->  			usb3@f0000 {
->  				status = "okay";
->  				usb-phy = <&usb3_phy>;
-> 
-
-
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 3f09f2e9aeb4..1eb957c347cd 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -496,16 +496,15 @@ static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
+ 		while (len > 8) {
+ 			__raw_readsl(info->mmio_base + NDDB, data, 8);
+ 
+-			for (timeout = 0;
+-			     !(nand_readl(info, NDSR) & NDSR_RDDREQ);
+-			     timeout++) {
+-				if (timeout >= 5) {
++			timeout = jiffies + msecs_to_jiffies(5);
++			while (!(nand_readl(info, NDSR) & NDSR_RDDREQ)) {
++				if (!time_before(jiffies, timeout)) {
+ 					dev_err(&info->pdev->dev,
+ 						"Timeout on RDDREQ while draining the FIFO\n");
+ 					return;
+ 				}
+ 
+-				mdelay(1);
++				msleep(1);
+ 			}
+ 
+ 			data += 32;
 -- 
-Gregory Clement, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+2.3.0
