@@ -1,14 +1,14 @@
-Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaU-0004wu-19
+ id 1YSuaT-0004w3-JK
  for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:46 +0000
-Received: by widex7 with SMTP id ex7so26230983wid.4
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:24 -0800 (PST)
+Received: by wiwl15 with SMTP id l15so26289401wiw.5
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:23 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 48/60] mtd: nand: r852: drop owner assignment
-Date: Tue,  3 Mar 2015 22:40:32 +0100
-Message-Id: <1425418844-25177-49-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 47/60] mtd: nand: pxa3xx_nand: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:31 +0100
+Message-Id: <1425418844-25177-48-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,24 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Owner is automatically set by mtdcore. Make use of that.
+Fix a bug where devices aren't shown in sysfs.
+
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/r852.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-index baea83f..2541a94 100644
---- a/drivers/mtd/nand/r852.c
-+++ b/drivers/mtd/nand/r852.c
-@@ -641,7 +641,6 @@ static int r852_register_nand_device(struct r852_device *dev)
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 96b0b1d..f908c6d 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1589,7 +1589,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 		host->cs = cs;
+ 		host->info_data = info;
+ 		mtd->priv = host;
+-		mtd->owner = THIS_MODULE;
++		mtd->dev.parent = &pdev->dev;
  
- 	WARN_ON(dev->card_registred);
- 
--	dev->mtd->owner = THIS_MODULE;
- 	dev->mtd->priv = dev->chip;
- 	dev->mtd->dev.parent = &dev->pci_dev->dev;
- 
+ 		chip->ecc.read_page	= pxa3xx_nand_read_page_hwecc;
+ 		chip->ecc.write_page	= pxa3xx_nand_write_page_hwecc;
 -- 
 2.2.2
