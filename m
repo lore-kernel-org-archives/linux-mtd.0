@@ -1,14 +1,14 @@
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaP-00078O-JD
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:42 +0000
-Received: by widem10 with SMTP id em10so26272315wid.1
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:20 -0800 (PST)
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YSuZz-0004s1-Eb
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:15 +0000
+Received: by widem10 with SMTP id em10so26100953wid.5
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:53 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 43/60] mtd: nand: omap2: show device structure in sysfs
-Date: Tue,  3 Mar 2015 22:40:27 +0100
-Message-Id: <1425418844-25177-44-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 14/60] mtd: maps: lantiq-flash: show device in sysfs
+Date: Tue,  3 Mar 2015 22:39:58 +0100
+Message-Id: <1425418844-25177-15-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,30 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make sure the device structure is properly shown in sysfs by properly
-filling in dev.parent.
+Fix a bug where mtd devices aren't shown in sysfs.
 
-While at it, make use of the default owner and name values set by
-mtdcore.
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/omap2.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/maps/lantiq-flash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 60fa899..7fbf009 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1684,8 +1684,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	info->ecc_opt		= pdata->ecc_opt;
- 	mtd			= &info->mtd;
- 	mtd->priv		= &info->nand;
--	mtd->name		= dev_name(&pdev->dev);
--	mtd->owner		= THIS_MODULE;
-+	mtd->dev.parent		= &pdev->dev;
- 	nand_chip		= &info->nand;
- 	nand_chip->ecc.priv	= NULL;
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 33d26f5..0cef3ba 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -161,7 +161,7 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
  
+-	ltq_mtd->mtd->owner = THIS_MODULE;
++	ltq_mtd->mtd->dev.parent = &pdev->dev;
+ 
+ 	cfi = ltq_mtd->map->fldrv_priv;
+ 	cfi->addr_unlock1 ^= 1;
 -- 
 2.2.2
