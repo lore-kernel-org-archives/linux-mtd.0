@@ -1,14 +1,14 @@
-Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSua8-0004sD-LS
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:26 +0000
-Received: by wggx12 with SMTP id x12so42760620wgg.11
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:02 -0800 (PST)
+ id 1YSua8-0004sB-9x
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:25 +0000
+Received: by wibhm9 with SMTP id hm9so2965930wib.2
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:01 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 24/60] mtd: nand: bcm47xxnflash: show device in sysfs
-Date: Tue,  3 Mar 2015 22:40:08 +0100
-Message-Id: <1425418844-25177-25-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 23/60] mtd: nand: au1550nd: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:07 +0100
+Message-Id: <1425418844-25177-24-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -28,21 +28,21 @@ While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/bcm47xxnflash/main.c | 2 +-
+ drivers/mtd/nand/au1550nd.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
-index 461577c..9ba0c0f 100644
---- a/drivers/mtd/nand/bcm47xxnflash/main.c
-+++ b/drivers/mtd/nand/bcm47xxnflash/main.c
-@@ -34,7 +34,7 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
+index c0c3be1..08a130f 100644
+--- a/drivers/mtd/nand/au1550nd.c
++++ b/drivers/mtd/nand/au1550nd.c
+@@ -439,7 +439,7 @@ static int au1550nd_probe(struct platform_device *pdev)
  
- 	b47n->nand_chip.priv = b47n;
--	b47n->mtd.owner = THIS_MODULE;
-+	b47n->mtd.dev.parent = &pdev->dev;
- 	b47n->mtd.priv = &b47n->nand_chip; /* Required */
- 	b47n->cc = container_of(nflash, struct bcma_drv_cc, nflash);
+ 	this = &ctx->chip;
+ 	ctx->info.priv = this;
+-	ctx->info.owner = THIS_MODULE;
++	ctx->info.dev.parent = &pdev->dev;
  
+ 	/* figure out which CS# r->start belongs to */
+ 	cs = find_nand_cs(r->start);
 -- 
 2.2.2
