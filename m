@@ -1,14 +1,14 @@
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaT-0004w3-JK
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:46 +0000
-Received: by wiwl15 with SMTP id l15so26289401wiw.5
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:23 -0800 (PST)
+ id 1YSuaS-0004w0-Qy
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:45 +0000
+Received: by widex7 with SMTP id ex7so26230787wid.4
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:22 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 47/60] mtd: nand: pxa3xx_nand: show device in sysfs
-Date: Tue,  3 Mar 2015 22:40:31 +0100
-Message-Id: <1425418844-25177-48-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 46/60] mtd: nand: plat_nand: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:30 +0100
+Message-Id: <1425418844-25177-47-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -24,25 +24,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Fix a bug where devices aren't shown in sysfs.
 
-While at it, make use of the default owner value set by mtdcore.
+While at it, make use of the default owner and name set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/plat_nand.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 96b0b1d..f908c6d 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1589,7 +1589,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 		host->cs = cs;
- 		host->info_data = info;
- 		mtd->priv = host;
--		mtd->owner = THIS_MODULE;
-+		mtd->dev.parent = &pdev->dev;
+diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+index 4535c26..72e321e 100644
+--- a/drivers/mtd/nand/plat_nand.c
++++ b/drivers/mtd/nand/plat_nand.c
+@@ -61,8 +61,7 @@ static int plat_nand_probe(struct platform_device *pdev)
  
- 		chip->ecc.read_page	= pxa3xx_nand_read_page_hwecc;
- 		chip->ecc.write_page	= pxa3xx_nand_write_page_hwecc;
+ 	data->chip.priv = &data;
+ 	data->mtd.priv = &data->chip;
+-	data->mtd.owner = THIS_MODULE;
+-	data->mtd.name = dev_name(&pdev->dev);
++	data->mtd.dev.parent = &pdev->dev;
+ 
+ 	data->chip.IO_ADDR_R = data->io_base;
+ 	data->chip.IO_ADDR_W = data->io_base;
 -- 
 2.2.2
