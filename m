@@ -1,14 +1,14 @@
-Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
+Received: from mail-wi0-f170.google.com ([209.85.212.170])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaG-0003Hn-6e
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:33 +0000
-Received: by wiwh11 with SMTP id h11so26268120wiw.3
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:10 -0800 (PST)
+ id 1YSuaK-0003Jc-Os
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:37 +0000
+Received: by widex7 with SMTP id ex7so24665299wid.1
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:14 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 32/60] mtd: nand: fsl_upm: show device in sysfs
-Date: Tue,  3 Mar 2015 22:40:16 +0100
-Message-Id: <1425418844-25177-33-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 37/60] mtd: nand: jz4740_nand: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:21 +0100
+Message-Id: <1425418844-25177-38-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -24,25 +24,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Fix a bug where devices aren't shown in sysfs.
 
-While at it, make use of the default owner set by mtdcore.
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/fsl_upm.c | 2 +-
+ drivers/mtd/nand/jz4740_nand.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index 72755d7..d326369 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -176,7 +176,7 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
- 		fun->chip.dev_ready = fun_chip_ready;
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+index ebf2cce..dc4e844 100644
+--- a/drivers/mtd/nand/jz4740_nand.c
++++ b/drivers/mtd/nand/jz4740_nand.c
+@@ -434,7 +434,7 @@ static int jz_nand_probe(struct platform_device *pdev)
+ 	mtd		= &nand->mtd;
+ 	chip		= &nand->chip;
+ 	mtd->priv	= chip;
+-	mtd->owner	= THIS_MODULE;
++	mtd->dev.parent = &pdev->dev;
+ 	mtd->name	= "jz4740-nand";
  
- 	fun->mtd.priv = &fun->chip;
--	fun->mtd.owner = THIS_MODULE;
-+	fun->mtd.dev.parent = fun->dev;
- 
- 	flash_np = of_get_next_child(upm_np, NULL);
- 	if (!flash_np)
+ 	chip->ecc.hwctl		= jz_nand_hwctl;
 -- 
 2.2.2
