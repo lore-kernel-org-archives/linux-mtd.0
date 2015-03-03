@@ -1,14 +1,14 @@
-Received: from mail-we0-x233.google.com ([2a00:1450:400c:c03::233])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuac-0003RP-D8
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:56 +0000
-Received: by wesq59 with SMTP id q59so42630212wes.1
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:31 -0800 (PST)
+ id 1YSuad-0003Sw-J1
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:57 +0000
+Received: by widex7 with SMTP id ex7so26231914wid.4
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:33 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 56/60] mtd: onenand: generic: show device in sysfs
-Date: Tue,  3 Mar 2015 22:40:40 +0100
-Message-Id: <1425418844-25177-57-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 58/60] mtd: onenand: samsung: drop owner assignment
+Date: Tue,  3 Mar 2015 22:40:42 +0100
+Message-Id: <1425418844-25177-59-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,30 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where mtd devices aren't shown in sysfs.
-
-While at it, take advantage of the default owner and name values set by
-mtdcore.
+Owner is automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/onenand/generic.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/onenand/samsung.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
-index 32a216d..9ed801b 100644
---- a/drivers/mtd/onenand/generic.c
-+++ b/drivers/mtd/onenand/generic.c
-@@ -60,9 +60,8 @@ static int generic_onenand_probe(struct platform_device *pdev)
- 	info->onenand.mmcontrol = pdata ? pdata->mmcontrol : NULL;
- 	info->onenand.irq = platform_get_irq(pdev, 0);
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index 19cfb97..5685923 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -864,7 +864,6 @@ static int s3c_onenand_probe(struct platform_device *pdev)
+ 	this = (struct onenand_chip *) &mtd[1];
+ 	mtd->priv = this;
+ 	mtd->dev.parent = &pdev->dev;
+-	mtd->owner = THIS_MODULE;
+ 	onenand->pdev = pdev;
+ 	onenand->type = platform_get_device_id(pdev)->driver_data;
  
--	info->mtd.name = dev_name(&pdev->dev);
-+	info->mtd.dev.parent = &pdev->dev;
- 	info->mtd.priv = &info->onenand;
--	info->mtd.owner = THIS_MODULE;
- 
- 	if (onenand_scan(&info->mtd, 1)) {
- 		err = -ENXIO;
 -- 
 2.2.2
