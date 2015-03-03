@@ -1,21 +1,21 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSgnZ-0004QR-QH
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 06:59:22 +0000
-Received: by pdbnh10 with SMTP id nh10so22476372pdb.3
- for <linux-mtd@lists.infradead.org>; Mon, 02 Mar 2015 22:59:00 -0800 (PST)
-Date: Mon, 2 Mar 2015 22:58:53 -0800
+ id 1YSgpL-00060f-Cg
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 07:01:11 +0000
+Received: by pablf10 with SMTP id lf10so50799122pab.6
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Mar 2015 23:00:50 -0800 (PST)
+Date: Mon, 2 Mar 2015 23:00:46 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] mtd: nand: MTD_NAND_HISI504 should depend on HAS_DMA
-Message-ID: <20150303065853.GA29684@norris-Latitude-E6410>
-References: <1425202552-27125-1-git-send-email-geert@linux-m68k.org>
+To: Colin King <colin.king@canonical.com>
+Subject: Re: [PATCH] mtd: atmel_nand: fix typo in dev_err error message
+Message-ID: <20150303070046.GB29684@norris-Latitude-E6410>
+References: <1425155276-8039-1-git-send-email-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1425202552-27125-1-git-send-email-geert@linux-m68k.org>
-Cc: linux-mtd@lists.infradead.org, Zhou Wang <wangzhou1@hisilicon.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <1425155276-8039-1-git-send-email-colin.king@canonical.com>
+Cc: Josh Wu <josh.wu@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Mar 01, 2015 at 10:35:52AM +0100, Geert Uytterhoeven wrote:
-> If NO_DMA=y:
+On Sat, Feb 28, 2015 at 08:27:56PM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
->     drivers/built-in.o: In function `hisi_nfc_probe':
->     hisi504_nand.c:(.text+0x23e646): undefined reference to `dmam_alloc_coherent'
+> Fix typo, "Unkown" -> "Unknown"
 > 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Looks good. Pushed to linux-mtd.git. Thanks!
+Pushed to l2-mtd.git
 
 Brian
