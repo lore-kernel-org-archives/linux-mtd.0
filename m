@@ -1,14 +1,14 @@
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuZw-0004rk-Ou
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:14 +0000
-Received: by wivz2 with SMTP id z2so6748898wiv.4
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:49 -0800 (PST)
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YSuaH-00077M-Tq
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:35 +0000
+Received: by wiwh11 with SMTP id h11so26268545wiw.3
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:15 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 10/60] mtd: maps: bfin-async-flash: show device in sysfs
-Date: Tue,  3 Mar 2015 22:39:54 +0100
-Message-Id: <1425418844-25177-11-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 38/60] mtd: nand: lpc32xx_mlc: drop owner assignment
+Date: Tue,  3 Mar 2015 22:40:22 +0100
+Message-Id: <1425418844-25177-39-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,24 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where mtd devices aren't shown in sysfs.
+Owner is automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/maps/bfin-async-flash.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/lpc32xx_mlc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/maps/bfin-async-flash.c b/drivers/mtd/maps/bfin-async-flash.c
-index 41730fe..d10356c 100644
---- a/drivers/mtd/maps/bfin-async-flash.c
-+++ b/drivers/mtd/maps/bfin-async-flash.c
-@@ -163,6 +163,7 @@ static int bfin_flash_probe(struct platform_device *pdev)
- 		kfree(state);
- 		return -ENXIO;
- 	}
-+	state->mtd.dev.parent = &pdev->dev;
+diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+index 79c3b78..65b7e03 100644
+--- a/drivers/mtd/nand/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/lpc32xx_mlc.c
+@@ -682,7 +682,6 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
  
- 	mtd_device_parse_register(state->mtd, part_probe_types, NULL,
- 				  pdata->parts, pdata->nr_parts);
+ 	nand_chip->priv = host;		/* link the private data structures */
+ 	mtd->priv = nand_chip;
+-	mtd->owner = THIS_MODULE;
+ 	mtd->dev.parent = &pdev->dev;
+ 
+ 	/* Get NAND clock */
 -- 
 2.2.2
