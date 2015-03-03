@@ -1,14 +1,14 @@
-Received: from mail-wi0-f172.google.com ([209.85.212.172])
+Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaA-0003EX-Gw
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:27 +0000
-Received: by wiwl15 with SMTP id l15so26122676wiw.3
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:04 -0800 (PST)
+ id 1YSuaB-0003F6-V2
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:29 +0000
+Received: by wggz12 with SMTP id z12so5616278wgg.9
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:06 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 26/60] mtd: nand: cafe_nand: drop owner assignment
-Date: Tue,  3 Mar 2015 22:40:10 +0100
-Message-Id: <1425418844-25177-27-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 28/60] mtd: nand: denali: drop owner assignment
+Date: Tue,  3 Mar 2015 22:40:12 +0100
+Message-Id: <1425418844-25177-29-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -26,20 +26,20 @@ Owner is automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/cafe_nand.c | 1 -
+ drivers/mtd/nand/denali.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index 9a0f45f..aa1dc55 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -604,7 +604,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index f44c606..16e61de 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1457,7 +1457,6 @@ int denali_init(struct denali_nand_info *denali)
+ 	/* now that our ISR is registered, we can enable interrupts */
+ 	denali_set_intr_modes(denali, true);
+ 	denali->mtd.name = "denali-nand";
+-	denali->mtd.owner = THIS_MODULE;
+ 	denali->mtd.priv = &denali->nand;
  
- 	mtd->dev.parent = &pdev->dev;
- 	mtd->priv = cafe;
--	mtd->owner = THIS_MODULE;
- 
- 	cafe->pdev = pdev;
- 	cafe->mmio = pci_iomap(pdev, 0, 0);
+ 	/* register the driver with the NAND core subsystem */
 -- 
 2.2.2
