@@ -1,22 +1,19 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSgve-0000A7-MB
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 07:07:43 +0000
-Received: by pdbfp1 with SMTP id fp1so8957548pdb.7
- for <linux-mtd@lists.infradead.org>; Mon, 02 Mar 2015 23:07:19 -0800 (PST)
-Date: Mon, 2 Mar 2015 23:07:15 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH] MTD: m25p80: fix inconsistency in m25p_ids for Micron
- devices
-Message-ID: <20150303070715.GC29684@norris-Latitude-E6410>
-References: <1425288411-6888-1-git-send-email-mike.looijmans@topic.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1425288411-6888-1-git-send-email-mike.looijmans@topic.nl>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, michal.simek@xilinx.com,
- linux-kernel@vger.kernel.org
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YShJR-0004mL-Fr
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 07:32:17 +0000
+Message-ID: <1425367912.26652.47.camel@sauron.fi.intel.com>
+Subject: Re: "corrupt empty space" error on boot?!?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Steve deRosier <derosier@gmail.com>
+Date: Tue, 03 Mar 2015 09:31:52 +0200
+In-Reply-To: <CALupW3CugdN+cwMZzePAhZSHbGhd9gfjk==DH=7Ezu54Y1BXUA@mail.gmail.com>
+References: <CALupW3CugdN+cwMZzePAhZSHbGhd9gfjk==DH=7Ezu54Y1BXUA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,64 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 02, 2015 at 10:26:51AM +0100, Mike Looijmans wrote:
-> As stated in a5b7616c5, "mtd: m25p80,spi-nor: Fix module aliases for
-> m25p80", m25p_ids[] in m25p80.c needs to be kept in sync with
-> spi_nor_ids[] in spi-nor.c.
-> 
-> This patch fixes the mismatches for the Micron devices, the
-> "n25q256a" and "n25q512a" do not exist in the spi_nor_ids, so
+On Mon, 2015-03-02 at 08:39 -0800, Steve deRosier wrote:
+> Logically, it seems to me that a non ecc protected bit-flip in an
+> empty page should be a non-issue. UBI should be able to move the
+> block, erase the block, torture/return-to-service and move on with
+> it's life.  No data is destroyed or even affected.
 
-Huh?
+Yes, you are right, if there is a corruption, UBIFS can:
 
-$ git grep -n 'n25q512a' drivers/mtd
-drivers/mtd/devices/m25p80.c:269:       {"n25q512a"},   {"n25q512ax3"}, {"n25q00"},
-drivers/mtd/spi-nor/spi-nor.c:569:      { "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-drivers/mtd/spi-nor/spi-nor.c:570:      { "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-$ git grep -n 'n25q256a' drivers/mtd
-drivers/mtd/devices/m25p80.c:268:       {"n25q064"},    {"n25q128a11"}, {"n25q128a13"}, {"n25q256a"},
-drivers/mtd/spi-nor/spi-nor.c:568:      { "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+1. Try to understand if this is a corruption in empty space or not.
+2. If yes, recover the LEB.
 
-> replace them with the correct names for these chips.
-> 
-> This repairs the disappearance of NOR flash on the Miami boards since 3.18.
+But this is not implemented. People keep hitting this issue, but no one
+contributed fixes yet.
 
-$ git grep -n 'n25q256a' v3.18 -- drivers/mtd
-v3.18:drivers/mtd/devices/m25p80.c:283: {"n25q064"},    {"n25q128a11"}, {"n25q128a13"}, {"n25q256a"},
-v3.18:drivers/mtd/spi-nor/spi-nor.c:538:        { "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
-$ git grep -n 'n25q512a' v3.18 -- drivers/mtd
-v3.18:drivers/mtd/devices/m25p80.c:284: {"n25q512a"},   {"n25q512ax3"}, {"n25q00"},
-v3.18:drivers/mtd/spi-nor/spi-nor.c:539:        { "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
-v3.18:drivers/mtd/spi-nor/spi-nor.c:540:        { "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
+> A unit not mounting the rootfs because of a bit-flip in _empty_space_
+> is unacceptable to us, so I've got to figure out a way to deal with
+> this rare event.
 
-Perhaps you're looking at a modified 3.18 kernel from your vendor?
+Well, improving UBIFS would be one of the possible solutions.
 
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-> ---
->  drivers/mtd/devices/m25p80.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index b2b33e4..402172c 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -280,8 +280,11 @@ static const struct spi_device_id m25p_ids[] = {
->  	{"mx25l3205d"},	{"mx25l3255e"},	{"mx25l6405d"},	{"mx25l12805d"},
->  	{"mx25l12855e"},{"mx25l25635e"},{"mx25l25655e"},{"mx66l51235l"},
->  	{"mx66l1g55g"},
-> -	{"n25q064"},	{"n25q128a11"},	{"n25q128a13"},	{"n25q256a"},
-> -	{"n25q512a"},	{"n25q512ax3"},	{"n25q00"},
-> +	{"n25q064"},
-> +	{"n25q128a11"},	{"n25q128a13"},
-> +	{"n25q256a11"},	{"n25q256a13"},
-> +	{"n25q512a11"},	{"n25q512a13"},	{"n25q512ax3"},
-> +	{"n25q00"},
-
-Even if I were to take your change (which I will not), please don't make
-arbitrary whitespace changes.
-
->  	{"pm25lv512"},	{"pm25lv010"},	{"pm25lq032"},
->  	{"s25sl032p"},	{"s25sl064p"},	{"s25fl256s0"},	{"s25fl256s1"},
->  	{"s25fl512s"},	{"s70fl01gs"},	{"s25sl12800"},	{"s25sl12801"},
-
-Brian
+Artem.
