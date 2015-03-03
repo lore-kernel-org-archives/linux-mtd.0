@@ -1,14 +1,14 @@
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from mail-we0-x22d.google.com ([2a00:1450:400c:c03::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaS-0004w0-Qy
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:45 +0000
-Received: by widex7 with SMTP id ex7so26230787wid.4
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:22 -0800 (PST)
+ id 1YSuaR-0004vi-PD
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:44 +0000
+Received: by wesw55 with SMTP id w55so42546698wes.4
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:21 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 46/60] mtd: nand: plat_nand: show device in sysfs
-Date: Tue,  3 Mar 2015 22:40:30 +0100
-Message-Id: <1425418844-25177-47-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 45/60] mtd: nand: pasemi_nand: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:29 +0100
+Message-Id: <1425418844-25177-46-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -24,26 +24,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Fix a bug where devices aren't shown in sysfs.
 
-While at it, make use of the default owner and name set by mtdcore.
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/plat_nand.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/nand/pasemi_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 4535c26..72e321e 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -61,8 +61,7 @@ static int plat_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
+index 66c345b..83cf021 100644
+--- a/drivers/mtd/nand/pasemi_nand.c
++++ b/drivers/mtd/nand/pasemi_nand.c
+@@ -124,7 +124,7 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
  
- 	data->chip.priv = &data;
- 	data->mtd.priv = &data->chip;
--	data->mtd.owner = THIS_MODULE;
--	data->mtd.name = dev_name(&pdev->dev);
-+	data->mtd.dev.parent = &pdev->dev;
+ 	/* Link the private data with the MTD structure */
+ 	pasemi_nand_mtd->priv = chip;
+-	pasemi_nand_mtd->owner = THIS_MODULE;
++	pasemi_nand_mtd->dev.parent = &ofdev->dev;
  
- 	data->chip.IO_ADDR_R = data->io_base;
- 	data->chip.IO_ADDR_W = data->io_base;
+ 	chip->IO_ADDR_R = of_iomap(np, 0);
+ 	chip->IO_ADDR_W = chip->IO_ADDR_R;
 -- 
 2.2.2
