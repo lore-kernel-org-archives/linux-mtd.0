@@ -1,14 +1,14 @@
-Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
+Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaB-0003F6-V2
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:29 +0000
-Received: by wggz12 with SMTP id z12so5616278wgg.9
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:06 -0800 (PST)
+ id 1YSuaD-0003G4-I6
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:30 +0000
+Received: by wevl61 with SMTP id l61so5640031wev.0
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:07 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 28/60] mtd: nand: denali: drop owner assignment
-Date: Tue,  3 Mar 2015 22:40:12 +0100
-Message-Id: <1425418844-25177-29-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 29/60] mtd: nand: docg4: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:13 +0100
+Message-Id: <1425418844-25177-30-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,24 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Owner is automatically set by mtdcore. Make use of that.
+Fix a bug where devices aren't shown in sysfs.
+
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/denali.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/docg4.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index f44c606..16e61de 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1457,7 +1457,6 @@ int denali_init(struct denali_nand_info *denali)
- 	/* now that our ISR is registered, we can enable interrupts */
- 	denali_set_intr_modes(denali, true);
- 	denali->mtd.name = "denali-nand";
--	denali->mtd.owner = THIS_MODULE;
- 	denali->mtd.priv = &denali->nand;
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index e5d7bca..510c12d 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -1316,7 +1316,7 @@ static int __init probe_docg4(struct platform_device *pdev)
+ 	doc = (struct docg4_priv *) (nand + 1);
+ 	mtd->priv = nand;
+ 	nand->priv = doc;
+-	mtd->owner = THIS_MODULE;
++	mtd->dev.parent = &pdev->dev;
+ 	doc->virtadr = virtadr;
+ 	doc->dev = dev;
  
- 	/* register the driver with the NAND core subsystem */
 -- 
 2.2.2
