@@ -1,14 +1,14 @@
-Received: from mail-we0-x22d.google.com ([2a00:1450:400c:c03::22d])
+Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaR-0004vi-PD
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:44 +0000
-Received: by wesw55 with SMTP id w55so42546698wes.4
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:21 -0800 (PST)
+ id 1YSuaP-0004u7-2X
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:41 +0000
+Received: by wghb13 with SMTP id b13so42785110wgh.0
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:19 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 45/60] mtd: nand: pasemi_nand: show device in sysfs
-Date: Tue,  3 Mar 2015 22:40:29 +0100
-Message-Id: <1425418844-25177-46-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 42/60] mtd: nand: nuc900_nand: show device in sysfs
+Date: Tue,  3 Mar 2015 22:40:26 +0100
+Message-Id: <1425418844-25177-43-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -28,21 +28,21 @@ While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/pasemi_nand.c | 2 +-
+ drivers/mtd/nand/nuc900_nand.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
-index 66c345b..83cf021 100644
---- a/drivers/mtd/nand/pasemi_nand.c
-+++ b/drivers/mtd/nand/pasemi_nand.c
-@@ -124,7 +124,7 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
+diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/nuc900_nand.c
+index e58c644..f0687f7 100644
+--- a/drivers/mtd/nand/nuc900_nand.c
++++ b/drivers/mtd/nand/nuc900_nand.c
+@@ -250,7 +250,7 @@ static int nuc900_nand_probe(struct platform_device *pdev)
+ 	chip = &(nuc900_nand->chip);
  
- 	/* Link the private data with the MTD structure */
- 	pasemi_nand_mtd->priv = chip;
--	pasemi_nand_mtd->owner = THIS_MODULE;
-+	pasemi_nand_mtd->dev.parent = &ofdev->dev;
+ 	nuc900_nand->mtd.priv	= chip;
+-	nuc900_nand->mtd.owner	= THIS_MODULE;
++	nuc900_nand->mtd.dev.parent = &pdev->dev;
+ 	spin_lock_init(&nuc900_nand->lock);
  
- 	chip->IO_ADDR_R = of_iomap(np, 0);
- 	chip->IO_ADDR_W = chip->IO_ADDR_R;
+ 	nuc900_nand->clk = devm_clk_get(&pdev->dev, NULL);
 -- 
 2.2.2
