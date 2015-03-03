@@ -1,14 +1,14 @@
-Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
+Received: from mail-wi0-f172.google.com ([209.85.212.172])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuZy-0003AT-2X
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:14 +0000
-Received: by wesw62 with SMTP id w62so42579984wes.9
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:41:52 -0800 (PST)
+ id 1YSuaA-0003EX-Gw
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:27 +0000
+Received: by wiwl15 with SMTP id l15so26122676wiw.3
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:04 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 13/60] mtd: maps: ixp4xx: show device in sysfs
-Date: Tue,  3 Mar 2015 22:39:57 +0100
-Message-Id: <1425418844-25177-14-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 26/60] mtd: nand: cafe_nand: drop owner assignment
+Date: Tue,  3 Mar 2015 22:40:10 +0100
+Message-Id: <1425418844-25177-27-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,27 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where mtd devices aren't shown in sysfs.
-
-While at it, make use of the default owner value set by mtdcore.
+Owner is automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/maps/ixp4xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/cafe_nand.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-index b443074..e3180d5 100644
---- a/drivers/mtd/maps/ixp4xx.c
-+++ b/drivers/mtd/maps/ixp4xx.c
-@@ -226,7 +226,7 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 		err = -ENXIO;
- 		goto Error;
- 	}
--	info->mtd->owner = THIS_MODULE;
-+	info->mtd->dev.parent = &dev->dev;
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index 9a0f45f..aa1dc55 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -604,7 +604,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
  
- 	/* Use the fast version */
- 	info->map.write = ixp4xx_write16;
+ 	mtd->dev.parent = &pdev->dev;
+ 	mtd->priv = cafe;
+-	mtd->owner = THIS_MODULE;
+ 
+ 	cafe->pdev = pdev;
+ 	cafe->mmio = pci_iomap(pdev, 0, 0);
 -- 
 2.2.2
