@@ -1,14 +1,14 @@
-Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSuaV-0004x8-3x
- for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:47 +0000
-Received: by wevl61 with SMTP id l61so5641425wev.0
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:25 -0800 (PST)
+ id 1YSuaU-0004wu-19
+ for linux-mtd@lists.infradead.org; Tue, 03 Mar 2015 21:42:46 +0000
+Received: by widex7 with SMTP id ex7so26230983wid.4
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 13:42:24 -0800 (PST)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 49/60] mtd: nand: s3c2410: show device in sysfs
-Date: Tue,  3 Mar 2015 22:40:33 +0100
-Message-Id: <1425418844-25177-50-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH 48/60] mtd: nand: r852: drop owner assignment
+Date: Tue,  3 Mar 2015 22:40:32 +0100
+Message-Id: <1425418844-25177-49-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,34 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where devices aren't shown in sysfs.
-
-While at it, make use of the default owner set by mtdcore.
+Owner is automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/s3c2410.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/r852.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 35aef5e..6db6126 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -832,7 +832,6 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
+index baea83f..2541a94 100644
+--- a/drivers/mtd/nand/r852.c
++++ b/drivers/mtd/nand/r852.c
+@@ -641,7 +641,6 @@ static int r852_register_nand_device(struct r852_device *dev)
  
- 	nmtd->info	   = info;
- 	nmtd->mtd.priv	   = chip;
--	nmtd->mtd.owner    = THIS_MODULE;
- 	nmtd->set	   = set;
+ 	WARN_ON(dev->card_registred);
  
- #ifdef CONFIG_MTD_NAND_S3C2410_HWECC
-@@ -1018,6 +1017,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 		pr_debug("initialising set %d (%p, info %p)\n",
- 			 setno, nmtd, info);
+-	dev->mtd->owner = THIS_MODULE;
+ 	dev->mtd->priv = dev->chip;
+ 	dev->mtd->dev.parent = &dev->pci_dev->dev;
  
-+		nmtd->mtd.dev.parent = &pdev->dev;
- 		s3c2410_nand_init_chip(info, nmtd, sets);
- 
- 		nmtd->scan_res = nand_scan_ident(&nmtd->mtd,
 -- 
 2.2.2
