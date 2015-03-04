@@ -1,16 +1,15 @@
-Message-ID: <54F6B2CE.9020604@atmel.com>
-Date: Wed, 4 Mar 2015 15:22:54 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YT6ee-0002BV-2m
+ for linux-mtd@lists.infradead.org; Wed, 04 Mar 2015 10:35:53 +0000
+From: Sheng Yong <shengyong1@huawei.com>
+To: <dedekind1@gmail.com>, <bengardiner@nanometrics.ca>
+Subject: [RESEND PATCH] ubifs: do not write master node if need recovery
+Date: Wed, 4 Mar 2015 10:46:16 +0000
+Message-ID: <1425465976-11116-1-git-send-email-shengyong1@huawei.com>
 MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] mtd: atmel_nand: check NFC busy flag by HSMC_SR instead
- of NFC cmd regs
-References: <1421922090-8803-1-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1421922090-8803-1-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, hujianyang@huawei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,62 +19,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Brain
+The commits 781c571 ("UBIFS: intialize LPT earlier") and 0980119 ("UBIFS:
+fix-up free space earlier") move some initialization before marking the
+master node dirty. But the modification changes the conditions of writing
+master. 
 
-Would you have any chance to take this patch as it's been a long time?
+If unclean umount happens, ubifs may fail when mounting. But trying to
+mount it will write new master nodes on the flash. This is useless but
+increasing sqnum. So check need_recovery before writing master node, and
+don't create new master node if filesystem needs recovery.
 
-Best Regards,
-Josh Wu
+The behavour of the bug shows at:
+http://lists.infradead.org/pipermail/linux-mtd/2015-February/057712.html
 
-On 1/22/2015 6:21 PM, Josh Wu wrote:
-> From: Boris Brezillon <boris.brezillon@free-electrons.com>
->
-> Currently the driver read NFC command registers to get NFC busy flag.
-> Actually this flag also can be get by reading HSMC_SR register.
->
-> Use the read NFC command registers need mapping a huge memory region.
-> To save the mapped memory region, we change to check NFC busy flag by
-> reading HSMC_SR register.
->
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> ---
->
-> Changes in v2:
-> - Change me to signed-off-by.
-> - modify the error log.
->
->   drivers/mtd/nand/atmel_nand.c     | 5 ++---
->   drivers/mtd/nand/atmel_nand_nfc.h | 1 +
->   2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index d93c849..336cc2d 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -1752,11 +1752,10 @@ static int nfc_send_command(struct atmel_nand_host *host,
->   		cmd, addr, cycle0);
->   
->   	timeout = jiffies + msecs_to_jiffies(NFC_TIME_OUT_MS);
-> -	while (nfc_cmd_readl(NFCADDR_CMD_NFCBUSY, host->nfc->base_cmd_regs)
-> -			& NFCADDR_CMD_NFCBUSY) {
-> +	while (nfc_readl(host->nfc->hsmc_regs, SR) & NFC_SR_BUSY) {
->   		if (time_after(jiffies, timeout)) {
->   			dev_err(host->dev,
-> -				"Time out to wait CMD_NFCBUSY ready!\n");
-> +				"Time out to wait for NFC ready!\n");
->   			return -ETIMEDOUT;
->   		}
->   	}
-> diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
-> index 85b8ca6..4d5d262 100644
-> --- a/drivers/mtd/nand/atmel_nand_nfc.h
-> +++ b/drivers/mtd/nand/atmel_nand_nfc.h
-> @@ -35,6 +35,7 @@
->   #define		NFC_CTRL_DISABLE	(1 << 1)
->   
->   #define ATMEL_HSMC_NFC_SR	0x08		/* NFC Status Register */
-> +#define		NFC_SR_BUSY		(1 << 8)
->   #define		NFC_SR_XFR_DONE		(1 << 16)
->   #define		NFC_SR_CMD_DONE		(1 << 17)
->   #define		NFC_SR_DTOE		(1 << 20)
+Signed-off-by: Sheng Yong <shengyong1@huawei.com>
+---
+ fs/ubifs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 93e9465..0b7378a 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1284,7 +1284,7 @@ static int mount_ubifs(struct ubifs_info *c)
+ 			goto out_lpt;
+ 	}
+ 
+-	if (!c->ro_mount) {
++	if (!c->ro_mount && !c->need_recovery) {
+ 		/*
+ 		 * Set the "dirty" flag so that if we reboot uncleanly we
+ 		 * will notice this immediately on the next mount.
+-- 
+1.8.3.4
