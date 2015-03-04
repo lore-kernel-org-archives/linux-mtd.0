@@ -1,19 +1,16 @@
-Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YT1RR-00061c-Tv
- for linux-mtd@lists.infradead.org; Wed, 04 Mar 2015 05:02:00 +0000
-Received: by igbhn18 with SMTP id hn18so33962700igb.2
- for <linux-mtd@lists.infradead.org>; Tue, 03 Mar 2015 21:01:32 -0800 (PST)
-From: Nicholas Krause <xerofoify@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH 2/3] mtd:Remove no longer required function,
- check_free_sectors in inftlmount.c
-Date: Wed,  4 Mar 2015 00:01:24 -0500
-Message-Id: <1425445285-17678-2-git-send-email-xerofoify@gmail.com>
-In-Reply-To: <1425445285-17678-1-git-send-email-xerofoify@gmail.com>
-References: <1425445285-17678-1-git-send-email-xerofoify@gmail.com>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Message-ID: <54F6B2CE.9020604@atmel.com>
+Date: Wed, 4 Mar 2015 15:22:54 +0800
+From: Josh Wu <josh.wu@atmel.com>
+MIME-Version: 1.0
+To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2] mtd: atmel_nand: check NFC busy flag by HSMC_SR instead
+ of NFC cmd regs
+References: <1421922090-8803-1-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1421922090-8803-1-git-send-email-josh.wu@atmel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +20,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Removes the no longer required function,check_free_sectors as this
-functions only caller,INFTL_formatblock has removed it's call to
-check_free_sectors.
+Hi, Brain
 
-Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
----
- drivers/mtd/inftlmount.c | 39 ---------------------------------------
- 1 file changed, 39 deletions(-)
+Would you have any chance to take this patch as it's been a long time?
 
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index 8f16de1..f9f1511 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -329,45 +329,6 @@ static int memcmpb(void *a, int c, int n)
- 	return 0;
- }
- 
--/*
-- * check_free_sector: check if a free sector is actually FREE,
-- *	i.e. All 0xff in data and oob area.
-- */
--static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
--	int len, int check_oob)
--{
--	u8 buf[SECTORSIZE + inftl->mbd.mtd->oobsize];
--	struct mtd_info *mtd = inftl->mbd.mtd;
--	size_t retlen;
--	int i;
--
--	for (i = 0; i < len; i += SECTORSIZE) {
--		if (mtd_read(mtd, address, SECTORSIZE, &retlen, buf))
--			return -1;
--		if (memcmpb(buf, 0xff, SECTORSIZE) != 0)
--			return -1;
--
--		if (check_oob) {
--			if(inftl_read_oob(mtd, address, mtd->oobsize,
--					  &retlen, &buf[SECTORSIZE]) < 0)
--				return -1;
--			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
--				return -1;
--		}
--		address += SECTORSIZE;
--	}
--
--	return 0;
--}
--
--/*
-- * INFTL_format: format a Erase Unit by erasing ALL Erase Zones in the Erase
-- *		 Unit and Update INFTL metadata. Each erase operation is
-- *		 checked with check_free_sectors.
-- *
-- * Return: 0 when succeed, -1 on error.
-- *
-- */
- int INFTL_formatblock(struct INFTLrecord *inftl, int block)
- {
- 	size_t retlen;
--- 
-2.1.0
+Best Regards,
+Josh Wu
+
+On 1/22/2015 6:21 PM, Josh Wu wrote:
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+>
+> Currently the driver read NFC command registers to get NFC busy flag.
+> Actually this flag also can be get by reading HSMC_SR register.
+>
+> Use the read NFC command registers need mapping a huge memory region.
+> To save the mapped memory region, we change to check NFC busy flag by
+> reading HSMC_SR register.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> ---
+>
+> Changes in v2:
+> - Change me to signed-off-by.
+> - modify the error log.
+>
+>   drivers/mtd/nand/atmel_nand.c     | 5 ++---
+>   drivers/mtd/nand/atmel_nand_nfc.h | 1 +
+>   2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index d93c849..336cc2d 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -1752,11 +1752,10 @@ static int nfc_send_command(struct atmel_nand_host *host,
+>   		cmd, addr, cycle0);
+>   
+>   	timeout = jiffies + msecs_to_jiffies(NFC_TIME_OUT_MS);
+> -	while (nfc_cmd_readl(NFCADDR_CMD_NFCBUSY, host->nfc->base_cmd_regs)
+> -			& NFCADDR_CMD_NFCBUSY) {
+> +	while (nfc_readl(host->nfc->hsmc_regs, SR) & NFC_SR_BUSY) {
+>   		if (time_after(jiffies, timeout)) {
+>   			dev_err(host->dev,
+> -				"Time out to wait CMD_NFCBUSY ready!\n");
+> +				"Time out to wait for NFC ready!\n");
+>   			return -ETIMEDOUT;
+>   		}
+>   	}
+> diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
+> index 85b8ca6..4d5d262 100644
+> --- a/drivers/mtd/nand/atmel_nand_nfc.h
+> +++ b/drivers/mtd/nand/atmel_nand_nfc.h
+> @@ -35,6 +35,7 @@
+>   #define		NFC_CTRL_DISABLE	(1 << 1)
+>   
+>   #define ATMEL_HSMC_NFC_SR	0x08		/* NFC Status Register */
+> +#define		NFC_SR_BUSY		(1 << 8)
+>   #define		NFC_SR_XFR_DONE		(1 << 16)
+>   #define		NFC_SR_CMD_DONE		(1 << 17)
+>   #define		NFC_SR_DTOE		(1 << 20)
