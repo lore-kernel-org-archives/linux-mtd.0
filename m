@@ -1,36 +1,39 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YTVYo-0002K5-K3
- for linux-mtd@lists.infradead.org; Thu, 05 Mar 2015 13:11:31 +0000
-Message-ID: <54F855E4.9030106@suse.de>
-Date: Thu, 05 Mar 2015 14:11:00 +0100
-From: Hannes Reinecke <hare@suse.de>
+ id 1YTVzt-0001L2-Ez
+ for linux-mtd@lists.infradead.org; Thu, 05 Mar 2015 13:39:29 +0000
+Received: by wibbs8 with SMTP id bs8so7051833wib.4
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Mar 2015 05:39:07 -0800 (PST)
 MIME-Version: 1.0
-To: Valentin Rothberg <valentinrothberg@gmail.com>, akpm@linux-foundation.org
-Subject: Re: [PATCH] Remove deprecated IRQF_DISABLED flag entirely
+In-Reply-To: <20150305130850.GK5437@mwanda>
 References: <1425560442-13367-1-git-send-email-valentinrothberg@gmail.com>
-In-Reply-To: <1425560442-13367-1-git-send-email-valentinrothberg@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+ <20150305130850.GK5437@mwanda>
+From: Valentin Rothberg <valentinrothberg@gmail.com>
+Date: Thu, 5 Mar 2015 14:33:13 +0100
+Message-ID: <CAD3Xx4L3QWW91NupRevugvixNxoE8bk5Hf5XrgG-NYcPu9S=Sg@mail.gmail.com>
+Subject: Re: [PATCH] Remove deprecated IRQF_DISABLED flag entirely
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset=UTF-8
 Cc: Nishanth Menon <nm@ti.com>, linux-mips@linux-mips.org,
  Quentin Lambert <lambert.quentin@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
  Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
  Sricharan R <r.sricharan@ti.com>, linux-mtd@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>, Huacai Chen <chenhc@lemote.com>,
+ Felipe Balbi <balbi@ti.com>, Huacai Chen <chenhc@lemote.com>,
  Christoph Hellwig <hch@lst.de>, Kukjin Kim <kgene.kim@samsung.com>,
  iss_storagedev@hp.com, Jonathan Corbet <corbet@lwn.net>,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
  Ewan Milne <emilne@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Dan Carpenter <dan.carpenter@oracle.com>, Afzal Mohammed <afzal@ti.com>,
- Arnd Bergmann <arnd@arndb.de>, Rajendra Nayak <rnayak@ti.com>,
- Eyal Perry <eyalpe@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Afzal Mohammed <afzal@ti.com>, Arnd Bergmann <arnd@arndb.de>,
+ Rajendra Nayak <rnayak@ti.com>, Eyal Perry <eyalpe@mellanox.com>,
+ Hannes Reinecke <hare@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
  Paul Bolle <pebolle@tiscali.nl>, Keerthy <j-keerthy@ti.com>,
  Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>,
+ linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
  Zhou Wang <wangzhou1@hisilicon.com>, linux-usb@vger.kernel.org,
  Santosh Shilimkar <santosh.shilimkar@ti.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hongliang Tao <taohl@lemote.com>, Brian Norris <computersforpeace@gmail.com>,
+ Hongliang Tao <taohl@lemote.com>, akpm@linux-foundation.org,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,50 +45,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/05/2015 01:59 PM, Valentin Rothberg wrote:
-> The IRQF_DISABLED is a NOOP and has been scheduled for removal since
-> Linux v2.6.36 by commit 6932bf37bed4 ("genirq: Remove IRQF_DISABLED from
-> core code").
-> 
-> According to commit e58aa3d2d0cc ("genirq: Run irq handlers with
-> interrupts disabled") running IRQ handlers with interrupts enabled can
-> cause stack overflows when the interrupt line of the issuing device is
-> still active.
-> 
-> This patch ends the grace period for IRQF_DISABLED (i.e., SA_INTERRUPT
-> in older versions of Linux) and removes the definition and all remaining
-> usages of this flag.
-> 
-> Signed-off-by: Valentin Rothberg <valentinrothberg@gmail.com>
-> ---
-> The bigger hunk in Documentation/scsi/ncr53c8xx.txt is removed entirely
-> as IRQF_DISABLED is gone now; the usage in older kernel versions
-> (including the old SA_INTERRUPT flag) should be discouraged.  The
-> trouble of using IRQF_SHARED is a general problem and not specific to
-> any driver.
-> 
-> I left the reference in Documentation/PCI/MSI-HOWTO.txt untouched since
-> it has already been removed in linux-next by commit b0e1ee8e1405
-> ("MSI-HOWTO.txt: remove reference on IRQF_DISABLED").
-> 
-> All remaining references are changelogs that I suggest to keep.
+On Thu, Mar 5, 2015 at 2:08 PM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> On Thu, Mar 05, 2015 at 01:59:39PM +0100, Valentin Rothberg wrote:
+>> diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
+>> index 289ad3ac3e80..7f9f9c827c1d 100644
+>> --- a/drivers/mtd/nand/hisi504_nand.c
+>> +++ b/drivers/mtd/nand/hisi504_nand.c
+>> @@ -758,8 +758,7 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+>>
+>>       hisi_nfc_host_init(host);
+>>
+>> -     ret = devm_request_irq(dev, irq, hinfc_irq_handle, IRQF_DISABLED,
+>> -                             "nandc", host);
+>> +     ret = devm_request_irq(dev, irq, hinfc_irq_handle, "nandc", host);
+>
+> I think this breaks the build.
 
-While you're at it: having '0x0' as a value for the irq flags looks
-a bit silly, and makes you wonder what the parameter is for.
+You're completely right, thanks!  Obviously I missed compiling this
+driver.  I will fix it.
 
-I would rather like to have
-
-#define IRQF_NONE 0x0
-
-and use it for these cases.
-That way the scope of that parameter is clear.
-
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke		               zSeries & Storage
-hare@suse.de			               +49 911 74053 688
-SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
-GF: F. Imendörffer, J. Smithard, J. Guild, D. Upmanyu, G. Norton
-HRB 21284 (AG Nürnberg)
+Kind regards,
+ Valentin
