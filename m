@@ -1,23 +1,39 @@
-Date: Thu, 5 Mar 2015 14:08:43 +0100
-From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH v3 5/9] mtd: pxa3xx_nand: add support for the Marvell
- Berlin nand controller
-Message-ID: <20150305130843.GC5265@kwain>
-References: <1425555085-29531-1-git-send-email-antoine.tenart@free-electrons.com>
- <1425555085-29531-6-git-send-email-antoine.tenart@free-electrons.com>
- <20150305140000.39081aa8@free-electrons.com>
+Received: from aserp1040.oracle.com ([141.146.126.69])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YTVYL-00027K-NJ
+ for linux-mtd@lists.infradead.org; Thu, 05 Mar 2015 13:11:02 +0000
+Date: Thu, 5 Mar 2015 16:08:50 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Valentin Rothberg <valentinrothberg@gmail.com>
+Subject: Re: [PATCH] Remove deprecated IRQF_DISABLED flag entirely
+Message-ID: <20150305130850.GK5437@mwanda>
+References: <1425560442-13367-1-git-send-email-valentinrothberg@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150305140000.39081aa8@free-electrons.com>
-Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- ezequiel.garcia@free-electrons.com, jszhang@marvell.com,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
+In-Reply-To: <1425560442-13367-1-git-send-email-valentinrothberg@gmail.com>
+Cc: Nishanth Menon <nm@ti.com>, linux-mips@linux-mips.org,
+ Quentin Lambert <lambert.quentin@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
+ Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Sricharan R <r.sricharan@ti.com>, linux-mtd@lists.infradead.org,
+ Felipe Balbi <balbi@ti.com>, Huacai Chen <chenhc@lemote.com>,
+ Christoph Hellwig <hch@lst.de>, Kukjin Kim <kgene.kim@samsung.com>,
+ iss_storagedev@hp.com, Jonathan Corbet <corbet@lwn.net>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Ewan Milne <emilne@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Afzal Mohammed <afzal@ti.com>, Arnd Bergmann <arnd@arndb.de>,
+ Rajendra Nayak <rnayak@ti.com>, Eyal Perry <eyalpe@mellanox.com>,
+ Hannes Reinecke <hare@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
+ Paul Bolle <pebolle@tiscali.nl>, Keerthy <j-keerthy@ti.com>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
+ Zhou Wang <wangzhou1@hisilicon.com>, linux-usb@vger.kernel.org,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hongliang Tao <taohl@lemote.com>, akpm@linux-foundation.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,56 +43,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas,
+On Thu, Mar 05, 2015 at 01:59:39PM +0100, Valentin Rothberg wrote:
+> diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
+> index 289ad3ac3e80..7f9f9c827c1d 100644
+> --- a/drivers/mtd/nand/hisi504_nand.c
+> +++ b/drivers/mtd/nand/hisi504_nand.c
+> @@ -758,8 +758,7 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+>  
+>  	hisi_nfc_host_init(host);
+>  
+> -	ret = devm_request_irq(dev, irq, hinfc_irq_handle, IRQF_DISABLED,
+> -				"nandc", host);
+> +	ret = devm_request_irq(dev, irq, hinfc_irq_handle, "nandc", host);
 
-On Thu, Mar 05, 2015 at 02:00:00PM +0100, Thomas Petazzoni wrote:
-> On Thu,  5 Mar 2015 12:31:21 +0100, Antoine Tenart wrote:
-> 
-> >  struct pxa3xx_nand_host {
-> > @@ -253,6 +258,12 @@ static struct pxa3xx_nand_flash builtin_flash_types[] = {
-> >  { "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096 },
-> >  { "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096 },
-> >  { "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048 },
-> > +{ }
-> > +};
-> > +
-> > +static struct pxa3xx_nand_flash berlin_builtin_flash_types[] = {
-> > +{ "4GiB 8-bit",    0xd7ec, 128, 8192,  8,  8, 4096 },
-> > +{ },
-> 
-> This looks fishy. You know have two different definitions for the exact
-> same chip_id. In the builtin_flash_types[] array:
-> 
-> { "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192 },
-> 
-> and in your new berlin_builtin_flash_types[] array:
-> 
-> { "4GiB 8-bit",    0xd7ec, 128, 8192,  8,  8, 4096 },
-> 
-> So you have twice a big pages, and twice as less blocks. Are you sure
-> about your definition of the 0xd7ec NAND chip_id ?
-> 
-> Why cannot you use the same data for both the Berlin platform and the
-> platforms already supported by the driver? Are you sure your NAND isn't
-> using 4k pages ? Or maybe the 0xd7ec entry in builtin_flash_types[] is
-> incorrect?
-> 
-> Or maybe like
-> http://lists.infradead.org/pipermail/linux-mtd/2010-June/031159.html,
-> the NAND chip_id is the same, but the NAND ext id is different.
-> 
-> Is there no common NAND mechanism to handle this, rather than having
-> this specifically in the driver?
+I think this breaks the build.
 
-I totally agree, this is one more thing wrong with this driver. Using a
-ext id would solve the issue here.
+>  	if (ret) {
+>  		dev_err(dev, "failed to request IRQ\n");
+>  		goto err_res;
 
-If a NULL table is given to the nand_get_flash_type() function, then the
-nand_flash_ids is used. This should be handled this way.
-
-Antoine
-
--- 
-Antoine Ténart, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+regards,
+dan carpenter
