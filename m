@@ -1,20 +1,16 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YTT67-0006Y4-0U
- for linux-mtd@lists.infradead.org; Thu, 05 Mar 2015 10:33:44 +0000
-Message-ID: <54F830EA.4080106@nod.at>
-Date: Thu, 05 Mar 2015 11:33:14 +0100
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 0/5] UBI: Coverity-inspired fixes
-References: <1425119009-28634-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1425119009-28634-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com
+Subject: [PATCH v3 2/9] Documentation: bindings: document the clocks for
+ pxa3xx-nand
+Date: Thu,  5 Mar 2015 12:31:18 +0100
+Message-Id: <1425555085-29531-3-git-send-email-antoine.tenart@free-electrons.com>
+In-Reply-To: <1425555085-29531-1-git-send-email-antoine.tenart@free-electrons.com>
+References: <1425555085-29531-1-git-send-email-antoine.tenart@free-electrons.com>
+Cc: thomas.petazzoni@free-electrons.com, boris.brezillon@free-electrons.com,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
+ jszhang@marvell.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
+The pxa3xx nand driver requires at least one clock to probe correctly.
+A second one, named 'ecc' can be specified if needed. Add the
+corresponding documentation.
 
-Am 28.02.2015 um 11:23 schrieb Brian Norris:
-> Except for the last one, these were inspired by Coverity Scan results.
-> 
-> These fixes have barely been tested, but they are pretty straightforward
-> logically. As they've been sitting in my dust pile too long, I thought I'd at
-> least get them out there.
-> 
-> Brian Norris (5):
->   UBI: account for bitflips in both the VID header and data
->   UBI: fix out of bounds write
->   UBI: initialize LEB number variable
->   UBI: fix check for "too many bytes"
->   UBI: align comment for readability
+Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+---
+ Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Nice work!
-I'll test them later today.
-Just a quick question, no patch has a stable tag, is this by design?
->From a first look most of them look like stable material.
-
-Thanks,
-//richard
+diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+index de8b517a5521..ecd1fc071f81 100644
+--- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+@@ -8,6 +8,8 @@ Required properties:
+  - reg: 		The register base for the controller
+  - interrupts:		The interrupt to map
+  - #address-cells:	Set to <1> if the node includes partitions
++ - clocks:		A phandle to the clocks
++ - clock-names:		'nfc' and 'ecc'. The 'nfc' clock is mandatory.
+ 
+ Optional properties:
+ 
+@@ -32,6 +34,8 @@ Example:
+ 		compatible = "marvell,pxa3xx-nand";
+ 		reg = <0x43100000 90>;
+ 		interrupts = <45>;
++		clocks = <&gateclk 11>;
++		clock-names = "nfc";
+ 		#address-cells = <1>;
+ 
+ 		marvell,nand-enable-arbiter;
+-- 
+2.3.1
