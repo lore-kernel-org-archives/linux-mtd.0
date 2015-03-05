@@ -1,18 +1,23 @@
-From: Stefan Agner <stefan@agner.ch>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Subject: [PATCH 5/5] ARM: dts: vf-colibri: enable NAND flash controller
-Date: Thu,  5 Mar 2015 00:10:24 +0100
-Message-Id: <1425510624-22250-6-git-send-email-stefan@agner.ch>
-In-Reply-To: <1425510624-22250-1-git-send-email-stefan@agner.ch>
-References: <1425510624-22250-1-git-send-email-stefan@agner.ch>
-Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
- aaron@tastycactus.com, marb@ixxat.de, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- Stefan Agner <stefan@agner.ch>, devicetree@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, galak@codeaurora.org,
- shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org,
- bpringlemeir@nbsps.com
+Received: from mail-qa0-x22f.google.com ([2607:f8b0:400d:c00::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YTKw5-0000cD-Pz
+ for linux-mtd@lists.infradead.org; Thu, 05 Mar 2015 01:50:50 +0000
+Received: by mail-qa0-f47.google.com with SMTP id v10so36958336qac.6
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Mar 2015 17:50:26 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20150304192310.GN18140@ld-irv-0074>
+References: <1423609138-19321-1-git-send-email-dehrenberg@chromium.org>
+ <20150304192310.GN18140@ld-irv-0074>
+Date: Wed, 4 Mar 2015 17:50:25 -0800
+Message-ID: <CAAK6Zt0e3+KG+GDUA=c=wuc54NB7e4Jt=WQY+V0o0MKtuXeWmQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] mtdpart: Allow adding a partition of a partition
+From: Daniel Ehrenberg <dehrenberg@google.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Gwendal Grignou <gwendal@chromium.org>, richard.weinberger@gmail.com,
+ Nam Nguyen <namnguyen@chromium.org>, Grant Grundler <grundler@chromium.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable NAND access by adding pinmux and NAND flash controller  node
-to device tree. The NAND chips currently used on the Colibri VF61
-requires 8-bit ECC per 512 byte page, hence specify 32-bit ECC
-strength per 2k page size.
+On Wed, Mar 4, 2015 at 11:23 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> One of the problems here is the semantics. Do we really want to do this
+> offset computation when using the partition instead of the master? That
+> means if the original partitioning does not cover the early part of the
+> master MTD, then that piece is lost forever. e.g.,
+>
+>  master, size 0x1000000, with a single partition
+>  /dev/mtd0, 1st partition 0x20000 - 0x40000
+>
+> Then, ioctl(BLKPG, /dev/mtd0) can never create any partitions before
+> 0x20000. But it CAN create partitions after 0x4000! We'd have to support
+> negative offsets for this to work consistently. (Now that I mention it,
+> does MTD's BLKPG even do sanity checking on the arguments? I think it
+> might actually accept negative offsets...).
+>
+> Also, it's a bit odd that you can use one partition to delete either
+> another partition, or itself. e.g.,
+>
+>         flash_part del /dev/mtd1 0  # deletes mtd0
+>         flash_part del /dev/mtd1 1  # deletes mtd1
+>
+> This might be acceptable, if awkward. But the first problem looks like
+> it needs more thought.
+>
+> Brian
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm/boot/dts/vf-colibri.dtsi | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+OK, how would you feel if I just added some stronger bounds checking
+for add? I'm not sure what to do about the delete case.
 
-diff --git a/arch/arm/boot/dts/vf-colibri.dtsi b/arch/arm/boot/dts/vf-colibri.dtsi
-index 5c2b732..651d13f 100644
---- a/arch/arm/boot/dts/vf-colibri.dtsi
-+++ b/arch/arm/boot/dts/vf-colibri.dtsi
-@@ -46,6 +46,18 @@
- 	pinctrl-0 = <&pinctrl_i2c0>;
- };
- 
-+&nfc {
-+	clock-frequency = <33000000>;
-+	nand-bus-width = <8>;
-+	nand-ecc-mode = "hw";
-+	nand-on-flash-bbt;
-+	nand-ecc-strength = <32>;
-+	nand-ecc-step-size = <2048>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_nfc_1>;
-+	status = "okay";
-+};
-+
- &pwm0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pwm0>;
-@@ -141,6 +153,25 @@
- 			>;
- 		};
- 
-+		pinctrl_nfc_1: nfcgrp_1 {
-+			fsl,pins = <
-+				VF610_PAD_PTD23__NF_IO7		0x28df
-+				VF610_PAD_PTD22__NF_IO6		0x28df
-+				VF610_PAD_PTD21__NF_IO5		0x28df
-+				VF610_PAD_PTD20__NF_IO4		0x28df
-+				VF610_PAD_PTD19__NF_IO3		0x28df
-+				VF610_PAD_PTD18__NF_IO2		0x28df
-+				VF610_PAD_PTD17__NF_IO1		0x28df
-+				VF610_PAD_PTD16__NF_IO0		0x28df
-+				VF610_PAD_PTB24__NF_WE_B	0x28c2
-+				VF610_PAD_PTB25__NF_CE0_B	0x28c2
-+				VF610_PAD_PTB27__NF_RE_B	0x28c2
-+				VF610_PAD_PTC26__NF_RB_B	0x283d
-+				VF610_PAD_PTC27__NF_ALE		0x28c2
-+				VF610_PAD_PTC28__NF_CLE		0x28c2
-+			>;
-+		};
-+
- 		pinctrl_pwm0: pwm0grp {
- 			fsl,pins = <
- 				VF610_PAD_PTB0__FTM0_CH0		0x1182
--- 
-2.3.0
+For my use case, I have one partition set up as mtd0 which spans over
+the whole device. I'll always be using this as my master. It'd suit my
+purposes if we restricted these special add and removes to that sort
+of case, but I generalized it like this because I thought it would be
+cleaner. I'm open to more suggestions. It'd also work for me to make
+some sort of option (kernel commandline param?) to give a number to
+the master device and just refer to that directly (I haven't really
+thought this option through).
+
+Dan
