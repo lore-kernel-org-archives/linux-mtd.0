@@ -1,20 +1,20 @@
-Message-ID: <54FA6DFC.1070904@free-electrons.com>
-Date: Sat, 07 Mar 2015 00:18:20 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YUCQi-0002HL-OC
+ for linux-mtd@lists.infradead.org; Sat, 07 Mar 2015 10:58:01 +0000
+Date: Fri, 6 Mar 2015 15:59:19 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Frans Klaver <fransklaver@gmail.com>
+Subject: Re: [PATCH 60/60] staging: mt29f_spinand: show device in sysfs
+Message-ID: <20150306235919.GA17068@kroah.com>
+References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
+ <1425418844-25177-61-git-send-email-fransklaver@gmail.com>
 MIME-Version: 1.0
-To: Antoine Tenart <antoine.tenart@free-electrons.com>,
- sebastian.hesselbarth@gmail.com, dwmw2@infradead.org,
- computersforpeace@gmail.com
-Subject: Re: [PATCH v3 5/9] mtd: pxa3xx_nand: add support for the Marvell
- Berlin nand controller
-References: <1425555085-29531-1-git-send-email-antoine.tenart@free-electrons.com>
- <1425555085-29531-6-git-send-email-antoine.tenart@free-electrons.com>
-In-Reply-To: <1425555085-29531-6-git-send-email-antoine.tenart@free-electrons.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Cc: thomas.petazzoni@free-electrons.com, boris.brezillon@free-electrons.com,
- linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
- jszhang@marvell.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1425418844-25177-61-git-send-email-fransklaver@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Mar 03, 2015 at 10:40:44PM +0100, Frans Klaver wrote:
+> Fix a bug where mtd devices aren't shown in sysfs.
+> 
+> While at it, take advantage of the default owner and name values set by
+> mtdcore.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Frans Klaver <fransklaver@gmail.com>
+> ---
+>  drivers/staging/mt29f_spinand/mt29f_spinand.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
 
-Hi Antoine,
-
-On 03/05/2015 08:31 AM, Antoine Tenart wrote:
-[..]
-> +
-> +static struct pxa3xx_nand_flash berlin_builtin_flash_types[] = {
-> +{ "4GiB 8-bit",    0xd7ec, 128, 8192,  8,  8, 4096 },
-> +{ },
-
-IMHO, supporting a specific flash shouldn't be part of this patch.
-
-In any case, why do you need this? If you can share the details about
-this device, it would be interesting for me to take a look.
-
-This driver's open-coded, legacy-style flash detection is nasty, and the
-only reason I've kept it is to avoid breaking some wacky user with some
-old board. In fact, maybe we can just kill it so nobody thinks it's sane.
-
-Flash detection is the NAND core's job, and duplicating it in the driver
-is not nice. Let's try to avoid it.
-
-BTW, nand_ids.c seems to list a similar device:
-
-  EXTENDED_ID_NAND("NAND 4GiB 3,3V 8-bit",  0xD7, 4096, LP_OPTIONS),
-
-Have you tried this?
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
