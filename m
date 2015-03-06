@@ -1,16 +1,16 @@
-Received: from mail-qg0-x229.google.com ([2607:f8b0:400d:c04::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YTqdU-0000sk-Al
- for linux-mtd@lists.infradead.org; Fri, 06 Mar 2015 11:41:44 +0000
-Received: by qgef51 with SMTP id f51so11785796qge.0
- for <linux-mtd@lists.infradead.org>; Fri, 06 Mar 2015 03:41:21 -0800 (PST)
-MIME-Version: 1.0
-Date: Fri, 6 Mar 2015 19:41:21 +0800
-Message-ID: <CAOx4H9D7AW8GFVfwbuWHP1zWsU3jE15HF3jndwX2tHF5rRHopQ@mail.gmail.com>
-Subject: Problem accessing /dev/mtdblockn
-From: t kevin <kevint324@gmail.com>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YTr7e-0003Uc-TK
+ for linux-mtd@lists.infradead.org; Fri, 06 Mar 2015 12:12:56 +0000
+From: rnd4@dave-tech.it
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH 2/2] mtd: nand: use nand_chip badblockbits when checking bad
+ block pattern
+Date: Fri,  6 Mar 2015 13:12:18 +0100
+Message-Id: <1425643938-24749-3-git-send-email-rnd4@dave-tech.it>
+In-Reply-To: <1425643938-24749-1-git-send-email-rnd4@dave-tech.it>
+References: <1425643938-24749-1-git-send-email-rnd4@dave-tech.it>
+Cc: boris.brezillon@free-electrons.com, Andrea Scian <andrea.scian@dave.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +20,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Andrea Scian <andrea.scian@dave.eu>
 
-I'm encountering a strange problem with Kernel version 2.6.36.
-Accessing mtd device is fine but not the corresponding mtdblock device.
+Use nand_chip->badblockbits like it's used inside nand_base.c when scanning
+bad block markers.
+This is particularly useful when using MLC NAND
 
-root@home:/tmp# dd if=/dev/mtd9 of=m9.bin
-13247+1 records in
-13247+1 records out
-6782496 bytes (6.5MB) copied, 2.714321 seconds, 2.4MB/s
+Signed-off-by: Andrea Scian <andrea.scian@dave.eu>
+---
+ drivers/mtd/nand/nand_bbt.c |   19 ++++++++++++++++---
+ include/linux/mtd/bbm.h     |    3 +++
+ 2 files changed, 19 insertions(+), 3 deletions(-)
 
-root@home:/tmp# dd if=/dev/mtdblock9 of=m9b.bin
-attempt to access beyond end of device
-mtdblock9: rw=0, want=13248, limit=13247
-Buffer I/O error on device mtdblock9, logical block 6623
-dd: /dev/mtdblock9: Input/output error
-
-ls -l :
--rw-r--r--    1 root     root       6782496 Jan  1 21:19 m9.bin
--rw-r--r--    1 root     root       6778880 Jan  1 21:19 m9b.bin
-
-mtdinfo
-mtd9
-Name:                          testos
-Type:                           nor
-Eraseblock size:                65536 bytes, 64.0 KiB
-Amount of eraseblocks:          103 (6782496 bytes, 6.5 MiB)
-Minimum input/output unit size: 1 byte
-Sub-page size:                  1 byte
-Character device major/minor:   90:18
-Bad blocks are allowed:         false
-Device is writable:             false
-
-
-
-Please get me some clue what went wrong.
-
-Thans a lot
-Kevin
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2672643..dba7f8b 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -127,9 +127,21 @@ static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_desc
+  */
+ static int check_short_pattern(uint8_t *buf, struct nand_bbt_descr *td)
+ {
+-	/* Compare the pattern */
+-	if (memcmp(buf + td->offs, td->pattern, td->len))
+-		return -1;
++	if (likely(td->toleratedbitdiff == 0)) {
++		/* Compare the pattern */
++		if (memcmp(buf + td->offs, td->pattern, td->len))
++			return -1;
++	} else {
++		int i, nbitdiff = 0;
++		uint8_t tmp;
++
++		for (i = 0; i < td->len; i++) {
++			tmp = buf[td->offs + i] ^ td->pattern[i];
++			nbitdiff += hweight8(tmp);
++			if (nbitdiff > td->toleratedbitdiff)
++				return -1;
++		}
++	}
+ 	return 0;
+ }
+ 
+@@ -1309,6 +1321,7 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
+ 	bd->len = (this->options & NAND_BUSWIDTH_16) ? 2 : 1;
+ 	bd->pattern = scan_ff_pattern;
+ 	bd->options |= NAND_BBT_DYNAMICSTRUCT;
++	bd->toleratedbitdiff = 8-this->badblockbits;
+ 	this->badblock_pattern = bd;
+ 	return 0;
+ }
+diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
+index 211ff67..0714337 100644
+--- a/include/linux/mtd/bbm.h
++++ b/include/linux/mtd/bbm.h
+@@ -48,6 +48,8 @@
+  *              bad) block in the stored bbt
+  * @pattern:	pattern to identify bad block table or factory marked good /
+  *		bad blocks, can be NULL, if len = 0
++ * @toleratedbitdiff: number of tolerated bit difference (in a byte) between
++ *		pattern and buffer
+  *
+  * Descriptor for the bad block table marker and the descriptor for the
+  * pattern which identifies good and bad blocks. The assumption is made
+@@ -64,6 +66,7 @@ struct nand_bbt_descr {
+ 	int maxblocks;
+ 	int reserved_block_code;
+ 	uint8_t *pattern;
++	int toleratedbitdiff;
+ };
+ 
+ /* Options for the bad block table descriptors */
+-- 
+1.7.9.5
