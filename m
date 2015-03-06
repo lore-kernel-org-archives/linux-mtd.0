@@ -1,26 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1YTlYF-0003MW-I8
- for linux-mtd@lists.infradead.org; Fri, 06 Mar 2015 06:16:00 +0000
-Date: Fri, 6 Mar 2015 07:15:02 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Stefan Agner <stefan@agner.ch>
-Subject: Re: [PATCH 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-Message-ID: <20150306061502.GB10997@pengutronix.de>
-References: <1425510624-22250-1-git-send-email-stefan@agner.ch>
- <1425510624-22250-2-git-send-email-stefan@agner.ch>
+Received: from mail-qg0-x229.google.com ([2607:f8b0:400d:c04::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YTqdU-0000sk-Al
+ for linux-mtd@lists.infradead.org; Fri, 06 Mar 2015 11:41:44 +0000
+Received: by qgef51 with SMTP id f51so11785796qge.0
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Mar 2015 03:41:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1425510624-22250-2-git-send-email-stefan@agner.ch>
-Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
- aaron@tastycactus.com, pawel.moll@arm.com, marb@ixxat.de,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- shawn.guo@linaro.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, galak@codeaurora.org,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, bpringlemeir@nbsps.com
+Date: Fri, 6 Mar 2015 19:41:21 +0800
+Message-ID: <CAOx4H9D7AW8GFVfwbuWHP1zWsU3jE15HF3jndwX2tHF5rRHopQ@mail.gmail.com>
+Subject: Problem accessing /dev/mtdblockn
+From: t kevin <kevint324@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,84 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+Hi,
 
-On Thu, Mar 05, 2015 at 12:10:20AM +0100, Stefan Agner wrote:
-> +
-> +static int vf610_nfc_probe_dt(struct device *dev, struct vf610_nfc_config *cfg)
-> +{
-> +	struct device_node *np = dev->of_node;
-> +	int buswidth;
-> +	u32 clkrate;
-> +
-> +	if (!np)
-> +		return 1;
-> +
-> +	cfg->flash_bbt = of_get_nand_on_flash_bbt(np);
-> +
-> +	if (!of_property_read_u32(np, "clock-frequency", &clkrate))
-> +		cfg->clkrate = clkrate;
+I'm encountering a strange problem with Kernel version 2.6.36.
+Accessing mtd device is fine but not the corresponding mtdblock device.
 
-Normally the clock-frequency property tells the driver at which
-frequency the device actually is running, not to tell the driver at
-which frequency the device *should* run. It's strange to use the value
-of the clock-frequency property as input to clk_set_rate(). Maybe the
-assigned clock binding is more appropriate here, see
-Documentation/devicetree/bindings/clock/clock-bindings.txt.
+root@home:/tmp# dd if=/dev/mtd9 of=m9.bin
+13247+1 records in
+13247+1 records out
+6782496 bytes (6.5MB) copied, 2.714321 seconds, 2.4MB/s
 
-BTW the above can easier be written as:
+root@home:/tmp# dd if=/dev/mtdblock9 of=m9b.bin
+attempt to access beyond end of device
+mtdblock9: rw=0, want=13248, limit=13247
+Buffer I/O error on device mtdblock9, logical block 6623
+dd: /dev/mtdblock9: Input/output error
 
-	of_property_read_u32(np, "clock-frequency", &cfg->clkrate);
+ls -l :
+-rw-r--r--    1 root     root       6782496 Jan  1 21:19 m9.bin
+-rw-r--r--    1 root     root       6778880 Jan  1 21:19 m9b.bin
 
-No return value checking necessary.
+mtdinfo
+mtd9
+Name:                          testos
+Type:                           nor
+Eraseblock size:                65536 bytes, 64.0 KiB
+Amount of eraseblocks:          103 (6782496 bytes, 6.5 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:18
+Bad blocks are allowed:         false
+Device is writable:             false
 
-> +static int vf610_nfc_probe(struct platform_device *pdev)
-> +{
-> +	struct vf610_nfc *nfc;
-> +	struct resource *res;
-> +	struct mtd_info *mtd;
-> +	struct nand_chip *chip;
-> +	struct vf610_nfc_config *cfg;
-> +	int err = 0;
-> +	int page_sz;
-> +	int irq;
-> +
-> +	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-> +	if (!nfc)
-> +		return -ENOMEM;
-> +
-> +	nfc->cfg = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-> +	if (!nfc->cfg)
-> +		return -ENOMEM;
-> +	cfg = nfc->cfg;
 
-Why is nfc->cfg allocated separately instead of embedding it into struct
-vf610_nfc? Is this some platform_data leftover you can remove now?
 
-> +
-> +	nfc->dev = &pdev->dev;
-> +	nfc->page = -1;
-> +	mtd = &nfc->mtd;
-> +	chip = &nfc->chip;
-> +
-> +	mtd->priv = chip;
-> +	mtd->owner = THIS_MODULE;
-> +	mtd->dev.parent = nfc->dev;
-> +	mtd->name = DRV_NAME;
-> +
-> +	err = vf610_nfc_probe_dt(nfc->dev, cfg);
-> +	if (err)
-> +		return -ENODEV;
+Please get me some clue what went wrong.
 
-Does this driver work without device tree or not? Currently the driver
-bails out when device tree support is enabled but no device node is
-given. When device tree support is disabled in the kernel though the
-driver happily continues here.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thans a lot
+Kevin
