@@ -1,25 +1,25 @@
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>,
-	Stefan Agner <stefan@agner.ch>
-Subject: Re: [PATCH 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-References: <1425510624-22250-1-git-send-email-stefan@agner.ch>
- <1425510624-22250-2-git-send-email-stefan@agner.ch>
- <20150306061502.GB10997@pengutronix.de>
- <fdfc84d92bbcb8abc98f2c29e1aa368b@agner.ch>
-Date: Fri, 06 Mar 2015 10:32:26 -0500
-In-Reply-To: <fdfc84d92bbcb8abc98f2c29e1aa368b@agner.ch> (Stefan Agner's
- message of "Fri, 06 Mar 2015 14:31:51 +0100")
-Message-ID: <87sidi3zw5.fsf@nbsps.com>
+Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YTuZD-0003NO-5N
+ for linux-mtd@lists.infradead.org; Fri, 06 Mar 2015 15:53:35 +0000
+Received: by iecvy18 with SMTP id vy18so22387337iec.9
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Mar 2015 07:53:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
- aaron@tastycactus.com, pawel.moll@arm.com, marb@ixxat.de,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- shawn.guo@linaro.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
- geert@linux-m68k.org, kernel@pengutronix.de, galak@codeaurora.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20150304192453.GO18140@ld-irv-0074>
+References: <1423520026-27068-1-git-send-email-namnguyen@chromium.org>
+ <CAAK6Zt1YM+bBKwkEZ2nT5iWYaL0HOvfTWj_xAq+5fp4spcZJXA@mail.gmail.com>
+ <20150304185119.GL18140@ld-irv-0074>
+ <20150304192453.GO18140@ld-irv-0074>
+Date: Fri, 6 Mar 2015 16:53:13 +0100
+Message-ID: <CAAQYJAv2j8zVDL3G=Ux-1k4YxpT2Su9gUeOiww647b=kP5fQ+Q@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd-utils: Add nandpart to add/delete partition
+From: Andrea Adami <andrea.adami@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "Nam T. Nguyen" <namnguyen@chromium.org>,
+ Mike Frysinger <vapier@chromium.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Daniel Ehrenberg <dehrenberg@chromium.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,129 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On  6 Mar 2015, stefan@agner.ch wrote:
+On Wed, Mar 4, 2015 at 8:24 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Wed, Mar 04, 2015 at 10:51:19AM -0800, Brian Norris wrote:
+>> On Wed, Mar 04, 2015 at 10:45:44AM -0800, Daniel Ehrenberg wrote:
+>> > On Mon, Feb 9, 2015 at 2:13 PM, Nam T. Nguyen <namnguyen@chromium.org> wrote:
+>> > > Add a simple utility to exercise BLKPG ioctl.
+>> > >
+>> > > Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
+>> >
+>> > Suggestion: rename to flash_part.c . This utility is not
+>> > nand-specific, and flash_ is used for general MTD utilities.
+>>
+>> Agreed.
+>
+> I'll retract that a bit. I think mtdpart might make more sense.
+> (Following after mtdinfo, rather than flash_erase.) And technically, not
+> all MTD's are flash.
+>
+> Brian
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-> On 2015-03-06 07:15, Sascha Hauer wrote:
->> Hi Stefan,
+While fiddling with BLKPG and mtd, would it be useful to implement
+BLKPG_RESIZE_PARTITION to have repartitoning on the fly? Maybe with a
+separate tool like i.e. https://patchwork.ozlabs.org/patch/60224/ ?
 
->> On Thu, Mar 05, 2015 at 12:10:20AM +0100, Stefan Agner wrote:
->>> +
->>> +static int vf610_nfc_probe_dt(struct device *dev, struct
->>> vf610_nfc_config *cfg)
->>> +{
->>> +	struct device_node *np = dev->of_node;
->>> +	int buswidth;
->>> +	u32 clkrate;
->>> +
->>> +	if (!np)
->>> +		return 1;
->>> +
->>> +	cfg->flash_bbt = of_get_nand_on_flash_bbt(np);
->>> +
->>> +	if (!of_property_read_u32(np, "clock-frequency", &clkrate))
->>> +		cfg->clkrate = clkrate;
-
->> Normally the clock-frequency property tells the driver at which
->> frequency the device actually is running, not to tell the driver at
->> which frequency the device *should* run. It's strange to use the
->> value of the clock-frequency property as input to
->> clk_set_rate(). Maybe the assigned clock binding is more appropriate
->> here, see Documentation/devicetree/bindings/clock/clock-bindings.txt.
-
-> What we try to do here is to specify the hardware limitations. There
-> seem to be some hardware restrictions when it comes to clock
-> frequencies. There has been a rather long discussion over at
-> Freescales community about it:
-> https://community.freescale.com/thread/317074
-
-> Not sure if this is the right way to specify the supported
-> frequencies, or should we create a custom property for this, something
-> like fsl,max-nfc-frequency = <33000000>?
-
-On most SOC's with this controller, the input clock to the controller
-affects the NAND flash timing and other factors; so you will want to set
-it based on the board/NAND stuffed.  The clock is for synchronous logic
-in the controller and affects many properties.  
-
-I guess Sascha's point is, the board's DT should just have some
-'&nfc_clk' node and not have this part of the driver?  Either way works.
-However, this clock is very important to get the driver to function.  It
-seem better for a user/porter to have this info in the node.  I guess
-you need to be trained to look at every node in the sub-tree for a
-device.  I think the other way might be better or a sub-system
-maintainer.  I looked at 'i2c' and other node which have a
-'clock-frequency' parameter. 
-
-In the Documentation/devicetree/bindings/clock/clock-bindings.txt,
-
-    uart@a000 {
-        compatible = "fsl,imx-uart";
-        reg = <0xa000 0x1000>;
-        interrupts = <33>;
-        clocks = <&osc 0>, <&pll 1>;
-        clock-names = "baud", "register";
-    };
-
-Here, this uart clock may affect the maximum baud rate supported by the
-device.  For this controller (vf610_nfc), the clock is like setting the
-'baud rate'; it affect the NAND memory cycles.  There is not really any
-'wait state' type logic in the controller register set that would allow
-the driver to work with a 'given clock' rate.  For certain a board
-should set this clock for the NAND chips they wish to support.
-
-What would the board file look like to use clock node?
-
-[generic]
-        nfc: nand@400e0000 {
-                compatible = "fsl,vf610-nfc";
-                reg = <0x400e0000 0x4000>;
-                clocks = <&clks VF610_CLK_NFC>;
-                clock-names = "nfc_clk";
-                status = "disabled";
-        };
-
-[board]
-
-&nfc {
-        nand-bus-width = <16>;
-        nand-ecc-mode = "hw";
-        nand-on-flash-bbt;
-        nand-ecc-strength = <24>;
-        nand-ecc-step-size = <2048>;
-        pinctrl-names = "default";
-        pinctrl-0 = <&pinctrl_nfc_1>;
-        status = "okay";
-        &nfc_clk { frequency = <33000000>}  /* Like this? */
-};
-
-I don't know how to do the 'Like this?' part.  I don't think the
-'clock-bindings.txt' explains it.  I see this is better as the the
-driver needs no 'clock handling' code.  It is definitely a little more
-obtuse for the users.
-
-[snip]
-
->> Does this driver work without device tree or not? Currently the
->> driver bails out when device tree support is enabled but no device
->> node is given. When device tree support is disabled in the kernel
->> though the driver happily continues here.
-
-> Hm, I never tried using this Driver without DT. 
-
-[snip]
-
-I also didn't test this.  The driver was ported from Linux versions
-where DT did not exist.  It is used in some OpenWRT/68k/coldfire
-(patched) kernels and I wanted it to be useful for them.  However, we
-could probably remove the 'platform support'.  Other people are using
-this on PPC platforms and they will also have dt/of.
-
-Currently the platform control has no way to 'pass data', so the driver
-only works with whatever defaults it has (or that is my belief).  For
-instance, those OpenWRT kernels have a 'machine file' which will set the
-'clock-frequency' and other parameters.  We could remove the platform
-support completely if it is misleading.  I guess the KConfig would need
-a 'depends on CONFIG_OF'.
-
-Thanks for the review,
-Bill Pringlemeir.
+Regards
+Andrea
