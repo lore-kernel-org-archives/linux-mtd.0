@@ -1,25 +1,43 @@
-Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YTuZD-0003NO-5N
- for linux-mtd@lists.infradead.org; Fri, 06 Mar 2015 15:53:35 +0000
-Received: by iecvy18 with SMTP id vy18so22387337iec.9
- for <linux-mtd@lists.infradead.org>; Fri, 06 Mar 2015 07:53:13 -0800 (PST)
+Received: from pmta1.delivery4.ore.mailhop.org ([54.191.151.194])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YTx7j-0004bE-7Q
+ for linux-mtd@lists.infradead.org; Fri, 06 Mar 2015 18:37:23 +0000
+Received: from smtp6.ore.mailhop.org (172.31.18.134) by
+ pmta1.delivery1.ore.mailhop.org id hv7psu20r847 for
+ <linux-mtd@lists.infradead.org>;
+ Fri, 6 Mar 2015 18:36:40 +0000 (envelope-from <tony@atomide.com>)
+Date: Fri, 6 Mar 2015 10:31:38 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Valentin Rothberg <valentinrothberg@gmail.com>
+Subject: Re: [PATCH v2] Remove deprecated IRQF_DISABLED flag entirely
+Message-ID: <20150306183137.GZ13520@atomide.com>
+References: <1425560442-13367-1-git-send-email-valentinrothberg@gmail.com>
+ <1425565425-12604-1-git-send-email-valentinrothberg@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20150304192453.GO18140@ld-irv-0074>
-References: <1423520026-27068-1-git-send-email-namnguyen@chromium.org>
- <CAAK6Zt1YM+bBKwkEZ2nT5iWYaL0HOvfTWj_xAq+5fp4spcZJXA@mail.gmail.com>
- <20150304185119.GL18140@ld-irv-0074>
- <20150304192453.GO18140@ld-irv-0074>
-Date: Fri, 6 Mar 2015 16:53:13 +0100
-Message-ID: <CAAQYJAv2j8zVDL3G=Ux-1k4YxpT2Su9gUeOiww647b=kP5fQ+Q@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd-utils: Add nandpart to add/delete partition
-From: Andrea Adami <andrea.adami@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "Nam T. Nguyen" <namnguyen@chromium.org>,
- Mike Frysinger <vapier@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Daniel Ehrenberg <dehrenberg@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1425565425-12604-1-git-send-email-valentinrothberg@gmail.com>
+Cc: Nishanth Menon <nm@ti.com>, linux-mips@linux-mips.org,
+ Jiri Kosina <jkosina@suse.cz>, Peter Zijlstra <peterz@infradead.org>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Sricharan R <r.sricharan@ti.com>,
+ linux-mtd@lists.infradead.org, Felipe Balbi <balbi@ti.com>,
+ Huacai Chen <chenhc@lemote.com>, Christoph Hellwig <hch@lst.de>,
+ iss_storagedev@hp.com, Jonathan Corbet <corbet@lwn.net>,
+ Quentin Lambert <lambert.quentin@gmail.com>, Ewan Milne <emilne@redhat.com>,
+ Ingo Molnar <mingo@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>,
+ Afzal Mohammed <afzal@ti.com>, Arnd Bergmann <arnd@arndb.de>,
+ Rajendra Nayak <rnayak@ti.com>, Eyal Perry <eyalpe@mellanox.com>,
+ Hannes Reinecke <hare@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
+ Paul Bolle <pebolle@tiscali.nl>, Keerthy <j-keerthy@ti.com>,
+ linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
+ Zhou Wang <wangzhou1@hisilicon.com>,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hongliang Tao <taohl@lemote.com>, akpm@linux-foundation.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +47,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 4, 2015 at 8:24 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Wed, Mar 04, 2015 at 10:51:19AM -0800, Brian Norris wrote:
->> On Wed, Mar 04, 2015 at 10:45:44AM -0800, Daniel Ehrenberg wrote:
->> > On Mon, Feb 9, 2015 at 2:13 PM, Nam T. Nguyen <namnguyen@chromium.org> wrote:
->> > > Add a simple utility to exercise BLKPG ioctl.
->> > >
->> > > Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
->> >
->> > Suggestion: rename to flash_part.c . This utility is not
->> > nand-specific, and flash_ is used for general MTD utilities.
->>
->> Agreed.
->
-> I'll retract that a bit. I think mtdpart might make more sense.
-> (Following after mtdinfo, rather than flash_erase.) And technically, not
-> all MTD's are flash.
->
-> Brian
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+* Valentin Rothberg <valentinrothberg@gmail.com> [150305 06:24]:
+> The IRQF_DISABLED is a NOOP and has been scheduled for removal since
+> Linux v2.6.36 by commit 6932bf37bed4 ("genirq: Remove IRQF_DISABLED from
+> core code").
+> 
+> According to commit e58aa3d2d0cc ("genirq: Run irq handlers with
+> interrupts disabled") running IRQ handlers with interrupts enabled can
+> cause stack overflows when the interrupt line of the issuing device is
+> still active.
+> 
+> This patch ends the grace period for IRQF_DISABLED (i.e., SA_INTERRUPT
+> in older versions of Linux) and removes the definition and all remaining
+> usages of this flag.
+> 
+> Signed-off-by: Valentin Rothberg <valentinrothberg@gmail.com>
 
-While fiddling with BLKPG and mtd, would it be useful to implement
-BLKPG_RESIZE_PARTITION to have repartitoning on the fly? Maybe with a
-separate tool like i.e. https://patchwork.ozlabs.org/patch/60224/ ?
-
-Regards
-Andrea
+Acked-by: Tony Lindgren <tony@atomide.com>
