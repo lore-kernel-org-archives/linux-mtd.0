@@ -1,14 +1,16 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YU3Oy-0007uY-0A
- for linux-mtd@lists.infradead.org; Sat, 07 Mar 2015 01:19:36 +0000
-Received: by pabli10 with SMTP id li10so55804594pab.13
- for <linux-mtd@lists.infradead.org>; Fri, 06 Mar 2015 17:19:15 -0800 (PST)
+ id 1YU3P0-0007v2-CF
+ for linux-mtd@lists.infradead.org; Sat, 07 Mar 2015 01:19:39 +0000
+Received: by padfa1 with SMTP id fa1so49662382pad.3
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Mar 2015 17:19:16 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 0/3] mtd: nand: add Broadcom NAND controller support
-Date: Fri,  6 Mar 2015 17:18:46 -0800
-Message-Id: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 1/3] mtd: nand: add common DT init code
+Date: Fri,  6 Mar 2015 17:18:47 -0800
+Message-Id: <1425691129-1150-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
+References: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
 Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
  Kevin Cernekee <cernekee@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
  Ray Jui <rjui@broadcom.com>,
@@ -25,40 +27,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+These are already-documented common bindings for NAND chips. Let's
+handle them in nand_base.
 
-This adds (long in coming) support for the Broadcom BCM7xxx Set-Top Box NAND
-controller. This controller has been used in a variety of Broadcom SoCs.
+If NAND controller drivers need to act on this data before bringing up
+the NAND chip (e.g., fill out ECC callback functions, change HW modes,
+etc.), then they can do so between calling nand_scan_ident() and
+nand_scan_tail().
 
-There are a few more features I'd like add in the near future, mostly to
-support more SoCs, but this is the base set, which should only need relatively
-minor additions to support chips like BCM63138, BCM3384, and Cygnus/iProc.
-Particularly, we may need to straighten out some endianness issues for the data
-path on iProc, and interrupt enabling/acking on iProc, BCM63xxx, BCM3xxx, and
-others.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c | 41 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h     |  5 +++++
+ 2 files changed, 46 insertions(+)
 
-TODO: add this to the DTS(I) files for BCM7445.
-
-Happy reviewing! (Speaking of which, I need to catch up on reviewing everybody
-else's MTD submissions...)
-
-Brian
-
-Brian Norris (3):
-  mtd: nand: add common DT init code
-  Documentation: devicetree: add binding doc for Broadcom NAND
-    controller
-  mtd: nand: add NAND driver for Broadcom STB NAND controller
-
- .../devicetree/bindings/mtd/brcmstb_nand.txt       |  109 +
- drivers/mtd/nand/Kconfig                           |    8 +
- drivers/mtd/nand/Makefile                          |    1 +
- drivers/mtd/nand/brcmstb_nand.c                    | 2182 ++++++++++++++++++++
- drivers/mtd/nand/nand_base.c                       |   41 +
- include/linux/mtd/nand.h                           |    5 +
- 6 files changed, 2346 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
- create mode 100644 drivers/mtd/nand/brcmstb_nand.c
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index df7eb4ff07d1..271866b038b3 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -48,6 +48,7 @@
+ #include <linux/leds.h>
+ #include <linux/io.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/of_mtd.h>
+ 
+ /* Define default oob placement schemes for large and small page devices */
+ static struct nand_ecclayout nand_oob_8 = {
+@@ -3779,6 +3780,39 @@ ident_done:
+ 	return type;
+ }
+ 
++static int nand_dt_init(struct mtd_info *mtd, struct nand_chip *chip,
++			struct device_node *dn)
++{
++	int ecc_mode, ecc_strength, ecc_step;
++
++	if (of_get_nand_bus_width(dn) == 16)
++		chip->options |= NAND_BUSWIDTH_16;
++
++	if (of_get_nand_on_flash_bbt(dn))
++		chip->bbt_options |= NAND_BBT_USE_FLASH;
++
++	ecc_mode = of_get_nand_ecc_mode(dn);
++	ecc_strength = of_get_nand_ecc_strength(dn);
++	ecc_step = of_get_nand_ecc_step_size(dn);
++
++	if ((ecc_step >= 0 && !(ecc_strength >= 0)) ||
++	    (!(ecc_step >= 0) && ecc_strength >= 0)) {
++		pr_err("must set both strength and step size in DT\n");
++		return -EINVAL;
++	}
++
++	if (ecc_mode >= 0)
++		chip->ecc.mode = ecc_mode;
++
++	if (ecc_strength >= 0)
++		chip->ecc.strength = ecc_strength;
++
++	if (ecc_step > 0)
++		chip->ecc.size = ecc_step;
++
++	return 0;
++}
++
+ /**
+  * nand_scan_ident - [NAND Interface] Scan for the NAND device
+  * @mtd: MTD device structure
+@@ -3796,6 +3830,13 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	int i, nand_maf_id, nand_dev_id;
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct nand_flash_dev *type;
++	int ret;
++
++	if (chip->dn) {
++		ret = nand_dt_init(mtd, chip, chip->dn);
++		if (ret)
++			return ret;
++	}
+ 
+ 	/* Set the default functions */
+ 	nand_set_defaults(chip, chip->options & NAND_BUSWIDTH_16);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 3d4ea7eb2b68..e0f40e12a2c8 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -26,6 +26,8 @@
+ 
+ struct mtd_info;
+ struct nand_flash_dev;
++struct device_node;
++
+ /* Scan and identify a NAND device */
+ extern int nand_scan(struct mtd_info *mtd, int max_chips);
+ /*
+@@ -542,6 +544,7 @@ struct nand_buffers {
+  *			flash device
+  * @IO_ADDR_W:		[BOARDSPECIFIC] address to write the 8 I/O lines of the
+  *			flash device.
++ * @dn:			[BOARDSPECIFIC] device node describing this instance
+  * @read_byte:		[REPLACEABLE] read one byte from the chip
+  * @read_word:		[REPLACEABLE] read one word from the chip
+  * @write_byte:		[REPLACEABLE] write a single byte to the chip on the
+@@ -644,6 +647,8 @@ struct nand_chip {
+ 	void __iomem *IO_ADDR_R;
+ 	void __iomem *IO_ADDR_W;
+ 
++	struct device_node *dn;
++
+ 	uint8_t (*read_byte)(struct mtd_info *mtd);
+ 	u16 (*read_word)(struct mtd_info *mtd);
+ 	void (*write_byte)(struct mtd_info *mtd, uint8_t byte);
 -- 
 1.9.1
