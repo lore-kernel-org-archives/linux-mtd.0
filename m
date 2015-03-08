@@ -1,17 +1,15 @@
-Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
+Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YUN0g-0006gU-G4
- for linux-mtd@lists.infradead.org; Sat, 07 Mar 2015 22:15:51 +0000
-Received: by igkb16 with SMTP id b16so12267161igk.1
- for <linux-mtd@lists.infradead.org>; Sat, 07 Mar 2015 14:15:29 -0800 (PST)
+ id 1YUOf1-0008Uy-TR
+ for linux-mtd@lists.infradead.org; Sun, 08 Mar 2015 00:01:36 +0000
+Received: by igbhn18 with SMTP id hn18so12504265igb.2
+ for <linux-mtd@lists.infradead.org>; Sat, 07 Mar 2015 16:01:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1425691129-1150-4-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
 References: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
- <1425691129-1150-4-git-send-email-computersforpeace@gmail.com>
-Date: Sat, 7 Mar 2015 23:15:28 +0100
-Message-ID: <CACna6ryrDT7OUAr81ebcVdnX0-_fwA24hU9FeVyFRF-BusEaMw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mtd: nand: add NAND driver for Broadcom STB NAND
- controller
+Date: Sun, 8 Mar 2015 01:01:14 +0100
+Message-ID: <CACna6rykQTjtfL8mqHJ4ZSY9Ci+kVhjDfDkjRpsFvg4YatNATw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] mtd: nand: add Broadcom NAND controller support
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
@@ -32,49 +30,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Brian,
+
+Thanks for your work on this. It looks amazing, nice piece of code :)
+
 On 7 March 2015 at 02:18, Brian Norris <computersforpeace@gmail.com> wrote:
-> +static int brcmnand_waitfunc(struct mtd_info *mtd, struct nand_chip *this)
-> +{
-> +       struct nand_chip *chip = mtd->priv;
-> +       struct brcmnand_host *host = chip->priv;
-> +       struct brcmnand_controller *ctrl = host->ctrl;
-> +       unsigned long timeo = msecs_to_jiffies(100);
-> +
-> +       dev_dbg(ctrl->dev, "wait on native cmd %d\n", ctrl->cmd_pending);
-> +       if (ctrl->cmd_pending &&
-> +                       wait_for_completion_timeout(&ctrl->done, timeo) <= 0) {
-> +               unsigned long cmd = brcmnand_read_reg(ctrl, BRCMNAND_CMD_START)
-> +                                       >> brcmnand_cmd_shift(ctrl);
-> +
-> +               dev_err_ratelimited(ctrl->dev,
-> +                       "timeout waiting for command %u (%ld)\n",
-> +                       host->last_cmd, cmd);
+> This adds (long in coming) support for the Broadcom BCM7xxx Set-Top Box NAND
+> controller. This controller has been used in a variety of Broadcom SoCs.
+>
+> There are a few more features I'd like add in the near future, mostly to
+> support more SoCs, but this is the base set, which should only need relatively
+> minor additions to support chips like BCM63138, BCM3384, and Cygnus/iProc.
+> Particularly, we may need to straighten out some endianness issues for the data
+> path on iProc, and interrupt enabling/acking on iProc, BCM63xxx, BCM3xxx, and
+> others.
 
-I think that using host->last_cmd in the above message is really
-misleading. Please consider following:
+After applying workaround for not working IRQ, it seems I have some
+problem with endianess on my BCM4708 (SoC with 6.01 controller).
 
-[    2.061139] [brcmnand_cmdfunc:1151] command:0x90 native_cmd:0x07
-[    2.067123] brcmstb_nand 18028000.nand: send native cmd 7 addr_lo 0x40
-[    2.168395] brcmstb_nand 18028000.nand: timeout waiting for command 144 (7)
-[    2.175321] brcmstb_nand 18028000.nand: intfc status f0000000
-[    2.181051] nand: device found, Manufacturer ID: 0x92, Chip ID: 0xf1
-[    2.187370] nand: Eon NAND 128MiB 3,3V 8-bit
-[    2.191632] nand: 128 MiB, SLC, erase size: 128 KiB, page size:
-2048, OOB size: 64
-[    2.199192] brcmstb_nand 18028000.nand: detected 128MiB total,
-128KiB blocks, 2KiB pages, 16B OOB, 8-bit, BCH-8
-[    2.199192]
-[    2.210724] Scanning device for bad blocks
-[    2.214812] brcmstb_nand 18028000.nand: send native cmd 1 addr_lo 0x0
-[    2.318394] brcmstb_nand 18028000.nand: timeout waiting for command 144 (1)
+Let me start with dumps of "nvram" MTD partition.
+1) Dumping with Netgear's original firmware:
+# hexdump -C -n 16 mtdblock1.bin
+00000000  46 4c 53 48 40 79 00 00  84 01 00 00 47 01 1c 08  |FLSH@y......G...|
+2) Dumping with OpenWrt and its bcm_nand.c:
+root@OpenWrt:/# hexdump -C -n 16 /dev/mtdblock1
+00000000  46 4c 53 48 38 79 00 00  cb 01 00 00 47 01 1c 08  |FLSH8y......G...|
 
-As you can see, first there was a brcmnand_cmdfunc call with 0x90
-(NAND_CMD_READID). It was translated into internal command 0x07
-(CMD_DEVICE_ID_READ).
+This makes me feel that bcm_nand.c driver is OK.
+Unfortunately when using brcmstb_nand.c my bcm47xxpart partition
+driver didn't detect any partition at all. This means I couldn't use
+any /dev/mtdblockX, not even user space as it wasn't mounted.
 
-Then there was a call to brcmnand_read_by_pio which resulted in
-sending internal command 0x01 (CMD_PAGE_READ). This one overwrote
-previous command. So the timeout wasn't about 144 (0x90) anymore.
+So since I didn't have user space, I decided to add some debugging to
+bcm47xxpart itself. There is what I got:
+1) OpenWrt and its bcm_nand.c:
+[bcm47xxpart_parse] 0x80000  46 4c 53 48  38 79 00 00  cb 01 00 00  47 01 1c 08
+2) OpenWrt and brcmstb_nand.c:
+[bcm47xxpart_parse] 0x80000  48 53 4c 46  00 00 79 38  00 00 01 cb  08 1c 01 47
 
-I suggest replacing that with something like
-"timeout waiting for internal command 0x%02x\n", cmd
+So obviously data returned by brcmstb_nand.c seems to be all
+endianess-flipped. Could you take a loo at this?
