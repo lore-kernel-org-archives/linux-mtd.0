@@ -1,24 +1,25 @@
-Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
+Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YUYMR-0006ox-45
- for linux-mtd@lists.infradead.org; Sun, 08 Mar 2015 10:23:03 +0000
-Received: by iecvy18 with SMTP id vy18so31972914iec.1
- for <linux-mtd@lists.infradead.org>; Sun, 08 Mar 2015 03:22:40 -0700 (PDT)
+ id 1YUZEb-0000FF-L9
+ for linux-mtd@lists.infradead.org; Sun, 08 Mar 2015 11:19:02 +0000
+Received: by igbhn18 with SMTP id hn18so14112862igb.2
+ for <linux-mtd@lists.infradead.org>; Sun, 08 Mar 2015 04:18:39 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <20150308005720.GF12966@brian-ubuntu>
 References: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
  <CACna6rykQTjtfL8mqHJ4ZSY9Ci+kVhjDfDkjRpsFvg4YatNATw@mail.gmail.com>
  <20150308005720.GF12966@brian-ubuntu>
-Date: Sun, 8 Mar 2015 11:22:40 +0100
-Message-ID: <CACna6rz656H-K1hPaSGyOE+x4RKfqdUdnWKhff87n=0dvHB+fw@mail.gmail.com>
+Date: Sun, 8 Mar 2015 12:18:39 +0100
+Message-ID: <CACna6rz_iya8UMdDvsOSA0NSvc2YxNJ1GObqBLtr8Xd2-9enCQ@mail.gmail.com>
 Subject: Re: [PATCH 0/3] mtd: nand: add Broadcom NAND controller support
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Florian Fainelli <f.fainelli@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
- Ray Jui <rjui@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>,
+ Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
+ Kevin Cernekee <cernekee@gmail.com>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  Jonathan Richardson <jonathar@broadcom.com>,
  Anatol Pomazao <anatol@google.com>, bcm-kernel-feedback-list@broadcom.com,
@@ -34,49 +35,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 8 March 2015 at 01:57, Brian Norris <computersforpeace@gmail.com> wrote:
-> 2. Endianness is a known issue with at least one other platform. On many
-> chips (spanning MIPS LE, MIPS BE, and ARM LE), NAND has been integrated
-> such that data can just be read/programmed in the native endianness
-> through the FLASH_CACHE registers (as this driver does), but there are a
-> few (on ARM, LE) that require a be32_to_cpu()/cpu_to_be32() swap. I'm
-> considering supporting DT properties like one of the following:
->
->         brcm,nand-cache-be
->         brcm,nand-cache-big-endian
->         brcm,nand-cache-reverse-endian
->
-> You might also check (though I might actually be better equipped for
-> this) if there is a separate register that can tell the NAND data bus to
-> automatically endian-swap data into the native endianness. I know a lot
-> of the buses and peripherals in BCG, at least, are designed such that
-> either (1) they can work naturally in the CPU's native endianness or
-> else (2) they can be configured to swap endianness into either format.
->
-> But if such a register does not exist, then we'll definitely have to do
-> something like the DT property above.
+> 3. I was told that there were only 2 or 3 chips that were released with
+> a v6.1 NAND controller, and BCM4708 wasn't one of them. Apparently I was
+> told wrong... I'll have to see if there are any other quirks we should
+> be accounting for.
 
-It seems there is such a magic register. Please take a look at bcm_nand.c:
-https://dev.openwrt.org/browser/trunk/target/linux/bcm53xx/patches-3.18/420=
--mtd-bcm5301x_nand.patch
+Please note I'm speaking about 6.01, not 6.10. Maybe it make a difference?
 
-There are multiple places (data, OOB, reads, writes) with:
+Buffalo WZR-600DHP2 (BCM47081)
+[    0.325732] [brcmnand_revision_init:371] ctrl->nand_version:0x0601
+[    4.838105] bcma: bus0: Found chip with id 53010, rev 0x00 and package 0=
+x02
 
-/* Set controller to Little Endian mode for copying */
-bcmnand_reg_awrite(ctrl, NANDC_IDM_APB_LITTLE_ENDIAN, 1);
+Buffalo WZR-1750DHP (BCM4708)
+[    0.326823] [brcmnand_revision_init:371] ctrl->nand_version:0x0601
+[    6.674288] bcma: bus0: Found chip with id 53010, rev 0x00 and package 0=
+x02
 
-/* Return to Big Endian mode for commands etc */
-bcmnand_reg_awrite(ctrl, NANDC_IDM_APB_LITTLE_ENDIAN, 0);
+Netgear R6250 V1 (BCM4708)
+[    0.326248] [brcmnand_revision_init:371] ctrl->nand_version:0x0601
+[    8.721335] bcma: bus0: Found chip with id 53010, rev 0x00 and package 0=
+x02
 
-That register is 0x408, but it's in "agent" core (AKA wrapper), so
-it's separated mapping. I'm not sure what address is it right now, as
-we read them from the EROM.
-
-
-> Do the bad block markers look OK without extra endian swapping? I'm
-> wondering whether the swapping will have to occur on both the
-> FLASH_CACHE and SPARE_AREA registers.
-
-I don't know, I didn't try nand-on-flash-bbt.
+Netgear R8000 (BCM4709)
+[    0.241961] bcma: bus0: Found chip with id 53010, rev 0x00 and package 0=
+x00
+[    1.990330] bcm_nand bcma0:18: NAND Controller rev 6.01
 
 --=20
 Rafa=C5=82
