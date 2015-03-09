@@ -1,28 +1,19 @@
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YV45I-0006xw-Dr
- for linux-mtd@lists.infradead.org; Mon, 09 Mar 2015 20:15:29 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v3 5/9] mtd: pxa3xx_nand: add support for the Marvell
- Berlin nand controller
-References: <1425555085-29531-1-git-send-email-antoine.tenart@free-electrons.com>
- <1425555085-29531-6-git-send-email-antoine.tenart@free-electrons.com>
- <54FA6DFC.1070904@free-electrons.com> <87oao3xvh8.fsf@free.fr>
- <54FCAF6C.7010902@free-electrons.com> <87ioebxhc7.fsf@free.fr>
- <54FD860F.2000008@free-electrons.com>
-Date: Mon, 09 Mar 2015 21:15:01 +0100
-In-Reply-To: <54FD860F.2000008@free-electrons.com> (Ezequiel Garcia's message
- of "Mon, 09 Mar 2015 08:37:51 -0300")
-Message-ID: <877fuqx70a.fsf@free.fr>
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ Stefan Agner <stefan@agner.ch>
+Subject: Re: [PATCH v2 3/6] mtd: nand: vf610_nfc: add device tree bindings
+References: <1425919132-13827-1-git-send-email-stefan@agner.ch>
+ <1425919132-13827-4-git-send-email-stefan@agner.ch>
+Date: Mon, 09 Mar 2015 16:11:59 -0400
+Message-ID: <87385eue0g.fsf@nbsps.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: thomas.petazzoni@free-electrons.com, boris.brezillon@free-electrons.com,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
- jszhang@marvell.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
+Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
+ aaron@tastycactus.com, marb@ixxat.de, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, robh+dt@kernel.org, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel Garcia <ezequiel.garcia@free-electrons.com> writes:
+On  9 Mar 2015, stefan@agner.ch wrote:
 
->>> Which flash do you have there?
->> The one with 0xba20 id as I said, which is AFAIK a Numonyx NAND02GR4B2C.
->> 
+> Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+> .../devicetree/bindings/mtd/vf610-nfc.txt | 39 ++++++++++++++++++++++
+> 1 file changed, 39 insertions(+) create mode 100644
+> Documentation/devicetree/bindings/mtd/vf610-nfc.txt
 >
-> $ grep "0xBA" drivers/mtd/nand/nand_ids.c
-> EXTENDED_ID_NAND("NAND 256MiB 1,8V 16-bit", 0xBA, 256, LP_OPTIONS16),
->
-> Seems already supported by the NAND core. The MTD way of probing
-> a non-ONFI device is by using the IDs in nand_ids.c. Additional
-> configuration (timings in this case) is applied between the nand_scan_ident()
-> and nand_scan_tail() calls.
+> diff --git a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+> b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+> new file mode 100644
+> index 0000000..312c872
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
 
-Ok, agreed.
+[snip]
 
-I've seen your answer in the "rework timings setup" mail thread. I think you
-have perfectly understood what bothers me :)
+> +- reg: Address range of the mtd chip 
+> +- interrupts: Should contain the STMMAC interrupts 
 
-Cheers.
+What is 'STMMAC'?  Is that something I cribbed from another file?  Ah, I
+see 'spear_smi.txt' which is an NAND driver with a 'clock-frequency'
+parameter (probably before 'assigned-clocks' support).
 
--- 
-Robert
+ https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/mtd/spear_smi.txt
+
+I don't think 'STMMAC' makes sense.
+
+  +- interrupts: irq to be used
+
+Maybe?  Same as mxc-nand.txt.  It is not so helpful though.
+
+> +- nand-bus-width: see nand.txt
+> +- nand-ecc-mode: see nand.txt
+> +- nand-on-flash-bbt: see nand.txt 
+> +- clock-frequency : Optional clock rate to NFC in Hz
+
+I guess this changed?  We might want to put a note about what kind of
+impact this might have on the bus.  Ie,
+
+ assigned-clocks: Input SOC clock to the NAND controller.
+ assigned-clock-rates: The NAND bus timing is derived from this clock
+    rate and should not exceed maximum timing for any NAND memory chip
+    in a board stuffing.  Typical NAND memory timings derived from this
+    clock are found in the SOC hardware reference manual.
+ 
+Originally, the reason I made this file was because the
+'clock-frequency' was non-standard.  I guess it is nice to have it
+anyways.
+
+Fwiw,
+Bill Pringlemeir.
