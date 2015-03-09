@@ -1,23 +1,23 @@
-Received: from mail-lb0-f180.google.com ([209.85.217.180])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YV4Jb-0000Kz-E8
- for linux-mtd@lists.infradead.org; Mon, 09 Mar 2015 20:30:16 +0000
-Received: by lbiz12 with SMTP id z12so51062858lbi.5
- for <linux-mtd@lists.infradead.org>; Mon, 09 Mar 2015 13:29:52 -0700 (PDT)
-Message-ID: <54FE02C1.9090803@cogentembedded.com>
-Date: Mon, 09 Mar 2015 23:29:53 +0300
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+ id 1YV6tB-0005aY-UU
+ for linux-mtd@lists.infradead.org; Mon, 09 Mar 2015 23:15:10 +0000
+Received: by padfa1 with SMTP id fa1so76138063pad.9
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Mar 2015 16:14:48 -0700 (PDT)
+Date: Mon, 9 Mar 2015 16:14:38 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Frans Klaver <fransklaver@gmail.com>
+Subject: Re: [PATCH 01/60] mtd: core: tone down suggestion that dev.parent
+ should be set
+Message-ID: <20150309230250.GA13266@ld-irv-0074>
+References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
+ <1425418844-25177-2-git-send-email-fransklaver@gmail.com>
 MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] MTD: cfi: reduce stack size
-References: <2376719.UMjvd0rdnO@wuerfel>
-In-Reply-To: <2376719.UMjvd0rdnO@wuerfel>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Jingoo Han <jg1.han@samsung.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1425418844-25177-2-git-send-email-fransklaver@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+On Tue, Mar 03, 2015 at 10:39:45PM +0100, Frans Klaver wrote:
+> add_mtd_device() has a comment suggesting that the caller should have
+> set dev.parent. This is required to have the device show up in sysfs,
 
-On 3/9/2015 10:34 PM, Arnd Bergmann wrote:
+What do you mean "have the device show up in sysfs"? AFAICT, this only
+has bearing on whether the *parent* device shows up as a sysfs symlink
+within the MTD device directory. i.e.:
 
-> The cfi_staa_write_buffers function uses a large amount of kernel stack
-> whenever CONFIG_MTD_MAP_BANK_WIDTH_32 is set, and that results in a
-> warning on ARM allmodconfig builds:
+   /sys/class/mtd/mtd*/device
 
-> drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_write_buffers':
-> drivers/mtd/chips/cfi_cmdset_0020.c:651:1: warning: the frame size of 1208 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+For instance, this sort of symlink:
 
-> It turns out that this is largely a result of a suboptimal implementation
-> of map_word_andequal(). Replacing this function with a straightforward
-> one reduces the stack size in this function by exactly 200 bytes,
-> shrinks the .text segment for this file from 27648 bytes to 26608 bytes,
-> and makes the warning go away.
+   /sys/class/mtd/mtd0/device -> ../../../f03e2800.nand
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+It might be good to clarify this in the commit message, since you make
+the problem sound worse than (I think) it is.
 
-> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-> index 5f487d776411..7b5841663d4f 100644
-> --- a/include/linux/mtd/map.h
-> +++ b/include/linux/mtd/map.h
-> @@ -314,7 +314,15 @@ static inline map_word map_word_or(struct map_info *map, map_word val1, map_word
->   	return r;
->   }
->
-> -#define map_word_andequal(m, a, b, z) map_word_equal(m, z, map_word_and(m, a, b))
-> +static inline int map_word_andequal(struct map_info *map, map_word val1, map_word val2, map_word val3)
-> +{
-> +	int i;
+Brian
 
-    I think empty line is needed here.
-
-> +	for (i=0; i < map_words(map); i++) {
-
-    Could you please be consistent and surround all binary operators with 
-spaces, like on the line below?
-
-> +		if ((val1.x[i] & val2.x[i]) != val3.x[i])
-> +			return 0;
-> +	}
-> +	return 1;
-> +}
-[...]
-
-WBR, Sergei
+> but not for proper operation of the mtd device itself. Currently we have
+> five drivers registering mtd devices during module initialization, so
+> they don't actually provide a parent device to link to. That means we
+> cannot WARN_ON() here, as it would trigger false positives.
+> 
+> Make the comment a bit less firm in its assertion that dev.parent should
+> be set.
+> 
+> Signed-off-by: Frans Klaver <fransklaver@gmail.com>
+> ---
+>  drivers/mtd/mtdcore.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 11883bd..2093676 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -422,7 +422,7 @@ int add_mtd_device(struct mtd_info *mtd)
+>  	}
+>  
+>  	/* Caller should have set dev.parent to match the
+> -	 * physical device.
+> +	 * physical device, if appropriate.
+>  	 */
+>  	mtd->dev.type = &mtd_devtype;
+>  	mtd->dev.class = &mtd_class;
+> -- 
+> 2.2.2
+> 
