@@ -1,15 +1,23 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YUpHP-0008Lk-SM
- for linux-mtd@lists.infradead.org; Mon, 09 Mar 2015 04:27:01 +0000
-From: Sheng Yong <shengyong1@huawei.com>
-To: <dedekind1@gmail.com>, <adrian.hunter@intel.com>, <richard@nod.at>
-Subject: [PATCH] ubifs: remove unused header files
-Date: Mon, 9 Mar 2015 04:37:15 +0000
-Message-ID: <1425875835-159577-1-git-send-email-shengyong1@huawei.com>
+ id 1YUrDt-0007RP-Iq
+ for linux-mtd@lists.infradead.org; Mon, 09 Mar 2015 06:31:30 +0000
+Received: by igal13 with SMTP id l13so17013384iga.1
+ for <linux-mtd@lists.infradead.org>; Sun, 08 Mar 2015 23:31:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org, hujianyang@huawei.com
+In-Reply-To: <CAN1oZWykZk13yCajiZc-xb5h372MrEP9iOWUqzhrt-feG6pkLQ@mail.gmail.com>
+References: <CAN1oZWykZk13yCajiZc-xb5h372MrEP9iOWUqzhrt-feG6pkLQ@mail.gmail.com>
+Date: Mon, 9 Mar 2015 07:31:07 +0100
+Message-ID: <CACna6ryC8TyxvvtztoSgZUXnE+tJdY6tefbXVkaZ60JoZ7ti7A@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd:spi-nor: Add Altera EPCQ Driver
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Viet Nga Dao <vndao@altera.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, nga_chi86 <ngachi86@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,156 +27,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove unused header files that are already inclued in "ubifs.h".
+Hi Viet,
 
-Signed-off-by: Sheng Yong <shengyong1@huawei.com>
----
- fs/ubifs/commit.c     | 1 -
- fs/ubifs/file.c       | 1 -
- fs/ubifs/gc.c         | 2 --
- fs/ubifs/io.c         | 1 -
- fs/ubifs/lpt.c        | 1 -
- fs/ubifs/lpt_commit.c | 1 -
- fs/ubifs/recovery.c   | 1 -
- fs/ubifs/sb.c         | 1 -
- fs/ubifs/super.c      | 1 -
- fs/ubifs/tnc.c        | 1 -
- fs/ubifs/xattr.c      | 2 --
- 11 files changed, 13 deletions(-)
+I'm not too active in mtd subsystem, so I didn't notice your patch
+earlier. However I would like to share few comments.
 
-diff --git a/fs/ubifs/commit.c b/fs/ubifs/commit.c
-index 26b69b2..63e76b0 100644
---- a/fs/ubifs/commit.c
-+++ b/fs/ubifs/commit.c
-@@ -45,7 +45,6 @@
- 
- #include <linux/freezer.h>
- #include <linux/kthread.h>
--#include <linux/slab.h>
- #include "ubifs.h"
- 
- /*
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index e627c0a..a3bdaec 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -53,7 +53,6 @@
- #include <linux/aio.h>
- #include <linux/mount.h>
- #include <linux/namei.h>
--#include <linux/slab.h>
- 
- static int read_block(struct inode *inode, void *addr, unsigned int block,
- 		      struct ubifs_data_node *dn)
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 9718da8..bd43ee2 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -53,8 +53,6 @@
-  * good, and GC takes extra care when moving them.
-  */
- 
--#include <linux/slab.h>
--#include <linux/pagemap.h>
- #include <linux/list_sort.h>
- #include "ubifs.h"
- 
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index fb08b0c..07ab034 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -71,7 +71,6 @@
-  */
- 
- #include <linux/crc32.h>
--#include <linux/slab.h>
- #include "ubifs.h"
- 
- /**
-diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
-index 421bd0a..8c6b30d 100644
---- a/fs/ubifs/lpt.c
-+++ b/fs/ubifs/lpt.c
-@@ -46,7 +46,6 @@
- #include "ubifs.h"
- #include <linux/crc16.h>
- #include <linux/math64.h>
--#include <linux/slab.h>
- 
- /**
-  * do_calc_lpt_geom - calculate sizes for the LPT area.
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index d9c0292..ac0bffa 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -26,7 +26,6 @@
-  */
- 
- #include <linux/crc16.h>
--#include <linux/slab.h>
- #include <linux/random.h>
- #include "ubifs.h"
- 
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index c640938..1431820 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -48,7 +48,6 @@
-  */
- 
- #include <linux/crc32.h>
--#include <linux/slab.h>
- #include "ubifs.h"
- 
- /**
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index 79c6dbb..4192a3a 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -27,7 +27,6 @@
-  */
- 
- #include "ubifs.h"
--#include <linux/slab.h>
- #include <linux/random.h>
- #include <linux/math64.h>
- 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 93e9465..e264911 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -27,7 +27,6 @@
-  */
- 
- #include <linux/init.h>
--#include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/ctype.h>
- #include <linux/kthread.h>
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 6793db0..f469f10 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -31,7 +31,6 @@
-  */
- 
- #include <linux/crc32.h>
--#include <linux/slab.h>
- #include "ubifs.h"
- 
- /*
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index a92be24..b0267e9 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -56,8 +56,6 @@
-  */
- 
- #include "ubifs.h"
--#include <linux/fs.h>
--#include <linux/slab.h>
- #include <linux/xattr.h>
- #include <linux/posix_acl_xattr.h>
- 
--- 
-1.8.3.4
+On 11 February 2015 at 05:53, Viet Nga Dao <vndao@altera.com> wrote:
+> From: Viet Nga Dao <vndao@altera.com>
+>
+> Altera EPCQ Controller is a soft IP which enables access to Altera EPCQ and
+> EPCS flash chips. This patch adds driver for these devices.
+
+First of all, your whole patch is white-space damaged. It can't be
+applied, seems all tabs were replaced with spaces. It's what I got in
+my GMail and what was also received by patchwork, see
+https://patchwork.ozlabs.org/patch/438684/
+
+You'll need to resend using some smarter e-mail client, you may e.g.
+try git send-email.
+
+
+> +#define EPCQ_INFO(_opcode_id, _ext_id, _sector_size, _n_sectors, _page_size) \
+> +    ((kernel_ulong_t)&(struct flash_info) {                \
+> +        .altera_flash_opcode_id = (_opcode_id),            \
+> +        .ext_id = (_ext_id),                    \
+> +        .sector_size = (_sector_size),                \
+> +        .n_sectors = (_n_sectors),                \
+> +        .page_size = (_page_size),                \
+> +    })
+
+Starting with kernel 3.19 we don't have ext_id in struct anymore, see:
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=d928a259385dc6fca3956b7775c588f21c0b50fc
+
+
+>  /* NOTE: double check command sets and memory organization when you add
+>   * more nor chips.  This current list focusses on newer chips, which
+>   * have been converging on command sets which including JEDEC ID.
+> @@ -637,6 +691,17 @@ static const struct spi_device_id spi_nor_ids[] = {
+>      { "cat25c09", CAT25_INFO( 128, 8, 32, 2, SPI_NOR_NO_ERASE |
+> SPI_NOR_NO_FR) },
+>      { "cat25c17", CAT25_INFO( 256, 8, 32, 2, SPI_NOR_NO_ERASE |
+> SPI_NOR_NO_FR) },
+>      { "cat25128", CAT25_INFO(2048, 8, 64, 2, SPI_NOR_NO_ERASE |
+> SPI_NOR_NO_FR) },
+> +
+> +    /* Altera EPCQ/EPCS Flashes */
+> +    { "epcq16"  , EPCQ_INFO(2, 0x15, 0x10000, 32,   0x100) },
+> +    { "epcq32"  , EPCQ_INFO(2, 0x16, 0x10000, 64,   0x100) },
+> +    { "epcq64"  , EPCQ_INFO(2, 0x17, 0x10000, 128,  0x100) },
+> +    { "epcq128" , EPCQ_INFO(2, 0x18, 0x10000, 256,  0x100) },
+> +    { "epcq256" , EPCQ_INFO(2, 0x19, 0x10000, 512,  0x100) },
+> +    { "epcq512" , EPCQ_INFO(2, 0x20, 0x10000, 1024, 0x100) },
+> +    { "epcs16"  , EPCQ_INFO(1, 0x14, 0x10000, 32,   0x100) },
+> +    { "epcs64"  , EPCQ_INFO(1, 0x16, 0x10000, 128,  0x100) },
+> +    { "epcs128" , EPCQ_INFO(1, 0x18, 0x40000, 256,  0x100) },
+>      { },
+>  };
+>
+> @@ -666,6 +731,14 @@ static const struct spi_device_id
+> *spi_nor_read_id(struct spi_nor *nor)
+>          if (info->jedec_id == jedec) {
+>              if (info->ext_id == 0 || info->ext_id == ext_jedec)
+>                  return &spi_nor_ids[tmp];
+> +
+> +        /* altera epcq which is non jedec device
+> +         * use id[4] as opcode id to differentiate
+> +         * epcs and epcq devices
+> +         */
+> +        } else if (info->altera_flash_opcode_id == id[4] &&
+> +              info->ext_id == id[3]) {
+> +                return &spi_nor_ids[tmp];
+
+This is the part I don't like. I think it's fishy, and that this check
+may result in false positives. Looks too generic.
+
+Also the logic of your behavior there seems unclear to me. On the one
+hand you don't have JEDEC, so you provide chip name using DT. But in
+place above you stop trusting DT info and you try to (kind of)
+auto-detect used chip anyway.
+
+I guess we should finally think about some more generic way of passing
+flash info.
