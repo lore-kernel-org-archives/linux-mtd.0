@@ -1,21 +1,16 @@
-Message-ID: <54FD860F.2000008@free-electrons.com>
-Date: Mon, 09 Mar 2015 08:37:51 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YUwL8-0006mL-Ov
+ for linux-mtd@lists.infradead.org; Mon, 09 Mar 2015 11:59:19 +0000
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>
+Subject: [PATCH_V2 0/2] mtd: nand: jz4780: Add nand and bch driver
+Date: Mon, 9 Mar 2015 11:58:17 +0000
+Message-ID: <1425902299-53967-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v3 5/9] mtd: pxa3xx_nand: add support for the Marvell
- Berlin nand controller
-References: <1425555085-29531-1-git-send-email-antoine.tenart@free-electrons.com>	<1425555085-29531-6-git-send-email-antoine.tenart@free-electrons.com>	<54FA6DFC.1070904@free-electrons.com>
- <87oao3xvh8.fsf@free.fr>	<54FCAF6C.7010902@free-electrons.com>
- <87ioebxhc7.fsf@free.fr>
-In-Reply-To: <87ioebxhc7.fsf@free.fr>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Cc: thomas.petazzoni@free-electrons.com, boris.brezillon@free-electrons.com,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-kernel@vger.kernel.org, zmxu@marvell.com, linux-mtd@lists.infradead.org,
- jszhang@marvell.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Zubair.Kakakhel@imgtec.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/08/2015 07:19 PM, Robert Jarzmik wrote:
-> Ezequiel Garcia <ezequiel.garcia@free-electrons.com> writes:
-> 
->>> I think you'll kill the zylonite board, and I'll nack it if that's the case. At
->>> least that's what happened when I tried to use onfi default values last time in
->>> barebox development.
->>>
->>> I can test your changes, but if the specific zylonite nand (ie. nand id 0xba20,
->>> ie. pxa310 embedded flash) gets broken, I'm against the removal of the legacy
->>> timings removal.
->>>
->>
->> I'm not speaking of any timing params here, but about the flash
->> identification.
->>
->> Which flash do you have there?
-> The one with 0xba20 id as I said, which is AFAIK a Numonyx NAND02GR4B2C.
-> 
+Hi,
 
-$ grep "0xBA" drivers/mtd/nand/nand_ids.c
-EXTENDED_ID_NAND("NAND 256MiB 1,8V 16-bit", 0xBA, 256, LP_OPTIONS16),
+Two patches based on 4.0-rc3 that add NAND and BCH controller
+drivers for the Ingenic JZ4780 SoC.
 
-Seems already supported by the NAND core. The MTD way of probing
-a non-ONFI device is by using the IDs in nand_ids.c. Additional
-configuration (timings in this case) is applied between the nand_scan_ident()
-and nand_scan_tail() calls.
+Core JZ4780 support is still in-flight.
+
+Review and feedback welcome.
+
+V1 - > V2
+Fixed module license macros
+Rebase to 4.0-rc3
+
+
+Thanks,
+ZubairLK
+
+Alex Smith (2):
+  dt-bindings: binding for jz4780-{nand,bch}
+  mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs
+
+ .../bindings/mtd/ingenic,jz4780-nand.txt           |  57 ++++
+ drivers/mtd/nand/Kconfig                           |   7 +
+ drivers/mtd/nand/Makefile                          |   1 +
+ drivers/mtd/nand/jz4780_bch.c                      | 358 ++++++++++++++++++++
+ drivers/mtd/nand/jz4780_bch.h                      |  42 +++
+ drivers/mtd/nand/jz4780_nand.c                     | 372 +++++++++++++++++++++
+ 6 files changed, 837 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+ create mode 100644 drivers/mtd/nand/jz4780_bch.c
+ create mode 100644 drivers/mtd/nand/jz4780_bch.h
+ create mode 100644 drivers/mtd/nand/jz4780_nand.c
 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.9.1
