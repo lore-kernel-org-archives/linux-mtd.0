@@ -1,23 +1,44 @@
-Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YUrDt-0007RP-Iq
- for linux-mtd@lists.infradead.org; Mon, 09 Mar 2015 06:31:30 +0000
-Received: by igal13 with SMTP id l13so17013384iga.1
- for <linux-mtd@lists.infradead.org>; Sun, 08 Mar 2015 23:31:07 -0700 (PDT)
+ id 1YUtGN-0006Cp-KL
+ for linux-mtd@lists.infradead.org; Mon, 09 Mar 2015 08:42:12 +0000
+Received: by obcwp4 with SMTP id wp4so25070612obc.4
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Mar 2015 01:41:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAN1oZWykZk13yCajiZc-xb5h372MrEP9iOWUqzhrt-feG6pkLQ@mail.gmail.com>
-References: <CAN1oZWykZk13yCajiZc-xb5h372MrEP9iOWUqzhrt-feG6pkLQ@mail.gmail.com>
-Date: Mon, 9 Mar 2015 07:31:07 +0100
-Message-ID: <CACna6ryC8TyxvvtztoSgZUXnE+tJdY6tefbXVkaZ60JoZ7ti7A@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd:spi-nor: Add Altera EPCQ Driver
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Viet Nga Dao <vndao@altera.com>
+In-Reply-To: <CAKdAkRRLk8rHyUw_fAGpNu_u8wkNyL2kDqFQ-=bigefkXqUcxA@mail.gmail.com>
+References: <1425560442-13367-1-git-send-email-valentinrothberg@gmail.com>
+ <54F855E4.9030106@suse.de>
+ <CAKdAkRRLk8rHyUw_fAGpNu_u8wkNyL2kDqFQ-=bigefkXqUcxA@mail.gmail.com>
+From: Valentin Rothberg <valentinrothberg@gmail.com>
+Date: Mon, 9 Mar 2015 09:41:18 +0100
+Message-ID: <CAD3Xx4L6T0_MFjC+7OwgaB40kn7wZX-RAMNWi5WOjJ9z+ZV46g@mail.gmail.com>
+Subject: Re: [PATCH] Remove deprecated IRQF_DISABLED flag entirely
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Cc: Nishanth Menon <nm@ti.com>,
+ "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
+ Quentin Lambert <lambert.quentin@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
+ Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Sricharan R <r.sricharan@ti.com>, linux-mtd@lists.infradead.org,
+ Felipe Balbi <balbi@ti.com>, Huacai Chen <chenhc@lemote.com>,
+ Christoph Hellwig <hch@lst.de>, Kukjin Kim <kgene.kim@samsung.com>,
+ iss_storagedev@hp.com, Jonathan Corbet <corbet@lwn.net>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Ewan Milne <emilne@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Dan Carpenter <dan.carpenter@oracle.com>, Afzal Mohammed <afzal@ti.com>,
+ Arnd Bergmann <arnd@arndb.de>, Rajendra Nayak <rnayak@ti.com>,
+ Eyal Perry <eyalpe@mellanox.com>, Hannes Reinecke <hare@suse.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Paul Bolle <pebolle@tiscali.nl>,
+ Keerthy <j-keerthy@ti.com>, Randy Dunlap <rdunlap@infradead.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>,
+ Zhou Wang <wangzhou1@hisilicon.com>, linux-usb@vger.kernel.org,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hongliang Tao <taohl@lemote.com>, Andrew Morton <akpm@linux-foundation.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, nga_chi86 <ngachi86@gmail.com>
+ David Woodhouse <dwmw2@infradead.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,84 +48,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Viet,
-
-I'm not too active in mtd subsystem, so I didn't notice your patch
-earlier. However I would like to share few comments.
-
-On 11 February 2015 at 05:53, Viet Nga Dao <vndao@altera.com> wrote:
-> From: Viet Nga Dao <vndao@altera.com>
+On Fri, Mar 6, 2015 at 8:41 PM, Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+> On Thu, Mar 5, 2015 at 5:11 AM, Hannes Reinecke <hare@suse.de> wrote:
+>> On 03/05/2015 01:59 PM, Valentin Rothberg wrote:
+>>> The IRQF_DISABLED is a NOOP and has been scheduled for removal since
+>>> Linux v2.6.36 by commit 6932bf37bed4 ("genirq: Remove IRQF_DISABLED from
+>>> core code").
+>>>
+>>> According to commit e58aa3d2d0cc ("genirq: Run irq handlers with
+>>> interrupts disabled") running IRQ handlers with interrupts enabled can
+>>> cause stack overflows when the interrupt line of the issuing device is
+>>> still active.
+>>>
+>>> This patch ends the grace period for IRQF_DISABLED (i.e., SA_INTERRUPT
+>>> in older versions of Linux) and removes the definition and all remaining
+>>> usages of this flag.
+>>>
+>>> Signed-off-by: Valentin Rothberg <valentinrothberg@gmail.com>
+>>> ---
+>>> The bigger hunk in Documentation/scsi/ncr53c8xx.txt is removed entirely
+>>> as IRQF_DISABLED is gone now; the usage in older kernel versions
+>>> (including the old SA_INTERRUPT flag) should be discouraged.  The
+>>> trouble of using IRQF_SHARED is a general problem and not specific to
+>>> any driver.
+>>>
+>>> I left the reference in Documentation/PCI/MSI-HOWTO.txt untouched since
+>>> it has already been removed in linux-next by commit b0e1ee8e1405
+>>> ("MSI-HOWTO.txt: remove reference on IRQF_DISABLED").
+>>>
+>>> All remaining references are changelogs that I suggest to keep.
+>>
+>> While you're at it: having '0x0' as a value for the irq flags looks
+>> a bit silly, and makes you wonder what the parameter is for.
+>>
+>> I would rather like to have
+>>
+>> #define IRQF_NONE 0x0
+>>
+>> and use it for these cases.
+>> That way the scope of that parameter is clear.
 >
-> Altera EPCQ Controller is a soft IP which enables access to Altera EPCQ and
-> EPCS flash chips. This patch adds driver for these devices.
+> No, that would imply that IRQ never triggers whereas passing 0 means
+> we keep triggers that have been set by the platform.
 
-First of all, your whole patch is white-space damaged. It can't be
-applied, seems all tabs were replaced with spaces. It's what I got in
-my GMail and what was also received by patchwork, see
-https://patchwork.ozlabs.org/patch/438684/
+Are you against introducing a new flag or just don't like 'IRQF_NONE'?
+ I think that passing 0 could mean anything when one does not know the
+semantics.  Combining yours and Hannes' proposal could look like this:
 
-You'll need to resend using some smarter e-mail client, you may e.g.
-try git send-email.
+#define IRQF_PLAT 0x0 - keep triggers that have been set by the platform
 
+I wrote a Coccinelle script to check for such 0-flags and find 758
+cases in current Linus' mainline.  The script only checks function
+calls to {devm_}request_{threaded_}IRQ() but does not find flags
+passed to wrapper functions or flags that are stored in a struct etc.
 
-> +#define EPCQ_INFO(_opcode_id, _ext_id, _sector_size, _n_sectors, _page_size) \
-> +    ((kernel_ulong_t)&(struct flash_info) {                \
-> +        .altera_flash_opcode_id = (_opcode_id),            \
-> +        .ext_id = (_ext_id),                    \
-> +        .sector_size = (_sector_size),                \
-> +        .n_sectors = (_n_sectors),                \
-> +        .page_size = (_page_size),                \
-> +    })
-
-Starting with kernel 3.19 we don't have ext_id in struct anymore, see:
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=d928a259385dc6fca3956b7775c588f21c0b50fc
-
-
->  /* NOTE: double check command sets and memory organization when you add
->   * more nor chips.  This current list focusses on newer chips, which
->   * have been converging on command sets which including JEDEC ID.
-> @@ -637,6 +691,17 @@ static const struct spi_device_id spi_nor_ids[] = {
->      { "cat25c09", CAT25_INFO( 128, 8, 32, 2, SPI_NOR_NO_ERASE |
-> SPI_NOR_NO_FR) },
->      { "cat25c17", CAT25_INFO( 256, 8, 32, 2, SPI_NOR_NO_ERASE |
-> SPI_NOR_NO_FR) },
->      { "cat25128", CAT25_INFO(2048, 8, 64, 2, SPI_NOR_NO_ERASE |
-> SPI_NOR_NO_FR) },
-> +
-> +    /* Altera EPCQ/EPCS Flashes */
-> +    { "epcq16"  , EPCQ_INFO(2, 0x15, 0x10000, 32,   0x100) },
-> +    { "epcq32"  , EPCQ_INFO(2, 0x16, 0x10000, 64,   0x100) },
-> +    { "epcq64"  , EPCQ_INFO(2, 0x17, 0x10000, 128,  0x100) },
-> +    { "epcq128" , EPCQ_INFO(2, 0x18, 0x10000, 256,  0x100) },
-> +    { "epcq256" , EPCQ_INFO(2, 0x19, 0x10000, 512,  0x100) },
-> +    { "epcq512" , EPCQ_INFO(2, 0x20, 0x10000, 1024, 0x100) },
-> +    { "epcs16"  , EPCQ_INFO(1, 0x14, 0x10000, 32,   0x100) },
-> +    { "epcs64"  , EPCQ_INFO(1, 0x16, 0x10000, 128,  0x100) },
-> +    { "epcs128" , EPCQ_INFO(1, 0x18, 0x40000, 256,  0x100) },
->      { },
->  };
->
-> @@ -666,6 +731,14 @@ static const struct spi_device_id
-> *spi_nor_read_id(struct spi_nor *nor)
->          if (info->jedec_id == jedec) {
->              if (info->ext_id == 0 || info->ext_id == ext_jedec)
->                  return &spi_nor_ids[tmp];
-> +
-> +        /* altera epcq which is non jedec device
-> +         * use id[4] as opcode id to differentiate
-> +         * epcs and epcq devices
-> +         */
-> +        } else if (info->altera_flash_opcode_id == id[4] &&
-> +              info->ext_id == id[3]) {
-> +                return &spi_nor_ids[tmp];
-
-This is the part I don't like. I think it's fishy, and that this check
-may result in false positives. Looks too generic.
-
-Also the logic of your behavior there seems unclear to me. On the one
-hand you don't have JEDEC, so you provide chip name using DT. But in
-place above you stop trusting DT info and you try to (kind of)
-auto-detect used chip anyway.
-
-I guess we should finally think about some more generic way of passing
-flash info.
+Kind regards,
+ Valentin
