@@ -1,25 +1,17 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVO8h-0007wd-Je
- for linux-mtd@lists.infradead.org; Tue, 10 Mar 2015 17:40:20 +0000
-Received: by pdev10 with SMTP id v10so3845878pde.13
- for <linux-mtd@lists.infradead.org>; Tue, 10 Mar 2015 10:39:57 -0700 (PDT)
-Date: Tue, 10 Mar 2015 10:39:48 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Frans Klaver <fransklaver@gmail.com>
-Subject: Re: [PATCH 01/60] mtd: core: tone down suggestion that dev.parent
- should be set
-Message-ID: <20150310173948.GB4124@norris-Latitude-E6410>
-References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
- <1425418844-25177-2-git-send-email-fransklaver@gmail.com>
- <20150309230250.GA13266@ld-irv-0074>
- <CAH6sp9P0mfhK3kq-uD-J2f_uCinKzuircAh7gOs354g98B6qAg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH6sp9P0mfhK3kq-uD-J2f_uCinKzuircAh7gOs354g98B6qAg@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <1426012416.18060.22.camel@perches.com>
+Subject: Re: [PATCH] mtd: clean up whitespace in linux/mtd/map.h
+From: Joe Perches <joe@perches.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 10 Mar 2015 11:33:36 -0700
+In-Reply-To: <2220416.D2kDyFWh1C@wuerfel>
+References: <2266200.3mx7btcFe5@wuerfel> <2220416.D2kDyFWh1C@wuerfel>
+Content-Type: text/plain; charset="ISO-8859-1"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 10, 2015 at 08:47:46AM +0100, Frans Klaver wrote:
-> On Tue, Mar 10, 2015 at 12:14 AM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > On Tue, Mar 03, 2015 at 10:39:45PM +0100, Frans Klaver wrote:
-> >> add_mtd_device() has a comment suggesting that the caller should have
-> >> set dev.parent. This is required to have the device show up in sysfs,
-> >
-> > What do you mean "have the device show up in sysfs"? AFAICT, this only
-> > has bearing on whether the *parent* device shows up as a sysfs symlink
-> > within the MTD device directory. i.e.:
-> >
-> >    /sys/class/mtd/mtd*/device
-> >
-> > For instance, this sort of symlink:
-> >
-> >    /sys/class/mtd/mtd0/device -> ../../../f03e2800.nand
-> >
-> > It might be good to clarify this in the commit message, since you make
-> > the problem sound worse than (I think) it is.
-> 
-> I do? That was definitely not my intention. I'll look into it.
+On Tue, 2015-03-10 at 17:51 +0100, Arnd Bergmann wrote:
+> As the only comments I got for the "mtd: cfi: reduce stack size"
+> patch were about whitespace changes, it appears necessary to fix
+> up the rest of the file as well, which contains the exact same
+> mistakes.
 
-Maybe it's just my bias when reading, since some people have complained
-loudly about this, seemingly without understanding that the problem
-really isn't that significant.
+trivia:
 
-So my question was really just to confirm my own understanding, that
-this only affects the 'device' symlink.
+> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+[]
+> @@ -77,7 +77,7 @@
+>  /* ensure we never evaluate anything shorted than an unsigned long
+>   * to zero, and ensure we'll never miss the end of an comparison (bjd) */
+>  
+> -#define map_calc_words(map) ((map_bankwidth(map) + (sizeof(unsigned long)-1))/ sizeof(unsigned long))
+> +#define map_calc_words(map) ((map_bankwidth(map) + (sizeof(unsigned long)-1)) / sizeof(unsigned long))
 
-BTW, it'd be nice if you don't respam with another 60 patches, if you're
-only changing a few of them. I can probably take most of them as-is,
-after you confirm there are no more compile failures.
+DIV_ROUND_UP?
+ 
+>  #ifdef CONFIG_MTD_MAP_BANK_WIDTH_8
+>  # ifdef map_bankwidth
+> @@ -181,7 +181,7 @@ static inline int map_bankwidth_supported(int w)
+>  	}
+>  }
+>  
+> -#define MAX_MAP_LONGS ( ((MAX_MAP_BANKWIDTH*8) + BITS_PER_LONG - 1) / BITS_PER_LONG )
+> +#define MAX_MAP_LONGS (((MAX_MAP_BANKWIDTH * 8) + BITS_PER_LONG - 1) / BITS_PER_LONG)
 
-Thanks,
-Brian
+BITS_TO_LONGS?
