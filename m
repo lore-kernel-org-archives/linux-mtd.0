@@ -1,19 +1,26 @@
-Message-ID: <1426019338.18060.34.camel@perches.com>
-Subject: Re: [PATCH] mtd: clean up whitespace in linux/mtd/map.h
-From: Joe Perches <joe@perches.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 10 Mar 2015 13:28:58 -0700
-In-Reply-To: <20150310195832.GD4124@norris-Latitude-E6410>
-References: <2266200.3mx7btcFe5@wuerfel> <2220416.D2kDyFWh1C@wuerfel>
- <1426012416.18060.22.camel@perches.com>
- <20150310195832.GD4124@norris-Latitude-E6410>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Arnd Bergmann <arnd@arndb.de>, Jingoo Han <jg1.han@samsung.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVQu7-0002zx-85
+ for linux-mtd@lists.infradead.org; Tue, 10 Mar 2015 20:37:27 +0000
+Received: by pabrd3 with SMTP id rd3so5131804pab.5
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Mar 2015 13:37:05 -0700 (PDT)
+Date: Tue, 10 Mar 2015 13:36:58 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Daniel Ehrenberg <dehrenberg@google.com>
+Subject: Re: [PATCH] mtd: part: Create the master device node when partitioned
+Message-ID: <20150310203658.GC32500@ld-irv-0074>
+References: <1425680522-7898-1-git-send-email-dehrenberg@chromium.org>
+ <20150310015329.GA32500@ld-irv-0074>
+ <CAAK6Zt2xY=maQOQyC1sg7U2pAthbvE2QaWN_UaJC+CA6KBp1sA@mail.gmail.com>
+ <20150310202317.GB32500@ld-irv-0074>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150310202317.GB32500@ld-irv-0074>
+Cc: richard.weinberger@gmail.com, Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
+ Nam Nguyen <namnguyen@chromium.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Gwendal Grignou <gwendal@chromium.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2015-03-10 at 12:58 -0700, Brian Norris wrote:
-> On Tue, Mar 10, 2015 at 11:33:36AM -0700, Joe Perches wrote:
-> > On Tue, 2015-03-10 at 17:51 +0100, Arnd Bergmann wrote:
-> > > As the only comments I got for the "mtd: cfi: reduce stack size"
-> > > patch were about whitespace changes, it appears necessary to fix
-> > > up the rest of the file as well, which contains the exact same
-> > > mistakes.
+On Tue, Mar 10, 2015 at 01:23:17PM -0700, Brian Norris wrote:
+> On Tue, Mar 10, 2015 at 01:00:35PM -0700, Daniel Ehrenberg wrote:
+> > On Mon, Mar 9, 2015 at 6:53 PM, Brian Norris
+> > <computersforpeace@gmail.com> wrote:
+> > > I kinda like this strategy. If users were flexible enough, I'd like to
+> > > be able to make this the default eventually. But that probably won't
+> > > happen, so we may have to live with this Kconfig forever, in that case.
 > > 
-> > trivia:
-> > 
-> > > diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-> > []
-> > > @@ -77,7 +77,7 @@
-> > >  /* ensure we never evaluate anything shorted than an unsigned long
-> > >   * to zero, and ensure we'll never miss the end of an comparison (bjd) */
-> > >  
-> > > -#define map_calc_words(map) ((map_bankwidth(map) + (sizeof(unsigned long)-1))/ sizeof(unsigned long))
-> > > +#define map_calc_words(map) ((map_bankwidth(map) + (sizeof(unsigned long)-1)) / sizeof(unsigned long))
-> > 
-> > DIV_ROUND_UP?
-> >  
-> > >  #ifdef CONFIG_MTD_MAP_BANK_WIDTH_8
-> > >  # ifdef map_bankwidth
-> > > @@ -181,7 +181,7 @@ static inline int map_bankwidth_supported(int w)
-> > >  	}
-> > >  }
-> > >  
-> > > -#define MAX_MAP_LONGS ( ((MAX_MAP_BANKWIDTH*8) + BITS_PER_LONG - 1) / BITS_PER_LONG )
-> > > +#define MAX_MAP_LONGS (((MAX_MAP_BANKWIDTH * 8) + BITS_PER_LONG - 1) / BITS_PER_LONG)
-> > 
-> > BITS_TO_LONGS?
+> > :( It'd also be nice if we could name things like mtda, mtda0, mtda1,
+> > etc like SCSI. Alas!
 > 
-> It seems the $subject patch is really not that necessary,
+> Yeah...
 
-Coding style patches rarely are.
+BTW, mtda{,0,1,...} is probably a little ambitious, but we might be able
+to get by with phasing in your new Kconfig option as default after a few
+releases. Then we could probably gauge whether we can kill the old
+behavior completely.
 
-> as it was just
-> inspired by similarly trivial comments. But I thought CodingStyle
-> was supposed to mostly be a guide for new code, not a charter to "fix
-> up" old code like drivers/mtd/{chips,maps}.
-
-'tisn't but consistency has its own virtue.
-
-> So I would have been happy with ignoring the whitespace comments on the
-> v1 stack usage patch (esp. since it *did* match the existing style), and
-> avoiding the ensuing comments about helper macros. IMO, it's pretty
-> silly when a simple patch to fix a real issue turns into an extended
-> search for other trivial issues.
-> 
-> I'll probably take both of Arnd's patches as they stand,
-
-No worries.   The comments weren't meant to derail
-the original patches.
-
->  but any more
-> trivial requests to stable code like this should come in the form of
-> real patches, not respins of Arnd's patch.
-
-I'm not respinning the patches.
-If Arnd wants to do more work, that's up to him.
+Brian
