@@ -1,16 +1,20 @@
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVZ7S-0001cV-EP
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 05:23:47 +0000
-Received: by wibbs8 with SMTP id bs8so35847090wib.0
- for <linux-mtd@lists.infradead.org>; Tue, 10 Mar 2015 22:23:23 -0700 (PDT)
-MIME-Version: 1.0
-From: Kurozaki m <kurozaki45@gmail.com>
-Date: Wed, 11 Mar 2015 01:23:03 -0400
-Message-ID: <CANg6kwr1UmTDDoKBLXzuA_qnVcmnCWe+jjhy7tOqG0RTEj2r1A@mail.gmail.com>
-Subject: UBIFS power-cut testing
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVaxv-0007Ro-BR
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 07:22:03 +0000
+Message-ID: <1426058499.1567.3.camel@sauron.fi.intel.com>
+Subject: Re: RFC: detect and manage power cut on MLC NAND
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Andrea Scian <rnd4@dave-tech.it>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+Date: Wed, 11 Mar 2015 09:21:39 +0200
+In-Reply-To: <54FEDC42.2060407@dave-tech.it>
+References: <54FEDC42.2060407@dave-tech.it>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I really need to do power-cut testing in my device but there is no
-documentation on how to do this, just references to integck and the
-debugfs tst_recovery file. Where can I find a guide on how to actually
-do power-cut testing for UBIFS?
+On Tue, 2015-03-10 at 12:57 +0100, Andrea Scian wrote:
+> Dear All,
+> 
+> for testing and research purpose, I'm working with an Embedded Linux
+> product which mounts an MLC NAND.
+> 
+> I know that one of the trouble with MLC flash on Linux with UBI/UBIFS is
+> the power cut management (ref.
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits)
+> 
+> IIUC the solution inside MTD/UBI/UBIFS is not so simple and thus not so
+> quick to implement.
+> 
+> I'm wondering if anyone of you already think about managing power cut in
+> a different way: many embedded/industrial products already have some
+> big/huge bypass capacitor that are able to keep the system alive for
+> hundreds of milliseconds (this is useful for power supply
+> micro-interruptions), which are commonly enough to complete the latest
+> NAND operation.
+> Most of the has a GPIO/IRQ that tells whenever such a power cut happens,
+> so the kernel can take some actions with it (e.g., in our case, complete
+> the last NAND operation and prevent from starting newer operation, which
+> may corrupt the NAND pages).
+> 
+> WDYT about this?
+> If it sounds reasonable is there any suggestion where to place such a code?
 
-I have a couple of mtd partitions in my flash device, and one of them
-I use to store some critical files. The problem is that sometimes
-after power failure(I think) it gets corrupted(Master node gets
-corrupted) and I'm not able to recover. What I did is I created a
-backup volume in the same UBI device so that I have both a data and
-backup volume, the critical files are backed up and kept in sync by an
-init script and in case corruption occurs I recreate the data
-partition and recover the files.
+Ccing Boris, he has been looking into this area lately.
 
-I want to be able to test that my script actually works by doing
-power-cut testing emulations, but I have no idea where to begin. I
-cross compiled integck for my device and set the corresponding
-environment variables, but when I run it all I see is:
-
-pid is 2907
-
-and then nothing happens.
-
-I've thought about opening the actual mtd partition with a hex editor
-and finding where the master node is and trying to corrupt it
-manually, but I don't know if that would be the best way to test it. I
-also don't have the debugfs files that are talked about on the mtd
-page, how do I get those? Is there like a switch I have to pass to
-ubifs? Do I have to recompile it with that option enabled? How would I
-do it? I only saw a section on how to enable debug messages, but
-didn't find how to enable this.
-
-Because I'm looking to corrupt the master node and see if my script
-works another question is: Is there a master node per ubifs volume? Or
-is the master node for the entire UBI device? Can both my backup and
-data volume be corrupted at the same time? Because if they can my
-script won't work at all. I'm relying on the idea that corruption only
-happens to one volume or the other so that it case the data volume
-gets corrupted I can recover using the backup volume and in case the
-backup volume is corrupted I can recover from the data volume.
+Artem.
