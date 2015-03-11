@@ -1,16 +1,19 @@
-Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVd99-0000J5-Td
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 09:41:49 +0000
-Subject: JFFS2: unaligned accesses may happen in jffs2_sum_process_sum_data
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Message-ID: <OFDCFAD872.747A8A9B-ON48257E05.002FA55F-48257E05.003534FE@zte.com.cn>
-From: wang.bo116@zte.com.cn
-Date: Wed, 11 Mar 2015 17:41:07 +0800
+Received: from mail-vc0-x22b.google.com ([2607:f8b0:400c:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVdcj-00037S-Hk
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 10:12:22 +0000
+Received: by mail-vc0-f171.google.com with SMTP id hy10so2614621vcb.2
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2015 03:11:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: wang.haitao1@zte.com.cn, cui.yunfeng@zte.com.cn, liu.song11@zte.com.cn,
- jiang.xuexin@zte.com.cn, lu.zhongjun@zte.com.cn, deng.chao1@zte.com.cn
+In-Reply-To: <CANg6kwr1UmTDDoKBLXzuA_qnVcmnCWe+jjhy7tOqG0RTEj2r1A@mail.gmail.com>
+References: <CANg6kwr1UmTDDoKBLXzuA_qnVcmnCWe+jjhy7tOqG0RTEj2r1A@mail.gmail.com>
+Date: Wed, 11 Mar 2015 11:11:59 +0100
+Message-ID: <CAFLxGvxe3Qze7ppYQYu_HCBDMDeLzX8cTG6P7PBVmgg4sweYGQ@mail.gmail.com>
+Subject: Re: UBIFS power-cut testing
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Kurozaki m <kurozaki45@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,9 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Mar 11, 2015 at 6:23 AM, Kurozaki m <kurozaki45@gmail.com> wrote:
+> I really need to do power-cut testing in my device but there is no
+> documentation on how to do this, just references to integck and the
+> debugfs tst_recovery file. Where can I find a guide on how to actually
+> do power-cut testing for UBIFS?
+>
+> I have a couple of mtd partitions in my flash device, and one of them
+> I use to store some critical files. The problem is that sometimes
+> after power failure(I think) it gets corrupted(Master node gets
+> corrupted) and I'm not able to recover. What I did is I created a
+> backup volume in the same UBI device so that I have both a data and
+> backup volume, the critical files are backed up and kept in sync by an
+> init script and in case corruption occurs I recreate the data
+> partition and recover the files.
+>
+> I want to be able to test that my script actually works by doing
+> power-cut testing emulations, but I have no idea where to begin. I
+> cross compiled integck for my device and set the corresponding
+> environment variables, but when I run it all I see is:
+>
+> pid is 2907
+>
+> and then nothing happens.
 
-	In JFFS2 summary, "#define JFFS2_SUMMARY_DIRENT_SIZE(x) (sizeof(struct jffs2_sum_dirent_flash) + (x))",because of x here is dir's name, the result of JFFS2_SUMMARY_DIRENT_SIZE may be unaligned. So in function "jffs2_sum_process_sum_data", may access unaligned pointer "sp" when excute "switch (je16_to_cpu(((struct jffs2_sum_unknown_flash *)sp)->nodetype))".
+To trigger a powercut UBIFS has a debufs knob called "tst_recovery".
 
-	Some machine not allowed unaligned accesses, for example, in linux mips systerms, unaligned accesses may cause a exception,but luckly,in linux, function "handle_adel" can handle it well.But when JFFS2 use in other operating systerm, this unaligned accesses may be a problem.
+HTH!
 
-	To fix it,the simple way is redefine JFFS2_SUMMARY_DIRENT_SIZE like "#define JFFS2_SUMMARY_DIRENT_SIZE(x) PAD((sizeof(struct jffs2_sum_dirent_flash) + (x)))",make it aligned.But the problem is SUMMARY became incompatible!
+-- 
+Thanks,
+//richard
