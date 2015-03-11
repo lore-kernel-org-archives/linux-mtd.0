@@ -1,24 +1,16 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVqL2-00031P-Bp
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 23:46:56 +0000
-Received: by paceu11 with SMTP id eu11so15439966pac.1
- for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2015 16:46:35 -0700 (PDT)
-Date: Wed, 11 Mar 2015 16:46:30 -0700
+Date: Wed, 11 Mar 2015 16:49:45 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/7] mtd: various fixes caught by Coverity
-Message-ID: <20150311234630.GF32500@ld-irv-0074>
-References: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3] mtd: cfi: reduce stack size
+Message-ID: <20150311234945.GG32500@ld-irv-0074>
+References: <2266200.3mx7btcFe5@wuerfel>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- Akinobu Mita <akinobu.mita@gmail.com>,
- Masahiro Yamada <yamada.m@jp.panasonic.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
+In-Reply-To: <2266200.3mx7btcFe5@wuerfel>
+Cc: Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 28, 2015 at 02:02:23AM -0800, Brian Norris wrote:
-> Several unrelated MTD fixes inspired by Coverity Scan results. I couldn't test
-> all of them, but they're all pretty obvious.
+On Tue, Mar 10, 2015 at 05:48:37PM +0100, Arnd Bergmann wrote:
+> The cfi_staa_write_buffers function uses a large amount of kernel stack
+> whenever CONFIG_MTD_MAP_BANK_WIDTH_32 is set, and that results in a
+> warning on ARM allmodconfig builds:
 > 
-> Brian Norris (7):
->   mtd: docg3: drop dead code
->   mtd: onenand: drop dead code
->   mtd: tests: fix more potential integer overflows
->   mtd: nand: fixup bounds checks for nand_{lock,unlock}()
->   mtd: nand: denali: drop dead code
->   mtd: blkdevs: remove dead code
->   mtd: nand: fully initialize mtd_oob_ops
+> drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_write_buffers':
+> drivers/mtd/chips/cfi_cmdset_0020.c:651:1: warning: the frame size of 1208 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> 
+> It turns out that this is largely a result of a suboptimal implementation
+> of map_word_andequal(). Replacing this function with a straightforward
+> one reduces the stack size in this function by exactly 200 bytes,
+> shrinks the .text segment for this file from 27648 bytes to 26608 bytes,
+> and makes the warning go away.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v3: more whitespace changes
+> v2: whitespace changes
 
-Pushed to l2-mtd.git, with v2 of patch 1.
+Applied to l2-mtd.git. Thanks!
 
 Brian
