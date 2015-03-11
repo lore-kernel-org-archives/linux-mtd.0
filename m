@@ -1,25 +1,37 @@
-Received: from mail-wg0-x22e.google.com ([2a00:1450:400c:c00::22e])
+Received: from mail-wg0-f50.google.com ([74.125.82.50])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVbcf-0005qm-CK
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 08:04:10 +0000
-Received: by wghl2 with SMTP id l2so7261418wgh.8
- for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2015 01:03:46 -0700 (PDT)
+ id 1YVcCt-0007J7-79
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 08:41:35 +0000
+Received: by wghn12 with SMTP id n12so7482705wgh.6
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2015 01:41:12 -0700 (PDT)
+Received: from mail-we0-f181.google.com (mail-we0-f181.google.com.
+ [74.125.82.181])
+ by mx.google.com with ESMTPSA id ev7sm4354950wjb.47.2015.03.11.01.41.11
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 11 Mar 2015 01:41:11 -0700 (PDT)
+Received: by wevk48 with SMTP id k48so7459068wev.5
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2015 01:41:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20150310173948.GB4124@norris-Latitude-E6410>
-References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
- <1425418844-25177-2-git-send-email-fransklaver@gmail.com>
- <20150309230250.GA13266@ld-irv-0074>
- <CAH6sp9P0mfhK3kq-uD-J2f_uCinKzuircAh7gOs354g98B6qAg@mail.gmail.com>
- <20150310173948.GB4124@norris-Latitude-E6410>
-Date: Wed, 11 Mar 2015 09:03:46 +0100
-Message-ID: <CAH6sp9M9wMOmRhfN3=vQORkooeN9m8f25_1EuVZ2V6MnA_4Uqw@mail.gmail.com>
-Subject: Re: [PATCH 01/60] mtd: core: tone down suggestion that dev.parent
- should be set
-From: Frans Klaver <fransklaver@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <CAN1oZWyq8Tni6M6yUZSU4Ky-Mku78kZW=qiNVEBcx-YuX7npXA@mail.gmail.com>
+References: <CAN1oZWykZk13yCajiZc-xb5h372MrEP9iOWUqzhrt-feG6pkLQ@mail.gmail.com>
+ <CACna6ryC8TyxvvtztoSgZUXnE+tJdY6tefbXVkaZ60JoZ7ti7A@mail.gmail.com>
+ <CAN1oZWw2RUf7jSDGqk5UUrT3DDR2MHD6ORGQ1OLXQyES6+3Cjw@mail.gmail.com>
+ <CACna6rzPRKFN+RzoF3TnNrPMy=rci25wb4NFPHZXBu9P61MjLQ@mail.gmail.com>
+ <A8F913A698B3864C898FDDF9BF921BC9E8C00F@PG-ITEXCH01.altera.priv.altera.com>
+ <CAN1oZWyq8Tni6M6yUZSU4Ky-Mku78kZW=qiNVEBcx-YuX7npXA@mail.gmail.com>
+Date: Wed, 11 Mar 2015 16:41:10 +0800
+Message-ID: <CAN1oZWyp6bC=UhwHxKn5GPvTsr88ON9CthWWjpA8j1opgaE2-A@mail.gmail.com>
+Subject: Re: FW: [PATCH v2] mtd:spi-nor: Add Altera EPCQ Driver
+From: Viet Nga Dao <vndao@altera.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, nga_chi86 <ngachi86@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +41,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 10, 2015 at 6:39 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Tue, Mar 10, 2015 at 08:47:46AM +0100, Frans Klaver wrote:
->> On Tue, Mar 10, 2015 at 12:14 AM, Brian Norris
->> <computersforpeace@gmail.com> wrote:
->> > On Tue, Mar 03, 2015 at 10:39:45PM +0100, Frans Klaver wrote:
->> >> add_mtd_device() has a comment suggesting that the caller should have
->> >> set dev.parent. This is required to have the device show up in sysfs,
->> >
->> > What do you mean "have the device show up in sysfs"? AFAICT, this only
->> > has bearing on whether the *parent* device shows up as a sysfs symlink
->> > within the MTD device directory. i.e.:
->> >
->> >    /sys/class/mtd/mtd*/device
->> >
->> > For instance, this sort of symlink:
->> >
->> >    /sys/class/mtd/mtd0/device -> ../../../f03e2800.nand
->> >
->> > It might be good to clarify this in the commit message, since you make
->> > the problem sound worse than (I think) it is.
+Hi Rafal,
+
+On Tue, Mar 10, 2015 at 4:09 PM, Viet Nga Dao <vndao@altera.com> wrote:
+>>>>> +
+>>>>> +    /* Altera EPCQ/EPCS Flashes */
+>>>>> +    { "epcq16"  , EPCQ_INFO(2, 0x15, 0x10000, 32,   0x100) },
+>>>>> +    { "epcq32"  , EPCQ_INFO(2, 0x16, 0x10000, 64,   0x100) },
+>>>>> +    { "epcq64"  , EPCQ_INFO(2, 0x17, 0x10000, 128,  0x100) },
+>>>>> +    { "epcq128" , EPCQ_INFO(2, 0x18, 0x10000, 256,  0x100) },
+>>>>> +    { "epcq256" , EPCQ_INFO(2, 0x19, 0x10000, 512,  0x100) },
+>>>>> +    { "epcq512" , EPCQ_INFO(2, 0x20, 0x10000, 1024, 0x100) },
+>>>>> +    { "epcs16"  , EPCQ_INFO(1, 0x14, 0x10000, 32,   0x100) },
+>>>>> +    { "epcs64"  , EPCQ_INFO(1, 0x16, 0x10000, 128,  0x100) },
+>>>>> +    { "epcs128" , EPCQ_INFO(1, 0x18, 0x40000, 256,  0x100) },
+>>>>>      { },
+>>>>>  };
+>>>>>
+>>>>> @@ -666,6 +731,14 @@ static const struct spi_device_id
+>>>>> *spi_nor_read_id(struct spi_nor *nor)
+>>>>>          if (info->jedec_id =3D=3D jedec) {
+>>>>>              if (info->ext_id =3D=3D 0 || info->ext_id =3D=3D ext_jed=
+ec)
+>>>>>                  return &spi_nor_ids[tmp];
+>>>>> +
+>>>>> +        /* altera epcq which is non jedec device
+>>>>> +         * use id[4] as opcode id to differentiate
+>>>>> +         * epcs and epcq devices
+>>>>> +         */
+>>>>> +        } else if (info->altera_flash_opcode_id =3D=3D id[4] &&
+>>>>> +              info->ext_id =3D=3D id[3]) {
+>>>>> +                return &spi_nor_ids[tmp];
+>>>>
+>>>> This is the part I don't like. I think it's fishy, and that this
+>>>> check may result in false positives. Looks too generic.
+>>>>
+>>>> Also the logic of your behavior there seems unclear to me. On the one
+>>>> hand you don't have JEDEC, so you provide chip name using DT. But in
+>>>> place above you stop trusting DT info and you try to (kind of)
+>>>> auto-detect used chip anyway.
+>>>>
+>>>> I guess we should finally think about some more generic way of
+>>>> passing flash info.
+>>>
+>>> Actually, i just want fo follow the way current spi-nor doing as much
+>>> as possible. Like to read the device id and compare with info table.
+>>> Like double checking from both dtb and the device id. Since the
+>>> flashes i support do not have JEDEC id but only extended id. But the
+>>> problem is that some of them have the same extended id, for example
+>>> epcs64 and epcq32). That is why in my driver, i have to decode 1st
+>>> byte of ext id to differentiate epcs and ecpq.
 >>
->> I do? That was definitely not my intention. I'll look into it.
->
-> Maybe it's just my bias when reading, since some people have complained
-> loudly about this, seemingly without understanding that the problem
-> really isn't that significant.
->
-> So my question was really just to confirm my own understanding, that
-> this only affects the 'device' symlink.
+>> I see your point and it makes sense, I just think it shouldn't be part o=
+f spi-nor. By adding chip specific code to spi-nor we'll end with hacky cod=
+e and possible false chips identifications. I can really easily imagine som=
+e random chip having the same id[3] and id[4] as one of Altera flashes.
+>>
+>> Moreover your patch has not working support for epcs16 and epcs64.
+>> They don't support 0x9f opcode (SPINOR_OP_RDID), so you would need to ad=
+d support for 0xab ("Read silicon ID") to the spi-nor.
+>>
+>> It's the same problem I have with Broadcom's "w25q128" that doesn't supp=
+ort 0x9f opcode but a 0x90 with 16b reply. You may see my tiny bcm53xxspifl=
+ash.c driver:
+>> http://git.openwrt.org/?p=3Dopenwrt.git;a=3Dblob;f=3Dtarget/linux/bcm53x=
+x/files/drivers/mtd/spi-nor/bcm53xxspiflash.c;h=3Df192f4e59b71a2444833b5c62=
+dd2239d28f9435d;hb=3Dd105c51a428a72a9af42759c472df9960c496d67
+>>
+>> So I'm afraid that if spi-nor gets support for:
+>> 1) 0xab opcode
+>> 2) 0x90 opcode
+>> 3) Some uncommon replies for 0x9f opcode (like Altera ones) it will quic=
+kly get hacky & buggy.
+>>
+>> So what about:
+>> 1) Using 0x9f and 0xab in altera_epcq.c
+>> 2) Finding chip name in altera_epcq.c
+>> 3) Adding Altera chip names & all sizes to spi-nor.c
+>> 4) Just passing a chip name to spi-nor.c
+>>
+>> It's something I do in bcm53xxspiflash.c. I detect w25q128 using some sp=
+ecific 0x90 opcode and just pass a chip name to the spi-nor.
+>>
+>> --
+>> Rafa=C5=82
+>>
+> Ok. I will modify the code the way you suggest.
 
-Ah right. I'll double check and reword where necessary. I already had
-the feeling that this wasn't very significant, as there weren't any
-real issues related to this using these drivers.
-
-> BTW, it'd be nice if you don't respam with another 60 patches, if you're
-> only changing a few of them. I can probably take most of them as-is,
-> after you confirm there are no more compile failures.
-
-Sure thing, I thought as much.
-
-Thanks,
-Frans
+I just realize that the opcode for RDID is handled by hardware in my
+case, therefore i dont really need to worry about 0xab opcode.
+Is there any other comments about the modified part i did the lock and
+unlock in spi-nor.c?
