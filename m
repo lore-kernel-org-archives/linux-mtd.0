@@ -1,19 +1,21 @@
-Received: from mail-vc0-x22b.google.com ([2607:f8b0:400c:c03::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVdcj-00037S-Hk
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 10:12:22 +0000
-Received: by mail-vc0-f171.google.com with SMTP id hy10so2614621vcb.2
- for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2015 03:11:59 -0700 (PDT)
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVk0g-0003Ya-Vy
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 17:01:32 +0000
+Message-ID: <550074D2.1070406@dave-tech.it>
+Date: Wed, 11 Mar 2015 18:01:06 +0100
+From: Andrea Scian <rnd4@dave-tech.it>
 MIME-Version: 1.0
-In-Reply-To: <CANg6kwr1UmTDDoKBLXzuA_qnVcmnCWe+jjhy7tOqG0RTEj2r1A@mail.gmail.com>
-References: <CANg6kwr1UmTDDoKBLXzuA_qnVcmnCWe+jjhy7tOqG0RTEj2r1A@mail.gmail.com>
-Date: Wed, 11 Mar 2015 11:11:59 +0100
-Message-ID: <CAFLxGvxe3Qze7ppYQYu_HCBDMDeLzX8cTG6P7PBVmgg4sweYGQ@mail.gmail.com>
-Subject: Re: UBIFS power-cut testing
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Kurozaki m <kurozaki45@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
+Subject: Re: RFC: detect and manage power cut on MLC NAND
+References: <54FEDC42.2060407@dave-tech.it>		
+ <CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>	
+ <1426058414.1567.2.camel@sauron.fi.intel.com> <5500037A.9010509@nod.at>
+ <1426064733.1567.6.camel@sauron.fi.intel.com> <55000637.1030702@nod.at>
+In-Reply-To: <55000637.1030702@nod.at>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 11, 2015 at 6:23 AM, Kurozaki m <kurozaki45@gmail.com> wrote:
-> I really need to do power-cut testing in my device but there is no
-> documentation on how to do this, just references to integck and the
-> debugfs tst_recovery file. Where can I find a guide on how to actually
-> do power-cut testing for UBIFS?
->
-> I have a couple of mtd partitions in my flash device, and one of them
-> I use to store some critical files. The problem is that sometimes
-> after power failure(I think) it gets corrupted(Master node gets
-> corrupted) and I'm not able to recover. What I did is I created a
-> backup volume in the same UBI device so that I have both a data and
-> backup volume, the critical files are backed up and kept in sync by an
-> init script and in case corruption occurs I recreate the data
-> partition and recover the files.
->
-> I want to be able to test that my script actually works by doing
-> power-cut testing emulations, but I have no idea where to begin. I
-> cross compiled integck for my device and set the corresponding
-> environment variables, but when I run it all I see is:
->
-> pid is 2907
->
-> and then nothing happens.
 
-To trigger a powercut UBIFS has a debufs knob called "tst_recovery".
+Hi all,
 
-HTH!
+and thanks for you feedback.
+You can find my comments below.
+
+Il 11/03/2015 10:09, Richard Weinberger ha scritto:
+> Am 11.03.2015 um 10:05 schrieb Artem Bityutskiy:
+>> On Wed, 2015-03-11 at 09:57 +0100, Richard Weinberger wrote:
+>>> Hi!
+>>>
+>>> Am 11.03.2015 um 08:20 schrieb Artem Bityutskiy:
+>>>> On Tue, 2015-03-10 at 13:51 +0100, Richard Weinberger wrote:
+>>>>>> WDYT about this?
+>>>>>> If it sounds reasonable is there any suggestion where to place such a code?
+>>>>> Customers often use DYI uninterruptible power supplies using capacitors.
+>>>>> But managing a power cut is the least problem you have with MLC NAND.
+>>>> Why is it the least problem, what is the hardest one? I thought this one
+>>>> is the hardest.
+>>> IMHO the hardest ones are the problems we don't know yet as NAND vendors
+>>> are not really chatty about the MLC constraints.
+>>> We don't know much about data retention for example. At least we have not
+>>> much hard facts. Most of our knowledge is hearsay.
+>> Well, but from the problems we know paired pages seems to be the biggest
+>> one. E.g., what do we do if VID header gets corrupted because of an
+>> interrupted write to the page paired with the VID header page? Sounds
+>> like a hard problem to me.
+> It is a hard problem. But at least we know about it.
+>
+
+IIUC can I summarize like the following
+
+1) power cut is one of the big problem we know about MLC NAND flash with UBI
+2) we are unaware of other big issue with MLC NAND
+
+Unfortunately I don't really know the MTD/UBI/UBIFS internals but
+(correct me if I'm wrong) to me solving the power cut issue only by
+software (by using proper data structure, redundancy, NAND flash
+operation jornal and so on) is pretty hard to implement inside the Linux
+MTD stack.
+
+On the other hand, stuff like scrubbing (e.g. having a task like GC that
+periodically scrub the required NAND erase block), paired page (e.g.
+carefully selecting LEB to PEB mapping to avoid reading/writing data
+into paired page in a wrong way) are still to be implemented but have,
+somehow, less impact on the whole MTD stack.
+
+For sure I'm missing some other MLC NAND issue, but the above are the
+one that I'm aware of.
+
+WDYT?
+
+Best Regards,
 
 -- 
-Thanks,
-//richard
+
+Andrea SCIAN
+
+DAVE Embedded Systems
