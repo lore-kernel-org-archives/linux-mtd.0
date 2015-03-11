@@ -1,27 +1,21 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVnzp-0000RQ-9V
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 21:16:54 +0000
-From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
-To: Richard Weinberger <richard@nod.at>, Andrea Scian <rnd4@dave-tech.it>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: RFC: detect and manage power cut on MLC NAND
-Date: Wed, 11 Mar 2015 21:16:16 +0000
-Message-ID: <0D23F1ECC880A74392D56535BCADD7354973D2A1@NTXBOIMBX03.micron.com>
-References: <54FEDC42.2060407@dave-tech.it>
- <CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>
- <1426058414.1567.2.camel@sauron.fi.intel.com> <5500037A.9010509@nod.at>
- <1426064733.1567.6.camel@sauron.fi.intel.com> <55000637.1030702@nod.at>
- <550074D2.1070406@dave-tech.it>
- <0D23F1ECC880A74392D56535BCADD7354973D072@NTXBOIMBX03.micron.com>
- <55007B79.2090705@nod.at>
-In-Reply-To: <55007B79.2090705@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1YVodg-0006mv-Mx
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 21:58:05 +0000
+Received: by pabli10 with SMTP id li10so14772168pab.2
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2015 14:57:42 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] Documentation: devicetree: m25p80: add "nor-jedec" binding
+Date: Wed, 11 Mar 2015 14:57:25 -0700
+Message-Id: <1426111046-29900-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- mtd_mailinglist <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,113 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Glad to help out.  I train FAE's and customers on many aspects of NAND incl=
-uding MLC. =20
+Almost all flash that are "compatible" with m25p80 support the JEDEC
+READ ID opcode (0x95), and in fact, that is often the only thing that is
+used to differentiate them. Let's add a compatible string that
+represents this lowest common denominator of compatibility.
 
+Device trees can still specify manufacturer/device names in addition,
+but (until some reason is found to differentiate between them through
+device tree) software will likely want to bind just against the generic
+name, and avoid unnecessarily growing its device ID binding tables.
 
-Jeff Lauruhn
-NAND Application Engineer
-Embedded Business Unit
-Micron Technology, Inc
+This is related to the work of commit a5b7616c55e1 ("mtd:
+m25p80,spi-nor: Fix module aliases for m25p80"), which showed that
+maintaining these device tables as stable device-tree/modalias binding
+tables is not a worthwhile burden for mostly-comptatible flash.
 
+At the same time, let's update the binding doc to point to the
+m25p_ids[] ID list instead of spi_nor_ids[]. The former can be used for
+device tree bindings, but the latter cannot. In the future, we should
+pare down the m25p_ids[] list to only those IDs which are actually used
+in device trees.
 
------Original Message-----
-From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of=
- Richard Weinberger
-Sent: Wednesday, March 11, 2015 10:29 AM
-To: Jeff Lauruhn (jlauruhn); Andrea Scian; dedekind1@gmail.com
-Cc: Boris Brezillon; mtd_mailinglist
-Subject: Re: RFC: detect and manage power cut on MLC NAND
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Rafał Miłecki <zajec5@gmail.com>
+---
+ Documentation/devicetree/bindings/mtd/m25p80.txt | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Jeff,
-
-Am 11.03.2015 um 18:23 schrieb Jeff Lauruhn (jlauruhn):
-> Power loss is actually very complex.  The Write Protect (WP) pin was adde=
-d to NAND help lock the NAND when a power loss event is detected.  I have e=
-xtensive information on NAND and would be happy to discuss.  =20
->=20
-
-it would be wonderful if you could share knowledge on MLC NAND.
-I'm very interested in supporting MLC in UBI (and UBIFS).
-UBI was designed with SLC NAND in mind, now with MLC some things have chang=
-ed.
-
-Thanks,
-//richard
-
-> Jeff Lauruhn
-> NAND Application Engineer
-> Embedded Business Unit
-> Micron Technology, Inc
->=20
->=20
-> -----Original Message-----
-> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On=20
-> Behalf Of Andrea Scian
-> Sent: Wednesday, March 11, 2015 10:01 AM
-> To: Richard Weinberger; dedekind1@gmail.com
-> Cc: mtd_mailinglist
-> Subject: Re: RFC: detect and manage power cut on MLC NAND
->=20
->=20
-> Hi all,
->=20
-> and thanks for you feedback.
-> You can find my comments below.
->=20
-> Il 11/03/2015 10:09, Richard Weinberger ha scritto:
->> Am 11.03.2015 um 10:05 schrieb Artem Bityutskiy:
->>> On Wed, 2015-03-11 at 09:57 +0100, Richard Weinberger wrote:
->>>> Hi!
->>>>
->>>> Am 11.03.2015 um 08:20 schrieb Artem Bityutskiy:
->>>>> On Tue, 2015-03-10 at 13:51 +0100, Richard Weinberger wrote:
->>>>>>> WDYT about this?
->>>>>>> If it sounds reasonable is there any suggestion where to place such=
- a code?
->>>>>> Customers often use DYI uninterruptible power supplies using capacit=
-ors.
->>>>>> But managing a power cut is the least problem you have with MLC NAND=
-.
->>>>> Why is it the least problem, what is the hardest one? I thought=20
->>>>> this one is the hardest.
->>>> IMHO the hardest ones are the problems we don't know yet as NAND=20
->>>> vendors are not really chatty about the MLC constraints.
->>>> We don't know much about data retention for example. At least we=20
->>>> have not much hard facts. Most of our knowledge is hearsay.
->>> Well, but from the problems we know paired pages seems to be the=20
->>> biggest one. E.g., what do we do if VID header gets corrupted=20
->>> because of an interrupted write to the page paired with the VID header =
-page?
->>> Sounds like a hard problem to me.
->> It is a hard problem. But at least we know about it.
->>
->=20
-> IIUC can I summarize like the following
->=20
-> 1) power cut is one of the big problem we know about MLC NAND flash=20
-> with UBI
-> 2) we are unaware of other big issue with MLC NAND
->=20
-> Unfortunately I don't really know the MTD/UBI/UBIFS internals but (correc=
-t me if I'm wrong) to me solving the power cut issue only by software (by u=
-sing proper data structure, redundancy, NAND flash operation jornal and so =
-on) is pretty hard to implement inside the Linux MTD stack.
->=20
-> On the other hand, stuff like scrubbing (e.g. having a task like GC that =
-periodically scrub the required NAND erase block), paired page (e.g.
-> carefully selecting LEB to PEB mapping to avoid reading/writing data into=
- paired page in a wrong way) are still to be implemented but have, somehow,=
- less impact on the whole MTD stack.
->=20
-> For sure I'm missing some other MLC NAND issue, but the above are the one=
- that I'm aware of.
->=20
-> WDYT?
->=20
-> Best Regards,
->=20
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+diff --git a/Documentation/devicetree/bindings/mtd/m25p80.txt b/Documentation/devicetree/bindings/mtd/m25p80.txt
+index 4611aa83531b..1b2997d4cee4 100644
+--- a/Documentation/devicetree/bindings/mtd/m25p80.txt
++++ b/Documentation/devicetree/bindings/mtd/m25p80.txt
+@@ -3,9 +3,12 @@
+ Required properties:
+ - #address-cells, #size-cells : Must be present if the device has sub-nodes
+   representing partitions.
+-- compatible : Should be the manufacturer and the name of the chip. Bear in mind
++- compatible : Should be "nor-jedec" for any SPI NOR flash that can be
++               identified by the JEDEC READ ID opcode (0x95).
++               Additionally, may include a device-specific string consisting of
++               the manufacturer and name of the chip. Bear in mind
+                the DT binding is not Linux-only, but in case of Linux, see the
+-               "spi_nor_ids" table in drivers/mtd/spi-nor/spi-nor.c for the list
++               "m25p_ids" table in drivers/mtd/devices/m25p80.c for the list
+                of supported chips.
+ - reg : Chip-Select number
+ - spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
+@@ -22,7 +25,7 @@ Example:
+ 	flash: m25p80@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		compatible = "spansion,m25p80";
++		compatible = "spansion,m25p80", "nor-jedec";
+ 		reg = <0>;
+ 		spi-max-frequency = <40000000>;
+ 		m25p,fast-read;
+-- 
+1.9.1
