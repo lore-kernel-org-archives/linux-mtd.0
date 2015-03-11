@@ -1,17 +1,16 @@
-Message-ID: <550008AE.9050406@atmel.com>
-Date: Wed, 11 Mar 2015 17:19:42 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVd99-0000J5-Td
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 09:41:49 +0000
+Subject: JFFS2: unaligned accesses may happen in jffs2_sum_process_sum_data
+To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Message-ID: <OFDCFAD872.747A8A9B-ON48257E05.002FA55F-48257E05.003534FE@zte.com.cn>
+From: wang.bo116@zte.com.cn
+Date: Wed, 11 Mar 2015 17:41:07 +0800
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] mtd: atmel_nand: check NFC busy flag by HSMC_SR instead
- of NFC cmd regs
-References: <1421922090-8803-1-git-send-email-josh.wu@atmel.com>
- <54F6B2CE.9020604@atmel.com>
-In-Reply-To: <54F6B2CE.9020604@atmel.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-type: text/plain; charset=US-ASCII
+Cc: wang.haitao1@zte.com.cn, cui.yunfeng@zte.com.cn, liu.song11@zte.com.cn,
+ jiang.xuexin@zte.com.cn, lu.zhongjun@zte.com.cn, deng.chao1@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,72 +20,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Brain
 
-Sorry to be impatient, but is there any feedback for this patch?
+	In JFFS2 summary, "#define JFFS2_SUMMARY_DIRENT_SIZE(x) (sizeof(struct jffs2_sum_dirent_flash) + (x))",because of x here is dir's name, the result of JFFS2_SUMMARY_DIRENT_SIZE may be unaligned. So in function "jffs2_sum_process_sum_data", may access unaligned pointer "sp" when excute "switch (je16_to_cpu(((struct jffs2_sum_unknown_flash *)sp)->nodetype))".
 
-Best Regards,
-Josh Wu
+	Some machine not allowed unaligned accesses, for example, in linux mips systerms, unaligned accesses may cause a exception,but luckly,in linux, function "handle_adel" can handle it well.But when JFFS2 use in other operating systerm, this unaligned accesses may be a problem.
 
-On 3/4/2015 3:22 PM, Josh Wu wrote:
-> Hi, Brain
->
-> Would you have any chance to take this patch as it's been a long time?
->
-> Best Regards,
-> Josh Wu
->
-> On 1/22/2015 6:21 PM, Josh Wu wrote:
->> From: Boris Brezillon <boris.brezillon@free-electrons.com>
->>
->> Currently the driver read NFC command registers to get NFC busy flag.
->> Actually this flag also can be get by reading HSMC_SR register.
->>
->> Use the read NFC command registers need mapping a huge memory region.
->> To save the mapped memory region, we change to check NFC busy flag by
->> reading HSMC_SR register.
->>
->> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->> ---
->>
->> Changes in v2:
->> - Change me to signed-off-by.
->> - modify the error log.
->>
->>   drivers/mtd/nand/atmel_nand.c     | 5 ++---
->>   drivers/mtd/nand/atmel_nand_nfc.h | 1 +
->>   2 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/atmel_nand.c 
->> b/drivers/mtd/nand/atmel_nand.c
->> index d93c849..336cc2d 100644
->> --- a/drivers/mtd/nand/atmel_nand.c
->> +++ b/drivers/mtd/nand/atmel_nand.c
->> @@ -1752,11 +1752,10 @@ static int nfc_send_command(struct 
->> atmel_nand_host *host,
->>           cmd, addr, cycle0);
->>         timeout = jiffies + msecs_to_jiffies(NFC_TIME_OUT_MS);
->> -    while (nfc_cmd_readl(NFCADDR_CMD_NFCBUSY, host->nfc->base_cmd_regs)
->> -            & NFCADDR_CMD_NFCBUSY) {
->> +    while (nfc_readl(host->nfc->hsmc_regs, SR) & NFC_SR_BUSY) {
->>           if (time_after(jiffies, timeout)) {
->>               dev_err(host->dev,
->> -                "Time out to wait CMD_NFCBUSY ready!\n");
->> +                "Time out to wait for NFC ready!\n");
->>               return -ETIMEDOUT;
->>           }
->>       }
->> diff --git a/drivers/mtd/nand/atmel_nand_nfc.h 
->> b/drivers/mtd/nand/atmel_nand_nfc.h
->> index 85b8ca6..4d5d262 100644
->> --- a/drivers/mtd/nand/atmel_nand_nfc.h
->> +++ b/drivers/mtd/nand/atmel_nand_nfc.h
->> @@ -35,6 +35,7 @@
->>   #define        NFC_CTRL_DISABLE    (1 << 1)
->>     #define ATMEL_HSMC_NFC_SR    0x08        /* NFC Status Register */
->> +#define        NFC_SR_BUSY        (1 << 8)
->>   #define        NFC_SR_XFR_DONE        (1 << 16)
->>   #define        NFC_SR_CMD_DONE        (1 << 17)
->>   #define        NFC_SR_DTOE        (1 << 20)
->
+	To fix it,the simple way is redefine JFFS2_SUMMARY_DIRENT_SIZE like "#define JFFS2_SUMMARY_DIRENT_SIZE(x) PAD((sizeof(struct jffs2_sum_dirent_flash) + (x)))",make it aligned.But the problem is SUMMARY became incompatible!
