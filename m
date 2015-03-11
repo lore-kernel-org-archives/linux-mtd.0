@@ -1,16 +1,24 @@
-Date: Wed, 11 Mar 2015 16:42:49 -0700
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVqL2-00031P-Bp
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2015 23:46:56 +0000
+Received: by paceu11 with SMTP id eu11so15439966pac.1
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2015 16:46:35 -0700 (PDT)
+Date: Wed, 11 Mar 2015 16:46:30 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 0/6] mtd: teach mxc-nand about ONFI probing
-Message-ID: <20150311234249.GE32500@ld-irv-0074>
-References: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/7] mtd: various fixes caught by Coverity
+Message-ID: <20150311234630.GF32500@ld-irv-0074>
+References: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1423594800-24214-1-git-send-email-u.kleine-koenig@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1425117750-22298-1-git-send-email-computersforpeace@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Akinobu Mita <akinobu.mita@gmail.com>,
+ Masahiro Yamada <yamada.m@jp.panasonic.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 10, 2015 at 07:59:54PM +0100, Uwe Kleine-König wrote:
-> Hello,
+On Sat, Feb 28, 2015 at 02:02:23AM -0800, Brian Norris wrote:
+> Several unrelated MTD fixes inspired by Coverity Scan results. I couldn't test
+> all of them, but they're all pretty obvious.
 > 
-> this series implements support for ONFI probing in mxc-nand.
-> Before a PARAM command was just ignored and the following read_bytes
-> read whatever then happened to be available from the controller's RAM.
-> But actually this wasn't that bad because the driver already failed to
-> read the ONFI marker at offset 32 in response to the READID command and
-> so the PARAM command wasn't issued at all :-)
-> 
-> Patch 1 is a robustness fix. Patch 2 is necessary to not make the
-> controller stuck when the READPAGE command is issued before the flash
-> chip is identified. Patch 3 is needed to be able to read more than 6
-> bytes in the read_byte callback. Finally patch 4 fixes the driver to
-> allow reading out the READID ONFI marker and patch 5 implements support
-> for the PARAM command.
-> 
-> Patch 6 implements a WARN that triggers when the core requests an
-> unknown command from the driver. In the case of missing PARAM support it
-> wouldn't have triggered because READID at offset 0x20 failed, too, but
-> it might be worthwhile anyhow; I'm not sure though, so I marked it RFC.
-> Not sure the set of commands will grow in the near future ...
-> 
-> Best regards
-> Uwe
+> Brian Norris (7):
+>   mtd: docg3: drop dead code
+>   mtd: onenand: drop dead code
+>   mtd: tests: fix more potential integer overflows
+>   mtd: nand: fixup bounds checks for nand_{lock,unlock}()
+>   mtd: nand: denali: drop dead code
+>   mtd: blkdevs: remove dead code
+>   mtd: nand: fully initialize mtd_oob_ops
 
-Looks OK to me. Pushed all to l2-mtd.git.
+Pushed to l2-mtd.git, with v2 of patch 1.
 
 Brian
