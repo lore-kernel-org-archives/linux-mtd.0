@@ -1,13 +1,12 @@
 Received: from pegase1.c-s.fr ([93.17.236.30] helo=mailhub1.si.c-s.fr)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YW5ZC-0006ah-0W
+ id 1YW5ZC-0006cA-0U
  for linux-mtd@lists.infradead.org; Thu, 12 Mar 2015 16:02:36 +0000
 From: Christophe Leroy <christophe.leroy@c-s.fr>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 5/8] tty: cpm_uart: replace CONFIG_8xx by CONFIG_CPM1
-Message-Id: <20150312152359.B611E1A2420@localhost.localdomain>
-Date: Thu, 12 Mar 2015 16:23:59 +0100 (CET)
+To: Karsten Keil <isdn@linux-pingi.de>
+Subject: [PATCH 7/8] isdn: replace CONFIG_8xx by CONFIG_PPC_8xx
+Message-Id: <20150312152409.E7B5C1A2422@localhost.localdomain>
+Date: Thu, 12 Mar 2015 16:24:09 +0100 (CET)
 Cc: linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org,
  user-mode-linux-devel@lists.sourceforge.net, netdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
@@ -37,48 +36,30 @@ so it is likely to be a good time to get rid of it completely ?
 Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 
 ---
- drivers/tty/serial/Kconfig             | 2 +-
- drivers/tty/serial/cpm_uart/Makefile   | 2 +-
- drivers/tty/serial/cpm_uart/cpm_uart.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/isdn/hardware/mISDN/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index c9dbc62..6086586 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -868,7 +868,7 @@ config SERIAL_PMACZILOG_CONSOLE
+diff --git a/drivers/isdn/hardware/mISDN/Kconfig b/drivers/isdn/hardware/mISDN/Kconfig
+index 09df54f..ad9deab 100644
+--- a/drivers/isdn/hardware/mISDN/Kconfig
++++ b/drivers/isdn/hardware/mISDN/Kconfig
+@@ -13,7 +13,7 @@ config MISDN_HFCPCI
  
- config SERIAL_CPM
- 	tristate "CPM SCC/SMC serial port support"
--	depends on CPM2 || 8xx
-+	depends on CPM2 || CPM1
- 	select SERIAL_CORE
+ config MISDN_HFCMULTI
+ 	tristate "Support for HFC multiport cards (HFC-4S/8S/E1)"
+-	depends on PCI || 8xx
++	depends on PCI || PPC_8xx
+ 	depends on MISDN
  	help
- 	  This driver supports the SCC and SMC serial ports on Motorola 
-diff --git a/drivers/tty/serial/cpm_uart/Makefile b/drivers/tty/serial/cpm_uart/Makefile
-index e072724..896a5d5 100644
---- a/drivers/tty/serial/cpm_uart/Makefile
-+++ b/drivers/tty/serial/cpm_uart/Makefile
-@@ -6,6 +6,6 @@ obj-$(CONFIG_SERIAL_CPM) += cpm_uart.o
- 
- # Select the correct platform objects.
- cpm_uart-objs-$(CONFIG_CPM2)	+= cpm_uart_cpm2.o
--cpm_uart-objs-$(CONFIG_8xx)	+= cpm_uart_cpm1.o
-+cpm_uart-objs-$(CONFIG_CPM1)	+= cpm_uart_cpm1.o
- 
- cpm_uart-objs	:= cpm_uart_core.o $(cpm_uart-objs-y)
-diff --git a/drivers/tty/serial/cpm_uart/cpm_uart.h b/drivers/tty/serial/cpm_uart/cpm_uart.h
-index cf34d26..0ad027b 100644
---- a/drivers/tty/serial/cpm_uart/cpm_uart.h
-+++ b/drivers/tty/serial/cpm_uart/cpm_uart.h
-@@ -19,7 +19,7 @@
- 
- #if defined(CONFIG_CPM2)
- #include "cpm_uart_cpm2.h"
--#elif defined(CONFIG_8xx)
-+#elif defined(CONFIG_CPM1)
- #include "cpm_uart_cpm1.h"
- #endif
+ 	  Enable support for cards with Cologne Chip AG's HFC multiport
+@@ -28,7 +28,7 @@ config MISDN_HFCMULTI_8xx
+ 	depends on MISDN
+ 	depends on MISDN_HFCMULTI
+ 	depends on 8xx
+-	default 8xx
++	default PPC_8xx
+ 	help
+ 	  Enable support for the XHFC embedded solution from Speech Design.
  
 -- 
 2.1.0
