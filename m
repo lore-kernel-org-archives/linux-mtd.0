@@ -1,22 +1,22 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YW8mF-0006N1-0i
- for linux-mtd@lists.infradead.org; Thu, 12 Mar 2015 19:28:15 +0000
-Date: Thu, 12 Mar 2015 15:27:20 -0400 (EDT)
-Message-Id: <20150312.152720.2248943963968220981.davem@redhat.com>
+ id 1YW8mG-0006O1-3J
+ for linux-mtd@lists.infradead.org; Thu, 12 Mar 2015 19:28:16 +0000
+Date: Thu, 12 Mar 2015 15:27:29 -0400 (EDT)
+Message-Id: <20150312.152729.567538955925640045.davem@redhat.com>
 To: christophe.leroy@c-s.fr
-Subject: Re: [PATCH 7/8] isdn: replace CONFIG_8xx by CONFIG_PPC_8xx
+Subject: Re: [PATCH 4/8] net: freescale: replace CONFIG_8xx by CONFIG_PPC_8xx
 From: David Miller <davem@redhat.com>
-In-Reply-To: <20150312152409.E7B5C1A2422@localhost.localdomain>
-References: <20150312152409.E7B5C1A2422@localhost.localdomain>
+In-Reply-To: <20150312152354.A47721A241F@localhost.localdomain>
+References: <20150312152354.A47721A241F@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: isdn@linux-pingi.de, linux-serial@vger.kernel.org,
- user-mode-linux-devel@lists.sourceforge.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
+Cc: linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org,
+ user-mode-linux-devel@lists.sourceforge.net, vitb@kernel.crashing.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
  linux-mtd@lists.infradead.org, user-mode-linux-user@lists.sourceforge.net,
- linuxppc-dev@lists.ozlabs.org
+ pantelis.antoniou@gmail.com, linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Christophe Leroy <christophe.leroy@c-s.fr>
-Date: Thu, 12 Mar 2015 16:24:09 +0100 (CET)
+Date: Thu, 12 Mar 2015 16:23:54 +0100 (CET)
 
 > Two config options exist to define powerpc MPC8xx:
 > * CONFIG_PPC_8xx
