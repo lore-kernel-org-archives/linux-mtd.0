@@ -1,38 +1,15 @@
-Received: from mail-oi0-x22c.google.com ([2607:f8b0:4003:c06::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YW9ag-0005mt-F7
- for linux-mtd@lists.infradead.org; Thu, 12 Mar 2015 20:20:23 +0000
-Received: by oiav1 with SMTP id v1so13539012oia.3
- for <linux-mtd@lists.infradead.org>; Thu, 12 Mar 2015 13:20:01 -0700 (PDT)
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20150312152420.11C821A2425@localhost.localdomain>
-References: <20150312152420.11C821A2425@localhost.localdomain>
-Date: Thu, 12 Mar 2015 21:20:01 +0100
-Message-ID: <CAMuHMdVuECs41hdUfdK9Q6-Kf53C874RC7PuvoqU8LieqgmDug@mail.gmail.com>
-Subject: Re: [PATCH 0/8] powerpc/8xx: Getting rid of CONFIG_8xx
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Christophe Leroy <christophe.leroy@c-s.fr>
-Content-Type: text/plain; charset=UTF-8
-Cc: Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- Vitaly Bordug <vitb@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Pantelis Antoniou <pantelis.antoniou@gmail.com>, Jiri Slaby <jslaby@suse.cz>,
- Richard Weinberger <richard@nod.at>, Tomi Valkeinen <tomi.valkeinen@ti.com>,
- "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- David Woodhouse <dwmw2@infradead.org>,
- uml-devel <user-mode-linux-devel@lists.sourceforge.net>,
- Jeff Dike <jdike@addtoit.com>,
- uml-user <user-mode-linux-user@lists.sourceforge.net>,
- Scott Wood <scottwood@freescale.com>, Karsten Keil <isdn@linux-pingi.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Received: from mailrelay116.isp.belgacom.be ([195.238.20.143])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YW9oh-0004o8-Ka
+ for linux-mtd@lists.infradead.org; Thu, 12 Mar 2015 20:34:52 +0000
+From: Fabian Frederick <fabf@skynet.be>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH V2 linux-next] UBIFS: simplify returns
+Date: Thu, 12 Mar 2015 21:34:21 +0100
+Message-Id: <1426192461-16011-1-git-send-email-fabf@skynet.be>
+Cc: Fabian Frederick <fabf@skynet.be>, linux-mtd@lists.infradead.org,
+ geert@linux-m68k.org, Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,33 +19,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 12, 2015 at 4:24 PM, Christophe Leroy
-<christophe.leroy@c-s.fr> wrote:
-> Two config options exist to define powerpc MPC8xx:
-> * CONFIG_PPC_8xx
-> * CONFIG_8xx
-> In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
-> communication co-processor
->
-> arch/powerpc/platforms/Kconfig.cputype has contained the following
-> comment about CONFIG_8xx item for some years:
-> "# this is temp to handle compat with arch=ppc"
->
-> It looks like not many places still have that old CONFIG_8xx used,
-> so it is likely to be a good time to get rid of it completely ?
+directly return recover_head() and ubifs_leb_unmap()
+instead of storing value in err and testing it.
 
-We also have CONFIG_40x,. CONFIG_44x, and CONFIG_4xx.
-There's no CONFIG_PPC_4* though.
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+V2: Keep curly braces around comment + 1 line in if.
+    (suggested by Geert Uytterhoeven)
 
-Do we want (some) consistency?
+ fs/ubifs/recovery.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index c640938..13ca4db 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -975,11 +975,8 @@ int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf)
+ 		return err;
+ 
+ 	dbg_rcvry("checking LPT head at %d:%d", c->nhead_lnum, c->nhead_offs);
+-	err = recover_head(c, c->nhead_lnum, c->nhead_offs, sbuf);
+-	if (err)
+-		return err;
+ 
+-	return 0;
++	return recover_head(c, c->nhead_lnum, c->nhead_offs, sbuf);
+ }
+ 
+ /**
+@@ -1004,10 +1001,7 @@ static int clean_an_unclean_leb(struct ubifs_info *c,
+ 
+ 	if (len == 0) {
+ 		/* Nothing to read, just unmap it */
+-		err = ubifs_leb_unmap(c, lnum);
+-		if (err)
+-			return err;
+-		return 0;
++		return ubifs_leb_unmap(c, lnum);
+ 	}
+ 
+ 	err = ubifs_leb_read(c, lnum, buf, offs, len, 0);
+-- 
+1.9.1
