@@ -1,28 +1,26 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YW0MC-0002kw-1n
- for linux-mtd@lists.infradead.org; Thu, 12 Mar 2015 10:28:49 +0000
-Message-ID: <55016A43.3000201@nod.at>
-Date: Thu, 12 Mar 2015 11:28:19 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1YW0U0-0007c3-50
+ for linux-mtd@lists.infradead.org; Thu, 12 Mar 2015 10:36:52 +0000
+Received: by iegc3 with SMTP id c3so32770880ieg.3
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Mar 2015 03:36:29 -0700 (PDT)
 MIME-Version: 1.0
-To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
-Subject: Re: RFC: detect and manage power cut on MLC NAND
-References: <54FEDC42.2060407@dave-tech.it>		
- <CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>	
- <1426058414.1567.2.camel@sauron.fi.intel.com> <5500037A.9010509@nod.at>
- <1426064733.1567.6.camel@sauron.fi.intel.com> <55000637.1030702@nod.at>
- <550074D2.1070406@dave-tech.it>
- <0D23F1ECC880A74392D56535BCADD7354973D072@NTXBOIMBX03.micron.com>
- <55007B79.2090705@nod.at>
- <0D23F1ECC880A74392D56535BCADD7354973D2A1@NTXBOIMBX03.micron.com>
-In-Reply-To: <0D23F1ECC880A74392D56535BCADD7354973D2A1@NTXBOIMBX03.micron.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Cc: Andrea Scian <rnd4@dave-tech.it>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- mtd_mailinglist <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <CAMuHMdUv2w0chGPK37oYaY5f64X4XK+Ab+aP7egxv2fnWa8k-g@mail.gmail.com>
+References: <1426111046-29900-1-git-send-email-computersforpeace@gmail.com>
+ <CAMuHMdUv2w0chGPK37oYaY5f64X4XK+Ab+aP7egxv2fnWa8k-g@mail.gmail.com>
+Date: Thu, 12 Mar 2015 11:36:29 +0100
+Message-ID: <CACna6rz-4nKE_iV2-8aG3ZEcrpN88A0iX4cHC+FudJ-==H9p7w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] Documentation: devicetree: m25p80: add "nor-jedec"
+ binding
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Marek Vasut <marex@denx.de>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,21 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 11.03.2015 um 22:16 schrieb Jeff Lauruhn (jlauruhn):
-> Glad to help out.  I train FAE's and customers on many aspects of NAND including MLC.  
+On 12 March 2015 at 11:19, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Wed, Mar 11, 2015 at 10:57 PM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+>> diff --git a/Documentation/devicetree/bindings/mtd/m25p80.txt b/Document=
+ation/devicetree/bindings/mtd/m25p80.txt
+>> index 4611aa83531b..1b2997d4cee4 100644
+>> --- a/Documentation/devicetree/bindings/mtd/m25p80.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/m25p80.txt
+>> @@ -3,9 +3,12 @@
+>>  Required properties:
+>>  - #address-cells, #size-cells : Must be present if the device has sub-n=
+odes
+>>    representing partitions.
+>> -- compatible : Should be the manufacturer and the name of the chip. Bea=
+r in mind
+>> +- compatible : Should be "nor-jedec" for any SPI NOR flash that can be
+>> +               identified by the JEDEC READ ID opcode (0x95).
+>> +               Additionally, may include a device-specific string consi=
+sting of
+>> +               the manufacturer and name of the chip. Bear in mind
+>
+> For the casual reader, this suggests putting "nor-jedec" first, which is =
+not
+> what we want. So I would write it like e.g.
+>
+> "Should be the manufacturer and the name of the chip. Additionally,
+>  should contain "nor-jedec" for any SPI NOR flash that can be
+>  identified by the JEDEC READ ID opcode (0x95)."
 
-UBI (and UBIFS) was designed with SLC NAND in mind, so far we know that we have to
-address the following constraints when we want UBI on MLC NAND:
+I don't really like above. It suggests using manufacturer,name
+always/in most cases. This is what we want to avoid. Let's use
+"nor-jedec" wherever possible (when dealing with JEDEC compatible
+flashes).
 
-1. Avoid repeating bit patterns. This can be solved by scrambling. Boris did some great work in this area.
-2. Paired pages. We'll have choose pages we write to very carefully to not loss already written data in case of a power cut.
-3. Read disturb. Happens also on SLC but not that early. I'm working in this.
-4. Data retention. i.e, blocks that have not been erased for a long time have to be re-erased. I'm working in this too.
-5. Unstable bits (not MLC specific).
-6. What did I miss?
-
-Jeff, what do you think?
-Can you point us to some hard facts? I'm specially interested in numbers on read disturb and data retention.
-
-Thanks,
-//richard
+--=20
+Rafa=C5=82
