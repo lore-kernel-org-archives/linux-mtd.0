@@ -1,12 +1,13 @@
 Received: from pegase1.c-s.fr ([93.17.236.30] helo=mailhub1.si.c-s.fr)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YW5ZC-0006cA-0U
+ id 1YW5ZC-0006ab-0d
  for linux-mtd@lists.infradead.org; Thu, 12 Mar 2015 16:02:36 +0000
 From: Christophe Leroy <christophe.leroy@c-s.fr>
-To: Karsten Keil <isdn@linux-pingi.de>
-Subject: [PATCH 7/8] isdn: replace CONFIG_8xx by CONFIG_PPC_8xx
-Message-Id: <20150312152409.E7B5C1A2422@localhost.localdomain>
-Date: Thu, 12 Mar 2015 16:24:09 +0100 (CET)
+To: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: [PATCH 3/8] video: replace CONFIG_8xx by CONFIG_PPC_8xx
+Message-Id: <20150312152349.943F91A241E@localhost.localdomain>
+Date: Thu, 12 Mar 2015 16:23:49 +0100 (CET)
 Cc: linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org,
  user-mode-linux-devel@lists.sourceforge.net, netdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
@@ -36,30 +37,21 @@ so it is likely to be a good time to get rid of it completely ?
 Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 
 ---
- drivers/isdn/hardware/mISDN/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/video/console/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/Kconfig b/drivers/isdn/hardware/mISDN/Kconfig
-index 09df54f..ad9deab 100644
---- a/drivers/isdn/hardware/mISDN/Kconfig
-+++ b/drivers/isdn/hardware/mISDN/Kconfig
-@@ -13,7 +13,7 @@ config MISDN_HFCPCI
+diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
+index ba97efc..6ee84c3 100644
+--- a/drivers/video/console/Kconfig
++++ b/drivers/video/console/Kconfig
+@@ -6,7 +6,7 @@ menu "Console display driver support"
  
- config MISDN_HFCMULTI
- 	tristate "Support for HFC multiport cards (HFC-4S/8S/E1)"
--	depends on PCI || 8xx
-+	depends on PCI || PPC_8xx
- 	depends on MISDN
- 	help
- 	  Enable support for cards with Cologne Chip AG's HFC multiport
-@@ -28,7 +28,7 @@ config MISDN_HFCMULTI_8xx
- 	depends on MISDN
- 	depends on MISDN_HFCMULTI
- 	depends on 8xx
--	default 8xx
-+	default PPC_8xx
- 	help
- 	  Enable support for the XHFC embedded solution from Speech Design.
- 
+ config VGA_CONSOLE
+ 	bool "VGA text console" if EXPERT || !X86
+-	depends on !4xx && !8xx && !SPARC && !M68K && !PARISC && !FRV && \
++	depends on !4xx && !PPC_8xx && !SPARC && !M68K && !PARISC && !FRV && \
+ 		!SUPERH && !BLACKFIN && !AVR32 && !MN10300 && !CRIS && \
+ 		(!ARM || ARCH_FOOTBRIDGE || ARCH_INTEGRATOR || ARCH_NETWINDER) && \
+ 		!ARM64
 -- 
 2.1.0
