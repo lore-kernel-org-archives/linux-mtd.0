@@ -1,20 +1,26 @@
-Date: Fri, 13 Mar 2015 09:06:01 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v4 02/10] mtd: st_spi_fsm: Fetch boot device locations
- from DT match tables
-Message-ID: <20150313160601.GI12966@brian-ubuntu>
-References: <1421853868-8262-1-git-send-email-lee.jones@linaro.org>
- <1421853868-8262-3-git-send-email-lee.jones@linaro.org>
- <20150206042744.GK18140@ld-irv-0074> <20150210074634.GD8020@x1>
- <20150224050452.GG18140@ld-irv-0074> <20150224094110.GA20969@x1>
+Received: from mx0b-00176a03.pphosted.com ([67.231.157.48])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YWU48-00020W-W0
+ for linux-mtd@lists.infradead.org; Fri, 13 Mar 2015 18:12:09 +0000
+Received: from pps.filterd (m0048299.ppops.net [127.0.0.1])
+ by m0048299.ppops.net-00176a03. (8.14.7/8.14.7) with SMTP id t2DIAW18000406
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Mar 2015 14:11:46 -0400
+Received: from alpmlip12.e2k.ad.ge.com (n165-156-000-000.static.ge.com
+ [165.156.5.1] (may be forged))
+ by m0048299.ppops.net-00176a03. with ESMTP id 1t44tcg06d-19
+ (version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Mar 2015 14:11:46 -0400
+Received: from [3.26.68.149] (unknown [3.26.68.149])
+ by selma.edi.geip.ge.com (Postfix) with ESMTP id 3A3D3E0D53
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Mar 2015 18:11:38 +0000 (GMT)
+Message-ID: <5503285A.5090500@ge.com>
+Date: Fri, 13 Mar 2015 18:11:38 +0000
+From: Renaud Barbier <renaud.barbier@ge.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150224094110.GA20969@x1>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kernel@stlinux.com
+To: linux-mtd@lists.infradead.org
+Subject: UBI/UBIFS: debugging help
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,75 +30,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 24, 2015 at 09:41:10AM +0000, Lee Jones wrote:
-> On Mon, 23 Feb 2015, Brian Norris wrote:
-> > On Tue, Feb 10, 2015 at 03:46:34PM +0800, Lee Jones wrote:
-> > > On Thu, 05 Feb 2015, Brian Norris wrote:
+My platform is based on a ARM Cortex-A9 and boots barebox from a spi-nor.
 
-[snip other discussion]
+I have tested UBI/UBIFS from Linux on this platform with no issue after
+disabling 4KB support for the spi nor I am using.
 
-> > Now, unless you were able to provide an additional enlightening
-> > viewpoint, then the following paragraph likely all holds true:
-> > 
-> > > > Also, I realized that all this boot device / syscfg gymnastics is just
-> > > > for one simple fact; your driver is trying to hide the fact that your
-> > > > system can't reliably handle 4-byte addressing for the boot device. Even
-> > > > if you try your best at toggling 4-byte addressing before/after each
-> > > > read/write/erase, you still are vulnerable to power cuts during the
-> > > > operation. This is a bad design, and we have consistently agreed that we
-> > > > aren't going to work around that in Linux.
-> > > > 
-> > > > Better solutions: hook up a reset line to your flash; improve your boot
-> > > > ROM / bootloader to handle 4-byte addressing for large flash.
-> 
-> Okay, I'm re-read the code and have a new understanding about the
-> boot-from-spi 'gymnastics'. 
+However, I got problem on the boot loader side. UBI/UBIFS has been
+ported by the barebox community from Linux and I used it successfully
+on a previous project on a PPC platform.
 
-Great! See, much of that could be done by reading your own code (yeah,
-yeah, not "yours"; but still) and honestly dealing with my questions,
-rather than giving up and deferring to me or your MIA authorities. I'm
-happy to return to technical points and avoid the other unpleasantness.
+On the ARM platform I can ubiattach, mount the mtd partition and copy a
+small file (~65KB spanning two sectors). The issue comes when I copy out
+a larger file (512KB) out. It fails to copy the whole file.
 
-> There is a separate controller on the platform which acts as a boot
-> device and makes the NOR chip appear as though it is memory mapped.
-> This expects the NOR Controller to be in its default state [24-bit
-> addressing] on boot.  The issue arises if a warm-reset occurs and the
-> device is still in 32-bit addressing mode.
+At the point of failure, ubifs_tnc_locate fails resulting in the
+function read_block to return -ENOENT.
 
-OK, this is all familiar. This is common to many other systems.
+Debugging shows that in the function ubifs_search_zbranch no keys match
+is found prior to the failure.
 
-> To minimise the risk, the
-> controller attempts to stay in 24-bit addressing mode for as long as
-> possible.
+I know this list is called linux-mtd but I was hoping that somebody
+could give me a pointer on where to look next. I am currently going
+through git logs and mailing list.
 
-This is the part where we differ, I suppose. The "as long as possible"
-statement is still not sufficient; I believe this still leaves holes
-that simply cannot be fixed in Linux.
+I am pretty confident the boot loader spi driver is working properly as
+raw write-read-compare have not failed.
 
-> You mentioned power-cuts.  I do not believe this to be an issue, as
-> when the power is completely removed the controller will reset back
-> into default state.  Only warm-resets are an issue.
-
-You're right: power cuts shouldn't be a problem. But what about other
-unexpected warm resets? (Watchdogs?) Do you have any solution for them?
-
-> > > > What's the possibility of dropping all this 4-byte address toggling
-> > > > shenanigans? This will be a blocker to merging with spi-nor.c.
-> 
-> We wouldn't be able to remove this code without significantly
-> weakening resilience to warm-reset mishaps, and changing the hardware
-> design for devices which have already been released is obviously out
-> of the question.
-
-Then maybe we can't solve this. That doesn't mean that upstream will
-support you, though.
-
-Problems like this are why "release early, release often" makes sense.
-If your employer didn't take the "fire the engineers and dump software
-support to the community" approach, but rather honestly engaged on
-driver support earlier, then perhaps your employer could have fixed the
-SoCs/boot ROMs/board designs earlier, rather than later, and you
-wouldn't be stuck trying to wedge in upstream workarounds for bad
-designs in the wild.
-
-Brian
+cheers.
