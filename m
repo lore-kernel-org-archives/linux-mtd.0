@@ -1,18 +1,12 @@
-From: Stefan Agner <stefan@agner.ch>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Subject: [PATCH v3 6/6] ARM: dts: vf-colibri: enable NAND flash controller
-Date: Fri, 13 Mar 2015 10:38:58 +0100
-Message-Id: <1426239538-11529-7-git-send-email-stefan@agner.ch>
-In-Reply-To: <1426239538-11529-1-git-send-email-stefan@agner.ch>
-References: <1426239538-11529-1-git-send-email-stefan@agner.ch>
-Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
- aaron@tastycactus.com, marb@ixxat.de, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- Stefan Agner <stefan@agner.ch>, devicetree@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, galak@codeaurora.org,
- shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org,
- bpringlemeir@nbsps.com
+From: Nicholas Mc Guire <hofrat@osadl.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: fsl_ifc_nand: use msecs_to_jiffies for time conversion
+Date: Fri, 13 Mar 2015 07:23:47 -0400
+Message-Id: <1426245828-15640-1-git-send-email-hofrat@osadl.org>
+Cc: Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
+ Joe Schultz <jschultz@xes-inc.com>, linux-mtd@lists.infradead.org,
+ Nicholas Mc Guire <hofrat@osadl.org>, Aaron Sierra <asierra@xes-inc.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +16,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable NAND access by adding pinmux and NAND flash controller  node
-to device tree. The NAND chips currently used on the Colibri VF61
-requires 8-bit ECC per 512 byte page, hence specify 32-bit ECC
-strength per 2k page size.
+This is only an API consolidation and should make things more readable
+it replaces var * HZ / 1000 by msecs_to_jiffies(var) which helps readability
+and also handles all corner-cases properly.
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 ---
- arch/arm/boot/dts/vf-colibri.dtsi | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
 
-diff --git a/arch/arm/boot/dts/vf-colibri.dtsi b/arch/arm/boot/dts/vf-colibri.dtsi
-index 5c2b732..76139d7 100644
---- a/arch/arm/boot/dts/vf-colibri.dtsi
-+++ b/arch/arm/boot/dts/vf-colibri.dtsi
-@@ -46,6 +46,19 @@
- 	pinctrl-0 = <&pinctrl_i2c0>;
- };
+Patch was compile tested with corenet64_smp_defconfig 
+(implies CONFIG_MTD_NAND_FSL_IFC=y)
+
+Patch is against 4.0-rc3 (localversion-next is -next-20150313
+
+ drivers/mtd/nand/fsl_ifc_nand.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 4c05f4f..51394e5 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -317,7 +317,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
  
-+&nfc {
-+	assigned-clocks = <&clks VF610_CLK_NFC>;
-+	assigned-clock-rates = <33000000>;
-+	nand-bus-width = <8>;
-+	nand-ecc-mode = "hw";
-+	nand-on-flash-bbt;
-+	nand-ecc-strength = <32>;
-+	nand-ecc-step-size = <2048>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_nfc_1>;
-+	status = "okay";
-+};
-+
- &pwm0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pwm0>;
-@@ -141,6 +154,25 @@
- 			>;
- 		};
+ 	/* wait for command complete flag or timeout */
+ 	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat,
+-			   IFC_TIMEOUT_MSECS * HZ/1000);
++			   msecs_to_jiffies(IFC_TIMEOUT_MSECS));
  
-+		pinctrl_nfc_1: nfcgrp_1 {
-+			fsl,pins = <
-+				VF610_PAD_PTD23__NF_IO7		0x28df
-+				VF610_PAD_PTD22__NF_IO6		0x28df
-+				VF610_PAD_PTD21__NF_IO5		0x28df
-+				VF610_PAD_PTD20__NF_IO4		0x28df
-+				VF610_PAD_PTD19__NF_IO3		0x28df
-+				VF610_PAD_PTD18__NF_IO2		0x28df
-+				VF610_PAD_PTD17__NF_IO1		0x28df
-+				VF610_PAD_PTD16__NF_IO0		0x28df
-+				VF610_PAD_PTB24__NF_WE_B	0x28c2
-+				VF610_PAD_PTB25__NF_CE0_B	0x28c2
-+				VF610_PAD_PTB27__NF_RE_B	0x28c2
-+				VF610_PAD_PTC26__NF_RB_B	0x283d
-+				VF610_PAD_PTC27__NF_ALE		0x28c2
-+				VF610_PAD_PTC28__NF_CLE		0x28c2
-+			>;
-+		};
-+
- 		pinctrl_pwm0: pwm0grp {
- 			fsl,pins = <
- 				VF610_PAD_PTB0__FTM0_CH0		0x1182
+ 	/* ctrl->nand_stat will be updated from IRQ context */
+ 	if (!ctrl->nand_stat)
+@@ -860,7 +860,7 @@ static void fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
+ 
+ 	/* wait for command complete flag or timeout */
+ 	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat,
+-			   IFC_TIMEOUT_MSECS * HZ/1000);
++			   msecs_to_jiffies(IFC_TIMEOUT_MSECS));
+ 
+ 	if (ctrl->nand_stat != IFC_NAND_EVTER_STAT_OPC)
+ 		printk(KERN_ERR "fsl-ifc: Failed to Initialise SRAM\n");
 -- 
-2.3.1
+1.7.10.4
