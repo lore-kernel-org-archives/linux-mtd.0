@@ -1,25 +1,29 @@
-Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXeKa-0007pT-Px
- for linux-mtd@lists.infradead.org; Mon, 16 Mar 2015 23:21:57 +0000
-Received: by igbue6 with SMTP id ue6so57733087igb.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Mar 2015 16:21:35 -0700 (PDT)
-In-Reply-To: <55076362.7040705@vanguardiasur.com.ar>
-References: <1426539315-17392-1-git-send-email-dehrenberg@chromium.org>
- <55076362.7040705@vanguardiasur.com.ar>
+ id 1YXeZh-0000QK-UP
+ for linux-mtd@lists.infradead.org; Mon, 16 Mar 2015 23:37:34 +0000
+Received: by pdbcz9 with SMTP id cz9so71816870pdb.3
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Mar 2015 16:37:12 -0700 (PDT)
+Date: Mon, 16 Mar 2015 16:37:06 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Scott Branden <sbranden@broadcom.com>
+Subject: Re: [PATCH 2/3] Documentation: devicetree: add binding doc for
+ Broadcom NAND controller
+Message-ID: <20150316233706.GL32500@ld-irv-0074>
+References: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
+ <1425691129-1150-3-git-send-email-computersforpeace@gmail.com>
+ <55076247.4070104@broadcom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain;
- charset=UTF-8
-Subject: Re: [PATCH] UBI: block: Add option for dynamic minor number
-From: Nicholas Krause <xerofoify@gmail.com>
-Date: Mon, 16 Mar 2015 19:21:28 -0400
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Dan Ehrenberg <dehrenberg@chromium.org>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
-Message-ID: <7CF353E4-64F1-4340-90B6-4BE8A11349AA@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, gwendal@chromium.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55076247.4070104@broadcom.com>
+Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
+ Ray Jui <rjui@broadcom.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-kernel@vger.kernel.org, Jonathan Richardson <jonathar@broadcom.com>,
+ Anatol Pomazao <anatol@google.com>, bcm-kernel-feedback-list@broadcom.com,
+ linux-mtd@lists.infradead.org, Dmitry Torokhov <dtor@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +33,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- dynamic in nature. 
-Nick 
+On Mon, Mar 16, 2015 at 04:07:51PM -0700, Scott Branden wrote:
+> On 15-03-06 05:18 PM, Brian Norris wrote:
+> >Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> >---
+> >  .../devicetree/bindings/mtd/brcmstb_nand.txt       | 109 +++++++++++++++++++++
+> >  1 file changed, 109 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
+> >
+> >diff --git a/Documentation/devicetree/bindings/mtd/brcmstb_nand.txt b/Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
+> >new file mode 100644
+> >index 000000000000..933d44943cbb
+> >--- /dev/null
+> 
+> Could you change the binding document with the vendor prefix to
+> match all the other drivers we have been submitting? ie.
+> "brcm,brcmnand.txt"
 
-On March 16, 2015 7:12:34 PM EDT, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
->(Adding UBI maintainers)
->
->On 03/16/2015 05:55 PM, Dan Ehrenberg wrote:
->> This patch adds a new config option, MTD_UBI_BLOCK_DYNAMIC_MINOR,
->which
->> makes minor numbers dynamically allocated for ubiblock devices,
->starting
->> at 0.
->> 
->> From the new Kconfig:
->>     This option makes ubiblock devices have minor numbers beginning
->from
->>     0, allocated dynamically independently of the ubi device/volume
->>     number. For users who don't refer to an ubiblock device directly
->by
->>     the major:minor number (e.g., with udev and/or devtmpfs), this
->option
->>     is useful if the device number is rather high (>1) and when
->executing
->>     on a 32-bit platform without LFS enabled in all userspace
->binaries.
->> 
->
->Hm, I'm wondering if there are any users relying on a specific minor.
->
->I'm not fond of the new option, and I'm not fond of the ifdefs you
->bring
->in. Can't we just change minors to be dynamic?
-Richard, 
-I have to agree and was going to point out the ugliness of adding these macros. Furthermore I second the vote for just making minor device numbers given to 
-Uni fs
+$ find Documentation/devicetree/ -name 'broadcom*'
+Documentation/devicetree/bindings/net/broadcom-systemport.txt
+Documentation/devicetree/bindings/net/broadcom-bcm87xx.txt
+Documentation/devicetree/bindings/net/broadcom-mdio-unimac.txt
+Documentation/devicetree/bindings/net/broadcom-bcmgenet.txt
+Documentation/devicetree/bindings/net/broadcom-sf2.txt
 
--- 
-Sent from my Android device with K-9 Mail. Please excuse my brevity.
+$ find Documentation/devicetree/ -name 'brcm[^,]*'
+Documentation/devicetree/bindings/arm/brcm-brcmstb.txt
+
+$ find Documentation/devicetree/ -name 'brcm,*'
+Documentation/devicetree/bindings/interrupt-controller/brcm,bcm2835-armctrl-ic.txt
+Documentation/devicetree/bindings/interrupt-controller/brcm,l2-intc.txt
+Documentation/devicetree/bindings/interrupt-controller/brcm,bcm7120-l2-intc.txt
+Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
+Documentation/devicetree/bindings/i2c/brcm,iproc-i2c.txt
+Documentation/devicetree/bindings/i2c/brcm,bcm2835-i2c.txt
+Documentation/devicetree/bindings/spi/brcm,bcm2835-spi.txt
+Documentation/devicetree/bindings/rng/brcm,bcm2835.txt
+Documentation/devicetree/bindings/pinctrl/brcm,bcm2835-gpio.txt
+Documentation/devicetree/bindings/pinctrl/brcm,bcm11351-pinctrl.txt
+Documentation/devicetree/bindings/bus/brcm,gisb-arb.txt
+Documentation/devicetree/bindings/watchdog/brcm,bcm2835-pm-wdog.txt
+Documentation/devicetree/bindings/arm/bcm/brcm,bcm11351-cpu-method
+Documentation/devicetree/bindings/mmc/brcm,bcm2835-sdhci.txt
+Documentation/devicetree/bindings/timer/brcm,bcm2835-system-timer.txt
+
+$ find Documentation/devicetree/bindings -name '*.txt' | grep -v ','| wc -l
+1227
+$ find Documentation/devicetree/bindings -name '*.txt' | grep ','| wc -l
+352
+
+So, what's the standard? Company prefix? Long name? Commas? Hyphens?
+
+Brian
