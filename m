@@ -1,27 +1,28 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXecv-0002qE-Qb
- for linux-mtd@lists.infradead.org; Mon, 16 Mar 2015 23:40:54 +0000
-Message-ID: <550769DD.2020208@broadcom.com>
-Date: Mon, 16 Mar 2015 16:40:13 -0700
-From: Scott Branden <sbranden@broadcom.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/3] Documentation: devicetree: add binding doc for
- Broadcom NAND controller
+Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YXeh4-0003XN-54
+ for linux-mtd@lists.infradead.org; Mon, 16 Mar 2015 23:45:10 +0000
+Received: by pdbcz9 with SMTP id cz9so71971318pdb.3
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Mar 2015 16:44:49 -0700 (PDT)
+Date: Mon, 16 Mar 2015 16:44:42 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Anatol Pomazau <anatol@google.com>
+Subject: Re: [PATCH 0/3] mtd: nand: add Broadcom NAND controller support
+Message-ID: <20150316234442.GM32500@ld-irv-0074>
 References: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
- <1425691129-1150-3-git-send-email-computersforpeace@gmail.com>
- <55076247.4070104@broadcom.com> <20150316233706.GL32500@ld-irv-0074>
-In-Reply-To: <20150316233706.GL32500@ld-irv-0074>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+ <CALj_zD5rW3Se27Rh0pL6QTMNGOrrmrvAVLvW3BCuF8RujYQE=g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALj_zD5rW3Se27Rh0pL6QTMNGOrrmrvAVLvW3BCuF8RujYQE=g@mail.gmail.com>
 Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
  Kevin Cernekee <cernekee@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
  Ray Jui <rjui@broadcom.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  linux-kernel@vger.kernel.org, Jonathan Richardson <jonathar@broadcom.com>,
- Anatol Pomazao <anatol@google.com>, bcm-kernel-feedback-list@broadcom.com,
- linux-mtd@lists.infradead.org, Dmitry Torokhov <dtor@google.com>
+ linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
+ Dmitry Torokhov <dtor@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,63 +32,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+(Your HTML mail will likely get blocked by a lot of filters)
 
-On 15-03-16 04:37 PM, Brian Norris wrote:
-> On Mon, Mar 16, 2015 at 04:07:51PM -0700, Scott Branden wrote:
->> On 15-03-06 05:18 PM, Brian Norris wrote:
->>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->>> ---
->>>   .../devicetree/bindings/mtd/brcmstb_nand.txt       | 109 +++++++++++++++++++++
->>>   1 file changed, 109 insertions(+)
->>>   create mode 100644 Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
->>>
->>> diff --git a/Documentation/devicetree/bindings/mtd/brcmstb_nand.txt b/Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
->>> new file mode 100644
->>> index 000000000000..933d44943cbb
->>> --- /dev/null
->>
->> Could you change the binding document with the vendor prefix to
->> match all the other drivers we have been submitting? ie.
->> "brcm,brcmnand.txt"
->
-> $ find Documentation/devicetree/ -name 'broadcom*'
-> Documentation/devicetree/bindings/net/broadcom-systemport.txt
-> Documentation/devicetree/bindings/net/broadcom-bcm87xx.txt
-> Documentation/devicetree/bindings/net/broadcom-mdio-unimac.txt
-> Documentation/devicetree/bindings/net/broadcom-bcmgenet.txt
-> Documentation/devicetree/bindings/net/broadcom-sf2.txt
->
-> $ find Documentation/devicetree/ -name 'brcm[^,]*'
-> Documentation/devicetree/bindings/arm/brcm-brcmstb.txt
->
-> $ find Documentation/devicetree/ -name 'brcm,*'
-> Documentation/devicetree/bindings/interrupt-controller/brcm,bcm2835-armctrl-ic.txt
-> Documentation/devicetree/bindings/interrupt-controller/brcm,l2-intc.txt
-> Documentation/devicetree/bindings/interrupt-controller/brcm,bcm7120-l2-intc.txt
-> Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
-> Documentation/devicetree/bindings/i2c/brcm,iproc-i2c.txt
-> Documentation/devicetree/bindings/i2c/brcm,bcm2835-i2c.txt
-> Documentation/devicetree/bindings/spi/brcm,bcm2835-spi.txt
-> Documentation/devicetree/bindings/rng/brcm,bcm2835.txt
-> Documentation/devicetree/bindings/pinctrl/brcm,bcm2835-gpio.txt
-> Documentation/devicetree/bindings/pinctrl/brcm,bcm11351-pinctrl.txt
-> Documentation/devicetree/bindings/bus/brcm,gisb-arb.txt
-> Documentation/devicetree/bindings/watchdog/brcm,bcm2835-pm-wdog.txt
-> Documentation/devicetree/bindings/arm/bcm/brcm,bcm11351-cpu-method
-> Documentation/devicetree/bindings/mmc/brcm,bcm2835-sdhci.txt
-> Documentation/devicetree/bindings/timer/brcm,bcm2835-system-timer.txt
->
-> $ find Documentation/devicetree/bindings -name '*.txt' | grep -v ','| wc -l
-> 1227
-> $ find Documentation/devicetree/bindings -name '*.txt' | grep ','| wc -l
-> 352
->
-> So, what's the standard? Company prefix? Long name? Commas? Hyphens?
+Hi Anatol,
 
-The problem with devicetree binding is there is no standard for much of 
-anything.  Some others use the vendor prefix for all their binding 
-documentation.  We can try to do the same?
+On Mon, Mar 16, 2015 at 04:24:20PM -0700, Anatol Pomazau wrote:
+> Hi Brian
+> 
+> Thanks for the patch series. I am going to test it on a Broadcom dev board.
+> 
+> Do you plan to add a patch for bcm-cygnus.dtsi similar to what is done
+> here https://github.com/Broadcom/cygnus-linux/commit/
+> 1de02697829c3a2ce48a1bc29a8535e4961999ca
+> 
+> ?
 
->
-> Brian
->
+Not yet. As I note below, this does not work as-is on Cygnus. I wanted
+to get the initial code out there, as this already supports some chips.
+There as still some additions necessary to get iProc/Cygnus and BCM53xxx
+chips working (WIP).
+
+The code you link to is a hacked version from Ray. His changes have not
+been integrated yet.
+
+> On Fri, Mar 6, 2015 at 5:18 PM, Brian Norris <computersforpeace@gmail.com>
+> wrote:
+>      Hi,
+> 
+>      This adds (long in coming) support for the Broadcom BCM7xxx Set-Top
+>      Box NAND
+>      controller. This controller has been used in a variety of Broadcom
+>      SoCs.
+> 
+>      There are a few more features I'd like add in the near future, mostly
+>      to
+>      support more SoCs, but this is the base set, which should only need
+>      relatively
+>      minor additions to support chips like BCM63138, BCM3384, and Cygnus/
+>      iProc.
+>      Particularly, we may need to straighten out some endianness issues
+>      for the data
+>      path on iProc, and interrupt enabling/acking on iProc, BCM63xxx,
+>      BCM3xxx, and
+>      others.
+
+^^^ Note the previous 2 sentences.
+
+
+>      TODO: add this to the DTS(I) files for BCM7445.
+> 
+>      Happy reviewing! (Speaking of which, I need to catch up on reviewing
+>      everybody
+>      else's MTD submissions...)
+> 
+>      Brian
+
+Brian
