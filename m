@@ -1,20 +1,27 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXZe5-0007xU-GO
- for linux-mtd@lists.infradead.org; Mon, 16 Mar 2015 18:21:46 +0000
-Message-ID: <55071F1D.3040308@nod.at>
-Date: Mon, 16 Mar 2015 19:21:17 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1YXa6C-0007iA-11
+ for linux-mtd@lists.infradead.org; Mon, 16 Mar 2015 18:50:48 +0000
+Received: by pdbni2 with SMTP id ni2so65741160pdb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Mar 2015 11:50:26 -0700 (PDT)
+Message-ID: <550725CB.60209@gmail.com>
+Date: Mon, 16 Mar 2015 11:49:47 -0700
+From: Florian Fainelli <f.fainelli@gmail.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] UBI: fix missing brace control flow
-References: <1424725642-26270-1-git-send-email-computersforpeace@gmail.com>
- <54EB99F1.4040608@nod.at> <20150316180844.GK32500@ld-irv-0074>
-In-Reply-To: <20150316180844.GK32500@ld-irv-0074>
-Content-Type: text/plain; charset=windows-1252
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/3] Documentation: devicetree: add binding doc for
+ Broadcom NAND controller
+References: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
+ <1425691129-1150-3-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1425691129-1150-3-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Dan Carpenter <dan.carpenter@oracle.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: devicetree@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>,
+ Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-kernel@vger.kernel.org, Jonathan Richardson <jonathar@broadcom.com>,
+ Anatol Pomazao <anatol@google.com>, bcm-kernel-feedback-list@broadcom.com,
+ Dmitry Torokhov <dtor@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +31,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On 06/03/15 17:18, Brian Norris wrote:
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Am 16.03.2015 um 19:08 schrieb Brian Norris:
-> On Mon, Feb 23, 2015 at 10:21:53PM +0100, Richard Weinberger wrote:
->> Am 23.02.2015 um 22:07 schrieb Brian Norris:
->>> commit 0e707ae79ba3 ("UBI: do propagate positive error codes up") seems
->>> to have produced an unintended change in the control flow here.
->>>
->>> Completely untested, but it looks obvious.
->>>
->>> Caught by Coverity, which didn't like the indentation. CID 1271184.
->>>
->>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->>> Cc: Dan Carpenter <dan.carpenter@oracle.com>
->>> ---
->>> Should go into 4.0, I expect.
->>
->> Good catch, patch tested and applied!
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+
+> ---
+>  .../devicetree/bindings/mtd/brcmstb_nand.txt       | 109 +++++++++++++++++++++
+>  1 file changed, 109 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
 > 
-> Is this going in 4.0? It fixes a typo in a hastily-applied patch that
-> made it to 4.0-rc1.
+> diff --git a/Documentation/devicetree/bindings/mtd/brcmstb_nand.txt b/Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
+> new file mode 100644
+> index 000000000000..933d44943cbb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
+> @@ -0,0 +1,109 @@
+> +* Broadcom STB NAND Controller
+> +
+> +The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
+> +flash chips. It has a memory-mapped register interface for both control
+> +registers and for its data input/output buffer. On some SoCs, this controller is
+> +paired with a custom DMA engine (inventively named "Flash DMA") which supports
+> +basic PROGRAM and READ functions, among other features.
+> +
+> +This controller was originally designed for STB SoCs (BCM7xxx) but is now
+> +available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
+> +iProc/Cygnus. Its history includes several similar (but not fully register
+> +compatible) versions.
+> +
+> +Required properties:
+> +- compatible       : should contain "brcm,brcmnand" and an appropriate version
+> +                      compatibility string, like "brcm,brcmnand-v7.0"
+> +                      Possible values:
+> +                         brcm,brcmnand-v4.0
+> +                         brcm,brcmnand-v5.0
+> +                         brcm,brcmnand-v6.0
+> +                         brcm,brcmnand-v7.0
+> +                         brcm,brcmnand-v7.1
+> +                         brcm,brcmnand
+> +- reg              : the register start and length for NAND register region.
+> +                     (optional) Flash DMA register range (if present)
+> +                     (optional) NAND flash cache range (if at non-standard offset)
+> +- reg-names        : a list of the names corresponding to the previous register
+> +                     ranges. Should contain "nand" and (optionally)
+> +                     "flash-dma" and/or "nand-cache".
+> +- interrupts       : The NAND CTLRDY interrupt and (if Flash DMA is available)
+> +                     FLASH_DMA_DONE
+> +- interrupt-names  : May be "nand_ctlrdy" or "flash_dma_done"
+> +- interrupt-parent : See standard interrupt bindings
+> +- #address-cells   : <1> - subnodes give the chip-select number
+> +- #size-cells      : <0>
+> +
+> +Optional properties:
+> +- brcm,nand-has-wp          : Some versions of this IP include a write-protect
+> +                              (WP) control bit. It is always available on >=
+> +                              v7.0. Use this property to describe the rare
+> +                              earlier versions of this core that include WP
+> +
+> +* NAND chip-select
+> +
+> +Each controller (compatible: "brcm,brcmnand") may contain one or more subnodes
+> +to represent enabled chip-selects which (may) contain NAND flash chips. Their
+> +properties are as follows.
+> +
+> +Required properties:
+> +- compatible                : should contain "brcm,nandcs"
+> +- reg                       : a single integer representing the chip-select
+> +                              number (e.g., 0, 1, 2, etc.)
+> +- #address-cells            : see partition.txt
+> +- #size-cells               : see partition.txt
+> +- nand-ecc-strength         : see nand.txt
+> +- nand-ecc-step-size        : must be 512 or 1024. See nand.txt
+> +
+> +Optional properties:
+> +- nand-on-flash-bbt         : boolean, to enable the on-flash BBT for this
+> +                              chip-select. See nand.txt
+> +- brcm,nand-oob-sector-size : integer, to denote the spare area sector size
+> +                              expected for the ECC layout in use. This size, in
+> +                              addition to the strength and step-size,
+> +                              determines how the hardware BCH engine will lay
+> +                              out the parity bytes it stores on the flash.
+> +                              This property can be automatically determined by
+> +                              the flash geometry (particularly the NAND page
+> +                              and OOB size) in many cases, but when booting
+> +                              from NAND, the boot controller has only a limited
+> +                              number of available options for its default ECC
+> +                              layout.
+> +
+> +Each nandcs device node may optionally contain sub-nodes describing the flash
+> +partition mapping. See partition.txt for more detail.
+> +
+> +Example:
+> +
+> +nand@f0442800 {
+> +	compatible = "brcm,brcmnand-v7.0", "brcm,brcmnand";
+> +	reg = <0xF0442800 0x600>,
+> +	      <0xF0443000 0x100>;
+> +	reg-names = "nand", "flash-dma";
+> +	interrupt-parent = <&hif_intr2_intc>;
+> +	interrupts = <24>, <4>;
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	nandcs@1 {
+> +		compatible = "brcm,nandcs";
+> +		reg = <1>; // Chip select 1
+> +		nand-on-flash-bbt;
+> +		nand-ecc-strength = <12>;
+> +		nand-ecc-step-size = <512>;
+> +
+> +		// Partitions
+> +		#address-cells = <1>;  // <2>, for 64-bit offset
+> +		#size-cells = <1>;     // <2>, for 64-bit length
+> +		flash0.rootfs@0 {
+> +			reg = <0 0x10000000>;
+> +		};
+> +		flash0@0 {
+> +			reg = <0 0>; // MTDPART_SIZ_FULL
+> +		};
+> +		flash0.kernel@10000000 {
+> +			reg = <0x10000000 0x400000>;
+> +		};
+> +	};
+> +};
+> 
 
-That's the plan.
 
-> I'm also not sure I understand the role of the +linux-next and +master
-> branches in linux-ubifs.git. Typically 'next' means for the current+1
-> release (i.e., 4.1), while 'not-next' (i.e., your master branch?) would
-> be for the current release (4.0). But you have +master based on top of
-> +linux-next.
-
-I'm using Artem's scheme. next is the branch Linus pulls from.
-Artem, why are the two UBIFS fixes from master not in next?
-I thought you want to send a pull request to Linus?
-If you want, I can do that. I'm anyway preparing some UBI fixes.
-
-Thanks,
-//richard
+-- 
+Florian
