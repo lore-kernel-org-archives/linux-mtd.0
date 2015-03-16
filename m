@@ -1,26 +1,22 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXe7S-0001vc-Hf
- for linux-mtd@lists.infradead.org; Mon, 16 Mar 2015 23:08:22 +0000
-Message-ID: <55076247.4070104@broadcom.com>
-Date: Mon, 16 Mar 2015 16:07:51 -0700
-From: Scott Branden <sbranden@broadcom.com>
+Received: from mail-wg0-f53.google.com ([74.125.82.53])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YXeEO-0004ry-6y
+ for linux-mtd@lists.infradead.org; Mon, 16 Mar 2015 23:15:32 +0000
+Received: by wgbcc7 with SMTP id cc7so52041486wgb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Mar 2015 16:15:06 -0700 (PDT)
+Message-ID: <55076362.7040705@vanguardiasur.com.ar>
+Date: Mon, 16 Mar 2015 20:12:34 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 2/3] Documentation: devicetree: add binding doc for
- Broadcom NAND controller
-References: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
- <1425691129-1150-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1425691129-1150-3-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Dan Ehrenberg <dehrenberg@chromium.org>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] UBI: block: Add option for dynamic minor number
+References: <1426539315-17392-1-git-send-email-dehrenberg@chromium.org>
+In-Reply-To: <1426539315-17392-1-git-send-email-dehrenberg@chromium.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
- Ray Jui <rjui@broadcom.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-kernel@vger.kernel.org, Jonathan Richardson <jonathar@broadcom.com>,
- Anatol Pomazao <anatol@google.com>, bcm-kernel-feedback-list@broadcom.com,
- Dmitry Torokhov <dtor@google.com>
+Cc: Richard Weinberger <richard@nod.at>, gwendal@chromium.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+(Adding UBI maintainers)
 
+On 03/16/2015 05:55 PM, Dan Ehrenberg wrote:
+> This patch adds a new config option, MTD_UBI_BLOCK_DYNAMIC_MINOR, which
+> makes minor numbers dynamically allocated for ubiblock devices, starting
+> at 0.
+> 
+> From the new Kconfig:
+>     This option makes ubiblock devices have minor numbers beginning from
+>     0, allocated dynamically independently of the ubi device/volume
+>     number. For users who don't refer to an ubiblock device directly by
+>     the major:minor number (e.g., with udev and/or devtmpfs), this option
+>     is useful if the device number is rather high (>1) and when executing
+>     on a 32-bit platform without LFS enabled in all userspace binaries.
+> 
 
-On 15-03-06 05:18 PM, Brian Norris wrote:
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->   .../devicetree/bindings/mtd/brcmstb_nand.txt       | 109 +++++++++++++++++++++
->   1 file changed, 109 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
->
-> diff --git a/Documentation/devicetree/bindings/mtd/brcmstb_nand.txt b/Documentation/devicetree/bindings/mtd/brcmstb_nand.txt
-> new file mode 100644
-> index 000000000000..933d44943cbb
-> --- /dev/null
+Hm, I'm wondering if there are any users relying on a specific minor.
 
-Could you change the binding document with the vendor prefix to match 
-all the other drivers we have been submitting? ie. "brcm,brcmnand.txt"
-
-Regards,
-  Scott
+I'm not fond of the new option, and I'm not fond of the ifdefs you bring
+in. Can't we just change minors to be dynamic?
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
