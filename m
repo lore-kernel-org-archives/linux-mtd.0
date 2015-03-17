@@ -1,22 +1,23 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mx.dave-tech.it ([2.229.21.40])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXnUv-0002Lc-8E
- for linux-mtd@lists.infradead.org; Tue, 17 Mar 2015 09:09:13 +0000
-Message-ID: <1426583329.1567.117.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: fix missing brace control flow
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Date: Tue, 17 Mar 2015 11:08:49 +0200
-In-Reply-To: <55071F1D.3040308@nod.at>
-References: <1424725642-26270-1-git-send-email-computersforpeace@gmail.com>
- <54EB99F1.4040608@nod.at> <20150316180844.GK32500@ld-irv-0074>
- <55071F1D.3040308@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+ id 1YXnpt-0005ks-VV
+ for linux-mtd@lists.infradead.org; Tue, 17 Mar 2015 09:30:55 +0000
+Message-ID: <5507F436.7030903@dave-tech.it>
+Date: Tue, 17 Mar 2015 10:30:30 +0100
+From: Andrea Scian <rnd4@dave-tech.it>
+MIME-Version: 1.0
+To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
+Subject: Re: RFC: detect and manage power cut on MLC NAND
+References: <54FEDC42.2060407@dave-tech.it>	<CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>	<1426058414.1567.2.camel@sauron.fi.intel.com>	<5500037A.9010509@nod.at>	<1426064733.1567.6.camel@sauron.fi.intel.com>	<55000637.1030702@nod.at>	<550074D2.1070406@dave-tech.it>	<0D23F1ECC880A74392D56535BCADD7354973D072@NTXBOIMBX03.micron.com>	<55007B79.2090705@nod.at>	<0D23F1ECC880A74392D56535BCADD7354973D2A1@NTXBOIMBX03.micron.com>	<55016A43.3000201@nod.at>	<0D23F1ECC880A74392D56535BCADD7354973DAD6@NTXBOIMBX03.micron.com>	<20150313213134.1b53430b@bbrezillon>	<0D23F1ECC880A74392D56535BCADD7354973DF0B@NTXBOIMBX03.micron.com>
+ <20150314113214.58d06f3d@bbrezillon>
+ <0D23F1ECC880A74392D56535BCADD7354973E2B8@NTXBOIMBX03.micron.com>
+In-Reply-To: <0D23F1ECC880A74392D56535BCADD7354973E2B8@NTXBOIMBX03.micron.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ mtd_mailinglist <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2015-03-16 at 19:21 +0100, Richard Weinberger wrote:
-> Hi!
-> 
-> Am 16.03.2015 um 19:08 schrieb Brian Norris:
-> > On Mon, Feb 23, 2015 at 10:21:53PM +0100, Richard Weinberger wrote:
-> >> Am 23.02.2015 um 22:07 schrieb Brian Norris:
-> >>> commit 0e707ae79ba3 ("UBI: do propagate positive error codes up") seems
-> >>> to have produced an unintended change in the control flow here.
-> >>>
-> >>> Completely untested, but it looks obvious.
-> >>>
-> >>> Caught by Coverity, which didn't like the indentation. CID 1271184.
-> >>>
-> >>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> >>> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> >>> ---
-> >>> Should go into 4.0, I expect.
-> >>
-> >> Good catch, patch tested and applied!
-> > 
-> > Is this going in 4.0? It fixes a typo in a hastily-applied patch that
-> > made it to 4.0-rc1.
-> 
-> That's the plan.
-> 
-> > I'm also not sure I understand the role of the +linux-next and +master
-> > branches in linux-ubifs.git. Typically 'next' means for the current+1
-> > release (i.e., 4.1), while 'not-next' (i.e., your master branch?) would
-> > be for the current release (4.0). But you have +master based on top of
-> > +linux-next.
-> 
-> I'm using Artem's scheme. next is the branch Linus pulls from.
-> Artem, why are the two UBIFS fixes from master not in next?
 
-Just wanted to keep them there for several days.
 
-> I thought you want to send a pull request to Linus?
+Dear Jeff,
 
-No, I was not going to send this for 4.0. There is one fix which looks
-important, but on the other hand, I did not test it, and no one reported
-this problem and said this patch helps, so I was not going to send it
-earlier.
+Il 16/03/2015 22:11, Jeff Lauruhn (jlauruhn) ha scritto:
+> Good morning Boris;
+> RR is a new feature and not available on all parts few.  I'm not sure 
+> about others, but since these are features, you simply enable of 
+> disable via SET FEATURE/GET FEATURE.  If you already provide that 
+> SET/GET FEATURE functionality then an end-user determine if their 
+> device supports a feature and then write the code to enable when they 
+> need it on their particular design.
 
-> If you want, I can do that. I'm anyway preparing some UBI fixes.
+I can confirm this. In fact I'm currently working with two Micron NAND:
 
-Yes, please, merge master to linux-next.
+MT29F32G08CBACAWP
+MT29F32G08CBADAWP
+
+The latter should be "just" a newer die revision of the former (at
+least, this is what our distributor says)
+
+There's a technology change between the two and, in fact, the latter
+supports RR while there's no mention of such a feature inside rev C.
+
+Jeff, could you please help me in understanding which if the following
+sentences are true and which are false?
+- rev D is more "robust" than rev C because it has RR (so an additional
+feature that improve error correction)
+- rev D is "robust" like rev C, if rev D is used with RR
+- if RR is not used rev D is more error prone than rev C
+
+I think this is crucial to understand how RR works and how much is
+needed inside MTD/UBI code.
+I hope that the above information are not under NDA ;-)
+
+Thanks in advance,
+
+--
+
+Andrea SCIAN
+
+DAVE Embedded Systems
