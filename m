@@ -1,17 +1,35 @@
-Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXfnk-0004Jz-Cn
- for linux-mtd@lists.infradead.org; Tue, 17 Mar 2015 00:56:09 +0000
-Received: by iecsl2 with SMTP id sl2so185595102iec.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Mar 2015 17:55:46 -0700 (PDT)
-Sender: Daniel Ehrenberg <dehrenberg@google.com>
-From: Dan Ehrenberg <dehrenberg@chromium.org>
-To: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2] UBI: block: Dynamically allocate minor numbers
-Date: Mon, 16 Mar 2015 17:55:43 -0700
-Message-Id: <1426553743-5398-1-git-send-email-dehrenberg@chromium.org>
-Cc: gwendal@chromium.org, Dan Ehrenberg <dehrenberg@chromium.org>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YXmR5-0000Qm-CA
+ for linux-mtd@lists.infradead.org; Tue, 17 Mar 2015 08:01:12 +0000
+Message-ID: <5507DF27.7050300@dave-tech.it>
+Date: Tue, 17 Mar 2015 09:00:39 +0100
+From: Andrea Scian <rnd4@dave-tech.it>
+MIME-Version: 1.0
+To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>,
+ Andrea Marson - DAVE Embedded Systems <andrea.marson@dave.eu>
+Subject: Re: RFC: detect and manage power cut on MLC NAND
+References: <54FEDC42.2060407@dave-tech.it>
+ <CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>
+ <1426058414.1567.2.camel@sauron.fi.intel.com> <5500037A.9010509@nod.at>
+ <1426064733.1567.6.camel@sauron.fi.intel.com> <55000637.1030702@nod.at>
+ <550074D2.1070406@dave-tech.it>
+ <0D23F1ECC880A74392D56535BCADD7354973D072@NTXBOIMBX03.micron.com>
+ <55007B79.2090705@nod.at>
+ <0D23F1ECC880A74392D56535BCADD7354973D2A1@NTXBOIMBX03.micron.com>
+ <55016A43.3000201@nod.at>
+ <0D23F1ECC880A74392D56535BCADD7354973DAD6@NTXBOIMBX03.micron.com>
+ <20150313213134.1b53430b@bbrezillon>
+ <0D23F1ECC880A74392D56535BCADD7354973DF0B@NTXBOIMBX03.micron.com>
+ <55040370.3040204@dave.eu>
+ <0D23F1ECC880A74392D56535BCADD7354973DFE3@NTXBOIMBX03.micron.com>
+In-Reply-To: <0D23F1ECC880A74392D56535BCADD7354973DFE3@NTXBOIMBX03.micron.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ mtd_mailinglist <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,103 +39,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes ubiblock devices have minor numbers beginning from
-0, allocated dynamically independently of the ubi device/volume
-number. This property becomes useful because, on 32-bit architectures
-with LFS turned off in a userspace program, device minor numbers
-over 8 bits cause stat to return -EOVERFLOW. If the device number is
-high (>1) due to multiple MTD partitions, such an overflow will occur.
-While enabling LFS is clearly a nicer solution, it's often difficult
-to turn on in practice globally as many widely distributed packages
-don't work with LFS on.
 
-Other storage systems have their own workarounds, with SCSI making
-multiple device majors and MMC having a config option for the number
-of partitions per device. A completely dynamic minor numbering is
-simpler than these. It is unlikely that anyone is depending on a
-static minor number since the major is dynamic anyway. In addition,
-ubiblock is still relatively new, so now is the time to make such
-changes.
+Dear Jeff,
 
-Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+Il 16/03/2015 17:02, Jeff Lauruhn (jlauruhn) ha scritto:
+> "What if it is set low while NAND is ready - that is it can accept new commands - but an erase operation is in progress?".  Again, the likelihood is low, in this case a block that was intended to be erased my not be fully erase, it can be fully erased when power returns.  No data will lost because the block was intended to be erased anyway. 
 
----
-Changes in v2: Removed config option and made dynamic minor universal
+AFAIK the real problem here is how to detect that the in-progress erase
+has not been terminated completely
+The block seems to be erased (it contains all 0xFF) but it can lead to
+some failure when writing or reading
+(I have some indirect experience in it, when doing some power-cut test
+on MLC but I cannot say for sure that it was caused by not completed
+erase operation. See also this reference
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits)
 
- drivers/mtd/ubi/block.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+> "Does the erase operation complete anyway?"  There has been a lot of work done to mitigate power loss on NAND, but I haven't ever seen a design from any NAND vendor that is 100%.  Surprise power loss should be avoided on NAND or consider power detection and elegant shutdown circuitry.
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index db2c05b..6faf268 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -48,6 +48,7 @@
- #include <linux/blk-mq.h>
- #include <linux/hdreg.h>
- #include <linux/scatterlist.h>
-+#include <linux/idr.h>
- #include <asm/div64.h>
- 
- #include "ubi-media.h"
-@@ -351,6 +352,18 @@ static struct blk_mq_ops ubiblock_mq_ops = {
- 	.map_queue      = blk_mq_map_queue,
- };
- 
-+static DEFINE_IDR(ubiblock_minor_idr);
-+
-+static int ubiblock_alloc_minor(struct ubiblock *dev)
-+{
-+	return idr_alloc(&ubiblock_minor_idr, dev, 0, 0, GFP_KERNEL);
-+}
-+
-+static void ubiblock_remove_minor(int minor)
-+{
-+	idr_remove(&ubiblock_minor_idr, minor);
-+}
-+
- int ubiblock_create(struct ubi_volume_info *vi)
- {
- 	struct ubiblock *dev;
-@@ -388,7 +401,13 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 
- 	gd->fops = &ubiblock_ops;
- 	gd->major = ubiblock_major;
--	gd->first_minor = dev->ubi_num * UBI_MAX_VOLUMES + dev->vol_id;
-+	gd->first_minor = ubiblock_alloc_minor(dev);
-+	if (gd->first_minor < 0) {
-+		dev_err(disk_to_dev(gd),
-+			"block: dynamic minor allocation failed");
-+		ret = -ENODEV;
-+		goto out_put_disk;
-+	}
- 	gd->private_data = dev;
- 	sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
- 	set_capacity(gd, disk_capacity);
-@@ -405,7 +424,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 	ret = blk_mq_alloc_tag_set(&dev->tag_set);
- 	if (ret) {
- 		dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
--		goto out_put_disk;
-+		goto out_remove_minor;
- 	}
- 
- 	dev->rq = blk_mq_init_queue(&dev->tag_set);
-@@ -443,6 +462,8 @@ out_free_queue:
- 	blk_cleanup_queue(dev->rq);
- out_free_tags:
- 	blk_mq_free_tag_set(&dev->tag_set);
-+out_remove_minor:
-+	ubiblock_remove_minor(gd->first_minor);
- out_put_disk:
- 	put_disk(dev->gd);
- out_free_dev:
-@@ -461,6 +482,7 @@ static void ubiblock_cleanup(struct ubiblock *dev)
- 	blk_cleanup_queue(dev->rq);
- 	blk_mq_free_tag_set(&dev->tag_set);
- 	dev_info(disk_to_dev(dev->gd), "released");
-+	ubiblock_remove_minor(dev->gd->first_minor);
- 	put_disk(dev->gd);
- }
- 
+IIUC we have two workaround here:
+- power detection and clean shutdown. This implies, of course, some
+hardware implementation and a piece of software able to intercept the
+hardware event, block all the NAND operation apart the one that is
+currently running. This is the topic of my initial RFC. I got a first
+implementation but, IMHO, is too strictly related to the NAND controller
+(I've placed the event handler inside it and just lock the NAND access
+by hacking chip->select_chip())
+I think that power fail detection can be useful in some other context
+too inside Linux kernel, so probably it may have a more general
+implementation. However (and unfortunately) I'm not so involved in
+mainline kernel so I don't really know if this topic has been discussed
+or not
+
+- detection of interrupted operations: having some kind of journal that
+record the last running operation and fix it on next reboot. AFAIK this
+is what commercial FTL and flash memory controller do, using a lot of
+patented piece of software.
+I'm not so aware of UBI/MTD internals but I think this is hard to
+implement using a general approach. It should be easier to implement
+such a logic having some additional hardware support (the first that
+come into my mind is battery backed SRAM, e.g. the one that we find
+inside RTC devices)
+
+Best Regards,
+
 -- 
-2.2.0.rc0.207.ga3a616c
+
+Andrea SCIAN
+
+DAVE Embedded Systems
