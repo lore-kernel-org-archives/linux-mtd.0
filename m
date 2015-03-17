@@ -1,35 +1,22 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXmR5-0000Qm-CA
- for linux-mtd@lists.infradead.org; Tue, 17 Mar 2015 08:01:12 +0000
-Message-ID: <5507DF27.7050300@dave-tech.it>
-Date: Tue, 17 Mar 2015 09:00:39 +0100
-From: Andrea Scian <rnd4@dave-tech.it>
-MIME-Version: 1.0
-To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>,
- Andrea Marson - DAVE Embedded Systems <andrea.marson@dave.eu>
-Subject: Re: RFC: detect and manage power cut on MLC NAND
-References: <54FEDC42.2060407@dave-tech.it>
- <CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>
- <1426058414.1567.2.camel@sauron.fi.intel.com> <5500037A.9010509@nod.at>
- <1426064733.1567.6.camel@sauron.fi.intel.com> <55000637.1030702@nod.at>
- <550074D2.1070406@dave-tech.it>
- <0D23F1ECC880A74392D56535BCADD7354973D072@NTXBOIMBX03.micron.com>
- <55007B79.2090705@nod.at>
- <0D23F1ECC880A74392D56535BCADD7354973D2A1@NTXBOIMBX03.micron.com>
- <55016A43.3000201@nod.at>
- <0D23F1ECC880A74392D56535BCADD7354973DAD6@NTXBOIMBX03.micron.com>
- <20150313213134.1b53430b@bbrezillon>
- <0D23F1ECC880A74392D56535BCADD7354973DF0B@NTXBOIMBX03.micron.com>
- <55040370.3040204@dave.eu>
- <0D23F1ECC880A74392D56535BCADD7354973DFE3@NTXBOIMBX03.micron.com>
-In-Reply-To: <0D23F1ECC880A74392D56535BCADD7354973DFE3@NTXBOIMBX03.micron.com>
-Content-Type: text/plain; charset=windows-1252
+ id 1YXnUv-0002Lc-8E
+ for linux-mtd@lists.infradead.org; Tue, 17 Mar 2015 09:09:13 +0000
+Message-ID: <1426583329.1567.117.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: fix missing brace control flow
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>
+Date: Tue, 17 Mar 2015 11:08:49 +0200
+In-Reply-To: <55071F1D.3040308@nod.at>
+References: <1424725642-26270-1-git-send-email-computersforpeace@gmail.com>
+ <54EB99F1.4040608@nod.at> <20150316180844.GK32500@ld-irv-0074>
+ <55071F1D.3040308@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- mtd_mailinglist <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,51 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2015-03-16 at 19:21 +0100, Richard Weinberger wrote:
+> Hi!
+> 
+> Am 16.03.2015 um 19:08 schrieb Brian Norris:
+> > On Mon, Feb 23, 2015 at 10:21:53PM +0100, Richard Weinberger wrote:
+> >> Am 23.02.2015 um 22:07 schrieb Brian Norris:
+> >>> commit 0e707ae79ba3 ("UBI: do propagate positive error codes up") seems
+> >>> to have produced an unintended change in the control flow here.
+> >>>
+> >>> Completely untested, but it looks obvious.
+> >>>
+> >>> Caught by Coverity, which didn't like the indentation. CID 1271184.
+> >>>
+> >>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> >>> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> >>> ---
+> >>> Should go into 4.0, I expect.
+> >>
+> >> Good catch, patch tested and applied!
+> > 
+> > Is this going in 4.0? It fixes a typo in a hastily-applied patch that
+> > made it to 4.0-rc1.
+> 
+> That's the plan.
+> 
+> > I'm also not sure I understand the role of the +linux-next and +master
+> > branches in linux-ubifs.git. Typically 'next' means for the current+1
+> > release (i.e., 4.1), while 'not-next' (i.e., your master branch?) would
+> > be for the current release (4.0). But you have +master based on top of
+> > +linux-next.
+> 
+> I'm using Artem's scheme. next is the branch Linus pulls from.
+> Artem, why are the two UBIFS fixes from master not in next?
 
-Dear Jeff,
+Just wanted to keep them there for several days.
 
-Il 16/03/2015 17:02, Jeff Lauruhn (jlauruhn) ha scritto:
-> "What if it is set low while NAND is ready - that is it can accept new commands - but an erase operation is in progress?".  Again, the likelihood is low, in this case a block that was intended to be erased my not be fully erase, it can be fully erased when power returns.  No data will lost because the block was intended to be erased anyway. 
+> I thought you want to send a pull request to Linus?
 
-AFAIK the real problem here is how to detect that the in-progress erase
-has not been terminated completely
-The block seems to be erased (it contains all 0xFF) but it can lead to
-some failure when writing or reading
-(I have some indirect experience in it, when doing some power-cut test
-on MLC but I cannot say for sure that it was caused by not completed
-erase operation. See also this reference
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits)
+No, I was not going to send this for 4.0. There is one fix which looks
+important, but on the other hand, I did not test it, and no one reported
+this problem and said this patch helps, so I was not going to send it
+earlier.
 
-> "Does the erase operation complete anyway?"  There has been a lot of work done to mitigate power loss on NAND, but I haven't ever seen a design from any NAND vendor that is 100%.  Surprise power loss should be avoided on NAND or consider power detection and elegant shutdown circuitry.
+> If you want, I can do that. I'm anyway preparing some UBI fixes.
 
-IIUC we have two workaround here:
-- power detection and clean shutdown. This implies, of course, some
-hardware implementation and a piece of software able to intercept the
-hardware event, block all the NAND operation apart the one that is
-currently running. This is the topic of my initial RFC. I got a first
-implementation but, IMHO, is too strictly related to the NAND controller
-(I've placed the event handler inside it and just lock the NAND access
-by hacking chip->select_chip())
-I think that power fail detection can be useful in some other context
-too inside Linux kernel, so probably it may have a more general
-implementation. However (and unfortunately) I'm not so involved in
-mainline kernel so I don't really know if this topic has been discussed
-or not
-
-- detection of interrupted operations: having some kind of journal that
-record the last running operation and fix it on next reboot. AFAIK this
-is what commercial FTL and flash memory controller do, using a lot of
-patented piece of software.
-I'm not so aware of UBI/MTD internals but I think this is hard to
-implement using a general approach. It should be easier to implement
-such a logic having some additional hardware support (the first that
-come into my mind is battery backed SRAM, e.g. the one that we find
-inside RTC devices)
-
-Best Regards,
-
--- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
+Yes, please, merge master to linux-next.
