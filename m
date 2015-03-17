@@ -1,18 +1,28 @@
-Received: from mail-ig0-x22a.google.com ([2607:f8b0:4001:c05::22a])
+Received: from mx0b-00176a03.pphosted.com ([67.231.157.48])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXvRC-0004PH-IX
- for linux-mtd@lists.infradead.org; Tue, 17 Mar 2015 17:37:55 +0000
-Received: by ignm3 with SMTP id m3so57432114ign.0
- for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2015 10:37:33 -0700 (PDT)
-Sender: Daniel Ehrenberg <dehrenberg@google.com>
-From: Dan Ehrenberg <dehrenberg@chromium.org>
-To: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, ezequiel@vanguardiasur.com.ar
-Subject: [PATCH v3] UBI: block: Dynamically allocate minor numbers
-Date: Tue, 17 Mar 2015 10:37:26 -0700
-Message-Id: <1426613846-36598-1-git-send-email-dehrenberg@chromium.org>
-Cc: gwendal@chromium.org, Dan Ehrenberg <dehrenberg@chromium.org>
+ id 1YXwH6-0005Rc-8l
+ for linux-mtd@lists.infradead.org; Tue, 17 Mar 2015 18:31:33 +0000
+Received: from pps.filterd (m0048299.ppops.net [127.0.0.1])
+ by m0048299.ppops.net-00176a03. (8.14.7/8.14.7) with SMTP id t2HIKXVo007400
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2015 14:31:06 -0400
+Received: from alpmlip13.e2k.ad.ge.com (n165-156-000-000.static.ge.com
+ [165.156.5.1] (may be forged))
+ by m0048299.ppops.net-00176a03. with ESMTP id 1t6s4h00nj-9
+ (version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2015 14:31:06 -0400
+Received: from [3.26.68.149] (unknown [3.26.68.149])
+ by selma.edi.geip.ge.com (Postfix) with ESMTP id 2D44FE1893
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2015 18:31:02 +0000 (GMT)
+Message-ID: <550872E5.7040106@ge.com>
+Date: Tue, 17 Mar 2015 18:31:01 +0000
+From: Renaud Barbier <renaud.barbier@ge.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Re: UBI/UBIFS: debugging help
+References: <5503285A.5090500@ge.com>
+In-Reply-To: <5503285A.5090500@ge.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,94 +32,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes ubiblock devices have minor numbers beginning from
-0, allocated dynamically independently of the ubi device/volume
-number. This property becomes useful because, on 32-bit architectures
-with LFS turned off in a userspace program, device minor numbers
-over 8 bits cause stat to return -EOVERFLOW. If the device number is
-high (>1) due to multiple MTD partitions, such an overflow will occur.
-While enabling LFS is clearly a nicer solution, it's often difficult
-to turn on in practice globally as many widely distributed packages
-don't work with LFS on.
+ I have added debug messages in the Linux UBIFS driver (I am using Linux
+3.14) and noticed as well that read_block returns -ENOENT several times
+toward the end of the copy of a file (512KB). Though, the Linux system
+is able to read the whole file correctly (checksum is correct).
 
-Other storage systems have their own workarounds, with SCSI making
-multiple device majors and MMC having a config option for the number
-of partitions per device. A completely dynamic minor numbering is
-simpler than these. It is unlikely that anyone is depending on a
-static minor number since the major is dynamic anyway. In addition,
-ubiblock is still relatively new, so now is the time to make such
-changes.
+The boot loader however bails out on error.
 
-Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+The read_block  issue disappears if I delete, copy it back and remount
+the UBIFS file system.
 
----
-Changes in v2: Removed config option and made dynamic minor universal
-Changes in v3: Minor code simplification
+Below is the way I create the UBI image before formatting the SPI-nor:
+# mkfs.ubifs -vv -F -d boot -m 1 -e 65408 -c 380  -U -x lzo -o boot.img
+# ubinize -v -o test3_nor.img -p 64KiB -m 1 ubinize.cfg
 
- drivers/mtd/ubi/block.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+with ubinize.cfg:
+# Section header
+[boot]
+mode=ubi
+# Source image
+image=boot.img
+# Volume ID in UBI image
+vol_id=0
+# Volume size
+vol_size=25MiB
+# Allow for static resize
+vol_type=dynamic
+# Volume name
+vol_name=boot
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index db2c05b..e0bb501 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -48,6 +48,7 @@
- #include <linux/blk-mq.h>
- #include <linux/hdreg.h>
- #include <linux/scatterlist.h>
-+#include <linux/idr.h>
- #include <asm/div64.h>
- 
- #include "ubi-media.h"
-@@ -351,6 +352,8 @@ static struct blk_mq_ops ubiblock_mq_ops = {
- 	.map_queue      = blk_mq_map_queue,
- };
- 
-+static DEFINE_IDR(ubiblock_minor_idr);
-+
- int ubiblock_create(struct ubi_volume_info *vi)
- {
- 	struct ubiblock *dev;
-@@ -388,7 +391,13 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 
- 	gd->fops = &ubiblock_ops;
- 	gd->major = ubiblock_major;
--	gd->first_minor = dev->ubi_num * UBI_MAX_VOLUMES + dev->vol_id;
-+	gd->first_minor = idr_alloc(&ubiblock_minor_idr, dev, 0, 0, GFP_KERNEL);
-+	if (gd->first_minor < 0) {
-+		dev_err(disk_to_dev(gd),
-+			"block: dynamic minor allocation failed");
-+		ret = -ENODEV;
-+		goto out_put_disk;
-+	}
- 	gd->private_data = dev;
- 	sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
- 	set_capacity(gd, disk_capacity);
-@@ -405,7 +414,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 	ret = blk_mq_alloc_tag_set(&dev->tag_set);
- 	if (ret) {
- 		dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
--		goto out_put_disk;
-+		goto out_remove_minor;
- 	}
- 
- 	dev->rq = blk_mq_init_queue(&dev->tag_set);
-@@ -443,6 +452,8 @@ out_free_queue:
- 	blk_cleanup_queue(dev->rq);
- out_free_tags:
- 	blk_mq_free_tag_set(&dev->tag_set);
-+out_remove_minor:
-+	idr_remove(&ubiblock_minor_idr, gd->first_minor);
- out_put_disk:
- 	put_disk(dev->gd);
- out_free_dev:
-@@ -461,6 +472,7 @@ static void ubiblock_cleanup(struct ubiblock *dev)
- 	blk_cleanup_queue(dev->rq);
- 	blk_mq_free_tag_set(&dev->tag_set);
- 	dev_info(disk_to_dev(dev->gd), "released");
-+	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
- 	put_disk(dev->gd);
- }
- 
--- 
-2.2.0.rc0.207.ga3a616c
+So in summary, if I ubiformat the partition from Linux with a ubi image,
+the Linux UBIFS driver function read_block returns ENOENT during file
+copy and it completes.
+However, if I copy a file to the UBIFS partition and read back after
+re-mounting there is no issue.
+
+Would somebody know whether the parameters to mkfs.ubifs and ubinize
+have anything to do with read_block failing?
+
+I created UBI images before for a flash with 128KB sectors and not seen
+this problem.
+
+Cheers.
+
+
+On 13/03/2015 18:11, Renaud Barbier wrote:
+> My platform is based on a ARM Cortex-A9 and boots barebox from a spi-nor.
+> 
+> I have tested UBI/UBIFS from Linux on this platform with no issue after
+> disabling 4KB support for the spi nor I am using.
+> 
+> However, I got problem on the boot loader side. UBI/UBIFS has been
+> ported by the barebox community from Linux and I used it successfully
+> on a previous project on a PPC platform.
+> 
+> On the ARM platform I can ubiattach, mount the mtd partition and copy a
+> small file (~65KB spanning two sectors). The issue comes when I copy out
+> a larger file (512KB) out. It fails to copy the whole file.
+> 
+> At the point of failure, ubifs_tnc_locate fails resulting in the
+> function read_block to return -ENOENT.
+> 
+> Debugging shows that in the function ubifs_search_zbranch no keys match
+> is found prior to the failure.
+> 
+> I know this list is called linux-mtd but I was hoping that somebody
+> could give me a pointer on where to look next. I am currently going
+> through git logs and mailing list.
+> 
+> I am pretty confident the boot loader spi driver is working properly as
+> raw write-read-compare have not failed.
+> 
+> cheers.
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
