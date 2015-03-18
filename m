@@ -1,21 +1,22 @@
-Received: from mail.comet.ch ([193.135.218.122])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbULa-0002Xi-0V
- for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 13:30:51 +0000
-From: "Morand, Guy" <Guy.Morand@comet.ch>
-To: Richard Weinberger <richard@nod.at>
-Subject: UBIFS corruption and UBI + unstable bit questions
-Message-ID: <68AC191B3EB2874F99C36CD9CA3A6D42196181@cgpmbx01.comet.ch>
-References: <68AC191B3EB2874F99C36CD9CA3A6D42195CB0@cgpmbx01.comet.ch>
- <CAFLxGvzqfmFqRLts5Swa-tintZzJksb6PsRXaNBX9KaRBpXMvg@mail.gmail.com>
- <68AC191B3EB2874F99C36CD9CA3A6D42195ED8@cgpmbx01.comet.ch>
- <55144D47.3000203@nod.at>
-In-Reply-To: <55144D47.3000203@nod.at>
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YYClC-00072m-Ll
+ for linux-mtd@lists.infradead.org; Wed, 18 Mar 2015 12:07:43 +0000
+Message-ID: <55096A75.8080207@nod.at>
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Andrea Marson <andrea.marson@dave.eu>
+Subject: Re: RFC: detect and manage power cut on MLC NAND (linux-mtd Digest,
+ Vol 144, Issue 70)
+References: <mailman.37176.1426610573.22890.linux-mtd@lists.infradead.org>	<mailman.37176.1426610573.22890.linux-mtd.{ec43ae5e-9450-4d5f-9aa7-4de61fefcb43}.0@lists.infradead.org>	<0D23F1ECC880A74392D56535BCADD7354973E51A@NTXBOIMBX03.micron.com>	<55093B1E.2050805@dave.eu>
+ <20150318100645.1babecfd@bbrezillon>
+In-Reply-To: <20150318100645.1babecfd@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: Andrea Scian <rnd4@dave-tech.it>,
+ "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
+ linux-mtd@lists.infradead.org, "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +25,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Fri, 27 Mar 2015 13:30:51 -0000
+Date: Wed, 18 Mar 2015 12:07:44 -0000
 
-SGksDQoNClRoYW5rcyBmb3IgY2xhcmlmeWluZyENCg0KPiBCdXQgaXQgZGVwZW5kcyBvbiB0aGUg
-dHlwZSBvZiB0aGUgY29ycnVwdGlvbi4NCldoYXQgZG8geW91IG1lYW4gYnkgInR5cGUgb2YgdGhl
-IGNvcnJ1cHRpb24iLiBJcyBpdCBhYm91dCBhIFBFQiBjb250YWluaW5nIHRoZSANCnZvbHVtZSB0
-YWJsZSBjb3JydXB0aW5nIGV2ZXJ5IHZvbHVtZXMgb24gdGhlIE1URCBkZXZpY2U/IEkgY2FuJ3Qg
-aW1hZ2luZSBhIFBFQg0KY29udGFpbmluZyAicmVndWxhciBkYXRhIiBjb3JydXB0aW5nIHRoZSB3
-aG9sZSBNVEQgZGV2aWNlIG9yIGNvcnJlY3QgbWUgaWYgSSdtIA0Kd3JvbmchIEkgZ3Vlc3MgdGhp
-cyBzaG91bGQgYmUgZXh0cmVtZWx5IHJhcmUgYXMgd2UgZG9uJ3QgdXBkYXRlIHRoZSB2b2x1bWUg
-dGFibGUgDQpldmVyeSBkYXkgLi4uDQoNCj4gT2theS4gVGhhdCdzIHdoYXQgSSB0aG91Z2h0LiBJ
-J3ZlIG5ldmVyIHNlZW4gdGhlIGlzc3VlIG9uIHNlcmlvdXMgaGFyZHdhcmUuDQpTZXJpb3VzIGhh
-cmR3YXJlLCBkb2VzIHRoYXQgbWVhbiB3aXRoIHNlcmlvdXNseSBzZWxlY3QgY29tcG9uZW50cz8N
-Cg0KS2luZCByZWdhcmRzLA0KDQpHdXkNCg0KLS0tLS1VcnNwcsO8bmdsaWNoZSBOYWNocmljaHQt
-LS0tLQ0KVm9uOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJkQG5vZC5hdF0gDQpH
-ZXNlbmRldDogRG9ubmVyc3RhZywgMjYuIE3DpHJ6IDIwMTUgMTk6MTgNCkFuOiBNb3JhbmQsIEd1
-eQ0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpCZXRyZWZmOiBSZTogVUJJRlMg
-Y29ycnVwdGlvbiBhbmQgVUJJICsgdW5zdGFibGUgYml0IHF1ZXN0aW9ucw0KDQpIaSENCg0KQW0g
-MjYuMDMuMjAxNSB1bSAxODoxOCBzY2hyaWViIE1vcmFuZCwgR3V5Og0KPj4gQ2FuIHlvdSBwbGVh
-c2UgYmUgbW9yZSBzcGVjaWZpYy4NCj4+IFdoYXQgZXhhY3RseSBkbyB5b3UgbWVhbiBieSAib25s
-eSB0aGUgcGFydGl0aW9uIj8NCj4+IEFsc28gd2hhdCBkbyB5b3UgbWVhbiBieSAiY29ycnVwdGVk
-Ij8NCj4gDQo+IFNvcnJ5LCBub21lbmNsYXR1cmUgcHJvYmxlbSAuLi4gSSBtZWFuIGJ5IGEgdm9s
-dW1lIHRoZSBsYXllciBvbiB0b3Agb2YgdGhlIE1URCANCj4gZGV2aWNlIChVQkkpOg0KPiB1Ymlm
-b3JtYXQgL2Rldi9tdGQxDQo+IHViaWF0dGFjaCAvZGV2L3ViaV9jdHJsIC1tIDENCj4gDQo+IEJ5
-IHBhcnRpdGlvbiwgSSBtZWFuIGFjdHVhbGx5IGEgdm9sdW1lIG9uIHRvcCBvZiBVQkkgKFVCSUZT
-KToNCj4gdWJpbWt2b2wgL2Rldi91YmkwIC1OIHBhcnRpdGlvbjEgLXMgNjRNaUINCj4gdWJpbWt2
-b2wgL2Rldi91YmkwIC1OIHBhcnRpdGlvbjIgLW0NCg0KU28sIGFuIFVCSSB2b2x1bWUuIDotKQ0K
-DQo+IFRoZW4gaWYgdGhlcmUgaXMgYSAidW5zdGFibGUgYml0IiBvbiBwYXJ0aXRpb24xLCBpcyBh
-bHNvIHRoZSBwYXJ0aXRpb24yIA0KPiBjb3JydXB0ZWQ/IFRoaXMgbWVhbnMgdGhlcmUgaXMgbm90
-aGluZyBJIGNhbiBkbyB0byByZXN0b3JlIGl0Lg0KDQpObywgVUJJIHRyaWVzIGhhcmQgdG8gcHJl
-c2VydmUgZGF0YS4NCkJ1dCBpdCBkZXBlbmRzIG9uIHRoZSB0eXBlIG9mIHRoZSBjb3JydXB0aW9u
-Lg0KDQo+PiBVQkkvRlMgaXMgbm90IGEgbWFnaWMgYnVsbGV0LiBQZW9wbGUgd2hvICpyZWFsbHkq
-IGNhcmUgYWJvdXQgcG93ZXIgY3V0IHNhZmV0eQ0KPj4gYXR0YWNrIHRoZSBwcm9ibGVtIGFsc28g
-d2l0aCB0aGVpciBoYXJkd2FyZS4NCj4gWWllYWggcmlnaHQsIEkgdW5kZXJzdGFuZC4uLiBJJ3Zl
-IHNlZW4gc29tZSBoYXJkd2FyZSB3aXRoIHN1cGVyIGNhcHMgdGhhdCBnaXZlcyANCj4gc29tZSB0
-aW1lIHRvIExpbnV4IHRvIHNodXRkb3duIGNvcnJlY3RseSwgSSByZWFsbHkgbG92ZSBpdCENCg0K
-SXQgaXMgbm90IHJlYWxseSBMaW51eCB3aGljaCBuZWVkcyB0aW1lIHRvIHNodXRkb3duLCBtb3N0
-bHkgb3RoZXIgaGFyZHdhcmUgY29tcG9uZW50cy4NClBlb3BsZSB3aG8gY2FyZSBrbm93IGV4YWN0
-bHkgd2hpY2ggY29tcG9uZW50cyBuZWVkIHNvbWUgdGltZSwgdGhlIE5BTkQgY2hpcCBpcyBvbmx5
-IG9uZSBvZiB0aGVtLg0KQWxzbyB0aGV5IGRvbid0IG9ubHkgY2FyZSBhYm91dCBhIHBsYWluIHBv
-d2VyIGN1dC4gWW91IGFsc28gbmVlZCB0byB0YWtlIGNhcmUgb2Ygdm9sdGFnZSB2YXJpYXRpb25z
-DQpkdXJpbmcgYSBwb3dlciBjdXQuDQoNCj4+IEFyZSB5b3UgYWJsZSB0byB0cmlnZ2VyIHRoaXMg
-cHJvYmxlbT8NCj4gTm8sIEknbSBqdXN0IHRoaW5raW5nIGFib3V0IGEgbmljZSBwYXJ0aXRpb25p
-bmcgc3RyYXRlZ3kgb24gbXkgcGxhdGZvcm0gdG8gDQo+IGF2b2lkIGFzIG11Y2ggY29ycnVwdGlv
-bnMgYXMgcG9zc2libGUgd2l0aCB0aGUgaGFyZHdhcmUgSSBoYXZlIGluIGhhbmRzIQ0KDQpPa2F5
-LiBUaGF0J3Mgd2hhdCBJIHRob3VnaHQuIEkndmUgbmV2ZXIgc2VlbiB0aGUgaXNzdWUgb24gc2Vy
-aW91cyBoYXJkd2FyZS4NCg0KVGhhbmtzLA0KLy9yaWNoYXJkDQo=
+Am 18.03.2015 um 10:06 schrieb Boris Brezillon:
+>> 1) IIUC read/program disturb effects exhibit at block level.
+>> In a typical embedded linux systems there are software parts - 
+>> bootloader, kernel image etc. - that virtually are never changed (almost 
+>> ...) but are read many times. Other parts - application libraries, log 
+>> files etc. - are read and wrote many times instead.
+>> If these two kinds of software are stored in different MTD partitions - 
+>> ket's say partition A for bootloader, kernel etc. and partition B for 
+>> application libraries, log files etc. - can we say that read/write 
+>> operations performed on partition B have no disturb effects on partition A?
+> 
+> AFAIK, read/write disturb effects only occur on pages of the same
+> block, so we shouldn't see bitflips on partition A caused by read/write
+> on partition B.
+
+I already saw corruptions on nearby blocks but I'm not sure if really
+plain read disturb was the root cause as this NAND chips showed in general
+funny symptoms.
+
+Jeff, can you tell us more?
+
+Thanks,
+//richard
