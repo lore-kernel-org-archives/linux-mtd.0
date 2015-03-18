@@ -1,25 +1,22 @@
-Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYFNA-0001aY-UD
- for linux-mtd@lists.infradead.org; Wed, 18 Mar 2015 14:55:06 +0000
-Date: Wed, 18 Mar 2015 09:54:25 -0500
-From: Ben Shelton <ben.shelton@ni.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/1] UBIFS: fix incorrect unlocking handling
-Message-ID: <20150318145425.GA20004@bshelton-desktop>
-References: <1426644566-29754-1-git-send-email-tsgatesv@gmail.com>
- <20150318031858.GO32500@ld-irv-0074>
+ id 1YYGv7-0007BT-QO
+ for linux-mtd@lists.infradead.org; Wed, 18 Mar 2015 16:34:15 +0000
+Message-ID: <5509A8EA.10201@nod.at>
+Date: Wed, 18 Mar 2015 17:33:46 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <20150318031858.GO32500@ld-irv-0074>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: taesoo@gatech.edu, Subodh Nijsure <snijsure@grid-net.com>,
- dedekind1@gmail.com, sanidhya@gatech.edu, adrian.hunter@intel.com,
- linux-kernel@vger.kernel.org, Terry Wilcox <terry.wilcox@ni.com>,
- linux-mtd@lists.infradead.org, blee@gatech.edu,
- Taesoo Kim <tsgatesv@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- Gratian Crisan <gratian.crisan@ni.com>, csong84@gatech.edu,
- changwoo@gatech.edu, Brad Mouring <brad.mouring@ni.com>
+To: Tanya Brokhman <tlinder@codeaurora.org>, ricard.wanderlof@axis.com
+Subject: Re: [PATCH 2/2] ubi-utils: ubinize: Add fastmap suport to image
+ creation
+References: <1426668763-6463-1-git-send-email-tlinder@codeaurora.org>
+ <550951C9.2040509@nod.at> <550956D7.9030309@codeaurora.org>
+ <55095E45.8030401@nod.at> <55096BA6.1030708@codeaurora.org>
+ <55096D6D.5000707@nod.at> <5509725F.6050606@codeaurora.org>
+In-Reply-To: <5509725F.6050606@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,101 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/17, Brian Norris wrote:
-> On Tue, Mar 17, 2015 at 10:09:26PM -0400, Taesoo Kim wrote:
-> > When ubifs_init_security() fails, 'ui_mutex' is incorrectly
-> > unlocked and incorrectly restores 'i_size'. There are four
-> > such places that were introduce by the last commit.
+Am 18.03.2015 um 13:41 schrieb Tanya Brokhman:
+> (thinking out-loud, trying not to reveal our flasher details)
+> UBI aware flasher has to:
+> 1. scan partition and collect ec values
+> 2. for each PEB of the image: update the ec_header, erase PEB and flash the image
+> 3. for remaining empty PEBs erase and write ec_heaser
 > 
-> "The last commit" is not very descriptive. Are you speaking of this
-> commit?
+> For generating FM in flasher we need to update #2 and while flashing the image construct the FM data in memory. (what PEB, for what volume etc). this is O(1)
 > 
-> commit d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53
-> Author: Subodh Nijsure <snijsure@grid-net.com>
-> Date:   Fri Oct 31 13:50:30 2014 -0500
+> When we have the layout in memory we need to construct the actual FM data => go over all lists => O(number of dev PEBs) => probably can be neglected as well.
 > 
->     UBIFS: Add security.* XATTR support for the UBIFS
-> 
-> CC'ing authors/reviewers.
-> 
-> Brian
+> Ok, I take it back: run time wont be effected. What will be effected is memory consumption.
 
-This is indeed a bug, and this patch looks like the right fix.  Good catch!
+Yeah, but a smart flasher would of course not keep the whole image in memory.
 
-Reviewed-by: Ben Shelton <ben.shelton@ni.com>
+> If I remember correctly, when we discussed this whole idea a while back you mentioned that a lot of users use their own proprietary flasher. So from your experience: you think
+> users will prefer to have a libfastmap and not ubinize enhancement?
+> Maybe implementing libfastmap to be added to any flasher isn't such a bad idea. Then the whole "ubi awareness" can be implemented there.
+> I wasn't aware of the fact that ubinize is skipped. Is this common?
 
-Ben
+I've seen that more than once. Customers tend to use their own non-trivial tools. ;)
+If we implement libfastmap ubinize could also use it (plus a big fat warning that you'll need a fastmap aware flasher).
 
-> 
-> > Signed-off-by: Taesoo Kim <tsgatesv@gmail.com>
-> > ---
-> >  fs/ubifs/dir.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> > index 0fa6c80..5b24bc4 100644
-> > --- a/fs/ubifs/dir.c
-> > +++ b/fs/ubifs/dir.c
-> > @@ -272,7 +272,7 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
-> > 
-> >  	err = ubifs_init_security(dir, inode, &dentry->d_name);
-> >  	if (err)
-> > -		goto out_cancel;
-> > +		goto out_inode;
-> > 
-> >  	mutex_lock(&dir_ui->ui_mutex);
-> >  	dir->i_size += sz_change;
-> > @@ -292,6 +292,7 @@ out_cancel:
-> >  	dir->i_size -= sz_change;
-> >  	dir_ui->ui_size = dir->i_size;
-> >  	mutex_unlock(&dir_ui->ui_mutex);
-> > +out_inode:
-> >  	make_bad_inode(inode);
-> >  	iput(inode);
-> >  out_budg:
-> > @@ -732,7 +733,7 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
-> > 
-> >  	err = ubifs_init_security(dir, inode, &dentry->d_name);
-> >  	if (err)
-> > -		goto out_cancel;
-> > +		goto out_inode;
-> > 
-> >  	mutex_lock(&dir_ui->ui_mutex);
-> >  	insert_inode_hash(inode);
-> > @@ -757,6 +758,7 @@ out_cancel:
-> >  	dir_ui->ui_size = dir->i_size;
-> >  	drop_nlink(dir);
-> >  	mutex_unlock(&dir_ui->ui_mutex);
-> > +out_inode:
-> >  	make_bad_inode(inode);
-> >  	iput(inode);
-> >  out_budg:
-> > @@ -816,7 +818,7 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
-> > 
-> >  	err = ubifs_init_security(dir, inode, &dentry->d_name);
-> >  	if (err)
-> > -		goto out_cancel;
-> > +		goto out_inode;
-> > 
-> >  	mutex_lock(&dir_ui->ui_mutex);
-> >  	dir->i_size += sz_change;
-> > @@ -836,6 +838,7 @@ out_cancel:
-> >  	dir->i_size -= sz_change;
-> >  	dir_ui->ui_size = dir->i_size;
-> >  	mutex_unlock(&dir_ui->ui_mutex);
-> > +out_inode:
-> >  	make_bad_inode(inode);
-> >  	iput(inode);
-> >  out_budg:
-> > @@ -896,7 +899,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
-> > 
-> >  	err = ubifs_init_security(dir, inode, &dentry->d_name);
-> >  	if (err)
-> > -		goto out_cancel;
-> > +		goto out_inode;
-> > 
-> >  	mutex_lock(&dir_ui->ui_mutex);
-> >  	dir->i_size += sz_change;
-> > --
-> > 2.3.3
-> > 
+Thanks,
+//richard
