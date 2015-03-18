@@ -1,28 +1,17 @@
-Received: from mx0b-00176a03.pphosted.com ([67.231.157.48])
+Received: from mail-qc0-x231.google.com ([2607:f8b0:400d:c01::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXwH6-0005Rc-8l
- for linux-mtd@lists.infradead.org; Tue, 17 Mar 2015 18:31:33 +0000
-Received: from pps.filterd (m0048299.ppops.net [127.0.0.1])
- by m0048299.ppops.net-00176a03. (8.14.7/8.14.7) with SMTP id t2HIKXVo007400
- for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2015 14:31:06 -0400
-Received: from alpmlip13.e2k.ad.ge.com (n165-156-000-000.static.ge.com
- [165.156.5.1] (may be forged))
- by m0048299.ppops.net-00176a03. with ESMTP id 1t6s4h00nj-9
- (version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2015 14:31:06 -0400
-Received: from [3.26.68.149] (unknown [3.26.68.149])
- by selma.edi.geip.ge.com (Postfix) with ESMTP id 2D44FE1893
- for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2015 18:31:02 +0000 (GMT)
-Message-ID: <550872E5.7040106@ge.com>
-Date: Tue, 17 Mar 2015 18:31:01 +0000
-From: Renaud Barbier <renaud.barbier@ge.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: UBI/UBIFS: debugging help
-References: <5503285A.5090500@ge.com>
-In-Reply-To: <5503285A.5090500@ge.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1YY3Qe-0003YA-H5
+ for linux-mtd@lists.infradead.org; Wed, 18 Mar 2015 02:09:53 +0000
+Received: by qcbkw5 with SMTP id kw5so26897769qcb.2
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2015 19:09:29 -0700 (PDT)
+From: Taesoo Kim <tsgatesv@gmail.com>
+To: dedekind1@gmail.com, adrian.hunter@intel.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] UBIFS: fix incorrect unlocking handling
+Date: Tue, 17 Mar 2015 22:09:26 -0400
+Message-Id: <1426644566-29754-1-git-send-email-tsgatesv@gmail.com>
+Cc: taesoo@gatech.edu, sanidhya@gatech.edu, Taesoo Kim <tsgatesv@gmail.com>,
+ blee@gatech.edu, csong84@gatech.edu, changwoo@gatech.edu
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,88 +21,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- I have added debug messages in the Linux UBIFS driver (I am using Linux
-3.14) and noticed as well that read_block returns -ENOENT several times
-toward the end of the copy of a file (512KB). Though, the Linux system
-is able to read the whole file correctly (checksum is correct).
+When ubifs_init_security() fails, 'ui_mutex' is incorrectly
+unlocked and incorrectly restores 'i_size'. There are four
+such places that were introduce by the last commit.
 
-The boot loader however bails out on error.
+Signed-off-by: Taesoo Kim <tsgatesv@gmail.com>
+---
+ fs/ubifs/dir.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-The read_block  issue disappears if I delete, copy it back and remount
-the UBIFS file system.
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 0fa6c80..5b24bc4 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -272,7 +272,7 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 
-Below is the way I create the UBI image before formatting the SPI-nor:
-# mkfs.ubifs -vv -F -d boot -m 1 -e 65408 -c 380  -U -x lzo -o boot.img
-# ubinize -v -o test3_nor.img -p 64KiB -m 1 ubinize.cfg
+ 	err = ubifs_init_security(dir, inode, &dentry->d_name);
+ 	if (err)
+-		goto out_cancel;
++		goto out_inode;
 
-with ubinize.cfg:
-# Section header
-[boot]
-mode=ubi
-# Source image
-image=boot.img
-# Volume ID in UBI image
-vol_id=0
-# Volume size
-vol_size=25MiB
-# Allow for static resize
-vol_type=dynamic
-# Volume name
-vol_name=boot
+ 	mutex_lock(&dir_ui->ui_mutex);
+ 	dir->i_size += sz_change;
+@@ -292,6 +292,7 @@ out_cancel:
+ 	dir->i_size -= sz_change;
+ 	dir_ui->ui_size = dir->i_size;
+ 	mutex_unlock(&dir_ui->ui_mutex);
++out_inode:
+ 	make_bad_inode(inode);
+ 	iput(inode);
+ out_budg:
+@@ -732,7 +733,7 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 
-So in summary, if I ubiformat the partition from Linux with a ubi image,
-the Linux UBIFS driver function read_block returns ENOENT during file
-copy and it completes.
-However, if I copy a file to the UBIFS partition and read back after
-re-mounting there is no issue.
+ 	err = ubifs_init_security(dir, inode, &dentry->d_name);
+ 	if (err)
+-		goto out_cancel;
++		goto out_inode;
 
-Would somebody know whether the parameters to mkfs.ubifs and ubinize
-have anything to do with read_block failing?
+ 	mutex_lock(&dir_ui->ui_mutex);
+ 	insert_inode_hash(inode);
+@@ -757,6 +758,7 @@ out_cancel:
+ 	dir_ui->ui_size = dir->i_size;
+ 	drop_nlink(dir);
+ 	mutex_unlock(&dir_ui->ui_mutex);
++out_inode:
+ 	make_bad_inode(inode);
+ 	iput(inode);
+ out_budg:
+@@ -816,7 +818,7 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
 
-I created UBI images before for a flash with 128KB sectors and not seen
-this problem.
+ 	err = ubifs_init_security(dir, inode, &dentry->d_name);
+ 	if (err)
+-		goto out_cancel;
++		goto out_inode;
 
-Cheers.
+ 	mutex_lock(&dir_ui->ui_mutex);
+ 	dir->i_size += sz_change;
+@@ -836,6 +838,7 @@ out_cancel:
+ 	dir->i_size -= sz_change;
+ 	dir_ui->ui_size = dir->i_size;
+ 	mutex_unlock(&dir_ui->ui_mutex);
++out_inode:
+ 	make_bad_inode(inode);
+ 	iput(inode);
+ out_budg:
+@@ -896,7 +899,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
 
+ 	err = ubifs_init_security(dir, inode, &dentry->d_name);
+ 	if (err)
+-		goto out_cancel;
++		goto out_inode;
 
-On 13/03/2015 18:11, Renaud Barbier wrote:
-> My platform is based on a ARM Cortex-A9 and boots barebox from a spi-nor.
-> 
-> I have tested UBI/UBIFS from Linux on this platform with no issue after
-> disabling 4KB support for the spi nor I am using.
-> 
-> However, I got problem on the boot loader side. UBI/UBIFS has been
-> ported by the barebox community from Linux and I used it successfully
-> on a previous project on a PPC platform.
-> 
-> On the ARM platform I can ubiattach, mount the mtd partition and copy a
-> small file (~65KB spanning two sectors). The issue comes when I copy out
-> a larger file (512KB) out. It fails to copy the whole file.
-> 
-> At the point of failure, ubifs_tnc_locate fails resulting in the
-> function read_block to return -ENOENT.
-> 
-> Debugging shows that in the function ubifs_search_zbranch no keys match
-> is found prior to the failure.
-> 
-> I know this list is called linux-mtd but I was hoping that somebody
-> could give me a pointer on where to look next. I am currently going
-> through git logs and mailing list.
-> 
-> I am pretty confident the boot loader spi driver is working properly as
-> raw write-read-compare have not failed.
-> 
-> cheers.
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+ 	mutex_lock(&dir_ui->ui_mutex);
+ 	dir->i_size += sz_change;
+--
+2.3.3
