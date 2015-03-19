@@ -1,29 +1,23 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYdSI-0001vA-Hu
- for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 16:37:59 +0000
-Received: by pacwe9 with SMTP id we9so80378612pac.1
- for <linux-mtd@lists.infradead.org>; Thu, 19 Mar 2015 09:37:37 -0700 (PDT)
-Message-ID: <550AFB29.9040403@gmail.com>
-Date: Thu, 19 Mar 2015 09:36:57 -0700
-From: Florian Fainelli <f.fainelli@gmail.com>
+ id 1YYdja-0008N7-Hu
+ for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 16:55:51 +0000
+Message-ID: <550AFF79.1030105@oracle.com>
+Date: Thu, 19 Mar 2015 11:55:21 -0500
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 3/4] mtd: nand: add NAND driver for Broadcom STB NAND
- controller
-References: <1426733358-15596-1-git-send-email-computersforpeace@gmail.com>
- <1426733358-15596-4-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1426733358-15596-4-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset=utf-8
+To: Boaz Harrosh <boaz@plexistor.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [Jfs-discussion] [PATCH] fs: cleanup slight list_entry abuse
+References: <1426764485-13637-1-git-send-email-linux@rasmusvillemoes.dk>
+ <550AF51C.9000600@plexistor.com>
+In-Reply-To: <550AF51C.9000600@plexistor.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>,
- Scott Branden <sbranden@broadcom.com>, Corneliu Doban <cdoban@broadcom.com>,
- Ray Jui <rjui@broadcom.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
- Jonathan Richardson <jonathar@broadcom.com>,
- Anatol Pomazao <anatol@google.com>, Gregory Fong <gregory.0xf0@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, Dmitry Torokhov <dtor@google.com>
+Cc: codalist@TELEMANN.coda.cs.cmu.edu, jfs-discussion@lists.sourceforge.net,
+ linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,20 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18/03/15 19:49, Brian Norris wrote:
-> This core originated in Set-Top Box chips (BCM7xxx) but is used in a
-> variety of other Broadcom chips, including some BCM63xxx, BCM33xx, and
-> iProc/Cygnus. It's been used only on ARM and MIPS SoCs, so restrict it
-> to those architectures.
+On 03/19/2015 11:11 AM, Boaz Harrosh wrote:
+> On 03/19/2015 01:28 PM, Rasmus Villemoes wrote:
+>> list_entry is just a wrapper for container_of, but it is arguably
+>> wrong (and slightly confusing) to use it when the pointed-to struct
+>> member is not a struct list_head. Use container_of directly instead.
+>>
+>> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+>> ---
+>> Most of these predate git. If I'm the only one who has been confused
+>> by this in 10 years, maybe it's not worth the churn.
+>>
 > 
-> There are multiple revisions of this core throughout the years, and
-> almost every version broke register compatibility in some small way, but
-> with some effort, this driver is able to support v4.0, v5.0, v6.x, v7.0,
-> and v7.1. It's been tested on v5.0, v6.0, v7.0, and v7.1 recently, so
-> there hopefully are no more lurking inconsistencies.
+> No you are not alone here. I have seen this once as well but did not have
+> the gumption to send a fix. (The sysv.h one)
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> I totally agree with this patch. (So many of them, bread crumbs of copy/paste
+> for you ;0)
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I'm sure that was the case with jfs.
+
+> 
+> Reviewed-by: Boaz Harrosh <boaz@plexistor.com>
+
+Acked-by: Dave Kleikamp <dave.kleikamp@oracle.com>
