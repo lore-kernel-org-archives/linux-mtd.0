@@ -1,28 +1,18 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYWVs-0007tL-Eo
- for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 09:13:13 +0000
-Date: Thu, 19 Mar 2015 10:12:46 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andrea Marson <andrea.marson@dave.eu>
-Subject: Re: RFC: detect and manage power cut on MLC NAND
-Message-ID: <20150319101246.26806e95@bbrezillon>
-In-Reply-To: <550A8D19.90404@dave.eu>
-References: <mailman.37176.1426610573.22890.linux-mtd@lists.infradead.org>
- <mailman.37176.1426610573.22890.linux-mtd.{ec43ae5e-9450-4d5f-9aa7-4de61fefcb43}.0@lists.infradead.org>
- <0D23F1ECC880A74392D56535BCADD7354973E51A@NTXBOIMBX03.micron.com>
- <55093B1E.2050805@dave.eu>
- <0D23F1ECC880A74392D56535BCADD7354973E995@NTXBOIMBX03.micron.com>
- <550A8D19.90404@dave.eu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Andrea Scian <rnd4@dave-tech.it>,
- "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>
+Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YYYd1-000561-L6
+ for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 11:28:44 +0000
+Received: by ladw1 with SMTP id w1so59385978lad.0
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Mar 2015 04:28:21 -0700 (PDT)
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH] fs: cleanup slight list_entry abuse
+Date: Thu, 19 Mar 2015 12:28:04 +0100
+Message-Id: <1426764485-13637-1-git-send-email-linux@rasmusvillemoes.dk>
+Cc: jfs-discussion@lists.sourceforge.net, linux-ntfs-dev@lists.sourceforge.net,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-kernel@vger.kernel.org,
+ codalist@coda.cs.cmu.edu, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,48 +22,197 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 19 Mar 2015 09:47:21 +0100
-Andrea Marson <andrea.marson@dave.eu> wrote:
+list_entry is just a wrapper for container_of, but it is arguably
+wrong (and slightly confusing) to use it when the pointed-to struct
+member is not a struct list_head. Use container_of directly instead.
 
-> > Disturb is a block level affect, as long as partition A and B are in different blocks there will be no disturb between them.   Disturbs, does not damage cells; ERASE returns cells to undisturbed levels.
-> I think there are two options here: MTD partitioning and UBI 
-> partitioning. AFAIK one should prefer UBI partitioning to preserve 
-> device-wide wear leveling. Boris, am I right?
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+Most of these predate git. If I'm the only one who has been confused
+by this in 10 years, maybe it's not worth the churn.
 
-Both of them act at block level, meaning that your the partition size
-must be a multiple of the block size (logical block size in case of UBI
-volume and physical block size in case of MTD partition).
-IOW, you shouldn't bother whether you're using UBI on top of MTD or
-directly using MTD partitions, both are immune to cross partition/volume
-read/write disturbance.
+ fs/affs/affs.h              | 2 +-
+ fs/befs/befs.h              | 2 +-
+ fs/coda/coda_linux.h        | 2 +-
+ fs/hfs/hfs_fs.h             | 2 +-
+ fs/hfsplus/hfsplus_fs.h     | 2 +-
+ fs/hpfs/hpfs_fn.h           | 2 +-
+ fs/jffs2/os-linux.h         | 2 +-
+ fs/jfs/jfs_incore.h         | 2 +-
+ fs/minix/minix.h            | 2 +-
+ fs/ntfs/inode.h             | 2 +-
+ fs/squashfs/squashfs_fs_i.h | 2 +-
+ fs/sysv/sysv.h              | 2 +-
+ fs/udf/udf_i.h              | 2 +-
+ 13 files changed, 13 insertions(+), 13 deletions(-)
 
-
-> 
-> > Officially I would say don't use SLC emulation, but technically I know what your doing.   The reason I say no is because we have very precise recipes designed to create very tight distibutions, and although the first pass distributions might look like an SLC, they are really designed with the expectation of the upper page being programmed.  Not a true SLC.
-> > With MLC lithography of 25 nm and less  the difference between each level (L0, L1, L2 and L3) is just a few 10's of electrons.  The distribution have to be very tight, in order to meet retention requirements.
-> This is quite interesting, however I'm afraid I have not fully 
-> understood it.
-
-Me neither :-/.
-
-> Let me try to rephrase it. Please correct me if I'm wrong.
-> 
-> 1) Technically speaking, it is possible to use an MLC memory in SLC 
-> mode, even if this is not recommended because MLC is not designed for 
-> this usage.
-
-That's what I understood, but I'm not sure to understand the
-constraints brought by SLC mode (only programming one of the paired
-pages).
-Jeff, Are you trying to explain what's described here [1] in slide 8
-(BTW I'm not sure to understand this diagram).
-If that's the case, could you explain us, how the NAND chip knows which
-threshold should be used (does it somehow store the information of
-which page has already been programmed)
-
-[1]http://www.bswd.com/FMS09/FMS09-T2A-Grunzke.pdf
-
+diff --git a/fs/affs/affs.h b/fs/affs/affs.h
+index c8764bd7497d..64469527d445 100644
+--- a/fs/affs/affs.h
++++ b/fs/affs/affs.h
+@@ -64,7 +64,7 @@ struct affs_inode_info {
+ /* short cut to get to the affs specific inode data */
+ static inline struct affs_inode_info *AFFS_I(struct inode *inode)
+ {
+-	return list_entry(inode, struct affs_inode_info, vfs_inode);
++	return container_of(inode, struct affs_inode_info, vfs_inode);
+ }
+ 
+ /*
+diff --git a/fs/befs/befs.h b/fs/befs/befs.h
+index 3a7813ab8c95..c69f62f9207b 100644
+--- a/fs/befs/befs.h
++++ b/fs/befs/befs.h
+@@ -114,7 +114,7 @@ BEFS_SB(const struct super_block *super)
+ static inline befs_inode_info *
+ BEFS_I(const struct inode *inode)
+ {
+-	return list_entry(inode, struct befs_inode_info, vfs_inode);
++	return container_of(inode, struct befs_inode_info, vfs_inode);
+ }
+ 
+ static inline befs_blocknr_t
+diff --git a/fs/coda/coda_linux.h b/fs/coda/coda_linux.h
+index d6f7a76a1f5b..f829fe963f5b 100644
+--- a/fs/coda/coda_linux.h
++++ b/fs/coda/coda_linux.h
+@@ -79,7 +79,7 @@ void coda_sysctl_clean(void);
+ 
+ static inline struct coda_inode_info *ITOC(struct inode *inode)
+ {
+-	return list_entry(inode, struct coda_inode_info, vfs_inode);
++	return container_of(inode, struct coda_inode_info, vfs_inode);
+ }
+ 
+ static __inline__ struct CodaFid *coda_i2f(struct inode *inode)
+diff --git a/fs/hfs/hfs_fs.h b/fs/hfs/hfs_fs.h
+index 95d255219b1e..1f1c7dcbcc2f 100644
+--- a/fs/hfs/hfs_fs.h
++++ b/fs/hfs/hfs_fs.h
+@@ -252,7 +252,7 @@ extern void hfs_mark_mdb_dirty(struct super_block *sb);
+ #define __hfs_u_to_mtime(sec)	cpu_to_be32(sec + 2082844800U - sys_tz.tz_minuteswest * 60)
+ #define __hfs_m_to_utime(sec)	(be32_to_cpu(sec) - 2082844800U  + sys_tz.tz_minuteswest * 60)
+ 
+-#define HFS_I(inode)	(list_entry(inode, struct hfs_inode_info, vfs_inode))
++#define HFS_I(inode)	(container_of(inode, struct hfs_inode_info, vfs_inode))
+ #define HFS_SB(sb)	((struct hfs_sb_info *)(sb)->s_fs_info)
+ 
+ #define hfs_m_to_utime(time)	(struct timespec){ .tv_sec = __hfs_m_to_utime(time) }
+diff --git a/fs/hfsplus/hfsplus_fs.h b/fs/hfsplus/hfsplus_fs.h
+index b0441d65fa54..f91a1faf819e 100644
+--- a/fs/hfsplus/hfsplus_fs.h
++++ b/fs/hfsplus/hfsplus_fs.h
+@@ -263,7 +263,7 @@ struct hfsplus_inode_info {
+ 
+ static inline struct hfsplus_inode_info *HFSPLUS_I(struct inode *inode)
+ {
+-	return list_entry(inode, struct hfsplus_inode_info, vfs_inode);
++	return container_of(inode, struct hfsplus_inode_info, vfs_inode);
+ }
+ 
+ /*
+diff --git a/fs/hpfs/hpfs_fn.h b/fs/hpfs/hpfs_fn.h
+index b63b75fa00e7..bb04b58d1d69 100644
+--- a/fs/hpfs/hpfs_fn.h
++++ b/fs/hpfs/hpfs_fn.h
+@@ -304,7 +304,7 @@ extern const struct address_space_operations hpfs_symlink_aops;
+ 
+ static inline struct hpfs_inode_info *hpfs_i(struct inode *inode)
+ {
+-	return list_entry(inode, struct hpfs_inode_info, vfs_inode);
++	return container_of(inode, struct hpfs_inode_info, vfs_inode);
+ }
+ 
+ static inline struct hpfs_sb_info *hpfs_sb(struct super_block *sb)
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index d200a9b8fd5e..824e61ede465 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -19,7 +19,7 @@
+ struct kstatfs;
+ struct kvec;
+ 
+-#define JFFS2_INODE_INFO(i) (list_entry(i, struct jffs2_inode_info, vfs_inode))
++#define JFFS2_INODE_INFO(i) (container_of(i, struct jffs2_inode_info, vfs_inode))
+ #define OFNI_EDONI_2SFFJ(f)  (&(f)->vfs_inode)
+ #define JFFS2_SB_INFO(sb) (sb->s_fs_info)
+ #define OFNI_BS_2SFFJ(c)  ((struct super_block *)c->os_priv)
+diff --git a/fs/jfs/jfs_incore.h b/fs/jfs/jfs_incore.h
+index fa7e795bd8ae..1f26d1910409 100644
+--- a/fs/jfs/jfs_incore.h
++++ b/fs/jfs/jfs_incore.h
+@@ -206,7 +206,7 @@ struct jfs_sb_info {
+ 
+ static inline struct jfs_inode_info *JFS_IP(struct inode *inode)
+ {
+-	return list_entry(inode, struct jfs_inode_info, vfs_inode);
++	return container_of(inode, struct jfs_inode_info, vfs_inode);
+ }
+ 
+ static inline int jfs_dirtable_inline(struct inode *inode)
+diff --git a/fs/minix/minix.h b/fs/minix/minix.h
+index 1ebd11854622..01ad81dcacc5 100644
+--- a/fs/minix/minix.h
++++ b/fs/minix/minix.h
+@@ -84,7 +84,7 @@ static inline struct minix_sb_info *minix_sb(struct super_block *sb)
+ 
+ static inline struct minix_inode_info *minix_i(struct inode *inode)
+ {
+-	return list_entry(inode, struct minix_inode_info, vfs_inode);
++	return container_of(inode, struct minix_inode_info, vfs_inode);
+ }
+ 
+ static inline unsigned minix_blocks_needed(unsigned bits, unsigned blocksize)
+diff --git a/fs/ntfs/inode.h b/fs/ntfs/inode.h
+index 76b6cfb579d7..b3c3469de6cb 100644
+--- a/fs/ntfs/inode.h
++++ b/fs/ntfs/inode.h
+@@ -239,7 +239,7 @@ typedef struct {
+  */
+ static inline ntfs_inode *NTFS_I(struct inode *inode)
+ {
+-	return (ntfs_inode *)list_entry(inode, big_ntfs_inode, vfs_inode);
++	return (ntfs_inode *)container_of(inode, big_ntfs_inode, vfs_inode);
+ }
+ 
+ static inline struct inode *VFS_I(ntfs_inode *ni)
+diff --git a/fs/squashfs/squashfs_fs_i.h b/fs/squashfs/squashfs_fs_i.h
+index 73588e7700ed..d09fcd6fb85d 100644
+--- a/fs/squashfs/squashfs_fs_i.h
++++ b/fs/squashfs/squashfs_fs_i.h
+@@ -49,6 +49,6 @@ struct squashfs_inode_info {
+ 
+ static inline struct squashfs_inode_info *squashfs_i(struct inode *inode)
+ {
+-	return list_entry(inode, struct squashfs_inode_info, vfs_inode);
++	return container_of(inode, struct squashfs_inode_info, vfs_inode);
+ }
+ #endif
+diff --git a/fs/sysv/sysv.h b/fs/sysv/sysv.h
+index 69d488986cce..766f00b46aa2 100644
+--- a/fs/sysv/sysv.h
++++ b/fs/sysv/sysv.h
+@@ -73,7 +73,7 @@ struct sysv_inode_info {
+ 
+ static inline struct sysv_inode_info *SYSV_I(struct inode *inode)
+ {
+-	return list_entry(inode, struct sysv_inode_info, vfs_inode);
++	return container_of(inode, struct sysv_inode_info, vfs_inode);
+ }
+ 
+ static inline struct sysv_sb_info *SYSV_SB(struct super_block *sb)
+diff --git a/fs/udf/udf_i.h b/fs/udf/udf_i.h
+index b5cd8ed2aa12..b1b9a63d8cf3 100644
+--- a/fs/udf/udf_i.h
++++ b/fs/udf/udf_i.h
+@@ -56,7 +56,7 @@ struct udf_inode_info {
+ 
+ static inline struct udf_inode_info *UDF_I(struct inode *inode)
+ {
+-	return list_entry(inode, struct udf_inode_info, vfs_inode);
++	return container_of(inode, struct udf_inode_info, vfs_inode);
+ }
+ 
+ #endif /* _UDF_I_H) */
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.1.3
