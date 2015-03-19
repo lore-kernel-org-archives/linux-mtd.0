@@ -1,28 +1,22 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYeWg-00008P-PV
- for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 17:46:36 +0000
-From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Andrea Marson
- <andrea.marson@dave.eu>
-Subject: RE: RFC: detect and manage power cut on MLC NAND
-Date: Thu, 19 Mar 2015 17:45:48 +0000
-Message-ID: <0D23F1ECC880A74392D56535BCADD7354973EFD4@NTXBOIMBX03.micron.com>
-References: <mailman.37176.1426610573.22890.linux-mtd@lists.infradead.org>
- <mailman.37176.1426610573.22890.linux-mtd.{ec43ae5e-9450-4d5f-9aa7-4de61fefcb43}.0@lists.infradead.org>
- <0D23F1ECC880A74392D56535BCADD7354973E51A@NTXBOIMBX03.micron.com>
- <55093B1E.2050805@dave.eu>
- <0D23F1ECC880A74392D56535BCADD7354973E995@NTXBOIMBX03.micron.com>
- <550A8D19.90404@dave.eu> <20150319101246.26806e95@bbrezillon>
-In-Reply-To: <20150319101246.26806e95@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1YYeZY-00012C-7S
+ for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 17:49:33 +0000
+Received: by pacwe9 with SMTP id we9so82075617pac.1
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Mar 2015 10:49:11 -0700 (PDT)
+Date: Thu, 19 Mar 2015 10:49:03 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: vndao@altera.com
+Subject: Re: [PATCH] mtd:spi-nor: Add lock and unlock callback functions to
+ struct spi_nor
+Message-ID: <20150319174903.GT32500@ld-irv-0074>
+References: <1426493714-3748-1-git-send-email-vndao@altera.com>
 MIME-Version: 1.0
-Cc: Andrea
- Scian <rnd4@dave-tech.it>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1426493714-3748-1-git-send-email-vndao@altera.com>
+Cc: linux-mtd@lists.infradead.org, ngachi86@gmail.com, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,103 +26,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris,
-You seem to have a pretty good understanding of NAND.  Now that I have a di=
-agram, it will make this easier to explain.  Refer to page 8 of the present=
-ation.  When we program and MLC device we program the Lower Page first.  In=
- a perfect world all bits would set to discrete values like -.5v and 2.0v, =
-called Vt erased and Vt programmed.  But, in reality Vts end up in a distri=
-bution, due to process, location of cell with a block, couplings, previous =
-state of the cell, etc.  The diagram we are looking at is a representation =
-of the distribution of all cells in the die, so if we programmed only the l=
-ower page and measured the potential on all cells, they would fall into 2 d=
-istributions around -.5v and 2.0v, I refer to them as L0 and L1.  L0 is def=
-ined as erased, or 1h and L1 is defined as programmed or 0h.  And yes there=
- is a bit, to indicate if the middle or upper page is programmed.  Now, pro=
-gram the middle page (this is MLC 2bits/cell btw).  First read the lower pa=
-ge and get it's current value.  If the lower page of a cell is 1 and you wa=
-nt to store a 1 in the upper page of the cell, then tighten the distributio=
-n around -.5 and call this new L0.  If the lower page of the cell is 1 and =
-you want to upper page to be 0, then move and tighten L0 to new L1.  If the=
- lower page is 0 and you want the upper page to be a 0, then add charge to =
-L1 and tighten, call this new L2.  Finally if you lower page is 0 and you w=
-ant the upper page to be 1 add a little more charge and tighten to the new =
-L3.  Now if you could measure the potential of every cell in the array they=
- would fall into 4 tighter distributions, L0 to L3, representing all for co=
-nditions. 00, 01, 10, 11. I'm not going to go into the TLC, just follow the=
- arrows. =20
+Hi Viet,
 
-If you have a power loss during a program, only the page you're programming=
- gets affected, not all distributions.  The programming process is designed=
- to make it easier to recover the lower page if there's a power loss while =
-programming the upper page.  =20
+On Mon, Mar 16, 2015 at 01:15:14AM -0700, vndao@altera.com wrote:
+> From: VIET NGA DAO <vndao@altera.com>
+> 
+> This patch introduces a properly-replaceable spi_nor callback that does
+> flash specific lock and unlock. The existing code for spi_nor_lock and
+> spi_nor_unlock is moved into their own functions which are stm_lock and
+> stm_unlock.
 
-These guys have a pretty good explaination.  http://www.supertalent.com/dat=
-asheets/SLC_vs_MLC%20whitepaper.pdf=20
+I'm curious; is this a complete ripoff of my code [1]? You haven't
+credited my authorship at all. That's a big no-no. Typically you keep
+the 'From:' and Signed-off-by of the original author if you're going to
+modify/redistribute it. (Admittedly, I didn't provide the S-o-b on my
+informal patch.)
 
-Hope this helps.
+Anyway, that's all fine this time, but please avoid doing this in the
+future; I can fix up the authorship, etc., and apply it, if it gets an
+Ack/Tested-by from one or more reviewers (e.g., you). BTW, I hope you at
+least tested this, right?
 
-Jeff Lauruhn
-NAND Application Engineer
+Brian
 
+[1] http://lists.infradead.org/pipermail/linux-mtd/2015-March/058301.html
 
------Original Message-----
-From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]=20
-Sent: Thursday, March 19, 2015 2:13 AM
-To: Andrea Marson
-Cc: Jeff Lauruhn (jlauruhn); linux-mtd@lists.infradead.org; Andrea Scian; R=
-ichard Weinberger; dedekind1@gmail.com
-Subject: Re: RFC: detect and manage power cut on MLC NAND
-
-On Thu, 19 Mar 2015 09:47:21 +0100
-Andrea Marson <andrea.marson@dave.eu> wrote:
-
-> > Disturb is a block level affect, as long as partition A and B are in di=
-fferent blocks there will be no disturb between them.   Disturbs, does not =
-damage cells; ERASE returns cells to undisturbed levels.
-> I think there are two options here: MTD partitioning and UBI=20
-> partitioning. AFAIK one should prefer UBI partitioning to preserve=20
-> device-wide wear leveling. Boris, am I right?
-
-Both of them act at block level, meaning that your the partition size must =
-be a multiple of the block size (logical block size in case of UBI volume a=
-nd physical block size in case of MTD partition).
-IOW, you shouldn't bother whether you're using UBI on top of MTD or directl=
-y using MTD partitions, both are immune to cross partition/volume read/writ=
-e disturbance.
-
-
->=20
-> > Officially I would say don't use SLC emulation, but technically I know =
-what your doing.   The reason I say no is because we have very precise reci=
-pes designed to create very tight distibutions, and although the first pass=
- distributions might look like an SLC, they are really designed with the ex=
-pectation of the upper page being programmed.  Not a true SLC.
-> > With MLC lithography of 25 nm and less  the difference between each lev=
-el (L0, L1, L2 and L3) is just a few 10's of electrons.  The distribution h=
-ave to be very tight, in order to meet retention requirements.
-> This is quite interesting, however I'm afraid I have not fully=20
-> understood it.
-
-Me neither :-/.
-
-> Let me try to rephrase it. Please correct me if I'm wrong.
->=20
-> 1) Technically speaking, it is possible to use an MLC memory in SLC=20
-> mode, even if this is not recommended because MLC is not designed for=20
-> this usage.
-
-That's what I understood, but I'm not sure to understand the constraints br=
-ought by SLC mode (only programming one of the paired pages).
-Jeff, Are you trying to explain what's described here [1] in slide 8 (BTW I=
-'m not sure to understand this diagram).
-If that's the case, could you explain us, how the NAND chip knows which thr=
-eshold should be used (does it somehow store the information of which page =
-has already been programmed)
-
-[1]http://www.bswd.com/FMS09/FMS09-T2A-Grunzke.pdf
-
---
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> Signed-off-by: VIET NGA DAO <vndao@altera.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 56 ++++++++++++++++++++++++++++---------------
+>  include/linux/mtd/spi-nor.h   |  4 ++++
+>  2 files changed, 41 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index b6a5a0c..43bb552 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -369,17 +369,13 @@ erase_err:
+>  	return ret;
+>  }
+>  
+> -static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+> +static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  {
+> -	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> +	struct mtd_info *mtd = nor->mtd;
+>  	uint32_t offset = ofs;
+>  	uint8_t status_old, status_new;
+>  	int ret = 0;
+>  
+> -	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_LOCK);
+> -	if (ret)
+> -		return ret;
+> -
+>  	status_old = read_sr(nor);
+>  
+>  	if (offset < mtd->size - (mtd->size / 2))
+> @@ -402,26 +398,18 @@ static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  				(status_old & (SR_BP2 | SR_BP1 | SR_BP0))) {
+>  		write_enable(nor);
+>  		ret = write_sr(nor, status_new);
+> -		if (ret)
+> -			goto err;
+>  	}
+>  
+> -err:
+> -	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK);
+>  	return ret;
+>  }
+>  
+> -static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+> +static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  {
+> -	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> +	struct mtd_info *mtd = nor->mtd;
+>  	uint32_t offset = ofs;
+>  	uint8_t status_old, status_new;
+>  	int ret = 0;
+>  
+> -	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_UNLOCK);
+> -	if (ret)
+> -		return ret;
+> -
+>  	status_old = read_sr(nor);
+>  
+>  	if (offset+len > mtd->size - (mtd->size / 64))
+> @@ -444,15 +432,41 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  				(status_old & (SR_BP2 | SR_BP1 | SR_BP0))) {
+>  		write_enable(nor);
+>  		ret = write_sr(nor, status_new);
+> -		if (ret)
+> -			goto err;
+>  	}
+>  
+> -err:
+> +	return ret;
+> +}
+> +
+> +static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+> +{
+> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> +	int ret;
+> +
+> +	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_LOCK);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = nor->flash_lock(nor, ofs, len);
+> +
+>  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_UNLOCK);
+>  	return ret;
+>  }
+>  
+> +static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+> +{
+> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> +	int ret;
+> +
+> +	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_UNLOCK);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = nor->flash_unlock(nor, ofs, len);
+> +
+> +	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK);
+> +	return ret;
+> +}
+> +
+>  /* Used when the "_ext_id" is two bytes at most */
+>  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+>  	((kernel_ulong_t)&(struct flash_info) {				\
+> @@ -1045,6 +1059,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  
+>  	/* nor protection support for STmicro chips */
+>  	if (JEDEC_MFR(info) == CFI_MFR_ST) {
+> +		nor->flash_lock = stm_lock;
+> +		nor->flash_unlock = stm_unlock;
+> +	}
+> +	if (nor->flash_lock && nor->flash_unlock) {
+>  		mtd->_lock = spi_nor_lock;
+>  		mtd->_unlock = spi_nor_unlock;
+>  	}
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 4720b86..e4e73d5 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -155,6 +155,8 @@ enum spi_nor_option_flags {
+>   * @write:		[DRIVER-SPECIFIC] write data to the SPI NOR
+>   * @erase:		[DRIVER-SPECIFIC] erase a sector of the SPI NOR
+>   *			at the offset @offs
+> + * @lock:		[FLASH-SPECIFIC] lock a region of the SPI NOR
+> + * @unlock:		[FLASH-SPECIFIC] unlock a region of the SPI NOR
+>   * @priv:		the private data
+>   */
+>  struct spi_nor {
+> @@ -188,6 +190,8 @@ struct spi_nor {
+>  	void (*write)(struct spi_nor *nor, loff_t to,
+>  			size_t len, size_t *retlen, const u_char *write_buf);
+>  	int (*erase)(struct spi_nor *nor, loff_t offs);
+> +	int (*flash_lock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+> +	int (*flash_unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+>  
+>  	void *priv;
+>  };
+> -- 
+> 1.7.11.GIT
+> 
