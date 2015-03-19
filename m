@@ -1,30 +1,22 @@
-Received: from plane.gmane.org ([80.91.229.3])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYhAD-00019M-90
- for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 20:35:34 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1YYh9k-0004R5-VV
- for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 21:35:05 +0100
-Received: from 216.239.45.97 ([216.239.45.97])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Thu, 19 Mar 2015 21:35:04 +0100
-Received: from pwvanvugt by 216.239.45.97 with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Thu, 19 Mar 2015 21:35:04 +0100
-To: linux-mtd@lists.infradead.org
-From: Peter van Vugt <pwvanvugt@gmail.com>
-Subject: Re: [RFC PATCH v2] mtd: nand: add erased-page bitflip correction
-Date: Thu, 19 Mar 2015 19:37:45 +0000 (UTC)
-Message-ID: <loom.20150319T201643-899@post.gmane.org>
-References: <1394803700-29467-1-git-send-email-pekon@ti.com>
- <20140317184130.GA3834@ld-irv-0074>
- <20980858CB6D3A4BAE95CA194937D5E73EAB3DE3@DBDE04.ent.ti.com>
- <20140318090554.GY31517@norris-Latitude-E6410>
- <20980858CB6D3A4BAE95CA194937D5E73EAB3F69@DBDE04.ent.ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
+To: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Subject: RE: [PATCH] mtd: Expand the ecc placement locations to 1260
+Date: Thu, 19 Mar 2015 23:21:35 +0000
+Message-ID: <0D23F1ECC880A74392D56535BCADD7354973F1C7@NTXBOIMBX03.micron.com>
+References: <BN1BFFO11FD0497164C4D8ECB568C7BDA7C8010@BN1BFFO11FD049.protection.gbl>
+In-Reply-To: <BN1BFFO11FD0497164C4D8ECB568C7BDA7C8010@BN1BFFO11FD049.protection.gbl>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "michals@xilinx.com" <michals@xilinx.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "shaktib@xilinx.com" <shaktib@xilinx.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "kalluripunnaiahchoudary@gmail.com" <kalluripunnaiahchoudary@gmail.com>,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,42 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Gupta, Pekon <pekon <at> ti.com> writes:
- 
-> I'll wait for your next revision of patch,  but please re-think on my 
-proposal
-> to leave out ecc.layout->oobfree[], and just reset ecc.laout->ecc.pos[].
-> as it keeps compatibility with other file-systems which use OOB to store
-> some metadata.
-> 
-> (may be you can put resetting complete OOB, as separate patch later).
-> 
-> >> - Therefore in my earlier patch [2] I was just counting bit-flips in 
-read_ecc[]
-> >>   *not* read_oob[].
-> >
-> >You can't have your cake and eat it too. You're trying to support
-> >intentionally programming bitflips (i.e., the 'cleanmarker') to spare
-> >area, but you're also trying to correct bits in such a page. Pick one.
-> >Or improve the JFFS2 / MTD API so that JFFS2 can communicate when it
-> >does and doesn't want error correction, rather than making assumptions.
-> >
+This device has a Page size x8: 17,600 bytes (16,384 + 1216 bytes) and mini=
+mum required ECC 24-bit ECC per 1100 bytes of data.  Spare area needed for =
+ECC would be ECC * M, where M is (codeword <=3D 2^m-1).  In this case M=3D1=
+4, because (1100*8)<=3D2^14-1, therefore minimum spare area needed is 14*24=
+ =3D 336b or 42B per codeword.  So for this device a minimum of 672bytes of=
+ the 1216 need to be used for ECC, the rest can be used for other purposes.
 
-For the record, has this patch been abandoned?
 
-I have encountered issues with one (and occasionally more) non-1 bits in 
-erased pages on several vendors' MLC NAND devices when using the GPMI 
-controller, which causes significant issues when using UBI. There was an 
-earlier GPMI-specific, not platform-agnostic patch 
-(http://lists.infradead.org/pipermail/linux-mtd/2014-
-January/thread.html#51356) that appears it may have been abandoned due to 
-silicon bugs that may have been fixed in my silicon revision, and a OMAP-
-specific patch that made it into the mainline in commit 62116e51 .
 
-The GPMI patch appears to have a few small issues in our use case that 
-might be fixable, but if I've missed something and some version of this 
-patch is still alive in some other form, I'd prefer to use/support it.
+Jeff Lauruhn
+NAND Application Engineer
 
-Regards,
 
-Peter
+-----Original Message-----
+From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of=
+ Punnaiah Choudary Kalluri
+Sent: Thursday, March 19, 2015 1:50 AM
+To: dwmw2@infradead.org; computersforpeace@gmail.com
+Cc: linux-kernel@vger.kernel.org; shaktib@xilinx.com; michals@xilinx.com; l=
+inux-mtd@lists.infradead.org; kalluripunnaiahchoudary@gmail.com; Punnaiah C=
+houdary Kalluri
+Subject: [PATCH] mtd: Expand the ecc placement locations to 1260
+
+Device like MT29F32G08ABCDBJ4 have a writesize/oobsize of 16K/1260 Bytes.
+So, increasing the maximum ecc placement locations to 1260
+
+Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+---
+ include/linux/mtd/mtd.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h index f17fa7=
+5..e73d85b 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -95,7 +95,7 @@ struct mtd_oob_ops {
+ };
+=20
+ #define MTD_MAX_OOBFREE_ENTRIES_LARGE	32
+-#define MTD_MAX_ECCPOS_ENTRIES_LARGE	640
++#define MTD_MAX_ECCPOS_ENTRIES_LARGE	1260
+ /*
+  * Internal ECC layout control structure. For historical reasons, there is=
+ a
+  * similar, smaller struct nand_ecclayout_user (in mtd-abi.h) that is reta=
+ined
+--
+1.7.4
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
