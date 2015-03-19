@@ -1,22 +1,28 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYGv7-0007BT-QO
- for linux-mtd@lists.infradead.org; Wed, 18 Mar 2015 16:34:15 +0000
-Message-ID: <5509A8EA.10201@nod.at>
-Date: Wed, 18 Mar 2015 17:33:46 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1YYPam-0001hh-RW
+ for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 01:49:49 +0000
+Received: by padcy3 with SMTP id cy3so59624403pad.3
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Mar 2015 18:49:27 -0700 (PDT)
+Date: Wed, 18 Mar 2015 18:49:21 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 3/3] mtd: nand: add NAND driver for Broadcom STB NAND
+ controller
+Message-ID: <20150319014921.GQ32500@ld-irv-0074>
+References: <1425691129-1150-1-git-send-email-computersforpeace@gmail.com>
+ <1425691129-1150-4-git-send-email-computersforpeace@gmail.com>
+ <55072714.9080104@gmail.com>
 MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>, ricard.wanderlof@axis.com
-Subject: Re: [PATCH 2/2] ubi-utils: ubinize: Add fastmap suport to image
- creation
-References: <1426668763-6463-1-git-send-email-tlinder@codeaurora.org>
- <550951C9.2040509@nod.at> <550956D7.9030309@codeaurora.org>
- <55095E45.8030401@nod.at> <55096BA6.1030708@codeaurora.org>
- <55096D6D.5000707@nod.at> <5509725F.6050606@codeaurora.org>
-In-Reply-To: <5509725F.6050606@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55072714.9080104@gmail.com>
+Cc: devicetree@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>,
+ Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-kernel@vger.kernel.org, Jonathan Richardson <jonathar@broadcom.com>,
+ Anatol Pomazao <anatol@google.com>, bcm-kernel-feedback-list@broadcom.com,
+ linux-mtd@lists.infradead.org, Dmitry Torokhov <dtor@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +32,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 18.03.2015 um 13:41 schrieb Tanya Brokhman:
-> (thinking out-loud, trying not to reveal our flasher details)
-> UBI aware flasher has to:
-> 1. scan partition and collect ec values
-> 2. for each PEB of the image: update the ec_header, erase PEB and flash the image
-> 3. for remaining empty PEBs erase and write ec_heaser
+On Mon, Mar 16, 2015 at 11:55:16AM -0700, Florian Fainelli wrote:
+> On 06/03/15 17:18, Brian Norris wrote:
+> > +static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
+> > +{
+> > +	static const unsigned int block_sizes_v6[] = { 8, 16, 128, 256, 512, 1024, 2048, 0 };
+> > +	static const unsigned int block_sizes_v4[] = { 16, 128, 8, 512, 256, 1024, 2048, 0 };
+> > +	static const unsigned int page_sizes[] = { 512, 2048, 4096, 8192, 0 };
+> > +
+> > +	ctrl->nand_version = nand_readreg(ctrl, 0) & 0xffff;
+> > +
+> > +	/* Only support v4.0+? */
+> > +	if (ctrl->nand_version < 0x0400)
+> > +		return -ENODEV;
 > 
-> For generating FM in flasher we need to update #2 and while flashing the image construct the FM data in memory. (what PEB, for what volume etc). this is O(1)
+> It could be nice to have an informative error message here that this is
+> either:
 > 
-> When we have the layout in memory we need to construct the actual FM data => go over all lists => O(number of dev PEBs) => probably can be neglected as well.
+> - an unknown controller revision (> 7.1)
+> - an older controller revision
+> - a check against the compatible property, just in case?
+
+I'll add a message that the revision is not supported. The DT binding
+should catch this too, so this check is just an extra safeguard.
+
+> [snip]
 > 
-> Ok, I take it back: run time wont be effected. What will be effected is memory consumption.
+> > +		ctrl->cs_offsets = brcmnand_cs_offsets_v71;
+> > +	} else {
+> > +		ctrl->cs_offsets = brcmnand_cs_offsets;
+> > +
+> > +		/* pre-v5.0 has a different CS0 offset layout */
+> > +		if (ctrl->nand_version <= 0x0500)
+> > +			ctrl->cs0_offsets = brcmnand_cs_offsets_cs0;
+> 
+> Based on this check, should the comment should be "pre-v5.0 and v5.0
+> have a different CS0 offset layout"?
 
-Yeah, but a smart flasher would of course not keep the whole image in memory.
+Yes. Fixed.
 
-> If I remember correctly, when we discussed this whole idea a while back you mentioned that a lot of users use their own proprietary flasher. So from your experience: you think
-> users will prefer to have a libfastmap and not ubinize enhancement?
-> Maybe implementing libfastmap to be added to any flasher isn't such a bad idea. Then the whole "ubi awareness" can be implemented there.
-> I wasn't aware of the fact that ubinize is skipped. Is this common?
-
-I've seen that more than once. Customers tend to use their own non-trivial tools. ;)
-If we implement libfastmap ubinize could also use it (plus a big fat warning that you'll need a fastmap aware flasher).
-
-Thanks,
-//richard
+Brian
