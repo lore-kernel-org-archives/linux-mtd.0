@@ -1,17 +1,22 @@
-Received: from mo6-p04-ob.smtp.rzone.de ([2a01:238:20a:202:5304::7])
+Received: from mail-wi0-f176.google.com ([209.85.212.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYabB-000544-QJ
- for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 13:34:59 +0000
-From: Stefan Roese <sr@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: fsmc_nand.c: Use default timings if none are provided in
- the dts
-Date: Thu, 19 Mar 2015 14:34:29 +0100
-Message-Id: <1426772069-12677-1-git-send-email-sr@denx.de>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Viresh Kumar <viresh.linux@gmail.com>,
- Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
+ id 1YYbdd-0001ky-DB
+ for linux-mtd@lists.infradead.org; Thu, 19 Mar 2015 14:41:34 +0000
+Received: by wixw10 with SMTP id w10so71229712wix.0
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Mar 2015 07:41:10 -0700 (PDT)
+Message-ID: <550ADF6C.3090408@vanguardiasur.com.ar>
+Date: Thu, 19 Mar 2015 11:38:36 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+MIME-Version: 1.0
+To: Dan Ehrenberg <dehrenberg@chromium.org>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v3] UBI: block: Dynamically allocate minor numbers
+References: <1426613846-36598-1-git-send-email-dehrenberg@chromium.org>
+In-Reply-To: <1426613846-36598-1-git-send-email-dehrenberg@chromium.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: gwendal@chromium.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Without this patch the timings are all set to 0 if not specified in the dts.
-With this patch the driver falls back to use the defaults that are already
-present in the driver and are known to work okay for some (older) boards.
 
-Tested on a custom SPEAr600 based board.
 
-Signed-off-by: Stefan Roese <sr@denx.de>
-Cc: Viresh Kumar <viresh.linux@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
----
- drivers/mtd/nand/fsmc_nand.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+On 03/17/2015 02:37 PM, Dan Ehrenberg wrote:
+> This patch makes ubiblock devices have minor numbers beginning from
+> 0, allocated dynamically independently of the ubi device/volume
+> number. This property becomes useful because, on 32-bit architectures
+> with LFS turned off in a userspace program, device minor numbers
+> over 8 bits cause stat to return -EOVERFLOW. If the device number is
+> high (>1) due to multiple MTD partitions, such an overflow will occur.
+> While enabling LFS is clearly a nicer solution, it's often difficult
+> to turn on in practice globally as many widely distributed packages
+> don't work with LFS on.
+> 
+> Other storage systems have their own workarounds, with SCSI making
+> multiple device majors and MMC having a config option for the number
+> of partitions per device. A completely dynamic minor numbering is
+> simpler than these. It is unlikely that anyone is depending on a
+> static minor number since the major is dynamic anyway. In addition,
+> ubiblock is still relatively new, so now is the time to make such
+> changes.
+> 
+> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+> 
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index edfaa21..e58af4b 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -873,6 +873,7 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
- {
- 	struct fsmc_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 	u32 val;
-+	int ret;
- 
- 	/* Set default NAND width to 8 bits */
- 	pdata->width = 8;
-@@ -891,8 +892,12 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
- 				sizeof(*pdata->nand_timings), GFP_KERNEL);
- 	if (!pdata->nand_timings)
- 		return -ENOMEM;
--	of_property_read_u8_array(np, "timings", (u8 *)pdata->nand_timings,
-+	ret = of_property_read_u8_array(np, "timings", (u8 *)pdata->nand_timings,
- 						sizeof(*pdata->nand_timings));
-+	if (ret) {
-+		dev_info(&pdev->dev, "No timings in dts specified, using default timings!\n");
-+		pdata->nand_timings = NULL;
-+	}
- 
- 	/* Set default NAND bank to 0 */
- 	pdata->bank = 0;
+Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 -- 
-2.3.3
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
