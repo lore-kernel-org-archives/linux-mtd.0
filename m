@@ -1,29 +1,29 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYsGS-0007Bq-VY
- for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 08:26:47 +0000
-Date: Fri, 20 Mar 2015 09:26:11 +0100
+ id 1YYslR-0003Zm-Ao
+ for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 08:58:46 +0000
+Date: Fri, 20 Mar 2015 09:58:22 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-Subject: Re: RFC: detect and manage power cut on MLC NAND
-Message-ID: <20150320092611.2648f3d5@bbrezillon>
-In-Reply-To: <EACD232272DA4849B060F0828564D13B57804E2680@ntcex01.corp.netcomm.com.au>
-References: <mailman.37176.1426610573.22890.linux-mtd@lists.infradead.org>
- <mailman.37176.1426610573.22890.linux-mtd.{ec43ae5e-9450-4d5f-9aa7-4de61fefcb43}.0@lists.infradead.org>
- <0D23F1ECC880A74392D56535BCADD7354973E51A@NTXBOIMBX03.micron.com>
- <55093B1E.2050805@dave.eu>
- <0D23F1ECC880A74392D56535BCADD7354973E995@NTXBOIMBX03.micron.com>
- <550A8D19.90404@dave.eu> <20150319101246.26806e95@bbrezillon>
- <EACD232272DA4849B060F0828564D13B57804E2680@ntcex01.corp.netcomm.com.au>
+To: "Qi Wang =?UTF-8?B?546L6LW3?= (qiwang)" <qiwang@micron.com>
+Subject: Re: detect and manage power cut on MLC NAND
+Message-ID: <20150320095822.7e1979ff@bbrezillon>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A771744B0@NTXXIAMBX02.xacn.micron.com>
+References: <mailman.37706.1426822709.22890.linux-mtd@lists.infradead.org>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7717444D@NTXXIAMBX02.xacn.micron.com>
+ <EACD232272DA4849B060F0828564D13B57804E26B6@ntcex01.corp.netcomm.com.au>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A771744B0@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, Andrea Scian <rnd4@dave-tech.it>,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
+ "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "rnd4@dave-tech.it" <rnd4@dave-tech.it>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Andrea Marson <andrea.marson@dave.eu>
+ "Frank Liu =?UTF-8?B?5YiY576k?= \(frankliu\)" <frankliu@micron.com>,
+ "andrea.marson@dave.eu" <andrea.marson@dave.eu>,
+ "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= \(beanhuo\)" <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,92 +33,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Iwo,
+Hi Qi,
 
-On Fri, 20 Mar 2015 11:25:18 +1100
-Iwo Mergler <Iwo.Mergler@netcommwireless.com> wrote:
+On Fri, 20 Mar 2015 07:44:58 +0000
+Qi Wang =E7=8E=8B=E8=B5=B7 (qiwang) <qiwang@micron.com> wrote:
 
-> 
-> Hi all,
-> 
-> 
-> I've been thinking a little about the paired pages problem.
-> 
-> The patented mitigation methods I've seen so far are
-> 
-> 1)  SanDisk: Use a separate log mechanism to back up LSB page
-> while writing MSB page.
-> 
-> 2) M-Systems: Within the block, interleave backup copies of LSB
-> pages when writing MSB pages.
-> 
-> 3) Micron: Use as a half-capacity SLC device by writing LSB and MSB
-> pages such that the levels are reinforced. Jeff mentioned this one.
+> >
+> >I seem to remember a requirement to write pages to a block in a
+> >monotonic fashion (low to high). Is that still the case? It
+> >seems that the low page backup could violate that rule otherwise.
+>=20
+> Yes, pages need to be programmed from low to high. But it is possible
+> to skip some pages. Take a example,
+>=20
+> below page program ordering is ok.
+> Page 0, page 1, page 2, page 4, page 6, page 10, page 15, etc..
+> Just make sure don't turn back to program the low page is ok.
 
-All these solutions involves storing a backup of the first paired page,
-before writing the 2nd one (I guess that's even worse with TLC NANDs:
-you'll have to save the 2nd page when writing the 3rd one).
-If that's possible, I think we should find a way to avoid this
-duplication.
+I asked a question regarding the programming sequence in answer to Iwo,
+but I'm not sure you were in Cc, so I'm asking it again.
 
-> 
-> 
-> Here is another idea. I assume it's patented already, in which case
-> I'd like to hear about it. If not, consider this published as of now :-)
-> 
-> 
-> Get UBI to map the paired pages into a single write unit. Jumbo page
-> if you will.  So, instead of a block with 64 pages, we get 32 pages,
-> twice as large.
-> 
-> Thus, the paired pages will be written in quick succession. A power
-> cut during this is reduced to the unstable bits issue we already have
-> with SLC.
+Say page 1 is paired with page 4, can we program pages in this order:
+1, 4, 2, 5, 3, 6, ..., so that both paired pages are programmed
+together (the Jumbo page approach Iwo described in his mail).
 
-That's actually a good idea, but I'd like to have feedback from Jeff
-and/or Qi regarding the feasibility of this proposal.
-I've read many times that MLC pages should be programmed in ascending
-order (0, 1, 2, 3, ..., N), and if you take a look at MLC datasheet
-you'll see that paired pages are not contiguous (here is an example
-[1], page 55-56 describe how pages are paired together).
 
-My question is: is there a reason for interleaving paired pages with
-other pages (write disturbance mitigation ?) ?
+[...]
+>=20
+> >
+> >Do you envision to dedicate some blocks for this purpose? Or
+> >would the duplicated pages become part of normal storage blocks?
+>=20
+> I don't want dedicate some blocks for this purpose, in this way,
+> these blocks P/E cycle could increase quickly.=20
+>=20
+> My idea is to allocate low P/E cycle block from UBI block pool=20
+> when need backup data. And release this block to UBI block pool
+> when the backup data isn't available any more.
 
-If there is no specific reason but to annoy software developers :-),
-then I think we should consider this Jumbo page approach, because it
-would contain the paired pages handling in the NAND layer (instead of
-exposing complexity to the UBI/UBIFS layers) while allowing us to use
-almost all the NAND chip capacity.
+But you can't take a random PEB: it has to be an even or odd block
+number depending on which block the page you're trying to backup
+belongs to, right ?
 
-> 
-> UBI could take the risk and split the first page pair between EC and
-> VID headers, replacing the EC info with average in case of unlikely
-> failure.
+>=20
+> >
+> >Naively, I see the cost of this method to be somewhere between
+> >a 25% reduction in storage or a 25% increase in erase cycles,
+> >depending on the backup block handling.
+> >Does that match your own prediction?
+>=20
+> I think it depends on UBI/UBIFS behavior.=20
+>=20
+> For example,=20
+>=20
+> Condition 1 - UBI/UBIFS write a lot blocks partially
+> The UBI/UBIFS write order like below:=09
+> Program some pages in block0, then block1, block2,3,4,5,6...100..
+> Then, UBI/UBIFS turn back to program block0,1,2... again.=20
+> =09
+> I think this condition need many backup blocks, as a lot data will
+> be available at some time. right?
 
-You want to do that in order to avoid using 2 Jumbo pages to only store
-a few bytes ?
-Artem suggested another solution to deal with that: duplicate the EC
-header in the VID header so that EC information can be recovered when
-writing to the page paired with the EC header.
-You'd still have to prevent any write on the page paired with the EC
-header, but you're still saving one page with this approach and avoid
-any corruption of UBI metadata caused by paired pages.
+It depends on how you deal with it, but if you're assigning a backup
+block for each payload/data block, then you'll have the same number of
+backup and data blocks, until some data blocks are completely filled
+with data.
 
-Maybe there are better solution, and I've been thinking about a
-different approach to avoid writing the EC and VID headers in 2
-different pages: store EC header information in a specific UBI volume
-(containing one or two LEBs).
-This volume would store a log of EC information update, so that when
-you erase a page you don't have to write the EC header right away, but
-should just add an entry in the UBI EC log.
-This way you write EC and VID information in one go when someone maps a
-LEB (attach it to a specific volume).
+>=20
+>=20
+> Condition 2 - UBI/UBIFS only write several blocks partially
+> The UBI/UBIFS write order like below:=09
+> Program some pages in block0, then block1, block2, 3.=20
+> Then, UBI/UBIFS turn back to program block0,1,2, 3. Until one of the
+> blocks is full, UBI/UBIFS will open block4, and write data into it.
+>=20
+> In this condition, we can only allocate 4 blocks to backup block 0,1,2,3
+> data should be ok. Right?
 
-These are just thoughts ;-).
+I would say so. IOW, you're loosing half your NAND capacity in the best
+case, right ?
 
-[1]http://www.szyuda88.com/uploadfile/cfile/2013419135343223.pdf
--- 
+BTW, where do you store information about where each block store its
+lower pages backup ?
+
+>=20
+>=20
+> For my understanding, UBI/UBIFS behavior is more like condition 2.=20
+
+Yep, that's my understanding too, but I'm definitely not a UBIFS expert.
+
+> Except EC header written, EC will be written into block initially.=20
+> So I don't suggest use this method to backup EC.
+
+It depends. If you want to write on the pages paired with EC and VID
+headers, you'll have to somehow same EC/VID information.
+
+>=20
+> And also, some of operation don't need to backup operation, such as,
+> Wear leveling, refresh etc..
+
+That's true for the wear leveling part (and for all atomic LEB
+operations in general), because a CRC is calculated and stored in the
+VID header, so that data integrity of the whole LEB can be checked.
+
+What do you mean by refresh ?
+
+Best Regards,
+
+Boris
+
+--=20
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
