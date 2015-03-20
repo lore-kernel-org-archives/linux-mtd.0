@@ -1,33 +1,31 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YZ06O-0002WV-Lc
- for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 16:48:53 +0000
-From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
-Subject: RE: detect and manage power cut on MLC NAND
-Date: Fri, 20 Mar 2015 16:48:16 +0000
-Message-ID: <0D23F1ECC880A74392D56535BCADD7354973F4B5@NTXBOIMBX03.micron.com>
-References: <mailman.37706.1426822709.22890.linux-mtd@lists.infradead.org>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7717444D@NTXXIAMBX02.xacn.micron.com>
- <EACD232272DA4849B060F0828564D13B57804E26B6@ntcex01.corp.netcomm.com.au>
- <71CF8D7F32C5C24C9CD1D0E02D52498A771744B0@NTXXIAMBX02.xacn.micron.com>
- <20150320095822.7e1979ff@bbrezillon>	<550BE355.8020009@nod.at>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7717470C@NTXXIAMBX02.xacn.micron.com>
- <20150320161903.608a79fc@bbrezillon>
-In-Reply-To: <20150320161903.608a79fc@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1YZ0WP-0002iI-2X
+ for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 17:15:48 +0000
+Received: by lbcgn8 with SMTP id gn8so79987216lbc.2
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Mar 2015 10:15:21 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20150320092611.2648f3d5@bbrezillon>
+References: <mailman.37176.1426610573.22890.linux-mtd@lists.infradead.org>
+ <mailman.37176.1426610573.22890.linux-mtd.{ec43ae5e-9450-4d5f-9aa7-4de61fefcb43}.0@lists.infradead.org>
+ <0D23F1ECC880A74392D56535BCADD7354973E51A@NTXBOIMBX03.micron.com>
+ <55093B1E.2050805@dave.eu>
+ <0D23F1ECC880A74392D56535BCADD7354973E995@NTXBOIMBX03.micron.com>
+ <550A8D19.90404@dave.eu> <20150319101246.26806e95@bbrezillon>
+ <EACD232272DA4849B060F0828564D13B57804E2680@ntcex01.corp.netcomm.com.au>
+ <20150320092611.2648f3d5@bbrezillon>
+Date: Fri, 20 Mar 2015 13:15:21 -0400
+Message-ID: <CAPDOMVjjSnvo2BGEOCpkBOjo2+NhauUL=tRG6m7ym9OoUyd5DQ@mail.gmail.com>
+Subject: Re: RFC: detect and manage power cut on MLC NAND
+From: Nick Krause <xerofoify@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=UTF-8
 Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
+ "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
  "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, "rnd4@dave-tech.it" <rnd4@dave-tech.it>,
- "Zoltan Szubbocsev \(zszubbocsev\)" <zszubbocsev@micron.com>,
+ Richard Weinberger <richard@nod.at>, Andrea Scian <rnd4@dave-tech.it>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- "andrea.marson@dave.eu" <andrea.marson@dave.eu>,
- =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+ Andrea Marson <andrea.marson@dave.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,49 +35,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQm9yaXM7IA0KPiBZZXMsIHlvdSBhcmUgcmlnaHQuIFRoaXMgbWV0aG9kIGlzbid0IGFsbG93
-ZWQuIFVzZXIgY2FuIG9ubHkgcHJvZ3JhbSANCj4gcGFnZSB3aXRoaW4gYSBibG9jayBmcm9tIGxv
-dyBhZGRyZXNzIHRvIGhpZ2ggYWRkcmVzcy4NCg0KRG8geW91IGtub3cgdGhlIHJlYXNvbiBiZWhp
-bmQgdGhpcyA/DQpUaGlzIGlzIGRvbmUgdG8gaGVscCBtaXRpZ2F0ZSBkaXN0dXJicyBhbmQgdG8g
-ZW5zdXJlIHdlIGdldCB0aGUgaGlnaGVzdCByZWxpYWJpbGl0eS4gIERyaXZpbmcgc29mdHdhcmUg
-ZGV2ZWxvcGVycyBjcmF6eSBpcyBqdXN0IGFuIGV4dHJhIGJlbmVmaXQuICA6KSANCg0KDQpKZWZm
-IExhdXJ1aG4NCk5BTkQgQXBwbGljYXRpb24gRW5naW5lZXINCkVtYmVkZGVkIEJ1c2luZXNzIFVu
-aXQNCk1pY3JvbiBUZWNobm9sb2d5LCBJbmMNCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
-LQ0KRnJvbTogQm9yaXMgQnJlemlsbG9uIFttYWlsdG86Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxl
-Y3Ryb25zLmNvbV0gDQpTZW50OiBGcmlkYXksIE1hcmNoIDIwLCAyMDE1IDg6MTkgQU0NClRvOiBR
-aSBXYW5nIOeOi+i1tyAocWl3YW5nKQ0KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlcjsgSXdvIE1lcmds
-ZXI7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBybmQ0QGRhdmUtdGVjaC5pdDsgSmVm
-ZiBMYXVydWhuIChqbGF1cnVobik7IGRlZGVraW5kMUBnbWFpbC5jb207IGFuZHJlYS5tYXJzb25A
-ZGF2ZS5ldTsgQmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKTsgRnJhbmsgTGl1IOWImOe+pCAo
-ZnJhbmtsaXUpOyBab2x0YW4gU3p1YmJvY3NldiAoenN6dWJib2NzZXYpDQpTdWJqZWN0OiBSZTog
-ZGV0ZWN0IGFuZCBtYW5hZ2UgcG93ZXIgY3V0IG9uIE1MQyBOQU5EDQoNCkhpIFFpLA0KDQpPbiBG
-cmksIDIwIE1hciAyMDE1IDE1OjA1OjU0ICswMDAwDQpRaSBXYW5nIOeOi+i1tyAocWl3YW5nKSA8
-cWl3YW5nQG1pY3Jvbi5jb20+IHdyb3RlOg0KDQo+IEhpIEJvcmlzLCBSaWNoYXJkDQo+IA0KPiBP
-biBGcmksIDIwIE1hciAyMDE1IDA1OjA4IFBNICswMDAwIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90
-ZToNCj4gPg0KPiA+QW0gMjAuMDMuMjAxNSB1bSAwOTo1OCBzY2hyaWViIEJvcmlzIEJyZXppbGxv
-bjoNCj4gPj4gSGkgUWksDQo+ID4+DQo+ID4+IE9uIEZyaSwgMjAgTWFyIDIwMTUgMDc6NDQ6NTgg
-KzAwMDANCj4gPj4gUWkgV2FuZyDnjovotbcgKHFpd2FuZykgPHFpd2FuZ0BtaWNyb24uY29tPiB3
-cm90ZToNCj4gPj4NCj4gPj4+Pg0KPiA+Pj4+IEkgc2VlbSB0byByZW1lbWJlciBhIHJlcXVpcmVt
-ZW50IHRvIHdyaXRlIHBhZ2VzIHRvIGEgYmxvY2sgaW4gYSANCj4gPj4+PiBtb25vdG9uaWMgZmFz
-aGlvbiAobG93IHRvIGhpZ2gpLiBJcyB0aGF0IHN0aWxsIHRoZSBjYXNlPyBJdCBzZWVtcyANCj4g
-Pj4+PiB0aGF0IHRoZSBsb3cgcGFnZSBiYWNrdXAgY291bGQgdmlvbGF0ZSB0aGF0IHJ1bGUgb3Ro
-ZXJ3aXNlLg0KPiA+Pj4NCj4gPj4+IFllcywgcGFnZXMgbmVlZCB0byBiZSBwcm9ncmFtbWVkIGZy
-b20gbG93IHRvIGhpZ2guIEJ1dCBpdCBpcyANCj4gPj4+IHBvc3NpYmxlIHRvIHNraXAgc29tZSBw
-YWdlcy4gVGFrZSBhIGV4YW1wbGUsDQo+ID4+Pg0KPiA+Pj4gYmVsb3cgcGFnZSBwcm9ncmFtIG9y
-ZGVyaW5nIGlzIG9rLg0KPiA+Pj4gUGFnZSAwLCBwYWdlIDEsIHBhZ2UgMiwgcGFnZSA0LCBwYWdl
-IDYsIHBhZ2UgMTAsIHBhZ2UgMTUsIGV0Yy4uDQo+ID4+PiBKdXN0IG1ha2Ugc3VyZSBkb24ndCB0
-dXJuIGJhY2sgdG8gcHJvZ3JhbSB0aGUgbG93IHBhZ2UgaXMgb2suDQo+ID4+DQo+ID4+IEkgYXNr
-ZWQgYSBxdWVzdGlvbiByZWdhcmRpbmcgdGhlIHByb2dyYW1taW5nIHNlcXVlbmNlIGluIGFuc3dl
-ciB0byANCj4gPj4gSXdvLCBidXQgSSdtIG5vdCBzdXJlIHlvdSB3ZXJlIGluIENjLCBzbyBJJ20g
-YXNraW5nIGl0IGFnYWluLg0KPiA+Pg0KPiA+PiBTYXkgcGFnZSAxIGlzIHBhaXJlZCB3aXRoIHBh
-Z2UgNCwgY2FuIHdlIHByb2dyYW0gcGFnZXMgaW4gdGhpcyBvcmRlcjoNCj4gPj4gMSwgNCwgMiwg
-NSwgMywgNiwgLi4uLCBzbyB0aGF0IGJvdGggcGFpcmVkIHBhZ2VzIGFyZSBwcm9ncmFtbWVkIA0K
-PiA+PiB0b2dldGhlciAodGhlIEp1bWJvIHBhZ2UgYXBwcm9hY2ggSXdvIGRlc2NyaWJlZCBpbiBo
-aXMgbWFpbCkuDQo+ID4NCj4gPlRoYXQncyBhIGdvb2QgcXVlc3Rpb24uIEkgd2FzIGFsd2F5cyB0
-b2xkIHRoYXQgeW91J3JlIG5vdCBhbGxvd2VkIHRvIA0KPiA+cHJvZ3JhbSBwYWdlcyBpbiBhIG5v
-bi1saW5lYXIgbWFubmVyLg0KPiA+DQo+IA0KPiBZZXMsIHlvdSBhcmUgcmlnaHQuIFRoaXMgbWV0
-aG9kIGlzbid0IGFsbG93ZWQuIFVzZXIgY2FuIG9ubHkgcHJvZ3JhbSANCj4gcGFnZSB3aXRoaW4g
-YSBibG9jayBmcm9tIGxvdyBhZGRyZXNzIHRvIGhpZ2ggYWRkcmVzcy4NCg0KRG8geW91IGtub3cg
-dGhlIHJlYXNvbiBiZWhpbmQgdGhpcyA/DQoNCg0KDQotLQ0KQm9yaXMgQnJlemlsbG9uLCBGcmVl
-IEVsZWN0cm9ucw0KRW1iZWRkZWQgTGludXggYW5kIEtlcm5lbCBlbmdpbmVlcmluZw0KaHR0cDov
-L2ZyZWUtZWxlY3Ryb25zLmNvbQ0K
+On Fri, Mar 20, 2015 at 4:26 AM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> Hi Iwo,
+>
+> On Fri, 20 Mar 2015 11:25:18 +1100
+> Iwo Mergler <Iwo.Mergler@netcommwireless.com> wrote:
+>
+>>
+>> Hi all,
+>>
+>>
+>> I've been thinking a little about the paired pages problem.
+>>
+>> The patented mitigation methods I've seen so far are
+>>
+>> 1)  SanDisk: Use a separate log mechanism to back up LSB page
+>> while writing MSB page.
+>>
+>> 2) M-Systems: Within the block, interleave backup copies of LSB
+>> pages when writing MSB pages.
+>>
+>> 3) Micron: Use as a half-capacity SLC device by writing LSB and MSB
+>> pages such that the levels are reinforced. Jeff mentioned this one.
+>
+> All these solutions involves storing a backup of the first paired page,
+> before writing the 2nd one (I guess that's even worse with TLC NANDs:
+> you'll have to save the 2nd page when writing the 3rd one).
+> If that's possible, I think we should find a way to avoid this
+> duplication.
+>
+>>
+>>
+>> Here is another idea. I assume it's patented already, in which case
+>> I'd like to hear about it. If not, consider this published as of now :-)
+>>
+>>
+>> Get UBI to map the paired pages into a single write unit. Jumbo page
+>> if you will.  So, instead of a block with 64 pages, we get 32 pages,
+>> twice as large.
+>>
+>> Thus, the paired pages will be written in quick succession. A power
+>> cut during this is reduced to the unstable bits issue we already have
+>> with SLC.
+>
+> That's actually a good idea, but I'd like to have feedback from Jeff
+> and/or Qi regarding the feasibility of this proposal.
+> I've read many times that MLC pages should be programmed in ascending
+> order (0, 1, 2, 3, ..., N), and if you take a look at MLC datasheet
+> you'll see that paired pages are not contiguous (here is an example
+> [1], page 55-56 describe how pages are paired together).
+>
+> My question is: is there a reason for interleaving paired pages with
+> other pages (write disturbance mitigation ?) ?
+>
+> If there is no specific reason but to annoy software developers :-),
+> then I think we should consider this Jumbo page approach, because it
+> would contain the paired pages handling in the NAND layer (instead of
+> exposing complexity to the UBI/UBIFS layers) while allowing us to use
+> almost all the NAND chip capacity.
+>
+>>
+>> UBI could take the risk and split the first page pair between EC and
+>> VID headers, replacing the EC info with average in case of unlikely
+>> failure.
+>
+> You want to do that in order to avoid using 2 Jumbo pages to only store
+> a few bytes ?
+> Artem suggested another solution to deal with that: duplicate the EC
+> header in the VID header so that EC information can be recovered when
+> writing to the page paired with the EC header.
+> You'd still have to prevent any write on the page paired with the EC
+> header, but you're still saving one page with this approach and avoid
+> any corruption of UBI metadata caused by paired pages.
+>
+> Maybe there are better solution, and I've been thinking about a
+> different approach to avoid writing the EC and VID headers in 2
+> different pages: store EC header information in a specific UBI volume
+> (containing one or two LEBs).
+> This volume would store a log of EC information update, so that when
+> you erase a page you don't have to write the EC header right away, but
+> should just add an entry in the UBI EC log.
+> This way you write EC and VID information in one go when someone maps a
+> LEB (attach it to a specific volume).
+>
+> These are just thoughts ;-).
+>
+> [1]http://www.szyuda88.com/uploadfile/cfile/2013419135343223.pdf
+> --
+> Boris Brezillon, Free Electrons
+> Embedded Linux and Kernel engineering
+> http://free-electrons.com
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Iwo,
+I was assuming the pages were still in ram and volatile for my example.
+Nick
