@@ -1,31 +1,27 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.197])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.207])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYpgF-0000xB-0a
- for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 05:41:11 +0000
+ id 1YYqp6-0005Sg-11
+ for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 06:54:24 +0000
 From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-To: nick <xerofoify@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Andrea Marson <andrea.marson@dave.eu>
-Date: Fri, 20 Mar 2015 16:40:31 +1100
-Subject: RE: RFC: detect and manage power cut on MLC NAND
-Message-ID: <EACD232272DA4849B060F0828564D13B57804E268D@ntcex01.corp.netcomm.com.au>
-References: <mailman.37176.1426610573.22890.linux-mtd@lists.infradead.org>
- <mailman.37176.1426610573.22890.linux-mtd.{ec43ae5e-9450-4d5f-9aa7-4de61fefcb43}.0@lists.infradead.org>
- <0D23F1ECC880A74392D56535BCADD7354973E51A@NTXBOIMBX03.micron.com>
- <55093B1E.2050805@dave.eu>
- <0D23F1ECC880A74392D56535BCADD7354973E995@NTXBOIMBX03.micron.com>
- <550A8D19.90404@dave.eu>,<20150319101246.26806e95@bbrezillon>
- <EACD232272DA4849B060F0828564D13B57804E2680@ntcex01.corp.netcomm.com.au>,
- <550B961B.6050407@gmail.com>
-In-Reply-To: <550B961B.6050407@gmail.com>
+To: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>
+Date: Fri, 20 Mar 2015 17:52:13 +1100
+Subject: RE: detect and manage power cut on MLC NAND
+Message-ID: <EACD232272DA4849B060F0828564D13B57804E26B6@ntcex01.corp.netcomm.com.au>
+References: <mailman.37706.1426822709.22890.linux-mtd@lists.infradead.org>,
+ <71CF8D7F32C5C24C9CD1D0E02D52498A7717444D@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A7717444D@NTXXIAMBX02.xacn.micron.com>
 Content-Language: en-AU
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: Andrea Scian <rnd4@dave-tech.it>,
- "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
+Cc: "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "rnd4@dave-tech.it" <rnd4@dave-tech.it>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>
+ =?gb2312?B?RnJhbmsgTGl1IMH1yLogKGZyYW5rbGl1KQ==?= <frankliu@micron.com>,
+ "andrea.marson@dave.eu" <andrea.marson@dave.eu>,
+ =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,49 +31,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Mar 2015 14:38:03 +1100
-nick <xerofoify@gmail.com> wrote:
->=20
->=20
-> On 2015-03-19 08:25 PM, Iwo Mergler wrote:
-> >=20
-> > Get UBI to map the paired pages into a single write unit. Jumbo page
-> > if you will.  So, instead of a block with 64 pages, we get 32 pages,
-> > twice as large.
-> >=20
-> > Thus, the paired pages will be written in quick succession. A power
-> > cut during this is reduced to the unstable bits issue we already
-> > have with SLC.
-> >=20
-> > UBI could take the risk and split the first page pair between EC and
-> > VID headers, replacing the EC info with average in case of unlikely
-> > failure.
-> >=20
-> > Would this work?
-> >=20
-> >=20
-> > Best regards,
-> >=20
-> > Iwo
-> >=20
-> >=20
-> >=20
-> Iwo,
-> Not a bad idea but what happens if the power gets cut after the first
-> 2 pages then we lose 30 pages worth of data.  Unless the hardware is
-> very fast and can move the pages over in a millisecond or less then
-> this can't really worth. However if we make these transactions atomic
-> in nature this may work better as CPU instruction respond is in the
-> nanosecond range even on low cost embedded boards using UBI for raw
-> flash embedded on to themselves. Nick
-
-I'm not sure I understand - why would you lose any data outside the
-affected paired pages?
-
-Also, write order within the block will still be respected. That is,
-when writing the first page pair, the other pages will be erased.
-
-
-Best regards,
-
-Iwo
+T24gRnJpLCAyMCBNYXIgMjAxNSAxNjowNzowNyArMTEwMA0KUWkgV2FuZyDN9cbwIChxaXdhbmcp
+IDxxaXdhbmdAbWljcm9uLmNvbT4gd3JvdGU6DQoNCj4gSGkgSXdvLA0KPiANCj4gR2xhZCB0byB0
+YWxrIHlvdSBoZXJlLCBhY3R1YWxseSBJIGFscmVhZHkgdGFsa2VkIHdpdGggQm9yaXMgYWJvdXQN
+Cj4gTUxDIE5BTkQgcG93ZXIgbG9zcyByZWNvdmVyeSBpbiBhbm90aGVyIGVtYWlsIGxvb3AgY291
+cGxlIG9mIGRheXMgDQo+IGJlZm9yZS4NCj4gDQo+IEkgYW0gTWljcm9uIFNoYW5naGFpIEVtYmVk
+ZGVkIGJ1c2luZXNzIGdyb3VwIFNXIGxlYWRlciwgaW4gY2hhcmdlDQo+IE9mIFNXIGRldmVsb3As
+IGluY2x1ZGUgbXRkIGRyaXZlciBhbmQgZmlsZXN5c3RlbSBvcHRpbWl6YXRpb24uIA0KPiAJDQo+
+IEkgdGFsa2VkIHdpdGggQm9yaXMsIEkgc3VibWl0dGVkIGEgcGF0ZW50IHRvIHByZXZlbnQgcGFp
+ciBwYWdlDQo+IGNvcnJ1cHRpb24gYWZ0ZXIgcG93ZXIgbG9zcyBpbiBBcHJpbCAyMDE0LiBBbmQg
+bm93LCBJIGFtIA0KPiBjb25zaWRlcmluZyB0byBjb250cmlidXRlIGl0IHRvIExpbnV4IGNvbW11
+bml0eSAoc3RpbGwgbmVlZCB0bw0KPiBhbGlnbiB3aXRoIE1pY3JvbiBwYXRlbnQgY29tbWl0dGVl
+KSBpZiBhbGwgb2YgeW91IHRoaW5rIHRoaXMgcGF0ZW50IA0KPiBpcyB2YWx1YWJsZSB0byBpbXBs
+ZW1lbnQgdG8gVUJJRlMuDQo+IA0KPiBUaGUgYmFzaWMgY29uY2VwdCBzdGlsbCBpcyBiYWNrdXAg
+bWV0aG9kLCBkZXRhaWwgYXMgYmVsb3ctDQo+IA0KPiAxLiBXaGVuIHByb2dyYW0gbG93IHBhZ2Us
+IHV0aWxpemUgbXVsdGlwbGUgcGxhbmUgbWV0aG9kIHRvIA0KPiAgICBwcm9ncmFtIGxvdyBwYWdl
+IHRvIHRhcmdldCBhZGRyZXNzIGFuZCBhbm90aGVyIGJhY2t1cCBibG9jay4gDQo+ICAgIEJhcmVs
+eSBoYXMgcGVyZm9ybWFuY2UgZG93bmdyYWRlIGV2ZW4gcHJvZ3JhbSAyIHBhZ2VzIGJlY2F1c2Ug
+DQo+ICAgIG9mIG11bHRpcGxlIHBsYW5lIGZlYXR1cmUuIA0KPiAyLiB3aGVuIHByb2dyYW0gdXBw
+ZXIgcGFnZSwgbm8gbmVlZCB0byBiYWNrdXAgbG93ZXIgcGFnZSBhdCBhbGwuDQo+IA0KPiBUaGlz
+IG1ldGhvZCBuZWFybHkgZG9uJ3QgaGF2ZSBwZXJmb3JtYW5jZSBwZW5hbHR5IGNvbXBhcmUgdG8g
+YmVmb3JlLg0KPiBCdXQgbmVlZCBpbXBsZW1lbnQgbXVsdGlwbGUgcGxhbmUgZnVuY3Rpb24sIGFu
+ZCBuZWVkIHRvIGtlZXAgDQo+IHRoZSBiYWNrdXAgYmxvY2sgc2FmZSB0byBlbnN1cmUgdGhlIGJh
+Y2t1cCBsb3cgcGFnZSBkYXRhIGlzIGdvb2QNCj4gd2hlbiBwcm9ncmFtIHJlbGV2YW50IHVwcGVy
+IHBhZ2UuDQo+IA0KPiBIb3cgZG8geW91IHRoaW5rIGFib3V0IHRoaXMgaWRlYT8NCg0KSGkgUWks
+DQoNCml0IHNvdW5kcyBsaWtlIGEgd29ydGh3aGlsZSBpbXByb3ZlbWVudCB0byB0aGUgYmFja3Vw
+IHRvIGxvZyBtZXRob2QuDQpJIGhhdmUgYSBmZXcgcXVlc3Rpb25zLg0KDQpJZiBJIHVuZGVyc3Rh
+bmQgeW91IGNvcnJlY3RseSwgdGhpcyBtZXRob2QgdGFrZXMgYWR2YW50YWdlIG9mDQp0aGUgb2Rk
+L2V2ZW4gYmxvY2sgcGxhbmVzIGFuZCB0aGUgc2ltdWx0YW5lb3VzIG11bHRpLXBsYW5lIHdyaXRl
+Lg0KDQpEbyB5b3UgaGF2ZSB0byBzZW5kIHRoZSBwYWdlIGRhdGEgdHdpY2U/IE9yIGNhbiB5b3Ug
+YXBwbHkgdGhlDQpzYW1lIHBhZ2UgYnVmZmVyIHRvIGJvdGggcGxhbmVzPw0KDQpJZiB5b3UgYXJl
+IGFib3V0IHRvIHdyaXRlIHRoZSBsb3cgcGFnZSBpbiBhLCBzYXksIGV2ZW4gYmxvY2ssDQp5b3Ug
+bmVlZCBmaW5kIGFuIG9kZCBibG9jayB3aXRoIHRoZSBzYW1lIHBhZ2UgYXZhaWxhYmxlIGFuZCB3
+cml0ZQ0KdGhlIHNhbWUgcGFnZSBjb250ZW50IHRvIGJvdGguIEkgdW5kZXJzdGFuZCB0aGF0IHRo
+ZSBjb2x1bW4NCmFkZHJlc3NlcyBoYXZlIHRvIGJlIGlkZW50aWNhbCAtIGlzIHRoYXQgY29ycmVj
+dD8NCg0KSSBzZWVtIHRvIHJlbWVtYmVyIGEgcmVxdWlyZW1lbnQgdG8gd3JpdGUgcGFnZXMgdG8g
+YSBibG9jayBpbiBhDQptb25vdG9uaWMgZmFzaGlvbiAobG93IHRvIGhpZ2gpLiBJcyB0aGF0IHN0
+aWxsIHRoZSBjYXNlPyBJdA0Kc2VlbXMgdGhhdCB0aGUgbG93IHBhZ2UgYmFja3VwIGNvdWxkIHZp
+b2xhdGUgdGhhdCBydWxlIG90aGVyd2lzZS4NCg0KSG93IHdvdWxkIHlvdSBkZWFsIHdpdGggdGhl
+IGJhY2t1cCBibG9ja3M/IFRoZSBiYWNrdXAgbXVzdCBzdGF5DQppbiBwbGFjZSBhZnRlciB3cml0
+aW5nIHRoZSBsb3cgcGFnZSwgYnV0IG9ubHkgdG8gdGhlIG1vbWVudCB0aGUNCmNvcnJlc3BvbmRp
+bmcgaGlnaCBwYWdlIGlzIHdyaXR0ZW4uIEFmdGVyIHRoYXQsIGl0J3Mgb2Jzb2xldGUuDQoNCkRv
+IHlvdSBlbnZpc2lvbiB0byBkZWRpY2F0ZSBzb21lIGJsb2NrcyBmb3IgdGhpcyBwdXJwb3NlPyBP
+cg0Kd291bGQgdGhlIGR1cGxpY2F0ZWQgcGFnZXMgYmVjb21lIHBhcnQgb2Ygbm9ybWFsIHN0b3Jh
+Z2UgYmxvY2tzPw0KDQpOYWl2ZWx5LCBJIHNlZSB0aGUgY29zdCBvZiB0aGlzIG1ldGhvZCB0byBi
+ZSBzb21ld2hlcmUgYmV0d2Vlbg0KYSAyNSUgcmVkdWN0aW9uIGluIHN0b3JhZ2Ugb3IgYSAyNSUg
+aW5jcmVhc2UgaW4gZXJhc2UgY3ljbGVzLA0KZGVwZW5kaW5nIG9uIHRoZSBiYWNrdXAgYmxvY2sg
+aGFuZGxpbmcuDQpEb2VzIHRoYXQgbWF0Y2ggeW91ciBvd24gcHJlZGljdGlvbj8NCg0KDQpCZXN0
+IHJlZ2FyZHMsDQoNCkl3bw0K
