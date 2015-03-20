@@ -1,32 +1,30 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYyi1-0006fR-1r
- for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 15:19:37 +0000
-Date: Fri, 20 Mar 2015 16:19:03 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Qi Wang =?UTF-8?B?546L6LW3?= (qiwang)" <qiwang@micron.com>
-Subject: Re: detect and manage power cut on MLC NAND
-Message-ID: <20150320161903.608a79fc@bbrezillon>
-In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A7717470C@NTXXIAMBX02.xacn.micron.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YYz7Z-00048p-Q8
+ for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 15:46:02 +0000
+From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: RE: detect and manage power cut on MLC NAND
+Date: Fri, 20 Mar 2015 15:45:10 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7717474E@NTXXIAMBX02.xacn.micron.com>
 References: <mailman.37706.1426822709.22890.linux-mtd@lists.infradead.org>
  <71CF8D7F32C5C24C9CD1D0E02D52498A7717444D@NTXXIAMBX02.xacn.micron.com>
  <EACD232272DA4849B060F0828564D13B57804E26B6@ntcex01.corp.netcomm.com.au>
  <71CF8D7F32C5C24C9CD1D0E02D52498A771744B0@NTXXIAMBX02.xacn.micron.com>
- <20150320095822.7e1979ff@bbrezillon> <550BE355.8020009@nod.at>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7717470C@NTXXIAMBX02.xacn.micron.com>
+ <20150320095822.7e1979ff@bbrezillon>
+In-Reply-To: <20150320095822.7e1979ff@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
  "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, "rnd4@dave-tech.it" <rnd4@dave-tech.it>,
- "Zoltan Szubbocsev \(zszubbocsev\)" <zszubbocsev@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Frank
- Liu =?UTF-8?B?5YiY576k?= \(frankliu\)" <frankliu@micron.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "rnd4@dave-tech.it" <rnd4@dave-tech.it>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
  "andrea.marson@dave.eu" <andrea.marson@dave.eu>,
- "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= \(beanhuo\)" <beanhuo@micron.com>
+ =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,52 +34,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Qi,
-
-On Fri, 20 Mar 2015 15:05:54 +0000
-Qi Wang =E7=8E=8B=E8=B5=B7 (qiwang) <qiwang@micron.com> wrote:
-
-> Hi Boris, Richard
->=20
-> On Fri, 20 Mar 2015 05:08 PM +0000 Richard Weinberger wrote:
-> >
-> >Am 20.03.2015 um 09:58 schrieb Boris Brezillon:
-> >> Hi Qi,
-> >>
-> >> On Fri, 20 Mar 2015 07:44:58 +0000
-> >> Qi Wang =E7=8E=8B=E8=B5=B7 (qiwang) <qiwang@micron.com> wrote:
-> >>
-> >>>>
-> >>>> I seem to remember a requirement to write pages to a block in a
-> >>>> monotonic fashion (low to high). Is that still the case? It
-> >>>> seems that the low page backup could violate that rule otherwise.
-> >>>
-> >>> Yes, pages need to be programmed from low to high. But it is possible
-> >>> to skip some pages. Take a example,
-> >>>
-> >>> below page program ordering is ok.
-> >>> Page 0, page 1, page 2, page 4, page 6, page 10, page 15, etc..
-> >>> Just make sure don't turn back to program the low page is ok.
-> >>
-> >> I asked a question regarding the programming sequence in answer to Iwo,
-> >> but I'm not sure you were in Cc, so I'm asking it again.
-> >>
-> >> Say page 1 is paired with page 4, can we program pages in this order:
-> >> 1, 4, 2, 5, 3, 6, ..., so that both paired pages are programmed
-> >> together (the Jumbo page approach Iwo described in his mail).
-> >
-> >That's a good question. I was always told that you're not allowed
-> >to program pages in a non-linear manner.
-> >
->=20
-> Yes, you are right. This method isn't allowed. User can only program page
-> within a block from low address to high address.
-
-Do you know the reason behind this ?
-
-
-
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+SGkgQm9yaXMsDQoNCk9uIEZyaSwgMjAgTWFyIDIwMTUgMDQ6NTg6MjQgUE0gKzAwMDAgQm9yaXMg
+QnJlemlsbG9uIHdyb3RlOg0KPg0KPkhpIFFpLA0KPg0KPk9uIEZyaSwgMjAgTWFyIDIwMTUgMDc6
+NDQ6NTggKzAwMDANCj5RaSBXYW5nIOeOi+i1tyAocWl3YW5nKSA8cWl3YW5nQG1pY3Jvbi5jb20+
+IHdyb3RlOg0KPg0KPj4gPg0KPj4gPkkgc2VlbSB0byByZW1lbWJlciBhIHJlcXVpcmVtZW50IHRv
+IHdyaXRlIHBhZ2VzIHRvIGEgYmxvY2sgaW4gYQ0KPj4gPm1vbm90b25pYyBmYXNoaW9uIChsb3cg
+dG8gaGlnaCkuIElzIHRoYXQgc3RpbGwgdGhlIGNhc2U/IEl0DQo+PiA+c2VlbXMgdGhhdCB0aGUg
+bG93IHBhZ2UgYmFja3VwIGNvdWxkIHZpb2xhdGUgdGhhdCBydWxlIG90aGVyd2lzZS4NCj4+DQo+
+PiBZZXMsIHBhZ2VzIG5lZWQgdG8gYmUgcHJvZ3JhbW1lZCBmcm9tIGxvdyB0byBoaWdoLiBCdXQg
+aXQgaXMgcG9zc2libGUNCj4+IHRvIHNraXAgc29tZSBwYWdlcy4gVGFrZSBhIGV4YW1wbGUsDQo+
+Pg0KPj4gYmVsb3cgcGFnZSBwcm9ncmFtIG9yZGVyaW5nIGlzIG9rLg0KPj4gUGFnZSAwLCBwYWdl
+IDEsIHBhZ2UgMiwgcGFnZSA0LCBwYWdlIDYsIHBhZ2UgMTAsIHBhZ2UgMTUsIGV0Yy4uDQo+PiBK
+dXN0IG1ha2Ugc3VyZSBkb24ndCB0dXJuIGJhY2sgdG8gcHJvZ3JhbSB0aGUgbG93IHBhZ2UgaXMg
+b2suDQo+DQo+SSBhc2tlZCBhIHF1ZXN0aW9uIHJlZ2FyZGluZyB0aGUgcHJvZ3JhbW1pbmcgc2Vx
+dWVuY2UgaW4gYW5zd2VyIHRvIEl3bywNCj5idXQgSSdtIG5vdCBzdXJlIHlvdSB3ZXJlIGluIENj
+LCBzbyBJJ20gYXNraW5nIGl0IGFnYWluLg0KPg0KPlNheSBwYWdlIDEgaXMgcGFpcmVkIHdpdGgg
+cGFnZSA0LCBjYW4gd2UgcHJvZ3JhbSBwYWdlcyBpbiB0aGlzIG9yZGVyOg0KPjEsIDQsIDIsIDUs
+IDMsIDYsIC4uLiwgc28gdGhhdCBib3RoIHBhaXJlZCBwYWdlcyBhcmUgcHJvZ3JhbW1lZA0KPnRv
+Z2V0aGVyICh0aGUgSnVtYm8gcGFnZSBhcHByb2FjaCBJd28gZGVzY3JpYmVkIGluIGhpcyBtYWls
+KS4NCj4NCj4NCj5bLi4uXQ0KPj4NCj4+ID4NCj4+ID5EbyB5b3UgZW52aXNpb24gdG8gZGVkaWNh
+dGUgc29tZSBibG9ja3MgZm9yIHRoaXMgcHVycG9zZT8gT3INCj4+ID53b3VsZCB0aGUgZHVwbGlj
+YXRlZCBwYWdlcyBiZWNvbWUgcGFydCBvZiBub3JtYWwgc3RvcmFnZSBibG9ja3M/DQo+Pg0KPj4g
+SSBkb24ndCB3YW50IGRlZGljYXRlIHNvbWUgYmxvY2tzIGZvciB0aGlzIHB1cnBvc2UsIGluIHRo
+aXMgd2F5LA0KPj4gdGhlc2UgYmxvY2tzIFAvRSBjeWNsZSBjb3VsZCBpbmNyZWFzZSBxdWlja2x5
+Lg0KPj4NCj4+IE15IGlkZWEgaXMgdG8gYWxsb2NhdGUgbG93IFAvRSBjeWNsZSBibG9jayBmcm9t
+IFVCSSBibG9jayBwb29sDQo+PiB3aGVuIG5lZWQgYmFja3VwIGRhdGEuIEFuZCByZWxlYXNlIHRo
+aXMgYmxvY2sgdG8gVUJJIGJsb2NrIHBvb2wNCj4+IHdoZW4gdGhlIGJhY2t1cCBkYXRhIGlzbid0
+IGF2YWlsYWJsZSBhbnkgbW9yZS4NCj4NCj5CdXQgeW91IGNhbid0IHRha2UgYSByYW5kb20gUEVC
+OiBpdCBoYXMgdG8gYmUgYW4gZXZlbiBvciBvZGQgYmxvY2sNCj5udW1iZXIgZGVwZW5kaW5nIG9u
+IHdoaWNoIGJsb2NrIHRoZSBwYWdlIHlvdSdyZSB0cnlpbmcgdG8gYmFja3VwDQo+YmVsb25ncyB0
+bywgcmlnaHQgPw0KDQpZZXMsIGFjdHVhbGx5IEkgc3Ryb25nbHkgc3VnZ2VzdCB0byByZWNvcmQg
+cGxhbmUgaW5mb3JtYXRpb24gb2YNCmEgYmxvY2sgaW4gVUJJLg0KICAgDQpGb3IgU0xDIE5BTkQs
+IHdlIGNhbiBtZXJnZSAyIHBoeXNpY2FsIGJsb2NrcyBiZWxvbmcgdG8gZGlmZmVyZW50IA0KcGxh
+bmUgdG8gMSBsb2dpYyBibG9jaywgYW5kIGxvZ2ljIHBhZ2UgYWxzbyBjb250YWluIDIgcGFnZXMg
+YmVsb25nIA0KdG8gdGhlc2UgMiBwaHlzaWNhbC4gVGhhdCBtZWFuIGxvZ2ljIGJsb2NrIHNpemUg
+YW5kIHBhZ2Ugc2l6ZSBhcmUgDQp0d2ljZSB0aGFuIGJlZm9yZS4gVGhlbiwgd2UgY2FuIHVzZSBt
+dWx0aXBsZSBwbGFuZSBtZXRob2QgdG8gcHJvZ3JhbQ0KdGhpcyAyIHBoeXNpY2FsIHBhZ2VzLCB0
+byBpbXByb3ZlIHBlcmZvcm1hbmNlLiBSaWdodD8NCkhvd2V2ZXIsIHRoaXMgaXMgYW5vdGhlciB0
+b3BpYyByZWxhdGVkIHdpdGggcGVyZm9ybWFuY2UuDQoNCj4NCj4+DQo+PiA+DQo+PiA+TmFpdmVs
+eSwgSSBzZWUgdGhlIGNvc3Qgb2YgdGhpcyBtZXRob2QgdG8gYmUgc29tZXdoZXJlIGJldHdlZW4N
+Cj4+ID5hIDI1JSByZWR1Y3Rpb24gaW4gc3RvcmFnZSBvciBhIDI1JSBpbmNyZWFzZSBpbiBlcmFz
+ZSBjeWNsZXMsDQo+PiA+ZGVwZW5kaW5nIG9uIHRoZSBiYWNrdXAgYmxvY2sgaGFuZGxpbmcuDQo+
+PiA+RG9lcyB0aGF0IG1hdGNoIHlvdXIgb3duIHByZWRpY3Rpb24/DQo+Pg0KPj4gSSB0aGluayBp
+dCBkZXBlbmRzIG9uIFVCSS9VQklGUyBiZWhhdmlvci4NCj4+DQo+PiBGb3IgZXhhbXBsZSwNCj4+
+DQo+PiBDb25kaXRpb24gMSAtIFVCSS9VQklGUyB3cml0ZSBhIGxvdCBibG9ja3MgcGFydGlhbGx5
+DQo+PiBUaGUgVUJJL1VCSUZTIHdyaXRlIG9yZGVyIGxpa2UgYmVsb3c6DQo+PiBQcm9ncmFtIHNv
+bWUgcGFnZXMgaW4gYmxvY2swLCB0aGVuIGJsb2NrMSwgYmxvY2syLDMsNCw1LDYuLi4xMDAuLg0K
+Pj4gVGhlbiwgVUJJL1VCSUZTIHR1cm4gYmFjayB0byBwcm9ncmFtIGJsb2NrMCwxLDIuLi4gYWdh
+aW4uDQo+Pg0KPj4gSSB0aGluayB0aGlzIGNvbmRpdGlvbiBuZWVkIG1hbnkgYmFja3VwIGJsb2Nr
+cywgYXMgYSBsb3QgZGF0YSB3aWxsDQo+PiBiZSBhdmFpbGFibGUgYXQgc29tZSB0aW1lLiByaWdo
+dD8NCj4NCj5JdCBkZXBlbmRzIG9uIGhvdyB5b3UgZGVhbCB3aXRoIGl0LCBidXQgaWYgeW91J3Jl
+IGFzc2lnbmluZyBhIGJhY2t1cA0KPmJsb2NrIGZvciBlYWNoIHBheWxvYWQvZGF0YSBibG9jaywg
+dGhlbiB5b3UnbGwgaGF2ZSB0aGUgc2FtZSBudW1iZXIgb2YNCj5iYWNrdXAgYW5kIGRhdGEgYmxv
+Y2tzLCB1bnRpbCBzb21lIGRhdGEgYmxvY2tzIGFyZSBjb21wbGV0ZWx5IGZpbGxlZA0KPndpdGgg
+ZGF0YS4NCj4NCj4+DQo+Pg0KPj4gQ29uZGl0aW9uIDIgLSBVQkkvVUJJRlMgb25seSB3cml0ZSBz
+ZXZlcmFsIGJsb2NrcyBwYXJ0aWFsbHkNCj4+IFRoZSBVQkkvVUJJRlMgd3JpdGUgb3JkZXIgbGlr
+ZSBiZWxvdzoNCj4+IFByb2dyYW0gc29tZSBwYWdlcyBpbiBibG9jazAsIHRoZW4gYmxvY2sxLCBi
+bG9jazIsIDMuDQo+PiBUaGVuLCBVQkkvVUJJRlMgdHVybiBiYWNrIHRvIHByb2dyYW0gYmxvY2sw
+LDEsMiwgMy4gVW50aWwgb25lIG9mIHRoZQ0KPj4gYmxvY2tzIGlzIGZ1bGwsIFVCSS9VQklGUyB3
+aWxsIG9wZW4gYmxvY2s0LCBhbmQgd3JpdGUgZGF0YSBpbnRvIGl0Lg0KPj4NCj4+IEluIHRoaXMg
+Y29uZGl0aW9uLCB3ZSBjYW4gb25seSBhbGxvY2F0ZSA0IGJsb2NrcyB0byBiYWNrdXAgYmxvY2sN
+Cj4wLDEsMiwzDQo+PiBkYXRhIHNob3VsZCBiZSBvay4gUmlnaHQ/DQo+DQo+SSB3b3VsZCBzYXkg
+c28uIElPVywgeW91J3JlIGxvb3NpbmcgaGFsZiB5b3VyIE5BTkQgY2FwYWNpdHkgaW4gdGhlIGJl
+c3QNCj5jYXNlLCByaWdodCA/DQo+DQoNClllcywgdmVyeSBwYWluZnVsLiA6KQ0KQnV0IGlmIGl0
+IGlzIHBvc3NpYmxlIHRvIG9jY3VyIHRoaXMgYmVzdCBjYXNlPyBBbmQgaWYgd2UgY2FuIGF2b2lk
+IHRoaXMgDQpoYXBwZW4/DQoNCg0KPkJUVywgd2hlcmUgZG8geW91IHN0b3JlIGluZm9ybWF0aW9u
+IGFib3V0IHdoZXJlIGVhY2ggYmxvY2sgc3RvcmUgaXRzDQo+bG93ZXIgcGFnZXMgYmFja3VwID8N
+Cj4NCg0KRm9yIG15IHJvdWdoIGlkZWEgaXMsIHdlIGNhbiBzdG9yZSBhZGRyZXNzIGluIE9PQiBh
+cmVhIG9mIHRoZSBwYWdlLg0KSW4gdGhlIFVCSSBzb2Z0d2FyZSBmcmFtZXdvcmssIGl0IHJlc2Vy
+dmUgc29tZSAiaW50ZXJuYWwgdm9sdW1lIiwgd2UgDQpjYW4gbGV2ZXJhZ2UgdGhpcyBtZWNoYW5p
+c20gdG8gY3JlYXRlIGEgaW50ZXJuYWwgdm9sdW1lIHRvIG1hbmFnZSB0aGVzZSANCmJhY2t1cCBw
+YWdlLiANCkR1cmluZyBhdHRhY2ggcHJvY2Vzcywgd2UgY2FuIGZpbmQgdGhpcyBiYWNrdXAgdm9s
+dW1lLCBhbmQgY2hlY2sgaWYgDQpiYWNrdXAgZGF0YSBpcyBlcXVhbCB0byB0aGUgb3JpZ2luYWwg
+ZGF0YS4gDQpBbnl3YXksIHRoaXMgaXMgbXkgcm91Z2ggaWRlYSwgc3RpbGwgbmVlZCB0byB0YWxr
+IHdpdGggYWxsIG9mIHlvdS4gICANCg0KPj4NCj4+DQo+PiBGb3IgbXkgdW5kZXJzdGFuZGluZywg
+VUJJL1VCSUZTIGJlaGF2aW9yIGlzIG1vcmUgbGlrZSBjb25kaXRpb24gMi4NCj4NCj5ZZXAsIHRo
+YXQncyBteSB1bmRlcnN0YW5kaW5nIHRvbywgYnV0IEknbSBkZWZpbml0ZWx5IG5vdCBhIFVCSUZT
+IGV4cGVydC4NCj4NCg0KSSBldmVyIGRpZCBzaW1wbGUgZXhwZXJpbWVudCBvbiBVQklGUywgdG8g
+cmFuZG9tIGNyZWF0ZS93cml0ZS9tb2RpZnkgDQpmaWxlcyBvciBkaXJlY3RvcnkuIEkgZm91bmQg
+VUJJRlMgYmVoYXZpb3IgaXMgbGlrZSBjb25kaXRpb24gMi4gDQpCdXQgSSBkb24ndCBrbm93IGlm
+IG15IGV4cGVyaW1lbnQgY292ZXIgdGhlIHdvcnNlIGNhc2UsIHNvIG5lZWQgZXhwZXJ0cyANCnRv
+IGNvbmZpcm0gbWUuICANCg0KDQo+PiBFeGNlcHQgRUMgaGVhZGVyIHdyaXR0ZW4sIEVDIHdpbGwg
+YmUgd3JpdHRlbiBpbnRvIGJsb2NrIGluaXRpYWxseS4NCj4+IFNvIEkgZG9uJ3Qgc3VnZ2VzdCB1
+c2UgdGhpcyBtZXRob2QgdG8gYmFja3VwIEVDLg0KPg0KPkl0IGRlcGVuZHMuIElmIHlvdSB3YW50
+IHRvIHdyaXRlIG9uIHRoZSBwYWdlcyBwYWlyZWQgd2l0aCBFQyBhbmQgVklEDQo+aGVhZGVycywg
+eW91J2xsIGhhdmUgdG8gc29tZWhvdyBzYW1lIEVDL1ZJRCBpbmZvcm1hdGlvbi4NCg0KU29ycnks
+IEknbSBub3QgdmVyeSBjbGVhciB0aGlzIHBvaW50LiBNeSB1bmRlcnN0YW5kaW5nIGlzIFZJRCBj
+b250YWluIA0KdGhlIG1hcHBpbmcgaW5mb3JtYXRpb24gdGhhdCBmcm9tIHBoeXNpY2FsIHRvIGxv
+Z2ljYWwsIHJpZ2h0PyBUaGlzDQppbmZvcm1hdGlvbiB3aWxsIGJlIHdyaXR0ZW4gb25seSB3aGVu
+IFVCSSBhbGxvY2F0ZSBhIG5ldyBsb2dpYyBibG9jay4NClNvIGl0IGlzIG9rIHRvIGJhY2t1cCB0
+aGlzIFZJRCBkYXRhIHRvIGJhY2t1cCBibG9jay4NCg0KQnV0IGZvciBFQywgaXQgd2lsbCB3cml0
+dGVuIGFsbCBibG9jaydzIHBhZ2UgMCBhdCB0aGUgZm9ybWF0IHBlcmlvZC4NCk15IGJhY2t1cCBs
+b3cgcGFnZSBtZXRob2QgaXNuJ3Qgc3VpdGFibGUgZm9yIHRoaXMgb3BlcmF0aW9uLCBhcyBpdCBp
+cyANCnRoZSB3b3JzZSBjYXNlIHlvdSBtZW50aW9uZWQgYWJvdmUsIHRoYXQgd2lsbCBsb3NlIGhh
+bGYgb2YgTkFORCANCmNhcGFiaWxpdHksIHJpZ2h0PyANCg0KPg0KPj4NCj4+IEFuZCBhbHNvLCBz
+b21lIG9mIG9wZXJhdGlvbiBkb24ndCBuZWVkIHRvIGJhY2t1cCBvcGVyYXRpb24sIHN1Y2ggYXMs
+DQo+PiBXZWFyIGxldmVsaW5nLCByZWZyZXNoIGV0Yy4uDQo+DQo+VGhhdCdzIHRydWUgZm9yIHRo
+ZSB3ZWFyIGxldmVsaW5nIHBhcnQgKGFuZCBmb3IgYWxsIGF0b21pYyBMRUINCj5vcGVyYXRpb25z
+IGluIGdlbmVyYWwpLCBiZWNhdXNlIGEgQ1JDIGlzIGNhbGN1bGF0ZWQgYW5kIHN0b3JlZCBpbiB0
+aGUNCj5WSUQgaGVhZGVyLCBzbyB0aGF0IGRhdGEgaW50ZWdyaXR5IG9mIHRoZSB3aG9sZSBMRUIg
+Y2FuIGJlIGNoZWNrZWQuDQo+DQo+V2hhdCBkbyB5b3UgbWVhbiBieSByZWZyZXNoID8NCg0KVGhl
+IHJlZnJlc2ggSSBtZW50aW9uZWQgaXMgd2hlbiBiaXQgZmxpcCBjb3VudCBleGNlZWQgdGhlIHRo
+cmVzaG9sZCwgVUJJIHdpbGwNCm1vdmUgYXZhaWxhYmxlIGRhdGEgdG8gYW5vdGhlciBibG9jay4g
+OikNCg0KLS0NClFpIFdhbmcNCkJlc3Qgd2lzaGVzDQoNCg==
