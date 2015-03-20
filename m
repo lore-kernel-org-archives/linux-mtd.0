@@ -1,27 +1,19 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.207])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYqp6-0005Sg-11
- for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 06:54:24 +0000
-From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-To: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>
-Date: Fri, 20 Mar 2015 17:52:13 +1100
-Subject: RE: detect and manage power cut on MLC NAND
-Message-ID: <EACD232272DA4849B060F0828564D13B57804E26B6@ntcex01.corp.netcomm.com.au>
-References: <mailman.37706.1426822709.22890.linux-mtd@lists.infradead.org>,
- <71CF8D7F32C5C24C9CD1D0E02D52498A7717444D@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A7717444D@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-AU
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "rnd4@dave-tech.it" <rnd4@dave-tech.it>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?gb2312?B?RnJhbmsgTGl1IMH1yLogKGZyYW5rbGl1KQ==?= <frankliu@micron.com>,
- "andrea.marson@dave.eu" <andrea.marson@dave.eu>,
- =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YYrUY-0006of-Dz
+ for linux-mtd@lists.infradead.org; Fri, 20 Mar 2015 07:37:15 +0000
+Message-ID: <1426836992.8234.24.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBI fixes for 4.0-rc5
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 20 Mar 2015 09:36:32 +0200
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,51 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gRnJpLCAyMCBNYXIgMjAxNSAxNjowNzowNyArMTEwMA0KUWkgV2FuZyDN9cbwIChxaXdhbmcp
-IDxxaXdhbmdAbWljcm9uLmNvbT4gd3JvdGU6DQoNCj4gSGkgSXdvLA0KPiANCj4gR2xhZCB0byB0
-YWxrIHlvdSBoZXJlLCBhY3R1YWxseSBJIGFscmVhZHkgdGFsa2VkIHdpdGggQm9yaXMgYWJvdXQN
-Cj4gTUxDIE5BTkQgcG93ZXIgbG9zcyByZWNvdmVyeSBpbiBhbm90aGVyIGVtYWlsIGxvb3AgY291
-cGxlIG9mIGRheXMgDQo+IGJlZm9yZS4NCj4gDQo+IEkgYW0gTWljcm9uIFNoYW5naGFpIEVtYmVk
-ZGVkIGJ1c2luZXNzIGdyb3VwIFNXIGxlYWRlciwgaW4gY2hhcmdlDQo+IE9mIFNXIGRldmVsb3As
-IGluY2x1ZGUgbXRkIGRyaXZlciBhbmQgZmlsZXN5c3RlbSBvcHRpbWl6YXRpb24uIA0KPiAJDQo+
-IEkgdGFsa2VkIHdpdGggQm9yaXMsIEkgc3VibWl0dGVkIGEgcGF0ZW50IHRvIHByZXZlbnQgcGFp
-ciBwYWdlDQo+IGNvcnJ1cHRpb24gYWZ0ZXIgcG93ZXIgbG9zcyBpbiBBcHJpbCAyMDE0LiBBbmQg
-bm93LCBJIGFtIA0KPiBjb25zaWRlcmluZyB0byBjb250cmlidXRlIGl0IHRvIExpbnV4IGNvbW11
-bml0eSAoc3RpbGwgbmVlZCB0bw0KPiBhbGlnbiB3aXRoIE1pY3JvbiBwYXRlbnQgY29tbWl0dGVl
-KSBpZiBhbGwgb2YgeW91IHRoaW5rIHRoaXMgcGF0ZW50IA0KPiBpcyB2YWx1YWJsZSB0byBpbXBs
-ZW1lbnQgdG8gVUJJRlMuDQo+IA0KPiBUaGUgYmFzaWMgY29uY2VwdCBzdGlsbCBpcyBiYWNrdXAg
-bWV0aG9kLCBkZXRhaWwgYXMgYmVsb3ctDQo+IA0KPiAxLiBXaGVuIHByb2dyYW0gbG93IHBhZ2Us
-IHV0aWxpemUgbXVsdGlwbGUgcGxhbmUgbWV0aG9kIHRvIA0KPiAgICBwcm9ncmFtIGxvdyBwYWdl
-IHRvIHRhcmdldCBhZGRyZXNzIGFuZCBhbm90aGVyIGJhY2t1cCBibG9jay4gDQo+ICAgIEJhcmVs
-eSBoYXMgcGVyZm9ybWFuY2UgZG93bmdyYWRlIGV2ZW4gcHJvZ3JhbSAyIHBhZ2VzIGJlY2F1c2Ug
-DQo+ICAgIG9mIG11bHRpcGxlIHBsYW5lIGZlYXR1cmUuIA0KPiAyLiB3aGVuIHByb2dyYW0gdXBw
-ZXIgcGFnZSwgbm8gbmVlZCB0byBiYWNrdXAgbG93ZXIgcGFnZSBhdCBhbGwuDQo+IA0KPiBUaGlz
-IG1ldGhvZCBuZWFybHkgZG9uJ3QgaGF2ZSBwZXJmb3JtYW5jZSBwZW5hbHR5IGNvbXBhcmUgdG8g
-YmVmb3JlLg0KPiBCdXQgbmVlZCBpbXBsZW1lbnQgbXVsdGlwbGUgcGxhbmUgZnVuY3Rpb24sIGFu
-ZCBuZWVkIHRvIGtlZXAgDQo+IHRoZSBiYWNrdXAgYmxvY2sgc2FmZSB0byBlbnN1cmUgdGhlIGJh
-Y2t1cCBsb3cgcGFnZSBkYXRhIGlzIGdvb2QNCj4gd2hlbiBwcm9ncmFtIHJlbGV2YW50IHVwcGVy
-IHBhZ2UuDQo+IA0KPiBIb3cgZG8geW91IHRoaW5rIGFib3V0IHRoaXMgaWRlYT8NCg0KSGkgUWks
-DQoNCml0IHNvdW5kcyBsaWtlIGEgd29ydGh3aGlsZSBpbXByb3ZlbWVudCB0byB0aGUgYmFja3Vw
-IHRvIGxvZyBtZXRob2QuDQpJIGhhdmUgYSBmZXcgcXVlc3Rpb25zLg0KDQpJZiBJIHVuZGVyc3Rh
-bmQgeW91IGNvcnJlY3RseSwgdGhpcyBtZXRob2QgdGFrZXMgYWR2YW50YWdlIG9mDQp0aGUgb2Rk
-L2V2ZW4gYmxvY2sgcGxhbmVzIGFuZCB0aGUgc2ltdWx0YW5lb3VzIG11bHRpLXBsYW5lIHdyaXRl
-Lg0KDQpEbyB5b3UgaGF2ZSB0byBzZW5kIHRoZSBwYWdlIGRhdGEgdHdpY2U/IE9yIGNhbiB5b3Ug
-YXBwbHkgdGhlDQpzYW1lIHBhZ2UgYnVmZmVyIHRvIGJvdGggcGxhbmVzPw0KDQpJZiB5b3UgYXJl
-IGFib3V0IHRvIHdyaXRlIHRoZSBsb3cgcGFnZSBpbiBhLCBzYXksIGV2ZW4gYmxvY2ssDQp5b3Ug
-bmVlZCBmaW5kIGFuIG9kZCBibG9jayB3aXRoIHRoZSBzYW1lIHBhZ2UgYXZhaWxhYmxlIGFuZCB3
-cml0ZQ0KdGhlIHNhbWUgcGFnZSBjb250ZW50IHRvIGJvdGguIEkgdW5kZXJzdGFuZCB0aGF0IHRo
-ZSBjb2x1bW4NCmFkZHJlc3NlcyBoYXZlIHRvIGJlIGlkZW50aWNhbCAtIGlzIHRoYXQgY29ycmVj
-dD8NCg0KSSBzZWVtIHRvIHJlbWVtYmVyIGEgcmVxdWlyZW1lbnQgdG8gd3JpdGUgcGFnZXMgdG8g
-YSBibG9jayBpbiBhDQptb25vdG9uaWMgZmFzaGlvbiAobG93IHRvIGhpZ2gpLiBJcyB0aGF0IHN0
-aWxsIHRoZSBjYXNlPyBJdA0Kc2VlbXMgdGhhdCB0aGUgbG93IHBhZ2UgYmFja3VwIGNvdWxkIHZp
-b2xhdGUgdGhhdCBydWxlIG90aGVyd2lzZS4NCg0KSG93IHdvdWxkIHlvdSBkZWFsIHdpdGggdGhl
-IGJhY2t1cCBibG9ja3M/IFRoZSBiYWNrdXAgbXVzdCBzdGF5DQppbiBwbGFjZSBhZnRlciB3cml0
-aW5nIHRoZSBsb3cgcGFnZSwgYnV0IG9ubHkgdG8gdGhlIG1vbWVudCB0aGUNCmNvcnJlc3BvbmRp
-bmcgaGlnaCBwYWdlIGlzIHdyaXR0ZW4uIEFmdGVyIHRoYXQsIGl0J3Mgb2Jzb2xldGUuDQoNCkRv
-IHlvdSBlbnZpc2lvbiB0byBkZWRpY2F0ZSBzb21lIGJsb2NrcyBmb3IgdGhpcyBwdXJwb3NlPyBP
-cg0Kd291bGQgdGhlIGR1cGxpY2F0ZWQgcGFnZXMgYmVjb21lIHBhcnQgb2Ygbm9ybWFsIHN0b3Jh
-Z2UgYmxvY2tzPw0KDQpOYWl2ZWx5LCBJIHNlZSB0aGUgY29zdCBvZiB0aGlzIG1ldGhvZCB0byBi
-ZSBzb21ld2hlcmUgYmV0d2Vlbg0KYSAyNSUgcmVkdWN0aW9uIGluIHN0b3JhZ2Ugb3IgYSAyNSUg
-aW5jcmVhc2UgaW4gZXJhc2UgY3ljbGVzLA0KZGVwZW5kaW5nIG9uIHRoZSBiYWNrdXAgYmxvY2sg
-aGFuZGxpbmcuDQpEb2VzIHRoYXQgbWF0Y2ggeW91ciBvd24gcHJlZGljdGlvbj8NCg0KDQpCZXN0
-IHJlZ2FyZHMsDQoNCkl3bw0K
+Hi Linus,
+
+a pull request follows, but first a short explanation.
+
+This pull request is based on a "random" commit, unfortunately. We
+usually use a tagged -rc commit as a base, but not this time. Sorry for
+this. Richard Weinberger is the new co-maintainer for UBI, and he was a
+little bit too fast and did not wait for -rc1.
+
+
+The following changes since commit 3d883483dc0a7261d73d8b1857a7387a1dd99eee:
+
+  Merge branch 'fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/evalenti/linux-soc-thermal (2015-02-19 17:51:22 -0800)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.0-rc5
+
+for you to fetch changes up to b388e6a7a6ba988998ddd83919ae8d3debf1a13d:
+
+  UBI: fix missing brace control flow (2015-02-23 22:17:24 +0100)
+
+----------------------------------------------------------------
+This pull request fixes a bug introduced during the v4.0 merge window where we
+forgot to put braces where they should be.
+
+----------------------------------------------------------------
+Brian Norris (1):
+      UBI: fix missing brace control flow
+
+ drivers/mtd/ubi/eba.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+
+--
+Regards,
+Artem.
