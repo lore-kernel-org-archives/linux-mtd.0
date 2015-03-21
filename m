@@ -1,34 +1,26 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YZ8XY-0003Iy-Sh
- for linux-mtd@lists.infradead.org; Sat, 21 Mar 2015 01:49:29 +0000
-From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
-To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-Subject: RE: detect and manage power cut on MLC NAND
-Date: Sat, 21 Mar 2015 01:48:41 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A7717482E@NTXXIAMBX02.xacn.micron.com>
-References: <mailman.37706.1426822709.22890.linux-mtd@lists.infradead.org>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7717444D@NTXXIAMBX02.xacn.micron.com>
- <EACD232272DA4849B060F0828564D13B57804E26B6@ntcex01.corp.netcomm.com.au>
- <71CF8D7F32C5C24C9CD1D0E02D52498A771744B0@NTXXIAMBX02.xacn.micron.com>
- <20150320095822.7e1979ff@bbrezillon>	<550BE355.8020009@nod.at>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7717470C@NTXXIAMBX02.xacn.micron.com>
- <20150320161903.608a79fc@bbrezillon>
- <0D23F1ECC880A74392D56535BCADD7354973F4B5@NTXBOIMBX03.micron.com>
-In-Reply-To: <0D23F1ECC880A74392D56535BCADD7354973F4B5@NTXBOIMBX03.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1YZL44-0007o1-EE
+ for linux-mtd@lists.infradead.org; Sat, 21 Mar 2015 15:11:53 +0000
+Received: by iedm5 with SMTP id m5so9144314ied.3
+ for <linux-mtd@lists.infradead.org>; Sat, 21 Mar 2015 08:11:29 -0700 (PDT)
 MIME-Version: 1.0
-Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, "rnd4@dave-tech.it" <rnd4@dave-tech.it>,
- "Zoltan Szubbocsev \(zszubbocsev\)" <zszubbocsev@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- "andrea.marson@dave.eu" <andrea.marson@dave.eu>,
- =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+Sender: snitzer@gmail.com
+In-Reply-To: <1421228561-16857-12-git-send-email-hch@lst.de>
+References: <1421228561-16857-1-git-send-email-hch@lst.de>
+ <1421228561-16857-12-git-send-email-hch@lst.de>
+From: Mike Snitzer <snitzer@redhat.com>
+Date: Sat, 21 Mar 2015 11:11:09 -0400
+Message-ID: <CAMM=eLe6Tt+g7dLcnn5a1fQboDknkasazsMiOFBziWPZemnYtg@mail.gmail.com>
+Subject: Re: [PATCH 11/12] fs: don't reassign dirty inodes to
+ default_backing_dev_info
+To: Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
+ linux-mm@kvack.org, Jens Axboe <axboe@fb.com>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ device-mapper development <dm-devel@redhat.com>, linux-mtd@lists.infradead.org,
+ Tejun Heo <tj@kernel.org>, ceph-devel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,19 +30,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgSmVmZiwNCg0KU28gZ2xhZCB0byBtZWV0IG91ciBNaWNyb24gY29sbGVhZ3VlIGhlcmUuIA0K
-DQpPbiBGcmksIDIxIE1hciAyMDE1IDEyOjQ4OjM1IEFNICswMDAwIEplZmYgTGF1cnVobiB3cm90
-ZToNCj4NCj5IaSBCb3JpczsNCj4+IFllcywgeW91IGFyZSByaWdodC4gVGhpcyBtZXRob2QgaXNu
-J3QgYWxsb3dlZC4gVXNlciBjYW4gb25seSBwcm9ncmFtDQo+PiBwYWdlIHdpdGhpbiBhIGJsb2Nr
-IGZyb20gbG93IGFkZHJlc3MgdG8gaGlnaCBhZGRyZXNzLg0KPg0KPkRvIHlvdSBrbm93IHRoZSBy
-ZWFzb24gYmVoaW5kIHRoaXMgPw0KDQpGb3IgdGhpcyBtZXRob2QsIG15IGlkZWEgaXMgd2UgY2Fu
-IGNvbnNpZGVyIHBhZ2UgMSBhbmQgcGFnZTQgYXMgb25lIA0KcGFnZSwgdG8gcHJvZ3JhbSBwYWdl
-IDEgYW5kIHBhZ2UgNCB0b2dldGhlci4gU28gaWYgcG93ZXIgY3V0IG9jY3VyLCANCmJvdGggcGFn
-ZSAxIGFuZCBwYWdlIDQgKEJ1dCBvbmUgcGFnZSBjb3JydXB0aW9uIGluIHNvZnR3YXJlIHZpZXcp
-d2lsbCANCmNvcnJ1cHQgYXQgc2FtZSB0aW1lLCB3b24ndCBoYXZlIGlzc3VlIGZvciBVQkkvVUJJ
-RlMuDQoNCkkgYW0gbm90IHN1cmUgaWYgSSBhbSByaWdodCwgQm9yaXMgY2FuIGNvcnJlY3QgbWUu
-IA0KDQo+VGhpcyBpcyBkb25lIHRvIGhlbHAgbWl0aWdhdGUgZGlzdHVyYnMgYW5kIHRvIGVuc3Vy
-ZSB3ZSBnZXQgdGhlIGhpZ2hlc3QNCj5yZWxpYWJpbGl0eS4gIERyaXZpbmcgc29mdHdhcmUgZGV2
-ZWxvcGVycyBjcmF6eSBpcyBqdXN0IGFuIGV4dHJhDQo+YmVuZWZpdC4gIDopDQoNClllcywgSSBh
-Z3JlZSB0aGlzIHBvaW50LCB0byBtaXRpZ2F0ZSBkaXN0dXJicy4gDQoNCi0tDQpUaGFua3MNClFp
-IFdhbmcNCg==
+On Wed, Jan 14, 2015 at 4:42 AM, Christoph Hellwig <hch@lst.de> wrote:
+> If we have dirty inodes we need to call the filesystem for it, even if the
+> device has been removed and the filesystem will error out early.  The
+> current code does that by reassining all dirty inodes to the default
+> backing_dev_info when a bdi is unlinked, but that's pretty pointless given
+> that the bdi must always outlive the super block.
+>
+> Instead of stopping writeback at unregister time and moving inodes to the
+> default bdi just keep the current bdi alive until it is destroyed.  The
+> containing objects of the bdi ensure this doesn't happen until all
+> writeback has finished by erroring out.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Tejun Heo <tj@kernel.org>
+> ---
+>  mm/backing-dev.c | 91 +++++++++++++++-----------------------------------------
+>  1 file changed, 24 insertions(+), 67 deletions(-)
+
+Hey Christoph,
+
+Just a heads up: your commit c4db59d31e39ea067c32163ac961e9c80198fd37
+is suspected as the first bad commit in a bisect performed to track
+down the cause of DM crashes reported in this BZ:
+https://bugzilla.redhat.com/show_bug.cgi?id=1202449
+
+I've yet to look closely at _why_ this commit but figured I'd share
+since this appears to be a 4.0-rcX regression.
+
+Mike
