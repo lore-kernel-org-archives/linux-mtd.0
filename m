@@ -1,26 +1,30 @@
-Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.2])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YZSqZ-00073h-S6
- for linux-mtd@lists.infradead.org; Sat, 21 Mar 2015 23:30:28 +0000
-Received: by iedm5 with SMTP id m5so13342530ied.3
- for <linux-mtd@lists.infradead.org>; Sat, 21 Mar 2015 16:30:05 -0700 (PDT)
+ id 1YZpbR-0001QX-6C
+ for linux-mtd@lists.infradead.org; Sun, 22 Mar 2015 23:48:21 +0000
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Mon, 23 Mar 2015 10:45:33 +1100
+Subject: RE: RFC: detect and manage power cut on MLC NAND
+Message-ID: <EACD232272DA4849B060F0828564D13B57804E26D9@ntcex01.corp.netcomm.com.au>
+References: <mailman.37176.1426610573.22890.linux-mtd@lists.infradead.org>
+ <mailman.37176.1426610573.22890.linux-mtd.{ec43ae5e-9450-4d5f-9aa7-4de61fefcb43}.0@lists.infradead.org>
+ <0D23F1ECC880A74392D56535BCADD7354973E51A@NTXBOIMBX03.micron.com>
+ <55093B1E.2050805@dave.eu>
+ <0D23F1ECC880A74392D56535BCADD7354973E995@NTXBOIMBX03.micron.com>
+ <550A8D19.90404@dave.eu>	<20150319101246.26806e95@bbrezillon>
+ <EACD232272DA4849B060F0828564D13B57804E2680@ntcex01.corp.netcomm.com.au>,
+ <20150320092611.2648f3d5@bbrezillon>
+In-Reply-To: <20150320092611.2648f3d5@bbrezillon>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20150320191258.GW32500@ld-irv-0074>
-References: <1426111046-29900-1-git-send-email-computersforpeace@gmail.com>
- <20150312105824.GD30145@leverpostej>
- <20150320191258.GW32500@ld-irv-0074>
-Date: Sun, 22 Mar 2015 00:30:05 +0100
-Message-ID: <CACna6ryvD2Dn2eQPMvoJ+1Yt75=w1J6OR=tvOSZsMsBgD2O4yg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] Documentation: devicetree: m25p80: add "nor-jedec"
- binding
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Marek Vasut <marex@denx.de>,
+Cc: "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Andrea Scian <rnd4@dave-tech.it>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ Andrea Marson <andrea.marson@dave.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +34,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 20 March 2015 at 20:12, Brian Norris <computersforpeace@gmail.com> wrote:
-> Yes, and that is an eventual goal I suppose, but the current list is
-> excessive and is most likely not currently relied on by any one. So I
-> don't just want to C&P the entire list into this binding immediately.
->
-> I guess my plan looks like this:
->
-> 1. add "nor-jedec" binding, to provide lowest common denominator binding
-> (this series)
->
-> 2. stop adding to the m25p_ids[] table unless necessary (enabled by this
-> series)
->
-> 3. gauge whether we can remove certain entries from m25p_ids[] (e.g., if
-> they were only used in platform_data, not DT; or if they were very
-> recently added just to synchronize with spi-nor.c)
+On Fri, 20 Mar 2015 19:26:11 +1100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-Why we can't remove (slowly) all entries from m25p_ids that don't need
-any extra handling?
+> I've read many times that MLC pages should be programmed in ascending
+> order (0, 1, 2, 3, ..., N), and if you take a look at MLC datasheet
+> you'll see that paired pages are not contiguous (here is an example
+> [1], page 55-56 describe how pages are paired together).
+>=20
+> My question is: is there a reason for interleaving paired pages with
+> other pages (write disturbance mitigation ?) ?
+>=20
+> If there is no specific reason but to annoy software developers :-),
 
-If we'll have DT with
-"spansion,m25p80", "nor-jedec"
-and then m25p80.c will handle both: "m25p80" and "nor-jedec" without
-any difference, what's the point of keeping "m25p80" entry?
+
+I don't know for sure, but it seems that groups of pages are sharing
+some resources. For instance, I've seen a few bit error patterns which
+looked like this (256MB SLC, pages in one block):
+
+-------------------------------X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X
+
+The pages marked with 'X' have a single bit error at the same bit
+offset in every page.
+
+That is, even on a SLC device, there is some sort of page interleaving
+pattern at work. In this case, maybe they share a broken sense amplifier
+or similar.
+
+I currently think that the rule about the ascending order is a
+generalisation for unknown NAND architecture. In my example, it
+may well be slightly better to write (0,2,4,6,8,10,12,14,1,3,5,
+7,9,11,13,15,16,18,20,22,24,26,28,30,17,19,21,23,25,27,29,31).
+
+Unless someone tells me otherwise, I guess that the paired pages
+probably should be written in sequence anyway (0,4,1,5,etc).
+Some of the backup methods appear suggestive of this.
+
+
+Best regards,
+
+Iwo
