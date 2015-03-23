@@ -1,26 +1,25 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ya9hb-0007XM-11
- for linux-mtd@lists.infradead.org; Mon, 23 Mar 2015 21:16:03 +0000
-From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
-To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>, Richard Weinberger
- <richard@nod.at>, "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: RFC: detect and manage power cut on MLC NAND
-Date: Mon, 23 Mar 2015 21:15:25 +0000
-Message-ID: <0D23F1ECC880A74392D56535BCADD7356B6C8603@NTXBOIMBX03.micron.com>
-References: <54FEDC42.2060407@dave-tech.it>
- <CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>
- <1426058414.1567.2.camel@sauron.fi.intel.com> <5500037A.9010509@nod.at>
- <1426064733.1567.6.camel@sauron.fi.intel.com>,<55000637.1030702@nod.at>
- <EACD232272DA4849B060F0828564D13B57804E2730@ntcex01.corp.netcomm.com.au>
-In-Reply-To: <EACD232272DA4849B060F0828564D13B57804E2730@ntcex01.corp.netcomm.com.au>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+ id 1YaB1Q-0005UA-22
+ for linux-mtd@lists.infradead.org; Mon, 23 Mar 2015 22:40:37 +0000
+Date: Mon, 23 Mar 2015 18:40:13 -0400
+From: Mike Snitzer <snitzer@redhat.com>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 11/12] fs: don't reassign dirty inodes to
+ default_backing_dev_info
+Message-ID: <20150323224012.GA29505@redhat.com>
+References: <1421228561-16857-1-git-send-email-hch@lst.de>
+ <1421228561-16857-12-git-send-email-hch@lst.de>
+ <CAMM=eLe6Tt+g7dLcnn5a1fQboDknkasazsMiOFBziWPZemnYtg@mail.gmail.com>
 MIME-Version: 1.0
-Cc: Andrea Scian <rnd4@dave-tech.it>,
- =?iso-2022-jp?B?UWkgV2FuZyAbJEIyJjUvGyhCIChxaXdhbmcp?= <qiwang@micron.com>,
- mtd_mailinglist <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMM=eLe6Tt+g7dLcnn5a1fQboDknkasazsMiOFBziWPZemnYtg@mail.gmail.com>
+Cc: Jens Axboe <axboe@fb.com>, linux-nfs@vger.kernel.org,
+ Jeff Moyer <jmoyer@redhat.com>, David Howells <dhowells@redhat.com>,
+ linux-mm@kvack.org, device-mapper development <dm-devel@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Tejun Heo <tj@kernel.org>, ceph-devel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,155 +29,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a very simplified description, but actually it's more like this:=20
+On Sat, Mar 21 2015 at 11:11am -0400,
+Mike Snitzer <snitzer@redhat.com> wrote:
 
-First pass, program the lower page.  If you the lower page is 1, do nothing=
-.  If the lower page is 0 subtract 0.7v to 0.3.  Lower page is SLC like, tw=
-o distributions spread apart by 0.7V.
+> On Wed, Jan 14, 2015 at 4:42 AM, Christoph Hellwig <hch@lst.de> wrote:
+> > If we have dirty inodes we need to call the filesystem for it, even if the
+> > device has been removed and the filesystem will error out early.  The
+> > current code does that by reassining all dirty inodes to the default
+> > backing_dev_info when a bdi is unlinked, but that's pretty pointless given
+> > that the bdi must always outlive the super block.
+> >
+> > Instead of stopping writeback at unregister time and moving inodes to the
+> > default bdi just keep the current bdi alive until it is destroyed.  The
+> > containing objects of the bdi ensure this doesn't happen until all
+> > writeback has finished by erroring out.
+> >
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > Reviewed-by: Tejun Heo <tj@kernel.org>
+> > ---
+> >  mm/backing-dev.c | 91 +++++++++++++++-----------------------------------------
+> >  1 file changed, 24 insertions(+), 67 deletions(-)
+> 
+> Hey Christoph,
+> 
+> Just a heads up: your commit c4db59d31e39ea067c32163ac961e9c80198fd37
+> is suspected as the first bad commit in a bisect performed to track
+> down the cause of DM crashes reported in this BZ:
+> https://bugzilla.redhat.com/show_bug.cgi?id=1202449
+> 
+> I've yet to look closely at _why_ this commit but figured I'd share
+> since this appears to be a 4.0-rcX regression.
 
-Lvl    LH
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-1.0 =3D> 1u
-0.3 =3D> 0u
+FYI, here is the DM fix I've staged for 4.0-rc6.  I'll continue testing
+the various DM targets before requesting Linus to pull.
 
-Now, program the upper page.  First, read lower page, if lower page is 1 an=
-d upper page is 1, do nothing (11).  If lower page is 1 and upper page is 0=
-, then subtract -0.3 and call that 01.  Next if lower page is 0 and upper p=
-age is 1 do nothing and if lower page is 0 and upper page is 0 subtract 0.3=
-v and call it 00.  Notice that state of lower page is on right of 11, 01,10=
-, 00. =20
+>From 63a4f065ece613b6d575b538234375b0e9c23bbc Mon Sep 17 00:00:00 2001
+From: Mike Snitzer <snitzer@redhat.com>
+Date: Mon, 23 Mar 2015 17:01:43 -0400
+Subject: [PATCH] dm: fix add_disk() NULL pointer due to race with free_dev()
 
-Lvl    LH
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-1.0 =3D> 11
-0.7 =3D> 01
-0.3 =3D> 10
-0.0 =3D> 00
+Commit c4db59d31e39 ("fs: don't reassign dirty inodes to
+default_backing_dev_info") exposed DM to a latent race in free_dev() vs
+add_disk() in relation to management of the device's minor number.
 
-Now what happens if there's a power loss during the programming of the uppe=
-r page?  The upper page data will most likely be lost, and the lower page m=
-ay be changed, but there's a good chance of recovery, because it will be in=
- the range of SLC.  It is highly recommended to read and refresh data after=
- a power loss.
-=20
+Fix this by refactoring free_dev() to match cleanup order of the
+alloc_dev() error path.  Move cleanup of the gendisk, queue, and bdev
+to _before_ the cleanup of the idr managed minor number.
 
-Jeff Lauruhn
-NAND Application Engineer
-Embedded Business Unit
+Also, purely due to cleanup that fell out during the free_dev() audit:
+- adjust dm_blk_close() to access the gendisk's private_data under
+  the _minor_lock spinlock.
+- move __dm_destroy()'s dm_get_live_table() call out from under the
+  _minor_lock spinlock.
 
------Original Message-----
-From: Iwo Mergler [mailto:Iwo.Mergler@netcommwireless.com]=20
-Sent: Sunday, March 22, 2015 9:09 PM
-To: Richard Weinberger; dedekind1@gmail.com
-Cc: Andrea Scian; mtd_mailinglist; Jeff Lauruhn (jlauruhn); Qi Wang =1B$B2&=
-5/=1B(B (qiwang)
-Subject: RE: RFC: detect and manage power cut on MLC NAND
+Resolves: https://bugzilla.redhat.com/show_bug.cgi?id=1202449
 
+Reported-by: Zdenek Kabelac <zkabelac@redhat.com>
+Reported-by: Jeff Moyer <jmoyer@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+---
+ drivers/md/dm.c |   26 ++++++++++++++++----------
+ 1 files changed, 16 insertions(+), 10 deletions(-)
 
-Hi all,
-
-
-I probably don't know enough about the silicon implementation of MLC paired=
- pages, but my feeling is that there should be a way to recover one of the =
-pages if the paired write fails, at least in some cases.
-
-Something along the lines of using both bits to map to a single good one.
-
-2 bit MLC stores 4 levels - 1.0, 0.7, 0.3, 0.0. Obviously, the actual volta=
-ge levels will be somewhat different, so take this as electrons on the floa=
-ting gate: 1.0=3Dminimum, 0.0 maximum.
-
-I imagine that there are two ways to achieve that - small step for low page=
- and large step for high page, or the other way 'round.
-
-Assuming the first, the low page write would subtract 0.3 from the erased (=
-1.0) cell if the bit is 0. That leaves the cell at either ~1.0 (1) or 0.7 (=
-0).
-
-Lvl    LH
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-1.0 =3D> 1u
-0.7 =3D> 0u
-
-Then, the high page write would subtract either nothing (1) or
-0.7 (0):
-
-Lvl    LH
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-1.0 =3D> 11
-0.7 =3D> 01
-0.3 =3D> 10
-0.0 =3D> 00
-
-So the MLC decoder logic gets 3 priority encoded bits from the sense amplif=
-iers: 111, 011, 001, 000. The decoder turns this into 11, 01, 10, 00.
-
-The process of writing a 0 to the high page, transitions low page 0-bits th=
-rough 1 and back to 0, as the level moves down.
-
-Low page 1 bits transition from 1 through 0 and back to 1.
-
-So a half-completed high page 0-write can flip a low page bit both ways.
-
-We can detect an incorrect 0-1 transition in the low page, because it's mar=
-ked by a 0 bit in the high page.
-
-We can't detect an incorrect 1-0 transition in the low page.
-
-So assuming a failed high page write, this is what we get:
-
-LH
-
-11 =3D nothing happens, reads back as 11
-     Correct level for both.
-
-01 =3D Level stays at 0.7, reads back as 01,
-     Correct level for low page.
-
-10 =3D Level between 1.0 and 0.3, reads back as 11, 01 or 10.
-     01 is wrong for low page, but can't be distinguished from 10.
-
-00 =3D Level between 0.7 and 0.0, reads back as 01, 10, or 00.
-     10 is wrong for low page, but can be distinguished from 01.
-
-So, there are two bit combinations (50%) that have an undetectable failure,=
- and this failure will happen about half the time, for a total of 25% unfix=
-able failure rate.
-
-Not acceptable in the general case, but might be good enough for things lik=
-e UBI EC & VID headers, if we ensure that the high page contains 1s at the =
-offsets at which the low page stores the header.
-
-
-Now, on the other hand, if the low page write uses the larger step, there s=
-houldn't be any paired page problem at all, since the high page write would=
-n't cross the low page thresholds on the way:
-
-Lvl    LH
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-1.0 =3D> 1u
-0.3 =3D> 0u
-
-Lvl    LH
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-1.0 =3D> 11
-0.7 =3D> 10
-0.3 =3D> 01
-0.0 =3D> 00
-
-
-Which makes me think I'm misunderstanding something. If not, why isn't his =
-scheme used in the first place?
-
-What would happen if we reverse the paired page writing order?
-Not recommended, we want pages programmed in sequence to mitigate disturbs =
-and obtain the highest reliability.
-
-
-Jeff, Qi, is the mechanism I described here anywhere near reality?
-It's a simplified view, but fairly accurate. =20
-
-
-Best regards,
-
-Iwo
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 9b641b3..8001fe9 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -433,7 +433,6 @@ static int dm_blk_open(struct block_device *bdev, fmode_t mode)
+ 
+ 	dm_get(md);
+ 	atomic_inc(&md->open_count);
+-
+ out:
+ 	spin_unlock(&_minor_lock);
+ 
+@@ -442,16 +441,20 @@ out:
+ 
+ static void dm_blk_close(struct gendisk *disk, fmode_t mode)
+ {
+-	struct mapped_device *md = disk->private_data;
++	struct mapped_device *md;
+ 
+ 	spin_lock(&_minor_lock);
+ 
++	md = disk->private_data;
++	if (WARN_ON(!md))
++		goto out;
++
+ 	if (atomic_dec_and_test(&md->open_count) &&
+ 	    (test_bit(DMF_DEFERRED_REMOVE, &md->flags)))
+ 		queue_work(deferred_remove_workqueue, &deferred_remove_work);
+ 
+ 	dm_put(md);
+-
++out:
+ 	spin_unlock(&_minor_lock);
+ }
+ 
+@@ -2241,7 +2244,6 @@ static void free_dev(struct mapped_device *md)
+ 	int minor = MINOR(disk_devt(md->disk));
+ 
+ 	unlock_fs(md);
+-	bdput(md->bdev);
+ 	destroy_workqueue(md->wq);
+ 
+ 	if (md->kworker_task)
+@@ -2252,19 +2254,22 @@ static void free_dev(struct mapped_device *md)
+ 		mempool_destroy(md->rq_pool);
+ 	if (md->bs)
+ 		bioset_free(md->bs);
+-	blk_integrity_unregister(md->disk);
+-	del_gendisk(md->disk);
++
+ 	cleanup_srcu_struct(&md->io_barrier);
+ 	free_table_devices(&md->table_devices);
+-	free_minor(minor);
++	dm_stats_cleanup(&md->stats);
+ 
+ 	spin_lock(&_minor_lock);
+ 	md->disk->private_data = NULL;
+ 	spin_unlock(&_minor_lock);
+-
++	if (blk_get_integrity(md->disk))
++		blk_integrity_unregister(md->disk);
++	del_gendisk(md->disk);
+ 	put_disk(md->disk);
+ 	blk_cleanup_queue(md->queue);
+-	dm_stats_cleanup(&md->stats);
++	bdput(md->bdev);
++	free_minor(minor);
++
+ 	module_put(THIS_MODULE);
+ 	kfree(md);
+ }
+@@ -2642,8 +2647,9 @@ static void __dm_destroy(struct mapped_device *md, bool wait)
+ 
+ 	might_sleep();
+ 
+-	spin_lock(&_minor_lock);
+ 	map = dm_get_live_table(md, &srcu_idx);
++
++	spin_lock(&_minor_lock);
+ 	idr_replace(&_minor_idr, MINOR_ALLOCED, MINOR(disk_devt(dm_disk(md))));
+ 	set_bit(DMF_FREEING, &md->flags);
+ 	spin_unlock(&_minor_lock);
+-- 
+1.7.4.4
