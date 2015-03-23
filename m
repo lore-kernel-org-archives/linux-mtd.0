@@ -1,32 +1,26 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ya7fo-0002ne-6c
- for linux-mtd@lists.infradead.org; Mon, 23 Mar 2015 19:06:05 +0000
-Date: Mon, 23 Mar 2015 20:05:11 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: dedekind1@gmail.com
-Subject: Re: RFC: detect and manage power cut on MLC NAND
-Message-ID: <20150323200511.545210ad@bbrezillon>
-In-Reply-To: <1427094391.8234.101.camel@sauron.fi.intel.com>
-References: <mailman.37176.1426610573.22890.linux-mtd@lists.infradead.org>
- <mailman.37176.1426610573.22890.linux-mtd.{ec43ae5e-9450-4d5f-9aa7-4de61fefcb43}.0@lists.infradead.org>
- <0D23F1ECC880A74392D56535BCADD7354973E51A@NTXBOIMBX03.micron.com>
- <55093B1E.2050805@dave.eu>
- <0D23F1ECC880A74392D56535BCADD7354973E995@NTXBOIMBX03.micron.com>
- <550A8D19.90404@dave.eu> <20150319101246.26806e95@bbrezillon>
- <EACD232272DA4849B060F0828564D13B57804E2680@ntcex01.corp.netcomm.com.au>
- <20150320092611.2648f3d5@bbrezillon>
- <EACD232272DA4849B060F0828564D13B57804E272F@ntcex01.corp.netcomm.com.au>
- <1427094391.8234.101.camel@sauron.fi.intel.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ya9hb-0007XM-11
+ for linux-mtd@lists.infradead.org; Mon, 23 Mar 2015 21:16:03 +0000
+From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
+To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>, Richard Weinberger
+ <richard@nod.at>, "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: RE: RFC: detect and manage power cut on MLC NAND
+Date: Mon, 23 Mar 2015 21:15:25 +0000
+Message-ID: <0D23F1ECC880A74392D56535BCADD7356B6C8603@NTXBOIMBX03.micron.com>
+References: <54FEDC42.2060407@dave-tech.it>
+ <CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>
+ <1426058414.1567.2.camel@sauron.fi.intel.com> <5500037A.9010509@nod.at>
+ <1426064733.1567.6.camel@sauron.fi.intel.com>,<55000637.1030702@nod.at>
+ <EACD232272DA4849B060F0828564D13B57804E2730@ntcex01.corp.netcomm.com.au>
+In-Reply-To: <EACD232272DA4849B060F0828564D13B57804E2730@ntcex01.corp.netcomm.com.au>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff Lauruhn
- \(jlauruhn\)" <jlauruhn@micron.com>, Richard Weinberger <richard@nod.at>,
- Andrea Scian <rnd4@dave-tech.it>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Andrea Marson <andrea.marson@dave.eu>
+Cc: Andrea Scian <rnd4@dave-tech.it>,
+ =?iso-2022-jp?B?UWkgV2FuZyAbJEIyJjUvGyhCIChxaXdhbmcp?= <qiwang@micron.com>,
+ mtd_mailinglist <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,35 +30,155 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+This is a very simplified description, but actually it's more like this:=20
 
-On Mon, 23 Mar 2015 09:06:31 +0200
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
+First pass, program the lower page.  If you the lower page is 1, do nothing=
+.  If the lower page is 0 subtract 0.7v to 0.3.  Lower page is SLC like, tw=
+o distributions spread apart by 0.7V.
 
-> > 
-> > > You'd still have to prevent any write on the page paired with the EC
-> > > header, but you're still saving one page with this approach and avoid
-> > > any corruption of UBI metadata caused by paired pages.
-> > 
-> > Ah, you probably meant VID header here, right?
-> 
-> If we sacrifice another page, we could store a copy of the VID header
-> there, in case the first copy gets corrupted. IOW, we'd have:
-> 
-> 	ECH, VIDH#1, VIDH#2, User Data.
+Lvl    LH
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+1.0 =3D> 1u
+0.3 =3D> 0u
 
-What do you mean by 'sacrificing another page', are you talking about
-the one paired with the VID header page ?
-If that's the case, then we cannot write anything on it (even a VID
-header backup), because if the PROGRAM operation is interrupted both
-pages (VIDH#1 and #2) could be corrupted.
+Now, program the upper page.  First, read lower page, if lower page is 1 an=
+d upper page is 1, do nothing (11).  If lower page is 1 and upper page is 0=
+, then subtract -0.3 and call that 01.  Next if lower page is 0 and upper p=
+age is 1 do nothing and if lower page is 0 and upper page is 0 subtract 0.3=
+v and call it 00.  Notice that state of lower page is on right of 11, 01,10=
+, 00. =20
 
-Best Regards,
+Lvl    LH
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+1.0 =3D> 11
+0.7 =3D> 01
+0.3 =3D> 10
+0.0 =3D> 00
 
-Boris
+Now what happens if there's a power loss during the programming of the uppe=
+r page?  The upper page data will most likely be lost, and the lower page m=
+ay be changed, but there's a good chance of recovery, because it will be in=
+ the range of SLC.  It is highly recommended to read and refresh data after=
+ a power loss.
+=20
+
+Jeff Lauruhn
+NAND Application Engineer
+Embedded Business Unit
+
+-----Original Message-----
+From: Iwo Mergler [mailto:Iwo.Mergler@netcommwireless.com]=20
+Sent: Sunday, March 22, 2015 9:09 PM
+To: Richard Weinberger; dedekind1@gmail.com
+Cc: Andrea Scian; mtd_mailinglist; Jeff Lauruhn (jlauruhn); Qi Wang =1B$B2&=
+5/=1B(B (qiwang)
+Subject: RE: RFC: detect and manage power cut on MLC NAND
 
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Hi all,
+
+
+I probably don't know enough about the silicon implementation of MLC paired=
+ pages, but my feeling is that there should be a way to recover one of the =
+pages if the paired write fails, at least in some cases.
+
+Something along the lines of using both bits to map to a single good one.
+
+2 bit MLC stores 4 levels - 1.0, 0.7, 0.3, 0.0. Obviously, the actual volta=
+ge levels will be somewhat different, so take this as electrons on the floa=
+ting gate: 1.0=3Dminimum, 0.0 maximum.
+
+I imagine that there are two ways to achieve that - small step for low page=
+ and large step for high page, or the other way 'round.
+
+Assuming the first, the low page write would subtract 0.3 from the erased (=
+1.0) cell if the bit is 0. That leaves the cell at either ~1.0 (1) or 0.7 (=
+0).
+
+Lvl    LH
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+1.0 =3D> 1u
+0.7 =3D> 0u
+
+Then, the high page write would subtract either nothing (1) or
+0.7 (0):
+
+Lvl    LH
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+1.0 =3D> 11
+0.7 =3D> 01
+0.3 =3D> 10
+0.0 =3D> 00
+
+So the MLC decoder logic gets 3 priority encoded bits from the sense amplif=
+iers: 111, 011, 001, 000. The decoder turns this into 11, 01, 10, 00.
+
+The process of writing a 0 to the high page, transitions low page 0-bits th=
+rough 1 and back to 0, as the level moves down.
+
+Low page 1 bits transition from 1 through 0 and back to 1.
+
+So a half-completed high page 0-write can flip a low page bit both ways.
+
+We can detect an incorrect 0-1 transition in the low page, because it's mar=
+ked by a 0 bit in the high page.
+
+We can't detect an incorrect 1-0 transition in the low page.
+
+So assuming a failed high page write, this is what we get:
+
+LH
+
+11 =3D nothing happens, reads back as 11
+     Correct level for both.
+
+01 =3D Level stays at 0.7, reads back as 01,
+     Correct level for low page.
+
+10 =3D Level between 1.0 and 0.3, reads back as 11, 01 or 10.
+     01 is wrong for low page, but can't be distinguished from 10.
+
+00 =3D Level between 0.7 and 0.0, reads back as 01, 10, or 00.
+     10 is wrong for low page, but can be distinguished from 01.
+
+So, there are two bit combinations (50%) that have an undetectable failure,=
+ and this failure will happen about half the time, for a total of 25% unfix=
+able failure rate.
+
+Not acceptable in the general case, but might be good enough for things lik=
+e UBI EC & VID headers, if we ensure that the high page contains 1s at the =
+offsets at which the low page stores the header.
+
+
+Now, on the other hand, if the low page write uses the larger step, there s=
+houldn't be any paired page problem at all, since the high page write would=
+n't cross the low page thresholds on the way:
+
+Lvl    LH
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+1.0 =3D> 1u
+0.3 =3D> 0u
+
+Lvl    LH
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+1.0 =3D> 11
+0.7 =3D> 10
+0.3 =3D> 01
+0.0 =3D> 00
+
+
+Which makes me think I'm misunderstanding something. If not, why isn't his =
+scheme used in the first place?
+
+What would happen if we reverse the paired page writing order?
+Not recommended, we want pages programmed in sequence to mitigate disturbs =
+and obtain the highest reliability.
+
+
+Jeff, Qi, is the mechanism I described here anywhere near reality?
+It's a simplified view, but fairly accurate. =20
+
+
+Best regards,
+
+Iwo
