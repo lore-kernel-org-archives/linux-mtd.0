@@ -1,27 +1,33 @@
-Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YaIis-0003Y5-35
- for linux-mtd@lists.infradead.org; Tue, 24 Mar 2015 06:53:58 +0000
-Date: Tue, 24 Mar 2015 07:53:25 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Mike Snitzer <snitzer@redhat.com>
-Subject: Re: [PATCH 11/12] fs: don't reassign dirty inodes to
- default_backing_dev_info
-Message-ID: <20150324065325.GC3159@lst.de>
-References: <1421228561-16857-1-git-send-email-hch@lst.de>
- <1421228561-16857-12-git-send-email-hch@lst.de>
- <CAMM=eLe6Tt+g7dLcnn5a1fQboDknkasazsMiOFBziWPZemnYtg@mail.gmail.com>
- <20150323224012.GA29505@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150323224012.GA29505@redhat.com>
-Cc: Jens Axboe <axboe@fb.com>, linux-nfs@vger.kernel.org,
- Jeff Moyer <jmoyer@redhat.com>, David Howells <dhowells@redhat.com>,
- linux-mm@kvack.org, device-mapper development <dm-devel@redhat.com>,
- linux-mtd@lists.infradead.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Tejun Heo <tj@kernel.org>, ceph-devel@vger.kernel.org,
- Christoph Hellwig <hch@lst.de>
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YaIuN-0008IC-PJ
+ for linux-mtd@lists.infradead.org; Tue, 24 Mar 2015 07:05:52 +0000
+Message-ID: <1427180716.8234.136.camel@sauron.fi.intel.com>
+Subject: Re: RFC: detect and manage power cut on MLC NAND
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Tue, 24 Mar 2015 09:05:16 +0200
+In-Reply-To: <20150323200511.545210ad@bbrezillon>
+References: <mailman.37176.1426610573.22890.linux-mtd@lists.infradead.org>
+ <mailman.37176.1426610573.22890.linux-mtd.{ec43ae5e-9450-4d5f-9aa7-4de61fefcb43}.0@lists.infradead.org>
+ <0D23F1ECC880A74392D56535BCADD7354973E51A@NTXBOIMBX03.micron.com>
+ <55093B1E.2050805@dave.eu>
+ <0D23F1ECC880A74392D56535BCADD7354973E995@NTXBOIMBX03.micron.com>
+ <550A8D19.90404@dave.eu> <20150319101246.26806e95@bbrezillon>
+ <EACD232272DA4849B060F0828564D13B57804E2680@ntcex01.corp.netcomm.com.au>
+ <20150320092611.2648f3d5@bbrezillon>
+ <EACD232272DA4849B060F0828564D13B57804E272F@ntcex01.corp.netcomm.com.au>
+ <1427094391.8234.101.camel@sauron.fi.intel.com>
+ <20150323200511.545210ad@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff Lauruhn
+ \(jlauruhn\)" <jlauruhn@micron.com>, Richard Weinberger <richard@nod.at>,
+ Andrea Scian <rnd4@dave-tech.it>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Andrea Marson <andrea.marson@dave.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,12 +37,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 23, 2015 at 06:40:13PM -0400, Mike Snitzer wrote:
-> FYI, here is the DM fix I've staged for 4.0-rc6.  I'll continue testing
-> the various DM targets before requesting Linus to pull.
+On Mon, 2015-03-23 at 20:05 +0100, Boris Brezillon wrote:
+> > If we sacrifice another page, we could store a copy of the VID header
+> > there, in case the first copy gets corrupted. IOW, we'd have:
+> > 
+> > 	ECH, VIDH#1, VIDH#2, User Data.
+> 
+> What do you mean by 'sacrificing another page', are you talking about
+> the one paired with the VID header page ?
+> If that's the case, then we cannot write anything on it (even a VID
+> header backup), because if the PROGRAM operation is interrupted both
+> pages (VIDH#1 and #2) could be corrupted.
 
-Yeah, from looking at the bugzilla it seemed like dm was releasing the
-dev_t before the queue has been freed.
+Just this:
 
-I don't know this code to well, so this isn't a full review, but it looks like
-the right fix to me.
+Page 0: ECH
+Page 1: VIDH#1 (+all the ECH data)
+Page 2: VIDH#2 (same as VIDH#1)
+
+VIDH#1 and #2 are not in paired pages, so I expect one of them to always
+be good.
+
+If pages 0,1;2,3;4,5;etc are paired, we may lose ECH sometimes, should
+not be catastrophic. I wonder though, if this pairing scheme is
+realistic?
+
+In case of a larger pairing step we seem to be always OK and will always
+have a valid ECH and VIDH.
+
+Do I miss something?
