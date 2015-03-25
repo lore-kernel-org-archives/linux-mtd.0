@@ -1,19 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yanew-0006AB-RM
- for linux-mtd@lists.infradead.org; Wed, 25 Mar 2015 15:55:59 +0000
-Message-ID: <5512DA72.8020204@imgtec.com>
-Date: Wed, 25 Mar 2015 15:55:30 +0000
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-MIME-Version: 1.0
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-Subject: Re: [PATCH_V2 0/2] mtd: nand: jz4780: Add nand and bch driver
-References: <1425902299-53967-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-In-Reply-To: <1425902299-53967-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+From: Stefan Agner <stefan@agner.ch>
+To: dwmw2@infradead.org,
+	computersforpeace@gmail.com
+Subject: [PATCH v4 4/6] ARM: vf610: enable NAND Flash Controller
+Date: Wed, 25 Mar 2015 17:28:27 +0100
+Message-Id: <1427300909-20825-5-git-send-email-stefan@agner.ch>
+In-Reply-To: <1427300909-20825-1-git-send-email-stefan@agner.ch>
+References: <1427300909-20825-1-git-send-email-stefan@agner.ch>
+Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
+ aaron@tastycactus.com, marb@ixxat.de, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
+ Stefan Agner <stefan@agner.ch>, devicetree@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de, galak@codeaurora.org,
+ shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org,
+ bpringlemeir@nbsps.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Enable the NAND Flash Controller driver which is part of the Vybrid
+SoC by default.
 
-Just wondering if this has gotten lost in the archives?
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ arch/arm/mach-imx/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Regards,
-ZubairLK
-
-On 09/03/15 11:58, Zubair Lutfullah Kakakhel wrote:
-> Hi,
-> 
-> Two patches based on 4.0-rc3 that add NAND and BCH controller
-> drivers for the Ingenic JZ4780 SoC.
-> 
-> Core JZ4780 support is still in-flight.
-> 
-> Review and feedback welcome.
-> 
-> V1 - > V2
-> Fixed module license macros
-> Rebase to 4.0-rc3
-> 
-> 
-> Thanks,
-> ZubairLK
-> 
-> Alex Smith (2):
->   dt-bindings: binding for jz4780-{nand,bch}
->   mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs
-> 
->  .../bindings/mtd/ingenic,jz4780-nand.txt           |  57 ++++
->  drivers/mtd/nand/Kconfig                           |   7 +
->  drivers/mtd/nand/Makefile                          |   1 +
->  drivers/mtd/nand/jz4780_bch.c                      | 358 ++++++++++++++++++++
->  drivers/mtd/nand/jz4780_bch.h                      |  42 +++
->  drivers/mtd/nand/jz4780_nand.c                     | 372 +++++++++++++++++++++
->  6 files changed, 837 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
->  create mode 100644 drivers/mtd/nand/jz4780_bch.c
->  create mode 100644 drivers/mtd/nand/jz4780_bch.h
->  create mode 100644 drivers/mtd/nand/jz4780_nand.c
-> 
+diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+index c8dffce..182e30e 100644
+--- a/arch/arm/mach-imx/Kconfig
++++ b/arch/arm/mach-imx/Kconfig
+@@ -635,6 +635,7 @@ config SOC_VF610
+ 	select ARM_GIC
+ 	select PINCTRL_VF610
+ 	select PL310_ERRATA_769419 if CACHE_L2X0
++	select HAVE_NAND_VF610_NFC
+ 
+ 	help
+ 	  This enable support for Freescale Vybrid VF610 processor.
+-- 
+2.3.3
