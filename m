@@ -1,18 +1,20 @@
-From: Stefan Agner <stefan@agner.ch>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Subject: [PATCH v4 5/6] ARM: dts: vf610: add NAND flash controller peripherial
-Date: Wed, 25 Mar 2015 17:28:28 +0100
-Message-Id: <1427300909-20825-6-git-send-email-stefan@agner.ch>
-In-Reply-To: <1427300909-20825-1-git-send-email-stefan@agner.ch>
-References: <1427300909-20825-1-git-send-email-stefan@agner.ch>
-Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
- aaron@tastycactus.com, marb@ixxat.de, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- Stefan Agner <stefan@agner.ch>, devicetree@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, galak@codeaurora.org,
- shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org,
- bpringlemeir@nbsps.com
+Received: from lb1-smtp-cloud2.xs4all.net ([194.109.24.21])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yas5l-0006tQ-Vg
+ for linux-mtd@lists.infradead.org; Wed, 25 Mar 2015 20:39:58 +0000
+Message-ID: <1427315945.10958.48.camel@x220>
+Subject: Re: [PATCH 1/3] mtd: nand: Add on-die ECC support
+From: Paul Bolle <pebolle@tiscali.nl>
+To: Richard Weinberger <richard@nod.at>
+Date: Wed, 25 Mar 2015 21:39:05 +0100
+In-Reply-To: <1427292151-3835-2-git-send-email-richard@nod.at>
+References: <1427292151-3835-1-git-send-email-richard@nod.at>
+ <1427292151-3835-2-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,92 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This adds the NAND flash controller (NFC) peripherial. The driver
-supports the SLC NAND chips found on Freescale's Vybrid Tower System
-Module. The Micron NAND chip on the module needs 4-bit ECC per 512
-byte page. Use 24-bit ECC per 2k page, which is supported by the
-driver.
+Probably not really the feedback you're hoping for at this moment, this
+being an RFC, but I spotted two nits anyway.
 
-Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm/boot/dts/vf610-twr.dts | 44 +++++++++++++++++++++++++++++++++++++++++
- arch/arm/boot/dts/vfxxx.dtsi    |  8 ++++++++
- 2 files changed, 52 insertions(+)
+On Wed, 2015-03-25 at 15:02 +0100, Richard Weinberger wrote:
+> --- /dev/null
+> +++ b/drivers/mtd/nand/nand_ondie.c
 
-diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
-index f64fddc..f42d155 100644
---- a/arch/arm/boot/dts/vf610-twr.dts
-+++ b/arch/arm/boot/dts/vf610-twr.dts
-@@ -287,6 +287,50 @@
- 	status = "okay";
- };
- 
-+&iomuxc {
-+	vf610-twr {
-+		pinctrl_nfc_1: nfcgrp_1 {
-+			fsl,pins = <
-+			VF610_PAD_PTD31__NF_IO15	0x28df
-+			VF610_PAD_PTD30__NF_IO14	0x28df
-+			VF610_PAD_PTD29__NF_IO13	0x28df
-+			VF610_PAD_PTD28__NF_IO12	0x28df
-+			VF610_PAD_PTD27__NF_IO11	0x28df
-+			VF610_PAD_PTD26__NF_IO10	0x28df
-+			VF610_PAD_PTD25__NF_IO9		0x28df
-+			VF610_PAD_PTD24__NF_IO8		0x28df
-+			VF610_PAD_PTD23__NF_IO7		0x28df
-+			VF610_PAD_PTD22__NF_IO6		0x28df
-+			VF610_PAD_PTD21__NF_IO5		0x28df
-+			VF610_PAD_PTD20__NF_IO4		0x28df
-+			VF610_PAD_PTD19__NF_IO3		0x28df
-+			VF610_PAD_PTD18__NF_IO2		0x28df
-+			VF610_PAD_PTD17__NF_IO1		0x28df
-+			VF610_PAD_PTD16__NF_IO0		0x28df
-+			VF610_PAD_PTB24__NF_WE_B	0x28c2
-+			VF610_PAD_PTB25__NF_CE0_B	0x28c2
-+			VF610_PAD_PTB27__NF_RE_B	0x28c2
-+			VF610_PAD_PTC26__NF_RB_B	0x283d
-+			VF610_PAD_PTC27__NF_ALE		0x28c2
-+			VF610_PAD_PTC28__NF_CLE		0x28c2
-+			>;
-+		};
-+	};
-+};
-+
-+&nfc {
-+	assigned-clocks = <&clks VF610_CLK_NFC>;
-+	assigned-clock-rates = <33000000>;
-+	nand-bus-width = <16>;
-+	nand-ecc-mode = "hw";
-+	nand-on-flash-bbt;
-+	nand-ecc-strength = <24>;
-+	nand-ecc-step-size = <2048>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_nfc_1>;
-+	status = "okay";
-+};
-+
- &uart1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart1>;
-diff --git a/arch/arm/boot/dts/vfxxx.dtsi b/arch/arm/boot/dts/vfxxx.dtsi
-index 32de809..8c85972 100644
---- a/arch/arm/boot/dts/vfxxx.dtsi
-+++ b/arch/arm/boot/dts/vfxxx.dtsi
-@@ -507,6 +507,14 @@
- 				status = "disabled";
- 			};
- 
-+			nfc: nand@400e0000 {
-+				compatible = "fsl,vf610-nfc";
-+				reg = <0x400e0000 0x4000>;
-+				interrupts = <83 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clks VF610_CLK_NFC>;
-+				clock-names = "nfc";
-+				status = "disabled";
-+			};
- 		};
- 	};
- };
--- 
-2.3.3
+This file makes git am whine: "new blank line at EOF".
+
+> +#include <linux/types.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+
+Is this include needed? The code can only be built in. This files also
+builds silently without that include. I used the rather hacky
+    make EXTRA_CFLAGS="-DCONFIG_MTD_NAND_ECC_ON_DIE" drivers/mtd/nand/nand_ondie.o
+
+to test the build.
+
+> +#include <linux/slab.h>
+> +#include <linux/bitops.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
+> +#include <linux/mtd/nand_ondie.h>
+
+
+Paul Bolle
