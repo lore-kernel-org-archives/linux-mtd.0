@@ -1,20 +1,14 @@
-Received: from lb1-smtp-cloud2.xs4all.net ([194.109.24.21])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yas5l-0006tQ-Vg
- for linux-mtd@lists.infradead.org; Wed, 25 Mar 2015 20:39:58 +0000
-Message-ID: <1427315945.10958.48.camel@x220>
-Subject: Re: [PATCH 1/3] mtd: nand: Add on-die ECC support
-From: Paul Bolle <pebolle@tiscali.nl>
-To: Richard Weinberger <richard@nod.at>
-Date: Wed, 25 Mar 2015 21:39:05 +0100
-In-Reply-To: <1427292151-3835-2-git-send-email-richard@nod.at>
-References: <1427292151-3835-1-git-send-email-richard@nod.at>
- <1427292151-3835-2-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YasHy-0007S2-C5
+ for linux-mtd@lists.infradead.org; Wed, 25 Mar 2015 20:52:35 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] of_mtd: Add support for on-die ECC mode
+Date: Wed, 25 Mar 2015 21:52:02 +0100
+Message-Id: <1427316722-9635-1-git-send-email-richard@nod.at>
+Cc: Richard Weinberger <richard@nod.at>, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +18,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Probably not really the feedback you're hoping for at this moment, this
-being an RFC, but I spotted two nits anyway.
+...teach of_get_nand_ecc_mode() to understand "hw_on_die".
 
-On Wed, 2015-03-25 at 15:02 +0100, Richard Weinberger wrote:
-> --- /dev/null
-> +++ b/drivers/mtd/nand/nand_ondie.c
+Signed-off-by: Richard Weinberger <richard@nod.at>
 
-This file makes git am whine: "new blank line at EOF".
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+index b53f92e..2de960e 100644
 
-> +#include <linux/types.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
+In my initial patch series I forgot about of_mtd.
+This patch will be added to v2 of the series.
 
-Is this include needed? The code can only be built in. This files also
-builds silently without that include. I used the rather hacky
-    make EXTRA_CFLAGS="-DCONFIG_MTD_NAND_ECC_ON_DIE" drivers/mtd/nand/nand_ondie.o
+Thanks,
+//richard
 
-to test the build.
-
-> +#include <linux/slab.h>
-> +#include <linux/bitops.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/mtd/nand_ondie.h>
-
-
-Paul Bolle
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -2,7 +2,7 @@
+ 
+ - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+   Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+-  "soft_bch".
++  "hw_on_die", "soft_bch".
+ - nand-bus-width : 8 or 16 bus width if not present 8
+ - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+ 
+diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+index b7361ed..3b38c9a 100644
+--- a/drivers/of/of_mtd.c
++++ b/drivers/of/of_mtd.c
+@@ -22,6 +22,7 @@ static const char *nand_ecc_modes[] = {
+ 	[NAND_ECC_HW]		= "hw",
+ 	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
+ 	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
++	[NAND_ECC_HW_ON_DIE]	= "hw_on_die",
+ 	[NAND_ECC_SOFT_BCH]	= "soft_bch",
+ };
+ 
+-- 
+2.3.4
