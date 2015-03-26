@@ -1,21 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-yh0-x22b.google.com ([2607:f8b0:4002:c01::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yb46y-0006PO-Tp
- for linux-mtd@lists.infradead.org; Thu, 26 Mar 2015 09:30:01 +0000
-Message-ID: <5513D17F.2080309@nod.at>
-Date: Thu, 26 Mar 2015 10:29:35 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1Yb5gR-0005i0-Ip
+ for linux-mtd@lists.infradead.org; Thu, 26 Mar 2015 11:10:45 +0000
+Received: by yhpt93 with SMTP id t93so24454142yhp.0
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Mar 2015 04:10:21 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 4/5] UBI: fix check for "too many bytes"
-References: <1425119009-28634-1-git-send-email-computersforpeace@gmail.com>
- <1425119009-28634-5-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1425119009-28634-5-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <CAFLxGvyG38+dQZXyFeGF3nru71bPR0VU_0ZTKJmmdVh96txqGA@mail.gmail.com>
+References: <CAFLxGvy6bnPnzZyGXiAN8Jq54E7CDpF5CmvLzkAuuMn8jdUbmQ@mail.gmail.com>
+ <1422789058-4595-1-git-send-email-david.oberhollenzer@sigma-star.at>
+ <CAFLxGvyG38+dQZXyFeGF3nru71bPR0VU_0ZTKJmmdVh96txqGA@mail.gmail.com>
+Date: Thu, 26 Mar 2015 12:10:21 +0100
+Message-ID: <CAFLxGvw+rrQ3qRYoVC52Tszo__TBxU8Yv23x-SP_yEeppf4=Mg@mail.gmail.com>
+Subject: Re: [PATCH] UBI: power cut emulation for testing
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: david.oberhollenzer@sigma-star.at
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 28.02.2015 um 11:23 schrieb Brian Norris:
-> The comparison from the previous line seems to have been erroneously
-> (partially) copied-and-pasted onto the next. The second line should be
-> checking req.bytes, not req.lnum.
-> 
-> Coverity CID #139400
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/ubi/cdev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-> index d647e504f9b1..7691a2a015cb 100644
-> --- a/drivers/mtd/ubi/cdev.c
-> +++ b/drivers/mtd/ubi/cdev.c
-> @@ -455,7 +455,7 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
->  		/* Validate the request */
->  		err = -EINVAL;
->  		if (req.lnum < 0 || req.lnum >= vol->reserved_pebs ||
-> -		    req.bytes < 0 || req.lnum >= vol->usable_leb_size)
-> +		    req.bytes < 0 || req.bytes >= vol->usable_leb_size)
->  			break;
+On Thu, Mar 26, 2015 at 9:55 AM, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> On Sun, Feb 1, 2015 at 12:10 PM,  <david.oberhollenzer@sigma-star.at> wrote:
+>> From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+>>
+>> Emulate random power cuts by switching device to ro after a number of
+>> writes to allow simple power cut testing with nand-sim.
+>>
+>> Maximum and minimum number of successful writes before power cut and
+>> what kind of writes (EC header, VID header or none) to interrupt
+>> configurable via debugfs.
+>>
+>> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+>
+> Applied, thanks David!
 
-Testing uncovered an issue with that.
-The comparison should be "req.bytes > vol->usable_leb_size" as
-we're allowed to write with usable_leb_size.
-There is no need to re-send, I'll fix the patch myself.
+Sorry, had to drop this patch.
+power_cut_counter is of type unsigned int, but you treat it as signed
+integer by using negative
+numbers. Please clarify and resend.
 
+-- 
 Thanks,
 //richard
