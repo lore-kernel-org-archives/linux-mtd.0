@@ -1,33 +1,20 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yb3Zz-0000Xw-WA
- for linux-mtd@lists.infradead.org; Thu, 26 Mar 2015 08:55:57 +0000
-Date: Thu, 26 Mar 2015 09:55:29 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
-Subject: RE: RFC: detect and manage power cut on MLC NAND
-In-Reply-To: <0D23F1ECC880A74392D56535BCADD7356B6CA7ED@NTXBOIMBX03.micron.com>
-Message-ID: <alpine.DEB.2.02.1503260954140.13892@lnxricardw1.se.axis.com>
-References: <54FEDC42.2060407@dave-tech.it>
- <CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>
- <1426058414.1567.2.camel@sauron.fi.intel.com> <5500037A.9010509@nod.at>
- <1426064733.1567.6.camel@sauron.fi.intel.com>, <55000637.1030702@nod.at>
- <EACD232272DA4849B060F0828564D13B57804E2730@ntcex01.corp.netcomm.com.au>,
- <0D23F1ECC880A74392D56535BCADD7356B6C8603@NTXBOIMBX03.micron.com>
- <EACD232272DA4849B060F0828564D13B6EB7D55E72@ntcex01.corp.netcomm.com.au>,
- <0D23F1ECC880A74392D56535BCADD7356B6C89FA@NTXBOIMBX03.micron.com>
- <EACD232272DA4849B060F0828564D13B6EB7D55E7E@ntcex01.corp.netcomm.com.au>
- <alpine.DEB.2.02.1503250918420.13892@lnxricardw1.se.axis.com>
- <0D23F1ECC880A74392D56535BCADD7356B6CA7ED@NTXBOIMBX03.micron.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yb3pa-0001t5-MF
+ for linux-mtd@lists.infradead.org; Thu, 26 Mar 2015 09:12:04 +0000
+Message-ID: <5513CD49.30803@nod.at>
+Date: Thu, 26 Mar 2015 10:11:37 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- =?ISO-2022-JP?Q?Qi_Wang_=1B$B2&5=2F=1B=28J_=28qiwang=29?=
- <qiwang@micron.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, Andrea Scian <rnd4@dave-tech.it>,
- =?ISO-8859-15?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>,
- mtd_mailinglist <linux-mtd@lists.infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/5] UBI: Coverity-inspired fixes
+References: <1425119009-28634-1-git-send-email-computersforpeace@gmail.com>
+ <54F830EA.4080106@nod.at> <20150306020442.GP18140@ld-irv-0074>
+In-Reply-To: <20150306020442.GP18140@ld-irv-0074>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,25 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Am 06.03.2015 um 03:04 schrieb Brian Norris:
+> On Thu, Mar 05, 2015 at 11:33:14AM +0100, Richard Weinberger wrote:
+>> Brian,
+>>
+>> Am 28.02.2015 um 11:23 schrieb Brian Norris:
+>>> Except for the last one, these were inspired by Coverity Scan results.
+>>>
+>>> These fixes have barely been tested, but they are pretty straightforward
+>>> logically. As they've been sitting in my dust pile too long, I thought I'd at
+>>> least get them out there.
+>>>
+>>> Brian Norris (5):
+>>>   UBI: account for bitflips in both the VID header and data
+>>>   UBI: fix out of bounds write
+>>>   UBI: initialize LEB number variable
+>>>   UBI: fix check for "too many bytes"
+>>>   UBI: align comment for readability
+>>
+>> Nice work!
+>> I'll test them later today.
+>> Just a quick question, no patch has a stable tag, is this by design?
+>> From a first look most of them look like stable material.
+> 
+> Two reasons:
+> 
+>  1. I hadn't tested them heavily, and I definitely didn't try to target
+>  their codepaths much.
+> 
+>  2. Given #1 and the fact that these were just found by static analysis,
+>  I don't think they pass this test from
+>  Documentation/stable_kernel_rules.txt:
+> 
+>  " - It must fix a real bug that bothers people (not a, "This could be a
+>     problem..." type thing)."
+> 
+> So, I expected they would only be sent to stable if somebody (perhaps
+> me) is able to trigger something real, or at least gets some significant
+> testing on them.
+> 
+> Maybe this is a case where you send the fixes, and then send the commit
+> IDs to Greg after they have been proven stable and/or can be exploited
+> in some way through testing. (Option 2 in the updated
+> stable_kernel_rules.txt.)
+> 
+> But really, it's your/Artem's call.
 
-On Thu, 26 Mar 2015, Jeff Lauruhn (jlauruhn) wrote:
+Applied, thanks a lot Brian!
+I've marked patches 1 to 4 as stable material.
 
-> Let me explain the read process a bit.  When we program and erase too, 
-> we set a target value L0 and L1 in the case of SLC and we get a 
-> ...
-> registers a 0 for that cell.  The sense circuit is very simple because 
-> there needs to be 2K of them so we can sense the whole page 
-> simultaneously.  The type of circuitry required to measure an analog 
-> value would make the die huge.  If it was possible, it would already be 
-> designed in.
-
-> Instead of measuring the cell voltage, it was easier to allow the end 
-> user to move Vread to maybe compensate for the shift in distribution.
-
-Makes perfect sense. Thanks for the response!
-
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Thanks,
+//richard
