@@ -1,32 +1,24 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-qg0-f54.google.com ([209.85.192.54])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yax3c-0000AX-Dn
- for linux-mtd@lists.infradead.org; Thu, 26 Mar 2015 01:58:05 +0000
-From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, Iwo Mergler
- <Iwo.Mergler@netcommwireless.com>
-Subject: RE: RFC: detect and manage power cut on MLC NAND
-Date: Thu, 26 Mar 2015 01:57:25 +0000
-Message-ID: <0D23F1ECC880A74392D56535BCADD7356B6CA7ED@NTXBOIMBX03.micron.com>
-References: <54FEDC42.2060407@dave-tech.it>
- <CAFLxGvx2WMZXvy7f_YyefgAFKDKgMoeoeqt905M1pJFJ28dXrw@mail.gmail.com>
- <1426058414.1567.2.camel@sauron.fi.intel.com> <5500037A.9010509@nod.at>
- <1426064733.1567.6.camel@sauron.fi.intel.com>,<55000637.1030702@nod.at>
- <EACD232272DA4849B060F0828564D13B57804E2730@ntcex01.corp.netcomm.com.au>,
- <0D23F1ECC880A74392D56535BCADD7356B6C8603@NTXBOIMBX03.micron.com>
- <EACD232272DA4849B060F0828564D13B6EB7D55E72@ntcex01.corp.netcomm.com.au>,
- <0D23F1ECC880A74392D56535BCADD7356B6C89FA@NTXBOIMBX03.micron.com>
- <EACD232272DA4849B060F0828564D13B6EB7D55E7E@ntcex01.corp.netcomm.com.au>
- <alpine.DEB.2.02.1503250918420.13892@lnxricardw1.se.axis.com>
-In-Reply-To: <alpine.DEB.2.02.1503250918420.13892@lnxricardw1.se.axis.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1YaxIt-0007rP-U5
+ for linux-mtd@lists.infradead.org; Thu, 26 Mar 2015 02:13:52 +0000
+Received: by qgf60 with SMTP id 60so60233191qgf.3
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Mar 2015 19:13:29 -0700 (PDT)
 MIME-Version: 1.0
-Cc: Andrea Scian <rnd4@dave-tech.it>, Richard Weinberger <richard@nod.at>,
- =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>,
- mtd_mailinglist <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <1427267091-227474-1-git-send-email-wangzhou1@hisilicon.com>
+References: <1427267091-227474-1-git-send-email-wangzhou1@hisilicon.com>
+Date: Thu, 26 Mar 2015 10:13:29 +0800
+Message-ID: <CAD6h2NQr_Z600vC+7RRuLgoGvV4MCXz8TAd4C5eCnqbA0ZdPWw@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3] mtd: hisilicon: add device tree node for NAND
+ controller
+From: Haojian Zhuang <haojian.zhuang@linaro.org>
+To: Zhou Wang <wangzhou1@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Wei Xu <xuwei5@hisilicon.com>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ "Liguozhu \(Kenneth\)" <liguozhu@hisilicon.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,102 +28,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCg0KSmVmZiBMYXVydWhuDQpOQU5EIEFwcGxpY2F0aW9uIEVuZ2luZWVyDQpFbWJlZGRlZCBC
-dXNpbmVzcyBVbml0DQpNaWNyb24gVGVjaG5vbG9neSwgSW5jDQoNCg0KLS0tLS1PcmlnaW5hbCBN
-ZXNzYWdlLS0tLS0NCkZyb206IFJpY2FyZCBXYW5kZXJsb2YgW21haWx0bzpyaWNhcmQud2FuZGVy
-bG9mQGF4aXMuY29tXSANClNlbnQ6IFdlZG5lc2RheSwgTWFyY2ggMjUsIDIwMTUgMTozMyBBTQ0K
-VG86IEl3byBNZXJnbGVyDQpDYzogSmVmZiBMYXVydWhuIChqbGF1cnVobik7IFJpY2hhcmQgV2Vp
-bmJlcmdlcjsgZGVkZWtpbmQxQGdtYWlsLmNvbTsgQW5kcmVhIFNjaWFuOyBRaSBXYW5nIOeOi+i1
-tyAocWl3YW5nKTsgbXRkX21haWxpbmdsaXN0DQpTdWJqZWN0OiBSRTogUkZDOiBkZXRlY3QgYW5k
-IG1hbmFnZSBwb3dlciBjdXQgb24gTUxDIE5BTkQNCg0KDQpPbiBXZWQsIDI1IE1hciAyMDE1LCBJ
-d28gTWVyZ2xlciB3cm90ZToNCg0KPiA+IEZyb20gYSBzaW1wbGlmaWVkIHBvaW50IG9mIHZpZXcg
-eW91J3JlIHJpZ2h0LiAgSW4gcmVhbGl0eSB0aGUgDQo+ID4gcHJvZ3JhbS9lcmFzZSByZWNpcGVz
-IGFyZSBhY3R1YWxseSBxdWl0ZSBhZHZhbmNlZCBpbiBvcmRlciB0byBnZXQgDQo+ID4gdmVyeSB0
-aWdodCBkaXN0cmlidXRpb25zIG9uIGEgZnVsbCBwYWdlLiAgVGhlIGxvd2VyL3VwcGVyIHBhZ2Ug
-DQo+ID4gc2VxdWVuY2UgaXMgZGVzaWduZWQgdG8gcHJvdmlkZSB0aGUgbW9zdCByZWxpYWJsZSBy
-ZXN1bHRzIGFuZCANCj4gPiBvcHRpbWFsbHkgd2Ugd291bGQgbGlrZSB0aGUgbG93ZXIgYW5kIHVw
-cGVyIHBhZ2UgcHJvZ3JhbW1lZCAxMDAlIG9mDQo+ID4gdGhlIHRpbWUuICAgVGhlcmUncyBiZWVu
-IGEgbG90IG9mIHdvcmsgZG9uZSBvdmVyIHRoZSB5ZWFycyB0byBpbXByb3ZlDQo+ID4gcG93ZXIg
-bG9zcyBhbmQgaXQncyBtdWNoIGJldHRlciB0aGFuIGluIHRoZSBwYXN0LCBidXQgaXQncyBzdGls
-bCANCj4gPiBzb21ldGhpbmcgdG8gYmUgYXZvaWRlZCBvbiBOQU5ELiAgSXQncyBhbHdheXMgYmVz
-dCB0byBjaGVjayB0aGUgDQo+ID4gaW50ZWdyaXR5IG9mIHRoZSBwYWdlIGFmdGVyIGEgcG93ZXIg
-bG9zcyBldmVudC4NCj4gDQo+IElzIHRoZXJlIGFueSB3YXkgdG8gY2hlY2sgdGhlIHBhZ2UgaW50
-ZWdyaXR5IGJleW9uZCBFQ0M/DQo+DQo+IEknbSBjb25jZXJuZWQgdGhhdCB0aGUgcG93ZXIgbG9z
-cyBjb3VsZCB5aWVsZCBhbiBPSyBsb29raW5nIHBhZ2UsIGJ1dCANCj4gd2l0aCBub3Qgc28gdGln
-aHQgY2hhcmdlIGRpc3RyaWJ1dGlvbi4NCj4gDQo+IE1heWJlIHRoZSBoYXJkd2FyZSB0aGF0IGNh
-biBhY2hpZXZlIHRpZ2h0IGRpc3RyaWJ1dGlvbnMgZHVyaW5nIA0KPiBwcm9ncmFtbWluZywgY2Fu
-IGJlIGFjY2Vzc2VkIHRvIG1lYXN1cmUgZGlzdHJpYnV0aW9uIG9mIGEgcHJvZ3JhbW1lZCANCj4g
-cGFnZT8NCg0KV2hhdCB3b3VsZCBiZSBpbnRlcmVzdGluZyBmcm9tIGEgc29mdHdhcmUgcGVyc3Bl
-Y3RpdmUgd291bGQgYmUgaWYgaW4gc29tZSBzcGVjaWFsIG1vZGUgb25lIGNvdWxkIHJlYWQgdGhl
-IHJlYWQgdGhlIG1lbW9yeSBjZWxscyBhbmQgZ2V0IGFuIGFuYWxvZyB2YWx1ZSB3aXRoIHNldmVy
-YWwgYml0cyBvZiByZXNvbHV0aW9uLCBhbG93aW5nIHRoZSBzb2Z0d2FyZSB0byBtYWtlIGFuIGFz
-c2Vzc21lbnQgYXMgdG8gaG93ICJnb29kIiB0aGUgYml0cyBhcmUuIFRoaXMgd291bGQgYmUgaW4g
-Y29udHJhc3QgdG8gdGhlIG5vcm1hbCwgaGlnaCBzcGVlZCwgcmVhZCBtb2RlLiBCdXQgcGVyaGFw
-cyBtYXR0ZXJzIGFyZSBub3QgdGhhdCBzaW1wbGUsIGVpdGhlciB0aGVyZSBpcyBubyBzdWNoIHZh
-bHVlIHRvIGJlIGhhZCAoYnV0IGFzIEkgdW5kZXJzdGFuZCBpdCBpbiBjZXJ0YWluIE1MQyBmbGFz
-aGVzIGl0IGlzIHBvc3NpYmxlIHRvIHNoaWZ0IHRoZSByZWFkIHRocmVzaG9sZHMsIHRodXMgb25l
-IGNvdWxkIGFjY29tcGxpc2ggdGhpcyBieSBzdWNjZXNzaXZlIGFwcHJveGltYXRpb24uIFN1cmUs
-IHRoYXQgbWVhbnMgdGhhdCBvbmUgY291bGQgZG8gaXQgZW50aXJlbHkgaW4gc29mdHdhcmUgdXNp
-bmcgZXhpc3RpbmcgZGV2aWNlcywgYnV0IGl0IGlzIGEgcmF0aGVyIGN1bWJlcnNvbWUgcHJvY2Vz
-cyBob3dldmVyKSwgb3IgdGhlcmUgYXJlIG90aGVyIGZhY3RvcnMgdGhhdCBnb3Zlcm4gdGhlIHJl
-YWQgdGhyZXNob2xkcyB3aGljaCBhcmUgbm90IGtub3duIG91dHNpZGUgdGhlIGNoaXAgKG9yIHJh
-dGhlciwgb3V0c2lkZSB0aGUgbWFudWZhY3R1cmVycyBsYWIhKS4NCg0KTm8gc3BlY2lhbCBhbmFs
-b2cgbW9kZXMgb24gcHJvZHVjdGlvbiBkZXZpY2VzLCBidXQgd2UgYXJlIG1vdmluZyBpbiB0aGUg
-ZGlyZWN0aW9uIG9mIGdpdmluZyBtb3JlIGNvbnRyb2wgdG8gdGhlIGVuZCB1c2VyLiAgQXMgbGl0
-aG9ncmFwaHkgZ29lcyBkb3duIGFuZCBiaXRzIHBlciBjZWxsIGdvZXMgdXAgd2UgYXJlIGFkZGlu
-ZyB3ZSBhcmUgdHJ5aW5nIHRvIGNvbWUgdXAgd2l0aCBtYW5hZ2VhYmxlIHdheXMgdG8gcmVjb3Zl
-ciBkYXRhLiAgVGhlcmUncyBubyBhbmFsb2cgcmVhZCBvdXQgb24gdGhlIHJvYWRtYXAsIGJ1dCBu
-ZXcgZmVhdHVyZXMgbGlrZSByZWFkIHJldHJ5LCB3aGljaCBnZW5lcmFsbHkgYXNzdW1lcyBjaGFy
-Z2UgbG9zcyBhbmQgYWxsb3dzIHRoZSBlbmQgdXNlciB0byB0cnkgZGlmZmVyZW50IHJlYWQgcmVm
-ZXJlbmNlIHZvbHRhZ2VzIGFuZCBvdGhlciByZWFkIG9mZnNldCBmZWF0dXJlcyBhcmUgb24gdGhl
-IHJvYWQgbWFwLiAgDQoNCkxldCBtZSBleHBsYWluIHRoZSByZWFkIHByb2Nlc3MgYSBiaXQuICBX
-aGVuIHdlIHByb2dyYW0gYW5kIGVyYXNlIHRvbywgd2Ugc2V0IGEgdGFyZ2V0IHZhbHVlIEwwIGFu
-ZCBMMSBpbiB0aGUgY2FzZSBvZiBTTEMgYW5kIHdlIGdldCBhIGRpc3RyaWJ1dGlvbiBhcm91bmQg
-dGhhdCB0aG9zZSB2YWx1ZXMuICBCdXQgd2hlbiB3ZSByZWFkIHdlIGFwcGx5IGEgdm9sdGFnZSB0
-byB0aGUgZ2F0ZSBvZiB0aGUgY2VsbCB3ZSBpbnRlbmQgdG8gcmVhZCB0aGF0IGlzIGJldHdlZW4g
-TDAgYW5kIEwxLCBjYWxsIGl0IFZyZWFkLCBpZiB0aGUgY2VsbCBpcyBlcmFzZWQsIFZyZWFkIGlz
-IGdyZWF0ZXIgdGhhbiB0aGUgdm9sdGFnZSB0aHJlc2hvbGQgVnQgb2YgTDAgYW5kIHRoZSBjZWxs
-IHdpbGwgY29uZHVjdCBhbmQgd2Ugd2lsbCBzZW5zZSBhIGN1cnJlbnQgZmxvdyBiZXR3ZWVuIHRo
-ZSBEcmFpbiBhbmQgU291cmNlIGFuZCB0aGUgc2Vuc2UgY2lyY3VpdCByZWdpc3RlcnMgYSAxIGZv
-ciB0aGF0IGNlbGwuICBJZiB0aGUgY2VsbCBpcyBwcm9ncmFtbWVkLCBWcmVhZCB3aWxsIG5vdCBi
-ZSBoaWdoIGVub3VnaCB0byBvdmVyY29tZSB0aGUgVnQgb2YgdGhlIGNlbGwgYW5kIHdlIHdpbGwg
-c2Vuc2Ugbm8gY3VycmVudCBmbG93IGJldHdlZW4gdGhlIGRyYWluIGFuZCBzb3VyY2UgYW5kIHRo
-ZSBzZW5zZSBjaXJjdWl0IHJlZ2lzdGVycyBhIDAgZm9yIHRoYXQgY2VsbC4gIFRoZSBzZW5zZSBj
-aXJjdWl0IGlzIHZlcnkgc2ltcGxlIGJlY2F1c2UgdGhlcmUgbmVlZHMgdG8gYmUgMksgb2YgdGhl
-bSBzbyB3ZSBjYW4gc2Vuc2UgdGhlIHdob2xlIHBhZ2Ugc2ltdWx0YW5lb3VzbHkuICBUaGUgdHlw
-ZSBvZiBjaXJjdWl0cnkgcmVxdWlyZWQgdG8gbWVhc3VyZSBhbiBhbmFsb2cgdmFsdWUgd291bGQg
-bWFrZSB0aGUgZGllIGh1Z2UuICBJZiBpdCB3YXMgcG9zc2libGUsIGl0IHdvdWxkIGFscmVhZHkg
-YmUgZGVzaWduZWQgaW4uICANCg0KSW5zdGVhZCBvZiBtZWFzdXJpbmcgdGhlIGNlbGwgdm9sdGFn
-ZSwgaXQgd2FzIGVhc2llciB0byBhbGxvdyB0aGUgZW5kIHVzZXIgdG8gbW92ZSBWcmVhZCB0byBt
-YXliZSBjb21wZW5zYXRlIGZvciB0aGUgc2hpZnQgaW4gZGlzdHJpYnV0aW9uLiAgDQogICAgICAg
-ICAgICAgIA0KDQo+ID4gSSBoYXZlIHRvIGJlIGNhcmVmdWwgaGVyZSBiZWNhdXNlIGl0J3MgdmVy
-eSBkZXBlbmRlbnQgb24gdGhlIGRlc2lnbiANCj4gPiBhbmQgSSByZWFsbHkgbmVlZCB0byBrbm93
-IHRoZSBzcGVjaWZpY3MgdG8gbWFrZSBhIGRlZmluaXRpdmUgDQo+ID4gc3RhdGVtZW50LCBidXQg
-YSBmZXcgbXMgc2hvdWxkIGJlIGVub3VnaCB0aW1lIHRvIHByb3RlY3QgdGhlIE5BTkQuDQo+ID4g
-V1AjIGlzIHlvdXIgZnJpZW5kIGhlcmUuDQo+IA0KPiBUaGUgZGVzaWduIGlzIHNvbWV3aGF0IGh5
-cG90aGV0aWNhbCAtIGxldCdzIGFzc3VtZSB0aGF0IHdlIGNhbiANCj4gZ3VhcmFudGVlIHRoZSBO
-QU5EIHN1cHBseSBmb3IgMTBtcyBhZnRlciBzeXN0ZW0gcmVzZXQgYXNzZXJ0cy4NCj4gDQo+IEF0
-IHJlc2V0IHRpbWUsIHRoZSBOQU5EIGNvbnRyb2xsZXIgd2lsbCBhYm9ydCBhbnkgY29tbWFuZCBz
-ZXF1ZW5jZSBpbiANCj4gcHJvZ3Jlc3MsIHNvIHRoZSBmaW5hbCAicHJvZ3JhbSBwYWdlIiBjb21t
-YW5kIHdpbGwgYmUgc2VudCBlaXRoZXIgDQo+IGJlZm9yZSB0aGUgcmVzZXQsIG9yIG5vdCBhdCBh
-bGwuIFRoZSBjb21tYW5kIGJ5dGUgbWF5IGJlIGN1dCBzaG9ydCBvbiB0aGUgYnVzLg0KDQpJdCB3
-b3VsZCBzZWVtIHRvIG1lIHRoYXQgdGhlIG9ubHkgdGhpbmcgcmVhbGx5IG5lZWRlZCB0byBndWFy
-YW50ZWUgdGhhdCB3cml0ZXMgKG9yIGVyYXNlIG9wZXJhdGlvbnMpIGFyZSBub3QgY3V0IHNob3J0
-IGJ5IHBvd2VyIGxvc3MsIGlzIGFzIEl3byBzYXlzIHRoYXQgdGhlIHN5c3RlbSBkZXNpZ24gaXMg
-c3VjaCB0aGF0IHdoZW4gcG93ZXIgbG9zcyBvY2N1cnMsIHRoZXJlIGlzIGVub3VnaCBwb3dlciB0
-byBtYWludGFpbiB2YWxpZCBzdXBwbHkgdm9sdGFnZSBsZXZlbHMgdG8gYWxsb3cgdGhlIE5BTkQg
-dG8gY29tcGxldGUgb3BlcmF0aW9ucyBpbiB0aGUgd29yc3QgY2FzZSwgYWZ0ZXIgc3lzdGVtIHJl
-c2V0IGlzIGFzc2VydGVkLg0KDQpBZG1pdHRlZGx5IHdlIGRvbid0IGFsd2F5cyBoYXZlIHRoZSBs
-dXh1cnkgb2Ygd2VsbC1kZXNpZ25lZCBoYXJkd2FyZSwgYnV0IGhhdmluZyBjbGVhciBkZXNpZ24g
-cnVsZXMgZm9yIHRoZSBoYXJkd2FyZSBndXlzIHdvdWxkIGhlbHAgYSBsb25nIHdheSBpbiBmdXR1
-cmUgZGVzaWducy4NCg0KPiBJJ20gdmVyeSBoYXBweSB0byB0YWxrIHRvIHNvbWVvbmUgYXQgdGhl
-IGNvYWwgZmFjZSBvZiBtb2Rlcm4gTkFORCANCj4gbWFudWZhY3R1cmluZy4gOi0pDQoNCkFncmVl
-ZCwgSSB0aGluayB3ZSdyZSB2ZXJ5IG1hbnkgdGhhdCBhcHByZWNpYXRlIEplZmYncyBjb250cmli
-dXRpb25zIG9uIHRoZSBsaXN0LCBtZSBpbmNsdWRlZC4gTkFORCBkYXRhIHNoZWV0cyBhcmUgb2Z0
-ZW4gbm90IHNvIGZvcnRoY29taW5nLCBhbmQgdGhlcmUgZW5kcyB1cCBiZWluZyBhIGxvdCBvZiBz
-cGVjdWxhdGlvbiBhYm91dCBob3cgdGhpbmdzIGFjdHVhbGx5IHdvcmssIHNvIGl0J3MgcmVhbGx5
-IG5pY2UgdG8gaGF2ZSBzb21lb25lIHdpdGggcmVhbCBrbm93bGVkZ2UgdG8gZGlzY3VzcyB0aGlz
-IHdpdGguDQoNCi9SaWNhcmQNCi0tIA0KUmljYXJkIFdvbGYgV2FuZGVybMO2ZiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHJpY2FyZHcoYXQpYXhpcy5jb20NCkF4aXMgQ29tbXVuaWNhdGlvbnMg
-QUIsIEx1bmQsIFN3ZWRlbiAgICAgICAgICAgIHd3dy5heGlzLmNvbQ0KUGhvbmUgKzQ2IDQ2IDI3
-MiAyMDE2ICAgICAgICAgICAgICAgICAgICAgICAgICAgRmF4ICs0NiA0NiAxMyA2MSAzMA0K
+On 25 March 2015 at 15:04, Zhou Wang <wangzhou1@hisilicon.com> wrote:
+> This patch adds dts support for NAND flash controller of Hisilicon Soc Hip04.
+> Now it is based on v4.0-rc5
+>
+> Changes in v3:
+> - Change E-mail address in signed-off-by to "wangzhou1@hisilicon.com"
+> Changes in v2:
+> - Base on v3.19-rc1
+> - Use nand-ecc-strength, nand-ecc-step-size to replace hisi,nand-ecc-bits
+> Changes in v1:
+> - Move partition and other board related information into board dts file:
+>   hip04-d01.dts
+>
+> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+> ---
+>  arch/arm/boot/dts/hip04-d01.dts | 27 +++++++++++++++++++++++++++
+>  arch/arm/boot/dts/hip04.dtsi    |  7 +++++++
+>  2 files changed, 34 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/hip04-d01.dts b/arch/arm/boot/dts/hip04-d01.dts
+> index 40a9e33..ba04dd5 100644
+> --- a/arch/arm/boot/dts/hip04-d01.dts
+> +++ b/arch/arm/boot/dts/hip04-d01.dts
+> @@ -28,5 +28,32 @@
+>                 uart0: uart@4007000 {
+>                         status = "ok";
+>                 };
+> +
+> +               nand: nand@4020000 {
+> +                       nand-bus-width = <8>;
+> +                       nand-ecc-mode = "hw";
+> +                       nand-ecc-strength = <16>;
+> +                       nand-ecc-step-size = <1024>;
+> +
+> +                       partition@0 {
+> +                               label = "nand_text";
+> +                               reg = <0x00000000 0x00400000>;
+> +                       };
+> +
+> +                       partition@00400000 {
+> +                               label = "nand_monitor";
+> +                               reg = <0x00400000 0x00400000>;
+> +                       };
+> +
+> +                       partition@00800000 {
+> +                               label = "nand_kernel";
+> +                               reg = <0x00800000 0x00800000>;
+> +                       };
+> +
+> +                       partition@01000000 {
+> +                               label = "nand_fs";
+> +                               reg = <0x01000000 0x1f000000>;
+> +                       };
+> +               };
+>         };
+>  };
+> diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
+> index 2388145..ac32fce 100644
+> --- a/arch/arm/boot/dts/hip04.dtsi
+> +++ b/arch/arm/boot/dts/hip04.dtsi
+> @@ -269,6 +269,13 @@
+>                         interrupts = <0 372 4>;
+>                 };
+>
+> +               nand: nand@4020000 {
+> +                       compatible = "hisilicon,504-nfc";
+> +                       reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
+> +                       interrupts = <0 379 4>;
+> +                       #address-cells = <1>;
+> +                       #size-cells = <1>;
+> +               };
+>         };
+>
+>         etb@0,e3c42000 {
+> --
+> 1.9.1
+>
+
+Acked-by: Haojian Zhuang <haojian.zhuang@linaro.org>
