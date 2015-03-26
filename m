@@ -1,19 +1,19 @@
-Received: from mail-yk0-x22a.google.com ([2607:f8b0:4002:c07::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbAua-0007gP-Sl
- for linux-mtd@lists.infradead.org; Thu, 26 Mar 2015 16:45:42 +0000
-Received: by ykef74 with SMTP id f74so7687582yke.1
- for <linux-mtd@lists.infradead.org>; Thu, 26 Mar 2015 09:45:17 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <68AC191B3EB2874F99C36CD9CA3A6D42195CB0@cgpmbx01.comet.ch>
+Received: from mail.comet.ch ([193.135.218.122])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YbBTc-0000bW-6V
+ for linux-mtd@lists.infradead.org; Thu, 26 Mar 2015 17:21:53 +0000
+From: "Morand, Guy" <Guy.Morand@comet.ch>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: AW: UBIFS corruption and UBI + unstable bit questions
+Date: Thu, 26 Mar 2015 17:21:27 +0000
+Message-ID: <68AC191B3EB2874F99C36CD9CA3A6D42195EE6@cgpmbx01.comet.ch>
 References: <68AC191B3EB2874F99C36CD9CA3A6D42195CB0@cgpmbx01.comet.ch>
-Date: Thu, 26 Mar 2015 17:45:17 +0100
-Message-ID: <CAFLxGvzqfmFqRLts5Swa-tintZzJksb6PsRXaNBX9KaRBpXMvg@mail.gmail.com>
-Subject: Re: UBIFS corruption and UBI + unstable bit questions
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: "Morand, Guy" <Guy.Morand@comet.ch>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ <CAFLxGvzqfmFqRLts5Swa-tintZzJksb6PsRXaNBX9KaRBpXMvg@mail.gmail.com>
+In-Reply-To: <CAFLxGvzqfmFqRLts5Swa-tintZzJksb6PsRXaNBX9KaRBpXMvg@mail.gmail.com>
+Content-Language: de-DE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 26, 2015 at 5:00 PM, Morand, Guy <Guy.Morand@comet.ch> wrote:
-> Hello UBI developers,
->
-> I was wondering what happens to the UBI volume if an UBIFS partition gets
-> corrupted:
-> * Is only the partition corrupted?
-> * Is the whole volume corrupted?
-
-Can you please be more specific.
-What exactly do you mean by "only the partition"?
-Also what do you mean by "corrupted"?
-
-If a filesystem is corrupted there is nothing you can do...
-(By definition of corrupted)
-
-> Moreover, about this "Unstable bit issue" ...
-> * Does it still make sense to use UBI/UBIFS as it doesn't seem to be fully
->   power cut failsafe?
-
-It all depends on how you define "fully power cut failsafe".
-UBI/FS is not a magic bullet. People who *really* care about power cut safety
-attack the problem also with their hardware.
-e.g., by not using the cheapest NAND chip they can find. ;-)
-
-> * Have you planned to fix this issue?
-
-TBH nobody cared enough so far to either fix the issue on its own or
-fund one of us UBI developers.
-
-Are you able to trigger this problem?
-
--- 
-Thanks,
-//richard
+PiBDYW4geW91IHBsZWFzZSBiZSBtb3JlIHNwZWNpZmljLg0KPiBXaGF0IGV4YWN0bHkgZG8geW91
+IG1lYW4gYnkgIm9ubHkgdGhlIHBhcnRpdGlvbiI/DQo+IEFsc28gd2hhdCBkbyB5b3UgbWVhbiBi
+eSAiY29ycnVwdGVkIj8NCg0KU29ycnksIG5vbWVuY2xhdHVyZSBwcm9ibGVtIC4uLiBJIG1lYW4g
+YnkgYSB2b2x1bWUgdGhlIGxheWVyIG9uIHRvcCBvZiB0aGUgTVREIA0KZGV2aWNlIChVQkkpOg0K
+dWJpZm9ybWF0IC9kZXYvbXRkMQ0KdWJpYXR0YWNoIC9kZXYvdWJpX2N0cmwgLW0gMQ0KDQpCeSBw
+YXJ0aXRpb24sIEkgbWVhbiBhY3R1YWxseSBhIHZvbHVtZSBvbiB0b3Agb2YgVUJJIChVQklGUyk6
+DQp1Ymlta3ZvbCAvZGV2L3ViaTAgLU4gcGFydGl0aW9uMSAtcyA2NE1pQg0KdWJpbWt2b2wgL2Rl
+di91YmkwIC1OIHBhcnRpdGlvbjIgLW0NCg0KVGhlbiBpZiB0aGVyZSBpcyBhICJ1bnN0YWJsZSBi
+aXQiIG9uIHBhcnRpdGlvbjEsIGlzIGFsc28gdGhlIHBhcnRpdGlvbjIgDQpjb3JydXB0ZWQ/IFRo
+aXMgbWVhbnMgdGhlcmUgaXMgbm90aGluZyBJIGNhbiBkbyB0byByZXN0b3JlIGl0Lg0KDQo+IFVC
+SS9GUyBpcyBub3QgYSBtYWdpYyBidWxsZXQuIFBlb3BsZSB3aG8gKnJlYWxseSogY2FyZSBhYm91
+dCBwb3dlciBjdXQgc2FmZXR5DQo+IGF0dGFjayB0aGUgcHJvYmxlbSBhbHNvIHdpdGggdGhlaXIg
+aGFyZHdhcmUuDQpZaWVhaCByaWdodCwgSSB1bmRlcnN0YW5kLi4uIEkndmUgc2VlbiBzb21lIGhh
+cmR3YXJlIHdpdGggc3VwZXIgY2FwcyB0aGF0IGdpdmVzIA0Kc29tZSB0aW1lIHRvIExpbnV4IHRv
+IHNodXRkb3duIGNvcnJlY3RseSwgSSByZWFsbHkgbG92ZSBpdCENCg0KPiBBcmUgeW91IGFibGUg
+dG8gdHJpZ2dlciB0aGlzIHByb2JsZW0/DQpObywgSSdtIGp1c3QgdGhpbmtpbmcgYWJvdXQgYSBu
+aWNlIHBhcnRpdGlvbmluZyBzdHJhdGVneSBvbiBteSBwbGF0Zm9ybSB0byANCmF2b2lkIGFzIG11
+Y2ggY29ycnVwdGlvbnMgYXMgcG9zc2libGUgd2l0aCB0aGUgaGFyZHdhcmUgSSBoYXZlIGluIGhh
+bmRzIQ0KDQpLaW5kIHJlZ2FyZHMsDQoNCkd1eQ0KDQotLS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hy
+aWNodC0tLS0tDQpWb246IFJpY2hhcmQgV2VpbmJlcmdlciBbbWFpbHRvOnJpY2hhcmQud2VpbmJl
+cmdlckBnbWFpbC5jb21dIA0KR2VzZW5kZXQ6IERvbm5lcnN0YWcsIDI2LiBNw6RyeiAyMDE1IDE3
+OjQ1DQpBbjogTW9yYW5kLCBHdXkNCkNjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0K
+QmV0cmVmZjogUmU6IFVCSUZTIGNvcnJ1cHRpb24gYW5kIFVCSSArIHVuc3RhYmxlIGJpdCBxdWVz
+dGlvbnMNCg0KT24gVGh1LCBNYXIgMjYsIDIwMTUgYXQgNTowMCBQTSwgTW9yYW5kLCBHdXkgPEd1
+eS5Nb3JhbmRAY29tZXQuY2g+IHdyb3RlOg0KPiBIZWxsbyBVQkkgZGV2ZWxvcGVycywNCj4NCj4g
+SSB3YXMgd29uZGVyaW5nIHdoYXQgaGFwcGVucyB0byB0aGUgVUJJIHZvbHVtZSBpZiBhbiBVQklG
+UyBwYXJ0aXRpb24gZ2V0cw0KPiBjb3JydXB0ZWQ6DQo+ICogSXMgb25seSB0aGUgcGFydGl0aW9u
+IGNvcnJ1cHRlZD8NCj4gKiBJcyB0aGUgd2hvbGUgdm9sdW1lIGNvcnJ1cHRlZD8NCg0KQ2FuIHlv
+dSBwbGVhc2UgYmUgbW9yZSBzcGVjaWZpYy4NCldoYXQgZXhhY3RseSBkbyB5b3UgbWVhbiBieSAi
+b25seSB0aGUgcGFydGl0aW9uIj8NCkFsc28gd2hhdCBkbyB5b3UgbWVhbiBieSAiY29ycnVwdGVk
+Ij8NCg0KSWYgYSBmaWxlc3lzdGVtIGlzIGNvcnJ1cHRlZCB0aGVyZSBpcyBub3RoaW5nIHlvdSBj
+YW4gZG8uLi4NCihCeSBkZWZpbml0aW9uIG9mIGNvcnJ1cHRlZCkNCg0KPiBNb3Jlb3ZlciwgYWJv
+dXQgdGhpcyAiVW5zdGFibGUgYml0IGlzc3VlIiAuLi4NCj4gKiBEb2VzIGl0IHN0aWxsIG1ha2Ug
+c2Vuc2UgdG8gdXNlIFVCSS9VQklGUyBhcyBpdCBkb2Vzbid0IHNlZW0gdG8gYmUgZnVsbHkNCj4g
+ICBwb3dlciBjdXQgZmFpbHNhZmU/DQoNCkl0IGFsbCBkZXBlbmRzIG9uIGhvdyB5b3UgZGVmaW5l
+ICJmdWxseSBwb3dlciBjdXQgZmFpbHNhZmUiLg0KVUJJL0ZTIGlzIG5vdCBhIG1hZ2ljIGJ1bGxl
+dC4gUGVvcGxlIHdobyAqcmVhbGx5KiBjYXJlIGFib3V0IHBvd2VyIGN1dCBzYWZldHkNCmF0dGFj
+ayB0aGUgcHJvYmxlbSBhbHNvIHdpdGggdGhlaXIgaGFyZHdhcmUuDQplLmcuLCBieSBub3QgdXNp
+bmcgdGhlIGNoZWFwZXN0IE5BTkQgY2hpcCB0aGV5IGNhbiBmaW5kLiA7LSkNCg0KPiAqIEhhdmUg
+eW91IHBsYW5uZWQgdG8gZml4IHRoaXMgaXNzdWU/DQoNClRCSCBub2JvZHkgY2FyZWQgZW5vdWdo
+IHNvIGZhciB0byBlaXRoZXIgZml4IHRoZSBpc3N1ZSBvbiBpdHMgb3duIG9yDQpmdW5kIG9uZSBv
+ZiB1cyBVQkkgZGV2ZWxvcGVycy4NCg0KQXJlIHlvdSBhYmxlIHRvIHRyaWdnZXIgdGhpcyBwcm9i
+bGVtPw0KDQotLSANClRoYW5rcywNCi8vcmljaGFyZA0K
