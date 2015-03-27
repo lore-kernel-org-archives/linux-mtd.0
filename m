@@ -1,20 +1,20 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mout.gmx.net ([212.227.17.21])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbXDa-0001ni-Dx
- for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 16:34:46 +0000
-Date: Fri, 27 Mar 2015 09:34:50 -0700
-From: Mark Brown <broonie@kernel.org>
-To: Shengzhou Liu <Shengzhou.Liu@freescale.com>
-Message-ID: <20150327163450.GE1743@sirena.org.uk>
-References: <1427449110-24556-1-git-send-email-Shengzhou.Liu@freescale.com>
+ id 1YbXHR-0005VG-So
+ for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 16:38:47 +0000
+Message-ID: <55158773.2080502@rempel-privat.de>
+Date: Fri, 27 Mar 2015 17:38:11 +0100
+From: Oleksij Rempel <linux@rempel-privat.de>
 MIME-Version: 1.0
+To: Nick Krause <xerofoify@gmail.com>
+Subject: Re: Help Out
+References: <CAPDOMVgj0qaqfEdZRNHKRqwCbuUZTRu3GcSuAqknhUYa4u9crg@mail.gmail.com>	<551560BB.3050607@rempel-privat.de>	<3BA9F386-DDC1-4C9E-855A-5D28B45BDD0B@gmail.com>	<55157648.9020907@rempel-privat.de>
+ <CAPDOMVh4YMVew=b9-HkDxbLG3C3gz4HT5m0e-NT38vivJOUyYA@mail.gmail.com>
+In-Reply-To: <CAPDOMVh4YMVew=b9-HkDxbLG3C3gz4HT5m0e-NT38vivJOUyYA@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="J4XPiPrVK1ev6Sgr"
-Content-Disposition: inline
-In-Reply-To: <1427449110-24556-1-git-send-email-Shengzhou.Liu@freescale.com>
-Subject: Re: [PATCH] mtd/spi: support en25s64 device
-Cc: scottwood@freescale.com, linuxppc-dev@lists.ozlabs.org,
- linux-mtd@lists.infradead.org
+ protocol="application/pgp-signature";
+ boundary="jWQ0m8DLCa2F8FWXotvj9dK9It0VEUBhw"
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +24,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---J4XPiPrVK1ev6Sgr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jWQ0m8DLCa2F8FWXotvj9dK9It0VEUBhw
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 27, 2015 at 05:38:30PM +0800, Shengzhou Liu wrote:
-> Add support for EON en25s64 spi device.
->=20
-> Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
+Am 27.03.2015 um 17:02 schrieb Nick Krause:
+> On Fri, Mar 27, 2015 at 11:24 AM, Oleksij Rempel <linux@rempel-privat.d=
+e> wrote:
+>> Am 27.03.2015 um 15:20 schrieb Nicholas Krause:
+>>>
+>>>
+>>> On March 27, 2015 9:52:59 AM EDT, Oleksij Rempel <linux@rempel-privat=
+=2Ede> wrote:
+>>>> Am 27.03.2015 um 14:22 schrieb Nick Krause:
+>>>>> Greetings All,
+>>>>> I have been reading this list for the last few weeks and was
+>>>> wondering
+>>>>> how I can start contributing.
+>>>>> Further more I have some understanding of kernel internals and file=
 
-This is a MTD driver, not a SPI driver - you need to send your patch to
-the MTD maintainers not me.
+>>>>> systems related to Linux so
+>>>>> helping out would be no problem, if there are any requests for wher=
+e
+>>>> I
+>>>>> should start please let me
+>>>>> known.
+>>>>> Thanks,
+>>>>> Nick
+>>>>
+>>>> Just get some hardware and start play with it. Try to brake it or wr=
+ite
+>>>> a new driver. After some work you will see how match work is needed =
+:)
+>>> Olaf,
+>>> That's the issue,  I don't know where to
+>>> purchase a board with mtd flash on it.
+>>> If you can point to where I can purchase a rather inexpensive board f=
+or this that would be great. Furthermore I was interested in how we are d=
+oing with fixing the issue relating to handling data concisely if there i=
+s a  power failure when writing to the flash on the system.
+>>> Nick
+>>
+>> Not sure if i can suggest you exact board. Probably i can give you som=
+e
+>> direction. Since you wish to play with file system, then you probably
+>> need some think bigger then 8MB of storage. In this case NAND will be
+>> better choice.
+>> You will need a SOC/Board with:
+>> - NAND controller
+>> - as match open as possible - you will need to work with latest vanill=
+a
+>> kernel source.
+>>
+>> - MIPS Creator CI20
+>> - ASM9260t eval board (i work on upstreaming. if you wish to work on
+>> this, we can talk about it)
+>>
+>> Other options with nand on board? Or other suggestions?
+>>
+>> --
+>> Regards,
+>> Oleksij
+>>
+> I would be glad to help you upstream the board you are working on.
+> Cheers,
+> Nick
 
---J4XPiPrVK1ev6Sgr
+About this project,
+
+- it is a SoC produced in China by some no name company
+- None of persons working on this project will probably ever be able to
+get money on it
+- our target is to have open and as chap as possible board.
+
+You will need:
+- own evaluation board and some jtag adapter for openocd (i use bus
+blaster v3, some thing else should work too)
+- probably most important, fix you patch and community skills - if i see
+it correctly, your reputation need really hard work to be acceptable.
+
+If you ok with all this, send me privately you skype name. It is
+probably most stable way to communicate with devs in china.
+
+--=20
+Regards,
+Oleksij
+
+
+--jWQ0m8DLCa2F8FWXotvj9dK9It0VEUBhw
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQEcBAEBCAAGBQJVFYapAAoJECTWi3JdVIfQ3mEH/1RBQB20poihdTUEsrx5Tior
-uyAbqNNkaZJQRqUq2uxDV4vBwdO7FVcZaBcTWMVqVIGuHU6kmnrHxWycC7ln0KBm
-LzFilVehfEzh0dRfm76tIf/ySskE48UX8cVnScIfBuyMW0vu6nRiUovXOslBA7sK
-yjJt6NVcDE8ikuGg/GO4HFaHUz37sOwajqU2pPtEod0+rp8Ac2Xl97r73Vm9JGfe
-E9IX8mZNA+MXzLiRiy3T7hNwsp5ddNsQ6KO8SXQiqHSyrZLcHGLFw81fmN1O9nU6
-1n+fthR/IwfuJ5+iM4EottZM8WxQUcOTbpghHV3dr0vOsRLQSfcQV6aCECZAibE=
-=+ySD
+iF4EAREIAAYFAlUVh3gACgkQHwImuRkmbWn9FgD+MtZP/AzFgE6uWoqzkt16CN6S
+/o5zUzBwgfLSNauafxkA/iTPd1m5j0KHV+vhbyqw6n4ZZNlRURhedhkSQnNB67n+
+=vBKZ
 -----END PGP SIGNATURE-----
 
---J4XPiPrVK1ev6Sgr--
+--jWQ0m8DLCa2F8FWXotvj9dK9It0VEUBhw--
