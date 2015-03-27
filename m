@@ -1,23 +1,17 @@
-Received: from mail-ob0-f179.google.com ([209.85.214.179])
+Received: from mail-by2on0137.outbound.protection.outlook.com
+ ([207.46.100.137] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbPn1-00057i-Ta
- for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 08:38:52 +0000
-Received: by obbld8 with SMTP id ld8so14018456obb.3
- for <linux-mtd@lists.infradead.org>; Fri, 27 Mar 2015 01:38:30 -0700 (PDT)
+ id 1YbQmG-0002HO-Tz
+ for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 09:42:10 +0000
+From: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
+ <broonie@kernel.org>
+Subject: [PATCH] mtd/spi: support en25s64 device
+Date: Fri, 27 Mar 2015 17:38:30 +0800
+Message-ID: <1427449110-24556-1-git-send-email-Shengzhou.Liu@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1426772069-12677-1-git-send-email-sr@denx.de>
-References: <1426772069-12677-1-git-send-email-sr@denx.de>
-Date: Fri, 27 Mar 2015 09:38:30 +0100
-Message-ID: <CACRpkdaTXE1WJNgM1MM5SspO5706Csju-qR1uBtRQ=Svg3macQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: fsmc_nand.c: Use default timings if none are
- provided in the dts
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Stefan Roese <sr@denx.de>
-Content-Type: text/plain; charset=UTF-8
-Cc: Viresh Kumar <viresh.linux@gmail.com>,
- Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: scottwood@freescale.com, Shengzhou Liu <Shengzhou.Liu@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 19, 2015 at 2:34 PM, Stefan Roese <sr@denx.de> wrote:
+Add support for EON en25s64 spi device.
 
-> Without this patch the timings are all set to 0 if not specified in the dts.
-> With this patch the driver falls back to use the defaults that are already
-> present in the driver and are known to work okay for some (older) boards.
->
-> Tested on a custom SPEAr600 based board.
->
-> Signed-off-by: Stefan Roese <sr@denx.de>
-> Cc: Viresh Kumar <viresh.linux@gmail.com>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
+Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 0f8ec3c..f8acef7 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -524,6 +524,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128, SECT_4K) },
+ 	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256, 0) },
+ 	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512, 0) },
++	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128, 0) },
+ 
+ 	/* ESMT */
+ 	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
+-- 
+2.1.0.27.g96db324
