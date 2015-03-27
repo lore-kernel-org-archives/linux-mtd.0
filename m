@@ -1,22 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-yh0-x22e.google.com ([2607:f8b0:4002:c01::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbWX8-0006R6-RF
- for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 15:50:56 +0000
-Message-ID: <55157C3B.20500@nod.at>
-Date: Fri, 27 Mar 2015 16:50:19 +0100
-From: Richard Weinberger <richard@nod.at>
+ id 1YbWil-0004iY-6D
+ for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 16:02:55 +0000
+Received: by yhim52 with SMTP id m52so40275834yhi.2
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Mar 2015 09:02:33 -0700 (PDT)
 MIME-Version: 1.0
-To: "Morand, Guy" <Guy.Morand@comet.ch>
-Subject: Re: UBIFS corruption and UBI + unstable bit questions
-References: <68AC191B3EB2874F99C36CD9CA3A6D42195CB0@cgpmbx01.comet.ch>
- <CAFLxGvzqfmFqRLts5Swa-tintZzJksb6PsRXaNBX9KaRBpXMvg@mail.gmail.com>
- <68AC191B3EB2874F99C36CD9CA3A6D42195ED8@cgpmbx01.comet.ch>
- <55144D47.3000203@nod.at>
- <68AC191B3EB2874F99C36CD9CA3A6D42196181@cgpmbx01.comet.ch>
-In-Reply-To: <68AC191B3EB2874F99C36CD9CA3A6D42196181@cgpmbx01.comet.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <55156575.8080704@nic.cz>
+References: <55156575.8080704@nic.cz>
+Date: Fri, 27 Mar 2015 17:02:32 +0100
+Message-ID: <CAFLxGvx-nXQQzOmpJyoGw5a6U8iEM_cr61vJx9aRNu5rAbnNLg@mail.gmail.com>
+Subject: Re: Missing support for ECC_SOFT_BCH in fsl-elbc-nand
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: =?UTF-8?Q?Martin_Strba=C4=8Dka?= <martin.strbacka@nic.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Tomas Hlavacek <tomas.hlavacek@nic.cz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 27.03.2015 um 14:30 schrieb Morand, Guy:
-> Hi,
-> 
-> Thanks for clarifying!
-> 
->> But it depends on the type of the corruption.
-> What do you mean by "type of the corruption". Is it about a PEB containing the 
-> volume table corrupting every volumes on the MTD device? I can't imagine a PEB
-> containing "regular data" corrupting the whole MTD device or correct me if I'm 
-> wrong! I guess this should be extremely rare as we don't update the volume table 
-> every day ...
+On Fri, Mar 27, 2015 at 3:13 PM, Martin Strba=C4=8Dka <martin.strbacka@nic.=
+cz> wrote:
+> Hello,
+>
+> in our product we have Freescale P2020 SoC together with Micron
+> MT29F2G08ABAEAWP NAND. Lately we discovered that the internal driver
+> (fsl-elbc-nand) supports only 1-bit HW ECC. So we would like to switch
+> to ECC_SOFT_BCH (or on-die ECC as I saw some patches in this list
+> recently). Do you know if anybody works on this or are there any patches
+> already?
 
-We save the volume table twice. But you can't expect that UBI or UBIFS will
-survive perfectly fine if random PEBs tun out of the sudden bad.
+Works on what?
+I work (obviously) on on-die ECC support.
 
->> Okay. That's what I thought. I've never seen the issue on serious hardware.
-> Serious hardware, does that mean with seriously select components?
-
-Yes.
-
+--=20
 Thanks,
 //richard
