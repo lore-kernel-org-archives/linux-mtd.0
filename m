@@ -1,25 +1,18 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbY5f-0002pa-I4
- for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 17:30:40 +0000
-Received: by pdcp1 with SMTP id p1so11038348pdc.3
- for <linux-mtd@lists.infradead.org>; Fri, 27 Mar 2015 10:30:18 -0700 (PDT)
+Date: Fri, 27 Mar 2015 10:35:04 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 2/2] mtd: m25p80: bind to "nor-jedec" ID, for auto-detection
-Date: Fri, 27 Mar 2015 10:29:50 -0700
-Message-Id: <1427477390-24069-2-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1427477390-24069-1-git-send-email-computersforpeace@gmail.com>
-References: <1427477390-24069-1-git-send-email-computersforpeace@gmail.com>
+To: Zhou Wang <wangzhou1@hisilicon.com>
+Subject: Re: [RESEND PATCH v3] mtd: hisilicon: add device tree node for NAND
+ controller
+Message-ID: <20150327173504.GY32500@ld-irv-0074>
+References: <1427267091-227474-1-git-send-email-wangzhou1@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1427267091-227474-1-git-send-email-wangzhou1@hisilicon.com>
+Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Wei Xu <xuwei5@hisilicon.com>, linux-mtd@lists.infradead.org,
+ Haojian Zhuang <haojian.zhuang@linaro.org>, liguozhu@hisilicon.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,76 +22,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the new 'nor-jedec' binding to provide automatic detection of flash
-that use the 0x9F READ ID opcode. This can help for use cases where
-platforms just specify compatibility with "m25p80", and then see
-messages like this:
+This would go through your arm-soc submaintainer; i.e., Wei Xu
 
-  m25p80 spi32766.0: found s25fl256s1, expected m25p80
+But FWIW...
 
-Instead, they can just specify the generic string and see this:
+On Wed, Mar 25, 2015 at 03:04:51PM +0800, Zhou Wang wrote:
+> This patch adds dts support for NAND flash controller of Hisilicon Soc Hip04.
+> Now it is based on v4.0-rc5
+> 
+> Changes in v3:
+> - Change E-mail address in signed-off-by to "wangzhou1@hisilicon.com"
+> Changes in v2:
+> - Base on v3.19-rc1
+> - Use nand-ecc-strength, nand-ecc-step-size to replace hisi,nand-ecc-bits
+> Changes in v1:
+> - Move partition and other board related information into board dts file:
+>   hip04-d01.dts
+> 
+> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+> ---
+>  arch/arm/boot/dts/hip04-d01.dts | 27 +++++++++++++++++++++++++++
+>  arch/arm/boot/dts/hip04.dtsi    |  7 +++++++
+>  2 files changed, 34 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/hip04-d01.dts b/arch/arm/boot/dts/hip04-d01.dts
+> index 40a9e33..ba04dd5 100644
+> --- a/arch/arm/boot/dts/hip04-d01.dts
+> +++ b/arch/arm/boot/dts/hip04-d01.dts
+> @@ -28,5 +28,32 @@
+>  		uart0: uart@4007000 {
+>  			status = "ok";
+>  		};
+> +
+> +		nand: nand@4020000 {
+> +			nand-bus-width = <8>;
+> +			nand-ecc-mode = "hw";
+> +			nand-ecc-strength = <16>;
+> +			nand-ecc-step-size = <1024>;
+> +
+> +			partition@0 {
+> +				label = "nand_text";
+> +				reg = <0x00000000 0x00400000>;
+> +			};
+> +
+> +			partition@00400000 {
+> +				label = "nand_monitor";
+> +				reg = <0x00400000 0x00400000>;
+> +			};
+> +
+> +			partition@00800000 {
+> +				label = "nand_kernel";
+> +				reg = <0x00800000 0x00800000>;
+> +			};
+> +
+> +			partition@01000000 {
+> +				label = "nand_fs";
+> +				reg = <0x01000000 0x1f000000>;
+> +			};
+> +		};
+>  	};
+>  };
+> diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
+> index 2388145..ac32fce 100644
+> --- a/arch/arm/boot/dts/hip04.dtsi
+> +++ b/arch/arm/boot/dts/hip04.dtsi
+> @@ -269,6 +269,13 @@
+>  			interrupts = <0 372 4>;
+>  		};
+>  
+> +		nand: nand@4020000 {
+> +			compatible = "hisilicon,504-nfc";
+> +			reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
+> +			interrupts = <0 379 4>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +		};
 
-  m25p80 spi32766.0: s25fl256s1 (32768 Kbytes)
+Seems reasonable and matches the binding we already accepted, so:
 
-Also, update the language about m25p_ids[] to straighten out the
-expectations here. We should no longer need to continuously grow the
-m25p_ids[] table, and in fact, we might want to start removing entries
-which are not used in device trees so far, so we can just default to
-auto-detection as much as possible in the future.
+Reviewed-by: Brian Norris <computersforpeace@gmail.com>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Rafał Miłecki <zajec5@gmail.com>
----
-v2: no change
-
- drivers/mtd/devices/m25p80.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 85e35467fba6..7c8b1694a134 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -223,6 +223,8 @@ static int m25p_probe(struct spi_device *spi)
- 	 */
- 	if (data && data->type)
- 		flash_name = data->type;
-+	else if (!strcmp(spi->modalias, "nor-jedec"))
-+		flash_name = NULL; /* auto-detect */
- 	else
- 		flash_name = spi->modalias;
- 
-@@ -247,9 +249,16 @@ static int m25p_remove(struct spi_device *spi)
- }
- 
- /*
-- * XXX This needs to be kept in sync with spi_nor_ids.  We can't share
-- * it with spi-nor, because if this is built as a module then modpost
-- * won't be able to read it and add appropriate aliases.
-+ * Do NOT add to this array without reading the following:
-+ *
-+ * Historically, many flash devices are bound to this driver by their name. But
-+ * since most of these flash are compatible to some extent, and their
-+ * differences can often be differentiated by the JEDEC read-ID command, we
-+ * encourage new users to add support to the spi-nor library, and simply bind
-+ * against a generic string here (e.g., "nor-jedec").
-+ *
-+ * Many flash names are kept here in this list (as well as in spi-nor.c) to
-+ * keep them available as module aliases for existing platforms.
-  */
- static const struct spi_device_id m25p_ids[] = {
- 	{"at25fs010"},	{"at25fs040"},	{"at25df041a"},	{"at25df321a"},
-@@ -291,6 +300,12 @@ static const struct spi_device_id m25p_ids[] = {
- 	{"w25x64"},	{"w25q64"},	{"w25q80"},	{"w25q80bl"},
- 	{"w25q128"},	{"w25q256"},	{"cat25c11"},
- 	{"cat25c03"},	{"cat25c09"},	{"cat25c17"},	{"cat25128"},
-+
-+	/*
-+	 * Generic support for SPI NOR that can be identified by the JEDEC READ
-+	 * ID opcode (0x9F). Use this, if possible.
-+	 */
-+	{"nor-jedec"},
- 	{ },
- };
- MODULE_DEVICE_TABLE(spi, m25p_ids);
--- 
-1.9.1
+>  	};
+>  
+>  	etb@0,e3c42000 {
+> -- 
+> 1.9.1
+> 
