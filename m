@@ -1,19 +1,16 @@
-Received: from mout.gmx.net ([212.227.15.15])
+Received: from mail.nic.cz ([2001:1488:800:400::400])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbUhl-0007fO-0i
- for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 13:53:45 +0000
-Message-ID: <551560BB.3050607@rempel-privat.de>
-Date: Fri, 27 Mar 2015 14:52:59 +0100
-From: Oleksij Rempel <linux@rempel-privat.de>
+ id 1YbV0v-0006pR-9Q
+ for linux-mtd@lists.infradead.org; Fri, 27 Mar 2015 14:13:34 +0000
+Message-ID: <55156575.8080704@nic.cz>
+Date: Fri, 27 Mar 2015 15:13:09 +0100
+From: =?UTF-8?B?TWFydGluIFN0cmJhxI1rYQ==?= <martin.strbacka@nic.cz>
 MIME-Version: 1.0
-To: Nick Krause <xerofoify@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Help Out
-References: <CAPDOMVgj0qaqfEdZRNHKRqwCbuUZTRu3GcSuAqknhUYa4u9crg@mail.gmail.com>
-In-Reply-To: <CAPDOMVgj0qaqfEdZRNHKRqwCbuUZTRu3GcSuAqknhUYa4u9crg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="X61kbVJ0W99hgQLeN9msSivdixg4uPQOo"
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Missing support for ECC_SOFT_BCH in fsl-elbc-nand
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Cc: Tomas Hlavacek <tomas.hlavacek@nic.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---X61kbVJ0W99hgQLeN9msSivdixg4uPQOo
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Am 27.03.2015 um 14:22 schrieb Nick Krause:
-> Greetings All,
-> I have been reading this list for the last few weeks and was wondering
-> how I can start contributing.
-> Further more I have some understanding of kernel internals and file
-> systems related to Linux so
-> helping out would be no problem, if there are any requests for where I
-> should start please let me
-> known.
-> Thanks,
-> Nick
+in our product we have Freescale P2020 SoC together with Micron
+MT29F2G08ABAEAWP NAND. Lately we discovered that the internal driver
+(fsl-elbc-nand) supports only 1-bit HW ECC. So we would like to switch
+to ECC_SOFT_BCH (or on-die ECC as I saw some patches in this list
+recently). Do you know if anybody works on this or are there any patches
+already?
 
-Just get some hardware and start play with it. Try to brake it or write
-a new driver. After some work you will see how match work is needed :)
+I tried some hacks already because I found that ECC_SOFT is a fallback
+option if HW ECC is not available. But it seems that there are few bits
+missing. At least an implemetation of NAND_CMD_RNDOUT. Or am I missing
+something?
 
---=20
-Regards,
-Oleksij
-
-
---X61kbVJ0W99hgQLeN9msSivdixg4uPQOo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iF4EAREIAAYFAlUVYMsACgkQHwImuRkmbWkLkQD7BXxwBsMkLNXwMf2rCdCqZ2ZH
-7EVRO/l4sNaA41MfJ+MBAIEwZUjSDMNJWJUh+UGTKR152nBxqcbylrH39H/vOyvq
-=zLrd
------END PGP SIGNATURE-----
-
---X61kbVJ0W99hgQLeN9msSivdixg4uPQOo--
+Best Regards,
+Martin Strbacka
