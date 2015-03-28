@@ -1,19 +1,15 @@
-Message-ID: <551651A8.3030307@hisilicon.com>
-Date: Sat, 28 Mar 2015 15:00:56 +0800
-From: Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <55171358.5070200@gmail.com>
+Date: Sat, 28 Mar 2015 21:47:20 +0100
+From: Gabriel Dobato <dobatog@gmail.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RESEND PATCH v3] mtd: hisilicon: add device tree node for NAND
- controller
-References: <1427267091-227474-1-git-send-email-wangzhou1@hisilicon.com>
- <20150327173504.GY32500@ld-irv-0074>
-In-Reply-To: <20150327173504.GY32500@ld-irv-0074>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: linux-arm-kernel@lists.infradead.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Ask for help: ARM: mvebu: add NAND support for dove
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- Wei Xu <xuwei5@hisilicon.com>, linux-mtd@lists.infradead.org,
- Haojian Zhuang <haojian.zhuang@linaro.org>, liguozhu@hisilicon.com,
- linux-arm-kernel@lists.infradead.org
+Cc: moinejf@free.fr, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ ezequiel.garcia@free-electrons.com,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,100 +19,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/3/28 1:35, Brian Norris wrote:
-> This would go through your arm-soc submaintainer; i.e., Wei Xu
-> 
-> But FWIW...
+Hello,
 
-Yes, I will ping him to check the patch.
+I am trying to set the Nand in a CM-510 Compulab based board (4.0-rc5).
 
-> 
-> On Wed, Mar 25, 2015 at 03:04:51PM +0800, Zhou Wang wrote:
->> This patch adds dts support for NAND flash controller of Hisilicon Soc Hip04.
->> Now it is based on v4.0-rc5
->>
->> Changes in v3:
->> - Change E-mail address in signed-off-by to "wangzhou1@hisilicon.com"
->> Changes in v2:
->> - Base on v3.19-rc1
->> - Use nand-ecc-strength, nand-ecc-step-size to replace hisi,nand-ecc-bits
->> Changes in v1:
->> - Move partition and other board related information into board dts file:
->>   hip04-d01.dts
->>
->> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
->> ---
->>  arch/arm/boot/dts/hip04-d01.dts | 27 +++++++++++++++++++++++++++
->>  arch/arm/boot/dts/hip04.dtsi    |  7 +++++++
->>  2 files changed, 34 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/hip04-d01.dts b/arch/arm/boot/dts/hip04-d01.dts
->> index 40a9e33..ba04dd5 100644
->> --- a/arch/arm/boot/dts/hip04-d01.dts
->> +++ b/arch/arm/boot/dts/hip04-d01.dts
->> @@ -28,5 +28,32 @@
->>  		uart0: uart@4007000 {
->>  			status = "ok";
->>  		};
->> +
->> +		nand: nand@4020000 {
->> +			nand-bus-width = <8>;
->> +			nand-ecc-mode = "hw";
->> +			nand-ecc-strength = <16>;
->> +			nand-ecc-step-size = <1024>;
->> +
->> +			partition@0 {
->> +				label = "nand_text";
->> +				reg = <0x00000000 0x00400000>;
->> +			};
->> +
->> +			partition@00400000 {
->> +				label = "nand_monitor";
->> +				reg = <0x00400000 0x00400000>;
->> +			};
->> +
->> +			partition@00800000 {
->> +				label = "nand_kernel";
->> +				reg = <0x00800000 0x00800000>;
->> +			};
->> +
->> +			partition@01000000 {
->> +				label = "nand_fs";
->> +				reg = <0x01000000 0x1f000000>;
->> +			};
->> +		};
->>  	};
->>  };
->> diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
->> index 2388145..ac32fce 100644
->> --- a/arch/arm/boot/dts/hip04.dtsi
->> +++ b/arch/arm/boot/dts/hip04.dtsi
->> @@ -269,6 +269,13 @@
->>  			interrupts = <0 372 4>;
->>  		};
->>  
->> +		nand: nand@4020000 {
->> +			compatible = "hisilicon,504-nfc";
->> +			reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
->> +			interrupts = <0 379 4>;
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +		};
-> 
-> Seems reasonable and matches the binding we already accepted, so:
-> 
-> Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-> 
+As pxa3xx-nand driver supports NFCv1 (PXA3xx) and NFCv2 (Armada 370/XP), 
+  I think that it should work more or less with Dove SoC (NFCv1) that is 
+similar enough.
 
-Thanks,
-Zhou
+Until now, I've only added the correspondent node in dove.dtsi and the 
+partitions in dove-cm-a510.dts ( it should be updated in the patch 
+series that Sebastian Hesselbarth submitted ) :
 
->>  	};
->>  
->>  	etb@0,e3c42000 {
->> -- 
->> 1.9.1
->>
-> 
-> .
-> 
+---
+  arch/arm/boot/dts/dove-cm-a510.dts | 17 +++++++++++++++++
+  arch/arm/boot/dts/dove.dtsi        | 16 ++++++++++++++++
+  2 files changed, 33 insertions(+)
+
+diff --git a/arch/arm/boot/dts/dove-cm-a510.dts 
+b/arch/arm/boot/dts/dove-cm-a510.dts
+index 50c0d69..36cf10d 100644
+--- a/arch/arm/boot/dts/dove-cm-a510.dts
++++ b/arch/arm/boot/dts/dove-cm-a510.dts
+@@ -36,3 +36,20 @@
+  &i2c0 {
+           status = "okay";
+  };
++
++&nand  {
++          status = "okay";
++          num-cs = <1>;
++          partition@0 {
++                 label = "uImage";
++                 reg = <0x000000000000 0x000000400000>;
++          };
++          partition@400000 {
++                 label = "Rootfs";
++                 reg = <0x000000400000 0x00001FC00000>;
++          };
++};
++
++
++
++
+diff --git a/arch/arm/boot/dts/dove.dtsi b/arch/arm/boot/dts/dove.dtsi
+index a5441d5..7e71f45 100644
+--- a/arch/arm/boot/dts/dove.dtsi
++++ b/arch/arm/boot/dts/dove.dtsi
+@@ -380,6 +380,22 @@
+                                 status = "disabled";
+                         };
+
++                       nand: nand@c0000 {
++                                compatible = "marvell,armada370-nand";
++                                #address-cells = <1>;
++                                #size-cells = <1>;
++                                reg= <0xc0000 0x60>;
++                                interrupts = <3>;
++                                clocks = <&core_clk 0>;
++                                pinctrl-0 = <&pmx_nand>;
++                                pinctrl-names = "default";
++                                marvell,nand-keep-config;
++                                marvell,nand-enable-arbiter;
++                                nand-on-flash-bbt;
++                        };
++
++
++
+                         thermal: thermal-diode@d001c {
+                                 compatible = "marvell,dove-thermal";
+                                 reg = <0xd001c 0x0c>, <0xd005c 0x08>;
+-- 
+1.9.1
+
+
+Int the boot trace, the Nand is detected:
+
+...
+brd: module loaded
+loop: module loaded
+mtip32xx Version 1.3.1
+pxa3xx-nand f10c0000.nand: This platform can't do DMA on this device
+nand: device found, Manufacturer ID: 0xec, Chip ID: 0xdc
+nand: Samsung NAND 512MiB 3,3V 8-bit
+nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+pxa3xx-nand f10c0000.nand: ECC strength 16, ECC step size 2048
+Scanning device for bad blocks
+random: nonblocking pool is initialized
+Bad eraseblock 1692 at 0x00000d380000
+Bad eraseblock 2395 at 0x000012b60000
+Bad eraseblock 3877 at 0x00001e4a0000
+2 ofpart partitions found on MTD device pxa3xx_nand-0
+Creating 2 MTD partitions on "pxa3xx_nand-0":
+0x000000000000-0x000020000000 : "uImage"
+0x000000400000-0x000020000000 : "rootfs"
+jme: JMicron JMC2XX ethernet driver version 1.0.8
+libphy: orion_mdio_bus: probed
+mv643xx_eth: MV-643xx 10/100/1000 ethernet driver version 1.4
+mv643xx_eth_port mv643xx_eth_port.0 eth0: port 0 with MAC address 
+00:01:c0:15:83:8e
+usbcore: registered new interface driver smsc95xx
+...
+
+root@debug:~# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 20000000 00020000 "uImage"
+mtd1: 1fc00000 00020000 "rootfs"
+
+....
+
+
+However, if I try to read/write into the mtd partitions, I can not, 
+there are errors:
+
+root@debug:~# nandwrite -p /dev/mtd0 /uImage
+Writing at 0x00000000
+pxa3xx-nand f10c0000.nand: Wait time out!!!
+
+root@debug:~# flash_erase /dev/mtd0 0 0
+Erasing 128 Kibyte @ 0 --  0 % complete pxa3xx-nand f10c0000.nand: Wait 
+time out!!!
+
+root@debug:~# cat /dev/mtd0
+pxa3xx-nand f10c0000.nand: Wait time out!!!
+
+
+
+AFAIK, the clock frequency of Dove Nand controller is different, so 
+maybe is necessary to adapt timings... and I suppose something else...
+
+I really appreciate any kind of help or advise .
+
+Thank you.
+
+Gabriel Dobato
