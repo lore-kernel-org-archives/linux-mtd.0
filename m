@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcDup-00012e-9p
- for linux-mtd@lists.infradead.org; Sun, 29 Mar 2015 14:10:17 +0000
+ id 1YcJGB-0005Wj-KJ
+ for linux-mtd@lists.infradead.org; Sun, 29 Mar 2015 19:52:42 +0000
 From: Richard Weinberger <richard@nod.at>
 To: computersforpeace@gmail.com
-Subject: [PATCH] mtd: Make MTD tests cancelable
-Date: Sun, 29 Mar 2015 16:09:46 +0200
-Message-Id: <1427638186-4731-1-git-send-email-richard@nod.at>
+Subject: [PATCH v2] mtd: Make MTD tests cancelable
+Date: Sun, 29 Mar 2015 21:52:06 +0200
+Message-Id: <1427658726-27068-1-git-send-email-richard@nod.at>
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
  linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,7 +23,7 @@ and have to wait forever until it finishes.
 >From the debug output I already know what the issue is but I
 have to wait or reset the board hard.
 Resetting is often not an option
-(remote access issues, you don't want lose the current state, etc...).
+(remote access, you don't want lose the current state, etc...).
 
 The solution is easy, check for pending signals at key positions
 in the code. Using that one can even stop a test by pressing CTRL-C
@@ -31,8 +31,11 @@ as insmod/modprobe have SIGINT pending.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/tests/mtd_nandecctest.c |  4 ++++
- drivers/mtd/tests/mtd_test.h        | 11 +++++++++++
+v2: First patch was missing two hunks from my working tree.
+    git commit -a vs. git commit ;-\
+---
+ drivers/mtd/tests/mtd_nandecctest.c |  6 ++++++
+ drivers/mtd/tests/mtd_test.h        | 12 ++++++++++++
  drivers/mtd/tests/nandbiterrs.c     |  4 ++++
  drivers/mtd/tests/oobtest.c         | 26 +++++++++++++++++++++-----
  drivers/mtd/tests/pagetest.c        | 10 ++++++++--
@@ -41,13 +44,22 @@ Signed-off-by: Richard Weinberger <richard@nod.at>
  drivers/mtd/tests/stresstest.c      |  5 ++++-
  drivers/mtd/tests/subpagetest.c     | 25 ++++++++++++++++++++-----
  drivers/mtd/tests/torturetest.c     | 15 ++++++++++++---
- 10 files changed, 117 insertions(+), 24 deletions(-)
+ 10 files changed, 120 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
-index e579f90..d6e5399 100644
+index e579f90..7931615 100644
 --- a/drivers/mtd/tests/mtd_nandecctest.c
 +++ b/drivers/mtd/tests/mtd_nandecctest.c
-@@ -274,6 +274,10 @@ static int nand_ecc_test_run(const size_t size)
+@@ -9,6 +9,8 @@
+ #include <linux/slab.h>
+ #include <linux/mtd/nand_ecc.h>
+ 
++#include "mtd_test.h"
++
+ /*
+  * Test the implementation for software ECC
+  *
+@@ -274,6 +276,10 @@ static int nand_ecc_test_run(const size_t size)
  		}
  		pr_info("ok - %s-%zd\n",
  			nand_ecc_test[i].name, size);
@@ -59,12 +71,13 @@ index e579f90..d6e5399 100644
  error:
  	kfree(error_data);
 diff --git a/drivers/mtd/tests/mtd_test.h b/drivers/mtd/tests/mtd_test.h
-index f437c77..9ee1be8 100644
+index f437c77..4b7bee1 100644
 --- a/drivers/mtd/tests/mtd_test.h
 +++ b/drivers/mtd/tests/mtd_test.h
-@@ -1,5 +1,16 @@
+@@ -1,4 +1,16 @@
  #include <linux/mtd/mtd.h>
- 
++#include <linux/sched.h>
++
 +static inline int mtdtest_relax(void)
 +{
 +	cond_resched();
@@ -75,10 +88,9 @@ index f437c77..9ee1be8 100644
 +
 +	return 0;
 +}
-+
+ 
  int mtdtest_erase_eraseblock(struct mtd_info *mtd, unsigned int ebnum);
  int mtdtest_scan_for_bad_eraseblocks(struct mtd_info *mtd, unsigned char *bbt,
- 					unsigned int eb, int ebcnt);
 diff --git a/drivers/mtd/tests/nandbiterrs.c b/drivers/mtd/tests/nandbiterrs.c
 index 273f7e5..09a4cca 100644
 --- a/drivers/mtd/tests/nandbiterrs.c
