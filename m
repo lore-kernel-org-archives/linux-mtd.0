@@ -1,15 +1,14 @@
-Date: Sun, 29 Mar 2015 15:41:22 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 52/86] mtd/maps: use uapi/linux/pci_ids.h directly
-Message-ID: <1427635734-24786-53-git-send-email-mst@redhat.com>
-References: <1427635734-24786-1-git-send-email-mst@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1427635734-24786-1-git-send-email-mst@redhat.com>
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YcDup-00012e-9p
+ for linux-mtd@lists.infradead.org; Sun, 29 Mar 2015 14:10:17 +0000
+From: Richard Weinberger <richard@nod.at>
+To: computersforpeace@gmail.com
+Subject: [PATCH] mtd: Make MTD tests cancelable
+Date: Sun, 29 Mar 2015 16:09:46 +0200
+Message-Id: <1427638186-4731-1-git-send-email-richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,83 +18,399 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Header moved from linux/pci_ids.h to uapi/linux/pci_ids.h,
-use the new header directly so we can drop
-the wrapper in include/linux/pci_ids.h.
+I always go nuts when I start an MTD test on a slow device
+and have to wait forever until it finishes.
+>From the debug output I already know what the issue is but I
+have to wait or reset the board hard.
+Resetting is often not an option
+(remote access issues, you don't want lose the current state, etc...).
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+The solution is easy, check for pending signals at key positions
+in the code. Using that one can even stop a test by pressing CTRL-C
+as insmod/modprobe have SIGINT pending.
+
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/maps/amd76xrom.c  | 2 +-
- drivers/mtd/maps/ck804xrom.c  | 2 +-
- drivers/mtd/maps/esb2rom.c    | 2 +-
- drivers/mtd/maps/ichxrom.c    | 2 +-
- drivers/mtd/maps/scb2_flash.c | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/tests/mtd_nandecctest.c |  4 ++++
+ drivers/mtd/tests/mtd_test.h        | 11 +++++++++++
+ drivers/mtd/tests/nandbiterrs.c     |  4 ++++
+ drivers/mtd/tests/oobtest.c         | 26 +++++++++++++++++++++-----
+ drivers/mtd/tests/pagetest.c        | 10 ++++++++--
+ drivers/mtd/tests/readtest.c        |  5 ++++-
+ drivers/mtd/tests/speedtest.c       | 36 +++++++++++++++++++++++++++++-------
+ drivers/mtd/tests/stresstest.c      |  5 ++++-
+ drivers/mtd/tests/subpagetest.c     | 25 ++++++++++++++++++++-----
+ drivers/mtd/tests/torturetest.c     | 15 ++++++++++++---
+ 10 files changed, 117 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/mtd/maps/amd76xrom.c b/drivers/mtd/maps/amd76xrom.c
-index f7207b0..9024cfa 100644
---- a/drivers/mtd/maps/amd76xrom.c
-+++ b/drivers/mtd/maps/amd76xrom.c
-@@ -15,7 +15,7 @@
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/flashchip.h>
- #include <linux/pci.h>
--#include <linux/pci_ids.h>
-+#include <uapi/linux/pci_ids.h>
- #include <linux/list.h>
+diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
+index e579f90..d6e5399 100644
+--- a/drivers/mtd/tests/mtd_nandecctest.c
++++ b/drivers/mtd/tests/mtd_nandecctest.c
+@@ -274,6 +274,10 @@ static int nand_ecc_test_run(const size_t size)
+ 		}
+ 		pr_info("ok - %s-%zd\n",
+ 			nand_ecc_test[i].name, size);
++
++		err = mtdtest_relax();
++		if (err)
++			break;
+ 	}
+ error:
+ 	kfree(error_data);
+diff --git a/drivers/mtd/tests/mtd_test.h b/drivers/mtd/tests/mtd_test.h
+index f437c77..9ee1be8 100644
+--- a/drivers/mtd/tests/mtd_test.h
++++ b/drivers/mtd/tests/mtd_test.h
+@@ -1,5 +1,16 @@
+ #include <linux/mtd/mtd.h>
  
++static inline int mtdtest_relax(void)
++{
++	cond_resched();
++	if (signal_pending(current)) {
++		pr_info("aborting test due to pending signal!\n");
++		return -EINTR;
++	}
++
++	return 0;
++}
++
+ int mtdtest_erase_eraseblock(struct mtd_info *mtd, unsigned int ebnum);
+ int mtdtest_scan_for_bad_eraseblocks(struct mtd_info *mtd, unsigned char *bbt,
+ 					unsigned int eb, int ebcnt);
+diff --git a/drivers/mtd/tests/nandbiterrs.c b/drivers/mtd/tests/nandbiterrs.c
+index 273f7e5..09a4cca 100644
+--- a/drivers/mtd/tests/nandbiterrs.c
++++ b/drivers/mtd/tests/nandbiterrs.c
+@@ -320,6 +320,10 @@ static int overwrite_test(void)
+ 			break;
+ 		}
  
-diff --git a/drivers/mtd/maps/ck804xrom.c b/drivers/mtd/maps/ck804xrom.c
-index 0455166..bf636b4 100644
---- a/drivers/mtd/maps/ck804xrom.c
-+++ b/drivers/mtd/maps/ck804xrom.c
-@@ -18,7 +18,7 @@
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/flashchip.h>
- #include <linux/pci.h>
--#include <linux/pci_ids.h>
-+#include <uapi/linux/pci_ids.h>
- #include <linux/list.h>
++		err = mtdtest_relax();
++		if (err)
++			break;
++
+ 		opno++;
+ 	}
  
+diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+index 5e06118..62c7a24 100644
+--- a/drivers/mtd/tests/oobtest.c
++++ b/drivers/mtd/tests/oobtest.c
+@@ -112,7 +112,10 @@ static int write_whole_device(void)
+ 			return err;
+ 		if (i % 256 == 0)
+ 			pr_info("written up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			return err;
+ 	}
+ 	pr_info("written %u eraseblocks\n", i);
+ 	return 0;
+@@ -310,7 +313,10 @@ static int verify_all_eraseblocks(void)
+ 			return err;
+ 		if (i % 256 == 0)
+ 			pr_info("verified up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			return err;
+ 	}
+ 	pr_info("verified %u eraseblocks\n", i);
+ 	return 0;
+@@ -421,7 +427,10 @@ static int __init mtd_oobtest_init(void)
+ 			goto out;
+ 		if (i % 256 == 0)
+ 			pr_info("verified up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	pr_info("verified %u eraseblocks\n", i);
  
-diff --git a/drivers/mtd/maps/esb2rom.c b/drivers/mtd/maps/esb2rom.c
-index f784cf0..80a9e55 100644
---- a/drivers/mtd/maps/esb2rom.c
-+++ b/drivers/mtd/maps/esb2rom.c
-@@ -21,7 +21,7 @@
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/flashchip.h>
- #include <linux/pci.h>
--#include <linux/pci_ids.h>
-+#include <uapi/linux/pci_ids.h>
- #include <linux/list.h>
+@@ -634,7 +643,11 @@ static int __init mtd_oobtest_init(void)
+ 				goto out;
+ 			if (i % 256 == 0)
+ 				pr_info("written up to eraseblock %u\n", i);
+-			cond_resched();
++
++			err = mtdtest_relax();
++			if (err)
++				goto out;
++
+ 			addr += mtd->writesize;
+ 		}
+ 	}
+@@ -672,7 +685,10 @@ static int __init mtd_oobtest_init(void)
+ 		}
+ 		if (i % 256 == 0)
+ 			pr_info("verified up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	pr_info("verified %u eraseblocks\n", i);
  
- #define MOD_NAME KBUILD_BASENAME
-diff --git a/drivers/mtd/maps/ichxrom.c b/drivers/mtd/maps/ichxrom.c
-index c7478e1..1da2a52 100644
---- a/drivers/mtd/maps/ichxrom.c
-+++ b/drivers/mtd/maps/ichxrom.c
-@@ -15,7 +15,7 @@
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/flashchip.h>
- #include <linux/pci.h>
--#include <linux/pci_ids.h>
-+#include <uapi/linux/pci_ids.h>
- #include <linux/list.h>
+diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
+index 88296e8..ba1890d 100644
+--- a/drivers/mtd/tests/pagetest.c
++++ b/drivers/mtd/tests/pagetest.c
+@@ -407,7 +407,10 @@ static int __init mtd_pagetest_init(void)
+ 			goto out;
+ 		if (i % 256 == 0)
+ 			pr_info("written up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	pr_info("written %u eraseblocks\n", i);
  
- #define xstr(s) str(s)
-diff --git a/drivers/mtd/maps/scb2_flash.c b/drivers/mtd/maps/scb2_flash.c
-index b7a22a6..8ede345 100644
---- a/drivers/mtd/maps/scb2_flash.c
-+++ b/drivers/mtd/maps/scb2_flash.c
-@@ -52,7 +52,7 @@
- #include <linux/mtd/map.h>
- #include <linux/mtd/cfi.h>
- #include <linux/pci.h>
--#include <linux/pci_ids.h>
-+#include <uapi/linux/pci_ids.h>
+@@ -422,7 +425,10 @@ static int __init mtd_pagetest_init(void)
+ 			goto out;
+ 		if (i % 256 == 0)
+ 			pr_info("verified up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	pr_info("verified %u eraseblocks\n", i);
  
- #define MODNAME		"scb2_flash"
- #define SCB2_ADDR	0xfff00000
+diff --git a/drivers/mtd/tests/readtest.c b/drivers/mtd/tests/readtest.c
+index a54cf15..a3196b7 100644
+--- a/drivers/mtd/tests/readtest.c
++++ b/drivers/mtd/tests/readtest.c
+@@ -190,7 +190,10 @@ static int __init mtd_readtest_init(void)
+ 			if (!err)
+ 				err = ret;
+ 		}
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 
+ 	if (err)
+diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
+index 5ee9f70..c0cec35 100644
+--- a/drivers/mtd/tests/speedtest.c
++++ b/drivers/mtd/tests/speedtest.c
+@@ -269,7 +269,10 @@ static int __init mtd_speedtest_init(void)
+ 		err = write_eraseblock(i);
+ 		if (err)
+ 			goto out;
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	stop_timing();
+ 	speed = calc_speed();
+@@ -284,7 +287,10 @@ static int __init mtd_speedtest_init(void)
+ 		err = read_eraseblock(i);
+ 		if (err)
+ 			goto out;
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	stop_timing();
+ 	speed = calc_speed();
+@@ -303,7 +309,10 @@ static int __init mtd_speedtest_init(void)
+ 		err = write_eraseblock_by_page(i);
+ 		if (err)
+ 			goto out;
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	stop_timing();
+ 	speed = calc_speed();
+@@ -318,7 +327,10 @@ static int __init mtd_speedtest_init(void)
+ 		err = read_eraseblock_by_page(i);
+ 		if (err)
+ 			goto out;
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	stop_timing();
+ 	speed = calc_speed();
+@@ -337,7 +349,10 @@ static int __init mtd_speedtest_init(void)
+ 		err = write_eraseblock_by_2pages(i);
+ 		if (err)
+ 			goto out;
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	stop_timing();
+ 	speed = calc_speed();
+@@ -352,7 +367,10 @@ static int __init mtd_speedtest_init(void)
+ 		err = read_eraseblock_by_2pages(i);
+ 		if (err)
+ 			goto out;
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	stop_timing();
+ 	speed = calc_speed();
+@@ -385,7 +403,11 @@ static int __init mtd_speedtest_init(void)
+ 			err = multiblock_erase(i, j);
+ 			if (err)
+ 				goto out;
+-			cond_resched();
++
++			err = mtdtest_relax();
++			if (err)
++				goto out;
++
+ 			i += j;
+ 		}
+ 		stop_timing();
+diff --git a/drivers/mtd/tests/stresstest.c b/drivers/mtd/tests/stresstest.c
+index c9d42cc..c4f5a90 100644
+--- a/drivers/mtd/tests/stresstest.c
++++ b/drivers/mtd/tests/stresstest.c
+@@ -221,7 +221,10 @@ static int __init mtd_stresstest_init(void)
+ 		err = do_operation();
+ 		if (err)
+ 			goto out;
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	pr_info("finished, %d operations done\n", op);
+ 
+diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
+index 7b59ef5..3395f84 100644
+--- a/drivers/mtd/tests/subpagetest.c
++++ b/drivers/mtd/tests/subpagetest.c
+@@ -269,7 +269,10 @@ static int verify_all_eraseblocks_ff(void)
+ 			return err;
+ 		if (i % 256 == 0)
+ 			pr_info("verified up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			return err;
+ 	}
+ 	pr_info("verified %u eraseblocks\n", i);
+ 	return 0;
+@@ -346,7 +349,10 @@ static int __init mtd_subpagetest_init(void)
+ 			goto out;
+ 		if (i % 256 == 0)
+ 			pr_info("written up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	pr_info("written %u eraseblocks\n", i);
+ 
+@@ -360,7 +366,10 @@ static int __init mtd_subpagetest_init(void)
+ 			goto out;
+ 		if (i % 256 == 0)
+ 			pr_info("verified up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	pr_info("verified %u eraseblocks\n", i);
+ 
+@@ -383,7 +392,10 @@ static int __init mtd_subpagetest_init(void)
+ 			goto out;
+ 		if (i % 256 == 0)
+ 			pr_info("written up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	pr_info("written %u eraseblocks\n", i);
+ 
+@@ -398,7 +410,10 @@ static int __init mtd_subpagetest_init(void)
+ 			goto out;
+ 		if (i % 256 == 0)
+ 			pr_info("verified up to eraseblock %u\n", i);
+-		cond_resched();
++
++		err = mtdtest_relax();
++		if (err)
++			goto out;
+ 	}
+ 	pr_info("verified %u eraseblocks\n", i);
+ 
+diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
+index b55bc52..ac290e4 100644
+--- a/drivers/mtd/tests/torturetest.c
++++ b/drivers/mtd/tests/torturetest.c
+@@ -279,7 +279,10 @@ static int __init tort_init(void)
+ 					       " for 0xFF... pattern\n");
+ 					goto out;
+ 				}
+-				cond_resched();
++
++				err = mtdtest_relax();
++				if (err)
++					goto out;
+ 			}
+ 		}
+ 
+@@ -294,7 +297,10 @@ static int __init tort_init(void)
+ 			err = write_pattern(i, patt);
+ 			if (err)
+ 				goto out;
+-			cond_resched();
++
++			err = mtdtest_relax();
++			if (err)
++				goto out;
+ 		}
+ 
+ 		/* Verify what we wrote */
+@@ -314,7 +320,10 @@ static int __init tort_init(void)
+ 					       "0x55AA55..." : "0xAA55AA...");
+ 					goto out;
+ 				}
+-				cond_resched();
++
++				err = mtdtest_relax();
++				if (err)
++					goto out;
+ 			}
+ 		}
+ 
 -- 
-MST
+1.8.4.5
