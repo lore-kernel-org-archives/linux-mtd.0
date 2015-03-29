@@ -1,16 +1,20 @@
-Message-ID: <5517D1F1.6000309@gmail.com>
-Date: Sun, 29 Mar 2015 12:20:33 +0200
-From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-To: Gabriel Dobato <dobatog@gmail.com>
-Subject: Re: Fwd: Ask for help: ARM: mvebu: add NAND support for dove
-References: <551713D8.3060809@gmail.com> <551714F8.2050401@gmail.com>
-In-Reply-To: <551714F8.2050401@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Jean-Francois Moine <moinejf@free.fr>, ezequiel.garcia@free-electrons.com,
- "mt >> linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-yk0-x235.google.com ([2607:f8b0:4002:c07::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YcAk4-0007wO-8g
+ for linux-mtd@lists.infradead.org; Sun, 29 Mar 2015 10:46:56 +0000
+Received: by ykeg184 with SMTP id g184so2031356yke.2
+ for <linux-mtd@lists.infradead.org>; Sun, 29 Mar 2015 03:46:34 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1416835236-25185-1-git-send-email-richard@nod.at>
+References: <1416835236-25185-1-git-send-email-richard@nod.at>
+Date: Sun, 29 Mar 2015 12:46:34 +0200
+Message-ID: <CAFLxGvwCPM7MNhAsVW+D29Kbs9MFkpPmpTsuv+9zhfCXvx7Uwg@mail.gmail.com>
+Subject: Re: Fastmap update v2 (pile 1)
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,104 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28.03.2015 21:54, Gabriel Dobato wrote:
-> I am trying to set the Nand in a CM-510 Compulab based board (4.0-rc5).
+On Mon, Nov 24, 2014 at 2:20 PM, Richard Weinberger <richard@nod.at> wrote:
+> Artem,
 >
-> As pxa3xx-nand driver supports NFCv1 (PXA3xx) and NFCv2 (Armada 370/XP),
-> I think that it should work more or less with Dove SoC (NFCv1) that is
-> similar enough.
-
-Gabriel,
-
-I haven't compared Dove NFC with the one from PXA3xx or Armada 370/XP
-in detail, yet. I doubt that it will be fully compatible with Armada
-370/XP as you state it is NFCv2 above.
-
-> Until now, I've only added the correspondent node in dove.dtsi and the
-> partitions in dove-cm-a510.dts ( it should be updated in the patch
-> series that Sebastian Hesselbarth submitted ) :
-
-We'll deal with it as soon as the i2c-mux thing is worked out.
-
-> ---
->   arch/arm/boot/dts/dove-cm-a510.dts | 17 +++++++++++++++++
->   arch/arm/boot/dts/dove.dtsi        | 16 ++++++++++++++++
->   2 files changed, 33 insertions(+)
+> as requested I'm resending my fastmap work in smaller pieces.
+> This is pile 1 of 7.
+> Rebasing my patches to ubifs.git was a massive PITA because the
+> logging style changes touched a lot of code and almost every patch
+> failed to apply and needed inspection by hand.
+> The first patches are bug fixes, the latter introduce cleanups
+> and new features.
+> After all bugfixes are mainline I'll make sure that all needed
+> fixes go into -stable.
 >
-> diff --git a/arch/arm/boot/dts/dove-cm-a510.dts
-> b/arch/arm/boot/dts/dove-cm-a510.dts
-> index 50c0d69..36cf10d 100644
-> --- a/arch/arm/boot/dts/dove-cm-a510.dts
-> +++ b/arch/arm/boot/dts/dove-cm-a510.dts
-> @@ -36,3 +36,20 @@
->   &i2c0 {
->            status = "okay";
->   };
-> +
-> +&nand  {
-> +          status = "okay";
-> +          num-cs = <1>;
-> +          partition@0 {
-> +                 label = "uImage";
-> +                 reg = <0x000000000000 0x000000400000>;
-
-#address-cells and #size-cells of &nand below is <1> each, so above
-should be 32b values. If it would be 64b it would have to be split
-into two 32b values anyway.
-
-> +          };
-> +          partition@400000 {
-> +                 label = "Rootfs";
-> +                 reg = <0x000000400000 0x00001FC00000>;
-> +          };
-> +};
-> +
-> +
-> +
-> +
-
-Please avoid adding extra whitespaces.
-
-> diff --git a/arch/arm/boot/dts/dove.dtsi b/arch/arm/boot/dts/dove.dtsi
-> index a5441d5..7e71f45 100644
-> --- a/arch/arm/boot/dts/dove.dtsi
-> +++ b/arch/arm/boot/dts/dove.dtsi
-> @@ -380,6 +380,22 @@
->                                  status = "disabled";
->                          };
+> [PATCH 1/6] UBI: Fastmap: Care about the protection queue
+> [PATCH 2/6] UBI: Fastmap: Ensure that only one fastmap work is
+> [PATCH 3/6] UBI: Fastmap: Ensure that all fastmap work is done upon
+> [PATCH 4/6] UBI: Fastmap: Fix races in ubi_wl_get_peb()
+> [PATCH 5/6] UBI: Split __wl_get_peb()
+> [PATCH 6/6] UBI: Fastmap: Make ubi_refill_pools() fair
 >
-> +                       nand: nand@c0000 {
-> +                                compatible = "marvell,armada370-nand";
+> The whole series can be found at
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/misc.git fastmap_upgrade2
 
-As said above, I doubt Dove NFC is fully compatible with Armada 370 NFC.
-Ezequiel can tell for sure, as he probably knows Marvell NFC best.
+Pushed pile 1 to 7 into linux-ubifs.git/master.
+Thanks everyone for the reviews and comments!
 
-> +                                #address-cells = <1>;
-> +                                #size-cells = <1>;
-> +                                reg= <0xc0000 0x60>;
-> +                                interrupts = <3>;
-> +                                clocks = <&core_clk 0>;
-
-There is a clock gate for NFC, check Dove FS, Clock Gating Control
-register, bit 10. Above should be:
-
-	clocks = <&gate_clk 10>;
-
-> +                                pinctrl-0 = <&pmx_nand>;
-> +                                pinctrl-names = "default";
-> +                                marvell,nand-keep-config;
-> +                                marvell,nand-enable-arbiter;
-
-I haven't checked the foo-arbiter property, but are you sure it is
-available on Dove?
-
-Sebastian
-
-> +                                nand-on-flash-bbt;
-> +                        };
-> +
-> +
-> +
->                          thermal: thermal-diode@d001c {
->                                  compatible = "marvell,dove-thermal";
->                                  reg = <0xd001c 0x0c>, <0xd005c 0x08>;
+-- 
+Thanks,
+//richard
