@@ -1,17 +1,21 @@
-Received: from mail-by2on0141.outbound.protection.outlook.com
- ([207.46.100.141] helo=na01-by2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YceCU-0000R0-6b
- for linux-mtd@lists.infradead.org; Mon, 30 Mar 2015 18:14:14 +0000
-From: "Kline, Matthew" <matthew.kline@flukenetworks.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Mounting UBIFS images with a min. I/O unit of 1 byte
-Date: Mon, 30 Mar 2015 18:13:47 +0000
-Message-ID: <E8C63C11EA3FB04DBDFEDECEFD927FD1140C207A@US-EVT-EXM04-P.global.tektronix.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Date: Mon, 30 Mar 2015 11:16:11 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v4 02/10] mtd: st_spi_fsm: Fetch boot device locations
+ from DT match tables
+Message-ID: <20150330181611.GC32500@ld-irv-0074>
+References: <1421853868-8262-1-git-send-email-lee.jones@linaro.org>
+ <1421853868-8262-3-git-send-email-lee.jones@linaro.org>
+ <20150206042744.GK18140@ld-irv-0074> <20150210074634.GD8020@x1>
+ <20150224050452.GG18140@ld-irv-0074> <20150224094110.GA20969@x1>
+ <20150313160601.GI12966@brian-ubuntu> <20150316081306.GD3383@x1>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150316081306.GD3383@x1>
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
+On Mon, Mar 16, 2015 at 08:13:06AM +0000, Lee Jones wrote:
+> So when you said "we have consistently agreed that we aren't going to
+> work around that in Linux", who has agreed this.  Would you be kind
+> enough to point me in the direction of that conversation please?
 
-I am attempting to mount a UBIFS image to extract and inspect the files wit=
-hin.
-Unfortunately, I'm running into a bunch of problems. For starters, there do=
-esn't
-seem to be a canonical way to do so - the process listed at
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_extract
-seems out of date given how my kernel (3.19.2) behaves and compared to proc=
-esses
-listed at more recent sources such as
-http://elinux.org/UBIFS#Mounting_UBI_Image_on_PC_using_nandsim or
-https://gist.github.com/naodesu/10620506. At any rate, I have had the most =
-luck
-with the third method, but mount fails, logging to dmesg,
-"validate_sb: min. I/O unit mismatch: 8 in superblock, 2048 real".
+A few pointers from recent history:
 
-After asking around on the IRC channel #mtd, I understand that the
-problem is caused by the UBIFS image being byte-addressable
-(with mkfs.ubifs being passed -m 1), while the NAND device nandsim is simul=
-ating
-is addressable to 2048 bit (or byte?) blocks (hence the dmesg output).
+http://lists.infradead.org/pipermail/linux-mtd/2014-September/055156.html
 
-So, if the image has a minimum I/O unit of 1 byte and most NAND memory
-has a unit of >=3D 512 bytes
-(as mentioned at http://linux-mtd.infradead.org/doc/ubi.html#L_min_io_unit)=
-,
-is mounting it with nandsim out of the question? Is there any other approac=
-h
-I can take?
+http://lists.infradead.org/pipermail/linux-mtd/2014-September/055559.html
 
-Best wishes,
+If the question came up in other threads, though, I'm sure the answers
+were the same.
 
-Matt Kline
-Fluke Networks
+BTW, there are sound solutions to this problem in Linux, and they are
+supported where possible. Some flash support a separate set of opcodes
+that always expect a 4-byte address. If we use these opcodes, we never
+have to do any persistent mode-switching. We only found that Spansion
+consistently supports these opcodes on all their flash, though.
+
+See:
+
+commit 87c9511fba2bd069a35e1312587a29e112fc0cd6
+Author: Brian Norris <computersforpeace@gmail.com>
+Date:   Thu Apr 11 01:34:57 2013 -0700
+
+    mtd: m25p80: utilize dedicated 4-byte addressing commands
+
+Brian
