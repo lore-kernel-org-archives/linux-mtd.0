@@ -1,21 +1,20 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-bn1on0118.outbound.protection.outlook.com
+ ([157.56.110.118] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YczqR-0002zI-JE
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 17:20:56 +0000
-Received: by pactp5 with SMTP id tp5so25589901pac.1
- for <linux-mtd@lists.infradead.org>; Tue, 31 Mar 2015 10:20:33 -0700 (PDT)
-Date: Tue, 31 Mar 2015 10:20:30 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: Re: [PATCH_V3 0/2] mtd: nand: jz4780: Add nand and bch driver
-Message-ID: <20150331172030.GE19571@brian-ubuntu>
-References: <1427821181-40843-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+ id 1Yd0VT-0003eQ-0l
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 18:03:19 +0000
+From: "Kline, Matthew" <matthew.kline@flukenetworks.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: Mounting UBIFS images with a min. I/O unit of 1 byte
+Date: Tue, 31 Mar 2015 18:02:45 +0000
+Message-ID: <E8C63C11EA3FB04DBDFEDECEFD927FD1140C20F4@US-EVT-EXM04-P.global.tektronix.net>
+References: <E8C63C11EA3FB04DBDFEDECEFD927FD1140C207A@US-EVT-EXM04-P.global.tektronix.net>
+ <1427783272.30360.153.camel@sauron.fi.intel.com>
+In-Reply-To: <1427783272.30360.153.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1427821181-40843-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-Cc: devicetree@vger.kernel.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 31, 2015 at 05:59:39PM +0100, Zubair Lutfullah Kakakhel wrote:
-> Hi,
-
-Hi!
-
-Nit: can you drop the underscore in your 'PATCH_Vx' subjects? It'd make
-my filtering a bit easier. I usually expect 'PATCH v3'. Thanks!
-
-> Two patches based on 4.0-rc6 that add NAND and BCH controller
-> drivers for the Ingenic JZ4780 SoC.
-> 
-> Hope these can make it in time for 4.1.
-> 
-> Tested on the MIPS Creator CI20.
-> 
-> Core JZ4780 support is still in-flight.
-
-Sorry, I can't even compile test your patches, since I don't have the
-dependencies. So I can't accept your patches yet, and they most likely
-won't make it to 4.1. Or if you can point me to the right place, perhaps
-we can work something out between the tree(s) that will contain the
-dependencies.
-
-Note that I'm not worried about the missing MACH_JZ4780 sybmol and your
-core platform support, as much as the missing JZ4780_NEMC support.
-
-> Review and feedback welcome.
-> 
-> V2 - > V3
-> Rebase to 4.0-rc6
-> Binding changes and fixes based on feedback by Brian Norris (Thank-you)
-
-I had a few questions on the driver that you didn't answer, I believe.
-It looks like maybe you silently answered them in this v3 code?
-
-> V1 - > V2
-> Fixed module license macros
-> Rebase to 4.0-rc3
-> 
-> Thanks,
-> ZubairLK
-> 
-> Alex Smith (2):
->   dt-bindings: binding for jz4780-{nand,bch}
->   mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs
-> 
->  .../bindings/mtd/ingenic,jz4780-nand.txt           |  57 ++++
->  drivers/mtd/nand/Kconfig                           |   7 +
->  drivers/mtd/nand/Makefile                          |   1 +
->  drivers/mtd/nand/jz4780_bch.c                      | 353 +++++++++++++++++++
->  drivers/mtd/nand/jz4780_bch.h                      |  42 +++
->  drivers/mtd/nand/jz4780_nand.c                     | 376 +++++++++++++++++++++
->  6 files changed, 836 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
->  create mode 100644 drivers/mtd/nand/jz4780_bch.c
->  create mode 100644 drivers/mtd/nand/jz4780_bch.h
->  create mode 100644 drivers/mtd/nand/jz4780_nand.c
-> 
-
-Brian
+PiBUcnkgbXRkcmFtIC0gc2hvdWxkIGhlbHAuIE1ha2Ugc3VyZSBpdCBpcyBidWlsdCwgdGhlbiBt
+b2Rwcm9iZSBtdGRyYW0uDQo+IFRoZXJlIGFyZSBwYXJhbWV0ZXJzIHRvIGNvbnRyb2wgZXJhc2Vi
+bG9jayBzaXplIGFuZCBmbGFzaCBzaXplLg0KDQptdGRyYW0gZGlkIHRoZSB0cmljayEgVGhhbmsg
+eW91IHNvIG11Y2ggZm9yIHRoZSBzdWdnZXN0aW9uLg0KVGhlIGltYWdlcyBhcmUgaW5kZWVkIGZv
+ciBOT1IgbWVtb3J5LCBidXQgdW50aWwgeW91IG1lbnRpb25lZCBpdCwNCkkgaGFkIG5vdCBoZWFy
+ZCBvZiBtdGRyYW0gLSBldmVyeSBzZXQgb2YgaW5zdHJ1Y3Rpb25zIEkgY291bGQgZmluZA0KZm9y
+IG1vdW50aW5nIHN1Z2dlc3RlZCBuYW5kc2ltLg0KDQo+IFAuUzogZmVlbCBmcmVlIHRvIGFtZW5k
+IHRoZSBtdGQgd2ViIHNpdGUgdG9vLiBTZW5kIHBhdGNoZXMgYWdhaW5zdCB0aGUgJ210ZC13d3cu
+Z2l0JyBwcm9qZWN0Lg0KDQpBcyBzb21lb25lIHdpdGhvdXQgdG9vIG11Y2ggbWFpbGluZyBsaXN0
+IGV4cGVyaWVuY2UsDQppcyBwcm9wZXIgZXRpcXVldHRlIHRvIGF0dGFjaCB0aGUgcGF0Y2hlcyBv
+ciBpbmNsdWRlIHRoZW0gYXMgcGFydA0Kb2YgdGhlIG1lc3NhZ2UgYm9keT8NCg0KTWFueSB0aGFu
+a3MsDQpNYXR0DQo=
