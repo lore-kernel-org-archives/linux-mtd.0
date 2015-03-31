@@ -1,16 +1,16 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YczQd-0006OD-BG
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 16:54:16 +0000
-Received: by pdbni2 with SMTP id ni2so26340218pdb.1
- for <linux-mtd@lists.infradead.org>; Tue, 31 Mar 2015 09:53:52 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: docg3: remove invalid __exit annotations
-Date: Tue, 31 Mar 2015 09:53:37 -0700
-Message-Id: <1427820817-9446-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YczWf-0003De-DW
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 17:00:30 +0000
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Subject: [PATCH_V3 0/2] mtd: nand: jz4780: Add nand and bch driver
+Date: Tue, 31 Mar 2015 17:59:39 +0100
+Message-ID: <1427821181-40843-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Zubair.Kakakhel@imgtec.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +20,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The .remove callback may be used when detaching a device via sysfs, so
-we can't expect to free up this memory.
+Hi,
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>
----
-Compile tested only
+Two patches based on 4.0-rc6 that add NAND and BCH controller
+drivers for the Ingenic JZ4780 SoC.
 
- drivers/mtd/devices/docg3.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hope these can make it in time for 4.1.
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 448ce42f951e..30b5be4e2109 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1805,7 +1805,7 @@ static int __init doc_dbg_register(struct docg3 *docg3)
- 	}
- }
- 
--static void __exit doc_dbg_unregister(struct docg3 *docg3)
-+static void doc_dbg_unregister(struct docg3 *docg3)
- {
- 	debugfs_remove_recursive(docg3->debugfs_root);
- }
-@@ -2103,7 +2103,7 @@ err_probe:
-  *
-  * Returns 0
-  */
--static int __exit docg3_release(struct platform_device *pdev)
-+static int docg3_release(struct platform_device *pdev)
- {
- 	struct docg3_cascade *cascade = platform_get_drvdata(pdev);
- 	struct docg3 *docg3 = cascade->floors[0]->priv;
-@@ -2134,7 +2134,7 @@ static struct platform_driver g3_driver = {
- 	},
- 	.suspend	= docg3_suspend,
- 	.resume		= docg3_resume,
--	.remove		= __exit_p(docg3_release),
-+	.remove		= docg3_release,
- };
- 
- module_platform_driver_probe(g3_driver, docg3_probe);
+Tested on the MIPS Creator CI20.
+
+Core JZ4780 support is still in-flight.
+
+Review and feedback welcome.
+
+V2 - > V3
+Rebase to 4.0-rc6
+Binding changes and fixes based on feedback by Brian Norris (Thank-you)
+
+V1 - > V2
+Fixed module license macros
+Rebase to 4.0-rc3
+
+Thanks,
+ZubairLK
+
+Alex Smith (2):
+  dt-bindings: binding for jz4780-{nand,bch}
+  mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs
+
+ .../bindings/mtd/ingenic,jz4780-nand.txt           |  57 ++++
+ drivers/mtd/nand/Kconfig                           |   7 +
+ drivers/mtd/nand/Makefile                          |   1 +
+ drivers/mtd/nand/jz4780_bch.c                      | 353 +++++++++++++++++++
+ drivers/mtd/nand/jz4780_bch.h                      |  42 +++
+ drivers/mtd/nand/jz4780_nand.c                     | 376 +++++++++++++++++++++
+ 6 files changed, 836 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+ create mode 100644 drivers/mtd/nand/jz4780_bch.c
+ create mode 100644 drivers/mtd/nand/jz4780_bch.h
+ create mode 100644 drivers/mtd/nand/jz4780_nand.c
+
 -- 
-2.1.0
+1.9.1
