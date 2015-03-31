@@ -1,24 +1,21 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YckTO-0001Re-JX
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 00:56:07 +0000
-Received: by patj18 with SMTP id j18so2579870pat.2
- for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 17:55:45 -0700 (PDT)
-Date: Mon, 30 Mar 2015 17:55:38 -0700
+ id 1YckWg-0002HV-7B
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 00:59:30 +0000
+Received: by pactp5 with SMTP id tp5so2681774pac.1
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 17:59:09 -0700 (PDT)
+Date: Mon, 30 Mar 2015 17:59:05 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: Re: [PATCH 6/8] mtd: replace CONFIG_8xx by CONFIG_PPC_8xx
-Message-ID: <20150331005538.GJ32500@ld-irv-0074>
-References: <20150312152404.D6C391A2421@localhost.localdomain>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH] mtd: maps: sa1100-flash: remove incorrect __exit markups
+Message-ID: <20150331005905.GK32500@ld-irv-0074>
+References: <20150309181041.GA25179@dtor-ws>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20150312152404.D6C391A2421@localhost.localdomain>
-Cc: linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org,
- user-mode-linux-devel@lists.sourceforge.net,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, user-mode-linux-user@lists.sourceforge.net,
- netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20150309181041.GA25179@dtor-ws>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 12, 2015 at 04:24:04PM +0100, Christophe Leroy wrote:
-> Two config options exist to define powerpc MPC8xx:
-> * CONFIG_PPC_8xx
-> * CONFIG_8xx
-> In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
-> communication co-processor
+On Mon, Mar 09, 2015 at 11:10:41AM -0700, Dmitry Torokhov wrote:
+> Even if bus is not hot-pluggable, the devices can be unbound from the
+> driver via sysfs, so we should not be using __exit annotations on
+> remove() methods. The only exception is drivers registered with
+> platform_driver_probe() which specifically disables sysfs bind/unbind
+> attributes.
 > 
-> arch/powerpc/platforms/Kconfig.cputype has contained the following
-> comment about CONFIG_8xx item for some years:
-> "# this is temp to handle compat with arch=ppc"
-> 
-> It looks like not many places still have that old CONFIG_8xx used,
-> so it is likely to be a good time to get rid of it completely ?
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-I'm not sure if the consistency aspect is worked out for all symbols
-(Geert's comment on the cover letter), but this one looks fine.
-
-Applied this patch to l2-mtd.git.
+Pushed to l2-mtd.git.
 
 Brian
