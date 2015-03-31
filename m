@@ -1,14 +1,16 @@
-Received: from mout.gmx.net ([212.227.17.21])
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcvPV-0004sp-PT
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 12:36:50 +0000
-MIME-Version: 1.0
-Message-ID: <trinity-c02357d1-77b8-45a8-9030-524418e69e18-1427805376579@3capp-gmx-bs38>
-From: "Arno Steffens" <star@gmx.li>
-To: linux-mtd@lists.infradead.org
-Subject: Bad Block recognition in Nand Flash
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 31 Mar 2015 14:36:16 +0200
+ id 1YczQd-0006OD-BG
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 16:54:16 +0000
+Received: by pdbni2 with SMTP id ni2so26340218pdb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Mar 2015 09:53:52 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: docg3: remove invalid __exit annotations
+Date: Tue, 31 Mar 2015 09:53:37 -0700
+Message-Id: <1427820817-9446-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,10 +20,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The first 2 bytes of OOB of each block contain the marker for Bad blocks. I found, that this is not protected by ECC in my case here - ore better it is used before ECC is applied. Is this because I am using ancient software or is this a known limitation till today? 
-In my implementation this bytes will compared with 0xff. A single bit flip and my device is bricked, as the otherwise good block is not used anymore.
+The .remove callback may be used when detaching a device via sysfs, so
+we can't expect to free up this memory.
 
-Background for this question: In my old uboot and kernel I just found a few function that are linked with bad block handling. So I am not sure I can make it to find all places where there is just a comparison.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+Compile tested only
 
-Thanks for your attention.
-Arno
+ drivers/mtd/devices/docg3.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index 448ce42f951e..30b5be4e2109 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -1805,7 +1805,7 @@ static int __init doc_dbg_register(struct docg3 *docg3)
+ 	}
+ }
+ 
+-static void __exit doc_dbg_unregister(struct docg3 *docg3)
++static void doc_dbg_unregister(struct docg3 *docg3)
+ {
+ 	debugfs_remove_recursive(docg3->debugfs_root);
+ }
+@@ -2103,7 +2103,7 @@ err_probe:
+  *
+  * Returns 0
+  */
+-static int __exit docg3_release(struct platform_device *pdev)
++static int docg3_release(struct platform_device *pdev)
+ {
+ 	struct docg3_cascade *cascade = platform_get_drvdata(pdev);
+ 	struct docg3 *docg3 = cascade->floors[0]->priv;
+@@ -2134,7 +2134,7 @@ static struct platform_driver g3_driver = {
+ 	},
+ 	.suspend	= docg3_suspend,
+ 	.resume		= docg3_resume,
+-	.remove		= __exit_p(docg3_release),
++	.remove		= docg3_release,
+ };
+ 
+ module_platform_driver_probe(g3_driver, docg3_probe);
+-- 
+2.1.0
