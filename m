@@ -1,26 +1,19 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcmuD-00084w-JB
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 03:31:58 +0000
-Received: by padcy3 with SMTP id cy3so6028300pad.3
- for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 20:31:35 -0700 (PDT)
-Date: Mon, 30 Mar 2015 20:31:30 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Daniel Ehrenberg <dehrenberg@google.com>
-Subject: Re: [PATCH v3 2/3] mtd: part: Add sysfs variable for offset of
- partition
-Message-ID: <20150331033130.GW32500@ld-irv-0074>
-References: <1427484257-13708-1-git-send-email-dehrenberg@chromium.org>
- <1427484257-13708-3-git-send-email-dehrenberg@chromium.org>
- <20150328005313.GB32500@ld-irv-0074>
- <CAAK6Zt1L54X4_JWCXzMSAz7nP-5bEkVTz4JLQLtROj6frzwgKQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAK6Zt1L54X4_JWCXzMSAz7nP-5bEkVTz4JLQLtROj6frzwgKQ@mail.gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Gwendal Grignou <gwendal@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ycpes-0002xr-B6
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 06:28:19 +0000
+Message-ID: <1427783272.30360.153.camel@sauron.fi.intel.com>
+Subject: Re: Mounting UBIFS images with a min. I/O unit of 1 byte
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: "Kline, Matthew" <matthew.kline@flukenetworks.com>
+Date: Tue, 31 Mar 2015 09:27:52 +0300
+In-Reply-To: <E8C63C11EA3FB04DBDFEDECEFD927FD1140C207A@US-EVT-EXM04-P.global.tektronix.net>
+References: <E8C63C11EA3FB04DBDFEDECEFD927FD1140C207A@US-EVT-EXM04-P.global.tektronix.net>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,119 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 30, 2015 at 01:32:21PM -0700, Daniel Ehrenberg wrote:
-> On Fri, Mar 27, 2015 at 5:53 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > On Fri, Mar 27, 2015 at 12:24:16PM -0700, Dan Ehrenberg wrote:
-> >> This patch makes a sysfs variable called 'offset' on each partition
-> >> which contains the offset in bytes from the beginning of the master
-> >> device that the partition starts.
-> >>
-> >> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
-> >> ---
-> >>  drivers/mtd/mtdpart.c | 29 +++++++++++++++++++++++++++++
-> >>  1 file changed, 29 insertions(+)
-> >>
-> >> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> >> index a19ec5a..b8ed202 100644
-> >> --- a/drivers/mtd/mtdpart.c
-> >> +++ b/drivers/mtd/mtdpart.c
-> >> @@ -554,6 +554,30 @@ out_register:
-> >>       return slave;
-> >>  }
-> >>
-> >> +static ssize_t mtd_partition_offset_show(struct device *dev,
-> >> +             struct device_attribute *attr, char *buf)
-> >> +{
-> >> +     struct mtd_info *mtd = dev_get_drvdata(dev);
-> >> +     struct mtd_part *part = PART(mtd);
-> >> +     return snprintf(buf, PAGE_SIZE, "%lld\n", part->offset);
-> >> +}
-> >> +
-> >> +static DEVICE_ATTR(offset, S_IRUGO, mtd_partition_offset_show, NULL);
-> >
-> > You'll want #include <linux/device.h>, just to be explicit.
-> >
-> > And if you're adding to the sysfs ABI, please update
-> > Documentation/ABI/testing/sysfs-class-mtd
-> >
-> >> +
-> >> +const static struct attribute *mtd_partition_attrs[] = {
-> >
-> > gcc complains:
-> >
-> >   drivers/mtd/mtdpart.c:568:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
-> >
-> >> +     &dev_attr_offset.attr,
-> >> +     NULL
-> >> +};
-> >> +
-> >> +int mtd_add_partition_attrs(struct mtd_part *new)
-> >
-> > gcc and sprase complain:
-> >
-> >   drivers/mtd/mtdpart.c:573:5: warning: no previous prototype for 'mtd_add_partition_attrs' [-Wmissing-prototypes]
-> >   drivers/mtd/mtdpart.c:573:5: warning: symbol 'mtd_add_partition_attrs' was not declared. Should it be static? [sparse]
+Hi Matt,
+
+On Mon, 2015-03-30 at 18:13 +0000, Kline, Matthew wrote:
+> Hello all,
 > 
-> Thanks, not sure why these warnings haven't been showing up for me
-> (while other warnings do, e.g., if I make an unused variable). I'll
-> fix this and the docs in a new patch.
+> I am attempting to mount a UBIFS image to extract and inspect the files within.
+> Unfortunately, I'm running into a bunch of problems. For starters, there doesn't
+> seem to be a canonical way to do so - the process listed at
+> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_extract
+> seems out of date given how my kernel (3.19.2) behaves and compared to processes
+> listed at more recent sources such as
+> http://elinux.org/UBIFS#Mounting_UBI_Image_on_PC_using_nandsim or
+> https://gist.github.com/naodesu/10620506. At any rate, I have had the most luck
+> with the third method, but mount fails, logging to dmesg,
+> "validate_sb: min. I/O unit mismatch: 8 in superblock, 2048 real".
 
-sparse is not run by default, and some of the gcc warnings might only be
-available on newer gcc's and/or when building with extra warnings
-enabled.
+Right, there is no canonical way, unfortunately, no one created it.
 
-To build with extra warnings, you can use 'make W=1' or 'make W=2'. To
-build with sparse checking you can use 'make C=1' or 'make C=2'. See
-Makefile for details.
+> After asking around on the IRC channel #mtd, I understand that the
+> problem is caused by the UBIFS image being byte-addressable
+> (with mkfs.ubifs being passed -m 1), while the NAND device nandsim is simulating
+> is addressable to 2048 bit (or byte?) blocks (hence the dmesg output).
 
-> >> +{
-> >> +     int ret = sysfs_create_files(&new->mtd.dev.kobj, mtd_partition_attrs);
-> >> +     if (ret)
-> >> +             printk(KERN_WARNING
-> >> +                    "mtd: failed to create partition attrs, err=%d\n", ret);
-> >> +     return ret;
-> >> +}
-> >> +
-> >>  int mtd_add_partition(struct mtd_info *master, const char *name,
-> >>                     long long offset, long long length)
-> >>  {
-> >> @@ -603,6 +627,8 @@ int mtd_add_partition(struct mtd_info *master, const char *name,
-> >>
-> >>       add_mtd_device(&new->mtd);
-> >>
-> >> +     mtd_add_partition_attrs(new);
-> >
-> > Hmm, so you're adding the partition attribute only to dynamically
-> > created partitions? I think we'll want it for all partitions. I know
-> > the naming isn't completely straightforward, but some partitions are
-> > added through add_mtd_device(), without calling mtd_add_partition().
-> 
-> It's also called in add_mtd_partitions, as you can see just below. I
-> tested this with static partitions and the attribute was visible.
+8 is what UBI/UBIFS uses in case of NOR flashes. So you seem to have an
+image made for a NOR flash and you are trying to put it to a NAND flash
+simulator.
 
-Sorry, must have overlooked this.
+> So, if the image has a minimum I/O unit of 1 byte and most NAND memory
+> has a unit of >= 512 bytes
+> (as mentioned at http://linux-mtd.infradead.org/doc/ubi.html#L_min_io_unit),
+> is mounting it with nandsim out of the question? Is there any other approach
+> I can take?
 
-> >
-> >> +
-> >>       return ret;
-> >>  err_inv:
-> >>       mutex_unlock(&mtd_partitions_mutex);
-> >> @@ -620,6 +646,8 @@ int mtd_del_partition(struct mtd_info *master, int partno)
-> >>       list_for_each_entry_safe(slave, next, &mtd_partitions, list)
-> >>               if ((slave->master == master) &&
-> >>                   (slave->mtd.index == partno)) {
-> >> +                     sysfs_remove_files(&slave->mtd.dev.kobj,
-> >> +                                        mtd_partition_attrs);
-> >>                       ret = del_mtd_device(&slave->mtd);
-> >>                       if (ret < 0)
-> >>                               break;
-> >> @@ -663,6 +691,7 @@ int add_mtd_partitions(struct mtd_info *master,
-> >>               mutex_unlock(&mtd_partitions_mutex);
-> >>
-> >>               add_mtd_device(&slave->mtd);
-> >> +             mtd_add_partition_attrs(slave);
-> >>
-> >>               cur_offset = slave->offset + slave->mtd.size;
+Try mtdram - should help. Make sure it is built, then modprobe mtdram.
+There are parameters to control eraseblock size and flash size.
 
-Brian
+Generally - UBI/UBIFS images are specific to flash geometry. If you want
+to mount the image, you need to have a flash of the same geometry:
+eraseblock size and min. I/O unit size. Flash size should be same or
+larger.
+
+HTH.
+
+P.S: feel free to amend the mtd web site too. Send patches against the
+'mtd-www.git' project.
