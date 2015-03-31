@@ -1,23 +1,22 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcmU3-0000yk-AF
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 03:04:56 +0000
-Received: by pdnc3 with SMTP id c3so5875240pdn.0
- for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 20:04:32 -0700 (PDT)
-Date: Mon, 30 Mar 2015 20:04:25 -0700
+ id 1YcmkT-0002pr-5z
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 03:21:54 +0000
+Received: by pdbni2 with SMTP id ni2so6197010pdb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 20:21:31 -0700 (PDT)
+Date: Mon, 30 Mar 2015 20:21:27 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-Subject: Re: [PATCH] mtd: hisilicon: remove deprecated IRQF_DISABLED
-Message-ID: <20150331030425.GU32500@ld-irv-0074>
-References: <1427420393-28723-1-git-send-email-michael.opdenacker@free-electrons.com>
+To: Masanari Iida <standby24x7@gmail.com>
+Subject: Re: [PATCH] mtd:ts5500_flash: Fix typo in MODULE_DESCRIPTION in
+ ts5500_flash.c
+Message-ID: <20150331032127.GV32500@ld-irv-0074>
+References: <1427709982-5679-1-git-send-email-standby24x7@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1427420393-28723-1-git-send-email-michael.opdenacker@free-electrons.com>
-Cc: linux-kernel@vger.kernel.org, wangzhou1@hisilicon.com,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- Ingo Molnar <mingo@kernel.org>, dan.carpenter@oracle.com,
- Valentin Rothberg <valentinrothberg@gmail.com>
+In-Reply-To: <1427709982-5679-1-git-send-email-standby24x7@gmail.com>
+Cc: trivial@kernel.org, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, sean@mess.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 26, 2015 at 06:39:53PM -0700, Michael Opdenacker wrote:
-> This removes the use of the IRQF_DISABLED flag
-> from drivers/mtd/nand/hisi504_nand.c
+On Mon, Mar 30, 2015 at 07:06:22PM +0900, Masanari Iida wrote:
+> This patch fix a spelling typo in MODULE_DESCRIPTION in ts5500_flash.c.
+
+Uhh, s/fix/fixes/ ? :)
+
+Fixed and pushed to l2-mtd.git.
+
+Brian
+
 > 
-> It's a NOOP since 2.6.35.
-> 
-> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
 > ---
->  drivers/mtd/nand/hisi504_nand.c | 2 +-
+>  drivers/mtd/maps/ts5500_flash.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
-> index 289ad3ac3e80..e39482441430 100644
-> --- a/drivers/mtd/nand/hisi504_nand.c
-> +++ b/drivers/mtd/nand/hisi504_nand.c
-> @@ -758,7 +758,7 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+> diff --git a/drivers/mtd/maps/ts5500_flash.c b/drivers/mtd/maps/ts5500_flash.c
+> index d1d671d..9969fed 100644
+> --- a/drivers/mtd/maps/ts5500_flash.c
+> +++ b/drivers/mtd/maps/ts5500_flash.c
+> @@ -117,5 +117,5 @@ module_exit(cleanup_ts5500_map);
 >  
->  	hisi_nfc_host_init(host);
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Sean Young <sean@mess.org>");
+> -MODULE_DESCRIPTION("MTD map driver for Techology Systems TS-5500 board");
+> +MODULE_DESCRIPTION("MTD map driver for Technology Systems TS-5500 board");
 >  
-> -	ret = devm_request_irq(dev, irq, hinfc_irq_handle, IRQF_DISABLED,
-> +	ret = devm_request_irq(dev, irq, hinfc_irq_handle, 0,
->  				"nandc", host);
->  	if (ret) {
->  		dev_err(dev, "failed to request IRQ\n");
-
-linux-next has this:
-
-commit d8bf368d0631d4bc2612d8bf2e4e8e74e620d0cc
-Author: Valentin Rothberg <valentinrothberg@gmail.com>
-Date:   Thu Mar 5 15:23:08 2015 +0100
-
-    genirq: Remove the deprecated 'IRQF_DISABLED' request_irq() flag entirely
-
-Thanks,
-Brian
+> -- 
+> 2.3.4.274.g92e625d
+> 
