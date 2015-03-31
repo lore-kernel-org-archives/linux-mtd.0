@@ -1,21 +1,23 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YckL8-0004SO-S9
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 00:47:35 +0000
-Received: by patj18 with SMTP id j18so2398583pat.2
- for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 17:47:13 -0700 (PDT)
-Date: Mon, 30 Mar 2015 17:47:10 -0700
+ id 1YckOA-0006sM-PC
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 00:50:43 +0000
+Received: by padcy3 with SMTP id cy3so2430929pad.3
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 17:50:21 -0700 (PDT)
+Date: Mon, 30 Mar 2015 17:50:16 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] jffs2: remove an unneeded condition
-Message-ID: <20150331004710.GH32500@ld-irv-0074>
-References: <20150323093519.GB558@mwanda>
+To: Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH] mtd: fsmc_nand.c: Use default timings if none are
+ provided in the dts
+Message-ID: <20150331005016.GI32500@ld-irv-0074>
+References: <1426772069-12677-1-git-send-email-sr@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20150323093519.GB558@mwanda>
-Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org
+In-Reply-To: <1426772069-12677-1-git-send-email-sr@denx.de>
+Cc: Viresh Kumar <viresh.linux@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
+ Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,10 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 23, 2015 at 12:35:19PM +0300, Dan Carpenter wrote:
-> We know "rc" is set so there is no need to check again.
+On Thu, Mar 19, 2015 at 02:34:29PM +0100, Stefan Roese wrote:
+> Without this patch the timings are all set to 0 if not specified in the dts.
+> With this patch the driver falls back to use the defaults that are already
+> present in the driver and are known to work okay for some (older) boards.
 > 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Tested on a custom SPEAr600 based board.
+> 
+> Signed-off-by: Stefan Roese <sr@denx.de>
+> Cc: Viresh Kumar <viresh.linux@gmail.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
 
 Pushed to l2-mtd.git.
 
