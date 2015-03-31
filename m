@@ -1,22 +1,23 @@
 Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ycl1Z-0000JE-M7
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 01:31:26 +0000
-Received: by pdbni2 with SMTP id ni2so3595624pdb.1
- for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 18:31:03 -0700 (PDT)
-Date: Mon, 30 Mar 2015 18:30:58 -0700
+ id 1Ycl3k-0001BS-Fa
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 01:33:41 +0000
+Received: by pdnc3 with SMTP id c3so3729934pdn.0
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 18:33:19 -0700 (PDT)
+Date: Mon, 30 Mar 2015 18:33:16 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: Re: [PATCH] mtd: pxa3xx_nand: cleanup wait_for_completion handling
-Message-ID: <20150331013058.GQ32500@ld-irv-0074>
-References: <1422809737-3991-1-git-send-email-hofrat@osadl.org>
+To: dinguyen@opensource.altera.com
+Subject: Re: [PATCH] mtd: denali: Disable sub-page writes in Denali NAND driver
+Message-ID: <20150331013316.GR32500@ld-irv-0074>
+References: <1421249930-21229-1-git-send-email-dinguyen@opensource.altera.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1422809737-3991-1-git-send-email-hofrat@osadl.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1421249930-21229-1-git-send-email-dinguyen@opensource.altera.com>
+Cc: dinh.linux@gmail.com, Richard Weinberger <richard@nod.at>,
+ josh@joshtriplett.org, linux-kernel@vger.kernel.org, yamada.m@jp.panasonic.com,
+ linux-mtd@lists.infradead.org, Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ dwmw2@infradead.org, Graham Moore <grmoore@opensource.altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Feb 01, 2015 at 11:55:37AM -0500, Nicholas Mc Guire wrote:
-> return type of wait_for_completion_timeout is unsigned long not int, this
-> patch uses the return value of wait_for_completion_timeout in the condition
-> directly rather than assigning it to an incorrect type variable.
+On Wed, Jan 14, 2015 at 09:38:50AM -0600, dinguyen@opensource.altera.com wrote:
+> From: Graham Moore <grmoore@opensource.altera.com>
 > 
-> The timeout declaration cleanup is just for readability
+> The Denali Controller IP does not support sub-page writes.
 > 
-> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> ---
-> 
-> The variable used for handling the return of wait_for_cmpletion_timeout
-> was int but should be unsigned long, where it was not in use for anything
-> else and the return value in case of completion (>0) is not used it was
-> removed and wait_for_completion_timeout() used directly in the if condition.
-> 
-> To make the timeout values a bit simpler to read and also handle all of
-> the corner cases correctly the declarations are moved to msecs_to_jiffies().
-> 
-> This patch was only compile tested for pxa3xx_defconfig 
-> (implies CONFIG_MTD_NAND_PXA3xx=y)
-> 
-> Patch is against 3.0.19-rc6 -next-20150130 
+> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> Signed-off-by: Dinh Nguyen <dinguyen@opensource.altera.com>
 
-Reworked the commit message a bit and pushed to l2-mtd.git.
+Pushed to l2-mtd.git. Thanks!
 
 Brian
