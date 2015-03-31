@@ -1,22 +1,20 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YckZ1-0003qu-Cs
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 01:01:55 +0000
-Received: by padcy3 with SMTP id cy3so2673227pad.3
- for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 18:01:34 -0700 (PDT)
-Date: Mon, 30 Mar 2015 18:01:30 -0700
+ id 1Yckd8-0005tp-At
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 01:06:10 +0000
+Received: by pdbni2 with SMTP id ni2so3011183pdb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 18:05:49 -0700 (PDT)
+Date: Mon, 30 Mar 2015 18:05:44 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] mtd: cfi: clean up some indenting
-Message-ID: <20150331010130.GL32500@ld-irv-0074>
-References: <20150225131558.GD19745@mwanda>
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Subject: Re: [PATCH] mtd: fsl-quadspi: Print the error value
+Message-ID: <20150331010544.GM32500@ld-irv-0074>
+References: <1423483639-4305-1-git-send-email-fabio.estevam@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20150225131558.GD19745@mwanda>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
- kernel-janitors@vger.kernel.org, Jingoo Han <jg1.han@samsung.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+In-Reply-To: <1423483639-4305-1-git-send-email-fabio.estevam@freescale.com>
+Cc: linux-mtd@lists.infradead.org, han.xu@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 25, 2015 at 04:15:58PM +0300, Dan Carpenter wrote:
-> These lines were all indented one tab more than they should be.
+On Mon, Feb 09, 2015 at 10:07:19AM -0200, Fabio Estevam wrote:
+> When displaying dev_err() messages it is useful to print the error value.
 > 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-Pushed to l2-mtd.git.
+Pushed to l2-mtd.git, with an additionl language fixup ("can not" ->
+"cannot").
 
+Thanks,
 Brian
