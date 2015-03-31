@@ -1,23 +1,21 @@
-Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YckJu-0004Fj-FD
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 00:46:19 +0000
-Received: by pddn5 with SMTP id n5so2515181pdd.2
- for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 17:45:56 -0700 (PDT)
-Date: Mon, 30 Mar 2015 17:45:53 -0700
+ id 1YckL8-0004SO-S9
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 00:47:35 +0000
+Received: by patj18 with SMTP id j18so2398583pat.2
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 17:47:13 -0700 (PDT)
+Date: Mon, 30 Mar 2015 17:47:10 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH] mtd: nand: Prevent possible kernel lockup in
- nand_command()
-Message-ID: <20150331004553.GG32500@ld-irv-0074>
-References: <1424705199-11337-1-git-send-email-rogerq@ti.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch] jffs2: remove an unneeded condition
+Message-ID: <20150331004710.GH32500@ld-irv-0074>
+References: <20150323093519.GB558@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1424705199-11337-1-git-send-email-rogerq@ti.com>
-Cc: nm@ti.com, nsekhar@ti.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, ezequiel.garcia@free-electrons.com,
- dwmw2@infradead.org
+In-Reply-To: <20150323093519.GB558@mwanda>
+Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 23, 2015 at 05:26:39PM +0200, Roger Quadros wrote:
-> If a NAND device is not really present or pin muxes are not correctly
-> configured we can lock up the kernel waiting infinitely for NAND_STATUS
-> to be ready.
+On Mon, Mar 23, 2015 at 12:35:19PM +0300, Dan Carpenter wrote:
+> We know "rc" is set so there is no need to check again.
 > 
-> This can be easily reproduced on TI's DRA7-evm board by booting it
-> without NAND support in u-boot and disabling NAND pin muxes in the kernel.
-> 
-> Add timeout when waiting for NAND_CMD_RESET completion. As per ONFi v4.0
-> tRST can be upto 250ms for EZ-NAND and 5ms for raw NAND.
-> 
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> Tested-by: Nishanth Menon <nm@ti.com>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Pushed to l2-mtd.git. Thanks.
+Pushed to l2-mtd.git.
 
 Brian
