@@ -1,23 +1,24 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YckOA-0006sM-PC
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 00:50:43 +0000
-Received: by padcy3 with SMTP id cy3so2430929pad.3
- for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 17:50:21 -0700 (PDT)
-Date: Mon, 30 Mar 2015 17:50:16 -0700
+ id 1YckTO-0001Re-JX
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 00:56:07 +0000
+Received: by patj18 with SMTP id j18so2579870pat.2
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2015 17:55:45 -0700 (PDT)
+Date: Mon, 30 Mar 2015 17:55:38 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH] mtd: fsmc_nand.c: Use default timings if none are
- provided in the dts
-Message-ID: <20150331005016.GI32500@ld-irv-0074>
-References: <1426772069-12677-1-git-send-email-sr@denx.de>
+To: Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: Re: [PATCH 6/8] mtd: replace CONFIG_8xx by CONFIG_PPC_8xx
+Message-ID: <20150331005538.GJ32500@ld-irv-0074>
+References: <20150312152404.D6C391A2421@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1426772069-12677-1-git-send-email-sr@denx.de>
-Cc: Viresh Kumar <viresh.linux@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
+In-Reply-To: <20150312152404.D6C391A2421@localhost.localdomain>
+Cc: linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org,
+ user-mode-linux-devel@lists.sourceforge.net,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, user-mode-linux-user@lists.sourceforge.net,
+ netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 19, 2015 at 02:34:29PM +0100, Stefan Roese wrote:
-> Without this patch the timings are all set to 0 if not specified in the dts.
-> With this patch the driver falls back to use the defaults that are already
-> present in the driver and are known to work okay for some (older) boards.
+On Thu, Mar 12, 2015 at 04:24:04PM +0100, Christophe Leroy wrote:
+> Two config options exist to define powerpc MPC8xx:
+> * CONFIG_PPC_8xx
+> * CONFIG_8xx
+> In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
+> communication co-processor
 > 
-> Tested on a custom SPEAr600 based board.
+> arch/powerpc/platforms/Kconfig.cputype has contained the following
+> comment about CONFIG_8xx item for some years:
+> "# this is temp to handle compat with arch=ppc"
 > 
-> Signed-off-by: Stefan Roese <sr@denx.de>
-> Cc: Viresh Kumar <viresh.linux@gmail.com>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
+> It looks like not many places still have that old CONFIG_8xx used,
+> so it is likely to be a good time to get rid of it completely ?
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 
-Pushed to l2-mtd.git.
+I'm not sure if the consistency aspect is worked out for all symbols
+(Geert's comment on the cover letter), but this one looks fine.
+
+Applied this patch to l2-mtd.git.
 
 Brian
