@@ -1,19 +1,15 @@
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]
- helo=smtp.smtpout.orange.fr)
+Received: from smtprelay02.ispgateway.de ([80.67.31.40])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yd2E4-0007zO-D7
- for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 19:53:29 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
+ id 1Yd3je-0007Ny-DW
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2015 21:30:13 +0000
+From: Christian Riesch <christian.riesch@omicron.at>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: docg3: remove invalid __exit annotations
-References: <1427820817-9446-1-git-send-email-computersforpeace@gmail.com>
-Date: Tue, 31 Mar 2015 21:53:00 +0200
-In-Reply-To: <1427820817-9446-1-git-send-email-computersforpeace@gmail.com>
- (Brian Norris's message of "Tue, 31 Mar 2015 09:53:37 -0700")
-Message-ID: <87wq1xt04j.fsf@free.fr>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: cfi_cmdset_0002: Initialize datum before calling
+ map_word_load_partial
+Date: Tue, 31 Mar 2015 23:29:22 +0200
+Message-Id: <1427837363-2782-1-git-send-email-christian.riesch@omicron.at>
+Cc: Christian Riesch <christian.riesch@omicron.at>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +19,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris <computersforpeace@gmail.com> writes:
+In do_otp_write we must initialize the variable datum before calling
+map_word_load_partial. Otherwise the upper bits of datum may be undefined,
+which later causes problems in chip_good called by do_write_oneword.
 
-> The .remove callback may be used when detaching a device via sysfs, so
-> we can't expect to free up this memory.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers.
-
---
-Robert
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index c50d8cf..c3624eb 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1295,7 +1295,7 @@ static int do_otp_write(struct map_info *map, struct flchip *chip, loff_t adr,
+ 		unsigned long bus_ofs = adr & ~(map_bankwidth(map)-1);
+ 		int gap = adr - bus_ofs;
+ 		int n = min_t(int, len, map_bankwidth(map) - gap);
+-		map_word datum;
++		map_word datum = map_word_ff(map);
+ 
+ 		if (n != map_bankwidth(map)) {
+ 			/* partial write of a word, load old contents */
+-- 
+1.7.9.5
