@@ -1,17 +1,20 @@
-Received: from ozlabs.org ([103.22.144.67])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdBmp-00038Z-Ht
- for linux-mtd@lists.infradead.org; Wed, 01 Apr 2015 06:06:01 +0000
-Content-Type: text/plain; charset="us-ascii"
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YdEyy-0001j2-CU
+ for linux-mtd@lists.infradead.org; Wed, 01 Apr 2015 09:30:45 +0000
+Message-ID: <551BBA9F.1010809@imgtec.com>
+Date: Wed, 1 Apr 2015 10:30:07 +0100
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH_V3 0/2] mtd: nand: jz4780: Add nand and bch driver
+References: <1427821181-40843-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <20150331172030.GE19571@brian-ubuntu>
+In-Reply-To: <20150331172030.GE19571@brian-ubuntu>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Subject: [PATCH 2/2] drivers/mtd: add powernv flash MTD abstraction driver
-Message-Id: <1427868330.742447.571120567721.2.gpush@pablo>
-In-Reply-To: <1427868330.741478.119647151764.0.gpush@pablo>
-To: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-From: Jeremy Kerr <jk@ozlabs.org>
-Date: Wed, 01 Apr 2015 14:05:30 +0800
-Cc: Cyril Bur <cyrilbur@gmail.com>, Joel Stanley <joel@jms.id.au>
+Cc: devicetree@vger.kernel.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,344 +24,221 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Cyril Bur <cyrilbur@gmail.com>
+Hi,
 
-Powerpc powernv platforms allow access to certain system flash devices
-through a firmwarwe interface. This change adds an mtd driver for these
-flash devices.
+On 31/03/15 18:20, Brian Norris wrote:
+> On Tue, Mar 31, 2015 at 05:59:39PM +0100, Zubair Lutfullah Kakakhel wrote:
+>> Hi,
+> 
+> Hi!
+> 
+> Nit: can you drop the underscore in your 'PATCH_Vx' subjects? It'd make
+> my filtering a bit easier. I usually expect 'PATCH v3'. Thanks!
 
-Minor updates from Jeremy Kerr and Joel Stanley.
+Sure. Will do that for v4 if we get there.
 
-Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
+Responses below.
 
----
- drivers/mtd/devices/Kconfig         |    6 
- drivers/mtd/devices/Makefile        |    1 
- drivers/mtd/devices/powernv_flash.c |  288 ++++++++++++++++++++++++++++
- 3 files changed, 295 insertions(+)
+> 
+>> Two patches based on 4.0-rc6 that add NAND and BCH controller
+>> drivers for the Ingenic JZ4780 SoC.
+>>
+>> Hope these can make it in time for 4.1.
+>>
+>> Tested on the MIPS Creator CI20.
+>>
+>> Core JZ4780 support is still in-flight.
+> 
+> Sorry, I can't even compile test your patches, since I don't have the
+> dependencies. So I can't accept your patches yet, and they most likely
+> won't make it to 4.1. Or if you can point me to the right place, perhaps
+> we can work something out between the tree(s) that will contain the
+> dependencies.
+> 
+> Note that I'm not worried about the missing MACH_JZ4780 sybmol and your
+> core platform support, as much as the missing JZ4780_NEMC support.
 
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index c49d0b1..5065e7c 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -195,6 +195,12 @@ config MTD_BLOCK2MTD
- 	  Testing MTD users (eg JFFS2) on large media and media that might
- 	  be removed during a write (using the floppy drive).
- 
-+config MTD_POWERNV_FLASH
-+	tristate "powernv flash MTD driver"
-+	depends on PPC_POWERNV
-+	help
-+	  This provides an MTD device for flash on powernv OPAL platforms
-+
- comment "Disk-On-Chip Device Drivers"
- 
- config MTD_DOCG3
-diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-index f0b0e61..7912d3a 100644
---- a/drivers/mtd/devices/Makefile
-+++ b/drivers/mtd/devices/Makefile
-@@ -16,6 +16,7 @@ obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
- obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
- obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
- obj-$(CONFIG_MTD_ST_SPI_FSM)    += st_spi_fsm.o
-+obj-$(CONFIG_MTD_POWERNV_FLASH)	+= powernv_flash.o
- 
- 
- CFLAGS_docg3.o			+= -I$(src)
-diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-new file mode 100644
-index 0000000..18f8a19
---- /dev/null
-+++ b/drivers/mtd/devices/powernv_flash.c
-@@ -0,0 +1,288 @@
-+/*
-+ * OPAL PNOR flash MTD abstraction
-+ *
-+ * IBM 2015
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/errno.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/string.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+
-+#include <linux/debugfs.h>
-+#include <linux/seq_file.h>
-+
-+#include <asm/opal.h>
-+
-+
-+/*
-+ * This driver creates the a Linux MTD abstraction for platform PNOR flash
-+ * backed by OPAL calls
-+ */
-+
-+struct powernv_flash {
-+	struct mtd_info	mtd;
-+	uint64_t	id;
-+};
-+
-+enum flash_op {
-+	FLASH_OP_READ,
-+	FLASH_OP_WRITE,
-+	FLASH_OP_ERASE,
-+};
-+
-+static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
-+		loff_t offset, size_t len, size_t *retlen, u_char *buf)
-+{
-+	struct powernv_flash *info = (struct powernv_flash *)mtd->priv;
-+	struct device *dev = &mtd->dev;
-+	int token;
-+	struct opal_msg msg;
-+	int rc;
-+
-+	dev_dbg(dev, "%s(op=%d, offset=0x%llx, len=%zu)\n",
-+			__func__, op, offset, len);
-+
-+	token = opal_async_get_token_interruptible();
-+	if (token < 0) {
-+		dev_err(dev, "Failed to get an async token\n");
-+		return -ENOMEM;
-+	}
-+
-+	switch (op) {
-+	case FLASH_OP_READ:
-+		rc = opal_flash_read(info->id, offset, __pa(buf), len, token);
-+		break;
-+	case FLASH_OP_WRITE:
-+		rc = opal_flash_write(info->id, offset, __pa(buf), len, token);
-+		break;
-+	case FLASH_OP_ERASE:
-+		rc = opal_flash_erase(info->id, offset, len, token);
-+		break;
-+	default:
-+		BUG_ON(1);
-+	}
-+
-+	if (rc != OPAL_ASYNC_COMPLETION) {
-+		dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
-+				op, rc);
-+		return -EIO;
-+	}
-+
-+	rc = opal_async_wait_response(token, &msg);
-+	opal_async_release_token(token);
-+	if (rc) {
-+		dev_err(dev, "opal async wait failed (rc %d)\n", rc);
-+		return -EIO;
-+	}
-+
-+	rc = be64_to_cpu(msg.params[1]);
-+	if (rc == OPAL_SUCCESS) {
-+		rc = 0;
-+		if (retlen)
-+			*retlen = len;
-+	} else {
-+		rc = -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * @mtd: the device
-+ * @from: the offset to read from
-+ * @len: the number of bytes to read
-+ * @retlen: the number of bytes actually read
-+ * @buf: the filled in buffer
-+ *
-+ * Returns 0 if read successful, or -ERRNO if an error occurred
-+ */
-+static int powernv_flash_read(struct mtd_info *mtd, loff_t from, size_t len,
-+	     size_t *retlen, u_char *buf)
-+{
-+	return powernv_flash_async_op(mtd, FLASH_OP_READ, from,
-+			len, retlen, buf);
-+}
-+
-+/**
-+ * @mtd: the device
-+ * @to: the offset to write to
-+ * @len: the number of bytes to write
-+ * @retlen: the number of bytes actually written
-+ * @buf: the buffer to get bytes from
-+ *
-+ * Returns 0 if write successful, -ERRNO if error occured
-+ */
-+static int powernv_flash_write(struct mtd_info *mtd, loff_t to, size_t len,
-+		     size_t *retlen, const u_char *buf)
-+{
-+	return powernv_flash_async_op(mtd, FLASH_OP_WRITE, to,
-+			len, retlen, (u_char *)buf);
-+}
-+
-+/**
-+ * @mtd: the device
-+ * @erase: the erase info
-+ * Returns 0 if erase successful or -ERRNO if an error occured
-+ */
-+static int powernv_flash_erase(struct mtd_info *mtd, struct erase_info *erase)
-+{
-+	int rc;
-+
-+	erase->state = MTD_ERASING;
-+
-+	/* todo: register our own notifier to do a true async implementation */
-+	rc =  powernv_flash_async_op(mtd, FLASH_OP_ERASE, erase->addr,
-+			erase->len, NULL, NULL);
-+
-+	if (rc) {
-+		erase->fail_addr = erase->addr;
-+		erase->state = MTD_ERASE_FAILED;
-+	} else {
-+		erase->state = MTD_ERASE_DONE;
-+	}
-+	mtd_erase_callback(erase);
-+	return 0;
-+}
-+
-+/**
-+ * powernv_flash_set_driver_info - Fill the mtd_info structure and docg3
-+ * structure @pdev: The platform device
-+ * @mtd: The structure to fill
-+ */
-+static int __init powernv_flash_set_driver_info(struct device *dev,
-+		struct mtd_info *mtd)
-+{
-+	const __be32 *reg, *erase_size;
-+	int count;
-+
-+	erase_size = of_get_property(dev->of_node,
-+			"ibm,flash-block-size", NULL);
-+	if (!erase_size) {
-+		dev_err(dev, "no device property 'ibm,flash-block-size'\n");
-+		return 1;
-+	}
-+
-+	reg = of_get_property(dev->of_node, "reg", &count);
-+	if (count / sizeof(__be32) != 2) {
-+		dev_err(dev, "couldn't get resource information count=%d\n",
-+				count);
-+		return 1;
-+	}
-+
-+	/* Going to have to check what details I need to set and how to
-+	 * get them */
-+	mtd->name = of_get_property(dev->of_node, "name", NULL);
-+	mtd->type = MTD_NANDFLASH;
-+	mtd->flags = MTD_CAP_NANDFLASH;
-+	mtd->size = of_read_number(reg, 2);
-+	mtd->erasesize = of_read_number(erase_size, 1);
-+	mtd->writebufsize = mtd->writesize = 1;
-+	mtd->owner = THIS_MODULE;
-+	mtd->_erase = powernv_flash_erase;
-+	mtd->_read = powernv_flash_read;
-+	mtd->_write = powernv_flash_write;
-+	mtd->dev.parent = dev;
-+	return 0;
-+}
-+
-+/**
-+ * powernv_flash_probe
-+ * @pdev: platform device
-+ *
-+ * Returns 0 on success, -ENOMEM, -ENXIO on error
-+ */
-+static int __init powernv_flash_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct powernv_flash *data;
-+	const __be32 *prop;
-+	int ret;
-+
-+	ret = -ENOMEM;
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		dev_err(dev, "couldn't allocate memory\n");
-+		goto out;
-+	}
-+	data->mtd.priv = data;
-+
-+	ret = -EIO;
-+	prop = of_get_property(dev->of_node, "ibm,opal-id", NULL);
-+	if (!prop) {
-+		dev_err(dev, "no device property 'ibm,opal-id\n");
-+		goto out;
-+	}
-+	data->id = of_read_number(prop, 1);
-+
-+	if (powernv_flash_set_driver_info(dev, &data->mtd))
-+		goto out;
-+
-+	/*
-+	 * Skiboot does expose the partitioning information via OF and the
-+	 * ofpart parser could partition it all nicely.
-+	 *
-+	 * The current flash that skiboot exposes is one contiguous flash chip
-+	 * with an ffs partition at the start, it should prove easier for users
-+	 * to deal with partitions or not as they see fit
-+	 */
-+	ret = mtd_device_parse_register(&data->mtd, NULL , NULL, NULL, 0);
-+
-+out:
-+	return ret;
-+}
-+
-+/**
-+ * op_release - Release the driver
-+ * @pdev: the platform device
-+ *
-+ * Returns 0
-+ */
-+static int __exit powernv_flash_release(struct platform_device *pdev)
-+{
-+	/* All resources should be freed automatically */
-+	return 0;
-+}
-+
-+static struct of_device_id powernv_flash_match[] = {
-+	{ .compatible = "ibm,opal-flash" },
-+	{}
-+};
-+
-+static struct platform_driver powernv_flash_driver = {
-+	.driver		= {
-+		.name		= "powernv_flash",
-+		.owner		= THIS_MODULE,
-+		.of_match_table	= powernv_flash_match,
-+	},
-+	.remove		= powernv_flash_release,
-+	.probe		= powernv_flash_probe,
-+};
-+
-+module_platform_driver(powernv_flash_driver);
-+
-+MODULE_DEVICE_TABLE(of, powernv_flash_match);
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Cyril Bur <cyril.bur@au1.ibm.com>");
-+MODULE_DESCRIPTION("MTD abstraction for OPAL flash");
+I understand. Just trying to spread the load and sending everywhere
+via separate subsystems.
+
+NEMC is going via greg-kh. They went through greg's char-misc-testing and
+just got applied here.
+
+https://git.kernel.org/cgit/linux/kernel/git/gregkh/char-misc.git/log/?h=char-misc-next
+
+Do you think that can work for compile testing? It is the upstream tree with nemc.
+
+I could point our github ones for the ci20 board.
+But it has quite a bit of other code too for jz4780 support.
+
+> 
+>> Review and feedback welcome.
+>>
+>> V2 - > V3
+>> Rebase to 4.0-rc6
+>> Binding changes and fixes based on feedback by Brian Norris (Thank-you)
+> 
+> I had a few questions on the driver that you didn't answer, I believe.
+> It looks like maybe you silently answered them in this v3 code?
+> 
+
+I apologize for the confusion. Rushing cause of 4.0-rc6
+
+Yes. I followed all changes accordingly except one.
+
+>> +static int jz4780_nand_init_chips(struct jz4780_nand *nand, struct device *dev)
+>> +{
+>> +	struct jz4780_nand_chip *chip;
+>> +	const __be32 *prop;
+>> +	u64 addr, size;
+>> +	int i = 0;
+>> +
+>> +	/*
+>> +	 * Iterate over each bank assigned to this device and request resources.
+>> +	 * The bank numbers may not be consecutive, but nand_scan_ident()
+>> +	 * expects chip numbers to be, so fill out a consecutive array of chips
+>> +	 * which map chip number to actual bank number.
+>> +	 */
+>> +	while ((prop = of_get_address(dev->of_node, i, &size, NULL))) {
+>> +		chip = &nand->chips[i];
+>> +		chip->bank = of_read_number(prop, 1);
+>> +
+>> +		jz47xx_nemc_set_type(nand->dev, chip->bank,
+>> +				     JZ47XX_NEMC_BANK_NAND);
+>> +
+>> +		addr = of_translate_address(dev->of_node, prop);
+>> +		if (addr == OF_BAD_ADDR)
+>> +			return -EINVAL;
+> 
+> Is it not possible to use platform_get_resource() here? I'm not real
+> sure about the platform and resource APIs vs. of_* APIs here, so I'm not
+> sure.
+
+I don't think so.
+
+of_translate_address traverses the DT nodes tree to get the addresses.
+platform_get_resource would just give the sub-address.
+
+the DT node in the SoC file for nemc is
+
+		nemc: nemc@13410000 {
+			compatible = "ingenic,jz4780-nemc";
+			reg = <0x13410000 0x10000>;
+			#address-cells = <2>;
+			#size-cells = <1>;
+			ranges = <1 0 0x1b000000 0x1000000
+			          2 0 0x1a000000 0x1000000
+			          3 0 0x19000000 0x1000000
+			          4 0 0x18000000 0x1000000
+			          5 0 0x17000000 0x1000000
+			          6 0 0x16000000 0x1000000>;
+
+			clocks = <&cgu JZ4780_CLK_NEMC>;
+		};
+
+Then the DT node in the board file is
+
+&nemc {
+	/*
+	 * Only CLE/ALE are needed for the devices that are connected, rather
+	 * than the full address line set.
+	 */
+	pinctrl-names = "default";
+	pinctrl-0 = <&pins_nemc_data &pins_nemc_cle_ale &pins_nemc_frd_fwe>;
+
+	nand: nand@1 {
+		compatible = "ingenic,jz4780-nand";
+		reg = <1 0 0x1000000>;
+
+		ingenic,nemc-tAS = <10>;
+		ingenic,nemc-tAH = <5>;
+		ingenic,nemc-tBP = <10>;
+		ingenic,nemc-tAW = <15>;
+		ingenic,nemc-tSTRV = <100>;
+
+		ingenic,bch-device = <&bch>;
+		nand-ecc-step-size = <1024>;
+		nand-ecc-strength = <24>;
+
+		rb-gpios = <&gpa 20 GPIO_ACTIVE_LOW>;
+		wp-gpios = <&gpf 22 GPIO_ACTIVE_LOW>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&pins_nemc_cs1>;
+
+		#address-cells = <2>;
+		#size-cells = <2>;
+
+		partition@0 {
+			label = "u-boot-spl";
+			reg = <0x0 0x0 0x0 0x800000>;
+		};
+
+		partition@0x800000 {
+			label = "u-boot";
+			reg = <0x0 0x800000 0x0 0x200000>;
+		};
+
+		partition@0xa00000 {
+			label = "u-boot-env";
+			reg = <0x0 0xa00000 0x0 0x200000>;
+		};
+
+		partition@0xc00000 {
+			label = "system";
+			reg = <0x0 0xc00000 0x1 0xff400000>;
+		};
+	};
+
+	dm9000@6 {
+		compatible = "davicom,dm9000";
+		davicom,no-eeprom;
+
+		reg = <6 0x0 1   /* addr */
+		       6 0x2 1>; /* data */
+
+		ingenic,nemc-tAS = <15>;
+		ingenic,nemc-tAH = <10>;
+		ingenic,nemc-tBP = <20>;
+		ingenic,nemc-tAW = <50>;
+		ingenic,nemc-tSTRV = <100>;
+
+		reset-gpios = <&gpf 12 GPIO_ACTIVE_HIGH>;
+		vcc-supply = <&eth0_power>;
+
+		interrupt-parent = <&gpe>;
+		interrupts = <19 0x4>;
+	};
+};
+
+Hope this clears the use of of_translate_address
+
+Regards,
+ZubairLK
+
+>> V1 - > V2
+>> Fixed module license macros
+>> Rebase to 4.0-rc3
+>>
+>> Thanks,
+>> ZubairLK
+>>
+>> Alex Smith (2):
+>>   dt-bindings: binding for jz4780-{nand,bch}
+>>   mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs
+>>
+>>  .../bindings/mtd/ingenic,jz4780-nand.txt           |  57 ++++
+>>  drivers/mtd/nand/Kconfig                           |   7 +
+>>  drivers/mtd/nand/Makefile                          |   1 +
+>>  drivers/mtd/nand/jz4780_bch.c                      | 353 +++++++++++++++++++
+>>  drivers/mtd/nand/jz4780_bch.h                      |  42 +++
+>>  drivers/mtd/nand/jz4780_nand.c                     | 376 +++++++++++++++++++++
+>>  6 files changed, 836 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+>>  create mode 100644 drivers/mtd/nand/jz4780_bch.c
+>>  create mode 100644 drivers/mtd/nand/jz4780_bch.h
+>>  create mode 100644 drivers/mtd/nand/jz4780_nand.c
+>>
+> 
+> Brian
+> 
