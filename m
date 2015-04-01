@@ -1,14 +1,16 @@
-Received: from rs233.mailgun.us ([209.61.151.233])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdPgi-0003hI-RF
- for linux-mtd@lists.infradead.org; Wed, 01 Apr 2015 20:56:38 +0000
-From: Matt Kline <matthew.kline@flukenetworks.com>
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YdRfk-00068r-Ev
+ for linux-mtd@lists.infradead.org; Wed, 01 Apr 2015 23:03:45 +0000
+Received: by ierf6 with SMTP id f6so55969626ier.2
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Apr 2015 16:03:19 -0700 (PDT)
+MIME-Version: 1.0
+Date: Thu, 2 Apr 2015 12:03:18 +1300
+Message-ID: <CAJMQpAesoRsuV8i0HnGNy63vmhHeULcXTh9aXnpBGM-HJ6cneA@mail.gmail.com>
+Subject: GPMI driver ecc_write_page with oob data problem
+From: Youxin Su <suyouxin@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Update UBIFS mounting instructions
-Date: Wed,  1 Apr 2015 13:55:58 -0700
-Message-Id: <1427921758-10295-1-git-send-email-matthew.kline@flukenetworks.com>
-Sender: matthew.kline=flukenetworks.com@bitbashing.io
-Cc: Matt Kline <matthew.kline@flukenetworks.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,153 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I recently spent several days attempting to mount a UBIFS image.
-Efforts were hampered by seemingly outdated documentation,
-the fact that much of the documentation was for UBI images,
-not UBIFS ones, and the fact that the image was for NOR memory and
-all documentation I found only referenced nandsim.
+Hello all,
 
-After some very kind help on IRC and from Artem Bityutskiy on the
-mailing list, I was able to figure things out. I think it is only
-fair that I contribute back and bring the web site up to date so
-others don't face the same stumbling blocks.
+I am attempting to mount Yaffs2 on a GPMI controlled NAND flash on
+IMX6. Unfortunately, I'm not able to mount it with default settings,
+instead I have to mount it with "inband-tags" which means don't use
+OOB area on NAND page to store data.
 
-This patch includes the following changes:
+Then I am running into check why yaffs2 can't use OOB area.
 
-- Acknowledge that udev _does_ now create a block device
-  automatically for MTD.
+We use MICRON MT29F32G08CBADAWP it has 8192 bytes payload and 744
+bytes OOB as log show below:
 
-- Provide instructions for mounting standalone UBIFS images as well
-  as UBI images.
+[    0.982938] nand: Micron MT29F32G08CBADAWP
+[    0.987056] nand: 4096MiB, MLC, page size: 8192, OOB size: 744
+[    0.993508] gpmi-nand 112000.gpmi-nand: enable the asynchronous EDO mode 5
 
-- Mention mtdram and its usefulness in mounting UBIFS images made
-  for NOR memory.
+Since the IMX6 only support up to 40bits ECC corrections, we don't
+want all the OOB used by BCH for ECC correction data. So we enabled
+"fsl,use-minimum-ecc" which is still use the max 40 bits corrections
+in BCH, after set_geometry_by_ecc_info does the calculation, its end
+up following geometry:
 
-Signed-off-by: Matt Kline <matthew.kline@flukenetworks.com>
----
- faq/ubifs.xml | 81 +++++++++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 54 insertions(+), 27 deletions(-)
+page_size = 8762
+write_size = 8129
+metadat_size = 10
+auxiliary_size = 24
+oob_free->offset = 570
+oob_free->length = 174
 
-diff --git a/faq/ubifs.xml b/faq/ubifs.xml
-index 8b61fc7..2b724f3 100644
---- a/faq/ubifs.xml
-+++ b/faq/ubifs.xml
-@@ -894,10 +894,9 @@ embedded systems.</p>
- modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa \
-                  third_id_byte=0x00 fourth_id_byte=0x15
- 
--# MTD is not LDM-enabled and udev does not create device
--# MTD device nodes automatically, so create /dev/mtd0
--# (we assume that you do not have other MTD devices)
--mknod /dev/mtd0 c 90 0
-+# udev should create MTD device nodes automatically.
-+# If it does not, we can create /dev/mtd0 manually with
-+# mknod /dev/mtd0 c 90 0
- 
- # Load UBI module and attach mtd0
- modprobe ubi mtd=0
-@@ -917,44 +916,65 @@ mount -t ubifs /dev/ubi0_0 /mnt/ubifs
- <h2><a name="L_ubifs_extract">How do I extract files from an UBI/UBIFS image?</a></h2>
- 
- <p>Unfortunately, at the moment there are no user-space tools which can
--unwrap UBI and UBIFS images. UBIFS cannot be loop-back mounted as well,
-+unwrap UBI and UBIFS images. UBIFS cannot be loop-back mounted either,
- because it does not work with block devices.</p>
- 
--<p>However, there is a hacky way to unwrap UBI/UBIFS images. But you have
--to make sure you have UBIFS support in your host machine. UBIFS is a relatively
--new file system and is not supported by all Linux distributions. But at least
--Fedora 11 does include it.</p>
-+<p>However, kernel modules exist that allow you to create a virtual MTD
-+onto which UBIFS can be mounted. You have two options:
-+<ol>
-+	<li><code>nandsim</code>, which can simulate various NAND devices.
-+	You can find an incomplete list of those devices
-+	<a href="../nand-data/nanddata.html">here</a>.
-+	To emulate a given device, pass its ID bytes via the module parameters
-+	<code>first_id_byte</code>, <code>second_id_byte</code>,
-+	<code>third_id_byte</code>, and <code>fourth_id_byte</code>.</li>
-+
-+	<li><code>mtdram</code>, which simulates a generic MTD.
-+	Use the module parameter <code>total_size</code> to specify the device size
-+	in KiB and <code>erase_size</code> to specify the erase block size in KiB.
-+	This module is useful for mounting UBIFS images made for NOR memory,
-+	which usually have a minimum I/O unit of 1 byte, as opposed to NAND
-+	devices which have a minimum unit of at least 512 bytes.
-+	See more information <a href="../doc/ubi.html#L_min_io_unit">here</a>.
-+	</li>
-+</ol>
-+These modules should be provided on most distributions released in the past
-+few years.</p>
- 
--<p>Let's consider a simple example. Suppose you have an <code>ubi.img</code>
--file. This is an UBI image, which contains a single UBI volume, which in turn
--contains UBIFS file-system. In other words, this is an image which was
--created using the <code>mkfs.ubifs</code> and <code>ubinize</code> tools,
--just like it is described in <a href="ubifs.html#L_mkfubifs">this</a>
--section (the image is created for a 256MiB NAND flash with 2KiB NAND page
--size and which supports sub-pages). Here is what you can do:</p>
-+<p>Consider a simple example. Suppose you have some <code>ubifs.img</code>
-+file which contains a single UBIFS filesystem.
-+In other words, this is an image which was created using <code>mkfs.ubifs</code>,
-+as described in <a href="ubifs.html#L_mkfubifs">this</a> section. To mount it:</p>
- 
- <pre>
--# Create an 256MiB emulated NAND flash with 2KiB NAND page size
--# (you should see the new MTD device in /proc/mtd)
-+# Create a virtual MTD by bringing up one of the kernel modules mentioned above.
- modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa \
-                  third_id_byte=0x00 fourth_id_byte=0x15
- 
--# MTD is not LDM-enabled and udev does not create device
--# MTD device nodes automatically, so create /dev/mtd0
--# (we assume that you do not have other MTD devices)
--mknod /dev/mtd0 c 90 0
-+# udev should create MTD device nodes automatically.
-+# If it does not, we can create /dev/mtd0 manually with
-+# mknod /dev/mtd0 c 90 0
- 
--# Copy the contents of your image to the emulated MTD device
--dd if=ubi.img of=/dev/mtd0 bs=2048
-+# Format the device. IOSIZE should be the minimum I/O unit size passed
-+# via -s to mkfs.ubifs when the image was created.
-+ubiformat /dev/mtd0 -s $IOSIZE
- 
- # Load UBI module and attach mtd0
- modprobe ubi mtd=0
- 
--# Mount UBIFS
--mount -t ubifs /dev/ubi0_0 /mnt/ubifs
-+# Create a volume.
-+# -N names the volume and -s sets its size, in bytes, kilobytes (KiB),
-+# or megabytes (MiB). Make sure it is at least as large as the image.
-+ubimkvol /dev/ubi0 -N "My UBIFS volume name" -s $VOLSIZE
-+
-+# Apply our image to that volume
-+ubiupdatevol /dev/ubi0_0 ubifs.img
-+
-+# Mount it to any desired mount point
-+mount /dev/ubi0_0 /mnt/ubifs
- </pre>
- 
--<p>Now you have the file-system in <code>/mnt/ubifs</code>. Use
-+<p>Now you have the filesystem in <code>/mnt/ubifs</code>. Use
- the following to get rid of it:</p>
- 
- <pre>
-@@ -962,6 +982,13 @@ umount /mnt/ubifs
- rmmod ubifs ubi nandsim
- </pre>
- 
-+If you have an entire UBI image made with <code>ubinize</code>,
-+the process is simpler.
-+Write the image to the MTD via <code>ubiformat -f ubi.img</code>
-+(assuming that is the name of your image file).
-+You should be able to skip the instructions above after
-+<code>modprobe ubi mtd=0</code>, since
-+the UBI image should take care of the volume(s) itself.
- 
- 
- <h2><a name="L_smaller_jrn">I need more space - should I make UBIFS journal smaller?</a></h2>
--- 
-2.3.4
+Which means we do have 174 bytes free OOB area can be used by file
+system. After a few days tracing and debugging I've found out the GPMI
+driver method gpmi_ecc_write_page actually does not write oob data(the
+174 bytes area) to NAND flash at all? The flags "oob_required" never
+been used in the method.
+
+Does anybody else used GPMI with OOB data read/write before? Does it
+work fine or Am I missing something?
+
+Best regards,
+Youxin
