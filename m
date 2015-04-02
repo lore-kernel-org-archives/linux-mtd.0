@@ -1,19 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ydhpd-0004uO-Ch
- for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 16:19:02 +0000
-Message-ID: <551D6BDA.6000606@nod.at>
-Date: Thu, 02 Apr 2015 18:18:34 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1Ydhx8-0001WG-Bv
+ for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 16:26:48 +0000
+Received: by pdbni2 with SMTP id ni2so94142214pdb.1
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Apr 2015 09:26:24 -0700 (PDT)
+Date: Thu, 2 Apr 2015 09:26:19 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH 2/2] mtd: mtd_oobtest: Fix the address offset with
+ vary_offset case
+Message-ID: <20150402162619.GG32500@ld-irv-0074>
+References: <1417792720-3017-1-git-send-email-rogerq@ti.com>
+ <1417792720-3017-3-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: Add simple read disturb test
-References: <1427984026-31100-1-git-send-email-richard@nod.at>
- <20150402160451.GF32500@ld-irv-0074>
-In-Reply-To: <20150402160451.GF32500@ld-irv-0074>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1417792720-3017-3-git-send-email-rogerq@ti.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, akinobu.mita@gmail.com,
  linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,34 +27,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 02.04.2015 um 18:04 schrieb Brian Norris:
-> On Thu, Apr 02, 2015 at 04:13:46PM +0200, Richard Weinberger wrote:
->> This simple MTD tests allows the user to see when read disturb happens.
->> By reading blocks over and over it reports flipped bits.
->> Currently it reports only flipped bits of the worst page of a block.
->> If within block X page P1 has 3 bit flips and P6 4, it will report 4.
->> By default every 50th block is read.
+On Fri, Dec 05, 2014 at 05:18:40PM +0200, Roger Quadros wrote:
+> When vary_offset is set (e.g. test case 3), the offset is not always
+> zero so memcmpshow() will show the wrong offset in the print message.
+> To fix this we introduce a new function memcmpshowoffset() which takes
+> offset as a parameter and displays the right offset and use it in
+> the case where offset is non zero.
 > 
-> Didn't read through this much yet, but why do we need another in-kernel
-> test that coul (AFAICT) be easily replicated in userspace? The same goes
-> for several of the other tests, I think, actually. But at least with
-> those, we have a history of keeping them around, so it's not too much
-> burden [1].
-
-I've added the test to drivers/mtd/tests/ because it fits into.
-As simple as that.
-
-> Brian
+> The old memcmpshow() functionality is preserved by converting it into
+> a macro with offset preset to 0.
 > 
-> [1] Although there are some latent issues in these tests that are still
-> getting get worked out (e.g., bad handling of 64-bit casting; too large
-> of stacks; uninterruptibility). The latter two would not even exist if
-> we were in user space.
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>  drivers/mtd/tests/oobtest.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+> index 4da877b..0d5e85d 100644
+> --- a/drivers/mtd/tests/oobtest.c
+> +++ b/drivers/mtd/tests/oobtest.c
+> @@ -122,7 +122,8 @@ static int write_whole_device(void)
+>   * Display the address, offset and data bytes at comparison failure.
+>   * Return number of bitflips encountered.
+>   */
+> -static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t count)
+> +static size_t memcmpshowoffset(loff_t addr, loff_t offset, const void *cs,
+> +			       const void *ct, size_t count)
+>  {
+>  	const unsigned char *su1, *su2;
+>  	int res;
+> @@ -132,8 +133,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
+>  	for (su1 = cs, su2 = ct; 0 < count; ++su1, ++su2, count--, i++) {
+>  		res = *su1 ^ *su2;
+>  		if (res) {
+> -			pr_info("error @addr[0x%lx:0x%x] 0x%x -> 0x%x diff 0x%x\n",
+> -				(unsigned long)addr, i, *su1, *su2, res);
+> +			pr_info("error @addr[0x%lx:0x%lx] 0x%x -> 0x%x diff 0x%x\n",
+> +				(unsigned long)addr, (unsigned long)offset + i,
+> +				*su1, *su2, res);
 
-uninterruptibility got solved by my "[PATCH] mtd: Make MTD tests cancelable" patch.
+This hunk doesn't apply. You seem to have missed this commit:
 
-But if we want to kill drivers/mtd/tests/ I'll happily help out.
-Where shall we move these tests into? mtd-utils?
+commit 806b6ef5676a1c6ea78592174aae15f59bb0a923
+Author: Brian Norris <computersforpeace@gmail.com>
+Date:   Thu Nov 20 01:26:51 2014 -0800
 
-Thanks,
-//richard
+    mtd: oobtest: correct printf() format specifier for 'size_t'
+
+Please rebase this patch on the latest l2-mtd.git.
+
+Brian
+
+>  			bitflips += hweight8(res);
+>  		}
+>  	}
+> @@ -141,6 +143,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
+>  	return bitflips;
+>  }
+>  
+> +#define memcmpshow(addr, cs, ct, count) memcmpshowoffset((addr), 0, (cs), (ct),\
+> +							 (count))
+> +
+>  /*
+>   * Compare with 0xff and show the address, offset and data bytes at
+>   * comparison failure. Return number of bitflips encountered.
+> @@ -224,9 +229,10 @@ static int verify_eraseblock(int ebnum)
+>  				errcnt += 1;
+>  				return err ? err : -1;
+>  			}
+> -			bitflips = memcmpshow(addr, readbuf + use_offset,
+> -					      writebuf + (use_len_max * i) + use_offset,
+> -					      use_len);
+> +			bitflips = memcmpshowoffset(addr, use_offset,
+> +						    readbuf + use_offset,
+> +						    writebuf + (use_len_max * i) + use_offset,
+> +						    use_len);
+>  
+>  			/* verify pre-offset area for 0xff */
+>  			bitflips += memffshow(addr, 0, readbuf, use_offset);
+> -- 
+> 2.1.0
+> 
