@@ -1,22 +1,27 @@
-Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdRxY-00084e-E2
- for linux-mtd@lists.infradead.org; Wed, 01 Apr 2015 23:22:09 +0000
-Received: by iedfl3 with SMTP id fl3so63125809ied.1
- for <linux-mtd@lists.infradead.org>; Wed, 01 Apr 2015 16:21:45 -0700 (PDT)
+Received: from hofr.at ([212.69.189.236] helo=mail.hofr.at)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YdSsJ-0006FO-Ea
+ for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 00:20:49 +0000
+Date: Thu, 2 Apr 2015 02:20:20 +0200
+From: Nicholas Mc Guire <der.herr@hofr.at>
+To: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH] mtd: fsl_ifc_nand: use msecs_to_jiffies for time
+ conversion
+Message-ID: <20150402002020.GA30284@opentech.at>
+References: <1426245828-15640-1-git-send-email-hofrat@osadl.org>
+ <1162655988.11370.1427896685060.JavaMail.zimbra@xes-inc.com>
+ <20150401142444.GA12125@opentech.at>
+ <699783288.22321.1427900904422.JavaMail.zimbra@xes-inc.com>
+ <1427901535.31790.10.camel@perches.com>
 MIME-Version: 1.0
-Sender: namnguyen@google.com
-In-Reply-To: <1425498091-3505-1-git-send-email-namnguyen@chromium.org>
-References: <1425498091-3505-1-git-send-email-namnguyen@chromium.org>
-From: Nam Nguyen <namnguyen@chromium.org>
-Date: Wed, 1 Apr 2015 16:21:25 -0700
-Message-ID: <CA+YNSmXA62b_7H+18+fO5igNJ28gfW2tXBDYB1JbqbovRCEq6g@mail.gmail.com>
-Subject: Re: [PATCH v3] mtd-utils: Add mtdpart to add/delete partition
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Cc: "Nam T. Nguyen" <namnguyen@chromium.org>,
- Mike Frysinger <vapier@chromium.org>, computersforpeace@gmail.com,
- dehrenberg@chromium.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1427901535.31790.10.camel@perches.com>
+Cc: Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
+ Joe Schultz <jschultz@xes-inc.com>, linux-mtd@lists.infradead.org,
+ Nicholas Mc Guire <hofrat@osadl.org>, Aaron Sierra <asierra@xes-inc.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,234 +31,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 01 Apr 2015, Joe Perches wrote:
 
-Is there any comment on this version?
+> On Wed, 2015-04-01 at 10:08 -0500, Aaron Sierra wrote:
+> > ----- Original Message -----
+> > > From: "Nicholas Mc Guire" <der.herr@hofr.at>
+> > > Sent: Wednesday, April 1, 2015 9:24:44 AM
+> > > 
+> > > On Wed, 01 Apr 2015, Aaron Sierra wrote:
+> > > 
+> > > > ----- Original Message -----
+> > > > > From: "Nicholas Mc Guire" <hofrat@osadl.org>
+> > > > > Sent: Friday, March 13, 2015 6:23:47 AM
+> > > > > 
+> > > > > This is only an API consolidation and should make things more readable
+> > > > > it replaces var * HZ / 1000 by msecs_to_jiffies(var) which helps
+> > > > > readability
+> > > > > and also handles all corner-cases properly.
+> > > > > 
+> > > > > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> > > > > ---
+> > > > > 
+> > > > > Patch was compile tested with corenet64_smp_defconfig
+> > > > > (implies CONFIG_MTD_NAND_FSL_IFC=y)
+> > > > > 
+> > > > > Patch is against 4.0-rc3 (localversion-next is -next-20150313
+> > > > > 
+> > > > >  drivers/mtd/nand/fsl_ifc_nand.c |    4 ++--
+> > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/mtd/nand/fsl_ifc_nand.c
+> > > > > b/drivers/mtd/nand/fsl_ifc_nand.c
+> > > > > index 4c05f4f..51394e5 100644
+> > > > > --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> > > > > +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> > > > > @@ -317,7 +317,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+> > > > >  
+> > > > >  	/* wait for command complete flag or timeout */
+> > > > >  	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat,
+> > > > > -			   IFC_TIMEOUT_MSECS * HZ/1000);
+> > > > > +			   msecs_to_jiffies(IFC_TIMEOUT_MSECS));
+> > > > 
+> > > > Nicholas,
+> > > > Your patch makes me think that this timeout value should be calculated
+> > > > once during initialization and stored in a new member of
+> > > > struct fsl_ifc_mtd. That would improve readability AND have some
+> > > > positive impact on performance.
+> > > >
+> > > 
+> > > is it not a bit wasteful to put it into struct fsl_ifc_mtd
+> > > which is used quite often in here ?cho
+> > 
+> > Storing the timeout in the private structure would use 4 or 8 bytes,
+> > but the structure is passed around as pointer reference, so there is
+> > no added overhead there.
+> >  
+> > > #define IFC_TIMEOUT msecs_to_jiffies(500)
+> > >
+> > > sould do - its only referenced twice and would achieve what you
+> > > suggested - initializing it in one location and improved readability
+> > > 
+> > > 	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat, IFC_TIMEOUT);
+> > > 
+> > > would there be any disadvantage of this solution?
+> > 
+> > I don't have an issue with the compactness of your code. The issue
+> > to me is that msecs_to_jiffies() is a real function call, not a macro.
+> > That means that there would be a branch to that function followed by a
+> > non-trivial calculation *every* time fsl_ifc_run_command() is called.
+> > 
+> > If the timeout value were calculated during init, then the cost of
+> > accessing it would simply a pointer dereference.
+> 
+> Nicholas, any progress on that builtin_const_p variant
+>
+did not get to it yet - but thats the next thing
+on my fun list.
 
-Thanks,
-Nam
-
-On Wed, Mar 4, 2015 at 11:41 AM, Nam T. Nguyen <namnguyen@chromium.org> wrote:
-> Add a simple utility to exercise BLKPG ioctl.
->
-> Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
-> ---
-> Changes from v2:
->
->   o Fix coding style
->   o Remove cleanup code since we exit()ing anyway.
->
->  Makefile  |   2 +-
->  mtdpart.c | 187 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 188 insertions(+), 1 deletion(-)
->  create mode 100644 mtdpart.c
->
-> diff --git a/Makefile b/Makefile
-> index eade234..f4ce313 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -20,7 +20,7 @@ MTD_BINS = \
->         ftl_format flash_erase nanddump doc_loadbios \
->         ftl_check mkfs.jffs2 flash_lock flash_unlock \
->         flash_otp_info flash_otp_dump flash_otp_lock flash_otp_write \
-> -       mtd_debug flashcp nandwrite nandtest \
-> +       mtd_debug flashcp nandwrite nandtest mtdpart \
->         jffs2dump \
->         nftldump nftl_format docfdisk \
->         rfddump rfdformat \
-> diff --git a/mtdpart.c b/mtdpart.c
-> new file mode 100644
-> index 0000000..b944f49
-> --- /dev/null
-> +++ b/mtdpart.c
-> @@ -0,0 +1,187 @@
-> +/*
-> + *  mtdpart.c
-> + *
-> + *  Copyright 2015 The Chromium OS Authors.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + *  Overview:
-> + *   This utility adds or removes a partition from an MTD device.
-> + */
-> +
-> +#define PROGRAM_NAME "mtdpart"
-> +
-> +#include <fcntl.h>
-> +#include <getopt.h>
-> +#include <linux/blkpg.h>
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <sys/ioctl.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +
-> +#include "common.h"
-> +
-> +static void display_help(int status)
-> +{
-> +       fprintf(status == EXIT_SUCCESS ? stdout : stderr,
-> +"Usage: %1$s add [OPTION] <MTD_DEVICE> <PART_NAME> <START> <SIZE>\n"
-> +"       %1$s del [OPTION] <MTD_DEVICE> <PART_NUMBER>\n"
-> +"Adds a partition to an MTD device, or remove an existing partition from it.\n"
-> +"\n"
-> +"  -h, --help    Display this help and exit\n"
-> +"      --version Output version information and exit\n"
-> +"\n"
-> +"START location and SIZE of the partition are in bytes. They should align on\n"
-> +"eraseblock size.\n",
-> +       PROGRAM_NAME
-> +       );
-> +       exit(status);
-> +}
-> +
-> +static void display_version(void)
-> +{
-> +       printf("%1$s " VERSION "\n"
-> +                       "\n"
-> +                       "%1$s comes with NO WARRANTY\n"
-> +                       "to the extent permitted by law.\n"
-> +                       "\n"
-> +                       "You may redistribute copies of %1$s\n"
-> +                       "under the terms of the GNU General Public Licence.\n"
-> +                       "See the file `COPYING' for more information.\n",
-> +                       PROGRAM_NAME);
-> +       exit(EXIT_SUCCESS);
-> +}
-> +
-> +/* Command arguments */
-> +
-> +typedef enum {
-> +       COMMAND_ADD,
-> +       COMMAND_DEL
-> +} command_type;
-> +
-> +static command_type            command;                /* add or del */
-> +static const char              *mtddev;                /* mtd device name */
-> +static const char              *part_name;             /* partition name */
-> +static int                     part_no;                /* partition number */
-> +static long long               start_addr;             /* start address */
-> +static long long               length;                 /* partition size */
-> +
-> +static void process_options(int argc, char * const argv[])
-> +{
-> +       int error = 0;
-> +
-> +       for (;;) {
-> +               int option_index = 0;
-> +               static const char short_options[] = "h";
-> +               static const struct option long_options[] = {
-> +                       {"version", no_argument, 0, 0},
-> +                       {"help", no_argument, 0, 'h'},
-> +                       {0, 0, 0, 0},
-> +               };
-> +
-> +               int c = getopt_long(argc, argv, short_options,
-> +                               long_options, &option_index);
-> +               if (c == EOF) {
-> +                       break;
-> +               }
-> +
-> +               switch (c) {
-> +                       case 0:
-> +                               display_version();
-> +                               break;
-> +                       case 'h':
-> +                               display_help(EXIT_SUCCESS);
-> +                               break;
-> +                       case '?':
-> +                               error++;
-> +                               break;
-> +               }
-> +       }
-> +
-> +       if ((argc - optind) < 3 || error)
-> +               display_help(EXIT_FAILURE);
-> +
-> +       const char *s_command = argv[optind++];
-> +       mtddev = argv[optind++];
-> +
-> +       if (strcmp(s_command, "del") == 0 && (argc - optind) == 1) {
-> +               const char *s_part_no = argv[optind++];
-> +
-> +               part_no = simple_strtol(s_part_no, &error);
-> +               if (part_no < 0) {
-> +                      errmsg_die("Can't specify negative partition number: %d",
-> +                                 part_no);
-> +               }
-> +
-> +               command = COMMAND_DEL;
-> +       } else if (strcmp(s_command, "add") == 0 && (argc - optind) == 3) {
-> +               part_name = argv[optind++];
-> +               const char *s_start = argv[optind++];
-> +               const char *s_length = argv[optind++];
-> +
-> +               if (strlen(part_name) >= BLKPG_DEVNAMELTH)
-> +                       errmsg_die("Partition name (%s) should be less than %d characters"
-> +                                  part_name, BLKPG_DEVNAMELTH);
-> +
-> +               start_addr = simple_strtoll(s_start, &error);
-> +               if (start_addr < 0)
-> +                      errmsg_die("Can't specify negative start offset: %lld",
-> +                                 start_addr);
-> +
-> +               length = simple_strtoll(s_length, &error);
-> +               if (length < 0)
-> +                      errmsg_die("Can't specify negative length: %lld",
-> +                                 length);
-> +
-> +               command = COMMAND_ADD;
-> +       } else
-> +               display_help(EXIT_FAILURE);
-> +
-> +       if (error)
-> +               display_help(EXIT_FAILURE);
-> +}
-> +
-> +
-> +int main(int argc, char * const argv[])
-> +{
-> +       int fd;
-> +       struct blkpg_partition part;
-> +       struct blkpg_ioctl_arg arg;
-> +
-> +       process_options(argc, argv);
-> +
-> +       fd = open(mtddev, O_RDWR | O_CLOEXEC);
-> +       if (fd == -1)
-> +               sys_errmsg_die("Cannot open %s", mtddev);
-> +
-> +       memset(&part, 0, sizeof(part));
-> +
-> +       memset(&arg, 0, sizeof(arg));
-> +       arg.datalen = sizeof(part);
-> +       arg.data = &part;
-> +
-> +       switch (command) {
-> +               case COMMAND_ADD:
-> +                       part.start = start_addr;
-> +                       part.length = length;
-> +                       strncpy(part.devname, part_name, sizeof(part.devname));
-> +                       arg.op = BLKPG_ADD_PARTITION;
-> +                       break;
-> +               case COMMAND_DEL:
-> +                       part.pno = part_no;
-> +                       arg.op = BLKPG_DEL_PARTITION;
-> +                       break;
-> +       }
-> +
-> +       if (ioctl(fd, BLKPG, &arg))
-> +               sys_errmsg_die("Failed to issue BLKPG ioctl");
-> +
-> +       close(fd);
-> +
-> +       /* Exit happy */
-> +       return EXIT_SUCCESS;
-> +}
-> --
-> 2.2.0.rc0.207.ga3a616c
->
+thx!
+hofrat
