@@ -1,16 +1,18 @@
-Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
+Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdnOn-00028K-7h
- for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 22:15:42 +0000
-Received: by iebmp1 with SMTP id mp1so72822275ieb.0
- for <linux-mtd@lists.infradead.org>; Thu, 02 Apr 2015 15:15:17 -0700 (PDT)
+ id 1YdnOp-00029o-GJ
+ for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 22:15:44 +0000
+Received: by igcau2 with SMTP id au2so88284582igc.0
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Apr 2015 15:15:22 -0700 (PDT)
 Sender: Daniel Ehrenberg <dehrenberg@google.com>
 From: Dan Ehrenberg <dehrenberg@chromium.org>
 To: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
  ezequiel@vanguardiasur.com.ar, Richard Weinberger <richard@nod.at>
-Subject: [PATCH v5 0/3]  Improve MTD dynamic partitioning support
-Date: Thu,  2 Apr 2015 15:15:09 -0700
-Message-Id: <1428012912-17551-1-git-send-email-dehrenberg@chromium.org>
+Subject: [PATCH v5 2/3] mtd: part: Add sysfs variable for offset of partition
+Date: Thu,  2 Apr 2015 15:15:11 -0700
+Message-Id: <1428012912-17551-3-git-send-email-dehrenberg@chromium.org>
+In-Reply-To: <1428012912-17551-1-git-send-email-dehrenberg@chromium.org>
+References: <1428012912-17551-1-git-send-email-dehrenberg@chromium.org>
 Cc: gwendal@chromium.org, Dan Ehrenberg <dehrenberg@chromium.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,41 +23,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The goal of this patchset is to make mtd dynamic partitioning work
-better.
-- First, a new config option is added to allow the master device to
-  coexist with partitions, which allows partitions to be created or
-  removed based on the master even if other partitions exist.
-- Second, to identify partitions and improve visibility, 
-- Third, remove overlap checks for partitions, which had a bug
-  in them and don't seem necessary since static partitions don't
-  have overlap checks.
+This patch makes a sysfs variable called 'offset' on each partition
+which contains the offset in bytes from the beginning of the master
+device that the partition starts.
 
-This patchset has gone through a few iterations.
+Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+---
+ Documentation/ABI/testing/sysfs-class-mtd | 10 ++++++++++
+ drivers/mtd/mtdpart.c                     | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
-v1 is based on a different concept, where a separate partition is
-used as a master, and partitioning is simply made more flexible.
-
-v2 switched to the model of the master coexisting with the partitions.
-
-v3 brings back the patch to remove overlap checks, as testing
-discovered that the overlap checks were buggy. This version
-also makes some style improvements.
-
-v4 fixes some style issues in the sysfs patch and adds documentation.
-
-v5 cleans up some unused code in the third patch.
-
-Dan Ehrenberg (3):
-  mtd: part: Create the master device node when partitioned
-  mtd: part: Add sysfs variable for offset of partition
-  mtd: part: Remove partition overlap checks
-
- Documentation/ABI/testing/sysfs-class-mtd | 10 +++++
- drivers/mtd/Kconfig                       | 13 ++++++
- drivers/mtd/mtdcore.c                     | 52 +++++++++++++++--------
- drivers/mtd/mtdpart.c                     | 68 +++++++++++++++++++------------
- 4 files changed, 102 insertions(+), 41 deletions(-)
-
+diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
+index 76ee192..3b5c3bc 100644
+--- a/Documentation/ABI/testing/sysfs-class-mtd
++++ b/Documentation/ABI/testing/sysfs-class-mtd
+@@ -222,3 +222,13 @@ Description:
+ 		The number of blocks that are marked as reserved, if any, in
+ 		this partition. These are typically used to store the in-flash
+ 		bad block table (BBT).
++
++What:		/sys/class/mtd/mtdX/offset
++Date:		March 2015
++KernelVersion:	4.1
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		For a partition, the offset of that partition from the start
++		of the master device in bytes. This attribute is absent on
++		main devices, so it can be used to distinguish between
++		partitions and devices that aren't partitions.
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index a19ec5a..be80340 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -554,6 +554,30 @@ out_register:
+ 	return slave;
+ }
+ 
++static ssize_t mtd_partition_offset_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++	struct mtd_part *part = PART(mtd);
++	return snprintf(buf, PAGE_SIZE, "%lld\n", part->offset);
++}
++
++static DEVICE_ATTR(offset, S_IRUGO, mtd_partition_offset_show, NULL);
++
++static const struct attribute *mtd_partition_attrs[] = {
++	&dev_attr_offset.attr,
++	NULL
++};
++
++static int mtd_add_partition_attrs(struct mtd_part *new)
++{
++	int ret = sysfs_create_files(&new->mtd.dev.kobj, mtd_partition_attrs);
++	if (ret)
++		printk(KERN_WARNING
++		       "mtd: failed to create partition attrs, err=%d\n", ret);
++	return ret;
++}
++
+ int mtd_add_partition(struct mtd_info *master, const char *name,
+ 		      long long offset, long long length)
+ {
+@@ -603,6 +627,8 @@ int mtd_add_partition(struct mtd_info *master, const char *name,
+ 
+ 	add_mtd_device(&new->mtd);
+ 
++	mtd_add_partition_attrs(new);
++
+ 	return ret;
+ err_inv:
+ 	mutex_unlock(&mtd_partitions_mutex);
+@@ -620,6 +646,8 @@ int mtd_del_partition(struct mtd_info *master, int partno)
+ 	list_for_each_entry_safe(slave, next, &mtd_partitions, list)
+ 		if ((slave->master == master) &&
+ 		    (slave->mtd.index == partno)) {
++			sysfs_remove_files(&slave->mtd.dev.kobj,
++					   mtd_partition_attrs);
+ 			ret = del_mtd_device(&slave->mtd);
+ 			if (ret < 0)
+ 				break;
+@@ -663,6 +691,7 @@ int add_mtd_partitions(struct mtd_info *master,
+ 		mutex_unlock(&mtd_partitions_mutex);
+ 
+ 		add_mtd_device(&slave->mtd);
++		mtd_add_partition_attrs(slave);
+ 
+ 		cur_offset = slave->offset + slave->mtd.size;
+ 	}
 -- 
 2.2.0.rc0.207.ga3a616c
