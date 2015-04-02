@@ -1,14 +1,18 @@
-Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
+Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ydgdr-0002k0-1n
- for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 15:02:48 +0000
-Received: by lbdc10 with SMTP id c10so61260939lbd.2
- for <linux-mtd@lists.infradead.org>; Thu, 02 Apr 2015 08:02:24 -0700 (PDT)
+ id 1YdgeV-00030n-Lt
+ for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 15:03:28 +0000
+Received: by lboc7 with SMTP id c7so61380992lbo.1
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Apr 2015 08:03:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1427984026-31100-1-git-send-email-richard@nod.at>
+In-Reply-To: <551D58B2.2050302@nod.at>
 References: <1427984026-31100-1-git-send-email-richard@nod.at>
-Date: Thu, 2 Apr 2015 12:02:24 -0300
-Message-ID: <CAOMZO5A8im4c126wZyD8tv1B0-2mvsgh5bfZ1mJWyMhG0fNM_Q@mail.gmail.com>
+ <CAOMZO5AeuCJB5anOt9Rq_H-HsLhXR9VZz0PDkN=R6aRPZN=+0g@mail.gmail.com>
+ <551D5352.8060305@nod.at>
+ <CAOMZO5BpX0LHOmkPpsOHn+7x-VBzAnjuG0ed_n4OTe6_g0O2mQ@mail.gmail.com>
+ <551D58B2.2050302@nod.at>
+Date: Thu, 2 Apr 2015 12:03:03 -0300
+Message-ID: <CAOMZO5B0OCWRsE9eHF6SptvYop19CcToAvXSsBBG2GEyGj2QtA@mail.gmail.com>
 Subject: Re: [PATCH] mtd: Add simple read disturb test
 From: Fabio Estevam <festevam@gmail.com>
 To: Richard Weinberger <richard@nod.at>
@@ -26,32 +30,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 2, 2015 at 11:13 AM, Richard Weinberger <richard@nod.at> wrote:
+On Thu, Apr 2, 2015 at 11:56 AM, Richard Weinberger <richard@nod.at> wrote:
 
-> +               ret = mtdtest_erase_eraseblock(mtd, i);
-> +               if (ret) {
-> +                       err = ret;
-> +                       goto out;
-> +               }
+> It is not *much* better. It is just a matter of taste.
 
-Why not just do like this instead?
-
-              err = mtdtest_erase_eraseblock(mtd, i);
-              if (err)
-                 goto out;
-
-> +
-> +               ret = mtdtest_write(mtd, i * mtd->erasesize, mtd->erasesize,
-> +                                   iobuf_orig);
-> +               if (ret) {
-> +                       err = ret;
-> +                       goto out;
-> +               }
-
-Same here.
-
-> +               ret = mtdtest_relax();
-> +               if (ret)
-> +                       goto out;
-
-Here you propagate the wrong error. You test for 'ret' and propagate 'err'.
+... and instructions cycles as well ;-)
