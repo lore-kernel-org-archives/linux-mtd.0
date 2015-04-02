@@ -1,27 +1,36 @@
-Received: from hofr.at ([212.69.189.236] helo=mail.hofr.at)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdSsJ-0006FO-Ea
- for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 00:20:49 +0000
-Date: Thu, 2 Apr 2015 02:20:20 +0200
-From: Nicholas Mc Guire <der.herr@hofr.at>
-To: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] mtd: fsl_ifc_nand: use msecs_to_jiffies for time
- conversion
-Message-ID: <20150402002020.GA30284@opentech.at>
-References: <1426245828-15640-1-git-send-email-hofrat@osadl.org>
- <1162655988.11370.1427896685060.JavaMail.zimbra@xes-inc.com>
- <20150401142444.GA12125@opentech.at>
- <699783288.22321.1427900904422.JavaMail.zimbra@xes-inc.com>
- <1427901535.31790.10.camel@perches.com>
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YdUgU-0004fX-BV
+ for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 02:16:45 +0000
+Received: from /spool/local
+ by e8.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <stewart@linux.vnet.ibm.com>;
+ Wed, 1 Apr 2015 22:16:20 -0400
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com
+ [9.57.198.27])
+ by d01dlp03.pok.ibm.com (Postfix) with ESMTP id 71120C9005E
+ for <linux-mtd@lists.infradead.org>; Wed,  1 Apr 2015 22:07:28 -0400 (EDT)
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+ by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ t322GIFG29032618
+ for <linux-mtd@lists.infradead.org>; Thu, 2 Apr 2015 02:16:18 GMT
+Received: from d01av04.pok.ibm.com (localhost [127.0.0.1])
+ by d01av04.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+ t322GHBx031345
+ for <linux-mtd@lists.infradead.org>; Wed, 1 Apr 2015 22:16:18 -0400
+From: Stewart Smith <stewart@linux.vnet.ibm.com>
+To: Jeremy Kerr <jk@ozlabs.org>, linux-mtd@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 1/2] powerpc/powernv: Add interfaces for flash device
+ access
+In-Reply-To: <1427868330.742068.357457598273.1.gpush@pablo>
+References: <1427868330.742068.357457598273.1.gpush@pablo>
+Date: Thu, 02 Apr 2015 13:16:14 +1100
+Message-ID: <m31tk32s29.fsf@oc8180480414.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1427901535.31790.10.camel@perches.com>
-Cc: Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
- Joe Schultz <jschultz@xes-inc.com>, linux-mtd@lists.infradead.org,
- Nicholas Mc Guire <hofrat@osadl.org>, Aaron Sierra <asierra@xes-inc.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Cyril Bur <cyrilbur@gmail.com>, Joel Stanley <joel@jms.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,82 +40,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 01 Apr 2015, Joe Perches wrote:
+Jeremy Kerr <jk@ozlabs.org> writes:
 
-> On Wed, 2015-04-01 at 10:08 -0500, Aaron Sierra wrote:
-> > ----- Original Message -----
-> > > From: "Nicholas Mc Guire" <der.herr@hofr.at>
-> > > Sent: Wednesday, April 1, 2015 9:24:44 AM
-> > > 
-> > > On Wed, 01 Apr 2015, Aaron Sierra wrote:
-> > > 
-> > > > ----- Original Message -----
-> > > > > From: "Nicholas Mc Guire" <hofrat@osadl.org>
-> > > > > Sent: Friday, March 13, 2015 6:23:47 AM
-> > > > > 
-> > > > > This is only an API consolidation and should make things more readable
-> > > > > it replaces var * HZ / 1000 by msecs_to_jiffies(var) which helps
-> > > > > readability
-> > > > > and also handles all corner-cases properly.
-> > > > > 
-> > > > > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> > > > > ---
-> > > > > 
-> > > > > Patch was compile tested with corenet64_smp_defconfig
-> > > > > (implies CONFIG_MTD_NAND_FSL_IFC=y)
-> > > > > 
-> > > > > Patch is against 4.0-rc3 (localversion-next is -next-20150313
-> > > > > 
-> > > > >  drivers/mtd/nand/fsl_ifc_nand.c |    4 ++--
-> > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/mtd/nand/fsl_ifc_nand.c
-> > > > > b/drivers/mtd/nand/fsl_ifc_nand.c
-> > > > > index 4c05f4f..51394e5 100644
-> > > > > --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> > > > > +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> > > > > @@ -317,7 +317,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
-> > > > >  
-> > > > >  	/* wait for command complete flag or timeout */
-> > > > >  	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat,
-> > > > > -			   IFC_TIMEOUT_MSECS * HZ/1000);
-> > > > > +			   msecs_to_jiffies(IFC_TIMEOUT_MSECS));
-> > > > 
-> > > > Nicholas,
-> > > > Your patch makes me think that this timeout value should be calculated
-> > > > once during initialization and stored in a new member of
-> > > > struct fsl_ifc_mtd. That would improve readability AND have some
-> > > > positive impact on performance.
-> > > >
-> > > 
-> > > is it not a bit wasteful to put it into struct fsl_ifc_mtd
-> > > which is used quite often in here ?cho
-> > 
-> > Storing the timeout in the private structure would use 4 or 8 bytes,
-> > but the structure is passed around as pointer reference, so there is
-> > no added overhead there.
-> >  
-> > > #define IFC_TIMEOUT msecs_to_jiffies(500)
-> > >
-> > > sould do - its only referenced twice and would achieve what you
-> > > suggested - initializing it in one location and improved readability
-> > > 
-> > > 	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat, IFC_TIMEOUT);
-> > > 
-> > > would there be any disadvantage of this solution?
-> > 
-> > I don't have an issue with the compactness of your code. The issue
-> > to me is that msecs_to_jiffies() is a real function call, not a macro.
-> > That means that there would be a branch to that function followed by a
-> > non-trivial calculation *every* time fsl_ifc_run_command() is called.
-> > 
-> > If the timeout value were calculated during init, then the cost of
-> > accessing it would simply a pointer dereference.
-> 
-> Nicholas, any progress on that builtin_const_p variant
+> From: Cyril Bur <cyrilbur@gmail.com>
 >
-did not get to it yet - but thats the next thing
-on my fun list.
+> This change adds the OPAL interface definitions to allow Linux to read,
+> write and erase from system flash devices. We register platform devices
+> for the flash devices exported by firmware.
+>
+> We clash with the existing opal_flash_init function, which is really for
+> the FSP flash update functionality, so we rename that initcall to
+> opal_flash_update_init().
+>
+> A future change will add an mtd driver that uses this interface.
+>
+> Changes from Joel Stanley and Jeremy Kerr.
+>
+> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
+> Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
 
-thx!
-hofrat
+Acking that firmware calls are merged into skiboot.
+
+Acked-by: Stewart Smith <stewart@linux.vnet.ibm.com>
