@@ -1,16 +1,16 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ydgtx-0005Kc-G3
- for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 15:19:26 +0000
-Message-ID: <551D5DE4.4020006@nod.at>
-Date: Thu, 02 Apr 2015 17:19:00 +0200
+ id 1Ydh3e-0002t8-Cz
+ for linux-mtd@lists.infradead.org; Thu, 02 Apr 2015 15:29:27 +0000
+Message-ID: <551D603D.90805@nod.at>
+Date: Thu, 02 Apr 2015 17:29:01 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Fabio Estevam <festevam@gmail.com>
 Subject: Re: [PATCH] mtd: Add simple read disturb test
-References: <1427984026-31100-1-git-send-email-richard@nod.at>	<CAOMZO5AeuCJB5anOt9Rq_H-HsLhXR9VZz0PDkN=R6aRPZN=+0g@mail.gmail.com>	<551D5352.8060305@nod.at>	<CAOMZO5BpX0LHOmkPpsOHn+7x-VBzAnjuG0ed_n4OTe6_g0O2mQ@mail.gmail.com>	<551D58B2.2050302@nod.at>
- <CAOMZO5B0OCWRsE9eHF6SptvYop19CcToAvXSsBBG2GEyGj2QtA@mail.gmail.com>
-In-Reply-To: <CAOMZO5B0OCWRsE9eHF6SptvYop19CcToAvXSsBBG2GEyGj2QtA@mail.gmail.com>
+References: <1427984026-31100-1-git-send-email-richard@nod.at>
+ <CAOMZO5AeuCJB5anOt9Rq_H-HsLhXR9VZz0PDkN=R6aRPZN=+0g@mail.gmail.com>
+In-Reply-To: <CAOMZO5AeuCJB5anOt9Rq_H-HsLhXR9VZz0PDkN=R6aRPZN=+0g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -26,14 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 02.04.2015 um 17:03 schrieb Fabio Estevam:
-> On Thu, Apr 2, 2015 at 11:56 AM, Richard Weinberger <richard@nod.at> wrote:
-> 
->> It is not *much* better. It is just a matter of taste.
-> 
-> ... and instructions cycles as well ;-)
+Am 02.04.2015 um 16:32 schrieb Fabio Estevam:
+>> +
+>> +                       ret = read_eraseblock_by_page(i, iteration);
+>> +
+>> +                       ret = mtdtest_relax();
+>> +                       if (ret)
+>> +                               goto out;
 
-You do understand that this is an error path?
+BTW: While all the nitpicking you oversaw the real issue in my code.
+I do not check ret after read_eraseblock_by_page(). ;-\
 
 Thanks,
 //richard
