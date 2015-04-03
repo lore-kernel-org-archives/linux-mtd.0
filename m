@@ -1,17 +1,20 @@
 Received: from mx.dave-tech.it ([2.229.21.40])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdyBJ-0006kk-Vo
- for linux-mtd@lists.infradead.org; Fri, 03 Apr 2015 09:46:31 +0000
-Message-ID: <551E615D.3090804@dave-tech.it>
-Date: Fri, 03 Apr 2015 11:46:05 +0200
+ id 1Ye160-00089n-Tc
+ for linux-mtd@lists.infradead.org; Fri, 03 Apr 2015 12:53:14 +0000
+Message-ID: <551E8D21.7050507@dave-tech.it>
+Date: Fri, 03 Apr 2015 14:52:49 +0200
 From: Andrea Scian <rnd4@dave-tech.it>
 MIME-Version: 1.0
-To: mtd_mailinglist <linux-mtd@lists.infradead.org>
-Subject: [MLC NAND]: data pattern sensivity
-Content-Type: text/plain; charset=iso-8859-15
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH 1/2] mtd: nand: use a lower value for badblockbits when
+ working with MLC NAND
+References: <1425643938-24749-1-git-send-email-rnd4@dave-tech.it>	<1425643938-24749-2-git-send-email-rnd4@dave-tech.it>
+ <20150315100752.3458ccfe@bbrezillon>
+In-Reply-To: <20150315100752.3458ccfe@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +25,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Dear All,
+Sorry for the later feedback, but unfortunately I had to move to other
+stuff before coming back to this topic
 
-I was looking inside Boris presentation at latest ELC (nice work!) and
-trying to understand a bit deeper the systematic data pattern problem.
-I also did some research on this ML, looking for some details about this
-topic, finding not so much more the original RFC thread:
+Il 15/03/2015 10:07, Boris Brezillon ha scritto:
+> Hi Andrea,
+> 
+> On Fri,  6 Mar 2015 13:12:17 +0100
+> rnd4@dave-tech.it wrote:
+> 
+>> From: Andrea Scian <andrea.scian@dave.eu>
+>>
+>> MLC NANDs have more bit flips that SLC. When looking for bad block
+>> marker we have a lot of false positive if we check for the whole byte. To
+>> avoid this tolerate a few (4 here) bit flips for byte.
+> 
+> I'm not sure sure we want to accept 4 bitflips for all MLC NANDs. IMHO
+> this value should be chip dependent.
 
-http://thread.gmane.org/gmane.linux.drivers.devicetree/72230/
+I agree
 
-I search for this kind of information inside various MLC NAND datasheets
-that I've available on my desk but I cannot find any reference on this,
-maybe is called in a different way or maybe I'm looking to the wrong
-devices (e.g. I'm currently working with some Micron NANDs
-MT29F32G08CBADA, MT29F32G08CBACA..)
+> I know there is currently no way to retrieve this information,
 
-I CCed Boris and Jeff directly because maybe they can help me in better
-understanding the impact of this problem on some real device.
+For this reason I just put a hardcoded value.
 
-TIA & BR,
+> so here are two suggestions:
+> 
+> 1/ make this value depend on the required NAND ecc strength
+> (badblockbits = ecc_strength / 10 ?)
+> 2/ let each controller change this value after nand_scan_ident
+> depending on the detected chip until we find a generic solution to
+> select this value
+
+I'll try to figure out how to solve this
+Any suggestion is welcome!
+
+Regards,
 
 -- 
 
