@@ -1,20 +1,20 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ye160-00089n-Tc
- for linux-mtd@lists.infradead.org; Fri, 03 Apr 2015 12:53:14 +0000
-Message-ID: <551E8D21.7050507@dave-tech.it>
-Date: Fri, 03 Apr 2015 14:52:49 +0200
-From: Andrea Scian <rnd4@dave-tech.it>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ye5HH-0003Ov-Mt
+ for linux-mtd@lists.infradead.org; Fri, 03 Apr 2015 17:21:08 +0000
+From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
+To: Andrea Scian <rnd4@dave-tech.it>, mtd_mailinglist
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [MLC NAND]: data pattern sensivity
+Date: Fri, 3 Apr 2015 17:20:29 +0000
+Message-ID: <0D23F1ECC880A74392D56535BCADD7356B6D0F17@NTXBOIMBX03.micron.com>
+References: <551E615D.3090804@dave-tech.it>
+In-Reply-To: <551E615D.3090804@dave-tech.it>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 1/2] mtd: nand: use a lower value for badblockbits when
- working with MLC NAND
-References: <1425643938-24749-1-git-send-email-rnd4@dave-tech.it>	<1425643938-24749-2-git-send-email-rnd4@dave-tech.it>
- <20150315100752.3458ccfe@bbrezillon>
-In-Reply-To: <20150315100752.3458ccfe@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I'm always glad to help out. I'm not sure I quite understand the meaning of=
+ "data pattern sensivity", but when I read it seem related to ECC code word=
+ size and Cyclicdesign.com is a good resource and in particular http://cycl=
+icdesign.com/whitepapers/Cyclic_Design_NAND_ECC.pdf.  If I'm off track let =
+me know and I will keep looking.
 
-Sorry for the later feedback, but unfortunately I had to move to other
-stuff before coming back to this topic
 
-Il 15/03/2015 10:07, Boris Brezillon ha scritto:
-> Hi Andrea,
-> 
-> On Fri,  6 Mar 2015 13:12:17 +0100
-> rnd4@dave-tech.it wrote:
-> 
->> From: Andrea Scian <andrea.scian@dave.eu>
->>
->> MLC NANDs have more bit flips that SLC. When looking for bad block
->> marker we have a lot of false positive if we check for the whole byte. To
->> avoid this tolerate a few (4 here) bit flips for byte.
-> 
-> I'm not sure sure we want to accept 4 bitflips for all MLC NANDs. IMHO
-> this value should be chip dependent.
 
-I agree
+Jeff Lauruhn
+NAND Application Engineer
+Embedded Business Unit
+Micron Technology, Inc
 
-> I know there is currently no way to retrieve this information,
+-----Original Message-----
+From: Andrea Scian [mailto:rnd4@dave-tech.it]=20
+Sent: Friday, April 03, 2015 2:46 AM
+To: mtd_mailinglist
+Cc: Boris Brezillon; Jeff Lauruhn (jlauruhn)
+Subject: [MLC NAND]: data pattern sensivity
 
-For this reason I just put a hardcoded value.
 
-> so here are two suggestions:
-> 
-> 1/ make this value depend on the required NAND ecc strength
-> (badblockbits = ecc_strength / 10 ?)
-> 2/ let each controller change this value after nand_scan_ident
-> depending on the detected chip until we find a generic solution to
-> select this value
+Dear All,
 
-I'll try to figure out how to solve this
-Any suggestion is welcome!
+I was looking inside Boris presentation at latest ELC (nice work!) and tryi=
+ng to understand a bit deeper the systematic data pattern problem.
+I also did some research on this ML, looking for some details about this to=
+pic, finding not so much more the original RFC thread:
 
-Regards,
+http://thread.gmane.org/gmane.linux.drivers.devicetree/72230/
 
--- 
+I search for this kind of information inside various MLC NAND datasheets th=
+at I've available on my desk but I cannot find any reference on this, maybe=
+ is called in a different way or maybe I'm looking to the wrong devices (e.=
+g. I'm currently working with some Micron NANDs MT29F32G08CBADA, MT29F32G08=
+CBACA..)
+
+I CCed Boris and Jeff directly because maybe they can help me in better und=
+erstanding the impact of this problem on some real device.
+
+TIA & BR,
+
+--=20
 
 Andrea SCIAN
 
