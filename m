@@ -1,19 +1,17 @@
-Received: from ozlabs.org ([103.22.144.67])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdxJ5-000313-9B
- for linux-mtd@lists.infradead.org; Fri, 03 Apr 2015 08:50:27 +0000
-Message-ID: <1428051002.27245.1.camel@ellerman.id.au>
-Subject: Re: [PATCH 0/2] Add a MTD driver for OpenPower PNOR flash
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Jeremy Kerr <jk@ozlabs.org>
-Date: Fri, 03 Apr 2015 19:50:02 +1100
-In-Reply-To: <1427868330.741478.119647151764.0.gpush@pablo>
-References: <1427868330.741478.119647151764.0.gpush@pablo>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YdyBJ-0006kk-Vo
+ for linux-mtd@lists.infradead.org; Fri, 03 Apr 2015 09:46:31 +0000
+Message-ID: <551E615D.3090804@dave-tech.it>
+Date: Fri, 03 Apr 2015 11:46:05 +0200
+From: Andrea Scian <rnd4@dave-tech.it>
+MIME-Version: 1.0
+To: mtd_mailinglist <linux-mtd@lists.infradead.org>
+Subject: [MLC NAND]: data pattern sensivity
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
- Cyril Bur <cyrilbur@gmail.com>, Joel Stanley <joel@jms.id.au>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2015-04-01 at 14:05 +0800, Jeremy Kerr wrote:
-> Hi all,
-> 
-> This series implements a simple mtd device to allow access to the PNOR
-> flash on OpenPower machines. The flash is accessed through firmware
-> calls.
-> 
-> Patch 1/2 adds the Linux interface to these calls. Patch 2/2 adds a mtd
-> driver that uses these calls.
-> 
-> Because there's two subsystems involved here, there are a couple of
-> methods to merge this:
-> 
->  1) The powerpc folks take 1/2, and the mtd folks take 2/2, to be
->     applied once 1/2 is available (Michael has created a topic branch for
->     this in the past, which can make things a little easier), or
 
-Unfortunately the topic branch approach is problematic for this series, because
-we already have changes to opal.h in powerpc-next that clash.
+Dear All,
 
-I can still make a topic branch, but it would have to include ~10 powerpc
-commits prior to this patch.
+I was looking inside Boris presentation at latest ELC (nice work!) and
+trying to understand a bit deeper the systematic data pattern problem.
+I also did some research on this ML, looking for some details about this
+topic, finding not so much more the original RFC thread:
 
->  2) One of the maintainers takes both patches, once the other has acked
->     their patch. I'd suggest that it goes through the powerpc tree in
->     this case, as that will be less likely to conflict.
+http://thread.gmane.org/gmane.linux.drivers.devicetree/72230/
 
-If the mtd maintainers are happy with it this would be the easier approach in
-this instance.
+I search for this kind of information inside various MLC NAND datasheets
+that I've available on my desk but I cannot find any reference on this,
+maybe is called in a different way or maybe I'm looking to the wrong
+devices (e.g. I'm currently working with some Micron NANDs
+MT29F32G08CBADA, MT29F32G08CBACA..)
 
-cheers
+I CCed Boris and Jeff directly because maybe they can help me in better
+understanding the impact of this problem on some real device.
+
+TIA & BR,
+
+-- 
+
+Andrea SCIAN
+
+DAVE Embedded Systems
