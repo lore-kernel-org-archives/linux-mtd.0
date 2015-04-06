@@ -1,20 +1,23 @@
 Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YevVk-0003Re-TV
- for linux-mtd@lists.infradead.org; Mon, 06 Apr 2015 01:07:34 +0000
-Received: by pdbni2 with SMTP id ni2so28547729pdb.1
- for <linux-mtd@lists.infradead.org>; Sun, 05 Apr 2015 18:07:11 -0700 (PDT)
-Date: Sun, 5 Apr 2015 18:07:08 -0700
+ id 1YevaY-0005dT-FR
+ for linux-mtd@lists.infradead.org; Mon, 06 Apr 2015 01:12:30 +0000
+Received: by pddn5 with SMTP id n5so28594389pdd.2
+ for <linux-mtd@lists.infradead.org>; Sun, 05 Apr 2015 18:12:09 -0700 (PDT)
+Date: Sun, 5 Apr 2015 18:12:06 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: docg3: remove invalid __exit annotations
-Message-ID: <20150406010708.GJ2677@norris-Latitude-E6410>
-References: <1427820817-9446-1-git-send-email-computersforpeace@gmail.com>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH 1/2] mtd: mtd_oobtest: Fix bitflip_limit usage in test
+ case 3
+Message-ID: <20150406011206.GK2677@norris-Latitude-E6410>
+References: <1417792720-3017-1-git-send-email-rogerq@ti.com>
+ <1417792720-3017-2-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1427820817-9446-1-git-send-email-computersforpeace@gmail.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+In-Reply-To: <1417792720-3017-2-git-send-email-rogerq@ti.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, akinobu.mita@gmail.com,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 31, 2015 at 09:53:37AM -0700, Brian Norris wrote:
-> The .remove callback may be used when detaching a device via sysfs, so
-> we can't expect to free up this memory.
+On Fri, Dec 05, 2014 at 05:18:39PM +0200, Roger Quadros wrote:
+> In test case 3, we set vary_offset to write at different
+> offsets and lengths in the OOB available area. We need to
+> do the bitflip_limit check while checking for 0xff outside the
+> OOB offset + length area that we didn't modify during write.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
 
-Pushed to l2-mtd.git.
+Applied patch 1 to l2-mtd.git. Patch 2 couldn't be applied cleanly.
 
 Brian
