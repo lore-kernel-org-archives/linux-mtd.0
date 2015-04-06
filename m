@@ -1,20 +1,14 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YewUm-00026g-2b
- for linux-mtd@lists.infradead.org; Mon, 06 Apr 2015 02:10:36 +0000
-Received: by pdbnk13 with SMTP id nk13so29899941pdb.0
- for <linux-mtd@lists.infradead.org>; Sun, 05 Apr 2015 19:10:11 -0700 (PDT)
-Date: Sun, 5 Apr 2015 19:10:08 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH 1/2] spi-nor: Add support for Winbond w25q64dw serial flash
-Message-ID: <20150406021008.GP2677@norris-Latitude-E6410>
-References: <1423154343-189674-1-git-send-email-mika.westerberg@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1423154343-189674-1-git-send-email-mika.westerberg@linux.intel.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Received: from smtp-out-171.synserver.de ([212.40.185.171])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yf3q4-0002Aa-Dl
+ for linux-mtd@lists.infradead.org; Mon, 06 Apr 2015 10:01:05 +0000
+From: Lars-Peter Clausen <lars@metafoo.de>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: Switch to PM ops
+Date: Mon,  6 Apr 2015 12:00:39 +0200
+Message-Id: <1428314439-10853-1-git-send-email-lars@metafoo.de>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +18,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 05, 2015 at 06:39:02PM +0200, Mika Westerberg wrote:
-> Add Winbond (w25q64dw) 8MB flash to the list of supported chips.
-> 
-> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 0f8ec3c2d015..bf4966e77e84 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -657,6 +657,7 @@ static const struct spi_device_id spi_nor_ids[] = {
->  	{ "w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64, SECT_4K) },
->  	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
->  	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
-> +	{ "w25q64dw", INFO(0xef6017, 0, 64 * 1024, 128, SECT_4K) },
->  	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
->  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
->  	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+Use dev_pm_ops instead of the legacy suspend/resume callbacks for the MTD
+class suspend and resume operations.
 
-Pushed both to l2-mtd.git.
+While we are at it slightly reorder things to avoid the need for forward
+declarations.
 
-Brian
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ drivers/mtd/mtdcore.c | 44 ++++++++++++++++++++++++--------------------
+ 1 file changed, 24 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 11883bd..8e2399d 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -47,14 +47,34 @@
+ static struct backing_dev_info mtd_bdi = {
+ };
+ 
+-static int mtd_cls_suspend(struct device *dev, pm_message_t state);
+-static int mtd_cls_resume(struct device *dev);
++#ifdef CONFIG_PM_SLEEP
++
++static int mtd_cls_suspend(struct device *dev)
++{
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++
++	return mtd ? mtd_suspend(mtd) : 0;
++}
++
++static int mtd_cls_resume(struct device *dev)
++{
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++
++	if (mtd)
++		mtd_resume(mtd);
++	return 0;
++}
++
++static SIMPLE_DEV_PM_OPS(mtd_cls_pm_ops, mtd_cls_suspend, mtd_cls_resume);
++#define MTD_CLS_PM_OPS (&mtd_cls_pm_ops)
++#else
++#define MTD_CLS_PM_OPS NULL
++#endif
+ 
+ static struct class mtd_class = {
+ 	.name = "mtd",
+ 	.owner = THIS_MODULE,
+-	.suspend = mtd_cls_suspend,
+-	.resume = mtd_cls_resume,
++	.pm = MTD_CLS_PM_OPS,
+ };
+ 
+ static DEFINE_IDR(mtd_idr);
+@@ -87,22 +107,6 @@ static void mtd_release(struct device *dev)
+ 	device_destroy(&mtd_class, index + 1);
+ }
+ 
+-static int mtd_cls_suspend(struct device *dev, pm_message_t state)
+-{
+-	struct mtd_info *mtd = dev_get_drvdata(dev);
+-
+-	return mtd ? mtd_suspend(mtd) : 0;
+-}
+-
+-static int mtd_cls_resume(struct device *dev)
+-{
+-	struct mtd_info *mtd = dev_get_drvdata(dev);
+-
+-	if (mtd)
+-		mtd_resume(mtd);
+-	return 0;
+-}
+-
+ static ssize_t mtd_type_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-- 
+1.8.0
