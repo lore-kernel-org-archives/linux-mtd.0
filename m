@@ -1,20 +1,22 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YfQn8-0002nU-JG
- for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 10:31:35 +0000
-Message-ID: <5523B1EE.1050906@dave-tech.it>
-Date: Tue, 07 Apr 2015 12:31:10 +0200
-From: Andrea Scian <rnd4@dave-tech.it>
-MIME-Version: 1.0
-To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>,
- mtd_mailinglist <linux-mtd@lists.infradead.org>
+ id 1YfRXx-0008Um-0p
+ for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 11:19:58 +0000
+Date: Tue, 7 Apr 2015 13:19:28 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Andrea Scian <rnd4@dave-tech.it>
 Subject: Re: [MLC NAND]: data pattern sensivity
+Message-ID: <20150407131928.350ee827@bbrezillon>
+In-Reply-To: <5523B1EE.1050906@dave-tech.it>
 References: <551E615D.3090804@dave-tech.it>
  <0D23F1ECC880A74392D56535BCADD7356B6D0F17@NTXBOIMBX03.micron.com>
-In-Reply-To: <0D23F1ECC880A74392D56535BCADD7356B6D0F17@NTXBOIMBX03.micron.com>
-Content-Type: text/plain; charset=windows-1252
+ <5523B1EE.1050906@dave-tech.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
+ mtd_mailinglist <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Il 03/04/2015 19:20, Jeff Lauruhn (jlauruhn) ha scritto:
-> I'm always glad to help out. I'm not sure I quite understand the meaning of "data pattern sensivity", but when I read it seem related to ECC code word size and Cyclicdesign.com is a good resource and in particular http://cyclicdesign.com/whitepapers/Cyclic_Design_NAND_ECC.pdf.  
+Hi,
 
-Thanks for pointing out the whitepaper
+On Tue, 07 Apr 2015 12:31:10 +0200
+Andrea Scian <rnd4@dave-tech.it> wrote:
 
-> If I'm off track let me know and I will keep looking.
+> Il 03/04/2015 19:20, Jeff Lauruhn (jlauruhn) ha scritto:
+> > I'm always glad to help out. I'm not sure I quite understand the meaning of "data pattern sensivity", but when I read it seem related to ECC code word size and Cyclicdesign.com is a good resource and in particular http://cyclicdesign.com/whitepapers/Cyclic_Design_NAND_ECC.pdf.  
+> 
+> Thanks for pointing out the whitepaper
 
-I don't really know, but, IIUC, is something related to NAND technology
-and its impact is dependent from the specific MLC implementation.
-For sure Boris can help us in have a better understanding of this issue :-)
+I haven't read this paper yet, but according to the title I doubt it is
+related to the "repeated/systematic data pattern" issue.
 
-BR,
+> 
+> > If I'm off track let me know and I will keep looking.
+> 
+> I don't really know, but, IIUC, is something related to NAND technology
+> and its impact is dependent from the specific MLC implementation.
+> For sure Boris can help us in have a better understanding of this issue :-)
+
+Actually this problem was mentioned in the Micron document I pointed
+out in a previous thread ([1] page 14).
+I also found a paper describing the benefit of data scrambling on MLC
+chips [2].
+
+Best Regards,
+
+Boris
+
+[1]http://www.bswd.com/FMS09/FMS09-T2A-Grunzke.pdf
+[2]http://soc.yonsei.ac.kr/Abstract/International_journal/pdf/106_Data%20Randomization%20Scheme%20for%20Endurance%20Enhancement%20and%20Interference%20Mitigation%20of%20Multilevel%20Flash%20Memory%20Devices.pdf
 
 -- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
-
-
->
->
-> Jeff Lauruhn
-> NAND Application Engineer
-> Embedded Business Unit
-> Micron Technology, Inc
->
-> -----Original Message-----
-> From: Andrea Scian [mailto:rnd4@dave-tech.it] 
-> Sent: Friday, April 03, 2015 2:46 AM
-> To: mtd_mailinglist
-> Cc: Boris Brezillon; Jeff Lauruhn (jlauruhn)
-> Subject: [MLC NAND]: data pattern sensivity
->
->
-> Dear All,
->
-> I was looking inside Boris presentation at latest ELC (nice work!) and trying to understand a bit deeper the systematic data pattern problem.
-> I also did some research on this ML, looking for some details about this topic, finding not so much more the original RFC thread:
->
-> http://thread.gmane.org/gmane.linux.drivers.devicetree/72230/
->
-> I search for this kind of information inside various MLC NAND datasheets that I've available on my desk but I cannot find any reference on this, maybe is called in a different way or maybe I'm looking to the wrong devices (e.g. I'm currently working with some Micron NANDs MT29F32G08CBADA, MT29F32G08CBACA..)
->
-> I CCed Boris and Jeff directly because maybe they can help me in better understanding the impact of this problem on some real device.
->
-> TIA & BR,
->
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
