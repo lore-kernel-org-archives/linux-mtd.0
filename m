@@ -1,24 +1,20 @@
-Received: from gateway12.websitewelcome.com ([69.56.148.16])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YfPQf-00033h-IB
- for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 09:04:18 +0000
-Received: from gadgetmobile.websitewelcome.com
- (gadgetmobile.websitewelcome.com [192.185.81.221])
- by gateway12.websitewelcome.com (Postfix) with ESMTP id 420CD46A11538
- for <linux-mtd@lists.infradead.org>; Tue,  7 Apr 2015 04:03:44 -0500 (CDT)
-Received: from olukanka by gadgetmobile.websitewelcome.com with local (Exim
- 4.82) (envelope-from <olukanka@gadgetmobile.websitewelcome.com>)
- id 1YfPQ7-0007tv-9B
- for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 04:03:43 -0500
-To: linux-mtd@lists.infradead.org
-Subject: Notice of appearance in Court #00000791873
-Date: Tue, 7 Apr 2015 04:03:43 -0500
-From: "County Court" <francisco.barber@olukankara.com>
-Reply-To: "County Court" <francisco.barber@olukankara.com>
-Message-ID: <a1a72f23b23ed649e02e6fe263d32203@olukankara.com>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YfQn8-0002nU-JG
+ for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 10:31:35 +0000
+Message-ID: <5523B1EE.1050906@dave-tech.it>
+Date: Tue, 07 Apr 2015 12:31:10 +0200
+From: Andrea Scian <rnd4@dave-tech.it>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_c2da10b7d2b2a728fee32abd08a1e412"
-Content-Transfer-Encoding: 8bit
+To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>,
+ mtd_mailinglist <linux-mtd@lists.infradead.org>
+Subject: Re: [MLC NAND]: data pattern sensivity
+References: <551E615D.3090804@dave-tech.it>
+ <0D23F1ECC880A74392D56535BCADD7356B6D0F17@NTXBOIMBX03.micron.com>
+In-Reply-To: <0D23F1ECC880A74392D56535BCADD7356B6D0F17@NTXBOIMBX03.micron.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,103 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_c2da10b7d2b2a728fee32abd08a1e412
-Content-Type: text/plain; charset=us-ascii
+Il 03/04/2015 19:20, Jeff Lauruhn (jlauruhn) ha scritto:
+> I'm always glad to help out. I'm not sure I quite understand the meaning of "data pattern sensivity", but when I read it seem related to ECC code word size and Cyclicdesign.com is a good resource and in particular http://cyclicdesign.com/whitepapers/Cyclic_Design_NAND_ECC.pdf.  
 
-Notice to Appear,
+Thanks for pointing out the whitepaper
 
-This is to inform you to appear in the Court on the April 15 for your case hearing.
-Please, prepare all the documents relating to the case and bring them to Court on the specified date.
-Note: The case will be heard by the judge in your absence if you do not come.
+> If I'm off track let me know and I will keep looking.
 
-You can review complete details of the Court Notice in the attachment.
+I don't really know, but, IIUC, is something related to NAND technology
+and its impact is dependent from the specific MLC implementation.
+For sure Boris can help us in have a better understanding of this issue :-)
 
-Regards,
-Francisco Barber,
-Court Secretary.
+BR,
 
+-- 
 
---b1_c2da10b7d2b2a728fee32abd08a1e412
-Content-Type: application/zip; name="Court_Notification_00000791873.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=Court_Notification_00000791873.zip
+Andrea SCIAN
 
-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
+DAVE Embedded Systems
 
 
---b1_c2da10b7d2b2a728fee32abd08a1e412--
+>
+>
+> Jeff Lauruhn
+> NAND Application Engineer
+> Embedded Business Unit
+> Micron Technology, Inc
+>
+> -----Original Message-----
+> From: Andrea Scian [mailto:rnd4@dave-tech.it] 
+> Sent: Friday, April 03, 2015 2:46 AM
+> To: mtd_mailinglist
+> Cc: Boris Brezillon; Jeff Lauruhn (jlauruhn)
+> Subject: [MLC NAND]: data pattern sensivity
+>
+>
+> Dear All,
+>
+> I was looking inside Boris presentation at latest ELC (nice work!) and trying to understand a bit deeper the systematic data pattern problem.
+> I also did some research on this ML, looking for some details about this topic, finding not so much more the original RFC thread:
+>
+> http://thread.gmane.org/gmane.linux.drivers.devicetree/72230/
+>
+> I search for this kind of information inside various MLC NAND datasheets that I've available on my desk but I cannot find any reference on this, maybe is called in a different way or maybe I'm looking to the wrong devices (e.g. I'm currently working with some Micron NANDs MT29F32G08CBADA, MT29F32G08CBACA..)
+>
+> I CCed Boris and Jeff directly because maybe they can help me in better understanding the impact of this problem on some real device.
+>
+> TIA & BR,
+>
