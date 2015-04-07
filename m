@@ -1,20 +1,15 @@
-Received: from ozlabs.org ([103.22.144.67])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YfJfk-0000yh-Fv
- for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 02:55:28 +0000
-Message-ID: <55234705.6090102@ozlabs.org>
-Date: Tue, 07 Apr 2015 10:55:01 +0800
-From: Jeremy Kerr <jk@ozlabs.org>
+ id 1YfOY3-0007b8-Tg
+ for linux-mtd@lists.infradead.org; Tue, 07 Apr 2015 08:07:53 +0000
+Message-ID: <55239023.5000107@huawei.com>
+Date: Tue, 7 Apr 2015 16:06:59 +0800
+From: fangwei <fangwei1@huawei.com>
 MIME-Version: 1.0
-To: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH 0/2] Add a MTD driver for OpenPower PNOR flash
-References: <1427868330.741478.119647151764.0.gpush@pablo>
- <1428051002.27245.1.camel@ellerman.id.au>
-In-Reply-To: <1428051002.27245.1.camel@ellerman.id.au>
-Content-Type: text/plain; charset=utf-8
+To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] jffs2: remove unneeded kfree.
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- Cyril Bur <cyrilbur@gmail.com>, Joel Stanley <joel@jms.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+c->oobbuf hasn't been kmalloced in jffs2_dataflash_setup, so
+there is no need to free it.
 
-> If the mtd maintainers are happy with it this would be the easier approach in
-> this instance.
+Signed-off-by: Wei Fang <fangwei1@huawei.com>
+---
+ fs/jffs2/wbuf.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-OK, sounds good to me.
-
-MTD folks: any objections to this process? If not, is this patch good to
-go in, or any changes we should make?
-
-Cheers,
-
-
-Jeremy
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index 09ed551..63f31c0 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -1274,7 +1274,6 @@ int jffs2_dataflash_setup(struct jffs2_sb_info *c) {
+ #ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+        c->wbuf_verify = kmalloc(c->wbuf_pagesize, GFP_KERNEL);
+        if (!c->wbuf_verify) {
+-               kfree(c->oobbuf);
+                kfree(c->wbuf);
+                return -ENOMEM;
+        }
+-- 
+1.8.3.1
