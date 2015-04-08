@@ -3,9 +3,9 @@ To: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Thierry Reding <thierry.reding@gmail.com>,
  Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH v2 4/5] ARM: tegra: add Tegra20 NAND flash controller node
-Date: Wed,  8 Apr 2015 21:46:09 +0200
-Message-Id: <1428522370-18035-5-git-send-email-dev@lynxeye.de>
+Subject: [PATCH v2 1/5] mtd: nand: tegra: add devicetree binding
+Date: Wed,  8 Apr 2015 21:46:06 +0200
+Message-Id: <1428522370-18035-2-git-send-email-dev@lynxeye.de>
 In-Reply-To: <1428522370-18035-1-git-send-email-dev@lynxeye.de>
 References: <1428522370-18035-1-git-send-email-dev@lynxeye.de>
 Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
@@ -24,23 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add basic controller description to be extended
-by individual boards.
+This adds the devicetree binding for the Tegra 2 NAND flash
+controller.
 
 Signed-off-by: Lucas Stach <dev@lynxeye.de>
 ---
- arch/arm/boot/dts/tegra20.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ .../bindings/mtd/nvidia,tegra20-nand.txt           | 29 ++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
 
-diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
-index e5527f7..d3c9a38 100644
---- a/arch/arm/boot/dts/tegra20.dtsi
-+++ b/arch/arm/boot/dts/tegra20.dtsi
-@@ -360,6 +360,19 @@
- 		status = "disabled";
- 	};
- 
-+	nand: nand@70008000 {
+diff --git a/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+new file mode 100644
+index 0000000..522d442
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+@@ -0,0 +1,29 @@
++NVIDIA Tegra NAND Flash controller
++
++Required properties:
++- compatible: Must be one of:
++  - "nvidia,tegra20-nand"
++- reg: MMIO address range
++- interrupts: interrupt output of the NFC controller
++- clocks: Must contain an entry for each entry in clock-names.
++  See ../clocks/clock-bindings.txt for details.
++- clock-names: Must include the following entries:
++  - nand
++- resets: Must contain an entry for each entry in reset-names.
++  See ../reset/reset.txt for details.
++- reset-names: Must include the following entries:
++  - nand
++
++Optional properties:
++- nvidia,wp-gpios: GPIO used to disable write protection of the flash
++
++  Example:
++	nand@70008000 {
 +		compatible = "nvidia,tegra20-nand";
 +		reg = <0x70008000 0x100>;
 +		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
@@ -48,13 +67,6 @@ index e5527f7..d3c9a38 100644
 +		clock-names = "nand";
 +		resets = <&tegra_car 13>;
 +		reset-names = "nand";
-+		status = "disabled";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
 +	};
-+
- 	pwm: pwm@7000a000 {
- 		compatible = "nvidia,tegra20-pwm";
- 		reg = <0x7000a000 0x100>;
 -- 
 2.1.0
