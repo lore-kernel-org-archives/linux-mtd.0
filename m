@@ -3,9 +3,9 @@ To: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Thierry Reding <thierry.reding@gmail.com>,
  Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH v2 5/5] ARM: tegra: enable NAND flash on Colibri T20
-Date: Wed,  8 Apr 2015 21:46:10 +0200
-Message-Id: <1428522370-18035-6-git-send-email-dev@lynxeye.de>
+Subject: [PATCH v2 4/5] ARM: tegra: add Tegra20 NAND flash controller node
+Date: Wed,  8 Apr 2015 21:46:09 +0200
+Message-Id: <1428522370-18035-5-git-send-email-dev@lynxeye.de>
 In-Reply-To: <1428522370-18035-1-git-send-email-dev@lynxeye.de>
 References: <1428522370-18035-1-git-send-email-dev@lynxeye.de>
 Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
@@ -24,29 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This enables the on-module ONFI conformant NAND flash.
+Add basic controller description to be extended
+by individual boards.
 
 Signed-off-by: Lucas Stach <dev@lynxeye.de>
 ---
- arch/arm/boot/dts/tegra20-colibri-512.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm/boot/dts/tegra20.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm/boot/dts/tegra20-colibri-512.dtsi b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-index 8e0066a..034d84b 100644
---- a/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-+++ b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-@@ -455,6 +455,12 @@
- 		};
+diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
+index e5527f7..d3c9a38 100644
+--- a/arch/arm/boot/dts/tegra20.dtsi
++++ b/arch/arm/boot/dts/tegra20.dtsi
+@@ -360,6 +360,19 @@
+ 		status = "disabled";
  	};
  
-+	nand@70008000 {
-+		status = "okay";
-+		nand-bus-width = <8>;
-+		nvidia,wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_HIGH>;
++	nand: nand@70008000 {
++		compatible = "nvidia,tegra20-nand";
++		reg = <0x70008000 0x100>;
++		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++		clock-names = "nand";
++		resets = <&tegra_car 13>;
++		reset-names = "nand";
++		status = "disabled";
++		#address-cells = <1>;
++		#size-cells = <1>;
 +	};
 +
- 	usb@c5004000 {
- 		status = "okay";
- 		nvidia,phy-reset-gpio = <&gpio TEGRA_GPIO(V, 1)
+ 	pwm: pwm@7000a000 {
+ 		compatible = "nvidia,tegra20-pwm";
+ 		reg = <0x7000a000 0x100>;
 -- 
 2.1.0
