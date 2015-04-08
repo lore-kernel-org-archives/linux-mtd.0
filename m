@@ -1,20 +1,20 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YfoTn-0002uY-Sx
- for linux-mtd@lists.infradead.org; Wed, 08 Apr 2015 11:49:12 +0000
-Message-ID: <5525159A.9020706@sigma-star.at>
-Date: Wed, 08 Apr 2015 13:48:42 +0200
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 4/4] UBI: Implement bitrot checking
-References: <1427631197-23610-1-git-send-email-richard@nod.at>
- <1427631197-23610-5-git-send-email-richard@nod.at>
-In-Reply-To: <1427631197-23610-5-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: boris.brezillon@free-electrons.com, linux-kernel@vger.kernel.org,
- dedekind1@gmail.com
+From: Lucas Stach <dev@lynxeye.de>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH v2 5/5] ARM: tegra: enable NAND flash on Colibri T20
+Date: Wed,  8 Apr 2015 21:46:10 +0200
+Message-Id: <1428522370-18035-6-git-send-email-dev@lynxeye.de>
+In-Reply-To: <1428522370-18035-1-git-send-email-dev@lynxeye.de>
+References: <1428522370-18035-1-git-send-email-dev@lynxeye.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
+ Pawel Moll <pawel.moll@arm.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Stefan Agner <stefan@agner.ch>, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, linux-tegra@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Marcel Ziswiler <marcel@ziswiler.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,4 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Reviewed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+This enables the on-module ONFI conformant NAND flash.
+
+Signed-off-by: Lucas Stach <dev@lynxeye.de>
+---
+ arch/arm/boot/dts/tegra20-colibri-512.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm/boot/dts/tegra20-colibri-512.dtsi b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
+index 8e0066a..034d84b 100644
+--- a/arch/arm/boot/dts/tegra20-colibri-512.dtsi
++++ b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
+@@ -455,6 +455,12 @@
+ 		};
+ 	};
+ 
++	nand@70008000 {
++		status = "okay";
++		nand-bus-width = <8>;
++		nvidia,wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_HIGH>;
++	};
++
+ 	usb@c5004000 {
+ 		status = "okay";
+ 		nvidia,phy-reset-gpio = <&gpio TEGRA_GPIO(V, 1)
+-- 
+2.1.0
