@@ -1,20 +1,18 @@
-Received: from mail-vn0-x22d.google.com ([2607:f8b0:400c:c0f::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yg7v0-0005pc-Ab
- for linux-mtd@lists.infradead.org; Thu, 09 Apr 2015 08:34:35 +0000
-Received: by vnbf1 with SMTP id f1so20819163vnb.0
- for <linux-mtd@lists.infradead.org>; Thu, 09 Apr 2015 01:34:11 -0700 (PDT)
+Message-ID: <55265F91.1080307@ti.com>
+Date: Thu, 9 Apr 2015 14:16:33 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1427410790-8855-1-git-send-email-david.oberhollenzer@sigma-star.at>
-References: <1427410790-8855-1-git-send-email-david.oberhollenzer@sigma-star.at>
-Date: Thu, 9 Apr 2015 10:34:10 +0200
-Message-ID: <CAFLxGvywkhhb+KjMfLwtoNMZ+yvJZw+rHpz5ekkb_XH8wCpVUw@mail.gmail.com>
-Subject: Re: [PATCH V2] UBI: power cut emulation for testing
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: david.oberhollenzer@sigma-star.at
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v2 2/2] mtd: mtd_oobtest: Fix the address offset with
+ vary_offset case
+References: <1417792720-3017-1-git-send-email-rogerq@ti.com>
+ <1417792720-3017-3-git-send-email-rogerq@ti.com>
+ <20150402162619.GG32500@ld-irv-0074>
+In-Reply-To: <20150402162619.GG32500@ld-irv-0074>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, akinobu.mita@gmail.com,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 26, 2015 at 11:59 PM,  <david.oberhollenzer@sigma-star.at> wrote:
-> Emulate random power cuts by switching device to ro after a number of
-> writes to allow simple power cut testing with nand-sim.
->
-> Maximum and minimum number of successful writes before power cut and
-> what kind of writes (EC header, VID header or none) to interrupt
-> configurable via debugfs.
->
-> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-> ---
-> V2: Remove broken check to prevent multiple triggering
+When vary_offset is set (e.g. test case 3), the offset is not always
+zero so memcmpshow() will show the wrong offset in the print message.
+To fix this we introduce a new function memcmpshowoffset() which takes
+offset as a parameter and displays the right offset and use it in
+the case where offset is non zero.
 
-Applied and pushed to linux-ubifs.git/master!
+The old memcmpshow() functionality is preserved by converting it into
+a macro with offset preset to 0.
 
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ drivers/mtd/tests/oobtest.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+index be6e181..0d5e85d 100644
+--- a/drivers/mtd/tests/oobtest.c
++++ b/drivers/mtd/tests/oobtest.c
+@@ -122,7 +122,8 @@ static int write_whole_device(void)
+  * Display the address, offset and data bytes at comparison failure.
+  * Return number of bitflips encountered.
+  */
+-static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t count)
++static size_t memcmpshowoffset(loff_t addr, loff_t offset, const void *cs,
++			       const void *ct, size_t count)
+ {
+ 	const unsigned char *su1, *su2;
+ 	int res;
+@@ -132,8 +133,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
+ 	for (su1 = cs, su2 = ct; 0 < count; ++su1, ++su2, count--, i++) {
+ 		res = *su1 ^ *su2;
+ 		if (res) {
+-			pr_info("error @addr[0x%lx:0x%zx] 0x%x -> 0x%x diff 0x%x\n",
+-				(unsigned long)addr, i, *su1, *su2, res);
++			pr_info("error @addr[0x%lx:0x%lx] 0x%x -> 0x%x diff 0x%x\n",
++				(unsigned long)addr, (unsigned long)offset + i,
++				*su1, *su2, res);
+ 			bitflips += hweight8(res);
+ 		}
+ 	}
+@@ -141,6 +143,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
+ 	return bitflips;
+ }
+ 
++#define memcmpshow(addr, cs, ct, count) memcmpshowoffset((addr), 0, (cs), (ct),\
++							 (count))
++
+ /*
+  * Compare with 0xff and show the address, offset and data bytes at
+  * comparison failure. Return number of bitflips encountered.
+@@ -224,9 +229,10 @@ static int verify_eraseblock(int ebnum)
+ 				errcnt += 1;
+ 				return err ? err : -1;
+ 			}
+-			bitflips = memcmpshow(addr, readbuf + use_offset,
+-					      writebuf + (use_len_max * i) + use_offset,
+-					      use_len);
++			bitflips = memcmpshowoffset(addr, use_offset,
++						    readbuf + use_offset,
++						    writebuf + (use_len_max * i) + use_offset,
++						    use_len);
+ 
+ 			/* verify pre-offset area for 0xff */
+ 			bitflips += memffshow(addr, 0, readbuf, use_offset);
 -- 
-Thanks,
-//richard
+2.1.0
