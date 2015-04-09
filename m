@@ -1,24 +1,21 @@
-Received: from gateway01.websitewelcome.com ([69.56.159.19])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YgHix-0002S8-L9
- for linux-mtd@lists.infradead.org; Thu, 09 Apr 2015 19:02:50 +0000
-Received: from lagonda.websitewelcome.com (lagonda.websitewelcome.com
- [192.185.83.200])
- by gateway01.websitewelcome.com (Postfix) with ESMTP id 3BFF9C8C02FAF
- for <linux-mtd@lists.infradead.org>; Thu,  9 Apr 2015 14:02:20 -0500 (CDT)
-Received: from koshi by lagonda.websitewelcome.com with local (Exim 4.82)
- (envelope-from <koshi@lagonda.websitewelcome.com>)
- id 1YgHiW-0005Wb-05
- for linux-mtd@lists.infradead.org; Thu, 09 Apr 2015 14:02:20 -0500
-To: linux-mtd@lists.infradead.org
-Subject: Payment for driving on toll road, invoice #000658091
-Date: Thu, 9 Apr 2015 14:02:19 -0500
-From: "E-ZPass Agent" <hugh.carroll@koshitours.com>
-Reply-To: "E-ZPass Agent" <hugh.carroll@koshitours.com>
-Message-ID: <ef8be5d2efff9f06c1215e651b5d63aa@koshitours.com>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YgIvU-0004Dp-Tg
+ for linux-mtd@lists.infradead.org; Thu, 09 Apr 2015 20:19:51 +0000
+Message-ID: <5526DEC7.8020802@dave-tech.it>
+Date: Thu, 09 Apr 2015 22:19:19 +0200
+From: Andrea Scian <rnd4@dave-tech.it>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_73cd23e2a2412901b9c7ca77f329fe5a"
-Content-Transfer-Encoding: 8bit
+To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [MLC NAND]: data pattern sensivity
+References: <551E615D.3090804@dave-tech.it>	<0D23F1ECC880A74392D56535BCADD7356B6D0F17@NTXBOIMBX03.micron.com>	<5523B1EE.1050906@dave-tech.it>	<20150407131928.350ee827@bbrezillon>	<5523D9D5.1020109@dave-tech.it>
+ <20150407170833.4726f3b9@bbrezillon>
+ <0D23F1ECC880A74392D56535BCADD7356B6D16E1@NTXBOIMBX03.micron.com>
+In-Reply-To: <0D23F1ECC880A74392D56535BCADD7356B6D16E1@NTXBOIMBX03.micron.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,106 +25,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_73cd23e2a2412901b9c7ca77f329fe5a
-Content-Type: text/plain; charset=us-ascii
+Il 07/04/2015 19:45, Jeff Lauruhn (jlauruhn) ha scritto:
+> I read back through the posts and I think we are talking about 2 separate things, random read time and randomization.
+>
+> Rand Read (tR) assumes you are doing a single read of a page (worst case), but most data is stored in blocks sequentially, so data output can be improve significantly by read by taking advantage of commands like READ PAGE CACHE SEQUENTIAL which copies the next sequential page from the NAND Flash array to the data register.
+>
+> Randomization is a relatively new feature, I'm no expert, but it's in general we know there are some distributions that are worse than others, and by randomizing the data we can avoid worst case and improve endurance.
 
-Notice to Appear,
+Definitely here I'm speaking about the latter.
+By looking inside the datasheet (hynix, micron and so on) I have I've 
+found no MLC part that explicitly required such a implementation, apart 
+the one pointed out by Boris.
 
-You have not paid for driving on a toll road. 
-Please, do not forget to service your debt.
+Kind Regards,
 
-You can review the invoice in the attachment.
+-- 
 
-Kind regards,
-Hugh Carroll,
-E-ZPass Support.
+Andrea SCIAN
 
-
---b1_73cd23e2a2412901b9c7ca77f329fe5a
-Content-Type: application/zip; name="Invoice_000658091.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=Invoice_000658091.zip
-
-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
+DAVE Embedded Systems
 
 
---b1_73cd23e2a2412901b9c7ca77f329fe5a--
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> Sent: Tuesday, April 07, 2015 8:09 AM
+> To: Andrea Scian
+> Cc: Jeff Lauruhn (jlauruhn); mtd_mailinglist
+> Subject: Re: [MLC NAND]: data pattern sensivity
+>
+> On Tue, 07 Apr 2015 15:21:25 +0200
+> Andrea Scian <rnd4@dave-tech.it> wrote:
+>
+>> Thanks for linking this again.
+>> I think that Jeff can help us in understanding this further.
+>> The documents is pretty old (2009) and is about TLC only.
+>> Does it mean that MLC are less (or not at all) affected by this issue?
+>
+> Some MLC chips require a randomization step: take a look at this datasheet [1], page 21:
+> "Users are required to employ randomizer function in the NAND controller to meet target endurance of the device."
+>
+> [1]http://www.100y.com.tw/pdf_file/37-SAMSUNG-K9GBG08U0A-SCB0.pdf
+>
+>
+> --
+> Boris Brezillon, Free Electrons
+> Embedded Linux and Kernel engineering
+> http://free-electrons.com
+>
+
+
+-- 
+
+Andrea SCIAN
+
+DAVE Embedded Systems
