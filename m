@@ -1,23 +1,20 @@
-Received: from h1673369.stratoserver.net ([85.214.135.14])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yg4Cd-0006MD-UK
- for linux-mtd@lists.infradead.org; Thu, 09 Apr 2015 04:36:32 +0000
-Received: from localhost (localhost [127.0.0.1])
- by h1673369.stratoserver.net (Postfix) with ESMTP id 5BD082750666
- for <linux-mtd@lists.infradead.org>; Thu,  9 Apr 2015 06:27:25 +0200 (CEST)
-Received: from h1673369.stratoserver.net ([127.0.0.1])
- by localhost (h1673369.stratoserver.net [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id zy+EDp-OPr8j for <linux-mtd@lists.infradead.org>;
- Thu,  9 Apr 2015 06:27:23 +0200 (CEST)
-To: linux-mtd@lists.infradead.org
-Subject: Indebted for driving on toll road #00000671501
-Date: Thu, 9 Apr 2015 06:27:23 +0200
-From: "E-ZPass Manager" <chester.bartlett@h1673369.stratoserver.net>
-Reply-To: "E-ZPass Manager" <chester.bartlett@h1673369.stratoserver.net>
-Message-ID: <ef8be5d2efff9f06c1215e651b5d63aa@h1673369.stratoserver.net>
+Received: from mail-vn0-x22d.google.com ([2607:f8b0:400c:c0f::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yg7v0-0005pc-Ab
+ for linux-mtd@lists.infradead.org; Thu, 09 Apr 2015 08:34:35 +0000
+Received: by vnbf1 with SMTP id f1so20819163vnb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Apr 2015 01:34:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_73cd23e2a2412901b9c7ca77f329fe5a"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1427410790-8855-1-git-send-email-david.oberhollenzer@sigma-star.at>
+References: <1427410790-8855-1-git-send-email-david.oberhollenzer@sigma-star.at>
+Date: Thu, 9 Apr 2015 10:34:10 +0200
+Message-ID: <CAFLxGvywkhhb+KjMfLwtoNMZ+yvJZw+rHpz5ekkb_XH8wCpVUw@mail.gmail.com>
+Subject: Re: [PATCH V2] UBI: power cut emulation for testing
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: david.oberhollenzer@sigma-star.at
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,107 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Mar 26, 2015 at 11:59 PM,  <david.oberhollenzer@sigma-star.at> wrote:
+> Emulate random power cuts by switching device to ro after a number of
+> writes to allow simple power cut testing with nand-sim.
+>
+> Maximum and minimum number of successful writes before power cut and
+> what kind of writes (EC header, VID header or none) to interrupt
+> configurable via debugfs.
+>
+> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> ---
+> V2: Remove broken check to prevent multiple triggering
 
---b1_73cd23e2a2412901b9c7ca77f329fe5a
-Content-Type: text/plain; charset=us-ascii
+Applied and pushed to linux-ubifs.git/master!
 
-Notice to Appear,
-
-You have a debt to pay for using a toll road.
-Please, do not forget to service your debt.
-
-The invoice is attached to this email.
-
-Yours faithfully,
-Chester Bartlett,
-E-ZPass Agent.
-
-
---b1_73cd23e2a2412901b9c7ca77f329fe5a
-Content-Type: application/zip; name="E-ZPass_00000671501.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=E-ZPass_00000671501.zip
-
-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
-
-
---b1_73cd23e2a2412901b9c7ca77f329fe5a--
+-- 
+Thanks,
+//richard
