@@ -1,21 +1,23 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YgIvU-0004Dp-Tg
- for linux-mtd@lists.infradead.org; Thu, 09 Apr 2015 20:19:51 +0000
-Message-ID: <5526DEC7.8020802@dave-tech.it>
-Date: Thu, 09 Apr 2015 22:19:19 +0200
-From: Andrea Scian <rnd4@dave-tech.it>
+Received: from mail-bn1on0111.outbound.protection.outlook.com
+ ([157.56.110.111] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YgOdm-0006gf-Tb
+ for linux-mtd@lists.infradead.org; Fri, 10 Apr 2015 02:25:55 +0000
+Message-ID: <1428632724.22867.571.camel@freescale.com>
+Subject: Re: Missing support for ECC_SOFT_BCH in fsl-elbc-nand
+From: Scott Wood <scottwood@freescale.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 9 Apr 2015 21:25:24 -0500
+In-Reply-To: <55195BA8.2080102@nod.at>
+References: <55156575.8080704@nic.cz>
+ <CAFLxGvx-nXQQzOmpJyoGw5a6U8iEM_cr61vJx9aRNu5rAbnNLg@mail.gmail.com>
+ <55190AEB.8010704@nic.cz> <55195BA8.2080102@nod.at>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-To: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [MLC NAND]: data pattern sensivity
-References: <551E615D.3090804@dave-tech.it>	<0D23F1ECC880A74392D56535BCADD7356B6D0F17@NTXBOIMBX03.micron.com>	<5523B1EE.1050906@dave-tech.it>	<20150407131928.350ee827@bbrezillon>	<5523D9D5.1020109@dave-tech.it>
- <20150407170833.4726f3b9@bbrezillon>
- <0D23F1ECC880A74392D56535BCADD7356B6D16E1@NTXBOIMBX03.micron.com>
-In-Reply-To: <0D23F1ECC880A74392D56535BCADD7356B6D16E1@NTXBOIMBX03.micron.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+Cc: Martin =?UTF-8?Q?Strba=C4=8Dka?= <martin.strbacka@nic.cz>, Tomas
+ Hlavacek <tomas.hlavacek@nic.cz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Il 07/04/2015 19:45, Jeff Lauruhn (jlauruhn) ha scritto:
-> I read back through the posts and I think we are talking about 2 separate things, random read time and randomization.
->
-> Rand Read (tR) assumes you are doing a single read of a page (worst case), but most data is stored in blocks sequentially, so data output can be improve significantly by read by taking advantage of commands like READ PAGE CACHE SEQUENTIAL which copies the next sequential page from the NAND Flash array to the data register.
->
-> Randomization is a relatively new feature, I'm no expert, but it's in general we know there are some distributions that are worse than others, and by randomizing the data we can avoid worst case and improve endurance.
+On Mon, 2015-03-30 at 16:20 +0200, Richard Weinberger wrote:
+> Hi!
+> 
+> Am 30.03.2015 um 10:35 schrieb Martin Strbačka:
+> > On 27.3.2015 17:02, Richard Weinberger wrote:
+> >> On Fri, Mar 27, 2015 at 3:13 PM, Martin Strbačka <martin.strbacka@nic.cz> wrote:
+> >>> Hello,
+> >>>
+> >>> in our product we have Freescale P2020 SoC together with Micron
+> >>> MT29F2G08ABAEAWP NAND. Lately we discovered that the internal driver
+> >>> (fsl-elbc-nand) supports only 1-bit HW ECC. So we would like to switch
+> >>> to ECC_SOFT_BCH (or on-die ECC as I saw some patches in this list
+> >>> recently). Do you know if anybody works on this or are there any patches
+> >>> already?
+> >>
+> >> Works on what?
+> >> I work (obviously) on on-die ECC support.
+> > 
+> > I mean working on support ECC_SOFT_BCH or on-die ECC in fsl-elbc-nand. I
+> > believe that fsl-elbc-nand needs some modifications to support those ECC
+> > modes. Or am I wrong?
+> 
+> Ah. My on-die ECC patches should work with any NFC. If you look
+> at the diffstat you'll notice that it does not touch any NAND driver.
+> Unless fsl-elbc-nand doesn't do strange things it should just work.
+> Please give it a try, feedback is very welcome! :)
 
-Definitely here I'm speaking about the latter.
-By looking inside the datasheet (hynix, micron and so on) I have I've 
-found no MLC part that explicitly required such a implementation, apart 
-the one pointed out by Boris.
+eLBC does "strange things" as its programming model is higher-level than
+what nand_base.c was designed for.
 
-Kind Regards,
-
--- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
-
-
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
-> Sent: Tuesday, April 07, 2015 8:09 AM
-> To: Andrea Scian
-> Cc: Jeff Lauruhn (jlauruhn); mtd_mailinglist
-> Subject: Re: [MLC NAND]: data pattern sensivity
->
-> On Tue, 07 Apr 2015 15:21:25 +0200
-> Andrea Scian <rnd4@dave-tech.it> wrote:
->
->> Thanks for linking this again.
->> I think that Jeff can help us in understanding this further.
->> The documents is pretty old (2009) and is about TLC only.
->> Does it mean that MLC are less (or not at all) affected by this issue?
->
-> Some MLC chips require a randomization step: take a look at this datasheet [1], page 21:
-> "Users are required to employ randomizer function in the NAND controller to meet target endurance of the device."
->
-> [1]http://www.100y.com.tw/pdf_file/37-SAMSUNG-K9GBG08U0A-SCB0.pdf
->
->
-> --
-> Boris Brezillon, Free Electrons
-> Embedded Linux and Kernel engineering
-> http://free-electrons.com
->
-
-
--- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
+-Scott
