@@ -1,22 +1,25 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YgUI3-0007Ak-Jj
- for linux-mtd@lists.infradead.org; Fri, 10 Apr 2015 08:27:52 +0000
-From: =?iso-2022-jp?B?UWkgV2FuZyAbJEIyJjUvGyhCIChxaXdhbmcp?=
- <qiwang@micron.com>
-To: "rnd4@dave-tech.it" <rnd4@dave-tech.it>
-Subject: [MLC NAND]: data pattern sensivity
-Date: Fri, 10 Apr 2015 08:27:15 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A9DF4228E@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "Jeff Lauruhn \(jlauruhn\)" <jlauruhn@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Fri, 10 Apr 2015 10:46:42 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Lucas Stach <dev@lynxeye.de>
+Subject: Re: [PATCH v2 2/5] mtd: nand: add NVIDIA Tegra NAND Flash
+ controller driver
+In-Reply-To: <1428522370-18035-3-git-send-email-dev@lynxeye.de>
+References: <1428522370-18035-1-git-send-email-dev@lynxeye.de>
+ <1428522370-18035-3-git-send-email-dev@lynxeye.de>
+Message-ID: <99af1297029d7f1624db2f5fd9d228d1@agner.ch>
+Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Thierry Reding <thierry.reding@avionic-design.de>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, linux-tegra@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+ Marcel Ziswiler <marcel@ziswiler.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +29,174 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andrea,
+Hi Lucas,
 
-On Thu, 2015-04-09 at 22:19 +0200, Andrea Scian wrote:
->Il 07/04/2015 19:45, Jeff Lauruhn (jlauruhn) ha scritto:
->> I read back through the posts and I think we are talking about 2
->separate things, random read time and randomization.
->>
->> Rand Read (tR) assumes you are doing a single read of a page (worst
->case), but most data is stored in blocks sequentially, so data output can
->be improve significantly by read by taking advantage of commands like
->READ PAGE CACHE SEQUENTIAL which copies the next sequential page from the
->NAND Flash array to the data register.
->>
->> Randomization is a relatively new feature, I'm no expert, but it's in
->general we know there are some distributions that are worse than others,
->and by randomizing the data we can avoid worst case and improve endurance.
+Thanks for working on that. Some minor comments below...
 
-Yes, Randomization can avoid worst case and improve endurance
+On 2015-04-08 21:46, Lucas Stach wrote:
+> Add support for the NAND flash controller found on NVIDIA
+> Tegra 2/3 SoCs.
+> 
+> Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
+> Signed-off-by: Lucas Stach <dev@lynxeye.de>
+> ---
+> v2:
+> - remove Tegra 3 compatible
+> - remove useless part_probes
+> - don't store irq number
+> - use gpiod API instead of deprecated of_gpios
+> - don't store reset
+> - correct TIMING_TCS mask
+> - simplify irq handler
+> - correct timing calculations
+> - don't store buswidth
+> - drop compile test
+> - correct ECC handling
+> ---
+>  MAINTAINERS                   |   6 +
+>  drivers/mtd/nand/Kconfig      |   6 +
+>  drivers/mtd/nand/Makefile     |   1 +
+>  drivers/mtd/nand/tegra_nand.c | 786 ++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 799 insertions(+)
+>  create mode 100644 drivers/mtd/nand/tegra_nand.c
+> 
+[...]
+> +static struct nand_ecclayout tegra_nand_oob_16 = {
+> +	.eccbytes = 4,
+> +	.eccpos = { 3, 4, 5, 6 },
+> +	.oobfree = {
+> +		{ .offset = 7, . length = 8 }
+> +	}
+> +};
+> +
+> +static struct nand_ecclayout tegra_nand_oob_64 = {
+> +	.eccbytes = 36,
+> +	.eccpos = {
+> +		 3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+> +		19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+> +		35, 36, 37, 38, 39
+> +	},
 
->
->Definitely here I'm speaking about the latter.
->By looking inside the datasheet (hynix, micron and so on) I have I've
->found no MLC part that explicitly required such a implementation, apart
->the one pointed out by Boris.
+The amount of eccbytes vs. length of eccpos do not match...
 
-For Micron MLC part, we already implement this function inside of our MLC,
-so external randomization isn't needed at all.
+> +	.oobfree = {
+> +		{ .offset = 40, .length = 24 }
+> +	}
+> +};
+> +
+> +static struct nand_ecclayout tegra_nand_oob_128 = {
+> +	.eccbytes = 72,
+> +	.eccpos = {
+> +		 3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+> +		19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+> +		35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+> +		51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66,
+> +		67, 68, 69, 70, 71, 72, 73, 74, 75
+> +	},
 
-Thanks
+Here...
+
+> +	.oobfree = {
+> +		{ .offset = 76, .length = 52 }
+> +	}
+> +};
+> +
+> +static struct nand_ecclayout tegra_nand_oob_224 = {
+> +	.eccbytes = 144,
+> +	.eccpos = {
+> +		  3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,
+> +		 15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,
+> +		 27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,
+> +		 39,  40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,
+> +		 51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,
+> +		 63,  64,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,
+> +		 75,  76,  77,  78,  79,  80,  81,  82,  83,  84,  85,  86,
+> +		 87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,  98,
+> +		 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110,
+> +		111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+> +		123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134,
+> +		135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146,
+> +		147
+> +	},
+
+... and here too.
+
+[...]
+> +static int tegra_nand_probe(struct platform_device *pdev)
+> +{
+> +	struct reset_control *rst;
+> +	struct tegra_nand *nand;
+> +	struct nand_chip *chip;
+> +	struct mtd_info *mtd;
+> +	struct resource *res;
+> +	unsigned long value;
+> +	int irq, buswidth, err = 0;
+> +
+> +	nand = devm_kzalloc(&pdev->dev, sizeof(*nand), GFP_KERNEL);
+> +	if (!nand)
+> +		return -ENOMEM;
+> +
+> +	nand->dev = &pdev->dev;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	nand->regs = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(nand->regs))
+> +		return PTR_ERR(nand->regs);
+> +
+> +	irq = platform_get_irq(pdev, 0);
+> +	err = devm_request_irq(&pdev->dev, irq, tegra_nand_irq, 0,
+> +			       dev_name(&pdev->dev), nand);
+> +	if (err)
+> +		return err;
+> +
+> +	rst = devm_reset_control_get(&pdev->dev, "nand");
+> +	if (IS_ERR(rst))
+> +		return PTR_ERR(rst);
+> +
+> +	nand->clk = devm_clk_get(&pdev->dev, "nand");
+> +	if (IS_ERR(nand->clk))
+> +		return PTR_ERR(nand->clk);
+> +
+> +	nand->wp_gpio = gpiod_get_optional(&pdev->dev, "nvidia,wp-gpios",
+> +					   GPIOD_OUT_HIGH);
+> +	if (IS_ERR(nand->wp_gpio))
+> +		return PTR_ERR(nand->wp_gpio);
+> +
+> +	buswidth = of_get_nand_bus_width(pdev->dev.of_node);
+> +	if (buswidth < 0)
+> +		return buswidth;
+> +
+> +	err = clk_prepare_enable(nand->clk);
+> +	if (err)
+> +		return err;
+> +
+> +	reset_control_assert(rst);
+> +	udelay(2);
+> +	reset_control_deassert(rst);
+> +
+> +	value = HWSTATUS_RDSTATUS_MASK(1) | HWSTATUS_RDSTATUS_VALUE(0) |
+> +		HWSTATUS_RBSY_MASK(NAND_STATUS_READY) |
+> +		HWSTATUS_RBSY_VALUE(NAND_STATUS_READY);
+> +	writel(NAND_CMD_STATUS, nand->regs + HWSTATUS_CMD);
+> +	writel(value, nand->regs + HWSTATUS_MASK);
+> +
+> +	init_completion(&nand->command_complete);
+> +	init_completion(&nand->dma_complete);
+> +
+> +	mtd = &nand->mtd;
+> +	mtd->name = dev_name(&pdev->dev);
+> +	mtd->owner = THIS_MODULE;
+> +	mtd->priv = &nand->chip;
+> +
+> +	mtd->type = MTD_NANDFLASH;
+> +	mtd->flags = MTD_CAP_NANDFLASH;
+
+This get filled by nand_scan_tail anyway, any reason to have it here
+too?
+
+Other than that, looks solid to me.
+
+Reviewed-by: Stefan Agner <stefan@agner.ch>
 
 --
-Qi Wang
+Stefan
