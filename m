@@ -1,9 +1,9 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YhLO2-0001QP-RE
- for linux-mtd@lists.infradead.org; Sun, 12 Apr 2015 17:09:35 +0000
-Message-ID: <552AA6B7.3070806@nod.at>
-Date: Sun, 12 Apr 2015 19:09:11 +0200
+ id 1YhLo4-0002rp-5q
+ for linux-mtd@lists.infradead.org; Sun, 12 Apr 2015 17:36:29 +0000
+Message-ID: <552AAD03.5050901@nod.at>
+Date: Sun, 12 Apr 2015 19:36:03 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
@@ -55,26 +55,17 @@ Am 12.04.2015 um 19:01 schrieb Boris Brezillon:
 >> +			atomic_inc(&ubi->bit_rot_work);
 >> +			schedule_bitrot_check(ubi, e);
 >> +		}
->> +	}
-> 
-> Do we really need to create a ubi_work per PEB ?
-> Couldn't we create a single work being rescheduled inside the worker
-> function (after updating the ubi_wl_entry of course).
 
-Currently the UBI worker thread handles one PEB per ubi_work. I didn't wanted
-to break that pattern. The downside of that approach is that we need more memory.
-A few KiB per run.
+After re-reading this loop I realized that I've missed a possible race against
+other workers. It can happen that we schedule eX and while being scheduled it
+is possible that eX turns bad and some worker frees eX under us.
+Not very likely but definitely possible.
+Let's see if I can find a solution for that without adding new locks or refcounter to
+ubi_wl_entry.
 
-I'm not sure if I understood your idea. You mean that we schedule one check for
-PEB N and this work will re-schedule again a work for PEB N+1?
-Using that approach we can safe memory, yes. But is it worth the hassle?
-I'd like to avoid works which schedule again other works.
-In the current way it is clear where the work is scheduled and how much.
+I can think of adding a check to the schedule work code which ensures that work
+targeting eX is scheduled only once.
 
-> I'm pretty sure I'm missing something obvious that you'll probably
-> point out ;-).
-
-No no, it is a very good question.
 
 Thanks,
 //richard
