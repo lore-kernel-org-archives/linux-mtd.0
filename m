@@ -1,21 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YhNbd-0003tb-9A
- for linux-mtd@lists.infradead.org; Sun, 12 Apr 2015 19:31:46 +0000
-Date: Sun, 12 Apr 2015 21:31:20 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] mtd: Add simple read disturb test
-Message-ID: <20150412213120.0414fee5@bbrezillon>
-In-Reply-To: <551D6BDA.6000606@nod.at>
-References: <1427984026-31100-1-git-send-email-richard@nod.at>
- <20150402160451.GF32500@ld-irv-0074> <551D6BDA.6000606@nod.at>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YhNwo-00040g-BC
+ for linux-mtd@lists.infradead.org; Sun, 12 Apr 2015 19:53:39 +0000
+Message-ID: <552ACD28.8000409@nod.at>
+Date: Sun, 12 Apr 2015 21:53:12 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH 4/4] UBI: Implement bitrot checking
+References: <1427631197-23610-1-git-send-email-richard@nod.at>	<1427631197-23610-5-git-send-email-richard@nod.at>	<20150412190119.7f0f7c64@bbrezillon>	<552AA6B7.3070806@nod.at>
+ <20150412212050.2949b6f5@bbrezillon>
+In-Reply-To: <20150412212050.2949b6f5@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
-
-On Thu, 02 Apr 2015 18:18:34 +0200
-Richard Weinberger <richard@nod.at> wrote:
-
-> Am 02.04.2015 um 18:04 schrieb Brian Norris:
-> > On Thu, Apr 02, 2015 at 04:13:46PM +0200, Richard Weinberger wrote:
-> >> This simple MTD tests allows the user to see when read disturb happens.
-> >> By reading blocks over and over it reports flipped bits.
-> >> Currently it reports only flipped bits of the worst page of a block.
-> >> If within block X page P1 has 3 bit flips and P6 4, it will report 4.
-> >> By default every 50th block is read.
-> > 
-> > Didn't read through this much yet, but why do we need another in-kernel
-> > test that coul (AFAICT) be easily replicated in userspace? The same goes
-> > for several of the other tests, I think, actually. But at least with
-> > those, we have a history of keeping them around, so it's not too much
-> > burden [1].
+Am 12.04.2015 um 21:20 schrieb Boris Brezillon:
+> Unless I'm missing something, it should be pretty easy to implement:
+> adding the following lines at the end of bitrot_check_worker() should do
+> the trick
 > 
-> I've added the test to drivers/mtd/tests/ because it fits into.
-> As simple as that.
+> 	if (e->pnum + 1 < ubi->peb_count) {
+> 		wl_wrk->e = ubi->lookuptbl[e->pnum + 1];
+> 		__schedule_ubi_work(ubi, wl_wrk);
+> 	} else {
+> 		atomic_dec(&ubi->bit_rot_work);
+> 	}
+> 	
+
+It will suffer from the same race issue as my current approach.
+While e is scheduled another worker could free it in case of an fatal
+error.
+
+>> I'd like to avoid works which schedule again other works.
+>> In the current way it is clear where the work is scheduled and how much.
 > 
-> > Brian
-> > 
-> > [1] Although there are some latent issues in these tests that are still
-> > getting get worked out (e.g., bad handling of 64-bit casting; too large
-> > of stacks; uninterruptibility). The latter two would not even exist if
-> > we were in user space.
-> 
-> uninterruptibility got solved by my "[PATCH] mtd: Make MTD tests cancelable" patch.
-> 
-> But if we want to kill drivers/mtd/tests/ I'll happily help out.
+> Yes, but the memory consumption induced by this approach can be pretty
+> big on modern NAND chips (on 32 bit platforms, ubi_work is 32 octets
+> large, and on modern NANDs you often have 4096 blocks, so a UBI device
+> of 4000 block is pretty common => 4000 * 32 = 125 KiB).
 
-I'd vote for that solution too.
-I've looked at in-kernel mtd tests, and I'm pretty sure they can all be
-done in userland.
-This would prevent any kernel crash caused by buggy test modules.  
+While I agree that consuming memory is not very nice I don't think that 125KiB
+is a big deal.
 
-> Where shall we move these tests into? mtd-utils?
+> For standard wear leveling requests, using a ubi_work per request is
+> sensible since you can't know in advance which block will be queued for
+> wear-leveling operation next time.
+> In your case, you're scanning all blocks in ascending order, which
+> makes it a good candidate for this 'one work for all bitrot checks'
+> approach.
 
-I guess so, but I'll let Brian answer that one.
-How about dispatching them in mtd-utils' tests/ directory (some of them
-are NAND related tests, so creating a tests/nand would make sense,
-and others are more generic).
+The good news is that I have an idea to solve both problems the race and
+the memory issue. It should be pretty easy to implement.
+Patches will materialize in a few days.
 
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+//richard
