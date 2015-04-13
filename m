@@ -1,18 +1,26 @@
-Received: from p3nlsmtp18.shr.prod.phx3.secureserver.net ([72.167.234.243])
+Received: from mail-bn1bon0088.outbound.protection.outlook.com
+ ([157.56.111.88] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yhg5b-0003ln-07
- for linux-mtd@lists.infradead.org; Mon, 13 Apr 2015 15:15:56 +0000
-Subject: Delivery Notification, ID 00227576
-To: linux-mtd@lists.infradead.org
-Date: Mon, 13 Apr 2015 08:15:31 -0700
-From: "FedEx International Ground"
- <karl.stone@p3nw8shg367.shr.prod.phx3.secureserver.net>
-Reply-To: "FedEx International Ground"
- <karl.stone@p3nw8shg367.shr.prod.phx3.secureserver.net>
-Message-ID: <fd71edd19eda2273c4ca7fb022af2252@p3nw8shg367.shr.prod.phx3.secureserver.net>
+ id 1YhgyN-0004yx-Ok
+ for linux-mtd@lists.infradead.org; Mon, 13 Apr 2015 16:12:32 +0000
+From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
+To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, <rob@landley.net>,
+ <michal.simek@xilinx.com>, <grant.likely@linaro.org>,
+ <gregkh@linuxfoundation.org>, <jason@lakedaemon.net>,
+ <ezequiel.garcia@free-electrons.com>, <arnd@arndb.de>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
+ <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>, <ivan.khoronzhuk@ti.com>,
+ <joern@logfs.org>
+Subject: [PATCH v6 0/2] Add arm pl353 smc driver for xilinx zynq soc
+Date: Mon, 13 Apr 2015 21:41:50 +0530
+Message-ID: <6a01528f-7482-4b89-887f-e270d4d72961@BL2FFO11FD019.protection.gbl>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_dfe8086f8de721a38bf59c74333cc225"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com, Punnaiah Choudary
+ Kalluri <punnaia@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,105 +30,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_dfe8086f8de721a38bf59c74333cc225
-Content-Type: text/plain; charset=us-ascii
+The following patches add arm pl353 static memory controller driver for
+xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
+nor/sram memory interfaces. The current implementation supports only a
+single SMC instance and nand specific configuration.
 
-Dear Customer,
+xilinx zynq TRM link:
+http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
 
-Your parcel has arrived at April 09. Courier was unable to deliver the parcel to you.
-Please, open email attachment to print shipment label.
+ARM pl353 smc TRM link:
+http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
+DDI0380G_smc_pl350_series_r2p1_trm.pdf
 
-Yours trully,
-Karl Stone,
-Support Manager.
+Punnaiah Choudary Kalluri (2):
+  Devicetree: Add pl353 smc controller devicetree binding information
+  memory: pl353: Add driver for arm pl353 static memory controller
 
+ .../bindings/memory-controllers/pl353-smc.txt      |   37 ++
+ drivers/memory/Kconfig                             |    7 +
+ drivers/memory/Makefile                            |    2 +-
+ drivers/memory/pl353-smc.c                         |  526 ++++++++++++++++++++
+ include/linux/memory/pl353-smc.h                   |   37 ++
+ 5 files changed, 608 insertions(+), 1 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+ create mode 100644 drivers/memory/pl353-smc.c
+ create mode 100644 include/linux/memory/pl353-smc.h
 
---b1_dfe8086f8de721a38bf59c74333cc225
-Content-Type: application/zip; name="FedEx_00227576.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=FedEx_00227576.zip
-
-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
-AAEAQwAAAIQRAAAAAA==
-
-
---b1_dfe8086f8de721a38bf59c74333cc225--
+-- 
+1.7.4
