@@ -1,21 +1,26 @@
-Received: from mail-bn1bbn0102.outbound.protection.outlook.com
- ([157.56.111.102] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YhjnD-0007eI-4y
- for linux-mtd@lists.infradead.org; Mon, 13 Apr 2015 19:13:12 +0000
-Message-ID: <1428952353.22867.621.camel@freescale.com>
-Subject: Re: Missing support for ECC_SOFT_BCH in fsl-elbc-nand
-From: Scott Wood <scottwood@freescale.com>
-To: Tomas Hlavacek <tomas.hlavacek@nic.cz>
-Date: Mon, 13 Apr 2015 14:12:33 -0500
-In-Reply-To: <5a117ed2-8cb4-4f55-9098-ff622066db4e@nic.cz>
-References: <55156575.8080704@nic.cz>
- <5a117ed2-8cb4-4f55-9098-ff622066db4e@nic.cz>
+Message-ID: <1428952974.2616.2.camel@lynxeye.de>
+Subject: Re: [PATCH v2 2/5] mtd: nand: add NVIDIA Tegra NAND Flash
+ controller driver
+From: Lucas Stach <dev@lynxeye.de>
+To: Stefan Agner <stefan@agner.ch>
+Date: Mon, 13 Apr 2015 21:22:54 +0200
+In-Reply-To: <99af1297029d7f1624db2f5fd9d228d1@agner.ch>
+References: <1428522370-18035-1-git-send-email-dev@lynxeye.de>
+ <1428522370-18035-3-git-send-email-dev@lynxeye.de>
+ <99af1297029d7f1624db2f5fd9d228d1@agner.ch>
 Content-Type: text/plain; charset="UTF-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Martin =?UTF-8?Q?Strba=C4=8Dka?= <martin.strbacka@nic.cz>,
- linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Thierry Reding <thierry.reding@avionic-design.de>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, linux-tegra@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+ Marcel Ziswiler <marcel@ziswiler.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,130 +30,188 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2015-04-13 at 00:30 +0200, Tomas Hlavacek wrote:
-> Hi!
+Hi Stefan,
+
+thanks for the review.
+
+Am Freitag, den 10.04.2015, 10:46 +0200 schrieb Stefan Agner:
+> Hi Lucas,
 > 
-> On Friday, March 27, 2015 3:13:09 PM CEST, Martin Strbačka wrote:
-> > in our product we have Freescale P2020 SoC together with Micron
-> > MT29F2G08ABAEAWP NAND. Lately we discovered that the internal driver
-> > (fsl-elbc-nand) supports only 1-bit HW ECC.
+> Thanks for working on that. Some minor comments below...
 > 
-> Actually we use the NAND pretty intensively with JFFS2 and we have seen 
-> some uncorrectable multiple bitflips with the current HW ECC mode (it means 
-> more than one bit flip in 512B subpage, if I got that right). So we would 
-> like to change to software BCH ECC since we have powerful enough CPU.
-
-Yes, the hardware ECC on eLBC is only suitable if 1 bit per 512 bytes
-meets the NAND chip's specifications.
-
-> I would like to discuss two major questions before I submit a patch for 
-> this:
+> On 2015-04-08 21:46, Lucas Stach wrote:
+> > Add support for the NAND flash controller found on NVIDIA
+> > Tegra 2/3 SoCs.
+> > 
+> > Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
+> > Signed-off-by: Lucas Stach <dev@lynxeye.de>
+> > ---
+> > v2:
+> > - remove Tegra 3 compatible
+> > - remove useless part_probes
+> > - don't store irq number
+> > - use gpiod API instead of deprecated of_gpios
+> > - don't store reset
+> > - correct TIMING_TCS mask
+> > - simplify irq handler
+> > - correct timing calculations
+> > - don't store buswidth
+> > - drop compile test
+> > - correct ECC handling
+> > ---
+> >  MAINTAINERS                   |   6 +
+> >  drivers/mtd/nand/Kconfig      |   6 +
+> >  drivers/mtd/nand/Makefile     |   1 +
+> >  drivers/mtd/nand/tegra_nand.c | 786 ++++++++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 799 insertions(+)
+> >  create mode 100644 drivers/mtd/nand/tegra_nand.c
+> > 
+> [...]
+> > +static struct nand_ecclayout tegra_nand_oob_16 = {
+> > +	.eccbytes = 4,
+> > +	.eccpos = { 3, 4, 5, 6 },
+> > +	.oobfree = {
+> > +		{ .offset = 7, . length = 8 }
+> > +	}
+> > +};
+> > +
+> > +static struct nand_ecclayout tegra_nand_oob_64 = {
+> > +	.eccbytes = 36,
+> > +	.eccpos = {
+> > +		 3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+> > +		19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+> > +		35, 36, 37, 38, 39
+> > +	},
 > 
-> 1) How to disable HW ECC?
+> The amount of eccbytes vs. length of eccpos do not match...
 > 
-> What I have done is this:
+> > +	.oobfree = {
+> > +		{ .offset = 40, .length = 24 }
+> > +	}
+> > +};
+> > +
+> > +static struct nand_ecclayout tegra_nand_oob_128 = {
+> > +	.eccbytes = 72,
+> > +	.eccpos = {
+> > +		 3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+> > +		19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+> > +		35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+> > +		51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66,
+> > +		67, 68, 69, 70, 71, 72, 73, 74, 75
+> > +	},
 > 
-> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c 
-> b/drivers/mtd/nand/fsl_elbc_nand.c
-> index 04b22fd..e5818ba 100644
-> --- a/drivers/mtd/nand/fsl_elbc_nand.c
-> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
+> Here...
 > 
-> @@ -676,6 +691,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info 
-> *mtd)
->         } else if (mtd->writesize == 2048) {
->                 priv->page_size = 1;
->                 setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
-> +#ifndef ELBC_ECC_SW_BCH
->                 /* adjust ecc setup if needed */
->                 if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
->                     BR_DECC_CHK_GEN) {
-> @@ -684,6 +700,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info 
-> *mtd)
->                                            &fsl_elbc_oob_lp_eccm1 :
->                                            &fsl_elbc_oob_lp_eccm0;
->                 }
-> +#endif
-
-You shouldn't be setting BR_DECC if you don't want to use HW ECC, so
-this ifdef doesn't accomplish anything.
-
-Also, while a compile-time hack may be suitable for your own use, to get
-a mergable patch it should be a runtime decision.  You should be able to
-read at runtime the level of ECC that the flash requires.
-
->         } else {
->                 dev_err(priv->dev,
->                         "fsl_elbc_init: page size %d is not supported\n",
-> @@ -774,11 +791,18 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd 
-> *priv)
->  
->         chip->ecc.read_page = fsl_elbc_read_page;
->         chip->ecc.write_page = fsl_elbc_write_page;
-> -       chip->ecc.write_subpage = fsl_elbc_write_subpage;
->  
-> +#ifdef ELBC_ECC_SW_BCH
-> +       
-> out_be32(&lbc->bank[priv->bank].br,(in_be32(&lbc->bank[priv->bank].br) & 
-> (~BR_DECC)));
-
-Instead change U-Boot to never set that bit in the first place.
-
-> It works but I am particularly not sure of line
+> > +	.oobfree = {
+> > +		{ .offset = 76, .length = 52 }
+> > +	}
+> > +};
+> > +
+> > +static struct nand_ecclayout tegra_nand_oob_224 = {
+> > +	.eccbytes = 144,
+> > +	.eccpos = {
+> > +		  3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,
+> > +		 15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,
+> > +		 27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,
+> > +		 39,  40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,
+> > +		 51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,
+> > +		 63,  64,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,
+> > +		 75,  76,  77,  78,  79,  80,  81,  82,  83,  84,  85,  86,
+> > +		 87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,  98,
+> > +		 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110,
+> > +		111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+> > +		123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134,
+> > +		135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146,
+> > +		147
+> > +	},
 > 
-> out_be32(&lbc->bank[priv->bank].br,(in_be32(&lbc->bank[priv->bank].br) & 
-> (~BR_DECC)));
+> ... and here too.
 > 
-> Does it make sense? I have been told that on our board there is some 
-> unconnected pin that causes that (in_be32(&lbc->bank[priv->bank].br) & 
-> BR_DECC) == BR_DECC_CHK_GEN is true but I still have to disable HW ECC.
 
->From this I assume you're booting from NAND, but even so U-Boot will
-overwrite that register with its own desired value.
+Urgh, actually they are all wrong, as the ECC starts at byte 4, not
+3. :/ Thanks for the hint.
 
-> I would like to point out that the shuffling chip->ecc.write_subpage = 
-> fsl_elbc_write_subpage; line is needed for subpages to work properly with 
-> SW ECC because the write_subpage pointer in elbc_fcm_ctrl is left intact 
-> when SW ECC is being initialized and then the ECC does not work for 
-> subpages. Not setting it causes that default write_subpage function is 
-> used.
-
-There is no default write_subpage function for swecc.
-
-> 2) We need to implement RNDOUT operation for SW ECC / ECC_BCH. My attempt 
-> follows:
+> [...]
+> > +static int tegra_nand_probe(struct platform_device *pdev)
+> > +{
+> > +	struct reset_control *rst;
+> > +	struct tegra_nand *nand;
+> > +	struct nand_chip *chip;
+> > +	struct mtd_info *mtd;
+> > +	struct resource *res;
+> > +	unsigned long value;
+> > +	int irq, buswidth, err = 0;
+> > +
+> > +	nand = devm_kzalloc(&pdev->dev, sizeof(*nand), GFP_KERNEL);
+> > +	if (!nand)
+> > +		return -ENOMEM;
+> > +
+> > +	nand->dev = &pdev->dev;
+> > +
+> > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	nand->regs = devm_ioremap_resource(&pdev->dev, res);
+> > +	if (IS_ERR(nand->regs))
+> > +		return PTR_ERR(nand->regs);
+> > +
+> > +	irq = platform_get_irq(pdev, 0);
+> > +	err = devm_request_irq(&pdev->dev, irq, tegra_nand_irq, 0,
+> > +			       dev_name(&pdev->dev), nand);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	rst = devm_reset_control_get(&pdev->dev, "nand");
+> > +	if (IS_ERR(rst))
+> > +		return PTR_ERR(rst);
+> > +
+> > +	nand->clk = devm_clk_get(&pdev->dev, "nand");
+> > +	if (IS_ERR(nand->clk))
+> > +		return PTR_ERR(nand->clk);
+> > +
+> > +	nand->wp_gpio = gpiod_get_optional(&pdev->dev, "nvidia,wp-gpios",
+> > +					   GPIOD_OUT_HIGH);
+> > +	if (IS_ERR(nand->wp_gpio))
+> > +		return PTR_ERR(nand->wp_gpio);
+> > +
+> > +	buswidth = of_get_nand_bus_width(pdev->dev.of_node);
+> > +	if (buswidth < 0)
+> > +		return buswidth;
+> > +
+> > +	err = clk_prepare_enable(nand->clk);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	reset_control_assert(rst);
+> > +	udelay(2);
+> > +	reset_control_deassert(rst);
+> > +
+> > +	value = HWSTATUS_RDSTATUS_MASK(1) | HWSTATUS_RDSTATUS_VALUE(0) |
+> > +		HWSTATUS_RBSY_MASK(NAND_STATUS_READY) |
+> > +		HWSTATUS_RBSY_VALUE(NAND_STATUS_READY);
+> > +	writel(NAND_CMD_STATUS, nand->regs + HWSTATUS_CMD);
+> > +	writel(value, nand->regs + HWSTATUS_MASK);
+> > +
+> > +	init_completion(&nand->command_complete);
+> > +	init_completion(&nand->dma_complete);
+> > +
+> > +	mtd = &nand->mtd;
+> > +	mtd->name = dev_name(&pdev->dev);
+> > +	mtd->owner = THIS_MODULE;
+> > +	mtd->priv = &nand->chip;
+> > +
+> > +	mtd->type = MTD_NANDFLASH;
+> > +	mtd->flags = MTD_CAP_NANDFLASH;
 > 
-> @@ -335,6 +335,21 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, 
-> unsigned int command,
->                 fsl_elbc_run_command(mtd);
->                 return;
->  
-> +       /* !!! Experimental */
-> +       case NAND_CMD_RNDOUT:
-> +               dev_vdbg(priv->dev,
-> +                       "fsl_elbc_cmdfunc: NAND_CMD_RNDOUT, "
-> +                       "column: 0x%x.\n", column);
-> +
-> +               if ((column < 512) || (priv->page_size && (column < 2048))) 
-> {
-> +                       elbc_fcm_ctrl->index = column;
-> +                       return;
-> +               } else {
-> +                       column -= priv->page_size ? 2048 : 512;
-> +                       page_addr = elbc_fcm_ctrl->page;
-> +                       /* and fall-through to READOOB */
-> +               }
-> +
->         /* READOOB reads only the OOB because no ECC is performed. */
->         case NAND_CMD_READOOB:
->                 dev_vdbg(priv->dev,
+> This get filled by nand_scan_tail anyway, any reason to have it here
+> too?
 > 
-> Maybe it is too complicated (?) and it would be sufficient to set 
-> elbc_fcm_ctrl->index = column both for IB and OOB data? It seems that both 
-> ways work for me.
+No, not really. Probably just cargo-culting. I'll remove this.
 
-I think you should just set index = column.  The OOB has already been
-read if we previously read a full page -- and RNDOUT is also used in
-other contexts such as ONFI identification.
+> Other than that, looks solid to me.
+> 
+> Reviewed-by: Stefan Agner <stefan@agner.ch>
+> 
+I'll wait a bit more before posting a v3, to give other people a chance
+to look at this.
 
--Scott
+Thanks,
+Lucas
