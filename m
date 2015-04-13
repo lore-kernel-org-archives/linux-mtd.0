@@ -1,27 +1,29 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from lb1-smtp-cloud3.xs4all.net ([194.109.24.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yhhzz-0002yA-P2
- for linux-mtd@lists.infradead.org; Mon, 13 Apr 2015 17:18:16 +0000
-Received: by pabsx10 with SMTP id sx10so108409101pab.3
- for <linux-mtd@lists.infradead.org>; Mon, 13 Apr 2015 10:17:51 -0700 (PDT)
-Date: Mon, 13 Apr 2015 10:17:43 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: linux-mtd digest emails (was Re: [PATCH 4/4] UBI: Implement bitrot
- checking)
-Message-ID: <20150413171743.GO32500@ld-irv-0074>
-References: <mailman.40253.1428858576.22890.linux-mtd@lists.infradead.org>
- <mailman.40253.1428858576.22890.linux-mtd.{2b889d2f-ba39-4abc-aea3-8920fd29865f}.0@lists.infradead.org>
- <552AA390.3070700@nod.at> <552AD8A6.6000406@dave-tech.it>
- <552ADD27.6080703@nod.at> <552AE48C.8070500@dave-tech.it>
- <552AE6C3.8040605@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <552AE6C3.8040605@nod.at>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, dedekind1@gmail.com,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Andrea Scian <rnd4@dave-tech.it>, linux-mtd@lists.infradead.org
+ id 1YhjQb-000373-KX
+ for linux-mtd@lists.infradead.org; Mon, 13 Apr 2015 18:49:50 +0000
+Message-ID: <1428950956.3868.16.camel@x220>
+Subject: Re: [PATCH v6 2/2] memory: pl353: Add driver for arm pl353 static
+ memory controller
+From: Paul Bolle <pebolle@tiscali.nl>
+To: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
+Date: Mon, 13 Apr 2015 20:49:16 +0200
+In-Reply-To: <a1f437fe-51cf-4a89-87b4-8f0a305e68ed@BN1AFFO11FD026.protection.gbl>
+References: <1428941512-26411-1-git-send-email-punnaia@xilinx.com>
+ <a1f437fe-51cf-4a89-87b4-8f0a305e68ed@BN1AFFO11FD026.protection.gbl>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, jussi.kivilinna@iki.fi, linux-doc@vger.kernel.org,
+ artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>, arnd@arndb.de,
+ michal.simek@xilinx.com, ezequiel.garcia@free-electrons.com,
+ grant.likely@linaro.org, devicetree@vger.kernel.org, jason@lakedaemon.net,
+ pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, joern@logfs.org,
+ kpc528@gmail.com, robh+dt@kernel.org, acourbot@nvidia.com,
+ kalluripunnaiahchoudary@gmail.com, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, rob@landley.net, galak@codeaurora.org,
+ ivan.khoronzhuk@ti.com, computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,26 +33,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi everyone,
+On Mon, 2015-04-13 at 21:41 +0530, Punnaiah Choudary Kalluri wrote:
+> --- a/drivers/memory/Kconfig
+> +++ b/drivers/memory/Kconfig
 
-linux-mtd administrative note:
+> +config PL353_SMC
+> +	bool "ARM PL353 Static Memory Controller (SMC) driver"
+> +	depends on ARM
+> +	help
+> +	  This driver is for the ARM PL353 Static Memory Controller (SMC)
+> +	  module.
 
-Please don't start conversations based on mailing list "digest" emails.
-It's not helpful for others (e.g., it likely breaks threading). Also,
-the mailing list filters these types of messages out, presumably based
-on the email subject, so many subscribers probably did not see your
-email.
+This adds a bool symbol.
 
-So, a recent thread was under the subject:
+> --- a/drivers/memory/Makefile
+> +++ b/drivers/memory/Makefile
 
- Re: [PATCH 4/4] UBI: Implement bitrot checking (linux-mtd Digest, Vol 145, Issue 24) 
+> +obj-$(CONFIG_PL353_SMC)		+= pl353-smc.o
 
-But it should be using:
+Which means pl353-smc.o can never be part of a module, right?
 
- Re: [PATCH 4/4] UBI: Implement bitrot checking
+(If that's not right you can stop reading here.)
 
-I've released a few messages for now, but I can't guarantee that such
-messages will get through in the future (and certainly not promptly).
+> --- /dev/null
+> +++ b/drivers/memory/pl353-smc.c
+
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+
+This states the license is GPL v2 or later.
+
+> +#include <linux/module.h>
+
+I wonder whether this include is needed, since this is built-in only
+code.
+
+> +MODULE_DEVICE_TABLE(of, pl353_smc_of_match);
+
+According to include/linux/module.h this will be preprocessed away for
+built-in code.
+
+> +static struct platform_driver pl353_smc_driver = {
+> +	.probe		= pl353_smc_probe,
+> +	.remove		= pl353_smc_remove,
+> +	.driver		= {
+> +		.name	= "pl353-smc",
+> +		.owner	= THIS_MODULE,
+
+THIS_MODULE will be equivalent to NULL for built-in code, according to
+include/linux/export.h.
+
+> +		.pm	= &pl353_smc_dev_pm_ops,
+> +		.of_match_table = pl353_smc_of_match,
+> +	},
+> +};
+
+> +module_platform_driver(pl353_smc_driver);
+
+Speaking from memory: for built-in only code this is equivalent to
+having a wrapper that only does
+    register_platform_driver(&pl353_smc_driver);
+
+and mark that wrapper with device_initcall().
+
+> +MODULE_AUTHOR("Xilinx, Inc.");
+> +MODULE_DESCRIPTION("ARM PL353 SMC Driver");
+> +MODULE_LICENSE("GPL v2");
+
+For built-in only code these macros will be effectively preprocessed
+away.
+
+(Would you make PL353_SMC a tristate symbol then you should note that
+according to include/linux/module.h "GPL" is the license ident that
+matches the license stated in the comment at the top of this file.)
 
 Thanks,
-Brian
+
+
+Paul Bolle
