@@ -1,15 +1,21 @@
 Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yi5Qw-00007W-6v
- for linux-mtd@lists.infradead.org; Tue, 14 Apr 2015 18:19:39 +0000
-Received: by igblo3 with SMTP id lo3so81837166igb.1
- for <linux-mtd@lists.infradead.org>; Tue, 14 Apr 2015 11:19:15 -0700 (PDT)
-From: namnguyen@chromium.org
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v4] mtd-utils: Add mtdpart to add/delete partition
-Date: Tue, 14 Apr 2015 11:18:38 -0700
-Message-Id: <1429035518-8323-1-git-send-email-namnguyen@chromium.org>
-Cc: "Nam T. Nguyen" <namnguyen@chromium.org>, vapier@chromium.org,
+ id 1Yi5WD-0003VY-Kd
+ for linux-mtd@lists.infradead.org; Tue, 14 Apr 2015 18:25:06 +0000
+Received: by igbpi8 with SMTP id pi8so52354610igb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Apr 2015 11:24:43 -0700 (PDT)
+MIME-Version: 1.0
+Sender: namnguyen@google.com
+In-Reply-To: <20150402211550.GJ32500@ld-irv-0074>
+References: <1425498091-3505-1-git-send-email-namnguyen@chromium.org>
+ <20150402211550.GJ32500@ld-irv-0074>
+From: Nam Nguyen <namnguyen@chromium.org>
+Date: Tue, 14 Apr 2015 11:24:23 -0700
+Message-ID: <CA+YNSmVCefLY0Stb1VNxbvZxGE2iuw9X_5Ts1rb3cAx_yNZ3Ag@mail.gmail.com>
+Subject: Re: [PATCH v3] mtd-utils: Add mtdpart to add/delete partition
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Mike Frysinger <vapier@chromium.org>, linux-mtd@lists.infradead.org,
  dehrenberg@chromium.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,230 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Nam T. Nguyen" <namnguyen@chromium.org>
+On Thu, Apr 2, 2015 at 2:15 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> This doesn't even compile...
 
-Add a simple utility to exercise BLKPG ioctl.
+This is an embarrassment. I'm so sorry it happened.
 
-Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
----
-Changes from v3:
+>
+> On Wed, Mar 04, 2015 at 11:41:31AM -0800, Nam T. Nguyen wrote:
+>> Add a simple utility to exercise BLKPG ioctl.
+>>
+>> Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
+>> ---
+>> Changes from v2:
+>>
+>>   o Fix coding style
+>>   o Remove cleanup code since we exit()ing anyway.
+>>
+>>  Makefile  |   2 +-
+>>  mtdpart.c | 187 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>  2 files changed, 188 insertions(+), 1 deletion(-)
+>>  create mode 100644 mtdpart.c
+>>
+> ...
+>> diff --git a/mtdpart.c b/mtdpart.c
+>> new file mode 100644
+>> index 0000000..b944f49
+>> --- /dev/null
+>> +++ b/mtdpart.c
+>> @@ -0,0 +1,187 @@
+> [...]
+>> +             command = COMMAND_DEL;
+>> +     } else if (strcmp(s_command, "add") == 0 && (argc - optind) == 3) {
+>> +             part_name = argv[optind++];
+>> +             const char *s_start = argv[optind++];
+>> +             const char *s_length = argv[optind++];
+>
+> The preferred style is to keep variable definitions before statements.
 
-  o Move variable definitions above statements.
-  o Fix compilation error.
+Done in v4.
 
- Makefile  |   2 +-
- mtdpart.c | 190 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 191 insertions(+), 1 deletion(-)
- create mode 100644 mtdpart.c
+>
+>> +
+>> +             if (strlen(part_name) >= BLKPG_DEVNAMELTH)
+>> +                     errmsg_die("Partition name (%s) should be less than %d characters"
+>
+> ^^ you're missing a comma on this line. I think that's the only compile
+> issue? But I'd expect you to compile and test what you're sending
+> first...
 
-diff --git a/Makefile b/Makefile
-index eade234..f4ce313 100644
---- a/Makefile
-+++ b/Makefile
-@@ -20,7 +20,7 @@ MTD_BINS = \
- 	ftl_format flash_erase nanddump doc_loadbios \
- 	ftl_check mkfs.jffs2 flash_lock flash_unlock \
- 	flash_otp_info flash_otp_dump flash_otp_lock flash_otp_write \
--	mtd_debug flashcp nandwrite nandtest \
-+	mtd_debug flashcp nandwrite nandtest mtdpart \
- 	jffs2dump \
- 	nftldump nftl_format docfdisk \
- 	rfddump rfdformat \
-diff --git a/mtdpart.c b/mtdpart.c
-new file mode 100644
-index 0000000..c2aed7f
---- /dev/null
-+++ b/mtdpart.c
-@@ -0,0 +1,190 @@
-+/*
-+ *  mtdpart.c
-+ *
-+ *  Copyright 2015 The Chromium OS Authors.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ *  Overview:
-+ *   This utility adds or removes a partition from an MTD device.
-+ */
-+
-+#define PROGRAM_NAME "mtdpart"
-+
-+#include <fcntl.h>
-+#include <getopt.h>
-+#include <linux/blkpg.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+#include "common.h"
-+
-+static void display_help(int status)
-+{
-+	fprintf(status == EXIT_SUCCESS ? stdout : stderr,
-+"Usage: %1$s add [OPTION] <MTD_DEVICE> <PART_NAME> <START> <SIZE>\n"
-+"       %1$s del [OPTION] <MTD_DEVICE> <PART_NUMBER>\n"
-+"Adds a partition to an MTD device, or remove an existing partition from it.\n"
-+"\n"
-+"  -h, --help    Display this help and exit\n"
-+"      --version Output version information and exit\n"
-+"\n"
-+"START location and SIZE of the partition are in bytes. They should align on\n"
-+"eraseblock size.\n",
-+	PROGRAM_NAME
-+	);
-+	exit(status);
-+}
-+
-+static void display_version(void)
-+{
-+	printf("%1$s " VERSION "\n"
-+			"\n"
-+			"%1$s comes with NO WARRANTY\n"
-+			"to the extent permitted by law.\n"
-+			"\n"
-+			"You may redistribute copies of %1$s\n"
-+			"under the terms of the GNU General Public Licence.\n"
-+			"See the file `COPYING' for more information.\n",
-+			PROGRAM_NAME);
-+	exit(EXIT_SUCCESS);
-+}
-+
-+/* Command arguments */
-+
-+typedef enum {
-+	COMMAND_ADD,
-+	COMMAND_DEL
-+} command_type;
-+
-+static command_type		command;		/* add or del */
-+static const char		*mtddev;		/* mtd device name */
-+static const char		*part_name;		/* partition name */
-+static int			part_no;		/* partition number */
-+static long long		start_addr;		/* start address */
-+static long long		length;			/* partition size */
-+
-+static void process_options(int argc, char * const argv[])
-+{
-+	int error = 0;
-+
-+	for (;;) {
-+		int option_index = 0;
-+		static const char short_options[] = "h";
-+		static const struct option long_options[] = {
-+			{"version", no_argument, 0, 0},
-+			{"help", no_argument, 0, 'h'},
-+			{0, 0, 0, 0},
-+		};
-+
-+		int c = getopt_long(argc, argv, short_options,
-+				long_options, &option_index);
-+		if (c == EOF) {
-+			break;
-+		}
-+
-+		switch (c) {
-+			case 0:
-+				display_version();
-+				break;
-+			case 'h':
-+				display_help(EXIT_SUCCESS);
-+				break;
-+			case '?':
-+				error++;
-+				break;
-+		}
-+	}
-+
-+	if ((argc - optind) < 3 || error)
-+		display_help(EXIT_FAILURE);
-+
-+	const char *s_command = argv[optind++];
-+	mtddev = argv[optind++];
-+
-+	if (strcmp(s_command, "del") == 0 && (argc - optind) == 1) {
-+		const char *s_part_no = argv[optind++];
-+
-+		part_no = simple_strtol(s_part_no, &error);
-+		if (part_no < 0) {
-+		       errmsg_die("Can't specify negative partition number: %d",
-+				  part_no);
-+		}
-+
-+		command = COMMAND_DEL;
-+	} else if (strcmp(s_command, "add") == 0 && (argc - optind) == 3) {
-+		const char *s_start;
-+		const char *s_length;
-+
-+		part_name = argv[optind++];
-+		s_start = argv[optind++];
-+		s_length = argv[optind++];
-+
-+		if (strlen(part_name) >= BLKPG_DEVNAMELTH)
-+			errmsg_die("Partition name (%s) should be less than %d characters",
-+				   part_name, BLKPG_DEVNAMELTH);
-+
-+		start_addr = simple_strtoll(s_start, &error);
-+		if (start_addr < 0)
-+		       errmsg_die("Can't specify negative start offset: %lld",
-+				  start_addr);
-+
-+		length = simple_strtoll(s_length, &error);
-+		if (length < 0)
-+		       errmsg_die("Can't specify negative length: %lld",
-+				  length);
-+
-+		command = COMMAND_ADD;
-+	} else
-+		display_help(EXIT_FAILURE);
-+
-+	if (error)
-+		display_help(EXIT_FAILURE);
-+}
-+
-+
-+int main(int argc, char * const argv[])
-+{
-+	int fd;
-+	struct blkpg_partition part;
-+	struct blkpg_ioctl_arg arg;
-+
-+	process_options(argc, argv);
-+
-+	fd = open(mtddev, O_RDWR | O_CLOEXEC);
-+	if (fd == -1)
-+		sys_errmsg_die("Cannot open %s", mtddev);
-+
-+	memset(&part, 0, sizeof(part));
-+
-+	memset(&arg, 0, sizeof(arg));
-+	arg.datalen = sizeof(part);
-+	arg.data = &part;
-+
-+	switch (command) {
-+		case COMMAND_ADD:
-+			part.start = start_addr;
-+			part.length = length;
-+			strncpy(part.devname, part_name, sizeof(part.devname));
-+			arg.op = BLKPG_ADD_PARTITION;
-+			break;
-+		case COMMAND_DEL:
-+			part.pno = part_no;
-+			arg.op = BLKPG_DEL_PARTITION;
-+			break;
-+	}
-+
-+	if (ioctl(fd, BLKPG, &arg))
-+		sys_errmsg_die("Failed to issue BLKPG ioctl");
-+
-+	close(fd);
-+
-+	/* Exit happy */
-+	return EXIT_SUCCESS;
-+}
--- 
-2.2.0.rc0.207.ga3a616c
+Thanks for catching it. Version 4 fixed this.
+
+Nam
