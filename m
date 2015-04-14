@@ -1,22 +1,16 @@
-Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
+Received: from mail-qk0-x22a.google.com ([2607:f8b0:400d:c09::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yi5WD-0003VY-Kd
- for linux-mtd@lists.infradead.org; Tue, 14 Apr 2015 18:25:06 +0000
-Received: by igbpi8 with SMTP id pi8so52354610igb.0
- for <linux-mtd@lists.infradead.org>; Tue, 14 Apr 2015 11:24:43 -0700 (PDT)
+ id 1Yi9ul-00006G-V6
+ for linux-mtd@lists.infradead.org; Tue, 14 Apr 2015 23:06:44 +0000
+Received: by qku63 with SMTP id 63so44964248qku.3
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Apr 2015 16:06:20 -0700 (PDT)
 MIME-Version: 1.0
-Sender: namnguyen@google.com
-In-Reply-To: <20150402211550.GJ32500@ld-irv-0074>
-References: <1425498091-3505-1-git-send-email-namnguyen@chromium.org>
- <20150402211550.GJ32500@ld-irv-0074>
-From: Nam Nguyen <namnguyen@chromium.org>
-Date: Tue, 14 Apr 2015 11:24:23 -0700
-Message-ID: <CA+YNSmVCefLY0Stb1VNxbvZxGE2iuw9X_5Ts1rb3cAx_yNZ3Ag@mail.gmail.com>
-Subject: Re: [PATCH v3] mtd-utils: Add mtdpart to add/delete partition
-To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 14 Apr 2015 16:06:07 -0700
+Message-ID: <CAAK6Zt2r=pjG4XtX6V7p37QOLATAgYR+ov2Kn=k10RW1bDS5bg@mail.gmail.com>
+Subject: fio MTD/NAND support patches out for review
+From: Daniel Ehrenberg <dehrenberg@google.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
-Cc: Mike Frysinger <vapier@chromium.org>, linux-mtd@lists.infradead.org,
- dehrenberg@chromium.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 2, 2015 at 2:15 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> This doesn't even compile...
+Hi all,
 
-This is an embarrassment. I'm so sorry it happened.
+I am interested in using fio as a basis for NAND flash
+characterization and qualification, so I wrote a patchset which adds
+an mtd fio ioengine and generates workloads which could work on NAND
+flash. I didn't want to spam this list with the whole patchset, since
+it doesn't modify code that's in the kernel or mtdutils, but I'd
+appreciate your comments or suggestions. I did take (fio is GPL2, like
+mtd-utils) a few files from mtd-utils for this, since it didn't look
+like that tends to be available as a shared library. You can find the
+thread at
 
->
-> On Wed, Mar 04, 2015 at 11:41:31AM -0800, Nam T. Nguyen wrote:
->> Add a simple utility to exercise BLKPG ioctl.
->>
->> Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
->> ---
->> Changes from v2:
->>
->>   o Fix coding style
->>   o Remove cleanup code since we exit()ing anyway.
->>
->>  Makefile  |   2 +-
->>  mtdpart.c | 187 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->>  2 files changed, 188 insertions(+), 1 deletion(-)
->>  create mode 100644 mtdpart.c
->>
-> ...
->> diff --git a/mtdpart.c b/mtdpart.c
->> new file mode 100644
->> index 0000000..b944f49
->> --- /dev/null
->> +++ b/mtdpart.c
->> @@ -0,0 +1,187 @@
-> [...]
->> +             command = COMMAND_DEL;
->> +     } else if (strcmp(s_command, "add") == 0 && (argc - optind) == 3) {
->> +             part_name = argv[optind++];
->> +             const char *s_start = argv[optind++];
->> +             const char *s_length = argv[optind++];
->
-> The preferred style is to keep variable definitions before statements.
+http://thread.gmane.org/gmane.comp.storage.fio/1569
 
-Done in v4.
-
->
->> +
->> +             if (strlen(part_name) >= BLKPG_DEVNAMELTH)
->> +                     errmsg_die("Partition name (%s) should be less than %d characters"
->
-> ^^ you're missing a comma on this line. I think that's the only compile
-> issue? But I'd expect you to compile and test what you're sending
-> first...
-
-Thanks for catching it. Version 4 fixed this.
-
-Nam
+Thanks,
+Dan
