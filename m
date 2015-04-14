@@ -1,44 +1,16 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yhuac-00039x-Bf
- for linux-mtd@lists.infradead.org; Tue, 14 Apr 2015 06:44:55 +0000
-Received: by paboj16 with SMTP id oj16so906755pab.0
- for <linux-mtd@lists.infradead.org>; Mon, 13 Apr 2015 23:44:32 -0700 (PDT)
-MIME-Version: 1.0
-Sender: kalluripunnaiahchoudary@gmail.com
-In-Reply-To: <1428950956.3868.16.camel@x220>
-References: <1428941512-26411-1-git-send-email-punnaia@xilinx.com>
- <a1f437fe-51cf-4a89-87b4-8f0a305e68ed@BN1AFFO11FD026.protection.gbl>
- <1428950956.3868.16.camel@x220>
-Date: Tue, 14 Apr 2015 12:14:32 +0530
-Message-ID: <CAGnW=BY_-Hiw1GoFs0vfmsTgybh=FvW2inG_fJAtdUj7aRchXw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] memory: pl353: Add driver for arm pl353 static
- memory controller
-From: punnaiah choudary kalluri <punnaia@xilinx.com>
-To: Paul Bolle <pebolle@tiscali.nl>
-Content-Type: text/plain; charset=UTF-8
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Arnd Bergmann <arnd@arndb.de>,
- "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "jason@lakedaemon.net" <jason@lakedaemon.net>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "joern@logfs.org" <joern@logfs.org>,
- Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- Alexandre Courbot <acourbot@nvidia.com>, Punnaiah Choudary <kpc528@gmail.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>, "Khoronzhuk,
- Ivan" <ivan.khoronzhuk@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ id 1Yi5Qw-00007W-6v
+ for linux-mtd@lists.infradead.org; Tue, 14 Apr 2015 18:19:39 +0000
+Received: by igblo3 with SMTP id lo3so81837166igb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Apr 2015 11:19:15 -0700 (PDT)
+From: namnguyen@chromium.org
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v4] mtd-utils: Add mtdpart to add/delete partition
+Date: Tue, 14 Apr 2015 11:18:38 -0700
+Message-Id: <1429035518-8323-1-git-send-email-namnguyen@chromium.org>
+Cc: "Nam T. Nguyen" <namnguyen@chromium.org>, vapier@chromium.org,
+ dehrenberg@chromium.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,103 +20,230 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Paul Bolle
+From: "Nam T. Nguyen" <namnguyen@chromium.org>
 
-On Tue, Apr 14, 2015 at 12:19 AM, Paul Bolle <pebolle@tiscali.nl> wrote:
-> On Mon, 2015-04-13 at 21:41 +0530, Punnaiah Choudary Kalluri wrote:
->> --- a/drivers/memory/Kconfig
->> +++ b/drivers/memory/Kconfig
->
->> +config PL353_SMC
->> +     bool "ARM PL353 Static Memory Controller (SMC) driver"
->> +     depends on ARM
->> +     help
->> +       This driver is for the ARM PL353 Static Memory Controller (SMC)
->> +       module.
->
-> This adds a bool symbol.
->
->> --- a/drivers/memory/Makefile
->> +++ b/drivers/memory/Makefile
->
->> +obj-$(CONFIG_PL353_SMC)              += pl353-smc.o
->
-> Which means pl353-smc.o can never be part of a module, right?
->
-> (If that's not right you can stop reading here.)
->
->> --- /dev/null
->> +++ b/drivers/memory/pl353-smc.c
->
->> + * This program is free software: you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation, either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->
-> This states the license is GPL v2 or later.
->
->> +#include <linux/module.h>
->
-> I wonder whether this include is needed, since this is built-in only
-> code.
->
->> +MODULE_DEVICE_TABLE(of, pl353_smc_of_match);
->
-> According to include/linux/module.h this will be preprocessed away for
-> built-in code.
->
->> +static struct platform_driver pl353_smc_driver = {
->> +     .probe          = pl353_smc_probe,
->> +     .remove         = pl353_smc_remove,
->> +     .driver         = {
->> +             .name   = "pl353-smc",
->> +             .owner  = THIS_MODULE,
->
-> THIS_MODULE will be equivalent to NULL for built-in code, according to
-> include/linux/export.h.
->
->> +             .pm     = &pl353_smc_dev_pm_ops,
->> +             .of_match_table = pl353_smc_of_match,
->> +     },
->> +};
->
->> +module_platform_driver(pl353_smc_driver);
->
-> Speaking from memory: for built-in only code this is equivalent to
-> having a wrapper that only does
->     register_platform_driver(&pl353_smc_driver);
->
-> and mark that wrapper with device_initcall().
->
->> +MODULE_AUTHOR("Xilinx, Inc.");
->> +MODULE_DESCRIPTION("ARM PL353 SMC Driver");
->> +MODULE_LICENSE("GPL v2");
->
-> For built-in only code these macros will be effectively preprocessed
-> away.
->
-> (Would you make PL353_SMC a tristate symbol then you should note that
-> according to include/linux/module.h "GPL" is the license ident that
-> matches the license stated in the comment at the top of this file.)
+Add a simple utility to exercise BLKPG ioctl.
 
-Ok. I will make PL353_SMC as tristate symbol and also i will change the
-licence ident to "GPL".
+Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
+---
+Changes from v3:
 
-Thanks for the review.
+  o Move variable definitions above statements.
+  o Fix compilation error.
 
-I will wait some time for further functional comments on this driver before
-sending the next version of patches
+ Makefile  |   2 +-
+ mtdpart.c | 190 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 191 insertions(+), 1 deletion(-)
+ create mode 100644 mtdpart.c
 
-Thanks,
-Punnaiah
->
-> Thanks,
->
->
-> Paul Bolle
->
+diff --git a/Makefile b/Makefile
+index eade234..f4ce313 100644
+--- a/Makefile
++++ b/Makefile
+@@ -20,7 +20,7 @@ MTD_BINS = \
+ 	ftl_format flash_erase nanddump doc_loadbios \
+ 	ftl_check mkfs.jffs2 flash_lock flash_unlock \
+ 	flash_otp_info flash_otp_dump flash_otp_lock flash_otp_write \
+-	mtd_debug flashcp nandwrite nandtest \
++	mtd_debug flashcp nandwrite nandtest mtdpart \
+ 	jffs2dump \
+ 	nftldump nftl_format docfdisk \
+ 	rfddump rfdformat \
+diff --git a/mtdpart.c b/mtdpart.c
+new file mode 100644
+index 0000000..c2aed7f
+--- /dev/null
++++ b/mtdpart.c
+@@ -0,0 +1,190 @@
++/*
++ *  mtdpart.c
++ *
++ *  Copyright 2015 The Chromium OS Authors.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ *  Overview:
++ *   This utility adds or removes a partition from an MTD device.
++ */
++
++#define PROGRAM_NAME "mtdpart"
++
++#include <fcntl.h>
++#include <getopt.h>
++#include <linux/blkpg.h>
++#include <stdio.h>
++#include <string.h>
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <unistd.h>
++
++#include "common.h"
++
++static void display_help(int status)
++{
++	fprintf(status == EXIT_SUCCESS ? stdout : stderr,
++"Usage: %1$s add [OPTION] <MTD_DEVICE> <PART_NAME> <START> <SIZE>\n"
++"       %1$s del [OPTION] <MTD_DEVICE> <PART_NUMBER>\n"
++"Adds a partition to an MTD device, or remove an existing partition from it.\n"
++"\n"
++"  -h, --help    Display this help and exit\n"
++"      --version Output version information and exit\n"
++"\n"
++"START location and SIZE of the partition are in bytes. They should align on\n"
++"eraseblock size.\n",
++	PROGRAM_NAME
++	);
++	exit(status);
++}
++
++static void display_version(void)
++{
++	printf("%1$s " VERSION "\n"
++			"\n"
++			"%1$s comes with NO WARRANTY\n"
++			"to the extent permitted by law.\n"
++			"\n"
++			"You may redistribute copies of %1$s\n"
++			"under the terms of the GNU General Public Licence.\n"
++			"See the file `COPYING' for more information.\n",
++			PROGRAM_NAME);
++	exit(EXIT_SUCCESS);
++}
++
++/* Command arguments */
++
++typedef enum {
++	COMMAND_ADD,
++	COMMAND_DEL
++} command_type;
++
++static command_type		command;		/* add or del */
++static const char		*mtddev;		/* mtd device name */
++static const char		*part_name;		/* partition name */
++static int			part_no;		/* partition number */
++static long long		start_addr;		/* start address */
++static long long		length;			/* partition size */
++
++static void process_options(int argc, char * const argv[])
++{
++	int error = 0;
++
++	for (;;) {
++		int option_index = 0;
++		static const char short_options[] = "h";
++		static const struct option long_options[] = {
++			{"version", no_argument, 0, 0},
++			{"help", no_argument, 0, 'h'},
++			{0, 0, 0, 0},
++		};
++
++		int c = getopt_long(argc, argv, short_options,
++				long_options, &option_index);
++		if (c == EOF) {
++			break;
++		}
++
++		switch (c) {
++			case 0:
++				display_version();
++				break;
++			case 'h':
++				display_help(EXIT_SUCCESS);
++				break;
++			case '?':
++				error++;
++				break;
++		}
++	}
++
++	if ((argc - optind) < 3 || error)
++		display_help(EXIT_FAILURE);
++
++	const char *s_command = argv[optind++];
++	mtddev = argv[optind++];
++
++	if (strcmp(s_command, "del") == 0 && (argc - optind) == 1) {
++		const char *s_part_no = argv[optind++];
++
++		part_no = simple_strtol(s_part_no, &error);
++		if (part_no < 0) {
++		       errmsg_die("Can't specify negative partition number: %d",
++				  part_no);
++		}
++
++		command = COMMAND_DEL;
++	} else if (strcmp(s_command, "add") == 0 && (argc - optind) == 3) {
++		const char *s_start;
++		const char *s_length;
++
++		part_name = argv[optind++];
++		s_start = argv[optind++];
++		s_length = argv[optind++];
++
++		if (strlen(part_name) >= BLKPG_DEVNAMELTH)
++			errmsg_die("Partition name (%s) should be less than %d characters",
++				   part_name, BLKPG_DEVNAMELTH);
++
++		start_addr = simple_strtoll(s_start, &error);
++		if (start_addr < 0)
++		       errmsg_die("Can't specify negative start offset: %lld",
++				  start_addr);
++
++		length = simple_strtoll(s_length, &error);
++		if (length < 0)
++		       errmsg_die("Can't specify negative length: %lld",
++				  length);
++
++		command = COMMAND_ADD;
++	} else
++		display_help(EXIT_FAILURE);
++
++	if (error)
++		display_help(EXIT_FAILURE);
++}
++
++
++int main(int argc, char * const argv[])
++{
++	int fd;
++	struct blkpg_partition part;
++	struct blkpg_ioctl_arg arg;
++
++	process_options(argc, argv);
++
++	fd = open(mtddev, O_RDWR | O_CLOEXEC);
++	if (fd == -1)
++		sys_errmsg_die("Cannot open %s", mtddev);
++
++	memset(&part, 0, sizeof(part));
++
++	memset(&arg, 0, sizeof(arg));
++	arg.datalen = sizeof(part);
++	arg.data = &part;
++
++	switch (command) {
++		case COMMAND_ADD:
++			part.start = start_addr;
++			part.length = length;
++			strncpy(part.devname, part_name, sizeof(part.devname));
++			arg.op = BLKPG_ADD_PARTITION;
++			break;
++		case COMMAND_DEL:
++			part.pno = part_no;
++			arg.op = BLKPG_DEL_PARTITION;
++			break;
++	}
++
++	if (ioctl(fd, BLKPG, &arg))
++		sys_errmsg_die("Failed to issue BLKPG ioctl");
++
++	close(fd);
++
++	/* Exit happy */
++	return EXIT_SUCCESS;
++}
+-- 
+2.2.0.rc0.207.ga3a616c
