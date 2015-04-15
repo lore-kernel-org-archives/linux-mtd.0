@@ -1,9 +1,9 @@
 From: Antoine Tenart <antoine.tenart@free-electrons.com>
 To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
  dwmw2@infradead.org, computersforpeace@gmail.com
-Subject: [PATCH v4 10/10] ARM: berlin: enable flash on the BG2Q DMP
-Date: Wed, 15 Apr 2015 19:24:08 +0200
-Message-Id: <1429118648-19416-11-git-send-email-antoine.tenart@free-electrons.com>
+Subject: [PATCH v4 05/10] mtd: nand: add Samsung K9GBG08U0A-M to nand_ids table
+Date: Wed, 15 Apr 2015 19:24:03 +0200
+Message-Id: <1429118648-19416-6-git-send-email-antoine.tenart@free-electrons.com>
 In-Reply-To: <1429118648-19416-1-git-send-email-antoine.tenart@free-electrons.com>
 References: <1429118648-19416-1-git-send-email-antoine.tenart@free-electrons.com>
 Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
@@ -19,47 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BG2Q DMP has a nand controller. Add the corresponding node, but do
-not enable it by default because the nand is only available on some BG2Q
-DMP.
+Add the full description of the Samsung K9GBG08U0A-M nand chip in the
+nand_ids table.
 
 Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 ---
- arch/arm/boot/dts/berlin2q-marvell-dmp.dts | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ drivers/mtd/nand/nand_ids.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/berlin2q-marvell-dmp.dts b/arch/arm/boot/dts/berlin2q-marvell-dmp.dts
-index a98ac1bd8f65..4157258a6fb0 100644
---- a/arch/arm/boot/dts/berlin2q-marvell-dmp.dts
-+++ b/arch/arm/boot/dts/berlin2q-marvell-dmp.dts
-@@ -112,3 +112,28 @@
- &sata_phy {
- 	status = "okay";
- };
-+
-+&chip {
-+	nand_pmux: nand-pmux {
-+		groups = "G0", "G1";
-+		function = "nand";
-+	};
-+};
-+
-+&nand0 {
-+	pinctrl-0 = <&nand_pmux>;
-+	pinctrl-names = "default";
-+
-+	marvell,nand-enable-arbiter;
-+	nand-ecc-strength = <48>;
-+	nand-ecc-step-size = <1024>;
-+
-+	num-cs = <1>;
-+
-+	/*
-+	 * Two kinds of BG2Q DMP are available: one with emmc and
-+	 * one with a nand. The latter is not widespread. Because
-+	 * of this, disable the nand by default.
-+	 */
-+	status = "disabled";
-+};
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index dd620c19c619..500c33e1db06 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -50,6 +50,10 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
+ 		  SZ_8K, SZ_8K, SZ_2M, 0, 6, 640, NAND_ECC_INFO(40, SZ_1K),
+ 		  4 },
++	{"NAND 4GiB 3,3V 8-bit",
++		{ .id = {0xec, 0xd7, 0x94, 0x76, 0x64, 0x43}, },
++		  8192, 4096, SZ_1M, LP_OPTIONS, 0, 0, NAND_ECC_INFO(40, SZ_1K),
++		  4 },
+ 
+ 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
+ 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
 -- 
 2.3.5
