@@ -1,10 +1,9 @@
 From: Antoine Tenart <antoine.tenart@free-electrons.com>
 To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
  dwmw2@infradead.org, computersforpeace@gmail.com
-Subject: [PATCH v4 08/10] mtd: nand: let Marvell Berlin SoCs select the pxa3xx
- driver
-Date: Wed, 15 Apr 2015 19:24:06 +0200
-Message-Id: <1429118648-19416-9-git-send-email-antoine.tenart@free-electrons.com>
+Subject: [PATCH v4 09/10] ARM: berlin: add BG2Q node for the nand
+Date: Wed, 15 Apr 2015 19:24:07 +0200
+Message-Id: <1429118648-19416-10-git-send-email-antoine.tenart@free-electrons.com>
 In-Reply-To: <1429118648-19416-1-git-send-email-antoine.tenart@free-electrons.com>
 References: <1429118648-19416-1-git-send-email-antoine.tenart@free-electrons.com>
 Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
@@ -20,28 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Marvell Berlin nand controller support has been added in the pxa3xx nand
-driver. Let these SoCs select the driver.
+Add a node describing the nand controller of the Marvell Berlin BG2Q
+SoC. It uses the pxa3xx nand driver, with a dedicated compatible.
+
+Also add the corresponding pinmuxing configuration.
 
 Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 ---
- drivers/mtd/nand/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/berlin2q.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 5b76a173cd95..acca044da603 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -331,8 +331,8 @@ config MTD_NAND_ATMEL
- 	  on Atmel AT91 and AVR32 processors.
+diff --git a/arch/arm/boot/dts/berlin2q.dtsi b/arch/arm/boot/dts/berlin2q.dtsi
+index be5397288d24..aeb3a0ea0540 100644
+--- a/arch/arm/boot/dts/berlin2q.dtsi
++++ b/arch/arm/boot/dts/berlin2q.dtsi
+@@ -437,6 +437,19 @@
+ 			status = "disabled";
+ 		};
  
- config MTD_NAND_PXA3xx
--	tristate "NAND support on PXA3xx and Armada 370/XP"
--	depends on PXA3xx || ARCH_MMP || PLAT_ORION
-+	tristate "NAND support on PXA3xx, Armada 370/XP and Marvell Berlin"
-+	depends on PXA3xx || ARCH_MMP || PLAT_ORION || ARCH_BERLIN
- 	help
- 	  This enables the driver for the NAND flash device found on
- 	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
++		nand0: nand@f00000 {
++			compatible = "marvell,berlin2-nand";
++			reg = <0xf00000 0x10000>;
++			interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&chip CLKID_NFC>,
++				 <&chip CLKID_NFC_ECC>;
++			clock-names = "nfc", "ecc";
++
++			#address-cells = <1>;
++
++			status = "disabled";
++		};
++
+ 		apb@fc0000 {
+ 			compatible = "simple-bus";
+ 			#address-cells = <1>;
 -- 
 2.3.5
