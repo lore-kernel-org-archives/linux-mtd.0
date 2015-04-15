@@ -1,19 +1,18 @@
-Message-ID: <552EB7F0.2090106@gmail.com>
-Date: Wed, 15 Apr 2015 21:11:44 +0200
-From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-To: Antoine Tenart <antoine.tenart@free-electrons.com>,
- ezequiel.garcia@free-electrons.com, dwmw2@infradead.org,
- computersforpeace@gmail.com
-Subject: Re: [PATCH v4 04/10] mtd: pxa3xx_nand: rework flash detection and
- timing setup
-References: <1429118648-19416-1-git-send-email-antoine.tenart@free-electrons.com>
- <1429118648-19416-5-git-send-email-antoine.tenart@free-electrons.com>
-In-Reply-To: <1429118648-19416-5-git-send-email-antoine.tenart@free-electrons.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- jszhang@marvell.com, linux-arm-kernel@lists.infradead.org
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YiTTG-00031T-3q
+ for linux-mtd@lists.infradead.org; Wed, 15 Apr 2015 19:59:39 +0000
+Message-ID: <552EC309.6050904@nod.at>
+Date: Wed, 15 Apr 2015 21:59:05 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] UBI/UBIFS updates for 4.1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="fJ8weTSE9pcd2ki7K7LMBpXRHmpcnH8Md"
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,178 +22,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15.04.2015 19:24, Antoine Tenart wrote:
-> Rework the pxa3xx_nand driver to allow using functions exported by the
-> nand framework to detect the flash and to configure the timings.
->
-> Because this driver supports some non-ONFI devices, we also keep the
-> custom timing setup of this driver so these devices won't break.
->
-> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
-> ---
-[...]
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--fJ8weTSE9pcd2ki7K7LMBpXRHmpcnH8Md
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Antoine,
+Linus,
 
-there are some issues with this patch.
+the following changes since commit bc465aa9d045feb0e13b4a8f32cc33c1943f62=
+d6:
 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index dc0edbc406bb..438770c56bd3 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -251,15 +251,14 @@ static struct pxa3xx_nand_timing timing[] = {
->   };
->
->   static struct pxa3xx_nand_flash builtin_flash_types[] = {
-> -{ "DEFAULT FLASH",      0,   0, 2048,  8,  8,    0, &timing[0] },
-> -{ "64MiB 16-bit",  0x46ec,  32,  512, 16, 16, 4096, &timing[1] },
-> -{ "256MiB 8-bit",  0xdaec,  64, 2048,  8,  8, 2048, &timing[1] },
-> -{ "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, &timing[1] },
-> -{ "128MiB 8-bit",  0xa12c,  64, 2048,  8,  8, 1024, &timing[2] },
-> -{ "128MiB 16-bit", 0xb12c,  64, 2048, 16, 16, 1024, &timing[2] },
-> -{ "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096, &timing[2] },
-> -{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &timing[2] },
-> -{ "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, &timing[3] },
-> +	{ 0x46ec, 16, 16, &timing[1] },
-> +	{ 0xdaec,  8,  8, &timing[1] },
-> +	{ 0xd7ec,  8,  8, &timing[1] },
-> +	{ 0xa12c,  8,  8, &timing[2] },
-> +	{ 0xb12c, 16, 16, &timing[2] },
-> +	{ 0xdc2c,  8,  8, &timing[2] },
-> +	{ 0xcc2c, 16, 16, &timing[2] },
-> +	{ 0xba20, 16, 16, &timing[3] },
+  Linux 4.0-rc5 (2015-03-22 16:50:21 -0700)
 
-How about we get rid of the driver specific timings completely
-and pick up the best onfi timing match instead? The nand_ids table
-allows for a default_onfi_timing parameter even if onfi itself is
-not supported.
+are available in the git repository at:
 
-For generic flash, i.e. no specific entry in the nand_ids table,
-we either choose onfi mode 0 (most conservative) or an even slower
-one.
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.1-rc1
 
-[...]
-> +static void pxa3xx_nand_set_sdr_timing(struct pxa3xx_nand_host *host,
-> +				       const struct nand_sdr_timings *t)
-> +{
-> +	struct pxa3xx_nand_info *info = host->info_data;
-> +	unsigned long nand_clk = clk_get_rate(info->clk);
-> +	uint32_t ndtr0, ndtr1;
-> +
-> +	u32 tCH_min = DIV_ROUND_UP(t->tCH_min, 1000);
-> +	u32 tCS_min = DIV_ROUND_UP(t->tCS_min, 1000);
-> +	u32 tWH_min = DIV_ROUND_UP(t->tWH_min, 1000);
-> +	u32 tWP_min = DIV_ROUND_UP(t->tWP_min, 1000);
+for you to fetch changes up to 502690674281a047abd45f81e64c498bc23a8bb3:
 
-While tWH_min is the minimum hold time of WE_n and tWP_min
-the minimum pulse width, the sum of the two rounded values
-may well exceed the minimum WE_n cycle width tWC_min.
+  UBI: power cut emulation for testing (2015-04-13 21:05:17 +0200)
 
-How about we do below instead?
+----------------------------------------------------------------
+This pull request includes the following UBI/UBIFS changes:
+* Powercut emulation for UBI
+* A huge update to UBI Fastmap
+* Cleanups and bugfixes all over UBI and UBIFS
 
-u32 tWH_min = DIV_ROUND_UP(t->tWH_min, 1000);
-u32 tWP_min = DIV_ROUND_UP(t->tWC_min - tWH_min, 1000);
-(note the missing t-> in front of tWH_min)
+----------------------------------------------------------------
+Artem Bityutskiy (1):
+      Merge tag 'v4.0-rc5' into linux-next
 
-> +	u32 tREH_min = DIV_ROUND_UP(t->tREH_min, 1000);
-> +	u32 tRP_min = DIV_ROUND_UP(t->tRP_min, 1000);
+Brian Norris (5):
+      UBI: account for bitflips in both the VID header and data
+      UBI: fix out of bounds write
+      UBI: initialize LEB number variable
+      UBI: fix check for "too many bytes"
+      UBI: align comment for readability
 
-Same applies to tRH and tRP.	
+Fabian Frederick (1):
+      UBIFS: simplify returns
 
-> +	u32 tRST_max = DIV_ROUND_UP_ULL(t->tRST_max, 1000);
-> +	u32 tWHR_min = DIV_ROUND_UP(t->tWHR_min, 1000);
-> +	u32 tAR_min = DIV_ROUND_UP(t->tAR_min, 1000);
-> +
-> +	ndtr0 = NDTR0_tCH(ns2cycle(tCH_min, nand_clk)) |
-> +		NDTR0_tCS(ns2cycle(tCS_min, nand_clk)) |
-> +		NDTR0_tWH(ns2cycle(tWH_min, nand_clk)) |
-> +		NDTR0_tWP(ns2cycle(tWP_min, nand_clk)) |
-> +		NDTR0_tRH(ns2cycle(tREH_min, nand_clk)) |
-> +		NDTR0_tRP(ns2cycle(tRP_min, nand_clk));
-> +
-> +	ndtr1 = NDTR1_tR(ns2cycle(tRST_max, nand_clk)) |
+Richard Weinberger (38):
+      UBI: Fastmap: Ensure that only one fastmap work is scheduled
+      UBI: Fastmap: Ensure that all fastmap work is done upon WL shutdown=
 
-Well, tRST (max reset duration) is not tR (max page read
-time) but much higher. I see that the onfi timings do not
-directly encode tR but have extra timings for tPROG, tBERS,
-tR, and tCCS.
+      UBI: Fastmap: Fix races in ubi_wl_get_peb()
+      UBI: Split __wl_get_peb()
+      UBI: Fastmap: Make ubi_refill_pools() fair
+      UBI: Fastmap: Don't allocate new ubi_wl_entry objects
+      UBI: Fastmap: Fix memory leaks while closing the WL sub-system
+      UBI: Fastmap: Notify user in case of an ubi_update_fastmap() failur=
+e
+      UBI: Fastmap: Wrap fastmap specific function in a ifdef
+      UBI: Fastmap: Fix fastmap usage in ubi_volume_notify()
+      UBI: Fastmap: Fix memory leak while attaching
+      UBI: Remove alloc_ai() slab name from parameter list
+      UBI: Fastmap: Fix race in ubi_eba_atomic_leb_change()
+      UBI: Fastmap: Remove bogus ubi_assert()
+      UBI: Fastmap: Remove eba_orphans logic
+      UBI: Fastmap: Switch to ro mode if invalidate_fastmap() fails
+      UBI: Fastmap: Make WL pool size 50% of user pool size
+      UBI: Fastmap: Fix leb_count unbalance
+      UBI: Fastmap: Fix race after ubi_wl_get_peb()
+      UBI: Fastmap: Set used_ebs only for static volumes
+      UBI: Fastmap: Locking updates
+      UBI: Fastmap: Prepare for variable sized fastmaps
+      UBI: Fastmap: Rework fastmap error paths
+      UBI: Add initial support for fastmap self checks
+      UBI: Fastmap: Enhance fastmap checking
+      UBI: Fix stale pointers in ubi->lookuptbl
+      UBI: Fastmap: Add self check to detect absent PEBs
+      UBI: Fastmap: Make self_check_eba() depend on fastmap self checking=
 
-I guess we'll have to amend sdr_timings for non-onfi devices
-then.
+      UBI: Fastmap: Add new module parameter fm_debug
+      UBI: Move fastmap specific functions out of wl.c
+      UBI: Add accessor functions for WL data structures
+      UBI: Fastmap: Wire up WL accessor functions
+      UBI: Fastmap: Introduce ubi_fastmap_init()
+      UBI: Fastmap: Introduce may_reserve_for_fm()
+      UBI: Fastmap: Remove else after return.
+      UBI: Fastmap: Add blank line after declarations
+      UBI: Fastmap: Remove is_fm_block()
+      UBI: Fastmap: Fall back to scanning mode after ECC error
 
-Also, if you check the armada370 functional spec, there is
-several meanings for tR register. Currently, pxa3xx nfc driver
-does not use WAIT_MODE which is supported for NFCv2 (non-pxa3xx
-SoCs). That will allow the controller to use R/Bn signal instead.
+Sheng Yong (3):
+      UBIFS: do not write master node if need recovery
+      UBIFS: extend debug/message capabilities
+      UBIFS: fix output format of INUM_WATERMARK
 
-Anyways, timing conversion is already tricky enough, let's start
-with 1:1 conversion and add additional modes later.
+Taesoo Kim (1):
+      UBIFS: fix incorrect unlocking handling
 
-> +		NDTR1_tWHR(ns2cycle(tWHR_min, nand_clk)) |
-> +		NDTR1_tAR(ns2cycle(tAR_min, nand_clk));
-> +
-> +	info->ndtr0cs0 = ndtr0;
-> +	info->ndtr1cs0 = ndtr1;
-> +	nand_writel(info, NDTR0CS0, ndtr0);
-> +	nand_writel(info, NDTR1CS0, ndtr1);
-> +}
-> +
-> +static int pxa3xx_nand_init_timings(struct pxa3xx_nand_host *host)
-> +{
-> +	const struct nand_sdr_timings *timings;
-> +	struct nand_chip *chip = &host->chip;
-> +	struct pxa3xx_nand_info *info = host->info_data;
-> +	const struct pxa3xx_nand_flash *f = NULL;
-> +	int mode, id, ntypes, i;
-> +
-> +	mode = onfi_get_async_timing_mode(chip);
-> +	if (mode == ONFI_TIMING_MODE_UNKNOWN) {
-> +		ntypes = ARRAY_SIZE(builtin_flash_types);
-> +
-> +		chip->cmdfunc(host->mtd, NAND_CMD_READID, 0x00, -1);
-> +
-> +		id = chip->read_byte(host->mtd);
-> +		id |= chip->read_byte(host->mtd) << 0x8;
-> +
-> +		for (i = 0; i < ntypes; i++) {
-> +			f = &builtin_flash_types[i];
-> +
-> +			if (f->chip_id == id)
-> +				break;
-> +		}
-> +
-> +		if (i == ntypes) {
-> +			dev_err(&info->pdev->dev, "Error: timings not found\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		pxa3xx_nand_set_timing(host, f->timing);
-> +
-> +		if (f->flash_width == 16) {
-> +			info->reg_ndcr |= NDCR_DWIDTH_M;
-> +			chip->options |= NAND_BUSWIDTH_16;
-> +		}
-> +
-> +		info->reg_ndcr |= (f->dfc_width == 16) ? NDCR_DWIDTH_C : 0;
-> +	} else {
-> +		mode = fls(mode) - 1;
-> +		if (mode < 0)
-> +			mode = 0;
+Yannick Guerrini (1):
+      UBIFS: Fix trivial typos in comments
 
-Is mode really a bitmap? If so, the name of onfi_get_async_timing_mode()
-is _very_ misleading. I would expect it to return the highest supported
-mode number instead of a bitmap of the supported modes.
+david.oberhollenzer@sigma-star.at (1):
+      UBI: power cut emulation for testing
 
-I'll have a deeper look into the patches later.
+ drivers/mtd/ubi/attach.c     |  73 +++---
+ drivers/mtd/ubi/build.c      |  29 ++-
+ drivers/mtd/ubi/cdev.c       |   2 +-
+ drivers/mtd/ubi/debug.c      | 100 +++++++-
+ drivers/mtd/ubi/debug.h      |  12 +
+ drivers/mtd/ubi/eba.c        |  54 ++--
+ drivers/mtd/ubi/fastmap-wl.c | 362 ++++++++++++++++++++++++++
+ drivers/mtd/ubi/fastmap.c    | 443 +++++++++++++++++---------------
+ drivers/mtd/ubi/io.c         |   6 +
+ drivers/mtd/ubi/ubi-media.h  |   2 -
+ drivers/mtd/ubi/ubi.h        |  85 ++++++-
+ drivers/mtd/ubi/wl.c         | 587 +++++++++++--------------------------=
+------
+ drivers/mtd/ubi/wl.h         |  28 +++
+ fs/ubifs/budget.c            |   2 +-
+ fs/ubifs/commit.c            |  12 +-
+ fs/ubifs/compress.c          |  22 +-
+ fs/ubifs/debug.c             | 186 +++++++-------
+ fs/ubifs/dir.c               |  23 +-
+ fs/ubifs/file.c              |  17 +-
+ fs/ubifs/io.c                |  40 +--
+ fs/ubifs/ioctl.c             |   2 +-
+ fs/ubifs/journal.c           |  17 +-
+ fs/ubifs/log.c               |   4 +-
+ fs/ubifs/lprops.c            |  62 ++---
+ fs/ubifs/lpt.c               |  59 ++---
+ fs/ubifs/lpt_commit.c        |  34 +--
+ fs/ubifs/master.c            |   6 +-
+ fs/ubifs/orphan.c            |  26 +-
+ fs/ubifs/recovery.c          |  44 ++--
+ fs/ubifs/replay.c            |  34 +--
+ fs/ubifs/sb.c                |  30 +--
+ fs/ubifs/scan.c              |  24 +-
+ fs/ubifs/super.c             | 107 ++++----
+ fs/ubifs/tnc.c               |  20 +-
+ fs/ubifs/tnc_commit.c        |  12 +-
+ fs/ubifs/tnc_misc.c          |  24 +-
+ fs/ubifs/ubifs.h             |  40 +--
+ fs/ubifs/xattr.c             |  18 +-
+ 38 files changed, 1507 insertions(+), 1141 deletions(-)
+ create mode 100644 drivers/mtd/ubi/fastmap-wl.c
+ create mode 100644 drivers/mtd/ubi/wl.h
 
-Sebastian
 
-> +		timings = onfi_async_timing_mode_to_sdr_timings(mode);
-> +		if (IS_ERR(timings))
-> +			return PTR_ERR(timings);
-> +
-> +		pxa3xx_nand_set_sdr_timing(host, timings);
-> +	}
-> +
-> +	return 0;
-> +}
+
+--fJ8weTSE9pcd2ki7K7LMBpXRHmpcnH8Md
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJVLsMOAAoJEPmeIjfg4UaaZigP/RuBUXzyPtdIdEU9SkmslAjU
+ZOCrsQig8vj34uAMZ43Z99VyLKNRIFX33cjMcsbDjBg6IH7DPBj9p82sEZOHdYwH
+fLU1dWaYzRk78Z/zzAJF4NjZCpfIFQ6u+AA5Qu+ivU35daTUlJuXF+JJv0eJ+z1b
+X6e5kLqcu319RhZjUf3mFjEriHH9Ds5x5Cc8JF5U2NA2zV1p4MKtttLMmdI/NgJo
+JTVmVRznYQBPEXsVkQulta3qbWyaIKuy7KBKwBOw7neJ/2NIofRt7WAqZOTpFCRT
+vpp/CfDFpstW5H6YAkn0DDsGlwf0FFTrOaKVeDNGO6huworcSUDJExY3aAksKgk2
+xbxE4Q5SnOybv+9KZaIzpGn6Q869JRpfTAvQK2qR+jF8bI31kT6Yuqvs8UUykT/w
+CFS5zWu4gFyuYjsPEuZksQ12+S9jEZGU0kkhBjbMWkH4SOPWBZrlReku0fhGT3u8
+rKhCVsUwcC0rWSyajqH5NKxCL7NqDlsWTnH/S082dMonkhJ0SJXfyFORa6CukNxw
+j8/O7PHUfExBdDQJgbvczLS7T51Xrx1k6zGh9B2MlvgfNpWt8ObF/Y+bnoj+aMM9
+Mch8K+bLTFHLK9/NkEOaJ3FZ4v4Zpe27tTQX3ZL8clvyVI/rQbHq42FBzzlztvsv
+ylK89yCxlpPM+E7jfzLx
+=GJDT
+-----END PGP SIGNATURE-----
+
+--fJ8weTSE9pcd2ki7K7LMBpXRHmpcnH8Md--
