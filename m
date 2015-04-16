@@ -1,13 +1,23 @@
-Received: from mout.kundenserver.de ([212.227.126.187])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yimjn-0001rH-2W
- for linux-mtd@lists.infradead.org; Thu, 16 Apr 2015 16:34:00 +0000
-From: James Cowgill <james410@cowgill.org.uk>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-utils: make hashtable_iterator functions static inline
-Date: Thu, 16 Apr 2015 17:32:56 +0100
-Message-Id: <1429201976-13558-1-git-send-email-james410@cowgill.org.uk>
-Cc: James Cowgill <james410@cowgill.org.uk>
+Message-ID: <552FEA74.5020909@free-electrons.com>
+Date: Thu, 16 Apr 2015 13:59:32 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+MIME-Version: 1.0
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ dwmw2@infradead.org, computersforpeace@gmail.com
+Subject: Re: [PATCH v4 04/10] mtd: pxa3xx_nand: rework flash detection and
+ timing setup
+References: <1429118648-19416-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1429118648-19416-5-git-send-email-antoine.tenart@free-electrons.com>
+ <552EB7F0.2090106@gmail.com> <552FB4DF.1030403@free-electrons.com>
+ <552FBC0E.20004@gmail.com>
+In-Reply-To: <552FBC0E.20004@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ jszhang@marvell.com, Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,64 +27,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-GCC 5 changed the default C standard to gnu11 which changed the behavior of the
-inline keyword. This causes mtd-utils to fail to build with duplicate
-definition errors involving hashtable_iterator_key and
-hashtable_iterator_value.
+On 04/16/2015 10:41 AM, Sebastian Hesselbarth wrote:
+> On 04/16/2015 03:10 PM, Ezequiel Garcia wrote:
+>> On 04/15/2015 04:11 PM, Sebastian Hesselbarth wrote:
+>>> On 15.04.2015 19:24, Antoine Tenart wrote:
+>>>> Rework the pxa3xx_nand driver to allow using functions exported by the
+>>>> nand framework to detect the flash and to configure the timings.
+>>>>
+>>>> Because this driver supports some non-ONFI devices, we also keep the
+>>>> custom timing setup of this driver so these devices won't break.
+>>>>
+>>>> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+>>>> ---
+>>> [...]
+>>> How about we get rid of the driver specific timings completely
+>>> and pick up the best onfi timing match instead? The nand_ids table
+>>> allows for a default_onfi_timing parameter even if onfi itself is
+>>> not supported.
+>>>
+>>> For generic flash, i.e. no specific entry in the nand_ids table,
+>>> we either choose onfi mode 0 (most conservative) or an even slower
+>>> one.
+>>>
+>>
+>> I think Robert mentioned [1] that using "ONFI default timings" on
+>> non-ONFI devices didn't work for him.
+>>
+>> [1] https://lkml.org/lkml/2015/3/8/124
+> 
+> Ok, I see. But there is still the option to pass board specific
+> timings with driver's platform_data. We could use
+> 
+> (a) pdata timings if passed
+> (b) onfi timings if available
+> (c) equivalent onfi timings if set
+> (d) conservative equivalent onfi timings otherwise
+> 
 
-This patch fixes the build by making the functions static inline and removing
-the extra definitions in hashtable_itr.c.
+Right, using platform_data sounds like a nice compromise solution.
+I'm willing to accept this series with the current timing rework; and
+leave the timing setup in-driver replacement for followup patches.
 
-Signed-off-by: James Cowgill <james410@cowgill.org.uk>
----
- mkfs.ubifs/hashtable/hashtable_itr.c | 12 ------------
- mkfs.ubifs/hashtable/hashtable_itr.h |  4 ++--
- 2 files changed, 2 insertions(+), 14 deletions(-)
+> All we need is a function to convert sdr_timings to sane driver
+> timings. And we really need to split this patch into tiny pieces
+> otherwise it is not reviewable - or at least I need a full overview
+> about the driver first.
+> 
 
-diff --git a/mkfs.ubifs/hashtable/hashtable_itr.c b/mkfs.ubifs/hashtable/hashtable_itr.c
-index 24f4dde..d102453 100644
---- a/mkfs.ubifs/hashtable/hashtable_itr.c
-+++ b/mkfs.ubifs/hashtable/hashtable_itr.c
-@@ -35,18 +35,6 @@ hashtable_iterator(struct hashtable *h)
- }
- 
- /*****************************************************************************/
--/* key      - return the key of the (key,value) pair at the current position */
--/* value    - return the value of the (key,value) pair at the current position */
--
--void *
--hashtable_iterator_key(struct hashtable_itr *i)
--{ return i->e->k; }
--
--void *
--hashtable_iterator_value(struct hashtable_itr *i)
--{ return i->e->v; }
--
--/*****************************************************************************/
- /* advance - advance the iterator to the next element
-  *           returns zero if advanced to end of table */
- 
-diff --git a/mkfs.ubifs/hashtable/hashtable_itr.h b/mkfs.ubifs/hashtable/hashtable_itr.h
-index 87a97eb..5c94a04 100644
---- a/mkfs.ubifs/hashtable/hashtable_itr.h
-+++ b/mkfs.ubifs/hashtable/hashtable_itr.h
-@@ -28,7 +28,7 @@ hashtable_iterator(struct hashtable *h);
- /* hashtable_iterator_key
-  * - return the value of the (key,value) pair at the current position */
- 
--extern inline void *
-+static inline void *
- hashtable_iterator_key(struct hashtable_itr *i)
- {
-     return i->e->k;
-@@ -37,7 +37,7 @@ hashtable_iterator_key(struct hashtable_itr *i)
- /*****************************************************************************/
- /* value - return the value of the (key,value) pair at the current position */
- 
--extern inline void *
-+static inline void *
- hashtable_iterator_value(struct hashtable_itr *i)
- {
-     return i->e->v;
+I think that's a bit of a different issue. This patch seems to be doing
+two things: it removes the in-driver flash detection *and* reworks
+timing setup.
+
+How about we split this in two or even three patches? Along these lines:
+1) introduce timing helpers, 2) rework timing setup, 3) remove in-driver
+flash detection. Not sure how feasible it is.
+
+> Also, as soon as Robert moves pxa3xx boards fully to DT, we'll loose
+> the pdata timings option above. *sigh*
+> 
+
+Well, such move would include proper timing DT properties for non-ONFI
+devices.
 -- 
-2.1.4
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
