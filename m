@@ -1,23 +1,23 @@
-Received: from mail-wg0-f44.google.com ([74.125.82.44])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ykh9W-0001YW-9p
- for linux-mtd@lists.infradead.org; Tue, 21 Apr 2015 23:00:27 +0000
-Received: by wgso17 with SMTP id o17so229176760wgs.1
- for <linux-mtd@lists.infradead.org>; Tue, 21 Apr 2015 16:00:03 -0700 (PDT)
-Message-ID: <5536D5C4.1010701@vanguardiasur.com.ar>
-Date: Tue, 21 Apr 2015 19:57:08 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YkhGj-0005RT-5C
+ for linux-mtd@lists.infradead.org; Tue, 21 Apr 2015 23:07:53 +0000
+Message-ID: <5536D77B.5040402@imgtec.com>
+Date: Tue, 21 Apr 2015 20:04:27 -0300
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v3] UBI: block: Dynamically allocate minor numbers
-References: <1426613846-36598-1-git-send-email-dehrenberg@chromium.org>
- <550ADF6C.3090408@vanguardiasur.com.ar>
-In-Reply-To: <550ADF6C.3090408@vanguardiasur.com.ar>
-Content-Type: text/plain; charset=windows-1252
+To: Daniel Ehrenberg <dehrenberg@chromium.org>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: Re: [PATCH 2/6] mtd: nand: Add JEDEC manufacturer ID for Gigadevice
+References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>	<1417525136-25731-3-git-send-email-ezequiel.garcia@imgtec.com>
+ <CAAK6Zt1ncdnibAYu25vOLF1uqycD+kgwXMtK8f0BOSCfoQvXWA@mail.gmail.com>
+In-Reply-To: <CAAK6Zt1ncdnibAYu25vOLF1uqycD+kgwXMtK8f0BOSCfoQvXWA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: gwendal@chromium.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Dan Ehrenberg <dehrenberg@chromium.org>
+Cc: bpqw@micron.com, Ionela Voinescu <ionela.voinescu@imgtec.com>,
+ frankliu@micron.com, Andrew Bresticker <abrestic@chromium.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ arnaud.mouiche@invoxia.com, James Hartley <james.hartley@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,35 +29,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 
-On 03/19/2015 11:38 AM, Ezequiel Garcia wrote:
-> 
-> 
-> On 03/17/2015 02:37 PM, Dan Ehrenberg wrote:
->> This patch makes ubiblock devices have minor numbers beginning from
->> 0, allocated dynamically independently of the ubi device/volume
->> number. This property becomes useful because, on 32-bit architectures
->> with LFS turned off in a userspace program, device minor numbers
->> over 8 bits cause stat to return -EOVERFLOW. If the device number is
->> high (>1) due to multiple MTD partitions, such an overflow will occur.
->> While enabling LFS is clearly a nicer solution, it's often difficult
->> to turn on in practice globally as many widely distributed packages
->> don't work with LFS on.
+On 12/12/2014 09:49 PM, Daniel Ehrenberg wrote:
+> On Tue, Dec 2, 2014 at 4:58 AM, Ezequiel Garcia
+> <ezequiel.garcia@imgtec.com> wrote:
+>> This commit adds Gigadevice to the list of manufacturer ID and name strings.
 >>
->> Other storage systems have their own workarounds, with SCSI making
->> multiple device majors and MMC having a config option for the number
->> of partitions per device. A completely dynamic minor numbering is
->> simpler than these. It is unlikely that anyone is depending on a
->> static minor number since the major is dynamic anyway. In addition,
->> ubiblock is still relatively new, so now is the time to make such
->> changes.
->>
->> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
->>
+>> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 > 
-> Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> Reviewed-by: Dan Ehrenberg <dehrenberg@chromium.org>
 > 
 
-Hm.. it seems this one fell through the cracks :/ Richard?
+Hey Brian,
+
+Do you think you can pick this one?
+
+Thanks,
 -- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+Ezequiel
