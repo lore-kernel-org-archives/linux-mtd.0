@@ -1,16 +1,16 @@
-Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
+Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ykoss-0004Ih-U7
- for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 07:15:47 +0000
-Received: by iebrs15 with SMTP id rs15so31092998ieb.3
- for <linux-mtd@lists.infradead.org>; Wed, 22 Apr 2015 00:15:25 -0700 (PDT)
-MIME-Version: 1.0
-From: Juha Kuikka <juha.kuikka@gmail.com>
-Date: Wed, 22 Apr 2015 00:15:04 -0700
-Message-ID: <CAKvrXUo5Tj8E3W-fO2cgm1BcaJVE1kYzHAa4S1mopU6rC+10NQ@mail.gmail.com>
-Subject: UBI/UBIFS: mount fails after volume truncate
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+ id 1Ykprh-000627-Ur
+ for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 08:18:39 +0000
+Received: by wgin8 with SMTP id n8so237755578wgi.0
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Apr 2015 01:18:13 -0700 (PDT)
+From: Tomas Hlavacek <tmshlvck@gmail.com>
+To: dwmw2@infradead.org
+Subject: [RFC] mtd: fsl_elbc_nand Add ECC mode selection in DT
+Date: Wed, 22 Apr 2015 10:18:10 +0200
+Message-Id: <1429690690-15057-1-git-send-email-tmshlvck@gmail.com>
+Cc: scottwood@freescale.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +20,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Add device tree parameters to turn off the HW ECC and force own ECC mode
+and ECC parameters. New entries are: nand-ecc-mode, nand-ecc-step-size
+and nand-ecc-strength.
 
-I ran into a weird thing today and I am not sure if this is expected
-behavior in my use case or an error:
+Add RNDOUT operation which is required for SOFT and SOFT_BCH modes.
 
-1. Truncate volume (UBI_IOCVOLUP with zero size)
-2. Reboot system few seconds after
-3. After reboot try to mount the truncated volume
+Do not set write_subpage function pointer from the driver when it initializes
+in SOFT and SOFT_BCH modes.
 
-Mount will fail with UBIFS complaining it cannot find a node in LEB
-zero (expected 6, got 255 for id). the message also indicates that the
-LEB is mapped.
+Signed-off-by: Tomas Hlavacek <tmshlvck@gmail.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c | 47 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 44 insertions(+), 3 deletions(-)
 
-Further, the error message in dmesg shows the first 32 bytes of the
-LEB, they show 0xFF.
-
-I find this strange, I would think the block either:
-A. Still has original EC, VID and data
-B. Had been erased (no EC, VID, data), in which case it wouldn't be
-mapped as LEB at all
-
-Or I suppose this could be an issue with fastmap if the mapping was
-read from FM but block was actually erased...
-
-This is on older kernel (3.8.13), so it could be an already fixed
-fastmap issue I suppose. I could go for a backport.
-
-Q1: How "atomic" is volume truncate? Are the unmapped lebs erase
-immediately or later?
-Q2: Any foreseen big issues in backporting UBI & UBIFS updates to 3.8.13?
-
-Cheers,
- - Juha
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 04b22fd..76ab2e2 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -335,6 +335,14 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 		fsl_elbc_run_command(mtd);
+ 		return;
+ 
++	case NAND_CMD_RNDOUT:
++		dev_vdbg(priv->dev,
++			 "fsl_elbc_cmdfunc: NAND_CMD_RNDOUT, column: 0x%x.\n",
++			 column);
++
++		elbc_fcm_ctrl->index = column;
++		return;
++
+ 	/* READOOB reads only the OOB because no ECC is performed. */
+ 	case NAND_CMD_READOOB:
+ 		dev_vdbg(priv->dev,
+@@ -656,6 +664,10 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 	        chip->ecc.steps);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.bytes = %d\n",
+ 	        chip->ecc.bytes);
++	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.size = %d\n",
++		chip->ecc.size);
++	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.strength = %d\n",
++		chip->ecc.strength);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.total = %d\n",
+ 	        chip->ecc.total);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.layout = %p\n",
+@@ -677,8 +689,8 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 		priv->page_size = 1;
+ 		setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
+ 		/* adjust ecc setup if needed */
+-		if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
+-		    BR_DECC_CHK_GEN) {
++		if (((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
++		    BR_DECC_CHK_GEN) && (chip->ecc.mode == NAND_ECC_HW)) {
+ 			chip->ecc.size = 512;
+ 			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
+ 			                   &fsl_elbc_oob_lp_eccm1 :
+@@ -742,6 +754,8 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
+ 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
+ 	struct nand_chip *chip = &priv->chip;
++	struct device_node *node = priv->dev->of_node;
++	const char *ecc_mode;
+ 
+ 	dev_dbg(priv->dev, "eLBC Set Information for bank %d\n", priv->bank);
+ 
+@@ -774,11 +788,38 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 
+ 	chip->ecc.read_page = fsl_elbc_read_page;
+ 	chip->ecc.write_page = fsl_elbc_write_page;
+-	chip->ecc.write_subpage = fsl_elbc_write_subpage;
++
++	/* Override default HW ECC according to settings in DT */
++	if (!of_property_read_string(node, "nand-ecc-mode", &ecc_mode)) {
++		if (!strncmp("none", ecc_mode, 4)) {
++			chip->ecc.mode = NAND_ECC_NONE;
++			return 0;
++		}
++
++		if (!strncmp("soft_bch", ecc_mode, 8)) {
++			chip->ecc.mode = NAND_ECC_SOFT_BCH;
++			chip->ecc.size = 512;
++			chip->ecc.strength = 4;
++
++			of_property_read_u32(node, "nand-ecc-step-size",
++						&chip->ecc.size);
++			of_property_read_u32(node, "nand-ecc-strength",
++						&chip->ecc.strength);
++			chip->ecc.bytes = ((fls(1+8*chip->ecc.size)*
++				chip->ecc.strength)/8);
++			return 0;
++		}
++
++		if (!strncmp("soft", ecc_mode, 4)) {
++			chip->ecc.mode = NAND_ECC_SOFT;
++			return 0;
++		}
++	}
+ 
+ 	/* If CS Base Register selects full hardware ECC then use it */
+ 	if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
+ 	    BR_DECC_CHK_GEN) {
++		chip->ecc.write_subpage = fsl_elbc_write_subpage;
+ 		chip->ecc.mode = NAND_ECC_HW;
+ 		/* put in small page settings and adjust later if needed */
+ 		chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
+-- 
+2.1.4
