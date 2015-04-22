@@ -1,12 +1,19 @@
-From: Ronald Wahl <ronald.wahl@raritan.com>
-To: linux-mtd@lists.infradead.org
-Subject: [RFC][PATCH] mtd: cfi_cmdset_0001.c: Take lock when determining block
- lock status.
-Date: Wed, 22 Apr 2015 14:37:04 +0200
-Message-Id: <1429706224-17356-1-git-send-email-ronald.wahl@raritan.com>
-Cc: Ronald Wahl <ronald.wahl@raritan.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YkyTV-0001y3-Fp
+ for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 17:30:14 +0000
+Date: Wed, 22 Apr 2015 12:29:44 -0500
+From: Ben Shelton <ben.shelton@ni.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com, dedekind1@gmail.com,
+ adrian.hunter@intel.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Adding subpage support to NAND driver -- backwards compatibility
+ concerns
+Message-ID: <20150422172944.GA4134@bshelton-desktop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: punnaiah.choudary.kalluri@xilinx.com, xander.huff@ni.com, joshc@ni.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,71 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Determining block lock status modifies chip status without taking lock.
-This can lead to hanging flash operations
+Hi all,
 
-Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
----
+We're currently carrying a patch out of tree to add subpage read and
+write support to the pl353_nand driver.  Xilinx is currently working to
+mainline this driver; see
 
-Not sure is this patch is efficient in the suspend/resume path since the lock
-is then taken and released for every flash block. This is also the reason why
-I split out a separate do_getlockstatus_oneblock_unlocked() routine. Maybe we
-need to take the lock separately in the suspend/resume path and then call this
-_unlocked variant for each flash block.
+http://www.spinics.net/lists/devicetree/msg76307.html
 
-In my own use case I do not use suspend resume so I just ignored this. So the
-question is: Is the patch usable in it's current form respective what needs to
-change.
+We'd like to upstream our patch, but my concern is that UBIFS behaves
+differently when it knows that the flash device supports subpages.  I
+have a couple of questions related to that:
 
- drivers/mtd/chips/cfi_cmdset_0001.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+- I know from experience that bad things happen when you use a kernel
+  without subpage support with an UBIFS filesystem that was formatted
+  with subpage support.  Is it safe to do the opposite (kernel with
+  subpage support / UBIFS filesystem formatted without subpage support)?
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 286b97a..cad687f 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -2044,10 +2044,10 @@ static void cfi_intelext_sync (struct mtd_info *mtd)
- 	}
- }
- 
--static int __xipram do_getlockstatus_oneblock(struct map_info *map,
--						struct flchip *chip,
--						unsigned long adr,
--						int len, void *thunk)
-+static int __xipram do_getlockstatus_oneblock_unlocked(struct map_info *map,
-+						       struct flchip *chip,
-+						       unsigned long adr,
-+						       int len, void *thunk)
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	int status, ofs_factor = cfi->interleave * cfi->device_type;
-@@ -2061,6 +2061,27 @@ static int __xipram do_getlockstatus_oneblock(struct map_info *map,
- 	return status;
- }
- 
-+static int __xipram do_getlockstatus_oneblock(struct map_info *map,
-+					      struct flchip *chip,
-+					      unsigned long adr,
-+					      int len, void *thunk)
-+{
-+	int ret;
-+
-+	mutex_lock(&chip->mutex);
-+	ret = get_chip(map, chip, adr + chip->start, FL_JEDEC_QUERY);
-+	if (ret) {
-+		mutex_unlock(&chip->mutex);
-+		return ret;
-+	}
-+
-+	ret = do_getlockstatus_oneblock_unlocked(map, chip, adr, len, thunk);
-+
-+	put_chip(map, chip, adr);
-+	mutex_unlock(&chip->mutex);
-+	return ret;
-+}
-+
- #ifdef DEBUG_LOCK_BITS
- static int __xipram do_printlockstatus_oneblock(struct map_info *map,
- 						struct flchip *chip,
--- 
-2.1.0
+- Assuming that it isn't safe, what's the best way to add subpage
+  support to this driver in an upstreamable way / without breaking
+  people?  Would it be sufficient to add subpage support as a Kconfig
+  option that's disabled by default with a strongly-worded message
+  describing the consequences of enabling it?
+
+Thanks,
+Ben
