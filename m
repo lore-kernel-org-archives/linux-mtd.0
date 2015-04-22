@@ -1,21 +1,16 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YkjmE-0001pj-WA
- for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 01:48:35 +0000
-Received: from mail.micron.com (ntxboicas01.micron.com [137.201.84.60])
- by mailout.micron.com (8.14.4/8.14.6) with ESMTP id t3M1m9cT030184
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
- for <linux-mtd@lists.infradead.org>; Tue, 21 Apr 2015 19:48:09 -0600
-From: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
- <peterpandong@micron.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Purpose of nand_chip.badblock_pattern
-Date: Wed, 22 Apr 2015 01:48:07 +0000
-Message-ID: <87F60714EC601C4C83DFF1D2E3D390A027283ECA@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ id 1Ykoss-0004Ih-U7
+ for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 07:15:47 +0000
+Received: by iebrs15 with SMTP id rs15so31092998ieb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Apr 2015 00:15:25 -0700 (PDT)
 MIME-Version: 1.0
+From: Juha Kuikka <juha.kuikka@gmail.com>
+Date: Wed, 22 Apr 2015 00:15:04 -0700
+Message-ID: <CAKvrXUo5Tj8E3W-fO2cgm1BcaJVE1kYzHAa4S1mopU6rC+10NQ@mail.gmail.com>
+Subject: UBI/UBIFS: mount fails after volume truncate
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,9 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgZXZlcnlvbmUsDQoNCk5vdyBJJ20gd29ya2luZyBvbiBzcGxpdCBuYW5kX2NoaXAgZnJvbSBu
-YW5kIEJCVCBjb2RlLiBJJ20gcXVpdGUgY29uZnVzZWQNCndoZW4gSSB0cnkgdG8gcmVtb3ZlIC5i
-YWRibG9ja19wYXR0ZXJuIGZyb20gc3RydWN0IG5hbmRfY2hpcC4NCg0KRG9lcyBhbnlvbmUgY2Fu
-IHRlbGwgbWUgdGhhdCB3aGF0J3MgdGhlIHB1cnBvc2Ugb2YgLmJhZGJsb2NrX3BhdHRlcm4NCmFu
-ZCB0aGUgZGlmZmVyZW5jZSBiZXR3ZWVuIC5iYWRibG9ja19wYXR0ZXJuLm9mZnMgYW5kIC5iYWRi
-bG9ja3Bvcz8NCg0KVGhhbmtzDQpQZXRlciBQYW4NCg==
+Hi,
+
+I ran into a weird thing today and I am not sure if this is expected
+behavior in my use case or an error:
+
+1. Truncate volume (UBI_IOCVOLUP with zero size)
+2. Reboot system few seconds after
+3. After reboot try to mount the truncated volume
+
+Mount will fail with UBIFS complaining it cannot find a node in LEB
+zero (expected 6, got 255 for id). the message also indicates that the
+LEB is mapped.
+
+Further, the error message in dmesg shows the first 32 bytes of the
+LEB, they show 0xFF.
+
+I find this strange, I would think the block either:
+A. Still has original EC, VID and data
+B. Had been erased (no EC, VID, data), in which case it wouldn't be
+mapped as LEB at all
+
+Or I suppose this could be an issue with fastmap if the mapping was
+read from FM but block was actually erased...
+
+This is on older kernel (3.8.13), so it could be an already fixed
+fastmap issue I suppose. I could go for a backport.
+
+Q1: How "atomic" is volume truncate? Are the unmapped lebs erase
+immediately or later?
+Q2: Any foreseen big issues in backporting UBI & UBIFS updates to 3.8.13?
+
+Cheers,
+ - Juha
