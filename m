@@ -1,23 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YkhGj-0005RT-5C
- for linux-mtd@lists.infradead.org; Tue, 21 Apr 2015 23:07:53 +0000
-Message-ID: <5536D77B.5040402@imgtec.com>
-Date: Tue, 21 Apr 2015 20:04:27 -0300
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YkjmE-0001pj-WA
+ for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 01:48:35 +0000
+Received: from mail.micron.com (ntxboicas01.micron.com [137.201.84.60])
+ by mailout.micron.com (8.14.4/8.14.6) with ESMTP id t3M1m9cT030184
+ (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Apr 2015 19:48:09 -0600
+From: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ <peterpandong@micron.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Purpose of nand_chip.badblock_pattern
+Date: Wed, 22 Apr 2015 01:48:07 +0000
+Message-ID: <87F60714EC601C4C83DFF1D2E3D390A027283ECA@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Daniel Ehrenberg <dehrenberg@chromium.org>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/6] mtd: nand: Add JEDEC manufacturer ID for Gigadevice
-References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>	<1417525136-25731-3-git-send-email-ezequiel.garcia@imgtec.com>
- <CAAK6Zt1ncdnibAYu25vOLF1uqycD+kgwXMtK8f0BOSCfoQvXWA@mail.gmail.com>
-In-Reply-To: <CAAK6Zt1ncdnibAYu25vOLF1uqycD+kgwXMtK8f0BOSCfoQvXWA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: bpqw@micron.com, Ionela Voinescu <ionela.voinescu@imgtec.com>,
- frankliu@micron.com, Andrew Bresticker <abrestic@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- arnaud.mouiche@invoxia.com, James Hartley <james.hartley@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +25,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 12/12/2014 09:49 PM, Daniel Ehrenberg wrote:
-> On Tue, Dec 2, 2014 at 4:58 AM, Ezequiel Garcia
-> <ezequiel.garcia@imgtec.com> wrote:
->> This commit adds Gigadevice to the list of manufacturer ID and name strings.
->>
->> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-> 
-> Reviewed-by: Dan Ehrenberg <dehrenberg@chromium.org>
-> 
-
-Hey Brian,
-
-Do you think you can pick this one?
-
-Thanks,
--- 
-Ezequiel
+SGkgZXZlcnlvbmUsDQoNCk5vdyBJJ20gd29ya2luZyBvbiBzcGxpdCBuYW5kX2NoaXAgZnJvbSBu
+YW5kIEJCVCBjb2RlLiBJJ20gcXVpdGUgY29uZnVzZWQNCndoZW4gSSB0cnkgdG8gcmVtb3ZlIC5i
+YWRibG9ja19wYXR0ZXJuIGZyb20gc3RydWN0IG5hbmRfY2hpcC4NCg0KRG9lcyBhbnlvbmUgY2Fu
+IHRlbGwgbWUgdGhhdCB3aGF0J3MgdGhlIHB1cnBvc2Ugb2YgLmJhZGJsb2NrX3BhdHRlcm4NCmFu
+ZCB0aGUgZGlmZmVyZW5jZSBiZXR3ZWVuIC5iYWRibG9ja19wYXR0ZXJuLm9mZnMgYW5kIC5iYWRi
+bG9ja3Bvcz8NCg0KVGhhbmtzDQpQZXRlciBQYW4NCg==
