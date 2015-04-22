@@ -1,17 +1,12 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yktr2-0000rp-Rl
- for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 12:34:13 +0000
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] UBI: block: Add missing cache flushes
-Date: Wed, 22 Apr 2015 09:30:53 -0300
-Message-ID: <1429705853-23872-1-git-send-email-ezequiel.garcia@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Richard Weinberger <richard@nod.at>,
- Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
- Kevin Cernekee <cernekee@chromium.org>, Artem Bityutskiy <dedekind1@gmail.com>
+From: Ronald Wahl <ronald.wahl@raritan.com>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC][PATCH] mtd: cfi_cmdset_0001.c: Take lock when determining block
+ lock status.
+Date: Wed, 22 Apr 2015 14:37:04 +0200
+Message-Id: <1429706224-17356-1-git-send-email-ronald.wahl@raritan.com>
+Cc: Ronald Wahl <ronald.wahl@raritan.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +16,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kevin Cernekee <cernekee@chromium.org>
+Determining block lock status modifies chip status without taking lock.
+This can lead to hanging flash operations
 
-Block drivers are responsible for calling flush_dcache_page() on each
-BIO request. This operation keeps the I$ coherent with the D$ on
-architectures that don't have hardware coherency support. Without this
-flush, random crashes are seen when executing user programs from an ext4
-filesystem backed by a ubiblock device.
-
-This patch is based on the change implemented in commit 2d4dc890b5c8
-("block: add helpers to run flush_dcache_page() against a bio and a
-request's pages").
-
-Fixes: 9d54c8a33eec ("UBI: R/O block driver on top of UBI volumes")
-Signed-off-by: Kevin Cernekee <cernekee@chromium.org>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
 ---
- drivers/mtd/ubi/block.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index db2c05b..c9eb78f 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -310,6 +310,8 @@ static void ubiblock_do_work(struct work_struct *work)
- 	blk_rq_map_sg(req->q, req, pdu->usgl.sg);
- 
- 	ret = ubiblock_read(pdu);
-+	rq_flush_dcache_pages(req);
-+
- 	blk_mq_end_request(req, ret);
+Not sure is this patch is efficient in the suspend/resume path since the lock
+is then taken and released for every flash block. This is also the reason why
+I split out a separate do_getlockstatus_oneblock_unlocked() routine. Maybe we
+need to take the lock separately in the suspend/resume path and then call this
+_unlocked variant for each flash block.
+
+In my own use case I do not use suspend resume so I just ignored this. So the
+question is: Is the patch usable in it's current form respective what needs to
+change.
+
+ drivers/mtd/chips/cfi_cmdset_0001.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 286b97a..cad687f 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2044,10 +2044,10 @@ static void cfi_intelext_sync (struct mtd_info *mtd)
+ 	}
  }
  
+-static int __xipram do_getlockstatus_oneblock(struct map_info *map,
+-						struct flchip *chip,
+-						unsigned long adr,
+-						int len, void *thunk)
++static int __xipram do_getlockstatus_oneblock_unlocked(struct map_info *map,
++						       struct flchip *chip,
++						       unsigned long adr,
++						       int len, void *thunk)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	int status, ofs_factor = cfi->interleave * cfi->device_type;
+@@ -2061,6 +2061,27 @@ static int __xipram do_getlockstatus_oneblock(struct map_info *map,
+ 	return status;
+ }
+ 
++static int __xipram do_getlockstatus_oneblock(struct map_info *map,
++					      struct flchip *chip,
++					      unsigned long adr,
++					      int len, void *thunk)
++{
++	int ret;
++
++	mutex_lock(&chip->mutex);
++	ret = get_chip(map, chip, adr + chip->start, FL_JEDEC_QUERY);
++	if (ret) {
++		mutex_unlock(&chip->mutex);
++		return ret;
++	}
++
++	ret = do_getlockstatus_oneblock_unlocked(map, chip, adr, len, thunk);
++
++	put_chip(map, chip, adr);
++	mutex_unlock(&chip->mutex);
++	return ret;
++}
++
+ #ifdef DEBUG_LOCK_BITS
+ static int __xipram do_printlockstatus_oneblock(struct map_info *map,
+ 						struct flchip *chip,
 -- 
-2.3.3
+2.1.0
