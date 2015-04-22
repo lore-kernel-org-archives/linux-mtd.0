@@ -1,27 +1,26 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YkykW-0002VF-QL
- for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 17:47:49 +0000
-Received: by paboj16 with SMTP id oj16so279191803pab.0
- for <linux-mtd@lists.infradead.org>; Wed, 22 Apr 2015 10:47:27 -0700 (PDT)
-Date: Wed, 22 Apr 2015 10:47:19 -0700
+ id 1YkynT-00040B-MQ
+ for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 17:50:52 +0000
+Received: by pabsx10 with SMTP id sx10so279204141pab.3
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Apr 2015 10:50:29 -0700 (PDT)
+Date: Wed, 22 Apr 2015 10:50:21 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: Re: [PATCH 2/6] mtd: nand: Add JEDEC manufacturer ID for Gigadevice
-Message-ID: <20150422174719.GV32500@ld-irv-0074>
-References: <1417525136-25731-1-git-send-email-ezequiel.garcia@imgtec.com>
- <1417525136-25731-3-git-send-email-ezequiel.garcia@imgtec.com>
- <CAAK6Zt1ncdnibAYu25vOLF1uqycD+kgwXMtK8f0BOSCfoQvXWA@mail.gmail.com>
- <5536D77B.5040402@imgtec.com>
+To: Peter Pan =?utf-8?B?5r2Y5qCLIChwZXRlcnBhbmRvbmcp?=
+ <peterpandong@micron.com>
+Subject: Re: [PATCH 1/6] mtd: nand_bbt: drop unnecessary header
+Message-ID: <20150422175021.GW32500@ld-irv-0074>
+References: <87F60714EC601C4C83DFF1D2E3D390A02728254F@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5536D77B.5040402@imgtec.com>
-Cc: bpqw@micron.com, Ionela Voinescu <ionela.voinescu@imgtec.com>,
- frankliu@micron.com, Andrew Bresticker <abrestic@chromium.org>,
- Daniel Ehrenberg <dehrenberg@chromium.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- arnaud.mouiche@invoxia.com, James Hartley <james.hartley@imgtec.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A02728254F@NTXXIAMBX02.xacn.micron.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "zajec5@gmail.com" <zajec5@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,23 +30,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 21, 2015 at 08:04:27PM -0300, Ezequiel Garcia wrote:
-> On 12/12/2014 09:49 PM, Daniel Ehrenberg wrote:
-> > On Tue, Dec 2, 2014 at 4:58 AM, Ezequiel Garcia
-> > <ezequiel.garcia@imgtec.com> wrote:
-> >> This commit adds Gigadevice to the list of manufacturer ID and name strings.
-> >>
-> >> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-> > 
-> > Reviewed-by: Dan Ehrenberg <dehrenberg@chromium.org>
-> > 
+On Thu, Apr 16, 2015 at 02:09:41AM +0000, Peter Pan 潘栋 (peterpandong) wrote:
 > 
-> Hey Brian,
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+
+Why are you just resending my patches? You could Ack/Reviewed-by/etc.
+instead...
+
+http://patchwork.ozlabs.org/patch/444604/
+
+> ---
+>  drivers/mtd/nand/nand_bbt.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> Do you think you can pick this one?
-
-Why would I do that, when I thought we were considering having a
-separate SPI NAND vs. parallel NAND driver (including separate ID
-tables)? Or are you seeing parallel NAND by Gigadevice?
-
-Brian
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index 9bb8453..307a285 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -64,7 +64,6 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/bbm.h>
+>  #include <linux/mtd/nand.h>
+> -#include <linux/mtd/nand_ecc.h>
+>  #include <linux/bitops.h>
+>  #include <linux/delay.h>
+>  #include <linux/vmalloc.h>
+> -- 
+> 1.9.1
