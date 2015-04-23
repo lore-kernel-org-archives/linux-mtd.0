@@ -1,30 +1,24 @@
-Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
+Received: from mx02.posteo.de ([89.146.194.165])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YlNAJ-0002y6-LY
- for linux-mtd@lists.infradead.org; Thu, 23 Apr 2015 19:52:04 +0000
-Date: Thu, 23 Apr 2015 14:50:43 -0500
-From: Josh Cartwright <joshc@ni.com>
-To: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-Subject: Re: [PATCH v6 1/2] Devicetree: Add pl353 smc controller devicetree
- binding information
-Message-ID: <20150423195043.GS27115@jcartwri.amer.corp.natinst.com>
-References: <1428941512-26411-1-git-send-email-punnaia@xilinx.com>
- <e3a73fa0-9159-4fbe-b042-4737dc9b041f@BN1BFFO11FD010.protection.gbl>
+ id 1YlPNF-0001OC-0B
+ for linux-mtd@lists.infradead.org; Thu, 23 Apr 2015 22:13:33 +0000
+Received: from dovecot03.posteo.de (unknown [185.67.36.28])
+ by mx02.posteo.de (Postfix) with ESMTPS id 5285F1F46581
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Apr 2015 00:12:57 +0200 (CEST)
+Received: from mail.posteo.de (localhost [127.0.0.1])
+ by dovecot03.posteo.de (Postfix) with ESMTPSA id 3lXtDT5MQbz5vN0
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Apr 2015 00:12:57 +0200 (CEST)
+From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/3] Makefile: fix build against musl
+Date: Fri, 24 Apr 2015 00:12:52 +0200
+Message-Id: <1429827173-1739-2-git-send-email-joerg.krause@embedded.rocks>
+In-Reply-To: <1429827173-1739-1-git-send-email-joerg.krause@embedded.rocks>
+References: <1429827173-1739-1-git-send-email-joerg.krause@embedded.rocks>
 MIME-Version: 1.0
-In-Reply-To: <e3a73fa0-9159-4fbe-b042-4737dc9b041f@BN1BFFO11FD010.protection.gbl>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="UlsYxwg8UDQn+EKZ"
-Content-Disposition: inline
-Cc: mark.rutland@arm.com, jussi.kivilinna@iki.fi, linux-doc@vger.kernel.org,
- artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>, arnd@arndb.de,
- michal.simek@xilinx.com, ezequiel.garcia@free-electrons.com,
- grant.likely@linaro.org, devicetree@vger.kernel.org, jason@lakedaemon.net,
- pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, joern@logfs.org,
- kpc528@gmail.com, robh+dt@kernel.org, acourbot@nvidia.com,
- kalluripunnaiahchoudary@gmail.com, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, rob@landley.net, galak@codeaurora.org,
- ivan.khoronzhuk@ti.com, computersforpeace@gmail.com, dwmw2@infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Cc: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,58 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---UlsYxwg8UDQn+EKZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hey Punnaiah-
-
-A few nitpicks here, in case you'll be spinning up a new version of your
-patchset.
-
-On Mon, Apr 13, 2015 at 09:41:51PM +0530, Punnaiah Choudary Kalluri wrote:
-> Add pl353 static memory controller devicetree binding information.
->
-> Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
-[..]
-> @@ -0,0 +1,37 @@
-> +Device tree bindings for ARM PL353 static memory controller
-> +
-> +PL353 static memory controller supports two kinds of memory
-> +interfaces. i.e NAND and SRAM/NOR interfaces.
-> +The actual devices are instantiated from the child nodes of pl353 smc node.
-> +
-> +Required properties:
-> +- compatible		: Should be "arm,pl353-smc-r2p1"
-> +- reg			: Controller registers map and length.
-> +- clock-names		: List of input clock names - "memclk", "aclk"
-> +			  (See clock bindings for details).
-> +- clocks		: Clock phandles (see clock bindings for details).
-
-Technically not clock phandles, but clock specifiers.
-
-> +- address-cells	: Address cells, must be 1.
-> +- size-cells		: Size cells. Must be 1.
-
-These should have the leading '#' as in '#address-cells' and
-'#size-cells'.
-
-  Josh
-
---UlsYxwg8UDQn+EKZ
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAABCAAGBQJVOU0OAAoJEKp7ZBKwQFArRsoH/jqayKE/frgryBvVuVL0NglS
-6XHfvrHFZLA56uC5ourwK1L88F6lg0lJK73uPLy7e5ag2buXgbe1r0CVqn9QrszT
-fFpTAehqnvPRm7uUa4CKo8de6iI3G6GetEaToEsIBzPrP+I3zk91/legfVwEE81O
-92FAvLgOT73rUoC700Zp5bPmEqPCzjw01CFhh6aKomIWgG3GJDO0dqgwN/WPOsN9
-IMqMZpjTPhJXu2HjVk6JYQUi6kFfmWxGJtde7o8HKEB/lJp66dDn5weJNNQF3eaF
-tsky9+z9AkfdGlfJGzA3nsMuz8pVY1JobONszH/wWGN16o4MC+d7lJ+dWRFrWI0=
-=fjRC
------END PGP SIGNATURE-----
-
---UlsYxwg8UDQn+EKZ--
+Rml4IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gJ2xpYmludGxfZ2V0dGV4dCcuCgpTaWduZWQtb2Zm
+LWJ5OiBKw7ZyZyBLcmF1c2UgPGpvZXJnLmtyYXVzZUBlbWJlZGRlZC5yb2Nrcz4KLS0tCiBNYWtl
+ZmlsZSB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigt
+KQoKZGlmZiAtLWdpdCBhL01ha2VmaWxlIGIvTWFrZWZpbGUKaW5kZXggZWFkZTIzNC4uMzZiYjcw
+MCAxMDA2NDQKLS0tIGEvTWFrZWZpbGUKKysrIGIvTWFrZWZpbGUKQEAgLTEwNSw3ICsxMDUsNyBA
+QCAkKGNhbGwgX21rZGVwLGxpYi8sbGlibXRkLmEpCiBvYmotbWtmcy51YmlmcyA9IGNyYzE2Lm8g
+bHB0Lm8gY29tcHIubyBkZXZ0YWJsZS5vIFwKIAloYXNodGFibGUvaGFzaHRhYmxlLm8gaGFzaHRh
+YmxlL2hhc2h0YWJsZV9pdHIubwogTERGTEFHU19ta2ZzLnViaWZzID0gJChaTElCTERGTEFHUykg
+JChMWk9MREZMQUdTKSAkKFVVSURMREZMQUdTKQotTERMSUJTX21rZnMudWJpZnMgPSAtbHogLWxs
+em8yIC1sbSAtbHV1aWQKK0xETElCU19ta2ZzLnViaWZzID0gLWx6IC1sbHpvMiAtbG0gLWx1dWlk
+IC1saW50bAogJChjYWxsIG1rZGVwLG1rZnMudWJpZnMvLG1rZnMudWJpZnMsLHViaS11dGlscy9s
+aWJ1YmkuYSkKIAogIwotLSAKMi4zLjYKCg==
