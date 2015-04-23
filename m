@@ -1,19 +1,27 @@
-From: =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH 2/6] mtd: diskonchip: don't call nand_scan_bbt() directly
-Date: Thu, 23 Apr 2015 00:30:34 +0000
-Message-ID: <87F60714EC601C4C83DFF1D2E3D390A027284081@NTXXIAMBX02.xacn.micron.com>
-References: <87F60714EC601C4C83DFF1D2E3D390A02728255E@NTXXIAMBX02.xacn.micron.com>
- <20150422175108.GX32500@ld-irv-0074>
-In-Reply-To: <20150422175108.GX32500@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.198])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yl7Ch-0005hF-L3
+ for linux-mtd@lists.infradead.org; Thu, 23 Apr 2015 02:49:28 +0000
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: Ben Shelton <ben.shelton@ni.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date: Thu, 23 Apr 2015 12:48:53 +1000
+Subject: RE: Adding subpage support to NAND driver -- backwards
+ compatibility concerns
+Message-ID: <EACD232272DA4849B060F0828564D13B95342BDE78@ntcex01.corp.netcomm.com.au>
+References: <20150422172944.GA4134@bshelton-desktop>
+In-Reply-To: <20150422172944.GA4134@bshelton-desktop>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "punnaiah.choudary.kalluri@xilinx.com"
+ <punnaiah.choudary.kalluri@xilinx.com>, "joshc@ni.com" <joshc@ni.com>,
+ "xander.huff@ni.com" <xander.huff@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,94 +31,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVGh1LCBBcHIgMjMsIDIwMTUgYXQgMDE6NTE6MjdQTSArMDAwMCwgQnJpYW4gTm9ycmlzIHdy
-b3RlOg0KPiANCj4gT24gVGh1LCBBcHIgMTYsIDIwMTUgYXQgMDI6MTE6MjRBTSArMDAwMCwgUGV0
-ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ0KPiB3cm90ZToNCj4gPiBUaGUgZGlza29uY2hp
-cCBkcml2ZXIgYWxtb3N0IHVzZXMgdGhlIGRlZmF1bHQgbmFuZF9iYXNlIGhvb2tzIGFzLWlzLA0K
-PiA+IGV4Y2VwdCB0aGF0IGl0IHByb3ZpZGVzIGN1c3RvbSBvbi1mbGFzaCBCQlQgZGVzY3JpcHRv
-cnMgYW5kIGF2b2lkcw0KPiB1c2luZw0KPiA+IGZhY3RvcnktbWFya2VkIGJhZCBibG9ja2Vycy4N
-Cj4gPg0KPiA+IFNvIGxldCdzIHJlZmFjdG9yIHRoZSBCQlQgaW5pdGlhbGl6YXRpb24gY29kZSBp
-bnRvIGEgcHJpdmF0ZQ0KPiAnbGF0ZV9pbml0Jw0KPiA+IGhvb2sgd2hpY2ggaGFuZGxlcyBhbGwg
-dGhlIHByaXZhdGUgZGV0YWlscy4gTm90ZSB0aGUgdXNhZ2Ugb2YNCj4gPiBOQU5EX1NLSVBfQkJU
-U0NBTiwgd2hpY2ggYWxsb3dzIHVzIHRvIGRlZmVyIHRoZSBCQlQgc2NhbiB1bnRpbCB3ZSd2ZQ0K
-PiA+IHByZXBhcmVkIGV2ZXJ5dGhpbmcuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBCcmlhbiBO
-b3JyaXMgPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBQ
-ZXRlciBQYW4gPHBldGVycGFuZG9uZ0BtaWNyb24uY29tPg0KPiANCj4gV2h5IGFyZSB5b3UganVz
-dCByZXNlbmRpbmcgbXkgcGF0Y2g/IFlvdSBjb3VsZCBBY2svUmV2aWV3L1Rlc3QgaXQNCj4gaW5z
-dGVhZC4gKERpZCB5b3UgdGVzdCBpdD8pDQoNCk15IHdvcmsgaXMgaW4gdGhlIDZ0aCBwYXRjaC4N
-CkkgYWxyZWFkeSB0ZXN0ZWQgdGhlIHBhdGNoIHdpdGggbWljcm9uIG93biBuYW5kIGNvbnRyb2xs
-ZXIuIEkgZG9uJ3QgaGF2ZQ0KcGxhdGZvcm0gd2l0aCBkb2NnNCBvciBkaXNrb25jaGlwIGNvbnRy
-b2xsZXIuIFNvIHRoZSBCQlQgYW5kIG5hbmRfYmFzZS5jDQpwYXJ0IGlzIGNvdmVyZWQgd2hpbGUg
-ZG9jZzQuYyBhbmQgZGlza29uY2hpcC5jIG5vdC4NCg0KPiBodHRwOi8vcGF0Y2h3b3JrLm96bGFi
-cy5vcmcvcGF0Y2gvNDQ0NjA1Lw0KPiANCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9k
-aXNrb25jaGlwLmMgfCAyNyArKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0NCj4gPiAgMSBmaWxl
-IGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvZGlza29uY2hpcC5jDQo+IGIvZHJpdmVycy9tdGQv
-bmFuZC9kaXNrb25jaGlwLmMNCj4gPiBpbmRleCBmNjhhN2JjLi5lNTgwMDE0IDEwMDY0NA0KPiA+
-IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvZGlza29uY2hpcC5jDQo+ID4gKysrIGIvZHJpdmVycy9t
-dGQvbmFuZC9kaXNrb25jaGlwLmMNCj4gPiBAQCAtNjksNiArNjksOSBAQCBzdHJ1Y3QgZG9jX3By
-aXYgew0KPiA+ICAJaW50IG1oMF9wYWdlOw0KPiA+ICAJaW50IG1oMV9wYWdlOw0KPiA+ICAJc3Ry
-dWN0IG10ZF9pbmZvICpuZXh0ZG9jOw0KPiA+ICsNCj4gPiArCS8qIEhhbmRsZSB0aGUgbGFzdCBz
-dGFnZSBvZiBpbml0aWFsaXphdGlvbiAoQkJUIHNjYW4sDQo+IHBhcnRpdGlvbmluZykgKi8NCj4g
-PiArCWludCAoKmxhdGVfaW5pdCkoc3RydWN0IG10ZF9pbmZvICptdGQpOw0KPiA+ICB9Ow0KPiA+
-DQo+ID4gIC8qIFRoaXMgaXMgdGhlIHN5bmRyb21lIGNvbXB1dGVkIGJ5IHRoZSBIVyBlY2MgZ2Vu
-ZXJhdG9yIHVwb24NCj4gcmVhZGluZyBhbiBlbXB0eQ0KPiA+IEBAIC0xMjk0LDEwICsxMjk3LDEw
-IEBAIHN0YXRpYyBpbnQgX19pbml0IG5mdGxfc2Nhbl9iYnQoc3RydWN0DQo+IG10ZF9pbmZvICpt
-dGQpDQo+ID4gIAkJdGhpcy0+YmJ0X21kID0gTlVMTDsNCj4gPiAgCX0NCj4gPg0KPiA+IC0JLyog
-SXQncyBzYWZlIHRvIHNldCBiZD1OVUxMIGJlbG93IGJlY2F1c2UgTkFORF9CQlRfQ1JFQVRFIGlz
-IG5vdA0KPiBzZXQuDQo+ID4gLQkgICBBdCBsZWFzdCBhcyBuYW5kX2JidC5jIGlzIGN1cnJlbnRs
-eSB3cml0dGVuLiAqLw0KPiA+IC0JaWYgKChyZXQgPSBuYW5kX3NjYW5fYmJ0KG10ZCwgTlVMTCkp
-KQ0KPiA+ICsJcmV0ID0gdGhpcy0+c2Nhbl9iYnQobXRkKTsNCj4gPiArCWlmIChyZXQpDQo+ID4g
-IAkJcmV0dXJuIHJldDsNCj4gPiArDQo+ID4gIAltdGRfZGV2aWNlX3JlZ2lzdGVyKG10ZCwgTlVM
-TCwgMCk7DQo+ID4gIAlpZiAoIW5vX2F1dG9wYXJ0KQ0KPiA+ICAJCW10ZF9kZXZpY2VfcmVnaXN0
-ZXIobXRkLCBwYXJ0cywgbnVtcGFydHMpOw0KPiA+IEBAIC0xMzQ0LDEwICsxMzQ3LDEwIEBAIHN0
-YXRpYyBpbnQgX19pbml0IGluZnRsX3NjYW5fYmJ0KHN0cnVjdA0KPiBtdGRfaW5mbyAqbXRkKQ0K
-PiA+ICAJCXRoaXMtPmJidF9tZC0+cGF0dGVybiA9ICJUQkJfU1lTTSI7DQo+ID4gIAl9DQo+ID4N
-Cj4gPiAtCS8qIEl0J3Mgc2FmZSB0byBzZXQgYmQ9TlVMTCBiZWxvdyBiZWNhdXNlIE5BTkRfQkJU
-X0NSRUFURSBpcyBub3QNCj4gc2V0Lg0KPiA+IC0JICAgQXQgbGVhc3QgYXMgbmFuZF9iYnQuYyBp
-cyBjdXJyZW50bHkgd3JpdHRlbi4gKi8NCj4gPiAtCWlmICgocmV0ID0gbmFuZF9zY2FuX2JidCht
-dGQsIE5VTEwpKSkNCj4gPiArCXJldCA9IHRoaXMtPnNjYW5fYmJ0KG10ZCk7DQo+ID4gKwlpZiAo
-cmV0KQ0KPiA+ICAJCXJldHVybiByZXQ7DQo+ID4gKw0KPiA+ICAJbWVtc2V0KChjaGFyICopcGFy
-dHMsIDAsIHNpemVvZihwYXJ0cykpOw0KPiA+ICAJbnVtcGFydHMgPSBpbmZ0bF9wYXJ0c2Nhbiht
-dGQsIHBhcnRzKTsNCj4gPiAgCS8qIEF0IGxlYXN0IGZvciBub3csIHJlcXVpcmUgdGhlIElORlRM
-IE1lZGlhIEhlYWRlci4gIFdlIGNvdWxkDQo+IHByb2JhYmx5DQo+ID4gQEAgLTEzNjksNyArMTM3
-Miw3IEBAIHN0YXRpYyBpbmxpbmUgaW50IF9faW5pdCBkb2MyMDAwX2luaXQoc3RydWN0DQo+IG10
-ZF9pbmZvICptdGQpDQo+ID4gIAl0aGlzLT5yZWFkX2J5dGUgPSBkb2MyMDAwX3JlYWRfYnl0ZTsN
-Cj4gPiAgCXRoaXMtPndyaXRlX2J1ZiA9IGRvYzIwMDBfd3JpdGVidWY7DQo+ID4gIAl0aGlzLT5y
-ZWFkX2J1ZiA9IGRvYzIwMDBfcmVhZGJ1ZjsNCj4gPiAtCXRoaXMtPnNjYW5fYmJ0ID0gbmZ0bF9z
-Y2FuX2JidDsNCj4gPiArCWRvYy0+bGF0ZV9pbml0ID0gbmZ0bF9zY2FuX2JidDsNCj4gPg0KPiA+
-ICAJZG9jLT5DRFNOQ29udHJvbCA9IENEU05fQ1RSTF9GTEFTSF9JTyB8IENEU05fQ1RSTF9FQ0Nf
-SU87DQo+ID4gIAlkb2MyMDAwX2NvdW50X2NoaXBzKG10ZCk7DQo+ID4gQEAgLTEzOTYsMTMgKzEz
-OTksMTMgQEAgc3RhdGljIGlubGluZSBpbnQgX19pbml0IGRvYzIwMDFfaW5pdChzdHJ1Y3QNCj4g
-bXRkX2luZm8gKm10ZCkNCj4gPiAgCQkgICBjYW4gaGF2ZSBtdWx0aXBsZSBjaGlwcy4gKi8NCj4g
-PiAgCQlkb2MyMDAwX2NvdW50X2NoaXBzKG10ZCk7DQo+ID4gIAkJbXRkLT5uYW1lID0gIkRpc2tP
-bkNoaXAgMjAwMCAoSU5GVEwgTW9kZWwpIjsNCj4gPiAtCQl0aGlzLT5zY2FuX2JidCA9IGluZnRs
-X3NjYW5fYmJ0Ow0KPiA+ICsJCWRvYy0+bGF0ZV9pbml0ID0gaW5mdGxfc2Nhbl9iYnQ7DQo+ID4g
-IAkJcmV0dXJuICg0ICogZG9jLT5jaGlwc19wZXJfZmxvb3IpOw0KPiA+ICAJfSBlbHNlIHsNCj4g
-PiAgCQkvKiBCb2ctc3RhbmRhcmQgTWlsbGVubml1bSAqLw0KPiA+ICAJCWRvYy0+Y2hpcHNfcGVy
-X2Zsb29yID0gMTsNCj4gPiAgCQltdGQtPm5hbWUgPSAiRGlza09uQ2hpcCBNaWxsZW5uaXVtIjsN
-Cj4gPiAtCQl0aGlzLT5zY2FuX2JidCA9IG5mdGxfc2Nhbl9iYnQ7DQo+ID4gKwkJZG9jLT5sYXRl
-X2luaXQgPSBuZnRsX3NjYW5fYmJ0Ow0KPiA+ICAJCXJldHVybiAxOw0KPiA+ICAJfQ0KPiA+ICB9
-DQo+ID4gQEAgLTE0MTUsNyArMTQxOCw3IEBAIHN0YXRpYyBpbmxpbmUgaW50IF9faW5pdA0KPiBk
-b2MyMDAxcGx1c19pbml0KHN0cnVjdCBtdGRfaW5mbyAqbXRkKQ0KPiA+ICAJdGhpcy0+cmVhZF9i
-eXRlID0gZG9jMjAwMXBsdXNfcmVhZF9ieXRlOw0KPiA+ICAJdGhpcy0+d3JpdGVfYnVmID0gZG9j
-MjAwMXBsdXNfd3JpdGVidWY7DQo+ID4gIAl0aGlzLT5yZWFkX2J1ZiA9IGRvYzIwMDFwbHVzX3Jl
-YWRidWY7DQo+ID4gLQl0aGlzLT5zY2FuX2JidCA9IGluZnRsX3NjYW5fYmJ0Ow0KPiA+ICsJZG9j
-LT5sYXRlX2luaXQgPSBpbmZ0bF9zY2FuX2JidDsNCj4gPiAgCXRoaXMtPmNtZF9jdHJsID0gTlVM
-TDsNCj4gPiAgCXRoaXMtPnNlbGVjdF9jaGlwID0gZG9jMjAwMXBsdXNfc2VsZWN0X2NoaXA7DQo+
-ID4gIAl0aGlzLT5jbWRmdW5jID0gZG9jMjAwMXBsdXNfY29tbWFuZDsNCj4gPiBAQCAtMTU5MSw2
-ICsxNTk0LDggQEAgc3RhdGljIGludCBfX2luaXQgZG9jX3Byb2JlKHVuc2lnbmVkIGxvbmcNCj4g
-cGh5c2FkcikNCj4gPiAgCW5hbmQtPmVjYy5ieXRlcwkJPSA2Ow0KPiA+ICAJbmFuZC0+ZWNjLnN0
-cmVuZ3RoCT0gMjsNCj4gPiAgCW5hbmQtPmJidF9vcHRpb25zCT0gTkFORF9CQlRfVVNFX0ZMQVNI
-Ow0KPiA+ICsJLyogU2tpcCB0aGUgYXV0b21hdGljIEJCVCBzY2FuIHNvIHdlIGNhbiBydW4gaXQg
-bWFudWFsbHkgKi8NCj4gPiArCW5hbmQtPm9wdGlvbnMJCXw9IE5BTkRfU0tJUF9CQlRTQ0FOOw0K
-PiA+DQo+ID4gIAlkb2MtPnBoeXNhZHIJCT0gcGh5c2FkcjsNCj4gPiAgCWRvYy0+dmlydGFkcgkJ
-PSB2aXJ0YWRyOw0KPiA+IEBAIC0xNjA4LDcgKzE2MTMsNyBAQCBzdGF0aWMgaW50IF9faW5pdCBk
-b2NfcHJvYmUodW5zaWduZWQgbG9uZw0KPiBwaHlzYWRyKQ0KPiA+ICAJZWxzZQ0KPiA+ICAJCW51
-bWNoaXBzID0gZG9jMjAwMV9pbml0KG10ZCk7DQo+ID4NCj4gPiAtCWlmICgocmV0ID0gbmFuZF9z
-Y2FuKG10ZCwgbnVtY2hpcHMpKSkgew0KPiA+ICsJaWYgKChyZXQgPSBuYW5kX3NjYW4obXRkLCBu
-dW1jaGlwcykpIHx8IChyZXQgPSBkb2MtDQo+ID5sYXRlX2luaXQobXRkKSkpIHsNCj4gPiAgCQkv
-KiBEQkIgbm90ZTogaSBiZWxpZXZlIG5hbmRfcmVsZWFzZSBpcyBuZWNlc3NhcnkgaGVyZSwgYXMN
-Cj4gPiAgCQkgICBidWZmZXJzIG1heSBoYXZlIGJlZW4gYWxsb2NhdGVkIGluIG5hbmRfYmFzZS4g
-IENoZWNrDQo+IHdpdGgNCj4gPiAgCQkgICBUaG9tYXMuIEZJWCBNRSEgKi8NCj4gPiAtLQ0KPiA+
-IDEuOS4xDQo+ID4NCg==
+On Thu, 23 Apr 2015 03:29:44 +1000
+Ben Shelton <ben.shelton@ni.com> wrote:
+
+> We'd like to upstream our patch, but my concern is that UBIFS behaves
+> differently when it knows that the flash device supports subpages.  I
+> have a couple of questions related to that:
+>=20
+> - I know from experience that bad things happen when you use a kernel
+>   without subpage support with an UBIFS filesystem that was formatted
+>   with subpage support.  Is it safe to do the opposite (kernel with
+>   subpage support / UBIFS filesystem formatted without subpage
+> support)?
+>=20
+> - Assuming that it isn't safe, what's the best way to add subpage
+>   support to this driver in an upstreamable way / without breaking
+>   people?  Would it be sufficient to add subpage support as a Kconfig
+>   option that's disabled by default with a strongly-worded message
+>   describing the consequences of enabling it?
+
+Hi Ben,
+
+
+from what I understand, the only part of the UBI/UBIFS stack that
+uses / cares about subpages are the UBI EC and VID headers. If you
+have subpage access, the two headers will share a page, if not, they
+live in separate pages. With subpages, you half your UBI overhead.
+
+This affects the LEB size for UBIFS as well as the UBI header and data
+locations within the PEB, so the filesystems are incompatible.
+
+If you add subpage support to a system that previously had none, and
+presumably want to use the old file systems, you need to force the
+ubiattach command to use the page size as the VID header offset.
+
+Something like
+
+	PAGESIZE=3D`cat /sys/class/mtd/mtd0/writesize`
+	ubiattach /dev/ubi_ctrl -O $PAGESIZE ...
+
+Same applies to any ubiformat commands.
+
+This stops UBI from using the subpage capability. You also don't
+get the benefit of the lower overhead, of course.
+
+Traditionally, if someone changes the kernel config, breaking things
+is definitely expected consequences. So, making subpage support
+a default-off option for the driver has my vote.
+
+
+Best regards,
+
+Iwo
