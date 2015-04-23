@@ -1,26 +1,35 @@
-Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
+Received: from mail-wg0-f43.google.com ([74.125.82.43])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YlBu2-00019M-FJ
- for linux-mtd@lists.infradead.org; Thu, 23 Apr 2015 07:50:34 +0000
-Received: by iejt8 with SMTP id t8so55186089iej.2
- for <linux-mtd@lists.infradead.org>; Thu, 23 Apr 2015 00:50:09 -0700 (PDT)
+ id 1YlGaA-0002SU-Ds
+ for linux-mtd@lists.infradead.org; Thu, 23 Apr 2015 12:50:20 +0000
+Received: by wgso17 with SMTP id o17so17202238wgs.1
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Apr 2015 05:49:53 -0700 (PDT)
+Message-ID: <5538EA69.2080702@monstr.eu>
+Date: Thu, 23 Apr 2015 14:49:45 +0200
+From: Michal Simek <monstr@monstr.eu>
+Reply-To: monstr@monstr.eu
 MIME-Version: 1.0
-In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A027284081@NTXXIAMBX02.xacn.micron.com>
-References: <87F60714EC601C4C83DFF1D2E3D390A02728255E@NTXXIAMBX02.xacn.micron.com>
- <20150422175108.GX32500@ld-irv-0074>
- <87F60714EC601C4C83DFF1D2E3D390A027284081@NTXXIAMBX02.xacn.micron.com>
-Date: Thu, 23 Apr 2015 09:50:08 +0200
-Message-ID: <CACna6rxihkdinPOiHJ5-C2LO9uELmR-4j-0ULOWTY9Z_Nre24A@mail.gmail.com>
-Subject: Re: [PATCH 2/6] mtd: diskonchip: don't call nand_scan_bbt() directly
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
+ robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net,
+ michal.simek@xilinx.com, grant.likely@linaro.org,
+ gregkh@linuxfoundation.org, jason@lakedaemon.net,
+ ezequiel.garcia@free-electrons.com, arnd@arndb.de, dwmw2@infradead.org,
+ computersforpeace@gmail.com, artem.bityutskiy@linux.intel.com,
+ jussi.kivilinna@iki.fi, acourbot@nvidia.com, ivan.khoronzhuk@ti.com,
+ joern@logfs.org
+Subject: Re: [PATCH 2/2] mtd: nand: Add support for Arasan Nand Flash
+ Controller
+References: <1429192597-23519-1-git-send-email-punnaia@xilinx.com>
+ <6ba05766-d8b9-436d-a953-447edc24b179@BN1BFFO11FD051.protection.gbl>
+In-Reply-To: <6ba05766-d8b9-436d-a953-447edc24b179@BN1BFFO11FD051.protection.gbl>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="L6qVeiwWAmIkH7BKcEvI4nmeQk1lumJWB"
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,37 +39,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 23 April 2015 at 02:30, Peter Pan =E6=BD=98=E6=A0=8B (peterpandong)
-<peterpandong@micron.com> wrote:
-> On Thu, Apr 23, 2015 at 01:51:27PM +0000, Brian Norris wrote:
->>
->> On Thu, Apr 16, 2015 at 02:11:24AM +0000, Peter Pan =E6=BD=98=E6=A0=8B (=
-peterpandong)
->> wrote:
->> > The diskonchip driver almost uses the default nand_base hooks as-is,
->> > except that it provides custom on-flash BBT descriptors and avoids
->> using
->> > factory-marked bad blockers.
->> >
->> > So let's refactor the BBT initialization code into a private
->> 'late_init'
->> > hook which handles all the private details. Note the usage of
->> > NAND_SKIP_BBTSCAN, which allows us to defer the BBT scan until we've
->> > prepared everything.
->> >
->> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->> > Signed-off-by: Peter Pan <peterpandong@micron.com>
->>
->> Why are you just resending my patch? You could Ack/Review/Test it
->> instead. (Did you test it?)
->
-> My work is in the 6th patch.
-> I already tested the patch with micron own nand controller. I don't have
-> platform with docg4 or diskonchip controller. So the BBT and nand_base.c
-> part is covered while docg4.c and diskonchip.c not.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--L6qVeiwWAmIkH7BKcEvI4nmeQk1lumJWB
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-You can use patch format's comment place to post sth like
-"Depends on 5 XXX patches from Brian"
+On 04/16/2015 03:56 PM, Punnaiah Choudary Kalluri wrote:
+> Added the basic driver for Arasan Nand Flash Controller used in
+> Zynq UltraScale+ MPSoC. It supports only Hw Ecc and upto 24bit
+> correction.
+>=20
+> Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+> ---
+>  drivers/mtd/nand/Kconfig      |    7 +
+>  drivers/mtd/nand/Makefile     |    1 +
+>  drivers/mtd/nand/arasan_nfc.c |  861 +++++++++++++++++++++++++++++++++=
+++++++++
+>  3 files changed, 869 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/mtd/nand/arasan_nfc.c
+>=20
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 5897d8d..64e497c 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -530,4 +530,11 @@ config MTD_NAND_HISI504
+>  	help
+>  	  Enables support for NAND controller on Hisilicon SoC Hip04.
+> =20
+> +config MTD_NAND_ARASAN
+> +	tristate "Support for Arasan Nand Flash controller"
+> +	depends on MTD_NAND
+> +	help
+> +	  Enables the driver for the Arasan Nand Flash controller on
+> +	  Zynq UltraScale+ MPSoC.
+> +
+>  endif # MTD_NAND
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index 582bbd05..fd863ea 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -52,5 +52,6 @@ obj-$(CONFIG_MTD_NAND_XWAY)		+=3D xway_nand.o
+>  obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+=3D bcm47xxnflash/
+>  obj-$(CONFIG_MTD_NAND_SUNXI)		+=3D sunxi_nand.o
+>  obj-$(CONFIG_MTD_NAND_HISI504)	        +=3D hisi504_nand.o
+> +obj-$(CONFIG_MTD_NAND_ARASAN)		+=3D arasan_nfc.o
+> =20
+>  nand-objs :=3D nand_base.o nand_bbt.o nand_timings.o
+> diff --git a/drivers/mtd/nand/arasan_nfc.c b/drivers/mtd/nand/arasan_nf=
+c.c
+> new file mode 100644
+> index 0000000..a4b407b
+> --- /dev/null
+> +++ b/drivers/mtd/nand/arasan_nfc.c
+> @@ -0,0 +1,861 @@
+> +/*
+> + * Arasan Nand Flash Controller Driver
+> + *
+> + * Copyright (C) 2014 - 2015 Xilinx, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or modif=
+y it under
+> + * the terms of the GNU General Public License version 2 as published =
+by the
+> + * Free Software Foundation; either version 2 of the License, or (at y=
+our
+> + * option) any later version.
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/module.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
+> +#include <linux/mtd/partitions.h>
+
+For !CONFIG_OF_MTD here should be also. Kbuild system just reported this
+problem.
+
+#include <linux/of.h>
+
+For the rest
+Tested-by: Michal Simek <michal.simek@xilinx.com>
+
+Thanks,
+Michal
 
 --=20
-Rafa=C5=82
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Microblaze cpu - http://www.monstr.eu/fdt/
+Maintainer of Linux kernel - Xilinx Zynq ARM architecture
+Microblaze U-BOOT custodian and responsible for u-boot arm zynq platform
+
+
+
+--L6qVeiwWAmIkH7BKcEvI4nmeQk1lumJWB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.14 (GNU/Linux)
+
+iEYEARECAAYFAlU46m0ACgkQykllyylKDCGHwgCdFk0Drlrn9u1pc0w0vhKUWAxG
+j+UAn3n945WuVJOtUYaLoJ532//SHWyR
+=H4cr
+-----END PGP SIGNATURE-----
+
+--L6qVeiwWAmIkH7BKcEvI4nmeQk1lumJWB--
