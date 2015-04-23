@@ -1,21 +1,16 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ykyo8-00048w-Ug
- for linux-mtd@lists.infradead.org; Wed, 22 Apr 2015 17:51:34 +0000
-Received: by pdea3 with SMTP id a3so280597573pde.3
- for <linux-mtd@lists.infradead.org>; Wed, 22 Apr 2015 10:51:11 -0700 (PDT)
-Date: Wed, 22 Apr 2015 10:51:08 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Peter Pan =?utf-8?B?5r2Y5qCLIChwZXRlcnBhbmRvbmcp?=
+From: =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
  <peterpandong@micron.com>
-Subject: Re: [PATCH 2/6] mtd: diskonchip: don't call nand_scan_bbt() directly
-Message-ID: <20150422175108.GX32500@ld-irv-0074>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: RE: [PATCH 2/6] mtd: diskonchip: don't call nand_scan_bbt() directly
+Date: Thu, 23 Apr 2015 00:30:34 +0000
+Message-ID: <87F60714EC601C4C83DFF1D2E3D390A027284081@NTXXIAMBX02.xacn.micron.com>
 References: <87F60714EC601C4C83DFF1D2E3D390A02728255E@NTXXIAMBX02.xacn.micron.com>
+ <20150422175108.GX32500@ld-irv-0074>
+In-Reply-To: <20150422175108.GX32500@ld-irv-0074>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A02728255E@NTXXIAMBX02.xacn.micron.com>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
@@ -28,122 +23,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 16, 2015 at 02:11:24AM +0000, Peter Pan 潘栋 (peterpandong) wrote:
-> The diskonchip driver almost uses the default nand_base hooks as-is,
-> except that it provides custom on-flash BBT descriptors and avoids using
-> factory-marked bad blockers.
-> 
-> So let's refactor the BBT initialization code into a private 'late_init'
-> hook which handles all the private details. Note the usage of
-> NAND_SKIP_BBTSCAN, which allows us to defer the BBT scan until we've
-> prepared everything.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-
-Why are you just resending my patch? You could Ack/Review/Test it
-instead. (Did you test it?)
-
-http://patchwork.ozlabs.org/patch/444605/
-
-> ---
->  drivers/mtd/nand/diskonchip.c | 27 ++++++++++++++++-----------
->  1 file changed, 16 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-> index f68a7bc..e580014 100644
-> --- a/drivers/mtd/nand/diskonchip.c
-> +++ b/drivers/mtd/nand/diskonchip.c
-> @@ -69,6 +69,9 @@ struct doc_priv {
->  	int mh0_page;
->  	int mh1_page;
->  	struct mtd_info *nextdoc;
-> +
-> +	/* Handle the last stage of initialization (BBT scan, partitioning) */
-> +	int (*late_init)(struct mtd_info *mtd);
->  };
->  
->  /* This is the syndrome computed by the HW ecc generator upon reading an empty
-> @@ -1294,10 +1297,10 @@ static int __init nftl_scan_bbt(struct mtd_info *mtd)
->  		this->bbt_md = NULL;
->  	}
->  
-> -	/* It's safe to set bd=NULL below because NAND_BBT_CREATE is not set.
-> -	   At least as nand_bbt.c is currently written. */
-> -	if ((ret = nand_scan_bbt(mtd, NULL)))
-> +	ret = this->scan_bbt(mtd);
-> +	if (ret)
->  		return ret;
-> +
->  	mtd_device_register(mtd, NULL, 0);
->  	if (!no_autopart)
->  		mtd_device_register(mtd, parts, numparts);
-> @@ -1344,10 +1347,10 @@ static int __init inftl_scan_bbt(struct mtd_info *mtd)
->  		this->bbt_md->pattern = "TBB_SYSM";
->  	}
->  
-> -	/* It's safe to set bd=NULL below because NAND_BBT_CREATE is not set.
-> -	   At least as nand_bbt.c is currently written. */
-> -	if ((ret = nand_scan_bbt(mtd, NULL)))
-> +	ret = this->scan_bbt(mtd);
-> +	if (ret)
->  		return ret;
-> +
->  	memset((char *)parts, 0, sizeof(parts));
->  	numparts = inftl_partscan(mtd, parts);
->  	/* At least for now, require the INFTL Media Header.  We could probably
-> @@ -1369,7 +1372,7 @@ static inline int __init doc2000_init(struct mtd_info *mtd)
->  	this->read_byte = doc2000_read_byte;
->  	this->write_buf = doc2000_writebuf;
->  	this->read_buf = doc2000_readbuf;
-> -	this->scan_bbt = nftl_scan_bbt;
-> +	doc->late_init = nftl_scan_bbt;
->  
->  	doc->CDSNControl = CDSN_CTRL_FLASH_IO | CDSN_CTRL_ECC_IO;
->  	doc2000_count_chips(mtd);
-> @@ -1396,13 +1399,13 @@ static inline int __init doc2001_init(struct mtd_info *mtd)
->  		   can have multiple chips. */
->  		doc2000_count_chips(mtd);
->  		mtd->name = "DiskOnChip 2000 (INFTL Model)";
-> -		this->scan_bbt = inftl_scan_bbt;
-> +		doc->late_init = inftl_scan_bbt;
->  		return (4 * doc->chips_per_floor);
->  	} else {
->  		/* Bog-standard Millennium */
->  		doc->chips_per_floor = 1;
->  		mtd->name = "DiskOnChip Millennium";
-> -		this->scan_bbt = nftl_scan_bbt;
-> +		doc->late_init = nftl_scan_bbt;
->  		return 1;
->  	}
->  }
-> @@ -1415,7 +1418,7 @@ static inline int __init doc2001plus_init(struct mtd_info *mtd)
->  	this->read_byte = doc2001plus_read_byte;
->  	this->write_buf = doc2001plus_writebuf;
->  	this->read_buf = doc2001plus_readbuf;
-> -	this->scan_bbt = inftl_scan_bbt;
-> +	doc->late_init = inftl_scan_bbt;
->  	this->cmd_ctrl = NULL;
->  	this->select_chip = doc2001plus_select_chip;
->  	this->cmdfunc = doc2001plus_command;
-> @@ -1591,6 +1594,8 @@ static int __init doc_probe(unsigned long physadr)
->  	nand->ecc.bytes		= 6;
->  	nand->ecc.strength	= 2;
->  	nand->bbt_options	= NAND_BBT_USE_FLASH;
-> +	/* Skip the automatic BBT scan so we can run it manually */
-> +	nand->options		|= NAND_SKIP_BBTSCAN;
->  
->  	doc->physadr		= physadr;
->  	doc->virtadr		= virtadr;
-> @@ -1608,7 +1613,7 @@ static int __init doc_probe(unsigned long physadr)
->  	else
->  		numchips = doc2001_init(mtd);
->  
-> -	if ((ret = nand_scan(mtd, numchips))) {
-> +	if ((ret = nand_scan(mtd, numchips)) || (ret = doc->late_init(mtd))) {
->  		/* DBB note: i believe nand_release is necessary here, as
->  		   buffers may have been allocated in nand_base.  Check with
->  		   Thomas. FIX ME! */
-> -- 
-> 1.9.1
-> 
+T24gVGh1LCBBcHIgMjMsIDIwMTUgYXQgMDE6NTE6MjdQTSArMDAwMCwgQnJpYW4gTm9ycmlzIHdy
+b3RlOg0KPiANCj4gT24gVGh1LCBBcHIgMTYsIDIwMTUgYXQgMDI6MTE6MjRBTSArMDAwMCwgUGV0
+ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ0KPiB3cm90ZToNCj4gPiBUaGUgZGlza29uY2hp
+cCBkcml2ZXIgYWxtb3N0IHVzZXMgdGhlIGRlZmF1bHQgbmFuZF9iYXNlIGhvb2tzIGFzLWlzLA0K
+PiA+IGV4Y2VwdCB0aGF0IGl0IHByb3ZpZGVzIGN1c3RvbSBvbi1mbGFzaCBCQlQgZGVzY3JpcHRv
+cnMgYW5kIGF2b2lkcw0KPiB1c2luZw0KPiA+IGZhY3RvcnktbWFya2VkIGJhZCBibG9ja2Vycy4N
+Cj4gPg0KPiA+IFNvIGxldCdzIHJlZmFjdG9yIHRoZSBCQlQgaW5pdGlhbGl6YXRpb24gY29kZSBp
+bnRvIGEgcHJpdmF0ZQ0KPiAnbGF0ZV9pbml0Jw0KPiA+IGhvb2sgd2hpY2ggaGFuZGxlcyBhbGwg
+dGhlIHByaXZhdGUgZGV0YWlscy4gTm90ZSB0aGUgdXNhZ2Ugb2YNCj4gPiBOQU5EX1NLSVBfQkJU
+U0NBTiwgd2hpY2ggYWxsb3dzIHVzIHRvIGRlZmVyIHRoZSBCQlQgc2NhbiB1bnRpbCB3ZSd2ZQ0K
+PiA+IHByZXBhcmVkIGV2ZXJ5dGhpbmcuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBCcmlhbiBO
+b3JyaXMgPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBQ
+ZXRlciBQYW4gPHBldGVycGFuZG9uZ0BtaWNyb24uY29tPg0KPiANCj4gV2h5IGFyZSB5b3UganVz
+dCByZXNlbmRpbmcgbXkgcGF0Y2g/IFlvdSBjb3VsZCBBY2svUmV2aWV3L1Rlc3QgaXQNCj4gaW5z
+dGVhZC4gKERpZCB5b3UgdGVzdCBpdD8pDQoNCk15IHdvcmsgaXMgaW4gdGhlIDZ0aCBwYXRjaC4N
+CkkgYWxyZWFkeSB0ZXN0ZWQgdGhlIHBhdGNoIHdpdGggbWljcm9uIG93biBuYW5kIGNvbnRyb2xs
+ZXIuIEkgZG9uJ3QgaGF2ZQ0KcGxhdGZvcm0gd2l0aCBkb2NnNCBvciBkaXNrb25jaGlwIGNvbnRy
+b2xsZXIuIFNvIHRoZSBCQlQgYW5kIG5hbmRfYmFzZS5jDQpwYXJ0IGlzIGNvdmVyZWQgd2hpbGUg
+ZG9jZzQuYyBhbmQgZGlza29uY2hpcC5jIG5vdC4NCg0KPiBodHRwOi8vcGF0Y2h3b3JrLm96bGFi
+cy5vcmcvcGF0Y2gvNDQ0NjA1Lw0KPiANCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9k
+aXNrb25jaGlwLmMgfCAyNyArKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0NCj4gPiAgMSBmaWxl
+IGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvZGlza29uY2hpcC5jDQo+IGIvZHJpdmVycy9tdGQv
+bmFuZC9kaXNrb25jaGlwLmMNCj4gPiBpbmRleCBmNjhhN2JjLi5lNTgwMDE0IDEwMDY0NA0KPiA+
+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvZGlza29uY2hpcC5jDQo+ID4gKysrIGIvZHJpdmVycy9t
+dGQvbmFuZC9kaXNrb25jaGlwLmMNCj4gPiBAQCAtNjksNiArNjksOSBAQCBzdHJ1Y3QgZG9jX3By
+aXYgew0KPiA+ICAJaW50IG1oMF9wYWdlOw0KPiA+ICAJaW50IG1oMV9wYWdlOw0KPiA+ICAJc3Ry
+dWN0IG10ZF9pbmZvICpuZXh0ZG9jOw0KPiA+ICsNCj4gPiArCS8qIEhhbmRsZSB0aGUgbGFzdCBz
+dGFnZSBvZiBpbml0aWFsaXphdGlvbiAoQkJUIHNjYW4sDQo+IHBhcnRpdGlvbmluZykgKi8NCj4g
+PiArCWludCAoKmxhdGVfaW5pdCkoc3RydWN0IG10ZF9pbmZvICptdGQpOw0KPiA+ICB9Ow0KPiA+
+DQo+ID4gIC8qIFRoaXMgaXMgdGhlIHN5bmRyb21lIGNvbXB1dGVkIGJ5IHRoZSBIVyBlY2MgZ2Vu
+ZXJhdG9yIHVwb24NCj4gcmVhZGluZyBhbiBlbXB0eQ0KPiA+IEBAIC0xMjk0LDEwICsxMjk3LDEw
+IEBAIHN0YXRpYyBpbnQgX19pbml0IG5mdGxfc2Nhbl9iYnQoc3RydWN0DQo+IG10ZF9pbmZvICpt
+dGQpDQo+ID4gIAkJdGhpcy0+YmJ0X21kID0gTlVMTDsNCj4gPiAgCX0NCj4gPg0KPiA+IC0JLyog
+SXQncyBzYWZlIHRvIHNldCBiZD1OVUxMIGJlbG93IGJlY2F1c2UgTkFORF9CQlRfQ1JFQVRFIGlz
+IG5vdA0KPiBzZXQuDQo+ID4gLQkgICBBdCBsZWFzdCBhcyBuYW5kX2JidC5jIGlzIGN1cnJlbnRs
+eSB3cml0dGVuLiAqLw0KPiA+IC0JaWYgKChyZXQgPSBuYW5kX3NjYW5fYmJ0KG10ZCwgTlVMTCkp
+KQ0KPiA+ICsJcmV0ID0gdGhpcy0+c2Nhbl9iYnQobXRkKTsNCj4gPiArCWlmIChyZXQpDQo+ID4g
+IAkJcmV0dXJuIHJldDsNCj4gPiArDQo+ID4gIAltdGRfZGV2aWNlX3JlZ2lzdGVyKG10ZCwgTlVM
+TCwgMCk7DQo+ID4gIAlpZiAoIW5vX2F1dG9wYXJ0KQ0KPiA+ICAJCW10ZF9kZXZpY2VfcmVnaXN0
+ZXIobXRkLCBwYXJ0cywgbnVtcGFydHMpOw0KPiA+IEBAIC0xMzQ0LDEwICsxMzQ3LDEwIEBAIHN0
+YXRpYyBpbnQgX19pbml0IGluZnRsX3NjYW5fYmJ0KHN0cnVjdA0KPiBtdGRfaW5mbyAqbXRkKQ0K
+PiA+ICAJCXRoaXMtPmJidF9tZC0+cGF0dGVybiA9ICJUQkJfU1lTTSI7DQo+ID4gIAl9DQo+ID4N
+Cj4gPiAtCS8qIEl0J3Mgc2FmZSB0byBzZXQgYmQ9TlVMTCBiZWxvdyBiZWNhdXNlIE5BTkRfQkJU
+X0NSRUFURSBpcyBub3QNCj4gc2V0Lg0KPiA+IC0JICAgQXQgbGVhc3QgYXMgbmFuZF9iYnQuYyBp
+cyBjdXJyZW50bHkgd3JpdHRlbi4gKi8NCj4gPiAtCWlmICgocmV0ID0gbmFuZF9zY2FuX2JidCht
+dGQsIE5VTEwpKSkNCj4gPiArCXJldCA9IHRoaXMtPnNjYW5fYmJ0KG10ZCk7DQo+ID4gKwlpZiAo
+cmV0KQ0KPiA+ICAJCXJldHVybiByZXQ7DQo+ID4gKw0KPiA+ICAJbWVtc2V0KChjaGFyICopcGFy
+dHMsIDAsIHNpemVvZihwYXJ0cykpOw0KPiA+ICAJbnVtcGFydHMgPSBpbmZ0bF9wYXJ0c2Nhbiht
+dGQsIHBhcnRzKTsNCj4gPiAgCS8qIEF0IGxlYXN0IGZvciBub3csIHJlcXVpcmUgdGhlIElORlRM
+IE1lZGlhIEhlYWRlci4gIFdlIGNvdWxkDQo+IHByb2JhYmx5DQo+ID4gQEAgLTEzNjksNyArMTM3
+Miw3IEBAIHN0YXRpYyBpbmxpbmUgaW50IF9faW5pdCBkb2MyMDAwX2luaXQoc3RydWN0DQo+IG10
+ZF9pbmZvICptdGQpDQo+ID4gIAl0aGlzLT5yZWFkX2J5dGUgPSBkb2MyMDAwX3JlYWRfYnl0ZTsN
+Cj4gPiAgCXRoaXMtPndyaXRlX2J1ZiA9IGRvYzIwMDBfd3JpdGVidWY7DQo+ID4gIAl0aGlzLT5y
+ZWFkX2J1ZiA9IGRvYzIwMDBfcmVhZGJ1ZjsNCj4gPiAtCXRoaXMtPnNjYW5fYmJ0ID0gbmZ0bF9z
+Y2FuX2JidDsNCj4gPiArCWRvYy0+bGF0ZV9pbml0ID0gbmZ0bF9zY2FuX2JidDsNCj4gPg0KPiA+
+ICAJZG9jLT5DRFNOQ29udHJvbCA9IENEU05fQ1RSTF9GTEFTSF9JTyB8IENEU05fQ1RSTF9FQ0Nf
+SU87DQo+ID4gIAlkb2MyMDAwX2NvdW50X2NoaXBzKG10ZCk7DQo+ID4gQEAgLTEzOTYsMTMgKzEz
+OTksMTMgQEAgc3RhdGljIGlubGluZSBpbnQgX19pbml0IGRvYzIwMDFfaW5pdChzdHJ1Y3QNCj4g
+bXRkX2luZm8gKm10ZCkNCj4gPiAgCQkgICBjYW4gaGF2ZSBtdWx0aXBsZSBjaGlwcy4gKi8NCj4g
+PiAgCQlkb2MyMDAwX2NvdW50X2NoaXBzKG10ZCk7DQo+ID4gIAkJbXRkLT5uYW1lID0gIkRpc2tP
+bkNoaXAgMjAwMCAoSU5GVEwgTW9kZWwpIjsNCj4gPiAtCQl0aGlzLT5zY2FuX2JidCA9IGluZnRs
+X3NjYW5fYmJ0Ow0KPiA+ICsJCWRvYy0+bGF0ZV9pbml0ID0gaW5mdGxfc2Nhbl9iYnQ7DQo+ID4g
+IAkJcmV0dXJuICg0ICogZG9jLT5jaGlwc19wZXJfZmxvb3IpOw0KPiA+ICAJfSBlbHNlIHsNCj4g
+PiAgCQkvKiBCb2ctc3RhbmRhcmQgTWlsbGVubml1bSAqLw0KPiA+ICAJCWRvYy0+Y2hpcHNfcGVy
+X2Zsb29yID0gMTsNCj4gPiAgCQltdGQtPm5hbWUgPSAiRGlza09uQ2hpcCBNaWxsZW5uaXVtIjsN
+Cj4gPiAtCQl0aGlzLT5zY2FuX2JidCA9IG5mdGxfc2Nhbl9iYnQ7DQo+ID4gKwkJZG9jLT5sYXRl
+X2luaXQgPSBuZnRsX3NjYW5fYmJ0Ow0KPiA+ICAJCXJldHVybiAxOw0KPiA+ICAJfQ0KPiA+ICB9
+DQo+ID4gQEAgLTE0MTUsNyArMTQxOCw3IEBAIHN0YXRpYyBpbmxpbmUgaW50IF9faW5pdA0KPiBk
+b2MyMDAxcGx1c19pbml0KHN0cnVjdCBtdGRfaW5mbyAqbXRkKQ0KPiA+ICAJdGhpcy0+cmVhZF9i
+eXRlID0gZG9jMjAwMXBsdXNfcmVhZF9ieXRlOw0KPiA+ICAJdGhpcy0+d3JpdGVfYnVmID0gZG9j
+MjAwMXBsdXNfd3JpdGVidWY7DQo+ID4gIAl0aGlzLT5yZWFkX2J1ZiA9IGRvYzIwMDFwbHVzX3Jl
+YWRidWY7DQo+ID4gLQl0aGlzLT5zY2FuX2JidCA9IGluZnRsX3NjYW5fYmJ0Ow0KPiA+ICsJZG9j
+LT5sYXRlX2luaXQgPSBpbmZ0bF9zY2FuX2JidDsNCj4gPiAgCXRoaXMtPmNtZF9jdHJsID0gTlVM
+TDsNCj4gPiAgCXRoaXMtPnNlbGVjdF9jaGlwID0gZG9jMjAwMXBsdXNfc2VsZWN0X2NoaXA7DQo+
+ID4gIAl0aGlzLT5jbWRmdW5jID0gZG9jMjAwMXBsdXNfY29tbWFuZDsNCj4gPiBAQCAtMTU5MSw2
+ICsxNTk0LDggQEAgc3RhdGljIGludCBfX2luaXQgZG9jX3Byb2JlKHVuc2lnbmVkIGxvbmcNCj4g
+cGh5c2FkcikNCj4gPiAgCW5hbmQtPmVjYy5ieXRlcwkJPSA2Ow0KPiA+ICAJbmFuZC0+ZWNjLnN0
+cmVuZ3RoCT0gMjsNCj4gPiAgCW5hbmQtPmJidF9vcHRpb25zCT0gTkFORF9CQlRfVVNFX0ZMQVNI
+Ow0KPiA+ICsJLyogU2tpcCB0aGUgYXV0b21hdGljIEJCVCBzY2FuIHNvIHdlIGNhbiBydW4gaXQg
+bWFudWFsbHkgKi8NCj4gPiArCW5hbmQtPm9wdGlvbnMJCXw9IE5BTkRfU0tJUF9CQlRTQ0FOOw0K
+PiA+DQo+ID4gIAlkb2MtPnBoeXNhZHIJCT0gcGh5c2FkcjsNCj4gPiAgCWRvYy0+dmlydGFkcgkJ
+PSB2aXJ0YWRyOw0KPiA+IEBAIC0xNjA4LDcgKzE2MTMsNyBAQCBzdGF0aWMgaW50IF9faW5pdCBk
+b2NfcHJvYmUodW5zaWduZWQgbG9uZw0KPiBwaHlzYWRyKQ0KPiA+ICAJZWxzZQ0KPiA+ICAJCW51
+bWNoaXBzID0gZG9jMjAwMV9pbml0KG10ZCk7DQo+ID4NCj4gPiAtCWlmICgocmV0ID0gbmFuZF9z
+Y2FuKG10ZCwgbnVtY2hpcHMpKSkgew0KPiA+ICsJaWYgKChyZXQgPSBuYW5kX3NjYW4obXRkLCBu
+dW1jaGlwcykpIHx8IChyZXQgPSBkb2MtDQo+ID5sYXRlX2luaXQobXRkKSkpIHsNCj4gPiAgCQkv
+KiBEQkIgbm90ZTogaSBiZWxpZXZlIG5hbmRfcmVsZWFzZSBpcyBuZWNlc3NhcnkgaGVyZSwgYXMN
+Cj4gPiAgCQkgICBidWZmZXJzIG1heSBoYXZlIGJlZW4gYWxsb2NhdGVkIGluIG5hbmRfYmFzZS4g
+IENoZWNrDQo+IHdpdGgNCj4gPiAgCQkgICBUaG9tYXMuIEZJWCBNRSEgKi8NCj4gPiAtLQ0KPiA+
+IDEuOS4xDQo+ID4NCg==
