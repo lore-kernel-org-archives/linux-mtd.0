@@ -1,28 +1,24 @@
 Received: from mx02.posteo.de ([89.146.194.165])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YlkSX-0001jb-Hm
- for linux-mtd@lists.infradead.org; Fri, 24 Apr 2015 20:44:26 +0000
+ id 1YlkaB-0005d9-7f
+ for linux-mtd@lists.infradead.org; Fri, 24 Apr 2015 20:52:19 +0000
 Received: from dovecot03.posteo.de (unknown [185.67.36.28])
- by mx02.posteo.de (Postfix) with ESMTPS id 7871E25B17F3
- for <linux-mtd@lists.infradead.org>; Fri, 24 Apr 2015 22:44:01 +0200 (CEST)
+ by mx02.posteo.de (Postfix) with ESMTPS id 8930D25AF51A
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Apr 2015 22:51:52 +0200 (CEST)
 Received: from mail.posteo.de (localhost [127.0.0.1])
- by dovecot03.posteo.de (Postfix) with ESMTPSA id 3lYSCP19Ylz5vN2
- for <linux-mtd@lists.infradead.org>; Fri, 24 Apr 2015 22:43:58 +0200 (CEST)
-Received: from nzxt.fritz.box (nzxt.localdomain [192.168.178.46])
- (Authenticated sender: joerg.krause@embedded.rocks)
- by embedded.rocks (Postfix) with ESMTPSA id 0AF54980384
- for <linux-mtd@lists.infradead.org>; Fri, 24 Apr 2015 22:43:57 +0200 (CEST)
-Message-ID: <1429908237.1945.72.camel@embedded.rocks>
-Subject: Re: [PATCH 2/3] Makefile: fix build against musl
-From: =?ISO-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
+ by dovecot03.posteo.de (Postfix) with ESMTPSA id 3lYSNR6zVkz5vN3
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Apr 2015 22:51:51 +0200 (CEST)
+From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
 To: linux-mtd@lists.infradead.org
-Date: Fri, 24 Apr 2015 22:43:57 +0200
-In-Reply-To: <1429827173-1739-2-git-send-email-joerg.krause@embedded.rocks>
-References: <1429827173-1739-1-git-send-email-joerg.krause@embedded.rocks>
- <1429827173-1739-2-git-send-email-joerg.krause@embedded.rocks>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH 2/2] recv_image: do not include error.h
+Date: Fri, 24 Apr 2015 22:51:47 +0200
+Message-Id: <1429908707-12537-2-git-send-email-joerg.krause@embedded.rocks>
+In-Reply-To: <1429908707-12537-1-git-send-email-joerg.krause@embedded.rocks>
+References: <1429908707-12537-1-git-send-email-joerg.krause@embedded.rocks>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Cc: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +28,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fr, 2015-04-24 at 00:12 +0200, Jörg Krause wrote:
-> Fix undefined reference to 'libintl_gettext'.
-> 
-> Signed-off-by: Jörg Krause <joerg.krause@embedded.rocks>
-> ---
->  Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index eade234..36bb700 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -105,7 +105,7 @@ $(call _mkdep,lib/,libmtd.a)
->  obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o \
->       hashtable/hashtable.o hashtable/hashtable_itr.o
->  LDFLAGS_mkfs.ubifs = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
-> -LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid
-> +LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid -lintl
->  $(call mkdep,mkfs.ubifs/,mkfs.ubifs,,ubi-utils/libubi.a)
->  
->  #
-
-It turned out that this is unrelated to mtd. Reject this.
+cmVjdl9pbWFnZSBkb2VzIG5vdCB1c2UgYW55dGhpbmcgZnJvbSBpdCBhbmQgaXQgaXMgbm90IGF2
+YWlsYWJsZSB3aXRoIGFsbApDIGxpYnJhcmllcywgZS5nLiBtdXNsLgoKU2lnbmVkLW9mZi1ieTog
+SsO2cmcgS3JhdXNlIDxqb2VyZy5rcmF1c2VAZW1iZWRkZWQucm9ja3M+Ci0tLQogcmVjdl9pbWFn
+ZS5jIHwgMSAtCiAxIGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3Jl
+Y3ZfaW1hZ2UuYyBiL3JlY3ZfaW1hZ2UuYwppbmRleCAyNmE4MzYxLi4wMDkzODMxIDEwMDY0NAot
+LS0gYS9yZWN2X2ltYWdlLmMKKysrIGIvcmVjdl9pbWFnZS5jCkBAIC00LDcgKzQsNiBAQAogI2Rl
+ZmluZSBfQlNEX1NPVVJDRQkvKiBzdHJ1Y3QgaXBfbXJlcSAqLwogCiAjaW5jbHVkZSA8ZXJybm8u
+aD4KLSNpbmNsdWRlIDxlcnJvci5oPgogI2luY2x1ZGUgPHN0ZGlvLmg+CiAjaW5jbHVkZSA8bmV0
+ZGIuaD4KICNpbmNsdWRlIDxzdGRsaWIuaD4KLS0gCjIuMy42Cgo=
