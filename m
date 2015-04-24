@@ -1,45 +1,28 @@
-Received: from mail-bn1on0075.outbound.protection.outlook.com ([157.56.110.75]
- helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YlRlj-0004qF-O0
- for linux-mtd@lists.infradead.org; Fri, 24 Apr 2015 00:47:00 +0000
-From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-To: Josh Cartwright <joshc@ni.com>
-Subject: RE: [PATCH v6 1/2] Devicetree: Add pl353 smc controller devicetree
- binding information
-Date: Fri, 24 Apr 2015 00:46:21 +0000
-References: <1428941512-26411-1-git-send-email-punnaia@xilinx.com>
- <e3a73fa0-9159-4fbe-b042-4737dc9b041f@BN1BFFO11FD010.protection.gbl>
- <20150423195043.GS27115@jcartwri.amer.corp.natinst.com>
-In-Reply-To: <20150423195043.GS27115@jcartwri.amer.corp.natinst.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1YlXc7-0001tY-SS
+ for linux-mtd@lists.infradead.org; Fri, 24 Apr 2015 07:01:28 +0000
+Received: by iedfl3 with SMTP id fl3so87407162ied.1
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Apr 2015 00:01:04 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <d4e01acf-28c1-466f-a796-12f7ea339507@BN1AFFO11FD028.protection.gbl>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "arnd@arndb.de" <arnd@arndb.de>, Michal Simek <michals@xilinx.com>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- "grant.likely@linaro.org" <grant.likely@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "jason@lakedaemon.net" <jason@lakedaemon.net>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "joern@logfs.org" <joern@logfs.org>, "kpc528@gmail.com" <kpc528@gmail.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "acourbot@nvidia.com" <acourbot@nvidia.com>,
- "kalluripunnaiahchoudary@gmail.com" <kalluripunnaiahchoudary@gmail.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A0272841C2@NTXXIAMBX02.xacn.micron.com>
+References: <87F60714EC601C4C83DFF1D2E3D390A02728254F@NTXXIAMBX02.xacn.micron.com>
+ <20150422175021.GW32500@ld-irv-0074>
+ <CACna6rwq3-Q5cKgVY_Q2Ao0Qt_ppTwG0KCUEcJVqRS-FtEEw1Q@mail.gmail.com>
+ <87F60714EC601C4C83DFF1D2E3D390A0272841C2@NTXXIAMBX02.xacn.micron.com>
+Date: Fri, 24 Apr 2015 09:01:04 +0200
+Message-ID: <CACna6rw+U8KRTSVbhOw6qHMRJ_kcwj6ivve_xAjfpxgDBgiw=A@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mtd: nand_bbt: drop unnecessary header
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "rob@landley.net" <rob@landley.net>,
- "galak@codeaurora.org" <galak@codeaurora.org>,
- "ivan.khoronzhuk@ti.com" <ivan.khoronzhuk@ti.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -49,63 +32,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Josh,
+On 24 April 2015 at 02:36, Peter Pan =E6=BD=98=E6=A0=8B (peterpandong)
+<peterpandong@micron.com> wrote:
+> On 23 April 2015 at 15:47, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> On 22 April 2015 at 19:50, Brian Norris <computersforpeace@gmail.com>
+>> wrote:
+>> > On Thu, Apr 16, 2015 at 02:09:41AM +0000, Peter Pan =E6=BD=98=E6=A0=8B
+>> (peterpandong) wrote:
+>> >>
+>> >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+>> >> Signed-off-by: Peter Pan <peterpandong@micron.com>
+>> >
+>> > Why are you just resending my patches? You could Ack/Reviewed-by/etc.
+>> > instead...
+>> >
+>> > http://patchwork.ozlabs.org/patch/444604/
+>>
+>> That was fishy to me too, thanks for clarifying it Brian.
+>>
+>> Also, if you *really* need to submit somebody's patch, you *should*
+>> use From to point the author to git.
+>
+>
+> Hi Brain and Rafa=C5=82,
+>
+> I am really sorry for this. It is my mistake. I just start sending patch
+> to community recently. If I do something improper, please tell me.
+>
+> I will resend Brain's and my patch with the right comment, but please loo=
+k
+> through this patchset if you can.
 
-> -----Original Message-----
-> From: Josh Cartwright [mailto:joshc@ni.com]
-> Sent: Friday, April 24, 2015 1:21 AM
-> To: Punnaiah Choudary Kalluri
-> Cc: robh+dt@kernel.org; pawel.moll@arm.com; mark.rutland@arm.com;
-> ijc+devicetree@hellion.org.uk; galak@codeaurora.org; rob@landley.net;
-> Michal Simek; grant.likely@linaro.org; gregkh@linuxfoundation.org;
-> jason@lakedaemon.net; ezequiel.garcia@free-electrons.com;
-> arnd@arndb.de; dwmw2@infradead.org; computersforpeace@gmail.com;
-> artem.bityutskiy@linux.intel.com; jussi.kivilinna@iki.fi;
-> acourbot@nvidia.com; ivan.khoronzhuk@ti.com; joern@logfs.org;
-> devicetree@vger.kernel.org; linux-doc@vger.kernel.org; linux-
-> kernel@vger.kernel.org; linux-mtd@lists.infradead.org; kpc528@gmail.com;
-> kalluripunnaiahchoudary@gmail.com; Punnaiah Choudary Kalluri
-> Subject: Re: [PATCH v6 1/2] Devicetree: Add pl353 smc controller devicetr=
-ee
-> binding information
->=20
-> Hey Punnaiah-
->=20
-> A few nitpicks here, in case you'll be spinning up a new version of your
-> patchset.
->=20
-> On Mon, Apr 13, 2015 at 09:41:51PM +0530, Punnaiah Choudary Kalluri wrote=
-:
-> > Add pl353 static memory controller devicetree binding information.
-> >
-> > Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
-> [..]
-> > @@ -0,0 +1,37 @@
-> > +Device tree bindings for ARM PL353 static memory controller
-> > +
-> > +PL353 static memory controller supports two kinds of memory
-> > +interfaces. i.e NAND and SRAM/NOR interfaces.
-> > +The actual devices are instantiated from the child nodes of pl353 smc
-> node.
-> > +
-> > +Required properties:
-> > +- compatible		: Should be "arm,pl353-smc-r2p1"
-> > +- reg			: Controller registers map and length.
-> > +- clock-names		: List of input clock names - "memclk", "aclk"
-> > +			  (See clock bindings for details).
-> > +- clocks		: Clock phandles (see clock bindings for details).
->=20
-> Technically not clock phandles, but clock specifiers.
->=20
-> > +- address-cells	: Address cells, must be 1.
-> > +- size-cells		: Size cells. Must be 1.
->=20
-> These should have the leading '#' as in '#address-cells' and
-> '#size-cells'.
+I don't think there is any need to re-send Brian's patches. I'm sure
+he's aware of them :)
+You may try pinging him, asking what's the status. And send your own
+with an appropriate comment that it depends on other stuff.
 
-Thanks for the review. I will take care of them new version
-
-Regards,
-Punnaiah
->=20
->   Josh
+--=20
+Rafa=C5=82
