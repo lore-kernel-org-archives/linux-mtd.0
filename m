@@ -1,19 +1,23 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YmKWu-0006rj-DF
- for linux-mtd@lists.infradead.org; Sun, 26 Apr 2015 11:15:20 +0000
-From: "Dolev Raviv" <draviv@codeaurora.org>
-To: <linux-mtd@lists.infradead.org>,
-	<linux-ext4@vger.kernel.org>
-Subject: planning general storage capacity for y fs
-Date: Sun, 26 Apr 2015 14:14:53 +0300
-Message-ID: <006901d08012$3a1f97a0$ae5ec6e0$@codeaurora.org>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
+ Linux)) id 1YmSbW-0008Cy-FT
+ for linux-mtd@lists.infradead.org; Sun, 26 Apr 2015 19:52:39 +0000
+Date: Sun, 26 Apr 2015 21:52:11 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Baruch Siach <baruch@tkos.co.il>
+Subject: Re: [PATCH 3/4] mtd: mxc_nand: fix truncate of unaligned oob copying
+Message-ID: <20150426195211.GB19431@pengutronix.de>
+References: <cover.1430034929.git.baruch@tkos.co.il>
+ <1f8e85fd8e75170e1005473c075942cb3d4479fe.1430034929.git.baruch@tkos.co.il>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-us
-Cc: Tanya Brokhman <tlinder@codeaurora.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f8e85fd8e75170e1005473c075942cb3d4479fe.1430034929.git.baruch@tkos.co.il>
+Cc: Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I'm looking for guidelines for planning storage capacity. I understand it
-strongly depended on the usage type.
-I want to know at what point storage fullness is effecting performance in a
-standard read/write partition. Do different File Systems (UBIFS/EXT4) have
-different full-free ratio?
-What about read only fs? Can I plan less free space in such cases?
+Hello Baruch,
 
-I'll appreciate any input on this, for UBIFS specific and fs in general.
+On Sun, Apr 26, 2015 at 11:16:50AM +0300, Baruch Siach wrote:
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index c650f0950b20..c05f5e8fef17 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -840,22 +840,22 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom)
+>  		for (i = 0; i < num_chunks - 1; i++)
+>  			memcpy32_fromio(d + i * oob_chunk_size,
+>  					s + i * sparebuf_size,
+> -					oob_chunk_size);
+> +					ALIGN(oob_chunk_size, 4));
+If oob_chunk_size isn't 32-bit-aligned, d + i * oob_chunk_size isn't
+either for uneven i. That's not nice. I suggest to use memcpy16_fromio.
 
-Thanks,
-Dolev
+Best regards
+Uwe
+
 -- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux
-Foundation Collaborative Project
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
