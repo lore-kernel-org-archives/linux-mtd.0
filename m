@@ -1,18 +1,19 @@
-From: Baruch Siach <baruch@tkos.co.il>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/4] mtd: nand: mxc_nand: cleanup copy_spare function
-Date: Sun, 26 Apr 2015 11:16:48 +0300
-Message-Id: <15bfff1fdffecb6ca7070504aa8d66dbd40feaee.1430034929.git.baruch@tkos.co.il>
-In-Reply-To: <cover.1430034929.git.baruch@tkos.co.il>
-References: <cover.1430034929.git.baruch@tkos.co.il>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YmKWu-0006rj-DF
+ for linux-mtd@lists.infradead.org; Sun, 26 Apr 2015 11:15:20 +0000
+From: "Dolev Raviv" <draviv@codeaurora.org>
+To: <linux-mtd@lists.infradead.org>,
+	<linux-ext4@vger.kernel.org>
+Subject: planning general storage capacity for y fs
+Date: Sun, 26 Apr 2015 14:14:53 +0300
+Message-ID: <006901d08012$3a1f97a0$ae5ec6e0$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
- Sascha Hauer <kernel@pengutronix.de>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
+Cc: Tanya Brokhman <tlinder@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,88 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Hi,
+I'm looking for guidelines for planning storage capacity. I understand it
+strongly depended on the usage type.
+I want to know at what point storage fullness is effecting performance in a
+standard read/write partition. Do different File Systems (UBIFS/EXT4) have
+different full-free ratio?
+What about read only fs? Can I plan less free space in such cases?
 
-To give people without the reference manual at hand a chance to
-understand how spare area is handled in the i.MX nand controller,
-improve commenting, naming of variables and coding style.
+I'll appreciate any input on this, for UBIFS specific and fs in general.
 
-No functional change intended.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-[baruch: declare oob_chunk_size; update comments; reword commit log]
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
- drivers/mtd/nand/mxc_nand.c | 46 ++++++++++++++++++++++++++++++---------------
- 1 file changed, 31 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 372e0e38f59b..33b22b9c0b30 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -807,32 +807,48 @@ static void mxc_nand_select_chip_v2(struct mtd_info *mtd, int chip)
- }
- 
- /*
-- * Function to transfer data to/from spare area.
-+ * The controller splits a page into data chunks of 512 bytes + partial oob.
-+ * There are writesize / 512 such chunks, the size of the partial oob parts is
-+ * oobsize / #chunks rounded down to a multiple of 2. The last oob chunk then
-+ * contains additionally the byte lost by rounding (if any).
-+ * This function handles the needed shuffling between host->data_buf (which
-+ * holds a page in natural order, i.e. writesize bytes data + oobsize bytes
-+ * spare) and the NFC buffer.
-  */
- static void copy_spare(struct mtd_info *mtd, bool bfrom)
- {
- 	struct nand_chip *this = mtd->priv;
- 	struct mxc_nand_host *host = this->priv;
--	u16 i, j;
--	u16 n = mtd->writesize >> 9;
-+	u16 i, oob_chunk_size;
-+	u16 num_chunks = mtd->writesize / 512;
-+
- 	u8 *d = host->data_buf + mtd->writesize;
- 	u8 __iomem *s = host->spare0;
--	u16 t = host->devtype_data->spare_len;
-+	u16 sparebuf_size = host->devtype_data->spare_len;
- 
--	j = (mtd->oobsize / n >> 1) << 1;
-+	/* size of oob chunk for all but possibly the last one */
-+	oob_chunk_size = (mtd->oobsize / num_chunks) & ~1;
- 
- 	if (bfrom) {
--		for (i = 0; i < n - 1; i++)
--			memcpy32_fromio(d + i * j, s + i * t, j);
--
--		/* the last section */
--		memcpy32_fromio(d + i * j, s + i * t, mtd->oobsize - i * j);
-+		for (i = 0; i < num_chunks - 1; i++)
-+			memcpy32_fromio(d + i * oob_chunk_size,
-+					s + i * sparebuf_size,
-+					oob_chunk_size);
-+
-+		/* the last chunk */
-+		memcpy32_fromio(d + i * oob_chunk_size,
-+				s + i * sparebuf_size,
-+				mtd->oobsize - i * oob_chunk_size);
- 	} else {
--		for (i = 0; i < n - 1; i++)
--			memcpy32_toio(&s[i * t], &d[i * j], j);
--
--		/* the last section */
--		memcpy32_toio(&s[i * t], &d[i * j], mtd->oobsize - i * j);
-+		for (i = 0; i < num_chunks - 1; i++)
-+			memcpy32_toio(&s[i * sparebuf_size],
-+				      &d[i * oob_chunk_size],
-+				      oob_chunk_size);
-+
-+		/* the last chunk */
-+		memcpy32_toio(&s[oob_chunk_size * sparebuf_size],
-+			      &d[i * oob_chunk_size],
-+			      mtd->oobsize - i * oob_chunk_size);
- 	}
- }
- 
+Thanks,
+Dolev
 -- 
-2.1.4
+Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux
+Foundation Collaborative Project
