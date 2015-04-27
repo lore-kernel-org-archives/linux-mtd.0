@@ -1,29 +1,17 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1Ymokz-00020R-O0
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2015 19:31:54 +0000
-Date: Mon, 27 Apr 2015 21:31:27 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH 2/4] mtd: mxc_nand: limit the size of used oob
-Message-ID: <20150427193127.GU19431@pengutronix.de>
-References: <cover.1430034929.git.baruch@tkos.co.il>
- <4bd5da1f7d57aa32c5682297f7aa0c768e8c6e49.1430034929.git.baruch@tkos.co.il>
- <20150426200725.GC19431@pengutronix.de>
- <20150427043906.GR2258@tarshish>
- <20150427071238.GE19431@pengutronix.de>
- <20150427072057.GT2258@tarshish>
- <20150427075023.GF19431@pengutronix.de>
- <20150427114341.GW2258@tarshish>
+Date: Mon, 27 Apr 2015 16:35:58 -0500
+From: Ben Shelton <ben.shelton@ni.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 1/3] mtd: nand: Add on-die ECC support
+Message-ID: <20150427213558.GA22780@bshelton-desktop>
+References: <1427292151-3835-1-git-send-email-richard@nod.at>
+ <1427292151-3835-2-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <1427292151-3835-2-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150427114341.GW2258@tarshish>
-Cc: Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
- Sascha Hauer <sha@pengutronix.de>, kernel@pengutronix.de,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: punnaiah.choudary.kalluri@xilinx.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,50 +21,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Richard,
 
-On Mon, Apr 27, 2015 at 02:43:41PM +0300, Baruch Siach wrote:
-> On Mon, Apr 27, 2015 at 09:50:23AM +0200, Uwe Kleine-König wrote:
-> > On Mon, Apr 27, 2015 at 10:20:57AM +0300, Baruch Siach wrote:
-> > > On Mon, Apr 27, 2015 at 09:12:38AM +0200, Uwe Kleine-König wrote:
-> > > > Hmm I rechecked the reference manual and found a register to specify the
-> > > > size of the spare area (I didn't notice that one before). Did you try
-> > > > what happens if you set this to 0x70 for 224 bytes oob?
-> > > 
-> > > Which register is that?
-> > Spare Area Size Register (SPAS) at offset 0x1e10 for the i.MX25 (that's
-> > what you're using, don't you?).
+On 03/25, Richard Weinberger wrote:
+> Some Micron NAND chips offer an on-die ECC (AKA internal ECC)
+> feature. It is useful when the host-platform does not offer
+> multi-bit ECC and software ECC is not feasible.
 > 
-> Yes, that's what I'm using.
+> Based on original work by David Mosberger <davidm@egauge.net>
 > 
-> I tried setting the SPAS register to oobsize/2 (0x70 in my case), but I see no 
-> change in behaviour. Moreover, it turns out the previously Barebox set this 
-> register (apparently wrongly) to 0x20 for spare size of 64. Current Barebox 
-> master still do. For v3 Barebox limits CONFIG2_SPAS to 218 bytes spare size 
-I guess for v21 writing to SPAS is just what the controller assumes
-after reset. I.e. that a 512-byte nand has 16 bytes spare and a 2k-nand
-has 64.
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
 
-> since Eric Bénard's commit 632c45795065 (nand_imx: update to support onfi & 4k 
-> flashs, 2012-07-05). As you can see, the kernel doesn't touch this register 
-> for v2 NFC.
-right.
+[...]
 
-> I have no idea what is the effect of the SPAS in v2 (or any other) NFC.
-I didn't try, but I'm surprised it doesn't make a difference. How did
-you test? I'd do in barebox:
+> +
+> +static int check_read_status_on_die(struct mtd_info *mtd, int page)
+> +{
+> +	struct nand_chip *chip = mtd->priv;
+> +	int max_bitflips = 0;
+> +	uint8_t status;
+> +
+> +	/* Check ECC status of page just transferred into NAND's page buffer */
+> +	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+> +	status = chip->read_byte(mtd);
+> +
+> +	/* Switch back to data reading */
+> +	chip->cmd_ctrl(mtd, NAND_CMD_READ0, NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
+> +	chip->cmd_ctrl(mtd, NAND_CMD_NONE, NAND_NCE | NAND_CTRL_CHANGE);
 
-	memset -w 0xbb000000 0x55 0x1200
-	set SPAS to 218/2
-	trigger page read
-	check how much of the 0x55 was overwritten
-	set SPAS to 224/2
-	trigger page read
-	compare with above
+I tested this against the latest version of the PL353 NAND driver that Punnaiah
+has been working to upstream (copying her on this message).  With a few changes
+to that driver, I got it most of the way through initialization with on-die ECC
+enabled, but it segfaults here with a null pointer dereference because the
+PL353 driver does not implement chip->cmd_ctrl.  Instead, it implements a
+custom override of cmd->cmdfunc that does not call cmd_ctrl.  Looking through
+the other in-tree NAND drivers, it looks like most of them do implement
+cmd_ctrl, but quite a few of them do not (e.g. au1550nd, denali, docg4).
 
-Best regards
-Uwe
+What do you think would be the best way to handle this?  It seems like this gap
+could be bridged from either side -- either the PL353 driver could implement
+cmd_ctrl, at least as a stub version that provides the expected behavior in
+this case; or the on-die framework could break this out into a callback
+function with a default implementation that the driver could override to
+perform this behavior in the manner of its choosing.
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+> +
+> +	if (status & NAND_STATUS_FAIL) {
+> +		/* Page has invalid ECC */
+> +		mtd->ecc_stats.failed++;
+> +	} else if (status & NAND_STATUS_REWRITE) {
+> +		/*
+> +		 * Micron on-die ECC doesn't report the number of
+> +		 * bitflips, so we have to count them ourself to see
+> +		 * if the error rate is too high.  This is
+> +		 * particularly important for pages with stuck bits.
+> +		 */
+> +		max_bitflips = check_for_bitflips(mtd, page);
+> +	}
+> +	return max_bitflips;
+> +}
+> +
+
+[...]
+
+> +#else /* !CONFIG_MTD_NAND_ECC_ON_DIE */
+> +static inline int mtd_nand_has_on_die(void) { return 0; }
+> +static inline int nand_read_subpage_on_die(struct mtd_info *mtd,
+> +					   struct nand_chip *chip,
+> +					   uint32_t data_offs,
+> +					   uint32_t readlen,
+> +					   uint8_t *bufpoi, int page)
+> +{
+> +	BUG();
+
+When I build this without CONFIG_MTD_NAND_ECC_ON_DIE enabled, I get the
+following warning here:
+
+In file included from drivers/mtd/nand/nand_base.c:46:0:
+include/linux/mtd/nand_ondie.h: In function 'nand_read_subpage_on_die':
+include/linux/mtd/nand_ondie.h:28:1: warning: no return statement in function returning non-void [-Wreturn-type]
+include/linux/mtd/nand_ondie.h: In function 'nand_read_page_on_die':
+include/linux/mtd/nand_ondie.h:34:1: warning: no return statement in function returning non-void [-Wreturn-type]
+
+Perhaps return an error code here, even though you'll never get past the BUG()?
+
+> +}
+> +
+> +static inline int nand_read_page_on_die(struct mtd_info *mtd, struct nand_chip *chip,
+> +					uint8_t *buf, int oob_required, int page)
+> +{
+> +	BUG();
+
+Same here.
+
+> +}
+
+Thanks,
+Ben
