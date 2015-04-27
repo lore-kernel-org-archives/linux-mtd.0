@@ -1,15 +1,27 @@
-Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
+Received: from mail-ob0-x232.google.com ([2607:f8b0:4003:c01::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yms2E-0007X9-SJ
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2015 23:01:55 +0000
-Received: by iejt8 with SMTP id t8so5901876iej.2
- for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2015 16:01:32 -0700 (PDT)
-From: "Nam T. Nguyen" <namnguyen@chromium.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v5] mtd-utils: Add mtdpart to add/delete partition
-Date: Mon, 27 Apr 2015 16:01:06 -0700
-Message-Id: <1430175666-9117-1-git-send-email-namnguyen@chromium.org>
-Cc: "Nam T. Nguyen" <namnguyen@chromium.org>, vapier@chromium.org
+ id 1YmsAU-0001Fa-Od
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2015 23:10:27 +0000
+Received: by obfe9 with SMTP id e9so95541533obf.1
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2015 16:10:02 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <553EBEDD.9050204@nod.at>
+References: <1427292151-3835-1-git-send-email-richard@nod.at>
+ <1427292151-3835-2-git-send-email-richard@nod.at>
+ <20150427213558.GA22780@bshelton-desktop> <553EB5E4.3050309@nod.at>
+ <20150427223630.GA11721@bshelton-desktop> <553EBB4A.1040905@nod.at>
+ <20150427225307.GC32500@ld-irv-0074> <553EBEDD.9050204@nod.at>
+Date: Mon, 27 Apr 2015 16:10:02 -0700
+Message-ID: <CAN8TOE8Wx_KKy_2Lu_8j8iUaL+Q+rff_mR=P8E8tFzuQaYcWPg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd: nand: Add on-die ECC support
+From: Brian Norris <computersforpeace@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Ben Shelton <ben.shelton@ni.com>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,231 +31,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a simple utility to exercise BLKPG ioctl.
+On Mon, Apr 27, 2015 at 3:57 PM, Richard Weinberger <richard@nod.at> wrote:
+> Am 28.04.2015 um 00:53 schrieb Brian Norris:
+>> On Tue, Apr 28, 2015 at 12:42:18AM +0200, Richard Weinberger wrote:
+>>> Am 28.04.2015 um 00:36 schrieb Ben Shelton:
+>>>>>> When I build this without CONFIG_MTD_NAND_ECC_ON_DIE enabled, I get =
+the
+>>>>>> following warning here:
+>>>>>>
+>>>>>> In file included from drivers/mtd/nand/nand_base.c:46:0:
+>>>>>> include/linux/mtd/nand_ondie.h: In function 'nand_read_subpage_on_di=
+e':
+>>>>>> include/linux/mtd/nand_ondie.h:28:1: warning: no return statement in=
+ function returning non-void [-Wreturn-type]
+>>>>>> include/linux/mtd/nand_ondie.h: In function 'nand_read_page_on_die':
+>>>>>> include/linux/mtd/nand_ondie.h:34:1: warning: no return statement in=
+ function returning non-void [-Wreturn-type]
+>>>>>>
+>>>>>> Perhaps return an error code here, even though you'll never get past=
+ the BUG()?
+>>>>>
+>>>>> What gcc is this?
+>>>>> gcc 4.8 here does not warn, I thought it is smart enough that this fu=
+nction does never
+>>>>> return. Can it be that your .config has CONFIG_BUG=3Dn?
+>>>>> Anyway, this functions clearly needs a return statement. :)
+>>>>
+>>>> gcc 4.7.2, and you are correct that I had CONFIG_BUG off.  :)
+>>>
+>>> Yeah, just noticed that BUG() with CONFIG_BUG=3Dn does not have
+>>> a nonreturn attribute. So, gcc cannot know...
+>>
+>> But it's an obvious infinite loop... all of my toolchains (4.2, 4.5,
+>> 4.6, 4.8) are able to compile this without complaining (gcc -Wall):
+>>
+>> int test() { do { } while (1); }
+>
+> Not here. gcc 4.8 warns on that.
+> As soon I add __attribute__ ((noreturn)) it does not longer complain.
 
-Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
----
-Changes since v4:
+Huh? Maybe I have a crazy modified gcc.
 
-  * Check part_no parameter for INT_MAX overflow
+$ gcc --version
+gcc (Ubuntu 4.8.2-19ubuntu1) 4.8.2
+Copyright (C) 2013 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
- Makefile  |   2 +-
- mtdpart.c | 194 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 195 insertions(+), 1 deletion(-)
- create mode 100644 mtdpart.c
+$ gcc -Wall -Wextra -c a.c
+$ cat a.c
+int test() { do {} while (1); }
 
-diff --git a/Makefile b/Makefile
-index eade234..f4ce313 100644
---- a/Makefile
-+++ b/Makefile
-@@ -20,7 +20,7 @@ MTD_BINS = \
- 	ftl_format flash_erase nanddump doc_loadbios \
- 	ftl_check mkfs.jffs2 flash_lock flash_unlock \
- 	flash_otp_info flash_otp_dump flash_otp_lock flash_otp_write \
--	mtd_debug flashcp nandwrite nandtest \
-+	mtd_debug flashcp nandwrite nandtest mtdpart \
- 	jffs2dump \
- 	nftldump nftl_format docfdisk \
- 	rfddump rfdformat \
-diff --git a/mtdpart.c b/mtdpart.c
-new file mode 100644
-index 0000000..0016e34
---- /dev/null
-+++ b/mtdpart.c
-@@ -0,0 +1,194 @@
-+/*
-+ *  mtdpart.c
-+ *
-+ *  Copyright 2015 The Chromium OS Authors.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ *  Overview:
-+ *   This utility adds or removes a partition from an MTD device.
-+ */
-+
-+#define PROGRAM_NAME "mtdpart"
-+
-+#include <fcntl.h>
-+#include <getopt.h>
-+#include <limits.h>
-+#include <linux/blkpg.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+#include "common.h"
-+
-+static void display_help(int status)
-+{
-+	fprintf(status == EXIT_SUCCESS ? stdout : stderr,
-+"Usage: %1$s add [OPTION] <MTD_DEVICE> <PART_NAME> <START> <SIZE>\n"
-+"       %1$s del [OPTION] <MTD_DEVICE> <PART_NUMBER>\n"
-+"Adds a partition to an MTD device, or remove an existing partition from it.\n"
-+"\n"
-+"  -h, --help    Display this help and exit\n"
-+"      --version Output version information and exit\n"
-+"\n"
-+"START location and SIZE of the partition are in bytes. They should align on\n"
-+"eraseblock size.\n",
-+	PROGRAM_NAME
-+	);
-+	exit(status);
-+}
-+
-+static void display_version(void)
-+{
-+	printf("%1$s " VERSION "\n"
-+			"\n"
-+			"%1$s comes with NO WARRANTY\n"
-+			"to the extent permitted by law.\n"
-+			"\n"
-+			"You may redistribute copies of %1$s\n"
-+			"under the terms of the GNU General Public Licence.\n"
-+			"See the file `COPYING' for more information.\n",
-+			PROGRAM_NAME);
-+	exit(EXIT_SUCCESS);
-+}
-+
-+/* Command arguments */
-+
-+typedef enum {
-+	COMMAND_ADD,
-+	COMMAND_DEL
-+} command_type;
-+
-+static command_type		command;		/* add or del */
-+static const char		*mtddev;		/* mtd device name */
-+static const char		*part_name;		/* partition name */
-+static int			part_no;		/* partition number */
-+static long long		start_addr;		/* start address */
-+static long long		length;			/* partition size */
-+
-+static void process_options(int argc, char * const argv[])
-+{
-+	int error = 0;
-+
-+	for (;;) {
-+		int option_index = 0;
-+		static const char short_options[] = "h";
-+		static const struct option long_options[] = {
-+			{"version", no_argument, 0, 0},
-+			{"help", no_argument, 0, 'h'},
-+			{0, 0, 0, 0},
-+		};
-+
-+		int c = getopt_long(argc, argv, short_options,
-+				long_options, &option_index);
-+		if (c == EOF) {
-+			break;
-+		}
-+
-+		switch (c) {
-+			case 0:
-+				display_version();
-+				break;
-+			case 'h':
-+				display_help(EXIT_SUCCESS);
-+				break;
-+			case '?':
-+				error++;
-+				break;
-+		}
-+	}
-+
-+	if ((argc - optind) < 3 || error)
-+		display_help(EXIT_FAILURE);
-+
-+	const char *s_command = argv[optind++];
-+	mtddev = argv[optind++];
-+
-+	if (strcmp(s_command, "del") == 0 && (argc - optind) == 1) {
-+		const char *s_part_no = argv[optind++];
-+
-+		long tmp = simple_strtol(s_part_no, &error);
-+		if (tmp < 0)
-+		       errmsg_die("Can't specify negative partition number: %ld",
-+				  tmp);
-+		if (tmp > INT_MAX)
-+		       errmsg_die("Partition number exceeds INT_MAX: %ld",
-+				  tmp);
-+
-+		part_no = tmp;
-+		command = COMMAND_DEL;
-+	} else if (strcmp(s_command, "add") == 0 && (argc - optind) == 3) {
-+		const char *s_start;
-+		const char *s_length;
-+
-+		part_name = argv[optind++];
-+		s_start = argv[optind++];
-+		s_length = argv[optind++];
-+
-+		if (strlen(part_name) >= BLKPG_DEVNAMELTH)
-+			errmsg_die("Partition name (%s) should be less than %d characters",
-+				   part_name, BLKPG_DEVNAMELTH);
-+
-+		start_addr = simple_strtoll(s_start, &error);
-+		if (start_addr < 0)
-+		       errmsg_die("Can't specify negative start offset: %lld",
-+				  start_addr);
-+
-+		length = simple_strtoll(s_length, &error);
-+		if (length < 0)
-+		       errmsg_die("Can't specify negative length: %lld",
-+				  length);
-+
-+		command = COMMAND_ADD;
-+	} else
-+		display_help(EXIT_FAILURE);
-+
-+	if (error)
-+		display_help(EXIT_FAILURE);
-+}
-+
-+
-+int main(int argc, char * const argv[])
-+{
-+	int fd;
-+	struct blkpg_partition part;
-+	struct blkpg_ioctl_arg arg;
-+
-+	process_options(argc, argv);
-+
-+	fd = open(mtddev, O_RDWR | O_CLOEXEC);
-+	if (fd == -1)
-+		sys_errmsg_die("Cannot open %s", mtddev);
-+
-+	memset(&part, 0, sizeof(part));
-+
-+	memset(&arg, 0, sizeof(arg));
-+	arg.datalen = sizeof(part);
-+	arg.data = &part;
-+
-+	switch (command) {
-+		case COMMAND_ADD:
-+			part.start = start_addr;
-+			part.length = length;
-+			strncpy(part.devname, part_name, sizeof(part.devname));
-+			arg.op = BLKPG_ADD_PARTITION;
-+			break;
-+		case COMMAND_DEL:
-+			part.pno = part_no;
-+			arg.op = BLKPG_DEL_PARTITION;
-+			break;
-+	}
-+
-+	if (ioctl(fd, BLKPG, &arg))
-+		sys_errmsg_die("Failed to issue BLKPG ioctl");
-+
-+	close(fd);
-+
-+	/* Exit happy */
-+	return EXIT_SUCCESS;
-+}
--- 
-2.2.0.rc0.207.ga3a616c
+But:
+
+$ gcc -Wall -Wextra -c b.c
+b.c: In function =E2=80=98test=E2=80=99:
+b.c:1:1: warning: control reaches end of non-void function [-Wreturn-type]
+ int test() { }
+ ^
+$ cat b.c
+int test() { }
