@@ -1,20 +1,24 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ymf9P-00068O-DG
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2015 09:16:27 +0000
-Received: by pacyx8 with SMTP id yx8so122984455pac.1
- for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2015 02:16:06 -0700 (PDT)
+Date: Mon, 27 Apr 2015 14:43:41 +0300
+From: Baruch Siach <baruch@tkos.co.il>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 2/4] mtd: mxc_nand: limit the size of used oob
+Message-ID: <20150427114341.GW2258@tarshish>
+References: <cover.1430034929.git.baruch@tkos.co.il>
+ <4bd5da1f7d57aa32c5682297f7aa0c768e8c6e49.1430034929.git.baruch@tkos.co.il>
+ <20150426200725.GC19431@pengutronix.de>
+ <20150427043906.GR2258@tarshish>
+ <20150427071238.GE19431@pengutronix.de>
+ <20150427072057.GT2258@tarshish>
+ <20150427075023.GF19431@pengutronix.de>
 MIME-Version: 1.0
-Sender: vapier@google.com
-In-Reply-To: <1429035518-8323-1-git-send-email-namnguyen@chromium.org>
-References: <1429035518-8323-1-git-send-email-namnguyen@chromium.org>
-From: Mike Frysinger <vapier@chromium.org>
-Date: Mon, 27 Apr 2015 17:15:45 +0800
-Message-ID: <CAAbOScnTQuujGN7AkiieL+KciF0RNaQyvga+hDB4H6VwY1=RjA@mail.gmail.com>
-Subject: Re: [PATCH v4] mtd-utils: Add mtdpart to add/delete partition
-To: Nam Nguyen <namnguyen@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org, dehrenberg@chromium.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150427075023.GF19431@pengutronix.de>
+Cc: Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <sha@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 15, 2015 at 2:18 AM, <namnguyen@chromium.org> wrote:
-> +static int                     part_no;                /* partition number */
+Hi Uwe,
 
-it's an int ...
+On Mon, Apr 27, 2015 at 09:50:23AM +0200, Uwe Kleine-König wrote:
+> On Mon, Apr 27, 2015 at 10:20:57AM +0300, Baruch Siach wrote:
+> > On Mon, Apr 27, 2015 at 09:12:38AM +0200, Uwe Kleine-König wrote:
+> > > Hmm I rechecked the reference manual and found a register to specify the
+> > > size of the spare area (I didn't notice that one before). Did you try
+> > > what happens if you set this to 0x70 for 224 bytes oob?
+> > 
+> > Which register is that?
+> Spare Area Size Register (SPAS) at offset 0x1e10 for the i.MX25 (that's
+> what you're using, don't you?).
 
-> +       if (strcmp(s_command, "del") == 0 && (argc - optind) == 1) {
-> +               const char *s_part_no = argv[optind++];
-> +
-> +               part_no = simple_strtol(s_part_no, &error);
+Yes, that's what I'm using.
 
-... but here you use simple_strol.  so there's a possibility of silent
-truncation ?  i'd change part_no to a long and then check to see if it
-exceeds INT_MAX.
--mike
+I tried setting the SPAS register to oobsize/2 (0x70 in my case), but I see no 
+change in behaviour. Moreover, it turns out the previously Barebox set this 
+register (apparently wrongly) to 0x20 for spare size of 64. Current Barebox 
+master still do. For v3 Barebox limits CONFIG2_SPAS to 218 bytes spare size 
+since Eric Bénard's commit 632c45795065 (nand_imx: update to support onfi & 4k 
+flashs, 2012-07-05). As you can see, the kernel doesn't touch this register 
+for v2 NFC.
+
+I have no idea what is the effect of the SPAS in v2 (or any other) NFC.
+
+baruch
+
+-- 
+     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
