@@ -1,21 +1,20 @@
-Received: from mail-vn0-x22b.google.com ([2607:f8b0:400c:c0f::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YmTR7-0002J0-BZ
- for linux-mtd@lists.infradead.org; Sun, 26 Apr 2015 20:45:57 +0000
-Received: by vnbf129 with SMTP id f129so9653823vnb.9
- for <linux-mtd@lists.infradead.org>; Sun, 26 Apr 2015 13:45:34 -0700 (PDT)
+Date: Mon, 27 Apr 2015 07:39:06 +0300
+From: Baruch Siach <baruch@tkos.co.il>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 2/4] mtd: mxc_nand: limit the size of used oob
+Message-ID: <20150427043906.GR2258@tarshish>
+References: <cover.1430034929.git.baruch@tkos.co.il>
+ <4bd5da1f7d57aa32c5682297f7aa0c768e8c6e49.1430034929.git.baruch@tkos.co.il>
+ <20150426200725.GC19431@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <006901d08012$3a1f97a0$ae5ec6e0$@codeaurora.org>
-References: <006901d08012$3a1f97a0$ae5ec6e0$@codeaurora.org>
-Date: Sun, 26 Apr 2015 22:45:33 +0200
-Message-ID: <CAFLxGvyJDyN2-WJUkJ9wz5cCDvNjrUsbdpHrN4DH7S1gQoF2Yw@mail.gmail.com>
-Subject: Re: planning general storage capacity for y fs
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Dolev Raviv <draviv@codeaurora.org>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-ext4@vger.kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Tanya Brokhman <tlinder@codeaurora.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150426200725.GC19431@pengutronix.de>
+Cc: Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +24,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Apr 26, 2015 at 1:14 PM, Dolev Raviv <draviv@codeaurora.org> wrote:
-> Hi,
-> I'm looking for guidelines for planning storage capacity. I understand it
-> strongly depended on the usage type.
-> I want to know at what point storage fullness is effecting performance in a
-> standard read/write partition. Do different File Systems (UBIFS/EXT4) have
-> different full-free ratio?
-> What about read only fs? Can I plan less free space in such cases?
->
-> I'll appreciate any input on this, for UBIFS specific and fs in general.
+Hi Uwe,
 
-Not sure if I got your question.
-You want to know how filesystems in general behave when they run out
-of free space?
-The general answer is that they need more effort to find free space.
+On Sun, Apr 26, 2015 at 10:07:25PM +0200, Uwe Kleine-König wrote:
+> On Sun, Apr 26, 2015 at 11:16:49AM +0300, Baruch Siach wrote:
+> > For 4k pages the i.MX NFC hardware uses exactly 218 or 128 bytes for 4bit or
+> > 8bit ECC data, respectively. Larger oobsize confuses the logic of copy_spare().
+> > Limit the size of used oob size to avoid that.
+> > 
+> > Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> > ---
+> >  drivers/mtd/nand/mxc_nand.c | 15 +++++++++++----
+> >  1 file changed, 11 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> > index 33b22b9c0b30..c650f0950b20 100644
+> > --- a/drivers/mtd/nand/mxc_nand.c
+> > +++ b/drivers/mtd/nand/mxc_nand.c
+> > @@ -819,15 +819,22 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom)
+> >  {
+> >  	struct nand_chip *this = mtd->priv;
+> >  	struct mxc_nand_host *host = this->priv;
+> > -	u16 i, oob_chunk_size;
+> > +	u16 i, oob_chunk_size, used_oobsize;
+> >  	u16 num_chunks = mtd->writesize / 512;
+> >  
+> >  	u8 *d = host->data_buf + mtd->writesize;
+> >  	u8 __iomem *s = host->spare0;
+> >  	u16 sparebuf_size = host->devtype_data->spare_len;
+> >  
+> > +	/* hardware can only use 218 or 128 oob bytes for ecc */
+> > +	if (mtd->oobsize >= 218)
+> IMHO this is the wrong check. What if your part (with 224 bytes spare)
+> is used but the machine only uses the small layout e.g. for booting?
+> (That would work, wouldn't it?)
 
-In case of UBIFS you also have to think of the garbage collector.
-See http://www.linux-mtd.infradead.org/doc/ubifs.html
-At the end of the day you'll have to run benchmarks on your own to
-find out how a specific filesystem behaves on your workload...
+Yes, but how would I know? I am following here the assumption of get_eccsize() 
+that enables 8 bit ECC when there is enough oobsize.
+
+> Moreover the comment is misleading as it
+> only applies to 4K flashes. At least the driver works well with (2ki +
+> 128) bytes pages (while there are only 64 bytes spare used?? Maybe there
+> are still more bugs?).
+
+I suspect there are more bugs. A simple way to trigger the bug I encountered 
+is by doing a sub-page write, that is:
+
+  dd if=/dev/zero bs=1024 count=1 of=/dev/mtd2
+  dd if=/dev/zero bs=1024 count=1 seek=1 of=/dev/mtd2
+
+and then try reading this page. You may need to dirty the (useless; random) 
+content of ecccalc to see the bug (you can conveniently use 
+mxc_nand_calculate_ecc() for that). What copy_spare() currently do (spread ECC 
+chunks evenly over oob) does not match nandv2_hw_eccoob_largepage.
+
+> > +		used_oobsize = 218;
+> > +	else if (mtd->oobsize >= 128)
+> > +		used_oobsize = 128;
+> > +	else
+> > +		used_oobsize = mtd->oobsize;
+> Is it worth to put this check into _probe and put the used size into
+> driver data?
+
+I think you are right. I'll also add checks for smaller page/oob size.
+
+Thanks for reviewing,
+baruch
 
 -- 
-Thanks,
-//richard
+     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
