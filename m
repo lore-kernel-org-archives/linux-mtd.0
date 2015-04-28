@@ -1,33 +1,19 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yn8F3-0004Qn-BC
- for linux-mtd@lists.infradead.org; Tue, 28 Apr 2015 16:20:14 +0000
-Received: by pacwv17 with SMTP id wv17so147053326pac.0
- for <linux-mtd@lists.infradead.org>; Tue, 28 Apr 2015 09:19:51 -0700 (PDT)
+ id 1YnCWj-0006p9-D9
+ for linux-mtd@lists.infradead.org; Tue, 28 Apr 2015 20:54:46 +0000
+Received: by lbbzk7 with SMTP id zk7so5733944lbb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Apr 2015 13:54:21 -0700 (PDT)
+From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] jffs2: fix UTF-8 character in pr_info
+Date: Tue, 28 Apr 2015 23:54:05 +0300
+Message-Id: <1430254445-32676-1-git-send-email-andrej.skvortzov@gmail.com>
 MIME-Version: 1.0
-Sender: kalluripunnaiahchoudary@gmail.com
-In-Reply-To: <20150428140347.GC2798@jcartwri.amer.corp.natinst.com>
-References: <1427292151-3835-1-git-send-email-richard@nod.at>
- <1427292151-3835-2-git-send-email-richard@nod.at>
- <20150427213558.GA22780@bshelton-desktop> <553EB5E4.3050309@nod.at>
- <20150427232353.GD32500@ld-irv-0074>
- <CAGnW=BYVn5quNKooiB44CiCYtuYckWArTkft4BQLxs188FwUpg@mail.gmail.com>
- <20150428032213.GI19571@brian-ubuntu>
- <CAGnW=BYeJQyg8BYX0oOxrnT_VNUh9iUNPGPmioqV7Xrj3by92g@mail.gmail.com>
- <20150428140347.GC2798@jcartwri.amer.corp.natinst.com>
-Date: Tue, 28 Apr 2015 21:49:51 +0530
-Message-ID: <CAGnW=BaBFKZc+hrTFg+YYf_aN7=Oj2QkC07raAgKJGGbW99UmQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mtd: nand: Add on-die ECC support
-From: punnaiah choudary kalluri <punnaia@xilinx.com>
-To: Josh Cartwright <joshc@ni.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ben Shelton <ben.shelton@ni.com>, Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 8bit
+Cc: Andrey Skvortsov <andrej.skvortzov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,45 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 28, 2015 at 7:33 PM, Josh Cartwright <joshc@ni.com> wrote:
-> On Tue, Apr 28, 2015 at 09:14:26AM +0530, punnaiah choudary kalluri wrote:
->> On Tue, Apr 28, 2015 at 8:52 AM, Brian Norris <computersforpeace@gmail.com> wrote:
->> > On Tue, Apr 28, 2015 at 08:18:12AM +0530, punnaiah choudary kalluri wrote:
->> >> On Tue, Apr 28, 2015 at 4:53 AM, Brian Norris <computersforpeace@gmail.com> wrote:
-> [..]
->> >> Agree that read_buf need not be returning raw data always including
->> >> my new driver for arasan nand flash controller.
->> >
->> > I agree with that. At the moment, chip->read_buf() really has very
->> > driver-specific meaning. Not sure if that's really a good thing, but
->> > it's the way things are...
->> >
->> >> http://lkml.iu.edu/hypermail/linux/kernel/1504.2/00313.html
->> >
->> > In the half a minute I just spent looking at this (I may review it
->> > properly later), I noted a few things:
->> >
->> > 1. you don't implement ecc.read_page_raw(); this means we'll probably
->> > have trouble supporting on-die ECC with your driver, among other things
->>
->> On-die ECC is optional as long as the controller has better ecc coverage.
->> The arasan controller supports up to 24 bit ecc. There is no point to use
->> on-die ECC and will always use hw ecc even for On-die ecc devices.
->
-> Maybe this is true of the controller instantiated in the Zynq MPSoC
-> chips, but the Zynq 7000 series SMC is documented to support only 1-bit
-> ECC.
+Boot log contained string:
+jffs2: version 2.2. \xffffffc2\xffffffa9 2001-2006 Red Hat, Inc.
 
-True. SMC controller in zynq supports only 1 -bit ECC. One can use
-on-die ECC devices
-and turn of the controller ECC for better ECC coverage. I am also
-exploring the options
-to use these patches with the pl353 driver in a  generic way and
-acceptable to all.
+non-ASCII characters are printed in HEX. 0xC2A9 is copyright sign in UTF-8.
+This patch replace it with '(c)' to make boot log readable.
 
-Regards,
-Punnaiah
->
-> (Which is why we're looking at your pl353 driver and this set).
->
->   Josh
+Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+---
+ fs/jffs2/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 3d76f28..763a3dc 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -382,7 +382,7 @@ static int __init init_jffs2_fs(void)
+ #ifdef CONFIG_JFFS2_SUMMARY
+ 	       " (SUMMARY) "
+ #endif
+-	       " © 2001-2006 Red Hat, Inc.\n");
++	       " (c) 2001-2006 Red Hat, Inc.\n");
+ 
+ 	jffs2_inode_cachep = kmem_cache_create("jffs2_i",
+ 					     sizeof(struct jffs2_inode_info),
+-- 
+2.1.4
