@@ -1,18 +1,27 @@
-Date: Tue, 28 Apr 2015 15:30:12 +0200
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx: Switch FIFO draining to
- jiffies-based timeout
-Message-ID: <20150428133012.GF10950@lukather>
-References: <1428413565-27644-1-git-send-email-maxime.ripard@free-electrons.com>
+Date: Tue, 28 Apr 2015 09:03:47 -0500
+From: Josh Cartwright <joshc@ni.com>
+To: punnaiah choudary kalluri <punnaia@xilinx.com>
+Subject: Re: [PATCH 1/3] mtd: nand: Add on-die ECC support
+Message-ID: <20150428140347.GC2798@jcartwri.amer.corp.natinst.com>
+References: <1427292151-3835-1-git-send-email-richard@nod.at>
+ <1427292151-3835-2-git-send-email-richard@nod.at>
+ <20150427213558.GA22780@bshelton-desktop> <553EB5E4.3050309@nod.at>
+ <20150427232353.GD32500@ld-irv-0074>
+ <CAGnW=BYVn5quNKooiB44CiCYtuYckWArTkft4BQLxs188FwUpg@mail.gmail.com>
+ <20150428032213.GI19571@brian-ubuntu>
+ <CAGnW=BYeJQyg8BYX0oOxrnT_VNUh9iUNPGPmioqV7Xrj3by92g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="E7i4zwmWs5DOuDSH"
+In-Reply-To: <CAGnW=BYeJQyg8BYX0oOxrnT_VNUh9iUNPGPmioqV7Xrj3by92g@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="B4IIlcmfBL/1gGOG"
 Content-Disposition: inline
-In-Reply-To: <1428413565-27644-1-git-send-email-maxime.ripard@free-electrons.com>
-Cc: Boris Brezillon <boris@free-electrons.com>, linux-mtd@lists.infradead.org,
- Baruch Siach <baruch@tkos.co.il>, linux-arm-kernel@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Ben Shelton <ben.shelton@ni.com>, Richard Weinberger <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +32,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---E7i4zwmWs5DOuDSH
+--B4IIlcmfBL/1gGOG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Brian,
-
-On Tue, Apr 07, 2015 at 03:32:45PM +0200, Maxime Ripard wrote:
-> Now that the driver handles the FIFO draining in a threaded interrupt, we=
- can
-> base our timeout on jiffies and sleeping, instead of using mdelay.
+On Tue, Apr 28, 2015 at 09:14:26AM +0530, punnaiah choudary kalluri wrote:
+> On Tue, Apr 28, 2015 at 8:52 AM, Brian Norris <computersforpeace@gmail.co=
+m> wrote:
+> > On Tue, Apr 28, 2015 at 08:18:12AM +0530, punnaiah choudary kalluri wro=
+te:
+> >> On Tue, Apr 28, 2015 at 4:53 AM, Brian Norris <computersforpeace@gmail=
+=2Ecom> wrote:
+[..]
+> >> Agree that read_buf need not be returning raw data always including
+> >> my new driver for arasan nand flash controller.
+> >
+> > I agree with that. At the moment, chip->read_buf() really has very
+> > driver-specific meaning. Not sure if that's really a good thing, but
+> > it's the way things are...
+> >
+> >> http://lkml.iu.edu/hypermail/linux/kernel/1504.2/00313.html
+> >
+> > In the half a minute I just spent looking at this (I may review it
+> > properly later), I noted a few things:
+> >
+> > 1. you don't implement ecc.read_page_raw(); this means we'll probably
+> > have trouble supporting on-die ECC with your driver, among other things
 >=20
-> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> On-die ECC is optional as long as the controller has better ecc coverage.
+> The arasan controller supports up to 24 bit ecc. There is no point to use
+> on-die ECC and will always use hw ecc even for On-die ecc devices.
 
-Ping?
+Maybe this is true of the controller instantiated in the Zynq MPSoC
+chips, but the Zynq 7000 series SMC is documented to support only 1-bit
+ECC.
 
-You were the one that asked for this patch in the first place, so I
-was kind of expecting you would merge it :)
+(Which is why we're looking at your pl353 driver and this set).
 
-Thanks,
-Maxime
+  Josh
 
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-
---E7i4zwmWs5DOuDSH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+--B4IIlcmfBL/1gGOG
+Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJVP4tkAAoJEBx+YmzsjxAgVqEP/ihYQeQK649GN7dgNHbCt9Ep
-zcbSNm1B4e1bnhNbYRjDso2IhYs0Rq5vHVaYP4PQI6pIbz2Aw/Exvo9bBOR2IOhN
-M/EyQbXOGf9SjI54XeWs/XKqdR+5LB7VUBegINghUL82iRKUCVf0BKTxhU+htGN+
-l9whUNwgDG/4y2kLwSklmyKa0W2SwxHhkhTvZf9NttKGOHJHQchW3lzugWrD5b6U
-9JnSRyqWK/SX1gaooLhnH6wzx1NtdQhjJgPMwAmCUFaK0Asmp6KbhF5121PKIPoM
-lN21bs/nYi5dUhCRQ0sUp2SOGdGDTMtqk0b9ssBak1N/7+T1gzf74hWQtJ3qtODc
-wleksQUTDorq5LSCVPnybkv6Fc7JegHfmJvneZRztea7SLO9RFCrYXZvL3N15ylJ
-DHi27w3K4/iWDgGfJysB/B/IzCWi1S+4FGiiaxN3GGfsQOjugdD0UOyI4DCSFX0E
-LFvGYJV3hBwTf99e8HBT0ur35FOgXtWOaYSDLNvcPzqyZwdEPW1rpzPjYdSWt/5O
-eWlDP8481OvIVBErM1izpLONyRzaV9Q0iFc39MBQvbU8VDLhe0/zIJU6jO7Vsq1Z
-WJagZiaTUiQGfhtSxk+FWORwW12DU/YCKVLLkut9pMVr+1+RtvhyC2hZhu2E2IGL
-1TY683t80psfxTXHWnc3
-=li3J
+iQEcBAABCAAGBQJVP5M/AAoJEKp7ZBKwQFArIKEH/0hmA21KwBjUnbtnD7FsisjE
+gHNWB6Zlthj14lrSMgVv6nKPnB7+InYHn4y6B4eNYOE6urQfP9kVSoN87WDilW2G
+yzdVesiS93Mkha7e0Ix9Cyg1G021ndM+X/Yaq903O0RCbzmBVOmxkVeLr7gbO1vS
+8ywJ1Hw1LceicKRopkOJwfjI63Tk9FmgDWiWpD3/D2wO+ImIq7CgzkrtNKavb0HY
+SYZf95jWJZIL419PrbjDlSvIX5LJ646XIuFulUBZJ8xE8qeNjmNhtxj7Mp/8PxFS
+yT1p11XV5GxqebyQWOHy1agRWhuI3+qWME8FoOY2/pO7apcSxEgiOqPGSs2FMOg=
+=v0qL
 -----END PGP SIGNATURE-----
 
---E7i4zwmWs5DOuDSH--
+--B4IIlcmfBL/1gGOG--
