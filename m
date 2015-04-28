@@ -1,19 +1,12 @@
-Received: from baptiste.telenet-ops.be ([195.130.132.51])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yn2WB-0007Lr-77
- for linux-mtd@lists.infradead.org; Tue, 28 Apr 2015 10:13:35 +0000
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Simon Horman <horms@verge.net.au>,
-	Magnus Damm <magnus.damm@gmail.com>
-Subject: [PATCH 3/5] ARM: shmobile: henninger dts: Add "nor-jedec" compatible
- value
-Date: Tue, 28 Apr 2015 12:12:56 +0200
-Message-Id: <1430215978-31087-4-git-send-email-geert+renesas@glider.be>
-In-Reply-To: <1430215978-31087-1-git-send-email-geert+renesas@glider.be>
-References: <1430215978-31087-1-git-send-email-geert+renesas@glider.be>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org
+From: Baruch Siach <baruch@tkos.co.il>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v3 1/2] mtd: nand: dt binding documentation for digicolor NFC
+Date: Tue, 28 Apr 2015 15:19:18 +0300
+Message-Id: <2bba276e3a1808a9fc49d30cabe8d9de8bc60efd.1430223559.git.baruch@tkos.co.il>
+Cc: devicetree@vger.kernel.org, Baruch Siach <baruch@tkos.co.il>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +16,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Spansion s25fl512s is compatible with "nor-jedec". Hence add the
-"nor-jedec" compatible value, so the driver can bind against the generic
-name, cfr. commit 8ff16cf77ce314c2 ("Documentation: devicetree: m25p80:
-add "nor-jedec" binding").
+The CX92755 SoC is one of Conexant Digicolor series of SoCs. This devicetree
+binding document describes the NAND flash controller the is shared by some SoCs
+in the Digicolor series.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Not all of the properties are currently actually used by the driver.
+Specifically, the driver doesn't make use of interrupts. This may change in the
+future.
+
+Also worth noting that the only supported ECC mode is "hw_syndrome". In the
+future the driver may add support for additional modes.
+
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
 ---
- arch/arm/boot/dts/r8a7791-henninger.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v3:
+   Make all generic nand binding properties for child nodes optional as
+   suggested by Boris Brezillon.
+---
+ .../devicetree/bindings/mtd/digicolor-nand.txt     | 71 ++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/digicolor-nand.txt
 
-diff --git a/arch/arm/boot/dts/r8a7791-henninger.dts b/arch/arm/boot/dts/r8a7791-henninger.dts
-index e33e4047b0b0c920..bb80122b4113bd8a 100644
---- a/arch/arm/boot/dts/r8a7791-henninger.dts
-+++ b/arch/arm/boot/dts/r8a7791-henninger.dts
-@@ -226,7 +226,7 @@
- 	flash@0 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
--		compatible = "spansion,s25fl512s";
-+		compatible = "spansion,s25fl512s", "nor-jedec";
- 		reg = <0>;
- 		spi-max-frequency = <30000000>;
- 		spi-tx-bus-width = <4>;
+diff --git a/Documentation/devicetree/bindings/mtd/digicolor-nand.txt b/Documentation/devicetree/bindings/mtd/digicolor-nand.txt
+new file mode 100644
+index 000000000000..f2b725580885
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/digicolor-nand.txt
+@@ -0,0 +1,71 @@
++Conexant Digicolor NAND Flash Controller (NFC)
++
++Required properties:
++- compatible : "cnxt,cx92755-nfc".
++- reg : shall contain registers location and length for data and reg.
++- interrupts : shall define the nand controller interrupt.
++- #address-cells: shall be set to 1. Encode the nand CS.
++- #size-cells : shall be set to 0.
++- clocks : shall reference nand controller clocks.
++
++Optional children nodes:
++Children nodes represent the available nand chips.
++
++Optional children properties:
++- nand-ecc-mode : defaults be "hw_syndrome".
++- nand-ecc-strength : must be one of 6, 7, 8, 24, 28, 30.
++- nand-ecc-step-size : must be either 512 or 1024.
++
++see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
++
++Each nand chip child node may optionally have partition sub-nodes. See
++Documentation/devicetree/bindings/mtd/partition.txt for partitions binding.
++
++Example:
++nfc: nfc@f00a4000 {
++	compatible = "cnxt,cx92755-nfc";
++	reg = <0xf00a4000 0x200>;
++	interrupts = <26>;
++	clocks = <&main_clk>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	nand@0 {
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		nand-ecc-mode = "hw_syndrome";
++		nand-ecc-step-size = <1024>;
++		nand-ecc-strength = <28>;
++
++		partition@0 {
++			label = "boot";
++			reg = <0x00000000 0x00700000>;
++		};
++
++		partition@700000 {
++			label = "splash";
++			reg = <0x00700000 0x00500000>;
++		};
++
++		partition@c00000 {
++			label = "maint";
++			reg = <0x00c00000 0x00500000>;
++		};
++
++		partition@1100000 {
++			label = "kernel";
++			reg = <0x01100000 0x00500000>;
++		};
++
++		partition@1600000 {
++			label = "rootfs";
++			reg = <0x01600000 0x18000000>;
++		};
++
++		partition@19600000 {
++			label = "data1";
++			reg = <0x19600000 0x66a00000>;
++		};
++	};
++};
 -- 
-1.9.1
+2.1.4
