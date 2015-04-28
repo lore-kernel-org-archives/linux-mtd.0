@@ -1,30 +1,18 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from michel.telenet-ops.be ([195.130.137.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YmxZe-0007Ds-JN
- for linux-mtd@lists.infradead.org; Tue, 28 Apr 2015 04:56:47 +0000
-Date: Tue, 28 Apr 2015 06:56:20 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Qi Wang =?UTF-8?B?546L6LW3?= (qiwang)" <qiwang@micron.com>
-Subject: Re: detect and manage power cut on MLC NAND
-Message-ID: <20150428065620.6de8cd4f@bbrezillon>
-In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A9DF42BF4@NTXXIAMBX02.xacn.micron.com>
-References: <mailman.37706.1426822709.22890.linux-mtd@lists.infradead.org>
- <71CF8D7F32C5C24C9CD1D0E02D52498A7717444D@NTXXIAMBX02.xacn.micron.com>
- <EACD232272DA4849B060F0828564D13B57804E26B6@ntcex01.corp.netcomm.com.au>
- <71CF8D7F32C5C24C9CD1D0E02D52498A771744B0@NTXXIAMBX02.xacn.micron.com>
- <20150320095822.7e1979ff@bbrezillon>
- <71CF8D7F32C5C24C9CD1D0E02D52498A9DF42BF4@NTXXIAMBX02.xacn.micron.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "rnd4@dave-tech.it" <rnd4@dave-tech.it>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "Frank Liu =?UTF-8?B?5YiY576k?= \(frankliu\)" <frankliu@micron.com>,
- "andrea.marson@dave.eu" <andrea.marson@dave.eu>,
- "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= \(beanhuo\)" <beanhuo@micron.com>
+ id 1Yn2WA-0007LP-Ns
+ for linux-mtd@lists.infradead.org; Tue, 28 Apr 2015 10:13:33 +0000
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Simon Horman <horms@verge.net.au>,
+	Magnus Damm <magnus.damm@gmail.com>
+Subject: [PATCH 2/5] ARM: shmobile: lager dts: Add "nor-jedec" compatible value
+Date: Tue, 28 Apr 2015 12:12:55 +0200
+Message-Id: <1430215978-31087-3-git-send-email-geert+renesas@glider.be>
+In-Reply-To: <1430215978-31087-1-git-send-email-geert+renesas@glider.be>
+References: <1430215978-31087-1-git-send-email-geert+renesas@glider.be>
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,37 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Qi,
+Spansion s25fl512s is compatible with "nor-jedec". Hence add the
+"nor-jedec" compatible value, so the driver can bind against the generic
+name, cfr. commit 8ff16cf77ce314c2 ("Documentation: devicetree: m25p80:
+add "nor-jedec" binding").
 
-Sorry for the late reply (I was quite busy on other projects
-lately :-/).
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ arch/arm/boot/dts/r8a7790-lager.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Mon, 13 Apr 2015 00:44:35 +0000
-Qi Wang =E7=8E=8B=E8=B5=B7 (qiwang) <qiwang@micron.com> wrote:
-
-
->=20
-> Glad to meet in you ELC.
-
-I was glad to meet you too.
-
-> Is there any planning or idea to fix MLC power loss problem?
-
-For the ideas part, I haven't thought about it since my talk at ELC.
-I guess the solution proposed on the MTD website is a good starting
-point [1].
-Some guys are also considering the "avoid any erase/program operation
-when you're about to loose power", but as I already explained I think
-the MTD/UBI/UBIFS layers should not rely on this assumption and take
-appropriate action to prevent any issue caused by unstable bits.
-
-Best Regards,
-
-Boris
-
-[1]http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
-
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+diff --git a/arch/arm/boot/dts/r8a7790-lager.dts b/arch/arm/boot/dts/r8a7790-lager.dts
+index aaa4f258e279ccfa..a6c793de8d809bd4 100644
+--- a/arch/arm/boot/dts/r8a7790-lager.dts
++++ b/arch/arm/boot/dts/r8a7790-lager.dts
+@@ -429,7 +429,7 @@
+ 	flash: flash@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		compatible = "spansion,s25fl512s";
++		compatible = "spansion,s25fl512s", "nor-jedec";
+ 		reg = <0>;
+ 		spi-max-frequency = <30000000>;
+ 		spi-tx-bus-width = <4>;
+-- 
+1.9.1
