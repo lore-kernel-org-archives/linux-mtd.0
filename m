@@ -1,16 +1,14 @@
-Received: from mailx.vnl.in ([27.251.196.172] helo=mail.vnl.in)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YnLcB-0006Jq-Bs
- for linux-mtd@lists.infradead.org; Wed, 29 Apr 2015 06:37:00 +0000
-Message-ID: <55407B97.7060904@vnl.in>
-Date: Wed, 29 Apr 2015 12:05:03 +0530
-From: Yogesh Gupta <yogesh.gupta@vnl.in>
-MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>
-Subject: JFFS2 in NOR Flash leaves 4K all zero holes in files
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
-Cc: yogesh.be22@gmail.com
+Received: from guitar.tcltek.co.il ([192.115.133.116] helo=mx.tkos.co.il)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YnNNM-0002ux-49
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2015 08:29:49 +0000
+From: Baruch Siach <baruch@tkos.co.il>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] libmtd: fix comment typo
+Date: Wed, 29 Apr 2015 11:28:43 +0300
+Message-Id: <01505da2d41012cbde4429a53ba58cda40943c48.1430296123.git.baruch@tkos.co.il>
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +18,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgYWxsLAoKSSBhbSB1c2luZyBhIEFSTS1iYXNlZCBzeXN0ZW0sIHJ1bm5pbmcga2VybmVsIDMu
-Ni4xMS1ydDM1IG9uIFRJODE0OCBEYXZpbmNpIHByb2Nlc3NvciwgaW5jbHVkaW5nIGEgSW50ZWwg
-dHlwZSBOT1ItZmxhc2ggb2YgNjRNQiBpbiBzaXplIHdoaWNoIGlzIGludGVncmF0ZWQgYXMgYSBt
-dGQgYmxvY2sgZGV2aWNlcyBhbmQgSkZGUzIgZmlsZSBzeXN0ZW0gaXMgZmxhc2hlZCBvbiBvbmUg
-b2YgaXRzIG10ZCBwYXJ0aXRpb24gd2l0aCBubyBjb21wcmVzc2lvbiBhbmQgZXJhc2UgYmxvY2sg
-b2YgMTI4S2IuIFdlIHVzZSB0aGlzIEpGRlMyIHBhcnRpdGlvbiBmb3Iga2VlcGluZyBTb2Z0d2Fy
-ZSBwYWNrYWdlcyhLZXJuZWwgYW5kIFJvb3RmcykgYW5kIENvbmZpZ3VyYXRpb24gZGF0YShYTUwg
-ZmlsZXMpIGFuZCBtb3VudCB0aGlzIHBhcnRpdGlvbiBhdCBzeXN0ZW0gYm9vdHVwLgoKV2UgaGF2
-ZSBvYnNlcnZlZCB0aGF0IHNvbWV0aW1lcyBzeXN0ZW0gZG9lcyBub3QgYm9vdCBhcyB1SW1hZ2Ug
-b3Igcm9vdGZzLmV4dC5nei51Ym9vdCBDUkMgbWlzbWF0Y2ggaGFwcGVuZWQgYWZ0ZXIgYWJydXB0
-IHBvd2VyIHJlYm9vdC4gQWZ0ZXIgY29ubmVjdGluZyBkZWJ1Z2dlciBhbmQgYnJpbmdpbmcgdXAg
-dGhlIHN5c3RlbSB3ZSBmb3VuZCB0aGF0IHVJbWFnZS9yb290ZnMgZmlsZXMgaGFzIGV4YWN0IDRL
-IGNodW5rIG9mIGFsbCB6ZXJvZXMgYXQgbWFueSBsb2NhdGlvbnMuCgpJIHNlYXJjaGVkIGFuZCBy
-ZWFkIHRoZSBhcmNoaXZlcyBhbmQgZm91bmQgdGhhdCBHQyhHYXJiYWdlIENvbGxlY3RvciB0aHJl
-YWQpIGZpcnN0IFpFUk9FRCB0aGUgbG9jYXRpb24gYW5kIHRoZW4gZXJhc2UgaXQuCkZpcnN0bHks
-IGl0IGlzIGNvcnJlY3QgYmVoYXZpb3IgZm9yIE5PUiB0eXBlIGZsYXNoIGFuZCBIb3cgY29tZXMg
-dGhpcyA0SyBob2xlcyBpZiBteSBlcmFzZSBibG9jayBpcyAxMjhLYiA/IEhvdyB0byBwcmV2ZW50
-IHRoZSBzeXN0ZW0gZnJvbSBjcmVhdGluZyB0aGVzZSA0SyBob2xlcyBkdWUgdG8gdW5wbGFubmVk
-IHBvd2VyIGJvb3Q/CgpTZWNvbmRseSBJIHVzZSBzeW5jKCkgYW5kIGZzeW5jKCkgYWZ0ZXIgd3Jp
-dGluZyBvbiBmbGFzaCB0aGVuIHVubW91bnQgYW5kIHRoZW4gcGxhbm5lZCBwb3dlciByZWJvb3Qu
-IFRoaXMgYmVoYXZpb3IgYWxzbyBsZWF2ZSA0SyB6ZXJvIGhvbGVzIGludG8gc3lzdGVtIGFzIHN5
-bmMoKSBqdXN0IG9ubHkgc2NoZWR1bGUgdGhlIHdyaXRlIGJ1ZmZlciBmbHVzaGluZyBvbiBmaWxl
-c3lzdGVtLiBTbyBJIHRoaW5rIGl0IGRvZXMgbm90IGd1YXJhbnRlZSB0aGUgZmxhc2ggaXMgZnVs
-bHkgd3JpdHRlbi4KU28gaXMgdGhlcmUgYW55IHdheSBJIGNhbiBndWFyYW50ZWUgdGhlIGZsYXNo
-IGlzIHdyaXR0ZW4gY29tcGxldGVseT8KCkxhc3RseSBJIHRoaW5rIGlmIHdlIGRvIG5vdCBtb3Vu
-dCB0aGlzIHBhcnRpdGlvbiBhdCBzeXN0ZW0gYm9vdCB0aGVuIEdDIHdpbGwgbm90IHJ1biBhbmQg
-bW91bnQgb25seSB3aGVuIHdlIG5lZWQgdG8gYWNjZXNzIHRoZSBmbGFzaCBhbmQgdGhlbiB1bm1v
-dW50LiBJbiBzdWNoIHNjZW5hcmlvIHdobyB3aWxsIGNsZWFuIG9yIGVyYXNlIHRoZSBkaXJ0eSBu
-b2RlcyBhbmQgaG93IEpGRlMyIGtlZXAgdGhlIGZsYXNoIGxpZmUgbG9uZyBsYXN0aW5nIGJ5IGV2
-ZW5seSBzcHJlYWRpbmcgb2Ygbm9kZXMuCgpUaGFua3MgaW4gYWR2YW5jZSwKWW9nZXNoIEd1cHRh
-CgpUaGUgaW5mb3JtYXRpb24gY29udGFpbmVkIGluIHRoaXMgZS1tYWlsIGlzIHByaXZhdGUgJiBj
-b25maWRlbnRpYWwgYW5kIG1heSBhbHNvIGJlIGxlZ2FsbHkgcHJpdmlsZWdlZC4gSWYgeW91IGFy
-ZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgcGxlYXNlIG5vdGlmeSB1cywgcHJlZmVyYWJs
-eSBieSBlLW1haWwsIGFuZCBkbyBub3QgcmVhZCwgY29weSBvciBkaXNjbG9zZSB0aGUgY29udGVu
-dHMgb2YgdGhpcyBtZXNzYWdlIHRvIGFueW9uZS4K
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+---
+ lib/libmtd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index a6665f08018e..60b4782710c8 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -476,7 +476,7 @@ static int dev_node2num(struct libmtd *lib, const char *node, int *mtd_num)
+  * sysfs_is_supported - check whether the MTD sub-system supports MTD.
+  * @lib: MTD library descriptor
+  *
+- * The Linux kernel MTD subsystem gained MTD support starting from kernel
++ * The Linux kernel MTD subsystem gained sysfs support starting from kernel
+  * 2.6.30 and libmtd tries to use sysfs interface if possible, because the NAND
+  * sub-page size is available there (and not available at all in pre-sysfs
+  * kernels).
+-- 
+2.1.4
