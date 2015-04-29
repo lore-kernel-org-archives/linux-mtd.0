@@ -1,10 +1,20 @@
-From: Ben Shelton <ben.shelton@ni.com>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: Introduce CONFIG_MTD_RESERVE_END
-Date: Wed, 29 Apr 2015 14:28:02 -0500
-Message-Id: <1430335682-6174-1-git-send-email-ben.shelton@ni.com>
-Cc: Jeff Westfahl <jeff.westfahl@ni.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YnZHc-0000ji-Hc
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2015 21:12:41 +0000
+From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
+To: Han Xu <xhnjupt@gmail.com>, Tee Zhen Cong <zc.tee@teraoka.com.sg>
+Subject: RE: nandtest error
+Date: Wed, 29 Apr 2015 21:12:13 +0000
+Message-ID: <0D23F1ECC880A74392D56535BCADD7357DEBE4C1@NTXBOIMBX03.micron.com>
+References: <000c01d08261$9726b7c0$c5742740$@teraoka.com.sg>
+ <CA+EcR20vND89+wk5ZTODJ4NoaSC0rrWsV+bXTWbpyZ9Y72aFiA@mail.gmail.com>
+In-Reply-To: <CA+EcR20vND89+wk5ZTODJ4NoaSC0rrWsV+bXTWbpyZ9Y72aFiA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,67 +24,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jeff Westfahl <jeff.westfahl@ni.com>
+When you read the data back are you reading the raw data?    Some amount of=
+ bit flipping is normal NAND Flash behavior.  ECC correction is required on=
+ all contemporary NAND to some degree to correct bit flips.  This Micron de=
+vice is designed to return a "FAIL" status only when the number of bad bits=
+ in any page exceeds 40bits/1117 bytes.  =20
 
-Add a new config parameter CONFIG_MTD_RESERVE_END. This is used with
-command line partition parsing to reserve space at the end of a
-partition defined with a size of '-', which indicates it should use all
-remaining space.
+I need to understand what nandtest is actually doing.  If I read this right=
+, if found 32 flipped bits in a 32 gigabit device.  That's actually very go=
+od.
 
-Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
----
- drivers/mtd/Kconfig       | 24 ++++++++++++++++++++++++
- drivers/mtd/cmdlinepart.c |  3 ++-
- 2 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index a03ad29..f7df08c 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -110,6 +110,30 @@ config MTD_CMDLINE_PARTS
- 
- 	  If unsure, say 'N'.
- 
-+config MTD_RESERVE_END
-+	int "Reserved space at the end of an all remaining space partition"
-+	depends on MTD_CMDLINE_PARTS = "y"
-+	default 0
-+	---help---
-+	  Specify an amount of reserved space at the end of the last MTD
-+	  partition when the size is specified with '-' to denote all
-+	  remaining space.
-+
-+	  This can be useful if, for example, the BBT is stored at the end
-+	  of the flash, and you don't want those blocks counted as part of
-+	  the last MTD partition. This is less heavyweight than reserving
-+	  the BBT blocks with a separate MTD partition. The BBT marks its
-+	  own blocks as bad blocks, which prevents an MTD driver such as
-+	  UBI from getting an accurate count of the actual bad blocks in
-+	  the MTD partition that contains the BBT.
-+
-+	  The value is specified in bytes. As an example, a typical BBT
-+	  reserves four erase blocks, and a typical erase block size is
-+	  128kB. To reserve that much space at the end of the flash, the
-+	  value for this config option would be 524288.
-+
-+	  If unsure, use the default value of zero.
-+
- config MTD_AFS_PARTS
- 	tristate "ARM Firmware Suite partition parsing"
- 	depends on ARM
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index c850300..9b83c1a 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -340,7 +340,8 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- 			offset = part->parts[i].offset;
- 
- 		if (part->parts[i].size == SIZE_REMAINING)
--			part->parts[i].size = master->size - offset;
-+			part->parts[i].size = master->size - offset -
-+					      CONFIG_MTD_RESERVE_END;
- 
- 		if (offset + part->parts[i].size > master->size) {
- 			printk(KERN_WARNING ERRP
--- 
-2.3.7
+Jeff Lauruhn
+NAND Application Engineer
+Embedded Business Unit
+Micron Technology, Inc
+
+-----Original Message-----
+From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of=
+ Han Xu
+Sent: Wednesday, April 29, 2015 11:36 AM
+To: Tee Zhen Cong
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: nandtest error
+
+On Wed, Apr 29, 2015 at 4:48 AM, Tee Zhen Cong <zc.tee@teraoka.com.sg> wrot=
+e:
+> Hi all,
+> I am using imx6SOLO to interface with a new 32Gb NAND flash from=20
+> MICRON, MT29F32G08CBADA.
+> After applying the patch to truncate the remaining bytes out of the=20
+> power-of-2, imx6SOLO is able to detect and recognize the NAND flash.
+> [    0.346874] ONFI flash detected
+> [    0.347012] ONFI param page 0 valid
+> [    0.347019] nand: onfi confirmed
+>  [    0.347035] NAND device: Manufacturer ID: 0x2c, Chip ID: 0x44 (Micron
+> MT29F32G08CBADAWP)
+>  [    0.349811] Bad block table found at page 524032, version 0x01
+>  [    0.352254] Bad block table found at page 523776, version 0x01
+>  [    0.354979] Creating 3 MTD partitions on "gpmi-nand":
+> [    0.354991] 0x000000000000-0x000000600000 : "kobs-ng"
+> [    0.355750] 0x000000600000-0x000000a00000 : "kernel"
+> [    0.356404] 0x000000a00000-0x000100000000 : "fs"
+> [    0.357165] ---------------------------------------
+> [    0.357173]        NFC Geometry (used by BCH)
+> [    0.357179] ---------------------------------------
+> [    0.357185] ECC Strength           : 56
+
+The default ecc value beyond the the BCH capability(upto 40bit).
+Please add  fsl,use-minimum-ecc =3D <1>; in dts nand portion.
+
+> [    0.357190] Page Size in Bytes     : 8936
+> [    0.357195] Metadata Size in Bytes : 10
+> [    0.357200] ECC Chunk Size in Bytes: 1024
+> [    0.357205] ECC Chunk Count        : 8
+> [    0.357210] Payload Size in Bytes  : 8192
+> [    0.357215] Auxiliary Size in Bytes: 20
+> [    0.357220] Auxiliary Status Offset: 12
+> [    0.357225] Block Mark Byte Offset : 7545
+> [    0.357230] Block Mark Bit Offset  : 0
+> [    0.357329] GPMI NAND driver registered. (IMX)
+>
+> However, when I tried to perform nandtest in my system, I always get=20
+> the error where some of the bytes read back is not the same as written in=
+.
+>> nandtest /dev/mtd2
+> ECC corrections: 0
+> ECC failures   : 0
+> Bad blocks     : 6
+> BBT blocks     : 0
+> 00000000: checking...
+> compare failed. seed 1667286349
+> Byte 0x23ff is 4f should be 47
+> Byte 0x882d is db should be d9
+> Byte 0x1602a is 2f should be 2d
+> Byte 0x39c1d is 8c should be 88
+> Byte 0x66815 is 62 should be 60
+> Byte 0x70833 is fb should be db
+> Byte 0x7742b is 34 should be 35
+> Byte 0x8601c is ab should be aa
+> Byte 0x9c80a is b7 should be b3
+> Byte 0xb141c is 59 should be 49
+> Byte 0xc700f is c5 should be c7
+> Byte 0xcc03c is de should be d6
+> Byte 0xe1c02 is 3e should be 7e
+> Byte 0xe6c13 is bc should be fc
+> Byte 0xea016 is 67 should be 6f
+> Byte 0xf0441 is 73 should be 72
+> Byte 0xf4026 is 59 should be 58
+> Byte 0xfc410 is 76 should be 56
+> Byte 0x114c40 is c6 should be c4
+> Byte 0x117c1e is 42 should be 40
+> Byte 0x13c037 is ea should be e2
+> Byte 0x151c08 is 74 should be 75
+> Byte 0x16603b is 52 should be 50
+> Byte 0x182824 is b7 should be b3
+> Byte 0x187832 is 88 should be 89
+> Byte 0x191c40 is 48 should be 40
+> Byte 0x1b7002 is 47 should be c7
+> Byte 0x1cf80c is 03 should be 01
+> Byte 0x1d0c24 is 10 should be 90
+> Byte 0x1d1c3b is 82 should be c2
+> Byte 0x1ea83d is c7 should be 87
+>
+> It seems like for the bytes with error, there are always 1 bit errors,=20
+> and the bit location is random. If I tried to perform nandtest several=20
+> time, the address of the error bytes are different as well.
+>
+> I am using linux kernel version 3.0.35. Anybody has any idea why is=20
+> this happening? Is there any setting that I need to tweak to make it work=
+?
+> Thanks.
+>
+> Regards,
+> zc
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
