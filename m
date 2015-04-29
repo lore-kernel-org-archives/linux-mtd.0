@@ -1,32 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1YnLar-000639-P1
- for linux-mtd@lists.infradead.org; Wed, 29 Apr 2015 06:35:39 +0000
-Date: Wed, 29 Apr 2015 08:35:08 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH 2/4] mtd: mxc_nand: limit the size of used oob
-Message-ID: <20150429063508.GE19431@pengutronix.de>
-References: <cover.1430034929.git.baruch@tkos.co.il>
- <4bd5da1f7d57aa32c5682297f7aa0c768e8c6e49.1430034929.git.baruch@tkos.co.il>
- <20150426200725.GC19431@pengutronix.de>
- <20150427043906.GR2258@tarshish>
- <20150427071238.GE19431@pengutronix.de>
- <20150427072057.GT2258@tarshish>
- <20150427075023.GF19431@pengutronix.de>
- <20150427114341.GW2258@tarshish>
- <20150427193127.GU19431@pengutronix.de>
- <20150429061853.GB2258@tarshish>
+Received: from mailx.vnl.in ([27.251.196.172] helo=mail.vnl.in)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YnLcB-0006Jq-Bs
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2015 06:37:00 +0000
+Message-ID: <55407B97.7060904@vnl.in>
+Date: Wed, 29 Apr 2015 12:05:03 +0530
+From: Yogesh Gupta <yogesh.gupta@vnl.in>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150429061853.GB2258@tarshish>
-Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
- Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
- Sascha Hauer <sha@pengutronix.de>, kernel@pengutronix.de,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 in NOR Flash leaves 4K all zero holes in files
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
+Cc: yogesh.be22@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,63 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Baruch,
-
-Cc += Fabio
-
-On Wed, Apr 29, 2015 at 09:18:53AM +0300, Baruch Siach wrote:
-> On Mon, Apr 27, 2015 at 09:31:27PM +0200, Uwe Kleine-König wrote:
-> > On Mon, Apr 27, 2015 at 02:43:41PM +0300, Baruch Siach wrote:
-> > > On Mon, Apr 27, 2015 at 09:50:23AM +0200, Uwe Kleine-König wrote:
-> > > > On Mon, Apr 27, 2015 at 10:20:57AM +0300, Baruch Siach wrote:
-> > > > > On Mon, Apr 27, 2015 at 09:12:38AM +0200, Uwe Kleine-König wrote:
-> > > > > > Hmm I rechecked the reference manual and found a register to specify the
-> > > > > > size of the spare area (I didn't notice that one before). Did you try
-> > > > > > what happens if you set this to 0x70 for 224 bytes oob?
-> > > > > 
-> > > > > Which register is that?
-> > > > Spare Area Size Register (SPAS) at offset 0x1e10 for the i.MX25 (that's
-> > > > what you're using, don't you?).
-> > > 
-> > > Yes, that's what I'm using.
-> > > 
-> > > I tried setting the SPAS register to oobsize/2 (0x70 in my case), but I see no 
-> > > change in behaviour. Moreover, it turns out the previously Barebox set this 
-> > > register (apparently wrongly) to 0x20 for spare size of 64. Current Barebox 
-> > > master still do. For v3 Barebox limits CONFIG2_SPAS to 218 bytes spare size 
-> > I guess for v21 writing to SPAS is just what the controller assumes
-> > after reset. I.e. that a 512-byte nand has 16 bytes spare and a 2k-nand
-> > has 64.
-> > 
-> > > since Eric Bénard's commit 632c45795065 (nand_imx: update to support onfi & 4k 
-> > > flashs, 2012-07-05). As you can see, the kernel doesn't touch this register 
-> > > for v2 NFC.
-> > right.
-> > 
-> > > I have no idea what is the effect of the SPAS in v2 (or any other) NFC.
-> > I didn't try, but I'm surprised it doesn't make a difference. How did
-> > you test? I'd do in barebox:
-> > 
-> > 	memset -w 0xbb000000 0x55 0x1200
-> > 	set SPAS to 218/2
-> > 	trigger page read
-> > 	check how much of the 0x55 was overwritten
-> > 	set SPAS to 224/2
-> > 	trigger page read
-> > 	compare with above
-> 
-> Just did this test. No matter how I set SPAS, Only first 26 bytes of each 64 
-> bytes spare data buffer chunk are overwritten. I tried setting SPAS to 224/2 
-> (0x70), 218/2 (0x6d), and 128/2 (0x40).
-That's surprising. It would be interesting to hear from Freescale what
-is wrong here (Fabio? Maybe contact support?). I quickly skimmed through
-the errata documents but didn't found anything. So it's not only that
-you need to handle a pristine flash differently on i.MX than on all
-other controllers but also that you cannot make full use of the flash's
-capacity. *sigh*
-
-Uwe
-
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+SGkgYWxsLAoKSSBhbSB1c2luZyBhIEFSTS1iYXNlZCBzeXN0ZW0sIHJ1bm5pbmcga2VybmVsIDMu
+Ni4xMS1ydDM1IG9uIFRJODE0OCBEYXZpbmNpIHByb2Nlc3NvciwgaW5jbHVkaW5nIGEgSW50ZWwg
+dHlwZSBOT1ItZmxhc2ggb2YgNjRNQiBpbiBzaXplIHdoaWNoIGlzIGludGVncmF0ZWQgYXMgYSBt
+dGQgYmxvY2sgZGV2aWNlcyBhbmQgSkZGUzIgZmlsZSBzeXN0ZW0gaXMgZmxhc2hlZCBvbiBvbmUg
+b2YgaXRzIG10ZCBwYXJ0aXRpb24gd2l0aCBubyBjb21wcmVzc2lvbiBhbmQgZXJhc2UgYmxvY2sg
+b2YgMTI4S2IuIFdlIHVzZSB0aGlzIEpGRlMyIHBhcnRpdGlvbiBmb3Iga2VlcGluZyBTb2Z0d2Fy
+ZSBwYWNrYWdlcyhLZXJuZWwgYW5kIFJvb3RmcykgYW5kIENvbmZpZ3VyYXRpb24gZGF0YShYTUwg
+ZmlsZXMpIGFuZCBtb3VudCB0aGlzIHBhcnRpdGlvbiBhdCBzeXN0ZW0gYm9vdHVwLgoKV2UgaGF2
+ZSBvYnNlcnZlZCB0aGF0IHNvbWV0aW1lcyBzeXN0ZW0gZG9lcyBub3QgYm9vdCBhcyB1SW1hZ2Ug
+b3Igcm9vdGZzLmV4dC5nei51Ym9vdCBDUkMgbWlzbWF0Y2ggaGFwcGVuZWQgYWZ0ZXIgYWJydXB0
+IHBvd2VyIHJlYm9vdC4gQWZ0ZXIgY29ubmVjdGluZyBkZWJ1Z2dlciBhbmQgYnJpbmdpbmcgdXAg
+dGhlIHN5c3RlbSB3ZSBmb3VuZCB0aGF0IHVJbWFnZS9yb290ZnMgZmlsZXMgaGFzIGV4YWN0IDRL
+IGNodW5rIG9mIGFsbCB6ZXJvZXMgYXQgbWFueSBsb2NhdGlvbnMuCgpJIHNlYXJjaGVkIGFuZCBy
+ZWFkIHRoZSBhcmNoaXZlcyBhbmQgZm91bmQgdGhhdCBHQyhHYXJiYWdlIENvbGxlY3RvciB0aHJl
+YWQpIGZpcnN0IFpFUk9FRCB0aGUgbG9jYXRpb24gYW5kIHRoZW4gZXJhc2UgaXQuCkZpcnN0bHks
+IGl0IGlzIGNvcnJlY3QgYmVoYXZpb3IgZm9yIE5PUiB0eXBlIGZsYXNoIGFuZCBIb3cgY29tZXMg
+dGhpcyA0SyBob2xlcyBpZiBteSBlcmFzZSBibG9jayBpcyAxMjhLYiA/IEhvdyB0byBwcmV2ZW50
+IHRoZSBzeXN0ZW0gZnJvbSBjcmVhdGluZyB0aGVzZSA0SyBob2xlcyBkdWUgdG8gdW5wbGFubmVk
+IHBvd2VyIGJvb3Q/CgpTZWNvbmRseSBJIHVzZSBzeW5jKCkgYW5kIGZzeW5jKCkgYWZ0ZXIgd3Jp
+dGluZyBvbiBmbGFzaCB0aGVuIHVubW91bnQgYW5kIHRoZW4gcGxhbm5lZCBwb3dlciByZWJvb3Qu
+IFRoaXMgYmVoYXZpb3IgYWxzbyBsZWF2ZSA0SyB6ZXJvIGhvbGVzIGludG8gc3lzdGVtIGFzIHN5
+bmMoKSBqdXN0IG9ubHkgc2NoZWR1bGUgdGhlIHdyaXRlIGJ1ZmZlciBmbHVzaGluZyBvbiBmaWxl
+c3lzdGVtLiBTbyBJIHRoaW5rIGl0IGRvZXMgbm90IGd1YXJhbnRlZSB0aGUgZmxhc2ggaXMgZnVs
+bHkgd3JpdHRlbi4KU28gaXMgdGhlcmUgYW55IHdheSBJIGNhbiBndWFyYW50ZWUgdGhlIGZsYXNo
+IGlzIHdyaXR0ZW4gY29tcGxldGVseT8KCkxhc3RseSBJIHRoaW5rIGlmIHdlIGRvIG5vdCBtb3Vu
+dCB0aGlzIHBhcnRpdGlvbiBhdCBzeXN0ZW0gYm9vdCB0aGVuIEdDIHdpbGwgbm90IHJ1biBhbmQg
+bW91bnQgb25seSB3aGVuIHdlIG5lZWQgdG8gYWNjZXNzIHRoZSBmbGFzaCBhbmQgdGhlbiB1bm1v
+dW50LiBJbiBzdWNoIHNjZW5hcmlvIHdobyB3aWxsIGNsZWFuIG9yIGVyYXNlIHRoZSBkaXJ0eSBu
+b2RlcyBhbmQgaG93IEpGRlMyIGtlZXAgdGhlIGZsYXNoIGxpZmUgbG9uZyBsYXN0aW5nIGJ5IGV2
+ZW5seSBzcHJlYWRpbmcgb2Ygbm9kZXMuCgpUaGFua3MgaW4gYWR2YW5jZSwKWW9nZXNoIEd1cHRh
+CgpUaGUgaW5mb3JtYXRpb24gY29udGFpbmVkIGluIHRoaXMgZS1tYWlsIGlzIHByaXZhdGUgJiBj
+b25maWRlbnRpYWwgYW5kIG1heSBhbHNvIGJlIGxlZ2FsbHkgcHJpdmlsZWdlZC4gSWYgeW91IGFy
+ZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgcGxlYXNlIG5vdGlmeSB1cywgcHJlZmVyYWJs
+eSBieSBlLW1haWwsIGFuZCBkbyBub3QgcmVhZCwgY29weSBvciBkaXNjbG9zZSB0aGUgY29udGVu
+dHMgb2YgdGhpcyBtZXNzYWdlIHRvIGFueW9uZS4K
