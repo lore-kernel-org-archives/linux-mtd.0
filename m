@@ -1,7 +1,7 @@
 Received: from mail9.teraoka.com.sg ([152.101.95.36] helo=mail.teraoka.com.sg)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1YneZ7-0007ed-VM
- for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 02:51:08 +0000
+ Linux)) id 1Ynf3Z-0002ru-NH
+ for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 03:22:35 +0000
 From: "Tee Zhen Cong" <zc.tee@teraoka.com.sg>
 To: "'Jeff Lauruhn \(jlauruhn\)'" <jlauruhn@micron.com>,
  "'Han Xu'" <xhnjupt@gmail.com>
@@ -12,8 +12,8 @@ References: <000c01d08261$9726b7c0$c5742740$@teraoka.com.sg>
  <0D23F1ECC880A74392D56535BCADD7357DEBE709@NTXBOIMBX03.micron.com>
 In-Reply-To: <0D23F1ECC880A74392D56535BCADD7357DEBE709@NTXBOIMBX03.micron.com>
 Subject: RE: nandtest error
-Date: Thu, 30 Apr 2015 10:50:27 +0800
-Message-ID: <001601d082f0$6c028210$44078630$@teraoka.com.sg>
+Date: Thu, 30 Apr 2015 11:21:51 +0800
+Message-ID: <001701d082f4$cedfa9e0$6c9efda0$@teraoka.com.sg>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
@@ -30,16 +30,131 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi Jeff,
-You have a point there seeing that we do not know what is the nandtest is
-doing and whether ECC is in place during the test.
-I am changing my test method. I will attach a ubifs onto the NAND flash.
-Then I will try and do format-write-read a big file (> 1GByte). I am sure
-ubifs has the ECC correction mechanism in place, and I believe we are able
-to test the NAND. If the file is corrupted after writing into NAND, then I
-guess something is wrong. Am I correct to say that?
+Done with the test. The NAND cannot survive one write-read test.
+Upon format (ubiformat -y /dev/mtd2),
+I am able to attach the ubifs (ubiattach /dev/ubi_ctrl -m 2) , 
+Create a volumn (ubimkvol /dev/ubi0 -N rootfs -m),
+make a ubifs volumn (mkfs.ubifs -x none /dev/ubi0_0), 
+and mount it (mount /dev/ubi0_0 tmp). Everything looks fine.
+[   32.506172] UBI: attaching mtd2 to ubi0
+[   32.506184] UBI: physical eraseblock size:   2097152 bytes (2048 KiB)
+[   32.506191] UBI: logical eraseblock size:    2080768 bytes
+[   32.506198] UBI: smallest flash I/O unit:    8192
+[   32.506205] UBI: VID header offset:          8192 (aligned 8192)
+[   32.506212] UBI: data offset:                16384
+[   42.274362] UBI: max. sequence number:       46
+[   42.293327] UBI: attached mtd2 to ubi0
+[   42.293337] UBI: MTD device name:            "fs"
+[   42.293344] UBI: MTD device size:            4086 MiB
+[   42.293350] UBI: number of good PEBs:        2037
+[   42.293356] UBI: number of bad PEBs:         6
+[   42.293362] UBI: number of corrupted PEBs:   0
+[   42.293368] UBI: max. allowed volumes:       128
+[   42.293373] UBI: wear-leveling threshold:    4096
+[   42.293379] UBI: number of internal volumes: 1
+[   42.293385] UBI: number of user volumes:     1
+[   42.293391] UBI: available PEBs:             0
+[   42.293396] UBI: total number of reserved PEBs: 2037
+[   42.293402] UBI: number of PEBs reserved for bad PEB handling: 20
+[   42.293409] UBI: max/mean erase counter: 2/0
+[   42.293415] UBI: image sequence number:  55069091
+[   42.295379] UBI: background thread "ubi_bgt0d" started, PID 2752
+[   42.295402] nand_erase_nand: start = 0x0000aee00000, len = 2097152
+[   58.193726] UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+[   58.193740] UBIFS: file system size:   4167778304 bytes (4070096 KiB,
+3974 MiB, 2003 LEBs)
+[   58.193751] UBIFS: journal size:       18726913 bytes (18288 KiB, 17 MiB,
+9 LEBs)
+[   58.193760] UBIFS: media format:       w4/r0 (latest is w4/r0)
+[   58.193767] UBIFS: default compressor: none
+[   58.193774] UBIFS: reserved for root:  0 bytes (0 KiB)
+
+However, after writing a big file into it, umount, shut down the system,
+reboot, attach and mount again, errors come in.
+[   88.607123] UBI: attaching mtd2 to ubi0
+[   88.607135] UBI: physical eraseblock size:   2097152 bytes (2048 KiB)
+[   88.607142] UBI: logical eraseblock size:    2080768 bytes
+[   88.607149] UBI: smallest flash I/O unit:    8192
+[   88.607156] UBI: VID header offset:          8192 (aligned 8192)
+[   88.607162] UBI: data offset:                16384
+[   89.088632] UBI warning: process_eb: valid VID header but corrupted EC
+header at PEB 102
+[   89.464258] UBI warning: process_eb: valid VID header but corrupted EC
+header at PEB 181
+[   90.338711] UBI error: check_corruption: PEB 238 contains corrupted VID
+header, and the data does not contain all 0xFF, this may be a non-UBI PEB or
+a severe VID header corruption which requires manual inspection
+[   90.966022] UBI error: check_corruption: PEB 243 contains corrupted VID
+header, and the data does not contain all 0xFF, this may be a non-UBI PEB or
+a severe VID header corruption which requires manual inspection
+[   91.251299] UBI warning: process_eb: valid VID header but corrupted EC
+header at PEB 303
+[   92.301930] UBI warning: process_eb: valid VID header but corrupted EC
+header at PEB 524
+[   93.182756] UBI warning: process_eb: valid VID header but corrupted EC
+header at PEB 706
+[   93.563780] UBI warning: process_eb: valid VID header but corrupted EC
+header at PEB 785
+[   99.801844] UBI error: check_what_we_have: 2 PEBs are corrupted and
+preserved
+[   99.801855] Corrupted PEBs are: 243 238
+[   99.802116] UBI: max. sequence number:       657
+[   99.818215] UBI warning: print_rsvd_warning: cannot reserve enough PEBs
+for bad PEB handling, reserved 18, need 20
+[   99.818228] UBI warning: print_rsvd_warning: 2 PEBs are corrupted and not
+used
+[   99.821040] UBI: attached mtd2 to ubi0
+[   99.821049] UBI: MTD device name:            "fs"
+[   99.821056] UBI: MTD device size:            4086 MiB
+[   99.821062] UBI: number of good PEBs:        2037
+[   99.821068] UBI: number of bad PEBs:         6
+[   99.821074] UBI: number of corrupted PEBs:   2
+[   99.821080] UBI: max. allowed volumes:       128
+[   99.821086] UBI: wear-leveling threshold:    4096
+[   99.821092] UBI: number of internal volumes: 1
+[   99.821097] UBI: number of user volumes:     1
+[   99.821103] UBI: available PEBs:             0
+[   99.821109] UBI: total number of reserved PEBs: 2035
+[   99.821115] UBI: number of PEBs reserved for bad PEB handling: 18
+[   99.821122] UBI: max/mean erase counter: 4/1
+[   99.821128] UBI: image sequence number:  1633046215
+[   99.824082] UBI: background thread "ubi_bgt0d" started, PID 3378
+[  101.914146] UBI warning: ubi_eba_copy_leb: read data back from PEB 1632
+and it is different
+[  101.914165] UBI error: wear_leveling_worker: error -22 while moving PEB
+102 to PEB 1632
+[  101.914176] UBI warning: ubi_ro_mode: switch to read-only mode
+[  101.914185] UBI error: do_work: work failed with error code -22
+[  101.914194] UBI error: ubi_thread: ubi_bgt0d: work failed with error code
+-22
+[  111.897572] UBIFS: read-only UBI device
+[  111.897588] UBIFS error (pid 3382): mount_ubifs: cannot mount read-write
+- read-only media
+[  111.960844] UBIFS: read-only UBI device
+[  113.793022] UBIFS: recovered master node from LEB 1
+[  113.793552] UBIFS: recovery needed
+[  115.360341] UBIFS: recovery deferred
+[  115.360360] UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+[  115.360366] UBIFS: mounted read-only
+[  115.360375] UBIFS: file system size:   4167778304 bytes (4070096 KiB,
+3974 MiB, 2003 LEBs)
+[  115.360385] UBIFS: journal size:       18726913 bytes (18288 KiB, 17 MiB,
+9 LEBs)
+[  115.360395] UBIFS: media format:       w4/r0 (latest is w4/r0)
+[  115.360402] UBIFS: default compressor: none
+[  115.360408] UBIFS: reserved for root:  0 bytes (0 KiB)
+
+With the error, I can only mount the ubifs in read only. It seems like still
+there is something wrong with the integration. Any idea why is this
+happening?
+Thanks.
 
 Regards,
 zc
+
+
+
+
 
 -----Original Message-----
 From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of
