@@ -1,15 +1,17 @@
 Received: from mail9.teraoka.com.sg ([152.101.95.36] helo=mail.teraoka.com.sg)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1YndBo-0001hT-Hg
- for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 01:22:57 +0000
+ Linux)) id 1YndI1-0004Pg-DA
+ for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 01:29:22 +0000
 From: "Tee Zhen Cong" <zc.tee@teraoka.com.sg>
-To: "'Han Xu'" <xhnjupt@gmail.com>
+To: "'Jeff Lauruhn \(jlauruhn\)'" <jlauruhn@micron.com>,
+ "'Han Xu'" <xhnjupt@gmail.com>
 References: <000c01d08261$9726b7c0$c5742740$@teraoka.com.sg>
  <CA+EcR20vND89+wk5ZTODJ4NoaSC0rrWsV+bXTWbpyZ9Y72aFiA@mail.gmail.com>
-In-Reply-To: <CA+EcR20vND89+wk5ZTODJ4NoaSC0rrWsV+bXTWbpyZ9Y72aFiA@mail.gmail.com>
+ <0D23F1ECC880A74392D56535BCADD7357DEBE4C1@NTXBOIMBX03.micron.com>
+In-Reply-To: <0D23F1ECC880A74392D56535BCADD7357DEBE4C1@NTXBOIMBX03.micron.com>
 Subject: RE: nandtest error
-Date: Thu, 30 Apr 2015 09:22:24 +0800
-Message-ID: <000101d082e4$1ecc1530$5c643f90$@teraoka.com.sg>
+Date: Thu, 30 Apr 2015 09:28:47 +0800
+Message-ID: <000201d082e5$032f7d70$098e7850$@teraoka.com.sg>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
@@ -25,18 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Han Xu,
-I do not have fsl and the dts in my kernel version. Is there any other way I
-can fix it in kernel source code?
-Thank you.
+Hi Jeff,
+The flipped bits is found in the first 2Mbytes (1st block) of the NAND. It
+stops at the first block where errors are detected. I am not so sure what is
+happening in the nandtest application. It seems like a standard linux test
+tool for nand where many ppl use. So I use it for my test as well.
+As far as I see, it erase, write then read back the NAND block by block, and
+see if the read back bytes are the same with the written bytes.
+In my opinion, the flipped bits is not normal. I got another board with a
+useable 16GBit NAND (MT29F16G08CBACA). Using the nandtest application, it
+returns successful without any flipped bit. Same kernel, same software. Only
+different NAND.
 
 Regards,
 zc
 
 -----Original Message-----
 From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of
+Jeff Lauruhn (jlauruhn)
+Sent: Thursday, 30 April, 2015 5:12 AM
+To: Han Xu; Tee Zhen Cong
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: nandtest error
+
+When you read the data back are you reading the raw data?    Some amount of
+bit flipping is normal NAND Flash behavior.  ECC correction is required on
+all contemporary NAND to some degree to correct bit flips.  This Micron
+device is designed to return a "FAIL" status only when the number of bad
+bits in any page exceeds 40bits/1117 bytes.   
+
+I need to understand what nandtest is actually doing.  If I read this right,
+if found 32 flipped bits in a 32 gigabit device.  That's actually very good.
+
+
+Jeff Lauruhn
+NAND Application Engineer
+Embedded Business Unit
+Micron Technology, Inc
+
+-----Original Message-----
+From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of
 Han Xu
-Sent: Thursday, 30 April, 2015 2:36 AM
+Sent: Wednesday, April 29, 2015 11:36 AM
 To: Tee Zhen Cong
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: nandtest error
@@ -135,6 +167,10 @@ Please add  fsl,use-minimum-ecc = <1>; in dts nand portion.
 > ______________________________________________________
 > Linux MTD discussion mailing list
 > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 ______________________________________________________
 Linux MTD discussion mailing list
