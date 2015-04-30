@@ -1,23 +1,35 @@
-Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YnpWv-0005aR-T4
- for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 14:33:38 +0000
-Message-Id: <cover.1430403750.git.hramrach@gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 30 Apr 2015 16:22:30 +0200
-Subject: [PATCH 0/3] Using SPI NOR flah on sunxi.
-To: linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
-  Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
-  Ian Campbell <ijc+devicetree@hellion.org.uk>,
-  Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
-  Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
-  Huang Shijie <b32955@freescale.com>, Michal Suchanek <hramrach@gmail.com>,
-  "Rafał Miłecki" <zajec5@gmail.com>, Ben Hutchings <ben@decadent.org.uk>,
-  Alison Chaiken <alison_chaiken@mentor.com>,
-  Mika Westerberg <mika.westerberg@linux.intel.com>,
-  "Bean Huo 霍斌斌 \(beanhuo\)" <beanhuo@micron.com>,
-  "grmoore@altera.com" <grmoore@altera.com>, devicetree@vger.kernel.org,
-  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YnpwA-0008Hz-4u
+ for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 14:59:38 +0000
+Received: by wgso17 with SMTP id o17so65556472wgs.1
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Apr 2015 07:59:13 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <3b0c112672f364452e80c333048161eaffb655db.1430403750.git.hramrach@gmail.com>
+References: <cover.1430403750.git.hramrach@gmail.com>
+ <3b0c112672f364452e80c333048161eaffb655db.1430403750.git.hramrach@gmail.com>
+From: Julian Calaby <julian.calaby@gmail.com>
+Date: Fri, 1 May 2015 00:58:52 +1000
+Message-ID: <CAGRGNgXKrpJ8rc4h4BykgHsn3kfT5fuAssMK1bQJtxhVL=s2BA@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH 3/3] MTD: m25p80: Add option to limit SPI
+ transfer size.
+To: Michal Suchanek <hramrach@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marex@denx.de>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Ben Hutchings <ben@decadent.org.uk>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ linux-sunxi <linux-sunxi@googlegroups.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ devicetree <devicetree@vger.kernel.org>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +39,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Michal,
 
-I tried to connect a SPI NOR flash to my sunxi board and due to the current
-sunxi SPI driver limitations it does not work.
+On Thu, Apr 30, 2015 at 11:46 PM, Michal Suchanek <hramrach@gmail.com> wrote:
+> My SPI driver does not support DMA so sizes larger than 64 bytes return
+> an error. Add an option to limit transfer size so m25p80 can be used
+> with reduced speed with such controller.
 
-The SPI driver returns an error when more than 64 bytes are transferred at once
-due to lack of DMA support.
+I suspect that this will be rejected as the maximum transfer size is a
+property of the SPI controller, not the device and should be exported
+to the device driver from the controller, not specified in the
+device's binding.
 
-I tried to hack in an option to limit the transfer size and discovered that the
-return value of write in m25p80 driver is wrong and never checked.
-
-This might be useful while working with other devices with limited driver support.
-
-Thanks
-
-Michal
-
-Michal Suchanek (3):
-  MTD: m25p80: fix write return value.
-  MTD: spi-nor: check for short writes in spi_nor_write.
-  MTD: m25p80: Add option to limit SPI transfer size.
-
- Documentation/devicetree/bindings/mtd/m25p80.txt |  5 +++
- drivers/mtd/devices/m25p80.c                     | 21 ++++++++++--
- drivers/mtd/spi-nor/spi-nor.c                    | 42 ++++++++++--------------
- 3 files changed, 40 insertions(+), 28 deletions(-)
+Thanks,
 
 -- 
-2.1.4
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
