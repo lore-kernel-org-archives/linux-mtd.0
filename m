@@ -1,13 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YnwQV-0006oF-Ix
- for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 21:55:26 +0000
-Message-Id: <02f7510acb9b6dbb3a5a6cd5bb287762eb4d22c1.1430430153.git.hramrach@gmail.com>
+ id 1YnwQV-0006oI-J0
+ for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 21:55:27 +0000
+Message-Id: <35add8df33b17e2354d9496eba8597d9d8488f30.1430430153.git.hramrach@gmail.com>
 In-Reply-To: <cover.1430430153.git.hramrach@gmail.com>
 References: <cover.1430430153.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 30 Apr 2015 15:33:47 +0200
-Subject: [PATCH 1/3] MTD: m25p80: fix write return value.
+Date: Thu, 30 Apr 2015 23:13:12 +0200
+Subject: [PATCH 3/3] MTD: spi-nor: add flag to not use sector erase.
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, <zajec5@gmail.com>,
  Marek Vasut <marex@denx.de>, Alison Chaiken <alison_chaiken@mentor.com>,
@@ -25,30 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The 'retlen' points to a variable representing the number of data bytes
-written/read (see include/linux/mtd/mtd.h) by the current invocation of
-the function. This variable must be set, not incremented.
+The sector size of the flash memory is unclear from datasheet or may
+possibly vary between chips so add a flag to always use 4k blocks.
 
-v2: clearer commit message
+Currently 4k blocks are always used when possible but in the future
+somebody might want to do some optimizations with sector erase.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-Acked-by: Marek Vasut <marex@denx.de>
 ---
- drivers/mtd/devices/m25p80.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/spi-nor/spi-nor.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 7c8b169..0b2bc21 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -102,7 +102,7 @@ static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index de73cf5..371e91c 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -55,6 +55,7 @@ struct flash_info {
+ #define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
+ #define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
+ #define	USE_FSR			0x80	/* use flag status register */
++#define	NO_SPINOR_OP_SE	       0x100	/* do not erase sectors */
+ };
  
- 	spi_sync(spi, &m);
+ #define JEDEC_MFR(info)	((info)->id[0])
+@@ -333,6 +334,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	/* REVISIT in some cases we could speed up erasing large regions
+ 	 * by using SPINOR_OP_SE instead of SPINOR_OP_BE_4K.  We may have set up
+ 	 * to use "small sector erase", but that's not always optimal.
++	 * The block size for SPINOR_OP_SE is unknown/untested for some flashes.
+ 	 */
  
--	*retlen += m.actual_length - cmd_sz;
-+	*retlen = m.actual_length - cmd_sz;
- }
+ 	/* "sector"-at-a-time erase */
+@@ -551,7 +553,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE) },
  
- static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+ 	/* GigaDevice */
+-	{ "gd25q41b", INFO(0xc84013, 0, 64 * 1024,  8, SECT_4K) },
++	{ "gd25q41b", INFO(0xc84013, 0, 64 * 1024,  8, SECT_4K | NO_SPINOR_OP_SE) },
+ 	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
 -- 
 2.1.4
