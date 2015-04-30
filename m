@@ -1,28 +1,16 @@
+Date: Thu, 30 Apr 2015 12:36:59 -0500
+From: Ben Shelton <ben.shelton@ni.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: Introduce CONFIG_MTD_RESERVE_END
+Message-ID: <20150430173659.GA30177@bshelton-desktop>
+References: <1430335682-6174-1-git-send-email-ben.shelton@ni.com>
+ <20150429214648.GF32500@ld-irv-0074>
 MIME-Version: 1.0
-In-Reply-To: <OF23B05612.4290AF80-ONC1257E37.00589292-C1257E37.005AB106@rohde-schwarz.com>
-References: <cover.1430403750.git.hramrach@gmail.com>
- <OF23B05612.4290AF80-ONC1257E37.00589292-C1257E37.005AB106@rohde-schwarz.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 30 Apr 2015 18:56:18 +0200
-Message-ID: <CAOMqctRLnCJfVCYGjsmhORYNk+HCf07wwSXnZv4oqDxbaQqKGw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Using SPI NOR flah on sunxi.
-To: Thomas.Betker@rohde-schwarz.com
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
- devicetree <devicetree@vger.kernel.org>, Marek Vasut <marex@denx.de>,
- "grmoore@altera.com" <grmoore@altera.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- David Woodhouse <dwmw2@infradead.org>, Rafa?? Mi??ecki <zajec5@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>,
- linux-sunxi <linux-sunxi@googlegroups.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Ben Hutchings <ben@decadent.org.uk>,
- Alison Chaiken <alison_chaiken@mentor.com>,
- "Bean Huo ????????? \(beanhuo\)" <beanhuo@micron.com>
+In-Reply-To: <20150429214648.GF32500@ld-irv-0074>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, Jeff Westfahl <jeff.westfahl@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +20,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 30 April 2015 at 18:30,  <Thomas.Betker@rohde-schwarz.com> wrote:
-> Hello Michal:
->
->> I tried to connect a SPI NOR flash to my sunxi board and due to the
-> current
->> sunxi SPI driver limitations it does not work.
->>
->> The SPI driver returns an error when more than 64 bytes are
->> transferred at once
->> due to lack of DMA support.
->
-> Wouldn't it be easier to fix the SPI driver to handle transfers larger
-> than 64 bytes, filling and draining the FIFO multiple times if neccessary?
-> (As far as I can tell, most SPI drivers do this.)
->
+Hi Brian,
 
-Yes, the intent is to fix this by adding dma support to the driver, eventually.
+On 04/29, Brian Norris wrote:
+> > +	  This can be useful if, for example, the BBT is stored at the end
+> > +	  of the flash, and you don't want those blocks counted as part of
+> > +	  the last MTD partition.
+> 
+> And why is that a problem? We don't add Kconfig options just because you
+> "don't want" something.
 
-The patch might be still useful for other hardware with developing SPI support.
+It's not a "problem" per se, but it does cause the calculated/displayed number
+of bad PEBs to be greater than it actually is.  In older kernel versions, this
+used to cause a warning on mount that it could not reserve enough PEBs, but
+this no longer occurs.
 
-Thanks
+Without the patch and config setting:
 
-Michal
+UBI: attached mtd3 (name "root", size 942 MiB) to ubi1
+UBI: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
+UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+UBI: VID header offset: 512 (aligned 512), data offset: 2048
+UBI: good PEBs: 7539, bad PEBs: 4, corrupted PEBs: 0
+UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+UBI: max/mean erase counter: 549/79, WL threshold: 4096, image sequence number: 0
+UBI: available PEBs: 4, total reserved PEBs: 7535, PEBs reserved for bad PEB handling: 156
+
+With the patch and config setting:
+
+UBI: attached mtd3 (name "root", size 942 MiB) to ubi1
+UBI: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
+UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+UBI: VID header offset: 512 (aligned 512), data offset: 2048
+UBI: good PEBs: 7539, bad PEBs: 0, corrupted PEBs: 0
+UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+UBI: max/mean erase counter: 549/79, WL threshold: 4096, image sequence number: 0
+UBI: available PEBs: 0, total reserved PEBs: 7539, PEBs reserved for bad PEB handling: 160
+
+The reason for doing this as a Kconfig option rather than with an additional
+partition is that we use the same .itb boot image (and kernel arguments) for
+a series of embedded controllers that have different NAND flash sizes, and we
+use the '-' command line parameter to give the root partition all the available
+space after the other partitions.
+
+Thanks,
+Ben
