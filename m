@@ -1,17 +1,27 @@
-Date: Thu, 30 Apr 2015 17:46:35 -0500
-From: Ben Shelton <ben.shelton@ni.com>
-To: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH] mtd: Introduce CONFIG_MTD_RESERVE_END
-Message-ID: <20150430224635.GA18985@bshelton-desktop>
-References: <1430335682-6174-1-git-send-email-ben.shelton@ni.com>
- <1430431357.2187.43.camel@x220>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YnxaY-0006jb-He
+ for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 23:09:51 +0000
+From: Marek Vasut <marex@denx.de>
+To: Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 1/3] MTD: m25p80: fix write return value.
+Date: Fri, 1 May 2015 01:09:22 +0200
+References: <cover.1430430153.git.hramrach@gmail.com>
+ <02f7510acb9b6dbb3a5a6cd5bb287762eb4d22c1.1430430153.git.hramrach@gmail.com>
+In-Reply-To: <02f7510acb9b6dbb3a5a6cd5bb287762eb4d22c1.1430430153.git.hramrach@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1430431357.2187.43.camel@x220>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- Jeff Westfahl <jeff.westfahl@ni.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201505010109.22577.marex@denx.de>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+ David Woodhouse <dwmw2@infradead.org>, zajec5@gmail.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Ben Hutchings <ben@decadent.org.uk>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ "Bean Huo \(beanhuo\)" <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +31,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Paul,
+On Thursday, April 30, 2015 at 03:33:47 PM, Michal Suchanek wrote:
+> The 'retlen' points to a variable representing the number of data bytes
+> written/read (see include/linux/mtd/mtd.h) by the current invocation of
+> the function. This variable must be set, not incremented.
+> 
+> v2: clearer commit message
 
-On 05/01, Paul Bolle wrote:
-> While you're discussing more substantial questions with Brian, I found
-> some nits.
-> 
-> On Wed, 2015-04-29 at 14:28 -0500, Ben Shelton wrote:
-> > --- a/drivers/mtd/Kconfig
-> > +++ b/drivers/mtd/Kconfig
-> 
-> 
-> > +config MTD_RESERVE_END
-> > +	int "Reserved space at the end of an all remaining space partition"
-> > +	depends on MTD_CMDLINE_PARTS = "y"
-> 
-> (The quotes are unneeded.)
-> 
-> MTD_CMDLINE_PARTS is tristate. Why does it need to be built-in for this
-> symbol?
+This V2 goes past the diffstat, so that when the patch is applied, it
+doesn't end up in the log.
 
-Good catch -- MTD_RESERVE_END should apply whether MTD_CMDLINE_PARTS is
-built-in or a module.  I'll fix that in the next version of the patch.
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> Acked-by: Marek Vasut <marex@denx.de>
+> ---
+>  drivers/mtd/devices/m25p80.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Ben
+Aka. V<n> changes go here.
+
+I don't think there's a need to repost tho :)
+
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 7c8b169..0b2bc21 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -102,7 +102,7 @@ static void m25p80_write(struct spi_nor *nor, loff_t
+> to, size_t len,
+> 
+>  	spi_sync(spi, &m);
+> 
+> -	*retlen += m.actual_length - cmd_sz;
+> +	*retlen = m.actual_length - cmd_sz;
+>  }
+> 
+>  static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+
+Best regards,
+Marek Vasut
