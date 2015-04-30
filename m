@@ -1,32 +1,31 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YnvXp-00011Q-Sc
- for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 20:58:54 +0000
 From: Marek Vasut <marex@denx.de>
 To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 1/3] MTD: m25p80: fix write return value.
-Date: Thu, 30 Apr 2015 20:43:11 +0200
+Subject: Re: [PATCH 0/3] Using SPI NOR flah on sunxi.
+Date: Thu, 30 Apr 2015 20:34:36 +0200
 References: <cover.1430403750.git.hramrach@gmail.com>
- <55132b4496e7fe73f949186c0f140f3e4fd4e2c7.1430403750.git.hramrach@gmail.com>
-In-Reply-To: <55132b4496e7fe73f949186c0f140f3e4fd4e2c7.1430403750.git.hramrach@gmail.com>
+ <OF23B05612.4290AF80-ONC1257E37.00589292-C1257E37.005AB106@rohde-schwarz.com>
+ <CAOMqctRLnCJfVCYGjsmhORYNk+HCf07wwSXnZv4oqDxbaQqKGw@mail.gmail.com>
+In-Reply-To: <CAOMqctRLnCJfVCYGjsmhORYNk+HCf07wwSXnZv4oqDxbaQqKGw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201504302043.11118.marex@denx.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+Message-Id: <201504302034.36753.marex@denx.de>
+Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
+ devicetree <devicetree@vger.kernel.org>,
  "grmoore@altera.com" <grmoore@altera.com>,
  Mika Westerberg <mika.westerberg@linux.intel.com>,
  Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Ben Hutchings <ben@decadent.org.uk>,
- =?utf-8?q?Rafa=C5=82?= =?utf-8?q?_Mi=C5=82ecki?= <zajec5@gmail.com>,
- linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
+ David Woodhouse <dwmw2@infradead.org>, Rafa?? Mi??ecki <zajec5@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ linux-sunxi <linux-sunxi@googlegroups.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Thomas.Betker@rohde-schwarz.com,
+ Kumar Gala <galak@codeaurora.org>, Mark Rutland <mark.rutland@arm.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Alison Chaiken <alison_chaiken@mentor.com>, "Bean Huo
- =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= \(beanhuo\)" <beanhuo@micron.com>
+ Ben Hutchings <ben@decadent.org.uk>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ "Bean Huo ????????? \(beanhuo\)" <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,40 +35,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, April 30, 2015 at 03:33:47 PM, Michal Suchanek wrote:
-> The size of written data was added to user supplied value rather than
-> written at the provided address.
-
-You might want to work on the commit message a little, something like
-the following, but feel free to reword as seen fit.
-
-The 'retlen' points to a variable representing the number of data bytes 
-written/read (see include/linux/mtd/mtd.h) by the current invocation of
-the function. This variable must be set, not incremented.
-
-Otherwise, the patch is correct I believe:
-
-Acked-by: Marek Vasut <marex@denx.de>
-
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> ---
->  drivers/mtd/devices/m25p80.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Thursday, April 30, 2015 at 06:56:18 PM, Michal Suchanek wrote:
+> On 30 April 2015 at 18:30,  <Thomas.Betker@rohde-schwarz.com> wrote:
+> > Hello Michal:
+> >> I tried to connect a SPI NOR flash to my sunxi board and due to the
+> > 
+> > current
+> > 
+> >> sunxi SPI driver limitations it does not work.
+> >> 
+> >> The SPI driver returns an error when more than 64 bytes are
+> >> transferred at once
+> >> due to lack of DMA support.
+> > 
+> > Wouldn't it be easier to fix the SPI driver to handle transfers larger
+> > than 64 bytes, filling and draining the FIFO multiple times if
+> > neccessary? (As far as I can tell, most SPI drivers do this.)
 > 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 7c8b169..0b2bc21 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -102,7 +102,7 @@ static void m25p80_write(struct spi_nor *nor, loff_t
-> to, size_t len,
+> Yes, the intent is to fix this by adding dma support to the driver,
+> eventually.
 > 
->  	spi_sync(spi, &m);
-> 
-> -	*retlen += m.actual_length - cmd_sz;
-> +	*retlen = m.actual_length - cmd_sz;
->  }
-> 
->  static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+> The patch might be still useful for other hardware with developing SPI
+> support.
+
+Please just fix the controller driver to correctly handle arbitrary transfer
+lengths.
 
 Best regards,
 Marek Vasut
