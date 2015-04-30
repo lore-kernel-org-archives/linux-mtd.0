@@ -1,19 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YnxaY-0006jb-He
- for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 23:09:51 +0000
+ id 1Ynxeq-0000YF-71
+ for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 23:14:16 +0000
 From: Marek Vasut <marex@denx.de>
 To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 1/3] MTD: m25p80: fix write return value.
-Date: Fri, 1 May 2015 01:09:22 +0200
+Subject: Re: [PATCH 3/3] MTD: spi-nor: add flag to not use sector erase.
+Date: Fri, 1 May 2015 01:13:50 +0200
 References: <cover.1430430153.git.hramrach@gmail.com>
- <02f7510acb9b6dbb3a5a6cd5bb287762eb4d22c1.1430430153.git.hramrach@gmail.com>
-In-Reply-To: <02f7510acb9b6dbb3a5a6cd5bb287762eb4d22c1.1430430153.git.hramrach@gmail.com>
+ <35add8df33b17e2354d9496eba8597d9d8488f30.1430430153.git.hramrach@gmail.com>
+In-Reply-To: <35add8df33b17e2354d9496eba8597d9d8488f30.1430430153.git.hramrach@gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201505010109.22577.marex@denx.de>
+Message-Id: <201505010113.50293.marex@denx.de>
 Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
  David Woodhouse <dwmw2@infradead.org>, zajec5@gmail.com,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
@@ -31,40 +31,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, April 30, 2015 at 03:33:47 PM, Michal Suchanek wrote:
-> The 'retlen' points to a variable representing the number of data bytes
-> written/read (see include/linux/mtd/mtd.h) by the current invocation of
-> the function. This variable must be set, not incremented.
+On Thursday, April 30, 2015 at 11:13:12 PM, Michal Suchanek wrote:
+> The sector size of the flash memory is unclear from datasheet or may
+> possibly vary between chips so add a flag to always use 4k blocks.
 > 
-> v2: clearer commit message
-
-This V2 goes past the diffstat, so that when the patch is applied, it
-doesn't end up in the log.
-
+> Currently 4k blocks are always used when possible but in the future
+> somebody might want to do some optimizations with sector erase.
+> 
 > Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> Acked-by: Marek Vasut <marex@denx.de>
-> ---
->  drivers/mtd/devices/m25p80.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Aka. V<n> changes go here.
+I _think_ you might be able to determine the size, no ?
 
-I don't think there's a need to repost tho :)
-
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 7c8b169..0b2bc21 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -102,7 +102,7 @@ static void m25p80_write(struct spi_nor *nor, loff_t
-> to, size_t len,
-> 
->  	spi_sync(spi, &m);
-> 
-> -	*retlen += m.actual_length - cmd_sz;
-> +	*retlen = m.actual_length - cmd_sz;
->  }
-> 
->  static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+One way is to ask the vendor, but you can also try something like:
+1) erase the whole SPI NOR
+2) overwrite it with zeroes (or ones ? I think it should be all ones after 
+erasing).
+3) Erase sector 0
+4) Read some 128 KiB back
+5) Observe what is the difference.
 
 Best regards,
 Marek Vasut
