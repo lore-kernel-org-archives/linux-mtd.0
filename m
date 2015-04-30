@@ -1,35 +1,21 @@
-Received: from mail-wg0-x242.google.com ([2a00:1450:400c:c00::242])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YnwAf-0005wh-I7
- for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 21:39:02 +0000
-Received: by wggy19 with SMTP id y19so6041609wgg.3
- for <linux-mtd@lists.infradead.org>; Thu, 30 Apr 2015 14:38:39 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201504302043.11118.marex@denx.de>
-References: <cover.1430403750.git.hramrach@gmail.com>
- <55132b4496e7fe73f949186c0f140f3e4fd4e2c7.1430403750.git.hramrach@gmail.com>
- <201504302043.11118.marex@denx.de>
+Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YnwQV-0006oH-J6
+ for linux-mtd@lists.infradead.org; Thu, 30 Apr 2015 21:55:25 +0000
+Message-Id: <3df22a1b0c6730787cfe38e54388732d02b6ceed.1430430153.git.hramrach@gmail.com>
+In-Reply-To: <cover.1430430153.git.hramrach@gmail.com>
+References: <cover.1430430153.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 30 Apr 2015 23:37:58 +0200
-Message-ID: <CAOMqctQes17hiccCfbX5=pnTkPv2H+MxkYaPFx-XkgmF+SiXfg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] MTD: m25p80: fix write return value.
-To: Marek Vasut <marex@denx.de>
-Content-Type: text/plain; charset=UTF-8
-Cc: Mark Rutland <mark.rutland@arm.com>,
- devicetree <devicetree@vger.kernel.org>,
- "grmoore@altera.com" <grmoore@altera.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Ben Hutchings <ben@decadent.org.uk>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>,
- linux-sunxi <linux-sunxi@googlegroups.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Alison Chaiken <alison_chaiken@mentor.com>,
- =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+Date: Thu, 30 Apr 2015 21:02:42 +0200
+Subject: [PATCH 2/3] MTD: spi-nor: Add Pm25LD020 and GD25Q41B chip ID.
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, <zajec5@gmail.com>,
+ Marek Vasut <marex@denx.de>, Alison Chaiken <alison_chaiken@mentor.com>,
+ Michal Suchanek <hramrach@gmail.com>, Ben Hutchings <ben@decadent.org.uk>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ "Bean Huo \(beanhuo\)" <beanhuo@micron.com>,
+ "grmoore@altera.com" <grmoore@altera.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,25 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 30 April 2015 at 20:43, Marek Vasut <marex@denx.de> wrote:
-> On Thursday, April 30, 2015 at 03:33:47 PM, Michal Suchanek wrote:
->> The size of written data was added to user supplied value rather than
->> written at the provided address.
->
-> You might want to work on the commit message a little, something like
-> the following, but feel free to reword as seen fit.
->
-> The 'retlen' points to a variable representing the number of data bytes
-> written/read (see include/linux/mtd/mtd.h) by the current invocation of
-> the function. This variable must be set, not incremented.
->
-> Otherwise, the patch is correct I believe:
->
-> Acked-by: Marek Vasut <marex@denx.de>
->
+First chip reads Pm25LD020 or Pm25L0020. Found on some WD HDD PCB.
+Identified as PMC Pm25LD020.
+Flash read does not return consistent data which explains why the disk died.
 
-ok, I will send an updated version.
+Second chip reads something like 25Q41BT. Found on Esspif ESP8266 based
+ESP-01 board. Identified as Elm Techchnology GD25Q41B.
+Datasheet is not clear about block size so erasing blocks may not work
+as expected.
 
-Thanks
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Michal
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 14a5d23..de73cf5 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -551,6 +551,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE) },
+ 
+ 	/* GigaDevice */
++	{ "gd25q41b", INFO(0xc84013, 0, 64 * 1024,  8, SECT_4K) },
+ 	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
+@@ -589,6 +590,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+ 	{ "pm25lv010",   INFO(0,        0, 32 * 1024,    4, SECT_4K_PMC) },
++	{ "pm25ld020",   INFO(0x7f9d22, 0, 64 * 1024,    4, SECT_4K) },
+ 	{ "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64, SECT_4K) },
+ 
+ 	/* Spansion -- single (large) sector size only, at least
+-- 
+2.1.4
