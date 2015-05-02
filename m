@@ -1,20 +1,13 @@
-Received: from www.osadl.org ([62.245.132.105])
+Received: from smtprelay02.ispgateway.de ([80.67.31.36])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YoSQk-0007U9-VX
- for linux-mtd@lists.infradead.org; Sat, 02 May 2015 08:05:47 +0000
-From: Nicholas Mc Guire <hofrat@osadl.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 4/4] mtd: sh_flctl: fix wrapped condition alignment
-Date: Sat,  2 May 2015 09:57:10 +0200
-Message-Id: <1430553430-21396-4-git-send-email-hofrat@osadl.org>
-In-Reply-To: <1430553430-21396-1-git-send-email-hofrat@osadl.org>
-References: <1430553430-21396-1-git-send-email-hofrat@osadl.org>
-Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Arnd Bergmann <arnd@arndb.de>, Wolfram Sang <wsa@the-dreams.de>,
- Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Nicholas Mc Guire <hofrat@osadl.org>,
- Brian Norris <computersforpeace@gmail.com>
+ id 1YoWgm-0008Ke-Nz
+ for linux-mtd@lists.infradead.org; Sat, 02 May 2015 12:38:39 +0000
+From: Bernhard Walle <bernhard@bwalle.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mkfs.ubifs: Fix build with gcc 5.1
+Date: Sat,  2 May 2015 14:38:06 +0200
+Message-Id: <1430570286-30434-1-git-send-email-bernhard@bwalle.de>
+Cc: Bernhard Walle <bernhard@bwalle.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +17,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CodingStyle fix only - align function parameters to opening (.
+In gcc 5.1, the default C standard which is used to compile a C file,
+has changed from gnu89 to gnu11. This changed the meaning of 'extern
+inline'. See https://gcc.gnu.org/gcc-5/porting_to.html.
 
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+In mkfs.ubifs, this leads to multiple definitions of
+hashtable_iterator_key and -hashtable_iterator_value. I think the most
+pragmatic way to fix the issue is to replace 'extern inline' with
+'static inline' here.
+
+Signed-off-by: Bernhard Walle <bernhard@bwalle.de>
 ---
+ mkfs.ubifs/hashtable/hashtable_itr.c | 12 ------------
+ mkfs.ubifs/hashtable/hashtable_itr.h |  4 ++--
+ 2 files changed, 2 insertions(+), 14 deletions(-)
 
-Patch was compile tested with ap325rxa_defconfig (implies
-CONFIG_MTD_NAND_SH_FLCTL=y)
-
-Patch is against 4.1-rc1 (localversion-next is -next-20150501)
-
- drivers/mtd/nand/sh_flctl.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index ffda530..2078c4d 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -428,8 +428,8 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
+diff --git a/mkfs.ubifs/hashtable/hashtable_itr.c b/mkfs.ubifs/hashtable/hashtable_itr.c
+index 24f4dde..d102453 100644
+--- a/mkfs.ubifs/hashtable/hashtable_itr.c
++++ b/mkfs.ubifs/hashtable/hashtable_itr.c
+@@ -35,18 +35,6 @@ hashtable_iterator(struct hashtable *h)
+ }
  
- 	/* initiate DMA transfer */
- 	if (flctl->chan_fifo0_rx && rlen >= 32 &&
--		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) == 0)
--			goto convert;	/* DMA success */
-+	    flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) == 0)
-+		goto convert;	/* DMA success */
+ /*****************************************************************************/
+-/* key      - return the key of the (key,value) pair at the current position */
+-/* value    - return the value of the (key,value) pair at the current position */
+-
+-void *
+-hashtable_iterator_key(struct hashtable_itr *i)
+-{ return i->e->k; }
+-
+-void *
+-hashtable_iterator_value(struct hashtable_itr *i)
+-{ return i->e->v; }
+-
+-/*****************************************************************************/
+ /* advance - advance the iterator to the next element
+  *           returns zero if advanced to end of table */
  
- 	/* do polling transfer */
- 	for (i = 0; i < len_4align; i++) {
-@@ -487,8 +487,8 @@ static void write_ec_fiforeg(struct sh_flctl *flctl, int rlen,
+diff --git a/mkfs.ubifs/hashtable/hashtable_itr.h b/mkfs.ubifs/hashtable/hashtable_itr.h
+index 87a97eb..5c94a04 100644
+--- a/mkfs.ubifs/hashtable/hashtable_itr.h
++++ b/mkfs.ubifs/hashtable/hashtable_itr.h
+@@ -28,7 +28,7 @@ hashtable_iterator(struct hashtable *h);
+ /* hashtable_iterator_key
+  * - return the value of the (key,value) pair at the current position */
  
- 	/* initiate DMA transfer */
- 	if (flctl->chan_fifo0_tx && rlen >= 32 &&
--		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) == 0)
--			return;	/* DMA success */
-+	    flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) == 0)
-+		return;	/* DMA success */
+-extern inline void *
++static inline void *
+ hashtable_iterator_key(struct hashtable_itr *i)
+ {
+     return i->e->k;
+@@ -37,7 +37,7 @@ hashtable_iterator_key(struct hashtable_itr *i)
+ /*****************************************************************************/
+ /* value - return the value of the (key,value) pair at the current position */
  
- 	/* do polling transfer */
- 	for (i = 0; i < len_4align; i++) {
+-extern inline void *
++static inline void *
+ hashtable_iterator_value(struct hashtable_itr *i)
+ {
+     return i->e->v;
 -- 
-1.7.10.4
+2.3.7
