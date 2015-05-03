@@ -1,31 +1,23 @@
-Date: Sun, 3 May 2015 10:55:49 +0300
-From: Baruch Siach <baruch@tkos.co.il>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 2/4] mtd: mxc_nand: limit the size of used oob
-Message-ID: <20150503075549.GH2265@tarshish>
-References: <20150426200725.GC19431@pengutronix.de>
- <20150427043906.GR2258@tarshish>
- <20150427071238.GE19431@pengutronix.de>
- <20150427072057.GT2258@tarshish>
- <20150427075023.GF19431@pengutronix.de>
- <20150427114341.GW2258@tarshish>
- <20150427193127.GU19431@pengutronix.de>
- <20150429061853.GB2258@tarshish>
- <20150429063508.GE19431@pengutronix.de>
- <CAOMZO5AAcRu3gscLSQTiRExeS_pXO-uJm0uA3fL5uwYUUMMsqQ@mail.gmail.com>
+Received: from galahad.ideasonboard.com ([2001:4b98:dc2:45:216:3eff:febb:480d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yoze5-0005AQ-6w
+ for linux-mtd@lists.infradead.org; Sun, 03 May 2015 19:33:46 +0000
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Nicholas Mc Guire <hofrat@osadl.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 2/4] mtd: sh_flctl: drop unused variable
+Date: Sun, 03 May 2015 22:33:43 +0300
+Message-ID: <1477205.SvYxjlTIEF@avalon>
+In-Reply-To: <1430553430-21396-2-git-send-email-hofrat@osadl.org>
+References: <1430553430-21396-1-git-send-email-hofrat@osadl.org>
+ <1430553430-21396-2-git-send-email-hofrat@osadl.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOMZO5AAcRu3gscLSQTiRExeS_pXO-uJm0uA3fL5uwYUUMMsqQ@mail.gmail.com>
-Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Sascha Hauer <kernel@pengutronix.de>,
- Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Shawn Guo <shawn.guo@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
- Sascha Hauer <sha@pengutronix.de>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: Arnd Bergmann <arnd@arndb.de>, Wolfram Sang <wsa@the-dreams.de>,
+ Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,29 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Fabio,
+Hi Nicholas,
 
-On Thu, Apr 30, 2015 at 12:20:32PM -0300, Fabio Estevam wrote:
-> On Wed, Apr 29, 2015 at 3:35 AM, Uwe Kleine-König
-> <u.kleine-koenig@pengutronix.de> wrote:
-> 
-> > That's surprising. It would be interesting to hear from Freescale what
-> > is wrong here (Fabio? Maybe contact support?). I quickly skimmed through
-> > the errata documents but didn't found anything. So it's not only that
-> 
-> Yes, that's something I am not aware of either.
-> 
-> Please contact the FSL support folks so that the hardware guys could
-> assist on this topic.
+Thank you for the patch.
 
-Our past experience with hardware support at the micro level was not all that 
-great. Anyway, I dropped the limit to 128 for oobsize < 218, since this is 
-only a theoretic bug, and I can't really test it.
+On Saturday 02 May 2015 09:57:08 Nicholas Mc Guire wrote:
+> shdma_tx_submit() called via dmaengine_submit() returns the assigned
+> cookie but this is not used here so the variable and assignment can
+> be dropped.
+> 
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 
-Thanks,
-baruch
+I would rephrase the commit message to avoid mentioning shdma_tx_submit() as 
+that's not relevant. Something like "dmaengine_submit() returns the assigned
+cookie but this is not used here so the variable and assignment can be 
+dropped."
+
+With that fixed,
+
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+> 
+> V2: As pointed out by Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>     the variable and assignment can be dropped but not the call to
+>     dmaengine_submit(desc) - fixed up
+> 
+> Patch was compile tested with ap325rxa_defconfig (implies
+> CONFIG_MTD_NAND_SH_FLCTL=y)
+> 
+> Patch is against 4.1-rc1 (localversion-next is -next-20150501)
+> 
+>  drivers/mtd/nand/sh_flctl.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+> index 9b032dd..d1c46e5 100644
+> --- a/drivers/mtd/nand/sh_flctl.c
+> +++ b/drivers/mtd/nand/sh_flctl.c
+> @@ -351,7 +351,6 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl
+> *flctl, unsigned long *buf, struct dma_chan *chan;
+>  	enum dma_transfer_direction tr_dir;
+>  	dma_addr_t dma_addr;
+> -	dma_cookie_t cookie = -EINVAL;
+>  	uint32_t reg;
+>  	int ret = 0;
+>  	unsigned long time_left;
+> @@ -377,7 +376,7 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl
+> *flctl, unsigned long *buf,
+> 
+>  		desc->callback = flctl_dma_complete;
+>  		desc->callback_param = flctl;
+> -		cookie = dmaengine_submit(desc);
+> +		dmaengine_submit(desc);
+> 
+>  		dma_async_issue_pending(chan);
+>  	} else {
 
 -- 
-     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
+Regards,
+
+Laurent Pinchart
