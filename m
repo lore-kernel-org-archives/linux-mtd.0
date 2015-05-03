@@ -1,28 +1,17 @@
-Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YoaOz-00085z-5G
- for linux-mtd@lists.infradead.org; Sat, 02 May 2015 16:36:30 +0000
-Received: by iedfl3 with SMTP id fl3so120412171ied.1
- for <linux-mtd@lists.infradead.org>; Sat, 02 May 2015 09:36:07 -0700 (PDT)
-In-Reply-To: <CAFLxGvzXWXgey+KyVdVy0FvUvzva1zn3jZTnTyqoOS3p94ExGQ@mail.gmail.com>
-References: <1430579413-4820-1-git-send-email-xerofoify@gmail.com>
- <CAFLxGvzXWXgey+KyVdVy0FvUvzva1zn3jZTnTyqoOS3p94ExGQ@mail.gmail.com>
+From: Baruch Siach <baruch@tkos.co.il>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v2 0/4] mtd: mxc_nand: fix 8 bit ECC and large oob
+Date: Sun,  3 May 2015 10:18:50 +0300
+Message-Id: <cover.1430636819.git.baruch@tkos.co.il>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain;
- charset=UTF-8
-Subject: Re: [PATCH] mtd:Remove unnessary BUG function calls in nand_scan_tail
-From: Nicholas Krause <xerofoify@gmail.com>
-Date: Sat, 02 May 2015 12:36:08 -0400
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Message-ID: <9C08D0D3-29D3-46E5-9207-E620241A94AA@gmail.com>
-Cc: boris.brezillon@free-electrons.com, Baruch Siach <baruch@tkos.co.il>,
- kdasu.kdev@gmail.com, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
- bpqw@micron.com, LKML <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, asierra@xes-inc.com,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, rogerq@ti.com
+Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
+ Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+ Sascha Hauer <kernel@pengutronix.de>,
+ =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,19 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch series fixes mxc_nand bugs that I encountered while trying to use 8
+bit ECC mode on i.MX25 with the Micron MT29F8G08ABABA flash chip.
 
+Many thanks to Uwe Kleine-König for guiding me through the process of
+debugging and fixing, and for contributing a clean-up patch to this series.
 
-On May 2, 2015 11:57:28 AM EDT, Richard Weinberger <richard.weinberger@gmail.com> wrote:
->On Sat, May 2, 2015 at 5:10 PM, Nicholas Krause <xerofoify@gmail.com>
->wrote:
->> This removes all unnessary calls to BUG() below pr_warn print
->messages
->> as these printed messages are verbose enough for debugging if these
->> scenarios are hit in the function,nand_scan_tail.
->
->NAK.
->We cannot continue with a bad ECC mode.
-That makes sense, clearly you are correct here. 
-Nick
+This series applies and tested on v4.1-rc1.
+
+This is version 2 of the patch series, addressing the comments and suggestion
+of Uwe Kleine-König on the first series
+(http://thread.gmane.org/gmane.linux.ports.arm.kernel/408635). See each patch
+for detailed per-patch changelog.
+
+Baruch Siach (3):
+  mtd: mxc_nand: limit the size of used oob
+  mtd: mxc_nand: fix truncate of unaligned oob copying
+  mtd: mxc_nand: generate nand_ecclayout for 8 bit ECC
+
+Uwe Kleine-König (1):
+  mtd: nand: mxc_nand: cleanup copy_spare function
+
+ drivers/mtd/nand/mxc_nand.c | 110 +++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 94 insertions(+), 16 deletions(-)
+
 -- 
-Sent from my Android device with K-9 Mail. Please excuse my brevity.
+2.1.4
