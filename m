@@ -1,19 +1,31 @@
+Date: Sun, 3 May 2015 10:55:49 +0300
 From: Baruch Siach <baruch@tkos.co.il>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 1/4] mtd: nand: mxc_nand: cleanup copy_spare function
-Date: Sun,  3 May 2015 10:18:51 +0300
-Message-Id: <782c879fdfa0125211fb1a3a2fcd143687c541fc.1430636819.git.baruch@tkos.co.il>
-In-Reply-To: <cover.1430636819.git.baruch@tkos.co.il>
-References: <cover.1430636819.git.baruch@tkos.co.il>
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 2/4] mtd: mxc_nand: limit the size of used oob
+Message-ID: <20150503075549.GH2265@tarshish>
+References: <20150426200725.GC19431@pengutronix.de>
+ <20150427043906.GR2258@tarshish>
+ <20150427071238.GE19431@pengutronix.de>
+ <20150427072057.GT2258@tarshish>
+ <20150427075023.GF19431@pengutronix.de>
+ <20150427114341.GW2258@tarshish>
+ <20150427193127.GU19431@pengutronix.de>
+ <20150429061853.GB2258@tarshish>
+ <20150429063508.GE19431@pengutronix.de>
+ <CAOMZO5AAcRu3gscLSQTiRExeS_pXO-uJm0uA3fL5uwYUUMMsqQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOMZO5AAcRu3gscLSQTiRExeS_pXO-uJm0uA3fL5uwYUUMMsqQ@mail.gmail.com>
 Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
- Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
  Sascha Hauer <kernel@pengutronix.de>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+ Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+ Shawn Guo <shawn.guo@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
+ Sascha Hauer <sha@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,88 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Hi Fabio,
 
-To give people without the reference manual at hand a chance to
-understand how spare area is handled in the i.MX nand controller,
-improve commenting, naming of variables and coding style.
+On Thu, Apr 30, 2015 at 12:20:32PM -0300, Fabio Estevam wrote:
+> On Wed, Apr 29, 2015 at 3:35 AM, Uwe Kleine-K�nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> 
+> > That's surprising. It would be interesting to hear from Freescale what
+> > is wrong here (Fabio? Maybe contact support?). I quickly skimmed through
+> > the errata documents but didn't found anything. So it's not only that
+> 
+> Yes, that's something I am not aware of either.
+> 
+> Please contact the FSL support folks so that the hardware guys could
+> assist on this topic.
 
-No functional change intended.
+Our past experience with hardware support at the micro level was not all that 
+great. Anyway, I dropped the limit to 128 for oobsize < 218, since this is 
+only a theoretic bug, and I can't really test it.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-[baruch: declare oob_chunk_size; update comments; reword commit log]
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
- drivers/mtd/nand/mxc_nand.c | 46 ++++++++++++++++++++++++++++++---------------
- 1 file changed, 31 insertions(+), 15 deletions(-)
+Thanks,
+baruch
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 372e0e38f59b..33b22b9c0b30 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -807,32 +807,48 @@ static void mxc_nand_select_chip_v2(struct mtd_info *mtd, int chip)
- }
- 
- /*
-- * Function to transfer data to/from spare area.
-+ * The controller splits a page into data chunks of 512 bytes + partial oob.
-+ * There are writesize / 512 such chunks, the size of the partial oob parts is
-+ * oobsize / #chunks rounded down to a multiple of 2. The last oob chunk then
-+ * contains additionally the byte lost by rounding (if any).
-+ * This function handles the needed shuffling between host->data_buf (which
-+ * holds a page in natural order, i.e. writesize bytes data + oobsize bytes
-+ * spare) and the NFC buffer.
-  */
- static void copy_spare(struct mtd_info *mtd, bool bfrom)
- {
- 	struct nand_chip *this = mtd->priv;
- 	struct mxc_nand_host *host = this->priv;
--	u16 i, j;
--	u16 n = mtd->writesize >> 9;
-+	u16 i, oob_chunk_size;
-+	u16 num_chunks = mtd->writesize / 512;
-+
- 	u8 *d = host->data_buf + mtd->writesize;
- 	u8 __iomem *s = host->spare0;
--	u16 t = host->devtype_data->spare_len;
-+	u16 sparebuf_size = host->devtype_data->spare_len;
- 
--	j = (mtd->oobsize / n >> 1) << 1;
-+	/* size of oob chunk for all but possibly the last one */
-+	oob_chunk_size = (mtd->oobsize / num_chunks) & ~1;
- 
- 	if (bfrom) {
--		for (i = 0; i < n - 1; i++)
--			memcpy32_fromio(d + i * j, s + i * t, j);
--
--		/* the last section */
--		memcpy32_fromio(d + i * j, s + i * t, mtd->oobsize - i * j);
-+		for (i = 0; i < num_chunks - 1; i++)
-+			memcpy32_fromio(d + i * oob_chunk_size,
-+					s + i * sparebuf_size,
-+					oob_chunk_size);
-+
-+		/* the last chunk */
-+		memcpy32_fromio(d + i * oob_chunk_size,
-+				s + i * sparebuf_size,
-+				mtd->oobsize - i * oob_chunk_size);
- 	} else {
--		for (i = 0; i < n - 1; i++)
--			memcpy32_toio(&s[i * t], &d[i * j], j);
--
--		/* the last section */
--		memcpy32_toio(&s[i * t], &d[i * j], mtd->oobsize - i * j);
-+		for (i = 0; i < num_chunks - 1; i++)
-+			memcpy32_toio(&s[i * sparebuf_size],
-+				      &d[i * oob_chunk_size],
-+				      oob_chunk_size);
-+
-+		/* the last chunk */
-+		memcpy32_toio(&s[oob_chunk_size * sparebuf_size],
-+			      &d[i * oob_chunk_size],
-+			      mtd->oobsize - i * oob_chunk_size);
- 	}
- }
- 
 -- 
-2.1.4
+     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
