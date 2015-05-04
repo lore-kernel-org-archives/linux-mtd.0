@@ -1,25 +1,22 @@
-Received: from galahad.ideasonboard.com ([185.26.127.97])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YpBBy-00016W-8o
- for linux-mtd@lists.infradead.org; Mon, 04 May 2015 07:53:30 +0000
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Nicholas Mc Guire <der.herr@hofr.at>
-Subject: Re: [PATCH 2/4] mtd: sh_flctl: drop unused variable
-Date: Mon, 04 May 2015 10:53:28 +0300
-Message-ID: <3139913.OhcnyJWC3N@avalon>
-In-Reply-To: <20150504060346.GB26350@opentech.at>
-References: <1430553430-21396-1-git-send-email-hofrat@osadl.org>
- <20150504051723.GW3521@localhost> <20150504060346.GB26350@opentech.at>
+ id 1YpDhC-0001r3-K4
+ for linux-mtd@lists.infradead.org; Mon, 04 May 2015 10:33:55 +0000
+Received: by wizk4 with SMTP id k4so116275964wiz.1
+ for <linux-mtd@lists.infradead.org>; Mon, 04 May 2015 03:33:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Wolfram Sang <wsa@the-dreams.de>, Vinod Koul <vinod.koul@intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Nicholas Mc Guire <hofrat@osadl.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <jwv4mnwfppf.fsf-monnier+gmane.comp.hardware.netbook.arm.sunxi@gnu.org>
+References: <cover.1430403750.git.hramrach@gmail.com>
+ <jwv4mnwfppf.fsf-monnier+gmane.comp.hardware.netbook.arm.sunxi@gnu.org>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Mon, 4 May 2015 12:32:51 +0200
+Message-ID: <CAOMqctT42f0RuShMb5BU_4Qun-qouS3HCj7_=8-oEY9h-zVimg@mail.gmail.com>
+Subject: Re: [linux-sunxi] Re: [PATCH 0/3] Using SPI NOR flah on sunxi.
+To: monnier@iro.umontreal.ca
+Content-Type: text/plain; charset=UTF-8
+Cc: devicetree <devicetree@vger.kernel.org>,
+ linux-sunxi <linux-sunxi@googlegroups.com>, linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,48 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nicholas,
+Hello,
 
-On Monday 04 May 2015 08:03:46 Nicholas Mc Guire wrote:
-> On Mon, 04 May 2015, Vinod Koul wrote:
-> > On Sun, May 03, 2015 at 10:33:43PM +0300, Laurent Pinchart wrote:
-> > > On Saturday 02 May 2015 09:57:08 Nicholas Mc Guire wrote:
-> > > > shdma_tx_submit() called via dmaengine_submit() returns the assigned
-> > > > cookie but this is not used here so the variable and assignment can
-> > > > be dropped.
-> > > > 
-> > > > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> > > 
-> > > I would rephrase the commit message to avoid mentioning
-> > > shdma_tx_submit() as that's not relevant. Something like
-> > > "dmaengine_submit() returns the assigned cookie but this is not used
-> > > here so the variable and assignment can be dropped."
-> > 
-> > And I am bit surrised about taht. Ideally the driver should use the cookie
-> > to check the status later on...
-> 
-> looking at other drivers it seems like the drivers should call
-> dma_submit_error(cookie); on the received cookie - which does:
->   return cookie < 0 ? cookie : 0;
-> but doing that after dmaengine_submit() which actually already queued the
-> this request in shdma_base.cc:shdma_tx_submit()
+On 1 May 2015 at 14:27, Stefan Monnier <monnier@iro.umontreal.ca> wrote:
+>> The SPI driver returns an error when more than 64 bytes are
+>> transferred at once due to lack of DMA support.
+>
+> Have you tried the dmaengine patch and make the SPI driver use it?
+>
 
-Don't take shdma into account. There's no guarantee that the DMA engine will 
-be an SH DMAC on all platforms where the flctl driver will be used. 
-Furthermore, the shdma implementation might change in the future. You should 
-consider the DMA engine API only and comply with its requirements.
+The dmaengine is already merged or queued in sunxi-wip but the SPI
+glue fell through the cracks. I found it after digging through the
+archives so I will see if it works for me.
 
-> might not be that helpful
-> and looking at dma_cookie_assign() I do not see how the condition that
-> dma_submit_error is checking for ever could occur as it can't go below
-> cookie = DMA_MIN_COOKIE which is defined to 1 (include/linux/dmaengine.h)
-> 
-> As other drivers seem to not be doing more with the returned cookie than
-> calling dma_submit_error() on it this seems ok here ...but I'm not that
-> deep into this - my starting point was a simple API inconsisteny in the
-> use of wait_for_completion_timeout() :)
+Thanks
 
--- 
-Regards,
-
-Laurent Pinchart
+Michal
