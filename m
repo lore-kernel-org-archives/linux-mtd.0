@@ -1,22 +1,29 @@
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YpDhC-0001r3-K4
- for linux-mtd@lists.infradead.org; Mon, 04 May 2015 10:33:55 +0000
-Received: by wizk4 with SMTP id k4so116275964wiz.1
- for <linux-mtd@lists.infradead.org>; Mon, 04 May 2015 03:33:31 -0700 (PDT)
+ id 1YpEIB-0003t5-Au
+ for linux-mtd@lists.infradead.org; Mon, 04 May 2015 11:12:08 +0000
+Received: by widdi4 with SMTP id di4so117233780wid.0
+ for <linux-mtd@lists.infradead.org>; Mon, 04 May 2015 04:11:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <jwv4mnwfppf.fsf-monnier+gmane.comp.hardware.netbook.arm.sunxi@gnu.org>
-References: <cover.1430403750.git.hramrach@gmail.com>
- <jwv4mnwfppf.fsf-monnier+gmane.comp.hardware.netbook.arm.sunxi@gnu.org>
+In-Reply-To: <201505011620.05512.marex@denx.de>
+References: <cover.1430430153.git.hramrach@gmail.com>
+ <201505010113.50293.marex@denx.de>
+ <CAOMqctSn-Ct06tWqSVYPbdoXcFmwrLb1Y9MGvhsSz0gf+fRP3Q@mail.gmail.com>
+ <201505011620.05512.marex@denx.de>
 From: Michal Suchanek <hramrach@gmail.com>
-Date: Mon, 4 May 2015 12:32:51 +0200
-Message-ID: <CAOMqctT42f0RuShMb5BU_4Qun-qouS3HCj7_=8-oEY9h-zVimg@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH 0/3] Using SPI NOR flah on sunxi.
-To: monnier@iro.umontreal.ca
+Date: Mon, 4 May 2015 13:11:03 +0200
+Message-ID: <CAOMqctTL-y+YxnxuBX8r4osgbz3_+xJ2T2AfCj4idxMo3tCo8g@mail.gmail.com>
+Subject: Re: [PATCH 3/3] MTD: spi-nor: add flag to not use sector erase.
+To: Marek Vasut <marex@denx.de>
 Content-Type: text/plain; charset=UTF-8
-Cc: devicetree <devicetree@vger.kernel.org>,
- linux-sunxi <linux-sunxi@googlegroups.com>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+ David Woodhouse <dwmw2@infradead.org>, Rafa?? Mi??ecki <zajec5@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, "grmoore@altera.com" <grmoore@altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Ben Hutchings <ben@decadent.org.uk>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ "Bean Huo \(beanhuo\)" <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +35,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hello,
 
-On 1 May 2015 at 14:27, Stefan Monnier <monnier@iro.umontreal.ca> wrote:
->> The SPI driver returns an error when more than 64 bytes are
->> transferred at once due to lack of DMA support.
+On 1 May 2015 at 16:20, Marek Vasut <marex@denx.de> wrote:
+> On Friday, May 01, 2015 at 09:05:15 AM, Michal Suchanek wrote:
+>> On 1 May 2015 at 01:13, Marek Vasut <marex@denx.de> wrote:
+>> I can determine it for this particular chip. However, when the vendor
+>> datasheet says the block is 64/32K it might mean that chips with this
+>> ID can have either block size.
 >
-> Have you tried the dmaengine patch and make the SPI driver use it?
+> http://www.chingistek.com/img/Product_Files/Pm25LD010020datasheet%20v04.pdf
+> page 21:
+>
+> SECTOR_ER (20h) erases 4kByte sector.
+> BLOCK_ER (d8h) erases 64kByte sector.
+>
+> http://www.gigadevice.com/product/download/366.html?locale=en_US
+> page 27-28:
+>
+> Sector Erase (SE) (20h) erases 4kByte sector
+> 64KB Block Erase (BE) (d8h) erases 64kByte sector
 >
 
-The dmaengine is already merged or queued in sunxi-wip but the SPI
-glue fell through the cracks. I found it after digging through the
-archives so I will see if it works for me.
+It's pretty much the same as the datasheet I used
+http://www.elm-tech.com/en/products/spi-flash-memory/gd25q41/gd25q41.pdf
+
+It mentions both
+32KB Block Erase (BE) (52H)
+and
+64KB Block Erase (BE) (D8H)
+
+So the chip probably tries its best to be compatible with any command
+set and this last patch is not needed. The memory organization table
+on page 7 is not all that reassuring, though.
 
 Thanks
 
