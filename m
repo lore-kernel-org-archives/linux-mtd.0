@@ -1,27 +1,29 @@
-Received: from hofr.at ([212.69.189.236] helo=mail.hofr.at)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yp9U7-0003Ww-Du
- for linux-mtd@lists.infradead.org; Mon, 04 May 2015 06:04:08 +0000
-Date: Mon, 4 May 2015 08:03:46 +0200
-From: Nicholas Mc Guire <der.herr@hofr.at>
-To: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/4] mtd: sh_flctl: drop unused variable
-Message-ID: <20150504060346.GB26350@opentech.at>
-References: <1430553430-21396-1-git-send-email-hofrat@osadl.org>
- <1430553430-21396-2-git-send-email-hofrat@osadl.org>
- <1477205.SvYxjlTIEF@avalon> <20150504051723.GW3521@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150504051723.GW3521@localhost>
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Nicholas Mc Guire <hofrat@osadl.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from e23smtp07.au.ibm.com ([202.81.31.140])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YpA7M-0003g5-VT
+ for linux-mtd@lists.infradead.org; Mon, 04 May 2015 06:44:41 +0000
+Received: from /spool/local
+ by e23smtp07.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <cyrilbur@gmail.com>;
+ Mon, 4 May 2015 16:44:14 +1000
+Received: from d23relay09.au.ibm.com (d23relay09.au.ibm.com [9.185.63.181])
+ by d23dlp01.au.ibm.com (Postfix) with ESMTP id 131972CE8040
+ for <linux-mtd@lists.infradead.org>; Mon,  4 May 2015 16:44:11 +1000 (EST)
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+ by d23relay09.au.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ t446i2rI42860584
+ for <linux-mtd@lists.infradead.org>; Mon, 4 May 2015 16:44:11 +1000
+Received: from d23av02.au.ibm.com (localhost [127.0.0.1])
+ by d23av02.au.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+ t446hcSU016253
+ for <linux-mtd@lists.infradead.org>; Mon, 4 May 2015 16:43:38 +1000
+From: Cyril Bur <cyrilbur@gmail.com>
+To: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] Add a MTD driver for OpenPower PNOR flash
+Date: Mon,  4 May 2015 16:42:18 +1000
+Message-Id: <1430721739-17517-1-git-send-email-cyrilbur@gmail.com>
+Cc: dwmw2@infradead.org, jk@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,40 +33,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 04 May 2015, Vinod Koul wrote:
+Hi,
 
-> On Sun, May 03, 2015 at 10:33:43PM +0300, Laurent Pinchart wrote:
-> > Hi Nicholas,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Saturday 02 May 2015 09:57:08 Nicholas Mc Guire wrote:
-> > > shdma_tx_submit() called via dmaengine_submit() returns the assigned
-> > > cookie but this is not used here so the variable and assignment can
-> > > be dropped.
-> > > 
-> > > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> > 
-> > I would rephrase the commit message to avoid mentioning shdma_tx_submit() as 
-> > that's not relevant. Something like "dmaengine_submit() returns the assigned
-> > cookie but this is not used here so the variable and assignment can be 
-> > dropped."
-> And I am bit surrised about taht. Ideally the driver should use the cookie
-> to check the status later on...
->
-looking at other drivers it seems like the drivers should call 
-dma_submit_error(cookie); on the received cookie - which does:
-  return cookie < 0 ? cookie : 0;
-but doing that after dmaengine_submit() which actually already queued the
-this request in shdma_base.cc:shdma_tx_submit() might not be that helpful 
-and looking at dma_cookie_assign() I do not see how the condition that 
-dma_submit_error is checking for ever could occur as it can't go below 
-cookie = DMA_MIN_COOKIE which is defined to 1 (include/linux/dmaengine.h)
+I'm resending the patch that Jeremy Kerr sent a while back.
 
-As other drivers seem to not be doing more with the returned cookie than 
-calling dma_submit_error() on it this seems ok here ...but I'm not that
-deep into this - my starting point was a simple API inconsisteny in the
-use of wait_for_completion_timeout() :)
+This patch implements a simple mtd device to allow access to the PNOR
+flash on OpenPower machines. The flash is accessed through firmware
+calls.
 
-thx!
-hofrat
+The firmware calls are already merged in:
+commit ed59190e41b725e1cfd79541f5fc66c20adb0671
+Author: Cyril Bur <cyrilbur@gmail.com>
+Date:   Wed Apr 1 14:05:30 2015 +0800
+
+    powerpc/powernv: Add interfaces for flash device access
+
+Cheers,
+
+Cyril
+
+
+
+Cyril Bur (1):
+  drivers/mtd: add powernv flash MTD abstraction driver
+
+ drivers/mtd/devices/Kconfig         |   6 +
+ drivers/mtd/devices/Makefile        |   1 +
+ drivers/mtd/devices/powernv_flash.c | 288 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 295 insertions(+)
+ create mode 100644 drivers/mtd/devices/powernv_flash.c
+
+-- 
+1.9.1
