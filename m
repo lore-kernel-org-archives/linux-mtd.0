@@ -1,28 +1,26 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YpH67-0000Og-Bc
- for linux-mtd@lists.infradead.org; Mon, 04 May 2015 14:11:52 +0000
-From: Marek Vasut <marex@denx.de>
-To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 3/3] MTD: spi-nor: add flag to not use sector erase.
-Date: Mon, 4 May 2015 16:11:26 +0200
-References: <cover.1430430153.git.hramrach@gmail.com>
- <201505041535.29878.marex@denx.de>
- <CAOMqctTwrN3onS0EuW1ZB0ZDcw4X+WrKwnFbYizPpwXY8cCLWQ@mail.gmail.com>
-In-Reply-To: <CAOMqctTwrN3onS0EuW1ZB0ZDcw4X+WrKwnFbYizPpwXY8cCLWQ@mail.gmail.com>
+ id 1YpJrO-0006Eu-8T
+ for linux-mtd@lists.infradead.org; Mon, 04 May 2015 17:08:51 +0000
+From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: RE: nandtest error
+Date: Mon, 4 May 2015 17:08:19 +0000
+Message-ID: <0D23F1ECC880A74392D56535BCADD7357DEBF330@NTXBOIMBX03.micron.com>
+References: <000c01d08261$9726b7c0$c5742740$@teraoka.com.sg>
+ <CA+EcR20vND89+wk5ZTODJ4NoaSC0rrWsV+bXTWbpyZ9Y72aFiA@mail.gmail.com>
+ <0D23F1ECC880A74392D56535BCADD7357DEBE4C1@NTXBOIMBX03.micron.com>
+ <000201d082e5$032f7d70$098e7850$@teraoka.com.sg>
+ <0D23F1ECC880A74392D56535BCADD7357DEBE709@NTXBOIMBX03.micron.com>
+ <001c01d0831c$619ac400$24d04c00$@teraoka.com.sg>
+ <0D23F1ECC880A74392D56535BCADD7357DEBE7F3@NTXBOIMBX03.micron.com>
+ <alpine.DEB.2.02.1505041424590.3922@lnxricardw1.se.axis.com>
+In-Reply-To: <alpine.DEB.2.02.1505041424590.3922@lnxricardw1.se.axis.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201505041611.26119.marex@denx.de>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
- David Woodhouse <dwmw2@infradead.org>, Rafa?? Mi??ecki <zajec5@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, "grmoore@altera.com" <grmoore@altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Ben Hutchings <ben@decadent.org.uk>,
- Alison Chaiken <alison_chaiken@mentor.com>,
- "Bean Huo \(beanhuo\)" <beanhuo@micron.com>
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,46 +30,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, May 04, 2015 at 03:39:44 PM, Michal Suchanek wrote:
-> On 4 May 2015 at 15:35, Marek Vasut <marex@denx.de> wrote:
-> > On Monday, May 04, 2015 at 03:18:56 PM, Michal Suchanek wrote:
-> >> On 4 May 2015 at 14:12, Marek Vasut <marex@denx.de> wrote:
-> >> > On Monday, May 04, 2015 at 01:11:03 PM, Michal Suchanek wrote:
-> >> >> It mentions both
-> >> >> 32KB Block Erase (BE) (52H)
-> >> >> and
-> >> >> 64KB Block Erase (BE) (D8H)
-> >> > 
-> >> > The SPI NOR framework will use 0xbe opcode, no problem.
-> >> > 
-> >> >> So the chip probably tries its best to be compatible with any command
-> >> >> set and this last patch is not needed. The memory organization table
-> >> >> on page 7 is not all that reassuring, though.
-> >> > 
-> >> > Which exact part do you refer to please ?
-> >> 
-> >> Start of page 7 where it says sector size 32/64K in either datasheet.
-> >> 
-> >> It can refer to both BE opcode variants being supported but it's quite
-> >> unclear.
-> > 
-> > My guess here would be that the internal organisation of the SPI NOR is
-> > in 4k blocks, which is no surprise really. My understanding is that
-> > opcode 0x52 erases 8x4k sector (ie. 32k of data) while 0xd8 erases 16x4k
-> > sector (ie. 64k of data). I don't see any problem here -- there are two
-> > different opcodes which do two different things and their behavior
-> > matches the one on various other SPI NORs.
-> > 
-> >> Write protection seems to be calculated in 4k sectors and not blocks
-> >> so the block size does not seem very relevant.
-> > 
-> > See above. Does it make sense now please ?
-> 
-> Yes,
-> 
-> makes sense.
+Hello Richard=20
 
-I'm glad to hear this got cleared up, thanks ! :)
+That's a great question.  Mainly it has to do with ONFI, they define packag=
+es and pin outs and it's in our best interest to design to ONFI standards f=
+or interoperability.  ONFI is driven by NAND, Controller and End Customers,=
+ the original ONFI standard in 2007 defined 4 package types TSOP-48,  WSOP-=
+48, LGA52 and BGA-63, since then only a few options have been requested and=
+ added BGA-100, BGA-132, BGA-152 (these last two are interchangeable) and B=
+GA-272 and BGA-316 (.8mm) .  I believe TSOP is still the most used, and I t=
+hink that may be for legacy reasons; once the board was laid out for TSOP o=
+ur customers could quickly and continually double the memory by simply drop=
+ping in the next TSOP and tweaking the Firmware.  I'm not sure why no one i=
+s proposing smaller package sizes to ONFI at this time.  I suspect IoT may =
+start driving smaller packages. =20
 
-Best regards,
-Marek Vasut
+
+
+Jeff Lauruhn
+NAND Application Engineer
+Embedded Business Unit
+Micron Technology, Inc
+
+-----Original Message-----
+From: Ricard Wanderlof [mailto:ricard.wanderlof@axis.com]=20
+Sent: Monday, May 04, 2015 5:27 AM
+To: Jeff Lauruhn (jlauruhn)
+Cc: Linux mtd
+Subject: RE: nandtest error
+
+
+Hi Jeff,
+
+A question that might be of interest for others on the list; myself I've al=
+ways been curious of this fact: how come NAND flash chips traditionally com=
+e in TSOP packages where only 16 or so of the 48 pins are in fact used; why=
+ not use a smaller package?
+
+My guess has been that the chip inside is so big that it requires a large p=
+ackage but I have no idea if this in fact is true or not.
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
