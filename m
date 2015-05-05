@@ -1,20 +1,21 @@
-Received: from michel.telenet-ops.be ([195.130.137.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ypfmb-0003Uv-IS
- for linux-mtd@lists.infradead.org; Tue, 05 May 2015 16:33:23 +0000
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 13/27] mtd: Allow compile test of GPIO consumers if !GPIOLIB
-Date: Tue,  5 May 2015 18:32:29 +0200
-Message-Id: <1430843563-18615-13-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1430843563-18615-1-git-send-email-geert@linux-m68k.org>
-References: <1430836404-15513-1-git-send-email-geert@linux-m68k.org>
- <1430843563-18615-1-git-send-email-geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from moh3-ve1.go2.pl ([193.17.41.30])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ypg4o-0006dX-95
+ for linux-mtd@lists.infradead.org; Tue, 05 May 2015 16:52:11 +0000
+Subject: =?UTF-8?Q?Re:_File_in_JFFS2_corrupted_after?=
+ =?UTF-8?Q?_power_loss_during_removal_of_otherfiles?=
+From: =?UTF-8?Q?Marcin_Adamski?= <mass85@tlen.pl>
+To: richard@nod.at
+In-Reply-To: <5548E560.5090106@nod.at>
+References: <553983c4.1e577cd2.5547694c.c00cd@tlen.pl>
+ <CAFLxGvx31ey877oxXawEPwnyf+NHFxqzh6LhU09KeJzfRDz_BQ@mail.gmail.com>
+ <5b5133fc.589863a5.5548ddf5.c47c7@tlen.pl> <5548E560.5090106@nod.at>
+Mime-Version: 1.0
+Message-ID: <4fde209.6da1852f.5548f520.48162@tlen.pl>
+Date: Tue, 05 May 2015 18:51:44 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The GPIO subsystem provides dummy GPIO consumer functions if GPIOLIB is
-not enabled. Hence drivers that depend on GPIOLIB, but use GPIO consumer
-functionality only, can still be compiled if GPIOLIB is not enabled.
+Dnia=205=20maja=202015=2017:44=20Richard=20Weinberger=20<richard@nod.at>=20=
+napisa=C5=82(a):
+>=20
+>=20>=20Am=2005.05.2015=20um=2017:12=20schrieb=20Marcin=20Adamski:
+>=20>=20On=20Mon,=20May=205,=202015=20at=2016:35,=20Richard=20Weinberger=20=
+<richard.weinberger@gmail.com>=20wrote:
+>=20>>=20I'd=20say=20"it's=20complicated".=20:)
+>=20>>
+>=20>>=20UBIFS=20was=20created=20to=20deal=20with=20such=20situations.
+>=20>>=20If=20you=20want=20to=20be=20on=20the=20safe=20side,=20use=20it.
+>=20>>
+>=20>=20
+>=20>=20I'm=20afraid=20it=20is=20too=20late=20for=20me=20to=20use=20UBIFS=
+,=20as=20I=20need=20to=20perform=20upgrade=20of=20my=20devices=20in=20the=
+=20field=20and=20migration=20from=20JFFS2=20to=20UBIFS=20seems=20impossib=
+le=20(at=20least=20without=20some=20additional=20free=20space=20in=20flas=
+h).
+>=20>=20
+>=20>=20I=20concluded=20that=20JFFS2=20should=20also=20handle=20this=20ki=
+nd=20of=20scenarios=20after=20reading=20about=20CRC=20failures=20in=20htt=
+p://www.linux-mtd.infradead.org/faq/jffs2.html#L=5Fmessages
+>=20
+>=20AFAIK=20it=20depends=20on=20the=20corruption.=20But=20JFFS2=20predate=
+s=20me.=20:)
+>=20Usually=20in=20such=20situations=20I=20inspect=20the=20corrupt=20imag=
+e=20by=20hand.
+>=20Maybe=20it=20is=20also=20an=20hardware=20issue.=20Is=20this=20NAND=20=
+flash?
 
-Relax the dependency on GPIOLIB if COMPILE_TEST is enabled, where
-appropriate.
+It=20is=20NAND=20flash.=20I=20think=20I=20will=20give=20up=20on=20inspect=
+ing=20image=20by=20hand,=20this=20seems=20too=20hard.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/maps/Kconfig | 2 +-
- drivers/mtd/nand/Kconfig | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index e715ae90632f82e6..7c95a656f9e47933 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -326,7 +326,7 @@ config MTD_BFIN_ASYNC
- 
- config MTD_GPIO_ADDR
- 	tristate "GPIO-assisted Flash Chip Support"
--	depends on GPIOLIB
-+	depends on GPIOLIB || COMPILE_TEST
- 	depends on MTD_COMPLEX_MAPPINGS
- 	help
- 	  Map driver which allows flashes to be partially physically addressed
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 5897d8d8fa5a962d..f318e1b5bf973267 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -76,7 +76,7 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
- 
- config MTD_NAND_GPIO
- 	tristate "GPIO assisted NAND Flash driver"
--	depends on GPIOLIB
-+	depends on GPIOLIB || COMPILE_TEST
- 	help
- 	  This enables a NAND flash driver where control signals are
- 	  connected to GPIO pins, and commands and data are communicated
--- 
-1.9.1
+Regards
+Marcin=20Adamski
