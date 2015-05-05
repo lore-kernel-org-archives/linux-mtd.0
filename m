@@ -1,21 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ypf1p-0005Dc-5z
- for linux-mtd@lists.infradead.org; Tue, 05 May 2015 15:45:02 +0000
-Message-ID: <5548E560.5090106@nod.at>
-Date: Tue, 05 May 2015 17:44:32 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Marcin Adamski <mass85@tlen.pl>
-Subject: Re: File in JFFS2 corrupted after power loss during removal of other
- files
-References: <553983c4.1e577cd2.5547694c.c00cd@tlen.pl>
- <CAFLxGvx31ey877oxXawEPwnyf+NHFxqzh6LhU09KeJzfRDz_BQ@mail.gmail.com>
- <5b5133fc.589863a5.5548ddf5.c47c7@tlen.pl>
-In-Reply-To: <5b5133fc.589863a5.5548ddf5.c47c7@tlen.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from michel.telenet-ops.be ([195.130.137.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ypfmb-0003Uv-IS
+ for linux-mtd@lists.infradead.org; Tue, 05 May 2015 16:33:23 +0000
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 13/27] mtd: Allow compile test of GPIO consumers if !GPIOLIB
+Date: Tue,  5 May 2015 18:32:29 +0200
+Message-Id: <1430843563-18615-13-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1430843563-18615-1-git-send-email-geert@linux-m68k.org>
+References: <1430836404-15513-1-git-send-email-geert@linux-m68k.org>
+ <1430843563-18615-1-git-send-email-geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +24,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 05.05.2015 um 17:12 schrieb Marcin Adamski:
-> On Mon, May 5, 2015 at 16:35,  Richard Weinberger <richard.weinberger@gmail.com> wrote:
->> I'd say "it's complicated". :)
->>
->> UBIFS was created to deal with such situations.
->> If you want to be on the safe side, use it.
->>
-> 
-> I'm afraid it is too late for me to use UBIFS, as I need to perform upgrade of my devices in the field and migration from JFFS2 to UBIFS seems impossible (at least without some additional free space in flash).
-> 
-> I concluded that JFFS2 should also handle this kind of scenarios after reading about CRC failures in http://www.linux-mtd.infradead.org/faq/jffs2.html#L_messages
+The GPIO subsystem provides dummy GPIO consumer functions if GPIOLIB is
+not enabled. Hence drivers that depend on GPIOLIB, but use GPIO consumer
+functionality only, can still be compiled if GPIOLIB is not enabled.
 
-AFAIK it depends on the corruption. But JFFS2 predates me. :)
-Usually in such situations I inspect the corrupt image by hand.
-Maybe it is also an hardware issue. Is this NAND flash?
+Relax the dependency on GPIOLIB if COMPILE_TEST is enabled, where
+appropriate.
 
-Thanks,
-//richard
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/maps/Kconfig | 2 +-
+ drivers/mtd/nand/Kconfig | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index e715ae90632f82e6..7c95a656f9e47933 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -326,7 +326,7 @@ config MTD_BFIN_ASYNC
+ 
+ config MTD_GPIO_ADDR
+ 	tristate "GPIO-assisted Flash Chip Support"
+-	depends on GPIOLIB
++	depends on GPIOLIB || COMPILE_TEST
+ 	depends on MTD_COMPLEX_MAPPINGS
+ 	help
+ 	  Map driver which allows flashes to be partially physically addressed
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 5897d8d8fa5a962d..f318e1b5bf973267 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -76,7 +76,7 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+ 
+ config MTD_NAND_GPIO
+ 	tristate "GPIO assisted NAND Flash driver"
+-	depends on GPIOLIB
++	depends on GPIOLIB || COMPILE_TEST
+ 	help
+ 	  This enables a NAND flash driver where control signals are
+ 	  connected to GPIO pins, and commands and data are communicated
+-- 
+1.9.1
