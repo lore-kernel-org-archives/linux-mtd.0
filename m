@@ -1,21 +1,20 @@
-Received: from mail-vn0-x234.google.com ([2607:f8b0:400c:c0f::234])
+Received: from moh3-ve3.go2.pl ([193.17.41.87])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ypdwb-0004BW-TR
- for linux-mtd@lists.infradead.org; Tue, 05 May 2015 14:35:35 +0000
-Received: by vnbf1 with SMTP id f1so17048679vnb.5
- for <linux-mtd@lists.infradead.org>; Tue, 05 May 2015 07:35:08 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <553983c4.1e577cd2.5547694c.c00cd@tlen.pl>
+ id 1YpeX5-0001YP-Kx
+ for linux-mtd@lists.infradead.org; Tue, 05 May 2015 15:13:16 +0000
+Subject: =?UTF-8?Q?Re:_File_in_JFFS2_corrupted_after?=
+ =?UTF-8?Q?_power_loss_during_removal_of_other_files?=
+From: =?UTF-8?Q?Marcin_Adamski?= <mass85@tlen.pl>
+To: richard.weinberger@gmail.com
+In-Reply-To: <CAFLxGvx31ey877oxXawEPwnyf+NHFxqzh6LhU09KeJzfRDz_BQ@mail.gmail.com>
 References: <553983c4.1e577cd2.5547694c.c00cd@tlen.pl>
-Date: Tue, 5 May 2015 16:35:08 +0200
-Message-ID: <CAFLxGvx31ey877oxXawEPwnyf+NHFxqzh6LhU09KeJzfRDz_BQ@mail.gmail.com>
-Subject: Re: File in JFFS2 corrupted after power loss during removal of other
- files
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Marcin Adamski <mass85@tlen.pl>
-Content-Type: text/plain; charset=UTF-8
+ <CAFLxGvx31ey877oxXawEPwnyf+NHFxqzh6LhU09KeJzfRDz_BQ@mail.gmail.com>
+Mime-Version: 1.0
+Message-ID: <5b5133fc.589863a5.5548ddf5.c47c7@tlen.pl>
+Date: Tue, 05 May 2015 17:12:53 +0200
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 4, 2015 at 2:42 PM, Marcin Adamski <mass85@tlen.pl> wrote:
-> Hi
+On=20Mon,=20May=205,=202015=20at=2016:35,=20=20Richard=20Weinberger=20<ri=
+chard.weinberger@gmail.com>=20wrote:
+>=20I'd=20say=20"it's=20complicated".=20:)
 >
-> I am working with Linux (3.4.31+) embedded system booting from JFFS2 part=
-ition. I frequently encounter a problem of a file corruption when power los=
-s occurs while other files are being removed. It happens during upgrade pro=
-cedure of the platform. These are simplified steps of the upgrade:
-> 1. Download tar.gz containing (among other files) rootfs.squashfs image o=
-f file system that I am upgrading to, verify md5 checksum of the image.
-> 2. Boot linux from a small JFFS2 partition that has a minimal set of tool=
-s required to perform upgrade.
-> 3. Mount the large partition that must be upgraded.
-> 4. Mount rootfs.squashfs which is stored in the big partition.
-> 5. Remove all files from the large partition except from some migrated da=
-ta files, the rootfs.squashfs image etc.
-> 6. Copy all files from mounted rootfs.squashfs to the large partition
-> 7. Boot from the large partition
+>=20UBIFS=20was=20created=20to=20deal=20with=20such=20situations.
+>=20If=20you=20want=20to=20be=20on=20the=20safe=20side,=20use=20it.
 >
-> The mentioned power loss occurs in 5. step. Note that the rootfs.squashfs=
- is mounted as read only and is never altered during upgrade. Even though t=
-his file gets corrupted and after device is powered on you can see that the=
- file's md5 checksum is different, size stays unchanged, image can be mount=
-ed but it is impossible to read some of the files from this image.
->
-> Shouldn't JFFS2 deal with this kind of scenario? Is there any way to reco=
-ver from this situation?
 
-I'd say "it's complicated". :)
+I'm=20afraid=20it=20is=20too=20late=20for=20me=20to=20use=20UBIFS,=20as=20=
+I=20need=20to=20perform=20upgrade=20of=20my=20devices=20in=20the=20field=20=
+and=20migration=20from=20JFFS2=20to=20UBIFS=20seems=20impossible=20(at=20=
+least=20without=20some=20additional=20free=20space=20in=20flash).
 
-UBIFS was created to deal with such situations.
-If you want to be on the safe side, use it.
+I=20concluded=20that=20JFFS2=20should=20also=20handle=20this=20kind=20of=20=
+scenarios=20after=20reading=20about=20CRC=20failures=20in=20http://www.li=
+nux-mtd.infradead.org/faq/jffs2.html#L=5Fmessages
 
---=20
-Thanks,
-//richard
+Regards
+Marcin=20Adamski
