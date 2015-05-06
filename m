@@ -1,30 +1,20 @@
-Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yq6G9-00035s-91
- for linux-mtd@lists.infradead.org; Wed, 06 May 2015 20:49:38 +0000
-Received: by pdbqd1 with SMTP id qd1so20223656pdb.2
- for <linux-mtd@lists.infradead.org>; Wed, 06 May 2015 13:49:16 -0700 (PDT)
-Date: Wed, 6 May 2015 13:49:10 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 06/10] mtd: brcmstb_nand: add SoC-specific support
-Message-ID: <20150506204910.GJ32500@ld-irv-0074>
-References: <1430935194-7579-1-git-send-email-computersforpeace@gmail.com>
- <1430935194-7579-7-git-send-email-computersforpeace@gmail.com>
- <7101952.uOJDgn7tgf@wuerfel>
+ id 1Yq6OW-0007he-9B
+ for linux-mtd@lists.infradead.org; Wed, 06 May 2015 20:58:17 +0000
+Message-ID: <554A804B.2050003@nod.at>
+Date: Wed, 06 May 2015 22:57:47 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7101952.uOJDgn7tgf@wuerfel>
-Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Scott Branden <sbranden@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
- Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
- Jonathan Richardson <jonathar@broadcom.com>,
- Anatol Pomazao <anatol@google.com>, Gregory Fong <gregory.0xf0@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
- Dmitry Torokhov <dtor@google.com>
+To: Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] UBI: block: Add missing cache flushes
+References: <1429705853-23872-1-git-send-email-ezequiel.garcia@imgtec.com>
+In-Reply-To: <1429705853-23872-1-git-send-email-ezequiel.garcia@imgtec.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
+Cc: Kevin Cernekee <cernekee@chromium.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,53 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 06, 2015 at 09:12:43PM +0200, Arnd Bergmann wrote:
-> On Wednesday 06 May 2015 10:59:50 Brian Norris wrote:
-> > +       /*
-> > +        * Some SoCs integrate this controller (e.g., its interrupt bits) in
-> > +        * interesting ways
-> > +        */
-> > +       if (of_property_read_bool(dn, "brcm,nand-soc")) {
-> > +               struct device_node *soc_dn;
-> > +
-> > +               soc_dn = of_parse_phandle(dn, "brcm,nand-soc", 0);
-> > +               if (!soc_dn)
-> > +                       return -ENODEV;
-> > +
-> > +               ctrl->soc = devm_brcmnand_probe_soc(dev, soc_dn);
-> > +               if (!ctrl->soc) {
-> > +                       dev_err(dev, "could not probe SoC data\n");
-> > +                       of_node_put(soc_dn);
-> > +                       return -ENODEV;
-> > +               }
-> > +
-> > +               ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
-> > +                                      DRV_NAME, ctrl);
-> > +
-> > +               /* Enable interrupt */
-> > +               ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
-> > +
-> > +               of_node_put(soc_dn);
-> > +       } else {
-> > +               /* Use standard interrupt infrastructure */
-> > +               ret = devm_request_irq(dev, ctrl->irq, brcmnand_ctlrdy_irq, 0,
-> > +                                      DRV_NAME, ctrl);
-> > +       }
-> > 
+Am 22.04.2015 um 14:30 schrieb Ezequiel Garcia:
+> From: Kevin Cernekee <cernekee@chromium.org>
 > 
-> It looks to me like this should be handled as a nested irqchip, so the node
-> you look up gets used as the "interrupt-parent" instead, making the behavior
-> of this SoC transparent to the nand driver.
+> Block drivers are responsible for calling flush_dcache_page() on each
+> BIO request. This operation keeps the I$ coherent with the D$ on
+> architectures that don't have hardware coherency support. Without this
+> flush, random crashes are seen when executing user programs from an ext4
+> filesystem backed by a ubiblock device.
+> 
+> This patch is based on the change implemented in commit 2d4dc890b5c8
+> ("block: add helpers to run flush_dcache_page() against a bio and a
+> request's pages").
+> 
+> Fixes: 9d54c8a33eec ("UBI: R/O block driver on top of UBI volumes")
+> Signed-off-by: Kevin Cernekee <cernekee@chromium.org>
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 
-You snipped the rest of the patch, which involves more than just IRQ
-handling. The same registers touch both interrupts and data bus endian
-configuration, so it can't possibly be done transparently to the NAND
-driver.
+Applied to linux-ubifs.git/master.
 
-> We recently merged nested irqdomain support as well, which might help here,
-> or might not be needed.
-
-I'm not familiar with nested irqdomains. Do they address anything like
-the above problem?
-
-Brian
+Thanks a lot Kevin and Ezequiel!
+//richard
