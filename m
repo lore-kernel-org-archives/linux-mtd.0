@@ -1,19 +1,21 @@
-Received: from mout.kundenserver.de ([212.227.126.187])
+Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yq4ph-0008Oe-Ml
- for linux-mtd@lists.infradead.org; Wed, 06 May 2015 19:18:14 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 03/10] mtd: nand: add NAND driver for Broadcom STB NAND
- controller
-Date: Wed, 06 May 2015 21:17:36 +0200
-Message-ID: <2114576.uWbXPVDdyI@wuerfel>
-In-Reply-To: <1430935194-7579-4-git-send-email-computersforpeace@gmail.com>
+ id 1Yq6G9-00035s-91
+ for linux-mtd@lists.infradead.org; Wed, 06 May 2015 20:49:38 +0000
+Received: by pdbqd1 with SMTP id qd1so20223656pdb.2
+ for <linux-mtd@lists.infradead.org>; Wed, 06 May 2015 13:49:16 -0700 (PDT)
+Date: Wed, 6 May 2015 13:49:10 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 06/10] mtd: brcmstb_nand: add SoC-specific support
+Message-ID: <20150506204910.GJ32500@ld-irv-0074>
 References: <1430935194-7579-1-git-send-email-computersforpeace@gmail.com>
- <1430935194-7579-4-git-send-email-computersforpeace@gmail.com>
+ <1430935194-7579-7-git-send-email-computersforpeace@gmail.com>
+ <7101952.uOJDgn7tgf@wuerfel>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7101952.uOJDgn7tgf@wuerfel>
 Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
  Scott Branden <sbranden@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
  Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
@@ -32,31 +34,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 06 May 2015 10:59:47 Brian Norris wrote:
-> +
-> +static inline u32 nand_readreg(struct brcmnand_controller *ctrl, u32 offs)
-> +{
-> +       return __raw_readl(ctrl->nand_base + offs);
-> +}
-> +
-> +static inline void nand_writereg(struct brcmnand_controller *ctrl, u32 offs,
-> +                                u32 val)
-> +{
-> +       __raw_writel(val, ctrl->nand_base + offs);
-> +}
-> +
+On Wed, May 06, 2015 at 09:12:43PM +0200, Arnd Bergmann wrote:
+> On Wednesday 06 May 2015 10:59:50 Brian Norris wrote:
+> > +       /*
+> > +        * Some SoCs integrate this controller (e.g., its interrupt bits) in
+> > +        * interesting ways
+> > +        */
+> > +       if (of_property_read_bool(dn, "brcm,nand-soc")) {
+> > +               struct device_node *soc_dn;
+> > +
+> > +               soc_dn = of_parse_phandle(dn, "brcm,nand-soc", 0);
+> > +               if (!soc_dn)
+> > +                       return -ENODEV;
+> > +
+> > +               ctrl->soc = devm_brcmnand_probe_soc(dev, soc_dn);
+> > +               if (!ctrl->soc) {
+> > +                       dev_err(dev, "could not probe SoC data\n");
+> > +                       of_node_put(soc_dn);
+> > +                       return -ENODEV;
+> > +               }
+> > +
+> > +               ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
+> > +                                      DRV_NAME, ctrl);
+> > +
+> > +               /* Enable interrupt */
+> > +               ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
+> > +
+> > +               of_node_put(soc_dn);
+> > +       } else {
+> > +               /* Use standard interrupt infrastructure */
+> > +               ret = devm_request_irq(dev, ctrl->irq, brcmnand_ctlrdy_irq, 0,
+> > +                                      DRV_NAME, ctrl);
+> > +       }
+> > 
 > 
+> It looks to me like this should be handled as a nested irqchip, so the node
+> you look up gets used as the "interrupt-parent" instead, making the behavior
+> of this SoC transparent to the nand driver.
 
-You had mentioned previously that there might be an endianess issue in this
-driver. I think this won't work on big-endian architectures other than MIPS,
-so it would be good to either list in the DT the endianess of the device
-and use appropriate accessors here, or hardcode it based on the architecture
-(using ioread32_be in big-endian mips, but readl elsewhere).
+You snipped the rest of the patch, which involves more than just IRQ
+handling. The same registers touch both interrupts and data bus endian
+configuration, so it can't possibly be done transparently to the NAND
+driver.
 
-Using __raw_writel has another problem regarding the DMA capability of this
-driver, as it will not flush any write buffers or synchronize caches before
-sending data off to the device, so you risk data corruption. Also, the
-compiler can choose to split up the 32-bit word access into byte accesses,
-which on most hardware does not do what you want.
+> We recently merged nested irqdomain support as well, which might help here,
+> or might not be needed.
 
-	Arnd
+I'm not familiar with nested irqdomains. Do they address anything like
+the above problem?
+
+Brian
