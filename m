@@ -1,22 +1,24 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YqFSl-0005xw-E8
- for linux-mtd@lists.infradead.org; Thu, 07 May 2015 06:39:16 +0000
-Received: by pacyx8 with SMTP id yx8so31628971pac.1
- for <linux-mtd@lists.infradead.org>; Wed, 06 May 2015 23:38:54 -0700 (PDT)
-Date: Wed, 6 May 2015 23:38:50 -0700
+ id 1YqFYg-0001cl-Ji
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2015 06:45:23 +0000
+Received: by pacwv17 with SMTP id wv17so31850883pac.0
+ for <linux-mtd@lists.infradead.org>; Wed, 06 May 2015 23:45:00 -0700 (PDT)
+Date: Wed, 6 May 2015 23:44:56 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/5] mtd: nand: misc BBT fixes
-Message-ID: <20150507063850.GB6055@norris-Latitude-E6410>
-References: <1425118393-25179-1-git-send-email-computersforpeace@gmail.com>
+To: Fabian Frederick <fabf@skynet.be>
+Subject: Re: [PATCH 12/35 linux-next] mtd: constify of_device_id array
+Message-ID: <20150507064456.GC6055@norris-Latitude-E6410>
+References: <1426533469-25458-1-git-send-email-fabf@skynet.be>
+ <1426533651-25586-1-git-send-email-fabf@skynet.be>
+ <1426533651-25586-3-git-send-email-fabf@skynet.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1425118393-25179-1-git-send-email-computersforpeace@gmail.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@imgtec.com>,
- Alexander Shiyan <shc_work@mail.ru>,
- Peter Pan =?utf-8?B?5r2Y5qCLIChwZXRlcnBhbmRvbmcp?= <peterpandong@micron.com>
+In-Reply-To: <1426533651-25586-3-git-send-email-fabf@skynet.be>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Han Xu <han.xu@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +28,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 28, 2015 at 02:13:08AM -0800, Brian Norris wrote:
-> A few assorted changes. Some of these are geared toward refactoring the BBT
-> code for being reused for SPI NAND.
+On Mon, Mar 16, 2015 at 08:20:28PM +0100, Fabian Frederick wrote:
+> of_device_id is always used as const.
+> (See driver.of_match_table and open firmware functions)
 > 
-> If possible, I'd really like to get some testing for the diskonchip changes.
-> It's an old driver, but it appears as if some still use it. Perhaps Alexander
-> (CC'd) can report?
+> Signed-off-by: Fabian Frederick <fabf@skynet.be>
 
-Pushed all 5 to l2-mtd.git, since the only comments I got were reposts
-of the patches...
-
-Brian
+Applied to l2-mtd.git.
