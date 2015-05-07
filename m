@@ -1,22 +1,22 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YqQr1-0003fV-Mt
- for linux-mtd@lists.infradead.org; Thu, 07 May 2015 18:49:04 +0000
-Message-ID: <554BB386.4070704@broadcom.com>
-Date: Thu, 7 May 2015 11:48:38 -0700
-From: Ray Jui <rjui@broadcom.com>
+ id 1YqQtp-0006sH-Cd
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2015 18:51:57 +0000
+Message-ID: <554BB429.7090009@broadcom.com>
+Date: Thu, 7 May 2015 11:51:21 -0700
+From: Florian Fainelli <fainelli@broadcom.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+To: Arnd Bergmann <arnd@arndb.de>, Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH v3 06/10] mtd: brcmstb_nand: add SoC-specific support
 References: <1430935194-7579-1-git-send-email-computersforpeace@gmail.com>
  <7101952.uOJDgn7tgf@wuerfel> <20150506204910.GJ32500@ld-irv-0074>
- <20781942.cIPodTiNzG@wuerfel> <20150507184246.GO32500@ld-irv-0074>
-In-Reply-To: <20150507184246.GO32500@ld-irv-0074>
-Content-Type: text/plain; charset="UTF-8"
+ <20781942.cIPodTiNzG@wuerfel>
+In-Reply-To: <20781942.cIPodTiNzG@wuerfel>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Scott Branden <sbranden@broadcom.com>, Corneliu Doban <cdoban@broadcom.com>,
- Kevin Cernekee <cernekee@gmail.com>,
+ Scott Branden <sbranden@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
+ Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
  =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
  Jonathan Richardson <jonathar@broadcom.com>,
@@ -32,72 +32,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 5/7/2015 11:42 AM, Brian Norris wrote:
-> On Thu, May 07, 2015 at 12:01:02PM +0200, Arnd Bergmann wrote:
->> On Wednesday 06 May 2015 13:49:10 Brian Norris wrote:
->>> On Wed, May 06, 2015 at 09:12:43PM +0200, Arnd Bergmann wrote:
->>>> On Wednesday 06 May 2015 10:59:50 Brian Norris wrote:
->>>>> +       /*
->>>>> +        * Some SoCs integrate this controller (e.g., its interrupt bits) in
->>>>> +        * interesting ways
->>>>> +        */
->>>>> +       if (of_property_read_bool(dn, "brcm,nand-soc")) {
->>>>> +               struct device_node *soc_dn;
->>>>> +
->>>>> +               soc_dn = of_parse_phandle(dn, "brcm,nand-soc", 0);
->>>>> +               if (!soc_dn)
->>>>> +                       return -ENODEV;
->>>>> +
->>>>> +               ctrl->soc = devm_brcmnand_probe_soc(dev, soc_dn);
->>>>> +               if (!ctrl->soc) {
->>>>> +                       dev_err(dev, "could not probe SoC data\n");
->>>>> +                       of_node_put(soc_dn);
->>>>> +                       return -ENODEV;
->>>>> +               }
->>>>> +
->>>>> +               ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
->>>>> +                                      DRV_NAME, ctrl);
->>>>> +
->>>>> +               /* Enable interrupt */
->>>>> +               ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
->>>>> +
->>>>> +               of_node_put(soc_dn);
->>>>> +       } else {
->>>>> +               /* Use standard interrupt infrastructure */
->>>>> +               ret = devm_request_irq(dev, ctrl->irq, brcmnand_ctlrdy_irq, 0,
->>>>> +                                      DRV_NAME, ctrl);
->>>>> +       }
->>>>>
+On 07/05/15 03:01, Arnd Bergmann wrote:
+> On Wednesday 06 May 2015 13:49:10 Brian Norris wrote:
+>> On Wed, May 06, 2015 at 09:12:43PM +0200, Arnd Bergmann wrote:
+>>> On Wednesday 06 May 2015 10:59:50 Brian Norris wrote:
+>>>> +       /*
+>>>> +        * Some SoCs integrate this controller (e.g., its interrupt bits) in
+>>>> +        * interesting ways
+>>>> +        */
+>>>> +       if (of_property_read_bool(dn, "brcm,nand-soc")) {
+>>>> +               struct device_node *soc_dn;
+>>>> +
+>>>> +               soc_dn = of_parse_phandle(dn, "brcm,nand-soc", 0);
+>>>> +               if (!soc_dn)
+>>>> +                       return -ENODEV;
+>>>> +
+>>>> +               ctrl->soc = devm_brcmnand_probe_soc(dev, soc_dn);
+>>>> +               if (!ctrl->soc) {
+>>>> +                       dev_err(dev, "could not probe SoC data\n");
+>>>> +                       of_node_put(soc_dn);
+>>>> +                       return -ENODEV;
+>>>> +               }
+>>>> +
+>>>> +               ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
+>>>> +                                      DRV_NAME, ctrl);
+>>>> +
+>>>> +               /* Enable interrupt */
+>>>> +               ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
+>>>> +
+>>>> +               of_node_put(soc_dn);
+>>>> +       } else {
+>>>> +               /* Use standard interrupt infrastructure */
+>>>> +               ret = devm_request_irq(dev, ctrl->irq, brcmnand_ctlrdy_irq, 0,
+>>>> +                                      DRV_NAME, ctrl);
+>>>> +       }
 >>>>
->>>> It looks to me like this should be handled as a nested irqchip, so the node
->>>> you look up gets used as the "interrupt-parent" instead, making the behavior
->>>> of this SoC transparent to the nand driver.
 >>>
->>> You snipped the rest of the patch, which involves more than just IRQ
->>> handling. The same registers touch both interrupts and data bus endian
->>> configuration, so it can't possibly be done transparently to the NAND
->>> driver.
+>>> It looks to me like this should be handled as a nested irqchip, so the node
+>>> you look up gets used as the "interrupt-parent" instead, making the behavior
+>>> of this SoC transparent to the nand driver.
 >>
->> Anything else in there?
+>> You snipped the rest of the patch, which involves more than just IRQ
+>> handling. The same registers touch both interrupts and data bus endian
+>> configuration, so it can't possibly be done transparently to the NAND
+>> driver.
 > 
-> Looks like miscellaneous NAND-related control bits. AXI and APB endian
-> configuration; several interrupt-enable bits (we only use one for now);
-> a clock-enable; and some timing test mode bits.
-> 
->> The bus configuration would just involve writing
->> a constant value in some register, right?
-> 
-> I'm not an expert on the Cygnus/iProc chips, but I believe the answer is
-> no: we *must* reconfigure the bus before and after each data
-> transaction, because it affects the rest of the core too. Others on the
-> CC list can probably elaborate.
-> 
+> Anything else in there? The bus configuration would just involve writing
+> a constant value in some register, right? Doing that in the irqchip
+> is also a bit ugly, but may still be better overall than doing it the
+> way you have above.
 
-Yes, we must configure the bus before the after each data/cache
-registers access, because it changes the APB bus endianess.
+IMHO this is uglier, having a pseudo interrupt controller driver that
+also takes care of preparing bus transfers, as opposed to an ad-hoc
+piece of code that does not pretend to be an interrupt controller at all
+sounds like the former is lying about what it is, while the latter is
+pretty straight forward even though it may duplicate an existing subsystem.
 
-Thanks,
+I would definitively see some value in writing an irqchip driver if this
+was remotely useful outside of the NAND block, e.g: the interrupt bits
+would serve other peripherals than NAND, which is not the case for 63138
+and 338x AFAICT, Cygnus is a special case.
 
-Ray
+I could very well imagine a near future where this controller gets added
+more features in the DMA/data-path that may require bus/chip-level glue
+code to be interfaced properly between Broadcom's different internal
+buses. In which case, the interrupt controller portion of the code could
+be much smaller than the bus/data-path logic, would it still make sense
+to pretend this to be an interrupt controller?
+-- 
+Florian
