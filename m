@@ -1,25 +1,26 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yq6vA-0008Ti-IK
- for linux-mtd@lists.infradead.org; Wed, 06 May 2015 21:32:01 +0000
-Message-ID: <554A882E.5040709@broadcom.com>
-Date: Wed, 6 May 2015 14:31:26 -0700
-From: Florian Fainelli <fainelli@broadcom.com>
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YqCTN-0004Kr-IN
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2015 03:27:43 +0000
+Received: by pabtp1 with SMTP id tp1so27619321pab.2
+ for <linux-mtd@lists.infradead.org>; Wed, 06 May 2015 20:27:20 -0700 (PDT)
+Date: Wed, 6 May 2015 20:27:12 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jonas Gorski <jogo@openwrt.org>
+Subject: Re: [PATCH] mtd: Introduce CONFIG_MTD_RESERVE_END
+Message-ID: <20150507032712.GA6055@norris-Latitude-E6410>
+References: <1430335682-6174-1-git-send-email-ben.shelton@ni.com>
+ <20150429214648.GF32500@ld-irv-0074>
+ <20150430173659.GA30177@bshelton-desktop>
+ <CAOiHx==fAPcji2=zjmO+m6yBX1xgB83XQk4+WgYgop=L4uZq7Q@mail.gmail.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v3 00/10] mtd: nand: add Broadcom NAND controller support
-References: <1430935194-7579-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1430935194-7579-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Scott Branden <sbranden@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
- Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
- Jonathan Richardson <jonathar@broadcom.com>,
- Anatol Pomazao <anatol@google.com>, Gregory Fong <gregory.0xf0@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, Dmitry Torokhov <dtor@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOiHx==fAPcji2=zjmO+m6yBX1xgB83XQk4+WgYgop=L4uZq7Q@mail.gmail.com>
+Cc: Ben Shelton <ben.shelton@ni.com>, David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jeff Westfahl <jeff.westfahl@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,90 +30,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/05/15 10:59, Brian Norris wrote:
-> Hi,
+On Fri, May 01, 2015 at 01:57:13PM +0200, Jonas Gorski wrote:
+> On Thu, Apr 30, 2015 at 7:36 PM, Ben Shelton <ben.shelton@ni.com> wrote:
+> > The reason for doing this as a Kconfig option rather than with an additional
+> > partition is that we use the same .itb boot image (and kernel arguments) for
+> > a series of embedded controllers that have different NAND flash sizes, and we
+> > use the '-' command line parameter to give the root partition all the available
+> > space after the other partitions.
 > 
-> This is version 3 of support for the Broadcom BCM7xxx Set-Top Box NAND
-> controller. This controller has been used in a variety of Broadcom SoCs.
-> 
-> This series now adds support for a few new chips: BCM63138, and the iProc chip
-> family. These add an additional 6 new patches to the original 4. If the only
-> comments end up on the latter 6 patches, the first 4 might be worth merging
-> independently.
+> Wouldn't it make more sense to make cmdlineparts to recognize if it is
+> run on a nand flash that has on-flash BBT enabled, and then reduce the
+> SIZE_REMAINING partition's size by the amount of nand_bbt_descr's
+> maxblocks * erase block size?
 
-This looks great, thanks!
+That's a possibility, but that seems like a bit too much hidden policy
+to add on top of the cmdlineparts format, which is pretty precise.
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+A better improvement, if you're dead set on using cmdlineparts rather
+than some other better parser, might be to support something like:
 
-on 63138DVT:
+  mtdparts=name:-(main),bbt(1M)
 
-[    0.575390] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xf1
-[    0.581885] nand: Micron MT29F1G08ABADAWP
-[    0.585979] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048,
-OOB size: 64
-[    0.593864] brcmstb_nand fffea000.nand: detected 128MiB total, 128KiB
-blocks, 2KiB pages, 164
-[    0.593864]
-[    0.605742] Scanning device for bad blocks
+So the "remaining space" partition will allow for following partitions.
+IOW, you would need to handle this case, which is currently an error:
 
-> 
-> Summary changelog:
-> 
-> v1 -> v2:
->  * add NAND to DTS for BCM7445 / BCM97445SVMB
->  * rename DT binding file to have 'brcm,' prefix
->  * catch DMA mapping errors
->  * fixup timeout / error messages (hex, remove misleading info)
->  * MODULE_LICENSE("GPL v2")
->  * fix incorrect comments
->  * print why we fail, when checking for supported controller revisions
->  * disable prefetch when using Flash DMA (see FIXME); will re-enable once we
->    get a good erased-page verification scheme merged
-> 
-> v2 -> v3:
->  * rebase to v4.1-rc1
->  * add SoC-specific infrastructure, to help support other SoCs:
->    - add BCM63138 support
->    - add iProc/Cygnus support
->  * disable prefetch on v6.1
-> 
-> Brian Norris (8):
->   mtd: nand: add common DT init code
->   Documentation: devicetree: add binding doc for Broadcom NAND
->     controller
->   mtd: nand: add NAND driver for Broadcom STB NAND controller
->   ARM: bcm7445: add NAND to DTS
->   Documentation: devicetree: brcmstb_nand: add 'brcm,nand-soc' bindings
->   mtd: brcmstb_nand: add SoC-specific support
->   mtd: brcsmtb_nand_soc: add support for BCM63138
->   ARM: bcm63138: add NAND DT support
-> 
-> Ray Jui (2):
->   mtd: brcsmtb_nand_soc: add iProc support
->   ARM: dts: cygnus: Enable NAND support for Cygnus
-> 
->  .../devicetree/bindings/mtd/brcm,brcmstb-nand.txt  |  147 ++
->  arch/arm/boot/dts/bcm-cygnus.dtsi                  |   20 +
->  arch/arm/boot/dts/bcm63138.dtsi                    |   17 +
->  arch/arm/boot/dts/bcm7445-bcm97445svmb.dts         |   23 +
->  arch/arm/boot/dts/bcm7445.dtsi                     |   22 +
->  arch/arm/boot/dts/bcm958300k.dts                   |   16 +
->  arch/arm/boot/dts/bcm963138dvt.dts                 |   12 +
->  drivers/mtd/nand/Kconfig                           |    8 +
->  drivers/mtd/nand/Makefile                          |    2 +
->  drivers/mtd/nand/brcmnand.h                        |   56 +
->  drivers/mtd/nand/brcmstb_nand.c                    | 2263 ++++++++++++++++++++
->  drivers/mtd/nand/brcmstb_nand_soc.c                |  244 +++
->  drivers/mtd/nand/nand_base.c                       |   41 +
->  include/linux/mtd/nand.h                           |    5 +
->  14 files changed, 2876 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/brcm,brcmstb-nand.txt
->  create mode 100644 drivers/mtd/nand/brcmnand.h
->  create mode 100644 drivers/mtd/nand/brcmstb_nand.c
->  create mode 100644 drivers/mtd/nand/brcmstb_nand_soc.c
-> 
+        /* test if more partitions are following */
+        if (*s == ',') {
+                if (size == SIZE_REMAINING) {
+                        printk(KERN_ERR ERRP "no partitions allowed after a fill-up partition\n");
+                        return ERR_PTR(-EINVAL);
+                }
+		...
+	}
 
+> Currently your proposed solution would break if boards have differing
+> erase block sizes, or if some have NOR flash, which makes it an option
+> for a rather narrow use case IMHO.
 
--- 
-Florian
+Yeah, consider this a NAK for the current patch.
+
+Brian
