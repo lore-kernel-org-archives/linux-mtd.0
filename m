@@ -1,27 +1,22 @@
-Received: from mout.kundenserver.de ([212.227.126.187])
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YqdVT-0007pG-Rk
- for linux-mtd@lists.infradead.org; Fri, 08 May 2015 08:19:40 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 03/10] mtd: nand: add NAND driver for Broadcom STB NAND
- controller
-Date: Fri, 08 May 2015 10:19:06 +0200
-Message-ID: <5461819.J0QLFmC4Wg@wuerfel>
-In-Reply-To: <20150508020113.GY32500@ld-irv-0074>
-References: <1430935194-7579-1-git-send-email-computersforpeace@gmail.com>
- <2668469.V5VmYNtzFN@wuerfel> <20150508020113.GY32500@ld-irv-0074>
+ id 1Yqf6i-0007S2-JH
+ for linux-mtd@lists.infradead.org; Fri, 08 May 2015 10:02:13 +0000
+Received: by wgic8 with SMTP id c8so41214366wgi.1
+ for <linux-mtd@lists.infradead.org>; Fri, 08 May 2015 03:01:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Scott Branden <sbranden@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
- Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
- Jonathan Richardson <jonathar@broadcom.com>, linux-mtd@lists.infradead.org,
- Gregory Fong <gregory.0xf0@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
- Anatol Pomazao <anatol@google.com>, Dmitry Torokhov <dtor@google.com>
+In-Reply-To: <1425418844-25177-3-git-send-email-fransklaver@gmail.com>
+References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
+ <1425418844-25177-3-git-send-email-fransklaver@gmail.com>
+Date: Fri, 8 May 2015 12:01:49 +0200
+Message-ID: <CAH6sp9Ng2VUUS62eOR-KRjq5CcPeZQL9BMF1nGCD6fkiJa173w@mail.gmail.com>
+Subject: Re: [PATCH 02/60] mtd: core: set some defaults when dev.parent is set
+From: Frans Klaver <fransklaver@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 07 May 2015 19:01:13 Brian Norris wrote:
-> 
-> Would this satisfy you?
-> 
-> From: Brian Norris <computersforpeace@gmail.com>
-> Date: Tue, 5 May 2015 17:46:42 -0700
-> Subject: [PATCH] mtd: brcmstb_nand: fixup endianness assumptions
-> 
-> All users of this controller (MIPS or ARM) have previously used native
-> I/O (__raw{read,write}l()) to access registers. This is normal for the
-> MIPS case, where BMIPS chips often have a boot-strap that configures not
-> only the CPU, but also all the busing, to use a given endianness.
-> However, newer ARM cores support switching to big endian mode at
-> runtime, which would leave us with different bus and CPU endianness. For
-> these cases, we should use the endian-switching accessors, so we
-> continue to access the NAND core in little endian mode.
-> 
-> Suggested by Arnd.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+On Tue, Mar 3, 2015 at 10:39 PM, Frans Klaver <fransklaver@gmail.com> wrote:
+> If a parent device is set, add_mtd_device() has enough knowledge to fill
+> in some sane default values for the module name and owner. Do so if they
+> aren't already set.
+>
+> Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 > ---
-> 
+>  drivers/mtd/mtdcore.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 2093676..487e467 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -412,6 +412,15 @@ int add_mtd_device(struct mtd_info *mtd)
+>         mtd->erasesize_mask = (1 << mtd->erasesize_shift) - 1;
+>         mtd->writesize_mask = (1 << mtd->writesize_shift) - 1;
+>
+> +       if (mtd->dev.parent) {
+> +               if (!mtd->owner)
+> +                       mtd->owner = mtd->dev.parent->driver->owner;
 
-Yes, looks good, thanks!
+Turns out that driver pointer is not guaranteed to be set. I don't
+have the overview on whether this is something that only occurs with
+nandsim, or whether it is possible to have an actual device without a
+driver.
 
-	Arnd
+It is of course easy to prevent the NULL dereference, but that does
+mean the requirement for owner becomes slightly more complex than
+"only necessary if you don't have a parent device". Unless someone has
+objections, I'll probably resend the series with this bit looking more
+like
+
++ if (mtd->dev.parent) {
++        if (!mtd->owner && mtd->dev.parent->driver)
++                mtd->owner = ...
+
+Nandsim seems to not have any issues with this.The drivers I've
+changed to rely on this seem to all have driver set.
+
+Thanks,
+Frans
