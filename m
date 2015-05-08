@@ -1,20 +1,19 @@
-Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yqf6i-0007S2-JH
- for linux-mtd@lists.infradead.org; Fri, 08 May 2015 10:02:13 +0000
-Received: by wgic8 with SMTP id c8so41214366wgi.1
- for <linux-mtd@lists.infradead.org>; Fri, 08 May 2015 03:01:49 -0700 (PDT)
+ id 1YqfJ9-0005Ss-Ew
+ for linux-mtd@lists.infradead.org; Fri, 08 May 2015 10:15:04 +0000
+Received: by widdi4 with SMTP id di4so23817140wid.0
+ for <linux-mtd@lists.infradead.org>; Fri, 08 May 2015 03:14:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1425418844-25177-3-git-send-email-fransklaver@gmail.com>
-References: <1425418844-25177-1-git-send-email-fransklaver@gmail.com>
- <1425418844-25177-3-git-send-email-fransklaver@gmail.com>
-Date: Fri, 8 May 2015 12:01:49 +0200
-Message-ID: <CAH6sp9Ng2VUUS62eOR-KRjq5CcPeZQL9BMF1nGCD6fkiJa173w@mail.gmail.com>
-Subject: Re: [PATCH 02/60] mtd: core: set some defaults when dev.parent is set
+In-Reply-To: <1431001910-4004-1-git-send-email-bert@biot.com>
+References: <1431001910-4004-1-git-send-email-bert@biot.com>
+Date: Fri, 8 May 2015 12:14:40 +0200
+Message-ID: <CAH6sp9OcFXcX6vgkPPJqCE-X1_fKPOBo0Ak2g=pWiWPZuCt5Yg@mail.gmail.com>
+Subject: Re: [PATCH v2] nand: Add NAND driver for Mikrotik RB4xx series boards
 From: Frans Klaver <fransklaver@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
+To: Bert Vermeulen <bert@biot.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,45 +25,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 3, 2015 at 10:39 PM, Frans Klaver <fransklaver@gmail.com> wrote:
-> If a parent device is set, add_mtd_device() has enough knowledge to fill
-> in some sane default values for the module name and owner. Do so if they
-> aren't already set.
->
-> Signed-off-by: Frans Klaver <fransklaver@gmail.com>
-> ---
->  drivers/mtd/mtdcore.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 2093676..487e467 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -412,6 +412,15 @@ int add_mtd_device(struct mtd_info *mtd)
->         mtd->erasesize_mask = (1 << mtd->erasesize_shift) - 1;
->         mtd->writesize_mask = (1 << mtd->writesize_shift) - 1;
->
-> +       if (mtd->dev.parent) {
-> +               if (!mtd->owner)
-> +                       mtd->owner = mtd->dev.parent->driver->owner;
+On Thu, May 7, 2015 at 2:31 PM, Bert Vermeulen <bert@biot.com> wrote:
 
-Turns out that driver pointer is not guaranteed to be set. I don't
-have the overview on whether this is something that only occurs with
-nandsim, or whether it is possible to have an actual device without a
-driver.
+> +static int rb4xx_nand_probe(struct platform_device *pdev)
+> +{
+> +       struct device *spi_dev;
+> +       struct rb4xx_nand_info  *info;
+> +       struct rb4xx_cpld_platform_data *pdata;
+> +       int ret;
+> +
+> +       /*
+> +        * NAND chip is behind the CPLD on SPI bus 0 CS 1. Allow this
+> +        * to silently fail the second time around.
+> +        */
+> +       spi_register_driver(&rb4xx_cpld_driver);
+> +
+> +       /*
+> +        * Getting a handle on the SPI device above will fail the first time,
+> +        * but should succeed whenever that driver gets probed.
+> +        */
+> +       spi_dev = bus_find_device_by_name(&spi_bus_type, NULL, "spi0.1");
+> +       if (!spi_dev)
+> +               return -EPROBE_DEFER;
+> +
+> +       pdata = dev_get_platdata(spi_dev);
+> +       if (!pdata)
+> +               return -ENODATA;
+> +
+> +       info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+> +       if (!info)
+> +               return -ENOMEM;
+> +
+> +       info->gpio_ale = devm_gpiod_get(&pdev->dev, "NAND ALE", GPIOD_OUT_LOW);
+> +       if (IS_ERR(info->gpio_ale)) {
+> +               dev_err(&pdev->dev, "unable to request gpio NAND ALE: %ld\n",
+> +                       PTR_ERR(info->gpio_ale));
+> +               return -ENOENT;
+> +       }
+> +
+> +       info->gpio_cle = devm_gpiod_get(&pdev->dev, "NAND CLE", GPIOD_OUT_LOW);
+> +       if (IS_ERR(info->gpio_cle)) {
+> +               dev_err(&pdev->dev, "unable to request gpio NAND CLE: %ld\n",
+> +                       PTR_ERR(info->gpio_cle));
+> +               return -ENOENT;
+> +       }
+> +
+> +       info->gpio_nce = devm_gpiod_get(&pdev->dev, "NAND NCE", GPIOD_OUT_LOW);
+> +       if (IS_ERR(info->gpio_nce)) {
+> +               dev_err(&pdev->dev, "unable to request gpio NAND NCE: %ld\n",
+> +                       PTR_ERR(info->gpio_nce));
+> +               return -ENOENT;
+> +       }
+> +
+> +       /* Platform GPIO, has no device to manage it. */
+> +       info->gpio_rdy = gpiod_get(NULL, "NAND RDY", GPIOD_IN);
+> +       if (IS_ERR(info->gpio_rdy)) {
+> +               dev_err(&pdev->dev, "unable to request gpio RDY: %ld\n",
+> +                       PTR_ERR(info->gpio_rdy));
+> +               return -ENOENT;
+> +       }
+> +
+> +       info->spi_dev = container_of(spi_dev, struct spi_device, dev);
+> +
+> +       info->chip.priv = info;
+> +       info->mtd.priv  = &info->chip;
+> +       info->mtd.owner = THIS_MODULE;
 
-It is of course easy to prevent the NULL dereference, but that does
-mean the requirement for owner becomes slightly more complex than
-"only necessary if you don't have a parent device". Unless someone has
-objections, I'll probably resend the series with this bit looking more
-like
+If you should respin, could you add
 
-+ if (mtd->dev.parent) {
-+        if (!mtd->owner && mtd->dev.parent->driver)
-+                mtd->owner = ...
+info->mtd.dev.parent = &pdev->dev;
 
-Nandsim seems to not have any issues with this.The drivers I've
-changed to rely on this seem to all have driver set.
+This will have a symlink to the parent device show up in sysfs. Seems
+some people feel rather strongly about that.
 
 Thanks,
 Frans
