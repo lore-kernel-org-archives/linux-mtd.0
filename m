@@ -1,25 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1Yqceb-0003Rv-58
- for linux-mtd@lists.infradead.org; Fri, 08 May 2015 07:25:02 +0000
-Date: Fri, 8 May 2015 09:24:32 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH v2 3/4] mtd: mxc_nand: fix truncate of unaligned oob
- copying
-Message-ID: <20150508072432.GJ12671@pengutronix.de>
-References: <cover.1430636819.git.baruch@tkos.co.il>
- <ff526c6b889682e36e7d086dd5e6dec8936f86d9.1430636819.git.baruch@tkos.co.il>
+Received: from mout.kundenserver.de ([212.227.17.13])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YqdUv-0007ba-Lg
+ for linux-mtd@lists.infradead.org; Fri, 08 May 2015 08:19:06 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 03/10] mtd: nand: add NAND driver for Broadcom STB NAND
+ controller
+Date: Fri, 08 May 2015 10:18:22 +0200
+Message-ID: <13180385.abdHk2aIq9@wuerfel>
+In-Reply-To: <20150507185211.GP32500@ld-irv-0074>
+References: <1430935194-7579-1-git-send-email-computersforpeace@gmail.com>
+ <2668469.V5VmYNtzFN@wuerfel> <20150507185211.GP32500@ld-irv-0074>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff526c6b889682e36e7d086dd5e6dec8936f86d9.1430636819.git.baruch@tkos.co.il>
-Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
- Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
- Sascha Hauer <kernel@pengutronix.de>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+ Scott Branden <sbranden@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
+ Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
+ Jonathan Richardson <jonathar@broadcom.com>, linux-mtd@lists.infradead.org,
+ Gregory Fong <gregory.0xf0@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
+ Anatol Pomazao <anatol@google.com>, Dmitry Torokhov <dtor@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +31,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, May 03, 2015 at 10:18:53AM +0300, Baruch Siach wrote:
-> Copy to/from oob io area might not be aligned to 4 bytes. When 8 bit ECC is
-> used, the buffer size is 26. Add memcpy16_{to,from}io, and use them to avoid
-> truncating the buffer. Prefer memcpy32_{to,from}io when the buffer is properly
-> aligned for better performance.
-Did you measure this performance difference? I doubt it's worth the
-complexity given that we're talking about buffers with a size of up to
-26 bytes.
+On Thursday 07 May 2015 11:52:11 Brian Norris wrote:
+> On Thu, May 07, 2015 at 11:25:29AM +0200, Arnd Bergmann wrote:
+> > On Wednesday 06 May 2015 14:18:47 Ray Jui wrote:
+> > > 
+> > > On 5/6/2015 2:05 PM, Brian Norris wrote:
+> > > > On Wed, May 06, 2015 at 09:17:36PM +0200, Arnd Bergmann wrote:
+> > > >> On Wednesday 06 May 2015 10:59:47 Brian Norris wrote:
+> [...]
+> > There is one twist here that I forgot to mention:
+> > 
+> > This loop in brcmnand_read_by_pio() and the respective one in
+> > brcmnand_write_by_pio():
+> > 
+> > +               if (likely(buf))
+> > +                       for (j = 0; j < FC_WORDS; j++, buf++)
+> > +                               *buf = brcmnand_read_fc(ctrl, j);
+> > 
+> > should be converted to use ioread32_rep().
+> 
+> Huh? That's completely wrong. You're assuming I have a single-register
+> FIFO, when in fact, I have a memory-mapped hardware buffer. Maybe you're
+> looking for memcpy_{to,from}io()? I see this is not optimized at all,
+> though.
 
-Best regards
-Uwe
+Ah, my mistake. So the brcmnand_read_fc() has to just keep using __raw_readl
+here, unlike the other accessors that should (on non-MIPS) use readl_relaxed
+or readl.
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+> 
+> > There are two reasons for
+> > this: 
+> > 
+> > a) accessing the flash data is inherently different from accessing an
+> >    mmio register, and you want the bytes to end up in memory in the same
+> >    order that they are in flash.
+> 
+> Right, which is why it's a separate helper function in my driver, and it
+> will stay with __raw_{read,write}l().
+
+Ok.
+
+> >    ioread32_rep() uses __raw_readl()
+> >    internally for this purpose, except on architectures that have a
+> >    byte flipping hardware on the bus interface.
+> > 
+> > b) The implementation is optimized on ARM and will likely give you
+> >    higher throughput than a manual loop using readl().
+> 
+> You suggested the wrong helper, and the "right" helper is *not*
+> optimized. It even has comments saying "this needs to be optimized".
+
+Yes, I was misreading the code and missed the fact that you implement
+a memcpy, not read-from-fifo in that loop. For the fifo case, the
+optimized implementation is in arch/arm/lib/io-readsl.S, while you
+are right that the ARM implementation of memcpy_fromio is pessimal
+by doing byte sized accesses, so don't use that. Your loop is fine.
+
+> > 
+> > > >> Also, the
+> > > >> compiler can choose to split up the 32-bit word access into byte accesses,
+> > > >> which on most hardware does not do what you want.
+> > > > 
+> > > > Huh? Wouldn't that break just about every driver in existence? And how
+> > > > is writel() any different than __raw_writel() in that regard? From
+> > > > include/asm-generic/io.h:
+> > > > 
+> > > > static inline void writel(u32 value, volatile void __iomem *addr)
+> > > > {
+> > > >         __raw_writel(__cpu_to_le32(value), addr);
+> > > > }
+> > > > 
+> > > > And BTW, splitting isn't possible on ARM. From
+> > > > arch/arm/include/asm/io.h:
+> > > > 
+> > > > static inline void __raw_writel(u32 val, volatile void __iomem *addr)
+> > > > {
+> > > >         asm volatile("str %1, %0"
+> > > >                      : "+Qo" (*(volatile u32 __force *)addr)
+> > > >                      : "r" (val));
+> > > > }
+> > > > 
+> > 
+> > Ah right, we changed that one to simplify KVM support. It used to just
+> > do a volatile store for __raw_* but use an assembly for writel_relaxed().
+> 
+> While the ARM case is rock-solid in my favor, I would appreciate an
+> answer to the asm-generic case too; do you really expect that any sane
+> compiler would break up word-aligned volatile stores into smaller (e.g.,
+> 8-bit) stores? As I said, I think that means every driver written in C
+> is broken, not just the ones using your pet enemies,
+> __raw_{read,write}l().
+
+Yes, we've had actual bugs in the past where it broke from one gcc
+release to the next. The reason it broke there was that the pointer
+was assigned (in violation of the C standard) from a pointer of smaller
+alignment. If you have code that does:
+
+
+	char __iomem *p1 = ...;
+	void __iomem *p2 = p1;
+	int __iomem *p3 = p2;
+	u32 data = __raw_readl(p3);
+
+then gcc may decide that it is not safe to do 32-bit aligned accesses
+because it does not know the alignment of p1.
+
+	Arnd
