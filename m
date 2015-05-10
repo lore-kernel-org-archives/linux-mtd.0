@@ -3,9 +3,9 @@ To: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Thierry Reding <thierry.reding@gmail.com>,
  Stephen Warren <swarren@wwwdotorg.org>
-Subject: [Patch v3 3/5] clk: tegra20: init NDFLASH clock to sensible rate
-Date: Sun, 10 May 2015 20:30:00 +0200
-Message-Id: <1431282602-7137-4-git-send-email-dev@lynxeye.de>
+Subject: [Patch v3 4/5] ARM: tegra: add Tegra20 NAND flash controller node
+Date: Sun, 10 May 2015 20:30:01 +0200
+Message-Id: <1431282602-7137-5-git-send-email-dev@lynxeye.de>
 In-Reply-To: <1431282602-7137-1-git-send-email-dev@lynxeye.de>
 References: <1431282602-7137-1-git-send-email-dev@lynxeye.de>
 Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
@@ -24,26 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Set up the NAND Flash controller clock to run at 150MHz
-instead of the rate set by the bootloader. This is a
-conservative rate which also yields good performance.
+Add basic controller description to be extended
+by individual boards.
 
 Signed-off-by: Lucas Stach <dev@lynxeye.de>
 ---
- drivers/clk/tegra/clk-tegra20.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/tegra20.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/clk/tegra/clk-tegra20.c b/drivers/clk/tegra/clk-tegra20.c
-index 41272dc..f20424d 100644
---- a/drivers/clk/tegra/clk-tegra20.c
-+++ b/drivers/clk/tegra/clk-tegra20.c
-@@ -1063,6 +1063,7 @@ static struct tegra_clk_init_table init_table[] __initdata = {
- 	{TEGRA20_CLK_DISP2, TEGRA20_CLK_PLL_P, 600000000, 0},
- 	{TEGRA20_CLK_GR2D, TEGRA20_CLK_PLL_C, 300000000, 0},
- 	{TEGRA20_CLK_GR3D, TEGRA20_CLK_PLL_C, 300000000, 0},
-+	{TEGRA20_CLK_NDFLASH, TEGRA20_CLK_PLL_P, 150000000, 0},
- 	{TEGRA20_CLK_CLK_MAX, TEGRA20_CLK_CLK_MAX, 0, 0}, /* This MUST be the last entry */
- };
+diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
+index adf6b04..8264cb1 100644
+--- a/arch/arm/boot/dts/tegra20.dtsi
++++ b/arch/arm/boot/dts/tegra20.dtsi
+@@ -373,6 +373,19 @@
+ 		status = "disabled";
+ 	};
  
++	nand: nand@70008000 {
++		compatible = "nvidia,tegra20-nand";
++		reg = <0x70008000 0x100>;
++		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++		clock-names = "nand";
++		resets = <&tegra_car 13>;
++		reset-names = "nand";
++		status = "disabled";
++		#address-cells = <1>;
++		#size-cells = <1>;
++	};
++
+ 	pwm: pwm@7000a000 {
+ 		compatible = "nvidia,tegra20-pwm";
+ 		reg = <0x7000a000 0x100>;
 -- 
 2.1.0
