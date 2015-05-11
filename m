@@ -2,9 +2,9 @@ From: Ben Shelton <ben.shelton@ni.com>
 To: dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  dedekind1@gmail.com, richard@nod.at
-Subject: [PATCH 3/3] mtd: ubi: use 'max_bad_blocks' to compute bad_peb_limit
-Date: Mon, 11 May 2015 10:19:56 -0500
-Message-Id: <1431357596-29959-4-git-send-email-ben.shelton@ni.com>
+Subject: [PATCH 2/3] mtd: nand: implement 'max_bad_blocks' mtd function
+Date: Mon, 11 May 2015 10:19:55 -0500
+Message-Id: <1431357596-29959-3-git-send-email-ben.shelton@ni.com>
 In-Reply-To: <1431357596-29959-1-git-send-email-ben.shelton@ni.com>
 References: <1431357596-29959-1-git-send-email-ben.shelton@ni.com>
 Cc: Jeff Westfahl <jeff.westfahl@ni.com>
@@ -19,40 +19,74 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Jeff Westfahl <jeff.westfahl@ni.com>
 
-Use the MTD function 'max_bad_blocks' to compute the UBI bad_peb_limit,
-if the function is implemented for an MTD and doesn't return an error.
+Implement the new mtd function 'max_bad_blocks'. Use the "bad blocks
+maximum per LUN" field in the ONFI parameter page to find the maximum
+number of bad blocks to reserve for an MTD, taking into account the
+number of LUNs in the NAND device and how many LUNs the MTD spans.
 
-Currently, the UBIFS code computes the bad PEB limit based on the
-worst-case assumption that all the bad blocks could be in a single
-partition.  However, there are cases in which this is too pessimistic,
-such as the case of an ONFI-compliant NAND device that specifies the
-maximum number of bad blocks per LUN.
+>From the ONFI 1.0 spec: "This field contains the maximum number of
+blocks that may be defective at manufacture and over the life of the
+device per LUN. The maximum rating assumes that the host is following
+the block endurance requirements and the ECC requirements reported in
+the parameter page."
 
 Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 ---
- drivers/mtd/ubi/build.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/mtd/nand/nand_base.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index b7f824d..eca8ca6 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -597,6 +597,16 @@ static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
- 	int limit, device_pebs;
- 	uint64_t device_size;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c2e1232..a97d08e 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2884,6 +2884,40 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ }
  
-+	/*
-+	 * If the MTD provides a max_bad_blocks function, use that value. Fall
-+	 * back to max_beb_per1024 if that function returns an error.
-+	 */
-+	if (ubi->mtd->_max_bad_blocks) {
-+		limit = ubi->mtd->_max_bad_blocks(ubi->mtd, 0, ubi->mtd->size);
-+		if (limit > 0)
-+			return limit;
-+	}
+ /**
++ * nand_max_bad_blocks - [MTD Interface] Max number of bad blocks for an mtd
++ * @mtd: MTD device structure
++ * @ofs: offset relative to mtd start
++ * @len: length of mtd
++ */
++static int nand_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
++{
++	struct nand_chip *chip = mtd->priv;
++	uint32_t part_start_block;
++	uint32_t part_end_block;
++	uint32_t part_start_lun;
++	uint32_t part_end_lun;
 +
- 	if (!max_beb_per1024)
- 		return 0;
++	/* ONFI is used to determine the maximum bad block count. */
++	if (!chip->onfi_version)
++		return -ENOTSUPP;
++
++	/* Get the start and end of the partition in erase blocks. */
++	part_start_block = mtd_div_by_eb(ofs, mtd);
++	part_end_block = mtd_div_by_eb(len, mtd) + part_start_block - 1;
++
++	/* Get the start and end LUNs of the partition. */
++	part_start_lun = part_start_block / chip->onfi_params.blocks_per_lun;
++	part_end_lun = part_end_block / chip->onfi_params.blocks_per_lun;
++
++	/*
++	 * Look up the bad blocks per unit and multiply by the number of units
++	 * that the partition spans.
++	 */
++	return chip->onfi_params.bb_per_lun *
++		(part_end_lun - part_start_lun + 1);
++}
++
++/**
+  * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
+  * @mtd: MTD device structure
+  * @chip: nand chip info structure
+@@ -4179,6 +4213,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->_block_isreserved = nand_block_isreserved;
+ 	mtd->_block_isbad = nand_block_isbad;
+ 	mtd->_block_markbad = nand_block_markbad;
++	mtd->_max_bad_blocks = nand_max_bad_blocks;
+ 	mtd->writebufsize = mtd->writesize;
  
+ 	/* propagate ecc info to mtd_info */
 -- 
 2.4.0
