@@ -1,15 +1,13 @@
-From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
- dwmw2@infradead.org, computersforpeace@gmail.com
-Subject: [PATCH v5 04/12] mtd: pxa3xx_nand: add helpers to setup the timings
-Date: Mon, 11 May 2015 16:58:53 +0200
-Message-Id: <1431356341-31640-5-git-send-email-antoine.tenart@free-electrons.com>
-In-Reply-To: <1431356341-31640-1-git-send-email-antoine.tenart@free-electrons.com>
-References: <1431356341-31640-1-git-send-email-antoine.tenart@free-electrons.com>
-Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- jszhang@marvell.com, linux-arm-kernel@lists.infradead.org
+From: Ben Shelton <ben.shelton@ni.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ dedekind1@gmail.com, richard@nod.at
+Subject: [PATCH 3/3] mtd: ubi: use 'max_bad_blocks' to compute bad_peb_limit
+Date: Mon, 11 May 2015 10:19:56 -0500
+Message-Id: <1431357596-29959-4-git-send-email-ben.shelton@ni.com>
+In-Reply-To: <1431357596-29959-1-git-send-email-ben.shelton@ni.com>
+References: <1431357596-29959-1-git-send-email-ben.shelton@ni.com>
+Cc: Jeff Westfahl <jeff.westfahl@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,116 +17,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add helpers to setup the timings in the pxa3xx driver. These helpers
-allow to either make use of the nand framework nand_sdr_timings or the
-pxa3xx specific pxa3xx_nand_host, for compatibility reasons.
+From: Jeff Westfahl <jeff.westfahl@ni.com>
 
-Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+Use the MTD function 'max_bad_blocks' to compute the UBI bad_peb_limit,
+if the function is implemented for an MTD and doesn't return an error.
+
+Currently, the UBIFS code computes the bad PEB limit based on the
+worst-case assumption that all the bad blocks could be in a single
+partition.  However, there are cases in which this is too pessimistic,
+such as the case of an ONFI-compliant NAND device that specifies the
+maximum number of bad blocks per LUN.
+
+Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 91 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 91 insertions(+)
+ drivers/mtd/ubi/build.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 3eb42093db27..b5aad4c46115 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -384,6 +384,97 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
- 	nand_writel(info, NDTR1CS0, ndtr1);
- }
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index b7f824d..eca8ca6 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -597,6 +597,16 @@ static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
+ 	int limit, device_pebs;
+ 	uint64_t device_size;
  
-+static void pxa3xx_nand_set_sdr_timing(struct pxa3xx_nand_host *host,
-+				       const struct nand_sdr_timings *t)
-+{
-+	struct pxa3xx_nand_info *info = host->info_data;
-+	struct nand_chip *chip = &host->chip;
-+	unsigned long nand_clk = clk_get_rate(info->clk);
-+	uint32_t ndtr0, ndtr1;
-+
-+	u32 tCH_min = DIV_ROUND_UP(t->tCH_min, 1000);
-+	u32 tCS_min = DIV_ROUND_UP(t->tCS_min, 1000);
-+	u32 tWH_min = DIV_ROUND_UP(t->tWH_min, 1000);
-+	u32 tWP_min = DIV_ROUND_UP(t->tWC_min - tWH_min, 1000);
-+	u32 tREH_min = DIV_ROUND_UP(t->tREH_min, 1000);
-+	u32 tRP_min = DIV_ROUND_UP(t->tRC_min - tREH_min, 1000);
-+	u32 tR = chip->chip_delay * 1000;
-+	u32 tWHR_min = DIV_ROUND_UP(t->tWHR_min, 1000);
-+	u32 tAR_min = DIV_ROUND_UP(t->tAR_min, 1000);
-+
-+	/* fallback to a default value if tR = 0 */
-+	if (!tR)
-+		tR = 20000;
-+
-+	ndtr0 = NDTR0_tCH(ns2cycle(tCH_min, nand_clk)) |
-+		NDTR0_tCS(ns2cycle(tCS_min, nand_clk)) |
-+		NDTR0_tWH(ns2cycle(tWH_min, nand_clk)) |
-+		NDTR0_tWP(ns2cycle(tWP_min, nand_clk)) |
-+		NDTR0_tRH(ns2cycle(tREH_min, nand_clk)) |
-+		NDTR0_tRP(ns2cycle(tRP_min, nand_clk));
-+
-+	ndtr1 = NDTR1_tR(ns2cycle(tR, nand_clk)) |
-+		NDTR1_tWHR(ns2cycle(tWHR_min, nand_clk)) |
-+		NDTR1_tAR(ns2cycle(tAR_min, nand_clk));
-+
-+	info->ndtr0cs0 = ndtr0;
-+	info->ndtr1cs0 = ndtr1;
-+	nand_writel(info, NDTR0CS0, ndtr0);
-+	nand_writel(info, NDTR1CS0, ndtr1);
-+}
-+
-+static int pxa3xx_nand_init_timings(struct pxa3xx_nand_host *host)
-+{
-+	const struct nand_sdr_timings *timings;
-+	struct nand_chip *chip = &host->chip;
-+	struct pxa3xx_nand_info *info = host->info_data;
-+	const struct pxa3xx_nand_flash *f = NULL;
-+	int mode, id, ntypes, i;
-+
-+	mode = onfi_get_async_timing_mode(chip);
-+	if (mode == ONFI_TIMING_MODE_UNKNOWN) {
-+		ntypes = ARRAY_SIZE(builtin_flash_types);
-+
-+		chip->cmdfunc(host->mtd, NAND_CMD_READID, 0x00, -1);
-+
-+		id = chip->read_byte(host->mtd);
-+		id |= chip->read_byte(host->mtd) << 0x8;
-+
-+		for (i = 0; i < ntypes; i++) {
-+			f = &builtin_flash_types[i];
-+
-+			if (f->chip_id == id)
-+				break;
-+		}
-+
-+		if (i == ntypes) {
-+			dev_err(&info->pdev->dev, "Error: timings not found\n");
-+			return -EINVAL;
-+		}
-+
-+		pxa3xx_nand_set_timing(host, f->timing);
-+
-+		if (f->flash_width == 16) {
-+			info->reg_ndcr |= NDCR_DWIDTH_M;
-+			chip->options |= NAND_BUSWIDTH_16;
-+		}
-+
-+		info->reg_ndcr |= (f->dfc_width == 16) ? NDCR_DWIDTH_C : 0;
-+	} else {
-+		mode = fls(mode) - 1;
-+		if (mode < 0)
-+			mode = 0;
-+
-+		timings = onfi_async_timing_mode_to_sdr_timings(mode);
-+		if (IS_ERR(timings))
-+			return PTR_ERR(timings);
-+
-+		pxa3xx_nand_set_sdr_timing(host, timings);
++	/*
++	 * If the MTD provides a max_bad_blocks function, use that value. Fall
++	 * back to max_beb_per1024 if that function returns an error.
++	 */
++	if (ubi->mtd->_max_bad_blocks) {
++		limit = ubi->mtd->_max_bad_blocks(ubi->mtd, 0, ubi->mtd->size);
++		if (limit > 0)
++			return limit;
 +	}
 +
-+	return 0;
-+}
-+
- /*
-  * Set the data and OOB size, depending on the selected
-  * spare and ECC configuration.
+ 	if (!max_beb_per1024)
+ 		return 0;
+ 
 -- 
 2.4.0
