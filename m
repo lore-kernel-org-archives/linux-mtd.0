@@ -1,32 +1,28 @@
-Date: Mon, 11 May 2015 15:46:46 -0700
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yrx5a-00014k-CP
+ for linux-mtd@lists.infradead.org; Mon, 11 May 2015 23:26:23 +0000
+Received: by pdbqd1 with SMTP id qd1so157880000pdb.2
+ for <linux-mtd@lists.infradead.org>; Mon, 11 May 2015 16:26:00 -0700 (PDT)
+Date: Mon, 11 May 2015 16:25:56 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Stephen Warren <swarren@wwwdotorg.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>
-Subject: Re: [PATCH] ARM: tegra: add "nor-jedec" flash compatible binding
-Message-ID: <20150511224646.GJ32500@ld-irv-0074>
-References: <1431066098-19821-1-git-send-email-zajec5@gmail.com>
- <554CDD8C.7050000@wwwdotorg.org>
- <20150508184317.GZ32500@ld-irv-0074>
- <CAMuHMdXeen3cU2bb8TXxxtdDjgMCU_FS1Yxdu1b-Tq2xE+x0ZA@mail.gmail.com>
- <554D24DA.8060601@wwwdotorg.org>
- <20150508213414.GE32500@ld-irv-0074>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 01/10] mtd: nand: add common DT init code
+Message-ID: <20150511232556.GL32500@ld-irv-0074>
+References: <1430935194-7579-1-git-send-email-computersforpeace@gmail.com>
+ <1430935194-7579-2-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20150508213414.GE32500@ld-irv-0074>
-Cc: Marek Vasut <marex@denx.de>, Alexandre Courbot <gnurou@gmail.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
+In-Reply-To: <1430935194-7579-2-git-send-email-computersforpeace@gmail.com>
+Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+ Scott Branden <sbranden@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
+ Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
  =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-spi <linux-spi@vger.kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-tegra@vger.kernel.org, MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
+ Jonathan Richardson <jonathar@broadcom.com>,
+ Anatol Pomazao <anatol@google.com>, Gregory Fong <gregory.0xf0@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com, Dmitry Torokhov <dtor@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,43 +32,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi DT maintainers,
-
-On Fri, May 08, 2015 at 02:34:14PM -0700, Brian Norris wrote:
-> On Fri, May 08, 2015 at 03:04:26PM -0600, Stephen Warren wrote:
-> > On 05/08/2015 02:57 PM, Geert Uytterhoeven wrote:
-> > >On Fri, May 8, 2015 at 8:43 PM, Brian Norris <computersforpeace@gmail.com> wrote:
-> > >>On Fri, May 08, 2015 at 10:00:12AM -0600, Stephen Warren wrote:
-> > >>>Equally, "nor-jedec" doesn't sound like the right name. It doesn't
-> > >>>differentiate between SPI and parallel NOR flash, which presumably
-> > >>>need different compatible values, since the programming model is
-> > >>>quite different, and the compatible value is supposed to
-> > >>>define/imply the SW-visible programming model.
-> > >>
-> > >>It's definitely for SPI only. There was much discussion about this a
-> > >>few months back. Somewhere along the way, it was mentioned that the
-> > >>context (SPI slave is a child of SPI master) would make this clear. I'm
-> > >>still not sure why we didn't end up with something more descriptive,
-> > >>though, like "spi-nor,nor-jedec".
-> > >
-> > >What about "jedec,spi-nor"?
-> > 
-> > That seems unique enough to me, or the options below if they're
-> > actually applicable.
+On Wed, May 06, 2015 at 10:59:45AM -0700, Brian Norris wrote:
+> These are already-documented common bindings for NAND chips. Let's
+> handle them in nand_base.
 > 
-> That could be OK with me. If I can get the magic blessing from the DT
-> folks, then I'll send patches to update everything.
+> If NAND controller drivers need to act on this data before bringing up
+> the NAND chip (e.g., fill out ECC callback functions, change HW modes,
+> etc.), then they can do so between calling nand_scan_ident() and
+> nand_scan_tail().
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Can I get an 'ack' for this change? We merged a binding for "nor-jedec"
-in 4.1-rc1, with review (but no explicit 'ack') from Mark, and a few
-DTS's are starting to use it. But we're now seeing objections, with a
-request to change this to "jedec,spi-nor". I don't care too much, but I
-can understand Stephen's point.
-
-Anyway, I don't want to go through too many more patch cycles without an
-explicit ack here on the "jedec,spi-nor" binding (i.e.,
-s/nor-jedec/jedec,spi-nor/g). With an ack, then I can make sure the
-binding and current users get changed before 4.1 is minted, and prevent
-other ARM subarchitectures from pulling in the "wrong" binding for 4.2.
+Pushed just this patch to l2-mtd.git, since it's relatively
+uncontroversial and hasn't changed across the first three revisions. It
+should be of benefit to a few other driver writers out there that I've
+reviewed.
 
 Brian
+
+> ---
+>  drivers/mtd/nand/nand_base.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/nand.h     |  5 +++++
+>  2 files changed, 46 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index c2e1232cd45c..c6cf775ee431 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -48,6 +48,7 @@
+>  #include <linux/leds.h>
+>  #include <linux/io.h>
+>  #include <linux/mtd/partitions.h>
+> +#include <linux/of_mtd.h>
+>  
+>  /* Define default oob placement schemes for large and small page devices */
+>  static struct nand_ecclayout nand_oob_8 = {
+> @@ -3798,6 +3799,39 @@ ident_done:
+>  	return type;
+>  }
+>  
+> +static int nand_dt_init(struct mtd_info *mtd, struct nand_chip *chip,
+> +			struct device_node *dn)
+> +{
+> +	int ecc_mode, ecc_strength, ecc_step;
+> +
+> +	if (of_get_nand_bus_width(dn) == 16)
+> +		chip->options |= NAND_BUSWIDTH_16;
+> +
+> +	if (of_get_nand_on_flash_bbt(dn))
+> +		chip->bbt_options |= NAND_BBT_USE_FLASH;
+> +
+> +	ecc_mode = of_get_nand_ecc_mode(dn);
+> +	ecc_strength = of_get_nand_ecc_strength(dn);
+> +	ecc_step = of_get_nand_ecc_step_size(dn);
+> +
+> +	if ((ecc_step >= 0 && !(ecc_strength >= 0)) ||
+> +	    (!(ecc_step >= 0) && ecc_strength >= 0)) {
+> +		pr_err("must set both strength and step size in DT\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (ecc_mode >= 0)
+> +		chip->ecc.mode = ecc_mode;
+> +
+> +	if (ecc_strength >= 0)
+> +		chip->ecc.strength = ecc_strength;
+> +
+> +	if (ecc_step > 0)
+> +		chip->ecc.size = ecc_step;
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * nand_scan_ident - [NAND Interface] Scan for the NAND device
+>   * @mtd: MTD device structure
+> @@ -3815,6 +3849,13 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+>  	int i, nand_maf_id, nand_dev_id;
+>  	struct nand_chip *chip = mtd->priv;
+>  	struct nand_flash_dev *type;
+> +	int ret;
+> +
+> +	if (chip->dn) {
+> +		ret = nand_dt_init(mtd, chip, chip->dn);
+> +		if (ret)
+> +			return ret;
+> +	}
+>  
+>  	/* Set the default functions */
+>  	nand_set_defaults(chip, chip->options & NAND_BUSWIDTH_16);
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 3d4ea7eb2b68..e0f40e12a2c8 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -26,6 +26,8 @@
+>  
+>  struct mtd_info;
+>  struct nand_flash_dev;
+> +struct device_node;
+> +
+>  /* Scan and identify a NAND device */
+>  extern int nand_scan(struct mtd_info *mtd, int max_chips);
+>  /*
+> @@ -542,6 +544,7 @@ struct nand_buffers {
+>   *			flash device
+>   * @IO_ADDR_W:		[BOARDSPECIFIC] address to write the 8 I/O lines of the
+>   *			flash device.
+> + * @dn:			[BOARDSPECIFIC] device node describing this instance
+>   * @read_byte:		[REPLACEABLE] read one byte from the chip
+>   * @read_word:		[REPLACEABLE] read one word from the chip
+>   * @write_byte:		[REPLACEABLE] write a single byte to the chip on the
+> @@ -644,6 +647,8 @@ struct nand_chip {
+>  	void __iomem *IO_ADDR_R;
+>  	void __iomem *IO_ADDR_W;
+>  
+> +	struct device_node *dn;
+> +
+>  	uint8_t (*read_byte)(struct mtd_info *mtd);
+>  	u16 (*read_word)(struct mtd_info *mtd);
+>  	void (*write_byte)(struct mtd_info *mtd, uint8_t byte);
+> -- 
+> 1.9.1
+> 
