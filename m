@@ -1,34 +1,32 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yrw8m-0002bi-6c
- for linux-mtd@lists.infradead.org; Mon, 11 May 2015 22:25:36 +0000
-Received: by pdea3 with SMTP id a3so158428808pde.3
- for <linux-mtd@lists.infradead.org>; Mon, 11 May 2015 15:25:13 -0700 (PDT)
-Date: Mon, 11 May 2015 15:25:05 -0700
+Date: Mon, 11 May 2015 15:46:46 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: "Cantavenera,
- Giuseppe (EXT-Other - DE/Ulm)" <giuseppe.cantavenera.ext@nokia.com>
-Subject: Re: [PATCH] mtd: fix: avoid race condition when accessing
- mtd->usecount
-Message-ID: <20150511222505.GI32500@ld-irv-0074>
-References: <1429611622-2652-1-git-send-email-giuseppe.cantavenera.ext@nokia.com>
- <20150508001012.GV32500@ld-irv-0074>
- <20150508001745.GW32500@ld-irv-0074>
- <20150508002649.GX32500@ld-irv-0074>
- <362FEC998FA6CC42BC5BA5B7BA75E0970D5A08FA@DEMUMBX009.nsn-intra.net>
+To: Stephen Warren <swarren@wwwdotorg.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>
+Subject: Re: [PATCH] ARM: tegra: add "nor-jedec" flash compatible binding
+Message-ID: <20150511224646.GJ32500@ld-irv-0074>
+References: <1431066098-19821-1-git-send-email-zajec5@gmail.com>
+ <554CDD8C.7050000@wwwdotorg.org>
+ <20150508184317.GZ32500@ld-irv-0074>
+ <CAMuHMdXeen3cU2bb8TXxxtdDjgMCU_FS1Yxdu1b-Tq2xE+x0ZA@mail.gmail.com>
+ <554D24DA.8060601@wwwdotorg.org>
+ <20150508213414.GE32500@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <362FEC998FA6CC42BC5BA5B7BA75E0970D5A08FA@DEMUMBX009.nsn-intra.net>
-Cc: "Restelli, Lorenzo \(EXT-Other - DE/Ulm\)" <lorenzo.restelli.ext@nokia.com>,
- zhangxingcai <zhangxingcai@huawei.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- "fengfuqiu@huawei.com" <fengfuqiu@huawei.com>, "Sverdlin,
- Alexander \(Nokia - DE/Ulm\)" <alexander.sverdlin@nokia.com>,
- "tanhaijun@huawei.com" <tanhaijun@huawei.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+In-Reply-To: <20150508213414.GE32500@ld-irv-0074>
+Cc: Marek Vasut <marex@denx.de>, Alexandre Courbot <gnurou@gmail.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-tegra@vger.kernel.org, MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,68 +36,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 11, 2015 at 07:44:26AM +0000, Cantavenera, Giuseppe (EXT-Other - DE/Ulm) wrote:
-> > -----Original Message-----
-> > From: ext Brian Norris [mailto:computersforpeace@gmail.com]
-> > Sent: Friday, May 08, 2015 2:27 AM
-> > To: Cantavenera, Giuseppe (EXT-Other - DE/Ulm)
-> > Cc: linux-mtd@lists.infradead.org; Restelli, Lorenzo (EXT-Other -
-> > DE/Ulm); dwmw2@infradead.org; stable@vger.kernel.org; Sverdlin,
-> > Alexander (Nokia - DE/Ulm); zhangxingcai; fengfuqiu@huawei.com;
-> > tanhaijun@huawei.com; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH] mtd: fix: avoid race condition when accessing mtd-
-> > >usecount
-> > 
-> > On Thu, May 07, 2015 at 05:17:45PM -0700, Brian Norris wrote:
-> > > On Thu, May 07, 2015 at 05:10:12PM -0700, Brian Norris wrote:
-> > > > On Tue, Apr 21, 2015 at 12:20:22PM +0200, Giuseppe Cantavenera
-> > wrote:
-> > > > > @@ -484,7 +486,7 @@ int del_mtd_blktrans_dev(struct
-> > mtd_blktrans_dev *old)
-> > > > >  	if (old->open) {
-> > > > >  		if (old->tr->release)
-> > > > >  			old->tr->release(old);
-> > > > > -		__put_mtd_device(old->mtd);
-> > > > > +		put_mtd_device(old->mtd);
-> > > >
-> > > > This looks wrong. See:
-> > > [...]
-> > > > deregister_mtd_blktrans()
-> > > > |_ mutex_lock(&mtd_table_mutex)
-> > > > |_ tr->remove_dev() -> inftl_remove_dev()
-> > > >    |_ del_mtd_blktrans_dev()
-> > > >       |_ put_mtd_device()
-> > > >          |_ mutex_lock(&mtd_table_mutex) <--- AA deadlock
-> > >
-> > > What's more, this code in del_mtd_blktrans_dev() makes it obvious
-> > that
-> > > this hunk is wrong:
-> > >
-> > > int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
-> > > {
-> > >         unsigned long flags;
-> > >
-> > >         if (mutex_trylock(&mtd_table_mutex)) {
-> > >                 mutex_unlock(&mtd_table_mutex);
-> > >                 BUG();
-> > >         }
-> > > 	...
-> > >
-> > > So rather than a comment, the code is showing that it's a BUG() to
-> > not
-> > > be holding mtd_table_mutex already.
-> > 
-> 
-> Hello,
-> Thanks for your comments and for pointing this out.
-> Definitely yes.. we shouldn't change  del_mtd_blktrans_dev().
-> 
-> > As an alternative to your patch, how about the following?
-> 
-> I think it's the right way to go now.
+Hi DT maintainers,
 
-Can I get a 'Tested-by', or at least an 'Acked-by' for the patch? I
-tested it, but I don't think I can reproduce your original problem very
-easily.
+On Fri, May 08, 2015 at 02:34:14PM -0700, Brian Norris wrote:
+> On Fri, May 08, 2015 at 03:04:26PM -0600, Stephen Warren wrote:
+> > On 05/08/2015 02:57 PM, Geert Uytterhoeven wrote:
+> > >On Fri, May 8, 2015 at 8:43 PM, Brian Norris <computersforpeace@gmail.com> wrote:
+> > >>On Fri, May 08, 2015 at 10:00:12AM -0600, Stephen Warren wrote:
+> > >>>Equally, "nor-jedec" doesn't sound like the right name. It doesn't
+> > >>>differentiate between SPI and parallel NOR flash, which presumably
+> > >>>need different compatible values, since the programming model is
+> > >>>quite different, and the compatible value is supposed to
+> > >>>define/imply the SW-visible programming model.
+> > >>
+> > >>It's definitely for SPI only. There was much discussion about this a
+> > >>few months back. Somewhere along the way, it was mentioned that the
+> > >>context (SPI slave is a child of SPI master) would make this clear. I'm
+> > >>still not sure why we didn't end up with something more descriptive,
+> > >>though, like "spi-nor,nor-jedec".
+> > >
+> > >What about "jedec,spi-nor"?
+> > 
+> > That seems unique enough to me, or the options below if they're
+> > actually applicable.
+> 
+> That could be OK with me. If I can get the magic blessing from the DT
+> folks, then I'll send patches to update everything.
+
+Can I get an 'ack' for this change? We merged a binding for "nor-jedec"
+in 4.1-rc1, with review (but no explicit 'ack') from Mark, and a few
+DTS's are starting to use it. But we're now seeing objections, with a
+request to change this to "jedec,spi-nor". I don't care too much, but I
+can understand Stephen's point.
+
+Anyway, I don't want to go through too many more patch cycles without an
+explicit ack here on the "jedec,spi-nor" binding (i.e.,
+s/nor-jedec/jedec,spi-nor/g). With an ack, then I can make sure the
+binding and current users get changed before 4.1 is minted, and prevent
+other ARM subarchitectures from pulling in the "wrong" binding for 4.2.
 
 Brian
