@@ -1,16 +1,18 @@
-Message-ID: <5550A92A.2040408@free-electrons.com>
-Date: Mon, 11 May 2015 15:05:46 +0200
+Message-ID: <5550AA08.5060001@free-electrons.com>
+Date: Mon, 11 May 2015 15:09:28 +0200
 From: Gregory CLEMENT <gregory.clement@free-electrons.com>
 MIME-Version: 1.0
 To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] ARM: mvebu: add "nor-jedec" flash compatible binding
-References: <1431066023-19479-1-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1431066023-19479-1-git-send-email-zajec5@gmail.com>
+Subject: Re: [PATCH] ARM: dts: kirkwood: add "nor-jedec" flash compatible
+ binding
+References: <1431066079-19725-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1431066079-19725-1-git-send-email-zajec5@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: Andrew Lunn <andrew@lunn.ch>, linux-mtd@lists.infradead.org,
- Jason Cooper <jason@lakedaemon.net>, linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ linux-mtd@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, Simon Guinot <simon.guinot@sequanux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,209 +24,195 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Rafał,
 
-On 08/05/2015 08:20, Rafał Miłecki wrote:
+On 08/05/2015 08:21, Rafał Miłecki wrote:
 > Starting with commits
 > 8ff16cf ("Documentation: devicetree: m25p80: add "nor-jedec" binding")
 > 1103b85 ("mtd: m25p80: bind to "nor-jedec" ID, for auto-detection")
 > we have "nor-jedec" binding indicating support for JEDEC identification.
 
-did you actually check that all the NOR flash referenced in the dts supports
-the JEDEC identification?
+I have the same question that for mvebu: did you actually check that all
+the NOR flash referenced in the dts supports the JEDEC identification?
 
-If it is the case I will add it in mvebu/dt soon.
+Then again, if it id the case I will add it in mvebu/dt soon, unless Andrew,
+Jason or any other developer who has submitted the dts is aware of a restriction
+about applying it.
 
 Thanks,
 
 Gregory
-
-
 > 
 > Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 > ---
->  arch/arm/boot/dts/armada-370-db.dts              | 2 +-
->  arch/arm/boot/dts/armada-370-synology-ds213j.dts | 2 +-
->  arch/arm/boot/dts/armada-375-db.dts              | 2 +-
->  arch/arm/boot/dts/armada-385-db-ap.dts           | 2 +-
->  arch/arm/boot/dts/armada-388-db.dts              | 2 +-
->  arch/arm/boot/dts/armada-388-gp.dts              | 2 +-
->  arch/arm/boot/dts/armada-388-rd.dts              | 2 +-
->  arch/arm/boot/dts/armada-398-db.dts              | 2 +-
->  arch/arm/boot/dts/armada-xp-axpwifiap.dts        | 2 +-
->  arch/arm/boot/dts/armada-xp-db.dts               | 2 +-
->  arch/arm/boot/dts/armada-xp-gp.dts               | 2 +-
->  arch/arm/boot/dts/armada-xp-linksys-mamba.dts    | 2 +-
->  arch/arm/boot/dts/armada-xp-synology-ds414.dts   | 2 +-
->  13 files changed, 13 insertions(+), 13 deletions(-)
+>  arch/arm/boot/dts/kirkwood-b3.dts              | 2 +-
+>  arch/arm/boot/dts/kirkwood-cloudbox.dts        | 2 +-
+>  arch/arm/boot/dts/kirkwood-dir665.dts          | 2 +-
+>  arch/arm/boot/dts/kirkwood-dreamplug.dts       | 2 +-
+>  arch/arm/boot/dts/kirkwood-lsxl.dtsi           | 2 +-
+>  arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts | 2 +-
+>  arch/arm/boot/dts/kirkwood-netxbig.dtsi        | 2 +-
+>  arch/arm/boot/dts/kirkwood-ns2-common.dtsi     | 2 +-
+>  arch/arm/boot/dts/kirkwood-rd88f6192.dts       | 2 +-
+>  arch/arm/boot/dts/kirkwood-synology.dtsi       | 2 +-
+>  arch/arm/boot/dts/kirkwood-t5325.dts           | 2 +-
+>  arch/arm/boot/dts/kirkwood-ts219.dtsi          | 2 +-
+>  12 files changed, 12 insertions(+), 12 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/armada-370-db.dts b/arch/arm/boot/dts/armada-370-db.dts
-> index 19f3bf2..972bfc9 100644
-> --- a/arch/arm/boot/dts/armada-370-db.dts
-> +++ b/arch/arm/boot/dts/armada-370-db.dts
-> @@ -162,7 +162,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "mx25l25635e";
-> +					compatible = "mx25l25635e", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <50000000>;
->  				};
-> diff --git a/arch/arm/boot/dts/armada-370-synology-ds213j.dts b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
-> index b42b767..2d6c2d4 100644
-> --- a/arch/arm/boot/dts/armada-370-synology-ds213j.dts
-> +++ b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
-> @@ -92,7 +92,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "micron,n25q064";
-> +					compatible = "micron,n25q064", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <20000000>;
->  
-> diff --git a/arch/arm/boot/dts/armada-375-db.dts b/arch/arm/boot/dts/armada-375-db.dts
-> index 4eabc9c..db52cdb 100644
-> --- a/arch/arm/boot/dts/armada-375-db.dts
-> +++ b/arch/arm/boot/dts/armada-375-db.dts
-> @@ -81,7 +81,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "n25q128a13";
-> +					compatible = "n25q128a13", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <108000000>;
->  				};
-> diff --git a/arch/arm/boot/dts/armada-385-db-ap.dts b/arch/arm/boot/dts/armada-385-db-ap.dts
-> index 7219ac3..0f9d063 100644
-> --- a/arch/arm/boot/dts/armada-385-db-ap.dts
-> +++ b/arch/arm/boot/dts/armada-385-db-ap.dts
-> @@ -70,7 +70,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "st,m25p128";
-> +					compatible = "st,m25p128", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <54000000>;
->  				};
-> diff --git a/arch/arm/boot/dts/armada-388-db.dts b/arch/arm/boot/dts/armada-388-db.dts
-> index 51d1623..3b5b8b5 100644
-> --- a/arch/arm/boot/dts/armada-388-db.dts
-> +++ b/arch/arm/boot/dts/armada-388-db.dts
-> @@ -73,7 +73,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "w25q32";
-> +					compatible = "w25q32", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <108000000>;
->  				};
-> diff --git a/arch/arm/boot/dts/armada-388-gp.dts b/arch/arm/boot/dts/armada-388-gp.dts
-> index 78514ab..df700e6 100644
-> --- a/arch/arm/boot/dts/armada-388-gp.dts
-> +++ b/arch/arm/boot/dts/armada-388-gp.dts
-> @@ -69,7 +69,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "st,m25p128";
-> +					compatible = "st,m25p128", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <50000000>;
->  					m25p,fast-read;
-> diff --git a/arch/arm/boot/dts/armada-388-rd.dts b/arch/arm/boot/dts/armada-388-rd.dts
-> index 1dc6e23..388fd1d 100644
-> --- a/arch/arm/boot/dts/armada-388-rd.dts
-> +++ b/arch/arm/boot/dts/armada-388-rd.dts
+> diff --git a/arch/arm/boot/dts/kirkwood-b3.dts b/arch/arm/boot/dts/kirkwood-b3.dts
+> index c9247f8..103551f 100644
+> --- a/arch/arm/boot/dts/kirkwood-b3.dts
+> +++ b/arch/arm/boot/dts/kirkwood-b3.dts
 > @@ -74,7 +74,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "st,m25p128";
-> +					compatible = "st,m25p128", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <108000000>;
->  				};
-> diff --git a/arch/arm/boot/dts/armada-398-db.dts b/arch/arm/boot/dts/armada-398-db.dts
-> index bbf8375..ec5ce94 100644
-> --- a/arch/arm/boot/dts/armada-398-db.dts
-> +++ b/arch/arm/boot/dts/armada-398-db.dts
-> @@ -73,7 +73,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <0>;
-> -					compatible = "n25q128a13";
-> +					compatible = "n25q128a13", "nor-jedec";
->  					reg = <0>;
->  					spi-max-frequency = <108000000>;
+>  			m25p16@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "st,m25p16";
+> +				compatible = "st,m25p16", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <40000000>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-cloudbox.dts b/arch/arm/boot/dts/kirkwood-cloudbox.dts
+> index ab6ab49..4a04985 100644
+> --- a/arch/arm/boot/dts/kirkwood-cloudbox.dts
+> +++ b/arch/arm/boot/dts/kirkwood-cloudbox.dts
+> @@ -42,7 +42,7 @@
+>  			flash@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "mxicy,mx25l4005a";
+> +				compatible = "mxicy,mx25l4005a", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <20000000>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-dir665.dts b/arch/arm/boot/dts/kirkwood-dir665.dts
+> index 786959e..94c80a2 100644
+> --- a/arch/arm/boot/dts/kirkwood-dir665.dts
+> +++ b/arch/arm/boot/dts/kirkwood-dir665.dts
+> @@ -93,7 +93,7 @@
+>  			m25p80@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "mxicy,mx25l12805d";
+> +				compatible = "mxicy,mx25l12805d", "nor-jedec";
+>  				spi-max-frequency = <50000000>;
+>  				reg = <0>;
 >  
-> diff --git a/arch/arm/boot/dts/armada-xp-axpwifiap.dts b/arch/arm/boot/dts/armada-xp-axpwifiap.dts
-> index dfd782b..1cbd1e5 100644
-> --- a/arch/arm/boot/dts/armada-xp-axpwifiap.dts
-> +++ b/arch/arm/boot/dts/armada-xp-axpwifiap.dts
-> @@ -140,7 +140,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "n25q128a13";
-> +					compatible = "n25q128a13", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <108000000>;
->  				};
-> diff --git a/arch/arm/boot/dts/armada-xp-db.dts b/arch/arm/boot/dts/armada-xp-db.dts
-> index 1037824..a9fd0ef 100644
-> --- a/arch/arm/boot/dts/armada-xp-db.dts
-> +++ b/arch/arm/boot/dts/armada-xp-db.dts
-> @@ -222,7 +222,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "m25p64";
-> +					compatible = "m25p64", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <20000000>;
->  				};
-> diff --git a/arch/arm/boot/dts/armada-xp-gp.dts b/arch/arm/boot/dts/armada-xp-gp.dts
-> index 565227e..1deec67 100644
-> --- a/arch/arm/boot/dts/armada-xp-gp.dts
-> +++ b/arch/arm/boot/dts/armada-xp-gp.dts
-> @@ -227,7 +227,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "n25q128a13";
-> +					compatible = "n25q128a13", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <108000000>;
->  				};
-> diff --git a/arch/arm/boot/dts/armada-xp-linksys-mamba.dts b/arch/arm/boot/dts/armada-xp-linksys-mamba.dts
-> index a2cf215..e9a746b 100644
-> --- a/arch/arm/boot/dts/armada-xp-linksys-mamba.dts
-> +++ b/arch/arm/boot/dts/armada-xp-linksys-mamba.dts
-> @@ -279,7 +279,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "everspin,mr25h256";
-> +					compatible = "everspin,mr25h256", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <40000000>;
->  				};
-> diff --git a/arch/arm/boot/dts/armada-xp-synology-ds414.dts b/arch/arm/boot/dts/armada-xp-synology-ds414.dts
-> index 6063428..46830e2 100644
-> --- a/arch/arm/boot/dts/armada-xp-synology-ds414.dts
-> +++ b/arch/arm/boot/dts/armada-xp-synology-ds414.dts
-> @@ -114,7 +114,7 @@
->  				spi-flash@0 {
->  					#address-cells = <1>;
->  					#size-cells = <1>;
-> -					compatible = "micron,n25q064";
-> +					compatible = "micron,n25q064", "nor-jedec";
->  					reg = <0>; /* Chip select 0 */
->  					spi-max-frequency = <20000000>;
->  
+> diff --git a/arch/arm/boot/dts/kirkwood-dreamplug.dts b/arch/arm/boot/dts/kirkwood-dreamplug.dts
+> index 6467c79..c9a1c09 100644
+> --- a/arch/arm/boot/dts/kirkwood-dreamplug.dts
+> +++ b/arch/arm/boot/dts/kirkwood-dreamplug.dts
+> @@ -42,7 +42,7 @@
+>  			m25p40@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "mxicy,mx25l1606e";
+> +				compatible = "mxicy,mx25l1606e", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <50000000>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-lsxl.dtsi b/arch/arm/boot/dts/kirkwood-lsxl.dtsi
+> index 5348447..58e197a 100644
+> --- a/arch/arm/boot/dts/kirkwood-lsxl.dtsi
+> +++ b/arch/arm/boot/dts/kirkwood-lsxl.dtsi
+> @@ -74,7 +74,7 @@
+>  			m25p40@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "m25p40";
+> +				compatible = "m25p40", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <25000000>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts b/arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts
+> index f82827d..ae68061 100644
+> --- a/arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts
+> +++ b/arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts
+> @@ -65,7 +65,7 @@
+>  			flash@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "mxicy,mx25l12805d";
+> +				compatible = "mxicy,mx25l12805d", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <50000000>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-netxbig.dtsi b/arch/arm/boot/dts/kirkwood-netxbig.dtsi
+> index b0cfb7c..11d21c0 100644
+> --- a/arch/arm/boot/dts/kirkwood-netxbig.dtsi
+> +++ b/arch/arm/boot/dts/kirkwood-netxbig.dtsi
+> @@ -33,7 +33,7 @@
+>  			flash@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "mxicy,mx25l4005a";
+> +				compatible = "mxicy,mx25l4005a", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <20000000>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-ns2-common.dtsi b/arch/arm/boot/dts/kirkwood-ns2-common.dtsi
+> index fe6c024..b860b7f 100644
+> --- a/arch/arm/boot/dts/kirkwood-ns2-common.dtsi
+> +++ b/arch/arm/boot/dts/kirkwood-ns2-common.dtsi
+> @@ -29,7 +29,7 @@
+>  			flash@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "mxicy,mx25l4005a";
+> +				compatible = "mxicy,mx25l4005a", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <20000000>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-rd88f6192.dts b/arch/arm/boot/dts/kirkwood-rd88f6192.dts
+> index 35a29de..80dff2f 100644
+> --- a/arch/arm/boot/dts/kirkwood-rd88f6192.dts
+> +++ b/arch/arm/boot/dts/kirkwood-rd88f6192.dts
+> @@ -61,7 +61,7 @@
+>  			m25p128@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "st,m25p128";
+> +				compatible = "st,m25p128", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <20000000>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-synology.dtsi b/arch/arm/boot/dts/kirkwood-synology.dtsi
+> index 8be5b2e..48f4b02 100644
+> --- a/arch/arm/boot/dts/kirkwood-synology.dtsi
+> +++ b/arch/arm/boot/dts/kirkwood-synology.dtsi
+> @@ -217,7 +217,7 @@
+>  			m25p80@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "st,m25p80";
+> +				compatible = "st,m25p80", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <20000000>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-t5325.dts b/arch/arm/boot/dts/kirkwood-t5325.dts
+> index 610ec0f..5dbd9a0 100644
+> --- a/arch/arm/boot/dts/kirkwood-t5325.dts
+> +++ b/arch/arm/boot/dts/kirkwood-t5325.dts
+> @@ -88,7 +88,7 @@
+>  			flash@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "st,m25p80";
+> +				compatible = "st,m25p80", "nor-jedec";
+>  				spi-max-frequency = <86000000>;
+>  				reg = <0>;
+>  				mode = <0>;
+> diff --git a/arch/arm/boot/dts/kirkwood-ts219.dtsi b/arch/arm/boot/dts/kirkwood-ts219.dtsi
+> index df7f152..cbb1049 100644
+> --- a/arch/arm/boot/dts/kirkwood-ts219.dtsi
+> +++ b/arch/arm/boot/dts/kirkwood-ts219.dtsi
+> @@ -49,7 +49,7 @@
+>  			m25p128@0 {
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				compatible = "m25p128";
+> +				compatible = "m25p128", "nor-jedec";
+>  				reg = <0>;
+>  				spi-max-frequency = <20000000>;
+>  				mode = <0>;
 > 
 
 
