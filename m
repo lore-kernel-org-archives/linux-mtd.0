@@ -1,27 +1,16 @@
-From: "Cantavenera, Giuseppe (EXT-Other - DE/Ulm)"
- <giuseppe.cantavenera.ext@nokia.com>
-To: ext Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH] mtd: fix: avoid race condition when accessing
- mtd->usecount
-Date: Mon, 11 May 2015 07:44:26 +0000
-Message-ID: <362FEC998FA6CC42BC5BA5B7BA75E0970D5A08FA@DEMUMBX009.nsn-intra.net>
-References: <1429611622-2652-1-git-send-email-giuseppe.cantavenera.ext@nokia.com>
- <20150508001012.GV32500@ld-irv-0074> <20150508001745.GW32500@ld-irv-0074>
- <20150508002649.GX32500@ld-irv-0074>
-In-Reply-To: <20150508002649.GX32500@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <5550A92A.2040408@free-electrons.com>
+Date: Mon, 11 May 2015 15:05:46 +0200
+From: Gregory CLEMENT <gregory.clement@free-electrons.com>
 MIME-Version: 1.0
-Cc: "Restelli, Lorenzo \(EXT-Other - DE/Ulm\)" <lorenzo.restelli.ext@nokia.com>,
- zhangxingcai <zhangxingcai@huawei.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- "fengfuqiu@huawei.com" <fengfuqiu@huawei.com>, "Sverdlin,
- Alexander \(Nokia - DE/Ulm\)" <alexander.sverdlin@nokia.com>,
- "tanhaijun@huawei.com" <tanhaijun@huawei.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] ARM: mvebu: add "nor-jedec" flash compatible binding
+References: <1431066023-19479-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1431066023-19479-1-git-send-email-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: Andrew Lunn <andrew@lunn.ch>, linux-mtd@lists.infradead.org,
+ Jason Cooper <jason@lakedaemon.net>, linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,64 +20,216 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> -----Original Message-----
-> From: ext Brian Norris [mailto:computersforpeace@gmail.com]
-> Sent: Friday, May 08, 2015 2:27 AM
-> To: Cantavenera, Giuseppe (EXT-Other - DE/Ulm)
-> Cc: linux-mtd@lists.infradead.org; Restelli, Lorenzo (EXT-Other -
-> DE/Ulm); dwmw2@infradead.org; stable@vger.kernel.org; Sverdlin,
-> Alexander (Nokia - DE/Ulm); zhangxingcai; fengfuqiu@huawei.com;
-> tanhaijun@huawei.com; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] mtd: fix: avoid race condition when accessing mtd-
-> >usecount
->=20
-> On Thu, May 07, 2015 at 05:17:45PM -0700, Brian Norris wrote:
-> > On Thu, May 07, 2015 at 05:10:12PM -0700, Brian Norris wrote:
-> > > On Tue, Apr 21, 2015 at 12:20:22PM +0200, Giuseppe Cantavenera
-> wrote:
-> > > > @@ -484,7 +486,7 @@ int del_mtd_blktrans_dev(struct
-> mtd_blktrans_dev *old)
-> > > >  	if (old->open) {
-> > > >  		if (old->tr->release)
-> > > >  			old->tr->release(old);
-> > > > -		__put_mtd_device(old->mtd);
-> > > > +		put_mtd_device(old->mtd);
-> > >
-> > > This looks wrong. See:
-> > [...]
-> > > deregister_mtd_blktrans()
-> > > |_ mutex_lock(&mtd_table_mutex)
-> > > |_ tr->remove_dev() -> inftl_remove_dev()
-> > >    |_ del_mtd_blktrans_dev()
-> > >       |_ put_mtd_device()
-> > >          |_ mutex_lock(&mtd_table_mutex) <--- AA deadlock
-> >
-> > What's more, this code in del_mtd_blktrans_dev() makes it obvious
-> that
-> > this hunk is wrong:
-> >
-> > int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
-> > {
-> >         unsigned long flags;
-> >
-> >         if (mutex_trylock(&mtd_table_mutex)) {
-> >                 mutex_unlock(&mtd_table_mutex);
-> >                 BUG();
-> >         }
-> > 	...
-> >
-> > So rather than a comment, the code is showing that it's a BUG() to
-> not
-> > be holding mtd_table_mutex already.
->=20
+Hi Rafał,
 
-Hello,
-Thanks for your comments and for pointing this out.
-Definitely yes.. we shouldn't change  del_mtd_blktrans_dev().
+On 08/05/2015 08:20, Rafał Miłecki wrote:
+> Starting with commits
+> 8ff16cf ("Documentation: devicetree: m25p80: add "nor-jedec" binding")
+> 1103b85 ("mtd: m25p80: bind to "nor-jedec" ID, for auto-detection")
+> we have "nor-jedec" binding indicating support for JEDEC identification.
 
-> As an alternative to your patch, how about the following?
+did you actually check that all the NOR flash referenced in the dts supports
+the JEDEC identification?
 
-I think it's the right way to go now.
+If it is the case I will add it in mvebu/dt soon.
 
-Thanks!
-Giuseppe
+Thanks,
+
+Gregory
+
+
+> 
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+> ---
+>  arch/arm/boot/dts/armada-370-db.dts              | 2 +-
+>  arch/arm/boot/dts/armada-370-synology-ds213j.dts | 2 +-
+>  arch/arm/boot/dts/armada-375-db.dts              | 2 +-
+>  arch/arm/boot/dts/armada-385-db-ap.dts           | 2 +-
+>  arch/arm/boot/dts/armada-388-db.dts              | 2 +-
+>  arch/arm/boot/dts/armada-388-gp.dts              | 2 +-
+>  arch/arm/boot/dts/armada-388-rd.dts              | 2 +-
+>  arch/arm/boot/dts/armada-398-db.dts              | 2 +-
+>  arch/arm/boot/dts/armada-xp-axpwifiap.dts        | 2 +-
+>  arch/arm/boot/dts/armada-xp-db.dts               | 2 +-
+>  arch/arm/boot/dts/armada-xp-gp.dts               | 2 +-
+>  arch/arm/boot/dts/armada-xp-linksys-mamba.dts    | 2 +-
+>  arch/arm/boot/dts/armada-xp-synology-ds414.dts   | 2 +-
+>  13 files changed, 13 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/armada-370-db.dts b/arch/arm/boot/dts/armada-370-db.dts
+> index 19f3bf2..972bfc9 100644
+> --- a/arch/arm/boot/dts/armada-370-db.dts
+> +++ b/arch/arm/boot/dts/armada-370-db.dts
+> @@ -162,7 +162,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "mx25l25635e";
+> +					compatible = "mx25l25635e", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <50000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-370-synology-ds213j.dts b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
+> index b42b767..2d6c2d4 100644
+> --- a/arch/arm/boot/dts/armada-370-synology-ds213j.dts
+> +++ b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
+> @@ -92,7 +92,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "micron,n25q064";
+> +					compatible = "micron,n25q064", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <20000000>;
+>  
+> diff --git a/arch/arm/boot/dts/armada-375-db.dts b/arch/arm/boot/dts/armada-375-db.dts
+> index 4eabc9c..db52cdb 100644
+> --- a/arch/arm/boot/dts/armada-375-db.dts
+> +++ b/arch/arm/boot/dts/armada-375-db.dts
+> @@ -81,7 +81,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "n25q128a13";
+> +					compatible = "n25q128a13", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-385-db-ap.dts b/arch/arm/boot/dts/armada-385-db-ap.dts
+> index 7219ac3..0f9d063 100644
+> --- a/arch/arm/boot/dts/armada-385-db-ap.dts
+> +++ b/arch/arm/boot/dts/armada-385-db-ap.dts
+> @@ -70,7 +70,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "st,m25p128";
+> +					compatible = "st,m25p128", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <54000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-388-db.dts b/arch/arm/boot/dts/armada-388-db.dts
+> index 51d1623..3b5b8b5 100644
+> --- a/arch/arm/boot/dts/armada-388-db.dts
+> +++ b/arch/arm/boot/dts/armada-388-db.dts
+> @@ -73,7 +73,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "w25q32";
+> +					compatible = "w25q32", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-388-gp.dts b/arch/arm/boot/dts/armada-388-gp.dts
+> index 78514ab..df700e6 100644
+> --- a/arch/arm/boot/dts/armada-388-gp.dts
+> +++ b/arch/arm/boot/dts/armada-388-gp.dts
+> @@ -69,7 +69,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "st,m25p128";
+> +					compatible = "st,m25p128", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <50000000>;
+>  					m25p,fast-read;
+> diff --git a/arch/arm/boot/dts/armada-388-rd.dts b/arch/arm/boot/dts/armada-388-rd.dts
+> index 1dc6e23..388fd1d 100644
+> --- a/arch/arm/boot/dts/armada-388-rd.dts
+> +++ b/arch/arm/boot/dts/armada-388-rd.dts
+> @@ -74,7 +74,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "st,m25p128";
+> +					compatible = "st,m25p128", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-398-db.dts b/arch/arm/boot/dts/armada-398-db.dts
+> index bbf8375..ec5ce94 100644
+> --- a/arch/arm/boot/dts/armada-398-db.dts
+> +++ b/arch/arm/boot/dts/armada-398-db.dts
+> @@ -73,7 +73,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <0>;
+> -					compatible = "n25q128a13";
+> +					compatible = "n25q128a13", "nor-jedec";
+>  					reg = <0>;
+>  					spi-max-frequency = <108000000>;
+>  
+> diff --git a/arch/arm/boot/dts/armada-xp-axpwifiap.dts b/arch/arm/boot/dts/armada-xp-axpwifiap.dts
+> index dfd782b..1cbd1e5 100644
+> --- a/arch/arm/boot/dts/armada-xp-axpwifiap.dts
+> +++ b/arch/arm/boot/dts/armada-xp-axpwifiap.dts
+> @@ -140,7 +140,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "n25q128a13";
+> +					compatible = "n25q128a13", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-xp-db.dts b/arch/arm/boot/dts/armada-xp-db.dts
+> index 1037824..a9fd0ef 100644
+> --- a/arch/arm/boot/dts/armada-xp-db.dts
+> +++ b/arch/arm/boot/dts/armada-xp-db.dts
+> @@ -222,7 +222,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "m25p64";
+> +					compatible = "m25p64", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <20000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-xp-gp.dts b/arch/arm/boot/dts/armada-xp-gp.dts
+> index 565227e..1deec67 100644
+> --- a/arch/arm/boot/dts/armada-xp-gp.dts
+> +++ b/arch/arm/boot/dts/armada-xp-gp.dts
+> @@ -227,7 +227,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "n25q128a13";
+> +					compatible = "n25q128a13", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-xp-linksys-mamba.dts b/arch/arm/boot/dts/armada-xp-linksys-mamba.dts
+> index a2cf215..e9a746b 100644
+> --- a/arch/arm/boot/dts/armada-xp-linksys-mamba.dts
+> +++ b/arch/arm/boot/dts/armada-xp-linksys-mamba.dts
+> @@ -279,7 +279,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "everspin,mr25h256";
+> +					compatible = "everspin,mr25h256", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <40000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-xp-synology-ds414.dts b/arch/arm/boot/dts/armada-xp-synology-ds414.dts
+> index 6063428..46830e2 100644
+> --- a/arch/arm/boot/dts/armada-xp-synology-ds414.dts
+> +++ b/arch/arm/boot/dts/armada-xp-synology-ds414.dts
+> @@ -114,7 +114,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "micron,n25q064";
+> +					compatible = "micron,n25q064", "nor-jedec";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <20000000>;
+>  
+> 
+
+
+-- 
+Gregory Clement, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
