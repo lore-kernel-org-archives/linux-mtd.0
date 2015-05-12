@@ -1,16 +1,16 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsHol-0002AT-AX
- for linux-mtd@lists.infradead.org; Tue, 12 May 2015 21:34:24 +0000
-Received: by pacwv17 with SMTP id wv17so27147797pac.0
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 14:33:58 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: readtest: don't clobber error reports
-Date: Tue, 12 May 2015 14:33:44 -0700
-Message-Id: <1431466424-32001-1-git-send-email-computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>
+Received: from mail-bn1on0135.outbound.protection.outlook.com
+ ([157.56.110.135] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YsIjU-0001BZ-1n
+ for linux-mtd@lists.infradead.org; Tue, 12 May 2015 22:33:00 +0000
+From: Han Xu <b45815@freescale.com>
+To: <computersforpeace@gmail.com>, <shijie.huang@intel.com>
+Subject: [PATCH V2] mtd: fsl-quadspi: Access multiple chips simultaneously
+Date: Tue, 12 May 2015 17:27:44 -0500
+Message-ID: <1431469664-20084-1-git-send-email-b45815@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, han.xu@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +20,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 2a6a28e7922c ("mtd: Make MTD tests cancelable") accidentally
-clobbered any read failure reports.
+Add supports for simultaneous access to multiple chips. Need to lock
+the mutex before any quad spi operations and unlock the mutex after
+operations complete.
 
-Coverity CID #1296020
+Rebase to latest l2-mtd code and resend.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Han Xu <b45815@freescale.com>
 ---
-regression in v4.1-rc1, so I'll probably want to queue this for 4.1
+ drivers/mtd/spi-nor/fsl-quadspi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
- drivers/mtd/tests/readtest.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/tests/readtest.c b/drivers/mtd/tests/readtest.c
-index a3196b750a22..58df07acdbdb 100644
---- a/drivers/mtd/tests/readtest.c
-+++ b/drivers/mtd/tests/readtest.c
-@@ -191,9 +191,11 @@ static int __init mtd_readtest_init(void)
- 				err = ret;
- 		}
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 52a872f..93c1cde 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -26,6 +26,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/spi-nor.h>
++#include <linux/mutex.h>
  
--		err = mtdtest_relax();
--		if (err)
-+		ret = mtdtest_relax();
-+		if (ret) {
-+			err = ret;
- 			goto out;
-+		}
- 	}
+ /* The registers */
+ #define QUADSPI_MCR			0x00
+@@ -233,6 +234,7 @@ struct fsl_qspi {
+ 	u32 clk_rate;
+ 	unsigned int chip_base_addr; /* We may support two chips. */
+ 	bool has_second_chip;
++	struct mutex lock;
+ };
  
- 	if (err)
+ static inline int is_vybrid_qspi(struct fsl_qspi *q)
+@@ -761,6 +763,7 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+ 	struct fsl_qspi *q = nor->priv;
+ 	int ret;
+ 
++	mutex_lock(&q->lock);
+ 	ret = clk_enable(q->clk_en);
+ 	if (ret)
+ 		return ret;
+@@ -781,6 +784,7 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+ 
+ 	clk_disable(q->clk);
+ 	clk_disable(q->clk_en);
++	mutex_unlock(&q->lock);
+ }
+ 
+ static int fsl_qspi_probe(struct platform_device *pdev)
+@@ -864,6 +868,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	if (of_get_property(np, "fsl,qspi-has-second-chip", NULL))
+ 		q->has_second_chip = true;
+ 
++	mutex_init(&q->lock);
++
+ 	/* iterate the subnodes. */
+ 	for_each_available_child_of_node(dev->of_node, np) {
+ 		char modalias[40];
 -- 
 1.9.1
