@@ -1,22 +1,20 @@
-Date: Tue, 12 May 2015 16:39:43 +0200
-From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH v5 05/12] mtd: pxa3xx_nand: rework flash detection and
- timing setup
-Message-ID: <20150512143943.GC32171@kwain>
-References: <1431356341-31640-1-git-send-email-antoine.tenart@free-electrons.com>
- <1431356341-31640-6-git-send-email-antoine.tenart@free-electrons.com>
- <555128F0.30702@vanguardiasur.com.ar>
+Message-ID: <55522C30.3060002@nokia.com>
+Date: Tue, 12 May 2015 18:37:04 +0200
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <555128F0.30702@vanguardiasur.com.ar>
-Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- jszhang@marvell.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
+To: ext Brian Norris <computersforpeace@gmail.com>,
+ Giuseppe Cantavenera <giuseppe.cantavenera.ext@nokia.com>
+Subject: Re: [PATCH] mtd: fix: avoid race condition when accessing
+ mtd->usecount
+References: <1429611622-2652-1-git-send-email-giuseppe.cantavenera.ext@nokia.com>
+ <20150508001012.GV32500@ld-irv-0074> <20150508001745.GW32500@ld-irv-0074>
+ <20150508002649.GX32500@ld-irv-0074>
+In-Reply-To: <20150508002649.GX32500@ld-irv-0074>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Cc: lorenzo.restelli.ext@nokia.com, zhangxingcai <zhangxingcai@huawei.com>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org, fengfuqiu@huawei.com,
+ linux-mtd@lists.infradead.org, tanhaijun@huawei.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +24,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel,
-
-On Mon, May 11, 2015 at 07:10:56PM -0300, Ezequiel Garcia wrote:
+On 08/05/15 02:26, ext Brian Norris wrote:
+> As an alternative to your patch, how about the following?
 > 
-> On 05/11/2015 11:58 AM, Antoine Tenart wrote:
-> [..]
-> > -
-> > -	/* calculate flash information */
-> > -	host->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
-> > -
+> BTW, this does still leave a usecount race in
+> drivers/mtd/maps/vmu-flash.c. But that driver should really be using
+> mtd->_get_device(), if it actually wants its own refcount.
 > 
-> [..]
-> > @@ -1732,6 +1669,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
-> >  		host->mtd = mtd;
-> >  		host->cs = cs;
-> >  		host->info_data = info;
-> > +		host->read_id_bytes = 4;
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+
+Acked-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+
+> ---
 > 
-> Are you sure this is correct? The value is set according to the page
-> size before this patch.
-
-Before reading the ID, the pxa3xx driver uses a default configuration,
-builtin_flash_types[0], which defines a page size of 2048 leading to set
-host->read_id_bytes to 4.
-
-I'm using this default value here.
-
-There might be an issue, as host->read_id_bytes isn't updated after
-reading the ID (and getting the actual page size). I don't know if this
-can be a problem. I can modify pxa3xx_nand_config_flash() to update
-host->read_id_bytes if needed. What do you think?
-
-Antoine
-
--- 
-Antoine Ténart, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> index 2b0c52870999..df7c6c70757a 100644
+> --- a/drivers/mtd/mtd_blkdevs.c
+> +++ b/drivers/mtd/mtd_blkdevs.c
+> @@ -197,6 +197,7 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+>  		return -ERESTARTSYS; /* FIXME: busy loop! -arnd*/
+>  
+>  	mutex_lock(&dev->lock);
+> +	mutex_lock(&mtd_table_mutex);
+>  
+>  	if (dev->open)
+>  		goto unlock;
+> @@ -220,6 +221,7 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+>  
+>  unlock:
+>  	dev->open++;
+> +	mutex_unlock(&mtd_table_mutex);
+>  	mutex_unlock(&dev->lock);
+>  	blktrans_dev_put(dev);
+>  	return ret;
+> @@ -230,6 +232,7 @@ error_release:
+>  error_put:
+>  	module_put(dev->tr->owner);
+>  	kref_put(&dev->ref, blktrans_dev_release);
+> +	mutex_unlock(&mtd_table_mutex);
+>  	mutex_unlock(&dev->lock);
+>  	blktrans_dev_put(dev);
+>  	return ret;
+> @@ -243,6 +246,7 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
+>  		return;
+>  
+>  	mutex_lock(&dev->lock);
+> +	mutex_lock(&mtd_table_mutex);
+>  
+>  	if (--dev->open)
+>  		goto unlock;
+> @@ -256,6 +260,7 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
+>  		__put_mtd_device(dev->mtd);
+>  	}
+>  unlock:
+> +	mutex_unlock(&mtd_table_mutex);
+>  	mutex_unlock(&dev->lock);
+>  	blktrans_dev_put(dev);
+>  }
