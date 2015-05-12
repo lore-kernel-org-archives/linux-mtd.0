@@ -1,21 +1,22 @@
-Received: from mail-by2on0146.outbound.protection.outlook.com
- ([207.46.100.146] helo=na01-by2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsAfY-0001SG-3A
- for linux-mtd@lists.infradead.org; Tue, 12 May 2015 13:56:24 +0000
-Message-ID: <1431438951.16357.490.camel@freescale.com>
-Subject: Re: [PATCH 1/1] [RESEND] IFC: Change IO accessor based on endianness
-From: Scott Wood <scottwood@freescale.com>
-To: Bharat Bhushan <r65777@rhuath.am.freescale.net>
-Date: Tue, 12 May 2015 08:55:51 -0500
-In-Reply-To: <1431420591-20453-1-git-send-email-r65777@rhuath.am.freescale.net>
-References: <1431420591-20453-1-git-send-email-r65777@rhuath.am.freescale.net>
-Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 12 May 2015 16:39:43 +0200
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH v5 05/12] mtd: pxa3xx_nand: rework flash detection and
+ timing setup
+Message-ID: <20150512143943.GC32171@kwain>
+References: <1431356341-31640-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1431356341-31640-6-git-send-email-antoine.tenart@free-electrons.com>
+ <555128F0.30702@vanguardiasur.com.ar>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
- prabhakar@freescale.com, arnd@arndb.de,
- Jaiprakash Singh <b44839@freescale.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <555128F0.30702@vanguardiasur.com.ar>
+Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ jszhang@marvell.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2015-05-12 at 03:49 -0500, Bharat Bhushan wrote:
-> From: Jaiprakash Singh <b44839@freescale.com>
-> 
-> IFC IO accressor are set at run time based
-> on IFC IP registers endianness.IFC node in
-> DTS file contains information about
-> endianness.
-> 
-> Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
-> ---
->  Tested on T1040RDB, LS2085a, LS1
-> 
->  .../bindings/memory-controllers/fsl/ifc.txt        |    3 +
->  drivers/memory/fsl_ifc.c                           |   43 +++-
->  drivers/mtd/nand/fsl_ifc_nand.c                    |  258 ++++++++++----------
->  include/linux/fsl_ifc.h                            |   50 ++++
->  4 files changed, 213 insertions(+), 141 deletions(-)
+Ezequiel,
 
-As before,
-Acked-by: Scott Wood <scottwood@freescale.com>
+On Mon, May 11, 2015 at 07:10:56PM -0300, Ezequiel Garcia wrote:
+> 
+> On 05/11/2015 11:58 AM, Antoine Tenart wrote:
+> [..]
+> > -
+> > -	/* calculate flash information */
+> > -	host->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
+> > -
+> 
+> [..]
+> > @@ -1732,6 +1669,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+> >  		host->mtd = mtd;
+> >  		host->cs = cs;
+> >  		host->info_data = info;
+> > +		host->read_id_bytes = 4;
+> 
+> Are you sure this is correct? The value is set according to the page
+> size before this patch.
 
-This touches MTD as well as dependencies outside MTD -- which tree
-should it go through?
+Before reading the ID, the pxa3xx driver uses a default configuration,
+builtin_flash_types[0], which defines a page size of 2048 leading to set
+host->read_id_bytes to 4.
 
--Scott
+I'm using this default value here.
+
+There might be an issue, as host->read_id_bytes isn't updated after
+reading the ID (and getting the actual page size). I don't know if this
+can be a problem. I can modify pxa3xx_nand_config_flash() to update
+host->read_id_bytes if needed. What do you think?
+
+Antoine
+
+-- 
+Antoine Ténart, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
