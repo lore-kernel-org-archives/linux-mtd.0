@@ -1,29 +1,24 @@
-From: "Cantavenera, Giuseppe (EXT-Other - DE/Ulm)"
- <giuseppe.cantavenera.ext@nokia.com>
-To: ext Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH] mtd: fix: avoid race condition when accessing
- mtd->usecount
-Date: Tue, 12 May 2015 06:38:34 +0000
-Message-ID: <362FEC998FA6CC42BC5BA5B7BA75E0970D5A1D1E@DEMUMBX009.nsn-intra.net>
-References: <1429611622-2652-1-git-send-email-giuseppe.cantavenera.ext@nokia.com>
- <20150508001012.GV32500@ld-irv-0074> <20150508001745.GW32500@ld-irv-0074>
- <20150508002649.GX32500@ld-irv-0074>
- <362FEC998FA6CC42BC5BA5B7BA75E0970D5A08FA@DEMUMBX009.nsn-intra.net>
- <20150511222505.GI32500@ld-irv-0074>
-In-Reply-To: <20150511222505.GI32500@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-la0-x230.google.com ([2a00:1450:4010:c03::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ys94H-0004TU-23
+ for linux-mtd@lists.infradead.org; Tue, 12 May 2015 12:13:49 +0000
+Received: by labbd9 with SMTP id bd9so4103455lab.2
+ for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 05:13:26 -0700 (PDT)
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [Jfs-discussion] [PATCH] fs: cleanup slight list_entry abuse
+References: <1426764485-13637-1-git-send-email-linux@rasmusvillemoes.dk>
+ <550AF51C.9000600@plexistor.com> <550AFF79.1030105@oracle.com>
+Date: Tue, 12 May 2015 14:13:25 +0200
+In-Reply-To: <550AFF79.1030105@oracle.com> (Dave Kleikamp's message of "Thu,
+ 19 Mar 2015 11:55:21 -0500")
+Message-ID: <87mw1a6lju.fsf@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Cc: "Restelli, Lorenzo \(EXT-Other - DE/Ulm\)" <lorenzo.restelli.ext@nokia.com>,
- zhangxingcai <zhangxingcai@huawei.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- "fengfuqiu@huawei.com" <fengfuqiu@huawei.com>, "Sverdlin,
- Alexander \(Nokia - DE/Ulm\)" <alexander.sverdlin@nokia.com>,
- "tanhaijun@huawei.com" <tanhaijun@huawei.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: codalist@TELEMANN.coda.cs.cmu.edu, Boaz Harrosh <boaz@plexistor.com>,
+ jfs-discussion@lists.sourceforge.net, linux-ntfs-dev@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org, Dave Kleikamp <dave.kleikamp@oracle.com>,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,48 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> -----Original Message-----
-> From: ext Brian Norris [mailto:computersforpeace@gmail.com]
-> Sent: Tuesday, May 12, 2015 12:25 AM
-> To: Cantavenera, Giuseppe (EXT-Other - DE/Ulm)
-> Cc: linux-mtd@lists.infradead.org; Restelli, Lorenzo (EXT-Other -
-> DE/Ulm); dwmw2@infradead.org; stable@vger.kernel.org; Sverdlin,
-> Alexander (Nokia - DE/Ulm); zhangxingcai; fengfuqiu@huawei.com;
-> tanhaijun@huawei.com; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] mtd: fix: avoid race condition when accessing mtd-
-> >usecount
->=20
-> On Mon, May 11, 2015 at 07:44:26AM +0000, Cantavenera, Giuseppe (EXT-
-> Other - DE/Ulm) wrote:
-> > > -----Original Message-----
-> > > From: ext Brian Norris [mailto:computersforpeace@gmail.com]
-> > > Sent: Friday, May 08, 2015 2:27 AM
-> > > To: Cantavenera, Giuseppe (EXT-Other - DE/Ulm)
-> > > Cc: linux-mtd@lists.infradead.org; Restelli, Lorenzo (EXT-Other -
-> > > DE/Ulm); dwmw2@infradead.org; stable@vger.kernel.org; Sverdlin,
-> > > Alexander (Nokia - DE/Ulm); zhangxingcai; fengfuqiu@huawei.com;
-> > > tanhaijun@huawei.com; linux-kernel@vger.kernel.org
-> > > Subject: Re: [PATCH] mtd: fix: avoid race condition when accessing
-> mtd-
-> > > >usecount
-> > >
-> > > On Thu, May 07, 2015 at 05:17:45PM -0700, Brian Norris wrote:
-> > > > On Thu, May 07, 2015 at 05:10:12PM -0700, Brian Norris wrote:
-> > > > > On Tue, Apr 21, 2015 at 12:20:22PM +0200, Giuseppe Cantavenera
-> > > wrote:
+On Thu, Mar 19 2015, Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
 
-> Can I get a 'Tested-by', or at least an 'Acked-by' for the patch? I
-> tested it, but I don't think I can reproduce your original problem very
-> easily.
->=20
-> Brian
+> On 03/19/2015 11:11 AM, Boaz Harrosh wrote:
+>> On 03/19/2015 01:28 PM, Rasmus Villemoes wrote:
+>>> list_entry is just a wrapper for container_of, but it is arguably
+>>> wrong (and slightly confusing) to use it when the pointed-to struct
+>>> member is not a struct list_head. Use container_of directly instead.
+>>>
+>>> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+>>> ---
+>>> Most of these predate git. If I'm the only one who has been confused
+>>> by this in 10 years, maybe it's not worth the churn.
+>>>
+>> 
+>> No you are not alone here. I have seen this once as well but did not have
+>> the gumption to send a fix. (The sysv.h one)
+>> 
+>> I totally agree with this patch. (So many of them, bread crumbs of copy/paste
+>> for you ;0)
+>
+> I'm sure that was the case with jfs.
+>
+>> 
+>> Reviewed-by: Boaz Harrosh <boaz@plexistor.com>
+>
+> Acked-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 
-Hello Brian,
+Al, any chance you'd take this through the vfs tree?
 
-We were able to do some long runs last night and as expected
-this patch seems to address the issue pretty well.
-
-Thanks,
-Giuseppe
-
-Tested-by: Giuseppe Cantavenera <giuseppe.cantavenera.ext@nokia.com>
+Rasmus
