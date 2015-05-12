@@ -1,9 +1,10 @@
 MIME-Version: 1.0
-In-Reply-To: <5550A92A.2040408@free-electrons.com>
+In-Reply-To: <CACna6rz9cisJt492kPyzX2nbvsSCig-ubhr6eGAxnxHzUNTvag@mail.gmail.com>
 References: <1431066023-19479-1-git-send-email-zajec5@gmail.com>
  <5550A92A.2040408@free-electrons.com>
-Date: Tue, 12 May 2015 07:00:41 +0200
-Message-ID: <CACna6rz9cisJt492kPyzX2nbvsSCig-ubhr6eGAxnxHzUNTvag@mail.gmail.com>
+ <CACna6rz9cisJt492kPyzX2nbvsSCig-ubhr6eGAxnxHzUNTvag@mail.gmail.com>
+Date: Tue, 12 May 2015 07:03:19 +0200
+Message-ID: <CACna6rw8nXUO3B+eXZ4dj+Byy9LKCmVMwEqN7OYBjrnqJRXLcQ@mail.gmail.com>
 Subject: Re: [PATCH] ARM: mvebu: add "nor-jedec" flash compatible binding
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 To: Gregory CLEMENT <gregory.clement@free-electrons.com>
@@ -23,22 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11 May 2015 at 15:05, Gregory CLEMENT
-<gregory.clement@free-electrons.com> wrote:
-> On 08/05/2015 08:20, Rafa=C5=82 Mi=C5=82ecki wrote:
->> Starting with commits
->> 8ff16cf ("Documentation: devicetree: m25p80: add "nor-jedec" binding")
->> 1103b85 ("mtd: m25p80: bind to "nor-jedec" ID, for auto-detection")
->> we have "nor-jedec" binding indicating support for JEDEC identification.
+On 12 May 2015 at 07:00, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+> On 11 May 2015 at 15:05, Gregory CLEMENT
+> <gregory.clement@free-electrons.com> wrote:
+>> On 08/05/2015 08:20, Rafa=C5=82 Mi=C5=82ecki wrote:
+>>> Starting with commits
+>>> 8ff16cf ("Documentation: devicetree: m25p80: add "nor-jedec" binding")
+>>> 1103b85 ("mtd: m25p80: bind to "nor-jedec" ID, for auto-detection")
+>>> we have "nor-jedec" binding indicating support for JEDEC identification=
+.
+>>
+>> did you actually check that all the NOR flash referenced in the dts supp=
+orts
+>> the JEDEC identification?
 >
-> did you actually check that all the NOR flash referenced in the dts suppo=
-rts
-> the JEDEC identification?
+> Yes, I did, yes, they do.
 
-Yes, I did, yes, they do.
+Oh wait, I just realized I also modified "mr25h256" about which one
+I'm not sure. I'll drop this one in the V2 unless I find a proper
+documentation meanwhile.
 
-
-> If it is the case I will add it in mvebu/dt soon.
-
-Please drop this patch as there is a discussion (in tegra patch) about
-renaming the binding to "jedec,spi-nor".
+--=20
+Rafa=C5=82
