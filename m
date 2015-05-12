@@ -1,16 +1,16 @@
-Received: from mail-ig0-x234.google.com ([2607:f8b0:4001:c05::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsG0z-0001Pw-4t
- for linux-mtd@lists.infradead.org; Tue, 12 May 2015 19:38:53 +0000
-Received: by igbyr2 with SMTP id yr2so118565455igb.0
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 12:38:31 -0700 (PDT)
-MIME-Version: 1.0
-Date: Tue, 12 May 2015 22:38:31 +0300
-Message-ID: <CAHafNYtURNYAxuYROnEU++1c=uF2Jq-oFEKTkDhUPQtdCnpcHQ@mail.gmail.com>
-Subject: Cannot mount ubifs partition
-From: Michael N <michael.niarchos@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YsHol-0002AT-AX
+ for linux-mtd@lists.infradead.org; Tue, 12 May 2015 21:34:24 +0000
+Received: by pacwv17 with SMTP id wv17so27147797pac.0
+ for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 14:33:58 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: readtest: don't clobber error reports
+Date: Tue, 12 May 2015 14:33:44 -0700
+Message-Id: <1431466424-32001-1-git-send-email-computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,21 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using a Zynq7000 with NAND 512MB and I am trying to deploy Linux on NAND
-memory. I use a custom built kernel with minimal features (UBI and UBIFS
-support are enabled and mtd-utils installed). I can ubiformat an mtd
-partition, I
-can ubiattach and ubidetach it but whenever I try to mount the
-partition I get this error.
+Commit 2a6a28e7922c ("mtd: Make MTD tests cancelable") accidentally
+clobbered any read failure reports.
 
-           mount: mounting /dev/ubi0:ubi-rootfs on /mnt/ubifs failed:
-No such device
+Coverity CID #1296020
 
-(ubi-rootfs is the name of the partition, I am sure about it)
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+regression in v4.1-rc1, so I'll probably want to queue this for 4.1
 
-I am sorry if I am asking about a problem that has been reported before,
-but I am
-new to this list
+ drivers/mtd/tests/readtest.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Thanks in advance,
-Michael
+diff --git a/drivers/mtd/tests/readtest.c b/drivers/mtd/tests/readtest.c
+index a3196b750a22..58df07acdbdb 100644
+--- a/drivers/mtd/tests/readtest.c
++++ b/drivers/mtd/tests/readtest.c
+@@ -191,9 +191,11 @@ static int __init mtd_readtest_init(void)
+ 				err = ret;
+ 		}
+ 
+-		err = mtdtest_relax();
+-		if (err)
++		ret = mtdtest_relax();
++		if (ret) {
++			err = ret;
+ 			goto out;
++		}
+ 	}
+ 
+ 	if (err)
+-- 
+1.9.1
