@@ -1,17 +1,19 @@
 MIME-Version: 1.0
-In-Reply-To: <20150511132052.GH9347@dragon>
-References: <1431066065-19644-1-git-send-email-zajec5@gmail.com>
- <20150511132052.GH9347@dragon>
-Date: Tue, 12 May 2015 06:54:22 +0200
-Message-ID: <CACna6ryDk2TTsXnVMbaica2T8-4Xo2tU40Ov6sq3FVkx_p=zhw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: imx: add "nor-jedec" flash compatible binding
+In-Reply-To: <5550A92A.2040408@free-electrons.com>
+References: <1431066023-19479-1-git-send-email-zajec5@gmail.com>
+ <5550A92A.2040408@free-electrons.com>
+Date: Tue, 12 May 2015 07:00:41 +0200
+Message-ID: <CACna6rz9cisJt492kPyzX2nbvsSCig-ubhr6eGAxnxHzUNTvag@mail.gmail.com>
+Subject: Re: [PATCH] ARM: mvebu: add "nor-jedec" flash compatible binding
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Shawn Guo <shawn.guo@linaro.org>
+To: Gregory CLEMENT <gregory.clement@free-electrons.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Sascha Hauer <kernel@pengutronix.de>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: Andrew Lunn <andrew@lunn.ch>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jason Cooper <jason@lakedaemon.net>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,20 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11 May 2015 at 15:20, Shawn Guo <shawn.guo@linaro.org> wrote:
-> On Fri, May 08, 2015 at 08:21:05AM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+On 11 May 2015 at 15:05, Gregory CLEMENT
+<gregory.clement@free-electrons.com> wrote:
+> On 08/05/2015 08:20, Rafa=C5=82 Mi=C5=82ecki wrote:
 >> Starting with commits
 >> 8ff16cf ("Documentation: devicetree: m25p80: add "nor-jedec" binding")
 >> 1103b85 ("mtd: m25p80: bind to "nor-jedec" ID, for auto-detection")
 >> we have "nor-jedec" binding indicating support for JEDEC identification.
->>
->> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
 >
-> Applied, thanks.
+> did you actually check that all the NOR flash referenced in the dts suppo=
+rts
+> the JEDEC identification?
 
-Thanks, unfortunately after some discussion started by tegra patch, it
-may happen we will rename it to jedec,spi-nor :( If that happens, I'll
-care to provide another patch. Sorry for the problem.
+Yes, I did, yes, they do.
 
---=20
-Rafa=C5=82
+
+> If it is the case I will add it in mvebu/dt soon.
+
+Please drop this patch as there is a discussion (in tegra patch) about
+renaming the binding to "jedec,spi-nor".
