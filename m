@@ -1,24 +1,21 @@
-Received: from mail-la0-x230.google.com ([2a00:1450:4010:c03::230])
+Received: from mail-by2on0146.outbound.protection.outlook.com
+ ([207.46.100.146] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ys94H-0004TU-23
- for linux-mtd@lists.infradead.org; Tue, 12 May 2015 12:13:49 +0000
-Received: by labbd9 with SMTP id bd9so4103455lab.2
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 05:13:26 -0700 (PDT)
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To: Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [Jfs-discussion] [PATCH] fs: cleanup slight list_entry abuse
-References: <1426764485-13637-1-git-send-email-linux@rasmusvillemoes.dk>
- <550AF51C.9000600@plexistor.com> <550AFF79.1030105@oracle.com>
-Date: Tue, 12 May 2015 14:13:25 +0200
-In-Reply-To: <550AFF79.1030105@oracle.com> (Dave Kleikamp's message of "Thu,
- 19 Mar 2015 11:55:21 -0500")
-Message-ID: <87mw1a6lju.fsf@rasmusvillemoes.dk>
+ id 1YsAfY-0001SG-3A
+ for linux-mtd@lists.infradead.org; Tue, 12 May 2015 13:56:24 +0000
+Message-ID: <1431438951.16357.490.camel@freescale.com>
+Subject: Re: [PATCH 1/1] [RESEND] IFC: Change IO accessor based on endianness
+From: Scott Wood <scottwood@freescale.com>
+To: Bharat Bhushan <r65777@rhuath.am.freescale.net>
+Date: Tue, 12 May 2015 08:55:51 -0500
+In-Reply-To: <1431420591-20453-1-git-send-email-r65777@rhuath.am.freescale.net>
+References: <1431420591-20453-1-git-send-email-r65777@rhuath.am.freescale.net>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: codalist@TELEMANN.coda.cs.cmu.edu, Boaz Harrosh <boaz@plexistor.com>,
- jfs-discussion@lists.sourceforge.net, linux-ntfs-dev@lists.sourceforge.net,
- linux-kernel@vger.kernel.org, Dave Kleikamp <dave.kleikamp@oracle.com>,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Cc: gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
+ prabhakar@freescale.com, arnd@arndb.de,
+ Jaiprakash Singh <b44839@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 19 2015, Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
+On Tue, 2015-05-12 at 03:49 -0500, Bharat Bhushan wrote:
+> From: Jaiprakash Singh <b44839@freescale.com>
+> 
+> IFC IO accressor are set at run time based
+> on IFC IP registers endianness.IFC node in
+> DTS file contains information about
+> endianness.
+> 
+> Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
+> ---
+>  Tested on T1040RDB, LS2085a, LS1
+> 
+>  .../bindings/memory-controllers/fsl/ifc.txt        |    3 +
+>  drivers/memory/fsl_ifc.c                           |   43 +++-
+>  drivers/mtd/nand/fsl_ifc_nand.c                    |  258 ++++++++++----------
+>  include/linux/fsl_ifc.h                            |   50 ++++
+>  4 files changed, 213 insertions(+), 141 deletions(-)
 
-> On 03/19/2015 11:11 AM, Boaz Harrosh wrote:
->> On 03/19/2015 01:28 PM, Rasmus Villemoes wrote:
->>> list_entry is just a wrapper for container_of, but it is arguably
->>> wrong (and slightly confusing) to use it when the pointed-to struct
->>> member is not a struct list_head. Use container_of directly instead.
->>>
->>> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
->>> ---
->>> Most of these predate git. If I'm the only one who has been confused
->>> by this in 10 years, maybe it's not worth the churn.
->>>
->> 
->> No you are not alone here. I have seen this once as well but did not have
->> the gumption to send a fix. (The sysv.h one)
->> 
->> I totally agree with this patch. (So many of them, bread crumbs of copy/paste
->> for you ;0)
->
-> I'm sure that was the case with jfs.
->
->> 
->> Reviewed-by: Boaz Harrosh <boaz@plexistor.com>
->
-> Acked-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+As before,
+Acked-by: Scott Wood <scottwood@freescale.com>
 
-Al, any chance you'd take this through the vfs tree?
+This touches MTD as well as dependencies outside MTD -- which tree
+should it go through?
 
-Rasmus
+-Scott
