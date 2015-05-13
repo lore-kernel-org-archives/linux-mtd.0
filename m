@@ -1,19 +1,25 @@
-From: Baruch Siach <baruch@tkos.co.il>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v3 1/4] mtd: nand: mxc_nand: cleanup copy_spare function
-Date: Wed, 13 May 2015 11:17:36 +0300
-Message-Id: <8d9838f27db99f5a9f4b9a95e7aab23773b54217.1431504091.git.baruch@tkos.co.il>
-In-Reply-To: <cover.1431504091.git.baruch@tkos.co.il>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
+ Linux)) id 1YsRy3-00037t-Ow
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 08:24:40 +0000
+Date: Wed, 13 May 2015 10:24:13 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Baruch Siach <baruch@tkos.co.il>
+Subject: Re: [PATCH v3 4/4] mtd: mxc_nand: generate nand_ecclayout for 8 bit
+ ECC
+Message-ID: <20150513082413.GL28888@pengutronix.de>
 References: <cover.1431504091.git.baruch@tkos.co.il>
+ <95e2a17d74da5a0415ab93e060f6efc681216313.1431504091.git.baruch@tkos.co.il>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <95e2a17d74da5a0415ab93e060f6efc681216313.1431504091.git.baruch@tkos.co.il>
 Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
- Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
  Sascha Hauer <kernel@pengutronix.de>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,89 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Uwe Kleine-KÃ¶nig <u.kleine-koenig@pengutronix.de>
+On Wed, May 13, 2015 at 11:17:39AM +0300, Baruch Siach wrote:
+> Hardware 8 bit ECC requires a different nand_ecclayout. Instead of adding yet
+> another static struct nand_ecclayout, generate it in code.
+> 
+> Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-To give people without the reference manual at hand a chance to
-understand how spare area is handled in the i.MX nand controller,
-improve commenting, naming of variables and coding style.
+Thanks
+Uwe
 
-No functional change intended.
-
-Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Uwe Kleine-KÃ¶nig <u.kleine-koenig@pengutronix.de>
-[baruch: declare oob_chunk_size; update comments; reword commit log]
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
- drivers/mtd/nand/mxc_nand.c | 46 ++++++++++++++++++++++++++++++---------------
- 1 file changed, 31 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 372e0e38f59b..33b22b9c0b30 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -807,32 +807,48 @@ static void mxc_nand_select_chip_v2(struct mtd_info *mtd, int chip)
- }
- 
- /*
-- * Function to transfer data to/from spare area.
-+ * The controller splits a page into data chunks of 512 bytes + partial oob.
-+ * There are writesize / 512 such chunks, the size of the partial oob parts is
-+ * oobsize / #chunks rounded down to a multiple of 2. The last oob chunk then
-+ * contains additionally the byte lost by rounding (if any).
-+ * This function handles the needed shuffling between host->data_buf (which
-+ * holds a page in natural order, i.e. writesize bytes data + oobsize bytes
-+ * spare) and the NFC buffer.
-  */
- static void copy_spare(struct mtd_info *mtd, bool bfrom)
- {
- 	struct nand_chip *this = mtd->priv;
- 	struct mxc_nand_host *host = this->priv;
--	u16 i, j;
--	u16 n = mtd->writesize >> 9;
-+	u16 i, oob_chunk_size;
-+	u16 num_chunks = mtd->writesize / 512;
-+
- 	u8 *d = host->data_buf + mtd->writesize;
- 	u8 __iomem *s = host->spare0;
--	u16 t = host->devtype_data->spare_len;
-+	u16 sparebuf_size = host->devtype_data->spare_len;
- 
--	j = (mtd->oobsize / n >> 1) << 1;
-+	/* size of oob chunk for all but possibly the last one */
-+	oob_chunk_size = (mtd->oobsize / num_chunks) & ~1;
- 
- 	if (bfrom) {
--		for (i = 0; i < n - 1; i++)
--			memcpy32_fromio(d + i * j, s + i * t, j);
--
--		/* the last section */
--		memcpy32_fromio(d + i * j, s + i * t, mtd->oobsize - i * j);
-+		for (i = 0; i < num_chunks - 1; i++)
-+			memcpy32_fromio(d + i * oob_chunk_size,
-+					s + i * sparebuf_size,
-+					oob_chunk_size);
-+
-+		/* the last chunk */
-+		memcpy32_fromio(d + i * oob_chunk_size,
-+				s + i * sparebuf_size,
-+				mtd->oobsize - i * oob_chunk_size);
- 	} else {
--		for (i = 0; i < n - 1; i++)
--			memcpy32_toio(&s[i * t], &d[i * j], j);
--
--		/* the last section */
--		memcpy32_toio(&s[i * t], &d[i * j], mtd->oobsize - i * j);
-+		for (i = 0; i < num_chunks - 1; i++)
-+			memcpy32_toio(&s[i * sparebuf_size],
-+				      &d[i * oob_chunk_size],
-+				      oob_chunk_size);
-+
-+		/* the last chunk */
-+		memcpy32_toio(&s[oob_chunk_size * sparebuf_size],
-+			      &d[i * oob_chunk_size],
-+			      mtd->oobsize - i * oob_chunk_size);
- 	}
- }
- 
 -- 
-2.1.4
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
