@@ -1,15 +1,14 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsKwM-0004yV-Fe
- for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:30 +0000
-Received: by pabtp1 with SMTP id tp1so32015792pab.2
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:54:05 -0700 (PDT)
+ id 1YsKwO-0004yk-0D
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:31 +0000
+Received: by pabsx10 with SMTP id sx10so31938160pab.3
+ for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:54:06 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 05/11] Documentation: devicetree: brcmstb_nand: add
- BCM63138 and Cygnus/iProc
-Date: Tue, 12 May 2015 17:53:38 -0700
-Message-Id: <1431478424-29230-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v4 06/11] mtd: brcmnand: add extra SoC support to library
+Date: Tue, 12 May 2015 17:53:39 -0700
+Message-Id: <1431478424-29230-7-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
 References: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
 Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
@@ -31,98 +30,173 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add notes to describe how some SoCs integrate this NAND core a little
-differently, and so we define extra compatibility strings and register
-resources/names.
+There are a few small hooks required for chips like BCM63138 and the
+iProc family. Let's introduce those now.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
-v4: reworked to include all NAND + SoC info directly in the NAND controller
-    node
+v4: refactored along with the library-ization
 
- .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 48 ++++++++++++++++++++--
- 1 file changed, 44 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/brcmnand/brcmnand.c | 61 +++++++++++++++++++++++++++++++++---
+ drivers/mtd/nand/brcmnand/brcmnand.h | 15 +++++++++
+ 2 files changed, 71 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-index 662c857e74fe..4ff7128ee3b2 100644
---- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-+++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-@@ -12,9 +12,14 @@ iProc/Cygnus. Its history includes several similar (but not fully register
- compatible) versions.
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index fb81aac8d4ef..a780768fe5e0 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -119,6 +119,9 @@ struct brcmnand_controller {
+ 	unsigned int		dma_irq;
+ 	int			nand_version;
  
- Required properties:
--- compatible       : should contain "brcm,brcmnand" and an appropriate version
--                      compatibility string, like "brcm,brcmnand-v7.0"
--                      Possible values:
-+- compatible       : May contain an SoC-specific compatibility string (see below)
-+                     to account for any SoC-specific hardware bits that may be
-+                     added on top of the base core controller.
-+                     In addition, must contain compatibility information about
-+                     the core NAND controller, of the following form:
-+                     "brcm,brcmnand" and an appropriate version compatibility
-+                     string, like "brcm,brcmnand-v7.0"
-+                     Possible values:
-                          brcm,brcmnand-v4.0
-                          brcm,brcmnand-v5.0
-                          brcm,brcmnand-v6.0
-@@ -30,7 +35,11 @@ Required properties:
-                      "flash-dma" and/or "nand-cache".
- - interrupts       : The NAND CTLRDY interrupt and (if Flash DMA is available)
-                      FLASH_DMA_DONE
--- interrupt-names  : May be "nand_ctlrdy" or "flash_dma_done"
-+- interrupt-names  : May be "nand_ctlrdy" or "flash_dma_done", if broken out as
-+                     individual interrupts.
-+                     May be "nand", if the SoC has the individual NAND
-+                     interrupts multiplexed behind another custom piece of
-+                     hardware
- - interrupt-parent : See standard interrupt bindings
- - #address-cells   : <1> - subnodes give the chip-select number
- - #size-cells      : <0>
-@@ -41,6 +50,36 @@ Optional properties:
-                               v7.0. Use this property to describe the rare
-                               earlier versions of this core that include WP
++	/* Some SoCs provide custom interrupt status register(s) */
++	struct brcmnand_soc	*soc;
++
+ 	int			cmd_pending;
+ 	bool			dma_pending;
+ 	struct completion	done;
+@@ -965,6 +968,17 @@ static irqreturn_t brcmnand_ctlrdy_irq(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
  
-+ -- Additonal SoC-specific NAND controller properties --
++/* Handle SoC-specific interrupt hardware */
++static irqreturn_t brcmnand_irq(int irq, void *data)
++{
++	struct brcmnand_controller *ctrl = data;
 +
-+The NAND controller is integrated differently on the variety of SoCs on which it
-+is found. Part of this integration involves providing status and enable bits
-+with which to control the 8 exposed NAND interrupts, as well as hardware for
-+configuring the endianness of the data bus. On some SoCs, these features are
-+handled via standard, modular components (e.g., their interrupts look like a
-+normal IRQ chip), but on others, they are controlled in unique and interesting
-+ways, sometimes with registers that lump multiple NAND-related functions
-+together. The former case can be described simply by the standard interrupts
-+properties in the main controller node. But for the latter exceptional cases,
-+we define additional 'compatible' properties and associated register resources within the NAND controller node above.
++	if (ctrl->soc->ctlrdy_ack(ctrl->soc))
++		return brcmnand_ctlrdy_irq(irq, data);
 +
-+ - compatible: Can be one of several SoC-specific strings. Each SoC may have
-+   different requirements for its additional properties, as described below each
-+   bullet point below.
++	return IRQ_NONE;
++}
 +
-+   * "brcm,nand-bcm63138"
-+     - reg: (required) the 'NAND_INT_BASE' register range, with separate status
-+       and enable registers
-+     - reg-names: (required) "nand-int-base"
+ static irqreturn_t brcmnand_dma_irq(int irq, void *data)
+ {
+ 	struct brcmnand_controller *ctrl = data;
+@@ -1153,12 +1167,18 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+ 	if (native_cmd == CMD_PARAMETER_READ ||
+ 			native_cmd == CMD_PARAMETER_CHANGE_COL) {
+ 		int i;
 +
-+   * "brcm,nand-iproc"
-+     - reg: (required) the "IDM" register range, for interrupt enable and APB
-+       bus access endianness configuration, and the "EXT" register range,
-+       for interrupt status/ack.
-+     - reg-names: (required) a list of the names corresponding to the previous
-+       register ranges. Should contain "iproc-idm" and "iproc-ext".
++		brcmnand_soc_data_bus_prepare(ctrl->soc);
 +
+ 		/*
+ 		 * Must cache the FLASH_CACHE now, since changes in
+ 		 * SECTOR_SIZE_1K may invalidate it
+ 		 */
+ 		for (i = 0; i < FC_WORDS; i++)
+ 			ctrl->flash_cache[i] = brcmnand_read_fc(ctrl, i);
 +
- * NAND chip-select
++		brcmnand_soc_data_bus_unprepare(ctrl->soc);
++
+ 		/* Cleanup from HW quirk: restore SECTOR_SIZE_1K */
+ 		if (host->hwcfg.sector_size_1k)
+ 			brcmnand_set_sector_size_1k(host,
+@@ -1371,10 +1391,15 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+ 		brcmnand_send_cmd(host, CMD_PAGE_READ);
+ 		brcmnand_waitfunc(mtd, chip);
  
- Each controller (compatible: "brcm,brcmnand") may contain one or more subnodes
-@@ -74,6 +113,7 @@ Optional properties:
- Each nandcs device node may optionally contain sub-nodes describing the flash
- partition mapping. See partition.txt for more detail.
- 
+-		if (likely(buf))
++		if (likely(buf)) {
++			brcmnand_soc_data_bus_prepare(ctrl->soc);
 +
- Example:
+ 			for (j = 0; j < FC_WORDS; j++, buf++)
+ 				*buf = brcmnand_read_fc(ctrl, j);
  
- nand@f0442800 {
++			brcmnand_soc_data_bus_unprepare(ctrl->soc);
++		}
++
+ 		if (oob)
+ 			oob += read_oob_from_regs(ctrl, i, oob,
+ 					mtd->oobsize / trans,
+@@ -1546,12 +1571,17 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
+ 				   lower_32_bits(addr));
+ 		(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+ 
+-		if (buf)
++		if (buf) {
++			brcmnand_soc_data_bus_prepare(ctrl->soc);
++
+ 			for (j = 0; j < FC_WORDS; j++, buf++)
+ 				brcmnand_write_fc(ctrl, j, *buf);
+-		else if (oob)
++
++			brcmnand_soc_data_bus_unprepare(ctrl->soc);
++		} else if (oob) {
+ 			for (j = 0; j < FC_WORDS; j++)
+ 				brcmnand_write_fc(ctrl, j, 0xffffffff);
++		}
+ 
+ 		if (oob) {
+ 			oob += write_oob_to_regs(ctrl, i, oob,
+@@ -1995,6 +2025,11 @@ static int brcmnand_resume(struct device *dev)
+ 	brcmnand_write_reg(ctrl, BRCMNAND_CS_XOR, ctrl->nand_cs_nand_xor);
+ 	brcmnand_write_reg(ctrl, BRCMNAND_CORR_THRESHOLD,
+ 			ctrl->corr_stat_threshold);
++	if (ctrl->soc) {
++		/* Clear/re-enable interrupt */
++		ctrl->soc->ctlrdy_ack(ctrl->soc);
++		ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
++	}
+ 
+ 	list_for_each_entry(host, &ctrl->host_list, node) {
+ 		struct mtd_info *mtd = &host->mtd;
+@@ -2139,8 +2174,24 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 		return -ENODEV;
+ 	}
+ 
+-	ret = devm_request_irq(dev, ctrl->irq, brcmnand_ctlrdy_irq, 0,
+-			DRV_NAME, ctrl);
++	/*
++	 * Some SoCs integrate this controller (e.g., its interrupt bits) in
++	 * interesting ways
++	 */
++	if (soc) {
++		ctrl->soc = soc;
++
++		ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
++				       DRV_NAME, ctrl);
++
++		/* Enable interrupt */
++		ctrl->soc->ctlrdy_ack(ctrl->soc);
++		ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
++	} else {
++		/* Use standard interrupt infrastructure */
++		ret = devm_request_irq(dev, ctrl->irq, brcmnand_ctlrdy_irq, 0,
++				       DRV_NAME, ctrl);
++	}
+ 	if (ret < 0) {
+ 		dev_err(dev, "can't allocate IRQ %d: error %d\n",
+ 			ctrl->irq, ret);
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
+index 5118b29555f0..a20c73630b7b 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.h
++++ b/drivers/mtd/nand/brcmnand/brcmnand.h
+@@ -23,8 +23,23 @@ struct dev_pm_ops;
+ struct brcmnand_soc {
+ 	struct platform_device *pdev;
+ 	void *priv;
++	bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
++	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
++	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
+ };
+ 
++static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
++{
++	if (soc && soc->prepare_data_bus)
++		soc->prepare_data_bus(soc, true);
++}
++
++static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc)
++{
++	if (soc && soc->prepare_data_bus)
++		soc->prepare_data_bus(soc, false);
++}
++
+ static inline u32 brcmnand_readl(void __iomem *addr)
+ {
+ 	/*
 -- 
 1.9.1
