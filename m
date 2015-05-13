@@ -1,16 +1,19 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsKwW-00050w-Dd
+ id 1YsKwW-00051d-KW
  for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:37 +0000
-Received: by pdbnk13 with SMTP id nk13so32808876pdb.0
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:54:13 -0700 (PDT)
+Received: by pabsx10 with SMTP id sx10so31941743pab.3
+ for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:54:15 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 10/11] ARM: dts: cygnus: Enable NAND support for Cygnus
-Date: Tue, 12 May 2015 17:53:43 -0700
-Message-Id: <1431478424-29230-11-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v4 11/11] MAINTAINERS: add entry for new brcmnand/ directory
+Date: Tue, 12 May 2015 17:53:44 -0700
+Message-Id: <1431478424-29230-12-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
 References: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
  Arnd Bergmann <arnd@arndb.de>, Scott Branden <sbranden@broadcom.com>,
  Kevin Cernekee <cernekee@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
@@ -30,66 +33,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Ray Jui <rjui@broadcom.com>
-
-Enable NAND support for Broadcom Cygnus SoC
-
-Signed-off-by: Ray Jui <rjui@broadcom.com>
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-v4: account for reworked DT binding
+v4: new to series
 
- arch/arm/boot/dts/bcm-cygnus.dtsi | 12 ++++++++++++
- arch/arm/boot/dts/bcm958300k.dts  | 16 ++++++++++++++++
- 2 files changed, 28 insertions(+)
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm/boot/dts/bcm-cygnus.dtsi b/arch/arm/boot/dts/bcm-cygnus.dtsi
-index 7b52c33ea69a..e1ac07a16f92 100644
---- a/arch/arm/boot/dts/bcm-cygnus.dtsi
-+++ b/arch/arm/boot/dts/bcm-cygnus.dtsi
-@@ -212,6 +212,18 @@
- 		status = "disabled";
- 	};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2e5bbc0d68b2..d41800e369b2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2242,6 +2242,12 @@ S:	Supported
+ F:	drivers/gpio/gpio-bcm-kona.c
+ F:	Documentation/devicetree/bindings/gpio/gpio-bcm-kona.txt
  
-+	nand: nand@18046000 {
-+		compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1", "brcm,brcmnand";
-+		reg = <0x18046000 0x600>, <0xf8105408 0x600>, <0x18046f00 0x20>;
-+		reg-names = "nand", "iproc-idm", "iproc-ext";
-+		interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
++BROADCOM STB NAND FLASH DRIVER
++M:	Brian Norris <computersforpeace@gmail.com>
++L:	linux-mtd@lists.infradead.org
++S:	Maintained
++F:	drivers/mtd/nand/brcmnand/
 +
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		brcm,nand-has-wp;
-+	};
-+
- 	gic: interrupt-controller@19021000 {
- 		compatible = "arm,cortex-a9-gic";
- 		#interrupt-cells = <3>;
-diff --git a/arch/arm/boot/dts/bcm958300k.dts b/arch/arm/boot/dts/bcm958300k.dts
-index c9eb8565eac5..2f63052f9d48 100644
---- a/arch/arm/boot/dts/bcm958300k.dts
-+++ b/arch/arm/boot/dts/bcm958300k.dts
-@@ -58,4 +58,20 @@
- 	uart3: serial@18023000 {
- 		status = "okay";
- 	};
-+
-+	nand: nand@18046000 {
-+		nandcs@1 {
-+			compatible = "brcm,nandcs";
-+			reg = <0>;
-+			nand-on-flash-bbt;
-+
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			nand-ecc-strength = <24>;
-+			nand-ecc-step-size = <1024>;
-+
-+			brcm,nand-oob-sector-size = <27>;
-+		};
-+	};
- };
+ BROADCOM SPECIFIC AMBA DRIVER (BCMA)
+ M:	Rafał Miłecki <zajec5@gmail.com>
+ L:	linux-wireless@vger.kernel.org
 -- 
 1.9.1
