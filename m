@@ -1,11 +1,27 @@
-From: Wenlin Kang <wenlin.kang@windriver.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: blktrans: change blktrans_getgeo rerurn value
-Date: Wed, 13 May 2015 14:29:16 +0800
-Message-ID: <1431498556-21275-1-git-send-email-wenlin.kang@windriver.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
+ Linux)) id 1YsQKK-00022H-2p
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 06:39:32 +0000
+Date: Wed, 13 May 2015 08:39:03 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Baruch Siach <baruch@tkos.co.il>
+Subject: Re: [PATCH v2 3/4] mtd: mxc_nand: fix truncate of unaligned oob
+ copying
+Message-ID: <20150513063903.GC28888@pengutronix.de>
+References: <cover.1430636819.git.baruch@tkos.co.il>
+ <ff526c6b889682e36e7d086dd5e6dec8936f86d9.1430636819.git.baruch@tkos.co.il>
+ <20150508072432.GJ12671@pengutronix.de>
+ <20150513051202.GI2558@tarshish>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150513051202.GI2558@tarshish>
+Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
+ Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,31 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Modify function blktrans_getgeo()'s return value to -ENXIO when
-dev->tr->getgeo == NULL.
+On Wed, May 13, 2015 at 08:12:02AM +0300, Baruch Siach wrote:
+> Hi Uwe,
+> 
+> On Fri, May 08, 2015 at 09:24:32AM +0200, Uwe Kleine-König wrote:
+> > On Sun, May 03, 2015 at 10:18:53AM +0300, Baruch Siach wrote:
+> > > Copy to/from oob io area might not be aligned to 4 bytes. When 8 bit ECC is
+> > > used, the buffer size is 26. Add memcpy16_{to,from}io, and use them to avoid
+> > > truncating the buffer. Prefer memcpy32_{to,from}io when the buffer is properly
+> > > aligned for better performance.
+> > Did you measure this performance difference? I doubt it's worth the
+> > complexity given that we're talking about buffers with a size of up to
+> > 26 bytes.
+> 
+> We'll need both memcpy16_{to,from}io and memcpy32_{to,from}io anyway. So by 
+> "complexity" you refer to the additional alignment check and memcpy32 
+> fallback?
+I thought we could get rid of the memcpy32 variants. Where do we need
+memcpy32_* where memcpy16 wouldn't work?
 
-We shouldn't make the return value to 0 when dev->tr->getgeo == NULL,
-because the function blktrans_getgeo() has an output value "hd_geometry"
-which is usually used by some application, if return 0, it will make some
-application get the wrong information.
+Best regards
+Uwe
 
-Signed-off-by: Wenlin Kang <wenlin.kang@windriver.com>
----
- drivers/mtd/mtd_blkdevs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 2b0c5287..f8bb16e 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -273,7 +273,7 @@ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
- 	if (!dev->mtd)
- 		goto unlock;
- 
--	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : 0;
-+	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : -ENXIO;
- unlock:
- 	mutex_unlock(&dev->lock);
- 	blktrans_dev_put(dev);
 -- 
-1.7.9.5
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
