@@ -1,19 +1,17 @@
 Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsKwM-0004zq-Ff
- for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:28 +0000
-Received: by pacyx8 with SMTP id yx8so31978244pac.1
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:54:10 -0700 (PDT)
+ id 1YsKwM-0004yV-Fe
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:30 +0000
+Received: by pabtp1 with SMTP id tp1so32015792pab.2
+ for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:54:05 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 08/11] mtd: brcmnand: add BCM63138 support
-Date: Tue, 12 May 2015 17:53:41 -0700
-Message-Id: <1431478424-29230-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v4 05/11] Documentation: devicetree: brcmstb_nand: add
+ BCM63138 and Cygnus/iProc
+Date: Tue, 12 May 2015 17:53:38 -0700
+Message-Id: <1431478424-29230-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
 References: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
  Arnd Bergmann <arnd@arndb.de>, Scott Branden <sbranden@broadcom.com>,
  Kevin Cernekee <cernekee@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
@@ -33,144 +31,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add notes to describe how some SoCs integrate this NAND core a little
+differently, and so we define extra compatibility strings and register
+resources/names.
+
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
-v4: split into its own proper platform driver
+v4: reworked to include all NAND + SoC info directly in the NAND controller
+    node
 
- drivers/mtd/nand/brcmnand/Makefile        |   1 +
- drivers/mtd/nand/brcmnand/bcm63138_nand.c | 111 ++++++++++++++++++++++++++++++
- 2 files changed, 112 insertions(+)
- create mode 100644 drivers/mtd/nand/brcmnand/bcm63138_nand.c
+ .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 48 ++++++++++++++++++++--
+ 1 file changed, 44 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
-index e78c3b932fd1..45a091e0550f 100644
---- a/drivers/mtd/nand/brcmnand/Makefile
-+++ b/drivers/mtd/nand/brcmnand/Makefile
-@@ -1,5 +1,6 @@
- # link order matters; don't link the more generic brcmstb_nand.o before the
- # more specific iproc_nand.o, for instance
- obj-$(CONFIG_MTD_NAND_BRCMSTB)		+= iproc_nand.o
-+obj-$(CONFIG_MTD_NAND_BRCMSTB)		+= bcm63138_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMSTB)		+= brcmstb_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMSTB)		+= brcmnand.o
-diff --git a/drivers/mtd/nand/brcmnand/bcm63138_nand.c b/drivers/mtd/nand/brcmnand/bcm63138_nand.c
-new file mode 100644
-index 000000000000..3f4c44c24e14
---- /dev/null
-+++ b/drivers/mtd/nand/brcmnand/bcm63138_nand.c
-@@ -0,0 +1,111 @@
-+/*
-+ * Copyright © 2015 Broadcom Corporation
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ */
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+index 662c857e74fe..4ff7128ee3b2 100644
+--- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+@@ -12,9 +12,14 @@ iProc/Cygnus. Its history includes several similar (but not fully register
+ compatible) versions.
+ 
+ Required properties:
+-- compatible       : should contain "brcm,brcmnand" and an appropriate version
+-                      compatibility string, like "brcm,brcmnand-v7.0"
+-                      Possible values:
++- compatible       : May contain an SoC-specific compatibility string (see below)
++                     to account for any SoC-specific hardware bits that may be
++                     added on top of the base core controller.
++                     In addition, must contain compatibility information about
++                     the core NAND controller, of the following form:
++                     "brcm,brcmnand" and an appropriate version compatibility
++                     string, like "brcm,brcmnand-v7.0"
++                     Possible values:
+                          brcm,brcmnand-v4.0
+                          brcm,brcmnand-v5.0
+                          brcm,brcmnand-v6.0
+@@ -30,7 +35,11 @@ Required properties:
+                      "flash-dma" and/or "nand-cache".
+ - interrupts       : The NAND CTLRDY interrupt and (if Flash DMA is available)
+                      FLASH_DMA_DONE
+-- interrupt-names  : May be "nand_ctlrdy" or "flash_dma_done"
++- interrupt-names  : May be "nand_ctlrdy" or "flash_dma_done", if broken out as
++                     individual interrupts.
++                     May be "nand", if the SoC has the individual NAND
++                     interrupts multiplexed behind another custom piece of
++                     hardware
+ - interrupt-parent : See standard interrupt bindings
+ - #address-cells   : <1> - subnodes give the chip-select number
+ - #size-cells      : <0>
+@@ -41,6 +50,36 @@ Optional properties:
+                               v7.0. Use this property to describe the rare
+                               earlier versions of this core that include WP
+ 
++ -- Additonal SoC-specific NAND controller properties --
 +
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
++The NAND controller is integrated differently on the variety of SoCs on which it
++is found. Part of this integration involves providing status and enable bits
++with which to control the 8 exposed NAND interrupts, as well as hardware for
++configuring the endianness of the data bus. On some SoCs, these features are
++handled via standard, modular components (e.g., their interrupts look like a
++normal IRQ chip), but on others, they are controlled in unique and interesting
++ways, sometimes with registers that lump multiple NAND-related functions
++together. The former case can be described simply by the standard interrupts
++properties in the main controller node. But for the latter exceptional cases,
++we define additional 'compatible' properties and associated register resources within the NAND controller node above.
 +
-+#include "brcmnand.h"
++ - compatible: Can be one of several SoC-specific strings. Each SoC may have
++   different requirements for its additional properties, as described below each
++   bullet point below.
 +
-+struct bcm63138_nand_soc_priv {
-+	void __iomem *base;
-+};
++   * "brcm,nand-bcm63138"
++     - reg: (required) the 'NAND_INT_BASE' register range, with separate status
++       and enable registers
++     - reg-names: (required) "nand-int-base"
 +
-+#define BCM63138_NAND_INT_STATUS		0x00
-+#define BCM63138_NAND_INT_EN			0x04
++   * "brcm,nand-iproc"
++     - reg: (required) the "IDM" register range, for interrupt enable and APB
++       bus access endianness configuration, and the "EXT" register range,
++       for interrupt status/ack.
++     - reg-names: (required) a list of the names corresponding to the previous
++       register ranges. Should contain "iproc-idm" and "iproc-ext".
 +
-+enum {
-+	BCM63138_CTLRDY		= BIT(4),
-+};
 +
-+static bool bcm63138_nand_intc_ack(struct brcmnand_soc *soc)
-+{
-+	struct bcm63138_nand_soc_priv *priv = soc->priv;
-+	void __iomem *mmio = priv->base + BCM63138_NAND_INT_STATUS;
-+	u32 val = brcmnand_readl(mmio);
+ * NAND chip-select
+ 
+ Each controller (compatible: "brcm,brcmnand") may contain one or more subnodes
+@@ -74,6 +113,7 @@ Optional properties:
+ Each nandcs device node may optionally contain sub-nodes describing the flash
+ partition mapping. See partition.txt for more detail.
+ 
 +
-+	if (val & BCM63138_CTLRDY) {
-+		brcmnand_writel(val & ~BCM63138_CTLRDY, mmio);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static void bcm63138_nand_intc_set(struct brcmnand_soc *soc, bool en)
-+{
-+	struct bcm63138_nand_soc_priv *priv = soc->priv;
-+	void __iomem *mmio = priv->base + BCM63138_NAND_INT_EN;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	if (en)
-+		val |= BCM63138_CTLRDY;
-+	else
-+		val &= ~BCM63138_CTLRDY;
-+
-+	brcmnand_writel(val, mmio);
-+}
-+
-+static int bcm63138_nand_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct bcm63138_nand_soc_priv *priv;
-+	struct brcmnand_soc *soc;
-+	struct resource *res;
-+
-+	soc = devm_kzalloc(dev, sizeof(*soc), GFP_KERNEL);
-+	if (!soc)
-+		return -ENOMEM;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand-int-base");
-+	priv->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	soc->pdev = pdev;
-+	soc->priv = priv;
-+	soc->ctlrdy_ack = bcm63138_nand_intc_ack;
-+	soc->ctlrdy_set_enabled = bcm63138_nand_intc_set;
-+
-+	return brcmnand_probe(pdev, soc);
-+}
-+
-+static const struct of_device_id bcm63138_nand_of_match[] = {
-+	{ .compatible = "brcm,nand-bcm63138" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, bcm63138_nand_of_match);
-+
-+static struct platform_driver bcm63138_nand_driver = {
-+	.probe			= bcm63138_nand_probe,
-+	.remove			= brcmnand_remove,
-+	.driver = {
-+		.name		= "bcm63138_nand",
-+		.pm		= &brcmnand_pm_ops,
-+		.of_match_table	= bcm63138_nand_of_match,
-+	}
-+};
-+module_platform_driver(bcm63138_nand_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Brian Norris");
-+MODULE_DESCRIPTION("NAND driver for BCM63138");
+ Example:
+ 
+ nand@f0442800 {
 -- 
 1.9.1
