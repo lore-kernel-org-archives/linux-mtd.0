@@ -1,20 +1,22 @@
-Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsMzL-00010f-S3
- for linux-mtd@lists.infradead.org; Wed, 13 May 2015 03:05:40 +0000
-Received: by pdbnk13 with SMTP id nk13so36194536pdb.0
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 20:05:18 -0700 (PDT)
-Date: Tue, 12 May 2015 20:05:15 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Michael N <michael.niarchos@gmail.com>
-Subject: Re: Cannot mount ubifs partition
-Message-ID: <20150513030515.GB23718@brian-ubuntu>
-References: <CAHafNYtURNYAxuYROnEU++1c=uF2Jq-oFEKTkDhUPQtdCnpcHQ@mail.gmail.com>
+Date: Wed, 13 May 2015 08:12:02 +0300
+From: Baruch Siach <baruch@tkos.co.il>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2 3/4] mtd: mxc_nand: fix truncate of unaligned oob
+ copying
+Message-ID: <20150513051202.GI2558@tarshish>
+References: <cover.1430636819.git.baruch@tkos.co.il>
+ <ff526c6b889682e36e7d086dd5e6dec8936f86d9.1430636819.git.baruch@tkos.co.il>
+ <20150508072432.GJ12671@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAHafNYtURNYAxuYROnEU++1c=uF2Jq-oFEKTkDhUPQtdCnpcHQ@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150508072432.GJ12671@pengutronix.de>
+Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
+ Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 12, 2015 at 10:38:31PM +0300, Michael N wrote:
-> I am using a Zynq7000 with NAND 512MB and I am trying to deploy Linux on NAND
-> memory. I use a custom built kernel with minimal features (UBI and UBIFS
-> support are enabled and mtd-utils installed). I can ubiformat an mtd
-> partition, I
-> can ubiattach and ubidetach it but whenever I try to mount the
-> partition I get this error.
-> 
->            mount: mounting /dev/ubi0:ubi-rootfs on /mnt/ubifs failed:
-> No such device
+Hi Uwe,
 
-What's the exact mount command you're running? Did you take a look at
-the MTD FAQ?
+On Fri, May 08, 2015 at 09:24:32AM +0200, Uwe Kleine-König wrote:
+> On Sun, May 03, 2015 at 10:18:53AM +0300, Baruch Siach wrote:
+> > Copy to/from oob io area might not be aligned to 4 bytes. When 8 bit ECC is
+> > used, the buffer size is 26. Add memcpy16_{to,from}io, and use them to avoid
+> > truncating the buffer. Prefer memcpy32_{to,from}io when the buffer is properly
+> > aligned for better performance.
+> Did you measure this performance difference? I doubt it's worth the
+> complexity given that we're talking about buffers with a size of up to
+> 26 bytes.
 
-http://linux-mtd.infradead.org/faq/ubifs.html#L_mount_ubifs
+We'll need both memcpy16_{to,from}io and memcpy32_{to,from}io anyway. So by 
+"complexity" you refer to the additional alignment check and memcpy32 
+fallback?
 
-> (ubi-rootfs is the name of the partition, I am sure about it)
+baruch
 
-Brian
+-- 
+     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
