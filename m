@@ -1,30 +1,16 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from mail-bl2on0124.outbound.protection.outlook.com ([65.55.169.124]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YscbM-0005lt-4S
- for linux-mtd@lists.infradead.org; Wed, 13 May 2015 19:46:01 +0000
-Received: by pdbqd1 with SMTP id qd1so61094381pdb.2
- for <linux-mtd@lists.infradead.org>; Wed, 13 May 2015 12:45:34 -0700 (PDT)
-Date: Wed, 13 May 2015 12:45:21 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 08/11] mtd: brcmnand: add BCM63138 support
-Message-ID: <20150513194521.GF11598@ld-irv-0074>
-References: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
- <1431478424-29230-9-git-send-email-computersforpeace@gmail.com>
- <7133995.DH7aRmliCR@wuerfel>
+ id 1Yscbi-0005wL-SB
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 19:46:20 +0000
+From: Han Xu <b45815@freescale.com>
+To: <computersforpeace@gmail.com>, <shijie.huang@intel.com>
+Subject: [PATCH V3] mtd: fsl-quadspi: Access multiple chips simultaneously
+Date: Wed, 13 May 2015 14:40:57 -0500
+Message-ID: <1431546057-16596-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7133995.DH7aRmliCR@wuerfel>
-Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Scott Branden <sbranden@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
- Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
- Jonathan Richardson <jonathar@broadcom.com>,
- Anatol Pomazao <anatol@google.com>, Gregory Fong <gregory.0xf0@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
- Dmitry Torokhov <dtor@google.com>
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, han.xu@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,98 +20,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 13, 2015 at 12:49:01PM +0200, Arnd Bergmann wrote:
-> On Tuesday 12 May 2015 17:53:41 Brian Norris wrote:
-> > +static bool bcm63138_nand_intc_ack(struct brcmnand_soc *soc)
-> > +{
-> > +       struct bcm63138_nand_soc_priv *priv = soc->priv;
-> > +       void __iomem *mmio = priv->base + BCM63138_NAND_INT_STATUS;
-> > +       u32 val = brcmnand_readl(mmio);
-> > +
-> > +       if (val & BCM63138_CTLRDY) {
-> > +               brcmnand_writel(val & ~BCM63138_CTLRDY, mmio);
-> > +               return true;
-> > +       }
-> > +
-> > +       return false;
-> > +}
-> ...
-> > +static int bcm63138_nand_probe(struct platform_device *pdev)
-> > +{
-> > +       struct device *dev = &pdev->dev;
-> > +       struct bcm63138_nand_soc_priv *priv;
-> > +       struct brcmnand_soc *soc;
-> > +       struct resource *res;
-> > +
-> > +       soc = devm_kzalloc(dev, sizeof(*soc), GFP_KERNEL);
-> > +       if (!soc)
-> > +               return -ENOMEM;
-> > +
-> > +       priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> > +       if (!priv)
-> > +               return -ENOMEM;
-> > +
-> 
-> This is a slightly unconventional method of doing the abstraction.
-> For consistency with a lot of other drivers, I'd do it like this:
-> 
-> struct bcm63138_controller {
-> 	void __iomem *base;
-> 	brcmnand_controller parent;
-> };
+Add supports for simultaneous access to multiple chips. Need to lock
+the mutex before any quad spi operations and unlock the mutex after
+operations complete.
 
-Does it really make sense to publicize all of the brcmnand_controller
-details to each of the constituent drivers? I was intentionally keeping
-them private, with a very small and well-defined interface provided for
-shim SoC drivers.
+Signed-off-by: Han Xu <b45815@freescale.com>
+---
+v2 -- > v3
+1. Unlock the mutex if errors occur.
+2. Destroy the mutex when module remove or probe fail.
 
-This is kind of a problem that has plagued the wider MTD (and esp. NAND)
-subsystem in general; we expose a ton of details to low-level drivers,
-and they're free to muck with things however they want, as long as it
-ends up working. I'd rather be more intentional in what I expose.
+v1 -- > v2
+1. Rebase to latest l2-mtd code and resend.
+---
 
-> static bool bcm63138_nand_intc_ack(struct brcmnand_controller *parent)
-> {
-> 	struct bcm63138_controller *controller;
-> 	controller = container_of(parent, struct brcmnand_controller, parent);
-> 
-> 	...
-> }
-> 
-> static int bcm63138_nand_probe(...)
-> {
-> 	struct bcm63138_controller *controller;
-> 
-> 	controller = devm_kzalloc(dev, sizeof(*controller), GFP_KERNEL);
-> 	...
-> 	return brcmnand_probe(pdev, &controller->parent);
-> }
-> 
-> This also simplifies the probe() functions and means less pointer chasing.
 
-I could still avoid one pointer chase and one extra memory allocation by
-embedding 'struct brcmnand_soc' in a 'struct bcm63138_nand_soc'. e.g.:
+ drivers/mtd/spi-nor/fsl-quadspi.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-struct bcm63138_nand_soc {
-	void __iomem *base;
-	struct brcmnand_soc soc;
-};
-
-static bool bcm63138_nand_intc_ack(struct brcmnand_soc *soc)
-{
-	struct bcm63138_nand_soc *priv;
-	priv = container_of(soc, struct bcm63138_nand_soc, soc);
-
-	...
-}
-
-static int bcm63138_nand_probe(...)
-{
-	struct bcm63138_nand_soc *priv;
-
-	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-	...
-	return brcmnand_probe(pdev, &priv->soc);
-}
-
-Brian
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 52a872f..e6fc064 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -26,6 +26,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/spi-nor.h>
++#include <linux/mutex.h>
+ 
+ /* The registers */
+ #define QUADSPI_MCR			0x00
+@@ -233,6 +234,7 @@ struct fsl_qspi {
+ 	u32 clk_rate;
+ 	unsigned int chip_base_addr; /* We may support two chips. */
+ 	bool has_second_chip;
++	struct mutex lock;
+ };
+ 
+ static inline int is_vybrid_qspi(struct fsl_qspi *q)
+@@ -761,13 +763,17 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+ 	struct fsl_qspi *q = nor->priv;
+ 	int ret;
+ 
++	mutex_lock(&q->lock);
+ 	ret = clk_enable(q->clk_en);
+-	if (ret)
++	if (ret) {
++		mutex_unlock(&q->lock);
+ 		return ret;
++	}
+ 
+ 	ret = clk_enable(q->clk);
+ 	if (ret) {
+ 		clk_disable(q->clk_en);
++		mutex_unlock(&q->lock);
+ 		return ret;
+ 	}
+ 
+@@ -781,6 +787,7 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+ 
+ 	clk_disable(q->clk);
+ 	clk_disable(q->clk_en);
++	mutex_unlock(&q->lock);
+ }
+ 
+ static int fsl_qspi_probe(struct platform_device *pdev)
+@@ -864,6 +871,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	if (of_get_property(np, "fsl,qspi-has-second-chip", NULL))
+ 		q->has_second_chip = true;
+ 
++	mutex_init(&q->lock);
++
+ 	/* iterate the subnodes. */
+ 	for_each_available_child_of_node(dev->of_node, np) {
+ 		char modalias[40];
+@@ -892,24 +901,24 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 
+ 		ret = of_modalias_node(np, modalias, sizeof(modalias));
+ 		if (ret < 0)
+-			goto irq_failed;
++			goto mutex_failed;
+ 
+ 		ret = of_property_read_u32(np, "spi-max-frequency",
+ 				&q->clk_rate);
+ 		if (ret < 0)
+-			goto irq_failed;
++			goto mutex_failed;
+ 
+ 		/* set the chip address for READID */
+ 		fsl_qspi_set_base_addr(q, nor);
+ 
+ 		ret = spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
+ 		if (ret)
+-			goto irq_failed;
++			goto mutex_failed;
+ 
+ 		ppdata.of_node = np;
+ 		ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+ 		if (ret)
+-			goto irq_failed;
++			goto mutex_failed;
+ 
+ 		/* Set the correct NOR size now. */
+ 		if (q->nor_size == 0) {
+@@ -950,6 +959,8 @@ last_init_failed:
+ 			i *= 2;
+ 		mtd_device_unregister(&q->mtd[i]);
+ 	}
++mutex_failed:
++	mutex_destroy(&q->lock);
+ irq_failed:
+ 	clk_disable_unprepare(q->clk);
+ clk_failed:
+@@ -973,6 +984,7 @@ static int fsl_qspi_remove(struct platform_device *pdev)
+ 	writel(QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
+ 	writel(0x0, q->iobase + QUADSPI_RSER);
+ 
++	mutex_destroy(&q->lock);
+ 	clk_unprepare(q->clk);
+ 	clk_unprepare(q->clk_en);
+ 	return 0;
+-- 
+1.9.1
