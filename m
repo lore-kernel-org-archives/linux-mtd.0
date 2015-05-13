@@ -1,14 +1,17 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
+Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsKwE-0004wU-GP
- for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:19 +0000
-Received: by pdbqa5 with SMTP id qa5so32811862pdb.1
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:53:56 -0700 (PDT)
+ id 1YsKwF-0004wr-VN
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:20 +0000
+Received: by pdea3 with SMTP id a3so32678449pde.3
+ for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:53:58 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 00/11] mtd: nand: add Broadcom NAND controller support
-Date: Tue, 12 May 2015 17:53:33 -0700
-Message-Id: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v4 01/11] Documentation: devicetree: add binding doc for
+ Broadcom NAND controller
+Date: Tue, 12 May 2015 17:53:34 -0700
+Message-Id: <1431478424-29230-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
+References: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
 Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
  Arnd Bergmann <arnd@arndb.de>, Scott Branden <sbranden@broadcom.com>,
  Kevin Cernekee <cernekee@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
@@ -28,83 +31,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+v4: no change
 
-This is the fourth (and final?) version of support for the Broadcom BCM7xxx
-Set-Top Box NAND controller. This controller has been used in a variety of
-Broadcom SoCs.
-
-Tested to work on Cygnus, BCM7445, and BCM63138.
-
-Summary changelog:
-
-v1 -> v2:
- * add NAND to DTS for BCM7445 / BCM97445SVMB
- * rename DT binding file to have 'brcm,' prefix
- * catch DMA mapping errors
- * fixup timeout / error messages (hex, remove misleading info)
- * MODULE_LICENSE("GPL v2")
- * fix incorrect comments
- * print why we fail, when checking for supported controller revisions
- * disable prefetch when using Flash DMA (see FIXME); will re-enable once we
-   get a good erased-page verification scheme merged
-
-v2 -> v3:
- * rebase to v4.1-rc1
- * add SoC-specific infrastructure, to help support other SoCs:
-   - add BCM63138 support
-   - add iProc/Cygnus support
- * disable prefetch on v6.1
-
-v3 -> v4:
- * move to brcmnand/ subdirectory
- * add MAINTAINERS entry
- * fixup endianness issues (only use __raw_xxx on MIPS BE)
- * split core NAND support into library, with tiny platform drivers for STB
-   (BCM7xxx), iProc, and BCM63138
- * restructure DT binding, so all SoC extras become part of main controller
-   node
-
-Brian Norris (10):
-  Documentation: devicetree: add binding doc for Broadcom NAND
-    controller
-  mtd: nand: add NAND driver "library" for Broadcom STB NAND controller
-  mtd: brcmnand: add support for STB chips
-  ARM: bcm7445: add NAND to DTS
-  Documentation: devicetree: brcmstb_nand: add BCM63138 and Cygnus/iProc
-  mtd: brcmnand: add extra SoC support to library
-  mtd: brcmnand: add support for Broadcom's IPROC family
-  mtd: brcmnand: add BCM63138 support
-  ARM: bcm63138: add NAND DT support
-  MAINTAINERS: add entry for new brcmnand/ directory
-
-Ray Jui (1):
-  ARM: dts: cygnus: Enable NAND support for Cygnus
-
- .../devicetree/bindings/mtd/brcm,brcmnand.txt      |  150 ++
- MAINTAINERS                                        |    6 +
- arch/arm/boot/dts/bcm-cygnus.dtsi                  |   12 +
- arch/arm/boot/dts/bcm63138.dtsi                    |   11 +
- arch/arm/boot/dts/bcm7445-bcm97445svmb.dts         |   23 +
- arch/arm/boot/dts/bcm7445.dtsi                     |   22 +
- arch/arm/boot/dts/bcm958300k.dts                   |   16 +
- arch/arm/boot/dts/bcm963138dvt.dts                 |   12 +
- drivers/mtd/nand/Kconfig                           |    8 +
- drivers/mtd/nand/Makefile                          |    1 +
- drivers/mtd/nand/brcmnand/Makefile                 |    6 +
- drivers/mtd/nand/brcmnand/bcm63138_nand.c          |  111 +
- drivers/mtd/nand/brcmnand/brcmnand.c               | 2246 ++++++++++++++++++++
- drivers/mtd/nand/brcmnand/brcmnand.h               |   73 +
- drivers/mtd/nand/brcmnand/brcmstb_nand.c           |   44 +
- drivers/mtd/nand/brcmnand/iproc_nand.c             |  150 ++
- 16 files changed, 2891 insertions(+)
+ .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 110 +++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
- create mode 100644 drivers/mtd/nand/brcmnand/Makefile
- create mode 100644 drivers/mtd/nand/brcmnand/bcm63138_nand.c
- create mode 100644 drivers/mtd/nand/brcmnand/brcmnand.c
- create mode 100644 drivers/mtd/nand/brcmnand/brcmnand.h
- create mode 100644 drivers/mtd/nand/brcmnand/brcmstb_nand.c
- create mode 100644 drivers/mtd/nand/brcmnand/iproc_nand.c
 
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+new file mode 100644
+index 000000000000..662c857e74fe
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+@@ -0,0 +1,110 @@
++* Broadcom STB NAND Controller
++
++The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
++flash chips. It has a memory-mapped register interface for both control
++registers and for its data input/output buffer. On some SoCs, this controller is
++paired with a custom DMA engine (inventively named "Flash DMA") which supports
++basic PROGRAM and READ functions, among other features.
++
++This controller was originally designed for STB SoCs (BCM7xxx) but is now
++available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
++iProc/Cygnus. Its history includes several similar (but not fully register
++compatible) versions.
++
++Required properties:
++- compatible       : should contain "brcm,brcmnand" and an appropriate version
++                      compatibility string, like "brcm,brcmnand-v7.0"
++                      Possible values:
++                         brcm,brcmnand-v4.0
++                         brcm,brcmnand-v5.0
++                         brcm,brcmnand-v6.0
++                         brcm,brcmnand-v6.1
++                         brcm,brcmnand-v7.0
++                         brcm,brcmnand-v7.1
++                         brcm,brcmnand
++- reg              : the register start and length for NAND register region.
++                     (optional) Flash DMA register range (if present)
++                     (optional) NAND flash cache range (if at non-standard offset)
++- reg-names        : a list of the names corresponding to the previous register
++                     ranges. Should contain "nand" and (optionally)
++                     "flash-dma" and/or "nand-cache".
++- interrupts       : The NAND CTLRDY interrupt and (if Flash DMA is available)
++                     FLASH_DMA_DONE
++- interrupt-names  : May be "nand_ctlrdy" or "flash_dma_done"
++- interrupt-parent : See standard interrupt bindings
++- #address-cells   : <1> - subnodes give the chip-select number
++- #size-cells      : <0>
++
++Optional properties:
++- brcm,nand-has-wp          : Some versions of this IP include a write-protect
++                              (WP) control bit. It is always available on >=
++                              v7.0. Use this property to describe the rare
++                              earlier versions of this core that include WP
++
++* NAND chip-select
++
++Each controller (compatible: "brcm,brcmnand") may contain one or more subnodes
++to represent enabled chip-selects which (may) contain NAND flash chips. Their
++properties are as follows.
++
++Required properties:
++- compatible                : should contain "brcm,nandcs"
++- reg                       : a single integer representing the chip-select
++                              number (e.g., 0, 1, 2, etc.)
++- #address-cells            : see partition.txt
++- #size-cells               : see partition.txt
++- nand-ecc-strength         : see nand.txt
++- nand-ecc-step-size        : must be 512 or 1024. See nand.txt
++
++Optional properties:
++- nand-on-flash-bbt         : boolean, to enable the on-flash BBT for this
++                              chip-select. See nand.txt
++- brcm,nand-oob-sector-size : integer, to denote the spare area sector size
++                              expected for the ECC layout in use. This size, in
++                              addition to the strength and step-size,
++                              determines how the hardware BCH engine will lay
++                              out the parity bytes it stores on the flash.
++                              This property can be automatically determined by
++                              the flash geometry (particularly the NAND page
++                              and OOB size) in many cases, but when booting
++                              from NAND, the boot controller has only a limited
++                              number of available options for its default ECC
++                              layout.
++
++Each nandcs device node may optionally contain sub-nodes describing the flash
++partition mapping. See partition.txt for more detail.
++
++Example:
++
++nand@f0442800 {
++	compatible = "brcm,brcmnand-v7.0", "brcm,brcmnand";
++	reg = <0xF0442800 0x600>,
++	      <0xF0443000 0x100>;
++	reg-names = "nand", "flash-dma";
++	interrupt-parent = <&hif_intr2_intc>;
++	interrupts = <24>, <4>;
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	nandcs@1 {
++		compatible = "brcm,nandcs";
++		reg = <1>; // Chip select 1
++		nand-on-flash-bbt;
++		nand-ecc-strength = <12>;
++		nand-ecc-step-size = <512>;
++
++		// Partitions
++		#address-cells = <1>;  // <2>, for 64-bit offset
++		#size-cells = <1>;     // <2>, for 64-bit length
++		flash0.rootfs@0 {
++			reg = <0 0x10000000>;
++		};
++		flash0@0 {
++			reg = <0 0>; // MTDPART_SIZ_FULL
++		};
++		flash0.kernel@10000000 {
++			reg = <0x10000000 0x400000>;
++		};
++	};
++};
 -- 
 1.9.1
