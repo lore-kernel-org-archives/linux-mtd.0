@@ -1,17 +1,19 @@
-Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
+Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsKwF-0004wr-VN
- for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:20 +0000
-Received: by pdea3 with SMTP id a3so32678449pde.3
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:53:58 -0700 (PDT)
+ id 1YsKwJ-0004xi-1l
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:24 +0000
+Received: by pdbnk13 with SMTP id nk13so32804094pdb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:54:01 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 01/11] Documentation: devicetree: add binding doc for
- Broadcom NAND controller
-Date: Tue, 12 May 2015 17:53:34 -0700
-Message-Id: <1431478424-29230-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v4 03/11] mtd: brcmnand: add support for STB chips
+Date: Tue, 12 May 2015 17:53:36 -0700
+Message-Id: <1431478424-29230-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
 References: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
  Arnd Bergmann <arnd@arndb.de>, Scott Branden <sbranden@broadcom.com>,
  Kevin Cernekee <cernekee@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
@@ -31,130 +33,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+BCM7xxx chips are supported entirely by the library code, since they use
+generic irqchip interfaces and don't need any extra SoC-specific
+configuration.
+
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
-v4: no change
+v4: pulled stub platform driver into its own file as part of the
+    library-ization. This is also important, to keep the STB driver from
+    overriding the iproc_nand driver, when seeing a compatible property like:
 
- .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 110 +++++++++++++++++++++
- 1 file changed, 110 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+      compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1", "brcm,brcmnand";
 
-diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+ drivers/mtd/nand/brcmnand/Makefile       |  1 +
+ drivers/mtd/nand/brcmnand/brcmstb_nand.c | 44 ++++++++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+)
+ create mode 100644 drivers/mtd/nand/brcmnand/brcmstb_nand.c
+
+diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
+index a1b3e3ebe440..b7b24f8277cc 100644
+--- a/drivers/mtd/nand/brcmnand/Makefile
++++ b/drivers/mtd/nand/brcmnand/Makefile
+@@ -1 +1,2 @@
++obj-$(CONFIG_MTD_NAND_BRCMSTB)		+= brcmstb_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMSTB)		+= brcmnand.o
+diff --git a/drivers/mtd/nand/brcmnand/brcmstb_nand.c b/drivers/mtd/nand/brcmnand/brcmstb_nand.c
 new file mode 100644
-index 000000000000..662c857e74fe
+index 000000000000..5c271077ac87
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-@@ -0,0 +1,110 @@
-+* Broadcom STB NAND Controller
++++ b/drivers/mtd/nand/brcmnand/brcmstb_nand.c
+@@ -0,0 +1,44 @@
++/*
++ * Copyright © 2015 Broadcom Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ */
 +
-+The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
-+flash chips. It has a memory-mapped register interface for both control
-+registers and for its data input/output buffer. On some SoCs, this controller is
-+paired with a custom DMA engine (inventively named "Flash DMA") which supports
-+basic PROGRAM and READ functions, among other features.
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
 +
-+This controller was originally designed for STB SoCs (BCM7xxx) but is now
-+available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
-+iProc/Cygnus. Its history includes several similar (but not fully register
-+compatible) versions.
++#include "brcmnand.h"
 +
-+Required properties:
-+- compatible       : should contain "brcm,brcmnand" and an appropriate version
-+                      compatibility string, like "brcm,brcmnand-v7.0"
-+                      Possible values:
-+                         brcm,brcmnand-v4.0
-+                         brcm,brcmnand-v5.0
-+                         brcm,brcmnand-v6.0
-+                         brcm,brcmnand-v6.1
-+                         brcm,brcmnand-v7.0
-+                         brcm,brcmnand-v7.1
-+                         brcm,brcmnand
-+- reg              : the register start and length for NAND register region.
-+                     (optional) Flash DMA register range (if present)
-+                     (optional) NAND flash cache range (if at non-standard offset)
-+- reg-names        : a list of the names corresponding to the previous register
-+                     ranges. Should contain "nand" and (optionally)
-+                     "flash-dma" and/or "nand-cache".
-+- interrupts       : The NAND CTLRDY interrupt and (if Flash DMA is available)
-+                     FLASH_DMA_DONE
-+- interrupt-names  : May be "nand_ctlrdy" or "flash_dma_done"
-+- interrupt-parent : See standard interrupt bindings
-+- #address-cells   : <1> - subnodes give the chip-select number
-+- #size-cells      : <0>
-+
-+Optional properties:
-+- brcm,nand-has-wp          : Some versions of this IP include a write-protect
-+                              (WP) control bit. It is always available on >=
-+                              v7.0. Use this property to describe the rare
-+                              earlier versions of this core that include WP
-+
-+* NAND chip-select
-+
-+Each controller (compatible: "brcm,brcmnand") may contain one or more subnodes
-+to represent enabled chip-selects which (may) contain NAND flash chips. Their
-+properties are as follows.
-+
-+Required properties:
-+- compatible                : should contain "brcm,nandcs"
-+- reg                       : a single integer representing the chip-select
-+                              number (e.g., 0, 1, 2, etc.)
-+- #address-cells            : see partition.txt
-+- #size-cells               : see partition.txt
-+- nand-ecc-strength         : see nand.txt
-+- nand-ecc-step-size        : must be 512 or 1024. See nand.txt
-+
-+Optional properties:
-+- nand-on-flash-bbt         : boolean, to enable the on-flash BBT for this
-+                              chip-select. See nand.txt
-+- brcm,nand-oob-sector-size : integer, to denote the spare area sector size
-+                              expected for the ECC layout in use. This size, in
-+                              addition to the strength and step-size,
-+                              determines how the hardware BCH engine will lay
-+                              out the parity bytes it stores on the flash.
-+                              This property can be automatically determined by
-+                              the flash geometry (particularly the NAND page
-+                              and OOB size) in many cases, but when booting
-+                              from NAND, the boot controller has only a limited
-+                              number of available options for its default ECC
-+                              layout.
-+
-+Each nandcs device node may optionally contain sub-nodes describing the flash
-+partition mapping. See partition.txt for more detail.
-+
-+Example:
-+
-+nand@f0442800 {
-+	compatible = "brcm,brcmnand-v7.0", "brcm,brcmnand";
-+	reg = <0xF0442800 0x600>,
-+	      <0xF0443000 0x100>;
-+	reg-names = "nand", "flash-dma";
-+	interrupt-parent = <&hif_intr2_intc>;
-+	interrupts = <24>, <4>;
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	nandcs@1 {
-+		compatible = "brcm,nandcs";
-+		reg = <1>; // Chip select 1
-+		nand-on-flash-bbt;
-+		nand-ecc-strength = <12>;
-+		nand-ecc-step-size = <512>;
-+
-+		// Partitions
-+		#address-cells = <1>;  // <2>, for 64-bit offset
-+		#size-cells = <1>;     // <2>, for 64-bit length
-+		flash0.rootfs@0 {
-+			reg = <0 0x10000000>;
-+		};
-+		flash0@0 {
-+			reg = <0 0>; // MTDPART_SIZ_FULL
-+		};
-+		flash0.kernel@10000000 {
-+			reg = <0x10000000 0x400000>;
-+		};
-+	};
++static const struct of_device_id brcmstb_nand_of_match[] = {
++	{ .compatible = "brcm,brcmnand" },
++	{},
 +};
++MODULE_DEVICE_TABLE(of, brcmstb_nand_of_match);
++
++static int brcmstb_nand_probe(struct platform_device *pdev)
++{
++	return brcmnand_probe(pdev, NULL);
++}
++
++static struct platform_driver brcmstb_nand_driver = {
++	.probe			= brcmstb_nand_probe,
++	.remove			= brcmnand_remove,
++	.driver = {
++		.name		= "brcmstb_nand",
++		.pm		= &brcmnand_pm_ops,
++		.of_match_table = brcmstb_nand_of_match,
++	}
++};
++module_platform_driver(brcmstb_nand_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Brian Norris");
++MODULE_DESCRIPTION("NAND driver for Broadcom STB chips");
 -- 
 1.9.1
