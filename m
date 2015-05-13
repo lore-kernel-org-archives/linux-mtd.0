@@ -1,24 +1,22 @@
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsQ7c-0004IW-66
- for linux-mtd@lists.infradead.org; Wed, 13 May 2015 06:26:25 +0000
-Received: by wicnf17 with SMTP id nf17so42394920wic.1
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 23:26:01 -0700 (PDT)
-Received: from [192.168.1.103] (adsl-220.37.6.44.tellas.gr. [37.6.44.220])
- by mx.google.com with ESMTPSA id ei8sm31180383wjd.32.2015.05.12.23.26.00
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Tue, 12 May 2015 23:26:00 -0700 (PDT)
-Message-ID: <5552EE77.8050202@gmail.com>
-Date: Wed, 13 May 2015 09:25:59 +0300
+ id 1YsQAm-0005F1-5v
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 06:29:40 +0000
+Received: by wgnd10 with SMTP id d10so30166781wgn.2
+ for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 23:29:17 -0700 (PDT)
+Message-ID: <5552EF3B.1070506@gmail.com>
+Date: Wed, 13 May 2015 09:29:15 +0300
 From: Michael Niarchos <michael.niarchos@gmail.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
+To: =?ISO-2022-JP?B?IkJlYW4gSHVvIBskQnA5SUxJTBsoQiAoYmVhbmh1byki?=
+ <beanhuo@micron.com>
 Subject: Re: Cannot mount ubifs partition
-References: <5552EE30.8060203@gmail.com>
-In-Reply-To: <5552EE30.8060203@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+References: <mailman.43705.1431478462.22890.linux-mtd@lists.infradead.org>
+ <A765B125120D1346A63912DDE6D8B631013AF1DC@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B631013AF1DC@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset=ISO-2022-JP
 Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 13-May-15 06:05, Brian Norris wrote:
-> On Tue, May 12, 2015 at 10:38:31PM +0300, Michael N wrote:
->> I am using a Zynq7000 with NAND 512MB and I am trying to deploy Linux on NAND
->> memory. I use a custom built kernel with minimal features (UBI and UBIFS
->> support are enabled and mtd-utils installed). I can ubiformat an mtd
->> partition, I
->> can ubiattach and ubidetach it but whenever I try to mount the
->> partition I get this error.
->>
->>             mount: mounting /dev/ubi0:ubi-rootfs on /mnt/ubifs failed:
+On 13-May-15 04:57, Bean Huo 霍斌斌 (beanhuo) wrote:
+> 
+>> I am using a Zynq7000 with NAND 512MB and
+>> I am trying to deploy Linux on NAND memory.
+>> I use a custom built kernel with minimal features
+>> (UBI and UBIFS support are enabled and mtd-utils installed).
+>> I can ubiformat an mtd partition, I can ubiattach and ubidetach it but whenever
+>> I try to mount the partition I get this error.
+> 
+>             >mount: mounting /dev/ubi0:ubi-rootfs on /mnt/ubifs failed:
 >> No such device
-> What's the exact mount command you're running? Did you take a look at
-> the MTD FAQ?
->
-> http://linux-mtd.infradead.org/faq/ubifs.html#L_mount_ubif
-
-I am running this command:
-
-$ mount -t ubifs ubi0:ubi-rootfs /mnt/ubifs
-
+> 
 >> (ubi-rootfs is the name of the partition, I am sure about it)
-> Brian
->
+> 
+>> I am sorry if I am asking about a problem that has been reported before, but I am new to this list
+> 
+>> Thanks in advance,
+>> Michael
+> 
+> Hi, Michael
+> 
+> Do you have create a ubi volume ubi-rootfs on this mtd device ?
+> 
+> ubimkvol /dev/ubi0 -N ubi-rootfs -m
+> 
+
+I have created a ubi volume in u-boot with the following commands.
+
+	ubi part nand-rootfs
+	ubi create ubi-rootfs
+
+"nand-rootfs is the name of the nand partition"
