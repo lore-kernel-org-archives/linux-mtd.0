@@ -1,32 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1YsQwR-0007sk-JF
- for linux-mtd@lists.infradead.org; Wed, 13 May 2015 07:18:56 +0000
-Date: Wed, 13 May 2015 09:18:28 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH v2 3/4] mtd: mxc_nand: fix truncate of unaligned oob
- copying
-Message-ID: <20150513071828.GI28888@pengutronix.de>
-References: <cover.1430636819.git.baruch@tkos.co.il>
- <ff526c6b889682e36e7d086dd5e6dec8936f86d9.1430636819.git.baruch@tkos.co.il>
- <20150508072432.GJ12671@pengutronix.de>
- <20150513051202.GI2558@tarshish>
- <20150513063903.GC28888@pengutronix.de>
- <20150513064404.GM2558@tarshish>
- <20150513064734.GF28888@pengutronix.de>
- <20150513065922.GN2558@tarshish>
- <20150513070140.GH28888@pengutronix.de>
- <20150513071201.GO2558@tarshish>
+From: Baruch Siach <baruch@tkos.co.il>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v3 3/4] mtd: mxc_nand: fix truncate of unaligned oob copying
+Date: Wed, 13 May 2015 11:17:38 +0300
+Message-Id: <a0876f2605899db96aa812b5aa4eceeb5d22ce1d.1431504091.git.baruch@tkos.co.il>
+In-Reply-To: <cover.1431504091.git.baruch@tkos.co.il>
+References: <cover.1431504091.git.baruch@tkos.co.il>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150513071201.GO2558@tarshish>
 Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+ Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+ Sascha Hauer <kernel@pengutronix.de>,
+ =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,42 +23,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 13, 2015 at 10:12:01AM +0300, Baruch Siach wrote:
-> Hi Uwe,
-> 
-> On Wed, May 13, 2015 at 09:01:40AM +0200, Uwe Kleine-König wrote:
-> > On Wed, May 13, 2015 at 09:59:22AM +0300, Baruch Siach wrote:
-> > > On Wed, May 13, 2015 at 08:47:34AM +0200, Uwe Kleine-König wrote:
-> > > > On Wed, May 13, 2015 at 09:44:04AM +0300, Baruch Siach wrote:
-> > > > > > I thought we could get rid of the memcpy32 variants. Where do we need
-> > > > > > memcpy32_* where memcpy16 wouldn't work?
-> > > > > 
-> > > > > memcpy16 should work, but would take twice as much IO/memory accesses. That 
-> > > > > would definitely affect performance, as this is the flash data read/write hot 
-> > > > > path. I didn't test, though.
-> > > > > 
-> > > > > Are you sure we want to do that?
-> > > > no, I'm not sure. But I think it's worth to test how much performance
-> > > > degrades.
-> > > 
-> > > That will have to wait a few weeks as I don't have the hardware handy at the 
-> > > moment.
-> > In the hope the test will not be forgotten I consider it ok to take this
-> > series without the test (with keeping the memcpy32 that is).
-> 
-> Agreed.
-> 
-> I'll respin this series with the ecc_8bit_layout name change as you suggested.
-> 
-> May I have your Reviewed-by/Acked-by for the patches you are not the author 
-> of?
-Sure, you can add an Acked-by for patches 2 and 3 for your resent.  Note
-that I prefer to have spaces around operators, too. That shouldn't be a
-show stopper though.
+Copy to/from oob io area might not be aligned to 4 bytes. When 8 bit ECC is
+used, the buffer size is 26. Add memcpy16_{to,from}io, and use them to avoid
+truncating the buffer. Prefer memcpy32_{to,from}io when the buffer is properly
+aligned for better performance.
 
-Best regards
-Uwe
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+Acked-by: Uwe Kleine-KÃ¶nig <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+---
+v2:
+   * Use memcpy16_{to,from}io (Uwe Kleine-KÃ¶nig)
+---
+ drivers/mtd/nand/mxc_nand.c | 40 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 36 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 51c1600d7eb9..010be8aa41d4 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -281,12 +281,44 @@ static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
+ 		*t++ = __raw_readl(s++);
+ }
+ 
++static void memcpy16_fromio(void *trg, const void __iomem  *src, size_t size)
++{
++	int i;
++	u16 *t = trg;
++	const __iomem u16 *s = src;
++
++	/* We assume that src (IO) is always 32bit aligned */
++	if (PTR_ALIGN(trg, 4) == trg && IS_ALIGNED(size, 4)) {
++		memcpy32_fromio(trg, src, size);
++		return;
++	}
++
++	for (i = 0; i < (size >> 1); i++)
++		*t++ = __raw_readw(s++);
++}
++
+ static inline void memcpy32_toio(void __iomem *trg, const void *src, int size)
+ {
+ 	/* __iowrite32_copy use 32bit size values so divide by 4 */
+ 	__iowrite32_copy(trg, src, size / 4);
+ }
+ 
++static void memcpy16_toio(void __iomem *trg, const void *src, int size)
++{
++	int i;
++	__iomem u16 *t = trg;
++	const u16 *s = src;
++
++	/* We assume that trg (IO) is always 32bit aligned */
++	if (PTR_ALIGN(src, 4) == src && IS_ALIGNED(size, 4)) {
++		memcpy32_toio(trg, src, size);
++		return;
++	}
++
++	for (i = 0; i < (size >> 1); i++)
++		__raw_writew(*s++, t++);
++}
++
+ static int check_int_v3(struct mxc_nand_host *host)
+ {
+ 	uint32_t tmp;
+@@ -832,22 +864,22 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom)
+ 
+ 	if (bfrom) {
+ 		for (i = 0; i < num_chunks - 1; i++)
+-			memcpy32_fromio(d + i * oob_chunk_size,
++			memcpy16_fromio(d + i * oob_chunk_size,
+ 					s + i * sparebuf_size,
+ 					oob_chunk_size);
+ 
+ 		/* the last chunk */
+-		memcpy32_fromio(d + i * oob_chunk_size,
++		memcpy16_fromio(d + i * oob_chunk_size,
+ 				s + i * sparebuf_size,
+ 				host->used_oobsize - i * oob_chunk_size);
+ 	} else {
+ 		for (i = 0; i < num_chunks - 1; i++)
+-			memcpy32_toio(&s[i * sparebuf_size],
++			memcpy16_toio(&s[i * sparebuf_size],
+ 				      &d[i * oob_chunk_size],
+ 				      oob_chunk_size);
+ 
+ 		/* the last chunk */
+-		memcpy32_toio(&s[oob_chunk_size * sparebuf_size],
++		memcpy16_toio(&s[oob_chunk_size * sparebuf_size],
+ 			      &d[i * oob_chunk_size],
+ 			      host->used_oobsize - i * oob_chunk_size);
+ 	}
 -- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+2.1.4
