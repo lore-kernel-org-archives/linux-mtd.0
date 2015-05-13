@@ -1,9 +1,13 @@
-Date: Wed, 13 May 2015 10:12:01 +0300
-From: Baruch Siach <baruch@tkos.co.il>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
+ Linux)) id 1YsQwR-0007sk-JF
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 07:18:56 +0000
+Date: Wed, 13 May 2015 09:18:28 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Baruch Siach <baruch@tkos.co.il>
 Subject: Re: [PATCH v2 3/4] mtd: mxc_nand: fix truncate of unaligned oob
  copying
-Message-ID: <20150513071201.GO2558@tarshish>
+Message-ID: <20150513071828.GI28888@pengutronix.de>
 References: <cover.1430636819.git.baruch@tkos.co.il>
  <ff526c6b889682e36e7d086dd5e6dec8936f86d9.1430636819.git.baruch@tkos.co.il>
  <20150508072432.GJ12671@pengutronix.de>
@@ -13,11 +17,12 @@ References: <cover.1430636819.git.baruch@tkos.co.il>
  <20150513064734.GF28888@pengutronix.de>
  <20150513065922.GN2558@tarshish>
  <20150513070140.GH28888@pengutronix.de>
+ <20150513071201.GO2558@tarshish>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150513070140.GH28888@pengutronix.de>
+In-Reply-To: <20150513071201.GO2558@tarshish>
 Cc: Fabio Estevam <Fabio.Estevam@freescale.com>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>,
@@ -31,38 +36,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Uwe,
+On Wed, May 13, 2015 at 10:12:01AM +0300, Baruch Siach wrote:
+> Hi Uwe,
+> 
+> On Wed, May 13, 2015 at 09:01:40AM +0200, Uwe Kleine-König wrote:
+> > On Wed, May 13, 2015 at 09:59:22AM +0300, Baruch Siach wrote:
+> > > On Wed, May 13, 2015 at 08:47:34AM +0200, Uwe Kleine-König wrote:
+> > > > On Wed, May 13, 2015 at 09:44:04AM +0300, Baruch Siach wrote:
+> > > > > > I thought we could get rid of the memcpy32 variants. Where do we need
+> > > > > > memcpy32_* where memcpy16 wouldn't work?
+> > > > > 
+> > > > > memcpy16 should work, but would take twice as much IO/memory accesses. That 
+> > > > > would definitely affect performance, as this is the flash data read/write hot 
+> > > > > path. I didn't test, though.
+> > > > > 
+> > > > > Are you sure we want to do that?
+> > > > no, I'm not sure. But I think it's worth to test how much performance
+> > > > degrades.
+> > > 
+> > > That will have to wait a few weeks as I don't have the hardware handy at the 
+> > > moment.
+> > In the hope the test will not be forgotten I consider it ok to take this
+> > series without the test (with keeping the memcpy32 that is).
+> 
+> Agreed.
+> 
+> I'll respin this series with the ecc_8bit_layout name change as you suggested.
+> 
+> May I have your Reviewed-by/Acked-by for the patches you are not the author 
+> of?
+Sure, you can add an Acked-by for patches 2 and 3 for your resent.  Note
+that I prefer to have spaces around operators, too. That shouldn't be a
+show stopper though.
 
-On Wed, May 13, 2015 at 09:01:40AM +0200, Uwe Kleine-König wrote:
-> On Wed, May 13, 2015 at 09:59:22AM +0300, Baruch Siach wrote:
-> > On Wed, May 13, 2015 at 08:47:34AM +0200, Uwe Kleine-König wrote:
-> > > On Wed, May 13, 2015 at 09:44:04AM +0300, Baruch Siach wrote:
-> > > > > I thought we could get rid of the memcpy32 variants. Where do we need
-> > > > > memcpy32_* where memcpy16 wouldn't work?
-> > > > 
-> > > > memcpy16 should work, but would take twice as much IO/memory accesses. That 
-> > > > would definitely affect performance, as this is the flash data read/write hot 
-> > > > path. I didn't test, though.
-> > > > 
-> > > > Are you sure we want to do that?
-> > > no, I'm not sure. But I think it's worth to test how much performance
-> > > degrades.
-> > 
-> > That will have to wait a few weeks as I don't have the hardware handy at the 
-> > moment.
-> In the hope the test will not be forgotten I consider it ok to take this
-> series without the test (with keeping the memcpy32 that is).
-
-Agreed.
-
-I'll respin this series with the ecc_8bit_layout name change as you suggested.
-
-May I have your Reviewed-by/Acked-by for the patches you are not the author 
-of?
-
-baruch
+Best regards
+Uwe
 
 -- 
-     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
