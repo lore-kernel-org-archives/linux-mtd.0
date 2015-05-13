@@ -1,22 +1,24 @@
-Received: from mail-lb0-x22d.google.com ([2a00:1450:4010:c04::22d])
+Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsIqp-0006CN-J4
- for linux-mtd@lists.infradead.org; Tue, 12 May 2015 22:40:36 +0000
-Received: by lbbuc2 with SMTP id uc2so16793534lbb.2
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 15:40:12 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1431469664-20084-1-git-send-email-b45815@freescale.com>
-References: <1431469664-20084-1-git-send-email-b45815@freescale.com>
-Date: Tue, 12 May 2015 19:40:12 -0300
-Message-ID: <CAOMZO5AN-Lrnv_44UtD6WzyhqJ=vu2s2_DY1MyAOk+V5xc2=+w@mail.gmail.com>
-Subject: Re: [PATCH V2] mtd: fsl-quadspi: Access multiple chips simultaneously
-From: Fabio Estevam <festevam@gmail.com>
-To: Han Xu <b45815@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Huang Shijie <shijie.huang@intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "han.xu@freescale.com" <han.xu@freescale.com>
+ id 1YsKwE-0004wU-GP
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 00:54:19 +0000
+Received: by pdbqa5 with SMTP id qa5so32811862pdb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 12 May 2015 17:53:56 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v4 00/11] mtd: nand: add Broadcom NAND controller support
+Date: Tue, 12 May 2015 17:53:33 -0700
+Message-Id: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
+Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+ Arnd Bergmann <arnd@arndb.de>, Scott Branden <sbranden@broadcom.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Corneliu Doban <cdoban@broadcom.com>,
+ Ray Jui <rjui@broadcom.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
+ Jonathan Richardson <jonathar@broadcom.com>,
+ Anatol Pomazao <anatol@google.com>, Gregory Fong <gregory.0xf0@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com,
+ Brian Norris <computersforpeace@gmail.com>, Dmitry Torokhov <dtor@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +28,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 12, 2015 at 7:27 PM, Han Xu <b45815@freescale.com> wrote:
-> Add supports for simultaneous access to multiple chips. Need to lock
-> the mutex before any quad spi operations and unlock the mutex after
-> operations complete.
->
-> Rebase to latest l2-mtd code and resend.
+Hi,
 
-It seems this would be better below the --- line.
+This is the fourth (and final?) version of support for the Broadcom BCM7xxx
+Set-Top Box NAND controller. This controller has been used in a variety of
+Broadcom SoCs.
 
->  static inline int is_vybrid_qspi(struct fsl_qspi *q)
-> @@ -761,6 +763,7 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->         struct fsl_qspi *q = nor->priv;
->         int ret;
->
-> +       mutex_lock(&q->lock);
->         ret = clk_enable(q->clk_en);
->         if (ret)
->                 return ret;
+Tested to work on Cygnus, BCM7445, and BCM63138.
 
-You forgot to unlock the mutex on error.
+Summary changelog:
+
+v1 -> v2:
+ * add NAND to DTS for BCM7445 / BCM97445SVMB
+ * rename DT binding file to have 'brcm,' prefix
+ * catch DMA mapping errors
+ * fixup timeout / error messages (hex, remove misleading info)
+ * MODULE_LICENSE("GPL v2")
+ * fix incorrect comments
+ * print why we fail, when checking for supported controller revisions
+ * disable prefetch when using Flash DMA (see FIXME); will re-enable once we
+   get a good erased-page verification scheme merged
+
+v2 -> v3:
+ * rebase to v4.1-rc1
+ * add SoC-specific infrastructure, to help support other SoCs:
+   - add BCM63138 support
+   - add iProc/Cygnus support
+ * disable prefetch on v6.1
+
+v3 -> v4:
+ * move to brcmnand/ subdirectory
+ * add MAINTAINERS entry
+ * fixup endianness issues (only use __raw_xxx on MIPS BE)
+ * split core NAND support into library, with tiny platform drivers for STB
+   (BCM7xxx), iProc, and BCM63138
+ * restructure DT binding, so all SoC extras become part of main controller
+   node
+
+Brian Norris (10):
+  Documentation: devicetree: add binding doc for Broadcom NAND
+    controller
+  mtd: nand: add NAND driver "library" for Broadcom STB NAND controller
+  mtd: brcmnand: add support for STB chips
+  ARM: bcm7445: add NAND to DTS
+  Documentation: devicetree: brcmstb_nand: add BCM63138 and Cygnus/iProc
+  mtd: brcmnand: add extra SoC support to library
+  mtd: brcmnand: add support for Broadcom's IPROC family
+  mtd: brcmnand: add BCM63138 support
+  ARM: bcm63138: add NAND DT support
+  MAINTAINERS: add entry for new brcmnand/ directory
+
+Ray Jui (1):
+  ARM: dts: cygnus: Enable NAND support for Cygnus
+
+ .../devicetree/bindings/mtd/brcm,brcmnand.txt      |  150 ++
+ MAINTAINERS                                        |    6 +
+ arch/arm/boot/dts/bcm-cygnus.dtsi                  |   12 +
+ arch/arm/boot/dts/bcm63138.dtsi                    |   11 +
+ arch/arm/boot/dts/bcm7445-bcm97445svmb.dts         |   23 +
+ arch/arm/boot/dts/bcm7445.dtsi                     |   22 +
+ arch/arm/boot/dts/bcm958300k.dts                   |   16 +
+ arch/arm/boot/dts/bcm963138dvt.dts                 |   12 +
+ drivers/mtd/nand/Kconfig                           |    8 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/brcmnand/Makefile                 |    6 +
+ drivers/mtd/nand/brcmnand/bcm63138_nand.c          |  111 +
+ drivers/mtd/nand/brcmnand/brcmnand.c               | 2246 ++++++++++++++++++++
+ drivers/mtd/nand/brcmnand/brcmnand.h               |   73 +
+ drivers/mtd/nand/brcmnand/brcmstb_nand.c           |   44 +
+ drivers/mtd/nand/brcmnand/iproc_nand.c             |  150 ++
+ 16 files changed, 2891 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+ create mode 100644 drivers/mtd/nand/brcmnand/Makefile
+ create mode 100644 drivers/mtd/nand/brcmnand/bcm63138_nand.c
+ create mode 100644 drivers/mtd/nand/brcmnand/brcmnand.c
+ create mode 100644 drivers/mtd/nand/brcmnand/brcmnand.h
+ create mode 100644 drivers/mtd/nand/brcmnand/brcmstb_nand.c
+ create mode 100644 drivers/mtd/nand/brcmnand/iproc_nand.c
+
+-- 
+1.9.1
