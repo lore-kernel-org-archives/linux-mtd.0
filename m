@@ -1,27 +1,26 @@
-Received: from mout.kundenserver.de ([212.227.126.130])
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsUEH-00057N-CX
- for linux-mtd@lists.infradead.org; Wed, 13 May 2015 10:49:34 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 08/11] mtd: brcmnand: add BCM63138 support
-Date: Wed, 13 May 2015 12:49:01 +0200
-Message-ID: <7133995.DH7aRmliCR@wuerfel>
-In-Reply-To: <1431478424-29230-9-git-send-email-computersforpeace@gmail.com>
-References: <1431478424-29230-1-git-send-email-computersforpeace@gmail.com>
- <1431478424-29230-9-git-send-email-computersforpeace@gmail.com>
+ id 1YsUNO-0002mt-Va
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2015 10:58:59 +0000
+Received: by widdi4 with SMTP id di4so193007716wid.0
+ for <linux-mtd@lists.infradead.org>; Wed, 13 May 2015 03:58:37 -0700 (PDT)
+Message-ID: <55532E5C.9070509@gmail.com>
+Date: Wed, 13 May 2015 13:58:36 +0300
+From: Michael Niarchos <michael.niarchos@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Scott Branden <sbranden@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>,
- Corneliu Doban <cdoban@broadcom.com>, Ray Jui <rjui@broadcom.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-kernel@vger.kernel.org, Dan Ehrenberg <dehrenberg@chromium.org>,
- Jonathan Richardson <jonathar@broadcom.com>,
- Anatol Pomazao <anatol@google.com>, Gregory Fong <gregory.0xf0@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
- Dmitry Torokhov <dtor@google.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: Cannot mount ubifs partition
+References: <5552EE30.8060203@gmail.com>	<5552EE77.8050202@gmail.com>
+ <CAFLxGvx+dqdKPJjQx5aHkuM561WLvWR1-AYP5VGBND6JctXpFA@mail.gmail.com>
+ <55530FC7.400@gmail.com> <55531046.80304@nod.at> <555311C7.8060601@gmail.com>
+ <55531263.5060908@nod.at> <55531421.1030700@gmail.com>
+ <5553174C.6000000@nod.at> <55531CB7.7070108@gmail.com>
+ <55532493.5010407@nod.at> <5553286E.2090303@gmail.com>
+ <55532AA2.5020808@nod.at>
+In-Reply-To: <55532AA2.5020808@nod.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,62 +30,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 12 May 2015 17:53:41 Brian Norris wrote:
-> +static bool bcm63138_nand_intc_ack(struct brcmnand_soc *soc)
-> +{
-> +       struct bcm63138_nand_soc_priv *priv = soc->priv;
-> +       void __iomem *mmio = priv->base + BCM63138_NAND_INT_STATUS;
-> +       u32 val = brcmnand_readl(mmio);
-> +
-> +       if (val & BCM63138_CTLRDY) {
-> +               brcmnand_writel(val & ~BCM63138_CTLRDY, mmio);
-> +               return true;
-> +       }
-> +
-> +       return false;
-> +}
-...
-> +static int bcm63138_nand_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +       struct bcm63138_nand_soc_priv *priv;
-> +       struct brcmnand_soc *soc;
-> +       struct resource *res;
-> +
-> +       soc = devm_kzalloc(dev, sizeof(*soc), GFP_KERNEL);
-> +       if (!soc)
-> +               return -ENOMEM;
-> +
-> +       priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +       if (!priv)
-> +               return -ENOMEM;
-> +
 
-This is a slightly unconventional method of doing the abstraction.
-For consistency with a lot of other drivers, I'd do it like this:
 
-struct bcm63138_controller {
-	void __iomem *base;
-	brcmnand_controller parent;
-};
+On 05/13/2015 01:42 PM, Richard Weinberger wrote:
+> Am 13.05.2015 um 12:33 schrieb Michael Niarchos:
+>> On 05/13/2015 01:16 PM, Richard Weinberger wrote:
+>>> Am 13.05.2015 um 11:43 schrieb Michael Niarchos:
+>>>
+>>>>> BTW: Have you created the nodes by hand? Do major/minor numbers match?
+>>>>>
+>>>> No, I have not created the nodes by hand
+>>>
+>>> Please answer all my questions. Also from the other mails.
+>>>
+>>> Thanks,
+>>> //richard
 
-static bool bcm63138_nand_intc_ack(struct brcmnand_controller *parent)
-{
-	struct bcm63138_controller *controller;
-	controller = container_of(parent, struct brcmnand_controller, parent);
+> Do the minor/major numbers match?
 
-	...
-}
+Yes they do match.
 
-static int bcm63138_nand_probe(...)
-{
-	struct bcm63138_controller *controller;
+$ ls -l /dev/ubi0_0
+crw-------    1 root     root      246,   1 May 11 16:19 /dev/ubi0_0
 
-	controller = devm_kzalloc(dev, sizeof(*controller), GFP_KERNEL);
-	...
-	return brcmnand_probe(pdev, &controller->parent);
-}
+> Does ubiupdatevol succeed?
 
-This also simplifies the probe() functions and means less pointer chasing.
+I run the following command:
 
-	Arnd
+$ ubiupdatevol /dev/ubi0_0 /tmp/zx3-image.ubifs
+
+and nothing is printed, so I suppose that it succeeds :)
+
+> If all ubitools work but mounting ubifs not, it is maybe an ubifs issue.
+> Is the ubifs module loaded? :)
+
+There is a problem with loading ubifs module (other modules as well)
+
+$ modprobe ubifs
+modprobe: module ubifs not found in modules.dep
+
+I think that this is a problem of my minimal built kernel.
+
+Michael
