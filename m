@@ -1,24 +1,17 @@
-Received: from szxga01-in.huawei.com ([58.251.152.64])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsoTZ-0001HZ-Gv
- for linux-mtd@lists.infradead.org; Thu, 14 May 2015 08:26:42 +0000
-Message-ID: <55545BC8.3010207@huawei.com>
-Date: Thu, 14 May 2015 16:24:40 +0800
-From: Sheng Yong <shengyong1@huawei.com>
+ id 1YsoTy-0001Xx-Ja
+ for linux-mtd@lists.infradead.org; Thu, 14 May 2015 08:27:07 +0000
+Message-ID: <55545C40.8070805@nod.at>
+Date: Thu, 14 May 2015 10:26:40 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, Michael Niarchos
- <michael.niarchos@gmail.com>
-Subject: Re: Cannot mount ubifs partition
-References: <5552EE30.8060203@gmail.com>	<5552EE77.8050202@gmail.com>
- <CAFLxGvx+dqdKPJjQx5aHkuM561WLvWR1-AYP5VGBND6JctXpFA@mail.gmail.com>
- <55530FC7.400@gmail.com> <55531046.80304@nod.at> <555311C7.8060601@gmail.com>
- <55531263.5060908@nod.at> <55531421.1030700@gmail.com>
- <5553174C.6000000@nod.at> <55541A6B.6060406@huawei.com>
- <555455B8.5010101@nod.at>
-In-Reply-To: <555455B8.5010101@nod.at>
-Content-Type: text/plain; charset="utf-8"
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: readtest: don't clobber error reports
+References: <1431466424-32001-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1431466424-32001-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,70 +21,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Am 12.05.2015 um 23:33 schrieb Brian Norris:
+> Commit 2a6a28e7922c ("mtd: Make MTD tests cancelable") accidentally
+> clobbered any read failure reports.
+> 
+> Coverity CID #1296020
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+> regression in v4.1-rc1, so I'll probably want to queue this for 4.1
 
+Sounds sane. Thanks for fixing!
 
-On 5/14/2015 3:58 PM, Richard Weinberger wrote:
-> Am 14.05.2015 um 05:45 schrieb Sheng Yong:
->> Hi, folks,
->>
->> On 5/13/2015 5:20 PM, Richard Weinberger wrote:
->>> Am 13.05.2015 um 11:06 schrieb Michael Niarchos:
->>>>
->>>>
->>>> On 05/13/2015 11:59 AM, Richard Weinberger wrote:
->>>>> Am 13.05.2015 um 10:56 schrieb Michael Niarchos:
->>>>>> Volume ID:   0 (on ubi0)
->>>>>> Type:        dynamic
->>>>>> Alignment:   1
->>>>>> Size:        3964 LEBs (503332864 bytes, 480.0 MiB)
->>>>>> State:       OK
->>>>>> Name:        ubi-rootfs
->>>>>> Character device major/minor: 246:1
->>>>>
->>>>> Is the device node present?
->>>>>
->>>>> Thanks,
->>>>> //richard
->>>>>
->>>> Yes, it is present
->>>>
->>>> root@zx3-pm3-zynq7:~# find /dev -name "ubi*"
->>>> /dev/ubi0_0
->>>> /dev/ubi0
->>>> /dev/ubi_ctrl
->>>
->>> BTW: Have you created the nodes by hand? Do major/minor numbers match?
-> 
-> Michael's problem was that ubifs was not loaded.
-> He confirmed that off-list.
-> 
->> If we create the dev node by hand, it is hard for kernel to notice that.
->>
->> UBI (and even driver base) seems doesn't know and doesn't care if device
->> nodes already exist. UBI just checks the ubi_devices, registers devices,
->> and tells udev to make node. Although everything seems ok, `mount' will
->> fail because of wrong device node. However, the "device node" is removed
->> when detaching without any warning or error message. In this way, UBI
->> could delete the file without user's permission.
->>
->> Is this appropriate? Shall we add some code in ubidetach to detect whether
->> the "device node" to be removed is correct?
-> 
-> Isn't this the behavior that all device drivers have?
-Yes, I think so. I just considered that is there any point to do something
-to avoid this, when I read the mail that you suggest Michael to check the
-device node. :-)
-
-thanks,
-Sheng
-
-> Maybe I miss something as my uptime is less than 15min. ;)
-> 
-> Thanks,
-> //richard
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
+Thanks,
+//richard
