@@ -1,22 +1,22 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from szxga01-in.huawei.com ([58.251.152.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YtArq-0005LD-6r
- for linux-mtd@lists.infradead.org; Fri, 15 May 2015 08:21:19 +0000
-Message-ID: <5555AC35.60906@huawei.com>
-Date: Fri, 15 May 2015 16:20:05 +0800
+ id 1YtAvL-0008C1-Ss
+ for linux-mtd@lists.infradead.org; Fri, 15 May 2015 08:24:53 +0000
+Message-ID: <5555AD1A.40909@huawei.com>
+Date: Fri, 15 May 2015 16:23:54 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] UBI: Use static class and attribute groups
-References: <1423057871-9928-1-git-send-email-tiwai@suse.de>
- <54EEE32F.2000001@huawei.com> <54EEE52D.9000906@nod.at>
-In-Reply-To: <54EEE52D.9000906@nod.at>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: [PATCH] UBI: improve messages in ubi_eba_read_leb()
+References: <54D97D9E.3040606@huawei.com>
+ <1423555541.2573.63.camel@sauron.fi.intel.com>
+ <CAFLxGvwJ9LhbPhcyEyq91+_jLDcd1XtbmcCHTGCSSk+J4ZCTWw@mail.gmail.com>
+In-Reply-To: <CAFLxGvwJ9LhbPhcyEyq91+_jLDcd1XtbmcCHTGCSSk+J4ZCTWw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: Sheng Yong <shengyong1@huawei.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Takashi Iwai <tiwai@suse.de>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,403 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/2/26 17:19, Richard Weinberger wrote:
-> Am 26.02.2015 um 10:11 schrieb hujianyang:
->> Hi Takashi,
+On 2015/2/10 17:30, Richard Weinberger wrote:
+> On Tue, Feb 10, 2015 at 9:05 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>> On Tue, 2015-02-10 at 11:40 +0800, hujianyang wrote:
+>>> If an error occur while reading from PEBs, for example, an ECC error,
+>>> ubi_io_read() will print some error messages. But it's not enough for
+>>> debugging. These messages don't show the mapping info for a read from
+>>> UBIFS layer.
+>>>
+>>> Although UBIFS will soon print its error messages after catching the
+>>> return value from UBI layer,  multi-path reading will confuse the
+>>> relationship between LEBs and PEBs showed by these messages, like:
+>>>
+>>> [   38.442770] UBI error: ubi_io_read: error -74 (ECC error) while reading 26624 bytes from PEB 54:104448, read 26624 bytes
+>>> [   38.852461] UBI error: ubi_io_read: error -74 (ECC error) while reading 77824 bytes from PEB 346:53248, read 77824 bytes
+>>> [   38.864142] UBIFS error (pid 1444): ubifs_recover_leb: corruption -3
+>>> [   38.870487] UBIFS error (pid 1444): ubifs_scanned_corruption: corruption at LEB 928:55280
+>>> [   38.878625] UBIFS error (pid 1444): ubifs_scanned_corruption: first 8192 bytes from LEB 928:55280
+>>> [   38.892117] UBIFS error (pid 1444): ubifs_recover_leb: LEB 928 scanning failed
+>>> mount: mounting ubi1:bak on /mountpoint: failed: Structure needs cleaning
+>>>
+>>> This patch improve the output of ubi_eba_read_leb() by printing the
+>>> mapping of LEB and PEB if an ECC error occur. And also, print PEB
+>>> and LEB number if a CRC error occur.
+>>>
+>>> Signed-off-by: hujianyang <hujianyang@huawei.com>
 >>
->> I think it's a good attempt. Did you test this patch on your environment
->> or just changing the code?
->>
->> How do you feel about this patch, Richard?
+>> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 > 
-> I like the patch but had no time to look at it in detail and test it but this will happen soon. :)
-> 
-> Thanks,
-> //richard
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+> As the merge window is already open I'd wait until the next merge
+> window with that patch.
 > 
 
-Hi Richard,
-
-I've amended this patch a bit and Sheng Yong helped me test a little.
-Could you please review and do some test on it?
-
-Thanks,
-Hu
-
-
-From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 4 Feb 2015 14:51:11 +0100
-Subject: [PATCH] UBI: Use static class and attribute groups
-
-This patch cleans up the manual device_create_file() or
-class_create_file() calls by replacing with static attribute groups.
-It simplifies the code and also avoids the possible races between the
-device/class registration and sysfs creations.
-
-For the simplification, also make ubi_class a static instance with
-initializers, too.
-
-Amend a bit by Hujianyang.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Tested-by: Sheng Yong <shengyong1@huawei.com>
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- drivers/mtd/ubi/build.c |  103 ++++++++++++++++------------------------------
- drivers/mtd/ubi/ubi.h   |    2 +-
- drivers/mtd/ubi/vmt.c   |   94 +++++++++---------------------------------
- 3 files changed, 57 insertions(+), 142 deletions(-)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index b7f824d..1554232 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -83,8 +83,6 @@ static struct mtd_dev_param __initdata mtd_dev_param[UBI_MAX_DEVICES];
- static bool fm_autoconvert;
- static bool fm_debug;
- #endif
--/* Root UBI "class" object (corresponds to '/<sysfs>/class/ubi/') */
--struct class *ubi_class;
-
- /* Slab cache for wear-leveling entries */
- struct kmem_cache *ubi_wl_entry_slab;
-@@ -113,8 +111,17 @@ static ssize_t ubi_version_show(struct class *class,
- }
-
- /* UBI version attribute ('/<sysfs>/class/ubi/version') */
--static struct class_attribute ubi_version =
--	__ATTR(version, S_IRUGO, ubi_version_show, NULL);
-+static struct class_attribute ubi_class_attrs[] = {
-+	__ATTR(version, S_IRUGO, ubi_version_show, NULL),
-+	__ATTR_NULL
-+};
-+
-+/* Root UBI "class" object (corresponds to '/<sysfs>/class/ubi/') */
-+struct class ubi_class = {
-+	.name		= UBI_NAME_STR,
-+	.owner		= THIS_MODULE,
-+	.class_attrs	= ubi_class_attrs,
-+};
-
- static ssize_t dev_attribute_show(struct device *dev,
- 				  struct device_attribute *attr, char *buf);
-@@ -385,6 +392,22 @@ static ssize_t dev_attribute_show(struct device *dev,
- 	return ret;
- }
-
-+static struct attribute *ubi_dev_attrs[] = {
-+	&dev_eraseblock_size.attr,
-+	&dev_avail_eraseblocks.attr,
-+	&dev_total_eraseblocks.attr,
-+	&dev_volumes_count.attr,
-+	&dev_max_ec.attr,
-+	&dev_reserved_for_bad.attr,
-+	&dev_bad_peb_count.attr,
-+	&dev_max_vol_count.attr,
-+	&dev_min_io_size.attr,
-+	&dev_bgt_enabled.attr,
-+	&dev_mtd_num.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(ubi_dev);
-+
- static void dev_release(struct device *dev)
- {
- 	struct ubi_device *ubi = container_of(dev, struct ubi_device, dev);
-@@ -407,45 +430,15 @@ static int ubi_sysfs_init(struct ubi_device *ubi, int *ref)
-
- 	ubi->dev.release = dev_release;
- 	ubi->dev.devt = ubi->cdev.dev;
--	ubi->dev.class = ubi_class;
-+	ubi->dev.class = &ubi_class;
-+	ubi->dev.groups = ubi_dev_groups;
- 	dev_set_name(&ubi->dev, UBI_NAME_STR"%d", ubi->ubi_num);
- 	err = device_register(&ubi->dev);
- 	if (err)
- 		return err;
-
- 	*ref = 1;
--	err = device_create_file(&ubi->dev, &dev_eraseblock_size);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_avail_eraseblocks);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_total_eraseblocks);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_volumes_count);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_max_ec);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_reserved_for_bad);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_bad_peb_count);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_max_vol_count);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_min_io_size);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_bgt_enabled);
--	if (err)
--		return err;
--	err = device_create_file(&ubi->dev, &dev_mtd_num);
--	return err;
-+	return 0;
- }
-
- /**
-@@ -454,17 +447,6 @@ static int ubi_sysfs_init(struct ubi_device *ubi, int *ref)
-  */
- static void ubi_sysfs_close(struct ubi_device *ubi)
- {
--	device_remove_file(&ubi->dev, &dev_mtd_num);
--	device_remove_file(&ubi->dev, &dev_bgt_enabled);
--	device_remove_file(&ubi->dev, &dev_min_io_size);
--	device_remove_file(&ubi->dev, &dev_max_vol_count);
--	device_remove_file(&ubi->dev, &dev_bad_peb_count);
--	device_remove_file(&ubi->dev, &dev_reserved_for_bad);
--	device_remove_file(&ubi->dev, &dev_max_ec);
--	device_remove_file(&ubi->dev, &dev_volumes_count);
--	device_remove_file(&ubi->dev, &dev_total_eraseblocks);
--	device_remove_file(&ubi->dev, &dev_avail_eraseblocks);
--	device_remove_file(&ubi->dev, &dev_eraseblock_size);
- 	device_unregister(&ubi->dev);
- }
-
-@@ -1233,23 +1215,14 @@ static int __init ubi_init(void)
- 	}
-
- 	/* Create base sysfs directory and sysfs files */
--	ubi_class = class_create(THIS_MODULE, UBI_NAME_STR);
--	if (IS_ERR(ubi_class)) {
--		err = PTR_ERR(ubi_class);
--		pr_err("UBI error: cannot create UBI class");
--		goto out;
--	}
--
--	err = class_create_file(ubi_class, &ubi_version);
--	if (err) {
--		pr_err("UBI error: cannot create sysfs file");
--		goto out_class;
--	}
-+	err = class_register(&ubi_class);
-+	if (err < 0)
-+		return err;
-
- 	err = misc_register(&ubi_ctrl_cdev);
- 	if (err) {
- 		pr_err("UBI error: cannot register device");
--		goto out_version;
-+		goto out;
- 	}
-
- 	ubi_wl_entry_slab = kmem_cache_create("ubi_wl_entry_slab",
-@@ -1333,11 +1306,8 @@ out_slab:
- 	kmem_cache_destroy(ubi_wl_entry_slab);
- out_dev_unreg:
- 	misc_deregister(&ubi_ctrl_cdev);
--out_version:
--	class_remove_file(ubi_class, &ubi_version);
--out_class:
--	class_destroy(ubi_class);
- out:
-+	class_unregister(&ubi_class);
- 	pr_err("UBI error: cannot initialize UBI, error %d", err);
- 	return err;
- }
-@@ -1358,8 +1328,7 @@ static void __exit ubi_exit(void)
- 	ubi_debugfs_exit();
- 	kmem_cache_destroy(ubi_wl_entry_slab);
- 	misc_deregister(&ubi_ctrl_cdev);
--	class_remove_file(ubi_class, &ubi_version);
--	class_destroy(ubi_class);
-+	class_unregister(&ubi_class);
- }
- module_exit(ubi_exit);
-
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index c998212..2974b67 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -775,7 +775,7 @@ extern struct kmem_cache *ubi_wl_entry_slab;
- extern const struct file_operations ubi_ctrl_cdev_operations;
- extern const struct file_operations ubi_cdev_operations;
- extern const struct file_operations ubi_vol_cdev_operations;
--extern struct class *ubi_class;
-+extern struct class ubi_class;
- extern struct mutex ubi_devices_mutex;
- extern struct blocking_notifier_head ubi_notifiers;
-
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index ff4d978..55e1d72 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -120,6 +120,19 @@ static ssize_t vol_attribute_show(struct device *dev,
- 	return ret;
- }
-
-+static struct attribute *volume_dev_attrs[] = {
-+	&attr_vol_reserved_ebs.attr,
-+	&attr_vol_type.attr,
-+	&attr_vol_name.attr,
-+	&attr_vol_corrupted.attr,
-+	&attr_vol_alignment.attr,
-+	&attr_vol_usable_eb_size.attr,
-+	&attr_vol_data_bytes.attr,
-+	&attr_vol_upd_marker.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(volume_dev);
-+
- /* Release method for volume devices */
- static void vol_release(struct device *dev)
- {
-@@ -130,64 +143,6 @@ static void vol_release(struct device *dev)
- }
-
- /**
-- * volume_sysfs_init - initialize sysfs for new volume.
-- * @ubi: UBI device description object
-- * @vol: volume description object
-- *
-- * This function returns zero in case of success and a negative error code in
-- * case of failure.
-- *
-- * Note, this function does not free allocated resources in case of failure -
-- * the caller does it. This is because this would cause release() here and the
-- * caller would oops.
-- */
--static int volume_sysfs_init(struct ubi_device *ubi, struct ubi_volume *vol)
--{
--	int err;
--
--	err = device_create_file(&vol->dev, &attr_vol_reserved_ebs);
--	if (err)
--		return err;
--	err = device_create_file(&vol->dev, &attr_vol_type);
--	if (err)
--		return err;
--	err = device_create_file(&vol->dev, &attr_vol_name);
--	if (err)
--		return err;
--	err = device_create_file(&vol->dev, &attr_vol_corrupted);
--	if (err)
--		return err;
--	err = device_create_file(&vol->dev, &attr_vol_alignment);
--	if (err)
--		return err;
--	err = device_create_file(&vol->dev, &attr_vol_usable_eb_size);
--	if (err)
--		return err;
--	err = device_create_file(&vol->dev, &attr_vol_data_bytes);
--	if (err)
--		return err;
--	err = device_create_file(&vol->dev, &attr_vol_upd_marker);
--	return err;
--}
--
--/**
-- * volume_sysfs_close - close sysfs for a volume.
-- * @vol: volume description object
-- */
--static void volume_sysfs_close(struct ubi_volume *vol)
--{
--	device_remove_file(&vol->dev, &attr_vol_upd_marker);
--	device_remove_file(&vol->dev, &attr_vol_data_bytes);
--	device_remove_file(&vol->dev, &attr_vol_usable_eb_size);
--	device_remove_file(&vol->dev, &attr_vol_alignment);
--	device_remove_file(&vol->dev, &attr_vol_corrupted);
--	device_remove_file(&vol->dev, &attr_vol_name);
--	device_remove_file(&vol->dev, &attr_vol_type);
--	device_remove_file(&vol->dev, &attr_vol_reserved_ebs);
--	device_unregister(&vol->dev);
--}
--
--/**
-  * ubi_create_volume - create volume.
-  * @ubi: UBI device description object
-  * @req: volume creation request
-@@ -323,7 +278,8 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	vol->dev.release = vol_release;
- 	vol->dev.parent = &ubi->dev;
- 	vol->dev.devt = dev;
--	vol->dev.class = ubi_class;
-+	vol->dev.class = &ubi_class;
-+	vol->dev.groups = volume_dev_groups;
-
- 	dev_set_name(&vol->dev, "%s_%d", ubi->ubi_name, vol->vol_id);
- 	err = device_register(&vol->dev);
-@@ -332,10 +288,6 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 		goto out_cdev;
- 	}
-
--	err = volume_sysfs_init(ubi, vol);
--	if (err)
--		goto out_sysfs;
--
- 	/* Fill volume table record */
- 	memset(&vtbl_rec, 0, sizeof(struct ubi_vtbl_record));
- 	vtbl_rec.reserved_pebs = cpu_to_be32(vol->reserved_pebs);
-@@ -372,7 +324,7 @@ out_sysfs:
- 	 */
- 	do_free = 0;
- 	get_device(&vol->dev);
--	volume_sysfs_close(vol);
-+	device_unregister(&vol->dev);
- out_cdev:
- 	cdev_del(&vol->cdev);
- out_mapping:
-@@ -440,7 +392,7 @@ int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl)
- 	}
-
- 	cdev_del(&vol->cdev);
--	volume_sysfs_close(vol);
-+	device_unregister(&vol->dev);
-
- 	spin_lock(&ubi->volumes_lock);
- 	ubi->rsvd_pebs -= reserved_pebs;
-@@ -653,19 +605,13 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
- 	vol->dev.release = vol_release;
- 	vol->dev.parent = &ubi->dev;
- 	vol->dev.devt = dev;
--	vol->dev.class = ubi_class;
-+	vol->dev.class = &ubi_class;
-+	vol->dev.groups = volume_dev_groups;
- 	dev_set_name(&vol->dev, "%s_%d", ubi->ubi_name, vol->vol_id);
- 	err = device_register(&vol->dev);
- 	if (err)
- 		goto out_cdev;
-
--	err = volume_sysfs_init(ubi, vol);
--	if (err) {
--		cdev_del(&vol->cdev);
--		volume_sysfs_close(vol);
--		return err;
--	}
--
- 	self_check_volumes(ubi);
- 	return err;
-
-@@ -688,7 +634,7 @@ void ubi_free_volume(struct ubi_device *ubi, struct ubi_volume *vol)
-
- 	ubi->volumes[vol->vol_id] = NULL;
- 	cdev_del(&vol->cdev);
--	volume_sysfs_close(vol);
-+	device_unregister(&vol->dev);
- }
-
- /**
--- 
-1.6.0.2
+Ping?
