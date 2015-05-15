@@ -1,32 +1,17 @@
-Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YtMas-0004h6-6G
- for linux-mtd@lists.infradead.org; Fri, 15 May 2015 20:52:30 +0000
-Received: by iebgx4 with SMTP id gx4so129991538ieb.0
- for <linux-mtd@lists.infradead.org>; Fri, 15 May 2015 13:52:08 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20150515200253.GM11598@ld-irv-0074>
-References: <1431624773-4165-1-git-send-email-computersforpeace@gmail.com>
- <5554DF5E.4020802@wwwdotorg.org>
- <CAMuHMdW6bDjEx+EkqLQmGCZTap-77w2wWiHpra+2pLPexwAWPw@mail.gmail.com>
- <20150515200253.GM11598@ld-irv-0074>
-Date: Fri, 15 May 2015 22:52:08 +0200
-Message-ID: <CACna6rwxiAXffy8AdOnQb7QbNOoknJUqiLHRw8WWisW8jpzRnw@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: dt: mtd: replace "nor-jedec" binding with
- "jedec, spi-nor"
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Marek Vasut <marex@denx.de>, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Stephen Warren <swarren@wwwdotorg.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Kumar Gala <galak@codeaurora.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+Received: from mailrelay101.isp.belgacom.be ([195.238.20.128])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YtNPL-0003d0-9N
+ for linux-mtd@lists.infradead.org; Fri, 15 May 2015 21:44:40 +0000
+From: Fabian Frederick <fabf@skynet.be>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 2/6 linux-next] ubifs: simplify return in shrink_liability()
+Date: Fri, 15 May 2015 23:43:56 +0200
+Message-Id: <1431726240-4675-2-git-send-email-fabf@skynet.be>
+In-Reply-To: <1431726240-4675-1-git-send-email-fabf@skynet.be>
+References: <1431726240-4675-1-git-send-email-fabf@skynet.be>
+Cc: Fabian Frederick <fabf@skynet.be>, linux-mtd@lists.infradead.org,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,16 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15 May 2015 at 22:02, Brian Norris <computersforpeace@gmail.com> wrote:
-> Thanks all. I see that I've gotten an ack from Mark as well (thanks!),
-> so I'll apply this (plus the fixup I just sent) to linux-mtd.git and
-> probably pullreq it before the weekend is over. I'll assume Rafal and
-> Geert will take care of following up on their DTS submissions that added
-> "nor-jedec", but let me know if you'd rather me take care of it. I'll
-> try to keep an eye open as we get nearer to the next merge window, to
-> make sure the wrong entries don't get through.
+Directly return ubifs_return_leb()
+instead of storing value in err and testing it.
 
-Sure, I will (Cc-ing linux-mtd).
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+ fs/ubifs/budget.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
---=20
-Rafa=C5=82
+diff --git a/fs/ubifs/budget.c b/fs/ubifs/budget.c
+index 11a11b3..c07b770 100644
+--- a/fs/ubifs/budget.c
++++ b/fs/ubifs/budget.c
+@@ -77,7 +77,7 @@ static void shrink_liability(struct ubifs_info *c, int nr_to_write)
+  */
+ static int run_gc(struct ubifs_info *c)
+ {
+-	int err, lnum;
++	int lnum;
+ 
+ 	/* Make some free space by garbage-collecting dirty space */
+ 	down_read(&c->commit_sem);
+@@ -88,10 +88,7 @@ static int run_gc(struct ubifs_info *c)
+ 
+ 	/* GC freed one LEB, return it to lprops */
+ 	dbg_budg("GC freed LEB %d", lnum);
+-	err = ubifs_return_leb(c, lnum);
+-	if (err)
+-		return err;
+-	return 0;
++	return ubifs_return_leb(c, lnum);
+ }
+ 
+ /**
+-- 
+2.4.0
