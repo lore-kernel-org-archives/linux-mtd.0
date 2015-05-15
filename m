@@ -1,14 +1,12 @@
 Received: from mailrelay101.isp.belgacom.be ([195.238.20.128])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YtNPL-0003d0-9N
+ id 1YtNPL-0003cx-Cp
  for linux-mtd@lists.infradead.org; Fri, 15 May 2015 21:44:40 +0000
 From: Fabian Frederick <fabf@skynet.be>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6 linux-next] ubifs: simplify return in shrink_liability()
-Date: Fri, 15 May 2015 23:43:56 +0200
-Message-Id: <1431726240-4675-2-git-send-email-fabf@skynet.be>
-In-Reply-To: <1431726240-4675-1-git-send-email-fabf@skynet.be>
-References: <1431726240-4675-1-git-send-email-fabf@skynet.be>
+Subject: [PATCH 1/6 linux-next] ubifs: remove unnecessary semi-colon
+Date: Fri, 15 May 2015 23:43:55 +0200
+Message-Id: <1431726240-4675-1-git-send-email-fabf@skynet.be>
 Cc: Fabian Frederick <fabf@skynet.be>, linux-mtd@lists.infradead.org,
  Adrian Hunter <adrian.hunter@intel.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
@@ -21,38 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Directly return ubifs_return_leb()
-instead of storing value in err and testing it.
+semi-colon after case is unneeded.
 
 Signed-off-by: Fabian Frederick <fabf@skynet.be>
 ---
- fs/ubifs/budget.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ fs/ubifs/sb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/budget.c b/fs/ubifs/budget.c
-index 11a11b3..c07b770 100644
---- a/fs/ubifs/budget.c
-+++ b/fs/ubifs/budget.c
-@@ -77,7 +77,7 @@ static void shrink_liability(struct ubifs_info *c, int nr_to_write)
-  */
- static int run_gc(struct ubifs_info *c)
- {
--	int err, lnum;
-+	int lnum;
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index f4fbc7b..50be857 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -586,7 +586,7 @@ int ubifs_read_superblock(struct ubifs_info *c)
+ 		c->key_hash = key_test_hash;
+ 		c->key_hash_type = UBIFS_KEY_HASH_TEST;
+ 		break;
+-	};
++	}
  
- 	/* Make some free space by garbage-collecting dirty space */
- 	down_read(&c->commit_sem);
-@@ -88,10 +88,7 @@ static int run_gc(struct ubifs_info *c)
+ 	c->key_fmt = sup->key_fmt;
  
- 	/* GC freed one LEB, return it to lprops */
- 	dbg_budg("GC freed LEB %d", lnum);
--	err = ubifs_return_leb(c, lnum);
--	if (err)
--		return err;
--	return 0;
-+	return ubifs_return_leb(c, lnum);
- }
- 
- /**
 -- 
 2.4.0
