@@ -1,12 +1,12 @@
 Received: from mailrelay101.isp.belgacom.be ([195.238.20.128])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YtNPO-0003cx-4T
+ id 1YtNPO-0003d0-8W
  for linux-mtd@lists.infradead.org; Fri, 15 May 2015 21:44:43 +0000
 From: Fabian Frederick <fabf@skynet.be>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 5/6 linux-next] ubifs: remove unnecessary else after break
-Date: Fri, 15 May 2015 23:43:59 +0200
-Message-Id: <1431726240-4675-5-git-send-email-fabf@skynet.be>
+Subject: [PATCH 6/6 linux-next] ubifs: remove else after return
+Date: Fri, 15 May 2015 23:44:00 +0200
+Message-Id: <1431726240-4675-6-git-send-email-fabf@skynet.be>
 In-Reply-To: <1431726240-4675-1-git-send-email-fabf@skynet.be>
 References: <1431726240-4675-1-git-send-email-fabf@skynet.be>
 Cc: Fabian Frederick <fabf@skynet.be>, linux-mtd@lists.infradead.org,
@@ -21,30 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-else is not needed after break in dbg_check_old_index()
-This also solves the {} parity.
+simplify code in add_to_lpt_heap()
 
 Signed-off-by: Fabian Frederick <fabf@skynet.be>
 ---
- fs/ubifs/commit.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/ubifs/lprops.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ubifs/commit.c b/fs/ubifs/commit.c
-index 63f5661..dd9ba81 100644
---- a/fs/ubifs/commit.c
-+++ b/fs/ubifs/commit.c
-@@ -680,9 +680,9 @@ int dbg_check_old_index(struct ubifs_info *c, struct ubifs_zbranch *zroot)
- 				if (iip + 1 < le16_to_cpu(idx->child_cnt)) {
- 					iip = iip + 1;
- 					break;
--				} else
--					/* Nope, so go up again */
--					iip = i->iip;
-+				}
-+				/* Nope, so go up again */
-+				iip = i->iip;
- 			}
- 		} else
- 			/* Go down left */
+diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
+index a0011aa..e1454cf 100644
+--- a/fs/ubifs/lprops.c
++++ b/fs/ubifs/lprops.c
+@@ -208,13 +208,12 @@ static int add_to_lpt_heap(struct ubifs_info *c, struct ubifs_lprops *lprops,
+ 		}
+ 		dbg_check_heap(c, heap, cat, -1);
+ 		return 0; /* Not added to heap */
+-	} else {
+-		lprops->hpos = heap->cnt++;
+-		heap->arr[lprops->hpos] = lprops;
+-		move_up_lpt_heap(c, heap, lprops, cat);
+-		dbg_check_heap(c, heap, cat, lprops->hpos);
+-		return 1; /* Added to heap */
+ 	}
++	lprops->hpos = heap->cnt++;
++	heap->arr[lprops->hpos] = lprops;
++	move_up_lpt_heap(c, heap, lprops, cat);
++	dbg_check_heap(c, heap, cat, lprops->hpos);
++	return 1; /* Added to heap */
+ }
+ 
+ /**
 -- 
 2.4.0
