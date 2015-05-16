@@ -1,23 +1,26 @@
-Received: from mail-vn0-x22a.google.com ([2607:f8b0:400c:c0f::22a])
+Received: from mail-wg0-f42.google.com ([74.125.82.42])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YtjYB-0006jT-5N
- for linux-mtd@lists.infradead.org; Sat, 16 May 2015 21:23:15 +0000
-Received: by vnbf7 with SMTP id f7so4550311vnb.13
- for <linux-mtd@lists.infradead.org>; Sat, 16 May 2015 14:22:53 -0700 (PDT)
+ id 1Ytjbm-0000Ih-Cv
+ for linux-mtd@lists.infradead.org; Sat, 16 May 2015 21:27:00 +0000
+Received: by wguv19 with SMTP id v19so87764766wgu.1
+ for <linux-mtd@lists.infradead.org>; Sat, 16 May 2015 14:26:36 -0700 (PDT)
+Message-ID: <5557B54B.9010307@vanguardiasur.com.ar>
+Date: Sat, 16 May 2015 18:23:23 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-In-Reply-To: <20150516205354.GK6055@norris-Latitude-E6410>
-References: <CAD=nrE_4tsSvKQ_Rz8XJpjJhfT-z+-Tkhn-SMvvcyUaPzg1PHA@mail.gmail.com>
- <CAAbfDBfXZCrRJ2M_MDGP8Pmo97tLiduYGHa2AdKasTya60e81A@mail.gmail.com>
- <CAD=nrE9=040qfZHQi349KAikhiRAr5YrPgO52-7bm9uA9WmW=Q@mail.gmail.com>
- <20150516205354.GK6055@norris-Latitude-E6410>
-Date: Sat, 16 May 2015 23:22:52 +0200
-Message-ID: <CAFLxGvwrCO8BozRb3jkncWy+2w6y82zz+wtL2r_E9i3VT3N8HQ@mail.gmail.com>
-Subject: Re: Tracking flash IO activity?
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "valent.turkovic@gmail.com" <valent.turkovic@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Antoine Tenart <antoine.tenart@free-electrons.com>
+Subject: Re: [PATCH v5 05/12] mtd: pxa3xx_nand: rework flash detection and
+ timing setup
+References: <1431356341-31640-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1431356341-31640-6-git-send-email-antoine.tenart@free-electrons.com>
+ <555128F0.30702@vanguardiasur.com.ar> <20150512143943.GC32171@kwain>
+In-Reply-To: <20150512143943.GC32171@kwain>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ jszhang@marvell.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +30,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, May 16, 2015 at 10:53 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> I don't know of any similar IO stats for MTDs, sorry.
 
-I wonder how hard it would be to integrate mtd into our current block IO stats.
-It mtd is too low level we could also do it with UBI.
+
+On 05/12/2015 11:39 AM, Antoine Tenart wrote:
+> Ezequiel,
+> 
+> On Mon, May 11, 2015 at 07:10:56PM -0300, Ezequiel Garcia wrote:
+>>
+>> On 05/11/2015 11:58 AM, Antoine Tenart wrote:
+>> [..]
+>>> -
+>>> -	/* calculate flash information */
+>>> -	host->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
+>>> -
+>>
+>> [..]
+>>> @@ -1732,6 +1669,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+>>>  		host->mtd = mtd;
+>>>  		host->cs = cs;
+>>>  		host->info_data = info;
+>>> +		host->read_id_bytes = 4;
+>>
+>> Are you sure this is correct? The value is set according to the page
+>> size before this patch.
+> 
+> Before reading the ID, the pxa3xx driver uses a default configuration,
+> builtin_flash_types[0], which defines a page size of 2048 leading to set
+> host->read_id_bytes to 4.
+> 
+> I'm using this default value here.
+> 
+> There might be an issue, as host->read_id_bytes isn't updated after
+> reading the ID (and getting the actual page size). I don't know if this
+> can be a problem. I can modify pxa3xx_nand_config_flash() to update
+> host->read_id_bytes if needed. What do you think?
+> 
+
+Well, once the device is detected, READ_ID shouldn't be used, so I'm not
+sure what's the point of that.
 
 -- 
-Thanks,
-//richard
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
