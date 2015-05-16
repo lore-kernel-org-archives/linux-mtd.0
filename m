@@ -1,22 +1,21 @@
-Received: from mail-la0-x233.google.com ([2a00:1450:4010:c03::233])
+Received: from mail-vn0-x235.google.com ([2607:f8b0:400c:c0f::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ytkkm-0003Rs-7z
- for linux-mtd@lists.infradead.org; Sat, 16 May 2015 22:40:20 +0000
-Received: by labbd9 with SMTP id bd9so170769574lab.2
- for <linux-mtd@lists.infradead.org>; Sat, 16 May 2015 15:39:57 -0700 (PDT)
+ id 1YtlBl-0006F0-RK
+ for linux-mtd@lists.infradead.org; Sat, 16 May 2015 23:08:14 +0000
+Received: by vnbg129 with SMTP id g129so1101451vnb.11
+ for <linux-mtd@lists.infradead.org>; Sat, 16 May 2015 16:07:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvwrCO8BozRb3jkncWy+2w6y82zz+wtL2r_E9i3VT3N8HQ@mail.gmail.com>
-References: <CAD=nrE_4tsSvKQ_Rz8XJpjJhfT-z+-Tkhn-SMvvcyUaPzg1PHA@mail.gmail.com>
- <CAAbfDBfXZCrRJ2M_MDGP8Pmo97tLiduYGHa2AdKasTya60e81A@mail.gmail.com>
- <CAD=nrE9=040qfZHQi349KAikhiRAr5YrPgO52-7bm9uA9WmW=Q@mail.gmail.com>
- <20150516205354.GK6055@norris-Latitude-E6410>
- <CAFLxGvwrCO8BozRb3jkncWy+2w6y82zz+wtL2r_E9i3VT3N8HQ@mail.gmail.com>
-Date: Sun, 17 May 2015 00:39:57 +0200
-Message-ID: <CAD=nrE915xc2_0znC=uzXjghhhueq=NqZhEmtFZ-Tvdfm1fXWw@mail.gmail.com>
-Subject: Re: Tracking flash IO activity?
-From: "valent.turkovic@gmail.com" <valent.turkovic@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <55547564.60107@nod.at>
+References: <55547564.60107@nod.at>
+Date: Sun, 17 May 2015 01:07:51 +0200
+Message-ID: <CAFLxGvyLFdOyMeupkbgix4B7VfjnX2JGudh0aZv8PT4YT+m0KA@mail.gmail.com>
+Subject: Re: [GIT PULL] UBI/UBIFS updates for 4.1-rc4
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Richard Weinberger <richard@nod.at>
 Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here is some interesting info I found using mtdinfo tool:
+On Thu, May 14, 2015 at 12:13 PM, Richard Weinberger <richard@nod.at> wrote:
+> Linus,
+>
+> the following changes since commit 5ebe6afaf0057ac3eaeb98defd5456894b446d22:
+>
+>   Linux 4.1-rc2 (2015-05-03 19:22:23 -0700)
+>
+> are available in the git repository at:
+>
+>   git://git.infradead.org/linux-ubifs.git tags/upstream-4.1-rc4
+>
+> for you to fetch changes up to 98fb1ffd8154890d7051750e61ff5548c3ee2ab2:
+>
+>   UBI: block: Add missing cache flushes (2015-05-06 22:52:22 +0200)
+>
+> ----------------------------------------------------------------
+> This pull request contains a single bug fix for the UBI block driver.
+>
+> ----------------------------------------------------------------
+> Kevin Cernekee (1):
+>       UBI: block: Add missing cache flushes
+>
+>  drivers/mtd/ubi/block.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-# mtdinfo /dev/mtd5
-mtd5
-Name:                           rootfs_data
-Type:                           nor
-Eraseblock size:                65536 bytes, 64.0 KiB
-Amount of eraseblocks:          104 (6815744 bytes, 6.5 MiB)
-Minimum input/output unit size: 1 byte
-Sub-page size:                  1 byte
-Character device major/minor:   90:10
-Bad blocks are allowed:         false
-Device is writable:             true
+Linus,
 
-So I see there are 104 eraseblocks on this partition. Interesting so
-see finaly some numbers. Now how to see how many times these
-eraseblock were issued "erase eraseblock" command?
+just noticed that you did not pull this (and also not my UML fixes).
+Is something wrong with my pull requests?
+
+-- 
+Thanks,
+//richard
