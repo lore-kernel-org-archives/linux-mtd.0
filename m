@@ -1,19 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YtldV-0000ba-Tz
- for linux-mtd@lists.infradead.org; Sat, 16 May 2015 23:36:54 +0000
-Message-ID: <5557D47F.8090509@nod.at>
-Date: Sun, 17 May 2015 01:36:31 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1YtlxM-0007nL-2d
+ for linux-mtd@lists.infradead.org; Sat, 16 May 2015 23:57:24 +0000
+Received: by igbpi8 with SMTP id pi8so23701117igb.1
+ for <linux-mtd@lists.infradead.org>; Sat, 16 May 2015 16:57:02 -0700 (PDT)
 MIME-Version: 1.0
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- Richard Weinberger <richard.weinberger@gmail.com>
+Sender: linus971@gmail.com
+In-Reply-To: <5557D34B.9020802@nod.at>
+References: <55547564.60107@nod.at>
+ <CAFLxGvyLFdOyMeupkbgix4B7VfjnX2JGudh0aZv8PT4YT+m0KA@mail.gmail.com>
+ <CA+55aFwTEz4Xjqshf-r5g8zPOvoXg6EuinaD1ie7jKYYq7Zj+Q@mail.gmail.com>
+ <5557D34B.9020802@nod.at>
+Date: Sat, 16 May 2015 16:57:02 -0700
+Message-ID: <CA+55aFya-ToiaNR_ys2pZ-UD-itTHObFvKmaosuj=CRBWxkZWg@mail.gmail.com>
 Subject: Re: [GIT PULL] UBI/UBIFS updates for 4.1-rc4
-References: <55547564.60107@nod.at>	<CAFLxGvyLFdOyMeupkbgix4B7VfjnX2JGudh0aZv8PT4YT+m0KA@mail.gmail.com>	<CA+55aFwTEz4Xjqshf-r5g8zPOvoXg6EuinaD1ie7jKYYq7Zj+Q@mail.gmail.com>
- <CA+55aFzE_xTZQGVpVHwogWsrYvs-YEaz2qMFYjFRs6V2Cv73UA@mail.gmail.com>
-In-Reply-To: <CA+55aFzE_xTZQGVpVHwogWsrYvs-YEaz2qMFYjFRs6V2Cv73UA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: Linus Torvalds <torvalds@linux-foundation.org>
+To: Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=UTF-8
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,22 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 17.05.2015 um 01:31 schrieb Linus Torvalds:
-> On Sat, May 16, 2015 at 4:27 PM, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->> I don't actually have the original in my mailbox at all. It may have
->> been caught as spam - I haven't checked my spam box for a while.
-> 
-> Yes. Both this and the UML pull request were in my spam box.
-> 
-> You're doing something bad that gmail really dislikes. Possibly this:
-> 
->    Received: from unknown (HELO ?192.168.0.11?) (richard@nod.at@213.47.235.169)
->      by radon.swed.at with ESMTPA; 14 May 2015 10:13:58 -0000
+On Sat, May 16, 2015 at 4:31 PM, Richard Weinberger <richard@nod.at> wrote:
+>
+> Hmm, I have not changed my mail setup lately.
+> If my mails are tagged as spam can you please tell me why? :-)
 
-Hmm, interesting. I have not changed this mail setup for years.
-Looks like I have to put on my MTA admin hat and find out ... :D
+Sadly, gmail doesn't give scores or reasons like spamassassin,
+presumably to make it harder to game.  So it's impossibel to tell why
+gmail hates some email. But often it's a header that doesn't look
+normal.
 
-Thanks,
-//richard
+               Linus
