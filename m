@@ -1,21 +1,15 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
+Received: from hauke-m.de ([5.39.93.123])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YtsOC-00014R-Eq
- for linux-mtd@lists.infradead.org; Sun, 17 May 2015 06:49:32 +0000
-Received: by pdfh10 with SMTP id h10so96275328pdf.3
- for <linux-mtd@lists.infradead.org>; Sat, 16 May 2015 23:49:11 -0700 (PDT)
-Date: Sat, 16 May 2015 23:49:07 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [GIT PULL] MTD fixes for 4.1-rc4
-Message-ID: <20150517064907.GL6055@norris-Latitude-E6410>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Geert Uytterhoeven <geert@linux-m68k.org>
+ id 1Yu0hB-00015W-9v
+ for linux-mtd@lists.infradead.org; Sun, 17 May 2015 15:41:42 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: computersforpeace@gmail.com
+Subject: [PATCH 0/7] mtd: brcmnand: add support for NAND core on bcma bus
+Date: Sun, 17 May 2015 17:40:59 +0200
+Message-Id: <1431877266-28566-1-git-send-email-hauke@hauke-m.de>
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, rjui@broadcom.com,
+ zajec5@gmail.com, linux-mtd@lists.infradead.org,
+ Hauke Mehrtens <hauke@hauke-m.de>, bcm-kernel-feedback-list@broadcom.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+These patches are adding support for the NAND controller on the BCM53xx 
+and BCM47xx arm SoCs (Northstar). These SoCs are using the axi bus 
+driven by bcma and not only device tree.
 
-The following changes since commit b787f68c36d49bb1d9236f403813641efa74a031:
+This was tested on a Netgear R6250 with a BCM4708 SoC.
+The patches are based on top of current l2-mtd/master tree.
 
-  Linux 4.1-rc1 (2015-04-26 17:59:10 -0700)
+Hauke Mehrtens (7):
+  mtd: brcmnand: remove double new line from print
+  mtd: brcmnand: do not make local variable static
+  mtd: brcmnand: use struct device and not platform_device
+  mtd: brcmnand: add methods to register struct device
+  mtd: brcmnand: add bcma driver
+  mtd: brcmnand: run bcm47xxpart part parser in addition
+  ARM: BCM5301X: add NAND flash chip description
 
-are available in the git repository at:
+ arch/arm/boot/dts/bcm4708-luxul-xwc-1000.dts |  12 +--
+ arch/arm/boot/dts/bcm5301x.dtsi              |  19 ++++
+ drivers/mtd/nand/Kconfig                     |   8 ++
+ drivers/mtd/nand/brcmnand/Makefile           |   1 +
+ drivers/mtd/nand/brcmnand/bcm63138_nand.c    |   2 +-
+ drivers/mtd/nand/brcmnand/bcma_nand.c        | 153 +++++++++++++++++++++++++++
+ drivers/mtd/nand/brcmnand/brcmnand.c         | 150 ++++++++++++++++----------
+ drivers/mtd/nand/brcmnand/brcmnand.h         |  10 +-
+ drivers/mtd/nand/brcmnand/iproc_nand.c       |   2 +-
+ 9 files changed, 293 insertions(+), 64 deletions(-)
+ create mode 100644 drivers/mtd/nand/brcmnand/bcma_nand.c
 
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20150516
-
-for you to fetch changes up to 8947e396a8296c5297928b60043f35dfa56baa05:
-
-  Documentation: dt: mtd: replace "nor-jedec" binding with "jedec, spi-nor" (2015-05-15 13:04:00 -0700)
-
-----------------------------------------------------------------
-Two MTD fixes for 4.1:
-
- * readtest: the signal-handling code was clobbering the error codes we should
-   be handling/reporting in this test, rendering it useless. Noticed by Coverity.
-
- * the common SPI NOR flash DT binding (merged for 4.1-rc1) is being revised,
-   so let's change that before 4.1 is minted.
-
-----------------------------------------------------------------
-Brian Norris (2):
-      mtd: readtest: don't clobber error reports
-      Documentation: dt: mtd: replace "nor-jedec" binding with "jedec, spi-nor"
-
- .../devicetree/bindings/mtd/{m25p80.txt => jedec,spi-nor.txt}       | 6 +++---
- drivers/mtd/devices/m25p80.c                                        | 6 +++---
- drivers/mtd/tests/readtest.c                                        | 6 ++++--
- 3 files changed, 10 insertions(+), 8 deletions(-)
- rename Documentation/devicetree/bindings/mtd/{m25p80.txt => jedec,spi-nor.txt} (85%)
+-- 
+2.1.4
