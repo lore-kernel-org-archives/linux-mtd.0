@@ -1,25 +1,15 @@
 Received: from hauke-m.de ([5.39.93.123])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yu1DX-0007YK-UY
- for linux-mtd@lists.infradead.org; Sun, 17 May 2015 16:15:08 +0000
-Message-ID: <5558BE74.5020307@hauke-m.de>
-Date: Sun, 17 May 2015 18:14:44 +0200
+ id 1Yu2TV-0008Qa-KO
+ for linux-mtd@lists.infradead.org; Sun, 17 May 2015 17:35:42 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
-MIME-Version: 1.0
-To: Jonas Gorski <jogo@openwrt.org>
-Subject: Re: [PATCH 6/7] mtd: brcmnand: run bcm47xxpart part parser in addition
-References: <1431877266-28566-1-git-send-email-hauke@hauke-m.de>
- <1431877266-28566-7-git-send-email-hauke@hauke-m.de>
- <CAOiHx=kGrsxLRT_Lf7PGm=hHm8azQYu5_AQVd6q+oOh2EXawsQ@mail.gmail.com>
-In-Reply-To: <CAOiHx=kGrsxLRT_Lf7PGm=hHm8azQYu5_AQVd6q+oOh2EXawsQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Florian Fainelli <f.fainelli@gmail.com>, rjui@broadcom.com,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Brian Norris <computersforpeace@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH] mtd: part: add generic parsing of linux,part-probe
+Date: Sun, 17 May 2015 19:35:12 +0200
+Message-Id: <1431884112-28236-1-git-send-email-hauke@hauke-m.de>
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, rjui@broadcom.com,
+ zajec5@gmail.com, jogo@openwrt.org, linux-mtd@lists.infradead.org,
+ Hauke Mehrtens <hauke@hauke-m.de>, bcm-kernel-feedback-list@broadcom.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,52 +19,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/17/2015 06:05 PM, Jonas Gorski wrote:
-> Hi Hauke,
-> 
-> On Sun, May 17, 2015 at 5:41 PM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
->> On the bcm53xx and bcm47xx SoC the bcm47xxpart partition parser is able
->> to parse the partitions automatically by reading some special header
->> used on these SoCs flash partition and some guessing. Without this
->> patch the default list is used, with this patch this partition parser
->> is used if the others haven't found a partition.
->>
->> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->> ---
->>  drivers/mtd/nand/brcmnand/brcmnand.c | 5 ++++-
->>  1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
->> index 468a212..cc5dc1e 100644
->> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
->> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
->> @@ -1879,6 +1879,9 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
->>         return 0;
->>  }
->>
->> +static const char * const probes[] = {"cmdlinepart", "ofpart", "bcm47xxpart",
->> +                                     NULL};
->> +
-> 
-> I know this is a bit more work, but how about moving the
-> "linux,part-probe" parsing code from drivers/mtd/maps/physmap_of.c to
-> mtd_device_parse_register?
-> 
-> then mtd_device_parse_register could do something like
-> 
->  if (!probes && ppdata && ppdata->of_node)
->     probes = of_get_probes(ppdata->of_node);
-> 
-> and you could just add a linux,part-probe = "..."; property to the dts files
-> 
-> (It looks too easy/obvious so I guess I'm overlooking something fundamental ;P)
-> 
+This moves the linux,part-probe device tree parsing code from
+physmap_of.c to mtdpart.c. Now all drivers can use this feature by just
+providing a reference to they device tree node in struct
+mtd_part_parser_data.
 
-Yes I will try to get this done in a generic way through device tree. I
-was already searching for a way to provide the partition parser from
-device tree and was wondering why it was not there.
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+---
+ drivers/mtd/maps/physmap_of.c | 40 +---------------------------------------
+ drivers/mtd/mtdpart.c         | 38 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+), 39 deletions(-)
 
-I will send an independent patch which adds this feature and this patch
-from this series can be dropped.
-
-Hauke
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 774b32f..fd3750f 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -112,45 +112,9 @@ static struct mtd_info *obsolete_probe(struct platform_device *dev,
+ static const char * const part_probe_types_def[] = {
+ 	"cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
+ 
+-static const char * const *of_get_probes(struct device_node *dp)
+-{
+-	const char *cp;
+-	int cplen;
+-	unsigned int l;
+-	unsigned int count;
+-	const char **res;
+-
+-	cp = of_get_property(dp, "linux,part-probe", &cplen);
+-	if (cp == NULL)
+-		return part_probe_types_def;
+-
+-	count = 0;
+-	for (l = 0; l != cplen; l++)
+-		if (cp[l] == 0)
+-			count++;
+-
+-	res = kzalloc((count + 1)*sizeof(*res), GFP_KERNEL);
+-	count = 0;
+-	while (cplen > 0) {
+-		res[count] = cp;
+-		l = strlen(cp) + 1;
+-		cp += l;
+-		cplen -= l;
+-		count++;
+-	}
+-	return res;
+-}
+-
+-static void of_free_probes(const char * const *probes)
+-{
+-	if (probes != part_probe_types_def)
+-		kfree(probes);
+-}
+-
+ static const struct of_device_id of_flash_match[];
+ static int of_flash_probe(struct platform_device *dev)
+ {
+-	const char * const *part_probe_types;
+ 	const struct of_device_id *match;
+ 	struct device_node *dp = dev->dev.of_node;
+ 	struct resource res;
+@@ -310,10 +274,8 @@ static int of_flash_probe(struct platform_device *dev)
+ 		goto err_out;
+ 
+ 	ppdata.of_node = dp;
+-	part_probe_types = of_get_probes(dp);
+-	mtd_device_parse_register(info->cmtd, part_probe_types, &ppdata,
++	mtd_device_parse_register(info->cmtd, part_probe_types_def, &ppdata,
+ 			NULL, 0);
+-	of_free_probes(part_probe_types);
+ 
+ 	kfree(mtd_list);
+ 
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index cafdb88..b3059d6 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -29,6 +29,7 @@
+ #include <linux/kmod.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/of.h>
+ #include <linux/err.h>
+ #include <linux/kconfig.h>
+ 
+@@ -718,6 +719,35 @@ void deregister_mtd_parser(struct mtd_part_parser *p)
+ }
+ EXPORT_SYMBOL_GPL(deregister_mtd_parser);
+ 
++static const char * const *of_get_probes(struct device_node *dp)
++{
++	const char *cp;
++	int cplen;
++	unsigned int l;
++	unsigned int count;
++	const char **res;
++
++	cp = of_get_property(dp, "linux,part-probe", &cplen);
++	if (cp == NULL)
++		return NULL;
++
++	count = 0;
++	for (l = 0; l != cplen; l++)
++		if (cp[l] == 0)
++			count++;
++
++	res = kzalloc((count + 1)*sizeof(*res), GFP_KERNEL);
++	count = 0;
++	while (cplen > 0) {
++		res[count] = cp;
++		l = strlen(cp) + 1;
++		cp += l;
++		cplen -= l;
++		count++;
++	}
++	return res;
++}
++
+ /*
+  * Do not forget to update 'parse_mtd_partitions()' kerneldoc comment if you
+  * are changing this array!
+@@ -754,6 +784,13 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ {
+ 	struct mtd_part_parser *parser;
+ 	int ret = 0;
++	const char *const *types_of = NULL;
++
++	if (data && data->of_node) {
++		types_of = of_get_probes(data->of_node);
++		if (types_of != NULL)
++			types = types_of;
++	}
+ 
+ 	if (!types)
+ 		types = default_mtd_part_types;
+@@ -772,6 +809,7 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 			break;
+ 		}
+ 	}
++	kfree(types_of);
+ 	return ret;
+ }
+ 
+-- 
+2.1.4
