@@ -1,14 +1,17 @@
 Received: from hauke-m.de ([2001:41d0:8:b27b::1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yu0hB-00015d-D6
- for linux-mtd@lists.infradead.org; Sun, 17 May 2015 15:41:44 +0000
+ id 1Yu0hX-000189-QE
+ for linux-mtd@lists.infradead.org; Sun, 17 May 2015 15:42:05 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: computersforpeace@gmail.com
-Subject: [PATCH 4/7] mtd: brcmnand: add methods to register struct device
-Date: Sun, 17 May 2015 17:41:03 +0200
-Message-Id: <1431877266-28566-5-git-send-email-hauke@hauke-m.de>
+Subject: [PATCH 5/7] mtd: brcmnand: add bcma driver
+Date: Sun, 17 May 2015 17:41:04 +0200
+Message-Id: <1431877266-28566-6-git-send-email-hauke@hauke-m.de>
 In-Reply-To: <1431877266-28566-1-git-send-email-hauke@hauke-m.de>
 References: <1431877266-28566-1-git-send-email-hauke@hauke-m.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, rjui@broadcom.com,
  zajec5@gmail.com, linux-mtd@lists.infradead.org,
  Hauke Mehrtens <hauke@hauke-m.de>, bcm-kernel-feedback-list@broadcom.com
@@ -21,246 +24,211 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit adds a new method to register a struct device to brcmnand.
-The functions handling platform device will stay, but they are just
-extracting the data from the platform device and are providing the data
-to the brcmnand_probe_dev() function.
+This driver registers at the bcma bus and drives the NAND core if it
+was found on this bus. The bcma bus with this NAND core is used on the
+bcm53xx and bcm47xx Northstar SoC with ARM CPU cores. The memory ranges
+are automatically detected by bcma and the irq numbers read from device
+tree by bcma bus driver.
 
-The struct brcmnand_soc is now used to provide all information like irq
-numbers and memory ranges to the actual driver. soc is now set in all
-cases.
+This is based on the iproc driver.
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- drivers/mtd/nand/brcmnand/brcmnand.c | 121 +++++++++++++++++++++++------------
- drivers/mtd/nand/brcmnand/brcmnand.h |   8 +++
- 2 files changed, 89 insertions(+), 40 deletions(-)
+ drivers/mtd/nand/Kconfig              |   8 ++
+ drivers/mtd/nand/brcmnand/Makefile    |   1 +
+ drivers/mtd/nand/brcmnand/bcma_nand.c | 153 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 162 insertions(+)
+ create mode 100644 drivers/mtd/nand/brcmnand/bcma_nand.c
 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 58462b5..468a212 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -2023,7 +2023,7 @@ static int brcmnand_resume(struct device *dev)
- 	brcmnand_write_reg(ctrl, BRCMNAND_CS_XOR, ctrl->nand_cs_nand_xor);
- 	brcmnand_write_reg(ctrl, BRCMNAND_CORR_THRESHOLD,
- 			ctrl->corr_stat_threshold);
--	if (ctrl->soc) {
-+	if (ctrl->soc->ctlrdy_ack && ctrl->soc->ctlrdy_set_enabled) {
- 		/* Clear/re-enable interrupt */
- 		ctrl->soc->ctlrdy_ack(ctrl->soc);
- 		ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
-@@ -2063,21 +2063,12 @@ MODULE_DEVICE_TABLE(of, brcmnand_of_match);
-  * Platform driver setup (per controller)
-  ***********************************************************************/
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 376b538..b698212 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -402,6 +402,14 @@ config MTD_NAND_BRCMNAND
+ 	  originally designed for Set-Top Box but is used on various BCM7xxx,
+ 	  BCM3xxx, BCM63xxx, iProc/Cygnus and more.
  
--int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
-+int brcmnand_probe_dev(struct device *dev, struct brcmnand_soc *soc)
- {
--	struct device *dev = &pdev->dev;
- 	struct device_node *dn = dev->of_node, *child;
- 	struct brcmnand_controller *ctrl;
--	struct resource *res;
- 	int ret;
- 
--	/* We only support device-tree instantiation */
--	if (!dn)
--		return -ENODEV;
--
--	if (!of_match_node(brcmnand_of_match, dn))
--		return -ENODEV;
--
- 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
- 	if (!ctrl)
- 		return -ENOMEM;
-@@ -2092,10 +2083,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 	INIT_LIST_HEAD(&ctrl->host_list);
- 
- 	/* NAND register range */
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	ctrl->nand_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(ctrl->nand_base))
--		return PTR_ERR(ctrl->nand_base);
-+	ctrl->nand_base = soc->nand_base;
- 
- 	/* Initialize NAND revision */
- 	ret = brcmnand_revision_init(ctrl);
-@@ -2106,22 +2094,16 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 	 * Most chips have this cache at a fixed offset within 'nand' block.
- 	 * Some must specify this region separately.
- 	 */
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand-cache");
--	if (res) {
--		ctrl->nand_fc = devm_ioremap_resource(dev, res);
--		if (IS_ERR(ctrl->nand_fc))
--			return PTR_ERR(ctrl->nand_fc);
-+	if (soc->nand_fc) {
-+		ctrl->nand_fc = soc->nand_fc;
- 	} else {
- 		ctrl->nand_fc = ctrl->nand_base +
- 				ctrl->reg_offsets[BRCMNAND_FC_BASE];
- 	}
- 
- 	/* FLASH_DMA */
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "flash-dma");
--	if (res) {
--		ctrl->flash_dma_base = devm_ioremap_resource(dev, res);
--		if (IS_ERR(ctrl->flash_dma_base))
--			return PTR_ERR(ctrl->flash_dma_base);
-+	if (soc->flash_dma_base) {
-+		ctrl->flash_dma_base = soc->flash_dma_base;
- 
- 		flash_dma_writel(ctrl, FLASH_DMA_MODE, 1); /* linked-list */
- 		flash_dma_writel(ctrl, FLASH_DMA_ERROR_STATUS, 0);
-@@ -2133,11 +2115,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 		if (!ctrl->dma_desc)
- 			return -ENOMEM;
- 
--		ctrl->dma_irq = platform_get_irq(pdev, 1);
--		if ((int)ctrl->dma_irq < 0) {
--			dev_err(dev, "missing FLASH_DMA IRQ\n");
--			return -ENODEV;
--		}
-+		ctrl->dma_irq = soc->dma_irq;
- 
- 		ret = devm_request_irq(dev, ctrl->dma_irq,
- 				brcmnand_dma_irq, 0, DRV_NAME,
-@@ -2166,17 +2144,13 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 	}
- 
- 	/* IRQ */
--	ctrl->irq = platform_get_irq(pdev, 0);
--	if ((int)ctrl->irq < 0) {
--		dev_err(dev, "no IRQ defined\n");
--		return -ENODEV;
--	}
-+	ctrl->irq = soc->irq;
- 
- 	/*
- 	 * Some SoCs integrate this controller (e.g., its interrupt bits) in
- 	 * interesting ways
- 	 */
--	if (soc) {
-+	if (soc->ctlrdy_ack && soc->ctlrdy_set_enabled) {
- 		ctrl->soc = soc;
- 
- 		ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
-@@ -2221,20 +2195,87 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(brcmnand_probe);
-+EXPORT_SYMBOL_GPL(brcmnand_probe_dev);
- 
--int brcmnand_remove(struct platform_device *pdev)
-+int brcmnand_remove_dev(struct device *dev)
- {
--	struct brcmnand_controller *ctrl = dev_get_drvdata(&pdev->dev);
-+	struct brcmnand_controller *ctrl = dev_get_drvdata(dev);
- 	struct brcmnand_host *host;
- 
- 	list_for_each_entry(host, &ctrl->host_list, node)
- 		nand_release(&host->mtd);
- 
--	dev_set_drvdata(&pdev->dev, NULL);
-+	dev_set_drvdata(dev, NULL);
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(brcmnand_remove_dev);
++config MTD_NAND_BRCMNAND_BCMA
++	tristate "Broadcom BCMA NAND controller"
++	depends on ARM || MIPS
++	select MTD_NAND_BRCMNAND
++	help
++	  Enables the driver which registers Broadcom NAND controller against
++	  bcma.
 +
-+int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ config MTD_NAND_BCM47XXNFLASH
+ 	tristate "Support for NAND flash on BCM4706 BCMA bus"
+ 	depends on BCMA_NFLASH
+diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
+index 3b1fbfd..8483984 100644
+--- a/drivers/mtd/nand/brcmnand/Makefile
++++ b/drivers/mtd/nand/brcmnand/Makefile
+@@ -1,6 +1,7 @@
+ # link order matters; don't link the more generic brcmstb_nand.o before the
+ # more specific iproc_nand.o, for instance
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
++obj-$(CONFIG_MTD_NAND_BRCMNAND_BCMA)	+= bcma_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
+diff --git a/drivers/mtd/nand/brcmnand/bcma_nand.c b/drivers/mtd/nand/brcmnand/bcma_nand.c
+new file mode 100644
+index 0000000..58380bd
+--- /dev/null
++++ b/drivers/mtd/nand/brcmnand/bcma_nand.c
+@@ -0,0 +1,153 @@
++/*
++ * Copyright © 2015 Broadcom Corporation
++ * Copyright 2015 Hauke Mehrtens <hauke@hauke-m.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/device.h>
++#include <linux/io.h>
++#include <linux/ioport.h>
++#include <linux/module.h>
++#include <linux/bcma/bcma.h>
++#include <linux/slab.h>
++
++#include "brcmnand.h"
++
++struct bcma_nand_soc_priv {
++	struct brcmnand_soc soc;
++	struct bcma_device *core;
++	spinlock_t idm_lock;
++};
++
++#define BCMA_NAND_CTLR_READY_OFFSET       0x0f10
++#define BCMA_NAND_CTLR_READY              BIT(0)
++
++#define BCMA_NAND_APB_LE_MODE             BIT(24)
++#define BCMA_NAND_INT_CTRL_READ_ENABLE    BIT(6)
++
++static bool bcma_nand_intc_ack(struct brcmnand_soc *soc)
 +{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *dn = dev->of_node;
-+	struct resource *res;
++	struct bcma_nand_soc_priv *priv = soc->priv;
++	struct bcma_device *core = priv->core;
 +
-+	/* We only support device-tree instantiation */
-+	if (!dn)
-+		return -ENODEV;
++	u32 val = bcma_read32(core, BCMA_NAND_CTLR_READY_OFFSET);
 +
-+	if (!of_match_node(brcmnand_of_match, dn))
-+		return -ENODEV;
-+
-+	if (!soc) {
-+		soc = devm_kzalloc(dev, sizeof(*soc), GFP_KERNEL);
-+		if (!soc)
-+			return -ENOMEM;
++	if (val & BCMA_NAND_CTLR_READY) {
++		bcma_write32(core, BCMA_NAND_CTLR_READY_OFFSET,
++			     BCMA_NAND_CTLR_READY);
++		return true;
 +	}
 +
-+	/* NAND register range */
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	soc->nand_base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(soc->nand_base))
-+		return PTR_ERR(soc->nand_base);
-+
-+	/*
-+	 * Most chips have this cache at a fixed offset within 'nand' block.
-+	 * Some must specify this region separately.
-+	 */
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand-cache");
-+	if (res) {
-+		soc->nand_fc = devm_ioremap_resource(dev, res);
-+		if (IS_ERR(soc->nand_fc))
-+			return PTR_ERR(soc->nand_fc);
-+	}
-+
-+	/* FLASH_DMA */
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "flash-dma");
-+	if (res) {
-+		soc->flash_dma_base = devm_ioremap_resource(dev, res);
-+		if (IS_ERR(soc->flash_dma_base))
-+			return PTR_ERR(soc->flash_dma_base);
-+
-+		soc->dma_irq = platform_get_irq(pdev, 1);
-+		if ((int)soc->dma_irq < 0) {
-+			dev_err(dev, "missing FLASH_DMA IRQ\n");
-+			return -ENODEV;
-+		}
-+	}
-+
-+	/* IRQ */
-+	soc->irq = platform_get_irq(pdev, 0);
-+	if ((int)soc->irq < 0) {
-+		dev_err(dev, "no IRQ defined\n");
-+		return -ENODEV;
-+	}
-+
-+	return brcmnand_probe_dev(&pdev->dev, soc);
++	return false;
 +}
-+EXPORT_SYMBOL_GPL(brcmnand_probe);
 +
-+int brcmnand_remove(struct platform_device *pdev)
++static void bcma_nand_intc_set(struct brcmnand_soc *soc, bool en)
 +{
-+	return brcmnand_remove_dev(&pdev->dev);
-+}
- EXPORT_SYMBOL_GPL(brcmnand_remove);
- 
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
-index d0d74d7..3211401 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.h
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.h
-@@ -26,6 +26,11 @@ struct brcmnand_soc {
- 	bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
- 	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
- 	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
-+	void __iomem	*nand_base;
-+	void __iomem	*nand_fc; /* flash cache */
-+	void __iomem	*flash_dma_base;
-+	unsigned int	irq;
-+	unsigned int	dma_irq;
- };
- 
- static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
-@@ -65,6 +70,9 @@ static inline void brcmnand_writel(u32 val, void __iomem *addr)
- 		writel_relaxed(val, addr);
- }
- 
-+int brcmnand_probe_dev(struct device *dev, struct brcmnand_soc *soc);
-+int brcmnand_remove_dev(struct device *dev);
++	struct bcma_nand_soc_priv *priv = soc->priv;
++	struct bcma_device *core = priv->core;
++	u32 val;
++	unsigned long flags;
 +
- int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc);
- int brcmnand_remove(struct platform_device *pdev);
- 
++	spin_lock_irqsave(&priv->idm_lock, flags);
++
++	val = bcma_aread32(core, BCMA_IOCTL);
++
++	if (en)
++		val |= BCMA_NAND_INT_CTRL_READ_ENABLE;
++	else
++		val &= ~BCMA_NAND_INT_CTRL_READ_ENABLE;
++
++	bcma_awrite32(core, BCMA_IOCTL, val);
++
++	spin_unlock_irqrestore(&priv->idm_lock, flags);
++}
++
++static void bcma_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
++{
++	struct bcma_nand_soc_priv *priv = soc->priv;
++	struct bcma_device *core = priv->core;
++	u32 val;
++	unsigned long flags;
++
++	spin_lock_irqsave(&priv->idm_lock, flags);
++
++	val = bcma_aread32(core, BCMA_IOCTL);
++
++	if (prepare)
++		val |= BCMA_NAND_APB_LE_MODE;
++	else
++		val &= ~BCMA_NAND_APB_LE_MODE;
++
++	bcma_awrite32(core, BCMA_IOCTL, val);
++
++	spin_unlock_irqrestore(&priv->idm_lock, flags);
++}
++
++static int bcma_nand_probe(struct bcma_device *core)
++{
++	struct device *dev = &core->dev;
++	struct bcma_nand_soc_priv *priv;
++	struct brcmnand_soc *soc;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->core = core;
++
++	soc = &priv->soc;
++	soc->nand_base = core->io_addr;
++	soc->irq = bcma_core_irq(core, 4);
++
++	soc->dev = dev;
++	soc->priv = priv;
++	soc->ctlrdy_ack = bcma_nand_intc_ack;
++	soc->ctlrdy_set_enabled = bcma_nand_intc_set;
++	soc->prepare_data_bus = bcma_nand_apb_access;
++
++	bcma_core_enable(core, 0);
++	return brcmnand_probe_dev(dev, soc);
++}
++
++static void bcma_nand_remove(struct bcma_device *core)
++{
++	brcmnand_remove_dev(&core->dev);
++}
++
++static const struct bcma_device_id bcma_nand_tbl[] = {
++	BCMA_CORE(BCMA_MANUF_BCM, BCMA_CORE_NS_NAND, BCMA_ANY_REV, BCMA_ANY_CLASS),
++	{},
++};
++MODULE_DEVICE_TABLE(bcma, bcma_nand_tbl);
++
++static struct bcma_driver bcma_nand_driver = {
++	.name		= KBUILD_MODNAME,
++	.id_table	= bcma_nand_tbl,
++	.probe		= bcma_nand_probe,
++	.remove		= bcma_nand_remove,
++};
++
++static int __init bcma_nand_init(void)
++{
++	return bcma_driver_register(&bcma_nand_driver);
++}
++
++static void __exit bcma_nand_exit(void)
++{
++	bcma_driver_unregister(&bcma_nand_driver);
++}
++
++module_init(bcma_nand_init)
++module_exit(bcma_nand_exit)
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Hauke Mehrtens");
++MODULE_DESCRIPTION("NAND driver for Broadcom bcma based SoCs");
 -- 
 2.1.4
