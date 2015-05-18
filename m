@@ -1,29 +1,18 @@
-Received: from foss.arm.com ([217.140.101.70])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YuIY4-0001ay-IE
- for linux-mtd@lists.infradead.org; Mon, 18 May 2015 10:45:30 +0000
-Date: Mon, 18 May 2015 11:45:01 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] Documentation: dt: mtd: replace "nor-jedec" binding with
- "jedec,spi-nor"
-Message-ID: <20150518104501.GD3551@leverpostej>
-References: <1431624773-4165-1-git-send-email-computersforpeace@gmail.com>
- <20150515195541.GL11598@ld-irv-0074>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20150515195541.GL11598@ld-irv-0074>
-Cc: Marek Vasut <marex@denx.de>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Pawel Moll <Pawel.Moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Stephen Warren <swarren@wwwdotorg.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Kumar Gala <galak@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Received: from mx1.redhat.com ([209.132.183.28])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YuIlM-0005Jn-9u
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2015 10:59:14 +0000
+From: Denys Vlasenko <dvlasenk@redhat.com>
+To: David Woodhouse <David.Woodhouse@intel.com>
+Subject: [PATCH] mtd: cfi: Deiline large functions
+Date: Mon, 18 May 2015 12:58:40 +0200
+Message-Id: <1431946720-32281-1-git-send-email-dvlasenk@redhat.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>,
+ Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Aaron Sierra <asierra@xes-inc.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,89 +22,446 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 15, 2015 at 08:55:41PM +0100, Brian Norris wrote:
-> It really helps if I test patches...
-> 
-> On Thu, May 14, 2015 at 10:32:53AM -0700, Brian Norris wrote:
-> > In commit 8ff16cf77ce3 ("Documentation: devicetree: m25p80: add "nor-jedec"
-> > binding"), we added a generic "nor-jedec" binding to catch all
-> > mostly-compatible SPI NOR flash which can be detected via the READ ID
-> > opcode (0x9F). This was discussed and reviewed at the time, however
-> > objections have come up since then as part of this discussion:
-> > 
-> >   http://lkml.kernel.org/g/20150511224646.GJ32500@ld-irv-0074
-> > 
-> > It seems the parties involved agree that "jedec,spi-nor" does a better
-> > job of capturing the fact that this is SPI-specific, not just any NOR
-> > flash.
-> > 
-> > This binding was only merged for v4.1-rc1, so it's still OK to change
-> > the naming.
-> > 
-> > At the same time, let's move the documentation to a better name.
-> > 
-> > Next up: prune the m25p_ids[] table to the minimal necessary listing, so
-> > we can stop referring to code (drivers/mtd/devices/m25p80.c) from the
-> > documentation.
-> > 
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > Cc: Stephen Warren <swarren@wwwdotorg.org>
-> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Cc: Marek Vasut <marex@denx.de>
-> > Cc: Rafał Miłecki <zajec5@gmail.com>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Pawel Moll <pawel.moll@arm.com>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>
-> > Cc: Kumar Gala <galak@codeaurora.org>
-> > Cc: devicetree@vger.kernel.org
-> > ---
-> > I'd *really* like to get an 'ack' from a DT maintainer for this, those those
-> > are apparently very hard to come by. And I'd really not like to have to revisit
-> > this again in a few weeks. We have patches getting queued up for 4.2 that are
-> > using the "nor-jedec" binding, and I'd like to nip those in the bud ASAP.
-> > 
-> >  .../devicetree/bindings/mtd/{m25p80.txt => jedec,spi-nor.txt}       | 6 +++---
-> >  drivers/mtd/devices/m25p80.c                                        | 6 +++---
-> >  2 files changed, 6 insertions(+), 6 deletions(-)
-> >  rename Documentation/devicetree/bindings/mtd/{m25p80.txt => jedec,spi-nor.txt} (85%)
-> > 
-> ...
-> > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> > index 7c8b1694a134..3d59ebc16b6e 100644
-> > --- a/drivers/mtd/devices/m25p80.c
-> > +++ b/drivers/mtd/devices/m25p80.c
-> > @@ -223,7 +223,7 @@ static int m25p_probe(struct spi_device *spi)
-> >  	 */
-> >  	if (data && data->type)
-> >  		flash_name = data->type;
-> > -	else if (!strcmp(spi->modalias, "nor-jedec"))
-> > +	else if (!strcmp(spi->modalias, "jedec,spi-nor"))
-> >  		flash_name = NULL; /* auto-detect */
-> >  	else
-> >  		flash_name = spi->modalias;
-> > @@ -255,7 +255,7 @@ static int m25p_remove(struct spi_device *spi)
-> >   * since most of these flash are compatible to some extent, and their
-> >   * differences can often be differentiated by the JEDEC read-ID command, we
-> >   * encourage new users to add support to the spi-nor library, and simply bind
-> > - * against a generic string here (e.g., "nor-jedec").
-> > + * against a generic string here (e.g., "jedec,spi-nor").
-> >   *
-> >   * Many flash names are kept here in this list (as well as in spi-nor.c) to
-> >   * keep them available as module aliases for existing platforms.
-> > @@ -305,7 +305,7 @@ static const struct spi_device_id m25p_ids[] = {
-> >  	 * Generic support for SPI NOR that can be identified by the JEDEC READ
-> >  	 * ID opcode (0x9F). Use this, if possible.
-> >  	 */
-> > -	{"nor-jedec"},
-> > +	{"jedec,spi-nor"},
-> 
-> So I forgot (again; we hit this before) that the SPI/OF framework strips
-> everything before the first comma before binding devices. See
-> of_modalias_node(). So I'll have to squash in the patch below to get a
-> usable binding.
+With this .config: http://busybox.net/~vda/kernel_config,
+after uninlining these functions have sizes and callsite counts
+as follows:
 
-Is it not possible to use the of_match_table on spi_driver::driver? If
-not, we really should make it so.
+cfi_udelay(): 74 bytes, 26 callsites
+cfi_send_gen_cmd(): 153 bytes, 95 callsites
+cfi_build_cmd(): 274 bytes, 123 callsites
+cfi_build_cmd_addr(): 49 bytes, 15 callsites
+cfi_merge_status(): 230 bytes, 3 callsites
 
-Mark.
+Reduction in code size is about 50,000:
+
+    text     data      bss       dec     hex filename
+85842882 22294584 20627456 128764922 7accbfa vmlinux.before
+85789648 22294616 20627456 128711720 7abfc28 vmlinux
+
+Signed-off-by: Denys Vlasenko <dvlasenk@redhat.com>
+CC: Dan Carpenter <dan.carpenter@oracle.com>
+CC: Jingoo Han <jg1.han@samsung.com>
+CC: Brian Norris <computersforpeace@gmail.com>
+CC: Aaron Sierra <asierra@xes-inc.com>
+CC: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
+CC: David Woodhouse <David.Woodhouse@intel.com>
+CC: linux-mtd@lists.infradead.org
+CC: linux-kernel@vger.kernel.org
+---
+ drivers/mtd/chips/cfi_util.c | 188 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/cfi.h      | 188 ++-----------------------------------------
+ 2 files changed, 196 insertions(+), 180 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
+index 09c79bd..6f16552 100644
+--- a/drivers/mtd/chips/cfi_util.c
++++ b/drivers/mtd/chips/cfi_util.c
+@@ -23,6 +23,194 @@
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/cfi.h>
+ 
++void cfi_udelay(int us)
++{
++	if (us >= 1000) {
++		msleep((us+999)/1000);
++	} else {
++		udelay(us);
++		cond_resched();
++	}
++}
++EXPORT_SYMBOL(cfi_udelay);
++
++/*
++ * Returns the command address according to the given geometry.
++ */
++uint32_t cfi_build_cmd_addr(uint32_t cmd_ofs,
++				struct map_info *map, struct cfi_private *cfi)
++{
++	unsigned bankwidth = map_bankwidth(map);
++	unsigned interleave = cfi_interleave(cfi);
++	unsigned type = cfi->device_type;
++	uint32_t addr;
++
++	addr = (cmd_ofs * type) * interleave;
++
++	/* Modify the unlock address if we are in compatibility mode.
++	 * For 16bit devices on 8 bit busses
++	 * and 32bit devices on 16 bit busses
++	 * set the low bit of the alternating bit sequence of the address.
++	 */
++	if (((type * interleave) > bankwidth) && ((cmd_ofs & 0xff) == 0xaa))
++		addr |= (type >> 1)*interleave;
++
++	return  addr;
++}
++EXPORT_SYMBOL(cfi_build_cmd_addr);
++
++/*
++ * Transforms the CFI command for the given geometry (bus width & interleave).
++ * It looks too long to be inline, but in the common case it should almost all
++ * get optimised away.
++ */
++map_word cfi_build_cmd(u_long cmd, struct map_info *map, struct cfi_private *cfi)
++{
++	map_word val = { {0} };
++	int wordwidth, words_per_bus, chip_mode, chips_per_word;
++	unsigned long onecmd;
++	int i;
++
++	/* We do it this way to give the compiler a fighting chance
++	   of optimising away all the crap for 'bankwidth' larger than
++	   an unsigned long, in the common case where that support is
++	   disabled */
++	if (map_bankwidth_is_large(map)) {
++		wordwidth = sizeof(unsigned long);
++		words_per_bus = (map_bankwidth(map)) / wordwidth; // i.e. normally 1
++	} else {
++		wordwidth = map_bankwidth(map);
++		words_per_bus = 1;
++	}
++
++	chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
++	chips_per_word = wordwidth * cfi_interleave(cfi) / map_bankwidth(map);
++
++	/* First, determine what the bit-pattern should be for a single
++	   device, according to chip mode and endianness... */
++	switch (chip_mode) {
++	default: BUG();
++	case 1:
++		onecmd = cmd;
++		break;
++	case 2:
++		onecmd = cpu_to_cfi16(map, cmd);
++		break;
++	case 4:
++		onecmd = cpu_to_cfi32(map, cmd);
++		break;
++	}
++
++	/* Now replicate it across the size of an unsigned long, or
++	   just to the bus width as appropriate */
++	switch (chips_per_word) {
++	default: BUG();
++#if BITS_PER_LONG >= 64
++	case 8:
++		onecmd |= (onecmd << (chip_mode * 32));
++#endif
++	case 4:
++		onecmd |= (onecmd << (chip_mode * 16));
++	case 2:
++		onecmd |= (onecmd << (chip_mode * 8));
++	case 1:
++		;
++	}
++
++	/* And finally, for the multi-word case, replicate it
++	   in all words in the structure */
++	for (i=0; i < words_per_bus; i++) {
++		val.x[i] = onecmd;
++	}
++
++	return val;
++}
++EXPORT_SYMBOL(cfi_build_cmd);
++
++unsigned long cfi_merge_status(map_word val, struct map_info *map,
++					   struct cfi_private *cfi)
++{
++	int wordwidth, words_per_bus, chip_mode, chips_per_word;
++	unsigned long onestat, res = 0;
++	int i;
++
++	/* We do it this way to give the compiler a fighting chance
++	   of optimising away all the crap for 'bankwidth' larger than
++	   an unsigned long, in the common case where that support is
++	   disabled */
++	if (map_bankwidth_is_large(map)) {
++		wordwidth = sizeof(unsigned long);
++		words_per_bus = (map_bankwidth(map)) / wordwidth; // i.e. normally 1
++	} else {
++		wordwidth = map_bankwidth(map);
++		words_per_bus = 1;
++	}
++
++	chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
++	chips_per_word = wordwidth * cfi_interleave(cfi) / map_bankwidth(map);
++
++	onestat = val.x[0];
++	/* Or all status words together */
++	for (i=1; i < words_per_bus; i++) {
++		onestat |= val.x[i];
++	}
++
++	res = onestat;
++	switch(chips_per_word) {
++	default: BUG();
++#if BITS_PER_LONG >= 64
++	case 8:
++		res |= (onestat >> (chip_mode * 32));
++#endif
++	case 4:
++		res |= (onestat >> (chip_mode * 16));
++	case 2:
++		res |= (onestat >> (chip_mode * 8));
++	case 1:
++		;
++	}
++
++	/* Last, determine what the bit-pattern should be for a single
++	   device, according to chip mode and endianness... */
++	switch (chip_mode) {
++	case 1:
++		break;
++	case 2:
++		res = cfi16_to_cpu(map, res);
++		break;
++	case 4:
++		res = cfi32_to_cpu(map, res);
++		break;
++	default: BUG();
++	}
++	return res;
++}
++EXPORT_SYMBOL(cfi_merge_status);
++
++/*
++ * Sends a CFI command to a bank of flash for the given geometry.
++ *
++ * Returns the offset in flash where the command was written.
++ * If prev_val is non-null, it will be set to the value at the command address,
++ * before the command was written.
++ */
++uint32_t cfi_send_gen_cmd(u_char cmd, uint32_t cmd_addr, uint32_t base,
++				struct map_info *map, struct cfi_private *cfi,
++				int type, map_word *prev_val)
++{
++	map_word val;
++	uint32_t addr = base + cfi_build_cmd_addr(cmd_addr, map, cfi);
++	val = cfi_build_cmd(cmd, map, cfi);
++
++	if (prev_val)
++		*prev_val = map_read(map, addr);
++
++	map_write(map, val, addr);
++
++	return addr - base;
++}
++EXPORT_SYMBOL(cfi_send_gen_cmd);
++
+ int __xipram cfi_qry_present(struct map_info *map, __u32 base,
+ 			     struct cfi_private *cfi)
+ {
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index 299d7d3..9b57a9b 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -296,183 +296,19 @@ struct cfi_private {
+ 	struct flchip chips[0];  /* per-chip data structure for each chip */
+ };
+ 
+-/*
+- * Returns the command address according to the given geometry.
+- */
+-static inline uint32_t cfi_build_cmd_addr(uint32_t cmd_ofs,
+-				struct map_info *map, struct cfi_private *cfi)
+-{
+-	unsigned bankwidth = map_bankwidth(map);
+-	unsigned interleave = cfi_interleave(cfi);
+-	unsigned type = cfi->device_type;
+-	uint32_t addr;
+-	
+-	addr = (cmd_ofs * type) * interleave;
+-
+-	/* Modify the unlock address if we are in compatibility mode.
+-	 * For 16bit devices on 8 bit busses
+-	 * and 32bit devices on 16 bit busses
+-	 * set the low bit of the alternating bit sequence of the address.
+-	 */
+-	if (((type * interleave) > bankwidth) && ((cmd_ofs & 0xff) == 0xaa))
+-		addr |= (type >> 1)*interleave;
+-
+-	return  addr;
+-}
+-
+-/*
+- * Transforms the CFI command for the given geometry (bus width & interleave).
+- * It looks too long to be inline, but in the common case it should almost all
+- * get optimised away.
+- */
+-static inline map_word cfi_build_cmd(u_long cmd, struct map_info *map, struct cfi_private *cfi)
+-{
+-	map_word val = { {0} };
+-	int wordwidth, words_per_bus, chip_mode, chips_per_word;
+-	unsigned long onecmd;
+-	int i;
+-
+-	/* We do it this way to give the compiler a fighting chance
+-	   of optimising away all the crap for 'bankwidth' larger than
+-	   an unsigned long, in the common case where that support is
+-	   disabled */
+-	if (map_bankwidth_is_large(map)) {
+-		wordwidth = sizeof(unsigned long);
+-		words_per_bus = (map_bankwidth(map)) / wordwidth; // i.e. normally 1
+-	} else {
+-		wordwidth = map_bankwidth(map);
+-		words_per_bus = 1;
+-	}
+-
+-	chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
+-	chips_per_word = wordwidth * cfi_interleave(cfi) / map_bankwidth(map);
+-
+-	/* First, determine what the bit-pattern should be for a single
+-	   device, according to chip mode and endianness... */
+-	switch (chip_mode) {
+-	default: BUG();
+-	case 1:
+-		onecmd = cmd;
+-		break;
+-	case 2:
+-		onecmd = cpu_to_cfi16(map, cmd);
+-		break;
+-	case 4:
+-		onecmd = cpu_to_cfi32(map, cmd);
+-		break;
+-	}
+-
+-	/* Now replicate it across the size of an unsigned long, or
+-	   just to the bus width as appropriate */
+-	switch (chips_per_word) {
+-	default: BUG();
+-#if BITS_PER_LONG >= 64
+-	case 8:
+-		onecmd |= (onecmd << (chip_mode * 32));
+-#endif
+-	case 4:
+-		onecmd |= (onecmd << (chip_mode * 16));
+-	case 2:
+-		onecmd |= (onecmd << (chip_mode * 8));
+-	case 1:
+-		;
+-	}
++uint32_t cfi_build_cmd_addr(uint32_t cmd_ofs,
++				struct map_info *map, struct cfi_private *cfi);
+ 
+-	/* And finally, for the multi-word case, replicate it
+-	   in all words in the structure */
+-	for (i=0; i < words_per_bus; i++) {
+-		val.x[i] = onecmd;
+-	}
+-
+-	return val;
+-}
++map_word cfi_build_cmd(u_long cmd, struct map_info *map, struct cfi_private *cfi);
+ #define CMD(x)  cfi_build_cmd((x), map, cfi)
+ 
+-
+-static inline unsigned long cfi_merge_status(map_word val, struct map_info *map,
+-					   struct cfi_private *cfi)
+-{
+-	int wordwidth, words_per_bus, chip_mode, chips_per_word;
+-	unsigned long onestat, res = 0;
+-	int i;
+-
+-	/* We do it this way to give the compiler a fighting chance
+-	   of optimising away all the crap for 'bankwidth' larger than
+-	   an unsigned long, in the common case where that support is
+-	   disabled */
+-	if (map_bankwidth_is_large(map)) {
+-		wordwidth = sizeof(unsigned long);
+-		words_per_bus = (map_bankwidth(map)) / wordwidth; // i.e. normally 1
+-	} else {
+-		wordwidth = map_bankwidth(map);
+-		words_per_bus = 1;
+-	}
+-
+-	chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
+-	chips_per_word = wordwidth * cfi_interleave(cfi) / map_bankwidth(map);
+-
+-	onestat = val.x[0];
+-	/* Or all status words together */
+-	for (i=1; i < words_per_bus; i++) {
+-		onestat |= val.x[i];
+-	}
+-
+-	res = onestat;
+-	switch(chips_per_word) {
+-	default: BUG();
+-#if BITS_PER_LONG >= 64
+-	case 8:
+-		res |= (onestat >> (chip_mode * 32));
+-#endif
+-	case 4:
+-		res |= (onestat >> (chip_mode * 16));
+-	case 2:
+-		res |= (onestat >> (chip_mode * 8));
+-	case 1:
+-		;
+-	}
+-
+-	/* Last, determine what the bit-pattern should be for a single
+-	   device, according to chip mode and endianness... */
+-	switch (chip_mode) {
+-	case 1:
+-		break;
+-	case 2:
+-		res = cfi16_to_cpu(map, res);
+-		break;
+-	case 4:
+-		res = cfi32_to_cpu(map, res);
+-		break;
+-	default: BUG();
+-	}
+-	return res;
+-}
+-
++unsigned long cfi_merge_status(map_word val, struct map_info *map,
++					   struct cfi_private *cfi);
+ #define MERGESTATUS(x) cfi_merge_status((x), map, cfi)
+ 
+-
+-/*
+- * Sends a CFI command to a bank of flash for the given geometry.
+- *
+- * Returns the offset in flash where the command was written.
+- * If prev_val is non-null, it will be set to the value at the command address,
+- * before the command was written.
+- */
+-static inline uint32_t cfi_send_gen_cmd(u_char cmd, uint32_t cmd_addr, uint32_t base,
++uint32_t cfi_send_gen_cmd(u_char cmd, uint32_t cmd_addr, uint32_t base,
+ 				struct map_info *map, struct cfi_private *cfi,
+-				int type, map_word *prev_val)
+-{
+-	map_word val;
+-	uint32_t addr = base + cfi_build_cmd_addr(cmd_addr, map, cfi);
+-	val = cfi_build_cmd(cmd, map, cfi);
+-
+-	if (prev_val)
+-		*prev_val = map_read(map, addr);
+-
+-	map_write(map, val, addr);
+-
+-	return addr - base;
+-}
++				int type, map_word *prev_val);
+ 
+ static inline uint8_t cfi_read_query(struct map_info *map, uint32_t addr)
+ {
+@@ -506,15 +342,7 @@ static inline uint16_t cfi_read_query16(struct map_info *map, uint32_t addr)
+ 	}
+ }
+ 
+-static inline void cfi_udelay(int us)
+-{
+-	if (us >= 1000) {
+-		msleep((us+999)/1000);
+-	} else {
+-		udelay(us);
+-		cond_resched();
+-	}
+-}
++void cfi_udelay(int us);
+ 
+ int __xipram cfi_qry_present(struct map_info *map, __u32 base,
+ 			     struct cfi_private *cfi);
+-- 
+1.8.1.4
