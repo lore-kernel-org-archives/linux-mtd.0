@@ -1,23 +1,19 @@
-Received: from mail-la0-x235.google.com ([2a00:1450:4010:c03::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YuLD5-00043U-4A
- for linux-mtd@lists.infradead.org; Mon, 18 May 2015 13:36:00 +0000
-Received: by labbd9 with SMTP id bd9so220518485lab.2
- for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 06:35:35 -0700 (PDT)
+Received: from spornkuller.de ([5.45.105.28])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YuLUl-0005p1-9d
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2015 13:54:16 +0000
+Received: from spornkuller.de (localhost [IPv6:::1])
+ by spornkuller.de (Postfix) with ESMTP id BFC6917F432
+ for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 15:53:51 +0200 (CEST)
 MIME-Version: 1.0
-In-Reply-To: <CAD=nrE915xc2_0znC=uzXjghhhueq=NqZhEmtFZ-Tvdfm1fXWw@mail.gmail.com>
-References: <CAD=nrE_4tsSvKQ_Rz8XJpjJhfT-z+-Tkhn-SMvvcyUaPzg1PHA@mail.gmail.com>
- <CAAbfDBfXZCrRJ2M_MDGP8Pmo97tLiduYGHa2AdKasTya60e81A@mail.gmail.com>
- <CAD=nrE9=040qfZHQi349KAikhiRAr5YrPgO52-7bm9uA9WmW=Q@mail.gmail.com>
- <20150516205354.GK6055@norris-Latitude-E6410>
- <CAFLxGvwrCO8BozRb3jkncWy+2w6y82zz+wtL2r_E9i3VT3N8HQ@mail.gmail.com>
- <CAD=nrE915xc2_0znC=uzXjghhhueq=NqZhEmtFZ-Tvdfm1fXWw@mail.gmail.com>
-Date: Mon, 18 May 2015 15:35:35 +0200
-Message-ID: <CAD=nrE_GN0aYsVazj0nnM0eMZBN57fcmLvWjdZaAF2eLw=ASjA@mail.gmail.com>
-Subject: Re: Tracking flash IO activity?
-From: "valent.turkovic@gmail.com" <valent.turkovic@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Mon, 18 May 2015 15:53:51 +0200
+From: Johannes Bauer <weolanwaybqm@spornkuller.de>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Wear-leveling peculiarities
+Message-ID: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,6 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-So nobody from this mailing list knows how to track IO usage on mtd
-partitions? How do you track usage in your embedded projects? Is
-anybody tracking how much mtd devices are being erased and written?
+Hello list,
+
+I keep track of some devices running an embedded ARM Linux which boots 
+from NAND flash. On there, ubifs is used. The deployed kernels are:
+
+Linux version 3.0.59 (###@###) (gcc version 4.5.4 20120305 (prerelease) 
+(GCC) ) #1 Mon Apr 29 16:36:42 CEST 2013
+
+Target is ARMv7 (omap2).
+
+The units have been deployed for three years now. Recently, we've been 
+seeing units fail more often. This warranted some investigation. I 
+pulled dd images of the relevant /dev/mtd device (mtd4 in my case) and 
+wrote a small Python script that evaluated the UBIFS LEB headers, in 
+particular the erase count. I expected to see a uniform distribution of 
+erases all around the flash.
+
+But on the contrary, we see the very opposite:
+
+http://imgur.com/a/d5Bhl
+
+Here you see graphs of two units. You can see that the pattern is 
+identical: Lots of pages which were written seldomly, lots of pages 
+which were written frequently. Very little inbetween. This is what the 
+histograms show (erase count on the X axis and their occurences on the Y 
+axis).
+
+The other graphs are even more disturbing. It shows the physical layout 
+of the NAND flash. Each pixel corresponds to one LEB. Everything upwards 
+of 100 erases is red (the scale is linear, shown at the very bottom). 
+You can see that in some areas, pages are erased very often while in 
+others they're virtually constant.
+
+This is something I'd expect if the FS would not perform wear-leveling 
+(files that are written in-place cause page erases at the same locations 
+over and over). But ubifs should take care of this, shouldn't it? It 
+might well be that my understanding of ubifs is too limited so I don't 
+grasp the whole picture. In any case, any advice is greatly appreciated.
+
+Thanks in advance,
+Johannes
