@@ -1,18 +1,20 @@
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from mail-wg0-x22c.google.com ([2a00:1450:400c:c00::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YuIlM-0005Jn-9u
- for linux-mtd@lists.infradead.org; Mon, 18 May 2015 10:59:14 +0000
-From: Denys Vlasenko <dvlasenk@redhat.com>
-To: David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH] mtd: cfi: Deiline large functions
-Date: Mon, 18 May 2015 12:58:40 +0200
-Message-Id: <1431946720-32281-1-git-send-email-dvlasenk@redhat.com>
-Cc: Denys Vlasenko <dvlasenk@redhat.com>,
- Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Aaron Sierra <asierra@xes-inc.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
+ id 1YuKGX-00068F-VG
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2015 12:35:30 +0000
+Received: by wgfl8 with SMTP id l8so34633884wgf.2
+ for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 05:35:06 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] mtd: add support for typed parsers splitting partitions
+Date: Mon, 18 May 2015 14:34:53 +0200
+Message-Id: <1431952494-6403-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Gabor Juhos <juhosg@openwrt.org>, Felix Fietkau <nbd@openwrt.org>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,446 +24,175 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With this .config: http://busybox.net/~vda/kernel_config,
-after uninlining these functions have sizes and callsite counts
-as follows:
+This extends MTD architecture by introducing partition types which allow
+handling selected (marked) partitions in a specific way. There are some
+types of partitions that require splitting, e.g. firmware containers.
+On some devices we want to have "firmware" container partition (for easy
+firmware upgrade) as well as subpartitions (e.g. to use rootfs).
 
-cfi_udelay(): 74 bytes, 26 callsites
-cfi_send_gen_cmd(): 153 bytes, 95 callsites
-cfi_build_cmd(): 274 bytes, 123 callsites
-cfi_build_cmd_addr(): 49 bytes, 15 callsites
-cfi_merge_status(): 230 bytes, 3 callsites
+Thanks to this change we will also avoid code duplication across various
+drivers/architectures. It will allow multiple drivers to use the same
+parser just by setting a proper type.
 
-Reduction in code size is about 50,000:
+An example use case for this can be TRX firmware format parser. This
+format contains 2-4 partitions including kernel and rootfs. It is used
+by many Broadcom devices on various platforms (bcm47xx, bcm53xx, ath79).
 
-    text     data      bss       dec     hex filename
-85842882 22294584 20627456 128764922 7accbfa vmlinux.before
-85789648 22294616 20627456 128711720 7abfc28 vmlinux
+When partition with a specified type is created we loop over registered
+parsers running ones with a matching type. When one returns list of new
+partitions we create them.
 
-Signed-off-by: Denys Vlasenko <dvlasenk@redhat.com>
-CC: Dan Carpenter <dan.carpenter@oracle.com>
-CC: Jingoo Han <jg1.han@samsung.com>
-CC: Brian Norris <computersforpeace@gmail.com>
-CC: Aaron Sierra <asierra@xes-inc.com>
-CC: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
-CC: David Woodhouse <David.Woodhouse@intel.com>
-CC: linux-mtd@lists.infradead.org
-CC: linux-kernel@vger.kernel.org
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
 ---
- drivers/mtd/chips/cfi_util.c | 188 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/cfi.h      | 188 ++-----------------------------------------
- 2 files changed, 196 insertions(+), 180 deletions(-)
+ drivers/mtd/mtdpart.c          | 74 +++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/partitions.h |  7 ++++
+ 2 files changed, 80 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
-index 09c79bd..6f16552 100644
---- a/drivers/mtd/chips/cfi_util.c
-+++ b/drivers/mtd/chips/cfi_util.c
-@@ -23,6 +23,194 @@
- #include <linux/mtd/map.h>
- #include <linux/mtd/cfi.h>
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index cafdb88..d583d6d 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -52,6 +52,8 @@ struct mtd_part {
+  */
+ #define PART(x)  ((struct mtd_part *)(x))
  
-+void cfi_udelay(int us)
-+{
-+	if (us >= 1000) {
-+		msleep((us+999)/1000);
-+	} else {
-+		udelay(us);
-+		cond_resched();
-+	}
-+}
-+EXPORT_SYMBOL(cfi_udelay);
-+
-+/*
-+ * Returns the command address according to the given geometry.
-+ */
-+uint32_t cfi_build_cmd_addr(uint32_t cmd_ofs,
-+				struct map_info *map, struct cfi_private *cfi)
-+{
-+	unsigned bankwidth = map_bankwidth(map);
-+	unsigned interleave = cfi_interleave(cfi);
-+	unsigned type = cfi->device_type;
-+	uint32_t addr;
-+
-+	addr = (cmd_ofs * type) * interleave;
-+
-+	/* Modify the unlock address if we are in compatibility mode.
-+	 * For 16bit devices on 8 bit busses
-+	 * and 32bit devices on 16 bit busses
-+	 * set the low bit of the alternating bit sequence of the address.
-+	 */
-+	if (((type * interleave) > bankwidth) && ((cmd_ofs & 0xff) == 0xaa))
-+		addr |= (type >> 1)*interleave;
-+
-+	return  addr;
-+}
-+EXPORT_SYMBOL(cfi_build_cmd_addr);
-+
-+/*
-+ * Transforms the CFI command for the given geometry (bus width & interleave).
-+ * It looks too long to be inline, but in the common case it should almost all
-+ * get optimised away.
-+ */
-+map_word cfi_build_cmd(u_long cmd, struct map_info *map, struct cfi_private *cfi)
-+{
-+	map_word val = { {0} };
-+	int wordwidth, words_per_bus, chip_mode, chips_per_word;
-+	unsigned long onecmd;
-+	int i;
-+
-+	/* We do it this way to give the compiler a fighting chance
-+	   of optimising away all the crap for 'bankwidth' larger than
-+	   an unsigned long, in the common case where that support is
-+	   disabled */
-+	if (map_bankwidth_is_large(map)) {
-+		wordwidth = sizeof(unsigned long);
-+		words_per_bus = (map_bankwidth(map)) / wordwidth; // i.e. normally 1
-+	} else {
-+		wordwidth = map_bankwidth(map);
-+		words_per_bus = 1;
-+	}
-+
-+	chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
-+	chips_per_word = wordwidth * cfi_interleave(cfi) / map_bankwidth(map);
-+
-+	/* First, determine what the bit-pattern should be for a single
-+	   device, according to chip mode and endianness... */
-+	switch (chip_mode) {
-+	default: BUG();
-+	case 1:
-+		onecmd = cmd;
-+		break;
-+	case 2:
-+		onecmd = cpu_to_cfi16(map, cmd);
-+		break;
-+	case 4:
-+		onecmd = cpu_to_cfi32(map, cmd);
-+		break;
-+	}
-+
-+	/* Now replicate it across the size of an unsigned long, or
-+	   just to the bus width as appropriate */
-+	switch (chips_per_word) {
-+	default: BUG();
-+#if BITS_PER_LONG >= 64
-+	case 8:
-+		onecmd |= (onecmd << (chip_mode * 32));
-+#endif
-+	case 4:
-+		onecmd |= (onecmd << (chip_mode * 16));
-+	case 2:
-+		onecmd |= (onecmd << (chip_mode * 8));
-+	case 1:
-+		;
-+	}
-+
-+	/* And finally, for the multi-word case, replicate it
-+	   in all words in the structure */
-+	for (i=0; i < words_per_bus; i++) {
-+		val.x[i] = onecmd;
-+	}
-+
-+	return val;
-+}
-+EXPORT_SYMBOL(cfi_build_cmd);
-+
-+unsigned long cfi_merge_status(map_word val, struct map_info *map,
-+					   struct cfi_private *cfi)
-+{
-+	int wordwidth, words_per_bus, chip_mode, chips_per_word;
-+	unsigned long onestat, res = 0;
-+	int i;
-+
-+	/* We do it this way to give the compiler a fighting chance
-+	   of optimising away all the crap for 'bankwidth' larger than
-+	   an unsigned long, in the common case where that support is
-+	   disabled */
-+	if (map_bankwidth_is_large(map)) {
-+		wordwidth = sizeof(unsigned long);
-+		words_per_bus = (map_bankwidth(map)) / wordwidth; // i.e. normally 1
-+	} else {
-+		wordwidth = map_bankwidth(map);
-+		words_per_bus = 1;
-+	}
-+
-+	chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
-+	chips_per_word = wordwidth * cfi_interleave(cfi) / map_bankwidth(map);
-+
-+	onestat = val.x[0];
-+	/* Or all status words together */
-+	for (i=1; i < words_per_bus; i++) {
-+		onestat |= val.x[i];
-+	}
-+
-+	res = onestat;
-+	switch(chips_per_word) {
-+	default: BUG();
-+#if BITS_PER_LONG >= 64
-+	case 8:
-+		res |= (onestat >> (chip_mode * 32));
-+#endif
-+	case 4:
-+		res |= (onestat >> (chip_mode * 16));
-+	case 2:
-+		res |= (onestat >> (chip_mode * 8));
-+	case 1:
-+		;
-+	}
-+
-+	/* Last, determine what the bit-pattern should be for a single
-+	   device, according to chip mode and endianness... */
-+	switch (chip_mode) {
-+	case 1:
-+		break;
-+	case 2:
-+		res = cfi16_to_cpu(map, res);
-+		break;
-+	case 4:
-+		res = cfi32_to_cpu(map, res);
-+		break;
-+	default: BUG();
-+	}
-+	return res;
-+}
-+EXPORT_SYMBOL(cfi_merge_status);
-+
-+/*
-+ * Sends a CFI command to a bank of flash for the given geometry.
-+ *
-+ * Returns the offset in flash where the command was written.
-+ * If prev_val is non-null, it will be set to the value at the command address,
-+ * before the command was written.
-+ */
-+uint32_t cfi_send_gen_cmd(u_char cmd, uint32_t cmd_addr, uint32_t base,
-+				struct map_info *map, struct cfi_private *cfi,
-+				int type, map_word *prev_val)
-+{
-+	map_word val;
-+	uint32_t addr = base + cfi_build_cmd_addr(cmd_addr, map, cfi);
-+	val = cfi_build_cmd(cmd, map, cfi);
-+
-+	if (prev_val)
-+		*prev_val = map_read(map, addr);
-+
-+	map_write(map, val, addr);
-+
-+	return addr - base;
-+}
-+EXPORT_SYMBOL(cfi_send_gen_cmd);
-+
- int __xipram cfi_qry_present(struct map_info *map, __u32 base,
- 			     struct cfi_private *cfi)
- {
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index 299d7d3..9b57a9b 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -296,183 +296,19 @@ struct cfi_private {
- 	struct flchip chips[0];  /* per-chip data structure for each chip */
- };
++static int mtd_parse_typed_part(struct mtd_part *slave,
++				enum mtd_partition_type type);
  
--/*
-- * Returns the command address according to the given geometry.
-- */
--static inline uint32_t cfi_build_cmd_addr(uint32_t cmd_ofs,
--				struct map_info *map, struct cfi_private *cfi)
--{
--	unsigned bankwidth = map_bankwidth(map);
--	unsigned interleave = cfi_interleave(cfi);
--	unsigned type = cfi->device_type;
--	uint32_t addr;
--	
--	addr = (cmd_ofs * type) * interleave;
--
--	/* Modify the unlock address if we are in compatibility mode.
--	 * For 16bit devices on 8 bit busses
--	 * and 32bit devices on 16 bit busses
--	 * set the low bit of the alternating bit sequence of the address.
--	 */
--	if (((type * interleave) > bankwidth) && ((cmd_ofs & 0xff) == 0xaa))
--		addr |= (type >> 1)*interleave;
--
--	return  addr;
--}
--
--/*
-- * Transforms the CFI command for the given geometry (bus width & interleave).
-- * It looks too long to be inline, but in the common case it should almost all
-- * get optimised away.
-- */
--static inline map_word cfi_build_cmd(u_long cmd, struct map_info *map, struct cfi_private *cfi)
--{
--	map_word val = { {0} };
--	int wordwidth, words_per_bus, chip_mode, chips_per_word;
--	unsigned long onecmd;
--	int i;
--
--	/* We do it this way to give the compiler a fighting chance
--	   of optimising away all the crap for 'bankwidth' larger than
--	   an unsigned long, in the common case where that support is
--	   disabled */
--	if (map_bankwidth_is_large(map)) {
--		wordwidth = sizeof(unsigned long);
--		words_per_bus = (map_bankwidth(map)) / wordwidth; // i.e. normally 1
--	} else {
--		wordwidth = map_bankwidth(map);
--		words_per_bus = 1;
--	}
--
--	chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
--	chips_per_word = wordwidth * cfi_interleave(cfi) / map_bankwidth(map);
--
--	/* First, determine what the bit-pattern should be for a single
--	   device, according to chip mode and endianness... */
--	switch (chip_mode) {
--	default: BUG();
--	case 1:
--		onecmd = cmd;
--		break;
--	case 2:
--		onecmd = cpu_to_cfi16(map, cmd);
--		break;
--	case 4:
--		onecmd = cpu_to_cfi32(map, cmd);
--		break;
--	}
--
--	/* Now replicate it across the size of an unsigned long, or
--	   just to the bus width as appropriate */
--	switch (chips_per_word) {
--	default: BUG();
--#if BITS_PER_LONG >= 64
--	case 8:
--		onecmd |= (onecmd << (chip_mode * 32));
--#endif
--	case 4:
--		onecmd |= (onecmd << (chip_mode * 16));
--	case 2:
--		onecmd |= (onecmd << (chip_mode * 8));
--	case 1:
--		;
--	}
-+uint32_t cfi_build_cmd_addr(uint32_t cmd_ofs,
-+				struct map_info *map, struct cfi_private *cfi);
+ /*
+  * MTD methods which simply translate the effective address and pass through
+@@ -663,7 +665,9 @@ int add_mtd_partitions(struct mtd_info *master,
+ 	printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", nbparts, master->name);
  
--	/* And finally, for the multi-word case, replicate it
--	   in all words in the structure */
--	for (i=0; i < words_per_bus; i++) {
--		val.x[i] = onecmd;
--	}
--
--	return val;
--}
-+map_word cfi_build_cmd(u_long cmd, struct map_info *map, struct cfi_private *cfi);
- #define CMD(x)  cfi_build_cmd((x), map, cfi)
+ 	for (i = 0; i < nbparts; i++) {
+-		slave = allocate_partition(master, parts + i, i, cur_offset);
++		const struct mtd_partition *part = parts + i;
++
++		slave = allocate_partition(master, part, i, cur_offset);
+ 		if (IS_ERR(slave))
+ 			return PTR_ERR(slave);
  
--
--static inline unsigned long cfi_merge_status(map_word val, struct map_info *map,
--					   struct cfi_private *cfi)
--{
--	int wordwidth, words_per_bus, chip_mode, chips_per_word;
--	unsigned long onestat, res = 0;
--	int i;
--
--	/* We do it this way to give the compiler a fighting chance
--	   of optimising away all the crap for 'bankwidth' larger than
--	   an unsigned long, in the common case where that support is
--	   disabled */
--	if (map_bankwidth_is_large(map)) {
--		wordwidth = sizeof(unsigned long);
--		words_per_bus = (map_bankwidth(map)) / wordwidth; // i.e. normally 1
--	} else {
--		wordwidth = map_bankwidth(map);
--		words_per_bus = 1;
--	}
--
--	chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
--	chips_per_word = wordwidth * cfi_interleave(cfi) / map_bankwidth(map);
--
--	onestat = val.x[0];
--	/* Or all status words together */
--	for (i=1; i < words_per_bus; i++) {
--		onestat |= val.x[i];
--	}
--
--	res = onestat;
--	switch(chips_per_word) {
--	default: BUG();
--#if BITS_PER_LONG >= 64
--	case 8:
--		res |= (onestat >> (chip_mode * 32));
--#endif
--	case 4:
--		res |= (onestat >> (chip_mode * 16));
--	case 2:
--		res |= (onestat >> (chip_mode * 8));
--	case 1:
--		;
--	}
--
--	/* Last, determine what the bit-pattern should be for a single
--	   device, according to chip mode and endianness... */
--	switch (chip_mode) {
--	case 1:
--		break;
--	case 2:
--		res = cfi16_to_cpu(map, res);
--		break;
--	case 4:
--		res = cfi32_to_cpu(map, res);
--		break;
--	default: BUG();
--	}
--	return res;
--}
--
-+unsigned long cfi_merge_status(map_word val, struct map_info *map,
-+					   struct cfi_private *cfi);
- #define MERGESTATUS(x) cfi_merge_status((x), map, cfi)
+@@ -673,6 +677,8 @@ int add_mtd_partitions(struct mtd_info *master,
  
--
--/*
-- * Sends a CFI command to a bank of flash for the given geometry.
-- *
-- * Returns the offset in flash where the command was written.
-- * If prev_val is non-null, it will be set to the value at the command address,
-- * before the command was written.
-- */
--static inline uint32_t cfi_send_gen_cmd(u_char cmd, uint32_t cmd_addr, uint32_t base,
-+uint32_t cfi_send_gen_cmd(u_char cmd, uint32_t cmd_addr, uint32_t base,
- 				struct map_info *map, struct cfi_private *cfi,
--				int type, map_word *prev_val)
--{
--	map_word val;
--	uint32_t addr = base + cfi_build_cmd_addr(cmd_addr, map, cfi);
--	val = cfi_build_cmd(cmd, map, cfi);
--
--	if (prev_val)
--		*prev_val = map_read(map, addr);
--
--	map_write(map, val, addr);
--
--	return addr - base;
--}
-+				int type, map_word *prev_val);
+ 		add_mtd_device(&slave->mtd);
+ 		mtd_add_partition_attrs(slave);
++		if (part->type)
++			mtd_parse_typed_part(slave, part->type);
  
- static inline uint8_t cfi_read_query(struct map_info *map, uint32_t addr)
- {
-@@ -506,15 +342,7 @@ static inline uint16_t cfi_read_query16(struct map_info *map, uint32_t addr)
+ 		cur_offset = slave->offset + slave->mtd.size;
  	}
+@@ -775,6 +781,72 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 	return ret;
  }
  
--static inline void cfi_udelay(int us)
--{
--	if (us >= 1000) {
--		msleep((us+999)/1000);
--	} else {
--		udelay(us);
--		cond_resched();
--	}
--}
-+void cfi_udelay(int us);
++int mtd_parse_typed_partitions(struct mtd_info *slave,
++			       enum mtd_partition_type type,
++			       struct mtd_partition **pparts,
++			       struct mtd_part_parser_data *data)
++{
++	struct mtd_part_parser *p = NULL;
++	bool found;
++	int ret = 0;
++
++	while (1) {
++		found = false;
++
++		spin_lock(&part_parser_lock);
++		p = list_prepare_entry(p, &part_parsers, list);
++		list_for_each_entry_continue(p, &part_parsers, list) {
++			if (p->type == type && try_module_get(p->owner)) {
++				found = true;
++				break;
++			}
++		}
++		spin_unlock(&part_parser_lock);
++
++		if (!found)
++			break;
++
++		ret = (*p->parse_fn)(slave, pparts, data);
++		if (ret > 0) {
++			put_partition_parser(p);
++			pr_notice("%d %s partitions found on MTD device %s\n",
++				  ret, p->name, slave->name);
++			break;
++		}
++
++		put_partition_parser(p);
++	}
++
++	return ret;
++}
++
++static int mtd_parse_typed_part(struct mtd_part *slave,
++				enum mtd_partition_type type)
++{
++	struct mtd_partition *parts;
++	int nr_parts;
++	int i;
++
++	nr_parts = mtd_parse_typed_partitions(&slave->mtd, type, &parts, NULL);
++	if (nr_parts <= 0)
++		return nr_parts;
++
++	if (WARN_ON(!parts))
++		return 0;
++
++	for (i = 0; i < nr_parts; i++) {
++		/* adjust partition offsets */
++		parts[i].offset += slave->offset;
++
++		mtd_add_partition(slave->master, parts[i].name, parts[i].offset,
++				  parts[i].size);
++	}
++
++	kfree(parts);
++
++	return nr_parts;
++}
++
+ int mtd_is_partition(const struct mtd_info *mtd)
+ {
+ 	struct mtd_part *part;
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 6a35e6d..4d2432a 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -11,6 +11,9 @@
  
- int __xipram cfi_qry_present(struct map_info *map, __u32 base,
- 			     struct cfi_private *cfi);
+ #include <linux/types.h>
+ 
++enum mtd_partition_type {
++	MTD_PARTITION_TYPE_GENERIC = 0,
++};
+ 
+ /*
+  * Partition definition structure:
+@@ -20,6 +23,8 @@
+  *
+  * For each partition, these fields are available:
+  * name: string that will be used to label the partition's MTD device.
++ * type: some partitions may require specific handling like splitting them into
++ *	into subpartitions (e.g. firmware which may contain kernel and rootfs)
+  * size: the partition size; if defined as MTDPART_SIZ_FULL, the partition
+  * 	will extend to the end of the master MTD device.
+  * offset: absolute starting position within the master MTD device; if
+@@ -38,6 +43,7 @@
+ 
+ struct mtd_partition {
+ 	const char *name;		/* identifier string */
++	enum mtd_partition_type type;	/* partition type */
+ 	uint64_t size;			/* partition size */
+ 	uint64_t offset;		/* offset within the master MTD space */
+ 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+@@ -72,6 +78,7 @@ struct mtd_part_parser {
+ 	struct list_head list;
+ 	struct module *owner;
+ 	const char *name;
++	enum mtd_partition_type type;
+ 	int (*parse_fn)(struct mtd_info *, struct mtd_partition **,
+ 			struct mtd_part_parser_data *);
+ };
 -- 
-1.8.1.4
+1.8.4.5
