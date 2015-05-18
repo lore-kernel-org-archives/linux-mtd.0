@@ -1,17 +1,17 @@
 Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YuULw-0000jo-Em
- for linux-mtd@lists.infradead.org; Mon, 18 May 2015 23:21:45 +0000
-Received: by pabts4 with SMTP id ts4so171061661pab.3
- for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 16:21:22 -0700 (PDT)
+ id 1YuUP5-0001Mo-2w
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2015 23:24:59 +0000
+Received: by padbw4 with SMTP id bw4so171137769pad.0
+ for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 16:24:38 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ralf Baechle <ralf@linux-mips.org>
-Subject: [PATCH] MIPS: netlogic: remove unnecessary MTD partition probe
+To: linux-sh@vger.kernel.org
+Subject: [PATCH] sh: mach-rsk: remove unnecessary MTD partition probe
  specification
-Date: Mon, 18 May 2015 16:21:12 -0700
-Message-Id: <1431991272-22200-1-git-send-email-computersforpeace@gmail.com>
-Cc: linux-mips@linux-mips.org, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org
+Date: Mon, 18 May 2015 16:24:30 -0700
+Message-Id: <1431991470-22388-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +25,29 @@ The cmdlinepart parser is already supported in the default probe.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- arch/mips/netlogic/xlr/platform-flash.c | 3 ---
+ arch/sh/boards/mach-rsk/setup.c | 3 ---
  1 file changed, 3 deletions(-)
 
-diff --git a/arch/mips/netlogic/xlr/platform-flash.c b/arch/mips/netlogic/xlr/platform-flash.c
-index 6d3c727e0ef8..f03131fec41d 100644
---- a/arch/mips/netlogic/xlr/platform-flash.c
-+++ b/arch/mips/netlogic/xlr/platform-flash.c
-@@ -78,8 +78,6 @@ static struct platform_device xlr_nor_dev = {
- 	.resource	= xlr_nor_res,
+diff --git a/arch/sh/boards/mach-rsk/setup.c b/arch/sh/boards/mach-rsk/setup.c
+index 2685ea03b064..6bc134bd7ec2 100644
+--- a/arch/sh/boards/mach-rsk/setup.c
++++ b/arch/sh/boards/mach-rsk/setup.c
+@@ -27,8 +27,6 @@ static struct regulator_consumer_supply dummy_supplies[] = {
+ 	REGULATOR_SUPPLY("vdd33a", "smsc911x"),
  };
  
--const char *xlr_part_probes[] = { "cmdlinepart", NULL };
+-static const char *part_probes[] = { "cmdlinepart", NULL };
 -
- /*
-  * Use "gen_nand" driver for NAND flash
-  *
-@@ -111,7 +109,6 @@ struct platform_nand_data xlr_nand_data = {
- 		.nr_partitions	= ARRAY_SIZE(xlr_nand_parts),
- 		.chip_delay	= 50,
- 		.partitions	= xlr_nand_parts,
--		.part_probe_types = xlr_part_probes,
- 	},
- 	.ctrl = {
- 		.cmd_ctrl	= xlr_nand_ctrl,
+ static struct mtd_partition rsk_partitions[] = {
+ 	{
+ 		.name		= "Bootloader",
+@@ -50,7 +48,6 @@ static struct physmap_flash_data flash_data = {
+ 	.parts			= rsk_partitions,
+ 	.nr_parts		= ARRAY_SIZE(rsk_partitions),
+ 	.width			= 2,
+-	.part_probe_types	= part_probes,
+ };
+ 
+ static struct resource flash_resource = {
 -- 
 1.9.1
