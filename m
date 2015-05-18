@@ -1,29 +1,22 @@
-Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YuR2G-0007CI-F1
- for linux-mtd@lists.infradead.org; Mon, 18 May 2015 19:49:13 +0000
-Received: by ieczm2 with SMTP id zm2so107704430iec.1
- for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 12:48:47 -0700 (PDT)
-Message-ID: <555A421D.1010606@gmail.com>
-Date: Mon, 18 May 2015 15:48:45 -0400
-From: nick <xerofoify@gmail.com>
+Received: from spornkuller.de ([5.45.105.28])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YuRo3-0004Ut-BI
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2015 20:38:36 +0000
+Received: from [192.168.1.2]
+ (HSI-KBW-149-172-8-84.hsi13.kabel-badenwuerttemberg.de [149.172.8.84])
+ by spornkuller.de (Postfix) with ESMTPSA id D577517F432
+ for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 22:38:12 +0200 (CEST)
+Message-ID: <555A4DB4.5050405@spornkuller.de>
+Date: Mon, 18 May 2015 22:38:12 +0200
+From: Johannes Bauer <weolanwaybqm@spornkuller.de>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: Tracking flash IO activity?
-References: <CAD=nrE_4tsSvKQ_Rz8XJpjJhfT-z+-Tkhn-SMvvcyUaPzg1PHA@mail.gmail.com>
- <CAAbfDBfXZCrRJ2M_MDGP8Pmo97tLiduYGHa2AdKasTya60e81A@mail.gmail.com>
- <CAD=nrE9=040qfZHQi349KAikhiRAr5YrPgO52-7bm9uA9WmW=Q@mail.gmail.com>
- <20150516205354.GK6055@norris-Latitude-E6410>
- <CAFLxGvwrCO8BozRb3jkncWy+2w6y82zz+wtL2r_E9i3VT3N8HQ@mail.gmail.com>
- <20150518175702.GO11598@ld-irv-0074> <555A398B.8050203@nod.at>
- <555A3C01.3030800@gmail.com> <555A3F76.1000900@nod.at>
- <555A4019.7070203@gmail.com> <555A4115.1050906@nod.at>
-In-Reply-To: <555A4115.1050906@nod.at>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Wear-leveling peculiarities
+References: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>	<55f052b8b8f65bf34b0ed9f20b4f2f07@joe.dyn.spornkuller.de>
+ <CAFLxGvxQeeA8dk7DY6ZcsAm0WBch7c6gOn92gUZB138B6bfeGA@mail.gmail.com>
+In-Reply-To: <CAFLxGvxQeeA8dk7DY6ZcsAm0WBch7c6gOn92gUZB138B6bfeGA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: "valent.turkovic@gmail.com" <valent.turkovic@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,22 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Sorry Richard, I meant to reply to the list.
 
+On 18.05.2015 19:58, Richard Weinberger wrote:
 
-On 2015-05-18 03:44 PM, Richard Weinberger wrote:
-> Am 18.05.2015 um 21:40 schrieb nick:
->> If that is the case, I am aware my rep here isn't that good but would you some help
->> with making it better as a maintainer you probably won't get around to this for a 
->> while, no offence :).
-> 
-> Honestly, if you want to get a grip on UBI, create such a tool on your own.
-> A EC dumper can be done in a few lines of C (or any other language).
-> 
-> Thanks,
-> //richard
-> 
-I have busy for the last while in terms of doing networking and kvm stack work/learning.
-Further more I was going to help test the mtd stack but am short on cash at the moment
-so buying a board is a little hard now :(. 
-Thanks for the Advice,
-Nick
+> Wear-leveling is done on UBI and UBIFS.
+> What is CONFIG_MTD_UBI_WL_THRESHOLD set to?
+
+Ooops. I honestly don't know, will check this out tomorrow. I must admit
+that I wasn't aware of this setting at all.
+
+> I suspect that your threshold was never reached.
+
+Yes, I suspect you're right here.
+
+>>From your provided graph it looks like all erase block have been
+> erased t most 300 times.
+> If your NAND starts dying after 300 erases you're in trouble.
+
+And I fear you're right here as well
+
+Although there's no definitive saying how many page writes the failed
+units had because the defective sectors are so broken that the kernel
+barfs out I/O errors. That means I can't even read the OOB metadata.
+
+Cheers,
+Johannes
