@@ -1,19 +1,21 @@
 Received: from spornkuller.de ([5.45.105.28])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YuLUl-0005p1-9d
- for linux-mtd@lists.infradead.org; Mon, 18 May 2015 13:54:16 +0000
+ id 1YuLjh-0007Dq-1n
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2015 14:09:41 +0000
 Received: from spornkuller.de (localhost [IPv6:::1])
- by spornkuller.de (Postfix) with ESMTP id BFC6917F432
- for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 15:53:51 +0200 (CEST)
+ by spornkuller.de (Postfix) with ESMTP id 2CE4217F432
+ for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 16:09:19 +0200 (CEST)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Mon, 18 May 2015 15:53:51 +0200
+Date: Mon, 18 May 2015 16:09:19 +0200
 From: Johannes Bauer <weolanwaybqm@spornkuller.de>
 To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Wear-leveling peculiarities
-Message-ID: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>
+Subject: Re: Wear-leveling peculiarities
+In-Reply-To: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>
+References: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>
+Message-ID: <55f052b8b8f65bf34b0ed9f20b4f2f07@joe.dyn.spornkuller.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello list,
+Am 18.05.2015 15:53, schrieb Johannes Bauer:
 
-I keep track of some devices running an embedded ARM Linux which boots 
-from NAND flash. On there, ubifs is used. The deployed kernels are:
+> I don't grasp the whole picture.
 
-Linux version 3.0.59 (###@###) (gcc version 4.5.4 20120305 (prerelease) 
-(GCC) ) #1 Mon Apr 29 16:36:42 CEST 2013
+Obviously.
 
-Target is ARMv7 (omap2).
+I've been thinking about this some more and had an epiphany pretty much 
+ten seconds after I hit the "send" button on my email.
 
-The units have been deployed for three years now. Recently, we've been 
-seeing units fail more often. This warranted some investigation. I 
-pulled dd images of the relevant /dev/mtd device (mtd4 in my case) and 
-wrote a small Python script that evaluated the UBIFS LEB headers, in 
-particular the erase count. I expected to see a uniform distribution of 
-erases all around the flash.
+Wear-leveling is working alright, but of course some parts (static 
+operating system components, for example) will never be written a lot of 
+times, because there is no need to change their contents. Wear-leveling 
+is only performed on the sectors which are actively written (and on 
+those which are unoccupied). This would explain the graphs, but is the 
+explanation also correct?
 
-But on the contrary, we see the very opposite:
+To remedy this, is is advisable/necessary to walk over the whole file 
+system every once in a while and read every LEB that has a small erase 
+count and write it back to its original location? So that an exchange 
+between the near-constant LEBs and the actively-written LEBs is 
+performed? Is there a tool to do this?
 
-http://imgur.com/a/d5Bhl
-
-Here you see graphs of two units. You can see that the pattern is 
-identical: Lots of pages which were written seldomly, lots of pages 
-which were written frequently. Very little inbetween. This is what the 
-histograms show (erase count on the X axis and their occurences on the Y 
-axis).
-
-The other graphs are even more disturbing. It shows the physical layout 
-of the NAND flash. Each pixel corresponds to one LEB. Everything upwards 
-of 100 erases is red (the scale is linear, shown at the very bottom). 
-You can see that in some areas, pages are erased very often while in 
-others they're virtually constant.
-
-This is something I'd expect if the FS would not perform wear-leveling 
-(files that are written in-place cause page erases at the same locations 
-over and over). But ubifs should take care of this, shouldn't it? It 
-might well be that my understanding of ubifs is too limited so I don't 
-grasp the whole picture. In any case, any advice is greatly appreciated.
-
-Thanks in advance,
+Best regards,
 Johannes
