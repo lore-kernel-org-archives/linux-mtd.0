@@ -1,25 +1,20 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-vn0-x229.google.com ([2607:f8b0:400c:c0f::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YuPI9-0008HV-OW
- for linux-mtd@lists.infradead.org; Mon, 18 May 2015 17:57:30 +0000
-Received: by pacwv17 with SMTP id wv17so161207678pac.2
- for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 10:57:07 -0700 (PDT)
-Date: Mon, 18 May 2015 10:57:02 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: Tracking flash IO activity?
-Message-ID: <20150518175702.GO11598@ld-irv-0074>
-References: <CAD=nrE_4tsSvKQ_Rz8XJpjJhfT-z+-Tkhn-SMvvcyUaPzg1PHA@mail.gmail.com>
- <CAAbfDBfXZCrRJ2M_MDGP8Pmo97tLiduYGHa2AdKasTya60e81A@mail.gmail.com>
- <CAD=nrE9=040qfZHQi349KAikhiRAr5YrPgO52-7bm9uA9WmW=Q@mail.gmail.com>
- <20150516205354.GK6055@norris-Latitude-E6410>
- <CAFLxGvwrCO8BozRb3jkncWy+2w6y82zz+wtL2r_E9i3VT3N8HQ@mail.gmail.com>
+ id 1YuPJK-0000Fv-V8
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2015 17:58:43 +0000
+Received: by vnbg190 with SMTP id g190so7107646vnb.3
+ for <linux-mtd@lists.infradead.org>; Mon, 18 May 2015 10:58:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFLxGvwrCO8BozRb3jkncWy+2w6y82zz+wtL2r_E9i3VT3N8HQ@mail.gmail.com>
-Cc: "valent.turkovic@gmail.com" <valent.turkovic@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <55f052b8b8f65bf34b0ed9f20b4f2f07@joe.dyn.spornkuller.de>
+References: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>
+ <55f052b8b8f65bf34b0ed9f20b4f2f07@joe.dyn.spornkuller.de>
+Date: Mon, 18 May 2015 19:58:20 +0200
+Message-ID: <CAFLxGvxQeeA8dk7DY6ZcsAm0WBch7c6gOn92gUZB138B6bfeGA@mail.gmail.com>
+Subject: Re: Wear-leveling peculiarities
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Johannes Bauer <weolanwaybqm@spornkuller.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, May 16, 2015 at 11:22:52PM +0200, Richard Weinberger wrote:
-> On Sat, May 16, 2015 at 10:53 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > I don't know of any similar IO stats for MTDs, sorry.
-> 
-> I wonder how hard it would be to integrate mtd into our current block IO stats.
-> It mtd is too low level we could also do it with UBI.
+On Mon, May 18, 2015 at 4:09 PM, Johannes Bauer
+<weolanwaybqm@spornkuller.de> wrote:
+> Am 18.05.2015 15:53, schrieb Johannes Bauer:
+>
+>> I don't grasp the whole picture.
+>
+>
+> Obviously.
+>
+> I've been thinking about this some more and had an epiphany pretty much ten
+> seconds after I hit the "send" button on my email.
+>
+> Wear-leveling is working alright, but of course some parts (static operating
+> system components, for example) will never be written a lot of times,
+> because there is no need to change their contents. Wear-leveling is only
+> performed on the sectors which are actively written (and on those which are
+> unoccupied). This would explain the graphs, but is the explanation also
+> correct?
 
-I'm not sure if blk-io's iostats would be sufficiently informative for
-MTD/UBI anyway. Wouldn't we care about at least one extra
-non-block-device stat: the erase stats?
+Wear-leveling is done on UBI and UBIFS.
+What is CONFIG_MTD_UBI_WL_THRESHOLD set to?
 
-Also (and this may be more like what Valent is asking for, though he
-mentions JFFS2, not UBIFS) is there a readily-available tool for reading
-the erase counter information from a UBI volume?
+>From the Kconfig help:
+          This parameter defines the maximum difference between the highest
+          erase counter value and the lowest erase counter value of eraseblocks
+          of UBI devices. When this threshold is exceeded, UBI starts performing
+          wear leveling by means of moving data from eraseblock with low erase
+          counter to eraseblocks with high erase counter.
 
-Brian
+          The default value should be OK for SLC NAND flashes, NOR flashes and
+          other flashes which have eraseblock life-cycle 100000 or more.
+          However, in case of MLC NAND flashes which typically have eraseblock
+          life-cycle less than 10000, the threshold should be lessened (e.g.,
+          to 128 or 256, although it does not have to be power of 2)
+
+I suspect that your threshold was never reached.
+>From your provided graph it looks like all erase block have been
+erased t most 300 times.
+If your NAND starts dying after 300 erases you're in trouble.
+
+-- 
+Thanks,
+//richard
