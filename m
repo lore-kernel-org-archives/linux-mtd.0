@@ -1,17 +1,16 @@
-Received: from mail-ob0-x233.google.com ([2607:f8b0:4003:c01::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YudmS-0000Sb-BA
- for linux-mtd@lists.infradead.org; Tue, 19 May 2015 09:25:45 +0000
-Received: by obcus9 with SMTP id us9so7528703obc.2
- for <linux-mtd@lists.infradead.org>; Tue, 19 May 2015 02:25:22 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-arm-kernel@lists.infradead.org, Jason Cooper <jason@lakedaemon.net>,
+ Andrew Lunn <andrew@lunn.ch>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: [PATCH] ARM: mvebu: add "jedec,spi-nor" flash compatible binding
+Date: Tue, 19 May 2015 13:30:46 +0200
+Message-Id: <1432035046-12888-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-From: =?UTF-8?Q?Micha=C5=82_Le=C5=9Bniewski?= <mlesniew@gmail.com>
-Date: Tue, 19 May 2015 11:24:41 +0200
-Message-ID: <CAOh7PeaDU13o52BkRZ_woKCDB_TOC982Rz9RpBnnX6Lqu8ZMsg@mail.gmail.com>
-Subject: Influence of mkfs.jffs2 parameters on file system behavior
-To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +20,184 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Starting with commit 8947e396a829 ("Documentation: dt: mtd: replace
+"nor-jedec" binding with "jedec, spi-nor"") we have "jedec,spi-nor"
+binding indicating support for JEDEC identification.
 
-I have a question about the parameters passed to mkfs.jffs2 and their
-influence on the JFFS2 behavior.
+Use it for all flashes that are supposed to support READ ID op according
+to the datasheets.
 
-When generating an image one can specify the erase block size of the
-flash, for which the image is generated, by suppling
-`--eraseblock=3D...` on the command line.  There is also a `--pagesize`
-parameter -- this parameter allows specifying the virtual memory page
-size of the target system (often 4kB).
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ arch/arm/boot/dts/armada-370-db.dts              | 2 +-
+ arch/arm/boot/dts/armada-370-synology-ds213j.dts | 2 +-
+ arch/arm/boot/dts/armada-375-db.dts              | 2 +-
+ arch/arm/boot/dts/armada-385-db-ap.dts           | 2 +-
+ arch/arm/boot/dts/armada-388-db.dts              | 2 +-
+ arch/arm/boot/dts/armada-388-gp.dts              | 2 +-
+ arch/arm/boot/dts/armada-388-rd.dts              | 2 +-
+ arch/arm/boot/dts/armada-398-db.dts              | 2 +-
+ arch/arm/boot/dts/armada-xp-axpwifiap.dts        | 2 +-
+ arch/arm/boot/dts/armada-xp-db.dts               | 2 +-
+ arch/arm/boot/dts/armada-xp-gp.dts               | 2 +-
+ arch/arm/boot/dts/armada-xp-synology-ds414.dts   | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
 
-I found out that by mistake, I generated images with the wrong values
-of these two parameters:
-
-1. Some of the images I used were generated with the right page size
-(4kB), but the wrong erase block size (flash memory has 128kB blocks,
-the parameter supplied to mkfs.jffs2 was 64kB).  Surprisingly, I
-didn't experience any problems with the file system, even when the
-file system was heavily used (lots of file reads, rewrites, etc.).
-However, when I switched the kernel from version 2.6.27 to version
-3.4.31, sometimes files seemed to be trimmed or parts of them were
-zeroed.  Could this be caused by the erase block size mismatch? The
-documentation states that generating an image with a smaller erase
-block than the actual flash device uses is harmless
-(http://www.linux-mtd.infradead.org/doc/jffs2.html)...
-
-2. Some other images I generated used the right erase block size but
-the wrong virtual memory page size (2kB instead of 4kB).  I didn't
-encounter any problems with the file system.  So in this case my
-question is what influence does the `--pagesize` parameter have and
-what's the worst thing that can happen if it's wrong?
-
-Regards,
-Micha=C5=82 Le=C5=9Bniewski
+diff --git a/arch/arm/boot/dts/armada-370-db.dts b/arch/arm/boot/dts/armada-370-db.dts
+index 19f3bf2..03542f7 100644
+--- a/arch/arm/boot/dts/armada-370-db.dts
++++ b/arch/arm/boot/dts/armada-370-db.dts
+@@ -162,7 +162,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "mx25l25635e";
++					compatible = "mx25l25635e", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <50000000>;
+ 				};
+diff --git a/arch/arm/boot/dts/armada-370-synology-ds213j.dts b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
+index b42b767..4f49243 100644
+--- a/arch/arm/boot/dts/armada-370-synology-ds213j.dts
++++ b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
+@@ -92,7 +92,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "micron,n25q064";
++					compatible = "micron,n25q064", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <20000000>;
+ 
+diff --git a/arch/arm/boot/dts/armada-375-db.dts b/arch/arm/boot/dts/armada-375-db.dts
+index 4eabc9c..5711b97 100644
+--- a/arch/arm/boot/dts/armada-375-db.dts
++++ b/arch/arm/boot/dts/armada-375-db.dts
+@@ -81,7 +81,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "n25q128a13";
++					compatible = "n25q128a13", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <108000000>;
+ 				};
+diff --git a/arch/arm/boot/dts/armada-385-db-ap.dts b/arch/arm/boot/dts/armada-385-db-ap.dts
+index 7219ac3..89f5a95 100644
+--- a/arch/arm/boot/dts/armada-385-db-ap.dts
++++ b/arch/arm/boot/dts/armada-385-db-ap.dts
+@@ -70,7 +70,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "st,m25p128";
++					compatible = "st,m25p128", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <54000000>;
+ 				};
+diff --git a/arch/arm/boot/dts/armada-388-db.dts b/arch/arm/boot/dts/armada-388-db.dts
+index 51d1623..91ac8c1 100644
+--- a/arch/arm/boot/dts/armada-388-db.dts
++++ b/arch/arm/boot/dts/armada-388-db.dts
+@@ -73,7 +73,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "w25q32";
++					compatible = "w25q32", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <108000000>;
+ 				};
+diff --git a/arch/arm/boot/dts/armada-388-gp.dts b/arch/arm/boot/dts/armada-388-gp.dts
+index 78514ab..fd4f6fd 100644
+--- a/arch/arm/boot/dts/armada-388-gp.dts
++++ b/arch/arm/boot/dts/armada-388-gp.dts
+@@ -69,7 +69,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "st,m25p128";
++					compatible = "st,m25p128", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <50000000>;
+ 					m25p,fast-read;
+diff --git a/arch/arm/boot/dts/armada-388-rd.dts b/arch/arm/boot/dts/armada-388-rd.dts
+index 1dc6e23..b657b16 100644
+--- a/arch/arm/boot/dts/armada-388-rd.dts
++++ b/arch/arm/boot/dts/armada-388-rd.dts
+@@ -74,7 +74,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "st,m25p128";
++					compatible = "st,m25p128", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <108000000>;
+ 				};
+diff --git a/arch/arm/boot/dts/armada-398-db.dts b/arch/arm/boot/dts/armada-398-db.dts
+index bbf8375..788c3ba 100644
+--- a/arch/arm/boot/dts/armada-398-db.dts
++++ b/arch/arm/boot/dts/armada-398-db.dts
+@@ -73,7 +73,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <0>;
+-					compatible = "n25q128a13";
++					compatible = "n25q128a13", "jedec,spi-nor";
+ 					reg = <0>;
+ 					spi-max-frequency = <108000000>;
+ 
+diff --git a/arch/arm/boot/dts/armada-xp-axpwifiap.dts b/arch/arm/boot/dts/armada-xp-axpwifiap.dts
+index dfd782b..60bbfe3 100644
+--- a/arch/arm/boot/dts/armada-xp-axpwifiap.dts
++++ b/arch/arm/boot/dts/armada-xp-axpwifiap.dts
+@@ -140,7 +140,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "n25q128a13";
++					compatible = "n25q128a13", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <108000000>;
+ 				};
+diff --git a/arch/arm/boot/dts/armada-xp-db.dts b/arch/arm/boot/dts/armada-xp-db.dts
+index 1037824..7dd900f 100644
+--- a/arch/arm/boot/dts/armada-xp-db.dts
++++ b/arch/arm/boot/dts/armada-xp-db.dts
+@@ -222,7 +222,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "m25p64";
++					compatible = "m25p64", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <20000000>;
+ 				};
+diff --git a/arch/arm/boot/dts/armada-xp-gp.dts b/arch/arm/boot/dts/armada-xp-gp.dts
+index 565227e..bf724ca 100644
+--- a/arch/arm/boot/dts/armada-xp-gp.dts
++++ b/arch/arm/boot/dts/armada-xp-gp.dts
+@@ -227,7 +227,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "n25q128a13";
++					compatible = "n25q128a13", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <108000000>;
+ 				};
+diff --git a/arch/arm/boot/dts/armada-xp-synology-ds414.dts b/arch/arm/boot/dts/armada-xp-synology-ds414.dts
+index 6063428..20267ad 100644
+--- a/arch/arm/boot/dts/armada-xp-synology-ds414.dts
++++ b/arch/arm/boot/dts/armada-xp-synology-ds414.dts
+@@ -114,7 +114,7 @@
+ 				spi-flash@0 {
+ 					#address-cells = <1>;
+ 					#size-cells = <1>;
+-					compatible = "micron,n25q064";
++					compatible = "micron,n25q064", "jedec,spi-nor";
+ 					reg = <0>; /* Chip select 0 */
+ 					spi-max-frequency = <20000000>;
+ 
+-- 
+1.8.4.5
