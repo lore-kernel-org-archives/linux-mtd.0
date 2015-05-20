@@ -1,26 +1,31 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvDgM-0006tl-6x
- for linux-mtd@lists.infradead.org; Wed, 20 May 2015 23:45:51 +0000
-Received: by pabru16 with SMTP id ru16so84328759pab.1
- for <linux-mtd@lists.infradead.org>; Wed, 20 May 2015 16:45:28 -0700 (PDT)
-Date: Wed, 20 May 2015 16:45:25 -0700
+Date: Wed, 20 May 2015 16:54:47 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 1/3] MTD: m25p80: fix write return value.
-Message-ID: <20150520234525.GY11598@ld-irv-0074>
-References: <cover.1430430153.git.hramrach@gmail.com>
- <02f7510acb9b6dbb3a5a6cd5bb287762eb4d22c1.1430430153.git.hramrach@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 0/3] Using SPI NOR flah on sunxi.
+Message-ID: <20150520235447.GZ11598@ld-irv-0074>
+References: <cover.1430403750.git.hramrach@gmail.com>
+ <OF23B05612.4290AF80-ONC1257E37.00589292-C1257E37.005AB106@rohde-schwarz.com>
+ <CAOMqctRLnCJfVCYGjsmhORYNk+HCf07wwSXnZv4oqDxbaQqKGw@mail.gmail.com>
+ <201504302034.36753.marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <02f7510acb9b6dbb3a5a6cd5bb287762eb4d22c1.1430430153.git.hramrach@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Geert Uytterhoeven <geert+renesas@glider.be>,
- David Woodhouse <dwmw2@infradead.org>, zajec5@gmail.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- "grmoore@altera.com" <grmoore@altera.com>, Ben Hutchings <ben@decadent.org.uk>,
+In-Reply-To: <201504302034.36753.marex@denx.de>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ linux-sunxi <linux-sunxi@googlegroups.com>, linux-mtd@lists.infradead.org,
  Alison Chaiken <alison_chaiken@mentor.com>,
- "Bean Huo \(beanhuo\)" <beanhuo@micron.com>
+ "Bean Huo ????????? \(beanhuo\)" <beanhuo@micron.com>,
+ linux-mtd <linux-mtd-bounces@lists.infradead.org>,
+ Michal Suchanek <hramrach@gmail.com>, Rafa?? Mi??ecki <zajec5@gmail.com>,
+ Ben Hutchings <ben@decadent.org.uk>, devicetree <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Mark Brown <broonie@kernel.org>, Thomas.Betker@rohde-schwarz.com,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,55 +35,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 30, 2015 at 03:33:47PM +0200, Michal Suchanek wrote:
-> The 'retlen' points to a variable representing the number of data bytes
-> written/read (see include/linux/mtd/mtd.h) by the current invocation of
-> the function. This variable must be set, not incremented.
+On Thu, Apr 30, 2015 at 08:34:36PM +0200, Marek Vasut wrote:
+> On Thursday, April 30, 2015 at 06:56:18 PM, Michal Suchanek wrote:
+> > On 30 April 2015 at 18:30,  <Thomas.Betker@rohde-schwarz.com> wrote:
+> > > Hello Michal:
+> > >> I tried to connect a SPI NOR flash to my sunxi board and due to the
+> > > 
+> > > current
+> > > 
+> > >> sunxi SPI driver limitations it does not work.
+> > >> 
+> > >> The SPI driver returns an error when more than 64 bytes are
+> > >> transferred at once
+> > >> due to lack of DMA support.
+> > > 
+> > > Wouldn't it be easier to fix the SPI driver to handle transfers larger
+> > > than 64 bytes, filling and draining the FIFO multiple times if
+> > > neccessary? (As far as I can tell, most SPI drivers do this.)
+> > 
+> > Yes, the intent is to fix this by adding dma support to the driver,
+> > eventually.
+> > 
+> > The patch might be still useful for other hardware with developing SPI
+> > support.
 > 
-> v2: clearer commit message
-> 
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> Acked-by: Marek Vasut <marex@denx.de>
-> ---
->  drivers/mtd/devices/m25p80.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 7c8b169..0b2bc21 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -102,7 +102,7 @@ static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
->  
->  	spi_sync(spi, &m);
->  
-> -	*retlen += m.actual_length - cmd_sz;
-> +	*retlen = m.actual_length - cmd_sz;
+> Please just fix the controller driver to correctly handle arbitrary transfer
+> lengths.
 
-This is very wrong. It gets a little better once you add your next
-patches (which are also not good) since those patches reinterpret the
-usage of retlen, but this one definitely does *not* stand a lone.
+Just noticed this. Yes, that would definitely be a better option!
 
-I'll admit the API is a little odd here, but the callers of this
-function (see spi_nor_write()) actually depend on calling this multiple
-times, with the value incrementing each time so we get a summary total.
-You're now clobbering this value.
-
-I'm willing to accept patches to improve this API, if you think that
-would help. Or to add comments that document this.
-
->  }
->  
->  static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
-
-Also, I'm a little confused because you sent two different patch series
-very close to each other, and this patch is in both of them. Please
-don't do that. Either send a single patch series that contains all
-patches (and is versions v2, v3, etc., as you revise the whole thing) or
-send completely independent patch series. Don't include the same patch
-in different series.
-
-Anyway, please consider my comments, and when you have something better,
-please resend everything. I'm not going to take either series as-is.
-
-Thanks,
 Brian
