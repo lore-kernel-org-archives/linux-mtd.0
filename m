@@ -1,20 +1,27 @@
-Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
+Received: from hauke-m.de ([2001:41d0:8:b27b::1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvBvT-0001v1-H6
- for linux-mtd@lists.infradead.org; Wed, 20 May 2015 21:53:20 +0000
-Received: by pdea3 with SMTP id a3so83404420pde.2
- for <linux-mtd@lists.infradead.org>; Wed, 20 May 2015 14:52:58 -0700 (PDT)
-Date: Wed, 20 May 2015 14:52:50 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Han Xu <b45815@freescale.com>
-Subject: Re: [PATCH V3] mtd: fsl-quadspi: Access multiple chips simultaneously
-Message-ID: <20150520215250.GP11598@ld-irv-0074>
-References: <1431546057-16596-1-git-send-email-b45815@freescale.com>
+ id 1YvCCq-0004Cv-7e
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2015 22:11:17 +0000
+Message-ID: <555D066C.6080200@hauke-m.de>
+Date: Thu, 21 May 2015 00:10:52 +0200
+From: Hauke Mehrtens <hauke@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1431546057-16596-1-git-send-email-b45815@freescale.com>
-Cc: shijie.huang@intel.com, linux-mtd@lists.infradead.org, han.xu@freescale.com
+To: Brian Norris <computersforpeace@gmail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJl?=
+ =?UTF-8?B?Y2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH 5/7] mtd: brcmnand: add bcma driver
+References: <1431877266-28566-1-git-send-email-hauke@hauke-m.de>
+ <1431877266-28566-6-git-send-email-hauke@hauke-m.de>
+ <20150520003402.GC11598@ld-irv-0074>
+ <CACna6rzBn3yzzER56aAmk+VPNiMh9ikA3B1YZmMesF=3DWdq+A@mail.gmail.com>
+ <20150520184028.GF11598@ld-irv-0074>
+In-Reply-To: <20150520184028.GF11598@ld-irv-0074>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: Ray Jui <rjui@broadcom.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,176 +31,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Han,
+On 05/20/2015 08:40 PM, Brian Norris wrote:
+> On Wed, May 20, 2015 at 08:39:06AM +0200, Rafał Miłecki wrote:
+>> On 20 May 2015 at 02:34, Brian Norris <computersforpeace@gmail.com> wrote:
+>>> On Sun, May 17, 2015 at 05:41:04PM +0200, Hauke Mehrtens wrote:
+>>>> This driver registers at the bcma bus and drives the NAND core if it
+>>>> was found on this bus. The bcma bus with this NAND core is used on the
+>>>> bcm53xx and bcm47xx Northstar SoC with ARM CPU cores. The memory ranges
+>>>> are automatically detected by bcma and the irq numbers read from device
+>>>> tree by bcma bus driver.
+>>>
+>>> If you're going to use device tree for part of it (IRQs) why not the
+>>> whole thing?
+>>>
+>>>> This is based on the iproc driver.
+>>>
+>>> This looks like you could probably get by with just using iproc_nand.c
+>>> as-is. The main NAND core is apparently MMIO-accessible on your chips,
+>>> so aren't the BCMA bits you're touching also?
 
-On Wed, May 13, 2015 at 02:40:57PM -0500, Han Xu wrote:
-> Add supports for simultaneous access to multiple chips. Need to lock
-> the mutex before any quad spi operations and unlock the mutex after
-> operations complete.
-> 
-> Signed-off-by: Han Xu <b45815@freescale.com>
-> ---
-> v2 -- > v3
-> 1. Unlock the mutex if errors occur.
-> 2. Destroy the mutex when module remove or probe fail.
-> 
-> v1 -- > v2
-> 1. Rebase to latest l2-mtd code and resend.
-> ---
-> 
-> 
->  drivers/mtd/spi-nor/fsl-quadspi.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 52a872f..e6fc064 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-...
-> @@ -761,13 +763,17 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->  	struct fsl_qspi *q = nor->priv;
->  	int ret;
->  
-> +	mutex_lock(&q->lock);
->  	ret = clk_enable(q->clk_en);
-> -	if (ret)
-> +	if (ret) {
-> +		mutex_unlock(&q->lock);
->  		return ret;
-> +	}
->  
->  	ret = clk_enable(q->clk);
->  	if (ret) {
->  		clk_disable(q->clk_en);
-> +		mutex_unlock(&q->lock);
->  		return ret;
->  	}
->  
+I will try this, I do not know if I have to reset or active the core
+before using it, at least the vendor driver does so and I added it also.
 
-I think it'd be better to have a single error path in this function now.
+>> That's right, in case of SoCs cores are MMIO-accessible, however I see
+>> few reasons for writing this driver as bcma based:
+>> 1) MMIO access isn't available for bcma bus /hosted/ on PCIe devices.
+>> By using bcma layer we write generic drivers.
+> 
+> I strongly doubt that this NAND core is ever put on a PCIe endpoint.
 
-Otherwise, I think this is OK. I can push the appended patch instead, if
-that's OK with you.
+Me too and then my driver would not work, because I am forwarding the
+memory directly to the driver and nothing would change the active core.
 
-Signed-off-by: Han Xu <b45815@freescale.com>
-[Brian: reworked err path in fsl_qspi_prep()]
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 32 +++++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
+>> 2) bcma detects cores and their MMIO addresses automatically, if we
+>> are a bit lazy, it's easier to use it rather than keep hardcoding all
+>> addresses
+> 
+> Laziness is a pretty bad excuse. You already have to do 60% of the work
+> by putting the IRQs and base NAND register range into the device tree.
+> Finding those remaining two register addresses is not so hard.
+> 
+>> 3) There are some dependencies in cores initialization, e.g.
+>> ChipCommon core usually has to be initialized first
+> 
+> Are you aware of any important dependencies? Isn't it safe to assume
+> that the ChipCommon core would have to be initialized way before any
+> peripherals?
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 52a872fa1b6e..4fe13dd535f8 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -26,6 +26,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/spi-nor.h>
-+#include <linux/mutex.h>
- 
- /* The registers */
- #define QUADSPI_MCR			0x00
-@@ -233,6 +234,7 @@ struct fsl_qspi {
- 	u32 clk_rate;
- 	unsigned int chip_base_addr; /* We may support two chips. */
- 	bool has_second_chip;
-+	struct mutex lock;
- };
- 
- static inline int is_vybrid_qspi(struct fsl_qspi *q)
-@@ -761,18 +763,24 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
- 	struct fsl_qspi *q = nor->priv;
- 	int ret;
- 
-+	mutex_lock(&q->lock);
- 	ret = clk_enable(q->clk_en);
- 	if (ret)
--		return ret;
-+		goto err_mutex;
- 
- 	ret = clk_enable(q->clk);
--	if (ret) {
--		clk_disable(q->clk_en);
--		return ret;
--	}
-+	if (ret)
-+		goto err_clk;
- 
- 	fsl_qspi_set_base_addr(q, nor);
- 	return 0;
-+
-+err_clk:
-+	clk_disable(q->clk_en);
-+err_mutex:
-+	mutex_unlock(&q->lock);
-+
-+	return ret;
- }
- 
- static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
-@@ -781,6 +789,7 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
- 
- 	clk_disable(q->clk);
- 	clk_disable(q->clk_en);
-+	mutex_unlock(&q->lock);
- }
- 
- static int fsl_qspi_probe(struct platform_device *pdev)
-@@ -864,6 +873,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 	if (of_get_property(np, "fsl,qspi-has-second-chip", NULL))
- 		q->has_second_chip = true;
- 
-+	mutex_init(&q->lock);
-+
- 	/* iterate the subnodes. */
- 	for_each_available_child_of_node(dev->of_node, np) {
- 		char modalias[40];
-@@ -892,24 +903,24 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 
- 		ret = of_modalias_node(np, modalias, sizeof(modalias));
- 		if (ret < 0)
--			goto irq_failed;
-+			goto mutex_failed;
- 
- 		ret = of_property_read_u32(np, "spi-max-frequency",
- 				&q->clk_rate);
- 		if (ret < 0)
--			goto irq_failed;
-+			goto mutex_failed;
- 
- 		/* set the chip address for READID */
- 		fsl_qspi_set_base_addr(q, nor);
- 
- 		ret = spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
- 		if (ret)
--			goto irq_failed;
-+			goto mutex_failed;
- 
- 		ppdata.of_node = np;
- 		ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
- 		if (ret)
--			goto irq_failed;
-+			goto mutex_failed;
- 
- 		/* Set the correct NOR size now. */
- 		if (q->nor_size == 0) {
-@@ -950,6 +961,8 @@ last_init_failed:
- 			i *= 2;
- 		mtd_device_unregister(&q->mtd[i]);
- 	}
-+mutex_failed:
-+	mutex_destroy(&q->lock);
- irq_failed:
- 	clk_disable_unprepare(q->clk);
- clk_failed:
-@@ -973,6 +986,7 @@ static int fsl_qspi_remove(struct platform_device *pdev)
- 	writel(QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
- 	writel(0x0, q->iobase + QUADSPI_RSER);
- 
-+	mutex_destroy(&q->lock);
- 	clk_unprepare(q->clk);
- 	clk_unprepare(q->clk_en);
- 	return 0;
--- 
-1.9.1
+I think ChipCommon is less important on ARM, I do not came up with an
+dependencies.
+
+> 
+>> 4) bcma provides some helpers like bcma_core_enable so we don't have
+>> to duplicate it in driver code
+> 
+> I don't see why we need to reset/re-enable the NAND core in the kernel
+> at all, but if we do, this is touching the exact same registers as
+> iproc_nand.c is already. So it makes sense to *share* that code, and do
+> the same thing on both Cygnus and Northstar, etc. (And no, Cygnus can't
+> convert to BCMA, so we can't do 100% sharing either way.)
+
+Will this Broadcom plugin to the AXI bus which bcma uses be removed from
+all newer SoCs or just from some SoC lines? If it will not be there in
+any more recent SoC then we should also go for the older arm SoCs to a
+more device tree only approach. Is Cygnus related to Northstar Plus or
+Northstar 2?
+
+>> That said, I'm for using bcma layer, even if there is some small DT
+>> involvement already.
+> 
+> For any reasons besides the above? Cause I'm still not convinced we need
+> a BCMA driver at all.
+> 
+> Brian
+> 
