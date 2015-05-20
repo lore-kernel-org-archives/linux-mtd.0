@@ -1,25 +1,24 @@
-Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yuxf5-0000qd-Ow
- for linux-mtd@lists.infradead.org; Wed, 20 May 2015 06:39:28 +0000
-Received: by ieczm2 with SMTP id zm2so31995396iec.1
- for <linux-mtd@lists.infradead.org>; Tue, 19 May 2015 23:39:06 -0700 (PDT)
+Date: Wed, 20 May 2015 15:55:31 +0200
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH v5 05/12] mtd: pxa3xx_nand: rework flash detection and
+ timing setup
+Message-ID: <20150520135531.GK22054@kwain>
+References: <1431356341-31640-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1431356341-31640-6-git-send-email-antoine.tenart@free-electrons.com>
+ <555128F0.30702@vanguardiasur.com.ar>
+ <20150512143943.GC32171@kwain>
+ <5557B54B.9010307@vanguardiasur.com.ar>
 MIME-Version: 1.0
-In-Reply-To: <20150520003402.GC11598@ld-irv-0074>
-References: <1431877266-28566-1-git-send-email-hauke@hauke-m.de>
- <1431877266-28566-6-git-send-email-hauke@hauke-m.de>
- <20150520003402.GC11598@ld-irv-0074>
-Date: Wed, 20 May 2015 08:39:06 +0200
-Message-ID: <CACna6rzBn3yzzER56aAmk+VPNiMh9ikA3B1YZmMesF=3DWdq+A@mail.gmail.com>
-Subject: Re: [PATCH 5/7] mtd: brcmnand: add bcma driver
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Florian Fainelli <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Ray Jui <rjui@broadcom.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5557B54B.9010307@vanguardiasur.com.ar>
+Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ jszhang@marvell.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,34 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 20 May 2015 at 02:34, Brian Norris <computersforpeace@gmail.com> wrote:
-> On Sun, May 17, 2015 at 05:41:04PM +0200, Hauke Mehrtens wrote:
->> This driver registers at the bcma bus and drives the NAND core if it
->> was found on this bus. The bcma bus with this NAND core is used on the
->> bcm53xx and bcm47xx Northstar SoC with ARM CPU cores. The memory ranges
->> are automatically detected by bcma and the irq numbers read from device
->> tree by bcma bus driver.
->
-> If you're going to use device tree for part of it (IRQs) why not the
-> whole thing?
->
->> This is based on the iproc driver.
->
-> This looks like you could probably get by with just using iproc_nand.c
-> as-is. The main NAND core is apparently MMIO-accessible on your chips,
-> so aren't the BCMA bits you're touching also?
+On Sat, May 16, 2015 at 06:23:23PM -0300, Ezequiel Garcia wrote:
+> On 05/12/2015 11:39 AM, Antoine Tenart wrote:
+> > On Mon, May 11, 2015 at 07:10:56PM -0300, Ezequiel Garcia wrote:
+> >>
+> >> On 05/11/2015 11:58 AM, Antoine Tenart wrote:
+> >> [..]
+> >>> -
+> >>> -	/* calculate flash information */
+> >>> -	host->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
+> >>> -
+> >>
+> >> [..]
+> >>> @@ -1732,6 +1669,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+> >>>  		host->mtd = mtd;
+> >>>  		host->cs = cs;
+> >>>  		host->info_data = info;
+> >>> +		host->read_id_bytes = 4;
+> >>
+> >> Are you sure this is correct? The value is set according to the page
+> >> size before this patch.
+> > 
+> > Before reading the ID, the pxa3xx driver uses a default configuration,
+> > builtin_flash_types[0], which defines a page size of 2048 leading to set
+> > host->read_id_bytes to 4.
+> > 
+> > I'm using this default value here.
+> > 
+> > There might be an issue, as host->read_id_bytes isn't updated after
+> > reading the ID (and getting the actual page size). I don't know if this
+> > can be a problem. I can modify pxa3xx_nand_config_flash() to update
+> > host->read_id_bytes if needed. What do you think?
+> > 
+> 
+> Well, once the device is detected, READ_ID shouldn't be used, so I'm not
+> sure what's the point of that.
 
-That's right, in case of SoCs cores are MMIO-accessible, however I see
-few reasons for writing this driver as bcma based:
-1) MMIO access isn't available for bcma bus /hosted/ on PCIe devices.
-By using bcma layer we write generic drivers.
-2) bcma detects cores and their MMIO addresses automatically, if we
-are a bit lazy, it's easier to use it rather than keep hardcoding all
-addresses
-3) There are some dependencies in cores initialization, e.g.
-ChipCommon core usually has to be initialized first
-4) bcma provides some helpers like bcma_core_enable so we don't have
-to duplicate it in driver code
+I don't think there's a need to update read_id_bytes once the device is
+detected. Why don't we stay with 4?
 
-That said, I'm for using bcma layer, even if there is some small DT
-involvement already.
+Antoine
+
+-- 
+Antoine Ténart, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
