@@ -1,20 +1,20 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvBnF-0004ra-Eo
- for linux-mtd@lists.infradead.org; Wed, 20 May 2015 21:44:50 +0000
-Received: by pdbnk13 with SMTP id nk13so83269691pdb.1
- for <linux-mtd@lists.infradead.org>; Wed, 20 May 2015 14:44:28 -0700 (PDT)
-Date: Wed, 20 May 2015 14:44:20 -0700
+ id 1YvBvT-0001v1-H6
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2015 21:53:20 +0000
+Received: by pdea3 with SMTP id a3so83404420pde.2
+ for <linux-mtd@lists.infradead.org>; Wed, 20 May 2015 14:52:58 -0700 (PDT)
+Date: Wed, 20 May 2015 14:52:50 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Haikun Wang <haikun.wang@freescale.com>
-Subject: Re: [PATCH v1] mtd: spi-nor: Specify wait ready time for every chip
-Message-ID: <20150520214420.GO11598@ld-irv-0074>
-References: <1431593152-30642-1-git-send-email-haikun.wang@freescale.com>
+To: Han Xu <b45815@freescale.com>
+Subject: Re: [PATCH V3] mtd: fsl-quadspi: Access multiple chips simultaneously
+Message-ID: <20150520215250.GP11598@ld-irv-0074>
+References: <1431546057-16596-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1431593152-30642-1-git-send-email-haikun.wang@freescale.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+In-Reply-To: <1431546057-16596-1-git-send-email-b45815@freescale.com>
+Cc: shijie.huang@intel.com, linux-mtd@lists.infradead.org, han.xu@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,246 +24,176 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 14, 2015 at 04:45:52PM +0800, Haikun Wang wrote:
-> Chip erase cycle time is different among different chips.
-> Cycle time is also differnet among different operations for a special chip.
-> So we had better use corresponding timeout value for a specail chip and
-> a special operation when wait chip ready.
-> This patch add the method to specify the timeout value and use them
-> when wait chip ready.
+Hi Han,
 
-(Might want to spell-check your comments above.)
-
-I can't take this until you show me a real user for this. Right now,
-there is no example demonstrating why you need to make these delays
-configurable. And I'm not at all convinced that we need them. If you
-need a few extra seconds for the timeout, we might as well just increase
-it for all chips. We shouldn't be running up against the timeout in
-practice anyway, so this is just an error handling parameter.
-
-> Signed-off-by: Haikun Wang <haikun.wang@freescale.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 60 ++++++++++++++++++++++++++++++++-----------
->  include/linux/mtd/spi-nor.h   |  4 +++
->  2 files changed, 49 insertions(+), 15 deletions(-)
+On Wed, May 13, 2015 at 02:40:57PM -0500, Han Xu wrote:
+> Add supports for simultaneous access to multiple chips. Need to lock
+> the mutex before any quad spi operations and unlock the mutex after
+> operations complete.
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 14a5d23..63a7488 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -46,6 +46,14 @@ struct flash_info {
->  	u16		page_size;
->  	u16		addr_width;
+> Signed-off-by: Han Xu <b45815@freescale.com>
+> ---
+> v2 -- > v3
+> 1. Unlock the mutex if errors occur.
+> 2. Destroy the mutex when module remove or probe fail.
+> 
+> v1 -- > v2
+> 1. Rebase to latest l2-mtd code and resend.
+> ---
+> 
+> 
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 22 +++++++++++++++++-----
+>  1 file changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 52a872f..e6fc064 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+...
+> @@ -761,13 +763,17 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+>  	struct fsl_qspi *q = nor->priv;
+>  	int ret;
 >  
-> +	/*
-> +	 * common_wait, wait ready time applying to most operations .
-> +	 * max_wait defines the max wait ready time.
-> +	 * Specified in seconds.
-> +	 */
-
-These comments are extremely non-specific. You need to be more precise
-than "most". Also, split the comments up to describe each field
-separately, instead of trying to tackle both fields in one comment
-block.
-
-Brian
-
-> +	s16		common_wait;
-> +	s16		max_wait;
-> +
->  	u16		flags;
->  #define	SECT_4K			0x01	/* SPINOR_OP_BE_4K works uniformly */
->  #define	SPI_NOR_NO_ERASE	0x02	/* No erase command needed */
-> @@ -231,12 +239,15 @@ static int spi_nor_ready(struct spi_nor *nor)
->   * Service routine to read status register until ready, or timeout occurs.
->   * Returns non-zero if error.
->   */
-> -static int spi_nor_wait_till_ready(struct spi_nor *nor)
-> +static int spi_nor_wait_till_ready(struct spi_nor *nor, int wait_time)
->  {
->  	unsigned long deadline;
->  	int timeout = 0, ret;
+> +	mutex_lock(&q->lock);
+>  	ret = clk_enable(q->clk_en);
+> -	if (ret)
+> +	if (ret) {
+> +		mutex_unlock(&q->lock);
+>  		return ret;
+> +	}
 >  
-> -	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
-> +	if (wait_time > 0)
-> +		deadline = jiffies + wait_time * HZ;
-> +	else
-> +		deadline = jiffies + MAX_READY_WAIT_JIFFIES;
->  
->  	while (!timeout) {
->  		if (time_after_eq(jiffies, deadline))
-> @@ -326,7 +337,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
->  			goto erase_err;
->  		}
->  
-> -		ret = spi_nor_wait_till_ready(nor);
-> +		ret = spi_nor_wait_till_ready(nor, nor->max_wait);
->  		if (ret)
->  			goto erase_err;
->  
-> @@ -348,7 +359,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
->  			addr += mtd->erasesize;
->  			len -= mtd->erasesize;
->  
-> -			ret = spi_nor_wait_till_ready(nor);
-> +			ret = spi_nor_wait_till_ready(nor, nor->common_wait);
->  			if (ret)
->  				goto erase_err;
->  		}
-> @@ -467,8 +478,9 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  	return ret;
->  }
->  
-> -/* Used when the "_ext_id" is two bytes at most */
-> -#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-> +/* Used when the "_ext_id" is two bytes at most, WATTM: wait time */
-> +#define INFO_WATTM(_jedec_id, _ext_id, _sector_size, _n_sectors,	\
-> +		   _common_wait, _max_wait, _flags)			\
->  	((kernel_ulong_t)&(struct flash_info) {				\
->  		.id = {							\
->  			((_jedec_id) >> 16) & 0xff,			\
-> @@ -481,10 +493,13 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  		.sector_size = (_sector_size),				\
->  		.n_sectors = (_n_sectors),				\
->  		.page_size = 256,					\
-> +		.common_wait = (_common_wait),				\
-> +		.max_wait = (_max_wait),				\
->  		.flags = (_flags),					\
->  	})
->  
-> -#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-> +#define INFO6_WATTM(_jedec_id, _ext_id, _sector_size, _n_sectors,	\
-> +		    _common_wait, _max_wait, _flags)			\
->  	((kernel_ulong_t)&(struct flash_info) {				\
->  		.id = {							\
->  			((_jedec_id) >> 16) & 0xff,			\
-> @@ -498,6 +513,8 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  		.sector_size = (_sector_size),				\
->  		.n_sectors = (_n_sectors),				\
->  		.page_size = 256,					\
-> +		.common_wait = (_common_wait),				\
-> +		.max_wait = (_max_wait),				\
->  		.flags = (_flags),					\
->  	})
->  
-> @@ -510,6 +527,16 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  		.flags = (_flags),					\
->  	})
->  
-> +#define DEFAULT_WAIT_TIME	40 /* in seconds */
-> +
-> +#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-> +	INFO_WATTM(_jedec_id, _ext_id, _sector_size, _n_sectors,	\
-> +		    DEFAULT_WAIT_TIME, DEFAULT_WAIT_TIME, _flags)
-> +
-> +#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-> +	INFO6_WATTM(_jedec_id, _ext_id, _sector_size, _n_sectors,	\
-> +		      DEFAULT_WAIT_TIME, DEFAULT_WAIT_TIME, _flags)
-> +
->  /* NOTE: double check command sets and memory organization when you add
->   * more nor chips.  This current list focusses on newer chips, which
->   * have been converging on command sets which including JEDEC ID.
-> @@ -756,7 +783,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
->  
->  		/* write one byte. */
->  		nor->write(nor, to, 1, retlen, buf);
-> -		ret = spi_nor_wait_till_ready(nor);
-> +		ret = spi_nor_wait_till_ready(nor, nor->common_wait);
->  		if (ret)
->  			goto time_out;
->  	}
-> @@ -768,7 +795,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
->  
->  		/* write two bytes. */
->  		nor->write(nor, to, 2, retlen, buf + actual);
-> -		ret = spi_nor_wait_till_ready(nor);
-> +		ret = spi_nor_wait_till_ready(nor, nor->common_wait);
->  		if (ret)
->  			goto time_out;
->  		to += 2;
-> @@ -777,7 +804,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
->  	nor->sst_write_second = false;
->  
->  	write_disable(nor);
-> -	ret = spi_nor_wait_till_ready(nor);
-> +	ret = spi_nor_wait_till_ready(nor, nor->common_wait);
->  	if (ret)
->  		goto time_out;
->  
-> @@ -788,7 +815,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
->  		nor->program_opcode = SPINOR_OP_BP;
->  		nor->write(nor, to, 1, retlen, buf + actual);
->  
-> -		ret = spi_nor_wait_till_ready(nor);
-> +		ret = spi_nor_wait_till_ready(nor, nor->common_wait);
->  		if (ret)
->  			goto time_out;
->  		write_disable(nor);
-> @@ -834,7 +861,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  			if (page_size > nor->page_size)
->  				page_size = nor->page_size;
->  
-> -			ret = spi_nor_wait_till_ready(nor);
-> +			ret = spi_nor_wait_till_ready(nor, nor->common_wait);
->  			if (ret)
->  				goto write_err;
->  
-> @@ -844,7 +871,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  		}
->  	}
->  
-> -	ret = spi_nor_wait_till_ready(nor);
-> +	ret = spi_nor_wait_till_ready(nor, nor->common_wait);
->  write_err:
->  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
->  	return ret;
-> @@ -860,7 +887,7 @@ static int macronix_quad_enable(struct spi_nor *nor)
->  	nor->cmd_buf[0] = val | SR_QUAD_EN_MX;
->  	nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 1, 0);
->  
-> -	if (spi_nor_wait_till_ready(nor))
-> +	if (spi_nor_wait_till_ready(nor, nor->common_wait))
->  		return 1;
->  
->  	ret = read_sr(nor);
-> @@ -931,7 +958,7 @@ static int micron_quad_enable(struct spi_nor *nor)
+>  	ret = clk_enable(q->clk);
+>  	if (ret) {
+>  		clk_disable(q->clk_en);
+> +		mutex_unlock(&q->lock);
 >  		return ret;
 >  	}
 >  
-> -	ret = spi_nor_wait_till_ready(nor);
-> +	ret = spi_nor_wait_till_ready(nor, nor->common_wait);
->  	if (ret)
->  		return ret;
->  
-> @@ -1184,6 +1211,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  
->  	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
->  
-> +	nor->common_wait = info->common_wait;
-> +	nor->max_wait = info->max_wait;
-> +
->  	dev_info(dev, "%s (%lld Kbytes)\n", id->name,
->  			(long long)mtd->size >> 10);
->  
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index e540952..a0f29c7 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -158,6 +158,8 @@ enum spi_nor_option_flags {
->   * @lock:		[FLASH-SPECIFIC] lock a region of the SPI NOR
->   * @unlock:		[FLASH-SPECIFIC] unlock a region of the SPI NOR
->   * @priv:		the private data
-> + * @common_wait:	wait ready time applying to most operations, in seconds
-> + * @max_wait:		max wait ready time of all operations, in seconds
->   */
->  struct spi_nor {
->  	struct mtd_info		*mtd;
-> @@ -195,6 +197,8 @@ struct spi_nor {
->  	int (*flash_unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
->  
->  	void *priv;
-> +	s16			common_wait;
-> +	s16			max_wait;
->  };
->  
->  /**
+
+I think it'd be better to have a single error path in this function now.
+
+Otherwise, I think this is OK. I can push the appended patch instead, if
+that's OK with you.
+
+Signed-off-by: Han Xu <b45815@freescale.com>
+[Brian: reworked err path in fsl_qspi_prep()]
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 32 +++++++++++++++++++++++---------
+ 1 file changed, 23 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 52a872fa1b6e..4fe13dd535f8 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -26,6 +26,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/spi-nor.h>
++#include <linux/mutex.h>
+ 
+ /* The registers */
+ #define QUADSPI_MCR			0x00
+@@ -233,6 +234,7 @@ struct fsl_qspi {
+ 	u32 clk_rate;
+ 	unsigned int chip_base_addr; /* We may support two chips. */
+ 	bool has_second_chip;
++	struct mutex lock;
+ };
+ 
+ static inline int is_vybrid_qspi(struct fsl_qspi *q)
+@@ -761,18 +763,24 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+ 	struct fsl_qspi *q = nor->priv;
+ 	int ret;
+ 
++	mutex_lock(&q->lock);
+ 	ret = clk_enable(q->clk_en);
+ 	if (ret)
+-		return ret;
++		goto err_mutex;
+ 
+ 	ret = clk_enable(q->clk);
+-	if (ret) {
+-		clk_disable(q->clk_en);
+-		return ret;
+-	}
++	if (ret)
++		goto err_clk;
+ 
+ 	fsl_qspi_set_base_addr(q, nor);
+ 	return 0;
++
++err_clk:
++	clk_disable(q->clk_en);
++err_mutex:
++	mutex_unlock(&q->lock);
++
++	return ret;
+ }
+ 
+ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+@@ -781,6 +789,7 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+ 
+ 	clk_disable(q->clk);
+ 	clk_disable(q->clk_en);
++	mutex_unlock(&q->lock);
+ }
+ 
+ static int fsl_qspi_probe(struct platform_device *pdev)
+@@ -864,6 +873,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	if (of_get_property(np, "fsl,qspi-has-second-chip", NULL))
+ 		q->has_second_chip = true;
+ 
++	mutex_init(&q->lock);
++
+ 	/* iterate the subnodes. */
+ 	for_each_available_child_of_node(dev->of_node, np) {
+ 		char modalias[40];
+@@ -892,24 +903,24 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 
+ 		ret = of_modalias_node(np, modalias, sizeof(modalias));
+ 		if (ret < 0)
+-			goto irq_failed;
++			goto mutex_failed;
+ 
+ 		ret = of_property_read_u32(np, "spi-max-frequency",
+ 				&q->clk_rate);
+ 		if (ret < 0)
+-			goto irq_failed;
++			goto mutex_failed;
+ 
+ 		/* set the chip address for READID */
+ 		fsl_qspi_set_base_addr(q, nor);
+ 
+ 		ret = spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
+ 		if (ret)
+-			goto irq_failed;
++			goto mutex_failed;
+ 
+ 		ppdata.of_node = np;
+ 		ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+ 		if (ret)
+-			goto irq_failed;
++			goto mutex_failed;
+ 
+ 		/* Set the correct NOR size now. */
+ 		if (q->nor_size == 0) {
+@@ -950,6 +961,8 @@ last_init_failed:
+ 			i *= 2;
+ 		mtd_device_unregister(&q->mtd[i]);
+ 	}
++mutex_failed:
++	mutex_destroy(&q->lock);
+ irq_failed:
+ 	clk_disable_unprepare(q->clk);
+ clk_failed:
+@@ -973,6 +986,7 @@ static int fsl_qspi_remove(struct platform_device *pdev)
+ 	writel(QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
+ 	writel(0x0, q->iobase + QUADSPI_RSER);
+ 
++	mutex_destroy(&q->lock);
+ 	clk_unprepare(q->clk);
+ 	clk_unprepare(q->clk_en);
+ 	return 0;
+-- 
+1.9.1
