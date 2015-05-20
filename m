@@ -1,24 +1,25 @@
-Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yurxw-00080i-Of
- for linux-mtd@lists.infradead.org; Wed, 20 May 2015 00:34:33 +0000
-Received: by pdbnk13 with SMTP id nk13so46616589pdb.1
- for <linux-mtd@lists.infradead.org>; Tue, 19 May 2015 17:34:11 -0700 (PDT)
-Date: Tue, 19 May 2015 17:34:02 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Subject: Re: [PATCH 5/7] mtd: brcmnand: add bcma driver
-Message-ID: <20150520003402.GC11598@ld-irv-0074>
+ id 1Yuxf5-0000qd-Ow
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2015 06:39:28 +0000
+Received: by ieczm2 with SMTP id zm2so31995396iec.1
+ for <linux-mtd@lists.infradead.org>; Tue, 19 May 2015 23:39:06 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20150520003402.GC11598@ld-irv-0074>
 References: <1431877266-28566-1-git-send-email-hauke@hauke-m.de>
  <1431877266-28566-6-git-send-email-hauke@hauke-m.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1431877266-28566-6-git-send-email-hauke@hauke-m.de>
-Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, rjui@broadcom.com,
- zajec5@gmail.com, linux-mtd@lists.infradead.org,
- bcm-kernel-feedback-list@broadcom.com
+ <20150520003402.GC11598@ld-irv-0074>
+Date: Wed, 20 May 2015 08:39:06 +0200
+Message-ID: <CACna6rzBn3yzzER56aAmk+VPNiMh9ikA3B1YZmMesF=3DWdq+A@mail.gmail.com>
+Subject: Re: [PATCH 5/7] mtd: brcmnand: add bcma driver
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Florian Fainelli <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Ray Jui <rjui@broadcom.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,229 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, May 17, 2015 at 05:41:04PM +0200, Hauke Mehrtens wrote:
-> This driver registers at the bcma bus and drives the NAND core if it
-> was found on this bus. The bcma bus with this NAND core is used on the
-> bcm53xx and bcm47xx Northstar SoC with ARM CPU cores. The memory ranges
-> are automatically detected by bcma and the irq numbers read from device
-> tree by bcma bus driver.
+On 20 May 2015 at 02:34, Brian Norris <computersforpeace@gmail.com> wrote:
+> On Sun, May 17, 2015 at 05:41:04PM +0200, Hauke Mehrtens wrote:
+>> This driver registers at the bcma bus and drives the NAND core if it
+>> was found on this bus. The bcma bus with this NAND core is used on the
+>> bcm53xx and bcm47xx Northstar SoC with ARM CPU cores. The memory ranges
+>> are automatically detected by bcma and the irq numbers read from device
+>> tree by bcma bus driver.
+>
+> If you're going to use device tree for part of it (IRQs) why not the
+> whole thing?
+>
+>> This is based on the iproc driver.
+>
+> This looks like you could probably get by with just using iproc_nand.c
+> as-is. The main NAND core is apparently MMIO-accessible on your chips,
+> so aren't the BCMA bits you're touching also?
 
-If you're going to use device tree for part of it (IRQs) why not the
-whole thing?
+That's right, in case of SoCs cores are MMIO-accessible, however I see
+few reasons for writing this driver as bcma based:
+1) MMIO access isn't available for bcma bus /hosted/ on PCIe devices.
+By using bcma layer we write generic drivers.
+2) bcma detects cores and their MMIO addresses automatically, if we
+are a bit lazy, it's easier to use it rather than keep hardcoding all
+addresses
+3) There are some dependencies in cores initialization, e.g.
+ChipCommon core usually has to be initialized first
+4) bcma provides some helpers like bcma_core_enable so we don't have
+to duplicate it in driver code
 
-> This is based on the iproc driver.
-
-This looks like you could probably get by with just using iproc_nand.c
-as-is. The main NAND core is apparently MMIO-accessible on your chips,
-so aren't the BCMA bits you're touching also?
-
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> ---
->  drivers/mtd/nand/Kconfig              |   8 ++
->  drivers/mtd/nand/brcmnand/Makefile    |   1 +
->  drivers/mtd/nand/brcmnand/bcma_nand.c | 153 ++++++++++++++++++++++++++++++++++
->  3 files changed, 162 insertions(+)
->  create mode 100644 drivers/mtd/nand/brcmnand/bcma_nand.c
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 376b538..b698212 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -402,6 +402,14 @@ config MTD_NAND_BRCMNAND
->  	  originally designed for Set-Top Box but is used on various BCM7xxx,
->  	  BCM3xxx, BCM63xxx, iProc/Cygnus and more.
->  
-> +config MTD_NAND_BRCMNAND_BCMA
-> +	tristate "Broadcom BCMA NAND controller"
-> +	depends on ARM || MIPS
-
-depends on BCMA ?
-
-> +	select MTD_NAND_BRCMNAND
-> +	help
-> +	  Enables the driver which registers Broadcom NAND controller against
-> +	  bcma.
-
-If you're going to add new Kconfigs for brcmnand, let's add a Kconfig
-file under drivers/mtd/nand/brcmnand/.
-
-Brian
-
-> +
->  config MTD_NAND_BCM47XXNFLASH
->  	tristate "Support for NAND flash on BCM4706 BCMA bus"
->  	depends on BCMA_NFLASH
-> diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
-> index 3b1fbfd..8483984 100644
-> --- a/drivers/mtd/nand/brcmnand/Makefile
-> +++ b/drivers/mtd/nand/brcmnand/Makefile
-> @@ -1,6 +1,7 @@
->  # link order matters; don't link the more generic brcmstb_nand.o before the
->  # more specific iproc_nand.o, for instance
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
-> +obj-$(CONFIG_MTD_NAND_BRCMNAND_BCMA)	+= bcma_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
-> diff --git a/drivers/mtd/nand/brcmnand/bcma_nand.c b/drivers/mtd/nand/brcmnand/bcma_nand.c
-> new file mode 100644
-> index 0000000..58380bd
-> --- /dev/null
-> +++ b/drivers/mtd/nand/brcmnand/bcma_nand.c
-> @@ -0,0 +1,153 @@
-> +/*
-> + * Copyright © 2015 Broadcom Corporation
-> + * Copyright 2015 Hauke Mehrtens <hauke@hauke-m.de>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-> + * GNU General Public License for more details.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/ioport.h>
-> +#include <linux/module.h>
-> +#include <linux/bcma/bcma.h>
-> +#include <linux/slab.h>
-> +
-> +#include "brcmnand.h"
-> +
-> +struct bcma_nand_soc_priv {
-> +	struct brcmnand_soc soc;
-> +	struct bcma_device *core;
-> +	spinlock_t idm_lock;
-> +};
-> +
-> +#define BCMA_NAND_CTLR_READY_OFFSET       0x0f10
-> +#define BCMA_NAND_CTLR_READY              BIT(0)
-> +
-> +#define BCMA_NAND_APB_LE_MODE             BIT(24)
-> +#define BCMA_NAND_INT_CTRL_READ_ENABLE    BIT(6)
-> +
-> +static bool bcma_nand_intc_ack(struct brcmnand_soc *soc)
-> +{
-> +	struct bcma_nand_soc_priv *priv = soc->priv;
-> +	struct bcma_device *core = priv->core;
-> +
-> +	u32 val = bcma_read32(core, BCMA_NAND_CTLR_READY_OFFSET);
-> +
-> +	if (val & BCMA_NAND_CTLR_READY) {
-> +		bcma_write32(core, BCMA_NAND_CTLR_READY_OFFSET,
-> +			     BCMA_NAND_CTLR_READY);
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +static void bcma_nand_intc_set(struct brcmnand_soc *soc, bool en)
-> +{
-> +	struct bcma_nand_soc_priv *priv = soc->priv;
-> +	struct bcma_device *core = priv->core;
-> +	u32 val;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&priv->idm_lock, flags);
-> +
-> +	val = bcma_aread32(core, BCMA_IOCTL);
-> +
-> +	if (en)
-> +		val |= BCMA_NAND_INT_CTRL_READ_ENABLE;
-> +	else
-> +		val &= ~BCMA_NAND_INT_CTRL_READ_ENABLE;
-> +
-> +	bcma_awrite32(core, BCMA_IOCTL, val);
-> +
-> +	spin_unlock_irqrestore(&priv->idm_lock, flags);
-> +}
-> +
-> +static void bcma_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
-> +{
-> +	struct bcma_nand_soc_priv *priv = soc->priv;
-> +	struct bcma_device *core = priv->core;
-> +	u32 val;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&priv->idm_lock, flags);
-> +
-> +	val = bcma_aread32(core, BCMA_IOCTL);
-> +
-> +	if (prepare)
-> +		val |= BCMA_NAND_APB_LE_MODE;
-> +	else
-> +		val &= ~BCMA_NAND_APB_LE_MODE;
-> +
-> +	bcma_awrite32(core, BCMA_IOCTL, val);
-> +
-> +	spin_unlock_irqrestore(&priv->idm_lock, flags);
-> +}
-> +
-> +static int bcma_nand_probe(struct bcma_device *core)
-> +{
-> +	struct device *dev = &core->dev;
-> +	struct bcma_nand_soc_priv *priv;
-> +	struct brcmnand_soc *soc;
-> +
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->core = core;
-> +
-> +	soc = &priv->soc;
-> +	soc->nand_base = core->io_addr;
-> +	soc->irq = bcma_core_irq(core, 4);
-> +
-> +	soc->dev = dev;
-> +	soc->priv = priv;
-> +	soc->ctlrdy_ack = bcma_nand_intc_ack;
-> +	soc->ctlrdy_set_enabled = bcma_nand_intc_set;
-> +	soc->prepare_data_bus = bcma_nand_apb_access;
-> +
-> +	bcma_core_enable(core, 0);
-> +	return brcmnand_probe_dev(dev, soc);
-> +}
-> +
-> +static void bcma_nand_remove(struct bcma_device *core)
-> +{
-> +	brcmnand_remove_dev(&core->dev);
-> +}
-> +
-> +static const struct bcma_device_id bcma_nand_tbl[] = {
-> +	BCMA_CORE(BCMA_MANUF_BCM, BCMA_CORE_NS_NAND, BCMA_ANY_REV, BCMA_ANY_CLASS),
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(bcma, bcma_nand_tbl);
-> +
-> +static struct bcma_driver bcma_nand_driver = {
-> +	.name		= KBUILD_MODNAME,
-> +	.id_table	= bcma_nand_tbl,
-> +	.probe		= bcma_nand_probe,
-> +	.remove		= bcma_nand_remove,
-> +};
-> +
-> +static int __init bcma_nand_init(void)
-> +{
-> +	return bcma_driver_register(&bcma_nand_driver);
-> +}
-> +
-> +static void __exit bcma_nand_exit(void)
-> +{
-> +	bcma_driver_unregister(&bcma_nand_driver);
-> +}
-> +
-> +module_init(bcma_nand_init)
-> +module_exit(bcma_nand_exit)
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Hauke Mehrtens");
-> +MODULE_DESCRIPTION("NAND driver for Broadcom bcma based SoCs");
-> -- 
-> 2.1.4
-> 
+That said, I'm for using bcma layer, even if there is some small DT
+involvement already.
