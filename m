@@ -1,36 +1,20 @@
-Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvBex-0001m2-G0
- for linux-mtd@lists.infradead.org; Wed, 20 May 2015 21:36:15 +0000
-Received: by pdbqa5 with SMTP id qa5so82990510pdb.0
- for <linux-mtd@lists.infradead.org>; Wed, 20 May 2015 14:35:54 -0700 (PDT)
-Date: Wed, 20 May 2015 14:35:46 -0700
+ id 1YvBnF-0004ra-Eo
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2015 21:44:50 +0000
+Received: by pdbnk13 with SMTP id nk13so83269691pdb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 20 May 2015 14:44:28 -0700 (PDT)
+Date: Wed, 20 May 2015 14:44:20 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] Documentation: dt: mtd: replace "nor-jedec" binding with
- "jedec,spi-nor"
-Message-ID: <20150520213546.GN11598@ld-irv-0074>
-References: <1431624773-4165-1-git-send-email-computersforpeace@gmail.com>
- <20150515195541.GL11598@ld-irv-0074>
- <20150518104501.GD3551@leverpostej>
- <20150518183442.GR11598@ld-irv-0074>
- <CAMuHMdUCj2AXk_0mAgRfAStrveHPi=Rp2g-b177zO_ode8NaCw@mail.gmail.com>
- <20150519013415.GV11598@ld-irv-0074>
- <CACna6rzpxoXEJbeRyxaR0wiPpWc_MmgvnqoW-dSw4fF-=EMM_g@mail.gmail.com>
+To: Haikun Wang <haikun.wang@freescale.com>
+Subject: Re: [PATCH v1] mtd: spi-nor: Specify wait ready time for every chip
+Message-ID: <20150520214420.GO11598@ld-irv-0074>
+References: <1431593152-30642-1-git-send-email-haikun.wang@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rzpxoXEJbeRyxaR0wiPpWc_MmgvnqoW-dSw4fF-=EMM_g@mail.gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Marek Vasut <marex@denx.de>, Pawel Moll <Pawel.Moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Stephen Warren <swarren@wwwdotorg.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Kumar Gala <galak@codeaurora.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <1431593152-30642-1-git-send-email-haikun.wang@freescale.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,32 +24,246 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 19, 2015 at 09:27:50AM +0200, Rafał Miłecki wrote:
-> On 19 May 2015 at 03:34, Brian Norris <computersforpeace@gmail.com> wrote:
-> > So how about the following patch? It seems like we'll need to be able to
-> > ignore useless 'modalias' values in cases like this:
-> >
-> >         // modalias = "shinynewdevice"
-> >         compatible = "myvendor,shinynewdevice", "jedec,spi-nor";
-> >
-> > and also if somebody leaves off the entire shinynewdevice string:
-> >
-> >         // modalias = "spi-nor"
-> >         compatible = "jedec,spi-nor";
-> >
-> > So we rework the spi-nor library to not reject "bad" names, and just
-> > fall back to autodetection, and we add the .of_match_table to properly
-> > catch all "jedec,spi-nor".
+On Thu, May 14, 2015 at 04:45:52PM +0800, Haikun Wang wrote:
+> Chip erase cycle time is different among different chips.
+> Cycle time is also differnet among different operations for a special chip.
+> So we had better use corresponding timeout value for a specail chip and
+> a special operation when wait chip ready.
+> This patch add the method to specify the timeout value and use them
+> when wait chip ready.
+
+(Might want to spell-check your comments above.)
+
+I can't take this until you show me a real user for this. Right now,
+there is no example demonstrating why you need to make these delays
+configurable. And I'm not at all convinced that we need them. If you
+need a few extra seconds for the timeout, we might as well just increase
+it for all chips. We shouldn't be running up against the timeout in
+practice anyway, so this is just an error handling parameter.
+
+> Signed-off-by: Haikun Wang <haikun.wang@freescale.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 60 ++++++++++++++++++++++++++++++++-----------
+>  include/linux/mtd/spi-nor.h   |  4 +++
+>  2 files changed, 49 insertions(+), 15 deletions(-)
 > 
-> That's nice but what about platforms using platform data instead of
-> DT? I would like to use some kind of "spi-nor" (with some prefix
-> *maybe*) for them too.
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 14a5d23..63a7488 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -46,6 +46,14 @@ struct flash_info {
+>  	u16		page_size;
+>  	u16		addr_width;
+>  
+> +	/*
+> +	 * common_wait, wait ready time applying to most operations .
+> +	 * max_wait defines the max wait ready time.
+> +	 * Specified in seconds.
+> +	 */
 
-For platform devices, you might as well just use the name of the driver,
-which is 'm25p80'. Isn't that how most platform devices are matched with
-drivers?
-
-Or if you can propose other clean solutions, I'm all ears. I'm likely to
-merge this patch for 4.2 unless a better solution comes up, though.
+These comments are extremely non-specific. You need to be more precise
+than "most". Also, split the comments up to describe each field
+separately, instead of trying to tackle both fields in one comment
+block.
 
 Brian
+
+> +	s16		common_wait;
+> +	s16		max_wait;
+> +
+>  	u16		flags;
+>  #define	SECT_4K			0x01	/* SPINOR_OP_BE_4K works uniformly */
+>  #define	SPI_NOR_NO_ERASE	0x02	/* No erase command needed */
+> @@ -231,12 +239,15 @@ static int spi_nor_ready(struct spi_nor *nor)
+>   * Service routine to read status register until ready, or timeout occurs.
+>   * Returns non-zero if error.
+>   */
+> -static int spi_nor_wait_till_ready(struct spi_nor *nor)
+> +static int spi_nor_wait_till_ready(struct spi_nor *nor, int wait_time)
+>  {
+>  	unsigned long deadline;
+>  	int timeout = 0, ret;
+>  
+> -	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
+> +	if (wait_time > 0)
+> +		deadline = jiffies + wait_time * HZ;
+> +	else
+> +		deadline = jiffies + MAX_READY_WAIT_JIFFIES;
+>  
+>  	while (!timeout) {
+>  		if (time_after_eq(jiffies, deadline))
+> @@ -326,7 +337,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  			goto erase_err;
+>  		}
+>  
+> -		ret = spi_nor_wait_till_ready(nor);
+> +		ret = spi_nor_wait_till_ready(nor, nor->max_wait);
+>  		if (ret)
+>  			goto erase_err;
+>  
+> @@ -348,7 +359,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  			addr += mtd->erasesize;
+>  			len -= mtd->erasesize;
+>  
+> -			ret = spi_nor_wait_till_ready(nor);
+> +			ret = spi_nor_wait_till_ready(nor, nor->common_wait);
+>  			if (ret)
+>  				goto erase_err;
+>  		}
+> @@ -467,8 +478,9 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	return ret;
+>  }
+>  
+> -/* Used when the "_ext_id" is two bytes at most */
+> -#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+> +/* Used when the "_ext_id" is two bytes at most, WATTM: wait time */
+> +#define INFO_WATTM(_jedec_id, _ext_id, _sector_size, _n_sectors,	\
+> +		   _common_wait, _max_wait, _flags)			\
+>  	((kernel_ulong_t)&(struct flash_info) {				\
+>  		.id = {							\
+>  			((_jedec_id) >> 16) & 0xff,			\
+> @@ -481,10 +493,13 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  		.sector_size = (_sector_size),				\
+>  		.n_sectors = (_n_sectors),				\
+>  		.page_size = 256,					\
+> +		.common_wait = (_common_wait),				\
+> +		.max_wait = (_max_wait),				\
+>  		.flags = (_flags),					\
+>  	})
+>  
+> -#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+> +#define INFO6_WATTM(_jedec_id, _ext_id, _sector_size, _n_sectors,	\
+> +		    _common_wait, _max_wait, _flags)			\
+>  	((kernel_ulong_t)&(struct flash_info) {				\
+>  		.id = {							\
+>  			((_jedec_id) >> 16) & 0xff,			\
+> @@ -498,6 +513,8 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  		.sector_size = (_sector_size),				\
+>  		.n_sectors = (_n_sectors),				\
+>  		.page_size = 256,					\
+> +		.common_wait = (_common_wait),				\
+> +		.max_wait = (_max_wait),				\
+>  		.flags = (_flags),					\
+>  	})
+>  
+> @@ -510,6 +527,16 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  		.flags = (_flags),					\
+>  	})
+>  
+> +#define DEFAULT_WAIT_TIME	40 /* in seconds */
+> +
+> +#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+> +	INFO_WATTM(_jedec_id, _ext_id, _sector_size, _n_sectors,	\
+> +		    DEFAULT_WAIT_TIME, DEFAULT_WAIT_TIME, _flags)
+> +
+> +#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+> +	INFO6_WATTM(_jedec_id, _ext_id, _sector_size, _n_sectors,	\
+> +		      DEFAULT_WAIT_TIME, DEFAULT_WAIT_TIME, _flags)
+> +
+>  /* NOTE: double check command sets and memory organization when you add
+>   * more nor chips.  This current list focusses on newer chips, which
+>   * have been converging on command sets which including JEDEC ID.
+> @@ -756,7 +783,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  
+>  		/* write one byte. */
+>  		nor->write(nor, to, 1, retlen, buf);
+> -		ret = spi_nor_wait_till_ready(nor);
+> +		ret = spi_nor_wait_till_ready(nor, nor->common_wait);
+>  		if (ret)
+>  			goto time_out;
+>  	}
+> @@ -768,7 +795,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  
+>  		/* write two bytes. */
+>  		nor->write(nor, to, 2, retlen, buf + actual);
+> -		ret = spi_nor_wait_till_ready(nor);
+> +		ret = spi_nor_wait_till_ready(nor, nor->common_wait);
+>  		if (ret)
+>  			goto time_out;
+>  		to += 2;
+> @@ -777,7 +804,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  	nor->sst_write_second = false;
+>  
+>  	write_disable(nor);
+> -	ret = spi_nor_wait_till_ready(nor);
+> +	ret = spi_nor_wait_till_ready(nor, nor->common_wait);
+>  	if (ret)
+>  		goto time_out;
+>  
+> @@ -788,7 +815,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  		nor->program_opcode = SPINOR_OP_BP;
+>  		nor->write(nor, to, 1, retlen, buf + actual);
+>  
+> -		ret = spi_nor_wait_till_ready(nor);
+> +		ret = spi_nor_wait_till_ready(nor, nor->common_wait);
+>  		if (ret)
+>  			goto time_out;
+>  		write_disable(nor);
+> @@ -834,7 +861,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  			if (page_size > nor->page_size)
+>  				page_size = nor->page_size;
+>  
+> -			ret = spi_nor_wait_till_ready(nor);
+> +			ret = spi_nor_wait_till_ready(nor, nor->common_wait);
+>  			if (ret)
+>  				goto write_err;
+>  
+> @@ -844,7 +871,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  		}
+>  	}
+>  
+> -	ret = spi_nor_wait_till_ready(nor);
+> +	ret = spi_nor_wait_till_ready(nor, nor->common_wait);
+>  write_err:
+>  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+>  	return ret;
+> @@ -860,7 +887,7 @@ static int macronix_quad_enable(struct spi_nor *nor)
+>  	nor->cmd_buf[0] = val | SR_QUAD_EN_MX;
+>  	nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 1, 0);
+>  
+> -	if (spi_nor_wait_till_ready(nor))
+> +	if (spi_nor_wait_till_ready(nor, nor->common_wait))
+>  		return 1;
+>  
+>  	ret = read_sr(nor);
+> @@ -931,7 +958,7 @@ static int micron_quad_enable(struct spi_nor *nor)
+>  		return ret;
+>  	}
+>  
+> -	ret = spi_nor_wait_till_ready(nor);
+> +	ret = spi_nor_wait_till_ready(nor, nor->common_wait);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -1184,6 +1211,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  
+>  	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
+>  
+> +	nor->common_wait = info->common_wait;
+> +	nor->max_wait = info->max_wait;
+> +
+>  	dev_info(dev, "%s (%lld Kbytes)\n", id->name,
+>  			(long long)mtd->size >> 10);
+>  
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index e540952..a0f29c7 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -158,6 +158,8 @@ enum spi_nor_option_flags {
+>   * @lock:		[FLASH-SPECIFIC] lock a region of the SPI NOR
+>   * @unlock:		[FLASH-SPECIFIC] unlock a region of the SPI NOR
+>   * @priv:		the private data
+> + * @common_wait:	wait ready time applying to most operations, in seconds
+> + * @max_wait:		max wait ready time of all operations, in seconds
+>   */
+>  struct spi_nor {
+>  	struct mtd_info		*mtd;
+> @@ -195,6 +197,8 @@ struct spi_nor {
+>  	int (*flash_unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+>  
+>  	void *priv;
+> +	s16			common_wait;
+> +	s16			max_wait;
+>  };
+>  
+>  /**
