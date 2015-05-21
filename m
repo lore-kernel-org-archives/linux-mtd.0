@@ -1,34 +1,24 @@
-Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+Received: from mail-ig0-x22b.google.com ([2607:f8b0:4001:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvKrN-0000Mf-MI
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 07:25:42 +0000
-Received: by igbsb11 with SMTP id sb11so2214933igb.0
- for <linux-mtd@lists.infradead.org>; Thu, 21 May 2015 00:25:19 -0700 (PDT)
-Date: Thu, 21 May 2015 00:25:15 -0700
+ id 1YvL3S-0007cb-GF
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2015 07:38:11 +0000
+Received: by igbpi8 with SMTP id pi8so3201656igb.1
+ for <linux-mtd@lists.infradead.org>; Thu, 21 May 2015 00:37:49 -0700 (PDT)
+Date: Thu, 21 May 2015 00:37:41 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] Documentation: dt: mtd: replace "nor-jedec" binding with
- "jedec,spi-nor"
-Message-ID: <20150521072515.GC11112@norris-Latitude-E6410>
-References: <1431624773-4165-1-git-send-email-computersforpeace@gmail.com>
- <20150515195541.GL11598@ld-irv-0074>
- <20150518104501.GD3551@leverpostej>
- <20150518183442.GR11598@ld-irv-0074>
- <CAMuHMdUCj2AXk_0mAgRfAStrveHPi=Rp2g-b177zO_ode8NaCw@mail.gmail.com>
- <20150519013415.GV11598@ld-irv-0074>
- <CACna6rzpxoXEJbeRyxaR0wiPpWc_MmgvnqoW-dSw4fF-=EMM_g@mail.gmail.com>
- <20150520213546.GN11598@ld-irv-0074>
- <CACna6rxq5zOR=7LT2vdbioWp3nD0eBeELJ_d9pPk7VwTWhmStg@mail.gmail.com>
+To: Wenlin Kang <wenlin.kang@windriver.com>
+Subject: Re: [PATCH] mtd: blktrans: change blktrans_getgeo rerurn value
+Message-ID: <20150521073741.GE11112@norris-Latitude-E6410>
+References: <1431498556-21275-1-git-send-email-wenlin.kang@windriver.com>
+ <20150520193325.GK11598@ld-irv-0074> <555CE4BF.8020506@gmail.com>
+ <555D8002.4050006@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rxq5zOR=7LT2vdbioWp3nD0eBeELJ_d9pPk7VwTWhmStg@mail.gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Stephen Warren <swarren@wwwdotorg.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>
+In-Reply-To: <555D8002.4050006@windriver.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,54 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(trim CC a bit, as this is no longer a DT binding question)
-
-On Thu, May 21, 2015 at 09:12:25AM +0200, Rafał Miłecki wrote:
-> On 20 May 2015 at 23:35, Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Tue, May 19, 2015 at 09:27:50AM +0200, Rafał Miłecki wrote:
-> >> On 19 May 2015 at 03:34, Brian Norris <computersforpeace@gmail.com> wrote:
-> >> > So how about the following patch? It seems like we'll need to be able to
-> >> > ignore useless 'modalias' values in cases like this:
-> >> >
-> >> >         // modalias = "shinynewdevice"
-> >> >         compatible = "myvendor,shinynewdevice", "jedec,spi-nor";
-> >> >
-> >> > and also if somebody leaves off the entire shinynewdevice string:
-> >> >
-> >> >         // modalias = "spi-nor"
-> >> >         compatible = "jedec,spi-nor";
-> >> >
-> >> > So we rework the spi-nor library to not reject "bad" names, and just
-> >> > fall back to autodetection, and we add the .of_match_table to properly
-> >> > catch all "jedec,spi-nor".
+On Thu, May 21, 2015 at 02:49:38PM +0800, Wenlin Kang wrote:
+> On 2015年05月21日 03:47, nick wrote:
+> >On 2015-05-20 03:33 PM, Brian Norris wrote:
+> >>On Wed, May 13, 2015 at 02:29:16PM +0800, Wenlin Kang wrote:
+> >>>Modify function blktrans_getgeo()'s return value to -ENXIO when
+> >>>dev->tr->getgeo == NULL.
+> >>>
+> >>>We shouldn't make the return value to 0 when dev->tr->getgeo == NULL,
+> >>>because the function blktrans_getgeo() has an output value "hd_geometry"
+> >>>which is usually used by some application, if return 0, it will make some
+> >>>application get the wrong information.
+> >>>
+> >>>Signed-off-by: Wenlin Kang <wenlin.kang@windriver.com>
+> >>>---
+> >>>  drivers/mtd/mtd_blkdevs.c |    2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>>diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> >>>index 2b0c5287..f8bb16e 100644
+> >>>--- a/drivers/mtd/mtd_blkdevs.c
+> >>>+++ b/drivers/mtd/mtd_blkdevs.c
+> >>>@@ -273,7 +273,7 @@ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+> >>>  	if (!dev->mtd)
+> >>>  		goto unlock;
+> >>>-	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : 0;
+> >>>+	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : -ENXIO;
+> >>Good catch. I don't think ENXIO is correct in this case, though. Maybe
+> >>-EOPNOTSUPP or -ENOSYS? The latter might make more sense I guess.
 > >>
-> >> That's nice but what about platforms using platform data instead of
-> >> DT? I would like to use some kind of "spi-nor" (with some prefix
-> >> *maybe*) for them too.
-> >
-> > For platform devices, you might as well just use the name of the driver,
-> > which is 'm25p80'. Isn't that how most platform devices are matched with
-> > drivers?
+> >I would recommend -EOPNOTSUPP as this as nothing to do with unimplemented
+> >functions or hardware support. This is just unsupported due to the value
+> >being NULL and therefore the hardware support is not there.
+> >Just My Option,
+> >Nick
 > 
-> Yes and I think it's ugly because it keeps causing the warning about
-> read flash model not matching specified one (m25p80).
+> As you said, -EOPNOTSUPP might be better,thanks.
 
-Sure, I agree.
+Nick's opinion is irrelevant here:
 
-> Are you
-> seriously not going to allow platform stuff *clearly* request flash
-> model detection (JEDEC RDID OP)? Just because they don't use DT?
+https://lkml.org/lkml/2014/8/4/206
 
-No, this isn't about "allowing" anything. It's just that my primary
-concern was to get the DT binding straightened out properly. Linus'
-current tree now has the proper binding, but the m25p80.c code doesn't
-quite bind properly. It will work if "jedec,spi-nor" is the first
-entry in the compatible property (and so it becomes the 'modalias', but
-not second, third, etc. So my patch fixes that properly.
+> I have remade the patch and attached it, would you please check it
+> again? thanks.
 
-Now, the secondary concern is that you want platform devices to specify
-something generic, and that doesn't yield a "found X, expected Y"
-message. I'm perfectly fine with fixing that too, if you have a patch
-for it. What do you propose?
+Please send patches inline (e.g., via git-send-email), not as
+attachments. But this is pretty trivial, and it's what I already tested.
+
+So, applied to l2-mtd.git.
 
 Brian
