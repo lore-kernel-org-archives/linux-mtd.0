@@ -1,34 +1,37 @@
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvM1Z-000387-Co
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 08:40:18 +0000
-Received: by wicmx19 with SMTP id mx19so6394988wic.0
- for <linux-mtd@lists.infradead.org>; Thu, 21 May 2015 01:39:54 -0700 (PDT)
+ id 1YvMCD-0002X6-Cl
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2015 08:51:18 +0000
+Received: by ieczm2 with SMTP id zm2so3354655iec.1
+ for <linux-mtd@lists.infradead.org>; Thu, 21 May 2015 01:50:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20150520233835.GX11598@ld-irv-0074>
-References: <cover.1430403750.git.hramrach@gmail.com>
- <50c40ef17ab6566f35ef5a4426bf23567f896db7.1430403750.git.hramrach@gmail.com>
- <20150520233835.GX11598@ld-irv-0074>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 21 May 2015 10:39:13 +0200
-Message-ID: <CAOMqctTYqDWL51twOuGi+oXONXQ4B2-2BkdJNSpzZAXshZUN6g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] MTD: spi-nor: check for short writes in spi_nor_write.
-To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <CAMuHMdVr37hUxCJL+9WGX7BZtMpAaDyXrAb=i=xovUn6AyxfxA@mail.gmail.com>
+References: <20150515195541.GL11598@ld-irv-0074>
+ <20150518104501.GD3551@leverpostej>
+ <20150518183442.GR11598@ld-irv-0074>
+ <CAMuHMdUCj2AXk_0mAgRfAStrveHPi=Rp2g-b177zO_ode8NaCw@mail.gmail.com>
+ <20150519013415.GV11598@ld-irv-0074>
+ <CACna6rzpxoXEJbeRyxaR0wiPpWc_MmgvnqoW-dSw4fF-=EMM_g@mail.gmail.com>
+ <20150520213546.GN11598@ld-irv-0074>
+ <CACna6rxq5zOR=7LT2vdbioWp3nD0eBeELJ_d9pPk7VwTWhmStg@mail.gmail.com>
+ <20150521072515.GC11112@norris-Latitude-E6410>
+ <CACna6rz6O2XRt0OBmf9stLvM1xh4v4aKTD=MR2EbCKFPV1SOpA@mail.gmail.com>
+ <20150521081526.GG11112@norris-Latitude-E6410>
+ <CACna6rweJuyqZ-sVe-DT7yaX4pPLXt8H++BdsZ7+EyzSzoeRoQ@mail.gmail.com>
+ <CAMuHMdVr37hUxCJL+9WGX7BZtMpAaDyXrAb=i=xovUn6AyxfxA@mail.gmail.com>
+Date: Thu, 21 May 2015 10:50:55 +0200
+Message-ID: <CACna6ryXarbqAoE2W7GMmXr-Dycgrq1bQc98bwex6T4rUg_AGA@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: dt: mtd: replace "nor-jedec" binding with
+ "jedec, spi-nor"
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8
-Cc: Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marex@denx.de>,
- "grmoore@altera.com" <grmoore@altera.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Ben Hutchings <ben@decadent.org.uk>, Mark Brown <broonie@kernel.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- linux-sunxi <linux-sunxi@googlegroups.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Alison Chaiken <alison_chaiken@mentor.com>,
- devicetree <devicetree@vger.kernel.org>,
- =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: Marek Vasut <marex@denx.de>, Stephen Warren <swarren@wwwdotorg.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,34 +41,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21 May 2015 at 01:38, Brian Norris <computersforpeace@gmail.com> wrote:
-> + linux-spi, Mark
+On 21 May 2015 at 10:39, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Hi Rafal, Brian,
 >
-> On Thu, Apr 30, 2015 at 03:38:50PM +0200, Michal Suchanek wrote:
->> My SPI controller driver does not support DMA so writes are truncated to
->> FIFO size.
+> On Thu, May 21, 2015 at 10:25 AM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.c=
+om> wrote:
+>> On 21 May 2015 at 10:15, Brian Norris <computersforpeace@gmail.com> wrot=
+e:
+>>> On Thu, May 21, 2015 at 10:01:05AM +0200, Rafa=C5=82 Mi=C5=82ecki wrote=
+:
+>>>> On 21 May 2015 at 09:25, Brian Norris <computersforpeace@gmail.com> wr=
+ote:
+>>>> >> > For platform devices, you might as well just use the name of the =
+driver,
+>>>> >> > which is 'm25p80'. Isn't that how most platform devices are match=
+ed with
+>>>> >> > drivers?
+>>>> >>
+>>>> >> Yes and I think it's ugly because it keeps causing the warning abou=
+t
+>>>> >> read flash model not matching specified one (m25p80).
+>>>> >
+>>>> > Sure, I agree.
+>>>> >
+>>>> >> Are you
+>>>> >> seriously not going to allow platform stuff *clearly* request flash
+>>>> >> model detection (JEDEC RDID OP)? Just because they don't use DT?
+>>>> >
+>>>> > No, this isn't about "allowing" anything. It's just that my primary
+>>>> > concern was to get the DT binding straightened out properly. Linus'
+>>>> > current tree now has the proper binding, but the m25p80.c code doesn=
+'t
+>>>> > quite bind properly. It will work if "jedec,spi-nor" is the first
+>>>> > entry in the compatible property (and so it becomes the 'modalias', =
+but
+>>>> > not second, third, etc. So my patch fixes that properly.
+>>>> >
+>>>> > Now, the secondary concern is that you want platform devices to spec=
+ify
+>>>> > something generic, and that doesn't yield a "found X, expected Y"
+>>>> > message. I'm perfectly fine with fixing that too, if you have a patc=
+h
+>>>> > for it. What do you propose?
+>>>>
+>>>> Maybe I wasn't clear enough. I was going to start using struct
+>>>> flash_platform_data with
+>>>> .type =3D "spi-nor",
+>>>> but your proposed patch removes support for such name.
+>>>
+>>> Ah, OK. So that's the part I was overlooking.
+>>>
+>>>> While I like matching DT *clearly* against the whole "jedec,spi-nor"
+>>>> string (really, I'm all for it), I'm confused what I should use for
+>>>> platform stuff now. I don't have any proposal as my initial plan was
+>>>> exactly to use this "spi-nor".
+>>>> I guess I don't want to re-add support for "spi-nor" (as you just
+>>>> proposed to remove it),
+>>>
+>>> I wasn't really trying to remove "spi-nor", that was mostly a side
+>>> effect.
+>>
+>> OK, I think we understand each other now :)
+>>
+>>>> so I think I have to bounce the question: what
+>>>> alternative do you propose?
+>>>
+>>> I think your comments suggest that I shouldn't be removing "spi-nor"
+>>> from m25p_ids[] nor from this block:
+>>>
+>>>         if (data && data->type)
+>>>                 flash_name =3D data->type;
+>>>         else if (!strcmp(spi->modalias, "spi-nor"))
+>>>                 flash_name =3D NULL; /* auto-detect */
+>>>         else
+>>>                 flash_name =3D spi->modalias;
+>>>
+>>> So it stays in both m25p_ids[] and .of_match_table.
+>>>
+>>> I suppose that can work. It then allows people to do weird stuff like:
+>>>
+>>>         compatible =3D "idontknowwhatimdoing,spi-nor";
+>>>
+>>> in their device tree. But other than that, there's not much downside I =
+don't
+>>> think.
+>>
+>> It sounds like a reasonable solution. I guess there isn't a perfect
+>> one. Even if we decide to go for sth like "jedec-spi-nor", there
+>> always will be a chance of someone using
+>> compatible =3D "idontknowwhatimdoing,jedec-spi-nor";
+>> So if you rework your patch to leave "spi-nor" support in m25p_ids and
+>> conditions block, it should be OK.
 >
-> Which SPI master driver?
-
-I am using sunxi SPI driver. The dmaengine support for sunxi is not
-yet in mainline kernel so the SPI master functionality is limited.
-
+> Typically platform devices just use the driver's name. Hence IMHO there's
+> no need to add a shiny new spi-nor device name.
 >
->> Check the amount of data actually written by the driver.
->
-> I'm not sure if we should just reactively use the retlen, or if we
-> should be communicating such a limitation via the SPI API. Thoughts?
->
+> So what's wrong with using "m25p80", and treating that as auto-detect iff
+> !spi->dev.of_node?
 
-Is there any driver that would break if the SPI master truncated
-writes when the message is too long rather than returning an error an
-refusing the transfer?
+Treating "m25p80" as auto-detect triggering string won't allow
+platform to *force* "m25p80" flash type if there ever appears to be
+needed. Maybe it's unlikely, but it still sounds like a bit bad design
+for me.
 
-m25p80 as is would because it assumes all data is always written.
 
-Some display driver I tried earlier has an option to limit transfer
-size actively in the driver.
+> Non-autodetect platform_devices use flash_platform_data.type anyway,
+> and thus fall under the first "if" clause above, don't they?
 
-Thanks
+They do, but I don't see the point.
 
-Michal
+--=20
+Rafa=C5=82
