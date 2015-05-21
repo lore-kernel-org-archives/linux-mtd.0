@@ -1,23 +1,36 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvNXp-0005f1-O7
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 10:17:42 +0000
-Message-ID: <555DB0AB.2000801@nod.at>
-Date: Thu, 21 May 2015 12:17:15 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1YvNiz-00027Q-LG
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2015 10:29:14 +0000
+Date: Thu, 21 May 2015 11:28:02 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Michal Suchanek <hramrach@gmail.com>
+Message-ID: <20150521102802.GS21577@sirena.org.uk>
+References: <cover.1430403750.git.hramrach@gmail.com>
+ <50c40ef17ab6566f35ef5a4426bf23567f896db7.1430403750.git.hramrach@gmail.com>
+ <20150520233835.GX11598@ld-irv-0074>
+ <CAOMqctTYqDWL51twOuGi+oXONXQ4B2-2BkdJNSpzZAXshZUN6g@mail.gmail.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: blktrans: change blktrans_getgeo rerurn value
-References: <1431498556-21275-1-git-send-email-wenlin.kang@windriver.com>
- <20150520193325.GK11598@ld-irv-0074>
- <CAFLxGvyy4UZWAZ9FaNCnF6-L664x3t72R_Kg_zEmD-HfkJqxrA@mail.gmail.com>
- <20150521080511.GF11112@norris-Latitude-E6410>
-In-Reply-To: <20150521080511.GF11112@norris-Latitude-E6410>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, Wenlin Kang <wenlin.kang@windriver.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="oJFDFiWc3BlD0xT/"
+Content-Disposition: inline
+In-Reply-To: <CAOMqctTYqDWL51twOuGi+oXONXQ4B2-2BkdJNSpzZAXshZUN6g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] MTD: spi-nor: check for short writes in spi_nor_write.
+Cc: Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marex@denx.de>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Ben Hutchings <ben@decadent.org.uk>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ linux-sunxi <linux-sunxi@googlegroups.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ devicetree <devicetree@vger.kernel.org>,
+ Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +40,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 21.05.2015 um 10:05 schrieb Brian Norris:
-> On Thu, May 21, 2015 at 09:56:21AM +0200, Richard Weinberger wrote:
->> On Wed, May 20, 2015 at 9:33 PM, Brian Norris
->> <computersforpeace@gmail.com> wrote:
->>> On Wed, May 13, 2015 at 02:29:16PM +0800, Wenlin Kang wrote:
->>>> Modify function blktrans_getgeo()'s return value to -ENXIO when
->>>> dev->tr->getgeo == NULL.
->>>>
->>>> We shouldn't make the return value to 0 when dev->tr->getgeo == NULL,
->>>> because the function blktrans_getgeo() has an output value "hd_geometry"
->>>> which is usually used by some application, if return 0, it will make some
->>>> application get the wrong information.
->>>>
->>>> Signed-off-by: Wenlin Kang <wenlin.kang@windriver.com>
->>>> ---
->>>>  drivers/mtd/mtd_blkdevs.c |    2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
->>>> index 2b0c5287..f8bb16e 100644
->>>> --- a/drivers/mtd/mtd_blkdevs.c
->>>> +++ b/drivers/mtd/mtd_blkdevs.c
->>>> @@ -273,7 +273,7 @@ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
->>>>       if (!dev->mtd)
->>>>               goto unlock;
->>>>
->>>> -     ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : 0;
->>>> +     ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : -ENXIO;
->>>
->>> Good catch. I don't think ENXIO is correct in this case, though. Maybe
->>> -EOPNOTSUPP or -ENOSYS? The latter might make more sense I guess.
->>
->> I'd vote for -ENOTTY as this is what HDIO_GETGEIO returns
->> if the function is not implemented and blktrans_getgeo()
->> is only a wrapper around that.
-> 
-> I suppose that makes more sense.
-> 
->> See https://www.kernel.org/doc/Documentation/ioctl/hdio.txt
-> 
-> But this only mentions EINVAL...
 
-Because ENOTTY is covered by ioctl().
-If you request a non-existing function this error code will
-be returned.
+--oJFDFiWc3BlD0xT/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-//richard
+On Thu, May 21, 2015 at 10:39:13AM +0200, Michal Suchanek wrote:
+> On 21 May 2015 at 01:38, Brian Norris <computersforpeace@gmail.com> wrote:
+
+Why is this thread about SPI error handling CCed to quite so many
+people?
+
+> >> Check the amount of data actually written by the driver.
+
+> > I'm not sure if we should just reactively use the retlen, or if we
+> > should be communicating such a limitation via the SPI API. Thoughts?
+
+> Is there any driver that would break if the SPI master truncated
+> writes when the message is too long rather than returning an error an
+> refusing the transfer?
+
+Any such driver is buggy, the actual length transferred has always been
+a part of the SPI API.  We should probably expose limitations so clients
+can query in advance (we don't at the minute) but it'd be a while before
+clients could rely on that information being useful and it's still
+possible things can be truncated by error.
+
+With modern drivers using transfer_one() where we have control of the
+chip select we do also have the ability to add support to the core for
+chopping large transfers up into smaller ones that the hardware can
+handle transparently.  That won't for everything though since it depends
+on us being able to manually control the chip select which not all
+hardware can do.
+
+--oJFDFiWc3BlD0xT/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVXbMxAAoJECTWi3JdVIfQckgH/3UcOz8dIAPvrx7v+/sValdq
+GzoPHmzNZdEr1GfUxMUXcQwlzMSfw1SkuCqMfWn0N8Y/iaZ2RKqiDLRHGiZlqRVi
+P/W6wQuBj3eJ/OC8ykC3fLlqrh0F/L4WaJDFtqYMv4wNlrf2gwhJnGbNi9CkDrWY
+t07hORcvdoRWUtizOminZpx3cm4wIS1jbMiD7RD5YhMwS0ZAnci9PYaPf8/uJzvb
+LPkB/CU8KiBvAPmrRNdWg+U7lDepMsaPZg+KhdXd5Qgzx++TdviJWG4fC0HFG50O
+9z2RgJ9Q9JuEYLrPcwLpyWguwukzZ2W5NfXMX16C55oMBnNRlvxyrVvVoKlZL8c=
+=bbmv
+-----END PGP SIGNATURE-----
+
+--oJFDFiWc3BlD0xT/--
