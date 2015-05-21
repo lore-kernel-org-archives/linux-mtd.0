@@ -1,26 +1,27 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvUgJ-0001xi-MF
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 17:54:56 +0000
-Received: by pabru16 with SMTP id ru16so112729328pab.1
- for <linux-mtd@lists.infradead.org>; Thu, 21 May 2015 10:54:34 -0700 (PDT)
-Date: Thu, 21 May 2015 10:54:31 -0700
+ id 1YvUpT-0007hL-Tn
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2015 18:04:24 +0000
+Received: by pdea3 with SMTP id a3so115994433pde.2
+ for <linux-mtd@lists.infradead.org>; Thu, 21 May 2015 11:04:02 -0700 (PDT)
+Date: Thu, 21 May 2015 11:03:58 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: [PATCH] mtd: blktrans: use better error code for unimplemented ioctl()
-Message-ID: <20150521175431.GC11598@ld-irv-0074>
-References: <1431498556-21275-1-git-send-email-wenlin.kang@windriver.com>
- <20150520193325.GK11598@ld-irv-0074>
- <CAFLxGvyy4UZWAZ9FaNCnF6-L664x3t72R_Kg_zEmD-HfkJqxrA@mail.gmail.com>
- <20150521080511.GF11112@norris-Latitude-E6410>
- <555DB0AB.2000801@nod.at>
+To: Denys Vlasenko <dvlasenk@redhat.com>
+Subject: Re: [PATCH] mtd: cfi: Deiline large functions
+Message-ID: <20150521180346.GD11598@ld-irv-0074>
+References: <1431946720-32281-1-git-send-email-dvlasenk@redhat.com>
+ <20150520185641.GI11598@ld-irv-0074> <555D8E4E.9030109@redhat.com>
+ <20150521083612.GH11112@norris-Latitude-E6410>
+ <555DAFB6.7080208@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <555DB0AB.2000801@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, Wenlin Kang <wenlin.kang@windriver.com>
+In-Reply-To: <555DAFB6.7080208@redhat.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Aaron Sierra <asierra@xes-inc.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,35 +31,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In commit 50183936254b ("mtd: blktrans: change blktrans_getgeo return
-value") we fixed the problem that ioctl(HDIO_GETGEO) might return 0
-(success) for mtdblock devices which did not implement the feature and
-would leave a blank (zero) result.
+On Thu, May 21, 2015 at 12:13:10PM +0200, Denys Vlasenko wrote:
+> On 05/21/2015 10:36 AM, Brian Norris wrote:
+> > On Thu, May 21, 2015 at 09:50:38AM +0200, Denys Vlasenko wrote:
+> >>>> cfi_udelay(): 74 bytes, 26 callsites
+> >>>
+> >>> ^^ This is pretty dead-simple. If it's generating bad code, we might
+> >>> look at fixing it up instead. Almost all of its call sites are with
+> >>> constant input, so it *should* just become:
+> >>>
+> >>> 	udelay(1);
+> >>> 	cond_resched();
+> >>>
+> >>> in most cases. For the non-constant cases, we might still do an
+> >>> out-of-line implementation. Or maybe we just say it's all not worth it,
+> >>> and we just stick with what you have. But I'd like to consider
+> >>> alternatives to out-lining this one.
+> >>
+> >> You want to consider not-deinlining (IOW: speed-optimizing)
+> > 
+> > Inlining isn't always about speed.
+> > 
+> >> a *fixed time delay function*?
+> >>
+> >> Think about what delay functions do...
+> > 
+> > I wasn't really looking at speed. Just memory usage.
+> 
+> I don't follow.
+> 
+> A single, not-inlined cfi_udelay(1) call is
+> a minimal possible code size. Even
+> 
+> udelay(1);
+> cond_resched();
+> 
+> ought to be bigger.
 
-But now, let's get the error code right. Other code paths on this ioctl
-tend to use -ENOTTY to notify the user that the ioctl() is not supported
-for the device, so let's use that instead of -EOPNOTSUPP.
+That's not really true. If all cases could be inlined to a single
+udelay/msleep call, then that would be the minimal code size; you'd save
+the non-inlined copy that would just call to msleep/udelay, as well as
+save the need for additional EXPORT_SYBMOL_*(). But in most realistic
+cases (including this case), your patch is in fact optimal. My follow up
+comment (trimmed from below) was intended to concede that I was a little
+off-base in my request.
 
-Suggested-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
-Against l2-mtd.git (linux-next)
+Thanks for putting up, even though some of your comments are tackling a
+straw man (I never mentioned performance).
 
- drivers/mtd/mtd_blkdevs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index c545c9325acf..41acc507b22e 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -278,7 +278,7 @@ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
- 	if (!dev->mtd)
- 		goto unlock;
- 
--	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : -EOPNOTSUPP;
-+	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : -ENOTTY;
- unlock:
- 	mutex_unlock(&dev->lock);
- 	blktrans_dev_put(dev);
--- 
-1.9.1
+Thanks,
+Brian
