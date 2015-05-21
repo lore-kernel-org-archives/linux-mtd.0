@@ -1,23 +1,15 @@
-Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvJjQ-0004Ix-5Y
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 06:13:24 +0000
-Received: by pdbnk13 with SMTP id nk13so96637884pdb.1
- for <linux-mtd@lists.infradead.org>; Wed, 20 May 2015 23:13:01 -0700 (PDT)
-Message-ID: <1432188772.2911.15.camel@cyril>
-Subject: Re: [PATCH] drivers/mtd: add powernv flash MTD abstraction driver
-From: Cyril Bur <cyrilbur@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Thu, 21 May 2015 16:12:52 +1000
-In-Reply-To: <20150520211716.GM11598@ld-irv-0074>
-References: <1430721739-17517-1-git-send-email-cyrilbur@gmail.com>
- <1430721739-17517-2-git-send-email-cyrilbur@gmail.com>
- <20150520211716.GM11598@ld-irv-0074>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Joel Stanley <joel@jms.id.au>, linuxppc-dev@lists.ozlabs.org,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org, jk@ozlabs.org
+Message-ID: <555D8002.4050006@windriver.com>
+Date: Thu, 21 May 2015 14:49:38 +0800
+From: Wenlin Kang <wenlin.kang@windriver.com>
+MIME-Version: 1.0
+To: nick <xerofoify@gmail.com>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: blktrans: change blktrans_getgeo rerurn value
+References: <1431498556-21275-1-git-send-email-wenlin.kang@windriver.com>
+ <20150520193325.GK11598@ld-irv-0074> <555CE4BF.8020506@gmail.com>
+In-Reply-To: <555CE4BF.8020506@gmail.com>
+Content-Type: multipart/mixed; boundary="------------030906060205020803000208"
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,124 +19,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--------------030906060205020803000208
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2015-05-20 at 14:17 -0700, Brian Norris wrote:
-> You might run this through checkpatch, as it caught several small
-> things.
-> 
-Hi Brian,
+On 2015年05月21日 03:47, nick wrote:
+>
+> On 2015-05-20 03:33 PM, Brian Norris wrote:
+>> Hi Wenlin,
+>>
+>> In the subject:
+>>
+>> s/rerurn/return/
 
-Oops, sorry absolutely should have done checkpatch!
+    Thanks for pointing out this, I will modify it.
 
-Thanks for the review, everything you've said is great, I've addressed
-all that - I'll post a v2.
+>>
+>> On Wed, May 13, 2015 at 02:29:16PM +0800, Wenlin Kang wrote:
+>>> Modify function blktrans_getgeo()'s return value to -ENXIO when
+>>> dev->tr->getgeo == NULL.
+>>>
+>>> We shouldn't make the return value to 0 when dev->tr->getgeo == NULL,
+>>> because the function blktrans_getgeo() has an output value "hd_geometry"
+>>> which is usually used by some application, if return 0, it will make some
+>>> application get the wrong information.
+>>>
+>>> Signed-off-by: Wenlin Kang <wenlin.kang@windriver.com>
+>>> ---
+>>>   drivers/mtd/mtd_blkdevs.c |    2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+>>> index 2b0c5287..f8bb16e 100644
+>>> --- a/drivers/mtd/mtd_blkdevs.c
+>>> +++ b/drivers/mtd/mtd_blkdevs.c
+>>> @@ -273,7 +273,7 @@ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+>>>   	if (!dev->mtd)
+>>>   		goto unlock;
+>>>   
+>>> -	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : 0;
+>>> +	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : -ENXIO;
+>> Good catch. I don't think ENXIO is correct in this case, though. Maybe
+>> -EOPNOTSUPP or -ENOSYS? The latter might make more sense I guess.
+>>
+> I would recommend -EOPNOTSUPP as this as nothing to do with unimplemented
+> functions or hardware support. This is just unsupported due to the value
+> being NULL and therefore the hardware support is not there.
+> Just My Option,
+> Nick
 
-One question though,
+As you said, -EOPNOTSUPP might be better,thanks.
 
-> On Mon, May 04, 2015 at 04:42:19PM +1000, Cyril Bur wrote:
-> > Powerpc powernv platforms allow access to certain system flash devices
-> > through a firmwarwe interface. This change adds an mtd driver for these
-> > flash devices.
-> > 
-> > Minor updates from Jeremy Kerr and Joel Stanley.
-> > 
-> > Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-> > Signed-off-by: Joel Stanley <joel@jms.id.au>
-> > Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
-> 
-> While I have Jeremy's attention, let me plug a friendly reminder for
-> this unrelated comment:
-> 
-> http://patchwork.ozlabs.org/patch/413355/
-> 
-> Jeremy, you still haven't updated patchwork.git for your last round of
-> supposed "merges".
-> 
-> > ---
-> >  drivers/mtd/devices/Kconfig         |   6 +
-> >  drivers/mtd/devices/Makefile        |   1 +
-> >  drivers/mtd/devices/powernv_flash.c | 288 ++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 295 insertions(+)
-> >  create mode 100644 drivers/mtd/devices/powernv_flash.c
-> > 
 
-[snip]
+Hi Brian
 
-> > +
-> > +/**
-> > + * powernv_flash_set_driver_info - Fill the mtd_info structure and docg3
-> > + * structure @pdev: The platform device
-> > + * @mtd: The structure to fill
-> > + */
-> > +static int __init powernv_flash_set_driver_info(struct device *dev,
-> > +		struct mtd_info *mtd)
-> > +{
-> > +	const __be32 *reg, *erase_size;
-> > +	int count;
-> > +
-> > +	erase_size = of_get_property(dev->of_node,
-> > +			"ibm,flash-block-size", NULL);
-> > +	if (!erase_size) {
-> > +		dev_err(dev, "no device property 'ibm,flash-block-size'\n");
-> > +		return 1;
-> > +	}
-> > +
-> > +	reg = of_get_property(dev->of_node, "reg", &count);
-> > +	if (count / sizeof(__be32) != 2) {
-> > +		dev_err(dev, "couldn't get resource information count=%d\n",
-> > +				count);
-> > +		return 1;
-> > +	}
-> > +
-> > +	/* Going to have to check what details I need to set and how to
-> > +	 * get them */
-> > +	mtd->name = of_get_property(dev->of_node, "name", NULL);
-> > +	mtd->type = MTD_NANDFLASH;
-> > +	mtd->flags = MTD_CAP_NANDFLASH;
-> 
-> Is this really NAND flash? It doesn't look like it; I see no bad block
-> implementation, and writesize==1.
-> 
+I have remade the patch and attached it, would you please check it 
+again? thanks.
 
-Correct, but the type here is a bit misleading, we have a firmware
-interface for the low level read/write/erase functions, all this driver
-does is pass the calls through to firmware, there isn't much that linux
-or userspace can do since it doesn't actually do the hardware accesses. 
 
-I've checked with Jeremy, turns out the hardware is actually NOR, no
-idea how I ever thought it was NAND.
+>>>   unlock:
+>>>   	mutex_unlock(&dev->lock);
+>>>   	blktrans_dev_put(dev);
+>> Thanks,
+>> Brian
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>
 
-Perhaps just:
-	mtd->type = MTD_RAM;
-	mtd->flags = MTD_WRITEABLE;
 
-I would have used MTD_NOR but Jeremy confirms that the backing flash may
-not always be NOR on other platforms.
+-- 
+Thanks,
+Wenlin Kang
 
-I would appreciate your thoughts here.
 
-> > +	mtd->size = of_read_number(reg, 2);
-> 
-> of_property_read_u64()?
-> 
-> > +	mtd->erasesize = of_read_number(erase_size, 1);
-> 
-> Looking for of_property_read_u32()?
-> 
-> > +	mtd->writebufsize = mtd->writesize = 1;
-> > +	mtd->owner = THIS_MODULE;
-> > +	mtd->_erase = powernv_flash_erase;
-> > +	mtd->_read = powernv_flash_read;
-> > +	mtd->_write = powernv_flash_write;
-> > +	mtd->dev.parent = dev;
-> > +	return 0;
-> > +}
-> > +
+--------------030906060205020803000208
+Content-Type: text/x-diff;
+	name="0001-mtd-blktrans-change-blktrans_getgeo-return-value.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0001-mtd-blktrans-change-blktrans_getgeo-return-value.patch"
 
-[snip]
+>From d8fa6589438a6992ed13b91c0124ed6cd8114eff Mon Sep 17 00:00:00 2001
+From: Wenlin Kang <wenlin.kang@windriver.com>
+Date: Thu, 21 May 2015 14:11:58 +0800
+Subject: [PATCH] mtd: blktrans: change blktrans_getgeo return value
 
-Thanks very much for the review,
+Modify function blktrans_getgeo()'s return value to -EOPNOTSUPP when
+dev->tr->getgeo == NULL.
 
-Cyril
-> 
-> Brian
+We shouldn't make the return value to 0 when dev->tr->getgeo == NULL,
+because the function blktrans_getgeo() has an output value "hd_geometry"
+which is usually used by some application, if return 0, it will make some
+application get the wrong information.
+
+Signed-off-by: Wenlin Kang <wenlin.kang@windriver.com>
+---
+ drivers/mtd/mtd_blkdevs.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 2b0c5287..2012216 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -273,7 +273,7 @@ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+ 	if (!dev->mtd)
+ 		goto unlock;
+ 
+-	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : 0;
++	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : -EOPNOTSUPP;
+ unlock:
+ 	mutex_unlock(&dev->lock);
+ 	blktrans_dev_put(dev);
+-- 
+1.7.9.5
+
+
+--------------030906060205020803000208--
