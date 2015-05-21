@@ -1,22 +1,21 @@
-Date: Wed, 20 May 2015 21:40:54 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH v3 4/4] mtd: mxc_nand: generate nand_ecclayout for 8 bit
- ECC
-Message-ID: <20150521044054.GC23718@brian-ubuntu>
-References: <cover.1431504091.git.baruch@tkos.co.il>
- <95e2a17d74da5a0415ab93e060f6efc681216313.1431504091.git.baruch@tkos.co.il>
- <20150520224120.GS11598@ld-irv-0074>
- <20150521041128.GI2586@tarshish>
+Received: from ozlabs.org ([2401:3900:2:1::2])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YvIjk-0004x5-6A
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2015 05:09:41 +0000
+Message-ID: <555D6877.1000709@ozlabs.org>
+Date: Thu, 21 May 2015 13:09:11 +0800
+From: Jeremy Kerr <jk@ozlabs.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150521041128.GI2586@tarshish>
-Cc: Fabio Estevam <Fabio.Estevam@freescale.com>, linux-mtd@lists.infradead.org,
- Sascha Hauer <kernel@pengutronix.de>,
- Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Shawn Guo <shawn.guo@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+To: Brian Norris <computersforpeace@gmail.com>, Cyril Bur <cyrilbur@gmail.com>
+Subject: Re: [PATCH] drivers/mtd: add powernv flash MTD abstraction driver
+References: <1430721739-17517-1-git-send-email-cyrilbur@gmail.com>
+ <1430721739-17517-2-git-send-email-cyrilbur@gmail.com>
+ <20150520211716.GM11598@ld-irv-0074>
+In-Reply-To: <20150520211716.GM11598@ld-irv-0074>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, Joel Stanley <joel@jms.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 21, 2015 at 07:11:28AM +0300, Baruch Siach wrote:
-> On Wed, May 20, 2015 at 03:41:20PM -0700, Brian Norris wrote:
-> > On Wed, May 13, 2015 at 11:17:39AM +0300, Baruch Siach wrote:
-> > > +		if (get_eccsize(mtd) == 8)
-> > > +			ecc_8bit_layout_4k(this->ecc.layout);
-> > 
-> > So you're overwriting an existing layout (e.g., nandv2_hw_eccoob_4k).
-> > What if you have more than one NAND chip? You might do better by
-> > dynamically allocating the memory.
+Hi Brian,
+
+> While I have Jeremy's attention, let me plug a friendly reminder for
+> this unrelated comment:
 > 
-> It would take a quite a bit more code changes then that to have the mxc_nand 
-> driver support more than one NAND chip, not to mention the DT binding. As Uwe 
+> http://patchwork.ozlabs.org/patch/413355/
+> 
+> Jeremy, you still haven't updated patchwork.git for your last round of
+> supposed "merges".
 
-Right. I guess there's also the case that you have more than one
-instance of this controller / driver. But I assume that's pretty
-unlikely?
+Ah, thanks for the reminder - I've just done the push.
 
-> has indicated on a previous version of this series, ecclayout handling in this 
-> driver could use some cleanup. This patch just fixes bug, trying to break 
-> anything else while doing so.
+Cheers,
 
-Yeah, OK. Then I'll apply this patch anyway, and the rest could be
-worked out later if this driver ever supports more cases.
 
-> Thanks for reviewing, and for applying the rest of this series.
-
-Applied, thanks.
-
-Brian
+Jeremy
