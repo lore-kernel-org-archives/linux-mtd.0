@@ -1,14 +1,16 @@
-Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvDza-00075W-Bx
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 00:05:43 +0000
-Received: by pdea3 with SMTP id a3so86949258pde.2
- for <linux-mtd@lists.infradead.org>; Wed, 20 May 2015 17:05:21 -0700 (PDT)
+ id 1YvDzb-00075h-MA
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2015 00:05:44 +0000
+Received: by pdea3 with SMTP id a3so86949888pde.2
+ for <linux-mtd@lists.infradead.org>; Wed, 20 May 2015 17:05:22 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/3] mtd: brcmnand: refactor bcm63138 SoC layering
-Date: Wed, 20 May 2015 17:05:04 -0700
-Message-Id: <1432166706-4320-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/3] mtd: brcmnand: refactor iProc SoC layering
+Date: Wed, 20 May 2015 17:05:05 -0700
+Message-Id: <1432166706-4320-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1432166706-4320-1-git-send-email-computersforpeace@gmail.com>
+References: <1432166706-4320-1-git-send-email-computersforpeace@gmail.com>
 Cc: Scott Branden <sbranden@broadcom.com>, Ray Jui <rjui@broadcom.com>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
  bcm-kernel-feedback-list@broadcom.com, Hauke Mehrtens <hauke@hauke-m.de>,
@@ -27,49 +29,60 @@ chasing.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/brcmnand/bcm63138_nand.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/brcmnand/iproc_nand.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/brcmnand/bcm63138_nand.c b/drivers/mtd/nand/brcmnand/bcm63138_nand.c
-index 3f4c44c24e14..59444b3a697d 100644
---- a/drivers/mtd/nand/brcmnand/bcm63138_nand.c
-+++ b/drivers/mtd/nand/brcmnand/bcm63138_nand.c
-@@ -22,7 +22,8 @@
+diff --git a/drivers/mtd/nand/brcmnand/iproc_nand.c b/drivers/mtd/nand/brcmnand/iproc_nand.c
+index 683495c74620..585596c549b2 100644
+--- a/drivers/mtd/nand/brcmnand/iproc_nand.c
++++ b/drivers/mtd/nand/brcmnand/iproc_nand.c
+@@ -22,7 +22,9 @@
  
  #include "brcmnand.h"
  
--struct bcm63138_nand_soc_priv {
-+struct bcm63138_nand_soc {
+-struct iproc_nand_soc_priv {
++struct iproc_nand_soc {
 +	struct brcmnand_soc soc;
- 	void __iomem *base;
- };
++
+ 	void __iomem *idm_base;
+ 	void __iomem *ext_base;
+ 	spinlock_t idm_lock;
+@@ -37,7 +39,8 @@ struct iproc_nand_soc_priv {
  
-@@ -35,7 +36,8 @@ enum {
- 
- static bool bcm63138_nand_intc_ack(struct brcmnand_soc *soc)
+ static bool iproc_nand_intc_ack(struct brcmnand_soc *soc)
  {
--	struct bcm63138_nand_soc_priv *priv = soc->priv;
-+	struct bcm63138_nand_soc *priv =
-+			container_of(soc, struct bcm63138_nand_soc, soc);
- 	void __iomem *mmio = priv->base + BCM63138_NAND_INT_STATUS;
+-	struct iproc_nand_soc_priv *priv = soc->priv;
++	struct iproc_nand_soc *priv =
++			container_of(soc, struct iproc_nand_soc, soc);
+ 	void __iomem *mmio = priv->ext_base + IPROC_NAND_CTLR_READY_OFFSET;
  	u32 val = brcmnand_readl(mmio);
  
-@@ -49,7 +51,8 @@ static bool bcm63138_nand_intc_ack(struct brcmnand_soc *soc)
+@@ -51,7 +54,8 @@ static bool iproc_nand_intc_ack(struct brcmnand_soc *soc)
  
- static void bcm63138_nand_intc_set(struct brcmnand_soc *soc, bool en)
+ static void iproc_nand_intc_set(struct brcmnand_soc *soc, bool en)
  {
--	struct bcm63138_nand_soc_priv *priv = soc->priv;
-+	struct bcm63138_nand_soc *priv =
-+			container_of(soc, struct bcm63138_nand_soc, soc);
- 	void __iomem *mmio = priv->base + BCM63138_NAND_INT_EN;
- 	u32 val = brcmnand_readl(mmio);
+-	struct iproc_nand_soc_priv *priv = soc->priv;
++	struct iproc_nand_soc *priv =
++			container_of(soc, struct iproc_nand_soc, soc);
+ 	void __iomem *mmio = priv->idm_base + IPROC_NAND_IO_CTRL_OFFSET;
+ 	u32 val;
+ 	unsigned long flags;
+@@ -72,7 +76,8 @@ static void iproc_nand_intc_set(struct brcmnand_soc *soc, bool en)
  
-@@ -64,25 +67,20 @@ static void bcm63138_nand_intc_set(struct brcmnand_soc *soc, bool en)
- static int bcm63138_nand_probe(struct platform_device *pdev)
+ static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
+ {
+-	struct iproc_nand_soc_priv *priv = soc->priv;
++	struct iproc_nand_soc *priv =
++			container_of(soc, struct iproc_nand_soc, soc);
+ 	void __iomem *mmio = priv->idm_base + IPROC_NAND_IO_CTRL_OFFSET;
+ 	u32 val;
+ 	unsigned long flags;
+@@ -94,17 +99,14 @@ static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
+ static int iproc_nand_probe(struct platform_device *pdev)
  {
  	struct device *dev = &pdev->dev;
--	struct bcm63138_nand_soc_priv *priv;
-+	struct bcm63138_nand_soc *priv;
+-	struct iproc_nand_soc_priv *priv;
++	struct iproc_nand_soc *priv;
  	struct brcmnand_soc *soc;
  	struct resource *res;
  
@@ -82,15 +95,16 @@ index 3f4c44c24e14..59444b3a697d 100644
  		return -ENOMEM;
 +	soc = &priv->soc;
  
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand-int-base");
- 	priv->base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
+ 	spin_lock_init(&priv->idm_lock);
+ 
+@@ -118,8 +120,6 @@ static int iproc_nand_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->ext_base))
+ 		return PTR_ERR(priv->ext_base);
  
 -	soc->pdev = pdev;
 -	soc->priv = priv;
- 	soc->ctlrdy_ack = bcm63138_nand_intc_ack;
- 	soc->ctlrdy_set_enabled = bcm63138_nand_intc_set;
- 
+ 	soc->ctlrdy_ack = iproc_nand_intc_ack;
+ 	soc->ctlrdy_set_enabled = iproc_nand_intc_set;
+ 	soc->prepare_data_bus = iproc_nand_apb_access;
 -- 
 1.9.1
