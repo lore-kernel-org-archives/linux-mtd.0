@@ -1,36 +1,18 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvNiz-00027Q-LG
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 10:29:14 +0000
-Date: Thu, 21 May 2015 11:28:02 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Michal Suchanek <hramrach@gmail.com>
-Message-ID: <20150521102802.GS21577@sirena.org.uk>
-References: <cover.1430403750.git.hramrach@gmail.com>
- <50c40ef17ab6566f35ef5a4426bf23567f896db7.1430403750.git.hramrach@gmail.com>
- <20150520233835.GX11598@ld-irv-0074>
- <CAOMqctTYqDWL51twOuGi+oXONXQ4B2-2BkdJNSpzZAXshZUN6g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="oJFDFiWc3BlD0xT/"
-Content-Disposition: inline
-In-Reply-To: <CAOMqctTYqDWL51twOuGi+oXONXQ4B2-2BkdJNSpzZAXshZUN6g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] MTD: spi-nor: check for short writes in spi_nor_write.
-Cc: Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marex@denx.de>,
- "grmoore@altera.com" <grmoore@altera.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Ben Hutchings <ben@decadent.org.uk>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- linux-sunxi <linux-sunxi@googlegroups.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Alison Chaiken <alison_chaiken@mentor.com>,
- devicetree <devicetree@vger.kernel.org>,
- Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+ id 1YvOwF-0003S8-5s
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2015 11:47:00 +0000
+Received: by wicmc15 with SMTP id mc15so10272678wic.1
+ for <linux-mtd@lists.infradead.org>; Thu, 21 May 2015 04:46:36 -0700 (PDT)
+From: Tomas Hlavacek <tmshlvck@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH v2] mtd: fsl_elbc_nand Add ECC mode selection in DT
+Date: Thu, 21 May 2015 13:46:31 +0200
+Message-Id: <1432208791-20734-1-git-send-email-tmshlvck@gmail.com>
+In-Reply-To: <20150507231530.GT32500@ld-irv-0074>
+References: <20150507231530.GT32500@ld-irv-0074>
+Cc: scottwood@freescale.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,53 +22,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add device tree pointer to chip structure in order to allow turn off the
+HW ECC and force own ECC mode and ECC parameters. Newly supported entries
+are as per documentation: nand-ecc-mode, nand-ecc-step-size
+and nand-ecc-strength.
 
---oJFDFiWc3BlD0xT/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Add RNDOUT operation which is required for SOFT and SOFT_BCH modes.
 
-On Thu, May 21, 2015 at 10:39:13AM +0200, Michal Suchanek wrote:
-> On 21 May 2015 at 01:38, Brian Norris <computersforpeace@gmail.com> wrote:
+Do not set write_subpage function pointer from the driver when it
+initializes in SOFT and SOFT_BCH modes.
 
-Why is this thread about SPI error handling CCed to quite so many
-people?
+Signed-off-by: Tomas Hlavacek <tmshlvck@gmail.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-> >> Check the amount of data actually written by the driver.
-
-> > I'm not sure if we should just reactively use the retlen, or if we
-> > should be communicating such a limitation via the SPI API. Thoughts?
-
-> Is there any driver that would break if the SPI master truncated
-> writes when the message is too long rather than returning an error an
-> refusing the transfer?
-
-Any such driver is buggy, the actual length transferred has always been
-a part of the SPI API.  We should probably expose limitations so clients
-can query in advance (we don't at the minute) but it'd be a while before
-clients could rely on that information being useful and it's still
-possible things can be truncated by error.
-
-With modern drivers using transfer_one() where we have control of the
-chip select we do also have the ability to add support to the core for
-chopping large transfers up into smaller ones that the hardware can
-handle transparently.  That won't for everything though since it depends
-on us being able to manually control the chip select which not all
-hardware can do.
-
---oJFDFiWc3BlD0xT/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVXbMxAAoJECTWi3JdVIfQckgH/3UcOz8dIAPvrx7v+/sValdq
-GzoPHmzNZdEr1GfUxMUXcQwlzMSfw1SkuCqMfWn0N8Y/iaZ2RKqiDLRHGiZlqRVi
-P/W6wQuBj3eJ/OC8ykC3fLlqrh0F/L4WaJDFtqYMv4wNlrf2gwhJnGbNi9CkDrWY
-t07hORcvdoRWUtizOminZpx3cm4wIS1jbMiD7RD5YhMwS0ZAnci9PYaPf8/uJzvb
-LPkB/CU8KiBvAPmrRNdWg+U7lDepMsaPZg+KhdXd5Qgzx++TdviJWG4fC0HFG50O
-9z2RgJ9Q9JuEYLrPcwLpyWguwukzZ2W5NfXMX16C55oMBnNRlvxyrVvVoKlZL8c=
-=bbmv
------END PGP SIGNATURE-----
-
---oJFDFiWc3BlD0xT/--
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 04b22fd..b6cdda6 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -335,6 +335,14 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 		fsl_elbc_run_command(mtd);
+ 		return;
+ 
++	case NAND_CMD_RNDOUT:
++		dev_vdbg(priv->dev,
++			"fsl_elbc_cmdfunc: NAND_CMD_RNDOUT, column: 0x%x.\n",
++			column);
++
++		elbc_fcm_ctrl->index = column;
++		return;
++
+ 	/* READOOB reads only the OOB because no ECC is performed. */
+ 	case NAND_CMD_READOOB:
+ 		dev_vdbg(priv->dev,
+@@ -656,6 +664,10 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 	        chip->ecc.steps);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.bytes = %d\n",
+ 	        chip->ecc.bytes);
++	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.size = %d\n",
++		chip->ecc.size);
++	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.strength = %d\n",
++		chip->ecc.strength);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.total = %d\n",
+ 	        chip->ecc.total);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.layout = %p\n",
+@@ -677,8 +689,8 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 		priv->page_size = 1;
+ 		setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
+ 		/* adjust ecc setup if needed */
+-		if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
+-		    BR_DECC_CHK_GEN) {
++		if (((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
++		    BR_DECC_CHK_GEN) && (chip->ecc.mode == NAND_ECC_HW)) {
+ 			chip->ecc.size = 512;
+ 			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
+ 			                   &fsl_elbc_oob_lp_eccm1 :
+@@ -742,6 +754,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
+ 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
+ 	struct nand_chip *chip = &priv->chip;
++	struct device_node *node = priv->dev->of_node;
+ 
+ 	dev_dbg(priv->dev, "eLBC Set Information for bank %d\n", priv->bank);
+ 
+@@ -749,6 +762,9 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 	priv->mtd.priv = chip;
+ 	priv->mtd.owner = THIS_MODULE;
+ 
++	/* Fill in OF node */
++	chip->dn = node;
++
+ 	/* set timeout to maximum */
+ 	priv->fmr = 15 << FMR_CWTO_SHIFT;
+ 	if (in_be32(&lbc->bank[priv->bank].or) & OR_FCM_PGS)
+@@ -774,7 +790,6 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 
+ 	chip->ecc.read_page = fsl_elbc_read_page;
+ 	chip->ecc.write_page = fsl_elbc_write_page;
+-	chip->ecc.write_subpage = fsl_elbc_write_subpage;
+ 
+ 	/* If CS Base Register selects full hardware ECC then use it */
+ 	if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
+@@ -786,6 +801,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 		chip->ecc.size = 512;
+ 		chip->ecc.bytes = 3;
+ 		chip->ecc.strength = 1;
++		chip->ecc.write_subpage = fsl_elbc_write_subpage;
+ 	} else {
+ 		/* otherwise fall back to default software ECC */
+ 		chip->ecc.mode = NAND_ECC_SOFT;
+-- 
+2.1.4
