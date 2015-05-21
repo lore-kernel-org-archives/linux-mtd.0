@@ -1,24 +1,23 @@
-Received: from mail-ig0-x22b.google.com ([2607:f8b0:4001:c05::22b])
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvL3S-0007cb-GF
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 07:38:11 +0000
-Received: by igbpi8 with SMTP id pi8so3201656igb.1
- for <linux-mtd@lists.infradead.org>; Thu, 21 May 2015 00:37:49 -0700 (PDT)
-Date: Thu, 21 May 2015 00:37:41 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Wenlin Kang <wenlin.kang@windriver.com>
-Subject: Re: [PATCH] mtd: blktrans: change blktrans_getgeo rerurn value
-Message-ID: <20150521073741.GE11112@norris-Latitude-E6410>
-References: <1431498556-21275-1-git-send-email-wenlin.kang@windriver.com>
- <20150520193325.GK11598@ld-irv-0074> <555CE4BF.8020506@gmail.com>
- <555D8002.4050006@windriver.com>
+ id 1YvLFy-0006T1-Pp
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2015 07:51:07 +0000
+Message-ID: <555D8E4E.9030109@redhat.com>
+Date: Thu, 21 May 2015 09:50:38 +0200
+From: Denys Vlasenko <dvlasenk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <555D8002.4050006@windriver.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: cfi: Deiline large functions
+References: <1431946720-32281-1-git-send-email-dvlasenk@redhat.com>
+ <20150520185641.GI11598@ld-irv-0074>
+In-Reply-To: <20150520185641.GI11598@ld-irv-0074>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Aaron Sierra <asierra@xes-inc.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 21, 2015 at 02:49:38PM +0800, Wenlin Kang wrote:
-> On 2015年05月21日 03:47, nick wrote:
-> >On 2015-05-20 03:33 PM, Brian Norris wrote:
-> >>On Wed, May 13, 2015 at 02:29:16PM +0800, Wenlin Kang wrote:
-> >>>Modify function blktrans_getgeo()'s return value to -ENXIO when
-> >>>dev->tr->getgeo == NULL.
-> >>>
-> >>>We shouldn't make the return value to 0 when dev->tr->getgeo == NULL,
-> >>>because the function blktrans_getgeo() has an output value "hd_geometry"
-> >>>which is usually used by some application, if return 0, it will make some
-> >>>application get the wrong information.
-> >>>
-> >>>Signed-off-by: Wenlin Kang <wenlin.kang@windriver.com>
-> >>>---
-> >>>  drivers/mtd/mtd_blkdevs.c |    2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>>diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> >>>index 2b0c5287..f8bb16e 100644
-> >>>--- a/drivers/mtd/mtd_blkdevs.c
-> >>>+++ b/drivers/mtd/mtd_blkdevs.c
-> >>>@@ -273,7 +273,7 @@ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
-> >>>  	if (!dev->mtd)
-> >>>  		goto unlock;
-> >>>-	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : 0;
-> >>>+	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : -ENXIO;
-> >>Good catch. I don't think ENXIO is correct in this case, though. Maybe
-> >>-EOPNOTSUPP or -ENOSYS? The latter might make more sense I guess.
-> >>
-> >I would recommend -EOPNOTSUPP as this as nothing to do with unimplemented
-> >functions or hardware support. This is just unsupported due to the value
-> >being NULL and therefore the hardware support is not there.
-> >Just My Option,
-> >Nick
+On 05/20/2015 08:56 PM, Brian Norris wrote:
+> On Mon, May 18, 2015 at 12:58:40PM +0200, Denys Vlasenko wrote:
+>> With this .config: http://busybox.net/~vda/kernel_config,
+>> after uninlining these functions have sizes and callsite counts
+>> as follows:
 > 
-> As you said, -EOPNOTSUPP might be better,thanks.
+> Most of this is probably good, thanks. But I'm curious about one:
+> 
+>> cfi_udelay(): 74 bytes, 26 callsites
+> 
+> ^^ This is pretty dead-simple. If it's generating bad code, we might
+> look at fixing it up instead. Almost all of its call sites are with
+> constant input, so it *should* just become:
+> 
+> 	udelay(1);
+> 	cond_resched();
+> 
+> in most cases. For the non-constant cases, we might still do an
+> out-of-line implementation. Or maybe we just say it's all not worth it,
+> and we just stick with what you have. But I'd like to consider
+> alternatives to out-lining this one.
 
-Nick's opinion is irrelevant here:
+You want to consider not-deinlining (IOW: speed-optimizing)
+a *fixed time delay function*?
 
-https://lkml.org/lkml/2014/8/4/206
-
-> I have remade the patch and attached it, would you please check it
-> again? thanks.
-
-Please send patches inline (e.g., via git-send-email), not as
-attachments. But this is pretty trivial, and it's what I already tested.
-
-So, applied to l2-mtd.git.
-
-Brian
+Think about what delay functions do...
