@@ -1,35 +1,20 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvLdv-0006Cf-2Q
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 08:15:51 +0000
-Received: by pdbqa5 with SMTP id qa5so100079305pdb.0
- for <linux-mtd@lists.infradead.org>; Thu, 21 May 2015 01:15:29 -0700 (PDT)
-Date: Thu, 21 May 2015 01:15:26 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] Documentation: dt: mtd: replace "nor-jedec" binding with
- "jedec,spi-nor"
-Message-ID: <20150521081526.GG11112@norris-Latitude-E6410>
-References: <20150515195541.GL11598@ld-irv-0074>
- <20150518104501.GD3551@leverpostej>
- <20150518183442.GR11598@ld-irv-0074>
- <CAMuHMdUCj2AXk_0mAgRfAStrveHPi=Rp2g-b177zO_ode8NaCw@mail.gmail.com>
- <20150519013415.GV11598@ld-irv-0074>
- <CACna6rzpxoXEJbeRyxaR0wiPpWc_MmgvnqoW-dSw4fF-=EMM_g@mail.gmail.com>
- <20150520213546.GN11598@ld-irv-0074>
- <CACna6rxq5zOR=7LT2vdbioWp3nD0eBeELJ_d9pPk7VwTWhmStg@mail.gmail.com>
- <20150521072515.GC11112@norris-Latitude-E6410>
- <CACna6rz6O2XRt0OBmf9stLvM1xh4v4aKTD=MR2EbCKFPV1SOpA@mail.gmail.com>
+Message-ID: <555D95C0.10104@windriver.com>
+Date: Thu, 21 May 2015 16:22:24 +0800
+From: Wenlin Kang <wenlin.kang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+To: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
+ <richard.weinberger@gmail.com>
+Subject: Re: [PATCH] mtd: blktrans: change blktrans_getgeo rerurn value
+References: <1431498556-21275-1-git-send-email-wenlin.kang@windriver.com>
+ <20150520193325.GK11598@ld-irv-0074>
+ <CAFLxGvyy4UZWAZ9FaNCnF6-L664x3t72R_Kg_zEmD-HfkJqxrA@mail.gmail.com>
+ <20150521080511.GF11112@norris-Latitude-E6410>
+In-Reply-To: <20150521080511.GF11112@norris-Latitude-E6410>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rz6O2XRt0OBmf9stLvM1xh4v4aKTD=MR2EbCKFPV1SOpA@mail.gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Stephen Warren <swarren@wwwdotorg.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
+Cc: David Woodhouse <dwmw2@infradead.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,95 +24,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 21, 2015 at 10:01:05AM +0200, Rafał Miłecki wrote:
-> On 21 May 2015 at 09:25, Brian Norris <computersforpeace@gmail.com> wrote:
-> > (trim CC a bit, as this is no longer a DT binding question)
-> >
-> > On Thu, May 21, 2015 at 09:12:25AM +0200, Rafał Miłecki wrote:
-> >> On 20 May 2015 at 23:35, Brian Norris <computersforpeace@gmail.com> wrote:
-> >> > On Tue, May 19, 2015 at 09:27:50AM +0200, Rafał Miłecki wrote:
-> >> >> On 19 May 2015 at 03:34, Brian Norris <computersforpeace@gmail.com> wrote:
-> >> >> > So how about the following patch? It seems like we'll need to be able to
-> >> >> > ignore useless 'modalias' values in cases like this:
-> >> >> >
-> >> >> >         // modalias = "shinynewdevice"
-> >> >> >         compatible = "myvendor,shinynewdevice", "jedec,spi-nor";
-> >> >> >
-> >> >> > and also if somebody leaves off the entire shinynewdevice string:
-> >> >> >
-> >> >> >         // modalias = "spi-nor"
-> >> >> >         compatible = "jedec,spi-nor";
-> >> >> >
-> >> >> > So we rework the spi-nor library to not reject "bad" names, and just
-> >> >> > fall back to autodetection, and we add the .of_match_table to properly
-> >> >> > catch all "jedec,spi-nor".
-> >> >>
-> >> >> That's nice but what about platforms using platform data instead of
-> >> >> DT? I would like to use some kind of "spi-nor" (with some prefix
-> >> >> *maybe*) for them too.
-> >> >
-> >> > For platform devices, you might as well just use the name of the driver,
-> >> > which is 'm25p80'. Isn't that how most platform devices are matched with
-> >> > drivers?
-> >>
-> >> Yes and I think it's ugly because it keeps causing the warning about
-> >> read flash model not matching specified one (m25p80).
-> >
-> > Sure, I agree.
-> >
-> >> Are you
-> >> seriously not going to allow platform stuff *clearly* request flash
-> >> model detection (JEDEC RDID OP)? Just because they don't use DT?
-> >
-> > No, this isn't about "allowing" anything. It's just that my primary
-> > concern was to get the DT binding straightened out properly. Linus'
-> > current tree now has the proper binding, but the m25p80.c code doesn't
-> > quite bind properly. It will work if "jedec,spi-nor" is the first
-> > entry in the compatible property (and so it becomes the 'modalias', but
-> > not second, third, etc. So my patch fixes that properly.
-> >
-> > Now, the secondary concern is that you want platform devices to specify
-> > something generic, and that doesn't yield a "found X, expected Y"
-> > message. I'm perfectly fine with fixing that too, if you have a patch
-> > for it. What do you propose?
-> 
-> Maybe I wasn't clear enough. I was going to start using struct
-> flash_platform_data with
-> .type = "spi-nor",
-> but your proposed patch removes support for such name.
+On 2015年05月21日 16:05, Brian Norris wrote:
+> On Thu, May 21, 2015 at 09:56:21AM +0200, Richard Weinberger wrote:
+>> On Wed, May 20, 2015 at 9:33 PM, Brian Norris
+>> <computersforpeace@gmail.com> wrote:
+>>> On Wed, May 13, 2015 at 02:29:16PM +0800, Wenlin Kang wrote:
+>>>> Modify function blktrans_getgeo()'s return value to -ENXIO when
+>>>> dev->tr->getgeo == NULL.
+>>>>
+>>>> We shouldn't make the return value to 0 when dev->tr->getgeo == NULL,
+>>>> because the function blktrans_getgeo() has an output value "hd_geometry"
+>>>> which is usually used by some application, if return 0, it will make some
+>>>> application get the wrong information.
+>>>>
+>>>> Signed-off-by: Wenlin Kang <wenlin.kang@windriver.com>
+>>>> ---
+>>>>   drivers/mtd/mtd_blkdevs.c |    2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+>>>> index 2b0c5287..f8bb16e 100644
+>>>> --- a/drivers/mtd/mtd_blkdevs.c
+>>>> +++ b/drivers/mtd/mtd_blkdevs.c
+>>>> @@ -273,7 +273,7 @@ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+>>>>        if (!dev->mtd)
+>>>>                goto unlock;
+>>>>
+>>>> -     ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : 0;
+>>>> +     ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : -ENXIO;
+>>> Good catch. I don't think ENXIO is correct in this case, though. Maybe
+>>> -EOPNOTSUPP or -ENOSYS? The latter might make more sense I guess.
+>> I'd vote for -ENOTTY as this is what HDIO_GETGEIO returns
+>> if the function is not implemented and blktrans_getgeo()
+>> is only a wrapper around that.
+> I suppose that makes more sense.
+>
+>> See https://www.kernel.org/doc/Documentation/ioctl/hdio.txt
+> But this only mentions EINVAL...
+>
+>> and block/ioctl.c.
+> Anyway, I pushed EOPNOTSUPP, but I can fix that up if we agree.
+>
+> Brian
+>
+>
 
-Ah, OK. So that's the part I was overlooking.
+Hi  Brian
 
-> While I like matching DT *clearly* against the whole "jedec,spi-nor"
-> string (really, I'm all for it), I'm confused what I should use for
-> platform stuff now. I don't have any proposal as my initial plan was
-> exactly to use this "spi-nor".
-> I guess I don't want to re-add support for "spi-nor" (as you just
-> proposed to remove it),
+I just read block/compat_ioctl.c, in that I found the follow,
 
-I wasn't really trying to remove "spi-nor", that was mostly a side
-effect.
+  51 static int compat_hdio_getgeo(struct gendisk *disk, struct 
+block_device *bdev,
+  52             struct compat_hd_geometry __user *ugeo)
+  53 {
+  54     struct hd_geometry geo;
+  55     int ret;
+  56
+  57     if (!ugeo)
+  58         return -EINVAL;
+  59     if (!disk->fops->getgeo)
+  60         return -ENOTTY;
 
-> so I think I have to bounce the question: what
-> alternative do you propose?
+So, as Richard said, -ENOTTY should also be OK, and before last
+commit(048d87199566663e4edc4880df3703c04bcf41d9), it's  -ENOTTY, so I 
+think you can modify it,
+or let know whether I need to resent it again.
 
-I think your comments suggest that I shouldn't be removing "spi-nor"
-from m25p_ids[] nor from this block:
 
-	if (data && data->type)
-		flash_name = data->type;
-	else if (!strcmp(spi->modalias, "spi-nor"))
-		flash_name = NULL; /* auto-detect */
-	else
-		flash_name = spi->modalias;
 
-So it stays in both m25p_ids[] and .of_match_table.
 
-I suppose that can work. It then allows people to do weird stuff like:
-
-	compatible = "idontknowwhatimdoing,spi-nor";
-
-in their device tree. But other than that, there's not much downside I don't
-think.
-
-Brian
+-- 
+Thanks,
+Wenlin Kang
