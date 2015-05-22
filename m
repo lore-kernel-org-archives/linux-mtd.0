@@ -1,21 +1,21 @@
-Received: from mail-by2on0105.outbound.protection.outlook.com
- ([207.46.100.105] helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvXYp-0000Yq-Pm
- for linux-mtd@lists.infradead.org; Thu, 21 May 2015 20:59:24 +0000
-Message-ID: <1432241934.27761.230.camel@freescale.com>
-Subject: Re: [PATCH v2] mtd: fsl_elbc_nand Add ECC mode selection in DT
-From: Scott Wood <scottwood@freescale.com>
-To: Tomas Hlavacek <tmshlvck@gmail.com>
-Date: Thu, 21 May 2015 15:58:54 -0500
-In-Reply-To: <1432208791-20734-1-git-send-email-tmshlvck@gmail.com>
-References: <20150507231530.GT32500@ld-irv-0074>
- <1432208791-20734-1-git-send-email-tmshlvck@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+ id 1YvasD-0004a1-VA
+ for linux-mtd@lists.infradead.org; Fri, 22 May 2015 00:31:38 +0000
+Received: from [10.46.164.140] (i-global254.qualcomm.com [199.106.103.254])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ (Authenticated sender: reddyn@smtp.codeaurora.org)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 9007413FCA7
+ for <linux-mtd@lists.infradead.org>; Fri, 22 May 2015 00:31:15 +0000 (UTC)
+Message-ID: <555E78D2.9020307@codeaurora.org>
+Date: Thu, 21 May 2015 17:31:14 -0700
+From: Nikhilesh Reddy <reddyn@codeaurora.org>
 MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: ubi_assert(list_empty(&used)) in ubi_attach_fastmap
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2015-05-21 at 13:46 +0200, Tomas Hlavacek wrote:
-> Add device tree pointer to chip structure in order to allow turn off the
-> HW ECC and force own ECC mode and ECC parameters. Newly supported entries
-> are as per documentation: nand-ecc-mode, nand-ecc-step-size
-> and nand-ecc-strength.
+Hi
 
-If you're using these properties with eLBC, the eLBC binding needs to be
-updated to say that they're allowed for use with software ECC.
+I am running kernel 3.10.
 
-> @@ -677,8 +689,8 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
->  		priv->page_size = 1;
->  		setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
->  		/* adjust ecc setup if needed */
-> -		if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
-> -		    BR_DECC_CHK_GEN) {
-> +		if (((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
-> +		    BR_DECC_CHK_GEN) && (chip->ecc.mode == NAND_ECC_HW)) {
+I recently saw an issue where ubi_assert(list_empty(&used)) in 
+ubi_attach_fastmap always hits on a partition.
 
-There's no need to check both.  If you're selecting software ECC in the
-device tree then you must also remove ECC checking from BRn.
+Searching this issue I found
+http://git.infradead.org/linux-ubifs.git/commitdiff/a83832a7c8d023f446ec865926190951bd18a4b1?hp=36a87e44f642966442fd0d23f2ec536851e00236
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 600c4f9..9858bfb 100644 (file)
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -814,7 +814,9 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+         list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list)
+                 list_move_tail(&tmp_aeb->u.list, &ai->free);
 
-If you want to make Linux write to BRn to ensure that it's consistent
-with ecc.mode after the DT init, fine, but don't just silently proceed
-without fixing it if there's an inconsistency.
+-       ubi_assert(list_empty(&used));
++       list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list)
++               list_move_tail(&tmp_aeb->u.list, &ai->erase);
++
+         ubi_assert(list_empty(&eba_orphans));
+         ubi_assert(list_empty(&free));
 
-> @@ -786,6 +801,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
->  		chip->ecc.size = 512;
->  		chip->ecc.bytes = 3;
->  		chip->ecc.strength = 1;
-> +		chip->ecc.write_subpage = fsl_elbc_write_subpage;
->  	} else {
->  		/* otherwise fall back to default software ECC */
->  		chip->ecc.mode = NAND_ECC_SOFT;
 
-...but here you are relying on BRn to be set correctly before
-nand_dt_init(), so I'm even more confused by what the previous change is
-for.
+Can you please give me a background on this patch.
+Is this safe to apply without any of patches in the list
 
--Scott
+http://lwn.net/Articles/618410/
+
+Can this occur when trying to attach an empty partition?
+i.e. one that doesn't contain a UBI image.
+
+Please let me know.
+I would really appreciate any help that you can give me.
+
+
+-- 
+Thanks
+Nikhilesh Reddy
+
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
