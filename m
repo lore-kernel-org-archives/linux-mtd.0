@@ -1,15 +1,29 @@
-Received: from hauke-m.de ([5.39.93.123])
+Received: from mail-wi0-f182.google.com ([209.85.212.182])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ywang-0006hQ-UG
- for linux-mtd@lists.infradead.org; Sun, 24 May 2015 18:39:09 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: computersforpeace@gmail.com
-Subject: [PATCH v2] mtd: part: add generic parsing of linux,part-probe
-Date: Sun, 24 May 2015 20:38:34 +0200
-Message-Id: <1432492714-12598-1-git-send-email-hauke@hauke-m.de>
-Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, rjui@broadcom.com,
- zajec5@gmail.com, jogo@openwrt.org, linux-mtd@lists.infradead.org,
- Hauke Mehrtens <hauke@hauke-m.de>, bcm-kernel-feedback-list@broadcom.com
+ id 1YwauF-00023B-JN
+ for linux-mtd@lists.infradead.org; Sun, 24 May 2015 18:45:57 +0000
+Received: by wibt6 with SMTP id t6so31110279wib.0
+ for <linux-mtd@lists.infradead.org>; Sun, 24 May 2015 11:45:27 -0700 (PDT)
+Message-ID: <55621B83.4040909@vanguardiasur.com.ar>
+Date: Sun, 24 May 2015 15:42:11 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+MIME-Version: 1.0
+To: Antoine Tenart <antoine.tenart@free-electrons.com>
+Subject: Re: [PATCH v5 07/12] mtd: nand: add Samsung K9GBG08U0A-M to nand_ids
+ table
+References: <1431356341-31640-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1431356341-31640-8-git-send-email-antoine.tenart@free-electrons.com>
+ <555792FC.8030407@vanguardiasur.com.ar> <20150520140631.GN22054@kwain>
+ <555C9584.1030609@vanguardiasur.com.ar> <20150520142409.GP22054@kwain>
+ <20150520144341.GQ22054@kwain>
+In-Reply-To: <20150520144341.GQ22054@kwain>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
+ Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, jszhang@marvell.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, sebastian.hesselbarth@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,188 +33,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This moves the linux,part-probe device tree parsing code from
-physmap_of.c to mtdpart.c. Now all drivers can use this feature by just
-providing a reference to their device tree node in struct
-mtd_part_parser_data.
+Antoine,
 
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
----
+On 05/20/2015 11:43 AM, Antoine Tenart wrote:
+[..]
+>>
+>> I just had a look on the datasheet, and I you're right, the nand should
+>> support JDEC. However I get a "No NAND device found" error when
+>> reverting this patch.
+>>
+>> It seems nand_flash_detect_jedec() is not reading "JDEC" and is returning
+>> directly. I'm having a look at this.
+> 
+> So, I can read 'J', 'E', 'D' and 'E' but then I got 0xff's. So I tried
+> to only check of JEDE in nand_flash_detect_jedec() but the JEDEC
+> parameter page was then not valid.
+> 
 
-changes since
-v1:
- * add documentation for linux,part-probe
- * fix spacing
- * add documentation for of_get_probes()
+This uncovers two different bugs in the driver.
 
- Documentation/devicetree/bindings/mtd/nand.txt | 16 ++++++++++
- drivers/mtd/maps/physmap_of.c                  | 40 +-----------------------
- drivers/mtd/mtdpart.c                          | 43 ++++++++++++++++++++++++++
- 3 files changed, 60 insertions(+), 39 deletions(-)
+1. read_id_bytes is either '2' or '4', but JEDEC detections needs at
+least 5 bytes.
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-index b53f92e..028eb1854 100644
---- a/Documentation/devicetree/bindings/mtd/nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/nand.txt
-@@ -12,6 +12,22 @@
- - nand-ecc-step-size: integer representing the number of data bytes
- 		      that are covered by a single ECC step.
- 
-+- linux,part-probe: list of name as strings of the partition parser
-+		    which should be used to parse the partition table.
-+		    They will be tried in the specified ordering and
-+		    the next one will be used if the previous one
-+		    failed.
-+
-+		    Example: linux,part-probe = "cmdlinepart", "ofpart";
-+
-+		    This is also the default value, which will be used
-+		    if this attribute is not specified. It could be
-+		    that the flash driver in use overwrote the default
-+		    value and uses some other default.
-+
-+		    Possible values are: bcm47xxpart, afs, ar7part,
-+		    ofoldpart, ofpart, bcm63xxpart, RedBoot, cmdlinepart
-+
- The ECC strength and ECC step size properties define the correction capability
- of a controller. Together, they say a controller can correct "{strength} bit
- errors per {size} bytes".
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 774b32f..fd3750f 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -112,45 +112,9 @@ static struct mtd_info *obsolete_probe(struct platform_device *dev,
- static const char * const part_probe_types_def[] = {
- 	"cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
- 
--static const char * const *of_get_probes(struct device_node *dp)
--{
--	const char *cp;
--	int cplen;
--	unsigned int l;
--	unsigned int count;
--	const char **res;
--
--	cp = of_get_property(dp, "linux,part-probe", &cplen);
--	if (cp == NULL)
--		return part_probe_types_def;
--
--	count = 0;
--	for (l = 0; l != cplen; l++)
--		if (cp[l] == 0)
--			count++;
--
--	res = kzalloc((count + 1)*sizeof(*res), GFP_KERNEL);
--	count = 0;
--	while (cplen > 0) {
--		res[count] = cp;
--		l = strlen(cp) + 1;
--		cp += l;
--		cplen -= l;
--		count++;
--	}
--	return res;
--}
--
--static void of_free_probes(const char * const *probes)
--{
--	if (probes != part_probe_types_def)
--		kfree(probes);
--}
--
- static const struct of_device_id of_flash_match[];
- static int of_flash_probe(struct platform_device *dev)
- {
--	const char * const *part_probe_types;
- 	const struct of_device_id *match;
- 	struct device_node *dp = dev->dev.of_node;
- 	struct resource res;
-@@ -310,10 +274,8 @@ static int of_flash_probe(struct platform_device *dev)
- 		goto err_out;
- 
- 	ppdata.of_node = dp;
--	part_probe_types = of_get_probes(dp);
--	mtd_device_parse_register(info->cmtd, part_probe_types, &ppdata,
-+	mtd_device_parse_register(info->cmtd, part_probe_types_def, &ppdata,
- 			NULL, 0);
--	of_free_probes(part_probe_types);
- 
- 	kfree(mtd_list);
- 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index cafdb88..63118e2 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -29,6 +29,7 @@
- #include <linux/kmod.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/of.h>
- #include <linux/err.h>
- #include <linux/kconfig.h>
- 
-@@ -719,6 +720,40 @@ void deregister_mtd_parser(struct mtd_part_parser *p)
- EXPORT_SYMBOL_GPL(deregister_mtd_parser);
- 
- /*
-+ * Parses the linux,part-probe device tree property.
-+ * When a non null value is returned it has to be freed with kfree() by
-+ * the caller.
-+ */
-+static const char * const *of_get_probes(struct device_node *dp)
-+{
-+	const char *cp;
-+	int cplen;
-+	unsigned int l;
-+	unsigned int count;
-+	const char **res;
-+
-+	cp = of_get_property(dp, "linux,part-probe", &cplen);
-+	if (cp == NULL)
-+		return NULL;
-+
-+	count = 0;
-+	for (l = 0; l != cplen; l++)
-+		if (cp[l] == 0)
-+			count++;
-+
-+	res = kzalloc((count + 1) * sizeof(*res), GFP_KERNEL);
-+	count = 0;
-+	while (cplen > 0) {
-+		res[count] = cp;
-+		l = strlen(cp) + 1;
-+		cp += l;
-+		cplen -= l;
-+		count++;
-+	}
-+	return res;
-+}
-+
-+/*
-  * Do not forget to update 'parse_mtd_partitions()' kerneldoc comment if you
-  * are changing this array!
+2. The initial buffer (to read the ID and the parameter page) has
+256 bytes, but the JEDEC parameter page is 512-bytes.
+
+And while at it, the driver doesn't seem to support reading the
+redundant parameter pages (recently reported on barebox ML [1]). So this
+is a third bug.
+
+Would you try setting read_id_bytes to '5' and also increasing the READ_PARAM
+transfer length? Something like this:
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 1259cc5..851372f 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -48,7 +48,7 @@
+  * STATUS, READID and PARAM. The largest of these is the PARAM command,
+  * needing 256 bytes.
   */
-@@ -754,6 +789,13 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
- {
- 	struct mtd_part_parser *parser;
- 	int ret = 0;
-+	const char *const *types_of = NULL;
-+
-+	if (data && data->of_node) {
-+		types_of = of_get_probes(data->of_node);
-+		if (types_of != NULL)
-+			types = types_of;
-+	}
+-#define INIT_BUFFER_SIZE	256
++#define INIT_BUFFER_SIZE	2048
  
- 	if (!types)
- 		types = default_mtd_part_types;
-@@ -772,6 +814,7 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
- 			break;
- 		}
- 	}
-+	kfree(types_of);
- 	return ret;
- }
+ /* registers and bit definitions */
+ #define NDCR		(0x00) /* Control register */
+@@ -899,18 +899,18 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 		break;
  
+ 	case NAND_CMD_PARAM:
+-		info->buf_count = 256;
++		info->buf_count = 2048;
+ 		info->ndcb0 |= NDCB0_CMD_TYPE(0)
+ 				| NDCB0_ADDR_CYC(1)
+ 				| NDCB0_LEN_OVRD
+ 				| command;
+ 		info->ndcb1 = (column & 0xFF);
+-		info->ndcb3 = 256;
+-		info->data_size = 256;
++		info->ndcb3 = 2048;
++		info->data_size = 2048;
+ 		break;
+
+[1] http://lists.infradead.org/pipermail/barebox/2015-May/023515.html
+
+Thanks,
 -- 
-2.1.4
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
