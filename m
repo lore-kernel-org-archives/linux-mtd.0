@@ -1,17 +1,20 @@
-Message-ID: <556336F7.8070804@free-electrons.com>
-Date: Mon, 25 May 2015 16:51:35 +0200
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YwvkB-0008SH-TE
+ for linux-mtd@lists.infradead.org; Mon, 25 May 2015 17:00:56 +0000
+Message-ID: <55635511.30602@broadcom.com>
+Date: Mon, 25 May 2015 10:00:01 -0700
+From: Ray Jui <rjui@broadcom.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] ARM: kirkwood: add "jedec,
- spi-nor" flash compatible binding
-References: <1432035616-14783-1-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1432035616-14783-1-git-send-email-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Cc: Andrew Lunn <andrew@lunn.ch>, linux-mtd@lists.infradead.org,
- Simon Guinot <simon.guinot@sequanux.org>, linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>, Brian Norris
+ <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <bcm-kernel-feedback-list@broadcom.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>
+Subject: Re: iProc nand iproc-idm register
+References: <5562078A.6030909@hauke-m.de>
+In-Reply-To: <5562078A.6030909@hauke-m.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,200 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rafał,
+Hi Hauke,
 
-On 19/05/2015 13:40, Rafał Miłecki wrote:
-> Starting with commit 8947e396a829 ("Documentation: dt: mtd: replace
-> "nor-jedec" binding with "jedec, spi-nor"") we have "jedec,spi-nor"
-> binding indicating support for JEDEC identification.
+On 5/24/2015 10:16 AM, Hauke Mehrtens wrote:
+> Hi Ray,
 > 
-> Use it for all flashes that are supposed to support READ ID op according
-> to the datasheets.
+> in the iproc_nand driver your are using this register range:
+> reg = <0x18046000 0x600>, <0xf8105408 0x600>, <0x18046f00 0x20>;
+> reg-names = "nand", "iproc-idm", "iproc-ext";
 > 
-> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-As now thre was a agreement about the binding,
-applied on mvebu/dt
+> I think the iproc-idm register range is the wrap address part on bcma
+> bus. On the bcma bus it is 0x1000 in size and 0x0408 is the offset of
+> the IO control register in it. Are the new iProc devices different here
+> or is this register not always at this offset but varies?
 
-Thanks,
+It's different. Based on the Cygnus RDB, there's nothing between
+0xf8105000 and 0xf8105404.
 
-Gregory
-
-> ---
->  arch/arm/boot/dts/kirkwood-b3.dts              | 2 +-
->  arch/arm/boot/dts/kirkwood-cloudbox.dts        | 2 +-
->  arch/arm/boot/dts/kirkwood-dir665.dts          | 2 +-
->  arch/arm/boot/dts/kirkwood-dreamplug.dts       | 2 +-
->  arch/arm/boot/dts/kirkwood-lsxl.dtsi           | 2 +-
->  arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts | 2 +-
->  arch/arm/boot/dts/kirkwood-netxbig.dtsi        | 2 +-
->  arch/arm/boot/dts/kirkwood-ns2-common.dtsi     | 2 +-
->  arch/arm/boot/dts/kirkwood-rd88f6192.dts       | 2 +-
->  arch/arm/boot/dts/kirkwood-synology.dtsi       | 2 +-
->  arch/arm/boot/dts/kirkwood-t5325.dts           | 2 +-
->  arch/arm/boot/dts/kirkwood-ts219.dtsi          | 2 +-
->  12 files changed, 12 insertions(+), 12 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/kirkwood-b3.dts b/arch/arm/boot/dts/kirkwood-b3.dts
-> index c9247f8..d2936ad 100644
-> --- a/arch/arm/boot/dts/kirkwood-b3.dts
-> +++ b/arch/arm/boot/dts/kirkwood-b3.dts
-> @@ -74,7 +74,7 @@
->  			m25p16@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "st,m25p16";
-> +				compatible = "st,m25p16", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <40000000>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-cloudbox.dts b/arch/arm/boot/dts/kirkwood-cloudbox.dts
-> index ab6ab49..7ec7656 100644
-> --- a/arch/arm/boot/dts/kirkwood-cloudbox.dts
-> +++ b/arch/arm/boot/dts/kirkwood-cloudbox.dts
-> @@ -42,7 +42,7 @@
->  			flash@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "mxicy,mx25l4005a";
-> +				compatible = "mxicy,mx25l4005a", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <20000000>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-dir665.dts b/arch/arm/boot/dts/kirkwood-dir665.dts
-> index 786959e..0473fcc 100644
-> --- a/arch/arm/boot/dts/kirkwood-dir665.dts
-> +++ b/arch/arm/boot/dts/kirkwood-dir665.dts
-> @@ -93,7 +93,7 @@
->  			m25p80@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "mxicy,mx25l12805d";
-> +				compatible = "mxicy,mx25l12805d", "jedec,spi-nor";
->  				spi-max-frequency = <50000000>;
->  				reg = <0>;
->  
-> diff --git a/arch/arm/boot/dts/kirkwood-dreamplug.dts b/arch/arm/boot/dts/kirkwood-dreamplug.dts
-> index 6467c79..e2abc82 100644
-> --- a/arch/arm/boot/dts/kirkwood-dreamplug.dts
-> +++ b/arch/arm/boot/dts/kirkwood-dreamplug.dts
-> @@ -42,7 +42,7 @@
->  			m25p40@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "mxicy,mx25l1606e";
-> +				compatible = "mxicy,mx25l1606e", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <50000000>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-lsxl.dtsi b/arch/arm/boot/dts/kirkwood-lsxl.dtsi
-> index 5348447..1d6528d 100644
-> --- a/arch/arm/boot/dts/kirkwood-lsxl.dtsi
-> +++ b/arch/arm/boot/dts/kirkwood-lsxl.dtsi
-> @@ -74,7 +74,7 @@
->  			m25p40@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "m25p40";
-> +				compatible = "m25p40", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <25000000>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts b/arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts
-> index f82827d..b7e7d78 100644
-> --- a/arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts
-> +++ b/arch/arm/boot/dts/kirkwood-mv88f6281gtw-ge.dts
-> @@ -65,7 +65,7 @@
->  			flash@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "mxicy,mx25l12805d";
-> +				compatible = "mxicy,mx25l12805d", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <50000000>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-netxbig.dtsi b/arch/arm/boot/dts/kirkwood-netxbig.dtsi
-> index b0cfb7c..1508b121 100644
-> --- a/arch/arm/boot/dts/kirkwood-netxbig.dtsi
-> +++ b/arch/arm/boot/dts/kirkwood-netxbig.dtsi
-> @@ -33,7 +33,7 @@
->  			flash@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "mxicy,mx25l4005a";
-> +				compatible = "mxicy,mx25l4005a", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <20000000>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-ns2-common.dtsi b/arch/arm/boot/dts/kirkwood-ns2-common.dtsi
-> index fe6c024..e832b63 100644
-> --- a/arch/arm/boot/dts/kirkwood-ns2-common.dtsi
-> +++ b/arch/arm/boot/dts/kirkwood-ns2-common.dtsi
-> @@ -29,7 +29,7 @@
->  			flash@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "mxicy,mx25l4005a";
-> +				compatible = "mxicy,mx25l4005a", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <20000000>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-rd88f6192.dts b/arch/arm/boot/dts/kirkwood-rd88f6192.dts
-> index 35a29de..e0b9593 100644
-> --- a/arch/arm/boot/dts/kirkwood-rd88f6192.dts
-> +++ b/arch/arm/boot/dts/kirkwood-rd88f6192.dts
-> @@ -61,7 +61,7 @@
->  			m25p128@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "st,m25p128";
-> +				compatible = "st,m25p128", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <20000000>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-synology.dtsi b/arch/arm/boot/dts/kirkwood-synology.dtsi
-> index 8be5b2e..04015c17 100644
-> --- a/arch/arm/boot/dts/kirkwood-synology.dtsi
-> +++ b/arch/arm/boot/dts/kirkwood-synology.dtsi
-> @@ -217,7 +217,7 @@
->  			m25p80@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "st,m25p80";
-> +				compatible = "st,m25p80", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <20000000>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-t5325.dts b/arch/arm/boot/dts/kirkwood-t5325.dts
-> index 610ec0f..ed956b8 100644
-> --- a/arch/arm/boot/dts/kirkwood-t5325.dts
-> +++ b/arch/arm/boot/dts/kirkwood-t5325.dts
-> @@ -88,7 +88,7 @@
->  			flash@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "st,m25p80";
-> +				compatible = "st,m25p80", "jedec,spi-nor";
->  				spi-max-frequency = <86000000>;
->  				reg = <0>;
->  				mode = <0>;
-> diff --git a/arch/arm/boot/dts/kirkwood-ts219.dtsi b/arch/arm/boot/dts/kirkwood-ts219.dtsi
-> index df7f152..c56ab6b 100644
-> --- a/arch/arm/boot/dts/kirkwood-ts219.dtsi
-> +++ b/arch/arm/boot/dts/kirkwood-ts219.dtsi
-> @@ -49,7 +49,7 @@
->  			m25p128@0 {
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				compatible = "m25p128";
-> +				compatible = "m25p128", "jedec,spi-nor";
->  				reg = <0>;
->  				spi-max-frequency = <20000000>;
->  				mode = <0>;
+> Wouldn't it be better to specify the complete range like this:
+> reg = <0x18046000 0x600>, <0xf8105000 0x1000>, <0x18046f00 0x20>;
+> Then you can read the register at offset 0x408 in that range.
 > 
-
-
--- 
-Gregory Clement, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+> Hauke
+> 
