@@ -1,18 +1,16 @@
-Received: from mail-bn1bon0146.outbound.protection.outlook.com
- ([157.56.111.146] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ywqxv-0003Ap-Mq
- for linux-mtd@lists.infradead.org; Mon, 25 May 2015 11:54:47 +0000
-From: Haikun Wang <haikun.wang@freescale.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, <han.xu@freescale.com>
-Subject: [PATCH 3/4 v1] mtd: spi-nor: fsl-quadspi: fix qspi irq handler
- complete exception
-Date: Mon, 25 May 2015 19:50:03 +0800
-Message-ID: <1432554603-2857-1-git-send-email-haikun.wang@freescale.com>
+Message-ID: <556336B7.7070308@free-electrons.com>
+Date: Mon, 25 May 2015 16:50:31 +0200
+From: Gregory CLEMENT <gregory.clement@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Haikun Wang <haikun.wang@freescale.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] ARM: mvebu: add "jedec,spi-nor" flash compatible binding
+References: <1432035046-12888-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1432035046-12888-1-git-send-email-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: Andrew Lunn <andrew@lunn.ch>, linux-mtd@lists.infradead.org,
+ Jason Cooper <jason@lakedaemon.net>, linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,138 +20,202 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In case of interrupt arrive immediately after requesting irq,
-kernel will panic due to uninitialized variable.
+Hi Rafał,
 
-Fix below exception on LS1021AQDS:
-Unable to handle kernel NULL pointer dereference at virtual address
-00000000
-pgd = 80003000
-[00000000] *pgd=80000080004003, *pmd=00000000
-Internal error: Oops: 206 [#1] SMP THUMB2
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.1.0-rc5+ #2
-Hardware name: Freescale LS1021A
-task: 80526f30 ti: 80522000 task.ti: 80522000
-PC is at __wake_up_common+0x14/0x46
-LR is at __wake_up_locked+0xb/0x10
-pc : [<800388ae>]    lr : [<800388eb>]    psr: 400001b3
-sp : 80523e78  ip : 00000008  fp : 00000001
-r10: 00000000  r9 : 00000003  r8 : ee008000
-r7 : 00000001  r6 : 80000193  r5 : 00000000  r4 : ee0c0bd0
-r3 : 00000000  r2 : 00000001  r1 : 00000003  r0 : fffffff4
-Flags: nZcv  IRQs off  FIQs on  Mode SVC_32  ISA Thumb  Segment kernel
-Control: 70c5387d  Table: 80003000  DAC: fddff9d7
-Process swapper/0 (pid: 0, stack limit = 0x80522210)
-Stack: (0x80523e78 to 0x80524000)
-3e60:                                                       00000000
-ee0c0bcc
-3e80: ee0c0bc8 80000193 00000000 ee0cb480 805532ff 800388eb 00000000
-00000003
-3ea0: 00000001 80038d7f ee0c0010 08010001 00000000 80211587 80211553
-cf81af00
-3ec0: 00000017 8003e199 ee0cb480 cf81af00 ee0cb480 80532ec0 6e2b4000
-00000000
-3ee0: ee008000 00000001 803326d0 8003e265 00000000 ee0cb480 80532ec0
-8003ff6b
-3f00: 8003ff09 00000017 8051ebc4 8003dc77 00000000 8003de47 80523f48
-f0002000
-3f20: 80523f48 805247d4 80523f7c 8051d384 8051fca0 8000924b 8000db28
-40000133
-3f40: ffffffff 8032df1b 00000001 00000000 00000000 80017be1 80522000
-00000000
-3f60: 00000000 80523f98 8051d384 8051fca0 803326d0 00000001 00000008
-80523f90
-3f80: 8000db27 8000db28 40000133 ffffffff 00000000 80038fd7 00000001
-00000000
-3fa0: 00000002 80556000 00000000 804eb933 ffffffff ffffffff 804eb545
-00000000
-3fc0: ffffffff 00000000 00000000 80512590 00000000 80556294 80524460
-8051258c
-3fe0: 80528050 80003010 410fc075 00000000 00000000 8000808f 00000000
-	00000000
-[<800388ae>] (__wake_up_common) from [<800388eb>]
-	(__wake_up_locked+0xb/0x10)
-[<800388eb>] (__wake_up_locked) from [<80038d7f>] (complete+0x1f/0x2a)
-[<80038d7f>] (complete) from [<80211587>] (fsl_qspi_irq_handler+0x35/0x38)
-[<80211587>] (fsl_qspi_irq_handler) from [<8003e199>]
-	(handle_irq_event_percpu+0x1b/0xb6)
-[<8003e199>] (handle_irq_event_percpu) from [<8003e265>]
-	(handle_irq_event+0x31/0x48)
-[<8003e265>] (handle_irq_event) from [<8003ff6b>]
-	(handle_fasteoi_irq+0x63/0xb8)
-[<8003ff6b>] (handle_fasteoi_irq) from [<8003dc77>]
-	(generic_handle_irq+0x13/0x1c)
-[<8003dc77>] (generic_handle_irq) from [<8003de47>]
-	(__handle_domain_irq+0x53/0x74)
-[<8003de47>] (__handle_domain_irq) from [<8000924b>]
-	(gic_handle_irq+0x27/0x40)
-[<8000924b>] (gic_handle_irq) from [<8032df1b>] (__irq_svc+0x3b/0x5c)
-Exception stack(0x80523f48 to 0x80523f90)
-3f40:                   00000001 00000000 00000000 80017be1 80522000
-00000000
-3f60: 00000000 80523f98 8051d384 8051fca0 803326d0 00000001 00000008
-80523f90
-3f80: 8000db27 8000db28 40000133 ffffffff
-[<8032df1b>] (__irq_svc) from [<8000db28>] (arch_cpu_idle+0x14/0x20)
-[<8000db28>] (arch_cpu_idle) from [<80038fd7>]
-	(cpu_startup_entry+0x187/0x1c4)
-[<80038fd7>] (cpu_startup_entry) from [<804eb933>]
-	(start_kernel+0x27b/0x2e4)
-[<804eb933>] (start_kernel) from [<8000808f>] (0x8000808f)
-Code: 4617 469a f1a5 000c (682d) 3d0c
----[ end trace 420f2b58e4270f57 ]---
-Kernel panic - not syncing: Fatal exception in interrupt
-CPU1: stopping
-CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      D         4.1.0-rc5+ #2
-Hardware name: Freescale LS1021A
-[<80011937>] (unwind_backtrace) from [<8000f4e7>] (show_stack+0xb/0xc)
-[<8000f4e7>] (show_stack) from [<8032ad55>] (dump_stack+0x51/0x64)
-[<8032ad55>] (dump_stack) from [<80010ff9>] (handle_IPI+0x7d/0xf8)
-[<80010ff9>] (handle_IPI) from [<8000925b>] (gic_handle_irq+0x37/0x40)
-[<8000925b>] (gic_handle_irq) from [<8032df1b>] (__irq_svc+0x3b/0x5c)
-Exception stack(0xee079f90 to 0xee079fd8)
-9f80:                                     00000001 00000000 00000000
-80017be1
-9fa0: ee078000 00000000 00000000 ee079fe0 8051d384 8051fca0 803326d0
-00000001
-9fc0: 00000008 ee079fd8 8000db27 8000db28 40000133 ffffffff
-[<8032df1b>] (__irq_svc) from [<8000db28>] (arch_cpu_idle+0x14/0x20)
-[<8000db28>] (arch_cpu_idle) from [<80038fd7>]
-	(cpu_startup_entry+0x187/0x1c4)
-[<80038fd7>] (cpu_startup_entry) from [<80009311>] (__enable_mmu+0x1/0x10)
----[ end Kernel panic - not syncing: Fatal exception in interrupt
+On 19/05/2015 13:30, Rafał Miłecki wrote:
+> Starting with commit 8947e396a829 ("Documentation: dt: mtd: replace
+> "nor-jedec" binding with "jedec, spi-nor"") we have "jedec,spi-nor"
+> binding indicating support for JEDEC identification.
+> 
+> Use it for all flashes that are supposed to support READ ID op according
+> to the datasheets.
 
-Signed-off-by: Haikun Wang <haikun.wang@freescale.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+As now there is an agreement about the binding,
+applied on mvebu/dt
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 997eb20..fa615a0 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -666,6 +666,10 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 	qspi_writel(q, QUADSPI_MCR_RESERVED_MASK | QUADSPI_MCR_END_CFG_MASK,
- 			base + QUADSPI_MCR);
- 
-+	/* clear flag register before enable the interrupt */
-+	reg = qspi_readl(q, q->iobase + QUADSPI_FR);
-+	qspi_writel(q, reg, q->iobase + QUADSPI_FR);
-+
- 	/* enable the interrupt */
- 	qspi_writel(q, QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
- 
-@@ -878,6 +882,10 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 		goto irq_failed;
- 	}
- 
-+	/* In case of interrupt arrive immediately after requesting irq,
-+	 * kernel will panic without init_completion.
-+	 */
-+	init_completion(&q->c);
- 	ret = devm_request_irq(dev, ret,
- 			fsl_qspi_irq_handler, 0, pdev->name, q);
- 	if (ret) {
+Thanks,
+
+Gregory
+
+
+> 
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+> ---
+>  arch/arm/boot/dts/armada-370-db.dts              | 2 +-
+>  arch/arm/boot/dts/armada-370-synology-ds213j.dts | 2 +-
+>  arch/arm/boot/dts/armada-375-db.dts              | 2 +-
+>  arch/arm/boot/dts/armada-385-db-ap.dts           | 2 +-
+>  arch/arm/boot/dts/armada-388-db.dts              | 2 +-
+>  arch/arm/boot/dts/armada-388-gp.dts              | 2 +-
+>  arch/arm/boot/dts/armada-388-rd.dts              | 2 +-
+>  arch/arm/boot/dts/armada-398-db.dts              | 2 +-
+>  arch/arm/boot/dts/armada-xp-axpwifiap.dts        | 2 +-
+>  arch/arm/boot/dts/armada-xp-db.dts               | 2 +-
+>  arch/arm/boot/dts/armada-xp-gp.dts               | 2 +-
+>  arch/arm/boot/dts/armada-xp-synology-ds414.dts   | 2 +-
+>  12 files changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/armada-370-db.dts b/arch/arm/boot/dts/armada-370-db.dts
+> index 19f3bf2..03542f7 100644
+> --- a/arch/arm/boot/dts/armada-370-db.dts
+> +++ b/arch/arm/boot/dts/armada-370-db.dts
+> @@ -162,7 +162,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "mx25l25635e";
+> +					compatible = "mx25l25635e", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <50000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-370-synology-ds213j.dts b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
+> index b42b767..4f49243 100644
+> --- a/arch/arm/boot/dts/armada-370-synology-ds213j.dts
+> +++ b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
+> @@ -92,7 +92,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "micron,n25q064";
+> +					compatible = "micron,n25q064", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <20000000>;
+>  
+> diff --git a/arch/arm/boot/dts/armada-375-db.dts b/arch/arm/boot/dts/armada-375-db.dts
+> index 4eabc9c..5711b97 100644
+> --- a/arch/arm/boot/dts/armada-375-db.dts
+> +++ b/arch/arm/boot/dts/armada-375-db.dts
+> @@ -81,7 +81,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "n25q128a13";
+> +					compatible = "n25q128a13", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-385-db-ap.dts b/arch/arm/boot/dts/armada-385-db-ap.dts
+> index 7219ac3..89f5a95 100644
+> --- a/arch/arm/boot/dts/armada-385-db-ap.dts
+> +++ b/arch/arm/boot/dts/armada-385-db-ap.dts
+> @@ -70,7 +70,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "st,m25p128";
+> +					compatible = "st,m25p128", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <54000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-388-db.dts b/arch/arm/boot/dts/armada-388-db.dts
+> index 51d1623..91ac8c1 100644
+> --- a/arch/arm/boot/dts/armada-388-db.dts
+> +++ b/arch/arm/boot/dts/armada-388-db.dts
+> @@ -73,7 +73,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "w25q32";
+> +					compatible = "w25q32", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-388-gp.dts b/arch/arm/boot/dts/armada-388-gp.dts
+> index 78514ab..fd4f6fd 100644
+> --- a/arch/arm/boot/dts/armada-388-gp.dts
+> +++ b/arch/arm/boot/dts/armada-388-gp.dts
+> @@ -69,7 +69,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "st,m25p128";
+> +					compatible = "st,m25p128", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <50000000>;
+>  					m25p,fast-read;
+> diff --git a/arch/arm/boot/dts/armada-388-rd.dts b/arch/arm/boot/dts/armada-388-rd.dts
+> index 1dc6e23..b657b16 100644
+> --- a/arch/arm/boot/dts/armada-388-rd.dts
+> +++ b/arch/arm/boot/dts/armada-388-rd.dts
+> @@ -74,7 +74,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "st,m25p128";
+> +					compatible = "st,m25p128", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-398-db.dts b/arch/arm/boot/dts/armada-398-db.dts
+> index bbf8375..788c3ba 100644
+> --- a/arch/arm/boot/dts/armada-398-db.dts
+> +++ b/arch/arm/boot/dts/armada-398-db.dts
+> @@ -73,7 +73,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <0>;
+> -					compatible = "n25q128a13";
+> +					compatible = "n25q128a13", "jedec,spi-nor";
+>  					reg = <0>;
+>  					spi-max-frequency = <108000000>;
+>  
+> diff --git a/arch/arm/boot/dts/armada-xp-axpwifiap.dts b/arch/arm/boot/dts/armada-xp-axpwifiap.dts
+> index dfd782b..60bbfe3 100644
+> --- a/arch/arm/boot/dts/armada-xp-axpwifiap.dts
+> +++ b/arch/arm/boot/dts/armada-xp-axpwifiap.dts
+> @@ -140,7 +140,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "n25q128a13";
+> +					compatible = "n25q128a13", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-xp-db.dts b/arch/arm/boot/dts/armada-xp-db.dts
+> index 1037824..7dd900f 100644
+> --- a/arch/arm/boot/dts/armada-xp-db.dts
+> +++ b/arch/arm/boot/dts/armada-xp-db.dts
+> @@ -222,7 +222,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "m25p64";
+> +					compatible = "m25p64", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <20000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-xp-gp.dts b/arch/arm/boot/dts/armada-xp-gp.dts
+> index 565227e..bf724ca 100644
+> --- a/arch/arm/boot/dts/armada-xp-gp.dts
+> +++ b/arch/arm/boot/dts/armada-xp-gp.dts
+> @@ -227,7 +227,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "n25q128a13";
+> +					compatible = "n25q128a13", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <108000000>;
+>  				};
+> diff --git a/arch/arm/boot/dts/armada-xp-synology-ds414.dts b/arch/arm/boot/dts/armada-xp-synology-ds414.dts
+> index 6063428..20267ad 100644
+> --- a/arch/arm/boot/dts/armada-xp-synology-ds414.dts
+> +++ b/arch/arm/boot/dts/armada-xp-synology-ds414.dts
+> @@ -114,7 +114,7 @@
+>  				spi-flash@0 {
+>  					#address-cells = <1>;
+>  					#size-cells = <1>;
+> -					compatible = "micron,n25q064";
+> +					compatible = "micron,n25q064", "jedec,spi-nor";
+>  					reg = <0>; /* Chip select 0 */
+>  					spi-max-frequency = <20000000>;
+>  
+> 
+
+
 -- 
-2.1.0.27.g96db324
+Gregory Clement, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
