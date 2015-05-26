@@ -1,17 +1,23 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxBpZ-0006xd-O3
- for linux-mtd@lists.infradead.org; Tue, 26 May 2015 10:11:33 +0000
-From: Sheng Yong <shengyong1@huawei.com>
-To: <richard@nod.at>
-Subject: [RFC PATCH v2 6/6] UBI: add a helper function for updatting on-flash
- layout volumes
-Date: Tue, 26 May 2015 10:07:10 +0000
-Message-ID: <1432634830-129590-7-git-send-email-shengyong1@huawei.com>
-In-Reply-To: <1432634830-129590-1-git-send-email-shengyong1@huawei.com>
-References: <1432634830-129590-1-git-send-email-shengyong1@huawei.com>
+Received: from spornkuller.de ([5.45.105.28])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YxCog-0002KK-0p
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2015 11:14:38 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Tue, 26 May 2015 13:14:15 +0200
+From: Johannes Bauer <weolanwaybqm@spornkuller.de>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: Wear-leveling peculiarities
+In-Reply-To: <5564460D.6010209@nod.at>
+References: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>
+ <55f052b8b8f65bf34b0ed9f20b4f2f07@joe.dyn.spornkuller.de>
+ <CAFLxGvxQeeA8dk7DY6ZcsAm0WBch7c6gOn92gUZB138B6bfeGA@mail.gmail.com>
+ <555A4D38.3070702@spornkuller.de> <555A4FFB.5040006@nod.at>
+ <f0e983ad35f8be37ef51686615017016@joe.dyn.spornkuller.de>
+ <5564460D.6010209@nod.at>
+Message-ID: <fa1a37d3deb8876079963af7ddc0ff25@joe.dyn.spornkuller.de>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,100 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Sheng Yong <shengyong1@huawei.com>
----
- drivers/mtd/ubi/vtbl.c | 45 ++++++++++++++++++++++++---------------------
- 1 file changed, 24 insertions(+), 21 deletions(-)
+Am 26.05.2015 12:08, schrieb Richard Weinberger:
 
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 68c9c5ea..80bdd5b 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -70,6 +70,26 @@ static void self_vtbl_check(const struct ubi_device *ubi);
- static struct ubi_vtbl_record empty_vtbl_record;
- 
- /**
-+ * ubi_update_layout_vol - helper for updatting layout volumes on flash
-+ * @ubi: UBI device description object
-+ */
-+static int ubi_update_layout_vol(struct ubi_device *ubi)
-+{
-+	struct ubi_volume *layout_vol;
-+	int i, err;
-+
-+	layout_vol = ubi->volumes[vol_id2idx(ubi, UBI_LAYOUT_VOLUME_ID)];
-+	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
-+		err = ubi_eba_atomic_leb_change(ubi, layout_vol, i, ubi->vtbl,
-+						ubi->vtbl_size);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-  * ubi_change_vtbl_record - change volume table record.
-  * @ubi: UBI device description object
-  * @idx: table index to change
-@@ -83,12 +103,10 @@ static struct ubi_vtbl_record empty_vtbl_record;
- int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
- 			   struct ubi_vtbl_record *vtbl_rec)
- {
--	int i, err;
-+	int err;
- 	uint32_t crc;
--	struct ubi_volume *layout_vol;
- 
- 	ubi_assert(idx >= 0 && idx < ubi->vtbl_slots);
--	layout_vol = ubi->volumes[vol_id2idx(ubi, UBI_LAYOUT_VOLUME_ID)];
- 
- 	if (!vtbl_rec)
- 		vtbl_rec = &empty_vtbl_record;
-@@ -98,15 +116,10 @@ int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
- 	}
- 
- 	memcpy(&ubi->vtbl[idx], vtbl_rec, sizeof(struct ubi_vtbl_record));
--	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
--		err = ubi_eba_atomic_leb_change(ubi, layout_vol, i, ubi->vtbl,
--						ubi->vtbl_size);
--		if (err)
--			return err;
--	}
-+	err = ubi_update_layout_vol(ubi);
- 
- 	self_vtbl_check(ubi);
--	return 0;
-+	return err ? err : 0;
- }
- 
- /**
-@@ -121,9 +134,7 @@ int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
- int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
- 			    struct list_head *rename_list)
- {
--	int i, err;
- 	struct ubi_rename_entry *re;
--	struct ubi_volume *layout_vol;
- 
- 	list_for_each_entry(re, rename_list, list) {
- 		uint32_t crc;
-@@ -145,15 +156,7 @@ int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
- 		vtbl_rec->crc = cpu_to_be32(crc);
- 	}
- 
--	layout_vol = ubi->volumes[vol_id2idx(ubi, UBI_LAYOUT_VOLUME_ID)];
--	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
--		err = ubi_eba_atomic_leb_change(ubi, layout_vol, i, ubi->vtbl,
--						ubi->vtbl_size);
--		if (err)
--			return err;
--	}
--
--	return 0;
-+	return ubi_update_layout_vol(ubi);
- }
- 
- /**
--- 
-1.8.3.4
+> What flash is this?
+> I should not start dying that early.
+
+To be honest, I have no idea. The problem is that the CPU is stacked on 
+top of the NAND via package-on-package technlogoly. The whole component 
+is supplied by a third party (and I've just scanned their documentation, 
+which does not give any hints about the origin of the NAND). So I have 
+no markings on the package (POP) and no documentation. The only thing I 
+do have is dmesg:
+
+omap2-nand driver initializing
+ONFI flash detected
+NAND device: Manufacturer ID: 0x20, Chip ID: 0xaa (ST Micro NAND 256MiB 
+1,8V 8-bit)
+
+Maybe there's a way to talk to the NAND directly and get some more 
+identification, but I don't know how. Any hints? I'd happily provide 
+clues.
+
+Cheers,
+Johannes
