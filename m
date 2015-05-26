@@ -1,13 +1,15 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wi0-f180.google.com ([209.85.212.180])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxHjV-00067O-LA
- for linux-mtd@lists.infradead.org; Tue, 26 May 2015 16:29:41 +0000
-Message-ID: <55649F58.5000101@nod.at>
-Date: Tue, 26 May 2015 18:29:12 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1YxJWg-0006vg-4K
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2015 18:24:30 +0000
+Received: by wifw1 with SMTP id w1so41076233wif.0
+ for <linux-mtd@lists.infradead.org>; Tue, 26 May 2015 11:24:06 -0700 (PDT)
+Message-ID: <5564B97D.4090203@vanguardiasur.com.ar>
+Date: Tue, 26 May 2015 15:20:45 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
 To: Johannes Bauer <weolanwaybqm@spornkuller.de>,
- "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
+ Richard Weinberger <richard@nod.at>
 Subject: Re: Wear-leveling peculiarities
 References: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>
  <55f052b8b8f65bf34b0ed9f20b4f2f07@joe.dyn.spornkuller.de>
@@ -16,9 +18,7 @@ References: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>
  <f0e983ad35f8be37ef51686615017016@joe.dyn.spornkuller.de>
  <5564460D.6010209@nod.at>
  <fa1a37d3deb8876079963af7ddc0ff25@joe.dyn.spornkuller.de>
- <0D23F1ECC880A74392D56535BCADD7357DEC6820@NTXBOIMBX03.micron.com>
- <b4b8ec63f4b8f638a2eee4f029e4309e@joe.dyn.spornkuller.de>
-In-Reply-To: <b4b8ec63f4b8f638a2eee4f029e4309e@joe.dyn.spornkuller.de>
+In-Reply-To: <fa1a37d3deb8876079963af7ddc0ff25@joe.dyn.spornkuller.de>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -31,17 +31,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 26.05.2015 um 18:24 schrieb Johannes Bauer:
-> Hi Jeff,
+On 05/26/2015 08:14 AM, Johannes Bauer wrote:
+> Am 26.05.2015 12:08, schrieb Richard Weinberger:
 > 
-> Am 26.05.2015 18:19, schrieb Jeff Lauruhn (jlauruhn):
->> If the part is ONFI compliant you can always dump the parameter page
->> and any information you need.
+>> What flash is this?
+>> I should not start dying that early.
 > 
-> This sounds very much like something I'd like to do... only that I have no clue how :-) Any hints?
+> To be honest, I have no idea. The problem is that the CPU is stacked on
+> top of the NAND via package-on-package technlogoly. The whole component
+> is supplied by a third party (and I've just scanned their documentation,
+> which does not give any hints about the origin of the NAND). So I have
+> no markings on the package (POP) and no documentation. The only thing I
+> do have is dmesg:
+> 
+> omap2-nand driver initializing
+> ONFI flash detected
+> NAND device: Manufacturer ID: 0x20, Chip ID: 0xaa (ST Micro NAND 256MiB
+> 1,8V 8-bit)
+> 
 
-Read nand_base.c it does all NAND probing.
-I'd start with a plain NAND_CMD_READID.
+According to this:
 
-Thanks,
-//richard
+http://www.linux-mtd.infradead.org/nand-data/nanddata.html
+
+0x20 0xaa is the ID of Numonyx/ST NAND02GXXX. Searching for the specs it
+seems the device is SLC, so it's kind of unexpected that the default WL
+value was wrong.
+
+> Maybe there's a way to talk to the NAND directly and get some more
+> identification, but I don't know how. Any hints? I'd happily provide clues.
+> 
+
+The ONFI specs talk about that (a quick "onfi spec pdf" search will do).
+The ONFI specifies a paramter page which contains all the information
+about the device (5.7.1. Parameter Page Data Structure Definition).
+
+Keep us updated if you find why the flashes are dying :)
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
