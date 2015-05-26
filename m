@@ -1,20 +1,26 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxD3L-0001Gi-1c
- for linux-mtd@lists.infradead.org; Tue, 26 May 2015 11:29:49 +0000
-Message-ID: <55645910.9010706@nod.at>
-Date: Tue, 26 May 2015 13:29:20 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1YxHaH-00083Y-03
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2015 16:20:05 +0000
+From: "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>
+To: Johannes Bauer <weolanwaybqm@spornkuller.de>, Richard Weinberger
+ <richard@nod.at>
+Subject: RE: Wear-leveling peculiarities
+Date: Tue, 26 May 2015 16:19:36 +0000
+Message-ID: <0D23F1ECC880A74392D56535BCADD7357DEC6820@NTXBOIMBX03.micron.com>
+References: <5b9c6106e355c0a676481e1de95ad15c@joe.dyn.spornkuller.de>
+ <55f052b8b8f65bf34b0ed9f20b4f2f07@joe.dyn.spornkuller.de>
+ <CAFLxGvxQeeA8dk7DY6ZcsAm0WBch7c6gOn92gUZB138B6bfeGA@mail.gmail.com>
+ <555A4D38.3070702@spornkuller.de> <555A4FFB.5040006@nod.at>
+ <f0e983ad35f8be37ef51686615017016@joe.dyn.spornkuller.de>
+ <5564460D.6010209@nod.at>
+ <fa1a37d3deb8876079963af7ddc0ff25@joe.dyn.spornkuller.de>
+In-Reply-To: <fa1a37d3deb8876079963af7ddc0ff25@joe.dyn.spornkuller.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Chao Yu <chao2.yu@samsung.com>, dedekind1@gmail.com,
- adrian.hunter@intel.com
-Subject: Re: [PATCH] ubifs: fix to check error code of register_shrinker
-References: <003001d09146$c124b150$436e13f0$@samsung.com>
- <000301d097a6$6f3f9e70$4dbedb50$@samsung.com>
-In-Reply-To: <000301d097a6$6f3f9e70$4dbedb50$@samsung.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,62 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 26.05.2015 um 13:23 schrieb Chao Yu:
-> Ping.
-> 
-> Add Cc Richard Weinberger.
+If the part is ONFI compliant you can always dump the parameter page and an=
+y information you need. =20
 
-Patch looks good to me.
-Artem, if you don't mind I'd pick it up for the 4.2 queue.
 
-Thanks,
-//richard
+Jeff Lauruhn
+NAND Application Engineer
+Embedded Business Unit
+Micron Technology, Inc
 
->> -----Original Message-----
->> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Chao Yu
->> Sent: Monday, May 18, 2015 4:43 PM
->> To: dedekind1@gmail.com; adrian.hunter@intel.com
->> Cc: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org
->> Subject: [PATCH] ubifs: fix to check error code of register_shrinker
->>
->> register_shrinker() in ubifs_init() can fail due to fail to call kzalloc.
->> This patch fixes to check the return value of register_shrinker, otherwise
->> our shrinker may be unregistered after ubifs initialized successfully.
->>
->> Signed-off-by: Chao Yu <chao2.yu@samsung.com>
->> ---
->>  fs/ubifs/super.c | 5 ++++-
->>  1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
->> index 75e6f04..fa83d1b 100644
->> --- a/fs/ubifs/super.c
->> +++ b/fs/ubifs/super.c
->> @@ -2245,7 +2245,9 @@ static int __init ubifs_init(void)
->>  	if (!ubifs_inode_slab)
->>  		return -ENOMEM;
->>
->> -	register_shrinker(&ubifs_shrinker_info);
->> +	err = register_shrinker(&ubifs_shrinker_info);
->> +	if (err)
->> +		goto out_slab;
->>
->>  	err = ubifs_compressors_init();
->>  	if (err)
->> @@ -2269,6 +2271,7 @@ out_compr:
->>  	ubifs_compressors_exit();
->>  out_shrinker:
->>  	unregister_shrinker(&ubifs_shrinker_info);
->> +out_slab:
->>  	kmem_cache_destroy(ubifs_inode_slab);
->>  	return err;
->>  }
->> --
->> 2.3.3
->>
->>
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+-----Original Message-----
+From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of=
+ Johannes Bauer
+Sent: Tuesday, May 26, 2015 4:14 AM
+To: Richard Weinberger
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Wear-leveling peculiarities
+
+Am 26.05.2015 12:08, schrieb Richard Weinberger:
+
+> What flash is this?
+> I should not start dying that early.
+
+To be honest, I have no idea. The problem is that the CPU is stacked on top=
+ of the NAND via package-on-package technlogoly. The whole component is sup=
+plied by a third party (and I've just scanned their documentation, which do=
+es not give any hints about the origin of the NAND). So I have no markings =
+on the package (POP) and no documentation. The only thing I do have is dmes=
+g:
+
+omap2-nand driver initializing
+ONFI flash detected
+NAND device: Manufacturer ID: 0x20, Chip ID: 0xaa (ST Micro NAND 256MiB 1,8=
+V 8-bit)
+
+Maybe there's a way to talk to the NAND directly and get some more identifi=
+cation, but I don't know how. Any hints? I'd happily provide clues.
+
+Cheers,
+Johannes
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
