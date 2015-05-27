@@ -1,24 +1,24 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxhRd-0007bX-9g
- for linux-mtd@lists.infradead.org; Wed, 27 May 2015 19:56:53 +0000
-Received: by pdfh10 with SMTP id h10so24286619pdf.3
- for <linux-mtd@lists.infradead.org>; Wed, 27 May 2015 12:56:32 -0700 (PDT)
-Date: Wed, 27 May 2015 12:56:23 -0700
+ id 1YxiO9-0005FW-UB
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2015 20:57:22 +0000
+Received: by paza2 with SMTP id a2so6472469paz.3
+ for <linux-mtd@lists.infradead.org>; Wed, 27 May 2015 13:57:00 -0700 (PDT)
+Date: Wed, 27 May 2015 13:56:57 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Christian Riesch <christian.riesch@omicron.at>
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Initialize datum before calling
- map_word_load_partial
-Message-ID: <20150527195623.GJ27753@ld-irv-0074>
-References: <1427837363-2782-1-git-send-email-christian.riesch@omicron.at>
- <20150507070256.GF6055@norris-Latitude-E6410>
- <CABkLObrEFNF9xwyxvJzy5tp+NaTZg_Ngws-Zryvv3bXS24VVNg@mail.gmail.com>
+To: Cyril Bur <cyrilbur@gmail.com>
+Subject: Re: [PATCH] drivers/mtd: add powernv flash MTD abstraction driver
+Message-ID: <20150527205559.GK27753@ld-irv-0074>
+References: <1430721739-17517-1-git-send-email-cyrilbur@gmail.com>
+ <1430721739-17517-2-git-send-email-cyrilbur@gmail.com>
+ <20150520211716.GM11598@ld-irv-0074>
+ <1432188772.2911.15.camel@cyril>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABkLObrEFNF9xwyxvJzy5tp+NaTZg_Ngws-Zryvv3bXS24VVNg@mail.gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <1432188772.2911.15.camel@cyril>
+Cc: Joel Stanley <joel@jms.id.au>, linuxppc-dev@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org, jk@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +28,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Christian,
+Hi Cyril,
 
-On Thu, May 07, 2015 at 12:32:03PM +0200, Christian Riesch wrote:
-> On Thu, May 7, 2015 at 9:02 AM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > On Tue, Mar 31, 2015 at 11:29:22PM +0200, Christian Riesch wrote:
-> >> In do_otp_write we must initialize the variable datum before calling
-> >> map_word_load_partial. Otherwise the upper bits of datum may be undefined,
-> >> which later causes problems in chip_good called by do_write_oneword.
-> >
-> > Hmm, are you sure this is actually the problem? It looks to me like the
-> > logic for the "partial write of a word, load old contents" block means
-> > that we *will* initialize datum with old contents, if we're not aligned.
+On Thu, May 21, 2015 at 04:12:52PM +1000, Cyril Bur wrote:
+> One question though,
 > 
-> That's right. But if we are aligned, datum will not be initialized, at
-> least not in every case.
+> On Wed, 2015-05-20 at 14:17 -0700, Brian Norris wrote:
+> > On Mon, May 04, 2015 at 04:42:19PM +1000, Cyril Bur wrote:
+> > > Powerpc powernv platforms allow access to certain system flash devices
+> > > through a firmwarwe interface. This change adds an mtd driver for these
+> > > flash devices.
+> > > 
+> > > Minor updates from Jeremy Kerr and Joel Stanley.
+> > > 
+> > > Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
+> > > Signed-off-by: Joel Stanley <joel@jms.id.au>
+> > > Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
+> > > ---
+> > >  drivers/mtd/devices/Kconfig         |   6 +
+> > >  drivers/mtd/devices/Makefile        |   1 +
+> > >  drivers/mtd/devices/powernv_flash.c | 288 ++++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 295 insertions(+)
+> > >  create mode 100644 drivers/mtd/devices/powernv_flash.c
+> > > 
 > 
-> > So your initialization actually looks redundant.
-> >
-> > Or please help explain, if I'm wrong.
+> [snip]
 > 
-> This is from do_otp_write():
-[snip]
-> Without initialization, unaligned writes work fine, whereas aligned writes fail.
+> > > +
+> > > +/**
+> > > + * powernv_flash_set_driver_info - Fill the mtd_info structure and docg3
+> > > + * structure @pdev: The platform device
+> > > + * @mtd: The structure to fill
+> > > + */
+> > > +static int __init powernv_flash_set_driver_info(struct device *dev,
+> > > +		struct mtd_info *mtd)
+> > > +{
+...
+> > > +	/* Going to have to check what details I need to set and how to
+> > > +	 * get them */
+> > > +	mtd->name = of_get_property(dev->of_node, "name", NULL);
+> > > +	mtd->type = MTD_NANDFLASH;
+> > > +	mtd->flags = MTD_CAP_NANDFLASH;
+> > 
+> > Is this really NAND flash? It doesn't look like it; I see no bad block
+> > implementation, and writesize==1.
+> 
+> Correct, but the type here is a bit misleading, we have a firmware
+> interface for the low level read/write/erase functions, all this driver
+> does is pass the calls through to firmware, there isn't much that linux
+> or userspace can do since it doesn't actually do the hardware accesses. 
+> 
+> I've checked with Jeremy, turns out the hardware is actually NOR, no
+> idea how I ever thought it was NAND.
+> 
+> Perhaps just:
+> 	mtd->type = MTD_RAM;
+> 	mtd->flags = MTD_WRITEABLE;
+> 
+> I would have used MTD_NOR but Jeremy confirms that the backing flash may
+> not always be NOR on other platforms.
 
-OK, thanks for the more thorough explanation. Makes sense. Applied to
-l2-mtd.git.
+Well, it definitely shouldn't have a type of MTD_NANDFLASH if it's
+actually NOR. MTD users may very well treat NAND differently than
+anything else. And MTD_RAM is also pretty misleading.
+
+Also, the comments throughout the driver about PNOR will be misleading
+if it's not always PNOR.
+
+What other type of memory might be used? Would it act any differently
+than PNOR? If so, then I'd expect the driver would need to account for
+this anyway (at a minimum, just by exposing that information through an
+MTD API, so users can treat it differently) so we'd have a chance to
+change the mtd->type.
 
 Brian
