@@ -1,21 +1,27 @@
 Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxWUU-0005u7-BF
- for linux-mtd@lists.infradead.org; Wed, 27 May 2015 08:15:07 +0000
-Received: by pdea3 with SMTP id a3so4332312pde.2
- for <linux-mtd@lists.infradead.org>; Wed, 27 May 2015 01:14:42 -0700 (PDT)
-Date: Wed, 27 May 2015 01:14:39 -0700
+ id 1Yxgnr-00086k-42
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2015 19:15:47 +0000
+Received: by pdea3 with SMTP id a3so23531858pde.2
+ for <linux-mtd@lists.infradead.org>; Wed, 27 May 2015 12:15:25 -0700 (PDT)
+Date: Wed, 27 May 2015 12:15:21 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: Reg status of mtd: nand: Allow NAND chip ids to be included
- standalone
-Message-ID: <20150527081439.GF23718@brian-ubuntu>
-References: <CAO_48GHtTadJN0j25G0MpdjZdtNvsTcevrgT9-zx3UWy9UnOfw@mail.gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd: blktrans: use better error code for unimplemented
+ ioctl()
+Message-ID: <20150527191429.GF27753@ld-irv-0074>
+References: <1431498556-21275-1-git-send-email-wenlin.kang@windriver.com>
+ <20150520193325.GK11598@ld-irv-0074>
+ <CAFLxGvyy4UZWAZ9FaNCnF6-L664x3t72R_Kg_zEmD-HfkJqxrA@mail.gmail.com>
+ <20150521080511.GF11112@norris-Latitude-E6410>
+ <555DB0AB.2000801@nod.at> <20150521175431.GC11598@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAO_48GHtTadJN0j25G0MpdjZdtNvsTcevrgT9-zx3UWy9UnOfw@mail.gmail.com>
-Cc: mnalajal@codeaurora.org, linux-mtd@lists.infradead.org
+In-Reply-To: <20150521175431.GC11598@ld-irv-0074>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, Wenlin Kang <wenlin.kang@windriver.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +31,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sumit,
-
-On Wed, May 27, 2015 at 01:28:16PM +0530, Sumit Semwal wrote:
-> Hello,
+On Thu, May 21, 2015 at 10:54:31AM -0700, Brian Norris wrote:
+> In commit 50183936254b ("mtd: blktrans: change blktrans_getgeo return
+> value") we fixed the problem that ioctl(HDIO_GETGEO) might return 0
+> (success) for mtdblock devices which did not implement the feature and
+> would leave a blank (zero) result.
 > 
-> As part of Linaro's Android Upstreaming effort, we were revisiting
-> outstanding patches, and realised that this patch [1] isn't yet
-> upstream.
+> But now, let's get the error code right. Other code paths on this ioctl
+> tend to use -ENOTTY to notify the user that the ioctl() is not supported
+> for the device, so let's use that instead of -EOPNOTSUPP.
 > 
-> I asked Artem for his advice (in a personal email), and he kindly
-> pointed me to ask on the mailing list as well - so could anyone please
-> let me know if there was something pending with this patch, or did it
-> just get missed?
-> 
-> If it just got missed, I could help with re-submitting it if required,
-> so it can get queued up.
-> 
-> Thanks very much!
-> 
-> [1] : http://patchwork.ozlabs.org/patch/85874/
+> Suggested-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+> Against l2-mtd.git (linux-next)
 
-I fully agree with Artem's comment from 4 years ago:
-
-"No, I think you should "sell" your driver better than that."
-
-Your msm_nand driver should be rewritten to use nand_base properly, at
-which point your linked patch would be unnecessary.
-
-IOW, the linked patch is now officially "Rejected".
-
-Brian
+Applied.
