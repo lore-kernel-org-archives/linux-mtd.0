@@ -1,23 +1,21 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxPwz-0001i2-RG
- for linux-mtd@lists.infradead.org; Wed, 27 May 2015 01:16:06 +0000
-Received: by paza2 with SMTP id a2so96348560paz.3
- for <linux-mtd@lists.infradead.org>; Tue, 26 May 2015 18:15:44 -0700 (PDT)
-Date: Tue, 26 May 2015 18:15:38 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Subject: Re: [RFC] ARM: BCM5301X: add NAND flash chip description
-Message-ID: <20150527011538.GE27753@ld-irv-0074>
-References: <1432492349-18517-1-git-send-email-hauke@hauke-m.de>
- <20150527004144.GC27753@ld-irv-0074>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150527004144.GC27753@ld-irv-0074>
-Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, rjui@broadcom.com,
- zajec5@gmail.com, jogo@openwrt.org, linux-mtd@lists.infradead.org,
- bcm-kernel-feedback-list@broadcom.com
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YxVl2-0001Rq-7n
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2015 07:28:08 +0000
+Message-ID: <1432711648.2703.152.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] ubifs: fix to check error code of register_shrinker
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>
+Date: Wed, 27 May 2015 10:27:28 +0300
+In-Reply-To: <55645910.9010706@nod.at>
+References: <003001d09146$c124b150$436e13f0$@samsung.com>
+ <000301d097a6$6f3f9e70$4dbedb50$@samsung.com> <55645910.9010706@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Chao Yu <chao2.yu@samsung.com>, linux-mtd@lists.infradead.org,
+ adrian.hunter@intel.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 26, 2015 at 05:41:44PM -0700, Brian Norris wrote:
-> > +			linux,part-probe = "ofpart", "bcm47xxpart";
+On Tue, 2015-05-26 at 13:29 +0200, Richard Weinberger wrote:
+> Am 26.05.2015 um 13:23 schrieb Chao Yu:
+> > Ping.
+> > 
+> > Add Cc Richard Weinberger.
 > 
-> ^ NAK to this line. You still haven't documented any semantics for this
-> property. And I gave you several comments on your previous patch about
-> what would need to change before I'd accept this property.
+> Patch looks good to me.
+> Artem, if you don't mind I'd pick it up for the 4.2 queue.
 
-Just noticed you sent v2 of your previous patch over the weekend, which
-does include documentation for this. That's a start, but I'm still not
-very happy with the property. I'll put my full comments there
-eventually.
+Yes, please, thanks!
 
-Brian
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
