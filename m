@@ -1,24 +1,24 @@
-Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
+Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxhG9-0001AS-Qg
- for linux-mtd@lists.infradead.org; Wed, 27 May 2015 19:45:02 +0000
-Received: by pdea3 with SMTP id a3so24012681pde.2
- for <linux-mtd@lists.infradead.org>; Wed, 27 May 2015 12:44:38 -0700 (PDT)
-Date: Wed, 27 May 2015 12:44:33 -0700
+ id 1YxhRd-0007bX-9g
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2015 19:56:53 +0000
+Received: by pdfh10 with SMTP id h10so24286619pdf.3
+ for <linux-mtd@lists.infradead.org>; Wed, 27 May 2015 12:56:32 -0700 (PDT)
+Date: Wed, 27 May 2015 12:56:23 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Denys Vlasenko <dvlasenk@redhat.com>
-Subject: Re: [PATCH] mtd: cfi: Deiline large functions
-Message-ID: <20150527194348.GI27753@ld-irv-0074>
-References: <1431946720-32281-1-git-send-email-dvlasenk@redhat.com>
+To: Christian Riesch <christian.riesch@omicron.at>
+Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Initialize datum before calling
+ map_word_load_partial
+Message-ID: <20150527195623.GJ27753@ld-irv-0074>
+References: <1427837363-2782-1-git-send-email-christian.riesch@omicron.at>
+ <20150507070256.GF6055@norris-Latitude-E6410>
+ <CABkLObrEFNF9xwyxvJzy5tp+NaTZg_Ngws-Zryvv3bXS24VVNg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1431946720-32281-1-git-send-email-dvlasenk@redhat.com>
-Cc: David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Aaron Sierra <asierra@xes-inc.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
+In-Reply-To: <CABkLObrEFNF9xwyxvJzy5tp+NaTZg_Ngws-Zryvv3bXS24VVNg@mail.gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 18, 2015 at 12:58:40PM +0200, Denys Vlasenko wrote:
-> With this .config: http://busybox.net/~vda/kernel_config,
-> after uninlining these functions have sizes and callsite counts
-> as follows:
-> 
-> cfi_udelay(): 74 bytes, 26 callsites
-> cfi_send_gen_cmd(): 153 bytes, 95 callsites
-> cfi_build_cmd(): 274 bytes, 123 callsites
-> cfi_build_cmd_addr(): 49 bytes, 15 callsites
-> cfi_merge_status(): 230 bytes, 3 callsites
-> 
-> Reduction in code size is about 50,000:
-> 
->     text     data      bss       dec     hex filename
-> 85842882 22294584 20627456 128764922 7accbfa vmlinux.before
-> 85789648 22294616 20627456 128711720 7abfc28 vmlinux
-> 
-> Signed-off-by: Denys Vlasenko <dvlasenk@redhat.com>
-> CC: Dan Carpenter <dan.carpenter@oracle.com>
-> CC: Jingoo Han <jg1.han@samsung.com>
-> CC: Brian Norris <computersforpeace@gmail.com>
-> CC: Aaron Sierra <asierra@xes-inc.com>
-> CC: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
-> CC: David Woodhouse <David.Woodhouse@intel.com>
-> CC: linux-mtd@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
+Hi Christian,
 
-Fixed the subject and applied to l2-mtd.git.
+On Thu, May 07, 2015 at 12:32:03PM +0200, Christian Riesch wrote:
+> On Thu, May 7, 2015 at 9:02 AM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+> > On Tue, Mar 31, 2015 at 11:29:22PM +0200, Christian Riesch wrote:
+> >> In do_otp_write we must initialize the variable datum before calling
+> >> map_word_load_partial. Otherwise the upper bits of datum may be undefined,
+> >> which later causes problems in chip_good called by do_write_oneword.
+> >
+> > Hmm, are you sure this is actually the problem? It looks to me like the
+> > logic for the "partial write of a word, load old contents" block means
+> > that we *will* initialize datum with old contents, if we're not aligned.
+> 
+> That's right. But if we are aligned, datum will not be initialized, at
+> least not in every case.
+> 
+> > So your initialization actually looks redundant.
+> >
+> > Or please help explain, if I'm wrong.
+> 
+> This is from do_otp_write():
+[snip]
+> Without initialization, unaligned writes work fine, whereas aligned writes fail.
 
-For my reference, did you test this, or just compile test?
+OK, thanks for the more thorough explanation. Makes sense. Applied to
+l2-mtd.git.
 
 Brian
