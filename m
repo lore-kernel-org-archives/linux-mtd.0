@@ -1,20 +1,18 @@
-Received: from mout.kundenserver.de ([212.227.17.24])
+Received: from mail-pd0-f170.google.com ([209.85.192.170])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxVv0-0000A7-96
- for linux-mtd@lists.infradead.org; Wed, 27 May 2015 07:38:27 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Subject: Re: [RFC] ARM: BCM5301X: add NAND flash chip description
-Date: Wed, 27 May 2015 09:37:53 +0200
-Message-ID: <5386954.hrl5VLbdYc@wuerfel>
-In-Reply-To: <1432492349-18517-1-git-send-email-hauke@hauke-m.de>
-References: <1432492349-18517-1-git-send-email-hauke@hauke-m.de>
+ id 1YxWEs-00029P-3Q
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2015 07:58:58 +0000
+Received: by pdea3 with SMTP id a3so3756893pde.2
+ for <linux-mtd@lists.infradead.org>; Wed, 27 May 2015 00:58:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, rjui@broadcom.com,
- zajec5@gmail.com, jogo@openwrt.org, bcm-kernel-feedback-list@broadcom.com,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com
+From: Sumit Semwal <sumit.semwal@linaro.org>
+Date: Wed, 27 May 2015 13:28:16 +0530
+Message-ID: <CAO_48GHtTadJN0j25G0MpdjZdtNvsTcevrgT9-zx3UWy9UnOfw@mail.gmail.com>
+Subject: Reg status of mtd: nand: Allow NAND chip ids to be included standalone
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: mnalajal@codeaurora.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday 24 May 2015 20:32:29 Hauke Mehrtens wrote:
-> @@ -124,17 +124,7 @@
->                         <0x00026000 0 &gic GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
->  
->                         /* Ethernet Controller 3 */
-> -                       <0x00027000 0 &gic GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH>,
-> -
-> -                       /* NAND Controller */
-> -                       <0x00028000 0 &gic GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>,
-> -                       <0x00028000 1 &gic GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
-> -                       <0x00028000 2 &gic GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>,
-> -                       <0x00028000 3 &gic GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
-> -                       <0x00028000 4 &gic GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
-> -                       <0x00028000 5 &gic GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>,
-> -                       <0x00028000 6 &gic GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>,
-> -                       <0x00028000 7 &gic GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
-> +                       <0x00027000 0 &gic GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH>;
->  
->                 chipcommon: chipcommon@0 {
->                         reg = <0x00000000 0x1000>;
-> @@ -143,4 +133,30 @@
->                         #gpio-cells = <2>;
->                 };
->         };
-> +
-> +       nand: nand@18028000 {
-> +               compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1", "brcm,brcmnand";
-> +               reg = <0x18028000 0x600>, <0x1811a408 0x600>, <0x18028f00 0x20>;
-> +               reg-names = "nand", "iproc-idm", "iproc-ext";
-> +               interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
+Hello,
 
-I think I'd rather leave the interrupt-map in the brcm node, and use
+As part of Linaro's Android Upstreaming effort, we were revisiting
+outstanding patches, and realised that this patch [1] isn't yet
+upstream.
 
-	interrupts = <0>;
+I asked Artem for his advice (in a personal email), and he kindly
+pointed me to ask on the mailing list as well - so could anyone please
+let me know if there was something pending with this patch, or did it
+just get missed?
 
-here.
+If it just got missed, I could help with re-submitting it if required,
+so it can get queued up.
 
-> +               status = "disabled";
-> +
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +
-> +               brcm,nand-has-wp;
-> +
-> +               nandcs@0 {
-> +                       compatible = "brcm,nandcs";
-> +                       reg = <0>;
-> +                       #address-cells = <1>;
-> +                       #size-cells = <1>;
-> +
-> +                       nand-ecc-strength = <8>;
-> +                       nand-ecc-step-size = <512>;
-> +
-> +                       linux,part-probe = "ofpart", "bcm47xxpart";
-> +               };
-> +       };
+Thanks very much!
 
-This seems fine in principle, once the exact binding has been nailed down.
+[1] : http://patchwork.ozlabs.org/patch/85874/
+--=20
+Thanks and regards,
 
-"bcm47xxpart" does not seem like an appropriate string here.
-
-	Arnd
+Sumit Semwal
+Kernel SubTeam Lead - Linaro Mobile Group
+Linaro.org =E2=94=82 Open source software for ARM SoCs
