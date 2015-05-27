@@ -1,24 +1,21 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from hauke-m.de ([2001:41d0:8:b27b::1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxiO9-0005FW-UB
- for linux-mtd@lists.infradead.org; Wed, 27 May 2015 20:57:22 +0000
-Received: by paza2 with SMTP id a2so6472469paz.3
- for <linux-mtd@lists.infradead.org>; Wed, 27 May 2015 13:57:00 -0700 (PDT)
-Date: Wed, 27 May 2015 13:56:57 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Cyril Bur <cyrilbur@gmail.com>
-Subject: Re: [PATCH] drivers/mtd: add powernv flash MTD abstraction driver
-Message-ID: <20150527205559.GK27753@ld-irv-0074>
-References: <1430721739-17517-1-git-send-email-cyrilbur@gmail.com>
- <1430721739-17517-2-git-send-email-cyrilbur@gmail.com>
- <20150520211716.GM11598@ld-irv-0074>
- <1432188772.2911.15.camel@cyril>
+ id 1YxjAO-00013j-KX
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2015 21:47:13 +0000
+Message-ID: <55663B48.5060306@hauke-m.de>
+Date: Wed, 27 May 2015 23:46:48 +0200
+From: Hauke Mehrtens <hauke@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1432188772.2911.15.camel@cyril>
-Cc: Joel Stanley <joel@jms.id.au>, linuxppc-dev@lists.ozlabs.org,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org, jk@ozlabs.org
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [RFC] ARM: BCM5301X: add NAND flash chip description
+References: <1432492349-18517-1-git-send-email-hauke@hauke-m.de>
+ <5386954.hrl5VLbdYc@wuerfel>
+In-Reply-To: <5386954.hrl5VLbdYc@wuerfel>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, rjui@broadcom.com,
+ zajec5@gmail.com, jogo@openwrt.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,77 +25,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyril,
+On 05/27/2015 09:37 AM, Arnd Bergmann wrote:
+> On Sunday 24 May 2015 20:32:29 Hauke Mehrtens wrote:
+>> @@ -124,17 +124,7 @@
+>>                         <0x00026000 0 &gic GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
+>>  
+>>                         /* Ethernet Controller 3 */
+>> -                       <0x00027000 0 &gic GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH>,
+>> -
+>> -                       /* NAND Controller */
+>> -                       <0x00028000 0 &gic GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>,
+>> -                       <0x00028000 1 &gic GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
+>> -                       <0x00028000 2 &gic GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>,
+>> -                       <0x00028000 3 &gic GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
+>> -                       <0x00028000 4 &gic GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
+>> -                       <0x00028000 5 &gic GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>,
+>> -                       <0x00028000 6 &gic GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>,
+>> -                       <0x00028000 7 &gic GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
+>> +                       <0x00027000 0 &gic GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH>;
+>>  
+>>                 chipcommon: chipcommon@0 {
+>>                         reg = <0x00000000 0x1000>;
+>> @@ -143,4 +133,30 @@
+>>                         #gpio-cells = <2>;
+>>                 };
+>>         };
+>> +
+>> +       nand: nand@18028000 {
+>> +               compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1", "brcm,brcmnand";
+>> +               reg = <0x18028000 0x600>, <0x1811a408 0x600>, <0x18028f00 0x20>;
+>> +               reg-names = "nand", "iproc-idm", "iproc-ext";
+>> +               interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
+> 
+> I think I'd rather leave the interrupt-map in the brcm node, and use
+> 
+> 	interrupts = <0>;
+> 
+> here.
 
-On Thu, May 21, 2015 at 04:12:52PM +1000, Cyril Bur wrote:
-> One question though,
-> 
-> On Wed, 2015-05-20 at 14:17 -0700, Brian Norris wrote:
-> > On Mon, May 04, 2015 at 04:42:19PM +1000, Cyril Bur wrote:
-> > > Powerpc powernv platforms allow access to certain system flash devices
-> > > through a firmwarwe interface. This change adds an mtd driver for these
-> > > flash devices.
-> > > 
-> > > Minor updates from Jeremy Kerr and Joel Stanley.
-> > > 
-> > > Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-> > > Signed-off-by: Joel Stanley <joel@jms.id.au>
-> > > Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
-> > > ---
-> > >  drivers/mtd/devices/Kconfig         |   6 +
-> > >  drivers/mtd/devices/Makefile        |   1 +
-> > >  drivers/mtd/devices/powernv_flash.c | 288 ++++++++++++++++++++++++++++++++++++
-> > >  3 files changed, 295 insertions(+)
-> > >  create mode 100644 drivers/mtd/devices/powernv_flash.c
-> > > 
-> 
-> [snip]
-> 
-> > > +
-> > > +/**
-> > > + * powernv_flash_set_driver_info - Fill the mtd_info structure and docg3
-> > > + * structure @pdev: The platform device
-> > > + * @mtd: The structure to fill
-> > > + */
-> > > +static int __init powernv_flash_set_driver_info(struct device *dev,
-> > > +		struct mtd_info *mtd)
-> > > +{
-...
-> > > +	/* Going to have to check what details I need to set and how to
-> > > +	 * get them */
-> > > +	mtd->name = of_get_property(dev->of_node, "name", NULL);
-> > > +	mtd->type = MTD_NANDFLASH;
-> > > +	mtd->flags = MTD_CAP_NANDFLASH;
-> > 
-> > Is this really NAND flash? It doesn't look like it; I see no bad block
-> > implementation, and writesize==1.
-> 
-> Correct, but the type here is a bit misleading, we have a firmware
-> interface for the low level read/write/erase functions, all this driver
-> does is pass the calls through to firmware, there isn't much that linux
-> or userspace can do since it doesn't actually do the hardware accesses. 
-> 
-> I've checked with Jeremy, turns out the hardware is actually NOR, no
-> idea how I ever thought it was NAND.
-> 
-> Perhaps just:
-> 	mtd->type = MTD_RAM;
-> 	mtd->flags = MTD_WRITEABLE;
-> 
-> I would have used MTD_NOR but Jeremy confirms that the backing flash may
-> not always be NOR on other platforms.
+There are two conflicting interests ;-)
 
-Well, it definitely shouldn't have a type of MTD_NANDFLASH if it's
-actually NOR. MTD users may very well treat NAND differently than
-anything else. And MTD_RAM is also pretty misleading.
+In the first approach we probed the NAND controller through bcma and
+just added the additional information we can not probe through device
+tree. That was this version:
+https://patchwork.ozlabs.org/patch/473181/
 
-Also, the comments throughout the driver about PNOR will be misleading
-if it's not always PNOR.
+This version needs some changes to the brcmnand driver and this
+additional part:
+https://patchwork.ozlabs.org/patch/473182/
 
-What other type of memory might be used? Would it act any differently
-than PNOR? If so, then I'd expect the driver would need to account for
-this anyway (at a minimum, just by exposing that information through an
-MTD API, so users can treat it differently) so we'd have a chance to
-change the mtd->type.
+This code is simular to the iproc_nand.c
 
-Brian
+Brian wanted us to use the iproc_nand.c which is possible, but then we
+completely ignore what we have probed in bcma and only use device tree.
+And this nand driver is not a subnode of the bcma bus any more so we can
+not use the irqs defined there.
+
+> 
+>> +               status = "disabled";
+>> +
+>> +               #address-cells = <1>;
+>> +               #size-cells = <0>;
+>> +
+>> +               brcm,nand-has-wp;
+>> +
+>> +               nandcs@0 {
+>> +                       compatible = "brcm,nandcs";
+>> +                       reg = <0>;
+>> +                       #address-cells = <1>;
+>> +                       #size-cells = <1>;
+>> +
+>> +                       nand-ecc-strength = <8>;
+>> +                       nand-ecc-step-size = <512>;
+>> +
+>> +                       linux,part-probe = "ofpart", "bcm47xxpart";
+>> +               };
+>> +       };
+> 
+> This seems fine in principle, once the exact binding has been nailed down.
+> 
+> "bcm47xxpart" does not seem like an appropriate string here.
+
+We are already thinking and talking about how to solve this problem.
+There are some parsers that are able to parse some partition layout
+based on information various sources or some vendor headers and some are
+also guessing in addition, like they are assuming that the bootloader is
+in the first block and n bytes long. The current module is that the
+flash driver defines which partition parsers to take, it is hard coded
+into the code. I do not like that. ;-)
+
+I am trying to get a simple patch in which makes it possible to
+overwrite the defaults from the flash driver with device tree.
+As it uses the same format it should be easy to convert devices from the
+old style to the new one. This deice tree attribute is already supported
+by one driver I moved the code to make it available for all drivers.
+
+The patch I am talking about: https://patchwork.ozlabs.org/patch/475988/
+
+Hauke
