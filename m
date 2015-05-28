@@ -1,21 +1,20 @@
 Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yy7Sk-0002K7-MZ
- for linux-mtd@lists.infradead.org; Thu, 28 May 2015 23:43:47 +0000
-Received: by padbw4 with SMTP id bw4so34513455pad.0
- for <linux-mtd@lists.infradead.org>; Thu, 28 May 2015 16:43:25 -0700 (PDT)
-Date: Thu, 28 May 2015 16:43:22 -0700
+ id 1Yy7dW-00072j-Py
+ for linux-mtd@lists.infradead.org; Thu, 28 May 2015 23:54:55 +0000
+Received: by pacwv17 with SMTP id wv17so34743644pac.2
+ for <linux-mtd@lists.infradead.org>; Thu, 28 May 2015 16:54:34 -0700 (PDT)
+Date: Thu, 28 May 2015 16:53:57 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?iso-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
-Subject: Re: [PATCH 1/3] include/common.h: fix build against musl
-Message-ID: <20150528234322.GB2878@ld-irv-0074>
-References: <1429827173-1739-1-git-send-email-joerg.krause@embedded.rocks>
+To: namnguyen@chromium.org
+Subject: Re: [PATCH v5] mtd-utils: Add mtdpart to add/delete partition
+Message-ID: <20150528235357.GC2878@ld-irv-0074>
+References: <1430233932-8380-1-git-send-email-namnguyen@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1429827173-1739-1-git-send-email-joerg.krause@embedded.rocks>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1430233932-8380-1-git-send-email-namnguyen@chromium.org>
+Cc: vapier@chromium.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 24, 2015 at 12:12:51AM +0200, Jörg Krause wrote:
-> Like uClibc version older than (not yet released) 0.9.34 musl does not have
-> a rpmatch() implementation.
+On Tue, Apr 28, 2015 at 08:12:12AM -0700, namnguyen@chromium.org wrote:
+> From: "Nam T. Nguyen" <namnguyen@chromium.org>
 > 
-> uClibc defines both __UCLIBC__ and __GLIBC__. So first check for uCibc and its
-> version and then for a non glibc implementation (like musl). Note, musl does
-> not define __MUSL__.
+> Add a simple utility to exercise BLKPG ioctl.
 > 
-> Signed-off-by: Jörg Krause <joerg.krause@embedded.rocks>
+> Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
+> ---
+> Changes since v4:
+> 
+>   * Check part_no parameter for INT_MAX overflow
 
-Applied this one to mtd-utils.git. Thanks!
+Pushed to mtd-utils.git. Thanks!
