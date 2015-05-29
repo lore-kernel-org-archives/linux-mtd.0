@@ -1,20 +1,16 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yy7dW-00072j-Py
- for linux-mtd@lists.infradead.org; Thu, 28 May 2015 23:54:55 +0000
-Received: by pacwv17 with SMTP id wv17so34743644pac.2
- for <linux-mtd@lists.infradead.org>; Thu, 28 May 2015 16:54:34 -0700 (PDT)
-Date: Thu, 28 May 2015 16:53:57 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: namnguyen@chromium.org
-Subject: Re: [PATCH v5] mtd-utils: Add mtdpart to add/delete partition
-Message-ID: <20150528235357.GC2878@ld-irv-0074>
-References: <1430233932-8380-1-git-send-email-namnguyen@chromium.org>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: use cfi-util in jedecprobe
+Date: Fri, 29 May 2015 10:39:28 +0200
+Message-ID: <7230287.A5AxNMN3qP@wuerfel>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1430233932-8380-1-git-send-email-namnguyen@chromium.org>
-Cc: vapier@chromium.org, linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: Denys Vlasenko <dvlasenk@redhat.com>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Dan Carpenter <dan.carpenter@oracle.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 28, 2015 at 08:12:12AM -0700, namnguyen@chromium.org wrote:
-> From: "Nam T. Nguyen" <namnguyen@chromium.org>
-> 
-> Add a simple utility to exercise BLKPG ioctl.
-> 
-> Signed-off-by: Nam T. Nguyen <namnguyen@chromium.org>
-> ---
-> Changes since v4:
-> 
->   * Check part_no parameter for INT_MAX overflow
+A recent change to move cfi helper functions out of line
+is causing build errors when cfi-util is a loadable module
+and jedecprobe is built-in:
 
-Pushed to mtd-utils.git. Thanks!
+drivers/built-in.o: In function `jedec_reset':
+(.text+0x140694): undefined reference to `cfi_send_gen_cmd'
+drivers/built-in.o: In function `jedec_probe_chip':
+(.text+0x140794): undefined reference to `cfi_build_cmd_addr'
+
+This adds a 'select' for the module containing these functions
+from the jedecprobe code, to ensure it is always reachable.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 4612c715a6ea6 ("mtd: cfi: deinline large functions")
+
+diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
+index 6f20977f8cf6..63b6b536b044 100644
+--- a/drivers/mtd/chips/Kconfig
++++ b/drivers/mtd/chips/Kconfig
+@@ -16,6 +16,7 @@ config MTD_CFI
+ config MTD_JEDECPROBE
+ 	tristate "Detect non-CFI AMD/JEDEC-compatible flash chips"
+ 	select MTD_GEN_PROBE
++	select MTD_CFI_UTIL
+ 	help
+ 	  This option enables JEDEC-style probing of flash chips which are not
+ 	  compatible with the Common Flash Interface, but will use the common
