@@ -1,17 +1,12 @@
-Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YyNyE-00030G-4r
- for linux-mtd@lists.infradead.org; Fri, 29 May 2015 17:21:22 +0000
-Received: by lagv1 with SMTP id v1so60774736lag.3
- for <linux-mtd@lists.infradead.org>; Fri, 29 May 2015 10:20:59 -0700 (PDT)
 From: Joachim Eastwood <manabian@gmail.com>
 To: computersforpeace@gmail.com,
 	dwmw2@infradead.org
-Subject: [PATCH] mtd: spi-nor: s25fl008k and s25fl016k supports dual/quad mode
-Date: Fri, 29 May 2015 19:20:24 +0200
-Message-Id: <1432920024-9058-1-git-send-email-manabian@gmail.com>
-Cc: shijie.huang@intel.com, Joachim Eastwood <manabian@gmail.com>,
- linux-mtd@lists.infradead.org
+Subject: [PATCH 0/2] NXP SPIFI driver for LPC18xx/43xx familiy
+Date: Fri, 29 May 2015 19:50:14 +0200
+Message-Id: <1432921816-10765-1-git-send-email-manabian@gmail.com>
+Cc: shijie.huang@intel.com, devicetree@vger.kernel.org,
+ Joachim Eastwood <manabian@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +16,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-s25fl016k can be found on Embedded Artists' LPC4357 Developer's Kit
-where is used in quad mode by the LPC4357 SPIFI controller.
+This patch set adds a SPI-NOR driver for the NXP SPI Flash (SPIFI)
+controller that can be found on newer NXP MCUs. For example on the
+LPC18xx and LPC43xx familiy.
 
-Signed-off-by: Joachim Eastwood <manabian@gmail.com>
----
+NXP SPIFI is a specialized SPI interface for serial Flash devices.
+It supports one Flash device with 1-, 2- and 4-bits width in SPI
+mode 0 or 3. The controller operates in either command or memory
+mode. In memory mode the Flash is accessible from the CPU as
+normal memory.
 
-Patch against l2-mtd.git master.
+Support for LPC18xx/43xx can found in linux-next now.
 
- drivers/mtd/spi-nor/spi-nor.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Patch against l2-mtd.git master branch.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d78831b4422b..c834bd3004d7 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -621,8 +621,8 @@ static const struct spi_device_id spi_nor_ids[] = {
- 	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32, 0) },
- 	{ "s25sl032a",  INFO(0x010215,      0,  64 * 1024,  64, 0) },
- 	{ "s25sl064a",  INFO(0x010216,      0,  64 * 1024, 128, 0) },
--	{ "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K) },
--	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K) },
-+	{ "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
- 	{ "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, SECT_4K) },
- 	{ "s25fl164k",  INFO(0x014017,      0,  64 * 1024, 128, SECT_4K) },
+
+Joachim Eastwood (2):
+  mtd: spi-nor: add driver for NXP SPI Flash Interface (SPIFI)
+  doc: dt: add documentation for nxp,lpc1773-spifi
+
+ .../devicetree/bindings/mtd/nxp-spifi.txt          |  56 +++
+ drivers/mtd/spi-nor/Kconfig                        |  10 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/nxp-spifi.c                    | 508 +++++++++++++++++++++
+ 4 files changed, 575 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nxp-spifi.txt
+ create mode 100644 drivers/mtd/spi-nor/nxp-spifi.c
+
 -- 
 1.8.0
