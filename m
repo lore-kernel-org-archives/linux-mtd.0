@@ -1,19 +1,18 @@
-Received: from hauke-m.de ([5.39.93.123])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YyN6C-0007g8-8z
- for linux-mtd@lists.infradead.org; Fri, 29 May 2015 16:25:32 +0000
-Message-ID: <556892B8.3020706@hauke-m.de>
-Date: Fri, 29 May 2015 18:24:24 +0200
-From: Hauke Mehrtens <hauke@hauke-m.de>
+Date: Fri, 29 May 2015 10:08:18 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] mtd: use cfi-util in jedecprobe
+Message-ID: <20150529170818.GU27753@ld-irv-0074>
+References: <7230287.A5AxNMN3qP@wuerfel>
 MIME-Version: 1.0
-To: Ray Jui <rjui@broadcom.com>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: iProc nand iproc-idm register
-References: <5562078A.6030909@hauke-m.de> <55635511.30602@broadcom.com>
-In-Reply-To: <55635511.30602@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7230287.A5AxNMN3qP@wuerfel>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Dan Carpenter <dan.carpenter@oracle.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Arnd,
 
-
-On 05/25/2015 07:00 PM, Ray Jui wrote:
-> Hi Hauke,
+On Fri, May 29, 2015 at 10:39:28AM +0200, Arnd Bergmann wrote:
+> A recent change to move cfi helper functions out of line
+> is causing build errors when cfi-util is a loadable module
+> and jedecprobe is built-in:
 > 
-> On 5/24/2015 10:16 AM, Hauke Mehrtens wrote:
->> Hi Ray,
->>
->> in the iproc_nand driver your are using this register range:
->> reg = <0x18046000 0x600>, <0xf8105408 0x600>, <0x18046f00 0x20>;
->> reg-names = "nand", "iproc-idm", "iproc-ext";
->>
->> I think the iproc-idm register range is the wrap address part on bcma
->> bus. On the bcma bus it is 0x1000 in size and 0x0408 is the offset of
->> the IO control register in it. Are the new iProc devices different here
->> or is this register not always at this offset but varies?
+> drivers/built-in.o: In function `jedec_reset':
+> (.text+0x140694): undefined reference to `cfi_send_gen_cmd'
+> drivers/built-in.o: In function `jedec_probe_chip':
+> (.text+0x140794): undefined reference to `cfi_build_cmd_addr'
 > 
-> It's different. Based on the Cygnus RDB, there's nothing between
-> 0xf8105000 and 0xf8105404.
-
-Thanks for the info, the space before 408 is not used on the older
-chips, just some addresses ontop of that.
-
-Still this is a strange address to start a register map.
-
+> This adds a 'select' for the module containing these functions
+> from the jedecprobe code, to ensure it is always reachable.
 > 
->>
->> Wouldn't it be better to specify the complete range like this:
->> reg = <0x18046000 0x600>, <0xf8105000 0x1000>, <0x18046f00 0x20>;
->> Then you can read the register at offset 0x408 in that range.
->>
->> Hauke
->>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: 4612c715a6ea6 ("mtd: cfi: deinline large functions")
+
+Already caught and fixed:
+
+http://patchwork.ozlabs.org/patch/477464/
+
+Thanks!
