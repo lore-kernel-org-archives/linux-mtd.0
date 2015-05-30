@@ -1,25 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YymWa-0006R4-1D
- for linux-mtd@lists.infradead.org; Sat, 30 May 2015 19:34:29 +0000
-Message-ID: <556A10A3.6000406@nod.at>
-Date: Sat, 30 May 2015 21:33:55 +0200
-From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Joachim Eastwood <manabian@gmail.com>
+In-Reply-To: <556A10A3.6000406@nod.at>
+References: <1432921816-10765-1-git-send-email-manabian@gmail.com>
+ <1432921816-10765-2-git-send-email-manabian@gmail.com>
+ <5569DAB9.9070105@vanguardiasur.com.ar>
+ <CAGhQ9VwsiPaFw=cMXhQrKfg8zWGa7RMOd+H6_VXfRepOwWbtYQ@mail.gmail.com>
+ <5569FC99.1060706@vanguardiasur.com.ar> <556A10A3.6000406@nod.at>
+Date: Sat, 30 May 2015 21:37:25 +0200
+Message-ID: <CAGhQ9VzDDK6dh6pGUzp_-h42NPROQJG=2D96WMWjZJEAoVqAFQ@mail.gmail.com>
 Subject: Re: [PATCH 1/2] mtd: spi-nor: add driver for NXP SPI Flash Interface
  (SPIFI)
-References: <1432921816-10765-1-git-send-email-manabian@gmail.com>	<1432921816-10765-2-git-send-email-manabian@gmail.com>	<5569DAB9.9070105@vanguardiasur.com.ar>
- <CAGhQ9VwsiPaFw=cMXhQrKfg8zWGa7RMOd+H6_VXfRepOwWbtYQ@mail.gmail.com>
- <5569FC99.1060706@vanguardiasur.com.ar>
-In-Reply-To: <5569FC99.1060706@vanguardiasur.com.ar>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+From: Joachim  Eastwood <manabian@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=UTF-8
 Cc: devicetree@vger.kernel.org,
  Ariel D'Alessandro <ariel.dalessandro@gmail.com>,
- linux-mtd@lists.infradead.org, shijie.huang@intel.com,
- computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ shijie.huang@intel.com, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,63 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 30.05.2015 um 20:08 schrieb Ezequiel Garcia:
-> +Richard
-> 
-> On 05/30/2015 01:51 PM, Joachim Eastwood wrote:
->> Hi Ezequiel,
+On 30 May 2015 at 21:33, Richard Weinberger <richard@nod.at> wrote:
+> Am 30.05.2015 um 20:08 schrieb Ezequiel Garcia:
+>> +Richard
 >>
->> On 30 May 2015 at 17:43, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
->>> Hi Joachim,
+>> On 05/30/2015 01:51 PM, Joachim Eastwood wrote:
+>>> Hi Ezequiel,
 >>>
->>> Looks pretty neat. I've just a couple comments.
+>>> On 30 May 2015 at 17:43, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+>>>> Hi Joachim,
+>>>>
+>>>> Looks pretty neat. I've just a couple comments.
+>>>>
+>>>> On 05/29/2015 02:50 PM, Joachim Eastwood wrote:
+>>>>> Add SPI-NOR driver for the SPI Flash Interface (SPIFI)
+>>>>> controller that is found newer NXP MCU devices.
+>>>>>
+>>>>> The controller supports serial SPI Flash devices with 1-, 2-
+>>>>> and 4-bit width in either SPI mode 0 or 3. The controller
+>>>>> can operate in either command or memory mode. In memory mode
+>>>>> the Flash is exposed as normal memory and can be directly
+>>>>> accessed by the CPU.
+>>>>>
+>>>>> Signed-off-by: Joachim Eastwood <manabian@gmail.com>
+>>>>> ---
+>>>>>  drivers/mtd/spi-nor/Kconfig     |  10 +
+>>>>>  drivers/mtd/spi-nor/Makefile    |   1 +
+>>>>>  drivers/mtd/spi-nor/nxp-spifi.c | 508 ++++++++++++++++++++++++++++++++++++++++
+>>>>>  3 files changed, 519 insertions(+)
+>>>>>  create mode 100644 drivers/mtd/spi-nor/nxp-spifi.c
+>>>>>
+>>>>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+>>>>> index 64a4f0edabc7..f10a37f1a4ef 100644
+>>>>> --- a/drivers/mtd/spi-nor/Kconfig
+>>>>> +++ b/drivers/mtd/spi-nor/Kconfig
+>>>>> @@ -28,4 +28,14 @@ config SPI_FSL_QUADSPI
+>>>>>         This enables support for the Quad SPI controller in master mode.
+>>>>>         We only connect the NOR to this controller now.
+>>>>>
+>>>>> +config SPI_NXP_SPIFI
+>>>>> +     tristate "NXP SPI Flash Interface (SPIFI)"
+>>>>> +     depends on OF && (ARCH_LPC18XX || COMPILE_TEST)
+>>>>
+>>>> Since you are adding COMPILE_TEST, maybe you want
+>>>> 'depends on HAS_IOMEM' as well?
 >>>
->>> On 05/29/2015 02:50 PM, Joachim Eastwood wrote:
->>>> Add SPI-NOR driver for the SPI Flash Interface (SPIFI)
->>>> controller that is found newer NXP MCU devices.
->>>>
->>>> The controller supports serial SPI Flash devices with 1-, 2-
->>>> and 4-bit width in either SPI mode 0 or 3. The controller
->>>> can operate in either command or memory mode. In memory mode
->>>> the Flash is exposed as normal memory and can be directly
->>>> accessed by the CPU.
->>>>
->>>> Signed-off-by: Joachim Eastwood <manabian@gmail.com>
->>>> ---
->>>>  drivers/mtd/spi-nor/Kconfig     |  10 +
->>>>  drivers/mtd/spi-nor/Makefile    |   1 +
->>>>  drivers/mtd/spi-nor/nxp-spifi.c | 508 ++++++++++++++++++++++++++++++++++++++++
->>>>  3 files changed, 519 insertions(+)
->>>>  create mode 100644 drivers/mtd/spi-nor/nxp-spifi.c
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
->>>> index 64a4f0edabc7..f10a37f1a4ef 100644
->>>> --- a/drivers/mtd/spi-nor/Kconfig
->>>> +++ b/drivers/mtd/spi-nor/Kconfig
->>>> @@ -28,4 +28,14 @@ config SPI_FSL_QUADSPI
->>>>         This enables support for the Quad SPI controller in master mode.
->>>>         We only connect the NOR to this controller now.
->>>>
->>>> +config SPI_NXP_SPIFI
->>>> +     tristate "NXP SPI Flash Interface (SPIFI)"
->>>> +     depends on OF && (ARCH_LPC18XX || COMPILE_TEST)
+>>> Since MTD depends on GENERIC_IO is that needed?
+>>> Or am I confusing the config options here(?)
 >>>
->>> Since you are adding COMPILE_TEST, maybe you want
->>> 'depends on HAS_IOMEM' as well?
 >>
->> Since MTD depends on GENERIC_IO is that needed?
->> Or am I confusing the config options here(?)
->>
-> 
-> I think you need HAS_IOMEM for ioremap stuff.
-> Maybe Brian or Richard will know better.
+>> I think you need HAS_IOMEM for ioremap stuff.
+>> Maybe Brian or Richard will know better.
+>
+> Yes, if you need ioremap() your driver has to depend on HAS_IOMEM.
+>
+> We have GENERIC_IO to allow non-physical MTD stuff
+> on architectures without io memory, namely s390 and UML.
+> Some time ago I've implemented GENERIC_IO to make nandsim
+> and UBI work on UML.
 
-Yes, if you need ioremap() your driver has to depend on HAS_IOMEM.
+Got it.
+Thanks Richard.
 
-We have GENERIC_IO to allow non-physical MTD stuff
-on architectures without io memory, namely s390 and UML.
-Some time ago I've implemented GENERIC_IO to make nandsim
-and UBI work on UML.
+I'll send a new version of the patch within a couple of days.
 
-Thanks,
-//richard
+
+regards,
+Joachim Eastwood
