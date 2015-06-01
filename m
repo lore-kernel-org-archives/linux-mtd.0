@@ -1,16 +1,18 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YzWzp-0008Dy-DF
- for linux-mtd@lists.infradead.org; Mon, 01 Jun 2015 21:11:47 +0000
-From: Richard Weinberger <richard@nod.at>
-To: computersforpeace@gmail.com
-Subject: [PATCH 5/6] mtd: docg3: Fix kasprintf() usage
-Date: Mon,  1 Jun 2015 23:10:53 +0200
-Message-Id: <1433193054-26865-6-git-send-email-richard@nod.at>
-In-Reply-To: <1433193054-26865-1-git-send-email-richard@nod.at>
-References: <1433193054-26865-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, maximlevitsky@gmail.com, linux-kernel@vger.kernel.org
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YzYyA-0007Hv-VA
+ for linux-mtd@lists.infradead.org; Mon, 01 Jun 2015 23:18:11 +0000
+Received: by pdjm12 with SMTP id m12so35613062pdj.3
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Jun 2015 16:17:49 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/4] mtd: diskonchip: remove two-phase partitioning /
+ registration
+Date: Mon,  1 Jun 2015 16:17:17 -0700
+Message-Id: <1433200640-17858-1-git-send-email-computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +22,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-kasprintf() does a dynamic memory allocation and can fail.
-We have to handle that case.
+It is a Bad Idea (TM) to call mtd_device_register() or
+mtd_device_parse_register() twice on the same master MTD. Among other
+things, it makes partition overrides (e.g., cmdlinepart) much more
+difficult.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Since commit 727dc612c46b ("mtd: part: Create the master device node
+when partitioned"), we now have a config option that accomplishes the
+same purpose as the double-registration done in diskonchip.c -- it
+forces the master MTD to *always* be registered, while partitions may
+optionally show up in addition. Eventually, we might like to make
+CONFIG_MTD_PARTITIONED_MASTER into the default, but this could be
+disruptive to user-space expectations of MTD numbering, so we'll take
+that slowly.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Alexander Shiyan <shc_work@mail.ru>
 ---
- drivers/mtd/devices/docg3.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Not tested, as I don't have the hardware
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 486936b..5e67b4a 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1815,7 +1815,7 @@ static void doc_dbg_unregister(struct docg3 *docg3)
-  * @chip_id: The chip ID of the supported chip
-  * @mtd: The structure to fill
-  */
--static void __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
-+static int __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
- {
- 	struct docg3 *docg3 = mtd->priv;
- 	int cfg;
-@@ -1828,6 +1828,8 @@ static void __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
- 	case DOC_CHIPID_G3:
- 		mtd->name = kasprintf(GFP_KERNEL, "docg3.%d",
- 				      docg3->device_id);
-+		if (!mtd->name)
-+			return -ENOMEM;
- 		docg3->max_block = 2047;
- 		break;
- 	}
-@@ -1850,6 +1852,8 @@ static void __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
- 	mtd->_block_isbad = doc_block_isbad;
- 	mtd->ecclayout = &docg3_oobinfo;
- 	mtd->ecc_strength = DOC_ECC_BCH_T;
-+
-+	return 0;
+ drivers/mtd/nand/diskonchip.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index e5800146cf33..7da266a53979 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -1301,10 +1301,7 @@ static int __init nftl_scan_bbt(struct mtd_info *mtd)
+ 	if (ret)
+ 		return ret;
+ 
+-	mtd_device_register(mtd, NULL, 0);
+-	if (!no_autopart)
+-		mtd_device_register(mtd, parts, numparts);
+-	return 0;
++	return mtd_device_register(mtd, parts, no_autopart ? 0 : numparts);
  }
  
- /**
-@@ -1913,7 +1917,9 @@ doc_probe_device(struct docg3_cascade *cascade, int floor, struct device *dev)
- 		goto nomem4;
- 	}
+ static int __init inftl_scan_bbt(struct mtd_info *mtd)
+@@ -1358,10 +1355,7 @@ static int __init inftl_scan_bbt(struct mtd_info *mtd)
+ 	   autopartitioning, but I want to give it more thought. */
+ 	if (!numparts)
+ 		return -EIO;
+-	mtd_device_register(mtd, NULL, 0);
+-	if (!no_autopart)
+-		mtd_device_register(mtd, parts, numparts);
+-	return 0;
++	return mtd_device_register(mtd, parts, no_autopart ? 0 : numparts);
+ }
  
--	doc_set_driver_info(chip_id, mtd);
-+	ret = doc_set_driver_info(chip_id, mtd);
-+	if (ret)
-+		goto nomem4;
- 
- 	doc_hamming_ecc_init(docg3, DOC_LAYOUT_OOB_PAGEINFO_SZ);
- 	doc_reload_bbt(docg3);
+ static inline int __init doc2000_init(struct mtd_info *mtd)
 -- 
-1.8.4.5
+1.9.1
