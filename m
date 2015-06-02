@@ -1,22 +1,21 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YzidZ-00044a-S9
- for linux-mtd@lists.infradead.org; Tue, 02 Jun 2015 09:37:34 +0000
-Message-ID: <556D7946.3000909@nod.at>
-Date: Tue, 02 Jun 2015 11:37:10 +0200
+ id 1YzihG-0007VL-7k
+ for linux-mtd@lists.infradead.org; Tue, 02 Jun 2015 09:41:23 +0000
+Message-ID: <556D7A29.8040201@nod.at>
+Date: Tue, 02 Jun 2015 11:40:57 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH v3] UBI: block: Dynamically allocate minor numbers
-References: <1426613846-36598-1-git-send-email-dehrenberg@chromium.org>
- <550ADF6C.3090408@vanguardiasur.com.ar>
- <5536D5C4.1010701@vanguardiasur.com.ar>
-In-Reply-To: <5536D5C4.1010701@vanguardiasur.com.ar>
+To: Takashi Iwai <tiwai@suse.de>, hujianyang <hujianyang@huawei.com>
+Subject: Re: [PATCH] UBI: Use static class and attribute groups
+References: <1423057871-9928-1-git-send-email-tiwai@suse.de>	<54EEE32F.2000001@huawei.com>	<54EEE52D.9000906@nod.at>	<5555AC35.60906@huawei.com>
+ <s5hegmd10j3.wl-tiwai@suse.de> <555AE8AD.6070205@nod.at>
+In-Reply-To: <555AE8AD.6070205@nod.at>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: gwendal@chromium.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Dan Ehrenberg <dehrenberg@chromium.org>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Sheng Yong <shengyong1@huawei.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 22.04.2015 um 00:57 schrieb Ezequiel Garcia:
-> 
-> 
-> On 03/19/2015 11:38 AM, Ezequiel Garcia wrote:
->>
->>
->> On 03/17/2015 02:37 PM, Dan Ehrenberg wrote:
->>> This patch makes ubiblock devices have minor numbers beginning from
->>> 0, allocated dynamically independently of the ubi device/volume
->>> number. This property becomes useful because, on 32-bit architectures
->>> with LFS turned off in a userspace program, device minor numbers
->>> over 8 bits cause stat to return -EOVERFLOW. If the device number is
->>> high (>1) due to multiple MTD partitions, such an overflow will occur.
->>> While enabling LFS is clearly a nicer solution, it's often difficult
->>> to turn on in practice globally as many widely distributed packages
->>> don't work with LFS on.
+Am 19.05.2015 um 09:39 schrieb Richard Weinberger:
+> Am 19.05.2015 um 09:36 schrieb Takashi Iwai:
+>> At Fri, 15 May 2015 16:20:05 +0800,
+>> hujianyang wrote:
 >>>
->>> Other storage systems have their own workarounds, with SCSI making
->>> multiple device majors and MMC having a config option for the number
->>> of partitions per device. A completely dynamic minor numbering is
->>> simpler than these. It is unlikely that anyone is depending on a
->>> static minor number since the major is dynamic anyway. In addition,
->>> ubiblock is still relatively new, so now is the time to make such
->>> changes.
+>>> On 2015/2/26 17:19, Richard Weinberger wrote:
+>>>> Am 26.02.2015 um 10:11 schrieb hujianyang:
+>>>>> Hi Takashi,
+>>>>>
+>>>>> I think it's a good attempt. Did you test this patch on your environment
+>>>>> or just changing the code?
+>>>>>
+>>>>> How do you feel about this patch, Richard?
+>>>>
+>>>> I like the patch but had no time to look at it in detail and test it but this will happen soon. :)
+>>>>
+>>>> Thanks,
+>>>> //richard
+>>>>
+>>>> ______________________________________________________
+>>>> Linux MTD discussion mailing list
+>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>>
+>>>>
 >>>
->>> Signed-off-by: Dan Ehrenberg <dehrenberg@chromium.org>
+>>> Hi Richard,
 >>>
+>>> I've amended this patch a bit and Sheng Yong helped me test a little.
+>>> Could you please review and do some test on it?
+>>>
+>>> Thanks,
+>>> Hu
 >>
->> Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>> Thanks Hu!  I must have overlooked the post from Richard.
 >>
+>> My patch wasn't tested with the real hardware, mostly compile-tested
+>> only.  So, yes, if anyone could test it, it'd be greatly appreciated.
 > 
-> Hm.. it seems this one fell through the cracks :/ Richard?
+> You can test it using the nandsim module. :-)
 
-Yep. :(
-Applied to my 4.2 queue!
+Can I have a Tested-by?
 
-Thanks everyone!
+Thanks,
 //richard
