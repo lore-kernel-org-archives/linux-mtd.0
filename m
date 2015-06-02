@@ -1,30 +1,16 @@
-Received: from e23smtp08.au.ibm.com ([202.81.31.141])
+Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YzdoH-0003bg-NB
- for linux-mtd@lists.infradead.org; Tue, 02 Jun 2015 04:28:19 +0000
-Received: from /spool/local
- by e23smtp08.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <cyrilbur@gmail.com>;
- Tue, 2 Jun 2015 14:27:44 +1000
-Received: from d23relay09.au.ibm.com (d23relay09.au.ibm.com [9.185.63.181])
- by d23dlp03.au.ibm.com (Postfix) with ESMTP id E9ADE357804F
- for <linux-mtd@lists.infradead.org>; Tue,  2 Jun 2015 14:27:41 +1000 (EST)
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
- by d23relay09.au.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- t524RXDp54394984
- for <linux-mtd@lists.infradead.org>; Tue, 2 Jun 2015 14:27:41 +1000
-Received: from d23av03.au.ibm.com (localhost [127.0.0.1])
- by d23av03.au.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
- t524R93v029109
- for <linux-mtd@lists.infradead.org>; Tue, 2 Jun 2015 14:27:09 +1000
-From: Cyril Bur <cyrilbur@gmail.com>
-To: linuxppc-dev@ozlabs.org, computersforpeace@gmail.com
-Subject: [PATCH V3] drivers/mtd: add powernv flash MTD abstraction driver
-Date: Tue,  2 Jun 2015 14:26:09 +1000
-Message-Id: <1433219169-5115-1-git-send-email-cyrilbur@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Joel Stanley <joel@jms.id.au>,
- Jeremy Kerr <jk@ozlabs.org>
+ id 1YzgXb-0000sb-4X
+ for linux-mtd@lists.infradead.org; Tue, 02 Jun 2015 07:23:17 +0000
+Received: by iebgx4 with SMTP id gx4so126545549ieb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Jun 2015 00:22:52 -0700 (PDT)
+MIME-Version: 1.0
+Date: Tue, 2 Jun 2015 09:22:52 +0200
+Message-ID: <CAOiidZP8qhLHEf-e5_gHgt-9+SAhnbxEJB8h+r3HG7KJunPuGg@mail.gmail.com>
+Subject: Kernel oops during untar
+From: Christian Litjes <flitjesdev@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,359 +20,320 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Powerpc powernv platforms allow access to certain system flash devices
-through a firmwarwe interface. This change adds an mtd driver for these
-flash devices.
+Hi there,
 
-Minor updates from Jeremy Kerr and Joel Stanley.
+The two kernel oopses below are happening in the following situation:
+A kernel with an init ramfs is mounting a mtd contains the rootfs.
+This kernel will then untar a tarball which is located in a ramdisk on the mtd.
 
-Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
----
-Hello Brian and MTD folk,
-Could I please get an ACK for Michael to take this through the powerpc
-tree.
-Thanks.
+I've tried to untar with -v to figure out which file is causing it but
+this slows down the untar significantly so I'm unable to gather enough
+data. A oops will occur statistically once very 15 attempts. I hope
+this can be solved without knowing which file it is. If not I'll try
+to setup a test scenario to gather the data.
+
+Kernel version: 2.6.31.8
+
+Gdb points to the following to lines:
+
+Oops 1:
+gdb nodelist.o
+list *(jffs2_get_ino_cache+0x1c)
+line: 425         while (ret && ret->ino < ino)
+
+Oops 2:
+gdb nodelist.o
+list *(jffs2_add_ino_cache+0x3c)
+line: 443         dbg_inocache("add %p (ino #%u)\n", new, new->ino);
 
 
-V2: Address Brian Norris' review
-    Fix typos
-    Change from NAND flash type to NOR flash type
-    Correctness tweaks
-V3: Address Neelesh Gupta's review
-    Minor corrections
-    Release the opal token on error
-    Unregister mtd device on module remove
----
- drivers/mtd/devices/Kconfig         |   8 +
- drivers/mtd/devices/Makefile        |   1 +
- drivers/mtd/devices/powernv_flash.c | 286 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 295 insertions(+)
- create mode 100644 drivers/mtd/devices/powernv_flash.c
+This causes the following to oopses:
 
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index c49d0b1..f73c416 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -195,6 +195,14 @@ config MTD_BLOCK2MTD
- 	  Testing MTD users (eg JFFS2) on large media and media that might
- 	  be removed during a write (using the floppy drive).
- 
-+config MTD_POWERNV_FLASH
-+	tristate "powernv flash MTD driver"
-+	depends on PPC_POWERNV
-+	help
-+	  This provides an MTD device to access flash on powernv OPAL
-+	  platforms from Linux. This device abstracts away the
-+	  firmware interface for flash access.
-+
- comment "Disk-On-Chip Device Drivers"
- 
- config MTD_DOCG3
-diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-index f0b0e61..7912d3a 100644
---- a/drivers/mtd/devices/Makefile
-+++ b/drivers/mtd/devices/Makefile
-@@ -16,6 +16,7 @@ obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
- obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
- obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
- obj-$(CONFIG_MTD_ST_SPI_FSM)    += st_spi_fsm.o
-+obj-$(CONFIG_MTD_POWERNV_FLASH)	+= powernv_flash.o
- 
- 
- CFLAGS_docg3.o			+= -I$(src)
-diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-new file mode 100644
-index 0000000..777e09f
---- /dev/null
-+++ b/drivers/mtd/devices/powernv_flash.c
-@@ -0,0 +1,286 @@
-+/*
-+ * OPAL PNOR flash MTD abstraction
-+ *
-+ * IBM 2015
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/errno.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/string.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+
-+#include <linux/debugfs.h>
-+#include <linux/seq_file.h>
-+
-+#include <asm/opal.h>
-+
-+
-+/*
-+ * This driver creates the a Linux MTD abstraction for platform PNOR flash
-+ * backed by OPAL calls
-+ */
-+
-+struct powernv_flash {
-+	struct mtd_info	mtd;
-+	u32 id;
-+};
-+
-+enum flash_op {
-+	FLASH_OP_READ,
-+	FLASH_OP_WRITE,
-+	FLASH_OP_ERASE,
-+};
-+
-+static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
-+		loff_t offset, size_t len, size_t *retlen, u_char *buf)
-+{
-+	struct powernv_flash *info = (struct powernv_flash *)mtd->priv;
-+	struct device *dev = &mtd->dev;
-+	int token;
-+	struct opal_msg msg;
-+	int rc;
-+
-+	dev_dbg(dev, "%s(op=%d, offset=0x%llx, len=%zu)\n",
-+			__func__, op, offset, len);
-+
-+	token = opal_async_get_token_interruptible();
-+	if (token < 0) {
-+		if (token != -ERESTARTSYS)
-+			dev_err(dev, "Failed to get an async token\n");
-+
-+		return token;
-+	}
-+
-+	switch (op) {
-+	case FLASH_OP_READ:
-+		rc = opal_flash_read(info->id, offset, __pa(buf), len, token);
-+		break;
-+	case FLASH_OP_WRITE:
-+		rc = opal_flash_write(info->id, offset, __pa(buf), len, token);
-+		break;
-+	case FLASH_OP_ERASE:
-+		rc = opal_flash_erase(info->id, offset, len, token);
-+		break;
-+	default:
-+		BUG_ON(1);
-+	}
-+
-+	if (rc != OPAL_ASYNC_COMPLETION) {
-+		dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
-+				op, rc);
-+		opal_async_release_token(token);
-+		return -EIO;
-+	}
-+
-+	rc = opal_async_wait_response(token, &msg);
-+	opal_async_release_token(token);
-+	if (rc) {
-+		dev_err(dev, "opal async wait failed (rc %d)\n", rc);
-+		return -EIO;
-+	}
-+
-+	rc = be64_to_cpu(msg.params[1]);
-+	if (rc == OPAL_SUCCESS) {
-+		rc = 0;
-+		if (retlen)
-+			*retlen = len;
-+	} else {
-+		rc = -EIO;
-+	}
-+
-+	return rc;
-+}
-+
-+/**
-+ * @mtd: the device
-+ * @from: the offset to read from
-+ * @len: the number of bytes to read
-+ * @retlen: the number of bytes actually read
-+ * @buf: the filled in buffer
-+ *
-+ * Returns 0 if read successful, or -ERRNO if an error occurred
-+ */
-+static int powernv_flash_read(struct mtd_info *mtd, loff_t from, size_t len,
-+	     size_t *retlen, u_char *buf)
-+{
-+	return powernv_flash_async_op(mtd, FLASH_OP_READ, from,
-+			len, retlen, buf);
-+}
-+
-+/**
-+ * @mtd: the device
-+ * @to: the offset to write to
-+ * @len: the number of bytes to write
-+ * @retlen: the number of bytes actually written
-+ * @buf: the buffer to get bytes from
-+ *
-+ * Returns 0 if write successful, -ERRNO if error occurred
-+ */
-+static int powernv_flash_write(struct mtd_info *mtd, loff_t to, size_t len,
-+		     size_t *retlen, const u_char *buf)
-+{
-+	return powernv_flash_async_op(mtd, FLASH_OP_WRITE, to,
-+			len, retlen, (u_char *)buf);
-+}
-+
-+/**
-+ * @mtd: the device
-+ * @erase: the erase info
-+ * Returns 0 if erase successful or -ERRNO if an error occurred
-+ */
-+static int powernv_flash_erase(struct mtd_info *mtd, struct erase_info *erase)
-+{
-+	int rc;
-+
-+	erase->state = MTD_ERASING;
-+
-+	/* todo: register our own notifier to do a true async implementation */
-+	rc =  powernv_flash_async_op(mtd, FLASH_OP_ERASE, erase->addr,
-+			erase->len, NULL, NULL);
-+
-+	if (rc) {
-+		erase->fail_addr = erase->addr;
-+		erase->state = MTD_ERASE_FAILED;
-+	} else {
-+		erase->state = MTD_ERASE_DONE;
-+	}
-+	mtd_erase_callback(erase);
-+	return rc;
-+}
-+
-+/**
-+ * powernv_flash_set_driver_info - Fill the mtd_info structure and docg3
-+ * structure @pdev: The platform device
-+ * @mtd: The structure to fill
-+ */
-+static int powernv_flash_set_driver_info(struct device *dev,
-+		struct mtd_info *mtd)
-+{
-+	u64 size;
-+	u32 erase_size;
-+	int rc;
-+
-+	rc = of_property_read_u32(dev->of_node, "ibm,flash-block-size",
-+			&erase_size);
-+	if (rc) {
-+		dev_err(dev, "couldn't get resource block size information\n");
-+		return rc;
-+	}
-+
-+	rc = of_property_read_u64(dev->of_node, "reg", &size);
-+	if (rc) {
-+		dev_err(dev, "couldn't get resource size information\n");
-+		return rc;
-+	}
-+
-+	/*
-+	 * Going to have to check what details I need to set and how to
-+	 * get them
-+	 */
-+	mtd->name = of_get_property(dev->of_node, "name", NULL);
-+	mtd->type = MTD_NORFLASH;
-+	mtd->flags = MTD_WRITEABLE;
-+	mtd->size = size;
-+	mtd->erasesize = erase_size;
-+	mtd->writebufsize = mtd->writesize = 1;
-+	mtd->owner = THIS_MODULE;
-+	mtd->_erase = powernv_flash_erase;
-+	mtd->_read = powernv_flash_read;
-+	mtd->_write = powernv_flash_write;
-+	mtd->dev.parent = dev;
-+	return 0;
-+}
-+
-+/**
-+ * powernv_flash_probe
-+ * @pdev: platform device
-+ *
-+ * Returns 0 on success, -ENOMEM, -ENXIO on error
-+ */
-+static int powernv_flash_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct powernv_flash *data;
-+	int ret;
-+
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	data->mtd.priv = data;
-+
-+	ret = of_property_read_u32(dev->of_node, "ibm,opal-id", &(data->id));
-+	if (ret) {
-+		dev_err(dev, "no device property 'ibm,opal-id'\n");
-+		goto out;
-+	}
-+
-+	ret = powernv_flash_set_driver_info(dev, &data->mtd);
-+	if (ret)
-+		goto out;
-+
-+	dev_set_drvdata(dev, data);
-+
-+	/*
-+	 * The current flash that skiboot exposes is one contiguous flash chip
-+	 * with an ffs partition at the start, it should prove easier for users
-+	 * to deal with partitions or not as they see fit
-+	 */
-+	ret = mtd_device_register(&data->mtd, NULL, 0);
-+
-+out:
-+	return ret;
-+}
-+
-+/**
-+ * op_release - Release the driver
-+ * @pdev: the platform device
-+ *
-+ * Returns 0
-+ */
-+static int powernv_flash_release(struct platform_device *pdev)
-+{
-+	struct powernv_flash *data = dev_get_drvdata(&(pdev->dev));
-+
-+	/* All resources should be freed automatically */
-+	return mtd_device_unregister(&(data->mtd));
-+}
-+
-+static const struct of_device_id powernv_flash_match[] = {
-+	{ .compatible = "ibm,opal-flash" },
-+	{}
-+};
-+
-+static struct platform_driver powernv_flash_driver = {
-+	.driver		= {
-+		.name		= "powernv_flash",
-+		.of_match_table	= powernv_flash_match,
-+	},
-+	.remove		= powernv_flash_release,
-+	.probe		= powernv_flash_probe,
-+};
-+
-+module_platform_driver(powernv_flash_driver);
-+
-+MODULE_DEVICE_TABLE(of, powernv_flash_match);
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Cyril Bur <cyril.bur@au1.ibm.com>");
-+MODULE_DESCRIPTION("MTD abstraction for OPAL flash");
--- 
-1.9.1
+Oops 1:
+
+Unable to handle kernel paging request at virtual address 18008614
+
+                pgd = c0580000
+                [18008614] *pgd=00000000
+                Internal error: Oops: 5 [#1]
+                Modules linked in: ext3 jbd mbcache ext2 vfat fat
+sd_mod usb_storage asix usbnet ehci_hcd usbcore
+                CPU: 0    Not tainted  (2.6.31.8 #2)
+                PC is at jffs2_get_ino_cache+0x1c/0x3c
+                LR is at jffs2_garbage_collect_pass+0x74/0x15b4
+                pc : [<c0b9ff04>]    lr : [<c0ba7510>]    psr: 20000013
+                sp : c04fdbd8  ip : 00000000  fp : c04fdd08
+                r10: 00000000  r9 : cdc6a400  r8 : 00000016
+                r7 : c04fc000  r6 : cdc6a42c  r5 : cdc6a400  r4 : 00000015
+                r3 : 0000007e  r2 : cdc6aa00  r1 : 0000287e  r0 : 18008608
+                Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM
+Segment user
+                Control: 0005397f  Table: 00580000  DAC: 00000015
+                Process tar (pid: 1336, stack limit = 0xc04fc270)
+                Stack: (0xc04fdbd8 to 0xc04fe000)
+                dbc0:
+     00000008 c0baaf34
+                dbe0: 000007dd c04fdbfc cddcd000 cdc6a42c 00200010
+00000002 c0ea31cc 000007dd
+                dc00: c0ea31cc 00010000 cf0a5c80 cf0a5cb0 c0e5d810
+c0e5d810 00000001 000000c4
+                dc20: c04fdc3c 3a1dd180 00000001 cf0a5c80 c0e5d810
+00000001 c04fdc5c cf01f090
+                dc40: c04d801c c0e5d810 c04d801c cf0a5c80 00000015
+cf01f060 cf0a5e10 000000c4
+                dc60: c04fc000 c0ae9928 00000000 cddbd980 c04fdc94
+c0d4e168 c04fc000 cdc6a400
+                dc80: cdc6a42c c04fc000 00000016 00000015 cdc6a400
+cdc6a42c c04fc000 00000016
+                dca0: 000000c4 00000000 c04fdd08 c0ba1e88 00000000
+00001000 00000000 c057b528
+                dcc0: cedc3848 00030000 cedc3820 cdc6a400 c057b528
+c0ba527c 00000012 00000000
+                dce0: 00030000 00000000 cedc3820 c0b9fb90 00001000
+cd6b3000 00000000 00000000
+                dd00: cedc3848 c0b9fe34 0000ffb8 00000000 60000013
+00001000 00000000 c057b528
+                dd20: cedc3848 cdc6a400 00000000 c1060660 00001000
+c0b9f95c 00030000 00001000
+                dd40: c04fdd54 c0d4e168 00030000 00000000 00001000
+00000000 00001000 00001000
+                dd60: 00000000 00030000 00000000 00001000 00000000
+c04fc000 00000000 c0afb8e8
+                dd80: 00001000 00001000 c1060660 00000097 00000001
+c04fdeb0 cf109520 cedc38e0
+                dda0: c0d5a8b8 cedc3848 00001000 00000000 c0d5a8b8
+cedc38e0 c04fdf40 00000001
+                ddc0: 00000000 00001000 00000097 c1060660 cedc3848
+00031000 00000000 00030000
+                dde0: 00000000 cedc3848 00000000 00001000 00001000
+c0afc05c 00030000 00000000
+                de00: c04fdf00 00001000 00000000 347be9ce c04fde20
+c04fdf00 c04fdf40 c04fdeb0
+                de20: cf109520 cedc38e0 00000000 00000001 cdc6ac00
+c0b2e6b0 00000097 347be9ce
+                de40: cf1090a0 00001000 c04fdf40 cedc38b4 c04fdeb0
+c04fdf40 cedc3848 00000001
+                de60: 00000000 cf109520 cedc38e0 c0afca4c cdc6ac64
+c0d557c0 c0422000 00030000
+                de80: 00000000 c04fdeb0 00000000 cf0a5c80 cf109520
+c04fdf80 c04fc000 00000000
+                dea0: 00000000 c0b1df58 00030000 00000000 c0a69128
+c0544000 00000000 00000001
+                dec0: ffffffff cf109520 00000000 00000000 00000000
+00000000 cf0a5c80 000200c1
+                dee0: 00000000 00000000 00000000 cf0a5c80 c0ae5c64
+c04fdef4 c04fdef4 00000004
+                df00: 00030000 00000000 cedc3848 00000700 00000000
+00000000 00001000 cedc3848
+                df20: cedcaf58 c0b2ee20 00000000 00000000 00000002
+ced15cf0 c04fc000 00000001
+                df40: beb22918 00001000 cf109520 beb22918 c04fdf80
+00001000 00001000 c0b1e9d4
+                df60: cf109520 beb22918 00030000 00000000 cf109520
+00001000 beb22918 c0b1eb28
+                df80: 00030000 00000000 00001000 00000000 00001000
+beb22918 00000004 00000004
+                dfa0: c0a69128 c0a68f80 00001000 beb22918 00000004
+beb22918 00001000 000918f4
+                dfc0: 00001000 beb22918 00000004 00000004 00030000
+00000000 00000004 00000000
+                dfe0: 4001f6c0 beb228e0 0000e660 40187a6c 60000010
+00000004 00000000 00000000
+                [<c0b9ff04>] (jffs2_get_ino_cache+0x1c/0x3c) from
+[<c0ba7510>] jffs2_garbage_collect_pass+0x74/0x15b4)
+                [<c0ba7510>] (jffs2_garbage_collect_pass+0x74/0x15b4)
+from [<c0ba1e88>] jffs2_reserve_space+0xac/0x158)
+                [<c0ba1e88>] (jffs2_reserve_space+0xac/0x158) from
+[<c0ba527c>] jffs2_write_inode_range+0x50/0x3f8)
+                [<c0ba527c>] (jffs2_write_inode_range+0x50/0x3f8) from
+[<c0b9f95c>] (jffs2_write_end+0x178/0x2cc)
+                [<c0b9f95c>] (jffs2_write_end+0x178/0x2cc) from
+[<c0afb8e8>] (generic_file_buffered_write+0x17c/0x2c8)
+                [<c0afb8e8>] (generic_file_buffered_write+0x17c/0x2c8)
+from [<c0afc05c>] (__generic_file_aio_write_nolock+0x430/0x480)
+                [<c0afc05c>]
+(__generic_file_aio_write_nolock+0x430/0x480) from [<c0afca4c>]
+(generic_file_aio_write+0x70/0xe8)
+                [<c0afca4c>] (generic_file_aio_write+0x70/0xe8) from
+[<c0b1df58>] (do_sync_write+0xac/0xfc)
+                [<c0b1df58>] (do_sync_write+0xac/0xfc) from
+[<c0b1e9d4>] (vfs_write+0xac/0x154)
+                [<c0b1e9d4>] (vfs_write+0xac/0x154) from [<c0b1eb28>]
+(sys_write+0x3c/0x68)
+                [<c0b1eb28>] (sys_write+0x3c/0x68) from [<c0a68f80>]
+(ret_fast_syscall+0x0/0x2c)
+                Code: ea000000 e5900010 e3500000 012fff1e (e590300c)
+               ---[ end trace 53dbd45cedeb0f6c ]---
+
+
+Oops 2:
+
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel:
+[<c00d950c>] (do_sys_open+0x58/0x10c) from [<c0025f80>]
+     (ret_fast_syscall+0x0/0x2c)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: Code:
+e2820010 e5902000 e3520000 0a000002 (e592300c)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: ---[ end
+trace 3ec321d0836421b9 ]---
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: Unable
+to handle kernel paging request at virtual address 68539462
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: pgd = ce8a8000
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel:
+[68539462] *pgd=00000000
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: Internal
+error: Oops: 1 [#2]
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: Modules linked in:
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: CPU: 0
+ Tainted: G      D     (2.6.31.8 #1)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: PC is at
+jffs2_add_ino_cache+0x3c/0x54
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: LR is at
+jffs2_do_new_inode+0x58/0x124
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: pc :
+[<c015bc0c>]    lr : [<c0161328>]    psr: 20000013
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: sp :
+ce9cfe50  ip : 0000047f  fp : 00000022
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: r10:
+cedea2e0  r9 : 000081a4  r8 : ce9384e0
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: r7 :
+00000001  r6 : cedea308  r5 : ce92e800  r4 : ce98bc68
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: r3 :
+0000007f  r2 : 68539456  r1 : ce98bc68  r0 : ce92ebfc
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: Flags:
+nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: Control:
+0005397f  Table: 0e8a8000  DAC: 00000015
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: Process
+cp (pid: 942, stack limit = 0xce9ce270)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: Stack:
+(0xce9cfe50 to 0xce9d0000)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: fe40:
+                                 cedad598 000081a4 cedea308 ce9384e0
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: fe60:
+cedea2e0 ce9b1000 ce92e800 c0165b64 000081a4 cedad598 ce9384e0
+cedad598
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: fe80:
+cede4818 ce9b1000 ce92e800 c015b39c cedad598 cede4818 000081a4
+00000000
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: fea0:
+cedad598 cede4818 000081a4 ce9cfef0 000200c2 c00e3058 cedad598
+cede4818
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: fec0:
+00000000 cedaca38 ce9cfef0 ffffff9c c0026128 c00e579c 000081a4
+000200c1
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: fee0:
+00000080 00000000 00000000 ce9ce000 cf00a8a0 cedaca38 d973c7fd
+00000006
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: ff00:
+ce9b101d cf00a2a0 cec01c18 00000700 00000000 00000000 ce8a8000
+00000200
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: ff20:
+cf56d7e0 c00c9dcc 000000b7 00000000 00000000 bec7bf38 bec7bac0
+000200c2
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: ff40:
+000081a4 cf0a4ee0 00000004 cf054a60 cf00a8a0 cede4818 cf054a64
+000200c1
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: ff60:
+000081a4 ffffff9c 00000000 c0026128 ce9b1000 00000004 00000000
+c00d950c
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: ff80:
+00000000 bec7bf38 000000c1 bec7bf38 bec7bf38 00000005 c0026128
+ce9ce000
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: ffa0:
+00000000 c0025f80 000000c1 bec7bf38 bec7bf38 000200c1 000081a4
+00000000
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: ffc0:
+000000c1 bec7bf38 bec7bf38 00000005 00000003 00000002 40025000
+00000000
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel: ffe0:
+000c231c bec7ba90 00092834 400dd650 60000010 bec7bf38 c012b015
+41008651
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel:
+[<c015bc0c>] (jffs2_add_ino_cache+0x3c/0x54) from [<c0161328>]
+(jffs2_do_new_inode+0x58/0x124)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel:
+[<c0161328>] (jffs2_do_new_inode+0x58/0x124) from [<c0165b64>]
+(jffs2_new_inode+0xdc/0x1e0)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel:
+[<c0165b64>] (jffs2_new_inode+0xdc/0x1e0) from [<c015b39c>]
+(jffs2_create+0x38/0x12c)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel:
+[<c015b39c>] (jffs2_create+0x38/0x12c) from [<c00e3058>]
+(vfs_create+0x74/0xc0)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel:
+[<c00e3058>] (vfs_create+0x74/0xc0) from [<c00e579c>]
+(do_filp_open+0x244/0x7e4)
+                2015-04-21T07:26:04+02:00 10.0.110.97 kernel:
+[<c00e579c>] (do_filp_open+0x244/0x7e4) from [<c00d950c>]
+(do_sys_open+0x58/0x10c)
+
+mtdinfo -a:
+Count of MTD devices:           5
+Present MTD devices:            mtd0, mtd1,
+mtd2, mtd3, mtd4
+Sysfs interface supported:      yes
+
+mtd0
+Name:                           uboot
+Type:                           nor
+Eraseblock size:                65536 bytes,
+64.0 KiB
+Amount of eraseblocks:          12 (786432
+bytes, 768.0 KiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:0
+Bad blocks are allowed:         false
+Device is writable:             true
+
+mtd1
+Name:                           kernel
+Type:                           nor
+Eraseblock size:                65536 bytes,
+64.0 KiB
+Amount of eraseblocks:          80 (5242880
+bytes, 5.0 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:2
+Bad blocks are allowed:         false
+Device is writable:             true
+
+mtd2
+Name:                           config
+Type:                           nor
+Eraseblock size:                65536 bytes,
+64.0 KiB
+Amount of eraseblocks:          32 (2097152
+bytes, 2.0 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:4
+Bad blocks are allowed:         false
+Device is writable:             true
+
+mtd3
+Name:                           rootfs
+Type:                           nor
+Eraseblock size:                65536 bytes,
+64.0 KiB
+Amount of eraseblocks:          896 (58720256
+bytes, 56.0 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:6
+Bad blocks are allowed:         false
+Device is writable:             true
+
+mtd4
+Name:                           ubenv
+Type:                           nor
+Eraseblock size:                65536 bytes,
+64.0 KiB
+Amount of eraseblocks:          4 (262144 bytes,
+256.0 KiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:8
+Bad blocks are allowed:         false
+Device is writable:             true
