@@ -1,22 +1,30 @@
-Date: Mon, 1 Jun 2015 18:32:05 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Stefan Agner <stefan@agner.ch>
-Subject: Re: [PATCH v4 1/6] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-Message-ID: <20150602013205.GA4917@ld-irv-0074>
-References: <1427300909-20825-1-git-send-email-stefan@agner.ch>
- <1427300909-20825-2-git-send-email-stefan@agner.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1427300909-20825-2-git-send-email-stefan@agner.ch>
-Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
- aaron@tastycactus.com, marb@ixxat.de, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, robh+dt@kernel.org, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org,
- bpringlemeir@nbsps.com
+Received: from e23smtp08.au.ibm.com ([202.81.31.141])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YzdoH-0003bg-NB
+ for linux-mtd@lists.infradead.org; Tue, 02 Jun 2015 04:28:19 +0000
+Received: from /spool/local
+ by e23smtp08.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <cyrilbur@gmail.com>;
+ Tue, 2 Jun 2015 14:27:44 +1000
+Received: from d23relay09.au.ibm.com (d23relay09.au.ibm.com [9.185.63.181])
+ by d23dlp03.au.ibm.com (Postfix) with ESMTP id E9ADE357804F
+ for <linux-mtd@lists.infradead.org>; Tue,  2 Jun 2015 14:27:41 +1000 (EST)
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+ by d23relay09.au.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ t524RXDp54394984
+ for <linux-mtd@lists.infradead.org>; Tue, 2 Jun 2015 14:27:41 +1000
+Received: from d23av03.au.ibm.com (localhost [127.0.0.1])
+ by d23av03.au.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+ t524R93v029109
+ for <linux-mtd@lists.infradead.org>; Tue, 2 Jun 2015 14:27:09 +1000
+From: Cyril Bur <cyrilbur@gmail.com>
+To: linuxppc-dev@ozlabs.org, computersforpeace@gmail.com
+Subject: [PATCH V3] drivers/mtd: add powernv flash MTD abstraction driver
+Date: Tue,  2 Jun 2015 14:26:09 +1000
+Message-Id: <1433219169-5115-1-git-send-email-cyrilbur@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Joel Stanley <joel@jms.id.au>,
+ Jeremy Kerr <jk@ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,821 +34,359 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+Powerpc powernv platforms allow access to certain system flash devices
+through a firmwarwe interface. This change adds an mtd driver for these
+flash devices.
 
-Late review...
+Minor updates from Jeremy Kerr and Joel Stanley.
 
-On Wed, Mar 25, 2015 at 05:28:24PM +0100, Stefan Agner wrote:
-> This driver supports Freescale NFC (NAND flash controller) found on
-> Vybrid (VF610), MPC5125, MCF54418 and Kinetis K70.
-> 
-> Limitations:
-> - DMA and pipelining not used
-> - Pages larger than 2k are not supported
-> - No hardware ECC
-> 
-> The driver has only been tested on Vybrid (VF610).
-> 
-> Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
->  MAINTAINERS                  |   6 +
->  drivers/mtd/nand/Kconfig     |  12 +
->  drivers/mtd/nand/Makefile    |   1 +
->  drivers/mtd/nand/vf610_nfc.c | 686 +++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 705 insertions(+)
->  create mode 100644 drivers/mtd/nand/vf610_nfc.c
-> 
-...
-> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-> new file mode 100644
-> index 0000000..23c1510
-> --- /dev/null
-> +++ b/drivers/mtd/nand/vf610_nfc.c
-> @@ -0,0 +1,686 @@
-> +/*
-> + * Copyright 2009-2015 Freescale Semiconductor, Inc. and others
-> + *
-> + * Description: MPC5125, VF610, MCF54418 and Kinetis K70 Nand driver.
-> + * Jason ported to M54418TWR and MVFA5 (VF610).
-> + * Authors: Stefan Agner <stefan.agner@toradex.com>
-> + *          Bill Pringlemeir <bpringlemeir@nbsps.com>
-> + *          Shaohui Xie <b21989@freescale.com>
-> + *          Jason Jin <Jason.jin@freescale.com>
-> + *
-> + * Based on original driver mpc5121_nfc.c.
+Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
+---
+Hello Brian and MTD folk,
+Could I please get an ACK for Michael to take this through the powerpc
+tree.
+Thanks.
 
-It's not supremely obvious to me: what's the relationship between these
-drivers? How similar is the IP, if at all?
 
-> + *
-> + * This is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * Limitations:
-> + * - Untested on MPC5125 and M54418.
-> + * - DMA not used.
-> + * - 2K pages or less.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/init.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/of_mtd.h>
-> +
-> +#define	DRV_NAME		"vf610_nfc"
-> +
-> +/* Register Offsets */
-> +#define NFC_FLASH_CMD1			0x3F00
-> +#define NFC_FLASH_CMD2			0x3F04
-> +#define NFC_COL_ADDR			0x3F08
-> +#define NFC_ROW_ADDR			0x3F0c
-> +#define NFC_ROW_ADDR_INC		0x3F14
-> +#define NFC_FLASH_STATUS1		0x3F18
-> +#define NFC_FLASH_STATUS2		0x3F1c
-> +#define NFC_CACHE_SWAP			0x3F28
-> +#define NFC_SECTOR_SIZE			0x3F2c
-> +#define NFC_FLASH_CONFIG		0x3F30
-> +#define NFC_IRQ_STATUS			0x3F38
-> +
-> +/* Addresses for NFC MAIN RAM BUFFER areas */
-> +#define NFC_MAIN_AREA(n)		((n) *  0x1000)
-> +
-> +#define PAGE_2K				0x0800
-> +#define OOB_64				0x0040
-> +
-> +/*
-> + * NFC_CMD2[CODE] values. See section:
-> + *  - 31.4.7 Flash Command Code Description, Vybrid manual
-> + *  - 23.8.6 Flash Command Sequencer, MPC5125 manual
-> + *
-> + * Briefly these are bitmasks of controller cycles.
-> + */
-> +#define READ_PAGE_CMD_CODE		0x7EE0
-> +#define PROGRAM_PAGE_CMD_CODE		0x7FC0
-> +#define ERASE_CMD_CODE			0x4EC0
-> +#define READ_ID_CMD_CODE		0x4804
-> +#define RESET_CMD_CODE			0x4040
-> +#define STATUS_READ_CMD_CODE		0x4068
-> +
-> +/* NFC ECC mode define */
-> +#define ECC_BYPASS			0
-> +
-> +/*** Register Mask and bit definitions */
-> +
-> +/* NFC_FLASH_CMD1 Field */
-> +#define CMD_BYTE2_MASK				0xFF000000
-> +#define CMD_BYTE2_SHIFT				24
-> +
-> +/* NFC_FLASH_CM2 Field */
-> +#define CMD_BYTE1_MASK				0xFF000000
-> +#define CMD_BYTE1_SHIFT				24
-> +#define CMD_CODE_MASK				0x00FFFF00
-> +#define CMD_CODE_SHIFT				8
-> +#define BUFNO_MASK				0x00000006
-> +#define BUFNO_SHIFT				1
-> +#define START_BIT				(1<<0)
-> +
-> +/* NFC_COL_ADDR Field */
-> +#define COL_ADDR_MASK				0x0000FFFF
-> +#define COL_ADDR_SHIFT				0
-> +
-> +/* NFC_ROW_ADDR Field */
-> +#define ROW_ADDR_MASK				0x00FFFFFF
-> +#define ROW_ADDR_SHIFT				0
-> +#define ROW_ADDR_CHIP_SEL_RB_MASK		0xF0000000
-> +#define ROW_ADDR_CHIP_SEL_RB_SHIFT		28
-> +#define ROW_ADDR_CHIP_SEL_MASK			0x0F000000
-> +#define ROW_ADDR_CHIP_SEL_SHIFT			24
-> +
-> +/* NFC_FLASH_STATUS2 Field */
-> +#define STATUS_BYTE1_MASK			0x000000FF
-> +
-> +/* NFC_FLASH_CONFIG Field */
-> +#define CONFIG_ECC_SRAM_REQ_BIT			(1<<21)
-> +#define CONFIG_DMA_REQ_BIT			(1<<20)
-> +#define CONFIG_ECC_MODE_MASK			0x000E0000
-> +#define CONFIG_ECC_MODE_SHIFT			17
-> +#define CONFIG_FAST_FLASH_BIT			(1<<16)
-> +#define CONFIG_16BIT				(1<<7)
-> +#define CONFIG_BOOT_MODE_BIT			(1<<6)
-> +#define CONFIG_ADDR_AUTO_INCR_BIT		(1<<5)
-> +#define CONFIG_BUFNO_AUTO_INCR_BIT		(1<<4)
-> +#define CONFIG_PAGE_CNT_MASK			0xF
-> +#define CONFIG_PAGE_CNT_SHIFT			0
-> +
-> +/* NFC_IRQ_STATUS Field */
-> +#define IDLE_IRQ_BIT				(1<<29)
-> +#define IDLE_EN_BIT				(1<<20)
-> +#define CMD_DONE_CLEAR_BIT			(1<<18)
-> +#define IDLE_CLEAR_BIT				(1<<17)
-> +
-> +#define NFC_TIMEOUT		(HZ)
-> +
-> +struct vf610_nfc_config {
-> +	int width;
-> +	int flash_bbt;
-> +};
-> +
-> +struct vf610_nfc {
-> +	struct mtd_info	   mtd;
-> +	struct nand_chip   chip;
-> +	struct device	  *dev;
-> +	void __iomem	  *regs;
-> +	wait_queue_head_t  irq_waitq;
-> +	uint               column;
-> +	int                spareonly;
-> +	int		   page_sz;
-> +	int                page;
-> +	/* Status and ID are in alternate locations. */
-> +	int                alt_buf;
-> +#define ALT_BUF_ID   1
-> +#define ALT_BUF_STAT 2
-> +	struct clk        *clk;
-> +
-> +	struct vf610_nfc_config cfg;
-> +};
-> +
-> +#define mtd_to_nfc(_mtd) container_of(_mtd, struct vf610_nfc, mtd)
-> +
-> +static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
-> +{
-> +	return readl(nfc->regs + reg);
-> +}
-> +
-> +static inline void vf610_nfc_write(struct vf610_nfc *nfc, uint reg, u32 val)
-> +{
-> +	writel(val, nfc->regs + reg);
-> +}
-> +
-> +static inline void vf610_nfc_set(struct vf610_nfc *nfc, uint reg, u32 bits)
-> +{
-> +	vf610_nfc_write(nfc, reg, vf610_nfc_read(nfc, reg) | bits);
-> +}
-> +
-> +static inline void vf610_nfc_clear(struct vf610_nfc *nfc, uint reg, u32 bits)
-> +{
-> +	vf610_nfc_write(nfc, reg, vf610_nfc_read(nfc, reg) & ~bits);
-> +}
-> +
-> +static inline void vf610_nfc_set_field(struct vf610_nfc *nfc, u32 reg,
-> +				       u32 mask, u32 shift, u32 val)
-> +{
-> +	vf610_nfc_write(nfc, reg,
-> +			(vf610_nfc_read(nfc, reg) & (~mask)) | val << shift);
-> +}
-> +
-> +static inline void vf610_nfc_memcpy(void *dst, const void *src, size_t n)
-> +{
-> +	/*
-> +	 * Use this accessor for the interal SRAM buffers. On ARM we can
-> +	 * treat the SRAM buffer as if its memory, hence use memcpy
+V2: Address Brian Norris' review
+    Fix typos
+    Change from NAND flash type to NOR flash type
+    Correctness tweaks
+V3: Address Neelesh Gupta's review
+    Minor corrections
+    Release the opal token on error
+    Unregister mtd device on module remove
+---
+ drivers/mtd/devices/Kconfig         |   8 +
+ drivers/mtd/devices/Makefile        |   1 +
+ drivers/mtd/devices/powernv_flash.c | 286 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 295 insertions(+)
+ create mode 100644 drivers/mtd/devices/powernv_flash.c
 
-s/its/it's/
-or
-s/its/it is/
-
-> +	 */
-> +	memcpy(dst, src, n);
-
-I'm not clear on all the reasoning in your comment. Is this really
-specific to ARM, that you can treat SRAM like memory? If so, should this
-driver have some dependency on ARM?
-
-Also, if you're really trying to handle iomem, it makes sense to
-annotate the 2nd argument with __iomem. Then sparse will only complain
-on the memcpy(), which has a proper comment explanation, rather than on
-every call site for vf610_nfc_memcpy(). i.e.:
-
-static inline void vf610_nfc_memcpy(void *dst, const void __iomem *src,
-				    size_t n)
-
-> +}
-> +
-> +/* Clear flags for upcoming command */
-> +static inline void vf610_nfc_clear_status(struct vf610_nfc *nfc)
-> +{
-> +	void __iomem *reg = nfc->regs + NFC_IRQ_STATUS;
-> +	u32 tmp = __raw_readl(reg);
-
-Why are you using __raw_xxx variants here, whereas you use readl() in
-others? The __raw_xxx variants do not have the normal endian awareness,
-nor do they have implicit I/O barriers. I'd bet you should be using the
-{read,write}l_relaxed() or {read,write}l(), depending on whether this is
-performance critical and you handle the consistency issues elsewhere.
-
-(Same comment applies to all the __raw_xxx usages in this driver, I
-think.)
-
-> +
-> +	tmp |= CMD_DONE_CLEAR_BIT | IDLE_CLEAR_BIT;
-> +	__raw_writel(tmp, reg);
-> +}
-> +
-> +static inline void vf610_nfc_done(struct vf610_nfc *nfc)
-> +{
-> +	int rv;
-> +
-> +	/*
-> +	 * Barrier is needed after this write. This write need
-> +	 * to be done before reading the next register the first
-> +	 * time.
-> +	 * vf610_nfc_set implicates such a barrier by using writel
-> +	 * to write to the register.
-> +	 */
-> +	vf610_nfc_set(nfc, NFC_IRQ_STATUS, IDLE_EN_BIT);
-> +	vf610_nfc_set(nfc, NFC_FLASH_CMD2, START_BIT);
-> +
-> +	if (!(vf610_nfc_read(nfc, NFC_IRQ_STATUS) & IDLE_IRQ_BIT)) {
-> +		rv = wait_event_timeout(nfc->irq_waitq,
-> +			(vf610_nfc_read(nfc, NFC_IRQ_STATUS) & IDLE_IRQ_BIT),
-> +					NFC_TIMEOUT);
-
-This looks like you're doing a standard IRQ-based wait-for-completion,
-except that you're also including some extra register polling. Would
-this work just as well using a struct completion
-(wait_for_completion_timeout() and complete())? Or is the register poll
-necessary?
-
-> +		if (!rv)
-> +			dev_warn(nfc->dev, "Timeout while waiting for BUSY.\n");
-> +	}
-> +	vf610_nfc_clear_status(nfc);
-> +}
-> +
-> +static u8 vf610_nfc_get_id(struct vf610_nfc *nfc, int col)
-> +{
-> +	u32 flash_id;
-> +
-> +	if (col < 4) {
-> +		flash_id = vf610_nfc_read(nfc, NFC_FLASH_STATUS1);
-> +		return (flash_id >> (3-col)*8) & 0xff;
-
-Add spaces around the arithmetic, please.
-
-> +	} else {
-> +		flash_id = vf610_nfc_read(nfc, NFC_FLASH_STATUS2);
-> +		return flash_id >> 24;
-> +	}
-> +}
-> +
-> +static u8 vf610_nfc_get_status(struct vf610_nfc *nfc)
-> +{
-> +	return vf610_nfc_read(nfc, NFC_FLASH_STATUS2) & STATUS_BYTE1_MASK;
-> +}
-> +
-> +static void vf610_nfc_send_command(struct vf610_nfc *nfc, u32 cmd_byte1,
-> +				   u32 cmd_code)
-> +{
-> +	void __iomem *reg = nfc->regs + NFC_FLASH_CMD2;
-> +	u32 tmp;
-> +
-> +	vf610_nfc_clear_status(nfc);
-> +
-> +	tmp = __raw_readl(reg);
-> +	tmp &= ~(CMD_BYTE1_MASK | CMD_CODE_MASK | BUFNO_MASK);
-> +	tmp |= cmd_byte1 << CMD_BYTE1_SHIFT;
-> +	tmp |= cmd_code << CMD_CODE_SHIFT;
-> +	__raw_writel(tmp, reg);
-> +}
-> +
-> +static void vf610_nfc_send_commands(struct vf610_nfc *nfc, u32 cmd_byte1,
-> +				    u32 cmd_byte2, u32 cmd_code)
-> +{
-> +	void __iomem *reg = nfc->regs + NFC_FLASH_CMD1;
-> +	u32 tmp;
-> +
-> +	vf610_nfc_send_command(nfc, cmd_byte1, cmd_code);
-> +
-> +	tmp = __raw_readl(reg);
-> +	tmp &= ~CMD_BYTE2_MASK;
-> +	tmp |= cmd_byte2 << CMD_BYTE2_SHIFT;
-> +	__raw_writel(tmp, reg);
-> +}
-> +
-> +static irqreturn_t vf610_nfc_irq(int irq, void *data)
-> +{
-> +	struct mtd_info *mtd = data;
-> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +
-> +	vf610_nfc_clear(nfc, NFC_IRQ_STATUS, IDLE_EN_BIT);
-> +	wake_up(&nfc->irq_waitq);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static void vf610_nfc_addr_cycle(struct vf610_nfc *nfc, int column, int page)
-> +{
-> +	if (column != -1) {
-> +		if (nfc->chip.options | NAND_BUSWIDTH_16)
-
-smatch caught a hard-to-spot one here:
-
-drivers/mtd/nand/vf610_nfc.c:335 vf610_nfc_addr_cycle() warn: suspicious bitop condition [smatch]
-
-You probably meant:
-
-		if (nfc->chip.options & NAND_BUSWIDTH_16)
-
-> +			column = column/2;
-> +		vf610_nfc_set_field(nfc, NFC_COL_ADDR, COL_ADDR_MASK,
-> +				    COL_ADDR_SHIFT, column);
-> +	}
-> +	if (page != -1)
-> +		vf610_nfc_set_field(nfc, NFC_ROW_ADDR, ROW_ADDR_MASK,
-> +				    ROW_ADDR_SHIFT, page);
-> +}
-> +
-> +static inline void vf610_nfc_transfer_size(void __iomem *regbase, int size)
-> +{
-> +	__raw_writel(size, regbase + NFC_SECTOR_SIZE);
-> +}
-> +
-> +static void vf610_nfc_command(struct mtd_info *mtd, unsigned command,
-> +			      int column, int page)
-> +{
-> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +
-> +	nfc->column     = max(column, 0);
-> +	nfc->spareonly	= 0;
-> +	nfc->alt_buf	= 0;
-> +
-> +	switch (command) {
-> +	case NAND_CMD_PAGEPROG:
-> +		nfc->page = -1;
-> +		vf610_nfc_transfer_size(nfc->regs, nfc->page_sz);
-> +		vf610_nfc_send_commands(nfc, NAND_CMD_SEQIN,
-> +					command, PROGRAM_PAGE_CMD_CODE);
-> +		vf610_nfc_addr_cycle(nfc, column, page);
-> +		break;
-> +
-> +	case NAND_CMD_RESET:
-> +		vf610_nfc_transfer_size(nfc->regs, 0);
-> +		vf610_nfc_send_command(nfc, command, RESET_CMD_CODE);
-> +		break;
-> +	/*
-> +	 * NFC does not support sub-page reads and writes,
-> +	 * so emulate them using full page transfers.
-> +	 */
-> +	case NAND_CMD_READOOB:
-> +		nfc->spareonly = 1;
-> +	case NAND_CMD_SEQIN: /* Pre-read for partial writes. */
-> +	case NAND_CMD_READ0:
-> +		column = 0;
-> +		/* Already read? */
-> +		if (nfc->page == page)
-> +			return;
-> +		nfc->page = page;
-> +		vf610_nfc_transfer_size(nfc->regs, nfc->page_sz);
-> +		vf610_nfc_send_commands(nfc, NAND_CMD_READ0,
-> +					NAND_CMD_READSTART, READ_PAGE_CMD_CODE);
-> +		vf610_nfc_addr_cycle(nfc, column, page);
-> +		break;
-> +
-> +	case NAND_CMD_ERASE1:
-> +		nfc->page = -1;
-> +		vf610_nfc_transfer_size(nfc->regs, 0);
-> +		vf610_nfc_send_commands(nfc, command,
-> +				  NAND_CMD_ERASE2, ERASE_CMD_CODE);
-> +		vf610_nfc_addr_cycle(nfc, column, page);
-> +		break;
-> +
-> +	case NAND_CMD_READID:
-> +		nfc->alt_buf = ALT_BUF_ID;
-> +		vf610_nfc_transfer_size(nfc->regs, 0);
-> +		vf610_nfc_send_command(nfc, command, READ_ID_CMD_CODE);
-> +		break;
-> +
-> +	case NAND_CMD_STATUS:
-> +		nfc->alt_buf = ALT_BUF_STAT;
-> +		vf610_nfc_transfer_size(nfc->regs, 0);
-> +		vf610_nfc_send_command(nfc, command, STATUS_READ_CMD_CODE);
-> +		break;
-> +	default:
-> +		return;
-> +	}
-> +
-> +	vf610_nfc_done(nfc);
-> +}
-> +
-> +static inline void vf610_nfc_read_spare(struct mtd_info *mtd, void *buf,
-> +					int len)
-> +{
-> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +
-> +	len = min_t(uint, mtd->oobsize, len);
-> +	if (len > 0)
-> +		vf610_nfc_memcpy(buf, nfc->regs + mtd->writesize, len);
-> +}
-> +
-> +static void vf610_nfc_read_buf(struct mtd_info *mtd, u_char *buf, int len)
-> +{
-> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +	uint c = nfc->column;
-> +	uint l;
-> +
-> +	/* Handle main area */
-> +	if (!nfc->spareonly) {
-> +		l = min_t(uint, len, mtd->writesize - c);
-> +		nfc->column += l;
-> +
-> +		if (!nfc->alt_buf)
-> +			vf610_nfc_memcpy(buf, nfc->regs + NFC_MAIN_AREA(0) + c, l);
-> +		else
-> +			if (nfc->alt_buf & ALT_BUF_ID)
-> +				*buf = vf610_nfc_get_id(nfc, c);
-> +			else
-> +				*buf = vf610_nfc_get_status(nfc);
-> +
-> +		buf += l;
-> +		len -= l;
-> +	}
-> +
-> +	/* Handle spare area access */
-> +	if (len) {
-> +		nfc->column += len;
-> +		vf610_nfc_read_spare(mtd, buf, len);
-> +	}
-> +}
-> +
-> +static void vf610_nfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-> +{
-> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +	uint c = nfc->column;
-> +	uint l;
-> +
-> +	l = min_t(uint, len, mtd->writesize + mtd->oobsize - c);
-> +	nfc->column += l;
-> +	vf610_nfc_memcpy(nfc->regs + NFC_MAIN_AREA(0) + c, buf, l);
-> +}
-> +
-> +static uint8_t vf610_nfc_read_byte(struct mtd_info *mtd)
-> +{
-> +	u8 tmp;
-> +
-> +	vf610_nfc_read_buf(mtd, &tmp, sizeof(tmp));
-> +	return tmp;
-> +}
-> +
-> +static u16 vf610_nfc_read_word(struct mtd_info *mtd)
-> +{
-> +	u16 tmp;
-> +
-> +	vf610_nfc_read_buf(mtd, (u_char *)&tmp, sizeof(tmp));
-> +	return tmp;
-> +}
-> +
-> +/* If not provided, upper layers apply a fixed delay. */
-> +static int vf610_nfc_dev_ready(struct mtd_info *mtd)
-> +{
-> +	/* NFC handles R/B internally; always ready.  */
-> +	return 1;
-> +}
-> +
-> +/*
-> + * This function supports Vybrid only (MPC5125 would have full RB and four CS)
-> + */
-> +static void vf610_nfc_select_chip(struct mtd_info *mtd, int chip)
-> +{
-> +#ifdef CONFIG_SOC_VF610
-> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +	u32 tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
-> +
-> +	tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
-> +	tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
-> +
-> +	if (chip == 0)
-> +		tmp |= 1 << ROW_ADDR_CHIP_SEL_SHIFT;
-> +	else if (chip == 1)
-> +		tmp |= 2 << ROW_ADDR_CHIP_SEL_SHIFT;
-> +
-> +	vf610_nfc_write(nfc, NFC_ROW_ADDR, tmp);
-> +#endif
-> +}
-> +
-> +#ifdef CONFIG_OF_MTD
-
-Don't use CONFIG_OF_MTD. Maybe CONFIG_OF, but even that doesn't seem
-necessary. The table is tiny, and the code should fail gracefully (and
-reduce to pretty simple / negligible code) if you don't have OF enabled.
-
-> +static const struct of_device_id vf610_nfc_dt_ids[] = {
-> +	{ .compatible = "fsl,vf610-nfc" },
-> +	{ .compatible = "fsl,mpc5125-nfc" },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, vf610_nfc_dt_ids);
-> +
-> +static int vf610_nfc_probe_dt(struct device *dev, struct vf610_nfc_config *cfg)
-> +{
-> +	struct device_node *np = dev->of_node;
-> +	int buswidth;
-> +
-> +	if (!np)
-> +		return 1;
-
-Try:
-
-		return -EINVAL;
-
-> +
-> +	cfg->flash_bbt = of_get_nand_on_flash_bbt(np);
-> +
-> +	buswidth = of_get_nand_bus_width(np);
-> +	if (buswidth < 0)
-> +		return buswidth;
-
-This function should mostly come for free as part of this:
-
-commit 5844feeaa4154d1c46d3462c7a4653d22356d8b4
-Author: Brian Norris <computersforpeace@gmail.com>
-Date:   Fri Jan 23 00:22:27 2015 -0800
-
-    mtd: nand: add common DT init code
-
-in l2-mtd.git and linux-next.git. Can you try just assigning chip->dn
-instead?
-
-> +
-> +	cfg->width = buswidth;
-> +
-> +	return 0;
-> +}
-> +#else
-> +static int vf610_nfc_probe_dt(struct device *dev, struct vf610_nfc_config *cfg)
-> +{
-> +	return 0;
-
-Really? I doubt you want to silently do nothing if you don't have OF
-enabled. It seems to make more sense to just kill the #ifdef, and have
-the registration fail on either the '!np' case or the
-'of_get_nand_bus_width(np) returns -ENOSYS' case.
-
-> +}
-> +#endif
-> +
-> +static int vf610_nfc_init_controller(struct vf610_nfc *nfc)
-> +{
-> +	struct vf610_nfc_config *cfg = &nfc->cfg;
-> +
-> +	if (cfg->width == 16)
-> +		vf610_nfc_set(nfc, NFC_FLASH_CONFIG, CONFIG_16BIT);
-> +	else
-> +		vf610_nfc_clear(nfc, NFC_FLASH_CONFIG, CONFIG_16BIT);
-> +
-> +	/* Set configuration register. */
-> +	vf610_nfc_clear(nfc, NFC_FLASH_CONFIG, CONFIG_ADDR_AUTO_INCR_BIT);
-> +	vf610_nfc_clear(nfc, NFC_FLASH_CONFIG, CONFIG_BUFNO_AUTO_INCR_BIT);
-> +	vf610_nfc_clear(nfc, NFC_FLASH_CONFIG, CONFIG_BOOT_MODE_BIT);
-> +	vf610_nfc_clear(nfc, NFC_FLASH_CONFIG, CONFIG_DMA_REQ_BIT);
-> +	vf610_nfc_set(nfc, NFC_FLASH_CONFIG, CONFIG_FAST_FLASH_BIT);
-> +
-> +	/* PAGE_CNT = 1 */
-> +	vf610_nfc_set_field(nfc, NFC_FLASH_CONFIG, CONFIG_PAGE_CNT_MASK,
-> +			    CONFIG_PAGE_CNT_SHIFT, 1);
-> +
-> +	return 0;
-> +}
-> +
-> +static int vf610_nfc_probe(struct platform_device *pdev)
-> +{
-> +	struct vf610_nfc *nfc;
-> +	struct resource *res;
-> +	struct mtd_info *mtd;
-> +	struct nand_chip *chip;
-> +	struct vf610_nfc_config *cfg;
-> +	int err = 0;
-> +	int irq;
-> +
-> +	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-> +	if (!nfc)
-> +		return -ENOMEM;
-> +
-> +	cfg = &nfc->cfg;
-> +
-> +	nfc->dev = &pdev->dev;
-> +	nfc->page = -1;
-> +	mtd = &nfc->mtd;
-> +	chip = &nfc->chip;
-> +
-> +	mtd->priv = chip;
-> +	mtd->owner = THIS_MODULE;
-> +	mtd->dev.parent = nfc->dev;
-> +	mtd->name = DRV_NAME;
-> +
-> +	err = vf610_nfc_probe_dt(nfc->dev, cfg);
-> +	if (err)
-> +		return -ENODEV;
-> +
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq <= 0)
-> +		return -EINVAL;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	nfc->regs = devm_ioremap_resource(nfc->dev, res);
-> +	if (IS_ERR(nfc->regs))
-> +		return PTR_ERR(nfc->regs);
-> +
-> +	nfc->clk = devm_clk_get(&pdev->dev, NULL);
-> +	if (IS_ERR(nfc->clk))
-> +		return PTR_ERR(nfc->clk);
-> +
-> +	err = clk_prepare_enable(nfc->clk);
-> +	if (err) {
-> +		dev_err(nfc->dev, "Unable to enable clock!\n");
-> +		return err;
-> +	}
-> +
-> +	if (cfg->width == 16)
-> +		chip->options |= NAND_BUSWIDTH_16;
-> +	else
-> +		chip->options &= ~NAND_BUSWIDTH_16;
-
-Is the else clause needed? Also, you'll get the above for free with the
-aforementioned commit ("mtd: nand: add common DT init code").
-
-> +
-> +	chip->dev_ready = vf610_nfc_dev_ready;
-> +	chip->cmdfunc = vf610_nfc_command;
-> +	chip->read_byte = vf610_nfc_read_byte;
-> +	chip->read_word = vf610_nfc_read_word;
-> +	chip->read_buf = vf610_nfc_read_buf;
-> +	chip->write_buf = vf610_nfc_write_buf;
-> +	chip->select_chip = vf610_nfc_select_chip;
-> +
-> +	/* Bad block options. */
-> +	if (cfg->flash_bbt)
-> +		chip->bbt_options = NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB |
-> +				    NAND_BBT_CREATE;
-
-You probably don't need NAND_BBT_CREATE here. It's added automatically
-to the BBT descriptors in nand_bbt.c.
-
-You can also get the NAND_BBT_USE_FLASH part for free from the
-aforementioned patch ("mtd: nand: add common DT init code").
-
-> +
-> +	init_waitqueue_head(&nfc->irq_waitq);
-> +
-> +	err = devm_request_irq(nfc->dev, irq, vf610_nfc_irq, 0, DRV_NAME, mtd);
-> +	if (err) {
-> +		dev_err(nfc->dev, "Error requesting IRQ!\n");
-> +		goto error;
-> +	}
-> +
-> +	nfc->page_sz = PAGE_2K + OOB_64;
-> +	nfc->page_sz += cfg->width == 16 ? 1 : 0;
-> +
-> +	vf610_nfc_init_controller(nfc);
-> +
-> +	/* first scan to find the device and get the page size */
-> +	if (nand_scan_ident(mtd, 1, NULL)) {
-> +		err = -ENXIO;
-> +		goto error;
-> +	}
-> +
-> +	chip->ecc.mode = NAND_ECC_SOFT; /* default */
-> +
-> +	nfc->page_sz = mtd->writesize + mtd->oobsize;
-> +
-> +	/* Single buffer only, max 256 OOB minus ECC status */
-> +	if (nfc->page_sz > PAGE_2K + 256 - 8) {
-> +		dev_err(nfc->dev, "Unsupported flash page size\n");
-> +		err = -ENXIO;
-> +		goto error;
-> +	}
-> +	nfc->page_sz += cfg->width == 16 ? 1 : 0;
-> +
-> +	/* second phase scan */
-> +	if (nand_scan_tail(mtd)) {
-> +		err = -ENXIO;
-> +		goto error;
-> +	}
-> +
-> +	/* Register device in MTD */
-> +	mtd_device_parse_register(mtd, NULL,
-> +		&(struct mtd_part_parser_data){
-> +			.of_node = pdev->dev.of_node,
-> +		},
-> +		NULL, 0);
-
-Please check the return code of mtd_device_parse_register().
-
-> +
-> +	platform_set_drvdata(pdev, mtd);
-
-If you move this up, then you can do:
-
-	return mtd_device_parse_register(...);
-
-> +
-> +	return 0;
-> +
-> +error:
-> +	clk_disable_unprepare(nfc->clk);
-> +	return err;
-> +}
-> +
-> +static int vf610_nfc_remove(struct platform_device *pdev)
-> +{
-> +	struct mtd_info *mtd = platform_get_drvdata(pdev);
-> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +
-> +	nand_release(mtd);
-> +	clk_disable_unprepare(nfc->clk);
-> +	return 0;
-> +}
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +static int vf610_nfc_suspend(struct device *dev)
-> +{
-> +	struct mtd_info *mtd = dev_get_drvdata(dev);
-> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +
-> +	clk_disable_unprepare(nfc->clk);
-> +	return 0;
-> +}
-> +
-> +static int vf610_nfc_resume(struct device *dev)
-> +{
-> +	struct mtd_info *mtd = dev_get_drvdata(dev);
-> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +
-> +	pinctrl_pm_select_default_state(dev);
-> +
-> +	clk_prepare_enable(nfc->clk);
-> +
-> +	vf610_nfc_init_controller(nfc);
-> +	return 0;
-> +}
-> +#endif
-> +
-> +static SIMPLE_DEV_PM_OPS(vf610_nfc_pm_ops, vf610_nfc_suspend, vf610_nfc_resume);
-> +
-> +static struct platform_driver vf610_nfc_driver = {
-> +	.driver		= {
-> +		.name	= DRV_NAME,
-> +		.of_match_table = vf610_nfc_dt_ids,
-> +		.pm	= &vf610_nfc_pm_ops,
-> +	},
-> +	.probe		= vf610_nfc_probe,
-> +	.remove		= vf610_nfc_remove,
-> +};
-> +
-> +module_platform_driver(vf610_nfc_driver);
-> +
-> +MODULE_AUTHOR("Freescale Semiconductor, Inc.");
-> +MODULE_DESCRIPTION("Freescale VF610/MPC5125 NFC MTD NAND driver");
-> +MODULE_LICENSE("GPL");
-
-Brian
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index c49d0b1..f73c416 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -195,6 +195,14 @@ config MTD_BLOCK2MTD
+ 	  Testing MTD users (eg JFFS2) on large media and media that might
+ 	  be removed during a write (using the floppy drive).
+ 
++config MTD_POWERNV_FLASH
++	tristate "powernv flash MTD driver"
++	depends on PPC_POWERNV
++	help
++	  This provides an MTD device to access flash on powernv OPAL
++	  platforms from Linux. This device abstracts away the
++	  firmware interface for flash access.
++
+ comment "Disk-On-Chip Device Drivers"
+ 
+ config MTD_DOCG3
+diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+index f0b0e61..7912d3a 100644
+--- a/drivers/mtd/devices/Makefile
++++ b/drivers/mtd/devices/Makefile
+@@ -16,6 +16,7 @@ obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
+ obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
+ obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
+ obj-$(CONFIG_MTD_ST_SPI_FSM)    += st_spi_fsm.o
++obj-$(CONFIG_MTD_POWERNV_FLASH)	+= powernv_flash.o
+ 
+ 
+ CFLAGS_docg3.o			+= -I$(src)
+diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
+new file mode 100644
+index 0000000..777e09f
+--- /dev/null
++++ b/drivers/mtd/devices/powernv_flash.c
+@@ -0,0 +1,286 @@
++/*
++ * OPAL PNOR flash MTD abstraction
++ *
++ * IBM 2015
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/errno.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/platform_device.h>
++#include <linux/string.h>
++#include <linux/slab.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++
++#include <linux/debugfs.h>
++#include <linux/seq_file.h>
++
++#include <asm/opal.h>
++
++
++/*
++ * This driver creates the a Linux MTD abstraction for platform PNOR flash
++ * backed by OPAL calls
++ */
++
++struct powernv_flash {
++	struct mtd_info	mtd;
++	u32 id;
++};
++
++enum flash_op {
++	FLASH_OP_READ,
++	FLASH_OP_WRITE,
++	FLASH_OP_ERASE,
++};
++
++static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
++		loff_t offset, size_t len, size_t *retlen, u_char *buf)
++{
++	struct powernv_flash *info = (struct powernv_flash *)mtd->priv;
++	struct device *dev = &mtd->dev;
++	int token;
++	struct opal_msg msg;
++	int rc;
++
++	dev_dbg(dev, "%s(op=%d, offset=0x%llx, len=%zu)\n",
++			__func__, op, offset, len);
++
++	token = opal_async_get_token_interruptible();
++	if (token < 0) {
++		if (token != -ERESTARTSYS)
++			dev_err(dev, "Failed to get an async token\n");
++
++		return token;
++	}
++
++	switch (op) {
++	case FLASH_OP_READ:
++		rc = opal_flash_read(info->id, offset, __pa(buf), len, token);
++		break;
++	case FLASH_OP_WRITE:
++		rc = opal_flash_write(info->id, offset, __pa(buf), len, token);
++		break;
++	case FLASH_OP_ERASE:
++		rc = opal_flash_erase(info->id, offset, len, token);
++		break;
++	default:
++		BUG_ON(1);
++	}
++
++	if (rc != OPAL_ASYNC_COMPLETION) {
++		dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
++				op, rc);
++		opal_async_release_token(token);
++		return -EIO;
++	}
++
++	rc = opal_async_wait_response(token, &msg);
++	opal_async_release_token(token);
++	if (rc) {
++		dev_err(dev, "opal async wait failed (rc %d)\n", rc);
++		return -EIO;
++	}
++
++	rc = be64_to_cpu(msg.params[1]);
++	if (rc == OPAL_SUCCESS) {
++		rc = 0;
++		if (retlen)
++			*retlen = len;
++	} else {
++		rc = -EIO;
++	}
++
++	return rc;
++}
++
++/**
++ * @mtd: the device
++ * @from: the offset to read from
++ * @len: the number of bytes to read
++ * @retlen: the number of bytes actually read
++ * @buf: the filled in buffer
++ *
++ * Returns 0 if read successful, or -ERRNO if an error occurred
++ */
++static int powernv_flash_read(struct mtd_info *mtd, loff_t from, size_t len,
++	     size_t *retlen, u_char *buf)
++{
++	return powernv_flash_async_op(mtd, FLASH_OP_READ, from,
++			len, retlen, buf);
++}
++
++/**
++ * @mtd: the device
++ * @to: the offset to write to
++ * @len: the number of bytes to write
++ * @retlen: the number of bytes actually written
++ * @buf: the buffer to get bytes from
++ *
++ * Returns 0 if write successful, -ERRNO if error occurred
++ */
++static int powernv_flash_write(struct mtd_info *mtd, loff_t to, size_t len,
++		     size_t *retlen, const u_char *buf)
++{
++	return powernv_flash_async_op(mtd, FLASH_OP_WRITE, to,
++			len, retlen, (u_char *)buf);
++}
++
++/**
++ * @mtd: the device
++ * @erase: the erase info
++ * Returns 0 if erase successful or -ERRNO if an error occurred
++ */
++static int powernv_flash_erase(struct mtd_info *mtd, struct erase_info *erase)
++{
++	int rc;
++
++	erase->state = MTD_ERASING;
++
++	/* todo: register our own notifier to do a true async implementation */
++	rc =  powernv_flash_async_op(mtd, FLASH_OP_ERASE, erase->addr,
++			erase->len, NULL, NULL);
++
++	if (rc) {
++		erase->fail_addr = erase->addr;
++		erase->state = MTD_ERASE_FAILED;
++	} else {
++		erase->state = MTD_ERASE_DONE;
++	}
++	mtd_erase_callback(erase);
++	return rc;
++}
++
++/**
++ * powernv_flash_set_driver_info - Fill the mtd_info structure and docg3
++ * structure @pdev: The platform device
++ * @mtd: The structure to fill
++ */
++static int powernv_flash_set_driver_info(struct device *dev,
++		struct mtd_info *mtd)
++{
++	u64 size;
++	u32 erase_size;
++	int rc;
++
++	rc = of_property_read_u32(dev->of_node, "ibm,flash-block-size",
++			&erase_size);
++	if (rc) {
++		dev_err(dev, "couldn't get resource block size information\n");
++		return rc;
++	}
++
++	rc = of_property_read_u64(dev->of_node, "reg", &size);
++	if (rc) {
++		dev_err(dev, "couldn't get resource size information\n");
++		return rc;
++	}
++
++	/*
++	 * Going to have to check what details I need to set and how to
++	 * get them
++	 */
++	mtd->name = of_get_property(dev->of_node, "name", NULL);
++	mtd->type = MTD_NORFLASH;
++	mtd->flags = MTD_WRITEABLE;
++	mtd->size = size;
++	mtd->erasesize = erase_size;
++	mtd->writebufsize = mtd->writesize = 1;
++	mtd->owner = THIS_MODULE;
++	mtd->_erase = powernv_flash_erase;
++	mtd->_read = powernv_flash_read;
++	mtd->_write = powernv_flash_write;
++	mtd->dev.parent = dev;
++	return 0;
++}
++
++/**
++ * powernv_flash_probe
++ * @pdev: platform device
++ *
++ * Returns 0 on success, -ENOMEM, -ENXIO on error
++ */
++static int powernv_flash_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct powernv_flash *data;
++	int ret;
++
++	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
++	if (!data) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	data->mtd.priv = data;
++
++	ret = of_property_read_u32(dev->of_node, "ibm,opal-id", &(data->id));
++	if (ret) {
++		dev_err(dev, "no device property 'ibm,opal-id'\n");
++		goto out;
++	}
++
++	ret = powernv_flash_set_driver_info(dev, &data->mtd);
++	if (ret)
++		goto out;
++
++	dev_set_drvdata(dev, data);
++
++	/*
++	 * The current flash that skiboot exposes is one contiguous flash chip
++	 * with an ffs partition at the start, it should prove easier for users
++	 * to deal with partitions or not as they see fit
++	 */
++	ret = mtd_device_register(&data->mtd, NULL, 0);
++
++out:
++	return ret;
++}
++
++/**
++ * op_release - Release the driver
++ * @pdev: the platform device
++ *
++ * Returns 0
++ */
++static int powernv_flash_release(struct platform_device *pdev)
++{
++	struct powernv_flash *data = dev_get_drvdata(&(pdev->dev));
++
++	/* All resources should be freed automatically */
++	return mtd_device_unregister(&(data->mtd));
++}
++
++static const struct of_device_id powernv_flash_match[] = {
++	{ .compatible = "ibm,opal-flash" },
++	{}
++};
++
++static struct platform_driver powernv_flash_driver = {
++	.driver		= {
++		.name		= "powernv_flash",
++		.of_match_table	= powernv_flash_match,
++	},
++	.remove		= powernv_flash_release,
++	.probe		= powernv_flash_probe,
++};
++
++module_platform_driver(powernv_flash_driver);
++
++MODULE_DEVICE_TABLE(of, powernv_flash_match);
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Cyril Bur <cyril.bur@au1.ibm.com>");
++MODULE_DESCRIPTION("MTD abstraction for OPAL flash");
+-- 
+1.9.1
