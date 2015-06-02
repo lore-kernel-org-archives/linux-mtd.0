@@ -1,9 +1,9 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yzjgu-0002iM-LB
- for linux-mtd@lists.infradead.org; Tue, 02 Jun 2015 10:45:05 +0000
-Message-ID: <556D8918.3090306@nod.at>
-Date: Tue, 02 Jun 2015 12:44:40 +0200
+ id 1YzkIg-0007rU-GV
+ for linux-mtd@lists.infradead.org; Tue, 02 Jun 2015 11:24:07 +0000
+Message-ID: <556D923E.1020503@nod.at>
+Date: Tue, 02 Jun 2015 13:23:42 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Takashi Iwai <tiwai@suse.de>
@@ -27,6 +27,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Am 02.06.2015 um 12:42 schrieb Takashi Iwai:
+> At Tue, 02 Jun 2015 11:40:57 +0200,
+> Richard Weinberger wrote:
+>>
+>> Am 19.05.2015 um 09:39 schrieb Richard Weinberger:
+>>> Am 19.05.2015 um 09:36 schrieb Takashi Iwai:
+>>>> At Fri, 15 May 2015 16:20:05 +0800,
+>>>> hujianyang wrote:
+>>>>>
+>>>>> On 2015/2/26 17:19, Richard Weinberger wrote:
+>>>>>> Am 26.02.2015 um 10:11 schrieb hujianyang:
+>>>>>>> Hi Takashi,
+>>>>>>>
+>>>>>>> I think it's a good attempt. Did you test this patch on your environment
+>>>>>>> or just changing the code?
+>>>>>>>
+>>>>>>> How do you feel about this patch, Richard?
+>>>>>>
+>>>>>> I like the patch but had no time to look at it in detail and test it but this will happen soon. :)
+>>>>>>
+>>>>>> Thanks,
+>>>>>> //richard
+>>>>>>
+>>>>>> ______________________________________________________
+>>>>>> Linux MTD discussion mailing list
+>>>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>>>>
+>>>>>>
+>>>>>
+>>>>> Hi Richard,
+>>>>>
+>>>>> I've amended this patch a bit and Sheng Yong helped me test a little.
+>>>>> Could you please review and do some test on it?
+>>>>>
+>>>>> Thanks,
+>>>>> Hu
+>>>>
+>>>> Thanks Hu!  I must have overlooked the post from Richard.
+>>>>
+>>>> My patch wasn't tested with the real hardware, mostly compile-tested
+>>>> only.  So, yes, if anyone could test it, it'd be greatly appreciated.
+>>>
 >>> You can test it using the nandsim module. :-)
 >>
 >> Can I have a Tested-by?
@@ -36,7 +77,5 @@ Am 02.06.2015 um 12:42 schrieb Takashi Iwai:
 > (Though, not sure whether tested-by tag by the patch author makes much
 >  sense :)
 
-If you as author tested I'm happy. :-)
-
-Thanks,
+Patch applied. Thanks everyone!
 //richard
