@@ -1,11 +1,12 @@
 From: Antoine Tenart <antoine.tenart@free-electrons.com>
 To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
  dwmw2@infradead.org, computersforpeace@gmail.com
-Subject: [PATCH 4/4] mtd: pxa3xx_nand: clean up the pxa3xx timings
-Date: Tue,  2 Jun 2015 17:53:41 +0200
-Message-Id: <1433260421-18002-5-git-send-email-antoine.tenart@free-electrons.com>
-In-Reply-To: <1433260421-18002-1-git-send-email-antoine.tenart@free-electrons.com>
-References: <1433260421-18002-1-git-send-email-antoine.tenart@free-electrons.com>
+Subject: [PATCH 2/7] Documentation: bindings: document the clocks for
+ pxa3xx-nand
+Date: Tue,  2 Jun 2015 19:32:26 +0200
+Message-Id: <1433266351-22587-3-git-send-email-antoine.tenart@free-electrons.com>
+In-Reply-To: <1433266351-22587-1-git-send-email-antoine.tenart@free-electrons.com>
+References: <1433266351-22587-1-git-send-email-antoine.tenart@free-electrons.com>
 Cc: zmxu@marvell.com, boris.brezillon@free-electrons.com,
  Antoine Tenart <antoine.tenart@free-electrons.com>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
@@ -19,75 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the previous modifications, lots of pxa3xx specific definitions can
-be removed.
+The pxa3xx nand driver requires at least one clock to probe correctly.
+A second one, named 'ecc' can be specified if needed. Add the
+corresponding documentation.
 
 Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c                | 20 ++++++++------------
- include/linux/platform_data/mtd-nand-pxa3xx.h | 11 +++--------
- 2 files changed, 11 insertions(+), 20 deletions(-)
+ Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 2987b50ccd64..42ad199ed63d 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -251,15 +251,14 @@ static struct pxa3xx_nand_timing timing[] = {
- };
+diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+index 4f833e3c4f51..ad30a02f1346 100644
+--- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+@@ -8,6 +8,8 @@ Required properties:
+  - reg: 		The register base for the controller
+  - interrupts:		The interrupt to map
+  - #address-cells:	Set to <1> if the node includes partitions
++ - clocks:		A phandle to the clocks
++ - clock-names:		'nfc' and 'ecc'. The 'nfc' clock is mandatory.
  
- static struct pxa3xx_nand_flash builtin_flash_types[] = {
--{ "DEFAULT FLASH",      0,   0, 2048,  8,  8,    0, &timing[0] },
--{ "64MiB 16-bit",  0x46ec,  32,  512, 16, 16, 4096, &timing[1] },
--{ "256MiB 8-bit",  0xdaec,  64, 2048,  8,  8, 2048, &timing[1] },
--{ "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, &timing[1] },
--{ "128MiB 8-bit",  0xa12c,  64, 2048,  8,  8, 1024, &timing[2] },
--{ "128MiB 16-bit", 0xb12c,  64, 2048, 16, 16, 1024, &timing[2] },
--{ "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096, &timing[2] },
--{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &timing[2] },
--{ "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, &timing[3] },
-+	{ 0x46ec, 16, 16, &timing[1] },
-+	{ 0xdaec,  8,  8, &timing[1] },
-+	{ 0xd7ec,  8,  8, &timing[1] },
-+	{ 0xa12c,  8,  8, &timing[2] },
-+	{ 0xb12c, 16, 16, &timing[2] },
-+	{ 0xdc2c,  8,  8, &timing[2] },
-+	{ 0xcc2c, 16, 16, &timing[2] },
-+	{ 0xba20, 16, 16, &timing[3] },
- };
+ Optional properties:
  
- static u8 bbt_pattern[] = {'M', 'V', 'B', 'b', 't', '0' };
-@@ -320,9 +319,6 @@ static struct nand_ecclayout ecc_layout_4KB_bch8bit = {
- 	.oobfree = { }
- };
+@@ -32,6 +34,8 @@ Example:
+ 		compatible = "marvell,pxa3xx-nand";
+ 		reg = <0x43100000 90>;
+ 		interrupts = <45>;
++		clocks = <&gateclk 11>;
++		clock-names = "nfc";
+ 		#address-cells = <1>;
  
--/* Define a default flash type setting serve as flash detecting only */
--#define DEFAULT_FLASH_TYPE (&builtin_flash_types[0])
--
- #define NDTR0_tCH(c)	(min((c), 7) << 19)
- #define NDTR0_tCS(c)	(min((c), 7) << 16)
- #define NDTR0_tWH(c)	(min((c), 7) << 11)
-diff --git a/include/linux/platform_data/mtd-nand-pxa3xx.h b/include/linux/platform_data/mtd-nand-pxa3xx.h
-index ac4ea2e641c7..25538cfeee26 100644
---- a/include/linux/platform_data/mtd-nand-pxa3xx.h
-+++ b/include/linux/platform_data/mtd-nand-pxa3xx.h
-@@ -17,15 +17,10 @@ struct pxa3xx_nand_timing {
- };
- 
- struct pxa3xx_nand_flash {
--	char		*name;
- 	uint32_t	chip_id;
--	unsigned int	page_per_block; /* Pages per block (PG_PER_BLK) */
--	unsigned int	page_size;	/* Page size in bytes (PAGE_SZ) */
--	unsigned int	flash_width;	/* Width of Flash memory (DWIDTH_M) */
--	unsigned int	dfc_width;	/* Width of flash controller(DWIDTH_C) */
--	unsigned int	num_blocks;	/* Number of physical blocks in Flash */
--
--	struct pxa3xx_nand_timing *timing;	/* NAND Flash timing */
-+	unsigned int	flash_width;    /* Width of Flash memory (DWIDTH_M) */
-+	unsigned int	dfc_width;      /* Width of flash controller(DWIDTH_C) */
-+	struct pxa3xx_nand_timing *timing; /* NAND Flash timing */
- };
- 
- /*
+ 		marvell,nand-enable-arbiter;
 -- 
 2.4.2
