@@ -1,17 +1,16 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YzhAX-0003fi-6y
- for linux-mtd@lists.infradead.org; Tue, 02 Jun 2015 08:03:30 +0000
-Message-ID: <556D6339.70607@nod.at>
-Date: Tue, 02 Jun 2015 10:03:05 +0200
+ id 1YzhAc-0003iL-6b
+ for linux-mtd@lists.infradead.org; Tue, 02 Jun 2015 08:03:35 +0000
+Message-ID: <556D633E.70300@nod.at>
+Date: Tue, 02 Jun 2015 10:03:10 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/4] mtd: fixup corner case error handling in
- mtd_device_parse_register()
+Subject: Re: [PATCH 4/4] mtd: warn when registering the same master many times
 References: <1433200640-17858-1-git-send-email-computersforpeace@gmail.com>
- <1433200640-17858-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1433200640-17858-3-git-send-email-computersforpeace@gmail.com>
+ <1433200640-17858-4-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1433200640-17858-4-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,47 +23,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Am 02.06.2015 um 01:17 schrieb Brian Norris:
-> Since commit 3efe41be224c ("mtd: implement common reboot notifier
-> boilerplate"), we might try to register a reboot notifier for an MTD
-> that failed to register. Let's avoid this by making the error path
-> clearer.
+> When CONFIG_MTD_PARTITIONED_MASTER=y, it is fatal to call
+> mtd_device_parse_register() twice on the same MTD, as we try to register
+> the same device/kobject multipile times.
+> 
+> When CONFIG_MTD_PARTITIONED_MASTER=n, calling
+> mtd_device_parse_register() is more of just a nuisance, as we can mostly
+> navigate around any conflicting actions.
+> 
+> But anyway, doing so is a Bad Thing (TM), and we should complain loudly
+> for any drivers that try to do this.
 > 
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > ---
->  drivers/mtd/mtdcore.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+>  drivers/mtd/mtdcore.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
 > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 8bbbb751bf45..03eec42dc715 100644
+> index 03eec42dc715..f0e157e0be89 100644
 > --- a/drivers/mtd/mtdcore.c
 > +++ b/drivers/mtd/mtdcore.c
-> @@ -579,9 +579,15 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
->  		else
->  			ret = nr_parts;
->  	}
-> +	/* Didn't come up with either parsed OR fallback partitions */
-> +	if (ret < 0) {
-> +		pr_info("mtd: failed to find partitions\n");
-> +		goto out;
-> +	}
+> @@ -387,6 +387,14 @@ int add_mtd_device(struct mtd_info *mtd)
+>  	struct mtd_notifier *not;
+>  	int i, error;
 >  
-> -	if (ret >= 0)
-> -		ret = mtd_add_device_partitions(mtd, real_parts, ret);
-> +	ret = mtd_add_device_partitions(mtd, real_parts, ret);
-> +	if (ret)
-> +		goto out;
+> +	/*
+> +	 * May occur, for instance, on buggy drivers which call
+> +	 * mtd_device_parse_register() multiple times on the same master MTD,
+> +	 * especially with CONFIG_MTD_PARTITIONED_MASTER=y.
+> +	 */
+> +	if (WARN(mtd->backing_dev_info, "MTD already registered\n"))
+> +		return -EEXIST;
+> +
+>  	mtd->backing_dev_info = &mtd_bdi;
 >  
->  	/*
->  	 * FIXME: some drivers unfortunately call this function more than once.
-> @@ -596,6 +602,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+>  	BUG_ON(mtd->writesize == 0);
+> @@ -597,6 +605,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+>  	 * does cause problems with parse_mtd_partitions() above (e.g.,
+>  	 * cmdlineparts will register partitions more than once).
+>  	 */
+> +	WARN(mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+>  	if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
+>  		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
 >  		register_reboot_notifier(&mtd->reboot_notifier);
->  	}
->  
-> +out:
->  	kfree(real_parts);
->  	return ret;
->  }
 
+One minor nit, IMHO WARN_ONCE() would make more sense.
+
+Beside of that:
 Reviewed-by: Richard Weinberger <richard@nod.at>
 
 Thanks,
