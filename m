@@ -1,11 +1,14 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0GBq-0003KG-6r
- for linux-mtd@lists.infradead.org; Wed, 03 Jun 2015 21:27:13 +0000
-Date: 3 Jun 2015 21:26:39 -0000
-Message-Id: <cover.1433364398.git.hramrach@gmail.com>
+ id 1Z0GBu-0003Kk-JT
+ for linux-mtd@lists.infradead.org; Wed, 03 Jun 2015 21:27:15 +0000
+Date: 3 Jun 2015 21:26:40 -0000
+Message-Id: <2be0439cf72f5b7f430a937bacf430cffab91f08.1433364398.git.hramrach@gmail.com>
+In-Reply-To: <cover.1433364398.git.hramrach@gmail.com>
+References: <cover.1433364398.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH 00/11] Enable access to SPI NOR flash on Samsung Snow board
+Subject: [PATCH 05/11] mtd: mtdpart: Do not fail mtd probe when parsing
+ partitions fails.
 To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
   Mark Rutland <mark.rutland@arm.com>,
   Ian Campbell <ijc+devicetree@hellion.org.uk>,
@@ -25,7 +28,7 @@ To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
   "grmoore@altera.com" <grmoore@altera.com>, devicetree@vger.kernel.org,
   linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
   linux-samsung-soc@vger.kernel.org, dmaengine@vger.kernel.org,
-  linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+  linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,50 +38,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Due to wrong assumption in ofpart ofpart fails on Exynos on SPI chips
+with no partitions because the subnode containing controller data
+confuses the ofpart parser.
 
-this patch series makes it possible to access the SPI NOR flash in the Samsung
-XE303 'Snow' Chromebook.
+Thus compiling in ofpart support automatically fails probing any SPI NOR
+flash without partitions on Exynos. Compiling in a partitioning scheme
+should not cause probe of otherwise valid device to fail.
 
-Unfortunately not all issues are resolved. To work around an issue with the
-pl330 dma engine I respun the patch for limiting transfer size in m25p80
-driver.
+Remove that failure possibility.
 
-As the flash does not contain any sane filesystem and is only likely to be
-accessed with mtd_debug or similar tool the limit of the dma engine is easily
-reached. Filesystems using shorter data transfers are less likely to be
-affected.
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+---
+ drivers/mtd/mtdpart.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Thanks
-
-Michal
-
-
-
-Michal Suchanek (11):
-  ARM: dt: Add SPI CS on Samsung Snow board.
-  mtd: spi-nor: Add GD25LQ32C 1.8V SPI NOR flash ID
-  mtd: add debug prints to mtdpart partition parser.
-  mtd: ofpart: do not fail probe when no partitions exist
-  mtd: mtdpart: Do not fail mtd probe when parsing partitions fails.
-  mtd: spi-nor: rework spi nor read and write.
-  mtd: spi-nor: rework write loop
-  MTD: m25p80: Add option to limit SPI transfer size.
-  dma: pl330: fix wording in mcbufsz message
-  spi: add more debug prints in s3c64xx
-  dt: Exynos: add Snow SPI NOR node.
-
- .../devicetree/bindings/mtd/jedec,spi-nor.txt      |  6 ++
- arch/arm/boot/dts/exynos5250-snow.dts              | 15 +++-
- drivers/dma/pl330.c                                |  4 +-
- drivers/mtd/devices/m25p80.c                       | 57 +++++++++++----
- drivers/mtd/mtdpart.c                              |  9 ++-
- drivers/mtd/ofpart.c                               |  4 +-
- drivers/mtd/spi-nor/fsl-quadspi.c                  | 29 ++++----
- drivers/mtd/spi-nor/spi-nor.c                      | 80 ++++++++++++----------
- drivers/spi/spi-s3c64xx.c                          | 30 ++++++++
- include/linux/mtd/spi-nor.h                        |  8 +--
- 10 files changed, 166 insertions(+), 76 deletions(-)
-
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index a79c4f7..37a2b79 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -743,7 +743,6 @@ static const char * const default_mtd_part_types[] = {
+  * partitions parsed out by the first parser.
+  *
+  * This function may return:
+- * o a negative error code in case of failure
+  * o zero if no partitions were found
+  * o a positive number of found partitions, in which case on exit @pparts will
+  *   point to an array containing this number of &struct mtd_info objects.
+@@ -773,10 +772,10 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 		if (ret > 0) {
+ 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+ 			       ret, parser->name, master->name);
+-			break;
++			return ret;
+ 		}
+ 	}
+-	return ret;
++	return 0;
+ }
+ 
+ int mtd_is_partition(const struct mtd_info *mtd)
 -- 
 2.1.4
