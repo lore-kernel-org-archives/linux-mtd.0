@@ -1,16 +1,15 @@
 From: Marek Vasut <marex@denx.de>
 To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 04/11] mtd: ofpart: do not fail probe when no partitions
- exist
-Date: Thu, 4 Jun 2015 00:58:52 +0200
+Subject: Re: [PATCH 10/11] spi: add more debug prints in s3c64xx
+Date: Thu, 4 Jun 2015 01:04:08 +0200
 References: <cover.1433364398.git.hramrach@gmail.com>
- <36e315552c849a4d22ac0fcff7958f6ffcafb160.1433364398.git.hramrach@gmail.com>
-In-Reply-To: <36e315552c849a4d22ac0fcff7958f6ffcafb160.1433364398.git.hramrach@gmail.com>
+ <305830ebf9c0ae98c4f6e0ebbdec7414d6762b36.1433364398.git.hramrach@gmail.com>
+In-Reply-To: <305830ebf9c0ae98c4f6e0ebbdec7414d6762b36.1433364398.git.hramrach@gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201506040058.52882.marex@denx.de>
+Message-Id: <201506040104.08192.marex@denx.de>
 Cc: Mark Rutland <mark.rutland@arm.com>,
  Krzysztof Kozlowski <k.kozlowski@samsung.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>, linux-mtd@lists.infradead.org,
@@ -39,15 +38,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, June 03, 2015 at 11:26:40 PM, Michal Suchanek wrote:
-> On Exynos it is necessary to set SPI controller parameters that apply to
-> a SPI slave in a DT subnode of the slave device. The ofpart code returns
-> an error when there are subnodes of the SPI flash but no partitions are
-> found. Change this condition to a warning so that flash without
-> partitions can be accessed on Exynos.
+On Wednesday, June 03, 2015 at 11:26:42 PM, Michal Suchanek wrote:
+> The SPI NOR transfers mysteriously fail so add more debug prints about
+> SPI transactions.
+> 
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 
-I have to admit the rationale for this patch is not very clear to me, sorry.
-Can you please explain this a bit more ?
+dev_dbg() and friends would certainly be nicer here.
 
 Best regards,
 Marek Vasut
