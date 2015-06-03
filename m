@@ -1,14 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0GBu-0003Kk-JT
- for linux-mtd@lists.infradead.org; Wed, 03 Jun 2015 21:27:15 +0000
-Date: 3 Jun 2015 21:26:40 -0000
-Message-Id: <2be0439cf72f5b7f430a937bacf430cffab91f08.1433364398.git.hramrach@gmail.com>
+ id 1Z0GC7-0003N6-Hm
+ for linux-mtd@lists.infradead.org; Wed, 03 Jun 2015 21:27:28 +0000
+Date: 3 Jun 2015 21:26:41 -0000
+Message-Id: <df028a8d9cff88f0acecb950839255a6ede492d0.1433364398.git.hramrach@gmail.com>
 In-Reply-To: <cover.1433364398.git.hramrach@gmail.com>
 References: <cover.1433364398.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH 05/11] mtd: mtdpart: Do not fail mtd probe when parsing
- partitions fails.
+Subject: [PATCH 07/11] mtd: spi-nor: rework write loop
 To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
   Mark Rutland <mark.rutland@arm.com>,
   Ian Campbell <ijc+devicetree@hellion.org.uk>,
@@ -38,45 +37,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Due to wrong assumption in ofpart ofpart fails on Exynos on SPI chips
-with no partitions because the subnode containing controller data
-confuses the ofpart parser.
-
-Thus compiling in ofpart support automatically fails probing any SPI NOR
-flash without partitions on Exynos. Compiling in a partitioning scheme
-should not cause probe of otherwise valid device to fail.
-
-Remove that failure possibility.
+The write loop assumes that what is passed to write() is what gets
+written. When write() writes less than page size at once data is dropped
+on the floor. Check the amount of data writen.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 ---
- drivers/mtd/mtdpart.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 48 ++++++++++++++-----------------------------
+ 1 file changed, 15 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index a79c4f7..37a2b79 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -743,7 +743,6 @@ static const char * const default_mtd_part_types[] = {
-  * partitions parsed out by the first parser.
-  *
-  * This function may return:
-- * o a negative error code in case of failure
-  * o zero if no partitions were found
-  * o a positive number of found partitions, in which case on exit @pparts will
-  *   point to an array containing this number of &struct mtd_info objects.
-@@ -773,10 +772,10 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
- 		if (ret > 0) {
- 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
- 			       ret, parser->name, master->name);
--			break;
-+			return ret;
- 		}
- 	}
--	return ret;
-+	return 0;
- }
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index c851bb5..76f4970 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -823,7 +823,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	size_t *retlen, const u_char *buf)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	u32 page_offset, page_size, i;
++	size_t page_offset, page_remain, i;
+ 	int ret;
  
- int mtd_is_partition(const struct mtd_info *mtd)
+ 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
+@@ -832,45 +832,27 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	if (ret)
+ 		return ret;
+ 
+-	write_enable(nor);
+-
+-	page_offset = to & (nor->page_size - 1);
++	for (i = 0; i < len; ) {
++		int written;
+ 
+-	/* do all the bytes fit onto one page? */
+-	if (page_offset + len <= nor->page_size) {
+-		ret = nor->write(nor, to, len, buf);
+-		if (ret < 0)
+-			goto write_err;
+-		*retlen += ret;
+-	} else {
++		page_offset = to & (nor->page_size - 1);
+ 		/* the size of data remaining on the first page */
+-		page_size = nor->page_size - page_offset;
+-		nor->write(nor, to, page_size, buf);
++		page_remain = min_t(size_t,
++				    nor->page_size - page_offset, len - i);
++
++		write_enable(nor);
++		ret = nor->write(nor, to + i, page_remain, buf + i);
+ 		if (ret < 0)
+ 			goto write_err;
+-		*retlen += ret;
+-
+-		/* write everything in nor->page_size chunks */
+-		for (i = ret; i < len; ) {
+-			page_size = len - i;
+-			if (page_size > nor->page_size)
+-				page_size = nor->page_size;
+-
+-			ret = spi_nor_wait_till_ready(nor);
+-			if (ret)
+-				goto write_err;
++		written = ret;
+ 
+-			write_enable(nor);
+-
+-			ret = nor->write(nor, to + i, page_size, buf + i);
+-			if (ret < 0)
+-				goto write_err;
+-			*retlen += ret;
+-			i += ret;
+-		}
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			goto write_err;
++		*retlen += written;
++		i += written;
+ 	}
+ 
+-	ret = spi_nor_wait_till_ready(nor);
+ write_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+ 	return ret;
 -- 
 2.1.4
