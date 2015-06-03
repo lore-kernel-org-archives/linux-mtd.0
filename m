@@ -1,14 +1,16 @@
 From: Marek Vasut <marex@denx.de>
 To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 00/11] Enable access to SPI NOR flash on Samsung Snow board
-Date: Thu, 4 Jun 2015 00:53:29 +0200
+Subject: Re: [PATCH 04/11] mtd: ofpart: do not fail probe when no partitions
+ exist
+Date: Thu, 4 Jun 2015 00:58:52 +0200
 References: <cover.1433364398.git.hramrach@gmail.com>
-In-Reply-To: <cover.1433364398.git.hramrach@gmail.com>
+ <36e315552c849a4d22ac0fcff7958f6ffcafb160.1433364398.git.hramrach@gmail.com>
+In-Reply-To: <36e315552c849a4d22ac0fcff7958f6ffcafb160.1433364398.git.hramrach@gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201506040053.29482.marex@denx.de>
+Message-Id: <201506040058.52882.marex@denx.de>
 Cc: Mark Rutland <mark.rutland@arm.com>,
  Krzysztof Kozlowski <k.kozlowski@samsung.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>, linux-mtd@lists.infradead.org,
@@ -37,26 +39,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, June 03, 2015 at 11:26:39 PM, Michal Suchanek wrote:
-> Hello,
+On Wednesday, June 03, 2015 at 11:26:40 PM, Michal Suchanek wrote:
+> On Exynos it is necessary to set SPI controller parameters that apply to
+> a SPI slave in a DT subnode of the slave device. The ofpart code returns
+> an error when there are subnodes of the SPI flash but no partitions are
+> found. Change this condition to a warning so that flash without
+> partitions can be accessed on Exynos.
 
-Hi,
-
-> this patch series makes it possible to access the SPI NOR flash in the
-> Samsung XE303 'Snow' Chromebook.
-> 
-> Unfortunately not all issues are resolved. To work around an issue with the
-> pl330 dma engine I respun the patch for limiting transfer size in m25p80
-> driver.
-
-Looks like fixing a bug at the wrong place to me ...
-
-> As the flash does not contain any sane filesystem and is only likely to be
-> accessed with mtd_debug or similar tool the limit of the dma engine is
-> easily reached. Filesystems using shorter data transfers are less likely
-> to be affected.
-
-Sounds like the DMA engine driver should be fixed.
+I have to admit the rationale for this patch is not very clear to me, sorry.
+Can you please explain this a bit more ?
 
 Best regards,
 Marek Vasut
