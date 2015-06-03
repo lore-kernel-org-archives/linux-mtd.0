@@ -1,13 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0GC7-0003N6-Hm
- for linux-mtd@lists.infradead.org; Wed, 03 Jun 2015 21:27:28 +0000
+ id 1Z0GCC-0003OL-I1
+ for linux-mtd@lists.infradead.org; Wed, 03 Jun 2015 21:27:34 +0000
 Date: 3 Jun 2015 21:26:41 -0000
-Message-Id: <df028a8d9cff88f0acecb950839255a6ede492d0.1433364398.git.hramrach@gmail.com>
+Message-Id: <8fc4b9f5291a509c4c35782a1337bf536f1019af.1433364398.git.hramrach@gmail.com>
 In-Reply-To: <cover.1433364398.git.hramrach@gmail.com>
 References: <cover.1433364398.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH 07/11] mtd: spi-nor: rework write loop
+Subject: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
 To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
   Mark Rutland <mark.rutland@arm.com>,
   Ian Campbell <ijc+devicetree@hellion.org.uk>,
@@ -37,87 +37,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The write loop assumes that what is passed to write() is what gets
-written. When write() writes less than page size at once data is dropped
-on the floor. Check the amount of data writen.
+On sunxi the SPI controller currently does not have DMA support and fails
+any transfer larger than 63 bytes.
+
+On Exynos the pl330 DMA controller fails any transfer larger than 64kb
+when using slower speed like 40MHz and any transfer larger than 128bytes
+when running at 133MHz.
+
+The best thing is that in both cases the controller can just lock up and
+never finish potentially leaving the hardware in unusable state.
+
+So it is required that the m25p80 driver actively prevents doing
+transfers that are too large for the current driver state on a
+particular piece of hardware.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 48 ++++++++++++++-----------------------------
- 1 file changed, 15 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index c851bb5..76f4970 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -823,7 +823,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	size_t *retlen, const u_char *buf)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
--	u32 page_offset, page_size, i;
-+	size_t page_offset, page_remain, i;
- 	int ret;
+--
+
+Update commit message and documentation text.
+---
+ .../devicetree/bindings/mtd/jedec,spi-nor.txt      |  6 ++++++
+ drivers/mtd/devices/m25p80.c                       | 24 ++++++++++++++++++++--
+ 2 files changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+index 2bee681..4e63ae8 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+@@ -19,6 +19,12 @@ Optional properties:
+                    all chips and support for it can not be detected at runtime.
+                    Refer to your chips' datasheet to check if this is supported
+                    by your chip.
++- linux,max_tx_len : With some SPI controller drivers possible transfer size is
++                     limited. This may be hardware or driver bug.
++                     Transfer data in chunks no larger than this value.
++                     Using this option may severely degrade performance and
++                     possibly flash memory life when max_tx_len is smaller than
++                     flash page size (typically 256 bytes)
  
- 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
-@@ -832,45 +832,27 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	if (ret)
+ Example:
+ 
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index f080cf9..ee13e57 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -26,12 +26,14 @@
+ #include <linux/spi/spi.h>
+ #include <linux/spi/flash.h>
+ #include <linux/mtd/spi-nor.h>
++#include <linux/of_platform.h>
+ 
+ #define	MAX_CMD_SIZE		6
+ struct m25p {
+ 	struct spi_device	*spi;
+ 	struct spi_nor		spi_nor;
+ 	struct mtd_info		mtd;
++	size_t max_tx_len;
+ 	u8			command[MAX_CMD_SIZE];
+ };
+ 
+@@ -98,7 +100,10 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+ 	spi_message_add_tail(&t[0], &m);
+ 
+ 	t[1].tx_buf = buf;
+-	t[1].len = len;
++	if (flash->max_tx_len)
++		t[1].len = min(len, flash->max_tx_len);
++	else
++		t[1].len = len;
+ 	spi_message_add_tail(&t[1], &m);
+ 
+ 	ret = spi_sync(spi, &m);
+@@ -152,7 +157,10 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 
+ 	t[1].rx_buf = buf;
+ 	t[1].rx_nbits = m25p80_rx_nbits(nor);
+-	t[1].len = len;
++	if (flash->max_tx_len)
++		t[1].len = min(len, flash->max_tx_len);
++	else
++		t[1].len = len;
+ 	spi_message_add_tail(&t[1], &m);
+ 
+ 	ret = spi_sync(spi, &m);
+@@ -242,6 +250,18 @@ static int m25p_probe(struct spi_device *spi)
  		return ret;
  
--	write_enable(nor);
--
--	page_offset = to & (nor->page_size - 1);
-+	for (i = 0; i < len; ) {
-+		int written;
- 
--	/* do all the bytes fit onto one page? */
--	if (page_offset + len <= nor->page_size) {
--		ret = nor->write(nor, to, len, buf);
--		if (ret < 0)
--			goto write_err;
--		*retlen += ret;
--	} else {
-+		page_offset = to & (nor->page_size - 1);
- 		/* the size of data remaining on the first page */
--		page_size = nor->page_size - page_offset;
--		nor->write(nor, to, page_size, buf);
-+		page_remain = min_t(size_t,
-+				    nor->page_size - page_offset, len - i);
+ 	ppdata.of_node = spi->dev.of_node;
++	if (spi->dev.of_node) {
++		int result = of_property_read_u32(spi->dev.of_node,
++						  "linux,max_tx_len",
++						  &flash->max_tx_len);
 +
-+		write_enable(nor);
-+		ret = nor->write(nor, to + i, page_remain, buf + i);
- 		if (ret < 0)
- 			goto write_err;
--		*retlen += ret;
--
--		/* write everything in nor->page_size chunks */
--		for (i = ret; i < len; ) {
--			page_size = len - i;
--			if (page_size > nor->page_size)
--				page_size = nor->page_size;
--
--			ret = spi_nor_wait_till_ready(nor);
--			if (ret)
--				goto write_err;
-+		written = ret;
++		if (result)
++			flash->max_tx_len = 0;
++		else
++			dev_info(&spi->dev,
++				 "Using maximum transfer length %u\n",
++				 flash->max_tx_len);
++	}
  
--			write_enable(nor);
--
--			ret = nor->write(nor, to + i, page_size, buf + i);
--			if (ret < 0)
--				goto write_err;
--			*retlen += ret;
--			i += ret;
--		}
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			goto write_err;
-+		*retlen += written;
-+		i += written;
- 	}
- 
--	ret = spi_nor_wait_till_ready(nor);
- write_err:
- 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
- 	return ret;
+ 	return mtd_device_parse_register(&flash->mtd, NULL, &ppdata,
+ 			data ? data->parts : NULL,
 -- 
 2.1.4
