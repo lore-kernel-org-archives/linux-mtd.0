@@ -1,32 +1,35 @@
-Message-id: <556FB37E.3000800@samsung.com>
-Date: Thu, 04 Jun 2015 11:10:06 +0900
-From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-MIME-version: 1.0
-To: Michal Suchanek <hramrach@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Russell King <linux@arm.linux.org.uk>,
- Kukjin Kim <kgene@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
- Dan Williams <dan.j.williams@intel.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
- Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>,
- Marek Vasut <marex@denx.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Alison Chaiken <alison_chaiken@mentor.com>,
- Huang Shijie <b32955@freescale.com>, Ben Hutchings <ben@decadent.org.uk>,
- Knut Wohlrab <knut.wohlrab@de.bosch.com>,
- =?UTF-8?B?IkJlYW4gSHVvIOmcjeaWjOaWjCAoYmVhbmh1byki?= <beanhuo@micron.com>,
- "grmoore@altera.com" <grmoore@altera.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH 09/11] dma: pl330: fix wording in mcbufsz message
+MIME-Version: 1.0
+In-Reply-To: <201506040053.29482.marex@denx.de>
 References: <cover.1433364398.git.hramrach@gmail.com>
- <14872fc6f86b7f4976d539b47a7899904cd954f6.1433364398.git.hramrach@gmail.com>
-In-reply-to: <14872fc6f86b7f4976d539b47a7899904cd954f6.1433364398.git.hramrach@gmail.com>
-Content-type: text/plain; charset=UTF-8
-Content-transfer-encoding: 7bit
+ <201506040053.29482.marex@denx.de>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Thu, 4 Jun 2015 06:21:32 +0200
+Message-ID: <CAOMqctRkoQrP7wAgXfWXHb2fbi2-6VayHRx5DgUKn6Djz0qtQQ@mail.gmail.com>
+Subject: Re: [PATCH 00/11] Enable access to SPI NOR flash on Samsung Snow board
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-mtd@lists.infradead.org,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ devicetree <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>,
+ dmaengine <dmaengine@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,14 +39,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04.06.2015 06:26, Michal Suchanek wrote:
-> The kernel is not trying to increase mcbufsz. It suggests you should try
-> doing so. Also print the calculated required size of mcbufsz.
-> 
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+On 4 June 2015 at 00:53, Marek Vasut <marex@denx.de> wrote:
+> On Wednesday, June 03, 2015 at 11:26:39 PM, Michal Suchanek wrote:
+>> Hello,
+>
+> Hi,
+>
+>> this patch series makes it possible to access the SPI NOR flash in the
+>> Samsung XE303 'Snow' Chromebook.
+>>
+>> Unfortunately not all issues are resolved. To work around an issue with the
+>> pl330 dma engine I respun the patch for limiting transfer size in m25p80
+>> driver.
+>
+> Looks like fixing a bug at the wrong place to me ...
+>
+>> As the flash does not contain any sane filesystem and is only likely to be
+>> accessed with mtd_debug or similar tool the limit of the dma engine is
+>> easily reached. Filesystems using shorter data transfers are less likely
+>> to be affected.
+>
+> Sounds like the DMA engine driver should be fixed.
 
-Looks good:
-Reviewed-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+I looked at the pl330 datasheet and don't see anything obviusly wrong
+with the pl330 driver in Linux.
 
-Best regards,
-Krzysztof
+Ideally it would be fixed but I have no idea what's wrong with it.
+
+Thanks
+
+Michal
