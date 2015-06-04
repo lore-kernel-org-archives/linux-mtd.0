@@ -1,11 +1,12 @@
 MIME-Version: 1.0
-In-Reply-To: <201506040053.29482.marex@denx.de>
+In-Reply-To: <201506040103.09555.marex@denx.de>
 References: <cover.1433364398.git.hramrach@gmail.com>
- <201506040053.29482.marex@denx.de>
+ <8fc4b9f5291a509c4c35782a1337bf536f1019af.1433364398.git.hramrach@gmail.com>
+ <201506040103.09555.marex@denx.de>
 From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 4 Jun 2015 06:21:32 +0200
-Message-ID: <CAOMqctRkoQrP7wAgXfWXHb2fbi2-6VayHRx5DgUKn6Djz0qtQQ@mail.gmail.com>
-Subject: Re: [PATCH 00/11] Enable access to SPI NOR flash on Samsung Snow board
+Date: Thu, 4 Jun 2015 06:31:45 +0200
+Message-ID: <CAOMqctQeg0Sj1pGOQsK1nNB6=-H9koH_5nrXYBq_NKeVt369dw@mail.gmail.com>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
 To: Marek Vasut <marex@denx.de>
 Content-Type: text/plain; charset=UTF-8
 Cc: Mark Rutland <mark.rutland@arm.com>,
@@ -39,32 +40,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4 June 2015 at 00:53, Marek Vasut <marex@denx.de> wrote:
-> On Wednesday, June 03, 2015 at 11:26:39 PM, Michal Suchanek wrote:
->> Hello,
->
-> Hi,
->
->> this patch series makes it possible to access the SPI NOR flash in the
->> Samsung XE303 'Snow' Chromebook.
+On 4 June 2015 at 01:03, Marek Vasut <marex@denx.de> wrote:
+> On Wednesday, June 03, 2015 at 11:26:41 PM, Michal Suchanek wrote:
+>> On sunxi the SPI controller currently does not have DMA support and fails
+>> any transfer larger than 63 bytes.
 >>
->> Unfortunately not all issues are resolved. To work around an issue with the
->> pl330 dma engine I respun the patch for limiting transfer size in m25p80
->> driver.
+>> On Exynos the pl330 DMA controller fails any transfer larger than 64kb
+>> when using slower speed like 40MHz and any transfer larger than 128bytes
+>> when running at 133MHz.
 >
-> Looks like fixing a bug at the wrong place to me ...
->
->> As the flash does not contain any sane filesystem and is only likely to be
->> accessed with mtd_debug or similar tool the limit of the dma engine is
->> easily reached. Filesystems using shorter data transfers are less likely
->> to be affected.
->
-> Sounds like the DMA engine driver should be fixed.
+> This smells more like some corruption of the data on the bus or something
+> even more obscure.
 
-I looked at the pl330 datasheet and don't see anything obviusly wrong
-with the pl330 driver in Linux.
+If the data was corrupted you would get corrupted data and not
+transfer failure. AFAIK there is no checksum or anything. I actually
+do get corrupted data when I use wrong feedback delay setting.
 
-Ideally it would be fixed but I have no idea what's wrong with it.
+>
+>> The best thing is that in both cases the controller can just lock up and
+>> never finish potentially leaving the hardware in unusable state.
+>>
+>> So it is required that the m25p80 driver actively prevents doing
+>> transfers that are too large for the current driver state on a
+>> particular piece of hardware.
+>>
+>> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+>>
+>> --
+>>
+>> Update commit message and documentation text.
+>> ---
+>>  .../devicetree/bindings/mtd/jedec,spi-nor.txt      |  6 ++++++
+>>  drivers/mtd/devices/m25p80.c                       | 24
+>> ++++++++++++++++++++-- 2 files changed, 28 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>> b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt index
+>> 2bee681..4e63ae8 100644
+>> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>> @@ -19,6 +19,12 @@ Optional properties:
+>>                     all chips and support for it can not be detected at
+>> runtime. Refer to your chips' datasheet to check if this is supported by
+>> your chip.
+>> +- linux,max_tx_len : With some SPI controller drivers possible transfer
+>> size is +                     limited. This may be hardware or driver bug.
+>> +                     Transfer data in chunks no larger than this value. +
+>>                     Using this option may severely degrade performance and
+>> +                     possibly flash memory life when max_tx_len is
+>> smaller than +                     flash page size (typically 256 bytes)
+>
+> Will we need similar patch for all other SPI slave drivers, like SPI NAND ?
+
+Probably. Some SPI slave drivers already do have similar option. In
+general it cannot be expected that you can reliably transfer
+arbitrarily large data over SPI it seems. However, if the nand driver
+transfers data a page at a time it should be fine.
 
 Thanks
 
