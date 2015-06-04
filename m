@@ -1,19 +1,12 @@
-MIME-Version: 1.0
-In-Reply-To: <5570692E.2050603@vanguardiasur.com.ar>
-References: <1433106362-6032-1-git-send-email-manabian@gmail.com>
- <1433106362-6032-2-git-send-email-manabian@gmail.com>
- <5570692E.2050603@vanguardiasur.com.ar>
-Date: Thu, 4 Jun 2015 17:58:07 +0200
-Message-ID: <CAGhQ9VzU+J1ZT45e-yZ+BAmyZvLUm1cyXE2T__O_4gGjtHrX-w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: add driver for NXP SPI Flash
- Interface (SPIFI)
-From: Joachim  Eastwood <manabian@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Content-Type: text/plain; charset=UTF-8
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- shijie.huang@intel.com, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+From: Joachim Eastwood <manabian@gmail.com>
+To: computersforpeace@gmail.com, dwmw2@infradead.org,
+ ezequiel@vanguardiasur.com.ar
+Subject: [PATCH v3 0/2] NXP SPIFI driver for LPC18xx/43xx familiy
+Date: Thu,  4 Jun 2015 18:54:01 +0200
+Message-Id: <1433436843-22296-1-git-send-email-manabian@gmail.com>
+Cc: shijie.huang@intel.com, devicetree@vger.kernel.org,
+ Joachim Eastwood <manabian@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,69 +16,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4 June 2015 at 17:05, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
-> Joachim,
->
-> I tested the driver and found an issue with it.
->
-> On 05/31/2015 06:06 PM, Joachim Eastwood wrote:
->> +
->> +     spifi->mtd.priv  = &spifi->nor;
->> +     spifi->nor.mtd   = &spifi->mtd;
->> +     spifi->nor.dev   = spifi->dev;
->> +     spifi->nor.priv  = spifi;
->> +     spifi->nor.read  = nxp_spifi_read;
->> +     spifi->nor.write = nxp_spifi_write;
->> +     spifi->nor.erase = nxp_spifi_erase;
->> +     spifi->nor.read_reg  = nxp_spifi_read_reg;
->> +     spifi->nor.write_reg = nxp_spifi_write_reg;
->> +
->> +     ret = of_modalias_node(np, modalias, sizeof(modalias));
->> +     if (ret < 0) {
->> +             dev_err(spifi->dev, "unable to get device modalias\n");
->> +             return ret;
->> +     }
->> +
->> +     /*
->> +      * The first read on a hard reset isn't reliable so do a
->> +      * dummy read of the id before calling spi_nor_scan().
->> +      * The reason for this problem is unknown.
->> +      *
->> +      * The official NXP spifilib uses more or less the same
->> +      * workaround that is applied here by reading the device
->> +      * id multiple times.
->> +      */
->> +     nxp_spifi_dummy_id_read(&spifi->nor);
->> +
->
-> Actually, I think there's an issue here. See how m25p80 deals
-> with modalias:
->
->         [..]
->         else if (!strcmp(spi->modalias, "spi-nor"))
->                 flash_name = NULL; /* auto-detect */
->         else
->                 flash_name = spi->modalias;
->
->         ret = spi_nor_scan(nor, flash_name, mode);
->         if (ret)
->                 return ret;
->
-> I think the "auto-detect" quirk is really needed, or you are will
-> otherwise fail to probe with the generic "jedec,spi-nor" compatible
-> string.
+This patch set adds a SPI-NOR driver for the NXP SPI Flash (SPIFI)
+controller that can be found on newer NXP MCUs. For example on the
+LPC18xx and LPC43xx familiy.
 
-I see.
+NXP SPIFI is a specialized SPI interface for serial Flash devices.
+It supports one Flash device with 1-, 2- and 4-bits width in SPI
+mode 0 or 3. The controller operates in either command or memory
+mode. In memory mode the Flash is made accessible for the CPU as
+normal memory.
 
-Seem easy enough to fix. I'll send out new version after doing some
-more tests here.
+This version address the comment from Ezequiel Garcia on v2. I
+have done some tests with both "jedec,spi-nor" and specific
+Flash name and both cases seems to work just fine now.
 
-Note that this code was copied from fsl-quadspi so I assume it has the
-same problem.
+Changes since v2:
+ - default to auto detection unless chip is specified
+ - update doc with reference to jedec,spi-nor.txt
 
+Changes since v1:
+ - use readb_poll_timeout instead of open coding
+ - cache current mode (memory/command)
+ - depend on HAS_IOMEM
+ - removed stray white space
+ - removed leftover debug print
 
-Thanks for testing and catching the issue, Ezequiel.
+Support for LPC18xx/43xx can found in linux-next now.
 
+Patch against l2-mtd.git master branch.
 
-regards,
-Joachim Eastwood
+Joachim Eastwood (2):
+  mtd: spi-nor: add driver for NXP SPI Flash Interface (SPIFI)
+  doc: dt: add documentation for nxp,lpc1773-spifi
+
+ .../devicetree/bindings/mtd/nxp-spifi.txt          |  58 +++
+ drivers/mtd/spi-nor/Kconfig                        |  11 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/nxp-spifi.c                    | 496 +++++++++++++++++++++
+ 4 files changed, 566 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nxp-spifi.txt
+ create mode 100644 drivers/mtd/spi-nor/nxp-spifi.c
+
+-- 
+1.8.0
