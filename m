@@ -1,24 +1,38 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0WlR-0005Ej-3G
- for linux-mtd@lists.infradead.org; Thu, 04 Jun 2015 15:09:02 +0000
-Received: by wiga1 with SMTP id a1so51014345wig.0
- for <linux-mtd@lists.infradead.org>; Thu, 04 Jun 2015 08:08:38 -0700 (PDT)
-Message-ID: <5570692E.2050603@vanguardiasur.com.ar>
-Date: Thu, 04 Jun 2015 12:05:18 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+From: Marek Vasut <marex@denx.de>
+To: Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+Date: Thu, 4 Jun 2015 17:15:12 +0200
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <201506040103.09555.marex@denx.de>
+ <CAOMqctQeg0Sj1pGOQsK1nNB6=-H9koH_5nrXYBq_NKeVt369dw@mail.gmail.com>
+In-Reply-To: <CAOMqctQeg0Sj1pGOQsK1nNB6=-H9koH_5nrXYBq_NKeVt369dw@mail.gmail.com>
 MIME-Version: 1.0
-To: Joachim Eastwood <manabian@gmail.com>, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: add driver for NXP SPI Flash
- Interface (SPIFI)
-References: <1433106362-6032-1-git-send-email-manabian@gmail.com>
- <1433106362-6032-2-git-send-email-manabian@gmail.com>
-In-Reply-To: <1433106362-6032-2-git-send-email-manabian@gmail.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: shijie.huang@intel.com, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Message-Id: <201506041715.12904.marex@denx.de>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-mtd@lists.infradead.org,
+ Alison Chaiken <alison_chaiken@mentor.com>, "Bean Huo
+ =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= \(beanhuo\)" <beanhuo@micron.com>,
+ linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ devicetree <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>,
+ dmaengine <dmaengine@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,69 +42,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joachim,
+On Thursday, June 04, 2015 at 06:31:45 AM, Michal Suchanek wrote:
+> On 4 June 2015 at 01:03, Marek Vasut <marex@denx.de> wrote:
+> > On Wednesday, June 03, 2015 at 11:26:41 PM, Michal Suchanek wrote:
+> >> On sunxi the SPI controller currently does not have DMA support and
+> >> fails any transfer larger than 63 bytes.
+> >> 
+> >> On Exynos the pl330 DMA controller fails any transfer larger than 64kb
+> >> when using slower speed like 40MHz and any transfer larger than 128bytes
+> >> when running at 133MHz.
+> > 
+> > This smells more like some corruption of the data on the bus or something
+> > even more obscure.
+> 
+> If the data was corrupted you would get corrupted data and not
+> transfer failure. AFAIK there is no checksum or anything. I actually
+> do get corrupted data when I use wrong feedback delay setting.
 
-I tested the driver and found an issue with it.
+OK
 
-On 05/31/2015 06:06 PM, Joachim Eastwood wrote:
-> +
-> +	spifi->mtd.priv  = &spifi->nor;
-> +	spifi->nor.mtd   = &spifi->mtd;
-> +	spifi->nor.dev   = spifi->dev;
-> +	spifi->nor.priv  = spifi;
-> +	spifi->nor.read  = nxp_spifi_read;
-> +	spifi->nor.write = nxp_spifi_write;
-> +	spifi->nor.erase = nxp_spifi_erase;
-> +	spifi->nor.read_reg  = nxp_spifi_read_reg;
-> +	spifi->nor.write_reg = nxp_spifi_write_reg;
-> +
-> +	ret = of_modalias_node(np, modalias, sizeof(modalias));
-> +	if (ret < 0) {
-> +		dev_err(spifi->dev, "unable to get device modalias\n");
-> +		return ret;
-> +	}
-> +
-> +	/*
-> +	 * The first read on a hard reset isn't reliable so do a
-> +	 * dummy read of the id before calling spi_nor_scan().
-> +	 * The reason for this problem is unknown.
-> +	 *
-> +	 * The official NXP spifilib uses more or less the same
-> +	 * workaround that is applied here by reading the device
-> +	 * id multiple times.
-> +	 */
-> +	nxp_spifi_dummy_id_read(&spifi->nor);
-> +
+> >> The best thing is that in both cases the controller can just lock up and
+> >> never finish potentially leaving the hardware in unusable state.
 
-Actually, I think there's an issue here. See how m25p80 deals
-with modalias:
+[...]
 
-	[..]
-        else if (!strcmp(spi->modalias, "spi-nor"))
-                flash_name = NULL; /* auto-detect */
-        else
-                flash_name = spi->modalias;
+> >> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+> >> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+> >> 
+> >> @@ -19,6 +19,12 @@ Optional properties:
+> >>                     all chips and support for it can not be detected at
+> >> 
+> >> runtime. Refer to your chips' datasheet to check if this is supported by
+> >> your chip.
+> >> +- linux,max_tx_len : With some SPI controller drivers possible transfer
+> >> size is +                     limited. This may be hardware or driver
+> >> bug. +                     Transfer data in chunks no larger than this
+> >> value. +
+> >> 
+> >>                     Using this option may severely degrade performance
+> >>                     and
+> >> 
+> >> +                     possibly flash memory life when max_tx_len is
+> >> smaller than +                     flash page size (typically 256 bytes)
+> > 
+> > Will we need similar patch for all other SPI slave drivers, like SPI NAND
+> > ?
+> 
+> Probably. Some SPI slave drivers already do have similar option.
 
-        ret = spi_nor_scan(nor, flash_name, mode);
-        if (ret)
-                return ret;
+So the SPI device drivers are implementing workarounds for buggy SPI hosts,
+even if those SPI devices themselves don't suffer from such limitations. Yes,
+this seems like the seriously wrong thing to do.
 
-I think the "auto-detect" quirk is really needed, or you are will
-otherwise fail to probe with the generic "jedec,spi-nor" compatible
-string.
+> In general it cannot be expected that you can reliably transfer
+> arbitrarily large data over SPI it seems.
 
-Notice that the binding specifies the chip-specific compatible
-as optional (it says _May_):
+This is what should be expected because this is how the bus is supposed
+to work in fact. You can transfer an arbitrary amount of data over SPI
+bus.
 
-- compatible : May include a device-specific string consisting of the
-               manufacturer and name of the chip.
+If some driver has a limitation, it's that (bus, dma) driver which needs
+to implement a fix or a workaround.
 
-> +	ret = spi_nor_scan(&spifi->nor, modalias, flash_read);
-> +	if (ret) {
-> +		dev_err(spifi->dev, "device scan failed\n");
-> +		return ret;
-> +	}
+> However, if the nand driver transfers data a page at a time it should
+> be fine.
 
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+... until someone issues multi-block read, in which case it all falls
+down like a house of cards. It is impossible to build a reliable system
+on "should" and similar assumptions ; the driver must be solid.
+
+Best regards,
+Marek Vasut
