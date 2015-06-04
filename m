@@ -1,33 +1,37 @@
 From: Marek Vasut <marex@denx.de>
-To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Subject: Re: [PATCH 11/11] dt: Exynos: add Snow SPI NOR node.
-Date: Thu, 4 Jun 2015 17:20:54 +0200
+To: Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 00/11] Enable access to SPI NOR flash on Samsung Snow board
+Date: Thu, 4 Jun 2015 17:29:35 +0200
 References: <cover.1433364398.git.hramrach@gmail.com>
- <3234c12c90eabbeeb6d33604a324231937e309ec.1433364398.git.hramrach@gmail.com>
- <556FB222.2070406@samsung.com>
-In-Reply-To: <556FB222.2070406@samsung.com>
+ <201506040053.29482.marex@denx.de>
+ <CAOMqctRkoQrP7wAgXfWXHb2fbi2-6VayHRx5DgUKn6Djz0qtQQ@mail.gmail.com>
+In-Reply-To: <CAOMqctRkoQrP7wAgXfWXHb2fbi2-6VayHRx5DgUKn6Djz0qtQQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201506041720.54666.marex@denx.de>
+Message-Id: <201506041729.35645.marex@denx.de>
 Cc: Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>, linux-mtd@lists.infradead.org,
  Alison Chaiken <alison_chaiken@mentor.com>, "Bean Huo
  =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= \(beanhuo\)" <beanhuo@micron.com>,
- Michal Suchanek <hramrach@gmail.com>, Russell King <linux@arm.linux.org.uk>,
- Vinod Koul <vinod.koul@intel.com>,
+ linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
  =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
- linux-samsung-soc@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
- Ben Hutchings <ben@decadent.org.uk>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ devicetree <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
- Dan Williams <dan.j.williams@intel.com>, linux-arm-kernel@lists.infradead.org,
- pavel@denx.de, "grmoore@altera.com" <grmoore@altera.com>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, Rob Herring <robh+dt@kernel.org>,
- Han Xu <han.xu@freescale.com>, Knut Wohlrab <knut.wohlrab@de.bosch.com>,
- dmaengine@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>,
+ dmaengine <dmaengine@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -38,46 +42,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, June 04, 2015 at 04:04:18 AM, Krzysztof Kozlowski wrote:
-> On 04.06.2015 06:26, Michal Suchanek wrote:
-> > The Snow has onboard SPI NOR flash which contains the bootloader.
+On Thursday, June 04, 2015 at 06:21:32 AM, Michal Suchanek wrote:
+> On 4 June 2015 at 00:53, Marek Vasut <marex@denx.de> wrote:
+> > On Wednesday, June 03, 2015 at 11:26:39 PM, Michal Suchanek wrote:
+> >> Hello,
 > > 
-> > Add DT node for this flash chip. The flash is rated 133MHz but the pl330
-> > controller can transfer only up to 128 bytes at this speed so use more
-> > conservative settings. Even at 40MHz pl330 can transfer at most 64k with
-> > the current driver.
+> > Hi,
 > > 
-> > Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> > ---
+> >> this patch series makes it possible to access the SPI NOR flash in the
+> >> Samsung XE303 'Snow' Chromebook.
+> >> 
+> >> Unfortunately not all issues are resolved. To work around an issue with
+> >> the pl330 dma engine I respun the patch for limiting transfer size in
+> >> m25p80 driver.
 > > 
-> >  arch/arm/boot/dts/exynos5250-snow.dts | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
+> > Looks like fixing a bug at the wrong place to me ...
 > > 
-> > diff --git a/arch/arm/boot/dts/exynos5250-snow.dts
-> > b/arch/arm/boot/dts/exynos5250-snow.dts index 1fa72cf..38e4cda 100644
-> > --- a/arch/arm/boot/dts/exynos5250-snow.dts
-> > +++ b/arch/arm/boot/dts/exynos5250-snow.dts
-> > @@ -691,6 +691,18 @@
+> >> As the flash does not contain any sane filesystem and is only likely to
+> >> be accessed with mtd_debug or similar tool the limit of the dma engine
+> >> is easily reached. Filesystems using shorter data transfers are less
+> >> likely to be affected.
 > > 
-> >  	num-cs = <1>;
-> >  	cs-gpios = <&gpa2 5 0>;
-> >  	status = "okay";
-> > 
-> > +		flash: m25p80@0 {
+> > Sounds like the DMA engine driver should be fixed.
 > 
-> The indentation looks odd. This should be at the same level as "status".
+> I looked at the pl330 datasheet and don't see anything obviusly wrong
+> with the pl330 driver in Linux.
 > 
-> > +			#address-cells = <1>;
-> > +			#size-cells = <1>;
-> > +			compatible = "jedec,spi-nor";
-> > +			reg = <0>;
-> > +			spi-max-frequency = <40000000>;
-> 
-> So actually you wanted 133 MHz but as a workaround for DMA issue you use
-> 40 MHz, right? Could you add here a small TODO note in comment about it?
+> Ideally it would be fixed but I have no idea what's wrong with it.
 
-I disagree. There is a problem, the problem should actually be analyzed and 
-fixed, not just postponed with some TODO nonsense.
+Ask maybe Catalin from ARM to help you -- he might be able to point you
+to the right hardware guy.
 
 Best regards,
 Marek Vasut
