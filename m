@@ -1,14 +1,40 @@
-From: Joachim Eastwood <manabian@gmail.com>
-To: computersforpeace@gmail.com, dwmw2@infradead.org,
- ezequiel@vanguardiasur.com.ar
-Subject: [PATCH v3 2/2] doc: dt: add documentation for nxp,lpc1773-spifi
-Date: Thu,  4 Jun 2015 18:54:03 +0200
-Message-Id: <1433436843-22296-3-git-send-email-manabian@gmail.com>
-In-Reply-To: <1433436843-22296-1-git-send-email-manabian@gmail.com>
-References: <1433436843-22296-1-git-send-email-manabian@gmail.com>
-Cc: shijie.huang@intel.com, devicetree@vger.kernel.org,
- Joachim Eastwood <manabian@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Date: Thu, 4 Jun 2015 19:15:47 +0200
+From: Richard Cochran <richardcochran@gmail.com>
+To: Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+Message-ID: <20150604171547.GA1530@localhost.localdomain>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <8fc4b9f5291a509c4c35782a1337bf536f1019af.1433364398.git.hramrach@gmail.com>
+ <CAMuHMdVT2M7pPHDDHmoNF_zVXhz1PUm5PiYxDKcAjSAcfSDiZg@mail.gmail.com>
+ <CAOMqctS6KNrTATB6MYCZLBnZUQmX=e0qQvGf78YtLaF8pkibhQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMqctS6KNrTATB6MYCZLBnZUQmX=e0qQvGf78YtLaF8pkibhQ@mail.gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ Marek Vasut <marex@denx.de>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Ben Hutchings <ben@decadent.org.uk>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>, Mark Brown <broonie@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@freescale.com>,
+ Kumar Gala <galak@codeaurora.org>, dmaengine <dmaengine@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,78 +44,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add device tree binding documentation for the SPI Flash Interface
-(SPIFI) found on NXP LPC18xx and LPC43xx devies.
+On Thu, Jun 04, 2015 at 10:31:45AM +0200, Michal Suchanek wrote:
+> You might want to try to run the bus at 60MHz or 80MHz and then the
+> values would probably again be different.
+> 
+> The first two values are set in DT so the logical place for setting
+> the third is also in DT.
+> 
+> Otherwise you would need some in-kernel table of these settings.
 
-Signed-off-by: Joachim Eastwood <manabian@gmail.com>
----
- .../devicetree/bindings/mtd/nxp-spifi.txt          | 58 ++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/nxp-spifi.txt
+Or a formula.
 
-diff --git a/Documentation/devicetree/bindings/mtd/nxp-spifi.txt b/Documentation/devicetree/bindings/mtd/nxp-spifi.txt
-new file mode 100644
-index 000000000000..f8b6b250654e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/nxp-spifi.txt
-@@ -0,0 +1,58 @@
-+* NXP SPI Flash Interface (SPIFI)
-+
-+NXP SPIFI is a specialized SPI interface for serial Flash devices.
-+It supports one Flash device with 1-, 2- and 4-bits width in SPI
-+mode 0 or 3. The controller operates in either command or memory
-+mode. In memory mode the Flash is accessible from the CPU as
-+normal memory.
-+
-+Required properties:
-+  - compatible : Should be "nxp,lpc1773-spifi"
-+  - reg : the first contains the register location and length,
-+          the second contains the memory mapping address and length
-+  - reg-names: Should contain the reg names "spifi" and "flash"
-+  - interrupts : Should contain the interrupt for the device
-+  - clocks : The clocks needed by the SPIFI controller
-+  - clock-names : Should contain the clock names "spifi" and "reg"
-+
-+Optional properties:
-+ - resets : phandle + reset specifier
-+
-+The SPI Flash must be a child of the SPIFI node and must have a
-+compatible property as specified in bindings/mtd/jedec,spi-nor.txt
-+
-+Optionally it can also contain the following properties.
-+ - spi-cpol : Controller only supports mode 0 and 3 so either
-+              both spi-cpol and spi-cpha should be present or
-+              none of them
-+ - spi-cpha : See above
-+ - spi-rx-bus-width : Used to select how many pins that are used
-+                      for input on the controller
-+
-+See bindings/spi/spi-bus.txt for more information.
-+
-+Example:
-+spifi: spifi@40003000 {
-+	compatible = "nxp,lpc1773-spifi";
-+	reg = <0x40003000 0x1000>, <0x14000000 0x4000000>;
-+	reg-names = "spifi", "flash";
-+	interrupts = <30>;
-+	clocks = <&ccu1 CLK_SPIFI>, <&ccu1 CLK_CPU_SPIFI>;
-+	clock-names = "spifi", "reg";
-+	resets = <&rgu 53>;
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		spi-cpol;
-+		spi-cpha;
-+		spi-rx-bus-width = <4>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		partition@0 {
-+			label = "data";
-+			reg = <0 0x200000>;
-+		};
-+	};
-+};
-+
--- 
-1.8.0
+Thanks,
+Richard
