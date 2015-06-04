@@ -1,25 +1,25 @@
-From: Marek Vasut <marex@denx.de>
-To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 04/11] mtd: ofpart: do not fail probe when no partitions
- exist
-Date: Thu, 4 Jun 2015 17:28:50 +0200
+MIME-Version: 1.0
+In-Reply-To: <201506041728.50227.marex@denx.de>
 References: <cover.1433364398.git.hramrach@gmail.com>
  <201506040058.52882.marex@denx.de>
  <CAOMqctTB2AYOQZUc9o-R4PF1DQ-HY0RfSw5T-T28r5uP2s=qZA@mail.gmail.com>
-In-Reply-To: <CAOMqctTB2AYOQZUc9o-R4PF1DQ-HY0RfSw5T-T28r5uP2s=qZA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201506041728.50227.marex@denx.de>
+ <201506041728.50227.marex@denx.de>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Thu, 4 Jun 2015 17:40:58 +0200
+Message-ID: <CAOMqctQTxVZspcocDsNP6GzsRw5-0zPqkNScS8PzNvkFjBWatQ@mail.gmail.com>
+Subject: Re: [PATCH 04/11] mtd: ofpart: do not fail probe when no partitions
+ exist
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
 Cc: Mark Rutland <mark.rutland@arm.com>,
  Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-mtd@lists.infradead.org,
- Alison Chaiken <alison_chaiken@mentor.com>, "Bean Huo
- =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= \(beanhuo\)" <beanhuo@micron.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
  linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
  Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
  devicetree <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
@@ -43,67 +43,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, June 04, 2015 at 06:54:00 AM, Michal Suchanek wrote:
-> On 4 June 2015 at 00:58, Marek Vasut <marex@denx.de> wrote:
-> > On Wednesday, June 03, 2015 at 11:26:40 PM, Michal Suchanek wrote:
-> >> On Exynos it is necessary to set SPI controller parameters that apply to
-> >> a SPI slave in a DT subnode of the slave device. The ofpart code returns
-> >> an error when there are subnodes of the SPI flash but no partitions are
-> >> found. Change this condition to a warning so that flash without
-> >> partitions can be accessed on Exynos.
-> > 
-> > I have to admit the rationale for this patch is not very clear to me,
-> > sorry. Can you please explain this a bit more ?
-> 
-> This is how the DT entry for SPI slave looks with s3c64xx:
-> flash: m25p80@0 {
->         #address-cells = <1>;
->         #size-cells = <1>;
->         compatible = "jedec,spi-nor";
->         reg = <0>;
->         spi-max-frequency = <40000000>;
->         linux,max_tx_len = <65536>;
-
-SIDENOTE: I thought this was actually added by your patch #8 in this
-series. The underscores in the name of the property are not really
-consistent with the rest of the names.
-
->         m25p,fast-read;
->         controller-data {
->             samsung,spi-feedback-delay = <0>;
->         };
->     };
-> 
-> this is example of flash partitions:
-> flash@0 {
->         #address-cells = <1>;
->         #size-cells = <1>;
-> 
->         partition@0 {
->                 label = "u-boot";
->                 reg = <0x0000000 0x100000>;
->                 read-only;
->         };
-> 
->         uimage@100000 {
->                 reg = <0x0100000 0x200000>;
->         };
-> };
-> 
-> The parser ignores any flash without subnodes and returns 0 (no
-> partititon). When there is a subnode it assumes the flash is
-> partitioned and tries to parse the subnodes as partitions. When there
-> are subnodes and none parses as partition an error is returned. As
-> shown above it is valid to have subnodes on unpartitioned flash.
+On 4 June 2015 at 17:28, Marek Vasut <marex@denx.de> wrote:
+> On Thursday, June 04, 2015 at 06:54:00 AM, Michal Suchanek wrote:
+>> On 4 June 2015 at 00:58, Marek Vasut <marex@denx.de> wrote:
+>> > On Wednesday, June 03, 2015 at 11:26:40 PM, Michal Suchanek wrote:
+>> >> On Exynos it is necessary to set SPI controller parameters that apply to
+>> >> a SPI slave in a DT subnode of the slave device. The ofpart code returns
+>> >> an error when there are subnodes of the SPI flash but no partitions are
+>> >> found. Change this condition to a warning so that flash without
+>> >> partitions can be accessed on Exynos.
+>> >
+>> > I have to admit the rationale for this patch is not very clear to me,
+>> > sorry. Can you please explain this a bit more ?
+>>
+>> This is how the DT entry for SPI slave looks with s3c64xx:
+>> flash: m25p80@0 {
+>>         #address-cells = <1>;
+>>         #size-cells = <1>;
+>>         compatible = "jedec,spi-nor";
+>>         reg = <0>;
+>>         spi-max-frequency = <40000000>;
+>>         linux,max_tx_len = <65536>;
 >
-> When an error is returned from a partition parser the mtdpart code
-> passes on this error to the flash probe function and the proble of the
-> flash fails.
+> SIDENOTE: I thought this was actually added by your patch #8 in this
+> series. The underscores in the name of the property are not really
+> consistent with the rest of the names.
+>
+>>         m25p,fast-read;
+>>         controller-data {
+>>             samsung,spi-feedback-delay = <0>;
+>>         };
+>>     };
+>>
+>> this is example of flash partitions:
+>> flash@0 {
+>>         #address-cells = <1>;
+>>         #size-cells = <1>;
+>>
+>>         partition@0 {
+>>                 label = "u-boot";
+>>                 reg = <0x0000000 0x100000>;
+>>                 read-only;
+>>         };
+>>
+>>         uimage@100000 {
+>>                 reg = <0x0100000 0x200000>;
+>>         };
+>> };
+>>
+>> The parser ignores any flash without subnodes and returns 0 (no
+>> partititon). When there is a subnode it assumes the flash is
+>> partitioned and tries to parse the subnodes as partitions. When there
+>> are subnodes and none parses as partition an error is returned. As
+>> shown above it is valid to have subnodes on unpartitioned flash.
+>>
+>> When an error is returned from a partition parser the mtdpart code
+>> passes on this error to the flash probe function and the proble of the
+>> flash fails.
+>
+> What does /proc/mtd tell you when you have no partitions defined
+> in the DT ? It should provide you with the entire MTD device and
+> the code shouldn't even try to parse any OF partitions, since you
+> don't have any.
 
-What does /proc/mtd tell you when you have no partitions defined
-in the DT ? It should provide you with the entire MTD device and
-the code shouldn't even try to parse any OF partitions, since you
-don't have any.
+mtdinfo shows I have no mtd devices and the log shows that probe
+failed unless I patch the kernel.
 
-Best regards,
-Marek Vasut
+When there is *support* for of partitions the ofparser is run on mtd
+probe. If it fails because it considers
+
+>>         controller-data {
+>>             samsung,spi-feedback-delay = <0>;
+>>         };
+
+an invalid partition and does not find any valid partition the probe fails.
+
+There are two problems here
+
+1) the above is not invalid. It just is not a partition. The parser
+should not fail seeing this
+
+2) the mtd probe should not fail when a partition parser fails and
+should present the unpartitioned device
+
+Both are addressed in separate patches.
+
+Thanks
+
+Michal
