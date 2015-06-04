@@ -1,42 +1,24 @@
-Date: Thu, 4 Jun 2015 11:56:53 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Michal Suchanek <hramrach@gmail.com>
-Message-ID: <20150604105653.GD14071@sirena.org.uk>
-References: <cover.1433364398.git.hramrach@gmail.com>
- <305830ebf9c0ae98c4f6e0ebbdec7414d6762b36.1433364398.git.hramrach@gmail.com>
- <20150604091634.GY14071@sirena.org.uk>
- <CAOMqctQxn6UY2DJ9Syp6Ay9SYKLgdU+8EjiTK_48-R3dZ8PcvA@mail.gmail.com>
- <20150604102621.GB14071@sirena.org.uk>
- <CAOMqctRFXWT3m8H4YBH0tzQAL3Y2NUs6XCo2LiF1R0Xz+iWUzw@mail.gmail.com>
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z0WlR-0005Ej-3G
+ for linux-mtd@lists.infradead.org; Thu, 04 Jun 2015 15:09:02 +0000
+Received: by wiga1 with SMTP id a1so51014345wig.0
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Jun 2015 08:08:38 -0700 (PDT)
+Message-ID: <5570692E.2050603@vanguardiasur.com.ar>
+Date: Thu, 04 Jun 2015 12:05:18 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="jNp2UUAAd0DeWbgM"
-Content-Disposition: inline
-In-Reply-To: <CAOMqctRFXWT3m8H4YBH0tzQAL3Y2NUs6XCo2LiF1R0Xz+iWUzw@mail.gmail.com>
-Subject: Re: [PATCH 10/11] spi: add more debug prints in s3c64xx
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Alison Chaiken <alison_chaiken@mentor.com>,
- Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- Marek Vasut <marex@denx.de>,
- linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
- Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
- devicetree <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Rob Herring <robh+dt@kernel.org>,
- Dan Williams <dan.j.williams@intel.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "grmoore@altera.com" <grmoore@altera.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- Han Xu <han.xu@freescale.com>, Knut Wohlrab <knut.wohlrab@de.bosch.com>,
- dmaengine <dmaengine@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+To: Joachim Eastwood <manabian@gmail.com>, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: add driver for NXP SPI Flash
+ Interface (SPIFI)
+References: <1433106362-6032-1-git-send-email-manabian@gmail.com>
+ <1433106362-6032-2-git-send-email-manabian@gmail.com>
+In-Reply-To: <1433106362-6032-2-git-send-email-manabian@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: shijie.huang@intel.com, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,32 +28,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Joachim,
 
---jNp2UUAAd0DeWbgM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I tested the driver and found an issue with it.
 
-On Thu, Jun 04, 2015 at 12:52:19PM +0200, Michal Suchanek wrote:
+On 05/31/2015 06:06 PM, Joachim Eastwood wrote:
+> +
+> +	spifi->mtd.priv  = &spifi->nor;
+> +	spifi->nor.mtd   = &spifi->mtd;
+> +	spifi->nor.dev   = spifi->dev;
+> +	spifi->nor.priv  = spifi;
+> +	spifi->nor.read  = nxp_spifi_read;
+> +	spifi->nor.write = nxp_spifi_write;
+> +	spifi->nor.erase = nxp_spifi_erase;
+> +	spifi->nor.read_reg  = nxp_spifi_read_reg;
+> +	spifi->nor.write_reg = nxp_spifi_write_reg;
+> +
+> +	ret = of_modalias_node(np, modalias, sizeof(modalias));
+> +	if (ret < 0) {
+> +		dev_err(spifi->dev, "unable to get device modalias\n");
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * The first read on a hard reset isn't reliable so do a
+> +	 * dummy read of the id before calling spi_nor_scan().
+> +	 * The reason for this problem is unknown.
+> +	 *
+> +	 * The official NXP spifilib uses more or less the same
+> +	 * workaround that is applied here by reading the device
+> +	 * id multiple times.
+> +	 */
+> +	nxp_spifi_dummy_id_read(&spifi->nor);
+> +
 
-> There is no code interdependency with the other patches so if it's
-> preferred I can send patches like this separately.
+Actually, I think there's an issue here. See how m25p80 deals
+with modalias:
 
-Yes, that's better practice.
+	[..]
+        else if (!strcmp(spi->modalias, "spi-nor"))
+                flash_name = NULL; /* auto-detect */
+        else
+                flash_name = spi->modalias;
 
---jNp2UUAAd0DeWbgM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+        ret = spi_nor_scan(nor, flash_name, mode);
+        if (ret)
+                return ret;
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+I think the "auto-detect" quirk is really needed, or you are will
+otherwise fail to probe with the generic "jedec,spi-nor" compatible
+string.
 
-iQEcBAEBCAAGBQJVcC71AAoJECTWi3JdVIfQBj8H/2IDwTMKds4nyc0wJHt1b/zn
-r2Xjn1gr2EEPJL71yeJewRKgUFS3df/m3czmwxQ1bLcweAhoDVnHjDQ/DMB0Aqmh
-UYbI1tuqCf83hxyDqlNcKsxkZ4hvvtDHxNKQtsVU1LNGsVb+yHFMLDmtQktZtycF
-BjLTw15SNHyixdXHrMej+qZt+NjozC7Y38ff9jdo4AAp3B65yokISIVatc93S6iy
-wow+h4THuzm+DMrKCXaUwtkqx6kmTEZ1DaxXf8QcKkXyKTzXL1b1riP/0Q1vA+rT
-SYgloqyo4pbXTmiyQkOwhARysxqNBpuQ/mesUvlqIS+f60HvJvrTaVgzEIbokVk=
-=giwp
------END PGP SIGNATURE-----
+Notice that the binding specifies the chip-specific compatible
+as optional (it says _May_):
 
---jNp2UUAAd0DeWbgM--
+- compatible : May include a device-specific string consisting of the
+               manufacturer and name of the chip.
+
+> +	ret = spi_nor_scan(&spifi->nor, modalias, flash_read);
+> +	if (ret) {
+> +		dev_err(spifi->dev, "device scan failed\n");
+> +		return ret;
+> +	}
+
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
