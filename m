@@ -1,5 +1,5 @@
-Message-id: <556FB27B.2090302@samsung.com>
-Date: Thu, 04 Jun 2015 11:05:47 +0900
+Message-id: <556FB37E.3000800@samsung.com>
+Date: Thu, 04 Jun 2015 11:10:06 +0900
 From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
 MIME-version: 1.0
 To: Michal Suchanek <hramrach@gmail.com>, Rob Herring <robh+dt@kernel.org>,
@@ -21,10 +21,10 @@ To: Michal Suchanek <hramrach@gmail.com>, Rob Herring <robh+dt@kernel.org>,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-samsung-soc@vger.kernel.org, dmaengine@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH 01/11] ARM: dt: Add SPI CS on Samsung Snow board.
+Subject: Re: [PATCH 09/11] dma: pl330: fix wording in mcbufsz message
 References: <cover.1433364398.git.hramrach@gmail.com>
- <d47abe28c751b54b839d9340269a2c06a6e23a6c.1433364398.git.hramrach@gmail.com>
-In-reply-to: <d47abe28c751b54b839d9340269a2c06a6e23a6c.1433364398.git.hramrach@gmail.com>
+ <14872fc6f86b7f4976d539b47a7899904cd954f6.1433364398.git.hramrach@gmail.com>
+In-reply-to: <14872fc6f86b7f4976d539b47a7899904cd954f6.1433364398.git.hramrach@gmail.com>
 Content-type: text/plain; charset=UTF-8
 Content-transfer-encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -37,15 +37,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 04.06.2015 06:26, Michal Suchanek wrote:
-> Although there is only one choice of chipselect it is necessary to
-> specify it. The driver cannot claim the gpio otherwise.
+> The kernel is not trying to increase mcbufsz. It suggests you should try
+> doing so. Also print the calculated required size of mcbufsz.
 > 
 > Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> ---
->  arch/arm/boot/dts/exynos5250-snow.dts | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
 
-Acked-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Looks good:
+Reviewed-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
 
 Best regards,
 Krzysztof
