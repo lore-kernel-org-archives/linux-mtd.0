@@ -1,15 +1,15 @@
 Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0t8i-00020a-E7
+ id 1Z0t8i-00020C-EI
  for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 15:02:37 +0000
 From: Petr Mladek <pmladek@suse.cz>
 To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>,
  Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
  Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC PATCH 13/18] ring_buffer: Use iterant kthreads API in the ring
- buffer benchmark
-Date: Fri,  5 Jun 2015 17:01:12 +0200
-Message-Id: <1433516477-5153-14-git-send-email-pmladek@suse.cz>
+Subject: [RFC PATCH 12/18] lockd: Convert the central lockd service to
+ kthread_iterant API
+Date: Fri,  5 Jun 2015 17:01:11 +0200
+Message-Id: <1433516477-5153-13-git-send-email-pmladek@suse.cz>
 In-Reply-To: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
@@ -40,155 +40,155 @@ The kthread function is split into optional init(), func(), destroy() parts
 where func() is called in a cycle. The common check point is after
 each func() function finishes. See kthread_iterant_fn() for more details.
 
-This patch removes the wait_to_die() cycle. Instead it uses
-the main cycle and func() does nothing in the kill_test state.
+This patch moves the action associated with the signal into a proper
+signal handler.
 
-The threads are not safe for freezing because there is used schedule()
-without try_to_freeze() inside the kthread. Let's fix it in separate
-patch. In the meantime, we need to disable it explicitly in the init()
-function.
+It removes the obsolete set_freezable() call because iterant kthreads
+are freezable by default.
 
-Consumer does not need to call schedule in func(). Instead, it sets
-KTI_INT_SLEEP type and lets the kthread iterant framework to do the sleep
-between iterations.
+struct kthread_iterant is stored into struct svc_rqst. We have already
+stored there the pointer to the related task_struct.
 
-On the other hand, the producer still need to implement the sleeping
-in func() because the iterant kthread framework does not support
-this type of sleep. But the plan is to make it possible later.
+The rest is just shuffling the code from the while cycle into _func().
 
 Signed-off-by: Petr Mladek <pmladek@suse.cz>
 ---
- kernel/trace/ring_buffer_benchmark.c | 81 +++++++++++++++++-------------------
- 1 file changed, 39 insertions(+), 42 deletions(-)
+ fs/lockd/svc.c             | 80 ++++++++++++++++++++++++----------------------
+ include/linux/sunrpc/svc.h |  2 ++
+ 2 files changed, 44 insertions(+), 38 deletions(-)
 
-diff --git a/kernel/trace/ring_buffer_benchmark.c b/kernel/trace/ring_buffer_benchmark.c
-index 13d945c0d03f..164f3762cc82 100644
---- a/kernel/trace/ring_buffer_benchmark.c
-+++ b/kernel/trace/ring_buffer_benchmark.c
-@@ -30,6 +30,8 @@ static struct completion read_done;
- static struct ring_buffer *buffer;
- static struct task_struct *producer;
- static struct task_struct *consumer;
-+static struct kthread_iterant producer_kti;
-+static struct kthread_iterant consumer_kti;
- static unsigned long read;
- 
- static int disable_reader;
-@@ -354,61 +356,51 @@ static void ring_buffer_producer(void)
- 	}
+diff --git a/fs/lockd/svc.c b/fs/lockd/svc.c
+index 55505cbe11af..5b1efe509fcc 100644
+--- a/fs/lockd/svc.c
++++ b/fs/lockd/svc.c
+@@ -122,58 +122,55 @@ static void restart_grace(void)
  }
  
--static void wait_to_die(void)
-+static void ring_buffer_consumer_thread_init(void *arg)
+ /*
+- * This is the lockd kernel thread
++ * Lockd kernel thread implementation using the iterant API
++ * We don't terminate until the last NFS mount or NFS daemon
++ * has gone away.
+  */
+-static int
+-lockd(void *vrqstp)
++static void lockd_sigkill(int sig)
  {
--	set_current_state(TASK_INTERRUPTIBLE);
--	while (!kthread_should_stop()) {
--		schedule();
--		set_current_state(TASK_INTERRUPTIBLE);
--	}
--	__set_current_state(TASK_RUNNING);
-+	/* it does not matter where we freeze */
-+	current->flags |= PF_NOFREEZE;
- }
- 
--static int ring_buffer_consumer_thread(void *arg)
-+static void ring_buffer_consumer_thread_func(void *arg)
- {
--	while (!kthread_should_stop() && !kill_test) {
--		complete(&read_start);
+-	int		err = 0;
+-	struct svc_rqst *rqstp = vrqstp;
 -
--		ring_buffer_consumer();
--
--		set_current_state(TASK_INTERRUPTIBLE);
--		if (kthread_should_stop() || kill_test)
--			break;
--
--		schedule();
--	}
--	__set_current_state(TASK_RUNNING);
--
- 	if (kill_test)
--		wait_to_die();
-+		return;
- 
--	return 0;
-+	complete(&read_start);
-+
-+	ring_buffer_consumer();
- }
- 
--static int ring_buffer_producer_thread(void *arg)
-+static void ring_buffer_producer_thread_init(void *arg)
- {
- 	init_completion(&read_start);
- 
--	while (!kthread_should_stop() && !kill_test) {
--		ring_buffer_reset(buffer);
-+	/* it does not matter where we freeze */
-+	current->flags |= PF_NOFREEZE;
+-	/* try_to_freeze() is called from svc_recv() */
+-	set_freezable();
++	restart_grace();
 +}
  
--		if (consumer) {
--			smp_wmb();
--			wake_up_process(consumer);
--			wait_for_completion(&read_start);
--		}
-+static void ring_buffer_producer_thread_func(void *arg)
++static void lockd_init(void *vrqstp)
 +{
-+	if (kill_test) {
-+		set_kthread_iterant_int_sleep();
+ 	/* Allow SIGKILL to tell lockd to drop all of its locks */
+-	allow_signal(SIGKILL);
++	kthread_sigaction(SIGKILL, lockd_sigkill);
+ 
+ 	dprintk("NFS locking service started (ver " LOCKD_VERSION ").\n");
++}
+ 
+-	/*
+-	 * The main request loop. We don't terminate until the last
+-	 * NFS mount or NFS daemon has gone away.
+-	 */
+-	while (!kthread_should_stop()) {
+-		long timeout = MAX_SCHEDULE_TIMEOUT;
+-		RPC_IFDEBUG(char buf[RPC_MAX_ADDRBUFLEN]);
++static void lockd_func(void *vrqstp)
++{
++	int err = 0;
++	struct svc_rqst *rqstp = vrqstp;
+ 
+-		/* update sv_maxconn if it has changed */
+-		rqstp->rq_server->sv_maxconn = nlm_max_connections;
++	long timeout = MAX_SCHEDULE_TIMEOUT;
++	RPC_IFDEBUG(char buf[RPC_MAX_ADDRBUFLEN]);
+ 
+-		if (signalled()) {
+-			flush_signals(current);
+-			restart_grace();
+-			continue;
+-		}
++	/* update sv_maxconn if it has changed */
++	rqstp->rq_server->sv_maxconn = nlm_max_connections;
+ 
+-		timeout = nlmsvc_retry_blocked();
++	timeout = nlmsvc_retry_blocked();
+ 
+-		/*
+-		 * Find a socket with data available and call its
+-		 * recvfrom routine.
+-		 */
+-		err = svc_recv(rqstp, timeout);
+-		if (err == -EAGAIN || err == -EINTR)
+-			continue;
+-		dprintk("lockd: request from %s\n",
+-				svc_print_addr(rqstp, buf, sizeof(buf)));
++	/*
++	 * Find a socket with data available and call its
++	 * recvfrom routine.
++	 */
++	err = svc_recv(rqstp, timeout);
++	if (err == -EAGAIN || err == -EINTR)
 +		return;
-+	}
  
--		ring_buffer_producer();
-+	ring_buffer_reset(buffer);
- 
--		trace_printk("Sleeping for 10 secs\n");
--		set_current_state(TASK_INTERRUPTIBLE);
--		schedule_timeout(HZ * SLEEP_TIME);
-+	if (consumer) {
-+		/* reset ring buffer before waking up the consumer */
-+		smp_wmb();
-+		wake_up_process(consumer);
-+		wait_for_completion(&read_start);
- 	}
- 
--	if (kill_test)
--		wait_to_die();
-+	ring_buffer_producer();
- 
+-		svc_process(rqstp);
+-	}
+-	flush_signals(current);
++	dprintk("lockd: request from %s\n",
++		svc_print_addr(rqstp, buf, sizeof(buf)));
++
++	svc_process(rqstp);
++}
++
++static void lockd_destroy(void *vrqstp)
++{
+ 	if (nlmsvc_ops)
+ 		nlmsvc_invalidate_all();
+ 	nlm_shutdown_hosts();
 -	return 0;
-+	trace_printk("Sleeping for 10 secs\n");
-+	set_current_state(TASK_INTERRUPTIBLE);
-+	schedule_timeout(HZ * SLEEP_TIME);
  }
  
- static int __init ring_buffer_benchmark_init(void)
-@@ -420,16 +412,21 @@ static int __init ring_buffer_benchmark_init(void)
- 	if (!buffer)
- 		return -ENOMEM;
+ static int create_lockd_listener(struct svc_serv *serv, const char *name,
+@@ -301,7 +298,14 @@ static int lockd_start_svc(struct svc_serv *serv)
+ 	svc_sock_update_bufs(serv);
+ 	serv->sv_maxconn = nlm_max_connections;
  
-+	consumer_kti.type = KTI_INT_SLEEP;
-+	consumer_kti.func = ring_buffer_consumer_thread_init;
-+	consumer_kti.func = ring_buffer_consumer_thread_func;
+-	nlmsvc_task = kthread_create(lockd, nlmsvc_rqst, "%s", serv->sv_name);
++	nlmsvc_rqst->rq_kti.type = 0;
++	nlmsvc_rqst->rq_kti.data = nlmsvc_rqst;
++	nlmsvc_rqst->rq_kti.init = lockd_init;
++	nlmsvc_rqst->rq_kti.func = lockd_func;
++	nlmsvc_rqst->rq_kti.destroy = lockd_destroy;
 +
- 	if (!disable_reader) {
--		consumer = kthread_create(ring_buffer_consumer_thread,
--					  NULL, "rb_consumer");
-+		consumer = kthread_iterant_create(&consumer_kti, "rb_consumer");
- 		ret = PTR_ERR(consumer);
- 		if (IS_ERR(consumer))
- 			goto out_fail;
- 	}
++	nlmsvc_task = kthread_iterant_create(&nlmsvc_rqst->rq_kti,
++					     "%s", serv->sv_name);
+ 	if (IS_ERR(nlmsvc_task)) {
+ 		error = PTR_ERR(nlmsvc_task);
+ 		printk(KERN_WARNING
+diff --git a/include/linux/sunrpc/svc.h b/include/linux/sunrpc/svc.h
+index fae6fb947fc8..6275e9b9df9b 100644
+--- a/include/linux/sunrpc/svc.h
++++ b/include/linux/sunrpc/svc.h
+@@ -16,6 +16,7 @@
+ #include <linux/sunrpc/xdr.h>
+ #include <linux/sunrpc/auth.h>
+ #include <linux/sunrpc/svcauth.h>
++#include <linux/kthread.h>
+ #include <linux/wait.h>
+ #include <linux/mm.h>
  
--	producer = kthread_run(ring_buffer_producer_thread,
--			       NULL, "rb_producer");
-+	producer_kti.init = ring_buffer_producer_thread_init;
-+	producer_kti.func = ring_buffer_producer_thread_func;
-+
-+	producer = kthread_iterant_run(&producer_kti, "rb_producer");
- 	ret = PTR_ERR(producer);
- 
- 	if (IS_ERR(producer))
+@@ -283,6 +284,7 @@ struct svc_rqst {
+ 	struct auth_domain *	rq_client;	/* RPC peer info */
+ 	struct auth_domain *	rq_gssclient;	/* "gss/"-style peer info */
+ 	struct svc_cacherep *	rq_cacherep;	/* cache info */
++	struct kthread_iterant  rq_kti;		/* info for iterant kthread */
+ 	struct task_struct	*rq_task;	/* service thread */
+ 	spinlock_t		rq_lock;	/* per-request lock */
+ };
 -- 
 1.8.5.6
