@@ -1,15 +1,15 @@
 Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0t8d-0001x2-Dg
- for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 15:02:29 +0000
+ id 1Z0t8i-00020Z-ES
+ for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 15:02:35 +0000
 From: Petr Mladek <pmladek@suse.cz>
 To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>,
  Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
  Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC PATCH 06/18] signal/kthread: Initial implementation of kthread
- signal handling
-Date: Fri,  5 Jun 2015 17:01:05 +0200
-Message-Id: <1433516477-5153-7-git-send-email-pmladek@suse.cz>
+Subject: [RFC PATCH 14/18] ring_buffer: Allow to cleanly freeze the ring
+ buffer benchmark kthreads
+Date: Fri,  5 Jun 2015 17:01:13 +0200
+Message-Id: <1433516477-5153-15-git-send-email-pmladek@suse.cz>
 In-Reply-To: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
@@ -32,180 +32,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Several kthreads already handle signals some way. They do so
-in different ways, search for allow_signal().
+One target of the switch to the kthread iterant API is to make
+most kthreads cleanly freezable.
 
-This patch allows to handle the signals in a more uniform way using
-kthread_do_signal().
-
-The main question is how much it should follow POSIX and the signal
-handling of user space processes. On one hand, we want to be as close
-as possible. On the other hand, we need to be very careful. All signals
-were ignored until now, except for the few kthreads that somehow
-handled them.
-
-POSIX behavior might cause some surprises and crazy bug reports.
-For example, imagine a home user stopping or killing kswapd because
-it makes the system too busy. It is like shooting in its own leg.
-
-Also the signals are already used a strange way. For example, klockd
-drops all locks when it gets SIGKILL. This was added before initial
-git commit, so the archaeology was not easy. The most likely explanation
-is that it is used during the system shutdown. It would make sense
-to drop all locks when user space processes are killed and before
-filesystems get unmounted.
-
-Now, the patch does the following compromise:
-
-  + defines default actions for SIGSTOP, SIGCONT, and fatal signals
-  + custom actions can be defined by kthread_sigaction()
-  + all signals are still ignored by default
-
-Well, fatal signals do not terminate the kthread immediately. They just
-set a flag to terminate the kthread, flush all other pending signals,
-and return to the main kthread cycle. The kthread is supposed to check
-the flag, leave the main cycle, do some cleanup actions when necessary
-and return from the kthread.
-
-Note that kthreads are running in the kernel address space. It makes
-the life much easier. The signal handler can be called directly and
-we do not need any arch-specific code to process it in the userspace.
-Also we do not care about ptrace.
-
-Finally, kthread_do_signal() is called on a safe place in the main
-iterant kthread cycle. Then we will not need any special code for
-signals when using this kthread API.
-
-This change does not affect any existing kthread. The plan is to
-use them only in safe kthreads that can be converted into
-the iterant kthread API.
+This patch adds try_to_freeze() where appropriate and enables
+freezing.
 
 Signed-off-by: Petr Mladek <pmladek@suse.cz>
 ---
- include/linux/signal.h |  1 +
- kernel/kthread.c       |  3 ++
- kernel/signal.c        | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 80 insertions(+)
+ kernel/trace/ring_buffer_benchmark.c | 34 ++++++++++++++--------------------
+ 1 file changed, 14 insertions(+), 20 deletions(-)
 
-diff --git a/include/linux/signal.h b/include/linux/signal.h
-index 06e54762c281..41e30310bc3b 100644
---- a/include/linux/signal.h
-+++ b/include/linux/signal.h
-@@ -294,6 +294,7 @@ extern int get_signal(struct ksignal *ksig);
- extern void signal_setup_done(int failed, struct ksignal *ksig, int stepping);
- extern void exit_signals(struct task_struct *tsk);
- extern void kthread_sigaction(int, __kthread_sighandler_t);
-+extern int kthread_do_signal(void);
+diff --git a/kernel/trace/ring_buffer_benchmark.c b/kernel/trace/ring_buffer_benchmark.c
+index 164f3762cc82..2d276b892aea 100644
+--- a/kernel/trace/ring_buffer_benchmark.c
++++ b/kernel/trace/ring_buffer_benchmark.c
+@@ -6,6 +6,7 @@
+ #include <linux/ring_buffer.h>
+ #include <linux/completion.h>
+ #include <linux/kthread.h>
++#include <linux/freezer.h>
+ #include <linux/module.h>
+ #include <linux/ktime.h>
+ #include <asm/local.h>
+@@ -207,6 +208,7 @@ static void ring_buffer_consumer(void)
+ 			break;
  
- static inline void allow_signal(int sig)
- {
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 688bb4cfd807..185902d0e293 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -426,6 +426,9 @@ static int kthread_iterant_fn(void *kti_ptr)
- 		if (kti->func)
- 			kti->func(data);
+ 		schedule();
++		try_to_freeze();
+ 	}
+ 	reader_finish = 0;
+ 	complete(&read_done);
+@@ -252,19 +254,21 @@ static void ring_buffer_producer(void)
+ 		if (consumer && !(cnt % wakeup_interval))
+ 			wake_up_process(consumer);
  
-+		if (signal_pending(current))
-+			kthread_do_signal();
-+
- 	/* this check is safe also for non-freezable kthreads */
- 	} while (!kthread_freezable_should_stop(NULL));
++		if (cnt % wakeup_interval) {
+ #ifndef CONFIG_PREEMPT
+-		/*
+-		 * If we are a non preempt kernel, the 10 second run will
+-		 * stop everything while it runs. Instead, we will call
+-		 * cond_resched and also add any time that was lost by a
+-		 * rescedule.
+-		 *
+-		 * Do a cond resched at the same frequency we would wake up
+-		 * the reader.
+-		 */
+-		if (cnt % wakeup_interval)
++			/*
++			 * If we are a non preempt kernel, the 10 second run
++			 * will stop everything while it runs. Instead, we will
++			 * call cond_resched and also add any time that was
++			 * lost by a rescedule.
++			 *
++			 * Do a cond resched at the same frequency we would
++			 * wake up the reader.
++			 */
+ 			cond_resched();
+ #endif
++			try_to_freeze();
++		}
  
-diff --git a/kernel/signal.c b/kernel/signal.c
-index ca6bdb411449..cdca53965c3d 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -23,6 +23,7 @@
- #include <linux/ptrace.h>
- #include <linux/signal.h>
- #include <linux/signalfd.h>
-+#include <linux/kthread.h>
- #include <linux/ratelimit.h>
- #include <linux/tracehook.h>
- #include <linux/capability.h>
-@@ -2365,6 +2366,81 @@ relock:
+ 	} while (ktime_before(end_time, timeout) && !kill_test);
+ 	trace_printk("End ring buffer hammer\n");
+@@ -356,12 +360,6 @@ static void ring_buffer_producer(void)
+ 	}
  }
  
- /**
-+ * kthread_do_signal - process signals delivered to kernel threads
-+ *
-+ * Kthreads are running in the kernel address space. It makes the life
-+ * much easier. The signal handler can be called directly and we do not
-+ * need any arch-specific code to process it in the userspace.
-+ * Also we do not care about ptrace.
-+ */
-+int kthread_do_signal(void)
-+{
-+	struct ksignal ksig;
-+	struct sighand_struct *sighand = current->sighand;
-+	struct signal_struct *signal = current->signal;
-+	unsigned long flags;
-+	int signr;
-+
-+	try_to_freeze();
-+relock:
-+	spin_lock_irqsave(&sighand->siglock, flags);
-+
-+	if (unlikely(signal->flags & SIGNAL_CLD_MASK)) {
-+		WARN(1, "there are no parents for kernel threads\n");
-+		signal->flags &= ~SIGNAL_CLD_MASK;
-+	}
-+
-+	for (;;) {
-+		struct k_sigaction *ka;
-+
-+		signr = dequeue_signal(current, &current->blocked, &ksig.info);
-+
-+		if (!signr)
-+			break;
-+
-+		ka = &sighand->action[signr-1];
-+
-+		/* Do nothing for ignored signals */
-+		if (ka->sa.kthread_sa_handler == KTHREAD_SIG_IGN)
-+			continue;
-+
-+		/* Run the custom handler if any */
-+		if (ka->sa.kthread_sa_handler != KTHREAD_SIG_DFL) {
-+			ksig.ka = *ka;
-+
-+			if (ka->sa.sa_flags & SA_ONESHOT)
-+				ka->sa.kthread_sa_handler = KTHREAD_SIG_DFL;
-+
-+			spin_unlock_irqrestore(&sighand->siglock, flags);
-+			/* could run directly for kthreads */
-+			ksig.ka.sa.kthread_sa_handler(signr);
-+			freezable_cond_resched();
-+			goto relock;
-+		}
-+
-+		/* Default actions */
-+		if (sig_kernel_ignore(signr))
-+			continue;
-+
-+		if (sig_kernel_stop(signr)) {
-+			__set_current_state(TASK_STOPPED);
-+			spin_unlock_irqrestore(&sighand->siglock, flags);
-+			/* Don't run again until woken by SIGCONT or SIGKILL */
-+			freezable_schedule();
-+			goto relock;
-+		}
-+
-+		/* Death signals, but try to terminate cleanly */
-+		kthread_stop_current();
-+		__flush_signals(current);
-+		break;
-+	}
-+	spin_unlock_irqrestore(&sighand->siglock, flags);
-+
-+	return 0;
-+}
-+
-+/**
-  * signal_delivered - 
-  * @ksig:		kernel signal struct
-  * @stepping:		nonzero if debugger single-step or block-step in use
+-static void ring_buffer_consumer_thread_init(void *arg)
+-{
+-	/* it does not matter where we freeze */
+-	current->flags |= PF_NOFREEZE;
+-}
+-
+ static void ring_buffer_consumer_thread_func(void *arg)
+ {
+ 	if (kill_test)
+@@ -375,9 +373,6 @@ static void ring_buffer_consumer_thread_func(void *arg)
+ static void ring_buffer_producer_thread_init(void *arg)
+ {
+ 	init_completion(&read_start);
+-
+-	/* it does not matter where we freeze */
+-	current->flags |= PF_NOFREEZE;
+ }
+ 
+ static void ring_buffer_producer_thread_func(void *arg)
+@@ -413,7 +408,6 @@ static int __init ring_buffer_benchmark_init(void)
+ 		return -ENOMEM;
+ 
+ 	consumer_kti.type = KTI_INT_SLEEP;
+-	consumer_kti.func = ring_buffer_consumer_thread_init;
+ 	consumer_kti.func = ring_buffer_consumer_thread_func;
+ 
+ 	if (!disable_reader) {
 -- 
 1.8.5.6
