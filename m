@@ -1,15 +1,14 @@
 Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0t8y-0006DQ-KZ
- for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 15:02:49 +0000
+ id 1Z0t93-0006DT-KZ
+ for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 15:02:53 +0000
 From: Petr Mladek <pmladek@suse.cz>
 To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>,
  Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
  Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC PATCH 16/18] kthread: Support interruptible sleep with a timeout
- by iterant kthreads
-Date: Fri,  5 Jun 2015 17:01:15 +0200
-Message-Id: <1433516477-5153-17-git-send-email-pmladek@suse.cz>
+Subject: [RFC PATCH 18/18] jffs2: Use the new API for a sleep with a timeout
+Date: Fri,  5 Jun 2015 17:01:17 +0200
+Message-Id: <1433516477-5153-19-git-send-email-pmladek@suse.cz>
 In-Reply-To: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
@@ -32,112 +31,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The aim of kthread iterant API is to maintain some non-trivial operations
-on the single place. One of this operations is sleeping between iterations
-because we need to handle properly system freezing, parking, and
-kthread stopping.
+It allows to maintain the checks for freezing, parking, and signal
+handling on a single place.
 
-This patch adds support for interruptible sleep with a timeout. It defines
-the type, function to set and do the sleep. The timeout value is added
-into the struct kthread_iterant.
+Note that the sleep with the timeout is used here to slow down
+the progress a bit. It does not matter if we do it before or after
+calling jffs2_garbage_collect_pass().
 
 Signed-off-by: Petr Mladek <pmladek@suse.cz>
 ---
- include/linux/kthread.h |  5 +++++
- kernel/kthread.c        | 30 +++++++++++++++++++++++++++++-
- 2 files changed, 34 insertions(+), 1 deletion(-)
+ fs/jffs2/background.c | 29 +++++++++++------------------
+ 1 file changed, 11 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-index 415178c20cde..e8f7c0106cfd 100644
---- a/include/linux/kthread.h
-+++ b/include/linux/kthread.h
-@@ -53,13 +53,16 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
- #define KTI_PAUSE_ONCE		0x00000001
- /* Do interruptible sleep between iterations. */
- #define KTI_INT_SLEEP		0x00000002
-+#define KTI_INT_SLEEP_TIMEOUT	0x00000004
+diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+index 50c16048ba2d..2d38d40e0ad1 100644
+--- a/fs/jffs2/background.c
++++ b/fs/jffs2/background.c
+@@ -62,6 +62,16 @@ static void jffs2_garbage_collect_thread_func(void *_c)
+ 	}
+ 	spin_unlock(&c->erase_completion_lock);
  
- #define KTI_PAUSE_MASK		(KTI_INT_SLEEP | \
-+				 KTI_INT_SLEEP_TIMEOUT | \
- 				 KTI_PAUSE_ONCE)
- 
- /**
-  * struct kthread_iterant - structure describing the function of the kthread
-  * @type: modifies the kthread behavior using extra flags.
-+ * @timeout: timeout value in jiffies.
-  * @data: pointer to a data passed to the functions.
-  * @init: function called when the kthread is created.
-  * @func: function called in the main cycle until the kthread is terminated.
-@@ -67,6 +70,7 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
-  */
- struct kthread_iterant {
- 	unsigned int type;
-+	signed long timeout;
- 	void *data;
- 	void (*init)(void *data);
- 	void (*func)(void *data);
-@@ -97,6 +101,7 @@ kthread_iterant_create_on_cpu(struct kthread_iterant *kti,
- })
- 
- void set_kthread_iterant_int_sleep(void);
-+void set_kthread_iterant_int_sleep_timeout(signed long timeout);
- 
- void kthread_bind(struct task_struct *k, unsigned int cpu);
- void kthread_stop_current(void);
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index fa40fb549e22..9a5845674419 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -455,6 +455,30 @@ void set_kthread_iterant_int_sleep(void)
- EXPORT_SYMBOL(set_kthread_iterant_int_sleep);
- 
- /**
-+ * set_kthread_iterant_int_sleep_timeout - do interuptible sleep
-+ *	with a timeout before the next iteration
-+ * @timeout: timeout value in jiffies
-+ *
-+ * This function is typically called under a lock, when the main func()
-+ * checks for the pending work.
-+ *
-+ * Kthreads should pause between iterations only when there is no work,
-+ * signal pending, freezing, parking, or termination; we want to do most
-+ * of these checks properly on a single place: kthread_iterant_fn().
-+ * Only the check for pending work need to be done in the main func()
-+ * because it is not generic.
-+ */
-+void set_kthread_iterant_int_sleep_timeout(signed long timeout)
-+{
-+	struct kthread_iterant *kti = to_kthread_iterant(current);
++	/* We don't want SIGHUP to interrupt us. STOP and KILL are OK though. */
++	sigprocmask(SIG_BLOCK, &hupmask, NULL);
 +
-+	set_kthread_iterant_pause_type(kti, KTI_INT_SLEEP_TIMEOUT);
-+	kti->timeout = timeout;
-+	set_current_state(TASK_INTERRUPTIBLE);
-+}
-+EXPORT_SYMBOL(set_kthread_iterant_int_sleep_timeout);
++	jffs2_dbg(1, "%s(): pass\n", __func__);
++	if (jffs2_garbage_collect_pass(c) == -ENOSPC) {
++		pr_notice("No space for garbage collection. Aborting GC thread\n");
++		kthread_stop_current();
++	}
++	sigprocmask(SIG_UNBLOCK, &hupmask, NULL);
 +
-+/**
-  * do_kthread_iterant_pause - do the selected pause before next iteration
-  *
-  * Most kthreads sleep or wait between iterations. This function
-@@ -470,7 +494,9 @@ static void do_kthread_iterant_pause(struct kthread_iterant *kti)
- 	 * Explicitly set the task state when it was not set by
- 	 * set_kthread_iterant_int_sleep*() functions.
+ 	/* Problem - immediately after bootup, the GCD spends a lot
+ 	 * of time in places like jffs2_kill_fragtree(); so much so
+ 	 * that userspace processes (like gdm and X) are starved
+@@ -73,24 +83,7 @@ static void jffs2_garbage_collect_thread_func(void *_c)
+ 	 * inode in with read_inode() is much preferable to having
+ 	 * the GC thread get there first.
  	 */
--	if (!(type & KTI_PAUSE_ONCE) && (type & KTI_INT_SLEEP))
-+	if (!(type & KTI_PAUSE_ONCE) &&
-+	    ((type & KTI_INT_SLEEP) ||
-+	     (type & KTI_INT_SLEEP_TIMEOUT)))
- 		set_current_state(TASK_INTERRUPTIBLE);
+-	schedule_timeout_interruptible(msecs_to_jiffies(50));
+-
+-	if (kthread_should_stop()) {
+-		jffs2_dbg(1, "%s(): kthread_stop() called\n", __func__);
+-		return;
+-	}
+-
+-	try_to_freeze();
+-
+-	/* We don't want SIGHUP to interrupt us. STOP and KILL are OK though. */
+-	sigprocmask(SIG_BLOCK, &hupmask, NULL);
+-
+-	jffs2_dbg(1, "%s(): pass\n", __func__);
+-	if (jffs2_garbage_collect_pass(c) == -ENOSPC) {
+-		pr_notice("No space for garbage collection. Aborting GC thread\n");
+-		kthread_stop_current();
+-	}
+-	sigprocmask(SIG_UNBLOCK, &hupmask, NULL);
++	set_kthread_iterant_int_sleep_timeout(msecs_to_jiffies(50));
+ }
  
- 	if (kthread_freezable_should_stop(NULL)) {
-@@ -480,6 +506,8 @@ static void do_kthread_iterant_pause(struct kthread_iterant *kti)
- 
- 	if (type & KTI_INT_SLEEP)
- 		freezable_schedule();
-+	else if (type & KTI_INT_SLEEP_TIMEOUT)
-+		freezable_schedule_timeout(kti->timeout);
- 	else
- 		freezable_cond_resched();
- 
+ static void jffs2_garbage_collect_thread_destroy(void *_c)
 -- 
 1.8.5.6
