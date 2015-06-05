@@ -1,15 +1,15 @@
 Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0t8i-00020C-EI
- for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 15:02:37 +0000
+ id 1Z0t8i-0001xg-Ea
+ for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 15:02:39 +0000
 From: Petr Mladek <pmladek@suse.cz>
 To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>,
  Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
  Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC PATCH 12/18] lockd: Convert the central lockd service to
- kthread_iterant API
-Date: Fri,  5 Jun 2015 17:01:11 +0200
-Message-Id: <1433516477-5153-13-git-send-email-pmladek@suse.cz>
+Subject: [RFC PATCH 09/18] kthread: Make it easier to correctly sleep in
+ iterant kthreads
+Date: Fri,  5 Jun 2015 17:01:08 +0200
+Message-Id: <1433516477-5153-10-git-send-email-pmladek@suse.cz>
 In-Reply-To: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
@@ -32,163 +32,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The new iterant kthread API allows to define a common checkpoint for
-freezing, parking, termination, and even signal handling. It will allow
-to maintain kthreads more easily and make the operations more reliable.
+Many kthreads go into an interruptible sleep when there is nothing
+to do. They should check if anyone did not requested the kthread
+to terminate, freeze, or park in the meantime. It is easy to do
+it a wrong way.
 
-The kthread function is split into optional init(), func(), destroy() parts
-where func() is called in a cycle. The common check point is after
-each func() function finishes. See kthread_iterant_fn() for more details.
+This patch adds an API to do the sleep easier and correct way.
+The big advantage is that we will have all the checks on a single
+place and will be able to fix all broken threads easily.
 
-This patch moves the action associated with the signal into a proper
-signal handler.
+We need two steps. set_current_state(TASK_INTERRUPTIBLE)
+is typically called under some lock together with a check for
+a pending work. While schedule() has to be called outside
+the lock.
 
-It removes the obsolete set_freezable() call because iterant kthreads
-are freezable by default.
+We use the freezable variants of kthread_should_stop(), schedule(),
+and cond_resched(). They are needed in freezable kthreads and they
+do the right job also in non-freezable ones.
 
-struct kthread_iterant is stored into struct svc_rqst. We have already
-stored there the pointer to the related task_struct.
-
-The rest is just shuffling the code from the while cycle into _func().
+The API is ready to support more sleeping variants, e.g.
+wait_event_freezable(), wait_event_freezable_timeout(). Well,
+we will need to add some more items into the struct kthread_iterant
+for them.
 
 Signed-off-by: Petr Mladek <pmladek@suse.cz>
 ---
- fs/lockd/svc.c             | 80 ++++++++++++++++++++++++----------------------
- include/linux/sunrpc/svc.h |  2 ++
- 2 files changed, 44 insertions(+), 38 deletions(-)
+ include/linux/kthread.h | 13 +++++++++
+ kernel/kthread.c        | 76 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 89 insertions(+)
 
-diff --git a/fs/lockd/svc.c b/fs/lockd/svc.c
-index 55505cbe11af..5b1efe509fcc 100644
---- a/fs/lockd/svc.c
-+++ b/fs/lockd/svc.c
-@@ -122,58 +122,55 @@ static void restart_grace(void)
- }
- 
- /*
-- * This is the lockd kernel thread
-+ * Lockd kernel thread implementation using the iterant API
-+ * We don't terminate until the last NFS mount or NFS daemon
-+ * has gone away.
+diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+index 100c1e006729..415178c20cde 100644
+--- a/include/linux/kthread.h
++++ b/include/linux/kthread.h
+@@ -48,14 +48,25 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
+  * must be released and non-interruptible work finished.
   */
--static int
--lockd(void *vrqstp)
-+static void lockd_sigkill(int sig)
- {
--	int		err = 0;
--	struct svc_rqst *rqstp = vrqstp;
--
--	/* try_to_freeze() is called from svc_recv() */
--	set_freezable();
-+	restart_grace();
-+}
  
-+static void lockd_init(void *vrqstp)
-+{
- 	/* Allow SIGKILL to tell lockd to drop all of its locks */
--	allow_signal(SIGKILL);
-+	kthread_sigaction(SIGKILL, lockd_sigkill);
- 
- 	dprintk("NFS locking service started (ver " LOCKD_VERSION ").\n");
-+}
- 
--	/*
--	 * The main request loop. We don't terminate until the last
--	 * NFS mount or NFS daemon has gone away.
--	 */
--	while (!kthread_should_stop()) {
--		long timeout = MAX_SCHEDULE_TIMEOUT;
--		RPC_IFDEBUG(char buf[RPC_MAX_ADDRBUFLEN]);
-+static void lockd_func(void *vrqstp)
-+{
-+	int err = 0;
-+	struct svc_rqst *rqstp = vrqstp;
- 
--		/* update sv_maxconn if it has changed */
--		rqstp->rq_server->sv_maxconn = nlm_max_connections;
-+	long timeout = MAX_SCHEDULE_TIMEOUT;
-+	RPC_IFDEBUG(char buf[RPC_MAX_ADDRBUFLEN]);
- 
--		if (signalled()) {
--			flush_signals(current);
--			restart_grace();
--			continue;
--		}
-+	/* update sv_maxconn if it has changed */
-+	rqstp->rq_server->sv_maxconn = nlm_max_connections;
- 
--		timeout = nlmsvc_retry_blocked();
-+	timeout = nlmsvc_retry_blocked();
- 
--		/*
--		 * Find a socket with data available and call its
--		 * recvfrom routine.
--		 */
--		err = svc_recv(rqstp, timeout);
--		if (err == -EAGAIN || err == -EINTR)
--			continue;
--		dprintk("lockd: request from %s\n",
--				svc_print_addr(rqstp, buf, sizeof(buf)));
-+	/*
-+	 * Find a socket with data available and call its
-+	 * recvfrom routine.
-+	 */
-+	err = svc_recv(rqstp, timeout);
-+	if (err == -EAGAIN || err == -EINTR)
-+		return;
- 
--		svc_process(rqstp);
--	}
--	flush_signals(current);
-+	dprintk("lockd: request from %s\n",
-+		svc_print_addr(rqstp, buf, sizeof(buf)));
++/* Flags that modify the default behavior of iterant kthreads. */
++/* Reset pause flags for the next iteration. */
++#define KTI_PAUSE_ONCE		0x00000001
++/* Do interruptible sleep between iterations. */
++#define KTI_INT_SLEEP		0x00000002
 +
-+	svc_process(rqstp);
-+}
++#define KTI_PAUSE_MASK		(KTI_INT_SLEEP | \
++				 KTI_PAUSE_ONCE)
 +
-+static void lockd_destroy(void *vrqstp)
-+{
- 	if (nlmsvc_ops)
- 		nlmsvc_invalidate_all();
- 	nlm_shutdown_hosts();
--	return 0;
+ /**
+  * struct kthread_iterant - structure describing the function of the kthread
++ * @type: modifies the kthread behavior using extra flags.
+  * @data: pointer to a data passed to the functions.
+  * @init: function called when the kthread is created.
+  * @func: function called in the main cycle until the kthread is terminated.
+  * @destroy: function called when the kthread is being terminated.
+  */
+ struct kthread_iterant {
++	unsigned int type;
+ 	void *data;
+ 	void (*init)(void *data);
+ 	void (*func)(void *data);
+@@ -85,6 +96,8 @@ kthread_iterant_create_on_cpu(struct kthread_iterant *kti,
+ 	__k;								   \
+ })
+ 
++void set_kthread_iterant_int_sleep(void);
++
+ void kthread_bind(struct task_struct *k, unsigned int cpu);
+ void kthread_stop_current(void);
+ int kthread_stop(struct task_struct *k);
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 41fb6a43a1f1..fa40fb549e22 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -414,6 +414,80 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
  }
  
- static int create_lockd_listener(struct svc_serv *serv, const char *name,
-@@ -301,7 +298,14 @@ static int lockd_start_svc(struct svc_serv *serv)
- 	svc_sock_update_bufs(serv);
- 	serv->sv_maxconn = nlm_max_connections;
- 
--	nlmsvc_task = kthread_create(lockd, nlmsvc_rqst, "%s", serv->sv_name);
-+	nlmsvc_rqst->rq_kti.type = 0;
-+	nlmsvc_rqst->rq_kti.data = nlmsvc_rqst;
-+	nlmsvc_rqst->rq_kti.init = lockd_init;
-+	nlmsvc_rqst->rq_kti.func = lockd_func;
-+	nlmsvc_rqst->rq_kti.destroy = lockd_destroy;
+ /**
++ * set_kthread_iterant_pause_type - set the type of the pause before
++ *	the next iteration
++ * @type: flags that define the type of the pause; they are the same
++ *	  as the flags used for @type in struct kthread_iterant
++ */
++static void set_kthread_iterant_pause_type(struct kthread_iterant *kti,
++					   unsigned int type)
++{
++	WARN_ONCE(type & ~KTI_PAUSE_MASK,
++		  "unknown pause type: 0x%x\n", type);
++	type &= KTI_PAUSE_MASK;
 +
-+	nlmsvc_task = kthread_iterant_create(&nlmsvc_rqst->rq_kti,
-+					     "%s", serv->sv_name);
- 	if (IS_ERR(nlmsvc_task)) {
- 		error = PTR_ERR(nlmsvc_task);
- 		printk(KERN_WARNING
-diff --git a/include/linux/sunrpc/svc.h b/include/linux/sunrpc/svc.h
-index fae6fb947fc8..6275e9b9df9b 100644
---- a/include/linux/sunrpc/svc.h
-+++ b/include/linux/sunrpc/svc.h
-@@ -16,6 +16,7 @@
- #include <linux/sunrpc/xdr.h>
- #include <linux/sunrpc/auth.h>
- #include <linux/sunrpc/svcauth.h>
-+#include <linux/kthread.h>
- #include <linux/wait.h>
- #include <linux/mm.h>
++	kti->type &= ~KTI_PAUSE_MASK;
++	kti->type |= type;
++	/* this function set the pause only for the next iteration */
++	kti->type |= KTI_PAUSE_ONCE;
++}
++
++/**
++ * set_kthread_iterant_int_sleep - do interruptible sleep before
++ *	the next iteration
++ *
++ * This function is typically called under a lock when the main func()
++ * checks for the pending work.
++ *
++ * Kthreads should pause between iterations only when there is no work,
++ * signal pending, freezing, parking, or termination. We want to do most
++ * of these checks properly on a single place: kthread_iterant_fn().
++ * Only the checks for pending work need to be done in the main func()
++ * because they are not generic.
++ */
++void set_kthread_iterant_int_sleep(void)
++{
++	struct kthread_iterant *kti = to_kthread_iterant(current);
++
++	set_kthread_iterant_pause_type(kti, KTI_INT_SLEEP);
++	set_current_state(TASK_INTERRUPTIBLE);
++}
++EXPORT_SYMBOL(set_kthread_iterant_int_sleep);
++
++/**
++ * do_kthread_iterant_pause - do the selected pause before next iteration
++ *
++ * Most kthreads sleep or wait between iterations. This function
++ * allows to do it the right way. The particular pause variant
++ * is defined by @type flags in struct kthread_iterant. Anyway,
++ * this is a safe place to call cond_resched().
++ */
++static void do_kthread_iterant_pause(struct kthread_iterant *kti)
++{
++	unsigned int type = kti->type;
++
++	/*
++	 * Explicitly set the task state when it was not set by
++	 * set_kthread_iterant_int_sleep*() functions.
++	 */
++	if (!(type & KTI_PAUSE_ONCE) && (type & KTI_INT_SLEEP))
++		set_current_state(TASK_INTERRUPTIBLE);
++
++	if (kthread_freezable_should_stop(NULL)) {
++		set_current_state(TASK_RUNNING);
++		return;
++	}
++
++	if (type & KTI_INT_SLEEP)
++		freezable_schedule();
++	else
++		freezable_cond_resched();
++
++	if (type & KTI_PAUSE_ONCE)
++		kti->type &= ~KTI_PAUSE_MASK;
++}
++
++/**
+  * kthread_iterant_fn - kthread function to process an iterant kthread
+  * @kti_ptr: pointer to an initialized struct kthread_iterant.
+  *
+@@ -443,6 +517,8 @@ static int kthread_iterant_fn(void *kti_ptr)
+ 		if (kti->func)
+ 			kti->func(data);
  
-@@ -283,6 +284,7 @@ struct svc_rqst {
- 	struct auth_domain *	rq_client;	/* RPC peer info */
- 	struct auth_domain *	rq_gssclient;	/* "gss/"-style peer info */
- 	struct svc_cacherep *	rq_cacherep;	/* cache info */
-+	struct kthread_iterant  rq_kti;		/* info for iterant kthread */
- 	struct task_struct	*rq_task;	/* service thread */
- 	spinlock_t		rq_lock;	/* per-request lock */
- };
++		do_kthread_iterant_pause(kti);
++
+ 		if (signal_pending(current))
+ 			kthread_do_signal();
+ 
 -- 
 1.8.5.6
