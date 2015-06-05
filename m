@@ -1,15 +1,15 @@
 Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0t8x-00024D-DN
- for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 15:02:48 +0000
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z0t8n-0006CZ-4s
+ for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 15:02:38 +0000
 From: Petr Mladek <pmladek@suse.cz>
 To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>,
  Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
  Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC PATCH 15/18] ring_buffer: Allow to exit the ring buffer
- benchmark immediately
-Date: Fri,  5 Jun 2015 17:01:14 +0200
-Message-Id: <1433516477-5153-16-git-send-email-pmladek@suse.cz>
+Subject: [RFC PATCH 10/18] jffs2: Remove forward definition of
+ jffs2_garbage_collect_thread()
+Date: Fri,  5 Jun 2015 17:01:09 +0200
+Message-Id: <1433516477-5153-11-git-send-email-pmladek@suse.cz>
 In-Reply-To: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
 Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
@@ -32,76 +32,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It takes a while until the ring_buffer_benchmark module is removed
-when the ring buffer hammer is running. It is because it takes
-few seconds and kthread_should_terminate() is not being checked.
+This commit just moves the function definition and fixes few coding
+style problems reported by checkpatch.pl. There are no changes in
+the functionality.
 
-This patch adds the check for kthread termination into the producer.
-It uses the existing kill_test flag to finish the kthreads as
-cleanly as possible.
-
-It disables printing the "ERROR" message when the kthread is going.
-
-Also it makes sure that producer does not go into the 10sec sleep
-when it is being killed.
+The change will be useful when switching to the new iterant kthread API.
 
 Signed-off-by: Petr Mladek <pmladek@suse.cz>
 ---
- kernel/trace/ring_buffer_benchmark.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ fs/jffs2/background.c | 101 +++++++++++++++++++++++++-------------------------
+ 1 file changed, 50 insertions(+), 51 deletions(-)
 
-diff --git a/kernel/trace/ring_buffer_benchmark.c b/kernel/trace/ring_buffer_benchmark.c
-index 2d276b892aea..4ecf7c4567e2 100644
---- a/kernel/trace/ring_buffer_benchmark.c
-+++ b/kernel/trace/ring_buffer_benchmark.c
-@@ -270,6 +270,9 @@ static void ring_buffer_producer(void)
- 			try_to_freeze();
- 		}
+diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+index bb9cebc9ca8a..6af076b8f60f 100644
+--- a/fs/jffs2/background.c
++++ b/fs/jffs2/background.c
+@@ -21,57 +21,6 @@
+ #include <linux/kthread.h>
+ #include "nodelist.h"
  
-+		if (kthread_should_stop())
-+			kill_test = 1;
-+
- 	} while (ktime_before(end_time, timeout) && !kill_test);
- 	trace_printk("End ring buffer hammer\n");
- 
-@@ -291,7 +294,7 @@ static void ring_buffer_producer(void)
- 	entries = ring_buffer_entries(buffer);
- 	overruns = ring_buffer_overruns(buffer);
- 
--	if (kill_test)
-+	if (kill_test && !kthread_should_stop())
- 		trace_printk("ERROR!\n");
- 
- 	if (!disable_reader) {
-@@ -377,10 +380,8 @@ static void ring_buffer_producer_thread_init(void *arg)
- 
- static void ring_buffer_producer_thread_func(void *arg)
- {
--	if (kill_test) {
--		set_kthread_iterant_int_sleep();
--		return;
+-
+-static int jffs2_garbage_collect_thread(void *);
+-
+-void jffs2_garbage_collect_trigger(struct jffs2_sb_info *c)
+-{
+-	assert_spin_locked(&c->erase_completion_lock);
+-	if (c->gc_task && jffs2_thread_should_wake(c))
+-		send_sig(SIGHUP, c->gc_task, 1);
+-}
+-
+-/* This must only ever be called when no GC thread is currently running */
+-int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
+-{
+-	struct task_struct *tsk;
+-	int ret = 0;
+-
+-	BUG_ON(c->gc_task);
+-
+-	init_completion(&c->gc_thread_start);
+-	init_completion(&c->gc_thread_exit);
+-
+-	tsk = kthread_run(jffs2_garbage_collect_thread, c, "jffs2_gcd_mtd%d", c->mtd->index);
+-	if (IS_ERR(tsk)) {
+-		pr_warn("fork failed for JFFS2 garbage collect thread: %ld\n",
+-			-PTR_ERR(tsk));
+-		complete(&c->gc_thread_exit);
+-		ret = PTR_ERR(tsk);
+-	} else {
+-		/* Wait for it... */
+-		jffs2_dbg(1, "Garbage collect thread is pid %d\n", tsk->pid);
+-		wait_for_completion(&c->gc_thread_start);
+-		ret = tsk->pid;
 -	}
-+	if (kill_test)
-+		goto test_killed;
- 
- 	ring_buffer_reset(buffer);
- 
-@@ -393,9 +394,16 @@ static void ring_buffer_producer_thread_func(void *arg)
- 
- 	ring_buffer_producer();
- 
-+	if (kill_test)
-+		goto test_killed;
-+
- 	trace_printk("Sleeping for 10 secs\n");
- 	set_current_state(TASK_INTERRUPTIBLE);
- 	schedule_timeout(HZ * SLEEP_TIME);
-+	return;
-+
-+test_killed:
-+	set_kthread_iterant_int_sleep();
+-
+-	return ret;
+-}
+-
+-void jffs2_stop_garbage_collect_thread(struct jffs2_sb_info *c)
+-{
+-	int wait = 0;
+-	spin_lock(&c->erase_completion_lock);
+-	if (c->gc_task) {
+-		jffs2_dbg(1, "Killing GC task %d\n", c->gc_task->pid);
+-		send_sig(SIGKILL, c->gc_task, 1);
+-		wait = 1;
+-	}
+-	spin_unlock(&c->erase_completion_lock);
+-	if (wait)
+-		wait_for_completion(&c->gc_thread_exit);
+-}
+-
+ static int jffs2_garbage_collect_thread(void *_c)
+ {
+ 	struct jffs2_sb_info *c = _c;
+@@ -166,3 +115,53 @@ static int jffs2_garbage_collect_thread(void *_c)
+ 	spin_unlock(&c->erase_completion_lock);
+ 	complete_and_exit(&c->gc_thread_exit, 0);
  }
- 
- static int __init ring_buffer_benchmark_init(void)
++
++void jffs2_garbage_collect_trigger(struct jffs2_sb_info *c)
++{
++	assert_spin_locked(&c->erase_completion_lock);
++	if (c->gc_task && jffs2_thread_should_wake(c))
++		send_sig(SIGHUP, c->gc_task, 1);
++}
++
++/* This must only ever be called when no GC thread is currently running */
++int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
++{
++	struct task_struct *tsk;
++	int ret = 0;
++
++	BUG_ON(c->gc_task);
++
++	init_completion(&c->gc_thread_start);
++	init_completion(&c->gc_thread_exit);
++
++	tsk = kthread_run(jffs2_garbage_collect_thread, c,
++			  "jffs2_gcd_mtd%d", c->mtd->index);
++	if (IS_ERR(tsk)) {
++		pr_warn("fork failed for JFFS2 garbage collect thread: %ld\n",
++			-PTR_ERR(tsk));
++		complete(&c->gc_thread_exit);
++		ret = PTR_ERR(tsk);
++	} else {
++		/* Wait for it... */
++		jffs2_dbg(1, "Garbage collect thread is pid %d\n", tsk->pid);
++		wait_for_completion(&c->gc_thread_start);
++		ret = tsk->pid;
++	}
++
++	return ret;
++}
++
++void jffs2_stop_garbage_collect_thread(struct jffs2_sb_info *c)
++{
++	int wait = 0;
++
++	spin_lock(&c->erase_completion_lock);
++	if (c->gc_task) {
++		jffs2_dbg(1, "Killing GC task %d\n", c->gc_task->pid);
++		send_sig(SIGKILL, c->gc_task, 1);
++		wait = 1;
++	}
++	spin_unlock(&c->erase_completion_lock);
++	if (wait)
++		wait_for_completion(&c->gc_thread_exit);
++}
 -- 
 1.8.5.6
