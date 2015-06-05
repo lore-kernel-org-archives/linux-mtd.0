@@ -1,21 +1,40 @@
-Received: from mail-vn0-f51.google.com ([209.85.216.51])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0mow-0006oc-Ag
- for linux-mtd@lists.infradead.org; Fri, 05 Jun 2015 08:17:42 +0000
-Received: by vnbg7 with SMTP id g7so2100892vnb.1
- for <linux-mtd@lists.infradead.org>; Fri, 05 Jun 2015 01:16:34 -0700 (PDT)
+From: Marek Vasut <marex@denx.de>
+To: Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 04/11] mtd: ofpart: do not fail probe when no partitions
+ exist
+Date: Fri, 5 Jun 2015 16:13:09 +0200
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <201506041728.50227.marex@denx.de>
+ <CAOMqctQTxVZspcocDsNP6GzsRw5-0zPqkNScS8PzNvkFjBWatQ@mail.gmail.com>
+In-Reply-To: <CAOMqctQTxVZspcocDsNP6GzsRw5-0zPqkNScS8PzNvkFjBWatQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1433479201.3379.10.camel@cyril>
-References: <1433219169-5115-1-git-send-email-cyrilbur@gmail.com>
- <1433479201.3379.10.camel@cyril>
-Date: Fri, 5 Jun 2015 10:16:34 +0200
-Message-ID: <CAFLxGvxM1V8EMmZotqhSUG-q0cy+NpufeksChjJrD0qSJCSB0g@mail.gmail.com>
-Subject: Re: [PATCH V3] drivers/mtd: add powernv flash MTD abstraction driver
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Cyril Bur <cyrilbur@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linuxppc-dev@ozlabs.org, Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201506051613.09187.marex@denx.de>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>, "Bean Huo
+ =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= \(beanhuo\)" <beanhuo@micron.com>,
+ linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ devicetree <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>,
+ dmaengine <dmaengine@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +44,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 5, 2015 at 6:40 AM, Cyril Bur <cyrilbur@gmail.com> wrote:
-> On Tue, 2015-06-02 at 14:26 +1000, Cyril Bur wrote:
->> Powerpc powernv platforms allow access to certain system flash devices
->> through a firmwarwe interface. This change adds an mtd driver for these
->> flash devices.
->>
->> Minor updates from Jeremy Kerr and Joel Stanley.
->>
->> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
->> Signed-off-by: Joel Stanley <joel@jms.id.au>
->> Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
->> ---
->> Hello Brian and MTD folk,
->> Could I please get an ACK for Michael to take this through the powerpc
->> tree.
->> Thanks.
->>
->
-> Hello Brian,
->
-> As we have some deadlines approaching, I am getting pressure to ensure
-> this gets merged upstream as quickly as possible, please let me know if
-> there is anything more which can be done.
+On Thursday, June 04, 2015 at 05:40:58 PM, Michal Suchanek wrote:
+> On 4 June 2015 at 17:28, Marek Vasut <marex@denx.de> wrote:
+> > On Thursday, June 04, 2015 at 06:54:00 AM, Michal Suchanek wrote:
+> >> On 4 June 2015 at 00:58, Marek Vasut <marex@denx.de> wrote:
+> >> > On Wednesday, June 03, 2015 at 11:26:40 PM, Michal Suchanek wrote:
+> >> >> On Exynos it is necessary to set SPI controller parameters that apply
+> >> >> to a SPI slave in a DT subnode of the slave device. The ofpart code
+> >> >> returns an error when there are subnodes of the SPI flash but no
+> >> >> partitions are found. Change this condition to a warning so that
+> >> >> flash without partitions can be accessed on Exynos.
+> >> > 
+> >> > I have to admit the rationale for this patch is not very clear to me,
+> >> > sorry. Can you please explain this a bit more ?
+> >> 
+> >> This is how the DT entry for SPI slave looks with s3c64xx:
+> >> flash: m25p80@0 {
+> >> 
+> >>         #address-cells = <1>;
+> >>         #size-cells = <1>;
+> >>         compatible = "jedec,spi-nor";
+> >>         reg = <0>;
+> >>         spi-max-frequency = <40000000>;
+> >>         linux,max_tx_len = <65536>;
+> > 
+> > SIDENOTE: I thought this was actually added by your patch #8 in this
+> > series. The underscores in the name of the property are not really
+> > consistent with the rest of the names.
+> > 
+> >>         m25p,fast-read;
+> >>         controller-data {
+> >>         
+> >>             samsung,spi-feedback-delay = <0>;
+> >>         
+> >>         };
+> >>     
+> >>     };
+> >> 
+> >> this is example of flash partitions:
+> >> flash@0 {
+> >> 
+> >>         #address-cells = <1>;
+> >>         #size-cells = <1>;
+> >>         
+> >>         partition@0 {
+> >>         
+> >>                 label = "u-boot";
+> >>                 reg = <0x0000000 0x100000>;
+> >>                 read-only;
+> >>         
+> >>         };
+> >>         
+> >>         uimage@100000 {
+> >>         
+> >>                 reg = <0x0100000 0x200000>;
+> >>         
+> >>         };
+> >> 
+> >> };
+> >> 
+> >> The parser ignores any flash without subnodes and returns 0 (no
+> >> partititon). When there is a subnode it assumes the flash is
+> >> partitioned and tries to parse the subnodes as partitions. When there
+> >> are subnodes and none parses as partition an error is returned. As
+> >> shown above it is valid to have subnodes on unpartitioned flash.
+> >> 
+> >> When an error is returned from a partition parser the mtdpart code
+> >> passes on this error to the flash probe function and the proble of the
+> >> flash fails.
+> > 
+> > What does /proc/mtd tell you when you have no partitions defined
+> > in the DT ? It should provide you with the entire MTD device and
+> > the code shouldn't even try to parse any OF partitions, since you
+> > don't have any.
+> 
+> mtdinfo shows I have no mtd devices and the log shows that probe
+> failed unless I patch the kernel.
+> 
+> When there is *support* for of partitions the ofparser is run on mtd
+> probe. If it fails because it considers
+> 
+> >>         controller-data {
+> >>         
+> >>             samsung,spi-feedback-delay = <0>;
+> >>         
+> >>         };
+> 
+> an invalid partition and does not find any valid partition the probe fails.
 
-FYI, Brian is not available for the next 1.5 weeks.
-So I fear this driver has to wait for the next merge window.
+OK, now it has become clearer to me, thanks!
 
--- 
-Thanks,
-//richard
+> There are two problems here
+> 
+> 1) the above is not invalid. It just is not a partition. The parser
+> should not fail seeing this
+
+The parser should complain verbosely and ignore this I guess ?
+
+> 2) the mtd probe should not fail when a partition parser fails and
+> should present the unpartitioned device
+
+OK
+
+> Both are addressed in separate patches.
+> 
+> Thanks
+> 
+> Michal
