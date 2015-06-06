@@ -1,9 +1,9 @@
 From: Stefan Agner <stefan@agner.ch>
 To: dwmw2@infradead.org,
 	computersforpeace@gmail.com
-Subject: [PATCH v5 4/6] ARM: vf610: enable NAND Flash Controller
-Date: Sat,  6 Jun 2015 11:53:34 +0200
-Message-Id: <1433584416-29607-5-git-send-email-stefan@agner.ch>
+Subject: [PATCH v5 3/6] mtd: nand: vf610_nfc: add device tree bindings
+Date: Sat,  6 Jun 2015 11:53:33 +0200
+Message-Id: <1433584416-29607-4-git-send-email-stefan@agner.ch>
 In-Reply-To: <1433584416-29607-1-git-send-email-stefan@agner.ch>
 References: <1433584416-29607-1-git-send-email-stefan@agner.ch>
 Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
@@ -12,7 +12,8 @@ Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
  linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
  sebastian@breakpoint.cc, robh+dt@kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
- galak@codeaurora.org, shawn.guo@linaro.org, devicetree@vger.kernel.org
+ galak@codeaurora.org, shawn.guo@linaro.org, devicetree@vger.kernel.org,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable the NAND Flash Controller driver which is part of the Vybrid
-SoC by default.
-
+Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
 Signed-off-by: Stefan Agner <stefan@agner.ch>
 ---
- arch/arm/mach-imx/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ .../devicetree/bindings/mtd/vf610-nfc.txt          | 47 ++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/vf610-nfc.txt
 
-diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
-index 3a3d3e9..9358135 100644
---- a/arch/arm/mach-imx/Kconfig
-+++ b/arch/arm/mach-imx/Kconfig
-@@ -589,6 +589,7 @@ config SOC_VF610
- 	select PINCTRL_VF610
- 	select PL310_ERRATA_769419 if CACHE_L2X0
- 	select SMP_ON_UP if SMP
-+	select HAVE_NAND_VF610_NFC
- 
- 	help
- 	  This enables support for Freescale Vybrid VF610 processor.
+diff --git a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+new file mode 100644
+index 0000000..0cb96fd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+@@ -0,0 +1,47 @@
++Freescale's NAND flash controller (NFC)
++
++This variant of the Freescale NAND flash controller (NFC) is on Vybrid (vf610),
++MPC5125, MCF54418 and Kinetis K70.
++
++Required properties:
++- compatible: Should be set to one of the following:
++    "fsl,vf610-nfc"
++    "fsl,mpc5125-nfc"
++- reg: address range of the NFC
++- interrupts: interrupt of the NFC
++- nand-bus-width: see nand.txt
++- nand-ecc-mode: see nand.txt
++- nand-on-flash-bbt: see nand.txt
++- assigned-clocks: main clock from the SoC, for Vybrid <&clks VF610_CLK_NFC>;
++- assigned-clock-rates: The NAND bus timing is derived from this clock
++    rate and should not exceed maximum timing for any NAND memory chip
++    in a board stuffing. Typical NAND memory timings derived from this
++    clock are found in the SoC hardware reference manual. Furthermore,
++    there might be restrictions on maximum rates when using hardware ECC.
++
++- #address-cells, #size-cells : Must be present if the device has sub-nodes
++  representing partitions.
++
++Required properties for hardware ECC:
++- nand-ecc-strength: supported strengths are 24 and 32 bit (see nand.txt)
++- nand-ecc-step-size: step size equals page size, currently only 2k pages are
++    supported
++
++Example:
++
++	nfc: nand@400e0000 {
++		compatible = "fsl,vf610-nfc";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0x400e0000 0x4000>;
++		interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&clks VF610_CLK_NFC>;
++		clock-names = "nfc";
++		assigned-clocks = <&clks VF610_CLK_NFC>;
++		assigned-clock-rates = <33000000>;
++		nand-bus-width = <8>;
++		nand-ecc-mode = "hw";
++		nand-ecc-strength = <32>;
++		nand-ecc-step-size = <2048>;
++		nand-on-flash-bbt;
++	};
 -- 
 2.4.2
