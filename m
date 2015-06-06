@@ -1,20 +1,32 @@
-From: Stefan Agner <stefan@agner.ch>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Subject: [PATCH v5 5/6] ARM: dts: vf610twr: add NAND flash controller
- peripherial
-Date: Sat,  6 Jun 2015 11:53:35 +0200
-Message-Id: <1433584416-29607-6-git-send-email-stefan@agner.ch>
-In-Reply-To: <1433584416-29607-1-git-send-email-stefan@agner.ch>
-References: <1433584416-29607-1-git-send-email-stefan@agner.ch>
-Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
- aaron@tastycactus.com, marb@ixxat.de, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, bpringlemeir@gmail.com,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
- sebastian@breakpoint.cc, robh+dt@kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
- galak@codeaurora.org, shawn.guo@linaro.org, devicetree@vger.kernel.org,
- Bill Pringlemeir <bpringlemeir@nbsps.com>
+Received: from mx1.redhat.com ([209.132.183.28])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z1LTm-00020y-KP
+ for linux-mtd@lists.infradead.org; Sat, 06 Jun 2015 21:18:11 +0000
+Date: Sat, 6 Jun 2015 23:16:48 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Petr Mladek <pmladek@suse.cz>
+Subject: Re: [RFC PATCH 11/18] jffs2: Convert jffs2_gcd_mtd kthread into
+ the iterant API
+Message-ID: <20150606211648.GA15591@redhat.com>
+References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
+ <1433516477-5153-12-git-send-email-pmladek@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1433516477-5153-12-git-send-email-pmladek@suse.cz>
+Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
+ Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Michal Hocko <mhocko@suse.cz>, Chris Mason <clm@fb.com>,
+ Ingo Molnar <mingo@redhat.com>, linux-mtd@lists.infradead.org,
+ linux-api@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+ Tejun Heo <tj@kernel.org>, live-patching@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Anna Schumaker <anna.schumaker@netapp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,92 +36,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This adds the NAND flash controller (NFC) peripherial. The driver
-supports the SLC NAND chips found on Freescale's Vybrid Tower System
-Module. The Micron NAND chip on the module needs 4-bit ECC per 512
-byte page. Use 24-bit ECC per 2k page, which is supported by the
-driver.
+On 06/05, Petr Mladek wrote:
+>
+> [*] In fact, there was a bug in the original code. It tried to process
+>     a non-existing signal when the system was freezing. See the common
+>     check for pending signal and freezing.
 
-Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm/boot/dts/vf610-twr.dts | 44 +++++++++++++++++++++++++++++++++++++++++
- arch/arm/boot/dts/vfxxx.dtsi    |  8 ++++++++
- 2 files changed, 52 insertions(+)
+And another bug afaics:
 
-diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
-index f64fddc..59da551 100644
---- a/arch/arm/boot/dts/vf610-twr.dts
-+++ b/arch/arm/boot/dts/vf610-twr.dts
-@@ -287,6 +287,50 @@
- 	status = "okay";
- };
- 
-+&iomuxc {
-+	vf610-twr {
-+		pinctrl_nfc_1: nfcgrp_1 {
-+			fsl,pins = <
-+			VF610_PAD_PTD31__NF_IO15	0x28df
-+			VF610_PAD_PTD30__NF_IO14	0x28df
-+			VF610_PAD_PTD29__NF_IO13	0x28df
-+			VF610_PAD_PTD28__NF_IO12	0x28df
-+			VF610_PAD_PTD27__NF_IO11	0x28df
-+			VF610_PAD_PTD26__NF_IO10	0x28df
-+			VF610_PAD_PTD25__NF_IO9		0x28df
-+			VF610_PAD_PTD24__NF_IO8		0x28df
-+			VF610_PAD_PTD23__NF_IO7		0x28df
-+			VF610_PAD_PTD22__NF_IO6		0x28df
-+			VF610_PAD_PTD21__NF_IO5		0x28df
-+			VF610_PAD_PTD20__NF_IO4		0x28df
-+			VF610_PAD_PTD19__NF_IO3		0x28df
-+			VF610_PAD_PTD18__NF_IO2		0x28df
-+			VF610_PAD_PTD17__NF_IO1		0x28df
-+			VF610_PAD_PTD16__NF_IO0		0x28df
-+			VF610_PAD_PTB24__NF_WE_B	0x28c2
-+			VF610_PAD_PTB25__NF_CE0_B	0x28c2
-+			VF610_PAD_PTB27__NF_RE_B	0x28c2
-+			VF610_PAD_PTC26__NF_RB_B	0x283d
-+			VF610_PAD_PTC27__NF_ALE		0x28c2
-+			VF610_PAD_PTC28__NF_CLE		0x28c2
-+			>;
-+		};
-+	};
-+};
-+
-+&nfc {
-+	assigned-clocks = <&clks VF610_CLK_NFC>;
-+	assigned-clock-rates = <33000000>;
-+	nand-bus-width = <16>;
-+	nand-ecc-mode = "hw";
-+	nand-ecc-step-size = <2048>;
-+	nand-ecc-strength = <24>;
-+	nand-on-flash-bbt;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_nfc_1>;
-+	status = "okay";
-+};
-+
- &uart1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart1>;
-diff --git a/arch/arm/boot/dts/vfxxx.dtsi b/arch/arm/boot/dts/vfxxx.dtsi
-index 4aa3351..2f4b04d 100644
---- a/arch/arm/boot/dts/vfxxx.dtsi
-+++ b/arch/arm/boot/dts/vfxxx.dtsi
-@@ -520,6 +520,14 @@
- 				status = "disabled";
- 			};
- 
-+			nfc: nand@400e0000 {
-+				compatible = "fsl,vf610-nfc";
-+				reg = <0x400e0000 0x4000>;
-+				interrupts = <83 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clks VF610_CLK_NFC>;
-+				clock-names = "nfc";
-+				status = "disabled";
-+			};
- 		};
- 	};
- };
--- 
-2.4.2
+> -			case SIGSTOP:
+> -				jffs2_dbg(1, "%s(): SIGSTOP received\n",
+> -					  __func__);
+> -				set_current_state(TASK_STOPPED);
+> -				schedule();
+> -				break;
+
+This is obviously racy, we can miss SIGCONT.
+
+Still I personally dislike the new kthread_sigaction() API. I agree,
+a couple if signal helpers for kthreads make sense. Say,
+
+	void kthread_do_signal_stop(void)
+	{
+		spin_lock_irq(&curtent->sighand->siglock);
+		if (current->jobctl & JOBCTL_STOP_DEQUEUED)
+			__set_current_state(TASK_STOPPED);
+		spin_unlock_irq(&current->sighand->siglock);
+
+		schedule();
+	}
+
+and probably even "int kthread_signal_deque(void)".
+
+But personally I do not think kthread_do_signal() makes a lot of sense...
+
+Oleg.
