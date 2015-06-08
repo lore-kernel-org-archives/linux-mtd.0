@@ -1,27 +1,33 @@
-Received: from mail-by2on0083.outbound.protection.outlook.com ([207.46.100.83]
- helo=na01-by2-obe.outbound.protection.outlook.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z21UB-0007Na-LC
- for linux-mtd@lists.infradead.org; Mon, 08 Jun 2015 18:09:24 +0000
-From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
- <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, <rob@landley.net>,
- <michal.simek@xilinx.com>, <grant.likely@linaro.org>,
- <gregkh@linuxfoundation.org>, <jason@lakedaemon.net>,
- <ezequiel.garcia@free-electrons.com>, <arnd@arndb.de>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
- <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>, <ivan.khoronzhuk@ti.com>,
- <joern@logfs.org>
-Subject: [PATCH v7 2/3] nand: pl353: Add software ecc support
-Date: Mon, 8 Jun 2015 23:38:37 +0530
-Message-ID: <1433786918-21500-3-git-send-email-punnaia@xilinx.com>
-In-Reply-To: <1433786918-21500-1-git-send-email-punnaia@xilinx.com>
-References: <1433786918-21500-1-git-send-email-punnaia@xilinx.com>
+Received: from mx1.redhat.com ([209.132.183.28])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z24Nn-0008CX-QU
+ for linux-mtd@lists.infradead.org; Mon, 08 Jun 2015 21:15:00 +0000
+Date: Mon, 8 Jun 2015 23:13:36 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Petr Mladek <pmladek@suse.cz>
+Subject: Re: [RFC PATCH 06/18] signal/kthread: Initial implementation of
+ kthread signal handling
+Message-ID: <20150608211336.GB24869@redhat.com>
+References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
+ <1433516477-5153-7-git-send-email-pmladek@suse.cz>
+ <20150606215816.GB15591@redhat.com> <20150608135107.GB3135@pathway.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com, punnaia@xilinx.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150608135107.GB3135@pathway.suse.cz>
+Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
+ Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Michal Hocko <mhocko@suse.cz>, Chris Mason <clm@fb.com>,
+ Ingo Molnar <mingo@redhat.com>, linux-mtd@lists.infradead.org,
+ linux-api@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+ Tejun Heo <tj@kernel.org>, live-patching@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Anna Schumaker <anna.schumaker@netapp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,224 +37,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added software ecc support.
+Let me first repeat that I agree that everything is subjective ;)
 
-Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
----
-Changes in v7:
-- None
-Changes in v6:
-- None
-Changes in v5:
-- None
-Changes in v4:
-- Updated the driver to sync with pl353_smc driver APIs
----
- drivers/mtd/nand/pl353_nand.c |  164 +++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 164 insertions(+), 0 deletions(-)
+On 06/08, Petr Mladek wrote:
+>
+> To be honest, this patch set does _not_ make any big change.
 
-diff --git a/drivers/mtd/nand/pl353_nand.c b/drivers/mtd/nand/pl353_nand.c
-index ff6cf3e..7e39939 100644
---- a/drivers/mtd/nand/pl353_nand.c
-+++ b/drivers/mtd/nand/pl353_nand.c
-@@ -331,6 +331,71 @@ static int pl353_nand_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
- }
- 
- /**
-+ * pl353_nand_read_page_raw - [Intern] read raw page data without ecc
-+ * @mtd:		Pointer to the mtd info structure
-+ * @chip:		Pointer to the NAND chip info structure
-+ * @buf:		Pointer to the data buffer
-+ * @oob_required:	Caller requires OOB data read to chip->oob_poi
-+ * @page:		Page number to read
-+ *
-+ * Return:	Always return zero
-+ */
-+static int pl353_nand_read_page_raw(struct mtd_info *mtd,
-+				struct nand_chip *chip,
-+				uint8_t *buf, int oob_required, int page)
-+{
-+	unsigned long data_phase_addr;
-+	uint8_t *p;
-+
-+	chip->read_buf(mtd, buf, mtd->writesize);
-+
-+	p = chip->oob_poi;
-+	chip->read_buf(mtd, p,
-+			(mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH));
-+	p += (mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-+
-+	data_phase_addr = (unsigned long __force)chip->IO_ADDR_R;
-+	data_phase_addr |= PL353_NAND_CLEAR_CS;
-+	chip->IO_ADDR_R = (void __iomem * __force)data_phase_addr;
-+
-+	chip->read_buf(mtd, p, PL353_NAND_LAST_TRANSFER_LENGTH);
-+	return 0;
-+}
-+
-+/**
-+ * pl353_nand_write_page_raw - [Intern] raw page write function
-+ * @mtd:		Pointer to the mtd info structure
-+ * @chip:		Pointer to the NAND chip info structure
-+ * @buf:		Pointer to the data buffer
-+ * @oob_required:	Caller requires OOB data read to chip->oob_poi
-+ *
-+ * Return:	Always return zero
-+ */
-+static int pl353_nand_write_page_raw(struct mtd_info *mtd,
-+				    struct nand_chip *chip,
-+				    const uint8_t *buf, int oob_required)
-+{
-+	unsigned long data_phase_addr;
-+	uint8_t *p;
-+
-+	chip->write_buf(mtd, buf, mtd->writesize);
-+
-+	p = chip->oob_poi;
-+	chip->write_buf(mtd, p,
-+			(mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH));
-+	p += (mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-+
-+	data_phase_addr = (unsigned long __force)chip->IO_ADDR_W;
-+	data_phase_addr |= PL353_NAND_CLEAR_CS;
-+	data_phase_addr |= (1 << END_CMD_VALID_SHIFT);
-+	chip->IO_ADDR_W = (void __iomem * __force)data_phase_addr;
-+
-+	chip->write_buf(mtd, p, PL353_NAND_LAST_TRANSFER_LENGTH);
-+
-+	return 0;
-+}
-+
-+/**
-  * nand_write_page_hwecc - Hardware ECC based page write function
-  * @mtd:		Pointer to the mtd info structure
-  * @chip:		Pointer to the NAND chip info structure
-@@ -396,6 +461,39 @@ static int pl353_nand_write_page_hwecc(struct mtd_info *mtd,
- }
- 
- /**
-+ * pl353_nand_write_page_swecc - [REPLACEABLE] software ecc based page write
-+ * function
-+ * @mtd:		Pointer to the mtd info structure
-+ * @chip:		Pointer to the NAND chip info structure
-+ * @buf:		Pointer to the data buffer
-+ * @oob_required:	Caller requires OOB data read to chip->oob_poi
-+ *
-+ * Return:	Always return zero
-+ */
-+static int pl353_nand_write_page_swecc(struct mtd_info *mtd,
-+				    struct nand_chip *chip, const uint8_t *buf,
-+				    int oob_required)
-+{
-+	int i, eccsize = chip->ecc.size;
-+	int eccbytes = chip->ecc.bytes;
-+	int eccsteps = chip->ecc.steps;
-+	uint8_t *ecc_calc = chip->buffers->ecccalc;
-+	const uint8_t *p = buf;
-+	uint32_t *eccpos = chip->ecc.layout->eccpos;
-+
-+	/* Software ecc calculation */
-+	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
-+		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
-+
-+	for (i = 0; i < chip->ecc.total; i++)
-+		chip->oob_poi[eccpos[i]] = ecc_calc[i];
-+
-+	chip->ecc.write_page_raw(mtd, chip, buf, 1);
-+
-+	return 0;
-+}
-+
-+/**
-  * pl353_nand_read_page_hwecc - Hardware ECC based page read function
-  * @mtd:		Pointer to the mtd info structure
-  * @chip:		Pointer to the NAND chip info structure
-@@ -477,6 +575,52 @@ static int pl353_nand_read_page_hwecc(struct mtd_info *mtd,
- }
- 
- /**
-+ * pl353_nand_read_page_swecc - [REPLACEABLE] software ecc based page read
-+ * function
-+ * @mtd:		Pointer to the mtd info structure
-+ * @chip:		Pointer to the NAND chip info structure
-+ * @buf:		Pointer to the buffer to store read data
-+ * @oob_required:	Caller requires OOB data read to chip->oob_poi
-+ * @page:		Page number to read
-+ *
-+ * Return:	Always return zero
-+ */
-+static int pl353_nand_read_page_swecc(struct mtd_info *mtd,
-+				     struct nand_chip *chip,
-+				     uint8_t *buf,  int oob_required, int page)
-+{
-+	int i, eccsize = chip->ecc.size;
-+	int eccbytes = chip->ecc.bytes;
-+	int eccsteps = chip->ecc.steps;
-+	uint8_t *p = buf;
-+	uint8_t *ecc_calc = chip->buffers->ecccalc;
-+	uint8_t *ecc_code = chip->buffers->ecccode;
-+	uint32_t *eccpos = chip->ecc.layout->eccpos;
-+
-+	chip->ecc.read_page_raw(mtd, chip, buf, page, 1);
-+
-+	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
-+		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
-+
-+	for (i = 0; i < chip->ecc.total; i++)
-+		ecc_code[i] = chip->oob_poi[eccpos[i]];
-+
-+	eccsteps = chip->ecc.steps;
-+	p = buf;
-+
-+	for (i = 0 ; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
-+		int stat;
-+
-+		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
-+		if (stat < 0)
-+			mtd->ecc_stats.failed++;
-+		else
-+			mtd->ecc_stats.corrected += stat;
-+	}
-+	return 0;
-+}
-+
-+/**
-  * pl353_nand_select_chip - Select the flash device
-  * @mtd:	Pointer to the mtd info structure
-  * @chip:	Pointer to the NAND chip info structure
-@@ -708,6 +852,8 @@ static int pl353_nand_ecc_init(struct mtd_info *mtd)
- 	nand_chip->ecc.read_oob = pl353_nand_read_oob;
- 	nand_chip->ecc.write_oob = pl353_nand_write_oob;
- 	nand_chip->ecc.strength = 1;
-+	nand_chip->ecc.read_page_raw = pl353_nand_read_page_raw;
-+	nand_chip->ecc.write_page_raw = pl353_nand_write_page_raw;
- 
- 	switch (xnand->ecc_mode) {
- 	case NAND_ECC_HW:
-@@ -734,6 +880,24 @@ static int pl353_nand_ecc_init(struct mtd_info *mtd)
- 			nand_chip->ecc.layout = &nand_oob_64;
- 
- 		break;
-+	case NAND_ECC_SOFT:
-+		/*
-+		 * The software ECC routines won't work with the
-+		 * SMC controller
-+		 */
-+		nand_chip->ecc.mode = NAND_ECC_HW;
-+		nand_chip->ecc.calculate = nand_calculate_ecc;
-+		nand_chip->ecc.correct = nand_correct_data;
-+		nand_chip->ecc.read_page = pl353_nand_read_page_swecc;
-+		nand_chip->ecc.write_page = pl353_nand_write_page_swecc;
-+		nand_chip->ecc.size = 256;
-+		nand_chip->ecc.bytes = 3;
-+		/* Bypass the controller ECC block */
-+		pl353_smc_set_ecc_pg_size(mtd->dev.parent, mtd->writesize);
-+		pl353_smc_set_ecc_mode(mtd->dev.parent,
-+					PL353_SMC_ECCMODE_BYPASS);
-+
-+		break;
- 	default:
- 		return -ENOTSUPP;
- 	}
--- 
-1.7.4
+But to me it does because (again, imo) it adds the a) unnecessary
+and b) wrong interface.
+
+But yes, yes, I agree that most (all?) of kthread/signal (ab)users
+need cleanups. And fixes.
+
+> I think that we should make it independent on the iterant kthread API.
+
+Yes! please. Then we can discuss this again and perhaps reconsider
+this API.
+
+So I am going to ignore some parts of your email. I am sleeping,
+please let me know if I missed something important ;)
+
+> Well, note that allow_signal() sets some "crazy" value (2) for the
+> signal handler. IMHO, we should check for these values and handle
+> them reasonably even in kthreads. It will make the code more secure.
+
+Not sure I understand. The crazy "2" value just means that kthread
+wants to recieve and dequeue this signal. I agree with the good name
+for this hard-coded number in advance.
+
+> > > +
+> > > +		/* Run the custom handler if any */
+> > > +		if (ka->sa.kthread_sa_handler != KTHREAD_SIG_DFL) {
+> > > +			ksig.ka = *ka;
+> > > +
+> > > +			if (ka->sa.sa_flags & SA_ONESHOT)
+> > > +				ka->sa.kthread_sa_handler = KTHREAD_SIG_DFL;
+> > > +
+> > > +			spin_unlock_irqrestore(&sighand->siglock, flags);
+> > > +			/* could run directly for kthreads */
+> > > +			ksig.ka.sa.kthread_sa_handler(signr);
+> > > +			freezable_cond_resched();
+> > > +			goto relock;
+> >
+> > Well. But for what? A simple "switch (signr)" after kthread_dequeue_signal()
+> > can do the same. Or, speaking of kthread_iterant_fn() it can even dequeue the
+> > signal and pass it to kti->whatever(signr).
+>
+> I wanted to make it independent on the iterant API. Also if you want to
+> handle more signals, you need even more code, e.g. the cycle,
+> cond_resched(). So, I think that some generic helper is useful.
+
+I do not. Contrary, I think this needs more code in the likely case.
+Anyway, this API won't have too many users, so I don't even this this
+is that important.
+
+> > > +		if (sig_kernel_stop(signr)) {
+> > > +			__set_current_state(TASK_STOPPED);
+> > > +			spin_unlock_irqrestore(&sighand->siglock, flags);
+> > > +			/* Don't run again until woken by SIGCONT or SIGKILL */
+> > > +			freezable_schedule();
+> > > +			goto relock;
+> >
+> > Yes this avoids the race with SIGCONT. But as I said we can add another
+> > trivial helper which checks JOBCTL_STOP_DEQUEUED. So a kthread can do
+> > this itself.
+>
+> Hmm, the helper would have a strange semantic. You need to take
+> sighand->siglock, dequeue the signal (SIGSTOP), and call
+> __set_current_state(TASK_STOPPED) before you release the lock.
+> But what would happen if the dequeued signal is _not_ SIGSTOP?
+
+Perhaps I missed your point, but no. If you want to handle SIGSTOP
+you can do
+
+	signr = kthread_signal_dequeue();
+	switch (signr) {
+	case SIGSTOP:
+		something_else();
+		kthread_do_signal_stop();
+	...
+	}
+
+
+> I think that we should support only the standard handling of
+> SIGSTOP. It is closely related with SIGCONT.
+
+Agreed. If kthread wants to actually sleep in TASK_STOPPED state then
+it should know about SIGCONT.
+
+> > To me, SIG_DFL behaviour just makes makes no sense when it comes to
+> > kthreads. I do not even think this can simplify the code. Unlike user-
+> > space task, kthread can happily dequeue SIGSTOP, so why should we mimic
+> > the userspace SIG_DFL logic.
+>
+> Maybe, we should handle only SIGSTOP
+
+So far I even disagree with SIGSTOP "default" semantics. I simply see
+no value.
+
+Oleg.
