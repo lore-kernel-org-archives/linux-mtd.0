@@ -1,34 +1,25 @@
-Received: from smtprelay0104.hostedemail.com ([216.40.44.104]
- helo=smtprelay.hostedemail.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z21A5-0002sj-LA
- for linux-mtd@lists.infradead.org; Mon, 08 Jun 2015 17:48:38 +0000
-Date: Mon, 8 Jun 2015 13:48:10 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH 09/18] kthread: Make it easier to correctly sleep in
- iterant kthreads
-Message-ID: <20150608134810.3abd862b@gandalf.local.home>
-In-Reply-To: <20150605161021.GJ19282@twins.programming.kicks-ass.net>
-References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
- <1433516477-5153-10-git-send-email-pmladek@suse.cz>
- <20150605161021.GJ19282@twins.programming.kicks-ass.net>
+Received: from mail-bn1bon0095.outbound.protection.outlook.com
+ ([157.56.111.95] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z21T5-00047O-DG
+ for linux-mtd@lists.infradead.org; Mon, 08 Jun 2015 18:08:16 +0000
+From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
+To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, <rob@landley.net>,
+ <michal.simek@xilinx.com>, <grant.likely@linaro.org>,
+ <gregkh@linuxfoundation.org>, <jason@lakedaemon.net>,
+ <ezequiel.garcia@free-electrons.com>, <arnd@arndb.de>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
+ <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>, <ivan.khoronzhuk@ti.com>,
+ <joern@logfs.org>
+Subject: [PATCH v7 0/2] Add arm pl353 smc driver for xilinx zynq soc
+Date: Mon, 8 Jun 2015 23:37:35 +0530
+Message-ID: <1433786857-32575-1-git-send-email-punnaia@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
- Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
- Richard Weinberger <richard@nod.at>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Oleg Nesterov <oleg@redhat.com>, Petr Mladek <pmladek@suse.cz>,
- linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
- Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
- linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
- live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Anna Schumaker <anna.schumaker@netapp.com>
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com, punnaia@xilinx.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,57 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 5 Jun 2015 18:10:21 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+The following patches add arm pl353 static memory controller driver for
+xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
+nor/sram memory interfaces. The current implementation supports only a
+single SMC instance and nand specific configuration.
 
-> On Fri, Jun 05, 2015 at 05:01:08PM +0200, Petr Mladek wrote:
-> > Many kthreads go into an interruptible sleep when there is nothing
-> > to do. They should check if anyone did not requested the kthread
-> > to terminate, freeze, or park in the meantime. It is easy to do
-> > it a wrong way.
-> 
-> INTERRUPTIBLE is the wrong state to idle in for kthreads, use
-> TASK_IDLE.
-> 
-> ---
-> 
-> commit 80ed87c8a9ca0cad7ca66cf3bbdfb17559a66dcf
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Fri May 8 14:23:45 2015 +0200
-> 
->     sched/wait: Introduce TASK_NOLOAD and TASK_IDLE
->     
->     Currently people use TASK_INTERRUPTIBLE to idle kthreads and wait for
->     'work' because TASK_UNINTERRUPTIBLE contributes to the loadavg. Having
->     all idle kthreads contribute to the loadavg is somewhat silly.
+xilinx zynq TRM link:
+http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
 
-Not to mention, tasks in TASK_UNINTERRUPTIBLE state for too long will
-trigger hung task detection.
+ARM pl353 smc TRM link:
+http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
+DDI0380G_smc_pl350_series_r2p1_trm.pdf
 
+Punnaiah Choudary Kalluri (2):
+  Devicetree: Add pl353 smc controller devicetree binding information
+  memory: pl353: Add driver for arm pl353 static memory controller
 
->     
->     Now mostly this works OK, because kthreads have all their signals
->     masked. However there's a few sites where this is causing problems and
->     TASK_UNINTERRUPTIBLE should be used, except for that loadavg issue.
->     
->     This patch adds TASK_NOLOAD which, when combined with
->     TASK_UNINTERRUPTIBLE avoids the loadavg accounting.
->     
->     As most of imagined usage sites are loops where a thread wants to
->     idle, waiting for work, a helper TASK_IDLE is introduced.
->     
->     Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+ .../bindings/memory-controllers/pl353-smc.txt      |   37 ++
+ drivers/memory/Kconfig                             |    7 +
+ drivers/memory/Makefile                            |    1 +
+ drivers/memory/pl353-smc.c                         |  559 ++++++++++++++++++++
+ include/linux/memory/pl353-smc.h                   |   37 ++
+ 5 files changed, 641 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+ create mode 100644 drivers/memory/pl353-smc.c
+ create mode 100644 include/linux/memory/pl353-smc.h
 
-Acked-by: Steven Rostedt <rostedt@goodmis.org>
-
--- Steve
-
->     Cc: Julian Anastasov <ja@ssi.bg>
->     Cc: Linus Torvalds <torvalds@linux-foundation.org>
->     Cc: NeilBrown <neilb@suse.de>
->     Cc: Oleg Nesterov <oleg@redhat.com>
->     Cc: Peter Zijlstra <peterz@infradead.org>
->     Cc: Thomas Gleixner <tglx@linutronix.de>
->     Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
+-- 
+1.7.4
