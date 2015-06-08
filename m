@@ -1,33 +1,30 @@
-Date: Mon, 8 Jun 2015 16:37:00 +0530
-From: Vinod Koul <vinod.koul@intel.com>
-To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 09/11] dma: pl330: fix wording in mcbufsz message
-Message-ID: <20150608110700.GI28601@localhost>
-References: <cover.1433364398.git.hramrach@gmail.com>
- <14872fc6f86b7f4976d539b47a7899904cd954f6.1433364398.git.hramrach@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14872fc6f86b7f4976d539b47a7899904cd954f6.1433364398.git.hramrach@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-mtd@lists.infradead.org,
- Alison Chaiken <alison_chaiken@mentor.com>,
- Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- Marek Vasut <marex@denx.de>, linux-samsung-soc@vger.kernel.org,
- Russell King <linux@arm.linux.org.uk>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
- devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
- Dan Williams <dan.j.williams@intel.com>, linux-arm-kernel@lists.infradead.org,
- "grmoore@altera.com" <grmoore@altera.com>, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@freescale.com>,
- Knut Wohlrab <knut.wohlrab@de.bosch.com>, dmaengine@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Message-ID: <1433763595.1495.35.camel@twins>
+Subject: Re: [RFC PATCH 09/18] kthread: Make it easier to correctly sleep in
+ iterant kthreads
+From: Peter Zijlstra <peterz@infradead.org>
+To: Petr Mladek <pmladek@suse.cz>
+Date: Mon, 08 Jun 2015 13:39:55 +0200
+In-Reply-To: <20150608100107.GA3135@pathway.suse.cz>
+References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
+ <1433516477-5153-10-git-send-email-pmladek@suse.cz>
+ <20150605161021.GJ19282@twins.programming.kicks-ass.net>
+ <20150608100107.GA3135@pathway.suse.cz>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
+ Richard Weinberger <richard@nod.at>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Oleg Nesterov <oleg@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
+ linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
+ Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
+ live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Anna Schumaker <anna.schumaker@netapp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,12 +34,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 03, 2015 at 09:26:41PM +0000, Michal Suchanek wrote:
-> The kernel is not trying to increase mcbufsz. It suggests you should try
-> doing so. Also print the calculated required size of mcbufsz.
-pls use right subsystem name in the patches
+On Mon, 2015-06-08 at 12:01 +0200, Petr Mladek wrote:
 
-I have applied this now
+> Just to be sure. Do you suggest to use TASK_IDLE everywhere in
+> kthreads or only when the uninterruptible sleep is really needed?
 
--- 
-~Vinod
+Always, only use INTERRUPTIBLE when you're actually interruptible, that
+is you want signals or such muck to terminate your wait.
+
+> IMHO, we should not use TASK_IDLE in freezable kthreads because
+> it would break freezing.
+
+How so? The task is IDLE, its not doing anything.
+
+>  Well, we could freezable_schedule() but only
+> on locations where it is safe to get freezed. Anyway, we need to
+> be careful here.
+
+s/freezed/frozen/
+
+Bah, you made me look at the freezer code, karma reduction for you.
+
+And this is the arch typical freeze point if ever there was one, you're
+checking kthread_stop, if we can terminate the kthread, we can certainly
+get frozen.
+
+> BTW: What is the preferred way of freezing, please? Is it better
+> to end up in the fridge or is it fine to call freezer_do_not_count();
+> or set PF_NOFREEZE when it is safe?
+
+freezable_schedule() is fine in this case.
