@@ -1,19 +1,35 @@
-Date: Tue, 9 Jun 2015 16:20:07 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roy Spliet <r.spliet@ultimaker.com>
-Subject: Re: [PATCH v2] mtd: nand: Sunxi calculate timing cfg
-Message-ID: <20150609162007.7b19e8e2@bbrezillon>
-In-Reply-To: <5576E7C2.10604@ultimaker.com>
-References: <1433849498-3270-1-git-send-email-r.spliet@ultimaker.com>
- <20150609142308.0fd0952a@bbrezillon> <5576E7C2.10604@ultimaker.com>
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2LPY-0002Zd-J7
+ for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 15:25:57 +0000
+Date: Tue, 9 Jun 2015 17:25:26 +0200
+From: Petr Mladek <pmladek@suse.cz>
+To: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH 09/18] kthread: Make it easier to correctly sleep in
+ iterant kthreads
+Message-ID: <20150609152526.GB9409@pathway.suse.cz>
+References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
+ <1433516477-5153-10-git-send-email-pmladek@suse.cz>
+ <20150605161021.GJ19282@twins.programming.kicks-ass.net>
+ <20150608100107.GA3135@pathway.suse.cz>
+ <1433763595.1495.35.camel@twins>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux MTD <linux-mtd@lists.infradead.org>,
- Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1433763595.1495.35.camel@twins>
+Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
+ Richard Weinberger <richard@nod.at>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Oleg Nesterov <oleg@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
+ linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
+ Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
+ live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Anna Schumaker <anna.schumaker@netapp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,87 +39,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 09 Jun 2015 15:18:58 +0200
-Roy Spliet <r.spliet@ultimaker.com> wrote:
-
-
->  >> +
->  >> +static s32 sunxi_nand_lookup_timing(const s32 *lut, lut, u32 
-> period, u32 clk_period)
->  > I'm not sure the period name is appropriate here, what you're actually
->  > passing is the timing you're expecting.
->  > How about renaming it 'min_timing'
+On Mon 2015-06-08 13:39:55, Peter Zijlstra wrote:
+> On Mon, 2015-06-08 at 12:01 +0200, Petr Mladek wrote:
 > 
-> What it encodes is the minimum or maximum time or delay for given timing
-> parameter in picoseconds. Given this definition, I think period actually
-> describes the parameter better than "min_timing". Alternatively, I could go
-> for period_ps or perhaps timing_period_ps (with matching clk_period_ps).
+> > Just to be sure. Do you suggest to use TASK_IDLE everywhere in
+> > kthreads or only when the uninterruptible sleep is really needed?
+>
+> Always, only use INTERRUPTIBLE when you're actually interruptible, that
+> is you want signals or such muck to terminate your wait.
 
-Hm, I don't agree here. From my POV, a period is something used to
-describe cyclic operations. If you take a clk, the period encodes the
-time required a clk cycle (a rising and a falling edge).
-Here the timings you're passing are not cyclic at all.
+I like that TASK_IDLE clearly describes that the state of the task.
+I am just curious. Is there any particular advantage of using
+uninterruptible sleep over the interruptible one, please?
 
+I ask because making freezable kthreads is quite tricky. You need to
+call try_to_freeze() after each schedule or call freezable_* variants
+of schedule(). I think that it is easy to make a mistake. I wonder if
+it might be more elegant to use interruptible sleep whenever possible,
+send the fake signal also to kthreads and force them moving into some
+location where the freeze is safe and handled.
+
+
+> > IMHO, we should not use TASK_IDLE in freezable kthreads because
+> > it would break freezing.
 > 
->  >> +{
->  >> +    u32 clks = (period + clk_period - 1) / clk_period;
->  >     u32 clks = DIV_ROUND_UP(period, clk_period);
->  >
->  > And again, IMO the variable name does not match what it's really
->  > encoding. How about div or divisor ?
+> How so? The task is IDLE, its not doing anything.
+
+Well, it might cause the freeze. I have just double checked this
+with ubi_thread(). It calls set_freezable().
+
+I did the following change:
+
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 16214d3d57a4..d528fa5e93ba 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1428,7 +1428,7 @@ int ubi_thread(void *u)
+                spin_lock(&ubi->wl_lock);
+                if (list_empty(&ubi->works) || ubi->ro_mode ||
+                    !ubi->thread_enabled || ubi_dbg_is_bgt_disabled(ubi)) {
+-                       set_current_state(TASK_INTERRUPTIBLE);
++                       set_current_state(TASK_IDLE);
+                        spin_unlock(&ubi->wl_lock);
+                        schedule();
+                        continue;
+
+
+  enabled this stuff:
+
+$> grep UBI .config
+CONFIG_TCP_CONG_CUBIC=y
+CONFIG_DEFAULT_CUBIC=y
+CONFIG_MTD_UBI=y
+CONFIG_MTD_UBI_WL_THRESHOLD=4096
+CONFIG_MTD_UBI_BEB_LIMIT=20
+# CONFIG_MTD_UBI_FASTMAP is not set
+CONFIG_MTD_UBI_GLUEBI=y
+CONFIG_MTD_UBI_BLOCK=y
+# CONFIG_JFFS2_RUBIN is not set
+CONFIG_UBIFS_FS=y
+# CONFIG_UBIFS_FS_ADVANCED_COMPR is not set
+CONFIG_UBIFS_FS_LZO=y
+CONFIG_UBIFS_FS_ZLIB=y
+# CONFIG_CRYPTO_ANUBIS is not set
+
+  called on the running system:
+
+$> ubiattach /dev/ubi_ctrl -m 0
+
+  to launch "ubi_bgt0d"
+
+  and it started to block freezer:
+
+$> echo freezer >/sys/power/pm_test
+$> echo reboot >/sys/power/disk
+$> echo disk >/sys/power/state
+-bash: echo: write error: Device or resource busy
+
+$dmesg
+[  658.874518] Freezing of tasks failed after 20.008 seconds (1 tasks refusing to freeze, wq_busy=0):
+[  658.874527] ubi_bgt0d       D ffff880136e2be38     0  3107      2 0x00000000
+[  658.874530]  ffff880136e2be38 ffff88013a456410 ffff880133808210 ffff8800b3f5cd00
+[  658.874532]  ffff880136e2c000 ffff880133808210 ffff8800ba1fd15c ffff8800ba1fd1d8
+[  658.874533]  ffff8800ba1fd1fc ffff880136e2be58 ffffffff81905737 ffff8800ba1fd15c
+[  658.874535] Call Trace:
+[  658.874540]  [<ffffffff81905737>] schedule+0x37/0x90
+[  658.874543]  [<ffffffff816b3065>] ubi_thread+0xd5/0x1f0
+[  658.874545]  [<ffffffff816b2f90>] ? ubi_wl_flush+0x1f0/0x1f0
+[  658.874547]  [<ffffffff81085219>] kthread+0xc9/0xe0
+[  658.874549]  [<ffffffff81085150>] ? kthread_create_on_node+0x180/0x180
+[  658.874551]  [<ffffffff81909962>] ret_from_fork+0x42/0x70
+[  658.874552]  [<ffffffff81085150>] ? kthread_create_on_node+0x180/0x180
+
+[  658.874554] Restarting kernel threads ... done.
+[  658.892995] PM: Basic memory bitmaps freed
+[  658.892999] Restarting tasks ... done.
+
+
+  It is because freeze_task() tries to wake up inly kthreads in
+  interruptible state. I does:
+
+		wake_up_state(p, TASK_INTERRUPTIBLE);
+
+
+Solutions would be to try in freeze_task() also
+
+		wake_up_state(p, TASK_IDLE);
+
+or use in ubi_thread()
+
+		freezable_schedule()
+
+or always ignore freezing when the task sets TASK_IDLE.
+
+
+> >  Well, we could freezable_schedule() but only
+> > on locations where it is safe to get freezed. Anyway, we need to
+> > be careful here.
 > 
-> This value encodes the period in number of clock cycles. If period_ps is
-> acceptable, how about period_cycles here?
+> Bah, you made me look at the freezer code, karma reduction for you.
 
-I'd rather use clk_cycles, or just cycles then.
-
-
->  >> +    tADL = DIV_ROUND_UP(timings->tADL_min, min_clk_period) >> 3;
->  >> +    tWHR = DIV_ROUND_UP(timings->tWHR_min, min_clk_period) >> 3;
->  >> +    tRHW = sunxi_nand_lookup_timing(tRHW_lut, timings->tRHW_min,
->  >> +            min_clk_period);
->  >> +    tCAD = 0x7;
->  >> +    chip->timing_cfg = (tWB & 0x3) |
->  >> +               (tADL & 0x3) << 2 |
->  >> +               (tWHR & 0x3) << 4 |
->  >> +               (tRHW & 0x3) << 6 |
->  >> +               (tCAD & 0x7) << 8;
->  >> +    /* \todo A83 has some more bits for CDQSS, CS, CLHZ, CCS, WC */
->  > Use the "TODO:" or "FIXME:" keywords so that people greping on these
->  > pattern will be able to find them.
-> 
-> I used \todo as the (assumed) preferred notation for doxygen (... but 
-> omitted
-> the second * denoting doxygen documentation formatting) Eclipse picks it up
-> fine, but if you prefer TODO: for your toolchain, it's the same to me.
-
-It depends on the kernel coding style rules, and AFAIR they use the
-TODO and FIXME (in capital letters) keywords.
+I feel like it has happened.
 
 
->  >>      /*
->  >> -     * TODO: replace these magic values with proper flags as soon as we
->  >> -     * know what they are encoding.
->  >> +     * TODO: replace this magic values with EDO flag
->  >>       */
->  >>      writel(0x100, nfc->regs + NFC_REG_TIMING_CTL);
->  >> -    writel(0x7ff, nfc->regs + NFC_REG_TIMING_CFG);
->  > Are you planning to post another patch defining the EDO mode flag and
->  > using it instead of keeping this magic value (note that I'm not
->  > asking you to make this change in the same patch, but that would be
->  > great to have it in the same patch series) ?
-> 
-> I agree that it would be good, but it is derived from the 6th ID byte, which
-> I have already seen omitted in several datasheets. I'm not sure if we can do
-> this without at least offering the option for overriding this value in 
-> the DT?
+> And this is the arch typical freeze point if ever there was one, you're
+> checking kthread_stop, if we can terminate the kthread, we can certainly
+> get frozen.
 
-Actually, I was just asking for a flag definition. You can keep the
-assignment here till we find a proper solution to extract it from the
-read-id (or ONFI information).
+It makes sense. The tasks should be in some sane state when it goes
+into the idle state. I hope that people will not misuse it too much.
 
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Best Regards,
+Petr
