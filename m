@@ -1,9 +1,9 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z29oL-0005f9-Vs
- for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 03:02:46 +0000
-Message-ID: <5576561B.20402@cn.fujitsu.com>
-Date: Tue, 9 Jun 2015 10:57:31 +0800
+ id 1Z2AEG-0006aB-CF
+ for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 03:29:32 +0000
+Message-ID: <55765C65.80302@cn.fujitsu.com>
+Date: Tue, 9 Jun 2015 11:24:21 +0800
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
@@ -50,13 +50,18 @@ On 06/09/2015 06:55 AM, Richard Weinberger wrote:
 > I'd give I_DIRTY_TIME a try. This way you could get at least rid of the mutex_is_locked()
 > usage.
 
-Thanx Richard, yes, we can use it to check if we need a budget here.
-But without removing the conditional lock as you suggested in last mail,
-that would not help a lot. Then I think I need to try more to find a 
-better way about this feature by looking more into the flags. :)
+Okey, after a reading, I'm afraid I can not think a better idea
+out. The flags between *old* cases and the *new* case can possiblly
+be same. Then we can't use the flags to filter the new case from old
+cases.
+
+But I think I can append a patch to add a support for lazytime here:
+	if (flags == I_DIRTY_TIME)
+		return;
 
 Thanx
 Yang
+
 >
 > Thanks,
 > //richard
