@@ -1,22 +1,24 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
+Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2Dpu-0000P2-9u
- for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 07:20:39 +0000
-Received: by pdbnf5 with SMTP id nf5so8787976pdb.2
- for <linux-mtd@lists.infradead.org>; Tue, 09 Jun 2015 00:20:16 -0700 (PDT)
+ id 1Z2E2J-00068O-2C
+ for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 07:33:27 +0000
+Received: by pdbki1 with SMTP id ki1so8992266pdb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Jun 2015 00:33:05 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 9 Jun 2015 16:20:03 +0900
+Date: Tue, 9 Jun 2015 16:32:53 +0900
 From: Tejun Heo <tj@kernel.org>
 To: Petr Mladek <pmladek@suse.cz>
-Subject: Re: [RFC PATCH 07/18] kthread: Make iterant kthreads freezable by
- default
-Message-ID: <20150609072003.GY21465@mtj.duckdns.org>
+Subject: Re: [RFC PATCH 09/18] kthread: Make it easier to correctly sleep in
+ iterant kthreads
+Message-ID: <20150609073253.GZ21465@mtj.duckdns.org>
 References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
- <1433516477-5153-8-git-send-email-pmladek@suse.cz>
+ <1433516477-5153-10-git-send-email-pmladek@suse.cz>
+ <20150605161021.GJ19282@twins.programming.kicks-ass.net>
+ <20150608100107.GA3135@pathway.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1433516477-5153-8-git-send-email-pmladek@suse.cz>
+In-Reply-To: <20150608100107.GA3135@pathway.suse.cz>
 Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
  Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
  Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>,
@@ -39,42 +41,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, Petr.
+Hello,
 
-On Fri, Jun 05, 2015 at 05:01:06PM +0200, Petr Mladek wrote:
-> Many kthreads already calls set_freezable() before they enter the main
-> cycle. One of the reasons for creating iterant kthreads is to create
-> a safe point for freezing and make even more kthreads properly
-> freezable. Therefore it would make sense to set all iterant
-> kthreads freezable by default.
+On Mon, Jun 08, 2015 at 12:01:07PM +0200, Petr Mladek wrote:
+> BTW: What is the preferred way of freezing, please? Is it better
+> to end up in the fridge or is it fine to call freezer_do_not_count();
+> or set PF_NOFREEZE when it is safe?
 
-Actually, for most cases, making kthreads freezable is unnecessary and
-often indicative of something going wrong.  This is a crude mechanism
-which goes along the line of "if all threads are stopped, the machine
-should be safe to be put into whatever state", which isn't true at all
-as there usually are a lot of stuff going on asynchronously especially
-when interacting with hardware.
-
-In most cases, we want to implement proper power management callbacks
-which plug new issuance of whatever work-unit the code is dealing with
-and drain in-flight ones.  Whether the worker threads are frozen or
-not doesn't matter once that's implemented.
-
-It seems that people have been marking kthreads freezable w/o really
-thinking about it - some of them are subtly broken due to missing
-drainage of in-flight things while others simply don't need freezing
-for correctness.
-
-We do want to clean up freezer usage in the kernel but definitely do
-not want to make kthreads freezable by default especially given that
-the freezer essentially is one giant lockdep-less system-wide lock.
-
-> However some kthreads might be hard to make properly freezable.
-> For example, if they do non-interruptible sleeps. They would
-> need to explicitly clear PF_NOFREEZE flag in the init() call.
-> But it should be avoided whenever possible.
-
-So, big no here.
+There's no one good answer.  The closest would be "don't use freezer
+on kthreads".  As Peter said, exit points are always safe freezing
+points and it's generally a good idea to avoid adding one anywhere
+else.
 
 Thanks.
 
