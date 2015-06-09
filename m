@@ -1,20 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wg0-f53.google.com ([74.125.82.53])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2FUE-0008Jt-AB
- for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 09:06:23 +0000
-Message-ID: <5576AC73.1030104@nod.at>
-Date: Tue, 09 Jun 2015 11:05:55 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1Z2HhL-00047r-0h
+ for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 11:28:04 +0000
+Received: by wgme6 with SMTP id e6so10701089wgm.2
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Jun 2015 04:27:39 -0700 (PDT)
 MIME-Version: 1.0
-To: t kevin <kevint324@gmail.com>
-Subject: Re: Data integrity check after UBIFORMAT? Bad image sequence number
- error.
-References: <CAOx4H9BWcd-8HNrXcnyP+YsnqDnjo-ucS7E9Zzvvr1WVd-os5A@mail.gmail.com>	<CAFLxGvww+uRu2vp2qLF3RdhCzrY6VxHUOpashUEUVf6PAg2b0Q@mail.gmail.com>
- <CAOx4H9CVYmWr7_DAkgLvgVyxXkgW6WFywnFNuoJ7XfRtuWvryQ@mail.gmail.com>
-In-Reply-To: <CAOx4H9CVYmWr7_DAkgLvgVyxXkgW6WFywnFNuoJ7XfRtuWvryQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Roy Spliet <r.spliet@ultimaker.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: nand: Sunxi calculate timing cfg
+Date: Tue,  9 Jun 2015 13:27:24 +0200
+Message-Id: <1433849244-2917-1-git-send-email-r.spliet@ultimaker.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Roy Spliet <r.spliet@ultimaker.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,83 +26,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Values derived from the A83 user manual
+
+Signed-off-by: Roy Spliet <r.spliet@ultimaker.com>
+---
+ drivers/mtd/nand/sunxi_nand.c | 43 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 37 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index 6f93b29..ec99502 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -194,7 +194,7 @@ struct sunxi_nand_chip_sel {
+  *
+  * @mode:	the sunxi ECC mode field deduced from ECC requirements
+  * @layout:	the OOB layout depending on the ECC requirements and the
+- *		selected ECC mode
++ *		ed ECC mode
+  */
+ struct sunxi_nand_hw_ecc {
+ 	int mode;
+@@ -217,6 +217,7 @@ struct sunxi_nand_chip {
+ 	struct nand_chip nand;
+ 	struct mtd_info mtd;
+ 	unsigned long clk_rate;
++	u32 timing_cfg;
+ 	int selected;
+ 	int nsels;
+ 	struct sunxi_nand_chip_sel sels[0];
+@@ -403,6 +404,7 @@ static void sunxi_nfc_select_chip(struct mtd_info *mtd, int chip)
+ 		}
+ 	}
+ 
++	writel(sunxi_nand->timing_cfg, nfc->regs + NFC_REG_TIMING_CFG);
+ 	writel(ctl, nfc->regs + NFC_REG_CTL);
+ 
+ 	sunxi_nand->selected = chip;
+@@ -807,10 +809,28 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
+ 	return 0;
+ }
+ 
++static const s32 tWB_lut[]  = {6, 12, 16, 20, -1};
++static const s32 tRHW_lut[] = {4,  8, 12, 20, -1};
++
++static s32 sunxi_nand_lookup_timing(const s32 *lut, u32 period, u32 clk_period)
++{
++	u32 clks = (period + clk_period - 1) / clk_period;
++	int i;
++
++	for (i = 0; lut[i] != -1; i++) {
++		if (clks <= lut[i])
++			return i;
++	}
++
++	/* Return max value */
++	return i - 1;
++}
++
+ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+ 				       const struct nand_sdr_timings *timings)
+ {
+ 	u32 min_clk_period = 0;
++	u32 tWB, tADL, tWHR, tRHW, tCAD;
+ 
+ 	/* T1 <=> tCLS */
+ 	if (timings->tCLS_min > min_clk_period)
+@@ -872,6 +892,20 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+ 	if (timings->tWC_min > (min_clk_period * 2))
+ 		min_clk_period = DIV_ROUND_UP(timings->tWC_min, 2);
+ 
++	/* T16 - T19 + tCAD */
++	tWB  = sunxi_nand_lookup_timing(tWB_lut, timings->tWB_max,
++			min_clk_period);
++	tADL = DIV_ROUND_UP(timings->tADL_min, min_clk_period) >> 3;
++	tWHR = DIV_ROUND_UP(timings->tWHR_min, min_clk_period) >> 3;
++	tRHW = sunxi_nand_lookup_timing(tRHW_lut, timings->tRHW_min,
++			min_clk_period);
++	tCAD = 0x7;
++	chip->timing_cfg = (tWB & 0x3) |
++			   (tADL & 0x3) << 2 |
++			   (tWHR & 0x3) << 4 |
++			   (tRHW & 0x3) << 6 |
++			   (tCAD & 0x7) << 8;
++	/* \todo A83 has some more bits for CDQSS, CS, CLHZ, CCS, WC */
+ 
+ 	/* Convert min_clk_period from picoseconds to nanoseconds */
+ 	min_clk_period = DIV_ROUND_UP(min_clk_period, 1000);
+@@ -884,8 +918,6 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+ 	 */
+ 	chip->clk_rate = (2 * NSEC_PER_SEC) / min_clk_period;
+ 
+-	/* TODO: configure T16-T19 */
+-
+ 	return 0;
+ }
+ 
+@@ -1168,6 +1200,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 
+ 	chip->nsels = nsels;
+ 	chip->selected = -1;
++	chip->timing_cfg = 0x7ff;
+ 
+ 	for (i = 0; i < nsels; i++) {
+ 		ret = of_property_read_u32_index(np, "reg", i, &tmp);
+@@ -1377,11 +1410,9 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, nfc);
+ 
+ 	/*
+-	 * TODO: replace these magic values with proper flags as soon as we
+-	 * know what they are encoding.
++	 * TODO: replace this magic values with EDO flag
+ 	 */
+ 	writel(0x100, nfc->regs + NFC_REG_TIMING_CTL);
+-	writel(0x7ff, nfc->regs + NFC_REG_TIMING_CFG);
+ 
+ 	ret = sunxi_nand_chips_init(dev, nfc);
+ 	if (ret) {
+-- 
+2.4.2
 
 
-Am 09.06.2015 um 10:52 schrieb t kevin:
-> Hi Richard
-> 
-> Thanks for the reply. See inline comments below.
-> 
-> 2015-06-09 16:20 GMT+08:00 Richard Weinberger <richard.weinberger@gmail.com>:
->> On Tue, Jun 9, 2015 at 10:02 AM, t kevin <kevint324@gmail.com> wrote:
->>> Hi,
->>>
->>> We are using kernel 2.6.36 and mtd-util-1.5.1 on our box.
->>> During system upgrade, very very occasionally ( 1 in 100, maybe? ) I
->>> get this error at ubiattach after ubiformat.
->>>
->>> [ 1632.520000] UBI: attaching mtd8 to ubi0
->>> [ 1632.520000] UBI: physical eraseblock size: 131072 bytes (128 KiB)
->>> [ 1632.530000] UBI: logical eraseblock size: 126976 bytes
->>> [ 1632.530000] UBI: smallest flash I/O unit: 2048
->>> [ 1632.540000] UBI: sub-page size: 512
->>> [ 1632.540000] UBI: VID header offset: 2048 (aligned 2048)
->>> [ 1632.550000] UBI: data offset: 4096
->>> [ 1633.190000] UBI error: process_eb: bad image sequence number
->>> 559476870 in PEB 635, expected 139654706
->>>
->>> I understand ubiformat generate a random sequence number and write the
->>> sequence number to all PEB. So it seems an expected sequence number
->>> somehow is not written into nand flash correctly.
->>
->> Are you sure about that?
->> Can it be that 559476870 is the seq number of the old image and the
->> new one is too small?
->> This is one of the main reasons why we have that number, such that
->> UBI can detect a partial written image.
->>
-> I don't really know what "559476870" is. We don't track image sequence
-> number : (
+-- 
 
-Please start tracking them. UBI prints the number while attaching.
-If the old number remains after an update, you update was most likely
-not complete. And you can start investigate.
 
->>> So I changed my upgrade sequence like below
->>>
->>> ubiformat ubi.img /dev/mtdx
->>> ubiattach /dev/mtdx
->>>
->>> if [ "$?" != "0" ]
->>>     #do ubiformat again
->>>     ubiformat ubi.img /dev/mtdx
->>
->> You format it while it is attached?
->>
-> 
-> I'll do re-format only when ubiattach returns fail and then I know
-> there is something wrong during ubiformat. So by that time it's not
-> attached.
+IMAGINE IT >> MAKE IT
 
-Right you are. :)
+Meet us online at Twitter <http://twitter.com/ultimaker>, Facebook 
+<http://facebook.com/ultimaker>, Google+ <http://google.com/+Ultimaker>
 
->>> My question are,
->>> 1. What could possibly be wrong that caused the ubiformat fail?
->>
->> It can be a faulty MTD driver, a usage error, everything.
->>
->>> 2. Is there a way to verify the data integrity after a UBIFORMAT
->>> process? Something like "mtd verify" function.
->>
->> I fear the answer is "no".
->>
-> 
-> As I mentioned, the error is very rare, but it did happen multiple
-> times. So we are considering data integrity check.
-
-I suspect that sometimes not the whole MTD partition is written.
-
-Just in case, does your MTD driver pass all mtd and UBI tests?
-
-Thanks,
-//richard
+www.ultimaker.com
