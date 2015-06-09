@@ -1,9 +1,9 @@
-Received: from mail-wg0-f53.google.com ([74.125.82.53])
+Received: from mail-wi0-f175.google.com ([209.85.212.175])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2HhL-00047r-0h
- for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 11:28:04 +0000
-Received: by wgme6 with SMTP id e6so10701089wgm.2
- for <linux-mtd@lists.infradead.org>; Tue, 09 Jun 2015 04:27:39 -0700 (PDT)
+ id 1Z2HlI-00071K-1R
+ for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 11:32:09 +0000
+Received: by wibut5 with SMTP id ut5so14753697wib.1
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Jun 2015 04:31:46 -0700 (PDT)
 MIME-Version: 1.0
 From: Roy Spliet <r.spliet@ultimaker.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -12,9 +12,9 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: nand: Sunxi calculate timing cfg
-Date: Tue,  9 Jun 2015 13:27:24 +0200
-Message-Id: <1433849244-2917-1-git-send-email-r.spliet@ultimaker.com>
+Subject: [PATCH v2] mtd: nand: Sunxi calculate timing cfg
+Date: Tue,  9 Jun 2015 13:31:38 +0200
+Message-Id: <1433849498-3270-1-git-send-email-r.spliet@ultimaker.com>
 Content-Type: text/plain; charset=US-ASCII
 Cc: Roy Spliet <r.spliet@ultimaker.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,25 +28,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Values derived from the A83 user manual
 
+V2: fix crippled comments
+
 Signed-off-by: Roy Spliet <r.spliet@ultimaker.com>
 ---
- drivers/mtd/nand/sunxi_nand.c | 43 +++++++++++++++++++++++++++++++++++++------
- 1 file changed, 37 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/sunxi_nand.c | 42 +++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 37 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 6f93b29..ec99502 100644
+index 6f93b29..86de7e3 100644
 --- a/drivers/mtd/nand/sunxi_nand.c
 +++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -194,7 +194,7 @@ struct sunxi_nand_chip_sel {
-  *
-  * @mode:	the sunxi ECC mode field deduced from ECC requirements
-  * @layout:	the OOB layout depending on the ECC requirements and the
-- *		selected ECC mode
-+ *		ed ECC mode
-  */
- struct sunxi_nand_hw_ecc {
- 	int mode;
-@@ -217,6 +217,7 @@ struct sunxi_nand_chip {
+@@ -208,6 +208,7 @@ struct sunxi_nand_hw_ecc {
+  * @nand:		base NAND chip structure
+  * @mtd:		base MTD structure
+  * @clk_rate:		clk_rate required for this NAND chip
++ * @timing_cfg		TIMING_CFG register value for this NAND chip
+  * @selected:		current active CS
+  * @nsels:		number of CS lines required by the NAND chip
+  * @sels:		array of CS lines descriptions
+@@ -217,6 +218,7 @@ struct sunxi_nand_chip {
  	struct nand_chip nand;
  	struct mtd_info mtd;
  	unsigned long clk_rate;
@@ -54,7 +55,7 @@ index 6f93b29..ec99502 100644
  	int selected;
  	int nsels;
  	struct sunxi_nand_chip_sel sels[0];
-@@ -403,6 +404,7 @@ static void sunxi_nfc_select_chip(struct mtd_info *mtd, int chip)
+@@ -403,6 +405,7 @@ static void sunxi_nfc_select_chip(struct mtd_info *mtd, int chip)
  		}
  	}
  
@@ -62,7 +63,7 @@ index 6f93b29..ec99502 100644
  	writel(ctl, nfc->regs + NFC_REG_CTL);
  
  	sunxi_nand->selected = chip;
-@@ -807,10 +809,28 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
+@@ -807,10 +810,28 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
  	return 0;
  }
  
@@ -91,7 +92,7 @@ index 6f93b29..ec99502 100644
  
  	/* T1 <=> tCLS */
  	if (timings->tCLS_min > min_clk_period)
-@@ -872,6 +892,20 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+@@ -872,6 +893,20 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
  	if (timings->tWC_min > (min_clk_period * 2))
  		min_clk_period = DIV_ROUND_UP(timings->tWC_min, 2);
  
@@ -112,7 +113,7 @@ index 6f93b29..ec99502 100644
  
  	/* Convert min_clk_period from picoseconds to nanoseconds */
  	min_clk_period = DIV_ROUND_UP(min_clk_period, 1000);
-@@ -884,8 +918,6 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+@@ -884,8 +919,6 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
  	 */
  	chip->clk_rate = (2 * NSEC_PER_SEC) / min_clk_period;
  
@@ -121,7 +122,7 @@ index 6f93b29..ec99502 100644
  	return 0;
  }
  
-@@ -1168,6 +1200,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+@@ -1168,6 +1201,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
  
  	chip->nsels = nsels;
  	chip->selected = -1;
@@ -129,7 +130,7 @@ index 6f93b29..ec99502 100644
  
  	for (i = 0; i < nsels; i++) {
  		ret = of_property_read_u32_index(np, "reg", i, &tmp);
-@@ -1377,11 +1410,9 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+@@ -1377,11 +1411,9 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
  	platform_set_drvdata(pdev, nfc);
  
  	/*
