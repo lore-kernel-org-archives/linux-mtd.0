@@ -1,32 +1,18 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2IRc-0005gz-8N
- for linux-mtd@lists.infradead.org; Tue, 09 Jun 2015 12:15:53 +0000
-Date: Tue, 9 Jun 2015 14:15:24 +0200 (CEST)
-From: Jiri Kosina <jkosina@suse.cz>
-To: Tejun Heo <tj@kernel.org>
-Subject: Re: [RFC PATCH 06/18] signal/kthread: Initial implementation of
- kthread signal handling
-In-Reply-To: <20150609071022.GX21465@mtj.duckdns.org>
-Message-ID: <alpine.LNX.2.00.1506091405360.12753@pobox.suse.cz>
-References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
- <1433516477-5153-7-git-send-email-pmladek@suse.cz>
- <20150609071022.GX21465@mtj.duckdns.org>
+Date: Tue, 9 Jun 2015 14:23:08 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Roy Spliet <r.spliet@ultimaker.com>
+Subject: Re: [PATCH v2] mtd: nand: Sunxi calculate timing cfg
+Message-ID: <20150609142308.0fd0952a@bbrezillon>
+In-Reply-To: <1433849498-3270-1-git-send-email-r.spliet@ultimaker.com>
+References: <1433849498-3270-1-git-send-email-r.spliet@ultimaker.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
- Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
- Richard Weinberger <richard@nod.at>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Oleg Nesterov <oleg@redhat.com>, Petr Mladek <pmladek@suse.cz>,
- linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
- Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
- linux-mtd@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>,
- Linus Torvalds <torvalds@linux-foundation.org>, linux-api@vger.kernel.org,
- live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Anna Schumaker <anna.schumaker@netapp.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,55 +22,192 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 9 Jun 2015, Tejun Heo wrote:
+Hi Roy,
 
-> While I agree that it'd be great to consolidate the existing kthread
-> signal users, I feel quite uncomfortable with doing full-fledged
-> signal handling for kthreads which try to mimic the userland behavior.
-> Most of the default behaviors don't make sense for kthreads and it'd
-> be awful to have different kthreads interpreting arbitrary signals for
-> differing custom behaviors, which often happens when there's no
-> default.
+On Tue,  9 Jun 2015 13:31:38 +0200
+Roy Spliet <r.spliet@ultimaker.com> wrote:
 
-I don't think the ultimate goal is to mimic what userspace does; 
-especially when it comes to default actions.
+For the patch title, could you use the "mtd: nand: sunxi: " prefix,
+then a short description of what you're modifying ("fix TIMING_CFG
+calculation" for example).
 
-To me, the ultimate goal (*) is to make it possible for kthread to be able 
-to decide whether it wants "some kind of default behavior" (however that'd 
-be defined), or "ignore all", or "just handle this set of signals with 
-these handlers", and make API for this that would avoid every kthread 
-implementing its own complete signal handling.
+> Values derived from the A83 user manual
 
-(*) Well, the ultimate goal really is to bring sanity to how kthreads are 
-    handling their main loop. Trying to bring some consistency to how 
-    kthreads are handling signals is just an (optional) added value on 
-    top of that.
+The commit message should describe what you're doing. You can specify
+where you retrieved the relevant information from, but that's not
+enough.
 
-> While we do have several kthread signal users, they aren't too many and 
-> majority of them use it to allow userland to tell it to shutdown and 
-
-Yeah. Via SIGKILL. Or SIGTERM. Or SIGINT. Or SIGQUIT. Not really 
-consistent either.
-
-> there seem to be a couple which use HUP/USR1 to cancel whatever it's 
-> processing / waiting on at the moment.  Hmmm... jffs uses STOP/CONT too.
-
-> I don't know how this should be done but let's please try to
 > 
-> 1. Encourage uniform behaviors across the signals.
+> V2: fix crippled comments
 
-Fully agreed.
+Put the changelog...
 
-> 2. Ultimately discourage usage of signals on kthreads as this closely
->    ties implementation detail (use of single kthread) to the userland
->    visible interface in a way where we can't easily get back out of.
->    For example, what if jffs needs its gc workers to be multi-threaded
->    and per-NUMA for high-iops devices later on?
+> 
+> Signed-off-by: Roy Spliet <r.spliet@ultimaker.com>
+> ---
 
-What kind of multi-threading kthreads are you referring to here? Something 
-more sophisticated than simply spawning several per-CPU (or 
-per-whatever-resource) full-fledged kthreads?
+... here, so that it doesn't appear in the final commit.
+
+>  drivers/mtd/nand/sunxi_nand.c | 42 +++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 37 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index 6f93b29..86de7e3 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -208,6 +208,7 @@ struct sunxi_nand_hw_ecc {
+>   * @nand:		base NAND chip structure
+>   * @mtd:		base MTD structure
+>   * @clk_rate:		clk_rate required for this NAND chip
+> + * @timing_cfg		TIMING_CFG register value for this NAND chip
+>   * @selected:		current active CS
+>   * @nsels:		number of CS lines required by the NAND chip
+>   * @sels:		array of CS lines descriptions
+> @@ -217,6 +218,7 @@ struct sunxi_nand_chip {
+>  	struct nand_chip nand;
+>  	struct mtd_info mtd;
+>  	unsigned long clk_rate;
+> +	u32 timing_cfg;
+>  	int selected;
+>  	int nsels;
+>  	struct sunxi_nand_chip_sel sels[0];
+> @@ -403,6 +405,7 @@ static void sunxi_nfc_select_chip(struct mtd_info *mtd, int chip)
+>  		}
+>  	}
+>  
+> +	writel(sunxi_nand->timing_cfg, nfc->regs + NFC_REG_TIMING_CFG);
+>  	writel(ctl, nfc->regs + NFC_REG_CTL);
+>  
+>  	sunxi_nand->selected = chip;
+> @@ -807,10 +810,28 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
+>  	return 0;
+>  }
+>  
+> +static const s32 tWB_lut[]  = {6, 12, 16, 20, -1};
+> +static const s32 tRHW_lut[] = {4,  8, 12, 20, -1};
+
+Nitpick: if you want to align the assignment, use tab instead of spaces
+(I'm personally not a big fan of these sort of alignment).
+
+> +
+> +static s32 sunxi_nand_lookup_timing(const s32 *lut, lut, u32 period, u32 clk_period)
+
+I'm not sure the period name is appropriate here, what you're actually
+passing is the timing you're expecting.
+How about renaming it 'min_timing'
+
+> +{
+> +	u32 clks = (period + clk_period - 1) / clk_period;
+
+	u32 clks = DIV_ROUND_UP(period, clk_period);
+
+And again, IMO the variable name does not match what it's really
+encoding. How about div or divisor ?
+
+> +	int i;
+> +
+> +	for (i = 0; lut[i] != -1; i++) {
+
+I'd prefer to have the lut_size passed in argument instead of this -1
+entry. Note that you'll be able to use the ARRAY_SIZE macro when
+calling the sunxi_nand_lookup_timing() function:
+
+sunxi_nand_lookup_timing(tRHW_lut,
+			 ARRAY_SIZE(tRHW_lut),
+			 timings->tRHW_min,
+			 min_clk_period);
+
+> +		if (clks <= lut[i])
+> +			return i;
+> +	}
+> +
+> +	/* Return max value */
+> +	return i - 1;
+
+Shouldn't we complain and fail (instead of silently returning the last
+entry) if we didn't find any suitable value ?
+I mean, if we configure the controller with invalid timings, we might
+encounter some trouble when launching specific operations.
+
+> +}
+> +
+>  static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+>  				       const struct nand_sdr_timings *timings)
+>  {
+>  	u32 min_clk_period = 0;
+> +	u32 tWB, tADL, tWHR, tRHW, tCAD;
+>  
+>  	/* T1 <=> tCLS */
+>  	if (timings->tCLS_min > min_clk_period)
+> @@ -872,6 +893,20 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+>  	if (timings->tWC_min > (min_clk_period * 2))
+>  		min_clk_period = DIV_ROUND_UP(timings->tWC_min, 2);
+>  
+> +	/* T16 - T19 + tCAD */
+> +	tWB  = sunxi_nand_lookup_timing(tWB_lut, timings->tWB_max,
+> +			min_clk_period);
+
+Please align min_clk_period argument on the opening parenthesis (the
+same comments applies in other places).
+
+> +	tADL = DIV_ROUND_UP(timings->tADL_min, min_clk_period) >> 3;
+> +	tWHR = DIV_ROUND_UP(timings->tWHR_min, min_clk_period) >> 3;
+> +	tRHW = sunxi_nand_lookup_timing(tRHW_lut, timings->tRHW_min,
+> +			min_clk_period);
+> +	tCAD = 0x7;
+> +	chip->timing_cfg = (tWB & 0x3) |
+> +			   (tADL & 0x3) << 2 |
+> +			   (tWHR & 0x3) << 4 |
+> +			   (tRHW & 0x3) << 6 |
+> +			   (tCAD & 0x7) << 8;
+> +	/* \todo A83 has some more bits for CDQSS, CS, CLHZ, CCS, WC */
+
+Use the "TODO:" or "FIXME:" keywords so that people greping on these
+pattern will be able to find them.
+
+>  
+>  	/* Convert min_clk_period from picoseconds to nanoseconds */
+>  	min_clk_period = DIV_ROUND_UP(min_clk_period, 1000);
+> @@ -884,8 +919,6 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+>  	 */
+>  	chip->clk_rate = (2 * NSEC_PER_SEC) / min_clk_period;
+>  
+> -	/* TODO: configure T16-T19 */
+> -
+>  	return 0;
+>  }
+>  
+> @@ -1168,6 +1201,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+>  
+>  	chip->nsels = nsels;
+>  	chip->selected = -1;
+> +	chip->timing_cfg = 0x7ff;
+>  
+>  	for (i = 0; i < nsels; i++) {
+>  		ret = of_property_read_u32_index(np, "reg", i, &tmp);
+> @@ -1377,11 +1411,9 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, nfc);
+>  
+>  	/*
+> -	 * TODO: replace these magic values with proper flags as soon as we
+> -	 * know what they are encoding.
+> +	 * TODO: replace this magic values with EDO flag
+>  	 */
+>  	writel(0x100, nfc->regs + NFC_REG_TIMING_CTL);
+> -	writel(0x7ff, nfc->regs + NFC_REG_TIMING_CFG);
+
+Are you planning to post another patch defining the EDO mode flag and
+using it instead of keeping this magic value (note that I'm not
+asking you to make this change in the same patch, but that would be
+great to have it in the same patch series) ?
+
+Thanks.
+
+Best Regards,
+
+Boris
 
 -- 
-Jiri Kosina
-SUSE Labs
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
