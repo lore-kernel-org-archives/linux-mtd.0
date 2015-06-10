@@ -1,14 +1,14 @@
-Received: from mail-wg0-x242.google.com ([2a00:1450:400c:c00::242])
+Received: from mail-wg0-x243.google.com ([2a00:1450:400c:c00::243])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mml-000579-Fl
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:44 +0000
-Received: by wggy19 with SMTP id y19so8965535wgg.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:22 -0700 (PDT)
+ id 1Z2mmi-00057E-Ta
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:41 +0000
+Received: by wggx12 with SMTP id x12so8978403wgg.1
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:24 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 13/60] mtd: maps: ixp4xx: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:27 +0200
-Message-Id: <1433968754-10651-14-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 14/60] mtd: maps: lantiq-flash: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:28 +0200
+Message-Id: <1433968754-10651-15-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -28,21 +28,21 @@ While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/maps/ixp4xx.c | 2 +-
+ drivers/mtd/maps/lantiq-flash.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-index b443074..e3180d5 100644
---- a/drivers/mtd/maps/ixp4xx.c
-+++ b/drivers/mtd/maps/ixp4xx.c
-@@ -226,7 +226,7 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 		err = -ENXIO;
- 		goto Error;
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 33d26f5..0cef3ba 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -161,7 +161,7 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 		return -ENXIO;
  	}
--	info->mtd->owner = THIS_MODULE;
-+	info->mtd->dev.parent = &dev->dev;
  
- 	/* Use the fast version */
- 	info->map.write = ixp4xx_write16;
+-	ltq_mtd->mtd->owner = THIS_MODULE;
++	ltq_mtd->mtd->dev.parent = &pdev->dev;
+ 
+ 	cfi = ltq_mtd->map->fldrv_priv;
+ 	cfi->addr_unlock1 ^= 1;
 -- 
 2.4.0
