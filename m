@@ -1,14 +1,14 @@
-Received: from mail-wi0-x242.google.com ([2a00:1450:400c:c05::242])
+Received: from mail-wg0-x241.google.com ([2a00:1450:400c:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mnG-0000Kb-4o
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:14 +0000
-Received: by wivr20 with SMTP id r20so11922022wiv.3
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:52 -0700 (PDT)
+ id 1Z2mnH-0000L1-Lh
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:16 +0000
+Received: by wggy19 with SMTP id y19so8969533wgg.2
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:53 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 40/60] mtd: nand: mxc_nand: drop owner assignment
-Date: Wed, 10 Jun 2015 22:38:54 +0200
-Message-Id: <1433968754-10651-41-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 41/60] mtd: nand: ndfc: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:55 +0200
+Message-Id: <1433968754-10651-42-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,24 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Owner is automatically set by mtdcore. Make use of that.
+Fix a bug where parent device symlinks aren't shown in sysfs.
+
+While at it, make use of the default owner set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/mxc_nand.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/ndfc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 372e0e3..dca63a7 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1450,7 +1450,6 @@ static int mxcnd_probe(struct platform_device *pdev)
- 	this = &host->nand;
- 	mtd = &host->mtd;
- 	mtd->priv = this;
--	mtd->owner = THIS_MODULE;
- 	mtd->dev.parent = &pdev->dev;
- 	mtd->name = DRIVER_NAME;
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+index 3187c6b..9c3f6c8 100644
+--- a/drivers/mtd/nand/ndfc.c
++++ b/drivers/mtd/nand/ndfc.c
+@@ -171,7 +171,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ 	chip->priv = ndfc;
  
+ 	ndfc->mtd.priv = chip;
+-	ndfc->mtd.owner = THIS_MODULE;
++	ndfc->mtd.dev.parent = &ndfc->ofdev->dev;
+ 
+ 	flash_np = of_get_next_child(node, NULL);
+ 	if (!flash_np)
 -- 
 2.4.0
