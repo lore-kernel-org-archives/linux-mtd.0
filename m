@@ -1,19 +1,19 @@
-Date: Wed, 10 Jun 2015 13:24:48 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roy Spliet <r.spliet@ultimaker.com>
-Subject: Re: [PATCH v3 2/2] mtd: nand: sunxi: Set serial access mode correctly
-Message-ID: <20150610132448.22cb14c5@bbrezillon>
-In-Reply-To: <1433924948-19288-2-git-send-email-r.spliet@ultimaker.com>
-References: <1433924948-19288-1-git-send-email-r.spliet@ultimaker.com>
- <1433924948-19288-2-git-send-email-r.spliet@ultimaker.com>
+Received: from mail-vn0-x230.google.com ([2607:f8b0:400c:c0f::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2e8Q-0005ZR-DL
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 11:25:31 +0000
+Received: by vnbg190 with SMTP id g190so7367317vnb.6
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 04:25:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux MTD <linux-mtd@lists.infradead.org>,
- Linux ARM kernel <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <CAC7eWMUvdiNFiiGqSkmv1qwFDUa52VZCCQds_BdnqocoskN+Qg@mail.gmail.com>
+References: <CAC7eWMUvdiNFiiGqSkmv1qwFDUa52VZCCQds_BdnqocoskN+Qg@mail.gmail.com>
+Date: Wed, 10 Jun 2015 13:25:05 +0200
+Message-ID: <CAFLxGvzA8N4PUK_7-jM9FcnrqLnyOsNcomfLOSMMGKc5Ed5D9Q@mail.gmail.com>
+Subject: Re: Trouble with UBIFS
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Smitha Rathnam <rathnam.smitha@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,85 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 10 Jun 2015 10:29:08 +0200
-Roy Spliet <r.spliet@ultimaker.com> wrote:
+Hi!
 
-> Replaces the hard coded "always use EDO" policy with that prescribed
-> by the ONFI 3.1 specification that EDO mode should always be used if tRC
-> is below 30ns.
-> 
-> Signed-off-by: Roy Spliet <r.spliet@ultimaker.com>
-> ---
->  drivers/mtd/nand/sunxi_nand.c | 21 +++++++++++++++------
->  1 file changed, 15 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index 68090b7..d98e98c 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -99,6 +99,9 @@
->  				 NFC_CMD_INT_ENABLE | \
->  				 NFC_DMA_INT_ENABLE)
->  
-> +/* define bit use in NFC_TIMING_CTL */
-> +#define NFC_TIMING_CTL_EDO	BIT(8)
-> +
->  /* define bit use in NFC_TIMING_CFG */
->  #define NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD)		\
->  	((tWB) & 0x3) | (((tADL) & 0x3) << 2) |			\
-> @@ -226,6 +229,7 @@ struct sunxi_nand_chip {
->  	struct mtd_info mtd;
->  	unsigned long clk_rate;
->  	u32 timing_cfg;
-> +	int serial_mode_edo;
+On Wed, Jun 10, 2015 at 12:08 PM, Smitha Rathnam
+<rathnam.smitha@gmail.com> wrote:
+>  Hi,
+>
+>  We have an embedded linux (2.6) system. Since the past few months, we
+> have been seeing a corruption of the log filesystem.
+>  The filesystem is using mtd5 device.
+>  The error looks like this;
+>  user.notice kernel: klogd started: BusyBox v1.20.0 (2012-09-18 17:42:52 MST)
+>
+>  Jan  1 00:00:05 user.debug kernel: 00001fa0: 00000000 00000000
+> 00000000 00000000 00000000 00000000 00000000 00000000
+> ................................
+>  Jan  1 00:00:05 user.debug kernel: 00001fc0: 00000000 00000000
+> 00000000 00000000 00000000 00000000 00000000 00000000
+> ................................
+>  Jan  1 00:00:05 user.debug kernel: 00001fe0: 00000000 00000000
+> 00000000 00000000 00000000 00000000 00000000 00000000
+> ................................
+>  *Jan  1 00:00:05 user.err kernel: UBIFS error (pid 1110):
+> ubifs_recover_leb: LEB 24 scanning failed*
+>
+>  Is there a way to retrieve data from the partition? How do we fix this error?
 
-How about directly storing the timing_ctl value (declaring an
-unsigned long timing_ctl field) ? This way, if we need
-to set other fields in the same register we won't have to add new
-fields to the structure.
+To fix the problem one has to analyze it first.
+The kernel output you've posted is incomplete and most likely unrelated.
+Do you have a complete kernel log?
 
->  	int selected;
->  	int nsels;
->  	struct sunxi_nand_chip_sel sels[0];
-> @@ -380,7 +384,7 @@ static void sunxi_nfc_select_chip(struct mtd_info *mtd, int chip)
->  	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
->  	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
->  	struct sunxi_nand_chip_sel *sel;
-> -	u32 ctl;
-> +	u32 ctl, timing_ctl;
->  
->  	if (chip > 0 && chip >= sunxi_nand->nsels)
->  		return;
-> @@ -412,6 +416,9 @@ static void sunxi_nfc_select_chip(struct mtd_info *mtd, int chip)
->  		}
->  	}
->  
-> +	timing_ctl = sunxi_nand->serial_mode_edo ? NFC_TIMING_CTL_EDO : 0;
-> +
-> +	writel(timing_ctl, nfc->regs + NFC_REG_TIMING_CTL);
->  	writel(sunxi_nand->timing_cfg, nfc->regs + NFC_REG_TIMING_CFG);
->  	writel(ctl, nfc->regs + NFC_REG_CTL);
->  
-> @@ -937,6 +944,13 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
->  	/* TODO: A83 has some more bits for CDQSS, CS, CLHZ, CCS, WC */
->  	chip->timing_cfg = NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD);
->  
-> +	/*
-> +	 * ONFI specification 3.1, paragraph 4.15.2 dictates that EDO data
-> +	 * output cycle timings shall be used if the host drives tRC less than
-> +	 * 30 ns.
-> +	 */
-> +	chip->serial_mode_edo = (timings->tRC_min < 30000);
-> +
-
-Oh, that's good to know.
-
-Thanks,
-
-Boris
-
+Retrieving data from the filesystem is not easy, it depends how much UBIFS
+is corrupted.
+What I do in such cases is dumping all nodes and running them thought a
+semi-automated script which can deal with UBIFS.
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+//richard
