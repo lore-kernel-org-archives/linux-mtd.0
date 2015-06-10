@@ -1,18 +1,22 @@
-Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mme-0003iZ-7n
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:36 +0000
-Received: by wivz2 with SMTP id z2so11951932wiv.0
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:11 -0700 (PDT)
-From: Frans Klaver <fransklaver@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 04/60] mtd: devices: docg3: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:18 +0200
-Message-Id: <1433968754-10651-5-git-send-email-fransklaver@gmail.com>
-In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
-References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2p3l-0006b8-N7
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 23:05:27 +0000
+Message-ID: <5578C299.2010200@nod.at>
+Date: Thu, 11 Jun 2015 01:04:57 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: cyl <cyl665236@126.com>
+Subject: Re: ubifs problem
+References: <2b88f8ae.15caa.14ddab0368e.Coremail.cyl665236@126.com>
+ <557791DF.9040501@huawei.com>
+ <CAFLxGvz4QX=C34eWYF-dV+7TzkKLe0ckETyCNiwPLky1UKQqOg@mail.gmail.com>
+ <4849a0b5.1368.14ddfb33013.Coremail.cyl665236@126.com>
+In-Reply-To: <4849a0b5.1368.14ddfb33013.Coremail.cyl665236@126.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+Cc: mtd mailing list <linux-mtd@lists.infradead.org>,
+ Sheng Yong <shengyong1@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where mtd parent device symlinks aren't shown in sysfs.
+Am 11.06.2015 um 00:59 schrieb cyl:
+> The default flash of the development board is a 128M "SLC" nand which is mx30lf4g28ab , I want a bigger one so I changed it to K9G8G08U0M which is a "MLC" flash. Does UBIFS support
+> MLC nandflash not good as supporting SLC nandflash? Will it be better if I use a SLC nand? 
 
-While at it, make use of the default owner value set by mtdcore.
+UBIFS was designed with SLC NAND in mind. If you use MLC you really have to know what you're doing.
 
-Signed-off-by: Frans Klaver <fransklaver@gmail.com>
----
- drivers/mtd/devices/docg3.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 866d319..7697c58 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1841,7 +1841,6 @@ static void __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
- 		mtd->erasesize /= 2;
- 	mtd->writebufsize = mtd->writesize = DOC_LAYOUT_PAGE_SIZE;
- 	mtd->oobsize = DOC_LAYOUT_OOB_SIZE;
--	mtd->owner = THIS_MODULE;
- 	mtd->_erase = doc_erase;
- 	mtd->_read = doc_read;
- 	mtd->_write = doc_write;
-@@ -1881,6 +1880,7 @@ doc_probe_device(struct docg3_cascade *cascade, int floor, struct device *dev)
- 	if (!mtd)
- 		goto nomem2;
- 	mtd->priv = docg3;
-+	mtd->dev.parent = dev;
- 	bbt_nbpages = DIV_ROUND_UP(docg3->max_block + 1,
- 				   8 * DOC_LAYOUT_PAGE_SIZE);
- 	docg3->bbt = kzalloc(bbt_nbpages * DOC_LAYOUT_PAGE_SIZE, GFP_KERNEL);
--- 
-2.4.0
+Thanks,
+//richard
