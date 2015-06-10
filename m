@@ -1,36 +1,15 @@
-Received: from smtprelay0133.hostedemail.com ([216.40.44.133]
- helo=smtprelay.hostedemail.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2gfi-0007zA-O4
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 14:08:03 +0000
-Date: Wed, 10 Jun 2015 10:07:29 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH 09/18] kthread: Make it easier to correctly sleep in
- iterant kthreads
-Message-ID: <20150610100729.6a674c15@gandalf.local.home>
-In-Reply-To: <20150610090724.GD3644@twins.programming.kicks-ass.net>
-References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
- <1433516477-5153-10-git-send-email-pmladek@suse.cz>
- <20150605161021.GJ19282@twins.programming.kicks-ass.net>
- <20150608134810.3abd862b@gandalf.local.home>
- <20150610090724.GD3644@twins.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
- Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
- Richard Weinberger <richard@nod.at>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Oleg Nesterov <oleg@redhat.com>, Petr Mladek <pmladek@suse.cz>,
- linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
- Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
- linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
- live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Anna Schumaker <anna.schumaker@netapp.com>
+Received: from mailrelay110.isp.belgacom.be ([195.238.20.137])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2iv1-0001yO-Ei
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 16:32:01 +0000
+From: Fabian Frederick <fabf@skynet.be>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1 linux-next] mtd/ftl: use swap() in copy_erase_unit()
+Date: Wed, 10 Jun 2015 18:31:06 +0200
+Message-Id: <1433953867-23429-1-git-send-email-fabf@skynet.be>
+Cc: Fabian Frederick <fabf@skynet.be>, Julia Lawall <Julia.Lawall@lip6.fr>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,19 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 10 Jun 2015 11:07:24 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+Use kernel.h macro definition.
 
-> > Not to mention, tasks in TASK_UNINTERRUPTIBLE state for too long will
-> > trigger hung task detection.
-> 
-> Right, and I had not considered that, but it turns out the hung_task
-> detector checks p->state == TASK_UNINTERRUPTIBLE, so TASK_IDLE is indeed
-> safe from that.
+Thanks to Julia Lawall for Coccinelle scripting support.
 
-Also, I would assume that TASK_IDLE only makes sense for kernel
-threads, I wonder if we should add an assertion in schedule that
-triggers if a task is scheduling with TASK_IDLE and is not a kernel
-thread (has its own mm?)
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+ drivers/mtd/ftl.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
--- Steve
+diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
+index dabf084..9fb3b0d 100644
+--- a/drivers/mtd/ftl.c
++++ b/drivers/mtd/ftl.c
+@@ -571,12 +571,8 @@ static int copy_erase_unit(partition_t *part, uint16_t srcunit,
+ 
+ 
+     /* Update the maps and usage stats*/
+-    i = xfer->EraseCount;
+-    xfer->EraseCount = eun->EraseCount;
+-    eun->EraseCount = i;
+-    i = xfer->Offset;
+-    xfer->Offset = eun->Offset;
+-    eun->Offset = i;
++    swap(xfer->EraseCount, eun->EraseCount);
++    swap(xfer->Offset, eun->Offset);
+     part->FreeTotal -= eun->Free;
+     part->FreeTotal += free;
+     eun->Free = free;
+-- 
+2.4.2
