@@ -1,22 +1,16 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2cCd-0005Ra-69
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 09:21:43 +0000
-Message-ID: <1433928078.14092.1.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH RESEND] ubifs: Introduce a mount option of force_atime.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Date: Wed, 10 Jun 2015 12:21:18 +0300
-In-Reply-To: <5577AC03.9060909@cn.fujitsu.com>
-References: <1433758060-18614-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1433831809.28854.17.camel@sauron.fi.intel.com> <55769D97.3010602@nod.at>
- <5577AC03.9060909@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, adrian.hunter@intel.com
+Received: from mail-qg0-x229.google.com ([2607:f8b0:400d:c04::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2cw5-0006Ql-J5
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 10:08:41 +0000
+Received: by qgfa66 with SMTP id a66so14321496qgf.0
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 03:08:19 -0700 (PDT)
+MIME-Version: 1.0
+Date: Wed, 10 Jun 2015 20:08:19 +1000
+Message-ID: <CAC7eWMUvdiNFiiGqSkmv1qwFDUa52VZCCQds_BdnqocoskN+Qg@mail.gmail.com>
+Subject: Trouble with UBIFS
+From: Smitha Rathnam <rathnam.smitha@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2015-06-10 at 11:16 +0800, Dongsheng Yang wrote:
-> Therefore, I introduced a new option named as force_atime in ubifs.
-> That's a ubifs-dependent opiton and it works as a main switch, in
-> a higher level compared with atime and noatime. If force_atime, we
-> support the atime-related flags. Otherwise, we don't care about all of
-> them in flags and don't support atime anyway.
+ Hi,
 
-How bad is it to just default to relatime like other file-systems do,
-comparing to what we have now?
+ We have an embedded linux (2.6) system. Since the past few months, we
+have been seeing a corruption of the log filesystem.
+ The filesystem is using mtd5 device.
+ The error looks like this;
+ user.notice kernel: klogd started: BusyBox v1.20.0 (2012-09-18 17:42:52 MST)
+
+ Jan  1 00:00:05 user.debug kernel: 00001fa0: 00000000 00000000
+00000000 00000000 00000000 00000000 00000000 00000000
+................................
+ Jan  1 00:00:05 user.debug kernel: 00001fc0: 00000000 00000000
+00000000 00000000 00000000 00000000 00000000 00000000
+................................
+ Jan  1 00:00:05 user.debug kernel: 00001fe0: 00000000 00000000
+00000000 00000000 00000000 00000000 00000000 00000000
+................................
+ *Jan  1 00:00:05 user.err kernel: UBIFS error (pid 1110):
+ubifs_recover_leb: LEB 24 scanning failed*
+
+ Is there a way to retrieve data from the partition? How do we fix this error?
+
+ Please help.
+
+ Thanks and regards,
+ Smitha.
