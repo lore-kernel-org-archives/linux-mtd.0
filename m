@@ -1,16 +1,22 @@
-Received: from mail-qg0-x229.google.com ([2607:f8b0:400d:c04::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2cw5-0006Ql-J5
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 10:08:41 +0000
-Received: by qgfa66 with SMTP id a66so14321496qgf.0
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 03:08:19 -0700 (PDT)
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2d2z-0003Ma-At
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 10:15:49 +0000
+Message-ID: <55780D1C.6080907@cn.fujitsu.com>
+Date: Wed, 10 Jun 2015 18:10:36 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Wed, 10 Jun 2015 20:08:19 +1000
-Message-ID: <CAC7eWMUvdiNFiiGqSkmv1qwFDUa52VZCCQds_BdnqocoskN+Qg@mail.gmail.com>
-Subject: Trouble with UBIFS
-From: Smitha Rathnam <rathnam.smitha@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH RESEND] ubifs: Introduce a mount option of force_atime.
+References: <1433758060-18614-1-git-send-email-yangds.fnst@cn.fujitsu.com>	
+ <1433831809.28854.17.camel@sauron.fi.intel.com> <55769D97.3010602@nod.at>	
+ <5577AC03.9060909@cn.fujitsu.com>
+ <1433928078.14092.1.camel@sauron.fi.intel.com>
+In-Reply-To: <1433928078.14092.1.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, adrian.hunter@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- Hi,
+On 06/10/2015 05:21 PM, Artem Bityutskiy wrote:
+> On Wed, 2015-06-10 at 11:16 +0800, Dongsheng Yang wrote:
+>> Therefore, I introduced a new option named as force_atime in ubifs.
+>> That's a ubifs-dependent opiton and it works as a main switch, in
+>> a higher level compared with atime and noatime. If force_atime, we
+>> support the atime-related flags. Otherwise, we don't care about all of
+>> them in flags and don't support atime anyway.
+>
+> How bad is it to just default to relatime like other file-systems do,
+> comparing to what we have now?
 
- We have an embedded linux (2.6) system. Since the past few months, we
-have been seeing a corruption of the log filesystem.
- The filesystem is using mtd5 device.
- The error looks like this;
- user.notice kernel: klogd started: BusyBox v1.20.0 (2012-09-18 17:42:52 MST)
+Ha, yes, that's a problem. I read it from wiki that the author think
+it's bad for ubifs. But I did not do a measure about it.
 
- Jan  1 00:00:05 user.debug kernel: 00001fa0: 00000000 00000000
-00000000 00000000 00000000 00000000 00000000 00000000
-................................
- Jan  1 00:00:05 user.debug kernel: 00001fc0: 00000000 00000000
-00000000 00000000 00000000 00000000 00000000 00000000
-................................
- Jan  1 00:00:05 user.debug kernel: 00001fe0: 00000000 00000000
-00000000 00000000 00000000 00000000 00000000 00000000
-................................
- *Jan  1 00:00:05 user.err kernel: UBIFS error (pid 1110):
-ubifs_recover_leb: LEB 24 scanning failed*
+In theory, yes, lots of writing would damage the flash. So I think
+just make it optional to user is a flexible way to do it. Even we
+want to make the default to relatime, I think it's better to keep
+the compatibility for a period and provide a force_atime to user.
 
- Is there a way to retrieve data from the partition? How do we fix this error?
-
- Please help.
-
- Thanks and regards,
- Smitha.
+When lots of users said "okey, we are mostly choosing force_atime in our
+use cases.". I believe that's a safe way to make ubifs supporting
+atime by default.
+>
+> .
+>
