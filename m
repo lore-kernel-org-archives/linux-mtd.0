@@ -1,21 +1,21 @@
-Date: Wed, 10 Jun 2015 09:45:39 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roy Spliet <r.spliet@ultimaker.com>
-Subject: Re: [PATCH v2] mtd: nand: Sunxi calculate timing cfg
-Message-ID: <20150610094539.111f9baf@bbrezillon>
-In-Reply-To: <5577E783.8050900@ultimaker.com>
-References: <1433849498-3270-1-git-send-email-r.spliet@ultimaker.com>
- <20150609142308.0fd0952a@bbrezillon> <5576E7C2.10604@ultimaker.com>
- <20150609162007.7b19e8e2@bbrezillon>
- <5577E783.8050900@ultimaker.com>
+Received: from mail-vn0-x22e.google.com ([2607:f8b0:400c:c0f::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2amb-0001jp-E7
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 07:50:46 +0000
+Received: by vnbg1 with SMTP id g1so6658813vnb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 00:50:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
+In-Reply-To: <1433920119-16303-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+References: <1433920119-16303-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+Date: Wed, 10 Jun 2015 09:50:22 +0200
+Message-ID: <CAFLxGvx7epkW9OA5PotBWbQr-FH_9uCMUZAtRP0oX16WcyiWLQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: support for Toshiba BENAND (Built-in ECC NAND)
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Linux MTD <linux-mtd@lists.infradead.org>,
- Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Roy,
+On Wed, Jun 10, 2015 at 9:08 AM, KOBAYASHI Yoshitake
+<yoshitake.kobayashi@toshiba.co.jp> wrote:
+> This patch enables support for Toshiba BENAND.
+> Toshiba BENAND is a SLC NAND solution that automatically generates ECC
+> inside NAND chip. Newer generation SLC NAND devices of today need multi-bit
+> hardware ECC by NAND controller in SoC. BENAND solution is ECC free,
+> has high performance and backward compatibility in NAND chip trend.
 
-On Wed, 10 Jun 2015 09:30:11 +0200
-Roy Spliet <r.spliet@ultimaker.com> wrote:
+Do you have performance numbers?
+How fast is it compared to a decent HW ECC engine?
 
-> Hey Boris!
-> 
-> Op 09-06-15 om 16:20 schreef Boris Brezillon:
-> > On Tue, 09 Jun 2015 15:18:58 +0200
-> > Roy Spliet<r.spliet@ultimaker.com>  wrote:
-> >
-> >
-> >>   >> +
-> >>   >> +static s32 sunxi_nand_lookup_timing(const s32 *lut, lut, u32
-> >> period, u32 clk_period)
-> >>   > I'm not sure the period name is appropriate here, what you're actually
-> >>   > passing is the timing you're expecting.
-> >>   > How about renaming it 'min_timing'
-> >>
-> >> What it encodes is the minimum or maximum time or delay for given timing
-> >> parameter in picoseconds. Given this definition, I think period actually
-> >> describes the parameter better than "min_timing". Alternatively, I could go
-> >> for period_ps or perhaps timing_period_ps (with matching clk_period_ps).
-> > Hm, I don't agree here. From my POV, a period is something used to
-> > describe cyclic operations. If you take a clk, the period encodes the
-> > time required a clk cycle (a rising and a falling edge).
-> > Here the timings you're passing are not cyclic at all.
-> For the sake of argument: within a cyclic event (wave theory) you are 
-> quite right with
-> this definition: the period describes the time to complete one cycle (or 
-> oscillation).
-> However, in English[1] a period is simply a length of time, carrying no 
-> further
-> specification about any recurrence of events.
-> Having said that, you're the person who still has to look at this code 
-> three weeks from
-> now. I personally find "timing" a confusing name because it is more 
-> abstract than
-> what the value holds (the interval/period/duration of a memory "state"), 
-> but if you find
-> that clearer, it's your final call!
+Did you see my On-Die ECC series and Brian's comments on it?
+https://lkml.org/lkml/2015/3/25/310
+I suspect some of his comments will apply to you as well.
 
-You're right about the English definition of period, however, what
-bothers me here is that the clk_period is actually representing the
-time of clk cycle, while the period argument is not related at all
-with a cyclic event, and this can lead misinterpretations.
-Anyway, this is just a detail (but I'd still prefer duration over
-period ;-)).
+> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+> ---
+>  drivers/mtd/nand/Kconfig     |   16 ++++++++++++++++
+>  drivers/mtd/nand/Makefile    |    1 +
+>  drivers/mtd/nand/nand_base.c |   32 ++++++++++++++++++++++++++++++--
+>  include/linux/mtd/nand.h     |    3 +++
+>  4 files changed, 50 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 5897d8d..2f11d43 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -22,6 +22,22 @@ menuconfig MTD_NAND
+>
+>  if MTD_NAND
+>
+> +config MTD_NAND_BENAND
+> +       tristate
+> +       depends on MTD_NAND_BENAND_ENABLE
+> +       default MTD_NAND
+> +
+> +config MTD_NAND_BENAND_ENABLE
+> +       bool "Support for Toshiba BENAND (Built-in ECC NAND)"
+> +       default y
+> +       help
+> +               Toshiba BENAND is a SLC NAND solution that automatically
+> +               generates ECC inside NAND chip.
+> +               Newer generation SLC NAND devices of today need multi-bit
+> +               hardware ECC by NAND controller in SoC.
+> +               BENAND solution is ECC free, has high performance and
+> +               backward compatibility in NAND chip trend.
+> +
+>  config MTD_NAND_BCH
+>         tristate
+>         select BCH
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index 582bbd05..afd26f0 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -3,6 +3,7 @@
+>  #
+>
+>  obj-$(CONFIG_MTD_NAND)                 += nand.o
+> +obj-$(CONFIG_MTD_NAND_BENAND)  += nand_benand.o
 
-Best Regards,
-
-Boris
+nand_benand.c is not part of this patch.
+Forgot a git add? :-)
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+//richard
