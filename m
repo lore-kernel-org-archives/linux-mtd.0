@@ -1,14 +1,15 @@
-Received: from mail-wg0-x241.google.com ([2a00:1450:400c:c00::241])
+Received: from mail-wi0-x241.google.com ([2a00:1450:400c:c05::241])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mmv-0003j2-5z
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:54 +0000
-Received: by wggx12 with SMTP id x12so8978923wgg.3
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:33 -0700 (PDT)
+ id 1Z2mmu-0003iy-Di
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:52 +0000
+Received: by wivr20 with SMTP id r20so11946841wiv.1
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:30 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 23/60] mtd: nand: au1550nd: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:37 +0200
-Message-Id: <1433968754-10651-24-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 20/60] mtd: maps: rbtx4939-flash: show parent device in
+ sysfs
+Date: Wed, 10 Jun 2015 22:38:34 +0200
+Message-Id: <1433968754-10651-21-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,27 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where parent device symlinks aren't shown in sysfs.
+Fix a bug where mtd parent device symlinks aren't shown in sysfs.
 
 While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/au1550nd.c | 2 +-
+ drivers/mtd/maps/rbtx4939-flash.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
-index c0c3be1..08a130f 100644
---- a/drivers/mtd/nand/au1550nd.c
-+++ b/drivers/mtd/nand/au1550nd.c
-@@ -439,7 +439,7 @@ static int au1550nd_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
+index 5a7551a..18ee3614 100644
+--- a/drivers/mtd/maps/rbtx4939-flash.c
++++ b/drivers/mtd/maps/rbtx4939-flash.c
+@@ -96,7 +96,7 @@ static int rbtx4939_flash_probe(struct platform_device *dev)
+ 		err = -ENXIO;
+ 		goto err_out;
+ 	}
+-	info->mtd->owner = THIS_MODULE;
++	info->mtd.dev.parent = &dev->dev;
+ 	err = mtd_device_parse_register(info->mtd, NULL, NULL, pdata->parts,
+ 					pdata->nr_parts);
  
- 	this = &ctx->chip;
- 	ctx->info.priv = this;
--	ctx->info.owner = THIS_MODULE;
-+	ctx->info.dev.parent = &pdev->dev;
- 
- 	/* figure out which CS# r->start belongs to */
- 	cs = find_nand_cs(r->start);
 -- 
 2.4.0
