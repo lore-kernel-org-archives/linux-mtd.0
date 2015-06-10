@@ -1,14 +1,14 @@
-Received: from mail-wi0-x241.google.com ([2a00:1450:400c:c05::241])
+Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mnM-0005Ir-37
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:20 +0000
-Received: by wivz2 with SMTP id z2so11959944wiv.0
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:59 -0700 (PDT)
+ id 1Z2mnD-0005FV-Cb
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:11 +0000
+Received: by wibbw19 with SMTP id bw19so11975341wib.2
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:51 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 46/60] mtd: nand: plat_nand: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:39:00 +0200
-Message-Id: <1433968754-10651-47-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 39/60] mtd: nand: mpc5121_nfc: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:53 +0200
+Message-Id: <1433968754-10651-40-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -24,26 +24,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Fix a bug where parent device symlinks aren't shown in sysfs.
 
-While at it, make use of the default owner and name set by mtdcore.
-
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/plat_nand.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/nand/mpc5121_nfc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 4535c26..72e321e 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -61,8 +61,7 @@ static int plat_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index 1f12e5b..b97c371 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -659,6 +659,7 @@ static int mpc5121_nfc_probe(struct platform_device *op)
+ 	chip = &prv->chip;
  
- 	data->chip.priv = &data;
- 	data->mtd.priv = &data->chip;
--	data->mtd.owner = THIS_MODULE;
--	data->mtd.name = dev_name(&pdev->dev);
-+	data->mtd.dev.parent = &pdev->dev;
+ 	mtd->priv = chip;
++	mtd->dev.parent = dev;
+ 	chip->priv = prv;
+ 	prv->dev = dev;
  
- 	data->chip.IO_ADDR_R = data->io_base;
- 	data->chip.IO_ADDR_W = data->io_base;
 -- 
 2.4.0
