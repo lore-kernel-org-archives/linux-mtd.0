@@ -1,14 +1,15 @@
-Received: from mail-wg0-x243.google.com ([2a00:1450:400c:c00::243])
+Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mmV-00006Y-9s
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:29 +0000
-Received: by wggy19 with SMTP id y19so8933015wgg.0
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:05 -0700 (PDT)
+ id 1Z2mmX-000076-PJ
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:30 +0000
+Received: by wivr20 with SMTP id r20so11943485wiv.1
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:10 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 02/60] mtd: core: set some defaults when dev.parent is set
-Date: Wed, 10 Jun 2015 22:38:16 +0200
-Message-Id: <1433968754-10651-3-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 03/60] mtd: devices: bcm47xxflash: show parent device in
+ sysfs
+Date: Wed, 10 Jun 2015 22:38:17 +0200
+Message-Id: <1433968754-10651-4-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,46 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If a parent device is set, add_mtd_device() has enough knowledge to fill
-in some sane default values for the module name and owner. Do so if they
-aren't already set.
+Fix a bug where mtd parent device symlinks aren't shown in sysfs.
+
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
-
 ---
-v1..v2
-  - Apparently we can get here without a driver set, causing a NULL
-    dereference[0]. Check that a driver is there before copying the
-    owner. It does mean that parent devices that don't seem to be
-    having a driver lying around still can't produce an owner. I suppose
-    the effect is not much different from it was before.
-  - Change wording of debug message to mention the fact we're talking
-    about parent device symlinks here.
+ drivers/mtd/devices/bcm47xxsflash.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-[0] https://lkml.org/lkml/2015/4/16/15
----
- drivers/mtd/mtdcore.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index d7967cc..0bd1761 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -413,6 +413,15 @@ int add_mtd_device(struct mtd_info *mtd)
- 	mtd->erasesize_mask = (1 << mtd->erasesize_shift) - 1;
- 	mtd->writesize_mask = (1 << mtd->writesize_shift) - 1;
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 3d008a9..347bb83 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -237,13 +237,14 @@ static int bcm47xxsflash_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return 0;
+ }
  
-+	if (mtd->dev.parent) {
-+		if (!mtd->owner && mtd->dev.parent->driver)
-+			mtd->owner = mtd->dev.parent->driver->owner;
-+		if (!mtd->name)
-+			mtd->name = dev_name(mtd->dev.parent);
-+	} else {
-+		pr_debug("mtd device won't show a device symlink in sysfs\n");
-+	}
-+
- 	/* Some chips always power up locked. Unlock them now */
- 	if ((mtd->flags & MTD_WRITEABLE) && (mtd->flags & MTD_POWERUP_LOCK)) {
- 		error = mtd_unlock(mtd, 0, mtd->size);
+-static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
++static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s,
++				   struct device *dev)
+ {
+ 	struct mtd_info *mtd = &b47s->mtd;
+ 
+ 	mtd->priv = b47s;
++	mtd->dev.parent = dev;
+ 	mtd->name = "bcm47xxsflash";
+-	mtd->owner = THIS_MODULE;
+ 
+ 	mtd->type = MTD_NORFLASH;
+ 	mtd->flags = MTD_CAP_NORFLASH;
+@@ -300,7 +301,7 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 	b47s->blocksize = sflash->blocksize;
+ 	b47s->numblocks = sflash->numblocks;
+ 	b47s->size = sflash->size;
+-	bcm47xxsflash_fill_mtd(b47s);
++	bcm47xxsflash_fill_mtd(b47s, &pdev->dev);
+ 
+ 	err = mtd_device_parse_register(&b47s->mtd, probes, NULL, NULL, 0);
+ 	if (err) {
 -- 
 2.4.0
