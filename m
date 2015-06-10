@@ -1,21 +1,36 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2fWU-0002dc-H1
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 12:54:27 +0000
-Message-ID: <55783369.2020109@codeaurora.org>
-Date: Wed, 10 Jun 2015 15:54:01 +0300
-From: "Brokhman, Tanya" <tlinder@codeaurora.org>
+Received: from smtprelay0133.hostedemail.com ([216.40.44.133]
+ helo=smtprelay.hostedemail.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2gfi-0007zA-O4
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 14:08:03 +0000
+Date: Wed, 10 Jun 2015 10:07:29 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH 09/18] kthread: Make it easier to correctly sleep in
+ iterant kthreads
+Message-ID: <20150610100729.6a674c15@gandalf.local.home>
+In-Reply-To: <20150610090724.GD3644@twins.programming.kicks-ass.net>
+References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
+ <1433516477-5153-10-git-send-email-pmladek@suse.cz>
+ <20150605161021.GJ19282@twins.programming.kicks-ass.net>
+ <20150608134810.3abd862b@gandalf.local.home>
+ <20150610090724.GD3644@twins.programming.kicks-ass.net>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>,
- Smitha Rathnam <rathnam.smitha@gmail.com>
-Subject: Re: Trouble with UBIFS
-References: <CAC7eWMUvdiNFiiGqSkmv1qwFDUa52VZCCQds_BdnqocoskN+Qg@mail.gmail.com>
- <CAFLxGvzA8N4PUK_7-jM9FcnrqLnyOsNcomfLOSMMGKc5Ed5D9Q@mail.gmail.com>
- <557825BA.6030104@codeaurora.org> <557830D4.3000301@nod.at>
-In-Reply-To: <557830D4.3000301@nod.at>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
+ Richard Weinberger <richard@nod.at>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Oleg Nesterov <oleg@redhat.com>, Petr Mladek <pmladek@suse.cz>,
+ linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
+ Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
+ live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Anna Schumaker <anna.schumaker@netapp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +40,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 10 Jun 2015 11:07:24 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
+> > Not to mention, tasks in TASK_UNINTERRUPTIBLE state for too long will
+> > trigger hung task detection.
+> 
+> Right, and I had not considered that, but it turns out the hung_task
+> detector checks p->state == TASK_UNINTERRUPTIBLE, so TASK_IDLE is indeed
+> safe from that.
 
-On 6/10/2015 3:43 PM, Richard Weinberger wrote:
-> Tanya,
->
-> Am 10.06.2015 um 13:55 schrieb Brokhman, Tanya:
->>> Retrieving data from the filesystem is not easy, it depends how much UBIFS
->>> is corrupted.
->>> What I do in such cases is dumping all nodes and running them thought a
->>> semi-automated script which can deal with UBIFS.
->> Could you please share the script? I'm facing same issues at the moment (debugging ubifs corruption). I have a binary dump of the partition. Looking for the most user-friendly tool
->> to look at it.
-> I'll share it as soon it is a) kind of user friendly and b) all legal stuff has been sorted out.
-> My plan is turning it into something like a fsck.ubfs with a "fuzzy dump" mode.
-great. thank you!
+Also, I would assume that TASK_IDLE only makes sense for kernel
+threads, I wonder if we should add an assertion in schedule that
+triggers if a task is scheduling with TASK_IDLE and is not a kernel
+thread (has its own mm?)
 
--Tanya
-
->
-> Thanks,
-> //richard
+-- Steve
