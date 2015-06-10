@@ -1,14 +1,14 @@
-Received: from mail-wg0-x242.google.com ([2a00:1450:400c:c00::242])
+Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mnP-0005Lr-GQ
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:24 +0000
-Received: by wggy19 with SMTP id y19so8971496wgg.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:40:06 -0700 (PDT)
+ id 1Z2mnN-0005LL-Ca
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:21 +0000
+Received: by wibbw19 with SMTP id bw19so11977696wib.2
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:40:03 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 53/60] mtd: nand: sunxi_nand: drop owner assignment
-Date: Wed, 10 Jun 2015 22:39:07 +0200
-Message-Id: <1433968754-10651-54-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 51/60] mtd: nand: sharpsl: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:39:05 +0200
+Message-Id: <1433968754-10651-52-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,24 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Owner is automatically set by mtdcore. Make use of that.
+Fix a bug where parent device symlinks aren't shown in sysfs.
+
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/sunxi_nand.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/sharpsl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 6f93b29..14f5c50 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -1245,7 +1245,6 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
- 	mtd = &chip->mtd;
- 	mtd->dev.parent = dev;
- 	mtd->priv = nand;
--	mtd->owner = THIS_MODULE;
+diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
+index 842c47a..082b600 100644
+--- a/drivers/mtd/nand/sharpsl.c
++++ b/drivers/mtd/nand/sharpsl.c
+@@ -144,7 +144,7 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
  
- 	ret = nand_scan_ident(mtd, nsels, NULL);
- 	if (ret)
+ 	/* Link the private data with the MTD structure */
+ 	sharpsl->mtd.priv = this;
+-	sharpsl->mtd.owner = THIS_MODULE;
++	sharpsl->mtd.dev.parent = &pdev->dev;
+ 
+ 	platform_set_drvdata(pdev, sharpsl);
+ 
 -- 
 2.4.0
