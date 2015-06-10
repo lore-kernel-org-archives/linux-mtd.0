@@ -1,14 +1,14 @@
-Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
+Received: from mail-wi0-x243.google.com ([2a00:1450:400c:c05::243])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mnD-0005FV-Cb
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:11 +0000
-Received: by wibbw19 with SMTP id bw19so11975341wib.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:51 -0700 (PDT)
+ id 1Z2mn8-0005Eh-2P
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:06 +0000
+Received: by wivz2 with SMTP id z2so11958082wiv.0
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:49 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 39/60] mtd: nand: mpc5121_nfc: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:53 +0200
-Message-Id: <1433968754-10651-40-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 37/60] mtd: nand: jz4740_nand: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:51 +0200
+Message-Id: <1433968754-10651-38-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -24,22 +24,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Fix a bug where parent device symlinks aren't shown in sysfs.
 
+While at it, make use of the default owner value set by mtdcore.
+
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/mpc5121_nfc.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/jz4740_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index 1f12e5b..b97c371 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -659,6 +659,7 @@ static int mpc5121_nfc_probe(struct platform_device *op)
- 	chip = &prv->chip;
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+index ebf2cce..dc4e844 100644
+--- a/drivers/mtd/nand/jz4740_nand.c
++++ b/drivers/mtd/nand/jz4740_nand.c
+@@ -434,7 +434,7 @@ static int jz_nand_probe(struct platform_device *pdev)
+ 	mtd		= &nand->mtd;
+ 	chip		= &nand->chip;
+ 	mtd->priv	= chip;
+-	mtd->owner	= THIS_MODULE;
++	mtd->dev.parent = &pdev->dev;
+ 	mtd->name	= "jz4740-nand";
  
- 	mtd->priv = chip;
-+	mtd->dev.parent = dev;
- 	chip->priv = prv;
- 	prv->dev = dev;
- 
+ 	chip->ecc.hwctl		= jz_nand_hwctl;
 -- 
 2.4.0
