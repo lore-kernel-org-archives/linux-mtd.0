@@ -1,14 +1,14 @@
-Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
+Received: from mail-wi0-x243.google.com ([2a00:1450:400c:c05::243])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mnN-0005LL-Ca
+ id 1Z2mnN-0005Jc-2j
  for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:21 +0000
-Received: by wibbw19 with SMTP id bw19so11977696wib.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:40:03 -0700 (PDT)
+Received: by wivr20 with SMTP id r20so11952210wiv.1
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:40:01 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 51/60] mtd: nand: sharpsl: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:39:05 +0200
-Message-Id: <1433968754-10651-52-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 48/60] mtd: nand: r852: drop owner assignment
+Date: Wed, 10 Jun 2015 22:39:02 +0200
+Message-Id: <1433968754-10651-49-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,27 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where parent device symlinks aren't shown in sysfs.
-
-While at it, make use of the default owner value set by mtdcore.
+Owner is automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/sharpsl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/r852.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-index 842c47a..082b600 100644
---- a/drivers/mtd/nand/sharpsl.c
-+++ b/drivers/mtd/nand/sharpsl.c
-@@ -144,7 +144,7 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
+index baea83f..2541a94 100644
+--- a/drivers/mtd/nand/r852.c
++++ b/drivers/mtd/nand/r852.c
+@@ -641,7 +641,6 @@ static int r852_register_nand_device(struct r852_device *dev)
  
- 	/* Link the private data with the MTD structure */
- 	sharpsl->mtd.priv = this;
--	sharpsl->mtd.owner = THIS_MODULE;
-+	sharpsl->mtd.dev.parent = &pdev->dev;
+ 	WARN_ON(dev->card_registred);
  
- 	platform_set_drvdata(pdev, sharpsl);
+-	dev->mtd->owner = THIS_MODULE;
+ 	dev->mtd->priv = dev->chip;
+ 	dev->mtd->dev.parent = &dev->pci_dev->dev;
  
 -- 
 2.4.0
