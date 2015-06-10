@@ -1,14 +1,14 @@
-Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
+Received: from mail-wg0-x242.google.com ([2a00:1450:400c:c00::242])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mmy-0005AG-Cj
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:57 +0000
-Received: by wivz2 with SMTP id z2so11955993wiv.0
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:36 -0700 (PDT)
+ id 1Z2mml-000579-Fl
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:44 +0000
+Received: by wggy19 with SMTP id y19so8965535wgg.2
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:22 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 25/60] mtd: nand: bf5xx_nand: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:39 +0200
-Message-Id: <1433968754-10651-26-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 13/60] mtd: maps: ixp4xx: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:27 +0200
+Message-Id: <1433968754-10651-14-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,27 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where parent device symlinks aren't shown in sysfs.
+Fix a bug where mtd parent device symlinks aren't shown in sysfs.
 
 While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/bf5xx_nand.c | 2 +-
+ drivers/mtd/maps/ixp4xx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 4d8d4ba..acec344 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -782,7 +782,7 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
- 	/* initialise mtd info data struct */
- 	mtd 		= &info->mtd;
- 	mtd->priv	= chip;
--	mtd->owner	= THIS_MODULE;
-+	mtd->dev.parent = &pdev->dev;
+diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
+index b443074..e3180d5 100644
+--- a/drivers/mtd/maps/ixp4xx.c
++++ b/drivers/mtd/maps/ixp4xx.c
+@@ -226,7 +226,7 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
+ 		err = -ENXIO;
+ 		goto Error;
+ 	}
+-	info->mtd->owner = THIS_MODULE;
++	info->mtd->dev.parent = &dev->dev;
  
- 	/* initialise the hardware */
- 	err = bf5xx_nand_hw_init(info);
+ 	/* Use the fast version */
+ 	info->map.write = ixp4xx_write16;
 -- 
 2.4.0
