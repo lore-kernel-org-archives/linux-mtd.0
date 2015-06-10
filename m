@@ -1,14 +1,14 @@
-Received: from mail-wg0-x241.google.com ([2a00:1450:400c:c00::241])
+Received: from mail-wg0-x242.google.com ([2a00:1450:400c:c00::242])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mmq-0003iu-GK
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:48 +0000
-Received: by wggx12 with SMTP id x12so8978096wgg.3
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:26 -0700 (PDT)
+ id 1Z2mml-0003if-CR
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:43 +0000
+Received: by wggx12 with SMTP id x12so8978068wgg.1
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:21 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 16/60] mtd: maps: physmap: drop owner assignment
-Date: Wed, 10 Jun 2015 22:38:30 +0200
-Message-Id: <1433968754-10651-17-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 12/60] mtd: maps: intel_vr_nor: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:26 +0200
+Message-Id: <1433968754-10651-13-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,24 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Owner is automatically set by mtdcore. Make use of that.
+Fix a bug where mtd parent device symlinks aren't shown in sysfs.
+
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/maps/physmap.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/maps/intel_vr_nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index 4305fd6..cc2adbb 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -167,7 +167,6 @@ static int physmap_flash_probe(struct platform_device *dev)
- 		} else {
- 			devices_found++;
- 		}
--		info->mtd[i]->owner = THIS_MODULE;
- 		info->mtd[i]->dev.parent = &dev->dev;
- 	}
+diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
+index 5ab71f0..8bf7977 100644
+--- a/drivers/mtd/maps/intel_vr_nor.c
++++ b/drivers/mtd/maps/intel_vr_nor.c
+@@ -90,7 +90,7 @@ static int vr_nor_mtd_setup(struct vr_nor_mtd *p)
+ 	if (!p->info)
+ 		return -ENODEV;
  
+-	p->info->owner = THIS_MODULE;
++	p->info->dev.parent = &p->dev->dev;
+ 
+ 	return 0;
+ }
 -- 
 2.4.0
