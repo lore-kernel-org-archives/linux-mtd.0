@@ -1,14 +1,14 @@
-Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
+Received: from mail-wi0-x243.google.com ([2a00:1450:400c:c05::243])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mnM-0003qG-Ck
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:20 +0000
-Received: by wibbw19 with SMTP id bw19so11977453wib.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:40:03 -0700 (PDT)
+ id 1Z2mnN-0003qh-Eh
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:21 +0000
+Received: by wivr20 with SMTP id r20so11953042wiv.1
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:40:04 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 50/60] mtd: nand: sh_flctl: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:39:04 +0200
-Message-Id: <1433968754-10651-51-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 52/60] mtd: nand: socrates_nand: drop owner assignment
+Date: Wed, 10 Jun 2015 22:39:06 +0200
+Message-Id: <1433968754-10651-53-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,24 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where parent device symlinks aren't shown in sysfs.
+Owner is automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/sh_flctl.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/socrates_nand.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index c3ce81c..2e4f762 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -1123,6 +1123,7 @@ static int flctl_probe(struct platform_device *pdev)
- 	flctl_mtd = &flctl->mtd;
- 	nand = &flctl->chip;
- 	flctl_mtd->priv = nand;
-+	flctl_mtd->dev.parent = &pdev->dev;
- 	flctl->pdev = pdev;
- 	flctl->hwecc = pdata->has_hwecc;
- 	flctl->holden = pdata->use_holden;
+diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
+index d710622..b94f534 100644
+--- a/drivers/mtd/nand/socrates_nand.c
++++ b/drivers/mtd/nand/socrates_nand.c
+@@ -167,7 +167,6 @@ static int socrates_nand_probe(struct platform_device *ofdev)
+ 	nand_chip->priv = host;		/* link the private data structures */
+ 	mtd->priv = nand_chip;
+ 	mtd->name = "socrates_nand";
+-	mtd->owner = THIS_MODULE;
+ 	mtd->dev.parent = &ofdev->dev;
+ 	ppdata.of_node = ofdev->dev.of_node;
+ 
 -- 
 2.4.0
