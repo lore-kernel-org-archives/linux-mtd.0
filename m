@@ -1,14 +1,15 @@
-Received: from mail-wg0-x243.google.com ([2a00:1450:400c:c00::243])
+Received: from mail-wg0-x244.google.com ([2a00:1450:400c:c00::244])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mn3-0003k8-SV
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:02 +0000
-Received: by wggy19 with SMTP id y19so8967825wgg.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:40 -0700 (PDT)
+ id 1Z2mn0-0003jZ-7B
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:59 +0000
+Received: by wggy19 with SMTP id y19so8937199wgg.0
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:39 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 29/60] mtd: nand: docg4: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:43 +0200
-Message-Id: <1433968754-10651-30-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 27/60] mtd: nand: davinci_nand: drop owner and name
+ assignment
+Date: Wed, 10 Jun 2015 22:38:41 +0200
+Message-Id: <1433968754-10651-28-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -22,27 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a bug where parent device symlinks aren't shown in sysfs.
-
-While at it, make use of the default owner value set by mtdcore.
+Owner and name are automatically set by mtdcore. Make use of that.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/docg4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/davinci_nand.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index e5d7bca..510c12d 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -1316,7 +1316,7 @@ static int __init probe_docg4(struct platform_device *pdev)
- 	doc = (struct docg4_priv *) (nand + 1);
- 	mtd->priv = nand;
- 	nand->priv = doc;
--	mtd->owner = THIS_MODULE;
-+	mtd->dev.parent = &pdev->dev;
- 	doc->virtadr = virtadr;
- 	doc->dev = dev;
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index feb6d18..78e0c4d 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -657,9 +657,6 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 	info->vaddr		= vaddr;
  
+ 	info->mtd.priv		= &info->chip;
+-	info->mtd.name		= dev_name(&pdev->dev);
+-	info->mtd.owner		= THIS_MODULE;
+-
+ 	info->mtd.dev.parent	= &pdev->dev;
+ 
+ 	info->chip.IO_ADDR_R	= vaddr;
 -- 
 2.4.0
