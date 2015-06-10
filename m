@@ -1,15 +1,17 @@
-Received: from m15-9.126.com ([220.181.15.9])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2TaE-0002RD-Vk
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 00:09:33 +0000
-Date: Wed, 10 Jun 2015 07:38:10 +0800 (CST)
-From: cyl <cyl665236@126.com>
-To: "mtd mailing list" <linux-mtd@lists.infradead.org>
-Subject: ubifs problem
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2Uom-00063t-Cx
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 01:28:40 +0000
+Message-ID: <557791DF.9040501@huawei.com>
+Date: Wed, 10 Jun 2015 09:24:47 +0800
+From: Sheng Yong <shengyong1@huawei.com>
 MIME-Version: 1.0
-Message-ID: <2b88f8ae.15caa.14ddab0368e.Coremail.cyl665236@126.com>
+To: cyl <cyl665236@126.com>, mtd mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: ubifs problem
+References: <2b88f8ae.15caa.14ddab0368e.Coremail.cyl665236@126.com>
+In-Reply-To: <2b88f8ae.15caa.14ddab0368e.Coremail.cyl665236@126.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,245 +21,994 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CkhpClRoZSBrZXJuZWwgSW0gdXNpbmcgaXMgMi42LjM1LjMgwqAuIMKgU29tZXRpbWVzIHdoZW4g
-SSByZXN0YXJ0IGl0ICwgdGhlIGtlcm5lbCBwYW5pY3MgbGlrZSB0aGlzOgoKCgoKVS1Cb290IDIw
-MDkuMDggKERlYyAwMyAyMDE0IC0gMjE6MDQ6MjApCgoKRnJlZXNjYWxlIGkuTVgyOCBmYW1pbHkK
-CgpDUFU6IMKgIDQ1NCBNSHoKCgpCVVM6IMKgIDE1MSBNSHoKCgpFTUk6IMKgIDIwNSBNSHoKCgpH
-UE1JOiDCoCAyNCBNSHoKCgpEUkFNOiDCoDEyOCBNQgoKCk5BTkQ6IMKgTWFudWZhY3R1cmVyIMKg
-IMKgIMKgOiBTYW1zdW5nICgweGVjKQoKCkRldmljZSBDb2RlIMKgIMKgIMKgIDogMHhkMwoKCkNl
-bGwgVGVjaG5vbG9neSDCoCA6IE1MQwoKCkNoaXAgU2l6ZSDCoCDCoCDCoCDCoCA6IDEgR2lCCgoK
-UGFnZXMgcGVyIEJsb2NrIMKgIDogMTI4CgoKUGFnZSBHZW9tZXRyeSDCoCDCoCA6IDIwNDgrNjQK
-CgpFQ0MgU3RyZW5ndGggwqAgwqAgwqA6IDQgYml0cwoKCkVDQyBTaXplIMKgIMKgIMKgIMKgIMKg
-OiA1MTIgQgoKCkRhdGEgU2V0dXAgVGltZSDCoCA6IDIwIG5zCgoKRGF0YSBIb2xkIFRpbWUgwqAg
-wqA6IDE1IG5zCgoKQWRkcmVzcyBTZXR1cCBUaW1lOiAyMCBucwoKCkdQTUkgU2FtcGxlIERlbGF5
-IDogNiBucwoKCnRSRUEgwqAgwqAgwqAgwqAgwqAgwqAgwqA6IFVua25vd24KCgp0UkxPSCDCoCDC
-oCDCoCDCoCDCoCDCoCA6IFVua25vd24KCgp0UkhPSCDCoCDCoCDCoCDCoCDCoCDCoCA6IFVua25v
-d24KCgpEZXNjcmlwdGlvbiDCoCDCoCDCoCA6IEs5RzhHMDhVME0sIEs5SEFHMDhVMU0KCgoxMDI0
-IE1pQgoKCioqKiBXYXJuaW5nIC0gYmFkIENSQyBvciBOQU5ELCB1c2luZyBkZWZhdWx0IGVudmly
-b25tZW50CgoKCgpJbjogwqAgwqBzZXJpYWwKCgpPdXQ6IMKgIHNlcmlhbAoKCkVycjogwqAgc2Vy
-aWFsCgoKTmV0OiDCoCBnb3QgTUFDIGFkZHJlc3MgZnJvbSBJSU06IDAwOjA0OjAwOjAwOjAwOjAw
-CgoKRkVDMAoKCkhpdCBhbnkga2V5IHRvIHN0b3AgYXV0b2Jvb3Q6IMKgMyAgMiAgMSAgMMKgCgoK
-CgpOQU5EIHJlYWQ6IGRldmljZSAwIG9mZnNldCAweDMwMDAwMCwgc2l6ZSAweDMwMDAwMAoKCsKg
-MzE0NTcyOCBieXRlcyByZWFkOiBPSwoKCiMjIEJvb3Rpbmcga2VybmVsIGZyb20gTGVnYWN5IElt
-YWdlIGF0IDQyMDAwMDAwIC4uLgoKCsKgIMKgSW1hZ2UgTmFtZTogwqAgTGludXgtMi42LjM1LjMt
-NjcwLWc5MTQ1NThlCgoKwqAgwqBJbWFnZSBUeXBlOiDCoCBBUk0gTGludXggS2VybmVsIEltYWdl
-ICh1bmNvbXByZXNzZWQpCgoKwqAgwqBEYXRhIFNpemU6IMKgIMKgMjY0NzMyMCBCeXRlcyA9IMKg
-Mi41IE1CCgoKwqAgwqBMb2FkIEFkZHJlc3M6IDQwMDA4MDAwCgoKwqAgwqBFbnRyeSBQb2ludDog
-wqA0MDAwODAwMAoKCsKgIMKgVmVyaWZ5aW5nIENoZWNrc3VtIC4uLiBPSwoKCsKgIMKgTG9hZGlu
-ZyBLZXJuZWwgSW1hZ2UgLi4uIE9LCgoKT0sKCgoKClN0YXJ0aW5nIGtlcm5lbCAuLi4KCgpVbmNv
-bXByZXNzaW5nIExpbnV4Li4uIGRvbmUsIGJvb3RpbmcgdGhlIGtlcm5lbC4KTGludXggdmVyc2lv
-biAyLjYuMzUuMy02NzAtZzkxNDU1OGUgKGFhYUB1YnVudHUpIChnY2MgdmVyc2lvbiA0LjQuNCAo
-NC40LjRfMDkuMDYuMjAxMCkgKSAjNzYgU3VuIE1heSAzIDE0OjU4OjMzIFBEVCAyMDE1CgoKQ1BV
-OiBBUk05MjZFSi1TIFs0MTA2OTI2NV0gcmV2aXNpb24gNSAoQVJNdjVURUopLCBjcj0wMDA1MzE3
-NwoKCkNQVTogVklWVCBkYXRhIGNhY2hlLCBWSVZUIGluc3RydWN0aW9uIGNhY2hlCgoKTWFjaGlu
-ZTogRnJlZXNjYWxlIE1YMjhFVksgYm9hcmQKCgpNZW1vcnkgcG9saWN5OiBFQ0MgZGlzYWJsZWQs
-IERhdGEgY2FjaGUgd3JpdGViYWNrCgoKQnVpbHQgMSB6b25lbGlzdHMgaW4gWm9uZSBvcmRlciwg
-bW9iaWxpdHkgZ3JvdXBpbmcgb24uIMKgVG90YWwgcGFnZXM6IDMyNTEyCgoKS2VybmVsIGNvbW1h
-bmQgbGluZTogY29uc29sZT10dHlBTTAsMTE1MjAwIHViaS5tdGQ9MSByb290PXViaTA6cm9vdGZz
-MCByb290ZnN0eXBlPXViaWZzIGdwbWkgcncgcm9vdHdhaXQgaXA9bm9uZQoKClBJRCBoYXNoIHRh
-YmxlIGVudHJpZXM6IDUxMiAob3JkZXI6IC0xLCAyMDQ4IGJ5dGVzKQoKCkRlbnRyeSBjYWNoZSBo
-YXNoIHRhYmxlIGVudHJpZXM6IDE2Mzg0IChvcmRlcjogNCwgNjU1MzYgYnl0ZXMpCgoKSW5vZGUt
-Y2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA4MTkyIChvcmRlcjogMywgMzI3NjggYnl0ZXMpCgoK
-TWVtb3J5OiAxMjhNQiA9IDEyOE1CIHRvdGFsCgoKTWVtb3J5OiAxMjQxMzZrLzEyNDEzNmsgYXZh
-aWxhYmxlLCA2OTM2ayByZXNlcnZlZCwgMEsgaGlnaG1lbQoKClZpcnR1YWwga2VybmVsIG1lbW9y
-eSBsYXlvdXQ6CgoKwqAgwqAgdmVjdG9yIMKgOiAweGZmZmYwMDAwIC0gMHhmZmZmMTAwMCDCoCAo
-IMKgIDQga0IpCgoKwqAgwqAgZml4bWFwIMKgOiAweGZmZjAwMDAwIC0gMHhmZmZlMDAwMCDCoCAo
-IDg5NiBrQikKCgrCoCDCoCBETUEgwqAgwqAgOiAweGZkZTAwMDAwIC0gMHhmZmUwMDAwMCDCoCAo
-IMKgMzIgTUIpCgoKwqAgwqAgdm1hbGxvYyA6IDB4Yzg4MDAwMDAgLSAweGYwMDAwMDAwIMKgICgg
-NjMyIE1CKQoKCsKgIMKgIGxvd21lbSDCoDogMHhjMDAwMDAwMCAtIDB4YzgwMDAwMDAgwqAgKCAx
-MjggTUIpCgoKwqAgwqAgbW9kdWxlcyA6IDB4YmYwMDAwMDAgLSAweGMwMDAwMDAwIMKgICggwqAx
-NiBNQikKCgrCoCDCoCDCoCAuaW5pdCA6IDB4YzAwMDgwMDAgLSAweGMwMDhjMDAwIMKgICggNTI4
-IGtCKQoKCsKgIMKgIMKgIC50ZXh0IDogMHhjMDA4YzAwMCAtIDB4YzA1MjMwMDAgwqAgKDQ3MDAg
-a0IpCgoKwqAgwqAgwqAgLmRhdGEgOiAweGMwNTI0MDAwIC0gMHhjMDU2MjYyMCDCoCAoIDI1MCBr
-QikKCgpTTFVCOiBHZW5zbGFicz0xMSwgSFdhbGlnbj0zMiwgT3JkZXI9MC0zLCBNaW5PYmplY3Rz
-PTAsIENQVXM9MSwgTm9kZXM9MQoKCkhpZXJhcmNoaWNhbCBSQ1UgaW1wbGVtZW50YXRpb24uCgoK
-CVJDVS1iYXNlZCBkZXRlY3Rpb24gb2Ygc3RhbGxlZCBDUFVzIGlzIGRpc2FibGVkLgoKCglWZXJi
-b3NlIHN0YWxsZWQtQ1BVcyBkZXRlY3Rpb24gaXMgZGlzYWJsZWQuCgoKTlJfSVJRUzoyODgKCgpD
-b25zb2xlOiBjb2xvdXIgZHVtbXkgZGV2aWNlIDgweDMwCgoKY29uc29sZSBbdHR5QU0wXSBlbmFi
-bGVkCgoKQ2FsaWJyYXRpbmcgZGVsYXkgbG9vcC4uLiAyMjYuMDkgQm9nb01JUFMgKGxwaj0xMTMw
-NDk2KQoKCnBpZF9tYXg6IGRlZmF1bHQ6IDMyNzY4IG1pbmltdW06IDMwMQoKClNlY3VyaXR5IEZy
-YW1ld29yayBpbml0aWFsaXplZAoKClNFTGludXg6IMKgSW5pdGlhbGl6aW5nLgoKCk1vdW50LWNh
-Y2hlIGhhc2ggdGFibGUgZW50cmllczogNTEyCgoKQ1BVOiBUZXN0aW5nIHdyaXRlIGJ1ZmZlciBj
-b2hlcmVuY3k6IG9rCgoKcmVndWxhdG9yOiBjb3JlIHZlcnNpb24gMC41CgoKTkVUOiBSZWdpc3Rl
-cmVkIHByb3RvY29sIGZhbWlseSAxNgoKCnJlZ3VsYXRvcjogdmRkZDogODAwIDwtLT4gMTU3NSBt
-ViBhdCAxNTAwIG1WIGZhc3Qgbm9ybWFswqAKCgpyZWd1bGF0b3I6IHZkZGRibzogODAwIDwtLT4g
-MTU3NSBtViBmYXN0IG5vcm1hbMKgCgoKcmVndWxhdG9yOiB2ZGRhOiAxNTAwIDwtLT4gMjI3NSBt
-ViBhdCAxODAwIG1WIGZhc3Qgbm9ybWFswqAKCgp2ZGRpbyA9IDMzODAwMDAsIHZhbD0xMAoKCnJl
-Z3VsYXRvcjogdmRkaW86IDI4ODAgPC0tPiAzNjgwIG1WIGF0IDMzODAgbVYgZmFzdCBub3JtYWzC
-oAoKCnJlZ3VsYXRvcjogb3ZlcmFsbF9jdXJyZW50OiBmYXN0IG5vcm1hbMKgCgoKcmVndWxhdG9y
-OiB2YnVzNXY6wqAKCgpyZWd1bGF0b3I6IG14cy1kdWFydC0xOiBmYXN0IG5vcm1hbMKgCgoKcmVn
-dWxhdG9yOiBteHMtYmwtMTogZmFzdCBub3JtYWzCoAoKCnJlZ3VsYXRvcjogbXhzLWkyYy0xOiBm
-YXN0IG5vcm1hbMKgCgoKcmVndWxhdG9yOiBtbWNfc3NwLTE6IGZhc3Qgbm9ybWFswqAKCgpyZWd1
-bGF0b3I6IG1tY19zc3AtMjogZmFzdCBub3JtYWzCoAoKCnJlZ3VsYXRvcjogY2hhcmdlci0xOiBm
-YXN0IG5vcm1hbMKgCgoKcmVndWxhdG9yOiBwb3dlci10ZXN0LTE6IGZhc3Qgbm9ybWFswqAKCgpy
-ZWd1bGF0b3I6IGNwdWZyZXEtMTogZmFzdCBub3JtYWzCoAoKCmkuTVggSVJBTSBwb29sOiAxMjQg
-S0JAMHhjODgyMDAwMAoKCkluaXRpYWxpemluZyBHUE1JIHBpbnMKCgpteDI4X2luaXRfZHVhcnQK
-dXNiIERSIHdha2V1cCBkZXZpY2UgaXMgcmVnaXN0ZXJlZAoKCklNWCB1c2Igd2FrZXVwIHByb2Jl
-CgoKYXVkaXQ6IGNhbm5vdCBpbml0aWFsaXplIGlub3RpZnkgaGFuZGxlCgoKYmlvOiBjcmVhdGUg
-c2xhYiA8YmlvLTA+IGF0IDAKCgpTQ1NJIHN1YnN5c3RlbSBpbml0aWFsaXplZAoKCkZyZWVzY2Fs
-ZSBVU0IgT1RHIERyaXZlciBsb2FkZWQsICRSZXZpc2lvbjogMS41NSAkCgoKdXNiY29yZTogcmVn
-aXN0ZXJlZCBuZXcgaW50ZXJmYWNlIGRyaXZlciB1c2JmcwoKCnVzYmNvcmU6IHJlZ2lzdGVyZWQg
-bmV3IGludGVyZmFjZSBkcml2ZXIgaHViCgoKdXNiY29yZTogcmVnaXN0ZXJlZCBuZXcgZGV2aWNl
-IGRyaXZlciB1c2IKCgpBZHZhbmNlZCBMaW51eCBTb3VuZCBBcmNoaXRlY3R1cmUgRHJpdmVyIFZl
-cnNpb24gMS4wLjIzLgoKClN3aXRjaGluZyB0byBjbG9ja3NvdXJjZSBteHMgY2xvY2sgc291cmNl
-CgoKTkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAyCgoKSVAgcm91dGUgY2FjaGUgaGFz
-aCB0YWJsZSBlbnRyaWVzOiAxMDI0IChvcmRlcjogMCwgNDA5NiBieXRlcykKCgpUQ1AgZXN0YWJs
-aXNoZWQgaGFzaCB0YWJsZSBlbnRyaWVzOiA0MDk2IChvcmRlcjogMywgMzI3NjggYnl0ZXMpCgoK
-VENQIGJpbmQgaGFzaCB0YWJsZSBlbnRyaWVzOiA0MDk2IChvcmRlcjogMiwgMTYzODQgYnl0ZXMp
-CgoKVENQOiBIYXNoIHRhYmxlcyBjb25maWd1cmVkIChlc3RhYmxpc2hlZCA0MDk2IGJpbmQgNDA5
-NikKCgpUQ1AgcmVubyByZWdpc3RlcmVkCgoKVURQIGhhc2ggdGFibGUgZW50cmllczogMjU2IChv
-cmRlcjogMCwgNDA5NiBieXRlcykKCgpVRFAtTGl0ZSBoYXNoIHRhYmxlIGVudHJpZXM6IDI1NiAo
-b3JkZXI6IDAsIDQwOTYgYnl0ZXMpCgoKTkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAx
-CgoKUlBDOiBSZWdpc3RlcmVkIHVkcCB0cmFuc3BvcnQgbW9kdWxlLgoKClJQQzogUmVnaXN0ZXJl
-ZCB0Y3AgdHJhbnNwb3J0IG1vZHVsZS4KCgpSUEM6IFJlZ2lzdGVyZWQgdGNwIE5GU3Y0LjEgYmFj
-a2NoYW5uZWwgdHJhbnNwb3J0IG1vZHVsZS4KCgpCdXMgZnJlcSBkcml2ZXIgbW9kdWxlIGxvYWRl
-ZAoKCklNWCB1c2Igd2FrZXVwIHByb2JlCgoKdXNiIGgxIHdha2V1cCBkZXZpY2UgaXMgcmVnaXN0
-ZXJlZAoKCm14c19jcHVfaW5pdDogY3B1ZnJlcSBpbml0IGZpbmlzaGVkCgoKYXVkaXQ6IGluaXRp
-YWxpemluZyBuZXRsaW5rIHNvY2tldCAoZGlzYWJsZWQpCgoKdHlwZT0yMDAwIGF1ZGl0KDAuNjAw
-OjEpOiBpbml0aWFsaXplZAoKClZGUzogRGlzayBxdW90YXMgZHF1b3RfNi41LjIKCgpEcXVvdC1j
-YWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDEwMjQgKG9yZGVyIDAsIDQwOTYgYnl0ZXMpCgoKSkZG
-UzIgdmVyc2lvbiAyLjIuIChOQU5EKSDCqSAyMDAxLTIwMDYgUmVkIEhhdCwgSW5jLgoKCm1zZ21u
-aSBoYXMgYmVlbiBzZXQgdG8gMjQyCgoKYWxnOiBObyB0ZXN0IGZvciBzdGRybmcgKGtybmcpCgoK
-Y3J5cHRvZGV2OiBkcml2ZXIgbG9hZGVkLgoKCkJsb2NrIGxheWVyIFNDU0kgZ2VuZXJpYyAoYnNn
-KSBkcml2ZXIgdmVyc2lvbiAwLjQgbG9hZGVkIChtYWpvciAyNTMpCgoKaW8gc2NoZWR1bGVyIG5v
-b3AgcmVnaXN0ZXJlZAoKCmlvIHNjaGVkdWxlciBkZWFkbGluZSByZWdpc3RlcmVkCgoKaW8gc2No
-ZWR1bGVyIGNmcSByZWdpc3RlcmVkIChkZWZhdWx0KQoKCmJyaWdodG5lc3MgMTAwCgoKQ29uc29s
-ZTogc3dpdGNoaW5nIHRvIGNvbG91ciBmcmFtZSBidWZmZXIgZGV2aWNlIDEwMHgzMAoKCmJyaWdo
-dG5lc3MgMTAwCgoKc2MxNmlzNzUyIC0gdWFydF9yZWdpc3Rlcl9kcml2ZXIKCgpzYzE2aXM3NTIg
-U1BJIHNlcmlhbCBleHBhbmRlciBpbml0aWFsaXplZAoKCm14cy1kdWFydC4wOiB0dHlBTTAgYXQg
-TU1JTyAweDgwMDc0MDAwIChpcnEgPSA0NykgaXMgYSBEZWJ1Z1VBUlQKCgpteHMtYXVhcnQuMDog
-dHR5U1AwIGF0IE1NSU8gMHg4MDA2YTAwMCAoaXJxID0gMTEyKSBpcyBhIG14cy1hdWFydC4wCgoK
-Rm91bmQgQVBQVUFSVCAzLjEuMAoKCm14cy1hdWFydC4xOiB0dHlTUDEgYXQgTU1JTyAweDgwMDZj
-MDAwIChpcnEgPSAxMTMpIGlzIGEgbXhzLWF1YXJ0LjEKCgpGb3VuZCBBUFBVQVJUIDMuMS4wCgoK
-bXhzLWF1YXJ0LjI6IHR0eVNQMiBhdCBNTUlPIDB4ODAwNmUwMDAgKGlycSA9IDExNCkgaXMgYSBt
-eHMtYXVhcnQuMgoKCkZvdW5kIEFQUFVBUlQgMy4xLjAKCgpteHMtYXVhcnQuMzogdHR5U1AzIGF0
-IE1NSU8gMHg4MDA3MDAwMCAoaXJxID0gMTE1KSBpcyBhIG14cy1hdWFydC4zCgoKRm91bmQgQVBQ
-VUFSVCAzLjEuMAoKCm14cy1hdWFydC40OiB0dHlTUDQgYXQgTU1JTyAweDgwMDcyMDAwIChpcnEg
-PSAxMTYpIGlzIGEgbXhzLWF1YXJ0LjQKCgpGb3VuZCBBUFBVQVJUIDMuMS4wCgoKYnJkOiBtb2R1
-bGUgbG9hZGVkCgoKbG9vcDogbW9kdWxlIGxvYWRlZAoKCmkuTVggR1BNSSBORkMKCgpORkM6IFZl
-cnNpb24gMSwgOC1jaGlwIEdQTUkgYW5kIEJDSAoKCkJvb3QgUk9NOiBWZXJzaW9uIDEsIFNpbmds
-ZS1jaGlwIGJvb3QgYXJlYSwgYmxvY2sgbWFyayBzd2FwcGluZyBzdXBwb3J0ZWQKCgpTY2Fubmlu
-ZyBmb3IgTkFORCBGbGFzaCBjaGlwcy4uLgoKCk5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6
-IDB4ZWMsIENoaXAgSUQ6IDB4ZDMgKFNhbXN1bmcgTkFORCAxR2lCIDMsM1YgOC1iaXQpCgoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCgpOQU5EIEZsYXNoIERldmljZSBJbmZvcm1hdGlv
-bgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgoKTWFudWZhY3R1cmVyIMKgIMKgIMKg
-OiBTYW1zdW5nICgweGVjKQoKCkRldmljZSBDb2RlIMKgIMKgIMKgIDogMHhkMwoKCkNlbGwgVGVj
-aG5vbG9neSDCoCA6IE1MQwoKCkNoaXAgU2l6ZSDCoCDCoCDCoCDCoCA6IDEgR2lCCgoKUGFnZXMg
-cGVyIEJsb2NrIMKgIDogMTI4CgoKUGFnZSBHZW9tZXRyeSDCoCDCoCA6IDIwNDgrNjQKCgpFQ0Mg
-U3RyZW5ndGggwqAgwqAgwqA6IDQgYml0cwoKCkVDQyBTaXplIMKgIMKgIMKgIMKgIMKgOiA1MTIg
-QgoKCkRhdGEgU2V0dXAgVGltZSDCoCA6IDIwIG5zCgoKRGF0YSBIb2xkIFRpbWUgwqAgwqA6IDE1
-IG5zCgoKQWRkcmVzcyBTZXR1cCBUaW1lOiAyMCBucwoKCkdQTUkgU2FtcGxlIERlbGF5IDogNiBu
-cwoKCnRSRUEgwqAgwqAgwqAgwqAgwqAgwqAgwqA6IFVua25vd24KCgp0UkxPSCDCoCDCoCDCoCDC
-oCDCoCDCoCA6IFVua25vd24KCgp0UkhPSCDCoCDCoCDCoCDCoCDCoCDCoCA6IFVua25vd24KCgpE
-ZXNjcmlwdGlvbiDCoCDCoCDCoCA6IEs5RzhHMDhVME0sIEs5SEFHMDhVMU0KCgotLS0tLS0tLS0t
-LS0tLS0tLQoKClBoeXNpY2FsIEdlb21ldHJ5CgoKLS0tLS0tLS0tLS0tLS0tLS0KCgpDaGlwIENv
-dW50IMKgIMKgIMKgIMKgIMKgIMKgIDogMQoKClBhZ2UgRGF0YSBTaXplIGluIEJ5dGVzOiAyMDQ4
-ICgweDgwMCkKCgpQYWdlIE9PQiBTaXplIGluIEJ5dGVzIDogNjQKCgpCbG9jayBTaXplIGluIEJ5
-dGVzIMKgIMKgOiAyNjIxNDQgKDB4NDAwMDApCgoKQmxvY2sgU2l6ZSBpbiBQYWdlcyDCoCDCoDog
-MTI4ICgweDgwKQoKCkNoaXAgU2l6ZSBpbiBCeXRlcyDCoCDCoCA6IDEwNzM3NDE4MjQgKDB4NDAw
-MDAwMDApCgoKQ2hpcCBTaXplIGluIFBhZ2VzIMKgIMKgIDogNTI0Mjg4ICgweDgwMDAwKQoKCkNo
-aXAgU2l6ZSBpbiBCbG9ja3MgwqAgwqA6IDQwOTYgKDB4MTAwMCkKCgpNZWRpdW0gU2l6ZSBpbiBC
-eXRlcyDCoCA6IDEwNzM3NDE4MjQgKDB4NDAwMDAwMDApCgoKLS0tLS0tLS0tLS0tCgoKTkZDIEdl
-b21ldHJ5CgoKLS0tLS0tLS0tLS0tCgoKRUNDIEFsZ29yaXRobSDCoCDCoCDCoCDCoCDCoDogQkNI
-CgoKRUNDIFN0cmVuZ3RoIMKgIMKgIMKgIMKgIMKgIDogOAoKClBhZ2UgU2l6ZSBpbiBCeXRlcyDC
-oCDCoCA6IDIxMTIKCgpNZXRhZGF0YSBTaXplIGluIEJ5dGVzIDogMTAKCgpFQ0MgQ2h1bmsgU2l6
-ZSBpbiBCeXRlczogNTEyCgoKRUNDIENodW5rIENvdW50IMKgIMKgIMKgIMKgOiA0CgoKUGF5bG9h
-ZCBTaXplIGluIEJ5dGVzIMKgOiAyMDQ4CgoKQXV4aWxpYXJ5IFNpemUgaW4gQnl0ZXM6IDE2CgoK
-QXV4aWxpYXJ5IFN0YXR1cyBPZmZzZXQ6IDEyCgoKQmxvY2sgTWFyayBCeXRlIE9mZnNldCA6IDE5
-OTkKCgpCbG9jayBNYXJrIEJpdCBPZmZzZXQgwqA6IDAKCgotLS0tLS0tLS0tLS0tLS0tLQoKCkJv
-b3QgUk9NIEdlb21ldHJ5CgoKLS0tLS0tLS0tLS0tLS0tLS0KCgpCb290IEFyZWEgQ291bnQgwqAg
-wqAgwqAgwqAgwqAgwqA6IDEKCgpCb290IEFyZWEgU2l6ZSBpbiBCeXRlcyDCoCDCoDogMjA5NzE1
-MjAgKDB4MTQwMDAwMCkKCgpTdHJpZGUgU2l6ZSBpbiBQYWdlcyDCoCDCoCDCoCA6IDY0CgoKU2Vh
-cmNoIEFyZWEgU3RyaWRlIEV4cG9uZW50OiAyCgoKQm9vdCBhcmVhIHByb3RlY3Rpb24gaXMgZW5h
-YmxlZC4KCgpDcmVhdGluZyAyIE1URCBwYXJ0aXRpb25zIG9uICJncG1pLW5mYy1tYWluIjoKCgow
-eDAwMDAwMDAwMDAwMC0weDAwMDAwMTQwMDAwMCA6ICJncG1pLW5mYy0wLWJvb3QiCgoKMHgwMDAw
-MDE0MDAwMDAtMHgwMDAwNDAwMDAwMDAgOiAiZ3BtaS1uZmMtZ2VuZXJhbC11c2UiCgoKVUJJOiBh
-dHRhY2hpbmcgbXRkMSB0byB1YmkwCgoKVUJJOiBwaHlzaWNhbCBlcmFzZWJsb2NrIHNpemU6IMKg
-IDI2MjE0NCBieXRlcyAoMjU2IEtpQikKCgpVQkk6IGxvZ2ljYWwgZXJhc2VibG9jayBzaXplOiDC
-oCDCoDI1ODA0OCBieXRlcwoKClVCSTogc21hbGxlc3QgZmxhc2ggSS9PIHVuaXQ6IMKgIMKgMjA0
-OAoKClVCSTogVklEIGhlYWRlciBvZmZzZXQ6IMKgIMKgIMKgIMKgIMKgMjA0OCAoYWxpZ25lZCAy
-MDQ4KQoKClVCSTogZGF0YSBvZmZzZXQ6IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgNDA5NgoKClVC
-STogYXR0YWNoZWQgbXRkMSB0byB1YmkwCgoKVUJJOiBNVEQgZGV2aWNlIG5hbWU6IMKgIMKgIMKg
-IMKgIMKgIMKgImdwbWktbmZjLWdlbmVyYWwtdXNlIgoKClVCSTogTVREIGRldmljZSBzaXplOiDC
-oCDCoCDCoCDCoCDCoCDCoDEwMDQgTWlCCgoKVUJJOiBudW1iZXIgb2YgZ29vZCBQRUJzOiDCoCDC
-oCDCoCDCoDQwMTYKCgpVQkk6IG51bWJlciBvZiBiYWQgUEVCczogwqAgwqAgwqAgwqAgMAoKClVC
-STogbWF4LiBhbGxvd2VkIHZvbHVtZXM6IMKgIMKgIMKgIDEyOAoKClVCSTogd2Vhci1sZXZlbGlu
-ZyB0aHJlc2hvbGQ6IMKgIMKgNDA5NgoKClVCSTogbnVtYmVyIG9mIGludGVybmFsIHZvbHVtZXM6
-IDEKCgpVQkk6IG51bWJlciBvZiB1c2VyIHZvbHVtZXM6IMKgIMKgIDEKCgpVQkk6IGF2YWlsYWJs
-ZSBQRUJzOiDCoCDCoCDCoCDCoCDCoCDCoCAwCgoKVUJJOiB0b3RhbCBudW1iZXIgb2YgcmVzZXJ2
-ZWQgUEVCczogNDAxNgoKClVCSTogbnVtYmVyIG9mIFBFQnMgcmVzZXJ2ZWQgZm9yIGJhZCBQRUIg
-aGFuZGxpbmc6IDQwCgoKVUJJOiBtYXgvbWVhbiBlcmFzZSBjb3VudGVyOiAxMi85CgoKVUJJOiBp
-bWFnZSBzZXF1ZW5jZSBudW1iZXI6IDAKCgpVQkk6IGJhY2tncm91bmQgdGhyZWFkICJ1YmlfYmd0
-MGQiIHN0YXJ0ZWQsIFBJRCAxMDEyCgoKwqB1YmlibGthOiB1bmtub3duIHBhcnRpdGlvbiB0YWJs
-ZQoKCm14cy1zcGkgbXhzLXNwaS4wOiBNYXggcG9zc2libGUgc3BlZWQgMjQwMDAgPSAyNDAwMDAw
-MC8yIGtIegpteHMtc3BpIG14cy1zcGkuMDogYXQgMHg4MDAxNDAwMCBtYXBwZWQgdG8gMHhGMDAx
-NDAwMCwgaXJxPTg0LCBidXMgMSwgRE1BIHZlcl9tYWpvciA0CgoKdmNhbjogVmlydHVhbCBDQU4g
-aW50ZXJmYWNlIGRyaXZlcgoKCkZyZWVzY2FsZSBGbGV4Q0FOIERyaXZlcsKgCgoKRkVDIEV0aGVy
-bmV0IERyaXZlcgoKCmZlY19lbmV0X21paV9idXM6IHByb2JlZAoKCmVoY2lfaGNkOiBVU0IgMi4w
-ICdFbmhhbmNlZCcgSG9zdCBDb250cm9sbGVyIChFSENJKSBEcml2ZXIKCgpmc2wtZWhjaSBmc2wt
-ZWhjaTogRnJlZXNjYWxlIE9uLUNoaXAgRUhDSSBIb3N0IENvbnRyb2xsZXIKCgpmc2wtZWhjaSBm
-c2wtZWhjaTogbmV3IFVTQiBidXMgcmVnaXN0ZXJlZCwgYXNzaWduZWQgYnVzIG51bWJlciAxCgoK
-ZnNsLWVoY2kgZnNsLWVoY2k6IGlycSA5MywgaW8gYmFzZSAweDgwMDgwMDAwCgoKZnNsLWVoY2kg
-ZnNsLWVoY2k6IFVTQiAyLjAgc3RhcnRlZCwgRUhDSSAxLjAwCgoKaHViIDEtMDoxLjA6IFVTQiBo
-dWIgZm91bmQKCgpodWIgMS0wOjEuMDogMSBwb3J0IGRldGVjdGVkCgoKZnNsLWVoY2kgZnNsLWVo
-Y2kuMDogRnJlZXNjYWxlIE9uLUNoaXAgRUhDSSBIb3N0IENvbnRyb2xsZXIKCgpmc2wtZWhjaSBm
-c2wtZWhjaS4wOiBuZXcgVVNCIGJ1cyByZWdpc3RlcmVkLCBhc3NpZ25lZCBidXMgbnVtYmVyIDIK
-Cgpmc2wtZWhjaSBmc2wtZWhjaS4wOiBpcnEgOTIsIGlvIGJhc2UgMHg4MDA5MDAwMAoKCmZzbC1l
-aGNpIGZzbC1laGNpLjA6IFVTQiAyLjAgc3RhcnRlZCwgRUhDSSAxLjAwCgoKaHViIDItMDoxLjA6
-IFVTQiBodWIgZm91bmQKCgpodWIgMi0wOjEuMDogMSBwb3J0IGRldGVjdGVkCgoKSW5pdGlhbGl6
-aW5nIFVTQiBNYXNzIFN0b3JhZ2UgZHJpdmVyLi4uCgoKdXNiY29yZTogcmVnaXN0ZXJlZCBuZXcg
-aW50ZXJmYWNlIGRyaXZlciB1c2Itc3RvcmFnZQoKClVTQiBNYXNzIFN0b3JhZ2Ugc3VwcG9ydCBy
-ZWdpc3RlcmVkLgoKCkFSQyBVU0JPVEcgRGV2aWNlIENvbnRyb2xsZXIgZHJpdmVyICgxIEF1Z3Vz
-dCAyMDA1KQoKCm1pY2U6IFBTLzIgbW91c2UgZGV2aWNlIGNvbW1vbiBmb3IgYWxsIG1pY2UKCgpp
-bnB1dDogbXhzLWtiZCBhcyAvZGV2aWNlcy9wbGF0Zm9ybS9teHMta2JkLjAvaW5wdXQvaW5wdXQw
-CgoKaW5wdXQ6IE1YUyB0b3VjaHNjcmVlbiBhcyAvZGV2aWNlcy92aXJ0dWFsL2lucHV0L2lucHV0
-MQoKCnJ0Yy1pc2wxMjA4IDAtMDA2ZjogY2hpcCBmb3VuZCwgZHJpdmVyIHZlcnNpb24gMC4zCgoK
-cnRjLWlzbDEyMDggMC0wMDZmOiBydGMgY29yZTogcmVnaXN0ZXJlZCBydGMtaXNsMTIwOCBhcyBy
-dGMwCgoKTVhTIFJUQyBkcml2ZXIgdjEuMCBoYXJkd2FyZSB2Mi4zLjAKCgpteHMtcnRjIG14cy1y
-dGMuMDogcnRjIGNvcmU6IHJlZ2lzdGVyZWQgbXhzLXJ0YyBhcyBydGMxCgoKaTJjIC9kZXYgZW50
-cmllcyBkcml2ZXIKCgpJUiBORUMgcHJvdG9jb2wgaGFuZGxlciBpbml0aWFsaXplZAoKCklSIFJD
-NSh4KSBwcm90b2NvbCBoYW5kbGVyIGluaXRpYWxpemVkCgoKSVIgUkM2IHByb3RvY29sIGhhbmRs
-ZXIgaW5pdGlhbGl6ZWQKCgpJUiBKVkMgcHJvdG9jb2wgaGFuZGxlciBpbml0aWFsaXplZAoKCklS
-IFNvbnkgcHJvdG9jb2wgaGFuZGxlciBpbml0aWFsaXplZAoKCkxpbnV4IHZpZGVvIGNhcHR1cmUg
-aW50ZXJmYWNlOiB2Mi4wMAoKCm14cy1weHAgbXhzLXB4cC4wOiBpbml0aWFsaXplZAoKCldBUk5J
-TkcgOiBObyBiYXR0ZXJ5IGNvbm5lY3RlZCAhCgoKQWJvcnRpbmcgcG93ZXIgZHJpdmVyIGluaXRp
-YWxpemF0aW9uCgoKbXhzLWJhdHRlcnk6IHByb2JlIG9mIG14cy1iYXR0ZXJ5LjAgZmFpbGVkIHdp
-dGggZXJyb3IgMQoKCm14cyB3YXRjaGRvZzogaW5pdGlhbGl6ZWQsIGhlYXJ0YmVhdCAxOSBzZWMK
-CgpteHMtbW1jOiBNWFMgU1NQIENvbnRyb2xsZXIgTU1DIEludGVyZmFjZSBkcml2ZXIKCgpkY3Ag
-ZGNwLjA6IERDUCBjcnlwdG8gZW5hYmxlZC4hCgoKdXNiY29yZTogcmVnaXN0ZXJlZCBuZXcgaW50
-ZXJmYWNlIGRyaXZlciBoaWRkZXYKCgp1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2Ug
-ZHJpdmVyIHVzYmhpZAoKCnVzYmhpZDogVVNCIEhJRCBjb3JlIGRyaXZlcgoKCm14cy1zcGRpZiBt
-eHMtc3BkaWYuMDogTVhTIFNQRElGIEF1ZGlvIFRyYW5zbWl0dGVyCgoKTm8gZGV2aWNlIGZvciBj
-b2RlYyBteHMgc3BkaWYKCgpObyBkZXZpY2UgZm9yIERBSSBteHMgc3BkaWYKCgpObyBkZXZpY2Ug
-Zm9yIERBSSBteHMtc2FpZgoKCk5vIGRldmljZSBmb3IgREFJIG14cy1zcGRpZgoKCmFzb2M6IG14
-cyBzcGRpZiA8LT4gbXhzLXNwZGlmIG1hcHBpbmcgb2sKCgpBTFNBIGRldmljZSBsaXN0OgoKCsKg
-ICMwOiBteHMtZXZrIChteHMgc3BkaWYpCgoKVENQIGN1YmljIHJlZ2lzdGVyZWQKCgpORVQ6IFJl
-Z2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDE3CgoKY2FuOiBjb250cm9sbGVyIGFyZWEgbmV0d29y
-ayBjb3JlIChyZXYgMjAwOTAxMDUgYWJpIDgpCgoKTkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZh
-bWlseSAyOQoKCmNhbjogcmF3IHByb3RvY29sIChyZXYgMjAwOTAxMDUpCgoKY2FuOiBicm9hZGNh
-c3QgbWFuYWdlciBwcm90b2NvbCAocmV2IDIwMDkwMTA1IHQpCgoKcmVndWxhdG9yX2luaXRfY29t
-cGxldGU6IGluY29tcGxldGUgY29uc3RyYWludHMsIGxlYXZpbmcgdmJ1czV2IG9uCgoKcnRjLWlz
-bDEyMDggMC0wMDZmOiBzZXR0aW5nIHN5c3RlbSBjbG9jayB0byAyMDE1LTA2LTEwIDA1OjUyOjUz
-IFVUQyAoMTQzMzkxNTU3MykKCgpVQkkgZXJyb3I6IHViaV9pb19yZWFkOiBlcnJvciAtNzQgd2hp
-bGUgcmVhZGluZyAyNTgwNDggYnl0ZXMgZnJvbSBQRUIgMzAyOTo0MDk2LCByZWFkIDI1ODA0OCBi
-eXRlcwoKClVCSSBlcnJvcjogdWJpX2lvX3JlYWQ6IGVycm9yIC03NCB3aGlsZSByZWFkaW5nIDI1
-ODA0OCBieXRlcyBmcm9tIFBFQiAzMDI5OjQwOTYsIHJlYWQgMjU4MDQ4IGJ5dGVzCgoKVUJJRlMg
-ZXJyb3IgKHBpZCAxKTogdWJpZnNfcmVjb3Zlcl9tYXN0ZXJfbm9kZTogZmFpbGVkIHRvIHJlY292
-ZXIgbWFzdGVyIG5vZGUKCgpMaXN0IG9mIGFsbCBwYXJ0aXRpb25zOgoKCjFmMDAgwqAgwqAgwqAg
-wqAgwqAgMjA0ODAgbXRkYmxvY2swIChkcml2ZXI/KQoKCjFmMDEgwqAgwqAgwqAgwqAgMTAyODA5
-NiBtdGRibG9jazEgKGRyaXZlcj8pCgoKZmUwMCDCoCDCoCDCoCDCoCAxMDAwOTQ0IHViaWJsa2Eg
-KGRyaXZlcj8pCgoKTm8gZmlsZXN5c3RlbSBjb3VsZCBtb3VudCByb290LCB0cmllZDogwqB1Ymlm
-cwoKCktlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBWRlM6IFVuYWJsZSB0byBtb3VudCByb290
-IGZzIG9uIHVua25vd24tYmxvY2soMCwwKQoKCkJhY2t0cmFjZTrCoAoKCls8YzAwOTAyODQ+XSAo
-ZHVtcF9iYWNrdHJhY2UrMHgwLzB4MTE0KSBmcm9tIFs8YzAzZjNiNmM+XSAoZHVtcF9zdGFjaysw
-eDE4LzB4MWMpCgoKwqByNzpjMDAyOWEyNCByNjowMDAwODAwMCByNTpjNzUwOTAwNiByNDpjMDU2
-MzU3OAoKCls8YzAzZjNiNTQ+XSAoZHVtcF9zdGFjaysweDAvMHgxYykgZnJvbSBbPGMwM2YzYmQw
-Pl0gKHBhbmljKzB4NjAvMHhkYykKCgpbPGMwM2YzYjcwPl0gKHBhbmljKzB4MC8weGRjKSBmcm9t
-IFs8YzAwMDhmZTQ+XSAobW91bnRfYmxvY2tfcm9vdCsweDFkOC8weDIxOCkKCgrCoHIzOjAwMDAw
-MDAwIHIyOjAwMDAwMDIwIHIxOmM3YzI3Zjc4IHIwOmMwNGE1NzY1CgoKWzxjMDAwOGUwYz5dICht
-b3VudF9ibG9ja19yb290KzB4MC8weDIxOCkgZnJvbSBbPGMwMDA5MWI0Pl0gKHByZXBhcmVfbmFt
-ZXNwYWNlKzB4OTQvMHgxYzQpCgoKWzxjMDAwOTEyMD5dIChwcmVwYXJlX25hbWVzcGFjZSsweDAv
-MHgxYzQpIGZyb20gWzxjMDAwODRlOD5dIChrZXJuZWxfaW5pdCsweDExOC8weDE1OCkKCgrCoHI1
-OmMwMDI4YjI4IHI0OmMwNTYyNmEwCgoKWzxjMDAwODNkMD5dIChrZXJuZWxfaW5pdCsweDAvMHgx
-NTgpIGZyb20gWzxjMDBhYTVlYz5dIChkb19leGl0KzB4MC8weDYwOCkKCgrCoHI1OmMwMDA4M2Qw
-IHI0OjAwMDAwMDAwCgoKCgoKCklzIHRoZXJlIGFueXdheSB0byBmaXggdGhpcz8=
+
+
+On 6/10/2015 7:38 AM, cyl wrote:
+> 
+> Hi
+> The kernel Im using is 2.6.35.3  .  Sometimes when I restart it , the kernel panics like this:
+> 
+> 
+> 
+> 
+> U-Boot 2009.08 (Dec 03 2014 - 21:04:20)
+> 
+> 
+> Freescale i.MX28 family
+> 
+> 
+> CPU:   454 MHz
+> 
+> 
+> BUS:   151 MHz
+> 
+> 
+> EMI:   205 MHz
+> 
+> 
+> GPMI:   24 MHz
+> 
+> 
+> DRAM:  128 MB
+> 
+> 
+> NAND:  Manufacturer      : Samsung (0xec)
+> 
+> 
+> Device Code       : 0xd3
+> 
+> 
+> Cell Technology   : MLC
+> 
+> 
+> Chip Size         : 1 GiB
+> 
+> 
+> Pages per Block   : 128
+> 
+> 
+> Page Geometry     : 2048+64
+> 
+> 
+> ECC Strength      : 4 bits
+> 
+> 
+> ECC Size          : 512 B
+> 
+> 
+> Data Setup Time   : 20 ns
+> 
+> 
+> Data Hold Time    : 15 ns
+> 
+> 
+> Address Setup Time: 20 ns
+> 
+> 
+> GPMI Sample Delay : 6 ns
+> 
+> 
+> tREA              : Unknown
+> 
+> 
+> tRLOH             : Unknown
+> 
+> 
+> tRHOH             : Unknown
+> 
+> 
+> Description       : K9G8G08U0M, K9HAG08U1M
+> 
+> 
+> 1024 MiB
+> 
+> 
+> *** Warning - bad CRC or NAND, using default environment
+> 
+> 
+> 
+> 
+> In:    serial
+> 
+> 
+> Out:   serial
+> 
+> 
+> Err:   serial
+> 
+> 
+> Net:   got MAC address from IIM: 00:04:00:00:00:00
+> 
+> 
+> FEC0
+> 
+> 
+> Hit any key to stop autoboot:  3  2  1  0 
+> 
+> 
+> 
+> 
+> NAND read: device 0 offset 0x300000, size 0x300000
+> 
+> 
+>  3145728 bytes read: OK
+> 
+> 
+> ## Booting kernel from Legacy Image at 42000000 ...
+> 
+> 
+>    Image Name:   Linux-2.6.35.3-670-g914558e
+> 
+> 
+>    Image Type:   ARM Linux Kernel Image (uncompressed)
+> 
+> 
+>    Data Size:    2647320 Bytes =  2.5 MB
+> 
+> 
+>    Load Address: 40008000
+> 
+> 
+>    Entry Point:  40008000
+> 
+> 
+>    Verifying Checksum ... OK
+> 
+> 
+>    Loading Kernel Image ... OK
+> 
+> 
+> OK
+> 
+> 
+> 
+> 
+> Starting kernel ...
+> 
+> 
+> Uncompressing Linux... done, booting the kernel.
+> Linux version 2.6.35.3-670-g914558e (aaa@ubuntu) (gcc version 4.4.4 (4.4.4_09.06.2010) ) #76 Sun May 3 14:58:33 PDT 2015
+> 
+> 
+> CPU: ARM926EJ-S [41069265] revision 5 (ARMv5TEJ), cr=00053177
+> 
+> 
+> CPU: VIVT data cache, VIVT instruction cache
+> 
+> 
+> Machine: Freescale MX28EVK board
+> 
+> 
+> Memory policy: ECC disabled, Data cache writeback
+> 
+> 
+> Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 32512
+> 
+> 
+> Kernel command line: console=ttyAM0,115200 ubi.mtd=1 root=ubi0:rootfs0 rootfstype=ubifs gpmi rw rootwait ip=none
+> 
+> 
+> PID hash table entries: 512 (order: -1, 2048 bytes)
+> 
+> 
+> Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
+> 
+> 
+> Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
+> 
+> 
+> Memory: 128MB = 128MB total
+> 
+> 
+> Memory: 124136k/124136k available, 6936k reserved, 0K highmem
+> 
+> 
+> Virtual kernel memory layout:
+> 
+> 
+>     vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+> 
+> 
+>     fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+> 
+> 
+>     DMA     : 0xfde00000 - 0xffe00000   (  32 MB)
+> 
+> 
+>     vmalloc : 0xc8800000 - 0xf0000000   ( 632 MB)
+> 
+> 
+>     lowmem  : 0xc0000000 - 0xc8000000   ( 128 MB)
+> 
+> 
+>     modules : 0xbf000000 - 0xc0000000   (  16 MB)
+> 
+> 
+>       .init : 0xc0008000 - 0xc008c000   ( 528 kB)
+> 
+> 
+>       .text : 0xc008c000 - 0xc0523000   (4700 kB)
+> 
+> 
+>       .data : 0xc0524000 - 0xc0562620   ( 250 kB)
+> 
+> 
+> SLUB: Genslabs=11, HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+> 
+> 
+> Hierarchical RCU implementation.
+> 
+> 
+> 	RCU-based detection of stalled CPUs is disabled.
+> 
+> 
+> 	Verbose stalled-CPUs detection is disabled.
+> 
+> 
+> NR_IRQS:288
+> 
+> 
+> Console: colour dummy device 80x30
+> 
+> 
+> console [ttyAM0] enabled
+> 
+> 
+> Calibrating delay loop... 226.09 BogoMIPS (lpj=1130496)
+> 
+> 
+> pid_max: default: 32768 minimum: 301
+> 
+> 
+> Security Framework initialized
+> 
+> 
+> SELinux:  Initializing.
+> 
+> 
+> Mount-cache hash table entries: 512
+> 
+> 
+> CPU: Testing write buffer coherency: ok
+> 
+> 
+> regulator: core version 0.5
+> 
+> 
+> NET: Registered protocol family 16
+> 
+> 
+> regulator: vddd: 800 <--> 1575 mV at 1500 mV fast normal 
+> 
+> 
+> regulator: vdddbo: 800 <--> 1575 mV fast normal 
+> 
+> 
+> regulator: vdda: 1500 <--> 2275 mV at 1800 mV fast normal 
+> 
+> 
+> vddio = 3380000, val=10
+> 
+> 
+> regulator: vddio: 2880 <--> 3680 mV at 3380 mV fast normal 
+> 
+> 
+> regulator: overall_current: fast normal 
+> 
+> 
+> regulator: vbus5v: 
+> 
+> 
+> regulator: mxs-duart-1: fast normal 
+> 
+> 
+> regulator: mxs-bl-1: fast normal 
+> 
+> 
+> regulator: mxs-i2c-1: fast normal 
+> 
+> 
+> regulator: mmc_ssp-1: fast normal 
+> 
+> 
+> regulator: mmc_ssp-2: fast normal 
+> 
+> 
+> regulator: charger-1: fast normal 
+> 
+> 
+> regulator: power-test-1: fast normal 
+> 
+> 
+> regulator: cpufreq-1: fast normal 
+> 
+> 
+> i.MX IRAM pool: 124 KB@0xc8820000
+> 
+> 
+> Initializing GPMI pins
+> 
+> 
+> mx28_init_duart
+> usb DR wakeup device is registered
+> 
+> 
+> IMX usb wakeup probe
+> 
+> 
+> audit: cannot initialize inotify handle
+> 
+> 
+> bio: create slab <bio-0> at 0
+> 
+> 
+> SCSI subsystem initialized
+> 
+> 
+> Freescale USB OTG Driver loaded, $Revision: 1.55 $
+> 
+> 
+> usbcore: registered new interface driver usbfs
+> 
+> 
+> usbcore: registered new interface driver hub
+> 
+> 
+> usbcore: registered new device driver usb
+> 
+> 
+> Advanced Linux Sound Architecture Driver Version 1.0.23.
+> 
+> 
+> Switching to clocksource mxs clock source
+> 
+> 
+> NET: Registered protocol family 2
+> 
+> 
+> IP route cache hash table entries: 1024 (order: 0, 4096 bytes)
+> 
+> 
+> TCP established hash table entries: 4096 (order: 3, 32768 bytes)
+> 
+> 
+> TCP bind hash table entries: 4096 (order: 2, 16384 bytes)
+> 
+> 
+> TCP: Hash tables configured (established 4096 bind 4096)
+> 
+> 
+> TCP reno registered
+> 
+> 
+> UDP hash table entries: 256 (order: 0, 4096 bytes)
+> 
+> 
+> UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+> 
+> 
+> NET: Registered protocol family 1
+> 
+> 
+> RPC: Registered udp transport module.
+> 
+> 
+> RPC: Registered tcp transport module.
+> 
+> 
+> RPC: Registered tcp NFSv4.1 backchannel transport module.
+> 
+> 
+> Bus freq driver module loaded
+> 
+> 
+> IMX usb wakeup probe
+> 
+> 
+> usb h1 wakeup device is registered
+> 
+> 
+> mxs_cpu_init: cpufreq init finished
+> 
+> 
+> audit: initializing netlink socket (disabled)
+> 
+> 
+> type=2000 audit(0.600:1): initialized
+> 
+> 
+> VFS: Disk quotas dquot_6.5.2
+> 
+> 
+> Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+> 
+> 
+> JFFS2 version 2.2. (NAND) © 2001-2006 Red Hat, Inc.
+> 
+> 
+> msgmni has been set to 242
+> 
+> 
+> alg: No test for stdrng (krng)
+> 
+> 
+> cryptodev: driver loaded.
+> 
+> 
+> Block layer SCSI generic (bsg) driver version 0.4 loaded (major 253)
+> 
+> 
+> io scheduler noop registered
+> 
+> 
+> io scheduler deadline registered
+> 
+> 
+> io scheduler cfq registered (default)
+> 
+> 
+> brightness 100
+> 
+> 
+> Console: switching to colour frame buffer device 100x30
+> 
+> 
+> brightness 100
+> 
+> 
+> sc16is752 - uart_register_driver
+> 
+> 
+> sc16is752 SPI serial expander initialized
+> 
+> 
+> mxs-duart.0: ttyAM0 at MMIO 0x80074000 (irq = 47) is a DebugUART
+> 
+> 
+> mxs-auart.0: ttySP0 at MMIO 0x8006a000 (irq = 112) is a mxs-auart.0
+> 
+> 
+> Found APPUART 3.1.0
+> 
+> 
+> mxs-auart.1: ttySP1 at MMIO 0x8006c000 (irq = 113) is a mxs-auart.1
+> 
+> 
+> Found APPUART 3.1.0
+> 
+> 
+> mxs-auart.2: ttySP2 at MMIO 0x8006e000 (irq = 114) is a mxs-auart.2
+> 
+> 
+> Found APPUART 3.1.0
+> 
+> 
+> mxs-auart.3: ttySP3 at MMIO 0x80070000 (irq = 115) is a mxs-auart.3
+> 
+> 
+> Found APPUART 3.1.0
+> 
+> 
+> mxs-auart.4: ttySP4 at MMIO 0x80072000 (irq = 116) is a mxs-auart.4
+> 
+> 
+> Found APPUART 3.1.0
+> 
+> 
+> brd: module loaded
+> 
+> 
+> loop: module loaded
+> 
+> 
+> i.MX GPMI NFC
+> 
+> 
+> NFC: Version 1, 8-chip GPMI and BCH
+> 
+> 
+> Boot ROM: Version 1, Single-chip boot area, block mark swapping supported
+> 
+> 
+> Scanning for NAND Flash chips...
+> 
+> 
+> NAND device: Manufacturer ID: 0xec, Chip ID: 0xd3 (Samsung NAND 1GiB 3,3V 8-bit)
+> 
+> 
+> -----------------------------
+> 
+> 
+> NAND Flash Device Information
+> 
+> 
+> -----------------------------
+> 
+> 
+> Manufacturer      : Samsung (0xec)
+> 
+> 
+> Device Code       : 0xd3
+> 
+> 
+> Cell Technology   : MLC
+> 
+> 
+> Chip Size         : 1 GiB
+> 
+> 
+> Pages per Block   : 128
+> 
+> 
+> Page Geometry     : 2048+64
+> 
+> 
+> ECC Strength      : 4 bits
+> 
+> 
+> ECC Size          : 512 B
+> 
+> 
+> Data Setup Time   : 20 ns
+> 
+> 
+> Data Hold Time    : 15 ns
+> 
+> 
+> Address Setup Time: 20 ns
+> 
+> 
+> GPMI Sample Delay : 6 ns
+> 
+> 
+> tREA              : Unknown
+> 
+> 
+> tRLOH             : Unknown
+> 
+> 
+> tRHOH             : Unknown
+> 
+> 
+> Description       : K9G8G08U0M, K9HAG08U1M
+> 
+> 
+> -----------------
+> 
+> 
+> Physical Geometry
+> 
+> 
+> -----------------
+> 
+> 
+> Chip Count             : 1
+> 
+> 
+> Page Data Size in Bytes: 2048 (0x800)
+> 
+> 
+> Page OOB Size in Bytes : 64
+> 
+> 
+> Block Size in Bytes    : 262144 (0x40000)
+> 
+> 
+> Block Size in Pages    : 128 (0x80)
+> 
+> 
+> Chip Size in Bytes     : 1073741824 (0x40000000)
+> 
+> 
+> Chip Size in Pages     : 524288 (0x80000)
+> 
+> 
+> Chip Size in Blocks    : 4096 (0x1000)
+> 
+> 
+> Medium Size in Bytes   : 1073741824 (0x40000000)
+> 
+> 
+> ------------
+> 
+> 
+> NFC Geometry
+> 
+> 
+> ------------
+> 
+> 
+> ECC Algorithm          : BCH
+> 
+> 
+> ECC Strength           : 8
+> 
+> 
+> Page Size in Bytes     : 2112
+> 
+> 
+> Metadata Size in Bytes : 10
+> 
+> 
+> ECC Chunk Size in Bytes: 512
+> 
+> 
+> ECC Chunk Count        : 4
+> 
+> 
+> Payload Size in Bytes  : 2048
+> 
+> 
+> Auxiliary Size in Bytes: 16
+> 
+> 
+> Auxiliary Status Offset: 12
+> 
+> 
+> Block Mark Byte Offset : 1999
+> 
+> 
+> Block Mark Bit Offset  : 0
+> 
+> 
+> -----------------
+> 
+> 
+> Boot ROM Geometry
+> 
+> 
+> -----------------
+> 
+> 
+> Boot Area Count            : 1
+> 
+> 
+> Boot Area Size in Bytes    : 20971520 (0x1400000)
+> 
+> 
+> Stride Size in Pages       : 64
+> 
+> 
+> Search Area Stride Exponent: 2
+> 
+> 
+> Boot area protection is enabled.
+> 
+> 
+> Creating 2 MTD partitions on "gpmi-nfc-main":
+> 
+> 
+> 0x000000000000-0x000001400000 : "gpmi-nfc-0-boot"
+> 
+> 
+> 0x000001400000-0x000040000000 : "gpmi-nfc-general-use"
+> 
+> 
+> UBI: attaching mtd1 to ubi0
+> 
+> 
+> UBI: physical eraseblock size:   262144 bytes (256 KiB)
+> 
+> 
+> UBI: logical eraseblock size:    258048 bytes
+> 
+> 
+> UBI: smallest flash I/O unit:    2048
+> 
+> 
+> UBI: VID header offset:          2048 (aligned 2048)
+> 
+> 
+> UBI: data offset:                4096
+> 
+> 
+> UBI: attached mtd1 to ubi0
+> 
+> 
+> UBI: MTD device name:            "gpmi-nfc-general-use"
+> 
+> 
+> UBI: MTD device size:            1004 MiB
+> 
+> 
+> UBI: number of good PEBs:        4016
+> 
+> 
+> UBI: number of bad PEBs:         0
+> 
+> 
+> UBI: max. allowed volumes:       128
+> 
+> 
+> UBI: wear-leveling threshold:    4096
+> 
+> 
+> UBI: number of internal volumes: 1
+> 
+> 
+> UBI: number of user volumes:     1
+> 
+> 
+> UBI: available PEBs:             0
+> 
+> 
+> UBI: total number of reserved PEBs: 4016
+> 
+> 
+> UBI: number of PEBs reserved for bad PEB handling: 40
+> 
+> 
+> UBI: max/mean erase counter: 12/9
+> 
+> 
+> UBI: image sequence number: 0
+> 
+> 
+> UBI: background thread "ubi_bgt0d" started, PID 1012
+> 
+> 
+>  ubiblka: unknown partition table
+> 
+> 
+> mxs-spi mxs-spi.0: Max possible speed 24000 = 24000000/2 kHz
+> mxs-spi mxs-spi.0: at 0x80014000 mapped to 0xF0014000, irq=84, bus 1, DMA ver_major 4
+> 
+> 
+> vcan: Virtual CAN interface driver
+> 
+> 
+> Freescale FlexCAN Driver 
+> 
+> 
+> FEC Ethernet Driver
+> 
+> 
+> fec_enet_mii_bus: probed
+> 
+> 
+> ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+> 
+> 
+> fsl-ehci fsl-ehci: Freescale On-Chip EHCI Host Controller
+> 
+> 
+> fsl-ehci fsl-ehci: new USB bus registered, assigned bus number 1
+> 
+> 
+> fsl-ehci fsl-ehci: irq 93, io base 0x80080000
+> 
+> 
+> fsl-ehci fsl-ehci: USB 2.0 started, EHCI 1.00
+> 
+> 
+> hub 1-0:1.0: USB hub found
+> 
+> 
+> hub 1-0:1.0: 1 port detected
+> 
+> 
+> fsl-ehci fsl-ehci.0: Freescale On-Chip EHCI Host Controller
+> 
+> 
+> fsl-ehci fsl-ehci.0: new USB bus registered, assigned bus number 2
+> 
+> 
+> fsl-ehci fsl-ehci.0: irq 92, io base 0x80090000
+> 
+> 
+> fsl-ehci fsl-ehci.0: USB 2.0 started, EHCI 1.00
+> 
+> 
+> hub 2-0:1.0: USB hub found
+> 
+> 
+> hub 2-0:1.0: 1 port detected
+> 
+> 
+> Initializing USB Mass Storage driver...
+> 
+> 
+> usbcore: registered new interface driver usb-storage
+> 
+> 
+> USB Mass Storage support registered.
+> 
+> 
+> ARC USBOTG Device Controller driver (1 August 2005)
+> 
+> 
+> mice: PS/2 mouse device common for all mice
+> 
+> 
+> input: mxs-kbd as /devices/platform/mxs-kbd.0/input/input0
+> 
+> 
+> input: MXS touchscreen as /devices/virtual/input/input1
+> 
+> 
+> rtc-isl1208 0-006f: chip found, driver version 0.3
+> 
+> 
+> rtc-isl1208 0-006f: rtc core: registered rtc-isl1208 as rtc0
+> 
+> 
+> MXS RTC driver v1.0 hardware v2.3.0
+> 
+> 
+> mxs-rtc mxs-rtc.0: rtc core: registered mxs-rtc as rtc1
+> 
+> 
+> i2c /dev entries driver
+> 
+> 
+> IR NEC protocol handler initialized
+> 
+> 
+> IR RC5(x) protocol handler initialized
+> 
+> 
+> IR RC6 protocol handler initialized
+> 
+> 
+> IR JVC protocol handler initialized
+> 
+> 
+> IR Sony protocol handler initialized
+> 
+> 
+> Linux video capture interface: v2.00
+> 
+> 
+> mxs-pxp mxs-pxp.0: initialized
+> 
+> 
+> WARNING : No battery connected !
+> 
+> 
+> Aborting power driver initialization
+> 
+> 
+> mxs-battery: probe of mxs-battery.0 failed with error 1
+> 
+> 
+> mxs watchdog: initialized, heartbeat 19 sec
+> 
+> 
+> mxs-mmc: MXS SSP Controller MMC Interface driver
+> 
+> 
+> dcp dcp.0: DCP crypto enabled.!
+> 
+> 
+> usbcore: registered new interface driver hiddev
+> 
+> 
+> usbcore: registered new interface driver usbhid
+> 
+> 
+> usbhid: USB HID core driver
+> 
+> 
+> mxs-spdif mxs-spdif.0: MXS SPDIF Audio Transmitter
+> 
+> 
+> No device for codec mxs spdif
+> 
+> 
+> No device for DAI mxs spdif
+> 
+> 
+> No device for DAI mxs-saif
+> 
+> 
+> No device for DAI mxs-spdif
+> 
+> 
+> asoc: mxs spdif <-> mxs-spdif mapping ok
+> 
+> 
+> ALSA device list:
+> 
+> 
+>   #0: mxs-evk (mxs spdif)
+> 
+> 
+> TCP cubic registered
+> 
+> 
+> NET: Registered protocol family 17
+> 
+> 
+> can: controller area network core (rev 20090105 abi 8)
+> 
+> 
+> NET: Registered protocol family 29
+> 
+> 
+> can: raw protocol (rev 20090105)
+> 
+> 
+> can: broadcast manager protocol (rev 20090105 t)
+> 
+> 
+> regulator_init_complete: incomplete constraints, leaving vbus5v on
+> 
+> 
+> rtc-isl1208 0-006f: setting system clock to 2015-06-10 05:52:53 UTC (1433915573)
+> 
+> 
+> UBI error: ubi_io_read: error -74 while reading 258048 bytes from PEB 3029:4096, read 258048 bytes
+> 
+> 
+> UBI error: ubi_io_read: error -74 while reading 258048 bytes from PEB 3029:4096, read 258048 bytes
+> 
+> 
+> UBIFS error (pid 1): ubifs_recover_master_node: failed to recover master node
+> 
+It seems you got an ECC error when reading master node. For ECC error, there is
+no easy way to recover it. Maybe you could dump the bad LEB to see what is wrong
+with `ubidump', and fix it by hand.
+
+thanks,
+Sheng
+> 
+> List of all partitions:
+> 
+> 
+> 1f00           20480 mtdblock0 (driver?)
+> 
+> 
+> 1f01         1028096 mtdblock1 (driver?)
+> 
+> 
+> fe00         1000944 ubiblka (driver?)
+> 
+> 
+> No filesystem could mount root, tried:  ubifs
+> 
+> 
+> Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+> 
+> 
+> Backtrace: 
+> 
+> 
+> [<c0090284>] (dump_backtrace+0x0/0x114) from [<c03f3b6c>] (dump_stack+0x18/0x1c)
+> 
+> 
+>  r7:c0029a24 r6:00008000 r5:c7509006 r4:c0563578
+> 
+> 
+> [<c03f3b54>] (dump_stack+0x0/0x1c) from [<c03f3bd0>] (panic+0x60/0xdc)
+> 
+> 
+> [<c03f3b70>] (panic+0x0/0xdc) from [<c0008fe4>] (mount_block_root+0x1d8/0x218)
+> 
+> 
+>  r3:00000000 r2:00000020 r1:c7c27f78 r0:c04a5765
+> 
+> 
+> [<c0008e0c>] (mount_block_root+0x0/0x218) from [<c00091b4>] (prepare_namespace+0x94/0x1c4)
+> 
+> 
+> [<c0009120>] (prepare_namespace+0x0/0x1c4) from [<c00084e8>] (kernel_init+0x118/0x158)
+> 
+> 
+>  r5:c0028b28 r4:c05626a0
+> 
+> 
+> [<c00083d0>] (kernel_init+0x0/0x158) from [<c00aa5ec>] (do_exit+0x0/0x608)
+> 
+> 
+>  r5:c00083d0 r4:00000000
+> 
+> 
+> 
+> 
+> 
+> 
+> Is there anyway to fix this?
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
