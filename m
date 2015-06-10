@@ -1,14 +1,14 @@
-Received: from mail-wg0-x243.google.com ([2a00:1450:400c:c00::243])
+Received: from mail-la0-x242.google.com ([2a00:1450:4010:c03::242])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mmi-00057E-Ta
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:41 +0000
-Received: by wggx12 with SMTP id x12so8978403wgg.1
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:24 -0700 (PDT)
+ id 1Z2mmh-00056o-W8
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:40 +0000
+Received: by lamq1 with SMTP id q1so5958468lam.0
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:17 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 14/60] mtd: maps: lantiq-flash: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:28 +0200
-Message-Id: <1433968754-10651-15-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 08/60] mtd: devices: sst251: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:22 +0200
+Message-Id: <1433968754-10651-9-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -28,21 +28,23 @@ While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/maps/lantiq-flash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/devices/sst25l.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
-index 33d26f5..0cef3ba 100644
---- a/drivers/mtd/maps/lantiq-flash.c
-+++ b/drivers/mtd/maps/lantiq-flash.c
-@@ -161,7 +161,7 @@ ltq_mtd_probe(struct platform_device *pdev)
- 		return -ENXIO;
- 	}
+diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
+index c63ecbc..3928014 100644
+--- a/drivers/mtd/devices/sst25l.c
++++ b/drivers/mtd/devices/sst25l.c
+@@ -374,9 +374,8 @@ static int sst25l_probe(struct spi_device *spi)
+ 	data = dev_get_platdata(&spi->dev);
+ 	if (data && data->name)
+ 		flash->mtd.name = data->name;
+-	else
+-		flash->mtd.name = dev_name(&spi->dev);
  
--	ltq_mtd->mtd->owner = THIS_MODULE;
-+	ltq_mtd->mtd->dev.parent = &pdev->dev;
- 
- 	cfi = ltq_mtd->map->fldrv_priv;
- 	cfi->addr_unlock1 ^= 1;
++	flash->mtd.dev.parent   = &spi->dev;
+ 	flash->mtd.type		= MTD_NORFLASH;
+ 	flash->mtd.flags	= MTD_CAP_NORFLASH;
+ 	flash->mtd.erasesize	= flash_info->erase_size;
 -- 
 2.4.0
