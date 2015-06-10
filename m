@@ -1,14 +1,14 @@
-Received: from mail-la0-x242.google.com ([2a00:1450:4010:c03::242])
+Received: from mail-wg0-x241.google.com ([2a00:1450:400c:c00::241])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mmh-00056o-W8
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:40 +0000
-Received: by lamq1 with SMTP id q1so5958468lam.0
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:17 -0700 (PDT)
+ id 1Z2mmc-00056T-A4
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:39 +0000
+Received: by wggx12 with SMTP id x12so8976352wgg.3
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:12 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 08/60] mtd: devices: sst251: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:22 +0200
-Message-Id: <1433968754-10651-9-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 05/60] mtd: devices: m25p80: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:19 +0200
+Message-Id: <1433968754-10651-6-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -24,27 +24,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Fix a bug where mtd parent device symlinks aren't shown in sysfs.
 
-While at it, make use of the default owner value set by mtdcore.
-
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/devices/sst25l.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/devices/m25p80.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-index c63ecbc..3928014 100644
---- a/drivers/mtd/devices/sst25l.c
-+++ b/drivers/mtd/devices/sst25l.c
-@@ -374,9 +374,8 @@ static int sst25l_probe(struct spi_device *spi)
- 	data = dev_get_platdata(&spi->dev);
- 	if (data && data->name)
- 		flash->mtd.name = data->name;
--	else
--		flash->mtd.name = dev_name(&spi->dev);
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 3af137f..dfa6ee0 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -206,6 +206,7 @@ static int m25p_probe(struct spi_device *spi)
  
-+	flash->mtd.dev.parent   = &spi->dev;
- 	flash->mtd.type		= MTD_NORFLASH;
- 	flash->mtd.flags	= MTD_CAP_NORFLASH;
- 	flash->mtd.erasesize	= flash_info->erase_size;
+ 	spi_set_drvdata(spi, flash);
+ 	flash->mtd.priv = nor;
++	flash->mtd.dev.parent = &spi->dev;
+ 	flash->spi = spi;
+ 
+ 	if (spi->mode & SPI_RX_QUAD)
 -- 
 2.4.0
