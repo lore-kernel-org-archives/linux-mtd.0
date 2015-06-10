@@ -1,12 +1,13 @@
 Received: from mailrelay110.isp.belgacom.be ([195.238.20.137])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2iv1-0001yO-Ei
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 16:32:01 +0000
+ id 1Z2iv1-00020m-5F
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 16:32:00 +0000
 From: Fabian Frederick <fabf@skynet.be>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1 linux-next] mtd/ftl: use swap() in copy_erase_unit()
-Date: Wed, 10 Jun 2015 18:31:06 +0200
-Message-Id: <1433953867-23429-1-git-send-email-fabf@skynet.be>
+Subject: [PATCH 1/1 linux-next] mtd: cfi_cmdset_0002: use swap() in
+ cfi_cmdset_0002()
+Date: Wed, 10 Jun 2015 18:31:32 +0200
+Message-Id: <1433953893-23547-1-git-send-email-fabf@skynet.be>
 Cc: Fabian Frederick <fabf@skynet.be>, Julia Lawall <Julia.Lawall@lip6.fr>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
@@ -25,27 +26,26 @@ Thanks to Julia Lawall for Coccinelle scripting support.
 
 Signed-off-by: Fabian Frederick <fabf@skynet.be>
 ---
- drivers/mtd/ftl.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
-index dabf084..9fb3b0d 100644
---- a/drivers/mtd/ftl.c
-+++ b/drivers/mtd/ftl.c
-@@ -571,12 +571,8 @@ static int copy_erase_unit(partition_t *part, uint16_t srcunit,
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index c3624eb..9dca881 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -615,11 +615,9 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
  
+ 				for (i=0; i<cfi->cfiq->NumEraseRegions / 2; i++) {
+ 					int j = (cfi->cfiq->NumEraseRegions-1)-i;
+-					__u32 swap;
  
-     /* Update the maps and usage stats*/
--    i = xfer->EraseCount;
--    xfer->EraseCount = eun->EraseCount;
--    eun->EraseCount = i;
--    i = xfer->Offset;
--    xfer->Offset = eun->Offset;
--    eun->Offset = i;
-+    swap(xfer->EraseCount, eun->EraseCount);
-+    swap(xfer->Offset, eun->Offset);
-     part->FreeTotal -= eun->Free;
-     part->FreeTotal += free;
-     eun->Free = free;
+-					swap = cfi->cfiq->EraseRegionInfo[i];
+-					cfi->cfiq->EraseRegionInfo[i] = cfi->cfiq->EraseRegionInfo[j];
+-					cfi->cfiq->EraseRegionInfo[j] = swap;
++					swap(cfi->cfiq->EraseRegionInfo[i],
++					     cfi->cfiq->EraseRegionInfo[j]);
+ 				}
+ 			}
+ 			/* Set the default CFI lock/unlock addresses */
 -- 
 2.4.2
