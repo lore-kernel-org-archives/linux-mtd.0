@@ -1,14 +1,14 @@
-Received: from mail-wg0-x244.google.com ([2a00:1450:400c:c00::244])
+Received: from mail-wi0-x242.google.com ([2a00:1450:400c:c05::242])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mn5-0005E5-RQ
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:04 +0000
-Received: by wggy19 with SMTP id y19so8968544wgg.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:45 -0700 (PDT)
+ id 1Z2mn4-0005DV-7f
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:02 +0000
+Received: by wivr20 with SMTP id r20so11949099wiv.1
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:43 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 34/60] mtd: nand: gpio: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:48 +0200
-Message-Id: <1433968754-10651-35-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 32/60] mtd: nand: fsl_upm: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:46 +0200
+Message-Id: <1433968754-10651-33-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -24,25 +24,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Fix a bug where parent device symlinks aren't shown in sysfs.
 
-While at it, make use of the default owner value set by mtdcore.
+While at it, make use of the default owner set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/gpio.c | 2 +-
+ drivers/mtd/nand/fsl_upm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 73c4048..9ab97f9 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -275,7 +275,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 	chip->cmd_ctrl		= gpio_nand_cmd_ctrl;
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+index 72755d7..d326369 100644
+--- a/drivers/mtd/nand/fsl_upm.c
++++ b/drivers/mtd/nand/fsl_upm.c
+@@ -176,7 +176,7 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 		fun->chip.dev_ready = fun_chip_ready;
  
- 	gpiomtd->mtd_info.priv	= chip;
--	gpiomtd->mtd_info.owner	= THIS_MODULE;
-+	gpiomtd->mtd_info.dev.parent = &pdev->dev;
+ 	fun->mtd.priv = &fun->chip;
+-	fun->mtd.owner = THIS_MODULE;
++	fun->mtd.dev.parent = fun->dev;
  
- 	platform_set_drvdata(pdev, gpiomtd);
- 
+ 	flash_np = of_get_next_child(upm_np, NULL);
+ 	if (!flash_np)
 -- 
 2.4.0
