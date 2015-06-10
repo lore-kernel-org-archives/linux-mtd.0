@@ -1,12 +1,24 @@
-From: Murali Karicheri <m-karicheri2@ti.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <wsa@the-dreams.de>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mtd: nand: davinci: add support for 4K page size nand devices.
-Date: Wed, 10 Jun 2015 03:27:56 -0400
-Message-ID: <1433921276-13242-1-git-send-email-m-karicheri2@ti.com>
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2aUY-0002OE-Tw
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 07:32:08 +0000
+Received: by wgez8 with SMTP id z8so28767408wge.0
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 00:31:43 -0700 (PDT)
+Message-ID: <5577E7DC.9000707@ultimaker.com>
+Date: Wed, 10 Jun 2015 09:31:40 +0200
+From: Roy Spliet <r.spliet@ultimaker.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Murali Karicheri <m-karicheri2@ti.com>, Hao Zhang <hzhang@ti.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v2] mtd: nand: Sunxi calculate timing cfg
+References: <1433849498-3270-1-git-send-email-r.spliet@ultimaker.com>	<20150609142308.0fd0952a@bbrezillon>	<5576E7C2.10604@ultimaker.com>
+ <20150609162007.7b19e8e2@bbrezillon>
+In-Reply-To: <20150609162007.7b19e8e2@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,63 +28,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-K2L EVM uses NAND with 4K page size. This patch add support for
-ECC layout requires to enable Micron MT29F16G08ADBCAH4 NAND available
-on this EVM.
+Hey Boris!
 
-Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
-Signed-off-by: Hao Zhang <hzhang@ti.com>
----
- drivers/mtd/nand/davinci_nand.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+Op 09-06-15 om 16:20 schreef Boris Brezillon:
+> On Tue, 09 Jun 2015 15:18:58 +0200
+> Roy Spliet<r.spliet@ultimaker.com>  wrote:
+>
+>>   >> +
+>>   >> +static s32 sunxi_nand_lookup_timing(const s32 *lut, lut, u32
+>> period, u32 clk_period)
+>>   > I'm not sure the period name is appropriate here, what you're actually
+>>   > passing is the timing you're expecting.
+>>   > How about renaming it 'min_timing'
+>>
+>> What it encodes is the minimum or maximum time or delay for given timing
+>> parameter in picoseconds. Given this definition, I think period actually
+>> describes the parameter better than "min_timing". Alternatively, I could go
+>> for period_ps or perhaps timing_period_ps (with matching clk_period_ps).
+> Hm, I don't agree here. From my POV, a period is something used to
+> describe cyclic operations. If you take a clk, the period encodes the
+> time required a clk cycle (a rising and a falling edge).
+> Here the timings you're passing are not cyclic at all.
+For the sake of argument: within a cyclic event (wave theory) you are 
+quite right with
+this definition: the period describes the time to complete one cycle (or 
+oscillation).
+However, in English[1] a period is simply a length of time, carrying no 
+further
+specification about any recurrence of events.
+Having said that, you're the person who still has to look at this code 
+three weeks from
+now. I personally find "timing" a confusing name because it is more 
+abstract than
+what the value holds (the interval/period/duration of a memory "state"), 
+but if you find
+that clearer, it's your final call!
+>>   >> +{
+>>   >> +    u32 clks = (period + clk_period - 1) / clk_period;
+>>   >     u32 clks = DIV_ROUND_UP(period, clk_period);
+>>   >
+>>   > And again, IMO the variable name does not match what it's really
+>>   > encoding. How about div or divisor ?
+>>
+>> This value encodes the period in number of clock cycles. If period_ps is
+>> acceptable, how about period_cycles here?
+> I'd rather use clk_cycles, or just cycles then.
+clk_cycles it is.
+>
+>>   >> +    tADL = DIV_ROUND_UP(timings->tADL_min, min_clk_period) >> 3;
+>>   >> +    tWHR = DIV_ROUND_UP(timings->tWHR_min, min_clk_period) >> 3;
+>>   >> +    tRHW = sunxi_nand_lookup_timing(tRHW_lut, timings->tRHW_min,
+>>   >> +            min_clk_period);
+>>   >> +    tCAD = 0x7;
+>>   >> +    chip->timing_cfg = (tWB & 0x3) |
+>>   >> +               (tADL & 0x3) << 2 |
+>>   >> +               (tWHR & 0x3) << 4 |
+>>   >> +               (tRHW & 0x3) << 6 |
+>>   >> +               (tCAD & 0x7) << 8;
+>>   >> +    /* \todo A83 has some more bits for CDQSS, CS, CLHZ, CCS, WC */
+>>   > Use the "TODO:" or "FIXME:" keywords so that people greping on these
+>>   > pattern will be able to find them.
+>>
+>> I used \todo as the (assumed) preferred notation for doxygen (... but
+>> omitted
+>> the second * denoting doxygen documentation formatting) Eclipse picks it up
+>> fine, but if you prefer TODO: for your toolchain, it's the same to me.
+> It depends on the kernel coding style rules, and AFAIR they use the
+> TODO and FIXME (in capital letters) keywords.
+Works for me.
+>>   >>      /*
+>>   >> -     * TODO: replace these magic values with proper flags as soon as we
+>>   >> -     * know what they are encoding.
+>>   >> +     * TODO: replace this magic values with EDO flag
+>>   >>       */
+>>   >>      writel(0x100, nfc->regs + NFC_REG_TIMING_CTL);
+>>   >> -    writel(0x7ff, nfc->regs + NFC_REG_TIMING_CFG);
+>>   > Are you planning to post another patch defining the EDO mode flag and
+>>   > using it instead of keeping this magic value (note that I'm not
+>>   > asking you to make this change in the same patch, but that would be
+>>   > great to have it in the same patch series) ?
+>>
+>> I agree that it would be good, but it is derived from the 6th ID byte, which
+>> I have already seen omitted in several datasheets. I'm not sure if we can do
+>> this without at least offering the option for overriding this value in
+>> the DT?
+> Actually, I was just asking for a flag definition. You can keep the
+> assignment here till we find a proper solution to extract it from the
+> read-id (or ONFI information).
+I hope to send you a V3 today once we get that bike shed painted :-). Yours,
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index feb6d18..d6d92e3 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -520,6 +520,31 @@ static struct nand_ecclayout hwecc4_2048 = {
- 	},
- };
- 
-+/* An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
-+ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-+ * and not overlapping the default BBT markers.
-+ */
-+static struct nand_ecclayout hwecc4_4096 = {
-+	.eccbytes = 80,
-+	.eccpos = {
-+		/* at the end of spare sector */
-+		48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
-+		58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
-+		68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
-+		78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
-+		88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
-+		98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
-+		108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
-+		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
-+		},
-+	.oobfree = {
-+		/* 2 bytes at offset 0 hold manufacturer badblock markers */
-+		{.offset = 2, .length = 46, },
-+		/* 5 bytes at offset 8 hold BBT markers */
-+		/* 8 bytes at offset 16 hold JFFS2 clean markers */
-+	},
-+};
-+
- #if defined(CONFIG_OF)
- static const struct of_device_id davinci_nand_of_match[] = {
- 	{.compatible = "ti,davinci-nand", },
-@@ -796,6 +821,11 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
- 			goto syndrome_done;
- 		}
-+		if (chunks == 8) {
-+			info->ecclayout = hwecc4_4096;
-+			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
-+			goto syndrome_done;
-+		}
- 
- 		/* 4KiB page chips are not yet supported. The eccpos from
- 		 * nand_ecclayout cannot hold 80 bytes and change to eccpos[]
+Roy
+
+[1] http://dictionary.cambridge.org/dictionary/business-english/period
+
 -- 
-1.9.1
+
+
+IMAGINE IT >> MAKE IT
+
+Meet us online at Twitter <http://twitter.com/ultimaker>, Facebook 
+<http://facebook.com/ultimaker>, Google+ <http://google.com/+Ultimaker>
+
+www.ultimaker.com
