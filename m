@@ -1,14 +1,14 @@
-Received: from mail-wi0-x243.google.com ([2a00:1450:400c:c05::243])
+Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mnX-0003sD-Ek
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:32 +0000
-Received: by wibbw19 with SMTP id bw19so11979350wib.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:40:13 -0700 (PDT)
+ id 1Z2mnW-0003r6-Cr
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:31 +0000
+Received: by wibbw19 with SMTP id bw19so11978688wib.2
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:40:09 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 60/60] staging: mt29f_spinand: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:39:14 +0200
-Message-Id: <1433968754-10651-61-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 56/60] mtd: onenand: generic: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:39:10 +0200
+Message-Id: <1433968754-10651-57-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -28,24 +28,24 @@ While at it, take advantage of the default owner and name values set by
 mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 3 +--
+ drivers/mtd/onenand/generic.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index 7285c64..c066ee0 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -912,8 +912,7 @@ static int spinand_probe(struct spi_device *spi_nand)
- 	dev_set_drvdata(&spi_nand->dev, mtd);
+diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
+index 32a216d..9ed801b 100644
+--- a/drivers/mtd/onenand/generic.c
++++ b/drivers/mtd/onenand/generic.c
+@@ -60,9 +60,8 @@ static int generic_onenand_probe(struct platform_device *pdev)
+ 	info->onenand.mmcontrol = pdata ? pdata->mmcontrol : NULL;
+ 	info->onenand.irq = platform_get_irq(pdev, 0);
  
- 	mtd->priv = chip;
--	mtd->name = dev_name(&spi_nand->dev);
--	mtd->owner = THIS_MODULE;
-+	mtd->dev.parent = &spi_nand->dev;
- 	mtd->oobsize = 64;
+-	info->mtd.name = dev_name(&pdev->dev);
++	info->mtd.dev.parent = &pdev->dev;
+ 	info->mtd.priv = &info->onenand;
+-	info->mtd.owner = THIS_MODULE;
  
- 	if (nand_scan(mtd, 1))
+ 	if (onenand_scan(&info->mtd, 1)) {
+ 		err = -ENXIO;
 -- 
 2.4.0
