@@ -1,15 +1,14 @@
-Received: from mail-wi0-x242.google.com ([2a00:1450:400c:c05::242])
+Received: from mail-wg0-x241.google.com ([2a00:1450:400c:c00::241])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mnF-0003oO-Pm
- for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:14 +0000
-Received: by wivr20 with SMTP id r20so11951122wiv.1
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:55 -0700 (PDT)
+ id 1Z2mnK-0003oQ-5s
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:40:18 +0000
+Received: by wggx12 with SMTP id x12so8981973wgg.3
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:56 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 43/60] mtd: nand: omap2: show parent device structure in
- sysfs
-Date: Wed, 10 Jun 2015 22:38:57 +0200
-Message-Id: <1433968754-10651-44-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 44/60] mtd: nand: orion_nand: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:58 +0200
+Message-Id: <1433968754-10651-45-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -23,30 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make sure the device structure is properly shown in sysfs by properly
-filling in dev.parent.
+Fix a bug where parent device symlinks aren't shown in sysfs.
 
-While at it, make use of the default owner and name values set by
-mtdcore.
+While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/omap2.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/nand/orion_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 60fa899..7fbf009 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1684,8 +1684,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	info->ecc_opt		= pdata->ecc_opt;
- 	mtd			= &info->mtd;
- 	mtd->priv		= &info->nand;
--	mtd->name		= dev_name(&pdev->dev);
--	mtd->owner		= THIS_MODULE;
-+	mtd->dev.parent		= &pdev->dev;
- 	nand_chip		= &info->nand;
- 	nand_chip->ecc.priv	= NULL;
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index c3c6d30..81897ef 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -124,7 +124,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 	}
  
+ 	mtd->priv = nc;
+-	mtd->owner = THIS_MODULE;
++	mtd->dev.parent = &pdev->dev;
+ 
+ 	nc->priv = board;
+ 	nc->IO_ADDR_R = nc->IO_ADDR_W = io_base;
 -- 
 2.4.0
