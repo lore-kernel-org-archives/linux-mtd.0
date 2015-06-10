@@ -1,29 +1,26 @@
-Date: Wed, 10 Jun 2015 12:40:57 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Subject: Re: [RFC PATCH 00/18] kthreads/signal: Safer kthread API and signal
- handling
-Message-ID: <20150610104057.GE3644@twins.programming.kicks-ass.net>
-References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
- <20150605162216.GK19282@twins.programming.kicks-ass.net>
- <20150609061446.GV21465@mtj.duckdns.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150609061446.GV21465@mtj.duckdns.org>
-Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
- Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
- Richard Weinberger <richard@nod.at>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Oleg Nesterov <oleg@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
- linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
- Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
- linux-mtd@lists.infradead.org, Petr Mladek <pmladek@suse.cz>,
- Linus Torvalds <torvalds@linux-foundation.org>, linux-api@vger.kernel.org,
- live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Anna Schumaker <anna.schumaker@netapp.com>
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2dpN-0004Nd-Rd
+ for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 11:05:50 +0000
+Message-ID: <1433934324.14092.15.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH RESEND] ubifs: Introduce a mount option of force_atime.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Date: Wed, 10 Jun 2015 14:05:24 +0300
+In-Reply-To: <557812A4.8020409@cn.fujitsu.com>
+References: <1433758060-18614-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1433831809.28854.17.camel@sauron.fi.intel.com> <55769D97.3010602@nod.at>
+ <5577AC03.9060909@cn.fujitsu.com>
+ <1433928078.14092.1.camel@sauron.fi.intel.com>
+ <55780D1C.6080907@cn.fujitsu.com>
+ <1433931934.14092.11.camel@sauron.fi.intel.com>
+ <557812A4.8020409@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, adrian.hunter@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,59 +30,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 09, 2015 at 03:14:46PM +0900, Tejun Heo wrote:
-> Hey, Peter.
-> 
-> On Fri, Jun 05, 2015 at 06:22:16PM +0200, Peter Zijlstra wrote:
-> > There's a lot more problems with workqueues:
-> > 
-> >  - they're not regular tasks and all the task controls don't work on
-> >    them. This means all things scheduler, like cpu-affinity, nice, and
-> >    RT/deadline scheduling policies. Instead there is some half baked
-> >    secondary interface for some of these.
-> 
-> Because there's a pool of them and the workers come and go
-> dynamically.  There's no way around it.  The attributes just have to
-> be per-pool.
-
-Sure, but there's a few possible ways to still make that work with the
-regular syscall interfaces.
-
- 1) propagate the change to any one worker to all workers of the same
-    pool
-
- 2) have a common ancestor task for each pool, and allow changing that.
-    You can combine that with either the propagation like above, or a
-    rule that workers kill themselves if they observe their parent
-    changed (eg. check a attribute sequence count after each work).
-
-> >    But this also very much includes things like cgroups, which brings me
-> >    to the second point.
+On Wed, 2015-06-10 at 18:34 +0800, Dongsheng Yang wrote:
+> On 06/10/2015 06:25 PM, Artem Bityutskiy wrote:
+> > On Wed, 2015-06-10 at 18:10 +0800, Dongsheng Yang wrote:
+> >> On 06/10/2015 05:21 PM, Artem Bityutskiy wrote:
+> >>> On Wed, 2015-06-10 at 11:16 +0800, Dongsheng Yang wrote:
+> >>>> Therefore, I introduced a new option named as force_atime in ubifs.
+> >>>> That's a ubifs-dependent opiton and it works as a main switch, in
+> >>>> a higher level compared with atime and noatime. If force_atime, we
+> >>>> support the atime-related flags. Otherwise, we don't care about all of
+> >>>> them in flags and don't support atime anyway.
+> >>>
+> >>> How bad is it to just default to relatime like other file-systems do,
+> >>> comparing to what we have now?
+> >>
+> >> Ha, yes, that's a problem. I read it from wiki that the author think
+> >> it's bad for ubifs. But I did not do a measure about it.
 > >
-> >  - its oblivious to cgroups (as it is to RT priority for example) both
-> >    leading to priority inversion. A work enqueued from a deep/limited
-> >    cgroup does not inherit the task's cgroup. Instead this work is ran
-> >    from the root cgroup.
-> > 
-> >    This breaks cgroup isolation, more significantly so when a large part
-> >    of the actual work is done from workqueues (as some workloads end up
-> >    being). Instead of being able to control the work, it all ends up in
-> >    the root cgroup outside of control.
+> > Since I am one of the authors, I think we were mostly looking at the
+> > full atime support, and did not really look at relatime.
+> >
+> >> In theory, yes, lots of writing would damage the flash. So I think
+> >> just make it optional to user is a flexible way to do it. Even we
+> >> want to make the default to relatime, I think it's better to keep
+> >> the compatibility for a period and provide a force_atime to user.
+> >>
+> >> When lots of users said "okey, we are mostly choosing force_atime in our
+> >> use cases.". I believe that's a safe way to make ubifs supporting
+> >> atime by default.
+> >
+> > Let me make a step back. So what I hear is that the problem is that you
+> > cannot find the original mount options. For example, when you see the
+> > MNT_RELATIME flag, you do not know whether it was specified by the user
+> > or it was VFS adding this flag. Is this correct?
+> >
+> > If it is correct, then I think we need to look at a VFS-level solution.
+> > If the above is the only problem, then I'd say that introducing a custom
+> > "force_atime" is a work-around for VFS limitations.
 > 
-> cgroup support will surely be added but I'm not sure we can or should
-> do inheritance automatically.  
+> That's correct. Yes, I really want to solve it in vfs at first. But
+> later, just submited this patch as a Problem-solved for us. Because I
+> thought the force_atime would disappear when we decide to support
+> atime by default in future.
+> 
+> Besides a change in VFS would cause more discussion, after a trade-off,
+> I submitted this patch for ubifs. :)
+> 
+> But yes, there is really, at leat, a TODO entry for VFS in this
+> scenario I think. If you think we need to do it rather than a
+> work-around as what this patch did. I will think a better way
+> in VFS for that. :)
 
-I think its a good default to inherit stuff from the task that queued
-it.
+Yes, I think a custom mount option should be the last resort solution,
+for the case when other options failed.
 
-> Using a different API doesn't solve the
-> problem automatically either.  A lot of kthreads are shared
-> system-wide after all.  We'll need an abstraction layer to deal with
-> that no matter where we do it.
+One way would be to push this assignment down to individual
+file-systems. Another way would be to have the original flags preserved
+and passed to the file-system.
 
-Yes, hardware threads are global, but so is the hardware. Those are not
-a problem provided the thread map 1:1 with the actual devices and do not
-service multiple devices from a single thread.
-
-Once you start combining things you start to get all the above problems
-all over again.
+May be you can find a better way.
