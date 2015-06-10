@@ -1,13 +1,32 @@
-From: Murali Karicheri <m-karicheri2@ti.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <wsa@the-dreams.de>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH - v1] mtd: nand: davinci: add support for 4K page size nand
- devices.
-Date: Wed, 10 Jun 2015 05:02:18 -0400
-Message-ID: <1433926938-14092-1-git-send-email-m-karicheri2@ti.com>
+Date: Wed, 10 Jun 2015 11:05:49 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Petr Mladek <pmladek@suse.cz>
+Subject: Re: [RFC PATCH 09/18] kthread: Make it easier to correctly sleep in
+ iterant kthreads
+Message-ID: <20150610090549.GC3644@twins.programming.kicks-ass.net>
+References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
+ <1433516477-5153-10-git-send-email-pmladek@suse.cz>
+ <20150605161021.GJ19282@twins.programming.kicks-ass.net>
+ <20150608100107.GA3135@pathway.suse.cz>
+ <1433763595.1495.35.camel@twins>
+ <20150609152526.GB9409@pathway.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Murali Karicheri <m-karicheri2@ti.com>, Hao Zhang <hzhang@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150609152526.GB9409@pathway.suse.cz>
+Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
+ Richard Weinberger <richard@nod.at>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Oleg Nesterov <oleg@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
+ linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
+ Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
+ live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Anna Schumaker <anna.schumaker@netapp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,77 +36,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-K2L EVM uses NAND with 4K page size. This patch add support for
-ECC layout requires to enable Micron MT29F16G08ADBCAH4 NAND available
-on this EVM.
+On Tue, Jun 09, 2015 at 05:25:26PM +0200, Petr Mladek wrote:
+> On Mon 2015-06-08 13:39:55, Peter Zijlstra wrote:
+> > On Mon, 2015-06-08 at 12:01 +0200, Petr Mladek wrote:
+> > 
+> > > Just to be sure. Do you suggest to use TASK_IDLE everywhere in
+> > > kthreads or only when the uninterruptible sleep is really needed?
+> >
+> > Always, only use INTERRUPTIBLE when you're actually interruptible, that
+> > is you want signals or such muck to terminate your wait.
+> 
+> I like that TASK_IDLE clearly describes that the state of the task.
+> I am just curious. Is there any particular advantage of using
+> uninterruptible sleep over the interruptible one, please?
 
-Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
-Signed-off-by: Hao Zhang <hzhang@ti.com>
----
- - v1 - Remove the comment as well from the code as now 4K page
-   is supported
- drivers/mtd/nand/davinci_nand.c | 42 +++++++++++++++++++++++++++++------------
- 1 file changed, 30 insertions(+), 12 deletions(-)
+I think, given how all schedule() calls should be inside a loop testing
+their sleep condition, and one has to assume spurious wakeups anyhow,
+one can make an argument for removing the distinction.
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index feb6d18..90b177b 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -520,6 +520,31 @@ static struct nand_ecclayout hwecc4_2048 = {
- 	},
- };
- 
-+/* An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
-+ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-+ * and not overlapping the default BBT markers.
-+ */
-+static struct nand_ecclayout hwecc4_4096 = {
-+	.eccbytes = 80,
-+	.eccpos = {
-+		/* at the end of spare sector */
-+		48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
-+		58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
-+		68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
-+		78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
-+		88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
-+		98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
-+		108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
-+		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
-+		},
-+	.oobfree = {
-+		/* 2 bytes at offset 0 hold manufacturer badblock markers */
-+		{.offset = 2, .length = 46, },
-+		/* 5 bytes at offset 8 hold BBT markers */
-+		/* 8 bytes at offset 16 hold JFFS2 clean markers */
-+	},
-+};
-+
- #if defined(CONFIG_OF)
- static const struct of_device_id davinci_nand_of_match[] = {
- 	{.compatible = "ti,davinci-nand", },
-@@ -796,18 +821,11 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
- 			goto syndrome_done;
- 		}
--
--		/* 4KiB page chips are not yet supported. The eccpos from
--		 * nand_ecclayout cannot hold 80 bytes and change to eccpos[]
--		 * breaks userspace ioctl interface with mtd-utils. Once we
--		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
--		 * for the 4KiB page chips.
--		 *
--		 * TODO: Note that nand_ecclayout has now been expanded and can
--		 *  hold plenty of OOB entries.
--		 */
--		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
--				"for 4KiB-page NAND\n");
-+		if (chunks == 8) {
-+			info->ecclayout = hwecc4_4096;
-+			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
-+			goto syndrome_done;
-+		}
- 		ret = -EIO;
- 		goto err;
- 
--- 
-1.9.1
+That said, typically INTERRUPTIBLE means 'capable of handling signals
+while waiting for $foo', and as said elsewhere in this thread, kthreads
+should not really be having signals.
+
+In that spirit, I think UNINTERRUPTIBLE is the right sleep.
+
+> I ask because making freezable kthreads is quite tricky. You need to
+> call try_to_freeze() after each schedule or call freezable_* variants
+> of schedule(). I think that it is easy to make a mistake. I wonder if
+> it might be more elegant to use interruptible sleep whenever possible,
+> send the fake signal also to kthreads and force them moving into some
+> location where the freeze is safe and handled.
+
+I don't think that's really a concern here, you have an absolutely
+perfect freeze point and freezable_schedule() is fine.
+> 
+> > > IMHO, we should not use TASK_IDLE in freezable kthreads because
+> > > it would break freezing.
+> > 
+> > How so? The task is IDLE, its not doing anything.
+> 
+> Well, it might cause the freeze. I have just double checked this
+> with ubi_thread(). It calls set_freezable().
+
+> I did the following change:
+> 
+> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+> index 16214d3d57a4..d528fa5e93ba 100644
+> --- a/drivers/mtd/ubi/wl.c
+> +++ b/drivers/mtd/ubi/wl.c
+> @@ -1428,7 +1428,7 @@ int ubi_thread(void *u)
+>                 spin_lock(&ubi->wl_lock);
+>                 if (list_empty(&ubi->works) || ubi->ro_mode ||
+>                     !ubi->thread_enabled || ubi_dbg_is_bgt_disabled(ubi)) {
+> -                       set_current_state(TASK_INTERRUPTIBLE);
+> +                       set_current_state(TASK_IDLE);
+>                         spin_unlock(&ubi->wl_lock);
+>                         schedule();
+>                         continue;
+
+
+> or use in ubi_thread()
+> 
+> 		freezable_schedule()
+
+This
+
+> or always ignore freezing when the task sets TASK_IDLE.
+
+Can't, because they might get woken up, in which case they need to end
+up in the fridge.
+
+> > And this is the arch typical freeze point if ever there was one, you're
+> > checking kthread_stop, if we can terminate the kthread, we can certainly
+> > get frozen.
+> 
+> It makes sense. The tasks should be in some sane state when it goes
+> into the idle state. I hope that people will not misuse it too much.
+
+Do your utmost bestest to put in as many assertions as you can to avoid
+abuse.
