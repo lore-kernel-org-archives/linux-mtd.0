@@ -1,14 +1,14 @@
-Received: from mail-wg0-x243.google.com ([2a00:1450:400c:c00::243])
+Received: from mail-wi0-x244.google.com ([2a00:1450:400c:c05::244])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mmx-00059i-TS
+ id 1Z2mmy-0005AG-Cj
  for linux-mtd@lists.infradead.org; Wed, 10 Jun 2015 20:39:57 +0000
-Received: by wggx12 with SMTP id x12so8979061wgg.3
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:34 -0700 (PDT)
+Received: by wivz2 with SMTP id z2so11955993wiv.0
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 13:39:36 -0700 (PDT)
 From: Frans Klaver <fransklaver@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 24/60] mtd: nand: bcm47xxnflash: show parent device in sysfs
-Date: Wed, 10 Jun 2015 22:38:38 +0200
-Message-Id: <1433968754-10651-25-git-send-email-fransklaver@gmail.com>
+Subject: [PATCH v2 25/60] mtd: nand: bf5xx_nand: show parent device in sysfs
+Date: Wed, 10 Jun 2015 22:38:39 +0200
+Message-Id: <1433968754-10651-26-git-send-email-fransklaver@gmail.com>
 In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Frans Klaver <fransklaver@gmail.com>,
@@ -28,21 +28,21 @@ While at it, make use of the default owner value set by mtdcore.
 
 Signed-off-by: Frans Klaver <fransklaver@gmail.com>
 ---
- drivers/mtd/nand/bcm47xxnflash/main.c | 2 +-
+ drivers/mtd/nand/bf5xx_nand.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
-index 461577c..9ba0c0f 100644
---- a/drivers/mtd/nand/bcm47xxnflash/main.c
-+++ b/drivers/mtd/nand/bcm47xxnflash/main.c
-@@ -34,7 +34,7 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+index 4d8d4ba..acec344 100644
+--- a/drivers/mtd/nand/bf5xx_nand.c
++++ b/drivers/mtd/nand/bf5xx_nand.c
+@@ -782,7 +782,7 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
+ 	/* initialise mtd info data struct */
+ 	mtd 		= &info->mtd;
+ 	mtd->priv	= chip;
+-	mtd->owner	= THIS_MODULE;
++	mtd->dev.parent = &pdev->dev;
  
- 	b47n->nand_chip.priv = b47n;
--	b47n->mtd.owner = THIS_MODULE;
-+	b47n->mtd.dev.parent = &pdev->dev;
- 	b47n->mtd.priv = &b47n->nand_chip; /* Required */
- 	b47n->cc = container_of(nflash, struct bcma_drv_cc, nflash);
- 
+ 	/* initialise the hardware */
+ 	err = bf5xx_nand_hw_init(info);
 -- 
 2.4.0
