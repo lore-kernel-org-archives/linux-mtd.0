@@ -1,19 +1,21 @@
-Date: Thu, 11 Jun 2015 17:38:45 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roy Spliet <r.spliet@ultimaker.com>
-Subject: Re: [PATCH v4 2/2] mtd: nand: sunxi: Set serial access mode correctly
-Message-ID: <20150611173845.650083f9@bbrezillon>
-In-Reply-To: <1434034637-9804-2-git-send-email-r.spliet@ultimaker.com>
-References: <1434034637-9804-1-git-send-email-r.spliet@ultimaker.com>
- <1434034637-9804-2-git-send-email-r.spliet@ultimaker.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z34r7-00030c-8X
+ for linux-mtd@lists.infradead.org; Thu, 11 Jun 2015 15:57:26 +0000
+From: Kamil Debski <Kamil.Debski@imgtec.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: NAND/OneNAND/SPI NAND bad block management
+Date: Thu, 11 Jun 2015 15:57:00 +0000
+Message-ID: <616819EF2EBFD445AEF36EFF651655B6AB8BB1@hhmail02.hh.imgtec.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux MTD <linux-mtd@lists.infradead.org>,
- Linux ARM kernel <linux-arm-kernel@lists.infradead.org>
+Cc: "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ Ionela Voinescu <Ionela.Voinescu@imgtec.com>,
+ "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>,
+ "peterpandong@micron.com" <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,88 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 11 Jun 2015 16:57:17 +0200
-Roy Spliet <r.spliet@ultimaker.com> wrote:
+Hi,
 
-> Replaces the hard coded "always use EDO" policy with that prescribed
-> by the ONFI 3.1 specification that EDO mode should always be used if tRC
-> is below 30ns.
-> 
-> Signed-off-by: Roy Spliet <r.spliet@ultimaker.com>
+I am currently working on the SPI NAND framework. I noticed that there was =
+quite a lot of discussion on this topic.=20
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+It seems that the necessary task to do first is to make some modification t=
+o the bad block management. It is necessary to separate it from the NAND co=
+re, as the same bad block handling would be used by the SPI NAND core.=20
 
-Thanks,
+My question regarding this is following. OneNAND core also needs BBM and im=
+plements it on its own. The design of BBM in OneNAND core is very similar t=
+o NAND core - there are also two files onenand_base.c and onenand_bbt.c.  T=
+he latter was actually derived from nand_bbt.c. I am pretty sure OneNAND wo=
+uld be also benefit from using a generic BBM. I did not find OneNAND mentio=
+ned in the previous discussion about separating bad block management from t=
+he NAND core [1]. Was there any reason why it was left out, or was it just =
+overlooked?
 
-Boris
+The file include/linux/mtd/bbm.h contains the struct bbm_info, which seems =
+as a good place to store the parameters and state of the BBM. I am not sure=
+ about creating a new struct nand_bbt for that reason; especially that stru=
+ct bbm_info is already used by the OneNAND core.  I would go for embedding =
+a struct bbm_info * in struct mtd_info, such that it wouldn't be necessary =
+to create wrappers.
 
-> 
-> V4:
-> - Simplify by pre-calculating the entire timing CTL register value
-> ---
->  drivers/mtd/nand/sunxi_nand.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index 79de4ef..26df48f 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -99,6 +99,9 @@
->  				 NFC_CMD_INT_ENABLE | \
->  				 NFC_DMA_INT_ENABLE)
->  
-> +/* define bit use in NFC_TIMING_CTL */
-> +#define NFC_TIMING_CTL_EDO	BIT(8)
-> +
->  /* define NFC_TIMING_CFG register layout */
->  #define NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD)		\
->  	((tWB) & 0x3) | (((tADL) & 0x3) << 2) |			\
-> @@ -226,6 +229,7 @@ struct sunxi_nand_chip {
->  	struct mtd_info mtd;
->  	unsigned long clk_rate;
->  	u32 timing_cfg;
-> +	u32 timing_ctl;
->  	int selected;
->  	int nsels;
->  	struct sunxi_nand_chip_sel sels[0];
-> @@ -412,6 +416,7 @@ static void sunxi_nfc_select_chip(struct mtd_info *mtd, int chip)
->  		}
->  	}
->  
-> +	writel(sunxi_nand->timing_ctl, nfc->regs + NFC_REG_TIMING_CTL);
->  	writel(sunxi_nand->timing_cfg, nfc->regs + NFC_REG_TIMING_CFG);
->  	writel(ctl, nfc->regs + NFC_REG_CTL);
->  
-> @@ -941,6 +946,13 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
->  	/* TODO: A83 has some more bits for CDQSS, CS, CLHZ, CCS, WC */
->  	chip->timing_cfg = NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD);
->  
-> +	/*
-> +	 * ONFI specification 3.1, paragraph 4.15.2 dictates that EDO data
-> +	 * output cycle timings shall be used if the host drives tRC less than
-> +	 * 30 ns.
-> +	 */
-> +	chip->timing_ctl = (timings->tRC_min < 30000) ? NFC_TIMING_CTL_EDO : 0;
-> +
->  	/* Convert min_clk_period from picoseconds to nanoseconds */
->  	min_clk_period = DIV_ROUND_UP(min_clk_period, 1000);
->  
-> @@ -1442,11 +1454,6 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, nfc);
->  
-> -	/*
-> -	 * TODO: replace this magic value with EDO flag
-> -	 */
-> -	writel(0x100, nfc->regs + NFC_REG_TIMING_CTL);
-> -
->  	ret = sunxi_nand_chips_init(dev, nfc);
->  	if (ret) {
->  		dev_err(dev, "failed to init nand chips\n");
+I am working on the patches and should send them out soon. I am quite new t=
+o mtd, so I am sure you'll have quite a few comments on this topic and the =
+patches :)
 
+Best wishes,
+Kamil Debski
 
+[1] http://lists.infradead.org/pipermail/linux-mtd/2015-January/057639.html
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Other useful links:
+- previous attempt at the SPI NAND framework by Ezequiel Garcia
+http://lists.infradead.org/pipermail/linux-mtd/2014-December/056763.html
+- successive attempt at the SPI NAND framework by Peter Pan
+http://lists.infradead.org/pipermail/linux-mtd/2015-January/057223.html
