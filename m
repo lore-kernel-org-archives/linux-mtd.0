@@ -1,23 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-vn0-x236.google.com ([2607:f8b0:400c:c0f::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2vz2-0007YX-JV
- for linux-mtd@lists.infradead.org; Thu, 11 Jun 2015 06:29:01 +0000
-Message-ID: <55792A92.2050707@nod.at>
-Date: Thu, 11 Jun 2015 08:28:34 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1Z2wA0-0003Q8-NV
+ for linux-mtd@lists.infradead.org; Thu, 11 Jun 2015 06:40:21 +0000
+Received: by vnbg7 with SMTP id g7so11461176vnb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 23:39:59 -0700 (PDT)
 MIME-Version: 1.0
-To: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH V3] drivers/mtd: add powernv flash MTD abstraction driver
-References: <1433219169-5115-1-git-send-email-cyrilbur@gmail.com>	
- <1433479201.3379.10.camel@cyril>	
- <CAFLxGvxM1V8EMmZotqhSUG-q0cy+NpufeksChjJrD0qSJCSB0g@mail.gmail.com>
- <1434001398.28304.3.camel@ellerman.id.au>
-In-Reply-To: <1434001398.28304.3.camel@ellerman.id.au>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Cyril Bur <cyrilbur@gmail.com>
+In-Reply-To: <CAC7eWMVyEyy3Y_qWU5qxOY4m9bm15u7Ga3sZrUyLqY_zgy=a8Q@mail.gmail.com>
+References: <CAC7eWMUvdiNFiiGqSkmv1qwFDUa52VZCCQds_BdnqocoskN+Qg@mail.gmail.com>
+ <CAC7eWMVyEyy3Y_qWU5qxOY4m9bm15u7Ga3sZrUyLqY_zgy=a8Q@mail.gmail.com>
+Date: Thu, 11 Jun 2015 08:39:59 +0200
+Message-ID: <CAFLxGvwGZAT1cLVX_Q5sdkoUEs=EhVGr0cknWLXuxFfW-biFmQ@mail.gmail.com>
+Subject: Re: Trouble with UBIFS
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Smitha Rathnam <rathnam.smitha@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 11.06.2015 um 07:43 schrieb Michael Ellerman:
-> On Fri, 2015-06-05 at 10:16 +0200, Richard Weinberger wrote:
->> On Fri, Jun 5, 2015 at 6:40 AM, Cyril Bur <cyrilbur@gmail.com> wrote:
->>> On Tue, 2015-06-02 at 14:26 +1000, Cyril Bur wrote:
->>>> Powerpc powernv platforms allow access to certain system flash devices
->>>> through a firmwarwe interface. This change adds an mtd driver for these
->>>> flash devices.
->>>>
->>>> Minor updates from Jeremy Kerr and Joel Stanley.
->>>>
->>>> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
->>>> Signed-off-by: Joel Stanley <joel@jms.id.au>
->>>> Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
->>>> ---
->>>> Hello Brian and MTD folk,
->>>> Could I please get an ACK for Michael to take this through the powerpc
->>>
->>> As we have some deadlines approaching, I am getting pressure to ensure
->>> this gets merged upstream as quickly as possible, please let me know if
->>> there is anything more which can be done.
->>
->> FYI, Brian is not available for the next 1.5 weeks.
->> So I fear this driver has to wait for the next merge window.
-> 
-> OK. We'll merge it via the powerpc tree and if there are any problems with it
-> we can fix them later.
+On Thu, Jun 11, 2015 at 6:58 AM, Smitha Rathnam
+<rathnam.smitha@gmail.com> wrote:
+> Hi,
+>
+> With respect to the UBIFS issue.. How do I come to a conclusion that
+> it is a hardware fault and not a software one?
 
-..or be respectful, have patience and wait for Brian.
+By analyzing the issue you're facing.
 
+> We are using Micron nand devices in our system.
+> The UBI rootfs is put on /dev/mtd4 and the ubi logfs is put on
+> /dev/mtd5. The mtd5 partition shows corruption. When we format the
+> device and reinstall, the corruption goes away. Of course, we have
+> lost data.
+> So should this be enough to conclude that this is an issue with
+> software and not the actual NAND device?
+
+No way. At least share the full kernel log, including the issue with us.
+
+> I ran the nandtest from the mtd_utils set. Before the format the test
+> showed a lot of ECC errors. After the format and reinstall, the test
+> showed no ECC failures although there were 4 bad blocks.
+> How do we understand this? Is this enough to conclude that the issue
+> is a software one related to the file system?
+
+Please verify your MTD driver by running mtd-tests (from kernel source),
+and UBI tests (from mtd-utils source).
+
+-- 
 Thanks,
 //richard
