@@ -1,20 +1,17 @@
-Received: from mail-vn0-x236.google.com ([2607:f8b0:400c:c0f::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2wA0-0003Q8-NV
- for linux-mtd@lists.infradead.org; Thu, 11 Jun 2015 06:40:21 +0000
-Received: by vnbg7 with SMTP id g7so11461176vnb.1
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 23:39:59 -0700 (PDT)
+Message-ID: <55799DFC.3000304@toshiba.co.jp>
+Date: Thu, 11 Jun 2015 23:41:00 +0900
+From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
 MIME-Version: 1.0
-In-Reply-To: <CAC7eWMVyEyy3Y_qWU5qxOY4m9bm15u7Ga3sZrUyLqY_zgy=a8Q@mail.gmail.com>
-References: <CAC7eWMUvdiNFiiGqSkmv1qwFDUa52VZCCQds_BdnqocoskN+Qg@mail.gmail.com>
- <CAC7eWMVyEyy3Y_qWU5qxOY4m9bm15u7Ga3sZrUyLqY_zgy=a8Q@mail.gmail.com>
-Date: Thu, 11 Jun 2015 08:39:59 +0200
-Message-ID: <CAFLxGvwGZAT1cLVX_Q5sdkoUEs=EhVGr0cknWLXuxFfW-biFmQ@mail.gmail.com>
-Subject: Re: Trouble with UBIFS
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Smitha Rathnam <rathnam.smitha@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: [PATCH] mtd: nand: support for Toshiba BENAND (Built-in ECC NAND)
+References: <1433920119-16303-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <CAFLxGvx7epkW9OA5PotBWbQr-FH_9uCMUZAtRP0oX16WcyiWLQ@mail.gmail.com>
+In-Reply-To: <CAFLxGvx7epkW9OA5PotBWbQr-FH_9uCMUZAtRP0oX16WcyiWLQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 11, 2015 at 6:58 AM, Smitha Rathnam
-<rathnam.smitha@gmail.com> wrote:
-> Hi,
+On 2015/06/10 16:50, Richard Weinberger wrote:
+> On Wed, Jun 10, 2015 at 9:08 AM, KOBAYASHI Yoshitake
+> <yoshitake.kobayashi@toshiba.co.jp> wrote:
+>> This patch enables support for Toshiba BENAND.
+>> Toshiba BENAND is a SLC NAND solution that automatically generates ECC
+>> inside NAND chip. Newer generation SLC NAND devices of today need multi-bit
+>> hardware ECC by NAND controller in SoC. BENAND solution is ECC free,
+>> has high performance and backward compatibility in NAND chip trend.
 >
-> With respect to the UBIFS issue.. How do I come to a conclusion that
-> it is a hardware fault and not a software one?
+> Do you have performance numbers?
+> How fast is it compared to a decent HW ECC engine?
 
-By analyzing the issue you're facing.
+Comparing with 24nm SLC NAND, BENAND is few percent faster in write and
+more than 5 percent faster in read. But the result depends on usecase
+and compared device. I will delete the last sentence.
 
-> We are using Micron nand devices in our system.
-> The UBI rootfs is put on /dev/mtd4 and the ubi logfs is put on
-> /dev/mtd5. The mtd5 partition shows corruption. When we format the
-> device and reinstall, the corruption goes away. Of course, we have
-> lost data.
-> So should this be enough to conclude that this is an issue with
-> software and not the actual NAND device?
+> Did you see my On-Die ECC series and Brian's comments on it?
+> https://lkml.org/lkml/2015/3/25/310
+> I suspect some of his comments will apply to you as well.
 
-No way. At least share the full kernel log, including the issue with us.
+Thanks for the suggestion.
+I would like to post the current driver first to make it open, then
+consider how to apply his comments. Because I made a big mistake.
 
-> I ran the nandtest from the mtd_utils set. Before the format the test
-> showed a lot of ECC errors. After the format and reinstall, the test
-> showed no ECC failures although there were 4 bad blocks.
-> How do we understand this? Is this enough to conclude that the issue
-> is a software one related to the file system?
+-- <snip> --
+>> +obj-$(CONFIG_MTD_NAND_BENAND)  += nand_benand.o
+>
+> nand_benand.c is not part of this patch.
+> Forgot a git add? :-)
 
-Please verify your MTD driver by running mtd-tests (from kernel source),
-and UBI tests (from mtd-utils source).
-
--- 
-Thanks,
-//richard
+Oh!.. I will repost it.
