@@ -1,35 +1,18 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+Received: from mail-qc0-x243.google.com ([2607:f8b0:400d:c01::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2u6l-0002Dw-Vy
- for linux-mtd@lists.infradead.org; Thu, 11 Jun 2015 04:28:52 +0000
-Date: Thu, 11 Jun 2015 06:28:28 +0200 (CEST)
-From: Jiri Kosina <jkosina@suse.cz>
-To: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC PATCH 09/18] kthread: Make it easier to correctly sleep in
- iterant kthreads
-In-Reply-To: <20150610100729.6a674c15@gandalf.local.home>
-Message-ID: <alpine.LNX.2.00.1506110625010.12753@pobox.suse.cz>
-References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
- <1433516477-5153-10-git-send-email-pmladek@suse.cz>
- <20150605161021.GJ19282@twins.programming.kicks-ass.net>
- <20150608134810.3abd862b@gandalf.local.home>
- <20150610090724.GD3644@twins.programming.kicks-ass.net>
- <20150610100729.6a674c15@gandalf.local.home>
+ id 1Z2uZM-0003yV-4O
+ for linux-mtd@lists.infradead.org; Thu, 11 Jun 2015 04:58:26 +0000
+Received: by qcvp6 with SMTP id p6so5763249qcv.3
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2015 21:58:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
- Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
- Richard Weinberger <richard@nod.at>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Oleg Nesterov <oleg@redhat.com>, Petr Mladek <pmladek@suse.cz>,
- linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
- Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
- linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
- live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Anna Schumaker <anna.schumaker@netapp.com>
+In-Reply-To: <CAC7eWMUvdiNFiiGqSkmv1qwFDUa52VZCCQds_BdnqocoskN+Qg@mail.gmail.com>
+References: <CAC7eWMUvdiNFiiGqSkmv1qwFDUa52VZCCQds_BdnqocoskN+Qg@mail.gmail.com>
+Date: Thu, 11 Jun 2015 14:58:00 +1000
+Message-ID: <CAC7eWMVyEyy3Y_qWU5qxOY4m9bm15u7Ga3sZrUyLqY_zgy=a8Q@mail.gmail.com>
+Subject: Re: Trouble with UBIFS
+From: Smitha Rathnam <rathnam.smitha@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,24 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 10 Jun 2015, Steven Rostedt wrote:
+Hi,
 
-> > Right, and I had not considered that, but it turns out the hung_task
-> > detector checks p->state == TASK_UNINTERRUPTIBLE, so TASK_IDLE is indeed
-> > safe from that.
-> 
-> Also, I would assume that TASK_IDLE only makes sense for kernel
-> threads, I wonder if we should add an assertion in schedule that
-> triggers if a task is scheduling with TASK_IDLE and is not a kernel
-> thread (has its own mm?)
+With respect to the UBIFS issue.. How do I come to a conclusion that
+it is a hardware fault and not a software one?
+We are using Micron nand devices in our system.
+The UBI rootfs is put on /dev/mtd4 and the ubi logfs is put on
+/dev/mtd5. The mtd5 partition shows corruption. When we format the
+device and reinstall, the corruption goes away. Of course, we have
+lost data.
+So should this be enough to conclude that this is an issue with
+software and not the actual NAND device?
+I ran the nandtest from the mtd_utils set. Before the format the test
+showed a lot of ECC errors. After the format and reinstall, the test
+showed no ECC failures although there were 4 bad blocks.
+How do we understand this? Is this enough to conclude that the issue
+is a software one related to the file system?
 
-For the sake of completnes -- testing for !task_struct->mm is not a 
-correct test to find out whether given entity is a kernel thread; kernel 
-threads are free to temporarily adopt user struct mm via use_mm() (usually 
-for handling AIO on behalf of a particular struct mm).
+Regards,
+Smitha.
 
-The correct check is to look at PF_KTHREAD flag in task_struct->flags.
-
--- 
-Jiri Kosina
-SUSE Labs
+On Wed, Jun 10, 2015 at 8:08 PM, Smitha Rathnam
+<rathnam.smitha@gmail.com> wrote:
+>  Hi,
+>
+>  We have an embedded linux (2.6) system. Since the past few months, we
+> have been seeing a corruption of the log filesystem.
+>  The filesystem is using mtd5 device.
+>  The error looks like this;
+>  user.notice kernel: klogd started: BusyBox v1.20.0 (2012-09-18 17:42:52 MST)
+>
+>  Jan  1 00:00:05 user.debug kernel: 00001fa0: 00000000 00000000
+> 00000000 00000000 00000000 00000000 00000000 00000000
+> ................................
+>  Jan  1 00:00:05 user.debug kernel: 00001fc0: 00000000 00000000
+> 00000000 00000000 00000000 00000000 00000000 00000000
+> ................................
+>  Jan  1 00:00:05 user.debug kernel: 00001fe0: 00000000 00000000
+> 00000000 00000000 00000000 00000000 00000000 00000000
+> ................................
+>  *Jan  1 00:00:05 user.err kernel: UBIFS error (pid 1110):
+> ubifs_recover_leb: LEB 24 scanning failed*
+>
+>  Is there a way to retrieve data from the partition? How do we fix this error?
+>
+>  Please help.
+>
+>  Thanks and regards,
+>  Smitha.
