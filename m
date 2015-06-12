@@ -1,37 +1,20 @@
-Received: from mail-pd0-x241.google.com ([2607:f8b0:400e:c02::241])
+Received: from lb3-smtp-cloud2.xs4all.net ([194.109.24.29])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z3AZC-0007No-L8
- for linux-mtd@lists.infradead.org; Thu, 11 Jun 2015 22:03:19 +0000
-Received: by pdev10 with SMTP id v10so4126462pde.0
- for <linux-mtd@lists.infradead.org>; Thu, 11 Jun 2015 15:02:55 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 12 Jun 2015 07:02:46 +0900
-From: Tejun Heo <tj@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH 00/18] kthreads/signal: Safer kthread API and signal
- handling
-Message-ID: <20150611220246.GE6336@mtj.duckdns.org>
-References: <1433516477-5153-1-git-send-email-pmladek@suse.cz>
- <20150605162216.GK19282@twins.programming.kicks-ass.net>
- <20150609061446.GV21465@mtj.duckdns.org>
- <20150610104057.GE3644@twins.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150610104057.GE3644@twins.programming.kicks-ass.net>
-Cc: linux-nfs@vger.kernel.org, Borislav Petkov <bp@suse.de>,
- Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
- Richard Weinberger <richard@nod.at>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Oleg Nesterov <oleg@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
- linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
- Chris Mason <clm@fb.com>, Ingo Molnar <mingo@redhat.com>,
- linux-mtd@lists.infradead.org, Petr Mladek <pmladek@suse.cz>,
- Linus Torvalds <torvalds@linux-foundation.org>, linux-api@vger.kernel.org,
- live-patching@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Anna Schumaker <anna.schumaker@netapp.com>
+ id 1Z3K3l-00065B-A4
+ for linux-mtd@lists.infradead.org; Fri, 12 Jun 2015 08:11:30 +0000
+Message-ID: <1434096662.2271.130.camel@x220>
+Subject: Re: [PATCH v2] mtd: nand: support for Toshiba BENAND (Built-in ECC
+ NAND)
+From: Paul Bolle <pebolle@tiscali.nl>
+To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Date: Fri, 12 Jun 2015 10:11:02 +0200
+In-Reply-To: <1434038402-26365-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+References: <1434038402-26365-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,89 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, Peter.
+On Fri, 2015-06-12 at 01:00 +0900, KOBAYASHI Yoshitake wrote:
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 5897d8d..050f0e9 100644
 
-On Wed, Jun 10, 2015 at 12:40:57PM +0200, Peter Zijlstra wrote:
-> > Because there's a pool of them and the workers come and go
-> > dynamically.  There's no way around it.  The attributes just have to
-> > be per-pool.
-> 
-> Sure, but there's a few possible ways to still make that work with the
-> regular syscall interfaces.
-> 
->  1) propagate the change to any one worker to all workers of the same
->     pool
-> 
->  2) have a common ancestor task for each pool, and allow changing that.
->     You can combine that with either the propagation like above, or a
->     rule that workers kill themselves if they observe their parent
->     changed (eg. check a attribute sequence count after each work).
+> +config MTD_NAND_BENAND
+> +	tristate
+> +	depends on MTD_NAND_BENAND_ENABLE
+> +	default MTD_NAND
+> +
+> +config MTD_NAND_BENAND_ENABLE
+> +	bool "Support for Toshiba BENAND (Built-in ECC NAND)"
+> +	default y
 
-Sure, we can build the interface in different ways but that doesn't
-really change the backend much which is where bulk of work lies.
+Why do you default to 'y'?
 
-I'm not sure having a proxy task is even a better interface.  It is
-better in that we'd be able to reuse task based interface but then
-we'd end up with the "proxy" tasks, hooking up notifiers from a number
-of essentially unrelated input points into the worker pool mechanism
-and what's supported and what's not wouldn't be clear either as the
-support for various attributes gradually grow.
+> +	help
+> +		This enables support for Toshiba BENAND.
+> +		Toshiba BENAND is a SLC NAND solution that automatically
+> +		generates ECC inside NAND chip.
+> +
 
-More importantly, not all pool attributes will be translatable to task
-attributes.  There's no way to map things like CPU or NUMA affinity,
-concurrency level or mode of concurrency to attributes of a task
-without involving a convoluted mapping or an extra side-band
-interface.  Given that that's the case in the other direction too (a
-lot of task attributes won't translate to pool attributes), I'm not
-doubtful there's a lot of benefit to gain from trying to reuse task
-interface for pools.
+> --- /dev/null
+> +++ b/drivers/mtd/nand/nand_benand.c
 
-> > cgroup support will surely be added but I'm not sure we can or should
-> > do inheritance automatically.  
-> 
-> I think its a good default to inherit stuff from the task that queued
-> it.
+> +EXPORT_SYMBOL(nand_benand_status_chk);
 
-While I agree that it'd make sense for certain use cases, I'm not sure
-making that a default.  At least for workqueue, a lot of use cases
-don't even register in terms of resource usage and they're just
-punting to be in the right execution context.  I'm not sure what we'd
-be gaining by going full-on w/ inheritance, which will inevitably
-involve a fairly large amount of complexity and overhead as it's
-likely to reduce the amount of sharing considerably.
+I didn't spot any users of nand_benand_status_chk() outside of this
+file. Why is this export needed?
 
-Also, a lot of asynchronous executions share some resources - the
-execution context itself, synchronization construct and so on.  While
-we do cause priority inversion by putting them all into the same
-bucket right now, priority inversions caused by blindly putting all
-such async executions into separate buckets are likely to be a lot
-worse by blocking higher priority executions behind an extremely
-resource constrained instance.
+Thanks,
 
-> > Using a different API doesn't solve the
-> > problem automatically either.  A lot of kthreads are shared
-> > system-wide after all.  We'll need an abstraction layer to deal with
-> > that no matter where we do it.
-> 
-> Yes, hardware threads are global, but so is the hardware. Those are not
-> a problem provided the thread map 1:1 with the actual devices and do not
-> service multiple devices from a single thread.
 
-I'm not sure why hardware is relevant here (especially given that a
-lot of devices which matter in terms of performance are heavily
-asynchronous), but if you're saying that certain things would be
-simpler if we don't pool anything, that is true but I'm quite doubtful
-that we can afford dedicated kthreads for every possible purpose at
-this point.
-
-> Once you start combining things you start to get all the above problems
-> all over again.
-
-Yes, again, the cost of having pools at all.  I'm not disagreeing that
-it adds a layer of abstraction and complexity.  I'm saying this is the
-cost we need to pay.
-
-Thanks.
-
--- 
-tejun
+Paul Bolle
