@@ -1,22 +1,21 @@
-Received: from mail-yh0-x236.google.com ([2607:f8b0:4002:c01::236])
+Received: from mail-wi0-f170.google.com ([209.85.212.170])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z3Lb1-0002Qe-2f
- for linux-mtd@lists.infradead.org; Fri, 12 Jun 2015 09:49:56 +0000
-Received: by yhak3 with SMTP id k3so11905098yha.2
- for <linux-mtd@lists.infradead.org>; Fri, 12 Jun 2015 02:49:33 -0700 (PDT)
+ id 1Z3NIt-0000WM-Hr
+ for linux-mtd@lists.infradead.org; Fri, 12 Jun 2015 11:39:20 +0000
+Received: by wigg3 with SMTP id g3so14609335wig.1
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Jun 2015 04:38:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1434038402-26365-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
-References: <1434038402-26365-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
-Date: Fri, 12 Jun 2015 11:49:31 +0200
-Message-ID: <CAFLxGvzSosfd50=UUcSRgjiVw=48FP8hgxb9bhL9UDGHTBz9yw@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: support for Toshiba BENAND (Built-in ECC
- NAND)
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
+From: Roy Spliet <r.spliet@ultimaker.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Linux-sunxi <linux-sunxi@googlegroups.com>
+Subject: [RFC] Add DMA RX support for sunxi nand
+Date: Fri, 12 Jun 2015 13:38:47 +0200
+Message-Id: <1434109129-28183-1-git-send-email-r.spliet@ultimaker.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 11, 2015 at 6:00 PM, KOBAYASHI Yoshitake
-<yoshitake.kobayashi@toshiba.co.jp> wrote:
-> This patch enables support for Toshiba BENAND.
-> BENAND is a SLC NAND solution that automatically generates ECC inside
-> NAND chip.
->
-> Some of the comments in the following discussion may need to be considerd.
->   https://lkml.org/lkml/2015/3/25/310
+Following are two patches for sunxi nand DMA support. There's a whole phletora
+of reasons why these are marked RFC, including:
+- Sunxi DMA support still needs to be merged upstream
+- Sun7i NAND definitions are not merged upstream
+- No TX support
+- Bounce buffer size is fixed to 8KB, and I have no idea whether this is sane
+- No clustering of DMA requests
+- More hw features that we might want to use
 
-Yep.
+Some of this can be addressed in follow-up patches, some can't. I'm just
+curious what you think.
+Motivation for sending this out anyway: on my set-up this already improves
+boot time by approx. 4s, or ~10%. This cheers me up on a sunny Friday afternoon
+in the office.
+Happy testing and reviewing. Yours,
 
-> +void nand_benand_init(struct mtd_info *mtd)
-> +{
-> +       struct nand_chip *chip = mtd->priv;
-> +
-> +       pr_info("%s\n", __func__);
+Roy
 
-Please kill all these prints. Use ftrace to trace function calls.
-
-> +       chip->ecc.size = mtd->writesize;
-> +       chip->ecc.strength = 1;
-
-BENAND can correct only one bit?
-This would explain why you consider it as fast. ;-)
-
-> +int nand_benand_status_chk(struct mtd_info *mtd, struct nand_chip *chip)
-> +{
-> +       unsigned int bitflips = 0;
-> +       u8 status;
-> +
-> +       pr_debug("%s\n", __func__);
-> +
-> +       /* Check Read Status */
-> +       chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-> +       status = chip->read_byte(mtd);
-> +
-> +       /* timeout */
-> +       if (!(status & NAND_STATUS_READY)) {
-> +               pr_info("BENAND : Time Out!\n");
-> +               return -EIO;
-> +       }
-> +
-> +       /* uncorrectable */
-> +       else if (status & NAND_STATUS_FAIL) {
-> +               pr_info("BENAND : Uncorrectable!\n");
-> +               mtd->ecc_stats.failed++;
-> +       }
-> +
-> +       /* correctable */
-> +       else if (status & NAND_STATUS_RECOM_REWRT) {
-> +               pr_info("BENAND : Recommended to rewrite!\n");
-> +               bitflips = chip->ecc.strength;
-
-In your case this might be okay, as you set strength to 1.
-Otherweise you'd have to report the real number of bitflips.
 
 -- 
-Thanks,
-//richard
+
+
+IMAGINE IT >> MAKE IT
+
+Meet us online at Twitter <http://twitter.com/ultimaker>, Facebook 
+<http://facebook.com/ultimaker>, Google+ <http://google.com/+Ultimaker>
+
+www.ultimaker.com
