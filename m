@@ -1,27 +1,23 @@
-Date: Fri, 12 Jun 2015 21:44:39 +0200
-From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-To: Stefan Agner <stefan@agner.ch>
-Subject: Re: [PATCH v4 1/6] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-Message-ID: <20150612194439.GA15327@breakpoint.cc>
-References: <1427300909-20825-1-git-send-email-stefan@agner.ch>
- <1427300909-20825-2-git-send-email-stefan@agner.ch>
- <20150603130825.GA23991@breakpoint.cc>
- <b3b09b4b8c97cbfc88fa0d5fdc5e40cd@agner.ch>
- <20150609200751.GC5720@breakpoint.cc>
- <16ebb290641f700f2262527f90ff1e46@agner.ch>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z3ed0-00073q-Hc
+ for linux-mtd@lists.infradead.org; Sat, 13 Jun 2015 06:09:15 +0000
+Date: Sat, 13 Jun 2015 08:08:36 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Roy Spliet <r.spliet@ultimaker.com>
+Subject: Re: [RFC] Add DMA RX support for sunxi nand
+Message-ID: <20150613080836.1df5a55a@bbrezillon>
+In-Reply-To: <1434109129-28183-1-git-send-email-r.spliet@ultimaker.com>
+References: <1434109129-28183-1-git-send-email-r.spliet@ultimaker.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16ebb290641f700f2262527f90ff1e46@agner.ch>
-Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
- aaron@tastycactus.com, pawel.moll@arm.com, marb@ixxat.de,
- ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
- shawn.guo@linaro.org, Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
- robh+dt@kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
- galak@codeaurora.org, computersforpeace@gmail.com, dwmw2@infradead.org,
- devicetree@vger.kernel.org, bpringlemeir@nbsps.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Linux-sunxi <linux-sunxi@googlegroups.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +27,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015-06-09 22:31:07 [+0200], Stefan Agner wrote:
-> > have the endian swap. So an abstraction like you provided earlier
-> > would be nice :)
+Hi Roy,
+
+On Fri, 12 Jun 2015 13:38:47 +0200
+Roy Spliet <r.spliet@ultimaker.com> wrote:
+
+> Following are two patches for sunxi nand DMA support. There's a whole phletora
+> of reasons why these are marked RFC, including:
+> - Sunxi DMA support still needs to be merged upstream
+> - Sun7i NAND definitions are not merged upstream
+> - No TX support
+> - Bounce buffer size is fixed to 8KB, and I have no idea whether this is sane
+> - No clustering of DMA requests
+> - More hw features that we might want to use
 > 
-> What do you mean by that?
+> Some of this can be addressed in follow-up patches, some can't. I'm just
+> curious what you think.
+> Motivation for sending this out anyway: on my set-up this already improves
+> boot time by approx. 4s, or ~10%. This cheers me up on a sunny Friday afternoon
+> in the office.
 
-Something like you did for the reader where you have:
+I'm really interested in having DMA support for this driver, but I'm
+still wondering why we have such a difference between the non-DMA and
+DMA verion, especially since you're now using a bounce buffer allocated
+with dma_alloc_coherent (uncached memory region).
 
-|static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
-|{
-|	return readl(nfc->regs + reg);
-|}
+I guess all the perf penalty comes from the memcpy_fromio/toio (which
+are useless in our case: we don't need a memory barrier after writing
+each byte in the SRAM). Can you try replacing them by simple memcpys and
+relaunch you tests ?
 
-instead using readl() directly. So you could also have
+This being said, I really think the DMA approach can be interesting if
+we support the 'page mode', which is able to read one full page with a
+single command (and a single DMA transfer) instead of having iterate
+over each ECC chunk.
 
-|static inline u32 vf610_nfc_read_relaxed(struct vf610_nfc *nfc, uint reg)
-|{
-|	return readl_relaxed(nfc->regs + reg);
-|}
+Best Regards,
 
-Instead of using readl_relaxed(). Unless I'm mistaken, that function was
-used more than once. If someone plugs in PPC support he does not need to
-add this function anymore but but simply add an ifdef in vf610_nfc_read()
-and vf610_nfc_read_relaxed() and replace it whatever works for him.
+Boris
 
-Sebastian
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
