@@ -1,22 +1,24 @@
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
+Received: from mail-wg0-f51.google.com ([74.125.82.51])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4mZC-0001N6-7D
- for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 08:49:58 +0000
-Received: by igbsb11 with SMTP id sb11so9339677igb.0
- for <linux-mtd@lists.infradead.org>; Tue, 16 Jun 2015 01:49:37 -0700 (PDT)
+ id 1Z4nR3-0005mR-D5
+ for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 09:45:38 +0000
+Received: by wgbhy7 with SMTP id hy7so8067697wgb.2
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Jun 2015 02:45:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1434443824-27077-1-git-send-email-antonynpavlov@gmail.com>
-References: <1434443824-27077-1-git-send-email-antonynpavlov@gmail.com>
-Date: Tue, 16 Jun 2015 10:49:36 +0200
-Message-ID: <CACna6rz2XAEBXYuZ_xqnsSN4vrjvAFqUTaLC2mCfj4QCfMrA0w@mail.gmail.com>
-Subject: Re: [PATCH V3] mtd: spi-nor: add Spansion S25FL204K support
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Antony Pavlov <antonynpavlov@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Marek Vasut <marex@denx.de>, David Woodhouse <dwmw2@infradead.org>,
+From: Roy Spliet <r.spliet@ultimaker.com>
+To: Linux MTD Mailinglist <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Baruch Siach <baruch@tkos.co.il>, Rafal Milecki <zajec5@gmail.com>
+Subject: [RFC Patch  2/3] mtd: nand: Support non-ONFI timing modes
+Date: Tue, 16 Jun 2015 11:45:03 +0200
+Message-Id: <1434447904-31748-3-git-send-email-r.spliet@ultimaker.com>
+In-Reply-To: <1434447904-31748-1-git-send-email-r.spliet@ultimaker.com>
+References: <1434447904-31748-1-git-send-email-r.spliet@ultimaker.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Roy Spliet <r.spliet@ultimaker.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +28,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 16 June 2015 at 10:37, Antony Pavlov <antonynpavlov@gmail.com> wrote:
-> Spansion S25FL204K is a 4-Mbit 3.0V Serial Flash Memory
-> with Uniform 4 kB Sectors.
->
-> Signed-off-by: Antony Pavlov <antonynpavlov@gmail.com>
+For chips whose timings are exceptionally aberrant to the point that it
+impacts performance, we are going to need some mechanism to steer away
+from ONFI modes. This lays the foundation for defining custom modes
+---
+ drivers/mtd/nand/nand_base.c | 9 +++++++--
+ include/linux/mtd/nand.h     | 1 +
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-Acked-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index f561c68..8e636df 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3624,8 +3624,13 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->ecc_strength_ds = NAND_ECC_STRENGTH(type);
+ 		chip->ecc_step_ds = NAND_ECC_STEP(type);
+ 
+-		mode = type->onfi_timing_mode_default;
+-		chip->sdr_timings = onfi_async_timing_mode_to_sdr_timings(mode);
++		if (type->custom_sdr_timing) {
++			chip->sdr_timings = type->custom_sdr_timing;
++		} else {
++			mode = type->onfi_timing_mode_default;
++			chip->sdr_timings =
++				onfi_async_timing_mode_to_sdr_timings(mode);
++		}
+ 
+ 		*busw = type->options & NAND_BUSWIDTH_16;
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 2eb92a3..7d9e599 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -863,6 +863,7 @@ struct nand_flash_dev {
+ 		uint16_t step_ds;
+ 	} ecc;
+ 	int onfi_timing_mode_default;
++	const struct nand_sdr_timings *custom_sdr_timing;
+ };
+ 
+ /**
+-- 
+2.4.3
 
-Thanks Antony!
+
+-- 
+
+
+IMAGINE IT >> MAKE IT
+
+Meet us online at Twitter <http://twitter.com/ultimaker>, Facebook 
+<http://facebook.com/ultimaker>, Google+ <http://google.com/+Ultimaker>
+
+www.ultimaker.com
