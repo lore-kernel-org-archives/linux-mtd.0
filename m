@@ -1,17 +1,23 @@
-Message-ID: <558026B3.9080206@toshiba.co.jp>
-Date: Tue, 16 Jun 2015 22:37:55 +0900
-From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z4rPX-00011y-6f
+ for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 14:00:20 +0000
+Message-ID: <55802A44.6040708@nod.at>
+Date: Tue, 16 Jun 2015 15:53:08 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Paul Bolle <pebolle@tiscali.nl>
+To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
 Subject: Re: [PATCH v2] mtd: nand: support for Toshiba BENAND (Built-in ECC
  NAND)
 References: <1434038402-26365-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <1434096662.2271.130.camel@x220>
-In-Reply-To: <1434096662.2271.130.camel@x220>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ <CAFLxGvzSosfd50=UUcSRgjiVw=48FP8hgxb9bhL9UDGHTBz9yw@mail.gmail.com>
+ <558025B7.3030103@toshiba.co.jp>
+In-Reply-To: <558025B7.3030103@toshiba.co.jp>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/06/12 17:11, Paul Bolle wrote:
-> On Fri, 2015-06-12 at 01:00 +0900, KOBAYASHI Yoshitake wrote:
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 5897d8d..050f0e9 100644
->
->> +config MTD_NAND_BENAND
->> +	tristate
->> +	depends on MTD_NAND_BENAND_ENABLE
->> +	default MTD_NAND
->> +
->> +config MTD_NAND_BENAND_ENABLE
->> +	bool "Support for Toshiba BENAND (Built-in ECC NAND)"
->> +	default y
->
-> Why do you default to 'y'?
+Am 16.06.2015 um 15:33 schrieb KOBAYASHI Yoshitake:
+>>> +       /* correctable */
+>>> +       else if (status & NAND_STATUS_RECOM_REWRT) {
+>>> +               pr_info("BENAND : Recommended to rewrite!\n");
+>>> +               bitflips = chip->ecc.strength;
+>>
+>> In your case this might be okay, as you set strength to 1.
+>> Otherweise you'd have to report the real number of bitflips.
+> 
+> I also thought it is okay in this case.
+> BENAND return corrected data to Host NAND Controller till uncorrectable status.
+> The current patch uses this Read Status command 70h to abstract BENAND Multi
+> bit ECC and Need to Rewrite judgement so BENAND would look like 1bit ECC device.
 
-Setting the config to 'y' will not affect the SLCNAND operation.
-I thought it is common to use BENAND and other vendor SLCNAND together
-in the same model with same software build.
+The layers above MTD need to know how many bits got repaired.
+It seems like BENAND suffers from the same shortcomings than On-Die-ECC. ;-\
+Please see my patches how to deal with that. Maybe you can find a better solution.
 
->> --- /dev/null
->> +++ b/drivers/mtd/nand/nand_benand.c
->
->> +EXPORT_SYMBOL(nand_benand_status_chk);
->
-> I didn't spot any users of nand_benand_status_chk() outside of this
-> file. Why is this export needed?
-
-I agree with you. Thanks for checking.
-I will delete this in next patch.
-
-  -- Yoshi
+Thanks,
+//richard
