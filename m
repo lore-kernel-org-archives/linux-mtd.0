@@ -1,23 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from [208.131.150.135] (helo=slmp-550-121.slc.westdc.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4rPX-00011y-6f
- for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 14:00:20 +0000
-Message-ID: <55802A44.6040708@nod.at>
-Date: Tue, 16 Jun 2015 15:53:08 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1Z50dp-0006tQ-24
+ for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 23:51:41 +0000
+Received: from bzq-109-64-22-11.red.bezeqint.net ([109.64.22.11]:52952
+ helo=LiadOffice)
+ by slmp-550-121.slc.westdc.net with esmtpa (Exim 4.85)
+ (envelope-from <ron@igamingseo.net>) id 1Z4zWJ-003F8E-DI
+ for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 16:39:51 -0600
+Date: Wed, 17 Jun 2015 01:39:51 +0300 (IDT)
+From: Ron Walters <ron@igamingseo.net>
+To: linux-mtd@lists.infradead.org
+Message-ID: <15931240.1325.1434494392610.JavaMail.Lior@LiadOffice>
+Subject: Business proposition
 MIME-Version: 1.0
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Subject: Re: [PATCH v2] mtd: nand: support for Toshiba BENAND (Built-in ECC
- NAND)
-References: <1434038402-26365-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <CAFLxGvzSosfd50=UUcSRgjiVw=48FP8hgxb9bhL9UDGHTBz9yw@mail.gmail.com>
- <558025B7.3030103@toshiba.co.jp>
-In-Reply-To: <558025B7.3030103@toshiba.co.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed;
+ boundary="----=_Part_5243_5120685.1434262343955"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 16.06.2015 um 15:33 schrieb KOBAYASHI Yoshitake:
->>> +       /* correctable */
->>> +       else if (status & NAND_STATUS_RECOM_REWRT) {
->>> +               pr_info("BENAND : Recommended to rewrite!\n");
->>> +               bitflips = chip->ecc.strength;
->>
->> In your case this might be okay, as you set strength to 1.
->> Otherweise you'd have to report the real number of bitflips.
-> 
-> I also thought it is okay in this case.
-> BENAND return corrected data to Host NAND Controller till uncorrectable status.
-> The current patch uses this Read Status command 70h to abstract BENAND Multi
-> bit ECC and Need to Rewrite judgement so BENAND would look like 1bit ECC device.
+------=_Part_5243_5120685.1434262343955
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The layers above MTD need to know how many bits got repaired.
-It seems like BENAND suffers from the same shortcomings than On-Die-ECC. ;-\
-Please see my patches how to deal with that. Maybe you can find a better solution.
+Hello.
 
-Thanks,
-//richard
+My name is Ron Walters and I am the advertising representative of a 
+number of leading online companies. 
+These companies operate in various fields, that include the gaming 
+industry, sports activities, international flower delivery and various leisure 
+activity fields. 
+I was impressed by your internet site http://lists.infradead.org
+And I would like to discuss the possibility of you hosting 
+advertising space for my clients on your site. 
+We are interested in various options that include Textural 
+advertisements, Banner space and Article publishing.
+If you are interested please contact me and we can discuss all the 
+possibilities in detail. 
+
+Looking forward to doing business with you.
+
+Best regards,
+Ron Walters
+Client side acquisition
+http://www.igamingseo.net
+------=_Part_5243_5120685.1434262343955--
