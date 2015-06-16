@@ -1,16 +1,23 @@
-Received: from [5.77.47.11] (helo=IS-23251.home)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jfv-0007Co-LL
- for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 05:44:44 +0000
-Subject: Pay for driving on toll road, invoice #000437548
-To: linux-mtd@lists.infradead.org
-Date: Tue, 16 Jun 2015 04:14:13 +0000
-From: "E-ZPass Agent" <lewis.dunn@zizzz.nl>
-Reply-To: "E-ZPass Agent" <lewis.dunn@zizzz.nl>
-Message-ID: <31b354e1a9e42456856ef2dd5ead6382@zizzz.nl>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_e68252c02282b887ae52d387f19d6336"
+Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z4jo2-0003Di-T6
+ for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 05:53:08 +0000
+Received: by lbbti3 with SMTP id ti3so3803413lbb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Jun 2015 22:52:44 -0700 (PDT)
+Date: Tue, 16 Jun 2015 08:58:59 +0300
+From: Antony Pavlov <antonynpavlov@gmail.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] mtd: m25p80: add Spansion S25FL204K support
+Message-Id: <20150616085859.a3c6ede052990e9a6c392313@gmail.com>
+In-Reply-To: <CACna6rwkFVezEM3-M0-sVJ5Ad8=9cy4DzO2C_OfwqHWqk4oHvA@mail.gmail.com>
+References: <1434399606-19228-1-git-send-email-antonynpavlov@gmail.com>
+ <CACna6rwkFVezEM3-M0-sVJ5Ad8=9cy4DzO2C_OfwqHWqk4oHvA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Cc: Marek Vasut <marex@denx.de>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_e68252c02282b887ae52d387f19d6336
-Content-Type: text/plain; charset=us-ascii
+On Mon, 15 Jun 2015 23:04:37 +0200
+Rafał Miłecki <zajec5@gmail.com> wrote:
 
-Notice to Appear,
+> On 15 June 2015 at 22:20, Antony Pavlov <antonynpavlov@gmail.com> wrote:
+> > Spansion S25FL204K is a 4-Mbit 3.0V Serial Flash Memory
+> > with Uniform 4 kB Sectors.
+> >
+> > Signed-off-by: Antony Pavlov <antonynpavlov@gmail.com>
+> > ---
+> >  drivers/mtd/devices/m25p80.c  | 2 +-
+> >  drivers/mtd/spi-nor/spi-nor.c | 1 +
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> > index 3af137f..85be835 100644
+> > --- a/drivers/mtd/devices/m25p80.c
+> > +++ b/drivers/mtd/devices/m25p80.c
+> > @@ -281,7 +281,7 @@ static const struct spi_device_id m25p_ids[] = {
+> >         {"s25fl512s"},  {"s70fl01gs"},  {"s25sl12800"}, {"s25sl12801"},
+> >         {"s25fl129p0"}, {"s25fl129p1"}, {"s25sl004a"},  {"s25sl008a"},
+> >         {"s25sl016a"},  {"s25sl032a"},  {"s25sl064a"},  {"s25fl008k"},
+> > -       {"s25fl016k"},  {"s25fl064k"},  {"s25fl132k"},
+> > +       {"s25fl016k"},  {"s25fl064k"},  {"s25fl132k"},  {"s25fl204k"},
+> >         {"sst25vf040b"},{"sst25vf080b"},{"sst25vf016b"},{"sst25vf032b"},
+> >         {"sst25vf064c"},{"sst25wf512"}, {"sst25wf010"}, {"sst25wf020"},
+> >         {"sst25wf040"},
+> 
+> And why do we need it in this table (above)? You didn't add any extra
+> handling for it. You also didn't call it anything like "nonjedec", so
+> I guess it supports JEDEC's RD ID.
 
-You have a unpaid bill for using toll road.
-You are kindly asked to service your debt in the shortest time possible.
+My original patch was made for linux-3.19 (Feb 8 2015), 
+I just used commit 3e38933dd894b4 as an example
 
-The copy of the invoice is attached to this email.
+  commit 3e38933dd894b48d422113cb26fd3510fd2a80bd
+  Author: Knut Wohlrab <knut.wohlrab@de.bosch.com>
+  Date:   Mon Nov 10 16:54:53 2014 +0100
 
-Yours faithfully,
-Lewis Dunn,
-E-ZPass Agent.
+      mtd: m25p80: Add support for serial flash Spansion S25FL132K
 
+Now I see that some things are changed with commit 1103b8517041b.
 
---b1_e68252c02282b887ae52d387f19d6336
-Content-Type: application/zip; name="000437548.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=000437548.zip
+  commit 1103b8517041b08286cae0da8481bef9164c961a
+  Author: Brian Norris <computersforpeace@gmail.com>
+  Date:   Fri Mar 27 10:29:50 2015 -0700
 
-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
+      mtd: m25p80: bind to "nor-jedec" ID, for auto-detection
 
+I will resubmit V2 of my patch in a short while.
 
---b1_e68252c02282b887ae52d387f19d6336--
+-- 
+Best regards,
+  Antony Pavlov
