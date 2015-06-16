@@ -1,18 +1,17 @@
-Message-ID: <558025B7.3030103@toshiba.co.jp>
-Date: Tue, 16 Jun 2015 22:33:43 +0900
+Message-ID: <558026B3.9080206@toshiba.co.jp>
+Date: Tue, 16 Jun 2015 22:37:55 +0900
 From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
 MIME-Version: 1.0
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: Paul Bolle <pebolle@tiscali.nl>
 Subject: Re: [PATCH v2] mtd: nand: support for Toshiba BENAND (Built-in ECC
  NAND)
 References: <1434038402-26365-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <CAFLxGvzSosfd50=UUcSRgjiVw=48FP8hgxb9bhL9UDGHTBz9yw@mail.gmail.com>
-In-Reply-To: <CAFLxGvzSosfd50=UUcSRgjiVw=48FP8hgxb9bhL9UDGHTBz9yw@mail.gmail.com>
+ <1434096662.2271.130.camel@x220>
+In-Reply-To: <1434096662.2271.130.camel@x220>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,72 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015/06/12 18:49, Richard Weinberger wrote:
-> On Thu, Jun 11, 2015 at 6:00 PM, KOBAYASHI Yoshitake
-> <yoshitake.kobayashi@toshiba.co.jp> wrote:
->> This patch enables support for Toshiba BENAND.
->> BENAND is a SLC NAND solution that automatically generates ECC inside
->> NAND chip.
->>
->> Some of the comments in the following discussion may need to be considerd.
->>    https://lkml.org/lkml/2015/3/25/310
+On 2015/06/12 17:11, Paul Bolle wrote:
+> On Fri, 2015-06-12 at 01:00 +0900, KOBAYASHI Yoshitake wrote:
+>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+>> index 5897d8d..050f0e9 100644
 >
-> Yep.
+>> +config MTD_NAND_BENAND
+>> +	tristate
+>> +	depends on MTD_NAND_BENAND_ENABLE
+>> +	default MTD_NAND
+>> +
+>> +config MTD_NAND_BENAND_ENABLE
+>> +	bool "Support for Toshiba BENAND (Built-in ECC NAND)"
+>> +	default y
 >
->> +void nand_benand_init(struct mtd_info *mtd)
->> +{
->> +       struct nand_chip *chip = mtd->priv;
->> +
->> +       pr_info("%s\n", __func__);
+> Why do you default to 'y'?
+
+Setting the config to 'y' will not affect the SLCNAND operation.
+I thought it is common to use BENAND and other vendor SLCNAND together
+in the same model with same software build.
+
+>> --- /dev/null
+>> +++ b/drivers/mtd/nand/nand_benand.c
 >
-> Please kill all these prints. Use ftrace to trace function calls.
-
-Okay, I will delete these prints in next patch.
-
->> +       chip->ecc.size = mtd->writesize;
->> +       chip->ecc.strength = 1;
+>> +EXPORT_SYMBOL(nand_benand_status_chk);
 >
-> BENAND can correct only one bit?
-> This would explain why you consider it as fast. ;-)
+> I didn't spot any users of nand_benand_status_chk() outside of this
+> file. Why is this export needed?
 
-BENAND is able to correct up to 8bit. By issuing Status command 70h for read operation, BENAND
-can report three types of ECC operation status (Pass / Fail(uncorrectable) / Recommended to rewrite).
-Judgement for Recommended to rewrite is based on internal logic of BENAND.
-
->> +int nand_benand_status_chk(struct mtd_info *mtd, struct nand_chip *chip)
->> +{
->> +       unsigned int bitflips = 0;
->> +       u8 status;
->> +
->> +       pr_debug("%s\n", __func__);
->> +
->> +       /* Check Read Status */
->> +       chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
->> +       status = chip->read_byte(mtd);
->> +
->> +       /* timeout */
->> +       if (!(status & NAND_STATUS_READY)) {
->> +               pr_info("BENAND : Time Out!\n");
->> +               return -EIO;
->> +       }
->> +
->> +       /* uncorrectable */
->> +       else if (status & NAND_STATUS_FAIL) {
->> +               pr_info("BENAND : Uncorrectable!\n");
->> +               mtd->ecc_stats.failed++;
->> +       }
->> +
->> +       /* correctable */
->> +       else if (status & NAND_STATUS_RECOM_REWRT) {
->> +               pr_info("BENAND : Recommended to rewrite!\n");
->> +               bitflips = chip->ecc.strength;
->
-> In your case this might be okay, as you set strength to 1.
-> Otherweise you'd have to report the real number of bitflips.
-
-I also thought it is okay in this case.
-BENAND return corrected data to Host NAND Controller till uncorrectable status.
-The current patch uses this Read Status command 70h to abstract BENAND Multi
-bit ECC and Need to Rewrite judgement so BENAND would look like 1bit ECC device.
+I agree with you. Thanks for checking.
+I will delete this in next patch.
 
   -- Yoshi
