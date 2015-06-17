@@ -1,23 +1,13 @@
-Received: from smtprelay0155.hostedemail.com ([216.40.44.155]
- helo=smtprelay.hostedemail.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z55Bt-000683-U5
- for linux-mtd@lists.infradead.org; Wed, 17 Jun 2015 04:43:10 +0000
-Message-ID: <1434516161.2689.67.camel@perches.com>
-Subject: Re: [PATCH 2/6] mtd: nandsim: Fix kasprintf() usage
-From: Joe Perches <joe@perches.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 16 Jun 2015 21:42:41 -0700
-In-Reply-To: <20150617020707.GD4917@ld-irv-0074>
-References: <1433193054-26865-1-git-send-email-richard@nod.at>
- <1433193054-26865-3-git-send-email-richard@nod.at>
- <20150617020707.GD4917@ld-irv-0074>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>, dwmw2@infradead.org,
- maximlevitsky@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+From: Sheng Yong <shengyong1@huawei.com>
+To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Subject: [PATCH 1/2] mtd: nandsim: fix free of NULL pointer
+Date: Wed, 17 Jun 2015 08:45:12 +0000
+Message-ID: <1434530713-81591-2-git-send-email-shengyong1@huawei.com>
+In-Reply-To: <1434530713-81591-1-git-send-email-shengyong1@huawei.com>
+References: <1434530713-81591-1-git-send-email-shengyong1@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: richard@nod.at, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +17,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2015-06-16 at 19:07 -0700, Brian Norris wrote:
-> On Mon, Jun 01, 2015 at 11:10:50PM +0200, Richard Weinberger wrote:
-> > kasprintf() used in get_partition_name() does a dynamic
-> > memory allocation and can fail. We have to handle that case.
-[]
-> > diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-[]
-> > @@ -743,6 +743,11 @@ static int init_nandsim(struct mtd_info *mtd)
-> >  			goto error;
-> >  		}
-> >  		ns->partitions[i].name   = get_partition_name(i);
-> > +		if (!ns->partitions[i].name) {
-> > +			NS_ERR("unable to allocate memory.\n");
-> 
-> Probably don't really need the allocation failure messages. But this
-> matches the current style, so we can just rip the messages out at
-> another time.
+If allocating ns->nand_pages_slab fails, do not try to destroy it when
+cleaning up nandsim resources.
 
-Maybe that other time can use the more typical
-pr_<level> mechanisms instead of NS_<LEVEL> too.
+Signed-off-by: Sheng Yong <shengyong1@huawei.com>
+---
+ drivers/mtd/nand/nandsim.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-As far as I can tell, the only thing that the
-NS_<LEVEL> macros do is prefix "error: " and
-"warning: " to the output.
-
-"[nandsim] " could be added via pr_fmt and it
-could be changed to "nandsim: " for commonality
-with the majority of the kernel logging.
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index cb38f3d..33e4064 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -646,7 +646,8 @@ static void free_device(struct nandsim *ns)
+ 				kmem_cache_free(ns->nand_pages_slab,
+ 						ns->pages[i].byte);
+ 		}
+-		kmem_cache_destroy(ns->nand_pages_slab);
++		if (ns->nand_pages_slab)
++			kmem_cache_destroy(ns->nand_pages_slab);
+ 		vfree(ns->pages);
+ 	}
+ }
+-- 
+1.8.3.4
