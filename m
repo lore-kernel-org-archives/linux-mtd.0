@@ -1,21 +1,26 @@
-Received: from mail-bl2on0068.outbound.protection.outlook.com ([65.55.169.68]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z5bHs-0002by-Tu
- for linux-mtd@lists.infradead.org; Thu, 18 Jun 2015 14:59:29 +0000
-From: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <marex@denx.de>,
- <shijie.huang@intel.com>, <zajec5@gmail.com>, <ben@decadent.org.uk>,
- <mika.westerberg@linux.intel.com>, <beanhuo@micron.com>, <grmoore@altera.com>
-Subject: [RFC PATCH] mtd: spi-nor: Added flag check for quad io protocol for
- micron flash parts
-Date: Thu, 18 Jun 2015 20:28:59 +0530
-Message-ID: <1434639539-7517-1-git-send-email-anuragku@xilinx.com>
+Date: Thu, 18 Jun 2015 20:27:07 +0200
+From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+To: Stefan Agner <stefan@agner.ch>
+Subject: Re: [PATCH v4 1/6] mtd: nand: vf610_nfc: Freescale NFC for VF610,
+ MPC5125 and others
+Message-ID: <20150618182707.GA2254@breakpoint.cc>
+References: <1427300909-20825-1-git-send-email-stefan@agner.ch>
+ <1427300909-20825-2-git-send-email-stefan@agner.ch>
+ <20150603130825.GA23991@breakpoint.cc>
+ <b3b09b4b8c97cbfc88fa0d5fdc5e40cd@agner.ch>
+ <20150609200751.GC5720@breakpoint.cc>
+ <32a7fe8d8df87dfe35ea50c582077c78@agner.ch>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: harinik@xilinx.com, Anurag Kumar Vulisha <anuragku@xilinx.com>,
- svemula@xilinx.com, linux-kernel@vger.kernel.org, broonie@kernel.org,
- linux-mtd@lists.infradead.org, anirudh@xilinx.com, punnaia@xilinx.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32a7fe8d8df87dfe35ea50c582077c78@agner.ch>
+Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com,
+ aaron@tastycactus.com, pawel.moll@arm.com, marb@ixxat.de,
+ ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org,
+ shawn.guo@linaro.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de, galak@codeaurora.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, bpringlemeir@nbsps.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +30,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-micron flash parts by default operates in extended spi protocol,which accepts
-command on single line and can accept address & data on one,two and four lines
-depending on the command sent.In set_quad_enable() we are enabling the quad io
-protocol for micron flash parts by updating the EVCR register,in this method the
-flash expects the command,address and data to be transmitted on all four data
-lines which may not be supported on all qspi controllers.So READ_1_1_4 command
-does not necessarily go out using those bus widths.
+On Wed, Jun 17, 2015 at 03:02:03PM +0200, Stefan Agner wrote:
+> On 2015-06-09 22:07, Sebastian Andrzej Siewior wrote:
+> > yeah, do you have any numbers by chance?
+> 
+> Just reevaluated the "performance optimizations". On a VF610 SoC (with
+> L2 cache) the improvements increase performance by 2.5% and below. On a
+> VF500 SoC (without L2 cache) it seems to have slightly more impact, up
+> to 4%. Overall, it seems to influence write more than read.
 
-So i have added SPI_QUAD_IO_PROTOCOL flag,which should be checked before enabling
-the quad io protocol.
+it could have something to do with the CPU clock and how long it is blocked
+due to the sync operation.
 
-Signed-off-by: Anurag Kumar Vulisha <anuragku@xilinx.com>
----
- drivers/mtd/spi-nor/spi-nor.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+> Back then, when I implemented the improvements it certainly had a bigger
+> impact. I don't have strong opinion on that...
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 14a5d23..a6fa8dc 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -55,6 +55,7 @@ struct flash_info {
- #define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
- #define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
- #define	USE_FSR			0x80	/* use flag status register */
-+#define SPI_QUAD_IO_PROTOCOL	0x100	/* use quad io protocol */
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -962,6 +963,8 @@ static int set_quad_mode(struct spi_nor *nor, struct flash_info *info)
- 		}
- 		return status;
- 	case CFI_MFR_ST:
-+		if (!(info->flags & SPI_QUAD_IO_PROTOCOL))
-+			return 0;
- 		status = micron_quad_enable(nor);
- 		if (status) {
- 			dev_err(nor->dev, "Micron quad-read not enabled\n");
--- 
-1.7.4
+Thanks for doing that. If you could take those numbers, put them in a table
+like with/without relaxed and so one, write how you got them (modprobe bla)
+and make it part of the commit message then everybody could see about how much
+we talk here. Thanks again.
+
+> --
+> Stefan
+
+Sebastian
