@@ -1,18 +1,24 @@
-Received: from mail-by2on0123.outbound.protection.outlook.com
- ([207.46.100.123] helo=na01-by2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z5Vk0-0002rC-EB
- for linux-mtd@lists.infradead.org; Thu, 18 Jun 2015 09:04:09 +0000
-From: Haikun Wang <haikun.wang@freescale.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, <han.xu@freescale.com>
-Subject: [PATCH 3/3 v2] mtd: spi-nor: fsl-quadspi: fix qspi irq handler
- complete exception
-Date: Thu, 18 Jun 2015 16:59:24 +0800
-Message-ID: <1434617964-12940-1-git-send-email-haikun.wang@freescale.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z5WPW-0003O2-Si
+ for linux-mtd@lists.infradead.org; Thu, 18 Jun 2015 09:47:04 +0000
+From: Kamil Debski <Kamil.Debski@imgtec.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: RE: NAND/OneNAND/SPI NAND bad block management
+Date: Thu, 18 Jun 2015 09:46:39 +0000
+Message-ID: <616819EF2EBFD445AEF36EFF651655B6AB9336@hhmail02.hh.imgtec.org>
+References: <616819EF2EBFD445AEF36EFF651655B6AB8BB1@hhmail02.hh.imgtec.org>
+ <20150617172026.GF4917@ld-irv-0074>
+In-Reply-To: <20150617172026.GF4917@ld-irv-0074>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Haikun Wang <haikun.wang@freescale.com>
+Cc: Ionela Voinescu <Ionela.Voinescu@imgtec.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>,
+ "peterpandong@micron.com" <peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,131 +28,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In case of interrupt arrive immediately after requesting irq,
-kernel will panic due to uninitialized variable.
+Hi Brian, Peter,
 
-Fix below exception on LS1021AQDS:
-Unable to handle kernel NULL pointer dereference at virtual address
-00000000
-pgd = 80003000
-[00000000] *pgd=80000080004003, *pmd=00000000
-Internal error: Oops: 206 [#1] SMP THUMB2
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.1.0-rc5+ #2
-Hardware name: Freescale LS1021A
-task: 80526f30 ti: 80522000 task.ti: 80522000
-PC is at __wake_up_common+0x14/0x46
-LR is at __wake_up_locked+0xb/0x10
-pc : [<800388ae>]    lr : [<800388eb>]    psr: 400001b3
-sp : 80523e78  ip : 00000008  fp : 00000001
-r10: 00000000  r9 : 00000003  r8 : ee008000
-r7 : 00000001  r6 : 80000193  r5 : 00000000  r4 : ee0c0bd0
-r3 : 00000000  r2 : 00000001  r1 : 00000003  r0 : fffffff4
-Flags: nZcv  IRQs off  FIQs on  Mode SVC_32  ISA Thumb  Segment kernel
-Control: 70c5387d  Table: 80003000  DAC: fddff9d7
-Process swapper/0 (pid: 0, stack limit = 0x80522210)
-Stack: (0x80523e78 to 0x80524000)
-3e60:                                                       00000000
-ee0c0bcc
-3e80: ee0c0bc8 80000193 00000000 ee0cb480 805532ff 800388eb 00000000
-00000003
-3ea0: 00000001 80038d7f ee0c0010 08010001 00000000 80211587 80211553
-cf81af00
-3ec0: 00000017 8003e199 ee0cb480 cf81af00 ee0cb480 80532ec0 6e2b4000
-00000000
-3ee0: ee008000 00000001 803326d0 8003e265 00000000 ee0cb480 80532ec0
-8003ff6b
-3f00: 8003ff09 00000017 8051ebc4 8003dc77 00000000 8003de47 80523f48
-f0002000
-3f20: 80523f48 805247d4 80523f7c 8051d384 8051fca0 8000924b 8000db28
-40000133
-3f40: ffffffff 8032df1b 00000001 00000000 00000000 80017be1 80522000
-00000000
-3f60: 00000000 80523f98 8051d384 8051fca0 803326d0 00000001 00000008
-80523f90
-3f80: 8000db27 8000db28 40000133 ffffffff 00000000 80038fd7 00000001
-00000000
-3fa0: 00000002 80556000 00000000 804eb933 ffffffff ffffffff 804eb545
-00000000
-3fc0: ffffffff 00000000 00000000 80512590 00000000 80556294 80524460
-8051258c
-3fe0: 80528050 80003010 410fc075 00000000 00000000 8000808f 00000000
-	00000000
-[<800388ae>] (__wake_up_common) from [<800388eb>]
-	(__wake_up_locked+0xb/0x10)
-[<800388eb>] (__wake_up_locked) from [<80038d7f>] (complete+0x1f/0x2a)
-[<80038d7f>] (complete) from [<80211587>] (fsl_qspi_irq_handler+0x35/0x38)
-[<80211587>] (fsl_qspi_irq_handler) from [<8003e199>]
-	(handle_irq_event_percpu+0x1b/0xb6)
-[<8003e199>] (handle_irq_event_percpu) from [<8003e265>]
-	(handle_irq_event+0x31/0x48)
-[<8003e265>] (handle_irq_event) from [<8003ff6b>]
-	(handle_fasteoi_irq+0x63/0xb8)
-[<8003ff6b>] (handle_fasteoi_irq) from [<8003dc77>]
-	(generic_handle_irq+0x13/0x1c)
-[<8003dc77>] (generic_handle_irq) from [<8003de47>]
-	(__handle_domain_irq+0x53/0x74)
-[<8003de47>] (__handle_domain_irq) from [<8000924b>]
-	(gic_handle_irq+0x27/0x40)
-[<8000924b>] (gic_handle_irq) from [<8032df1b>] (__irq_svc+0x3b/0x5c)
-Exception stack(0x80523f48 to 0x80523f90)
-3f40:                   00000001 00000000 00000000 80017be1 80522000
-00000000
-3f60: 00000000 80523f98 8051d384 8051fca0 803326d0 00000001 00000008
-80523f90
-3f80: 8000db27 8000db28 40000133 ffffffff
-[<8032df1b>] (__irq_svc) from [<8000db28>] (arch_cpu_idle+0x14/0x20)
-[<8000db28>] (arch_cpu_idle) from [<80038fd7>]
-	(cpu_startup_entry+0x187/0x1c4)
-[<80038fd7>] (cpu_startup_entry) from [<804eb933>]
-	(start_kernel+0x27b/0x2e4)
-[<804eb933>] (start_kernel) from [<8000808f>] (0x8000808f)
-Code: 4617 469a f1a5 000c (682d) 3d0c
----[ end trace 420f2b58e4270f57 ]---
-Kernel panic - not syncing: Fatal exception in interrupt
-CPU1: stopping
-CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      D         4.1.0-rc5+ #2
-Hardware name: Freescale LS1021A
-[<80011937>] (unwind_backtrace) from [<8000f4e7>] (show_stack+0xb/0xc)
-[<8000f4e7>] (show_stack) from [<8032ad55>] (dump_stack+0x51/0x64)
-[<8032ad55>] (dump_stack) from [<80010ff9>] (handle_IPI+0x7d/0xf8)
-[<80010ff9>] (handle_IPI) from [<8000925b>] (gic_handle_irq+0x37/0x40)
-[<8000925b>] (gic_handle_irq) from [<8032df1b>] (__irq_svc+0x3b/0x5c)
-Exception stack(0xee079f90 to 0xee079fd8)
-9f80:                                     00000001 00000000 00000000
-80017be1
-9fa0: ee078000 00000000 00000000 ee079fe0 8051d384 8051fca0 803326d0
-00000001
-9fc0: 00000008 ee079fd8 8000db27 8000db28 40000133 ffffffff
-[<8032df1b>] (__irq_svc) from [<8000db28>] (arch_cpu_idle+0x14/0x20)
-[<8000db28>] (arch_cpu_idle) from [<80038fd7>]
-	(cpu_startup_entry+0x187/0x1c4)
-[<80038fd7>] (cpu_startup_entry) from [<80009311>] (__enable_mmu+0x1/0x10)
----[ end Kernel panic - not syncing: Fatal exception in interrupt
+> From: Brian Norris [mailto:computersforpeace@gmail.com]
+> Sent: 17 June 2015 18:20
+> To: Kamil Debski
+> Cc: linux-mtd@lists.infradead.org; ezequiel@vanguardiasur.com.ar;
+> kyungmin.park@samsung.com; peterpandong@micron.com; Ionela
+> Voinescu
+> Subject: Re: NAND/OneNAND/SPI NAND bad block management
+>=20
+> On Thu, Jun 11, 2015 at 03:57:00PM +0000, Kamil Debski wrote:
+> > Hi,
+>=20
+> Hi!
+>=20
+> > I am currently working on the SPI NAND framework. I noticed that there
+> > was quite a lot of discussion on this topic.
+> >
+> > It seems that the necessary task to do first is to make some
+> > modification to the bad block management. It is necessary to separate
+> > it from the NAND core, as the same bad block handling would be used by
+> > the SPI NAND core.
+> >
+> > My question regarding this is following. OneNAND core also needs BBM
+> > and implements it on its own. The design of BBM in OneNAND core is
+> > very similar to NAND core - there are also two files onenand_base.c
+> > and onenand_bbt.c.  The latter was actually derived from nand_bbt.c. I
+> > am pretty sure OneNAND would be also benefit from using a generic BBM.
+> > I did not find OneNAND mentioned in the previous discussion about
+> > separating bad block management from the NAND core [1]. Was there any
+> > reason why it was left out, or was it just overlooked?
+>=20
+> OneNAND development is essentially dead, AFAICT. I don't know if anyone
+> still uses it, but I haven't really seen significant patches from anyone
+> on that code in a long time. So I figure it's better to leave it alone,
+> until someone actually has hardware to test and a desire to work on it.
 
-Signed-off-by: Haikun Wang <haikun.wang@freescale.com>
----
+I see. My idea was to separate all the possible common code to follow the
+saying that less code is better. Though, you might be right that, it's bett=
+er to
+leave OneNAND alone.
 
-Changes in v2:
-- Remove 'init_completion'
+> (I see you sent patches just recently; do you have hardware to test it?)
 
- drivers/mtd/spi-nor/fsl-quadspi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I have a device which used SPI NAND and can get my hands on a board with NA=
+ND, but unfortunately I have no access to any boards with OneNAND. This may=
+ be a good argument to keep out of OneNAND :)
+=20
+> > The file include/linux/mtd/bbm.h contains the struct bbm_info, which
+> > seems as a good place to store the parameters and state of the BBM. I
+> > am not sure about creating a new struct nand_bbt for that reason;
+> > especially that struct bbm_info is already used by the OneNAND core.
+> > I would go for embedding a struct bbm_info * in struct mtd_info, such
+> > that it wouldn't be necessary to create wrappers.
+>=20
+> I suppose that's possible, but as I mentioned, we aren't really equipped
+> to rework OneNAND at the moment, so it may be best to keep them
+> separate.
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index dc157f9..2c8cc5e 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -666,6 +666,10 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 	qspi_writel(q, QUADSPI_MCR_RESERVED_MASK | QUADSPI_MCR_END_CFG_MASK,
- 			base + QUADSPI_MCR);
- 
-+	/* clear flag register before enable the interrupt */
-+	reg = qspi_readl(q, q->iobase + QUADSPI_FR);
-+	qspi_writel(q, reg, q->iobase + QUADSPI_FR);
-+
- 	/* enable the interrupt */
- 	qspi_writel(q, QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
- 
--- 
-2.1.0.27.g96db324
+Right.
+
+> > I am working on the patches and should send them out soon. I am quite
+> > new to mtd, so I am sure you'll have quite a few comments on this
+> > topic and the patches :)
+>=20
+> Glad to see you interested in the topic. You might do best to comment
+> on and/or test existing solutions, though, rather than rewrite them.
+
+The thing is that I missed the recent patch by Peter Pan that you mentioned=
+ below.
+
+>=20
+> > Best wishes,
+> > Kamil Debski
+> >
+> > [1] http://lists.infradead.org/pipermail/linux-mtd/2015-
+> January/057639.html
+> >
+> > Other useful links:
+> > - previous attempt at the SPI NAND framework by Ezequiel Garcia
+> > http://lists.infradead.org/pipermail/linux-mtd/2014-
+> December/056763.html
+> > - successive attempt at the SPI NAND framework by Peter Pan
+> > http://lists.infradead.org/pipermail/linux-mtd/2015-January/057223.html
+>=20
+> You're missing Peter Pan's latest revision:
+>=20
+> http://lists.infradead.org/pipermail/linux-mtd/2015-May/059183.html
+>=20
+> I'd appreciate if you could make an argument why we should consider your
+> solution instead of just focusing on his.
+
+As I mentioned above - I missed the most recent patch by Peter Pan. No one =
+mentioned this in reply to my previous email, thus I started to work on my =
+patches :)
+
+I had a browse through Peter Pan's code and it looks good. I would like to =
+apply it on my development branch, however I have some trouble with this.
+
+Peter, can you tell me which branch did you use as the base for your patch?=
+ I tried applying to v4.0, v4.1-rc8 and master and nand_bbt branches on htt=
+p://git.infradead.org/users/norris/linux-mtd.git.
+
+>=20
+> Regards,
+> Brian
+
+Best wishes,
+Kamil Debski
