@@ -1,27 +1,15 @@
-Received: from mail-bl2on0055.outbound.protection.outlook.com ([65.55.169.55]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z61lj-0002aC-DL
- for linux-mtd@lists.infradead.org; Fri, 19 Jun 2015 19:16:04 +0000
-Message-ID: <5584695E.1090906@opensource.altera.com>
-Date: Fri, 19 Jun 2015 14:11:26 -0500
-From: Graham Moore <grmoore@opensource.altera.com>
-MIME-Version: 1.0
-To: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
-Subject: Re: [RFC PATCH] mtd: spi-nor: Added flag check for quad io protocol
- for micron flash parts
-References: <1434639539-7517-1-git-send-email-anuragku@xilinx.com>
-In-Reply-To: <1434639539-7517-1-git-send-email-anuragku@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de, harinik@xilinx.com, mika.westerberg@linux.intel.com,
- ben@decadent.org.uk, broonie@kernel.org, zajec5@gmail.com,
- Anurag Kumar Vulisha <anuragku@xilinx.com>, linux-kernel@vger.kernel.org,
- svemula@xilinx.com, linux-mtd@lists.infradead.org, anirudh@xilinx.com,
- shijie.huang@intel.com, punnaia@xilinx.com, computersforpeace@gmail.com,
- dwmw2@infradead.org,
- =?UTF-8?B?IkJlYW4gSHVvIOmcjeaWjOaWjCAoYg==?= =?UTF-8?B?ZWFuaHVvKSI=?=
- <beanhuo@micron.com>
+ id 1Z62cb-0002EI-01
+ for linux-mtd@lists.infradead.org; Fri, 19 Jun 2015 20:10:42 +0000
+Received: by pdjn11 with SMTP id n11so97333393pdj.0
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Jun 2015 13:10:15 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] mtd: cmdlinepart: allow small partitions
+Date: Fri, 19 Jun 2015 13:10:06 -0700
+Message-Id: <1434744607-26621-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,62 +19,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Anurag,
+I'm not sure why we have a PAGE_SIZE restriction on this partition
+parser.
 
-We're struggling with the same issue, our Cadence QSPI controller *does* 
-handle four-line command, address, and data, but has to be configured 
-for it.  The setting of quad-io-protocol mode in micron_quad_enable is 
-really jacking up our code.  We have to snoop the command stream and 
-configure the controller as soon as we see the quad-io-protocol command 
-go to the Micron chip.  Ugly.
+If we really wanted the restriction, I would expect it to be a
+restriction for *all* parsers, so we'd move it to the MTD core
 
-I'd like to point out that this flag is also dependent upon the 
-particular controller in use, not just the Micron chip.  In fact, it may 
-be more of a controller thing than a chip thing.
+At any rate, while small partitions may not be useful (they'll often be
+smaller than the eraseblock size and therefore can only be used
+read-only), they still have use as a read-only partition.
 
-Maybe this flag should actually be an enum read_mode value, and passed 
-into spi_nor_scan by the controller?
+This restriction is especially annoying because it aborts the entire
+MTD's cmdline parsing, leaving it unpartitioned.
 
-Thanks,
-Graham
+So, let's kill the restriction and only check for zero-sized partitions,
+which I expect we don't want to allow.
 
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+Anyone know a good reason why this restriction should be here?
 
-On 06/18/2015 09:58 AM, Anurag Kumar Vulisha wrote:
-> micron flash parts by default operates in extended spi protocol,which accepts
-> command on single line and can accept address & data on one,two and four lines
-> depending on the command sent.In set_quad_enable() we are enabling the quad io
-> protocol for micron flash parts by updating the EVCR register,in this method the
-> flash expects the command,address and data to be transmitted on all four data
-> lines which may not be supported on all qspi controllers.So READ_1_1_4 command
-> does not necessarily go out using those bus widths.
->
-> So i have added SPI_QUAD_IO_PROTOCOL flag,which should be checked before enabling
-> the quad io protocol.
->
-> Signed-off-by: Anurag Kumar Vulisha <anuragku@xilinx.com>
-> ---
->   drivers/mtd/spi-nor/spi-nor.c |    3 +++
->   1 files changed, 3 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 14a5d23..a6fa8dc 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -55,6 +55,7 @@ struct flash_info {
->   #define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
->   #define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
->   #define	USE_FSR			0x80	/* use flag status register */
-> +#define SPI_QUAD_IO_PROTOCOL	0x100	/* use quad io protocol */
->   };
->
->   #define JEDEC_MFR(info)	((info)->id[0])
-> @@ -962,6 +963,8 @@ static int set_quad_mode(struct spi_nor *nor, struct flash_info *info)
->   		}
->   		return status;
->   	case CFI_MFR_ST:
-> +		if (!(info->flags & SPI_QUAD_IO_PROTOCOL))
-> +			return 0;
->   		status = micron_quad_enable(nor);
->   		if (status) {
->   			dev_err(nor->dev, "Micron quad-read not enabled\n");
->
+ drivers/mtd/cmdlinepart.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index c8503006f17a..477923a8b86f 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -115,9 +115,8 @@ static struct mtd_partition * newpart(char *s,
+ 		s++;
+ 	} else {
+ 		size = memparse(s, &s);
+-		if (size < PAGE_SIZE) {
+-			printk(KERN_ERR ERRP "partition size too small (%llx)\n",
+-			       size);
++		if (!size) {
++			printk(KERN_ERR ERRP "partition has size 0\n");
+ 			return ERR_PTR(-EINVAL);
+ 		}
+ 	}
+-- 
+1.9.1
