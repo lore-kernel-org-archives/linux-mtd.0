@@ -1,26 +1,19 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z5kX1-0005Hn-PN
- for linux-mtd@lists.infradead.org; Fri, 19 Jun 2015 00:51:44 +0000
-From: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
- <peterpandong@micron.com>
-To: Kamil Debski <Kamil.Debski@imgtec.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: RE: NAND/OneNAND/SPI NAND bad block management
-Date: Fri, 19 Jun 2015 00:51:10 +0000
-Message-ID: <87F60714EC601C4C83DFF1D2E3D390A032685000@NTXXIAMBX02.xacn.micron.com>
-References: <616819EF2EBFD445AEF36EFF651655B6AB8BB1@hhmail02.hh.imgtec.org>
- <20150617172026.GF4917@ld-irv-0074>
- <616819EF2EBFD445AEF36EFF651655B6AB9336@hhmail02.hh.imgtec.org>
-In-Reply-To: <616819EF2EBFD445AEF36EFF651655B6AB9336@hhmail02.hh.imgtec.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Message-ID: <55842B51.6000507@toshiba.co.jp>
+Date: Fri, 19 Jun 2015 23:46:41 +0900
+From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
 MIME-Version: 1.0
-Cc: Ionela Voinescu <Ionela.Voinescu@imgtec.com>,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2] mtd: nand: support for Toshiba BENAND (Built-in ECC
+ NAND)
+References: <1434038402-26365-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <CAFLxGvzSosfd50=UUcSRgjiVw=48FP8hgxb9bhL9UDGHTBz9yw@mail.gmail.com>
+ <558025B7.3030103@toshiba.co.jp> <55802A44.6040708@nod.at>
+In-Reply-To: <55802A44.6040708@nod.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,38 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVGh1LCBKdW4gMTgsIDIwMTUgYXQgMTc6NDc6MDBQTSwgS2FtaWwgRGVic2tpIHdyb3RlOg0K
-PiBIaSBCcmlhbiwgUGV0ZXIsDQo+IA0KPiA+ID4NCj4gPiA+IFsxXSBodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTUtDQo+ID4gSmFudWFyeS8wNTc2Mzku
-aHRtbA0KPiA+ID4NCj4gPiA+IE90aGVyIHVzZWZ1bCBsaW5rczoNCj4gPiA+IC0gcHJldmlvdXMg
-YXR0ZW1wdCBhdCB0aGUgU1BJIE5BTkQgZnJhbWV3b3JrIGJ5IEV6ZXF1aWVsIEdhcmNpYQ0KPiA+
-ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDE0LURl
-Y2VtYmVyLzA1Njc2My5odG1sDQo+ID4gPiAtIHN1Y2Nlc3NpdmUgYXR0ZW1wdCBhdCB0aGUgU1BJ
-IE5BTkQgZnJhbWV3b3JrIGJ5IFBldGVyIFBhbg0KPiA+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDE1LUphbnVhcnkvMDU3MjIzLmh0bWwNCj4gPg0K
-PiA+IFlvdSdyZSBtaXNzaW5nIFBldGVyIFBhbidzIGxhdGVzdCByZXZpc2lvbjoNCj4gPg0KPiA+
-IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxNS1NYXkv
-MDU5MTgzLmh0bWwNCj4gPg0KPiA+IEknZCBhcHByZWNpYXRlIGlmIHlvdSBjb3VsZCBtYWtlIGFu
-IGFyZ3VtZW50IHdoeSB3ZSBzaG91bGQgY29uc2lkZXIgeW91cg0KPiA+IHNvbHV0aW9uIGluc3Rl
-YWQgb2YganVzdCBmb2N1c2luZyBvbiBoaXMuDQo+IA0KPiBBcyBJIG1lbnRpb25lZCBhYm92ZSAt
-IEkgbWlzc2VkIHRoZSBtb3N0IHJlY2VudCBwYXRjaCBieSBQZXRlciBQYW4uIE5vDQo+IG9uZSBt
-ZW50aW9uZWQgdGhpcyBpbiByZXBseSB0byBteSBwcmV2aW91cyBlbWFpbCwgdGh1cyBJIHN0YXJ0
-ZWQgdG8NCj4gd29yayBvbiBteSBwYXRjaGVzIDopDQo+IA0KPiBJIGhhZCBhIGJyb3dzZSB0aHJv
-dWdoIFBldGVyIFBhbidzIGNvZGUgYW5kIGl0IGxvb2tzIGdvb2QuIEkgd291bGQgbGlrZQ0KPiB0
-byBhcHBseSBpdCBvbiBteSBkZXZlbG9wbWVudCBicmFuY2gsIGhvd2V2ZXIgSSBoYXZlIHNvbWUg
-dHJvdWJsZSB3aXRoDQo+IHRoaXMuDQo+IA0KPiBQZXRlciwgY2FuIHlvdSB0ZWxsIG1lIHdoaWNo
-IGJyYW5jaCBkaWQgeW91IHVzZSBhcyB0aGUgYmFzZSBmb3IgeW91cg0KPiBwYXRjaD8gSSB0cmll
-ZCBhcHBseWluZyB0byB2NC4wLCB2NC4xLXJjOCBhbmQgbWFzdGVyIGFuZCBuYW5kX2JidA0KPiBi
-cmFuY2hlcyBvbiBodHRwOi8vZ2l0LmluZnJhZGVhZC5vcmcvdXNlcnMvbm9ycmlzL2xpbnV4LW10
-ZC5naXQuDQo+IA0KDQpGaXJzdCBvZiBhbGwsIEknbSBoYXBweSB5b3UgYXJlIGludGVyZXN0aW5n
-IGluIFNQSSBOQU5EIHN1cHBvcnQgYW5kIEJCVA0Kc2VwYXJhdGlvbi4gSSB0aGluayB3ZSBjYW4g
-d29yayB0b2dldGhlciBmb3IgbmV3IEJCVCBhbmQgU1BJIE5BTkQgYWNjZXB0YW5jZS4NCg0KQXMg
-bWVudGlvbmVkIGFib3ZlLCBJIGFscmVhZHkgdHJpZWQgdG8gc2VuZCBCQlQgYW5kIFNQSSBOQU5E
-IHBhdGNoLiBCdXQgZmV3DQpkaXNjdXNzaW9uIGFmdGVyIHNlbmRpbmcuIFBsZWFzZSBmZWVsIGZy
-ZWUgdG8gZG8gYW55dGhpbmcgY2FuIHB1c2ggdGhlIHBhdGNoZXMuDQoNCkkgbWFkZSB0aGUgQkJU
-IHBhdGNoIG9uIG1hc3RlciBicmFuY2ggb2YgZ2l0Oi8vZ2l0LmluZnJhZGVhZC5vcmcvbDItbXRk
-LmdpdCAuDQpJIGFscmVhZHkgdHJpZWQgdG8gYXBwbHkgaXQgb24gdGhlIGxhdGVzdCBjb21taXQu
-IEl0IHdvcmtzLiBUaGUgdmVyc2lvbiBpcw0KdjQuMS1yYzQuDQoNCkZlZWwgZnJlZSB0byBsZXQg
-bWUga25vdyBpZiB5b3UgaGF2ZSBhbnkgc3VnZ2VzdGlvbi4gSWYgeW91IHN0aWxsIGhhdmUgYW55
-DQppc3N1ZSBhYm91dCBwYXRjaCBhcHBsaWNhdGlvbiwgcGxlYXNlIGxldCBtZSBrbm93Lg0KDQpU
-aGFua3MsDQpQZXRlciBQYW4NCg==
+> Please see my patches how to deal with that. Maybe you can find a better solution.
+
+Thank you for your suggestion. I considered to use your submitted patch on BENAND
+driver, but I believe reading twice the same page approach will affect read performance.
+Additionally, BENAND does not support Disable ECC. So, I cannot use same approach.
+
+I consider other solutions.
+
+BENAND Read Status CMD (70h) can report Rewrite Recommend. BENAND also has extended
+ECC Status CMD (7Ah). This can report number of bit error / sector data.
+If I can use an extended ECC Status CMD (7Ah) in BENAND driver (nand_benand.c),
+I suggest to implement it as the follows:
+
++++ b/drivers/mtd/nand/nand_benand.c
+     .....
+
++/* ECC Status Read Command */
++#define NAND_CMD_ECC_STATUS 0x7A
+     .....
++	chip->ecc.strength = 8;
+     .....
++            /* correctable */
++            else if (status & NAND_STATUS_RECOM_REWRT) {
++                          if (chip->cmd_ctrl &&
++                                        IS_ENABLED(CONFIG_MTD_NAND_BENAND_ECC_STATUS)) {
++
++                                        /* Check Read ECC Status */
++                                        chip->cmd_ctrl(mtd, NAND_CMD_ECC_STATUS,
++                                                      NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
++                                        ecc_status = chip->read_byte(mtd);
++                                        bitflips = ecc_status & 0xff;
++                                        mtd->ecc_stats.corrected += bitflips;
+
+
+If above implementation cannot be acceptable, I would like to use "mtd->bitflip_threshold"
+to inform number of bitflip, as the follows:
+
++                          } else {
++                                        /*
++                                        * If can't use chip->cmd_ctrl,
++                                        * we can't get real number of bitflips.
++                                        * So, we set bitflips mtd->bitflip_threshold.
++                                        */
++                                        bitflips = mtd->bitflip_threshold;
++                                        mtd->ecc_stats.corrected += bitflips;
++                          }
++            }
++
++            return bitflips;
++}
+
+-- Yoshi
+
+On 2015/06/16 22:53, Richard Weinberger wrote:
+> Am 16.06.2015 um 15:33 schrieb KOBAYASHI Yoshitake:
+>>>> +       /* correctable */
+>>>> +       else if (status & NAND_STATUS_RECOM_REWRT) {
+>>>> +               pr_info("BENAND : Recommended to rewrite!\n");
+>>>> +               bitflips = chip->ecc.strength;
+>>>
+>>> In your case this might be okay, as you set strength to 1.
+>>> Otherweise you'd have to report the real number of bitflips.
+>>
+>> I also thought it is okay in this case.
+>> BENAND return corrected data to Host NAND Controller till uncorrectable status.
+>> The current patch uses this Read Status command 70h to abstract BENAND Multi
+>> bit ECC and Need to Rewrite judgement so BENAND would look like 1bit ECC device.
+>
+> The layers above MTD need to know how many bits got repaired.
+> It seems like BENAND suffers from the same shortcomings than On-Die-ECC. ;-\
+> Please see my patches how to deal with that. Maybe you can find a better solution.
+>
+> Thanks,
+> //richard
+>
+>
+>
