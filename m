@@ -1,19 +1,27 @@
-Message-ID: <55842B51.6000507@toshiba.co.jp>
-Date: Fri, 19 Jun 2015 23:46:41 +0900
-From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Received: from mail-bl2on0055.outbound.protection.outlook.com ([65.55.169.55]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z61lj-0002aC-DL
+ for linux-mtd@lists.infradead.org; Fri, 19 Jun 2015 19:16:04 +0000
+Message-ID: <5584695E.1090906@opensource.altera.com>
+Date: Fri, 19 Jun 2015 14:11:26 -0500
+From: Graham Moore <grmoore@opensource.altera.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v2] mtd: nand: support for Toshiba BENAND (Built-in ECC
- NAND)
-References: <1434038402-26365-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <CAFLxGvzSosfd50=UUcSRgjiVw=48FP8hgxb9bhL9UDGHTBz9yw@mail.gmail.com>
- <558025B7.3030103@toshiba.co.jp> <55802A44.6040708@nod.at>
-In-Reply-To: <55802A44.6040708@nod.at>
-Content-Type: text/plain; charset=utf-8; format=flowed
+To: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
+Subject: Re: [RFC PATCH] mtd: spi-nor: Added flag check for quad io protocol
+ for micron flash parts
+References: <1434639539-7517-1-git-send-email-anuragku@xilinx.com>
+In-Reply-To: <1434639539-7517-1-git-send-email-anuragku@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: marex@denx.de, harinik@xilinx.com, mika.westerberg@linux.intel.com,
+ ben@decadent.org.uk, broonie@kernel.org, zajec5@gmail.com,
+ Anurag Kumar Vulisha <anuragku@xilinx.com>, linux-kernel@vger.kernel.org,
+ svemula@xilinx.com, linux-mtd@lists.infradead.org, anirudh@xilinx.com,
+ shijie.huang@intel.com, punnaia@xilinx.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org,
+ =?UTF-8?B?IkJlYW4gSHVvIOmcjeaWjOaWjCAoYg==?= =?UTF-8?B?ZWFuaHVvKSI=?=
+ <beanhuo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +31,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Please see my patches how to deal with that. Maybe you can find a better solution.
+Hi Anurag,
 
-Thank you for your suggestion. I considered to use your submitted patch on BENAND
-driver, but I believe reading twice the same page approach will affect read performance.
-Additionally, BENAND does not support Disable ECC. So, I cannot use same approach.
+We're struggling with the same issue, our Cadence QSPI controller *does* 
+handle four-line command, address, and data, but has to be configured 
+for it.  The setting of quad-io-protocol mode in micron_quad_enable is 
+really jacking up our code.  We have to snoop the command stream and 
+configure the controller as soon as we see the quad-io-protocol command 
+go to the Micron chip.  Ugly.
 
-I consider other solutions.
+I'd like to point out that this flag is also dependent upon the 
+particular controller in use, not just the Micron chip.  In fact, it may 
+be more of a controller thing than a chip thing.
 
-BENAND Read Status CMD (70h) can report Rewrite Recommend. BENAND also has extended
-ECC Status CMD (7Ah). This can report number of bit error / sector data.
-If I can use an extended ECC Status CMD (7Ah) in BENAND driver (nand_benand.c),
-I suggest to implement it as the follows:
+Maybe this flag should actually be an enum read_mode value, and passed 
+into spi_nor_scan by the controller?
 
-+++ b/drivers/mtd/nand/nand_benand.c
-     .....
-
-+/* ECC Status Read Command */
-+#define NAND_CMD_ECC_STATUS 0x7A
-     .....
-+	chip->ecc.strength = 8;
-     .....
-+            /* correctable */
-+            else if (status & NAND_STATUS_RECOM_REWRT) {
-+                          if (chip->cmd_ctrl &&
-+                                        IS_ENABLED(CONFIG_MTD_NAND_BENAND_ECC_STATUS)) {
-+
-+                                        /* Check Read ECC Status */
-+                                        chip->cmd_ctrl(mtd, NAND_CMD_ECC_STATUS,
-+                                                      NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
-+                                        ecc_status = chip->read_byte(mtd);
-+                                        bitflips = ecc_status & 0xff;
-+                                        mtd->ecc_stats.corrected += bitflips;
+Thanks,
+Graham
 
 
-If above implementation cannot be acceptable, I would like to use "mtd->bitflip_threshold"
-to inform number of bitflip, as the follows:
-
-+                          } else {
-+                                        /*
-+                                        * If can't use chip->cmd_ctrl,
-+                                        * we can't get real number of bitflips.
-+                                        * So, we set bitflips mtd->bitflip_threshold.
-+                                        */
-+                                        bitflips = mtd->bitflip_threshold;
-+                                        mtd->ecc_stats.corrected += bitflips;
-+                          }
-+            }
-+
-+            return bitflips;
-+}
-
--- Yoshi
-
-On 2015/06/16 22:53, Richard Weinberger wrote:
-> Am 16.06.2015 um 15:33 schrieb KOBAYASHI Yoshitake:
->>>> +       /* correctable */
->>>> +       else if (status & NAND_STATUS_RECOM_REWRT) {
->>>> +               pr_info("BENAND : Recommended to rewrite!\n");
->>>> +               bitflips = chip->ecc.strength;
->>>
->>> In your case this might be okay, as you set strength to 1.
->>> Otherweise you'd have to report the real number of bitflips.
->>
->> I also thought it is okay in this case.
->> BENAND return corrected data to Host NAND Controller till uncorrectable status.
->> The current patch uses this Read Status command 70h to abstract BENAND Multi
->> bit ECC and Need to Rewrite judgement so BENAND would look like 1bit ECC device.
+On 06/18/2015 09:58 AM, Anurag Kumar Vulisha wrote:
+> micron flash parts by default operates in extended spi protocol,which accepts
+> command on single line and can accept address & data on one,two and four lines
+> depending on the command sent.In set_quad_enable() we are enabling the quad io
+> protocol for micron flash parts by updating the EVCR register,in this method the
+> flash expects the command,address and data to be transmitted on all four data
+> lines which may not be supported on all qspi controllers.So READ_1_1_4 command
+> does not necessarily go out using those bus widths.
 >
-> The layers above MTD need to know how many bits got repaired.
-> It seems like BENAND suffers from the same shortcomings than On-Die-ECC. ;-\
-> Please see my patches how to deal with that. Maybe you can find a better solution.
+> So i have added SPI_QUAD_IO_PROTOCOL flag,which should be checked before enabling
+> the quad io protocol.
 >
-> Thanks,
-> //richard
+> Signed-off-by: Anurag Kumar Vulisha <anuragku@xilinx.com>
+> ---
+>   drivers/mtd/spi-nor/spi-nor.c |    3 +++
+>   1 files changed, 3 insertions(+), 0 deletions(-)
 >
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 14a5d23..a6fa8dc 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -55,6 +55,7 @@ struct flash_info {
+>   #define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
+>   #define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
+>   #define	USE_FSR			0x80	/* use flag status register */
+> +#define SPI_QUAD_IO_PROTOCOL	0x100	/* use quad io protocol */
+>   };
 >
+>   #define JEDEC_MFR(info)	((info)->id[0])
+> @@ -962,6 +963,8 @@ static int set_quad_mode(struct spi_nor *nor, struct flash_info *info)
+>   		}
+>   		return status;
+>   	case CFI_MFR_ST:
+> +		if (!(info->flags & SPI_QUAD_IO_PROTOCOL))
+> +			return 0;
+>   		status = micron_quad_enable(nor);
+>   		if (status) {
+>   			dev_err(nor->dev, "Micron quad-read not enabled\n");
 >
