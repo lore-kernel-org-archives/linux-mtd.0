@@ -1,37 +1,19 @@
-Received: from mail-by2on0075.outbound.protection.outlook.com ([207.46.100.75]
- helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-vn0-x232.google.com ([2607:f8b0:400c:c0f::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z68YC-00049F-0a
- for linux-mtd@lists.infradead.org; Sat, 20 Jun 2015 02:30:33 +0000
-From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-To: Graham Moore <grmoore@opensource.altera.com>, Anurag Kumar Vulisha
- <anuragku@xilinx.com>
-Subject: RE: [RFC PATCH] mtd: spi-nor: Added flag check for quad io protocol
- for micron flash parts
-Date: Sat, 20 Jun 2015 02:30:01 +0000
-Message-ID: <03CA77BA8AF6F1469AEDFBDA1322A7B7495B3042@XAP-PVEXMBX02.xlnx.xilinx.com>
-References: <1434639539-7517-1-git-send-email-anuragku@xilinx.com>
- <5584695E.1090906@opensource.altera.com>
-In-Reply-To: <5584695E.1090906@opensource.altera.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1Z6Div-0003I7-0r
+ for linux-mtd@lists.infradead.org; Sat, 20 Jun 2015 08:01:57 +0000
+Received: by vnbf7 with SMTP id f7so941590vnb.6
+ for <linux-mtd@lists.infradead.org>; Sat, 20 Jun 2015 01:01:34 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "marex@denx.de" <marex@denx.de>, Harini Katakam <harinik@xilinx.com>,
- "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
- "ben@decadent.org.uk" <ben@decadent.org.uk>,
- "Mark Brown \(broonie@kernel.org\)" <broonie@kernel.org>,
- "zajec5@gmail.com" <zajec5@gmail.com>,
- Anurag Kumar Vulisha <anuragku@xilinx.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Srikanth Vemula <svemula@xilinx.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Anirudha Sarangi <anirudh@xilinx.com>,
- "shijie.huang@intel.com" <shijie.huang@intel.com>,
- Michal Simek <michals@xilinx.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- =?utf-8?B?IkJlYW4gSHVvIOmcjeaWjOaWjCAoYmVhbmh1byki?= <beanhuo@micron.com>
+In-Reply-To: <CAC7eWMWXxbSL+WG_vHFg-DtApitTHx+-A5aarfcNeAJSWY+kJg@mail.gmail.com>
+References: <CAC7eWMWXxbSL+WG_vHFg-DtApitTHx+-A5aarfcNeAJSWY+kJg@mail.gmail.com>
+Date: Sat, 20 Jun 2015 10:01:33 +0200
+Message-ID: <CAFLxGvy7cmbDR3zo2H-sbBuJx1W4jN+4U_CZAgHonnEq7cMHDg@mail.gmail.com>
+Subject: Re: Two ubifs errors
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Smitha Rathnam <rathnam.smitha@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,84 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgR3JhaGFtLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEdyYWhh
-bSBNb29yZSBbbWFpbHRvOmdybW9vcmVAb3BlbnNvdXJjZS5hbHRlcmEuY29tXQ0KPiBTZW50OiBT
-YXR1cmRheSwgSnVuZSAyMCwgMjAxNSAxMjo0MSBBTQ0KPiBUbzogQW51cmFnIEt1bWFyIFZ1bGlz
-aGENCj4gQ2M6IGR3bXcyQGluZnJhZGVhZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNv
-bTsNCj4gbWFyZXhAZGVueC5kZTsgc2hpamllLmh1YW5nQGludGVsLmNvbTsgemFqZWM1QGdtYWls
-LmNvbTsNCj4gYmVuQGRlY2FkZW50Lm9yZy51azsgbWlrYS53ZXN0ZXJiZXJnQGxpbnV4LmludGVs
-LmNvbTsgIkJlYW4gSHVvIOmcjeaWjA0KPiDmlowgKGJlYW5odW8pIjsgSGFyaW5pIEthdGFrYW07
-IEFudXJhZyBLdW1hciBWdWxpc2hhOyBTcmlrYW50aCBWZW11bGE7DQo+IGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmc7IGJyb29uaWVAa2VybmVsLm9yZzsgbGludXgtDQo+IG10ZEBsaXN0cy5p
-bmZyYWRlYWQub3JnOyBBbmlydWRoYSBTYXJhbmdpOyBQdW5uYWlhaCBDaG91ZGFyeSBLYWxsdXJp
-DQo+IFN1YmplY3Q6IFJlOiBbUkZDIFBBVENIXSBtdGQ6IHNwaS1ub3I6IEFkZGVkIGZsYWcgY2hl
-Y2sgZm9yIHF1YWQgaW8gcHJvdG9jb2wNCj4gZm9yIG1pY3JvbiBmbGFzaCBwYXJ0cw0KPiANCj4g
-SGkgQW51cmFnLA0KPiANCj4gV2UncmUgc3RydWdnbGluZyB3aXRoIHRoZSBzYW1lIGlzc3VlLCBv
-dXIgQ2FkZW5jZSBRU1BJIGNvbnRyb2xsZXIgKmRvZXMqDQo+IGhhbmRsZSBmb3VyLWxpbmUgY29t
-bWFuZCwgYWRkcmVzcywgYW5kIGRhdGEsIGJ1dCBoYXMgdG8gYmUgY29uZmlndXJlZA0KPiBmb3Ig
-aXQuICBUaGUgc2V0dGluZyBvZiBxdWFkLWlvLXByb3RvY29sIG1vZGUgaW4gbWljcm9uX3F1YWRf
-ZW5hYmxlIGlzDQo+IHJlYWxseSBqYWNraW5nIHVwIG91ciBjb2RlLiAgV2UgaGF2ZSB0byBzbm9v
-cCB0aGUgY29tbWFuZCBzdHJlYW0gYW5kDQo+IGNvbmZpZ3VyZSB0aGUgY29udHJvbGxlciBhcyBz
-b29uIGFzIHdlIHNlZSB0aGUgcXVhZC1pby1wcm90b2NvbCBjb21tYW5kDQo+IGdvIHRvIHRoZSBN
-aWNyb24gY2hpcC4gIFVnbHkuDQo+IA0KPiBJJ2QgbGlrZSB0byBwb2ludCBvdXQgdGhhdCB0aGlz
-IGZsYWcgaXMgYWxzbyBkZXBlbmRlbnQgdXBvbiB0aGUNCj4gcGFydGljdWxhciBjb250cm9sbGVy
-IGluIHVzZSwgbm90IGp1c3QgdGhlIE1pY3JvbiBjaGlwLiAgSW4gZmFjdCwgaXQgbWF5DQo+IGJl
-IG1vcmUgb2YgYSBjb250cm9sbGVyIHRoaW5nIHRoYW4gYSBjaGlwIHRoaW5nLg0KDQpBZ3JlZSwN
-ClFVQUQgSU8gcHJvdG9jb2wgaXMgZGlmZmVyZW50IHRvIHN1cHBvcnRpbmcgUVVBRCBJTyByZWFk
-IGNvbW1hbmQuDQpJbiBRVUFEIElPIFByb3RvY29sIG1vZGUsIGFsbCB0aGUgY29tbWFuZHMgaW5j
-bHVkaW5nIHJlZ2lzdGVyIHJlYWQsIGVyYXNlLCByZWFkLA0KUHJvZ3JhbS4uLiB3aWxsIGJlIHVz
-aW5nIHRoZSBmb3VyIGxpbmVzLg0KDQpFbmFibGluZyB0aGUgUVVBRCBJTyBQcm90b2NvbCBpbiBm
-bGFzaCBzaG91bGQgZW5zdXJlIHRoYXQgYm90aCB0aGUgY29udHJvbGxlcg0KYW5kIGZsYXNoIGhh
-dmUgdGhpcyBzdXBwb3J0IG90aGVyd2lzZSB0aGUgcmVzdWx0IGlzIHVucHJlZGljdGFibGUuDQoN
-ClNvLCBub3cgbTI1cDgwIGRyaXZlciBzaG91bGQgY2hlY2sgdGhlIG51bWJlciBiaXRzIHRvIHVz
-ZSBkZXBlbmRpbmcgb24gdGhlIA0KUHJvdG9jb2wgaXQgdXNlcy4gTGl0ZXJhbGx5IHdlIG5lZWQg
-YW5vdGhlciBtb2RlIGkuZSBwcm90b2NvbCBtb2RlLg0KVGhlIHBvc3NpYmxlIHZhbHVlcyBmb3Ig
-dGhpcyBtb2RlcyBhcmUNCg0KRHVhbCBJbyBwcm90b2NvbCAtIGFsbCB0aGUgY29tbWFuZHMgd2ls
-bCBiZSBzZW50IHVzaW5nIDIgbGluZXMNCg0KUXVhZCBJbyBwcm90b2NvbCAtIGFsbCB0aGUgY29t
-bWFuZHMgd2lsbCBiZSBzZW5kIHVzaW5nIDQgbGluZXMuDQoNCkV4dGVuZGVkIHNwaSBwcm90b2Nv
-bCAtIG51bWJlciBvZiBkYXRhIGxpbmVzIHRvIHVzZSB3aWxsIGRlcGVuZHMgb24gdGhlIGRhdGEg
-Y29tbWFuZC4NCg0KSWYgdGhlIHByb3RvY29sIGlzIGV4dGVuZGVkIHNwaSBwcm90b2NvbCwgbTI1
-cDgwIHNob3VsZCBzZWxlY3QgdGhlIHJ4IGFuZCB0eCBiaXRzIHRvIHVzZQ0KZm9yIGRhdGEgb3Bl
-cmF0aW9ucyBkZXBlbmRzIG9uIHRoZSAibW9kZSIgaS5lLiBxdWFkL2R1YWwNCklmIHRoZSBwcm90
-b2NvbCBpcyBRdWFkIElPL2R1YWwgSW8sIG0ycDgwIHNob3VsZCBzZWxlY3QgdGhlIHJ4IGFuZCB0
-eCBiaXRzIGVpdGhlciA0LzIgZm9yDQpBbGwgdGhlIGNvbW1hbmRzLiAgICAgDQoNCkRhdGEgb3Bl
-cmF0aW9ucyBpbiB0aGUgYWJvdmUgY29udGV4dCBtZWFucyByZWFkLCBwYWdlIHByb2dyYW0gb3Bl
-cmF0aW9uLiAgICAgDQoNCiBTdWdnZXN0IGlmIHdlIGhhdmUgYW55IG90aGVyIGFjY2VwdGFibGUg
-c29sdXRpb25zIGZvciBpbXBsZW1lbnRpbmcgdGhlIHF1YWQvZHVhbCBpbw0KUHJvdG9jb2wgc3Vw
-cG9ydC4gIA0KDQpSZWdhcmRzLA0KUHVubmFpYWggDQoNCj4gDQo+IE1heWJlIHRoaXMgZmxhZyBz
-aG91bGQgYWN0dWFsbHkgYmUgYW4gZW51bSByZWFkX21vZGUgdmFsdWUsIGFuZCBwYXNzZWQNCj4g
-aW50byBzcGlfbm9yX3NjYW4gYnkgdGhlIGNvbnRyb2xsZXI/DQo+IA0KPiBUaGFua3MsDQo+IEdy
-YWhhbQ0KPiANCj4gDQo+IE9uIDA2LzE4LzIwMTUgMDk6NTggQU0sIEFudXJhZyBLdW1hciBWdWxp
-c2hhIHdyb3RlOg0KPiA+IG1pY3JvbiBmbGFzaCBwYXJ0cyBieSBkZWZhdWx0IG9wZXJhdGVzIGlu
-IGV4dGVuZGVkIHNwaSBwcm90b2NvbCx3aGljaA0KPiBhY2NlcHRzDQo+ID4gY29tbWFuZCBvbiBz
-aW5nbGUgbGluZSBhbmQgY2FuIGFjY2VwdCBhZGRyZXNzICYgZGF0YSBvbiBvbmUsdHdvIGFuZCBm
-b3VyDQo+IGxpbmVzDQo+ID4gZGVwZW5kaW5nIG9uIHRoZSBjb21tYW5kIHNlbnQuSW4gc2V0X3F1
-YWRfZW5hYmxlKCkgd2UgYXJlIGVuYWJsaW5nDQo+IHRoZSBxdWFkIGlvDQo+ID4gcHJvdG9jb2wg
-Zm9yIG1pY3JvbiBmbGFzaCBwYXJ0cyBieSB1cGRhdGluZyB0aGUgRVZDUiByZWdpc3RlcixpbiB0
-aGlzIG1ldGhvZA0KPiB0aGUNCj4gPiBmbGFzaCBleHBlY3RzIHRoZSBjb21tYW5kLGFkZHJlc3Mg
-YW5kIGRhdGEgdG8gYmUgdHJhbnNtaXR0ZWQgb24gYWxsIGZvdXINCj4gZGF0YQ0KPiA+IGxpbmVz
-IHdoaWNoIG1heSBub3QgYmUgc3VwcG9ydGVkIG9uIGFsbCBxc3BpIGNvbnRyb2xsZXJzLlNvIFJF
-QURfMV8xXzQNCj4gY29tbWFuZA0KPiA+IGRvZXMgbm90IG5lY2Vzc2FyaWx5IGdvIG91dCB1c2lu
-ZyB0aG9zZSBidXMgd2lkdGhzLg0KPiA+DQo+ID4gU28gaSBoYXZlIGFkZGVkIFNQSV9RVUFEX0lP
-X1BST1RPQ09MIGZsYWcsd2hpY2ggc2hvdWxkIGJlIGNoZWNrZWQNCj4gYmVmb3JlIGVuYWJsaW5n
-DQo+ID4gdGhlIHF1YWQgaW8gcHJvdG9jb2wuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBBbnVy
-YWcgS3VtYXIgVnVsaXNoYSA8YW51cmFna3VAeGlsaW54LmNvbT4NCj4gPiAtLS0NCj4gPiAgIGRy
-aXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwgICAgMyArKysNCj4gPiAgIDEgZmlsZXMgY2hh
-bmdlZCwgMyBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9z
-cGktbm9yLmMNCj4gPiBpbmRleCAxNGE1ZDIzLi5hNmZhOGRjIDEwMDY0NA0KPiA+IC0tLSBhL2Ry
-aXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ID4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5v
-ci9zcGktbm9yLmMNCj4gPiBAQCAtNTUsNiArNTUsNyBAQCBzdHJ1Y3QgZmxhc2hfaW5mbyB7DQo+
-ID4gICAjZGVmaW5lCVNQSV9OT1JfRFVBTF9SRUFECTB4MjAgICAgLyogRmxhc2ggc3VwcG9ydHMg
-RHVhbCBSZWFkICovDQo+ID4gICAjZGVmaW5lCVNQSV9OT1JfUVVBRF9SRUFECTB4NDAgICAgLyog
-Rmxhc2ggc3VwcG9ydHMgUXVhZCBSZWFkDQo+ICovDQo+ID4gICAjZGVmaW5lCVVTRV9GU1IJCQkw
-eDgwCS8qIHVzZSBmbGFnIHN0YXR1cw0KPiByZWdpc3RlciAqLw0KPiA+ICsjZGVmaW5lIFNQSV9R
-VUFEX0lPX1BST1RPQ09MCTB4MTAwCS8qIHVzZSBxdWFkIGlvIHByb3RvY29sICovDQo+ID4gICB9
-Ow0KPiA+DQo+ID4gICAjZGVmaW5lIEpFREVDX01GUihpbmZvKQkoKGluZm8pLT5pZFswXSkNCj4g
-PiBAQCAtOTYyLDYgKzk2Myw4IEBAIHN0YXRpYyBpbnQgc2V0X3F1YWRfbW9kZShzdHJ1Y3Qgc3Bp
-X25vciAqbm9yLA0KPiBzdHJ1Y3QgZmxhc2hfaW5mbyAqaW5mbykNCj4gPiAgIAkJfQ0KPiA+ICAg
-CQlyZXR1cm4gc3RhdHVzOw0KPiA+ICAgCWNhc2UgQ0ZJX01GUl9TVDoNCj4gPiArCQlpZiAoIShp
-bmZvLT5mbGFncyAmIFNQSV9RVUFEX0lPX1BST1RPQ09MKSkNCj4gPiArCQkJcmV0dXJuIDA7DQo+
-ID4gICAJCXN0YXR1cyA9IG1pY3Jvbl9xdWFkX2VuYWJsZShub3IpOw0KPiA+ICAgCQlpZiAoc3Rh
-dHVzKSB7DQo+ID4gICAJCQlkZXZfZXJyKG5vci0+ZGV2LCAiTWljcm9uIHF1YWQtcmVhZCBub3QN
-Cj4gZW5hYmxlZFxuIik7DQo+ID4NCg==
+On Sat, Jun 20, 2015 at 12:50 AM, Smitha Rathnam
+<rathnam.smitha@gmail.com> wrote:
+> Hi All,
+>
+> I posted a similar problem earlier. This time my question is slightly different.
+> First: We have a system that uses the linux 2.6 kernel, ubifs. We use
+> a micron nand device.
+> The system uses two partitions, one for the ubi rootfs and the other
+> for the ubi logfs.
+> We found that in the last few months, the system has been failing on
+> the logfs. And we lose data. The error seen is "UBIFS error. LEB xx
+> scanning failed."
+>
+> We got around this error by reinstalling (which essentially formats
+> the partitions) software. But we lost the data.
+>
+> Second: The question was how to reproduce the issue. After looking
+> through forums, I found that it is mostly related to losing power when
+> writing to the nand.
+> So we setup a test station with three systems running the same
+> software version writing lot of data to the nand and continuously
+> powercycling the system. After running the tests for two days, we
+> found one system had broken down after 2000 power cycles. While the
+> others had not. After restarting the test, we found that another
+> system had broken down with the same error after two days but after
+> 300 power cycles. This time it failed while scanning LEB 2733.
+>
+> One of the systems shows the bad block error which seems to show up in
+> the ubi rootfs. This does not affect the nand fs.
+>
+> My worry and question is: Why are all systems not failing after two
+> days? One system seems to be more succeptible than others. What could
+> be the explanation for that?
+> I have some logs. Please have a look and advise.
+
+Without a detailed analyze of the UBI/FS corruptions you face I can't say much.
+Maybe your MTD driver has issues, maybe you're using a horrible
+screwed vendor kernel...
+  Regarding the powercut tests, please use the UBIFS or UBI powercut emulation,
+it will stop IO at critical points. If you just power cycle your board
+from time to time
+there is a high chance that all IO is done while you cut the power.
+
+-- 
+Thanks,
+//richard
