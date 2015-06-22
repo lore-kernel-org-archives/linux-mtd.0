@@ -1,20 +1,20 @@
-Received: from ez37.mirohost.net ([89.184.75.186])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z6u73-0001SI-TE
- for linux-mtd@lists.infradead.org; Mon, 22 Jun 2015 05:17:43 +0000
-Received: from apache by ez37.mirohost.net with local (Exim 4.80)
- (envelope-from <php-sender-apteka-tas.com.ua@undeliver.mirohost.net>)
- id 1Z6u5Z-0007iN-O1
- for linux-mtd@lists.infradead.org; Mon, 22 Jun 2015 08:16:09 +0300
-To: linux-mtd@lists.infradead.org
-Subject: Notice of appearance in Court #0000766279
-Date: Mon, 22 Jun 2015 08:16:09 +0300
-From: "District Court" <ryan.stevenson@ez37.mirohost.net>
-Reply-To: "District Court" <ryan.stevenson@ez37.mirohost.net>
-Message-ID: <fac472526d51c3d367757696459c30f2@ez37.mirohost.net>
+Received: from mail.hot-smoke.com ([178.17.37.181])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z6wgF-00041y-FW
+ for linux-mtd@lists.infradead.org; Mon, 22 Jun 2015 08:02:12 +0000
+Received: from Pano100PC (77-95-183-131.ccsleeds.co.uk [77.95.183.131])
+ by mail.hot-smoke.com (Hot Smoke Mail Server) with ESMTP id JOX04649
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Jun 2015 09:01:49 +0100
+From: "David J Myers" <david.myers@amg-panogenics.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: UBI-FS Master Node failure
+Date: Mon, 22 Jun 2015 09:01:48 +0100
+Message-ID: <002901d0acc1$b1956d10$14c04730$@myers@amg-panogenics.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_28af5b3936549f0a67623f8328a4b0fb"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +24,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_28af5b3936549f0a67623f8328a4b0fb
-Content-Type: text/plain; charset=us-ascii
+Guys,
+I have an embedded product running a system based on linux-2.6.29,
+originally from the IC supplier, but patched and modified to our spec.
+Recently we have had two units go down with the same UBI-FS Master Node
+failure, both in LEB-2 at slightly different offsets. The console log looks
+like this:-
 
-Notice to Appear,
+[    6.645845] UBIFS error (pid 1): ubifs_scan: corrupt empty space at LEB
+2:86016
+[    6.653268] UBIFS error (pid 1): ubifs_scanned_corruption: corrupted data
+at LEB 2:86016
+[    6.668163] UBIFS error (pid 1): ubifs_scan: LEB 2 scanning failed
+[    6.889661] UBIFS error (pid 1): ubifs_recover_master_node: failed to
+recover master node
+[    6.898497] List of all partitions:
+[    6.902188] 1f00             128 mtdblock0 (driver?)
+[    6.907218] 1f01             768 mtdblock1 (driver?)
+[    6.912314] 1f02             128 mtdblock2 (driver?)
+[    6.917318] 1f03            4096 mtdblock3 (driver?)
+[    6.922395] 1f04            4096 mtdblock4 (driver?)
+[    6.927397] 1f05           65536 mtdblock5 (driver?)
+[    6.932464] 1f06          184320 mtdblock6 (driver?)
+[    6.937455] No filesystem could mount root, tried:  ubifs
+[    6.942988] Kernel panic - not syncing: VFS: Unable to mount root fs on
+unknown-block(0,0)
 
-This is to inform you to appear in the Court on the June 28 for your case hearing.
-You are kindly asked to prepare and bring the documents relating to the case to Court on the specified date.
-Note: The case will be heard by the judge in your absence if you do not come.
+I found two patches to fs/ubifs/recovery.c since 2.6.29 which I applied, but
+they did not fix the corrupted flash. These two patches were this one:-
 
-The Court Notice is attached to this email.
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index f94ddf7..31d09d1 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -299,6 +299,32 @@ int ubifs_recover_master_node(struct ubifs_info *c)
+                      goto out_free;
+              }
+              memcpy(c->rcvrd_mst_node, c->mst_node, UBIFS_MST_NODE_SZ);
++
++              /*
++              * We had to recover the master node, which means there was an
++              * unclean reboot. However, it is possible that the master
+node
++              * is clean at this point, i.e., %UBIFS_MST_DIRTY is not set.
++              * E.g., consider the following chain of events:
++              *
++              * 1. UBIFS was cleanly unmounted, so the master node is clean
++              * 2. UBIFS is being mounted R/W and starts changing the
+master
++              *    node in the first (%UBIFS_MST_LNUM). A power cut
+happens,
++              *    so this LEB ends up with some amount of garbage at the
++              *    end.
++              * 3. UBIFS is being mounted R/O. We reach this place and
++              *    recover the master node from the second LEB
++              *    (%UBIFS_MST_LNUM + 1). But we cannot update the media
++              *    because we are being mounted R/O. We have to defer the
++              *    operation.
++              * 4. However, this master node (@c->mst_node) is marked as
++              *    clean (since the step 1). And if we just return, the
++              *    mount code will be confused and won't recover the master
++              *    node when it is re-mounter R/W later.
++              *
++              *    Thus, to force the recovery by marking the master node
+as
++              *    dirty.
++              */
++              c->mst_node->flags |= cpu_to_le32(UBIFS_MST_DIRTY);
+       } else {
+              /* Write the recovered master node */
+              c->max_sqnum = le64_to_cpu(mst->ch.sqnum) - 1;
+-- 
+1.7.10.2
 
-Yours faithfully,
-Ryan Stevenson,
-Court Secretary.
+And this one:-
+> diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+> index 5256f42..2c98d77 100644
+> --- a/fs/ubifs/recovery.c
+> +++ b/fs/ubifs/recovery.c
+> @@ -273,7 +273,8 @@ int ubifs_recover_master_node(struct ubifs_info *c)
+>                              if (cor1)
+>                                     goto out_err;
+>                              mst = mst1;
+> -                    } else if (offs1 == 0 && offs2 + sz >= c->leb_size) {
+> +                    } else if (offs1 == 0 &&
+> +                               c->leb_size - offs2 - sz < sz) {
+>                              /* 1st LEB was unmapped and written, 2nd not
+*/
+>                              if (cor1)
+>                                     goto out_err;
+>
 
-
---b1_28af5b3936549f0a67623f8328a4b0fb
-Content-Type: application/zip; name="0000766279.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=0000766279.zip
-
-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
-PwAAAJwGAAAAAA==
-
-
---b1_28af5b3936549f0a67623f8328a4b0fb--
+Please advise.
+-	J
