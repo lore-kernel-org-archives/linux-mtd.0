@@ -1,23 +1,16 @@
-Received: from smtp10.smtpout.orange.fr ([80.12.242.132]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-la0-x22c.google.com ([2a00:1450:4010:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z7V3F-00029e-9t
- for linux-mtd@lists.infradead.org; Tue, 23 Jun 2015 20:44:14 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 6/6] mtd: docg3: Don't do ERR_PTR(0)
-References: <1433193054-26865-1-git-send-email-richard@nod.at>
- <1433193054-26865-7-git-send-email-richard@nod.at>
- <20150617184144.GH4917@ld-irv-0074> <5588FC61.5070202@nod.at>
-Date: Tue, 23 Jun 2015 22:41:33 +0200
-In-Reply-To: <5588FC61.5070202@nod.at> (Richard Weinberger's message of "Tue,
- 23 Jun 2015 08:27:45 +0200")
-Message-ID: <871th2kvia.fsf@belgarion.home>
+ id 1Z7VCU-0007uv-Ci
+ for linux-mtd@lists.infradead.org; Tue, 23 Jun 2015 20:53:47 +0000
+Received: by lagi2 with SMTP id i2so14259900lag.2
+ for <linux-mtd@lists.infradead.org>; Tue, 23 Jun 2015 13:53:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: dwmw2@infradead.org, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, maximlevitsky@gmail.com,
- linux-kernel@vger.kernel.org
+Date: Tue, 23 Jun 2015 22:53:23 +0200
+Message-ID: <CAPpUg6MX6L+z7qsweSxQa5TpHhcbP1GZySZ1qAShPMAvr_QMoQ@mail.gmail.com>
+Subject: m25p80, wait_till_ready removed
+From: Baptiste Clenet <bapclenet@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +20,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Richard Weinberger <richard@nod.at> writes:
+Hi,
 
-> Am 17.06.2015 um 20:41 schrieb Brian Norris:
->> On Mon, Jun 01, 2015 at 11:10:54PM +0200, Richard Weinberger wrote:
->>> Don't return a obfuscated null pointer using ERR_PTR(0).
->>> If the no device is found clearly return -ENODEV.
->>> This makes the code more clear and matches the comment
->>> of doc_probe_device().
->>>
->>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>> ---
->> 
->> Have you tested this patch?
->
-> nah, I don't own such a device.
-But I do. If you resend a patch, please Cc me. You can even ask for a test from
-time to time if you want a confirmation, I have a 2 floors docg3 device.
+I'm working on the board Ralink MT7628 which uses the driver m25p80 to
+write the flash memory. I'm upgrading the kernel from 3.18 to 4.0.4
+and I've got some problems concerning the flash.
+jffs2 complains about wrong CRC:
 
-Cheers.
+[   18.900000] jffs2: jffs2_scan_inode_node(): CRC failed on node at
+0x0047000c: Read 0x4552e06b, calculated 0x4900568b
+[   18.930000] jffs2: jffs2_scan_dirent_node(): Node CRC failed on
+node at 0x00470050: Read 0xffffffff, calculated 0x602684d4
 
---
-Robert
+... many times
+
+Currently, my changes in /etc/config/network are not saved after
+reboot. I presume it is related to my errors. /etc/config/network is
+writeable since it is inside /overlay/upper (any edits inside it are
+not saved after reboot).
+
+I've attached a patch which failed when I upgrade to kernel 4.0.4.
+Obviously, nor->wait_till_ready(nor); couldn't work since it has been
+removed. I'm wondering how to replace it and if it could be related to
+my problem? (Only removing it brought me to my errors)
+
+
+
+Here are some details about the structure of my board:
+[    0.480000] Creating 4 MTD partitions on "spi32766.0":
+[    0.490000] 0x000000000000-0x000000030000 : "u-boot"
+[    0.500000] 0x000000030000-0x000000040000 : "u-boot-env"
+[    0.510000] 0x000000040000-0x000000050000 : "factory"
+[    0.520000] 0x000000050000-0x000000800000 : "firmware"
+
+[    0.550000] 2 uimage-fw partitions found on MTD device firmware
+[    0.570000] 0x000000050000-0x00000016b46d : "kernel"
+[    0.580000] 0x00000016b46d-0x000000800000 : "rootfs"
+
+[    0.590000] mtd: device 5 (rootfs) set to be root filesystem
+[    0.600000] 1 squashfs-split partitions found on MTD device rootfs
+[    0.610000] 0x000000380000-0x000000800000 : "rootfs_data"
+
+
+root@OpenWrt:/overlay/upper/etc# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00030000 00010000 "u-boot"
+mtd1: 00010000 00010000 "u-boot-env"
+mtd2: 00010000 00010000 "factory"
+mtd3: 007b0000 00010000 "firmware"
+mtd4: 0011b46d 00010000 "kernel"
+mtd5: 00694b93 00010000 "rootfs"
+mtd6: 00480000 00010000 "rootfs_data"
+
+root@OpenWrt:/overlay/upper/etc# cat /proc/partitions
+major minor  #blocks  name
+
+  31        0        192 mtdblock0
+  31        1         64 mtdblock1
+  31        2         64 mtdblock2
+  31        3       7872 mtdblock3
+  31        4       1133 mtdblock4
+  31        5       6738 mtdblock5
+  31        6       4608 mtdblock6
+
+root@OpenWrt:/overlay/upper/etc# cat /proc/mounts
+/dev/root /rom squashfs ro,relatime 0 0
+proc /proc proc rw,noatime 0 0
+sysfs /sys sysfs rw,noatime 0 0
+tmpfs /tmp tmpfs rw,nosuid,nodev,noatime 0 0
+/dev/mtdblock6 /overlay jffs2 rw,noatime 0 0
+overlayfs:/overlay / overlay
+rw,noatime,lowerdir=/,upperdir=/overlay/upper,workdir=/overlay/work 0
+0
+tmpfs /dev tmpfs rw,relatime,size=512k,mode=755 0 0
+devpts /dev/pts devpts rw,relatime,mode=600 0 0
+debugfs /sys/kernel/debug debugfs rw,noatime 0 0
+
+
+I would be grateful if you could help me a bit on that.
+
+Cheers,
+
+Baptiste
