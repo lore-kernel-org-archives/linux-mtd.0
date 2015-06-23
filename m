@@ -1,21 +1,20 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z7XKv-00031L-RS
- for linux-mtd@lists.infradead.org; Tue, 23 Jun 2015 23:10:38 +0000
-Received: by pdbki1 with SMTP id ki1so16689886pdb.1
- for <linux-mtd@lists.infradead.org>; Tue, 23 Jun 2015 16:10:15 -0700 (PDT)
-Date: Tue, 23 Jun 2015 16:10:06 -0700
+Date: Tue, 23 Jun 2015 16:30:03 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Han Xu <b45815@freescale.com>
-Subject: Re: [PATCH V3] mtd: fsl-quadspi: Access multiple chips simultaneously
-Message-ID: <20150623231006.GQ4917@ld-irv-0074>
-References: <1431546057-16596-1-git-send-email-b45815@freescale.com>
- <20150520215250.GP11598@ld-irv-0074>
+To: Roy Spliet <r.spliet@ultimaker.com>
+Subject: Re: [PATCH v4 1/2] mtd: nand: sunxi: Replace failsafe timing cfg
+ with calculated value
+Message-ID: <20150623233003.GR4917@ld-irv-0074>
+References: <1434034637-9804-1-git-send-email-r.spliet@ultimaker.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20150520215250.GP11598@ld-irv-0074>
-Cc: shijie.huang@intel.com, linux-mtd@lists.infradead.org, han.xu@freescale.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1434034637-9804-1-git-send-email-r.spliet@ultimaker.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linux ARM kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +24,226 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 20, 2015 at 02:52:50PM -0700, Brian Norris wrote:
-> On Wed, May 13, 2015 at 02:40:57PM -0500, Han Xu wrote:
-> I think it'd be better to have a single error path in this function now.
+On Thu, Jun 11, 2015 at 04:57:16PM +0200, Roy Spliet wrote:
+> The TIMING_CFG register was previously statically set to a magic value
+> (extracted from Allwinner's BSP) when initializing the NAND controller.
+> Now that we have more details about the TIMING_CFG register layout
+> (extracted from the A83 user manual) we can dynamically calculate the
+> appropriate value for each NAND chip and set it when selecting the
+> chip.
 > 
-> Otherwise, I think this is OK. I can push the appended patch instead, if
-> that's OK with you.
+> Signed-off-by: Roy Spliet <r.spliet@ultimaker.com>
 > 
-> Signed-off-by: Han Xu <b45815@freescale.com>
-> [Brian: reworked err path in fsl_qspi_prep()]
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 32 +++++++++++++++++++++++---------
->  1 file changed, 23 insertions(+), 9 deletions(-)
-...
+> V2:
+> - Fix crippled comments
+> 
+> V3:
+> - Warn for invalid timings
+> - Style
+> 
+> V4:
+> - Make better use of return types
+> - Style and comments
+> - Remove superfluous initialisation
 
-Pushed this version to l2-mtd.git/next.
+You've got some checkpatch issues. The first one is not quite right, but the
+second is.
+
+ERROR:MULTISTATEMENT_MACRO_USE_DO_WHILE: Macros with multiple statements should be enclosed in a do - while loop
+#42: FILE: drivers/mtd/nand/sunxi_nand.c:103:
++#define NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD)		\
++	((tWB) & 0x3) | (((tADL) & 0x3) << 2) |			\
++	(((tWHR) & 0x3) << 4) | (((tRHW) & 0x3) << 6) |		\
++	(((tCAD) & 0x7) << 8);
+
+WARNING:TRAILING_SEMICOLON: macros should not use a trailing semicolon
+#42: FILE: drivers/mtd/nand/sunxi_nand.c:103:
++#define NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD)		\
++	((tWB) & 0x3) | (((tADL) & 0x3) << 2) |			\
++	(((tWHR) & 0x3) << 4) | (((tRHW) & 0x3) << 6) |		\
++	(((tCAD) & 0x7) << 8);
+
+ERROR:SPACING: space required after that ',' (ctx:VxV)
+#97: FILE: drivers/mtd/nand/sunxi_nand.c:838:
++#define sunxi_nand_lookup_timing(l,p,c) \
+                                   ^
+
+ERROR:SPACING: space required after that ',' (ctx:VxV)
+#97: FILE: drivers/mtd/nand/sunxi_nand.c:838:
++#define sunxi_nand_lookup_timing(l,p,c) \
+                                     ^
+
+total: 3 errors, 1 warnings, 128 lines checked
+
+
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 74 ++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 69 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index 6f93b29..79de4ef 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -99,6 +99,13 @@
+>  				 NFC_CMD_INT_ENABLE | \
+>  				 NFC_DMA_INT_ENABLE)
+>  
+> +/* define NFC_TIMING_CFG register layout */
+> +#define NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD)		\
+> +	((tWB) & 0x3) | (((tADL) & 0x3) << 2) |			\
+> +	(((tWHR) & 0x3) << 4) | (((tRHW) & 0x3) << 6) |		\
+> +	(((tCAD) & 0x7) << 8);
+
+checkpatch didn't like this for other reasons (which you should also address),
+but it didn't point out the fact that you need some parentheses around the
+whole expression here, so you don't get weird results for things like:
+
+	foo = NFC_TIMING_CFG(a, b, c, d, e) & bar;
+
+> +
+> +
+>  /* define bit use in NFC_CMD */
+>  #define NFC_CMD_LOW_BYTE	GENMASK(7, 0)
+>  #define NFC_CMD_HIGH_BYTE	GENMASK(15, 8)
+> @@ -208,6 +215,7 @@ struct sunxi_nand_hw_ecc {
+>   * @nand:		base NAND chip structure
+>   * @mtd:		base MTD structure
+>   * @clk_rate:		clk_rate required for this NAND chip
+> + * @timing_cfg		TIMING_CFG register value for this NAND chip
+>   * @selected:		current active CS
+>   * @nsels:		number of CS lines required by the NAND chip
+>   * @sels:		array of CS lines descriptions
+> @@ -217,6 +225,7 @@ struct sunxi_nand_chip {
+>  	struct nand_chip nand;
+>  	struct mtd_info mtd;
+>  	unsigned long clk_rate;
+> +	u32 timing_cfg;
+>  	int selected;
+>  	int nsels;
+>  	struct sunxi_nand_chip_sel sels[0];
+> @@ -403,6 +412,7 @@ static void sunxi_nfc_select_chip(struct mtd_info *mtd, int chip)
+>  		}
+>  	}
+>  
+> +	writel(sunxi_nand->timing_cfg, nfc->regs + NFC_REG_TIMING_CFG);
+>  	writel(ctl, nfc->regs + NFC_REG_CTL);
+>  
+>  	sunxi_nand->selected = chip;
+> @@ -807,10 +817,33 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
+>  	return 0;
+>  }
+>  
+> +static const s32 tWB_lut[] = {6, 12, 16, 20};
+> +static const s32 tRHW_lut[] = {4, 8, 12, 20};
+> +
+> +static int _sunxi_nand_lookup_timing(const s32 *lut, int lut_size, u32 duration,
+> +		u32 clk_period)
+> +{
+> +	u32 clk_cycles = DIV_ROUND_UP(duration, clk_period);
+> +	int i;
+> +
+> +	for (i = 0; i < lut_size; i++) {
+> +		if (clk_cycles <= lut[i])
+> +			return i;
+> +	}
+> +
+> +	/* Doesn't fit */
+> +	return -EINVAL;
+> +}
+> +
+> +#define sunxi_nand_lookup_timing(l,p,c) \
+> +			_sunxi_nand_lookup_timing(l, ARRAY_SIZE(l), p, c)
+> +
+>  static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+>  				       const struct nand_sdr_timings *timings)
+>  {
+> +	struct sunxi_nfc *nfc = to_sunxi_nfc(chip->nand.controller);
+>  	u32 min_clk_period = 0;
+> +	u32 tWB, tADL, tWHR, tRHW, tCAD;
+>  
+>  	/* T1 <=> tCLS */
+>  	if (timings->tCLS_min > min_clk_period)
+> @@ -872,6 +905,41 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+>  	if (timings->tWC_min > (min_clk_period * 2))
+>  		min_clk_period = DIV_ROUND_UP(timings->tWC_min, 2);
+>  
+> +	/* T16 - T19 + tCAD */
+> +	tWB  = sunxi_nand_lookup_timing(tWB_lut, timings->tWB_max,
+> +					min_clk_period);
+> +	if (tWB < 0) {
+
+smatch and gcc complain:
+
+drivers/mtd/nand/sunxi_nand.c: In function ‘sunxi_nand_chip_set_timings’:
+drivers/mtd/nand/sunxi_nand.c:916:2: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+  if (tWB < 0) {
+  ^
+drivers/mtd/nand/sunxi_nand.c:916 sunxi_nand_chip_set_timings() warn: unsigned 'tWB' is never less than zero. [smatch]
+
+
+> +		dev_err(nfc->dev, "unsupported tWB\n");
+> +		return tWB;
+> +	}
+> +
+> +	tADL = DIV_ROUND_UP(timings->tADL_min, min_clk_period) >> 3;
+> +	if (tADL > 3) {
+> +		dev_err(nfc->dev, "unsupported tADL\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	tWHR = DIV_ROUND_UP(timings->tWHR_min, min_clk_period) >> 3;
+> +	if (tWHR > 3) {
+> +		dev_err(nfc->dev, "unsupported tWHR\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	tRHW = sunxi_nand_lookup_timing(tRHW_lut, timings->tRHW_min,
+> +					min_clk_period);
+> +	if (tRHW < 0) {
+
+smatch and gcc compalin:
+
+drivers/mtd/nand/sunxi_nand.c:935 sunxi_nand_chip_set_timings() warn: unsigned 'tRHW' is never less than zero. [smatch]
+drivers/mtd/nand/sunxi_nand.c:935:2: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+  if (tRHW < 0) {
+  ^
+
+> +		dev_err(nfc->dev, "unsupported tRHW\n");
+> +		return tRHW;
+> +	}
+> +
+> +	/*
+> +	 * TODO: according to ONFI specs this value only applies for DDR NAND,
+> +	 * but Allwinner seems to set this to 0x7. Mimic them for now.
+> +	 */
+> +	tCAD = 0x7;
+> +
+> +	/* TODO: A83 has some more bits for CDQSS, CS, CLHZ, CCS, WC */
+> +	chip->timing_cfg = NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD);
+>  
+>  	/* Convert min_clk_period from picoseconds to nanoseconds */
+>  	min_clk_period = DIV_ROUND_UP(min_clk_period, 1000);
+> @@ -884,8 +952,6 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+>  	 */
+>  	chip->clk_rate = (2 * NSEC_PER_SEC) / min_clk_period;
+>  
+> -	/* TODO: configure T16-T19 */
+> -
+>  	return 0;
+>  }
+>  
+> @@ -1377,11 +1443,9 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, nfc);
+>  
+>  	/*
+> -	 * TODO: replace these magic values with proper flags as soon as we
+> -	 * know what they are encoding.
+> +	 * TODO: replace this magic value with EDO flag
+>  	 */
+>  	writel(0x100, nfc->regs + NFC_REG_TIMING_CTL);
+> -	writel(0x7ff, nfc->regs + NFC_REG_TIMING_CFG);
+>  
+>  	ret = sunxi_nand_chips_init(dev, nfc);
+>  	if (ret) {
+
+Brian
