@@ -1,33 +1,23 @@
-Date: Tue, 23 Jun 2015 11:26:33 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 04/11] mtd: ofpart: do not fail probe when no partitions
- exist
-Message-ID: <20150623182633.GO4917@ld-irv-0074>
-References: <cover.1433364398.git.hramrach@gmail.com>
- <36e315552c849a4d22ac0fcff7958f6ffcafb160.1433364398.git.hramrach@gmail.com>
+Received: from smtp10.smtpout.orange.fr ([80.12.242.132]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z7V3F-00029e-9t
+ for linux-mtd@lists.infradead.org; Tue, 23 Jun 2015 20:44:14 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 6/6] mtd: docg3: Don't do ERR_PTR(0)
+References: <1433193054-26865-1-git-send-email-richard@nod.at>
+ <1433193054-26865-7-git-send-email-richard@nod.at>
+ <20150617184144.GH4917@ld-irv-0074> <5588FC61.5070202@nod.at>
+Date: Tue, 23 Jun 2015 22:41:33 +0200
+In-Reply-To: <5588FC61.5070202@nod.at> (Richard Weinberger's message of "Tue,
+ 23 Jun 2015 08:27:45 +0200")
+Message-ID: <871th2kvia.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <36e315552c849a4d22ac0fcff7958f6ffcafb160.1433364398.git.hramrach@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-mtd@lists.infradead.org,
- Alison Chaiken <alison_chaiken@mentor.com>,
- Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- Marek Vasut <marex@denx.de>, linux-samsung-soc@vger.kernel.org,
- Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
- devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
- Dan Williams <dan.j.williams@intel.com>, linux-arm-kernel@lists.infradead.org,
- "grmoore@altera.com" <grmoore@altera.com>, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@freescale.com>,
- Knut Wohlrab <knut.wohlrab@de.bosch.com>, dmaengine@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: dwmw2@infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, maximlevitsky@gmail.com,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,71 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 03, 2015 at 09:26:40PM -0000, Michal Suchanek wrote:
-> On Exynos it is necessary to set SPI controller parameters that apply to
-> a SPI slave in a DT subnode of the slave device. The ofpart code returns
-> an error when there are subnodes of the SPI flash but no partitions are
-> found. Change this condition to a warning so that flash without
-> partitions can be accessed on Exynos.
+Richard Weinberger <richard@nod.at> writes:
 
-So judging by the subsequent discussion, you're looking at handling
-nodes like this:
+> Am 17.06.2015 um 20:41 schrieb Brian Norris:
+>> On Mon, Jun 01, 2015 at 11:10:54PM +0200, Richard Weinberger wrote:
+>>> Don't return a obfuscated null pointer using ERR_PTR(0).
+>>> If the no device is found clearly return -ENODEV.
+>>> This makes the code more clear and matches the comment
+>>> of doc_probe_device().
+>>>
+>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>>> ---
+>> 
+>> Have you tested this patch?
+>
+> nah, I don't own such a device.
+But I do. If you resend a patch, please Cc me. You can even ask for a test from
+time to time if you want a confirmation, I have a 2 floors docg3 device.
 
-	flash@... {
-		compatible = "m25p80";
-		...
+Cheers.
 
-		controller-data {
-			samsung,spi-feedback-delay = <0>;
-		};
-	};
-
-Now, I'm not a real fan of this controller-data node in the first place
-(did that binding get reviewed?). But this is especially bad since
-we now have collisions on what to do with subnodes that don't have a
-compatible property. By legacy, ofpart has already claimed ownership of
-subnodes of an MTD node, where the subnode does not have a compatible
-property. See Documentation/devicetree/bindings/mtd/partition.txt:
-
-  "NOTE: if the sub-node has a compatible string, then it is not a
-  partition."
-
-So it seems the natural solution is to just define a proper
-compatibile property for this subnode, and ofpart.c will naturally
-handle this. See:
-
-commit e79265ba6bdb31437bd4c3e7911950f9d1262a07
-Author: Josh Wu <josh.wu@atmel.com>
-Date:   Mon Aug 5 19:14:38 2013 +0800
-
-    mtd: ofpart: add compatible check for child nodes
-
-
-
-Brian
-
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> ---
->  drivers/mtd/ofpart.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index aa26c32..a29d29f 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -94,10 +94,10 @@ static int parse_ofpart_partitions(struct mtd_info *master,
->  
->  	if (!i) {
->  		of_node_put(pp);
-> -		pr_err("No valid partition found on %s\n", node->full_name);
-> +		pr_warn("No valid partition found on %s\n", node->full_name);
->  		kfree(*pparts);
->  		*pparts = NULL;
-> -		return -EINVAL;
-> +		return 0;
->  	}
->  
->  	return nr_parts;
-> -- 
-> 2.1.4
-> 
+--
+Robert
