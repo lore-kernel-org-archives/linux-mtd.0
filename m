@@ -1,28 +1,20 @@
-Received: from ipmail06.adl6.internode.on.net ([150.101.137.145])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z7Yfw-0005Dm-Oo
- for linux-mtd@lists.infradead.org; Wed, 24 Jun 2015 00:36:25 +0000
-Date: Wed, 24 Jun 2015 10:33:35 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH RESEND] ubifs: Introduce a mount option of force_atime.
-Message-ID: <20150624003335.GG22807@dastard>
-References: <1433831809.28854.17.camel@sauron.fi.intel.com>
- <55769D97.3010602@nod.at> <5577AC03.9060909@cn.fujitsu.com>
- <1433928078.14092.1.camel@sauron.fi.intel.com>
- <55780D1C.6080907@cn.fujitsu.com>
- <1433931934.14092.11.camel@sauron.fi.intel.com>
- <557812A4.8020409@cn.fujitsu.com>
- <1433934324.14092.15.camel@sauron.fi.intel.com>
- <55892D18.3020203@cn.fujitsu.com>
- <1435056240.7659.69.camel@sauron.fi.intel.com>
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z7Yx8-0002Ci-Ca
+ for linux-mtd@lists.infradead.org; Wed, 24 Jun 2015 00:54:11 +0000
+Message-ID: <5589FF6B.3060801@huawei.com>
+Date: Wed, 24 Jun 2015 08:53:00 +0800
+From: Sheng Yong <shengyong1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1435056240.7659.69.camel@sauron.fi.intel.com>
-Cc: linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com
+To: Richard Weinberger <richard@nod.at>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>
+Subject: Re: [PATCH 0/2] mtd: nandsim: fix error handling
+References: <1434530713-81591-1-git-send-email-shengyong1@huawei.com>
+ <5588B07E.4080404@huawei.com> <5588FC20.4020600@nod.at>
+In-Reply-To: <5588FC20.4020600@nod.at>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,39 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 23, 2015 at 01:44:00PM +0300, Artem Bityutskiy wrote:
-> On Tue, 2015-06-23 at 17:55 +0800, Dongsheng Yang wrote:
-> > In short, I think force_atime to ubifs is the choice from my opinion.
+
+
+On 6/23/2015 2:26 PM, Richard Weinberger wrote:
+> Am 23.06.2015 um 03:03 schrieb Sheng Yong:
+>> Ping. Any comments are appreciated :)
+>>
+>> thanks,
+>> Sheng
+>>
+>> On 6/17/2015 4:45 PM, Sheng Yong wrote:
+>>> These 2 patches fix error handling when nandsim initialization fails.
+>>>
+>>> In alloc_device(), if creating slab memory fails, free_device() will try
+>>> to destroy the slab memory without checking if it exists.  PATCH 1 fixes
+>>> it.
+>>>
+>>> If something goes wrong in init_nandsim(), it calls free_device() before
+>>> returning. However, the caller of init_nandsim() - ns_init_module() - also
+>>> does the cleanup by calling free_nandsim(). This causes double free. PATCH
+>>> 2 fixes it.
+>>>
+>>> Thanks,
+>>> Sheng
+>>>
+>>> Sheng Yong (2):
+>>>   mtd: nandsim: fix free of NULL pointer
+>>>   mtd: nandsim: fix double free
 > 
-> So will we end up with this:
+> Both patches look good to me.
+Hi, Richard
+Can I add your reviewed-by?
+
+thanks,
+Sheng
 > 
-> -o - no atime support
-> -o atime - no atime support
-> -o noatime - same, no atime support
-> -o force_atime - full atime support
-> -o relatime - relative atime support
-> -o lazyatime - lazy atime support
-
-> IOW, atime/noatime mount options have no effect on UBIFS. To have full
-> atime support - people have to use "force_atime". And then the rest of
-> the standard options are supported.
-
-That's the exact semantics of the standard -o strictatime option.
-See the mount(8) man page:
-
-       strictatime
-	      Allows  to  explicitly requesting full atime updates.
-	      This makes it possible for kernel to defaults to
-	      relatime or noatime but still allow userspace to
-	      override it. For more details about the default system
-	      mount options see /proc/mounts.
-
-It's passed down to the kernel via the MS_STRICTATIME flag. All
-you need to do is make ubifs aware of this flag...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> Thanks,
+> //richard
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
