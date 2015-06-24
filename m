@@ -1,20 +1,17 @@
-Received: from szxga01-in.huawei.com ([58.251.152.64])
+Received: from mailin.vu.nl ([130.37.164.17])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z7Yx8-0002Ci-Ca
- for linux-mtd@lists.infradead.org; Wed, 24 Jun 2015 00:54:11 +0000
-Message-ID: <5589FF6B.3060801@huawei.com>
-Date: Wed, 24 Jun 2015 08:53:00 +0800
-From: Sheng Yong <shengyong1@huawei.com>
+ id 1Z7jmr-000154-LB
+ for linux-mtd@lists.infradead.org; Wed, 24 Jun 2015 12:28:18 +0000
+Message-ID: <558AA244.7000303@vu.nl>
+Date: Wed, 24 Jun 2015 14:27:48 +0200
+From: "ir. Tjeerd Pinkert" <t.j.pinkert@vu.nl>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>
-Subject: Re: [PATCH 0/2] mtd: nandsim: fix error handling
-References: <1434530713-81591-1-git-send-email-shengyong1@huawei.com>
- <5588B07E.4080404@huawei.com> <5588FC20.4020600@nod.at>
-In-Reply-To: <5588FC20.4020600@nod.at>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: Re: UBI_READWRITE constraint when opening volumes to rename
+References: <54450352.6000408@nod.at>
+In-Reply-To: <54450352.6000408@nod.at>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +21,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I'm just wondering, has this been included in the distro/kernel already?
+Or is it only in the git repo?
+
+I could not perform the rename action with ro mounted / with v1.5.1
+programs and 3.18.6 stock kernel (buildroot system).
+
+Best regards,
 
 
-On 6/23/2015 2:26 PM, Richard Weinberger wrote:
-> Am 23.06.2015 um 03:03 schrieb Sheng Yong:
->> Ping. Any comments are appreciated :)
->>
->> thanks,
->> Sheng
->>
->> On 6/17/2015 4:45 PM, Sheng Yong wrote:
->>> These 2 patches fix error handling when nandsim initialization fails.
->>>
->>> In alloc_device(), if creating slab memory fails, free_device() will try
->>> to destroy the slab memory without checking if it exists.  PATCH 1 fixes
->>> it.
->>>
->>> If something goes wrong in init_nandsim(), it calls free_device() before
->>> returning. However, the caller of init_nandsim() - ns_init_module() - also
->>> does the cleanup by calling free_nandsim(). This causes double free. PATCH
->>> 2 fixes it.
->>>
->>> Thanks,
->>> Sheng
->>>
->>> Sheng Yong (2):
->>>   mtd: nandsim: fix free of NULL pointer
->>>   mtd: nandsim: fix double free
-> 
-> Both patches look good to me.
-Hi, Richard
-Can I add your reviewed-by?
-
-thanks,
-Sheng
-> 
-> Thanks,
-> //richard
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
+Tjeerd
