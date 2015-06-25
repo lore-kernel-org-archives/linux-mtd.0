@@ -1,30 +1,13 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z7nCT-0006uL-0J
- for linux-mtd@lists.infradead.org; Wed, 24 Jun 2015 16:06:57 +0000
-Message-ID: <1435161894.9627.1.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH RESEND] ubifs: Introduce a mount option of force_atime.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dave Chinner <david@fromorbit.com>
-Date: Wed, 24 Jun 2015 19:04:54 +0300
-In-Reply-To: <20150624003335.GG22807@dastard>
-References: <1433831809.28854.17.camel@sauron.fi.intel.com>
- <55769D97.3010602@nod.at> <5577AC03.9060909@cn.fujitsu.com>
- <1433928078.14092.1.camel@sauron.fi.intel.com>
- <55780D1C.6080907@cn.fujitsu.com>
- <1433931934.14092.11.camel@sauron.fi.intel.com>
- <557812A4.8020409@cn.fujitsu.com>
- <1433934324.14092.15.camel@sauron.fi.intel.com>
- <55892D18.3020203@cn.fujitsu.com>
- <1435056240.7659.69.camel@sauron.fi.intel.com>
- <20150624003335.GG22807@dastard>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com
+From: Sheng Yong <shengyong1@huawei.com>
+To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Subject: [PATCH V2 1/2] mtd: nandsim: fix free of NULL pointer
+Date: Thu, 25 Jun 2015 00:46:48 +0000
+Message-ID: <1435193209-54305-2-git-send-email-shengyong1@huawei.com>
+In-Reply-To: <1435193209-54305-1-git-send-email-shengyong1@huawei.com>
+References: <1435193209-54305-1-git-send-email-shengyong1@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: richard@nod.at, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,8 +17,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2015-06-24 at 10:33 +1000, Dave Chinner wrote:
-> It's passed down to the kernel via the MS_STRICTATIME flag. All
-> you need to do is make ubifs aware of this flag...
+If allocating ns->nand_pages_slab fails, do not try to destroy it when
+cleaning up nandsim resources.
 
-Oh, right, thank you. Indeed this is it.
+Signed-off-by: Sheng Yong <shengyong1@huawei.com>
+---
+ drivers/mtd/nand/nandsim.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 52c0c1a..6a74f62 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -649,7 +649,8 @@ static void free_device(struct nandsim *ns)
+ 				kmem_cache_free(ns->nand_pages_slab,
+ 						ns->pages[i].byte);
+ 		}
+-		kmem_cache_destroy(ns->nand_pages_slab);
++		if (ns->nand_pages_slab)
++			kmem_cache_destroy(ns->nand_pages_slab);
+ 		vfree(ns->pages);
+ 	}
+ }
+-- 
+1.8.3.4
