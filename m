@@ -1,18 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z87Tx-0003vM-7O
- for linux-mtd@lists.infradead.org; Thu, 25 Jun 2015 13:46:22 +0000
-Message-ID: <558C0612.7070309@nod.at>
-Date: Thu, 25 Jun 2015 15:45:54 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1Z8Alk-0007KS-3G
+ for linux-mtd@lists.infradead.org; Thu, 25 Jun 2015 17:16:57 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 6/6] mtd: docg3: Don't do ERR_PTR(0)
+References: <1433193054-26865-1-git-send-email-richard@nod.at>
+ <1433193054-26865-7-git-send-email-richard@nod.at>
+ <20150617184144.GH4917@ld-irv-0074> <5588FC61.5070202@nod.at>
+ <871th2kvia.fsf@belgarion.home> <20150625022940.GT4917@ld-irv-0074>
+Date: Thu, 25 Jun 2015 19:14:18 +0200
+In-Reply-To: <20150625022940.GT4917@ld-irv-0074> (Brian Norris's message of
+ "Wed, 24 Jun 2015 19:29:40 -0700")
+Message-ID: <87wpyrk8wl.fsf@belgarion.home>
 MIME-Version: 1.0
-To: "Brokhman, Tanya" <tlinder@codeaurora.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: ubifs_recover_leb() failure
-References: <558C04BD.7030101@codeaurora.org>
-In-Reply-To: <558C04BD.7030101@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org, maximlevitsky@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +27,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Brian Norris <computersforpeace@gmail.com> writes:
 
-Am 25.06.2015 um 15:40 schrieb Brokhman, Tanya:
-> Hi Richard et. al,
-> 
-> We recently encountered the following error messages:
-> 
-> UBIFS-0 error (pid 1): ubifs_recover_leb: corrupt empty space LEB 159:32768, corruption starts at 3810
-> 
-> UBIFS-0 error (pid 1): ubifs_scanned_corruption: corruption at LEB 159:36578
-> 
-> UBIFS-0 error (pid 1): ubifs_scanned_corruption: first 8192 bytes from LEB 159:36578
-> 
-> 00000000: fffffffe ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff  ................................
-> 
-> 00000020: ffffffff ffffffff ffffffff ffffffff ffffffff fffffffd ffffffff ffffffff  ................................
-> 
-> 
-> The test scenario is simple: power cut while writing.
-> We run this in a loop and the issue is not easily reproducible but the failure is constant.
-> 
-> We're working with a 3.10 based kernel, fastmap enabled. I saw that you released a lot of fixes in fastmap (~46).
-> I picked up these below 2 as they seemed to resolve a similar issue:
-> 1. UBI: Fastmap: Fix race in ubi_eba_atomic_leb_change() - http://git.kernel.org/cgit/linux/kernel/git/mcgrof/linux-next.git/commit/?id=36a87e44f642966442fd0d23f2ec536851e00236
-> 2. UBI: Fastmap: Fix races in ubi_wl_get_peb() - http://git.kernel.org/cgit/linux/kernel/git/mcgrof/linux-next.git/commit/?id=d59f21bebe9d0fda34027ff1afda4f2b0d5f1869
-> 
-> Unfortunately, even with these fixes, the issue is still reproducible.
-> Picking up all 46 fixes is a bit risky since I will be picking them out of context, without other related ubi patches.
-> I was wondering if you encountered similar error message and was hoping that you could advise me on a shorter list of patches to pick up.
+> Hi Robert,
+>
+> On Tue, Jun 23, 2015 at 10:41:33PM +0200, Robert Jarzmik wrote:
+>> Richard Weinberger <richard@nod.at> writes:
+>> 
+>> > Am 17.06.2015 um 20:41 schrieb Brian Norris:
+>> >> Have you tested this patch?
+>> >
+>> > nah, I don't own such a device.
+>> But I do. If you resend a patch, please Cc me. You can even ask for a test from
+>> time to time if you want a confirmation, I have a 2 floors docg3 device.
+>
+> Do you want to be on a MAINTAINERS entry for this driver?
+Sure.
 
-Please apply all patches. They depend on each other and fix a lot of nasty issues.
+Here is the patch, after the scissors.
 
-Currently I have a similar corruption to analyze on my desk. Maybe you're hitting the same one.
-If you can trigger the issue using a fully patched kernel, I'd love to get a copy of the corrupted image.
+Cheers.
 
-Thanks,
-//richard
+-- 
+Robert
+
+---8<---
+>From 20002639eac1bd7a81b0613c4bd15ae7522c269d Mon Sep 17 00:00:00 2001
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Thu, 25 Jun 2015 19:07:48 +0200
+Subject: [PATCH] MAINTAINERS: mtd: docg3: add docg3 maintainer
+
+Add myself as maintainer of the NAND based MSystems DiskOnChip G3
+driver.
+
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aca2886..87d87c7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6687,6 +6687,12 @@ T:	git git://linuxtv.org/anttip/media_tree.git
+ S:	Maintained
+ F:	drivers/media/usb/msi2500/
+ 
++MSYSTEMS DISKONCHIP G3 MTD DRIVER
++M:	Robert Jarzmik <robert.jarzmik@free.fr>
++L:	linux-mtd@lists.infradead.org
++S:	Maintained
++F:	drivers/mtd/devices/docg3*
++
+ MT9M032 APTINA SENSOR DRIVER
+ M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+ L:	linux-media@vger.kernel.org
+-- 
+2.1.4
