@@ -1,12 +1,20 @@
-Message-ID: <558BADE1.2070704@huawei.com>
-Date: Thu, 25 Jun 2015 15:29:37 +0800
-From: Wei Fang <fangwei1@huawei.com>
+Received: from mail-vn0-x232.google.com ([2607:f8b0:400c:c0f::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z81y0-0007Hz-8N
+ for linux-mtd@lists.infradead.org; Thu, 25 Jun 2015 07:53:01 +0000
+Received: by vnbf62 with SMTP id f62so9822326vnb.5
+ for <linux-mtd@lists.infradead.org>; Thu, 25 Jun 2015 00:52:38 -0700 (PDT)
 MIME-Version: 1.0
-To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-Subject: [PATCH] jffs2: remove unneeded kfree
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <558AA244.7000303@vu.nl>
+References: <54450352.6000408@nod.at>
+	<558AA244.7000303@vu.nl>
+Date: Thu, 25 Jun 2015 09:52:37 +0200
+Message-ID: <CAFLxGvznFc6znqyuXaXVxLDHOYkrmQBiyaR+L5q4PBv1O4RwCA@mail.gmail.com>
+Subject: Re: Re: UBI_READWRITE constraint when opening volumes to rename
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: "ir. Tjeerd Pinkert" <t.j.pinkert@vu.nl>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,24 +24,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-c->oobbuf hasn't been kmalloced in jffs2_dataflash_setup, so
-there is no need to free it.
+On Wed, Jun 24, 2015 at 2:27 PM, ir. Tjeerd Pinkert <t.j.pinkert@vu.nl> wrote:
+> I'm just wondering, has this been included in the distro/kernel already?
+> Or is it only in the git repo?
 
-Signed-off-by: Wei Fang <fangwei1@huawei.com>
----
- fs/jffs2/wbuf.c | 1 -
- 1 file changed, 1 deletion(-)
+"the distro"? The feature is mainline since 4.0.
 
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index 09ed551..63f31c0 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -1274,7 +1274,6 @@ int jffs2_dataflash_setup(struct jffs2_sb_info *c) {
- #ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
-        c->wbuf_verify = kmalloc(c->wbuf_pagesize, GFP_KERNEL);
-        if (!c->wbuf_verify) {
--               kfree(c->oobbuf);
-                kfree(c->wbuf);
-                return -ENOMEM;
-        }
--- 1.8.3.1
+-- 
+Thanks,
+//richard
