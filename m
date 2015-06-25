@@ -1,8 +1,14 @@
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z7vLc-0005Q3-Lr
+ for linux-mtd@lists.infradead.org; Thu, 25 Jun 2015 00:48:57 +0000
 From: Sheng Yong <shengyong1@huawei.com>
 To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-Subject: [PATCH V2 0/2] mtd: nandsim: fix error handling
-Date: Thu, 25 Jun 2015 00:46:47 +0000
-Message-ID: <1435193209-54305-1-git-send-email-shengyong1@huawei.com>
+Subject: [PATCH V2 2/2] mtd: nandsim: fix double free
+Date: Thu, 25 Jun 2015 00:46:49 +0000
+Message-ID: <1435193209-54305-3-git-send-email-shengyong1@huawei.com>
+In-Reply-To: <1435193209-54305-1-git-send-email-shengyong1@huawei.com>
+References: <1435193209-54305-1-git-send-email-shengyong1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: richard@nod.at, linux-mtd@lists.infradead.org
@@ -15,30 +21,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-V2:
-Resend the patches against l2-mtd/master.
+Do not call free_device() in init_nandsim, the caller - ns_init_module -
+will take care of that if something goes wrong.
 
-V1:
-These 2 patches fix error handling when nandsim initialization fails.
+Signed-off-by: Sheng Yong <shengyong1@huawei.com>
+---
+ drivers/mtd/nand/nandsim.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-In alloc_device(), if creating slab memory fails, free_device() will try
-to destroy the slab memory without checking if it exists.  PATCH 1 fixes
-it.
-
-If something goes wrong in init_nandsim(), it calls free_device() before
-returning. However, the caller of init_nandsim() - ns_init_module() - also
-does the cleanup by calling free_nandsim(). This causes double free. PATCH
-2 fixes it.
-
-Thanks,
-Sheng
-
-Sheng Yong (2):
-  mtd: nandsim: fix free of NULL pointer
-  mtd: nandsim: fix double free
-
- drivers/mtd/nand/nandsim.c | 22 +++++++---------------
- 1 file changed, 7 insertions(+), 15 deletions(-)
-
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 6a74f62..92afde9 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -730,8 +730,7 @@ static int init_nandsim(struct mtd_info *mtd)
+ 	/* Fill the partition_info structure */
+ 	if (parts_num > ARRAY_SIZE(ns->partitions)) {
+ 		NS_ERR("too many partitions.\n");
+-		ret = -EINVAL;
+-		goto error;
++		return -EINVAL;
+ 	}
+ 	remains = ns->geom.totsz;
+ 	next_offset = 0;
+@@ -740,8 +739,7 @@ static int init_nandsim(struct mtd_info *mtd)
+ 
+ 		if (!part_sz || part_sz > remains) {
+ 			NS_ERR("bad partition size.\n");
+-			ret = -EINVAL;
+-			goto error;
++			return -EINVAL;
+ 		}
+ 		ns->partitions[i].name   = get_partition_name(i);
+ 		if (!ns->partitions[i].name) {
+@@ -758,8 +756,7 @@ static int init_nandsim(struct mtd_info *mtd)
+ 	if (remains) {
+ 		if (parts_num + 1 > ARRAY_SIZE(ns->partitions)) {
+ 			NS_ERR("too many partitions.\n");
+-			ret = -EINVAL;
+-			goto error;
++			return -EINVAL;
+ 		}
+ 		ns->partitions[i].name   = get_partition_name(i);
+ 		if (!ns->partitions[i].name) {
+@@ -793,24 +790,18 @@ static int init_nandsim(struct mtd_info *mtd)
+ 	printk("options: %#x\n",                ns->options);
+ 
+ 	if ((ret = alloc_device(ns)) != 0)
+-		goto error;
++		return ret;
+ 
+ 	/* Allocate / initialize the internal buffer */
+ 	ns->buf.byte = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
+ 	if (!ns->buf.byte) {
+ 		NS_ERR("init_nandsim: unable to allocate %u bytes for the internal buffer\n",
+ 			ns->geom.pgszoob);
+-		ret = -ENOMEM;
+-		goto error;
++		return -ENOMEM;
+ 	}
+ 	memset(ns->buf.byte, 0xFF, ns->geom.pgszoob);
+ 
+ 	return 0;
+-
+-error:
+-	free_device(ns);
+-
+-	return ret;
+ }
+ 
+ /*
 -- 
 1.8.3.4
