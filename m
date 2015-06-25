@@ -1,17 +1,21 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z7vLc-0005Q3-Lr
- for linux-mtd@lists.infradead.org; Thu, 25 Jun 2015 00:48:57 +0000
-From: Sheng Yong <shengyong1@huawei.com>
-To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-Subject: [PATCH V2 2/2] mtd: nandsim: fix double free
-Date: Thu, 25 Jun 2015 00:46:49 +0000
-Message-ID: <1435193209-54305-3-git-send-email-shengyong1@huawei.com>
-In-Reply-To: <1435193209-54305-1-git-send-email-shengyong1@huawei.com>
+ id 1Z7vtz-0003K0-OT
+ for linux-mtd@lists.infradead.org; Thu, 25 Jun 2015 01:24:29 +0000
+Received: by pactm7 with SMTP id tm7so39286334pac.2
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Jun 2015 18:24:05 -0700 (PDT)
+Date: Wed, 24 Jun 2015 18:24:01 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Sheng Yong <shengyong1@huawei.com>
+Subject: Re: [PATCH V2 0/2] mtd: nandsim: fix error handling
+Message-ID: <20150625012401.GS4917@ld-irv-0074>
 References: <1435193209-54305-1-git-send-email-shengyong1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: richard@nod.at, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1435193209-54305-1-git-send-email-shengyong1@huawei.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, richard@nod.at
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,74 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Do not call free_device() in init_nandsim, the caller - ns_init_module -
-will take care of that if something goes wrong.
+On Thu, Jun 25, 2015 at 12:46:47AM +0000, Sheng Yong wrote:
+> V2:
+> Resend the patches against l2-mtd/master.
 
-Signed-off-by: Sheng Yong <shengyong1@huawei.com>
----
- drivers/mtd/nand/nandsim.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+  CC      drivers/mtd/nand/nandsim.o
+drivers/mtd/nand/nandsim.c: In function ‘init_nandsim’:
+drivers/mtd/nand/nandsim.c:765:4: error: label ‘error’ used but not defined
+    goto error;
+    ^
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 6a74f62..92afde9 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -730,8 +730,7 @@ static int init_nandsim(struct mtd_info *mtd)
- 	/* Fill the partition_info structure */
- 	if (parts_num > ARRAY_SIZE(ns->partitions)) {
- 		NS_ERR("too many partitions.\n");
--		ret = -EINVAL;
--		goto error;
-+		return -EINVAL;
- 	}
- 	remains = ns->geom.totsz;
- 	next_offset = 0;
-@@ -740,8 +739,7 @@ static int init_nandsim(struct mtd_info *mtd)
- 
- 		if (!part_sz || part_sz > remains) {
- 			NS_ERR("bad partition size.\n");
--			ret = -EINVAL;
--			goto error;
-+			return -EINVAL;
- 		}
- 		ns->partitions[i].name   = get_partition_name(i);
- 		if (!ns->partitions[i].name) {
-@@ -758,8 +756,7 @@ static int init_nandsim(struct mtd_info *mtd)
- 	if (remains) {
- 		if (parts_num + 1 > ARRAY_SIZE(ns->partitions)) {
- 			NS_ERR("too many partitions.\n");
--			ret = -EINVAL;
--			goto error;
-+			return -EINVAL;
- 		}
- 		ns->partitions[i].name   = get_partition_name(i);
- 		if (!ns->partitions[i].name) {
-@@ -793,24 +790,18 @@ static int init_nandsim(struct mtd_info *mtd)
- 	printk("options: %#x\n",                ns->options);
- 
- 	if ((ret = alloc_device(ns)) != 0)
--		goto error;
-+		return ret;
- 
- 	/* Allocate / initialize the internal buffer */
- 	ns->buf.byte = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
- 	if (!ns->buf.byte) {
- 		NS_ERR("init_nandsim: unable to allocate %u bytes for the internal buffer\n",
- 			ns->geom.pgszoob);
--		ret = -ENOMEM;
--		goto error;
-+		return -ENOMEM;
- 	}
- 	memset(ns->buf.byte, 0xFF, ns->geom.pgszoob);
- 
- 	return 0;
--
--error:
--	free_device(ns);
--
--	return ret;
- }
- 
- /*
--- 
-1.8.3.4
+The point wasn't to rebase blindly. I got this far already. But you should be
+testing (at a minimum, compile testing) your changes!
+
+Brian
