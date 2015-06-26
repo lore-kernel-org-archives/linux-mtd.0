@@ -1,38 +1,23 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z8Ozx-0008QY-3u
- for linux-mtd@lists.infradead.org; Fri, 26 Jun 2015 08:28:33 +0000
-Message-ID: <558D0BE3.7090502@cn.fujitsu.com>
-Date: Fri, 26 Jun 2015 16:22:59 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Received: from mail-yk0-f178.google.com ([209.85.160.178])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z8PV6-0004R5-I3
+ for linux-mtd@lists.infradead.org; Fri, 26 Jun 2015 09:00:45 +0000
+Received: by ykdy1 with SMTP id y1so53469060ykd.2
+ for <linux-mtd@lists.infradead.org>; Fri, 26 Jun 2015 02:00:21 -0700 (PDT)
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH RESEND] ubifs: Introduce a mount option of force_atime.
-References: <1433831809.28854.17.camel@sauron.fi.intel.com>					
- <55769D97.3010602@nod.at> <5577AC03.9060909@cn.fujitsu.com>					
- <1433928078.14092.1.camel@sauron.fi.intel.com>					
- <55780D1C.6080907@cn.fujitsu.com>					
- <1433931934.14092.11.camel@sauron.fi.intel.com>					
- <557812A4.8020409@cn.fujitsu.com>					
- <1433934324.14092.15.camel@sauron.fi.intel.com>					
- <55892D18.3020203@cn.fujitsu.com>					
- <1435056240.7659.69.camel@sauron.fi.intel.com>					
- <20150624003335.GG22807@dastard> <558BD010.6020207@cn.fujitsu.com>				
- <1435226918.9627.14.camel@sauron.fi.intel.com>				
- <558BD3B0.8080209@cn.fujitsu.com>			
- <1435231689.9627.17.camel@sauron.fi.intel.com>			
- <558CA82B.7050306@cn.fujitsu.com>		
- <1435302083.9627.36.camel@sauron.fi.intel.com>		
- <558CFB96.2000006@cn.fujitsu.com>	
- <1435304624.9627.47.camel@sauron.fi.intel.com>	
- <558D04B8.5050300@cn.fujitsu.com>
- <1435306788.9627.64.camel@sauron.fi.intel.com>
-In-Reply-To: <1435306788.9627.64.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Dave Chinner <david@fromorbit.com>, adrian.hunter@intel.com,
- linux-mtd@lists.infradead.org
+From: Roy Spliet <r.spliet@ultimaker.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Linux ARM kernel <linux-arm-kernel@lists.infradead.org>,
+ Linux sunxi <linux-sunxi@googlegroups.com>
+Subject: [PATCH v5 1/2] mtd: nand: sunxi: Replace failsafe timing cfg with
+ calculated value
+Date: Fri, 26 Jun 2015 11:00:10 +0200
+Message-Id: <1435309211-15236-1-git-send-email-r.spliet@ultimaker.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, Roy Spliet <r.spliet@ultimaker.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,21 +27,184 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/26/2015 04:19 PM, Artem Bityutskiy wrote:
-> On Fri, 2015-06-26 at 15:52 +0800, Dongsheng Yang wrote:
->>
->> Yes, it's only used in util-linux now. But do you think it's weird
->> that:
->> -o atime - no atime (we treat it as the default behavior)
->> -o noatime - no atime
->
-> Yes, it is, and worse, this is inconsistent with other file-systems,
-> e.g., ext4. So I think I am convinced that with UBIFS_ATIME_SUPPORT
-> we'll end up with a better overall result.
+The TIMING_CFG register was previously statically set to a magic value
+(extracted from Allwinner's BSP) when initializing the NAND controller.
+Now that we have more details about the TIMING_CFG register layout
+(extracted from the A83 user manual) we can dynamically calculate the
+appropriate value for each NAND chip and set it when selecting the
+chip.
 
-Great!! Then I will plan to do it later.
+Signed-off-by: Roy Spliet <r.spliet@ultimaker.com>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Thanx for you patience on this proposal :).
+---
+V2:
+- Fix crippled comments
 
->
->
+V3:
+- Warn for invalid timings
+- Style
+
+V4:
+- Make better use of return types
+- Style and comments
+- Remove superfluous initialisation
+
+V5:
+- Tidy up macros
+---
+ drivers/mtd/nand/sunxi_nand.c | 73 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 68 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index 6f93b29..663e331 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -99,6 +99,12 @@
+ 				 NFC_CMD_INT_ENABLE | \
+ 				 NFC_DMA_INT_ENABLE)
+ 
++/* define NFC_TIMING_CFG register layout */
++#define NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD)		\
++	(((tWB) & 0x3) | (((tADL) & 0x3) << 2) |		\
++	(((tWHR) & 0x3) << 4) | (((tRHW) & 0x3) << 6) |		\
++	(((tCAD) & 0x7) << 8))
++
+ /* define bit use in NFC_CMD */
+ #define NFC_CMD_LOW_BYTE	GENMASK(7, 0)
+ #define NFC_CMD_HIGH_BYTE	GENMASK(15, 8)
+@@ -208,6 +214,7 @@ struct sunxi_nand_hw_ecc {
+  * @nand:		base NAND chip structure
+  * @mtd:		base MTD structure
+  * @clk_rate:		clk_rate required for this NAND chip
++ * @timing_cfg		TIMING_CFG register value for this NAND chip
+  * @selected:		current active CS
+  * @nsels:		number of CS lines required by the NAND chip
+  * @sels:		array of CS lines descriptions
+@@ -217,6 +224,7 @@ struct sunxi_nand_chip {
+ 	struct nand_chip nand;
+ 	struct mtd_info mtd;
+ 	unsigned long clk_rate;
++	u32 timing_cfg;
+ 	int selected;
+ 	int nsels;
+ 	struct sunxi_nand_chip_sel sels[0];
+@@ -403,6 +411,7 @@ static void sunxi_nfc_select_chip(struct mtd_info *mtd, int chip)
+ 		}
+ 	}
+ 
++	writel(sunxi_nand->timing_cfg, nfc->regs + NFC_REG_TIMING_CFG);
+ 	writel(ctl, nfc->regs + NFC_REG_CTL);
+ 
+ 	sunxi_nand->selected = chip;
+@@ -807,10 +816,33 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
+ 	return 0;
+ }
+ 
++static const s32 tWB_lut[] = {6, 12, 16, 20};
++static const s32 tRHW_lut[] = {4, 8, 12, 20};
++
++static int _sunxi_nand_lookup_timing(const s32 *lut, int lut_size, u32 duration,
++		u32 clk_period)
++{
++	u32 clk_cycles = DIV_ROUND_UP(duration, clk_period);
++	int i;
++
++	for (i = 0; i < lut_size; i++) {
++		if (clk_cycles <= lut[i])
++			return i;
++	}
++
++	/* Doesn't fit */
++	return -EINVAL;
++}
++
++#define sunxi_nand_lookup_timing(l, p, c) \
++			_sunxi_nand_lookup_timing(l, ARRAY_SIZE(l), p, c)
++
+ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+ 				       const struct nand_sdr_timings *timings)
+ {
++	struct sunxi_nfc *nfc = to_sunxi_nfc(chip->nand.controller);
+ 	u32 min_clk_period = 0;
++	s32 tWB, tADL, tWHR, tRHW, tCAD;
+ 
+ 	/* T1 <=> tCLS */
+ 	if (timings->tCLS_min > min_clk_period)
+@@ -872,6 +904,41 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+ 	if (timings->tWC_min > (min_clk_period * 2))
+ 		min_clk_period = DIV_ROUND_UP(timings->tWC_min, 2);
+ 
++	/* T16 - T19 + tCAD */
++	tWB  = sunxi_nand_lookup_timing(tWB_lut, timings->tWB_max,
++					min_clk_period);
++	if (tWB < 0) {
++		dev_err(nfc->dev, "unsupported tWB\n");
++		return tWB;
++	}
++
++	tADL = DIV_ROUND_UP(timings->tADL_min, min_clk_period) >> 3;
++	if (tADL > 3) {
++		dev_err(nfc->dev, "unsupported tADL\n");
++		return -EINVAL;
++	}
++
++	tWHR = DIV_ROUND_UP(timings->tWHR_min, min_clk_period) >> 3;
++	if (tWHR > 3) {
++		dev_err(nfc->dev, "unsupported tWHR\n");
++		return -EINVAL;
++	}
++
++	tRHW = sunxi_nand_lookup_timing(tRHW_lut, timings->tRHW_min,
++					min_clk_period);
++	if (tRHW < 0) {
++		dev_err(nfc->dev, "unsupported tRHW\n");
++		return tRHW;
++	}
++
++	/*
++	 * TODO: according to ONFI specs this value only applies for DDR NAND,
++	 * but Allwinner seems to set this to 0x7. Mimic them for now.
++	 */
++	tCAD = 0x7;
++
++	/* TODO: A83 has some more bits for CDQSS, CS, CLHZ, CCS, WC */
++	chip->timing_cfg = NFC_TIMING_CFG(tWB, tADL, tWHR, tRHW, tCAD);
+ 
+ 	/* Convert min_clk_period from picoseconds to nanoseconds */
+ 	min_clk_period = DIV_ROUND_UP(min_clk_period, 1000);
+@@ -884,8 +951,6 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+ 	 */
+ 	chip->clk_rate = (2 * NSEC_PER_SEC) / min_clk_period;
+ 
+-	/* TODO: configure T16-T19 */
+-
+ 	return 0;
+ }
+ 
+@@ -1377,11 +1442,9 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, nfc);
+ 
+ 	/*
+-	 * TODO: replace these magic values with proper flags as soon as we
+-	 * know what they are encoding.
++	 * TODO: replace this magic value with EDO flag
+ 	 */
+ 	writel(0x100, nfc->regs + NFC_REG_TIMING_CTL);
+-	writel(0x7ff, nfc->regs + NFC_REG_TIMING_CFG);
+ 
+ 	ret = sunxi_nand_chips_init(dev, nfc);
+ 	if (ret) {
+-- 
+2.4.3
+
+
+-- 
+
+
+IMAGINE IT >> MAKE IT
+
+Meet us online at Twitter <http://twitter.com/ultimaker>, Facebook 
+<http://facebook.com/ultimaker>, Google+ <http://google.com/+Ultimaker>
+
+www.ultimaker.com
