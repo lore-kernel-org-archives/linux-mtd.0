@@ -1,14 +1,25 @@
-Received: from gproxy2-pub.mail.unifiedlayer.com ([69.89.18.3])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z8Gs0-00015T-Uc
- for linux-mtd@lists.infradead.org; Thu, 25 Jun 2015 23:47:49 +0000
-From: Willem Atsma <willem.atsma@tanglebridge.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Bug fix in kernel nand driver code for ONFI flash with
- unconfigured buswidth
-Date: Thu, 25 Jun 2015 16:46:46 -0700
-Message-Id: <1435276006-804-1-git-send-email-willem.atsma@tanglebridge.com>
-Cc: Willem Atsma <willem.atsma@tanglebridge.com>, dwmw2@infradead.org
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z8HQn-0001rD-RX
+ for linux-mtd@lists.infradead.org; Fri, 26 Jun 2015 00:23:46 +0000
+Received: by pactm7 with SMTP id tm7so58361550pac.2
+ for <linux-mtd@lists.infradead.org>; Thu, 25 Jun 2015 17:23:23 -0700 (PDT)
+Date: Thu, 25 Jun 2015 17:23:17 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 6/6] mtd: docg3: Don't do ERR_PTR(0)
+Message-ID: <20150626002317.GU4917@ld-irv-0074>
+References: <1433193054-26865-1-git-send-email-richard@nod.at>
+ <1433193054-26865-7-git-send-email-richard@nod.at>
+ <20150617184144.GH4917@ld-irv-0074> <5588FC61.5070202@nod.at>
+ <871th2kvia.fsf@belgarion.home> <20150625022940.GT4917@ld-irv-0074>
+ <87wpyrk8wl.fsf@belgarion.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wpyrk8wl.fsf@belgarion.home>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org, maximlevitsky@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,36 +29,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Previously, when ONFI configuration succeeds the driver configuration might
-still fail in the calling function nand_get_flash_type() if the
-chip->options was not configured for the detected busw (8 or 16bit). With
-ONFI present the hardware driver does not need to be configured. However
-downstream the driver uses the chip->options field, so this patch updates
-the bits when ONFI detection succeeds.
+On Thu, Jun 25, 2015 at 07:14:18PM +0200, Robert Jarzmik wrote:
+> From 20002639eac1bd7a81b0613c4bd15ae7522c269d Mon Sep 17 00:00:00 2001
+> From: Robert Jarzmik <robert.jarzmik@free.fr>
+> Date: Thu, 25 Jun 2015 19:07:48 +0200
+> Subject: [PATCH] MAINTAINERS: mtd: docg3: add docg3 maintainer
+> 
+> Add myself as maintainer of the NAND based MSystems DiskOnChip G3
+> driver.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-This fixes nand driver configuration on the overo-earth platform with
-micron nand flash.
-
-Signed-off-by: Willem Atsma <willem.atsma@tanglebridge.com>
----
- drivers/mtd/nand/nand_base.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ceb68ca..7b20471 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3218,6 +3218,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	else
- 		*busw = 0;
- 
-+	/* Set the chip option here since ONFI succeeded and non-ONFI config may
-+	 * be incomplete:
-+	 */
-+	chip->options |= *busw;
-+
- 	if (p->ecc_bits != 0xff) {
- 		chip->ecc_strength_ds = p->ecc_bits;
- 		chip->ecc_step_ds = 512;
--- 
-1.9.1
+Queued, thanks
