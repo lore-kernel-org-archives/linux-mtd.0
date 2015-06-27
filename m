@@ -1,17 +1,12 @@
-Received: from mail-bn1bon0136.outbound.protection.outlook.com
- ([157.56.111.136] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z8eEQ-0006zv-Cm
- for linux-mtd@lists.infradead.org; Sat, 27 Jun 2015 00:44:31 +0000
-From: Scott Wood <scottwood@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: Fix NAND_USE_BOUNCE_BUFFER flag conflict
-Date: Fri, 26 Jun 2015 19:43:58 -0500
-Message-ID: <1435365838-10940-1-git-send-email-scottwood@freescale.com>
+Message-ID: <558E59C9.2070207@huawei.com>
+Date: Sat, 27 Jun 2015 16:07:37 +0800
+From: Wei Fang <fangwei1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Scott Wood <scottwood@freescale.com>, Kamal Dasu <kdasu.kdev@gmail.com>
+To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Subject: [PATCH] jffs2: remove unneeded conditions
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +16,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 66507c7bc8895f0da6b ("mtd: nand: Add support to use nand_base
-poi databuf as bounce buffer") added a flag NAND_USE_BOUNCE_BUFFER
-using the same bit value as the existing NAND_BUSWIDTH_AUTO.
+Since len must not be smaller than JFFS2_MIN_NODE_HEADER, if
+"len < X" is true, than "JFFS2_MIN_NODE_HEADER < X" must be true,
+so it can be removed.
 
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>
-Fixes: 66507c7bc8895f0da6b ("mtd: nand: Add support to use nand_base
-	poi databuf as bounce buffer")
-Signed-off-by: Scott Wood <scottwood@freescale.com>
+Signed-off-by: Wei Fang <fangwei1@huawei.com>
 ---
- include/linux/mtd/nand.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/jffs2/readinode.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 3d4ea7e..12b75f3 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -176,17 +176,17 @@ typedef enum {
- /* Chip may not exist, so silence any errors in scan */
- #define NAND_SCAN_SILENT_NODEV	0x00040000
- /*
-- * This option could be defined by controller drivers to protect against
-- * kmap'ed, vmalloc'ed highmem buffers being passed from upper layers
-- */
--#define NAND_USE_BOUNCE_BUFFER	0x00080000
--/*
-  * Autodetect nand buswidth with readid/onfi.
-  * This suppose the driver will configure the hardware in 8 bits mode
-  * when calling nand_scan_ident, and update its configuration
-  * before calling nand_scan_tail.
-  */
- #define NAND_BUSWIDTH_AUTO      0x00080000
-+/*
-+ * This option could be defined by controller drivers to protect against
-+ * kmap'ed, vmalloc'ed highmem buffers being passed from upper layers
-+ */
-+#define NAND_USE_BOUNCE_BUFFER	0x00100000
- 
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index dddbde4..b9bd3ad 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -1059,8 +1059,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+
+ 		case JFFS2_NODETYPE_DIRENT:
+
+-			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_dirent) &&
+-			    len < sizeof(struct jffs2_raw_dirent)) {
++			if (len < sizeof(struct jffs2_raw_dirent)) {
+ 				err = read_more(c, ref, sizeof(struct jffs2_raw_dirent), &len, buf);
+ 				if (unlikely(err))
+ 					goto free_out;
+@@ -1074,8 +1073,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+
+ 		case JFFS2_NODETYPE_INODE:
+
+-			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_inode) &&
+-			    len < sizeof(struct jffs2_raw_inode)) {
++			if (len < sizeof(struct jffs2_raw_inode)) {
+ 				err = read_more(c, ref, sizeof(struct jffs2_raw_inode), &len, buf);
+ 				if (unlikely(err))
+ 					goto free_out;
+@@ -1088,8 +1086,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+ 			break;
+
+ 		default:
+-			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_unknown_node) &&
+-			    len < sizeof(struct jffs2_unknown_node)) {
++			if (len < sizeof(struct jffs2_unknown_node)) {
+ 				err = read_more(c, ref, sizeof(struct jffs2_unknown_node), &len, buf);
+ 				if (unlikely(err))
+ 					goto free_out;
 -- 
-2.1.4
+1.8.3.1
