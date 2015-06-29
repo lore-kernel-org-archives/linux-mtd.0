@@ -1,16 +1,19 @@
-Message-ID: <559184F0.7000300@ti.com>
-Date: Mon, 29 Jun 2015 13:48:32 -0400
-From: Murali Karicheri <m-karicheri2@ti.com>
+Received: from us2.outbound.mailhostbox.com ([162.210.70.53])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z9dpA-0008FS-IG
+ for linux-mtd@lists.infradead.org; Mon, 29 Jun 2015 18:30:33 +0000
+Message-ID: <55918E99.4030701@pek-sem.com>
+Date: Mon, 29 Jun 2015 23:59:45 +0530
+From: pekon <pekon@pek-sem.com>
 MIME-Version: 1.0
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <wsa@the-dreams.de>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH - v1] mtd: nand: davinci: add support for 4K page size
- nand devices.
-References: <1433926938-14092-1-git-send-email-m-karicheri2@ti.com>
-In-Reply-To: <1433926938-14092-1-git-send-email-m-karicheri2@ti.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+To: Willem Atsma <willem.atsma@tanglebridge.com>
+Subject: Re: [PATCH] Bug fix in kernel nand driver code for ONFI flash with
+ unconfigured buswidth
+References: <1435276006-804-1-git-send-email-willem.atsma@tanglebridge.com>
+In-Reply-To: <1435276006-804-1-git-send-email-willem.atsma@tanglebridge.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Hao Zhang <hzhang@ti.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,85 +23,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/10/2015 05:02 AM, Murali Karicheri wrote:
-> K2L EVM uses NAND with 4K page size. This patch add support for
-> ECC layout requires to enable Micron MT29F16G08ADBCAH4 NAND available
-> on this EVM.
+Hi Willem,
+
+On Friday 26 June 2015 05:16 AM, Willem Atsma wrote:
+> Previously, when ONFI configuration succeeds the driver configuration might
+> still fail in the calling function nand_get_flash_type() if the
+> chip->options was not configured for the detected busw (8 or 16bit). With
+> ONFI present the hardware driver does not need to be configured. However
+> downstream the driver uses the chip->options field, so this patch updates
+> the bits when ONFI detection succeeds.
 >
-> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
-> Signed-off-by: Hao Zhang <hzhang@ti.com>
+> This fixes nand driver configuration on the overo-earth platform with
+> micron nand flash.
+>
+> Signed-off-by: Willem Atsma <willem.atsma@tanglebridge.com>
 > ---
->   - v1 - Remove the comment as well from the code as now 4K page
->     is supported
->   drivers/mtd/nand/davinci_nand.c | 42 +++++++++++++++++++++++++++++------------
->   1 file changed, 30 insertions(+), 12 deletions(-)
+>   drivers/mtd/nand/nand_base.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 >
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index feb6d18..90b177b 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -520,6 +520,31 @@ static struct nand_ecclayout hwecc4_2048 = {
->   	},
->   };
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index ceb68ca..7b20471 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3218,6 +3218,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>   	else
+>   		*busw = 0;
 >
-> +/* An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
-> + * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-> + * and not overlapping the default BBT markers.
-> + */
-> +static struct nand_ecclayout hwecc4_4096 = {
-> +	.eccbytes = 80,
-> +	.eccpos = {
-> +		/* at the end of spare sector */
-> +		48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
-> +		58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
-> +		68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
-> +		78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
-> +		88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
-> +		98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
-> +		108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
-> +		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
-> +		},
-> +	.oobfree = {
-> +		/* 2 bytes at offset 0 hold manufacturer badblock markers */
-> +		{.offset = 2, .length = 46, },
-> +		/* 5 bytes at offset 8 hold BBT markers */
-> +		/* 8 bytes at offset 16 hold JFFS2 clean markers */
-> +	},
-> +};
+> +	/* Set the chip option here since ONFI succeeded and non-ONFI config may
+> +	 * be incomplete:
+> +	 */
+> +	chip->options |= *busw;
 > +
->   #if defined(CONFIG_OF)
->   static const struct of_device_id davinci_nand_of_match[] = {
->   	{.compatible = "ti,davinci-nand", },
-> @@ -796,18 +821,11 @@ static int nand_davinci_probe(struct platform_device *pdev)
->   			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
->   			goto syndrome_done;
->   		}
-> -
-> -		/* 4KiB page chips are not yet supported. The eccpos from
-> -		 * nand_ecclayout cannot hold 80 bytes and change to eccpos[]
-> -		 * breaks userspace ioctl interface with mtd-utils. Once we
-> -		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
-> -		 * for the 4KiB page chips.
-> -		 *
-> -		 * TODO: Note that nand_ecclayout has now been expanded and can
-> -		 *  hold plenty of OOB entries.
-> -		 */
-> -		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
-> -				"for 4KiB-page NAND\n");
-> +		if (chunks == 8) {
-> +			info->ecclayout = hwecc4_4096;
-> +			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
-> +			goto syndrome_done;
-> +		}
->   		ret = -EIO;
->   		goto err;
+>   	if (p->ecc_bits != 0xff) {
+>   		chip->ecc_strength_ds = p->ecc_bits;
+>   		chip->ecc_step_ds = 512;
 >
->
-MTD Maintainers,
+This patch actually causes a false-pass to the following check when 
+Hardware driver incorrectly configures NAND-device width.
 
-Can you please review and queue this to next?
+nand_base.c @@nand_get_flash_type(...)
+------------------------------------------------------
+} else if (busw != (chip->options & NAND_BUSWIDTH_16)) {
+		/*
+		 * Check, if buswidth is correct. Hardware drivers should set
+		 * chip correct!
+		 */
+		pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+			*maf_id, *dev_id);
+		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
+		pr_warn("bus width %d instead %d bit\n",
+			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
+			   busw ? 16 : 8);
+		return ERR_PTR(-EINVAL);
+	}
+------------------------------------------------------
 
-Thanks
--- 
-Murali Karicheri
-Linux Kernel, Keystone
+This check was added to find out if there is any mis-match because 
+driver's bus-width and actual device's bus-width
+(a) Driver setting (from DT or platform-data) is in chip->options
+(b) Actual NAND device-width as detected from ONFI params is in *busw.
+
+This check was explicitly added as some controllers like GPMC need to be 
+pre-configured via DT or platform-data with correct bus-width even 
+before the nand_probe(). So nand_probe() should check that both (a) and 
+(b) are matching.
+
+Hence, updating chip->options just after ONFI detection is not correct. 
+Anyways NAND driver is not doing any other access apart from ONFI reads 
+so existing implementation should be okay.
+
+Also, as per spec all ONFI reads should work at x8 bus-width. Refer
+	commit 64b37b2a63eb2f80b65c7185f0013f8ffc637ae3
+	Author:     Matthieu CASTET <matthieu.castet at parrot.com>
+	mtd: nand: add NAND_BUSWIDTH_AUTO to autodetect bus width
+
+
+with regards, pekon
