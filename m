@@ -1,19 +1,22 @@
-Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z98JE-0006o4-Sx
- for linux-mtd@lists.infradead.org; Sun, 28 Jun 2015 08:51:29 +0000
-Received: by lagh6 with SMTP id h6so23733305lag.2
- for <linux-mtd@lists.infradead.org>; Sun, 28 Jun 2015 01:51:03 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: bcm47xxpart: store MAGICs in little-endian order
-Date: Sun, 28 Jun 2015 10:50:51 +0200
-Message-Id: <1435481451-12223-1-git-send-email-zajec5@gmail.com>
+ id 1Z9REE-0002au-00
+ for linux-mtd@lists.infradead.org; Mon, 29 Jun 2015 05:03:35 +0000
+Received: from mail.micron.com (ntxboicas01.micron.com [137.201.84.60])
+ by mailout.micron.com (8.14.4/8.14.6) with ESMTP id t5T5388X006267
+ (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+ for <linux-mtd@lists.infradead.org>; Sun, 28 Jun 2015 23:03:08 -0600
+From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: mount_ubifs: failed to mount ubifs
+Date: Mon, 29 Jun 2015 05:03:05 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF36288@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,141 +26,193 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is more natural for programming and used by various filesystems /
-containers in the kernel.
-Data on flash is store in big-endian, so simply use be32_to_cpu.
+Hello:
+Currently ,I mainly focus on ubi powerloss solution for MLC nand ,now I=20
+Have a problem about master node, below is log.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/bcm47xxpart.c | 49 ++++++++++++++++++++++++-----------------------
- 1 file changed, 25 insertions(+), 24 deletions(-)
+When PEB 354:4096 read failed,and ubi will regard this block a corrupted bl=
+ock.
+Ubi will not recover it, but reserve it.
+Maybe this block contains master node, so will mount failure?
+Why ubi not try to recover such block?
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index c0720c1..6a1d978 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -31,18 +31,18 @@
- #define BCM47XXPART_BYTES_TO_READ	0x4e8
- 
- /* Magics */
--#define BOARD_DATA_MAGIC		0x5246504D	/* MPFR */
--#define BOARD_DATA_MAGIC2		0xBD0D0BBD
--#define CFE_MAGIC			0x43464531	/* 1EFC */
--#define FACTORY_MAGIC			0x59544346	/* FCTY */
--#define NVRAM_HEADER			0x48534C46	/* FLSH */
--#define POT_MAGIC1			0x54544f50	/* POTT */
--#define POT_MAGIC2			0x504f		/* OP */
--#define ML_MAGIC1			0x39685a42
--#define ML_MAGIC2			0x26594131
--#define TRX_MAGIC			0x30524448
-+#define BOARD_DATA_MAGIC		0x4D504652	/* MPFR */
-+#define BOARD_DATA_MAGIC2		0xBD0B0DBD
-+#define CFE_MAGIC			0x31454643	/* 1EFC */
-+#define FACTORY_MAGIC			0x46435459	/* FCTY */
-+#define NVRAM_HEADER			0x464C5348	/* FLSH */
-+#define POT_MAGIC1			0x504f5454	/* POTT */
-+#define POT_MAGIC2			0x4f500000	/* OP */
-+#define ML_MAGIC1			0x425a6839
-+#define ML_MAGIC2			0x31415926
-+#define TRX_MAGIC			0x48445230	/* HDR0 */
- #define SHSQ_MAGIC			0x71736873	/* shsq (weird ZTE H218N endianness) */
--#define UBI_EC_MAGIC			0x23494255	/* UBI# */
-+#define UBI_EC_MAGIC			0x55424923	/* UBI# */
- 
- struct trx_header {
- 	uint32_t magic;
-@@ -74,7 +74,7 @@ static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
- 		goto out_default;
- 	}
- 
--	if (buf == UBI_EC_MAGIC)
-+	if (be32_to_cpu(buf) == UBI_EC_MAGIC)
- 		return "ubi";
- 
- out_default:
-@@ -136,8 +136,9 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		}
- 
- 		/* Magic or small NVRAM at 0x400 */
--		if ((buf[0x4e0 / 4] == CFE_MAGIC && buf[0x4e4 / 4] == CFE_MAGIC) ||
--		    (buf[0x400 / 4] == NVRAM_HEADER)) {
-+		if ((be32_to_cpu(buf[0x4e0 / 4]) == CFE_MAGIC &&
-+		     be32_to_cpu(buf[0x4e4 / 4]) == CFE_MAGIC) ||
-+		    (be32_to_cpu(buf[0x400 / 4]) == NVRAM_HEADER)) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "boot",
- 					     offset, MTD_WRITEABLE);
- 			continue;
-@@ -147,37 +148,37 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		 * board_data starts with board_id which differs across boards,
- 		 * but we can use 'MPFR' (hopefully) magic at 0x100
- 		 */
--		if (buf[0x100 / 4] == BOARD_DATA_MAGIC) {
-+		if (be32_to_cpu(buf[0x100 / 4]) == BOARD_DATA_MAGIC) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "board_data",
- 					     offset, MTD_WRITEABLE);
- 			continue;
- 		}
- 
- 		/* Found on Huawei E970 */
--		if (buf[0x000 / 4] == FACTORY_MAGIC) {
-+		if (be32_to_cpu(buf[0x000 / 4]) == FACTORY_MAGIC) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "factory",
- 					     offset, MTD_WRITEABLE);
- 			continue;
- 		}
- 
- 		/* POT(TOP) */
--		if (buf[0x000 / 4] == POT_MAGIC1 &&
--		    (buf[0x004 / 4] & 0xFFFF) == POT_MAGIC2) {
-+		if (be32_to_cpu(buf[0x000 / 4]) == POT_MAGIC1 &&
-+		    (be32_to_cpu(buf[0x004 / 4]) & 0xFFFF0000) == POT_MAGIC2) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "POT", offset,
- 					     MTD_WRITEABLE);
- 			continue;
- 		}
- 
- 		/* ML */
--		if (buf[0x010 / 4] == ML_MAGIC1 &&
--		    buf[0x014 / 4] == ML_MAGIC2) {
-+		if (be32_to_cpu(buf[0x010 / 4]) == ML_MAGIC1 &&
-+		    be32_to_cpu(buf[0x014 / 4]) == ML_MAGIC2) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "ML", offset,
- 					     MTD_WRITEABLE);
- 			continue;
- 		}
- 
- 		/* TRX */
--		if (buf[0x000 / 4] == TRX_MAGIC) {
-+		if (be32_to_cpu(buf[0x000 / 4]) == TRX_MAGIC) {
- 			if (BCM47XXPART_MAX_PARTS - curr_part < 4) {
- 				pr_warn("Not enough partitions left to register trx, scanning stopped!\n");
- 				break;
-@@ -247,7 +248,7 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		 * block will be checked later, so skip it.
- 		 */
- 		if (offset != master->size - blocksize &&
--		    buf[0x000 / 4] == NVRAM_HEADER) {
-+		    be32_to_cpu(buf[0x000 / 4]) == NVRAM_HEADER) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "nvram",
- 					     offset, 0);
- 			continue;
-@@ -262,7 +263,7 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		}
- 
- 		/* Some devices (ex. WNDR3700v3) don't have a standard 'MPFR' */
--		if (buf[0x000 / 4] == BOARD_DATA_MAGIC2) {
-+		if (be32_to_cpu(buf[0x000 / 4]) == BOARD_DATA_MAGIC2) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "board_data",
- 					     offset, MTD_WRITEABLE);
- 			continue;
-@@ -285,7 +286,7 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		}
- 
- 		/* Standard NVRAM */
--		if (buf[0] == NVRAM_HEADER) {
-+		if (be32_to_cpu(buf[0]) == NVRAM_HEADER) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "nvram",
- 					     master->size - blocksize, 0);
- 			break;
--- 
-1.8.4.5
+
+
+UBI: attaching mtd2 to ubi0 ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 4096 bytes fr=
+om PEB 354:4096, read only 4096 bytes, retry
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 4096 bytes fr=
+om PEB 354:4096, read only 4096 bytes, retry
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 4096 bytes fr=
+om PEB 354:4096, read only 4096 bytes, retry
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+UBI error: ubi_io_read: error -74 (ECC error) while reading 4096 bytes from=
+ PEB 354:4096, read 4096 bytes
+CPU: 1 PID: 1303 Comm: ubiattach Not tainted 3.14.0-xilinx-00017-g71d29dc-d=
+irty #65
+[<c00145c0>] (unwind_backtrace) from [<c0010c50>] (show_stack+0x10/0x14)
+[<c0010c50>] (show_stack) from [<c0478df4>] (dump_stack+0x84/0xd4)
+[<c0478df4>] (dump_stack) from [<c02bacf0>] (ubi_io_read+0x1c4/0x298)
+[<c02bacf0>] (ubi_io_read) from [<c02c1338>] (ubi_backup_volume_scan+0x208/=
+0x308)
+[<c02c1338>] (ubi_backup_volume_scan) from [<c02bf300>] (ubi_attach+0x29c/0=
+x1200)
+[<c02bf300>] (ubi_attach) from [<c02b60a0>] (ubi_attach_mtd_dev+0x59c/0xb60=
+)
+[<c02b60a0>] (ubi_attach_mtd_dev) from [<c02b68b4>] (ctrl_cdev_ioctl+0xd0/0=
+x17c)
+[<c02b68b4>] (ctrl_cdev_ioctl) from [<c00bfac4>] (vfs_ioctl+0x18/0x34)
+[<c00bfac4>] (vfs_ioctl) from [<c00c059c>] (do_vfs_ioctl+0x530/0x578)
+[<c00c059c>] (do_vfs_ioctl) from [<c00c061c>] (SyS_ioctl+0x38/0x54)
+[<c00c061c>] (SyS_ioctl) from [<c000db80>] (ret_fast_syscall+0x0/0x30)
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 4096 bytes fr=
+om PEB 354:4096, read only 4096 bytes, retry
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 4096 bytes fr=
+om PEB 354:4096, read only 4096 bytes, retry
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 4096 bytes fr=
+om PEB 354:4096, read only 4096 bytes, retry
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+ecc unrecoverable error
+UBI error: ubi_io_read: error -74 (ECC error) while reading 4096 bytes from=
+ PEB 354:4096, read 4096 bytes
+CPU: 1 PID: 1303 Comm: ubiattach Not tainted 3.14.0-xilinx-00017-g71d29dc-d=
+irty #65
+[<c00145c0>] (unwind_backtrace) from [<c0010c50>] (show_stack+0x10/0x14)
+[<c0010c50>] (show_stack) from [<c0478df4>] (dump_stack+0x84/0xd4)
+[<c0478df4>] (dump_stack) from [<c02bacf0>] (ubi_io_read+0x1c4/0x298)
+[<c02bacf0>] (ubi_io_read) from [<c02bb1a0>] (ubi_io_read_vid_hdr+0x6c/0x1d=
+4)
+[<c02bb1a0>] (ubi_io_read_vid_hdr) from [<c02bf2ec>] (ubi_attach+0x288/0x12=
+00)
+[<c02bf2ec>] (ubi_attach) from [<c02b60a0>] (ubi_attach_mtd_dev+0x59c/0xb60=
+)
+[<c02b60a0>] (ubi_attach_mtd_dev) from [<c02b68b4>] (ctrl_cdev_ioctl+0xd0/0=
+x17c)
+[<c02b68b4>] (ctrl_cdev_ioctl) from [<c00bfac4>] (vfs_ioctl+0x18/0x34)
+[<c00bfac4>] (vfs_ioctl) from [<c00c059c>] (do_vfs_ioctl+0x530/0x578)
+[<c00c059c>] (do_vfs_ioctl) from [<c00c061c>] (SyS_ioctl+0x38/0x54)
+[<c00c061c>] (SyS_ioctl) from [<c000db80>] (ret_fast_syscall+0x0/0x30)
+UBI error: check_corruption: PEB 354 contains corrupted VID header, and the=
+ data does not contain all 0xFF
+UBI error: check_corruption: this may be a non-UBI PEB or a severe VID head=
+er corruption which requires manual inspection
+Volume identifier header dump:
+        magic     55424921
+        version   1
+        vol_type  1
+        copy_flag 0
+        compat    0
+        vol_id    0
+        lnum      1
+        data_size 0
+        used_ebs  0
+        data_pad  0
+        sqnum     258171
+        hdr_crc   f57b76e2
+Volume identifier header hexdump:
+hexdump of PEB 354 offset 8192, length 1040384
+UBI: scanning is finished
+UBI error: late_analysis: 1 PEBs are corrupted and preserved
+Corrupted PEBs are: 354
+UBI assert failed in ubi_wl_init at 1967 (pid 1303)
+CPU: 1 PID: 1303 Comm: ubiattach Not tainted 3.14.0-xilinx-00017-g71d29dc-d=
+irty #65
+[<c00145c0>] (unwind_backtrace) from [<c0010c50>] (show_stack+0x10/0x14)
+[<c0010c50>] (show_stack) from [<c0478df4>] (dump_stack+0x84/0xd4)
+[<c0478df4>] (dump_stack) from [<c02be3c8>] (ubi_wl_init+0x3a0/0x460)
+[<c02be3c8>] (ubi_wl_init) from [<c02c01b8>] (ubi_attach+0x1154/0x1200)
+[<c02c01b8>] (ubi_attach) from [<c02b60a0>] (ubi_attach_mtd_dev+0x59c/0xb60=
+)
+[<c02b60a0>] (ubi_attach_mtd_dev) from [<c02b68b4>] (ctrl_cdev_ioctl+0xd0/0=
+x17c)
+[<c02b68b4>] (ctrl_cdev_ioctl) from [<c00bfac4>] (vfs_ioctl+0x18/0x34)
+[<c00bfac4>] (vfs_ioctl) from [<c00c059c>] (do_vfs_ioctl+0x530/0x578)
+[<c00c059c>] (do_vfs_ioctl) from [<c00c061c>] (SyS_ioctl+0x38/0x54)
+[<c00c061c>] (SyS_ioctl) from [<c000db80>] (ret_fast_syscall+0x0/0x30)
+UBI warning: print_rsvd_warning: cannot reserve enough PEBs for bad PEB han=
+dling, reserved 76, need 77
+UBI warning: print_rsvd_warning: 1 PEBs are corrupted and not used
+UBI: attached mtd2 (name "test2", size 1024 MiB) to ubi0
+UBI: PEB size: 1048576 bytes (1024 KiB), LEB size: 1040384 bytes
+UBI: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
+UBI: VID header offset: 4096 (aligned 4096), data offset: 8192
+UBI: good PEBs: 1021, bad PEBs: 3, corrupted PEBs: 1
+UBI: user volume: 1, internal volumes: 2, max. volumes count: 128
+UBI: max/mean erase counter: 446/254, WL threshold: 4096, image sequence nu=
+mber: 3046330715
+UBI: available PEBs: 0, total reserved PEBs: 1020, PEBs reserved for bad PE=
+B handling: 76
+UBI: background thread "ubi_bgt0d" started, PID 1306
+UBI device number 0, total 1021 LEBs (1062232064 bytes, 1013.0 MiB), availa=
+ble 0 LEBs (0 bytes), LEB size 1040384 bytes (1016.0 KiB)
+ Ubi device attach................................[OK]=20
+ Scan ubi volume..................................[OK]=20
+ Mount ubifs on tesUBIFS: background thread "ubifs_bgt0_0" started, PID 131=
+1
+t dir...............................UBIFS error (pid 1309): ubifs_recover_m=
+aster_node: failed to recover master node
+UBIFS error (pid 1309): ubifs_recover_master_node: dumping second master no=
+de
+        magic          0x6101831
+        crc            0x6a102f75
+        node_type      7 (master node)
+        group_type     0 (no node group)
+        sqnum          5889233
+        len            512
+        highest_inum   103440
+        commit number  247070
+        flags          0x3
+        log_lnum       4
+        root_lnum      937
+        root_offs      411568
+        root_len       68
+        gc_lnum        12
+        ihead_lnum     937
+        ihead_offs     413696
+        index_size     230688
+        lpt_lnum       6
+        lpt_offs       581727
+        nhead_lnum     6
+        nhead_offs     585728
+        ltab_lnum      6
+        ltab_offs      581632
+        lsave_lnum     0
+        lsave_offs     0
+        lscan_lnum     51
+        leb_cnt        939
+        empty_lebs     880
+        idx_lebs       11
+        total_free     917319680
+        total_dirty    27678232
+        total_used     21288136
+        total_dead     0
+        total_dark     7520256
+UBIFS: background thread "ubifs_bgt0_0" stops
