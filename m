@@ -1,22 +1,16 @@
-Received: from mail-vn0-x22c.google.com ([2607:f8b0:400c:c0f::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z9T8s-0003z7-5i
- for linux-mtd@lists.infradead.org; Mon, 29 Jun 2015 07:06:10 +0000
-Received: by vnbf62 with SMTP id f62so2275692vnb.9
- for <linux-mtd@lists.infradead.org>; Mon, 29 Jun 2015 00:05:48 -0700 (PDT)
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z9Uq8-0005zS-Ju
+ for linux-mtd@lists.infradead.org; Mon, 29 Jun 2015 08:54:58 +0000
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <richard.weinberger@gmail.com>, <computersforpeace@gmail.com>
+Subject: [PATCH 1/2] mtd-utils: fs-tests: pass TEST_DIR to integck in
+ run_all.sh
+Date: Mon, 29 Jun 2015 16:49:18 +0800
+Message-ID: <1435567759-32518-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF362BA@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF36288@NTXXIAMBX02.xacn.micron.com>
- <CAFLxGvxE+HMP9iOfBUVWE0yBABezZ+uZ2bh_i+_FYHrPGZtBqw@mail.gmail.com>
- <A765B125120D1346A63912DDE6D8B6310BF362BA@NTXXIAMBX02.xacn.micron.com>
-Date: Mon, 29 Jun 2015 09:05:48 +0200
-Message-ID: <CAFLxGvwuvZX+p=xnmYsG+jjrQ9N+rACem06g52=+nEUWjdK8sw@mail.gmail.com>
-Subject: Re: mount_ubifs: failed to mount ubifs
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 29, 2015 at 9:03 AM, Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (bean=
-huo)
-<beanhuo@micron.com> wrote:
->>As you work for Micron, it would be wonderful if you could give us more d=
-etails on the MLC nand and what Micron recommends to deal with that.
->
-> So far, I am also little know about ubifs. But for MLC nand,maybe I can g=
-ive you some helpful infor.
+Test integck requires a parameter but run_all.sh did no pass any to it.
+Then:
+integck: error!: test file-system was not specified (use -h for help)
 
-The hardest problem we are aware of are paired pages.
-Please search the archives, we had already some discussion on it.
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+---
+ tests/fs-tests/run_all.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-Thanks,
-//richard
+diff --git a/tests/fs-tests/run_all.sh b/tests/fs-tests/run_all.sh
+index 7c82921..cb481ab 100755
+--- a/tests/fs-tests/run_all.sh
++++ b/tests/fs-tests/run_all.sh
+@@ -16,7 +16,7 @@ rm -rf ${TEST_DIR}/*
+ 
+ rm -rf ${TEST_DIR}/*
+ 
+-./integrity/integck || exit 1
++./integrity/integck $TEST_DIR|| exit 1
+ 
+ rm -rf ${TEST_DIR}/*
+ 
+-- 
+1.8.4.2
