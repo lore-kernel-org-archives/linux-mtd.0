@@ -1,20 +1,20 @@
-Received: from mail-bn1on0143.outbound.protection.outlook.com
- ([157.56.110.143] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z9rvL-0001Jf-VQ
- for linux-mtd@lists.infradead.org; Tue, 30 Jun 2015 09:33:53 +0000
-From: Haikun Wang <haikun.wang@freescale.com>
-To: <linux-mtd@lists.infradead.org>, <han.xu@freescale.com>
-Subject: [PATCH 4/5 v1] mtd: spi-nor: fsl-quadspi: Add QSPI dts node for
- LS1021A
-Date: Tue, 30 Jun 2015 17:28:37 +0800
-Message-ID: <1435656518-14022-4-git-send-email-haikun.wang@freescale.com>
-In-Reply-To: <1435656518-14022-1-git-send-email-haikun.wang@freescale.com>
-References: <1435656518-14022-1-git-send-email-haikun.wang@freescale.com>
+Received: from relay1.mentorg.com ([192.94.38.131])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z9sFJ-0008Um-Vv
+ for linux-mtd@lists.infradead.org; Tue, 30 Jun 2015 09:54:30 +0000
+Received: from nat-ies.mentorg.com ([192.94.31.2]
+ helo=SVR-IES-FEM-02.mgc.mentorg.com)
+ by relay1.mentorg.com with esmtp
+ id 1Z9sEv-0001ba-JP from Alexey_Firago@mentor.com
+ for linux-mtd@lists.infradead.org; Tue, 30 Jun 2015 02:54:05 -0700
+From: Alexey Firago <alexey_firago@mentor.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: spi-nor: set SECT_4K for n25q064 SPI flash
+Date: Tue, 30 Jun 2015 12:53:46 +0300
+Message-ID: <1435658026-10627-1-git-send-email-alexey_firago@mentor.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- Haikun Wang <haikun.wang@freescale.com>
+Cc: Alexey Firago <alexey_firago@mentor.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,85 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add QSPI dts node for LS1021AQDS and LS1021ATWR boards.
+Micron n25q064 flash supports 4 KiB erase sectors.
 
-Signed-off-by: Haikun Wang <haikun.wang@freescale.com>
+Signed-off-by: Alexey Firago <alexey_firago@mentor.com>
 ---
- arch/arm/boot/dts/ls1021a-qds.dts | 16 ++++++++++++++++
- arch/arm/boot/dts/ls1021a-twr.dts | 13 +++++++++++++
- arch/arm/boot/dts/ls1021a.dtsi    | 15 +++++++++++++++
- 3 files changed, 44 insertions(+)
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/ls1021a-qds.dts b/arch/arm/boot/dts/ls1021a-qds.dts
-index 9c5e16b..15bf07f 100644
---- a/arch/arm/boot/dts/ls1021a-qds.dts
-+++ b/arch/arm/boot/dts/ls1021a-qds.dts
-@@ -238,3 +238,19 @@
- &uart1 {
- 	status = "okay";
- };
-+
-+&qspi {
-+	num-cs = <2>;
-+	bus-num = <0>;
-+	fsl,spi-num-chipselects = <2>;
-+	fsl,spi-flash-chipselects = <0>;
-+	status = "okay";
-+
-+	qflash0: s25fl128s@0 {
-+		compatible = "spansion,s25fl128s";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		spi-max-frequency = <20000000>;
-+		reg = <0>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/ls1021a-twr.dts b/arch/arm/boot/dts/ls1021a-twr.dts
-index a2c591e..b72f6ee 100644
---- a/arch/arm/boot/dts/ls1021a-twr.dts
-+++ b/arch/arm/boot/dts/ls1021a-twr.dts
-@@ -125,3 +125,16 @@
- &uart1 {
- 	status = "okay";
- };
-+
-+&qspi {
-+	num-cs = <2>;
-+	status = "okay";
-+
-+	qflash0: n25q128a13@0 {
-+		compatible = "micron,n25q128a13";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		spi-max-frequency = <20000000>;
-+		reg = <0>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index c70bb27..09f1a33 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -127,6 +127,21 @@
- 			big-endian;
- 		};
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d78831b..b2e8c3b 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -589,7 +589,7 @@ static const struct spi_device_id spi_nor_ids[] = {
  
-+		qspi: quadspi@1550000 {
-+			compatible = "fsl,ls1-qspi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x0 0x1550000 0x0 0x10000>,
-+				<0x0 0x40000000 0x0 0x4000000>;
-+			reg-names = "QuadSPI", "QuadSPI-memory";
-+			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-+			clock-names = "qspi_en", "qspi";
-+			clocks = <&platform_clk 1>, <&platform_clk 1>;
-+			big-endian;
-+			amba-base = <0x40000000>;
-+			status = "disabled";
-+		};
-+
- 		esdhc: esdhc@1560000 {
- 			compatible = "fsl,esdhc";
- 			reg = <0x0 0x1560000 0x0 0x10000>;
+ 	/* Micron */
+ 	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+-	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SPI_NOR_QUAD_READ) },
++	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+ 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
+ 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
 -- 
-2.1.0.27.g96db324
+1.9.1
