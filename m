@@ -1,14 +1,14 @@
-Received: from mail-bn1on0707.outbound.protection.outlook.com
- ([2a01:111:f400:fc10::707] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-bn1on0134.outbound.protection.outlook.com
+ ([157.56.110.134] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z9rvH-0001IQ-OZ
- for linux-mtd@lists.infradead.org; Tue, 30 Jun 2015 09:33:49 +0000
+ id 1Z9rvJ-0001Ho-LG
+ for linux-mtd@lists.infradead.org; Tue, 30 Jun 2015 09:33:50 +0000
 From: Haikun Wang <haikun.wang@freescale.com>
 To: <linux-mtd@lists.infradead.org>, <han.xu@freescale.com>
-Subject: [PATCH 3/5 v4] mtd: spi-nor: fsl-quadspi: Enable support big endian
- registers
-Date: Tue, 30 Jun 2015 17:28:36 +0800
-Message-ID: <1435656518-14022-3-git-send-email-haikun.wang@freescale.com>
+Subject: [PATCH 5/5 v1] mtd: spi-nor: fsl-quadspi: Update bindings
+ documentation
+Date: Tue, 30 Jun 2015 17:28:38 +0800
+Message-ID: <1435656518-14022-5-git-send-email-haikun.wang@freescale.com>
 In-Reply-To: <1435656518-14022-1-git-send-email-haikun.wang@freescale.com>
 References: <1435656518-14022-1-git-send-email-haikun.wang@freescale.com>
 MIME-Version: 1.0
@@ -24,44 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QSPI registers are big endian on LS1021A.
-This patch check endianness before accessing register and
-swap the data if QSPI register is big endian.
+Add QuadSPI slave properties description.
 
 Signed-off-by: Haikun Wang <haikun.wang@freescale.com>
 ---
-Changes in v4:
-- Split into three patches
+ Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Changes in v3:
-- Rebase with l2-mtd.git
-
-Changes in v2:
-- Fix compile issue
-
- drivers/mtd/spi-nor/fsl-quadspi.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index d65e073..e416b08 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -260,12 +260,14 @@ static inline int is_imx6sx_qspi(struct fsl_qspi *q)
+diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+index 4461dc7..6627893 100644
+--- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+@@ -1,6 +1,6 @@
+ * Freescale Quad Serial Peripheral Interface(QuadSPI)
  
- static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem *addr)
- {
--	writel(val, addr);
-+	q->devtype_data->driver_data & QUADSPI_QUIRK_REGMAP_BE ?
-+		writel(cpu_to_be32(val), addr) : writel(val, addr);
- }
+-Required properties:
++QuadSPI master required properties:
+   - compatible : Should be "fsl,vf610-qspi" or "fsl,imx6sx-qspi"
+   - reg : the first contains the register location and length,
+           the second contains the memory mapping address and length
+@@ -18,6 +18,13 @@ Optional properties:
+ 			      bus, you should enable this property.
+ 			      (Please check the board's schematic.)
  
- static u32 qspi_readl(struct fsl_qspi *q, void __iomem *addr)
- {
--	return	readl(addr);
-+	return q->devtype_data->driver_data & QUADSPI_QUIRK_REGMAP_BE ?
-+		cpu_to_be32(readl(addr)) : readl(addr);
- }
++QuadSPI slave required properties:
++  - compatible : Should be the manufacturer and the name of the chip,
++		 like "spansion,s25fl128s", "micron,n25q128a13"...
++		 See the "spi_nor_ids" table in drivers/mtd/spi-nor/spi-nor.c
++		 for the list of supported chips.
++  - spi-max-frequency : Maximum SPI clocking speed of device in Hz
++
+ Example:
  
- 
+ qspi0: quadspi@40044000 {
 -- 
 2.1.0.27.g96db324
