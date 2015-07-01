@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZA922-0004JX-Eo
- for linux-mtd@lists.infradead.org; Wed, 01 Jul 2015 03:49:55 +0000
+ id 1ZA922-0004JW-GL
+ for linux-mtd@lists.infradead.org; Wed, 01 Jul 2015 03:49:57 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <richard.weinberger@gmail.com>, <computersforpeace@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 3/4] mtd-utils: fix 'new blank line at EOF' problems
-Date: Wed, 1 Jul 2015 11:44:16 +0800
-Message-ID: <1435722257-13218-3-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 4/4 v2] mtd-utils: Restructure the mtd-utils source.
+Date: Wed, 1 Jul 2015 11:44:17 +0800
+Message-ID: <1435722257-13218-4-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1435722257-13218-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1435722257-13218-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,204 +22,525 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+* There is no code modification in this commit, only moving
+* the files to proper place.
+
+The user tools looks a little messy as we place almost
+the all tools in the root directory of mtd-utils. To make
+it more clear, I propose to introduce the following structure
+for our source code.
+
+mtd-utils/
+	|-- lib
+	|-- include
+	|-- misc-utils
+	|-- flash-utils
+	|-- jffsX-utils
+	|-- nand-utils
+	|-- nor-utils
+	|-- ubi-utils
+	|-- ubifs-utils
+	`-- tests
+
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- MAKEDEV                             |  1 -
- device_table.txt                    |  1 -
- flashcp.c                           |  1 -
- include/mtd/inftl-user.h            |  2 --
- mtd-utils.spec                      |  1 -
- rfddump.c                           |  1 -
- tests/checkfs/Makefile              |  1 -
- tests/checkfs/README                |  4 ----
- tests/checkfs/comm.c                | 13 -------------
- tests/checkfs/makefiles.c           |  7 -------
- tests/jittertest/filljffs2.sh       |  1 -
- tests/jittertest/plotJittervsFill.c |  4 ----
- tests/ubi-tests/io_update.c         |  1 -
- tests/ubi-tests/mkvol_basic.c       |  1 -
- ubi-utils/LICENSE.libiniparser      |  1 -
- ubi-utils/include/ubiutils-common.h |  1 -
- ubi-utils/ubidetach.c               |  1 -
- 17 files changed, 42 deletions(-)
+changelog:
+	v1->v2:
+		rebase against the latest mtd-utils.
+ Makefile                                           | 66 +++++++++++++---------
+ flash_erase.c => flash-utils/flash_erase.c         |  0
+ flash_eraseall => flash-utils/flash_eraseall       |  0
+ flash_lock.c => flash-utils/flash_lock.c           |  0
+ flash_otp_dump.c => flash-utils/flash_otp_dump.c   |  0
+ flash_otp_info.c => flash-utils/flash_otp_info.c   |  0
+ flash_otp_lock.c => flash-utils/flash_otp_lock.c   |  0
+ flash_otp_write.c => flash-utils/flash_otp_write.c |  0
+ flash_unlock.c => flash-utils/flash_unlock.c       |  0
+ flashcp.c => flash-utils/flashcp.c                 |  0
+ compr.c => jffsX-utils/compr.c                     |  0
+ compr.h => jffsX-utils/compr.h                     |  0
+ compr_lzo.c => jffsX-utils/compr_lzo.c             |  0
+ compr_rtime.c => jffsX-utils/compr_rtime.c         |  0
+ compr_zlib.c => jffsX-utils/compr_zlib.c           |  0
+ device_table.txt => jffsX-utils/device_table.txt   |  0
+ jffs-dump.c => jffsX-utils/jffs-dump.c             |  0
+ jffs2dump.c => jffsX-utils/jffs2dump.c             |  0
+ jffs2reader.c => jffsX-utils/jffs2reader.c         |  0
+ mkfs.jffs2.1 => jffsX-utils/mkfs.jffs2.1           |  0
+ mkfs.jffs2.c => jffsX-utils/mkfs.jffs2.c           |  0
+ rbtree.c => jffsX-utils/rbtree.c                   |  0
+ rbtree.h => jffsX-utils/rbtree.h                   |  0
+ summary.h => jffsX-utils/summary.h                 |  0
+ sumtool.c => jffsX-utils/sumtool.c                 |  0
+ MAKEDEV => misc-utils/MAKEDEV                      |  0
+ doc_loadbios.c => misc-utils/doc_loadbios.c        |  0
+ docfdisk.c => misc-utils/docfdisk.c                |  0
+ fectest.c => misc-utils/fectest.c                  |  0
+ ftl_check.c => misc-utils/ftl_check.c              |  0
+ ftl_format.c => misc-utils/ftl_format.c            |  0
+ mcast_image.h => misc-utils/mcast_image.h          |  0
+ mtd_debug.c => misc-utils/mtd_debug.c              |  0
+ mtdpart.c => misc-utils/mtdpart.c                  |  0
+ recv_image.c => misc-utils/recv_image.c            |  0
+ serve_image.c => misc-utils/serve_image.c          |  0
+ load_nandsim.sh => nand-utils/load_nandsim.sh      |  0
+ nanddump.c => nand-utils/nanddump.c                |  0
+ nandtest.c => nand-utils/nandtest.c                |  0
+ nandwrite.c => nand-utils/nandwrite.c              |  0
+ nftl_format.c => nand-utils/nftl_format.c          |  0
+ nftldump.c => nand-utils/nftldump.c                |  0
+ rfddump.c => nor-utils/rfddump.c                   |  0
+ rfdformat.c => nor-utils/rfdformat.c               |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/.gitignore  |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/COPYING     |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/README      |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/compr.c     |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/compr.h     |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/crc16.c     |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/crc16.h     |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/defs.h      |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/devtable.c  |  0
+ .../mkfs.ubifs}/hashtable/hashtable.c              |  0
+ .../mkfs.ubifs}/hashtable/hashtable.h              |  0
+ .../mkfs.ubifs}/hashtable/hashtable_itr.c          |  0
+ .../mkfs.ubifs}/hashtable/hashtable_itr.h          |  0
+ .../mkfs.ubifs}/hashtable/hashtable_private.h      |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/key.h       |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/lpt.c       |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/lpt.h       |  0
+ .../mkfs.ubifs}/mkfs.ubifs.c                       |  0
+ .../mkfs.ubifs}/mkfs.ubifs.h                       |  0
+ {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/ubifs.h     |  0
+ 64 files changed, 39 insertions(+), 27 deletions(-)
+ rename flash_erase.c => flash-utils/flash_erase.c (100%)
+ rename flash_eraseall => flash-utils/flash_eraseall (100%)
+ rename flash_lock.c => flash-utils/flash_lock.c (100%)
+ rename flash_otp_dump.c => flash-utils/flash_otp_dump.c (100%)
+ rename flash_otp_info.c => flash-utils/flash_otp_info.c (100%)
+ rename flash_otp_lock.c => flash-utils/flash_otp_lock.c (100%)
+ rename flash_otp_write.c => flash-utils/flash_otp_write.c (100%)
+ rename flash_unlock.c => flash-utils/flash_unlock.c (100%)
+ rename flashcp.c => flash-utils/flashcp.c (100%)
+ rename compr.c => jffsX-utils/compr.c (100%)
+ rename compr.h => jffsX-utils/compr.h (100%)
+ rename compr_lzo.c => jffsX-utils/compr_lzo.c (100%)
+ rename compr_rtime.c => jffsX-utils/compr_rtime.c (100%)
+ rename compr_zlib.c => jffsX-utils/compr_zlib.c (100%)
+ rename device_table.txt => jffsX-utils/device_table.txt (100%)
+ rename jffs-dump.c => jffsX-utils/jffs-dump.c (100%)
+ rename jffs2dump.c => jffsX-utils/jffs2dump.c (100%)
+ rename jffs2reader.c => jffsX-utils/jffs2reader.c (100%)
+ rename mkfs.jffs2.1 => jffsX-utils/mkfs.jffs2.1 (100%)
+ rename mkfs.jffs2.c => jffsX-utils/mkfs.jffs2.c (100%)
+ rename rbtree.c => jffsX-utils/rbtree.c (100%)
+ rename rbtree.h => jffsX-utils/rbtree.h (100%)
+ rename summary.h => jffsX-utils/summary.h (100%)
+ rename sumtool.c => jffsX-utils/sumtool.c (100%)
+ rename MAKEDEV => misc-utils/MAKEDEV (100%)
+ rename doc_loadbios.c => misc-utils/doc_loadbios.c (100%)
+ rename docfdisk.c => misc-utils/docfdisk.c (100%)
+ rename fectest.c => misc-utils/fectest.c (100%)
+ rename ftl_check.c => misc-utils/ftl_check.c (100%)
+ rename ftl_format.c => misc-utils/ftl_format.c (100%)
+ rename mcast_image.h => misc-utils/mcast_image.h (100%)
+ rename mtd_debug.c => misc-utils/mtd_debug.c (100%)
+ rename mtdpart.c => misc-utils/mtdpart.c (100%)
+ rename recv_image.c => misc-utils/recv_image.c (100%)
+ rename serve_image.c => misc-utils/serve_image.c (100%)
+ rename load_nandsim.sh => nand-utils/load_nandsim.sh (100%)
+ rename nanddump.c => nand-utils/nanddump.c (100%)
+ rename nandtest.c => nand-utils/nandtest.c (100%)
+ rename nandwrite.c => nand-utils/nandwrite.c (100%)
+ rename nftl_format.c => nand-utils/nftl_format.c (100%)
+ rename nftldump.c => nand-utils/nftldump.c (100%)
+ rename rfddump.c => nor-utils/rfddump.c (100%)
+ rename rfdformat.c => nor-utils/rfdformat.c (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/.gitignore (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/COPYING (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/README (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/compr.c (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/compr.h (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/crc16.c (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/crc16.h (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/defs.h (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/devtable.c (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/hashtable/hashtable.c (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/hashtable/hashtable.h (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/hashtable/hashtable_itr.c (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/hashtable/hashtable_itr.h (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/hashtable/hashtable_private.h (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/key.h (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/lpt.c (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/lpt.h (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/mkfs.ubifs.c (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/mkfs.ubifs.h (100%)
+ rename {mkfs.ubifs => ubifs-utils/mkfs.ubifs}/ubifs.h (100%)
 
-diff --git a/MAKEDEV b/MAKEDEV
-index a4141b5..b59e90e 100755
---- a/MAKEDEV
-+++ b/MAKEDEV
-@@ -39,4 +39,3 @@ for a in `seq 0 16` ; do
- 	mknod /dev/mtdr$a c 90 `expr $a + $a + 1`
- 	mknod /dev/mtdblock$a b 31 $a
- done
--
-diff --git a/device_table.txt b/device_table.txt
-index 194fed6..394a62b 100644
---- a/device_table.txt
-+++ b/device_table.txt
-@@ -126,4 +126,3 @@
- #/dev/sbpcd	b	640	0	0	25	0	0	1	4
- #/dev/mcd	b	640	0	0	23	0	0	0	-
- #/dev/optcd	b	640	0	0	17	0	0	0	-
--
-diff --git a/flashcp.c b/flashcp.c
-index d58c81b..86334ac 100644
---- a/flashcp.c
-+++ b/flashcp.c
-@@ -387,4 +387,3 @@ int main (int argc,char *argv[])
+diff --git a/Makefile b/Makefile
+index f4ce313..bb40929 100644
+--- a/Makefile
++++ b/Makefile
+@@ -16,24 +16,32 @@ endif
  
- 	exit (EXIT_SUCCESS);
- }
--
-diff --git a/include/mtd/inftl-user.h b/include/mtd/inftl-user.h
-index 9b1e252..45220ed 100644
---- a/include/mtd/inftl-user.h
-+++ b/include/mtd/inftl-user.h
-@@ -87,5 +87,3 @@ struct INFTLMediaHeader {
- #define	INFTL_LAST	0x80000000
+ TESTS = tests
  
- #endif /* __MTD_INFTL_USER_H__ */
+-MTD_BINS = \
+-	ftl_format flash_erase nanddump doc_loadbios \
+-	ftl_check mkfs.jffs2 flash_lock flash_unlock \
+-	flash_otp_info flash_otp_dump flash_otp_lock flash_otp_write \
+-	mtd_debug flashcp nandwrite nandtest mtdpart \
+-	jffs2dump \
+-	nftldump nftl_format docfdisk \
+-	rfddump rfdformat \
+-	serve_image recv_image \
+-	sumtool jffs2reader
++MISC_BINS = \
++	ftl_format doc_loadbios ftl_check mtd_debug docfdisk \
++	serve_image recv_image mtdpart
+ UBI_BINS = \
+ 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
+ 	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
 -
--
-diff --git a/mtd-utils.spec b/mtd-utils.spec
-index 606a6a2..120e00c 100644
---- a/mtd-utils.spec
-+++ b/mtd-utils.spec
-@@ -37,4 +37,3 @@ rm -rf $RPM_BUILD_ROOT
- %changelog
- * Wed May  5 2004  <dwmw2@infradead.org> - 1.0
- - Initial build.
--
-diff --git a/rfddump.c b/rfddump.c
-index 1934d93..0375bac 100644
---- a/rfddump.c
-+++ b/rfddump.c
-@@ -335,4 +335,3 @@ err:
+-BINS = $(MTD_BINS)
+-BINS += mkfs.ubifs/mkfs.ubifs
++UBIFS_BINS = \
++	mkfs.ubifs/mkfs.ubifs
++JFFSX_BINS = \
++	mkfs.jffs2 sumtool jffs2reader jffs2dump
++FLASH_BINS = \
++	flash_erase flash_lock flash_unlock flash_otp_info flash_otp_dump \
++	flash_otp_lock flash_otp_write flashcp
++NAND_BINS = \
++	nanddump nandwrite nandtest nftldump nftl_format
++NOR_BINS = \
++	rfddump rfdformat
++
++BINS = $(addprefix misc-utils/,$(MISC_BINS))
+ BINS += $(addprefix ubi-utils/,$(UBI_BINS))
+-SCRIPTS = flash_eraseall
++BINS += $(addprefix ubifs-utils/,$(UBIFS_BINS))
++BINS += $(addprefix jffsX-utils/,$(JFFSX_BINS))
++BINS += $(addprefix flash-utils/,$(FLASH_BINS))
++BINS += $(addprefix nand-utils/,$(NAND_BINS))
++BINS += $(addprefix nor-utils/,$(NOR_BINS))
++SCRIPTS = $(addprefix flash-utils/,flash_eraseall)
  
- 	return 2;
- }
--
-diff --git a/tests/checkfs/Makefile b/tests/checkfs/Makefile
-index 0a77682..14a83d4 100644
---- a/tests/checkfs/Makefile
-+++ b/tests/checkfs/Makefile
-@@ -3,4 +3,3 @@ TARGETS = checkfs makefiles
- include ../../common.mk
+ TARGETS = $(BINS)
+ TARGETS += lib/libmtd.a
+@@ -61,11 +69,11 @@ endif
+ 	rm -f $(BUILDDIR)/include/version.h
+ 	$(MAKE) -C $(TESTS) clean
  
- $(TARGETS): $(addprefix $(BUILDDIR)/, comm.o)
--
-diff --git a/tests/checkfs/README b/tests/checkfs/README
-index 6b72487..d5b3b87 100644
---- a/tests/checkfs/README
-+++ b/tests/checkfs/README
-@@ -167,7 +167,3 @@ checkfs is called from the rc.local script file.
- The cycle then repeats till a problem is detected, at which point
- the "ok to power me down" message is not sent and the cycle stops
- waiting for the user to examine the system.
--
--
--
--
-diff --git a/tests/checkfs/comm.c b/tests/checkfs/comm.c
-index 881a270..c8c457e 100644
---- a/tests/checkfs/comm.c
-+++ b/tests/checkfs/comm.c
-@@ -49,16 +49,3 @@ int do_pwr_dn(int fd, int cycleCnt)
+-install:: $(addprefix $(BUILDDIR)/,${BINS}) ${SCRIPTS}
++install:: $(addprefix $(BUILDDIR)/,${BINS} ${SCRIPTS})
+ 	mkdir -p ${DESTDIR}/${SBINDIR}
+ 	install -m 0755 $^ ${DESTDIR}/${SBINDIR}/
+ 	mkdir -p ${DESTDIR}/${MANDIR}/man1
+-	install -m 0644 mkfs.jffs2.1 ${DESTDIR}/${MANDIR}/man1/
++	install -m 0644 jffsX-utils/mkfs.jffs2.1 ${DESTDIR}/${MANDIR}/man1/
+ 	-gzip -9f ${DESTDIR}/${MANDIR}/man1/*.1
  
-     return 0;
- }
--
--
--
--
--
--
--
--
--
--
--
--
--
-diff --git a/tests/checkfs/makefiles.c b/tests/checkfs/makefiles.c
-index 662fe86..589280b 100644
---- a/tests/checkfs/makefiles.c
-+++ b/tests/checkfs/makefiles.c
-@@ -255,10 +255,3 @@ int main(void){
-   exit(0);
+ tests::
+@@ -85,13 +93,17 @@ $(BUILDDIR)/include/version.h.tmp:
+ # Utils in top level
+ #
+ obj-mkfs.jffs2 = compr_rtime.o compr_zlib.o compr_lzo.o compr.o rbtree.o
+-LDFLAGS_mkfs.jffs2 = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
++LDFLAGS_mkfs.jffs2 = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(CPPFLAGS)
+ LDLIBS_mkfs.jffs2  = -lz $(LZOLDLIBS)
  
- }/*end main()*/
--
--
--
--
--
--
--
-diff --git a/tests/jittertest/filljffs2.sh b/tests/jittertest/filljffs2.sh
-index d8c2a83..5d42ab5 100644
---- a/tests/jittertest/filljffs2.sh
-+++ b/tests/jittertest/filljffs2.sh
-@@ -13,4 +13,3 @@ do
-    echo "sleeping $3"
-    sleep $3
- done
--
-diff --git a/tests/jittertest/plotJittervsFill.c b/tests/jittertest/plotJittervsFill.c
-index 9f6c7b3..99e627b 100644
---- a/tests/jittertest/plotJittervsFill.c
-+++ b/tests/jittertest/plotJittervsFill.c
-@@ -306,7 +306,3 @@ int main(
+ LDFLAGS_jffs2reader = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
+ LDLIBS_jffs2reader  = -lz $(LZOLDLIBS)
  
+-$(foreach v,$(MTD_BINS),$(eval $(call mkdep,,$(v))))
++$(foreach v,$(MISC_BINS),$(eval $(call mkdep,misc-utils/,$(v))))
++$(foreach v,$(JFFSX_BINS),$(eval $(call mkdep,jffsX-utils/,$(v))))
++$(foreach v,$(FLASH_BINS),$(eval $(call mkdep,flash-utils/,$(v))))
++$(foreach v,$(NAND_BINS),$(eval $(call mkdep,nand-utils/,$(v))))
++$(foreach v,$(NOR_BINS),$(eval $(call mkdep,nor-utils/,$(v))))
  
- }/* end main() */
--
--
--
--
-diff --git a/tests/ubi-tests/io_update.c b/tests/ubi-tests/io_update.c
-index 29dd125..28b5570 100644
---- a/tests/ubi-tests/io_update.c
-+++ b/tests/ubi-tests/io_update.c
-@@ -296,4 +296,3 @@ close:
- 	libubi_close(libubi);
- 	return 1;
- }
--
-diff --git a/tests/ubi-tests/mkvol_basic.c b/tests/ubi-tests/mkvol_basic.c
-index cda7241..240f6a2 100644
---- a/tests/ubi-tests/mkvol_basic.c
-+++ b/tests/ubi-tests/mkvol_basic.c
-@@ -248,4 +248,3 @@ close:
- 	libubi_close(libubi);
- 	return 1;
- }
--
-diff --git a/ubi-utils/LICENSE.libiniparser b/ubi-utils/LICENSE.libiniparser
-index dbfa45d..74c125c 100644
---- a/ubi-utils/LICENSE.libiniparser
-+++ b/ubi-utils/LICENSE.libiniparser
-@@ -18,4 +18,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- DEALINGS IN THE SOFTWARE.
--
-diff --git a/ubi-utils/include/ubiutils-common.h b/ubi-utils/include/ubiutils-common.h
-index 762e21f..9762837 100644
---- a/ubi-utils/include/ubiutils-common.h
-+++ b/ubi-utils/include/ubiutils-common.h
-@@ -33,4 +33,3 @@ int ubiutils_srand(void);
- #endif
+ #
+ # Common libmtd
+@@ -100,15 +112,6 @@ obj-libmtd.a = libmtd.o libmtd_legacy.o libcrc32.o libfec.o
+ $(call _mkdep,lib/,libmtd.a)
  
- #endif /* !__UBI_UTILS_COMMON_H__ */
+ #
+-# Utils in mkfs.ubifs subdir
+-#
+-obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o \
+-	hashtable/hashtable.o hashtable/hashtable_itr.o
+-LDFLAGS_mkfs.ubifs = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
+-LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid
+-$(call mkdep,mkfs.ubifs/,mkfs.ubifs,,ubi-utils/libubi.a)
 -
-diff --git a/ubi-utils/ubidetach.c b/ubi-utils/ubidetach.c
-index 64b748e..29f721e 100644
---- a/ubi-utils/ubidetach.c
-+++ b/ubi-utils/ubidetach.c
-@@ -204,4 +204,3 @@ out_libubi:
- 	libubi_close(libubi);
- 	return -1;
- }
--
+-#
+ # Utils in ubi-utils/ subdir
+ #
+ obj-libiniparser.a = libiniparser.o dictionary.o
+@@ -122,3 +125,12 @@ obj-ubiformat = libubigen.a libscan.a
+ 
+ $(foreach v,libubi.a libubigen.a libiniparser.a libscan.a,$(eval $(call _mkdep,ubi-utils/,$(v))))
+ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-common.o)))
++
++#
++# Utils in ubifs-utils subdir
++#
++obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o \
++	hashtable/hashtable.o hashtable/hashtable_itr.o
++LDFLAGS_mkfs.ubifs = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
++LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid
++$(call mkdep,ubifs-utils/mkfs.ubifs/,mkfs.ubifs,,ubi-utils/libubi.a)
+diff --git a/flash_erase.c b/flash-utils/flash_erase.c
+similarity index 100%
+rename from flash_erase.c
+rename to flash-utils/flash_erase.c
+diff --git a/flash_eraseall b/flash-utils/flash_eraseall
+similarity index 100%
+rename from flash_eraseall
+rename to flash-utils/flash_eraseall
+diff --git a/flash_lock.c b/flash-utils/flash_lock.c
+similarity index 100%
+rename from flash_lock.c
+rename to flash-utils/flash_lock.c
+diff --git a/flash_otp_dump.c b/flash-utils/flash_otp_dump.c
+similarity index 100%
+rename from flash_otp_dump.c
+rename to flash-utils/flash_otp_dump.c
+diff --git a/flash_otp_info.c b/flash-utils/flash_otp_info.c
+similarity index 100%
+rename from flash_otp_info.c
+rename to flash-utils/flash_otp_info.c
+diff --git a/flash_otp_lock.c b/flash-utils/flash_otp_lock.c
+similarity index 100%
+rename from flash_otp_lock.c
+rename to flash-utils/flash_otp_lock.c
+diff --git a/flash_otp_write.c b/flash-utils/flash_otp_write.c
+similarity index 100%
+rename from flash_otp_write.c
+rename to flash-utils/flash_otp_write.c
+diff --git a/flash_unlock.c b/flash-utils/flash_unlock.c
+similarity index 100%
+rename from flash_unlock.c
+rename to flash-utils/flash_unlock.c
+diff --git a/flashcp.c b/flash-utils/flashcp.c
+similarity index 100%
+rename from flashcp.c
+rename to flash-utils/flashcp.c
+diff --git a/compr.c b/jffsX-utils/compr.c
+similarity index 100%
+rename from compr.c
+rename to jffsX-utils/compr.c
+diff --git a/compr.h b/jffsX-utils/compr.h
+similarity index 100%
+rename from compr.h
+rename to jffsX-utils/compr.h
+diff --git a/compr_lzo.c b/jffsX-utils/compr_lzo.c
+similarity index 100%
+rename from compr_lzo.c
+rename to jffsX-utils/compr_lzo.c
+diff --git a/compr_rtime.c b/jffsX-utils/compr_rtime.c
+similarity index 100%
+rename from compr_rtime.c
+rename to jffsX-utils/compr_rtime.c
+diff --git a/compr_zlib.c b/jffsX-utils/compr_zlib.c
+similarity index 100%
+rename from compr_zlib.c
+rename to jffsX-utils/compr_zlib.c
+diff --git a/device_table.txt b/jffsX-utils/device_table.txt
+similarity index 100%
+rename from device_table.txt
+rename to jffsX-utils/device_table.txt
+diff --git a/jffs-dump.c b/jffsX-utils/jffs-dump.c
+similarity index 100%
+rename from jffs-dump.c
+rename to jffsX-utils/jffs-dump.c
+diff --git a/jffs2dump.c b/jffsX-utils/jffs2dump.c
+similarity index 100%
+rename from jffs2dump.c
+rename to jffsX-utils/jffs2dump.c
+diff --git a/jffs2reader.c b/jffsX-utils/jffs2reader.c
+similarity index 100%
+rename from jffs2reader.c
+rename to jffsX-utils/jffs2reader.c
+diff --git a/mkfs.jffs2.1 b/jffsX-utils/mkfs.jffs2.1
+similarity index 100%
+rename from mkfs.jffs2.1
+rename to jffsX-utils/mkfs.jffs2.1
+diff --git a/mkfs.jffs2.c b/jffsX-utils/mkfs.jffs2.c
+similarity index 100%
+rename from mkfs.jffs2.c
+rename to jffsX-utils/mkfs.jffs2.c
+diff --git a/rbtree.c b/jffsX-utils/rbtree.c
+similarity index 100%
+rename from rbtree.c
+rename to jffsX-utils/rbtree.c
+diff --git a/rbtree.h b/jffsX-utils/rbtree.h
+similarity index 100%
+rename from rbtree.h
+rename to jffsX-utils/rbtree.h
+diff --git a/summary.h b/jffsX-utils/summary.h
+similarity index 100%
+rename from summary.h
+rename to jffsX-utils/summary.h
+diff --git a/sumtool.c b/jffsX-utils/sumtool.c
+similarity index 100%
+rename from sumtool.c
+rename to jffsX-utils/sumtool.c
+diff --git a/MAKEDEV b/misc-utils/MAKEDEV
+similarity index 100%
+rename from MAKEDEV
+rename to misc-utils/MAKEDEV
+diff --git a/doc_loadbios.c b/misc-utils/doc_loadbios.c
+similarity index 100%
+rename from doc_loadbios.c
+rename to misc-utils/doc_loadbios.c
+diff --git a/docfdisk.c b/misc-utils/docfdisk.c
+similarity index 100%
+rename from docfdisk.c
+rename to misc-utils/docfdisk.c
+diff --git a/fectest.c b/misc-utils/fectest.c
+similarity index 100%
+rename from fectest.c
+rename to misc-utils/fectest.c
+diff --git a/ftl_check.c b/misc-utils/ftl_check.c
+similarity index 100%
+rename from ftl_check.c
+rename to misc-utils/ftl_check.c
+diff --git a/ftl_format.c b/misc-utils/ftl_format.c
+similarity index 100%
+rename from ftl_format.c
+rename to misc-utils/ftl_format.c
+diff --git a/mcast_image.h b/misc-utils/mcast_image.h
+similarity index 100%
+rename from mcast_image.h
+rename to misc-utils/mcast_image.h
+diff --git a/mtd_debug.c b/misc-utils/mtd_debug.c
+similarity index 100%
+rename from mtd_debug.c
+rename to misc-utils/mtd_debug.c
+diff --git a/mtdpart.c b/misc-utils/mtdpart.c
+similarity index 100%
+rename from mtdpart.c
+rename to misc-utils/mtdpart.c
+diff --git a/recv_image.c b/misc-utils/recv_image.c
+similarity index 100%
+rename from recv_image.c
+rename to misc-utils/recv_image.c
+diff --git a/serve_image.c b/misc-utils/serve_image.c
+similarity index 100%
+rename from serve_image.c
+rename to misc-utils/serve_image.c
+diff --git a/load_nandsim.sh b/nand-utils/load_nandsim.sh
+similarity index 100%
+rename from load_nandsim.sh
+rename to nand-utils/load_nandsim.sh
+diff --git a/nanddump.c b/nand-utils/nanddump.c
+similarity index 100%
+rename from nanddump.c
+rename to nand-utils/nanddump.c
+diff --git a/nandtest.c b/nand-utils/nandtest.c
+similarity index 100%
+rename from nandtest.c
+rename to nand-utils/nandtest.c
+diff --git a/nandwrite.c b/nand-utils/nandwrite.c
+similarity index 100%
+rename from nandwrite.c
+rename to nand-utils/nandwrite.c
+diff --git a/nftl_format.c b/nand-utils/nftl_format.c
+similarity index 100%
+rename from nftl_format.c
+rename to nand-utils/nftl_format.c
+diff --git a/nftldump.c b/nand-utils/nftldump.c
+similarity index 100%
+rename from nftldump.c
+rename to nand-utils/nftldump.c
+diff --git a/rfddump.c b/nor-utils/rfddump.c
+similarity index 100%
+rename from rfddump.c
+rename to nor-utils/rfddump.c
+diff --git a/rfdformat.c b/nor-utils/rfdformat.c
+similarity index 100%
+rename from rfdformat.c
+rename to nor-utils/rfdformat.c
+diff --git a/mkfs.ubifs/.gitignore b/ubifs-utils/mkfs.ubifs/.gitignore
+similarity index 100%
+rename from mkfs.ubifs/.gitignore
+rename to ubifs-utils/mkfs.ubifs/.gitignore
+diff --git a/mkfs.ubifs/COPYING b/ubifs-utils/mkfs.ubifs/COPYING
+similarity index 100%
+rename from mkfs.ubifs/COPYING
+rename to ubifs-utils/mkfs.ubifs/COPYING
+diff --git a/mkfs.ubifs/README b/ubifs-utils/mkfs.ubifs/README
+similarity index 100%
+rename from mkfs.ubifs/README
+rename to ubifs-utils/mkfs.ubifs/README
+diff --git a/mkfs.ubifs/compr.c b/ubifs-utils/mkfs.ubifs/compr.c
+similarity index 100%
+rename from mkfs.ubifs/compr.c
+rename to ubifs-utils/mkfs.ubifs/compr.c
+diff --git a/mkfs.ubifs/compr.h b/ubifs-utils/mkfs.ubifs/compr.h
+similarity index 100%
+rename from mkfs.ubifs/compr.h
+rename to ubifs-utils/mkfs.ubifs/compr.h
+diff --git a/mkfs.ubifs/crc16.c b/ubifs-utils/mkfs.ubifs/crc16.c
+similarity index 100%
+rename from mkfs.ubifs/crc16.c
+rename to ubifs-utils/mkfs.ubifs/crc16.c
+diff --git a/mkfs.ubifs/crc16.h b/ubifs-utils/mkfs.ubifs/crc16.h
+similarity index 100%
+rename from mkfs.ubifs/crc16.h
+rename to ubifs-utils/mkfs.ubifs/crc16.h
+diff --git a/mkfs.ubifs/defs.h b/ubifs-utils/mkfs.ubifs/defs.h
+similarity index 100%
+rename from mkfs.ubifs/defs.h
+rename to ubifs-utils/mkfs.ubifs/defs.h
+diff --git a/mkfs.ubifs/devtable.c b/ubifs-utils/mkfs.ubifs/devtable.c
+similarity index 100%
+rename from mkfs.ubifs/devtable.c
+rename to ubifs-utils/mkfs.ubifs/devtable.c
+diff --git a/mkfs.ubifs/hashtable/hashtable.c b/ubifs-utils/mkfs.ubifs/hashtable/hashtable.c
+similarity index 100%
+rename from mkfs.ubifs/hashtable/hashtable.c
+rename to ubifs-utils/mkfs.ubifs/hashtable/hashtable.c
+diff --git a/mkfs.ubifs/hashtable/hashtable.h b/ubifs-utils/mkfs.ubifs/hashtable/hashtable.h
+similarity index 100%
+rename from mkfs.ubifs/hashtable/hashtable.h
+rename to ubifs-utils/mkfs.ubifs/hashtable/hashtable.h
+diff --git a/mkfs.ubifs/hashtable/hashtable_itr.c b/ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.c
+similarity index 100%
+rename from mkfs.ubifs/hashtable/hashtable_itr.c
+rename to ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.c
+diff --git a/mkfs.ubifs/hashtable/hashtable_itr.h b/ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.h
+similarity index 100%
+rename from mkfs.ubifs/hashtable/hashtable_itr.h
+rename to ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.h
+diff --git a/mkfs.ubifs/hashtable/hashtable_private.h b/ubifs-utils/mkfs.ubifs/hashtable/hashtable_private.h
+similarity index 100%
+rename from mkfs.ubifs/hashtable/hashtable_private.h
+rename to ubifs-utils/mkfs.ubifs/hashtable/hashtable_private.h
+diff --git a/mkfs.ubifs/key.h b/ubifs-utils/mkfs.ubifs/key.h
+similarity index 100%
+rename from mkfs.ubifs/key.h
+rename to ubifs-utils/mkfs.ubifs/key.h
+diff --git a/mkfs.ubifs/lpt.c b/ubifs-utils/mkfs.ubifs/lpt.c
+similarity index 100%
+rename from mkfs.ubifs/lpt.c
+rename to ubifs-utils/mkfs.ubifs/lpt.c
+diff --git a/mkfs.ubifs/lpt.h b/ubifs-utils/mkfs.ubifs/lpt.h
+similarity index 100%
+rename from mkfs.ubifs/lpt.h
+rename to ubifs-utils/mkfs.ubifs/lpt.h
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+similarity index 100%
+rename from mkfs.ubifs/mkfs.ubifs.c
+rename to ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+diff --git a/mkfs.ubifs/mkfs.ubifs.h b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
+similarity index 100%
+rename from mkfs.ubifs/mkfs.ubifs.h
+rename to ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
+diff --git a/mkfs.ubifs/ubifs.h b/ubifs-utils/mkfs.ubifs/ubifs.h
+similarity index 100%
+rename from mkfs.ubifs/ubifs.h
+rename to ubifs-utils/mkfs.ubifs/ubifs.h
 -- 
 1.8.4.2
