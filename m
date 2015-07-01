@@ -1,21 +1,23 @@
-Received: from mx12-out14.antispamcloud.com ([46.165.232.184])
+Received: from mx6-out11.antispamcloud.com ([95.211.2.202])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAAlp-0005Jk-1j
- for linux-mtd@lists.infradead.org; Wed, 01 Jul 2015 05:41:18 +0000
-Message-ID: <55937D58.9090102@topic.nl>
-Date: Wed, 1 Jul 2015 07:40:40 +0200
+ id 1ZAAud-0007nm-Jn
+ for linux-mtd@lists.infradead.org; Wed, 01 Jul 2015 05:50:24 +0000
+Message-ID: <55937F74.1020801@topic.nl>
+Date: Wed, 1 Jul 2015 07:49:40 +0200
 From: Mike Looijmans <mike.looijmans@topic.nl>
 MIME-Version: 1.0
-To: Graham Moore <grmoore@opensource.altera.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <git@xilinx.com>, <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
+To: =?ISO-2022-JP?B?IkJlYW4gSHVvIBskQnA5SUxJTBsoQiAoYmVhbmh1byki?=
  <beanhuo@micron.com>
+CC: "git@xilinx.com" <git@xilinx.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: Re: [PATCH] mtd: spi-nor: Only set Micron quad-read mode when
  controller in 4-lane TX mode
 References: <1435663042-25425-1-git-send-email-mike.looijmans@topic.nl>
- <5592B8FE.3050601@opensource.altera.com>
-In-Reply-To: <5592B8FE.3050601@opensource.altera.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+ <A765B125120D1346A63912DDE6D8B6310BF3651A@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF3651A@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,67 +28,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=EF=BB=BFOn 30-06-15 17:42, Graham Moore wrote:
-> On 06/30/2015 06:17 AM, Mike Looijmans wrote:
->> Micron QUAD mode expects command, address and data on 4 lanes instead of=
- just
->> one for command (extended SPI mode). This requires the controller to be =
-in a
->> special mode, so check first if the controller could be in that mode. If=
- a
->> controller does not have the SPI_TX_QUAD mode set, this setting has no c=
-hance
->> of being valid at all, so don't try to enable it then, and just keep usi=
-ng
->> the extended SPI mode.
->>
->> Tested on a Zynq 7000 with a n25q256a flash chip, this failed to functio=
-n
->> because of the introduction of:
->> "driver:mtd:spi-nor: Add quad I/O support for Micron spi nor"
->> This commit sets QUAD mode for most Micron chips without asking the cont=
-roller
->> whether it's possible to do so, and without telling the controller that =
-a
->> different mode is required, so it couldn't work.
->>
->> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
->> ---
->>   drivers/mtd/spi-nor/spi-nor.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
+=EF=BB=BFOn 01-07-15 04:19, Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) =
+wrote:
+>> drivers/mtd/spi-nor/spi-nor.c | 2 ++
+>> 1 file changed, 2 insertions(+)
+>=20
 >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor=
-.c
->> index e8f6131..10ba94f 100644
+.c index e8f6131..10ba94f 100644
 >> --- a/drivers/mtd/spi-nor/spi-nor.c
 >> +++ b/drivers/mtd/spi-nor/spi-nor.c
 >> @@ -1398,6 +1398,8 @@ static int set_quad_mode(struct spi_nor *nor, stru=
-ct
->> flash_info *info)
->>           }
->>           return status;
->>       case CFI_MFR_ST:
->> +        if (!(nor->spi->mode & SPI_TX_QUAD))
->> +            return 0;
->
-> This is a great idea, but what codebase are you working from?  My l2-mtd =
-tree
-> doesn't have a 'spi' member of spi_nor, and this case statement is around=
- line
-> 977, not 1398.
+ct flash_info *info)
+>   >		}
+>   >		return status;
+>   >	case CFI_MFR_ST:
+>> +		if (!(nor->spi->mode & SPI_TX_QUAD))
+>> +			return 0;
+> I think, this action should be done before callback set_quad_mode,and add=
+ some codes in
+> Spi controller driver.what is more,how do you get spi member in spi_nor?s=
+eems no this member.
 
-I was working from the Xilinx kernel tree, and there's a lot of changes the=
-re.=20
-The one that added the "struct spi_device* spi" to the nor struct is:
-63697f5cf9a6201556947ef0ea29442843e5ba61 mtd: spi-nor: Changes for stacked =
-and=20
-parallel
+Too many changes between the Xilinx tree and mainline. My patch isn't for
+mainline, I'll make a new one.
 
->>           status =3D micron_quad_enable(nor);
->>           if (status) {
->>               dev_err(nor->dev, "Micron quad-read not enabled\n");
->>
+> I have one concern that as long as spi nor be configed into quad mode,spi=
+ controller must be also
+> immediately Transfer into quad mode, otherwise read status will be fail.
 
+The original commit that added the micron Quad mode did not do this. I wond=
+er
+how this was tested, because it could never have worked on any setup I'm aw=
+are
+of. After setting the "quad mode" bit in volatile config, the controller ne=
+eds
+to start sending commands on all 4 lanes.
+Even if it succeeds in doing that, a soft reset (e.g. unloading/loading the
+driver, or kexec to another kernel) will bring the system in a state where =
+the
+controller will use 1 lane for commands while the chip expects 4, thus
+breaking all communication.
+
+Having slept and pondered about this, I suggest plainly removing the Micron
+Quad mode code, because it is just broken and can never work. There's no
+actual performance advantage here, apart from just saving a few clocks on
+commands, which would be less than 0.1% on a 1k data read.
+
+> But setting spi controller layer(driver/spi/) and configure spi nor layer=
+(driver/mtd/spi-nor)
+>   are not the same mtd layer,I found that it's hard to do.
+> But for new structure spi controller(such as driver/mtd/spi-nor/fsl-quads=
+pi.c) is very reasonable.and
+> it can be easy to set spi controller and spi nor into quad mode at the sa=
+me time.
+
+I'm sorry, but I didn't understand what you meant  here.
 
 
 
