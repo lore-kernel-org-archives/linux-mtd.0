@@ -1,18 +1,22 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAAgG-0003QW-4u
- for linux-mtd@lists.infradead.org; Wed, 01 Jul 2015 05:35:33 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <richard.weinberger@gmail.com>, <dedekind1@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 2/2] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
-Date: Wed, 1 Jul 2015 13:30:00 +0800
-Message-ID: <1435728600-14560-2-git-send-email-yangds.fnst@cn.fujitsu.com>
-In-Reply-To: <1435728600-14560-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-References: <1435728600-14560-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Received: from mx12-out14.antispamcloud.com ([46.165.232.184])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZAAlp-0005Jk-1j
+ for linux-mtd@lists.infradead.org; Wed, 01 Jul 2015 05:41:18 +0000
+Message-ID: <55937D58.9090102@topic.nl>
+Date: Wed, 1 Jul 2015 07:40:40 +0200
+From: Mike Looijmans <mike.looijmans@topic.nl>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: Graham Moore <grmoore@opensource.altera.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <git@xilinx.com>, <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
+ <beanhuo@micron.com>
+Subject: Re: [PATCH] mtd: spi-nor: Only set Micron quad-read mode when
+ controller in 4-lane TX mode
+References: <1435663042-25425-1-git-send-email-mike.looijmans@topic.nl>
+ <5592B8FE.3050601@opensource.altera.com>
+In-Reply-To: <5592B8FE.3050601@opensource.altera.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,168 +26,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To make ubifs support atime flexily, this commit introduces
-a Kconfig option named as UBIFS_ATIME_SUPPORT.
+=EF=BB=BFOn 30-06-15 17:42, Graham Moore wrote:
+> On 06/30/2015 06:17 AM, Mike Looijmans wrote:
+>> Micron QUAD mode expects command, address and data on 4 lanes instead of=
+ just
+>> one for command (extended SPI mode). This requires the controller to be =
+in a
+>> special mode, so check first if the controller could be in that mode. If=
+ a
+>> controller does not have the SPI_TX_QUAD mode set, this setting has no c=
+hance
+>> of being valid at all, so don't try to enable it then, and just keep usi=
+ng
+>> the extended SPI mode.
+>>
+>> Tested on a Zynq 7000 with a n25q256a flash chip, this failed to functio=
+n
+>> because of the introduction of:
+>> "driver:mtd:spi-nor: Add quad I/O support for Micron spi nor"
+>> This commit sets QUAD mode for most Micron chips without asking the cont=
+roller
+>> whether it's possible to do so, and without telling the controller that =
+a
+>> different mode is required, so it couldn't work.
+>>
+>> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+>> ---
+>>   drivers/mtd/spi-nor/spi-nor.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor=
+.c
+>> index e8f6131..10ba94f 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1398,6 +1398,8 @@ static int set_quad_mode(struct spi_nor *nor, stru=
+ct
+>> flash_info *info)
+>>           }
+>>           return status;
+>>       case CFI_MFR_ST:
+>> +        if (!(nor->spi->mode & SPI_TX_QUAD))
+>> +            return 0;
+>
+> This is a great idea, but what codebase are you working from?  My l2-mtd =
+tree
+> doesn't have a 'spi' member of spi_nor, and this case statement is around=
+ line
+> 977, not 1398.
 
-With UBIFS_ATIME_SUPPORT=n:
-	ubifs keeps the full compatibility to no_atime from
-the start of ubifs.
-=================UBIFS_ATIME_SUPPORT=n=======================
--o - no atime
--o atime - no atime
--o noatime - no atime
--o relatime - no atime
--o strictatime - no atime
--o lazyatime - no atime
+I was working from the Xilinx kernel tree, and there's a lot of changes the=
+re.=20
+The one that added the "struct spi_device* spi" to the nor struct is:
+63697f5cf9a6201556947ef0ea29442843e5ba61 mtd: spi-nor: Changes for stacked =
+and=20
+parallel
 
-With UBIFS_ATIME_SUPPORT=y:
-	ubifs supports the atime same with other main stream
-file systems.
-=================UBIFS_ATIME_SUPPORT=y=======================
--o - default behavior (relatime currently)
--o atime - atime support
--o noatime - no atime support
--o relatime - relative atime support
--o strictatime - strict atime support
--o lazyatime - lazy atime support
+>>           status =3D micron_quad_enable(nor);
+>>           if (status) {
+>>               dev_err(nor->dev, "Micron quad-read not enabled\n");
+>>
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
- fs/ubifs/Kconfig | 11 ++++++++++
- fs/ubifs/file.c  |  3 +++
- fs/ubifs/super.c | 64 +++++++++++++++++++++++++++++++++++++++++++++++++++++---
- 3 files changed, 75 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-index f9aaad1..44474e7 100644
---- a/fs/ubifs/Kconfig
-+++ b/fs/ubifs/Kconfig
-@@ -35,3 +35,14 @@ config UBIFS_FS_ZLIB
- 	default y
- 	help
- 	  Zlib compresses better than LZO but it is slower. Say 'N' if unsure.
-+
-+config UBIFS_ATIME_SUPPORT
-+	bool "Access time support" if UBIFS_FS
-+	depends on UBIFS_FS
-+	default n
-+	help
-+	  This option allows ubifs to support atime. -o strictatime is harmful to
-+	  your flash, we don't suggest it. But relatime and lazytime are much
-+	  better.
-+
-+	  If unsure, say 'N'
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 35efc10..93bbb61 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1546,6 +1546,9 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (err)
- 		return err;
- 	vma->vm_ops = &ubifs_file_vm_ops;
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+	file_accessed(file);
-+#endif
- 	return 0;
- }
- 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 75e6f04..76f51e6 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -128,7 +128,10 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
- 	if (err)
- 		goto out_ino;
- 
--	inode->i_flags |= (S_NOCMTIME | S_NOATIME);
-+	inode->i_flags |= S_NOCMTIME;
-+#ifndef CONFIG_UBIFS_ATIME_SUPPORT
-+	inode->i_flags |= S_NOATIME;
-+#endif
- 	set_nlink(inode, le32_to_cpu(ino->nlink));
- 	i_uid_write(inode, le32_to_cpu(ino->uid));
- 	i_gid_write(inode, le32_to_cpu(ino->gid));
-@@ -378,16 +381,61 @@ done:
- 	clear_inode(inode);
- }
- 
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+/*
-+ * There is only one possible caller of ubifs_dirty_inode without holding
-+ * ui->ui_mutex, file_accessed. We are going to support atime if user
-+ * set UBIFS_ATIME_SUPPORT=y in Kconfig. In that case, ubifs_dirty_inode
-+ * need to lock ui->ui_mutex by itself and do a budget by itself.
-+ */
- static void ubifs_dirty_inode(struct inode *inode, int flags)
- {
- 	struct ubifs_inode *ui = ubifs_inode(inode);
-+	int locked = mutex_is_locked(&ui->ui_mutex);
-+	struct ubifs_info *c = inode->i_sb->s_fs_info;
-+	int ret = 0;
-+
-+	if (!locked)
-+		mutex_lock(&ui->ui_mutex);
- 
--	ubifs_assert(mutex_is_locked(&ui->ui_mutex));
- 	if (!ui->dirty) {
-+		if (!locked) {
-+			/*
-+			 * It's a little tricky here, there is only one
-+			 * possible user of ubifs_dirty_inode did not do
-+			 * a budget for this inode. At the same time, this
-+			 * user is not holding the ui->ui_mutex. Then if
-+			 * we found ui->ui_mutex is not locked, we can say:
-+			 * we need to do a budget in ubifs_dirty_inode here.
-+			 */
-+			struct ubifs_budget_req req = { .dirtied_ino = 1,
-+					.dirtied_ino_d = ALIGN(ui->data_len, 8) };
-+
-+			ret = ubifs_budget_space(c, &req);
-+			if (ret)
-+				goto out;
-+		}
- 		ui->dirty = 1;
- 		dbg_gen("inode %lu",  inode->i_ino);
- 	}
-+
-+out:
-+	if (!locked)
-+		mutex_unlock(&ui->ui_mutex);
-+	return;
-+}
-+#else
-+static void ubifs_dirty_inode(struct inode *inode, int flags)
-+{
-+        struct ubifs_inode *ui = ubifs_inode(inode);
-+
-+        ubifs_assert(mutex_is_locked(&ui->ui_mutex));
-+        if (!ui->dirty) {
-+                ui->dirty = 1;
-+                dbg_gen("inode %lu",  inode->i_ino);
-+        }
- }
-+#endif
- 
- static int ubifs_statfs(struct dentry *dentry, struct kstatfs *buf)
- {
-@@ -2138,7 +2186,17 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
- 		if (err)
- 			goto out_deact;
- 		/* We do not support atime */
--		sb->s_flags |= MS_ACTIVE | MS_NOATIME;
-+		sb->s_flags |= MS_ACTIVE;
-+#ifndef CONFIG_UBIFS_ATIME_SUPPORT
-+		sb->s_flags |= MS_NOATIME;
-+#else
-+		ubifs_warn(c, "************WARNING START****************");
-+		ubifs_warn(c, "Ubifs is supporting atime now, that would");
-+		ubifs_warn(c, "probably damage your flash. If you are not");
-+		ubifs_warn(c, "sure about it, please set UBIFS_ATIME_SUPPORT");
-+		ubifs_warn(c, "to 'N'.");
-+		ubifs_warn(c, "************WARNING END******************");
-+#endif
- 	}
- 
- 	/* 'fill_super()' opens ubi again so we must close it here */
--- 
-1.8.4.2
+
+
+Kind regards,
+
+Mike Looijmans
+System Expert
+
+TOPIC Embedded Products
+Eindhovenseweg 32-C, NL-5683 KH Best
+Postbus 440, NL-5680 AK Best
+Telefoon: +31 (0) 499 33 69 79
+Telefax: +31 (0) 499 33 69 70
+E-mail: mike.looijmans@topicproducts.com
+Website: www.topicproducts.com
+
+Please consider the environment before printing this e-mail
