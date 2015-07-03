@@ -1,20 +1,13 @@
-Received: from 206-248-167-68.dsl.teksavvy.com ([206.248.167.68]
- helo=mail.isoar.ca)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAk3p-0002hp-Mo
- for linux-mtd@lists.infradead.org; Thu, 02 Jul 2015 19:22:14 +0000
-Received: from localhost ([127.0.0.1])
- by mail.isoar.ca with esmtpsa (TLSv1.2:DHE-RSA-AES128-SHA:128)
- (Exim 4.80.1 #2) id 1ZAk3R-0005xz-AX
- for linux-mtd@lists.infradead.org; Thu, 02 Jul 2015 15:21:49 -0400
-Message-ID: <55958F4C.1020002@isoar.ca>
-Date: Thu, 02 Jul 2015 15:21:48 -0400
-From: "Andrew E. Mileski" <andrewm@isoar.ca>
-MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Hang on reboot in nand_get_device()
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZAwSm-0007Nt-RX
+ for linux-mtd@lists.infradead.org; Fri, 03 Jul 2015 08:36:49 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 1/3] UBI: Fastmap: Simplify expression
+Date: Fri,  3 Jul 2015 10:36:14 +0200
+Message-Id: <1435912576-27878-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +17,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm experiencing a hang on reboot with a Freescale P1022 PowerPC system, with a
-dual chip-select NAND part (specified in the device tree as two separate 
-devices), and kernel v4.0.6.
+There is no need to compute pnum again.
 
-It appears to be a hang in mtd/nand/nand_base.c:nand_get_device() waiting on
-chip->controller->active.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/fastmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Shouldn't nand_shutdown(), or perhaps a special case in nand_get_device() for
-FL_SHUTDOWN, set chip->controller->active = NULL before returning?
-
-This seems to fix the problem for me, but I don't know all the code well enough
-to know whether doing so is appropriate, or sufficient.
-
-~~Andrew E. Mileski
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 24f2cf6..22db594 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -775,7 +775,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 		for (j = 0; j < be32_to_cpu(fm_eba->reserved_pebs); j++) {
+ 			int pnum = be32_to_cpu(fm_eba->pnum[j]);
+ 
+-			if ((int)be32_to_cpu(fm_eba->pnum[j]) < 0)
++			if (pnum < 0)
+ 				continue;
+ 
+ 			aeb = NULL;
+-- 
+1.8.4.5
