@@ -1,20 +1,21 @@
-Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCE7H-0003RF-LG
- for linux-mtd@lists.infradead.org; Mon, 06 Jul 2015 21:39:56 +0000
-Received: by obbgp5 with SMTP id gp5so3964071obb.0
- for <linux-mtd@lists.infradead.org>; Mon, 06 Jul 2015 14:39:34 -0700 (PDT)
+ id 1ZCEA4-00059Q-8K
+ for linux-mtd@lists.infradead.org; Mon, 06 Jul 2015 21:42:48 +0000
+Received: by pacgz10 with SMTP id gz10so27625728pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Jul 2015 14:42:27 -0700 (PDT)
+Date: Mon, 6 Jul 2015 14:42:17 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: richard.weinberger@gmail.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] mtd-utils: fs-tests: pass TEST_DIR to integck in
+ run_all.sh
+Message-ID: <20150706214217.GA22005@brian-ubuntu>
+References: <1435567759-32518-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
-References: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
-Date: Mon, 6 Jul 2015 23:39:34 +0200
-Message-ID: <CAFLxGvz4=hjkawWa4SWD6P588J7RUOX4=X+pdU8Rd0WrynOOBQ@mail.gmail.com>
-Subject: Re: autoresize causes insufficient reservation of PEBs for bad PEB
- handling
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: "Egli, Samuel" <samuel.egli@siemens.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1435567759-32518-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Samuel,
+On Mon, Jun 29, 2015 at 04:49:18PM +0800, Dongsheng Yang wrote:
+> Test integck requires a parameter but run_all.sh did no pass any to it.
+> Then:
+> integck: error!: test file-system was not specified (use -h for help)
+> 
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> ---
+>  tests/fs-tests/run_all.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tests/fs-tests/run_all.sh b/tests/fs-tests/run_all.sh
+> index 7c82921..cb481ab 100755
+> --- a/tests/fs-tests/run_all.sh
+> +++ b/tests/fs-tests/run_all.sh
+> @@ -16,7 +16,7 @@ rm -rf ${TEST_DIR}/*
+>  
+>  rm -rf ${TEST_DIR}/*
+>  
+> -./integrity/integck || exit 1
+> +./integrity/integck $TEST_DIR|| exit 1
 
-On Mon, Jul 6, 2015 at 1:04 PM, Egli, Samuel <samuel.egli@siemens.com> wrote:
-> Hi all,
->
-> I have difficulties to understand why I get the following warning message
-> at linux start up:
->
-> ...
-> [    4.777488] UBI warning: print_rsvd_warning: cannot reserve enough PEBs \
-> for bad PEB handling, reserved 40, need 80
-> ...
->
-> My assumption is that if I don't specify the size of one volume
-> UBI will choose the right size for the volume and reserve the
-> right amount of PEBs for bad block handling. With 20/1024 set,vi I
-> expect indeed to have 80 blocks reserved. But somehow this
-> does not work. I observed that I get this warning when vol_flags
-> is set to autoresize. In this case only 40 blocks get reserved.
-> Using for all volumes the vol_size parameter and omitting
-> autoresize, I can avoid this situation and I get my 80 blocks reserved.
->
-> However, I don't understand why and it seems odd to me that
-> autoresize would work this way.
->
-> Can somebody confirm this observations or explain why this
-> works like this. Maybe I'm also doing something wrong.
+Applied, with a whitespace fixup. Thanks.
 
-I'm a bit puzzled. Can you please share the full kernel log?
-Maybe some other UBI warning brings light into that.
-Please also share the output of ubinfo -a with and without autoresize.
-
-The re-size mechanism will use ubi->avail_pebs for the new volume size.
-ubi->avail_pebs should honor the number of reserved PEBs.
-If you have a lot of bad/corrupted PEBs the situation may be different.
-
--- 
-Thanks,
-//richard
+>  
+>  rm -rf ${TEST_DIR}/*
+>  
+> -- 
+> 1.8.4.2
+> 
