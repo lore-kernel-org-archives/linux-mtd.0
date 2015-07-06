@@ -1,20 +1,20 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCEnj-00017l-3Q
- for linux-mtd@lists.infradead.org; Mon, 06 Jul 2015 22:23:47 +0000
-Received: by pacgz10 with SMTP id gz10so28050310pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 06 Jul 2015 15:23:25 -0700 (PDT)
-Date: Mon, 6 Jul 2015 15:23:18 -0700
+ id 1ZCErw-0002zt-7o
+ for linux-mtd@lists.infradead.org; Mon, 06 Jul 2015 22:28:08 +0000
+Received: by pdbci14 with SMTP id ci14so113065365pdb.2
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Jul 2015 15:27:47 -0700 (PDT)
+Date: Mon, 6 Jul 2015 15:27:40 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: fangwei <fangwei1@huawei.com>
+To: Wei Fang <fangwei1@huawei.com>
 Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] jffs2: remove unneeded kfree.
-Message-ID: <20150706222318.GB18370@brian-ubuntu>
-References: <55239023.5000107@huawei.com>
+Subject: Re: [PATCH] jffs2: remove unneeded kfree
+Message-ID: <20150706222740.GC18370@brian-ubuntu>
+References: <558BADE1.2070704@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <55239023.5000107@huawei.com>
+In-Reply-To: <558BADE1.2070704@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,7 +24,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 07, 2015 at 04:06:59PM +0800, fangwei wrote:
+On Thu, Jun 25, 2015 at 03:29:37PM +0800, Wei Fang wrote:
 > c->oobbuf hasn't been kmalloced in jffs2_dataflash_setup, so
 > there is no need to free it.
 > 
@@ -46,9 +46,9 @@ On Tue, Apr 07, 2015 at 04:06:59PM +0800, fangwei wrote:
 >                 return -ENOMEM;
 >         }
 
-Your patches are whitespace damaged and cannot be applied. Please fix
-your mailer and resend. Consider retesting by sending to yourself and
-try using git-am. If all else fails, git-send-email is your friend.
+I just realized I responded to your email from months ago. But I see you
+sent the same patch here. Both are similarly whitespace damaged. Please
+fix and test on your end before resending again.
 
 Thanks,
 Brian
