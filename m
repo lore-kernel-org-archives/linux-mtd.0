@@ -1,15 +1,26 @@
-Received: from mx1.polytechnique.org ([129.104.30.34])
+Received: from lizzard.sbs.de ([194.138.37.39])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZBZCN-0001kN-LO
- for linux-mtd@lists.infradead.org; Sun, 05 Jul 2015 01:58:28 +0000
-From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-To: Maxim Levitsky <maximlevitsky@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Subject: [PATCH] mtd: r852: make ecc_reg 32-bit in r852_ecc_correct
-Date: Sun,  5 Jul 2015 09:57:41 +0800
-Message-Id: <1436061461-30560-1-git-send-email-nicolas.iooss_linux@m4x.org>
+ id 1ZC4Cm-0001Ja-LG
+ for linux-mtd@lists.infradead.org; Mon, 06 Jul 2015 11:04:57 +0000
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+ by lizzard.sbs.de (8.15.1/8.15.1) with ESMTPS id t66B4Vns019295
+ (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <linux-mtd@lists.infradead.org>; Mon, 6 Jul 2015 13:04:31 +0200
+Received: from DEFTHW99ERMMSX.ww902.siemens.net
+ (defthw99ermmsx.ww902.siemens.net [139.22.70.142])
+ by mail1.sbs.de (8.15.1/8.15.1) with ESMTPS id t66B46eZ017656
+ (version=TLSv1 cipher=AES256-SHA bits=256 verify=FAIL)
+ for <linux-mtd@lists.infradead.org>; Mon, 6 Jul 2015 13:04:31 +0200
+From: "Egli, Samuel" <samuel.egli@siemens.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: autoresize causes insufficient reservation of PEBs for bad PEB
+ handling
+Date: Mon, 6 Jul 2015 11:04:21 +0000
+Message-ID: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,37 +30,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-r852_ecc_correct() reads a 32-bit register into a 16-bit variable,
-ecc_reg, but this variable is later used as if it was larger.  This is
-reported by clang when building the kernel with many warnings:
+Hi all,
 
-    drivers/mtd/nand/r852.c:512:11: error: shift count >= width of type
-    [-Werror,-Wshift-count-overflow]
-                    ecc_reg >>= 16;
-                            ^   ~~
-Fix this by making ecc_reg 32-bit, like the return type of
-r852_read_reg_dword().
+I have difficulties to understand why I get the following warning message
+at linux start up:
 
-Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
----
+...
+[    4.777488] UBI warning: print_rsvd_warning: cannot reserve enough PEBs =
+\
+for bad PEB handling, reserved 40, need 80
+...
 
-As I haven't got the hardware to test this patch, it is only compile-tested.
+My assumption is that if I don't specify the size of one volume=20
+UBI will choose the right size for the volume and reserve the=20
+right amount of PEBs for bad block handling. With 20/1024 set,vi I
+expect indeed to have 80 blocks reserved. But somehow this
+does not work. I observed that I get this warning when vol_flags
+is set to autoresize. In this case only 40 blocks get reserved.
+Using for all volumes the vol_size parameter and omitting=20
+autoresize, I can avoid this situation and I get my 80 blocks reserved.
 
- drivers/mtd/nand/r852.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+However, I don't understand why and it seems odd to me that
+autoresize would work this way.=20
 
-diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-index 77e96d2df96c..cc6bac537f5a 100644
---- a/drivers/mtd/nand/r852.c
-+++ b/drivers/mtd/nand/r852.c
-@@ -466,7 +466,7 @@ static int r852_ecc_calculate(struct mtd_info *mtd, const uint8_t *dat,
- static int r852_ecc_correct(struct mtd_info *mtd, uint8_t *dat,
- 				uint8_t *read_ecc, uint8_t *calc_ecc)
- {
--	uint16_t ecc_reg;
-+	uint32_t ecc_reg;
- 	uint8_t ecc_status, err_byte;
- 	int i, error = 0;
- 
--- 
-2.4.5
+Can somebody confirm this observations or explain why this
+works like this. Maybe I'm also doing something wrong.
+
+See below how I generate the ubi image.
+
+General setup
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+flash size: 4096 PEBs
+mtd partition size: 4065 PEBs
+number of volumes: 3
+
+Linux version:
+Linux dxr2 3.14.36-r2 #1 PREEMPT Tue Jun 30 10:26:05 CEST 2015 armv7l GNU/L=
+inux
+
+
+Config 1
+=3D=3D=3D=3D=3D=3D=3D=3D
+2 volumes with fixed size
+1 volume has vol_flags=3Dautoresize and vol_size not defined
+
+mkfs.ubifs -r ../rootfs/path -o rootfs.ubifs -F -m 2048 -e 126976 -c 4065
+mkfs.ubifs -r ../conf/path -o conf.ubifs -F -m 2048 -e 126976 -c 4065
+ubinize -o rootfs.ubi -m 2048 -p 131072 -O 2048 ubinize.cfg
+
+ubinize.cfg:
+ [rootfs_a]
+ mode=3Dubi
+ image=3Drootfs.ubifs
+ vol_id=3D0
+ vol_type=3Ddynamic
+ vol_name=3Drootfs_a
+ vol_size=3D140MiB
+ [rootfs_b]
+ mode=3Dubi
+ vol_id=3D1
+ vol_type=3Ddynamic
+ vol_name=3Drootfs_b
+ vol_size=3D140MiB
+ [configuration]
+ mode=3Dubi
+ image=3Dconfiguration.ubifs
+ vol_id=3D2
+ vol_type=3Ddynamic
+ vol_name=3Dconfiguration
+ vol_flags=3Dautoresize
+
+--> only 40 blocks get reserved vor bad PEB handling
+
+Config 2
+=3D=3D=3D=3D=3D=3D=3D=3D
+All 3 volumes with fixed size
+
+mkfs.ubifs -r ../rootfs/path -o rootfs.ubifs -F -m 2048 -e 126976 -c 4065
+mkfs.ubifs -r ../conf/path -o conf.ubifs -F -m 2048 -e 126976 -c 4065
+
+ubinize.cfg:
+ [rootfs_a]
+ mode=3Dubi
+ image=3Drootfs.ubifs
+ vol_id=3D0
+ vol_type=3Ddynamic
+ vol_name=3Drootfs_a
+ vol_size=3D140MiB
+ [rootfs_b]
+ mode=3Dubi
+ vol_id=3D1
+ vol_type=3Ddynamic
+ vol_name=3Drootfs_b
+ vol_size=3D140MiB
+ [configuration]
+ mode=3Dubi
+ image=3Dconfiguration.ubifs
+ vol_id=3D2
+ vol_type=3Ddynamic
+ vol_name=3Dconfiguration
+ vol_size=3D341MiB
+
+--> ok, 80 blocks reserved but cannot use autoresize
+
+Kind ragards
+
+Sam
