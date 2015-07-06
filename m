@@ -1,26 +1,17 @@
-Received: from lizzard.sbs.de ([194.138.37.39])
+Received: from 220.77.144.195.ipv4.evonet.be ([195.144.77.220]
+ helo=exchange.essensium.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZC4Cm-0001Ja-LG
- for linux-mtd@lists.infradead.org; Mon, 06 Jul 2015 11:04:57 +0000
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
- by lizzard.sbs.de (8.15.1/8.15.1) with ESMTPS id t66B4Vns019295
- (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <linux-mtd@lists.infradead.org>; Mon, 6 Jul 2015 13:04:31 +0200
-Received: from DEFTHW99ERMMSX.ww902.siemens.net
- (defthw99ermmsx.ww902.siemens.net [139.22.70.142])
- by mail1.sbs.de (8.15.1/8.15.1) with ESMTPS id t66B46eZ017656
- (version=TLSv1 cipher=AES256-SHA bits=256 verify=FAIL)
- for <linux-mtd@lists.infradead.org>; Mon, 6 Jul 2015 13:04:31 +0200
-From: "Egli, Samuel" <samuel.egli@siemens.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: autoresize causes insufficient reservation of PEBs for bad PEB
- handling
-Date: Mon, 6 Jul 2015 11:04:21 +0000
-Message-ID: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1ZC6ze-0002LU-Le
+ for linux-mtd@lists.infradead.org; Mon, 06 Jul 2015 14:03:37 +0000
+To: <linux-mtd@lists.infradead.org>
+CC: Philip Oberstaller <Philip.Oberstaller@septentrio.com>
+From: Arnout Vandecappelle <arnout.vandecappelle@essensium.com>
+Subject: UBIFS: Possible on-flash metadata corruption
+Message-ID: <559A8A83.3050508@essensium.com>
+Date: Mon, 6 Jul 2015 16:02:43 +0200
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,109 +21,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi,
 
-I have difficulties to understand why I get the following warning message
-at linux start up:
+We're facing something that looks like on-flash metadata corruption with UBI/UBIFS.
 
-...
-[    4.777488] UBI warning: print_rsvd_warning: cannot reserve enough PEBs =
-\
-for bad PEB handling, reserved 40, need 80
-...
+>From one moment to the other (not sure if there was a reboot or power-cut
+in-between) I was not able to list the content of a specific directory on a
+UBI partition anymore, getting the following kernel error messages:
 
-My assumption is that if I don't specify the size of one volume=20
-UBI will choose the right size for the volume and reserve the=20
-right amount of PEBs for bad block handling. With 20/1024 set,vi I
-expect indeed to have 80 blocks reserved. But somehow this
-does not work. I observed that I get this warning when vol_flags
-is set to autoresize. In this case only 40 blocks get reserved.
-Using for all volumes the vol_size parameter and omitting=20
-autoresize, I can avoid this situation and I get my 80 blocks reserved.
+UBIFS error (pid 1824): ubifs_read_node_wbuf: bad node type (0 but expected 2)
+UBIFS error (pid 1824): ubifs_read_node_wbuf: bad node at LEB 23:120832
+Not a node, first 24 bytes:
+00000000: 64 8f 2e c3 40 23 2e c3 b0 f5 1a c0 00 00 00 00 00 00 00 00 00 00 00 00
 
-However, I don't understand why and it seems odd to me that
-autoresize would work this way.=20
+So instead of finding a direntry node, UBIFS found an inode node. After flashing
+a new kernel with dynamic debugging enabled the error message
+changed into the following where it appears that UBIFS has reused the node
+in the meantime for a data node:
 
-Can somebody confirm this observations or explain why this
-works like this. Maybe I'm also doing something wrong.
+UBIFS error (pid 458): ubifs_read_node: bad node type (1 but expected 2)
+UBIFS error (pid 458): ubifs_read_node: bad node at LEB 23:120832, LEB mapping
+status 1
 
-See below how I generate the ubi image.
+[<c00131b8>] (unwind_backtrace) from [<c0011350>] (show_stack+0x10/0x14)
+[<c0011350>] (show_stack) from [<c0122f34>] (ubifs_read_node+0x290/0x2e4)
+[<c0122f34>] (ubifs_read_node) from [<c0141a28>] (ubifs_tnc_read_node+0x60/0x1cc)
+[<c0141a28>] (ubifs_tnc_read_node) from [<c0123d7c>] (tnc_read_node_nm+0xb4/0x1c8)
+[<c0123d7c>] (tnc_read_node_nm) from [<c0127cdc>] (ubifs_tnc_next_ent+0x1dc/0x244)
+[<c0127cdc>] (ubifs_tnc_next_ent) from [<c011977c>] (ubifs_readdir+0x438/0x52c)
+[<c011977c>] (ubifs_readdir) from [<c00c41d0>] (iterate_dir+0x60/0x98)
+[<c00c41d0>] (iterate_dir) from [<c00c45dc>] (SyS_getdents64+0x78/0xe4)
+[<c00c45dc>] (SyS_getdents64) from [<c000e540>] (ret_fast_syscall+0x0/0x30)
 
-General setup
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-flash size: 4096 PEBs
-mtd partition size: 4065 PEBs
-number of volumes: 3
+The PEB related to LEB 23 contains all data nodes. AFAIK, UBIFS separates
+data nodes and other nodes on two different jheads, effectively putting them on
+separate PEBs? So, it would be weird why it would even look for a direntry node
+on LEB 23.
 
-Linux version:
-Linux dxr2 3.14.36-r2 #1 PREEMPT Tue Jun 30 10:26:05 CEST 2015 armv7l GNU/L=
-inux
+In our application, files are changed atomically as suggested by
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_atomic_change. The file with
+the corrupt metadata is one of the files that is changed this way. These files
+are updated at a rate of roughly once every 10-60 seconds.
 
+This problem has now appeared out of the blue after running the application for
+months. A few dozen other units have not shown this problem at all.
 
-Config 1
-=3D=3D=3D=3D=3D=3D=3D=3D
-2 volumes with fixed size
-1 volume has vol_flags=3Dautoresize and vol_size not defined
+UBI does not report any bad blocks or any other event around the time it
+happened - but debugging output was pretty limited at the time so I don't think
+any scrubbing event would have been logged. We're not using fastmap. At the UBI
+level, everything seems to be OK.
 
-mkfs.ubifs -r ../rootfs/path -o rootfs.ubifs -F -m 2048 -e 126976 -c 4065
-mkfs.ubifs -r ../conf/path -o conf.ubifs -F -m 2048 -e 126976 -c 4065
-ubinize -o rootfs.ubi -m 2048 -p 131072 -O 2048 ubinize.cfg
+The used kernel version is 3.14.39. I've checked for upstream bug-fixes, but
+couldn't spot any targeting this problem. Further, I copied the UBI partition
+from the target device to my PC with a 4.0 kernel and used nandsim to mount the
+corrupted UBIFS volume. The same error happens there as well when listing the
+'bad' directory.
 
-ubinize.cfg:
- [rootfs_a]
- mode=3Dubi
- image=3Drootfs.ubifs
- vol_id=3D0
- vol_type=3Ddynamic
- vol_name=3Drootfs_a
- vol_size=3D140MiB
- [rootfs_b]
- mode=3Dubi
- vol_id=3D1
- vol_type=3Ddynamic
- vol_name=3Drootfs_b
- vol_size=3D140MiB
- [configuration]
- mode=3Dubi
- image=3Dconfiguration.ubifs
- vol_id=3D2
- vol_type=3Ddynamic
- vol_name=3Dconfiguration
- vol_flags=3Dautoresize
+The original ubifs was created with ubinize + mkfs.ubifs under a 3.4 kernel, but
+since all the files and directories have been overwritten several times under
+the 3.14 kernel, there is probably not much left from the original creation.
 
---> only 40 blocks get reserved vor bad PEB handling
+Is this already an identified issue?
 
-Config 2
-=3D=3D=3D=3D=3D=3D=3D=3D
-All 3 volumes with fixed size
+I have not been able to locate the node that refers to LEB 23:120832 - it would
+seem that that is the one that is corrupt. Is there any tool or debug trace that
+will help me find the referring node?
 
-mkfs.ubifs -r ../rootfs/path -o rootfs.ubifs -F -m 2048 -e 126976 -c 4065
-mkfs.ubifs -r ../conf/path -o conf.ubifs -F -m 2048 -e 126976 -c 4065
+Is there any way that would allow me to automatically recover from such an
+issue if it occurs again?
 
-ubinize.cfg:
- [rootfs_a]
- mode=3Dubi
- image=3Drootfs.ubifs
- vol_id=3D0
- vol_type=3Ddynamic
- vol_name=3Drootfs_a
- vol_size=3D140MiB
- [rootfs_b]
- mode=3Dubi
- vol_id=3D1
- vol_type=3Ddynamic
- vol_name=3Drootfs_b
- vol_size=3D140MiB
- [configuration]
- mode=3Dubi
- image=3Dconfiguration.ubifs
- vol_id=3D2
- vol_type=3Ddynamic
- vol_name=3Dconfiguration
- vol_size=3D341MiB
+We would be grateful for any help!
 
---> ok, 80 blocks reserved but cannot use autoresize
+Regards,
+Philip & Arnout
 
-Kind ragards
-
-Sam
+-- 
+Arnout Vandecappelle      arnout dot vandecappelle at essensium dot com
+Senior Embedded Software Architect . . . . . . +32-478-010353 (mobile)
+Essensium, Mind division . . . . . . . . . . . . . . http://www.mind.be
+G.Geenslaan 9, 3001 Leuven, Belgium . . . . . BE 872 984 063 RPR Leuven
+LinkedIn profile: http://www.linkedin.com/in/arnoutvandecappelle
+GPG fingerprint:  7493 020B C7E3 8618 8DEC 222C 82EB F404 F9AC 0DDF
