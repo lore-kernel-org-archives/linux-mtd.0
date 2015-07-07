@@ -5,11 +5,9 @@ Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
  boris.brezillon@free-electrons.com, zmxu@marvell.com, jszhang@marvell.com,
  linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] mtd: pxa3xx_nand: clean up the pxa3xx timings
-Date: Tue,  7 Jul 2015 17:08:27 +0200
-Message-Id: <1436281707-20106-5-git-send-email-antoine.tenart@free-electrons.com>
-In-Reply-To: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
-References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+Subject: [PATCH v2 0/7] ARM: berlin: nand support
+Date: Tue,  7 Jul 2015 17:27:20 +0200
+Message-Id: <1436282847-21137-1-git-send-email-antoine.tenart@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,75 +17,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the previous modifications, lots of pxa3xx specific definitions can
-be removed.
+Hi,
 
-Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
----
- drivers/mtd/nand/pxa3xx_nand.c                | 20 ++++++++------------
- include/linux/platform_data/mtd-nand-pxa3xx.h | 11 +++--------
- 2 files changed, 11 insertions(+), 20 deletions(-)
+This series was part of a bigger one[1], which was split into smaller
+ones as asked by Ezequiel[2]. When we take this into account, this is
+v7. In addition, there was not comment for more than 1 month (since
+June, 3rd). So I'd like this series to go forward quickly.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 513f8f6069f0..0e1db91b386c 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -252,15 +252,14 @@ static struct pxa3xx_nand_timing timing[] = {
- };
- 
- static struct pxa3xx_nand_flash builtin_flash_types[] = {
--{ "DEFAULT FLASH",      0,   0, 2048,  8,  8,    0, &timing[0] },
--{ "64MiB 16-bit",  0x46ec,  32,  512, 16, 16, 4096, &timing[1] },
--{ "256MiB 8-bit",  0xdaec,  64, 2048,  8,  8, 2048, &timing[1] },
--{ "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, &timing[1] },
--{ "128MiB 8-bit",  0xa12c,  64, 2048,  8,  8, 1024, &timing[2] },
--{ "128MiB 16-bit", 0xb12c,  64, 2048, 16, 16, 1024, &timing[2] },
--{ "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096, &timing[2] },
--{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &timing[2] },
--{ "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, &timing[3] },
-+	{ 0x46ec, 16, 16, &timing[1] },
-+	{ 0xdaec,  8,  8, &timing[1] },
-+	{ 0xd7ec,  8,  8, &timing[1] },
-+	{ 0xa12c,  8,  8, &timing[2] },
-+	{ 0xb12c, 16, 16, &timing[2] },
-+	{ 0xdc2c,  8,  8, &timing[2] },
-+	{ 0xcc2c, 16, 16, &timing[2] },
-+	{ 0xba20, 16, 16, &timing[3] },
- };
- 
- static u8 bbt_pattern[] = {'M', 'V', 'B', 'b', 't', '0' };
-@@ -321,9 +320,6 @@ static struct nand_ecclayout ecc_layout_4KB_bch8bit = {
- 	.oobfree = { }
- };
- 
--/* Define a default flash type setting serve as flash detecting only */
--#define DEFAULT_FLASH_TYPE (&builtin_flash_types[0])
--
- #define NDTR0_tCH(c)	(min((c), 7) << 19)
- #define NDTR0_tCS(c)	(min((c), 7) << 16)
- #define NDTR0_tWH(c)	(min((c), 7) << 11)
-diff --git a/include/linux/platform_data/mtd-nand-pxa3xx.h b/include/linux/platform_data/mtd-nand-pxa3xx.h
-index ac4ea2e641c7..25538cfeee26 100644
---- a/include/linux/platform_data/mtd-nand-pxa3xx.h
-+++ b/include/linux/platform_data/mtd-nand-pxa3xx.h
-@@ -17,15 +17,10 @@ struct pxa3xx_nand_timing {
- };
- 
- struct pxa3xx_nand_flash {
--	char		*name;
- 	uint32_t	chip_id;
--	unsigned int	page_per_block; /* Pages per block (PG_PER_BLK) */
--	unsigned int	page_size;	/* Page size in bytes (PAGE_SZ) */
--	unsigned int	flash_width;	/* Width of Flash memory (DWIDTH_M) */
--	unsigned int	dfc_width;	/* Width of flash controller(DWIDTH_C) */
--	unsigned int	num_blocks;	/* Number of physical blocks in Flash */
--
--	struct pxa3xx_nand_timing *timing;	/* NAND Flash timing */
-+	unsigned int	flash_width;    /* Width of Flash memory (DWIDTH_M) */
-+	unsigned int	dfc_width;      /* Width of flash controller(DWIDTH_C) */
-+	struct pxa3xx_nand_timing *timing; /* NAND Flash timing */
- };
- 
- /*
+The support is added into the existing pxa3xx nand controller. Some
+additions were done in order to get this controller working:
+- Support for a non mandatory ECC clock has been added.
+- The Berlin nand controller needs to poll the status register.
+- Sequences of commands are quite different in order to perform write
+  operation.
+
+Based on [3].
+
+Since v1:
+	- Rebased on top of 4.2-rc1
+	- Fixed the documentation as suggested by Robert Jarzmik
+
+[1] https://lkml.org/lkml/2015/5/11/495
+[2] https://lkml.org/lkml/2015/5/16/309
+[3] https://lkml.org/lkml/2015/7/7/542
+
+Thanks!
+
+Antoine Tenart (7):
+  mtd: pxa3xx_nand: add a non mandatory ECC clock
+  Documentation: bindings: document the clocks for pxa3xx-nand
+  mtd: pxa3xx_nand: add support for the Marvell Berlin nand controller
+  Documentation: bindings: add the Berlin nand controller compatible
+  mtd: nand: let Marvell Berlin SoCs select the pxa3xx driver
+  ARM: berlin: add BG2Q node for the nand
+  ARM: berlin: enable flash on the BG2Q DMP
+
+ .../devicetree/bindings/mtd/pxa3xx-nand.txt        |   5 +
+ arch/arm/boot/dts/berlin2q-marvell-dmp.dts         |  25 +++
+ arch/arm/boot/dts/berlin2q.dtsi                    |  13 ++
+ drivers/mtd/nand/Kconfig                           |   4 +-
+ drivers/mtd/nand/pxa3xx_nand.c                     | 214 +++++++++++++++++++--
+ 5 files changed, 240 insertions(+), 21 deletions(-)
+
 -- 
 2.4.5
