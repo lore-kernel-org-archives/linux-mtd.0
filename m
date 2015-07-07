@@ -1,21 +1,21 @@
-Received: from goliath.siemens.de ([192.35.17.28])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCQbR-0002zW-Fu
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 10:59:54 +0000
-From: "Egli, Samuel" <samuel.egli@siemens.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
+ id 1ZCQgX-0006Fj-UH
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 11:05:11 +0000
+Message-ID: <559BB24C.5080205@nod.at>
+Date: Tue, 07 Jul 2015 13:04:44 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: "Egli, Samuel" <samuel.egli@siemens.com>
 CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: autoresize causes insufficient reservation of PEBs for bad PEB
+Subject: Re: autoresize causes insufficient reservation of PEBs for bad PEB
  handling
-Date: Tue, 7 Jul 2015 10:59:25 +0000
-Message-ID: <27E9275BC1C8554E840881B19B62BE421A92F3@DENBGAT9EI1MSX.ww902.siemens.net>
 References: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
  <CAFLxGvwLZ0YKX9f=QzAt-+AfgPgUiJMT2WfUBx3UMbX0z+mnGA@mail.gmail.com>
-In-Reply-To: <CAFLxGvwLZ0YKX9f=QzAt-+AfgPgUiJMT2WfUBx3UMbX0z+mnGA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ <27E9275BC1C8554E840881B19B62BE421A92F3@DENBGAT9EI1MSX.ww902.siemens.net>
+In-Reply-To: <27E9275BC1C8554E840881B19B62BE421A92F3@DENBGAT9EI1MSX.ww902.siemens.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,91 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gUmljaGFyZCwNCg0KPi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+RnJvbTogUmlj
-aGFyZCBXZWluYmVyZ2VyIFttYWlsdG86cmljaGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbV0NCj5T
-ZW50OiBEaWVuc3RhZywgNy4gSnVsaSAyMDE1IDEyOjUwDQo+VG86IEVnbGksIFNhbXVlbA0KPkNj
-OiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPlN1YmplY3Q6IFJlOiBhdXRvcmVzaXpl
-IGNhdXNlcyBpbnN1ZmZpY2llbnQgcmVzZXJ2YXRpb24gb2YgUEVCcyBmb3IgYmFkDQo+UEVCIGhh
-bmRsaW5nDQo+DQo+U2FtdWVsLA0KPg0KPk9uIE1vbiwgSnVsIDYsIDIwMTUgYXQgMTowNCBQTSwg
-RWdsaSwgU2FtdWVsIDxzYW11ZWwuZWdsaUBzaWVtZW5zLmNvbT4NCj53cm90ZToNCj4+IEhpIGFs
-bCwNCj4+DQo+PiBJIGhhdmUgZGlmZmljdWx0aWVzIHRvIHVuZGVyc3RhbmQgd2h5IEkgZ2V0IHRo
-ZSBmb2xsb3dpbmcgd2FybmluZw0KPj4gbWVzc2FnZSBhdCBsaW51eCBzdGFydCB1cDoNCj4+DQo+
-PiAuLi4NCj4+IFsgICAgNC43Nzc0ODhdIFVCSSB3YXJuaW5nOiBwcmludF9yc3ZkX3dhcm5pbmc6
-IGNhbm5vdCByZXNlcnZlIGVub3VnaA0KPlBFQnMgXA0KPj4gZm9yIGJhZCBQRUIgaGFuZGxpbmcs
-IHJlc2VydmVkIDQwLCBuZWVkIDgwIC4uLg0KPj4NCj4+IE15IGFzc3VtcHRpb24gaXMgdGhhdCBp
-ZiBJIGRvbid0IHNwZWNpZnkgdGhlIHNpemUgb2Ygb25lIHZvbHVtZSBVQkkNCj4+IHdpbGwgY2hv
-b3NlIHRoZSByaWdodCBzaXplIGZvciB0aGUgdm9sdW1lIGFuZCByZXNlcnZlIHRoZSByaWdodCBh
-bW91bnQNCj4+IG9mIFBFQnMgZm9yIGJhZCBibG9jayBoYW5kbGluZy4gV2l0aCAyMC8xMDI0IHNl
-dCx2aSBJIGV4cGVjdCBpbmRlZWQgdG8NCj4+IGhhdmUgODAgYmxvY2tzIHJlc2VydmVkLiBCdXQg
-c29tZWhvdyB0aGlzIGRvZXMgbm90IHdvcmsuIEkgb2JzZXJ2ZWQNCj4+IHRoYXQgSSBnZXQgdGhp
-cyB3YXJuaW5nIHdoZW4gdm9sX2ZsYWdzIGlzIHNldCB0byBhdXRvcmVzaXplLiBJbiB0aGlzDQo+
-PiBjYXNlIG9ubHkgNDAgYmxvY2tzIGdldCByZXNlcnZlZC4NCj4+IFVzaW5nIGZvciBhbGwgdm9s
-dW1lcyB0aGUgdm9sX3NpemUgcGFyYW1ldGVyIGFuZCBvbWl0dGluZyBhdXRvcmVzaXplLA0KPj4g
-SSBjYW4gYXZvaWQgdGhpcyBzaXR1YXRpb24gYW5kIEkgZ2V0IG15IDgwIGJsb2NrcyByZXNlcnZl
-ZC4NCj4+DQo+PiBIb3dldmVyLCBJIGRvbid0IHVuZGVyc3RhbmQgd2h5IGFuZCBpdCBzZWVtcyBv
-ZGQgdG8gbWUgdGhhdCBhdXRvcmVzaXplDQo+PiB3b3VsZCB3b3JrIHRoaXMgd2F5Lg0KPj4NCj4+
-IENhbiBzb21lYm9keSBjb25maXJtIHRoaXMgb2JzZXJ2YXRpb25zIG9yIGV4cGxhaW4gd2h5IHRo
-aXMgd29ya3MgbGlrZQ0KPj4gdGhpcy4gTWF5YmUgSSdtIGFsc28gZG9pbmcgc29tZXRoaW5nIHdy
-b25nLg0KPj4NCj4+IFNlZSBiZWxvdyBob3cgSSBnZW5lcmF0ZSB0aGUgdWJpIGltYWdlLg0KPj4N
-Cj4+IEdlbmVyYWwgc2V0dXANCj4+ID09PT09PT09PT09PT0NCj4+IGZsYXNoIHNpemU6IDQwOTYg
-UEVCcw0KPj4gbXRkIHBhcnRpdGlvbiBzaXplOiA0MDY1IFBFQnMNCj4+IG51bWJlciBvZiB2b2x1
-bWVzOiAzDQo+Pg0KPj4gTGludXggdmVyc2lvbjoNCj4+IExpbnV4IGR4cjIgMy4xNC4zNi1yMiAj
-MSBQUkVFTVBUIFR1ZSBKdW4gMzAgMTA6MjY6MDUgQ0VTVCAyMDE1IGFybXY3bA0KPj4gR05VL0xp
-bnV4DQo+Pg0KPj4NCj4+IENvbmZpZyAxDQo+PiA9PT09PT09PQ0KPj4gMiB2b2x1bWVzIHdpdGgg
-Zml4ZWQgc2l6ZQ0KPj4gMSB2b2x1bWUgaGFzIHZvbF9mbGFncz1hdXRvcmVzaXplIGFuZCB2b2xf
-c2l6ZSBub3QgZGVmaW5lZA0KPj4NCj4+IG1rZnMudWJpZnMgLXIgLi4vcm9vdGZzL3BhdGggLW8g
-cm9vdGZzLnViaWZzIC1GIC1tIDIwNDggLWUgMTI2OTc2IC1jDQo+PiA0MDY1IG1rZnMudWJpZnMg
-LXIgLi4vY29uZi9wYXRoIC1vIGNvbmYudWJpZnMgLUYgLW0gMjA0OCAtZSAxMjY5NzYgLWMNCj4+
-IDQwNjUgdWJpbml6ZSAtbyByb290ZnMudWJpIC1tIDIwNDggLXAgMTMxMDcyIC1PIDIwNDggdWJp
-bml6ZS5jZmcNCj4+DQo+PiB1YmluaXplLmNmZzoNCj4+ICBbcm9vdGZzX2FdDQo+PiAgbW9kZT11
-YmkNCj4+ICBpbWFnZT1yb290ZnMudWJpZnMNCj4+ICB2b2xfaWQ9MA0KPj4gIHZvbF90eXBlPWR5
-bmFtaWMNCj4+ICB2b2xfbmFtZT1yb290ZnNfYQ0KPj4gIHZvbF9zaXplPTE0ME1pQg0KPj4gIFty
-b290ZnNfYl0NCj4+ICBtb2RlPXViaQ0KPj4gIHZvbF9pZD0xDQo+PiAgdm9sX3R5cGU9ZHluYW1p
-Yw0KPj4gIHZvbF9uYW1lPXJvb3Rmc19iDQo+PiAgdm9sX3NpemU9MTQwTWlCDQo+PiAgW2NvbmZp
-Z3VyYXRpb25dDQo+PiAgbW9kZT11YmkNCj4+ICBpbWFnZT1jb25maWd1cmF0aW9uLnViaWZzDQo+
-PiAgdm9sX2lkPTINCj4+ICB2b2xfdHlwZT1keW5hbWljDQo+PiAgdm9sX25hbWU9Y29uZmlndXJh
-dGlvbg0KPj4gIHZvbF9mbGFncz1hdXRvcmVzaXplDQo+Pg0KPj4gLS0+IG9ubHkgNDAgYmxvY2tz
-IGdldCByZXNlcnZlZCB2b3IgYmFkIFBFQiBoYW5kbGluZw0KPj4NCj4+IENvbmZpZyAyDQo+PiA9
-PT09PT09PQ0KPj4gQWxsIDMgdm9sdW1lcyB3aXRoIGZpeGVkIHNpemUNCj4+DQo+PiBta2ZzLnVi
-aWZzIC1yIC4uL3Jvb3Rmcy9wYXRoIC1vIHJvb3Rmcy51YmlmcyAtRiAtbSAyMDQ4IC1lIDEyNjk3
-NiAtYw0KPj4gNDA2NSBta2ZzLnViaWZzIC1yIC4uL2NvbmYvcGF0aCAtbyBjb25mLnViaWZzIC1G
-IC1tIDIwNDggLWUgMTI2OTc2IC1jDQo+PiA0MDY1DQo+Pg0KPj4gdWJpbml6ZS5jZmc6DQo+PiAg
-W3Jvb3Rmc19hXQ0KPj4gIG1vZGU9dWJpDQo+PiAgaW1hZ2U9cm9vdGZzLnViaWZzDQo+PiAgdm9s
-X2lkPTANCj4+ICB2b2xfdHlwZT1keW5hbWljDQo+PiAgdm9sX25hbWU9cm9vdGZzX2ENCj4+ICB2
-b2xfc2l6ZT0xNDBNaUINCj4+ICBbcm9vdGZzX2JdDQo+PiAgbW9kZT11YmkNCj4+ICB2b2xfaWQ9
-MQ0KPj4gIHZvbF90eXBlPWR5bmFtaWMNCj4+ICB2b2xfbmFtZT1yb290ZnNfYg0KPj4gIHZvbF9z
-aXplPTE0ME1pQg0KPj4gIFtjb25maWd1cmF0aW9uXQ0KPj4gIG1vZGU9dWJpDQo+PiAgaW1hZ2U9
-Y29uZmlndXJhdGlvbi51Ymlmcw0KPj4gIHZvbF9pZD0yDQo+PiAgdm9sX3R5cGU9ZHluYW1pYw0K
-Pj4gIHZvbF9uYW1lPWNvbmZpZ3VyYXRpb24NCj4+ICB2b2xfc2l6ZT0zNDFNaUINCj4NCj5Tb21l
-dGhpbmcgSSBkaWQgbm90IG5vdGljZSB5ZXN0ZXJuaWdodCwgMTQwKzE0MCszNDEgaXMgNjIxLg0K
-PkFjY29yZGluZyB0byB5b3VyIGxvZ3MgdGhlIE1URCBwYXJ0aXRpb24gaXMgb25seSA1MDhNaUIg
-bGFyZ2UuDQoNCm9vcHMuIFNvcnJ5LCB0aGlzIGlzIG15IG1pc3Rha2UuIFdlIGhhdmUgdG8gcHJv
-ZHVjdHMgd2l0aCBzYW1lIA0KbnVtYmVyIG9mIHZvbHVtZXMgYW5kIG5hbWVzIGJ1dCB3aXRoIGRp
-ZmZlcmVudCB2b2x1bWUgc2l6ZXMuDQoNClRoZSBzYW1wbGVzIEkgbGlua2VkIG9uIGdpc3QgaGF2
-ZSB2b2xfc2l6ZSBmb3Igcm9vdGZzX2EgYW5kIA0Kcm9vdGZzX2Igc2V0IHRvIDcwTWlCLiBTbyB3
-aGVuIHNldHRpbmcgdGhlIDNyZCB2b2xfc2l6ZSB0bw0KMzQxTWlCIEkgZ2V0IGxpa2UgbGlua2Vk
-IGJlZm9yZSBmcm9tICJ1YmluZm8gLWEiIHRoZSBmb2xsb3dpbmc6DQoNCnViaTANClZvbHVtZXMg
-Y291bnQ6ICAgICAgICAgICAgICAgICAgICAgICAgICAgMw0KTG9naWNhbCBlcmFzZWJsb2NrIHNp
-emU6ICAgICAgICAgICAgICAgICAxMjY5NzYgYnl0ZXMsIDEyNC4wIEtpQg0KVG90YWwgYW1vdW50
-IG9mIGxvZ2ljYWwgZXJhc2VibG9ja3M6ICAgICA0MDY1ICg1MTYxNTc0NDAgYnl0ZXMsIDQ5Mi4y
-IE1pQikNCkFtb3VudCBvZiBhdmFpbGFibGUgbG9naWNhbCBlcmFzZWJsb2NrczogNyAoODg4ODMy
-IGJ5dGVzLCA4NjguMCBLaUIpDQpNYXhpbXVtIGNvdW50IG9mIHZvbHVtZXMgICAgICAgICAgICAg
-ICAgIDEyOA0KQ291bnQgb2YgYmFkIHBoeXNpY2FsIGVyYXNlYmxvY2tzOiAgICAgICAwDQpDb3Vu
-dCBvZiByZXNlcnZlZCBwaHlzaWNhbCBlcmFzZWJsb2NrczogIDgwDQpDdXJyZW50IG1heGltdW0g
-ZXJhc2UgY291bnRlciB2YWx1ZTogICAgIDINCk1pbmltdW0gaW5wdXQvb3V0cHV0IHVuaXQgc2l6
-ZTogICAgICAgICAgMjA0OCBieXRlcw0KQ2hhcmFjdGVyIGRldmljZSBtYWpvci9taW5vcjogICAg
-ICAgICAgICAyNTE6MA0KUHJlc2VudCB2b2x1bWVzOiAgICAgICAgICAgICAgICAgICAgICAgICAw
-LCAxLCAyDQogDQpWb2x1bWUgSUQ6ICAgMCAob24gdWJpMCkNClR5cGU6ICAgICAgICBkeW5hbWlj
-DQpBbGlnbm1lbnQ6ICAgMQ0KU2l6ZTogICAgICAgIDU3OSBMRUJzICg3MzUxOTEwNCBieXRlcywg
-NzAuMSBNaUIpDQpTdGF0ZTogICAgICAgT0sNCk5hbWU6ICAgICAgICByb290ZnNfYQ0KQ2hhcmFj
-dGVyIGRldmljZSBtYWpvci9taW5vcjogMjUxOjENCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tDQpWb2x1bWUgSUQ6ICAgMSAob24gdWJpMCkNClR5cGU6ICAgICAgICBkeW5hbWlj
-DQpBbGlnbm1lbnQ6ICAgMQ0KU2l6ZTogICAgICAgIDU3OSBMRUJzICg3MzUxOTEwNCBieXRlcywg
-NzAuMSBNaUIpDQpTdGF0ZTogICAgICAgT0sNCk5hbWU6ICAgICAgICByb290ZnNfYg0KQ2hhcmFj
-dGVyIGRldmljZSBtYWpvci9taW5vcjogMjUxOjINCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tDQpWb2x1bWUgSUQ6ICAgMiAob24gdWJpMCkNClR5cGU6ICAgICAgICBkeW5hbWlj
-DQpBbGlnbm1lbnQ6ICAgMQ0KU2l6ZTogICAgICAgIDI4MTYgTEVCcyAoMzU3NTY0NDE2IGJ5dGVz
-LCAzNDEuMCBNaUIpDQpTdGF0ZTogICAgICAgT0sNCk5hbWU6ICAgICAgICBjb25maWd1cmF0aW9u
-DQpDaGFyYWN0ZXIgZGV2aWNlIG1ham9yL21pbm9yOiAyNTE6Mw0KDQpTbyB0aGlzIGlzIGFjdHVh
-bGx5IG9rLiBJIGdldCBteSA4MCBibG9ja3MgcmVzZXJ2ZWQuDQoNClNvcnJ5IGZvciB0aGUgY29u
-ZnVzaW9uLg0KDQpTYW0NCg0K
+Am 07.07.2015 um 12:59 schrieb Egli, Samuel:
+> Hello Richard,
+>> Something I did not notice yesternight, 140+140+341 is 621.
+>> According to your logs the MTD partition is only 508MiB large.
+> 
+> oops. Sorry, this is my mistake. We have to products with same 
+> number of volumes and names but with different volume sizes.
+> 
+> The samples I linked on gist have vol_size for rootfs_a and 
+> rootfs_b set to 70MiB. So when setting the 3rd vol_size to
+> 341MiB I get like linked before from "ubinfo -a" the following:
+> 
+> ubi0
+> Volumes count:                           3
+> Logical eraseblock size:                 126976 bytes, 124.0 KiB
+> Total amount of logical eraseblocks:     4065 (516157440 bytes, 492.2 MiB)
+> Amount of available logical eraseblocks: 7 (888832 bytes, 868.0 KiB)
+> Maximum count of volumes                 128
+> Count of bad physical eraseblocks:       0
+> Count of reserved physical eraseblocks:  80
+> Current maximum erase counter value:     2
+> Minimum input/output unit size:          2048 bytes
+> Character device major/minor:            251:0
+> Present volumes:                         0, 1, 2
+>  
+Richard Weinberger <richard.weinberger@gmail.com>> Volume ID:   0 (on ubi0)
+> Type:        dynamic
+> Alignment:   1
+> Size:        579 LEBs (73519104 bytes, 70.1 MiB)
+> State:       OK
+> Name:        rootfs_a
+> Character device major/minor: 251:1
+> -----------------------------------
+> Volume ID:   1 (on ubi0)
+> Type:        dynamic
+> Alignment:   1
+> Size:        579 LEBs (73519104 bytes, 70.1 MiB)
+> State:       OK
+> Name:        rootfs_b
+> Character device major/minor: 251:2
+> -----------------------------------
+> Volume ID:   2 (on ubi0)
+> Type:        dynamic
+> Alignment:   1
+> Size:        2816 LEBs (357564416 bytes, 341.0 MiB)
+> State:       OK
+> Name:        configuration
+> Character device major/minor: 251:3
+> 
+> So this is actually ok. I get my 80 blocks reserved.
+> 
+> Sorry for the confusion.
+
+Okay. So there is no issue at all? :-)
+
+Thanks,
+//richard
