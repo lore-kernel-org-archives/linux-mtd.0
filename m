@@ -1,19 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from goliath.siemens.de ([192.35.17.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCNRc-0002SM-Hq
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 07:37:33 +0000
-Message-ID: <559B81A1.7010302@nod.at>
-Date: Tue, 07 Jul 2015 09:37:05 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: pavi1729 <pavitra1729@gmail.com>
+ id 1ZCNlk-0006OU-6I
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 07:58:21 +0000
+From: "Egli, Samuel" <samuel.egli@siemens.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Query on ubifs_assert
-References: <CAMf7+LjVE7ivjwOCMdPYHCV8PG9yH7A=eVJ_WGiagxzvVc-_aw@mail.gmail.com>	<CAFLxGvwi7=4qNgkwXjXvMrj=VvmwbyrYNRYsB6xhZ_avczTSkw@mail.gmail.com>
- <CAMf7+Lj93m55AD0ORfvumxEF5NrZUjhkSZ-X6h2JZLtoRNLcAQ@mail.gmail.com>
-In-Reply-To: <CAMf7+Lj93m55AD0ORfvumxEF5NrZUjhkSZ-X6h2JZLtoRNLcAQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Subject: RE: autoresize causes insufficient reservation of PEBs for bad PEB
+ handling
+Date: Tue, 7 Jul 2015 07:57:55 +0000
+Message-ID: <27E9275BC1C8554E840881B19B62BE421A927A@DENBGAT9EI1MSX.ww902.siemens.net>
+References: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
+ <CAFLxGvz4=hjkawWa4SWD6P588J7RUOX4=X+pdU8Rd0WrynOOBQ@mail.gmail.com>
+In-Reply-To: <CAFLxGvz4=hjkawWa4SWD6P588J7RUOX4=X+pdU8Rd0WrynOOBQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 07.07.2015 um 09:29 schrieb pavi1729:
-> Richard,
->   Just wondering ..
-> 
-> On Wed, Jul 1, 2015 at 7:41 PM, Richard Weinberger
-> <richard.weinberger@gmail.com> wrote:
->> On Wed, Jul 1, 2015 at 1:03 PM, pavi1729 <pavitra1729@gmail.com> wrote:
->>> Hi,
->>>
->>>  FILE: fs/ubifs/misc.h :
->>>  FUNCTION : ubifs_compr_present
->>>
->>> "ubifs_compr_present" function has "ubifs_assert" which checks for the
->>> valid compression value
->>> and does a stack_dump if not.
->>>
->>> Could there be a case where the "compr_type" is corrupt; if yes, then
->>> does a stack_dump  suffice?
->>> Thus if compr_type is invalid then the below return is not reliable.
->>>     return !!ubifs_compressors[compr_type]->capi_name;
->>
->> If compr_type is invalid something nasty is happening and the kernel will crash
->> at some point.
->> But using the ubifs_assert() we can see at least what went wrong.
-> .. if we know for sure that, the kernel will crash, then why not panic
-> here and halt the system.
-> We know for sure that it is going to crash anyways.
-
-Because we don't want to stop the machine. Maybe only the current thread
-dies...
-But I'm sure some ubifs_assert() could be converted to WARN_ON().
-
-Thanks,
-//richard
+SGkgUmljaGFyZA0KdGhhbmsgeW91IGZvciB5b3VyIHJlcGx5Lg0KDQo+LS0tLS1PcmlnaW5hbCBN
+ZXNzYWdlLS0tLS0NCj5Gcm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJkLndl
+aW5iZXJnZXJAZ21haWwuY29tXQ0KPlNlbnQ6IE1vbnRhZywgNi4gSnVsaSAyMDE1IDIzOjQwDQo+
+VG86IEVnbGksIFNhbXVlbA0KPkNjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPlN1
+YmplY3Q6IFJlOiBhdXRvcmVzaXplIGNhdXNlcyBpbnN1ZmZpY2llbnQgcmVzZXJ2YXRpb24gb2Yg
+UEVCcyBmb3IgYmFkDQo+UEVCIGhhbmRsaW5nDQo+DQo+Wy4uLl0NCj4NCj5JJ20gYSBiaXQgcHV6
+emxlZC4gQ2FuIHlvdSBwbGVhc2Ugc2hhcmUgdGhlIGZ1bGwga2VybmVsIGxvZz8NCg0Kdm9sX2Zs
+YWdzPWF1dG9yZXNpemUNCmh0dHBzOi8vZ2lzdC5naXRodWIuY29tL2Fub255bW91cy83YTRiNzkw
+YjI3YWFjODE0MjFhYg0KDQp2b2xfc2l6ZSBmaXhlZA0KaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20v
+YW5vbnltb3VzLzgxMWVhZGM5YzY1OTI1MzkzODdhDQoNCj5NYXliZSBzb21lIG90aGVyIFVCSSB3
+YXJuaW5nIGJyaW5ncyBsaWdodCBpbnRvIHRoYXQuDQo+UGxlYXNlIGFsc28gc2hhcmUgdGhlIG91
+dHB1dCBvZiB1YmluZm8gLWEgd2l0aCBhbmQgd2l0aG91dCBhdXRvcmVzaXplLg0KDQp1YmluZm8g
+LWEgKHZvbF9mbGFncz1hdXRvcmVzaXplKTogDQpodHRwczovL2dpc3QuZ2l0aHViLmNvbS9hbm9u
+eW1vdXMvNDRkZTA2OTExOTg4ZmI1NWE3NDINCg0KdWJpbmZvIC1hIChmaXggdm9sX3NpemUpOg0K
+aHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYW5vbnltb3VzL2U1Y2ZiYzBhMzYwNmQyZDM1OTc0DQoN
+Cg0KPg0KPlRoZSByZS1zaXplIG1lY2hhbmlzbSB3aWxsIHVzZSB1YmktPmF2YWlsX3BlYnMgZm9y
+IHRoZSBuZXcgdm9sdW1lIHNpemUuDQo+dWJpLT5hdmFpbF9wZWJzIHNob3VsZCBob25vciB0aGUg
+bnVtYmVyIG9mIHJlc2VydmVkIFBFQnMuDQo+SWYgeW91IGhhdmUgYSBsb3Qgb2YgYmFkL2NvcnJ1
+cHRlZCBQRUJzIHRoZSBzaXR1YXRpb24gbWF5IGJlIGRpZmZlcmVudC4NCg0KSG1tLCBpcyB0aGVy
+ZSBzb21lIHNwZWNpYWwgaGFuZGxpbmcgb2YgU0xDIGFuZCBNTEMgTkFORD8NCkFueXdheSwgaGVy
+ZSB0aGUgcmVsZXZhbnQga2VybmVsIGNvbmZpZzoNCg0KemNhdCAvcHJvYy9jb25maWcuZ3ogfCBn
+cmVwIFVCSToNCkNPTkZJR19UQ1BfQ09OR19DVUJJQz15DQpDT05GSUdfTVREX1VCST15DQpDT05G
+SUdfTVREX1VCSV9XTF9USFJFU0hPTEQ9NDA5Ng0KQ09ORklHX01URF9VQklfQkVCX0xJTUlUPTIw
+DQojIENPTkZJR19NVERfVUJJX0ZBU1RNQVAgaXMgbm90IHNldA0KIyBDT05GSUdfTVREX1VCSV9H
+TFVFQkkgaXMgbm90IHNldA0KQ09ORklHX1VCSUZTX0ZTPXkNCiMgQ09ORklHX1VCSUZTX0ZTX0FE
+VkFOQ0VEX0NPTVBSIGlzIG5vdCBzZXQNCkNPTkZJR19VQklGU19GU19MWk89eQ0KQ09ORklHX1VC
+SUZTX0ZTX1pMSUI9eQ0KIyBDT05GSUdfQ1JZUFRPX0FOVUJJUyBpcyBub3Qgc2V0DQoNCktpbmQg
+cmVnYXJkcw0KDQpTYW0NCg0K
