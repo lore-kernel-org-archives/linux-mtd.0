@@ -1,19 +1,20 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCNEi-0002QW-DM
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 07:24:12 +0000
-Received: by pactm7 with SMTP id tm7so108721620pac.2
- for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2015 00:23:51 -0700 (PDT)
-Date: Tue, 7 Jul 2015 12:53:45 +0530
-From: Vaishali Thakkar <vthakkar1994@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: denali: Use module_pci_driver
-Message-ID: <20150707072345.GA20060@vaishali-Ideapad-Z570>
+ id 1ZCNKZ-0004jT-0D
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 07:30:15 +0000
+Received: by iecuq6 with SMTP id uq6so128911952iec.2
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2015 00:29:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <CAFLxGvwi7=4qNgkwXjXvMrj=VvmwbyrYNRYsB6xhZ_avczTSkw@mail.gmail.com>
+References: <CAMf7+LjVE7ivjwOCMdPYHCV8PG9yH7A=eVJ_WGiagxzvVc-_aw@mail.gmail.com>
+ <CAFLxGvwi7=4qNgkwXjXvMrj=VvmwbyrYNRYsB6xhZ_avczTSkw@mail.gmail.com>
+Date: Tue, 7 Jul 2015 12:59:53 +0530
+Message-ID: <CAMf7+Lj93m55AD0ORfvumxEF5NrZUjhkSZ-X6h2JZLtoRNLcAQ@mail.gmail.com>
+Subject: Re: Query on ubifs_assert
+From: pavi1729 <pavitra1729@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,61 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use module_pci_driver for drivers whose init and exit functions
-only register and unregister, respectively.
+Richard,
+  Just wondering ..
 
-A simplified version of the Coccinelle semantic patch that performs
-this transformation is as follows:
-
-@a@
-identifier f, x;
-@@
--static f(...) { return pci_register_driver(&x); }
-
-@b depends on a@
-identifier e, a.x;
-@@
--static e(...) { pci_unregister_driver(&x); }
-
-@c depends on a && b@
-identifier a.f;
-declarer name module_init;
-@@
--module_init(f);
-
-@d depends on a && b && c@
-identifier b.e, a.x;
-declarer name module_exit;
-declarer name module_pci_driver;
-@@
--module_exit(e);
-+module_pci_driver(x);
-
-Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
----
- drivers/mtd/nand/denali_pci.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-index 6e2f387..a47a14c 100644
---- a/drivers/mtd/nand/denali_pci.c
-+++ b/drivers/mtd/nand/denali_pci.c
-@@ -128,15 +128,4 @@ static struct pci_driver denali_pci_driver = {
- 	.probe = denali_pci_probe,
- 	.remove = denali_pci_remove,
- };
--
--static int denali_init_pci(void)
--{
--	return pci_register_driver(&denali_pci_driver);
--}
--module_init(denali_init_pci);
--
--static void denali_exit_pci(void)
--{
--	pci_unregister_driver(&denali_pci_driver);
--}
--module_exit(denali_exit_pci);
-+module_pci_driver(denali_pci_driver);
--- 
-1.9.1
+On Wed, Jul 1, 2015 at 7:41 PM, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> On Wed, Jul 1, 2015 at 1:03 PM, pavi1729 <pavitra1729@gmail.com> wrote:
+>> Hi,
+>>
+>>  FILE: fs/ubifs/misc.h :
+>>  FUNCTION : ubifs_compr_present
+>>
+>> "ubifs_compr_present" function has "ubifs_assert" which checks for the
+>> valid compression value
+>> and does a stack_dump if not.
+>>
+>> Could there be a case where the "compr_type" is corrupt; if yes, then
+>> does a stack_dump  suffice?
+>> Thus if compr_type is invalid then the below return is not reliable.
+>>     return !!ubifs_compressors[compr_type]->capi_name;
+>
+> If compr_type is invalid something nasty is happening and the kernel will crash
+> at some point.
+> But using the ubifs_assert() we can see at least what went wrong.
+.. if we know for sure that, the kernel will crash, then why not panic
+here and halt the system.
+We know for sure that it is going to crash anyways.
+>
+>> So where does this end, eventually does it go to a point where the
+>> volume get corrupt and not unmountable ?
+>
+> As I said, if that value is corrupt we are already in trouble.
+> The purpose of the assert is to report which value is bad.
+>
+> --
+> Thanks,
+> //richard
