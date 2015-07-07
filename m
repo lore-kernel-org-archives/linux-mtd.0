@@ -1,18 +1,12 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCImJ-0005Zm-NA
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 02:38:37 +0000
-Message-ID: <559B3B4B.4010502@huawei.com>
-Date: Tue, 7 Jul 2015 10:36:59 +0800
-From: Sheng Yong <shengyong1@huawei.com>
+From: Wei Fang <fangwei1@huawei.com>
+To: <computersforpeace@gmail.com>
+CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>, Wei Fang
+ <fangwei1@huawei.com>
+Subject: [PATCH RESEND] jffs2: remove unneeded kfree
+Date: Tue, 7 Jul 2015 10:54:26 +0800
+Message-ID: <1436237666-27398-1-git-send-email-fangwei1@huawei.com>
 MIME-Version: 1.0
-To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-CC: <richard@nod.at>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH V3 0/2] mtd: nandsim: fix error handling
-References: <1435198994-110948-1-git-send-email-shengyong1@huawei.com>
-In-Reply-To: <1435198994-110948-1-git-send-email-shengyong1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +16,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ping.
+c->oobbuf hasn't been kmalloced in jffs2_dataflash_setup, so
+there is no need to free it.
 
-thanks,
-Sheng
+Signed-off-by: Wei Fang <fangwei1@huawei.com>
+---
+ fs/jffs2/wbuf.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-On 6/25/2015 10:23 AM, Sheng Yong wrote:
-> V3:
-> Fix compiling error of PATCH 2 because of my silly bindly rebase without
-> testing :( These 2 patches are already tested.
-> 
-> V2:
-> Resend the patches against l2-mtd/master.
-> 
-> V1:
-> These 2 patches fix error handling when nandsim initialization fails.
-> 
-> In alloc_device(), if creating slab memory fails, free_device() will try
-> to destroy the slab memory without checking if it exists.  PATCH 1 fixes
-> it.
-> 
-> If something goes wrong in init_nandsim(), it calls free_device() before
-> returning. However, the caller of init_nandsim() - ns_init_module() - also
-> does the cleanup by calling free_nandsim(). This causes double free. PATCH
-> 2 fixes it.
-> 
-> Thanks,
-> Sheng
-> 
-> Sheng Yong (2):
->   mtd: nandsim: fix free of NULL pointer
->   mtd: nandsim: fix double free
-> 
->  drivers/mtd/nand/nandsim.c | 28 +++++++++-------------------
->  1 file changed, 9 insertions(+), 19 deletions(-)
-> 
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index 09ed551..63f31c0 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -1274,7 +1274,6 @@ int jffs2_dataflash_setup(struct jffs2_sb_info *c) {
+ #ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+ 	c->wbuf_verify = kmalloc(c->wbuf_pagesize, GFP_KERNEL);
+ 	if (!c->wbuf_verify) {
+-		kfree(c->oobbuf);
+ 		kfree(c->wbuf);
+ 		return -ENOMEM;
+ 	}
+-- 
+1.7.1
