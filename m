@@ -1,16 +1,16 @@
-Received: from mail-bl2on0116.outbound.protection.outlook.com ([65.55.169.116]
+Received: from mail-bl2on0137.outbound.protection.outlook.com ([65.55.169.137]
  helo=na01-bl2-obe.outbound.protection.outlook.com)
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCOTq-0002FN-4F
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 08:43:55 +0000
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1ZCOTr-0001Vs-8b
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 08:43:56 +0000
 From: Haikun Wang <haikun.wang@freescale.com>
 To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
  <computersforpeace@gmail.com>, <han.xu@freescale.com>
 CC: Haikun Wang <haikun.wang@freescale.com>
-Subject: [PATCH 6/8 v2] mtd: spi-nor: fsl-quadspi: Add QSPI dts node for
- LS1021A
-Date: Tue, 7 Jul 2015 16:38:18 +0800
-Message-ID: <1436258300-21261-6-git-send-email-haikun.wang@freescale.com>
+Subject: [PATCH 7/8 v2] mtd: spi-nor: fsl-quadspi: Update bindings
+ documentation
+Date: Tue, 7 Jul 2015 16:38:19 +0800
+Message-ID: <1436258300-21261-7-git-send-email-haikun.wang@freescale.com>
 In-Reply-To: <1436258300-21261-1-git-send-email-haikun.wang@freescale.com>
 References: <1436258300-21261-1-git-send-email-haikun.wang@freescale.com>
 MIME-Version: 1.0
@@ -24,88 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add QSPI dts node for LS1021AQDS and LS1021ATWR boards.
+Add QuadSPI slave properties description.
 
 Signed-off-by: Haikun Wang <haikun.wang@freescale.com>
 ---
 Changes in v2:
 - Rebase
 
- arch/arm/boot/dts/ls1021a-qds.dts | 16 ++++++++++++++++
- arch/arm/boot/dts/ls1021a-twr.dts | 13 +++++++++++++
- arch/arm/boot/dts/ls1021a.dtsi    | 15 +++++++++++++++
- 3 files changed, 44 insertions(+)
+ Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/ls1021a-qds.dts b/arch/arm/boot/dts/ls1021a-qds.dts
-index 9c5e16b..15bf07f 100644
---- a/arch/arm/boot/dts/ls1021a-qds.dts
-+++ b/arch/arm/boot/dts/ls1021a-qds.dts
-@@ -238,3 +238,19 @@
- &uart1 {
- 	status = "okay";
- };
-+
-+&qspi {
-+	num-cs = <2>;
-+	bus-num = <0>;
-+	fsl,spi-num-chipselects = <2>;
-+	fsl,spi-flash-chipselects = <0>;
-+	status = "okay";
-+
-+	qflash0: s25fl128s@0 {
-+		compatible = "spansion,s25fl128s";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		spi-max-frequency = <20000000>;
-+		reg = <0>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/ls1021a-twr.dts b/arch/arm/boot/dts/ls1021a-twr.dts
-index a2c591e..b72f6ee 100644
---- a/arch/arm/boot/dts/ls1021a-twr.dts
-+++ b/arch/arm/boot/dts/ls1021a-twr.dts
-@@ -125,3 +125,16 @@
- &uart1 {
- 	status = "okay";
- };
-+
-+&qspi {
-+	num-cs = <2>;
-+	status = "okay";
-+
-+	qflash0: n25q128a13@0 {
-+		compatible = "micron,n25q128a13";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		spi-max-frequency = <20000000>;
-+		reg = <0>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index c70bb27..09f1a33 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -127,6 +127,21 @@
- 			big-endian;
- 		};
+diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+index 4461dc7..6627893 100644
+--- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+@@ -1,6 +1,6 @@
+ * Freescale Quad Serial Peripheral Interface(QuadSPI)
  
-+		qspi: quadspi@1550000 {
-+			compatible = "fsl,ls1-qspi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x0 0x1550000 0x0 0x10000>,
-+				<0x0 0x40000000 0x0 0x4000000>;
-+			reg-names = "QuadSPI", "QuadSPI-memory";
-+			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-+			clock-names = "qspi_en", "qspi";
-+			clocks = <&platform_clk 1>, <&platform_clk 1>;
-+			big-endian;
-+			amba-base = <0x40000000>;
-+			status = "disabled";
-+		};
+-Required properties:
++QuadSPI master required properties:
+   - compatible : Should be "fsl,vf610-qspi" or "fsl,imx6sx-qspi"
+   - reg : the first contains the register location and length,
+           the second contains the memory mapping address and length
+@@ -18,6 +18,13 @@ Optional properties:
+ 			      bus, you should enable this property.
+ 			      (Please check the board's schematic.)
+ 
++QuadSPI slave required properties:
++  - compatible : Should be the manufacturer and the name of the chip,
++		 like "spansion,s25fl128s", "micron,n25q128a13"...
++		 See the "spi_nor_ids" table in drivers/mtd/spi-nor/spi-nor.c
++		 for the list of supported chips.
++  - spi-max-frequency : Maximum SPI clocking speed of device in Hz
 +
- 		esdhc: esdhc@1560000 {
- 			compatible = "fsl,esdhc";
- 			reg = <0x0 0x1560000 0x0 0x10000>;
+ Example:
+ 
+ qspi0: quadspi@40044000 {
 -- 
 2.1.0.27.g96db324
