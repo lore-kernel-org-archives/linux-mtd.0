@@ -1,21 +1,20 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCZA4-0000bp-Oq
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 20:08:13 +0000
-Received: by pacws9 with SMTP id ws9so119765868pac.0
- for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2015 13:07:51 -0700 (PDT)
-Date: Tue, 7 Jul 2015 13:07:44 -0700
+ id 1ZCZKh-0004PR-4I
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 20:19:11 +0000
+Received: by pdbep18 with SMTP id ep18so131556055pdb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2015 13:18:50 -0700 (PDT)
+Date: Tue, 7 Jul 2015 13:18:43 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Scott Wood <scottwood@freescale.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [PATCH] mtd: nand: Fix NAND_USE_BOUNCE_BUFFER flag conflict
-Message-ID: <20150707200744.GG18370@brian-ubuntu>
-References: <1435365838-10940-1-git-send-email-scottwood@freescale.com>
+To: Wei Fang <fangwei1@huawei.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] jffs2: remove unneeded conditions
+Message-ID: <20150707201843.GH18370@brian-ubuntu>
+References: <558E59C9.2070207@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1435365838-10940-1-git-send-email-scottwood@freescale.com>
+In-Reply-To: <558E59C9.2070207@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +24,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 26, 2015 at 07:43:58PM -0500, Scott Wood wrote:
-> Commit 66507c7bc8895f0da6b ("mtd: nand: Add support to use nand_base
-> poi databuf as bounce buffer") added a flag NAND_USE_BOUNCE_BUFFER
-> using the same bit value as the existing NAND_BUSWIDTH_AUTO.
+Hi Wei,
 
-Good catch. It'd probably be easier to catch these things if we didn't
-just manually type these in hex. Perhaps BIT() would make this more
-obvious?
+On Sat, Jun 27, 2015 at 04:07:37PM +0800, Wei Fang wrote:
+> Since len must not be smaller than JFFS2_MIN_NODE_HEADER, if
+> "len < X" is true, than "JFFS2_MIN_NODE_HEADER < X" must be true,
+> so it can be removed.
 
-Anyway, looks good. Pushed to linux-mtd.git.
+Huh? This comment doesn't exactly make sense to me. It seems like when
+reasoning about a safety check, you're assuming the safety check will
+already pass. Can you elaborate your reasoning here?
 
-Brian
+Also, did you test these changes? Are you solving any real problem?
 
-> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
-> Fixes: 66507c7bc8895f0da6b ("mtd: nand: Add support to use nand_base
-> 	poi databuf as bounce buffer")
-> Signed-off-by: Scott Wood <scottwood@freescale.com>
+> Signed-off-by: Wei Fang <fangwei1@huawei.com>
 > ---
->  include/linux/mtd/nand.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>  fs/jffs2/readinode.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
 > 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 3d4ea7e..12b75f3 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -176,17 +176,17 @@ typedef enum {
->  /* Chip may not exist, so silence any errors in scan */
->  #define NAND_SCAN_SILENT_NODEV	0x00040000
->  /*
-> - * This option could be defined by controller drivers to protect against
-> - * kmap'ed, vmalloc'ed highmem buffers being passed from upper layers
-> - */
-> -#define NAND_USE_BOUNCE_BUFFER	0x00080000
-> -/*
->   * Autodetect nand buswidth with readid/onfi.
->   * This suppose the driver will configure the hardware in 8 bits mode
->   * when calling nand_scan_ident, and update its configuration
->   * before calling nand_scan_tail.
->   */
->  #define NAND_BUSWIDTH_AUTO      0x00080000
-> +/*
-> + * This option could be defined by controller drivers to protect against
-> + * kmap'ed, vmalloc'ed highmem buffers being passed from upper layers
-> + */
-> +#define NAND_USE_BOUNCE_BUFFER	0x00100000
->  
->  /* Options set by nand scan */
->  /* Nand scan has allocated controller struct */
-> -- 
-> 2.1.4
+> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+> index dddbde4..b9bd3ad 100644
+> --- a/fs/jffs2/readinode.c
+> +++ b/fs/jffs2/readinode.c
+> @@ -1059,8 +1059,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
 > 
+>  		case JFFS2_NODETYPE_DIRENT:
+> 
+> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_dirent) &&
+
+^^ The original comparison here is kind of strange. I see:
+
+#define JFFS2_MIN_NODE_HEADER sizeof(struct jffs2_raw_dirent)
+
+which means that we're comparing:
+
+			if (sizeof(struct jffs2_raw_dirent) < sizeof(struct jffs2_raw_dirent) && ...)
+
+AFAIK, that comparison will *always* be false, and so the entire
+condition will always be false. Not sure if that's intentional.
+
+> -			    len < sizeof(struct jffs2_raw_dirent)) {
+> +			if (len < sizeof(struct jffs2_raw_dirent)) {
+
+Therefore, the "refactoring" you are doing seems to actually make a
+logical change. If nothing else, it makes it harder (likely impossible)
+for the compiler to reason that the conditional code is all dead code.
+I'm not sure if that's a good or a bad thing, as I haven't figured out
+the full intent of this code in the first place.
+
+>  				err = read_more(c, ref, sizeof(struct jffs2_raw_dirent), &len, buf);
+>  				if (unlikely(err))
+>  					goto free_out;
+> @@ -1074,8 +1073,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+> 
+>  		case JFFS2_NODETYPE_INODE:
+> 
+> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_inode) &&
+> -			    len < sizeof(struct jffs2_raw_inode)) {
+> +			if (len < sizeof(struct jffs2_raw_inode)) {
+>  				err = read_more(c, ref, sizeof(struct jffs2_raw_inode), &len, buf);
+>  				if (unlikely(err))
+>  					goto free_out;
+> @@ -1088,8 +1086,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+>  			break;
+> 
+>  		default:
+> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_unknown_node) &&
+> -			    len < sizeof(struct jffs2_unknown_node)) {
+> +			if (len < sizeof(struct jffs2_unknown_node)) {
+>  				err = read_more(c, ref, sizeof(struct jffs2_unknown_node), &len, buf);
+>  				if (unlikely(err))
+>  					goto free_out;
+
+At any rate, I'm not confident in this patch without a lot more
+explanation, so I will not be taking it as-is.
+
+Thanks,
+Brian
