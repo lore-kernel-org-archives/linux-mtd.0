@@ -1,20 +1,21 @@
-Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCZKh-0004PR-4I
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 20:19:11 +0000
-Received: by pdbep18 with SMTP id ep18so131556055pdb.1
- for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2015 13:18:50 -0700 (PDT)
-Date: Tue, 7 Jul 2015 13:18:43 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Wei Fang <fangwei1@huawei.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] jffs2: remove unneeded conditions
-Message-ID: <20150707201843.GH18370@brian-ubuntu>
-References: <558E59C9.2070207@huawei.com>
+ id 1ZCa86-0004mM-4S
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2015 21:10:14 +0000
+Message-ID: <559C401E.4000601@nod.at>
+Date: Tue, 07 Jul 2015 23:09:50 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <558E59C9.2070207@huawei.com>
+To: "Egli, Samuel" <samuel.egli@siemens.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: autoresize causes insufficient reservation of PEBs for bad PEB
+ handling
+References: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
+ <CAFLxGvz4=hjkawWa4SWD6P588J7RUOX4=X+pdU8Rd0WrynOOBQ@mail.gmail.com>
+ <27E9275BC1C8554E840881B19B62BE421A927A@DENBGAT9EI1MSX.ww902.siemens.net>
+In-Reply-To: <27E9275BC1C8554E840881B19B62BE421A927A@DENBGAT9EI1MSX.ww902.siemens.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,80 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Wei,
-
-On Sat, Jun 27, 2015 at 04:07:37PM +0800, Wei Fang wrote:
-> Since len must not be smaller than JFFS2_MIN_NODE_HEADER, if
-> "len < X" is true, than "JFFS2_MIN_NODE_HEADER < X" must be true,
-> so it can be removed.
-
-Huh? This comment doesn't exactly make sense to me. It seems like when
-reasoning about a safety check, you're assuming the safety check will
-already pass. Can you elaborate your reasoning here?
-
-Also, did you test these changes? Are you solving any real problem?
-
-> Signed-off-by: Wei Fang <fangwei1@huawei.com>
-> ---
->  fs/jffs2/readinode.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+Am 07.07.2015 um 09:57 schrieb Egli, Samuel:
+> Hi Richard
+> thank you for your reply.
 > 
-> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-> index dddbde4..b9bd3ad 100644
-> --- a/fs/jffs2/readinode.c
-> +++ b/fs/jffs2/readinode.c
-> @@ -1059,8 +1059,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+>> -----Original Message-----
+>> From: Richard Weinberger [mailto:richard.weinberger@gmail.com]
+>> Sent: Montag, 6. Juli 2015 23:40
+>> To: Egli, Samuel
+>> Cc: linux-mtd@lists.infradead.org
+>> Subject: Re: autoresize causes insufficient reservation of PEBs for bad
+>> PEB handling
+>>
+>> [...]
+>>
+>> I'm a bit puzzled. Can you please share the full kernel log?
 > 
->  		case JFFS2_NODETYPE_DIRENT:
-> 
-> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_dirent) &&
+> vol_flags=autoresize
+> https://gist.github.com/anonymous/7a4b790b27aac81421ab
 
-^^ The original comparison here is kind of strange. I see:
+There are more odds.
 
-#define JFFS2_MIN_NODE_HEADER sizeof(struct jffs2_raw_dirent)
+I don't see a message like "[   90.757282] ubi0: volume 2 ("configuration") re-sized from 80 to 7948 LEBs"
+in that log. So, re-size did not happen.
 
-which means that we're comparing:
-
-			if (sizeof(struct jffs2_raw_dirent) < sizeof(struct jffs2_raw_dirent) && ...)
-
-AFAIK, that comparison will *always* be false, and so the entire
-condition will always be false. Not sure if that's intentional.
-
-> -			    len < sizeof(struct jffs2_raw_dirent)) {
-> +			if (len < sizeof(struct jffs2_raw_dirent)) {
-
-Therefore, the "refactoring" you are doing seems to actually make a
-logical change. If nothing else, it makes it harder (likely impossible)
-for the compiler to reason that the conditional code is all dead code.
-I'm not sure if that's a good or a bad thing, as I haven't figured out
-the full intent of this code in the first place.
-
->  				err = read_more(c, ref, sizeof(struct jffs2_raw_dirent), &len, buf);
->  				if (unlikely(err))
->  					goto free_out;
-> @@ -1074,8 +1073,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
-> 
->  		case JFFS2_NODETYPE_INODE:
-> 
-> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_inode) &&
-> -			    len < sizeof(struct jffs2_raw_inode)) {
-> +			if (len < sizeof(struct jffs2_raw_inode)) {
->  				err = read_more(c, ref, sizeof(struct jffs2_raw_inode), &len, buf);
->  				if (unlikely(err))
->  					goto free_out;
-> @@ -1088,8 +1086,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
->  			break;
-> 
->  		default:
-> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_unknown_node) &&
-> -			    len < sizeof(struct jffs2_unknown_node)) {
-> +			if (len < sizeof(struct jffs2_unknown_node)) {
->  				err = read_more(c, ref, sizeof(struct jffs2_unknown_node), &len, buf);
->  				if (unlikely(err))
->  					goto free_out;
-
-At any rate, I'm not confident in this patch without a lot more
-explanation, so I will not be taking it as-is.
+Is this a pristine kernel or does it contain some vendor "tweaks"?
 
 Thanks,
-Brian
+//richard
