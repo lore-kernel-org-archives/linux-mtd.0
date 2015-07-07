@@ -5,9 +5,11 @@ Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
  boris.brezillon@free-electrons.com, zmxu@marvell.com, jszhang@marvell.com,
  linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/4] mtd: pxa3xx_nand: rework the timing setup
-Date: Tue,  7 Jul 2015 17:08:23 +0200
-Message-Id: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+Subject: [PATCH v2 1/4] mtd: pxa3xx_nand: add a default chunk size
+Date: Tue,  7 Jul 2015 17:08:24 +0200
+Message-Id: <1436281707-20106-2-git-send-email-antoine.tenart@free-electrons.com>
+In-Reply-To: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,37 +19,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+When keeping the configuration set by the bootloader (by using
+the marvell,nand-keep-config property), the pxa3xx_nand_detect_config()
+function is called and set the chunk size to 512 as a default value if
+NDCR_PAGE_SZ is not set.
 
-This series was part of a bigger one[1], which was split into smaller
-ones as asked by Ezequiel[2]. When we take this into account, this is
-v7. In addition, there was absolutely no comment for more than 1 month
-(since June 2nd). Given this, I really expect the series to be merge
-soon as other series are based on this.
+In the other case, when not keeping the bootloader configuration, no
+chunk size is set. Fix this by adding a default chunk size of 512.
 
-The aim here is to use the nand framework to setup the timings,
-while keeping the old in-driver way of configuration timings for
-compatibility reasons.
+Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Since v1:
-	- Rebased on top of v4.2-rc1
-
-Since the series was split up:
-        - reworked the ndcr setup
-        - removed the read_id_bytes update after device detection
-
-[1] https://lkml.org/lkml/2015/5/11/495
-[2] https://lkml.org/lkml/2015/5/16/309
-
-Antoine Tenart (4):
-  mtd: pxa3xx_nand: add a default chunk size
-  mtd: pxa3xx_nand: add helpers to setup the timings
-  mtd: pxa3xx_nand: rework flash detection and timing setup
-  mtd: pxa3xx_nand: clean up the pxa3xx timings
-
- drivers/mtd/nand/pxa3xx_nand.c                | 251 ++++++++++++++------------
- include/linux/platform_data/mtd-nand-pxa3xx.h |  11 +-
- 2 files changed, 143 insertions(+), 119 deletions(-)
-
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 1259cc558ce9..5465fa439c9e 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1473,6 +1473,9 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
+ 		goto KEEP_CONFIG;
+ 
++	/* Set a default chunk size */
++	info->chunk_size = 512;
++
+ 	ret = pxa3xx_nand_sensing(info);
+ 	if (ret) {
+ 		dev_info(&info->pdev->dev, "There is no chip on cs %d!\n",
 -- 
 2.4.5
