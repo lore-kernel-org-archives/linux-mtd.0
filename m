@@ -5,9 +5,9 @@ Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
  boris.brezillon@free-electrons.com, zmxu@marvell.com, jszhang@marvell.com,
  linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] ARM: berlin: enable flash on the BG2Q DMP
-Date: Tue,  7 Jul 2015 17:27:27 +0200
-Message-Id: <1436282847-21137-8-git-send-email-antoine.tenart@free-electrons.com>
+Subject: [PATCH v2 6/7] ARM: berlin: add BG2Q node for the nand
+Date: Tue,  7 Jul 2015 17:27:26 +0200
+Message-Id: <1436282847-21137-7-git-send-email-antoine.tenart@free-electrons.com>
 In-Reply-To: <1436282847-21137-1-git-send-email-antoine.tenart@free-electrons.com>
 References: <1436282847-21137-1-git-send-email-antoine.tenart@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -19,47 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BG2Q DMP has a nand controller. Add the corresponding node, but do
-not enable it by default because the nand is only available on some BG2Q
-DMP.
+Add a node describing the nand controller of the Marvell Berlin BG2Q
+SoC. It uses the pxa3xx nand driver, with a dedicated compatible.
+
+Also add the corresponding pinmuxing configuration.
 
 Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 ---
- arch/arm/boot/dts/berlin2q-marvell-dmp.dts | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ arch/arm/boot/dts/berlin2q.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm/boot/dts/berlin2q-marvell-dmp.dts b/arch/arm/boot/dts/berlin2q-marvell-dmp.dts
-index 4a749e5b3b44..0d0146a773c0 100644
---- a/arch/arm/boot/dts/berlin2q-marvell-dmp.dts
-+++ b/arch/arm/boot/dts/berlin2q-marvell-dmp.dts
-@@ -140,3 +140,28 @@
- &sata_phy {
- 	status = "okay";
- };
+diff --git a/arch/arm/boot/dts/berlin2q.dtsi b/arch/arm/boot/dts/berlin2q.dtsi
+index 63a48490e2f9..aeb2a68302ae 100644
+--- a/arch/arm/boot/dts/berlin2q.dtsi
++++ b/arch/arm/boot/dts/berlin2q.dtsi
+@@ -477,6 +477,19 @@
+ 			status = "disabled";
+ 		};
+ 
++		nand0: nand@f00000 {
++			compatible = "marvell,berlin2-nand";
++			reg = <0xf00000 0x10000>;
++			interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&chip_clk CLKID_NFC>,
++				 <&chip_clk CLKID_NFC_ECC>;
++			clock-names = "nfc", "ecc";
 +
-+&soc_pinctrl {
-+	nand_pmux: nand-pmux {
-+		groups = "G0", "G1";
-+		function = "nand";
-+	};
-+};
++			#address-cells = <1>;
 +
-+&nand0 {
-+	pinctrl-0 = <&nand_pmux>;
-+	pinctrl-names = "default";
++			status = "disabled";
++		};
 +
-+	marvell,nand-enable-arbiter;
-+	nand-ecc-strength = <48>;
-+	nand-ecc-step-size = <1024>;
-+
-+	num-cs = <1>;
-+
-+	/*
-+	 * Two kinds of BG2Q DMP are available: one with emmc and
-+	 * one with a nand. The latter is not widespread. Because
-+	 * of this, disable the nand by default.
-+	 */
-+	status = "disabled";
-+};
+ 		apb@fc0000 {
+ 			compatible = "simple-bus";
+ 			#address-cells = <1>;
 -- 
 2.4.5
