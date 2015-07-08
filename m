@@ -1,15 +1,13 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZClwh-00088h-8Y
- for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 09:47:16 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: dedekind1@gmail.com, adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, boris.brezillon@free-electrons.com,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] ubifs: Kill unneeded locking in ubifs_init_security
-Date: Wed,  8 Jul 2015 11:46:36 +0200
-Message-Id: <1436348796-19725-1-git-send-email-richard@nod.at>
+From: Roger Quadros <rogerq@ti.com>
+To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+CC: <akinobu.mita@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v2] mtd: mtd_oobtest: Fix the address offset with vary_offset
+ case
+Date: Wed, 8 Jul 2015 14:50:19 +0300
+Message-ID: <1436356219-5085-1-git-send-email-rogerq@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,93 +17,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixes the following lockdep splat:
-[    1.244527] =============================================
-[    1.245193] [ INFO: possible recursive locking detected ]
-[    1.245193] 4.2.0-rc1+ #37 Not tainted
-[    1.245193] ---------------------------------------------
-[    1.245193] cp/742 is trying to acquire lock:
-[    1.245193]  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff812b3f69>] ubifs_init_security+0x29/0xb0
-[    1.245193]
-[    1.245193] but task is already holding lock:
-[    1.245193]  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff81198e7f>] path_openat+0x3af/0x1280
-[    1.245193]
-[    1.245193] other info that might help us debug this:
-[    1.245193]  Possible unsafe locking scenario:
-[    1.245193]
-[    1.245193]        CPU0
-[    1.245193]        ----
-[    1.245193]   lock(&sb->s_type->i_mutex_key#9);
-[    1.245193]   lock(&sb->s_type->i_mutex_key#9);
-[    1.245193]
-[    1.245193]  *** DEADLOCK ***
-[    1.245193]
-[    1.245193]  May be due to missing lock nesting notation
-[    1.245193]
-[    1.245193] 2 locks held by cp/742:
-[    1.245193]  #0:  (sb_writers#5){.+.+.+}, at: [<ffffffff811ad37f>] mnt_want_write+0x1f/0x50
-[    1.245193]  #1:  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff81198e7f>] path_openat+0x3af/0x1280
-[    1.245193]
-[    1.245193] stack backtrace:
-[    1.245193] CPU: 2 PID: 742 Comm: cp Not tainted 4.2.0-rc1+ #37
-[    1.245193] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.7.5-0-ge51488c-20140816_022509-build35 04/01/2014
-[    1.245193]  ffffffff8252d530 ffff88007b023a38 ffffffff814f6f49 ffffffff810b56c5
-[    1.245193]  ffff88007c30cc80 ffff88007b023af8 ffffffff810a150d ffff88007b023a68
-[    1.245193]  000000008101302a ffff880000000000 00000008f447e23f ffffffff8252d500
-[    1.245193] Call Trace:
-[    1.245193]  [<ffffffff814f6f49>] dump_stack+0x4c/0x65
-[    1.245193]  [<ffffffff810b56c5>] ? console_unlock+0x1c5/0x510
-[    1.245193]  [<ffffffff810a150d>] __lock_acquire+0x1a6d/0x1ea0
-[    1.245193]  [<ffffffff8109fa78>] ? __lock_is_held+0x58/0x80
-[    1.245193]  [<ffffffff810a1a93>] lock_acquire+0xd3/0x270
-[    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
-[    1.245193]  [<ffffffff814fc83b>] mutex_lock_nested+0x6b/0x3a0
-[    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
-[    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
-[    1.245193]  [<ffffffff812b3f69>] ubifs_init_security+0x29/0xb0
-[    1.245193]  [<ffffffff8128e286>] ubifs_create+0xa6/0x1f0
-[    1.245193]  [<ffffffff81198e7f>] ? path_openat+0x3af/0x1280
-[    1.245193]  [<ffffffff81195d15>] vfs_create+0x95/0xc0
-[    1.245193]  [<ffffffff8119929c>] path_openat+0x7cc/0x1280
-[    1.245193]  [<ffffffff8109ffe3>] ? __lock_acquire+0x543/0x1ea0
-[    1.245193]  [<ffffffff81088f20>] ? sched_clock_cpu+0x90/0xc0
-[    1.245193]  [<ffffffff81088c00>] ? calc_global_load_tick+0x60/0x90
-[    1.245193]  [<ffffffff81088f20>] ? sched_clock_cpu+0x90/0xc0
-[    1.245193]  [<ffffffff811a9cef>] ? __alloc_fd+0xaf/0x180
-[    1.245193]  [<ffffffff8119ac55>] do_filp_open+0x75/0xd0
-[    1.245193]  [<ffffffff814ffd86>] ? _raw_spin_unlock+0x26/0x40
-[    1.245193]  [<ffffffff811a9cef>] ? __alloc_fd+0xaf/0x180
-[    1.245193]  [<ffffffff81189bd9>] do_sys_open+0x129/0x200
-[    1.245193]  [<ffffffff81189cc9>] SyS_open+0x19/0x20
-[    1.245193]  [<ffffffff81500717>] entry_SYSCALL_64_fastpath+0x12/0x6f
+When vary_offset is set (e.g. test case 3), the offset is not always
+zero so memcmpshow() will show the wrong offset in the print message.
+To fix this we introduce a new function memcmpshowoffset() which takes
+offset as a parameter and displays the right offset and use it in
+the case where offset is non zero.
 
-While the lockdep splat is a false positive, becuase path_openat holds i_mutex
-of the parent directory and ubifs_init_security() tries to acquire i_mutex
-of a new inode, it reveals that taking i_mutex in ubifs_init_security() is
-in vain because it is only being called in the inode allocation path
-and therefore nobody else can see the inode yet.
+The old memcmpshow() functionality is preserved by converting it into
+a macro with offset preset to 0.
 
-Reported-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- fs/ubifs/xattr.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/mtd/tests/oobtest.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 96f3448..fd65b3f 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -652,11 +652,8 @@ int ubifs_init_security(struct inode *dentry, struct inode *inode,
+diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+index 8e8525f..3176212 100644
+--- a/drivers/mtd/tests/oobtest.c
++++ b/drivers/mtd/tests/oobtest.c
+@@ -125,7 +125,8 @@ static int write_whole_device(void)
+  * Display the address, offset and data bytes at comparison failure.
+  * Return number of bitflips encountered.
+  */
+-static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t count)
++static size_t memcmpshowoffset(loff_t addr, loff_t offset, const void *cs,
++			       const void *ct, size_t count)
  {
- 	int err;
+ 	const unsigned char *su1, *su2;
+ 	int res;
+@@ -135,8 +136,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
+ 	for (su1 = cs, su2 = ct; 0 < count; ++su1, ++su2, count--, i++) {
+ 		res = *su1 ^ *su2;
+ 		if (res) {
+-			pr_info("error @addr[0x%lx:0x%zx] 0x%x -> 0x%x diff 0x%x\n",
+-				(unsigned long)addr, i, *su1, *su2, res);
++			pr_info("error @addr[0x%lx:0x%lx] 0x%x -> 0x%x diff 0x%x\n",
++				(unsigned long)addr, (unsigned long)offset + i,
++				*su1, *su2, res);
+ 			bitflips += hweight8(res);
+ 		}
+ 	}
+@@ -144,6 +146,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
+ 	return bitflips;
+ }
  
--	mutex_lock(&inode->i_mutex);
- 	err = security_inode_init_security(inode, dentry, qstr,
- 					   &init_xattrs, 0);
--	mutex_unlock(&inode->i_mutex);
--
- 	if (err) {
- 		struct ubifs_info *c = dentry->i_sb->s_fs_info;
- 		ubifs_err(c, "cannot initialize security for inode %lu, error %d",
++#define memcmpshow(addr, cs, ct, count) memcmpshowoffset((addr), 0, (cs), (ct),\
++							 (count))
++
+ /*
+  * Compare with 0xff and show the address, offset and data bytes at
+  * comparison failure. Return number of bitflips encountered.
+@@ -228,9 +233,10 @@ static int verify_eraseblock(int ebnum)
+ 				errcnt += 1;
+ 				return err ? err : -1;
+ 			}
+-			bitflips = memcmpshow(addr, readbuf + use_offset,
+-					      writebuf + (use_len_max * i) + use_offset,
+-					      use_len);
++			bitflips = memcmpshowoffset(addr, use_offset,
++						    readbuf + use_offset,
++						    writebuf + (use_len_max * i) + use_offset,
++						    use_len);
+ 
+ 			/* verify pre-offset area for 0xff */
+ 			bitflips += memffshow(addr, 0, readbuf, use_offset);
 -- 
-1.8.4.5
+2.1.4
