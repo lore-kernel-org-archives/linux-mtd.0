@@ -1,27 +1,21 @@
-Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+Received: from mail-qg0-f48.google.com ([209.85.192.48])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCvER-0000rp-5F
- for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 19:42:11 +0000
-Date: Wed, 8 Jul 2015 14:40:51 -0500
-From: Josh Cartwright <joshc@ni.com>
-To: dwmw2@infradead.org, computersforpeace@gmail.com, michal.simek@xilinx.com
-Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net,
- grant.likely@linaro.org, gregkh@linuxfoundation.org,
- jason@lakedaemon.net, ezequiel.garcia@free-electrons.com,
- arnd@arndb.de, artem.bityutskiy@linux.intel.com,
- jussi.kivilinna@iki.fi, acourbot@nvidia.com, ivan.khoronzhuk@ti.com,
- joern@logfs.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- kpc528@gmail.com, kalluripunnaiahchoudary@gmail.com, punnaia@xilinx.com
-Subject: Re: [PATCH v7 0/3] Add arm pl353 smc nand driver for xilinx zynq soc
-Message-ID: <20150708194051.GP25028@jcartwri.amer.corp.natinst.com>
-References: <1433786918-21500-1-git-send-email-punnaia@xilinx.com>
-MIME-Version: 1.0
-In-Reply-To: <1433786918-21500-1-git-send-email-punnaia@xilinx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="+ARLBH93C7pgvpZY"
-Content-Disposition: inline
+ id 1ZCvr7-0001jJ-AE
+ for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 20:22:09 +0000
+Received: by qget71 with SMTP id t71so105860341qge.2
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Jul 2015 13:21:46 -0700 (PDT)
+From: Cory Tusar <cory.tusar@pid1solutions.com>
+To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org, shawnguo@kernel.org,
+ kernel@pengutronix.de, han.xu@freescale.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com
+Cc: stefan@agner.ch, linux@arm.linux.org.uk, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, andrew@lunn.ch,
+ Cory Tusar <cory.tusar@pid1solutions.com>
+Subject: [PATCH v1 0/7] fsl-quadspi: Allow additional device combinations.
+Date: Wed,  8 Jul 2015 16:21:14 -0400
+Message-Id: <1436386881-28088-1-git-send-email-cory.tusar@pid1solutions.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,44 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch series fixes and extends the fsl-quadspi driver to allow for
+non-contiguous and non-homogeneous SPI NOR device layouts.  The current
+driver assumes that attached devices are all of the same type, and are
+populated "in order" beginning with QSPIn_A_CS0.
 
---+ARLBH93C7pgvpZY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The updated driver and DT changes make use of the 'reg' property
+for each flash to determine the interface and chip select to which each
+device is attached.
 
-On Mon, Jun 08, 2015 at 11:38:35PM +0530, Punnaiah Choudary Kalluri wrote:
-> The following patches add arm pl353 static memory controller driver for
-> xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
-> nor/sram memory interfaces. The current implementation supports only a
-> single SMC instance and nand specific configuration.
+Patchset was tested on a custom VF610-based board with a single SPI NOR
+connected to QSPI0_B_CS0, and also on a Rev. H TWR board with dual SPI
+NOR devices connected to QSPI0_A_CS0 and QSPI0_B_CS0.  MTD tests passed
+for all devices (readtest, speedtest, and stresstest), and independent
+access to both devices was verified on the TWR system.
 
-What's the integration plan for this guy?  Looks like we missed 4.2.
-It'd be swell to get have NAND support land for Zynq in 4.3.
+Regards,
+-Cory
 
-Assuming there is nothing else holding it back:
 
-Brian- I'm assuming you'll want to take this through your tree.
+Changes since RFC:
+- Rebased onto 4.2-rc1
+- Moved the qspi1 node under aips1 where it belongs.
 
-It looks like most of the stuff in drivers/memory have historically gone
-through arm-soc/drivers, Michal- does it make sense for you to pick up
-http://lkml.kernel.org/r/1433786857-32575-1-git-send-email-punnaia@xilinx.com?
 
-Thanks,
-  Josh
+Cory Tusar (7):
+  ARM: dts: vf610: Add missing QuadSPI register mapping and names.
+  ARM: dts: vfxxx: Include support for qspi1 functionality.
+  mtd: fsl-quadspi: Support both 24- and 32-bit addressed commands.
+  mtd: fsl-quadspi: Use per-device clk_rate.
+  mtd: fsl-quadspi: Allow non-contiguous flash layouts.
+  mtd: spi-nor: Add support for Micron MT25QL02GC serial flash.
+  ARM: dts: vf610-twr: Enable QSPI and map flash devices.
 
---+ARLBH93C7pgvpZY
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../devicetree/bindings/mtd/fsl-quadspi.txt        |  15 +-
+ arch/arm/boot/dts/vf610-twr.dts                    |  39 +++
+ arch/arm/boot/dts/vfxxx.dtsi                       |  16 +-
+ drivers/mtd/spi-nor/fsl-quadspi.c                  | 313 +++++++++++----------
+ drivers/mtd/spi-nor/spi-nor.c                      |   1 +
+ 5 files changed, 232 insertions(+), 152 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAABCAAGBQJVnXy/AAoJEKp7ZBKwQFArjI0H/ir6PMmzySwqvHfaDpdP6/ac
-LvALkoUK74SaRfxjc5NrFzF7Aah0BnjAtKrW16SsJUoYyTEghx+sZ8BzAXwG0Y+C
-iVBL5dqyeu3BjJQrup9FeiXvhQ+/VBDef2iabTeWrLjznxaXnTTEMWlLH4piZp6o
-19cyseFNEAmD+jmDIXpEclLrEHkD/JcNSlRUcJXftt6DQOulwKLcxX4FIDRgk6VR
-agp4jdPT9u8J8i7VapwVIa3kRfHD12bObe+e1Joor2ogsqj2psEbHl1hJ5T1er9T
-kYU8xCBc8mIsvBfc4iCgCX6BqZmycZ2Wctmfg2BpaSnWCYNBy3TTehTuaIwzyr8=
-=sIiL
------END PGP SIGNATURE-----
-
---+ARLBH93C7pgvpZY--
+-- 
+2.3.6
