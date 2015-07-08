@@ -1,23 +1,25 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCwtx-0007Lo-GP
- for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 21:29:10 +0000
-Message-ID: <559D960F.7050802@nod.at>
-Date: Wed, 08 Jul 2015 23:28:47 +0200
-From: Richard Weinberger <richard@nod.at>
+Date: Thu, 9 Jul 2015 00:31:56 +0200
+From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+To: Bill Pringlemeir <bpringle@sympatico.ca>
+Cc: Shawn Guo <shawnguo@kernel.org>, Stefan Agner <stefan@agner.ch>,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
+ galak@codeaurora.org, shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de,
+ aaron@tastycactus.com, bpringlemeir@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/6] ARM: vf610: enable NAND Flash Controller
+Message-ID: <20150708223156.GA3103@breakpoint.cc>
+References: <1434668319-6651-1-git-send-email-stefan@agner.ch>
+ <1434668319-6651-5-git-send-email-stefan@agner.ch>
+ <20150708093801.GG28488@tiger>
+ <BLU436-SMTP255283C042EDEF59D9BA0CFB8910@phx.gbl>
 MIME-Version: 1.0
-To: nick <xerofoify@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] jffs2:Fix error paths return value for the function
- read_unknown
-References: <1436389195-16522-1-git-send-email-xerofoify@gmail.com>
- <CAFLxGvy+-rWQzxgHFq86bH47YM3KEU2yUh1QdJhbA4JtHkT7QA@mail.gmail.com>
- <559D943B.1030708@gmail.com>
-In-Reply-To: <559D943B.1030708@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BLU436-SMTP255283C042EDEF59D9BA0CFB8910@phx.gbl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,9 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> On Wed, Jul 8, 2015 at 10:59 PM, Nicholas Krause <xerofoify@gmail.com> wrote:
+On Wed, Jul 08, 2015 at 10:32:54AM -0400, Bill Pringlemeir wrote:
+> >> diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+> >> index 3a3d3e9..9358135 100644
+> >> --- a/arch/arm/mach-imx/Kconfig
+> >> +++ b/arch/arm/mach-imx/Kconfig
+> >>>> -589,6 +589,7 @@ config SOC_VF610
+> >> 	select PINCTRL_VF610
+> >> 	select PL310_ERRATA_769419 if CACHE_L2X0
+> >> 	select SMP_ON_UP if SMP
+> >> +	select HAVE_NAND_VF610_NFC
+> 
+> > I'm not sure about the benefit of having this option, except we have
+> > to have this additional architecture patch.
+> 
+> For other SOC, like the PowerPC or ColdFire CPUs with this controller,
+> it was a way to mark the controller as populated.  Otherwise, the
+> Kconfig entry to select the controller will pop up for everybody.
+> 
+> Is there a better way to do this?
 
-Oh, damn. I should have stopped reading here. /ignore.
+use
+	depends on SOC_VF610
+instead.
 
-Thanks,
-//richard
+Sebastian
