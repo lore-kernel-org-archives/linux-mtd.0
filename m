@@ -1,11 +1,21 @@
-From: Roger Quadros <rogerq@ti.com>
-To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-CC: <akinobu.mita@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2] mtd: mtd_oobtest: Fix the address offset with vary_offset
- case
-Date: Wed, 8 Jul 2015 14:50:19 +0300
-Message-ID: <1436356219-5085-1-git-send-email-rogerq@ti.com>
+Message-ID: <BLU436-SMTP255283C042EDEF59D9BA0CFB8910@phx.gbl>
+From: Bill Pringlemeir <bpringle@sympatico.ca>
+To: Shawn Guo <shawnguo@kernel.org>
+CC: Stefan Agner <stefan@agner.ch>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, sebastian@breakpoint.cc, robh+dt@kernel.org,
+ pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
+ galak@codeaurora.org, shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
+ bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/6] ARM: vf610: enable NAND Flash Controller
+References: <1434668319-6651-1-git-send-email-stefan@agner.ch>
+ <1434668319-6651-5-git-send-email-stefan@agner.ch>
+ <20150708093801.GG28488@tiger>
+Date: Wed, 8 Jul 2015 10:32:54 -0400
+In-Reply-To: <20150708093801.GG28488@tiger> (Shawn Guo's message of "Wed, 8
+ Jul 2015 17:38:01 +0800")
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -17,69 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When vary_offset is set (e.g. test case 3), the offset is not always
-zero so memcmpshow() will show the wrong offset in the print message.
-To fix this we introduce a new function memcmpshowoffset() which takes
-offset as a parameter and displays the right offset and use it in
-the case where offset is non zero.
 
-The old memcmpshow() functionality is preserved by converting it into
-a macro with offset preset to 0.
+On  8 Jul 2015, shawnguo@kernel.org wrote:
+> On Fri, Jun 19, 2015 at 12:58:37AM +0200, Stefan Agner wrote:
+>> Enable the NAND Flash Controller driver which is part of the Vybrid
+>> SoC by default.
+>>
+>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>> ---
+>> arch/arm/mach-imx/Kconfig | 1 +
+>> 1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+>> index 3a3d3e9..9358135 100644
+>> --- a/arch/arm/mach-imx/Kconfig
+>> +++ b/arch/arm/mach-imx/Kconfig
+>>>> -589,6 +589,7 @@ config SOC_VF610
+>> 	select PINCTRL_VF610
+>> 	select PL310_ERRATA_769419 if CACHE_L2X0
+>> 	select SMP_ON_UP if SMP
+>> +	select HAVE_NAND_VF610_NFC
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- drivers/mtd/tests/oobtest.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+> I'm not sure about the benefit of having this option, except we have
+> to have this additional architecture patch.
 
-diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
-index 8e8525f..3176212 100644
---- a/drivers/mtd/tests/oobtest.c
-+++ b/drivers/mtd/tests/oobtest.c
-@@ -125,7 +125,8 @@ static int write_whole_device(void)
-  * Display the address, offset and data bytes at comparison failure.
-  * Return number of bitflips encountered.
-  */
--static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t count)
-+static size_t memcmpshowoffset(loff_t addr, loff_t offset, const void *cs,
-+			       const void *ct, size_t count)
- {
- 	const unsigned char *su1, *su2;
- 	int res;
-@@ -135,8 +136,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
- 	for (su1 = cs, su2 = ct; 0 < count; ++su1, ++su2, count--, i++) {
- 		res = *su1 ^ *su2;
- 		if (res) {
--			pr_info("error @addr[0x%lx:0x%zx] 0x%x -> 0x%x diff 0x%x\n",
--				(unsigned long)addr, i, *su1, *su2, res);
-+			pr_info("error @addr[0x%lx:0x%lx] 0x%x -> 0x%x diff 0x%x\n",
-+				(unsigned long)addr, (unsigned long)offset + i,
-+				*su1, *su2, res);
- 			bitflips += hweight8(res);
- 		}
- 	}
-@@ -144,6 +146,9 @@ static size_t memcmpshow(loff_t addr, const void *cs, const void *ct, size_t cou
- 	return bitflips;
- }
- 
-+#define memcmpshow(addr, cs, ct, count) memcmpshowoffset((addr), 0, (cs), (ct),\
-+							 (count))
-+
- /*
-  * Compare with 0xff and show the address, offset and data bytes at
-  * comparison failure. Return number of bitflips encountered.
-@@ -228,9 +233,10 @@ static int verify_eraseblock(int ebnum)
- 				errcnt += 1;
- 				return err ? err : -1;
- 			}
--			bitflips = memcmpshow(addr, readbuf + use_offset,
--					      writebuf + (use_len_max * i) + use_offset,
--					      use_len);
-+			bitflips = memcmpshowoffset(addr, use_offset,
-+						    readbuf + use_offset,
-+						    writebuf + (use_len_max * i) + use_offset,
-+						    use_len);
- 
- 			/* verify pre-offset area for 0xff */
- 			bitflips += memffshow(addr, 0, readbuf, use_offset);
--- 
-2.1.4
+For other SOC, like the PowerPC or ColdFire CPUs with this controller,
+it was a way to mark the controller as populated.  Otherwise, the
+Kconfig entry to select the controller will pop up for everybody.
+
+Is there a better way to do this?
+
+
+>>
+>> 	help
+>> 	  This enables support for Freescale Vybrid VF610 processor.
