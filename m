@@ -1,17 +1,23 @@
-Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
+Received: from thoth.sbs.de ([192.35.17.2])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCiJn-0001SV-2k
- for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 05:54:51 +0000
-Received: by igau2 with SMTP id u2so54762352iga.0
- for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2015 22:54:27 -0700 (PDT)
-From: Rajat Jain <rajatja@google.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>,
- Rajat Jain <rajatxjain@gmail.com>
-Subject: [PATCH] mtd: denali: Use module_pci_driver()
-Date: Tue,  7 Jul 2015 22:54:03 -0700
-Message-Id: <1436334843-27480-1-git-send-email-rajatja@google.com>
+ id 1ZCjlJ-0006Bh-NS
+ for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 07:27:22 +0000
+From: "Egli, Samuel" <samuel.egli@siemens.com>
+To: Richard Weinberger <richard@nod.at>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: autoresize causes insufficient reservation of PEBs for bad PEB
+ handling
+Date: Wed, 8 Jul 2015 07:26:57 +0000
+Message-ID: <27E9275BC1C8554E840881B19B62BE421A96B3@DENBGAT9EI1MSX.ww902.siemens.net>
+References: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
+ <CAFLxGvz4=hjkawWa4SWD6P588J7RUOX4=X+pdU8Rd0WrynOOBQ@mail.gmail.com>
+ <27E9275BC1C8554E840881B19B62BE421A927A@DENBGAT9EI1MSX.ww902.siemens.net>
+ <559C401E.4000601@nod.at>
+In-Reply-To: <559C401E.4000601@nod.at>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use module_pci_driver, since init and exit functions only register
-and unregister the pci driver, respectively.
-
-Signed-off-by: Rajat Jain <rajatja@google.com>
-Signed-off-by: Rajat Jain <rajatxjain@gmail.com>
----
- drivers/mtd/nand/denali_pci.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
-
-diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-index 6e2f387..29e5d0c 100644
---- a/drivers/mtd/nand/denali_pci.c
-+++ b/drivers/mtd/nand/denali_pci.c
-@@ -129,14 +129,4 @@ static struct pci_driver denali_pci_driver = {
- 	.remove = denali_pci_remove,
- };
- 
--static int denali_init_pci(void)
--{
--	return pci_register_driver(&denali_pci_driver);
--}
--module_init(denali_init_pci);
--
--static void denali_exit_pci(void)
--{
--	pci_unregister_driver(&denali_pci_driver);
--}
--module_exit(denali_exit_pci);
-+module_pci_driver(denali_pci_driver);
--- 
-2.4.3.573.g4eafbef
+SGkgUmljaGFyZCwNCg0KPj4+IFsuLi5dDQo+Pj4NCj4+PiBJJ20gYSBiaXQgcHV6emxlZC4gQ2Fu
+IHlvdSBwbGVhc2Ugc2hhcmUgdGhlIGZ1bGwga2VybmVsIGxvZz8NCj4+DQo+PiB2b2xfZmxhZ3M9
+YXV0b3Jlc2l6ZQ0KPj4gaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYW5vbnltb3VzLzdhNGI3OTBi
+MjdhYWM4MTQyMWFiDQo+DQo+VGhlcmUgYXJlIG1vcmUgb2Rkcy4NCj4NCj5JIGRvbid0IHNlZSBh
+IG1lc3NhZ2UgbGlrZSAiWyAgIDkwLjc1NzI4Ml0gdWJpMDogdm9sdW1lIDINCj4oImNvbmZpZ3Vy
+YXRpb24iKSByZS1zaXplZCBmcm9tIDgwIHRvIDc5NDggTEVCcyINCj5pbiB0aGF0IGxvZy4gU28s
+IHJlLXNpemUgZGlkIG5vdCBoYXBwZW4uDQo+DQo+SXMgdGhpcyBhIHByaXN0aW5lIGtlcm5lbCBv
+ciBkb2VzIGl0IGNvbnRhaW4gc29tZSB2ZW5kb3IgInR3ZWFrcyI/DQoNCmhtbSwgdGhhbmtzIGZv
+ciB0aGUgaGludC4gV2UgaGF2ZSBzb21lIHBhdGNoZXMgb24gdG9wIG9mIDMuMTQuMzYuDQpNb3N0
+bHkgbXRkOm5hbmQ6b21hcCBhbmQgc29tZSBvdGhlciBUSSBwYXRjaGVzLg0KDQpJIHNlZSB0byBl
+bmFibGUgc29tZSBkZWJ1ZyBwcmludHMgaW4gdWJpIHRvIGdldCBtb3JlIGluZm9ybWF0aW9uLg0K
+DQpUaGFua3MsDQoNClNhbQ0KDQoNCiANCg==
