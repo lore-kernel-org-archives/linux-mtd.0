@@ -1,19 +1,19 @@
-Received: from mx.eurodcs.com ([89.110.144.168])
+Received: from mail-oi0-x233.google.com ([2607:f8b0:4003:c06::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCu4u-0006rh-9Z
- for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 18:28:17 +0000
-Received: from goemail-server.goerlitz.int (unknown [217.146.148.195])
- by mx.eurodcs.com (Postfix) with ESMTPSA id 6A2C181297
- for <linux-mtd@lists.infradead.org>; Wed,  8 Jul 2015 20:27:50 +0200 (CEST)
-From: Stelling Carsten <Carsten.Stelling@goerlitz.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Wed, 8 Jul 2015 20:27:44 +0200
-Subject: Reading from UBI volume character device did not work.
-Message-ID: <02855DE82B1CA94A9115CCD637A13256CF6CC4EF02@goemail-server>
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1ZCv2f-00025C-16
+ for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 19:30:02 +0000
+Received: by oiyy130 with SMTP id y130so173619355oiy.0
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Jul 2015 12:29:39 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <02855DE82B1CA94A9115CCD637A13256CF6CC4EF02@goemail-server>
+References: <02855DE82B1CA94A9115CCD637A13256CF6CC4EF02@goemail-server>
+Date: Wed, 8 Jul 2015 21:29:39 +0200
+Message-ID: <CAFLxGvxB5OCU_Afr_7vQ-3h8HLWNO63AK+U3gUZNX3Ry+k0U0w@mail.gmail.com>
+Subject: Re: Reading from UBI volume character device did not work.
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Stelling Carsten <Carsten.Stelling@goerlitz.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8sDQoNCkknbSB0cnlpbmcgdG8gcmVhZCBmcm9tIGEgVUJJIHZvbHVtZSB1c2luZyB0aGUg
-Y2hhcmFjdGVyIGRldmljZSAvZGV2L3ViaTIsDQpidXQgcmVhZCBhbHdheXMgcmV0dXJucyAwLiBN
-eSBrZXJuZWwgdmVyc2lvbiBpcyAzLjE0LjMxIChubyB1YmlibG9jaykuDQoNCmZkID0gb3Blbigi
-L2Rldi91YmkyIiwgT19SRE9OTFkpOw0KcmVhZChmZCwgYnVmZmVyLCBjb3VudCk7DQoNCkkgc2V0
-IGNvdW50IHRvIGRpZmZlcmVudCB2YWx1ZXMsIGVzcGVjaWFsbHkgdG8gbWluX2lvX3NpemUgPSAy
-MDQ4LCBidXQgd2l0aG91dCBzdWNjZXNzLg0KUmVhZGluZyBmcm9tIHRoZSB1bmRlcmx5aW5nIE1U
-RCBkZXZpY2UgIi9kZXYvbXRkOCIgc3VjY2VlZHMuDQpXaGF0IGRpZCBJIG1pc3M/DQoNCk15IHRh
-c2sgaXMsIGFzIHN1Z2dlc3RlZCBieSB0aGUgVUJJRlMgZG9jdW1lbnRhdGlvbiwgdG8gd3JpdGUg
-YSB1c2Vyc3BhY2UgZGFlbW9uDQpvbiB0b3Agb2YgVUJJLCB0aGF0IHJlYWRzIGFsbCBMRUJzIGFu
-ZCBhc3NvY2lhdGVkIFBFQnMgaW4gdGhlIGJhY2tncm91bmQsIHRvIGxldCBVQkkNCmhhbmRsZSBy
-YXJlbHkgYWNjZXNzZWQgcGFnZXMgd2l0aCBhY2N1bXVsYXRlZCBiaXQtZmxpcHMuDQoNCllvdXIg
-aGVscCBpcyB2ZXJ5IG11Y2ggYXBwcmVjaWF0ZWQuDQoNClRoYW5rcywNCg0KQ2Fyc3Rlbg0KDQoN
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQogQ2Fyc3RlbiBTdGVsbGlu
-Zw0KRiZFIEhhcmR3YXJlIC8gUiZEIEhhcmR3YXJlDQoNCkfDllJMSVRaIEFrdGllbmdlc2VsbHNj
-aGFmdCB8IEF1Z3VzdC1UaHlzc2VuLVN0cmHDn2UgMzIgfCBELTU2MDcwIEtvYmxlbnoNClQ6ICs0
-OS0yNjEtOTI4NS0zMzYgfCBNOiAgfCBGOiArNDktMjYxLTkyODUtMTkwDQpNYWlsIHRvOiBDYXJz
-dGVuLlN0ZWxsaW5nQGdvZXJsaXR6LmNvbSB8IHd3dy5nb2VybGl0ei5jb20NCg0KVm9yc3RhbmQg
-fCBFeGVjdXRpdmUgQm9hcmQ6IERpcGwuLUluZy4gTm9yYmVydCBCYXJ0c2NoLCBKw7ZyZyBGaWdn
-ZQ0KVm9yc2l0emVuZGVyIGRlcyBBdWZzaWNodHNyYXRlcyB8IENoYWlybWFuIG9mIHRoZSBzdXBl
-cnZpc29yeSBib2FyZDogTm9yYmVydCBXYWduZXINClJlZ2lzdGVyZ2VyaWNodCB8IENvdXJ0IG9m
-IHJlZ2lzdHJhdGlvbjogQW10c2dlcmljaHQgS29ibGVueiBIUkIgNTM0Ng0KU2l0eiBkZXIgR2Vz
-ZWxsc2NoYWZ0IHwgUmVnaXN0ZXJlZCBvZmZpY2U6IEtvYmxlbnoNCkltbWVyIHVwLXRvLWRhdGUg
-bWl0IHVuc2VyZW0gTmV3c2xldHRlciEgSGllciBnZWh0J3MgenVyIEFubWVsZHVuZzogd3d3Lmdv
-ZXJsaXR6LmNvbS9uZXdzbGV0dGVyDQpNZW1iZXIgb2YgdGhlIElEUy1Hcm91cA0KDQo=
+Hi Carsten,
+
+On Wed, Jul 8, 2015 at 8:27 PM, Stelling Carsten
+<Carsten.Stelling@goerlitz.com> wrote:
+> Hello,
+>
+> I'm trying to read from a UBI volume using the character device /dev/ubi2,
+> but read always returns 0. My kernel version is 3.14.31 (no ubiblock).
+>
+> fd = open("/dev/ubi2", O_RDONLY);
+> read(fd, buffer, count);
+>
+> I set count to different values, especially to min_io_size = 2048, but without success.
+> Reading from the underlying MTD device "/dev/mtd8" succeeds.
+> What did I miss?
+
+read() should return -1 with errno = EINVAL as you cannot read from /dev/ubi2.
+read/write access is only implemented for volume devices like /dev/ubi2_X.
+
+> My task is, as suggested by the UBIFS documentation, to write a userspace daemon
+> on top of UBI, that reads all LEBs and associated PEBs in the background, to let UBI
+> handle rarely accessed pages with accumulated bit-flips.
+
+Please note that this check is not perfect.
+You'll miss all pages which contain UBI meta data like EC/VID headers.
+
+This reminds me that I should carry on with my bitrot patch set. B-)
+
+-- 
+Thanks,
+//richard
