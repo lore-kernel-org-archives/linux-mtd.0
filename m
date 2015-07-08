@@ -1,23 +1,17 @@
-Received: from mail-qg0-f44.google.com ([209.85.192.44])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCvrN-0001OH-2a
- for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 20:22:28 +0000
-Received: by qget71 with SMTP id t71so105864237qge.2
- for <linux-mtd@lists.infradead.org>; Wed, 08 Jul 2015 13:22:03 -0700 (PDT)
-From: Cory Tusar <cory.tusar@pid1solutions.com>
-To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org, shawnguo@kernel.org,
- kernel@pengutronix.de, han.xu@freescale.com, dwmw2@infradead.org,
- computersforpeace@gmail.com
-Cc: stefan@agner.ch, linux@arm.linux.org.uk, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, andrew@lunn.ch,
- Cory Tusar <cory.tusar@pid1solutions.com>
-Subject: [PATCH v1 7/7] ARM: dts: vf610-twr: Enable QSPI and map flash devices.
-Date: Wed,  8 Jul 2015 16:21:21 -0400
-Message-Id: <1436386881-28088-8-git-send-email-cory.tusar@pid1solutions.com>
-In-Reply-To: <1436386881-28088-1-git-send-email-cory.tusar@pid1solutions.com>
-References: <1436386881-28088-1-git-send-email-cory.tusar@pid1solutions.com>
+Received: from mail-ie0-x22b.google.com ([2607:f8b0:4001:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZCwS5-0000yt-1h
+ for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 21:00:21 +0000
+Received: by iecvh10 with SMTP id vh10so164347506iec.3
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Jul 2015 13:59:59 -0700 (PDT)
+From: Nicholas Krause <xerofoify@gmail.com>
+To: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] jffs2:Fix error paths return value for the function
+ read_unknown
+Date: Wed,  8 Jul 2015 16:59:55 -0400
+Message-Id: <1436389195-16522-1-git-send-email-xerofoify@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,74 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit enables the qspi0 functional block, and maps the two
-flash devices connected to QSPI0_A_CS0 and QSPI0_B_CS0 to individual MTD
-devices.
+This fixes the error paths in the function read_unknown that return
+a value to correctly return -EIO rather then the kernel value for
+successful function execution of zero to indicate to this function's
+callers that a failure has occurred related to I/O and needs to be
+handled by this function's caller.
 
-Tested using mtd_readtest, mtd_speedtest, and mtd_stresstest on a Rev. H
-TWR board.
-
-Signed-off-by: Cory Tusar <cory.tusar@pid1solutions.com>
+Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
 ---
- arch/arm/boot/dts/vf610-twr.dts | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ fs/jffs2/readinode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
-index 375ab23..6ae2e7c 100644
---- a/arch/arm/boot/dts/vf610-twr.dts
-+++ b/arch/arm/boot/dts/vf610-twr.dts
-@@ -246,6 +246,23 @@
- 			>;
- 		};
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 28e0aab..63bf879 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -875,7 +875,7 @@ static inline int read_unknown(struct jffs2_sb_info *c, struct jffs2_raw_node_re
+ 			    je16_to_cpu(un->magic), je16_to_cpu(un->nodetype),
+ 			    je32_to_cpu(un->totlen), je32_to_cpu(un->hdr_crc));
+ 		jffs2_mark_node_obsolete(c, ref);
+-		return 0;
++		return -EIO;
+ 	}
  
-+		pinctrl_qspi0: qspi0grp {
-+			fsl,pins = <
-+				VF610_PAD_PTD0__QSPI0_A_QSCK		0x31e2
-+				VF610_PAD_PTD1__QSPI0_A_CS0		0x31e2
-+				VF610_PAD_PTD2__QSPI0_A_DATA3		0x31e3
-+				VF610_PAD_PTD3__QSPI0_A_DATA2		0x31e3
-+				VF610_PAD_PTD4__QSPI0_A_DATA1		0x31e3
-+				VF610_PAD_PTD5__QSPI0_A_DATA0		0x31e3
-+				VF610_PAD_PTD7__QSPI0_B_QSCK		0x31e2
-+				VF610_PAD_PTD8__QSPI0_B_CS0		0x31e2
-+				VF610_PAD_PTD9__QSPI0_B_DATA3		0x31e3
-+				VF610_PAD_PTD10__QSPI0_B_DATA2		0x31e3
-+				VF610_PAD_PTD11__QSPI0_B_DATA1		0x31e3
-+				VF610_PAD_PTD12__QSPI0_B_DATA0		0x31e3
-+			>;
-+		};
-+
- 		pinctrl_sai2: sai2grp {
- 			fsl,pins = <
- 				VF610_PAD_PTA16__SAI2_TX_BCLK		0x02ed
-@@ -280,6 +297,28 @@
- 	status = "okay";
- };
+ 	un->nodetype = cpu_to_je16(JFFS2_NODE_ACCURATE | je16_to_cpu(un->nodetype));
+@@ -904,7 +904,7 @@ static inline int read_unknown(struct jffs2_sb_info *c, struct jffs2_raw_node_re
+ 		JFFS2_NOTICE("unknown RWCOMPAT_DELETE nodetype %#04X at %#08x\n",
+ 			     je16_to_cpu(un->nodetype), ref_offset(ref));
+ 		jffs2_mark_node_obsolete(c, ref);
+-		return 0;
++		return -EIO;
+ 	}
  
-+&qspi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_qspi0>;
-+	status = "okay";
-+
-+	flash0: s25fl128s@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "spansion,s25fl128s";
-+		spi-max-frequency = <66000000>;
-+		reg = <0>;
-+	};
-+
-+	flash1: s25fl128s@2 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "spansion,s25fl128s";
-+		spi-max-frequency = <66000000>;
-+		reg = <2>;
-+	};
-+};
-+
- &sai2 {
- 	#sound-dai-cells = <0>;
- 	pinctrl-names = "default";
+ 	return 0;
 -- 
-2.3.6
+2.1.4
