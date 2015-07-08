@@ -1,23 +1,22 @@
-Received: from thoth.sbs.de ([192.35.17.2])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCjlJ-0006Bh-NS
- for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 07:27:22 +0000
-From: "Egli, Samuel" <samuel.egli@siemens.com>
-To: Richard Weinberger <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: autoresize causes insufficient reservation of PEBs for bad PEB
- handling
-Date: Wed, 8 Jul 2015 07:26:57 +0000
-Message-ID: <27E9275BC1C8554E840881B19B62BE421A96B3@DENBGAT9EI1MSX.ww902.siemens.net>
-References: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
- <CAFLxGvz4=hjkawWa4SWD6P588J7RUOX4=X+pdU8Rd0WrynOOBQ@mail.gmail.com>
- <27E9275BC1C8554E840881B19B62BE421A927A@DENBGAT9EI1MSX.ww902.siemens.net>
- <559C401E.4000601@nod.at>
-In-Reply-To: <559C401E.4000601@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Date: Wed, 8 Jul 2015 17:38:01 +0800
+From: Shawn Guo <shawnguo@kernel.org>
+To: Stefan Agner <stefan@agner.ch>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
+ galak@codeaurora.org, shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de,
+ aaron@tastycactus.com, bpringlemeir@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/6] ARM: vf610: enable NAND Flash Controller
+Message-ID: <20150708093801.GG28488@tiger>
+References: <1434668319-6651-1-git-send-email-stefan@agner.ch>
+ <1434668319-6651-5-git-send-email-stefan@agner.ch>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1434668319-6651-5-git-send-email-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCwNCg0KPj4+IFsuLi5dDQo+Pj4NCj4+PiBJJ20gYSBiaXQgcHV6emxlZC4gQ2Fu
-IHlvdSBwbGVhc2Ugc2hhcmUgdGhlIGZ1bGwga2VybmVsIGxvZz8NCj4+DQo+PiB2b2xfZmxhZ3M9
-YXV0b3Jlc2l6ZQ0KPj4gaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYW5vbnltb3VzLzdhNGI3OTBi
-MjdhYWM4MTQyMWFiDQo+DQo+VGhlcmUgYXJlIG1vcmUgb2Rkcy4NCj4NCj5JIGRvbid0IHNlZSBh
-IG1lc3NhZ2UgbGlrZSAiWyAgIDkwLjc1NzI4Ml0gdWJpMDogdm9sdW1lIDINCj4oImNvbmZpZ3Vy
-YXRpb24iKSByZS1zaXplZCBmcm9tIDgwIHRvIDc5NDggTEVCcyINCj5pbiB0aGF0IGxvZy4gU28s
-IHJlLXNpemUgZGlkIG5vdCBoYXBwZW4uDQo+DQo+SXMgdGhpcyBhIHByaXN0aW5lIGtlcm5lbCBv
-ciBkb2VzIGl0IGNvbnRhaW4gc29tZSB2ZW5kb3IgInR3ZWFrcyI/DQoNCmhtbSwgdGhhbmtzIGZv
-ciB0aGUgaGludC4gV2UgaGF2ZSBzb21lIHBhdGNoZXMgb24gdG9wIG9mIDMuMTQuMzYuDQpNb3N0
-bHkgbXRkOm5hbmQ6b21hcCBhbmQgc29tZSBvdGhlciBUSSBwYXRjaGVzLg0KDQpJIHNlZSB0byBl
-bmFibGUgc29tZSBkZWJ1ZyBwcmludHMgaW4gdWJpIHRvIGdldCBtb3JlIGluZm9ybWF0aW9uLg0K
-DQpUaGFua3MsDQoNClNhbQ0KDQoNCiANCg==
+On Fri, Jun 19, 2015 at 12:58:37AM +0200, Stefan Agner wrote:
+> Enable the NAND Flash Controller driver which is part of the Vybrid
+> SoC by default.
+> 
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>  arch/arm/mach-imx/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+> index 3a3d3e9..9358135 100644
+> --- a/arch/arm/mach-imx/Kconfig
+> +++ b/arch/arm/mach-imx/Kconfig
+> @@ -589,6 +589,7 @@ config SOC_VF610
+>  	select PINCTRL_VF610
+>  	select PL310_ERRATA_769419 if CACHE_L2X0
+>  	select SMP_ON_UP if SMP
+> +	select HAVE_NAND_VF610_NFC
+
+I'm not sure about the benefit of having this option, except we have to
+have this additional architecture patch.
+
+Shawn
+
+>  
+>  	help
+>  	  This enables support for Freescale Vybrid VF610 processor.
+> -- 
+> 2.4.2
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+> 
