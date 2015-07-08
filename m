@@ -1,15 +1,17 @@
-Message-ID: <559C80B9.8060200@huawei.com>
-Date: Wed, 8 Jul 2015 09:45:29 +0800
-From: Sheng Yong <shengyong1@huawei.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, Wei Fang <fangwei1@huawei.com>
-CC: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
- "dedekind1@gmail.com >> Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: Re: [PATCH] jffs2: remove unneeded conditions
-References: <558E59C9.2070207@huawei.com> <20150707201843.GH18370@brian-ubuntu>
-In-Reply-To: <20150707201843.GH18370@brian-ubuntu>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZCiJn-0001SV-2k
+ for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 05:54:51 +0000
+Received: by igau2 with SMTP id u2so54762352iga.0
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2015 22:54:27 -0700 (PDT)
+From: Rajat Jain <rajatja@google.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>,
+ Rajat Jain <rajatxjain@gmail.com>
+Subject: [PATCH] mtd: denali: Use module_pci_driver()
+Date: Tue,  7 Jul 2015 22:54:03 -0700
+Message-Id: <1436334843-27480-1-git-send-email-rajatja@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,105 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Brain and Wei Fang,
+Use module_pci_driver, since init and exit functions only register
+and unregister the pci driver, respectively.
 
-#CCed Artem Bityutskiy.
+Signed-off-by: Rajat Jain <rajatja@google.com>
+Signed-off-by: Rajat Jain <rajatxjain@gmail.com>
+---
+ drivers/mtd/nand/denali_pci.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-On 7/8/2015 4:18 AM, Brian Norris wrote:
-> Hi Wei,
-> 
-> On Sat, Jun 27, 2015 at 04:07:37PM +0800, Wei Fang wrote:
->> Since len must not be smaller than JFFS2_MIN_NODE_HEADER, if
->> "len < X" is true, than "JFFS2_MIN_NODE_HEADER < X" must be true,
->> so it can be removed.
-> 
-> Huh? This comment doesn't exactly make sense to me. It seems like when
-> reasoning about a safety check, you're assuming the safety check will
-> already pass. Can you elaborate your reasoning here?
-> 
-> Also, did you test these changes? Are you solving any real problem?
-> 
->> Signed-off-by: Wei Fang <fangwei1@huawei.com>
->> ---
->>  fs/jffs2/readinode.c | 9 +++------
->>  1 file changed, 3 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
->> index dddbde4..b9bd3ad 100644
->> --- a/fs/jffs2/readinode.c
->> +++ b/fs/jffs2/readinode.c
->> @@ -1059,8 +1059,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
->>
->>  		case JFFS2_NODETYPE_DIRENT:
->>
->> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_dirent) &&
-> 
-> ^^ The original comparison here is kind of strange. I see:
-> 
-> #define JFFS2_MIN_NODE_HEADER sizeof(struct jffs2_raw_dirent)
-> 
-> which means that we're comparing:
-> 
-> 			if (sizeof(struct jffs2_raw_dirent) < sizeof(struct jffs2_raw_dirent) && ...)
-> 
-> AFAIK, that comparison will *always* be false, and so the entire
-> condition will always be false. Not sure if that's intentional.
-According to the comment,
-	"At this point we don't know the type of the node we're going
-	 to read, so we do not know the size of its header. In order
-	 to minimize the amount of flash IO we assume the node has
-	 size = JFFS2_MIN_NODE_HEADER."
-in order to save overhead of flash IO, jffs2 reads JFFS2_MIN_NODE_HEADER
-bytes first. This is enough to detect the node type. IMO, for node whose
-type is JFFS2_NODETYPE_DIRENT, there is no need to read more, so the whole
-block of if statement can be removed.
-
-And as Brain said, the modification needs some test.
-
-thanks,
-Sheng
-> 
->> -			    len < sizeof(struct jffs2_raw_dirent)) {
->> +			if (len < sizeof(struct jffs2_raw_dirent)) {
-> 
-> Therefore, the "refactoring" you are doing seems to actually make a
-> logical change. If nothing else, it makes it harder (likely impossible)
-> for the compiler to reason that the conditional code is all dead code.
-> I'm not sure if that's a good or a bad thing, as I haven't figured out
-> the full intent of this code in the first place.
-> 
->>  				err = read_more(c, ref, sizeof(struct jffs2_raw_dirent), &len, buf);
->>  				if (unlikely(err))
->>  					goto free_out;
->> @@ -1074,8 +1073,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
->>
->>  		case JFFS2_NODETYPE_INODE:
->>
->> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_inode) &&
->> -			    len < sizeof(struct jffs2_raw_inode)) {
->> +			if (len < sizeof(struct jffs2_raw_inode)) {
->>  				err = read_more(c, ref, sizeof(struct jffs2_raw_inode), &len, buf);
->>  				if (unlikely(err))
->>  					goto free_out;
->> @@ -1088,8 +1086,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
->>  			break;
->>
->>  		default:
->> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_unknown_node) &&
->> -			    len < sizeof(struct jffs2_unknown_node)) {
->> +			if (len < sizeof(struct jffs2_unknown_node)) {
->>  				err = read_more(c, ref, sizeof(struct jffs2_unknown_node), &len, buf);
->>  				if (unlikely(err))
->>  					goto free_out;
-> 
-> At any rate, I'm not confident in this patch without a lot more
-> explanation, so I will not be taking it as-is.
-> 
-> Thanks,
-> Brian
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
+diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
+index 6e2f387..29e5d0c 100644
+--- a/drivers/mtd/nand/denali_pci.c
++++ b/drivers/mtd/nand/denali_pci.c
+@@ -129,14 +129,4 @@ static struct pci_driver denali_pci_driver = {
+ 	.remove = denali_pci_remove,
+ };
+ 
+-static int denali_init_pci(void)
+-{
+-	return pci_register_driver(&denali_pci_driver);
+-}
+-module_init(denali_init_pci);
+-
+-static void denali_exit_pci(void)
+-{
+-	pci_unregister_driver(&denali_pci_driver);
+-}
+-module_exit(denali_exit_pci);
++module_pci_driver(denali_pci_driver);
+-- 
+2.4.3.573.g4eafbef
