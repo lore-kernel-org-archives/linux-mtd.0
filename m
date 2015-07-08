@@ -1,19 +1,27 @@
-Received: from mail-oi0-x233.google.com ([2607:f8b0:4003:c06::233])
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCv2f-00025C-16
- for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 19:30:02 +0000
-Received: by oiyy130 with SMTP id y130so173619355oiy.0
- for <linux-mtd@lists.infradead.org>; Wed, 08 Jul 2015 12:29:39 -0700 (PDT)
+ id 1ZCvER-0000rp-5F
+ for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 19:42:11 +0000
+Date: Wed, 8 Jul 2015 14:40:51 -0500
+From: Josh Cartwright <joshc@ni.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com, michal.simek@xilinx.com
+Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net,
+ grant.likely@linaro.org, gregkh@linuxfoundation.org,
+ jason@lakedaemon.net, ezequiel.garcia@free-electrons.com,
+ arnd@arndb.de, artem.bityutskiy@linux.intel.com,
+ jussi.kivilinna@iki.fi, acourbot@nvidia.com, ivan.khoronzhuk@ti.com,
+ joern@logfs.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kpc528@gmail.com, kalluripunnaiahchoudary@gmail.com, punnaia@xilinx.com
+Subject: Re: [PATCH v7 0/3] Add arm pl353 smc nand driver for xilinx zynq soc
+Message-ID: <20150708194051.GP25028@jcartwri.amer.corp.natinst.com>
+References: <1433786918-21500-1-git-send-email-punnaia@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <02855DE82B1CA94A9115CCD637A13256CF6CC4EF02@goemail-server>
-References: <02855DE82B1CA94A9115CCD637A13256CF6CC4EF02@goemail-server>
-Date: Wed, 8 Jul 2015 21:29:39 +0200
-Message-ID: <CAFLxGvxB5OCU_Afr_7vQ-3h8HLWNO63AK+U3gUZNX3Ry+k0U0w@mail.gmail.com>
-Subject: Re: Reading from UBI volume character device did not work.
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Stelling Carsten <Carsten.Stelling@goerlitz.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1433786918-21500-1-git-send-email-punnaia@xilinx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="+ARLBH93C7pgvpZY"
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +31,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Carsten,
 
-On Wed, Jul 8, 2015 at 8:27 PM, Stelling Carsten
-<Carsten.Stelling@goerlitz.com> wrote:
-> Hello,
->
-> I'm trying to read from a UBI volume using the character device /dev/ubi2,
-> but read always returns 0. My kernel version is 3.14.31 (no ubiblock).
->
-> fd = open("/dev/ubi2", O_RDONLY);
-> read(fd, buffer, count);
->
-> I set count to different values, especially to min_io_size = 2048, but without success.
-> Reading from the underlying MTD device "/dev/mtd8" succeeds.
-> What did I miss?
+--+ARLBH93C7pgvpZY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-read() should return -1 with errno = EINVAL as you cannot read from /dev/ubi2.
-read/write access is only implemented for volume devices like /dev/ubi2_X.
+On Mon, Jun 08, 2015 at 11:38:35PM +0530, Punnaiah Choudary Kalluri wrote:
+> The following patches add arm pl353 static memory controller driver for
+> xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
+> nor/sram memory interfaces. The current implementation supports only a
+> single SMC instance and nand specific configuration.
 
-> My task is, as suggested by the UBIFS documentation, to write a userspace daemon
-> on top of UBI, that reads all LEBs and associated PEBs in the background, to let UBI
-> handle rarely accessed pages with accumulated bit-flips.
+What's the integration plan for this guy?  Looks like we missed 4.2.
+It'd be swell to get have NAND support land for Zynq in 4.3.
 
-Please note that this check is not perfect.
-You'll miss all pages which contain UBI meta data like EC/VID headers.
+Assuming there is nothing else holding it back:
 
-This reminds me that I should carry on with my bitrot patch set. B-)
+Brian- I'm assuming you'll want to take this through your tree.
 
--- 
+It looks like most of the stuff in drivers/memory have historically gone
+through arm-soc/drivers, Michal- does it make sense for you to pick up
+http://lkml.kernel.org/r/1433786857-32575-1-git-send-email-punnaia@xilinx.com?
+
 Thanks,
-//richard
+  Josh
+
+--+ARLBH93C7pgvpZY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAABCAAGBQJVnXy/AAoJEKp7ZBKwQFArjI0H/ir6PMmzySwqvHfaDpdP6/ac
+LvALkoUK74SaRfxjc5NrFzF7Aah0BnjAtKrW16SsJUoYyTEghx+sZ8BzAXwG0Y+C
+iVBL5dqyeu3BjJQrup9FeiXvhQ+/VBDef2iabTeWrLjznxaXnTTEMWlLH4piZp6o
+19cyseFNEAmD+jmDIXpEclLrEHkD/JcNSlRUcJXftt6DQOulwKLcxX4FIDRgk6VR
+agp4jdPT9u8J8i7VapwVIa3kRfHD12bObe+e1Joor2ogsqj2psEbHl1hJ5T1er9T
+kYU8xCBc8mIsvBfc4iCgCX6BqZmycZ2Wctmfg2BpaSnWCYNBy3TTehTuaIwzyr8=
+=sIiL
+-----END PGP SIGNATURE-----
+
+--+ARLBH93C7pgvpZY--
