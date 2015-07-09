@@ -1,23 +1,18 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZD960-0001ZH-NX
- for linux-mtd@lists.infradead.org; Thu, 09 Jul 2015 10:30:25 +0000
-Message-ID: <559E4D26.5080203@nod.at>
-Date: Thu, 09 Jul 2015 12:29:58 +0200
-From: Richard Weinberger <richard@nod.at>
+From: Ranjit Waghmode <ranjit.waghmode@xilinx.com>
+To: broonie@kernel.org, michal.simek@xilinx.com, soren.brinkmann@xilinx.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
+ marex@denx.de, shijie.huang@intel.com, juhosg@openwrt.org,
+ ben@decadent.org.uk
+CC: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ harinik@xilinx.com, punnaia@xilinx.com, ran27jit@gmail.com,
+ Ranjit Waghmode <ranjit.waghmode@xilinx.com>
+Subject: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support in Zynq
+ MPSoC GQSPI controller
+Date: Thu,  9 Jul 2015 18:14:53 +0530
+Message-ID: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
 MIME-Version: 1.0
-To: "Egli, Samuel" <samuel.egli@siemens.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: autoresize causes insufficient reservation of PEBs for bad PEB
- handling
-References: <27E9275BC1C8554E840881B19B62BE421A8FD9@DENBGAT9EI1MSX.ww902.siemens.net>
- <CAFLxGvz4=hjkawWa4SWD6P588J7RUOX4=X+pdU8Rd0WrynOOBQ@mail.gmail.com>
- <27E9275BC1C8554E840881B19B62BE421A927A@DENBGAT9EI1MSX.ww902.siemens.net>
- <559C401E.4000601@nod.at>
- <27E9275BC1C8554E840881B19B62BE421A9ADD@DENBGAT9EI1MSX.ww902.siemens.net>
-In-Reply-To: <27E9275BC1C8554E840881B19B62BE421A9ADD@DENBGAT9EI1MSX.ww902.siemens.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 09.07.2015 um 12:23 schrieb Egli, Samuel:
-> Hi Richard
-> 
->>
->> There are more odds.
->>
->> I don't see a message like "[   90.757282] ubi0: volume 2
->> ("configuration") re-sized from 80 to 7948 LEBs"
->> in that log. So, re-size did not happen.
->>
->> Is this a pristine kernel or does it contain some vendor "tweaks"?
-> 
-> The issue didn't lie in linux kernel. We have in our ubi volume
-> the uImage. So U-Boot needs to mount it and actually does
-> the resize. In U-Boot version 2014.04 there is still a 
-> older ubi driver that doesn't perform the resizing correctly.
+This series of patches is to add dual parallel and stacked mode support for
+Zynq Ultrascale+ MPSoC GQSPI controller driver.
 
-Bah. ;-\
+These are all very high level changes and expected to make an idea clear.
+Comments and suggestions are welcomed.
 
-> With U-Boot v2015.04, however, the issue is resolved.
+What is dual parallel mode?
+---------------------------
+ZynqMP GQSPI controller supports Dual Parallel mode with following functionalities:
+1) Supporting two SPI flash memories operating in parallel. 8 I/O lines.
+2) Chip selects and clock are shared to both the flash devices
+3) This mode is targeted for faster read/write speed and also doubles the size
+4) Commands/data can be transmitted/received from both the devices(mirror),
+   or only upper or only lower flash memory devices.
+5) Data arrangement:
+   With stripe enabled,
+   Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
+   Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
 
-Thanks for letting me know.
+What is stacked mode?
+---------------------
+ZynqMP GQSPI controller supports stacked mode with following functionalities:
+1) The Generic Quad-SPI controller also supports two SPI flash memories
+   in a shared bus arrangement to reduce IO pin count.
+2) Separate chip select lines
+3) Shared I/O lines
+4) This mode is targeted for increasing the flash memory and no performance
+   improvement when compared with single.
 
-> Thanks, for looking into this.
+Suggestions on MTD layer support
+--------------------------------
+In order to add above two specified modes, we may required to get some
+support from MTD layer.
 
-You're welcome!
+I'm trying to list the dependencies as follows:
+1) Support for two flashes
+2) Enable/Disable data stripe as and when required.
+3) May need to update read_sr() to get status of both flashes
+4) May also need to update read_fsr() to get status of both flashes
+5) Adjustment of offset value based on the parallel/stacked mode configuration
+6) Setting either parallel or stacked mode during the scan process.
+7) In case of stacked mode, is there a MTD concatenation support?
 
-Thanks,
-//richard
+Kindly suggest us the way by which we can proceed further for adding this
+support.
+
+Will plan to send RFC for MTD related changes, based on above dependencies.
+
+Ranjit Waghmode (2):
+  spi: zynqmp: gqspi: add support for dual parallel mode configuration
+  spi: zynqmp: gqspi: add support for stacked mode configuration
+
+ drivers/spi/spi-zynqmp-gqspi.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
+
+--
+2.1.2
