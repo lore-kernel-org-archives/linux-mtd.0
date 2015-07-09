@@ -1,22 +1,21 @@
-Received: from mx.eurodcs.com ([89.110.144.168])
+Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZDGkF-0005cW-3k
- for linux-mtd@lists.infradead.org; Thu, 09 Jul 2015 18:40:28 +0000
-Received: from goemail-server.goerlitz.int (unknown [217.146.148.195])
- by mx.eurodcs.com (Postfix) with ESMTPSA id 43CE98136B
- for <linux-mtd@lists.infradead.org>; Thu,  9 Jul 2015 20:40:02 +0200 (CEST)
-From: Stelling Carsten <Carsten.Stelling@goerlitz.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Thu, 9 Jul 2015 20:39:58 +0200
-Subject: AW: Reading from UBI volume character device did not work.
-Message-ID: <02855DE82B1CA94A9115CCD637A13256CF6CC4F15B@goemail-server>
+ id 1ZDHml-0006Px-VV
+ for linux-mtd@lists.infradead.org; Thu, 09 Jul 2015 19:47:08 +0000
+Received: by obbkm3 with SMTP id km3so178165134obb.1
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Jul 2015 12:46:46 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <02855DE82B1CA94A9115CCD637A13256CF6CC4F15B@goemail-server>
 References: <02855DE82B1CA94A9115CCD637A13256CF6CC4EF02@goemail-server>
  <CAFLxGvxB5OCU_Afr_7vQ-3h8HLWNO63AK+U3gUZNX3Ry+k0U0w@mail.gmail.com>
-In-Reply-To: <CAFLxGvxB5OCU_Afr_7vQ-3h8HLWNO63AK+U3gUZNX3Ry+k0U0w@mail.gmail.com>
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ <02855DE82B1CA94A9115CCD637A13256CF6CC4F15B@goemail-server>
+Date: Thu, 9 Jul 2015 21:46:46 +0200
+Message-ID: <CAFLxGvxCQFmt=JEnMez7Wc+SyGW6sCCsgvOWuiZj+mnhsiOrxw@mail.gmail.com>
+Subject: Re: Reading from UBI volume character device did not work.
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Stelling Carsten <Carsten.Stelling@goerlitz.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,75 +25,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KIENhcnN0ZW4gU3RlbGxp
-bmcNCkYmRSBIYXJkd2FyZSAvIFImRCBIYXJkd2FyZQ0KDQpHw5ZSTElUWiBBa3RpZW5nZXNlbGxz
-Y2hhZnQgfCBBdWd1c3QtVGh5c3Nlbi1TdHJhw59lIDMyIHwgRC01NjA3MCBLb2JsZW56DQpUOiAr
-NDktMjYxLTkyODUtMzM2IHwgTTogIHwgRjogKzQ5LTI2MS05Mjg1LTE5MA0KTWFpbCB0bzogQ2Fy
-c3Rlbi5TdGVsbGluZ0Bnb2VybGl0ei5jb20gfCB3d3cuZ29lcmxpdHouY29tDQoNClZvcnN0YW5k
-IHwgRXhlY3V0aXZlIEJvYXJkOiBEaXBsLi1JbmcuIE5vcmJlcnQgQmFydHNjaCwgSsO2cmcgRmln
-Z2UNClZvcnNpdHplbmRlciBkZXMgQXVmc2ljaHRzcmF0ZXMgfCBDaGFpcm1hbiBvZiB0aGUgc3Vw
-ZXJ2aXNvcnkgYm9hcmQ6IE5vcmJlcnQgV2FnbmVyDQpSZWdpc3RlcmdlcmljaHQgfCBDb3VydCBv
-ZiByZWdpc3RyYXRpb246IEFtdHNnZXJpY2h0IEtvYmxlbnogSFJCIDUzNDYNClNpdHogZGVyIEdl
-c2VsbHNjaGFmdCB8IFJlZ2lzdGVyZWQgb2ZmaWNlOiBLb2JsZW56DQpJbW1lciB1cC10by1kYXRl
-IG1pdCB1bnNlcmVtIE5ld3NsZXR0ZXIhIEhpZXIgZ2VodCdzIHp1ciBBbm1lbGR1bmc6IHd3dy5n
-b2VybGl0ei5jb20vbmV3c2xldHRlcg0KTWVtYmVyIG9mIHRoZSBJRFMtR3JvdXANCg0KLS0tLS1V
-cnNwcsO8bmdsaWNoZSBOYWNocmljaHQtLS0tLQ0KVm9uOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21h
-aWx0bzpyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tXQ0KR2VzZW5kZXQ6IE1pdHR3b2NoLCA4
-LiBKdWxpIDIwMTUgMjE6MzANCkFuOiBTdGVsbGluZyBDYXJzdGVuDQpDYzogbGludXgtbXRkQGxp
-c3RzLmluZnJhZGVhZC5vcmcNCkJldHJlZmY6IFJlOiBSZWFkaW5nIGZyb20gVUJJIHZvbHVtZSBj
-aGFyYWN0ZXIgZGV2aWNlIGRpZCBub3Qgd29yay4NCg0KSGkgQ2Fyc3RlbiwNCg0KT24gV2VkLCBK
-dWwgOCwgMjAxNSBhdCA4OjI3IFBNLCBTdGVsbGluZyBDYXJzdGVuDQo8Q2Fyc3Rlbi5TdGVsbGlu
-Z0Bnb2VybGl0ei5jb20+IHdyb3RlOg0KPiBIZWxsbywNCj4NCj4gSSdtIHRyeWluZyB0byByZWFk
-IGZyb20gYSBVQkkgdm9sdW1lIHVzaW5nIHRoZSBjaGFyYWN0ZXIgZGV2aWNlIC9kZXYvdWJpMiwN
-Cj4gYnV0IHJlYWQgYWx3YXlzIHJldHVybnMgMC4gTXkga2VybmVsIHZlcnNpb24gaXMgMy4xNC4z
-MSAobm8gdWJpYmxvY2spLg0KPg0KPiBmZCA9IG9wZW4oIi9kZXYvdWJpMiIsIE9fUkRPTkxZKTsN
-Cj4gcmVhZChmZCwgYnVmZmVyLCBjb3VudCk7DQo+DQo+IEkgc2V0IGNvdW50IHRvIGRpZmZlcmVu
-dCB2YWx1ZXMsIGVzcGVjaWFsbHkgdG8gbWluX2lvX3NpemUgPSAyMDQ4LCBidXQgd2l0aG91dCBz
-dWNjZXNzLg0KPiBSZWFkaW5nIGZyb20gdGhlIHVuZGVybHlpbmcgTVREIGRldmljZSAiL2Rldi9t
-dGQ4IiBzdWNjZWVkcy4NCj4gV2hhdCBkaWQgSSBtaXNzPw0KDQpyZWFkKCkgc2hvdWxkIHJldHVy
-biAtMSB3aXRoIGVycm5vID0gRUlOVkFMIGFzIHlvdSBjYW5ub3QgcmVhZCBmcm9tIC9kZXYvdWJp
-Mi4NCnJlYWQvd3JpdGUgYWNjZXNzIGlzIG9ubHkgaW1wbGVtZW50ZWQgZm9yIHZvbHVtZSBkZXZp
-Y2VzIGxpa2UgL2Rldi91YmkyX1guDQoNCj4gTXkgdGFzayBpcywgYXMgc3VnZ2VzdGVkIGJ5IHRo
-ZSBVQklGUyBkb2N1bWVudGF0aW9uLCB0byB3cml0ZSBhIHVzZXJzcGFjZSBkYWVtb24NCj4gb24g
-dG9wIG9mIFVCSSwgdGhhdCByZWFkcyBhbGwgTEVCcyBhbmQgYXNzb2NpYXRlZCBQRUJzIGluIHRo
-ZSBiYWNrZ3JvdW5kLCB0byBsZXQgVUJJDQo+IGhhbmRsZSByYXJlbHkgYWNjZXNzZWQgcGFnZXMg
-d2l0aCBhY2N1bXVsYXRlZCBiaXQtZmxpcHMuDQoNClBsZWFzZSBub3RlIHRoYXQgdGhpcyBjaGVj
-ayBpcyBub3QgcGVyZmVjdC4NCllvdSdsbCBtaXNzIGFsbCBwYWdlcyB3aGljaCBjb250YWluIFVC
-SSBtZXRhIGRhdGEgbGlrZSBFQy9WSUQgaGVhZGVycy4NCg0KVGhpcyByZW1pbmRzIG1lIHRoYXQg
-SSBzaG91bGQgY2Fycnkgb24gd2l0aCBteSBiaXRyb3QgcGF0Y2ggc2V0LiBCLSkNCg0KLS0NClRo
-YW5rcywNCi8vcmljaGFyZA0KDQpIaSBSaWNoYXJkLA0KDQpUaGFuayB5b3UgZm9yIHlvdXIgaGlu
-dC4gQWZ0ZXIgY3JlYXRpbmcgdGhlIHZvbHVtZSBkZXZpY2Ugd2l0aCB1Ymlta3ZvbCBpdCB3b3Jr
-cy4NCllvdSBhcmUgcmlnaHQsIHRoaXMgYXBwcm9hY2ggaXMgc3Vib3B0aW1hbCwgc2luY2UgaXQg
-Y292ZXJzIGFwcHJveC4gOTYlIG9mIHRoZQ0KYXZhaWxhYmxlIHBhZ2VzLg0KDQpXaGF0J3MgdGhl
-IHRpbWVsaW5lIGZvciB5b3VyIHdvcmsgb24gdGhlIGJpdHJvdCBwYXRjaD8NCg0KQWRkaXRpb25h
-bGx5LCBoZXJlJ3JlIHNvbWUgb2YgbXkgdGhvdWdodHMgcmVsYXRlZCB0byB0aGUgY3Jhd2xlcjoN
-ClRoZSBjcmF3bGVyIHByb2Nlc3MgbWlnaHQgYmUgYSB2ZXJ5IGxvbmcgcnVubmluZyB0YXNrIG9m
-IHNldmVyYWwgZGF5cyBvcg0KZXZlbiBsb25nZXIuIFRoaXMgZGVwZW5kcyBvbiB0aGUgc2l6ZSBv
-ZiB0aGUgZmxhc2ggYW5kIHRoZSBDUFUgbG9hZCBhbGxvd2VkDQpmb3IgdGhpcyB0YXNrLg0KVGhl
-IGJhY2tncm91bmQgcHJvY2VzcyBzaG91bGQgbm90IGludHJvZHVjZSBoaWdoIENQVSBsb2FkICht
-YXguIDItMyUsDQpidXQgc2hvcnQgcGVha3MgZm9yIHNjcnViYmluZyBtYXkgYmUgb2spLg0KVGh1
-cywgdGhlIHVzZXIgd2FudHMgdG8gY29udHJvbCB0aGUgc3BlZWQgb2YgcmVhZGluZyAoaWRsZSB0
-aW1lIGJldHdlZW4NCnN1YnNlcXVlbnQgcGFnZSByZWFkcykuDQpJdCBpcyBvayBmb3IgdGhlIGJh
-Y2tncm91bmQgcHJvY2VzcyB0byBzZXF1ZW50aWFsbHkgcHJvY2VzcyBVQkkgdm9sdW1lcy4NClRo
-ZXJlIG11c3Qgbm90IGV4aXN0IG9uZSBjcmF3bGVyIHRocmVhZCBwZXIgdm9sdW1lLg0KVGhlIGNy
-YXdsZXIgc2hvdWxkIHRlcm1pbmF0ZSBpdHNlbGYgaW4gYSBjbGVhbiB3YXksIHdpdGhvdXQgYWNj
-ZXNzaW5nIHRoZSBmbGFzaCwNCmlmIHRoZSBkZXZpY2UgaXMgc3dpdGNoaW5nIHRvIHJ1bmxldmVs
-IDYgKHNodXRkb3duKS4gUG93ZXIgZmFpbCBjb25kaXRpb25zIGFyZQ0KaGFuZGxlZCBieSB0aGUg
-bG93IGxldmVsIGZsYXNoIGRyaXZlciwgYmxvY2tpbmcgd3JpdGUgb3IgZXJhc2Ugb3BlcmF0aW9u
-cyAobm90DQp0byBiZSBoYW5kbGVkIGJ5IFVCSSkuDQpGcm9tIHRpbWUgdG8gdGltZSwgdGhlIHVz
-ZXIgbWlnaHQgd2FudCB0byBwZXJzaXN0IGluZm9ybWF0aW9uIGFib3V0IHRoZSBhY3R1YWwNCnZv
-bHVtZSBhbmQgUEVCIHRoZSBjcmF3bGVyIGlzIHdvcmtpbmcgb24uIFRoaXMsIGluIGFkZGl0aW9u
-IHRvIHRoZSBjYXBhYmlsaXR5IHRvDQpzZXQgdGhlIFBFQiB0byBzdGFydCBmcm9tLCB0aGlzIGNh
-biBhdm9pZCByZXBlYXRlZCBwcm9jZXNzaW5nIGZyb20gc3RhcnQsIGlmIHRoZQ0KZGV2aWNlIGlz
-IHBvd2VyZWQgb2ZmIGFuZCBvbiByZXBlYXRlZGx5LiBPdGhlcndpc2UsIFBFQnMgYXQgdGhlIGVu
-ZCB3b3VsZA0KbmV2ZXIgYmUgcmVhY2hlZCwgcmVhZCBhbmQgc2NydWJiZWQgaW4gdGhlIHByb2Nl
-c3MuDQpJdCB3b3VsZCBiZSBncmVhdCwgaWYgdGhlIHVzZXIgY2FuIGRldGVybWluZSB0aGUgc3Rh
-dHVzIG9mIHRoZSBjcmF3bGVyIHZpYSBzeXNmcw0Kb3IgaW9jdGwuIHN5c2ZzIG1pZ2h0IGJlIGJl
-dHRlciBpbiB0aGUgc2Vuc2Ugb2YgZXZlbnQgZHJpdmVuIHByb2dyYW1zLiBTZXR0aW5nDQp0aGUg
-c3RhcnRpbmcgcG9pbnQgKHZvbHVtZSBhbmQgUEVCKSBtaWdodCBiZSBoZWxwZnVsIGFzIHNhaWQg
-YWJvdmUuIFRodXMsDQp0aGUgdXNlciBjYW4gcGVyc2lzdCB0aGUgYWN0dWFsIGNyYXdsZXIgc3Rh
-dHVzLCBhbmQgc2V0IHRoZSBzdGFydGluZyBwb2ludCB0byB0aGUNClBFQiBieSBoaW1zZWxmIHdo
-ZXJlIHByb2Nlc3Npbmcgd2FzIGxlZnQgb2ZmIGF0IHNodXRkb3duLg0KDQpJIGFwb2xvZ2l6ZSBm
-b3IgYW55IGluY29udmVuaWVuY2UgYnkgcG9sbHV0aW5nIHRoaXMgbGlzdCB3aXRoIG15IHNpZ25h
-dHVyZS4NCkl0IGlzIGFwcGVuZGVkIGJ5IG91ciBtYWlsIHNlcnZlciBhdXRvbWF0aWNhbGx5LCBh
-bmQgSSBjYW5ub3Qgc3dpdGNoIHRoaXMgb2ZmLg0KDQpDYXJzdGVuDQoNCg==
+Hi Carsten,
+
+On Thu, Jul 9, 2015 at 8:39 PM, Stelling Carsten
+<Carsten.Stelling@goerlitz.com> wrote:
+> Thank you for your hint. After creating the volume device with ubimkvol it works.
+> You are right, this approach is suboptimal, since it covers approx. 96% of the
+> available pages.
+
+But it misses the most important ones. The pages containing the headers.
+Especially if Fastmap is used these pages are not even read upon attach time.
+
+> What's the timeline for your work on the bitrot patch?
+
+When it is done, it is done.
+
+> Additionally, here're some of my thoughts related to the crawler:
+> The crawler process might be a very long running task of several days or
+> even longer. This depends on the size of the flash and the CPU load allowed
+> for this task.
+> The background process should not introduce high CPU load (max. 2-3%,
+> but short peaks for scrubbing may be ok).
+> Thus, the user wants to control the speed of reading (idle time between
+> subsequent page reads).
+> It is ok for the background process to sequentially process UBI volumes.
+> There must not exist one crawler thread per volume.
+> The crawler should terminate itself in a clean way, without accessing the flash,
+> if the device is switching to runlevel 6 (shutdown). Power fail conditions are
+> handled by the low level flash driver, blocking write or erase operations (not
+> to be handled by UBI).
+> From time to time, the user might want to persist information about the actual
+> volume and PEB the crawler is working on. This, in addition to the capability to
+> set the PEB to start from, this can avoid repeated processing from start, if the
+> device is powered off and on repeatedly. Otherwise, PEBs at the end would
+> never be reached, read and scrubbed in the process.
+> It would be great, if the user can determine the status of the crawler via sysfs
+> or ioctl. sysfs might be better in the sense of event driven programs. Setting
+> the starting point (volume and PEB) might be helpful as said above. Thus,
+> the user can persist the actual crawler status, and set the starting point to the
+> PEB by himself where processing was left off at shutdown.
+
+Yeah, this is exactly what my big plan is.
+I call it ubi-healthd.
+All it needs is a proper kernel interface to check any PEB for
+bitflips, schedule
+re-write and gathering read/write counters.
+Especially for MLC nand we need it.
+
+-- 
+Thanks,
+//richard
