@@ -1,23 +1,25 @@
-Received: from mail-qk0-f171.google.com ([209.85.220.171])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCyAE-0005A6-Vf
- for linux-mtd@lists.infradead.org; Wed, 08 Jul 2015 22:50:03 +0000
-Received: by qkei195 with SMTP id i195so174468840qke.3
- for <linux-mtd@lists.infradead.org>; Wed, 08 Jul 2015 15:49:39 -0700 (PDT)
-Message-ID: <559DA901.3060404@pid1solutions.com>
-Date: Wed, 08 Jul 2015 18:49:37 -0400
-From: Cory Tusar <cory.tusar@pid1solutions.com>
+Date: Thu, 9 Jul 2015 09:55:51 +0800
+From: Shawn Guo <shawnguo@kernel.org>
+To: Bill Pringlemeir <bpringle@sympatico.ca>
+Cc: Stefan Agner <stefan@agner.ch>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, sebastian@breakpoint.cc,
+ robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de,
+ aaron@tastycactus.com, bpringlemeir@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/6] ARM: vf610: enable NAND Flash Controller
+Message-ID: <20150709015551.GJ28488@tiger>
+References: <1434668319-6651-1-git-send-email-stefan@agner.ch>
+ <1434668319-6651-5-git-send-email-stefan@agner.ch>
+ <20150708093801.GG28488@tiger>
+ <BLU436-SMTP255283C042EDEF59D9BA0CFB8910@phx.gbl>
 MIME-Version: 1.0
-To: Haikun Wang <haikun.wang@freescale.com>
-CC: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, han.xu@freescale.com
-Subject: Re: [PATCH 6/8 v2] mtd: spi-nor: fsl-quadspi: Add QSPI dts node for
- LS1021A
-References: <1436258300-21261-1-git-send-email-haikun.wang@freescale.com>
- <1436258300-21261-6-git-send-email-haikun.wang@freescale.com>
-In-Reply-To: <1436258300-21261-6-git-send-email-haikun.wang@freescale.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BLU436-SMTP255283C042EDEF59D9BA0CFB8910@phx.gbl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,118 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-On 07/07/2015 04:38 AM, Haikun Wang wrote:
-> Add QSPI dts node for LS1021AQDS and LS1021ATWR boards.
+On Wed, Jul 08, 2015 at 10:32:54AM -0400, Bill Pringlemeir wrote:
 > 
-> Signed-off-by: Haikun Wang <haikun.wang@freescale.com>
-> ---
-> Changes in v2:
-> - Rebase
+> On  8 Jul 2015, shawnguo@kernel.org wrote:
+> > On Fri, Jun 19, 2015 at 12:58:37AM +0200, Stefan Agner wrote:
+> >> Enable the NAND Flash Controller driver which is part of the Vybrid
+> >> SoC by default.
+> >>
+> >> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> >> ---
+> >> arch/arm/mach-imx/Kconfig | 1 +
+> >> 1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+> >> index 3a3d3e9..9358135 100644
+> >> --- a/arch/arm/mach-imx/Kconfig
+> >> +++ b/arch/arm/mach-imx/Kconfig
+> >>>> -589,6 +589,7 @@ config SOC_VF610
+> >> 	select PINCTRL_VF610
+> >> 	select PL310_ERRATA_769419 if CACHE_L2X0
+> >> 	select SMP_ON_UP if SMP
+> >> +	select HAVE_NAND_VF610_NFC
 > 
->  arch/arm/boot/dts/ls1021a-qds.dts | 16 ++++++++++++++++
->  arch/arm/boot/dts/ls1021a-twr.dts | 13 +++++++++++++
->  arch/arm/boot/dts/ls1021a.dtsi    | 15 +++++++++++++++
->  3 files changed, 44 insertions(+)
+> > I'm not sure about the benefit of having this option, except we have
+> > to have this additional architecture patch.
 > 
-> diff --git a/arch/arm/boot/dts/ls1021a-qds.dts b/arch/arm/boot/dts/ls1021a-qds.dts
-> index 9c5e16b..15bf07f 100644
-> --- a/arch/arm/boot/dts/ls1021a-qds.dts
-> +++ b/arch/arm/boot/dts/ls1021a-qds.dts
-> @@ -238,3 +238,19 @@
->  &uart1 {
->  	status = "okay";
->  };
-> +
-> +&qspi {
-> +	num-cs = <2>;
-> +	bus-num = <0>;
-> +	fsl,spi-num-chipselects = <2>;
-> +	fsl,spi-flash-chipselects = <0>;
+> For other SOC, like the PowerPC or ColdFire CPUs with this controller,
+> it was a way to mark the controller as populated.  Otherwise, the
+> Kconfig entry to select the controller will pop up for everybody.
 
-I don't believe the above 4 properties are used by the fsl-quadspi
-driver.
+IMHO, having the option pop up for everybody isn't really a problem.  On
+the other hand, we can even compile test the driver on any architecture
+without the COMPILE_TEST dependency.
 
-> +	status = "okay";
-> +
-> +	qflash0: s25fl128s@0 {
-> +		compatible = "spansion,s25fl128s";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		spi-max-frequency = <20000000>;
-> +		reg = <0>;
-> +	};
-> +};
-> diff --git a/arch/arm/boot/dts/ls1021a-twr.dts b/arch/arm/boot/dts/ls1021a-twr.dts
-> index a2c591e..b72f6ee 100644
-> --- a/arch/arm/boot/dts/ls1021a-twr.dts
-> +++ b/arch/arm/boot/dts/ls1021a-twr.dts
-> @@ -125,3 +125,16 @@
->  &uart1 {
->  	status = "okay";
->  };
-> +
-> +&qspi {
-> +	num-cs = <2>;
+But if MTD maintainer has a different opinion, we can still have a
+'depends on SOC_VF610' to save this patch.
 
-I don't believe the above property is used by the fsl-quadspi driver.
-
-> +	status = "okay";
-> +
-> +	qflash0: n25q128a13@0 {
-> +		compatible = "micron,n25q128a13";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		spi-max-frequency = <20000000>;
-> +		reg = <0>;
-> +	};
-> +};
-> diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-> index c70bb27..09f1a33 100644
-> --- a/arch/arm/boot/dts/ls1021a.dtsi
-> +++ b/arch/arm/boot/dts/ls1021a.dtsi
-> @@ -127,6 +127,21 @@
->  			big-endian;
->  		};
->  
-> +		qspi: quadspi@1550000 {
-> +			compatible = "fsl,ls1-qspi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <0x0 0x1550000 0x0 0x10000>,
-> +				<0x0 0x40000000 0x0 0x4000000>;
-> +			reg-names = "QuadSPI", "QuadSPI-memory";
-> +			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-> +			clock-names = "qspi_en", "qspi";
-> +			clocks = <&platform_clk 1>, <&platform_clk 1>;
-> +			big-endian;
-> +			amba-base = <0x40000000>;
-> +			status = "disabled";
-> +		};
-> +
->  		esdhc: esdhc@1560000 {
->  			compatible = "fsl,esdhc";
->  			reg = <0x0 0x1560000 0x0 0x10000>;
-> 
-
-
-- -- 
-Cory Tusar
-Principal
-PID 1 Solutions, Inc.
-
-
-"There are two ways of constructing a software design.  One way is to
- make it so simple that there are obviously no deficiencies, and the
- other way is to make it so complicated that there are no obvious
- deficiencies."  --Sir Charles Anthony Richard Hoare
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iEYEARECAAYFAlWdqQEACgkQHT1tsfGwHJ+exQCfax9VHUKrButLo7J9wX9PQqiU
-FAAAn1jsXCaFdWgtp6i29jsyCX0H18e+
-=j0oT
------END PGP SIGNATURE-----
+Shawn
