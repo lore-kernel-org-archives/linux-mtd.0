@@ -1,25 +1,21 @@
-Date: Thu, 9 Jul 2015 09:55:51 +0800
-From: Shawn Guo <shawnguo@kernel.org>
-To: Bill Pringlemeir <bpringle@sympatico.ca>
-Cc: Stefan Agner <stefan@agner.ch>, dwmw2@infradead.org,
- computersforpeace@gmail.com, sebastian@breakpoint.cc,
- robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de,
- aaron@tastycactus.com, bpringlemeir@gmail.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/6] ARM: vf610: enable NAND Flash Controller
-Message-ID: <20150709015551.GJ28488@tiger>
-References: <1434668319-6651-1-git-send-email-stefan@agner.ch>
- <1434668319-6651-5-git-send-email-stefan@agner.ch>
- <20150708093801.GG28488@tiger>
- <BLU436-SMTP255283C042EDEF59D9BA0CFB8910@phx.gbl>
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZD1Bw-0004lo-Ky
+ for linux-mtd@lists.infradead.org; Thu, 09 Jul 2015 02:04:01 +0000
+Message-ID: <559DD61C.3010505@huawei.com>
+Date: Thu, 9 Jul 2015 10:02:04 +0800
+From: Wei Fang <fangwei1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BLU436-SMTP255283C042EDEF59D9BA0CFB8910@phx.gbl>
+To: Sheng Yong <shengyong1@huawei.com>, Brian Norris
+ <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
+ "dedekind1@gmail.com >> Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: Re: [PATCH] jffs2: remove unneeded conditions
+References: <558E59C9.2070207@huawei.com>
+ <20150707201843.GH18370@brian-ubuntu> <559C80B9.8060200@huawei.com>
+In-Reply-To: <559C80B9.8060200@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +25,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 08, 2015 at 10:32:54AM -0400, Bill Pringlemeir wrote:
-> 
-> On  8 Jul 2015, shawnguo@kernel.org wrote:
-> > On Fri, Jun 19, 2015 at 12:58:37AM +0200, Stefan Agner wrote:
-> >> Enable the NAND Flash Controller driver which is part of the Vybrid
-> >> SoC by default.
-> >>
-> >> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> >> ---
-> >> arch/arm/mach-imx/Kconfig | 1 +
-> >> 1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
-> >> index 3a3d3e9..9358135 100644
-> >> --- a/arch/arm/mach-imx/Kconfig
-> >> +++ b/arch/arm/mach-imx/Kconfig
-> >>>> -589,6 +589,7 @@ config SOC_VF610
-> >> 	select PINCTRL_VF610
-> >> 	select PL310_ERRATA_769419 if CACHE_L2X0
-> >> 	select SMP_ON_UP if SMP
-> >> +	select HAVE_NAND_VF610_NFC
-> 
-> > I'm not sure about the benefit of having this option, except we have
-> > to have this additional architecture patch.
-> 
-> For other SOC, like the PowerPC or ColdFire CPUs with this controller,
-> it was a way to mark the controller as populated.  Otherwise, the
-> Kconfig entry to select the controller will pop up for everybody.
+Hi Brian and Sheng,
 
-IMHO, having the option pop up for everybody isn't really a problem.  On
-the other hand, we can even compile test the driver on any architecture
-without the COMPILE_TEST dependency.
+On 2015/7/8 9:45, Sheng Yong wrote:
+> On 7/8/2015 4:18 AM, Brian Norris wrote:
+>> Huh? This comment doesn't exactly make sense to me. It seems like when
+>> reasoning about a safety check, you're assuming the safety check will
+>> already pass. Can you elaborate your reasoning here?
 
-But if MTD maintainer has a different opinion, we can still have a
-'depends on SOC_VF610' to save this patch.
+Hmm, I think my poor comment confused you:(.
+As we known, len >= JFFS2_MIN_NODE_HEADER, and depending on that point,
+my reasoning is like this:
+ len < X   JFFS2_MIN_NODE_HEADER < X   JFFS2_MIN_NODE_HEADER < X && len < X
+ if true	must be true			 true
+ if false	don't care			 false
+so the final result can be decided by "len < X", and I thought
+"JFFS2_MIN_NODE_HEADER < X" is unneeded.
 
-Shawn
+Do I miss something?
+Yes. Thanks to you, I realized that "JFFS2_MIN_NODE_HEADER < X" can be judged
+by compiler, and if false, the scope of if would be ignored by compiler. So
+this comparison is very useful!
+
+>> Also, did you test these changes? Are you solving any real problem?
+>>
+>>> Signed-off-by: Wei Fang <fangwei1@huawei.com>
+>>> ---
+>>>  fs/jffs2/readinode.c | 9 +++------
+>>>  1 file changed, 3 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+>>> index dddbde4..b9bd3ad 100644
+>>> --- a/fs/jffs2/readinode.c
+>>> +++ b/fs/jffs2/readinode.c
+>>> @@ -1059,8 +1059,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+>>>
+>>>  		case JFFS2_NODETYPE_DIRENT:
+>>>
+>>> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_dirent) &&
+>>
+>> ^^ The original comparison here is kind of strange. I see:
+>>
+>> #define JFFS2_MIN_NODE_HEADER sizeof(struct jffs2_raw_dirent)
+>>
+>> which means that we're comparing:
+>>
+>> 			if (sizeof(struct jffs2_raw_dirent) < sizeof(struct jffs2_raw_dirent) && ...)
+>>
+>> AFAIK, that comparison will *always* be false, and so the entire
+>> condition will always be false. Not sure if that's intentional.
+> According to the comment,
+> 	"At this point we don't know the type of the node we're going
+> 	 to read, so we do not know the size of its header. In order
+> 	 to minimize the amount of flash IO we assume the node has
+> 	 size = JFFS2_MIN_NODE_HEADER."
+> in order to save overhead of flash IO, jffs2 reads JFFS2_MIN_NODE_HEADER
+> bytes first. This is enough to detect the node type. IMO, for node whose
+> type is JFFS2_NODETYPE_DIRENT, there is no need to read more, so the whole
+> block of if statement can be removed.
+
+When we do some changes to the node type structures, JFFS2_MIN_NODE_HEADER
+may be redefined, and the result of this comparison will be changed.
+Though jffs2 is very stable, and changes to structures on flash won't
+happen, I still think remaining this kind of comparison can make the
+code more readable and maintainable.
+Whatever, as I said, this scope of if can be ignored by compiler,
+removing it doesn't make any sense.
+
+> 
+> And as Brain said, the modification needs some test.
+> 
+> thanks,
+> Sheng
+>>
+>>> -			    len < sizeof(struct jffs2_raw_dirent)) {
+>>> +			if (len < sizeof(struct jffs2_raw_dirent)) {
+>>
+>> Therefore, the "refactoring" you are doing seems to actually make a
+>> logical change. If nothing else, it makes it harder (likely impossible)
+>> for the compiler to reason that the conditional code is all dead code.
+>> I'm not sure if that's a good or a bad thing, as I haven't figured out
+>> the full intent of this code in the first place.
+>>
+>>>  				err = read_more(c, ref, sizeof(struct jffs2_raw_dirent), &len, buf);
+>>>  				if (unlikely(err))
+>>>  					goto free_out;
+>>> @@ -1074,8 +1073,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+>>>
+>>>  		case JFFS2_NODETYPE_INODE:
+>>>
+>>> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_inode) &&
+>>> -			    len < sizeof(struct jffs2_raw_inode)) {
+>>> +			if (len < sizeof(struct jffs2_raw_inode)) {
+>>>  				err = read_more(c, ref, sizeof(struct jffs2_raw_inode), &len, buf);
+>>>  				if (unlikely(err))
+>>>  					goto free_out;
+>>> @@ -1088,8 +1086,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+>>>  			break;
+>>>
+>>>  		default:
+>>> -			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_unknown_node) &&
+>>> -			    len < sizeof(struct jffs2_unknown_node)) {
+>>> +			if (len < sizeof(struct jffs2_unknown_node)) {
+>>>  				err = read_more(c, ref, sizeof(struct jffs2_unknown_node), &len, buf);
+>>>  				if (unlikely(err))
+>>>  					goto free_out;
+>>
+>> At any rate, I'm not confident in this patch without a lot more
+>> explanation, so I will not be taking it as-is.
+
+Please ignore this patch. Adding comment to "JFFS2_MIN_NODE_HEADER < X"
+may be useful:).
+
+Thanks,
+Wei
+
+>>
+>> Thanks,
+>> Brian
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>>
