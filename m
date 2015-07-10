@@ -1,22 +1,15 @@
-Message-ID: <559F824B.70409@topic.nl>
-Date: Fri, 10 Jul 2015 10:28:59 +0200
-From: Mike Looijmans <mike.looijmans@topic.nl>
+From: Roger Quadros <rogerq@ti.com>
+To: <tony@atomide.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <bcousson@baylibre.com>
+CC: <ezequiel@vanguardiasur.com.ar>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH 00/12] ARM: omap: mtd: nand: Support GPMC NAND on non-OMAP
+ platforms
+Date: Fri, 10 Jul 2015 15:23:27 +0300
+Message-ID: <1436531019-18088-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-To: Ranjit Waghmode <ranjit.waghmode@xilinx.com>, <broonie@kernel.org>,
- <michal.simek@xilinx.com>, <soren.brinkmann@xilinx.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <zajec5@gmail.com>,
- <marex@denx.de>, <shijie.huang@intel.com>, <juhosg@openwrt.org>,
- <ben@decadent.org.uk>
-CC: <harinik@xilinx.com>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <punnaia@xilinx.com>, <ran27jit@gmail.com>,
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support
- in Zynq MPSoC GQSPI controller
-References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
-In-Reply-To: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,53 +19,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=EF=BB=BFOn 09-07-15 14:44, Ranjit Waghmode wrote:
-> This series of patches is to add dual parallel and stacked mode support f=
-or
-> Zynq Ultrascale+ MPSoC GQSPI controller driver.
->
-> These are all very high level changes and expected to make an idea clear.
-> Comments and suggestions are welcomed.
->
-...
->
-> What is stacked mode?
-> ---------------------
-> ZynqMP GQSPI controller supports stacked mode with following functionalit=
-ies:
-> 1) The Generic Quad-SPI controller also supports two SPI flash memories
->     in a shared bus arrangement to reduce IO pin count.
-> 2) Separate chip select lines
-> 3) Shared I/O lines
-> 4) This mode is targeted for increasing the flash memory and no performan=
-ce
->     improvement when compared with single.
+Hi,
 
-One could also model the stacked mode as having two distinct flash chips wi=
-th=20
-separate chip selects and shared lines.
-Merging them into a single storage device can be done on block layer or hig=
-her=20
-level. This allows the flash chips to be used in any configuration using=20
-existing support for concatenating multiple devices.
-I think this would be a more generic way of doing this. It also allows much=
-=20
-more flexibility, for example the devices could be used in a mirror setup, =
-or=20
-in combination with additional devices on other controllers.
+The OMAP GPMC IP is being used on non-OMAP platforms as well
+and this series aims at cleaning up device tree implementation
+for GPMC NAND so that it can be used on non-OMAP platforms.
 
+NAND is now treated as any other generic GPMC child and has to
+have its own compatible-id and address+interrupt resource.
 
-Kind regards,
+Tested NAND on following boards
+- dra7-evm
+- am437x-gp-evm
+- beagleboard C4
 
-Mike Looijmans
-System Expert
+--
+cheers,
+-roger
 
-TOPIC Embedded Products
-Eindhovenseweg 32-C, NL-5683 KH Best
-Postbus 440, NL-5680 AK Best
-Telefoon: +31 (0) 499 33 69 79
-Telefax: +31 (0) 499 33 69 70
-E-mail: mike.looijmans@topicproducts.com
-Website: www.topicproducts.com
+Roger Quadros (12):
+  ARM: OMAP2+: gpmc: Add platform data
+  ARM: OMAP2+: gpmc: Add gpmc timings and settings to platform data
+  mtd: nand: omap: Move IRQ handling from GPMC to NAND driver
+  mtd: nand: omap: Move gpmc_update_nand_reg to nand driver
+  mtd: nand: omap: Move NAND write protect code from GPMC to NAND driver
+  mtd: nand: omap: Copy platform data parameters to omap_nand_info data
+  mtd: nand: omap: Clean up device tree support
+  mtd: nand: omap: Update DT binding documentation
+  memory: omap-gpmc: use module_platform_driver()
+  memory: omap-gpmc: Prevent mapping into 1st 16MB
+  ARM: dts: OMAP2+: Fix NAND device nodes
+  ARM: dts: omap3: Fix gpmc memory resource size
 
-Please consider the environment before printing this e-mail
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  16 +-
+ arch/arm/boot/dts/am335x-baltos-ir5221.dts         |   9 +-
+ arch/arm/boot/dts/am335x-chilisom.dtsi             |   8 +-
+ arch/arm/boot/dts/am335x-evm.dts                   |   8 +-
+ arch/arm/boot/dts/am335x-igep0033.dtsi             |   8 +-
+ arch/arm/boot/dts/am437x-gp-evm.dts                |   8 +-
+ arch/arm/boot/dts/am43x-epos-evm.dts               |   8 +-
+ arch/arm/boot/dts/dm8168-evm.dts                   |   8 +-
+ arch/arm/boot/dts/dra7-evm.dts                     |   8 +-
+ arch/arm/boot/dts/dra72-evm.dts                    |   8 +-
+ arch/arm/boot/dts/logicpd-torpedo-som.dtsi         |   9 +-
+ arch/arm/boot/dts/omap3-beagle.dts                 |   7 +-
+ arch/arm/boot/dts/omap3-cm-t3x.dtsi                |   8 +-
+ arch/arm/boot/dts/omap3-devkit8000.dts             |   9 +-
+ arch/arm/boot/dts/omap3-evm-37xx.dts               |  10 +-
+ arch/arm/boot/dts/omap3-gta04.dtsi                 |   8 +-
+ arch/arm/boot/dts/omap3-igep.dtsi                  |   5 +-
+ arch/arm/boot/dts/omap3-igep0020-common.dtsi       |   5 +-
+ arch/arm/boot/dts/omap3-igep0030-common.dtsi       |   6 +
+ arch/arm/boot/dts/omap3-ldp.dts                    |  10 +-
+ arch/arm/boot/dts/omap3-lilly-a83x.dtsi            |   8 +-
+ arch/arm/boot/dts/omap3-lilly-dbb056.dts           |   7 +-
+ arch/arm/boot/dts/omap3-pandora-common.dtsi        |   8 +-
+ arch/arm/boot/dts/omap3-tao3530.dtsi               |   8 +-
+ arch/arm/boot/dts/omap3.dtsi                       |   2 +-
+ arch/arm/boot/dts/omap3430-sdp.dts                 |   8 +-
+ arch/arm/mach-omap2/gpmc-nand.c                    |  19 +-
+ drivers/memory/omap-gpmc.c                         | 427 +++------------------
+ drivers/mtd/nand/omap2.c                           | 380 ++++++++++++++----
+ include/linux/omap-gpmc.h                          | 148 +------
+ include/linux/platform_data/gpmc-omap.h            | 169 ++++++++
+ include/linux/platform_data/mtd-nand-omap2.h       |  10 +-
+ 32 files changed, 705 insertions(+), 655 deletions(-)
+ create mode 100644 include/linux/platform_data/gpmc-omap.h
+
+-- 
+2.1.4
