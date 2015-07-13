@@ -1,20 +1,20 @@
-Message-ID: <55A38D2E.9010500@ti.com>
-Date: Mon, 13 Jul 2015 13:04:30 +0300
-From: Roger Quadros <rogerq@ti.com>
+In-Reply-To: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
+References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
+To: Ranjit Waghmode <ranjit.waghmode@xilinx.com>
+Cc: ben@decadent.org.uk, broonie@kernel.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, harinik@xilinx.com, juhosg@openwrt.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ "linux-mtd" <linux-mtd-bounces@lists.infradead.org>, linux-spi@vger.kernel.org,
+ marex@denx.de, michal.simek@xilinx.com, punnaia@xilinx.com, ran27jit@gmail.com,
+ shijie.huang@intel.com, soren.brinkmann@xilinx.com, zajec5@gmail.com
 MIME-Version: 1.0
-To: Tony Lindgren <tony@atomide.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <bcousson@baylibre.com>, <ezequiel@vanguardiasur.com.ar>,
- <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/12] mtd: nand: omap: Move IRQ handling from GPMC to
- NAND driver
-References: <1436531019-18088-1-git-send-email-rogerq@ti.com>
- <1436531019-18088-4-git-send-email-rogerq@ti.com>
- <20150713071008.GC26485@atomide.com>
-In-Reply-To: <20150713071008.GC26485@atomide.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Subject: Re: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support
+ in Zynq MPSoC GQSPI controller
+From: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OFDDDA0AA7.A583461A-ONC1257E81.0030FCED-C1257E81.003761EE@rohde-schwarz.com>
+Date: Mon, 13 Jul 2015 12:04:54 +0200
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tony,
+Hello Ranjit:
 
-On 13/07/15 10:10, Tony Lindgren wrote:
-> * Roger Quadros <rogerq@ti.com> [150710 05:26]:
->> Since the Interrupt Events are used only by the NAND driver,
->> there is no point in managing the Interrupt registers
->> in the GPMC driver and complicating it with irqchip modeling.
+> What is dual parallel mode?
+> ---------------------------
+> ZynqMP GQSPI controller supports Dual Parallel mode with following 
+> functionalities:
+> 1) Supporting two SPI flash memories operating in parallel. 8 I/O lines.
+> 2) Chip selects and clock are shared to both the flash devices
+> 3) This mode is targeted for faster read/write speed and also doubles 
+the size
+> 4) Commands/data can be transmitted/received from both the 
+devices(mirror),
+>    or only upper or only lower flash memory devices.
+> 5) Data arrangement:
+>    With stripe enabled,
+>    Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
+>    Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
+
+In the dual-parallel configuration, odd and even _bits_ of each byte are 
+distributed over the flash chips; I am assuming this works just as in Zynq 
+QSPI (apparently, the TRM for ZynqMP isn't out yet).
+
+Striping seems to be a different mechanism, though. Can you explain it a 
+bit more? Also, the wording seems to indicate that it belongs to 
+dual-stacked rather than dual-parallel.
+
+> Suggestions on MTD layer support
+> --------------------------------
+> In order to add above two specified modes, we may required to get some
+> support from MTD layer.
 > 
-> I don't think it's a good idea to allow external drivers to
-> tinker directly with GPMC registers. How about just set up GPMC
-> as an irqchip for the edge detection interrupts?
-> 
-> I think we already have devices with multiple NAND chips. And
-> there's nothing stopping other drivers from using the edge
-> detection interrupts.
+> I'm trying to list the dependencies as follows:
+> 1) Support for two flashes
+> 2) Enable/Disable data stripe as and when required.
+> 3) May need to update read_sr() to get status of both flashes
+> 4) May also need to update read_fsr() to get status of both flashes
+> 5) Adjustment of offset value based on the parallel/stacked mode 
+configuration
+> 6) Setting either parallel or stacked mode during the scan process.
+> 7) In case of stacked mode, is there a MTD concatenation support?
 
-OK. The GPMC_IRQ registers manage 2 NAND specific interrupts
-(terminalcount and fifo) and 'n' WAIT pin edge interrupts.
+In addition to 5), the MTD driver using a dual-parallel QSPI flash has to
+5a) add padding at the start of data for unaligned addresses,
+5b) add padding at the end of data for unaligned lengths.
 
-So we can model this as a irqchip with 'n + 2' interrupts.
-
-We need to take care that if a GPMC chip select needs a
-wait pin then it can't be used as a generic interrupt.
-
-We need to get rid of omap_dev_ready() in nand/omap2.c as
-it accesses the GPMC_STATUS register directly. Plus it is
-hard coded to only monitor wait0 pin.
-
-What is the best map we should use for irqchip?
-Some Socs have 4 WAIT pins, some have 3 and some have 2.
-
-Should we start with 0,1,2, for the wait pins and use the next
-available free one for the NAND?
-
-cheers,
--roger
+Best regards,
+Thomas Betker
