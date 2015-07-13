@@ -1,24 +1,12 @@
-Date: Mon, 13 Jul 2015 15:59:07 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: Ranjit Waghmode <ranjit.waghmode@xilinx.com>, michal.simek@xilinx.com,
- soren.brinkmann@xilinx.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, zajec5@gmail.com, marex@denx.de,
- shijie.huang@intel.com, juhosg@openwrt.org, ben@decadent.org.uk,
- harinik@xilinx.com, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- punnaia@xilinx.com, ran27jit@gmail.com,
- linux-arm-kernel@lists.infradead.org
-Message-ID: <20150713145907.GF11162@sirena.org.uk>
-References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
- <559F824B.70409@topic.nl>
+From: Murali Karicheri <m-karicheri2@ti.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <wsa@the-dreams.de>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [RESEND: PATCH v1] mtd: nand: davinci: add support for 4K page size
+ nand devices.
+Date: Mon, 13 Jul 2015 16:07:16 -0400
+Message-ID: <1436818036-7093-1-git-send-email-m-karicheri2@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="kK9AL8AnBmMfbzhN"
-Content-Disposition: inline
-In-Reply-To: <559F824B.70409@topic.nl>
-Subject: Re: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support in
- Zynq MPSoC GQSPI controller
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +16,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+K2L EVM uses NAND with 4K page size. This patch add support for
+ECC layout requires to enable Micron MT29F16G08ADBCAH4 NAND available
+on this EVM.
 
---kK9AL8AnBmMfbzhN
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+Signed-off-by: Hao Zhang <hzhang@ti.com>
+---
+ - Resend after subscribing to linux-mtd mailing list. I assume
+   no one has seen this on this mailing list as I don't have any
+   comments. So re-sending.
+ - v1 - Remove the comment as well from the code as now 4K page
+   is supported
+ drivers/mtd/nand/davinci_nand.c | 42 +++++++++++++++++++++++++++++------------
+ 1 file changed, 30 insertions(+), 12 deletions(-)
 
-On Fri, Jul 10, 2015 at 10:28:59AM +0200, Mike Looijmans wrote:
-> =EF=BB=BFOn 09-07-15 14:44, Ranjit Waghmode wrote:
-
-> >ZynqMP GQSPI controller supports stacked mode with following functionali=
-ties:
-> >1) The Generic Quad-SPI controller also supports two SPI flash memories
-> >    in a shared bus arrangement to reduce IO pin count.
-> >2) Separate chip select lines
-> >3) Shared I/O lines
-> >4) This mode is targeted for increasing the flash memory and no performa=
-nce
-> >    improvement when compared with single.
-
-> One could also model the stacked mode as having two distinct flash chips
-> with separate chip selects and shared lines.
-
-Well, quite.  I'm confused about how the above differs from a just a SPI
-controller with two chip selects which is perfectly standard.
-
---kK9AL8AnBmMfbzhN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVo9I7AAoJECTWi3JdVIfQio4H/1o3jKiZR03QWE+n+6/R2X3E
-9Rgqw1W8K63XeTcpVnO0E5mLv+OQ4WdRg/8CvUExZxkOW5Wm+YGWNjTJ3xzedvtF
-JrgKNNa/a0U/w9xscFX+x9fhkL7oSVLRg/w3k5s/skDNtfhfGwplzJ5sOxz7jP/5
-0H5r6aTuLgchSWzUiSt2mZqwtHRMW0b5WLBR2gil9ez8LtaUZEozOw7wss+RPAH0
-MaFFrvC2kr+o+FyVaGfqEjxTWpOCAtEHbvrrfElx4AK7tiUFJ8FoGi+jNmjWA8f7
-AdSP+H2QHDkhHCSyGwFxCpAfP72U0fQXLS1EKXCcCQwBSc5jMvtfWSHV5EuuRME=
-=MTwl
------END PGP SIGNATURE-----
-
---kK9AL8AnBmMfbzhN--
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index feb6d18..90b177b 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -520,6 +520,31 @@ static struct nand_ecclayout hwecc4_2048 = {
+ 	},
+ };
+ 
++/* An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
++ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
++ * and not overlapping the default BBT markers.
++ */
++static struct nand_ecclayout hwecc4_4096 = {
++	.eccbytes = 80,
++	.eccpos = {
++		/* at the end of spare sector */
++		48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
++		58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
++		68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
++		78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
++		88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
++		98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
++		108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
++		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
++		},
++	.oobfree = {
++		/* 2 bytes at offset 0 hold manufacturer badblock markers */
++		{.offset = 2, .length = 46, },
++		/* 5 bytes at offset 8 hold BBT markers */
++		/* 8 bytes at offset 16 hold JFFS2 clean markers */
++	},
++};
++
+ #if defined(CONFIG_OF)
+ static const struct of_device_id davinci_nand_of_match[] = {
+ 	{.compatible = "ti,davinci-nand", },
+@@ -796,18 +821,11 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
+ 			goto syndrome_done;
+ 		}
+-
+-		/* 4KiB page chips are not yet supported. The eccpos from
+-		 * nand_ecclayout cannot hold 80 bytes and change to eccpos[]
+-		 * breaks userspace ioctl interface with mtd-utils. Once we
+-		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
+-		 * for the 4KiB page chips.
+-		 *
+-		 * TODO: Note that nand_ecclayout has now been expanded and can
+-		 *  hold plenty of OOB entries.
+-		 */
+-		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
+-				"for 4KiB-page NAND\n");
++		if (chunks == 8) {
++			info->ecclayout = hwecc4_4096;
++			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
++			goto syndrome_done;
++		}
+ 		ret = -EIO;
+ 		goto err;
+ 
+-- 
+1.9.1
