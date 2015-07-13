@@ -1,19 +1,24 @@
-Received: from mail-oi0-x231.google.com ([2607:f8b0:4003:c06::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZEeQH-0004YM-Jp
- for linux-mtd@lists.infradead.org; Mon, 13 Jul 2015 14:09:34 +0000
-Received: by oibn4 with SMTP id n4so24068963oib.3
- for <linux-mtd@lists.infradead.org>; Mon, 13 Jul 2015 07:09:12 -0700 (PDT)
+Date: Mon, 13 Jul 2015 15:59:07 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: Ranjit Waghmode <ranjit.waghmode@xilinx.com>, michal.simek@xilinx.com,
+ soren.brinkmann@xilinx.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, zajec5@gmail.com, marex@denx.de,
+ shijie.huang@intel.com, juhosg@openwrt.org, ben@decadent.org.uk,
+ harinik@xilinx.com, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ punnaia@xilinx.com, ran27jit@gmail.com,
+ linux-arm-kernel@lists.infradead.org
+Message-ID: <20150713145907.GF11162@sirena.org.uk>
+References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
+ <559F824B.70409@topic.nl>
 MIME-Version: 1.0
-In-Reply-To: <55A3C342.9010704@gmail.com>
-References: <55A3C342.9010704@gmail.com>
-Date: Mon, 13 Jul 2015 16:09:12 +0200
-Message-ID: <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
-Subject: Re: UBIFS errors when file-system is full
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Bhuvanchandra DV <bhuvanchandradv@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="kK9AL8AnBmMfbzhN"
+Content-Disposition: inline
+In-Reply-To: <559F824B.70409@topic.nl>
+Subject: Re: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support in
+ Zynq MPSoC GQSPI controller
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,55 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 13, 2015 at 3:55 PM, Bhuvanchandra DV
-<bhuvanchandradv@gmail.com> wrote:
-> Hello,
->
-> Facing some issues with UBIFS mounting when NAND flash is almost near to
-> full.
->
-> Hardware:
-> SOC: Freescale Vybrid
-> COM: Colibri VF50
-> Flash: Macronic NAND 128MB, 3.3V, 8-Bit
->
-> By default the Linux Image flashed on the NAND flash almost occupies ~93% of
-> the flash.
-> Observed this issue when power resetting the module for about 500 times,
-> with journalctl
-> enabled, after around 500 power cycles the debug log fills up the nand
-> flash. When the
-> flash menory is about to full, the ubifs partation is un-mountable.
->
-> The nand flash controller driver is under review and passed all MTD tests.
-> https://lkml.org/lkml/2015/6/18/847
->
->
-> Debug log during UBIFS mounting from U-Boot:
->
-> U-Boot 2015.04 (May 18 2015 - 15:37:34)
->
-> CPU: Freescale Vybrid VF500 at 396 MHz
-> Reset cause: POWER ON RESET
-> DRAM:  128 MiB
-> NAND:  128 MiB
-> MMC:   FSL_SDHC: 0
-> *** Warning - bad CRC, using default environment
->
-> In:    serial
-> Out:   serial
-> Err:   serial
-> Model: Toradex Colibri VF50 128MB V1.1A, Serial# 04815679
-> Net:   FEC
-> Hit any key to stop autoboot:  0
-> Booting from NAND...
-> UBI: default fastmap pool size: 50
-> UBI: default fastmap WL pool size: 25
-> UBI: attaching mtd1 to ubi0
-> UBI: attached by fastmap
 
-Is this a recent kernel with all fastmap fixes applied?
+--kK9AL8AnBmMfbzhN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thanks,
-//richard
+On Fri, Jul 10, 2015 at 10:28:59AM +0200, Mike Looijmans wrote:
+> =EF=BB=BFOn 09-07-15 14:44, Ranjit Waghmode wrote:
+
+> >ZynqMP GQSPI controller supports stacked mode with following functionali=
+ties:
+> >1) The Generic Quad-SPI controller also supports two SPI flash memories
+> >    in a shared bus arrangement to reduce IO pin count.
+> >2) Separate chip select lines
+> >3) Shared I/O lines
+> >4) This mode is targeted for increasing the flash memory and no performa=
+nce
+> >    improvement when compared with single.
+
+> One could also model the stacked mode as having two distinct flash chips
+> with separate chip selects and shared lines.
+
+Well, quite.  I'm confused about how the above differs from a just a SPI
+controller with two chip selects which is perfectly standard.
+
+--kK9AL8AnBmMfbzhN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVo9I7AAoJECTWi3JdVIfQio4H/1o3jKiZR03QWE+n+6/R2X3E
+9Rgqw1W8K63XeTcpVnO0E5mLv+OQ4WdRg/8CvUExZxkOW5Wm+YGWNjTJ3xzedvtF
+JrgKNNa/a0U/w9xscFX+x9fhkL7oSVLRg/w3k5s/skDNtfhfGwplzJ5sOxz7jP/5
+0H5r6aTuLgchSWzUiSt2mZqwtHRMW0b5WLBR2gil9ez8LtaUZEozOw7wss+RPAH0
+MaFFrvC2kr+o+FyVaGfqEjxTWpOCAtEHbvrrfElx4AK7tiUFJ8FoGi+jNmjWA8f7
+AdSP+H2QHDkhHCSyGwFxCpAfP72U0fQXLS1EKXCcCQwBSc5jMvtfWSHV5EuuRME=
+=MTwl
+-----END PGP SIGNATURE-----
+
+--kK9AL8AnBmMfbzhN--
