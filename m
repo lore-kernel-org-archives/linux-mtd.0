@@ -1,22 +1,23 @@
-Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZDyMs-0005PW-GP
- for linux-mtd@lists.infradead.org; Sat, 11 Jul 2015 17:15:14 +0000
-Received: by iecuq6 with SMTP id uq6so213375218iec.2
- for <linux-mtd@lists.infradead.org>; Sat, 11 Jul 2015 10:14:53 -0700 (PDT)
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZEXso-0006kY-9O
+ for linux-mtd@lists.infradead.org; Mon, 13 Jul 2015 07:10:35 +0000
+Date: Mon, 13 Jul 2015 00:10:09 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, bcousson@baylibre.com,
+ ezequiel@vanguardiasur.com.ar, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/12] mtd: nand: omap: Move IRQ handling from GPMC to
+ NAND driver
+Message-ID: <20150713071008.GC26485@atomide.com>
+References: <1436531019-18088-1-git-send-email-rogerq@ti.com>
+ <1436531019-18088-4-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1436515808-45639-1-git-send-email-haikun.wang@freescale.com>
-References: <1436515808-45639-1-git-send-email-haikun.wang@freescale.com>
-Date: Sat, 11 Jul 2015 19:14:52 +0200
-Message-ID: <CACna6rwo-jMcCtC4kR2CmV7fWf-b2-OSEce=S33SWRYMM5G2cA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: Get mtd_info->name from spi_device as the
- second choice
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Haikun Wang <haikun.wang@freescale.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1436531019-18088-4-git-send-email-rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10 July 2015 at 10:10, Haikun Wang <haikun.wang@freescale.com> wrote:
-> If we can't get "mtd_info->name" form struct flash_platform_data,
-> get it from "spi_device".
->
-> Signed-off-by: Haikun Wang <haikun.wang@freescale.com>
-> ---
->  drivers/mtd/devices/m25p80.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index d313f948b..ebac9e5 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -215,6 +215,8 @@ static int m25p_probe(struct spi_device *spi)
->
->         if (data && data->name)
->                 flash->mtd.name = data->name;
-> +       else
-> +               flash->mtd.name = dev_name(&spi->dev);
+* Roger Quadros <rogerq@ti.com> [150710 05:26]:
+> Since the Interrupt Events are used only by the NAND driver,
+> there is no point in managing the Interrupt registers
+> in the GPMC driver and complicating it with irqchip modeling.
 
-I'm curious. Is this for changing kernel messages to include some nice
-name? Can you give us an example of before vs. after?
+I don't think it's a good idea to allow external drivers to
+tinker directly with GPMC registers. How about just set up GPMC
+as an irqchip for the edge detection interrupts?
+
+I think we already have devices with multiple NAND chips. And
+there's nothing stopping other drivers from using the edge
+detection interrupts.
+
+Regards,
+
+Tony
