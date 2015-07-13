@@ -1,24 +1,27 @@
-Received: from muru.com ([72.249.23.125])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZEd2z-0006JE-4l
- for linux-mtd@lists.infradead.org; Mon, 13 Jul 2015 12:41:25 +0000
-Date: Mon, 13 Jul 2015 05:40:59 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, bcousson@baylibre.com,
- ezequiel@vanguardiasur.com.ar, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZEdDS-0006Yc-4B
+ for linux-mtd@lists.infradead.org; Mon, 13 Jul 2015 12:52:14 +0000
+Received: by igbij6 with SMTP id ij6so20633174igb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jul 2015 05:51:52 -0700 (PDT)
+Message-ID: <55A3B467.8030409@gmail.com>
+Date: Mon, 13 Jul 2015 08:51:51 -0400
+From: nick <xerofoify@gmail.com>
+MIME-Version: 1.0
+To: Tony Lindgren <tony@atomide.com>, Roger Quadros <rogerq@ti.com>
+CC: devicetree@vger.kernel.org, computersforpeace@gmail.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ ezequiel@vanguardiasur.com.ar, bcousson@baylibre.com,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 Subject: Re: [PATCH 03/12] mtd: nand: omap: Move IRQ handling from GPMC to
  NAND driver
-Message-ID: <20150713124059.GF26485@atomide.com>
 References: <1436531019-18088-1-git-send-email-rogerq@ti.com>
  <1436531019-18088-4-git-send-email-rogerq@ti.com>
  <20150713071008.GC26485@atomide.com> <55A38D2E.9010500@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55A38D2E.9010500@ti.com>
+ <20150713124059.GF26485@atomide.com>
+In-Reply-To: <20150713124059.GF26485@atomide.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +31,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [150713 03:07]:
-> Tony,
-> 
-> On 13/07/15 10:10, Tony Lindgren wrote:
-> > * Roger Quadros <rogerq@ti.com> [150710 05:26]:
-> >> Since the Interrupt Events are used only by the NAND driver,
-> >> there is no point in managing the Interrupt registers
-> >> in the GPMC driver and complicating it with irqchip modeling.
-> > 
-> > I don't think it's a good idea to allow external drivers to
-> > tinker directly with GPMC registers. How about just set up GPMC
-> > as an irqchip for the edge detection interrupts?
-> > 
-> > I think we already have devices with multiple NAND chips. And
-> > there's nothing stopping other drivers from using the edge
-> > detection interrupts.
-> 
-> OK. The GPMC_IRQ registers manage 2 NAND specific interrupts
-> (terminalcount and fifo) and 'n' WAIT pin edge interrupts.
-> 
->  So we can model this as a irqchip with 'n + 2' interrupts.
 
-OK
- 
-> We need to take care that if a GPMC chip select needs a
-> wait pin then it can't be used as a generic interrupt.
+
+On 2015-07-13 08:40 AM, Tony Lindgren wrote:
+> * Roger Quadros <rogerq@ti.com> [150713 03:07]:
+>> Tony,
+>>
+>> On 13/07/15 10:10, Tony Lindgren wrote:
+>>> * Roger Quadros <rogerq@ti.com> [150710 05:26]:
+>>>> Since the Interrupt Events are used only by the NAND driver,
+>>>> there is no point in managing the Interrupt registers
+>>>> in the GPMC driver and complicating it with irqchip modeling.
+>>>
+>>> I don't think it's a good idea to allow external drivers to
+>>> tinker directly with GPMC registers. How about just set up GPMC
+>>> as an irqchip for the edge detection interrupts?
+>>>
+>>> I think we already have devices with multiple NAND chips. And
+>>> there's nothing stopping other drivers from using the edge
+>>> detection interrupts.
+>>
+>> OK. The GPMC_IRQ registers manage 2 NAND specific interrupts
+>> (terminalcount and fifo) and 'n' WAIT pin edge interrupts.
+>>
+>>  So we can model this as a irqchip with 'n + 2' interrupts.
 > 
-> We need to get rid of omap_dev_ready() in nand/omap2.c as
-> it accesses the GPMC_STATUS register directly. Plus it is
-> hard coded to only monitor wait0 pin.
-
-OK
- 
-> What is the best map we should use for irqchip?
-> Some Socs have 4 WAIT pins, some have 3 and some have 2.
+> OK
+>  
+>> We need to take care that if a GPMC chip select needs a
+>> wait pin then it can't be used as a generic interrupt.
+>>
+>> We need to get rid of omap_dev_ready() in nand/omap2.c as
+>> it accesses the GPMC_STATUS register directly. Plus it is
+>> hard coded to only monitor wait0 pin.
 > 
-> Should we start with 0,1,2, for the wait pins and use the next
-> available free one for the NAND?
-
-Maybe we can just use the bits defined for each SoC in the
-GPMC_IRQSTATUS register for the mapping?  
-Regards,
-
-Tony
+> OK
+>  
+>> What is the best map we should use for irqchip?
+>> Some Socs have 4 WAIT pins, some have 3 and some have 2.
+>>
+>> Should we start with 0,1,2, for the wait pins and use the next
+>> available free one for the NAND?
+> 
+> Maybe we can just use the bits defined for each SoC in the
+> GPMC_IRQSTATUS register for the mapping?  
+> Regards,
+> 
+> Tony
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+Tony,
+Is that a good idea as to my knowledge of OMAP platforms that register is hardware
+dependent and therefore that may be an issue unless your idea is to create device
+tables like the way they do in the nand subsystems to support various vendor's 
+nand flash expect here for the pins on OMAP SOCs.
+Nick  
