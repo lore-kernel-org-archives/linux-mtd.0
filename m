@@ -1,23 +1,19 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-ob0-x234.google.com ([2607:f8b0:4003:c01::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZEy3M-0008GQ-0D
- for linux-mtd@lists.infradead.org; Tue, 14 Jul 2015 11:07:13 +0000
-Message-ID: <55A4ED47.4060802@nod.at>
-Date: Tue, 14 Jul 2015 13:06:47 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1ZEyMk-0006fK-Lc
+ for linux-mtd@lists.infradead.org; Tue, 14 Jul 2015 11:27:15 +0000
+Received: by obnw1 with SMTP id w1so3969336obn.3
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Jul 2015 04:26:52 -0700 (PDT)
 MIME-Version: 1.0
-To: Bhuvanchandra DV <bhuvanchandradv@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: UBIFS errors when file-system is full
-References: <55A3C342.9010704@gmail.com>
- <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
- <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
- <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
- <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
- <55A4DF83.5080505@gmail.com>
-In-Reply-To: <55A4DF83.5080505@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <899311436867317@web30h.yandex.ru>
+References: <899311436867317@web30h.yandex.ru>
+Date: Tue, 14 Jul 2015 13:26:52 +0200
+Message-ID: <CAFLxGvxedXbf4+HdWrJk0LCpgR=cEbK_JWeesgQc9kzGe+4P9w@mail.gmail.com>
+Subject: Re: Why UBIFS min I/O unit size must be power of 2?
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Konstantin Tokarev <annulen@yandex.ru>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,56 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 14.07.2015 um 12:08 schrieb Bhuvanchandra DV:
-> On 07/14/2015 02:12 PM, Richard Weinberger wrote:
-> 
->> Am 14.07.2015 um 10:29 schrieb Bhuvanchandra DV:
->>> On 07/14/2015 12:02 PM, Richard Weinberger wrote:
->>>
->>>> Am 14.07.2015 um 08:30 schrieb Bhuvanchandra DV:
->>>>> Reproduced the issue with a clean UBI image.
->>>> On 4.1?
->>>> How can you reproduce?
->>> Flashed a clean UBI image with 4.1.
->>> I can reproduce it by amost filling up the flash and doing a power resets for around ~200 cycles.
->> And it really happens only if you're filling up the UBIFS?
-> 
-> The only thing observed so far during this tests is when the journactl log starts filling up the flash
-> memory and at some point of time fails to mount the ubifs.
+On Tue, Jul 14, 2015 at 11:48 AM, Konstantin Tokarev <annulen@yandex.ru> wrote:
+> Hi all,
+>
+> I'd like to increase compression ratio of UBIFS image (at the cost of possibly
+> slower writes). However, my LEB size is 129024, so the largest block size that
+> I could use is 2048 (otherwise LEB won't be multiple of I/O unit size).
+>
+> So I wonder why UBIFS cannot use 129024 as I/O unit size and requires it to be
+> power of 2? Is it possible to eleminate this limitation?
 
-You mean filling up the filesystem? How and when does the power cut happen?
+To my knowledge the property is defined by hardware limitations (i.e.
+flash properties).
 
-> Flashed an Image which occupies less flash ~40-50%. Run the same tests for around 1200 power cycles
-> no issues observed during mounting but still there are few error messages:
-> ..
-> [    6.879643] ubi0 error: __wl_get_peb: no free eraseblocks
-
-This message cannot come from a recent kernel.
-
-> So came to an assumption that filling the flash to max lead to this issue.
-> 
-> Could there be any other possibility for this issue apart from filling up the flash ?
-> 
->> If you set the UBI module parameter "fm_debug", does the EBA selfcheck trigger?
-> 
-> Yes, EBA selfcheck got triggered. Atleast i could see the debug printks added
-> in 'self_check_eba' method after setting the fm_debug parameter.
-> 
->>
->>> During some point U-Boot cannot mount the ubifs partition and fails with:
->>> "Error reading superblock on volume 'ubi0:rootfs' errno=-22!"
->> How exactly is U-Boot involved? Does U-Boot touch UBI in any way?
-> 
-> kernel, device tree blobs are available in rootfs /boot. U-Boot mounts the ubi partition
-> and loads the kernel and device tree blob.
-> 
-> Also U-Boot is involved during flashing the UBI image to flash.
-
-In you last mail you wrote
-"During some point U-Boot cannot mount the ubifs partition and fails with"..
-
-So, please reproduce from scratch(!) with a recent kernel (4.1 or newer) and provide all needed infos.
-Otherwise I see no way howto help you.
-
+-- 
 Thanks,
 //richard
