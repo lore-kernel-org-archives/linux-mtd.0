@@ -1,22 +1,23 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: Cory Tusar <cory.tusar@pid1solutions.com>
-Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org, shawnguo@kernel.org,
- kernel@pengutronix.de, han.xu@freescale.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, stefan@agner.ch, linux@arm.linux.org.uk,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- andrew@lunn.ch
-Subject: Re: [PATCH v1 3/7] mtd: fsl-quadspi: Support both 24- and 32-bit
- addressed commands.
-Date: Tue, 14 Jul 2015 16:11:19 +0200
-Message-ID: <1991808.GxeN5ENdEz@ws-stein>
-In-Reply-To: <1436386881-28088-4-git-send-email-cory.tusar@pid1solutions.com>
-References: <1436386881-28088-1-git-send-email-cory.tusar@pid1solutions.com>
- <1436386881-28088-4-git-send-email-cory.tusar@pid1solutions.com>
+Date: Tue, 14 Jul 2015 17:26:27 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Ranjit Waghmode <ranjit.waghmode@xilinx.com>
+Cc: michal.simek@xilinx.com, soren.brinkmann@xilinx.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
+ marex@denx.de, shijie.huang@intel.com, juhosg@openwrt.org,
+ ben@decadent.org.uk, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, harinik@xilinx.com,
+ punnaia@xilinx.com, ran27jit@gmail.com
+Message-ID: <20150714162627.GC11162@sirena.org.uk>
+References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
+ <1436445895-25504-2-git-send-email-ranjit.waghmode@xilinx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="OmEpep6L+R/25PJj"
+Content-Disposition: inline
+In-Reply-To: <1436445895-25504-2-git-send-email-ranjit.waghmode@xilinx.com>
+Subject: Re: [RFC PATCH 1/2] spi: zynqmp: gqspi: add support for dual
+ parallel mode configuration
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,103 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Cory,
 
-On Wednesday 08 July 2015 16:21:17, Cory Tusar wrote:
-> The current fsl-quadspi implementation assumes that all connected
-> devices are of the same size and type.  This commit adds lookup table
-> entries for both 24- and 32-bit addressed variants of the read, sector
-> erase, and page program operations as a precursor to later changes which
-> generalize the flash layout parsing logic and allow for non-contiguous
-> and non-homogeneous chip combinations.
-> 
-> Signed-off-by: Cory Tusar <cory.tusar@pid1solutions.com>
-> 
-> [...]
->  /* Get the SEQID for the command */
-> -static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
-> +static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd, u8 addr_width)
->  {
->  	switch (cmd) {
->  	case SPINOR_OP_READ_1_1_4:
-> -		return SEQID_QUAD_READ;
-> +		if (addr_width == 3)
-> +			return SEQID_QUAD_READ_24;
-> +		if (addr_width == 4)
-> +			return SEQID_QUAD_READ_32;
-> +		dev_err(q->dev, "Unsupported addr_width (%d) for cmd 0x%.2x\n",
-> +			addr_width, cmd);
-> +		break;
+--OmEpep6L+R/25PJj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Does this actually work? What if q->nor[0].read_opcode is SPINOR_OP_READ4_1_1_4 (set in spi-nor.c for flashes using 4 byte address commands)?
+On Thu, Jul 09, 2015 at 06:14:54PM +0530, Ranjit Waghmode wrote:
 
->  	case SPINOR_OP_WREN:
->  		return SEQID_WREN;
->  	case SPINOR_OP_WRDI:
-> @@ -403,11 +394,23 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
->  	case SPINOR_OP_RDSR:
->  		return SEQID_RDSR;
->  	case SPINOR_OP_SE:
-> -		return SEQID_SE;
-> +		if (addr_width == 3)
-> +			return SEQID_SE_24;
-> +		if (addr_width == 4)
-> +			return SEQID_SE_32;
-> +		dev_err(q->dev, "Unsupported addr_width (%d) for cmd 0x%.2x\n",
-> +			addr_width, cmd);
-> +		break;
+> +	if (qspi->master->flags & SPI_BOTH_FLASH) {
 
-Same as for read command.
+There's currently no SPI_BOTH_FLASH...
 
->  	case SPINOR_OP_CHIP_ERASE:
->  		return SEQID_CHIP_ERASE;
->  	case SPINOR_OP_PP:
-> -		return SEQID_PP;
-> +		if (addr_width == 3)
-> +			return SEQID_PP_24;
-> +		if (addr_width == 4)
-> +			return SEQID_PP_32;
-> +		dev_err(q->dev, "Unsupported addr_width (%d) for cmd 0x%.2x\n",
-> +			addr_width, cmd);
-> +		break;
+--OmEpep6L+R/25PJj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-See above too.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->  	case SPINOR_OP_RDID:
->  		return SEQID_RDID;
->  	case SPINOR_OP_WRSR:
-> @@ -456,7 +459,7 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
->  	} while (1);
->  
->  	/* trigger the LUT now */
-> -	seqid = fsl_qspi_get_seqid(q, cmd);
-> +	seqid = fsl_qspi_get_seqid(q, cmd, q->nor[0].addr_width);
->  	writel((seqid << QUADSPI_IPCR_SEQID_SHIFT) | len, base + QUADSPI_IPCR);
->  
->  	/* Wait for the interrupt. */
-> @@ -601,9 +604,10 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
->  	writel(0, base + QUADSPI_BUF2IND);
->  
->  	/* Set the default lut sequence for AHB Read. */
-> -	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
-> +	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode,
-> +			q->nor[0].addr_width);
->  	writel(seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
+iQEcBAEBCAAGBQJVpTgyAAoJECTWi3JdVIfQ2doH/AmmtPppWJw/uHkEkc0/kP4P
+YtxX4R+MLlxHgsRnLnc3NLzq2EGqz8n20BgY68sLnu6YRrpf9Onx+6UuYnVShJXy
++bvwsqvnvFQrO/cOTgnPcVUQHihp/e5xS69X/i/aE+F1eOStYWYmiAFRANoc9sxN
+kcE84q7gd0mHPbP0abk0wkHigZBkoT7rt/nO/4ZjGVdWbccA3t921c4ftkU0gecI
+Bp1xhTgHVP0NuCzkDVDniVXzh5mxqcHlCp0+cLYoD/hb9tgRgaNTA2Vau2vIqR6+
+GUGLpmAncEQlRc5exnAFvI0L/PBu0N11B24a6PYXapwY5ft8Uhy7vwlDb/PIwMA=
+=iJMq
+-----END PGP SIGNATURE-----
 
-Those changes can then be skipped you explicitly do switch/case for 4 byte address commands.
-
-Best reagrds,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
-
-SYS TEC electronic GmbH
-Am Windrad 2
-08468 Heinsdorfergrund
-Tel.: 03765 38600-1156
-Fax: 03765 38600-4100
-Email: alexander.stein@systec-electronic.com
-Website: www.systec-electronic.com
- 
-Managing Director: Dipl.-Phys. Siegmar Schmidt
-Commercial registry: Amtsgericht Chemnitz, HRB 28082
+--OmEpep6L+R/25PJj--
