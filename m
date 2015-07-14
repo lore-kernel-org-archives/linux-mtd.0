@@ -1,19 +1,22 @@
-Received: from forward18p.cmail.yandex.net ([2a02:6b8:0:1465::ab])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZF0oD-0001wZ-9r
- for linux-mtd@lists.infradead.org; Tue, 14 Jul 2015 14:03:46 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-In-Reply-To: <CAFLxGvxedXbf4+HdWrJk0LCpgR=cEbK_JWeesgQc9kzGe+4P9w@mail.gmail.com>
-References: <899311436867317@web30h.yandex.ru>
- <CAFLxGvxedXbf4+HdWrJk0LCpgR=cEbK_JWeesgQc9kzGe+4P9w@mail.gmail.com>
-Subject: Re: Why UBIFS min I/O unit size must be power of 2?
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+To: Cory Tusar <cory.tusar@pid1solutions.com>
+Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org, shawnguo@kernel.org,
+ kernel@pengutronix.de, han.xu@freescale.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, stefan@agner.ch, linux@arm.linux.org.uk,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ andrew@lunn.ch
+Subject: Re: [PATCH v1 3/7] mtd: fsl-quadspi: Support both 24- and 32-bit
+ addressed commands.
+Date: Tue, 14 Jul 2015 16:11:19 +0200
+Message-ID: <1991808.GxeN5ENdEz@ws-stein>
+In-Reply-To: <1436386881-28088-4-git-send-email-cory.tusar@pid1solutions.com>
+References: <1436386881-28088-1-git-send-email-cory.tusar@pid1solutions.com>
+ <1436386881-28088-4-git-send-email-cory.tusar@pid1solutions.com>
 MIME-Version: 1.0
-Message-Id: <2298861436882598@web17g.yandex.ru>
-Date: Tue, 14 Jul 2015 17:03:18 +0300
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=koi8-r
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +26,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Cory,
 
+On Wednesday 08 July 2015 16:21:17, Cory Tusar wrote:
+> The current fsl-quadspi implementation assumes that all connected
+> devices are of the same size and type.  This commit adds lookup table
+> entries for both 24- and 32-bit addressed variants of the read, sector
+> erase, and page program operations as a precursor to later changes which
+> generalize the flash layout parsing logic and allow for non-contiguous
+> and non-homogeneous chip combinations.
+> 
+> Signed-off-by: Cory Tusar <cory.tusar@pid1solutions.com>
+> 
+> [...]
+>  /* Get the SEQID for the command */
+> -static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
+> +static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd, u8 addr_width)
+>  {
+>  	switch (cmd) {
+>  	case SPINOR_OP_READ_1_1_4:
+> -		return SEQID_QUAD_READ;
+> +		if (addr_width == 3)
+> +			return SEQID_QUAD_READ_24;
+> +		if (addr_width == 4)
+> +			return SEQID_QUAD_READ_32;
+> +		dev_err(q->dev, "Unsupported addr_width (%d) for cmd 0x%.2x\n",
+> +			addr_width, cmd);
+> +		break;
 
-14.07.2015, 14:26, "Richard Weinberger" <richard.weinberger@gmail.com>:
-> On Tue, Jul 14, 2015 at 11:48 AM, Konstantin Tokarev <annulen@yandex.ru> wrote:
->> šHi all,
->>
->> šI'd like to increase compression ratio of UBIFS image (at the cost of possibly
->> šslower writes). However, my LEB size is 129024, so the largest block size that
->> šI could use is 2048 (otherwise LEB won't be multiple of I/O unit size).
->>
->> šSo I wonder why UBIFS cannot use 129024 as I/O unit size and requires it to be
->> špower of 2? Is it possible to eleminate this limitation?
->
-> To my knowledge the property is defined by hardware limitations (i.e.
-> flash properties).
->
+Does this actually work? What if q->nor[0].read_opcode is SPINOR_OP_READ4_1_1_4 (set in spi-nor.c for flashes using 4 byte address commands)?
 
-Ah, this is *hardware* I/O unit size, and I was thinking of it as it was UBIFS
-compression block size.
+>  	case SPINOR_OP_WREN:
+>  		return SEQID_WREN;
+>  	case SPINOR_OP_WRDI:
+> @@ -403,11 +394,23 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
+>  	case SPINOR_OP_RDSR:
+>  		return SEQID_RDSR;
+>  	case SPINOR_OP_SE:
+> -		return SEQID_SE;
+> +		if (addr_width == 3)
+> +			return SEQID_SE_24;
+> +		if (addr_width == 4)
+> +			return SEQID_SE_32;
+> +		dev_err(q->dev, "Unsupported addr_width (%d) for cmd 0x%.2x\n",
+> +			addr_width, cmd);
+> +		break;
 
-Thank you.
+Same as for read command.
 
+>  	case SPINOR_OP_CHIP_ERASE:
+>  		return SEQID_CHIP_ERASE;
+>  	case SPINOR_OP_PP:
+> -		return SEQID_PP;
+> +		if (addr_width == 3)
+> +			return SEQID_PP_24;
+> +		if (addr_width == 4)
+> +			return SEQID_PP_32;
+> +		dev_err(q->dev, "Unsupported addr_width (%d) for cmd 0x%.2x\n",
+> +			addr_width, cmd);
+> +		break;
+
+See above too.
+
+>  	case SPINOR_OP_RDID:
+>  		return SEQID_RDID;
+>  	case SPINOR_OP_WRSR:
+> @@ -456,7 +459,7 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
+>  	} while (1);
+>  
+>  	/* trigger the LUT now */
+> -	seqid = fsl_qspi_get_seqid(q, cmd);
+> +	seqid = fsl_qspi_get_seqid(q, cmd, q->nor[0].addr_width);
+>  	writel((seqid << QUADSPI_IPCR_SEQID_SHIFT) | len, base + QUADSPI_IPCR);
+>  
+>  	/* Wait for the interrupt. */
+> @@ -601,9 +604,10 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
+>  	writel(0, base + QUADSPI_BUF2IND);
+>  
+>  	/* Set the default lut sequence for AHB Read. */
+> -	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
+> +	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode,
+> +			q->nor[0].addr_width);
+>  	writel(seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
+
+Those changes can then be skipped you explicitly do switch/case for 4 byte address commands.
+
+Best reagrds,
+Alexander
 -- 
-Regards,
-Konstantin
+Dipl.-Inf. Alexander Stein
+
+SYS TEC electronic GmbH
+Am Windrad 2
+08468 Heinsdorfergrund
+Tel.: 03765 38600-1156
+Fax: 03765 38600-4100
+Email: alexander.stein@systec-electronic.com
+Website: www.systec-electronic.com
+ 
+Managing Director: Dipl.-Phys. Siegmar Schmidt
+Commercial registry: Amtsgericht Chemnitz, HRB 28082
