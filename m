@@ -1,22 +1,41 @@
-Date: Tue, 14 Jul 2015 17:40:05 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Ranjit Waghmode <ranjit.waghmode@xilinx.com>
-Cc: michal.simek@xilinx.com, soren.brinkmann@xilinx.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
- marex@denx.de, shijie.huang@intel.com, juhosg@openwrt.org,
- ben@decadent.org.uk, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, harinik@xilinx.com,
- punnaia@xilinx.com, ran27jit@gmail.com
-Message-ID: <20150714164005.GE11162@sirena.org.uk>
-References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="BC0PqexbI+QDQ83Q"
-Content-Disposition: inline
-In-Reply-To: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
-Subject: Re: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support in
- Zynq MPSoC GQSPI controller
+In-Reply-To: <20150604171547.GA1530@localhost.localdomain>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <8fc4b9f5291a509c4c35782a1337bf536f1019af.1433364398.git.hramrach@gmail.com>
+ <CAMuHMdVT2M7pPHDDHmoNF_zVXhz1PUm5PiYxDKcAjSAcfSDiZg@mail.gmail.com>
+ <CAOMqctS6KNrTATB6MYCZLBnZUQmX=e0qQvGf78YtLaF8pkibhQ@mail.gmail.com>
+ <20150604171547.GA1530@localhost.localdomain>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Wed, 15 Jul 2015 11:45:07 +0200
+Message-ID: <CAOMqctSCL9E-kCBryeaMvtssSP12RY=kyfPuwSYx9wc=Lv9kGQ@mail.gmail.com>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+To: Richard Cochran <richardcochran@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ Marek Vasut <marex@denx.de>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, Rob Herring <robh+dt@kernel.org>,
+ Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>, dmaengine <dmaengine@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +45,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 4 June 2015 at 19:15, Richard Cochran <richardcochran@gmail.com> wrote:
+> On Thu, Jun 04, 2015 at 10:31:45AM +0200, Michal Suchanek wrote:
+>> You might want to try to run the bus at 60MHz or 80MHz and then the
+>> values would probably again be different.
+>>
+>> The first two values are set in DT so the logical place for setting
+>> the third is also in DT.
+>>
+>> Otherwise you would need some in-kernel table of these settings.
+>
+> Or a formula.
+>
 
---BC0PqexbI+QDQ83Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This formula probably needs to take into account
 
-On Thu, Jul 09, 2015 at 06:14:53PM +0530, Ranjit Waghmode wrote:
+ - the unknown reason for the pl330 to fail transfer
+ - the device transfer speed and transfer phase as set in DT
+ - possibly device-specific latency and board-specific trace design
+and assembly tolerances
 
+Seriously, until I have at least a vague idea why the transfer fails I
+am not comfortable pulling some formula out of thin air and pretending
+I have a working patch.
 
-> What is dual parallel mode?
-> ---------------------------
-> ZynqMP GQSPI controller supports Dual Parallel mode with following functionalities:
-> 1) Supporting two SPI flash memories operating in parallel. 8 I/O lines.
-> 2) Chip selects and clock are shared to both the flash devices
-> 3) This mode is targeted for faster read/write speed and also doubles the size
-> 4) Commands/data can be transmitted/received from both the devices(mirror),
->    or only upper or only lower flash memory devices.
-> 5) Data arrangement:
->    With stripe enabled,
->    Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
->    Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
+On the other hand, a parameter you can set in the DT and which comes
+with a suggested value which can be tuned depending on the system
+seems more viable.
 
-For the SPI code this just seems like SPI with an 8 bit data width.
+Thanks
 
-> What is stacked mode?
-> ---------------------
-> ZynqMP GQSPI controller supports stacked mode with following functionalities:
-> 1) The Generic Quad-SPI controller also supports two SPI flash memories
->    in a shared bus arrangement to reduce IO pin count.
-> 2) Separate chip select lines
-> 3) Shared I/O lines
-> 4) This mode is targeted for increasing the flash memory and no performance
->    improvement when compared with single.
-
-This is just a normal SPI controller from a SPI point of view.
-
---BC0PqexbI+QDQ83Q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVpTtkAAoJECTWi3JdVIfQAWgH/2jTg94UlpB2zKtJL/FOWWzm
-TLJv6Kx5gYzLvin6CWk8Ww8y0BJ6SKImSo/e9xGY4vK9lPHPYpkluGMZchap74gG
-toVIkiAvXvhqhKHzeb5HnOPEXEIuJmod6U8eR6xLUkj3j2YDUx1hqp4GIDngRTU1
-DF1pojb0u4oejEg4KafdByjkVrs49sjBX9YVg2c2b2CQTiLOojJXSqf90NZ7eWmp
-6B0Gw0ikbpVELvnoEL/BK7xjDolTJXdO3Nb8HfTV8+bSysd24SOHgnwG+vuDpDoG
-7ESsyXQ0P1thcoWkiPDJrYhuIPqrOiMiC5EkjOYkxSBBXSWe20k/y9Ww3AixsFQ=
-=4RN1
------END PGP SIGNATURE-----
-
---BC0PqexbI+QDQ83Q--
+Michal
