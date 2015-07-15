@@ -1,30 +1,42 @@
-From: Ranjit Abhimanyu Waghmode <ranjit.waghmode@xilinx.com>
-To: Mark Brown <broonie@kernel.org>
-CC: Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>,
- "zajec5@gmail.com" <zajec5@gmail.com>, "marex@denx.de" <marex@denx.de>,
- "shijie.huang@intel.com" <shijie.huang@intel.com>,
- "juhosg@openwrt.org" <juhosg@openwrt.org>,
- "ben@decadent.org.uk" <ben@decadent.org.uk>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Harini Katakam <harinik@xilinx.com>,
- "Punnaiah Choudary Kalluri" <punnaia@xilinx.com>, "ran27jit@gmail.com"
- <ran27jit@gmail.com>
-Subject: RE: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support
- in Zynq MPSoC GQSPI controller
-Date: Wed, 15 Jul 2015 14:12:54 +0000
-Message-ID: <7CFCFE83B8145347A1D424EC939F1C3CA7E53D@XAP-PVEXMBX01.xlnx.xilinx.com>
-References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
- <20150714164005.GE11162@sirena.org.uk>
-In-Reply-To: <20150714164005.GE11162@sirena.org.uk>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Date: Wed, 15 Jul 2015 08:59:46 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Marek Vasut <marex@denx.de>, hramrach@gmail.com
+Cc: Michal Suchanek <hramrach@gmail.com>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>,
+ dmaengine <dmaengine@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+Message-ID: <20150715155946.GB21362@localhost>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <20150604171547.GA1530@localhost.localdomain>
+ <CAOMqctSCL9E-kCBryeaMvtssSP12RY=kyfPuwSYx9wc=Lv9kGQ@mail.gmail.com>
+ <201507151352.27689.marex@denx.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201507151352.27689.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,42 +46,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+Hi Michal,
 
-> > What is dual parallel mode?
-> > ---------------------------
-> > ZynqMP GQSPI controller supports Dual Parallel mode with following
-> functionalities:
-> > 1) Supporting two SPI flash memories operating in parallel. 8 I/O lines=
-.
-> > 2) Chip selects and clock are shared to both the flash devices
-> > 3) This mode is targeted for faster read/write speed and also doubles t=
-he size
-> > 4) Commands/data can be transmitted/received from both the devices(mirr=
-or),
-> >    or only upper or only lower flash memory devices.
-> > 5) Data arrangement:
-> >    With stripe enabled,
-> >    Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
-> >    Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
->=20
-> For the SPI code this just seems like SPI with an 8 bit data width.
->=20
-> > What is stacked mode?
-> > ---------------------
-> > ZynqMP GQSPI controller supports stacked mode with following
-> functionalities:
-> > 1) The Generic Quad-SPI controller also supports two SPI flash memories
-> >    in a shared bus arrangement to reduce IO pin count.
-> > 2) Separate chip select lines
-> > 3) Shared I/O lines
-> > 4) This mode is targeted for increasing the flash memory and no perform=
-ance
-> >    improvement when compared with single.
->=20
-> This is just a normal SPI controller from a SPI point of view.
+On Wed, Jul 15, 2015 at 01:52:27PM +0200, Marek Vasut wrote:
+> The problem is, if you add a new DT binding, you'd have to support it
+> forever, no matter how bad idea that binding turned out to be.
 
-How can we really represent the stacked mode in current configuration?
+Agreed, and a solid NAK to this patch. I could have sworn I gave such a
+response when this was originally being discussed a month ago.
 
-Thanks & Regards,
-Ranjit
+AFAICT, you have one of two general approaches available to you:
+
+1. Fix up the SPI driver so that it knows how to break large SPI
+transfers up into smaller segments that its constituent hardware (DMA
+controllers, fast clocks, etc.) can handle.
+
+2. Utilize/create a parameter within the SPI subsystem to communicate
+that the SPI master has a limited max transfer size (notably: NOT a
+per-device DT property, but a SPI API property), and modify SPI device
+drivers (like m25p80) to honor it. Mark Brown seemed open to this, and I
+thought he suggested it somewhere.
+
+It is most definitely wrong to put this information solely in the slave
+device DT (i.e., for the flash), when it is not a property of the flash
+device at all. It's a property of the SPI master and/or its clocks and
+DMA controllers.
+
+Brian
