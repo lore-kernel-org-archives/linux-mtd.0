@@ -1,33 +1,18 @@
-Date: Thu, 16 Jul 2015 09:57:39 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Ranjit Abhimanyu Waghmode <ranjit.waghmode@xilinx.com>
-Cc: Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "zajec5@gmail.com" <zajec5@gmail.com>, "marex@denx.de" <marex@denx.de>,
- "shijie.huang@intel.com" <shijie.huang@intel.com>,
- "juhosg@openwrt.org" <juhosg@openwrt.org>,
- "ben@decadent.org.uk" <ben@decadent.org.uk>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Harini Katakam <harinik@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
- "ran27jit@gmail.com" <ran27jit@gmail.com>
-Message-ID: <20150716085739.GT11162@sirena.org.uk>
-References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
- <20150714164005.GE11162@sirena.org.uk>
- <7CFCFE83B8145347A1D424EC939F1C3CA7E53D@XAP-PVEXMBX01.xlnx.xilinx.com>
- <20150715160146.GS11162@sirena.org.uk>
- <7CFCFE83B8145347A1D424EC939F1C3CA7E758@XAP-PVEXMBX01.xlnx.xilinx.com>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZFj7a-00007f-8D
+ for linux-mtd@lists.infradead.org; Thu, 16 Jul 2015 13:22:43 +0000
+Received: from [127.0.0.1] (unknown [192.168.0.126])
+ by mx.dave-tech.it (Postfix) with ESMTPS id 942AB10B
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Jul 2015 15:22:12 +0200 (CEST)
+To: mtd_mailinglist <linux-mtd@lists.infradead.org>
+From: Andrea Scian <rnd4@dave-tech.it>
+Subject: UBIFS: recovery of master node
+Message-ID: <55A7B004.2090705@dave-tech.it>
+Date: Thu, 16 Jul 2015 15:22:12 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="nvwB+Y2gyxL5aXTF"
-Content-Disposition: inline
-In-Reply-To: <7CFCFE83B8145347A1D424EC939F1C3CA7E758@XAP-PVEXMBX01.xlnx.xilinx.com>
-Subject: Re: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support in
- Zynq MPSoC GQSPI controller
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,41 +23,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---nvwB+Y2gyxL5aXTF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Dear all,
 
-On Thu, Jul 16, 2015 at 07:27:34AM +0000, Ranjit Abhimanyu Waghmode wrote:
+I'm trying to understand how UBIFS recovers master node from a corrupted 
+flash (e.g. after power cut during one of the two of master node or due 
+flash corruption itself).
 
-> For an example take two flashes connected in stacked mode.
-> For user it doesn't matter whether how many flashes are really connected.=
-=20
-> There will be situation like, single partition is spread across two flash=
-es (partition staring at the end of one flash and continued to the second f=
-lash). But it has to be shown contiguous to user.
-> In this scenario, I am not clear how MTD layer will handle the case.
-> It would be great if you could just put some light on it.
+IIUC (please correct me if I'm wrong) UBIFS store two copies of master 
+node, in LEB1 and LEB2 (LEB0 is reserved for superblock), ref. 
+http://www.linux-mtd.infradead.org/doc/ubifs_whitepaper.pdf.
+Inside ubifs_recover_master_node() try to read first LEB1 and, only in 
+case of get_master_node() does NOT return an error, it tries to read 
+LEB2 (ref. fs/ubifs/recovery.c)
+I'm working with a 3.10 class kernel, but I've found nearly the same 
+code on mainline.
 
-That's something for the MTD layer or possibly even a layer above it to
-worry about - this situation is the same as we have with disks where we
-have md which combines other devices, if something similar is needed for
-flash we should use a similar pattern.
+On my test-bed, the recovery fails because get_master_node(LEB1) fails 
+(exactly here 
+http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/fs/ubifs/recovery.c#n184)
+I'm hacking around the code to see what's really happening under the 
+wood, but I'm a UBIFS newbie I would like to ask:
 
---nvwB+Y2gyxL5aXTF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+1) why if get_master_node(LEB1) fails we don't ALWAYS look at 
+get_master_node(LEB2)? I think we should try to read LEB2 even if 
+something really bad happens to LEB1.. or not?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+2) if I bypass the get_master_node(LEB1) return value, I found that 
+get_master_node(LEB2) fails too, for the same reason of LEB1 (see 
+above). IIUC we check about empty space because master node pages get 
+written without being erased every time, but I'm still studying this 
+topic ;-)
 
-iQEcBAEBCAAGBQJVp3ICAAoJECTWi3JdVIfQFH4H/jgoYSPT5C2B/zTNqOObAyHF
-fTf6kdLH3FXQaw5nenrlDtmAKe4I7jEx3Dc+pqKCQTyu6PazwiIVzFgg36NmaK21
-IS2H8bScruoIq+Ur2776UaTgfA/AWBfxLasUZSF9TO1zKKh7c+WcyIG+2BTn1Jnb
-4RrT7HNX8QYZ6mSIo1VfsxBM0MkwHfB6QtTZMSQm6Z968J1bqM4gI2scyq0OXsWT
-kveJeJiDYV82leFGfqhFUIDB4ySrFoAkYja8VDQ0cd3H68LJkFc9lziV92HRvqFm
-6iu8l1ZM+BkjPK90G6SOuk8hEH97O1XAvYawOEDhZTqh7wolAXiOfJjjLKkO99E=
-=phUr
------END PGP SIGNATURE-----
+If I bypass that check too, I can mount UBIFS and everything inside the 
+FS is there but, of course, I'm sure I'm doing something that may be wrong..
 
---nvwB+Y2gyxL5aXTF--
+WDYT?
+
+Thanks in advance and kind regards,
+
+-- 
+
+Andrea SCIAN
+
+DAVE Embedded Systems
