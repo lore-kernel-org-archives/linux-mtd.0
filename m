@@ -1,19 +1,22 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZFlQe-0005D1-Pb
- for linux-mtd@lists.infradead.org; Thu, 16 Jul 2015 15:50:33 +0000
-Subject: Re: UBIFS: recovery of master node
-To: Richard Weinberger <richard.weinberger@gmail.com>
-References: <55A7B004.2090705@dave-tech.it>
- <CAFLxGvxgKeKq1_cLNG9rS53NDT=OZsO9h6cizBnkU5Zv69EwSQ@mail.gmail.com>
-Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
-From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <55A7D2B1.1040203@dave-tech.it>
-Date: Thu, 16 Jul 2015 17:50:09 +0200
+Received: from mail-qg0-f54.google.com ([209.85.192.54])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZFmyp-0000pC-O2
+ for linux-mtd@lists.infradead.org; Thu, 16 Jul 2015 17:29:56 +0000
+Received: by qgii95 with SMTP id i95so4717341qgi.2
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Jul 2015 10:29:33 -0700 (PDT)
+Message-ID: <55A7E9FA.4040704@pid1solutions.com>
+Date: Thu, 16 Jul 2015 13:29:30 -0400
+From: Cory Tusar <cory.tusar@pid1solutions.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvxgKeKq1_cLNG9rS53NDT=OZsO9h6cizBnkU5Zv69EwSQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+CC: Han Xu <han.xu@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/1] mtd: fsl-quadspi: Add mutex for accessing different
+ SPI-NOR devices
+References: <1437056014-16928-1-git-send-email-alexander.stein@systec-electronic.com>
+In-Reply-To: <1437056014-16928-1-git-send-email-alexander.stein@systec-electronic.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,71 +26,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Dear Richard,
+On 07/16/2015 10:13 AM, Alexander Stein wrote:
+> Access is only serialized for each NOR device in spi_nor_lock_and_prep(),
+> but not for the QSPI device.
 
-Il 16/07/2015 17:29, Richard Weinberger ha scritto:
-> Andrea,
->
-> On Thu, Jul 16, 2015 at 3:22 PM, Andrea Scian <rnd4@dave-tech.it> wrote:
->> Dear all,
->>
->> I'm trying to understand how UBIFS recovers master node from a corrupted
->> flash (e.g. after power cut during one of the two of master node or due
->> flash corruption itself).
->>
->> IIUC (please correct me if I'm wrong) UBIFS store two copies of master node,
->> in LEB1 and LEB2 (LEB0 is reserved for superblock), ref.
->> http://www.linux-mtd.infradead.org/doc/ubifs_whitepaper.pdf.
->> Inside ubifs_recover_master_node() try to read first LEB1 and, only in case
->> of get_master_node() does NOT return an error, it tries to read LEB2 (ref.
->> fs/ubifs/recovery.c)
->> I'm working with a 3.10 class kernel, but I've found nearly the same code on
->> mainline.
->>
->> On my test-bed, the recovery fails because get_master_node(LEB1) fails
->> (exactly here
->> http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/fs/ubifs/recovery.c#n184)
->> I'm hacking around the code to see what's really happening under the wood,
->> but I'm a UBIFS newbie I would like to ask:
->>
->> 1) why if get_master_node(LEB1) fails we don't ALWAYS look at
->> get_master_node(LEB2)? I think we should try to read LEB2 even if something
->> really bad happens to LEB1.. or not?
-> AFAIK the idea was that only upon plausible errors the second LEB will be used.
-> If reading LEB1 fails due to an internal MTD error UBIFS gives up.
+Hi Alexander,
 
-Understood, I think you already told me that UBI/UBIFS assume that empty 
-flash always stay empty
+Are both devices that you're testing with in the below scenario QSPI, or
+is it a combination of QSPI + some other MTD device?
 
-However, to me it seems this is a heavy limitation, if we have another 
-master node, why don't we always try to use it?
-Again, I'm just trying to understand the recovery code and try to 
-improve it (if possible ;-) )
+Just want to understand how it was tested as I've got hardware here that
+may let me help out with that...
 
->> 2) if I bypass the get_master_node(LEB1) return value, I found that
->> get_master_node(LEB2) fails too, for the same reason of LEB1 (see above).
->> IIUC we check about empty space because master node pages get written
->> without being erased every time, but I'm still studying this topic ;-)
->>
->> If I bypass that check too, I can mount UBIFS and everything inside the FS
->> is there but, of course, I'm sure I'm doing something that may be wrong..
->>
->> WDYT?
-> So, you're facing bitflips on empty space?
+Best regards,
+- -Cory
 
-Yes, and this seems the same behavior I saw previously regarding factory 
-bad block marker (ref 
-http://lists.infradead.org/pipermail/linux-mtd/2015-March/058151.html)
 
-> Is this MLC NAND?
+> We must ensure only one NOR device is accessed as each call to
+> fsl_qspi_set_base_addr (in fsl_qspi_prep) will affect the effective flash
+> address.
+> This can simply be achieved by using a mutex in prepare/unprepare
+> callbacks.
+> 
+> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+> ---
+> This problem can simply be trigged by doing a hexdump on /dev/mtdblock0
+> (256 kiB) and /dev/mtdblock3 (64MiB), in my case.
+> 
+> $ hexdump -C /dev/mtdblock3 # doing a long taking access.
+> $ hexdump -C /dev/mtdblock0 # in the meanwhile will show data from mtdblock3
+> 
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 5d2df50..a48495a 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -226,6 +226,7 @@ struct fsl_qspi {
+>  	u32 memmap_phy;
+>  	struct clk *clk, *clk_en;
+>  	struct device *dev;
+> +	struct mutex lock; /* to serialize access to different mtd partitions */
+>  	struct completion c;
+>  	struct fsl_qspi_devtype_data *devtype_data;
+>  	u32 nor_size;
+> @@ -771,6 +772,8 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+>  		return ret;
+>  	}
+>  
+> +	mutex_lock(&q->lock);
+> +
+>  	fsl_qspi_set_base_addr(q, nor);
+>  	return 0;
+>  }
+> @@ -779,6 +782,8 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+>  {
+>  	struct fsl_qspi *q = nor->priv;
+>  
+> +	mutex_unlock(&q->lock);
+> +
+>  	clk_disable(q->clk);
+>  	clk_disable(q->clk_en);
+>  }
+> @@ -856,6 +861,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  	q->dev = dev;
+>  	q->devtype_data = (struct fsl_qspi_devtype_data *)of_id->data;
+>  	platform_set_drvdata(pdev, q);
+> +	mutex_init(&q->lock);
+>  
+>  	ret = fsl_qspi_nor_setup(q);
+>  	if (ret)
+> 
 
-Yes, I'm doing some heavy stress test on it
 
-Kind Regards,
+- -- 
+Cory Tusar
+Principal
+PID 1 Solutions, Inc.
 
--- 
 
-Andrea SCIAN
+"There are two ways of constructing a software design.  One way is to
+ make it so simple that there are obviously no deficiencies, and the
+ other way is to make it so complicated that there are no obvious
+ deficiencies."  --Sir Charles Anthony Richard Hoare
 
-DAVE Embedded Systems
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iEYEARECAAYFAlWn6foACgkQHT1tsfGwHJ8pmwCfQsbV/yEhq19HPdcbshjeWnrx
+Pw0AoJxcek3AjjtPZHSSDEvo81NwaV4H
+=Rwdj
+-----END PGP SIGNATURE-----
