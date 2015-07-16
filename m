@@ -1,18 +1,16 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
+Received: from webbox1416.server-home.net ([77.236.96.61])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZFj7a-00007f-8D
- for linux-mtd@lists.infradead.org; Thu, 16 Jul 2015 13:22:43 +0000
-Received: from [127.0.0.1] (unknown [192.168.0.126])
- by mx.dave-tech.it (Postfix) with ESMTPS id 942AB10B
- for <linux-mtd@lists.infradead.org>; Thu, 16 Jul 2015 15:22:12 +0200 (CEST)
-To: mtd_mailinglist <linux-mtd@lists.infradead.org>
-From: Andrea Scian <rnd4@dave-tech.it>
-Subject: UBIFS: recovery of master node
-Message-ID: <55A7B004.2090705@dave-tech.it>
-Date: Thu, 16 Jul 2015 15:22:12 +0200
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+ id 1ZFjvH-0005NS-Jw
+ for linux-mtd@lists.infradead.org; Thu, 16 Jul 2015 14:14:04 +0000
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+To: Han Xu <han.xu@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] mtd: fsl-quadspi: Add mutex for accessing different
+ SPI-NOR devices
+Date: Thu, 16 Jul 2015 16:13:34 +0200
+Message-Id: <1437056014-16928-1-git-send-email-alexander.stein@systec-electronic.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +20,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Access is only serialized for each NOR device in spi_nor_lock_and_prep(),
+but not for the QSPI device.
+We must ensure only one NOR device is accessed as each call to
+fsl_qspi_set_base_addr (in fsl_qspi_prep) will affect the effective flash
+address.
+This can simply be achieved by using a mutex in prepare/unprepare
+callbacks.
 
-Dear all,
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+This problem can simply be trigged by doing a hexdump on /dev/mtdblock0
+(256 kiB) and /dev/mtdblock3 (64MiB), in my case.
 
-I'm trying to understand how UBIFS recovers master node from a corrupted 
-flash (e.g. after power cut during one of the two of master node or due 
-flash corruption itself).
+$ hexdump -C /dev/mtdblock3 # doing a long taking access.
+$ hexdump -C /dev/mtdblock0 # in the meanwhile will show data from mtdblock3
 
-IIUC (please correct me if I'm wrong) UBIFS store two copies of master 
-node, in LEB1 and LEB2 (LEB0 is reserved for superblock), ref. 
-http://www.linux-mtd.infradead.org/doc/ubifs_whitepaper.pdf.
-Inside ubifs_recover_master_node() try to read first LEB1 and, only in 
-case of get_master_node() does NOT return an error, it tries to read 
-LEB2 (ref. fs/ubifs/recovery.c)
-I'm working with a 3.10 class kernel, but I've found nearly the same 
-code on mainline.
+ drivers/mtd/spi-nor/fsl-quadspi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-On my test-bed, the recovery fails because get_master_node(LEB1) fails 
-(exactly here 
-http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/fs/ubifs/recovery.c#n184)
-I'm hacking around the code to see what's really happening under the 
-wood, but I'm a UBIFS newbie I would like to ask:
-
-1) why if get_master_node(LEB1) fails we don't ALWAYS look at 
-get_master_node(LEB2)? I think we should try to read LEB2 even if 
-something really bad happens to LEB1.. or not?
-
-2) if I bypass the get_master_node(LEB1) return value, I found that 
-get_master_node(LEB2) fails too, for the same reason of LEB1 (see 
-above). IIUC we check about empty space because master node pages get 
-written without being erased every time, but I'm still studying this 
-topic ;-)
-
-If I bypass that check too, I can mount UBIFS and everything inside the 
-FS is there but, of course, I'm sure I'm doing something that may be wrong..
-
-WDYT?
-
-Thanks in advance and kind regards,
-
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 5d2df50..a48495a 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -226,6 +226,7 @@ struct fsl_qspi {
+ 	u32 memmap_phy;
+ 	struct clk *clk, *clk_en;
+ 	struct device *dev;
++	struct mutex lock; /* to serialize access to different mtd partitions */
+ 	struct completion c;
+ 	struct fsl_qspi_devtype_data *devtype_data;
+ 	u32 nor_size;
+@@ -771,6 +772,8 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+ 		return ret;
+ 	}
+ 
++	mutex_lock(&q->lock);
++
+ 	fsl_qspi_set_base_addr(q, nor);
+ 	return 0;
+ }
+@@ -779,6 +782,8 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+ {
+ 	struct fsl_qspi *q = nor->priv;
+ 
++	mutex_unlock(&q->lock);
++
+ 	clk_disable(q->clk);
+ 	clk_disable(q->clk_en);
+ }
+@@ -856,6 +861,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	q->dev = dev;
+ 	q->devtype_data = (struct fsl_qspi_devtype_data *)of_id->data;
+ 	platform_set_drvdata(pdev, q);
++	mutex_init(&q->lock);
+ 
+ 	ret = fsl_qspi_nor_setup(q);
+ 	if (ret)
 -- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
+2.3.6
