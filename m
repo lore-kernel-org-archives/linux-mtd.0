@@ -1,16 +1,19 @@
-Received: from webbox1416.server-home.net ([77.236.96.61])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZFjvH-0005NS-Jw
- for linux-mtd@lists.infradead.org; Thu, 16 Jul 2015 14:14:04 +0000
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: Han Xu <han.xu@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH 1/1] mtd: fsl-quadspi: Add mutex for accessing different
- SPI-NOR devices
-Date: Thu, 16 Jul 2015 16:13:34 +0200
-Message-Id: <1437056014-16928-1-git-send-email-alexander.stein@systec-electronic.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
+ <juhosg@openwrt.org>, <marex@denx.de>, <shijie.huang@intel.com>,
+ <ben@decadent.org.uk>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, <linux-mtd@lists.infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: [PATCH 0/7] add driver for Atmel QSPI controller
+Date: Thu, 16 Jul 2015 17:27:47 +0200
+Message-ID: <cover.1437059658.git.cyrille.pitchen@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,62 +23,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Access is only serialized for each NOR device in spi_nor_lock_and_prep(),
-but not for the QSPI device.
-We must ensure only one NOR device is accessed as each call to
-fsl_qspi_set_base_addr (in fsl_qspi_prep) will affect the effective flash
-address.
-This can simply be achieved by using a mutex in prepare/unprepare
-callbacks.
+Hi all,
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
----
-This problem can simply be trigged by doing a hexdump on /dev/mtdblock0
-(256 kiB) and /dev/mtdblock3 (64MiB), in my case.
+in order to be able to use Micron Quad SPI memories with the new Atmel QSPI
+controller I added a new set_protocol() callback into struct spi_nor.
+Indeed, once the quad I/O mode has been enabled on a Micron QSPI flash by
+clearing bit 7 in its Enhanced Volatile Configuration Register, this memory
+expects all the following commands to use the QSPI 4-4-4 protocol. So the
+QSPI controller needs to be notified about this protocol change before
+reading the Status register, 0x05 command sent by the
+spi_nor_wail_till_ready() function, in micron_quad_enable().
 
-$ hexdump -C /dev/mtdblock3 # doing a long taking access.
-$ hexdump -C /dev/mtdblock0 # in the meanwhile will show data from mtdblock3
+Reading spi-nor.h, I saw an interesting struct spi_nor_xfer_cfg and its
+associated callbacks write_xfer() and read_xfer(). However these callbacks
+don't seem to be used at all for now. They look to have been designed to
+add QSPI support to the generic spi-nor framework. So before extending the
+framework with my own callback, I'd like to know whether I should have
+tried to used the read_xfer()/write_xfer() callbacks to join an already
+existing effort to add QSPI support.
+If so, I think either the read/write_reg() prototypes should be updated or
+new callbacks should be added for register reads/writes. As explained
+above, even for reading the Status register the QSPI 4-4-4 protocol must be
+used with Micron memories in quad I/O mode. So the framework has to find a
+way to tell the QSPI controller which protocol it should use.
 
- drivers/mtd/spi-nor/fsl-quadspi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+So I'm interested in your comments! :)
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 5d2df50..a48495a 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -226,6 +226,7 @@ struct fsl_qspi {
- 	u32 memmap_phy;
- 	struct clk *clk, *clk_en;
- 	struct device *dev;
-+	struct mutex lock; /* to serialize access to different mtd partitions */
- 	struct completion c;
- 	struct fsl_qspi_devtype_data *devtype_data;
- 	u32 nor_size;
-@@ -771,6 +772,8 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
- 		return ret;
- 	}
- 
-+	mutex_lock(&q->lock);
-+
- 	fsl_qspi_set_base_addr(q, nor);
- 	return 0;
- }
-@@ -779,6 +782,8 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
- {
- 	struct fsl_qspi *q = nor->priv;
- 
-+	mutex_unlock(&q->lock);
-+
- 	clk_disable(q->clk);
- 	clk_disable(q->clk_en);
- }
-@@ -856,6 +861,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 	q->dev = dev;
- 	q->devtype_data = (struct fsl_qspi_devtype_data *)of_id->data;
- 	platform_set_drvdata(pdev, q);
-+	mutex_init(&q->lock);
- 
- 	ret = fsl_qspi_nor_setup(q);
- 	if (ret)
+Best Regards,
+
+Cyrille
+
+ChangeLog
+
+v1:
+
+This series of patches add support for the new Atmel QSPI controller
+embedded inside sama5d2x SoCs.
+
+These patches were first developped for linux-3.18-at91 and tested on a
+sama5d27 Xplained ultra board, which embeds a Micron n25q128a13 QSPI NOR
+flash memory. Then the series was adapted for mainline.
+
+Cyrille Pitchen (7):
+  Documentation: mtd: add a DT property to set the number of dummy
+    cycles
+  mtd: spi-nor: notify (Q)SPI controller about protocol change
+  mtd: spi-nor: allow to tune the number of dummy cycles
+  Documentation: mtd: add a DT property to set the latency code of
+    Spansion memory
+  mtd: spi-nor: allow the set the latency code on Spansion memories
+  Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
+  mtd: atmel-quadspi: add driver for Atmel QSPI controller
+
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      |  29 +
+ .../devicetree/bindings/mtd/jedec,spi-nor.txt      |   6 +
+ .../devicetree/bindings/mtd/spansion-nor.txt       |  22 +
+ drivers/mtd/spi-nor/Kconfig                        |   7 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/atmel-quadspi.c                | 901 +++++++++++++++++++++
+ drivers/mtd/spi-nor/spi-nor.c                      | 160 +++-
+ include/linux/mtd/spi-nor.h                        |  15 +
+ 8 files changed, 1122 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/spansion-nor.txt
+ create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
+
 -- 
-2.3.6
+1.8.2.2
