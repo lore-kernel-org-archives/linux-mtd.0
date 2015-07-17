@@ -1,20 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZG00r-0005M9-LR
- for linux-mtd@lists.infradead.org; Fri, 17 Jul 2015 07:24:54 +0000
-Message-ID: <55A8ADA9.70402@nod.at>
-Date: Fri, 17 Jul 2015 09:24:25 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Andrea Scian <rnd4@dave-tech.it>
-CC: mtd_mailinglist <linux-mtd@lists.infradead.org>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZG0dX-0007zh-No
+ for linux-mtd@lists.infradead.org; Fri, 17 Jul 2015 08:04:54 +0000
 Subject: Re: UBIFS: recovery of master node
+To: Richard Weinberger <richard@nod.at>
 References: <55A7B004.2090705@dave-tech.it>
  <CAFLxGvxgKeKq1_cLNG9rS53NDT=OZsO9h6cizBnkU5Zv69EwSQ@mail.gmail.com>
- <55A8A7A4.906@dave-tech.it>
-In-Reply-To: <55A8A7A4.906@dave-tech.it>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ <55A8A7A4.906@dave-tech.it> <55A8ADA9.70402@nod.at>
+Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
+From: Andrea Scian <rnd4@dave-tech.it>
+Message-ID: <55A8B70B.5030405@dave-tech.it>
+Date: Fri, 17 Jul 2015 10:04:27 +0200
+MIME-Version: 1.0
+In-Reply-To: <55A8ADA9.70402@nod.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +24,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 17.07.2015 um 08:58 schrieb Andrea Scian:
-> Il 16/07/2015 17:29, Richard Weinberger ha scritto:
->> Andrea,
->>
->> On Thu, Jul 16, 2015 at 3:22 PM, Andrea Scian <rnd4@dave-tech.it> wrote:
+
+Dear Richard,
+
+Il 17/07/2015 09:24, Richard Weinberger ha scritto:
+> Am 17.07.2015 um 08:58 schrieb Andrea Scian:
+>> Il 16/07/2015 17:29, Richard Weinberger ha scritto:
+>>> Andrea,
 >>>
->>> If I bypass that check too, I can mount UBIFS and everything inside the FS
->>> is there but, of course, I'm sure I'm doing something that may be wrong..
+>>> On Thu, Jul 16, 2015 at 3:22 PM, Andrea Scian <rnd4@dave-tech.it> wrote:
+>>>>
+>>>> If I bypass that check too, I can mount UBIFS and everything inside the FS
+>>>> is there but, of course, I'm sure I'm doing something that may be wrong..
+>>>>
+>>>> WDYT?
 >>>
->>> WDYT?
+>>> So, you're facing bitflips on empty space?
 >>
->> So, you're facing bitflips on empty space?
-> 
-> Another UBI/UBIFS "implementation" question: are there some other places, apart from get_master_node(), where UBIFS check empty space corruption and fails badly if something wrong?
+>> Another UBI/UBIFS "implementation" question: are there some other places,
+ >> apart from get_master_node(),
+ >> where UBIFS check empty space corruption and fails
+ >> badly if something wrong?
+>
+> Having non-corrupted empty space is a fundamental requirement of UBIFS.
+> If you patch it out you'll hurt UBIFS's ability to recover from a power cut.
+> Someone tried to do so already.
 
-Having non-corrupted empty space is a fundamental requirement of UBIFS.
-If you patch it out you'll hurt UBIFS's ability to recover from a power cut.
-Someone tried to do so already.
+Thanks, this are the internals of UBIFS I'm not aware of, and for this 
+I'm asking the experts :-)
 
-I know, cheap modern NAND, especially MLC seems to show bitflips also on empty pages.
-Not all NAND controllers can deal with that and will just return an uncorrectable ECC error
-upon reading.
-IMHO the right place to deal with that is MTD core.
-Please search the archives, Brian posted some patches some time ago.
+> I know, cheap modern NAND, especially MLC seems to show bitflips also on empty pages.
+> Not all NAND controllers can deal with that and will just return an uncorrectable ECC error
+> upon reading.
 
-Thanks,
-//richard
+Is the any NAND controller able to do so? ;-)
+
+> IMHO the right place to deal with that is MTD core.
+
+I agree with you, however I'm handling it at lowest level, inside the 
+NAND controller.
+I know that having this code into the MTD NAND layer will allow us to 
+have a "controller independent" implementation, however MTD see only a 
+bigger picture: for example MTD sees only a NAND page (4k in my case) 
+while the NAND controller usually apply ECC on smaller (1k in my case) 
+section and here we have the right threshold to apply (ecc_strength or 
+something a bit smaller if you prefer).
+
+Finding the right threshold is, IMHO, the real trick.
+
+> Please search the archives, Brian posted some patches some time ago.
+
+Thanks for point this out.
+I've found some patches from one year ago from Huang Shijie (@freescale) 
+which looks very close to mine. However I cannot see any inclusion in 
+the mainline.
+
+I'll continue my research.
+
+Thanks and kind regards,
+
+-- 
+
+Andrea SCIAN
+
+DAVE Embedded Systems
