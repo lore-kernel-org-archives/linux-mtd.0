@@ -1,18 +1,21 @@
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZG32J-0005ug-Do
- for linux-mtd@lists.infradead.org; Fri, 17 Jul 2015 10:38:36 +0000
-From: Colin King <colin.king@canonical.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Aaron Sierra <asierra@xes-inc.com>,
- Ard Biesheuvel <ard.biesheuvel@linaro.org>,
- Fabian Frederick <fabf@skynet.be>, Joe Schultz <jschultz@xes-inc.com>,
- linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: fix null pointer deference when kzalloc returns null
-Date: Fri, 17 Jul 2015 11:37:52 +0100
-Message-Id: <1437129472-13099-1-git-send-email-colin.king@canonical.com>
+ id 1ZG3yF-0001jt-VT
+ for linux-mtd@lists.infradead.org; Fri, 17 Jul 2015 11:38:28 +0000
+Message-ID: <1437133082.2507.114.camel@gmail.com>
+Subject: Re: UBIFS: recovery of master node
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>, Andrea Scian <rnd4@dave-tech.it>
+Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
+Date: Fri, 17 Jul 2015 14:38:02 +0300
+In-Reply-To: <55A8ADA9.70402@nod.at>
+References: <55A7B004.2090705@dave-tech.it>
+ <CAFLxGvxgKeKq1_cLNG9rS53NDT=OZsO9h6cizBnkU5Zv69EwSQ@mail.gmail.com>
+ <55A8A7A4.906@dave-tech.it> <55A8ADA9.70402@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, 2015-07-17 at 09:24 +0200, Richard Weinberger wrote:
+> Am 17.07.2015 um 08:58 schrieb Andrea Scian:
+> > Il 16/07/2015 17:29, Richard Weinberger ha scritto:
+> > > Andrea,
+> > > 
+> > > On Thu, Jul 16, 2015 at 3:22 PM, Andrea Scian <rnd4@dave-tech.it> 
+> > > wrote:
+> > > > 
+> > > > If I bypass that check too, I can mount UBIFS and everything 
+> > > > inside the FS
+> > > > is there but, of course, I'm sure I'm doing something that may 
+> > > > be wrong..
+> > > > 
+> > > > WDYT?
+> > > 
+> > > So, you're facing bitflips on empty space?
+> > 
+> > Another UBI/UBIFS "implementation" question: are there some other 
+> > places, apart from get_master_node(), where UBIFS check empty space 
+> > corruption and fails badly if something wrong?
+> 
+> Having non-corrupted empty space is a fundamental requirement of 
+> UBIFS.
 
-static analysis by smatch caught the following error:
+I am not sure it is that fundamental. What UBIFS needs is to
+distinguish between used and usused flash areas. It does this by
+comparing agains 0xFFs. Simple, worked fine in the past.
 
-drivers/mtd/maps/physmap_of.c:135 of_get_probes()
-   error: potential null dereference 'res'.  (kzalloc returns null)
+If the space is empty, UBIFS assumes it can write to it. UBIFS is being
+paranoid and also verifies that entire empty space contains all 0xFFs.
+Also very simple, worked fine in the past.
 
-Check for failed kzalloc and return -ENOMEM in of_flash_probe if
-this occurs.
+Now if you have "corrupted empty space" (i.e., you cannot write to it),
+this does not have to be the end of the world, you can clean it up by
+doing the "atomic LEB change" operation. It is just not implemented,
+but it could be done - matter of engineer-hours spent.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/mtd/maps/physmap_of.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 774b32f..3e614e9 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -130,6 +130,8 @@ static const char * const *of_get_probes(struct device_node *dp)
- 			count++;
- 
- 	res = kzalloc((count + 1)*sizeof(*res), GFP_KERNEL);
-+	if (!res)
-+		return NULL;
- 	count = 0;
- 	while (cplen > 0) {
- 		res[count] = cp;
-@@ -311,6 +313,10 @@ static int of_flash_probe(struct platform_device *dev)
- 
- 	ppdata.of_node = dp;
- 	part_probe_types = of_get_probes(dp);
-+	if (!part_probe_types) {
-+		err = -ENOMEM;
-+		goto err_out;
-+	}
- 	mtd_device_parse_register(info->cmtd, part_probe_types, &ppdata,
- 			NULL, 0);
- 	of_free_probes(part_probe_types);
--- 
-2.1.4
+Artem.
