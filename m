@@ -1,19 +1,26 @@
-Date: Fri, 17 Jul 2015 15:41:59 +0200
-From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
- dwmw2@infradead.org, computersforpeace@gmail.com
-Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
- boris.brezillon@free-electrons.com, zmxu@marvell.com,
- jszhang@marvell.com, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mail-qk0-f173.google.com ([209.85.220.173])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZG6oP-0005EB-Cp
+ for linux-mtd@lists.infradead.org; Fri, 17 Jul 2015 14:40:31 +0000
+Received: by qkdv3 with SMTP id v3so70843383qkd.3
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Jul 2015 07:40:07 -0700 (PDT)
 Subject: Re: [PATCH v2 0/4] mtd: pxa3xx_nand: rework the timing setup
-Message-ID: <20150717134159.GC10608@kwain>
+To: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ sebastian.hesselbarth@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com
 References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+ <20150717134159.GC10608@kwain>
+Cc: boris.brezillon@free-electrons.com, zmxu@marvell.com,
+ jszhang@marvell.com, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Message-ID: <55A912F0.7080605@vanguardiasur.com.ar>
+Date: Fri, 17 Jul 2015 11:36:32 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+In-Reply-To: <20150717134159.GC10608@kwain>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi guys,
+Hi Antoine,
 
-On Tue, Jul 07, 2015 at 05:08:23PM +0200, Antoine Tenart wrote:
-> 
-> This series was part of a bigger one[1], which was split into smaller
-> ones as asked by Ezequiel[2]. When we take this into account, this is
-> v7. In addition, there was absolutely no comment for more than 1 month
-> (since June 2nd). Given this, I really expect the series to be merge
-> soon as other series are based on this.
+On 07/17/2015 10:41 AM, Antoine Tenart wrote:
+> Hi guys,
+>
+> On Tue, Jul 07, 2015 at 05:08:23PM +0200, Antoine Tenart wrote:
+>>
+>> This series was part of a bigger one[1], which was split into smaller
+>> ones as asked by Ezequiel[2]. When we take this into account, this is
+>> v7. In addition, there was absolutely no comment for more than 1 month
+>> (since June 2nd). Given this, I really expect the series to be merge
+>> soon as other series are based on this.
+>
+> Any news on this series?
+>
 
-Any news on this series?
+I'll try to take a look and do some testing over the weekend.
+
+Robert: think you can test this on a pxa board? I have one here,
+but it's non trivial for me to set it up.
 
 Thanks,
-
-Antoine
-
-> The aim here is to use the nand framework to setup the timings,
-> while keeping the old in-driver way of configuration timings for
-> compatibility reasons.
-> 
-> Since v1:
-> 	- Rebased on top of v4.2-rc1
-> 
-> Since the series was split up:
->         - reworked the ndcr setup
->         - removed the read_id_bytes update after device detection
-> 
-> [1] https://lkml.org/lkml/2015/5/11/495
-> [2] https://lkml.org/lkml/2015/5/16/309
-> 
-> Antoine Tenart (4):
->   mtd: pxa3xx_nand: add a default chunk size
->   mtd: pxa3xx_nand: add helpers to setup the timings
->   mtd: pxa3xx_nand: rework flash detection and timing setup
->   mtd: pxa3xx_nand: clean up the pxa3xx timings
-> 
->  drivers/mtd/nand/pxa3xx_nand.c                | 251 ++++++++++++++------------
->  include/linux/platform_data/mtd-nand-pxa3xx.h |  11 +-
->  2 files changed, 143 insertions(+), 119 deletions(-)
-> 
-> -- 
-> 2.4.5
-> 
-
 -- 
-Antoine Ténart, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
