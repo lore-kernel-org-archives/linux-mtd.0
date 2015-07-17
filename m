@@ -1,24 +1,19 @@
-From: Marek Vasut <marex@denx.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH 4/7] Documentation: mtd: add a DT property to set the
- latency code of Spansion memory
-Date: Thu, 16 Jul 2015 19:44:20 +0200
-Cc: nicolas.ferre@atmel.com, broonie@kernel.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
- beanhuo@micron.com, juhosg@openwrt.org, shijie.huang@intel.com,
- ben@decadent.org.uk, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- linux-mtd@lists.infradead.org
-References: <cover.1437059658.git.cyrille.pitchen@atmel.com>
- <398ca9f17bda638e05e97f258fb4e6d27ac828db.1437059658.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <398ca9f17bda638e05e97f258fb4e6d27ac828db.1437059658.git.cyrille.pitchen@atmel.com>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZFzbw-0002Ee-A4
+ for linux-mtd@lists.infradead.org; Fri, 17 Jul 2015 06:59:09 +0000
+Subject: Re: UBIFS: recovery of master node
+To: Richard Weinberger <richard.weinberger@gmail.com>
+References: <55A7B004.2090705@dave-tech.it>
+ <CAFLxGvxgKeKq1_cLNG9rS53NDT=OZsO9h6cizBnkU5Zv69EwSQ@mail.gmail.com>
+Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
+From: Andrea Scian <rnd4@dave-tech.it>
+Message-ID: <55A8A7A4.906@dave-tech.it>
+Date: Fri, 17 Jul 2015 08:58:44 +0200
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+In-Reply-To: <CAFLxGvxgKeKq1_cLNG9rS53NDT=OZsO9h6cizBnkU5Zv69EwSQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201507161944.20523.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, July 16, 2015 at 05:27:51 PM, Cyrille Pitchen wrote:
+Il 16/07/2015 17:29, Richard Weinberger ha scritto:
+> Andrea,
+>
+> On Thu, Jul 16, 2015 at 3:22 PM, Andrea Scian <rnd4@dave-tech.it> wrote:
+>>
+>> If I bypass that check too, I can mount UBIFS and everything inside the FS
+>> is there but, of course, I'm sure I'm doing something that may be wrong..
+>>
+>> WDYT?
+>
+> So, you're facing bitflips on empty space?
 
-Hi!
+Another UBI/UBIFS "implementation" question: are there some other 
+places, apart from get_master_node(), where UBIFS check empty space 
+corruption and fails badly if something wrong?
 
-> Both the SPI controller and the NOR flash memory need to agree on the
-> number of dummy cycles to use for Fast Read commands. For Spansion
-> memories, this number of dummy cycles is not given directly but through a
-> so called "latency code".
-> The latency code can be found into the memory datasheet and depends on the
-> SPI clock frequency, the Fast Read op code and the Single/Dual Data Rate
-> mode.
+TIA,
 
-Shouldn't you be able to derive the latency code from the above information,
-which you already know then ?
+-- 
 
-Best regards,
-Marek Vasut
+Andrea SCIAN
+
+DAVE Embedded Systems
