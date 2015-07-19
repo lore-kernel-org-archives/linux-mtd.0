@@ -1,27 +1,39 @@
-Received: from mail-qg0-f50.google.com ([209.85.192.50])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZGd0I-0007rp-Ev
- for linux-mtd@lists.infradead.org; Sun, 19 Jul 2015 01:02:55 +0000
-Received: by qgeu79 with SMTP id u79so5539589qge.1
- for <linux-mtd@lists.infradead.org>; Sat, 18 Jul 2015 18:02:33 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] mtd: pxa3xx_nand: rework flash detection and
- timing setup
-To: Antoine Tenart <antoine.tenart@free-electrons.com>,
- sebastian.hesselbarth@gmail.com, dwmw2@infradead.org,
- computersforpeace@gmail.com
-References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
- <1436281707-20106-4-git-send-email-antoine.tenart@free-electrons.com>
-Cc: boris.brezillon@free-electrons.com, zmxu@marvell.com,
- jszhang@marvell.com, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Robert Jarzmik <robert.jarzmik@free.fr>
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Message-ID: <55AAF64D.4040201@vanguardiasur.com.ar>
-Date: Sat, 18 Jul 2015 21:58:53 -0300
 MIME-Version: 1.0
-In-Reply-To: <1436281707-20106-4-git-send-email-antoine.tenart@free-electrons.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20150715155946.GB21362@localhost>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <20150604171547.GA1530@localhost.localdomain>
+ <CAOMqctSCL9E-kCBryeaMvtssSP12RY=kyfPuwSYx9wc=Lv9kGQ@mail.gmail.com>
+ <201507151352.27689.marex@denx.de> <20150715155946.GB21362@localhost>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Sun, 19 Jul 2015 21:01:34 +0200
+Message-ID: <CAOMqctTJEg7EauKfrqW-6rUQ-QOmtkTfkgOyz0rCuyh_-XrW5w@mail.gmail.com>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Richard Cochran <richardcochran@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, Rob Herring <robh+dt@kernel.org>,
+ Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>, dmaengine <dmaengine@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,230 +43,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/07/2015 12:08 PM, Antoine Tenart wrote:
-> Rework the pxa3xx_nand driver to allow using functions exported by the
-> nand framework to detect the flash and the timings. Then setup the
-> timings using the helpers previously added.
->
-> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
-> ---
->   drivers/mtd/nand/pxa3xx_nand.c | 137 ++++++++++++-----------------------------
->   1 file changed, 38 insertions(+), 99 deletions(-)
->
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 9a95c24ab2ce..513f8f6069f0 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1320,48 +1320,16 @@ static int pxa3xx_nand_waitfunc(struct mtd_info *mtd, struct nand_chip *this)
->   	return NAND_STATUS_READY;
->   }
->
-> -static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
-> -				    const struct pxa3xx_nand_flash *f)
-> +static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info)
->   {
-> -	struct platform_device *pdev = info->pdev;
-> -	struct pxa3xx_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
->   	struct pxa3xx_nand_host *host = info->host[info->cs];
-> -	uint32_t ndcr = 0x0; /* enable all interrupts */
-> -
-> -	if (f->page_size != 2048 && f->page_size != 512) {
-> -		dev_err(&pdev->dev, "Current only support 2048 and 512 size\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	if (f->flash_width != 16 && f->flash_width != 8) {
-> -		dev_err(&pdev->dev, "Only support 8bit and 16 bit!\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	/* calculate flash information */
-> -	host->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
-> -
-> -	/* calculate addressing information */
-> -	host->col_addr_cycles = (f->page_size == 2048) ? 2 : 1;
-> -
-> -	if (f->num_blocks * f->page_per_block > 65536)
-> -		host->row_addr_cycles = 3;
-> -	else
-> -		host->row_addr_cycles = 2;
-> -
-> -	ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
-> -	ndcr |= (host->col_addr_cycles == 2) ? NDCR_RA_START : 0;
-> -	ndcr |= (f->page_per_block == 64) ? NDCR_PG_PER_BLK : 0;
-> -	ndcr |= (f->page_size == 2048) ? NDCR_PAGE_SZ : 0;
-> -	ndcr |= (f->flash_width == 16) ? NDCR_DWIDTH_M : 0;
-> -	ndcr |= (f->dfc_width == 16) ? NDCR_DWIDTH_C : 0;
-> -
-> -	ndcr |= NDCR_RD_ID_CNT(host->read_id_bytes);
-> -	ndcr |= NDCR_SPARE_EN; /* enable spare by default */
-> +	struct mtd_info *mtd = host->mtd;
-> +	struct nand_chip *chip = mtd->priv;
->
-> -	info->reg_ndcr = ndcr;
-> +	info->reg_ndcr |= (host->col_addr_cycles == 2) ? NDCR_RA_START : 0;
-> +	info->reg_ndcr |= (chip->page_shift == 6) ? NDCR_PG_PER_BLK : 0;
-> +	info->reg_ndcr |= (mtd->writesize == 2048) ? NDCR_PAGE_SZ : 0;
->
-> -	pxa3xx_nand_set_timing(host, f->timing);
->   	return 0;
->   }
->
-> @@ -1456,19 +1424,31 @@ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
->   }
->   #endif
->
-> -static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
-> +static int pxa3xx_nand_sensing(struct pxa3xx_nand_host *host)
->   {
-> +	struct pxa3xx_nand_info *info = host->info_data;
-> +	struct platform_device *pdev = info->pdev;
-> +	struct pxa3xx_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
->   	struct mtd_info *mtd;
->   	struct nand_chip *chip;
-> +	const struct nand_sdr_timings *timings;
->   	int ret;
->
->   	mtd = info->host[info->cs]->mtd;
->   	chip = mtd->priv;
->
-> +	/* configure default flash values */
-> +	info->reg_ndcr = 0x0; /* enable all interrupts */
-> +	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
-> +	info->reg_ndcr |= NDCR_RD_ID_CNT(host->read_id_bytes);
-> +	info->reg_ndcr |= NDCR_SPARE_EN; /* enable spare by default */
-> +
->   	/* use the common timing to make a try */
-> -	ret = pxa3xx_nand_config_flash(info, &builtin_flash_types[0]);
-> -	if (ret)
-> -		return ret;
-> +	timings = onfi_async_timing_mode_to_sdr_timings(0);
-> +	if (IS_ERR(timings))
-> +		return PTR_ERR(timings);
-> +
-> +	pxa3xx_nand_set_sdr_timing(host, timings);
->
->   	chip->cmdfunc(mtd, NAND_CMD_RESET, 0, 0);
->   	ret = chip->waitfunc(mtd, chip);
-> @@ -1553,12 +1533,8 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
->   	struct pxa3xx_nand_info *info = host->info_data;
->   	struct platform_device *pdev = info->pdev;
->   	struct pxa3xx_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
-> -	struct nand_flash_dev pxa3xx_flash_ids[2], *def = NULL;
-> -	const struct pxa3xx_nand_flash *f = NULL;
->   	struct nand_chip *chip = mtd->priv;
-> -	uint32_t id = -1;
-> -	uint64_t chipsize;
-> -	int i, ret, num;
-> +	int ret;
->   	uint16_t ecc_strength, ecc_step;
->
->   	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
-> @@ -1567,7 +1543,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
->   	/* Set a default chunk size */
->   	info->chunk_size = 512;
->
-> -	ret = pxa3xx_nand_sensing(info);
-> +	ret = pxa3xx_nand_sensing(host);
->   	if (ret) {
->   		dev_info(&info->pdev->dev, "There is no chip on cs %d!\n",
->   			 info->cs);
-> @@ -1575,64 +1551,26 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
->   		return ret;
->   	}
->
-> -	chip->cmdfunc(mtd, NAND_CMD_READID, 0, 0);
-> -	id = *((uint16_t *)(info->data_buff));
-> -	if (id != 0)
-> -		dev_info(&info->pdev->dev, "Detect a flash id %x\n", id);
-> -	else {
-> -		dev_warn(&info->pdev->dev,
-> -			 "Read out ID 0, potential timing set wrong!!\n");
-> -
-> -		return -EINVAL;
-> -	}
-> -
-> -	num = ARRAY_SIZE(builtin_flash_types) + pdata->num_flash - 1;
-> -	for (i = 0; i < num; i++) {
-> -		if (i < pdata->num_flash)
-> -			f = pdata->flash + i;
-> -		else
-> -			f = &builtin_flash_types[i - pdata->num_flash + 1];
-> -
-> -		/* find the chip in default list */
-> -		if (f->chip_id == id)
-> -			break;
-> -	}
-> -
-> -	if (i >= (ARRAY_SIZE(builtin_flash_types) + pdata->num_flash - 1)) {
-> -		dev_err(&info->pdev->dev, "ERROR!! flash not defined!!!\n");
-> -
-> -		return -EINVAL;
-> -	}
-> -
-> -	ret = pxa3xx_nand_config_flash(info, f);
-> -	if (ret) {
-> -		dev_err(&info->pdev->dev, "ERROR! Configure failed\n");
-> -		return ret;
-> -	}
-> -
-> -	memset(pxa3xx_flash_ids, 0, sizeof(pxa3xx_flash_ids));
-> -
-> -	pxa3xx_flash_ids[0].name = f->name;
-> -	pxa3xx_flash_ids[0].dev_id = (f->chip_id >> 8) & 0xffff;
-> -	pxa3xx_flash_ids[0].pagesize = f->page_size;
-> -	chipsize = (uint64_t)f->num_blocks * f->page_per_block * f->page_size;
-> -	pxa3xx_flash_ids[0].chipsize = chipsize >> 20;
-> -	pxa3xx_flash_ids[0].erasesize = f->page_size * f->page_per_block;
-> -	if (f->flash_width == 16)
-> -		pxa3xx_flash_ids[0].options = NAND_BUSWIDTH_16;
-> -	pxa3xx_flash_ids[1].name = NULL;
-> -	def = pxa3xx_flash_ids;
->   KEEP_CONFIG:
+Hello,
 
-Hm...
-
-> -	if (info->reg_ndcr & NDCR_DWIDTH_M)
-> -		chip->options |= NAND_BUSWIDTH_16;
-> -
-
-...can't see why this removal is needed. AFAICS, it removes
-support for 16-bit devices (only supported when using keep-config).
-
->   	/* Device detection must be done with ECC disabled */
->   	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
->   		nand_writel(info, NDECCCTRL, 0x0);
+On 15 July 2015 at 17:59, Brian Norris <computersforpeace@gmail.com> wrote:
+> Hi Michal,
 >
-> -	if (nand_scan_ident(mtd, 1, def))
-> +	if (nand_scan_ident(mtd, 1, NULL))
->   		return -ENODEV;
+> On Wed, Jul 15, 2015 at 01:52:27PM +0200, Marek Vasut wrote:
+>> The problem is, if you add a new DT binding, you'd have to support it
+>> forever, no matter how bad idea that binding turned out to be.
 >
-> +	if (!pdata->keep_config) {
-> +		ret = pxa3xx_nand_init_timings(host);
-> +		if (ret) {
-> +			dev_err(&info->pdev->dev, "Failed to set timings: %d\n", ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	ret = pxa3xx_nand_config_flash(info);
-> +	if (ret)
-> +		return ret;
-> +
->   	if (pdata->flash_bbt) {
->   		/*
->   		 * We'll use a bad block table stored in-flash and don't
-> @@ -1729,6 +1667,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
->   		host->mtd = mtd;
->   		host->cs = cs;
->   		host->info_data = info;
-> +		host->read_id_bytes = 4;
->   		mtd->priv = host;
->   		mtd->owner = THIS_MODULE;
+> Agreed, and a solid NAK to this patch. I could have sworn I gave such a
+> response when this was originally being discussed a month ago.
 >
+> AFAICT, you have one of two general approaches available to you:
 >
+> 1. Fix up the SPI driver so that it knows how to break large SPI
+> transfers up into smaller segments that its constituent hardware (DMA
+> controllers, fast clocks, etc.) can handle.
+>
+> 2. Utilize/create a parameter within the SPI subsystem to communicate
+> that the SPI master has a limited max transfer size (notably: NOT a
+> per-device DT property, but a SPI API property), and modify SPI device
+> drivers (like m25p80) to honor it. Mark Brown seemed open to this, and I
+> thought he suggested it somewhere.
 
+It is not known what exactly is limited here.
 
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+It seems that the pl330 fails but it is not possible to transfer that
+much data over the spi bus in one go without the help of the pl330.
+
+With either approach the limit depends on the SPI transfer settings
+which are known the the SPI driver. The pl330 driver is oblivious to
+these because it just transfers data from one port to another port and
+has no idea that the port is wired to SPI in the SoC.
+
+On the other hand, AFAICT the SPI driver only allocates a DMA channel
+which it receives through DT binding and is oblivious to the fact the
+DMA channel lives on a pl330. It could probably determine that the
+channel is indeed driven by a pl330. I don't think it's a great idea
+to add device-specific handling to a generic dmaengine driver or a
+dmaengine-spiecific handling to a SPI driver.
+
+It's technically possible to pass SPI transfer parameters to the
+dmaengine driver prior to transfer and the dmaengine could impose some
+limitation based on those parameters. However, generalising this to
+drivers other than SPI might be problematic. Should this interface
+also handle i2c parameters, VE parameters, audio parameters, ethernet
+parameters, etc?
+
+In the DT you have the information that this particular device is
+connected to a Samsung SPI controller connected to a pl330 dma engine.
+
+>
+> It is most definitely wrong to put this information solely in the slave
+> device DT (i.e., for the flash), when it is not a property of the flash
+> device at all. It's a property of the SPI master and/or its clocks and
+> DMA controllers.
+
+However, the clocks are set by the parameters of the device, not the
+parameters of the master. So the limitation applies for the master
+with the settings of the particular slave device. Different slave
+settings do impose different master limitations.
+
+Thanks
+
+Michal
