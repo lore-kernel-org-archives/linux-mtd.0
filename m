@@ -1,31 +1,26 @@
-Received: from mail-wg0-f41.google.com ([74.125.82.41])
+Received: from mail-qk0-f173.google.com ([209.85.220.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZGVkn-0004WZ-9q
- for linux-mtd@lists.infradead.org; Sat, 18 Jul 2015 17:18:26 +0000
-Received: by wgav7 with SMTP id v7so37092418wga.2
- for <linux-mtd@lists.infradead.org>; Sat, 18 Jul 2015 10:18:02 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <87h9p2is8e.fsf@belgarion.home>
+ id 1ZGcuV-00067I-RK
+ for linux-mtd@lists.infradead.org; Sun, 19 Jul 2015 00:56:56 +0000
+Received: by qkdv3 with SMTP id v3so92008768qkd.3
+ for <linux-mtd@lists.infradead.org>; Sat, 18 Jul 2015 17:56:34 -0700 (PDT)
+Subject: Re: [PATCH v2 2/4] mtd: pxa3xx_nand: add helpers to setup the timings
+To: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ sebastian.hesselbarth@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com
 References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
- <20150717134159.GC10608@kwain>
- <55A912F0.7080605@vanguardiasur.com.ar>
- <87h9p2is8e.fsf@belgarion.home>
-Date: Sat, 18 Jul 2015 14:18:02 -0300
-Message-ID: <CAAEAJfCcdioVQKZs9U3DP6H94BiuQ2qU21DsMKevS5+j+-XEKA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] mtd: pxa3xx_nand: rework the timing setup
+ <1436281707-20106-3-git-send-email-antoine.tenart@free-electrons.com>
+Cc: boris.brezillon@free-electrons.com, zmxu@marvell.com,
+ jszhang@marvell.com, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, zmxu@marvell.com,
- jszhang@marvell.com,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <55AAF4EC.6000700@vanguardiasur.com.ar>
+Date: Sat, 18 Jul 2015 21:53:00 -0300
+MIME-Version: 1.0
+In-Reply-To: <1436281707-20106-3-git-send-email-antoine.tenart@free-electrons.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,42 +30,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17 July 2015 at 14:55, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
+On 07/07/2015 12:08 PM, Antoine Tenart wrote:
+> Add helpers to setup the timings in the pxa3xx driver. These helpers
+> allow to either make use of the nand framework nand_sdr_timings or the
+> pxa3xx specific pxa3xx_nand_host, for compatibility reasons.
 >
->> Hi Antoine,
->>
->> On 07/17/2015 10:41 AM, Antoine Tenart wrote:
->>> Hi guys,
->>>
->>> On Tue, Jul 07, 2015 at 05:08:23PM +0200, Antoine Tenart wrote:
->>>>
->>>> This series was part of a bigger one[1], which was split into smaller
->>>> ones as asked by Ezequiel[2]. When we take this into account, this is
->>>> v7. In addition, there was absolutely no comment for more than 1 month
->>>> (since June 2nd). Given this, I really expect the series to be merge
->>>> soon as other series are based on this.
->>>
->>> Any news on this series?
->>>
->>
->> I'll try to take a look and do some testing over the weekend.
->>
->> Robert: think you can test this on a pxa board? I have one here,
->> but it's non trivial for me to set it up.
+> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+> ---
+>   drivers/mtd/nand/pxa3xx_nand.c | 91 ++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 91 insertions(+)
 >
-> Sure, if somebody sends patches to me, it's very easy and automated, so p=
-lease
-> send the whole serie to robert.jarzmik@free.fr, and I'll reply to this ma=
-il with
-> the test result on both cm-x300 and zylonite board.
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 5465fa439c9e..9a95c24ab2ce 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -385,6 +385,97 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
+>   	nand_writel(info, NDTR1CS0, ndtr1);
+>   }
+>
+> +static void pxa3xx_nand_set_sdr_timing(struct pxa3xx_nand_host *host,
+> +				       const struct nand_sdr_timings *t)
+> +{
+> +	struct pxa3xx_nand_info *info = host->info_data;
+> +	struct nand_chip *chip = &host->chip;
+> +	unsigned long nand_clk = clk_get_rate(info->clk);
+> +	uint32_t ndtr0, ndtr1;
+> +
+> +	u32 tCH_min = DIV_ROUND_UP(t->tCH_min, 1000);
+> +	u32 tCS_min = DIV_ROUND_UP(t->tCS_min, 1000);
+> +	u32 tWH_min = DIV_ROUND_UP(t->tWH_min, 1000);
+> +	u32 tWP_min = DIV_ROUND_UP(t->tWC_min - tWH_min, 1000);
+
+Is the substraction above correct? You seem to be substracting
+picoseconds to nanoseconds.
+
+> +	u32 tREH_min = DIV_ROUND_UP(t->tREH_min, 1000);
+> +	u32 tRP_min = DIV_ROUND_UP(t->tRC_min - tREH_min, 1000);
+
+Ditto.
+
+> +	u32 tR = chip->chip_delay * 1000;
+> +	u32 tWHR_min = DIV_ROUND_UP(t->tWHR_min, 1000);
+> +	u32 tAR_min = DIV_ROUND_UP(t->tAR_min, 1000);
+> +
+> +	/* fallback to a default value if tR = 0 */
+> +	if (!tR)
+> +		tR = 20000;
+> +
+> +	ndtr0 = NDTR0_tCH(ns2cycle(tCH_min, nand_clk)) |
+> +		NDTR0_tCS(ns2cycle(tCS_min, nand_clk)) |
+> +		NDTR0_tWH(ns2cycle(tWH_min, nand_clk)) |
+> +		NDTR0_tWP(ns2cycle(tWP_min, nand_clk)) |
+> +		NDTR0_tRH(ns2cycle(tREH_min, nand_clk)) |
+> +		NDTR0_tRP(ns2cycle(tRP_min, nand_clk));
+> +
+> +	ndtr1 = NDTR1_tR(ns2cycle(tR, nand_clk)) |
+> +		NDTR1_tWHR(ns2cycle(tWHR_min, nand_clk)) |
+> +		NDTR1_tAR(ns2cycle(tAR_min, nand_clk));
+> +
+> +	info->ndtr0cs0 = ndtr0;
+> +	info->ndtr1cs0 = ndtr1;
+> +	nand_writel(info, NDTR0CS0, ndtr0);
+> +	nand_writel(info, NDTR1CS0, ndtr1);
+> +}
+> +
+> +static int pxa3xx_nand_init_timings(struct pxa3xx_nand_host *host)
+> +{
+> +	const struct nand_sdr_timings *timings;
+> +	struct nand_chip *chip = &host->chip;
+> +	struct pxa3xx_nand_info *info = host->info_data;
+> +	const struct pxa3xx_nand_flash *f = NULL;
+> +	int mode, id, ntypes, i;
+> +
+> +	mode = onfi_get_async_timing_mode(chip);
+> +	if (mode == ONFI_TIMING_MODE_UNKNOWN) {
+> +		ntypes = ARRAY_SIZE(builtin_flash_types);
+> +
+> +		chip->cmdfunc(host->mtd, NAND_CMD_READID, 0x00, -1);
+> +
+> +		id = chip->read_byte(host->mtd);
+> +		id |= chip->read_byte(host->mtd) << 0x8;
+> +
+> +		for (i = 0; i < ntypes; i++) {
+> +			f = &builtin_flash_types[i];
+> +
+> +			if (f->chip_id == id)
+> +				break;
+> +		}
+> +
+> +		if (i == ntypes) {
+> +			dev_err(&info->pdev->dev, "Error: timings not found\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		pxa3xx_nand_set_timing(host, f->timing);
+> +
+> +		if (f->flash_width == 16) {
+> +			info->reg_ndcr |= NDCR_DWIDTH_M;
+> +			chip->options |= NAND_BUSWIDTH_16;
+> +		}
+> +
+> +		info->reg_ndcr |= (f->dfc_width == 16) ? NDCR_DWIDTH_C : 0;
+
+Nitpick: the 16-bit flash configuration doesn't belong in a function
+called "xxx_init_timings".
+
+> +	} else {
+> +		mode = fls(mode) - 1;
+> +		if (mode < 0)
+> +			mode = 0;
+> +
+> +		timings = onfi_async_timing_mode_to_sdr_timings(mode);
+> +		if (IS_ERR(timings))
+> +			return PTR_ERR(timings);
+> +
+> +		pxa3xx_nand_set_sdr_timing(host, timings);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   /*
+>    * Set the data and OOB size, depending on the selected
+>    * spare and ECC configuration.
 >
 
-Here you go:
-
-http://git.infradead.org/users/ezequielg/linux/shortlog/refs/heads/pxa3xx-n=
-and-timing-rework-v2
-
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
+Thanks,
+-- 
+Ezequiel Garcia, VanguardiaSur
 www.vanguardiasur.com.ar
