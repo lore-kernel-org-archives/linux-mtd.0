@@ -1,36 +1,24 @@
-Received: from mail-wi0-f179.google.com ([209.85.212.179])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHFie-0001Ul-0c
- for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 18:23:16 +0000
-Received: by wibxm9 with SMTP id xm9so99185258wib.0
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jul 2015 11:22:53 -0700 (PDT)
+From: Marek Vasut <marex@denx.de>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH 4/7] Documentation: mtd: add a DT property to set the
+ latency code of Spansion memory
+Date: Mon, 20 Jul 2015 21:29:41 +0200
+Cc: nicolas.ferre@atmel.com, broonie@kernel.org, linux-spi@vger.kernel.org,
+ dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
+ beanhuo@micron.com, juhosg@openwrt.org, shijie.huang@intel.com,
+ ben@decadent.org.uk, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ linux-mtd@lists.infradead.org
+References: <cover.1437059658.git.cyrille.pitchen@atmel.com>
+ <201507161944.20523.marex@denx.de> <55ACBE1B.6050507@atmel.com>
+In-Reply-To: <55ACBE1B.6050507@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <20150720180847.GH24125@google.com>
-References: <1431356341-31640-1-git-send-email-antoine.tenart@free-electrons.com>
- <1431356341-31640-8-git-send-email-antoine.tenart@free-electrons.com>
- <555792FC.8030407@vanguardiasur.com.ar>
- <20150520140631.GN22054@kwain>
- <555C9584.1030609@vanguardiasur.com.ar>
- <20150520142409.GP22054@kwain> <20150520144341.GQ22054@kwain>
- <55621B83.4040909@vanguardiasur.com.ar>
- <20150720180847.GH24125@google.com>
-Date: Mon, 20 Jul 2015 15:22:53 -0300
-Message-ID: <CAAEAJfDuDu_M7D41h5qtvVrAiAB2KW8scAauckP2z5gZjC6=1w@mail.gmail.com>
-Subject: Re: [PATCH v5 07/12] mtd: nand: add Samsung K9GBG08U0A-M to nand_ids
- table
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, zmxu@marvell.com,
- jszhang@marvell.com,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <201507202129.42105.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,66 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 20 July 2015 at 15:08, Brian Norris <computersforpeace@gmail.com> wrote:
-> Hi Ezequiel,
->
-> On Sun, May 24, 2015 at 03:42:11PM -0300, Ezequiel Garcia wrote:
->> On 05/20/2015 11:43 AM, Antoine Tenart wrote:
->> [..]
->> >>
->> >> I just had a look on the datasheet, and I you're right, the nand shou=
-ld
->> >> support JDEC. However I get a "No NAND device found" error when
->> >> reverting this patch.
->> >>
->> >> It seems nand_flash_detect_jedec() is not reading "JDEC" and is retur=
-ning
->> >> directly. I'm having a look at this.
->> >
->> > So, I can read 'J', 'E', 'D' and 'E' but then I got 0xff's. So I tried
->> > to only check of JEDE in nand_flash_detect_jedec() but the JEDEC
->> > parameter page was then not valid.
->> >
->>
->> This uncovers two different bugs in the driver.
->>
->> 1. read_id_bytes is either '2' or '4', but JEDEC detections needs at
->> least 5 bytes.
->>
->> 2. The initial buffer (to read the ID and the parameter page) has
->> 256 bytes, but the JEDEC parameter page is 512-bytes.
->>
->> And while at it, the driver doesn't seem to support reading the
->> redundant parameter pages (recently reported on barebox ML [1]). So this
->> is a third bug.
->>
->> Would you try setting read_id_bytes to '5' and also increasing the READ_=
-PARAM
->> transfer length? Something like this:
->
-> I'm trying to parse through the latest pxa3xx_nand patches, and I'm a
-> bit lost. Did this piece get dropped on the floor?
->
+On Monday, July 20, 2015 at 11:23:39 AM, Cyrille Pitchen wrote:
+> Hi Marek,
 
-As far as I can see, yes. Regarding this particular patch, the flash device
-supports JEDEC detection but the driver needs a fix.
+Hi!
 
-Hopefully, Antoine will submit a fix in the future.
+> Le 16/07/2015 19:44, Marek Vasut a =E9crit :
+> > On Thursday, July 16, 2015 at 05:27:51 PM, Cyrille Pitchen wrote:
+> >=20
+> > Hi!
+> >=20
+> >> Both the SPI controller and the NOR flash memory need to agree on the
+> >> number of dummy cycles to use for Fast Read commands. For Spansion
+> >> memories, this number of dummy cycles is not given directly but through
+> >> a so called "latency code".
+> >> The latency code can be found into the memory datasheet and depends on
+> >> the SPI clock frequency, the Fast Read op code and the Single/Dual Data
+> >> Rate mode.
+> >=20
+> > Shouldn't you be able to derive the latency code from the above
+> > information, which you already know then ?
+>=20
+> Yes I agree with you; this could have been done adding static tables insi=
+de
+> the driver instead of creating a new DT property dedicated to Spansion
+> memories.
 
-> At any rate, it looks like there are a few more things to fix in
-> Antoine's latest work, so I can't quite take them. Correct me if I'm
-> misunderstanding.
->
+OK, I see now. The latency code can not be calculed from "SPI clock frequen=
+cy,=20
+the Fast Read op code and the Single/Dual Data Rate mode" easily, you need =
+to
+index into some table to obtain some ad-hoc value. Got it. Sorry for the no=
+ise!
 
-The current patchset under discussion is "v2 mtd: pxa3xx_nand: rework
-the timing setup":
+> When I wrote this patch, I had a close look at the s25fl512s datasheet but
+> only overviewed few datasheets for other Spansion QSPI flash memories. So
+> I don't know whether a single latency code table could be shared among all
+> Spansion memories or many tables should be added to support different
+> memory models.
+>=20
+> That's why I've chosen to add a dedicated DT property to support Spansion
+> memories as it avoids to add tables to guess the proper latency code to be
+> used. I thought it would be more flexible.
+>=20
+> Maybe I will remove the support of Spansion QSPI memories from this series
+> for now. Their support can still be implemented later.
+>=20
+> Anyway, thanks for your review :)
 
-http://lists.infradead.org/pipermail/linux-mtd/2015-July/060033.html
+Let's wait for more comments :)
 
-We are trying to get that sorted out, so we can move to the Berlin SoC supp=
-ort.
-
-Cheers,
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+Best regards,
+Marek Vasut
