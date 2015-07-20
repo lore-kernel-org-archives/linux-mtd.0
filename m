@@ -1,21 +1,20 @@
-Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
+Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHF4R-0005Es-5A
- for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 17:41:43 +0000
-Received: by pdrg1 with SMTP id g1so104806716pdr.2
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jul 2015 10:41:22 -0700 (PDT)
-Date: Mon, 20 Jul 2015 10:41:19 -0700
+ id 1ZHF6d-0005XF-4R
+ for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 17:43:59 +0000
+Received: by pdjr16 with SMTP id r16so106824783pdj.3
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jul 2015 10:43:34 -0700 (PDT)
+Date: Mon, 20 Jul 2015 10:43:31 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Han Xu <han.xu@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: fsl-quadspi: Actually clear TX FIFO upon write
-Message-ID: <20150720174119.GD24125@google.com>
-References: <1435829876-18149-1-git-send-email-alexander.stein@systec-electronic.com>
+To: Alexey Firago <alexey_firago@mentor.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: set SECT_4K for n25q064 SPI flash
+Message-ID: <20150720174331.GE24125@google.com>
+References: <1435658026-10627-1-git-send-email-alexey_firago@mentor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1435829876-18149-1-git-send-email-alexander.stein@systec-electronic.com>
+In-Reply-To: <1435658026-10627-1-git-send-email-alexey_firago@mentor.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,11 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 02, 2015 at 11:37:56AM +0200, Alexander Stein wrote:
-> QUADSPI_MCR_CLR_TXF_MASK is the correct mask for clearing the TX FIFO.
+On Tue, Jun 30, 2015 at 12:53:46PM +0300, Alexey Firago wrote:
+> Micron n25q064 flash supports 4 KiB erase sectors.
 > 
-> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+> Signed-off-by: Alexey Firago <alexey_firago@mentor.com>
 
-Pushed to l2-mtd.git, thanks.
+Pushed to l2-mtd.git. Thanks!
 
 Brian
