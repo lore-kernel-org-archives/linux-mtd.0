@@ -1,27 +1,16 @@
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-bn1bon0134.outbound.protection.outlook.com
+ ([157.56.111.134] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHH7o-0006Ui-4R
- for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 19:53:21 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, zmxu@marvell.com,
- jszhang@marvell.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] mtd: pxa3xx_nand: rework the timing setup
-References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
- <20150717134159.GC10608@kwain> <55A912F0.7080605@vanguardiasur.com.ar>
- <87h9p2is8e.fsf@belgarion.home>
- <CAAEAJfCcdioVQKZs9U3DP6H94BiuQ2qU21DsMKevS5+j+-XEKA@mail.gmail.com>
-Date: Mon, 20 Jul 2015 21:49:44 +0200
-In-Reply-To: <CAAEAJfCcdioVQKZs9U3DP6H94BiuQ2qU21DsMKevS5+j+-XEKA@mail.gmail.com>
- (Ezequiel Garcia's message of "Sat, 18 Jul 2015 14:18:02 -0300")
-Message-ID: <87wpxufw2v.fsf@belgarion.home>
+ id 1ZHJ4a-00046V-DY
+ for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 21:58:09 +0000
+From: <Frank.Li@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <b45815@freescale.com>,
+ <computersforpeace@gmail.com>, <lznuaa@gmail.com>
+CC: Frank Li <Frank.Li@freescale.com>
+Subject: [PATCH 1/1] mtd: spi-nor: fsl-qspi: dynamically map memory space for
+ AHB read
+Date: Tue, 21 Jul 2015 04:48:14 +0800
+Message-ID: <1437425294-32090-1-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,53 +22,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
+From: Allen Xu <b45815@freescale.com>
 
-> Here you go:
->
-> http://git.infradead.org/users/ezequielg/linux/shortlog/refs/heads/pxa3xx-nand-timing-rework-v2
+QSPI may failed to map enough memory (256MB) for AHB read in
+previous implementation, especially in 3G/1G memory layout kernel.
+Dynamically map memory to avoid such issue.
 
-Okay, I've tested this on cm-x300. The result is not bright :
-	nand: device found, Manufacturer ID: 0xec, Chip ID: 0xdc
-	nand: Samsung NAND 512MiB 3,3V 8-bit
-	nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-	pxa3xx-nand pxa3xx-nand: ECC strength 1, ECC step size 512
-	Scanning device for bad blocks
-	random: nonblocking pool is initialized
-	Bad eraseblock 1037 at 0x0000081a0000
-	Creating 6 MTD partitions on "pxa3xx_nand-0":
-	0x000000000000-0x000000040000 : "OBM"
-	0x000000040000-0x000000080000 : "U-Boot"
-	0x000000080000-0x0000000c0000 : "Environment"
-	0x0000000c0000-0x000000200000 : "reserved"
-	0x000000200000-0x000000600000 : "kernel"
-	0x000000600000-0x000020000000 : "fs"
+This implementation generally map 4MB memory for AHB read, it should
+be enough for common scenarios, and the side effect (0.6% performance
+drop) is minor.
 
-The bad black is not bad normally.
-And then :
-	# dd if=/dev/mtd0 of=toto count=1
-	pxa3xx-nand pxa3xx-nand: Wait time out!!!
-	1+0 records in
-	1+0 records out
-	# ls -l toto
-	-rw-r--r--    1 root     root           512 Jan  1 00:02 toto
-	# hexdump-C toto
-	00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-	*
-	00000200
+Previous implementation
 
-That's not possible, as it should have dumped the OBMI.
+root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=1K count=32K
+32768+0 records in
+32768+0 records out
+33554432 bytes (34 MB) copied, 2.16006 s, 15.5 MB/s
 
-And yet, I hesitate to incriminate this patchset, I will try without it. It wont
-be very fast, as my USB to serial converter just broke, and my order will take a
-couple of days to complete.
+root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=32M count=1
+1+0 records in
+1+0 records out
+33554432 bytes (34 MB) copied, 1.43149 s, 23.4 MB/s
 
-And of course without this converter I cannot test anymore, especially the
-zylonite board which will be more interesting.
+After applied the patch
 
-So I'll report back as soon as the UK mail has completed the shipment.
+root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=1K count=32K
+32768+0 records in
+32768+0 records out
+33554432 bytes (34 MB) copied, 2.1743 s, 15.4 MB/s
 
-Cheers.
+root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=32M count=1
+1+0 records in
+1+0 records out
+33554432 bytes (34 MB) copied, 1.43158 s, 23.4 MB/s
 
+Signed-off-by: Allen Xu <b45815@freescale.com>
+Signed-off-by: Frank Li <Frank.Li@freescale.com>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 48 ++++++++++++++++++++++++++++++++-------
+ 1 file changed, 40 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 52a872f..69b95e8 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -222,8 +222,10 @@ struct fsl_qspi {
+ 	struct mtd_info mtd[FSL_QSPI_MAX_CHIP];
+ 	struct spi_nor nor[FSL_QSPI_MAX_CHIP];
+ 	void __iomem *iobase;
+-	void __iomem *ahb_base; /* Used when read from AHB bus */
++	void __iomem *ahb_addr;
+ 	u32 memmap_phy;
++	u32 memmap_offs;
++	u32 memmap_len;
+ 	struct clk *clk, *clk_en;
+ 	struct device *dev;
+ 	struct completion c;
+@@ -730,11 +732,41 @@ static int fsl_qspi_read(struct spi_nor *nor, loff_t from,
+ 	struct fsl_qspi *q = nor->priv;
+ 	u8 cmd = nor->read_opcode;
+ 
+-	dev_dbg(q->dev, "cmd [%x],read from (0x%p, 0x%.8x, 0x%.8x),len:%d\n",
+-		cmd, q->ahb_base, q->chip_base_addr, (unsigned int)from, len);
++	/* if necessary,ioremap buffer before AHB read, */
++	/* generally 4MB should be large enough */
++	if (!q->ahb_addr) {
++		q->ahb_addr = ioremap_nocache(
++				q->memmap_phy + q->chip_base_addr + from,
++				len > SZ_4M ? len : SZ_4M);
++		if (!q->ahb_addr) {
++			dev_err(q->dev, "ioremap failed\n");
++			return -ENOMEM;
++		}
++		q->memmap_offs = q->chip_base_addr + from;
++		q->memmap_len = len > SZ_4M ? len : SZ_4M;
++	/* ioremap if the data requested is out of range */
++	} else if (q->chip_base_addr + from < q->memmap_offs
++			|| q->chip_base_addr + from + len >
++			q->memmap_offs + q->memmap_len) {
++		iounmap(q->ahb_addr);
++		q->ahb_addr = ioremap_nocache(
++				q->memmap_phy + q->chip_base_addr + from,
++				len > SZ_4M ? len : SZ_4M);
++		if (!q->ahb_addr) {
++			dev_err(q->dev, "ioremap failed\n");
++			return -ENOMEM;
++		}
++		q->memmap_offs = q->chip_base_addr + from;
++		q->memmap_len = len > SZ_4M ? len : SZ_4M;
++	}
++
++	dev_dbg(q->dev, "cmd [%x],read from 0x%p, len:%d\n",
++		cmd, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
++		len);
+ 
+ 	/* Read out the data directly from the AHB buffer.*/
+-	memcpy(buf, q->ahb_base + q->chip_base_addr + from, len);
++	memcpy(buf, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
++		len);
+ 
+ 	*retlen += len;
+ 	return 0;
+@@ -812,10 +844,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+ 					"QuadSPI-memory");
+-	q->ahb_base = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(q->ahb_base))
+-		return PTR_ERR(q->ahb_base);
+-
+ 	q->memmap_phy = res->start;
+ 
+ 	/* find the clocks */
+@@ -975,6 +1003,10 @@ static int fsl_qspi_remove(struct platform_device *pdev)
+ 
+ 	clk_unprepare(q->clk);
+ 	clk_unprepare(q->clk_en);
++
++	if (q->ahb_addr)
++		iounmap(q->ahb_addr);
++
+ 	return 0;
+ }
+ 
 -- 
-Robert
+1.9.1
