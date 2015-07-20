@@ -1,16 +1,21 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+Received: from webbox1416.server-home.net ([77.236.96.61])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZH46z-0004Fm-N8
- for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 05:59:38 +0000
-Message-ID: <55AC8CDE.9020905@cn.fujitsu.com>
-Date: Mon, 20 Jul 2015 13:53:34 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+ id 1ZH4v2-00088U-FX
+ for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 06:51:21 +0000
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+To: Cory Tusar <cory.tusar@pid1solutions.com>
+Cc: Han Xu <han.xu@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/1] mtd: fsl-quadspi: Add mutex for accessing different
+ SPI-NOR devices
+Date: Mon, 20 Jul 2015 08:50:48 +0200
+Message-ID: <22821071.S74fF7YYzh@ws-stein>
+In-Reply-To: <55A7E9FA.4040704@pid1solutions.com>
+References: <1437056014-16928-1-git-send-email-alexander.stein@systec-electronic.com>
+ <55A7E9FA.4040704@pid1solutions.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
- <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: UBIFS: Question about calc_dd_growth()
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,22 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Atem and Richard and all:
+Hello Cory,
 
-	I am doing some work about adding support of quota
-in ubifs. But I found there is a question in  calc_dd_growth
-I am confused about.
+On Thursday 16 July 2015 13:29:30, Cory Tusar wrote:
+> On 07/16/2015 10:13 AM, Alexander Stein wrote:
+> > Access is only serialized for each NOR device in spi_nor_lock_and_prep(),
+> > but not for the QSPI device.
+>
+> Are both devices that you're testing with in the below scenario QSPI, or
+> is it a combination of QSPI + some other MTD device?
 
-  417         if (req->dirtied_ino)
-  418                 dd_growth += c->bi.inode_budget << 
-(req->dirtied_ino - 1);
+On my board a s70fl01gs is connected to QSPI bank A. As this is a dual-die 
+chip it uses both chip-selcts on bank A. So in the end it's 2 QSPI devices.
+When accessing different flashs on those 2 chip-selects i get the following
+error message:
+> [  233.157410] fsl-quadspi 1550000.quadspi: cmd 0x05 timeout, addr@00000000,
+> FR:0x08000000, SR:0x00003c00 [  233.166731] error -110 reading SR
+> [  233.170097] end_request: I/O error, dev mtdblock3, sector 72
+> [  233.175740] Buffer I/O error on device mtdblock3, logical block 9
 
-Why it's a '<<'?? I mean, to myself, it's clear to be that:
+This seems to be caused by simultaneously access to different chips.
 
-   dd_growth += c->bi.inode_budget * req->dirtied_ino;
+Best regards,
+Alexander
+-- 
+Dipl.-Inf. Alexander Stein
+SYS TEC electronic GmbH
+alexander.stein@systec-electronic.com
 
+Legal and Commercial Address:
+Am Windrad 2
+08468 Heinsdorfergrund
+Germany
 
-Could you help to explain it to me?
-
-Thanx
-Yang
+Office: +49 (0) 3765 38600-11xx
+Fax:    +49 (0) 0) 3765 38600-41xx
+ 
+Managing Directors:
+	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
+	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
+Commercial Registry:
+	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
