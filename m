@@ -1,24 +1,29 @@
-From: Marek Vasut <marex@denx.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH 4/7] Documentation: mtd: add a DT property to set the
- latency code of Spansion memory
-Date: Mon, 20 Jul 2015 21:29:41 +0200
-Cc: nicolas.ferre@atmel.com, broonie@kernel.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
- beanhuo@micron.com, juhosg@openwrt.org, shijie.huang@intel.com,
- ben@decadent.org.uk, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- linux-mtd@lists.infradead.org
-References: <cover.1437059658.git.cyrille.pitchen@atmel.com>
- <201507161944.20523.marex@denx.de> <55ACBE1B.6050507@atmel.com>
-In-Reply-To: <55ACBE1B.6050507@atmel.com>
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZHH7o-0006Ui-4R
+ for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 19:53:21 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, zmxu@marvell.com,
+ jszhang@marvell.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] mtd: pxa3xx_nand: rework the timing setup
+References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+ <20150717134159.GC10608@kwain> <55A912F0.7080605@vanguardiasur.com.ar>
+ <87h9p2is8e.fsf@belgarion.home>
+ <CAAEAJfCcdioVQKZs9U3DP6H94BiuQ2qU21DsMKevS5+j+-XEKA@mail.gmail.com>
+Date: Mon, 20 Jul 2015 21:49:44 +0200
+In-Reply-To: <CAAEAJfCcdioVQKZs9U3DP6H94BiuQ2qU21DsMKevS5+j+-XEKA@mail.gmail.com>
+ (Ezequiel Garcia's message of "Sat, 18 Jul 2015 14:18:02 -0300")
+Message-ID: <87wpxufw2v.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201507202129.42105.marex@denx.de>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +33,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, July 20, 2015 at 11:23:39 AM, Cyrille Pitchen wrote:
-> Hi Marek,
+Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
 
-Hi!
+> Here you go:
+>
+> http://git.infradead.org/users/ezequielg/linux/shortlog/refs/heads/pxa3xx-nand-timing-rework-v2
 
-> Le 16/07/2015 19:44, Marek Vasut a =E9crit :
-> > On Thursday, July 16, 2015 at 05:27:51 PM, Cyrille Pitchen wrote:
-> >=20
-> > Hi!
-> >=20
-> >> Both the SPI controller and the NOR flash memory need to agree on the
-> >> number of dummy cycles to use for Fast Read commands. For Spansion
-> >> memories, this number of dummy cycles is not given directly but through
-> >> a so called "latency code".
-> >> The latency code can be found into the memory datasheet and depends on
-> >> the SPI clock frequency, the Fast Read op code and the Single/Dual Data
-> >> Rate mode.
-> >=20
-> > Shouldn't you be able to derive the latency code from the above
-> > information, which you already know then ?
->=20
-> Yes I agree with you; this could have been done adding static tables insi=
-de
-> the driver instead of creating a new DT property dedicated to Spansion
-> memories.
+Okay, I've tested this on cm-x300. The result is not bright :
+	nand: device found, Manufacturer ID: 0xec, Chip ID: 0xdc
+	nand: Samsung NAND 512MiB 3,3V 8-bit
+	nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+	pxa3xx-nand pxa3xx-nand: ECC strength 1, ECC step size 512
+	Scanning device for bad blocks
+	random: nonblocking pool is initialized
+	Bad eraseblock 1037 at 0x0000081a0000
+	Creating 6 MTD partitions on "pxa3xx_nand-0":
+	0x000000000000-0x000000040000 : "OBM"
+	0x000000040000-0x000000080000 : "U-Boot"
+	0x000000080000-0x0000000c0000 : "Environment"
+	0x0000000c0000-0x000000200000 : "reserved"
+	0x000000200000-0x000000600000 : "kernel"
+	0x000000600000-0x000020000000 : "fs"
 
-OK, I see now. The latency code can not be calculed from "SPI clock frequen=
-cy,=20
-the Fast Read op code and the Single/Dual Data Rate mode" easily, you need =
-to
-index into some table to obtain some ad-hoc value. Got it. Sorry for the no=
-ise!
+The bad black is not bad normally.
+And then :
+	# dd if=/dev/mtd0 of=toto count=1
+	pxa3xx-nand pxa3xx-nand: Wait time out!!!
+	1+0 records in
+	1+0 records out
+	# ls -l toto
+	-rw-r--r--    1 root     root           512 Jan  1 00:02 toto
+	# hexdump-C toto
+	00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
+	*
+	00000200
 
-> When I wrote this patch, I had a close look at the s25fl512s datasheet but
-> only overviewed few datasheets for other Spansion QSPI flash memories. So
-> I don't know whether a single latency code table could be shared among all
-> Spansion memories or many tables should be added to support different
-> memory models.
->=20
-> That's why I've chosen to add a dedicated DT property to support Spansion
-> memories as it avoids to add tables to guess the proper latency code to be
-> used. I thought it would be more flexible.
->=20
-> Maybe I will remove the support of Spansion QSPI memories from this series
-> for now. Their support can still be implemented later.
->=20
-> Anyway, thanks for your review :)
+That's not possible, as it should have dumped the OBMI.
 
-Let's wait for more comments :)
+And yet, I hesitate to incriminate this patchset, I will try without it. It wont
+be very fast, as my USB to serial converter just broke, and my order will take a
+couple of days to complete.
 
-Best regards,
-Marek Vasut
+And of course without this converter I cannot test anymore, especially the
+zylonite board which will be more interesting.
+
+So I'll report back as soon as the UK mail has completed the shipment.
+
+Cheers.
+
+-- 
+Robert
