@@ -1,24 +1,22 @@
-Message-ID: <55ACBE1B.6050507@atmel.com>
-Date: Mon, 20 Jul 2015 11:23:39 +0200
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZHEOf-0001zI-QV
+ for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 16:58:34 +0000
+Received: by padck2 with SMTP id ck2so103597295pad.0
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jul 2015 09:58:11 -0700 (PDT)
+Date: Mon, 20 Jul 2015 09:58:04 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Murali Karicheri <m-karicheri2@ti.com>
+Cc: dwmw2@infradead.org, wsa@the-dreams.de, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RESEND: PATCH v1] mtd: nand: davinci: add support for 4K page
+ size nand devices.
+Message-ID: <20150720165804.GA24125@google.com>
+References: <1436818036-7093-1-git-send-email-m-karicheri2@ti.com>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-CC: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
- <juhosg@openwrt.org>, <shijie.huang@intel.com>, <ben@decadent.org.uk>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
- <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
- <galak@codeaurora.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 4/7] Documentation: mtd: add a DT property to set the
- latency code of Spansion memory
-References: <cover.1437059658.git.cyrille.pitchen@atmel.com>
- <398ca9f17bda638e05e97f258fb4e6d27ac828db.1437059658.git.cyrille.pitchen@atmel.com>
- <201507161944.20523.marex@denx.de>
-In-Reply-To: <201507161944.20523.marex@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1436818036-7093-1-git-send-email-m-karicheri2@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +26,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
++ others
 
-Le 16/07/2015 19:44, Marek Vasut a écrit :
-> On Thursday, July 16, 2015 at 05:27:51 PM, Cyrille Pitchen wrote:
+On Mon, Jul 13, 2015 at 04:07:16PM -0400, Murali Karicheri wrote:
+> K2L EVM uses NAND with 4K page size. This patch add support for
+> ECC layout requires to enable Micron MT29F16G08ADBCAH4 NAND available
+> on this EVM.
 > 
-> Hi!
+> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+> Signed-off-by: Hao Zhang <hzhang@ti.com>
+
+I see a much earlier patch that is nearly identical, but whose
+whitespace is a little cleaner:
+
+http://patchwork.ozlabs.org/patch/381347/
+
+I don't know why it was never ack'd or merged. I think I'll take it now.
+
+Is there anyone who wants to step and have a MAINTAINERS entry on this?
+I don't have hardware or anything, so it'd be great if someone who works
+on these things can ack changes for davinci_nand.c.
+
+Thanks,
+Brian
+
+> ---
+>  - Resend after subscribing to linux-mtd mailing list. I assume
+>    no one has seen this on this mailing list as I don't have any
+>    comments. So re-sending.
+>  - v1 - Remove the comment as well from the code as now 4K page
+>    is supported
+>  drivers/mtd/nand/davinci_nand.c | 42 +++++++++++++++++++++++++++++------------
+>  1 file changed, 30 insertions(+), 12 deletions(-)
 > 
->> Both the SPI controller and the NOR flash memory need to agree on the
->> number of dummy cycles to use for Fast Read commands. For Spansion
->> memories, this number of dummy cycles is not given directly but through a
->> so called "latency code".
->> The latency code can be found into the memory datasheet and depends on the
->> SPI clock frequency, the Fast Read op code and the Single/Dual Data Rate
->> mode.
+> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+> index feb6d18..90b177b 100644
+> --- a/drivers/mtd/nand/davinci_nand.c
+> +++ b/drivers/mtd/nand/davinci_nand.c
+> @@ -520,6 +520,31 @@ static struct nand_ecclayout hwecc4_2048 = {
+>  	},
+>  };
+>  
+> +/* An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
+> + * storing ten ECC bytes plus the manufacturer's bad block marker byte,
+> + * and not overlapping the default BBT markers.
+> + */
+> +static struct nand_ecclayout hwecc4_4096 = {
+> +	.eccbytes = 80,
+> +	.eccpos = {
+> +		/* at the end of spare sector */
+> +		48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
+> +		58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
+> +		68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
+> +		78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
+> +		88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
+> +		98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
+> +		108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
+> +		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
+> +		},
+> +	.oobfree = {
+> +		/* 2 bytes at offset 0 hold manufacturer badblock markers */
+> +		{.offset = 2, .length = 46, },
+> +		/* 5 bytes at offset 8 hold BBT markers */
+> +		/* 8 bytes at offset 16 hold JFFS2 clean markers */
+> +	},
+> +};
+> +
+>  #if defined(CONFIG_OF)
+>  static const struct of_device_id davinci_nand_of_match[] = {
+>  	{.compatible = "ti,davinci-nand", },
+> @@ -796,18 +821,11 @@ static int nand_davinci_probe(struct platform_device *pdev)
+>  			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
+>  			goto syndrome_done;
+>  		}
+> -
+> -		/* 4KiB page chips are not yet supported. The eccpos from
+> -		 * nand_ecclayout cannot hold 80 bytes and change to eccpos[]
+> -		 * breaks userspace ioctl interface with mtd-utils. Once we
+> -		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
+> -		 * for the 4KiB page chips.
+> -		 *
+> -		 * TODO: Note that nand_ecclayout has now been expanded and can
+> -		 *  hold plenty of OOB entries.
+> -		 */
+> -		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
+> -				"for 4KiB-page NAND\n");
+> +		if (chunks == 8) {
+> +			info->ecclayout = hwecc4_4096;
+> +			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
+> +			goto syndrome_done;
+> +		}
+>  		ret = -EIO;
+>  		goto err;
+>  
+> -- 
+> 1.9.1
 > 
-> Shouldn't you be able to derive the latency code from the above information,
-> which you already know then ?
-Yes I agree with you; this could have been done adding static tables inside the
-driver instead of creating a new DT property dedicated to Spansion memories.
-
-When I wrote this patch, I had a close look at the s25fl512s datasheet but only
-overviewed few datasheets for other Spansion QSPI flash memories. So I don't
-know whether a single latency code table could be shared among all Spansion
-memories or many tables should be added to support different memory models.
-
-That's why I've chosen to add a dedicated DT property to support Spansion
-memories as it avoids to add tables to guess the proper latency code to be
-used. I thought it would be more flexible.
-
-Maybe I will remove the support of Spansion QSPI memories from this series for
-now. Their support can still be implemented later.
-
-Anyway, thanks for your review :)
-
-> 
-> Best regards,
-> Marek Vasut
-> 
-
-Best Regards,
-
-Cyrille
