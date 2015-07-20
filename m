@@ -1,39 +1,16 @@
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZH46z-0004Fm-N8
+ for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 05:59:38 +0000
+Message-ID: <55AC8CDE.9020905@cn.fujitsu.com>
+Date: Mon, 20 Jul 2015 13:53:34 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <20150715155946.GB21362@localhost>
-References: <cover.1433364398.git.hramrach@gmail.com>
- <20150604171547.GA1530@localhost.localdomain>
- <CAOMqctSCL9E-kCBryeaMvtssSP12RY=kyfPuwSYx9wc=Lv9kGQ@mail.gmail.com>
- <201507151352.27689.marex@denx.de> <20150715155946.GB21362@localhost>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Sun, 19 Jul 2015 21:01:34 +0200
-Message-ID: <CAOMqctTJEg7EauKfrqW-6rUQ-QOmtkTfkgOyz0rCuyh_-XrW5w@mail.gmail.com>
-Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Richard Cochran <richardcochran@gmail.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Alison Chaiken <alison_chaiken@mentor.com>,
- =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
- Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "grmoore@altera.com" <grmoore@altera.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>, Rob Herring <robh+dt@kernel.org>,
- Han Xu <han.xu@freescale.com>,
- Knut Wohlrab <knut.wohlrab@de.bosch.com>, dmaengine <dmaengine@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
+ <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: UBIFS: Question about calc_dd_growth()
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,68 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Atem and Richard and all:
 
-On 15 July 2015 at 17:59, Brian Norris <computersforpeace@gmail.com> wrote:
-> Hi Michal,
->
-> On Wed, Jul 15, 2015 at 01:52:27PM +0200, Marek Vasut wrote:
->> The problem is, if you add a new DT binding, you'd have to support it
->> forever, no matter how bad idea that binding turned out to be.
->
-> Agreed, and a solid NAK to this patch. I could have sworn I gave such a
-> response when this was originally being discussed a month ago.
->
-> AFAICT, you have one of two general approaches available to you:
->
-> 1. Fix up the SPI driver so that it knows how to break large SPI
-> transfers up into smaller segments that its constituent hardware (DMA
-> controllers, fast clocks, etc.) can handle.
->
-> 2. Utilize/create a parameter within the SPI subsystem to communicate
-> that the SPI master has a limited max transfer size (notably: NOT a
-> per-device DT property, but a SPI API property), and modify SPI device
-> drivers (like m25p80) to honor it. Mark Brown seemed open to this, and I
-> thought he suggested it somewhere.
+	I am doing some work about adding support of quota
+in ubifs. But I found there is a question in  calc_dd_growth
+I am confused about.
 
-It is not known what exactly is limited here.
+  417         if (req->dirtied_ino)
+  418                 dd_growth += c->bi.inode_budget << 
+(req->dirtied_ino - 1);
 
-It seems that the pl330 fails but it is not possible to transfer that
-much data over the spi bus in one go without the help of the pl330.
+Why it's a '<<'?? I mean, to myself, it's clear to be that:
 
-With either approach the limit depends on the SPI transfer settings
-which are known the the SPI driver. The pl330 driver is oblivious to
-these because it just transfers data from one port to another port and
-has no idea that the port is wired to SPI in the SoC.
+   dd_growth += c->bi.inode_budget * req->dirtied_ino;
 
-On the other hand, AFAICT the SPI driver only allocates a DMA channel
-which it receives through DT binding and is oblivious to the fact the
-DMA channel lives on a pl330. It could probably determine that the
-channel is indeed driven by a pl330. I don't think it's a great idea
-to add device-specific handling to a generic dmaengine driver or a
-dmaengine-spiecific handling to a SPI driver.
 
-It's technically possible to pass SPI transfer parameters to the
-dmaengine driver prior to transfer and the dmaengine could impose some
-limitation based on those parameters. However, generalising this to
-drivers other than SPI might be problematic. Should this interface
-also handle i2c parameters, VE parameters, audio parameters, ethernet
-parameters, etc?
+Could you help to explain it to me?
 
-In the DT you have the information that this particular device is
-connected to a Samsung SPI controller connected to a pl330 dma engine.
-
->
-> It is most definitely wrong to put this information solely in the slave
-> device DT (i.e., for the flash), when it is not a property of the flash
-> device at all. It's a property of the SPI master and/or its clocks and
-> DMA controllers.
-
-However, the clocks are set by the parameters of the device, not the
-parameters of the master. So the limitation applies for the master
-with the settings of the particular slave device. Different slave
-settings do impose different master limitations.
-
-Thanks
-
-Michal
+Thanx
+Yang
