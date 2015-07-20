@@ -1,24 +1,24 @@
-Message-ID: <55ACB72D.60506@atmel.com>
-Date: Mon, 20 Jul 2015 10:54:05 +0200
+Message-ID: <55ACB79A.3010101@atmel.com>
+Date: Mon, 20 Jul 2015 10:55:54 +0200
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
- <nicolas.ferre@atmel.com>, <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <zajec5@gmail.com>,
- <beanhuo@micron.com>, <juhosg@openwrt.org>, <marex@denx.de>,
- <shijie.huang@intel.com>, <ben@decadent.org.uk>
-CC: <mark.rutland@arm.com>, <devicetree@vger.kernel.org>,
- <pawel.moll@arm.com>, <ijc+devicetree@hellion.org.uk>,
- <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
- <linux-mtd@lists.infradead.org>, <galak@codeaurora.org>,
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 6/7] Documentation: atmel-quadspi: add binding file for
- Atmel QSPI driver
-References: <cover.1437059658.git.cyrille.pitchen@atmel.com>
- <f4bb1c68fcc19b3642110ab0ef9850d6eeca3112.1437059658.git.cyrille.pitchen@atmel.com>
- <55A8EAAE.6010506@cogentembedded.com>
-In-Reply-To: <55A8EAAE.6010506@cogentembedded.com>
-Content-Type: text/plain; charset="windows-1252"
+To: Paul Bolle <pebolle@tiscali.nl>
+CC: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
+ <juhosg@openwrt.org>, <marex@denx.de>, <shijie.huang@intel.com>,
+ <ben@decadent.org.uk>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 7/7] mtd: atmel-quadspi: add driver for Atmel QSPI
+ controller
+References: <cover.1437059658.git.cyrille.pitchen@atmel.com>	
+ <cf2522fc858b72af78d057ac76c4f029e80edf4a.1437059658.git.cyrille.pitchen@atmel.com>
+ <1437123868.24981.7.camel@tiscali.nl>
+In-Reply-To: <1437123868.24981.7.camel@tiscali.nl>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,60 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sergei,
+Hi Paul,
 
-thanks for the review. For the next series I've removed all references to
-"qspi" in the node example but the one from the compatible string.
-I've also removed the leading 0 in the size of the second memory region.
+I've removed the ".bus = &plaform_bus_type" for the next series.
+Thank you for the explanation and the review :)
 
 Best Regards,
 
 Cyrille
 
-Le 17/07/2015 13:44, Sergei Shtylyov a écrit :
-> Hello.
-> 
-> On 7/16/2015 6:27 PM, Cyrille Pitchen wrote:
-> 
->> This patch documents the DT bindings for the driver of the Atmel QSPI
->> controller embedded inside sama5d2x SoCs.
-> 
->> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->> ---
->>   .../devicetree/bindings/mtd/atmel-quadspi.txt      | 29 ++++++++++++++++++++++
->>   1 file changed, 29 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
-> 
->> diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
->> new file mode 100644
->> index 000000000000..a0d60ac7ae10
+Le 17/07/2015 11:04, Paul Bolle a Ã©crit :
+> On do, 2015-07-16 at 17:27 +0200, Cyrille Pitchen wrote:
 >> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
->> @@ -0,0 +1,29 @@
->> +* Atmel Quad Serial Peripheral Interface (QSPI)
->> +
->> +Required properties:
->> +  - compatible : Should be "atmel,sama5d2-qspi"
->> +  - reg : the first contains the register location and length,
->> +          the second contains the memory mapping address and length
->> +  - interrupts : Should contain the interrupt for the device
->> +  - clocks : The clock needed by the QSPI controller
->> +  - #address-cells : should be 1
->> +  - #size-cells : should be 0
->> +
->> +Example:
->> +
->> +qspi0: qspi@f0020000 {
+>> +++ b/drivers/mtd/spi-nor/atmel-quadspi.c
 > 
->     Once again, the ePAPR standard tells up to call the node just "spi", not "qspi".
+>> +static struct platform_driver atmel_qspi_driver = {
+>> +	.driver		= {
+>> +		[...]
+>> +		.bus	= &platform_bus_type,
+>> +		[...]
+>> +};
+>> +module_platform_driver(atmel_qspi_driver);
 > 
->> +    compatible = "atmel,sama5d2-qspi";
->> +    reg = <0xf0020000 0x100>,
->> +          <0xd0000000 0x08000000>;
+> Nit: on module init this will basically do
+>     __platform_driver_register(&atmel_qspi_driver, THIS_MODULE);
 > 
->    Either you use the leading zeroes or you don't. :-)
+> which will again set bus to &platform_bus_type. So you might as well
+> drop that line.
 > 
-> [...]
 > 
-> MBR, Sergei
+> Paul Bolle
 > 
