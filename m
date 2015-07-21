@@ -1,15 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHT9f-0002r6-0D
- for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 08:44:05 +0000
+ id 1ZHT9f-0002qt-RD
+ for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 08:44:06 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>, <jack@suse.com>
 CC: <linux-fsdevel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 18/25] ubifs: record quota information about inode in
- ubifs_new_inode
-Date: Tue, 21 Jul 2015 16:37:49 +0800
-Message-ID: <1437467876-22106-19-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 19/25] ubifs: free quota inode information in ubifs_evict_inode
+Date: Tue, 21 Jul 2015 16:37:50 +0800
+Message-ID: <1437467876-22106-20-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -23,71 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Initialize quota and alloc a inode quota information in
-ubifs_new_inode(). Then quota would be aware of a new
-inode is allocated.
+In evict, we have to call dquot_free_inode() to tell quota
+subsystem there is one inode to be free. Please update the
+quota information.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/ubifs/dir.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ fs/ubifs/super.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 27060fc..01cbc8b 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -41,6 +41,7 @@
-  */
- 
- #include "ubifs.h"
-+#include <linux/quotaops.h>
- 
- /**
-  * inherit_flags - inherit flags of the parent inode.
-@@ -90,12 +91,18 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
- {
- 	struct inode *inode;
- 	struct ubifs_inode *ui;
-+	int err = 0;
- 
- 	inode = new_inode(c->vfs_sb);
--	ui = ubifs_inode(inode);
- 	if (!inode)
- 		return ERR_PTR(-ENOMEM);
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 0638436..60deed2 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -362,6 +362,7 @@ static void ubifs_evict_inode(struct inode *inode)
+ 	if (is_bad_inode(inode))
+ 		goto out;
  
 +	dquot_initialize(inode);
-+        err = dquot_alloc_inode(inode);
-+        if (err)
-+                goto fail_drop;
-+
-+	ui = ubifs_inode(inode);
- 	/*
- 	 * Set 'S_NOCMTIME' to prevent VFS form updating [mc]time of inodes and
- 	 * marking them dirty in file write path (see 'file_update_time()').
-@@ -148,8 +155,8 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
- 			spin_unlock(&c->cnt_lock);
- 			ubifs_err(c, "out of inode numbers");
- 			make_bad_inode(inode);
--			iput(inode);
--			return ERR_PTR(-EINVAL);
-+			err = -EINVAL;
-+			goto fail_free;
- 		}
- 		ubifs_warn(c, "running out of inode numbers (current %lu, max %u)",
- 			   (unsigned long)c->highest_inum, INUM_WATERMARK);
-@@ -166,6 +173,13 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
- 	ui->creat_sqnum = ++c->max_sqnum;
- 	spin_unlock(&c->cnt_lock);
- 	return inode;
-+
-+fail_free:
+ 	ui->ui_size = inode->i_size = 0;
+ 	err = ubifs_jnl_delete_inode(c, inode);
+ 	if (err)
+@@ -371,7 +372,7 @@ static void ubifs_evict_inode(struct inode *inode)
+ 		 */
+ 		ubifs_err(c, "can't delete inode %lu, error %d",
+ 			  inode->i_ino, err);
+-
 +	dquot_free_inode(inode);
-+fail_drop:
+ out:
+ 	if (ui->dirty)
+ 		ubifs_release_dirty_inode_budget(c, ui);
+@@ -381,6 +382,7 @@ out:
+ 		smp_wmb();
+ 	}
+ done:
 +	dquot_drop(inode);
-+	iput(inode);
-+	return ERR_PTR(err);
+ 	clear_inode(inode);
  }
  
- static int dbg_check_name(const struct ubifs_info *c,
 -- 
 1.8.4.2
