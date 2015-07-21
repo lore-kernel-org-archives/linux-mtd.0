@@ -1,21 +1,19 @@
 Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHe7Z-0003RC-3o
+ id 1ZHe7Z-0003R7-5R
  for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 20:26:38 +0000
-Date: Tue, 21 Jul 2015 11:04:57 +0200
+Date: Tue, 21 Jul 2015 10:58:34 +0200
 From: Jan Kara <jack@suse.cz>
 To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 Cc: dedekind1@gmail.com, richard.weinberger@gmail.com, jack@suse.com,
  linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 04/25] fs: super: introduce the functions to get super by
- cdev reference
-Message-ID: <20150721090457.GF6533@quack.suse.cz>
+Subject: Re: [RFC PATCH 00/25] Add quota supporting in ubifs
+Message-ID: <20150721085834.GE6533@quack.suse.cz>
 References: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1437467876-22106-5-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1437467876-22106-5-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,111 +23,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue 21-07-15 16:37:35, Dongsheng Yang wrote:
-> As we have cdev in super block now, we can provide get_super_cdev
-> to get super_block by a cdev reference, similar with get_super
-> which is working only for block_device.
+  Hello,
+
+On Tue 21-07-15 16:37:31, Dongsheng Yang wrote:
+> Hi Atem, Richard and others,
+> 	This is a patchset to add quota supporting in ubifs.
+> [1/25] - [7/25] are working to make quotactl to support filesystems
+> which are running on char device.
 > 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> Others are about making ubifs to support quota
+> Please help to review or test it. Any comment is welcome :).
+> 
+> Hi Jan Kara,
+> 	I am not sure I am using the quota APIs correctly, please
+> help to correct me if I am wrong.
 
-Instead of duplicating the superblock searching functions, can you please
-create common __get_super() function like:
-
-struct super_block *__get_super(
-		int (*compare)(struct super_block *, void *), void *key)
-
-And it will use the compare function to check whether the sb is the right
-one or not. You will then have one comparion functions for searching by
-bdev used by get_super() and one comparison function for searching by cdev
-used by get_super_cdev().
-
-Similarly you can create __get_super_thawed() to avoid the duplication
-there.
+Well, the patches for cdev handling are more for Al Viro as a VFS
+maintainer. I can give you some feedback but he is the final arbiter to
+decide whether those patches get merged. So please CC him in the next
+posting.
 
 								Honza
 
-> ---
->  fs/super.c         | 45 +++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/fs.h |  2 ++
->  2 files changed, 47 insertions(+)
 > 
-> diff --git a/fs/super.c b/fs/super.c
-> index 928c20f..4a9031a 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -605,6 +605,37 @@ rescan:
->  
->  EXPORT_SYMBOL(get_super);
->  
-> +struct super_block *get_super_cdev(struct cdev *cdev)
-> +{
-> +	struct super_block *sb;
-> +
-> +	if (!cdev)
-> +		return NULL;
-> +
-> +	spin_lock(&sb_lock);
-> +rescan:
-> +	list_for_each_entry(sb, &super_blocks, s_list) {
-> +		if (hlist_unhashed(&sb->s_instances))
-> +			continue;
-> +		if (sb->s_cdev == cdev) {
-> +			sb->s_count++;
-> +			spin_unlock(&sb_lock);
-> +			down_read(&sb->s_umount);
-> +			/* still alive? */
-> +			if (sb->s_root && (sb->s_flags & MS_BORN))
-> +				return sb;
-> +			up_read(&sb->s_umount);
-> +			/* nope, got unmounted */
-> +			spin_lock(&sb_lock);
-> +			__put_super(sb);
-> +			goto rescan;
-> +		}
-> +	}
-> +	spin_unlock(&sb_lock);
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL(get_super_cdev);
-> +
->  /**
->   *	get_super_thawed - get thawed superblock of a device
->   *	@bdev: device to get the superblock for
-> @@ -628,6 +659,20 @@ struct super_block *get_super_thawed(struct block_device *bdev)
->  }
->  EXPORT_SYMBOL(get_super_thawed);
->  
-> +struct super_block *get_super_cdev_thawed(struct cdev *cdev)
-> +{
-> +	while (1) {
-> +		struct super_block *s = get_super_cdev(cdev);
-> +		if (!s || s->s_writers.frozen == SB_UNFROZEN)
-> +			return s;
-> +		up_read(&s->s_umount);
-> +		wait_event(s->s_writers.wait_unfrozen,
-> +			   s->s_writers.frozen == SB_UNFROZEN);
-> +		put_super(s);
-> +	}
-> +}
-> +EXPORT_SYMBOL(get_super_cdev_thawed);
-> +
->  /**
->   * get_active_super - get an active reference to the superblock of a device
->   * @bdev: device to get the superblock for
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 2f1d9499..5c7d789 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2744,7 +2744,9 @@ extern void get_filesystem(struct file_system_type *fs);
->  extern void put_filesystem(struct file_system_type *fs);
->  extern struct file_system_type *get_fs_type(const char *name);
->  extern struct super_block *get_super(struct block_device *);
-> +extern struct super_block *get_super_cdev(struct cdev *);
->  extern struct super_block *get_super_thawed(struct block_device *);
-> +extern struct super_block *get_super_cdev_thawed(struct cdev *);
->  extern struct super_block *get_active_super(struct block_device *bdev);
->  extern void drop_super(struct super_block *sb);
->  extern void iterate_supers(void (*)(struct super_block *, void *), void *);
+> Also you can get the code from:
+> https://github.com/yangdongsheng/linux.git  ubifs_quota_v1
+> 
+> 	My simple testing is shown as below:
+> [root@atest-guest linux_compile]# mount -t ubifs -o usrquota,grpquota /dev/ubi0_0 /mnt/ubifs/
+> [root@atest-guest linux_compile]# quotacheck -ug /mnt/ubifs
+> [root@atest-guest linux_compile]# quotaon /mnt/ubifs
+> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+> *** Report for user quotas on device /dev/ubi0_0
+> Block grace time: 7days; Inode grace time: 7days
+>                         Block limits                File limits
+> User            used    soft    hard  grace    used  soft  hard  grace
+> ----------------------------------------------------------------------
+> root      --       0       0       0              1     0     0 
+> [root@atest-guest linux_compile]# setquota root 10 10 3 3 /mnt/ubifs
+> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+> *** Report for user quotas on device /dev/ubi0_0
+> Block grace time: 7days; Inode grace time: 7days
+>                         Block limits                File limits
+> User            used    soft    hard  grace    used  soft  hard  grace
+> ----------------------------------------------------------------------
+> root      --       0      10      10              1     3     3 
+> [root@atest-guest linux_compile]# touch /mnt/ubifs/{1,11,111}
+> ubifs: warning, user file quota exceeded.
+> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+> *** Report for user quotas on device /dev/ubi0_0
+> Block grace time: 7days; Inode grace time: 7days
+>                         Block limits                File limits
+> User            used    soft    hard  grace    used  soft  hard  grace
+> ----------------------------------------------------------------------
+> root      -+       0      10      10              4     3     3  7days
+> [root@atest-guest linux_compile]# rm -rf /mnt/ubifs/1*
+> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+> *** Report for user quotas on device /dev/ubi0_0
+> Block grace time: 7days; Inode grace time: 7days
+>                         Block limits                File limits
+> User            used    soft    hard  grace    used  soft  hard  grace
+> ----------------------------------------------------------------------
+> root      --       0      10      10              1     3     3    
+> [root@atest-guest linux_compile]# dd if=/dev/urandom of=/mnt/ubifs/data bs=1K count=11
+> ubifs: warning, user block quota exceeded.
+> 11+0 records in
+> 11+0 records out
+> 11264 bytes (11 kB) copied, 0.216498 s, 52.0 kB/s
+> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+> *** Report for user quotas on device /dev/ubi0_0
+> Block grace time: 7days; Inode grace time: 7days
+>                         Block limits                File limits
+> User            used    soft    hard  grace    used  soft  hard  grace
+> ----------------------------------------------------------------------
+> root      +-      11      10      10  7days       2     3     3   
+> [root@atest-guest linux_compile]# rm -rf /mnt/ubifs/data 
+> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+> *** Report for user quotas on device /dev/ubi0_0
+> Block grace time: 7days; Inode grace time: 7days
+>                         Block limits                File limits
+> User            used    soft    hard  grace    used  soft  hard  grace
+> ----------------------------------------------------------------------
+> root      --       0      10      10              1     3     3     
+> 
+> 
+> Dongsheng Yang (25):
+>   fs: introduce a ->s_cdev field into struct super_block
+>   ubi: introduce a interface to get cdev in ubi_volume
+>   ubifs: fill sb->s_cdev in ubifs_fill_super()
+>   fs: super: introduce the functions to get super by cdev reference
+>   fs: char_dev: introduce lookup_cdev function to find cdev by name
+>   fs: dquot: skip invalidate_bdev if bdev is NULL
+>   fs: quota: make quota support fs which is running on char dev
+>   ubifs: fix a typo in comment of ubifs_budget_req
+>   ubifs: extend budget for blocks
+>   ubifs: fill ->s_dev in ubifs_fill_super
+>   ubifs: export read_block() from file.c
+>   ubifs: introduce quota related mount options
+>   ubifs: introduce a field named as budgeted to ubifs_inode
+>   ubifs: implement IO functions for quota files
+>   ubifs: disable quota in ubifs_put_super
+>   ubifs: write quota back in ubifs_sync
+>   ubifs: suspend & resume quota properly in ubifs_remount
+>   ubifs: record quota information about inode in ubifs_new_inode
+>   ubifs: free quota inode information in ubifs_evict_inode
+>   ubifs: alloc quota space in ubifs_write_begin
+>   ubifs: free quota space in do_truncation and unlink
+>   ubifs: adapt quota space informatin in do_setattr
+>   ubifs: transfer quota information in changing owner or group
+>   ubifs: implement ubifs_qctl_operations for quotactl
+>   ubifs: make ubifs to support quota
+> 
+>  drivers/mtd/ubi/kapi.c  |   6 +
+>  fs/char_dev.c           |  72 ++++++++++
+>  fs/quota/dquot.c        |   3 +-
+>  fs/quota/quota.c        |  30 +++--
+>  fs/super.c              |  45 +++++++
+>  fs/ubifs/budget.c       |   4 +
+>  fs/ubifs/debug.c        |   2 +
+>  fs/ubifs/dir.c          |  24 +++-
+>  fs/ubifs/file.c         |  56 +++++++-
+>  fs/ubifs/ioctl.c        |   1 +
+>  fs/ubifs/super.c        | 352 +++++++++++++++++++++++++++++++++++++++++++++++-
+>  fs/ubifs/ubifs.h        |  19 ++-
+>  include/linux/fs.h      |   5 +
+>  include/linux/mtd/ubi.h |   1 +
+>  14 files changed, 597 insertions(+), 23 deletions(-)
+> 
 > -- 
 > 1.8.4.2
 > 
