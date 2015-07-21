@@ -1,17 +1,16 @@
-Received: from mail-by2on0102.outbound.protection.outlook.com
- ([207.46.100.102] helo=na01-by2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHUid-0007yT-Er
- for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 10:24:16 +0000
-From: Zhiqiang Hou <B48286@freescale.com>
-To: <linux-mtd@lists.infradead.org>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>
-CC: <b21284@freescale.com>, Hou Zhiqiang <B48286@freescale.com>
-Subject: [PATCH] mtd: m25p80: Add Power Management support
-Date: Tue, 21 Jul 2015 18:18:53 +0800
-Message-ID: <1437473933-11983-1-git-send-email-B48286@freescale.com>
+Message-ID: <55AE1F3E.1000705@huawei.com>
+Date: Tue, 21 Jul 2015 18:30:22 +0800
+From: chenjie <chenjie6@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: Brian Norris <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ "zhihui.gao@huawei.com" <zhihui.gao@huawei.com>, Al Viro
+ <viro@zeniv.linux.org.uk>
+Subject: Re: The patch  e72e6497e74811e01d72b4c1b7537b3aea3ee857 have a bug
+References: <5562F56B.3050900@huawei.com> <20150720180218.GG24125@google.com>
+In-Reply-To: <20150720180218.GG24125@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +20,281 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hou Zhiqiang <B48286@freescale.com>
 
-Add the rescanning and initialization of SPI flash, to make the SPI
-flash in the correct state. Because if the Power Management system
-truns off power supply for SPI flash when system suspending, the SPI
-flash will return to the reset state after system resume.
+Hi Brian Norris:
 
-Signed-off-by: Hou Zhiqiang <B48286@freescale.com>
+	Thank you for your reply.
+	
+	we test the latest jffs2 code with kernel-4.1. The Capacity
+of jffs2 is 2M, very small (to trigger this situation) and create,
+write, and rm always.
+	
+	Usually  after 3 hours this will be occured. when deleted the patch
+it is normal for 3 days. we test it more than 10 times.
+
+	I had Submitted a patch
+
+>From 1ce0fd5dd154cb10a440a67bb9233e29a943ac22 Mon Sep 17 00:00:00 2001
+From: chenjie <chenjie6@huawei.com>
+Date: Wed, 26 Nov 2014 18:46:06 +0800
+Subject: [PATCH] jffs2: bug fix of creating node when gc or find space
+
+Creat node by insert_inode_locked, write dnode successfully but dirent
+not writed ,so the gc or jffs2_reserve_space may read the block which dnode
+writed, the dnode can not been readed because it was created unfinished.
+
+lockf2.test     D c02dead8     0 11666      1 0x00000001
+locked:
+c90f9be8   &inode->i_mutex  0  [<c00bf158>] generic_file_aio_write+0x40/0xb0	
+c2c54c44   &c->alloc_sem    1  [<bf056f9c>] jffs2_garbage_collect_pass+0x1c/0xf08 [jffs2]	
+[<c02dead8>] (__schedule+0x458/0x604) from [<c0114090>] (inode_wait+0x8/0x10)
+[<c0114090>] (inode_wait+0x8/0x10) from [<c02dd050>] (__wait_on_bit+0x54/0xa0)
+[<c02dd050>] (__wait_on_bit+0x54/0xa0) from [<c02dd114>] (out_of_line_wait_on_bit+0x78/0x84)
+[<c02dd114>] (out_of_line_wait_on_bit+0x78/0x84) from [<c01157a0>] (iget_locked+0x90/0x1b0)
+[<c01157a0>] (iget_locked+0x90/0x1b0) from [<bf059fe8>] (jffs2_iget+0xc/0x344 [jffs2])
+[<bf059fe8>] (jffs2_iget+0xc/0x344 [jffs2]) from [<bf05a6fc>] (jffs2_gc_fetch_inode+0x104/0x158 [jffs2])
+[<bf05a6fc>] (jffs2_gc_fetch_inode+0x104/0x158 [jffs2]) from [<bf0577f0>] (jffs2_garbage_collect_pass+0x870/0xf08 [jffs2])
+[<bf0577f0>] (jffs2_garbage_collect_pass+0x870/0xf08 [jffs2]) from [<bf051248>] (jffs2_reserve_space+0x154/0x3b4 [jffs2])
+[<bf051248>] (jffs2_reserve_space+0x154/0x3b4 [jffs2]) from [<bf053eac>] (jffs2_write_inode_range+0x58/0x3ac [jffs2])
+[<bf053eac>] (jffs2_write_inode_range+0x58/0x3ac [jffs2]) from [<bf04ec20>] (jffs2_write_end+0x11c/0x224 [jffs2])
+[<bf04ec20>] (jffs2_write_end+0x11c/0x224 [jffs2]) from [<c00bdfa4>] (generic_file_buffered_write+0x160/0x23c)
+[<c00bdfa4>] (generic_file_buffered_write+0x160/0x23c) from [<c00bf0ac>] (__generic_file_aio_write+0x328/0x394)
+[<c00bf0ac>] (__generic_file_aio_write+0x328/0x394) from [<c00bf16c>] (generic_file_aio_write+0x54/0xb0)
+[<c00bf16c>] (generic_file_aio_write+0x54/0xb0) from [<c00fdc24>] (do_sync_write+0x74/0x98)
+[<c00fdc24>] (do_sync_write+0x74/0x98) from [<c00fe550>] (vfs_write+0xcc/0x174)
+[<c00fe550>] (vfs_write+0xcc/0x174) from [<c00fe8a8>] (SyS_write+0x38/0x64)
+[<c00fe8a8>] (SyS_write+0x38/0x64) from [<c000f0c0>] (ret_fast_syscall+0x0/0x58)
+
+Fixes:e72e6497e74811e01d72b4c1b7537b3aea3ee857
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Chen Jie <chenjie6@huawei.com>
 ---
- drivers/mtd/devices/m25p80.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ fs/jffs2/dir.c      |  4 ++++
+ fs/jffs2/gc.c       | 10 ++++++++++
+ fs/jffs2/nodelist.c |  9 +++++++++
+ fs/jffs2/nodelist.h |  6 ++++++
+ fs/jffs2/write.c    |  1 +
+ 5 files changed, 30 insertions(+)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index d313f948b..f9d2b2e 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -248,6 +248,39 @@ static int m25p_remove(struct spi_device *spi)
- 	return mtd_device_unregister(&flash->mtd);
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index 9385560..176bc94 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -208,6 +208,7 @@ static int jffs2_create(struct inode *dir_i, struct dentry *dentry,
+ 		  f->inocache->pino_nlink, inode->i_mapping->nrpages);
+
+ 	unlock_new_inode(inode);
++	jffs2_set_inocache_state_new(c, f->inocache, INO_STATE_N_NEW);
+ 	d_instantiate(dentry, inode);
+ 	return 0;
+
+@@ -428,6 +429,7 @@ static int jffs2_symlink (struct inode *dir_i, struct dentry *dentry, const char
+ 	jffs2_complete_reservation(c);
+
+ 	unlock_new_inode(inode);
++	jffs2_set_inocache_state_new(c, f->inocache, INO_STATE_N_NEW);
+ 	d_instantiate(dentry, inode);
+ 	return 0;
+
+@@ -573,6 +575,7 @@ static int jffs2_mkdir (struct inode *dir_i, struct dentry *dentry, umode_t mode
+ 	jffs2_complete_reservation(c);
+
+ 	unlock_new_inode(inode);
++	jffs2_set_inocache_state_new(c, f->inocache, INO_STATE_N_NEW);
+ 	d_instantiate(dentry, inode);
+ 	return 0;
+
+@@ -748,6 +751,7 @@ static int jffs2_mknod (struct inode *dir_i, struct dentry *dentry, umode_t mode
+ 	jffs2_complete_reservation(c);
+
+ 	unlock_new_inode(inode);
++	jffs2_set_inocache_state_new(c, f->inocache, INO_STATE_N_NEW);
+ 	d_instantiate(dentry, inode);
+ 	return 0;
+
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 5a2dec2..e7e8c09 100644
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -333,6 +333,16 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
+ 		  __func__, jeb->offset, ref_offset(raw), ref_flags(raw),
+ 		  ic->ino);
+
++	/*create but not finished so find next block*/
++	if (ic->state_new == INO_STATE_I_NEW) {
++		jffs2_dbg(1, "%s(): ino #%u in state new so find next block\n",
++			  __func__, ic->ino);
++		c->gcblock = NULL;
++		mutex_unlock(&c->alloc_sem);
++		spin_unlock(&c->inocache_lock);
++		return 0;
++	}
++
+ 	/* Three possibilities:
+ 	   1. Inode is already in-core. We must iget it and do proper
+ 	      updating to its fragtree, etc.
+diff --git a/fs/jffs2/nodelist.c b/fs/jffs2/nodelist.c
+index 9a5449b..9f469c4 100644
+--- a/fs/jffs2/nodelist.c
++++ b/fs/jffs2/nodelist.c
+@@ -413,6 +413,15 @@ void jffs2_set_inocache_state(struct jffs2_sb_info *c, struct jffs2_inode_cache
+ 	spin_unlock(&c->inocache_lock);
  }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int m25p_suspend(struct device *dev)
+
++void jffs2_set_inocache_state_new(struct jffs2_sb_info *c,
++					struct jffs2_inode_cache *ic, int state)
 +{
-+	return 0;
++	spin_lock(&c->inocache_lock);
++	ic->state_new = state;
++	wake_up(&c->inocache_wq);
++	spin_unlock(&c->inocache_lock);
 +}
 +
-+static int m25p_resume(struct device *dev)
-+{
-+	struct m25p *flash = dev_get_drvdata(dev);
-+	struct spi_device *spi = flash->spi;
-+	struct spi_nor *nor = &flash->spi_nor;
-+	enum read_mode mode = SPI_NOR_NORMAL;
-+	struct flash_platform_data *data;
-+	char *flash_name = NULL;
+ /* During mount, this needs no locking. During normal operation, its
+    callers want to do other stuff while still holding the inocache_lock.
+    Rather than introducing special case get_ino_cache functions or
+diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+index fa35ff7..ac2d8c8 100644
+--- a/fs/jffs2/nodelist.h
++++ b/fs/jffs2/nodelist.h
+@@ -180,6 +180,7 @@ struct jffs2_inode_cache {
+ 				   here; other inodes store nlink.
+ 				   Zero always means that it's
+ 				   completely unlinked. */
++	uint32_t state_new;	/*create flag*/
+ };
+
+ /* Inode states for 'state' above. We need the 'GC' state to prevent
+@@ -193,6 +194,9 @@ struct jffs2_inode_cache {
+ #define INO_STATE_READING	5	/* In read_inode() */
+ #define INO_STATE_CLEARING	6	/* In clear_inode() */
+
++#define INO_STATE_I_NEW		0	/* Just create but not finish*/
++#define INO_STATE_N_NEW		1	/* finished*/
 +
-+	if (spi->mode & SPI_RX_QUAD)
-+		mode = SPI_NOR_QUAD;
-+	else if (spi->mode & SPI_RX_DUAL)
-+		mode = SPI_NOR_DUAL;
-+
-+	data = dev_get_platdata(&spi->dev);
-+	if (data && data->type)
-+		flash_name = data->type;
-+	else if (!strcmp(spi->modalias, "spi-nor"))
-+		flash_name = NULL; /* auto-detect */
-+	else
-+		flash_name = spi->modalias;
-+
-+	return spi_nor_scan(nor, flash_name, mode);
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
- /*
-  * Do NOT add to this array without reading the following:
-  *
-@@ -302,6 +335,7 @@ static struct spi_driver m25p80_driver = {
- 	.driver = {
- 		.name	= "m25p80",
- 		.owner	= THIS_MODULE,
-+		.pm	= &m25p_pm_ops,
- 	},
- 	.id_table	= m25p_ids,
- 	.probe	= m25p_probe,
+ #define INO_FLAGS_XATTR_CHECKED	0x01	/* has no duplicate xattr_ref */
+
+ #define RAWNODE_CLASS_INODE_CACHE	0
+@@ -359,6 +363,8 @@ static inline struct jffs2_node_frag *frag_last(struct rb_root *root)
+ /* nodelist.c */
+ void jffs2_add_fd_to_list(struct jffs2_sb_info *c, struct jffs2_full_dirent *new, struct jffs2_full_dirent **list);
+ void jffs2_set_inocache_state(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic, int state);
++void jffs2_set_inocache_state_new(struct jffs2_sb_info *c,
++				struct jffs2_inode_cache *ic, int state);
+ struct jffs2_inode_cache *jffs2_get_ino_cache(struct jffs2_sb_info *c, uint32_t ino);
+ void jffs2_add_ino_cache (struct jffs2_sb_info *c, struct jffs2_inode_cache *new);
+ void jffs2_del_ino_cache(struct jffs2_sb_info *c, struct jffs2_inode_cache *old);
+diff --git a/fs/jffs2/write.c b/fs/jffs2/write.c
+index b634de4..dc8242d 100644
+--- a/fs/jffs2/write.c
++++ b/fs/jffs2/write.c
+@@ -36,6 +36,7 @@ int jffs2_do_new_inode(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+ 	f->inocache->pino_nlink = 1; /* Will be overwritten shortly for directories */
+ 	f->inocache->nodes = (struct jffs2_raw_node_ref *)f->inocache;
+ 	f->inocache->state = INO_STATE_PRESENT;
++	f->inocache->state_new = INO_STATE_I_NEW;
+
+ 	jffs2_add_ino_cache(c, f->inocache);
+ 	jffs2_dbg(1, "%s(): Assigned ino# %d\n", __func__, f->inocache->ino);
 -- 
-2.1.0.27.g96db324
+1.8.0
+
+
+but this have a bug
+
++	/*create but not finished so find next block*/
++	if (ic->state_new == INO_STATE_I_NEW) {
++		jffs2_dbg(1, "%s(): ino #%u in state new so find next block\n",
++			  __func__, ic->ino);
++		c->gcblock = NULL;
++		mutex_unlock(&c->alloc_sem);
++		spin_unlock(&c->inocache_lock);
++		return 0;
++	}
++
+should be
+
++	/*create but not finished so find next block*/
++	if (ic->state_new == INO_STATE_I_NEW) {
++		jffs2_dbg(1, "%s(): ino #%u in state new so find next block\n",
++			  __func__, ic->ino);
++		c->gcblock = NULL;
+		list_add_tail(&jeb->list, &c->dirty_list);
++		mutex_unlock(&c->alloc_sem);
++		spin_unlock(&c->inocache_lock);
++		return 0;
++	}
++
+
+In flash file system this patch e72e6497e74811e01d72b4c1b7537b3aea3ee857 is not
+suitable. This patch(e72e6497e) is not in ubifs .
+
+	
+
+
+
+
+
+
+
+
+
+On 2015/7/21 2:02, Brian Norris wrote:
+> Hi chenji,
+> 
+> I just noticed this old report. Not sure I can be much direct help at
+> the moment, but this looks interesting.
+> 
+> (And ping, David!)
+> 
+> On Mon, May 25, 2015 at 06:11:55PM +0800, chenjie wrote:
+>> e72e6497e74811e01d72b4c1b7537b3aea3ee857:
+>>
+>> +	if (insert_inode_locked(inode) < 0) {
+>> +		make_bad_inode(inode);
+>> +		unlock_new_inode(inode);
+>> +		iput(inode);
+>> +		return ERR_PTR(-EINVAL);
+>> +	}
+> 
+> What makes you suspect the above commit? Just by code inspection?
+> Bisection? I haven't followed through the code logic yet, I just want to
+> see your thought process.
+> 
+>>
+>>
+>> Creat node by insert_inode_locked, write dnode successfully but dirent
+>> not writed ,so the gc or jffs2_reserve_space may read the block which dnode
+>> writed, the dnode can not been readed because it was created unfinished.
+>>
+>> lockf2.test     D c02dead8     0 11666      1 0x00000001
+>> locked:
+>> c90f9be8   &inode->i_mutex  0  [<c00bf158>] generic_file_aio_write+0x40/0xb0	
+>> c2c54c44   &c->alloc_sem    1  [<bf056f9c>] jffs2_garbage_collect_pass+0x1c/0xf08 [jffs2]	
+>> [<c02dead8>] (__schedule+0x458/0x604) from [<c0114090>] (inode_wait+0x8/0x10)
+>> [<c0114090>] (inode_wait+0x8/0x10) from [<c02dd050>] (__wait_on_bit+0x54/0xa0)
+>> [<c02dd050>] (__wait_on_bit+0x54/0xa0) from [<c02dd114>] (out_of_line_wait_on_bit+0x78/0x84)
+>> [<c02dd114>] (out_of_line_wait_on_bit+0x78/0x84) from [<c01157a0>] (iget_locked+0x90/0x1b0)
+>> [<c01157a0>] (iget_locked+0x90/0x1b0) from [<bf059fe8>] (jffs2_iget+0xc/0x344 [jffs2])
+>> [<bf059fe8>] (jffs2_iget+0xc/0x344 [jffs2]) from [<bf05a6fc>] (jffs2_gc_fetch_inode+0x104/0x158 [jffs2])
+>> [<bf05a6fc>] (jffs2_gc_fetch_inode+0x104/0x158 [jffs2]) from [<bf0577f0>] (jffs2_garbage_collect_pass+0x870/0xf08 [jffs2])
+>> [<bf0577f0>] (jffs2_garbage_collect_pass+0x870/0xf08 [jffs2]) from [<bf051248>] (jffs2_reserve_space+0x154/0x3b4 [jffs2])
+>> [<bf051248>] (jffs2_reserve_space+0x154/0x3b4 [jffs2]) from [<bf053eac>] (jffs2_write_inode_range+0x58/0x3ac [jffs2])
+>> [<bf053eac>] (jffs2_write_inode_range+0x58/0x3ac [jffs2]) from [<bf04ec20>] (jffs2_write_end+0x11c/0x224 [jffs2])
+>> [<bf04ec20>] (jffs2_write_end+0x11c/0x224 [jffs2]) from [<c00bdfa4>] (generic_file_buffered_write+0x160/0x23c)
+>> [<c00bdfa4>] (generic_file_buffered_write+0x160/0x23c) from [<c00bf0ac>] (__generic_file_aio_write+0x328/0x394)
+>> [<c00bf0ac>] (__generic_file_aio_write+0x328/0x394) from [<c00bf16c>] (generic_file_aio_write+0x54/0xb0)
+>> [<c00bf16c>] (generic_file_aio_write+0x54/0xb0) from [<c00fdc24>] (do_sync_write+0x74/0x98)
+>> [<c00fdc24>] (do_sync_write+0x74/0x98) from [<c00fe550>] (vfs_write+0xcc/0x174)
+>> [<c00fe550>] (vfs_write+0xcc/0x174) from [<c00fe8a8>] (SyS_write+0x38/0x64)
+>> [<c00fe8a8>] (SyS_write+0x38/0x64) from [<c000f0c0>] (ret_fast_syscall+0x0/0x58)
+>>
+>>
+>> please give me some advise,thank you.
+> 
+> Have you retested on the latest kernel? Or, what kernel are you testing?
+> 
+> Brian
+> 
+> .
+> 
