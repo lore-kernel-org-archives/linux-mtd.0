@@ -1,15 +1,17 @@
 Received: from mail-by2on0116.outbound.protection.outlook.com
  ([207.46.100.116] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHeU6-00046A-5O
+ id 1ZHeU7-00046A-9I
  for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 20:49:55 +0000
 From: <Frank.Li@freescale.com>
 To: <linux-mtd@lists.infradead.org>, <b45815@freescale.com>,
  <computersforpeace@gmail.com>, <lznuaa@gmail.com>
-Subject: [PATCH 1/7] mtd: spi-nor: fsl-quadspi: use quirk to distinguish
- different qspi version
-Date: Wed, 22 Jul 2015 03:39:53 +0800
-Message-ID: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
+CC: Frank Li <Frank.Li@freescale.com>
+Subject: [PATCH 2/7] mtd: spi-nor: fsl-quadspi: add imx7d support
+Date: Wed, 22 Jul 2015 03:39:54 +0800
+Message-ID: <1437507599-25424-2-git-send-email-Frank.Li@freescale.com>
+In-Reply-To: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
+References: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,93 +23,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Han Xu <b45815@freescale.com>
+From: Frank Li <Frank.Li@freescale.com>
 
-add several quirk to distinguish different version of qspi module.
+Support i.mx7d.
+quadspi in i.mx7d increase rxfifo.
+require fill at least 16byte to trigger data transfer.
 
+Signed-off-by: Frank Li <Frank.Li@freescale.com>
 Signed-off-by: Han Xu <b45815@freescale.com>
 ---
- drivers/mtd/spi-nor/fsl-quadspi.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index e854004..258bebf 100644
+index 258bebf..9c3e38d 100644
 --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -28,6 +28,11 @@
- #include <linux/mtd/spi-nor.h>
- #include <linux/mutex.h>
+@@ -32,6 +32,11 @@
+ #define QUADSPI_QUIRK_SWAP_ENDIAN	(1 << 0)
+ /* Controller needs 4x internal clock */
+ #define QUADSPI_QUIRK_4X_INT_CLK	(1 << 1)
++/*
++ * TKT253890, Controller needs driver to fill txfifo till 16 byte to
++ * trigger data transfer even though extern data will not transferred.
++ */
++#define QUADSPI_QUIRK_TKT253890		(1 << 2)
  
-+/* Controller needs driver to swap endian */
-+#define QUADSPI_QUIRK_SWAP_ENDIAN	(1 << 0)
-+/* Controller needs 4x internal clock */
-+#define QUADSPI_QUIRK_4X_INT_CLK	(1 << 1)
-+
  /* The registers */
  #define QUADSPI_MCR			0x00
- #define QUADSPI_MCR_RESERVED_SHIFT	16
-@@ -202,20 +207,23 @@ struct fsl_qspi_devtype_data {
- 	int rxfifo;
- 	int txfifo;
- 	int ahb_buf_size;
-+	int driver_data;
+@@ -200,6 +205,7 @@
+ enum fsl_qspi_devtype {
+ 	FSL_QUADSPI_VYBRID,
+ 	FSL_QUADSPI_IMX6SX,
++	FSL_QUADSPI_IMX7D,
  };
  
- static struct fsl_qspi_devtype_data vybrid_data = {
- 	.devtype = FSL_QUADSPI_VYBRID,
- 	.rxfifo = 128,
- 	.txfifo = 64,
--	.ahb_buf_size = 1024
+ struct fsl_qspi_devtype_data {
+@@ -226,6 +232,15 @@ static struct fsl_qspi_devtype_data imx6sx_data = {
+ 	.driver_data = QUADSPI_QUIRK_4X_INT_CLK
+ };
+ 
++static struct fsl_qspi_devtype_data imx7d_data = {
++	.devtype = FSL_QUADSPI_IMX7D,
++	.rxfifo = 512,
++	.txfifo = 512,
 +	.ahb_buf_size = 1024,
-+	.driver_data = QUADSPI_QUIRK_SWAP_ENDIAN
- };
- 
- static struct fsl_qspi_devtype_data imx6sx_data = {
- 	.devtype = FSL_QUADSPI_IMX6SX,
- 	.rxfifo = 128,
- 	.txfifo = 512,
--	.ahb_buf_size = 1024
-+	.ahb_buf_size = 1024,
-+	.driver_data = QUADSPI_QUIRK_4X_INT_CLK
- };
- 
++	.driver_data = QUADSPI_QUIRK_TKT253890
++		       | QUADSPI_QUIRK_4X_INT_CLK
++};
++
  #define FSL_QSPI_MAX_CHIP	4
-@@ -239,14 +247,14 @@ struct fsl_qspi {
- 	struct mutex lock;
- };
- 
--static inline int is_vybrid_qspi(struct fsl_qspi *q)
-+static inline int needs_swap_endian(struct fsl_qspi *q)
- {
--	return q->devtype_data->devtype == FSL_QUADSPI_VYBRID;
-+	return q->devtype_data->driver_data & QUADSPI_QUIRK_SWAP_ENDIAN;
+ struct fsl_qspi {
+ 	struct mtd_info mtd[FSL_QSPI_MAX_CHIP];
+@@ -257,6 +272,11 @@ static inline int needs_4x_clock(struct fsl_qspi *q)
+ 	return q->devtype_data->driver_data & QUADSPI_QUIRK_4X_INT_CLK;
  }
  
--static inline int is_imx6sx_qspi(struct fsl_qspi *q)
-+static inline int needs_4x_clock(struct fsl_qspi *q)
- {
--	return q->devtype_data->devtype == FSL_QUADSPI_IMX6SX;
-+	return q->devtype_data->driver_data & QUADSPI_QUIRK_4X_INT_CLK;
- }
- 
++static inline int needs_fill_txfifo(struct fsl_qspi *q)
++{
++	return q->devtype_data->driver_data & QUADSPI_QUIRK_TKT253890;
++}
++
  /*
-@@ -255,7 +263,7 @@ static inline int is_imx6sx_qspi(struct fsl_qspi *q)
-  */
- static inline u32 fsl_qspi_endian_xchg(struct fsl_qspi *q, u32 a)
- {
--	return is_vybrid_qspi(q) ? __swab32(a) : a;
-+	return needs_swap_endian(q) ? __swab32(a) : a;
- }
+  * An IC bug makes us to re-arrange the 32-bit data.
+  * The following chips, such as IMX6SLX, have fixed this bug.
+@@ -558,6 +578,11 @@ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+ 		txbuf++;
+ 	}
  
- static inline void fsl_qspi_unlock_lut(struct fsl_qspi *q)
-@@ -650,7 +658,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
- 	unsigned long rate = q->clk_rate;
- 	int ret;
++	/* fill the TXFIFO upto 16 bytes for i.MX7d */
++	if (needs_fill_txfifo(q))
++		for (; i < 4; i++)
++			writel(tmp, q->iobase + QUADSPI_TBDR);
++
+ 	/* Trigger it */
+ 	ret = fsl_qspi_runcmd(q, opcode, to, count);
  
--	if (is_imx6sx_qspi(q))
-+	if (needs_4x_clock(q))
- 		rate *= 4;
- 
- 	ret = clk_set_rate(q->clk, rate);
+@@ -677,6 +702,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
+ static const struct of_device_id fsl_qspi_dt_ids[] = {
+ 	{ .compatible = "fsl,vf610-qspi", .data = (void *)&vybrid_data, },
+ 	{ .compatible = "fsl,imx6sx-qspi", .data = (void *)&imx6sx_data, },
++	{ .compatible = "fsl,imx7d-qspi", .data = (void *)&imx7d_data, },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
 -- 
 1.9.1
