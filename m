@@ -1,26 +1,42 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHQpn-0003zI-KR
- for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 06:15:24 +0000
-Message-ID: <55ADE35F.6050808@nod.at>
-Date: Tue, 21 Jul 2015 08:14:55 +0200
-From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Bhuvanchandra DV <bhuvanchandradv@gmail.com>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS errors when file-system is full
-References: <55A3C342.9010704@gmail.com>
- <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
- <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
- <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
- <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
- <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
- <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
- <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
- <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
-In-Reply-To: <55ADE0F1.9090809@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150721042932.GF23525@localhost>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <20150604171547.GA1530@localhost.localdomain>
+ <CAOMqctSCL9E-kCBryeaMvtssSP12RY=kyfPuwSYx9wc=Lv9kGQ@mail.gmail.com>
+ <201507151352.27689.marex@denx.de> <20150715155946.GB21362@localhost>
+ <CAOMqctTJEg7EauKfrqW-6rUQ-QOmtkTfkgOyz0rCuyh_-XrW5w@mail.gmail.com>
+ <20150721042932.GF23525@localhost>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Tue, 21 Jul 2015 10:14:11 +0200
+Message-ID: <CAOMqctSzzUV1J8Vj03XJ3Y70R9ynVErP4RZVtbjarDcZ9JLnaw@mail.gmail.com>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, Rob Herring <robh+dt@kernel.org>,
+ Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>, dmaengine <dmaengine@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,31 +46,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Hello,
 
-Am 21.07.2015 um 08:04 schrieb Bhuvanchandra DV:
-> Ran the power cut tests with fm_debug enabled, no additional logs are observed.
-> After few hundred power cuts U-Boot fails to mount with -22 and kernel fails
-> mounting with stack trace when reading the node.
+On 21 July 2015 at 06:29, Vinod Koul <vinod.koul@intel.com> wrote:
+> On Sun, Jul 19, 2015 at 09:01:34PM +0200, Michal Suchanek wrote:
+>> Hello,
+>>
+>> On 15 July 2015 at 17:59, Brian Norris <computersforpeace@gmail.com> wrote:
+>> > Hi Michal,
+>> >
+>> > On Wed, Jul 15, 2015 at 01:52:27PM +0200, Marek Vasut wrote:
+>> >> The problem is, if you add a new DT binding, you'd have to support it
+>> >> forever, no matter how bad idea that binding turned out to be.
+>> >
+>> > Agreed, and a solid NAK to this patch. I could have sworn I gave such a
+>> > response when this was originally being discussed a month ago.
+>> >
+>> > AFAICT, you have one of two general approaches available to you:
+>> >
+>> > 1. Fix up the SPI driver so that it knows how to break large SPI
+>> > transfers up into smaller segments that its constituent hardware (DMA
+>> > controllers, fast clocks, etc.) can handle.
+>> >
+>> > 2. Utilize/create a parameter within the SPI subsystem to communicate
+>> > that the SPI master has a limited max transfer size (notably: NOT a
+>> > per-device DT property, but a SPI API property), and modify SPI device
+>> > drivers (like m25p80) to honor it. Mark Brown seemed open to this, and I
+>> > thought he suggested it somewhere.
+>>
+>> It is not known what exactly is limited here.
+>>
+>> It seems that the pl330 fails but it is not possible to transfer that
+>> much data over the spi bus in one go without the help of the pl330.
+>>
+>> With either approach the limit depends on the SPI transfer settings
+>> which are known the the SPI driver. The pl330 driver is oblivious to
+>> these because it just transfers data from one port to another port and
+>> has no idea that the port is wired to SPI in the SoC.
+>>
+>> On the other hand, AFAICT the SPI driver only allocates a DMA channel
+>> which it receives through DT binding and is oblivious to the fact the
+>> DMA channel lives on a pl330. It could probably determine that the
+>> channel is indeed driven by a pl330. I don't think it's a great idea
+>> to add device-specific handling to a generic dmaengine driver or a
+>> dmaengine-spiecific handling to a SPI driver.
+>>
+>> It's technically possible to pass SPI transfer parameters to the
+>> dmaengine driver prior to transfer and the dmaengine could impose some
+>> limitation based on those parameters. However, generalising this to
+>> drivers other than SPI might be problematic. Should this interface
+>> also handle i2c parameters, VE parameters, audio parameters, ethernet
+>> parameters, etc?
+> Or alternatively we could publish the limitations of the channel using
+> capabilities so SPI knows I have a dmaengine channel and it can transfer max N
+> length transfers so would be able to break rather than guessing it or coding
+> in DT. Yes it may come from DT but that should be dmaengine driver rather
+> than client driver :)
+>
+> This can be done by dma_get_slave_caps(chan, &caps)
+>
+> And we add max_length as one more parameter to existing set
+>
+> Also all this could be handled in generic SPI-dmaengine layer so that
+> individual drivers don't have to code it in
+>
+> Let me know if this idea is okay, I can push the dmaengine bits...
+>
 
-Why U-Boot? Has U-Boot fastmap enabled?
+It would be ok if there was a fixed limit. However, the limit depends
+on SPI slave settings. Presumably for other buses using the dmaengine
+the limit would depend on the bus or slave settings as well. I do not
+see a sane way of passing this all the way to the dmaengine driver.
 
-Anyway, we need to sort out what is going on.
-As fm_debug does not trigger it could also be a non-fastmap issue.
-Did you try your test without fastmap being enabled?
+Thanks
 
-Does your target pass UBI tests too?
-
-> Log:
-[...]
-> [    2.847326] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type (255 but expected 3)
-> [    2.866839] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at LEB 981:70368, LEB mapping status 1
-> [    2.887961] Not a node, first 24 bytes:
-> [    2.891864] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff                          ........................
-
-Hmm, LEB1 is unmapped.
-If you disable fastmap, does this target boot as expected?
-Or is this a persistent corruption?
-
-Thanks,
-//richard
+Michal
