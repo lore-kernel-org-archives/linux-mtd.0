@@ -1,16 +1,15 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHT9k-0002qt-JD
- for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 08:44:10 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>, <jack@suse.com>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 24/25] ubifs: implement ubifs_qctl_operations for quotactl
-Date: Tue, 21 Jul 2015 16:37:55 +0800
-Message-ID: <1437467876-22106-25-git-send-email-yangds.fnst@cn.fujitsu.com>
-In-Reply-To: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-References: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Received: from mail-by2on0102.outbound.protection.outlook.com
+ ([207.46.100.102] helo=na01-by2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZHUid-0007yT-Er
+ for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 10:24:16 +0000
+From: Zhiqiang Hou <B48286@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>
+CC: <b21284@freescale.com>, Hou Zhiqiang <B48286@freescale.com>
+Subject: [PATCH] mtd: m25p80: Add Power Management support
+Date: Tue, 21 Jul 2015 18:18:53 +0800
+Message-ID: <1437473933-11983-1-git-send-email-B48286@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,82 +21,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To make ubifs support quota, we have to provide a qctl_operations
-to quotactl. But we can not use the default operations. The problem
-is quota_off function. We have to do a budget at first before
-disabling quota.
+From: Hou Zhiqiang <B48286@freescale.com>
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Add the rescanning and initialization of SPI flash, to make the SPI
+flash in the correct state. Because if the Power Management system
+truns off power supply for SPI flash when system suspending, the SPI
+flash will return to the reset state after system resume.
+
+Signed-off-by: Hou Zhiqiang <B48286@freescale.com>
 ---
- fs/ubifs/super.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ drivers/mtd/devices/m25p80.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 60deed2..00451b0 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2278,6 +2278,62 @@ static struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi)
- 	return c;
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index d313f948b..f9d2b2e 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -248,6 +248,39 @@ static int m25p_remove(struct spi_device *spi)
+ 	return mtd_device_unregister(&flash->mtd);
  }
  
-+#ifdef CONFIG_QUOTA
-+static int ubifs_quota_off(struct super_block *sb, int type)
++#ifdef CONFIG_PM_SLEEP
++static int m25p_suspend(struct device *dev)
 +{
-+	struct ubifs_budget_req req = {};
-+	struct ubifs_info *c = sb->s_fs_info;
-+	struct quota_info *dqopt = sb_dqopt(sb);
-+	struct inode *inodes[MAXQUOTAS] = {};
-+	struct inode *tmp = NULL;
-+	struct ubifs_inode *ui = NULL;
-+	int ret = 0;
-+	int cnt = 0;
-+
-+	if (type == -1) {
-+		for (cnt = 0; cnt < MAXQUOTAS; cnt++) {
-+			if (!sb_has_quota_loaded(sb, cnt))
-+				continue;
-+			req.dirtied_ino += 1;
-+			inodes[cnt] = dqopt->files[cnt];
-+		}
-+	} else {
-+		if (sb_has_quota_loaded(sb, type)) {
-+			req.dirtied_ino = 1;
-+			inodes[cnt] = dqopt->files[type];
-+		}
-+	}
-+
-+	if (req.dirtied_ino) {
-+		ret = ubifs_budget_space(c, &req);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	for (cnt = 0; cnt < MAXQUOTAS; cnt++) {
-+		tmp = inodes[cnt];
-+		if (!tmp)
-+			break;
-+		ui = ubifs_inode(tmp);
-+		mutex_lock(&ui->ui_mutex);
-+		ui->budgeted = 1;
-+		mutex_unlock(&ui->ui_mutex);
-+	}
-+
-+	return dquot_disable(sb, type, DQUOT_USAGE_ENABLED | DQUOT_LIMITS_ENABLED);
++	return 0;
 +}
 +
-+static const struct quotactl_ops ubifs_qctl_operations = {
-+	.quota_on	= dquot_quota_on,
-+	.quota_off	= ubifs_quota_off,
-+	.quota_sync     = dquot_quota_sync,
-+	.get_state      = dquot_get_state,
-+	.set_info       = dquot_set_dqinfo,
-+	.get_dqblk      = dquot_get_dqblk,
-+	.set_dqblk      = dquot_set_dqblk
-+};
-+#endif
++static int m25p_resume(struct device *dev)
++{
++	struct m25p *flash = dev_get_drvdata(dev);
++	struct spi_device *spi = flash->spi;
++	struct spi_nor *nor = &flash->spi_nor;
++	enum read_mode mode = SPI_NOR_NORMAL;
++	struct flash_platform_data *data;
++	char *flash_name = NULL;
 +
- static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- {
- 	struct ubifs_info *c = sb->s_fs_info;
++	if (spi->mode & SPI_RX_QUAD)
++		mode = SPI_NOR_QUAD;
++	else if (spi->mode & SPI_RX_DUAL)
++		mode = SPI_NOR_DUAL;
++
++	data = dev_get_platdata(&spi->dev);
++	if (data && data->type)
++		flash_name = data->type;
++	else if (!strcmp(spi->modalias, "spi-nor"))
++		flash_name = NULL; /* auto-detect */
++	else
++		flash_name = spi->modalias;
++
++	return spi_nor_scan(nor, flash_name, mode);
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
+ /*
+  * Do NOT add to this array without reading the following:
+  *
+@@ -302,6 +335,7 @@ static struct spi_driver m25p80_driver = {
+ 	.driver = {
+ 		.name	= "m25p80",
+ 		.owner	= THIS_MODULE,
++		.pm	= &m25p_pm_ops,
+ 	},
+ 	.id_table	= m25p_ids,
+ 	.probe	= m25p_probe,
 -- 
-1.8.4.2
+2.1.0.27.g96db324
