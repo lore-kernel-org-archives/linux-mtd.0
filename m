@@ -1,35 +1,22 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHarR-0004k7-V5
- for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 16:57:46 +0000
-Received: by pdjr16 with SMTP id r16so125760638pdj.3
- for <linux-mtd@lists.infradead.org>; Tue, 21 Jul 2015 09:57:25 -0700 (PDT)
-Date: Tue, 21 Jul 2015 09:57:21 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <Pawel.Moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Stephen Warren <swarren@wwwdotorg.org>, Marek Vasut <marex@denx.de>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-spi <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH] Documentation: dt: mtd: replace "nor-jedec" binding with
- "jedec,spi-nor"
-Message-ID: <20150721165721.GJ24125@google.com>
-References: <1431624773-4165-1-git-send-email-computersforpeace@gmail.com>
- <20150515195541.GL11598@ld-irv-0074>
- <20150518104501.GD3551@leverpostej>
- <20150518183442.GR11598@ld-irv-0074>
- <CAMuHMdUCj2AXk_0mAgRfAStrveHPi=Rp2g-b177zO_ode8NaCw@mail.gmail.com>
- <20150519013415.GV11598@ld-irv-0074>
+ id 1ZHe7Z-0003RB-3H
+ for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 20:26:37 +0000
+Date: Tue, 21 Jul 2015 11:20:12 +0200
+From: Jan Kara <jack@suse.cz>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: dedekind1@gmail.com, richard.weinberger@gmail.com, jack@suse.com,
+ linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Al Viro <viro@ZenIV.linux.org.uk>
+Subject: Re: [PATCH 05/25] fs: char_dev: introduce lookup_cdev function to
+ find cdev by name
+Message-ID: <20150721092012.GG6533@quack.suse.cz>
+References: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1437467876-22106-6-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20150519013415.GV11598@ld-irv-0074>
+In-Reply-To: <1437467876-22106-6-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,100 +26,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 18, 2015 at 06:34:15PM -0700, Brian Norris wrote:
-> So how about the following patch? It seems like we'll need to be able to
-> ignore useless 'modalias' values in cases like this:
+On Tue 21-07-15 16:37:36, Dongsheng Yang wrote:
+> Function lookup_cdev works similar with lookup_bdev, we can get
+> a cdev instance by lookup_cdev with a parameter of dev name.
 > 
-> 	// modalias = "shinynewdevice"
-> 	compatible = "myvendor,shinynewdevice", "jedec,spi-nor";
+> This function will be used in quotactl to get a cdev by a dev name.
 > 
-> and also if somebody leaves off the entire shinynewdevice string:
-> 
-> 	// modalias = "spi-nor"
-> 	compatible = "jedec,spi-nor";
-> 
-> So we rework the spi-nor library to not reject "bad" names, and just
-> fall back to autodetection, and we add the .of_match_table to properly
-> catch all "jedec,spi-nor".
-> 
-> Signed-off-by: Brian Norris <computerfsorpeace@gmail.com>
-
-I realized this conversation ended in essentially an ack from Rafal,
-with no other comments. So I've pushed this (with some extra commentary)
-to l2-mtd.git. Holler if there are objections.
-
-Thanks,
-Brian
-
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 > ---
->  drivers/mtd/devices/m25p80.c  | 18 +++++++++++-------
->  drivers/mtd/spi-nor/spi-nor.c |  8 ++++----
->  2 files changed, 15 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 3af137f49ac9..30d608775f5a 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -223,8 +223,6 @@ static int m25p_probe(struct spi_device *spi)
->  	 */
->  	if (data && data->type)
->  		flash_name = data->type;
-> -	else if (!strcmp(spi->modalias, "spi-nor"))
-> -		flash_name = NULL; /* auto-detect */
->  	else
->  		flash_name = spi->modalias;
->  
-> @@ -301,19 +299,25 @@ static const struct spi_device_id m25p_ids[] = {
->  	{"w25q128"},	{"w25q256"},	{"cat25c11"},
->  	{"cat25c03"},	{"cat25c09"},	{"cat25c17"},	{"cat25128"},
->  
-> -	/*
-> -	 * Generic support for SPI NOR that can be identified by the JEDEC READ
-> -	 * ID opcode (0x9F). Use this, if possible.
-> -	 */
-> -	{"spi-nor"},
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(spi, m25p_ids);
->  
-> +static const struct of_device_id m25p_of_table[] = {
-> +	/*
-> +	 * Generic compatibility for SPI NOR that can be identified by the
-> +	 * JEDEC READ ID opcode (0x9F). Use this, if possible.
-> +	 */
-> +	{ .compatible = "jedec,spi-nor" },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, m25p_of_table);
+>  fs/char_dev.c      | 72 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/fs.h |  2 ++
+>  2 files changed, 74 insertions(+)
+
+Thanks for the patch.
+
+...
+> +struct cdev *lookup_cdev(const char *pathname)
+> +{
+> +	struct cdev *cdev;
+> +	struct inode *inode;
+> +	struct path path;
+> +	int error;
 > +
->  static struct spi_driver m25p80_driver = {
->  	.driver = {
->  		.name	= "m25p80",
->  		.owner	= THIS_MODULE,
-> +		.of_match_table = m25p_of_table,
->  	},
->  	.id_table	= m25p_ids,
->  	.probe	= m25p_probe,
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 14a5d2325dac..390d6fa0a53f 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1003,11 +1003,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  	if (ret)
->  		return ret;
->  
-> -	/* Try to auto-detect if chip name wasn't specified */
-> -	if (!name)
-> -		id = spi_nor_read_id(nor);
-> -	else
-> +	if (name)
->  		id = spi_nor_match_id(name);
-> +	/* Try to auto-detect if chip name wasn't specified or not found */
-> +	if (!id)
-> +		id = spi_nor_read_id(nor);
->  	if (IS_ERR_OR_NULL(id))
->  		return -ENOENT;
->  
-> -- 
-> 1.9.1
-> 
+> +	if (!pathname || !*pathname)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	error = kern_path(pathname, LOOKUP_FOLLOW, &path);
+> +	if (error)
+> +		return ERR_PTR(error);
+> +
+> +	inode = d_backing_inode(path.dentry);
+> +	error = -ENODEV;
+> +	if (!S_ISCHR(inode->i_mode))
+> +		goto fail;
+> +	error = -EACCES;
+> +	if (path.mnt->mnt_flags & MNT_NODEV)
+> +		goto fail;
+> +	error = -ENXIO;
+> +	cdev = cd_acquire(inode);
+> +	if (!cdev)
+> +		goto fail;
+> +out:
+> +	path_put(&path);
+> +	return cdev;
+> +fail:
+> +	cdev = ERR_PTR(error);
+> +	goto out;
+> +}
+
+Again I don't like the code duplication here. Can we have a common
+function lookup_dev() like:
+
+int lookup_dev(const char *pathname, struct cdev **cdevp,
+	       struct block_device **bdevp)
+{
+	struct inode *inode;
+	struct path path;
+	int error;
+
+	if (!pathname || !*pathname)
+		return -EINVAL;
+
+	error = kern_path(pathname, LOOKUP_FOLLOW, &path);
+	if (error)
+		return error;
+
+	inode = d_backing_inode(path.dentry);
+	error = -ENODEV;
+
+	if (!((S_ISCHR(inode->i_mode) && cdevp) ||
+	      (S_ISBLK(inode->i_mode) && bdevp)))
+		goto out;
+	error = -EACCES;
+	if (path.mnt->mnt_flags & MNT_NODEV)
+		goto out;
+	error = -ENXIO;
+	if (S_ISCHR(inode->i_mode)) {
+		struct cdev *cdev;
+
+		cdev = cd_acquire(inode);
+		if (!cdev)
+			goto out;
+		*cdevp = cdev;
+	} else {
+		struct block_device *bdev;
+
+		bdev = bd_acquire(inode);
+		if (!bdev)
+			goto out;
+		*bdevp = bdev;
+	}
+	error = 0;
+out:
+	path_put(&path);
+	return error;
+}
+
+It is then easy to wrap lookup_bdev() around it. I'm not too happy about
+the function prototype but I still think it's better than the duplication.
+Al? Also quota code can then easily use this lookup_dev() function instead
+of trying one device type and then another one...
+
+								Honza
+-- 
+Jan Kara <jack@suse.cz>
+SUSE Labs, CR
