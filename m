@@ -1,20 +1,17 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-by2on0107.outbound.protection.outlook.com
+ ([207.46.100.107] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHUtZ-0007Ql-18
- for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 10:35:33 +0000
-From: Archit Taneja <architt@codeaurora.org>
-To: linux-mtd@lists.infradead.org, dehrenberg@google.com, cernekee@gmail.com,
- computersforpeace@gmail.com
-Cc: linux-arm-msm@vger.kernel.org, agross@codeaurora.org,
- linux-kernel@vger.kernel.org, Archit Taneja <architt@codeaurora.org>,
- devicetree@vger.kernel.org
-Subject: [PATCH v2 5/5] arm: qcom: dts: Enale NAND node on IPQ8064 AP148
- platform
-Date: Tue, 21 Jul 2015 16:04:46 +0530
-Message-Id: <1437474886-6209-6-git-send-email-architt@codeaurora.org>
-In-Reply-To: <1437474886-6209-1-git-send-email-architt@codeaurora.org>
-References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
- <1437474886-6209-1-git-send-email-architt@codeaurora.org>
+ id 1ZHWFd-0003jA-SM
+ for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 12:02:26 +0000
+From: Zhiqiang Hou <B48286@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>
+CC: <b21284@freescale.com>, Hou Zhiqiang <B48286@freescale.com>
+Subject: [PATCH] RFC: mtd/spi-nor: add checking for the spi_nor_read
+Date: Tue, 21 Jul 2015 19:57:08 +0800
+Message-ID: <1437479828-30826-1-git-send-email-B48286@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +21,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable the NAND controller node on the AP148 platform. Provide pinmux
-information.
+From: Hou Zhiqiang <B48286@freescale.com>
 
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Archit Taneja <architt@codeaurora.org>
+Compare the var retlen with len to ensure the read operation successful.
+
+There are some SPI controllers that have a maximum transfer length,
+e.g. Freescale eSPI controller is able to transfer 0x10000 Bytes each time.
+If the spi_nor_read diliver a transaction length that excced the ability of
+the SPI controller, there should be multiple read operation to make sure
+this transaction completion.
+
+Signed-off-by: Hou Zhiqiang <B48286@freescale.com>
 ---
- arch/arm/boot/dts/qcom-ipq8064-ap148.dts | 36 ++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ drivers/mtd/spi-nor/spi-nor.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/qcom-ipq8064-ap148.dts b/arch/arm/boot/dts/qcom-ipq8064-ap148.dts
-index 7f9ea50..03fd6b7 100644
---- a/arch/arm/boot/dts/qcom-ipq8064-ap148.dts
-+++ b/arch/arm/boot/dts/qcom-ipq8064-ap148.dts
-@@ -30,6 +30,28 @@
- 					bias-none;
- 				};
- 			};
-+			nand_pins: nand_pins {
-+				mux {
-+					pins = "gpio34", "gpio35", "gpio36",
-+					       "gpio37", "gpio38", "gpio39",
-+					       "gpio40", "gpio41", "gpio42",
-+					       "gpio43", "gpio44", "gpio45",
-+					       "gpio46", "gpio47";
-+					function = "nand";
-+					drive-strength = <10>;
-+					bias-disable;
-+				};
-+				pullups {
-+					pins = "gpio39";
-+					bias-pull-up;
-+				};
-+				hold {
-+					pins = "gpio40", "gpio41", "gpio42",
-+					       "gpio43", "gpio44", "gpio45",
-+					       "gpio46", "gpio47";
-+					bias-bus-hold;
-+				};
-+			};
- 		};
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index fbc5035..ec10cd1 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -715,6 +715,8 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+ 	int ret;
++	size_t cnt = 0;
++	u_char *cur = buf;
  
- 		gsbi@16300000 {
-@@ -93,5 +115,19 @@
- 		sata@29000000 {
- 			status = "ok";
- 		};
-+
-+		nand@0x1ac00000 {
-+			status = "ok";
-+
-+			pinctrl-0 = <&nand_pins>;
-+			pinctrl-names = "default";
-+
-+			nand-ecc-strength = <4>;
-+			nand-bus-width = <8>;
-+		};
- 	};
- };
-+
-+&adm_dma {
-+	status = "ok";
-+};
+ 	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
+ 
+@@ -722,8 +724,16 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = nor->read(nor, from, len, retlen, buf);
+-
++	*retlen = 0;
++	while (len > 0) {
++		ret = nor->read(nor, from, len, &cnt, cur);
++		if (ret < 0)
++			break;
++		len -= cnt;
++		cur += cnt;
++		*retlen += cnt;
++		from += cnt;
++	}
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
+ 	return ret;
+ }
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-hosted by The Linux Foundation
+2.1.0.27.g96db324
