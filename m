@@ -1,20 +1,19 @@
-Received: from mail-bl2on0127.outbound.protection.outlook.com ([65.55.169.127]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHeUI-00047y-5z
- for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 20:50:07 +0000
-From: <Frank.Li@freescale.com>
-To: <linux-mtd@lists.infradead.org>, <b45815@freescale.com>,
- <computersforpeace@gmail.com>, <lznuaa@gmail.com>
-CC: Frank Li <Frank.Li@freescale.com>
-Subject: [PATCH 7/7] mtd: spi-nor: fsl-quadspi: fix unsupported cmd when run
- flash_erase
-Date: Wed, 22 Jul 2015 03:39:59 +0800
-Message-ID: <1437507599-25424-7-git-send-email-Frank.Li@freescale.com>
-In-Reply-To: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
-References: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
+ id 1ZHeVF-0005iV-UM
+ for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 20:51:08 +0000
+Message-ID: <55AEB0A3.4030106@nod.at>
+Date: Tue, 21 Jul 2015 22:50:43 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com,
+ jack@suse.com
+CC: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH 00/25] Add quota supporting in ubifs
+References: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Frank Li <Frank.Li@freescale.com>
+Am 21.07.2015 um 10:37 schrieb Dongsheng Yang:
+> Hi Atem, Richard and others,
+> 	This is a patchset to add quota supporting in ubifs.
+> [1/25] - [7/25] are working to make quotactl to support filesystems
+> which are running on char device.
+> 
+> Others are about making ubifs to support quota
+> Please help to review or test it. Any comment is welcome :).
 
-fsl-quadspi 21e0000.qspi: Unsupported cmd 0x20
+How did you test this new feature? xfstests? Also wrt. powercuts?
+Please also don't forget to add quota support to integchk.
 
-when config CONFIG_MTD_SPI_NOR_USE_4K_SECTORS enable,
-erase will use SPINOR_OP_BE_4K, which was not supported by fsl-quadspi
-driver
-
-Signed-off-by: Frank Li <Frank.Li@freescale.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 68054c1..d2981c5 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -396,11 +396,11 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
- 	lut_base = SEQID_SE * 4;
- 
- 	if (q->nor_size <= SZ_16M) {
--		cmd = SPINOR_OP_SE;
-+		cmd = q->nor[0].erase_opcode;
- 		addrlen = ADDR24BIT;
- 	} else {
- 		/* use the 4-byte address */
--		cmd = SPINOR_OP_SE;
-+		cmd = q->nor[0].erase_opcode;
- 		addrlen = ADDR32BIT;
- 	}
- 
-@@ -471,6 +471,8 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
- 	case SPINOR_OP_BRWR:
- 		return SEQID_BRWR;
- 	default:
-+		if (cmd == q->nor[0].erase_opcode)
-+			return SEQID_SE;
- 		dev_err(q->dev, "Unsupported cmd 0x%.2x\n", cmd);
- 		break;
- 	}
--- 
-1.9.1
+Thanks,
+//richard
