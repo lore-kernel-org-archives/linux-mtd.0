@@ -1,15 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHT9V-0002qj-7L
+ id 1ZHT9W-0002r6-D7
  for linux-mtd@lists.infradead.org; Tue, 21 Jul 2015 08:43:54 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>, <jack@suse.com>
 CC: <linux-fsdevel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 05/25] fs: char_dev: introduce lookup_cdev function to find
- cdev by name
-Date: Tue, 21 Jul 2015 16:37:36 +0800
-Message-ID: <1437467876-22106-6-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 07/25] fs: quota: make quota support fs which is running on
+ char dev
+Date: Tue, 21 Jul 2015 16:37:38 +0800
+Message-ID: <1437467876-22106-8-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -23,126 +23,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Function lookup_cdev works similar with lookup_bdev, we can get
-a cdev instance by lookup_cdev with a parameter of dev name.
-
-This function will be used in quotactl to get a cdev by a dev name.
+So far, we have done all preparation. Then let's add some
+code to support char dev fs in quotactl.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/char_dev.c      | 72 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/fs.h |  2 ++
- 2 files changed, 74 insertions(+)
+ fs/quota/quota.c | 30 +++++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/fs/char_dev.c b/fs/char_dev.c
-index ea06a3d..899f08b 100644
---- a/fs/char_dev.c
-+++ b/fs/char_dev.c
-@@ -22,6 +22,9 @@
- #include <linux/backing-dev.h>
- #include <linux/tty.h>
+diff --git a/fs/quota/quota.c b/fs/quota/quota.c
+index 86ded73..3f9acea 100644
+--- a/fs/quota/quota.c
++++ b/fs/quota/quota.c
+@@ -17,6 +17,7 @@
+ #include <linux/quotaops.h>
+ #include <linux/types.h>
+ #include <linux/writeback.h>
++#include <linux/cdev.h>
  
-+#include <linux/namei.h>
-+#include <linux/mount.h>
+ static int check_quotactl_permission(struct super_block *sb, int type, int cmd,
+ 				     qid_t id)
+@@ -726,29 +727,40 @@ static int quotactl_cmd_write(int cmd)
+  */
+ static struct super_block *quotactl_block(const char __user *special, int cmd)
+ {
++	struct super_block *sb = NULL;
++	struct filename *tmp = getname(special);
++	struct cdev *cdev = NULL;
 +
- #include "internal.h"
+ #ifdef CONFIG_BLOCK
+ 	struct block_device *bdev;
+-	struct super_block *sb;
+-	struct filename *tmp = getname(special);
  
- static struct kobj_map *cdev_map;
-@@ -439,6 +442,74 @@ static int exact_lock(dev_t dev, void *data)
- 	return cdev_get(p) ? 0 : -1;
+ 	if (IS_ERR(tmp))
+ 		return ERR_CAST(tmp);
+ 	bdev = lookup_bdev(tmp->name);
+-	putname(tmp);
+ 	if (IS_ERR(bdev))
+-		return ERR_CAST(bdev);
++		goto not_block;
+ 	if (quotactl_cmd_write(cmd))
+ 		sb = get_super_thawed(bdev);
+ 	else
+ 		sb = get_super(bdev);
+ 	bdput(bdev);
+-	if (!sb)
+-		return ERR_PTR(-ENODEV);
++	goto out;
+ 
+-	return sb;
+-#else
+-	return ERR_PTR(-ENODEV);
++not_block:
+ #endif
++	cdev = lookup_cdev(tmp->name);
++	if (IS_ERR(cdev))
++		goto out;
++	if (quotactl_cmd_write(cmd))
++		sb = get_super_cdev_thawed(cdev);
++	else
++		sb = get_super_cdev(cdev);
++	cdev_put(cdev);
++out:
++	putname(tmp);
++	if (sb)
++		return sb;
++	return ERR_PTR(-ENODEV);
  }
  
-+static struct cdev *cd_acquire(struct inode *inode)
-+{
-+	struct cdev *cdev;
-+	struct cdev *new = NULL;
-+
-+	spin_lock(&cdev_lock);
-+	cdev = inode->i_cdev;
-+	if (!cdev) {
-+		struct kobject *kobj;
-+		int idx;
-+		spin_unlock(&cdev_lock);
-+		kobj = kobj_lookup(cdev_map, inode->i_rdev, &idx);
-+		if (!kobj) {
-+			cdev = NULL;
-+			goto out;
-+		}
-+		new = container_of(kobj, struct cdev, kobj);
-+		spin_lock(&cdev_lock);
-+		/* Check i_cdev again in case somebody beat us to it while
-+		   we dropped the lock. */
-+		cdev = inode->i_cdev;
-+		if (!cdev) {
-+			inode->i_cdev = cdev = new;
-+			list_add(&inode->i_devices, &cdev->list);
-+		}
-+	}
-+
-+	if (!cdev_get(cdev))
-+		cdev = NULL;
-+	spin_unlock(&cdev_lock);
-+
-+out:
-+	return cdev;
-+}
-+
-+struct cdev *lookup_cdev(const char *pathname)
-+{
-+	struct cdev *cdev;
-+	struct inode *inode;
-+	struct path path;
-+	int error;
-+
-+	if (!pathname || !*pathname)
-+		return ERR_PTR(-EINVAL);
-+
-+	error = kern_path(pathname, LOOKUP_FOLLOW, &path);
-+	if (error)
-+		return ERR_PTR(error);
-+
-+	inode = d_backing_inode(path.dentry);
-+	error = -ENODEV;
-+	if (!S_ISCHR(inode->i_mode))
-+		goto fail;
-+	error = -EACCES;
-+	if (path.mnt->mnt_flags & MNT_NODEV)
-+		goto fail;
-+	error = -ENXIO;
-+	cdev = cd_acquire(inode);
-+	if (!cdev)
-+		goto fail;
-+out:
-+	path_put(&path);
-+	return cdev;
-+fail:
-+	cdev = ERR_PTR(error);
-+	goto out;
-+}
-+
- /**
-  * cdev_add() - add a char device to the system
-  * @p: the cdev structure for the device
-@@ -561,6 +632,7 @@ void __init chrdev_init(void)
- EXPORT_SYMBOL(register_chrdev_region);
- EXPORT_SYMBOL(unregister_chrdev_region);
- EXPORT_SYMBOL(alloc_chrdev_region);
-+EXPORT_SYMBOL(lookup_cdev);
- EXPORT_SYMBOL(cdev_init);
- EXPORT_SYMBOL(cdev_alloc);
- EXPORT_SYMBOL(cdev_del);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 5c7d789..860b235 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2308,6 +2308,8 @@ extern void __unregister_chrdev(unsigned int major, unsigned int baseminor,
- 				unsigned int count, const char *name);
- extern void unregister_chrdev_region(dev_t, unsigned);
- extern void chrdev_show(struct seq_file *,off_t);
-+extern struct cdev *lookup_cdev(const char *);
-+
- 
- static inline int register_chrdev(unsigned int major, const char *name,
- 				  const struct file_operations *fops)
+ /*
 -- 
 1.8.4.2
