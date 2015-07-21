@@ -1,18 +1,44 @@
-Received: from mail-bn1bon0134.outbound.protection.outlook.com
- ([157.56.111.134] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHJ4a-00046V-DY
- for linux-mtd@lists.infradead.org; Mon, 20 Jul 2015 21:58:09 +0000
-From: <Frank.Li@freescale.com>
-To: <linux-mtd@lists.infradead.org>, <b45815@freescale.com>,
- <computersforpeace@gmail.com>, <lznuaa@gmail.com>
-CC: Frank Li <Frank.Li@freescale.com>
-Subject: [PATCH 1/1] mtd: spi-nor: fsl-qspi: dynamically map memory space for
- AHB read
-Date: Tue, 21 Jul 2015 04:48:14 +0800
-Message-ID: <1437425294-32090-1-git-send-email-Frank.Li@freescale.com>
+Date: Tue, 21 Jul 2015 09:59:32 +0530
+From: Vinod Koul <vinod.koul@intel.com>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, Rob Herring <robh+dt@kernel.org>,
+ Han Xu <han.xu@freescale.com>, Knut Wohlrab <knut.wohlrab@de.bosch.com>,
+ dmaengine <dmaengine@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+Message-ID: <20150721042932.GF23525@localhost>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <20150604171547.GA1530@localhost.localdomain>
+ <CAOMqctSCL9E-kCBryeaMvtssSP12RY=kyfPuwSYx9wc=Lv9kGQ@mail.gmail.com>
+ <201507151352.27689.marex@denx.de>
+ <20150715155946.GB21362@localhost>
+ <CAOMqctTJEg7EauKfrqW-6rUQ-QOmtkTfkgOyz0rCuyh_-XrW5w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMqctTJEg7EauKfrqW-6rUQ-QOmtkTfkgOyz0rCuyh_-XrW5w@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,128 +48,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Allen Xu <b45815@freescale.com>
+On Sun, Jul 19, 2015 at 09:01:34PM +0200, Michal Suchanek wrote:
+> Hello,
+> 
+> On 15 July 2015 at 17:59, Brian Norris <computersforpeace@gmail.com> wrote:
+> > Hi Michal,
+> >
+> > On Wed, Jul 15, 2015 at 01:52:27PM +0200, Marek Vasut wrote:
+> >> The problem is, if you add a new DT binding, you'd have to support it
+> >> forever, no matter how bad idea that binding turned out to be.
+> >
+> > Agreed, and a solid NAK to this patch. I could have sworn I gave such a
+> > response when this was originally being discussed a month ago.
+> >
+> > AFAICT, you have one of two general approaches available to you:
+> >
+> > 1. Fix up the SPI driver so that it knows how to break large SPI
+> > transfers up into smaller segments that its constituent hardware (DMA
+> > controllers, fast clocks, etc.) can handle.
+> >
+> > 2. Utilize/create a parameter within the SPI subsystem to communicate
+> > that the SPI master has a limited max transfer size (notably: NOT a
+> > per-device DT property, but a SPI API property), and modify SPI device
+> > drivers (like m25p80) to honor it. Mark Brown seemed open to this, and I
+> > thought he suggested it somewhere.
+> 
+> It is not known what exactly is limited here.
+> 
+> It seems that the pl330 fails but it is not possible to transfer that
+> much data over the spi bus in one go without the help of the pl330.
+> 
+> With either approach the limit depends on the SPI transfer settings
+> which are known the the SPI driver. The pl330 driver is oblivious to
+> these because it just transfers data from one port to another port and
+> has no idea that the port is wired to SPI in the SoC.
+> 
+> On the other hand, AFAICT the SPI driver only allocates a DMA channel
+> which it receives through DT binding and is oblivious to the fact the
+> DMA channel lives on a pl330. It could probably determine that the
+> channel is indeed driven by a pl330. I don't think it's a great idea
+> to add device-specific handling to a generic dmaengine driver or a
+> dmaengine-spiecific handling to a SPI driver.
+> 
+> It's technically possible to pass SPI transfer parameters to the
+> dmaengine driver prior to transfer and the dmaengine could impose some
+> limitation based on those parameters. However, generalising this to
+> drivers other than SPI might be problematic. Should this interface
+> also handle i2c parameters, VE parameters, audio parameters, ethernet
+> parameters, etc?
+Or alternatively we could publish the limitations of the channel using
+capabilities so SPI knows I have a dmaengine channel and it can transfer max N
+length transfers so would be able to break rather than guessing it or coding
+in DT. Yes it may come from DT but that should be dmaengine driver rather
+than client driver :)
 
-QSPI may failed to map enough memory (256MB) for AHB read in
-previous implementation, especially in 3G/1G memory layout kernel.
-Dynamically map memory to avoid such issue.
+This can be done by dma_get_slave_caps(chan, &caps)
 
-This implementation generally map 4MB memory for AHB read, it should
-be enough for common scenarios, and the side effect (0.6% performance
-drop) is minor.
+And we add max_length as one more parameter to existing set
 
-Previous implementation
+Also all this could be handled in generic SPI-dmaengine layer so that
+individual drivers don't have to code it in
 
-root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=1K count=32K
-32768+0 records in
-32768+0 records out
-33554432 bytes (34 MB) copied, 2.16006 s, 15.5 MB/s
+Let me know if this idea is okay, I can push the dmaengine bits...
 
-root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=32M count=1
-1+0 records in
-1+0 records out
-33554432 bytes (34 MB) copied, 1.43149 s, 23.4 MB/s
-
-After applied the patch
-
-root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=1K count=32K
-32768+0 records in
-32768+0 records out
-33554432 bytes (34 MB) copied, 2.1743 s, 15.4 MB/s
-
-root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=32M count=1
-1+0 records in
-1+0 records out
-33554432 bytes (34 MB) copied, 1.43158 s, 23.4 MB/s
-
-Signed-off-by: Allen Xu <b45815@freescale.com>
-Signed-off-by: Frank Li <Frank.Li@freescale.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 48 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 40 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 52a872f..69b95e8 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -222,8 +222,10 @@ struct fsl_qspi {
- 	struct mtd_info mtd[FSL_QSPI_MAX_CHIP];
- 	struct spi_nor nor[FSL_QSPI_MAX_CHIP];
- 	void __iomem *iobase;
--	void __iomem *ahb_base; /* Used when read from AHB bus */
-+	void __iomem *ahb_addr;
- 	u32 memmap_phy;
-+	u32 memmap_offs;
-+	u32 memmap_len;
- 	struct clk *clk, *clk_en;
- 	struct device *dev;
- 	struct completion c;
-@@ -730,11 +732,41 @@ static int fsl_qspi_read(struct spi_nor *nor, loff_t from,
- 	struct fsl_qspi *q = nor->priv;
- 	u8 cmd = nor->read_opcode;
- 
--	dev_dbg(q->dev, "cmd [%x],read from (0x%p, 0x%.8x, 0x%.8x),len:%d\n",
--		cmd, q->ahb_base, q->chip_base_addr, (unsigned int)from, len);
-+	/* if necessary,ioremap buffer before AHB read, */
-+	/* generally 4MB should be large enough */
-+	if (!q->ahb_addr) {
-+		q->ahb_addr = ioremap_nocache(
-+				q->memmap_phy + q->chip_base_addr + from,
-+				len > SZ_4M ? len : SZ_4M);
-+		if (!q->ahb_addr) {
-+			dev_err(q->dev, "ioremap failed\n");
-+			return -ENOMEM;
-+		}
-+		q->memmap_offs = q->chip_base_addr + from;
-+		q->memmap_len = len > SZ_4M ? len : SZ_4M;
-+	/* ioremap if the data requested is out of range */
-+	} else if (q->chip_base_addr + from < q->memmap_offs
-+			|| q->chip_base_addr + from + len >
-+			q->memmap_offs + q->memmap_len) {
-+		iounmap(q->ahb_addr);
-+		q->ahb_addr = ioremap_nocache(
-+				q->memmap_phy + q->chip_base_addr + from,
-+				len > SZ_4M ? len : SZ_4M);
-+		if (!q->ahb_addr) {
-+			dev_err(q->dev, "ioremap failed\n");
-+			return -ENOMEM;
-+		}
-+		q->memmap_offs = q->chip_base_addr + from;
-+		q->memmap_len = len > SZ_4M ? len : SZ_4M;
-+	}
-+
-+	dev_dbg(q->dev, "cmd [%x],read from 0x%p, len:%d\n",
-+		cmd, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
-+		len);
- 
- 	/* Read out the data directly from the AHB buffer.*/
--	memcpy(buf, q->ahb_base + q->chip_base_addr + from, len);
-+	memcpy(buf, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
-+		len);
- 
- 	*retlen += len;
- 	return 0;
-@@ -812,10 +844,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
- 					"QuadSPI-memory");
--	q->ahb_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(q->ahb_base))
--		return PTR_ERR(q->ahb_base);
--
- 	q->memmap_phy = res->start;
- 
- 	/* find the clocks */
-@@ -975,6 +1003,10 @@ static int fsl_qspi_remove(struct platform_device *pdev)
- 
- 	clk_unprepare(q->clk);
- 	clk_unprepare(q->clk_en);
-+
-+	if (q->ahb_addr)
-+		iounmap(q->ahb_addr);
-+
- 	return 0;
- }
- 
+Thanks
 -- 
-1.9.1
+~Vinod
