@@ -1,19 +1,46 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHifK-0006km-Ag
- for linux-mtd@lists.infradead.org; Wed, 22 Jul 2015 01:17:46 +0000
-Message-ID: <55AEEDDE.6030407@cn.fujitsu.com>
-Date: Wed, 22 Jul 2015 09:11:58 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Date: Wed, 22 Jul 2015 10:19:25 +0530
+From: Vinod Koul <vinod.koul@intel.com>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, Rob Herring <robh+dt@kernel.org>,
+ Han Xu <han.xu@freescale.com>, Knut Wohlrab <knut.wohlrab@de.bosch.com>,
+ dmaengine <dmaengine@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+Message-ID: <20150722044925.GN23525@localhost>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <20150604171547.GA1530@localhost.localdomain>
+ <CAOMqctSCL9E-kCBryeaMvtssSP12RY=kyfPuwSYx9wc=Lv9kGQ@mail.gmail.com>
+ <201507151352.27689.marex@denx.de>
+ <20150715155946.GB21362@localhost>
+ <CAOMqctTJEg7EauKfrqW-6rUQ-QOmtkTfkgOyz0rCuyh_-XrW5w@mail.gmail.com>
+ <20150721042932.GF23525@localhost>
+ <CAOMqctSzzUV1J8Vj03XJ3Y70R9ynVErP4RZVtbjarDcZ9JLnaw@mail.gmail.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <dedekind1@gmail.com>, <jack@suse.com>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [RFC PATCH 00/25] Add quota supporting in ubifs
-References: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <55AEB0A3.4030106@nod.at>
-In-Reply-To: <55AEB0A3.4030106@nod.at>
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMqctSzzUV1J8Vj03XJ3Y70R9ynVErP4RZVtbjarDcZ9JLnaw@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +50,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/22/2015 04:50 AM, Richard Weinberger wrote:
-> Am 21.07.2015 um 10:37 schrieb Dongsheng Yang:
->> Hi Atem, Richard and others,
->> 	This is a patchset to add quota supporting in ubifs.
->> [1/25] - [7/25] are working to make quotactl to support filesystems
->> which are running on char device.
->>
->> Others are about making ubifs to support quota
->> Please help to review or test it. Any comment is welcome :).
->
-> How did you test this new feature? xfstests? Also wrt. powercuts?
+On Tue, Jul 21, 2015 at 10:14:11AM +0200, Michal Suchanek wrote:
+> > Or alternatively we could publish the limitations of the channel using
+> > capabilities so SPI knows I have a dmaengine channel and it can transfer max N
+> > length transfers so would be able to break rather than guessing it or coding
+> > in DT. Yes it may come from DT but that should be dmaengine driver rather
+> > than client driver :)
+> >
+> > This can be done by dma_get_slave_caps(chan, &caps)
+> >
+> > And we add max_length as one more parameter to existing set
+> >
+> > Also all this could be handled in generic SPI-dmaengine layer so that
+> > individual drivers don't have to code it in
+> >
+> > Let me know if this idea is okay, I can push the dmaengine bits...
+> 
+> It would be ok if there was a fixed limit. However, the limit depends
+> on SPI slave settings. Presumably for other buses using the dmaengine
+> the limit would depend on the bus or slave settings as well. I do not
+> see a sane way of passing this all the way to the dmaengine driver.
+I don't see why this should be client (SPI) dependent. The max length
+supported is a dmaengine constraint, typically flowing from max
+blocks/length it can transfer. Know this limit can allow clients to split
+transfers.
 
-I did not try powercuts, and I did not try some more full testing so
-far. That's why I marked it as RFC :). I want to get the opinions as
-early as possible. Then will do some more testing later.
-> Please also don't forget to add quota support to integchk.
-
-Thanx for your reminding. :)
-
-Yang
->
-> Thanks,
-> //richard
-> .
->
+-- 
+~Vinod
