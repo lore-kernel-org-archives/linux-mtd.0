@@ -1,31 +1,14 @@
-MIME-Version: 1.0
-In-Reply-To: <CAHrpEqQNSgkakXN8kAT1FwPv7Ou_ERkOTJrX-4Vmb=TogzsF2A@mail.gmail.com>
-References: <1398657227-20721-1-git-send-email-b32955@freescale.com>
- <1398657227-20721-4-git-send-email-b32955@freescale.com>
- <20140730050843.GE11952@brian-ubuntu>
- <20140730064413.GA15547@shldeISGChi005.sh.intel.com>
- <20140730074500.GF11952@brian-ubuntu>
- <20140730104607.GQ17528@sirena.org.uk>
- <20140802020617.GS3711@ld-irv-0074>
- <CAMuHMdWxzKG1TTUVgYqfRP0Prp85HPwVxH7NQp7S-pNeLfFqjA@mail.gmail.com>
- <20140804142507.GP30458@sirena.org.uk>
- <CAHrpEqQNSgkakXN8kAT1FwPv7Ou_ERkOTJrX-4Vmb=TogzsF2A@mail.gmail.com>
-Date: Wed, 22 Jul 2015 13:18:23 -0500
-Message-ID: <CAHrpEqR7GH7JtAncmcNOeJJsa9GyuE-0VeK3vgat9FFPVdynyg@mail.gmail.com>
-Subject: Re: [PATCH v2 03/10] mtd: spi-nor: add DDR quad read support
-From: Zhi Li <lznuaa@gmail.com>
-To: Mark Brown <broonie@kernel.org>, Huang Shijie <shijie8@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Huang Shijie <shijie.huang@intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+From: Xander Huff <xander.huff@ni.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ jeff.westfahl@ni.com, jaeden.amero@ni.com, joshc@ni.com,
+ Ben Shelton <ben.shelton@ni.com>, xander.huff@ni.com
+Subject: [RESEND PATCH v2] mtd: nand_bbt: scan for next free bbt block if
+ writing bbt fails
+Date: Wed, 22 Jul 2015 14:42:37 -0500
+Message-Id: <1437594157-44885-1-git-send-email-xander.huff@ni.com>
+In-Reply-To: <1436284803-16081-1-git-send-email-xander.huff@ni.com>
+References: <1436284803-16081-1-git-send-email-xander.huff@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,65 +18,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 22, 2015 at 1:15 PM, Zhi Li <lznuaa@gmail.com> wrote:
-> On Mon, Aug 4, 2014 at 9:25 AM, Mark Brown <broonie@kernel.org> wrote:
->> On Sat, Aug 02, 2014 at 11:09:09AM +0200, Geert Uytterhoeven wrote:
->>> On Sat, Aug 2, 2014 at 4:06 AM, Brian Norris
->>> > On Wed, Jul 30, 2014 at 11:46:07AM +0100, Mark Brown wrote:
->>
->>> >> I don't know what DDR is in this context, sorry.
->>
->>> > I think it's just the ability to latch data on both the rising and
->>> > falling edges of the SPI clock. For SPI flash, it seems to be used for
->>> > the data portion of the opcode/address/data sequence.
->>
->>> > Yeah, I suppose it could be wedged in later if drivers/spi/ ever adopts
->>> > a solution.
->>
->>> I think this can just be another SPI_* spi_device.mode flag.
->>
->> Sounds like it yes - I was wondering if this might be one of the modes
->> with extra clock cycles that I've heard mentioned before which might be
->> a little more fun.
->>
->>> Do we need bindings for this in
->>> Documentation/devicetree/bindings/spi/spi-bus.txt?
->>> Unlike Quad SPI transfer support, this doesn't need special wiring, so DDR
->>> capability is an intrinsic property of the SPI slave, and the mode bit can just
->>> be set in the SPI slave driver, without any DT magic?
->>
->> Right, unless we run into things like board design issues causing
->> constraints this is something that can be enabled by the two drivers
->> without needing DT configuration.
->
-> All:
+From: Ben Shelton <ben.shelton@ni.com>
 
-Just update shijie's email address.
+If erasing or writing the BBT fails, we should mark the current BBT
+block as bad and use the BBT descriptor to scan for the next available
+unused block in the BBT. We should only return a failure if there isn't
+any space left.
 
->
-> we plan resume this work.
-> I need direction how go ahead further.
->
-> I go through this email thread.
->
-> The discussion focus on how to get dummy cycle information.
->
-> Shijie get it from DT.
->
-> Brain suggest get from CFI or map id table if I understand correct.
->
-> Accodring to spec
-> http://www.spansion.com/Support/Datasheets/S25FL128S_256S_00.pdf
->
-> Table 8.10
->
-> Dummy cycle depend on frequency, read command.
->
-> if information saved in driver, it will be huge table.
->
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>
+Based on original code implemented by Jeff Westfahl
+<jeff.westfahl@ni.com>.
+
+Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+Reviewed-by: Jaeden Amero <jaeden.amero@ni.com>
+Suggested-by: Jeff Westfahl <jeff.westfahl@ni.com>
+Signed-off-by: Xander Huff <xander.huff@ni.com>
+---
+This v2 patch is in reply to comments from Brian Norris on 7/22/13. See
+the following links for context:
+http://lists.infradead.org/pipermail/linux-mtd/2013-July/047596.html
+http://patchwork.ozlabs.org/patch/244324/
+---
+ drivers/mtd/nand/nand_base.c |  4 ++++
+ drivers/mtd/nand/nand_bbt.c  | 34 ++++++++++++++++++++++++++++++++--
+ include/linux/mtd/nand.h     |  7 +++++++
+ 3 files changed, 43 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ceb68ca..48299dc 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2761,6 +2761,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 		pr_debug("%s: device is write protected!\n",
+ 				__func__);
+ 		instr->state = MTD_ERASE_FAILED;
++		instr->priv = NAND_ERASE_WRITE_PROTECTED;
+ 		goto erase_exit;
+ 	}
+ 
+@@ -2776,6 +2777,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
+ 				    __func__, page);
+ 			instr->state = MTD_ERASE_FAILED;
++			instr->priv = NAND_ERASE_BAD_BLOCK;
+ 			goto erase_exit;
+ 		}
+ 
+@@ -2802,6 +2804,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 			pr_debug("%s: failed erase, page 0x%08x\n",
+ 					__func__, page);
+ 			instr->state = MTD_ERASE_FAILED;
++			instr->priv = NAND_ERASE_BLOCK_ERASE_FAILED;
+ 			instr->fail_addr =
+ 				((loff_t)page << chip->page_shift);
+ 			goto erase_exit;
+@@ -2819,6 +2822,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 		}
+ 	}
+ 	instr->state = MTD_ERASE_DONE;
++	instr->priv = NAND_ERASE_OK;
+ 
+ erase_exit:
+ 
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 63a1a36..09f9e62 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -662,6 +662,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			page = td->pages[chip];
+ 			goto write;
+ 		}
++next:
+ 
+ 		/*
+ 		 * Automatic placement of the bad block table. Search direction
+@@ -787,13 +788,42 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		einfo.addr = to;
+ 		einfo.len = 1 << this->bbt_erase_shift;
+ 		res = nand_erase_nand(mtd, &einfo, 1);
+-		if (res < 0)
++		if (res == -EIO && einfo.state == MTD_ERASE_FAILED
++		    && einfo.priv == NAND_ERASE_BLOCK_ERASE_FAILED) {
++			/* This block is bad. Mark it as such and see if
++			 * there's another block available in the BBT area. */
++			int block = page >>
++				(this->bbt_erase_shift - this->page_shift);
++			pr_info("nand_bbt: failed to erase block %d when writing BBT\n",
++				block);
++			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++
++			res = this->block_markbad(mtd, block);
++			if (res)
++				pr_warn("nand_bbt: error %d while marking block %d bad\n",
++					res, block);
++			goto next;
++		} else if (res < 0)
+ 			goto outerr;
+ 
+ 		res = scan_write_bbt(mtd, to, len, buf,
+ 				td->options & NAND_BBT_NO_OOB ? NULL :
+ 				&buf[len]);
+-		if (res < 0)
++		if (res == -EIO) {
++			/* This block is bad. Mark it as such and see if
++			 * there's another block available in the BBT area. */
++			int block = page >>
++				(this->bbt_erase_shift - this->page_shift);
++			pr_info("nand_bbt: failed to erase block %d when writing BBT\n",
++				block);
++			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++
++			res = this->block_markbad(mtd, block);
++			if (res)
++				pr_warn("nand_bbt: error %d while marking block %d bad\n",
++					res, block);
++			goto next;
++		} else if (res < 0)
+ 			goto outerr;
+ 
+ 		pr_info("Bad block table written to 0x%012llx, version 0x%02X\n",
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 272f429..86e11f6 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -1030,4 +1030,11 @@ struct nand_sdr_timings {
+ 
+ /* get timing characteristics from ONFI timing mode. */
+ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
++
++/* reasons for erase failures */
++#define NAND_ERASE_OK			0
++#define NAND_ERASE_WRITE_PROTECTED	1
++#define NAND_ERASE_BAD_BLOCK		2
++#define NAND_ERASE_BLOCK_ERASE_FAILED	3
++
+ #endif /* __LINUX_MTD_NAND_H */
+-- 
+1.9.1
