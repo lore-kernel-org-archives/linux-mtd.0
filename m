@@ -1,7 +1,14 @@
-From: Marek Vasut <marex@denx.de>
-To: Michal Suchanek <hramrach@gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <201507220958.00231.marex@denx.de>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <201507220933.19752.marex@denx.de>
+ <CAOMqctTmRy0gOchdUQ+VnoV-oJz0v9NpUPLi1pxO_O9QrLXsZA@mail.gmail.com>
+ <201507220958.00231.marex@denx.de>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Wed, 22 Jul 2015 10:18:04 +0200
+Message-ID: <CAOMqctQ13JE+GHyj+hU4XL3Uz4+Yt_X6BFU=NO8jXcpRtzMyzQ@mail.gmail.com>
 Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
-Date: Wed, 22 Jul 2015 09:58:00 +0200
+To: Marek Vasut <marex@denx.de>
 Cc: Vinod Koul <vinod.koul@intel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Cochran <richardcochran@gmail.com>,
@@ -10,34 +17,25 @@ Cc: Vinod Koul <vinod.koul@intel.com>,
  Krzysztof Kozlowski <k.kozlowski@samsung.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>,
  MTD Maling List <linux-mtd@lists.infradead.org>,
- Alison Chaiken <alison_chaiken@mentor.com>, "Bean Huo
- =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= (beanhuo)" <beanhuo@micron.com>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
  "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
  Russell King <linux@arm.linux.org.uk>,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Mark Brown <broonie@kernel.org>,
- Dan Williams <dan.j.williams@intel.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
  "grmoore@altera.com" <grmoore@altera.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi" <linux-spi@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
  Huang Shijie <b32955@freescale.com>, Rob Herring <robh+dt@kernel.org>,
- Han Xu <han.xu@freescale.com>, Knut Wohlrab <knut.wohlrab@de.bosch.com>,
- dmaengine <dmaengine@vger.kernel.org>,
+ Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>, dmaengine <dmaengine@vger.kernel.org>,
  David Woodhouse <dwmw2@infradead.org>
-References: <cover.1433364398.git.hramrach@gmail.com>
- <201507220933.19752.marex@denx.de>
- <CAOMqctTmRy0gOchdUQ+VnoV-oJz0v9NpUPLi1pxO_O9QrLXsZA@mail.gmail.com>
-In-Reply-To: <CAOMqctTmRy0gOchdUQ+VnoV-oJz0v9NpUPLi1pxO_O9QrLXsZA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201507220958.00231.marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,56 +45,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, July 22, 2015 at 09:45:27 AM, Michal Suchanek wrote:
-> On 22 July 2015 at 09:33, Marek Vasut <marex@denx.de> wrote:
-> > On Wednesday, July 22, 2015 at 09:30:54 AM, Michal Suchanek wrote:
-> >> On 22 July 2015 at 06:49, Vinod Koul <vinod.koul@intel.com> wrote:
-> >> > On Tue, Jul 21, 2015 at 10:14:11AM +0200, Michal Suchanek wrote:
-> >> >> > Or alternatively we could publish the limitations of the channel
-> >> >> > using capabilities so SPI knows I have a dmaengine channel and it
-> >> >> > can transfer max N length transfers so would be able to break
-> >> >> > rather than guessing it or coding in DT. Yes it may come from DT
-> >> >> > but that should be dmaengine driver rather than client driver :)
-> >> >> > 
-> >> >> > This can be done by dma_get_slave_caps(chan, &caps)
-> >> >> > 
-> >> >> > And we add max_length as one more parameter to existing set
-> >> >> > 
-> >> >> > Also all this could be handled in generic SPI-dmaengine layer so
-> >> >> > that individual drivers don't have to code it in
-> >> >> > 
-> >> >> > Let me know if this idea is okay, I can push the dmaengine bits...
-> >> >> 
-> >> >> It would be ok if there was a fixed limit. However, the limit depends
-> >> >> on SPI slave settings. Presumably for other buses using the dmaengine
-> >> >> the limit would depend on the bus or slave settings as well. I do not
-> >> >> see a sane way of passing this all the way to the dmaengine driver.
-> >> > 
-> >> > I don't see why this should be client (SPI) dependent. The max length
-> >> > supported is a dmaengine constraint, typically flowing from max
-> >> > blocks/length it can transfer. Know this limit can allow clients to
-> >> > split transfers.
-> >> 
-> >> In practice on the board I have the maximum transfer length before it
-> >> fails depends on SPI bus speed which is set up per slave. I did not
-> >> try searching the space of possible settings thorougly and settled for
-> >> a setting that gives reasonable speed and transfer length.
-> > 
-> > This looks more like a signal integrity issue though.
-> 
-> It certainly does on the surface. However, when wrong data is
-> delivered over the SPI bus (such as when I use wrong phase setting)
-> the SPI controller happily delivers wrong data over PIO.
-> 
-> The failure I am seeing is that the pl330 DMA program which repeatedly
-> waits for data from the SPI controller never finishes the read loop
-> and does not signal the interrupt. It seems it also leaves some data
-> in a FIFO somewhere so next command on the flash returns garbage and
-> fails.
+On 22 July 2015 at 09:58, Marek Vasut <marex@denx.de> wrote:
+> On Wednesday, July 22, 2015 at 09:45:27 AM, Michal Suchanek wrote:
+>> On 22 July 2015 at 09:33, Marek Vasut <marex@denx.de> wrote:
+>> > On Wednesday, July 22, 2015 at 09:30:54 AM, Michal Suchanek wrote:
+>> >> On 22 July 2015 at 06:49, Vinod Koul <vinod.koul@intel.com> wrote:
+>> >> > On Tue, Jul 21, 2015 at 10:14:11AM +0200, Michal Suchanek wrote:
+>> >> >> > Or alternatively we could publish the limitations of the channel
+>> >> >> > using capabilities so SPI knows I have a dmaengine channel and it
+>> >> >> > can transfer max N length transfers so would be able to break
+>> >> >> > rather than guessing it or coding in DT. Yes it may come from DT
+>> >> >> > but that should be dmaengine driver rather than client driver :)
+>> >> >> >
+>> >> >> > This can be done by dma_get_slave_caps(chan, &caps)
+>> >> >> >
+>> >> >> > And we add max_length as one more parameter to existing set
+>> >> >> >
+>> >> >> > Also all this could be handled in generic SPI-dmaengine layer so
+>> >> >> > that individual drivers don't have to code it in
+>> >> >> >
+>> >> >> > Let me know if this idea is okay, I can push the dmaengine bits...
+>> >> >>
+>> >> >> It would be ok if there was a fixed limit. However, the limit depends
+>> >> >> on SPI slave settings. Presumably for other buses using the dmaengine
+>> >> >> the limit would depend on the bus or slave settings as well. I do not
+>> >> >> see a sane way of passing this all the way to the dmaengine driver.
+>> >> >
+>> >> > I don't see why this should be client (SPI) dependent. The max length
+>> >> > supported is a dmaengine constraint, typically flowing from max
+>> >> > blocks/length it can transfer. Know this limit can allow clients to
+>> >> > split transfers.
+>> >>
+>> >> In practice on the board I have the maximum transfer length before it
+>> >> fails depends on SPI bus speed which is set up per slave. I did not
+>> >> try searching the space of possible settings thorougly and settled for
+>> >> a setting that gives reasonable speed and transfer length.
+>> >
+>> > This looks more like a signal integrity issue though.
+>>
+>> It certainly does on the surface. However, when wrong data is
+>> delivered over the SPI bus (such as when I use wrong phase setting)
+>> the SPI controller happily delivers wrong data over PIO.
+>>
+>> The failure I am seeing is that the pl330 DMA program which repeatedly
+>> waits for data from the SPI controller never finishes the read loop
+>> and does not signal the interrupt. It seems it also leaves some data
+>> in a FIFO somewhere so next command on the flash returns garbage and
+>> fails.
+>
+> I observed something similar on MXS (mx28) SPI block. Do you use mixed
+> PIO/DMA mode perhaps ?
 
-I observed something similar on MXS (mx28) SPI block. Do you use mixed
-PIO/DMA mode perhaps ? Do you have the option to connect a bus analyzer?
-I can probably offer you some tools, I'm in Prague ...
+The SPI driver uses PIO for short transfers and DMA for transfers
+longer than the controller FIFO. This seems to be the standard way to
+do things.It works flawlessly so long as submitting overly long DMA
+programs is avoided.
 
-Best regards,
-Marek Vasut
+> Do you have the option to connect a bus analyzer?
+> I can probably offer you some tools, I'm in Prague ...
+
+The flash chip is accessible when removing the bottom cover. It is
+VSOP8 package slightly lower than SOP8 so attaching clips to it might
+be a bit problematic. That's the only accessible part. Everything
+other than SPI is inside the SoC.
+
+Since SPI has no verification whatsoever the chip might be completely
+dead and you can still read fine all zeroes or all ones when
+attempting a read from it. I observed this behaviour when I used a
+flash chip in a socket and it was not firmly seated. It was with a
+different SPI controller, though.
+
+Thanks
+
+Michal
