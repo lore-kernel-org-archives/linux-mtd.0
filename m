@@ -1,27 +1,44 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHoKs-0007Rv-8K
- for linux-mtd@lists.infradead.org; Wed, 22 Jul 2015 07:21:02 +0000
-Message-ID: <55AF4447.50500@nod.at>
-Date: Wed, 22 Jul 2015 09:20:39 +0200
-From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Bhuvanchandra DV <bhuvanchandradv@gmail.com>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS errors when file-system is full
-References: <55A3C342.9010704@gmail.com>
- <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
- <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
- <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
- <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
- <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
- <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
- <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
- <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
- <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
-In-Reply-To: <55AF41DD.2060902@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150722044925.GN23525@localhost>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <20150604171547.GA1530@localhost.localdomain>
+ <CAOMqctSCL9E-kCBryeaMvtssSP12RY=kyfPuwSYx9wc=Lv9kGQ@mail.gmail.com>
+ <201507151352.27689.marex@denx.de> <20150715155946.GB21362@localhost>
+ <CAOMqctTJEg7EauKfrqW-6rUQ-QOmtkTfkgOyz0rCuyh_-XrW5w@mail.gmail.com>
+ <20150721042932.GF23525@localhost>
+ <CAOMqctSzzUV1J8Vj03XJ3Y70R9ynVErP4RZVtbjarDcZ9JLnaw@mail.gmail.com>
+ <20150722044925.GN23525@localhost>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Wed, 22 Jul 2015 09:30:54 +0200
+Message-ID: <CAOMqctQH4MnKMthOnuPgB-A5k6PCOAmhwHzJfn7gE3R4w8bufg@mail.gmail.com>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Ben Hutchings <ben@decadent.org.uk>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, Rob Herring <robh+dt@kernel.org>,
+ Han Xu <han.xu@freescale.com>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>, dmaengine <dmaengine@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,58 +48,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 22.07.2015 um 09:10 schrieb Bhuvanchandra DV:
-> On 07/21/2015 11:44 AM, Richard Weinberger wrote:
-> 
->> Hi!
+On 22 July 2015 at 06:49, Vinod Koul <vinod.koul@intel.com> wrote:
+> On Tue, Jul 21, 2015 at 10:14:11AM +0200, Michal Suchanek wrote:
+>> > Or alternatively we could publish the limitations of the channel using
+>> > capabilities so SPI knows I have a dmaengine channel and it can transfer max N
+>> > length transfers so would be able to break rather than guessing it or coding
+>> > in DT. Yes it may come from DT but that should be dmaengine driver rather
+>> > than client driver :)
+>> >
+>> > This can be done by dma_get_slave_caps(chan, &caps)
+>> >
+>> > And we add max_length as one more parameter to existing set
+>> >
+>> > Also all this could be handled in generic SPI-dmaengine layer so that
+>> > individual drivers don't have to code it in
+>> >
+>> > Let me know if this idea is okay, I can push the dmaengine bits...
 >>
->> Am 21.07.2015 um 08:04 schrieb Bhuvanchandra DV:
->>> Ran the power cut tests with fm_debug enabled, no additional logs are observed.
->>> After few hundred power cuts U-Boot fails to mount with -22 and kernel fails
->>> mounting with stack trace when reading the node.
->> Why U-Boot? Has U-Boot fastmap enabled?
-> 
-> Yes, fastmap is enabled in U-Boot.
+>> It would be ok if there was a fixed limit. However, the limit depends
+>> on SPI slave settings. Presumably for other buses using the dmaengine
+>> the limit would depend on the bus or slave settings as well. I do not
+>> see a sane way of passing this all the way to the dmaengine driver.
+> I don't see why this should be client (SPI) dependent. The max length
+> supported is a dmaengine constraint, typically flowing from max
+> blocks/length it can transfer. Know this limit can allow clients to split
+> transfers.
 
-Please disable it.
+In practice on the board I have the maximum transfer length before it
+fails depends on SPI bus speed which is set up per slave. I did not
+try searching the space of possible settings thorougly and settled for
+a setting that gives reasonable speed and transfer length.
 
-> The same power cut tests are done by skipping the U-Boot to mount the UBIFS. Loaded
-> the kernel via tftp and mount the rootfs with kernel. The power cut test passed.
-> I think U-Boot might have some issues, but not very sure.
+However, if this was not tied to the particular slave setting picked
+in the current DT a formula would be needed that translates arbitrary
+client settings to transfer size limit and there would be need to
+somehow get the client settings to the formula in the dmaengine
+driver.
 
-To my knowledge U-Boot's fastmap support is incomplete.
-If you *really* need fastmap in U-Boot make sure that they have backported
-all recent fastmap changes. Fastmap is still experimental and faced a lot of fixes
-recently.
+Thanks
 
->>
->> Anyway, we need to sort out what is going on.
->> As fm_debug does not trigger it could also be a non-fastmap issue.
->> Did you try your test without fastmap being enabled?
->>
->> Does your target pass UBI tests too?
-> 
-> I'm not aware of UBI tests so far the driver passed all MTD tests.
-> Can you please provide some pointers for UBI tests. Will run the UBI tests with
-> driver.
-
-They are in the mtd-utils source.
-
->>
->>> Log:
->> [...]
->>> [    2.847326] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type (255 but expected 3)
->>> [    2.866839] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at LEB 981:70368, LEB mapping status 1
->>> [    2.887961] Not a node, first 24 bytes:
->>> [    2.891864] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff                          ........................
->> Hmm, LEB1 is unmapped.
->> If you disable fastmap, does this target boot as expected?
->> Or is this a persistent corruption?
-> 
-> No, the corruption is persistent.
-> - removed|fm_autoconvert from kernel args - removed the fastmap support from kernel Tested with above both cases, the corruption is persistent. |
-
-Okay that is a clear hint that Linux's fastmap is only the messenger and not the evil doer.
-
-Thanks,
-//richard
+Michal
