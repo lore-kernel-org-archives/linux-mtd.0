@@ -1,20 +1,19 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHiPw-0000MV-Es
- for linux-mtd@lists.infradead.org; Wed, 22 Jul 2015 01:01:53 +0000
-Message-ID: <55AEEA24.20203@cn.fujitsu.com>
-Date: Wed, 22 Jul 2015 08:56:04 +0800
+ id 1ZHiQ1-0000MV-KF
+ for linux-mtd@lists.infradead.org; Wed, 22 Jul 2015 01:01:58 +0000
+Message-ID: <55AEEA3E.8080605@cn.fujitsu.com>
+Date: Wed, 22 Jul 2015 08:56:30 +0800
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <dedekind1@gmail.com>, <jack@suse.com>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 13/25] ubifs: introduce a field named as budgeted to
- ubifs_inode
+To: Jan Kara <jack@suse.cz>
+CC: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>, <jack@suse.com>,
+ <linux-fsdevel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC PATCH 00/25] Add quota supporting in ubifs
 References: <1437467876-22106-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1437467876-22106-14-git-send-email-yangds.fnst@cn.fujitsu.com>
- <55AEAFDA.3000008@nod.at>
-In-Reply-To: <55AEAFDA.3000008@nod.at>
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+ <20150721085834.GE6533@quack.suse.cz>
+In-Reply-To: <20150721085834.GE6533@quack.suse.cz>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,207 +24,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/22/2015 04:47 AM, Richard Weinberger wrote:
-> Am 21.07.2015 um 10:37 schrieb Dongsheng Yang:
->> There is a long-term pain in ubifs, we have to introduce a
->> ui_mutex in ubifs_inode to solve two problems below:
->>
->> 1: make some process atomic, such as ubifs_rename.
->> 2: make sure we budget space for inode before dirting it.
->>
->> About 1, it's true and we have to do it.
->>
->> About 2, we can do it better.
->> 	There is a ubifs_assert(mutex_is_locked(&ui->mutex)) in
->> ubifs_dirty_inode(). But there is probably some processes
->> are very long, and we can not make all of it into a pair of
->> lock/unlock ui->mutex.
->>
->> E.g: dquot_disable().
->> 	It would mark the quota files as dirty and write the
->> inode back. We can do a budget before this function, but we
->> can not make the whole dquot_disable() into mutex_lock/mutex_unlock.
->> Because we need to lock the ui_mutex in dquot_disable().
->>
->> So, this commit introduce a ui->budgeted to allow us to make
->> budgeting and dirting in two different lock windows.
->>
->> Result:
->> 	ubifs_budget_space()
->> 	mutex_lock();
->> 	ui->budgeted = 1;
->> 	mutex_unlock();
->> 	...
->> 	dquot_disable();
+On 07/21/2015 04:58 PM, Jan Kara wrote:
+>    Hello,
 >
-> I'm confused by this changelog.
-
-Sorry, it is indeed confusing. Let me try to explain it more.
-
-Currently, we have a ubifs_assert(mutex_is_locked(&ui->ui_mutex));
-in ubifs_dirty_inode(). The reason of it is to make sure we have
-done the budget before dirting it.
-
-So we have to use it like that:
-	struct ubifs_budget_req req = { .dirtied_ino = 1};
-	ubifs_budget_space(req);
-	mutex_lock(&ui->ui_mutex);
-	ubifs_dirty_inode();
-	mutex_unlock(&ui->ui_mutex);
-We are checking the ui_mutex in ubifs_dirty_inode() to make sure
-we are taking a full control of this process and we are sure there
-is enough space to write this inode.
-
-
-But the problem is: we can not put all process which are going to
-dirty inode into the lock window, such as dquot_disable(), it will
-acquire the ui_mutex in itself. (Although we can blame vfs to dirty
-inode without asking ubifs is that correct)
-
-So, I introduce a ui->budgeted here to replace ubifs_assert() in
-ubifs_dirty_inode(); In ubifs_dirty_inode(), we can only check
-the ui->budgeted to know whether we have done the budget for this
-inode. Take the advantage of it, we can get what we want and solve
-the problem I mentioned above.
-
-I hope it more clear.
-
-Thanx
-Yang
+> On Tue 21-07-15 16:37:31, Dongsheng Yang wrote:
+>> Hi Atem, Richard and others,
+>> 	This is a patchset to add quota supporting in ubifs.
+>> [1/25] - [7/25] are working to make quotactl to support filesystems
+>> which are running on char device.
+>>
+>> Others are about making ubifs to support quota
+>> Please help to review or test it. Any comment is welcome :).
+>>
+>> Hi Jan Kara,
+>> 	I am not sure I am using the quota APIs correctly, please
+>> help to correct me if I am wrong.
 >
-> Why do you need ui->budgeted? You set it but never read it
-> except in an ubifs_assert().
+> Well, the patches for cdev handling are more for Al Viro as a VFS
+> maintainer. I can give you some feedback but he is the final arbiter to
+> decide whether those patches get merged. So please CC him in the next
+> posting.
+
+Thanx, will do it in next version.
 >
->> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
->> ---
->>   fs/ubifs/file.c  |  7 +++++++
->>   fs/ubifs/ioctl.c |  1 +
->>   fs/ubifs/super.c | 14 +++++++++++++-
->>   fs/ubifs/ubifs.h |  1 +
->>   4 files changed, 22 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
->> index dc8bf0b..113c3a6 100644
->> --- a/fs/ubifs/file.c
->> +++ b/fs/ubifs/file.c
->> @@ -307,6 +307,7 @@ static int write_begin_slow(struct address_space *mapping,
->>   			 * budget we allocated.
->>   			 */
->>   			ubifs_release_dirty_inode_budget(c, ui);
->> +		ui->budgeted = 1;
->>   	}
->>
->>   	*pagep = page;
->> @@ -357,6 +358,7 @@ static int allocate_budget(struct ubifs_info *c, struct page *page,
->>   		 * we need to budget the inode change.
->>   		 */
->>   		req.dirtied_ino = 1;
->> +		ui->budgeted = 1;
->>   	} else {
->>   		if (PageChecked(page))
->>   			/*
->> @@ -384,6 +386,7 @@ static int allocate_budget(struct ubifs_info *c, struct page *page,
->>   				 * needs a budget.
->>   				 */
->>   				req.dirtied_ino = 1;
->> +			ui->budgeted = 1;
->>   		}
->>   	}
->>
->> @@ -1237,6 +1240,7 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
->>   	do_attr_changes(inode, attr);
->>
->>   	release = ui->dirty;
->> +	ui->budgeted = 1;
->>   	if (attr->ia_valid & ATTR_SIZE)
->>   		/*
->>   		 * Inode length changed, so we have to make sure
->> @@ -1397,6 +1401,7 @@ static int ubifs_update_time(struct inode *inode, struct timespec *time,
->>   		iflags |= I_DIRTY_SYNC;
->>
->>   	release = ui->dirty;
->> +	ui->budgeted = 1;
->>   	__mark_inode_dirty(inode, iflags);
->>   	mutex_unlock(&ui->ui_mutex);
->>   	if (release)
->> @@ -1430,6 +1435,7 @@ static int update_mctime(struct inode *inode)
->>   		mutex_lock(&ui->ui_mutex);
->>   		inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
->>   		release = ui->dirty;
->> +		ui->budgeted = 1;
->>   		mark_inode_dirty_sync(inode);
->>   		mutex_unlock(&ui->ui_mutex);
->>   		if (release)
->> @@ -1556,6 +1562,7 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
->>   		mutex_lock(&ui->ui_mutex);
->>   		inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
->>   		release = ui->dirty;
->> +		ui->budgeted = 1;
->>   		mark_inode_dirty_sync(inode);
->>   		mutex_unlock(&ui->ui_mutex);
->>   		if (release)
->> diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
->> index 3c7b29d..f015b81 100644
->> --- a/fs/ubifs/ioctl.c
->> +++ b/fs/ubifs/ioctl.c
->> @@ -128,6 +128,7 @@ static int setflags(struct inode *inode, int flags)
->>   	ubifs_set_inode_flags(inode);
->>   	inode->i_ctime = ubifs_current_time(inode);
->>   	release = ui->dirty;
->> +	ui->budgeted = 1;
->>   	mark_inode_dirty_sync(inode);
->>   	mutex_unlock(&ui->ui_mutex);
->>
->> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
->> index 2491fff..5fa21d6 100644
->> --- a/fs/ubifs/super.c
->> +++ b/fs/ubifs/super.c
->> @@ -331,6 +331,7 @@ static int ubifs_write_inode(struct inode *inode, struct writeback_control *wbc)
->>   	}
->>
->>   	ui->dirty = 0;
->> +	ui->budgeted = 0;
->>   	mutex_unlock(&ui->ui_mutex);
->>   	ubifs_release_dirty_inode_budget(c, ui);
->>   	return err;
->> @@ -386,12 +387,23 @@ done:
->>   static void ubifs_dirty_inode(struct inode *inode, int flags)
->>   {
->>           struct ubifs_inode *ui = ubifs_inode(inode);
->> +	int need_unlock = 0;
->>
->> -	ubifs_assert(mutex_is_locked(&ui->ui_mutex));
->> +	if (unlikely(!mutex_is_locked(&ui->ui_mutex))) {
->> +		/* We need to lock ui_mutex to access ui->budgeted */
->> +		mutex_lock(&ui->ui_mutex);
->> +		need_unlock = 1;
->> +	}
->> +
->> +	/* Check the budget for this inode */
->> +	ubifs_assert(ui->budgeted);
->>   	if (!ui->dirty) {
->>   		ui->dirty = 1;
->>   		dbg_gen("inode %lu",  inode->i_ino);
->>   	}
->> +
->> +	if (need_unlock)
->> +		mutex_unlock(&ui->ui_mutex);
->>   }
->>
->>   static int ubifs_statfs(struct dentry *dentry, struct kstatfs *buf)
->> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
->> index 9754bb6..28392a6 100644
->> --- a/fs/ubifs/ubifs.h
->> +++ b/fs/ubifs/ubifs.h
->> @@ -410,6 +410,7 @@ struct ubifs_inode {
->>   	unsigned int xattr_cnt;
->>   	unsigned int xattr_names;
->>   	unsigned int dirty:1;
->> +	unsigned int budgeted:1;
+> 								Honza
 >
-> Please document that new flag too.
->
-> Thanks,
-> //richard
-> .
->
+>>
+>> Also you can get the code from:
+>> https://github.com/yangdongsheng/linux.git  ubifs_quota_v1
+>>
+>> 	My simple testing is shown as below:
+>> [root@atest-guest linux_compile]# mount -t ubifs -o usrquota,grpquota /dev/ubi0_0 /mnt/ubifs/
+>> [root@atest-guest linux_compile]# quotacheck -ug /mnt/ubifs
+>> [root@atest-guest linux_compile]# quotaon /mnt/ubifs
+>> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+>> *** Report for user quotas on device /dev/ubi0_0
+>> Block grace time: 7days; Inode grace time: 7days
+>>                          Block limits                File limits
+>> User            used    soft    hard  grace    used  soft  hard  grace
+>> ----------------------------------------------------------------------
+>> root      --       0       0       0              1     0     0
+>> [root@atest-guest linux_compile]# setquota root 10 10 3 3 /mnt/ubifs
+>> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+>> *** Report for user quotas on device /dev/ubi0_0
+>> Block grace time: 7days; Inode grace time: 7days
+>>                          Block limits                File limits
+>> User            used    soft    hard  grace    used  soft  hard  grace
+>> ----------------------------------------------------------------------
+>> root      --       0      10      10              1     3     3
+>> [root@atest-guest linux_compile]# touch /mnt/ubifs/{1,11,111}
+>> ubifs: warning, user file quota exceeded.
+>> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+>> *** Report for user quotas on device /dev/ubi0_0
+>> Block grace time: 7days; Inode grace time: 7days
+>>                          Block limits                File limits
+>> User            used    soft    hard  grace    used  soft  hard  grace
+>> ----------------------------------------------------------------------
+>> root      -+       0      10      10              4     3     3  7days
+>> [root@atest-guest linux_compile]# rm -rf /mnt/ubifs/1*
+>> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+>> *** Report for user quotas on device /dev/ubi0_0
+>> Block grace time: 7days; Inode grace time: 7days
+>>                          Block limits                File limits
+>> User            used    soft    hard  grace    used  soft  hard  grace
+>> ----------------------------------------------------------------------
+>> root      --       0      10      10              1     3     3
+>> [root@atest-guest linux_compile]# dd if=/dev/urandom of=/mnt/ubifs/data bs=1K count=11
+>> ubifs: warning, user block quota exceeded.
+>> 11+0 records in
+>> 11+0 records out
+>> 11264 bytes (11 kB) copied, 0.216498 s, 52.0 kB/s
+>> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+>> *** Report for user quotas on device /dev/ubi0_0
+>> Block grace time: 7days; Inode grace time: 7days
+>>                          Block limits                File limits
+>> User            used    soft    hard  grace    used  soft  hard  grace
+>> ----------------------------------------------------------------------
+>> root      +-      11      10      10  7days       2     3     3
+>> [root@atest-guest linux_compile]# rm -rf /mnt/ubifs/data
+>> [root@atest-guest linux_compile]# repquota /mnt/ubifs
+>> *** Report for user quotas on device /dev/ubi0_0
+>> Block grace time: 7days; Inode grace time: 7days
+>>                          Block limits                File limits
+>> User            used    soft    hard  grace    used  soft  hard  grace
+>> ----------------------------------------------------------------------
+>> root      --       0      10      10              1     3     3
+>>
+>>
+>> Dongsheng Yang (25):
+>>    fs: introduce a ->s_cdev field into struct super_block
+>>    ubi: introduce a interface to get cdev in ubi_volume
+>>    ubifs: fill sb->s_cdev in ubifs_fill_super()
+>>    fs: super: introduce the functions to get super by cdev reference
+>>    fs: char_dev: introduce lookup_cdev function to find cdev by name
+>>    fs: dquot: skip invalidate_bdev if bdev is NULL
+>>    fs: quota: make quota support fs which is running on char dev
+>>    ubifs: fix a typo in comment of ubifs_budget_req
+>>    ubifs: extend budget for blocks
+>>    ubifs: fill ->s_dev in ubifs_fill_super
+>>    ubifs: export read_block() from file.c
+>>    ubifs: introduce quota related mount options
+>>    ubifs: introduce a field named as budgeted to ubifs_inode
+>>    ubifs: implement IO functions for quota files
+>>    ubifs: disable quota in ubifs_put_super
+>>    ubifs: write quota back in ubifs_sync
+>>    ubifs: suspend & resume quota properly in ubifs_remount
+>>    ubifs: record quota information about inode in ubifs_new_inode
+>>    ubifs: free quota inode information in ubifs_evict_inode
+>>    ubifs: alloc quota space in ubifs_write_begin
+>>    ubifs: free quota space in do_truncation and unlink
+>>    ubifs: adapt quota space informatin in do_setattr
+>>    ubifs: transfer quota information in changing owner or group
+>>    ubifs: implement ubifs_qctl_operations for quotactl
+>>    ubifs: make ubifs to support quota
+>>
+>>   drivers/mtd/ubi/kapi.c  |   6 +
+>>   fs/char_dev.c           |  72 ++++++++++
+>>   fs/quota/dquot.c        |   3 +-
+>>   fs/quota/quota.c        |  30 +++--
+>>   fs/super.c              |  45 +++++++
+>>   fs/ubifs/budget.c       |   4 +
+>>   fs/ubifs/debug.c        |   2 +
+>>   fs/ubifs/dir.c          |  24 +++-
+>>   fs/ubifs/file.c         |  56 +++++++-
+>>   fs/ubifs/ioctl.c        |   1 +
+>>   fs/ubifs/super.c        | 352 +++++++++++++++++++++++++++++++++++++++++++++++-
+>>   fs/ubifs/ubifs.h        |  19 ++-
+>>   include/linux/fs.h      |   5 +
+>>   include/linux/mtd/ubi.h |   1 +
+>>   14 files changed, 597 insertions(+), 23 deletions(-)
+>>
+>> --
+>> 1.8.4.2
+>>
+>>
