@@ -1,24 +1,26 @@
-Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZIgV9-0007Xc-Te
- for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 17:11:16 +0000
-Received: by oihq81 with SMTP id q81so22235321oih.2
- for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2015 10:10:54 -0700 (PDT)
+Received: from mail-bl2on0079.outbound.protection.outlook.com ([65.55.169.79]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZIgec-0003pU-VP
+ for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 17:21:05 +0000
+Message-ID: <55B27300.80801@opensource.altera.com>
+Date: Fri, 24 Jul 2015 12:16:48 -0500
+From: Graham Moore <grmoore@opensource.altera.com>
 MIME-Version: 1.0
-In-Reply-To: <20150724165649.GH8876@google.com>
-References: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
- <1437507599-25424-4-git-send-email-Frank.Li@freescale.com>
- <20150724165649.GH8876@google.com>
-Date: Fri, 24 Jul 2015 12:10:54 -0500
-Message-ID: <CAHrpEqSW_WS3a5y3W521339PZDD1QJ_JozMD-vHu8Gbm=13-HQ@mail.gmail.com>
-Subject: Re: [PATCH 4/7] mtd: spi-nor: fsl-quadspi: i.MX6SX: fixed the random
- QSPI access failed issue
-From: Zhi Li <lznuaa@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "Frank.Li@freescale.com" <Frank.Li@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Allen Xu <b45815@freescale.com>
-Content-Type: text/plain; charset=UTF-8
+To: Marek Vasut <marex@denx.de>
+CC: <linux-mtd@lists.infradead.org>, Alan Tull <atull@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ <linux-kernel@vger.kernel.org>, Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>
+Subject: Re: [PATCH V4 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+References: <1427117782-14764-1-git-send-email-grmoore@opensource.altera.com>
+ <201507241445.07988.marex@denx.de> <55B263D1.8080506@opensource.altera.com>
+ <201507241825.00826.marex@denx.de>
+In-Reply-To: <201507241825.00826.marex@denx.de>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,65 +30,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 24, 2015 at 11:56 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Wed, Jul 22, 2015 at 03:39:56AM +0800, Frank.Li@freescale.com wrote:
->> From: Allen Xu <b45815@freescale.com>
+On 07/24/2015 11:25 AM, Marek Vasut wrote:
+> On Friday, July 24, 2015 at 06:12:01 PM, Graham Moore wrote:
+>> On 07/24/2015 07:45 AM, Marek Vasut wrote:
+>>> On Monday, March 23, 2015 at 02:36:21 PM, Graham Moore wrote:
+>>>> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+>>>> ---
+>>>> V2: Add cdns prefix to driver-specific bindings.
+>>>> V3: Use existing property "is-decoded-cs" instead of creating a
+>>>> duplicate, "ext-decoder".  Timing parameters are in nanoseconds, not
+>>>> master reference clocks.  Remove bus-num completely.
+>>>
+>>> Hi!
+>>>
+>>> do you plan to continue on this driver any soon? If not, I'd like to take
+>>> over the mainlining if you're not opposed. I'd like to see this in
+>>> mainline soon.
 >>
->> We found there is a low probability(5%) QSPI access timeout issue,
->> usually it happened on kernel boot stage, the first time kernel tried to
->> access QSPI chip. The READ_ID command was sent but not executed,
->> consequently the probe function failed.
->>
->> Finally we located the issue by these steps.
->>
->> 1. Since the issue happened randomly and usually it cost half day to
->> reproduce, we add more debug code in driver, to create a timeout file if
->> the issue occurred.
->>
->> 2. Prepared an autorun script to keep rebooting the system and check if
->> the timeout file existed, if the file existed, stop reboot.
->>
->> 3. The system will stop rebooting when timeout error occurred, set the
->> CCM_CCOSR register and related IOMUX to measure QPSI clock, found there
->> is no clock output, while clock output can be measured when QSPI driver
->> successfully probed.
->>
->> 4. Check the code and found QSPI clock rate was changed while not
->> disabled clock gate, most of the multiplexers on i.MX6 are glitch ones,
->> clock glitch may occurred and propagated into downstream clock dividers
->>
->> Based on the new clock flag(CLK_SET_RATE_GATE) and new framework, we
->> need to change the approach of seting clock rate. In current
->> implementation, there are several places in which the clock was touched.
->>
->> 1. probe function. prepare and enable clock before setting the QSPI
->> register, disable and unprepare the clock before exit.
->>
->> 2. nor_setup & nor_setup_last, since we change clock rate in these two
->> functions.
->>
->> 3. fsl_qspi_prep and fsl_qspi_unprep, clock was enabled only when got
->> QSPI access request.
->>
->> 4. resume function. Clock was required to restroe the setting after
->> resume, disable the clock before exit.
->>
->> Signed-off-by: Allen Xu <b45815@freescale.com>
->> Signed-off-by: Frank Li <Frank.Li@freescale.com>
->> ---
->>  drivers/mtd/spi-nor/fsl-quadspi.c | 83 +++++++++++++++++++++++++++------------
->>  1 file changed, 58 insertions(+), 25 deletions(-)
+>> I don't have a problem with you taking over the mainlining.  I've been
+>> stalled on the micron quad protocol issue that Cyrille Pitchen has solved.
 >
-> [...]
+> Do you mean the protocol change notification please?
 >
-> This patch does not apply to l2-mtd.git.
 
-Did you try to apply below patch firstly?
+Yes, that's what I mean, the protocol change notification.
 
-[PATCH 1/1] mtd: spi-nor: fsl-qspi: dynamically map memory space for AHB read
+>>> btw you'll need some kind of a variation on the attached two patches in
+>>> the next iteration.
+>>
+>> I have a V5 with fixes for sparse and smatch issues.  Do you want me to
+>> post it and you add those two patches?  Alternatively I can incorporate
+>> them into my V5.
+>
+> Please post those patches, yup, that'd be nice :)
+>
+> Also, just squash those two micropatches into yours, no problem.
+>
+> Be careful about the 0002 patch, see the commit message. I do NOT think
+> it is correct to pass the pdev->dev which represents the controller, not
+> the subnode, into spi_nor_scan() in cqspi_probe() . I might be wrong here
+> though, I am not sure. I think Brian or David would be much better people
+> to comment on this part.
+>
 
-Which branch? I can double check.
+I'm doing it the way fsl_quadspi.c does it.  It works on my Cyclone5 
+test system with and without that 0002 patch.  So maybe I'll leave it 
+out for now.
 
-best regards
-Frank Li
+V5 patches on the way...
+
+BR,
+Graham
+
+> Best regards,
+> Marek Vasut
+>
