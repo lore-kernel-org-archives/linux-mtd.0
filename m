@@ -1,22 +1,24 @@
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZIcOK-00025W-IB
+ for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 12:47:58 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH V4 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+Date: Fri, 24 Jul 2015 14:45:07 +0200
+Cc: Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ linux-kernel@vger.kernel.org, Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+References: <1427117782-14764-1-git-send-email-grmoore@opensource.altera.com>
+In-Reply-To: <1427117782-14764-1-git-send-email-grmoore@opensource.altera.com>
 MIME-Version: 1.0
-In-Reply-To: <201507241034.15406.marex@denx.de>
-References: <cover.1433364398.git.hramrach@gmail.com>
- <CAOMqctRnh2RsUYiRr2-+wucaq5NArTNrzPpqdPs+ETrFe9UrZA@mail.gmail.com>
- <CAOMqctREShUrBR=aQM2Vc6MhVezCP9rnNfUNq=m2-GH_gbYxFw@mail.gmail.com>
- <201507241034.15406.marex@denx.de>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Fri, 24 Jul 2015 13:20:32 +0200
-Message-ID: <CAOMqctR-bGJVrfbEK39eodDeZ5Nzf-EXxrGZ9iC+C09Tic8_VA@mail.gmail.com>
-Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
-To: Marek Vasut <marex@denx.de>
-Cc: Vinod Koul <vinod.koul@intel.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- dmaengine <dmaengine@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_TNjsVRzj20XI0/R"
+Message-Id: <201507241445.07988.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,88 +28,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24 July 2015 at 10:34, Marek Vasut <marex@denx.de> wrote:
-> On Thursday, July 23, 2015 at 07:03:47 PM, Michal Suchanek wrote:
->
-> Hi!
->
-> [...]
->
->> >>> It's probably slower to set up DMA for 2-byte commands but it might
->> >>> work nonetheless.
->> >>
->> >> It is, the overhead will be considerable. It might help the stability
->> >> though. I'm really looking forward to the results!
->> >
->> > Hello,
->> >
->> > this does not quite work.
->> >
->> > My test with spidev:
->> >
->> > # ./spinor /dev/spidev1.0
->> > Sending 9f 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->> > Received 00 ff c8 60 16 c8 60 16 c8 60 16 c8 60 16 c8 60
->> > Sending 90 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->> > Received 00 ff ff ff ff c8 15 c8 15 c8 15 c8 15 c8 15 c8
->> > Sending 9f 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->> > Received 00 ff c8 60 16 c8 60 16 c8 60 16 c8 60 16 c8 60
->> >
->> > I receive correct ID but spi-nor complains it does not know ID 00 c8 60.
->> > IIRC garbage should be sent only at the time command is transferred so
->> > only one byte of garbage should be received. Also the garbage tends to
->> > be the last state of the data output - all 0 or all 1.
->> > So it seems using DMA for all transfers including 1-byte commands
->> > results in (some?) received data getting an extra 00 prefix.
->> >
->> >
->> > I also managed to lock up the controller completely since there is
->> > some error passing the SPI speed somewhere :(
->> >
->> > [ 1352.977530] spidev spi1.0: setup mode 0, 8 bits/w, 80000000 Hz max -->
->> > 0 [ 1352.977540] spidev spi1.0: spi mode 0
->> > [ 1352.977576] spidev spi1.0: setup mode 0, 8 bits/w, 80000000 Hz max -->
->> > 0 [ 1352.977582] spidev spi1.0: msb first
->> > [ 1352.977614] spidev spi1.0: setup mode 0, 8 bits/w, 80000000 Hz max -->
->> > 0 [ 1352.977620] spidev spi1.0: 0 bits per word
->> > [ 1352.977652] spidev spi1.0: setup mode 0, 8 bits/w, 2690588672 Hz max
->> > --> 0 [ 1352.977726] spi_master spi1: s3c64xx_spi_config: clk_from_cmu 1
->> > src_clk sclk_spi1 mode bpw 8
->> > [ 1352.977753] spi_master spi1: spi1.0 s3c64xx_spi_transfer_one: xfer
->> > bpw 8 speed -1604378624
->> > [ 1352.977760] spi_master spi1: s3c64xx_spi_config: clk_from_cmu 1
->> > src_clk sclk_spi1 mode bpw 8
->> > [ 1352.977781] spi_master spi1: spi1.0 s3c64xx_spi_transfer_one: using
->> > dma [ 1352.977797] dma-pl330 121b0000.pdma: setting up request on thread
->> > 1
->>
->> Hmm, on a second thought it probably works as expected more or less.
->>
->> The nonsensical value was passed from application and there is no
->> guard against that.
->>
->> Since I don't do PIO the controller remains locked up indefinitely.
->
-> I have to admit, I don't quite understand the above. I also don't quite know
-> what your spidev test does.
+--Boundary-00=_TNjsVRzj20XI0/R
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-It does a full duplex transfer sending what is printed and printing
-what is received.
+On Monday, March 23, 2015 at 02:36:21 PM, Graham Moore wrote:
+> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> ---
+> V2: Add cdns prefix to driver-specific bindings.
+> V3: Use existing property "is-decoded-cs" instead of creating a duplicate,
+> "ext-decoder".  Timing parameters are in nanoseconds, not master reference
+> clocks.  Remove bus-num completely.
 
-> Can you possibly just bind a regular SPI NOR driver
-> and run mtdtests to see if it is stable ?
+Hi!
 
-I can if I use PIO for short transfers. Using DMA for all transfers
-results in the received data prefixed with 00 so the NOR flash
-identification fails. Admittedly I have no idea what the flash memory
-actually contains so if all DMA reads were always prefixed with 00 I
-could not tell. I vaguely recall reading the whole content and parsing
-the
+do you plan to continue on this driver any soon? If not, I'd like to take
+over the mainlining if you're not opposed. I'd like to see this in mainline
+soon.
 
-I can probably make the minimum length for DMA configurable so I can
-fall back to PIO when the controler locks up. It seems setting up a
-PIO transfer makes it work again.
+btw you'll need some kind of a variation on the attached two patches in
+the next iteration.
 
-Thanks
+Best regards,
+Marek Vasut
 
-Michal
+--Boundary-00=_TNjsVRzj20XI0/R
+Content-Type: text/x-patch;
+  charset="UTF-8";
+  name="0001-mtd-spi-nor-Fix-SRAM-config-on-CQSPI.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="0001-mtd-spi-nor-Fix-SRAM-config-on-CQSPI.patch"
+
+=46rom e305b9a9cd80e56aeaa19b3c2a5bb26ba3adf8d7 Mon Sep 17 00:00:00 2001
+=46rom: Marek Vasut <marex@denx.de>
+Date: Fri, 24 Jul 2015 10:10:23 +0200
+Subject: [PATCH 1/2] mtd: spi-nor: Fix SRAM config on CQSPI
+
+Make sure the SRAM configuration register is loaded with correct data
+when initializing the controller. This might not always be the case,
+since for example U-Boot configures this register and even toggling the
+controller reset doesn't reset it to default value. Thus, explicitly
+set the register.
+
+Signed-off-by: Marek Vasut <marex@denx.de>
+=2D--
+ drivers/mtd/spi-nor/cadence-quadspi.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/ca=
+dence-quadspi.c
+index fa7b421..a18732c 100644
+=2D-- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -1100,6 +1100,9 @@ static void cqspi_controller_init(struct cqspi_st *cq=
+spi)
+ 	/* Disable all interrupts. */
+ 	writel(0, cqspi->iobase + CQSPI_REG_IRQMASK);
+=20
++	/* Configure the SRAM split to 1:1 . */
++	writel(0x40, cqspi->iobase + CQSPI_REG_SRAMPARTITION);
++
+ 	cqspi_controller_enable(cqspi);
+ }
+=20
+=2D-=20
+2.1.4
+
+
+--Boundary-00=_TNjsVRzj20XI0/R
+Content-Type: text/x-patch;
+  charset="UTF-8";
+  name="0002-mtd-spi-nor-Pass-OF-node-into-subdevs.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="0002-mtd-spi-nor-Pass-OF-node-into-subdevs.patch"
+
+=46rom fac766b916a64c263fdb044bdaba80a52f582ecb Mon Sep 17 00:00:00 2001
+=46rom: Marek Vasut <marex@denx.de>
+Date: Fri, 24 Jul 2015 14:10:09 +0200
+Subject: [PATCH 2/2] mtd: spi-nor: Pass OF node into subdevs
+
+The entire mechanism by which the CQSPI driver probes the SPI NORs
+is probably broken, in particular because it uses dev pointer of
+the CQSPI and passes it into spi_nor_scan(). Since the dev->of_node
+therefore points into the of_node of the CQSPI, the spi-nor driver
+cannot properly parse the OF properties of the subnode and thus can
+not configure itself accordingly. Add a nasty hack to work around
+this for now.
+
+Signed-off-by: Marek Vasut <marex@denx.de>
+=2D--
+ drivers/mtd/spi-nor/cadence-quadspi.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/ca=
+dence-quadspi.c
+index a18732c..017460e 100644
+=2D-- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -1203,6 +1203,7 @@ static int cqspi_probe(struct platform_device *pdev)
+=20
+ 		nor->mtd =3D mtd;
+ 		nor->dev =3D dev;
++		nor->dev->of_node =3D np;
+ 		nor->priv =3D cqspi;
+ 		mtd->priv =3D nor;
+=20
+=2D-=20
+2.1.4
+
+
+--Boundary-00=_TNjsVRzj20XI0/R--
