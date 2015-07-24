@@ -1,24 +1,25 @@
-Received: from mail-vn0-x234.google.com ([2607:f8b0:400c:c0f::234])
+Received: from mail-bn1on0628.outbound.protection.outlook.com
+ ([2a01:111:f400:fc10::628] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZIf7Q-0004Vr-SV
- for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 15:42:45 +0000
-Received: by vnav141 with SMTP id v141so10410135vna.0
- for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2015 08:42:19 -0700 (PDT)
+ id 1ZIfdo-0000v0-TQ
+ for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 16:16:10 +0000
+Message-ID: <55B263D1.8080506@opensource.altera.com>
+Date: Fri, 24 Jul 2015 11:12:01 -0500
+From: Graham Moore <grmoore@opensource.altera.com>
 MIME-Version: 1.0
-In-Reply-To: <1437507599-25424-7-git-send-email-Frank.Li@freescale.com>
-References: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
- <1437507599-25424-7-git-send-email-Frank.Li@freescale.com>
-Date: Fri, 24 Jul 2015 10:42:19 -0500
-Message-ID: <CA+EcR20tdPxQpqS3CZ5ZGXTf8Fi2PFoJs57-VBdWYEbVrcFL5Q@mail.gmail.com>
-Subject: Re: [PATCH 7/7] mtd: spi-nor: fsl-quadspi: fix unsupported cmd when
- run flash_erase
-From: Han Xu <xhnjupt@gmail.com>
-To: "Frank.Li@freescale.com" <Frank.Li@freescale.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "b45815@freescale.com" <b45815@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- =?UTF-8?B?5p2O5pm6?= <lznuaa@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: Marek Vasut <marex@denx.de>
+CC: <linux-mtd@lists.infradead.org>, Alan Tull <atull@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ <linux-kernel@vger.kernel.org>, Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>
+Subject: Re: [PATCH V4 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+References: <1427117782-14764-1-git-send-email-grmoore@opensource.altera.com>
+ <201507241445.07988.marex@denx.de>
+In-Reply-To: <201507241445.07988.marex@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,54 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 21, 2015 at 2:39 PM,  <Frank.Li@freescale.com> wrote:
-> From: Frank Li <Frank.Li@freescale.com>
+On 07/24/2015 07:45 AM, Marek Vasut wrote:
+> On Monday, March 23, 2015 at 02:36:21 PM, Graham Moore wrote:
+>> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+>> ---
+>> V2: Add cdns prefix to driver-specific bindings.
+>> V3: Use existing property "is-decoded-cs" instead of creating a duplicate,
+>> "ext-decoder".  Timing parameters are in nanoseconds, not master reference
+>> clocks.  Remove bus-num completely.
 >
-> fsl-quadspi 21e0000.qspi: Unsupported cmd 0x20
+> Hi!
 >
-> when config CONFIG_MTD_SPI_NOR_USE_4K_SECTORS enable,
-> erase will use SPINOR_OP_BE_4K, which was not supported by fsl-quadspi
-> driver
+> do you plan to continue on this driver any soon? If not, I'd like to take
+> over the mainlining if you're not opposed. I'd like to see this in mainline
+> soon.
 >
-> Signed-off-by: Frank Li <Frank.Li@freescale.com>
 
-Acked-by: Han Xu <han.xu@freescale.com>
+I don't have a problem with you taking over the mainlining.  I've been 
+stalled on the micron quad protocol issue that Cyrille Pitchen has solved.
 
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> btw you'll need some kind of a variation on the attached two patches in
+> the next iteration.
 >
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 68054c1..d2981c5 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -396,11 +396,11 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->         lut_base = SEQID_SE * 4;
+
+I have a V5 with fixes for sparse and smatch issues.  Do you want me to 
+post it and you add those two patches?  Alternatively I can incorporate 
+them into my V5.
+
+Best regards,
+Graham
+
+> Best regards,
+> Marek Vasut
 >
->         if (q->nor_size <= SZ_16M) {
-> -               cmd = SPINOR_OP_SE;
-> +               cmd = q->nor[0].erase_opcode;
->                 addrlen = ADDR24BIT;
->         } else {
->                 /* use the 4-byte address */
-> -               cmd = SPINOR_OP_SE;
-> +               cmd = q->nor[0].erase_opcode;
->                 addrlen = ADDR32BIT;
->         }
->
-> @@ -471,6 +471,8 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
->         case SPINOR_OP_BRWR:
->                 return SEQID_BRWR;
->         default:
-> +               if (cmd == q->nor[0].erase_opcode)
-> +                       return SEQID_SE;
->                 dev_err(q->dev, "Unsupported cmd 0x%.2x\n", cmd);
->                 break;
->         }
-> --
-> 1.9.1
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
