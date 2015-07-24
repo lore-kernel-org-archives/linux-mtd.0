@@ -1,22 +1,23 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZIS3U-00059I-3y
- for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 01:45:44 +0000
-Received: by pacan13 with SMTP id an13so5490981pac.1
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jul 2015 18:45:22 -0700 (PDT)
-Date: Thu, 23 Jul 2015 18:45:19 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mtd: nand support for Toshiba BENAND (Built-in ECC
- NAND)
-Message-ID: <20150724014519.GG8876@google.com>
-References: <1437699138-24582-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+From: Marek Vasut <marex@denx.de>
+To: Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+Date: Fri, 24 Jul 2015 10:34:15 +0200
+Cc: Vinod Koul <vinod.koul@intel.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi" <linux-spi@vger.kernel.org>,
+ dmaengine <dmaengine@vger.kernel.org>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <CAOMqctRnh2RsUYiRr2-+wucaq5NArTNrzPpqdPs+ETrFe9UrZA@mail.gmail.com>
+ <CAOMqctREShUrBR=aQM2Vc6MhVezCP9rnNfUNq=m2-GH_gbYxFw@mail.gmail.com>
+In-Reply-To: <CAOMqctREShUrBR=aQM2Vc6MhVezCP9rnNfUNq=m2-GH_gbYxFw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1437699138-24582-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201507241034.15406.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 24, 2015 at 09:52:18AM +0900, KOBAYASHI Yoshitake wrote:
-> This patch enables support for Toshiba BENAND. BENAND is a SLC NAND
-> solution that automatically generates ECC inside NAND chip.
-> 
-> I considered to use the patch of on-die ECC, but I believe reading twice
-> the same page approach will affect read performance. Additionally, BENAND
-> does not support Disable ECC. So, I cannot use same approach.
-> 
-> BENAND Read Status CMD(70h) is able to report Rewrite Recommend. BENAND
-> also has extended ECC Status CMD(7Ah). This command is able to report the
-> number of bit error/sector data. When MTD_NAND_BENAND_ENABLE option enabled,
-> this driver use the extended ECC status CMD(7Ah) to report real number of
-> bitflips. In case of difficult to use CMD(7Ah), this driver use
-> "mtd->bitflip_threshold" to assume the number of bitflips.
-> 
-> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-> ---
+On Thursday, July 23, 2015 at 07:03:47 PM, Michal Suchanek wrote:
 
-Where's the changelog? I see that this is version 3...
+Hi!
 
-Brian
+[...]
+
+> >>> It's probably slower to set up DMA for 2-byte commands but it might
+> >>> work nonetheless.
+> >> 
+> >> It is, the overhead will be considerable. It might help the stability
+> >> though. I'm really looking forward to the results!
+> > 
+> > Hello,
+> > 
+> > this does not quite work.
+> > 
+> > My test with spidev:
+> > 
+> > # ./spinor /dev/spidev1.0
+> > Sending 9f 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > Received 00 ff c8 60 16 c8 60 16 c8 60 16 c8 60 16 c8 60
+> > Sending 90 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > Received 00 ff ff ff ff c8 15 c8 15 c8 15 c8 15 c8 15 c8
+> > Sending 9f 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > Received 00 ff c8 60 16 c8 60 16 c8 60 16 c8 60 16 c8 60
+> > 
+> > I receive correct ID but spi-nor complains it does not know ID 00 c8 60.
+> > IIRC garbage should be sent only at the time command is transferred so
+> > only one byte of garbage should be received. Also the garbage tends to
+> > be the last state of the data output - all 0 or all 1.
+> > So it seems using DMA for all transfers including 1-byte commands
+> > results in (some?) received data getting an extra 00 prefix.
+> > 
+> > 
+> > I also managed to lock up the controller completely since there is
+> > some error passing the SPI speed somewhere :(
+> > 
+> > [ 1352.977530] spidev spi1.0: setup mode 0, 8 bits/w, 80000000 Hz max -->
+> > 0 [ 1352.977540] spidev spi1.0: spi mode 0
+> > [ 1352.977576] spidev spi1.0: setup mode 0, 8 bits/w, 80000000 Hz max -->
+> > 0 [ 1352.977582] spidev spi1.0: msb first
+> > [ 1352.977614] spidev spi1.0: setup mode 0, 8 bits/w, 80000000 Hz max -->
+> > 0 [ 1352.977620] spidev spi1.0: 0 bits per word
+> > [ 1352.977652] spidev spi1.0: setup mode 0, 8 bits/w, 2690588672 Hz max
+> > --> 0 [ 1352.977726] spi_master spi1: s3c64xx_spi_config: clk_from_cmu 1
+> > src_clk sclk_spi1 mode bpw 8
+> > [ 1352.977753] spi_master spi1: spi1.0 s3c64xx_spi_transfer_one: xfer
+> > bpw 8 speed -1604378624
+> > [ 1352.977760] spi_master spi1: s3c64xx_spi_config: clk_from_cmu 1
+> > src_clk sclk_spi1 mode bpw 8
+> > [ 1352.977781] spi_master spi1: spi1.0 s3c64xx_spi_transfer_one: using
+> > dma [ 1352.977797] dma-pl330 121b0000.pdma: setting up request on thread
+> > 1
+> 
+> Hmm, on a second thought it probably works as expected more or less.
+> 
+> The nonsensical value was passed from application and there is no
+> guard against that.
+> 
+> Since I don't do PIO the controller remains locked up indefinitely.
+
+I have to admit, I don't quite understand the above. I also don't quite know
+what your spidev test does. Can you possibly just bind a regular SPI NOR driver 
+and run mtdtests to see if it is stable ?
