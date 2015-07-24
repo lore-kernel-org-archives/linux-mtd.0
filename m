@@ -1,17 +1,16 @@
-Received: from mail-vn0-x233.google.com ([2607:f8b0:400c:c0f::233])
+Received: from mail-vn0-x22e.google.com ([2607:f8b0:400c:c0f::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZIf4R-0000bM-CK
- for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 15:39:39 +0000
-Received: by vnds125 with SMTP id s125so10334355vnd.1
- for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2015 08:39:14 -0700 (PDT)
+ id 1ZIf5N-0001t7-H4
+ for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 15:40:36 +0000
+Received: by vnk197 with SMTP id 197so10339930vnk.3
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2015 08:40:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1437507599-25424-5-git-send-email-Frank.Li@freescale.com>
+In-Reply-To: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
 References: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
- <1437507599-25424-5-git-send-email-Frank.Li@freescale.com>
-Date: Fri, 24 Jul 2015 10:39:14 -0500
-Message-ID: <CA+EcR23FqjzsXt+vQWTS3nZFdn8CAPw98sTj_pdjD8E6YHovhQ@mail.gmail.com>
-Subject: Re: [PATCH 5/7] mtd: spi-nor: fsl-quadspi: workaround qspi can't
- wakeup from wait mode
+Date: Fri, 24 Jul 2015 10:40:12 -0500
+Message-ID: <CA+EcR23Y8OF2e90jAgw7r1ufscXhejo7wk_OU1HQLK+S32AzKA@mail.gmail.com>
+Subject: Re: [PATCH 1/7] mtd: spi-nor: fsl-quadspi: use quirk to distinguish
+ different qspi version
 From: Han Xu <xhnjupt@gmail.com>
 To: "Frank.Li@freescale.com" <Frank.Li@freescale.com>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -29,110 +28,97 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, Jul 21, 2015 at 2:39 PM,  <Frank.Li@freescale.com> wrote:
-> From: Frank Li <Frank.Li@freescale.com>
+> From: Han Xu <b45815@freescale.com>
 >
-> QSPI1 cannot wake up CCM from WAIT mode on SX ARD board, add pmqos to
-> let PM NOT enter WAIT mode when accessing QSPI1, refer to TKT245618.
+> add several quirk to distinguish different version of qspi module.
 >
-> Signed-off-by: Frank Li <Frank.Li@freescale.com>
-> Signed-off-by: Allen Xu <b45815@freescale.com>
+> Signed-off-by: Han Xu <b45815@freescale.com>
 
 Acked-by: Han Xu <han.xu@freescale.com>
 
 > ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 24 ++++++++++++++++++++----
->  1 file changed, 20 insertions(+), 4 deletions(-)
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 24 ++++++++++++++++--------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
 >
 > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 1419f1f..10a2c23 100644
+> index e854004..258bebf 100644
 > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -27,6 +27,7 @@
->  #include <linux/mtd/partitions.h>
+> @@ -28,6 +28,11 @@
 >  #include <linux/mtd/spi-nor.h>
 >  #include <linux/mutex.h>
-> +#include <linux/pm_qos.h>
 >
->  /* Controller needs driver to swap endian */
->  #define QUADSPI_QUIRK_SWAP_ENDIAN      (1 << 0)
-> @@ -37,6 +38,8 @@
->   * trigger data transfer even though extern data will not transferred.
->   */
->  #define QUADSPI_QUIRK_TKT253890                (1 << 2)
-> +/* Controller cannot wake up from wait mode, TKT245618 */
-> +#define QUADSPI_QUIRK_TKT245618         (1 << 3)
->
+> +/* Controller needs driver to swap endian */
+> +#define QUADSPI_QUIRK_SWAP_ENDIAN      (1 << 0)
+> +/* Controller needs 4x internal clock */
+> +#define QUADSPI_QUIRK_4X_INT_CLK       (1 << 1)
+> +
 >  /* The registers */
 >  #define QUADSPI_MCR                    0x00
-> @@ -231,6 +234,7 @@ static struct fsl_qspi_devtype_data imx6sx_data = {
+>  #define QUADSPI_MCR_RESERVED_SHIFT     16
+> @@ -202,20 +207,23 @@ struct fsl_qspi_devtype_data {
+>         int rxfifo;
+>         int txfifo;
+>         int ahb_buf_size;
+> +       int driver_data;
+>  };
+>
+>  static struct fsl_qspi_devtype_data vybrid_data = {
+>         .devtype = FSL_QUADSPI_VYBRID,
+>         .rxfifo = 128,
+>         .txfifo = 64,
+> -       .ahb_buf_size = 1024
+> +       .ahb_buf_size = 1024,
+> +       .driver_data = QUADSPI_QUIRK_SWAP_ENDIAN
+>  };
+>
+>  static struct fsl_qspi_devtype_data imx6sx_data = {
+>         .devtype = FSL_QUADSPI_IMX6SX,
+>         .rxfifo = 128,
 >         .txfifo = 512,
->         .ahb_buf_size = 1024,
->         .driver_data = QUADSPI_QUIRK_4X_INT_CLK
-> +                      | QUADSPI_QUIRK_TKT245618
+> -       .ahb_buf_size = 1024
+> +       .ahb_buf_size = 1024,
+> +       .driver_data = QUADSPI_QUIRK_4X_INT_CLK
 >  };
 >
->  static struct fsl_qspi_devtype_data imx7d_data = {
-> @@ -270,6 +274,7 @@ struct fsl_qspi {
->         unsigned int chip_base_addr; /* We may support two chips. */
->         bool has_second_chip;
+>  #define FSL_QSPI_MAX_CHIP      4
+> @@ -239,14 +247,14 @@ struct fsl_qspi {
 >         struct mutex lock;
-> +       struct pm_qos_request pm_qos_req;
 >  };
 >
->  static inline int needs_swap_endian(struct fsl_qspi *q)
-> @@ -287,6 +292,11 @@ static inline int needs_fill_txfifo(struct fsl_qspi *q)
->         return q->devtype_data->driver_data & QUADSPI_QUIRK_TKT253890;
->  }
->
-> +static inline int needs_wakeup_wait_mode(struct fsl_qspi *q)
-> +{
-> +       return q->devtype_data->driver_data & QUADSPI_QUIRK_TKT245618;
-> +}
-> +
->  /*
->   * An IC bug makes us to re-arrange the 32-bit data.
->   * The following chips, such as IMX6SLX, have fixed this bug.
-> @@ -668,12 +678,18 @@ static int fsl_qspi_clk_prep_enable(struct fsl_qspi *q)
->                 return ret;
->         }
->
-> +       if (needs_wakeup_wait_mode(q))
-> +               pm_qos_add_request(&q->pm_qos_req, PM_QOS_CPU_DMA_LATENCY, 0);
-> +
->         return 0;
->  }
->
->  /* This function was used to disable and unprepare QSPI clock */
->  static void fsl_qspi_clk_disable_unprep(struct fsl_qspi *q)
+> -static inline int is_vybrid_qspi(struct fsl_qspi *q)
+> +static inline int needs_swap_endian(struct fsl_qspi *q)
 >  {
-> +       if (needs_wakeup_wait_mode(q))
-> +               pm_qos_remove_request(&q->pm_qos_req);
-> +
->         clk_disable_unprepare(q->clk);
->         clk_disable_unprepare(q->clk_en);
+> -       return q->devtype_data->devtype == FSL_QUADSPI_VYBRID;
+> +       return q->devtype_data->driver_data & QUADSPI_QUIRK_SWAP_ENDIAN;
+>  }
 >
-> @@ -925,6 +941,10 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->         if (!q->nor_num || q->nor_num > FSL_QSPI_MAX_CHIP)
->                 return -ENODEV;
+> -static inline int is_imx6sx_qspi(struct fsl_qspi *q)
+> +static inline int needs_4x_clock(struct fsl_qspi *q)
+>  {
+> -       return q->devtype_data->devtype == FSL_QUADSPI_IMX6SX;
+> +       return q->devtype_data->driver_data & QUADSPI_QUIRK_4X_INT_CLK;
+>  }
 >
-> +       q->dev = dev;
-> +       q->devtype_data = (struct fsl_qspi_devtype_data *)of_id->data;
-> +       platform_set_drvdata(pdev, q);
-> +
->         /* find the resources */
->         res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "QuadSPI");
->         q->iobase = devm_ioremap_resource(dev, res);
-> @@ -964,10 +984,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->                 goto irq_failed;
->         }
+>  /*
+> @@ -255,7 +263,7 @@ static inline int is_imx6sx_qspi(struct fsl_qspi *q)
+>   */
+>  static inline u32 fsl_qspi_endian_xchg(struct fsl_qspi *q, u32 a)
+>  {
+> -       return is_vybrid_qspi(q) ? __swab32(a) : a;
+> +       return needs_swap_endian(q) ? __swab32(a) : a;
+>  }
 >
-> -       q->dev = dev;
-> -       q->devtype_data = (struct fsl_qspi_devtype_data *)of_id->data;
-> -       platform_set_drvdata(pdev, q);
-> -
->         ret = fsl_qspi_nor_setup(q);
->         if (ret)
->                 goto irq_failed;
+>  static inline void fsl_qspi_unlock_lut(struct fsl_qspi *q)
+> @@ -650,7 +658,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
+>         unsigned long rate = q->clk_rate;
+>         int ret;
+>
+> -       if (is_imx6sx_qspi(q))
+> +       if (needs_4x_clock(q))
+>                 rate *= 4;
+>
+>         ret = clk_set_rate(q->clk, rate);
 > --
 > 1.9.1
 >
