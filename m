@@ -1,18 +1,30 @@
-From: Stefan Agner <stefan@agner.ch>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Cc: sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
- mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
- bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v7 5/5] ARM: dts: vf-colibri: enable NAND flash controller
-Date: Fri, 24 Jul 2015 15:16:24 +0200
-Message-Id: <1437743784-30163-6-git-send-email-stefan@agner.ch>
-In-Reply-To: <1437743784-30163-1-git-send-email-stefan@agner.ch>
-References: <1437743784-30163-1-git-send-email-stefan@agner.ch>
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZIeD5-0007y3-0E
+ for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 14:44:27 +0000
+Received: by padck2 with SMTP id ck2so15550529pad.0
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2015 07:44:05 -0700 (PDT)
+From: Bhuvanchandra DV <bhuvanchandradv@gmail.com>
+Subject: Re: UBIFS errors when file-system is full
+To: Richard Weinberger <richard@nod.at>
+References: <55A3C342.9010704@gmail.com>
+ <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
+ <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
+ <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
+ <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
+ <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
+ <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
+ <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
+ <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
+ <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
+ <55AF4447.50500@nod.at>
+Cc: linux-mtd@lists.infradead.org
+Message-ID: <55B24F2F.9020705@gmail.com>
+Date: Fri, 24 Jul 2015 20:13:59 +0530
+MIME-Version: 1.0
+In-Reply-To: <55AF4447.50500@nod.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +34,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable NAND access by adding pinmux and NAND flash controller node
-to device tree. The NAND chips currently used on the Colibri VF61
-requires 8-bit ECC per 512 byte page, hence specify 32-bit ECC
-strength per 2k page size.
+On 07/22/2015 12:50 PM, Richard Weinberger wrote:
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm/boot/dts/vf-colibri.dtsi | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+> Am 22.07.2015 um 09:10 schrieb Bhuvanchandra DV:
+>> On 07/21/2015 11:44 AM, Richard Weinberger wrote:
+>>
+>>> Hi!
+>>>
+>>> Am 21.07.2015 um 08:04 schrieb Bhuvanchandra DV:
+>>>> Ran the power cut tests with fm_debug enabled, no additional logs are observed.
+>>>> After few hundred power cuts U-Boot fails to mount with -22 and kernel fails
+>>>> mounting with stack trace when reading the node.
+>>> Why U-Boot? Has U-Boot fastmap enabled?
+>> Yes, fastmap is enabled in U-Boot.
+> Please disable it.
 
-diff --git a/arch/arm/boot/dts/vf-colibri.dtsi b/arch/arm/boot/dts/vf-colibri.dtsi
-index 68ca125..8d7986a 100644
---- a/arch/arm/boot/dts/vf-colibri.dtsi
-+++ b/arch/arm/boot/dts/vf-colibri.dtsi
-@@ -52,6 +52,19 @@
- 	pinctrl-0 = <&pinctrl_i2c0>;
- };
- 
-+&nfc {
-+	assigned-clocks = <&clks VF610_CLK_NFC>;
-+	assigned-clock-rates = <33000000>;
-+	nand-bus-width = <8>;
-+	nand-ecc-mode = "hw";
-+	nand-ecc-step-size = <2048>;
-+	nand-ecc-strength = <32>;
-+	nand-on-flash-bbt;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_nfc_1>;
-+	status = "okay";
-+};
-+
- &pwm0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pwm0>;
-@@ -156,6 +169,25 @@
- 			>;
- 		};
- 
-+		pinctrl_nfc_1: nfcgrp_1 {
-+			fsl,pins = <
-+				VF610_PAD_PTD23__NF_IO7		0x28df
-+				VF610_PAD_PTD22__NF_IO6		0x28df
-+				VF610_PAD_PTD21__NF_IO5		0x28df
-+				VF610_PAD_PTD20__NF_IO4		0x28df
-+				VF610_PAD_PTD19__NF_IO3		0x28df
-+				VF610_PAD_PTD18__NF_IO2		0x28df
-+				VF610_PAD_PTD17__NF_IO1		0x28df
-+				VF610_PAD_PTD16__NF_IO0		0x28df
-+				VF610_PAD_PTB24__NF_WE_B	0x28c2
-+				VF610_PAD_PTB25__NF_CE0_B	0x28c2
-+				VF610_PAD_PTB27__NF_RE_B	0x28c2
-+				VF610_PAD_PTC26__NF_RB_B	0x283d
-+				VF610_PAD_PTC27__NF_ALE		0x28c2
-+				VF610_PAD_PTC28__NF_CLE		0x28c2
-+			>;
-+		};
-+
- 		pinctrl_pwm0: pwm0grp {
- 			fsl,pins = <
- 				VF610_PAD_PTB0__FTM0_CH0		0x1182
--- 
-2.4.5
+Disabled fastmap in U-Boot, still the corruption is persistent when using
+U-Boot to mount rootfs and load kernel.
+
+>> The same power cut tests are done by skipping the U-Boot to mount the UBIFS. Loaded
+>> the kernel via tftp and mount the rootfs with kernel. The power cut test passed.
+>> I think U-Boot might have some issues, but not very sure.
+> To my knowledge U-Boot's fastmap support is incomplete.
+> If you *really* need fastmap in U-Boot make sure that they have backported
+> all recent fastmap changes. Fastmap is still experimental and faced a lot of fixes
+> recently.
+
+Tested with mainline U-Boot along with few downstream patches for boot config block
+support applied, the ubifs corruption is persistant.
+
+>
+>>> Anyway, we need to sort out what is going on.
+>>> As fm_debug does not trigger it could also be a non-fastmap issue.
+>>> Did you try your test without fastmap being enabled?
+>>>
+>>> Does your target pass UBI tests too?
+>> I'm not aware of UBI tests so far the driver passed all MTD tests.
+>> Can you please provide some pointers for UBI tests. Will run the UBI tests with
+>> driver.
+> They are in the mtd-utils source.
+
+Not yet ran the ubi-tests. Will run the tests and share the results.
+
+>
+>>>> Log:
+>>> [...]
+>>>> [    2.847326] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type (255 but expected 3)
+>>>> [    2.866839] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at LEB 981:70368, LEB mapping status 1
+>>>> [    2.887961] Not a node, first 24 bytes:
+>>>> [    2.891864] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff                          ........................
+>>> Hmm, LEB1 is unmapped.
+>>> If you disable fastmap, does this target boot as expected?
+>>> Or is this a persistent corruption?
+>> No, the corruption is persistent.
+>> - removed|fm_autoconvert from kernel args - removed the fastmap support from kernel Tested with above both cases, the corruption is persistent. |
+> Okay that is a clear hint that Linux's fastmap is only the messenger and not the evil doer.
+>
+> Thanks,
+> //richard
+
+Best regards,
+
+Bhuvan
