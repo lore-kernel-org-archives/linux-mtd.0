@@ -1,30 +1,23 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-vn0-x22c.google.com ([2607:f8b0:400c:c0f::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZIeD5-0007y3-0E
- for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 14:44:27 +0000
-Received: by padck2 with SMTP id ck2so15550529pad.0
- for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2015 07:44:05 -0700 (PDT)
-From: Bhuvanchandra DV <bhuvanchandradv@gmail.com>
-Subject: Re: UBIFS errors when file-system is full
-To: Richard Weinberger <richard@nod.at>
-References: <55A3C342.9010704@gmail.com>
- <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
- <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
- <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
- <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
- <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
- <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
- <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
- <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
- <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
- <55AF4447.50500@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Message-ID: <55B24F2F.9020705@gmail.com>
-Date: Fri, 24 Jul 2015 20:13:59 +0530
+ id 1ZIf21-0007jn-UT
+ for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 15:37:06 +0000
+Received: by vnaa140 with SMTP id a140so10326837vna.2
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2015 08:36:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <55AF4447.50500@nod.at>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1437684751-1845-1-git-send-email-Frank.Li@freescale.com>
+References: <1437684751-1845-1-git-send-email-Frank.Li@freescale.com>
+Date: Fri, 24 Jul 2015 10:36:43 -0500
+Message-ID: <CA+EcR20NeKsAiOBmkpi7poHCqoSpfCxAUqmc-=N9DdD=bHMi4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mtd: spi-nor: fsl-qspi: dynamically map memory
+ space for AHB read
+From: Han Xu <xhnjupt@gmail.com>
+To: "Frank.Li@freescale.com" <Frank.Li@freescale.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "b45815@freescale.com" <b45815@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?B?5p2O5pm6?= <lznuaa@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,65 +27,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/22/2015 12:50 PM, Richard Weinberger wrote:
-
-> Am 22.07.2015 um 09:10 schrieb Bhuvanchandra DV:
->> On 07/21/2015 11:44 AM, Richard Weinberger wrote:
->>
->>> Hi!
->>>
->>> Am 21.07.2015 um 08:04 schrieb Bhuvanchandra DV:
->>>> Ran the power cut tests with fm_debug enabled, no additional logs are observed.
->>>> After few hundred power cuts U-Boot fails to mount with -22 and kernel fails
->>>> mounting with stack trace when reading the node.
->>> Why U-Boot? Has U-Boot fastmap enabled?
->> Yes, fastmap is enabled in U-Boot.
-> Please disable it.
-
-Disabled fastmap in U-Boot, still the corruption is persistent when using
-U-Boot to mount rootfs and load kernel.
-
->> The same power cut tests are done by skipping the U-Boot to mount the UBIFS. Loaded
->> the kernel via tftp and mount the rootfs with kernel. The power cut test passed.
->> I think U-Boot might have some issues, but not very sure.
-> To my knowledge U-Boot's fastmap support is incomplete.
-> If you *really* need fastmap in U-Boot make sure that they have backported
-> all recent fastmap changes. Fastmap is still experimental and faced a lot of fixes
-> recently.
-
-Tested with mainline U-Boot along with few downstream patches for boot config block
-support applied, the ubifs corruption is persistant.
-
+On Thu, Jul 23, 2015 at 3:52 PM,  <Frank.Li@freescale.com> wrote:
+> From: Allen Xu <b45815@freescale.com>
 >
->>> Anyway, we need to sort out what is going on.
->>> As fm_debug does not trigger it could also be a non-fastmap issue.
->>> Did you try your test without fastmap being enabled?
->>>
->>> Does your target pass UBI tests too?
->> I'm not aware of UBI tests so far the driver passed all MTD tests.
->> Can you please provide some pointers for UBI tests. Will run the UBI tests with
->> driver.
-> They are in the mtd-utils source.
-
-Not yet ran the ubi-tests. Will run the tests and share the results.
-
+> QSPI may failed to map enough memory (256MB) for AHB read in
+> previous implementation, especially in 3G/1G memory layout kernel.
+> Dynamically map memory to avoid such issue.
 >
->>>> Log:
->>> [...]
->>>> [    2.847326] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type (255 but expected 3)
->>>> [    2.866839] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at LEB 981:70368, LEB mapping status 1
->>>> [    2.887961] Not a node, first 24 bytes:
->>>> [    2.891864] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff                          ........................
->>> Hmm, LEB1 is unmapped.
->>> If you disable fastmap, does this target boot as expected?
->>> Or is this a persistent corruption?
->> No, the corruption is persistent.
->> - removed|fm_autoconvert from kernel args - removed the fastmap support from kernel Tested with above both cases, the corruption is persistent. |
-> Okay that is a clear hint that Linux's fastmap is only the messenger and not the evil doer.
+> This implementation generally map 4MB memory for AHB read, it should
+> be enough for common scenarios, and the side effect (0.6% performance
+> drop) is minor.
 >
-> Thanks,
-> //richard
+> Previous implementation
+>
+> root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=1K count=32K
+> 32768+0 records in
+> 32768+0 records out
+> 33554432 bytes (34 MB) copied, 2.16006 s, 15.5 MB/s
+>
+> root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=32M count=1
+> 1+0 records in
+> 1+0 records out
+> 33554432 bytes (34 MB) copied, 1.43149 s, 23.4 MB/s
+>
+> After applied the patch
+>
+> root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=1K count=32K
+> 32768+0 records in
+> 32768+0 records out
+> 33554432 bytes (34 MB) copied, 2.1743 s, 15.4 MB/s
+>
+> root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=32M count=1
+> 1+0 records in
+> 1+0 records out
+> 33554432 bytes (34 MB) copied, 1.43158 s, 23.4 MB/s
+>
+> Signed-off-by: Allen Xu <b45815@freescale.com>
+> Signed-off-by: Frank Li <Frank.Li@freescale.com>
 
-Best regards,
+Acked-by: Han Xu <han.xu@freescale.com>
 
-Bhuvan
+> ---
+>
+> Change from v1 to v2:
+>    rebase to last l2-mtd
+>
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 48 ++++++++++++++++++++++++++++++++-------
+>  1 file changed, 40 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 1946c6d..e854004 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -223,8 +223,10 @@ struct fsl_qspi {
+>         struct mtd_info mtd[FSL_QSPI_MAX_CHIP];
+>         struct spi_nor nor[FSL_QSPI_MAX_CHIP];
+>         void __iomem *iobase;
+> -       void __iomem *ahb_base; /* Used when read from AHB bus */
+> +       void __iomem *ahb_addr;
+>         u32 memmap_phy;
+> +       u32 memmap_offs;
+> +       u32 memmap_len;
+>         struct clk *clk, *clk_en;
+>         struct device *dev;
+>         struct completion c;
+> @@ -732,11 +734,41 @@ static int fsl_qspi_read(struct spi_nor *nor, loff_t from,
+>         struct fsl_qspi *q = nor->priv;
+>         u8 cmd = nor->read_opcode;
+>
+> -       dev_dbg(q->dev, "cmd [%x],read from (0x%p, 0x%.8x, 0x%.8x),len:%d\n",
+> -               cmd, q->ahb_base, q->chip_base_addr, (unsigned int)from, len);
+> +       /* if necessary,ioremap buffer before AHB read, */
+> +       /* generally 4MB should be large enough */
+> +       if (!q->ahb_addr) {
+> +               q->ahb_addr = ioremap_nocache(
+> +                               q->memmap_phy + q->chip_base_addr + from,
+> +                               len > SZ_4M ? len : SZ_4M);
+> +               if (!q->ahb_addr) {
+> +                       dev_err(q->dev, "ioremap failed\n");
+> +                       return -ENOMEM;
+> +               }
+> +               q->memmap_offs = q->chip_base_addr + from;
+> +               q->memmap_len = len > SZ_4M ? len : SZ_4M;
+> +       /* ioremap if the data requested is out of range */
+> +       } else if (q->chip_base_addr + from < q->memmap_offs
+> +                       || q->chip_base_addr + from + len >
+> +                       q->memmap_offs + q->memmap_len) {
+> +               iounmap(q->ahb_addr);
+> +               q->ahb_addr = ioremap_nocache(
+> +                               q->memmap_phy + q->chip_base_addr + from,
+> +                               len > SZ_4M ? len : SZ_4M);
+> +               if (!q->ahb_addr) {
+> +                       dev_err(q->dev, "ioremap failed\n");
+> +                       return -ENOMEM;
+> +               }
+> +               q->memmap_offs = q->chip_base_addr + from;
+> +               q->memmap_len = len > SZ_4M ? len : SZ_4M;
+> +       }
+> +
+> +       dev_dbg(q->dev, "cmd [%x],read from 0x%p, len:%d\n",
+> +               cmd, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
+> +               len);
+>
+>         /* Read out the data directly from the AHB buffer.*/
+> -       memcpy(buf, q->ahb_base + q->chip_base_addr + from, len);
+> +       memcpy(buf, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
+> +               len);
+>
+>         *retlen += len;
+>         return 0;
+> @@ -821,10 +853,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>
+>         res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>                                         "QuadSPI-memory");
+> -       q->ahb_base = devm_ioremap_resource(dev, res);
+> -       if (IS_ERR(q->ahb_base))
+> -               return PTR_ERR(q->ahb_base);
+> -
+>         q->memmap_phy = res->start;
+>
+>         /* find the clocks */
+> @@ -989,6 +1017,10 @@ static int fsl_qspi_remove(struct platform_device *pdev)
+>         mutex_destroy(&q->lock);
+>         clk_unprepare(q->clk);
+>         clk_unprepare(q->clk_en);
+> +
+> +       if (q->ahb_addr)
+> +               iounmap(q->ahb_addr);
+> +
+>         return 0;
+>  }
+>
+> --
+> 1.9.1
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
