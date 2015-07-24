@@ -1,28 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZIgCm-0004yy-Eb
- for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 16:52:17 +0000
-Message-ID: <55B26D24.3060006@nod.at>
-Date: Fri, 24 Jul 2015 18:51:48 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1ZIgHZ-0007Uu-HY
+ for linux-mtd@lists.infradead.org; Fri, 24 Jul 2015 16:57:15 +0000
+Received: by pdbnt7 with SMTP id nt7so16228909pdb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2015 09:56:52 -0700 (PDT)
+Date: Fri, 24 Jul 2015 09:56:49 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Frank.Li@freescale.com
+Cc: linux-mtd@lists.infradead.org, b45815@freescale.com, lznuaa@gmail.com
+Subject: Re: [PATCH 4/7] mtd: spi-nor: fsl-quadspi: i.MX6SX: fixed the random
+ QSPI access failed issue
+Message-ID: <20150724165649.GH8876@google.com>
+References: <1437507599-25424-1-git-send-email-Frank.Li@freescale.com>
+ <1437507599-25424-4-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
-To: Bhuvanchandra DV <bhuvanchandradv@gmail.com>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS errors when file-system is full
-References: <55A3C342.9010704@gmail.com>
- <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
- <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
- <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
- <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
- <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
- <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
- <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
- <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
- <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
- <55AF4447.50500@nod.at> <55B24F2F.9020705@gmail.com>
-In-Reply-To: <55B24F2F.9020705@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1437507599-25424-4-git-send-email-Frank.Li@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,43 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-
-Am 24.07.2015 um 16:43 schrieb Bhuvanchandra DV:
-> Disabled fastmap in U-Boot, still the corruption is persistent when using
-> U-Boot to mount rootfs and load kernel.
-
-Can you please describe your boot setup in detail?
-Why does U-Boot _mount_ an UBIFS? Install the kernel on an UBI static volume.
-
-If U-Boot mounts UBIFS it has to use UBI in RW mode and therefore it has to process
-fastmap or _delete_ it.
-
->>> The same power cut tests are done by skipping the U-Boot to mount the UBIFS. Loaded
->>> the kernel via tftp and mount the rootfs with kernel. The power cut test passed.
->>> I think U-Boot might have some issues, but not very sure.
->> To my knowledge U-Boot's fastmap support is incomplete.
->> If you *really* need fastmap in U-Boot make sure that they have backported
->> all recent fastmap changes. Fastmap is still experimental and faced a lot of fixes
->> recently.
+On Wed, Jul 22, 2015 at 03:39:56AM +0800, Frank.Li@freescale.com wrote:
+> From: Allen Xu <b45815@freescale.com>
 > 
-> Tested with mainline U-Boot along with few downstream patches for boot config block
-> support applied, the ubifs corruption is persistant.
+> We found there is a low probability(5%) QSPI access timeout issue,
+> usually it happened on kernel boot stage, the first time kernel tried to
+> access QSPI chip. The READ_ID command was sent but not executed,
+> consequently the probe function failed.
 > 
->>
->>>> Anyway, we need to sort out what is going on.
->>>> As fm_debug does not trigger it could also be a non-fastmap issue.
->>>> Did you try your test without fastmap being enabled?
->>>>
->>>> Does your target pass UBI tests too?
->>> I'm not aware of UBI tests so far the driver passed all MTD tests.
->>> Can you please provide some pointers for UBI tests. Will run the UBI tests with
->>> driver.
->> They are in the mtd-utils source.
+> Finally we located the issue by these steps.
 > 
-> Not yet ran the ubi-tests. Will run the tests and share the results.
+> 1. Since the issue happened randomly and usually it cost half day to
+> reproduce, we add more debug code in driver, to create a timeout file if
+> the issue occurred.
+> 
+> 2. Prepared an autorun script to keep rebooting the system and check if
+> the timeout file existed, if the file existed, stop reboot.
+> 
+> 3. The system will stop rebooting when timeout error occurred, set the
+> CCM_CCOSR register and related IOMUX to measure QPSI clock, found there
+> is no clock output, while clock output can be measured when QSPI driver
+> successfully probed.
+> 
+> 4. Check the code and found QSPI clock rate was changed while not
+> disabled clock gate, most of the multiplexers on i.MX6 are glitch ones,
+> clock glitch may occurred and propagated into downstream clock dividers
+> 
+> Based on the new clock flag(CLK_SET_RATE_GATE) and new framework, we
+> need to change the approach of seting clock rate. In current
+> implementation, there are several places in which the clock was touched.
+> 
+> 1. probe function. prepare and enable clock before setting the QSPI
+> register, disable and unprepare the clock before exit.
+> 
+> 2. nor_setup & nor_setup_last, since we change clock rate in these two
+> functions.
+> 
+> 3. fsl_qspi_prep and fsl_qspi_unprep, clock was enabled only when got
+> QSPI access request.
+> 
+> 4. resume function. Clock was required to restroe the setting after
+> resume, disable the clock before exit.
+> 
+> Signed-off-by: Allen Xu <b45815@freescale.com>
+> Signed-off-by: Frank Li <Frank.Li@freescale.com>
+> ---
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 83 +++++++++++++++++++++++++++------------
+>  1 file changed, 58 insertions(+), 25 deletions(-)
 
-Please do so. :-)
+[...]
 
-Thanks,
-//richard
+This patch does not apply to l2-mtd.git.
