@@ -1,21 +1,22 @@
-Message-ID: <55B2D1F9.9040709@st.com>
-Date: Fri, 24 Jul 2015 17:02:01 -0700
-From: vikasm <vikas.manocha@st.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZInhD-0002cx-Jd
+ for linux-mtd@lists.infradead.org; Sat, 25 Jul 2015 00:52:14 +0000
+Message-ID: <55B2DDA3.40306@codeaurora.org>
+Date: Fri, 24 Jul 2015 17:51:47 -0700
+From: Stephen Boyd <sboyd@codeaurora.org>
 MIME-Version: 1.0
-To: Graham Moore <grmoore@opensource.altera.com>, Marek Vasut <marex@denx.de>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, David
- Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Alan Tull
- <atull@opensource.altera.com>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>
-Subject: Re: [PATCH V5 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-References: <1437758259-28299-1-git-send-email-grmoore@opensource.altera.com>
- <1437758259-28299-2-git-send-email-grmoore@opensource.altera.com>
-In-Reply-To: <1437758259-28299-2-git-send-email-grmoore@opensource.altera.com>
-Content-Type: text/plain; charset="windows-1252"
+To: Archit Taneja <architt@codeaurora.org>
+CC: linux-mtd@lists.infradead.org, dehrenberg@google.com,
+ cernekee@gmail.com, computersforpeace@gmail.com,
+ linux-arm-msm@vger.kernel.org, agross@codeaurora.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] mtd: nand: Qualcomm NAND controller driver
+References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
+ <1437474886-6209-1-git-send-email-architt@codeaurora.org>
+ <1437474886-6209-3-git-send-email-architt@codeaurora.org>
+In-Reply-To: <1437474886-6209-3-git-send-email-architt@codeaurora.org>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,1412 +27,1323 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Graham,
+On 07/21/2015 03:34 AM, Archit Taneja wrote:
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 5b2806a..31951fc 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -538,4 +538,11 @@ config MTD_NAND_HISI504
+>  	help
+>  	  Enables support for NAND controller on Hisilicon SoC Hip04.
+>  
+> +config MTD_NAND_QCOM
+> +	tristate "Support for NAND on QCOM SoCs"
+> +	depends on ARCH_QCOM && QCOM_ADM
 
-On 07/24/2015 10:17 AM, Graham Moore wrote:
-> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> ---
-> V2: use NULL instead of modalias in spi_nor_scan call
-> V3: Use existing property is-decoded-cs instead of creating duplicate.
-> V4: Support Micron quad mode by snooping command stream for EVCR command
-> and subsequently configuring Cadence controller for quad mode.
-> V5: Clean up sparse and smatch complaints.  Remove snooping of Micron
-> quad mode.  Add comment on XIP mode bit and dummy clock cycles.  Set
-> up SRAM partition at 1:1 during init.
-> ---
->  arch/arm/boot/dts/socfpga.dtsi               |    1 +
->  arch/arm/boot/dts/socfpga_cyclone5_socdk.dts |    1 -
->  drivers/mtd/spi-nor/Kconfig                  |    6 +
->  drivers/mtd/spi-nor/Makefile                 |    1 +
->  drivers/mtd/spi-nor/cadence-quadspi.c        | 1261 ++++++++++++++++++++++++++
->  5 files changed, 1269 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/spi-nor/cadence-quadspi.c
->
-> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
-> index c71a705..e9ecdce 100644
-> --- a/arch/arm/boot/dts/socfpga.dtsi
-> +++ b/arch/arm/boot/dts/socfpga.dtsi
-> @@ -695,6 +695,7 @@
->                         is-decoded-cs = <1>;
->                         fifo-depth = <128>;
->                         status = "disabled";
-> +                       m25p,fast-read;
+This is sort of annoying that the menu won't show up unless the ADM
+driver is also enabled (which would be in a completely different area of
+the configurator). Perhaps drop that requirement because it isn't
+required to build?
 
-This patch is not applicable to l2-mtd master or linus master repo, might need to rebase it.
-   
->                 };
->
->                 /* Local timer */
-> diff --git a/arch/arm/boot/dts/socfpga_cyclone5_socdk.dts b/arch/arm/boot/dts/socfpga_cyclone5_socdk.dts
-> index 9886728..1792c43 100644
-> --- a/arch/arm/boot/dts/socfpga_cyclone5_socdk.dts
-> +++ b/arch/arm/boot/dts/socfpga_cyclone5_socdk.dts
-> @@ -98,7 +98,6 @@
->                 compatible = "n25q00", "n25q512a", "n25q512ax3";
->                 reg = <0>;
->                 spi-max-frequency = <100000000>;
-> -               m25p,fast-read;
->
->                 cdns,page-size = <256>;
->                 cdns,block-size = <16>;
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 64a4f0e..9485481 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -28,4 +28,10 @@ config SPI_FSL_QUADSPI
->           This enables support for the Quad SPI controller in master mode.
->           We only connect the NOR to this controller now.
->
-> +config SPI_CADENCE_QUADSPI
-> +       tristate "Cadence Quad SPI controller"
-> +       depends on ARCH_SOCFPGA
-> +       help
-> +         This enables support for the Cadence Quad SPI controller and NOR flash.
+> +	help
+> +	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
+> +	  controller. This controller is found on IPQ806x SoC.
 > +
->  endif # MTD_SPI_NOR
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 6a7ce14..372628c 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,2 +1,3 @@
->  obj-$(CONFIG_MTD_SPI_NOR)      += spi-nor.o
-> +obj-$(CONFIG_SPI_CADENCE_QUADSPI)      += cadence-quadspi.o
->  obj-$(CONFIG_SPI_FSL_QUADSPI)  += fsl-quadspi.o
-> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+>  endif # MTD_NAND
+> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
 > new file mode 100644
-> index 0000000..4881db5
+> index 0000000..51c284c
 > --- /dev/null
-> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-> @@ -0,0 +1,1261 @@
+> +++ b/drivers/mtd/nand/qcom_nandc.c
+> @@ -0,0 +1,2019 @@
 > +/*
-> + * Driver for Cadence QSPI Controller
+> + * Copyright (c) 2015, The Linux Foundation. All rights reserved.
 > + *
-> + * Copyright Altera Corporation (C) 2012-2014. All rights reserved.
+> + * This software is licensed under the terms of the GNU General Public
+> + * License version 2, as published by the Free Software Foundation, and
+> + * may be copied, distributed, and modified under those terms.
 > + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms and conditions of the GNU General Public License,
-> + * version 2, as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope it will be useful, but WITHOUT
-> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-> + * more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along with
-> + * this program.  If not, see <http://www.gnu.org/licenses/>.
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
 > + */
+> +
 > +#include <linux/clk.h>
-> +#include <linux/completion.h>
-> +#include <linux/delay.h>
-> +#include <linux/err.h>
-> +#include <linux/errno.h>
+> +#include <linux/slab.h>
 > +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/jiffies.h>
-> +#include <linux/kernel.h>
+
+Where is this used?
+
+> +#include <linux/bitops.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/dmaengine.h>
 > +#include <linux/module.h>
-> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
 > +#include <linux/mtd/partitions.h>
-> +#include <linux/mtd/spi-nor.h>
-> +#include <linux/of_device.h>
 > +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/sched.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/timer.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_mtd.h>
+> +#include <linux/delay.h>
 > +
-> +#define CQSPI_NAME                     "cadence-qspi"
-
-replace space with tabs.
-
-> +#define CQSPI_MAX_CHIPSELECT           16
-
-replace space with tabs.
-
+[..]
+> +/*
+> + * the NAND controller performs reads/writes with ECC in 516 byte chunks.
+> + * the driver calls the chunks 'step' or 'codeword' interchangeably
+> + */
+> +#define NANDC_STEP_SIZE			512
 > +
-> +struct cqspi_flash_pdata {
-> +       struct mtd_info mtd;
-
-replace space with tabs at all relevant code locations in the file, most of the code is using spaces instead of tabs.
-
-> +       struct spi_nor nor;
-> +       u32 clk_rate;
-> +       unsigned int read_delay;
-> +       unsigned int tshsl_ns;
-> +       unsigned int tsd2d_ns;
-> +       unsigned int tchsh_ns;
-> +       unsigned int tslch_ns;
+> +/*
+> + * the largest page size we support is 8K, this will have 16 steps/codewords
+> + * of 512 bytes each
+> + */
+> +#define	MAX_NUM_STEPS			(SZ_8K / NANDC_STEP_SIZE)
+> +
+> +/* we read at most 3 registers per codeword scan */
+> +#define MAX_REG_RD			(3 * MAX_NUM_STEPS)
+> +
+> +/* ECC modes */
+> +#define ECC_NONE	BIT(0)
+> +#define ECC_RS_4BIT	BIT(1)
+> +#define	ECC_BCH_4BIT	BIT(2)
+> +#define	ECC_BCH_8BIT	BIT(3)
+> +
+> +struct desc_info {
+> +	struct list_head list;
+> +
+> +	enum dma_transfer_direction dir;
+> +	struct scatterlist sgl;
+> +	struct dma_async_tx_descriptor *dma_desc;
 > +};
 > +
-> +struct cqspi_st {
-> +       struct platform_device *pdev;
+> +/*
+> + * holds the current register values that we want to write. acts as a contiguous
+> + * chunk of memory which we use to write the controller registers through DMA.
+> + */
+> +struct nandc_regs {
+> +	u32 cmd;
+> +	u32 addr0;
+> +	u32 addr1;
+> +	u32 chip_sel;
+> +	u32 exec;
 > +
-> +       struct clk *clk;
-> +       unsigned int sclk;
+> +	u32 cfg0;
+> +	u32 cfg1;
+> +	u32 ecc_bch_cfg;
 > +
-> +       void __iomem *iobase;
-> +       void __iomem *ahb_base;
-> +       struct completion transfer_complete;
-> +       unsigned int irq_mask;
-> +       int current_cs;
-> +       unsigned int ahb_phy_addr;
-> +       unsigned int master_ref_clk_hz;
-> +       u32 is_decoded_cs;
-> +       unsigned int fifo_depth;
-> +       struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
+> +	u32 clrflashstatus;
+> +	u32 clrreadstatus;
+> +
+> +	u32 cmd1;
+> +	u32 vld;
+> +
+> +	u32 orig_cmd1;
+> +	u32 orig_vld;
+> +
+> +	u32 ecc_buf_cfg;
 > +};
 > +
-> +/* Operation timeout value */
-> +#define CQSPI_TIMEOUT_MS                       500
-> +#define CQSPI_READ_TIMEOUT_MS                  10
-> +#define CQSPI_POLL_IDLE_RETRY                  3
+> +/*
+> + * @cmd_crci:			ADM DMA CRCI for command flow control
+> + * @data_crci:			ADM DMA CRCI for data flow control
+> + * @list:			DMA descriptor list (list of desc_infos)
+> + * @dma_done:			completion param to denote end of last
+> + *				descriptor in the list
+> + * @data_buffer:		our local DMA buffer for page read/writes,
+> + *				used when we can't use the buffer provided
+> + *				by upper layers directly
+> + * @buf_size/count/start:	markers for chip->read_buf/write_buf functions
+> + * @reg_read_buf:		buffer for reading register data via DMA
+> + * @reg_read_pos:		marker for data read in reg_read_buf
+> + * @cfg0, cfg1, cfg0_raw..:	NANDc register configurations needed for
+> + *				ecc/non-ecc mode for the current nand flash
+> + *				device
+> + * @regs:			a contiguous chunk of memory for DMA register
+> + *				writes
+> + * @ecc_strength:		4 bit or 8 bit ecc, received via DT
+> + * @bus_width:			8 bit or 16 bit NAND bus width, received via DT
+> + * @ecc_modes:			supported ECC modes by the current controller,
+> + *				initialized via DT match data
+> + * @cw_size:			the number of bytes in a single step/codeword
+> + *				of a page, consisting of all data, ecc, spare
+> + *				and reserved bytes
+> + * @cw_data:			the number of bytes within a codeword protected
+> + *				by ECC
+> + * @bch_enabled:		flag to tell whether BCH or RS ECC mode is used
+> + * @status:			value to be returned if NAND_CMD_STATUS command
+> + *				is executed
+> + */
+> +struct qcom_nandc_data {
+> +	struct platform_device *pdev;
+> +	struct device *dev;
 > +
-> +#define CQSPI_FIFO_WIDTH                       4
+> +	void __iomem *base;
+> +	struct resource *res;
+> +
+> +	struct clk *core_clk;
+> +	struct clk *aon_clk;
+> +
+> +	/* DMA stuff */
+> +	struct dma_chan *chan;
+> +	struct dma_slave_config	slave_conf;
+> +	unsigned int cmd_crci;
+> +	unsigned int data_crci;
+> +	struct list_head list;
+> +	struct completion dma_done;
+> +
+> +	/* MTD stuff */
+> +	struct nand_chip chip;
+> +	struct mtd_info mtd;
+> +
+> +	/* local data buffer and markers */
+> +	u8		*data_buffer;
+> +	int		buf_size;
+> +	int		buf_count;
+> +	int		buf_start;
+> +
+> +	/* local buffer to read back registers */
+> +	u32 *reg_read_buf;
+> +	dma_addr_t reg_read_paddr;
 
-FIFO width could be 4 or 8 etc depending on the SOC, it would be better to get it from device.
-You can refer to u-boot code for the same.
+Is this used?
 
-> +
-> +#define CQSPI_REG_SRAM_RESV_WORDS              2
-> +#define CQSPI_REG_SRAM_PARTITION_WR            1
-> +#define CQSPI_REG_SRAM_THRESHOLD_BYTES         50
-> +
-> +/* Instruction type */
-> +#define CQSPI_INST_TYPE_SINGLE                 0
-> +#define CQSPI_INST_TYPE_DUAL                   1
-> +#define CQSPI_INST_TYPE_QUAD                   2
-> +
-> +#define CQSPI_DUMMY_CLKS_MAX                   31
-> +
-> +#define CQSPI_STIG_DATA_LEN_MAX                        8
-> +
-> +#define CQSPI_INDIRECTTRIGGER_ADDR_MASK                0xFFFFF
-
-Mask value of 0xFFFFF is specific to socfpga platform.
-Please refer to u-boot patchset for same discussion.
-
-> +
-> +/* Register map */
-> +#define CQSPI_REG_CONFIG                       0x00
-> +#define CQSPI_REG_CONFIG_ENABLE_MASK           BIT(0)
-> +#define CQSPI_REG_CONFIG_DECODE_MASK           BIT(9)
-> +#define CQSPI_REG_CONFIG_CHIPSELECT_LSB                10
-> +#define CQSPI_REG_CONFIG_DMA_MASK              BIT(15)
-> +#define CQSPI_REG_CONFIG_BAUD_LSB              19
-> +#define CQSPI_REG_CONFIG_IDLE_LSB              31
-> +#define CQSPI_REG_CONFIG_CHIPSELECT_MASK       0xF
-> +#define CQSPI_REG_CONFIG_BAUD_MASK             0xF
-> +
-> +#define CQSPI_REG_RD_INSTR                     0x04
-> +#define CQSPI_REG_RD_INSTR_OPCODE_LSB          0
-> +#define CQSPI_REG_RD_INSTR_TYPE_INSTR_LSB      8
-> +#define CQSPI_REG_RD_INSTR_TYPE_ADDR_LSB       12
-> +#define CQSPI_REG_RD_INSTR_TYPE_DATA_LSB       16
-> +#define CQSPI_REG_RD_INSTR_MODE_EN_LSB         20
-> +#define CQSPI_REG_RD_INSTR_DUMMY_LSB           24
-> +#define CQSPI_REG_RD_INSTR_TYPE_INSTR_MASK     0x3
-> +#define CQSPI_REG_RD_INSTR_TYPE_ADDR_MASK      0x3
-> +#define CQSPI_REG_RD_INSTR_TYPE_DATA_MASK      0x3
-> +#define CQSPI_REG_RD_INSTR_DUMMY_MASK          0x1F
-> +
-> +#define CQSPI_REG_WR_INSTR                     0x08
-> +#define CQSPI_REG_WR_INSTR_OPCODE_LSB          0
-> +#define CQSPI_REG_WR_INSTR_TYPE_ADDR_LSB       12
-> +#define CQSPI_REG_WR_INSTR_TYPE_DATA_LSB       16
-> +
-> +#define CQSPI_REG_DELAY                                0x0C
-> +#define CQSPI_REG_DELAY_TSLCH_LSB              0
-> +#define CQSPI_REG_DELAY_TCHSH_LSB              8
-> +#define CQSPI_REG_DELAY_TSD2D_LSB              16
-> +#define CQSPI_REG_DELAY_TSHSL_LSB              24
-> +#define CQSPI_REG_DELAY_TSLCH_MASK             0xFF
-> +#define CQSPI_REG_DELAY_TCHSH_MASK             0xFF
-> +#define CQSPI_REG_DELAY_TSD2D_MASK             0xFF
-> +#define CQSPI_REG_DELAY_TSHSL_MASK             0xFF
-> +
-> +#define CQSPI_REG_READCAPTURE                  0x10
-> +#define CQSPI_REG_READCAPTURE_BYPASS_LSB       0
-> +#define CQSPI_REG_READCAPTURE_DELAY_LSB                1
-> +#define CQSPI_REG_READCAPTURE_DELAY_MASK       0xF
-> +
-> +#define CQSPI_REG_SIZE                         0x14
-> +#define CQSPI_REG_SIZE_ADDRESS_LSB             0
-> +#define CQSPI_REG_SIZE_PAGE_LSB                        4
-> +#define CQSPI_REG_SIZE_BLOCK_LSB               16
-> +#define CQSPI_REG_SIZE_ADDRESS_MASK            0xF
-> +#define CQSPI_REG_SIZE_PAGE_MASK               0xFFF
-> +#define CQSPI_REG_SIZE_BLOCK_MASK              0x3F
-> +
-> +#define CQSPI_REG_SRAMPARTITION                        0x18
-> +#define CQSPI_REG_INDIRECTTRIGGER              0x1C
-> +
-> +#define CQSPI_REG_DMA                          0x20
-> +#define CQSPI_REG_DMA_SINGLE_LSB               0
-> +#define CQSPI_REG_DMA_BURST_LSB                        8
-> +#define CQSPI_REG_DMA_SINGLE_MASK              0xFF
-> +#define CQSPI_REG_DMA_BURST_MASK               0xFF
-> +
-> +#define CQSPI_REG_REMAP                                0x24
-> +#define CQSPI_REG_MODE_BIT                     0x28
-> +
-> +#define CQSPI_REG_SDRAMLEVEL                   0x2C
-> +#define CQSPI_REG_SDRAMLEVEL_RD_LSB            0
-> +#define CQSPI_REG_SDRAMLEVEL_WR_LSB            16
-> +#define CQSPI_REG_SDRAMLEVEL_RD_MASK           0xFFFF
-> +#define CQSPI_REG_SDRAMLEVEL_WR_MASK           0xFFFF
-> +
-> +#define CQSPI_REG_IRQSTATUS                    0x40
-> +#define CQSPI_REG_IRQMASK                      0x44
-> +
-> +#define CQSPI_REG_INDIRECTRD                   0x60
-> +#define CQSPI_REG_INDIRECTRD_START_MASK                BIT(0)
-> +#define CQSPI_REG_INDIRECTRD_CANCEL_MASK       BIT(1)
-> +#define CQSPI_REG_INDIRECTRD_DONE_MASK         BIT(5)
-> +
-> +#define CQSPI_REG_INDIRECTRDWATERMARK          0x64
-> +#define CQSPI_REG_INDIRECTRDSTARTADDR          0x68
-> +#define CQSPI_REG_INDIRECTRDBYTES              0x6C
-> +
-> +#define CQSPI_REG_CMDCTRL                      0x90
-> +#define CQSPI_REG_CMDCTRL_EXECUTE_MASK         BIT(0)
-> +#define CQSPI_REG_CMDCTRL_INPROGRESS_MASK      BIT(1)
-> +#define CQSPI_REG_CMDCTRL_WR_BYTES_LSB         12
-> +#define CQSPI_REG_CMDCTRL_WR_EN_LSB            15
-> +#define CQSPI_REG_CMDCTRL_ADD_BYTES_LSB                16
-> +#define CQSPI_REG_CMDCTRL_ADDR_EN_LSB          19
-> +#define CQSPI_REG_CMDCTRL_RD_BYTES_LSB         20
-> +#define CQSPI_REG_CMDCTRL_RD_EN_LSB            23
-> +#define CQSPI_REG_CMDCTRL_OPCODE_LSB           24
-> +#define CQSPI_REG_CMDCTRL_WR_BYTES_MASK                0x7
-> +#define CQSPI_REG_CMDCTRL_ADD_BYTES_MASK       0x3
-> +#define CQSPI_REG_CMDCTRL_RD_BYTES_MASK                0x7
-> +
-> +#define CQSPI_REG_INDIRECTWR                   0x70
-> +#define CQSPI_REG_INDIRECTWR_START_MASK                BIT(0)
-> +#define CQSPI_REG_INDIRECTWR_CANCEL_MASK       BIT(1)
-> +#define CQSPI_REG_INDIRECTWR_DONE_MASK         BIT(5)
-> +
-> +#define CQSPI_REG_INDIRECTWRWATERMARK          0x74
-> +#define CQSPI_REG_INDIRECTWRSTARTADDR          0x78
-> +#define CQSPI_REG_INDIRECTWRBYTES              0x7C
-> +
-> +#define CQSPI_REG_CMDADDRESS                   0x94
-> +#define CQSPI_REG_CMDREADDATALOWER             0xA0
-> +#define CQSPI_REG_CMDREADDATAUPPER             0xA4
-> +#define CQSPI_REG_CMDWRITEDATALOWER            0xA8
-> +#define CQSPI_REG_CMDWRITEDATAUPPER            0xAC
-> +
-> +/* Interrupt status bits */
-> +#define CQSPI_REG_IRQ_MODE_ERR                 BIT(0)
-> +#define CQSPI_REG_IRQ_UNDERFLOW                        BIT(1)
-> +#define CQSPI_REG_IRQ_IND_COMP                 BIT(2)
-> +#define CQSPI_REG_IRQ_IND_RD_REJECT            BIT(3)
-> +#define CQSPI_REG_IRQ_WR_PROTECTED_ERR         BIT(4)
-> +#define CQSPI_REG_IRQ_ILLEGAL_AHB_ERR          BIT(5)
-> +#define CQSPI_REG_IRQ_WATERMARK                        BIT(6)
-> +#define CQSPI_REG_IRQ_IND_RD_OVERFLOW          BIT(12)
-> +
-> +#define CQSPI_IRQ_STATUS_ERR           (CQSPI_REG_IRQ_MODE_ERR         | \
-> +                                        CQSPI_REG_IRQ_IND_RD_REJECT    | \
-> +                                        CQSPI_REG_IRQ_WR_PROTECTED_ERR | \
-> +                                        CQSPI_REG_IRQ_ILLEGAL_AHB_ERR)
-> +
-> +#define CQSPI_IRQ_MASK_RD              (CQSPI_REG_IRQ_WATERMARK        | \
-> +                                        CQSPI_REG_IRQ_IND_RD_OVERFLOW  | \
-> +                                        CQSPI_REG_IRQ_IND_COMP)
-> +
-> +#define CQSPI_IRQ_MASK_WR              (CQSPI_REG_IRQ_IND_COMP         | \
-> +                                        CQSPI_REG_IRQ_WATERMARK        | \
-> +                                        CQSPI_REG_IRQ_UNDERFLOW)
-> +
-> +#define CQSPI_IRQ_STATUS_MASK          0x1FFFF
-> +
-> +#define CQSPI_REG_IS_IDLE(base)                                                \
-> +               ((readl(base + CQSPI_REG_CONFIG) >>             \
-> +                       CQSPI_REG_CONFIG_IDLE_LSB) & 0x1)
-> +
-> +#define CQSPI_GET_RD_SRAM_LEVEL(reg_base)                              \
-> +               (((readl(reg_base + CQSPI_REG_SDRAMLEVEL)) >>   \
-> +               CQSPI_REG_SDRAMLEVEL_RD_LSB) & CQSPI_REG_SDRAMLEVEL_RD_MASK)
-> +
-> +static unsigned int cqspi_init_timeout(unsigned long timeout_in_ms)
-> +{
-> +       return jiffies + msecs_to_jiffies(timeout_in_ms);
-> +}
-> +
-> +static unsigned int cqspi_check_timeout(unsigned long timeout)
-> +{
-> +       return time_before(jiffies, timeout);
-> +}
-> +
-> +static void cqspi_fifo_read(void *dest, const void __iomem *src_ahb_addr,
-> +                           unsigned int bytes)
-> +{
-> +       unsigned int temp;
-> +       int remaining = bytes;
-> +       unsigned int *dest_ptr = (unsigned int *)dest;
-> +
-> +       while (remaining >= CQSPI_FIFO_WIDTH) {
-> +               *dest_ptr = readl(src_ahb_addr);
-> +               dest_ptr++;
-> +               remaining -= CQSPI_FIFO_WIDTH;
-
-this logic only works when fifo width is 4 with "unsigned int" data of 4 bytes.
-It has been corrected in mainline u-boot or in the u-boot patches.
-
-> +       }
-> +       if (remaining > 0) {
-> +               /* dangling bytes */
-> +               temp = readl(src_ahb_addr);
-> +               memcpy(dest_ptr, &temp, remaining);
-> +       }
-> +}
-> +
-> +static void cqspi_fifo_write(void __iomem *dest_ahb_addr,
-> +                            const void *src, unsigned int bytes)
-> +{
-> +       unsigned int temp;
-> +       int remaining = bytes;
-> +       unsigned int *src_ptr = (unsigned int *)src;
-> +
-> +       while (remaining >= CQSPI_FIFO_WIDTH) {
-> +               writel(*src_ptr, dest_ahb_addr);
-> +               src_ptr++;
-> +               remaining -= CQSPI_FIFO_WIDTH;
-
-same here, this logic only works for fifo width of 4.
-
-> +       }
-> +       if (remaining > 0) {
-> +               /* dangling bytes */
-> +               memcpy(&temp, src_ptr, remaining);
-> +               writel(temp, dest_ahb_addr);
-> +       }
-> +}
-> +
-> +static irqreturn_t cqspi_irq_handler(int this_irq, void *dev)
-> +{
-> +       struct cqspi_st *cqspi = dev;
-> +       unsigned int irq_status;
-> +
-> +       /* Read interrupt status */
-> +       irq_status = readl(cqspi->iobase + CQSPI_REG_IRQSTATUS);
-> +
-> +       /* Clear interrupt */
-> +       writel(irq_status, cqspi->iobase + CQSPI_REG_IRQSTATUS);
-> +
-> +       if (irq_status & cqspi->irq_mask)
-> +               complete(&cqspi->transfer_complete);
-> +
-> +       return IRQ_HANDLED;
-> +}
-> +
-> +static int cqspi_find_chipselect(struct spi_nor *nor)
-> +{
-> +       int cs = -1;
-> +       struct cqspi_st *cqspi = nor->priv;
-> +
-> +       for (cs = 0; cs < CQSPI_MAX_CHIPSELECT; cs++)
-> +               if (nor == &cqspi->f_pdata[cs].nor)
-> +                       break;
-> +       return cs;
-> +}
-> +
-> +static unsigned int cqspi_calc_rdreg(struct spi_nor *nor, u8 opcode)
-> +{
-> +       unsigned int rdreg = 0;
-> +       struct cqspi_st *cqspi = nor->priv;
-> +       struct cqspi_flash_pdata *f_pdata;
-> +
-> +       f_pdata = &cqspi->f_pdata[cqspi->current_cs];
-> +
-> +       if (nor->flash_read == SPI_NOR_QUAD)
-> +               rdreg |= (CQSPI_INST_TYPE_QUAD
-> +                         << CQSPI_REG_RD_INSTR_TYPE_DATA_LSB);
-> +       return rdreg;
-> +}
-> +
-> +static unsigned int cqspi_wait_idle(struct cqspi_st *cqspi)
-> +{
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int count = 0;
-> +       unsigned timeout;
-> +
-> +       timeout = cqspi_init_timeout(CQSPI_TIMEOUT_MS);
-> +       while (cqspi_check_timeout(timeout)) {
-> +               if (CQSPI_REG_IS_IDLE(reg_base)) {
-> +                       /*
-> +                        * Read few times in succession to ensure it does
-> +                        * not transition low again
-> +                        */
-> +                       count++;
-> +                       if (count >= CQSPI_POLL_IDLE_RETRY)
-> +                               return 1;
-> +               } else {
-> +                       count = 0;
-> +               }
-> +               cpu_relax();
-> +       }
-> +
-> +       /* Timeout, in busy mode. */
-> +       dev_err(&cqspi->pdev->dev, "QSPI is still busy after %dms timeout.\n",
-> +               CQSPI_TIMEOUT_MS);
-> +       return 0;
-> +}
-> +
-> +static int cqspi_exec_flash_cmd(struct cqspi_st *cqspi, unsigned int reg)
-> +{
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int timeout;
-> +
-> +       /* Write the CMDCTRL without start execution. */
-> +       writel(reg, reg_base + CQSPI_REG_CMDCTRL);
-> +       /* Start execute */
-> +       reg |= CQSPI_REG_CMDCTRL_EXECUTE_MASK;
-> +       writel(reg, reg_base + CQSPI_REG_CMDCTRL);
-> +
-> +       /* Polling for completion. */
-> +       timeout = cqspi_init_timeout(CQSPI_TIMEOUT_MS);
-> +       while (cqspi_check_timeout(timeout)) {
-> +               reg = readl(reg_base + CQSPI_REG_CMDCTRL) &
-> +                   CQSPI_REG_CMDCTRL_INPROGRESS_MASK;
-> +               if (!reg)
-> +                       break;
-> +       }
-> +
-> +       if (reg != 0) {
-> +               dev_err(&cqspi->pdev->dev, "flash cmd execute time out\n");
-> +               return -EIO;
-> +       }
-> +
-> +       /* Polling QSPI idle status. */
-> +       if (!cqspi_wait_idle(cqspi))
-> +               return -EIO;
-> +
-> +       return 0;
-> +}
-> +
-> +static int cqspi_command_read(struct spi_nor *nor,
-> +                             const u8 *txbuf, unsigned n_tx,
-> +                             u8 *rxbuf, unsigned n_rx)
-> +{
-> +       unsigned int reg;
-> +       unsigned int read_len;
-> +       int status;
-> +       struct cqspi_st *cqspi = nor->priv;
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int rdreg;
-> +
-> +       if (!n_rx || n_rx > CQSPI_STIG_DATA_LEN_MAX || !rxbuf) {
-> +               dev_err(nor->dev,
-> +                       "Invalid input argument, len %d rxbuf 0x%08x\n", n_rx,
-> +                       (unsigned int)rxbuf);
-> +               return -EINVAL;
-> +       }
-> +
-> +       reg = txbuf[0] << CQSPI_REG_CMDCTRL_OPCODE_LSB;
-> +
-> +       rdreg = cqspi_calc_rdreg(nor, txbuf[0]);
-> +       writel(rdreg, reg_base + CQSPI_REG_RD_INSTR);
-> +
-> +       reg |= (0x1 << CQSPI_REG_CMDCTRL_RD_EN_LSB);
-> +
-> +       /* 0 means 1 byte. */
-> +       reg |= (((n_rx - 1) & CQSPI_REG_CMDCTRL_RD_BYTES_MASK)
-> +               << CQSPI_REG_CMDCTRL_RD_BYTES_LSB);
-> +       status = cqspi_exec_flash_cmd(cqspi, reg);
-> +       if (status != 0)
-> +               return status;
-> +
-> +       reg = readl(reg_base + CQSPI_REG_CMDREADDATALOWER);
-> +
-> +       /* Put the read value into rx_buf */
-> +       read_len = (n_rx > 4) ? 4 : n_rx;
-> +       memcpy(rxbuf, &reg, read_len);
-> +       rxbuf += read_len;
-> +
-> +       if (n_rx > 4) {
-> +               reg = readl(reg_base + CQSPI_REG_CMDREADDATAUPPER);
-> +
-> +               read_len = n_rx - read_len;
-> +               memcpy(rxbuf, &reg, read_len);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int cqspi_command_write(struct spi_nor *nor,
-> +                              u8 opcode, const u8 *txbuf, unsigned n_tx)
-> +{
-> +       unsigned int reg;
-> +       unsigned int data;
-> +       int ret;
-> +       struct cqspi_st *cqspi = nor->priv;
-> +       void __iomem *reg_base = cqspi->iobase;
-> +
-> +       if (n_tx > 4 || (n_tx && !txbuf)) {
-> +               dev_err(nor->dev,
-> +                       "Invalid input argument, cmdlen %d txbuf 0x%08x\n",
-> +                       n_tx, (unsigned int)txbuf);
-> +               return -EINVAL;
-> +       }
-> +
-> +       reg = opcode << CQSPI_REG_CMDCTRL_OPCODE_LSB;
-> +       if (n_tx) {
-> +               reg |= (0x1 << CQSPI_REG_CMDCTRL_WR_EN_LSB);
-> +               reg |= ((n_tx - 1) & CQSPI_REG_CMDCTRL_WR_BYTES_MASK)
-> +                   << CQSPI_REG_CMDCTRL_WR_BYTES_LSB;
-> +               data = 0;
-> +               memcpy(&data, txbuf, n_tx);
-> +               writel(data, reg_base + CQSPI_REG_CMDWRITEDATALOWER);
-> +       }
-> +
-> +       ret = cqspi_exec_flash_cmd(cqspi, reg);
-> +       return ret;
-> +}
-> +
-> +static int cqspi_command_write_addr(struct spi_nor *nor,
-> +                                   u8 opcode, unsigned int addr)
-> +{
-> +       unsigned int reg;
-> +       struct cqspi_st *cqspi = nor->priv;
-> +       void __iomem *reg_base = cqspi->iobase;
-> +
-> +       reg = opcode << CQSPI_REG_CMDCTRL_OPCODE_LSB;
-> +       reg |= (0x1 << CQSPI_REG_CMDCTRL_ADDR_EN_LSB);
-> +       reg |= ((nor->addr_width - 1) & CQSPI_REG_CMDCTRL_ADD_BYTES_MASK)
-> +           << CQSPI_REG_CMDCTRL_ADD_BYTES_LSB;
-> +
-> +       writel(addr, reg_base + CQSPI_REG_CMDADDRESS);
-> +
-> +       return cqspi_exec_flash_cmd(cqspi, reg);
-> +}
-> +
-> +static int cqspi_indirect_read_setup(struct spi_nor *nor,
-> +                                    unsigned int from_addr)
-> +{
-> +       unsigned int reg;
-> +       unsigned int dummy_clk = 0;
-> +       struct cqspi_st *cqspi = nor->priv;
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int ahb_phy_addr = cqspi->ahb_phy_addr;
-> +
-> +       writel((ahb_phy_addr & CQSPI_INDIRECTTRIGGER_ADDR_MASK),
-> +              reg_base + CQSPI_REG_INDIRECTTRIGGER);
-> +       writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
-
-Base trigger register address (0x1c register) corresponds to the address which
-should be put on AHB bus to handle indirect transfer triggered before.
-   
-To handle indirect transfer we need to issue addresses from (value of 0x1c) to
-(value of 0x1c) + 15*4 ("4" corresponds to size of SRAM location).
-There are no obstacles in issuing const address just equal to 0x1c. Important
-thing to note is that indirect trigger address has nothing in common with your
-physical or mapped NOR Flash address.
-   
-Transfer read/write start addresses should be programmed with the absolute flash address
-to be read/written.
-
-> +
-> +       reg = nor->read_opcode << CQSPI_REG_RD_INSTR_OPCODE_LSB;
-> +       reg |= cqspi_calc_rdreg(nor, nor->read_opcode);
-> +
-> +       /* Setup dummy clock cycles */
-> +#define CQSPI_SUPPORT_XIP_CHIPS
-> +#ifdef CQSPI_SUPPORT_XIP_CHIPS
-> +       /*
-> +        * Set mode bits high to ensure chip doesn't enter XIP.
-> +        * This results in an extra 8 dummy clocks so
-> +        * we must account for them.
-> +        */
-> +       writel(0xFF, reg_base + CQSPI_REG_MODE_BIT);
-> +       reg |= (1 << CQSPI_REG_RD_INSTR_MODE_EN_LSB);
-> +       if (nor->read_dummy >= 8)
-> +               dummy_clk = nor->read_dummy - 8;
-> +       else
-> +               dummy_clk = 0;
-> +#else
-> +       dummy_clk = nor->read_dummy;
-> +#endif
-> +       reg |= (dummy_clk & CQSPI_REG_RD_INSTR_DUMMY_MASK)
-> +           << CQSPI_REG_RD_INSTR_DUMMY_LSB;
-> +
-> +       writel(reg, reg_base + CQSPI_REG_RD_INSTR);
-> +
-> +       /* Set address width */
-> +       reg = readl(reg_base + CQSPI_REG_SIZE);
-> +       reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
-> +       reg |= (nor->addr_width - 1);
-> +       writel(reg, reg_base + CQSPI_REG_SIZE);
-> +       return 0;
-> +}
-> +
-> +static int cqspi_indirect_read_execute(struct spi_nor *nor,
-> +                                      u8 *rxbuf, unsigned n_rx)
-> +{
-> +       int ret = 0;
-> +       unsigned int reg = 0;
-> +       unsigned int bytes_to_read = 0;
-> +       unsigned int timeout;
-> +       unsigned int watermark;
-> +       struct cqspi_st *cqspi = nor->priv;
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       void __iomem *ahb_base = cqspi->ahb_base;
-> +       int remaining = (int)n_rx;
-> +
-> +       watermark = cqspi->fifo_depth * CQSPI_FIFO_WIDTH / 2;
-> +       writel(watermark, reg_base + CQSPI_REG_INDIRECTRDWATERMARK);
-> +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
-> +       writel(cqspi->fifo_depth - CQSPI_REG_SRAM_RESV_WORDS,
-> +              reg_base + CQSPI_REG_SRAMPARTITION);
-
-sram partioning is not needed to be changed at every read/write, it should be ok to configure it
-in the init like divide half for read & half for write.
-
-> +
-> +       /* Clear all interrupts. */
-> +       writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
-> +
-> +       cqspi->irq_mask = CQSPI_IRQ_MASK_RD;
-> +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
-> +
-> +       reinit_completion(&cqspi->transfer_complete);
-> +       writel(CQSPI_REG_INDIRECTRD_START_MASK,
-> +              reg_base + CQSPI_REG_INDIRECTRD);
-> +
-> +       while (remaining > 0) {
-> +               ret = wait_for_completion_timeout(&cqspi->transfer_complete,
-> +                                                 msecs_to_jiffies
-> +                                                 (CQSPI_READ_TIMEOUT_MS));
-> +
-> +               bytes_to_read = CQSPI_GET_RD_SRAM_LEVEL(reg_base);
-
-Base trigger register address (0x1c register) corresponds to the address which
-should be put on AHB bus to handle indirect transfer triggered before.
-   
-To handle indirect transfer we need to issue addresses from (value of 0x1c) to
-(value of 0x1c) + 15*4 ("4" corresponds to size of SRAM location).
-There are no obstacles in issuing const address just equal to 0x1c. Important
-thing to note is that indirect trigger address has nothing in common with your
-physical or mapped NOR Flash address.
-   
-Transfer read/write start addresses (offset 0x68/0x78)should be programmed with
-the absolute flash address to be read/written.
-
-
-> +
-> +               if (!ret && bytes_to_read == 0) {
-> +                       dev_err(nor->dev, "Indirect read timeout, no bytes\n");
-> +                       ret = -ETIMEDOUT;
-> +                       goto failrd;
-> +               }
-> +
-> +               while (bytes_to_read != 0) {
-> +                       bytes_to_read *= CQSPI_FIFO_WIDTH;
-> +                       bytes_to_read = bytes_to_read > remaining
-> +                           ? remaining : bytes_to_read;
-> +                       cqspi_fifo_read(rxbuf, ahb_base, bytes_to_read);
-> +                       rxbuf += bytes_to_read;
-> +                       remaining -= bytes_to_read;
-> +                       bytes_to_read = CQSPI_GET_RD_SRAM_LEVEL(reg_base);
-> +               }
-> +       }
-> +
-> +       /* Check indirect done status */
-> +       timeout = cqspi_init_timeout(CQSPI_TIMEOUT_MS);
-> +       while (cqspi_check_timeout(timeout)) {
-> +               reg = readl(reg_base + CQSPI_REG_INDIRECTRD);
-> +               if (reg & CQSPI_REG_INDIRECTRD_DONE_MASK)
-> +                       break;
-> +       }
-> +
-> +       if (!(reg & CQSPI_REG_INDIRECTRD_DONE_MASK)) {
-> +               dev_err(nor->dev,
-> +                       "Indirect read completion error 0x%08x\n", reg);
-> +               ret = -ETIMEDOUT;
-> +               goto failrd;
-> +       }
-> +
-> +       /* Disable interrupt */
-> +       writel(0, reg_base + CQSPI_REG_IRQMASK);
-> +
-> +       /* Clear indirect completion status */
-> +       writel(CQSPI_REG_INDIRECTRD_DONE_MASK, reg_base + CQSPI_REG_INDIRECTRD);
-> +
-> +       return 0;
-> +
-> + failrd:
-> +       /* Disable interrupt */
-> +       writel(0, reg_base + CQSPI_REG_IRQMASK);
-> +
-> +       /* Cancel the indirect read */
-> +       writel(CQSPI_REG_INDIRECTWR_CANCEL_MASK,
-> +              reg_base + CQSPI_REG_INDIRECTRD);
-> +       return ret;
-> +}
-> +
-> +static int cqspi_indirect_write_setup(struct spi_nor *nor, unsigned int to_addr)
-> +{
-> +       unsigned int reg;
-> +       struct cqspi_st *cqspi = nor->priv;
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int ahb_phy_addr = cqspi->ahb_phy_addr;
-> +
-> +       /* Set opcode. */
-> +       reg = nor->program_opcode << CQSPI_REG_WR_INSTR_OPCODE_LSB;
-> +       writel(reg, reg_base + CQSPI_REG_WR_INSTR);
-> +       reg = cqspi_calc_rdreg(nor, nor->program_opcode);
-> +       writel(reg, reg_base + CQSPI_REG_RD_INSTR);
-> +
-> +       writel((ahb_phy_addr & CQSPI_INDIRECTTRIGGER_ADDR_MASK),
-> +              reg_base + CQSPI_REG_INDIRECTTRIGGER);
-> +       writel(to_addr, reg_base + CQSPI_REG_INDIRECTWRSTARTADDR);
-> +
-> +       reg = readl(reg_base + CQSPI_REG_SIZE);
-> +       reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
-> +       reg |= (nor->addr_width - 1);
-> +       writel(reg, reg_base + CQSPI_REG_SIZE);
-> +       return 0;
-> +}
-> +
-> +static int cqspi_indirect_write_execute(struct spi_nor *nor,
-> +                                       const u8 *txbuf, unsigned n_tx)
-> +{
-> +       int ret;
-> +       unsigned int timeout;
-> +       unsigned int reg = 0;
-> +       struct cqspi_st *cqspi = nor->priv;
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       void __iomem *ahb_base = cqspi->ahb_base;
-> +       int remaining = (int)n_tx;
-> +       struct cqspi_flash_pdata *f_pdata;
-> +       unsigned int page_size;
-> +       unsigned int write_bytes;
-> +
-> +       f_pdata = &cqspi->f_pdata[cqspi->current_cs];
-> +       page_size = nor->page_size;
-> +
-> +       writel(CQSPI_REG_SRAM_THRESHOLD_BYTES, reg_base +
-> +              CQSPI_REG_INDIRECTWRWATERMARK);
-> +       writel(remaining, reg_base + CQSPI_REG_INDIRECTWRBYTES);
-> +       writel(CQSPI_REG_SRAM_PARTITION_WR,
-> +              reg_base + CQSPI_REG_SRAMPARTITION);
-
-same comment as of read_execute, better to configure it once in init.
-
-Rgds,
-Vikas
-
-> +
-> +       /* Clear all interrupts. */
-> +       writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
-> +
-> +       cqspi->irq_mask = CQSPI_IRQ_MASK_WR;
-> +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
-> +
-> +       reinit_completion(&cqspi->transfer_complete);
-> +       writel(CQSPI_REG_INDIRECTWR_START_MASK,
-> +              reg_base + CQSPI_REG_INDIRECTWR);
-> +
-> +       /* Write a page or remaining bytes. */
-> +       write_bytes = remaining > page_size ? page_size : remaining;
-> +       /* Fill up the data at the beginning */
-> +       cqspi_fifo_write(ahb_base, txbuf, write_bytes);
-> +       txbuf += write_bytes;
-> +       remaining -= write_bytes;
-> +
-> +       while (remaining > 0) {
-> +               ret = wait_for_completion_timeout(&cqspi->transfer_complete,
-> +                                                 msecs_to_jiffies
-> +                                                 (CQSPI_TIMEOUT_MS));
-> +               if (!ret) {
-> +                       dev_err(nor->dev, "Indirect write timeout\n");
-> +                       ret = -ETIMEDOUT;
-> +                       goto failwr;
-> +               }
-> +
-> +               write_bytes = remaining > page_size ? page_size : remaining;
-> +               cqspi_fifo_write(ahb_base, txbuf, write_bytes);
-> +               txbuf += write_bytes;
-> +               remaining -= write_bytes;
-> +       }
-> +
-> +       ret = wait_for_completion_timeout(&cqspi->transfer_complete,
-> +                                         msecs_to_jiffies(CQSPI_TIMEOUT_MS));
-> +       if (!ret) {
-> +               dev_err(nor->dev, "Indirect write timeout\n");
-> +               ret = -ETIMEDOUT;
-> +               goto failwr;
-> +       }
-> +
-> +       /* Check indirect done status */
-> +       timeout = cqspi_init_timeout(CQSPI_TIMEOUT_MS);
-> +       while (cqspi_check_timeout(timeout)) {
-> +               reg = readl(reg_base + CQSPI_REG_INDIRECTWR);
-> +               if (reg & CQSPI_REG_INDIRECTWR_DONE_MASK)
-> +                       break;
-> +       }
-> +
-> +       if (!(reg & CQSPI_REG_INDIRECTWR_DONE_MASK)) {
-> +               dev_err(nor->dev,
-> +                       "Indirect write completion error 0x%08x\n", reg);
-> +               ret = -ETIMEDOUT;
-> +               goto failwr;
-> +       }
-> +
-> +       /* Disable interrupt. */
-> +       writel(0, reg_base + CQSPI_REG_IRQMASK);
-> +
-> +       /* Clear indirect completion status */
-> +       writel(CQSPI_REG_INDIRECTWR_DONE_MASK, reg_base + CQSPI_REG_INDIRECTWR);
-> +
-> +       cqspi_wait_idle(cqspi);
-> +
-> +       return 0;
-> +
-> + failwr:
-> +       /* Disable interrupt. */
-> +       writel(0, reg_base + CQSPI_REG_IRQMASK);
-> +
-> +       /* Cancel the indirect write */
-> +       writel(CQSPI_REG_INDIRECTWR_CANCEL_MASK,
-> +              reg_base + CQSPI_REG_INDIRECTWR);
-> +       return ret;
-> +}
-> +
-> +static void cqspi_write(struct spi_nor *nor, loff_t to,
-> +                       size_t len, size_t *retlen, const u_char *buf)
-> +{
-> +       int ret;
-> +
-> +       ret = cqspi_indirect_write_setup(nor, to);
-> +       if (ret == 0) {
-> +               ret = cqspi_indirect_write_execute(nor, buf, len);
-> +               if (ret == 0)
-> +                       *retlen += len;
-> +       }
-> +}
-> +
-> +static int cqspi_read(struct spi_nor *nor, loff_t from,
-> +                     size_t len, size_t *retlen, u_char *buf)
-> +{
-> +       int ret;
-> +
-> +       ret = cqspi_indirect_read_setup(nor, from);
-> +       if (ret == 0) {
-> +               ret = cqspi_indirect_read_execute(nor, buf, len);
-> +               if (ret == 0)
-> +                       *retlen += len;
-> +       }
-> +       return ret;
-> +}
-> +
-> +static int cqspi_erase(struct spi_nor *nor, loff_t offs)
-> +{
-> +       int ret;
-> +
-> +       /* Send write enable, then erase commands. */
-> +       ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0, 0);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* Set up command buffer. */
-> +       ret = cqspi_command_write_addr(nor, nor->erase_opcode, offs);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return 0;
-> +}
-> +
-> +static unsigned int calculate_ticks_for_ns(unsigned int ref_clk_hz,
-> +                                          unsigned int ns_val)
-> +{
-> +       unsigned int ticks;
-> +
-> +       ticks = ref_clk_hz;
-> +       ticks /= 1000;
-> +       ticks *= ns_val;
-> +       ticks += 999999;
-> +       ticks /= 1000000;
-> +       return ticks;
-> +}
-> +
-> +static void cqspi_delay(struct cqspi_st *cqspi,
-> +                       unsigned int ref_clk_hz, unsigned int sclk_hz)
-> +{
-> +       void __iomem *iobase = cqspi->iobase;
-> +       struct cqspi_flash_pdata *f_pdata;
-> +       unsigned int tshsl, tchsh, tslch, tsd2d;
-> +       unsigned int reg;
-> +       unsigned int tsclk;
-> +
-> +       f_pdata = &cqspi->f_pdata[cqspi->current_cs];
-> +
-> +       /* calculate the number of ref ticks for one sclk tick */
-> +       tsclk = (ref_clk_hz + sclk_hz - 1) / sclk_hz;
-> +
-> +       tshsl = calculate_ticks_for_ns(ref_clk_hz, f_pdata->tshsl_ns);
-> +       /* this particular value must be at least one sclk */
-> +       if (tshsl < tsclk)
-> +               tshsl = tsclk;
-> +
-> +       tchsh = calculate_ticks_for_ns(ref_clk_hz, f_pdata->tchsh_ns);
-> +       tslch = calculate_ticks_for_ns(ref_clk_hz, f_pdata->tslch_ns);
-> +       tsd2d = calculate_ticks_for_ns(ref_clk_hz, f_pdata->tsd2d_ns);
-> +
-> +       reg = ((tshsl & CQSPI_REG_DELAY_TSHSL_MASK)
-> +              << CQSPI_REG_DELAY_TSHSL_LSB);
-> +       reg |= ((tchsh & CQSPI_REG_DELAY_TCHSH_MASK)
-> +               << CQSPI_REG_DELAY_TCHSH_LSB);
-> +       reg |= ((tslch & CQSPI_REG_DELAY_TSLCH_MASK)
-> +               << CQSPI_REG_DELAY_TSLCH_LSB);
-> +       reg |= ((tsd2d & CQSPI_REG_DELAY_TSD2D_MASK)
-> +               << CQSPI_REG_DELAY_TSD2D_LSB);
-> +       writel(reg, iobase + CQSPI_REG_DELAY);
-> +}
-> +
-> +static void cqspi_config_baudrate_div(struct cqspi_st *cqspi,
-> +                                     unsigned int ref_clk_hz,
-> +                                     unsigned int sclk_hz)
-> +{
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int reg;
-> +       unsigned int div;
-> +
-> +       reg = readl(reg_base + CQSPI_REG_CONFIG);
-> +       reg &= ~(CQSPI_REG_CONFIG_BAUD_MASK << CQSPI_REG_CONFIG_BAUD_LSB);
-> +
-> +       div = ref_clk_hz / sclk_hz;
-> +
-> +       /* Recalculate the baudrate divisor based on QSPI specification. */
-> +       if (div > 32)
-> +               div = 32;
-> +
-> +       /* Check if even number. */
-> +       if (div & 1)
-> +               div = (div / 2);
-> +       else
-> +               div = (div / 2) - 1;
-> +
-> +       div = (div & CQSPI_REG_CONFIG_BAUD_MASK) << CQSPI_REG_CONFIG_BAUD_LSB;
-> +       reg |= div;
-> +       writel(reg, reg_base + CQSPI_REG_CONFIG);
-> +}
-> +
-> +static void cqspi_readdata_capture(struct cqspi_st *cqspi,
-> +                                  unsigned int bypass, unsigned int delay)
-> +{
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int reg;
-> +
-> +       reg = readl(reg_base + CQSPI_REG_READCAPTURE);
-> +
-> +       if (bypass)
-> +               reg |= (1 << CQSPI_REG_READCAPTURE_BYPASS_LSB);
-> +       else
-> +               reg &= ~(1 << CQSPI_REG_READCAPTURE_BYPASS_LSB);
-> +
-> +       reg &= ~(CQSPI_REG_READCAPTURE_DELAY_MASK
-> +                << CQSPI_REG_READCAPTURE_DELAY_LSB);
-> +
-> +       reg |= ((delay & CQSPI_REG_READCAPTURE_DELAY_MASK)
-> +               << CQSPI_REG_READCAPTURE_DELAY_LSB);
-> +
-> +       writel(reg, reg_base + CQSPI_REG_READCAPTURE);
-> +}
-> +
-> +static void cqspi_chipselect(struct cqspi_st *cqspi,
-> +                            unsigned int chip_select,
-> +                            unsigned int decoder_enable)
-> +{
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int reg;
-> +
-> +       reg = readl(reg_base + CQSPI_REG_CONFIG);
-> +       if (decoder_enable) {
-> +               reg |= CQSPI_REG_CONFIG_DECODE_MASK;
-> +       } else {
-> +               reg &= ~CQSPI_REG_CONFIG_DECODE_MASK;
-> +
-> +               /* Convert CS if without decoder.
-> +                * CS0 to 4b'1110
-> +                * CS1 to 4b'1101
-> +                * CS2 to 4b'1011
-> +                * CS3 to 4b'0111
-> +                */
-> +               chip_select = 0xF & ~(1 << chip_select);
-> +       }
-> +
-> +       reg &= ~(CQSPI_REG_CONFIG_CHIPSELECT_MASK
-> +                << CQSPI_REG_CONFIG_CHIPSELECT_LSB);
-> +       reg |= (chip_select & CQSPI_REG_CONFIG_CHIPSELECT_MASK)
-> +           << CQSPI_REG_CONFIG_CHIPSELECT_LSB;
-> +       writel(reg, reg_base + CQSPI_REG_CONFIG);
-> +}
-> +
-> +static void cqspi_controller_enable(struct cqspi_st *cqspi)
-> +{
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int reg;
-> +
-> +       reg = readl(reg_base + CQSPI_REG_CONFIG);
-> +       reg |= CQSPI_REG_CONFIG_ENABLE_MASK;
-> +       writel(reg, reg_base + CQSPI_REG_CONFIG);
-> +}
-> +
-> +static void cqspi_controller_disable(struct cqspi_st *cqspi)
-> +{
-> +       void __iomem *reg_base = cqspi->iobase;
-> +       unsigned int reg;
-> +
-> +       reg = readl(reg_base + CQSPI_REG_CONFIG);
-> +       reg &= ~CQSPI_REG_CONFIG_ENABLE_MASK;
-> +       writel(reg, reg_base + CQSPI_REG_CONFIG);
-> +}
-> +
-> +static void cqspi_switch_cs(struct cqspi_st *cqspi, unsigned int cs)
-> +{
-> +       unsigned int reg;
-> +       struct cqspi_flash_pdata *f_pdata = &cqspi->f_pdata[cs];
-> +       void __iomem *iobase = cqspi->iobase;
-> +       struct spi_nor *nor = &f_pdata->nor;
-> +
-> +       cqspi_controller_disable(cqspi);
-> +
-> +       /* configure page size and block size. */
-> +       reg = readl(iobase + CQSPI_REG_SIZE);
-> +       reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
-> +       reg &= ~(CQSPI_REG_SIZE_BLOCK_MASK << CQSPI_REG_SIZE_BLOCK_LSB);
-> +       reg |= (nor->page_size << CQSPI_REG_SIZE_PAGE_LSB);
-> +       reg |= (ilog2(nor->mtd->erasesize) << CQSPI_REG_SIZE_BLOCK_LSB);
-> +       reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
-> +       reg |= (nor->addr_width - 1);
-> +       writel(reg, iobase + CQSPI_REG_SIZE);
-> +
-> +       /* configure the chip select */
-> +       cqspi_chipselect(cqspi, cs, cqspi->is_decoded_cs);
-> +
-> +       cqspi_controller_enable(cqspi);
-> +}
-> +
-> +static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-> +{
-> +       struct cqspi_st *cqspi = nor->priv;
-> +       int cs = cqspi_find_chipselect(nor);
-> +       struct cqspi_flash_pdata *f_pdata;
-> +       unsigned int sclk;
-> +
-> +       /* Switch chip select. */
-> +       if (cqspi->current_cs != cs) {
-> +               cqspi->current_cs = cs;
-> +               cqspi_switch_cs(cqspi, cs);
-> +       }
-> +
-> +       /* Setup baudrate divisor and delays */
-> +       f_pdata = &cqspi->f_pdata[cqspi->current_cs];
-> +       sclk = f_pdata->clk_rate;
-> +       if (cqspi->sclk != sclk) {
-> +               cqspi->sclk = sclk;
-> +               cqspi_controller_disable(cqspi);
-> +               cqspi_config_baudrate_div(cqspi,
-> +                                         cqspi->master_ref_clk_hz, sclk);
-> +               cqspi_delay(cqspi, cqspi->master_ref_clk_hz, sclk);
-> +               cqspi_readdata_capture(cqspi, 1, f_pdata->read_delay);
-> +               cqspi_controller_enable(cqspi);
-> +       }
-> +       return 0;
-> +}
-> +
-> +static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-> +{
-> +       int ret;
-> +
-> +       cqspi_prep(nor, SPI_NOR_OPS_READ);
-> +
-> +       ret = cqspi_command_read(nor, &opcode, 1, buf, len);
-> +       return ret;
-> +}
-> +
-> +static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
-> +                          int write_enable)
-> +{
-> +       int ret = 0;
-> +
-> +       cqspi_prep(nor, SPI_NOR_OPS_WRITE);
-> +
-> +       ret = cqspi_command_write(nor, opcode, buf, len);
-> +       return ret;
-> +}
-> +
-> +static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
-> +                                   struct cqspi_flash_pdata *f_pdata,
-> +                                   struct device_node *np)
-> +{
-> +       if (of_property_read_u32(np, "cdns,read-delay", &f_pdata->read_delay)) {
-> +               dev_err(&pdev->dev, "couldn't determine read-delay\n");
-> +               return -ENXIO;
-> +       }
-> +
-> +       if (of_property_read_u32(np, "cdns,tshsl-ns", &f_pdata->tshsl_ns)) {
-> +               dev_err(&pdev->dev, "couldn't determine tshsl-ns\n");
-> +               return -ENXIO;
-> +       }
-> +
-> +       if (of_property_read_u32(np, "cdns,tsd2d-ns", &f_pdata->tsd2d_ns)) {
-> +               dev_err(&pdev->dev, "couldn't determine tsd2d-ns\n");
-> +               return -ENXIO;
-> +       }
-> +
-> +       if (of_property_read_u32(np, "cdns,tchsh-ns", &f_pdata->tchsh_ns)) {
-> +               dev_err(&pdev->dev, "couldn't determine tchsh-ns\n");
-> +               return -ENXIO;
-> +       }
-> +
-> +       if (of_property_read_u32(np, "cdns,tslch-ns", &f_pdata->tslch_ns)) {
-> +               dev_err(&pdev->dev, "couldn't determine tslch-ns\n");
-> +               return -ENXIO;
-> +       }
-> +
-> +       if (of_property_read_u32(np, "spi-max-frequency", &f_pdata->clk_rate)) {
-> +               dev_err(&pdev->dev, "couldn't determine spi-max-frequency\n");
-> +               return -ENXIO;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int cqspi_of_get_pdata(struct platform_device *pdev)
-> +{
-> +       struct device_node *np = pdev->dev.of_node;
-> +       struct cqspi_st *cqspi = platform_get_drvdata(pdev);
-> +
-> +       if (of_property_read_u32(np, "is-decoded-cs", &cqspi->is_decoded_cs))
-> +               cqspi->is_decoded_cs = 0;
-> +
-> +       if (of_property_read_u32(np, "fifo-depth", &cqspi->fifo_depth)) {
-> +               dev_err(&pdev->dev, "couldn't determine fifo-depth\n");
-> +               return -ENXIO;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static void cqspi_controller_init(struct cqspi_st *cqspi)
-> +{
-> +       cqspi_controller_disable(cqspi);
-> +
-> +       /* Configure the remap address register, no remap */
-> +       writel(0, cqspi->iobase + CQSPI_REG_REMAP);
-> +
-> +       /* Disable all interrupts. */
-> +       writel(0, cqspi->iobase + CQSPI_REG_IRQMASK);
-> +
-> +       /* Configure the SRAM split to 1:1 . */
-> +       writel(0x40, cqspi->iobase + CQSPI_REG_SRAMPARTITION);
-> +
-> +       cqspi_controller_enable(cqspi);
-> +}
-> +
-> +static int cqspi_remove(struct platform_device *pdev)
-> +{
-> +       struct cqspi_st *cqspi = platform_get_drvdata(pdev);
-> +       int i;
-> +
-> +       cqspi_controller_disable(cqspi);
-> +
-> +       for (i = 0; i < CQSPI_MAX_CHIPSELECT; i++)
-> +               if (cqspi->f_pdata[i].mtd.name)
-> +                       mtd_device_unregister(&cqspi->f_pdata[i].mtd);
-> +
-> +       return 0;
-> +}
-> +
-> +static int cqspi_probe(struct platform_device *pdev)
-> +{
-> +       struct device_node *np = pdev->dev.of_node;
-> +       struct mtd_part_parser_data ppdata;
-> +       struct device *dev = &pdev->dev;
-> +       struct cqspi_st *cqspi;
-> +       struct spi_nor *nor;
-> +       struct mtd_info *mtd;
-> +       struct resource *res;
-> +       struct resource *res_ahb;
-> +       int ret;
-> +       int irq;
-> +
-> +       cqspi = devm_kzalloc(dev, sizeof(*cqspi), GFP_KERNEL);
-> +       if (!cqspi)
-> +               return -ENOMEM;
-> +
-> +       cqspi->pdev = pdev;
-> +       platform_set_drvdata(pdev, cqspi);
-> +
-> +       ret = cqspi_of_get_pdata(pdev);
-> +       if (ret) {
-> +               dev_err(dev, "Get platform data failed.\n");
-> +               return -ENODEV;
-> +       }
-> +
-> +       cqspi->clk = devm_clk_get(dev, NULL);
-> +       if (IS_ERR(cqspi->clk)) {
-> +               dev_err(dev, "cannot get qspi clk\n");
-> +               ret = PTR_ERR(cqspi->clk);
-> +               goto probe_failed;
-> +       }
-> +       cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
-> +
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       cqspi->iobase = devm_ioremap_resource(dev, res);
-> +       if (IS_ERR(cqspi->iobase)) {
-> +               dev_err(dev, "devm_ioremap_resource res 0 failed\n");
-> +               ret = PTR_ERR(cqspi->iobase);
-> +               goto probe_failed;
-> +       }
-> +
-> +       res_ahb = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +       cqspi->ahb_phy_addr = res_ahb->start;
-> +       cqspi->ahb_base = devm_ioremap_resource(dev, res_ahb);
-> +       if (IS_ERR(cqspi->ahb_base)) {
-> +               dev_err(dev, "devm_ioremap_resource res 1 failed\n");
-> +               ret = PTR_ERR(cqspi->ahb_base);
-> +               goto probe_failed;
-> +       }
-> +
-> +       init_completion(&cqspi->transfer_complete);
-> +
-> +       irq = platform_get_irq(pdev, 0);
-> +       if (irq < 0) {
-> +               dev_err(dev, "platform_get_irq failed\n");
-> +               ret = -ENXIO;
-> +               goto probe_failed;
-> +       }
-> +       ret = devm_request_irq(dev, irq,
-> +                              cqspi_irq_handler, 0, pdev->name, cqspi);
-> +       if (ret) {
-> +               dev_err(dev, "devm_request_irq failed\n");
-> +               goto probe_failed;
-> +       }
-> +
-> +       cqspi_wait_idle(cqspi);
-> +       cqspi_controller_init(cqspi);
-> +       cqspi->current_cs = -1;
-> +       cqspi->sclk = 0;
-> +
-> +       /* Get flash device data */
-> +       for_each_available_child_of_node(dev->of_node, np) {
-> +               unsigned int cs;
-> +               struct cqspi_flash_pdata *f_pdata;
-> +
-> +               if (of_property_read_u32(np, "reg", &cs)) {
-> +                       dev_err(dev, "couldn't determine chip select\n");
-> +                       return -ENXIO;
-> +               }
-> +               if (cs >= CQSPI_MAX_CHIPSELECT) {
-> +                       dev_err(dev, "chip select %d out of range\n", cs);
-> +                       return -ENXIO;
-> +               }
-> +               f_pdata = &cqspi->f_pdata[cs];
-> +
-> +               ret = cqspi_of_get_flash_pdata(pdev, f_pdata, np);
-> +               if (ret)
-> +                       goto probe_failed;
-> +
-> +               nor = &f_pdata->nor;
-> +               mtd = &f_pdata->mtd;
-> +
-> +               nor->mtd = mtd;
-> +               nor->dev = dev;
-> +               nor->priv = cqspi;
-> +               mtd->priv = nor;
-> +
-> +               nor->read_reg = cqspi_read_reg;
-> +               nor->write_reg = cqspi_write_reg;
-> +               nor->read = cqspi_read;
-> +               nor->write = cqspi_write;
-> +               nor->erase = cqspi_erase;
-> +
-> +               nor->prepare = cqspi_prep;
-> +
-> +               ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> +               if (ret)
-> +                       goto probe_failed;
-> +
-> +               if (nor->read_dummy > CQSPI_DUMMY_CLKS_MAX)
-> +                       nor->read_dummy = CQSPI_DUMMY_CLKS_MAX;
-> +
-> +               ppdata.of_node = np;
-> +               ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
-> +               if (ret)
-> +                       goto probe_failed;
-> +       }
-> +
-> +       dev_info(dev, "Cadence QSPI NOR flash driver\n");
-> +       return 0;
-> +
-> + probe_failed:
-> +       dev_err(dev, "Cadence QSPI NOR probe failed %d\n", ret);
-> +       cqspi_remove(pdev);
-> +       return ret;
-> +}
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +static int cqspi_suspend(struct device *dev)
-> +{
-> +       struct cqspi_st *cqspi = dev_get_drvdata(dev);
-> +
-> +       cqspi_controller_disable(cqspi);
-> +       return 0;
-> +}
-> +
-> +static int cqspi_resume(struct device *dev)
-> +{
-> +       struct cqspi_st *cqspi = dev_get_drvdata(dev);
-> +
-> +       cqspi_controller_enable(cqspi);
-> +       return 0;
-> +}
-> +
-> +static const struct dev_pm_ops cqspi__dev_pm_ops = {
-> +       .suspend = cqspi_suspend,
-> +       .resume = cqspi_resume,
+> +	int reg_read_pos;
+> +
+> +	/* required configs */
+> +	u32 cfg0, cfg1;
+> +	u32 cfg0_raw, cfg1_raw;
+> +	u32 ecc_buf_cfg;
+> +	u32 ecc_bch_cfg;
+> +	u32 clrflashstatus;
+> +	u32 clrreadstatus;
+> +	u32 sflashc_burst_cfg;
+> +	u32 cmd1, vld;
+> +
+> +	/* register state */
+> +	struct nandc_regs *regs;
+> +
+> +	/* things we get from DT */
+> +	int ecc_strength;
+> +	int bus_width;
+> +
+> +	u32 ecc_modes;
+> +
+> +	/* misc params */
+> +	int cw_size;
+> +	int cw_data;
+> +	bool use_ecc;
+> +	bool bch_enabled;
+> +	u8 status;
+> +	int last_command;
 > +};
 > +
-> +#define CQSPI_DEV_PM_OPS       (&cqspi__dev_pm_ops)
-> +#else
-> +#define CQSPI_DEV_PM_OPS       NULL
-> +#endif
+> +static inline unsigned int nandc_read(struct qcom_nandc_data *this, int offset)
+> +{
+> +	return ioread32(this->base + offset);
+> +}
 > +
-> +static struct of_device_id const cqspi_dt_ids[] = {
-> +       {.compatible = "cdns,qspi-nor",},
-> +       { /* end of table */ }
+> +static inline void nandc_write(struct qcom_nandc_data *this, int offset,
+> +		unsigned int val)
+> +{
+> +	iowrite32(val, this->base + offset);
+> +}
+
+Perhaps these should take and return u32s to match the signature of
+ioread32/iowrite32
+
+> +
+> +/* helper to configure address register values */
+> +static void set_address(struct qcom_nandc_data *this, u16 column, int page)
+> +{
+> +	struct nand_chip *chip = &this->chip;
+> +	struct nandc_regs *regs = this->regs;
+> +
+> +	if (chip->options & NAND_BUSWIDTH_16)
+> +		column >>= 1;
+> +
+> +	regs->addr0 = page << 16 | column;
+> +	regs->addr1 = page >> 16 & 0xff;
+> +}
+> +
+> +/*
+> + * update_rw_regs:	set up read/write register values, these will be
+> + *			written to the NAND controller registers via DMA
+> + *
+> + * @num_cw:		number of steps for the read/write operation
+> + * @read:		read or write operation
+> + */
+> +static void update_rw_regs(struct qcom_nandc_data *this, int num_cw, bool read)
+> +{
+> +	struct nandc_regs *regs = this->regs;
+> +
+> +	if (this->use_ecc) {
+> +		if (read)
+> +			regs->cmd = PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
+> +		else
+> +			regs->cmd = PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
+> +
+> +		regs->cfg0 = (this->cfg0 & ~(7U << CW_PER_PAGE)) |
+> +				(num_cw - 1) << CW_PER_PAGE;
+> +
+> +		regs->cfg1 = this->cfg1;
+> +		regs->ecc_bch_cfg = this->ecc_bch_cfg;
+> +	} else {
+> +		if (read)
+> +			regs->cmd = PAGE_READ | PAGE_ACC | LAST_PAGE;
+> +		else
+> +			regs->cmd = PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
+> +
+> +		regs->cfg0 = (this->cfg0_raw & ~(7U << CW_PER_PAGE)) |
+> +				(num_cw - 1) << CW_PER_PAGE;
+> +
+> +		regs->cfg1 = this->cfg1_raw;
+> +		regs->ecc_bch_cfg = 1 << ECC_CFG_ECC_DISABLE;
+> +	}
+
+These two arms are almost exactly the same, except regs->cmd has
+PAGE_READ_WITH_ECC vs PAGE_READ and regs->ecc_bch_cfg is different. It
+should be possible to push the use_ecc case down into the two places
+that need it and reduce lines.
+
+> +
+> +	regs->ecc_buf_cfg = this->ecc_buf_cfg;
+> +	regs->clrflashstatus = this->clrflashstatus;
+> +	regs->clrreadstatus = this->clrreadstatus;
+> +	regs->exec = 1;
+> +}
+> +
+> +/*
+> + * write_reg_dma:	prepares a descriptor to write a given number of
+> + *			contiguous registers
+> + *
+> + * @first:		offset of the first register in the contiguous block
+> + * @reg:		starting address containing the reg values to write
+> + * @num_regs:		number of registers to write
+> + * @flow_control:	flow control enabled/disabled
+> + */
+> +static int write_reg_dma(struct qcom_nandc_data *this, int first, u32 *reg,
+> +			 int num_regs, bool flow_control)
+> +{
+> +	struct desc_info *desc;
+> +	struct dma_async_tx_descriptor *dma_desc;
+> +	struct scatterlist *sgl;
+> +	int size;
+> +	int r;
+> +
+> +	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
+> +	if (!desc)
+> +		return -ENOMEM;
+> +
+> +	list_add_tail(&desc->list, &this->list);
+> +
+> +	sgl = &desc->sgl;
+> +
+> +	size = num_regs * sizeof(u32);
+> +
+> +	sg_init_one(sgl, reg, size);
+> +
+> +	desc->dir = DMA_MEM_TO_DEV;
+> +
+> +	dma_map_sg(this->dev, sgl, 1, desc->dir);
+> +
+> +	this->slave_conf.device_fc = flow_control ? 1 : 0;
+> +	this->slave_conf.dst_addr = this->res->start + first;
+> +	this->slave_conf.dst_maxburst = 16;
+> +	this->slave_conf.slave_id = this->cmd_crci;
+> +
+> +	r = dmaengine_slave_config(this->chan, &this->slave_conf);
+> +	if (r) {
+> +		dev_err(this->dev, "failed to configure dma channel\n");
+> +		goto err;
+> +	}
+> +
+> +	dma_desc = dmaengine_prep_slave_sg(this->chan, sgl, 1, desc->dir, 0);
+> +	if (!dma_desc) {
+> +		dev_err(this->dev, "failed to prepare register write desc\n");
+> +		r = PTR_ERR(dma_desc);
+
+PTR_ERR(NULL) doesn't make sense. It would be nice if the DMA engine
+APIs were documented so we knew if it returned NULL or an error pointer
+on failure.
+
+> +		goto err;
+> +	}
+> +
+> +	desc->dma_desc = dma_desc;
+> +
+> +	return 0;
+> +err:
+> +	kfree(desc);
+> +
+> +	return r;
+> +}
+> +
+> +/*
+
+BTW, this isn't kernel doc. That would need two asterisks.
+ 
+> + * read_reg_dma:	prepares a descriptor to read a given number of
+> + *			contiguous registers to the reg_read_buf pointer
+> + *
+> + * @first:		offset of the first register in the contiguous block
+> + * @num_regs:		number of registers to read
+> + * @flow_control:	flow control enabled/disabled
+> + */
+> +static int read_reg_dma(struct qcom_nandc_data *this, int first, int num_regs,
+> +			bool flow_control)
+> +{
+> +	struct desc_info *desc;
+> +	struct dma_async_tx_descriptor *dma_desc;
+> +	struct scatterlist *sgl;
+> +	int size;
+> +	int r;
+> +
+> +	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
+> +	if (!desc)
+> +		return -ENOMEM;
+> +
+> +	list_add_tail(&desc->list, &this->list);
+> +
+> +	sgl = &desc->sgl;
+> +
+> +	size = num_regs * sizeof(u32);
+> +
+> +	sg_init_one(sgl, this->reg_read_buf + this->reg_read_pos, size);
+> +
+> +	desc->dir = DMA_DEV_TO_MEM;
+> +
+> +	dma_map_sg(this->dev, sgl, 1, desc->dir);
+> +
+> +	this->slave_conf.device_fc = flow_control ? 1 : 0;
+
+device_fc is a bool, so why the 1 : 0 trick? flow_control is already bool.
+
+> +	this->slave_conf.src_addr = this->res->start + first;
+> +	this->slave_conf.src_maxburst = 16;
+> +	this->slave_conf.slave_id = this->data_crci;
+> +
+> +	r = dmaengine_slave_config(this->chan, &this->slave_conf);
+> +	if (r) {
+> +		dev_err(this->dev, "failed to configure dma channel\n");
+> +		goto err;
+> +	}
+> +
+> +	dma_desc = dmaengine_prep_slave_sg(this->chan, sgl, 1, desc->dir, 0);
+> +	if (!dma_desc) {
+> +		dev_err(this->dev, "failed to prepare register read desc\n");
+> +		r = PTR_ERR(dma_desc);
+
+Same problem here for PTR_ERR. Would be nice to figure out a way to
+consolidate these DMA functions. They're only subtly different.
+
+> +		goto err;
+> +	}
+> +
+> +	desc->dma_desc = dma_desc;
+> +
+> +	this->reg_read_pos += num_regs;
+> +
+> +	return 0;
+> +err:
+> +	kfree(desc);
+> +
+> +	return r;
+> +}
+> +
+[..]
+> +
+> +/*
+> + * write_data_dma:	prepares a DMA descriptor to transfer data from
+> + *			'vaddr' to the controller's internal buffer
+> + *
+> + * @reg_off:		offset within the controller's data buffer
+> + * @vaddr:		virtual address of the buffer we want to read from
+> + * @size:		DMA transaction size in bytes
+> + */
+> +static int write_data_dma(struct qcom_nandc_data *this, int reg_off, u8 *vaddr,
+
+const u8 *vaddr?
+
+> +			  int size)
+> +{
+> +	struct desc_info *desc;
+> +	struct dma_async_tx_descriptor *dma_desc;
+> +	struct scatterlist *sgl;
+> +	int r;
+> +
+> +	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
+> +	if (!desc)
+> +		return -ENOMEM;
+> +
+> +	list_add_tail(&desc->list, &this->list);
+> +
+> +	sgl = &desc->sgl;
+> +
+> +	sg_init_one(sgl, vaddr, size);
+> +
+> +	desc->dir = DMA_MEM_TO_DEV;
+> +
+> +	r = dma_map_sg(this->dev, sgl, 1, desc->dir);
+> +	if (r == 0)
+> +		goto err;
+
+Should we return an error in this case? Looks like return 0.
+
+> +
+> +	this->slave_conf.device_fc = 0;
+> +	this->slave_conf.dst_addr = this->res->start + reg_off;
+> +	this->slave_conf.dst_maxburst = 16;
+
+Is there any reason why slave_conf can't be on the stack? Otherwise it's
+odd that it's overwritten a few times before we submit the descriptors,
+so it must be copied by the dmaengine provider, but that isn't clear at
+all from the code. If it isn't copied, perhaps it should be part of the
+desc_info structure. If it is copied I wonder why it isn't const in the
+function signature.
+
+> +
+> +	r = dmaengine_slave_config(this->chan, &this->slave_conf);
+> +	if (r) {
+> +		dev_err(this->dev, "failed to configure dma channel\n");
+> +		goto err;
+> +	}
+> +
+> +	dma_desc = dmaengine_prep_slave_sg(this->chan, sgl, 1, desc->dir, 0);
+> +	if (!dma_desc) {
+> +		dev_err(this->dev, "failed to prepare data write desc\n");
+> +		r = PTR_ERR(dma_desc);
+> +		goto err;
+> +	}
+> +
+> +	desc->dma_desc = dma_desc;
+> +
+> +	return 0;
+> +err:
+> +	kfree(desc);
+> +
+> +	return r;
+> +}
+> +
+> +/*
+> + * helper to prepare dma descriptors to configure registers needed for reading a
+> + * codeword/step in a page
+> + */
+> +static void config_cw_read(struct qcom_nandc_data *this)
+> +{
+> +	struct nandc_regs *regs = this->regs;
+> +
+> +	write_reg_dma(this, NAND_FLASH_CMD, &regs->cmd, 3, true);
+
+Maybe it would be better to have a case statement inside
+{write,read}_reg_dma() that looked at the second argument and matched it
+up with an offset in regs. Then this could be
+
+    write_reg_dma(this, NAND_FLASH_CMD, 3, true);
+
+and we wouldn't have to worry about having the wrong argument for
+parameter 2 and parameter 3. It may even be that we always read the same
+number of registers too? In which case we could move parameter 4 into
+the case statement too?
+
+> +	write_reg_dma(this, NAND_DEV0_CFG0, &regs->cfg0, 3, false);
+> +	write_reg_dma(this, NAND_EBI2_ECC_BUF_CFG, &regs->ecc_buf_cfg,
+> +		1, false);
+> +
+> +	write_reg_dma(this, NAND_EXEC_CMD, &regs->exec, 1, false);
+> +
+> +	read_reg_dma(this, NAND_FLASH_STATUS, 2, true);
+> +	read_reg_dma(this, NAND_ERASED_CW_DETECT_STATUS, 1, false);
+> +}
+> +
+[...]
+> +/* sets up descriptors for NAND_CMD_RESET */
+> +static int reset(struct qcom_nandc_data *this)
+> +{
+> +	struct nandc_regs *regs = this->regs;
+> +
+> +	regs->cmd = RESET_DEVICE;
+> +	regs->exec = 1;
+> +
+> +	write_reg_dma(this, NAND_FLASH_CMD, &regs->cmd, 1, true);
+> +	write_reg_dma(this, NAND_EXEC_CMD, &regs->exec, 1, false);
+> +
+> +	read_reg_dma(this, NAND_FLASH_STATUS, 1, true);
+> +
+> +	return 0;
+> +}
+> +
+> +/* helpers to submit/free our list of dma descriptors */
+> +static void dma_callback(void *param)
+> +{
+> +	struct qcom_nandc_data *this = (struct qcom_nandc_data *) param;
+
+Useless cast.
+
+> +	struct completion *c = &this->dma_done;
+> +
+> +	complete(c);
+> +}
+> +
+> +static int submit_descs(struct qcom_nandc_data *this)
+> +{
+> +	struct completion *c = &this->dma_done;
+> +	struct desc_info *desc;
+> +	int r;
+> +
+> +	init_completion(c);
+> +
+> +	list_for_each_entry(desc, &this->list, list) {
+> +		/*
+> +		 * we add a callback the last descriptor in our list to notify
+
+to the last?
+
+> +		 * completion of command
+> +		 */
+> +		if (list_is_last(&desc->list, &this->list)) {
+> +			desc->dma_desc->callback = dma_callback;
+> +			desc->dma_desc->callback_param = this;
+> +		}
+> +
+> +		dmaengine_submit(desc->dma_desc);
+> +	}
+> +
+> +	dma_async_issue_pending(this->chan);
+> +
+> +	r = wait_for_completion_timeout(c, msecs_to_jiffies(500));
+> +	if (!r)
+> +		return -EINVAL;
+
+Why not -ETIMEDOUT?
+
+> +
+> +	return 0;
+> +}
+> +
+[...]
+> +
+> +/*
+> + * when using RS ECC, the NAND controller flags an error when reading an
+> + * erased page. however, there are special characters at certain offsets when
+> + * we read the erased page. we check here if the page is really empty. if so,
+> + * we replace the magic characters with 0xffs
+> + */
+> +static bool empty_page_fixup(struct qcom_nandc_data *this, u8 *data_buf)
+> +{
+> +	struct mtd_info *mtd = &this->mtd;
+> +	struct nand_chip *chip = &this->chip;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	int cwperpage = ecc->steps;
+> +	int i;
+> +
+> +	/* if BCH is enabled, HW will take care of detecting erased pages */
+> +	if (this->bch_enabled || !this->use_ecc)
+> +		return false;
+> +
+> +	for (i = 0; i < cwperpage; i++) {
+> +		u8 *empty1, *empty2;
+> +		u32 flash_status = this->reg_read_buf[3 * i];
+> +
+> +		/*
+> +		 * an erased page flags an error in NAND_FLASH_STATUS, check if
+> +		 * the page is erased by looking for 0x54s at offsets 3 and 175
+> +		 * from the beginning of each codeword
+> +		 */
+> +		if (flash_status & FS_OP_ERR) {
+> +			empty1 = &data_buf[3 + i * this->cw_data];
+> +			empty2 = &data_buf[175 + i * this->cw_data];
+> +
+> +			/*
+> +			 * the error wasn't because of an erased page, bail out
+> +			 * and let someone else do the error checking
+> +			 */
+> +			if (!((*empty1 == 0x54 && *empty2 == 0xff) ||
+> +					(*empty1 == 0xff && *empty2 == 0x54)))
+
+Why are we using pointers? Just use u8 empty1, empty2 = data_buf[...] ?
+
+> +				return false;
+> +		}
+> +	}
+> +
+> +	for (i = 0; i < mtd->writesize && (data_buf[i] == 0xff ||
+> +		(i % this->cw_data == 3 || i % this->cw_data == 175)); i++) {
+> +	}
+
+This might be clearer like so:
+
+    for (i = 0; i < mtd->writesize; i++) {
+        if (i % this->cw_data == 3 || i % this->cw_data == 175);
+            continue;
+        if (data_buf[i] != 0xff)
+            return false;
+    }
+
+and then drop the if after the loop. Actually since we're checking the
+whole page it may be better to do this:
+
++
++	/*
++	 * the whole page is 0xffs besides the magic offsets, we replace the
++	 * 0x54s with 0xffs
++	 */
++	for (i = 0; i < cwperpage; i++) {
++		data_buf[3 + i * this->cw_data] = 0xff;
++		data_buf[175 + i * this->cw_data] = 0xff;
++	}
++
+
+
+and then
+
+    return memchr_inv(data_buf, 0xff, mtd->writesize) ? false : true ;
+
+the memchr_inv() is optimized to find the bad characters 8 bytes at a time.
+
+> +
+> +	if (i < mtd->writesize)
+> +		return false;
+> +
+> +	/*
+> +	 * the whole page is 0xffs besides the magic offsets, we replace the
+> +	 * 0x54s with 0xffs
+> +	 */
+> +	for (i = 0; i < cwperpage; i++) {
+> +		data_buf[3 + i * this->cw_data] = 0xff;
+> +		data_buf[175 + i * this->cw_data] = 0xff;
+> +	}
+> +
+> +	/*
+> +	 * tell the caller that the page was empty and is fixed up, so that
+> +	 * parse_read_errors() doesn't think it's and error
+> +	 */
+> +	return true;
+> +}
+> +
+> +/*
+> + * reads back status registers set by the controller to notify page read
+> + * errors. this is equivalent to what 'ecc->correct()' would do.
+> + */
+> +static int parse_read_errors(struct qcom_nandc_data *this, bool erased_page)
+> +{
+> +	struct mtd_info *mtd = &this->mtd;
+> +	struct nand_chip *chip = &this->chip;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	int cwperpage = ecc->steps;
+> +	unsigned int max_bitflips = 0;
+> +	int i;
+> +
+> +	for (i = 0; i < cwperpage; i++) {
+> +		int stat;
+> +		u32 flash_status = this->reg_read_buf[3 * i];
+> +		u32 buffer_status = this->reg_read_buf[3 * i + 1];
+> +		u32 erased_cw_status = this->reg_read_buf[3 * i + 2];
+
+struct stats {
+    u32 flash;
+    u32 buffer;
+    u32 erased_cw;
+};
+
+struct stats *buf = (struct stat *)this->reg_read_buf;
+
+for (i = 0; i < cwperpage; i++, buf++) {
+    int stat;
+    if (buf->flash & (FS_OP_ERR | FS_MPU_ERR))
+
+?
+
+Also, is the buffer little endian? If so, that should be a __le32 flash,
+__le32 buffer, etc. up there and then le32_to_cpu().
+
+> +
+> +		if (flash_status & (FS_OP_ERR | FS_MPU_ERR)) {
+> +
+> +			/* ignore erased codeword errors */
+> +			if (this->bch_enabled) {
+> +				if ((erased_cw_status & ERASED_CW) == ERASED_CW)
+> +					continue;
+> +			} else if (erased_page) {
+> +				continue;
+> +			}
+> +
+> +			if (buffer_status & BS_UNCORRECTABLE_BIT) {
+> +				mtd->ecc_stats.failed++;
+> +				continue;
+> +			}
+> +		}
+> +
+> +		stat = buffer_status & BS_CORRECTABLE_ERR_MSK;
+> +		mtd->ecc_stats.corrected += stat;
+> +
+> +		max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> +	}
+> +
+> +	return max_bitflips;
+> +}
+> +
+> +/*
+> + * helper to perform the actual page read operation, used by ecc->read_page()
+> + * and ecc->read_oob()
+> + */
+> +static int read_page_low(struct qcom_nandc_data *this, u8 *data_buf,
+> +			 u8 *oob_buf)
+> +{
+> +	struct nand_chip *chip = &this->chip;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	int i, r;
+> +
+> +	/* queue cmd descs for each codeword */
+> +	for (i = 0; i < ecc->steps; i++) {
+> +		int data_size, oob_size;
+> +
+> +		if (i == (ecc->steps - 1)) {
+> +			data_size = ecc->size - ((ecc->steps - 1) << 2);
+> +			oob_size = (ecc->steps << 2) + ecc->bytes;
+> +		} else {
+> +			data_size = this->cw_data;
+> +			oob_size = ecc->bytes;
+> +		}
+> +
+> +		config_cw_read(this);
+> +
+> +		if (data_buf)
+> +			read_data_dma(this, FLASH_BUF_ACC, data_buf, data_size);
+> +
+> +		if (oob_buf)
+> +			read_data_dma(this, FLASH_BUF_ACC + data_size, oob_buf,
+> +					oob_size);
+> +
+> +		if (data_buf)
+> +			data_buf += data_size;
+> +		if (oob_buf)
+> +			oob_buf += oob_size;
+> +	}
+> +
+> +	r = submit_descs(this);
+> +	if (r)
+> +		dev_err(this->dev, "failure to read page/oob\n");
+> +
+> +	free_descs(this);
+> +
+> +	return r;
+> +}
+> +
+> +/*
+> + * a helper that copies the last step/codeword of a page (containing free oob)
+> + * into our local buffer
+> + */
+> +static int copy_last_cw(struct qcom_nandc_data *this, bool use_ecc, int page)
+> +{
+> +	struct nand_chip *chip = &this->chip;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	int size;
+> +	int r;
+> +
+> +	clear_read_regs(this);
+> +
+> +	size = use_ecc ? this->cw_data : this->cw_size;
+> +
+> +	/* prepare a clean read buffer */
+> +	memset(this->data_buffer, 0xff, size);
+> +
+> +	this->use_ecc = use_ecc;
+> +	set_address(this, this->cw_size * (ecc->steps - 1), page);
+> +	update_rw_regs(this, 1, true);
+> +
+> +	config_cw_read(this);
+> +
+> +	read_data_dma(this, FLASH_BUF_ACC, this->data_buffer, size);
+> +
+> +	r = submit_descs(this);
+> +	if (r)
+> +		dev_err(this->dev, "failed to copy last codeword\n");
+> +
+> +	free_descs(this);
+> +
+> +	return r;
+> +}
+> +
+> +/* implements ecc->read_page() */
+> +static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+> +				uint8_t *buf, int oob_required, int page)
+> +{
+> +	struct qcom_nandc_data *this = chip->priv;
+> +	u8 *data_buf, *oob_buf = NULL;
+> +	bool direct_dma, erased_page;
+> +	int r;
+> +
+> +	/*
+> +	 * first try to map the upper buffer directly, else, use our own buf
+> +	 * and memcpy to upper buf
+> +	 */
+> +	if (virt_addr_valid(buf) && !object_is_on_stack(buf)) {
+> +		direct_dma = true;
+> +		data_buf = buf;
+> +	} else {
+> +		direct_dma = false;
+> +		data_buf = this->data_buffer;
+> +		memset(data_buf, 0xff, mtd->writesize + mtd->oobsize);
+> +	}
+> +
+> +	oob_buf = oob_required ? chip->oob_poi : NULL;
+> +
+> +	r = read_page_low(this, data_buf, oob_buf);
+> +	if (r) {
+> +		dev_err(this->dev, "failure to read page\n");
+> +		goto err;
+
+return r?
+
+> +	}
+> +
+> +	erased_page = empty_page_fixup(this, data_buf);
+> +
+> +	if (!direct_dma)
+> +		memcpy(buf, this->data_buffer, mtd->writesize);
+> +
+> +	r = parse_read_errors(this, erased_page);
+> +err:
+> +	return r;
+
+and then return parse_read_errors()?
+
+> +}
+> +
+> +/* implements ecc->read_oob() */
+> +static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+> +			       int page)
+> +{
+> +	struct qcom_nandc_data *this = chip->priv;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	int r;
+> +
+> +	clear_read_regs(this);
+> +
+> +	this->use_ecc = true;
+> +	set_address(this, 0, page);
+> +	update_rw_regs(this, ecc->steps, true);
+> +
+> +	r = read_page_low(this, NULL, chip->oob_poi);
+> +	if (r)
+> +		dev_err(this->dev, "failure to read oob\n");
+> +
+> +	return r;
+> +}
+> +
+> +/* implements ecc->read_oob_raw(), used to read the bad block marker flag */
+> +static int qcom_nandc_read_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
+> +					int page)
+> +{
+> +	struct qcom_nandc_data *this = chip->priv;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	uint8_t *oob = chip->oob_poi;
+> +	int start, length;
+> +	int r;
+> +
+> +	/*
+> +	 * configure registers for a raw page read, the address is set to the
+> +	 * beginning of the last codeword, we don't care about reading ecc
+> +	 * portion of oob, just the free stuff
+> +	 */
+> +	r = copy_last_cw(this, false, page);
+> +	if (r)
+> +		return r;
+> +
+> +	/*
+> +	 * reading raw oob has 2 parts, first the bad block byte, then the
+> +	 * actual free oob region. perform a memcpy in two steps
+> +	 */
+> +	start = mtd->writesize - (this->cw_size * (ecc->steps - 1));
+> +	length = chip->options & NAND_BUSWIDTH_16 ? 2 : 1;
+> +
+> +	memcpy(oob, this->data_buffer + start, length);
+> +
+> +	oob += length;
+> +
+> +	start = this->cw_data - (ecc->steps << 2) + 1;
+> +	length = ecc->steps << 2;
+> +
+> +	memcpy(oob, this->data_buffer + start, length);
+> +
+> +	return 0;
+> +}
+> +
+> +/* implements ecc->write_page() */
+> +static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+> +				 const uint8_t *buf, int oob_required)
+> +{
+> +	struct qcom_nandc_data *this = chip->priv;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	u8 *data_buf, *oob_buf;
+> +	bool direct_dma;
+> +	int i, r = 0;
+> +
+> +	clear_read_regs(this);
+> +
+> +	/*
+> +	 * first try to map the upper buffer directly, else, memcpy upper
+> +	 * buffer to our local buffer
+> +	 */
+> +	direct_dma = virt_addr_valid(buf) && !object_is_on_stack((void *) buf);
+
+We should change object_is_on_stack() to take a const pointer.
+
+Are we guaranteed that this is called within the same context as where
+the buffer is passed to this function? Otherwise this stack check isn't
+going to work because object_is_on_stack() will silently fail.
+
+> +
+> +	if (!direct_dma) {
+> +		memcpy(this->data_buffer, buf, mtd->writesize
+> );
+> +		data_buf = this->data_buffer;
+> +	} else {
+> +		data_buf = (u8 *) buf;
+
+Shouldn't need to cast away const...
+
+> +	}
+> +
+> +	oob_buf = chip->oob_poi;
+> +
+> +	this->use_ecc = true;
+> +	update_rw_regs(this, ecc->steps, false);
+> +
+> +	for (i = 0; i < ecc->steps; i++) {
+> +		int data_size, oob_size;
+> +
+> +		if (i == (ecc->steps - 1)) {
+> +			data_size = ecc->size - ((ecc->steps - 1) << 2);
+> +			oob_size = (ecc->steps << 2) + ecc->bytes;
+> +		} else {
+> +			data_size = this->cw_data;
+> +			oob_size = ecc->bytes;
+> +		}
+> +
+> +		config_cw_write_pre(this);
+> +		write_data_dma(this, FLASH_BUF_ACC, data_buf, data_size);
+> +
+> +		/*
+> +		 * we don't really need to write anything to oob for the
+> +		 * first n - 1 codewords since these oob regions just
+> +		 * contain ecc that's written by the controller itself
+> +		 */
+> +		if (i == (ecc->steps - 1))
+> +			write_data_dma(this, FLASH_BUF_ACC + data_size,
+> +					oob_buf, oob_size);
+> +		config_cw_write_post(this);
+> +
+> +		data_buf += data_size;
+> +		oob_buf += oob_size;
+> +	}
+> +
+> +	r = submit_descs(this);
+> +	if (r)
+> +		dev_err(this->dev, "failure to write page\n");
+> +
+> +	free_descs(this);
+> +
+> +	return r;
+> +}
+> +
+> +/*
+> + * implements ecc->write_oob()
+> + *
+> + * the NAND controller cannot write only data or only oob within a codeword,
+> + * since ecc is calculated for the combined codeword. we first copy the
+> + * entire contents for the last codeword(data + oob), replace the old oob
+> + * with the new one in chip->oob_poi, and then write the entire codeword.
+> + * this read-copy-write operation results in a slight perormance loss.
+> + */
+> +static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+> +				int page)
+> +{
+> +	struct qcom_nandc_data *this = chip->priv;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	uint8_t *oob = chip->oob_poi;
+> +	int free_boff;
+> +	int data_size, oob_size;
+> +	int r, status = 0;
+> +
+> +	r = copy_last_cw(this, true, page);
+> +	if (r)
+> +		return r;
+> +
+> +	clear_read_regs(this);
+> +
+> +	/* calculate the data and oob size for the last codeword/step */
+> +	data_size = ecc->size - ((ecc->steps - 1) << 2);
+> +	oob_size = (ecc->steps << 2) + ecc->bytes;
+> +
+> +	/*
+> +	 * the location of spare data in the oob buffer, we could also use
+> +	 * ecc->layout.oobfree here
+> +	 */
+> +	free_boff = ecc->bytes * (ecc->steps - 1);
+> +
+> +	/* override new oob content to last codeword */
+> +	memcpy(this->data_buffer + data_size, oob + free_boff, oob_size);
+> +
+> +	this->use_ecc = true;
+> +	set_address(this, this->cw_size * (ecc->steps - 1), page);
+> +	update_rw_regs(this, 1, false);
+> +
+> +	config_cw_write_pre(this);
+> +	write_data_dma(this, FLASH_BUF_ACC, this->data_buffer,
+> +		data_size + oob_size);
+> +	config_cw_write_post(this);
+> +
+> +	r = submit_descs(this);
+> +	if (r)
+> +		dev_err(this->dev, "failure to write oob\n");
+> +
+> +	free_descs(this);
+> +
+> +	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+> +
+> +	status = chip->waitfunc(mtd, chip);
+
+Should we wait if the submission failed?
+
+> +
+> +	return status & NAND_STATUS_FAIL ? -EIO : 0;
+> +}
+> +
+> +/* implements ecc->write_oob_raw(), used to write bad block marker flag */
+> +static int qcom_nandc_write_oob_raw(struct mtd_info *mtd,
+> +				    struct nand_chip *chip, int page)
+> +{
+> +	struct qcom_nandc_data *this = chip->priv;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	uint8_t *oob = chip->oob_poi;
+> +	int start, length;
+> +	int r, status = 0;
+> +
+> +	r = copy_last_cw(this, false, page);
+> +	if (r)
+> +		return r;
+> +
+> +	clear_read_regs(this);
+> +
+> +	/*
+> +	 * writing raw oob has 2 parts, first the bad block region, then the
+> +	 * actual free region
+> +	 */
+> +	start = mtd->writesize - (this->cw_size * (ecc->steps - 1));
+> +	length = chip->options & NAND_BUSWIDTH_16 ? 2 : 1;
+> +
+> +	memcpy(this->data_buffer + start, oob, length);
+> +
+> +	oob += length;
+> +
+> +	start = this->cw_data - (ecc->steps << 2) + 1;
+> +	length = ecc->steps << 2;
+> +
+> +	memcpy(this->data_buffer + start, oob, length);
+> +
+> +	/* prepare write */
+> +	this->use_ecc = false;
+> +	set_address(this, this->cw_size * (ecc->steps - 1), page);
+> +	update_rw_regs(this, 1, false);
+> +
+> +	config_cw_write_pre(this);
+> +	write_data_dma(this, FLASH_BUF_ACC, this->data_buffer, this->cw_size);
+> +	config_cw_write_post(this);
+> +
+> +	r = submit_descs(this);
+> +	if (r)
+> +		dev_err(this->dev, "failure to write updated oob\n");
+> +
+> +	free_descs(this);
+> +
+> +	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+> +
+> +	status = chip->waitfunc(mtd, chip);
+
+Ditto.
+
+> +
+> +	return status & NAND_STATUS_FAIL ? -EIO : 0;
+> +}
+> +
+> +/*
+> + * the three functions below implement chip->read_byte(), chip->read_buf()
+> + * and chip->write_buf() respectively. these aren't used for
+> + * reading/writing page data, they are used for smaller data like reading
+> + * id, status etc
+> + */
+> +static uint8_t qcom_nandc_read_byte(struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *chip = mtd->priv;
+> +	struct qcom_nandc_data *this = chip->priv;
+> +	uint8_t *buf = (uint8_t *) this->data_buffer;
+
+isn't it already uint8_t?
+
+> +	uint8_t ret = 0x0;
+> +
+> +	if (this->last_command == NAND_CMD_STATUS) {
+> +		ret = this->status;
+> +
+> +		this->status = NAND_STATUS_READY | NAND_STATUS_WP;
+> +
+> +		return ret;
+> +	}
+> +
+> +	if (this->buf_start < this->buf_count)
+> +		ret = buf[this->buf_start++];
+> +
+> +	return ret;
+> +}
+> +
+[...]
+> +
+> +static int qcom_nandc_alloc(struct qcom_nandc_data *this)
+> +{
+> +	int r;
+> +
+> +	r = dma_set_coherent_mask(this->dev, DMA_BIT_MASK(32));
+> +	if (r) {
+> +		dev_err(this->dev, "failed to set DMA mask\n");
+> +		return r;
+> +	}
+> +
+> +	/*
+> +	 * we don't know the page size of the NAND chip yet, set the buffer size
+> +	 * to 512 bytes for now, that's sufficient for reading ID or ONFI params
+> +	 */
+> +	this->buf_size = SZ_512;
+> +
+> +	this->data_buffer = devm_kzalloc(this->dev, this->buf_size, GFP_KERNEL);
+> +	if (!this->data_buffer)
+> +		return -ENOMEM;
+> +
+> +	this->regs = devm_kzalloc(this->dev, sizeof(struct nandc_regs),
+
+sizeof(*this->regs)?
+
+> +			GFP_KERNEL);
+> +	if (!this->regs)
+> +		return -ENOMEM;
+> +
+> +	this->reg_read_buf = devm_kzalloc(this->dev, MAX_REG_RD * sizeof(u32),
+> +				GFP_KERNEL);
+
+devm_kcalloc() and sizeof(*this->reg_read_buf) ?
+
+> +	if (!this->reg_read_buf)
+> +		return -ENOMEM;
+> +
+> +	INIT_LIST_HEAD(&this->list);
+> +
+> +	this->chan = dma_request_slave_channel(this->dev, "rxtx");
+> +	if (!this->chan) {
+> +		dev_err(this->dev, "failed to request slave channel\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void qcom_nandc_unalloc(struct qcom_nandc_data *this)
+> +{
+> +	dma_release_channel(this->chan);
+> +}
+> +
+> +static int qcom_nandc_init(struct qcom_nandc_data *this)
+> +{
+> +	struct mtd_info *mtd = &this->mtd;
+> +	struct nand_chip *chip = &this->chip;
+> +	struct mtd_part_parser_data ppdata = {};
+> +	int r;
+> +
+> +	mtd->priv = chip;
+> +	mtd->name = "qcom-nandc";
+> +	mtd->owner = THIS_MODULE;
+> +
+> +	chip->priv = this;
+> +
+> +	chip->cmdfunc		= qcom_nandc_command;
+> +	chip->select_chip	= qcom_nandc_select_chip;
+> +	chip->read_byte		= qcom_nandc_read_byte;
+> +	chip->read_buf		= qcom_nandc_read_buf;
+> +	chip->write_buf		= qcom_nandc_write_buf;
+> +
+> +	chip->options |= NAND_NO_SUBPAGE_WRITE;
+> +	chip->bbt_options = NAND_BBT_ACCESS_BBM_RAW | NAND_BBT_USE_FLASH;
+> +
+> +	if (this->bus_width == 16)
+> +		chip->options |= NAND_BUSWIDTH_16;
+> +
+> +	qcom_nandc_pre_init(this);
+> +
+> +	r = nand_scan_ident(mtd, 1, NULL);
+> +	if (r)
+> +		return r;
+> +
+> +	r = qcom_nandc_ecc_init(this);
+> +	if (r)
+> +		return r;
+> +
+> +	qcom_nandc_hw_post_init(this);
+> +
+> +	r = nand_scan_tail(mtd);
+> +	if (r)
+> +		return r;
+> +
+> +
+
+Weird double newline here.
+
+> +	ppdata.of_node = this->dev->of_node;
+> +	r = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+> +	if (r)
+> +		return r;
+> +
+> +	return 0;
+
+Could be simplified to return mtd_device_parse_register(...).
+
+> +}
+> +
+[..]
+> +
+> +static int qcom_nandc_remove(struct platform_device *pdev)
+> +{
+> +	struct qcom_nandc_data *this;
+> +
+> +	this = platform_get_drvdata(pdev);
+> +	if (!this)
+> +		return -ENODEV;
+
+This seems impossible, so why check for it?
+
+> +
+> +	qcom_nandc_unalloc(this);
+> +
+> +	clk_disable_unprepare(this->aon_clk);
+> +	clk_disable_unprepare(this->core_clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver qcom_nandc_driver = {
+> +	.driver = {
+> +		.name = "qcom-nandc",
+> +		.of_match_table = qcom_nandc_of_match,
+> +	},
+> +	.probe   = qcom_nandc_probe,
+> +	.remove  = qcom_nandc_remove,
 > +};
+> +module_platform_driver(qcom_nandc_driver);
 > +
-> +MODULE_DEVICE_TABLE(of, cqspi_dt_ids);
-> +
-> +static struct platform_driver cqspi_platform_driver = {
-> +       .probe = cqspi_probe,
-> +       .remove = cqspi_remove,
-> +       .driver = {
-> +               .name = CQSPI_NAME,
-> +               .pm = CQSPI_DEV_PM_OPS,
-> +               .of_match_table = cqspi_dt_ids,
-> +       },
-> +};
-> +
-> +module_platform_driver(cqspi_platform_driver);
-> +
-> +MODULE_DESCRIPTION("Cadence QSPI Controller Driver");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:" CQSPI_NAME);
-> +MODULE_AUTHOR("Ley Foon Tan <lftan@altera.com>");
-> +MODULE_AUTHOR("Graham Moore <grmoore@opensource.altera.com>");
-> --
-> 1.7.9.5
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-> .
->
+> +MODULE_AUTHOR("Archit Taneja <architt@codeaurora.org>");
+> +MODULE_DESCRIPTION("Qualcomm NAND Controller driver");
+> +MODULE_LICENSE("GPL");
+
+This should say GPL v2 explicitly.
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
