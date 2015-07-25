@@ -1,20 +1,23 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZInxu-00018M-OQ
- for linux-mtd@lists.infradead.org; Sat, 25 Jul 2015 01:09:27 +0000
-Received: by pdbbh15 with SMTP id bh15so21050661pdb.1
- for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2015 18:09:05 -0700 (PDT)
-Date: Fri, 24 Jul 2015 18:09:02 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [GIT PULL] MTD updates for 4.2-rc4
-Message-ID: <20150725010902.GO8876@google.com>
+Date: Sat, 25 Jul 2015 11:30:36 +0800
+From: Shawn Guo <shawnguo@kernel.org>
+To: Stefan Agner <stefan@agner.ch>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, mark.rutland@arm.com,
+ boris.brezillon@free-electrons.com, aaron@tastycactus.com,
+ marb@ixxat.de, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
+ bpringlemeir@gmail.com, linux-kernel@vger.kernel.org,
+ sebastian@breakpoint.cc, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ kernel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org,
+ devicetree@vger.kernel.org, Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v7 4/5] ARM: dts: vf610twr: add NAND flash controller
+ peripherial
+Message-ID: <20150725033036.GI12927@tiger>
+References: <1437743784-30163-1-git-send-email-stefan@agner.ch>
+ <1437743784-30163-5-git-send-email-stefan@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1437743784-30163-5-git-send-email-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +27,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+On Fri, Jul 24, 2015 at 03:16:23PM +0200, Stefan Agner wrote:
+> This adds the NAND flash controller (NFC) peripherial. The driver
+> supports the SLC NAND chips found on Freescale's Vybrid Tower System
+> Module. The Micron NAND chip on the module needs 4-bit ECC per 512
+> byte page. Use 24-bit ECC per 2k page, which is supported by the
+> driver.
+> 
+> Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>  arch/arm/boot/dts/vf610-twr.dts | 44 +++++++++++++++++++++++++++++++++++++++++
+>  arch/arm/boot/dts/vfxxx.dtsi    |  8 ++++++++
+>  2 files changed, 52 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
+> index 375ab23..0b2b932 100644
+> --- a/arch/arm/boot/dts/vf610-twr.dts
+> +++ b/arch/arm/boot/dts/vf610-twr.dts
+> @@ -287,6 +287,50 @@
+>  	status = "okay";
+>  };
+>  
+> +&iomuxc {
+> +	vf610-twr {
+> +		pinctrl_nfc_1: nfcgrp_1 {
 
-The following changes since commit d770e558e21961ad6cfdf0ff7df0eb5d7d4f0754:
+The suffix "_1" is meaningless.  Please drop it here as well as patch
+#5.
 
-  Linux 4.2-rc1 (2015-07-05 11:01:52 -0700)
+Shawn
 
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20150724
-
-for you to fetch changes up to 5f867db63473f32cce1b868e281ebd42a41f8fad:
-
-  mtd: nand: Fix NAND_USE_BOUNCE_BUFFER flag conflict (2015-07-07 13:03:25 -0700)
-
-----------------------------------------------------------------
-MTD updates for 4.2-rc4:
-
-Two trivial updates. I meant to send these much earlier, but I've been
-preoccupied.
-
-* Add MAINTAINERS entry for diskonchip g3 driver
-
-* Fix an overlooked conflict in bitfield value assignments
-
-The latter update is a bit overdue, but there's no reason to wait any longer.
-
-----------------------------------------------------------------
-Robert Jarzmik (1):
-      MAINTAINERS: mtd: docg3: add docg3 maintainer
-
-Scott Wood (1):
-      mtd: nand: Fix NAND_USE_BOUNCE_BUFFER flag conflict
-
- MAINTAINERS              |  6 ++++++
- include/linux/mtd/nand.h | 10 +++++-----
- 2 files changed, 11 insertions(+), 5 deletions(-)
+> +			fsl,pins = <
+> +			VF610_PAD_PTD31__NF_IO15	0x28df
+> +			VF610_PAD_PTD30__NF_IO14	0x28df
+> +			VF610_PAD_PTD29__NF_IO13	0x28df
+> +			VF610_PAD_PTD28__NF_IO12	0x28df
+> +			VF610_PAD_PTD27__NF_IO11	0x28df
+> +			VF610_PAD_PTD26__NF_IO10	0x28df
+> +			VF610_PAD_PTD25__NF_IO9		0x28df
+> +			VF610_PAD_PTD24__NF_IO8		0x28df
+> +			VF610_PAD_PTD23__NF_IO7		0x28df
+> +			VF610_PAD_PTD22__NF_IO6		0x28df
+> +			VF610_PAD_PTD21__NF_IO5		0x28df
+> +			VF610_PAD_PTD20__NF_IO4		0x28df
+> +			VF610_PAD_PTD19__NF_IO3		0x28df
+> +			VF610_PAD_PTD18__NF_IO2		0x28df
+> +			VF610_PAD_PTD17__NF_IO1		0x28df
+> +			VF610_PAD_PTD16__NF_IO0		0x28df
+> +			VF610_PAD_PTB24__NF_WE_B	0x28c2
+> +			VF610_PAD_PTB25__NF_CE0_B	0x28c2
+> +			VF610_PAD_PTB27__NF_RE_B	0x28c2
+> +			VF610_PAD_PTC26__NF_RB_B	0x283d
+> +			VF610_PAD_PTC27__NF_ALE		0x28c2
+> +			VF610_PAD_PTC28__NF_CLE		0x28c2
+> +			>;
+> +		};
+> +	};
+> +};
+> +
+> +&nfc {
+> +	assigned-clocks = <&clks VF610_CLK_NFC>;
+> +	assigned-clock-rates = <33000000>;
+> +	nand-bus-width = <16>;
+> +	nand-ecc-mode = "hw";
+> +	nand-ecc-step-size = <2048>;
+> +	nand-ecc-strength = <24>;
+> +	nand-on-flash-bbt;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_nfc_1>;
+> +	status = "okay";
+> +};
+> +
+>  &uart1 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_uart1>;
+> diff --git a/arch/arm/boot/dts/vfxxx.dtsi b/arch/arm/boot/dts/vfxxx.dtsi
+> index 4aa3351..2f4b04d 100644
+> --- a/arch/arm/boot/dts/vfxxx.dtsi
+> +++ b/arch/arm/boot/dts/vfxxx.dtsi
+> @@ -520,6 +520,14 @@
+>  				status = "disabled";
+>  			};
+>  
+> +			nfc: nand@400e0000 {
+> +				compatible = "fsl,vf610-nfc";
+> +				reg = <0x400e0000 0x4000>;
+> +				interrupts = <83 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clks VF610_CLK_NFC>;
+> +				clock-names = "nfc";
+> +				status = "disabled";
+> +			};
+>  		};
+>  	};
+>  };
+> -- 
+> 2.4.5
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
