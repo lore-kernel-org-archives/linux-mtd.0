@@ -1,22 +1,19 @@
-Received: from mail-wi0-f175.google.com ([209.85.212.175])
+Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZJ3Uk-0005N7-Sm
- for linux-mtd@lists.infradead.org; Sat, 25 Jul 2015 17:45:03 +0000
-Received: by wibud3 with SMTP id ud3so67979362wib.0
- for <linux-mtd@lists.infradead.org>; Sat, 25 Jul 2015 10:44:00 -0700 (PDT)
+ id 1ZJFwq-0004qK-H6
+ for linux-mtd@lists.infradead.org; Sun, 26 Jul 2015 07:02:12 +0000
+Received: by igbij6 with SMTP id ij6so41575050igb.1
+ for <linux-mtd@lists.infradead.org>; Sun, 26 Jul 2015 00:01:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1437842963-8107-1-git-send-email-khoroshilov@ispras.ru>
-References: <1437842963-8107-1-git-send-email-khoroshilov@ispras.ru>
-Date: Sat, 25 Jul 2015 14:44:00 -0300
-Message-ID: <CAAEAJfD9iwFNkcA5Vsz6jFgMDGqmKFxYrQJgMB1eywc80cZ0EQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: gpio-addr-flash: add missing iounmap in probe/remove
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Mike Frysinger <vapier@gentoo.org>, ldv-project@linuxtesting.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <1437835063-58407-2-git-send-email-eastyjr@gmail.com>
+References: <1437835063-58407-1-git-send-email-eastyjr@gmail.com>
+ <1437835063-58407-2-git-send-email-eastyjr@gmail.com>
+Date: Sun, 26 Jul 2015 09:01:50 +0200
+Message-ID: <CACna6rx0KNfh6Y7JVVF6-QnFne2aRyxcrnNK0_R4=JEF8zV+9Q@mail.gmail.com>
+Subject: Re: [PATCH V2 1/4] mtd: bcm47xxpart.c: NVRAM partition handling
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Joseph East <eastyjr@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,38 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexey,
+On 25 July 2015 at 16:37, Joseph East <eastyjr@gmail.com> wrote:
+> ---
 
-On 25 July 2015 at 13:49, Alexey Khoroshilov <khoroshilov@ispras.ru> wrote:
-> There is no iounmap(state->map.virt) in gpio_flash_remove() and
-> in gpio_flash_probe() error handling code.
+You didn't describe your change, you didn't signed off the patch.
+
+
+>  drivers/mtd/bcm47xxpart.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 >
+> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+> index c0720c1..55a1462 100644
+> --- a/drivers/mtd/bcm47xxpart.c
+> +++ b/drivers/mtd/bcm47xxpart.c
+> @@ -95,6 +95,7 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+>         int trx_part =3D -1;
+>         int last_trx_part =3D -1;
+>         int possible_nvram_sizes[] =3D { 0x8000, 0xF000, 0x10000, };
+> +       bool found_nvram =3D false;
+>
+>         /*
+>          * Some really old flashes (like AT45DB*) had smaller erasesize-s=
+, but
+> @@ -288,12 +289,23 @@ static int bcm47xxpart_parse(struct mtd_info *maste=
+r,
+>                 if (buf[0] =3D=3D NVRAM_HEADER) {
+>                         bcm47xxpart_add_part(&parts[curr_part++], "nvram"=
+,
+>                                              master->size - blocksize, 0)=
+;
+> +                       found_nvram =3D true;
+>                         break;
+>                 }
+>         }
+>
+>         kfree(buf);
+>
+> +       if (!found_nvram) {
+> +               pr_warning("Cannot find a nvram partition, reserving last=
+ two blocks\n");
+> +               bcm47xxpart_add_part(&parts[curr_part++], "nvram_guess",
+> +                                    master->size - blocksize * 2, MTD_WR=
+ITEABLE);
+> +               for (i =3D 0; i < curr_part; i++) {
+> +                       if (parts[i].size + parts[i].offset =3D=3D master=
+->size)
+> +                               parts[i].offset -=3D blocksize * 2;
+> +               }
+> +       }
+> +
 
-Is there any reason why we can't just use managed variants? E.g.
+I'm not asking "what for", because it should be in a commit message.
+Waiting for it.
 
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c
-b/drivers/mtd/maps/gpio-addr-flash.c
-index 2fb3460..bbaa92b 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -238,7 +238,8 @@ static int gpio_flash_probe(struct platform_device *pde=
-v)
-        state->map.copy_to    =3D gf_copy_to;
-        state->map.bankwidth  =3D pdata->width;
-        state->map.size       =3D state->win_size * (1 << state->gpio_count=
-);
--       state->map.virt       =3D ioremap_nocache(memory->start, state->map=
-.size);
-+       state->map.virt       =3D devm_ioremap_nocache(&pdev->dev, memory->=
-start,
-+                                                    state->map.size);
-        state->map.phys       =3D NO_XIP;
-        state->map.map_priv_1 =3D (unsigned long)state;
-
-Notice the error checks are still needed though, but managed stuff would ma=
-ke
-it simpler.
+One problem I can see: it won't work well on devices with multiple
+flashes. Is it expected for NVRAM to be located only on a one flash
+memory.
 
 --=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+Rafa=C5=82
