@@ -1,23 +1,22 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZJpBd-0004Ms-A4
- for linux-mtd@lists.infradead.org; Mon, 27 Jul 2015 20:39:49 +0000
-Received: by pabkd10 with SMTP id kd10so56959941pab.2
- for <linux-mtd@lists.infradead.org>; Mon, 27 Jul 2015 13:39:27 -0700 (PDT)
-Date: Mon, 27 Jul 2015 13:39:24 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Michal Suchanek <hramrach@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] mtd: ofpart: do not fail probe when no partitions
- exist
-Message-ID: <20150727203924.GQ8876@google.com>
-References: <cover.1438028045.git.hramrach@gmail.com>
- <2feb6039b908bbe7daf98c0fc3b7c8f725c36ac3.1438028045.git.hramrach@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2feb6039b908bbe7daf98c0fc3b7c8f725c36ac3.1438028045.git.hramrach@gmail.com>
+In-Reply-To: <201507271943.32453.marex@denx.de>
+References: <cover.1433364398.git.hramrach@gmail.com>
+ <201507241034.15406.marex@denx.de>
+ <CAOMqctTsA5ZxBWFTzirqhQBoR2sO6B+uMFXWMHuSVb_EygCDvw@mail.gmail.com>
+ <201507271943.32453.marex@denx.de>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Mon, 27 Jul 2015 22:43:05 +0200
+Message-ID: <CAOMqctRPOv3_YZqS-g+SuuMT5UpOJMFs1OtBuZAhLR_SZnfTyw@mail.gmail.com>
+Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
+To: Marek Vasut <marex@denx.de>
+Cc: Vinod Koul <vinod.koul@intel.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ dmaengine <dmaengine@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +26,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 27, 2015 at 08:30:43PM -0000, Michal Suchanek wrote:
-...
-> The controller-data node contains no partition information and no other
-> subnodes with partition information exist.
-> 
-> The ofpart code returns an error when there are subnodes of the flash DT
-> node but no partitions are found. This error is then propagated to
-> mtdpart which propagetes it to MTD probe which fails probing the flash
-> device.
-> 
-> Change this condition to a warning so that flash without partitions can
-> be accessed on Exynos with ofpart support compiled in.
+On 27 July 2015 at 19:43, Marek Vasut <marex@denx.de> wrote:
+> On Monday, July 27, 2015 at 11:46:25 AM, Michal Suchanek wrote:
+>> On 24 July 2015 at 10:34, Marek Vasut <marex@denx.de> wrote:
+>> > On Thursday, July 23, 2015 at 07:03:47 PM, Michal Suchanek wrote:
+>> >
+>> Ok, so here is some summary.
+>>
+>> I have a NOR flash attached to a s3c64xx SPI controller with 64byte
+>> fifo and a pl330 dma controller.
+>>
+>> Normally DMA controller is used for transfers that do not fit into the
+>> FIFO.
+>>
+>> I tried adding the flash memory ID to the spi-nor driver table and
+>> adding a DT node for it.
+>>
+>> The flash is rated at 120MHz so I used that speed but the ID was
+>> bit-shifted and identification failed. There is DT property
+>> samsung,spi-feedback-delay for addressing this and at 120MHz it must
+>> be 2 or 3 on this board. 40MHz works with default value 0.
+>>
+>> The next step after identification worked was to try reading the flash
+>> content. For this the DMA controller is used because data is
+>> transferred in blocks larger than 64 bytes. When reading the whole 4MB
+>> flash the transfer failed silently. I got a 4MB file of all ones or
+>> all zeroes.
+>>
+>> It turns out that
+>>
+>>  - the pl330 locks up when transfering large amount of data.
+>> Specifically, the maximum power of 2 sized transfer at 120MHz is 128
+>> bytes and 64k at 40MHz. Transferring more than this results in the
+>> pl330 locking up and never signalling completion of the transfer.
+>
+> Hypothesis:
+> I think this might just be that the controller didn't catch all the
+> inbound clock ticks and thus counted less inbound data than it was
+> set up to receive. The controller thus waits for more data.
 
-You never replied to my suggestion here:
+The flash chip can transfer data as long as you keep the clock going,
+especially when you transfer 64k off a 4M flash.
 
-http://lists.infradead.org/pipermail/linux-arm-kernel/2015-June/352206.html
+The read command is bound just by stopping the clock. There is always
+more data to be had.
 
-Particularly, "just define a proper compatibile property for [the
-'controller-data'] subnode, and ofpart.c will naturally handle this".
+>
+>> Data
+>> is left in FIFO which causes subsequent commands to fail since garbage
+>> is returned instead of command reply. Also subsequent read may cause
+>> I/O error or or return an empty page depending on the garbage around.
+>
+> So the driver for the DMA controller might need to be augmented to handle
+> this case -- add a timeout and in case DMA times out, drain the FIFO to
+> make sure subsequent transfers do not fail.
 
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> 
-> --
->  - add more verbose explanation
-> ---
->  drivers/mtd/ofpart.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index aa26c32..a29d29f 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -94,10 +94,10 @@ static int parse_ofpart_partitions(struct mtd_info *master,
->  
->  	if (!i) {
->  		of_node_put(pp);
-> -		pr_err("No valid partition found on %s\n", node->full_name);
-> +		pr_warn("No valid partition found on %s\n", node->full_name);
->  		kfree(*pparts);
->  		*pparts = NULL;
-> -		return -EINVAL;
-> +		return 0;
+There is no way to add timeout in the DMA driver since it does not
+know the SPI clock.
 
-I don't really like this, since it can turn other invalid device trees
-into a silent fallback. I'd really prefer we make it easy to tell the
-difference between a MTD partition subnode and another foo-bar subnode.
+The timeout is handled by the SPI driver and it should be possible to
+augment it to drain the FIFO when DMA fails so long as FIFO level is
+readable somewhere.
 
->  	}
->  
->  	return nr_parts;
+>
+>> - the I/O errors are not checked in spi-nor at all which leads to
+>> silent data corruption.
+>>
+>> On a suggestion that this may improve reliability I changed the
+>> s3c64xx driver to use DMA for all transfers. This caused
+>> identification to fail in spin-nor because the ID was prefixed with
+>> extra 00  byte. Testing with spidev confirmed that everything is
+>> prefixed with extra 00.
+>
+> The determinism of this is in fact excellent news.
+>
+>> Also when the DMA controller locked up no
+>> transfers were possible anymore. When DMA was not used for sending
+>> commands the controller would recover on next command. I made the
+>> option to always use DMA configurable and it turns out that the
+>> returned data is prefixed with 00 only when no transfer without DMA
+>> was ever made. Loading the spi-nor driver with the dma-only option off
+>> and then with dma-only option on results in correct operation. Only
+>> loading the dma-only driver first causes the 00 prefix.
+>
+> Can we conclude that the PIO codepath somehow programs a register somewhere
+> which gets rid of this 0x00 prefix ? If so, this should then also be part
+> of the DMA codepath, or even better, this should be set in probe() somewhere.
 
-Brian
+Yes, it looks like it.
+
+Thanks
+
+Michal
