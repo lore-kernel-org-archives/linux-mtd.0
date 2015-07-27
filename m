@@ -1,20 +1,34 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZJio3-0006YI-OZ
- for linux-mtd@lists.infradead.org; Mon, 27 Jul 2015 13:51:06 +0000
-From: Alex Smith <alex.smith@imgtec.com>
-To: <linux-mtd@lists.infradead.org>
-CC: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- <linux-kernel@vger.kernel.org>, Alex Smith <alex.smith@imgtec.com>,
- <devicetree@vger.kernel.org>
-Subject: [PATCH v4 2/3] dt-bindings: binding for jz4780-{nand,bch}
-Date: Mon, 27 Jul 2015 14:50:18 +0100
-Message-ID: <1438005019-28162-3-git-send-email-alex.smith@imgtec.com>
-In-Reply-To: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
-References: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
+From: Ranjit Abhimanyu Waghmode <ranjit.waghmode@xilinx.com>
+To: Mark Brown <broonie@kernel.org>
+CC: Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
+ "zajec5@gmail.com" <zajec5@gmail.com>, "marex@denx.de" <marex@denx.de>,
+ "shijie.huang@intel.com" <shijie.huang@intel.com>, "juhosg@openwrt.org"
+ <juhosg@openwrt.org>, "ben@decadent.org.uk" <ben@decadent.org.uk>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Harini Katakam <harinik@xilinx.com>,
+ "Punnaiah Choudary Kalluri" <punnaia@xilinx.com>, "ran27jit@gmail.com"
+ <ran27jit@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>
+Subject: RE: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support
+ in Zynq MPSoC GQSPI controller
+Date: Mon, 27 Jul 2015 13:55:56 +0000
+Message-ID: <7CFCFE83B8145347A1D424EC939F1C3C0148C95C@XAP-PVEXMBX01.xlnx.xilinx.com>
+References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
+ <20150714164005.GE11162@sirena.org.uk>
+ <7CFCFE83B8145347A1D424EC939F1C3CA7E53D@XAP-PVEXMBX01.xlnx.xilinx.com>
+ <20150715160146.GS11162@sirena.org.uk>
+ <7CFCFE83B8145347A1D424EC939F1C3CA7E758@XAP-PVEXMBX01.xlnx.xilinx.com>
+ <20150716085739.GT11162@sirena.org.uk>
+ <7CFCFE83B8145347A1D424EC939F1C3CA81D12@XAP-PVEXMBX01.xlnx.xilinx.com>
+ <20150724105209.GI11162@sirena.org.uk>
+In-Reply-To: <20150724105209.GI11162@sirena.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,97 +38,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add DT bindings for NAND devices connected to the NEMC on JZ4780 SoCs,
-as well as the hardware BCH controller, used by the jz4780_{nand,bch}
-drivers.
+Hi Mark,
 
-Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
-v3 -> v4:
- - No change
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, July 24, 2015 4:22 PM
+> To: Ranjit Abhimanyu Waghmode
+> Cc: Michal Simek; Soren Brinkmann; zajec5@gmail.com; marex@denx.de;
+> shijie.huang@intel.com; juhosg@openwrt.org; ben@decadent.org.uk; linux-
+> mtd@lists.infradead.org; linux-spi@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Harini Katakam;
+> Punnaiah Choudary Kalluri; ran27jit@gmail.com; dwmw2@infradead.org;
+> computersforpeace@gmail.com
+> Subject: Re: [RFC PATCH 0/2] spi: add dual parallel & stacked mode suppor=
+t in
+> Zynq MPSoC GQSPI controller
+>=20
+> On Fri, Jul 24, 2015 at 10:42:35AM +0000, Ranjit Abhimanyu Waghmode wrote=
+:
+>=20
+> As I think you've been asked before please fix your mail client to word w=
+rap
+> within paragraphs so your mails are more legible.
+>=20
 
-v2 -> v3:
- - Rebase to 4.0-rc6
- - Changed ingenic,ecc-size to common nand-ecc-step-size
- - Changed ingenic,ecc-strength to common nand-ecc-strength
- - Changed ingenic,busy-gpio to common rb-gpios
- - Changed ingenic,wp-gpio to common wp-gpios
+Sorry about this, I did some changes but it's kind of broken. Will fix this=
+.
 
-v1 -> v2:
- - Rebase to 4.0-rc3
----
- .../bindings/mtd/ingenic,jz4780-nand.txt           | 57 ++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+> > To support the dual parallel mode in this controller, following minor
+> > things can be added to the driver.
+>=20
+> > 1) Controller needs to know in which mode it is working, then it's
+> > obvious to set the appropriate flag for the same
+> > 2) There are more than one chip selects, so need to set the same
+> >
+> > So kindly suggest your view on the above request.
+>=20
+> I'm not entirely sure what you're asking here from the point of view of S=
+PI, sorry
+> - what exactly are you requesting?  If you want to add support for new SP=
+I bus
+> modes please go ahead and do that, you need to clearly document what any
+> new modes you're adding are so that other people can understand them.
 
-diff --git a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
-new file mode 100644
-index 000000000000..1e8e2eeffbf7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
-@@ -0,0 +1,57 @@
-+* Ingenic JZ4780 NAND/BCH
-+
-+This file documents the device tree bindings for NAND flash devices on the
-+JZ4780. NAND devices are connected to the NEMC controller (described in
-+memory-controllers/ingenic,jz4780-nemc.txt), and thus NAND device nodes must
-+be children of the NEMC node.
-+
-+Required NAND device properties:
-+- compatible: Should be set to "ingenic,jz4780-nand".
-+- reg: For each bank with a NAND chip attached, should specify a bank number,
-+  an offset of 0 and a size of 0x1000000 (i.e. the whole NEMC bank).
-+
-+Optional NAND device properties:
-+- ingenic,bch-device: To make use of the hardware BCH controller, this property
-+  must contain a phandle for the BCH controller node. The required properties
-+  for this node are described below. If this is not specified, software BCH
-+  will be used instead.
-+- nand-ecc-step-size: ECC block size in bytes.
-+- nand-ecc-strength: ECC strength (max number of correctable bits).
-+- rb-gpios: GPIO specifier for the busy pin.
-+- wp-gpios: GPIO specifier for the write protect pin.
-+
-+Example:
-+
-+nemc: nemc@13410000 {
-+	...
-+
-+	nand: nand@1 {
-+		compatible = "ingenic,jz4780-nand";
-+		reg = <1 0 0x1000000>;	/* Bank 1 */
-+
-+		ingenic,bch-device = <&bch>;
-+		nand-ecc-step-size = <1024>;
-+		nand-ecc-strength = <24>;
-+
-+		rb-gpios = <&gpa 20 GPIO_ACTIVE_LOW>;
-+		wp-gpios = <&gpf 22 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+The BCH controller is a separate SoC component used for error correction on
-+NAND devices. The following is a description of the device properties for a
-+BCH controller.
-+
-+Required BCH properties:
-+- compatible: Should be set to "ingenic,jz4780-bch".
-+- reg: Should specify the BCH controller registers location and length.
-+- clocks: Clock for the BCH controller.
-+
-+Example:
-+
-+bch: bch@134d0000 {
-+	compatible = "ingenic,jz4780-bch";
-+	reg = <0x134d0000 0x10000>;
-+
-+	clocks = <&cgu JZ4780_CLK_BCH>;
-+};
--- 
-2.4.6
+Ok, my description was too short to get it completely.
+
+For adding dual parallel mode support to current driver:
+Are following points enough? Or do you want to suggest something better on =
+top of it?
+
+Driver:
+1) Controller needs to know in which mode it is working.
+2) As there are more than one chip selects, may need to add code for handli=
+ng that as well.
+
+MTD:
+1) Adding TWO_FLASH support
+2) Adding DATA_STRIPE support
+3) For reading array size needs to be doubled.
+4) Need to access even addresses. Basically address/2.
+
+Please suggest your view on above points.
+
+Regards,
+Ranjit
