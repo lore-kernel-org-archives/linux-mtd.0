@@ -1,23 +1,26 @@
-From: Vikas MANOCHA <vikas.manocha@st.com>
-To: Graham Moore <grmoore@opensource.altera.com>
-CC: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Alan Tull <atull@opensource.altera.com>,
- Dinh Nguyen <dinguyen@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>
-Date: Mon, 27 Jul 2015 20:12:40 +0200
-Subject: RE: [PATCH V5 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-Message-ID: <9026814FBF99304F9FA3AC3FB72F3E2F04919670@SAFEX1MAIL4.st.com>
-References: <1437758259-28299-1-git-send-email-grmoore@opensource.altera.com>
- <1437758259-28299-2-git-send-email-grmoore@opensource.altera.com>
- <55B2D1F9.9040709@st.com> <55B66CEF.7030100@opensource.altera.com>
-In-Reply-To: <55B66CEF.7030100@opensource.altera.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Message-ID: <1438024359.2313.4.camel@lynxeye.de>
+Subject: Re: [Patch v3 2/5] mtd: nand: add NVIDIA Tegra NAND Flash
+ controller driver
+From: Lucas Stach <dev@lynxeye.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Thierry Reding
+ <thierry.reding@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Rob
+ Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
+ <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>, Boris
+ BREZILLON <boris.brezillon@free-electrons.com>, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>, Stefan Agner <stefan@agner.ch>, Marcel
+ Ziswiler <marcel@ziswiler.com>, devicetree@vger.kernel.org,
+ linux-tegra@vger.kernel.org,  linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Date: Mon, 27 Jul 2015 21:12:39 +0200
+In-Reply-To: <20150722231025.GB8876@google.com>
+References: <1431282602-7137-1-git-send-email-dev@lynxeye.de>
+ <1431282602-7137-3-git-send-email-dev@lynxeye.de>
+ <20150721212710.GN24125@google.com> <1437597760.2289.13.camel@lynxeye.de>
+ <20150722231025.GB8876@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,188 +30,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Graham,
+Hi Brian,
 
-> -----Original Message-----
-> From: Graham Moore [mailto:grmoore@opensource.altera.com]
-> Sent: Monday, July 27, 2015 10:40 AM
-> To: Vikas MANOCHA
-> Cc: Marek Vasut; linux-mtd@lists.infradead.org; David Woodhouse; Brian
-> Norris; linux-kernel@vger.kernel.org; Alan Tull; Dinh Nguyen; Yves
-> Vandervennet
-> Subject: Re: [PATCH V5 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
-> Flash Controller.
->=20
-> Hi Vikas,
->=20
-> On 07/24/2015 07:02 PM, vikasm wrote:
-> > Hi Graham,
-> >
-> > On 07/24/2015 10:17 AM, Graham Moore wrote:
-> >> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> >> ---
-> >> V2: use NULL instead of modalias in spi_nor_scan call
-> >> V3: Use existing property is-decoded-cs instead of creating duplicate.
-> >> V4: Support Micron quad mode by snooping command stream for EVCR
-> >> command and subsequently configuring Cadence controller for quad
-> mode.
-> >> V5: Clean up sparse and smatch complaints.  Remove snooping of Micron
-> >> quad mode.  Add comment on XIP mode bit and dummy clock cycles.  Set
-> >> up SRAM partition at 1:1 during init.
-> >> ---
-> >>   arch/arm/boot/dts/socfpga.dtsi               |    1 +
-> >>   arch/arm/boot/dts/socfpga_cyclone5_socdk.dts |    1 -
-> >>   drivers/mtd/spi-nor/Kconfig                  |    6 +
-> >>   drivers/mtd/spi-nor/Makefile                 |    1 +
-> >>   drivers/mtd/spi-nor/cadence-quadspi.c        | 1261
-> ++++++++++++++++++++++++++
-> >>   5 files changed, 1269 insertions(+), 1 deletion(-)
-> >>   create mode 100644 drivers/mtd/spi-nor/cadence-quadspi.c
-> >>
-> >> diff --git a/arch/arm/boot/dts/socfpga.dtsi
-> >> b/arch/arm/boot/dts/socfpga.dtsi index c71a705..e9ecdce 100644
-> >> --- a/arch/arm/boot/dts/socfpga.dtsi
-> >> +++ b/arch/arm/boot/dts/socfpga.dtsi
-> >> @@ -695,6 +695,7 @@
-> >>                          is-decoded-cs =3D <1>;
-> >>                          fifo-depth =3D <128>;
-> >>                          status =3D "disabled";
-> >> +                       m25p,fast-read;
-> >
-> > This patch is not applicable to l2-mtd master or linus master repo, mig=
-ht
-> need to rebase it.
-> >
->=20
-> Argh, my mistake, these dts files are not supposed to be in the patch.
->=20
-> ...
->=20
-> >> +#include <linux/timer.h>
-> >> +
-> >> +#define CQSPI_NAME                     "cadence-qspi"
-> >
-> > replace space with tabs.
-> >
->=20
-> They *are* tabs in my original patch.  Not sure how they got changed to
-> spaces...
->=20
-> ...
-> >> +
-> >> +#define CQSPI_FIFO_WIDTH                       4
-> >
-> > FIFO width could be 4 or 8 etc depending on the SOC, it would be better=
- to
-> get it from device.
-> > You can refer to u-boot code for the same.
-> >
->=20
-> OK
-> ...
-> >> +
-> >> +#define CQSPI_INDIRECTTRIGGER_ADDR_MASK                0xFFFFF
-> >
-> > Mask value of 0xFFFFF is specific to socfpga platform.
-> > Please refer to u-boot patchset for same discussion.
-> >
->=20
-> OK
-> ...
-> >> +static void cqspi_fifo_read(void *dest, const void __iomem
-> *src_ahb_addr,
-> >> +                           unsigned int bytes) {
-> >> +       unsigned int temp;
-> >> +       int remaining =3D bytes;
-> >> +       unsigned int *dest_ptr =3D (unsigned int *)dest;
-> >> +
-> >> +       while (remaining >=3D CQSPI_FIFO_WIDTH) {
-> >> +               *dest_ptr =3D readl(src_ahb_addr);
-> >> +               dest_ptr++;
-> >> +               remaining -=3D CQSPI_FIFO_WIDTH;
-> >
-> > this logic only works when fifo width is 4 with "unsigned int" data of =
-4
-> bytes.
-> > It has been corrected in mainline u-boot or in the u-boot patches.
-> >
->=20
-> OK
-> ...
-> >> +static int cqspi_indirect_read_setup(struct spi_nor *nor,
-> >> +                                    unsigned int from_addr) {
-> >> +       unsigned int reg;
-> >> +       unsigned int dummy_clk =3D 0;
-> >> +       struct cqspi_st *cqspi =3D nor->priv;
-> >> +       void __iomem *reg_base =3D cqspi->iobase;
-> >> +       unsigned int ahb_phy_addr =3D cqspi->ahb_phy_addr;
-> >> +
-> >> +       writel((ahb_phy_addr & CQSPI_INDIRECTTRIGGER_ADDR_MASK),
-> >> +              reg_base + CQSPI_REG_INDIRECTTRIGGER);
-> >> +       writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
-> >
-> > Base trigger register address (0x1c register) corresponds to the
-> > address which should be put on AHB bus to handle indirect transfer
-> triggered before.
-> >
-> > To handle indirect transfer we need to issue addresses from (value of
-> > 0x1c) to (value of 0x1c) + 15*4 ("4" corresponds to size of SRAM locati=
-on).
-> > There are no obstacles in issuing const address just equal to 0x1c.
-> > Important thing to note is that indirect trigger address has nothing
-> > in common with your physical or mapped NOR Flash address.
-> >
-> > Transfer read/write start addresses should be programmed with the
-> > absolute flash address to be read/written.
-> >
->=20
-> OK, I'll add the trigger address to the device tree, etc.  You seem to be
-> concerned about the fact that on Altera SoC, the trigger address and the =
-ahb
-> address are different.  I'm not seeing any problem with that.
+a bit of investigation later I have some coherent answers to your
+requests. :)
 
-No problem with different or same trigger address & ahb address. Trigger ad=
-dress should be passed through device tree as it could
-be different for different SoCs. Masking it with value like 0xf_ffff to mak=
-e it suitable for one SOC in driver does not seems right approach.
-
-> The CPU reads/writes the FIFO using an address, but that is not the same
-> address that goes on the bus way down in the interconnect.  What's wrong
-> with that?  It's the way our SoC works.  If we use the trigger address fo=
-r the
-> trigger address register, and the ahb address for reading/writing the FIF=
-O,
-> then it works fine.
-
-This implementation is your Soc specific & not generic for the qspi periphe=
-ral. In this way, it won't be possible to use this driver for Socs other th=
-an altera soc.
-
-Rgds,
-Vikas
-
->=20
+Am Mittwoch, den 22.07.2015, 16:10 -0700 schrieb Brian Norris:
+> Hi,
+> 
+> On Wed, Jul 22, 2015 at 10:42:40PM +0200, Lucas Stach wrote:
+> > Am Dienstag, den 21.07.2015, 14:27 -0700 schrieb Brian Norris:
+> > > On Sun, May 10, 2015 at 08:29:59PM +0200, Lucas Stach wrote:
+> > > > --- /dev/null
+> > > > +++ b/drivers/mtd/nand/tegra_nand.c
+> > > > @@ -0,0 +1,801 @@
 > ...
->=20
-> >> +       watermark =3D cqspi->fifo_depth * CQSPI_FIFO_WIDTH / 2;
-> >> +       writel(watermark, reg_base +
-> CQSPI_REG_INDIRECTRDWATERMARK);
-> >> +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
-> >> +       writel(cqspi->fifo_depth - CQSPI_REG_SRAM_RESV_WORDS,
-> >> +              reg_base + CQSPI_REG_SRAMPARTITION);
-> >
-> > sram partioning is not needed to be changed at every read/write, it
-> > should be ok to configure it in the init like divide half for read & ha=
-lf for
-> write.
-> >
->=20
-> OK
+> > > > +static int tegra_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+> > > > +				uint8_t *buf, int oob_required, int page)
+> > > > +{
 > ...
-> >
-> > Rgds,
-> > Vikas
-> >
->=20
-> Best regards,
-> Graham
+> > > > +	value = readl(nand->regs + DEC_STATUS);
+> > > > +
+> > > > +	if (value & DEC_STATUS_A_ECC_FAIL) {
+> > > > +		/*
+> > > > +		 * The ECC isn't smart enough to figure out if a page is
+> > > > +		 * completely erased and flags an error in this case. So we
+> > > > +		 * check the read data here to figure out if it's a legitimate
+> > > > +		 * error or a false positive.
+> > > > +		 */
+> > > > +		int i;
+> > > > +		u32 *data = (u32 *)buf;
+> > > > +		for (i = 0; i < mtd->writesize / 4; i++) {
+> > > > +			if (data[i] != 0xffffffff) {
+> > > > +				mtd->ecc_stats.failed++;
+> > > > +				return -EBADMSG;
+> > > > +			}
+> > > > +		}
+> > > 
+> > > Hmm, what about OOB? It's possible to actually write 0xff to the entire
+> > > page. This hunk means that such a data pattern would then be
+> > > unprotected. You should probably check that *both* the main and OOB data
+> > > are all 0xff; if there are non-0xff bytes, then that (probably, see the
+> > > following) means someone intentionally wrote all 0xff to the page. [1]
+> > > 
+> > 
+> > This check is only executed if the ECC engine flagged a non-correctable
+> > error. If someone wrote all 0xff to the page there will be a proper ECC
+> > checksum calculated and we won't get into this path. So to get this
+> > check to wrongly paper over a legitimate error someone would need to
+> > write almost all 0xff with a few bits 0, which then flip to a 1
+> > afterwards, which is highly unlikely as far as I understand flash
+> > technology.
+> 
+> On second thought, the case I mentioned is not a problem for you
+> currently. You'll just have more problems once you start seeing bitflips
+> in erased pages.
+> 
+> And I agree, the latter case you mention is probably pretty unlikely,
+> though I'm not really an EE expert to tell you cannot see such a 0->1
+> "stuck bit".
+> 
+> But anyway, why don't you check the spare area too? It turns the
+> "unlikely" problem into a non-issue.
+> 
+If I'm using the HWECC/DMA functions I have no way to check the OOB ECC
+area. The controller just skips over it and only transfers user
+available OOB data into the buffer. So checking the OOB is unfortunately
+not easily done.
+
+> At the same time, I see that you don't support raw page reads/writes. Is
+> it impossible? Or is it just an oversight?
+> 
+It's possible, but I've skipped it for now, as this would increase the
+amount of testing I have to do to validate each round of those patches
+even more and I don't see much benefit right now. So this remains a
+TODO.
+
+[...]
+> > > > +	unsigned long rate = clk_get_rate(nand->clk) / 1000000;
+> 
+> ^^ conversion to MHz? Why? (comment) How about DIV_ROUND_UP, so you
+> don't overestimate the clock period (and thus underestimate the number
+> of clock periods needed)?
+> 
+> > > > +	unsigned long period = 1000000 / rate;
+> 
+> And period is... in picoseconds? It took me a minute to figure that out
+> for sure, so IMO it deserves a comment.
+> 
+> > > > +	const struct nand_sdr_timings *timings;
+> > > > +	u32 val, reg = 0;
+> > > > +
+> > > > +	timings = onfi_async_timing_mode_to_sdr_timings(mode);
+> > > > +
+> > > > +	val = max3(timings->tAR_min, timings->tRR_min,
+> > > > +		   timings->tRC_min) / period;
+> 
+> DIV_ROUND_UP()? You don't want to lop off a partial timing cycle, right?
+> Simliar comments apply throughout. Or please correct me if I'm wrong.
+> 
+
+I agree with the reasoning here and made those changes for v4.
+
+> > > > +	if (val > 2)
+> > > > +		val -= 3;
+> > > > +	reg |= TIMING_TCR_TAR_TRR(val);
+> > > > +
+> > > > +	val = max(max(timings->tCS_min, timings->tCH_min),
+> > > > +		  max(timings->tALS_min, timings->tALH_min)) / period;
+> > > > +	if (val > 1)
+> > > > +		val -= 2;
+> > > > +	reg |= TIMING_TCS(val);
+> > > > +
+> > > > +	val = (max(timings->tRP_min, timings->tREA_max) + 6000) / period;
+> > > > +	reg |= (TIMING_TRP(val) | TIMING_TRP_RESP(val));
+> > > > +
+> > > > +	reg |= TIMING_TWB(timings->tWB_max / period);
+> > > > +	reg |= TIMING_TWHR(timings->tWHR_min / period);
+> > > > +	reg |= TIMING_TWH(timings->tWH_min / period);
+> > > > +	reg |= TIMING_TWP(timings->tWP_min / period);
+> > > > +	reg |= TIMING_TRH(timings->tRHW_min / period);
+> > > > +
+> > > > +	writel(reg, nand->regs + TIMING_1);
+> > > > +
+> > > > +	val = timings->tADL_min / period;
+> > > > +	if (val > 2)
+> > > > +		val -= 3;
+> > > > +	reg = TIMING_TADL(val);
+> > > > +
+> > > > +	writel(reg, nand->regs + TIMING_2);
+> > > > +}
+> 
+Regards,
+Lucas
