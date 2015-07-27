@@ -1,16 +1,16 @@
 Received: from mailapp01.imgtec.com ([195.59.15.196])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZJinz-0006Wn-LV
- for linux-mtd@lists.infradead.org; Mon, 27 Jul 2015 13:51:02 +0000
+ id 1ZJio3-0006YI-OZ
+ for linux-mtd@lists.infradead.org; Mon, 27 Jul 2015 13:51:06 +0000
 From: Alex Smith <alex.smith@imgtec.com>
 To: <linux-mtd@lists.infradead.org>
 CC: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- <linux-kernel@vger.kernel.org>, Alex Smith <alex.smith@imgtec.com>
-Subject: [PATCH v4 1/3] mtd: nand: increase ready wait timeout and report
- timeouts
-Date: Mon, 27 Jul 2015 14:50:17 +0100
-Message-ID: <1438005019-28162-2-git-send-email-alex.smith@imgtec.com>
+ <linux-kernel@vger.kernel.org>, Alex Smith <alex.smith@imgtec.com>,
+ <devicetree@vger.kernel.org>
+Subject: [PATCH v4 2/3] dt-bindings: binding for jz4780-{nand,bch}
+Date: Mon, 27 Jul 2015 14:50:18 +0100
+Message-ID: <1438005019-28162-3-git-send-email-alex.smith@imgtec.com>
 In-Reply-To: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
 References: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
 MIME-Version: 1.0
@@ -24,89 +24,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If nand_wait_ready() times out, this is silently ignored, and its
-caller will then proceed to read from/write to the chip before it is
-ready. This can potentially result in corruption with no indication as
-to why.
-
-While a 20ms timeout seems like it should be plenty enough, certain
-behaviour can cause it to timeout much earlier than expected. The
-situation which prompted this change was that CPU 0, which is
-responsible for updating jiffies, was holding interrupts disabled
-for a fairly long time while writing to the console during a printk,
-causing several jiffies updates to be delayed. If CPU 1 happens to
-enter the timeout loop in nand_wait_ready() just before CPU 0 re-
-enables interrupts and updates jiffies, CPU 1 will immediately time
-out when the delayed jiffies updates are made. The result of this is
-that nand_wait_ready() actually waits less time than the NAND chip
-would normally take to be ready, and then read_page() proceeds to
-read out bad data from the chip.
-
-The situation described above may seem unlikely, but in fact it can be
-reproduced almost every boot on the MIPS Creator Ci20.
-
-Debugging this was made more difficult by the misleading comment above
-nand_wait_ready() stating "The timeout is caught later" - no timeout
-was ever reported, leading me away from the real source of the problem.
-
-Therefore, this patch increases the timeout to 200ms. This should be
-enough to cover cases where jiffies updates get delayed. Additionally,
-add a pr_warn() when a timeout does occur so that it is easier to
-pinpoint any problems in future caused by the chip not becoming ready.
+Add DT bindings for NAND devices connected to the NEMC on JZ4780 SoCs,
+as well as the hardware BCH controller, used by the jz4780_{nand,bch}
+drivers.
 
 Signed-off-by: Alex Smith <alex.smith@imgtec.com>
 Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>
 Cc: linux-mtd@lists.infradead.org
+Cc: devicetree@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
 v3 -> v4:
- - New patch to fix issue encountered in external Ci20 3.18 kernel
-   branch which also applies upstream.
----
- drivers/mtd/nand/nand_base.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ - No change
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ceb68ca8277a..a0dab3414f16 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -543,23 +543,32 @@ static void panic_nand_wait_ready(struct mtd_info *mtd, unsigned long timeo)
- 	}
- }
- 
--/* Wait for the ready pin, after a command. The timeout is caught later. */
-+/**
-+ * nand_wait_ready - [GENERIC] Wait for the ready pin after commands.
-+ * @mtd: MTD device structure
-+ *
-+ * Wait for the ready pin after a command, and warn if a timeout occurs.
-+ */
- void nand_wait_ready(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd->priv;
--	unsigned long timeo = jiffies + msecs_to_jiffies(20);
-+	unsigned long timeo = jiffies + msecs_to_jiffies(200);
- 
- 	/* 400ms timeout */
- 	if (in_interrupt() || oops_in_progress)
- 		return panic_nand_wait_ready(mtd, 400);
- 
- 	led_trigger_event(nand_led_trigger, LED_FULL);
+v2 -> v3:
+ - Rebase to 4.0-rc6
+ - Changed ingenic,ecc-size to common nand-ecc-step-size
+ - Changed ingenic,ecc-strength to common nand-ecc-strength
+ - Changed ingenic,busy-gpio to common rb-gpios
+ - Changed ingenic,wp-gpio to common wp-gpios
+
+v1 -> v2:
+ - Rebase to 4.0-rc3
+---
+ .../bindings/mtd/ingenic,jz4780-nand.txt           | 57 ++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+
+diff --git a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+new file mode 100644
+index 000000000000..1e8e2eeffbf7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+@@ -0,0 +1,57 @@
++* Ingenic JZ4780 NAND/BCH
 +
- 	/* Wait until command is processed or timeout occurs */
- 	do {
- 		if (chip->dev_ready(mtd))
--			break;
-+			goto out;
- 		touch_softlockup_watchdog();
- 	} while (time_before(jiffies, timeo));
++This file documents the device tree bindings for NAND flash devices on the
++JZ4780. NAND devices are connected to the NEMC controller (described in
++memory-controllers/ingenic,jz4780-nemc.txt), and thus NAND device nodes must
++be children of the NEMC node.
 +
-+	pr_warn("timeout while waiting for chip to become ready\n");
-+out:
- 	led_trigger_event(nand_led_trigger, LED_OFF);
- }
- EXPORT_SYMBOL_GPL(nand_wait_ready);
++Required NAND device properties:
++- compatible: Should be set to "ingenic,jz4780-nand".
++- reg: For each bank with a NAND chip attached, should specify a bank number,
++  an offset of 0 and a size of 0x1000000 (i.e. the whole NEMC bank).
++
++Optional NAND device properties:
++- ingenic,bch-device: To make use of the hardware BCH controller, this property
++  must contain a phandle for the BCH controller node. The required properties
++  for this node are described below. If this is not specified, software BCH
++  will be used instead.
++- nand-ecc-step-size: ECC block size in bytes.
++- nand-ecc-strength: ECC strength (max number of correctable bits).
++- rb-gpios: GPIO specifier for the busy pin.
++- wp-gpios: GPIO specifier for the write protect pin.
++
++Example:
++
++nemc: nemc@13410000 {
++	...
++
++	nand: nand@1 {
++		compatible = "ingenic,jz4780-nand";
++		reg = <1 0 0x1000000>;	/* Bank 1 */
++
++		ingenic,bch-device = <&bch>;
++		nand-ecc-step-size = <1024>;
++		nand-ecc-strength = <24>;
++
++		rb-gpios = <&gpa 20 GPIO_ACTIVE_LOW>;
++		wp-gpios = <&gpf 22 GPIO_ACTIVE_LOW>;
++	};
++};
++
++The BCH controller is a separate SoC component used for error correction on
++NAND devices. The following is a description of the device properties for a
++BCH controller.
++
++Required BCH properties:
++- compatible: Should be set to "ingenic,jz4780-bch".
++- reg: Should specify the BCH controller registers location and length.
++- clocks: Clock for the BCH controller.
++
++Example:
++
++bch: bch@134d0000 {
++	compatible = "ingenic,jz4780-bch";
++	reg = <0x134d0000 0x10000>;
++
++	clocks = <&cgu JZ4780_CLK_BCH>;
++};
 -- 
 2.4.6
