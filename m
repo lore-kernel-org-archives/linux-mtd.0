@@ -1,23 +1,20 @@
-Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZJO8X-0007Aa-SK
- for linux-mtd@lists.infradead.org; Sun, 26 Jul 2015 15:46:50 +0000
-Received: by igr7 with SMTP id 7so45941926igr.0
- for <linux-mtd@lists.infradead.org>; Sun, 26 Jul 2015 08:46:28 -0700 (PDT)
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZJXCE-0000OZ-Of
+ for linux-mtd@lists.infradead.org; Mon, 27 Jul 2015 01:27:16 +0000
+Message-ID: <55B5876F.70708@cn.fujitsu.com>
+Date: Mon, 27 Jul 2015 09:20:47 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <55B4AC57.3070308@gmail.com>
-References: <1437835063-58407-1-git-send-email-eastyjr@gmail.com>
- <1437835063-58407-3-git-send-email-eastyjr@gmail.com>
- <CACna6rxvk0pOSotaErMuhCU_-qd+e6PV+3osx9dOe-GgsiH4zQ@mail.gmail.com>
- <55B4AC57.3070308@gmail.com>
-Date: Sun, 26 Jul 2015 17:46:28 +0200
-Message-ID: <CACna6rx=vFtSUQy+crKhfHanVqcHNFX+_05C6Xw8RQ24R9otOw@mail.gmail.com>
-Subject: Re: [PATCH V2 2/4] mtd: bcm47xxpart.c: Adding Xaiomi board support
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Joseph East <eastyjr@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+CC: <dedekind1@gmail.com>, <adrian.hunter@intel.com>,
+ <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+ <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] ubifs: Kill unneeded locking in ubifs_init_security
+References: <1436348796-19725-1-git-send-email-richard@nod.at>
+In-Reply-To: <1436348796-19725-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,90 +24,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 26 July 2015 at 11:45, Joseph East <eastyjr@gmail.com> wrote:
-> On 26/07/2015 4:35 PM, Rafa=C5=82 Mi=C5=82ecki wrote:
->> On 25 July 2015 at 16:37, Joseph East <eastyjr@gmail.com> wrote:
->>> ---
->>
->> Oh and now you're sending my patch pretending its your. NACK!
->>
+On 07/08/2015 05:46 PM, Richard Weinberger wrote:
+> Fixes the following lockdep splat:
+> [    1.244527] =============================================
+> [    1.245193] [ INFO: possible recursive locking detected ]
+> [    1.245193] 4.2.0-rc1+ #37 Not tainted
+> [    1.245193] ---------------------------------------------
+> [    1.245193] cp/742 is trying to acquire lock:
+> [    1.245193]  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff812b3f69>] ubifs_init_security+0x29/0xb0
+> [    1.245193]
+> [    1.245193] but task is already holding lock:
+> [    1.245193]  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff81198e7f>] path_openat+0x3af/0x1280
+> [    1.245193]
+> [    1.245193] other info that might help us debug this:
+> [    1.245193]  Possible unsafe locking scenario:
+> [    1.245193]
+> [    1.245193]        CPU0
+> [    1.245193]        ----
+> [    1.245193]   lock(&sb->s_type->i_mutex_key#9);
+> [    1.245193]   lock(&sb->s_type->i_mutex_key#9);
+> [    1.245193]
+> [    1.245193]  *** DEADLOCK ***
+> [    1.245193]
+> [    1.245193]  May be due to missing lock nesting notation
+> [    1.245193]
+> [    1.245193] 2 locks held by cp/742:
+> [    1.245193]  #0:  (sb_writers#5){.+.+.+}, at: [<ffffffff811ad37f>] mnt_want_write+0x1f/0x50
+> [    1.245193]  #1:  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff81198e7f>] path_openat+0x3af/0x1280
+> [    1.245193]
+> [    1.245193] stack backtrace:
+> [    1.245193] CPU: 2 PID: 742 Comm: cp Not tainted 4.2.0-rc1+ #37
+> [    1.245193] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.7.5-0-ge51488c-20140816_022509-build35 04/01/2014
+> [    1.245193]  ffffffff8252d530 ffff88007b023a38 ffffffff814f6f49 ffffffff810b56c5
+> [    1.245193]  ffff88007c30cc80 ffff88007b023af8 ffffffff810a150d ffff88007b023a68
+> [    1.245193]  000000008101302a ffff880000000000 00000008f447e23f ffffffff8252d500
+> [    1.245193] Call Trace:
+> [    1.245193]  [<ffffffff814f6f49>] dump_stack+0x4c/0x65
+> [    1.245193]  [<ffffffff810b56c5>] ? console_unlock+0x1c5/0x510
+> [    1.245193]  [<ffffffff810a150d>] __lock_acquire+0x1a6d/0x1ea0
+> [    1.245193]  [<ffffffff8109fa78>] ? __lock_is_held+0x58/0x80
+> [    1.245193]  [<ffffffff810a1a93>] lock_acquire+0xd3/0x270
+> [    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
+> [    1.245193]  [<ffffffff814fc83b>] mutex_lock_nested+0x6b/0x3a0
+> [    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
+> [    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
+> [    1.245193]  [<ffffffff812b3f69>] ubifs_init_security+0x29/0xb0
+> [    1.245193]  [<ffffffff8128e286>] ubifs_create+0xa6/0x1f0
+> [    1.245193]  [<ffffffff81198e7f>] ? path_openat+0x3af/0x1280
+> [    1.245193]  [<ffffffff81195d15>] vfs_create+0x95/0xc0
+> [    1.245193]  [<ffffffff8119929c>] path_openat+0x7cc/0x1280
+> [    1.245193]  [<ffffffff8109ffe3>] ? __lock_acquire+0x543/0x1ea0
+> [    1.245193]  [<ffffffff81088f20>] ? sched_clock_cpu+0x90/0xc0
+> [    1.245193]  [<ffffffff81088c00>] ? calc_global_load_tick+0x60/0x90
+> [    1.245193]  [<ffffffff81088f20>] ? sched_clock_cpu+0x90/0xc0
+> [    1.245193]  [<ffffffff811a9cef>] ? __alloc_fd+0xaf/0x180
+> [    1.245193]  [<ffffffff8119ac55>] do_filp_open+0x75/0xd0
+> [    1.245193]  [<ffffffff814ffd86>] ? _raw_spin_unlock+0x26/0x40
+> [    1.245193]  [<ffffffff811a9cef>] ? __alloc_fd+0xaf/0x180
+> [    1.245193]  [<ffffffff81189bd9>] do_sys_open+0x129/0x200
+> [    1.245193]  [<ffffffff81189cc9>] SyS_open+0x19/0x20
+> [    1.245193]  [<ffffffff81500717>] entry_SYSCALL_64_fastpath+0x12/0x6f
 >
-> The cover letter [PATCH 0/4] clearly states the origin of these patches.
+> While the lockdep splat is a false positive, becuase path_openat holds i_mutex
+> of the parent directory and ubifs_init_security() tries to acquire i_mutex
+> of a new inode, it reveals that taking i_mutex in ubifs_init_security() is
+> in vain because it is only being called in the inode allocation path
+> and therefore nobody else can see the inode yet.
 
-And it doesn't go into git history at all.
+Yes, makes sense to me.
+Reviewed and Tested.
 
-
-> The sign-off indicates that I am compliant with http://developercertifica=
-te.org/, in particular clause b)
-
-There isn't any S-o-b for this patch. Check it yourself.
-
-
-> I do not take credit for the creation for all of these patches, but I am =
-pushing them.
-
-So why did you drop "From" and Signed-of-by from original patch?
-
-
-> I apologise if it appears anything was untoward, but I could not find any=
- trace of these patches being pushed elsewhere.
-
-This could be for a good reason, e.g. patch not being tested or clean enoug=
-h.
-
-So 2 quite important rules:
-1) Respect patch author, don't drop him from "From" and his S-o-b
-2) Don't send patches you don't understand
-
-
->>>  drivers/mtd/bcm47xxpart.c | 4 +++-
->>>  1 file changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
->>> index 55a1462..a27d185 100644
->>> --- a/drivers/mtd/bcm47xxpart.c
->>> +++ b/drivers/mtd/bcm47xxpart.c
->>> @@ -33,6 +33,7 @@
->>>  /* Magics */
->>>  #define BOARD_DATA_MAGIC               0x5246504D      /* MPFR */
->>>  #define BOARD_DATA_MAGIC2              0xBD0D0BBD
->>> +#define BOARD_DATA_XIAOMI_MAGIC        0x474D4442      /* GMDB */
->>>  #define CFE_MAGIC                      0x43464531      /* 1EFC */
->>>  #define FACTORY_MAGIC                  0x59544346      /* FCTY */
->>>  #define NVRAM_HEADER                   0x48534C46      /* FLSH */
->>> @@ -263,7 +264,8 @@ static int bcm47xxpart_parse(struct mtd_info *maste=
-r,
->>>                 }
->>>
->>>                 /* Some devices (ex. WNDR3700v3) don't have a standard =
-'MPFR' */
->>> -               if (buf[0x000 / 4] =3D=3D BOARD_DATA_MAGIC2) {
->>> +               if (buf[0x000 / 4] =3D=3D BOARD_DATA_MAGIC2 ||
->>> +                   le32_to_cpu(buf[0x000 / 4]) =3D=3D BOARD_DATA_XIAOM=
-I_MAGIC) {
->>
->> le32_to_cpu won't work here obviously, so it seems you didn't even
->> test it on a proper device. Nack.
+Thanx
+Yang
 >
-> This patch has been in OpenWrt for 6 months which you apparently signed o=
-ff.
+> Reported-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>   fs/ubifs/xattr.c | 3 ---
+>   1 file changed, 3 deletions(-)
 >
-> https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.18/4=
-31-mtd-bcm47xxpart-support-for-Xiaomi-specific-board_da.patch
+> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+> index 96f3448..fd65b3f 100644
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -652,11 +652,8 @@ int ubifs_init_security(struct inode *dentry, struct inode *inode,
+>   {
+>   	int err;
 >
-> While true I have not tested this code path, why has this not been raised=
- earlier?
+> -	mutex_lock(&inode->i_mutex);
+>   	err = security_inode_init_security(inode, dentry, qstr,
+>   					   &init_xattrs, 0);
+> -	mutex_unlock(&inode->i_mutex);
+> -
+>   	if (err) {
+>   		struct ubifs_info *c = dentry->i_sb->s_fs_info;
+>   		ubifs_err(c, "cannot initialize security for inode %lu, error %d",
 >
-> At the very least it does not prevent compilation for other brcm47xx targ=
-ets.
->
-> That does not justify its inclusion however, and I have no issues with th=
-is patch being dropped.
-
-It's common that someone reports a problem to OpenWrt team, we try to
-fix it and then wait for testing it for ever. That was the case. After
-few months I can see problems with this patch but I guess it should
-probably just get dropped since it has no interest at all.
-
---=20
-Rafa=C5=82
