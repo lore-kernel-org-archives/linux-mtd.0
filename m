@@ -1,12 +1,21 @@
-Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZJj1Q-000115-8e
- for linux-mtd@lists.infradead.org; Mon, 27 Jul 2015 14:04:53 +0000
-Message-Id: <c14fec4f9669c06d3d20ef44ad02033b6cc6d51b.1438005615.git.hramrach@gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Mon, 27 Jul 2015 15:47:10 +0200
-Subject: mtd-utils: mtd_debug: check amount of data read.
-To: linux-mtd@lists.infradead.org
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZJjIK-0007QP-QB
+ for linux-mtd@lists.infradead.org; Mon, 27 Jul 2015 14:22:23 +0000
+Subject: [PATCH v4 3/3] mtd: nand: jz4780: driver for NAND devices on JZ4780
+ SoCs
+To: <linux-mtd@lists.infradead.org>
+References: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
+CC: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ <linux-kernel@vger.kernel.org>, Alex Smith <alex.smith@imgtec.com>
+From: Alex Smith <alex.smith@imgtec.com>
+Message-ID: <55B63E85.5030809@imgtec.com>
+Date: Mon, 27 Jul 2015 15:21:57 +0100
+MIME-Version: 1.0
+In-Reply-To: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,32 +25,866 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The kernel refuses to read more data from a MTD device than the device
-size. However, mtd_debug does not check the amount of data read as
-returned by read(2) and assumes the requested amount is always read when
-there is no error. Reading 8M data from a 4M flash chip results in 8M
-file containing the flash data at the start.
+Add a driver for NAND devices connected to the NEMC on JZ4780 SoCs, as
+well as the hardware BCH controller. DMA is not currently implemented.
 
-Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+While older 47xx SoCs also have a BCH controller, they are incompatible
+with the one in the 4780 due to differing register/bit positions, which
+would make implementing a common driver for them quite messy.
+
+Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 ---
- mtd_debug.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+v3 -> v4:
+ - Rebase to 4.2-rc4
+ - Change ECC_HW_OOB_FIRST to ECC_HW, reading OOB first is not necessary.
+ - Fix argument to get_device() in jz4780_bch_get()
 
-diff --git a/mtd_debug.c b/mtd_debug.c
-index d6993ce..f3826cf 100644
---- a/mtd_debug.c
-+++ b/mtd_debug.c
-@@ -141,7 +141,10 @@ retry:
- 			perror("read()");
- 			goto err2;
- 		}
--		err = write(outfd, buf, size);
-+		if (err < size) {
-+			fprintf(stderr, "%s: short read, requested %#x, read %#x\n", __func__, size, err);
+v2 -> v3:
+ - Rebase to 4.0-rc6
+ - Reflect binding changes
+ - get/put_device in bch get/release
+ - Removed empty .remove() callback
+ - Removed .owner
+ - Set mtd->dev.parent
+
+v1 -> v2:
+ - Fixed module license macro
+ - Rebase to 4.0-rc3
+---
+ drivers/mtd/nand/Kconfig       |   7 +
+ drivers/mtd/nand/Makefile      |   1 +
+ drivers/mtd/nand/jz4780_bch.c  | 354 ++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/jz4780_bch.h  |  42 +++++
+ drivers/mtd/nand/jz4780_nand.c | 376 +++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 780 insertions(+)
+ create mode 100644 drivers/mtd/nand/jz4780_bch.c
+ create mode 100644 drivers/mtd/nand/jz4780_bch.h
+ create mode 100644 drivers/mtd/nand/jz4780_nand.c
+
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 5b2806a7e5f7..3900e5f93146 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -511,6 +511,13 @@ config MTD_NAND_JZ4740
+ 	help
+ 		Enables support for NAND Flash on JZ4740 SoC based boards.
+ 
++config MTD_NAND_JZ4780
++	tristate "Support for NAND on JZ4780 SoC"
++	depends on MACH_JZ4780 && JZ4780_NEMC
++	help
++	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
++	  based boards, using the BCH controller for hardware error correction.
++
+ config MTD_NAND_FSMC
+ 	tristate "Support for NAND on ST Micros FSMC"
+ 	depends on PLAT_SPEAR || ARCH_NOMADIK || ARCH_U8500 || MACH_U300
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 1f897ec3c242..3ee2fd6bc641 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -47,6 +47,7 @@ obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
+ obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
+ obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
+ obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
++obj-$(CONFIG_MTD_NAND_JZ4780)		+= jz4780_nand.o jz4780_bch.o
+ obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
+ obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
+ obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
+diff --git a/drivers/mtd/nand/jz4780_bch.c b/drivers/mtd/nand/jz4780_bch.c
+new file mode 100644
+index 000000000000..1686d76f8457
+--- /dev/null
++++ b/drivers/mtd/nand/jz4780_bch.c
+@@ -0,0 +1,354 @@
++/*
++ * JZ4780 BCH controller
++ *
++ * Copyright (c) 2015 Imagination Technologies
++ * Author: Alex Smith <alex.smith@imgtec.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ */
++
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
++
++#include "jz4780_bch.h"
++
++#define BCH_BHCR			0x0
++#define BCH_BHCCR			0x8
++#define BCH_BHCNT			0xc
++#define BCH_BHDR			0x10
++#define BCH_BHPAR0			0x14
++#define BCH_BHERR0			0x84
++#define BCH_BHINT			0x184
++#define BCH_BHINTES			0x188
++#define BCH_BHINTEC			0x18c
++#define BCH_BHINTE			0x190
++
++#define BCH_BHCR_BSEL_SHIFT		4
++#define BCH_BHCR_BSEL_MASK		(0x7f << BCH_BHCR_BSEL_SHIFT)
++#define BCH_BHCR_ENCE			BIT(2)
++#define BCH_BHCR_INIT			BIT(1)
++#define BCH_BHCR_BCHE			BIT(0)
++
++#define BCH_BHCNT_PARITYSIZE_SHIFT	16
++#define BCH_BHCNT_PARITYSIZE_MASK	(0x7f << BCH_BHCNT_PARITYSIZE_SHIFT)
++#define BCH_BHCNT_BLOCKSIZE_SHIFT	0
++#define BCH_BHCNT_BLOCKSIZE_MASK	(0x7ff << BCH_BHCNT_BLOCKSIZE_SHIFT)
++
++#define BCH_BHERR_MASK_SHIFT		16
++#define BCH_BHERR_MASK_MASK		(0xffff << BCH_BHERR_MASK_SHIFT)
++#define BCH_BHERR_INDEX_SHIFT		0
++#define BCH_BHERR_INDEX_MASK		(0x7ff << BCH_BHERR_INDEX_SHIFT)
++
++#define BCH_BHINT_ERRC_SHIFT		24
++#define BCH_BHINT_ERRC_MASK		(0x7f << BCH_BHINT_ERRC_SHIFT)
++#define BCH_BHINT_TERRC_SHIFT		16
++#define BCH_BHINT_TERRC_MASK		(0x7f << BCH_BHINT_TERRC_SHIFT)
++#define BCH_BHINT_DECF			BIT(3)
++#define BCH_BHINT_ENCF			BIT(2)
++#define BCH_BHINT_UNCOR			BIT(1)
++#define BCH_BHINT_ERR			BIT(0)
++
++#define BCH_CLK_RATE			(200 * 1000 * 1000)
++
++/* Timeout for BCH calculation/correction in milliseconds. */
++#define BCH_TIMEOUT			100
++
++struct jz4780_bch {
++	void __iomem *base;
++	struct clk *clk;
++};
++
++static void jz4780_bch_init(struct jz4780_bch *bch,
++			    struct jz4780_bch_params *params, bool encode)
++{
++	uint32_t reg;
++
++	/* Clear interrupt status. */
++	writel(readl(bch->base + BCH_BHINT), bch->base + BCH_BHINT);
++
++	/* Set up BCH count register. */
++	reg = params->size << BCH_BHCNT_BLOCKSIZE_SHIFT;
++	reg |= params->bytes << BCH_BHCNT_PARITYSIZE_SHIFT;
++	writel(reg, bch->base + BCH_BHCNT);
++
++	/* Initialise and enable BCH. */
++	reg = BCH_BHCR_BCHE | BCH_BHCR_INIT;
++	reg |= params->strength << BCH_BHCR_BSEL_SHIFT;
++	if (encode)
++		reg |= BCH_BHCR_ENCE;
++	writel(reg, bch->base + BCH_BHCR);
++}
++
++static void jz4780_bch_disable(struct jz4780_bch *bch)
++{
++	writel(readl(bch->base + BCH_BHINT), bch->base + BCH_BHINT);
++	writel(BCH_BHCR_BCHE, bch->base + BCH_BHCCR);
++}
++
++static void jz4780_bch_write_data(struct jz4780_bch *bch, const void *buf,
++				  size_t size)
++{
++	size_t size32 = size / sizeof(uint32_t);
++	size_t size8 = size & (sizeof(uint32_t) - 1);
++	const uint32_t *src32;
++	const uint8_t *src8;
++
++	src32 = (const uint32_t *)buf;
++	while (size32--)
++		writel(*src32++, bch->base + BCH_BHDR);
++
++	src8 = (const uint8_t *)src32;
++	while (size8--)
++		writeb(*src8++, bch->base + BCH_BHDR);
++}
++
++static void jz4780_bch_read_parity(struct jz4780_bch *bch, void *buf,
++				   size_t size)
++{
++	size_t size32 = size / sizeof(uint32_t);
++	size_t size8 = size & (sizeof(uint32_t) - 1);
++	uint32_t *dest32;
++	uint8_t *dest8;
++	uint32_t val, offset = 0;
++
++	dest32 = (uint32_t *)buf;
++	while (size32--) {
++		*dest32++ = readl(bch->base + BCH_BHPAR0 + offset);
++		offset += sizeof(uint32_t);
++	}
++
++	dest8 = (uint8_t *)dest32;
++	val = readl(bch->base + BCH_BHPAR0 + offset);
++	switch (size8) {
++	case 3:
++		dest8[2] = (val >> 16) & 0xff;
++	case 2:
++		dest8[1] = (val >> 8) & 0xff;
++	case 1:
++		dest8[0] = val & 0xff;
++		break;
++	}
++}
++
++static bool jz4780_bch_wait_complete(struct jz4780_bch *bch, unsigned int irq,
++				     uint32_t *status)
++{
++	unsigned long timeout = jiffies + msecs_to_jiffies(BCH_TIMEOUT);
++	uint32_t reg;
++
++	/*
++	 * While we could use use interrupts here and sleep until the operation
++	 * completes, the controller works fairly quickly (usually a few
++	 * microseconds), so the overhead of sleeping until we get an interrupt
++	 * actually quite noticably decreases performance.
++	 */
++	do {
++		reg = readl(bch->base + BCH_BHINT);
++		if ((reg & irq) == irq) {
++			if (status)
++				*status = reg;
++
++			writel(reg, bch->base + BCH_BHINT);
++			return true;
 +		}
-+		err = write(outfd, buf, err);
- 		if (err < 0) {
- 			fprintf(stderr, "%s: write, size %#x, n %#x\n", __func__, size, n);
- 			perror("write()");
++
++		cond_resched();
++	} while (time_before(jiffies, timeout));
++
++	return false;
++}
++
++/**
++ * jz4780_bch_calculate() - calculate ECC for a data buffer
++ * @dev: BCH device.
++ * @params: BCH parameters.
++ * @buf: input buffer with raw data.
++ * @ecc_code: output buffer with ECC.
++ *
++ * Return: 0 on success, -ETIMEDOUT if timed out while waiting for BCH
++ * controller.
++ */
++int jz4780_bch_calculate(struct device *dev, struct jz4780_bch_params *params,
++			 const uint8_t *buf, uint8_t *ecc_code)
++{
++	struct jz4780_bch *bch = dev_get_drvdata(dev);
++	int ret = 0;
++
++	jz4780_bch_init(bch, params, true);
++	jz4780_bch_write_data(bch, buf, params->size);
++
++	if (jz4780_bch_wait_complete(bch, BCH_BHINT_ENCF, NULL)) {
++		jz4780_bch_read_parity(bch, ecc_code, params->bytes);
++	} else {
++		dev_err(dev, "timed out while calculating ECC\n");
++		ret = -ETIMEDOUT;
++	}
++
++	jz4780_bch_disable(bch);
++	return ret;
++}
++EXPORT_SYMBOL(jz4780_bch_calculate);
++
++/**
++ * jz4780_bch_correct() - detect and correct bit errors
++ * @dev: BCH device.
++ * @params: BCH parameters.
++ * @buf: raw data read from the chip.
++ * @ecc_code: ECC read from the chip.
++ *
++ * Given the raw data and the ECC read from the NAND device, detects and
++ * corrects errors in the data.
++ *
++ * Return: the number of bit errors corrected, or -1 if there are too many
++ * errors to correct or we timed out waiting for the controller.
++ */
++int jz4780_bch_correct(struct device *dev, struct jz4780_bch_params *params,
++		       uint8_t *buf, uint8_t *ecc_code)
++{
++	struct jz4780_bch *bch = dev_get_drvdata(dev);
++	uint32_t reg, mask, index;
++	int i, ret, count;
++
++	jz4780_bch_init(bch, params, false);
++	jz4780_bch_write_data(bch, buf, params->size);
++	jz4780_bch_write_data(bch, ecc_code, params->bytes);
++
++	if (!jz4780_bch_wait_complete(bch, BCH_BHINT_DECF, &reg)) {
++		dev_err(dev, "timed out while correcting data\n");
++		ret = -1;
++		goto out;
++	}
++
++	if (reg & BCH_BHINT_UNCOR) {
++		dev_warn(dev, "uncorrectable ECC error\n");
++		ret = -1;
++		goto out;
++	}
++
++	/* Correct any detected errors. */
++	if (reg & BCH_BHINT_ERR) {
++		count = (reg & BCH_BHINT_ERRC_MASK) >> BCH_BHINT_ERRC_SHIFT;
++		ret = (reg & BCH_BHINT_TERRC_MASK) >> BCH_BHINT_TERRC_SHIFT;
++
++		for (i = 0; i < count; i++) {
++			reg = readl(bch->base + BCH_BHERR0 + (i * 4));
++			mask = (reg & BCH_BHERR_MASK_MASK) >>
++						BCH_BHERR_MASK_SHIFT;
++			index = (reg & BCH_BHERR_INDEX_MASK) >>
++						BCH_BHERR_INDEX_SHIFT;
++			buf[(index * 2) + 0] ^= mask;
++			buf[(index * 2) + 1] ^= mask >> 8;
++		}
++	} else {
++		ret = 0;
++	}
++
++out:
++	jz4780_bch_disable(bch);
++	return ret;
++}
++EXPORT_SYMBOL(jz4780_bch_correct);
++
++/**
++ * jz4780_bch_get() - get the BCH controller device
++ * @np: BCH device tree node.
++ * @dev: where to store pointer to BCH controller device.
++ *
++ * Gets the BCH controller device from the specified device tree node. The
++ * device must be released with jz4780_bch_release() when it is no longer being
++ * used.
++ *
++ * Return: 0 on success, -EPROBE_DEFER if the controller has not yet been
++ * initialised.
++ */
++int jz4780_bch_get(struct device_node *np, struct device **dev)
++{
++	struct platform_device *pdev;
++	struct jz4780_bch *bch;
++
++	pdev = of_find_device_by_node(np);
++	if (!pdev || !platform_get_drvdata(pdev))
++		return -EPROBE_DEFER;
++
++	get_device(&pdev->dev);
++
++	bch = platform_get_drvdata(pdev);
++	clk_prepare_enable(bch->clk);
++
++	*dev = &pdev->dev;
++	return 0;
++}
++EXPORT_SYMBOL(jz4780_bch_get);
++
++/**
++ * jz4780_bch_release() - release the BCH controller device
++ * @dev: BCH device.
++ */
++void jz4780_bch_release(struct device *dev)
++{
++	struct jz4780_bch *bch = dev_get_drvdata(dev);
++
++	clk_disable_unprepare(bch->clk);
++	put_device(dev);
++}
++EXPORT_SYMBOL(jz4780_bch_release);
++
++static int jz4780_bch_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct jz4780_bch *bch;
++	struct resource *res;
++
++	bch = devm_kzalloc(dev, sizeof(*bch), GFP_KERNEL);
++	if (!bch)
++		return -ENOMEM;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	bch->base = devm_ioremap_resource(dev, res);
++	if (IS_ERR(bch->base)) {
++		dev_err(dev, "failed to get I/O memory\n");
++		return PTR_ERR(bch->base);
++	}
++
++	jz4780_bch_disable(bch);
++
++	bch->clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(bch->clk)) {
++		dev_err(dev, "failed to get clock: %ld\n", PTR_ERR(bch->clk));
++		return PTR_ERR(bch->clk);
++	}
++
++	clk_set_rate(bch->clk, BCH_CLK_RATE);
++
++	platform_set_drvdata(pdev, bch);
++	dev_info(dev, "JZ4780 BCH initialised\n");
++	return 0;
++}
++
++static const struct of_device_id jz4780_bch_dt_match[] = {
++	{ .compatible = "ingenic,jz4780-bch" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, jz4780_bch_dt_match);
++
++static struct platform_driver jz4780_bch_driver = {
++	.probe		= jz4780_bch_probe,
++	.driver	= {
++		.name	= "jz4780-bch",
++		.of_match_table = of_match_ptr(jz4780_bch_dt_match),
++	},
++};
++module_platform_driver(jz4780_bch_driver);
++
++MODULE_AUTHOR("Alex Smith <alex.smith@imgtec.com>");
++MODULE_DESCRIPTION("Ingenic JZ4780 BCH error correction driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/mtd/nand/jz4780_bch.h b/drivers/mtd/nand/jz4780_bch.h
+new file mode 100644
+index 000000000000..cf315f384b6e
+--- /dev/null
++++ b/drivers/mtd/nand/jz4780_bch.h
+@@ -0,0 +1,42 @@
++/*
++ * JZ4780 BCH controller
++ *
++ * Copyright (c) 2015 Imagination Technologies
++ * Author: Alex Smith <alex.smith@imgtec.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ */
++
++#ifndef __DRIVERS_MTD_NAND_JZ4780_BCH_H__
++#define __DRIVERS_MTD_NAND_JZ4780_BCH_H__
++
++#include <linux/types.h>
++
++struct device;
++struct device_node;
++
++/**
++ * struct jz4780_bch_params - BCH parameters
++ * @size: data bytes per ECC step.
++ * @bytes: ECC bytes per step.
++ * @strength: number of correctable bits per ECC step.
++ */
++struct jz4780_bch_params {
++	int size;
++	int bytes;
++	int strength;
++};
++
++extern int jz4780_bch_calculate(struct device *dev,
++				struct jz4780_bch_params *params,
++				const uint8_t *buf, uint8_t *ecc_code);
++extern int jz4780_bch_correct(struct device *dev,
++			      struct jz4780_bch_params *params, uint8_t *buf,
++			      uint8_t *ecc_code);
++
++extern int jz4780_bch_get(struct device_node *np, struct device **dev);
++extern void jz4780_bch_release(struct device *dev);
++
++#endif /* __DRIVERS_MTD_NAND_JZ4780_BCH_H__ */
+diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+new file mode 100644
+index 000000000000..925a6b65363a
+--- /dev/null
++++ b/drivers/mtd/nand/jz4780_nand.c
+@@ -0,0 +1,376 @@
++/*
++ * JZ4780 NAND driver
++ *
++ * Copyright (c) 2015 Imagination Technologies
++ * Author: Alex Smith <alex.smith@imgtec.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ */
++
++#include <linux/delay.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_gpio.h>
++#include <linux/of_mtd.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++
++#include <linux/jz4780-nemc.h>
++
++#include "jz4780_bch.h"
++
++#define OFFSET_DATA	0x00000000
++#define OFFSET_CMD	0x00400000
++#define OFFSET_ADDR	0x00800000
++
++/* Command delay when there is no R/B pin (in microseconds). */
++#define RB_DELAY	50
++
++struct jz4780_nand_chip {
++	unsigned int bank;
++	void __iomem *base;
++};
++
++struct jz4780_nand {
++	struct mtd_info mtd;
++	struct nand_chip chip;
++
++	struct device *dev;
++	struct device *bch;
++
++	struct nand_ecclayout ecclayout;
++
++	int busy_gpio;
++	int wp_gpio;
++	unsigned int busy_gpio_active_low: 1;
++	unsigned int wp_gpio_active_low: 1;
++	unsigned int reading: 1;
++
++	unsigned int num_banks;
++	int selected;
++	struct jz4780_nand_chip chips[];
++};
++
++static inline struct jz4780_nand *to_jz4780_nand(struct mtd_info *mtd)
++{
++	return container_of(mtd, struct jz4780_nand, mtd);
++}
++
++static void jz4780_nand_select_chip(struct mtd_info *mtd, int chipnr)
++{
++	struct jz4780_nand *nand = to_jz4780_nand(mtd);
++	struct jz4780_nand_chip *chip;
++
++	if (chipnr == -1) {
++		/* Ensure the currently selected chip is deasserted. */
++		if (nand->selected >= 0) {
++			chip = &nand->chips[nand->selected];
++			jz4780_nemc_assert(nand->dev, chip->bank, false);
++		}
++	} else {
++		chip = &nand->chips[chipnr];
++		nand->chip.IO_ADDR_R = chip->base + OFFSET_DATA;
++		nand->chip.IO_ADDR_W = chip->base + OFFSET_DATA;
++	}
++
++	nand->selected = chipnr;
++}
++
++static void jz4780_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
++				 unsigned int ctrl)
++{
++	struct jz4780_nand *nand = to_jz4780_nand(mtd);
++	struct jz4780_nand_chip *chip;
++
++	BUG_ON(nand->selected < 0);
++	chip = &nand->chips[nand->selected];
++
++	if (ctrl & NAND_CTRL_CHANGE) {
++		if (ctrl & NAND_ALE)
++			nand->chip.IO_ADDR_W = chip->base + OFFSET_ADDR;
++		else if (ctrl & NAND_CLE)
++			nand->chip.IO_ADDR_W = chip->base + OFFSET_CMD;
++		else
++			nand->chip.IO_ADDR_W = chip->base + OFFSET_DATA;
++
++		jz4780_nemc_assert(nand->dev, chip->bank, ctrl & NAND_NCE);
++	}
++
++	if (cmd != NAND_CMD_NONE)
++		writeb(cmd, nand->chip.IO_ADDR_W);
++}
++
++static int jz4780_nand_dev_ready(struct mtd_info *mtd)
++{
++	struct jz4780_nand *nand = to_jz4780_nand(mtd);
++
++	return !(gpio_get_value(nand->busy_gpio) ^ nand->busy_gpio_active_low);
++}
++
++static void jz4780_nand_ecc_hwctl(struct mtd_info *mtd, int mode)
++{
++	struct jz4780_nand *nand = to_jz4780_nand(mtd);
++
++	nand->reading = (mode == NAND_ECC_READ);
++}
++
++static int jz4780_nand_ecc_calculate(struct mtd_info *mtd, const uint8_t *dat,
++				     uint8_t *ecc_code)
++{
++	struct jz4780_nand *nand = to_jz4780_nand(mtd);
++	struct jz4780_bch_params params;
++
++	/*
++	 * Don't need to generate the ECC when reading, BCH does it for us as
++	 * part of decoding/correction.
++	 */
++	if (nand->reading)
++		return 0;
++
++	params.size = nand->chip.ecc.size;
++	params.bytes = nand->chip.ecc.bytes;
++	params.strength = nand->chip.ecc.strength;
++
++	return jz4780_bch_calculate(nand->bch, &params, dat, ecc_code);
++}
++
++static int jz4780_nand_ecc_correct(struct mtd_info *mtd, uint8_t *dat,
++				   uint8_t *read_ecc, uint8_t *calc_ecc)
++{
++	struct jz4780_nand *nand = to_jz4780_nand(mtd);
++	struct jz4780_bch_params params;
++
++	params.size = nand->chip.ecc.size;
++	params.bytes = nand->chip.ecc.bytes;
++	params.strength = nand->chip.ecc.strength;
++
++	return jz4780_bch_correct(nand->bch, &params, dat, read_ecc);
++}
++
++static void jz4780_nand_init_ecc(struct jz4780_nand *nand, struct device *dev)
++{
++	struct mtd_info *mtd = &nand->mtd;
++	struct nand_chip *chip = &nand->chip;
++	struct nand_ecclayout *layout = &nand->ecclayout;
++	uint32_t start, i;
++
++	chip->ecc.size = of_get_nand_ecc_step_size(dev->of_node);
++	if (chip->ecc.size < 0)
++		chip->ecc.size = 1024;
++
++	chip->ecc.strength = of_get_nand_ecc_strength(dev->of_node);
++	if (chip->ecc.strength < 0)
++		chip->ecc.strength = 24;
++
++	chip->ecc.bytes = fls(1 + 8 * chip->ecc.size) * chip->ecc.strength / 8;
++
++	dev_info(dev, "using %s BCH (strength %d, size %d, bytes %d)\n",
++		 (nand->bch) ? "hardware" : "software", chip->ecc.strength,
++		 chip->ecc.size, chip->ecc.bytes);
++
++	if (nand->bch) {
++		chip->ecc.mode = NAND_ECC_HW;
++		chip->ecc.hwctl = jz4780_nand_ecc_hwctl;
++		chip->ecc.calculate = jz4780_nand_ecc_calculate;
++		chip->ecc.correct = jz4780_nand_ecc_correct;
++	} else {
++		chip->ecc.mode = NAND_ECC_SOFT_BCH;
++	}
++
++	/* Generate ECC layout. ECC codes are right aligned in the OOB area. */
++	layout->eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
++	start = mtd->oobsize - layout->eccbytes;
++	for (i = 0; i < layout->eccbytes; i++)
++		layout->eccpos[i] = start + i;
++
++	layout->oobfree[0].offset = 2;
++	layout->oobfree[0].length = mtd->oobsize - layout->eccbytes - 2;
++
++	chip->ecc.layout = layout;
++}
++
++static int jz4780_nand_init_chips(struct jz4780_nand *nand, struct device *dev)
++{
++	struct jz4780_nand_chip *chip;
++	const __be32 *prop;
++	u64 addr, size;
++	int i = 0;
++
++	/*
++	 * Iterate over each bank assigned to this device and request resources.
++	 * The bank numbers may not be consecutive, but nand_scan_ident()
++	 * expects chip numbers to be, so fill out a consecutive array of chips
++	 * which map chip number to actual bank number.
++	 */
++	while ((prop = of_get_address(dev->of_node, i, &size, NULL))) {
++		chip = &nand->chips[i];
++		chip->bank = of_read_number(prop, 1);
++
++		jz4780_nemc_set_type(nand->dev, chip->bank,
++				     JZ4780_NEMC_BANK_NAND);
++
++		addr = of_translate_address(dev->of_node, prop);
++		if (addr == OF_BAD_ADDR)
++			return -EINVAL;
++
++		chip->base = devm_ioremap(dev, addr, size);
++		if (IS_ERR(chip->base)) {
++			dev_err(dev, "failed to map bank %u: %ld\n", chip->bank,
++				PTR_ERR(chip->base));
++			return PTR_ERR(chip->base);
++		}
++
++		i++;
++	}
++
++	return 0;
++}
++
++static int jz4780_nand_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	unsigned int num_banks;
++	struct jz4780_nand *nand;
++	struct device_node *bch_np;
++	struct mtd_info *mtd;
++	struct nand_chip *chip;
++	enum of_gpio_flags flags;
++	struct mtd_part_parser_data ppdata;
++	int ret;
++
++	num_banks = jz4780_nemc_num_banks(dev);
++
++	nand = devm_kzalloc(dev,
++			sizeof(*nand) + (sizeof(nand->chips[0]) * num_banks),
++			GFP_KERNEL);
++	if (!nand)
++		return -ENOMEM;
++
++	nand->dev = dev;
++	nand->num_banks = num_banks;
++	nand->selected = -1;
++
++	/* Look for the BCH controller. */
++	bch_np = of_parse_phandle(dev->of_node, "ingenic,bch-device", 0);
++	if (bch_np) {
++		ret = jz4780_bch_get(bch_np, &nand->bch);
++		of_node_put(bch_np);
++		if (ret)
++			return ret;
++	}
++
++	mtd = &nand->mtd;
++	chip = &nand->chip;
++	mtd->priv = chip;
++	mtd->owner = THIS_MODULE;
++	mtd->name = "jz4780-nand";
++	mtd->dev.parent = dev;
++
++	chip->chip_delay = RB_DELAY;
++	chip->options = NAND_NO_SUBPAGE_WRITE;
++	chip->bbt_options = NAND_BBT_USE_FLASH;
++	chip->select_chip = jz4780_nand_select_chip;
++	chip->cmd_ctrl = jz4780_nand_cmd_ctrl;
++
++	nand->busy_gpio = of_get_named_gpio_flags(dev->of_node,
++						  "rb-gpios",
++						  0, &flags);
++	if (gpio_is_valid(nand->busy_gpio)) {
++		ret = devm_gpio_request(dev, nand->busy_gpio, "NAND busy");
++		if (ret) {
++			dev_err(dev, "failed to request busy GPIO %d: %d\n",
++				nand->busy_gpio, ret);
++			goto err_release_bch;
++		}
++
++		nand->busy_gpio_active_low = flags & OF_GPIO_ACTIVE_LOW;
++		gpio_direction_input(nand->busy_gpio);
++
++		chip->dev_ready = jz4780_nand_dev_ready;
++	}
++
++	nand->wp_gpio = of_get_named_gpio_flags(dev->of_node, "wp-gpios",
++						0, &flags);
++	if (gpio_is_valid(nand->wp_gpio)) {
++		ret = devm_gpio_request(dev, nand->wp_gpio, "NAND WP");
++		if (ret) {
++			dev_err(dev, "failed to request WP GPIO %d: %d\n",
++				nand->wp_gpio, ret);
++			goto err_release_bch;
++		}
++
++		nand->wp_gpio_active_low = flags & OF_GPIO_ACTIVE_LOW;
++		gpio_direction_output(nand->wp_gpio, nand->wp_gpio_active_low);
++	}
++
++	ret = jz4780_nand_init_chips(nand, dev);
++	if (ret)
++		goto err_release_bch;
++
++	ret = nand_scan_ident(mtd, num_banks, NULL);
++	if (ret)
++		goto err_release_bch;
++
++	jz4780_nand_init_ecc(nand, dev);
++
++	ret = nand_scan_tail(mtd);
++	if (ret)
++		goto err_release_bch;
++
++	ppdata.of_node = dev->of_node;
++	ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
++	if (ret)
++		goto err_release_nand;
++
++	platform_set_drvdata(pdev, nand);
++	dev_info(dev, "JZ4780 NAND initialised\n");
++	return 0;
++
++err_release_nand:
++	nand_release(mtd);
++
++err_release_bch:
++	if (nand->bch)
++		jz4780_bch_release(nand->bch);
++
++	return ret;
++}
++
++static int jz4780_nand_remove(struct platform_device *pdev)
++{
++	struct jz4780_nand *nand = platform_get_drvdata(pdev);
++
++	if (nand->bch)
++		jz4780_bch_release(nand->bch);
++
++	return 0;
++}
++
++static const struct of_device_id jz4780_nand_dt_match[] = {
++	{ .compatible = "ingenic,jz4780-nand" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, jz4780_nand_dt_match);
++
++static struct platform_driver jz4780_nand_driver = {
++	.probe		= jz4780_nand_probe,
++	.remove		= jz4780_nand_remove,
++	.driver	= {
++		.name	= "jz4780-nand",
++		.of_match_table = of_match_ptr(jz4780_nand_dt_match),
++	},
++};
++module_platform_driver(jz4780_nand_driver);
++
++MODULE_AUTHOR("Alex Smith <alex.smith@imgtec.com>");
++MODULE_DESCRIPTION("Ingenic JZ4780 NAND driver");
++MODULE_LICENSE("GPL v2");
 -- 
-2.1.4
+2.4.6
