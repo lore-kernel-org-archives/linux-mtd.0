@@ -1,25 +1,16 @@
-Message-ID: <1438024797.2313.11.camel@lynxeye.de>
-Subject: Re: [Patch v3 2/5] mtd: nand: add NVIDIA Tegra NAND Flash
- controller driver
-From: Lucas Stach <dev@lynxeye.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Thierry Reding
- <thierry.reding@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Rob
- Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>, Boris
- BREZILLON <boris.brezillon@free-electrons.com>, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>, Stefan Agner <stefan@agner.ch>, Marcel
- Ziswiler <marcel@ziswiler.com>, devicetree@vger.kernel.org,
- linux-tegra@vger.kernel.org,  linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Date: Mon, 27 Jul 2015 21:19:57 +0200
-In-Reply-To: <20150721212710.GN24125@google.com>
-References: <1431282602-7137-1-git-send-email-dev@lynxeye.de>
- <1431282602-7137-3-git-send-email-dev@lynxeye.de>
- <20150721212710.GN24125@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZJp3A-0007z6-8g
+ for linux-mtd@lists.infradead.org; Mon, 27 Jul 2015 20:31:04 +0000
+Date: 27 Jul 2015 20:30:43 -0000
+Message-Id: <2feb6039b908bbe7daf98c0fc3b7c8f725c36ac3.1438028045.git.hramrach@gmail.com>
+In-Reply-To: <cover.1438028045.git.hramrach@gmail.com>
+References: <cover.1438028045.git.hramrach@gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Subject: [PATCH 2/3] mtd: ofpart: do not fail probe when no partitions exist
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +20,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, den 21.07.2015, 14:27 -0700 schrieb Brian Norris:
+On Exynos it is necessary to set SPI controller parameters that apply to
+a SPI slave in a DT subnode of the slave device.  Example:
 
-[...]
-> 
-> > +		return 0;
-> > +	}
-> > +
-> > +	if (value & DEC_STATUS_ERR_COUNT_MASK) {
-> > +		value = (value & DEC_STATUS_ERR_COUNT_MASK) >>
-> > +			DEC_STATUS_ERR_COUNT_SHIFT;
-> 
-> What does this ERR_COUNT represent? The total bitflips seen in this
-> page? The max seen per ECC region? Or something else?
-> 
-> > +		mtd->ecc_stats.corrected += value;
-> 
-> I ask because this ^^^ should be accounting the total bitflips for the
-> page, if possible...
-> 
-> > +		return value;
-> 
-> ...and this ^^^ should be returning the max bitflips seen in a single
-> correction region (see the mtd_read() API). There is a subtle
-> difference.
-> 
-I've checked this again and unfortunately the DEC_STATUS_ERR_COUNT seems
-to be completely bogus. It is certainly only set when there are
-bitflips, but it doesn't represent a valid value.
+flash: m25p80@0 {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "jedec,spi-nor";
+        reg = <0>;
+        spi-max-frequency = <40000000>;
+        m25p,fast-read;
+        controller-data {
+            samsung,spi-feedback-delay = <0>;
+        };
+};
 
-I have another register that seems to accurately reflect the maximum
-number of bitflips in any of the 512b ECC blocks, so I'm able to return
-the correct amount of bitflips to the upper level.
-The downside is that the hardware already does the calculation of max
-bitflips, so I'm unable to count bitflips correctly for the stats. All I
-can do is to return a pessimistic value that assumes that all 512b
-blocks had the returned number of bitflips. Could this be a problem?
+The ofpart code checks if there are any subnodes on the MTD device DT
+node and if so it tries to parse them as MTD partitions (example below)
 
-Regards,
-Lucas
+flash@0 {
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        partition@0 {
+                label = "u-boot";
+                reg = <0x0000000 0x100000>;
+                read-only;
+        };
+
+        uimage@100000 {
+                reg = <0x0100000 0x200000>;
+        };
+};
+
+The controller-data node contains no partition information and no other
+subnodes with partition information exist.
+
+The ofpart code returns an error when there are subnodes of the flash DT
+node but no partitions are found. This error is then propagated to
+mtdpart which propagetes it to MTD probe which fails probing the flash
+device.
+
+Change this condition to a warning so that flash without partitions can
+be accessed on Exynos with ofpart support compiled in.
+
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+
+--
+ - add more verbose explanation
+---
+ drivers/mtd/ofpart.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index aa26c32..a29d29f 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -94,10 +94,10 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 
+ 	if (!i) {
+ 		of_node_put(pp);
+-		pr_err("No valid partition found on %s\n", node->full_name);
++		pr_warn("No valid partition found on %s\n", node->full_name);
+ 		kfree(*pparts);
+ 		*pparts = NULL;
+-		return -EINVAL;
++		return 0;
+ 	}
+ 
+ 	return nr_parts;
+-- 
+2.1.4
