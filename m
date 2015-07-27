@@ -1,37 +1,18 @@
-Date: Mon, 27 Jul 2015 15:23:22 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Ranjit Abhimanyu Waghmode <ranjit.waghmode@xilinx.com>
-Cc: Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
- "zajec5@gmail.com" <zajec5@gmail.com>, "marex@denx.de" <marex@denx.de>,
- "shijie.huang@intel.com" <shijie.huang@intel.com>,
- "juhosg@openwrt.org" <juhosg@openwrt.org>,
- "ben@decadent.org.uk" <ben@decadent.org.uk>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Harini Katakam <harinik@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
- "ran27jit@gmail.com" <ran27jit@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-Message-ID: <20150727142322.GA11162@sirena.org.uk>
-References: <1436445895-25504-1-git-send-email-ranjit.waghmode@xilinx.com>
- <20150714164005.GE11162@sirena.org.uk>
- <7CFCFE83B8145347A1D424EC939F1C3CA7E53D@XAP-PVEXMBX01.xlnx.xilinx.com>
- <20150715160146.GS11162@sirena.org.uk>
- <7CFCFE83B8145347A1D424EC939F1C3CA7E758@XAP-PVEXMBX01.xlnx.xilinx.com>
- <20150716085739.GT11162@sirena.org.uk>
- <7CFCFE83B8145347A1D424EC939F1C3CA81D12@XAP-PVEXMBX01.xlnx.xilinx.com>
- <20150724105209.GI11162@sirena.org.uk>
- <7CFCFE83B8145347A1D424EC939F1C3C0148C95C@XAP-PVEXMBX01.xlnx.xilinx.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="Xjbxwvxc0BPBk24+"
-Content-Disposition: inline
-In-Reply-To: <7CFCFE83B8145347A1D424EC939F1C3C0148C95C@XAP-PVEXMBX01.xlnx.xilinx.com>
-Subject: Re: [RFC PATCH 0/2] spi: add dual parallel & stacked mode support in
- Zynq MPSoC GQSPI controller
+From: Stefan Agner <stefan@agner.ch>
+To: dwmw2@infradead.org,
+	computersforpeace@gmail.com
+Cc: sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
+ bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v8 5/5] ARM: dts: vf-colibri: enable NAND flash controller
+Date: Mon, 27 Jul 2015 18:42:45 +0200
+Message-Id: <1438015365-15685-6-git-send-email-stefan@agner.ch>
+In-Reply-To: <1438015365-15685-1-git-send-email-stefan@agner.ch>
+References: <1438015365-15685-1-git-send-email-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,50 +22,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Enable NAND access by adding pinmux and NAND flash controller node
+to device tree. The NAND chips currently used on the Colibri VF61
+requires 8-bit ECC per 512 byte page, hence specify 32-bit ECC
+strength per 2k page size.
 
---Xjbxwvxc0BPBk24+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ arch/arm/boot/dts/vf-colibri.dtsi | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-On Mon, Jul 27, 2015 at 01:55:56PM +0000, Ranjit Abhimanyu Waghmode wrote:
-
-> > As I think you've been asked before please fix your mail client to word wrap
-> > within paragraphs so your mails are more legible.
-
-> Sorry about this, I did some changes but it's kind of broken. Will fix this.
-
-Still not working...
-
-> > I'm not entirely sure what you're asking here from the point of view of SPI, sorry
-> > - what exactly are you requesting?  If you want to add support for new SPI bus
-> > modes please go ahead and do that, you need to clearly document what any
-> > new modes you're adding are so that other people can understand them.
-
-> Ok, my description was too short to get it completely.
-
-> For adding dual parallel mode support to current driver:
-> Are following points enough? Or do you want to suggest something better on top of it?
-
-> Driver:
-> 1) Controller needs to know in which mode it is working.
-> 2) As there are more than one chip selects, may need to add code for handling that as well.
-
-That's probably about right.
-
---Xjbxwvxc0BPBk24+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVtj7ZAAoJECTWi3JdVIfQ18AH/3nM+nWN9G43RXdb7xghWjAV
-Zja6A3McrXlbaEbhwnIEuGCLWexk5goq8uGy42+DWMWyJJo7NNkZ0v2tyKxEym6N
-7uRk70J5Uz1G0fw3ejzf9N77qitNkVON1O7np0VIOZsDKJDFdrH9Qr9/Aj7UIKyz
-g2ypGFmuOgeZtom/Uy+OeTsjbUm5Tu0Lal9bvv0pkJDcYw4Wz0pvzcrdgrE+T4eZ
-ANwVeAE1ieDMAEMmhLagnPw8dtUS44gaTobEUgFmxIwniquapcFdtzFB1eue7GHO
-Y2hYqLUr3ny+DWYkxMvKRYFPutpUIDBq6o0MZ7f/vF2NxDAxPxRGyONf4V7L0ys=
-=Kw4O
------END PGP SIGNATURE-----
-
---Xjbxwvxc0BPBk24+--
+diff --git a/arch/arm/boot/dts/vf-colibri.dtsi b/arch/arm/boot/dts/vf-colibri.dtsi
+index 68ca125..ab2e74b 100644
+--- a/arch/arm/boot/dts/vf-colibri.dtsi
++++ b/arch/arm/boot/dts/vf-colibri.dtsi
+@@ -52,6 +52,19 @@
+ 	pinctrl-0 = <&pinctrl_i2c0>;
+ };
+ 
++&nfc {
++	assigned-clocks = <&clks VF610_CLK_NFC>;
++	assigned-clock-rates = <33000000>;
++	nand-bus-width = <8>;
++	nand-ecc-mode = "hw";
++	nand-ecc-step-size = <2048>;
++	nand-ecc-strength = <32>;
++	nand-on-flash-bbt;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_nfc>;
++	status = "okay";
++};
++
+ &pwm0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pwm0>;
+@@ -156,6 +169,25 @@
+ 			>;
+ 		};
+ 
++		pinctrl_nfc: nfcgrp {
++			fsl,pins = <
++				VF610_PAD_PTD23__NF_IO7		0x28df
++				VF610_PAD_PTD22__NF_IO6		0x28df
++				VF610_PAD_PTD21__NF_IO5		0x28df
++				VF610_PAD_PTD20__NF_IO4		0x28df
++				VF610_PAD_PTD19__NF_IO3		0x28df
++				VF610_PAD_PTD18__NF_IO2		0x28df
++				VF610_PAD_PTD17__NF_IO1		0x28df
++				VF610_PAD_PTD16__NF_IO0		0x28df
++				VF610_PAD_PTB24__NF_WE_B	0x28c2
++				VF610_PAD_PTB25__NF_CE0_B	0x28c2
++				VF610_PAD_PTB27__NF_RE_B	0x28c2
++				VF610_PAD_PTC26__NF_RB_B	0x283d
++				VF610_PAD_PTC27__NF_ALE		0x28c2
++				VF610_PAD_PTC28__NF_CLE		0x28c2
++			>;
++		};
++
+ 		pinctrl_pwm0: pwm0grp {
+ 			fsl,pins = <
+ 				VF610_PAD_PTB0__FTM0_CH0		0x1182
+-- 
+2.4.5
