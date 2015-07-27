@@ -1,23 +1,23 @@
-From: Marek Vasut <marex@denx.de>
-To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
-Date: Mon, 27 Jul 2015 19:43:32 +0200
-Cc: Vinod Koul <vinod.koul@intel.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi" <linux-spi@vger.kernel.org>,
- dmaengine <dmaengine@vger.kernel.org>
-References: <cover.1433364398.git.hramrach@gmail.com>
- <201507241034.15406.marex@denx.de>
- <CAOMqctTsA5ZxBWFTzirqhQBoR2sO6B+uMFXWMHuSVb_EygCDvw@mail.gmail.com>
-In-Reply-To: <CAOMqctTsA5ZxBWFTzirqhQBoR2sO6B+uMFXWMHuSVb_EygCDvw@mail.gmail.com>
+From: Vikas MANOCHA <vikas.manocha@st.com>
+To: Graham Moore <grmoore@opensource.altera.com>
+CC: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Alan Tull <atull@opensource.altera.com>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>
+Date: Mon, 27 Jul 2015 20:12:40 +0200
+Subject: RE: [PATCH V5 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+Message-ID: <9026814FBF99304F9FA3AC3FB72F3E2F04919670@SAFEX1MAIL4.st.com>
+References: <1437758259-28299-1-git-send-email-grmoore@opensource.altera.com>
+ <1437758259-28299-2-git-send-email-grmoore@opensource.altera.com>
+ <55B2D1F9.9040709@st.com> <55B66CEF.7030100@opensource.altera.com>
+In-Reply-To: <55B66CEF.7030100@opensource.altera.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201507271943.32453.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,137 +27,188 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, July 27, 2015 at 11:46:25 AM, Michal Suchanek wrote:
-> On 24 July 2015 at 10:34, Marek Vasut <marex@denx.de> wrote:
-> > On Thursday, July 23, 2015 at 07:03:47 PM, Michal Suchanek wrote:
-> > 
-> > Hi!
-> > 
-> > [...]
-> > 
-> >> >>> It's probably slower to set up DMA for 2-byte commands but it might
-> >> >>> work nonetheless.
-> >> >> 
-> >> >> It is, the overhead will be considerable. It might help the stability
-> >> >> though. I'm really looking forward to the results!
-> >> > 
-> >> > Hello,
-> >> > 
-> >> > this does not quite work.
-> >> > 
-> >> > My test with spidev:
-> >> > 
-> >> > # ./spinor /dev/spidev1.0
-> >> > Sending 9f 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >> > Received 00 ff c8 60 16 c8 60 16 c8 60 16 c8 60 16 c8 60
-> >> > Sending 90 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >> > Received 00 ff ff ff ff c8 15 c8 15 c8 15 c8 15 c8 15 c8
-> >> > Sending 9f 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >> > Received 00 ff c8 60 16 c8 60 16 c8 60 16 c8 60 16 c8 60
-> >> > 
-> >> > I receive correct ID but spi-nor complains it does not know ID 00 c8
-> >> > 60. IIRC garbage should be sent only at the time command is
-> >> > transferred so only one byte of garbage should be received. Also the
-> >> > garbage tends to be the last state of the data output - all 0 or all
-> >> > 1.
-> >> > So it seems using DMA for all transfers including 1-byte commands
-> >> > results in (some?) received data getting an extra 00 prefix.
-> >> > 
-> >> > 
-> >> > I also managed to lock up the controller completely since there is
-> >> > some error passing the SPI speed somewhere :(
-> >> > 
-> >> > [ 1352.977530] spidev spi1.0: setup mode 0, 8 bits/w, 80000000 Hz max
-> >> > --> 0 [ 1352.977540] spidev spi1.0: spi mode 0
-> >> > [ 1352.977576] spidev spi1.0: setup mode 0, 8 bits/w, 80000000 Hz max
-> >> > --> 0 [ 1352.977582] spidev spi1.0: msb first
-> >> > [ 1352.977614] spidev spi1.0: setup mode 0, 8 bits/w, 80000000 Hz max
-> >> > --> 0 [ 1352.977620] spidev spi1.0: 0 bits per word
-> >> > [ 1352.977652] spidev spi1.0: setup mode 0, 8 bits/w, 2690588672 Hz
-> >> > max --> 0 [ 1352.977726] spi_master spi1: s3c64xx_spi_config:
-> >> > clk_from_cmu 1 src_clk sclk_spi1 mode bpw 8
-> >> > [ 1352.977753] spi_master spi1: spi1.0 s3c64xx_spi_transfer_one: xfer
-> >> > bpw 8 speed -1604378624
-> >> > [ 1352.977760] spi_master spi1: s3c64xx_spi_config: clk_from_cmu 1
-> >> > src_clk sclk_spi1 mode bpw 8
-> >> > [ 1352.977781] spi_master spi1: spi1.0 s3c64xx_spi_transfer_one: using
-> >> > dma [ 1352.977797] dma-pl330 121b0000.pdma: setting up request on
-> >> > thread 1
-> >> 
-> >> Hmm, on a second thought it probably works as expected more or less.
-> >> 
-> >> The nonsensical value was passed from application and there is no
-> >> guard against that.
-> >> 
-> >> Since I don't do PIO the controller remains locked up indefinitely.
-> > 
-> > I have to admit, I don't quite understand the above. I also don't quite
-> > know what your spidev test does. Can you possibly just bind a regular
-> > SPI NOR driver and run mtdtests to see if it is stable ?
-> 
-> Ok, so here is some summary.
-> 
-> I have a NOR flash attached to a s3c64xx SPI controller with 64byte
-> fifo and a pl330 dma controller.
-> 
-> Normally DMA controller is used for transfers that do not fit into the
-> FIFO.
-> 
-> I tried adding the flash memory ID to the spi-nor driver table and
-> adding a DT node for it.
-> 
-> The flash is rated at 120MHz so I used that speed but the ID was
-> bit-shifted and identification failed. There is DT property
-> samsung,spi-feedback-delay for addressing this and at 120MHz it must
-> be 2 or 3 on this board. 40MHz works with default value 0.
-> 
-> The next step after identification worked was to try reading the flash
-> content. For this the DMA controller is used because data is
-> transferred in blocks larger than 64 bytes. When reading the whole 4MB
-> flash the transfer failed silently. I got a 4MB file of all ones or
-> all zeroes.
-> 
-> It turns out that
-> 
->  - the pl330 locks up when transfering large amount of data.
-> Specifically, the maximum power of 2 sized transfer at 120MHz is 128
-> bytes and 64k at 40MHz. Transferring more than this results in the
-> pl330 locking up and never signalling completion of the transfer.
+Hi Graham,
 
-Hypothesis:
-I think this might just be that the controller didn't catch all the
-inbound clock ticks and thus counted less inbound data than it was
-set up to receive. The controller thus waits for more data.
+> -----Original Message-----
+> From: Graham Moore [mailto:grmoore@opensource.altera.com]
+> Sent: Monday, July 27, 2015 10:40 AM
+> To: Vikas MANOCHA
+> Cc: Marek Vasut; linux-mtd@lists.infradead.org; David Woodhouse; Brian
+> Norris; linux-kernel@vger.kernel.org; Alan Tull; Dinh Nguyen; Yves
+> Vandervennet
+> Subject: Re: [PATCH V5 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+> Flash Controller.
+>=20
+> Hi Vikas,
+>=20
+> On 07/24/2015 07:02 PM, vikasm wrote:
+> > Hi Graham,
+> >
+> > On 07/24/2015 10:17 AM, Graham Moore wrote:
+> >> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> >> ---
+> >> V2: use NULL instead of modalias in spi_nor_scan call
+> >> V3: Use existing property is-decoded-cs instead of creating duplicate.
+> >> V4: Support Micron quad mode by snooping command stream for EVCR
+> >> command and subsequently configuring Cadence controller for quad
+> mode.
+> >> V5: Clean up sparse and smatch complaints.  Remove snooping of Micron
+> >> quad mode.  Add comment on XIP mode bit and dummy clock cycles.  Set
+> >> up SRAM partition at 1:1 during init.
+> >> ---
+> >>   arch/arm/boot/dts/socfpga.dtsi               |    1 +
+> >>   arch/arm/boot/dts/socfpga_cyclone5_socdk.dts |    1 -
+> >>   drivers/mtd/spi-nor/Kconfig                  |    6 +
+> >>   drivers/mtd/spi-nor/Makefile                 |    1 +
+> >>   drivers/mtd/spi-nor/cadence-quadspi.c        | 1261
+> ++++++++++++++++++++++++++
+> >>   5 files changed, 1269 insertions(+), 1 deletion(-)
+> >>   create mode 100644 drivers/mtd/spi-nor/cadence-quadspi.c
+> >>
+> >> diff --git a/arch/arm/boot/dts/socfpga.dtsi
+> >> b/arch/arm/boot/dts/socfpga.dtsi index c71a705..e9ecdce 100644
+> >> --- a/arch/arm/boot/dts/socfpga.dtsi
+> >> +++ b/arch/arm/boot/dts/socfpga.dtsi
+> >> @@ -695,6 +695,7 @@
+> >>                          is-decoded-cs =3D <1>;
+> >>                          fifo-depth =3D <128>;
+> >>                          status =3D "disabled";
+> >> +                       m25p,fast-read;
+> >
+> > This patch is not applicable to l2-mtd master or linus master repo, mig=
+ht
+> need to rebase it.
+> >
+>=20
+> Argh, my mistake, these dts files are not supposed to be in the patch.
+>=20
+> ...
+>=20
+> >> +#include <linux/timer.h>
+> >> +
+> >> +#define CQSPI_NAME                     "cadence-qspi"
+> >
+> > replace space with tabs.
+> >
+>=20
+> They *are* tabs in my original patch.  Not sure how they got changed to
+> spaces...
+>=20
+> ...
+> >> +
+> >> +#define CQSPI_FIFO_WIDTH                       4
+> >
+> > FIFO width could be 4 or 8 etc depending on the SOC, it would be better=
+ to
+> get it from device.
+> > You can refer to u-boot code for the same.
+> >
+>=20
+> OK
+> ...
+> >> +
+> >> +#define CQSPI_INDIRECTTRIGGER_ADDR_MASK                0xFFFFF
+> >
+> > Mask value of 0xFFFFF is specific to socfpga platform.
+> > Please refer to u-boot patchset for same discussion.
+> >
+>=20
+> OK
+> ...
+> >> +static void cqspi_fifo_read(void *dest, const void __iomem
+> *src_ahb_addr,
+> >> +                           unsigned int bytes) {
+> >> +       unsigned int temp;
+> >> +       int remaining =3D bytes;
+> >> +       unsigned int *dest_ptr =3D (unsigned int *)dest;
+> >> +
+> >> +       while (remaining >=3D CQSPI_FIFO_WIDTH) {
+> >> +               *dest_ptr =3D readl(src_ahb_addr);
+> >> +               dest_ptr++;
+> >> +               remaining -=3D CQSPI_FIFO_WIDTH;
+> >
+> > this logic only works when fifo width is 4 with "unsigned int" data of =
+4
+> bytes.
+> > It has been corrected in mainline u-boot or in the u-boot patches.
+> >
+>=20
+> OK
+> ...
+> >> +static int cqspi_indirect_read_setup(struct spi_nor *nor,
+> >> +                                    unsigned int from_addr) {
+> >> +       unsigned int reg;
+> >> +       unsigned int dummy_clk =3D 0;
+> >> +       struct cqspi_st *cqspi =3D nor->priv;
+> >> +       void __iomem *reg_base =3D cqspi->iobase;
+> >> +       unsigned int ahb_phy_addr =3D cqspi->ahb_phy_addr;
+> >> +
+> >> +       writel((ahb_phy_addr & CQSPI_INDIRECTTRIGGER_ADDR_MASK),
+> >> +              reg_base + CQSPI_REG_INDIRECTTRIGGER);
+> >> +       writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+> >
+> > Base trigger register address (0x1c register) corresponds to the
+> > address which should be put on AHB bus to handle indirect transfer
+> triggered before.
+> >
+> > To handle indirect transfer we need to issue addresses from (value of
+> > 0x1c) to (value of 0x1c) + 15*4 ("4" corresponds to size of SRAM locati=
+on).
+> > There are no obstacles in issuing const address just equal to 0x1c.
+> > Important thing to note is that indirect trigger address has nothing
+> > in common with your physical or mapped NOR Flash address.
+> >
+> > Transfer read/write start addresses should be programmed with the
+> > absolute flash address to be read/written.
+> >
+>=20
+> OK, I'll add the trigger address to the device tree, etc.  You seem to be
+> concerned about the fact that on Altera SoC, the trigger address and the =
+ahb
+> address are different.  I'm not seeing any problem with that.
 
-> Data
-> is left in FIFO which causes subsequent commands to fail since garbage
-> is returned instead of command reply. Also subsequent read may cause
-> I/O error or or return an empty page depending on the garbage around.
+No problem with different or same trigger address & ahb address. Trigger ad=
+dress should be passed through device tree as it could
+be different for different SoCs. Masking it with value like 0xf_ffff to mak=
+e it suitable for one SOC in driver does not seems right approach.
 
-So the driver for the DMA controller might need to be augmented to handle
-this case -- add a timeout and in case DMA times out, drain the FIFO to
-make sure subsequent transfers do not fail.
+> The CPU reads/writes the FIFO using an address, but that is not the same
+> address that goes on the bus way down in the interconnect.  What's wrong
+> with that?  It's the way our SoC works.  If we use the trigger address fo=
+r the
+> trigger address register, and the ahb address for reading/writing the FIF=
+O,
+> then it works fine.
 
-> - the I/O errors are not checked in spi-nor at all which leads to
-> silent data corruption.
-> 
-> On a suggestion that this may improve reliability I changed the
-> s3c64xx driver to use DMA for all transfers. This caused
-> identification to fail in spin-nor because the ID was prefixed with
-> extra 00  byte. Testing with spidev confirmed that everything is
-> prefixed with extra 00.
+This implementation is your Soc specific & not generic for the qspi periphe=
+ral. In this way, it won't be possible to use this driver for Socs other th=
+an altera soc.
 
-The determinism of this is in fact excellent news.
+Rgds,
+Vikas
 
-> Also when the DMA controller locked up no
-> transfers were possible anymore. When DMA was not used for sending
-> commands the controller would recover on next command. I made the
-> option to always use DMA configurable and it turns out that the
-> returned data is prefixed with 00 only when no transfer without DMA
-> was ever made. Loading the spi-nor driver with the dma-only option off
-> and then with dma-only option on results in correct operation. Only
-> loading the dma-only driver first causes the 00 prefix.
-
-Can we conclude that the PIO codepath somehow programs a register somewhere
-which gets rid of this 0x00 prefix ? If so, this should then also be part
-of the DMA codepath, or even better, this should be set in probe() somewhere.
+>=20
+> ...
+>=20
+> >> +       watermark =3D cqspi->fifo_depth * CQSPI_FIFO_WIDTH / 2;
+> >> +       writel(watermark, reg_base +
+> CQSPI_REG_INDIRECTRDWATERMARK);
+> >> +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
+> >> +       writel(cqspi->fifo_depth - CQSPI_REG_SRAM_RESV_WORDS,
+> >> +              reg_base + CQSPI_REG_SRAMPARTITION);
+> >
+> > sram partioning is not needed to be changed at every read/write, it
+> > should be ok to configure it in the init like divide half for read & ha=
+lf for
+> write.
+> >
+>=20
+> OK
+> ...
+> >
+> > Rgds,
+> > Vikas
+> >
+>=20
+> Best regards,
+> Graham
