@@ -1,16 +1,19 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK0ry-0001yj-R5
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 09:08:20 +0000
-Message-Id: <cover.1438073915.git.hramrach@gmail.com>
+ id 1ZK16Z-00023w-Ic
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 09:23:24 +0000
+Date: 28 Jul 2015 09:23:02 -0000
+Message-Id: <6fc4b472097ecc8285f451eb2c9216cfa13b612b.1438074682.git.hramrach@gmail.com>
+In-Reply-To: <cover.1438074682.git.hramrach@gmail.com>
+References: <cover.1438074682.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Date: Tue, 28 Jul 2015 10:58:35 +0200
-Subject: [PATCH 0/2] New SPI NOR chip IDs
+Subject: [PATCH 2/2] mtd: spi-nor: rework write loop
 To: David Woodhouse <dwmw2@infradead.org>,
-  Brian Norris <computersforpeace@gmail.com>,
-  "Rafał Miłecki" <zajec5@gmail.com>, Huang Shijie <shijie.huang@intel.com>,
-  Marek Vasut <marex@denx.de>, Michal Suchanek <hramrach@gmail.com>,
-  Ben Hutchings <ben@decadent.org.uk>,
+  Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
+  "Rafał Miłecki" <zajec5@gmail.com>, Michal Suchanek <hramrach@gmail.com>,
+  Alison Chaiken <alison_chaiken@mentor.com>,
+  Huang Shijie <b32955@freescale.com>, Ben Hutchings <ben@decadent.org.uk>,
+  Marek Vasut <marex@denx.de>, Gabor Juhos <juhosg@openwrt.org>,
   "Bean Huo 霍斌斌 \(beanhuo\)" <beanhuo@micron.com>,
   linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,23 +25,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+The write loop assumes that what is passed to write() is what gets
+written. When write() writes less than page size at once data is dropped
+on the floor. Check the amount of data writen.
 
-these are flash chips I used when testing spi nor drivers.
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 48 ++++++++++++++-----------------------------
+ 1 file changed, 15 insertions(+), 33 deletions(-)
 
-GD25Q41B is thoroughly tested, Pm25LD020 is tested but the chip is probably bad
-and GD25LQ32C is tested readonly.
-
-Thanks
-
-Michal
-
-Michal Suchanek (2):
-  mtd: spi-nor: Add GD25LQ32C 1.8V SPI NOR flash ID
-  MTD: spi-nor: Add Pm25LD020 and GD25Q41B chip ID.
-
- drivers/mtd/spi-nor/spi-nor.c | 3 +++
- 1 file changed, 3 insertions(+)
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index c19fa7d..1cbe0be 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -837,7 +837,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	size_t *retlen, const u_char *buf)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	u32 page_offset, page_size, i;
++	size_t page_offset, page_remain, i;
+ 	int ret;
+ 
+ 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
+@@ -846,45 +846,27 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	if (ret)
+ 		return ret;
+ 
+-	write_enable(nor);
+-
+-	page_offset = to & (nor->page_size - 1);
++	for (i = 0; i < len; ) {
++		int written;
+ 
+-	/* do all the bytes fit onto one page? */
+-	if (page_offset + len <= nor->page_size) {
+-		ret = nor->write(nor, to, len, buf);
+-		if (ret < 0)
+-			goto write_err;
+-		*retlen += ret;
+-	} else {
++		page_offset = to & (nor->page_size - 1);
+ 		/* the size of data remaining on the first page */
+-		page_size = nor->page_size - page_offset;
+-		nor->write(nor, to, page_size, buf);
++		page_remain = min_t(size_t,
++				    nor->page_size - page_offset, len - i);
++
++		write_enable(nor);
++		ret = nor->write(nor, to + i, page_remain, buf + i);
+ 		if (ret < 0)
+ 			goto write_err;
+-		*retlen += ret;
+-
+-		/* write everything in nor->page_size chunks */
+-		for (i = ret; i < len; ) {
+-			page_size = len - i;
+-			if (page_size > nor->page_size)
+-				page_size = nor->page_size;
+-
+-			ret = spi_nor_wait_till_ready(nor);
+-			if (ret)
+-				goto write_err;
++		written = ret;
+ 
+-			write_enable(nor);
+-
+-			ret = nor->write(nor, to + i, page_size, buf + i);
+-			if (ret < 0)
+-				goto write_err;
+-			*retlen += ret;
+-			i += ret;
+-		}
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			goto write_err;
++		*retlen += written;
++		i += written;
+ 	}
+ 
+-	ret = spi_nor_wait_till_ready(nor);
+ write_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+ 	return ret;
 -- 
 2.1.4
