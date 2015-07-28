@@ -1,18 +1,20 @@
-From: Vignesh R <vigneshr@ti.com>
-To: Mark Brown <broonie@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>
-CC: Huang Shijie <b32955@freescale.com>, Vignesh R <vigneshr@ti.com>,
- <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-Subject: [RFC PATCH 2/5] spi: spi-ti-qspi: Add memory mapped read support
-Date: Tue, 28 Jul 2015 14:11:13 +0530
-Message-ID: <1438072876-16338-3-git-send-email-vigneshr@ti.com>
-In-Reply-To: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
-References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZK0ry-0001yr-RC
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 09:08:20 +0000
+Date: 28 Jul 2015 09:07:57 -0000
+Message-Id: <cb552b89554df49d1e6a24ce45b48c9e203f3b37.1438073915.git.hramrach@gmail.com>
+In-Reply-To: <cover.1438073915.git.hramrach@gmail.com>
+References: <cover.1438073915.git.hramrach@gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Subject: [PATCH 1/2] mtd: spi-nor: Add GD25LQ32C 1.8V SPI NOR flash ID
+To: David Woodhouse <dwmw2@infradead.org>,
+  Brian Norris <computersforpeace@gmail.com>,
+  "Rafał Miłecki" <zajec5@gmail.com>, Huang Shijie <shijie.huang@intel.com>,
+  Marek Vasut <marex@denx.de>, Michal Suchanek <hramrach@gmail.com>,
+  Ben Hutchings <ben@decadent.org.uk>,
+  "Bean Huo 霍斌斌 \(beanhuo\)" <beanhuo@micron.com>,
+  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,182 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-TI QSPI controller has memory mapped port through which SPI flash
-memories can be read using memcpy call. This patch adds support for
-memory mapped read based on use_mmap_read flag.
-When use_mmap_read flag is set, the controller is switched to memory
-mapped interface by writing to QSPI_SPI_SWITCH_REG. The read_opcode,
-read mode, dummy bytes are configured in QSPI_SPI_SETUPx_REG, then
-memcpy is called to copy the requested data from flash to the rx_buf.
-With this patch, the read speed increased from ~100kB/s to ~2.5MB/s on
-DRA74 EVM.
+This 1.8V SPI NOR flash is found on ARM Chromebook XE303C and reads
+something like 25LQ32VIG in the middle.
 
-Signed-off-by: Vignesh R <vigneshr@ti.com>
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 ---
- drivers/spi/spi-ti-qspi.c | 129 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 125 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-index 5c0616870358..45844a227c5e 100644
---- a/drivers/spi/spi-ti-qspi.c
-+++ b/drivers/spi/spi-ti-qspi.c
-@@ -71,11 +71,8 @@ struct ti_qspi {
- #define QSPI_SPI_CMD_REG		(0x48)
- #define QSPI_SPI_STATUS_REG		(0x4c)
- #define QSPI_SPI_DATA_REG		(0x50)
--#define QSPI_SPI_SETUP0_REG		(0x54)
-+#define QSPI_SPI_SETUP_REG(n)		(0x54 + 4 * n)
- #define QSPI_SPI_SWITCH_REG		(0x64)
--#define QSPI_SPI_SETUP1_REG		(0x58)
--#define QSPI_SPI_SETUP2_REG		(0x5c)
--#define QSPI_SPI_SETUP3_REG		(0x60)
- #define QSPI_SPI_DATA_REG_1		(0x68)
- #define QSPI_SPI_DATA_REG_2		(0x6c)
- #define QSPI_SPI_DATA_REG_3		(0x70)
-@@ -118,6 +115,16 @@ struct ti_qspi {
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d78831b..cba3bd0 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -559,6 +559,7 @@ static const struct spi_device_id spi_nor_ids[] = {
  
- #define QSPI_AUTOSUSPEND_TIMEOUT         2000
- 
-+#define MEM_CS_EN(n)			((n + 1) << 8)
-+
-+#define MM_SWITCH			0x1
-+
-+#define QSPI_SETUP_RD_NORMAL		(0x0 << 12)
-+#define QSPI_SETUP_RD_DUAL		(0x1 << 12)
-+#define QSPI_SETUP_RD_QUAD		(0x3 << 12)
-+#define QSPI_SETUP_ADDR_SHIFT		8
-+#define QSPI_SETUP_DUMMY_SHIFT		10
-+
- static inline unsigned long ti_qspi_read(struct ti_qspi *qspi,
- 		unsigned long reg)
- {
-@@ -335,6 +342,117 @@ static int qspi_transfer_msg(struct ti_qspi *qspi, struct spi_transfer *t)
- 	return 0;
- }
- 
-+static void ti_qspi_enable_memory_map(struct spi_device *spi)
-+{
-+	struct ti_qspi  *qspi = spi_master_get_devdata(spi->master);
-+	u32 val;
-+
-+	ti_qspi_write(qspi, MM_SWITCH, QSPI_SPI_SWITCH_REG);
-+	if (qspi->ctrl_mod) {
-+		val = readl(qspi->ctrl_base);
-+		val |= MEM_CS_EN(spi->chip_select);
-+		writel(val, qspi->ctrl_base);
-+	}
-+}
-+
-+static void ti_qspi_disable_memory_map(struct spi_device *spi)
-+{
-+	struct ti_qspi  *qspi = spi_master_get_devdata(spi->master);
-+	u32 val;
-+
-+	ti_qspi_write(qspi, 0, QSPI_SPI_SWITCH_REG);
-+	if (qspi->ctrl_mod) {
-+		val = readl(qspi->ctrl_base);
-+		val &= ~MEM_CS_EN(spi->chip_select);
-+		writel(val, qspi->ctrl_base);
-+	}
-+}
-+
-+static void ti_qspi_setup_mmap_read(struct spi_device *spi, u8
-+				    read_opcode, u8 addr_width,
-+				    u8 dummy_bytes)
-+{
-+	struct ti_qspi  *qspi = spi_master_get_devdata(spi->master);
-+	u32 mode = spi->mode & (SPI_RX_DUAL | SPI_RX_QUAD);
-+	u32 memval = read_opcode;
-+
-+	switch (mode) {
-+	case SPI_RX_QUAD:
-+		memval |= QSPI_SETUP_RD_QUAD;
-+		break;
-+	case SPI_RX_DUAL:
-+		memval |= QSPI_SETUP_RD_DUAL;
-+		break;
-+	default:
-+		memval |= QSPI_SETUP_RD_NORMAL;
-+		break;
-+	}
-+	memval |= ((addr_width - 1) << QSPI_SETUP_ADDR_SHIFT |
-+		   dummy_bytes << QSPI_SETUP_DUMMY_SHIFT);
-+	ti_qspi_write(qspi, memval,
-+		      QSPI_SPI_SETUP_REG(spi->chip_select));
-+}
-+
-+static unsigned int ti_qspi_cmd2addr(u8 *cmd, u8 addr_width)
-+{
-+	u32 addr;
-+
-+	/* cmd[0] is read opcode */
-+	addr = cmd[1] << ((addr_width - 1) * 8);
-+	addr |= cmd[2] << ((addr_width - 2) * 8);
-+	addr |= cmd[3] << ((addr_width - 3) * 8);
-+	addr |= cmd[4] << ((addr_width - 4) * 8);
-+
-+	return addr;
-+}
-+
-+static int ti_qspi_mmap_read(struct spi_master *master,
-+			     struct spi_message *m)
-+{
-+	struct ti_qspi *qspi = spi_master_get_devdata(master);
-+	struct spi_device *spi = m->spi;
-+	struct spi_transfer *t;
-+	u8 read_opcode = 0x3;	/* Default normal read */
-+	void *to = NULL;
-+	u8 addr_width = 4, dummy_bytes = 0;
-+	unsigned int len = 0, from = 0;
-+	int status = 0;
-+
-+	mutex_lock(&qspi->list_lock);
-+
-+	/* disable WC interrupt during memcpy */
-+	ti_qspi_write(qspi, QSPI_WC_INT_DISABLE, QSPI_INTR_ENABLE_CLEAR_REG);
-+	ti_qspi_enable_memory_map(spi);
-+	list_for_each_entry(t, &m->transfers, transfer_list) {
-+		if (t->tx_buf) {
-+			read_opcode = *((u8 *)t->tx_buf);
-+			dummy_bytes = t->len - (addr_width + 1);
-+			from = ti_qspi_cmd2addr((u8 *)t->tx_buf, addr_width);
-+		}
-+		if (t->rx_buf) {
-+			to = ((void *)t->rx_buf);
-+			len = t->len;
-+		}
-+		m->actual_length += t->len;
-+	}
-+	ti_qspi_setup_mmap_read(spi, read_opcode, addr_width,
-+				dummy_bytes);
-+
-+	if (qspi_is_busy(qspi)) {
-+		status = -EBUSY;
-+		goto err;
-+	}
-+	memcpy(to, qspi->mmap_base + from, len);
-+
-+err:
-+	ti_qspi_disable_memory_map(spi);
-+	mutex_unlock(&qspi->list_lock);
-+	m->status = status;
-+	spi_finalize_current_message(master);
-+
-+	return status;
-+}
-+
- static int ti_qspi_start_transfer_one(struct spi_master *master,
- 		struct spi_message *m)
- {
-@@ -344,6 +462,9 @@ static int ti_qspi_start_transfer_one(struct spi_master *master,
- 	int status = 0, ret;
- 	int frame_length;
- 
-+	if (m->use_mmap_mode)
-+		return ti_qspi_mmap_read(master, m);
-+
- 	/* setup device control reg */
- 	qspi->dc = 0;
+ 	/* GigaDevice */
+ 	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
++	{ "gd25lq32c", INFO(0xc86016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
  
 -- 
-2.4.6
+2.1.4
