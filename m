@@ -1,25 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-bn1bon0140.outbound.protection.outlook.com
+ ([157.56.111.140] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK97I-0004Iw-A5
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 17:56:41 +0000
-From: Marek Vasut <marex@denx.de>
-To: Graham Moore <grmoore@opensource.altera.com>
-Subject: Re: [PATCH V6 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
-Date: Tue, 28 Jul 2015 19:56:13 +0200
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Vikas MANOCHA <vikas.manocha@st.com>, linux-kernel@vger.kernel.org,
- Alan Tull <atull@opensource.altera.com>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>
-References: <1438105083-19738-1-git-send-email-grmoore@opensource.altera.com>
-In-Reply-To: <1438105083-19738-1-git-send-email-grmoore@opensource.altera.com>
+ id 1ZK98i-0004cm-5s
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 17:58:08 +0000
+From: Han Xu <b45815@freescale.com>
+To: <shijie8@gmail.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <b45815@freescale.com>, <boris.brezillon@free-electrons.com>,
+ <fabio.estevam@freescale.com>, <hofrat@osadl.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/6] mtd: nand: gpmi: add gpmi dsm supend/resume support
+Date: Tue, 28 Jul 2015 12:49:58 -0500
+Message-ID: <1438105798-22188-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201507281956.13994.marex@denx.de>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,56 +23,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, July 28, 2015 at 07:38:02 PM, Graham Moore wrote:
+From: Huang Shijie <b32955@freescale.com>
 
-A commit message would be really nice :-)
+i.MX6SX supports deep sleep mode(DSM) that may turn off GPMI/BCH power
+during suspend, add gpmi nand suspend/resume function to release DMA
+channel in suspend function and re-init GPMI/BCH controller during
+resume function.
 
-> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> ---
-> V2: Add cdns prefix to driver-specific bindings.
-> V3: Use existing property "is-decoded-cs" instead of creating a duplicate,
-> "ext-decoder".  Timing parameters are in nanoseconds, not master reference
-> clocks.  Remove bus-num completely.
-> V4: Add new properties fifo-width and trigger-address
-> ---
->  .../devicetree/bindings/mtd/cadence_quadspi.txt    |   54
-> ++++++++++++++++++++ 1 file changed, 54 insertions(+)
->  create mode 100644
-> Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-> b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt new file mode
-> 100644
-> index 0000000..d7e6fdd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-> @@ -0,0 +1,54 @@
-> +* Cadence Quad SPI controller
-> +
-> +Required properties:
-> +- compatible : Should be "cdns,qspi-nor".
-> +- reg : Contains two entries, each of which is a tuple consisting of a
-> +	physical address and length.  The first entry is the address and
-> +	length of the controller register set.  The second entry is the
-> +	address and length of the QSPI Controller data area.
-> +- interrupts : Unit interrupt specifier for the controller interrupt.
-> +- clocks : phandle to the Quad SPI clock.
-> +- fifo-depth : Size of the data FIFO in words.
+Although it is not necessary to restore GPMI/BCH registers value for
+i.MX6QDL, the code doesn't distinguish different platforms to keep the
+code simple.
 
-This and the following two are absolutelly Cadence specific, so prefix
-them that way please:
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Han Xu <han.xu@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 45 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
 
-cdns,fifo-depth
-
-> +- fifo-width: Bus width of the data FIFO in bytes.
-
-cdns,fifo-width
-
-> +- trigger-address : 32-bit indirect AHB trigger address.
-
-cdns,trigger-address
-
-What is this address exactly? Is this documented somewhere what the value
-should be precisely ?
-
-[...]
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 1b8f350..dfd0ba1 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1,7 +1,7 @@
+ /*
+  * Freescale GPMI NAND Flash Driver
+  *
+- * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
++ * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
+  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -2036,9 +2036,52 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int gpmi_pm_suspend(struct device *dev)
++{
++	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++
++	release_dma_channels(this);
++	return 0;
++}
++
++static int gpmi_pm_resume(struct device *dev)
++{
++	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++	int ret;
++
++	ret = acquire_dma_channels(this);
++	if (ret < 0)
++		return ret;
++
++	/* re-init the GPMI registers */
++	this->flags &= ~GPMI_TIMING_INIT_OK;
++	ret = gpmi_init(this);
++	if (ret) {
++		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
++		return ret;
++	}
++
++	/* re-init the BCH registers */
++	ret = bch_set_geometry(this);
++	if (ret) {
++		dev_err(this->dev, "Error setting BCH : %d\n", ret);
++		return ret;
++	}
++
++	/* re-init others */
++	gpmi_extra_init(this);
++
++	return 0;
++}
++
++static const struct dev_pm_ops gpmi_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
++};
++
+ static struct platform_driver gpmi_nand_driver = {
+ 	.driver = {
+ 		.name = "gpmi-nand",
++		.pm = &gpmi_pm_ops,
+ 		.of_match_table = gpmi_nand_id_table,
+ 	},
+ 	.probe   = gpmi_nand_probe,
+-- 
+1.9.1
