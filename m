@@ -1,26 +1,17 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-bn1on0135.outbound.protection.outlook.com
+ ([157.56.110.135] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK9dd-0004Ar-9x
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 18:30:06 +0000
-From: Marek Vasut <marex@denx.de>
-To: Graham Moore <grmoore@opensource.altera.com>
-Subject: Re: [PATCH V6 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-Date: Tue, 28 Jul 2015 20:29:40 +0200
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Vikas MANOCHA <vikas.manocha@st.com>, linux-kernel@vger.kernel.org,
- Alan Tull <atull@opensource.altera.com>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>
-References: <1438105083-19738-1-git-send-email-grmoore@opensource.altera.com>
- <201507282007.56506.marex@denx.de> <55B7C84D.5040104@opensource.altera.com>
-In-Reply-To: <55B7C84D.5040104@opensource.altera.com>
+ id 1ZKAOE-0000w6-7L
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 19:18:15 +0000
+From: Han Xu <b45815@freescale.com>
+To: <vinod.koul@intel.com>
+CC: <dan.j.williams@intel.com>, <dmaengine@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH 2/6] dmaengine: mxs: support i.MX7D and deep sleep mode
+Date: Tue, 28 Jul 2015 14:10:07 -0500
+Message-ID: <1438110607-22551-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201507282029.40924.marex@denx.de>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,25 +21,202 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, July 28, 2015 at 08:22:05 PM, Graham Moore wrote:
-> On 07/28/2015 01:07 PM, Marek Vasut wrote:
-> > On Tuesday, July 28, 2015 at 07:38:03 PM, Graham Moore wrote:
-> > 
-> > DTTO here.
-> > 
-> > Thanks a lot for working on the driver though -- would you like me to
-> > continue reviewing or just take over please ?
-> 
-> Aha, I see your strategy :)  You must *really* want to take this over.
-> Fine, you can have it.
+From: Huang Shijie <b32955@freescale.com>
 
-I don't care either way, it's just a driver on my radar which I'd like to
-see mainline because I use it on my board. I can keep reviewing until we
-bash it into sensible state :)
+The patch support i.MX7D platform by adding extra DMA clock.
 
-> And thanks, I'm glad somebody actually gives a hoot.
+Deep Sleep Mode(dsm) turns off the power for APBH DMA module, add
+suspend/resume function and re-init the APBH DMA during resume.
 
-You're welcome, I do care indeed. I use UBI/UBIFS on a QSPI NOR here.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Han Xu <han.xu@freescale.com>
+Signed-off-by: Adrian Alonso <aalonso@freescale.com>
+---
+ drivers/dma/mxs-dma.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 67 insertions(+), 6 deletions(-)
 
-Best regards,
-Marek Vasut
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index 60de352..2b0915d 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
++ * Copyright 2011-2015 Freescale Semiconductor, Inc. All Rights Reserved.
+  *
+  * Refer to drivers/dma/imx-sdma.c
+  *
+@@ -28,7 +28,6 @@
+ #include <linux/of_device.h>
+ #include <linux/of_dma.h>
+ #include <linux/list.h>
+-
+ #include <asm/irq.h>
+ 
+ #include "dmaengine.h"
+@@ -135,6 +134,7 @@ enum mxs_dma_devtype {
+ enum mxs_dma_id {
+ 	IMX23_DMA,
+ 	IMX28_DMA,
++	IMX7D_DMA,
+ };
+ 
+ struct mxs_dma_engine {
+@@ -142,6 +142,7 @@ struct mxs_dma_engine {
+ 	enum mxs_dma_devtype		type;
+ 	void __iomem			*base;
+ 	struct clk			*clk;
++	struct clk			*clk_io;
+ 	struct dma_device		dma_device;
+ 	struct device_dma_parameters	dma_parms;
+ 	struct mxs_dma_chan		mxs_chans[MXS_DMA_CHANNELS];
+@@ -167,6 +168,9 @@ static struct mxs_dma_type mxs_dma_types[] = {
+ 	}, {
+ 		.id = IMX28_DMA,
+ 		.type = MXS_DMA_APBX,
++	}, {
++		.id = IMX7D_DMA,
++		.type = MXS_DMA_APBH,
+ 	}
+ };
+ 
+@@ -184,6 +188,9 @@ static const struct platform_device_id mxs_dma_ids[] = {
+ 		.name = "imx28-dma-apbx",
+ 		.driver_data = (kernel_ulong_t) &mxs_dma_types[3],
+ 	}, {
++		.name = "imx7d-dma-apbh",
++		.driver_data = (kernel_ulong_t) &mxs_dma_types[4],
++	}, {
+ 		/* end of list */
+ 	}
+ };
+@@ -193,6 +200,7 @@ static const struct of_device_id mxs_dma_dt_ids[] = {
+ 	{ .compatible = "fsl,imx23-dma-apbx", .data = &mxs_dma_ids[1], },
+ 	{ .compatible = "fsl,imx28-dma-apbh", .data = &mxs_dma_ids[2], },
+ 	{ .compatible = "fsl,imx28-dma-apbx", .data = &mxs_dma_ids[3], },
++	{ .compatible = "fsl,imx7d-dma-apbh", .data = &mxs_dma_ids[4], },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, mxs_dma_dt_ids);
+@@ -440,6 +448,12 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+ 	if (ret)
+ 		goto err_clk;
+ 
++	if (mxs_dma->dev_id == IMX7D_DMA) {
++		ret = clk_prepare_enable(mxs_dma->clk_io);
++		if (ret)
++			goto err_clk_unprepare;
++	}
++
+ 	mxs_dma_reset_chan(chan);
+ 
+ 	dma_async_tx_descriptor_init(&mxs_chan->desc, chan);
+@@ -450,6 +464,8 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+ 
+ 	return 0;
+ 
++err_clk_unprepare:
++	clk_disable_unprepare(mxs_dma->clk);
+ err_clk:
+ 	free_irq(mxs_chan->chan_irq, mxs_dma);
+ err_irq:
+@@ -471,6 +487,9 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
+ 	dma_free_coherent(mxs_dma->dma_device.dev, CCW_BLOCK_SIZE,
+ 			mxs_chan->ccw, mxs_chan->ccw_phys);
+ 
++	if (mxs_dma->dev_id == IMX7D_DMA)
++		clk_disable_unprepare(mxs_dma->clk_io);
++
+ 	clk_disable_unprepare(mxs_dma->clk);
+ }
+ 
+@@ -693,7 +712,7 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
+ 	return mxs_chan->status;
+ }
+ 
+-static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
++static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+ {
+ 	int ret;
+ 
+@@ -701,6 +720,12 @@ static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+ 	if (ret)
+ 		return ret;
+ 
++	if (mxs_dma->dev_id == IMX7D_DMA) {
++		ret = clk_prepare_enable(mxs_dma->clk_io);
++		if (ret)
++			goto err_out;
++	}
++
+ 	ret = stmp_reset_block(mxs_dma->base);
+ 	if (ret)
+ 		goto err_out;
+@@ -803,9 +828,19 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mxs_dma->base))
+ 		return PTR_ERR(mxs_dma->base);
+ 
+-	mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(mxs_dma->clk))
+-		return PTR_ERR(mxs_dma->clk);
++	if (mxs_dma->dev_id == IMX7D_DMA) {
++		mxs_dma->clk = devm_clk_get(&pdev->dev, "dma_apbh_bch");
++		if (IS_ERR(mxs_dma->clk))
++			return PTR_ERR(mxs_dma->clk);
++		mxs_dma->clk_io = devm_clk_get(&pdev->dev, "dma_apbh_io");
++		if (IS_ERR(mxs_dma->clk_io))
++			return PTR_ERR(mxs_dma->clk_io);
++
++	} else {
++		mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
++		if (IS_ERR(mxs_dma->clk))
++			return PTR_ERR(mxs_dma->clk);
++	}
+ 
+ 	dma_cap_set(DMA_SLAVE, mxs_dma->dma_device.cap_mask);
+ 	dma_cap_set(DMA_CYCLIC, mxs_dma->dma_device.cap_mask);
+@@ -835,6 +870,7 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 
+ 	mxs_dma->pdev = pdev;
+ 	mxs_dma->dma_device.dev = &pdev->dev;
++	dev_set_drvdata(&pdev->dev, mxs_dma);
+ 
+ 	/* mxs_dma gets 65535 bytes maximum sg size */
+ 	mxs_dma->dma_device.dev->dma_parms = &mxs_dma->dma_parms;
+@@ -872,9 +908,34 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int mxs_dma_pm_suspend(struct device *dev)
++{
++	/*
++	 * We do not save any registers here, since the gpmi will release its
++	 * DMA channel.
++	 */
++	return 0;
++}
++
++static int mxs_dma_pm_resume(struct device *dev)
++{
++	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
++	int ret;
++
++	ret = mxs_dma_init(mxs_dma);
++	if (ret)
++		return ret;
++	return 0;
++}
++
++static const struct dev_pm_ops mxs_dma_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(mxs_dma_pm_suspend, mxs_dma_pm_resume)
++};
++
+ static struct platform_driver mxs_dma_driver = {
+ 	.driver		= {
+ 		.name	= "mxs-dma",
++		.pm = &mxs_dma_pm_ops,
+ 		.of_match_table = mxs_dma_dt_ids,
+ 	},
+ 	.id_table	= mxs_dma_ids,
+-- 
+1.9.1
