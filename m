@@ -1,28 +1,22 @@
-Date: Mon, 27 Jul 2015 13:52:11 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lucas Stach <dev@lynxeye.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Stefan Agner <stefan@agner.ch>,
- Marcel Ziswiler <marcel@ziswiler.com>, devicetree@vger.kernel.org,
- linux-tegra@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [Patch v3 2/5] mtd: nand: add NVIDIA Tegra NAND Flash controller
- driver
-Message-ID: <20150727205211.GR8876@google.com>
-References: <1431282602-7137-1-git-send-email-dev@lynxeye.de>
- <1431282602-7137-3-git-send-email-dev@lynxeye.de>
- <20150721212710.GN24125@google.com>
- <1438024797.2313.11.camel@lynxeye.de>
+Date: Tue, 28 Jul 2015 09:05:13 +0800
+From: Shawn Guo <shawnguo@kernel.org>
+To: Stefan Agner <stefan@agner.ch>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, mark.rutland@arm.com,
+ boris.brezillon@free-electrons.com, aaron@tastycactus.com,
+ marb@ixxat.de, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
+ bpringlemeir@gmail.com, linux-kernel@vger.kernel.org,
+ sebastian@breakpoint.cc, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ kernel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org,
+ devicetree@vger.kernel.org, Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v8 3/5] mtd: nand: vf610_nfc: add device tree bindings
+Message-ID: <20150728010513.GV12927@tiger>
+References: <1438015365-15685-1-git-send-email-stefan@agner.ch>
+ <1438015365-15685-4-git-send-email-stefan@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1438024797.2313.11.camel@lynxeye.de>
+In-Reply-To: <1438015365-15685-4-git-send-email-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,42 +26,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 27, 2015 at 09:19:57PM +0200, Lucas Stach wrote:
-> Am Dienstag, den 21.07.2015, 14:27 -0700 schrieb Brian Norris:
-> I've checked this again and unfortunately the DEC_STATUS_ERR_COUNT seems
-> to be completely bogus. It is certainly only set when there are
-> bitflips, but it doesn't represent a valid value.
+On Mon, Jul 27, 2015 at 06:42:43PM +0200, Stefan Agner wrote:
+> Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
 
-:( HW sucks.
+Acked-by: Shawn Guo <shawnguo@kernel.org>
 
-> I have another register that seems to accurately reflect the maximum
-> number of bitflips in any of the 512b ECC blocks, so I'm able to return
-> the correct amount of bitflips to the upper level.
-> The downside is that the hardware already does the calculation of max
-> bitflips, so I'm unable to count bitflips correctly for the stats. All I
-> can do is to return a pessimistic value that assumes that all 512b
-> blocks had the returned number of bitflips. Could this be a problem?
-
-As things currently stand: no, I don't think so. The ecc_stats are
-actually mostly just that -- statistics. Some pieces of the codebase use
-the fact they increased as a sign, but they don't care about the actual
-number. The max_bitflips calculation, however, is very important so that
-MTD can determine whether we've reached the reliability threshold.
-
-So I guess you have some flexibility in how to report this, but I think
-two main options are sane:
-
- 1. leave as-is; you can only guarantee that max_bitflips occurred in
- total, so only increment ecc_stats.corrected by max_bitflips
-
- 2. change to
-
-     ecc_stats.corrected += max_bitflips * chip->ecc.steps;
-
- This is the maximum that might have occured on this page read.
-
-IOW, option 1 is optimistic and option 2 is pessimistic. Either way,
-this probably deserves a comment in the code.
-
-Regards,
-Brian
+> ---
+>  .../devicetree/bindings/mtd/vf610-nfc.txt          | 45 ++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+> new file mode 100644
+> index 0000000..cae5f25
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+> @@ -0,0 +1,45 @@
+> +Freescale's NAND flash controller (NFC)
+> +
+> +This variant of the Freescale NAND flash controller (NFC) can be found on
+> +Vybrid (vf610), MPC5125, MCF54418 and Kinetis K70.
+> +
+> +Required properties:
+> +- compatible: Should be set to "fsl,vf610-nfc"
+> +- reg: address range of the NFC
+> +- interrupts: interrupt of the NFC
+> +- nand-bus-width: see nand.txt
+> +- nand-ecc-mode: see nand.txt
+> +- nand-on-flash-bbt: see nand.txt
+> +- assigned-clocks: main clock from the SoC, for Vybrid <&clks VF610_CLK_NFC>;
+> +- assigned-clock-rates: The NAND bus timing is derived from this clock
+> +    rate and should not exceed maximum timing for any NAND memory chip
+> +    in a board stuffing. Typical NAND memory timings derived from this
+> +    clock are found in the SoC hardware reference manual. Furthermore,
+> +    there might be restrictions on maximum rates when using hardware ECC.
+> +
+> +- #address-cells, #size-cells : Must be present if the device has sub-nodes
+> +  representing partitions.
+> +
+> +Required properties for hardware ECC:
+> +- nand-ecc-strength: supported strengths are 24 and 32 bit (see nand.txt)
+> +- nand-ecc-step-size: step size equals page size, currently only 2k pages are
+> +    supported
+> +
+> +Example:
+> +
+> +	nfc: nand@400e0000 {
+> +		compatible = "fsl,vf610-nfc";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		reg = <0x400e0000 0x4000>;
+> +		interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&clks VF610_CLK_NFC>;
+> +		clock-names = "nfc";
+> +		assigned-clocks = <&clks VF610_CLK_NFC>;
+> +		assigned-clock-rates = <33000000>;
+> +		nand-bus-width = <8>;
+> +		nand-ecc-mode = "hw";
+> +		nand-ecc-strength = <32>;
+> +		nand-ecc-step-size = <2048>;
+> +		nand-on-flash-bbt;
+> +	};
+> -- 
+> 2.4.5
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
