@@ -1,28 +1,26 @@
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK6Fe-000349-J4
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 14:53:07 +0000
-Received: by wibud3 with SMTP id ud3so163305012wib.0
- for <linux-mtd@lists.infradead.org>; Tue, 28 Jul 2015 07:52:43 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201507281638.35845.marex@denx.de>
-References: <cover.1438073915.git.hramrach@gmail.com>
- <201507281633.19407.marex@denx.de>
- <CAOMqctRJ1qOn3raR1e3qw6aoqWcGLPRdkMU3xQKbL-gMKZthOg@mail.gmail.com>
- <201507281638.35845.marex@denx.de>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Tue, 28 Jul 2015 16:52:04 +0200
-Message-ID: <CAOMqctQdaLi6sKqocrf4uYcfCfaDokuPWAFcXkUsuFrYAfFnhw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Add GD25LQ32C 1.8V SPI NOR flash ID
-To: Marek Vasut <marex@denx.de>
+Received: from mail-out.m-online.net ([212.18.0.10])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZK5xK-0004w0-Nk
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 14:34:11 +0000
+From: Marek Vasut <marex@denx.de>
+To: Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Add Pm25LD020 and GD25Q41B chip ID.
+Date: Tue, 28 Jul 2015 16:33:47 +0200
 Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, "
+ =?utf-8?q?Rafa=C5=82?= =?utf-8?q?_Mi=C5=82ecki?=" <zajec5@gmail.com>,
  Huang Shijie <shijie.huang@intel.com>, Ben Hutchings <ben@decadent.org.uk>,
- =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+ "Bean Huo
+ =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= \(beanhuo\)" <beanhuo@micron.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1438073915.git.hramrach@gmail.com>
+ <c9120b0590effa9ea7e60ef805782de70b5336ea.1438073915.git.hramrach@gmail.com>
+In-Reply-To: <c9120b0590effa9ea7e60ef805782de70b5336ea.1438073915.git.hramrach@gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201507281633.47322.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,56 +30,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28 July 2015 at 16:38, Marek Vasut <marex@denx.de> wrote:
-> On Tuesday, July 28, 2015 at 04:36:29 PM, Michal Suchanek wrote:
->> On 28 July 2015 at 16:33, Marek Vasut <marex@denx.de> wrote:
->> > On Tuesday, July 28, 2015 at 11:07:57 AM, Michal Suchanek wrote:
->> >> This 1.8V SPI NOR flash is found on ARM Chromebook XE303C and reads
->> >> something like 25LQ32VIG in the middle.
->> >>
->> >> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
->> >> ---
->> >>
->> >>  drivers/mtd/spi-nor/spi-nor.c | 1 +
->> >>  1 file changed, 1 insertion(+)
->> >>
->> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c
->> >> b/drivers/mtd/spi-nor/spi-nor.c index d78831b..cba3bd0 100644
->> >> --- a/drivers/mtd/spi-nor/spi-nor.c
->> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> >> @@ -559,6 +559,7 @@ static const struct spi_device_id spi_nor_ids[] = {
->> >>
->> >>       /* GigaDevice */
->> >>       { "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
->> >>
->> >> +     { "gd25lq32c", INFO(0xc86016, 0, 64 * 1024,  64, SECT_4K) },
->> >>
->> >>       { "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
->> >>       { "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
->> >
->> > Don't we have DT bindings, so we can use jedec,spi-nor prop for all
->> > new SPI NORs without growing this table ?
->>
->> When jedec,spi-nor compatible is used an attempt is made to identify
->> the chip using this table.
->>
->> When the ID is not in the table (or is misread due to transfer error)
->> spi-nor probe fails.
->
-> Dang, I was under the impression we want to avoid growing this table :(
->
+On Tuesday, July 28, 2015 at 11:07:58 AM, Michal Suchanek wrote:
+> First chip reads Pm25LD020 or Pm25L0020. Found on some WD HDD PCB.
+> Identified as PMC Pm25LD020.
+> Flash read does not return consistent data which explains why the disk
+> died.
+> 
+> Second chip reads something like 25Q41BT. Found on Esspif ESP8266 based
+> ESP-01 board. Identified as Giga Devices GD25Q41B.
+> 
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index cba3bd0..e55689d 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -558,6 +558,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+>  	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE) },
+> 
+>  	/* GigaDevice */
+> +	{ "gd25q41b", INFO(0xc84013, 0, 64 * 1024,  8, SECT_4K) },
+>  	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
+>  	{ "gd25lq32c", INFO(0xc86016, 0, 64 * 1024,  64, SECT_4K) },
+>  	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+> @@ -601,6 +602,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+>  	/* PMC */
+>  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+>  	{ "pm25lv010",   INFO(0,        0, 32 * 1024,    4, SECT_4K_PMC) },
+> +	{ "pm25ld020",   INFO(0x7f9d22, 0, 64 * 1024,    4, SECT_4K) },
+>  	{ "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64, SECT_4K) },
+> 
+>  	/* Spansion -- single (large) sector size only, at least
 
-The table not to be grown is the devicetree compatibles table.
-jedec,spi-nor should be enough for chips that respond to the ID
-command.
+You might want to split this into two patches, but see my comment on 1/2
+and please wait for Brian's confirmation there before you do anything.
 
-BTW jedec is not a registered vendor and adding flash chips to
-devicetree causes checkpatch warnings.
+Thanks!
 
-Theoretically you could use the ID data to infer block and whole flash
-size but code for that is not in the driver. Not sure how many
-vendor-specific encodings and exceptions are out there.
-
-Thanks
-
-Michal
+Best regards,
+Marek Vasut
