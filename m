@@ -1,13 +1,11 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK62F-0005R3-5Z
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 14:39:18 +0000
-Date: 28 Jul 2015 14:38:46 -0000
-Message-Id: <69e4f06f2fd77db83320999a64a32239eacde7a3.1438093758.git.hramrach@gmail.com>
-In-Reply-To: <cover.1438093758.git.hramrach@gmail.com>
-References: <cover.1438093758.git.hramrach@gmail.com>
+ id 1ZK62F-0005R5-0K
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 14:39:17 +0000
+Message-Id: <cover.1438093758.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH 2/2] mtd: nand: add Samsung K9GBG08U0A chip id
+Date: Tue, 28 Jul 2015 16:29:18 +0200
+Subject: [PATCH 0/2] New NAND chip IDs
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris BREZILLON <b.brezillon.dev@gmail.com>,
@@ -23,32 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nand reportedly uses 30MHz clock but according to datasheet some timings
-are on the slow side. Onfi 0 timing should work at least.
+Hello,
 
-The chip ID in datasheet is different. Allwinner code uses multiple IDs:
+the NAND chips on Cubietech boards are not known to Linux.
 
-0xec, 0xd7, 0x94, 0x76, 0xff, 0xff, 0xff, 0xff
-0xec, 0xd7, 0x94, 0x7A, 0xff, 0xff, 0xff, 0xff
+I used Petros Angelatos' patch from sunxi experimental tree for one chip and
+added another chip.
 
-Signed-off-by: Michal Suchanek <hramrach@gmail.com>
----
- drivers/mtd/nand/nand_ids.c | 3 +++
- 1 file changed, 3 insertions(+)
+I hope it's ok to send both patches to avoid merge conflict.
 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 749a3e0..76e545b 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -48,6 +48,9 @@ struct nand_flash_dev nand_flash_ids[] = {
- 		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
- 		  SZ_8K, SZ_8K, SZ_2M, 0, 6, 640, NAND_ECC_INFO(40, SZ_1K),
- 		  4 },
-+	{"K9GBG08U0A 32G 3.3V 8-bit", /* Note: other IDs probably exist */
-+		{ .id = {0xec, 0xd7, 0x94, 0x7a, 0x54, 0x43} },
-+		  SZ_8K, SZ_4K, SZ_1M, 0, 6, 640, NAND_ECC_INFO(40, SZ_1K) },
- 	{"K9GBG08U0B 32G 3.3V 8-bit",
- 		{ .id = {0xec, 0xd7, 0x94, 0x7e, 0x64, 0x44} },
- 		  SZ_8K, SZ_4K, SZ_1M, 0, 6, 1024, NAND_ECC_INFO(40, SZ_1K) },
+Thanks
+
+Michal
+
+Michal Suchanek (1):
+  mtd: nand: add Samsung K9GBG08U0A chip id
+
+Petros Angelatos (1):
+  mtd: nand: add Samsung's K9GBG08U0B to nand_ids table
+
+ drivers/mtd/nand/nand_ids.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
 -- 
 2.1.4
