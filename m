@@ -1,28 +1,23 @@
-Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK6iD-0003uZ-W9
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 15:22:38 +0000
-Received: by igr7 with SMTP id 7so121177197igr.0
- for <linux-mtd@lists.infradead.org>; Tue, 28 Jul 2015 08:22:17 -0700 (PDT)
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZK6qH-00020z-V9
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 15:30:58 +0000
+Date: Tue, 28 Jul 2015 17:30:35 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Michal Suchanek
+ <hramrach@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Petros Angelatos <petrosagg@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] New NAND chip IDs
+Message-ID: <20150728173035.2cf446c3@bbrezillon>
+In-Reply-To: <20150728171940.481e8581@bbrezillon>
+References: <cover.1438093758.git.hramrach@gmail.com>
+ <55B79696.40906@redhat.com> <20150728171940.481e8581@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <201507281633.47322.marex@denx.de>
-References: <cover.1438073915.git.hramrach@gmail.com>
- <c9120b0590effa9ea7e60ef805782de70b5336ea.1438073915.git.hramrach@gmail.com>
- <201507281633.47322.marex@denx.de>
-Date: Tue, 28 Jul 2015 17:22:17 +0200
-Message-ID: <CACna6ryGDsL4cP_tvWrZ+wkBx3_+PhP1mu2RzS32HzBbB2kCmA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Add Pm25LD020 and GD25Q41B chip ID.
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Cc: Michal Suchanek <hramrach@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie.huang@intel.com>,
- Ben Hutchings <ben@decadent.org.uk>,
- =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,55 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28 July 2015 at 16:33, Marek Vasut <marex@denx.de> wrote:
-> On Tuesday, July 28, 2015 at 11:07:58 AM, Michal Suchanek wrote:
->> First chip reads Pm25LD020 or Pm25L0020. Found on some WD HDD PCB.
->> Identified as PMC Pm25LD020.
->> Flash read does not return consistent data which explains why the disk
->> died.
->>
->> Second chip reads something like 25Q41BT. Found on Esspif ESP8266 based
->> ESP-01 board. Identified as Giga Devices GD25Q41B.
->>
->> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor=
-.c
->> index cba3bd0..e55689d 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -558,6 +558,7 @@ static const struct spi_device_id spi_nor_ids[] =3D =
-{
->>       { "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE) =
-},
->>
->>       /* GigaDevice */
->> +     { "gd25q41b", INFO(0xc84013, 0, 64 * 1024,  8, SECT_4K) },
->>       { "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
->>       { "gd25lq32c", INFO(0xc86016, 0, 64 * 1024,  64, SECT_4K) },
->>       { "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
->> @@ -601,6 +602,7 @@ static const struct spi_device_id spi_nor_ids[] =3D =
-{
->>       /* PMC */
->>       { "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) }=
-,
->>       { "pm25lv010",   INFO(0,        0, 32 * 1024,    4, SECT_4K_PMC) }=
-,
->> +     { "pm25ld020",   INFO(0x7f9d22, 0, 64 * 1024,    4, SECT_4K) },
->>       { "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64, SECT_4K) },
->>
->>       /* Spansion -- single (large) sector size only, at least
->
-> You might want to split this into two patches, but see my comment on 1/2
-> and please wait for Brian's confirmation there before you do anything.
+On Tue, 28 Jul 2015 17:19:40 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-Since these flashes are from 2 different vendors, it may make sense to
-use 2 separated patches. I don't care too much however.
+> Hi Hans,
+> 
+> Here is a more appropriate answer ;-)
+> 
+> On Tue, 28 Jul 2015 16:49:58 +0200
+> Hans de Goede <hdegoede@redhat.com> wrote:
+> 
+> > Hi,
+> > 
+> > On 07/28/2015 04:29 PM, Michal Suchanek wrote:
+> > > Hello,
+> > >
+> > > the NAND chips on Cubietech boards are not known to Linux.
+> > >
+> > > I used Petros Angelatos' patch from sunxi experimental tree for one chip and
+> > > added another chip.
+> > >
+> > > I hope it's ok to send both patches to avoid merge conflict.
+> > 
+> > I do not think that these patches are a good idea, this will lead to an
+> > ever growing manual maintained list of ids, and that is not maintainable
+> > IMHO.
+> > 
+> > For Samsung chips we only need the ecc strength and size the rest is already
+> > detected on the fly, and I've a patch in my personal tree to get the
+> > ecc strengt and size from the nand without needing to have an entry per
+> > chip:
+> > 
+> > https://github.com/jwrdegoede/linux-sunxi/commit/53b335d33232753b7aa70298009158baadf5a6bf
+> > 
+> > This is IMHO a much better solution.
+> 
+> Yes, indeed, this is a better approach, but AFAIR, not all Samsung
+> chips use this layout to expose the ECC strength/size info, and I
+> guess this is why this method is not used to retrieve the ECC
+> requirements.
 
-Adding these entries is OK in general.
+At least this was true for Hynix chips (see this thread [1]).
 
---=20
-Rafa=C5=82
+[1]http://comments.gmane.org/gmane.linux.drivers.mtd/50252
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
