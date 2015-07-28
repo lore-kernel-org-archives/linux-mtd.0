@@ -1,28 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-by2on0059.outbound.protection.outlook.com ([207.46.100.59]
+ helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK78f-0004Mj-UN
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 15:49:58 +0000
-From: Marek Vasut <marex@denx.de>
-To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Add Pm25LD020 and GD25Q41B chip ID.
-Date: Tue, 28 Jul 2015 17:49:31 +0200
-Cc: Michal Suchanek <hramrach@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie.huang@intel.com>, Ben Hutchings <ben@decadent.org.uk>,
- "Bean Huo
- =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= (beanhuo)" <beanhuo@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1438073915.git.hramrach@gmail.com>
- <201507281633.47322.marex@denx.de>
- <CACna6ryGDsL4cP_tvWrZ+wkBx3_+PhP1mu2RzS32HzBbB2kCmA@mail.gmail.com>
-In-Reply-To: <CACna6ryGDsL4cP_tvWrZ+wkBx3_+PhP1mu2RzS32HzBbB2kCmA@mail.gmail.com>
+ id 1ZK8tw-0004J8-Ma
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 17:42:53 +0000
+From: Graham Moore <grmoore@opensource.altera.com>
+To: <linux-mtd@lists.infradead.org>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Vikas MANOCHA <vikas.manocha@st.com>, "Marek
+ Vasut" <marex@denx.de>, <linux-kernel@vger.kernel.org>, Alan Tull
+ <atull@opensource.altera.com>, Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>, Graham Moore
+ <grmoore@opensource.altera.com>
+Subject: [PATCH V6 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+Date: Tue, 28 Jul 2015 12:38:02 -0500
+Message-ID: <1438105083-19738-1-git-send-email-grmoore@opensource.altera.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201507281749.31916.marex@denx.de>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,64 +26,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, July 28, 2015 at 05:22:17 PM, Rafa=C5=82 Mi=C5=82ecki wrote:
-> On 28 July 2015 at 16:33, Marek Vasut <marex@denx.de> wrote:
-> > On Tuesday, July 28, 2015 at 11:07:58 AM, Michal Suchanek wrote:
-> >> First chip reads Pm25LD020 or Pm25L0020. Found on some WD HDD PCB.
-> >> Identified as PMC Pm25LD020.
-> >> Flash read does not return consistent data which explains why the disk
-> >> died.
-> >>=20
-> >> Second chip reads something like 25Q41BT. Found on Esspif ESP8266 based
-> >> ESP-01 board. Identified as Giga Devices GD25Q41B.
-> >>=20
-> >> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> >> ---
-> >>=20
-> >>  drivers/mtd/spi-nor/spi-nor.c | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> >>=20
-> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c
-> >> b/drivers/mtd/spi-nor/spi-nor.c index cba3bd0..e55689d 100644
-> >> --- a/drivers/mtd/spi-nor/spi-nor.c
-> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> >> @@ -558,6 +558,7 @@ static const struct spi_device_id spi_nor_ids[] =
-=3D {
-> >>=20
-> >>       { "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE)
-> >>       },
-> >>      =20
-> >>       /* GigaDevice */
-> >>=20
-> >> +     { "gd25q41b", INFO(0xc84013, 0, 64 * 1024,  8, SECT_4K) },
-> >>=20
-> >>       { "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
-> >>       { "gd25lq32c", INFO(0xc86016, 0, 64 * 1024,  64, SECT_4K) },
-> >>       { "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
-> >>=20
-> >> @@ -601,6 +602,7 @@ static const struct spi_device_id spi_nor_ids[] =
-=3D {
-> >>=20
-> >>       /* PMC */
-> >>       { "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC)
-> >>       }, { "pm25lv010",   INFO(0,        0, 32 * 1024,    4,
-> >>       SECT_4K_PMC) },
-> >>=20
-> >> +     { "pm25ld020",   INFO(0x7f9d22, 0, 64 * 1024,    4, SECT_4K) },
-> >>=20
-> >>       { "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64, SECT_4K) },
-> >>      =20
-> >>       /* Spansion -- single (large) sector size only, at least
-> >=20
-> > You might want to split this into two patches, but see my comment on 1/2
-> > and please wait for Brian's confirmation there before you do anything.
->=20
-> Since these flashes are from 2 different vendors, it may make sense to
-> use 2 separated patches. I don't care too much however.
->=20
-> Adding these entries is OK in general.
+Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+---
+V2: Add cdns prefix to driver-specific bindings.
+V3: Use existing property "is-decoded-cs" instead of creating a duplicate,
+"ext-decoder".  Timing parameters are in nanoseconds, not master reference
+clocks.  Remove bus-num completely.
+V4: Add new properties fifo-width and trigger-address
+---
+ .../devicetree/bindings/mtd/cadence_quadspi.txt    |   54 ++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
 
-Thanks for clarifying, I'll make sure to remember this :)
-
-Best regards,
-Marek Vasut
+diff --git a/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+new file mode 100644
+index 0000000..d7e6fdd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+@@ -0,0 +1,54 @@
++* Cadence Quad SPI controller
++
++Required properties:
++- compatible : Should be "cdns,qspi-nor".
++- reg : Contains two entries, each of which is a tuple consisting of a
++	physical address and length.  The first entry is the address and
++	length of the controller register set.  The second entry is the
++	address and length of the QSPI Controller data area.
++- interrupts : Unit interrupt specifier for the controller interrupt.
++- clocks : phandle to the Quad SPI clock.
++- fifo-depth : Size of the data FIFO in words.
++- fifo-width: Bus width of the data FIFO in bytes.
++- trigger-address : 32-bit indirect AHB trigger address.
++
++Optional properties:
++- is-decoded-cs : Flag to indicate whether decoder is used or not.
++
++Optional subnodes:
++Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
++custom properties:
++- cdns,page-size : Size, in bytes, of the device's write page
++- cdns,block-size : Size of the device's erase block
++- cdns,read-delay : Delay for read capture logic, in clock cycles
++- cdns,tshsl-ns : Delay in nanoseconds for the length that the master mode chip select outputs are de-asserted between transactions.
++- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being de-activated and the activation of another.
++- cdns,tchsh-ns : Delay in nanoseconds between last bit of current transaction and deasserting the device chip select (qspi_n_ss_out).
++- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low and first bit transfer.
++
++Example:
++
++	qspi: spi@ff705000 {
++		compatible = "cdns,qspi-nor";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0xff705000 0x1000>,
++			<0xffa00000 0x1000>;
++		interrupts = <0 151 4>;
++		clocks = <&qspi_clk>;
++		is-decoded-cs = <1>;
++		fifo-depth = <128>;
++		fifo-width = <4>;
++		trigger-address = <0x00000000>;
++
++		flash0: n25q00@0 {
++			...
++			cdns,page-size = <256>;
++			cdns,block-size = <16>;
++			cdns,read-delay = <4>;
++			cdns,tshsl-ns = <50>;
++			cdns,tsd2d-ns = <50>;
++			cdns,tchsh-ns = <4>;
++			cdns,tslch-ns = <4>;
++		}
++	}
+-- 
+1.7.9.5
