@@ -1,23 +1,28 @@
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK6ce-0007kW-4l
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 15:16:52 +0000
-Subject: Re: [PATCH 0/2] New NAND chip IDs
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <cover.1438093758.git.hramrach@gmail.com>
- <55B79696.40906@redhat.com> <20150728171013.58cbc608@bbrezillon>
-Cc: Michal Suchanek <hramrach@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Petros Angelatos <petrosagg@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <55B79CCD.5000804@redhat.com>
-Date: Tue, 28 Jul 2015 17:16:29 +0200
+ id 1ZK6fL-0001Pe-W5
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 15:19:40 +0000
+Received: by iggf3 with SMTP id f3so125629622igg.1
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Jul 2015 08:19:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20150728171013.58cbc608@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <201507281633.19407.marex@denx.de>
+References: <cover.1438073915.git.hramrach@gmail.com>
+ <cb552b89554df49d1e6a24ce45b48c9e203f3b37.1438073915.git.hramrach@gmail.com>
+ <201507281633.19407.marex@denx.de>
+Date: Tue, 28 Jul 2015 17:19:18 +0200
+Message-ID: <CACna6rybkxWj0c6CTNSKq0_nVGNxgX0XZjLY_Yo7CX8_bKSwSg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: Add GD25LQ32C 1.8V SPI NOR flash ID
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Cc: Michal Suchanek <hramrach@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Huang Shijie <shijie.huang@intel.com>,
+ Ben Hutchings <ben@decadent.org.uk>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,56 +32,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On 07/28/2015 05:10 PM, Boris Brezillon wrote:
-> Hi Hans,
+On 28 July 2015 at 16:33, Marek Vasut <marex@denx.de> wrote:
+> On Tuesday, July 28, 2015 at 11:07:57 AM, Michal Suchanek wrote:
+>> This 1.8V SPI NOR flash is found on ARM Chromebook XE303C and reads
+>> something like 25LQ32VIG in the middle.
+>>
+>> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor=
+.c
+>> index d78831b..cba3bd0 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -559,6 +559,7 @@ static const struct spi_device_id spi_nor_ids[] =3D =
+{
+>>
+>>       /* GigaDevice */
+>>       { "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
+>> +     { "gd25lq32c", INFO(0xc86016, 0, 64 * 1024,  64, SECT_4K) },
+>>       { "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+>>       { "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
 >
-> On Tue, 28 Jul 2015 16:49:58 +0200
-> Hans de Goede <hdegoede@redhat.com> wrote:
->
->> Hi,
->>
->> On 07/28/2015 04:29 PM, Michal Suchanek wrote:
->>> Hello,
->>>
->>> the NAND chips on Cubietech boards are not known to Linux.
->>>
->>> I used Petros Angelatos' patch from sunxi experimental tree for one chip and
->>> added another chip.
->>>
->>> I hope it's ok to send both patches to avoid merge conflict.
->>
->> I do not think that these patches are a good idea, this will lead to an
->> ever growing manual maintained list of ids, and that is not maintainable
->> IMHO.
->>
->> For Samsung chips we only need the ecc strength and size the rest is already
->> detected on the fly, and I've a patch in my personal tree to get the
->> ecc strengt and size from the nand without needing to have an entry per
->> chip:
->>
->> https://github.com/jwrdegoede/linux-sunxi/commit/53b335d33232753b7aa70298009158baadf5a6bf
->>
->> This is IMHO a much better solution.
->
-> Hm, IMHO it's not: the nand ids table also store information about
-> supported NAND timings, and maybe we'll have to add new things (like
-> the read-retry implementation to use for a specific chip).
->
-> Moreover, this information can be automatically deduced from the NAND
-> id, and we try to keep discoverable info out of the DT.
+> Don't we have DT bindings, so we can use jedec,spi-nor prop for all
+> new SPI NORs without growing this table ?
 
-Note I'm not advocating to add stuff to DT, I'm advocating to not
-add entries to the ID table unless it gives us something which we
-cannot get another way.
+You confused this table with the one in m25p80.c.
 
-The current samsung nand entries in the table only add ecc strength /
-size info over what is already determined by the generic nand scan code,
-my patch adds support to get ecc strength / size for samsung nands to
-the generic code, this allows at least to remove the current samsung
-nand lines, I believe.
-
-Regards,
-
-Hans
+--=20
+Rafa=C5=82
