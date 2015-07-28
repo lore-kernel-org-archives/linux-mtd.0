@@ -1,17 +1,21 @@
-Received: from mail-bn1on0135.outbound.protection.outlook.com
- ([157.56.110.135] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKAOE-0000w6-7L
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 19:18:15 +0000
-From: Han Xu <b45815@freescale.com>
-To: <vinod.koul@intel.com>
-CC: <dan.j.williams@intel.com>, <dmaengine@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/6] dmaengine: mxs: support i.MX7D and deep sleep mode
-Date: Tue, 28 Jul 2015 14:10:07 -0500
-Message-ID: <1438110607-22551-1-git-send-email-b45815@freescale.com>
+ id 1ZKCMM-0000Ju-1N
+ for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 21:24:27 +0000
+Subject: Re: [PATCH] ubifs: Kill unneeded locking in ubifs_init_security
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1436348796-19725-1-git-send-email-richard@nod.at>
+ <20150728132103.7f6f52dd@bbrezillon>
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com,
+ adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55B7F2EB.4070902@nod.at>
+Date: Tue, 28 Jul 2015 23:23:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20150728132103.7f6f52dd@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,202 +25,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <b32955@freescale.com>
+Am 28.07.2015 um 13:21 schrieb Boris Brezillon:
+> Hi Richard,
+> 
+> On Wed,  8 Jul 2015 11:46:36 +0200
+> Richard Weinberger <richard@nod.at> wrote:
+> 
+>> Fixes the following lockdep splat:
+>> [    1.244527] =============================================
+>> [    1.245193] [ INFO: possible recursive locking detected ]
+>> [    1.245193] 4.2.0-rc1+ #37 Not tainted
+>> [    1.245193] ---------------------------------------------
+>> [    1.245193] cp/742 is trying to acquire lock:
+>> [    1.245193]  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff812b3f69>] ubifs_init_security+0x29/0xb0
+>> [    1.245193]
+>> [    1.245193] but task is already holding lock:
+>> [    1.245193]  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff81198e7f>] path_openat+0x3af/0x1280
+>> [    1.245193]
+>> [    1.245193] other info that might help us debug this:
+>> [    1.245193]  Possible unsafe locking scenario:
+>> [    1.245193]
+>> [    1.245193]        CPU0
+>> [    1.245193]        ----
+>> [    1.245193]   lock(&sb->s_type->i_mutex_key#9);
+>> [    1.245193]   lock(&sb->s_type->i_mutex_key#9);
+>> [    1.245193]
+>> [    1.245193]  *** DEADLOCK ***
+>> [    1.245193]
+>> [    1.245193]  May be due to missing lock nesting notation
+>> [    1.245193]
+>> [    1.245193] 2 locks held by cp/742:
+>> [    1.245193]  #0:  (sb_writers#5){.+.+.+}, at: [<ffffffff811ad37f>] mnt_want_write+0x1f/0x50
+>> [    1.245193]  #1:  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff81198e7f>] path_openat+0x3af/0x1280
+>> [    1.245193]
+>> [    1.245193] stack backtrace:
+>> [    1.245193] CPU: 2 PID: 742 Comm: cp Not tainted 4.2.0-rc1+ #37
+>> [    1.245193] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.7.5-0-ge51488c-20140816_022509-build35 04/01/2014
+>> [    1.245193]  ffffffff8252d530 ffff88007b023a38 ffffffff814f6f49 ffffffff810b56c5
+>> [    1.245193]  ffff88007c30cc80 ffff88007b023af8 ffffffff810a150d ffff88007b023a68
+>> [    1.245193]  000000008101302a ffff880000000000 00000008f447e23f ffffffff8252d500
+>> [    1.245193] Call Trace:
+>> [    1.245193]  [<ffffffff814f6f49>] dump_stack+0x4c/0x65
+>> [    1.245193]  [<ffffffff810b56c5>] ? console_unlock+0x1c5/0x510
+>> [    1.245193]  [<ffffffff810a150d>] __lock_acquire+0x1a6d/0x1ea0
+>> [    1.245193]  [<ffffffff8109fa78>] ? __lock_is_held+0x58/0x80
+>> [    1.245193]  [<ffffffff810a1a93>] lock_acquire+0xd3/0x270
+>> [    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
+>> [    1.245193]  [<ffffffff814fc83b>] mutex_lock_nested+0x6b/0x3a0
+>> [    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
+>> [    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
+>> [    1.245193]  [<ffffffff812b3f69>] ubifs_init_security+0x29/0xb0
+>> [    1.245193]  [<ffffffff8128e286>] ubifs_create+0xa6/0x1f0
+>> [    1.245193]  [<ffffffff81198e7f>] ? path_openat+0x3af/0x1280
+>> [    1.245193]  [<ffffffff81195d15>] vfs_create+0x95/0xc0
+>> [    1.245193]  [<ffffffff8119929c>] path_openat+0x7cc/0x1280
+>> [    1.245193]  [<ffffffff8109ffe3>] ? __lock_acquire+0x543/0x1ea0
+>> [    1.245193]  [<ffffffff81088f20>] ? sched_clock_cpu+0x90/0xc0
+>> [    1.245193]  [<ffffffff81088c00>] ? calc_global_load_tick+0x60/0x90
+>> [    1.245193]  [<ffffffff81088f20>] ? sched_clock_cpu+0x90/0xc0
+>> [    1.245193]  [<ffffffff811a9cef>] ? __alloc_fd+0xaf/0x180
+>> [    1.245193]  [<ffffffff8119ac55>] do_filp_open+0x75/0xd0
+>> [    1.245193]  [<ffffffff814ffd86>] ? _raw_spin_unlock+0x26/0x40
+>> [    1.245193]  [<ffffffff811a9cef>] ? __alloc_fd+0xaf/0x180
+>> [    1.245193]  [<ffffffff81189bd9>] do_sys_open+0x129/0x200
+>> [    1.245193]  [<ffffffff81189cc9>] SyS_open+0x19/0x20
+>> [    1.245193]  [<ffffffff81500717>] entry_SYSCALL_64_fastpath+0x12/0x6f
+>>
+>> While the lockdep splat is a false positive, becuase path_openat holds i_mutex
+>> of the parent directory and ubifs_init_security() tries to acquire i_mutex
+>> of a new inode, it reveals that taking i_mutex in ubifs_init_security() is
+>> in vain because it is only being called in the inode allocation path
+>> and therefore nobody else can see the inode yet.
+>>
+>> Reported-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+> 
+> It might be too late, but if it's not you can add my
+> 
+> Tested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-The patch support i.MX7D platform by adding extra DMA clock.
+Applied and pushed!
 
-Deep Sleep Mode(dsm) turns off the power for APBH DMA module, add
-suspend/resume function and re-init the APBH DMA during resume.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Han Xu <han.xu@freescale.com>
-Signed-off-by: Adrian Alonso <aalonso@freescale.com>
----
- drivers/dma/mxs-dma.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 67 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 60de352..2b0915d 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -1,5 +1,5 @@
- /*
-- * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
-+ * Copyright 2011-2015 Freescale Semiconductor, Inc. All Rights Reserved.
-  *
-  * Refer to drivers/dma/imx-sdma.c
-  *
-@@ -28,7 +28,6 @@
- #include <linux/of_device.h>
- #include <linux/of_dma.h>
- #include <linux/list.h>
--
- #include <asm/irq.h>
- 
- #include "dmaengine.h"
-@@ -135,6 +134,7 @@ enum mxs_dma_devtype {
- enum mxs_dma_id {
- 	IMX23_DMA,
- 	IMX28_DMA,
-+	IMX7D_DMA,
- };
- 
- struct mxs_dma_engine {
-@@ -142,6 +142,7 @@ struct mxs_dma_engine {
- 	enum mxs_dma_devtype		type;
- 	void __iomem			*base;
- 	struct clk			*clk;
-+	struct clk			*clk_io;
- 	struct dma_device		dma_device;
- 	struct device_dma_parameters	dma_parms;
- 	struct mxs_dma_chan		mxs_chans[MXS_DMA_CHANNELS];
-@@ -167,6 +168,9 @@ static struct mxs_dma_type mxs_dma_types[] = {
- 	}, {
- 		.id = IMX28_DMA,
- 		.type = MXS_DMA_APBX,
-+	}, {
-+		.id = IMX7D_DMA,
-+		.type = MXS_DMA_APBH,
- 	}
- };
- 
-@@ -184,6 +188,9 @@ static const struct platform_device_id mxs_dma_ids[] = {
- 		.name = "imx28-dma-apbx",
- 		.driver_data = (kernel_ulong_t) &mxs_dma_types[3],
- 	}, {
-+		.name = "imx7d-dma-apbh",
-+		.driver_data = (kernel_ulong_t) &mxs_dma_types[4],
-+	}, {
- 		/* end of list */
- 	}
- };
-@@ -193,6 +200,7 @@ static const struct of_device_id mxs_dma_dt_ids[] = {
- 	{ .compatible = "fsl,imx23-dma-apbx", .data = &mxs_dma_ids[1], },
- 	{ .compatible = "fsl,imx28-dma-apbh", .data = &mxs_dma_ids[2], },
- 	{ .compatible = "fsl,imx28-dma-apbx", .data = &mxs_dma_ids[3], },
-+	{ .compatible = "fsl,imx7d-dma-apbh", .data = &mxs_dma_ids[4], },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mxs_dma_dt_ids);
-@@ -440,6 +448,12 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
- 	if (ret)
- 		goto err_clk;
- 
-+	if (mxs_dma->dev_id == IMX7D_DMA) {
-+		ret = clk_prepare_enable(mxs_dma->clk_io);
-+		if (ret)
-+			goto err_clk_unprepare;
-+	}
-+
- 	mxs_dma_reset_chan(chan);
- 
- 	dma_async_tx_descriptor_init(&mxs_chan->desc, chan);
-@@ -450,6 +464,8 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
- 
- 	return 0;
- 
-+err_clk_unprepare:
-+	clk_disable_unprepare(mxs_dma->clk);
- err_clk:
- 	free_irq(mxs_chan->chan_irq, mxs_dma);
- err_irq:
-@@ -471,6 +487,9 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
- 	dma_free_coherent(mxs_dma->dma_device.dev, CCW_BLOCK_SIZE,
- 			mxs_chan->ccw, mxs_chan->ccw_phys);
- 
-+	if (mxs_dma->dev_id == IMX7D_DMA)
-+		clk_disable_unprepare(mxs_dma->clk_io);
-+
- 	clk_disable_unprepare(mxs_dma->clk);
- }
- 
-@@ -693,7 +712,7 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
- 	return mxs_chan->status;
- }
- 
--static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
-+static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
- {
- 	int ret;
- 
-@@ -701,6 +720,12 @@ static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
- 	if (ret)
- 		return ret;
- 
-+	if (mxs_dma->dev_id == IMX7D_DMA) {
-+		ret = clk_prepare_enable(mxs_dma->clk_io);
-+		if (ret)
-+			goto err_out;
-+	}
-+
- 	ret = stmp_reset_block(mxs_dma->base);
- 	if (ret)
- 		goto err_out;
-@@ -803,9 +828,19 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 	if (IS_ERR(mxs_dma->base))
- 		return PTR_ERR(mxs_dma->base);
- 
--	mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
--	if (IS_ERR(mxs_dma->clk))
--		return PTR_ERR(mxs_dma->clk);
-+	if (mxs_dma->dev_id == IMX7D_DMA) {
-+		mxs_dma->clk = devm_clk_get(&pdev->dev, "dma_apbh_bch");
-+		if (IS_ERR(mxs_dma->clk))
-+			return PTR_ERR(mxs_dma->clk);
-+		mxs_dma->clk_io = devm_clk_get(&pdev->dev, "dma_apbh_io");
-+		if (IS_ERR(mxs_dma->clk_io))
-+			return PTR_ERR(mxs_dma->clk_io);
-+
-+	} else {
-+		mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
-+		if (IS_ERR(mxs_dma->clk))
-+			return PTR_ERR(mxs_dma->clk);
-+	}
- 
- 	dma_cap_set(DMA_SLAVE, mxs_dma->dma_device.cap_mask);
- 	dma_cap_set(DMA_CYCLIC, mxs_dma->dma_device.cap_mask);
-@@ -835,6 +870,7 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 
- 	mxs_dma->pdev = pdev;
- 	mxs_dma->dma_device.dev = &pdev->dev;
-+	dev_set_drvdata(&pdev->dev, mxs_dma);
- 
- 	/* mxs_dma gets 65535 bytes maximum sg size */
- 	mxs_dma->dma_device.dev->dma_parms = &mxs_dma->dma_parms;
-@@ -872,9 +908,34 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int mxs_dma_pm_suspend(struct device *dev)
-+{
-+	/*
-+	 * We do not save any registers here, since the gpmi will release its
-+	 * DMA channel.
-+	 */
-+	return 0;
-+}
-+
-+static int mxs_dma_pm_resume(struct device *dev)
-+{
-+	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = mxs_dma_init(mxs_dma);
-+	if (ret)
-+		return ret;
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops mxs_dma_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(mxs_dma_pm_suspend, mxs_dma_pm_resume)
-+};
-+
- static struct platform_driver mxs_dma_driver = {
- 	.driver		= {
- 		.name	= "mxs-dma",
-+		.pm = &mxs_dma_pm_ops,
- 		.of_match_table = mxs_dma_dt_ids,
- 	},
- 	.id_table	= mxs_dma_ids,
--- 
-1.9.1
+Thanks,
+//richard
