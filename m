@@ -1,24 +1,24 @@
-Received: from mail.mpk.gov.my ([218.208.55.13])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKO8B-0000H6-FM
- for linux-mtd@lists.infradead.org; Wed, 29 Jul 2015 09:58:37 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by mail.mpk.gov.my (Postfix) with ESMTP id E1F0D10229
- for <linux-mtd@lists.infradead.org>; Wed, 29 Jul 2015 17:57:53 +0800 (MYT)
-Received: from mail.mpk.gov.my ([127.0.0.1])
- by localhost (mail.mpk.gov.my [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id TB07Q6FXm16b for <linux-mtd@lists.infradead.org>;
- Wed, 29 Jul 2015 17:57:53 +0800 (MYT)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 29 Jul 2015 10:55:39 +0100
-From: James reshman <fatimah@mpk.gov.my>
-To: undisclosed-recipients:;
-Subject: Hello
-Reply-To: jamesreshman@gmail.com
-Message-ID: <cd06fef1028e9af9f23d6097e076cb5c@mpk.gov.my>
+Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKQ5l-0007y5-TD
+ for linux-mtd@lists.infradead.org; Wed, 29 Jul 2015 12:04:16 +0000
+Message-Id: <cover.1438168484.git.hramrach@gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Wed, 29 Jul 2015 13:14:44 +0200
+Subject: [RFC PATCH 0/2] disambiguate s3c64xx controller-data and ofpart
+ partition nodes
+To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Mark Brown <broonie@kernel.org>, Michal Suchanek <hramrach@gmail.com>,
+ Padmavathi Venna <padma.kvr@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-spi@vger.kernel.org,
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,6 +28,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
-I m A Banker. Do You Have A Bank Account To Receive An Abandoned USD10.5 
-million For Me and Take 45 % Contact Me For More information
+the ofpart partition nodes and s3c64xx controller-data nodes are both subnodes
+of MTD SPI slaves such as spi-nor.
+
+When ofpart is compiled-in and no partitions are defined on a MTD SPI slave
+ofpart tries to parse the controller-data node, gets confused, mtd probe fails,
+and the mtd device is inaccessible.
+
+ofpart claims all subnodes of mtd devices which have no compatible and when
+there is a subnode but no partitions are found it reports error which is then
+propagated to mtd probe.
+
+A simple fix that turns the error into a warning was rejected on the basis that
+the ofpart parser could then accept invalid devicetree as fallback.
+
+https://www.mail-archive.com/linux-kernel%40vger.kernel.org/msg941351.html
+
+Firstly, the ofpart parser already does accept 'invalid' trees as fallback.
+Looking at the code it only requires that there is one mtd subnode that parses
+as partition and there can be arbitrary number of other nodes which were not
+understood. It only singles out the case when there are subnodes but none is
+understood as partition.
+
+Secondly, the fact that a devicetree node is not understood by a particular
+driver does not make it 'invalid'.
+
+In my view either it is acceptable that nodes without compatible property exist
+and then drivers using such nodes should be ready to gracefully handle nodes
+that do not have compatible property but are meant for another driver. The
+s3c64xx driver already does this but ofpart does not.
+
+On the other hand, if not using a compatible property is not acceptable then
+both drivers should use a compatible property to reserve their subnodes for
+themselves and avoid any conflict.
+
+Either way I would like the maintainers of the conflicting drivers to agree on
+where compatible property should be and where not so that compiling-in ofpart
+does not make valid MTD devices inaccessible.
+
+The patches are only for illustration and are not meant to be included
+anywhere. They are not tested and miss adding the properties to tens of binding
+docs and dts files.
+
+Thanks
+
+Michal
+
+Michal Suchanek (2):
+  dt: mtd: ofpart: use compatible for partitions
+  dt: spi: s3c64xx: add compatible to controller-data
+
+ .../devicetree/bindings/mtd/partition.txt          |  7 +++++-
+ .../devicetree/bindings/spi/spi-samsung.txt        |  3 +++
+ drivers/mtd/ofpart.c                               | 26 +++++++++++++---------
+ drivers/spi/spi-s3c64xx.c                          |  4 ++++
+ 4 files changed, 29 insertions(+), 11 deletions(-)
+
+-- 
+2.1.4
