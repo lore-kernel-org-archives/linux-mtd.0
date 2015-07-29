@@ -1,23 +1,26 @@
-Message-ID: <55B8F3A9.8010000@ti.com>
-Date: Wed, 29 Jul 2015 18:39:21 +0300
-From: Roger Quadros <rogerq@ti.com>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKTnJ-0000sN-H5
+ for linux-mtd@lists.infradead.org; Wed, 29 Jul 2015 16:01:27 +0000
+Subject: Re: [PATCH 5/6] mtd: nand: gpmi: correct bitflip for erased NAND page
+To: Han Xu <xhnjupt@gmail.com>
+References: <mailman.4028.1438106338.1758.linux-mtd@lists.infradead.org>
+ <mailman.4028.1438106338.1758.linux-mtd.{c3fbf4b6-bd46-4f1f-ba46-40c78864ddc3}.0@lists.infradead.org>
+ <1438105841-22314-1-git-send-email-b45815@freescale.com>
+ <55B88952.1060709@dave-tech.it>
+ <CA+EcR21ert+xksT92-=jQ6HSPEVdOo3gYGttqvsUW2LE9Jk9qA@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Han Xu <b45815@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>,
+ boris.brezillon@free-electrons.com, Huang Shijie <shijie8@gmail.com>,
+ linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+From: Andrea Scian <rnd4@dave-tech.it>
+Message-ID: <55B8F8BE.4060005@dave-tech.it>
+Date: Wed, 29 Jul 2015 18:01:02 +0200
 MIME-Version: 1.0
-To: nick <xerofoify@gmail.com>, Tony Lindgren <tony@atomide.com>
-CC: <devicetree@vger.kernel.org>, <computersforpeace@gmail.com>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <ezequiel@vanguardiasur.com.ar>, <bcousson@baylibre.com>,
- <linux-omap@vger.kernel.org>, <dwmw2@infradead.org>
-Subject: Re: [PATCH 03/12] mtd: nand: omap: Move IRQ handling from GPMC to
- NAND driver
-References: <1436531019-18088-1-git-send-email-rogerq@ti.com>
- <1436531019-18088-4-git-send-email-rogerq@ti.com>
- <20150713071008.GC26485@atomide.com> <55A38D2E.9010500@ti.com>
- <20150713124059.GF26485@atomide.com> <55B8C1D5.3090807@ti.com>
- <55B8C364.4030203@gmail.com> <55B8DAB9.7070602@ti.com>
- <55B8DE44.4070608@gmail.com> <55B8ED49.6050304@ti.com>
- <55B8F0B3.5000009@gmail.com>
-In-Reply-To: <55B8F0B3.5000009@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CA+EcR21ert+xksT92-=jQ6HSPEVdOo3gYGttqvsUW2LE9Jk9qA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,95 +31,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29/07/15 18:26, nick wrote:
-> 
-> 
-> On 2015-07-29 11:12 AM, Roger Quadros wrote:
->> On 29/07/15 17:08, nick wrote:
->>>
->>>
->>> On 2015-07-29 09:52 AM, Roger Quadros wrote:
->>>> On 29/07/15 15:13, nick wrote:
->>>>>
->>>>>
->>>>> On 2015-07-29 08:06 AM, Roger Quadros wrote:
->>>>>> Tony,
->>>>>>
->>>>>> On 13/07/15 15:40, Tony Lindgren wrote:
->>>>>>> * Roger Quadros <rogerq@ti.com> [150713 03:07]:
->>>>>>>> Tony,
->>>>>>>>
->>>>>>>> On 13/07/15 10:10, Tony Lindgren wrote:
->>>>>>>>> * Roger Quadros <rogerq@ti.com> [150710 05:26]:
->>>>>>>>>> Since the Interrupt Events are used only by the NAND driver,
->>>>>>>>>> there is no point in managing the Interrupt registers
->>>>>>>>>> in the GPMC driver and complicating it with irqchip modeling.
->>>>>>>>>
->>>>>>>>> I don't think it's a good idea to allow external drivers to
->>>>>>>>> tinker directly with GPMC registers. How about just set up GPMC
->>>>>>>>> as an irqchip for the edge detection interrupts?
->>>>>>>>>
->>>>>>>>> I think we already have devices with multiple NAND chips. And
->>>>>>>>> there's nothing stopping other drivers from using the edge
->>>>>>>>> detection interrupts.
->>>>>>>>
->>>>>>>> OK. The GPMC_IRQ registers manage 2 NAND specific interrupts
->>>>>>>> (terminalcount and fifo) and 'n' WAIT pin edge interrupts.
->>>>>>>>
->>>>>>>>  So we can model this as a irqchip with 'n + 2' interrupts.
->>>>>>>
->>>>>>> OK
->>>>>>
->>>>>> For the wait pins irqchip is not sufficient and it needs to be gpiochip
->>>>>> with irqchip. Waitpin status can be read from GPIO_STATUS register.
->>>>>>
->>>>>> Just getting the interrupt is not enough and we want to know if the
->>>>>> line is high or low. That is how nand->dev_ready works.
->>>>>>
->>>>>> How about having 2 IRQ domains?
->>>>>> One is irqchip with 2 interrupts (terminalcount and fifo) and second is
->>>>>> gpiochip + irqchip for the n wait pins.
->>>>>>
->>>>>> The nand driver can then be modified to use GPIO to get Read/Busy
->>>>>> pin status from the wait pin.
->>>>>>
->>>>>> cheers,
->>>>>> -roger
->>>>>>
->>>>> Doesn't OMAP boards support shared IRQs and if so why not share them across one
->>>>> IRQ domain if possible to save IRQ domains for other hardware that needs its 
->>>>> own IRQ domain. This is just a suggestion through as I don't have the hardware
->>>>> spec sheet on me Roger.
->>>>
->>>> IRQ domain is a virtual abstraction introduced to prevent kernel irq number overlapping
->>>> in a single flat domain. I don't see what you can save by domain reuse.
->>>> Some memory maybe at most.
->>>>
->>>> Shared interrupt is something totally different but we're trying to add real
->>>> hardware interrupts here. Didn't understand what you will share it with.
->>>>
->>>> cheers,
->>>> -roger
->>>>
->>> My question then is do these hardware interrupts need to be on their own interrupt line
->>> for the CPU or can they share a CPU line as my concern is if possible we may be able to
->>> save a interrupt line for other use. I known on Intel CPUs this is a very limited resource
->>> but not sure on OMAP based boards if not then just avoid my recommendations.
->>
->> It is like adding an external interrupt controller to expand the number of available
->> hardware interrupts.
->> This interrupt controller will still use the same GPMC IRQ line to propagate the
->> irq event upwards.
->>
->> cheers,
->> -roger
->>
-> That was my other suggestion for IRQ issues. Would you mind sending me a link to a spec sheet so
-> I can review your patches better as you stated you wanted me to do this for you.
+Il 29/07/2015 16:34, Han Xu ha scritto:
+> Hi Andrea,
+>
+> The threshold gf/2 is referred to Huang Shijie's previous patch for bitflip,
+>
+> http://lists.infradead.org/pipermail/linux-mtd/2014-January/051513.html
 
-Sure. You can pick up any of omap3/4 or 5 Technical Reference Manuals.
-e.g. omap5 TRM is here
-http://www.ti.com/product/OMAP5432/technicaldocuments
+Thanks for pointing out the reference.
+Looking forward on the same thread, I saw that Brian already have some 
+doubt about having the threshold correlated with gf instead of ecc_strength.
 
-cheers,
--roger
+I think in this way (until someone, e.g. from micron, tell me something 
+different ;-) ): erased pages act like the programmed one. They have 
+bitflips and, unfortunately, cannot be protected by an ECC-like algorithm.
+If, let's say, your NAND device need a 30 bit ECC protection over 1024 
+byte page, this is nearly the same for an erased page.
+
+As additional thought: what happens if you reports that an erased page 
+has too much bitflips? UBIFS will fail badly [1]
+
+Usually you never reach the "uncorrectable ECC error" level on standard 
+situation (even on MLC ;-) ) because as soon as bitflips are more than a 
+given threshold [2] those blocks are scrubbed and you're in the safe 
+area again.
+If you report ECC errors before this threshold, I think we fake the 
+scrubbing functionality of UBI (which, yes, AFAIK should work on erased 
+blocks too, why not?)
+
+As first instance I would choose ECC strength as value to use, apart 
+from the fact that I'm wondering what's happens if:
+* my erased block is close to this value (let's say ECC strength -1)
+* I write some data on it (with ECC)
+* this write probably increase bitflips (only an erase operation will 
+lower bitflip events) and, even worst, it will point me close to "ECC 
+strength + 1" bitflips
+
+> To verify the function, I raw write the whole NAND page with 0xFF and several
+> scattered bits with 0x0 to fake the bitflip, since the real bitflip is
+> unpredictable and tested the feature with Micron MT29F64G08AFAAA.
+
+Ok thanks.
+
+IIUC MT29F64G08AFAAA is an SLC NAND device but probably, due it's size, 
+not a "real" SLC device and should have MLC like behavior.
+
+I think you can easily trigger this situation (as I do) as follows:
+* ubiformat, ubiattach, ubimkvol on a NAND MTD partition
+* mount -t ubifs that volume
+* get the physical address of LEB1 and LEB2 (somehow.. ;-) ). They have 
+lots of erased space that UBIFS will check at boot time
+* umount, ubidetach the partition
+* do a nanddump lots of times (let's say from 10k to 100k) on those two PEBs
+* sooner or later you'll see some bitflips on erased page
+* try to mount UBIFS again: without patch it should fail, with your 
+addition you should see that your erased-page check works correctly and 
+UBIFS mounts successfully
+
+Maybe I'm a bit OT regarding this patch, but I think this is an 
+interesting point to discuss about.
+Any comment is welcome
+
+Kind Regards,
+
+-- 
+
+Andrea SCIAN
+
+DAVE Embedded Systems
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2015-July/060168.html
+[2] http://lists.infradead.org/pipermail/linux-mtd/2015-January/057334.html
