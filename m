@@ -1,27 +1,29 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKTnJ-0000sN-H5
- for linux-mtd@lists.infradead.org; Wed, 29 Jul 2015 16:01:27 +0000
-Subject: Re: [PATCH 5/6] mtd: nand: gpmi: correct bitflip for erased NAND page
-To: Han Xu <xhnjupt@gmail.com>
-References: <mailman.4028.1438106338.1758.linux-mtd@lists.infradead.org>
- <mailman.4028.1438106338.1758.linux-mtd.{c3fbf4b6-bd46-4f1f-ba46-40c78864ddc3}.0@lists.infradead.org>
- <1438105841-22314-1-git-send-email-b45815@freescale.com>
- <55B88952.1060709@dave-tech.it>
- <CA+EcR21ert+xksT92-=jQ6HSPEVdOo3gYGttqvsUW2LE9Jk9qA@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Han Xu <b45815@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>,
- boris.brezillon@free-electrons.com, Huang Shijie <shijie8@gmail.com>,
- linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <55B8F8BE.4060005@dave-tech.it>
-Date: Wed, 29 Jul 2015 18:01:02 +0200
 MIME-Version: 1.0
-In-Reply-To: <CA+EcR21ert+xksT92-=jQ6HSPEVdOo3gYGttqvsUW2LE9Jk9qA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20150729140046.GB11082@sirena.org.uk>
+References: <cover.1438170519.git.hramrach@gmail.com>
+ <557c1962448393b2a8736f26bfa2a3a5ba4aeb7a.1438170519.git.hramrach@gmail.com>
+ <20150729140046.GB11082@sirena.org.uk>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Wed, 29 Jul 2015 18:19:24 +0200
+Message-ID: <CAOMqctTZVET=U=2o65HpWSm4W660XZtYYbBND2k4u9CnfjfMhQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] dt: spi: s3c64xx: add compatible to
+ controller-data
+To: Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Padmavathi Venna <padma.kvr@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ devicetree <devicetree@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,74 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Il 29/07/2015 16:34, Han Xu ha scritto:
-> Hi Andrea,
+On 29 July 2015 at 16:00, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Jul 29, 2015 at 12:19:57PM +0200, Michal Suchanek wrote:
 >
-> The threshold gf/2 is referred to Huang Shijie's previous patch for bitflip,
+> Please use subject lines matching the style for the subsytsem so people
+> can spot that the patch is in some way relevant.
 >
-> http://lists.infradead.org/pipermail/linux-mtd/2014-January/051513.html
+>> The controller-data subnode has no compatible. This can lead to other
+>> drivers getting confused by it. Add a compatible to make devicetreee
+>> unambiguous.
+>
+> I can't tell from this commit message what the issue you're trying to
+> fix is, sorry.  Nodes without compatible strings are entirely normal and
+> don't need compatible strings.  It sounds like a bug in whatever other
+> driver is becoming confused.
 
-Thanks for pointing out the reference.
-Looking forward on the same thread, I saw that Brian already have some 
-doubt about having the threshold correlated with gf instead of ecc_strength.
+The driver that gets confused is ofpart.
 
-I think in this way (until someone, e.g. from micron, tell me something 
-different ;-) ): erased pages act like the programmed one. They have 
-bitflips and, unfortunately, cannot be protected by an ECC-like algorithm.
-If, let's say, your NAND device need a 30 bit ECC protection over 1024 
-byte page, this is nearly the same for an erased page.
+The two-line patch to allow it to just ignore controller-data has been
+rejected on the basis that s3c64xx should use a compatible string
+because ofpart monopolizes all nodes without compatible which are
+children of a mtd device. Devicetrees containing such nodes that are
+not partitions are presumably invalid and should be rejected when
+ofpart is compiled into the kernel.
 
-As additional thought: what happens if you reports that an erased page 
-has too much bitflips? UBIFS will fail badly [1]
+>
+>> +     if (!of_get_property(data_np, "compatible", NULL) ||
+>> +         strcmp(of_get_property(data_np, "compatible", NULL),
+>> +                "samsung,s3c-controller-data"))
+>> +             dev_err(&spi->dev, "child node 'controller-data' does not have correct compatible\n");
+>
+> This will break all existing users which is not acceptable for
+> mainline, we need to preserve compatibility with existing device trees.
 
-Usually you never reach the "uncorrectable ECC error" level on standard 
-situation (even on MLC ;-) ) because as soon as bitflips are more than a 
-given threshold [2] those blocks are scrubbed and you're in the safe 
-area again.
-If you report ECC errors before this threshold, I think we fake the 
-scrubbing functionality of UBI (which, yes, AFAIK should work on erased 
-blocks too, why not?)
+It will not break anything. It will just spam dmesg.
 
-As first instance I would choose ECC strength as value to use, apart 
-from the fact that I'm wondering what's happens if:
-* my erased block is close to this value (let's say ECC strength -1)
-* I write some data on it (with ECC)
-* this write probably increase bitflips (only an erase operation will 
-lower bitflip events) and, even worst, it will point me close to "ECC 
-strength + 1" bitflips
+Thanks
 
-> To verify the function, I raw write the whole NAND page with 0xFF and several
-> scattered bits with 0x0 to fake the bitflip, since the real bitflip is
-> unpredictable and tested the feature with Micron MT29F64G08AFAAA.
-
-Ok thanks.
-
-IIUC MT29F64G08AFAAA is an SLC NAND device but probably, due it's size, 
-not a "real" SLC device and should have MLC like behavior.
-
-I think you can easily trigger this situation (as I do) as follows:
-* ubiformat, ubiattach, ubimkvol on a NAND MTD partition
-* mount -t ubifs that volume
-* get the physical address of LEB1 and LEB2 (somehow.. ;-) ). They have 
-lots of erased space that UBIFS will check at boot time
-* umount, ubidetach the partition
-* do a nanddump lots of times (let's say from 10k to 100k) on those two PEBs
-* sooner or later you'll see some bitflips on erased page
-* try to mount UBIFS again: without patch it should fail, with your 
-addition you should see that your erased-page check works correctly and 
-UBIFS mounts successfully
-
-Maybe I'm a bit OT regarding this patch, but I think this is an 
-interesting point to discuss about.
-Any comment is welcome
-
-Kind Regards,
-
--- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2015-July/060168.html
-[2] http://lists.infradead.org/pipermail/linux-mtd/2015-January/057334.html
+Michal
