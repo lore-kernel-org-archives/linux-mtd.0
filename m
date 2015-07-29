@@ -1,20 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKCMM-0000Ju-1N
- for linux-mtd@lists.infradead.org; Tue, 28 Jul 2015 21:24:27 +0000
-Subject: Re: [PATCH] ubifs: Kill unneeded locking in ubifs_init_security
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1436348796-19725-1-git-send-email-richard@nod.at>
- <20150728132103.7f6f52dd@bbrezillon>
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com,
- adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55B7F2EB.4070902@nod.at>
-Date: Tue, 28 Jul 2015 23:23:55 +0200
+ id 1ZKGUW-0003wY-Vg
+ for linux-mtd@lists.infradead.org; Wed, 29 Jul 2015 01:49:09 +0000
+Message-ID: <55B830FE.2020601@codeaurora.org>
+Date: Tue, 28 Jul 2015 18:48:46 -0700
+From: Stephen Boyd <sboyd@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20150728132103.7f6f52dd@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
+To: Archit Taneja <architt@codeaurora.org>
+CC: dehrenberg@google.com, linux-arm-msm@vger.kernel.org,
+ cernekee@gmail.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, agross@codeaurora.org,
+ computersforpeace@gmail.com
+Subject: Re: [PATCH v2 2/5] mtd: nand: Qualcomm NAND controller driver
+References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
+ <1437474886-6209-1-git-send-email-architt@codeaurora.org>
+ <1437474886-6209-3-git-send-email-architt@codeaurora.org>
+ <55B2DDA3.40306@codeaurora.org> <55B7063F.9090102@codeaurora.org>
+In-Reply-To: <55B7063F.9090102@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,86 +28,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 28.07.2015 um 13:21 schrieb Boris Brezillon:
-> Hi Richard,
-> 
-> On Wed,  8 Jul 2015 11:46:36 +0200
-> Richard Weinberger <richard@nod.at> wrote:
-> 
->> Fixes the following lockdep splat:
->> [    1.244527] =============================================
->> [    1.245193] [ INFO: possible recursive locking detected ]
->> [    1.245193] 4.2.0-rc1+ #37 Not tainted
->> [    1.245193] ---------------------------------------------
->> [    1.245193] cp/742 is trying to acquire lock:
->> [    1.245193]  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff812b3f69>] ubifs_init_security+0x29/0xb0
->> [    1.245193]
->> [    1.245193] but task is already holding lock:
->> [    1.245193]  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff81198e7f>] path_openat+0x3af/0x1280
->> [    1.245193]
->> [    1.245193] other info that might help us debug this:
->> [    1.245193]  Possible unsafe locking scenario:
->> [    1.245193]
->> [    1.245193]        CPU0
->> [    1.245193]        ----
->> [    1.245193]   lock(&sb->s_type->i_mutex_key#9);
->> [    1.245193]   lock(&sb->s_type->i_mutex_key#9);
->> [    1.245193]
->> [    1.245193]  *** DEADLOCK ***
->> [    1.245193]
->> [    1.245193]  May be due to missing lock nesting notation
->> [    1.245193]
->> [    1.245193] 2 locks held by cp/742:
->> [    1.245193]  #0:  (sb_writers#5){.+.+.+}, at: [<ffffffff811ad37f>] mnt_want_write+0x1f/0x50
->> [    1.245193]  #1:  (&sb->s_type->i_mutex_key#9){+.+.+.}, at: [<ffffffff81198e7f>] path_openat+0x3af/0x1280
->> [    1.245193]
->> [    1.245193] stack backtrace:
->> [    1.245193] CPU: 2 PID: 742 Comm: cp Not tainted 4.2.0-rc1+ #37
->> [    1.245193] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.7.5-0-ge51488c-20140816_022509-build35 04/01/2014
->> [    1.245193]  ffffffff8252d530 ffff88007b023a38 ffffffff814f6f49 ffffffff810b56c5
->> [    1.245193]  ffff88007c30cc80 ffff88007b023af8 ffffffff810a150d ffff88007b023a68
->> [    1.245193]  000000008101302a ffff880000000000 00000008f447e23f ffffffff8252d500
->> [    1.245193] Call Trace:
->> [    1.245193]  [<ffffffff814f6f49>] dump_stack+0x4c/0x65
->> [    1.245193]  [<ffffffff810b56c5>] ? console_unlock+0x1c5/0x510
->> [    1.245193]  [<ffffffff810a150d>] __lock_acquire+0x1a6d/0x1ea0
->> [    1.245193]  [<ffffffff8109fa78>] ? __lock_is_held+0x58/0x80
->> [    1.245193]  [<ffffffff810a1a93>] lock_acquire+0xd3/0x270
->> [    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
->> [    1.245193]  [<ffffffff814fc83b>] mutex_lock_nested+0x6b/0x3a0
->> [    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
->> [    1.245193]  [<ffffffff812b3f69>] ? ubifs_init_security+0x29/0xb0
->> [    1.245193]  [<ffffffff812b3f69>] ubifs_init_security+0x29/0xb0
->> [    1.245193]  [<ffffffff8128e286>] ubifs_create+0xa6/0x1f0
->> [    1.245193]  [<ffffffff81198e7f>] ? path_openat+0x3af/0x1280
->> [    1.245193]  [<ffffffff81195d15>] vfs_create+0x95/0xc0
->> [    1.245193]  [<ffffffff8119929c>] path_openat+0x7cc/0x1280
->> [    1.245193]  [<ffffffff8109ffe3>] ? __lock_acquire+0x543/0x1ea0
->> [    1.245193]  [<ffffffff81088f20>] ? sched_clock_cpu+0x90/0xc0
->> [    1.245193]  [<ffffffff81088c00>] ? calc_global_load_tick+0x60/0x90
->> [    1.245193]  [<ffffffff81088f20>] ? sched_clock_cpu+0x90/0xc0
->> [    1.245193]  [<ffffffff811a9cef>] ? __alloc_fd+0xaf/0x180
->> [    1.245193]  [<ffffffff8119ac55>] do_filp_open+0x75/0xd0
->> [    1.245193]  [<ffffffff814ffd86>] ? _raw_spin_unlock+0x26/0x40
->> [    1.245193]  [<ffffffff811a9cef>] ? __alloc_fd+0xaf/0x180
->> [    1.245193]  [<ffffffff81189bd9>] do_sys_open+0x129/0x200
->> [    1.245193]  [<ffffffff81189cc9>] SyS_open+0x19/0x20
->> [    1.245193]  [<ffffffff81500717>] entry_SYSCALL_64_fastpath+0x12/0x6f
+On 07/27/2015 09:34 PM, Archit Taneja wrote:
+> Hi,
+>
+> On 07/25/2015 06:21 AM, Stephen Boyd wrote:
+>> On 07/21/2015 03:34 AM, Archit Taneja wrote:
 >>
->> While the lockdep splat is a false positive, becuase path_openat holds i_mutex
->> of the parent directory and ubifs_init_security() tries to acquire i_mutex
->> of a new inode, it reveals that taking i_mutex in ubifs_init_security() is
->> in vain because it is only being called in the inode allocation path
->> and therefore nobody else can see the inode yet.
+>>> +              int size)
+>>> +{
+>>> +    struct desc_info *desc;
+>>> +    struct dma_async_tx_descriptor *dma_desc;
+>>> +    struct scatterlist *sgl;
+>>> +    int r;
+>>> +
+>>> +    desc = kzalloc(sizeof(*desc), GFP_KERNEL);
+>>> +    if (!desc)
+>>> +        return -ENOMEM;
+>>> +
+>>> +    list_add_tail(&desc->list, &this->list);
+>>> +
+>>> +    sgl = &desc->sgl;
+>>> +
+>>> +    sg_init_one(sgl, vaddr, size);
+>>> +
+>>> +    desc->dir = DMA_MEM_TO_DEV;
+>>> +
+>>> +    r = dma_map_sg(this->dev, sgl, 1, desc->dir);
+>>> +    if (r == 0)
+>>> +        goto err;
 >>
->> Reported-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
-> 
-> It might be too late, but if it's not you can add my
-> 
-> Tested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> Should we return an error in this case? Looks like return 0.
+>
+> dma_map_sg returns the number of sg entries successfully mapped. In
+> this case, it should be 1.
 
-Applied and pushed!
+Right, but this function returns 0 (success?) if we failed to map anything.
 
-Thanks,
-//richard
+>
+>>
+>>> +
+>>> +    this->slave_conf.device_fc = 0;
+>>> +    this->slave_conf.dst_addr = this->res->start + reg_off;
+>>> +    this->slave_conf.dst_maxburst = 16;
+>>
+>> Is there any reason why slave_conf can't be on the stack? Otherwise it's
+>> odd that it's overwritten a few times before we submit the descriptors,
+>> so it must be copied by the dmaengine provider, but that isn't clear at
+>> all from the code. If it isn't copied, perhaps it should be part of the
+>> desc_info structure. If it is copied I wonder why it isn't const in the
+>> function signature.
+>
+> The dmaengine drivers either memcpy slave_config in their
+> device_config() dmaengine op, or populate their local members reading
+> params in the passed slave_config.
+>
+> I'll move slave_conf to stack. As you said, the config argument
+> in dmaengine_slave_config should ideally use const.
+
+Cool, someone should send a patch.
+
+>
+>>
+>>> +
+>>> +    r = dmaengine_slave_config(this->chan, &this->slave_conf);
+>>> +    if (r) {
+>>> +        dev_err(this->dev, "failed to configure dma channel\n");
+>>> +        goto err;
+>>> +    }
+>>> +
+>>> +    dma_desc = dmaengine_prep_slave_sg(this->chan, sgl, 1, 
+>>> desc->dir, 0);
+>>> +    if (!dma_desc) {
+>>> +        dev_err(this->dev, "failed to prepare data write desc\n");
+>>> +        r = PTR_ERR(dma_desc);
+>>> +        goto err;
+>>> +    }
+>>> +
+>>> +    desc->dma_desc = dma_desc;
+>>> +
+>>> +    return 0;
+>>> +err:
+>>> +    kfree(desc);
+>>> +
+>>> +    return r;
+>>> +}
+>>> +
+>>> +/*
+>>> + * helper to prepare dma descriptors to configure registers needed 
+>>> for reading a
+>>> + * codeword/step in a page
+>>> + */
+>>> +static void config_cw_read(struct qcom_nandc_data *this)
+>>> +{
+>>> +    struct nandc_regs *regs = this->regs;
+>>> +
+>>> +    write_reg_dma(this, NAND_FLASH_CMD, &regs->cmd, 3, true);
+>>
+>> Maybe it would be better to have a case statement inside
+>> {write,read}_reg_dma() that looked at the second argument and matched it
+>> up with an offset in regs. Then this could be
+>>
+>>      write_reg_dma(this, NAND_FLASH_CMD, 3, true);
+>
+> That's a good idea. However, we have at least one programming seqeunce 
+> (in nandc_param) where we need to write two different values to the 
+> same register. In such a case, we need two different locations to 
+> store the two values.
+>
+> I can split up the programming sequence into two parts such that we 
+> won't write to the same register twice. But doing this for the sake of 
+> reducing an argument to write_reg_dma seems a bit unnecessary.
+>
+
+Or you could have two #defines that indicate the different usage? Like 
+NAND_CMD_FOO and NAND_CMD_BAR that both map to the same register but 
+uses different locations as storage.
+
+>>
+>> Are we guaranteed that this is called within the same context as where
+>> the buffer is passed to this function? Otherwise this stack check isn't
+>> going to work because object_is_on_stack() will silently fail.
+>
+> These are funcs are finally tied to mtd ops. I think in normal operation
+> it'll be the same context. I'll still cross check. The aim of the check
+> is to prevent a memcpy of the buffer to/from the layer above. A false
+> negative will result in a slower read/write operation.
+
+Right. It would be nice if the mtd layer was DMA aware and could 
+indicate to drivers that DMA on the buffer is allowable or not. Trying 
+to figure it out if the buffer is in lowmem after the buffer is mapped 
+is error prone, which is why not a lot of usage of object_is_on_stack() 
+exists. Honestly I'm confused, I thought the DMA APIs would "do the 
+right thing" when highmem was passed into the mapping APIs, but maybe 
+I'm wrong. I'll have to look.
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
