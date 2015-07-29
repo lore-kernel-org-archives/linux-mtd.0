@@ -1,23 +1,31 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKVrU-0005HJ-3O
- for linux-mtd@lists.infradead.org; Wed, 29 Jul 2015 18:13:52 +0000
-Received: by pacan13 with SMTP id an13so9604343pac.1
- for <linux-mtd@lists.infradead.org>; Wed, 29 Jul 2015 11:13:30 -0700 (PDT)
-Date: Wed, 29 Jul 2015 11:13:27 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Boris BREZILLON <b.brezillon.dev@gmail.com>,
- linux-mtd@lists.infradead.org, linux-sunxi@googlegroups.com,
- Michal Suchanek <hramrach@gmail.com>, Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH 1/4] mtd: nand: Fix NAND_* options to use unique values.
-Message-ID: <20150729181327.GU8876@google.com>
-References: <1438192434-18363-1-git-send-email-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1438192434-18363-1-git-send-email-hdegoede@redhat.com>
+In-Reply-To: <20150729171613.GI11162@sirena.org.uk>
+References: <cover.1438170519.git.hramrach@gmail.com>
+ <557c1962448393b2a8736f26bfa2a3a5ba4aeb7a.1438170519.git.hramrach@gmail.com>
+ <20150729140046.GB11082@sirena.org.uk>
+ <CAOMqctTZVET=U=2o65HpWSm4W660XZtYYbBND2k4u9CnfjfMhQ@mail.gmail.com>
+ <20150729171613.GI11162@sirena.org.uk>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Wed, 29 Jul 2015 20:21:34 +0200
+Message-ID: <CAOMqctQzh69RCQu8pK1EuuYkrZsh6mg34+YWJFzSvimcK3B0rA@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] dt: spi: s3c64xx: add compatible to
+ controller-data
+To: Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Padmavathi Venna <padma.kvr@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ devicetree <devicetree@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +35,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 29, 2015 at 07:53:51PM +0200, Hans de Goede wrote:
-> From: Michal Suchanek <hramrach@gmail.com>
-> 
-> NAND_BUSWIDTH_AUTO (64b37b2a6) and NAND_USE_BOUNCE_BUFFER (66507c7bc)
-> are the same value. Change the later introduced NAND_USE_BOUNCE_BUFFER
-> to a different value.
-> 
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+On 29 July 2015 at 19:16, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Jul 29, 2015 at 06:19:24PM +0200, Michal Suchanek wrote:
+>> On 29 July 2015 at 16:00, Mark Brown <broonie@kernel.org> wrote:
+>
+>> > I can't tell from this commit message what the issue you're trying to
+>> > fix is, sorry.  Nodes without compatible strings are entirely normal and
+>> > don't need compatible strings.  It sounds like a bug in whatever other
+>> > driver is becoming confused.
+>
+>> The driver that gets confused is ofpart.
+>
+>> The two-line patch to allow it to just ignore controller-data has been
+>> rejected on the basis that s3c64xx should use a compatible string
+>> because ofpart monopolizes all nodes without compatible which are
+>> children of a mtd device. Devicetrees containing such nodes that are
+>> not partitions are presumably invalid and should be rejected when
+>> ofpart is compiled into the kernel.
+>
+> That seems like an extremely limited binding, the normal thing here
+> would be to create a specifically named node to contain the collection
+> of subnodes like many PMICs do for their regulators.  As a fix I'd
+> suggest just silently ignoring nodes it can't understand, or printing a
+> warning if that's a serious issue.
+>
+>> >> +     if (!of_get_property(data_np, "compatible", NULL) ||
+>> >> +         strcmp(of_get_property(data_np, "compatible", NULL),
+>> >> +                "samsung,s3c-controller-data"))
+>> >> +             dev_err(&spi->dev, "child node 'controller-data' does not have correct compatible\n");
+>
+>> > This will break all existing users which is not acceptable for
+>> > mainline, we need to preserve compatibility with existing device trees.
+>
+>> It will not break anything. It will just spam dmesg.
+>
+> I'm confused - if all this change does is to spam dmesg then what's the
+> point?
 
-Thanks for the fix! But Scott already caught this one. The fix is in
-4.2-rc already as commit 5f867db63473 ("mtd: nand: Fix
-NAND_USE_BOUNCE_BUFFER flag conflict").
+Presumably when your SPI NOR flash fails to probe this message will be
+just above and you will look into the binding doc and add the
+compatible.
 
-(Obligatory: please base your MTD patches on l2-mtd.git, or
-linux-next.git if necessary [1].)
+Thanks
 
-Regards,
-Brian
-
-[1] http://linux-mtd.infradead.org/source.html
+Michal
