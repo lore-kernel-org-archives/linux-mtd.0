@@ -1,29 +1,29 @@
-MIME-Version: 1.0
-In-Reply-To: <20150729140046.GB11082@sirena.org.uk>
-References: <cover.1438170519.git.hramrach@gmail.com>
- <557c1962448393b2a8736f26bfa2a3a5ba4aeb7a.1438170519.git.hramrach@gmail.com>
- <20150729140046.GB11082@sirena.org.uk>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Wed, 29 Jul 2015 18:19:24 +0200
-Message-ID: <CAOMqctTZVET=U=2o65HpWSm4W660XZtYYbBND2k4u9CnfjfMhQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] dt: spi: s3c64xx: add compatible to
- controller-data
-To: Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Padmavathi Venna <padma.kvr@gmail.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- devicetree <devicetree@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKUlv-0005aO-UV
+ for linux-mtd@lists.infradead.org; Wed, 29 Jul 2015 17:04:05 +0000
+From: Marek Vasut <marex@denx.de>
+To: Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: rework spi nor read and write.
+Date: Wed, 29 Jul 2015 19:03:35 +0200
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Alison Chaiken <alison_chaiken@mentor.com>,
+ Huang Shijie <b32955@freescale.com>, Ben Hutchings <ben@decadent.org.uk>,
+ Gabor Juhos <juhosg@openwrt.org>, "Bean Huo
+ =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= (beanhuo)" <beanhuo@micron.com>,
  MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1438074682.git.hramrach@gmail.com>
+ <201507282015.10775.marex@denx.de>
+ <CAOMqctRvoX9w9euyPqD_aBrz=d_pCC9AYKCg2HVrZ-tLOcAibQ@mail.gmail.com>
+In-Reply-To: <CAOMqctRvoX9w9euyPqD_aBrz=d_pCC9AYKCg2HVrZ-tLOcAibQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201507291903.36020.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +33,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29 July 2015 at 16:00, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Jul 29, 2015 at 12:19:57PM +0200, Michal Suchanek wrote:
->
-> Please use subject lines matching the style for the subsytsem so people
-> can spot that the patch is in some way relevant.
->
->> The controller-data subnode has no compatible. This can lead to other
->> drivers getting confused by it. Add a compatible to make devicetreee
->> unambiguous.
->
-> I can't tell from this commit message what the issue you're trying to
-> fix is, sorry.  Nodes without compatible strings are entirely normal and
-> don't need compatible strings.  It sounds like a bug in whatever other
-> driver is becoming confused.
+On Wednesday, July 29, 2015 at 06:16:21 AM, Michal Suchanek wrote:
+> On 28 July 2015 at 20:15, Marek Vasut <marex@denx.de> wrote:
+> > On Tuesday, July 28, 2015 at 11:23:02 AM, Michal Suchanek wrote:
+> >> The spi_nor read and write functions pass thru the mtd retlen to the
+> >> chip-specific read and write function. This makes it difficult to check
+> >> for errors in read and write functions and these errors are not checked.
+> >> This leads to silent data corruption.
+> >> 
+> >> This patch styles the chip-specific read and write function as unix
+> >> read(2) and write(2) and updates the retlen in the spi-nor generic
+> >> driver.
+> >> 
+> >> This also makes it possible to check for write errors.
+> >> When pl330 fails to transfer the flash data over SPI I get I/O error
+> >> instead of 4M of zeroes.
+> >> 
+> >> I do not have sst and fsl hardware to test with.
+> >> 
+> >> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> >> ---
+> >> 
+> >>  drivers/mtd/devices/m25p80.c      | 33 ++++++++++++++---------
+> >>  drivers/mtd/spi-nor/fsl-quadspi.c | 29 ++++++++++----------
+> >>  drivers/mtd/spi-nor/spi-nor.c     | 57
+> >> 
+> >> ++++++++++++++++++++++++++++----------- include/linux/mtd/spi-nor.h
+> >> 
+> >> |  8 +++---
+> >>  
+> >>  4 files changed, 81 insertions(+), 46 deletions(-)
+> >> 
+> >> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> >> index d313f948b..d8f064b 100644
+> >> --- a/drivers/mtd/devices/m25p80.c
+> >> +++ b/drivers/mtd/devices/m25p80.c
+> >> @@ -75,14 +75,15 @@ static int m25p80_write_reg(struct spi_nor *nor, u8
+> >> opcode, u8 *buf, int len, return spi_write(spi, flash->command, len +
+> >> 1);
+> >> 
+> >>  }
+> >> 
+> >> -static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+> >> -                     size_t *retlen, const u_char *buf)
+> >> +static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+> >> +                         const u_char *buf)
+> >> 
+> >>  {
+> >>  
+> >>       struct m25p *flash = nor->priv;
+> >>       struct spi_device *spi = flash->spi;
+> >>       struct spi_transfer t[2] = {};
+> >>       struct spi_message m;
+> >>       int cmd_sz = m25p_cmdsz(nor);
+> >> 
+> >> +     ssize_t ret;
+> >> 
+> >>       spi_message_init(&m);
+> >> 
+> >> @@ -100,9 +101,14 @@ static void m25p80_write(struct spi_nor *nor,
+> >> loff_t to, size_t len, t[1].len = len;
+> >> 
+> >>       spi_message_add_tail(&t[1], &m);
+> >> 
+> >> -     spi_sync(spi, &m);
+> >> +     ret = spi_sync(spi, &m);
+> >> +     if (ret)
+> >> +             return ret;
+> >> 
+> >> -     *retlen += m.actual_length - cmd_sz;
+> >> +     ret = m.actual_length - cmd_sz;
+> >> +     if (ret < 0)
+> >> +             return -EIO;
+> >> +     return ret;
+> > 
+> > I'd prefer to just add the return value and keep the retlen to keep error
+> > codes and transfer length separate.
+> 
+> I prefer to not pass around retlen because passing it around
+> 
+>  - causes code duplication
+>  - makes the code harder to understand
 
-The driver that gets confused is ofpart.
+Not sure I want to argue on this one, since it looks like a matter of taste.
+Adding the error return first and removing the retlen second might make the
+patch more readable though.
 
-The two-line patch to allow it to just ignore controller-data has been
-rejected on the basis that s3c64xx should use a compatible string
-because ofpart monopolizes all nodes without compatible which are
-children of a mtd device. Devicetrees containing such nodes that are
-not partitions are presumably invalid and should be rejected when
-ofpart is compiled into the kernel.
+> > btw. you change the transfer length from unsigned to signed type -- long
+> > transfer might get interpreted as an error.
+> 
+> Note that ssize_t is supposed to be enough for write(2) so when it
+> does not suffice you have a real system-wide problem.
+> 
+> That aside NOR flash sizes tend to be in the order of megabytes so
+> this concern is very theoretical.
 
->
->> +     if (!of_get_property(data_np, "compatible", NULL) ||
->> +         strcmp(of_get_property(data_np, "compatible", NULL),
->> +                "samsung,s3c-controller-data"))
->> +             dev_err(&spi->dev, "child node 'controller-data' does not have correct compatible\n");
->
-> This will break all existing users which is not acceptable for
-> mainline, we need to preserve compatibility with existing device trees.
-
-It will not break anything. It will just spam dmesg.
-
-Thanks
-
-Michal
+I do hope so :)
