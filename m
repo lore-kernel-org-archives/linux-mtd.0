@@ -1,25 +1,21 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKhjL-0000JM-2J
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 06:54:15 +0000
-Message-ID: <55B9C9F9.3030003@codeaurora.org>
-Date: Thu, 30 Jul 2015 12:23:45 +0530
-From: Archit Taneja <architt@codeaurora.org>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKi6E-0002cm-AS
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 07:17:55 +0000
+Date: Thu, 30 Jul 2015 09:17:30 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-sunxi@googlegroups.com, Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 4/4] mtd: nand: print full chip ID
+Message-ID: <20150730091730.1774291d@bbrezillon>
+In-Reply-To: <1438192434-18363-4-git-send-email-hdegoede@redhat.com>
+References: <1438192434-18363-1-git-send-email-hdegoede@redhat.com>
+ <1438192434-18363-4-git-send-email-hdegoede@redhat.com>
 MIME-Version: 1.0
-To: Stephen Boyd <sboyd@codeaurora.org>
-CC: dehrenberg@google.com, linux-arm-msm@vger.kernel.org,
- cernekee@gmail.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, agross@codeaurora.org,
- computersforpeace@gmail.com
-Subject: Re: [PATCH v2 2/5] mtd: nand: Qualcomm NAND controller driver
-References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
- <1437474886-6209-1-git-send-email-architt@codeaurora.org>
- <1437474886-6209-3-git-send-email-architt@codeaurora.org>
- <55B2DDA3.40306@codeaurora.org> <55B7063F.9090102@codeaurora.org>
- <55B830FE.2020601@codeaurora.org> <55B86142.9090806@codeaurora.org>
- <20150729183358.GD3159@codeaurora.org>
-In-Reply-To: <20150729183358.GD3159@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,63 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hans, Michal,
 
+On Wed, 29 Jul 2015 19:53:54 +0200
+Hans de Goede <hdegoede@redhat.com> wrote:
 
-On 7/30/2015 12:03 AM, Stephen Boyd wrote:
-> On 07/29, Archit Taneja wrote:
->> On 07/29/2015 07:18 AM, Stephen Boyd wrote:
->>> On 07/27/2015 09:34 PM, Archit Taneja wrote:
->>>> Hi,
->>>>
->>>> On 07/25/2015 06:21 AM, Stephen Boyd wrote:
->>>>> On 07/21/2015 03:34 AM, Archit Taneja wrote:
->>>>>
->>>>>> +              int size)
->>>>>> +{Looks like a
->>>>>> +    struct desc_info *desc;
->>>>>> +    struct dma_async_tx_descriptor *dma_desc;
->>>>>> +    struct scatterlist *sgl;
->>>>>> +    int r;
->>>>>> +
->>>>>> +    desc = kzalloc(sizeof(*desc), GFP_KERNEL);
->>>>>> +    if (!desc)
->>>>>> +        return -ENOMEM;
->>>>>> +
->>>>>> +    list_add_tail(&desc->list, &this->list);
->>>>>> +
->>>>>> +    sgl = &desc->sgl;
->>>>>> +
->>>>>> +    sg_init_one(sgl, vaddr, size);
->>>>>> +
->>>>>> +    desc->dir = DMA_MEM_TO_DEV;
->>>>>> +
->>>>>> +    r = dma_map_sg(this->dev, sgl, 1, desc->dir);
->>>>>> +    if (r == 0)
->>>>>> +        goto err;
->>>>>
->>>>> Should we return an error in this case? Looks like return 0.
->>>>
->>>> dma_map_sg returns the number of sg entries successfully mapped. In
->>>> this case, it should be 1.
->>>
->>> Right, but this function returns 0 (success?) if we failed to map anything.
->>
->> Yes. The return value is number of entries successfully mapped.
->> dma_map_sg is a macro that is replaced by dma_map_sg_attrs. Its
->> comment
->> says:
->>
->> "dma_maps_sg_attrs returns 0 on error and > 0 on success. It should
->> never return a value < 0."
->
-> Yes, and so this function that calls dma_map_sg() is going to
-> return 0 to the caller when it didn't do what it was asked to do?
+> From: Michal Suchanek <hramrach@gmail.com>
+> 
+> Full chip ID is printed so user has data to paste from syslog in case
+> of chip misidentification.
+> 
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 28 +++++++++++++++++++++++-----
+>  1 file changed, 23 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index e2e2690..13e9938 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4243,7 +4243,7 @@ static inline bool is_full_id_nand(struct nand_flash_dev *type)
+>  }
+>  
+>  static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+> -		   struct nand_flash_dev *type, u8 *id_data, int *busw)
+> +		   struct nand_flash_dev *type, const u8 *id_data, int *busw)
+>  {
+>  	if (!strncmp(type->id, id_data, type->id_len)) {
+>  		mtd->writesize = type->pagesize;
+> @@ -4269,6 +4269,26 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+>  }
+>  
+>  /*
+> + * Print full detail of chip ID read from chip.
+> + */
+> +static void print_nand_chip_info(int maf_id, int dev_id, u8 id_data[8])
+> +{
+> +	u8 delim[8] = { [0 ... 7] = ',' };
+> +
+> +	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+> +		maf_id, dev_id);
+> +
+> +	delim[7] = ' ';
+> +	delim[nand_id_len(id_data, 8) - 1] = ';';
+> +
+> +	pr_info("chip id data: 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c\n",
+> +		id_data[0], delim[0], id_data[1], delim[1],
+> +		id_data[2], delim[2], id_data[3], delim[3],
+> +		id_data[4], delim[4], id_data[5], delim[5],
+> +		id_data[6], delim[6], id_data[7], delim[7]);
 
-Ah, I get your point now :p. I thought you were referring to the
-return value of dma_map_sg, and not write_data_dma. Will fix this.
+This looks like debug information to me, how about using pr_debug ?
 
-Archit
+Best Regards,
+
+Boris
 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
