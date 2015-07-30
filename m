@@ -1,16 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKgns-0006IZ-HP
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:55 +0000
+ id 1ZKgnu-0006Ib-Ca
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:56 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 34/35] ubifs: implement ubifs_get_qsize to get quota size
- in ubifs
-Date: Thu, 30 Jul 2015 13:48:30 +0800
-Message-ID: <1438235311-23788-35-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 35/35] ubifs: make ubifs to support quota
+Date: Thu, 30 Jul 2015 13:48:31 +0800
+Message-ID: <1438235311-23788-36-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,78 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We only care the size of regular file in ubifs for quota.
-The reason is similar with the comment in ubifs_getattr().
-
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/ubifs/dir.c   |  3 +++
- fs/ubifs/file.c  | 19 +++++++++++++++++++
- fs/ubifs/ubifs.h |  1 +
- 3 files changed, 23 insertions(+)
+ fs/ubifs/super.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index d430bb6..4230818 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1214,6 +1214,9 @@ const struct file_operations ubifs_dir_operations = {
- 	.iterate        = ubifs_readdir,
- 	.fsync          = ubifs_fsync,
- 	.unlocked_ioctl = ubifs_ioctl,
-+#ifdef CONFIG_QUOTA
-+	.get_qsize	= ubifs_get_qsize,
-+#endif
- #ifdef CONFIG_COMPAT
- 	.compat_ioctl   = ubifs_compat_ioctl,
- #endif
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index c4651a8..e916306 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1640,6 +1640,22 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	return 0;
- }
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index acc5d2f..466f8e1 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -2349,6 +2349,11 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_op = &ubifs_super_operations;
+ 	sb->s_xattr = ubifs_xattr_handlers;
  
-+/*
-+ * ubifs_get_qsize: get the quota size of a file
-+ * @inode: inode which we are going to get the qsize
-+ *
-+ * We only care the size of regular file in ubifs
-+ * for quota. The reason is similar with the comment
-+ * in ubifs_getattr().
-+ */
-+ssize_t ubifs_get_qsize(struct inode *inode)
-+{
-+	if (S_ISREG(inode->i_mode))
-+		return i_size_read(inode);
-+	else
-+		return 0;
-+}
-+
- const struct address_space_operations ubifs_file_address_operations = {
- 	.readpage       = ubifs_readpage,
- 	.writepage      = ubifs_writepage,
-@@ -1685,6 +1701,9 @@ const struct file_operations ubifs_file_operations = {
- 	.unlocked_ioctl = ubifs_ioctl,
- 	.splice_read	= generic_file_splice_read,
- 	.splice_write	= iter_file_splice_write,
 +#ifdef CONFIG_QUOTA
-+	.get_qsize	= ubifs_get_qsize,
++	sb->dq_op = &dquot_operations;
++	sb->s_qcop = &dquot_quotactl_ops;
++	sb->s_quota_types = QTYPE_MASK_USR | QTYPE_MASK_GRP;
 +#endif
- #ifdef CONFIG_COMPAT
- 	.compat_ioctl   = ubifs_compat_ioctl,
- #endif
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 3b5a204..5e4ed2a 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1761,6 +1761,7 @@ int ubifs_read_block(struct inode *inode, void *addr, unsigned int block,
- int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
- int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
- int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
-+ssize_t ubifs_get_qsize(struct inode *inode);
- 
- /* dir.c */
- struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
+ 	mutex_lock(&c->umount_mutex);
+ 	err = mount_ubifs(c);
+ 	if (err) {
 -- 
 1.8.4.2
