@@ -1,20 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKiC3-0007S0-Cs
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 07:23:55 +0000
-Date: Thu, 30 Jul 2015 09:23:33 +0200
+ id 1ZKiHY-0001Vo-SD
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 07:29:37 +0000
+Date: Thu, 30 Jul 2015 09:29:14 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+To: Hans de Goede <hdegoede@redhat.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 3/4] mtd: nand: nand_get_flash_type: Print detected ECC
- strength and size
-Message-ID: <20150730092333.59705873@bbrezillon>
-In-Reply-To: <1438192434-18363-3-git-send-email-hdegoede@redhat.com>
+Subject: Re: [PATCH 2/4] mtd: nand: nand_decode_ext_id(): Fill in ecc
+ strength and size for Samsung
+Message-ID: <20150730092914.3616eb5c@bbrezillon>
+In-Reply-To: <1438192434-18363-2-git-send-email-hdegoede@redhat.com>
 References: <1438192434-18363-1-git-send-email-hdegoede@redhat.com>
- <1438192434-18363-3-git-send-email-hdegoede@redhat.com>
+ <1438192434-18363-2-git-send-email-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,44 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Hans,
+Hi,
 
-On Wed, 29 Jul 2015 19:53:53 +0200
+On Wed, 29 Jul 2015 19:53:52 +0200
 Hans de Goede <hdegoede@redhat.com> wrote:
 
-> Print the detected ECC strength and size from nand_get_flash_type().
-
-Indeed, that's an interesting information.
-
+> On some nand controllers with hw-ecc the controller code wants to know the
+> ecc strength and size and having these as 0, 0 is not accepted.
 > 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> Specifying these in devicetree is possible but undesirable as the nand
+> may be different in different production runs of the same board, so it
+> is better to get this info from the nand id where possible.
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index f3fefbf..e2e2690 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4433,9 +4433,10 @@ ident_done:
->  		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
->  				type->name);
->  
-> -	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
-> +	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d, ECC strength %d size %d\n",
+> This commit adds code to read the ecc strength and size from the nand for
+> Samsung extended-id nands. This code is based on the info for the 5th
+> id byte in the datasheets for the following Samsung nands: K9GAG08U0E,
+> K9GAG08U0F, K9GAG08X0D, K9GBG08U0A, K9GBG08U0B. These all use these bits
+> in the exact same way.
 
-How about the follwing formalism ?
-
-	pr_info("%d MiB, type: %s, erase size: %d KiB, page size: %d, OOB size: %d, ECC: %dbits/%dbytes\n",
-
-or just
-
-	pr_info("%d MiB, type: %s, erase size: %d KiB, page size: %d, OOB size: %d, ECC: %d/%d\n",
+Okay, that's the one I'm not sure about. If that's really the case,
+and Samsung is actually using the same layout for all its chips, we
+should be good, but as I already stated in the other thread, this was
+not the case for Hynix chips.
 
 Best Regards,
 
 Boris
-
 
 -- 
 Boris Brezillon, Free Electrons
