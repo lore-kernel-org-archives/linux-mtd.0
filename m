@@ -1,16 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKgnr-0006Ib-IX
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:53 +0000
+ id 1ZKgns-0006If-79
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:54 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 32/35] ubifs: write inode in ubifs_quota_write if we are
- appending
-Date: Thu, 30 Jul 2015 13:48:28 +0800
-Message-ID: <1438235311-23788-33-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 33/35] fs: introduce a get_qsize() to file_operations
+Date: Thu, 30 Jul 2015 13:48:29 +0800
+Message-ID: <1438235311-23788-34-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,81 +23,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When we are appending writing quota file, we have to do a
-budgeting for the inode and write inode in ubifs_quota_write.
+get_qsize() is used to allow inode to decide how much of the quota size
+in itself. If file system implements the own get_qsize(), ioctl of
+FIOQSIZe will call it to get quota size. If not implemented, get the
+quota size in a generic way.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/ubifs/super.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ fs/ioctl.c         | 31 ++++++++++++++++++++++++-------
+ include/linux/fs.h |  1 +
+ 2 files changed, 25 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 20500f0..acc5d2f 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1040,6 +1040,10 @@ static ssize_t ubifs_quota_write(struct super_block *sb, int type,
- 				const char *data, size_t len, loff_t off)
- {
- 	struct inode *inode = sb_dqopt(sb)->files[type];
-+	struct ubifs_inode *ui = ubifs_inode(inode);
-+	loff_t end_pos = off + len;
-+	int appending = (end_pos > inode->i_size);
-+	int ino_released = 0;
- 	unsigned long block = off >> UBIFS_BLOCK_SHIFT;
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 	int offset = off & (sb->s_blocksize - 1);
-@@ -1048,6 +1052,8 @@ static ssize_t ubifs_quota_write(struct super_block *sb, int type,
- 	size_t towrite = len;
- 	int ret, err = 0;
- 	struct ubifs_budget_req req = {};
-+	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
-+				.dirtied_ino_d = ALIGN(ui->data_len, 8) };
- 	int new_block = 0;
- 	struct ubifs_data_node *dn;
- 	char *block_buf;
-@@ -1058,13 +1064,17 @@ static ssize_t ubifs_quota_write(struct super_block *sb, int type,
- 	new_block = DIV_ROUND_UP(len - (sb->s_blocksize - offset), sb->s_blocksize);
- 	if (offset)
- 		new_block += 1;
--
- 	req.new_block_num = new_block;
--
- 	err = ubifs_budget_space(c, &req);
- 	if (err)
- 		goto out;
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index 5d01d26..2c567db 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -545,6 +545,29 @@ static int ioctl_fsthaw(struct file *filp)
+ 	return thaw_super(sb);
+ }
  
-+	if (appending) {
-+		err = ubifs_budget_space(c, &ino_req);
-+		if (err)
-+			goto release_block;
-+	}
++static int ioctl_fioqsize(struct file *filp, int __user *argp)
++{
++	struct inode *inode = file_inode(filp);
++	loff_t res = 0;
++	int error = 0;
 +
- 	dn = kmalloc(UBIFS_MAX_DATA_NODE_SZ, GFP_NOFS);
- 	if (!dn) {
- 		err = -ENOMEM;
-@@ -1140,11 +1150,23 @@ static ssize_t ubifs_quota_write(struct super_block *sb, int type,
- 		if (err)
- 			goto free_buf;
- 	}
-+	if (appending) {
-+		mutex_lock(&ui->ui_mutex);
-+		i_size_write(inode, end_pos);
-+		ui->ui_size = end_pos;
-+		__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
-+		mutex_unlock(&ui->ui_mutex);
-+		err = inode->i_sb->s_op->write_inode(inode, NULL);
-+		ino_released = 1;
++	if (filp->f_op->get_qsize) {
++		res = filp->f_op->get_qsize(inode);
++		error = copy_to_user(argp, &res, sizeof(res)) ?
++				-EFAULT : 0;
++	} else {
++                if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
++                    S_ISLNK(inode->i_mode)) {
++                        res = inode_get_bytes(inode);
++                        error = copy_to_user(argp, &res, sizeof(res)) ?
++                                        -EFAULT : 0;
++                } else {
++                        error = -ENOTTY;
++		}
 +	}
- free_buf:
- 	kfree(block_buf);
- free_dn:
- 	kfree(dn);
- release_budget:
-+	if (appending && !ino_released)
-+		ubifs_release_budget(c, &ino_req);
-+release_block:
- 	ubifs_release_budget(c, &req);
- out:
- 	if (!err)
++	return error;
++}
++
+ /*
+  * When you add any new common ioctls to the switches above and below
+  * please update compat_sys_ioctl() too.
+@@ -577,13 +600,7 @@ int do_vfs_ioctl(struct file *filp, unsigned int fd, unsigned int cmd,
+ 		break;
+ 
+ 	case FIOQSIZE:
+-		if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
+-		    S_ISLNK(inode->i_mode)) {
+-			loff_t res = inode_get_bytes(inode);
+-			error = copy_to_user(argp, &res, sizeof(res)) ?
+-					-EFAULT : 0;
+-		} else
+-			error = -ENOTTY;
++		error = ioctl_fioqsize(filp, argp);
+ 		break;
+ 
+ 	case FIFREEZE:
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 860b235..70695d3 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1601,6 +1601,7 @@ struct file_operations {
+ 	long (*fallocate)(struct file *file, int mode, loff_t offset,
+ 			  loff_t len);
+ 	void (*show_fdinfo)(struct seq_file *m, struct file *f);
++	ssize_t (*get_qsize) (struct inode *);
+ #ifndef CONFIG_MMU
+ 	unsigned (*mmap_capabilities)(struct file *);
+ #endif
 -- 
 1.8.4.2
