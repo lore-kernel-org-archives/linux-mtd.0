@@ -1,16 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKgnn-0006Ib-86
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:48 +0000
+ id 1ZKgnn-0006IZ-IS
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:49 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 26/35] ubifs: free quota inode information in
- ubifs_evict_inode
-Date: Thu, 30 Jul 2015 13:48:22 +0800
-Message-ID: <1438235311-23788-27-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 27/35] ubifs: alloc quota space in ubifs_write_begin
+Date: Thu, 30 Jul 2015 13:48:23 +0800
+Message-ID: <1438235311-23788-28-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,42 +23,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In evict, we have to call dquot_free_inode() to tell quota
-subsystem there is one inode to be free. Please update the
-quota information.
+Besides inode, quota also limit the space. When
+use want to write something, we have to tell quota
+subsystem there is something is going to be written
+into ubifs, please check the quota limit. If it exceed
+the limit, return EQUOT. Else, record it and go on.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/ubifs/super.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/ubifs/file.c | 30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 06dd7af..20500f0 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -361,6 +361,7 @@ static void ubifs_evict_inode(struct inode *inode)
- 	if (is_bad_inode(inode))
- 		goto out;
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index f307e86..b1e89ff 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -53,6 +53,7 @@
+ #include <linux/mount.h>
+ #include <linux/namei.h>
+ #include <linux/slab.h>
++#include <linux/quotaops.h>
  
-+	dquot_initialize(inode);
- 	ui->ui_size = inode->i_size = 0;
- 	err = ubifs_jnl_delete_inode(c, inode);
- 	if (err)
-@@ -370,7 +371,7 @@ static void ubifs_evict_inode(struct inode *inode)
- 		 */
- 		ubifs_err(c, "can't delete inode %lu, error %d",
- 			  inode->i_ino, err);
--
-+	dquot_free_inode(inode);
- out:
- 	if (ui->dirty)
- 		ubifs_release_dirty_inode_budget(c, ui);
-@@ -380,6 +381,7 @@ out:
- 		smp_wmb();
+ int ubifs_read_block(struct inode *inode, void *addr, unsigned int block,
+ 		      struct ubifs_data_node *dn)
+@@ -431,8 +432,10 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
+ 	int uninitialized_var(err), appending = !!(pos + len > inode->i_size);
++	int quota_size = 0;
+ 	int skipped_read = 0;
+ 	struct page *page;
++	int ret = 0;
+ 
+ 	ubifs_assert(ubifs_inode(inode)->ui_size == inode->i_size);
+ 	ubifs_assert(!c->ro_media && !c->ro_mount);
+@@ -440,10 +443,22 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
+ 	if (unlikely(c->ro_error))
+ 		return -EROFS;
+ 
++	quota_size = ((pos + len) - inode->i_size);
++	if (quota_size < 0)
++		quota_size = 0;
++	if (S_ISREG(inode->i_mode)) {
++		dquot_initialize(inode);
++		ret = dquot_alloc_space_nodirty(inode, quota_size);
++		if (unlikely(ret))
++			goto err;
++	}
++
+ 	/* Try out the fast-path part first */
+ 	page = grab_cache_page_write_begin(mapping, index, flags);
+-	if (unlikely(!page))
+-		return -ENOMEM;
++	if (unlikely(!page)) {
++		ret = -ENOMEM;
++		goto free_quot;
++	}
+ 
+ 	if (!PageUptodate(page)) {
+ 		/* The page is not loaded from the flash */
+@@ -497,7 +512,9 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
+ 		unlock_page(page);
+ 		page_cache_release(page);
+ 
+-		return write_begin_slow(mapping, pos, len, pagep, flags);
++		ret = write_begin_slow(mapping, pos, len, pagep, flags);
++		if (unlikely(ret))
++			goto free_quot;
  	}
- done:
-+	dquot_drop(inode);
- 	clear_inode(inode);
+ 
+ 	/*
+@@ -507,7 +524,12 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
+ 	 * otherwise. This is an optimization (slightly hacky though).
+ 	 */
+ 	*pagep = page;
+-	return 0;
++
++	return ret;
++free_quot:
++	dquot_free_space_nodirty(inode, quota_size);
++err:
++	return ret;
+ 
  }
  
 -- 
