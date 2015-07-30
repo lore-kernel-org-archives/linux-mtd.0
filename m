@@ -6,10 +6,9 @@ Cc: linux-kernel@vger.kernel.org, Roy Spliet <r.spliet@ultimaker.com>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [RFC PATCH 3/6] mtd: nand: move nand_ecc_ctrl initialization out of
- nand_scan_tail
-Date: Thu, 30 Jul 2015 15:50:22 +0200
-Message-Id: <1438264225-23796-4-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [RFC PATCH 2/6] mtd: part: pass OF node to the MTD partition layer
+Date: Thu, 30 Jul 2015 15:50:21 +0200
+Message-Id: <1438264225-23796-3-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1438264225-23796-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1438264225-23796-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,155 +20,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ECC initialization is currently done when the NAND chip is
-registered to the NAND framework, but we are about to add per-partition
-ECC setting.
-Move the ECC initialization code into its own function so that it can be
-reused for the per-partition config.
+Pass the OF node attached an MTD partition so that specific MTD device
+implementations can extract extra information from the DT definition.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_base.c | 104 ++++++++++++++++++++++++++-----------------
- 1 file changed, 64 insertions(+), 40 deletions(-)
+ drivers/mtd/mtdpart.c          | 2 ++
+ drivers/mtd/ofpart.c           | 1 +
+ include/linux/mtd/partitions.h | 3 ++-
+ 3 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ceb68ca..0321126 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3928,43 +3928,14 @@ static bool nand_ecc_strength_good(struct mtd_info *mtd)
- 	return corr >= ds_corr && ecc->strength >= chip->ecc_strength_ds;
- }
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 9a45230..c2e5920 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -362,6 +362,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 		return ERR_PTR(-ENOMEM);
+ 	}
  
--/**
-- * nand_scan_tail - [NAND Interface] Scan for the NAND device
-- * @mtd: MTD device structure
-- *
-- * This is the second phase of the normal nand_scan() function. It fills out
-- * all the uninitialized function pointers with the defaults and scans for a
-- * bad block table if appropriate.
-+/*
-+ * Initialize ECC struct:
-+ *  - fill ECC struct with default function/values when these ones are undefined
-+ *  - fill ECC infos based on MTD device
-  */
--int nand_scan_tail(struct mtd_info *mtd)
-+static int nand_ecc_ctrl_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc)
- {
- 	int i;
--	struct nand_chip *chip = mtd->priv;
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	struct nand_buffers *nbuf;
--
--	/* New bad blocks should be marked in OOB, flash-based BBT, or both */
--	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
--			!(chip->bbt_options & NAND_BBT_USE_FLASH));
--
--	if (!(chip->options & NAND_OWN_BUFFERS)) {
--		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
--				+ mtd->oobsize * 3, GFP_KERNEL);
--		if (!nbuf)
--			return -ENOMEM;
--		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
--		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
--		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
--
--		chip->buffers = nbuf;
--	} else {
--		if (!chip->buffers)
--			return -ENOMEM;
--	}
--
--	/* Set the internal oob buffer location, just after the page data */
--	chip->oob_poi = chip->buffers->databuf + mtd->writesize;
--
- 	/*
- 	 * If no default placement scheme is given, select an appropriate one.
- 	 */
-@@ -3989,9 +3960,6 @@ int nand_scan_tail(struct mtd_info *mtd)
++	slave->mtd.dev.of_node = part->of_node;
++
+ 	/* set up the MTD object for this partition */
+ 	slave->mtd.type = master->type;
+ 	slave->mtd.flags = master->flags & ~part->mask_flags;
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index aa26c32..8a06cfb 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -73,6 +73,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 			continue;
  		}
- 	}
  
--	if (!chip->write_page)
--		chip->write_page = nand_write_page;
++		(*pparts)[i].of_node = pp;
+ 		a_cells = of_n_addr_cells(pp);
+ 		s_cells = of_n_size_cells(pp);
+ 		(*pparts)[i].offset = of_read_number(reg, a_cells);
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 6a35e6d..e4ff8a3 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -12,6 +12,7 @@
+ #include <linux/types.h>
+ 
+ 
++
+ /*
+  * Partition definition structure:
+  *
+@@ -42,6 +43,7 @@ struct mtd_partition {
+ 	uint64_t offset;		/* offset within the master MTD space */
+ 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+ 	struct nand_ecclayout *ecclayout;	/* out of band layout for this partition (NAND only) */
++	struct device_node *of_node;	/* OF node attached to this partition (optional) */
+ };
+ 
+ #define MTDPART_OFS_RETAIN	(-3)
+@@ -63,7 +65,6 @@ struct mtd_part_parser_data {
+ 	struct device_node *of_node;
+ };
+ 
 -
- 	/*
- 	 * Check ECC mode, default to software if 3byte/512byte hardware ECC is
- 	 * selected and we have 256 byte pagesize fallback to software ECC
-@@ -4161,6 +4129,64 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	}
- 	ecc->total = ecc->steps * ecc->bytes;
- 
-+	return 0;
-+}
-+
-+static void nand_ecc_cleanup(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc)
-+{
-+	if (ecc->mode == NAND_ECC_SOFT_BCH)
-+		nand_bch_free((struct nand_bch_control *)ecc->priv);
-+}
-+
-+/**
-+ * nand_scan_tail - [NAND Interface] Scan for the NAND device
-+ * @mtd: MTD device structure
-+ *
-+ * This is the second phase of the normal nand_scan() function. It fills out
-+ * all the uninitialized function pointers with the defaults and scans for a
-+ * bad block table if appropriate.
-+ */
-+int nand_scan_tail(struct mtd_info *mtd)
-+{
-+	int ret;
-+	struct nand_chip *chip = mtd->priv;
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+	struct nand_buffers *nbuf;
-+
-+	/* New bad blocks should be marked in OOB, flash-based BBT, or both */
-+	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
-+			!(chip->bbt_options & NAND_BBT_USE_FLASH));
-+
-+	if (!(chip->options & NAND_OWN_BUFFERS)) {
-+		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
-+				+ mtd->oobsize * 3, GFP_KERNEL);
-+		if (!nbuf)
-+			return -ENOMEM;
-+		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
-+		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
-+		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
-+
-+		chip->buffers = nbuf;
-+	} else {
-+		if (!chip->buffers)
-+			return -ENOMEM;
-+	}
-+
-+	/* Set the internal oob buffer location, just after the page data */
-+	chip->oob_poi = chip->buffers->databuf + mtd->writesize;
-+
-+	if (!chip->write_page)
-+		chip->write_page = nand_write_page;
-+
-+	/* Initialize ECC struct */
-+	ret = nand_ecc_ctrl_init(mtd, ecc);
-+	if (ret) {
-+		if (!(chip->options & NAND_OWN_BUFFERS))
-+			kfree(chip->buffers);
-+
-+		return ret;
-+	}
-+
- 	/* Allow subpage writes up to ecc.steps. Not possible for MLC flash */
- 	if (!(chip->options & NAND_NO_SUBPAGE_WRITE) && nand_is_slc(chip)) {
- 		switch (ecc->steps) {
-@@ -4285,9 +4311,7 @@ void nand_release(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd->priv;
- 
--	if (chip->ecc.mode == NAND_ECC_SOFT_BCH)
--		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
--
-+	nand_ecc_cleanup(mtd, &chip->ecc);
- 	mtd_device_unregister(mtd);
- 
- 	/* Free bad block table memory */
+ /*
+  * Functions dealing with the various ways of partitioning the space
+  */
 -- 
 1.9.1
