@@ -1,23 +1,25 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKiHY-0001Vo-SD
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 07:29:37 +0000
-Date: Thu, 30 Jul 2015 09:29:14 +0200
+Date: Thu, 30 Jul 2015 09:50:51 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Hans de Goede <hdegoede@redhat.com>, Brian Norris
- <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 2/4] mtd: nand: nand_decode_ext_id(): Fill in ecc
- strength and size for Samsung
-Message-ID: <20150730092914.3616eb5c@bbrezillon>
-In-Reply-To: <1438192434-18363-2-git-send-email-hdegoede@redhat.com>
-References: <1438192434-18363-1-git-send-email-hdegoede@redhat.com>
- <1438192434-18363-2-git-send-email-hdegoede@redhat.com>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof
+ Kozlowski <k.kozlowski@samsung.com>, Mark Brown <broonie@kernel.org>,
+ Padmavathi Venna <padma.kvr@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-spi@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] dt: spi: s3c64xx: add compatible to
+ controller-data
+Message-ID: <20150730095051.06eff8b1@bbrezillon>
+In-Reply-To: <557c1962448393b2a8736f26bfa2a3a5ba4aeb7a.1438170519.git.hramrach@gmail.com>
+References: <cover.1438170519.git.hramrach@gmail.com>
+ <557c1962448393b2a8736f26bfa2a3a5ba4aeb7a.1438170519.git.hramrach@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +29,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Michal,
 
-On Wed, 29 Jul 2015 19:53:52 +0200
-Hans de Goede <hdegoede@redhat.com> wrote:
+On Wed, 29 Jul 2015 12:19:57 +0200
+Michal Suchanek <hramrach@gmail.com> wrote:
 
-> On some nand controllers with hw-ecc the controller code wants to know the
-> ecc strength and size and having these as 0, 0 is not accepted.
-> 
-> Specifying these in devicetree is possible but undesirable as the nand
-> may be different in different production runs of the same board, so it
-> is better to get this info from the nand id where possible.
-> 
-> This commit adds code to read the ecc strength and size from the nand for
-> Samsung extended-id nands. This code is based on the info for the 5th
-> id byte in the datasheets for the following Samsung nands: K9GAG08U0E,
-> K9GAG08U0F, K9GAG08X0D, K9GBG08U0A, K9GBG08U0B. These all use these bits
-> in the exact same way.
+> The controller-data subnode has no compatible. This can lead to other
+> drivers getting confused by it. Add a compatible to make devicetreee
+> unambiguous.
+>=20
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/spi/spi-samsung.txt | 3 +++
+>  drivers/spi/spi-s3c64xx.c                             | 4 ++++
+>  2 files changed, 7 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/spi/spi-samsung.txt b/Docu=
+mentation/devicetree/bindings/spi/spi-samsung.txt
+> index 6dbdeb3..b1e98d1 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-samsung.txt
+> +++ b/Documentation/devicetree/bindings/spi/spi-samsung.txt
+> @@ -92,16 +92,19 @@ Example:
+>  			spi-max-frequency =3D <10000>;
+> =20
+>  			controller-data {
+> +				compatible =3D "samsung,s3c-controller-data";
 
-Okay, that's the one I'm not sure about. If that's really the case,
-and Samsung is actually using the same layout for all its chips, we
-should be good, but as I already stated in the other thread, this was
-not the case for Hynix chips.
+AFAIK compatible should (as much as possible :-)) only be used to encode
+HW type, and here you're using it to expose what you want to do with
+your data in Linux.
+
+>  				samsung,spi-feedback-delay =3D <0>;
+>  			};
+> =20
+>  			partition@0 {
+> +				compatible =3D "linux,ofpart-partition";
+
+Ditto.
+
+Since you have to patch your DTs anyway, how about putting your
+partitions in a subnode and patch the ofpart code to parse this subnode
+if it is present (see the following patch).
 
 Best Regards,
 
 Boris
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+--- >8 ---
+
+=46rom e342860932bda3a6354a0a6e17540db5c85a14e0 Mon Sep 17 00:00:00 2001
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Thu, 30 Jul 2015 09:44:07 +0200
+Subject: [PATCH] mtd: ofpart: search for a partitions node
+
+The DT partition parser currently assumes the parition definitions are
+directly stored in the MTD device node, but sometime this device node
+contains other child nodes used to store device specific information.
+
+Search for a partitions subnode containing the partition definitions,
+if it is not there, parse the definitions in the device node.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/ofpart.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 8a06cfb..ba52b88 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -38,7 +38,10 @@ static int parse_ofpart_partitions(struct mtd_info *mast=
+er,
+ 	if (!data)
+ 		return 0;
+=20
+-	node =3D data->of_node;
++	node =3D of_get_child_by_name(data->of_node, "partitions");
++	if (!node)
++		node =3D data->of_node;
++
+ 	if (!node)
+ 		return 0;
+=20
+--=20
+1.9.1
