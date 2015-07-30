@@ -1,25 +1,18 @@
-Date: Thu, 30 Jul 2015 09:50:51 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Michal Suchanek <hramrach@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
- Rutland <mark.rutland@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof
- Kozlowski <k.kozlowski@samsung.com>, Mark Brown <broonie@kernel.org>,
- Padmavathi Venna <padma.kvr@gmail.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-spi@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] dt: spi: s3c64xx: add compatible to
- controller-data
-Message-ID: <20150730095051.06eff8b1@bbrezillon>
-In-Reply-To: <557c1962448393b2a8736f26bfa2a3a5ba4aeb7a.1438170519.git.hramrach@gmail.com>
-References: <cover.1438170519.git.hramrach@gmail.com>
- <557c1962448393b2a8736f26bfa2a3a5ba4aeb7a.1438170519.git.hramrach@gmail.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKiqs-0003nN-5E
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 08:06:07 +0000
+Subject: Re: [PATCH] ubifs: make ubifs_[get|set]xattr atomic
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com
+References: <1438234650-21289-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Cc: linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55B9DAD2.4060803@nod.at>
+Date: Thu, 30 Jul 2015 10:05:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1438234650-21289-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,87 +22,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Michal,
+Am 30.07.2015 um 07:37 schrieb Dongsheng Yang:
+> This commit make the ubifs_[get|set]xattr protected by ui_mutex,
+> making xfstests/generic/037 passed.
 
-On Wed, 29 Jul 2015 12:19:57 +0200
-Michal Suchanek <hramrach@gmail.com> wrote:
+Making a test pass is not a good patch description.
+Please describe what needs protection and why. :-)
 
-> The controller-data subnode has no compatible. This can lead to other
-> drivers getting confused by it. Add a compatible to make devicetreee
-> unambiguous.
->=20
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> ---
->  Documentation/devicetree/bindings/spi/spi-samsung.txt | 3 +++
->  drivers/spi/spi-s3c64xx.c                             | 4 ++++
->  2 files changed, 7 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/spi/spi-samsung.txt b/Docu=
-mentation/devicetree/bindings/spi/spi-samsung.txt
-> index 6dbdeb3..b1e98d1 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-samsung.txt
-> +++ b/Documentation/devicetree/bindings/spi/spi-samsung.txt
-> @@ -92,16 +92,19 @@ Example:
->  			spi-max-frequency =3D <10000>;
-> =20
->  			controller-data {
-> +				compatible =3D "samsung,s3c-controller-data";
-
-AFAIK compatible should (as much as possible :-)) only be used to encode
-HW type, and here you're using it to expose what you want to do with
-your data in Linux.
-
->  				samsung,spi-feedback-delay =3D <0>;
->  			};
-> =20
->  			partition@0 {
-> +				compatible =3D "linux,ofpart-partition";
-
-Ditto.
-
-Since you have to patch your DTs anyway, how about putting your
-partitions in a subnode and patch the ofpart code to parse this subnode
-if it is present (see the following patch).
-
-Best Regards,
-
-Boris
-
---- >8 ---
-
-=46rom e342860932bda3a6354a0a6e17540db5c85a14e0 Mon Sep 17 00:00:00 2001
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Date: Thu, 30 Jul 2015 09:44:07 +0200
-Subject: [PATCH] mtd: ofpart: search for a partitions node
-
-The DT partition parser currently assumes the parition definitions are
-directly stored in the MTD device node, but sometime this device node
-contains other child nodes used to store device specific information.
-
-Search for a partitions subnode containing the partition definitions,
-if it is not there, parse the definitions in the device node.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/ofpart.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 8a06cfb..ba52b88 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -38,7 +38,10 @@ static int parse_ofpart_partitions(struct mtd_info *mast=
-er,
- 	if (!data)
- 		return 0;
-=20
--	node =3D data->of_node;
-+	node =3D of_get_child_by_name(data->of_node, "partitions");
-+	if (!node)
-+		node =3D data->of_node;
-+
- 	if (!node)
- 		return 0;
-=20
---=20
-1.9.1
+Thanks,
+//richard
