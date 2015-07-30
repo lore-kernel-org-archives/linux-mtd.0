@@ -1,15 +1,16 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKgnf-0006If-R8
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:41 +0000
+ id 1ZKgng-0006IZ-L3
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:43 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 18/35] ubifs: introduce quota related mount options
-Date: Thu, 30 Jul 2015 13:48:14 +0800
-Message-ID: <1438235311-23788-19-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 19/35] ubifs: budget for inode in ubifs_dirty_inode if
+ necessary
+Date: Thu, 30 Jul 2015 13:48:15 +0800
+Message-ID: <1438235311-23788-20-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -23,118 +24,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit introduce mount options of quota, noquota,
-usrquota and grpquota. These options are used to make
-ubifs support quota. But with this commit, quota will
-not working on ubifs actually. We just introduce options
-here and will make ubifs support quota later.
+In ubifs, we have to do a budget for inode before marking
+it as dirty. But sometimes, we would call dirty_inode in vfs
+which will not do a budget for inode. In this case, we have
+to do a budget in ubifs_dirty_inode() by ourselvies.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/ubifs/super.c | 30 ++++++++++++++++++++++++++++++
- fs/ubifs/ubifs.h |  7 +++++++
- 2 files changed, 37 insertions(+)
+ fs/ubifs/super.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 161b1a6..2491fff 100644
+index 2491fff..bc57685 100644
 --- a/fs/ubifs/super.c
 +++ b/fs/ubifs/super.c
-@@ -36,6 +36,7 @@
- #include <linux/mount.h>
- #include <linux/math64.h>
- #include <linux/writeback.h>
-+#include <linux/quotaops.h>
- #include <linux/cdev.h>
- #include "ubifs.h"
+@@ -383,15 +383,38 @@ done:
+ 	clear_inode(inode);
+ }
  
-@@ -439,6 +440,12 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
- 	else if (c->mount_opts.chk_data_crc == 1)
- 		seq_puts(s, ",no_chk_data_crc");
- 
-+	if (c->usrquota)
-+		seq_puts(s, ",usrquota");
++/*
++ * In theory, ubifs should take the full control of dirty<->clean
++ * of an inode with ui->ui_mutex. But there are callers of
++ * ubifs_dirty_inode in vfs without holding ui->ui_mutex and
++ * budgeting. So when we found the ui_mutex is not locked, we have
++ * to lock ui->ui_mutex by itself and do a budget by itself.
++ */
+ static void ubifs_dirty_inode(struct inode *inode, int flags)
+ {
+         struct ubifs_inode *ui = ubifs_inode(inode);
++	int locked = mutex_is_locked(&ui->ui_mutex);
++	struct ubifs_info *c = inode->i_sb->s_fs_info;
++	int ret = 0;
 +
-+	if (c->grpquota)
-+		seq_puts(s, ",grpquota");
-+
- 	if (c->mount_opts.override_compr) {
- 		seq_printf(s, ",compr=%s",
- 			   ubifs_compr_name(c->mount_opts.compr_type));
-@@ -930,6 +937,10 @@ enum {
- 	Opt_chk_data_crc,
- 	Opt_no_chk_data_crc,
- 	Opt_override_compr,
-+	Opt_ignore,
-+	Opt_quota,
-+	Opt_usrquota,
-+	Opt_grpquota,
- 	Opt_err,
- };
++	if (!locked)
++		mutex_lock(&ui->ui_mutex);
  
-@@ -941,6 +952,10 @@ static const match_table_t tokens = {
- 	{Opt_chk_data_crc, "chk_data_crc"},
- 	{Opt_no_chk_data_crc, "no_chk_data_crc"},
- 	{Opt_override_compr, "compr=%s"},
-+	{Opt_ignore, "noquota"},
-+	{Opt_quota, "quota"},
-+	{Opt_usrquota, "usrquota"},
-+	{Opt_grpquota, "grpquota"},
- 	{Opt_err, NULL},
- };
+-	ubifs_assert(mutex_is_locked(&ui->ui_mutex));
+ 	if (!ui->dirty) {
++		if (!locked) {
++			struct ubifs_budget_req req = { .dirtied_ino = 1,
++				   .dirtied_ino_d = ALIGN(ui->data_len, 8) };
++			ret = ubifs_budget_space(c, &req);
++			if (ret)
++				goto out;
++		}
+ 		ui->dirty = 1;
+ 		dbg_gen("inode %lu",  inode->i_ino);
+ 	}
++out:
++	if (!locked)
++		mutex_unlock(&ui->ui_mutex);
++	return;
+ }
  
-@@ -1041,6 +1056,21 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
- 			c->default_compr = c->mount_opts.compr_type;
- 			break;
- 		}
-+#ifdef CONFIG_QUOTA
-+		case Opt_quota:
-+		case Opt_usrquota:
-+			c->usrquota = 1;
-+			break;
-+		case Opt_grpquota:
-+			c->grpquota = 1;
-+			break;
-+#else
-+		case Opt_quota:
-+		case Opt_usrquota:
-+		case Opt_grpquota:
-+			ubifs_err(c, "quota operations not supported");
-+			break;
-+#endif
- 		default:
- 		{
- 			unsigned long flag;
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index c48fb41..3b5a204 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -418,6 +418,9 @@ struct ubifs_inode {
- 	loff_t synced_i_size;
- 	loff_t ui_size;
- 	int flags;
-+#ifdef CONFIG_QUOTA
-+	struct dquot *i_dquot[MAXQUOTAS];
-+#endif
- 	pgoff_t last_page_read;
- 	pgoff_t read_in_a_row;
- 	int data_len;
-@@ -1039,6 +1042,8 @@ struct ubifs_debug_info;
-  * @bulk_read: enable bulk-reads
-  * @default_compr: default compression algorithm (%UBIFS_COMPR_LZO, etc)
-  * @rw_incompat: the media is not R/W compatible
-+ * @usrquota: enable usrquota
-+ * @grpquota: enable grpquota
-  *
-  * @tnc_mutex: protects the Tree Node Cache (TNC), @zroot, @cnext, @enext, and
-  *             @calc_idx_sz
-@@ -1280,6 +1285,8 @@ struct ubifs_info {
- 	unsigned int bulk_read:1;
- 	unsigned int default_compr:2;
- 	unsigned int rw_incompat:1;
-+	unsigned int usrquota:1;
-+	unsigned int grpquota:1;
- 
- 	struct mutex tnc_mutex;
- 	struct ubifs_zbranch zroot;
+ static int ubifs_statfs(struct dentry *dentry, struct kstatfs *buf)
 -- 
 1.8.4.2
