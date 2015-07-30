@@ -1,16 +1,26 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKmjA-0001PL-6L
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 12:14:25 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [RFC PATCH] mtd: add an MTD_IS_PARTITION flag
-Date: Thu, 30 Jul 2015 14:14:00 +0200
-Message-Id: <1438258440-21459-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mx1.redhat.com ([209.132.183.28])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKmkX-0003Tq-Aw
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 12:15:51 +0000
+Subject: Re: [PATCH v2] mtd: nand: print full chip ID
+To: Michal Suchanek <hramrach@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ linux-sunxi <linux-sunxi@googlegroups.com>
+References: <1438192434-18363-1-git-send-email-hdegoede@redhat.com>
+ <1438192434-18363-4-git-send-email-hdegoede@redhat.com>
+ <20150730091730.1774291d@bbrezillon>
+ <CAOMqctSvTiDgbmjvkpF=GiJa6Zi8avaAqoRmvgJvYuhaDHuwPw@mail.gmail.com>
+ <7db2069b03cd249eed3d76a74bd1bfc83f2290be.1438255877.git.hramrach@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <55BA155D.6000205@redhat.com>
+Date: Thu, 30 Jul 2015 14:15:25 +0200
+MIME-Version: 1.0
+In-Reply-To: <7db2069b03cd249eed3d76a74bd1bfc83f2290be.1438255877.git.hramrach@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +30,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add an MTD_IS_PARTITION flag so that the test to check whether an
-MTD device is a partition or not is faster.
-This also allows user-space programs to know whether they are
-manipulating a partition or a real device.
+Hi,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/mtdpart.c      | 14 ++------------
- include/uapi/mtd/mtd-abi.h |  1 +
- 2 files changed, 3 insertions(+), 12 deletions(-)
+On 30-07-15 13:52, Michal Suchanek wrote:
+> Full chip ID is printed so user has data to paste from syslog in case
+> of chip misidentification.
+>
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+>
+> ---
+> v2:
+>
+>   - remove superfluous hunk
+>   - join printed lines
+> ---
+>   drivers/mtd/nand/nand_base.c | 22 ++++++++++++++++++----
+>   1 file changed, 18 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index ceb68ca..7c10e06 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3631,6 +3631,22 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+>   }
+>
+>   /*
+> + * Print full detail of chip ID read from chip.
+> + */
+> +static void nand_print_chip_info(int maf_id, int dev_id, u8 id_data[8])
+> +{
+> +	u8 delim[8] = { [0 ... 7] = ',' };
+> +
+> +	/* Kernel inserts newline after every other printk so format in one go. */
+> +	delim[7] = ' ';
+> +	delim[nand_id_len(id_data, 8) - 1] = ';';
+> +	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x, ID data: 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c\n",
+> +		maf_id, dev_id,
+> +		id_data[0], delim[0], id_data[1], delim[1], id_data[2], delim[2], id_data[3], delim[3],
+> +		id_data[4], delim[4], id_data[5], delim[5], id_data[6], delim[6], id_data[7], delim[7]);
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 919a936..3dc479f 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -370,6 +370,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	/* set up the MTD object for this partition */
- 	slave->mtd.type = master->type;
- 	slave->mtd.flags = master->flags & ~part->mask_flags;
-+	slave->mtd.flags |= MTD_IS_PARTITION;
- 	slave->mtd.size = part->size;
- 	slave->mtd.writesize = master->writesize;
- 	slave->mtd.writebufsize = master->writebufsize;
-@@ -779,18 +780,7 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
- 
- int mtd_is_partition(const struct mtd_info *mtd)
- {
--	struct mtd_part *part;
--	int ispart = 0;
--
--	mutex_lock(&mtd_partitions_mutex);
--	list_for_each_entry(part, &mtd_partitions, list)
--		if (&part->mtd == mtd) {
--			ispart = 1;
--			break;
--		}
--	mutex_unlock(&mtd_partitions_mutex);
--
--	return ispart;
-+	return mtd->flags & MTD_IS_PARTITION;
- }
- EXPORT_SYMBOL_GPL(mtd_is_partition);
- 
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index 763bb69..ffc1903 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -103,6 +103,7 @@ struct mtd_write_req {
- #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
- #define MTD_NO_ERASE		0x1000	/* No erase necessary */
- #define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
-+#define MTD_IS_PARTITION	0x4000	/* Device is an MTD partition */
- 
- /* Some common devices / combinations of capabilities */
- #define MTD_CAP_ROM		0
--- 
-1.9.1
+These lines are longer then 80 chars, that is allowed only for lines ending with "...",
+
+Which is why the version of this patch I submitted upstream had:
+
++		id_data[0], delim[0], id_data[1], delim[1],
++		id_data[2], delim[2], id_data[3], delim[3],
++		id_data[4], delim[4], id_data[5], delim[5],
++		id_data[6], delim[6], id_data[7], delim[7]);
+
+Other then that this version looks good to me, and I agree that having this
+info as non pr_debug is quite useful so that if (variants of) boards show up
+with a nand with an unknown nand id, but one which the auto-detect code
+does handle, we will still know and we can add an entry to the id table
+for the nand to enable extra features (higher speed, special read retry
+logic). This is quite likely to happen with e.g. the popular mk802 hdmi
+tv sticks which have a single dts file for all of them, but come with
+different nand chips based on the exact production run.
+
+Regards,
+
+Hans
+
+
+> +}
+> +
+> +/*
+>    * Get the flash and manufacturer id and lookup if the type is supported.
+>    */
+>   static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+> @@ -3743,8 +3759,7 @@ ident_done:
+>   		 * Check, if buswidth is correct. Hardware drivers should set
+>   		 * chip correct!
+>   		 */
+> -		pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+> -			*maf_id, *dev_id);
+> +		nand_print_chip_info(*maf_id, *dev_id, id_data);
+>   		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
+>   		pr_warn("bus width %d instead %d bit\n",
+>   			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
+> @@ -3775,8 +3790,7 @@ ident_done:
+>   	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+>   		chip->cmdfunc = nand_command_lp;
+>
+> -	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+> -		*maf_id, *dev_id);
+> +	nand_print_chip_info(*maf_id, *dev_id, id_data);
+>
+>   	if (chip->onfi_version)
+>   		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
+>
