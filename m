@@ -1,16 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKgnb-0006If-S6
+ id 1ZKgnc-0006Ib-AB
  for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:37 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 11/35] fs: quota: make quota support fs which is running on
- char dev
-Date: Thu, 30 Jul 2015 13:48:07 +0800
-Message-ID: <1438235311-23788-12-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 12/35] ubi: introduce a interface to get cdev in ubi_volume
+Date: Thu, 30 Jul 2015 13:48:08 +0800
+Message-ID: <1438235311-23788-13-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,75 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-So far, we have done all preparation. Then let's add some
-code to support char dev fs in quotactl.
+We want to fill the sb->s_cdev in ubifs_fill_super(),
+so, we need to add a interface in ubi to get the cdev
+of an ubi_volume.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/quota/quota.c | 30 +++++++++++++++++++++---------
- 1 file changed, 21 insertions(+), 9 deletions(-)
+ drivers/mtd/ubi/kapi.c  | 6 ++++++
+ include/linux/mtd/ubi.h | 1 +
+ 2 files changed, 7 insertions(+)
 
-diff --git a/fs/quota/quota.c b/fs/quota/quota.c
-index 86ded73..3f9acea 100644
---- a/fs/quota/quota.c
-+++ b/fs/quota/quota.c
-@@ -17,6 +17,7 @@
- #include <linux/quotaops.h>
- #include <linux/types.h>
- #include <linux/writeback.h>
-+#include <linux/cdev.h>
- 
- static int check_quotactl_permission(struct super_block *sb, int type, int cmd,
- 				     qid_t id)
-@@ -726,29 +727,40 @@ static int quotactl_cmd_write(int cmd)
-  */
- static struct super_block *quotactl_block(const char __user *special, int cmd)
- {
-+	struct super_block *sb = NULL;
-+	struct filename *tmp = getname(special);
-+	struct cdev *cdev = NULL;
-+
- #ifdef CONFIG_BLOCK
- 	struct block_device *bdev;
--	struct super_block *sb;
--	struct filename *tmp = getname(special);
- 
- 	if (IS_ERR(tmp))
- 		return ERR_CAST(tmp);
- 	bdev = lookup_bdev(tmp->name);
--	putname(tmp);
- 	if (IS_ERR(bdev))
--		return ERR_CAST(bdev);
-+		goto not_block;
- 	if (quotactl_cmd_write(cmd))
- 		sb = get_super_thawed(bdev);
- 	else
- 		sb = get_super(bdev);
- 	bdput(bdev);
--	if (!sb)
--		return ERR_PTR(-ENODEV);
-+	goto out;
- 
--	return sb;
--#else
--	return ERR_PTR(-ENODEV);
-+not_block:
- #endif
-+	cdev = lookup_cdev(tmp->name);
-+	if (IS_ERR(cdev))
-+		goto out;
-+	if (quotactl_cmd_write(cmd))
-+		sb = get_super_cdev_thawed(cdev);
-+	else
-+		sb = get_super_cdev(cdev);
-+	cdev_put(cdev);
-+out:
-+	putname(tmp);
-+	if (sb)
-+		return sb;
-+	return ERR_PTR(-ENODEV);
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index e844887..d3d1982 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -862,3 +862,9 @@ int ubi_unregister_volume_notifier(struct notifier_block *nb)
+ 	return blocking_notifier_chain_unregister(&ubi_notifiers, nb);
  }
+ EXPORT_SYMBOL_GPL(ubi_unregister_volume_notifier);
++
++inline struct cdev *ubi_get_volume_cdev(struct ubi_volume_desc *desc)
++{
++	return &(desc->vol->cdev);
++}
++EXPORT_SYMBOL_GPL(ubi_get_volume_cdev);
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index 1e271cb..301c6e9 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -261,6 +261,7 @@ int ubi_leb_map(struct ubi_volume_desc *desc, int lnum);
+ int ubi_is_mapped(struct ubi_volume_desc *desc, int lnum);
+ int ubi_sync(int ubi_num);
+ int ubi_flush(int ubi_num, int vol_id, int lnum);
++struct cdev *ubi_get_volume_cdev(struct ubi_volume_desc *desc);
  
  /*
+  * This function is the same as the 'ubi_leb_read()' function, but it does not
 -- 
 1.8.4.2
