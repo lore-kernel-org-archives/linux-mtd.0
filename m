@@ -1,24 +1,21 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKmkX-0003Tq-Aw
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 12:15:51 +0000
-Subject: Re: [PATCH v2] mtd: nand: print full chip ID
-To: Michal Suchanek <hramrach@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-sunxi <linux-sunxi@googlegroups.com>
+ id 1ZKmlj-0004Al-K5
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 12:17:04 +0000
+Subject: Re: [linux-sunxi] Re: [PATCH 3/4] mtd: nand: nand_get_flash_type:
+ Print detected ECC strength and size
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 References: <1438192434-18363-1-git-send-email-hdegoede@redhat.com>
- <1438192434-18363-4-git-send-email-hdegoede@redhat.com>
- <20150730091730.1774291d@bbrezillon>
- <CAOMqctSvTiDgbmjvkpF=GiJa6Zi8avaAqoRmvgJvYuhaDHuwPw@mail.gmail.com>
- <7db2069b03cd249eed3d76a74bd1bfc83f2290be.1438255877.git.hramrach@gmail.com>
+ <1438192434-18363-3-git-send-email-hdegoede@redhat.com>
+ <20150730092333.59705873@bbrezillon>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-sunxi@googlegroups.com
 From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <55BA155D.6000205@redhat.com>
-Date: Thu, 30 Jul 2015 14:15:25 +0200
+Message-ID: <55BA15A8.1040309@redhat.com>
+Date: Thu, 30 Jul 2015 14:16:40 +0200
 MIME-Version: 1.0
-In-Reply-To: <7db2069b03cd249eed3d76a74bd1bfc83f2290be.1438255877.git.hramrach@gmail.com>
+In-Reply-To: <20150730092333.59705873@bbrezillon>
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,90 +29,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On 30-07-15 13:52, Michal Suchanek wrote:
-> Full chip ID is printed so user has data to paste from syslog in case
-> of chip misidentification.
+On 30-07-15 09:23, Boris Brezillon wrote:
+> Hi Hans,
 >
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> On Wed, 29 Jul 2015 19:53:53 +0200
+> Hans de Goede <hdegoede@redhat.com> wrote:
 >
-> ---
-> v2:
+>> Print the detected ECC strength and size from nand_get_flash_type().
 >
->   - remove superfluous hunk
->   - join printed lines
-> ---
->   drivers/mtd/nand/nand_base.c | 22 ++++++++++++++++++----
->   1 file changed, 18 insertions(+), 4 deletions(-)
+> Indeed, that's an interesting information.
 >
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index ceb68ca..7c10e06 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3631,6 +3631,22 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
->   }
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>>   drivers/mtd/nand/nand_base.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index f3fefbf..e2e2690 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -4433,9 +4433,10 @@ ident_done:
+>>   		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
+>>   				type->name);
+>>
+>> -	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
+>> +	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d, ECC strength %d size %d\n",
 >
->   /*
-> + * Print full detail of chip ID read from chip.
-> + */
-> +static void nand_print_chip_info(int maf_id, int dev_id, u8 id_data[8])
-> +{
-> +	u8 delim[8] = { [0 ... 7] = ',' };
-> +
-> +	/* Kernel inserts newline after every other printk so format in one go. */
-> +	delim[7] = ' ';
-> +	delim[nand_id_len(id_data, 8) - 1] = ';';
-> +	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x, ID data: 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c\n",
-> +		maf_id, dev_id,
-> +		id_data[0], delim[0], id_data[1], delim[1], id_data[2], delim[2], id_data[3], delim[3],
-> +		id_data[4], delim[4], id_data[5], delim[5], id_data[6], delim[6], id_data[7], delim[7]);
+> How about the follwing formalism ?
+>
+> 	pr_info("%d MiB, type: %s, erase size: %d KiB, page size: %d, OOB size: %d, ECC: %dbits/%dbytes\n",
+>
+> or just
+>
+> 	pr_info("%d MiB, type: %s, erase size: %d KiB, page size: %d, OOB size: %d, ECC: %d/%d\n",
 
-These lines are longer then 80 chars, that is allowed only for lines ending with "...",
-
-Which is why the version of this patch I submitted upstream had:
-
-+		id_data[0], delim[0], id_data[1], delim[1],
-+		id_data[2], delim[2], id_data[3], delim[3],
-+		id_data[4], delim[4], id_data[5], delim[5],
-+		id_data[6], delim[6], id_data[7], delim[7]);
-
-Other then that this version looks good to me, and I agree that having this
-info as non pr_debug is quite useful so that if (variants of) boards show up
-with a nand with an unknown nand id, but one which the auto-detect code
-does handle, we will still know and we can add an entry to the id table
-for the nand to enable extra features (higher speed, special read retry
-logic). This is quite likely to happen with e.g. the popular mk802 hdmi
-tv sticks which have a single dts file for all of them, but come with
-different nand chips based on the exact production run.
+Both works for me too, Brian can you let us know which version you
+prefer and/or just adjust this when you merge it ?
 
 Regards,
 
 Hans
-
-
-> +}
-> +
-> +/*
->    * Get the flash and manufacturer id and lookup if the type is supported.
->    */
->   static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
-> @@ -3743,8 +3759,7 @@ ident_done:
->   		 * Check, if buswidth is correct. Hardware drivers should set
->   		 * chip correct!
->   		 */
-> -		pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
-> -			*maf_id, *dev_id);
-> +		nand_print_chip_info(*maf_id, *dev_id, id_data);
->   		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
->   		pr_warn("bus width %d instead %d bit\n",
->   			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
-> @@ -3775,8 +3790,7 @@ ident_done:
->   	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
->   		chip->cmdfunc = nand_command_lp;
->
-> -	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
-> -		*maf_id, *dev_id);
-> +	nand_print_chip_info(*maf_id, *dev_id, id_data);
->
->   	if (chip->onfi_version)
->   		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
->
