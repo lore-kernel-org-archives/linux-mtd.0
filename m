@@ -1,19 +1,26 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKh5N-0002r3-OP
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 06:12:59 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <eguan@redhat.com>, <fstests@vger.kernel.org>, <dedekind1@gmail.com>,
- <richard.weinberger@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 4/5] xfstest: introduce subtestset for ubifs
-Date: Thu, 30 Jul 2015 14:06:56 +0800
-Message-ID: <1438236417-24612-5-git-send-email-yangds.fnst@cn.fujitsu.com>
-In-Reply-To: <1438236417-24612-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-References: <1438236417-24612-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKhjL-0000JM-2J
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 06:54:15 +0000
+Message-ID: <55B9C9F9.3030003@codeaurora.org>
+Date: Thu, 30 Jul 2015 12:23:45 +0530
+From: Archit Taneja <architt@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: Stephen Boyd <sboyd@codeaurora.org>
+CC: dehrenberg@google.com, linux-arm-msm@vger.kernel.org,
+ cernekee@gmail.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, agross@codeaurora.org,
+ computersforpeace@gmail.com
+Subject: Re: [PATCH v2 2/5] mtd: nand: Qualcomm NAND controller driver
+References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
+ <1437474886-6209-1-git-send-email-architt@codeaurora.org>
+ <1437474886-6209-3-git-send-email-architt@codeaurora.org>
+ <55B2DDA3.40306@codeaurora.org> <55B7063F.9090102@codeaurora.org>
+ <55B830FE.2020601@codeaurora.org> <55B86142.9090806@codeaurora.org>
+ <20150729183358.GD3159@codeaurora.org>
+In-Reply-To: <20150729183358.GD3159@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,115 +30,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit creat a subdir in tests named as ubifs for
-ubifs specified tests. And introduce the ubifs/001 to
-it.
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
- tests/ubifs/001     | 71 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- tests/ubifs/001.out |  1 +
- tests/ubifs/group   |  6 +++++
- 3 files changed, 78 insertions(+)
- create mode 100755 tests/ubifs/001
- create mode 100644 tests/ubifs/001.out
- create mode 100644 tests/ubifs/group
 
-diff --git a/tests/ubifs/001 b/tests/ubifs/001
-new file mode 100755
-index 0000000..9107915
---- /dev/null
-+++ b/tests/ubifs/001
-@@ -0,0 +1,71 @@
-+#! /bin/bash
-+# FS QA Test 001
-+#
-+# This is a test for mkfs.ubifs, mkfs.ubifs accept a -r option
-+# to build a file system from a directory. This case is testing
-+# this option and check the result of it.
-+#
-+#-----------------------------------------------------------------------
-+# Copyright (c) 2015 Dongsheng Yang <yangds.fnst@cn.fujitsu.com>.  All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#-----------------------------------------------------------------------
-+#
-+
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=`mktemp -d`
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# real QA test starts here
-+_supported_fs ubifs
-+_supported_os Linux
-+_require_test
-+_require_scratch
-+_require_fssum
-+_need_to_be_root
-+
-+rm -f $seqres.full
-+
-+rootdir=$tmp/root
-+mkdir $rootdir
-+
-+for i in $(seq 1 10); do
-+	dd if=/dev/urandom of=$rootdir/$i bs=1M count=1 >> $seqres.full 2>&1 || _fail "dd failed"
-+done
-+
-+run_check $FSSUM_PROG -A -f -w $tmp/fssum $rootdir
-+
-+_scratch_mkfs "-r $rootdir" >/dev/null 2>&1
-+_scratch_mount
-+
-+run_check $FSSUM_PROG -r $tmp/fssum $SCRATCH_MNT 2>> $seqres.full
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/ubifs/001.out b/tests/ubifs/001.out
-new file mode 100644
-index 0000000..097d046
---- /dev/null
-+++ b/tests/ubifs/001.out
-@@ -0,0 +1 @@
-+QA output created by 001
-diff --git a/tests/ubifs/group b/tests/ubifs/group
-new file mode 100644
-index 0000000..45516bc
---- /dev/null
-+++ b/tests/ubifs/group
-@@ -0,0 +1,6 @@
-+# QA groups control
-+#
-+# define groups and default group owners
-+# do not start group name with a digit
-+#
-+001 auto quick mkfs
+On 7/30/2015 12:03 AM, Stephen Boyd wrote:
+> On 07/29, Archit Taneja wrote:
+>> On 07/29/2015 07:18 AM, Stephen Boyd wrote:
+>>> On 07/27/2015 09:34 PM, Archit Taneja wrote:
+>>>> Hi,
+>>>>
+>>>> On 07/25/2015 06:21 AM, Stephen Boyd wrote:
+>>>>> On 07/21/2015 03:34 AM, Archit Taneja wrote:
+>>>>>
+>>>>>> +              int size)
+>>>>>> +{Looks like a
+>>>>>> +    struct desc_info *desc;
+>>>>>> +    struct dma_async_tx_descriptor *dma_desc;
+>>>>>> +    struct scatterlist *sgl;
+>>>>>> +    int r;
+>>>>>> +
+>>>>>> +    desc = kzalloc(sizeof(*desc), GFP_KERNEL);
+>>>>>> +    if (!desc)
+>>>>>> +        return -ENOMEM;
+>>>>>> +
+>>>>>> +    list_add_tail(&desc->list, &this->list);
+>>>>>> +
+>>>>>> +    sgl = &desc->sgl;
+>>>>>> +
+>>>>>> +    sg_init_one(sgl, vaddr, size);
+>>>>>> +
+>>>>>> +    desc->dir = DMA_MEM_TO_DEV;
+>>>>>> +
+>>>>>> +    r = dma_map_sg(this->dev, sgl, 1, desc->dir);
+>>>>>> +    if (r == 0)
+>>>>>> +        goto err;
+>>>>>
+>>>>> Should we return an error in this case? Looks like return 0.
+>>>>
+>>>> dma_map_sg returns the number of sg entries successfully mapped. In
+>>>> this case, it should be 1.
+>>>
+>>> Right, but this function returns 0 (success?) if we failed to map anything.
+>>
+>> Yes. The return value is number of entries successfully mapped.
+>> dma_map_sg is a macro that is replaced by dma_map_sg_attrs. Its
+>> comment
+>> says:
+>>
+>> "dma_maps_sg_attrs returns 0 on error and > 0 on success. It should
+>> never return a value < 0."
+>
+> Yes, and so this function that calls dma_map_sg() is going to
+> return 0 to the caller when it didn't do what it was asked to do?
+
+Ah, I get your point now :p. I thought you were referring to the
+return value of dma_map_sg, and not write_data_dma. Will fix this.
+
+Archit
+
 -- 
-1.8.4.2
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
