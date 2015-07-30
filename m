@@ -1,16 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKgng-0006IZ-L3
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:43 +0000
+ id 1ZKgni-0006Ib-87
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:44 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 19/35] ubifs: budget for inode in ubifs_dirty_inode if
- necessary
-Date: Thu, 30 Jul 2015 13:48:15 +0800
-Message-ID: <1438235311-23788-20-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 21/35] ubifs: disable quota in ubifs_put_super
+Date: Thu, 30 Jul 2015 13:48:17 +0800
+Message-ID: <1438235311-23788-22-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,59 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In ubifs, we have to do a budget for inode before marking
-it as dirty. But sometimes, we would call dirty_inode in vfs
-which will not do a budget for inode. In this case, we have
-to do a budget in ubifs_dirty_inode() by ourselvies.
+We need to disable quota in umounting ubifs. So we have to
+disable quota in ubifs_put_super(). But quota disable will
+write quota file, and we have to budget for it.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/ubifs/super.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ fs/ubifs/super.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 2491fff..bc57685 100644
+index 3609d7b..7031c16 100644
 --- a/fs/ubifs/super.c
 +++ b/fs/ubifs/super.c
-@@ -383,15 +383,38 @@ done:
- 	clear_inode(inode);
- }
+@@ -2027,6 +2027,8 @@ static void ubifs_put_super(struct super_block *sb)
  
-+/*
-+ * In theory, ubifs should take the full control of dirty<->clean
-+ * of an inode with ui->ui_mutex. But there are callers of
-+ * ubifs_dirty_inode in vfs without holding ui->ui_mutex and
-+ * budgeting. So when we found the ui_mutex is not locked, we have
-+ * to lock ui->ui_mutex by itself and do a budget by itself.
-+ */
- static void ubifs_dirty_inode(struct inode *inode, int flags)
- {
-         struct ubifs_inode *ui = ubifs_inode(inode);
-+	int locked = mutex_is_locked(&ui->ui_mutex);
-+	struct ubifs_info *c = inode->i_sb->s_fs_info;
-+	int ret = 0;
-+
-+	if (!locked)
-+		mutex_lock(&ui->ui_mutex);
+ 	ubifs_msg(c, "un-mount UBI device %d", c->vi.ubi_num);
  
--	ubifs_assert(mutex_is_locked(&ui->ui_mutex));
- 	if (!ui->dirty) {
-+		if (!locked) {
-+			struct ubifs_budget_req req = { .dirtied_ino = 1,
-+				   .dirtied_ino_d = ALIGN(ui->data_len, 8) };
-+			ret = ubifs_budget_space(c, &req);
-+			if (ret)
-+				goto out;
-+		}
- 		ui->dirty = 1;
- 		dbg_gen("inode %lu",  inode->i_ino);
- 	}
-+out:
-+	if (!locked)
-+		mutex_unlock(&ui->ui_mutex);
-+	return;
- }
- 
- static int ubifs_statfs(struct dentry *dentry, struct kstatfs *buf)
++	if (!c->ro_mount)
++		dquot_disable(sb, -1, DQUOT_USAGE_ENABLED | DQUOT_LIMITS_ENABLED);
+ 	/*
+ 	 * The following asserts are only valid if there has not been a failure
+ 	 * of the media. For example, there will be dirty inodes if we failed
 -- 
 1.8.4.2
