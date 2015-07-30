@@ -1,23 +1,21 @@
-From: Marek Vasut <marex@denx.de>
-To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 08/11] MTD: m25p80: Add option to limit SPI transfer size.
-Date: Thu, 30 Jul 2015 13:24:05 +0200
-Cc: Vinod Koul <vinod.koul@intel.com>,
+Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKmNz-0007mt-NQ
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 11:52:32 +0000
+Date: 30 Jul 2015 11:52:00 -0000
+In-Reply-To: <CAOMqctSvTiDgbmjvkpF=GiJa6Zi8avaAqoRmvgJvYuhaDHuwPw@mail.gmail.com>
+References: <1438192434-18363-1-git-send-email-hdegoede@redhat.com>
+ <1438192434-18363-4-git-send-email-hdegoede@redhat.com>
+ <20150730091730.1774291d@bbrezillon>
+ <CAOMqctSvTiDgbmjvkpF=GiJa6Zi8avaAqoRmvgJvYuhaDHuwPw@mail.gmail.com>
+Message-Id: <7db2069b03cd249eed3d76a74bd1bfc83f2290be.1438255877.git.hramrach@gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Subject: [PATCH v2] mtd: nand: print full chip ID
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Hans de Goede <hdegoede@redhat.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi" <linux-spi@vger.kernel.org>,
- dmaengine <dmaengine@vger.kernel.org>
-References: <cover.1433364398.git.hramrach@gmail.com>
- <201507271943.32453.marex@denx.de>
- <CAOMqctRPOv3_YZqS-g+SuuMT5UpOJMFs1OtBuZAhLR_SZnfTyw@mail.gmail.com>
-In-Reply-To: <CAOMqctRPOv3_YZqS-g+SuuMT5UpOJMFs1OtBuZAhLR_SZnfTyw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201507301324.05721.marex@denx.de>
+ linux-sunxi <linux-sunxi@googlegroups.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,103 +25,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, July 27, 2015 at 10:43:05 PM, Michal Suchanek wrote:
-> On 27 July 2015 at 19:43, Marek Vasut <marex@denx.de> wrote:
-> > On Monday, July 27, 2015 at 11:46:25 AM, Michal Suchanek wrote:
-> >> On 24 July 2015 at 10:34, Marek Vasut <marex@denx.de> wrote:
-> >> > On Thursday, July 23, 2015 at 07:03:47 PM, Michal Suchanek wrote:
-> >> Ok, so here is some summary.
-> >> 
-> >> I have a NOR flash attached to a s3c64xx SPI controller with 64byte
-> >> fifo and a pl330 dma controller.
-> >> 
-> >> Normally DMA controller is used for transfers that do not fit into the
-> >> FIFO.
-> >> 
-> >> I tried adding the flash memory ID to the spi-nor driver table and
-> >> adding a DT node for it.
-> >> 
-> >> The flash is rated at 120MHz so I used that speed but the ID was
-> >> bit-shifted and identification failed. There is DT property
-> >> samsung,spi-feedback-delay for addressing this and at 120MHz it must
-> >> be 2 or 3 on this board. 40MHz works with default value 0.
-> >> 
-> >> The next step after identification worked was to try reading the flash
-> >> content. For this the DMA controller is used because data is
-> >> transferred in blocks larger than 64 bytes. When reading the whole 4MB
-> >> flash the transfer failed silently. I got a 4MB file of all ones or
-> >> all zeroes.
-> >> 
-> >> It turns out that
-> >> 
-> >>  - the pl330 locks up when transfering large amount of data.
-> >> 
-> >> Specifically, the maximum power of 2 sized transfer at 120MHz is 128
-> >> bytes and 64k at 40MHz. Transferring more than this results in the
-> >> pl330 locking up and never signalling completion of the transfer.
-> > 
-> > Hypothesis:
-> > I think this might just be that the controller didn't catch all the
-> > inbound clock ticks and thus counted less inbound data than it was
-> > set up to receive. The controller thus waits for more data.
-> 
-> The flash chip can transfer data as long as you keep the clock going,
-> especially when you transfer 64k off a 4M flash.
-> 
-> The read command is bound just by stopping the clock. There is always
-> more data to be had.
+Full chip ID is printed so user has data to paste from syslog in case
+of chip misidentification.
 
-Sure, if you keep clocking the chip, the data will keep going. Is the
-chip being clocked ?
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 
-Doesn't the PL330 have some kind of a counter register where you can check
-how much data were received so far ? That should be sufficient to verify
-this hypothesis of mine.
+---
+v2:
 
-> >> Data
-> >> is left in FIFO which causes subsequent commands to fail since garbage
-> >> is returned instead of command reply. Also subsequent read may cause
-> >> I/O error or or return an empty page depending on the garbage around.
-> > 
-> > So the driver for the DMA controller might need to be augmented to handle
-> > this case -- add a timeout and in case DMA times out, drain the FIFO to
-> > make sure subsequent transfers do not fail.
-> 
-> There is no way to add timeout in the DMA driver since it does not
-> know the SPI clock.
-> 
-> The timeout is handled by the SPI driver and it should be possible to
-> augment it to drain the FIFO when DMA fails so long as FIFO level is
-> readable somewhere.
+ - remove superfluous hunk
+ - join printed lines
+---
+ drivers/mtd/nand/nand_base.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-If the DMA doesn't complete in certain amount of time, it should time out
-I'd say. Don't you think ?
-
-> >> - the I/O errors are not checked in spi-nor at all which leads to
-> >> silent data corruption.
-> >> 
-> >> On a suggestion that this may improve reliability I changed the
-> >> s3c64xx driver to use DMA for all transfers. This caused
-> >> identification to fail in spin-nor because the ID was prefixed with
-> >> extra 00  byte. Testing with spidev confirmed that everything is
-> >> prefixed with extra 00.
-> > 
-> > The determinism of this is in fact excellent news.
-> > 
-> >> Also when the DMA controller locked up no
-> >> transfers were possible anymore. When DMA was not used for sending
-> >> commands the controller would recover on next command. I made the
-> >> option to always use DMA configurable and it turns out that the
-> >> returned data is prefixed with 00 only when no transfer without DMA
-> >> was ever made. Loading the spi-nor driver with the dma-only option off
-> >> and then with dma-only option on results in correct operation. Only
-> >> loading the dma-only driver first causes the 00 prefix.
-> > 
-> > Can we conclude that the PIO codepath somehow programs a register
-> > somewhere which gets rid of this 0x00 prefix ? If so, this should then
-> > also be part of the DMA codepath, or even better, this should be set in
-> > probe() somewhere.
-> 
-> Yes, it looks like it.
-
-Did you find what this could be please ?
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ceb68ca..7c10e06 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3631,6 +3631,22 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /*
++ * Print full detail of chip ID read from chip.
++ */
++static void nand_print_chip_info(int maf_id, int dev_id, u8 id_data[8])
++{
++	u8 delim[8] = { [0 ... 7] = ',' };
++
++	/* Kernel inserts newline after every other printk so format in one go. */
++	delim[7] = ' ';
++	delim[nand_id_len(id_data, 8) - 1] = ';';
++	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x, ID data: 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c\n",
++		maf_id, dev_id,
++		id_data[0], delim[0], id_data[1], delim[1], id_data[2], delim[2], id_data[3], delim[3],
++		id_data[4], delim[4], id_data[5], delim[5], id_data[6], delim[6], id_data[7], delim[7]);
++}
++
++/*
+  * Get the flash and manufacturer id and lookup if the type is supported.
+  */
+ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+@@ -3743,8 +3759,7 @@ ident_done:
+ 		 * Check, if buswidth is correct. Hardware drivers should set
+ 		 * chip correct!
+ 		 */
+-		pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+-			*maf_id, *dev_id);
++		nand_print_chip_info(*maf_id, *dev_id, id_data);
+ 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
+ 		pr_warn("bus width %d instead %d bit\n",
+ 			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
+@@ -3775,8 +3790,7 @@ ident_done:
+ 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+ 		chip->cmdfunc = nand_command_lp;
+ 
+-	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+-		*maf_id, *dev_id);
++	nand_print_chip_info(*maf_id, *dev_id, id_data);
+ 
+ 	if (chip->onfi_version)
+ 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
+-- 
+2.1.4
