@@ -1,33 +1,17 @@
-MIME-Version: 1.0
-In-Reply-To: <20150729184043.GL11162@sirena.org.uk>
-References: <cover.1438170519.git.hramrach@gmail.com>
- <557c1962448393b2a8736f26bfa2a3a5ba4aeb7a.1438170519.git.hramrach@gmail.com>
- <20150729140046.GB11082@sirena.org.uk>
- <CAOMqctTZVET=U=2o65HpWSm4W660XZtYYbBND2k4u9CnfjfMhQ@mail.gmail.com>
- <20150729171613.GI11162@sirena.org.uk>
- <CAOMqctQzh69RCQu8pK1EuuYkrZsh6mg34+YWJFzSvimcK3B0rA@mail.gmail.com>
- <20150729184043.GL11162@sirena.org.uk>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 30 Jul 2015 10:24:37 +0200
-Message-ID: <CAOMqctQTc-8_rU6URCPHXno-OqH6wf_rHY4mW+Sf-epNhCwhFQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] dt: spi: s3c64xx: add compatible to
- controller-data
-To: Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Padmavathi Venna <padma.kvr@gmail.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- devicetree <devicetree@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKkeX-0003Ox-I6
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 10:01:30 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH] nand: sunxi: fix write to USER_DATA reg
+Date: Thu, 30 Jul 2015 12:01:06 +0200
+Message-Id: <1438250466-18396-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,65 +21,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29 July 2015 at 20:40, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Jul 29, 2015 at 08:21:34PM +0200, Michal Suchanek wrote:
->> On 29 July 2015 at 19:16, Mark Brown <broonie@kernel.org> wrote:
->
->> >> It will not break anything. It will just spam dmesg.
->
->> > I'm confused - if all this change does is to spam dmesg then what's the
->> > point?
->
->> Presumably when your SPI NOR flash fails to probe this message will be
->> just above and you will look into the binding doc and add the
->> compatible.
->
-> If you're looking to add a warning message when the flash device fails
-> to probe then add that in the flash driver when it detects an error,
-> this will cause needless noise for everyone else using this controller
-> purely to work around the broken binding.
+The USER_DATA register cannot be accessed using byte accessors on A13
+SoCs, thus triggering a bug when using memcpy_toio on this register.
+Declare a temporary u32 variable to store the USER_DATA value and access
+the register with writel.
 
-Technically nobody needs to see the warning with in-tree boards since
-the dts can be amended with the compatible.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/sunxi_nand.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-There is no error in flash device driver.
-
-There is only error parsing partition scheme. In my opinion this
-should never cause an error. With disk drives failure to parse
-partition table results in unpartitioned disk. As there are number of
-partitioning schemes failure to parse one still does not prevent other
-in succeding.
-
->
-> And like I say compatible really seems like it isn't an appropriate
-> property here.
-
-So to sum up the discussion adding compatible to s3c64xx
-controller-data is not desirable and making ofpart more robust is
-desirable.
-
-I think the suggestion to use a subnode for ofpart gives the most
-robust solution.
-
-Even adding compatibles to the partition subnodes ofpart still
-monopolizes the address and cells property of the mtd node which does
-not pass the 'if another driver did the same would it work together?'
-test.
-
-So my suggestion is to
-
-1) search of ofpart subnode in mtd node. If present read address and
-reg from it and search partitions as subnodes of the ofpart node. In
-this case unknown nodes can cause error.
-
-2) failing that issue a warning and try to parse ofpart partitions
-from the mtd node itself. In this case unknown nodes cannot cause
-error for compatibility with other drivers including the already
-exisitn s3c64xx controller-data node.
-
-The parser code can be the same for both cases and only operate on
-different node with a flag to reject unknown subnodes or not.
-
-Thanks
-
-Michal
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index 6f93b29..5e374ab 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -624,6 +624,8 @@ static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
+ 	writel(tmp, nfc->regs + NFC_REG_ECC_CTL);
+ 
+ 	for (i = 0; i < ecc->steps; i++) {
++		u32 user_data;
++
+ 		if (i)
+ 			chip->cmdfunc(mtd, NAND_CMD_RNDIN, i * ecc->size, -1);
+ 
+@@ -632,16 +634,16 @@ static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
+ 		offset = layout->eccpos[i * ecc->bytes] - 4 + mtd->writesize;
+ 
+ 		/* Fill OOB data in */
+-		if (oob_required) {
+-			tmp = 0xffffffff;
+-			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
+-				    4);
++		if (!oob_required) {
++			user_data = 0xffffffff;
+ 		} else {
+-			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE,
+-				    chip->oob_poi + offset - mtd->writesize,
+-				    4);
++			memcpy(&user_data,
++			       chip->oob_poi + layout->oobfree[i].offset, 4);
++			user_data = le32_to_cpu(user_data);
+ 		}
+ 
++		writel(user_data, nfc->regs + NFC_REG_USER_DATA_BASE);
++
+ 		chip->cmdfunc(mtd, NAND_CMD_RNDIN, offset, -1);
+ 
+ 		ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
+@@ -772,13 +774,13 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
+ 		/* Fill OOB data in */
+ 		if (oob_required) {
+ 			tmp = 0xffffffff;
+-			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
+-				    4);
+ 		} else {
+-			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, oob,
+-				    4);
++			memcpy(&tmp, oob, sizeof(tmp));
++			tmp = le32_to_cpu(tmp);
+ 		}
+ 
++		writel(tmp, nfc->regs + NFC_REG_USER_DATA_BASE);
++
+ 		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ACCESS_DIR |
+ 		      (1 << 30);
+ 		writel(tmp, nfc->regs + NFC_REG_CMD);
+-- 
+1.9.1
