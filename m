@@ -1,24 +1,27 @@
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKlEd-0007gk-BC
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 10:38:48 +0000
-Received: by wicmv11 with SMTP id mv11so15505494wic.0
- for <linux-mtd@lists.infradead.org>; Thu, 30 Jul 2015 03:38:25 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20150730091730.1774291d@bbrezillon>
-References: <1438192434-18363-1-git-send-email-hdegoede@redhat.com>
- <1438192434-18363-4-git-send-email-hdegoede@redhat.com>
- <20150730091730.1774291d@bbrezillon>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 30 Jul 2015 12:37:46 +0200
-Message-ID: <CAOMqctSvTiDgbmjvkpF=GiJa6Zi8avaAqoRmvgJvYuhaDHuwPw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mtd: nand: print full chip ID
+Date: Thu, 30 Jul 2015 11:51:54 +0100
+From: Mark Brown <broonie@kernel.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset=UTF-8
+Cc: Michal Suchanek <hramrach@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Padmavathi Venna <padma.kvr@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-spi@vger.kernel.org
+Message-ID: <20150730105154.GN11162@sirena.org.uk>
+References: <cover.1438170519.git.hramrach@gmail.com>
+ <557c1962448393b2a8736f26bfa2a3a5ba4aeb7a.1438170519.git.hramrach@gmail.com>
+ <20150730095051.06eff8b1@bbrezillon>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="GS4hgKuWjO35gvSO"
+Content-Disposition: inline
+In-Reply-To: <20150730095051.06eff8b1@bbrezillon>
+Subject: Re: [RFC PATCH 2/2] dt: spi: s3c64xx: add compatible to
+ controller-data
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,70 +31,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-On 30 July 2015 at 09:17, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hans, Michal,
->
-> On Wed, 29 Jul 2015 19:53:54 +0200
-> Hans de Goede <hdegoede@redhat.com> wrote:
->
->> From: Michal Suchanek <hramrach@gmail.com>
->>
->> Full chip ID is printed so user has data to paste from syslog in case
->> of chip misidentification.
->>
->> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->>  drivers/mtd/nand/nand_base.c | 28 +++++++++++++++++++++++-----
->>  1 file changed, 23 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index e2e2690..13e9938 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -4243,7 +4243,7 @@ static inline bool is_full_id_nand(struct nand_flash_dev *type)
->>  }
->>
->>  static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
->> -                struct nand_flash_dev *type, u8 *id_data, int *busw)
->> +                struct nand_flash_dev *type, const u8 *id_data, int *busw)
->>  {
->>       if (!strncmp(type->id, id_data, type->id_len)) {
->>               mtd->writesize = type->pagesize;
->> @@ -4269,6 +4269,26 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
->>  }
->>
->>  /*
->> + * Print full detail of chip ID read from chip.
->> + */
->> +static void print_nand_chip_info(int maf_id, int dev_id, u8 id_data[8])
->> +{
->> +     u8 delim[8] = { [0 ... 7] = ',' };
->> +
->> +     pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
->> +             maf_id, dev_id);
->> +
->> +     delim[7] = ' ';
->> +     delim[nand_id_len(id_data, 8) - 1] = ';';
->> +
->> +     pr_info("chip id data: 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c 0x%02x%c\n",
->> +             id_data[0], delim[0], id_data[1], delim[1],
->> +             id_data[2], delim[2], id_data[3], delim[3],
->> +             id_data[4], delim[4], id_data[5], delim[5],
->> +             id_data[6], delim[6], id_data[7], delim[7]);
->
-> This looks like debug information to me, how about using pr_debug ?
->
+--GS4hgKuWjO35gvSO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This is informative message saying that a device was detected. The
-only change is that full id is printed as part of the message. The
-same message is printed when the device fails to identify so it should
-probably be shown by default. Maybe joining it into one line to avoid
-excessive spam would be better.
+On Thu, Jul 30, 2015 at 09:50:51AM +0200, Boris Brezillon wrote:
 
-Thanks
+> Since you have to patch your DTs anyway, how about putting your
+> partitions in a subnode and patch the ofpart code to parse this subnode
+> if it is present (see the following patch).
 
-Michal
+This is the best idea, yes - if we're changing the DT for the system
+anyway then making a sane binding and using that seems better than
+trying to mitigate problems with the old bindings.
+
+--GS4hgKuWjO35gvSO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVugHFAAoJECTWi3JdVIfQH9cH/1S6NbHQrmi/jf+A98rqZo3l
+81E0I2rLeyM1yprSA9pKVHUga36sXGu6+/Dpwib19s8xr3O0qj8CLEtPguL5itz/
+5X6lBKOPrXWDb6rWoRIaU9sR1iMSuwHCrfooX5Buxp+hiTiGYRWQ62/F+da1B/sm
+MMFStwQdxwsDjEBuK2Lk2nAyQC0ROwn37p8zqjgbJVZ7jY6JDDKduWpnHfEU4hft
+jacOBSj8kG3W4ADEyTt3fagD/HuM6HYpvvxE+HINgISrYgcmlGwkT33YxCPaB0z2
+CrskLgl3DnG21WMB20O82Ru/5BpV/jp+6XjpmPJiv6klfRPEXcLaL7Z2aecRnCE=
+=ynHd
+-----END PGP SIGNATURE-----
+
+--GS4hgKuWjO35gvSO--
