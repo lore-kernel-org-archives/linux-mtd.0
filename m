@@ -1,18 +1,24 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKrjm-0005NN-8i
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 17:35:24 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [RFC PATCH 1/2] mtd: nand: add nand_check_erased helper functions
-Date: Thu, 30 Jul 2015 19:34:53 +0200
-Message-Id: <1438277694-23763-2-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1438277694-23763-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1438277694-23763-1-git-send-email-boris.brezillon@free-electrons.com>
+Date: Thu, 30 Jul 2015 22:11:25 +0200
+From: Albert ARIBAUD <albert.aribaud@3adev.fr>
+To: Stefan Agner <stefan@agner.ch>, sebastian@breakpoint.cc
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, robh+dt@kernel.org,
+ pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
+ galak@codeaurora.org, shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
+ bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v8 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
+ MPC5125 and others
+Message-ID: <20150730221125.08b5b2cf.albert.aribaud@3adev.fr>
+In-Reply-To: <36ffdc45494ab888ba375ff8478864ad@agner.ch>
+References: <1438015365-15685-1-git-send-email-stefan@agner.ch>
+ <1438015365-15685-2-git-send-email-stefan@agner.ch>
+ <20150730181321.3bd38db7.albert.aribaud@3adev.fr>
+ <36ffdc45494ab888ba375ff8478864ad@agner.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,146 +28,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add two helper functions to help NAND controller drivers test whether a
-specific NAND region is erased or not.
+Hi Stefan,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/nand_base.c | 104 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nand.h     |   8 ++++
- 2 files changed, 112 insertions(+)
+Le Thu, 30 Jul 2015 19:00:38 +0200, Stefan Agner <stefan@agner.ch> a
+=C3=A9crit :
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ceb68ca..1542ea7 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1101,6 +1101,110 @@ out:
- EXPORT_SYMBOL(nand_lock);
- 
- /**
-+ * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
-+ * @buf: buffer to test
-+ * @len: buffer length
-+ * @bitflips_threshold:maximum number of bitflips
-+ *
-+ * Check if a buffer contains only 0xff, which means the underlying region
-+ * has been erased and is ready to be programmed.
-+ * The bitflips_threshold specify the maximum number of bitflips before
-+ * considering the region is not erased.
-+ * Note: The logic of this function has been extracted from the memweight
-+ * implementation, except that nand_check_erased_buf function exit before
-+ * testing the whole buffer if the number of bitflips exceed the
-+ * bitflips_threshold value.
-+ *
-+ * Returns a positive number of bitflips or -ERROR_CODE.
-+ */
-+int nand_check_erased_buf(void *buf, int len, int bitflips_threshold)
-+{
-+	const unsigned char *bitmap = buf;
-+	int bitflips = 0;
-+	int weight;
-+	int longs;
-+
-+	for (; len && ((unsigned long)bitmap) % sizeof(long);
-+	     len--, bitmap++) {
-+		weight = hweight8(*bitmap);
-+
-+		bitflips += sizeof(u8) - weight;
-+		if (bitflips > bitflips_threshold)
-+			return -EINVAL;
-+	}
-+
-+
-+	for (longs = len / sizeof(long); longs;
-+	     longs--, bitmap += sizeof(long)) {
-+		BUG_ON(longs >= INT_MAX / BITS_PER_LONG);
-+		weight = hweight_long(*((unsigned long *)bitmap));
-+
-+		bitflips += sizeof(long) - weight;
-+		if (bitflips > bitflips_threshold)
-+			return -EINVAL;
-+	}
-+
-+	len %= sizeof(long);
-+
-+	for (; len > 0; len--, bitmap++) {
-+		weight = hweight8(*bitmap);
-+		bitflips += sizeof(u8) - weight;
-+	}
-+
-+	return bitflips;
-+}
-+EXPORT_SYMBOL(nand_check_erased_buf);
-+
-+/**
-+ * nand_check_erased_ecc_chunk - check if an ECC chunk contains (almost) only
-+ *				 0xff data
-+ * @data: data buffer to test
-+ * @datalen: data length
-+ * @ecc: ECC buffer
-+ * @ecclen: ECC length
-+ * @extraoob: extra OOB buffer
-+ * @extraooblen: extra OOB length
-+ * @bitflips_threshold: maximum number of bitflips
-+ *
-+ * Check if a data buffer and its associated ECC and OOB data contains only
-+ * 0xff pattern, which means the underlying region has been erased and is
-+ * ready to be programmed.
-+ * The bitflips_threshold specify the maximum number of bitflips before
-+ * considering the region as not erased.
-+ *
-+ * Returns a positive number of bitflips or -ERROR_CODE.
-+ */
-+int nand_check_erased_ecc_chunk(void *data, int datalen,
-+				void *ecc, int ecclen,
-+				void *extraoob, int extraooblen,
-+				int bitflips_threshold)
-+{
-+	int bitflips = 0;
-+	int ret;
-+
-+	ret = nand_check_erased_buf(data, datalen, bitflips_threshold);
-+	if (ret < 0)
-+		return ret;
-+
-+	bitflips += ret;
-+	bitflips_threshold -= ret;
-+
-+	ret = nand_check_erased_buf(ecc, ecclen, bitflips_threshold);
-+	if (ret < 0)
-+		return ret;
-+
-+	bitflips += ret;
-+	bitflips_threshold -= ret;
-+
-+	ret = nand_check_erased_buf(extraoob, extraooblen, bitflips_threshold);
-+	if (ret < 0)
-+		return ret;
-+
-+	return bitflips + ret;
-+}
-+EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
-+
-+/**
-  * nand_read_page_raw - [INTERN] read raw page data without ecc
-  * @mtd: mtd info structure
-  * @chip: nand chip info structure
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 272f429..ae06a07 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -1030,4 +1030,12 @@ struct nand_sdr_timings {
- 
- /* get timing characteristics from ONFI timing mode. */
- const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
-+
-+int nand_check_erased_buf(void *data, int datalen,
-+			  int threshold);
-+
-+int nand_check_erased_ecc_chunk(void *data, int datalen,
-+				void *ecc, int ecclen,
-+				void *extraoob, int extraooblen,
-+				int threshold);
- #endif /* __LINUX_MTD_NAND_H */
--- 
-1.9.1
+> Hi Albert,
+>=20
+> On 2015-07-30 18:13, Albert ARIBAUD wrote:
+> > Hi Stefan,
+> >=20
+> > Le Mon, 27 Jul 2015 18:42:41 +0200, Stefan Agner <stefan@agner.ch> a
+> > =C3=A9crit :
+> >=20
+> >> This driver supports Freescale NFC (NAND flash controller) found on
+> >> Vybrid (VF610), MPC5125, MCF54418 and Kinetis K70. The driver has
+> >> been tested on 8-bit and 16-bit NAND interface and supports ONFI
+> >> parameter page reading.
+> >>
+> >> [...]
+> >>
+> >> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc=
+.c
+> >> new file mode 100644
+> >> index 0000000..0da500e
+> >> --- /dev/null
+> >> +++ b/drivers/mtd/nand/vf610_nfc.c
+> >> @@ -0,0 +1,640 @@
+> >> [...]
+> >=20
+> > ... about line 708:
+> >=20
+> >> +	err =3D devm_request_irq(nfc->dev, irq, vf610_nfc_irq, 0, DRV_NAME, =
+mtd);
+> >> +	if (err) {
+> >> +		dev_err(nfc->dev, "Error requesting IRQ!\n");
+> >> +		goto error;
+> >> +	}
+> >> +
+> >> +	vf610_nfc_init_controller(nfc);
+> >=20
+> > The call above is too early: vf610_nfc_init_controller() will test
+> > for (nfc->chip.options & NAND_BUSWIDTH_16) but this option bit is only
+> > set once nand_scan_ident() below has been run.
+> >=20
+> > This has the effect that even when the DT node specifies a 16-bit wide
+> > bus, the controller is configured for 8-bit mode at this point, which of
+> > course causes read failures. I've experienced this with a Vybrid SoC
+> > and a Micron MT29F4G16ABADAH4 16-bit NAND.
+> >=20
+> >> +	/* first scan to find the device and get the page size */
+> >> +	if (nand_scan_ident(mtd, 1, NULL)) {
+> >> +		err =3D -ENXIO;
+> >> +		goto error;
+> >> +	}
+> >=20
+> > Placing the call to vf610_nfc_init_controller() here, after the call
+> > to nand_scan_ident() rather than before it, fixed the issue for me.
+>=20
+> Hm, since nand_scan_ident access the devices we actually want the
+> controller initialized before we access it the first time. In most
+> cases, the boot loader/boot ROM probably initialized the controller in a
+> way that identifying the chip should work non the less. However, the
+> safe way would be to initialize it before calling nand_scan_ident.
+
+Correct -- there is a mutual dependency here between nand_scan_ident()
+and vf610_nfc_init_controller(). Anyway, my call order switch was only
+a hack to get things working.
+
+> However, I see your point regarding bus width: With the change to
+> nand_dt_init, we have that information after nand_scan_ident. There is
+> actually more: Also the HW ECC settings are not yet parsed at that
+> point, hence the ECC status and offset will not be initialized right.=20
+>=20
+> We could call the whole initialization twice. This would configure 8-Bit
+> mode for the 16-Bit devices, but during initialization this is anyway
+> the required default (ONFI). Or we split it up and call it something
+> like vf610_nfc_preinit_controller and vf610_nfc_init_controller.
+>=20
+> What do you think?
+
+I think creating a vf610_nfc_preinit_controller() function with no
+dependency on the DT is the cleaner option.
+
+> --
+> Stefan
+
+Cordialement,
+Albert ARIBAUD
+3ADEV
