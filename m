@@ -1,14 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZL8Lu-0002W4-9C
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 11:19:51 +0000
-Message-Id: <4982216b5cb602c71ade6810cecdb9535e0862fc.1438340815.git.hramrach@gmail.com>
+ id 1ZL8Lu-0002Vs-99
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 11:19:52 +0000
+Message-Id: <db876ebdebb301c24f1ba466830149a0ff40abc5.1438340815.git.hramrach@gmail.com>
 In-Reply-To: <cover.1438340815.git.hramrach@gmail.com>
 References: <cover.1438340815.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 30 Jul 2015 12:10:42 +0200
-Subject: [PATCH v2 5/5] mtd: ofpart: move ofpart partitions to a dedicated dt
- node
+Date: Thu, 30 Jul 2015 10:43:17 +0200
+Subject: [PATCH v2 3/5] mtd: ofpart: update devicetree binding specification
 To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Mark Rutland <mark.rutland@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
@@ -25,124 +24,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Parsing direct subnodes of a mtd device as partitions is unreliable
-since the mtd device is also part of its bus subsystem and can contain
-bus data in subnodes.
-
-Move ofpart data to a subnode of its own so it is clear which data is
-part of the partition layout.
+To avoid conflict with other drivers using subnodes of the mtd device
+create only one ofpart-specific node rather than any number of
+arbitrary partition subnodes.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 ---
- drivers/mtd/ofpart.c | 56 +++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 40 insertions(+), 16 deletions(-)
+ .../devicetree/bindings/mtd/partition.txt          | 68 +++++++++++++---------
+ 1 file changed, 40 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index aa26c32..2c28aaa 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -29,23 +29,33 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 				   struct mtd_partition **pparts,
- 				   struct mtd_part_parser_data *data)
- {
--	struct device_node *node;
-+	struct device_node *mtd_node;
-+	struct device_node *ofpart_node;
- 	const char *partname;
- 	struct device_node *pp;
- 	int nr_parts, i;
-+	bool dedicated = true;
- 
- 
- 	if (!data)
- 		return 0;
- 
--	node = data->of_node;
--	if (!node)
-+	mtd_node = data->of_node;
-+	if (!mtd_node)
- 		return 0;
- 
-+	ofpart_node = of_get_child_by_name(mtd_node, "ofpart");
-+	if (!ofpart_node) {
-+		pr_warn("%s: 'ofpart' subnode not found on %s. Trying to parse direct subnodes as partitions.\n",
-+			master->name, mtd_node->full_name);
-+		ofpart_node = mtd_node;
-+		dedicated = false;
-+	}
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+index 8e5557d..367ce4e 100644
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ b/Documentation/devicetree/bindings/mtd/partition.txt
+@@ -4,10 +4,16 @@ Partitions can be represented by sub-nodes of an mtd device. This can be used
+ on platforms which have strong conventions about which portions of a flash are
+ used for what purposes, but which don't use an on-flash partition table such
+ as RedBoot.
 +
- 	/* First count the subnodes */
- 	nr_parts = 0;
--	for_each_child_of_node(node,  pp) {
--		if (node_has_compatible(pp))
-+	for_each_child_of_node(ofpart_node,  pp) {
-+		if (!dedicated && node_has_compatible(pp))
- 			continue;
- 
- 		nr_parts++;
-@@ -59,22 +69,36 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 		return -ENOMEM;
- 
- 	i = 0;
--	for_each_child_of_node(node,  pp) {
-+	for_each_child_of_node(ofpart_node,  pp) {
- 		const __be32 *reg;
- 		int len;
- 		int a_cells, s_cells;
- 
--		if (node_has_compatible(pp))
--			continue;
-+		if (!dedicated && node_has_compatible(pp))
-+				continue;
- 
- 		reg = of_get_property(pp, "reg", &len);
- 		if (!reg) {
-+			if (dedicated) {
-+				pr_debug("%s: ofpart partition %s (%s) missing reg property.\n",
-+					 master->name, pp->full_name,
-+					 mtd_node->full_name);
-+				goto ofpart_fail;
-+			} else {
- 			nr_parts--;
- 			continue;
-+			}
- 		}
- 
- 		a_cells = of_n_addr_cells(pp);
- 		s_cells = of_n_size_cells(pp);
-+		if (len / 4 != a_cells + s_cells) {
-+			pr_debug("%s: ofpart partition %s (%s) error parsing reg property.\n",
-+				 master->name, pp->full_name,
-+				 mtd_node->full_name);
-+			goto ofpart_fail;
-+		}
++The partition table should be in ofpart subnode of the mtd node. Partitions are
++defined as subnodes of the ofpart node.
 +
- 		(*pparts)[i].offset = of_read_number(reg, a_cells);
- 		(*pparts)[i].size = of_read_number(reg + a_cells, s_cells);
++For backwards compatibility partitions as direct subnodes of the mtd device are
++supported. This use is discouraged.
+ NOTE: if the sub-node has a compatible string, then it is not a partition.
  
-@@ -92,15 +116,15 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 		i++;
- 	}
+-#address-cells & #size-cells must both be present in the mtd device. There are
+-two valid values for both:
++#address-cells & #size-cells must both be present in the ofpart subnode of the
++mtd device. There are two valid values for both:
+ <1>: for partitions that require a single 32-bit cell to represent their
+      size/address (aka the value is below 4 GiB)
+ <2>: for partitions that require two 32-bit cells to represent their
+@@ -28,44 +34,50 @@ Examples:
  
--	if (!i) {
--		of_node_put(pp);
--		pr_err("No valid partition found on %s\n", node->full_name);
--		kfree(*pparts);
--		*pparts = NULL;
--		return -EINVAL;
--	}
--
- 	return nr_parts;
-+
-+ofpart_fail:
-+	pr_err("%s: error parsing ofpart partition %s (%s)\n",
-+	       master->name, pp->full_name, mtd_node->full_name);
-+	of_node_put(pp);
-+	kfree(*pparts);
-+	*pparts = NULL;
-+	return -EINVAL;
- }
  
- static struct mtd_part_parser ofpart_parser = {
+ flash@0 {
+-	#address-cells = <1>;
+-	#size-cells = <1>;
++	ofpart {
++		#address-cells = <1>;
++		#size-cells = <1>;
+ 
+-	partition@0 {
+-		label = "u-boot";
+-		reg = <0x0000000 0x100000>;
+-		read-only;
+-	};
++		partition@0 {
++			label = "u-boot";
++			reg = <0x0000000 0x100000>;
++			read-only;
++		};
+ 
+-	uimage@100000 {
+-		reg = <0x0100000 0x200000>;
++		uimage@100000 {
++			reg = <0x0100000 0x200000>;
++		};
+ 	};
+ };
+ 
+ flash@1 {
+-	#address-cells = <1>;
+-	#size-cells = <2>;
++	ofpart {
++		#address-cells = <1>;
++		#size-cells = <2>;
+ 
+-	/* a 4 GiB partition */
+-	partition@0 {
+-		label = "filesystem";
+-		reg = <0x00000000 0x1 0x00000000>;
++		/* a 4 GiB partition */
++		partition@0 {
++			label = "filesystem";
++			reg = <0x00000000 0x1 0x00000000>;
++		};
+ 	};
+ };
+ 
+ flash@2 {
+-	#address-cells = <2>;
+-	#size-cells = <2>;
++	ofpart {
++		#address-cells = <2>;
++		#size-cells = <2>;
+ 
+-	/* an 8 GiB partition */
+-	partition@0 {
+-		label = "filesystem #1";
+-		reg = <0x0 0x00000000 0x2 0x00000000>;
+-	};
++		/* an 8 GiB partition */
++		partition@0 {
++			label = "filesystem #1";
++			reg = <0x0 0x00000000 0x2 0x00000000>;
++		};
+ 
+-	/* a 4 GiB partition */
+-	partition@200000000 {
+-		label = "filesystem #2";
+-		reg = <0x2 0x00000000 0x1 0x00000000>;
++		/* a 4 GiB partition */
++		partition@200000000 {
++			label = "filesystem #2";
++			reg = <0x2 0x00000000 0x1 0x00000000>;
++		};
+ 	};
+ };
 -- 
 2.1.4
