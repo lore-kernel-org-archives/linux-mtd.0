@@ -1,15 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKgnf-0006IZ-6d
- for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:40 +0000
+ id 1ZKgnf-0006Ib-QC
+ for linux-mtd@lists.infradead.org; Thu, 30 Jul 2015 05:54:41 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 16/35] ubifs: fill ->s_dev in ubifs_fill_super
-Date: Thu, 30 Jul 2015 13:48:12 +0800
-Message-ID: <1438235311-23788-17-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 17/35] ubifs: export read_block() from file.c
+Date: Thu, 30 Jul 2015 13:48:13 +0800
+Message-ID: <1438235311-23788-18-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -23,37 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some tools in userspace, such as quota-tools, are using
-stat() to get the st_dev of a mount point then to find
-out the device mounted on this mount point.
-
-So we have to fill ->s_dev here to tell them which device
-is mounted on this point.
+We want to use read_block to read quota file bypass the page cache.
+So export it from file.c, then we can use it in somewhere else.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/ubifs/super.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/ubifs/file.c  | 4 ++--
+ fs/ubifs/ubifs.h | 2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 27e1739..161b1a6 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -36,6 +36,7 @@
- #include <linux/mount.h>
- #include <linux/math64.h>
- #include <linux/writeback.h>
-+#include <linux/cdev.h>
- #include "ubifs.h"
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 554d7b9..f307e86 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -54,7 +54,7 @@
+ #include <linux/namei.h>
+ #include <linux/slab.h>
  
- /*
-@@ -2033,6 +2034,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+-static int read_block(struct inode *inode, void *addr, unsigned int block,
++int ubifs_read_block(struct inode *inode, void *addr, unsigned int block,
+ 		      struct ubifs_data_node *dn)
+ {
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+@@ -141,7 +141,7 @@ static int do_readpage(struct page *page)
+ 			err = -ENOENT;
+ 			memset(addr, 0, UBIFS_BLOCK_SIZE);
+ 		} else {
+-			ret = read_block(inode, addr, block, dn);
++			ret = ubifs_read_block(inode, addr, block, dn);
+ 			if (ret) {
+ 				err = ret;
+ 				if (err != -ENOENT)
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 71b79b5..c48fb41 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1749,6 +1749,8 @@ const struct ubifs_lprops *ubifs_fast_find_frdi_idx(struct ubifs_info *c);
+ int ubifs_calc_dark(const struct ubifs_info *c, int spc);
  
- 	sb->s_bdi = &c->bdi;
- 	sb->s_cdev = ubi_get_volume_cdev(c->ubi);
-+	sb->s_dev = sb->s_cdev->dev;
- 	sb->s_fs_info = c;
- 	sb->s_magic = UBIFS_SUPER_MAGIC;
- 	sb->s_blocksize = UBIFS_BLOCK_SIZE;
+ /* file.c */
++int ubifs_read_block(struct inode *inode, void *addr, unsigned int block,
++		      struct ubifs_data_node *dn);
+ int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
+ int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
+ int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
 -- 
 1.8.4.2
