@@ -1,21 +1,24 @@
-Date: Fri, 31 Jul 2015 14:28:47 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Mark Brown <broonie@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>,
- Huang Shijie <b32955@freescale.com>, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org
-Subject: Re: [RFC PATCH 4/5] ARM: dts: DRA7: Add memory map region entries
- for qspi
-Message-ID: <20150731212847.GH10676@google.com>
-References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
- <1438072876-16338-5-git-send-email-vigneshr@ti.com>
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZLIK1-0001TA-8Q
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 21:58:34 +0000
+Received: by oihq81 with SMTP id q81so45387799oih.2
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2015 14:58:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1438072876-16338-5-git-send-email-vigneshr@ti.com>
+In-Reply-To: <20150731212053.GG10676@google.com>
+References: <1437761188-8179-1-git-send-email-Frank.Li@freescale.com>
+ <1437761188-8179-9-git-send-email-Frank.Li@freescale.com>
+ <20150731212053.GG10676@google.com>
+Date: Fri, 31 Jul 2015 16:58:10 -0500
+Message-ID: <CAHrpEqQNW+ceQqCLaKSy2vmi5oj_hMzPzj5h=mpNXMW4QteZGw@mail.gmail.com>
+Subject: Re: [PATCH v3 8/8] mtd: spi-nor: fsl-quadspi: fix unsupported cmd
+ when run flash_erase
+From: Zhi Li <lznuaa@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "Frank.Li@freescale.com" <Frank.Li@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Allen Xu <b45815@freescale.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +28,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 28, 2015 at 02:11:15PM +0530, Vignesh R wrote:
-> Add qspi memory mapped region entries for DRA7xx based SoCs.
-> 
-> Signed-off-by: Vignesh R <vigneshr@ti.com>
-> ---
->  arch/arm/boot/dts/am4372.dtsi | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
-> index ade28c790f4b..5317a0f24ab9 100644
-> --- a/arch/arm/boot/dts/am4372.dtsi
-> +++ b/arch/arm/boot/dts/am4372.dtsi
-> @@ -902,7 +902,9 @@
->  
->  		qspi: qspi@47900000 {
->  			compatible = "ti,am4372-qspi";
-> -			reg = <0x47900000 0x100>;
-> +			reg = <0x47900000 0x100>,
-> +			      <0x30000000 0x3ffffff>;
+On Fri, Jul 31, 2015 at 4:20 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Sat, Jul 25, 2015 at 02:06:28AM +0800, Frank.Li@freescale.com wrote:
+>> From: Frank Li <Frank.Li@freescale.com>
+>>
+>> fsl-quadspi 21e0000.qspi: Unsupported cmd 0x20
+>>
+>> when config CONFIG_MTD_SPI_NOR_USE_4K_SECTORS enable,
+>> erase will use SPINOR_OP_BE_4K, which was not supported by fsl-quadspi
+>> driver
+>
+> Slightly off topic: things looks pretty fragile here. /me thinks most of
+> this can be written more cleanly...
+>
+>> Signed-off-by: Frank Li <Frank.Li@freescale.com>
+>> Acked-by: Allen Xu <b45815@freescale.com>
+>> ---
+>>  drivers/mtd/spi-nor/fsl-quadspi.c | 6 ++++--
+>>  1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+>> index 0f3f22d..e50da5c 100644
+>> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+>> @@ -396,11 +396,11 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>>       lut_base = SEQID_SE * 4;
+>>
+>>       if (q->nor_size <= SZ_16M) {
+>> -             cmd = SPINOR_OP_SE;
+>> +             cmd = q->nor[0].erase_opcode;
+>>               addrlen = ADDR24BIT;
+>>       } else {
+>>               /* use the 4-byte address */
+>> -             cmd = SPINOR_OP_SE;
+>> +             cmd = q->nor[0].erase_opcode;
+>>               addrlen = ADDR32BIT;
+>>       }
+>
+> This whole block can be refactored to:
+>
+>         cmd = q->nor[0].erase_opcode;
+>         addrlen = q->nor_size <= SZ_16M ? ADDR24BIT : ADDR32BIT;
+>
+> But really, this should be based on nor->addr_width...
+>
+>>
+>> @@ -471,6 +471,8 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
+>>       case SPINOR_OP_BRWR:
+>>               return SEQID_BRWR;
+>>       default:
+>> +             if (cmd == q->nor[0].erase_opcode)
+>
+> Related question: what happens if you have multiple flash chips
+> connected, and they don't need the same opcodes? It looks like you
+> program the LUT only for the opcodes of the first flash, so the second
+> wouldn't work right.
 
-Are you sure this region is 1 byte shy of 64MB in length? Same question
-for patch 5.
+Fsl-qspi controller assume you connect two same flash chips.
+Two chip share the same opcodes.  all other command
+like read,  both chip also must use the same opcode.
 
-> +			reg-names = "qspi_base", "qspi_mmap";
->  			#address-cells = <1>;
->  			#size-cells = <0>;
->  			ti,hwmods = "qspi";
-> -- 
-> 2.4.6
-> 
+Frank Li
+
+>
+>> +                     return SEQID_SE;
+>>               dev_err(q->dev, "Unsupported cmd 0x%.2x\n", cmd);
+>>               break;
+>>       }
+>
+> Brian
