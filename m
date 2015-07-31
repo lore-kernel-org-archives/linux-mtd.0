@@ -1,24 +1,28 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZLD2H-0007k7-43
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 16:19:54 +0000
-Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
- default ECC read functions
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
- <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
- <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
- <55BB48D9.6050508@dave-tech.it> <20150731123221.34cf601e@bbrezillon>
- <55BB7ABD.7040008@dave-tech.it> <20150731161032.2b155ccb@bbrezillon>
+ id 1ZLD9h-0003OH-BM
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 16:27:34 +0000
+Date: Fri, 31 Jul 2015 18:27:09 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Andrea Scian <rnd4@dave-tech.it>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
  Han Xu <b45815@freescale.com>
-From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <55BBA012.4080600@dave-tech.it>
-Date: Fri, 31 Jul 2015 18:19:30 +0200
+Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
+ default ECC read functions
+Message-ID: <20150731182709.14c345df@bbrezillon>
+In-Reply-To: <55BBA012.4080600@dave-tech.it>
+References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
+ <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
+ <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
+ <55BB48D9.6050508@dave-tech.it>
+ <20150731123221.34cf601e@bbrezillon>
+ <55BB7ABD.7040008@dave-tech.it>
+ <20150731161032.2b155ccb@bbrezillon>
+ <55BBA012.4080600@dave-tech.it>
 MIME-Version: 1.0
-In-Reply-To: <20150731161032.2b155ccb@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,103 +33,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Il 31/07/2015 16:10, Boris Brezillon ha scritto:
-> On Fri, 31 Jul 2015 15:40:13 +0200
-> Andrea Scian <rnd4@dave-tech.it> wrote:
->
->>
->> Boris,
->>
->> Il 31/07/2015 12:32, Boris Brezillon ha scritto:
->>> Hi Andrea,
->>>
->>> Adding Han in Cc.
->>>
->>> On Fri, 31 Jul 2015 12:07:21 +0200
->>> Andrea Scian <rnd4@dave-tech.it> wrote:
->>>
->>>>
->>>> Dear Boris,
->>>>
->>>>
->>>> Il 30/07/2015 19:34, Boris Brezillon ha scritto:
->>>>> The default NAND read functions are relying on an underlying controller
->>>>> to correct bitflips, but some of those controller cannot properly fix
->>>>> bitflips in erased pages.
->>>>> In case of ECC failures, check if the page of subpage is empty before
->>>>> reporting an ECC failure.
->>>>
->>>> I'm still wondering if chip->ecc.strength is the right threshold.
->>>>
->>>> Did you see my comments here [1]? WDYT?
->>>
->>> Yes I've read it, and decided to go for ecc->strength as a first
->>> step (I'm more interested in discussing the approach than the threshold
->>> value right now ;-)).
->>
->> I perfectly understand, that's the reason why I ask if you want to move
->> to another thread ;-)
->>
->>> Anyway, as you pointed out in the thread, writing data on an erased
->>> page already containing some bitflips might generate even more
->>> bitflips, so using a different threshold for the erased page check
->>> makes sense. This threshold should definitely be correlated to the ECC
->>> strength, but how, that's the question.
->>>
->>> How about taking a rather conservative value like 10% of the specified
->>> ECC strength, and see how it goes.
->>
->> Yes, I think that there's no real way to get the right value, other than
->> feedbacks from on-field testing with various devices.
->>
->> I'm also thinking about changing how a NAND page is written on the
->> device, now that we know that even erased page may have (too many!)
->> bitflips if they has not been so-freshly erased.
->>
->> Read on NAND device is lot's faster that write, so maybe we can:
->>
->> a) read the page before write it, check for bitflips on erased area and
->> write it only if it fit our threshold
->>
->> b) read the page after write it and check if the bitflips are lower that
->> a give value
->>
->> In this way:
->> - we can use ecc_strength as read threshold, because it fits all the
->> other NAND read
->>
->> - we can use "something a bit lower than" mtd->bitflip_threshold on
->> read-before-write or read-after-write. If we don't do so the block will
->> be scrubbed next time we read it again (if we are lucky.. if we are
->> unlucky the block will have bitflip > ecc_strength!): IOW we did a write
->> that will trigger another erase/write cycle.
->>
->> Am I misunderstanding something?
->
-> Nope, but this implies doing an extra read after each write :-/
->
+On Fri, 31 Jul 2015 18:19:30 +0200
+Andrea Scian <rnd4@dave-tech.it> wrote:
 
-Let's wait what the others says about this, but I would like to put some 
-numbers in it.
+> Il 31/07/2015 16:10, Boris Brezillon ha scritto:
+> > On Fri, 31 Jul 2015 15:40:13 +0200
+> > Andrea Scian <rnd4@dave-tech.it> wrote:
+> >
+> >>
+> >> Boris,
+> >>
+> >> Il 31/07/2015 12:32, Boris Brezillon ha scritto:
+> >>> Hi Andrea,
+> >>>
+> >>> Adding Han in Cc.
+> >>>
+> >>> On Fri, 31 Jul 2015 12:07:21 +0200
+> >>> Andrea Scian <rnd4@dave-tech.it> wrote:
+> >>>
+> >>>>
+> >>>> Dear Boris,
+> >>>>
+> >>>>
+> >>>> Il 30/07/2015 19:34, Boris Brezillon ha scritto:
+> >>>>> The default NAND read functions are relying on an underlying controller
+> >>>>> to correct bitflips, but some of those controller cannot properly fix
+> >>>>> bitflips in erased pages.
+> >>>>> In case of ECC failures, check if the page of subpage is empty before
+> >>>>> reporting an ECC failure.
+> >>>>
+> >>>> I'm still wondering if chip->ecc.strength is the right threshold.
+> >>>>
+> >>>> Did you see my comments here [1]? WDYT?
+> >>>
+> >>> Yes I've read it, and decided to go for ecc->strength as a first
+> >>> step (I'm more interested in discussing the approach than the threshold
+> >>> value right now ;-)).
+> >>
+> >> I perfectly understand, that's the reason why I ask if you want to move
+> >> to another thread ;-)
+> >>
+> >>> Anyway, as you pointed out in the thread, writing data on an erased
+> >>> page already containing some bitflips might generate even more
+> >>> bitflips, so using a different threshold for the erased page check
+> >>> makes sense. This threshold should definitely be correlated to the ECC
+> >>> strength, but how, that's the question.
+> >>>
+> >>> How about taking a rather conservative value like 10% of the specified
+> >>> ECC strength, and see how it goes.
+> >>
+> >> Yes, I think that there's no real way to get the right value, other than
+> >> feedbacks from on-field testing with various devices.
+> >>
+> >> I'm also thinking about changing how a NAND page is written on the
+> >> device, now that we know that even erased page may have (too many!)
+> >> bitflips if they has not been so-freshly erased.
+> >>
+> >> Read on NAND device is lot's faster that write, so maybe we can:
+> >>
+> >> a) read the page before write it, check for bitflips on erased area and
+> >> write it only if it fit our threshold
+> >>
+> >> b) read the page after write it and check if the bitflips are lower that
+> >> a give value
+> >>
+> >> In this way:
+> >> - we can use ecc_strength as read threshold, because it fits all the
+> >> other NAND read
+> >>
+> >> - we can use "something a bit lower than" mtd->bitflip_threshold on
+> >> read-before-write or read-after-write. If we don't do so the block will
+> >> be scrubbed next time we read it again (if we are lucky.. if we are
+> >> unlucky the block will have bitflip > ecc_strength!): IOW we did a write
+> >> that will trigger another erase/write cycle.
+> >>
+> >> Am I misunderstanding something?
+> >
+> > Nope, but this implies doing an extra read after each write :-/
+> >
+> 
+> Let's wait what the others says about this, but I would like to put some 
+> numbers in it.
 
-My micron MLC device says
-- read page max 75 uS
-- write page typ 1300uS, max 2600uS
+Sure.
 
-If we implement read-before-write (which is, IMO, the best approach), in 
-the worst overhead we have is 1375uS vs 1300uS, which is ~6%.
-Please note that, if you read a page that "is not suitable" for write, 
-you avoid the write time, schedule it for scrubbing, and use another 
-free page.
+> 
+> My micron MLC device says
+> - read page max 75 uS
+> - write page typ 1300uS, max 2600uS
+> 
+> If we implement read-before-write (which is, IMO, the best approach), in 
+> the worst overhead we have is 1375uS vs 1300uS, which is ~6%.
+> Please note that, if you read a page that "is not suitable" for write, 
+> you avoid the write time, schedule it for scrubbing, and use another 
+> free page.
 
-Probably I'm a bit optimistic because we also need to take in account 
-other latencies (DMA setup, ECC engine, buffer copies and so on) but 
-it's a starting point ;-)
+Indeed, that's not such a big overhead.
 
-KR,
+> 
+> Probably I'm a bit optimistic because we also need to take in account 
+> other latencies (DMA setup, ECC engine, buffer copies and so on) but 
+> it's a starting point ;-)
+
+Yep, if you test it, could you provide some speed test results (with
+and without this solution).
+
+And I wonder if we shouldn't do it the other way around, write then
+read-back and check the content.
+Of course this implies doing the extra write even when the erased page
+contains too many bitflips, but at least your sure that the data you
+put in the page were correct at that time.
+
 
 -- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
