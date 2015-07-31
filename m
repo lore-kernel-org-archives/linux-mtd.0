@@ -1,24 +1,23 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZLB1U-0001Hz-0E
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 14:10:58 +0000
-Date: Fri, 31 Jul 2015 16:10:32 +0200
+ id 1ZLCpV-00036S-KL
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 16:06:43 +0000
+Date: Fri, 31 Jul 2015 18:06:14 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andrea Scian <rnd4@dave-tech.it>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
- Han Xu <b45815@freescale.com>
-Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
- default ECC read functions
-Message-ID: <20150731161032.2b155ccb@bbrezillon>
-In-Reply-To: <55BB7ABD.7040008@dave-tech.it>
-References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
- <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
- <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
- <55BB48D9.6050508@dave-tech.it>
- <20150731123221.34cf601e@bbrezillon>
- <55BB7ABD.7040008@dave-tech.it>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 5/5] mtd: ofpart: move ofpart partitions to a
+ dedicated dt node
+Message-ID: <20150731180614.162852ee@bbrezillon>
+In-Reply-To: <4982216b5cb602c71ade6810cecdb9535e0862fc.1438340815.git.hramrach@gmail.com>
+References: <cover.1438340815.git.hramrach@gmail.com>
+ <4982216b5cb602c71ade6810cecdb9535e0862fc.1438340815.git.hramrach@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -31,79 +30,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 31 Jul 2015 15:40:13 +0200
-Andrea Scian <rnd4@dave-tech.it> wrote:
+Hi Michal,
 
-> 
-> Boris,
-> 
-> Il 31/07/2015 12:32, Boris Brezillon ha scritto:
-> > Hi Andrea,
-> >
-> > Adding Han in Cc.
-> >
-> > On Fri, 31 Jul 2015 12:07:21 +0200
-> > Andrea Scian <rnd4@dave-tech.it> wrote:
-> >
-> >>
-> >> Dear Boris,
-> >>
-> >>
-> >> Il 30/07/2015 19:34, Boris Brezillon ha scritto:
-> >>> The default NAND read functions are relying on an underlying controller
-> >>> to correct bitflips, but some of those controller cannot properly fix
-> >>> bitflips in erased pages.
-> >>> In case of ECC failures, check if the page of subpage is empty before
-> >>> reporting an ECC failure.
-> >>
-> >> I'm still wondering if chip->ecc.strength is the right threshold.
-> >>
-> >> Did you see my comments here [1]? WDYT?
-> >
-> > Yes I've read it, and decided to go for ecc->strength as a first
-> > step (I'm more interested in discussing the approach than the threshold
-> > value right now ;-)).
-> 
-> I perfectly understand, that's the reason why I ask if you want to move 
-> to another thread ;-)
-> 
-> > Anyway, as you pointed out in the thread, writing data on an erased
-> > page already containing some bitflips might generate even more
-> > bitflips, so using a different threshold for the erased page check
-> > makes sense. This threshold should definitely be correlated to the ECC
-> > strength, but how, that's the question.
-> >
-> > How about taking a rather conservative value like 10% of the specified
-> > ECC strength, and see how it goes.
-> 
-> Yes, I think that there's no real way to get the right value, other than 
-> feedbacks from on-field testing with various devices.
-> 
-> I'm also thinking about changing how a NAND page is written on the 
-> device, now that we know that even erased page may have (too many!) 
-> bitflips if they has not been so-freshly erased.
-> 
-> Read on NAND device is lot's faster that write, so maybe we can:
-> 
-> a) read the page before write it, check for bitflips on erased area and 
-> write it only if it fit our threshold
-> 
-> b) read the page after write it and check if the bitflips are lower that 
-> a give value
-> 
-> In this way:
-> - we can use ecc_strength as read threshold, because it fits all the 
-> other NAND read
-> 
-> - we can use "something a bit lower than" mtd->bitflip_threshold on 
-> read-before-write or read-after-write. If we don't do so the block will 
-> be scrubbed next time we read it again (if we are lucky.. if we are 
-> unlucky the block will have bitflip > ecc_strength!): IOW we did a write 
-> that will trigger another erase/write cycle.
-> 
-> Am I misunderstanding something?
+On Thu, 30 Jul 2015 12:10:42 +0200
+Michal Suchanek <hramrach@gmail.com> wrote:
 
-Nope, but this implies doing an extra read after each write :-/
+> Parsing direct subnodes of a mtd device as partitions is unreliable
+> since the mtd device is also part of its bus subsystem and can contain
+> bus data in subnodes.
+> 
+> Move ofpart data to a subnode of its own so it is clear which data is
+> part of the partition layout.
+> 
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> ---
+>  drivers/mtd/ofpart.c | 56 +++++++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 40 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+> index aa26c32..2c28aaa 100644
+> --- a/drivers/mtd/ofpart.c
+> +++ b/drivers/mtd/ofpart.c
+> @@ -29,23 +29,33 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+>  				   struct mtd_partition **pparts,
+>  				   struct mtd_part_parser_data *data)
+>  {
+> -	struct device_node *node;
+> +	struct device_node *mtd_node;
+> +	struct device_node *ofpart_node;
+>  	const char *partname;
+>  	struct device_node *pp;
+>  	int nr_parts, i;
+> +	bool dedicated = true;
+>  
+>  
+>  	if (!data)
+>  		return 0;
+>  
+> -	node = data->of_node;
+> -	if (!node)
+> +	mtd_node = data->of_node;
+> +	if (!mtd_node)
+>  		return 0;
+>  
+> +	ofpart_node = of_get_child_by_name(mtd_node, "ofpart");
+
+Hm, you should use a more generic name, ofpart of the linux MTD
+DT partition parser, but another operating system might decide to name
+it otherwise. I think "partitions" is more appropriate. 
+
+> +	if (!ofpart_node) {
+> +		pr_warn("%s: 'ofpart' subnode not found on %s. Trying to parse direct subnodes as partitions.\n",
+> +			master->name, mtd_node->full_name);
+
+Do we really want to complain here. I mean, a lot of users do not need
+to define their partition in a different node.
+
+> +		ofpart_node = mtd_node;
+> +		dedicated = false;
+> +	}
+> +
+>  	/* First count the subnodes */
+>  	nr_parts = 0;
+> -	for_each_child_of_node(node,  pp) {
+> -		if (node_has_compatible(pp))
+> +	for_each_child_of_node(ofpart_node,  pp) {
+> +		if (!dedicated && node_has_compatible(pp))
+>  			continue;
+>  
+>  		nr_parts++;
+> @@ -59,22 +69,36 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+>  		return -ENOMEM;
+>  
+>  	i = 0;
+> -	for_each_child_of_node(node,  pp) {
+> +	for_each_child_of_node(ofpart_node,  pp) {
+>  		const __be32 *reg;
+>  		int len;
+>  		int a_cells, s_cells;
+>  
+> -		if (node_has_compatible(pp))
+> -			continue;
+> +		if (!dedicated && node_has_compatible(pp))
+> +				continue;
+
+Check your indentation (checkpatch should complain here).
+
+>  
+>  		reg = of_get_property(pp, "reg", &len);
+>  		if (!reg) {
+> +			if (dedicated) {
+> +				pr_debug("%s: ofpart partition %s (%s) missing reg property.\n",
+> +					 master->name, pp->full_name,
+> +					 mtd_node->full_name);
+> +				goto ofpart_fail;
+> +			} else {
+>  			nr_parts--;
+>  			continue;
+
+Ditto.
+
+> +			}
+>  		}
+>  
+>  		a_cells = of_n_addr_cells(pp);
+>  		s_cells = of_n_size_cells(pp);
+> +		if (len / 4 != a_cells + s_cells) {
+> +			pr_debug("%s: ofpart partition %s (%s) error parsing reg property.\n",
+> +				 master->name, pp->full_name,
+> +				 mtd_node->full_name);
+> +			goto ofpart_fail;
+> +		}
+> +
+
+The above changes have nothing to do with the description you gave in
+your commit message.
+
+>  		(*pparts)[i].offset = of_read_number(reg, a_cells);
+>  		(*pparts)[i].size = of_read_number(reg + a_cells, s_cells);
+>  
+> @@ -92,15 +116,15 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+>  		i++;
+>  	}
+>  
+> -	if (!i) {
+> -		of_node_put(pp);
+> -		pr_err("No valid partition found on %s\n", node->full_name);
+> -		kfree(*pparts);
+> -		*pparts = NULL;
+> -		return -EINVAL;
+> -	}
+> -
+
+Are you sure you can safely remove this check?
+
+
+Best Regards,
+
+Boris
+
 
 -- 
 Boris Brezillon, Free Electrons
