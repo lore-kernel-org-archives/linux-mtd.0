@@ -1,4 +1,4 @@
-Date: Fri, 31 Jul 2015 19:17:45 +0100
+Date: Fri, 31 Jul 2015 19:19:03 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Vignesh R <vigneshr@ti.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -8,15 +8,16 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-spi@vger.kernel.org
-Message-ID: <20150731181745.GM20873@sirena.org.uk>
+Message-ID: <20150731181903.GN20873@sirena.org.uk>
 References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
- <1438072876-16338-2-git-send-email-vigneshr@ti.com>
+ <1438072876-16338-5-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="00sTfE/IIAT5d2r5"
+ protocol="application/pgp-signature"; boundary="MSd2ShuMixI0uVaZ"
 Content-Disposition: inline
-In-Reply-To: <1438072876-16338-2-git-send-email-vigneshr@ti.com>
-Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
+In-Reply-To: <1438072876-16338-5-git-send-email-vigneshr@ti.com>
+Subject: Re: [RFC PATCH 4/5] ARM: dts: DRA7: Add memory map region entries
+ for qspi
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +28,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---00sTfE/IIAT5d2r5
+--MSd2ShuMixI0uVaZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 28, 2015 at 02:11:12PM +0530, Vignesh R wrote:
+On Tue, Jul 28, 2015 at 02:11:15PM +0530, Vignesh R wrote:
+> Add qspi memory mapped region entries for DRA7xx based SoCs.
+>=20
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
 
-> Introduce use_mmap_read field in spi_message struct. This can be set by
-> mtd devices (m25p80) to indicate to spi-master (ti-qspi) to perform
-> memory mapped read. This helps to distinguish whether the spi-message is
-> from mtd layer(hence mmap read is possible) or by other spi devices.
+>  		qspi: qspi@47900000 {
+>  			compatible =3D "ti,am4372-qspi";
+> -			reg =3D <0x47900000 0x100>;
+> +			reg =3D <0x47900000 0x100>,
+> +			      <0x30000000 0x3ffffff>;
+> +			reg-names =3D "qspi_base", "qspi_mmap";
 
-Based on this description and...
+The DT binding document for the controller needs to be extended to
+document this change in the binding.
 
-> + * @use_mmap_mode: Indicate to spi master to perform memory mapped
-> + *	read if possible.
-
-...the internal documentation I unable to tell what is meant by "perform
-a memory mapped read", at least to the extent where it is visible
-outside of the driver.  This means we can't really use this as a generic
-API since other people won't be able to tell what it does.
-
---00sTfE/IIAT5d2r5
+--MSd2ShuMixI0uVaZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVu7vIAAoJECTWi3JdVIfQfrcH/0pJFX98izm/xHRxCwsEfEd3
-J1YH0uS6BbvZ4CEpe6XuitCyh6Fl7YRTq1LRSQ1Gy7drdZSrajyJcgdTNI8CO81L
-qDZ2xasU9Fuqo4r/oOozKS1WG8op3jRtpVxAnajm2A0vMqA6YQLdK28F46dggDWQ
-opCortabqzzgp/3/fgNSxpPmIeEW+IwO4yGeIvr3Sz05krSdYcTZTmgFSCgfdKVP
-m/K4bURA0/J483komR39SeYaVccYkeyvz8jfvlPSK+sIGDc3hMQ4Q7dQqhNIU4ol
-Yo+xShyIgcyUTVM3NRTxgYfAWCDgXgPlfCvDUTo3oxsVERcjQBQ8WkuKDLHqatk=
-=x6wY
+iQEcBAEBCAAGBQJVu7wXAAoJECTWi3JdVIfQvi8H/2W+R7cKglm9p4j8auQ7ZMvY
+87fE/A0i6i5RnQF2TW2eDB4V1QTHIi8rPQPOY7CAt2rP0URkAHDJPY5Nw0p7LRrt
+VLMWSndfvZrL9tmhTxwXIXuQM2ZanipaEx555WtJTbdPcttcuqmWt6MHiH1kWlfc
+YK0VkfbdI7YtBctKCZfGTk1aUE/5jJZ4A4pi4FSUUSYFR4U/GypjxisNkNo4e+1L
+xKZg25o6iRhWh6RlDi3zxLFhVBMG5UJz3LZ3GhQM0+6pbDpyfy9kqaJkorCyj0ss
+x+oZq31kYiknF1O9zAuuXvlrLYNqkYFEkCBJASZJbNq/0LOmqKSB4Yg1AtheJtI=
+=kTX6
 -----END PGP SIGNATURE-----
 
---00sTfE/IIAT5d2r5--
+--MSd2ShuMixI0uVaZ--
