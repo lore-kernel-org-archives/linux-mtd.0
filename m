@@ -1,15 +1,15 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZLH8I-0005e7-Mu
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 20:42:23 +0000
-Received: by pacan13 with SMTP id an13so46941577pac.1
- for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2015 13:42:02 -0700 (PDT)
-Date: Fri, 31 Jul 2015 13:41:57 -0700
+ id 1ZLHBp-0007EB-Kk
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 20:46:02 +0000
+Received: by pdbbh15 with SMTP id bh15so47907662pdb.1
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2015 13:45:40 -0700 (PDT)
+Date: Fri, 31 Jul 2015 13:45:36 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Frank.Li@freescale.com
 Cc: linux-mtd@lists.infradead.org, b45815@freescale.com, lznuaa@gmail.com
 Subject: Re: [PATCH v3 3/8] mtd: spi-nor: fsl-quadspi: add imx7d support
-Message-ID: <20150731204157.GC10676@google.com>
+Message-ID: <20150731204536.GD10676@google.com>
 References: <1437761188-8179-1-git-send-email-Frank.Li@freescale.com>
  <1437761188-8179-4-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
@@ -25,6 +25,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Forgot one thing:
+
 On Sat, Jul 25, 2015 at 02:06:23AM +0800, Frank.Li@freescale.com wrote:
 > From: Frank Li <Frank.Li@freescale.com>
 > 
@@ -34,7 +36,31 @@ On Sat, Jul 25, 2015 at 02:06:23AM +0800, Frank.Li@freescale.com wrote:
 > 
 > Signed-off-by: Frank Li <Frank.Li@freescale.com>
 > Signed-off-by: Han Xu <b45815@freescale.com>
+> ---
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 5f31bc7..3fc94ad 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+...
+> @@ -677,6 +702,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
+>  static const struct of_device_id fsl_qspi_dt_ids[] = {
+>  	{ .compatible = "fsl,vf610-qspi", .data = (void *)&vybrid_data, },
+>  	{ .compatible = "fsl,imx6sx-qspi", .data = (void *)&imx6sx_data, },
+> +	{ .compatible = "fsl,imx7d-qspi", .data = (void *)&imx7d_data, },
 
-Looks good. I can take it when you resend the fixed-up series:
+^^ This compatible string needs to be documented in
+Documentation/devicetree/bindings/...
 
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
+Please add a patch for the new properties in your next revision.
+
+Brian
+
+>  	{ /* sentinel */ }
+>  };
+>  MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
+> -- 
+> 1.9.1
+> 
