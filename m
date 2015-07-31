@@ -1,13 +1,14 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKytS-00083L-T5
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 01:13:52 +0000
-From: Sheng Yong <shengyong1@huawei.com>
-To: <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>
-Subject: [RFC PATCH] mtd: nand_bbt: set the smallest size of bbt table
-Date: Fri, 31 Jul 2015 01:12:44 +0000
-Message-ID: <1438305164-82852-1-git-send-email-shengyong1@huawei.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKyvd-0001lY-3z
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 01:16:06 +0000
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <richard.weinberger@gmail.com>, <dedekind1@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v4] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
+Date: Fri, 31 Jul 2015 09:09:56 +0800
+Message-ID: <1438304996-31502-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -19,76 +20,218 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When using nandsim to simulate a 128K block nand with `overridesize = 1',
-the size of mtd device is too small (mtd_size = 4 * block_size) to get the
-right length of bbt. Then when creating bbt, kzmalloc() will return
-ZERO_SIZE_PTR. This causes a NULL pointer oops when scanning bbt.
+To make ubifs support atime flexily, this commit introduces
+a Kconfig option named as UBIFS_ATIME_SUPPORT.
 
-[  952.156166] BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
-[  952.157064] IP: [<ffffffff8148ad4a>] nand_isreserved_bbt+0x2a/0x40
-[  952.157064] PGD 0
-[  952.157064] Oops: 0000 [#1] SMP
-[  952.157064] Modules linked in: nandsim(+) [last unloaded: nandsim]
-[  952.157064] CPU: 1 PID: 7103 Comm: modprobe Not tainted 4.2.0-rc3-next-20150724 #4
-[  952.157064] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
-[  952.157064] task: ffff88003e24b980 ti: ffff88003d274000 task.ti: ffff88003d274000
-[  952.157064] RIP: 0010:[<ffffffff8148ad4a>]  [<ffffffff8148ad4a>] nand_isreserved_bbt+0x2a/0x40
-[  952.157064] RSP: 0018:ffff88003d277b90  EFLAGS: 00010246
-[  952.157064] RAX: 0000000000000010 RBX: ffff88003d5a1000 RCX: 0000000000000000
-[  952.157064] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88003d919000
-[  952.157064] RBP: ffff88003d277b98 R08: 0000000000020000 R09: 0000000000000000
-[  952.157064] R10: 0000000000000000 R11: 0000000000000195 R12: ffff88003d919000
-[  952.157064] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[  952.157064] FS:  00007fada4d07700(0000) GS:ffff88003fd00000(0000) knlGS:0000000000000000
-[  952.157064] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
-[  952.157064] CR2: 0000000000000010 CR3: 0000000037924000 CR4: 00000000000006a0
-[  952.157064] Stack:
-[  952.157064]  ffffffff814851ec ffff88003d277ba8 ffffffff8147e35f ffff88003d277bf8
-[  952.157064]  ffffffff814816f3 ffff88003d277c08 ffff88003d277bc8 0000000000000282
-[  952.157064]  0000000000000001 0000000000000000 ffff88003d209540 0000000000000001
-[  952.157064] Call Trace:
-[  952.157064]  [<ffffffff814851ec>] ? nand_block_isreserved+0x1c/0x20
-[  952.157064]  [<ffffffff8147e35f>] mtd_block_isreserved+0x1f/0x30
-[  952.157064]  [<ffffffff814816f3>] allocate_partition+0x463/0x6a0
-[  952.157064]  [<ffffffff81481b3b>] add_mtd_partitions+0x4b/0xe0
-[  952.157064]  [<ffffffff8147f14c>] mtd_device_parse_register+0x4c/0xe0
-[  952.157064]  [<ffffffffa0013daf>] ns_init_module+0xdaf/0xde4 [nandsim]
-[  952.157064]  [<ffffffff8128d7c8>] ? kasprintf+0x38/0x40
-[  952.157064]  [<ffffffffa0013000>] ? 0xffffffffa0013000
-[  952.157064]  [<ffffffff810002c3>] do_one_initcall+0x83/0x1b0
-[  952.157064]  [<ffffffff8113afab>] ? kmem_cache_alloc_trace+0x6b/0x120
-[  952.157064]  [<ffffffff8160b503>] do_init_module+0x5c/0x1dd
-[  952.157064]  [<ffffffff810aa4db>] load_module+0x1bbb/0x20b0
-[  952.157064]  [<ffffffff810a6fc0>] ? __symbol_put+0x30/0x30
-[  952.157064]  [<ffffffff810aaac9>] SyS_init_module+0xf9/0x110
-[  952.157064]  [<ffffffff810aa9d1>] ? SyS_init_module+0x1/0x110
-[  952.157064]  [<ffffffff81615f57>] entry_SYSCALL_64_fastpath+0x12/0x6a
-[  952.157064] Code: 00 55 48 8b 87 80 01 00 00 48 89 e5 8b 88 cc 00 00 00 48 8b 80 f0 03 00 00 5d 48 d3 fe 89 f2 83 e6 03 c1 fa 02 8d 0c 36 48 63 d2 <0f> b6 04 10 d3 f8 83 e0 03 3c 02 0f 94 c0 0f b6 c0 c3 0f 1f 40
-[  952.157064] RIP  [<ffffffff8148ad4a>] nand_isreserved_bbt+0x2a/0x40
-[  952.157064]  RSP <ffff88003d277b90>
-[  952.157064] CR2: 0000000000000010
-[  952.204010] ---[ end trace 6ca2e1c041fdba36 ]---
+With UBIFS_ATIME_SUPPORT=n:
+	ubifs keeps the full compatibility to no_atime from
+the start of ubifs.
+=================UBIFS_ATIME_SUPPORT=n=======================
+-o - no atime
+-o atime - no atime
+-o noatime - no atime
+-o relatime - no atime
+-o strictatime - no atime
+-o lazyatime - no atime
 
-This patch gives a smallest length to bbt, 1 byte, which is enough to
-represent up to 4 blocks.
+With UBIFS_ATIME_SUPPORT=y:
+	ubifs supports the atime same with other main stream
+file systems.
+=================UBIFS_ATIME_SUPPORT=y=======================
+-o - default behavior (relatime currently)
+-o atime - atime support
+-o noatime - no atime support
+-o relatime - relative atime support
+-o strictatime - strict atime support
+-o lazyatime - lazy atime support
 
-Signed-off-by: Sheng Yong <shengyong1@huawei.com>
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- drivers/mtd/nand/nand_bbt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+	-v2:
+		implement update_time for ubifs
+	-v3:
+		Oops, forgot to assign update_time for
+		ubifs_dir_inode_operations.
+	-v4:
+		drop the patch to change 'Y' to 'N' in
+		Kconfig
+ fs/ubifs/Kconfig | 11 +++++++++++
+ fs/ubifs/dir.c   |  3 +++
+ fs/ubifs/file.c  | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/super.c | 19 ++++++++++++++++---
+ fs/ubifs/ubifs.h |  1 +
+ 5 files changed, 81 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 63a1a36..b1d4f81 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -1080,7 +1080,7 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
- 	struct nand_bbt_descr *td = this->bbt_td;
- 	struct nand_bbt_descr *md = this->bbt_md;
+diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+index ba66d50..2eaae3e 100644
+--- a/fs/ubifs/Kconfig
++++ b/fs/ubifs/Kconfig
+@@ -35,3 +35,14 @@ config UBIFS_FS_ZLIB
+ 	default y
+ 	help
+ 	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
++
++config UBIFS_ATIME_SUPPORT
++	bool "Access time support" if UBIFS_FS
++	depends on UBIFS_FS
++	default n
++	help
++	  This option allows ubifs to support atime. -o strictatime is harmful to
++	  your flash, we don't suggest it. But relatime and lazytime are much
++	  better.
++
++	  If unsure, say 'N'
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 27060fc..8d93427 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1187,6 +1187,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
+ 	.getxattr    = ubifs_getxattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.removexattr = ubifs_removexattr,
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	.update_time = ubifs_update_time,
++#endif
+ };
  
--	len = mtd->size >> (this->bbt_erase_shift + 2);
-+	len = (mtd->size >> (this->bbt_erase_shift + 2)) ? : 1;
- 	/*
- 	 * Allocate memory (2bit per block) and clear the memory bad block
- 	 * table.
+ const struct file_operations ubifs_dir_operations = {
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 35efc10..554d7b9 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1364,6 +1364,47 @@ static inline int mctime_update_needed(const struct inode *inode,
+ }
+ 
+ /**
++ * ubifs_update_time - update time of inode.
++ * @inode: inode to update
++ *
++ * This function updates time of the inode.
++ */
++int ubifs_update_time(struct inode *inode, struct timespec *time,
++			     int flags)
++{
++	struct ubifs_inode *ui = ubifs_inode(inode);
++	struct ubifs_info *c = inode->i_sb->s_fs_info;
++	struct ubifs_budget_req req = { .dirtied_ino = 1,
++			.dirtied_ino_d = ALIGN(ui->data_len, 8) };
++	int iflags = I_DIRTY_TIME;
++	int err, release;
++
++	err = ubifs_budget_space(c, &req);
++	if (err)
++		return err;
++
++	mutex_lock(&ui->ui_mutex);
++	if (flags & S_ATIME)
++		inode->i_atime = *time;
++	if (flags & S_VERSION)
++		inode_inc_iversion(inode);
++	if (flags & S_CTIME)
++		inode->i_ctime = *time;
++	if (flags & S_MTIME)
++		inode->i_mtime = *time;
++
++	if (!(inode->i_sb->s_flags & MS_LAZYTIME) || (flags & S_VERSION))
++		iflags |= I_DIRTY_SYNC;
++
++	release = ui->dirty;
++	__mark_inode_dirty(inode, iflags);
++	mutex_unlock(&ui->ui_mutex);
++	if (release)
++		ubifs_release_budget(c, &req);
++	return 0;
++}
++
++/**
+  * update_ctime - update mtime and ctime of an inode.
+  * @inode: inode to update
+  *
+@@ -1546,6 +1587,9 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ 	if (err)
+ 		return err;
+ 	vma->vm_ops = &ubifs_file_vm_ops;
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	file_accessed(file);
++#endif
+ 	return 0;
+ }
+ 
+@@ -1566,6 +1610,9 @@ const struct inode_operations ubifs_file_inode_operations = {
+ 	.getxattr    = ubifs_getxattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.removexattr = ubifs_removexattr,
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	.update_time = ubifs_update_time,
++#endif
+ };
+ 
+ const struct inode_operations ubifs_symlink_inode_operations = {
+@@ -1577,6 +1624,9 @@ const struct inode_operations ubifs_symlink_inode_operations = {
+ 	.getxattr    = ubifs_getxattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.removexattr = ubifs_removexattr,
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	.update_time = ubifs_update_time,
++#endif
+ };
+ 
+ const struct file_operations ubifs_file_operations = {
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 75e6f04..c643261 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -128,7 +128,10 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
+ 	if (err)
+ 		goto out_ino;
+ 
+-	inode->i_flags |= (S_NOCMTIME | S_NOATIME);
++	inode->i_flags |= S_NOCMTIME;
++#ifndef CONFIG_UBIFS_ATIME_SUPPORT
++	inode->i_flags |= S_NOATIME;
++#endif
+ 	set_nlink(inode, le32_to_cpu(ino->nlink));
+ 	i_uid_write(inode, le32_to_cpu(ino->uid));
+ 	i_gid_write(inode, le32_to_cpu(ino->gid));
+@@ -380,7 +383,7 @@ done:
+ 
+ static void ubifs_dirty_inode(struct inode *inode, int flags)
+ {
+-	struct ubifs_inode *ui = ubifs_inode(inode);
++        struct ubifs_inode *ui = ubifs_inode(inode);
+ 
+ 	ubifs_assert(mutex_is_locked(&ui->ui_mutex));
+ 	if (!ui->dirty) {
+@@ -2138,7 +2141,17 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
+ 		if (err)
+ 			goto out_deact;
+ 		/* We do not support atime */
+-		sb->s_flags |= MS_ACTIVE | MS_NOATIME;
++		sb->s_flags |= MS_ACTIVE;
++#ifndef CONFIG_UBIFS_ATIME_SUPPORT
++		sb->s_flags |= MS_NOATIME;
++#else
++		ubifs_warn(c, "************WARNING START****************");
++		ubifs_warn(c, "Ubifs is supporting atime now, that would");
++		ubifs_warn(c, "probably damage your flash. If you are not");
++		ubifs_warn(c, "sure about it, please set UBIFS_ATIME_SUPPORT");
++		ubifs_warn(c, "to 'N'.");
++		ubifs_warn(c, "************WARNING END******************");
++#endif
+ 	}
+ 
+ 	/* 'fill_super()' opens ubi again so we must close it here */
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index de75902..216ba87 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1746,6 +1746,7 @@ int ubifs_calc_dark(const struct ubifs_info *c, int spc);
+ /* file.c */
+ int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
+ int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
++int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
+ 
+ /* dir.c */
+ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
 -- 
-1.8.3.4
+1.8.4.2
