@@ -1,23 +1,30 @@
-Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZLIK1-0001TA-8Q
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 21:58:34 +0000
-Received: by oihq81 with SMTP id q81so45387799oih.2
- for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2015 14:58:10 -0700 (PDT)
+ id 1ZLIru-0000cK-6u
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 22:33:34 +0000
+Received: by wicgj17 with SMTP id gj17so35264033wic.1
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2015 15:33:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20150731212053.GG10676@google.com>
-References: <1437761188-8179-1-git-send-email-Frank.Li@freescale.com>
- <1437761188-8179-9-git-send-email-Frank.Li@freescale.com>
- <20150731212053.GG10676@google.com>
-Date: Fri, 31 Jul 2015 16:58:10 -0500
-Message-ID: <CAHrpEqQNW+ceQqCLaKSy2vmi5oj_hMzPzj5h=mpNXMW4QteZGw@mail.gmail.com>
-Subject: Re: [PATCH v3 8/8] mtd: spi-nor: fsl-quadspi: fix unsupported cmd
- when run flash_erase
-From: Zhi Li <lznuaa@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "Frank.Li@freescale.com" <Frank.Li@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Allen Xu <b45815@freescale.com>
+In-Reply-To: <20150731192458.457c6c9d@bbrezillon>
+References: <cover.1438340815.git.hramrach@gmail.com>
+ <4982216b5cb602c71ade6810cecdb9535e0862fc.1438340815.git.hramrach@gmail.com>
+ <20150731180614.162852ee@bbrezillon>
+ <CAOMqctROw6wrKa+3jF275m=nd6qy7mRy0k3ztJB5s2Vy8r=DZw@mail.gmail.com>
+ <20150731192458.457c6c9d@bbrezillon>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Sat, 1 Aug 2015 00:32:32 +0200
+Message-ID: <CAOMqctS4jXf=Mr=pUk6QLdtsrKAh6usXmj6hRiMUyrC7z_WPzQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] mtd: ofpart: move ofpart partitions to a dedicated
+ dt node
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ devicetree <devicetree@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,73 +35,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 31, 2015 at 4:20 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Sat, Jul 25, 2015 at 02:06:28AM +0800, Frank.Li@freescale.com wrote:
->> From: Frank Li <Frank.Li@freescale.com>
+On 31 July 2015 at 19:24, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Fri, 31 Jul 2015 18:52:01 +0200
+> Michal Suchanek <hramrach@gmail.com> wrote:
+>
+>
+>> >
+>> >>               (*pparts)[i].offset = of_read_number(reg, a_cells);
+>> >>               (*pparts)[i].size = of_read_number(reg + a_cells, s_cells);
+>> >>
+>> >> @@ -92,15 +116,15 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+>> >>               i++;
+>> >>       }
+>> >>
+>> >> -     if (!i) {
+>> >> -             of_node_put(pp);
+>> >> -             pr_err("No valid partition found on %s\n", node->full_name);
+>> >> -             kfree(*pparts);
+>> >> -             *pparts = NULL;
+>> >> -             return -EINVAL;
+>> >> -     }
+>> >> -
+>> >
+>> > Are you sure you can safely remove this check?
 >>
->> fsl-quadspi 21e0000.qspi: Unsupported cmd 0x20
+>> Yes. It was incomplete check to reject some partitioning schemes
+>> considered invalid.
 >>
->> when config CONFIG_MTD_SPI_NOR_USE_4K_SECTORS enable,
->> erase will use SPINOR_OP_BE_4K, which was not supported by fsl-quadspi
->> driver
+>> Now there is stricter checking above so this can be removed.
 >
-> Slightly off topic: things looks pretty fragile here. /me thinks most of
-> this can be written more cleanly...
->
->> Signed-off-by: Frank Li <Frank.Li@freescale.com>
->> Acked-by: Allen Xu <b45815@freescale.com>
->> ---
->>  drivers/mtd/spi-nor/fsl-quadspi.c | 6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
->> index 0f3f22d..e50da5c 100644
->> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
->> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
->> @@ -396,11 +396,11 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->>       lut_base = SEQID_SE * 4;
->>
->>       if (q->nor_size <= SZ_16M) {
->> -             cmd = SPINOR_OP_SE;
->> +             cmd = q->nor[0].erase_opcode;
->>               addrlen = ADDR24BIT;
->>       } else {
->>               /* use the 4-byte address */
->> -             cmd = SPINOR_OP_SE;
->> +             cmd = q->nor[0].erase_opcode;
->>               addrlen = ADDR32BIT;
->>       }
->
-> This whole block can be refactored to:
->
->         cmd = q->nor[0].erase_opcode;
->         addrlen = q->nor_size <= SZ_16M ? ADDR24BIT : ADDR32BIT;
->
-> But really, this should be based on nor->addr_width...
->
->>
->> @@ -471,6 +471,8 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
->>       case SPINOR_OP_BRWR:
->>               return SEQID_BRWR;
->>       default:
->> +             if (cmd == q->nor[0].erase_opcode)
->
-> Related question: what happens if you have multiple flash chips
-> connected, and they don't need the same opcodes? It looks like you
-> program the LUT only for the opcodes of the first flash, so the second
-> wouldn't work right.
+> Indeed, I was worried about resources deallocation, but this is handle
+> by the caller, and if nr_parts is zero the master MTD device will
+> be exposed.
 
-Fsl-qspi controller assume you connect two same flash chips.
-Two chip share the same opcodes.  all other command
-like read,  both chip also must use the same opcode.
+Due to compatibility with the previous scheme there is still
+possibility that partitions are allocated, and no partitions are
+returned due to the nr_parts--;
 
-Frank Li
+So yes, the pparts could possibly leak in this case if there were more
+partition parsers following ofpart and should be deallocated.
 
->
->> +                     return SEQID_SE;
->>               dev_err(q->dev, "Unsupported cmd 0x%.2x\n", cmd);
->>               break;
->>       }
->
-> Brian
+Thanks
+
+Michal
