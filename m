@@ -1,20 +1,22 @@
-Message-ID: <55BB4C1D.5080905@ti.com>
-Date: Fri, 31 Jul 2015 13:21:17 +0300
-From: Roger Quadros <rogerq@ti.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZL7SG-0001xC-Qr
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 10:22:30 +0000
+Date: Fri, 31 Jul 2015 12:21:57 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Andrea Scian <rnd4@dave-tech.it>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mtd: nand: add nand_check_erased helper functions
+Message-ID: <20150731122157.78bad539@bbrezillon>
+In-Reply-To: <55BB48A8.1060204@dave-tech.it>
+References: <mailman.4514.1438332781.1758.linux-mtd@lists.infradead.org>
+ <mailman.4514.1438332781.1758.linux-mtd.{54f18e14-0058-4822-8ce0-2e36468ada80}.0@lists.infradead.org>
+ <20150731091037.09c7ee57@bbrezillon>
+ <55BB48A8.1060204@dave-tech.it>
 MIME-Version: 1.0
-To: Tony Lindgren <tony@atomide.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <bcousson@baylibre.com>, <ezequiel@vanguardiasur.com.ar>,
- <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/12] mtd: nand: omap: Move IRQ handling from GPMC to
- NAND driver
-References: <1436531019-18088-1-git-send-email-rogerq@ti.com>
- <1436531019-18088-4-git-send-email-rogerq@ti.com>
- <20150713071008.GC26485@atomide.com> <55A38D2E.9010500@ti.com>
- <20150713124059.GF26485@atomide.com> <55B8C1D5.3090807@ti.com>
-In-Reply-To: <55B8C1D5.3090807@ti.com>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,116 +27,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29/07/15 15:06, Roger Quadros wrote:
-> Tony,
+Hi Andrea,
+
+On Fri, 31 Jul 2015 12:06:32 +0200
+Andrea Scian <rnd4@dave-tech.it> wrote:
+
 > 
-> On 13/07/15 15:40, Tony Lindgren wrote:
->> * Roger Quadros <rogerq@ti.com> [150713 03:07]:
->>> Tony,
->>>
->>> On 13/07/15 10:10, Tony Lindgren wrote:
->>>> * Roger Quadros <rogerq@ti.com> [150710 05:26]:
->>>>> Since the Interrupt Events are used only by the NAND driver,
->>>>> there is no point in managing the Interrupt registers
->>>>> in the GPMC driver and complicating it with irqchip modeling.
->>>>
->>>> I don't think it's a good idea to allow external drivers to
->>>> tinker directly with GPMC registers. How about just set up GPMC
->>>> as an irqchip for the edge detection interrupts?
->>>>
->>>> I think we already have devices with multiple NAND chips. And
->>>> there's nothing stopping other drivers from using the edge
->>>> detection interrupts.
->>>
->>> OK. The GPMC_IRQ registers manage 2 NAND specific interrupts
->>> (terminalcount and fifo) and 'n' WAIT pin edge interrupts.
->>>
->>>  So we can model this as a irqchip with 'n + 2' interrupts.
->>
->> OK
+> Dear Boris,
 > 
-> For the wait pins irqchip is not sufficient and it needs to be gpiochip
-> with irqchip. Waitpin status can be read from GPIO_STATUS register.
+> thanks for pointing this out again.
 > 
-> Just getting the interrupt is not enough and we want to know if the
-> line is high or low. That is how nand->dev_ready works.
+> I'm on the same topic too, using iMX6 (I'll try to test you patch on the 
+> next days, if I found some spare time, unfortunately I got a 3.10 
+> kernel, so I think the patch will not apply cleanly :-( ).
 > 
-> How about having 2 IRQ domains?
-> One is irqchip with 2 interrupts (terminalcount and fifo) and second is
-> gpiochip + irqchip for the n wait pins.
+> See my comment below (and on the next mail too)
 > 
-> The nand driver can then be modified to use GPIO to get Read/Busy
-> pin status from the wait pin.
+> Il 31/07/2015 09:10, Boris Brezillon ha scritto:
+> > On Thu, 30 Jul 2015 19:34:53 +0200
+> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> >
+> >> Add two helper functions to help NAND controller drivers test whether a
+> >> specific NAND region is erased or not.
+> >>
+> >> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> >> ---
+> >>   drivers/mtd/nand/nand_base.c | 104 +++++++++++++++++++++++++++++++++++++++++++
+> >>   include/linux/mtd/nand.h     |   8 ++++
+> >>   2 files changed, 112 insertions(+)
+> >>
+> >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> >> index ceb68ca..1542ea7 100644
+> >> --- a/drivers/mtd/nand/nand_base.c
+> >> +++ b/drivers/mtd/nand/nand_base.c
+> >> @@ -1101,6 +1101,110 @@ out:
+> >>   EXPORT_SYMBOL(nand_lock);
+> >>
+> >>   /**
+> >> + * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
+> >> + * @buf: buffer to test
+> >> + * @len: buffer length
+> >> + * @bitflips_threshold:maximum number of bitflips
+> >> + *
+> >> + * Check if a buffer contains only 0xff, which means the underlying region
+> >> + * has been erased and is ready to be programmed.
+> >> + * The bitflips_threshold specify the maximum number of bitflips before
+> >> + * considering the region is not erased.
+> >> + * Note: The logic of this function has been extracted from the memweight
+> >> + * implementation, except that nand_check_erased_buf function exit before
+> >> + * testing the whole buffer if the number of bitflips exceed the
+> >> + * bitflips_threshold value.
+> >> + *
+> >> + * Returns a positive number of bitflips or -ERROR_CODE.
+> >> + */
+> >> +int nand_check_erased_buf(void *buf, int len, int bitflips_threshold)
+> >> +{
+> >> +	const unsigned char *bitmap = buf;
+> >> +	int bitflips = 0;
+> >> +	int weight;
+> >> +	int longs;
+> >> +
+> >> +	for (; len && ((unsigned long)bitmap) % sizeof(long);
+> >> +	     len--, bitmap++) {
+> >> +		weight = hweight8(*bitmap);
+> >> +
+> >> +		bitflips += sizeof(u8) - weight;
+> >> +		if (bitflips > bitflips_threshold)
+> >> +			return -EINVAL;
+> 
+> I think it's better to do something like:
+> 
+> if (UNLIKELY(bitflips > bitflips_threshold))
+> 	return -EINVAL;
+> 
+> isn't it? :-)
+> (the same for the other if)
 
-One more observation I've had is that using irqchip modelling for
-the 2 NAND events causes a performance impact.
+Maybe, or maybe not. It depends on whether you expect to have a lot of
+corrupted pages or a lot of blank pages with bitflips ;-).
+Anyway, I'm not opposed to this change.
 
-Using mtd_oobtest I see the following on dra7-evm
+> 
+> 
+> >> +	}
+> >> +
+> >> +
+> >> +	for (longs = len / sizeof(long); longs;
+> >> +	     longs--, bitmap += sizeof(long)) {
+> >> +		BUG_ON(longs >= INT_MAX / BITS_PER_LONG);
+> >> +		weight = hweight_long(*((unsigned long *)bitmap));
+> >> +
+> >> +		bitflips += sizeof(long) - weight;
+> >> +		if (bitflips > bitflips_threshold)
+> >> +			return -EINVAL;
+> >> +	}
+> >> +
+> >> +	len %= sizeof(long);
+> >> +
+> >> +	for (; len > 0; len--, bitmap++) {
+> >> +		weight = hweight8(*bitmap);
+> >> +		bitflips += sizeof(u8) - weight;
+> >> +	}
+> >> +
+> >> +	return bitflips;
+> >> +}
+> >> +EXPORT_SYMBOL(nand_check_erased_buf);
+> >> +
+> >> +/**
+> >> + * nand_check_erased_ecc_chunk - check if an ECC chunk contains (almost) only
+> >> + *				 0xff data
+> >> + * @data: data buffer to test
+> >> + * @datalen: data length
+> >> + * @ecc: ECC buffer
+> >> + * @ecclen: ECC length
+> >> + * @extraoob: extra OOB buffer
+> >> + * @extraooblen: extra OOB length
+> >> + * @bitflips_threshold: maximum number of bitflips
+> >> + *
+> >> + * Check if a data buffer and its associated ECC and OOB data contains only
+> >> + * 0xff pattern, which means the underlying region has been erased and is
+> >> + * ready to be programmed.
+> >> + * The bitflips_threshold specify the maximum number of bitflips before
+> >> + * considering the region as not erased.
+> >> + *
+> >> + * Returns a positive number of bitflips or -ERROR_CODE.
+> >> + */
+> >> +int nand_check_erased_ecc_chunk(void *data, int datalen,
+> >> +				void *ecc, int ecclen,
+> >> +				void *extraoob, int extraooblen,
+> >> +				int bitflips_threshold)
+> >> +{
+> >> +	int bitflips = 0;
+> >> +	int ret;
+> >> +
+> >> +	ret = nand_check_erased_buf(data, datalen, bitflips_threshold);
+> >> +	if (ret < 0)
+> >> +		return ret;
+> >> +
+> >> +	bitflips += ret;
+> >> +	bitflips_threshold -= ret;
+> >> +
+> >> +	ret = nand_check_erased_buf(ecc, ecclen, bitflips_threshold);
+> >> +	if (ret < 0)
+> >> +		return ret;
+> >> +
+> >> +	bitflips += ret;
+> >> +	bitflips_threshold -= ret;
+> >> +
+> >> +	ret = nand_check_erased_buf(extraoob, extraooblen, bitflips_threshold);
+> >> +	if (ret < 0)
+> >> +		return ret;
+> >> +
+> >
+> > Forgot the memset operations here:
+> >
+> > 	memset(data, 0xff, datalen);
+> > 	memset(ecc, 0xff, ecclen);
+> > 	memset(extraoob, 0xff, extraooblen);
+> 
+> Yes, you're right.. I did the same mistake on my first implementation 
+> too ;-)
 
-1) v4.2-rc4 with prefetch-polled (no IRQs used)
-mtd_speedtest: eraseblock write speed is 7142 KiB/s
-mtd_speedtest: eraseblock read speed is 13721 KiB/s
+Hehe.
 
-2) v4.2-rc4 with prefetch-irq (IRQchip model)
-eraseblock write speed is 5475 KiB/s
-eraseblock read speed is 6420 KiB/s
+> 
+> As additional optimization you may also check if the lower layer already 
+> did the check for you (e.g. if you have an iMXQP as we saw in latest 
+> days), but I think it's a minor one, because you'll face this situation 
+> very very unlikely.
 
-3) this series (*) with prefetch-irq (no IRQchip model, nand driver
-directly accesses irqstatus/irqenable)
-eraseblock write speed is 6564 KiB/s
-eraseblock read speed is 10850 KiB/s
+If the hardware is capable of doing such test (I mean counting the
+number of bits to one and considering the page as erased under a given
+limit of bitflips), there's a lot of chance it will implement its own
+ecc_read_page function, and will never use this helper.
 
-(*) diff at the end is required on top to fix an issue with this series.
+Best Regards,
 
-So should we continue IRQchip modelling for the NAND events
-or use the GPMC interrupt as shared and add APIs to access
-the NAND bits of the IRQSTATUS/ENABLE register.
+Boris
 
-cheers,
--roger
-
---
-
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index fecc054..26ef2bd 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1832,13 +1832,14 @@ static int omap_get_dt_info(struct device *dev, struct omap_nand_info *info)
- 		for (i = 0; i < ARRAY_SIZE(nand_xfer_types); i++) {
- 			if (!strcasecmp(s, nand_xfer_types[i])) {
- 				info->xfer_type = i;
--				break;
-+				goto next;
- 			}
- 		}
- 
- 		dev_err(dev, "unrecognized value for ti,nand-xfer-type\n");
- 		return -EINVAL;
- 	}
-+next:
- 
- 	of_get_nand_on_flash_bbt(child);
- 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 26ef2bd..e8bdff5 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -670,17 +670,12 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
- 			goto done;
- 	}
- 
--	/* Clear FIFOEVENT STATUS */
--	irqstatus &= ~GPMC_IRQ_FIFOEVENT;
--	writel(irqstatus, info->reg.gpmc_irqstatus);
--
- 	return IRQ_HANDLED;
- 
- done:
- 	complete(&info->comp);
- 
--	/* Clear FIFOEVENT and TERMCOUNT STATUS */
--	irqstatus &= ~(GPMC_IRQ_TERMCOUNT | GPMC_IRQ_FIFOEVENT);
-+	/* Clear IRQ STATUS */
- 	writel(irqstatus, info->reg.gpmc_irqstatus);
- 
- 	/* Disable Interrupt generation */
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
