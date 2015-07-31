@@ -1,22 +1,22 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZLHQD-0005Z2-A6
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 21:00:54 +0000
-Received: by pdjr16 with SMTP id r16so49427526pdj.3
- for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2015 14:00:32 -0700 (PDT)
-Date: Fri, 31 Jul 2015 14:00:27 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Frank.Li@freescale.com
-Cc: linux-mtd@lists.infradead.org, b45815@freescale.com, lznuaa@gmail.com
-Subject: Re: [PATCH v3 5/8] mtd: spi-nor: fsl-quadspi: i.MX6SX: fixed the
- random QSPI access failed issue
-Message-ID: <20150731210027.GF10676@google.com>
-References: <1437761188-8179-1-git-send-email-Frank.Li@freescale.com>
- <1437761188-8179-6-git-send-email-Frank.Li@freescale.com>
+Date: Fri, 31 Jul 2015 19:17:45 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Vignesh R <vigneshr@ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>,
+ Huang Shijie <b32955@freescale.com>, linux-omap@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org
+Message-ID: <20150731181745.GM20873@sirena.org.uk>
+References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
+ <1438072876-16338-2-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="00sTfE/IIAT5d2r5"
 Content-Disposition: inline
-In-Reply-To: <1437761188-8179-6-git-send-email-Frank.Li@freescale.com>
+In-Reply-To: <1438072876-16338-2-git-send-email-vigneshr@ti.com>
+Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,151 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jul 25, 2015 at 02:06:25AM +0800, Frank.Li@freescale.com wrote:
-> From: Allen Xu <b45815@freescale.com>
-> 
-> We found there is a low probability(5%) QSPI access timeout issue,
-> usually it happened on kernel boot stage, the first time kernel tried to
-> access QSPI chip. The READ_ID command was sent but not executed,
-> consequently the probe function failed.
-> 
-> Finally we located the issue by these steps.
-> 
-> 1. Since the issue happened randomly and usually it cost half day to
-> reproduce, we add more debug code in driver, to create a timeout file if
-> the issue occurred.
-> 
-> 2. Prepared an autorun script to keep rebooting the system and check if
-> the timeout file existed, if the file existed, stop reboot.
-> 
-> 3. The system will stop rebooting when timeout error occurred, set the
-> CCM_CCOSR register and related IOMUX to measure QPSI clock, found there
-> is no clock output, while clock output can be measured when QSPI driver
-> successfully probed.
-> 
-> 4. Check the code and found QSPI clock rate was changed while not
-> disabled clock gate, most of the multiplexers on i.MX6 are glitch ones,
-> clock glitch may occurred and propagated into downstream clock dividers
-> 
-> Based on the new clock flag(CLK_SET_RATE_GATE) and new framework, we
-> need to change the approach of seting clock rate. In current
-> implementation, there are several places in which the clock was touched.
 
-I appreciate the long, descriptive commit message, but I feel like
-there's still an important detail that's not very obvious -- what was
-the actual *bug* you're solving? (You spend more time on how you found
-the problem (which is nice, but readers probably don't really care), and
-leave the actual problem to be inferred by reading up on
-CLK_SET_RATE_GATE.)
+--00sTfE/IIAT5d2r5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-AIUI, the problem is that your clocks need to be gated when their rate
-is changed, correct? Please put a short note here that explains it.
+On Tue, Jul 28, 2015 at 02:11:12PM +0530, Vignesh R wrote:
 
-> 1. probe function. prepare and enable clock before setting the QSPI
-> register, disable and unprepare the clock before exit.
-> 
-> 2. nor_setup & nor_setup_last, since we change clock rate in these two
-> functions.
-> 
-> 3. fsl_qspi_prep and fsl_qspi_unprep, clock was enabled only when got
-> QSPI access request.
-> 
-> 4. resume function. Clock was required to restroe the setting after
-> resume, disable the clock before exit.
-> 
-> Signed-off-by: Allen Xu <b45815@freescale.com>
-> Signed-off-by: Frank Li <Frank.Li@freescale.com>
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 83 +++++++++++++++++++++++++++------------
->  1 file changed, 58 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 3746542..9ee6db9 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -653,6 +653,32 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
->  		q->iobase + QUADSPI_BFGENCR);
->  }
->  
-> +/* This function was used to prepare and enable QSPI clock */
-> +static int fsl_qspi_clk_prep_enable(struct fsl_qspi *q)
-> +{
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(q->clk_en);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = clk_prepare_enable(q->clk);
-> +	if (ret) {
-> +		clk_disable_unprepare(q->clk_en);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/* This function was used to disable and unprepare QSPI clock */
-> +static void fsl_qspi_clk_disable_unprep(struct fsl_qspi *q)
-> +{
-> +	clk_disable_unprepare(q->clk);
-> +	clk_disable_unprepare(q->clk_en);
-> +
-> +}
-> +
->  /* We use this function to do some basic init for spi_nor_scan(). */
->  static int fsl_qspi_nor_setup(struct fsl_qspi *q)
->  {
-> @@ -660,11 +686,19 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
->  	u32 reg;
->  	int ret;
->  
-> -	/* the default frequency, we will change it in the future.*/
-> +	/* disable and unprepare clock first */
+> Introduce use_mmap_read field in spi_message struct. This can be set by
+> mtd devices (m25p80) to indicate to spi-master (ti-qspi) to perform
+> memory mapped read. This helps to distinguish whether the spi-message is
+> from mtd layer(hence mmap read is possible) or by other spi devices.
 
-The comment (above) doesn't add much that the function name (below)
-doesn't say already (i.e., the function says "disable" and "unprep").
-But perhaps you can explain the "why"? e.g.:
+Based on this description and...
 
-	/* Clocks must be gated when changing rates, to avoid glitching */
+> + * @use_mmap_mode: Indicate to spi master to perform memory mapped
+> + *	read if possible.
 
-> +	fsl_qspi_clk_disable_unprep(q);
-> +
-> +	/* the default frequency, we will change it in the future. */
->  	ret = clk_set_rate(q->clk, 66000000);
->  	if (ret)
->  		return ret;
->  
-> +	/* prepare and enable the clock */
-> +	ret = fsl_qspi_clk_prep_enable(q);
-> +	if (ret)
-> +		return ret;
-> +
->  	/* Init the LUT table. */
->  	fsl_qspi_init_lut(q);
->  
-> @@ -696,10 +730,18 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
->  	if (needs_4x_clock(q))
->  		rate *= 4;
->  
-> +	/* disable and unprepare clock first */
+...the internal documentation I unable to tell what is meant by "perform
+a memory mapped read", at least to the extent where it is visible
+outside of the driver.  This means we can't really use this as a generic
+API since other people won't be able to tell what it does.
 
-Same here.
+--00sTfE/IIAT5d2r5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +	fsl_qspi_clk_disable_unprep(q);
-> +
->  	ret = clk_set_rate(q->clk, rate);
->  	if (ret)
->  		return ret;
->  
-> +	/* prepare and enable the clock */
-> +	ret = fsl_qspi_clk_prep_enable(q);
-> +	if (ret)
-> +		return ret;
-> +
->  	/* Init the LUT table again. */
->  	fsl_qspi_init_lut(q);
->  
-...
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Brian
+iQEcBAEBCAAGBQJVu7vIAAoJECTWi3JdVIfQfrcH/0pJFX98izm/xHRxCwsEfEd3
+J1YH0uS6BbvZ4CEpe6XuitCyh6Fl7YRTq1LRSQ1Gy7drdZSrajyJcgdTNI8CO81L
+qDZ2xasU9Fuqo4r/oOozKS1WG8op3jRtpVxAnajm2A0vMqA6YQLdK28F46dggDWQ
+opCortabqzzgp/3/fgNSxpPmIeEW+IwO4yGeIvr3Sz05krSdYcTZTmgFSCgfdKVP
+m/K4bURA0/J483komR39SeYaVccYkeyvz8jfvlPSK+sIGDc3hMQ4Q7dQqhNIU4ol
+Yo+xShyIgcyUTVM3NRTxgYfAWCDgXgPlfCvDUTo3oxsVERcjQBQ8WkuKDLHqatk=
+=x6wY
+-----END PGP SIGNATURE-----
+
+--00sTfE/IIAT5d2r5--
