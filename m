@@ -1,19 +1,20 @@
 Received: from mx.dave-tech.it ([2.229.21.40])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZL7DT-0003DO-6D
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 10:07:04 +0000
-Subject: Re: [RFC PATCH 1/2] mtd: nand: add nand_check_erased helper functions
+ id 1ZL7E7-0003ty-6C
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 10:07:44 +0000
+Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
+ default ECC read functions
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <mailman.4514.1438332781.1758.linux-mtd@lists.infradead.org>
- <mailman.4514.1438332781.1758.linux-mtd.{54f18e14-0058-4822-8ce0-2e36468ada80}.0@lists.infradead.org>
- <20150731091037.09c7ee57@bbrezillon>
+References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
+ <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
+ <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
 From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <55BB48A8.1060204@dave-tech.it>
-Date: Fri, 31 Jul 2015 12:06:32 +0200
+Message-ID: <55BB48D9.6050508@dave-tech.it>
+Date: Fri, 31 Jul 2015 12:07:21 +0200
 MIME-Version: 1.0
-In-Reply-To: <20150731091037.09c7ee57@bbrezillon>
+In-Reply-To: <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,161 +29,142 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Dear Boris,
 
-thanks for pointing this out again.
 
-I'm on the same topic too, using iMX6 (I'll try to test you patch on the 
-next days, if I found some spare time, unfortunately I got a 3.10 
-kernel, so I think the patch will not apply cleanly :-( ).
+Il 30/07/2015 19:34, Boris Brezillon ha scritto:
+> The default NAND read functions are relying on an underlying controller
+> to correct bitflips, but some of those controller cannot properly fix
+> bitflips in erased pages.
+> In case of ECC failures, check if the page of subpage is empty before
+> reporting an ECC failure.
 
-See my comment below (and on the next mail too)
+I'm still wondering if chip->ecc.strength is the right threshold.
 
-Il 31/07/2015 09:10, Boris Brezillon ha scritto:
-> On Thu, 30 Jul 2015 19:34:53 +0200
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->
->> Add two helper functions to help NAND controller drivers test whether a
->> specific NAND region is erased or not.
->>
->> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->> ---
->>   drivers/mtd/nand/nand_base.c | 104 +++++++++++++++++++++++++++++++++++++++++++
->>   include/linux/mtd/nand.h     |   8 ++++
->>   2 files changed, 112 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index ceb68ca..1542ea7 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -1101,6 +1101,110 @@ out:
->>   EXPORT_SYMBOL(nand_lock);
->>
->>   /**
->> + * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
->> + * @buf: buffer to test
->> + * @len: buffer length
->> + * @bitflips_threshold:maximum number of bitflips
->> + *
->> + * Check if a buffer contains only 0xff, which means the underlying region
->> + * has been erased and is ready to be programmed.
->> + * The bitflips_threshold specify the maximum number of bitflips before
->> + * considering the region is not erased.
->> + * Note: The logic of this function has been extracted from the memweight
->> + * implementation, except that nand_check_erased_buf function exit before
->> + * testing the whole buffer if the number of bitflips exceed the
->> + * bitflips_threshold value.
->> + *
->> + * Returns a positive number of bitflips or -ERROR_CODE.
->> + */
->> +int nand_check_erased_buf(void *buf, int len, int bitflips_threshold)
->> +{
->> +	const unsigned char *bitmap = buf;
->> +	int bitflips = 0;
->> +	int weight;
->> +	int longs;
->> +
->> +	for (; len && ((unsigned long)bitmap) % sizeof(long);
->> +	     len--, bitmap++) {
->> +		weight = hweight8(*bitmap);
->> +
->> +		bitflips += sizeof(u8) - weight;
->> +		if (bitflips > bitflips_threshold)
->> +			return -EINVAL;
+Did you see my comments here [1]? WDYT?
 
-I think it's better to do something like:
+Maybe we can have this discussion in a separate thread, if you want ;-)
 
-if (UNLIKELY(bitflips > bitflips_threshold))
-	return -EINVAL;
-
-isn't it? :-)
-(the same for the other if)
-
-
->> +	}
->> +
->> +
->> +	for (longs = len / sizeof(long); longs;
->> +	     longs--, bitmap += sizeof(long)) {
->> +		BUG_ON(longs >= INT_MAX / BITS_PER_LONG);
->> +		weight = hweight_long(*((unsigned long *)bitmap));
->> +
->> +		bitflips += sizeof(long) - weight;
->> +		if (bitflips > bitflips_threshold)
->> +			return -EINVAL;
->> +	}
->> +
->> +	len %= sizeof(long);
->> +
->> +	for (; len > 0; len--, bitmap++) {
->> +		weight = hweight8(*bitmap);
->> +		bitflips += sizeof(u8) - weight;
->> +	}
->> +
->> +	return bitflips;
->> +}
->> +EXPORT_SYMBOL(nand_check_erased_buf);
->> +
->> +/**
->> + * nand_check_erased_ecc_chunk - check if an ECC chunk contains (almost) only
->> + *				 0xff data
->> + * @data: data buffer to test
->> + * @datalen: data length
->> + * @ecc: ECC buffer
->> + * @ecclen: ECC length
->> + * @extraoob: extra OOB buffer
->> + * @extraooblen: extra OOB length
->> + * @bitflips_threshold: maximum number of bitflips
->> + *
->> + * Check if a data buffer and its associated ECC and OOB data contains only
->> + * 0xff pattern, which means the underlying region has been erased and is
->> + * ready to be programmed.
->> + * The bitflips_threshold specify the maximum number of bitflips before
->> + * considering the region as not erased.
->> + *
->> + * Returns a positive number of bitflips or -ERROR_CODE.
->> + */
->> +int nand_check_erased_ecc_chunk(void *data, int datalen,
->> +				void *ecc, int ecclen,
->> +				void *extraoob, int extraooblen,
->> +				int bitflips_threshold)
->> +{
->> +	int bitflips = 0;
->> +	int ret;
->> +
->> +	ret = nand_check_erased_buf(data, datalen, bitflips_threshold);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	bitflips += ret;
->> +	bitflips_threshold -= ret;
->> +
->> +	ret = nand_check_erased_buf(ecc, ecclen, bitflips_threshold);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	bitflips += ret;
->> +	bitflips_threshold -= ret;
->> +
->> +	ret = nand_check_erased_buf(extraoob, extraooblen, bitflips_threshold);
->> +	if (ret < 0)
->> +		return ret;
->> +
->
-> Forgot the memset operations here:
->
-> 	memset(data, 0xff, datalen);
-> 	memset(ecc, 0xff, ecclen);
-> 	memset(extraoob, 0xff, extraooblen);
-
-Yes, you're right.. I did the same mistake on my first implementation 
-too ;-)
-
-As additional optimization you may also check if the lower layer already 
-did the check for you (e.g. if you have an iMXQP as we saw in latest 
-days), but I think it's a minor one, because you'll face this situation 
-very very unlikely.
+Kind Regards,
 
 -- 
 
 Andrea SCIAN
 
 DAVE Embedded Systems
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2015-July/060520.html
+
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>   drivers/mtd/nand/nand_base.c | 63 ++++++++++++++++++++++++++++++++++++++------
+>   1 file changed, 55 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 1542ea7..d527c73 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1396,6 +1396,19 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+>   		stat = chip->ecc.correct(mtd, p,
+>   			&chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
+>   		if (stat < 0) {
+> +			/* check for empty pages with bitflips */
+> +			int col = (int)(p - bufpoi);
+> +
+> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, col, -1);
+> +			chip->read_buf(mtd, p, chip->ecc.size);
+> +			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
+> +						&chip->buffers->ecccode[i],
+> +						chip->ecc.bytes,
+> +						NULL, 0,
+> +						chip->ecc.strength);
+> +		}
+> +
+> +		if (stat < 0) {
+>   			mtd->ecc_stats.failed++;
+>   		} else {
+>   			mtd->ecc_stats.corrected += stat;
+> @@ -1445,6 +1458,16 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+>
+>   		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+>   		if (stat < 0) {
+> +			/* check for empty pages with bitflips */
+> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, i, -1);
+> +			chip->read_buf(mtd, p, eccsize);
+> +			stat = nand_check_erased_ecc_chunk(p, eccsize,
+> +						&ecc_code[i], eccbytes,
+> +						NULL, 0,
+> +						chip->ecc.strength);
+> +		}
+> +
+> +		if (stat < 0) {
+>   			mtd->ecc_stats.failed++;
+>   		} else {
+>   			mtd->ecc_stats.corrected += stat;
+> @@ -1495,7 +1518,18 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+>   		chip->read_buf(mtd, p, eccsize);
+>   		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
+>
+> -		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
+> +		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+> +		if (stat < 0) {
+> +			/* check for empty pages with bitflips */
+> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
+> +				      i + mtd->oobsize, -1);
+> +			chip->read_buf(mtd, p, eccsize);
+> +			stat = nand_check_erased_ecc_chunk(p, eccsize,
+> +						&ecc_code[i], eccbytes,
+> +						NULL, 0,
+> +						chip->ecc.strength);
+> +		}
+> +
+>   		if (stat < 0) {
+>   			mtd->ecc_stats.failed++;
+>   		} else {
+> @@ -1523,6 +1557,8 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+>   	int i, eccsize = chip->ecc.size;
+>   	int eccbytes = chip->ecc.bytes;
+>   	int eccsteps = chip->ecc.steps;
+> +	int eccstepsize = eccsize + eccbytes + chip->ecc.prepad +
+> +			  chip->ecc.postpad;
+>   	uint8_t *p = buf;
+>   	uint8_t *oob = chip->oob_poi;
+>   	unsigned int max_bitflips = 0;
+> @@ -1542,19 +1578,30 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+>   		chip->read_buf(mtd, oob, eccbytes);
+>   		stat = chip->ecc.correct(mtd, p, oob, NULL);
+>
+> -		if (stat < 0) {
+> -			mtd->ecc_stats.failed++;
+> -		} else {
+> -			mtd->ecc_stats.corrected += stat;
+> -			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> -		}
+> -
+>   		oob += eccbytes;
+>
+>   		if (chip->ecc.postpad) {
+>   			chip->read_buf(mtd, oob, chip->ecc.postpad);
+>   			oob += chip->ecc.postpad;
+>   		}
+> +
+> +		if (stat < 0) {
+> +			/* check for empty pages with bitflips */
+> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, i * eccstepsize, -1);
+> +			chip->read_buf(mtd, p, chip->ecc.size);
+> +			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
+> +							   oob - eccstepsize,
+> +							   eccstepsize,
+> +							   NULL, 0,
+> +							   chip->ecc.strength);
+> +		}
+> +
+> +		if (stat < 0) {
+> +			mtd->ecc_stats.failed++;
+> +		} else {
+> +			mtd->ecc_stats.corrected += stat;
+> +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> +		}
+>   	}
+>
+>   	/* Calculate remaining oob bytes */
+>
