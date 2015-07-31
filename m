@@ -1,21 +1,21 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZLHBp-0007EB-Kk
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 20:46:02 +0000
-Received: by pdbbh15 with SMTP id bh15so47907662pdb.1
- for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2015 13:45:40 -0700 (PDT)
-Date: Fri, 31 Jul 2015 13:45:36 -0700
+ id 1ZLHCg-0007O3-FD
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 20:46:54 +0000
+Received: by pachj5 with SMTP id hj5so46030054pac.3
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2015 13:46:33 -0700 (PDT)
+Date: Fri, 31 Jul 2015 13:46:29 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Frank.Li@freescale.com
 Cc: linux-mtd@lists.infradead.org, b45815@freescale.com, lznuaa@gmail.com
-Subject: Re: [PATCH v3 3/8] mtd: spi-nor: fsl-quadspi: add imx7d support
-Message-ID: <20150731204536.GD10676@google.com>
+Subject: Re: [PATCH v3 4/8] mtd: spi-nor: fsl-quadspi: add i.mx6ul support
+Message-ID: <20150731204629.GE10676@google.com>
 References: <1437761188-8179-1-git-send-email-Frank.Li@freescale.com>
- <1437761188-8179-4-git-send-email-Frank.Li@freescale.com>
+ <1437761188-8179-5-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1437761188-8179-4-git-send-email-Frank.Li@freescale.com>
+In-Reply-To: <1437761188-8179-5-git-send-email-Frank.Li@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +25,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Forgot one thing:
+Same comments from the other patches:
 
-On Sat, Jul 25, 2015 at 02:06:23AM +0800, Frank.Li@freescale.com wrote:
+On Sat, Jul 25, 2015 at 02:06:24AM +0800, Frank.Li@freescale.com wrote:
 > From: Frank Li <Frank.Li@freescale.com>
 > 
-> Support i.mx7d.
-> quadspi in i.mx7d increase rxfifo.
-> require fill at least 16byte to trigger data transfer.
+> Add i.mx6ul chip support
 > 
 > Signed-off-by: Frank Li <Frank.Li@freescale.com>
-> Signed-off-by: Han Xu <b45815@freescale.com>
+> Acked-by: Allen Xu <b45815@freescale.com>
 > ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
 > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 5f31bc7..3fc94ad 100644
+> index 3fc94ad..3746542 100644
 > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-...
-> @@ -677,6 +702,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
->  static const struct of_device_id fsl_qspi_dt_ids[] = {
+> @@ -206,6 +206,7 @@ enum fsl_qspi_devtype {
+>  	FSL_QUADSPI_VYBRID,
+>  	FSL_QUADSPI_IMX6SX,
+>  	FSL_QUADSPI_IMX7D,
+> +	FSL_QUADSPI_IMX6UL,
+>  };
+>  
+>  struct fsl_qspi_devtype_data {
+> @@ -241,6 +242,15 @@ static struct fsl_qspi_devtype_data imx7d_data = {
+>  		       | QUADSPI_QUIRK_4X_INT_CLK
+>  };
+>  
+> +static struct fsl_qspi_devtype_data imx6ul_data = {
+> +	.devtype = FSL_QUADSPI_IMX6UL,
+> +	.rxfifo = 128,
+> +	.txfifo = 512,
+> +	.ahb_buf_size = 1024,
+> +	.driver_data = QUADSPI_QUIRK_TKT253890
+> +		       | QUADSPI_QUIRK_4X_INT_CLK
+
+End this line with a comma.
+
+> +};
+> +
+>  #define FSL_QSPI_MAX_CHIP	4
+>  struct fsl_qspi {
+>  	struct mtd_info mtd[FSL_QSPI_MAX_CHIP];
+> @@ -703,6 +713,7 @@ static const struct of_device_id fsl_qspi_dt_ids[] = {
 >  	{ .compatible = "fsl,vf610-qspi", .data = (void *)&vybrid_data, },
 >  	{ .compatible = "fsl,imx6sx-qspi", .data = (void *)&imx6sx_data, },
-> +	{ .compatible = "fsl,imx7d-qspi", .data = (void *)&imx7d_data, },
+>  	{ .compatible = "fsl,imx7d-qspi", .data = (void *)&imx7d_data, },
+> +	{ .compatible = "fsl,imx6ul-qspi", .data = (void *)&imx6ul_data, },
 
-^^ This compatible string needs to be documented in
-Documentation/devicetree/bindings/...
-
-Please add a patch for the new properties in your next revision.
-
-Brian
+Document this compatible property.
 
 >  	{ /* sentinel */ }
 >  };
@@ -64,3 +83,5 @@ Brian
 > -- 
 > 1.9.1
 > 
+
+Brian
