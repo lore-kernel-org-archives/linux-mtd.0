@@ -1,23 +1,21 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZLAY8-0001pQ-EI
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 13:40:39 +0000
-Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
- default ECC read functions
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
- <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
- <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
- <55BB48D9.6050508@dave-tech.it> <20150731123221.34cf601e@bbrezillon>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
- Han Xu <b45815@freescale.com>
-From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <55BB7ABD.7040008@dave-tech.it>
-Date: Fri, 31 Jul 2015 15:40:13 +0200
+Message-ID: <55BB7CA4.1020300@ti.com>
+Date: Fri, 31 Jul 2015 19:18:20 +0530
+From: Sekhar Nori <nsekhar@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20150731123221.34cf601e@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+To: Vignesh R <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>, David
+ Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>
+CC: Huang Shijie <b32955@freescale.com>, <linux-omap@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-spi@vger.kernel.org>
+Subject: Re: [RFC PATCH 4/5] ARM: dts: DRA7: Add memory map region entries
+ for qspi
+References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
+ <1438072876-16338-5-git-send-email-vigneshr@ti.com>
+In-Reply-To: <1438072876-16338-5-git-send-email-vigneshr@ti.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,86 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tuesday 28 July 2015 02:11 PM, Vignesh R wrote:
+> Add qspi memory mapped region entries for DRA7xx based SoCs.
+> 
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> ---
+>  arch/arm/boot/dts/am4372.dtsi | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
+> index ade28c790f4b..5317a0f24ab9 100644
+> --- a/arch/arm/boot/dts/am4372.dtsi
+> +++ b/arch/arm/boot/dts/am4372.dtsi
 
-Boris,
+The patch talks about DRA7x in subject and description but you modify
+AM437x here. You have got commit text mixed up between 4/5 and 5/5.
 
-Il 31/07/2015 12:32, Boris Brezillon ha scritto:
-> Hi Andrea,
->
-> Adding Han in Cc.
->
-> On Fri, 31 Jul 2015 12:07:21 +0200
-> Andrea Scian <rnd4@dave-tech.it> wrote:
->
->>
->> Dear Boris,
->>
->>
->> Il 30/07/2015 19:34, Boris Brezillon ha scritto:
->>> The default NAND read functions are relying on an underlying controller
->>> to correct bitflips, but some of those controller cannot properly fix
->>> bitflips in erased pages.
->>> In case of ECC failures, check if the page of subpage is empty before
->>> reporting an ECC failure.
->>
->> I'm still wondering if chip->ecc.strength is the right threshold.
->>
->> Did you see my comments here [1]? WDYT?
->
-> Yes I've read it, and decided to go for ecc->strength as a first
-> step (I'm more interested in discussing the approach than the threshold
-> value right now ;-)).
+Probably not the kind of feedback you are looking for an RFC, but since
+I noticed it..
 
-I perfectly understand, that's the reason why I ask if you want to move 
-to another thread ;-)
-
-> Anyway, as you pointed out in the thread, writing data on an erased
-> page already containing some bitflips might generate even more
-> bitflips, so using a different threshold for the erased page check
-> makes sense. This threshold should definitely be correlated to the ECC
-> strength, but how, that's the question.
->
-> How about taking a rather conservative value like 10% of the specified
-> ECC strength, and see how it goes.
-
-Yes, I think that there's no real way to get the right value, other than 
-feedbacks from on-field testing with various devices.
-
-I'm also thinking about changing how a NAND page is written on the 
-device, now that we know that even erased page may have (too many!) 
-bitflips if they has not been so-freshly erased.
-
-Read on NAND device is lot's faster that write, so maybe we can:
-
-a) read the page before write it, check for bitflips on erased area and 
-write it only if it fit our threshold
-
-b) read the page after write it and check if the bitflips are lower that 
-a give value
-
-In this way:
-- we can use ecc_strength as read threshold, because it fits all the 
-other NAND read
-
-- we can use "something a bit lower than" mtd->bitflip_threshold on 
-read-before-write or read-after-write. If we don't do so the block will 
-be scrubbed next time we read it again (if we are lucky.. if we are 
-unlucky the block will have bitflip > ecc_strength!): IOW we did a write 
-that will trigger another erase/write cycle.
-
-Am I misunderstanding something?
-
-
->> Maybe we can have this discussion in a separate thread, if you want ;-)
->
-> No, I think we should keep discussing it in this thread.
-
-OK
-
-KR,
-
--- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
+Thanks,
+Sekhar
