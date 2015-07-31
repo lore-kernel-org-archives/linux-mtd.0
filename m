@@ -1,24 +1,20 @@
-Date: Thu, 30 Jul 2015 22:11:25 +0200
-From: Albert ARIBAUD <albert.aribaud@3adev.fr>
-To: Stefan Agner <stefan@agner.ch>, sebastian@breakpoint.cc
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, robh+dt@kernel.org,
- pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
- galak@codeaurora.org, shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
- bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Bill Pringlemeir <bpringlemeir@nbsps.com>
-Subject: Re: [PATCH v8 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-Message-ID: <20150730221125.08b5b2cf.albert.aribaud@3adev.fr>
-In-Reply-To: <36ffdc45494ab888ba375ff8478864ad@agner.ch>
-References: <1438015365-15685-1-git-send-email-stefan@agner.ch>
- <1438015365-15685-2-git-send-email-stefan@agner.ch>
- <20150730181321.3bd38db7.albert.aribaud@3adev.fr>
- <36ffdc45494ab888ba375ff8478864ad@agner.ch>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKxtD-0000sh-8x
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 00:09:31 +0000
+Message-ID: <55BABB55.6010807@cn.fujitsu.com>
+Date: Fri, 31 Jul 2015 08:03:33 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: Brian Norris <computersforpeace@gmail.com>
+CC: <richard.weinberger@gmail.com>, <dedekind1@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 1/2] ubifs: Kconfig: fix the description in Kconfig
+References: <1435728600-14560-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <20150730164701.GA42191@google.com>
+In-Reply-To: <20150730164701.GA42191@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,92 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+On 07/31/2015 12:47 AM, Brian Norris wrote:
+> On Wed, Jul 01, 2015 at 01:29:59PM +0800, Dongsheng Yang wrote:
+>> If unsure we would say 'N' rather than 'Y'.
+>>
+>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+>> ---
+>>   fs/ubifs/Kconfig | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+>> index ba66d50..f9aaad1 100644
+>> --- a/fs/ubifs/Kconfig
+>> +++ b/fs/ubifs/Kconfig
+>> @@ -27,11 +27,11 @@ config UBIFS_FS_LZO
+>>   	default y
+>>   	help
+>>   	   LZO compressor is generally faster than zlib but compresses worse.
+>> -	   Say 'Y' if unsure.
+>> +	   Say 'N' if unsure.
+>
+> Why would we recommend 'N' yet set the default to 'Y'? Seems like
+> some dissonance.
 
-Le Thu, 30 Jul 2015 19:00:38 +0200, Stefan Agner <stefan@agner.ch> a
-=C3=A9crit :
+OMG, that's TRUE. I can not recall what I was thinking when I sent
+this patch, but I believe there was something wrong in my mind.
 
-> Hi Albert,
->=20
-> On 2015-07-30 18:13, Albert ARIBAUD wrote:
-> > Hi Stefan,
-> >=20
-> > Le Mon, 27 Jul 2015 18:42:41 +0200, Stefan Agner <stefan@agner.ch> a
-> > =C3=A9crit :
-> >=20
-> >> This driver supports Freescale NFC (NAND flash controller) found on
-> >> Vybrid (VF610), MPC5125, MCF54418 and Kinetis K70. The driver has
-> >> been tested on 8-bit and 16-bit NAND interface and supports ONFI
-> >> parameter page reading.
-> >>
-> >> [...]
-> >>
-> >> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc=
-.c
-> >> new file mode 100644
-> >> index 0000000..0da500e
-> >> --- /dev/null
-> >> +++ b/drivers/mtd/nand/vf610_nfc.c
-> >> @@ -0,0 +1,640 @@
-> >> [...]
-> >=20
-> > ... about line 708:
-> >=20
-> >> +	err =3D devm_request_irq(nfc->dev, irq, vf610_nfc_irq, 0, DRV_NAME, =
-mtd);
-> >> +	if (err) {
-> >> +		dev_err(nfc->dev, "Error requesting IRQ!\n");
-> >> +		goto error;
-> >> +	}
-> >> +
-> >> +	vf610_nfc_init_controller(nfc);
-> >=20
-> > The call above is too early: vf610_nfc_init_controller() will test
-> > for (nfc->chip.options & NAND_BUSWIDTH_16) but this option bit is only
-> > set once nand_scan_ident() below has been run.
-> >=20
-> > This has the effect that even when the DT node specifies a 16-bit wide
-> > bus, the controller is configured for 8-bit mode at this point, which of
-> > course causes read failures. I've experienced this with a Vybrid SoC
-> > and a Micron MT29F4G16ABADAH4 16-bit NAND.
-> >=20
-> >> +	/* first scan to find the device and get the page size */
-> >> +	if (nand_scan_ident(mtd, 1, NULL)) {
-> >> +		err =3D -ENXIO;
-> >> +		goto error;
-> >> +	}
-> >=20
-> > Placing the call to vf610_nfc_init_controller() here, after the call
-> > to nand_scan_ident() rather than before it, fixed the issue for me.
->=20
-> Hm, since nand_scan_ident access the devices we actually want the
-> controller initialized before we access it the first time. In most
-> cases, the boot loader/boot ROM probably initialized the controller in a
-> way that identifying the chip should work non the less. However, the
-> safe way would be to initialize it before calling nand_scan_ident.
+Thanx a lot to point it out, Brian.
 
-Correct -- there is a mutual dependency here between nand_scan_ident()
-and vf610_nfc_init_controller(). Anyway, my call order switch was only
-a hack to get things working.
+Atem and Richard, Please ignore this noise. My bad :(.
 
-> However, I see your point regarding bus width: With the change to
-> nand_dt_init, we have that information after nand_scan_ident. There is
-> actually more: Also the HW ECC settings are not yet parsed at that
-> point, hence the ECC status and offset will not be initialized right.=20
->=20
-> We could call the whole initialization twice. This would configure 8-Bit
-> mode for the 16-Bit devices, but during initialization this is anyway
-> the required default (ONFI). Or we split it up and call it something
-> like vf610_nfc_preinit_controller and vf610_nfc_init_controller.
->=20
-> What do you think?
-
-I think creating a vf610_nfc_preinit_controller() function with no
-dependency on the DT is the cleaner option.
-
-> --
-> Stefan
-
-Cordialement,
-Albert ARIBAUD
-3ADEV
+Yang
+>
+> Also, I'm not an expert on UBIFS, but I imagine the suggestion to say
+> yes is because of legacy support; what if you need to mount a file
+> system that was created with LZO?
+>
+>>
+>>   config UBIFS_FS_ZLIB
+>>   	bool "ZLIB compression support" if UBIFS_FS_ADVANCED_COMPR
+>>   	depends on UBIFS_FS
+>>   	default y
+>>   	help
+>> -	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
+>> +	  Zlib compresses better than LZO but it is slower. Say 'N' if unsure.
+>
+> Same here.
+>
+> Brian
+> .
+>
