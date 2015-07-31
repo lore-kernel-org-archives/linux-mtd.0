@@ -1,25 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1ZL7cK-0003kt-2r
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 10:32:44 +0000
-Date: Fri, 31 Jul 2015 12:32:21 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andrea Scian <rnd4@dave-tech.it>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
- Han Xu <b45815@freescale.com>
-Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
- default ECC read functions
-Message-ID: <20150731123221.34cf601e@bbrezillon>
-In-Reply-To: <55BB48D9.6050508@dave-tech.it>
-References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
- <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
- <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
- <55BB48D9.6050508@dave-tech.it>
+Received: from mail-bl2on0147.outbound.protection.outlook.com ([65.55.169.147]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZL7fY-0008I1-GO
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 10:36:05 +0000
+From: Hou Zhiqiang <B48286@freescale.com>
+To: Hou Zhiqiang <B48286@freescale.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "shijie.huang@intel.com" <shijie.huang@intel.com>
+CC: Hu Vincent <Mingkai.Hu@freescale.com>
+Subject: RE: [PATCH] RFC: mtd/spi-nor: add checking for the spi_nor_read
+Date: Fri, 31 Jul 2015 10:35:39 +0000
+Message-ID: <CY1PR0301MB0780E3F6E2A1170A7A56A8538B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+References: <1437479828-30826-1-git-send-email-B48286@freescale.com>
+In-Reply-To: <1437479828-30826-1-git-send-email-B48286@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,52 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andrea,
-
-Adding Han in Cc.
-
-On Fri, 31 Jul 2015 12:07:21 +0200
-Andrea Scian <rnd4@dave-tech.it> wrote:
-
-> 
-> Dear Boris,
-> 
-> 
-> Il 30/07/2015 19:34, Boris Brezillon ha scritto:
-> > The default NAND read functions are relying on an underlying controller
-> > to correct bitflips, but some of those controller cannot properly fix
-> > bitflips in erased pages.
-> > In case of ECC failures, check if the page of subpage is empty before
-> > reporting an ECC failure.
-> 
-> I'm still wondering if chip->ecc.strength is the right threshold.
-> 
-> Did you see my comments here [1]? WDYT?
-
-Yes I've read it, and decided to go for ecc->strength as a first
-step (I'm more interested in discussing the approach than the threshold
-value right now ;-)).
-
-Anyway, as you pointed out in the thread, writing data on an erased
-page already containing some bitflips might generate even more
-bitflips, so using a different threshold for the erased page check
-makes sense. This threshold should definitely be correlated to the ECC
-strength, but how, that's the question.
-
-How about taking a rather conservative value like 10% of the specified
-ECC strength, and see how it goes.
-
-> 
-> Maybe we can have this discussion in a separate thread, if you want ;-)
-
-No, I think we should keep discussing it in this thread.
-
-Thanks,
-
-Boris
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+SGkgU2hpamllIGFuZCBCcmlhbiwNCg0KRG8geW91IGhhdmUgYW55IGNvbW1lbnQ/DQoNCj4gLS0t
+LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogWmhpcWlhbmcgSG91IFttYWlsdG86QjQ4
+Mjg2QGZyZWVzY2FsZS5jb21dDQo+IFNlbnQ6IDIwMTXE6jfUwjIxyNUgMTk6NTcNCj4gVG86IGxp
+bnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207
+DQo+IGR3bXcyQGluZnJhZGVhZC5vcmcNCj4gQ2M6IEh1IE1pbmdrYWktQjIxMjg0OyBIb3UgWmhp
+cWlhbmctQjQ4Mjg2DQo+IFN1YmplY3Q6IFtQQVRDSF0gUkZDOiBtdGQvc3BpLW5vcjogYWRkIGNo
+ZWNraW5nIGZvciB0aGUgc3BpX25vcl9yZWFkDQo+IA0KPiBGcm9tOiBIb3UgWmhpcWlhbmcgPEI0
+ODI4NkBmcmVlc2NhbGUuY29tPg0KPiANCj4gQ29tcGFyZSB0aGUgdmFyIHJldGxlbiB3aXRoIGxl
+biB0byBlbnN1cmUgdGhlIHJlYWQgb3BlcmF0aW9uIHN1Y2Nlc3NmdWwuDQo+IA0KPiBUaGVyZSBh
+cmUgc29tZSBTUEkgY29udHJvbGxlcnMgdGhhdCBoYXZlIGEgbWF4aW11bSB0cmFuc2ZlciBsZW5n
+dGgsIGUuZy4NCj4gRnJlZXNjYWxlIGVTUEkgY29udHJvbGxlciBpcyBhYmxlIHRvIHRyYW5zZmVy
+IDB4MTAwMDAgQnl0ZXMgZWFjaCB0aW1lLg0KPiBJZiB0aGUgc3BpX25vcl9yZWFkIGRpbGl2ZXIg
+YSB0cmFuc2FjdGlvbiBsZW5ndGggdGhhdCBleGNjZWQgdGhlIGFiaWxpdHkNCj4gb2YgdGhlIFNQ
+SSBjb250cm9sbGVyLCB0aGVyZSBzaG91bGQgYmUgbXVsdGlwbGUgcmVhZCBvcGVyYXRpb24gdG8g
+bWFrZQ0KPiBzdXJlIHRoaXMgdHJhbnNhY3Rpb24gY29tcGxldGlvbi4NCj4gDQo+IFNpZ25lZC1v
+ZmYtYnk6IEhvdSBaaGlxaWFuZyA8QjQ4Mjg2QGZyZWVzY2FsZS5jb20+DQo+IC0tLQ0KPiAgZHJp
+dmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAxNCArKysrKysrKysrKystLQ0KPiAgMSBmaWxl
+IGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgYi9kcml2ZXJzL210ZC9zcGktbm9y
+L3NwaS0NCj4gbm9yLmMgaW5kZXggZmJjNTAzNS4uZWMxMGNkMSAxMDA2NDQNCj4gLS0tIGEvZHJp
+dmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9z
+cGktbm9yLmMNCj4gQEAgLTcxNSw2ICs3MTUsOCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcmVhZChz
+dHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90DQo+IGZyb20sIHNpemVfdCBsZW4sICB7DQo+ICAJ
+c3RydWN0IHNwaV9ub3IgKm5vciA9IG10ZF90b19zcGlfbm9yKG10ZCk7DQo+ICAJaW50IHJldDsN
+Cj4gKwlzaXplX3QgY250ID0gMDsNCj4gKwl1X2NoYXIgKmN1ciA9IGJ1ZjsNCj4gDQo+ICAJZGV2
+X2RiZyhub3ItPmRldiwgImZyb20gMHglMDh4LCBsZW4gJXpkXG4iLCAodTMyKWZyb20sIGxlbik7
+DQo+IA0KPiBAQCAtNzIyLDggKzcyNCwxNiBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcmVhZChzdHJ1
+Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90DQo+IGZyb20sIHNpemVfdCBsZW4sDQo+ICAJaWYgKHJl
+dCkNCj4gIAkJcmV0dXJuIHJldDsNCj4gDQo+IC0JcmV0ID0gbm9yLT5yZWFkKG5vciwgZnJvbSwg
+bGVuLCByZXRsZW4sIGJ1Zik7DQo+IC0NCj4gKwkqcmV0bGVuID0gMDsNCj4gKwl3aGlsZSAobGVu
+ID4gMCkgew0KPiArCQlyZXQgPSBub3ItPnJlYWQobm9yLCBmcm9tLCBsZW4sICZjbnQsIGN1cik7
+DQo+ICsJCWlmIChyZXQgPCAwKQ0KPiArCQkJYnJlYWs7DQo+ICsJCWxlbiAtPSBjbnQ7DQo+ICsJ
+CWN1ciArPSBjbnQ7DQo+ICsJCSpyZXRsZW4gKz0gY250Ow0KPiArCQlmcm9tICs9IGNudDsNCj4g
+Kwl9DQo+ICAJc3BpX25vcl91bmxvY2tfYW5kX3VucHJlcChub3IsIFNQSV9OT1JfT1BTX1JFQUQp
+Ow0KPiAgCXJldHVybiByZXQ7DQo+ICB9DQo+IC0tDQo+IDIuMS4wLjI3Lmc5NmRiMzI0DQoNClRo
+YW5rcywNClpoaXFpYW5nDQo=
