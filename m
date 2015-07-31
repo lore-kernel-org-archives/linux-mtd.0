@@ -1,21 +1,20 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZL7E7-0003ty-6C
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 10:07:44 +0000
-Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
- default ECC read functions
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
- <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
- <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
-From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <55BB48D9.6050508@dave-tech.it>
-Date: Fri, 31 Jul 2015 12:07:21 +0200
+Message-ID: <55BB4C1D.5080905@ti.com>
+Date: Fri, 31 Jul 2015 13:21:17 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+To: Tony Lindgren <tony@atomide.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <bcousson@baylibre.com>, <ezequiel@vanguardiasur.com.ar>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/12] mtd: nand: omap: Move IRQ handling from GPMC to
+ NAND driver
+References: <1436531019-18088-1-git-send-email-rogerq@ti.com>
+ <1436531019-18088-4-git-send-email-rogerq@ti.com>
+ <20150713071008.GC26485@atomide.com> <55A38D2E.9010500@ti.com>
+ <20150713124059.GF26485@atomide.com> <55B8C1D5.3090807@ti.com>
+In-Reply-To: <55B8C1D5.3090807@ti.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,145 +25,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 29/07/15 15:06, Roger Quadros wrote:
+> Tony,
+> 
+> On 13/07/15 15:40, Tony Lindgren wrote:
+>> * Roger Quadros <rogerq@ti.com> [150713 03:07]:
+>>> Tony,
+>>>
+>>> On 13/07/15 10:10, Tony Lindgren wrote:
+>>>> * Roger Quadros <rogerq@ti.com> [150710 05:26]:
+>>>>> Since the Interrupt Events are used only by the NAND driver,
+>>>>> there is no point in managing the Interrupt registers
+>>>>> in the GPMC driver and complicating it with irqchip modeling.
+>>>>
+>>>> I don't think it's a good idea to allow external drivers to
+>>>> tinker directly with GPMC registers. How about just set up GPMC
+>>>> as an irqchip for the edge detection interrupts?
+>>>>
+>>>> I think we already have devices with multiple NAND chips. And
+>>>> there's nothing stopping other drivers from using the edge
+>>>> detection interrupts.
+>>>
+>>> OK. The GPMC_IRQ registers manage 2 NAND specific interrupts
+>>> (terminalcount and fifo) and 'n' WAIT pin edge interrupts.
+>>>
+>>>  So we can model this as a irqchip with 'n + 2' interrupts.
+>>
+>> OK
+> 
+> For the wait pins irqchip is not sufficient and it needs to be gpiochip
+> with irqchip. Waitpin status can be read from GPIO_STATUS register.
+> 
+> Just getting the interrupt is not enough and we want to know if the
+> line is high or low. That is how nand->dev_ready works.
+> 
+> How about having 2 IRQ domains?
+> One is irqchip with 2 interrupts (terminalcount and fifo) and second is
+> gpiochip + irqchip for the n wait pins.
+> 
+> The nand driver can then be modified to use GPIO to get Read/Busy
+> pin status from the wait pin.
 
-Dear Boris,
+One more observation I've had is that using irqchip modelling for
+the 2 NAND events causes a performance impact.
 
+Using mtd_oobtest I see the following on dra7-evm
 
-Il 30/07/2015 19:34, Boris Brezillon ha scritto:
-> The default NAND read functions are relying on an underlying controller
-> to correct bitflips, but some of those controller cannot properly fix
-> bitflips in erased pages.
-> In case of ECC failures, check if the page of subpage is empty before
-> reporting an ECC failure.
+1) v4.2-rc4 with prefetch-polled (no IRQs used)
+mtd_speedtest: eraseblock write speed is 7142 KiB/s
+mtd_speedtest: eraseblock read speed is 13721 KiB/s
 
-I'm still wondering if chip->ecc.strength is the right threshold.
+2) v4.2-rc4 with prefetch-irq (IRQchip model)
+eraseblock write speed is 5475 KiB/s
+eraseblock read speed is 6420 KiB/s
 
-Did you see my comments here [1]? WDYT?
+3) this series (*) with prefetch-irq (no IRQchip model, nand driver
+directly accesses irqstatus/irqenable)
+eraseblock write speed is 6564 KiB/s
+eraseblock read speed is 10850 KiB/s
 
-Maybe we can have this discussion in a separate thread, if you want ;-)
+(*) diff at the end is required on top to fix an issue with this series.
 
-Kind Regards,
+So should we continue IRQchip modelling for the NAND events
+or use the GPMC interrupt as shared and add APIs to access
+the NAND bits of the IRQSTATUS/ENABLE register.
 
--- 
+cheers,
+-roger
 
-Andrea SCIAN
+--
 
-DAVE Embedded Systems
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2015-July/060520.html
-
->
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->   drivers/mtd/nand/nand_base.c | 63 ++++++++++++++++++++++++++++++++++++++------
->   1 file changed, 55 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 1542ea7..d527c73 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1396,6 +1396,19 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
->   		stat = chip->ecc.correct(mtd, p,
->   			&chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
->   		if (stat < 0) {
-> +			/* check for empty pages with bitflips */
-> +			int col = (int)(p - bufpoi);
-> +
-> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, col, -1);
-> +			chip->read_buf(mtd, p, chip->ecc.size);
-> +			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
-> +						&chip->buffers->ecccode[i],
-> +						chip->ecc.bytes,
-> +						NULL, 0,
-> +						chip->ecc.strength);
-> +		}
-> +
-> +		if (stat < 0) {
->   			mtd->ecc_stats.failed++;
->   		} else {
->   			mtd->ecc_stats.corrected += stat;
-> @@ -1445,6 +1458,16 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
->
->   		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
->   		if (stat < 0) {
-> +			/* check for empty pages with bitflips */
-> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, i, -1);
-> +			chip->read_buf(mtd, p, eccsize);
-> +			stat = nand_check_erased_ecc_chunk(p, eccsize,
-> +						&ecc_code[i], eccbytes,
-> +						NULL, 0,
-> +						chip->ecc.strength);
-> +		}
-> +
-> +		if (stat < 0) {
->   			mtd->ecc_stats.failed++;
->   		} else {
->   			mtd->ecc_stats.corrected += stat;
-> @@ -1495,7 +1518,18 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
->   		chip->read_buf(mtd, p, eccsize);
->   		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
->
-> -		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
-> +		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
-> +		if (stat < 0) {
-> +			/* check for empty pages with bitflips */
-> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
-> +				      i + mtd->oobsize, -1);
-> +			chip->read_buf(mtd, p, eccsize);
-> +			stat = nand_check_erased_ecc_chunk(p, eccsize,
-> +						&ecc_code[i], eccbytes,
-> +						NULL, 0,
-> +						chip->ecc.strength);
-> +		}
-> +
->   		if (stat < 0) {
->   			mtd->ecc_stats.failed++;
->   		} else {
-> @@ -1523,6 +1557,8 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
->   	int i, eccsize = chip->ecc.size;
->   	int eccbytes = chip->ecc.bytes;
->   	int eccsteps = chip->ecc.steps;
-> +	int eccstepsize = eccsize + eccbytes + chip->ecc.prepad +
-> +			  chip->ecc.postpad;
->   	uint8_t *p = buf;
->   	uint8_t *oob = chip->oob_poi;
->   	unsigned int max_bitflips = 0;
-> @@ -1542,19 +1578,30 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
->   		chip->read_buf(mtd, oob, eccbytes);
->   		stat = chip->ecc.correct(mtd, p, oob, NULL);
->
-> -		if (stat < 0) {
-> -			mtd->ecc_stats.failed++;
-> -		} else {
-> -			mtd->ecc_stats.corrected += stat;
-> -			max_bitflips = max_t(unsigned int, max_bitflips, stat);
-> -		}
-> -
->   		oob += eccbytes;
->
->   		if (chip->ecc.postpad) {
->   			chip->read_buf(mtd, oob, chip->ecc.postpad);
->   			oob += chip->ecc.postpad;
->   		}
-> +
-> +		if (stat < 0) {
-> +			/* check for empty pages with bitflips */
-> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, i * eccstepsize, -1);
-> +			chip->read_buf(mtd, p, chip->ecc.size);
-> +			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
-> +							   oob - eccstepsize,
-> +							   eccstepsize,
-> +							   NULL, 0,
-> +							   chip->ecc.strength);
-> +		}
-> +
-> +		if (stat < 0) {
-> +			mtd->ecc_stats.failed++;
-> +		} else {
-> +			mtd->ecc_stats.corrected += stat;
-> +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
-> +		}
->   	}
->
->   	/* Calculate remaining oob bytes */
->
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index fecc054..26ef2bd 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1832,13 +1832,14 @@ static int omap_get_dt_info(struct device *dev, struct omap_nand_info *info)
+ 		for (i = 0; i < ARRAY_SIZE(nand_xfer_types); i++) {
+ 			if (!strcasecmp(s, nand_xfer_types[i])) {
+ 				info->xfer_type = i;
+-				break;
++				goto next;
+ 			}
+ 		}
+ 
+ 		dev_err(dev, "unrecognized value for ti,nand-xfer-type\n");
+ 		return -EINVAL;
+ 	}
++next:
+ 
+ 	of_get_nand_on_flash_bbt(child);
+ 
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 26ef2bd..e8bdff5 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -670,17 +670,12 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
+ 			goto done;
+ 	}
+ 
+-	/* Clear FIFOEVENT STATUS */
+-	irqstatus &= ~GPMC_IRQ_FIFOEVENT;
+-	writel(irqstatus, info->reg.gpmc_irqstatus);
+-
+ 	return IRQ_HANDLED;
+ 
+ done:
+ 	complete(&info->comp);
+ 
+-	/* Clear FIFOEVENT and TERMCOUNT STATUS */
+-	irqstatus &= ~(GPMC_IRQ_TERMCOUNT | GPMC_IRQ_FIFOEVENT);
++	/* Clear IRQ STATUS */
+ 	writel(irqstatus, info->reg.gpmc_irqstatus);
+ 
+ 	/* Disable Interrupt generation */
