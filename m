@@ -1,22 +1,21 @@
-Received: from mail-bl2on0106.outbound.protection.outlook.com ([65.55.169.106]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZL7o9-000497-QE
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 10:44:58 +0000
-From: Hou Zhiqiang <B48286@freescale.com>
-To: Hou Zhiqiang <B48286@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-CC: Hu Vincent <Mingkai.Hu@freescale.com>
-Subject: RE: [PATCH] mtd: m25p80: Add Power Management support
-Date: Fri, 31 Jul 2015 10:44:35 +0000
-Message-ID: <CY1PR0301MB0780DF6BC293B2C6B5397EA88B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
-References: <1437473933-11983-1-git-send-email-B48286@freescale.com>
-In-Reply-To: <1437473933-11983-1-git-send-email-B48286@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZL8Lu-0002Vp-9C
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 11:19:51 +0000
+Date: 31 Jul 2015 11:19:24 -0000
+Message-Id: <5deae3946cc9422b451b95bc5886bcef30176c67.1438340815.git.hramrach@gmail.com>
+In-Reply-To: <cover.1438340815.git.hramrach@gmail.com>
+References: <cover.1438340815.git.hramrach@gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Subject: [PATCH v2 2/5] mtd: mtdpart: Do not fail mtd probe when parsing
+ partitions fails.
+To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQnJpYW4sDQoNCkRvIHlvdSBoYXZlIGFueSBjb21tZW50Pw0KDQo+IC0tLS0tT3JpZ2luYWwg
-TWVzc2FnZS0tLS0tDQo+IEZyb206IFpoaXFpYW5nIEhvdSBbbWFpbHRvOkI0ODI4NkBmcmVlc2Nh
-bGUuY29tXQ0KPiBTZW50OiAyMDE1xOo31MIyMcjVIDE4OjE5DQo+IFRvOiBsaW51eC1tdGRAbGlz
-dHMuaW5mcmFkZWFkLm9yZzsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOw0KPiBkd213MkBp
-bmZyYWRlYWQub3JnDQo+IENjOiBIdSBNaW5na2FpLUIyMTI4NDsgSG91IFpoaXFpYW5nLUI0ODI4
-Ng0KPiBTdWJqZWN0OiBbUEFUQ0hdIG10ZDogbTI1cDgwOiBBZGQgUG93ZXIgTWFuYWdlbWVudCBz
-dXBwb3J0DQo+IA0KPiBGcm9tOiBIb3UgWmhpcWlhbmcgPEI0ODI4NkBmcmVlc2NhbGUuY29tPg0K
-PiANCj4gQWRkIHRoZSByZXNjYW5uaW5nIGFuZCBpbml0aWFsaXphdGlvbiBvZiBTUEkgZmxhc2gs
-IHRvIG1ha2UgdGhlIFNQSSBmbGFzaA0KPiBpbiB0aGUgY29ycmVjdCBzdGF0ZS4gQmVjYXVzZSBp
-ZiB0aGUgUG93ZXIgTWFuYWdlbWVudCBzeXN0ZW0gdHJ1bnMgb2ZmDQo+IHBvd2VyIHN1cHBseSBm
-b3IgU1BJIGZsYXNoIHdoZW4gc3lzdGVtIHN1c3BlbmRpbmcsIHRoZSBTUEkgZmxhc2ggd2lsbA0K
-PiByZXR1cm4gdG8gdGhlIHJlc2V0IHN0YXRlIGFmdGVyIHN5c3RlbSByZXN1bWUuDQo+IA0KPiBT
-aWduZWQtb2ZmLWJ5OiBIb3UgWmhpcWlhbmcgPEI0ODI4NkBmcmVlc2NhbGUuY29tPg0KPiAtLS0N
-Cj4gIGRyaXZlcnMvbXRkL2RldmljZXMvbTI1cDgwLmMgfCAzNCArKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKQ0KPiAN
-Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2RldmljZXMvbTI1cDgwLmMgYi9kcml2ZXJzL210
-ZC9kZXZpY2VzL20yNXA4MC5jDQo+IGluZGV4IGQzMTNmOTQ4Yi4uZjlkMmIyZSAxMDA2NDQNCj4g
-LS0tIGEvZHJpdmVycy9tdGQvZGV2aWNlcy9tMjVwODAuYw0KPiArKysgYi9kcml2ZXJzL210ZC9k
-ZXZpY2VzL20yNXA4MC5jDQo+IEBAIC0yNDgsNiArMjQ4LDM5IEBAIHN0YXRpYyBpbnQgbTI1cF9y
-ZW1vdmUoc3RydWN0IHNwaV9kZXZpY2UgKnNwaSkNCj4gIAlyZXR1cm4gbXRkX2RldmljZV91bnJl
-Z2lzdGVyKCZmbGFzaC0+bXRkKTsNCj4gIH0NCj4gDQo+ICsjaWZkZWYgQ09ORklHX1BNX1NMRUVQ
-DQo+ICtzdGF0aWMgaW50IG0yNXBfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpIHsNCj4gKwly
-ZXR1cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBtMjVwX3Jlc3VtZShzdHJ1Y3QgZGV2
-aWNlICpkZXYpIHsNCj4gKwlzdHJ1Y3QgbTI1cCAqZmxhc2ggPSBkZXZfZ2V0X2RydmRhdGEoZGV2
-KTsNCj4gKwlzdHJ1Y3Qgc3BpX2RldmljZSAqc3BpID0gZmxhc2gtPnNwaTsNCj4gKwlzdHJ1Y3Qg
-c3BpX25vciAqbm9yID0gJmZsYXNoLT5zcGlfbm9yOw0KPiArCWVudW0gcmVhZF9tb2RlIG1vZGUg
-PSBTUElfTk9SX05PUk1BTDsNCj4gKwlzdHJ1Y3QgZmxhc2hfcGxhdGZvcm1fZGF0YSAqZGF0YTsN
-Cj4gKwljaGFyICpmbGFzaF9uYW1lID0gTlVMTDsNCj4gKw0KPiArCWlmIChzcGktPm1vZGUgJiBT
-UElfUlhfUVVBRCkNCj4gKwkJbW9kZSA9IFNQSV9OT1JfUVVBRDsNCj4gKwllbHNlIGlmIChzcGkt
-Pm1vZGUgJiBTUElfUlhfRFVBTCkNCj4gKwkJbW9kZSA9IFNQSV9OT1JfRFVBTDsNCj4gKw0KPiAr
-CWRhdGEgPSBkZXZfZ2V0X3BsYXRkYXRhKCZzcGktPmRldik7DQo+ICsJaWYgKGRhdGEgJiYgZGF0
-YS0+dHlwZSkNCj4gKwkJZmxhc2hfbmFtZSA9IGRhdGEtPnR5cGU7DQo+ICsJZWxzZSBpZiAoIXN0
-cmNtcChzcGktPm1vZGFsaWFzLCAic3BpLW5vciIpKQ0KPiArCQlmbGFzaF9uYW1lID0gTlVMTDsg
-LyogYXV0by1kZXRlY3QgKi8NCj4gKwllbHNlDQo+ICsJCWZsYXNoX25hbWUgPSBzcGktPm1vZGFs
-aWFzOw0KPiArDQo+ICsJcmV0dXJuIHNwaV9ub3Jfc2Nhbihub3IsIGZsYXNoX25hbWUsIG1vZGUp
-OyB9ICNlbmRpZiAvKg0KPiArQ09ORklHX1BNX1NMRUVQICovDQo+ICsNCj4gK3N0YXRpYyBTSU1Q
-TEVfREVWX1BNX09QUyhtMjVwX3BtX29wcywgbTI1cF9zdXNwZW5kLCBtMjVwX3Jlc3VtZSk7DQo+
-ICAvKg0KPiAgICogRG8gTk9UIGFkZCB0byB0aGlzIGFycmF5IHdpdGhvdXQgcmVhZGluZyB0aGUg
-Zm9sbG93aW5nOg0KPiAgICoNCj4gQEAgLTMwMiw2ICszMzUsNyBAQCBzdGF0aWMgc3RydWN0IHNw
-aV9kcml2ZXIgbTI1cDgwX2RyaXZlciA9IHsNCj4gIAkuZHJpdmVyID0gew0KPiAgCQkubmFtZQk9
-ICJtMjVwODAiLA0KPiAgCQkub3duZXIJPSBUSElTX01PRFVMRSwNCj4gKwkJLnBtCT0gJm0yNXBf
-cG1fb3BzLA0KPiAgCX0sDQo+ICAJLmlkX3RhYmxlCT0gbTI1cF9pZHMsDQo+ICAJLnByb2JlCT0g
-bTI1cF9wcm9iZSwNCj4gLS0NCj4gMi4xLjAuMjcuZzk2ZGIzMjQNCg0KVGhhbmtzLA0KWmhpcWlh
-bmcNCg==
+Due to wrong assumption in ofpart ofpart fails on Exynos on SPI chips
+with no partitions because the subnode containing controller data
+confuses the ofpart parser.
+
+Thus compiling in ofpart support automatically fails probing any SPI NOR
+flash without partitions on Exynos.
+
+Compiling in a partitioning scheme should not cause probe of otherwise
+valid device to fail.
+
+Remove that failure possibility when MTD_PARTITIONED_MASTER is set.
+
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+
+---
+v2:
+
+ - only allow partition parsing failure when MTD_PARTITIONED_MASTER is
+   set
+---
+ drivers/mtd/mtdpart.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 31888c2..6eafbe9 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -774,10 +774,15 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 		if (ret > 0) {
+ 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+ 			       ret, parser->name, master->name);
+-			break;
++			return ret;
++		}
++		if (!IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) && (ret < 0)) {
++			pr_err("Error parsing %s partitions on %s\n",
++			       parser->name, master->name);
++			return ret;
+ 		}
+ 	}
+-	return ret;
++	return 0;
+ }
+ 
+ int mtd_is_partition(const struct mtd_info *mtd)
+-- 
+2.1.4
