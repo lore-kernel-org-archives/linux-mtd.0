@@ -1,19 +1,18 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKxtD-0000sh-8x
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 00:09:31 +0000
-Message-ID: <55BABB55.6010807@cn.fujitsu.com>
-Date: Fri, 31 Jul 2015 08:03:33 +0800
+ id 1ZKxtr-0000tx-Sy
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 00:10:12 +0000
+Message-ID: <55BABB80.9080406@cn.fujitsu.com>
+Date: Fri, 31 Jul 2015 08:04:16 +0800
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-CC: <richard.weinberger@gmail.com>, <dedekind1@gmail.com>,
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 1/2] ubifs: Kconfig: fix the description in Kconfig
-References: <1435728600-14560-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20150730164701.GA42191@google.com>
-In-Reply-To: <20150730164701.GA42191@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+To: Richard Weinberger <richard@nod.at>, <dedekind1@gmail.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] ubifs: make ubifs_[get|set]xattr atomic
+References: <1438234650-21289-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <55B9DAD2.4060803@nod.at>
+In-Reply-To: <55B9DAD2.4060803@nod.at>
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,53 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/31/2015 12:47 AM, Brian Norris wrote:
-> On Wed, Jul 01, 2015 at 01:29:59PM +0800, Dongsheng Yang wrote:
->> If unsure we would say 'N' rather than 'Y'.
->>
->> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
->> ---
->>   fs/ubifs/Kconfig | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
->> index ba66d50..f9aaad1 100644
->> --- a/fs/ubifs/Kconfig
->> +++ b/fs/ubifs/Kconfig
->> @@ -27,11 +27,11 @@ config UBIFS_FS_LZO
->>   	default y
->>   	help
->>   	   LZO compressor is generally faster than zlib but compresses worse.
->> -	   Say 'Y' if unsure.
->> +	   Say 'N' if unsure.
+On 07/30/2015 04:05 PM, Richard Weinberger wrote:
+> Am 30.07.2015 um 07:37 schrieb Dongsheng Yang:
+>> This commit make the ubifs_[get|set]xattr protected by ui_mutex,
+>> making xfstests/generic/037 passed.
 >
-> Why would we recommend 'N' yet set the default to 'Y'? Seems like
-> some dissonance.
+> Making a test pass is not a good patch description.
+> Please describe what needs protection and why. :-)
 
-OMG, that's TRUE. I can not recall what I was thinking when I sent
-this patch, but I believe there was something wrong in my mind.
+Agreed, sorry for my lazy :)
 
-Thanx a lot to point it out, Brian.
+Will send a V2 with more description.
 
-Atem and Richard, Please ignore this noise. My bad :(.
-
+Thanx
 Yang
 >
-> Also, I'm not an expert on UBIFS, but I imagine the suggestion to say
-> yes is because of legacy support; what if you need to mount a file
-> system that was created with LZO?
->
->>
->>   config UBIFS_FS_ZLIB
->>   	bool "ZLIB compression support" if UBIFS_FS_ADVANCED_COMPR
->>   	depends on UBIFS_FS
->>   	default y
->>   	help
->> -	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
->> +	  Zlib compresses better than LZO but it is slower. Say 'N' if unsure.
->
-> Same here.
->
-> Brian
-> .
+> Thanks,
+> //richard
 >
