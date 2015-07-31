@@ -1,18 +1,22 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKyxW-0003KD-Hr
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 01:18:03 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <richard@nod.at>, <dedekind1@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2] ubifs: make ubifs_[get|set]xattr atomic
-Date: Fri, 31 Jul 2015 09:12:03 +0800
-Message-ID: <1438305123-31675-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-In-Reply-To: <55BABB80.9080406@cn.fujitsu.com>
-References: <55BABB80.9080406@cn.fujitsu.com>
+ id 1ZL4T7-0002TB-4i
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2015 07:11:02 +0000
+Date: Fri, 31 Jul 2015 09:10:37 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mtd: nand: add nand_check_erased helper functions
+Message-ID: <20150731091037.09c7ee57@bbrezillon>
+In-Reply-To: <1438277694-23763-2-git-send-email-boris.brezillon@free-electrons.com>
+References: <1438277694-23763-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1438277694-23763-2-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +26,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit make the ubifs_[get|set]xattr protected by ui_mutex.
+On Thu, 30 Jul 2015 19:34:53 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-Originally, there is a possibility that ubifs_getxattr to get
-a wrong value.
+> Add two helper functions to help NAND controller drivers test whether a
+> specific NAND region is erased or not.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 104 +++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/nand.h     |   8 ++++
+>  2 files changed, 112 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index ceb68ca..1542ea7 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1101,6 +1101,110 @@ out:
+>  EXPORT_SYMBOL(nand_lock);
+>  
+>  /**
+> + * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
+> + * @buf: buffer to test
+> + * @len: buffer length
+> + * @bitflips_threshold:maximum number of bitflips
+> + *
+> + * Check if a buffer contains only 0xff, which means the underlying region
+> + * has been erased and is ready to be programmed.
+> + * The bitflips_threshold specify the maximum number of bitflips before
+> + * considering the region is not erased.
+> + * Note: The logic of this function has been extracted from the memweight
+> + * implementation, except that nand_check_erased_buf function exit before
+> + * testing the whole buffer if the number of bitflips exceed the
+> + * bitflips_threshold value.
+> + *
+> + * Returns a positive number of bitflips or -ERROR_CODE.
+> + */
+> +int nand_check_erased_buf(void *buf, int len, int bitflips_threshold)
+> +{
+> +	const unsigned char *bitmap = buf;
+> +	int bitflips = 0;
+> +	int weight;
+> +	int longs;
+> +
+> +	for (; len && ((unsigned long)bitmap) % sizeof(long);
+> +	     len--, bitmap++) {
+> +		weight = hweight8(*bitmap);
+> +
+> +		bitflips += sizeof(u8) - weight;
+> +		if (bitflips > bitflips_threshold)
+> +			return -EINVAL;
+> +	}
+> +
+> +
+> +	for (longs = len / sizeof(long); longs;
+> +	     longs--, bitmap += sizeof(long)) {
+> +		BUG_ON(longs >= INT_MAX / BITS_PER_LONG);
+> +		weight = hweight_long(*((unsigned long *)bitmap));
+> +
+> +		bitflips += sizeof(long) - weight;
+> +		if (bitflips > bitflips_threshold)
+> +			return -EINVAL;
+> +	}
+> +
+> +	len %= sizeof(long);
+> +
+> +	for (; len > 0; len--, bitmap++) {
+> +		weight = hweight8(*bitmap);
+> +		bitflips += sizeof(u8) - weight;
+> +	}
+> +
+> +	return bitflips;
+> +}
+> +EXPORT_SYMBOL(nand_check_erased_buf);
+> +
+> +/**
+> + * nand_check_erased_ecc_chunk - check if an ECC chunk contains (almost) only
+> + *				 0xff data
+> + * @data: data buffer to test
+> + * @datalen: data length
+> + * @ecc: ECC buffer
+> + * @ecclen: ECC length
+> + * @extraoob: extra OOB buffer
+> + * @extraooblen: extra OOB length
+> + * @bitflips_threshold: maximum number of bitflips
+> + *
+> + * Check if a data buffer and its associated ECC and OOB data contains only
+> + * 0xff pattern, which means the underlying region has been erased and is
+> + * ready to be programmed.
+> + * The bitflips_threshold specify the maximum number of bitflips before
+> + * considering the region as not erased.
+> + *
+> + * Returns a positive number of bitflips or -ERROR_CODE.
+> + */
+> +int nand_check_erased_ecc_chunk(void *data, int datalen,
+> +				void *ecc, int ecclen,
+> +				void *extraoob, int extraooblen,
+> +				int bitflips_threshold)
+> +{
+> +	int bitflips = 0;
+> +	int ret;
+> +
+> +	ret = nand_check_erased_buf(data, datalen, bitflips_threshold);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	bitflips += ret;
+> +	bitflips_threshold -= ret;
+> +
+> +	ret = nand_check_erased_buf(ecc, ecclen, bitflips_threshold);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	bitflips += ret;
+> +	bitflips_threshold -= ret;
+> +
+> +	ret = nand_check_erased_buf(extraoob, extraooblen, bitflips_threshold);
+> +	if (ret < 0)
+> +		return ret;
+> +
 
-    P1				    P2
-----------			----------
-ubifs_getxattr			ubifs_setxattr
-				   - kfree()
-   - memcpy()
-				   - kmemdup()
+Forgot the memset operations here:
 
-Then ubifs_getxattr() would get a non-sense data. To solve this
-problem, this commit make the xattr of ubifs_inode updated in
-atomic.
+	memset(data, 0xff, datalen);
+	memset(ecc, 0xff, ecclen);
+	memset(extraoob, 0xff, extraooblen);
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
-	-v2:
-		Add more description in commit message
- fs/ubifs/xattr.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> +	return bitflips + ret;
+> +}
+> +EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
+> +
+> +/**
+>   * nand_read_page_raw - [INTERN] read raw page data without ecc
+>   * @mtd: mtd info structure
+>   * @chip: nand chip info structure
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 272f429..ae06a07 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -1030,4 +1030,12 @@ struct nand_sdr_timings {
+>  
+>  /* get timing characteristics from ONFI timing mode. */
+>  const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
+> +
+> +int nand_check_erased_buf(void *data, int datalen,
+> +			  int threshold);
+> +
+> +int nand_check_erased_ecc_chunk(void *data, int datalen,
+> +				void *ecc, int ecclen,
+> +				void *extraoob, int extraooblen,
+> +				int threshold);
+>  #endif /* __LINUX_MTD_NAND_H */
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 96f3448..dec1afd 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -208,6 +208,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 	if (err)
- 		return err;
- 
-+	mutex_lock(&ui->ui_mutex);
- 	kfree(ui->data);
- 	ui->data = kmemdup(value, size, GFP_NOFS);
- 	if (!ui->data) {
-@@ -216,6 +217,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 	}
- 	inode->i_size = ui->ui_size = size;
- 	ui->data_len = size;
-+	mutex_unlock(&ui->ui_mutex);
- 
- 	mutex_lock(&host_ui->ui_mutex);
- 	host->i_ctime = ubifs_current_time(host);
-@@ -409,6 +411,7 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
- 	ubifs_assert(inode->i_size == ui->data_len);
- 	ubifs_assert(ubifs_inode(host)->xattr_size > ui->data_len);
- 
-+	mutex_lock(&ui->ui_mutex);
- 	if (buf) {
- 		/* If @buf is %NULL we are supposed to return the length */
- 		if (ui->data_len > size) {
-@@ -423,6 +426,7 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
- 	err = ui->data_len;
- 
- out_iput:
-+	mutex_unlock(&ui->ui_mutex);
- 	iput(inode);
- out_unlock:
- 	kfree(xent);
+
+
 -- 
-1.8.4.2
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
