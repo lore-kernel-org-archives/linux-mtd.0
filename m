@@ -1,22 +1,22 @@
 Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMLlx-0007hA-Iw
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 19:51:46 +0000
-Date: Mon, 3 Aug 2015 21:51:20 +0200
+ id 1ZMLrK-0001Bv-U5
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 19:57:19 +0000
+Date: Mon, 3 Aug 2015 21:56:53 +0200
 From: Jan Kara <jack@suse.cz>
 To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 Cc: viro@ZenIV.linux.org.uk, jack@suse.cz, dedekind1@gmail.com,
  richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
  linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 05/35] fs: super: introduce a get_super_cdev to get
- super by a cdev reference
-Message-ID: <20150803195120.GC23810@quack.suse.cz>
+Subject: Re: [PATCH v2 06/35] fs: super: introduce a get_super_cdev_thawed to
+ get sb by cdev reference
+Message-ID: <20150803195653.GD23810@quack.suse.cz>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-6-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438235311-23788-7-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1438235311-23788-6-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1438235311-23788-7-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +26,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu 30-07-15 13:48:01, Dongsheng Yang wrote:
-> As we have cdev in superblock now, we can provide get_super_cdev
-> to get super_block by a cdev reference, similar with get_super
-> which is working only for block_device.
-
-The patch looks good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.com>
-
-								Honza
-
+On Thu 30-07-15 13:48:02, Dongsheng Yang wrote:
+> This patch refactors the original get_super_thawed to get a common
+> helper function of __get_super_thawed. Then take the use of
+> __get_super_thawed, we can implement get_super_cdev_thawed easily.
 > 
 > Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 > ---
->  fs/super.c         | 15 +++++++++++++++
+>  fs/super.c         | 29 +++++++++++++++++++++++++----
 >  include/linux/fs.h |  1 +
->  2 files changed, 16 insertions(+)
+>  2 files changed, 26 insertions(+), 4 deletions(-)
 > 
 > diff --git a/fs/super.c b/fs/super.c
-> index 46fd1f1..4c56dff 100644
+> index 4c56dff..0e11412 100644
 > --- a/fs/super.c
 > +++ b/fs/super.c
-> @@ -613,6 +613,21 @@ struct super_block *get_super(struct block_device *bdev)
->  }
->  EXPORT_SYMBOL(get_super);
+> @@ -629,18 +629,20 @@ struct super_block *get_super_cdev(struct cdev *cdev)
+>  EXPORT_SYMBOL(get_super_cdev);
 >  
-> +static int cdev_compare(struct super_block *sb, void *key)
-> +{
-> +	return (sb->s_cdev == (struct cdev *)key);
-> +}
+>  /**
+> - * get_super_thawed - get thawed superblock of a device
+> - * @bdev: device to get the superblock for
+> + * __get_super_thawed - get thawed superblock
+> + * @func: function pointer to get superblock by key
+> + * @key: key to find superblock
+>   *
+>   * Scans the superblock list and finds the superblock of the file system
+>   * mounted on the device. The superblock is returned once it is thawed
+>   * (or immediately if it was not frozen). %NULL is returned if no match
+>   * is found.
+>   */
+> -struct super_block *get_super_thawed(struct block_device *bdev)
+> +static struct super_block *__get_super_thawed(
+> +		struct super_block *(*func)(void *), void *key)
+>  {
+>  	while (1) {
+> -		struct super_block *s = get_super(bdev);
+> +		struct super_block *s = func(key);
+
+It would seem more obvious (and consistent with get_super() class of
+functions) if you passed in a comparison function and a key and then call
+from here:
+
+s = __get_super(compare, key);
+
+Also you would avoid some of the ugly typecasting below.
+
+								Honza
+
+>  		if (!s || s->s_writers.frozen == SB_UNFROZEN)
+>  			return s;
+>  		up_read(&s->s_umount);
+> @@ -649,9 +651,28 @@ struct super_block *get_super_thawed(struct block_device *bdev)
+>  		put_super(s);
+>  	}
+>  }
 > +
 > +/**
-> + * get_super_cdev - get the superblock of a cdev
-> + * @cdev: char device to get the superblock for
+> + * get_super_thawed - get thawed superblock of a device
+> + * @bdev: device to get the superblock for
 > + */
-> +struct super_block *get_super_cdev(struct cdev *cdev)
+> +struct super_block *get_super_thawed(struct block_device *bdev)
 > +{
-> +	return __get_super(cdev_compare, cdev);
+> +	return __get_super_thawed((struct super_block *(*)(void *))get_super, bdev);
 > +}
-> +EXPORT_SYMBOL(get_super_cdev);
-> +
+>  EXPORT_SYMBOL(get_super_thawed);
+>  
 >  /**
->   * get_super_thawed - get thawed superblock of a device
+> + * get_super_cdev_thawed - get thawed superblock of a char device
+> + * @cdev: device to get the superblock for
+> + */
+> +struct super_block *get_super_cdev_thawed(struct cdev *cdev)
+> +{
+> +	return __get_super_thawed((struct super_block *(*)(void *))get_super_cdev, cdev);
+> +}
+> +EXPORT_SYMBOL(get_super_cdev_thawed);
+> +
+> +/**
+>   * get_active_super - get an active reference to the superblock of a device
 >   * @bdev: device to get the superblock for
+>   *
 > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 2f1d9499..e5ea425a 100644
+> index e5ea425a..5c7d789 100644
 > --- a/include/linux/fs.h
 > +++ b/include/linux/fs.h
-> @@ -2744,6 +2744,7 @@ extern void get_filesystem(struct file_system_type *fs);
->  extern void put_filesystem(struct file_system_type *fs);
->  extern struct file_system_type *get_fs_type(const char *name);
+> @@ -2746,6 +2746,7 @@ extern struct file_system_type *get_fs_type(const char *name);
 >  extern struct super_block *get_super(struct block_device *);
-> +extern struct super_block *get_super_cdev(struct cdev *);
+>  extern struct super_block *get_super_cdev(struct cdev *);
 >  extern struct super_block *get_super_thawed(struct block_device *);
+> +extern struct super_block *get_super_cdev_thawed(struct cdev *);
 >  extern struct super_block *get_active_super(struct block_device *bdev);
 >  extern void drop_super(struct super_block *sb);
+>  extern void iterate_supers(void (*)(struct super_block *, void *), void *);
 > -- 
 > 1.8.4.2
 > 
