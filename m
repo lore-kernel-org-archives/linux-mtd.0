@@ -1,13 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMKlk-0000xi-9R
+ id 1ZMKlk-0000xh-9S
  for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 18:47:29 +0000
-Date: 3 Aug 2015 18:39:03 -0000
-Message-Id: <35f40bc5c10ed649986d91bd58f6cacf49d6b8c7.1438626500.git.hramrach@gmail.com>
+Date: 3 Aug 2015 18:39:02 -0000
+Message-Id: <5399cd6f1655029ff0bdd55f29895b59dbbebd3e.1438626500.git.hramrach@gmail.com>
 In-Reply-To: <cover.1438626500.git.hramrach@gmail.com>
 References: <cover.1438626500.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v2 6/6] mtd: spi-nor: simplify write loop
+Subject: [PATCH v2 4/6] mtd: spi-nor: check return value from read/write
 To: David Woodhouse <dwmw2@infradead.org>,
   Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
   "Rafał Miłecki" <zajec5@gmail.com>, Michal Suchanek <hramrach@gmail.com>,
@@ -25,92 +25,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The spi-nor write loop assumes that what is passed to the hardware
-driver write() is what gets written.
-
-When write() writes less than page size at once data is dropped on the
-floor. Check the amount of data writen.
-
-This also means that write can start mid-page any time so there is
-no special case for first page.
+SPI NOR hardware drivers now return useful values from their read/write
+functions so check them.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 48 ++++++++++++++-----------------------------
- 1 file changed, 15 insertions(+), 33 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 50 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 36 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 837e3df..e0ae9cf 100644
+index d78831b..5116bbd 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -836,7 +836,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	size_t *retlen, const u_char *buf)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
--	u32 page_offset, page_size, i;
-+	size_t page_offset, page_remain, i;
- 	int ret;
+@@ -741,7 +741,10 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	ret = nor->read(nor, from, len, retlen, buf);
  
- 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
-@@ -845,45 +845,27 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	if (ret)
- 		return ret;
- 
--	write_enable(nor);
--
--	page_offset = to & (nor->page_size - 1);
-+	for (i = 0; i < len; ) {
-+		int written;
- 
--	/* do all the bytes fit onto one page? */
--	if (page_offset + len <= nor->page_size) {
--		ret = nor->write(nor, to, len, buf);
--		if (ret < 0)
--			goto write_err;
--		*retlen += ret;
--	} else {
-+		page_offset = to & (nor->page_size - 1);
- 		/* the size of data remaining on the first page */
--		page_size = nor->page_size - page_offset;
--		ret = nor->write(nor, to, page_size, buf);
-+		page_remain = min_t(size_t,
-+				    nor->page_size - page_offset, len - i);
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
+-	return ret;
++	if (ret < 0)
++		return ret;
 +
-+		write_enable(nor);
-+		ret = nor->write(nor, to + i, page_remain, buf + i);
- 		if (ret < 0)
- 			goto write_err;
--		*retlen += ret;
--
--		/* write everything in nor->page_size chunks */
--		for (i = ret; i < len; ) {
--			page_size = len - i;
--			if (page_size > nor->page_size)
--				page_size = nor->page_size;
--
--			ret = spi_nor_wait_till_ready(nor);
--			if (ret)
--				goto write_err;
-+		written = ret;
++	return 0;
+ }
  
--			write_enable(nor);
--
--			ret = nor->write(nor, to + i, page_size, buf + i);
--			if (ret < 0)
--				goto write_err;
--			*retlen += ret;
--			i += ret;
--		}
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			goto write_err;
-+		*retlen += written;
-+		i += written;
+ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -767,10 +770,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_BP;
+ 
+ 		/* write one byte. */
+-		nor->write(nor, to, 1, retlen, buf);
++		ret = nor->write(nor, to, 1, retlen, buf);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
  	}
+ 	to += actual;
  
--	ret = spi_nor_wait_till_ready(nor);
- write_err:
+@@ -779,10 +786,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_AAI_WP;
+ 
+ 		/* write two bytes. */
+-		nor->write(nor, to, 2, retlen, buf + actual);
++		ret = nor->write(nor, to, 2, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		to += 2;
+ 		nor->sst_write_second = true;
+ 	}
+@@ -791,21 +802,24 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	write_disable(nor);
+ 	ret = spi_nor_wait_till_ready(nor);
+ 	if (ret)
+-		goto time_out;
++		goto sst_write_err;
+ 
+ 	/* Write out trailing byte if it exists. */
+ 	if (actual != len) {
+ 		write_enable(nor);
+ 
+ 		nor->program_opcode = SPINOR_OP_BP;
+-		nor->write(nor, to, 1, retlen, buf + actual);
+-
++		ret = nor->write(nor, to, 1, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		write_disable(nor);
+ 	}
+-time_out:
++sst_write_err:
  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
  	return ret;
+ }
+@@ -834,14 +848,18 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 	/* do all the bytes fit onto one page? */
+ 	if (page_offset + len <= nor->page_size) {
+-		nor->write(nor, to, len, retlen, buf);
++		ret = nor->write(nor, to, len, retlen, buf);
++		if (ret < 0)
++			goto write_err;
+ 	} else {
+ 		/* the size of data remaining on the first page */
+ 		page_size = nor->page_size - page_offset;
+-		nor->write(nor, to, page_size, retlen, buf);
++		ret = nor->write(nor, to, page_size, retlen, buf);
++		if (ret < 0)
++			goto write_err;
+ 
+ 		/* write everything in nor->page_size chunks */
+-		for (i = page_size; i < len; i += page_size) {
++		for (i = ret; i < len; ) {
+ 			page_size = len - i;
+ 			if (page_size > nor->page_size)
+ 				page_size = nor->page_size;
+@@ -852,7 +870,11 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 			write_enable(nor);
+ 
+-			nor->write(nor, to + i, page_size, retlen, buf + i);
++			ret = nor->write(nor, to + i, page_size, retlen,
++					 buf + i);
++			if (ret < 0)
++				goto write_err;
++			i += ret;
+ 		}
+ 	}
+ 
 -- 
 2.1.4
