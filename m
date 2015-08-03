@@ -1,20 +1,21 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZM8e6-0006NX-3M
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 05:50:46 +0000
-Received: by pdbnt7 with SMTP id nt7so69378211pdb.0
- for <linux-mtd@lists.infradead.org>; Sun, 02 Aug 2015 22:50:25 -0700 (PDT)
-From: Tomer Barletz <barletz@gmail.com>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Tomer Barletz <barletz@gmail.com>
-Subject: [PATCH] Avoid compiler warning by storing the result of rq_data_dir()
- in an int variable
-Date: Sun,  2 Aug 2015 22:49:41 -0700
-Message-Id: <1438580981-14444-1-git-send-email-barletz@gmail.com>
-In-Reply-To: <20150802134845.GA31982@virgo.local>
-References: <20150802134845.GA31982@virgo.local>
+Received: from ipmail07.adl2.internode.on.net ([150.101.137.131])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZM8fj-0006X1-Gc
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 05:52:28 +0000
+Date: Mon, 3 Aug 2015 15:51:49 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: eguan@redhat.com, fstests@vger.kernel.org, dedekind1@gmail.com,
+ richard.weinberger@gmail.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/5] xfstest: add ubifs support
+Message-ID: <20150803055149.GR3902@dastard>
+References: <1438236417-24612-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438236417-24612-2-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <20150803041229.GQ3902@dastard> <55BEF1A3.9060103@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55BEF1A3.9060103@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +25,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With gcc 5.1 I get:
-warning: switch condition has boolean value [-Wswitch-bool]
+On Mon, Aug 03, 2015 at 12:44:19PM +0800, Dongsheng Yang wrote:
+> On 08/03/2015 12:12 PM, Dave Chinner wrote:
+> >On Thu, Jul 30, 2015 at 02:06:53PM +0800, Dongsheng Yang wrote:
+> >>-	echo $TEST_DEV | grep -qE ":|//" > /dev/null 2>&1
+> >>+	echo $TEST_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
+> >>  	if [ ! -b "$TEST_DEV" -a "$?" != "0" ]; then
+> >>-		echo "common/config: Error: \$TEST_DEV ($TEST_DEV) is not a block device or a network filesystem"
+> >>+		echo "common/config: Error: \$TEST_DEV ($TEST_DEV) is not a block device or a network filesystem or ubi device"
+> >>  		exit 1
+> >>  	fi
+> >>
+> >>@@ -488,9 +489,9 @@ get_next_config() {
+> >>  		export SCRATCH_DEV_NOT_SET=true
+> >>  	fi
+> >>
+> >>-	echo $SCRATCH_DEV | grep -qE ":|//" > /dev/null 2>&1
+> >>+	echo $SCRATCH_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
+> >>  	if [ ! -z "$SCRATCH_DEV" -a ! -b "$SCRATCH_DEV" -a "$?" != "0" ]; then
+> >>-		echo "common/config: Error: \$SCRATCH_DEV ($SCRATCH_DEV) is not a block device or a network filesystem"
+> >>+		echo "common/config: Error: \$SCRATCH_DEV ($SCRATCH_DEV) is not a block device or a network filesystem or ubi device"
+> >>  		exit 1
+> >>  	fi
+> >
+> >Hmmm - how do we validate that we were passed a valid ubi device in
+> >TEST_DEV/SCRATCH_DEV? (goes back to the probing question above...)
+> 
+> I am using the following config for my testing. So if we want to
+> test ubifs, we have to pass a ubi volume to it. the name of it
+> looks as ubiX_X.
+> 
+> # cat local.config
+> # Ideally define at least these 4 to match your environment
+> # The first 2 are required.
+> # See README for other variables which can be set.
+> #
+> # Note: SCRATCH_DEV >will< get overwritten!
+> 
+> export TEST_DEV=/dev/ubi0_0
+> export TEST_DIR=/mnt/test
+> export SCRATCH_DEV=/dev/ubi0_1
+> export SCRATCH_MNT=/mnt/scratch
 
-Signed-off-by: Tomer Barletz <barletz@gmail.com>
----
- drivers/mtd/mtd_blkdevs.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+So if we see /dev/ubi???? then we should check that it's a char
+device to confirm it is what we think it should be?
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 41acc50..8830475 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -97,14 +97,13 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
- 	if (req->cmd_flags & REQ_DISCARD)
- 		return tr->discard(dev, block, nsect);
- 
--	switch(rq_data_dir(req)) {
--	case READ:
-+	if (rq_data_dir(req) == READ) {
- 		for (; nsect > 0; nsect--, block++, buf += tr->blksize)
- 			if (tr->readsect(dev, block, buf))
- 				return -EIO;
- 		rq_flush_dcache_pages(req);
- 		return 0;
--	case WRITE:
-+	} else {
- 		if (!tr->writesect)
- 			return -EIO;
- 
-@@ -113,9 +112,6 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
- 			if (tr->writesect(dev, block, buf))
- 				return -EIO;
- 		return 0;
--	default:
--		printk(KERN_NOTICE "Unknown request %u\n", rq_data_dir(req));
--		return -EIO;
- 	}
- }
- 
+Cheers,
+
+Dave.
 -- 
-2.4.3
+Dave Chinner
+david@fromorbit.com
