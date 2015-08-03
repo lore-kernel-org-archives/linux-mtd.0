@@ -1,21 +1,19 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMM9b-0001nH-7E
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 20:16:12 +0000
-Date: Mon, 3 Aug 2015 22:15:46 +0200
-From: Jan Kara <jack@suse.cz>
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Cc: viro@ZenIV.linux.org.uk, jack@suse.cz, dedekind1@gmail.com,
- richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 33/35] fs: introduce a get_qsize() to file_operations
-Message-ID: <20150803201546.GI23810@quack.suse.cz>
-References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-34-git-send-email-yangds.fnst@cn.fujitsu.com>
+ id 1ZMMKd-0006w2-PJ
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 20:27:36 +0000
+Subject: Re: [PATCH v2] ubifs: make ubifs_[get|set]xattr atomic
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com
+References: <55BABB80.9080406@cn.fujitsu.com>
+ <1438305123-31675-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Cc: linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55BFCEA0.7080900@nod.at>
+Date: Mon, 3 Aug 2015 22:27:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1438235311-23788-34-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1438305123-31675-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,92 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu 30-07-15 13:48:29, Dongsheng Yang wrote:
-> get_qsize() is used to allow inode to decide how much of the quota size
-> in itself. If file system implements the own get_qsize(), ioctl of
-> FIOQSIZe will call it to get quota size. If not implemented, get the
-> quota size in a generic way.
-
-OK, can you ellaborate a bit why using i_blocks / i_bytes isn't good
-enough for ubifs?
-
+Am 31.07.2015 um 03:12 schrieb Dongsheng Yang:
+> This commit make the ubifs_[get|set]xattr protected by ui_mutex.
 > 
+> Originally, there is a possibility that ubifs_getxattr to get
+> a wrong value.
+> 
+>     P1				    P2
+> ----------			----------
+> ubifs_getxattr			ubifs_setxattr
+> 				   - kfree()
+>    - memcpy()
+> 				   - kmemdup()
+> 
+> Then ubifs_getxattr() would get a non-sense data. To solve this
+> problem, this commit make the xattr of ubifs_inode updated in
+> atomic.
+
+so, ui->data needs protection?
+The comment in fs/ubifs/ubifs.h does not mention ->data.
+I'm asking because I want to make sure that ui_mutex is the correct lock to take.
+
 > Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 > ---
->  fs/ioctl.c         | 31 ++++++++++++++++++++++++-------
->  include/linux/fs.h |  1 +
->  2 files changed, 25 insertions(+), 7 deletions(-)
+> 	-v2:
+> 		Add more description in commit message
+>  fs/ubifs/xattr.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/fs/ioctl.c b/fs/ioctl.c
-> index 5d01d26..2c567db 100644
-> --- a/fs/ioctl.c
-> +++ b/fs/ioctl.c
-> @@ -545,6 +545,29 @@ static int ioctl_fsthaw(struct file *filp)
->  	return thaw_super(sb);
->  }
+> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+> index 96f3448..dec1afd 100644
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -208,6 +208,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
+>  	if (err)
+>  		return err;
 >  
-> +static int ioctl_fioqsize(struct file *filp, int __user *argp)
-> +{
-> +	struct inode *inode = file_inode(filp);
-> +	loff_t res = 0;
-> +	int error = 0;
-> +
-> +	if (filp->f_op->get_qsize) {
+> +	mutex_lock(&ui->ui_mutex);
+>  	kfree(ui->data);
+>  	ui->data = kmemdup(value, size, GFP_NOFS);
+>  	if (!ui->data) {
+> @@ -216,6 +217,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
+>  	}
+>  	inode->i_size = ui->ui_size = size;
+>  	ui->data_len = size;
+> +	mutex_unlock(&ui->ui_mutex);
 
-Using file->f_ops looks wrong to me. I think it would be more naturally an
-inode operation.
+You also need a mutex_unlock(&ui->ui_mutex) under out_free, otherwise
+the if (!ui->data) { branch will trigger a deadlock.
 
-								Honza
-
-> +		res = filp->f_op->get_qsize(inode);
-> +		error = copy_to_user(argp, &res, sizeof(res)) ?
-> +				-EFAULT : 0;
-> +	} else {
-> +                if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
-> +                    S_ISLNK(inode->i_mode)) {
-> +                        res = inode_get_bytes(inode);
-> +                        error = copy_to_user(argp, &res, sizeof(res)) ?
-> +                                        -EFAULT : 0;
-> +                } else {
-> +                        error = -ENOTTY;
-> +		}
-> +	}
-> +	return error;
-> +}
-> +
->  /*
->   * When you add any new common ioctls to the switches above and below
->   * please update compat_sys_ioctl() too.
-> @@ -577,13 +600,7 @@ int do_vfs_ioctl(struct file *filp, unsigned int fd, unsigned int cmd,
->  		break;
->  
->  	case FIOQSIZE:
-> -		if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
-> -		    S_ISLNK(inode->i_mode)) {
-> -			loff_t res = inode_get_bytes(inode);
-> -			error = copy_to_user(argp, &res, sizeof(res)) ?
-> -					-EFAULT : 0;
-> -		} else
-> -			error = -ENOTTY;
-> +		error = ioctl_fioqsize(filp, argp);
->  		break;
->  
->  	case FIFREEZE:
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 860b235..70695d3 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -1601,6 +1601,7 @@ struct file_operations {
->  	long (*fallocate)(struct file *file, int mode, loff_t offset,
->  			  loff_t len);
->  	void (*show_fdinfo)(struct seq_file *m, struct file *f);
-> +	ssize_t (*get_qsize) (struct inode *);
->  #ifndef CONFIG_MMU
->  	unsigned (*mmap_capabilities)(struct file *);
->  #endif
-> -- 
-> 1.8.4.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+//richard
