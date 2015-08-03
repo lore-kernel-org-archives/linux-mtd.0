@@ -1,20 +1,31 @@
-Received: from ipmail06.adl2.internode.on.net ([150.101.137.129])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZM77S-0005UR-6K
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 04:12:59 +0000
-Date: Mon, 3 Aug 2015 14:12:29 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Cc: eguan@redhat.com, fstests@vger.kernel.org, dedekind1@gmail.com,
- richard.weinberger@gmail.com, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/5] xfstest: add ubifs support
-Message-ID: <20150803041229.GQ3902@dastard>
-References: <1438236417-24612-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438236417-24612-2-git-send-email-yangds.fnst@cn.fujitsu.com>
+Received: from smtp10.smtpout.orange.fr ([80.12.242.132]
+ helo=smtp.smtpout.orange.fr)
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1ZM7fl-0007lQ-UH
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 04:48:27 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, zmxu@marvell.com,
+ jszhang@marvell.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] mtd: pxa3xx_nand: rework the timing setup
+References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+ <20150717134159.GC10608@kwain> <55A912F0.7080605@vanguardiasur.com.ar>
+ <87h9p2is8e.fsf@belgarion.home>
+ <CAAEAJfCcdioVQKZs9U3DP6H94BiuQ2qU21DsMKevS5+j+-XEKA@mail.gmail.com>
+ <87wpxufw2v.fsf@belgarion.home>
+ <CAAEAJfB3caa+DmJN=Pa8brx0uGC11QA29KJb3NQdJjXTgw-yuA@mail.gmail.com>
+Date: Mon, 03 Aug 2015 06:44:21 +0200
+In-Reply-To: <CAAEAJfB3caa+DmJN=Pa8brx0uGC11QA29KJb3NQdJjXTgw-yuA@mail.gmail.com>
+ (Ezequiel Garcia's message of "Sun, 2 Aug 2015 23:49:55 -0300")
+Message-ID: <87si81m15m.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1438236417-24612-2-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,124 +35,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 30, 2015 at 02:06:53PM +0800, Dongsheng Yang wrote:
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> ---
->  check         | 2 ++
->  common/config | 9 +++++----
->  common/rc     | 8 ++++++--
->  3 files changed, 13 insertions(+), 6 deletions(-)
-> 
-> diff --git a/check b/check
-> index a300130..20d45f8 100755
-> --- a/check
-> +++ b/check
-> @@ -69,6 +69,7 @@ check options
->      -nfs                test NFS
->      -cifs               test CIFS
->      -tmpfs              test TMPFS
-> +    -ubifs		test ubifs
->      -l			line mode diff
->      -udiff		show unified diff (default)
->      -n			show me, do not run tests
-> @@ -207,6 +208,7 @@ while [ $# -gt 0 ]; do
->  	-nfs)	FSTYP=nfs ;;
->  	-cifs)	FSTYP=cifs ;;
->  	-tmpfs)	FSTYP=tmpfs ;;
-> +	-ubifs)	FSTYP=ubifs ;;
+Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
 
-It's a local device - we should be able to probe it to find FSTYP
-like we do with all other local devices. Probing is much preferable
-to adding more FS specific CLI options....
+> Just tested linux-next (hence *without* the patchset) and I see
+> the same "Wait time out". In other words, pxa3xx-nand is broken
+> on PXA :/
+>
+> Interestingly, the culprit doesn't seem to be in pxa3xx-nand itself.
+> Reverting the recent commits on pxa3xx-nand doesn't help.
+>
+> ce914e6 mtd: nand: pxa3xx: fix build on ARM64
+> afca11e mtd: nand: pxa3xx: Switch FIFO draining to jiffies-based timeout
+> e5860c1 mtd: pxa3xx_nand: cleanup wait_for_completion handling
+> 7c2f717 mtd: pxa3xx_nand: initialiaze pxa3xx_flash_ids to 0
+> ed446cc Merge MTD updates into -next
+> e423c90 mtd: pxa3xx_nand: fix driver when num_cs is 0
+> 2454225 mtd: pxa3xx-nand: handle PIO in threaded interrupt
+> 8dad038 mtd: nand: pxa3xx: Fix PIO FIFO draining
+> b7e46062 mtd: pxa3xx_nand: make the driver work on big-endian systems
+> 5b3e507 mtd: nand: pxa3xx: Use ECC strength and step size devicetree binding
+> eee0166 mtd: nand: pxa3xx: Clean pxa_ecc_init() error handling
+> 17754ad mtd: nand: pxa3xx: Make of_device_id array const
+> e634ce5 mtd: nand: pxa3xx: Print actual ECC strength in error message
+>
+> Yet v3.18 succeeds to pass a few NAND blocks on nandtest.
+>
+> Robert: any ideas?
+Actually yes, I worked on that this weekend.
+Would you try the following patch [1] to see if it works for you ?
 
-> diff --git a/common/config b/common/config
-> index 8e21c28..2c809b6 100644
-> --- a/common/config
-> +++ b/common/config
-> @@ -220,6 +220,7 @@ case "$HOSTOS" in
->          export MKFS_EXT4_PROG="`set_prog_path mkfs.ext4`"
->          export MKFS_UDF_PROG="`set_prog_path mkudffs`"
->          export MKFS_BTRFS_PROG="`set_btrfs_mkfs_prog_path_with_opts`"
-> +        export MKFS_UBIFS_PROG="`set_prog_path mkfs.ubifs`"
->          export MKFS_F2FS_PROG="`set_prog_path mkfs.f2fs`"
->          export DUMP_F2FS_PROG="`set_prog_path dump.f2fs`"
->          export BTRFS_UTIL_PROG="`set_prog_path btrfs`"
-> @@ -465,9 +466,9 @@ get_next_config() {
->  		exit 1
->  	fi
->  
-> -	echo $TEST_DEV | grep -qE ":|//" > /dev/null 2>&1
-> +	echo $TEST_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
->  	if [ ! -b "$TEST_DEV" -a "$?" != "0" ]; then
-> -		echo "common/config: Error: \$TEST_DEV ($TEST_DEV) is not a block device or a network filesystem"
-> +		echo "common/config: Error: \$TEST_DEV ($TEST_DEV) is not a block device or a network filesystem or ubi device"
->  		exit 1
->  	fi
->  
-> @@ -488,9 +489,9 @@ get_next_config() {
->  		export SCRATCH_DEV_NOT_SET=true
->  	fi
->  
-> -	echo $SCRATCH_DEV | grep -qE ":|//" > /dev/null 2>&1
-> +	echo $SCRATCH_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
->  	if [ ! -z "$SCRATCH_DEV" -a ! -b "$SCRATCH_DEV" -a "$?" != "0" ]; then
-> -		echo "common/config: Error: \$SCRATCH_DEV ($SCRATCH_DEV) is not a block device or a network filesystem"
-> +		echo "common/config: Error: \$SCRATCH_DEV ($SCRATCH_DEV) is not a block device or a network filesystem or ubi device"
->  		exit 1
->  	fi
+The issue I see is that :
+ - there is a bug in the clk driver for pxa3xx I introduced (CKEN_AB)
+ - and shutting down the GCU clock prevents the NAND from working (I can't
+ explain that one yet)
 
-Hmmm - how do we validate that we were passed a valid ubi device in
-TEST_DEV/SCRATCH_DEV? (goes back to the probing question above...)
+Cheers.
 
-> diff --git a/common/rc b/common/rc
-> index 610045e..b206827 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -1106,7 +1106,7 @@ _require_scratch_nocheck()
->  		     _notrun "this test requires a valid \$SCRATCH_MNT"
->  		fi
->  		;;
-> -	tmpfs)
-> +	tmpfs|ubifs)
->  		if [ -z "$SCRATCH_DEV" -o ! -d "$SCRATCH_MNT" ];
->  		then
->  		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
-> @@ -1180,7 +1180,7 @@ _require_test()
->  		     _notrun "this test requires a valid \$TEST_DIR"
->  		fi
->  		;;
-> -	tmpfs)
-> +	tmpfs|ubifs)
->  		if [ -z "$TEST_DEV" -o ! -d "$TEST_DIR" ];
->  		then
->  		    _notrun "this test requires a valid \$TEST_DIR and unique $TEST_DEV"
-> @@ -2054,6 +2054,8 @@ _check_test_fs()
->      tmpfs)
->  	# no way to check consistency for tmpfs
->  	;;
-> +    ubifs)
-> +	;;
->      *)
->  	_check_generic_filesystem $TEST_DEV
->  	;;
-> @@ -2092,6 +2094,8 @@ _check_scratch_fs()
->      tmpfs)
->  	# no way to check consistency for tmpfs
->  	;;
-> +    ubifs)
-> +	;;
-
-There is no fsck.ubifs? How do you validate the filesystem is
-consistent?
-
-Keep in minds that the people you are asking to review/commit this
-code have no idea what UBIFS is or how it works, so you need to
-explain why xfstests requires non-standard configuration and
-bypassing of the config sanity testing...
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Robert
+
+[1] Clocks patch
+---8>---
+diff --git a/drivers/clk/pxa/clk-pxa3xx.c b/drivers/clk/pxa/clk-pxa3xx.c
+index c677b9ab5367..a47a0c40f937 100644
+--- a/drivers/clk/pxa/clk-pxa3xx.c
++++ b/drivers/clk/pxa/clk-pxa3xx.c
+@@ -126,7 +126,7 @@ PARENTS(pxa3xx_ac97_bus) = { "ring_osc_60mhz", "ac97" };
+ PARENTS(pxa3xx_sbus) = { "ring_osc_60mhz", "system_bus" };
+ PARENTS(pxa3xx_smemcbus) = { "ring_osc_60mhz", "smemc" };
+ 
+-#define CKEN_AB(bit) ((CKEN_ ## bit > 31) ? &CKENA : &CKENB)
++#define CKEN_AB(bit) ((CKEN_ ## bit > 31) ? &CKENB : &CKENA)
+ #define PXA3XX_CKEN(dev_id, con_id, parents, mult_lp, div_lp, mult_hp,	\
+ 		    div_hp, bit, is_lp, flags)				\
+ 	PXA_CKEN(dev_id, con_id, bit, parents, mult_lp, div_lp,		\
+@@ -136,6 +136,10 @@ PARENTS(pxa3xx_smemcbus) = { "ring_osc_60mhz", "smemc" };
+ 			 mult_hp, div_hp, delay)			\
+ 	PXA3XX_CKEN(dev_id, con_id, pxa3xx_pbus_parents, mult_lp,	\
+ 		    div_lp, mult_hp, div_hp, bit, pxa3xx_is_ring_osc_forced, 0)
++#define PXA3XX_PBUS_CKENF(dev_id, con_id, bit, mult_lp, div_lp,		\
++			  mult_hp, div_hp, delay, flag)			\
++	PXA3XX_CKEN(dev_id, con_id, pxa3xx_pbus_parents, mult_lp,	\
++		    div_lp, mult_hp, div_hp, bit, pxa3xx_is_ring_osc_forced, flag)
+ #define PXA3XX_CKEN_1RATE(dev_id, con_id, bit, parents)			\
+ 	PXA_CKEN_1RATE(dev_id, con_id, bit, parents,			\
+ 		       CKEN_AB(bit), (CKEN_ ## bit % 32), 0)
+@@ -173,13 +177,13 @@ static struct desc_clk_cken pxa3xx_clocks[] __initdata = {
+ 
+ static struct desc_clk_cken pxa300_310_clocks[] __initdata = {
+ 
+-	PXA3XX_PBUS_CKEN("pxa3xx-gcu", NULL, PXA300_GCU, 1, 1, 1, 1, 0),
+-	PXA3XX_PBUS_CKEN("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0),
++	PXA3XX_PBUS_CKENF("pxa3xx-gcu", NULL, PXA300_GCU, 1, 1, 1, 1, 0, CLK_IGNORE_UNUSED),
++	PXA3XX_PBUS_CKENF("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0, CLK_IGNORE_UNUSED),
+ 	PXA3XX_CKEN_1RATE("pxa3xx-gpio", NULL, GPIO, pxa3xx_13MHz_bus_parents),
+ };
+ 
+ static struct desc_clk_cken pxa320_clocks[] __initdata = {
+-	PXA3XX_PBUS_CKEN("pxa3xx-nand", NULL, NAND, 1, 2, 1, 6, 0),
++	PXA3XX_PBUS_CKENF("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0, CLK_IGNORE_UNUSED),
+ 	PXA3XX_PBUS_CKEN("pxa3xx-gcu", NULL, PXA320_GCU, 1, 1, 1, 1, 0),
+ 	PXA3XX_CKEN_1RATE("pxa3xx-gpio", NULL, GPIO, pxa3xx_13MHz_bus_parents),
+ };
+@@ -187,7 +191,7 @@ static struct desc_clk_cken pxa320_clocks[] __initdata = {
+ static struct desc_clk_cken pxa93x_clocks[] __initdata = {
+ 
+ 	PXA3XX_PBUS_CKEN("pxa3xx-gcu", NULL, PXA300_GCU, 1, 1, 1, 1, 0),
+-	PXA3XX_PBUS_CKEN("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0),
++	PXA3XX_PBUS_CKENF("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0, CLK_IGNORE_UNUSED),
+ 	PXA3XX_CKEN_1RATE("pxa93x-gpio", NULL, GPIO, pxa3xx_13MHz_bus_parents),
+ };
+ 
