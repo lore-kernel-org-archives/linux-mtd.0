@@ -1,28 +1,35 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMFxx-0007fn-IE
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 13:39:48 +0000
-Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
- default ECC read functions
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
- <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
- <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
- <55BB48D9.6050508@dave-tech.it> <20150731123221.34cf601e@bbrezillon>
- <55BB7ABD.7040008@dave-tech.it> <20150731161032.2b155ccb@bbrezillon>
- <55BBA012.4080600@dave-tech.it> <20150731182709.14c345df@bbrezillon>
- <55BF4D72.8090000@dave-tech.it> <20150803144253.66fc6941@bbrezillon>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
- Han Xu <b45815@freescale.com>, Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>
-From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <55BF6F09.9000001@dave-tech.it>
-Date: Mon, 3 Aug 2015 15:39:21 +0200
+Received: from mail-wi0-f180.google.com ([209.85.212.180])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMG7A-0004Is-T3
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 13:49:18 +0000
+Received: by wicgj17 with SMTP id gj17so106411540wic.1
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Aug 2015 06:48:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20150803144253.66fc6941@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <87si81m15m.fsf@belgarion.home>
+References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+ <20150717134159.GC10608@kwain>
+ <55A912F0.7080605@vanguardiasur.com.ar>
+ <87h9p2is8e.fsf@belgarion.home>
+ <CAAEAJfCcdioVQKZs9U3DP6H94BiuQ2qU21DsMKevS5+j+-XEKA@mail.gmail.com>
+ <87wpxufw2v.fsf@belgarion.home>
+ <CAAEAJfB3caa+DmJN=Pa8brx0uGC11QA29KJb3NQdJjXTgw-yuA@mail.gmail.com>
+ <87si81m15m.fsf@belgarion.home>
+Date: Mon, 3 Aug 2015 10:48:55 -0300
+Message-ID: <CAAEAJfBMpQ8nf5aLTUqrCsJkMQbnkQTB1yA5MBiJ6R4h6RgupQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] mtd: pxa3xx_nand: rework the timing setup
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, zmxu@marvell.com,
+ jszhang@marvell.com,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,180 +39,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Il 03/08/2015 14:42, Boris Brezillon ha scritto:
-> Adding Artem and Richard in the loop.
-
-thanks ;-)
-
+On 3 August 2015 at 01:44, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
 >
-> On Mon, 3 Aug 2015 13:16:02 +0200
-> Andrea Scian <rnd4@dave-tech.it> wrote:
+>> Just tested linux-next (hence *without* the patchset) and I see
+>> the same "Wait time out". In other words, pxa3xx-nand is broken
+>> on PXA :/
+>>
+>> Interestingly, the culprit doesn't seem to be in pxa3xx-nand itself.
+>> Reverting the recent commits on pxa3xx-nand doesn't help.
+>>
+>> ce914e6 mtd: nand: pxa3xx: fix build on ARM64
+>> afca11e mtd: nand: pxa3xx: Switch FIFO draining to jiffies-based timeout
+>> e5860c1 mtd: pxa3xx_nand: cleanup wait_for_completion handling
+>> 7c2f717 mtd: pxa3xx_nand: initialiaze pxa3xx_flash_ids to 0
+>> ed446cc Merge MTD updates into -next
+>> e423c90 mtd: pxa3xx_nand: fix driver when num_cs is 0
+>> 2454225 mtd: pxa3xx-nand: handle PIO in threaded interrupt
+>> 8dad038 mtd: nand: pxa3xx: Fix PIO FIFO draining
+>> b7e46062 mtd: pxa3xx_nand: make the driver work on big-endian systems
+>> 5b3e507 mtd: nand: pxa3xx: Use ECC strength and step size devicetree bin=
+ding
+>> eee0166 mtd: nand: pxa3xx: Clean pxa_ecc_init() error handling
+>> 17754ad mtd: nand: pxa3xx: Make of_device_id array const
+>> e634ce5 mtd: nand: pxa3xx: Print actual ECC strength in error message
+>>
+>> Yet v3.18 succeeds to pass a few NAND blocks on nandtest.
+>>
+>> Robert: any ideas?
+> Actually yes, I worked on that this weekend.
+> Would you try the following patch [1] to see if it works for you ?
 >
->>
->> Dear Boris,
->>
->> Il 31/07/2015 18:27, Boris Brezillon ha scritto:
->>> On Fri, 31 Jul 2015 18:19:30 +0200
->>> Andrea Scian <rnd4@dave-tech.it> wrote:
->>>
->>>> Il 31/07/2015 16:10, Boris Brezillon ha scritto:
->>>>> On Fri, 31 Jul 2015 15:40:13 +0200
->>>>> Andrea Scian <rnd4@dave-tech.it> wrote:
->>>>>
->>>>>> Boris,
->>>>>>
->>>>>> Il 31/07/2015 12:32, Boris Brezillon ha scritto:
->>>>>>> Hi Andrea,
->>>>>>>
->>>>>>> Adding Han in Cc.
->>>>>>>
->>>>>>> On Fri, 31 Jul 2015 12:07:21 +0200
->>>>>>> Andrea Scian <rnd4@dave-tech.it> wrote:
->>>>>>>
->>>>>>>> Dear Boris,
->>>>>>>>
->>>>>>>>
->>>>>>>> Il 30/07/2015 19:34, Boris Brezillon ha scritto:
->>>>>>>>> The default NAND read functions are relying on an underlying controller
->>>>>>>>> to correct bitflips, but some of those controller cannot properly fix
->>>>>>>>> bitflips in erased pages.
->>>>>>>>> In case of ECC failures, check if the page of subpage is empty before
->>>>>>>>> reporting an ECC failure.
->>>>>>>> I'm still wondering if chip->ecc.strength is the right threshold.
->>>>>>>>
->>>>>>>> Did you see my comments here [1]? WDYT?
->>>>>>> Yes I've read it, and decided to go for ecc->strength as a first
->>>>>>> step (I'm more interested in discussing the approach than the threshold
->>>>>>> value right now ;-)).
->>>>>> I perfectly understand, that's the reason why I ask if you want to move
->>>>>> to another thread ;-)
->>>>>>
->>>>>>> Anyway, as you pointed out in the thread, writing data on an erased
->>>>>>> page already containing some bitflips might generate even more
->>>>>>> bitflips, so using a different threshold for the erased page check
->>>>>>> makes sense. This threshold should definitely be correlated to the ECC
->>>>>>> strength, but how, that's the question.
->>>>>>>
->>>>>>> How about taking a rather conservative value like 10% of the specified
->>>>>>> ECC strength, and see how it goes.
->>>>>> Yes, I think that there's no real way to get the right value, other than
->>>>>> feedbacks from on-field testing with various devices.
->>>>>>
->>>>>> I'm also thinking about changing how a NAND page is written on the
->>>>>> device, now that we know that even erased page may have (too many!)
->>>>>> bitflips if they has not been so-freshly erased.
->>>>>>
->>>>>> Read on NAND device is lot's faster that write, so maybe we can:
->>>>>>
->>>>>> a) read the page before write it, check for bitflips on erased area and
->>>>>> write it only if it fit our threshold
->>>>>>
->>>>>> b) read the page after write it and check if the bitflips are lower that
->>>>>> a give value
->>>>>>
->>>>>> In this way:
->>>>>> - we can use ecc_strength as read threshold, because it fits all the
->>>>>> other NAND read
->>>>>>
->>>>>> - we can use "something a bit lower than" mtd->bitflip_threshold on
->>>>>> read-before-write or read-after-write. If we don't do so the block will
->>>>>> be scrubbed next time we read it again (if we are lucky.. if we are
->>>>>> unlucky the block will have bitflip > ecc_strength!): IOW we did a write
->>>>>> that will trigger another erase/write cycle.
->>>>>>
->>>>>> Am I misunderstanding something?
->>>>> Nope, but this implies doing an extra read after each write :-/
->>>>>
->>>> Let's wait what the others says about this, but I would like to put some
->>>> numbers in it.
->>> Sure.
->>>
->>>> My micron MLC device says
->>>> - read page max 75 uS
->>>> - write page typ 1300uS, max 2600uS
->>>>
->>>> If we implement read-before-write (which is, IMO, the best approach), in
->>>> the worst overhead we have is 1375uS vs 1300uS, which is ~6%.
->>>> Please note that, if you read a page that "is not suitable" for write,
->>>> you avoid the write time, schedule it for scrubbing, and use another
->>>> free page.
->>> Indeed, that's not such a big overhead.
->>>
->>>> Probably I'm a bit optimistic because we also need to take in account
->>>> other latencies (DMA setup, ECC engine, buffer copies and so on) but
->>>> it's a starting point ;-)
->>> Yep, if you test it, could you provide some speed test results (with
->>> and without this solution).
->>
->> I think I can find some time to do some performance tests on real hardware.
->> Can you please help me in finding:
->> - which benchmark to use (currently I'm using bonnie++ on UBIFS, maybe I
->> can you just mtd_speedtest)
->> - where to implement those read
+> The issue I see is that :
+>  - there is a bug in the clk driver for pxa3xx I introduced (CKEN_AB)
+>  - and shutting down the GCU clock prevents the NAND from working (I can'=
+t
+>  explain that one yet)
 >
-> I think the test should be done at the UBI layer if we want to check
-> the real impact of the additional read sequence, but given the answer I
-> gave to your other question I'm not sure this is relevant anymore ;-).
+
+IIRC, on Armada 370/XP SoCs we have two clocks feeding the NAND
+controller: one for the NAND logic (not really sure?), and one for the
+NAND ECC engine.
+
+Maybe the GCU feeds the ECC?
+
+> Cheers.
 >
->>
->> For the second point I think we can implement it a UBI or MTD level.
->> I think the former will allow us to easily schedule scrubbing and choose
->> another block to issue the write to. However I don't really know how to
->> implement it (I don't really know so much about the UBI code).
->>
->> The latter, at least for me, is easier to implement: I think I can find
->> the place to add the page read on my own, anyway any clue is welcome ;-)
->> But I think it will be harder (or impossible) to choose where to issue
->> the write, unless UBI already do so when it saw an MTD write failure.
->>
->>> And I wonder if we shouldn't do it the other way around, write then
->>> read-back and check the content.
->>> Of course this implies doing the extra write even when the erased page
->>> contains too many bitflips, but at least your sure that the data you
->>> put in the page were correct at that time.
->>>
->>
->> You're right, I think this is something that once we can find inside the
->> MTD code (something like "check NAND written page" kconfig option) but I
->> cannot find this option anymore on latest kernel.
->>
->> You're approach will also have another advantage, currently nearly all
->> platform will use software implementation for ECC check on erased
->> blocks, while nearly all of them has hardware ECC once programmed. Using
->> hardware ECC will remove CPU load and, maybe, be faster than call
->> nand_check_erased_ecc_chunk()
->> I also think that the situation of having failure on write is very
->> unlikely, unless you have a very "used" NAND device or you're not using
->> Richard's bitrot check. So we'll have a performance impact (issuing
->> another write) only when it's really needed.
+> --
+> Robert
 >
-> I didn't check before suggesting that, but it seems that the UBI layer
-> is already doing this check for you [1], so if you're using UBI/UBIFS
-> you shouldn't worry about bitflips in erased pages: if there is any,
-> and their presence impact the write result, they should be detected.
-> AFAICT, the only thing that is not checked is whether the number of
-> bitflips after a write exceed the bitflips threshold or not, and I
-> guess this can be added.
+> [1] Clocks patch
 
-IIUC this is a runtime debug check
+Ah, good. I was almost sure it was the clock (after trying a bunch of
+other stuff it was the only big change left).
 
-if (!ubi_dbg_chk_io(ubi))
-	....
+I'll try this and will let you know.
 
-And thus is disabled by default.
-Anyway, this answer my missing "check NAND written page" question above ;-)
+> ---8>---
+> diff --git a/drivers/clk/pxa/clk-pxa3xx.c b/drivers/clk/pxa/clk-pxa3xx.c
+> index c677b9ab5367..a47a0c40f937 100644
+> --- a/drivers/clk/pxa/clk-pxa3xx.c
+> +++ b/drivers/clk/pxa/clk-pxa3xx.c
+> @@ -126,7 +126,7 @@ PARENTS(pxa3xx_ac97_bus) =3D { "ring_osc_60mhz", "ac9=
+7" };
+>  PARENTS(pxa3xx_sbus) =3D { "ring_osc_60mhz", "system_bus" };
+>  PARENTS(pxa3xx_smemcbus) =3D { "ring_osc_60mhz", "smemc" };
+>
+> -#define CKEN_AB(bit) ((CKEN_ ## bit > 31) ? &CKENA : &CKENB)
+> +#define CKEN_AB(bit) ((CKEN_ ## bit > 31) ? &CKENB : &CKENA)
+>  #define PXA3XX_CKEN(dev_id, con_id, parents, mult_lp, div_lp, mult_hp, \
+>                     div_hp, bit, is_lp, flags)                          \
+>         PXA_CKEN(dev_id, con_id, bit, parents, mult_lp, div_lp,         \
+> @@ -136,6 +136,10 @@ PARENTS(pxa3xx_smemcbus) =3D { "ring_osc_60mhz", "sm=
+emc" };
+>                          mult_hp, div_hp, delay)                        \
+>         PXA3XX_CKEN(dev_id, con_id, pxa3xx_pbus_parents, mult_lp,       \
+>                     div_lp, mult_hp, div_hp, bit, pxa3xx_is_ring_osc_forc=
+ed, 0)
+> +#define PXA3XX_PBUS_CKENF(dev_id, con_id, bit, mult_lp, div_lp,         =
+       \
+> +                         mult_hp, div_hp, delay, flag)                 \
+> +       PXA3XX_CKEN(dev_id, con_id, pxa3xx_pbus_parents, mult_lp,       \
+> +                   div_lp, mult_hp, div_hp, bit, pxa3xx_is_ring_osc_forc=
+ed, flag)
+>  #define PXA3XX_CKEN_1RATE(dev_id, con_id, bit, parents)                 =
+       \
+>         PXA_CKEN_1RATE(dev_id, con_id, bit, parents,                    \
+>                        CKEN_AB(bit), (CKEN_ ## bit % 32), 0)
+> @@ -173,13 +177,13 @@ static struct desc_clk_cken pxa3xx_clocks[] __initd=
+ata =3D {
+>
+>  static struct desc_clk_cken pxa300_310_clocks[] __initdata =3D {
+>
+> -       PXA3XX_PBUS_CKEN("pxa3xx-gcu", NULL, PXA300_GCU, 1, 1, 1, 1, 0),
+> -       PXA3XX_PBUS_CKEN("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0),
+> +       PXA3XX_PBUS_CKENF("pxa3xx-gcu", NULL, PXA300_GCU, 1, 1, 1, 1, 0, =
+CLK_IGNORE_UNUSED),
+> +       PXA3XX_PBUS_CKENF("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0, CLK_I=
+GNORE_UNUSED),
+>         PXA3XX_CKEN_1RATE("pxa3xx-gpio", NULL, GPIO, pxa3xx_13MHz_bus_par=
+ents),
+>  };
+>
+>  static struct desc_clk_cken pxa320_clocks[] __initdata =3D {
+> -       PXA3XX_PBUS_CKEN("pxa3xx-nand", NULL, NAND, 1, 2, 1, 6, 0),
+> +       PXA3XX_PBUS_CKENF("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0, CLK_I=
+GNORE_UNUSED),
+>         PXA3XX_PBUS_CKEN("pxa3xx-gcu", NULL, PXA320_GCU, 1, 1, 1, 1, 0),
+>         PXA3XX_CKEN_1RATE("pxa3xx-gpio", NULL, GPIO, pxa3xx_13MHz_bus_par=
+ents),
+>  };
+> @@ -187,7 +191,7 @@ static struct desc_clk_cken pxa320_clocks[] __initdat=
+a =3D {
+>  static struct desc_clk_cken pxa93x_clocks[] __initdata =3D {
+>
+>         PXA3XX_PBUS_CKEN("pxa3xx-gcu", NULL, PXA300_GCU, 1, 1, 1, 1, 0),
+> -       PXA3XX_PBUS_CKEN("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0),
+> +       PXA3XX_PBUS_CKENF("pxa3xx-nand", NULL, NAND, 1, 2, 1, 4, 0, CLK_I=
+GNORE_UNUSED),
+>         PXA3XX_CKEN_1RATE("pxa93x-gpio", NULL, GPIO, pxa3xx_13MHz_bus_par=
+ents),
+>  };
+>
 
-IIUC (again) /sys/kernel/debug/ubi/ubi0/chk_io enable this and many 
-other runtime check, so it's only partially useful to have a first raw 
-approach to performance impact.
 
-And, yes, those functions only check for valid data, not about bitflip 
-counts.
 
-Kind Regards,
-
--- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
