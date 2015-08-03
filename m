@@ -1,6 +1,9 @@
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Mon, 03 Aug 2015 11:28:43 +0200
 From: Stefan Agner <stefan@agner.ch>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
+To: computersforpeace@gmail.com
 Cc: sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
  mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
  shawn.guo@linaro.org, kernel@pengutronix.de,
@@ -8,12 +11,12 @@ Cc: sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
  bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
  devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, albert.aribaud@3adev.fr,
- klimov.linux@gmail.com, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v10 5/5] ARM: dts: vf-colibri: enable NAND flash controller
-Date: Mon,  3 Aug 2015 11:27:30 +0200
-Message-Id: <1438594050-4595-6-git-send-email-stefan@agner.ch>
-In-Reply-To: <1438594050-4595-1-git-send-email-stefan@agner.ch>
+ klimov.linux@gmail.com, Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v10 2/5] mtd: nand: vf610_nfc: add hardware BCH-ECC support
+In-Reply-To: <1438594050-4595-3-git-send-email-stefan@agner.ch>
 References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
+ <1438594050-4595-3-git-send-email-stefan@agner.ch>
+Message-ID: <ff2e2716578a1ae5f0c4b0e0ca8bbdc3@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable NAND access by adding pinmux and NAND flash controller node
-to device tree. The NAND chips currently used on the Colibri VF61
-requires 8-bit ECC per 512 byte page, hence specify 32-bit ECC
-strength per 2k page size.
+Hi Brian,
 
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm/boot/dts/vf-colibri.dtsi | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+On 2015-08-03 11:27, Stefan Agner wrote:
+<snip>
+> +static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
+> +					 uint8_t *oob, int oob_loaded)
+> +{
+> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> +	u8 ecc_status;
+> +	u8 ecc_count;
+> +	int flip;
+> +
+> +	ecc_status = __raw_readb(nfc->regs + ECC_SRAM_ADDR * 8 + ECC_OFFSET);
+> +	ecc_count = ecc_status & ECC_ERR_COUNT;
+> +
+> +	if (!(ecc_status & ECC_STATUS_MASK))
+> +		return ecc_count;
+> +
+> +	if (!oob_loaded)
+> +		vf610_nfc_read_buf(mtd, oob, mtd->oobsize);
+> +
+> +	/*
+> +	 * On an erased page, bit count (including OOB) should be zero or
+> +	 * at least less then half of the ECC strength.
+> +	 */
+> +	flip = count_written_bits(dat, nfc->chip.ecc.size, ecc_count);
+> +	flip += count_written_bits(oob, mtd->oobsize - nfc->chip.ecc.bytes,
+> +				   ecc_count);
 
-diff --git a/arch/arm/boot/dts/vf-colibri.dtsi b/arch/arm/boot/dts/vf-colibri.dtsi
-index 68ca125..ab2e74b 100644
---- a/arch/arm/boot/dts/vf-colibri.dtsi
-+++ b/arch/arm/boot/dts/vf-colibri.dtsi
-@@ -52,6 +52,19 @@
- 	pinctrl-0 = <&pinctrl_i2c0>;
- };
- 
-+&nfc {
-+	assigned-clocks = <&clks VF610_CLK_NFC>;
-+	assigned-clock-rates = <33000000>;
-+	nand-bus-width = <8>;
-+	nand-ecc-mode = "hw";
-+	nand-ecc-step-size = <2048>;
-+	nand-ecc-strength = <32>;
-+	nand-on-flash-bbt;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_nfc>;
-+	status = "okay";
-+};
-+
- &pwm0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pwm0>;
-@@ -156,6 +169,25 @@
- 			>;
- 		};
- 
-+		pinctrl_nfc: nfcgrp {
-+			fsl,pins = <
-+				VF610_PAD_PTD23__NF_IO7		0x28df
-+				VF610_PAD_PTD22__NF_IO6		0x28df
-+				VF610_PAD_PTD21__NF_IO5		0x28df
-+				VF610_PAD_PTD20__NF_IO4		0x28df
-+				VF610_PAD_PTD19__NF_IO3		0x28df
-+				VF610_PAD_PTD18__NF_IO2		0x28df
-+				VF610_PAD_PTD17__NF_IO1		0x28df
-+				VF610_PAD_PTD16__NF_IO0		0x28df
-+				VF610_PAD_PTB24__NF_WE_B	0x28c2
-+				VF610_PAD_PTB25__NF_CE0_B	0x28c2
-+				VF610_PAD_PTB27__NF_RE_B	0x28c2
-+				VF610_PAD_PTC26__NF_RB_B	0x283d
-+				VF610_PAD_PTC27__NF_ALE		0x28c2
-+				VF610_PAD_PTC28__NF_CLE		0x28c2
-+			>;
-+		};
-+
- 		pinctrl_pwm0: pwm0grp {
- 			fsl,pins = <
- 				VF610_PAD_PTB0__FTM0_CH0		0x1182
--- 
-2.5.0
+With ECC the controller seems to clear the ECC bytes in SRAM buffer.
+This is a dump of 64 Bit OOB with the 32-error ECC mode which requires
+60 bytes of OOB for ECC:
+
+[   22.190273] ff ff ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   22.209698] vf610_nfc_correct_data, flips 1
+
+Not sure if this is acceptable, but I now only count the bits in the
+non-ECC area of the OOB.
+
+Btw, if the ECC check fails, the controller seems kind of count the
+amount of bitflips. It works for most devices reliable, but we had
+devices for which that number was not accurate, see:
+http://thread.gmane.org/gmane.linux.ports.arm.kernel/357439
+
+--
+Stefan
