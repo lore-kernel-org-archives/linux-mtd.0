@@ -1,21 +1,19 @@
-Received: from ipmail07.adl2.internode.on.net ([150.101.137.131])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZM8jT-00088Q-4G
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 05:56:19 +0000
-Date: Mon, 3 Aug 2015 15:55:37 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Cc: eguan@redhat.com, fstests@vger.kernel.org, dedekind1@gmail.com,
- richard.weinberger@gmail.com, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/5] xfstest: generic/219 add _require_odirect
-Message-ID: <20150803055537.GS3902@dastard>
-References: <1438236417-24612-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438236417-24612-3-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20150803035909.GP3902@dastard> <55BEF5A2.6090606@cn.fujitsu.com>
+From: Ranjit Waghmode <ranjit.waghmode@xilinx.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <broonie@kernel.org>, <michal.simek@xilinx.com>,
+ <soren.brinkmann@xilinx.com>, <zajec5@gmail.com>, <ben@decadent.org.uk>,
+ <marex@denx.de>, <b32955@freescale.com>, <knut.wohlrab@de.bosch.com>,
+ <juhosg@openwrt.org>, <beanhuo@micron.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <harinik@xilinx.com>, <punnaia@xilinx.com>, <ranjitw@xilinx.com>,
+ <ran27jit@gmail.com>, Ranjit Waghmode <ranjit.waghmode@xilinx.com>
+Subject: [LINUX RFC 0/2] spi: add dual parallel mode support in Zynq MPSoC
+ GQSPI controller
+Date: Mon, 3 Aug 2015 14:35:05 +0530
+Message-ID: <1438592707-30713-1-git-send-email-ranjit.waghmode@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55BEF5A2.6090606@cn.fujitsu.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 03, 2015 at 01:01:22PM +0800, Dongsheng Yang wrote:
-> On 08/03/2015 11:59 AM, Dave Chinner wrote:
-> >On Thu, Jul 30, 2015 at 02:06:54PM +0800, Dongsheng Yang wrote:
-> >>generic/219 is testing quota in three use cases including
-> >>Direct I/O. So we have to add a dependence to odirect in
-> >>this test.
-> >
-> >Hmmm - you've modified on only 2 tests here in this patch series
-> >that use direct IO. There are many more - just looking for direct IO
-> >comments, these generic tests use direct IO in some way, and there
-> >are others that such usage is not obvious (e.g. this patch to
-> >generic/219):
-> >
-> >generic/091
-> >generic/113
-> >generic/130
-> >generic/214
-> >generic/224
-> >generic/263
-> >shared/272
-> >
-> >And all the aio/dio tests:
-> >
-> >generic/036
-> >generic/198
-> >generic/207
-> >generic/208
-> >generic/209
-> >generic/210
-> >generic/211
-> >generic/212
-> >generic/239
-> >generic/240
-> >generic/323
-> >
-> >And there are others that run fio that uses DIO, too, like
-> >
-> >generic/299
-> >generic/300
-> >
-> >And so on. I haven't even looked at all the fsx tests that might
-> >use DIO, and I know that some of them are not listed above...
-> >
-> >On the whole, I think ubifs would be better to implement DIO via
-> >buffered fallback that to make us have to annotate every test that
-> >uses DIO in some way...
-> 
-> Fair point. Yes, It's difficult to find out all the tests which
-> would use DIO.
-> 
-> And we are discussing about dio in ubifs.
-> 
-> So if you are strongly rejecting this kind of change, I will drop
-> this patch in my next version.
+This series is to add dual parallel mode support for Zynq Ultrascale+ MPSoC GQSPI controller driver.
 
-I would say "strongy rejecting", more advising a different approach
-to solve the problem.  i.e. with a "return 0" ->direct_IO method,
-applications that use direct IO won't randomly fail or refuse to
-run.  That seems like a much better (and simpler!) solution compared
-to chasing down applications that use direct IO and changing
-them....
+What is dual parallel mode?
+---------------------------
+ZynqMP GQSPI controller supports Dual Parallel mode with following functionalities:
+1) Supporting two SPI flash memories operating in parallel. 8 I/O lines.
+2) Chip selects and clock are shared to both the flash devices
+3) This mode is targeted for faster read/write speed and also doubles the size
+4) Commands/data can be transmitted/received from both the devices(mirror),
+   or only upper or only lower flash memory devices.
+5) Data arrangement:
+   With stripe enabled,
+   Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
+   Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
 
-Cheers,
+This series also updated MTD layer files for adding parallel mode support.
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+MTD layer dependency changes:
+-----------------------------
+1) Added Support for two flashes
+2) Support to enable/disable data stripe as and when required.
+3) Added required parameters to spi_nor structure. Initialized all
+   added parameters in spi_nor_scan()
+4) Added support for dual parallel in spi_nor_read/write/erase functions by:
+   a) Increasing page_size, sector_size, erase_size and toatal flash size
+      as and when required.
+   b) Dividing address by 2
+   c) Updating spi->master->flags for qspi driver to change CS
+5) Updated read_sr() to get status of both flashes
+6) Also updated read_fsr() to get status of both flashes
+
+These all are very high level changes and expected to make an idea clear.
+Comments and suggestions are always welcomed.
+
+Ranjit Waghmode (2):
+  mtd: spi-nor: add dual parallel mode support
+  spi: zynqmp: gqspi: add support for dual parallel mode configuration
+
+ drivers/mtd/devices/m25p80.c   |  1 +
+ drivers/mtd/spi-nor/spi-nor.c  | 92 +++++++++++++++++++++++++++++++++---------
+ drivers/spi/spi-zynqmp-gqspi.c | 24 ++++++++++-
+ include/linux/mtd/spi-nor.h    |  3 ++
+ include/linux/spi/spi.h        |  2 +
+ 5 files changed, 102 insertions(+), 20 deletions(-)
+
+--
+2.1.2
