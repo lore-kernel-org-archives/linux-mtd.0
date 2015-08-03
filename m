@@ -1,29 +1,24 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMLTx-0007Z5-UE
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 19:33:11 +0000
-Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
- default ECC read functions
-To: Andrea Scian <rnd4@dave-tech.it>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
- <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
- <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
- <55BB48D9.6050508@dave-tech.it> <20150731123221.34cf601e@bbrezillon>
- <55BB7ABD.7040008@dave-tech.it> <20150731161032.2b155ccb@bbrezillon>
- <55BBA012.4080600@dave-tech.it> <20150731182709.14c345df@bbrezillon>
- <55BF4D72.8090000@dave-tech.it> <20150803144253.66fc6941@bbrezillon>
- <55BF6F09.9000001@dave-tech.it>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
- Han Xu <b45815@freescale.com>, Artem Bityutskiy <dedekind1@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55BFC1DA.3090108@nod.at>
-Date: Mon, 3 Aug 2015 21:32:42 +0200
+ id 1ZMLWK-0000id-Gw
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 19:35:37 +0000
+Date: Mon, 3 Aug 2015 14:35:14 -0500
+From: Andy Gross <agross@codeaurora.org>
+To: Archit Taneja <architt@codeaurora.org>
+Cc: linux-mtd@lists.infradead.org, dehrenberg@google.com,
+ cernekee@gmail.com, computersforpeace@gmail.com,
+ linux-arm-msm@vger.kernel.org, sboyd@codeaurora.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 5/5] arm: qcom: dts: Enable NAND node on IPQ8064 AP148
+ platform
+Message-ID: <20150803193514.GA19772@qualcomm.com>
+References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
+ <1438578498-32254-1-git-send-email-architt@codeaurora.org>
+ <1438578498-32254-6-git-send-email-architt@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <55BF6F09.9000001@dave-tech.it>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1438578498-32254-6-git-send-email-architt@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,58 +28,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 03.08.2015 um 15:39 schrieb Andrea Scian:
->>> I think I can find some time to do some performance tests on real hardware.
->>> Can you please help me in finding:
->>> - which benchmark to use (currently I'm using bonnie++ on UBIFS, maybe I
->>> can you just mtd_speedtest)
->>> - where to implement those read
->>
->> I think the test should be done at the UBI layer if we want to check
->> the real impact of the additional read sequence, but given the answer I
->> gave to your other question I'm not sure this is relevant anymore ;-).
-
-I'm not sure whether introducing a read-before-write check is the best solution.
-At least we need hard numbers for slow/old SLC NANDs too.
-
-We has such checks already and got rid of them.
-commit 657f28f8811c92724db10d18bbbec70d540147d6
-Author: Huang Shijie <shijie8@gmail.com>
-Date:   Tue Aug 14 22:38:45 2012 -0400
-
-    mtd: kill MTD_NAND_VERIFY_WRITE
-
-
-Although the goal of 657f28f8 was something else.
-
-In general I don't think putting much MTD/ECC logic into UBI is the way to go.
-UBI is a layer above MTD and MTD should do as much as possible wrt. ECC.
-
->>>
->>> For the second point I think we can implement it a UBI or MTD level.
->>> I think the former will allow us to easily schedule scrubbing and choose
->>> another block to issue the write to. However I don't really know how to
->>> implement it (I don't really know so much about the UBI code).
-
-Implementing this is not much work.
-I've done such hacks for various customers to hunt down hardware issues.
-
->> I didn't check before suggesting that, but it seems that the UBI layer
->> is already doing this check for you [1], so if you're using UBI/UBIFS
->> you shouldn't worry about bitflips in erased pages: if there is any,
->> and their presence impact the write result, they should be detected.
->> AFAICT, the only thing that is not checked is whether the number of
->> bitflips after a write exceed the bitflips threshold or not, and I
->> guess this can be added.
+On Mon, Aug 03, 2015 at 10:38:18AM +0530, Archit Taneja wrote:
+> Enable the NAND controller node on the AP148 platform. Provide pinmux
+> information.
 > 
-> IIUC this is a runtime debug check
+> Cc: devicetree@vger.kernel.org
 > 
-> if (!ubi_dbg_chk_io(ubi))
->     ....
+> Signed-off-by: Archit Taneja <architt@codeaurora.org>
+> ---
+>  arch/arm/boot/dts/qcom-ipq8064-ap148.dts | 36 ++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
 > 
-> And thus is disabled by default.
+> diff --git a/arch/arm/boot/dts/qcom-ipq8064-ap148.dts b/arch/arm/boot/dts/qcom-ipq8064-ap148.dts
+> index 7f9ea50..2e88eff 100644
+> --- a/arch/arm/boot/dts/qcom-ipq8064-ap148.dts
+> +++ b/arch/arm/boot/dts/qcom-ipq8064-ap148.dts
+> @@ -30,6 +30,28 @@
+>  					bias-none;
+>  				};
+>  			};
+> +			nand_pins: nand_pins {
+> +				mux {
+> +					pins = "gpio34", "gpio35", "gpio36",
+> +					       "gpio37", "gpio38", "gpio39",
+> +					       "gpio40", "gpio41", "gpio42",
+> +					       "gpio43", "gpio44", "gpio45",
+> +					       "gpio46", "gpio47";
+> +					function = "nand";
+> +					drive-strength = <10>;
+> +					bias-disable;
+> +				};
+> +				pullups {
+> +					pins = "gpio39";
+> +					bias-pull-up;
+> +				};
+> +				hold {
+> +					pins = "gpio40", "gpio41", "gpio42",
+> +					       "gpio43", "gpio44", "gpio45",
+> +					       "gpio46", "gpio47";
+> +					bias-bus-hold;
 
-That's correct.
+Maybe split out the bias-disable into a separate set and remove that property
+from the mux.
 
-Thanks,
-//richard
+> +				};
+> +			};
+>  		};
+>  
+>  		gsbi@16300000 {
+> @@ -93,5 +115,19 @@
+>  		sata@29000000 {
+>  			status = "ok";
+>  		};
+> +
+> +		nand@1ac00000 {
+> +			status = "ok";
+> +
+> +			pinctrl-0 = <&nand_pins>;
+> +			pinctrl-names = "default";
+> +
+> +			nand-ecc-strength = <4>;
+> +			nand-bus-width = <8>;
+> +		};
+>  	};
+>  };
+> +
+> +&adm_dma {
+> +	status = "ok";
+> +};
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> hosted by The Linux Foundation
+> 
+
+-- 
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
