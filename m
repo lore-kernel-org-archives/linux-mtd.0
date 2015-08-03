@@ -1,21 +1,26 @@
-Date: Mon, 3 Aug 2015 12:35:41 +0200
-From: Albert ARIBAUD <albert.aribaud@3adev.fr>
-To: Stefan Agner <stefan@agner.ch>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
- mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
- bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, klimov.linux@gmail.com
-Subject: Re: [PATCH v10 0/5] mtd: nand: vf610_nfc: Freescale NFC for VF610
-Message-ID: <20150803123541.54d4228e.albert.aribaud@3adev.fr>
-In-Reply-To: <1438594050-4595-1-git-send-email-stefan@agner.ch>
-References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMDjH-0008GU-K0
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 11:16:32 +0000
+Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
+ default ECC read functions
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
+ <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
+ <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
+ <55BB48D9.6050508@dave-tech.it> <20150731123221.34cf601e@bbrezillon>
+ <55BB7ABD.7040008@dave-tech.it> <20150731161032.2b155ccb@bbrezillon>
+ <55BBA012.4080600@dave-tech.it> <20150731182709.14c345df@bbrezillon>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
+ Han Xu <b45815@freescale.com>
+From: Andrea Scian <rnd4@dave-tech.it>
+Message-ID: <55BF4D72.8090000@dave-tech.it>
+Date: Mon, 3 Aug 2015 13:16:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20150731182709.14c345df@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,97 +30,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
 
-Le Mon,  3 Aug 2015 11:27:25 +0200, Stefan Agner <stefan@agner.ch> a
-=C3=A9crit :
+Dear Boris,
 
-> The 10th revision includes some more review comments, including an
-> improved handling of empty NAND pages with hardware ECC.
->=20
-> More information and the full test log of earlier patchset version
-> can be found in the cover letter of the last revision v6:
-> http://thread.gmane.org/gmane.linux.kernel/1979868
->=20
-> Changes since v9:
-> - Remove inline of vf610_nfc_done
-> - Add __iomem to src argument of vf610_nfc_memcpy
-> - Handle return value of mtd_device_parse_register correctly
-> - Count bits in OOB too (only non-ECC bits)
-> - Return bitflips in ecc.read_page callback vf610_nfc_read_page
-> - Fall-through ALT_BUF_ONFI
-> - Use BIT macros
->=20
-> Changes since v8:
-> - Fix 16-Bit NAND flash support by splitting up initialization
->   (introduce vf610_nfc_preinit_controller)
-> - Updated comments in initialziation functions
->=20
-> Changes since v7:
-> - vf610-twr.dts: Moved NFC pinmux into the existing iomuxc node
->   and sort new nfc node behind the existing iomuxc node as well.
-> - vf610-twr.dts/vf-colibri.dtsi: Dropped _1 suffixes
->=20
-> Changes since v6:
-> - Rebased ontop of l2-mtd/master (v4.2-rc1 based)
-> - Removed HAVE_NAND_VF610_NFC and use depends on. This made
->   "[PATCH v6 4/6] ARM: vf610: enable NAND Flash Controller" unnecessary
->=20
-> Changes since v5:
-> - Removed fsl,mpc5125-nfc compatible string
-> - Removed readl/writel_relaxed
-> - Change interface of vf610_nfc_transfer_size to match other accessors
->=20
-> Changes since v4:
-> - Rebased ontop of l2-mtd/master (v4.1-rc4 based)
-> - Eliminate unnecessary page read (NAND_CMD_SEQIN) since the driver does
->   not support sub-page writes anyway (improves write performance)
-> - Support ONFI by enabling READID command with offset and parameter page
->   reads (CMD_PARAM)
-> - Change to dedicated read_page/write_page function, enables raw writes
-> - Use __LITTLE_ENDIAN to distingush between LE/BE relevant statements
-> - Eliminated vf610_nfc_probe_dt in favor of common DT init code
-> - Use wait_for_completion_timeout
-> - Some style fixes (spaces, etc.)
->=20
-> Changes since v3:
-> - Make the driver selectable when COMPILE_TEST is set
-> - Fix compile error due to superfluous ECC_STATUS configuration in initial
->   patch (without ECC correction ECC_STATUS does not need to be configured)
-> - Remove custom BBT pattern and switch to in-band BBT in the initial patch
-> - Include two bug fixes, for details see the corresponding U-Boot patches:
->   http://thread.gmane.org/gmane.comp.boot-loaders.u-boot/215802
->=20
-> Changes since v2:
-> - Updated binding documentation
->=20
-> Changes since v1:
-> - Nest nfc_config struct within the main nfc struct
-> - Use assigned clock binding to specify NFC clock
-> - Rebased ontop of MSCM IR patchset (driver parts have been merged)
-> - Split out arch Kconfig in a separate config
-> - Fix module license
-> - Updated MAINTAINERS
->=20
-> Changes since RFC (Bill Pringlemeir):
-> - Renamed driver from fsl_nfc to vf610_nfc
-> - Use readl/writel for all register in accessor functions
-> - Optimized field accessor functions
-> - Implemented PM (suspend/resume) functions
-> - Implemented basic support for ECC strength/ECC step size from dt
-> - Improved performance of count_written_bits by using hweight32
-> - Support ECC with 60-bytes to correct up to 32 bit errors
-> - Changed to in-band BBT (NAND_BBT_NO_OOB) which also allows ECC modes
->   which uses up to 60 bytes on 64 byte OOB
-> - Removed custom (downstream) BBT pattern since BBT table won't be
->   compatible anyway (due to the change above)
+Il 31/07/2015 18:27, Boris Brezillon ha scritto:
+> On Fri, 31 Jul 2015 18:19:30 +0200
+> Andrea Scian <rnd4@dave-tech.it> wrote:
+>
+>> Il 31/07/2015 16:10, Boris Brezillon ha scritto:
+>>> On Fri, 31 Jul 2015 15:40:13 +0200
+>>> Andrea Scian <rnd4@dave-tech.it> wrote:
+>>>
+>>>> Boris,
+>>>>
+>>>> Il 31/07/2015 12:32, Boris Brezillon ha scritto:
+>>>>> Hi Andrea,
+>>>>>
+>>>>> Adding Han in Cc.
+>>>>>
+>>>>> On Fri, 31 Jul 2015 12:07:21 +0200
+>>>>> Andrea Scian <rnd4@dave-tech.it> wrote:
+>>>>>
+>>>>>> Dear Boris,
+>>>>>>
+>>>>>>
+>>>>>> Il 30/07/2015 19:34, Boris Brezillon ha scritto:
+>>>>>>> The default NAND read functions are relying on an underlying controller
+>>>>>>> to correct bitflips, but some of those controller cannot properly fix
+>>>>>>> bitflips in erased pages.
+>>>>>>> In case of ECC failures, check if the page of subpage is empty before
+>>>>>>> reporting an ECC failure.
+>>>>>> I'm still wondering if chip->ecc.strength is the right threshold.
+>>>>>>
+>>>>>> Did you see my comments here [1]? WDYT?
+>>>>> Yes I've read it, and decided to go for ecc->strength as a first
+>>>>> step (I'm more interested in discussing the approach than the threshold
+>>>>> value right now ;-)).
+>>>> I perfectly understand, that's the reason why I ask if you want to move
+>>>> to another thread ;-)
+>>>>
+>>>>> Anyway, as you pointed out in the thread, writing data on an erased
+>>>>> page already containing some bitflips might generate even more
+>>>>> bitflips, so using a different threshold for the erased page check
+>>>>> makes sense. This threshold should definitely be correlated to the ECC
+>>>>> strength, but how, that's the question.
+>>>>>
+>>>>> How about taking a rather conservative value like 10% of the specified
+>>>>> ECC strength, and see how it goes.
+>>>> Yes, I think that there's no real way to get the right value, other than
+>>>> feedbacks from on-field testing with various devices.
+>>>>
+>>>> I'm also thinking about changing how a NAND page is written on the
+>>>> device, now that we know that even erased page may have (too many!)
+>>>> bitflips if they has not been so-freshly erased.
+>>>>
+>>>> Read on NAND device is lot's faster that write, so maybe we can:
+>>>>
+>>>> a) read the page before write it, check for bitflips on erased area and
+>>>> write it only if it fit our threshold
+>>>>
+>>>> b) read the page after write it and check if the bitflips are lower that
+>>>> a give value
+>>>>
+>>>> In this way:
+>>>> - we can use ecc_strength as read threshold, because it fits all the
+>>>> other NAND read
+>>>>
+>>>> - we can use "something a bit lower than" mtd->bitflip_threshold on
+>>>> read-before-write or read-after-write. If we don't do so the block will
+>>>> be scrubbed next time we read it again (if we are lucky.. if we are
+>>>> unlucky the block will have bitflip > ecc_strength!): IOW we did a write
+>>>> that will trigger another erase/write cycle.
+>>>>
+>>>> Am I misunderstanding something?
+>>> Nope, but this implies doing an extra read after each write :-/
+>>>
+>> Let's wait what the others says about this, but I would like to put some
+>> numbers in it.
+> Sure.
+>
+>> My micron MLC device says
+>> - read page max 75 uS
+>> - write page typ 1300uS, max 2600uS
+>>
+>> If we implement read-before-write (which is, IMO, the best approach), in
+>> the worst overhead we have is 1375uS vs 1300uS, which is ~6%.
+>> Please note that, if you read a page that "is not suitable" for write,
+>> you avoid the write time, schedule it for scrubbing, and use another
+>> free page.
+> Indeed, that's not such a big overhead.
+>
+>> Probably I'm a bit optimistic because we also need to take in account
+>> other latencies (DMA setup, ECC engine, buffer copies and so on) but
+>> it's a starting point ;-)
+> Yep, if you test it, could you provide some speed test results (with
+> and without this solution).
 
-For the sake of regression testing:
+I think I can find some time to do some performance tests on real hardware.
+Can you please help me in finding:
+- which benchmark to use (currently I'm using bonnie++ on UBIFS, maybe I 
+can you just mtd_speedtest)
+- where to implement those read
 
-Tested-by: Albert ARIBAUD <albert.aribaud@3adev.fr>
+For the second point I think we can implement it a UBI or MTD level.
+I think the former will allow us to easily schedule scrubbing and choose 
+another block to issue the write to. However I don't really know how to 
+implement it (I don't really know so much about the UBI code).
 
-Still works fine here on a Vybrid and 16-bit Micron NAND.
+The latter, at least for me, is easier to implement: I think I can find 
+the place to add the page read on my own, anyway any clue is welcome ;-)
+But I think it will be harder (or impossible) to choose where to issue 
+the write, unless UBI already do so when it saw an MTD write failure.
 
-Cordialement,
-Albert ARIBAUD
-3ADEV
+> And I wonder if we shouldn't do it the other way around, write then
+> read-back and check the content.
+> Of course this implies doing the extra write even when the erased page
+> contains too many bitflips, but at least your sure that the data you
+> put in the page were correct at that time.
+>
+
+You're right, I think this is something that once we can find inside the 
+MTD code (something like "check NAND written page" kconfig option) but I 
+cannot find this option anymore on latest kernel.
+
+You're approach will also have another advantage, currently nearly all 
+platform will use software implementation for ECC check on erased 
+blocks, while nearly all of them has hardware ECC once programmed. Using 
+hardware ECC will remove CPU load and, maybe, be faster than call 
+nand_check_erased_ecc_chunk()
+I also think that the situation of having failure on write is very 
+unlikely, unless you have a very "used" NAND device or you're not using 
+Richard's bitrot check. So we'll have a performance impact (issuing 
+another write) only when it's really needed.
+
+Kind Regards,
+
+-- 
+
+Andrea SCIAN
+
+DAVE Embedded Systems
