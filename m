@@ -1,22 +1,21 @@
 Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMLrK-0001Bv-U5
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 19:57:19 +0000
-Date: Mon, 3 Aug 2015 21:56:53 +0200
+ id 1ZMLyV-0003sJ-NK
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 20:04:44 +0000
+Date: Mon, 3 Aug 2015 22:04:18 +0200
 From: Jan Kara <jack@suse.cz>
 To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 Cc: viro@ZenIV.linux.org.uk, jack@suse.cz, dedekind1@gmail.com,
  richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
  linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 06/35] fs: super: introduce a get_super_cdev_thawed to
- get sb by cdev reference
-Message-ID: <20150803195653.GD23810@quack.suse.cz>
+Subject: Re: [PATCH v2 10/35] fs: dquot: skip invalidate_bdev if bdev is NULL
+Message-ID: <20150803200418.GE23810@quack.suse.cz>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-7-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438235311-23788-11-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1438235311-23788-7-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1438235311-23788-11-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,98 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu 30-07-15 13:48:02, Dongsheng Yang wrote:
-> This patch refactors the original get_super_thawed to get a common
-> helper function of __get_super_thawed. Then take the use of
-> __get_super_thawed, we can implement get_super_cdev_thawed easily.
+On Thu 30-07-15 13:48:06, Dongsheng Yang wrote:
+> There would be a NULL pointer dereference if bdev is NULL
 > 
 > Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> ---
->  fs/super.c         | 29 +++++++++++++++++++++++++----
->  include/linux/fs.h |  1 +
->  2 files changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/super.c b/fs/super.c
-> index 4c56dff..0e11412 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -629,18 +629,20 @@ struct super_block *get_super_cdev(struct cdev *cdev)
->  EXPORT_SYMBOL(get_super_cdev);
->  
->  /**
-> - * get_super_thawed - get thawed superblock of a device
-> - * @bdev: device to get the superblock for
-> + * __get_super_thawed - get thawed superblock
-> + * @func: function pointer to get superblock by key
-> + * @key: key to find superblock
->   *
->   * Scans the superblock list and finds the superblock of the file system
->   * mounted on the device. The superblock is returned once it is thawed
->   * (or immediately if it was not frozen). %NULL is returned if no match
->   * is found.
->   */
-> -struct super_block *get_super_thawed(struct block_device *bdev)
-> +static struct super_block *__get_super_thawed(
-> +		struct super_block *(*func)(void *), void *key)
->  {
->  	while (1) {
-> -		struct super_block *s = get_super(bdev);
-> +		struct super_block *s = func(key);
 
-It would seem more obvious (and consistent with get_super() class of
-functions) if you passed in a comparison function and a key and then call
-from here:
+The patch looks good. You can add:
 
-s = __get_super(compare, key);
-
-Also you would avoid some of the ugly typecasting below.
+Reviewed-by: Jan Kara <jack@suse.com>
 
 								Honza
 
->  		if (!s || s->s_writers.frozen == SB_UNFROZEN)
->  			return s;
->  		up_read(&s->s_umount);
-> @@ -649,9 +651,28 @@ struct super_block *get_super_thawed(struct block_device *bdev)
->  		put_super(s);
+> ---
+>  fs/quota/dquot.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+> index 20d1f74..140397a 100644
+> --- a/fs/quota/dquot.c
+> +++ b/fs/quota/dquot.c
+> @@ -2208,7 +2208,8 @@ static int vfs_load_quota_inode(struct inode *inode, int type, int format_id,
+>  		 * of the cache could fail because of other unrelated dirty
+>  		 * data */
+>  		sync_filesystem(sb);
+> -		invalidate_bdev(sb->s_bdev);
+> +		if (sb->s_bdev)
+> +			invalidate_bdev(sb->s_bdev);
 >  	}
->  }
-> +
-> +/**
-> + * get_super_thawed - get thawed superblock of a device
-> + * @bdev: device to get the superblock for
-> + */
-> +struct super_block *get_super_thawed(struct block_device *bdev)
-> +{
-> +	return __get_super_thawed((struct super_block *(*)(void *))get_super, bdev);
-> +}
->  EXPORT_SYMBOL(get_super_thawed);
->  
->  /**
-> + * get_super_cdev_thawed - get thawed superblock of a char device
-> + * @cdev: device to get the superblock for
-> + */
-> +struct super_block *get_super_cdev_thawed(struct cdev *cdev)
-> +{
-> +	return __get_super_thawed((struct super_block *(*)(void *))get_super_cdev, cdev);
-> +}
-> +EXPORT_SYMBOL(get_super_cdev_thawed);
-> +
-> +/**
->   * get_active_super - get an active reference to the superblock of a device
->   * @bdev: device to get the superblock for
->   *
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index e5ea425a..5c7d789 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2746,6 +2746,7 @@ extern struct file_system_type *get_fs_type(const char *name);
->  extern struct super_block *get_super(struct block_device *);
->  extern struct super_block *get_super_cdev(struct cdev *);
->  extern struct super_block *get_super_thawed(struct block_device *);
-> +extern struct super_block *get_super_cdev_thawed(struct cdev *);
->  extern struct super_block *get_active_super(struct block_device *bdev);
->  extern void drop_super(struct super_block *sb);
->  extern void iterate_supers(void (*)(struct super_block *, void *), void *);
+>  	mutex_lock(&dqopt->dqonoff_mutex);
+>  	if (sb_has_quota_loaded(sb, type)) {
 > -- 
 > 1.8.4.2
 > 
