@@ -1,24 +1,22 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMLWK-0000id-Gw
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 19:35:37 +0000
-Date: Mon, 3 Aug 2015 14:35:14 -0500
-From: Andy Gross <agross@codeaurora.org>
-To: Archit Taneja <architt@codeaurora.org>
-Cc: linux-mtd@lists.infradead.org, dehrenberg@google.com,
- cernekee@gmail.com, computersforpeace@gmail.com,
- linux-arm-msm@vger.kernel.org, sboyd@codeaurora.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] arm: qcom: dts: Enable NAND node on IPQ8064 AP148
- platform
-Message-ID: <20150803193514.GA19772@qualcomm.com>
-References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
- <1438578498-32254-1-git-send-email-architt@codeaurora.org>
- <1438578498-32254-6-git-send-email-architt@codeaurora.org>
+ id 1ZMLlA-0007K0-Gg
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 19:50:57 +0000
+Date: Mon, 3 Aug 2015 21:50:30 +0200
+From: Jan Kara <jack@suse.cz>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: viro@ZenIV.linux.org.uk, jack@suse.cz, dedekind1@gmail.com,
+ richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 04/35] fs: super: consolidate the get_super class
+ functions
+Message-ID: <20150803195030.GB23810@quack.suse.cz>
+References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438235311-23788-5-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1438578498-32254-6-git-send-email-architt@codeaurora.org>
+In-Reply-To: <1438235311-23788-5-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,80 +26,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 03, 2015 at 10:38:18AM +0530, Archit Taneja wrote:
-> Enable the NAND controller node on the AP148 platform. Provide pinmux
-> information.
+On Thu 30-07-15 13:48:00, Dongsheng Yang wrote:
+> There is a lot of duplicated code in get_super and user_get_super.
+> This commit introduc a __get_super as a common function to reduce
+> the duplication of it.
 > 
-> Cc: devicetree@vger.kernel.org
-> 
-> Signed-off-by: Archit Taneja <architt@codeaurora.org>
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+
+The patch looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.com>
+
+								Honza
+
 > ---
->  arch/arm/boot/dts/qcom-ipq8064-ap148.dts | 36 ++++++++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
+>  fs/super.c | 64 ++++++++++++++++++++++++++++++--------------------------------
+>  1 file changed, 31 insertions(+), 33 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/qcom-ipq8064-ap148.dts b/arch/arm/boot/dts/qcom-ipq8064-ap148.dts
-> index 7f9ea50..2e88eff 100644
-> --- a/arch/arm/boot/dts/qcom-ipq8064-ap148.dts
-> +++ b/arch/arm/boot/dts/qcom-ipq8064-ap148.dts
-> @@ -30,6 +30,28 @@
->  					bias-none;
->  				};
->  			};
-> +			nand_pins: nand_pins {
-> +				mux {
-> +					pins = "gpio34", "gpio35", "gpio36",
-> +					       "gpio37", "gpio38", "gpio39",
-> +					       "gpio40", "gpio41", "gpio42",
-> +					       "gpio43", "gpio44", "gpio45",
-> +					       "gpio46", "gpio47";
-> +					function = "nand";
-> +					drive-strength = <10>;
-> +					bias-disable;
-> +				};
-> +				pullups {
-> +					pins = "gpio39";
-> +					bias-pull-up;
-> +				};
-> +				hold {
-> +					pins = "gpio40", "gpio41", "gpio42",
-> +					       "gpio43", "gpio44", "gpio45",
-> +					       "gpio46", "gpio47";
-> +					bias-bus-hold;
-
-Maybe split out the bias-disable into a separate set and remove that property
-from the mux.
-
-> +				};
-> +			};
->  		};
+> diff --git a/fs/super.c b/fs/super.c
+> index fadb677..46fd1f1 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -559,19 +559,20 @@ void iterate_supers_type(struct file_system_type *type,
+>  }
+>  EXPORT_SYMBOL(iterate_supers_type);
 >  
->  		gsbi@16300000 {
-> @@ -93,5 +115,19 @@
->  		sata@29000000 {
->  			status = "ok";
->  		};
+> -/**
+> - * get_super - get the superblock of a device
+> - * @bdev: device to get the superblock for
+> - * 
+> - * Scans the superblock list and finds the superblock of the file system
+> - * mounted on the device given. %NULL is returned if no match is found.
+> +/*
+> + * __get_super - helper function for the other functions in get_super class
+> + * @compare: function pointer to compare sb in list and key
+> + * @key: key of the sb you want
+> + *
+> + * Scans the superblock list and finds the superblock you want. %NULL is
+> + * returned if no match is found.
+>   */
+> -
+> -struct super_block *get_super(struct block_device *bdev)
+> +static struct super_block *__get_super(
+> +		int (*compare)(struct super_block *, void *), void *key)
+>  {
+>  	struct super_block *sb;
+>  
+> -	if (!bdev)
+> +	if (!key)
+>  		return NULL;
+>  
+>  	spin_lock(&sb_lock);
+> @@ -579,7 +580,7 @@ rescan:
+>  	list_for_each_entry(sb, &super_blocks, s_list) {
+>  		if (hlist_unhashed(&sb->s_instances))
+>  			continue;
+> -		if (sb->s_bdev == bdev) {
+> +		if (compare(sb, key)) {
+>  			sb->s_count++;
+>  			spin_unlock(&sb_lock);
+>  			down_read(&sb->s_umount);
+> @@ -596,6 +597,20 @@ rescan:
+>  	spin_unlock(&sb_lock);
+>  	return NULL;
+>  }
 > +
-> +		nand@1ac00000 {
-> +			status = "ok";
+> +static int bdev_compare(struct super_block *sb, void *key)
+> +{
+> +	return (sb->s_bdev == (struct block_device *)key);
+> +}
 > +
-> +			pinctrl-0 = <&nand_pins>;
-> +			pinctrl-names = "default";
+> +/**
+> + * get_super - get the superblock of a device
+> + * @bdev: device to get the superblock for
+> + */
+> +struct super_block *get_super(struct block_device *bdev)
+> +{
+> +	return __get_super(bdev_compare, bdev);
+> +}
+>  EXPORT_SYMBOL(get_super);
+>  
+>  /**
+> @@ -651,32 +666,15 @@ restart:
+>  	spin_unlock(&sb_lock);
+>  	return NULL;
+>  }
 > +
-> +			nand-ecc-strength = <4>;
-> +			nand-bus-width = <8>;
-> +		};
->  	};
->  };
-> +
-> +&adm_dma {
-> +	status = "ok";
-> +};
+> +static int user_compare(struct super_block *sb, void *key)
+> +{
+> +	return (sb->s_dev == *(dev_t *)key);
+> +}
+>   
+>  struct super_block *user_get_super(dev_t dev)
+>  {
+> -	struct super_block *sb;
+> -
+> -	spin_lock(&sb_lock);
+> -rescan:
+> -	list_for_each_entry(sb, &super_blocks, s_list) {
+> -		if (hlist_unhashed(&sb->s_instances))
+> -			continue;
+> -		if (sb->s_dev ==  dev) {
+> -			sb->s_count++;
+> -			spin_unlock(&sb_lock);
+> -			down_read(&sb->s_umount);
+> -			/* still alive? */
+> -			if (sb->s_root && (sb->s_flags & MS_BORN))
+> -				return sb;
+> -			up_read(&sb->s_umount);
+> -			/* nope, got unmounted */
+> -			spin_lock(&sb_lock);
+> -			__put_super(sb);
+> -			goto rescan;
+> -		}
+> -	}
+> -	spin_unlock(&sb_lock);
+> -	return NULL;
+> +	return __get_super(user_compare, &dev);
+>  }
+>  
+>  /**
 > -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> hosted by The Linux Foundation
+> 1.8.4.2
 > 
-
 -- 
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
