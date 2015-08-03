@@ -1,22 +1,21 @@
 Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMM6x-0008Ns-Es
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 20:13:28 +0000
-Date: Mon, 3 Aug 2015 22:13:02 +0200
+ id 1ZMM9b-0001nH-7E
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 20:16:12 +0000
+Date: Mon, 3 Aug 2015 22:15:46 +0200
 From: Jan Kara <jack@suse.cz>
 To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 Cc: viro@ZenIV.linux.org.uk, jack@suse.cz, dedekind1@gmail.com,
  richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
  linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 08/35] fs: introduce a __lookup_dev for internal using
-Message-ID: <20150803201302.GH23810@quack.suse.cz>
+Subject: Re: [PATCH v2 33/35] fs: introduce a get_qsize() to file_operations
+Message-ID: <20150803201546.GI23810@quack.suse.cz>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-9-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20150803200806.GF23810@quack.suse.cz>
+ <1438235311-23788-34-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20150803200806.GF23810@quack.suse.cz>
+In-Reply-To: <1438235311-23788-34-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,72 +25,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon 03-08-15 22:08:06, Jan Kara wrote:
-> On Thu 30-07-15 13:48:04, Dongsheng Yang wrote:
-> > This commit introduce a file of fs/dev.c at first. This is
-> > a internal file shared by block_dev and char_dev. There is
-> > only one function in it __lookup_dev which will be wrapped
-> > to be lookup_bdev and loopup_cdev.
-> > 
-> > We will put more code in this file which is shared by
-> > block_dev and char_dev.
-> > 
-> > Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> > ---
-> >  fs/Makefile    |  2 +-
-> >  fs/block_dev.c | 26 ++------------------
-> >  fs/dev.c       | 77 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  fs/internal.h  | 14 +++++++++++
-> >  4 files changed, 94 insertions(+), 25 deletions(-)
-> >  create mode 100644 fs/dev.c
-> > 
-> ...
-> > +/**
-> > + * __lookup_dev  - lookup a block_device or cdev by name
-> > + * @pathname:	special file representing the device
-> > + * @cdevp:	cdev would be returned by cdevp
-> > + * @bdevp:	block_device would be returned by bdevp
-> > + *
-> > + * Get a reference to the block_deivce or cdev at @pathname in
-> > + * the current namespace if possible and return it.
-> > + */
-> > +int __lookup_dev(const char *pathname, struct cdev **cdevp,
-> > +	       struct block_device **bdevp)
-> > +{
-> > +	struct inode *inode;
-> > +	struct path path;
-> > +	int error = 0;
-> > +
-> > +	if (!pathname || !*pathname)
-> > +		return -EINVAL;
-> > +
-> > +	error = kern_path(pathname, LOOKUP_FOLLOW, &path);
-> > +	if (error)
-> > +		return error;
-> > +
-> > +	inode = d_backing_inode(path.dentry);
-> > +
-> > +	/**
-> > +	 * We need at least one of bdevp and cdevp to be NULL,
-> > +	 * but cdevp and bdevp can not be both NULL.
-> > +	 */
-> > +	error = -EINVAL;
-> > +	if (!(cdevp || bdevp) || (cdevp && bdevp))
-> > +		goto out;
+On Thu 30-07-15 13:48:29, Dongsheng Yang wrote:
+> get_qsize() is used to allow inode to decide how much of the quota size
+> in itself. If file system implements the own get_qsize(), ioctl of
+> FIOQSIZe will call it to get quota size. If not implemented, get the
+> quota size in a generic way.
+
+OK, can you ellaborate a bit why using i_blocks / i_bytes isn't good
+enough for ubifs?
+
 > 
-> Why don't you allow both cdevp and bdevp to be set and in that case accept
-> both block & character device and just set appropriate pointer and the
-> other one to NULL? Then quota code wouldn't have to search twice...
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> ---
+>  fs/ioctl.c         | 31 ++++++++++++++++++++++++-------
+>  include/linux/fs.h |  1 +
+>  2 files changed, 25 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 5d01d26..2c567db 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -545,6 +545,29 @@ static int ioctl_fsthaw(struct file *filp)
+>  	return thaw_super(sb);
+>  }
+>  
+> +static int ioctl_fioqsize(struct file *filp, int __user *argp)
+> +{
+> +	struct inode *inode = file_inode(filp);
+> +	loff_t res = 0;
+> +	int error = 0;
+> +
+> +	if (filp->f_op->get_qsize) {
 
-On a second thought it's probably not worth the hassle with using the
-function directly from quota code. So OK. You can add:
+Using file->f_ops looks wrong to me. I think it would be more naturally an
+inode operation.
 
-Reviewed-by: Jan Kara <jack@suse.com>
+								Honza
 
-							Honza
+> +		res = filp->f_op->get_qsize(inode);
+> +		error = copy_to_user(argp, &res, sizeof(res)) ?
+> +				-EFAULT : 0;
+> +	} else {
+> +                if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
+> +                    S_ISLNK(inode->i_mode)) {
+> +                        res = inode_get_bytes(inode);
+> +                        error = copy_to_user(argp, &res, sizeof(res)) ?
+> +                                        -EFAULT : 0;
+> +                } else {
+> +                        error = -ENOTTY;
+> +		}
+> +	}
+> +	return error;
+> +}
+> +
+>  /*
+>   * When you add any new common ioctls to the switches above and below
+>   * please update compat_sys_ioctl() too.
+> @@ -577,13 +600,7 @@ int do_vfs_ioctl(struct file *filp, unsigned int fd, unsigned int cmd,
+>  		break;
+>  
+>  	case FIOQSIZE:
+> -		if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
+> -		    S_ISLNK(inode->i_mode)) {
+> -			loff_t res = inode_get_bytes(inode);
+> -			error = copy_to_user(argp, &res, sizeof(res)) ?
+> -					-EFAULT : 0;
+> -		} else
+> -			error = -ENOTTY;
+> +		error = ioctl_fioqsize(filp, argp);
+>  		break;
+>  
+>  	case FIFREEZE:
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 860b235..70695d3 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1601,6 +1601,7 @@ struct file_operations {
+>  	long (*fallocate)(struct file *file, int mode, loff_t offset,
+>  			  loff_t len);
+>  	void (*show_fdinfo)(struct seq_file *m, struct file *f);
+> +	ssize_t (*get_qsize) (struct inode *);
+>  #ifndef CONFIG_MMU
+>  	unsigned (*mmap_capabilities)(struct file *);
+>  #endif
 > -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> 1.8.4.2
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
