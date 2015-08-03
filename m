@@ -1,27 +1,17 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMO4M-0001wW-AD
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 22:18:55 +0000
-From: Marek Vasut <marex@denx.de>
-To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH v2 1/6] mtd: spi-nor: change return value of read/write
-Date: Mon, 3 Aug 2015 23:46:35 +0200
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
- " =?utf-8?q?Rafa=C5=82?= =?utf-8?q?_Mi=C5=82ecki?=" <zajec5@gmail.com>,
- Huang Shijie <b32955@freescale.com>, Ben Hutchings <ben@decadent.org.uk>,
- Gabor Juhos <juhosg@openwrt.org>, "Bean Huo
- =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?=" <beanhuo@micron.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Hou Zhiqiang <B48286@freescale.com>, shijie.huang@intel.com
-References: <cover.1438626500.git.hramrach@gmail.com>
- <38c818599e1de5530ba0fe86d262d26d737ee7a2.1438626500.git.hramrach@gmail.com>
-In-Reply-To: <38c818599e1de5530ba0fe86d262d26d737ee7a2.1438626500.git.hramrach@gmail.com>
+Received: from valiant.selinc.com ([74.117.214.141])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMP3t-0007zf-5m
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 23:22:30 +0000
+Received: from edison.ad.selinc.com (edison.ad.selinc.com [10.100.0.15])
+ by valiant.selinc.com (8.15.0.59/8.14.7) with ESMTP id t73N3jf9014438
+ for <linux-mtd@lists.infradead.org>; Mon, 3 Aug 2015 16:03:45 -0700
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201508032346.36032.marex@denx.de>
+Subject: Trying to understand nand_chip->chipsize inconsistencies
+Message-ID: <OF2E1FCDDB.D3A51309-ON88257E96.00804E52-88257E96.00805C0A@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Mon, 3 Aug 2015 16:22:01 -0700
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,34 +21,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, August 03, 2015 at 08:39:01 PM, Michal Suchanek wrote:
-> Change the return value of spi-nor device read and write methods to
-> allow returning amount of data transferred and errors as
-> read(2)/write(2) does.
-> 
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> ---
->  include/linux/mtd/spi-nor.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index e540952..7d782cb 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -185,9 +185,9 @@ struct spi_nor {
->  	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
->  			int write_enable);
-> 
-> -	int (*read)(struct spi_nor *nor, loff_t from,
-> +	ssize_t (*read)(struct spi_nor *nor, loff_t from,
->  			size_t len, size_t *retlen, u_char *read_buf);
-> -	void (*write)(struct spi_nor *nor, loff_t to,
-> +	ssize_t (*write)(struct spi_nor *nor, loff_t to,
->  			size_t len, size_t *retlen, const u_char *write_buf);
->  	int (*erase)(struct spi_nor *nor, loff_t offs);
+Hello, 
 
-You realize that if someone does bisect and has only this patch applied,
-the compiler will complain loudly about mismatching data types, right ? :)
+We're currently running the 3.0 kernel on an MPC8349 with a Samsung 
+K9WAG08U1A NAND flash (which is non-ONFI).  We're migrating to an ONFI 
+compliant Micron MT29F16G08AJADAWP part, and I'm seeing some 
+inconsistencies in the way nand_chip->chipsize is being calculated that I 
+need some help in understanding. 
 
-Best regards,
-Marek Vasut
+Both parts contain multiple die in the same package and each have two 
+chipselects.  In the case of the Samsung part there are two die and two 
+chipselects (1/die) whereas the Micron has four die and two chipselects 
+(2/die).  The Micron part has a lower density on each die, so both 
+packages are 16GiBits or 2GiBytes. 
+
+If you follow through the non-ONFI path of nand_get_flash_type, 
+nand_chip->chipsize gets calculated from the "chipsize in MegaByte" field 
+in nand_lash_ids[], and is based on the ID code returned from the flash 
+part via a READ_ID address 0x00.  For both the Samsung and the Micron 
+parts that ID code is 0xD3, which is an 8GiBit part. nand_get_flash_type() 
+calculates "chip->chipsize = (uint64_t)type->chipsize << 20;" resulting in 
+chip->chipsize of 1GiByte.  This seems reasonable to me since each 
+chipselect on the part controls 1GiByte and as far as the processor and 
+the kernel are concerned each chipselect is a different chip. 
+
+Now looking at the ONFI path for the Micron part, I get the following from 
+the parameter page data structure in the nand_onfi_params structure: 
+
+pyte_per_page = 0x800 
+spare_bytes_per_page = 0x40 
+pages_per_block = 0x40 
+block_per_lun = 0x1000 
+lun_count = 0x4 
+
+>From the 3.0 kernel (condensing several lines of code) we have: 
+nand_chip->chipsize = blocks_per_lun * pages_per_block * byte_per_page = 
+0x1000 * 0x40 * 0x800 = 512MByte (hummm, seems a little small) 
+
+>From the 3.10 kernel we have: 
+nand_chip->chipsize = lun_count * blocks_per_lun * pages_per_block * 
+byte_per_page 
+                                          = 0x4 *  0x1000 * 0x40 * 0x800 = 
+2GiByte (which is the size of the entire PACKAGE not a single chipselect) 
+
+The 4.0 kernel does that last calculation using shifts because of the 
+possibility that pages_per_block and blocks_per_lun may not be a 
+power-of-2, but in my case they are so the math works out the same so that 
+nand_chip->chipsize = 2GiByte. 
+
+Any way you slice it I get a different value for nand_chip->chipsize 
+between the ONFI and non-ONFI paths through nand_get_flash_type.  So here 
+are my questions: 
+
+1) Do I not have a good understanding of what chipsize should be?  My 
+assumption for years (based on my experience with the Samsung parts) was 
+that it represented the size of what was controlled by a SINGLE chipselect 
+regardless of the number of chipselects a package may have. 
+2) Or is the calculation of chipsize in the 3.10 and 4.0 kernels (based on 
+the lun_count of 4 from the Micron part) somehow wrong?  It is absolutely 
+true that the Micron part has 4 logical units (defined by ONFI as "the 
+minimum unit that can independently execute commands and report status"), 
+but it only has TWO targets (defined by ONFI as "the unit of memory access 
+by a chip enable"), and each target is 1GiByte so it seems to me that 
+chipsize should be 1GiByte and each chipselect has a nand_chip struct 
+associated with it. 
+3) (most likely) Am I completely off the rails here and don't have a clue 
+what I'm talking about (if that isn't an invitation of flaming I don't 
+know what is :)  ) 
+
+Thank for any guidance anyone can give. 
+
+Bruce 
