@@ -1,22 +1,22 @@
 Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMLlA-0007K0-Gg
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 19:50:57 +0000
-Date: Mon, 3 Aug 2015 21:50:30 +0200
+ id 1ZMLlx-0007hA-Iw
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 19:51:46 +0000
+Date: Mon, 3 Aug 2015 21:51:20 +0200
 From: Jan Kara <jack@suse.cz>
 To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 Cc: viro@ZenIV.linux.org.uk, jack@suse.cz, dedekind1@gmail.com,
  richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
  linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 04/35] fs: super: consolidate the get_super class
- functions
-Message-ID: <20150803195030.GB23810@quack.suse.cz>
+Subject: Re: [PATCH v2 05/35] fs: super: introduce a get_super_cdev to get
+ super by a cdev reference
+Message-ID: <20150803195120.GC23810@quack.suse.cz>
 References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-5-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438235311-23788-6-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1438235311-23788-5-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1438235311-23788-6-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu 30-07-15 13:48:00, Dongsheng Yang wrote:
-> There is a lot of duplicated code in get_super and user_get_super.
-> This commit introduc a __get_super as a common function to reduce
-> the duplication of it.
-> 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+On Thu 30-07-15 13:48:01, Dongsheng Yang wrote:
+> As we have cdev in superblock now, we can provide get_super_cdev
+> to get super_block by a cdev reference, similar with get_super
+> which is working only for block_device.
 
 The patch looks good to me. You can add:
 
@@ -39,113 +37,51 @@ Reviewed-by: Jan Kara <jack@suse.com>
 
 								Honza
 
+> 
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 > ---
->  fs/super.c | 64 ++++++++++++++++++++++++++++++--------------------------------
->  1 file changed, 31 insertions(+), 33 deletions(-)
+>  fs/super.c         | 15 +++++++++++++++
+>  include/linux/fs.h |  1 +
+>  2 files changed, 16 insertions(+)
 > 
 > diff --git a/fs/super.c b/fs/super.c
-> index fadb677..46fd1f1 100644
+> index 46fd1f1..4c56dff 100644
 > --- a/fs/super.c
 > +++ b/fs/super.c
-> @@ -559,19 +559,20 @@ void iterate_supers_type(struct file_system_type *type,
+> @@ -613,6 +613,21 @@ struct super_block *get_super(struct block_device *bdev)
 >  }
->  EXPORT_SYMBOL(iterate_supers_type);
+>  EXPORT_SYMBOL(get_super);
 >  
-> -/**
-> - * get_super - get the superblock of a device
-> - * @bdev: device to get the superblock for
-> - * 
-> - * Scans the superblock list and finds the superblock of the file system
-> - * mounted on the device given. %NULL is returned if no match is found.
-> +/*
-> + * __get_super - helper function for the other functions in get_super class
-> + * @compare: function pointer to compare sb in list and key
-> + * @key: key of the sb you want
-> + *
-> + * Scans the superblock list and finds the superblock you want. %NULL is
-> + * returned if no match is found.
->   */
-> -
-> -struct super_block *get_super(struct block_device *bdev)
-> +static struct super_block *__get_super(
-> +		int (*compare)(struct super_block *, void *), void *key)
->  {
->  	struct super_block *sb;
->  
-> -	if (!bdev)
-> +	if (!key)
->  		return NULL;
->  
->  	spin_lock(&sb_lock);
-> @@ -579,7 +580,7 @@ rescan:
->  	list_for_each_entry(sb, &super_blocks, s_list) {
->  		if (hlist_unhashed(&sb->s_instances))
->  			continue;
-> -		if (sb->s_bdev == bdev) {
-> +		if (compare(sb, key)) {
->  			sb->s_count++;
->  			spin_unlock(&sb_lock);
->  			down_read(&sb->s_umount);
-> @@ -596,6 +597,20 @@ rescan:
->  	spin_unlock(&sb_lock);
->  	return NULL;
->  }
-> +
-> +static int bdev_compare(struct super_block *sb, void *key)
+> +static int cdev_compare(struct super_block *sb, void *key)
 > +{
-> +	return (sb->s_bdev == (struct block_device *)key);
+> +	return (sb->s_cdev == (struct cdev *)key);
 > +}
 > +
 > +/**
-> + * get_super - get the superblock of a device
-> + * @bdev: device to get the superblock for
+> + * get_super_cdev - get the superblock of a cdev
+> + * @cdev: char device to get the superblock for
 > + */
-> +struct super_block *get_super(struct block_device *bdev)
+> +struct super_block *get_super_cdev(struct cdev *cdev)
 > +{
-> +	return __get_super(bdev_compare, bdev);
+> +	return __get_super(cdev_compare, cdev);
 > +}
->  EXPORT_SYMBOL(get_super);
->  
->  /**
-> @@ -651,32 +666,15 @@ restart:
->  	spin_unlock(&sb_lock);
->  	return NULL;
->  }
+> +EXPORT_SYMBOL(get_super_cdev);
 > +
-> +static int user_compare(struct super_block *sb, void *key)
-> +{
-> +	return (sb->s_dev == *(dev_t *)key);
-> +}
->   
->  struct super_block *user_get_super(dev_t dev)
->  {
-> -	struct super_block *sb;
-> -
-> -	spin_lock(&sb_lock);
-> -rescan:
-> -	list_for_each_entry(sb, &super_blocks, s_list) {
-> -		if (hlist_unhashed(&sb->s_instances))
-> -			continue;
-> -		if (sb->s_dev ==  dev) {
-> -			sb->s_count++;
-> -			spin_unlock(&sb_lock);
-> -			down_read(&sb->s_umount);
-> -			/* still alive? */
-> -			if (sb->s_root && (sb->s_flags & MS_BORN))
-> -				return sb;
-> -			up_read(&sb->s_umount);
-> -			/* nope, got unmounted */
-> -			spin_lock(&sb_lock);
-> -			__put_super(sb);
-> -			goto rescan;
-> -		}
-> -	}
-> -	spin_unlock(&sb_lock);
-> -	return NULL;
-> +	return __get_super(user_compare, &dev);
->  }
->  
 >  /**
+>   * get_super_thawed - get thawed superblock of a device
+>   * @bdev: device to get the superblock for
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 2f1d9499..e5ea425a 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2744,6 +2744,7 @@ extern void get_filesystem(struct file_system_type *fs);
+>  extern void put_filesystem(struct file_system_type *fs);
+>  extern struct file_system_type *get_fs_type(const char *name);
+>  extern struct super_block *get_super(struct block_device *);
+> +extern struct super_block *get_super_cdev(struct cdev *);
+>  extern struct super_block *get_super_thawed(struct block_device *);
+>  extern struct super_block *get_active_super(struct block_device *bdev);
+>  extern void drop_super(struct super_block *sb);
 > -- 
 > 1.8.4.2
 > 
