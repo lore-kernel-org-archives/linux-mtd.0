@@ -1,21 +1,20 @@
-Message-ID: <55BEF6E4.2000905@ti.com>
-Date: Mon, 3 Aug 2015 10:36:44 +0530
-From: Vignesh R <vigneshr@ti.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZM7y6-00053r-74
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2015 05:07:22 +0000
+Message-ID: <55BEF5A2.6090606@cn.fujitsu.com>
+Date: Mon, 3 Aug 2015 13:01:22 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-CC: Mark Brown <broonie@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>,
- Huang Shijie <b32955@freescale.com>, <linux-omap@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-spi@vger.kernel.org>
-Subject: Re: [RFC PATCH 4/5] ARM: dts: DRA7: Add memory map region entries
- for qspi
-References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
- <1438072876-16338-5-git-send-email-vigneshr@ti.com>
- <20150731212847.GH10676@google.com>
-In-Reply-To: <20150731212847.GH10676@google.com>
-Content-Type: text/plain; charset="windows-1252"
+To: Dave Chinner <david@fromorbit.com>
+CC: <eguan@redhat.com>, <fstests@vger.kernel.org>, <dedekind1@gmail.com>,
+ <richard.weinberger@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 2/5] xfstest: generic/219 add _require_odirect
+References: <1438236417-24612-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438236417-24612-3-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <20150803035909.GP3902@dastard>
+In-Reply-To: <20150803035909.GP3902@dastard>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,44 +25,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 08/03/2015 11:59 AM, Dave Chinner wrote:
+> On Thu, Jul 30, 2015 at 02:06:54PM +0800, Dongsheng Yang wrote:
+>> generic/219 is testing quota in three use cases including
+>> Direct I/O. So we have to add a dependence to odirect in
+>> this test.
+>
+> Hmmm - you've modified on only 2 tests here in this patch series
+> that use direct IO. There are many more - just looking for direct IO
+> comments, these generic tests use direct IO in some way, and there
+> are others that such usage is not obvious (e.g. this patch to
+> generic/219):
+>
+> generic/091
+> generic/113
+> generic/130
+> generic/214
+> generic/224
+> generic/263
+> shared/272
+>
+> And all the aio/dio tests:
+>
+> generic/036
+> generic/198
+> generic/207
+> generic/208
+> generic/209
+> generic/210
+> generic/211
+> generic/212
+> generic/239
+> generic/240
+> generic/323
+>
+> And there are others that run fio that uses DIO, too, like
+>
+> generic/299
+> generic/300
+>
+> And so on. I haven't even looked at all the fsx tests that might
+> use DIO, and I know that some of them are not listed above...
+>
+> On the whole, I think ubifs would be better to implement DIO via
+> buffered fallback that to make us have to annotate every test that
+> uses DIO in some way...
 
+Fair point. Yes, It's difficult to find out all the tests which would 
+use DIO.
 
-On 08/01/2015 02:58 AM, Brian Norris wrote:
-> On Tue, Jul 28, 2015 at 02:11:15PM +0530, Vignesh R wrote:
->> Add qspi memory mapped region entries for DRA7xx based SoCs.
->>
->> Signed-off-by: Vignesh R <vigneshr@ti.com>
->> ---
->>  arch/arm/boot/dts/am4372.dtsi | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
->> index ade28c790f4b..5317a0f24ab9 100644
->> --- a/arch/arm/boot/dts/am4372.dtsi
->> +++ b/arch/arm/boot/dts/am4372.dtsi
->> @@ -902,7 +902,9 @@
->>  
->>  		qspi: qspi@47900000 {
->>  			compatible = "ti,am4372-qspi";
->> -			reg = <0x47900000 0x100>;
->> +			reg = <0x47900000 0x100>,
->> +			      <0x30000000 0x3ffffff>;
-> 
-> Are you sure this region is 1 byte shy of 64MB in length? Same question
-> for patch 5.
-> 
+And we are discussing about dio in ubifs.
 
-Oops, my bad... Its 64MB in length, I entered offset of last byte
-instead of length. Will correct this in the actual patch.
+So if you are strongly rejecting this kind of change, I will drop
+this patch in my next version.
 
->> +			reg-names = "qspi_base", "qspi_mmap";
->>  			#address-cells = <1>;
->>  			#size-cells = <0>;
->>  			ti,hwmods = "qspi";
->> -- 
->> 2.4.6
->>
-
--- 
-Regards
-Vignesh
+Thanx
+Yang
+>
+> Cheers,
+>
+> Dave.
+>
