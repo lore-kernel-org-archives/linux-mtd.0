@@ -1,29 +1,29 @@
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMVx6-0005B8-2h
- for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 06:43:57 +0000
-Received: by wicgj17 with SMTP id gj17so135409500wic.1
- for <linux-mtd@lists.infradead.org>; Mon, 03 Aug 2015 23:43:31 -0700 (PDT)
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMWFG-0004hM-33
+ for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 07:02:43 +0000
+Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
+ default ECC read functions
+To: Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
+ <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
+ <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
+ <55BB48D9.6050508@dave-tech.it> <20150731123221.34cf601e@bbrezillon>
+ <55BB7ABD.7040008@dave-tech.it> <20150731161032.2b155ccb@bbrezillon>
+ <55BBA012.4080600@dave-tech.it> <20150731182709.14c345df@bbrezillon>
+ <55BF4D72.8090000@dave-tech.it> <20150803144253.66fc6941@bbrezillon>
+ <55BF6F09.9000001@dave-tech.it> <55BFC1DA.3090108@nod.at>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
+ Han Xu <b45815@freescale.com>, Artem Bityutskiy <dedekind1@gmail.com>
+From: Andrea Scian <rnd4@dave-tech.it>
+Message-ID: <55C06379.5090705@dave-tech.it>
+Date: Tue, 4 Aug 2015 09:02:17 +0200
 MIME-Version: 1.0
-In-Reply-To: <201508032346.36032.marex@denx.de>
-References: <cover.1438626500.git.hramrach@gmail.com>
- <38c818599e1de5530ba0fe86d262d26d737ee7a2.1438626500.git.hramrach@gmail.com>
- <201508032346.36032.marex@denx.de>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Tue, 4 Aug 2015 08:42:51 +0200
-Message-ID: <CAOMqctQf0c4orOQTD1UJiyZdLadg73b98bpxN5a_RuXnEOFpfA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] mtd: spi-nor: change return value of read/write
-To: Marek Vasut <marex@denx.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Huang Shijie <b32955@freescale.com>, Ben Hutchings <ben@decadent.org.uk>,
- Gabor Juhos <juhosg@openwrt.org>,
- =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paM?= <beanhuo@micron.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Hou Zhiqiang <B48286@freescale.com>, Huang Shijie <shijie.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <55BFC1DA.3090108@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +33,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3 August 2015 at 23:46, Marek Vasut <marex@denx.de> wrote:
-> On Monday, August 03, 2015 at 08:39:01 PM, Michal Suchanek wrote:
->> Change the return value of spi-nor device read and write methods to
->> allow returning amount of data transferred and errors as
->> read(2)/write(2) does.
->>
->> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
->> ---
->>  include/linux/mtd/spi-nor.h | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
->> index e540952..7d782cb 100644
->> --- a/include/linux/mtd/spi-nor.h
->> +++ b/include/linux/mtd/spi-nor.h
->> @@ -185,9 +185,9 @@ struct spi_nor {
->>       int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
->>                       int write_enable);
->>
->> -     int (*read)(struct spi_nor *nor, loff_t from,
->> +     ssize_t (*read)(struct spi_nor *nor, loff_t from,
->>                       size_t len, size_t *retlen, u_char *read_buf);
->> -     void (*write)(struct spi_nor *nor, loff_t to,
->> +     ssize_t (*write)(struct spi_nor *nor, loff_t to,
->>                       size_t len, size_t *retlen, const u_char *write_buf);
->>       int (*erase)(struct spi_nor *nor, loff_t offs);
+
+Richard,
+
+Il 03/08/2015 21:32, Richard Weinberger ha scritto:
+> Am 03.08.2015 um 15:39 schrieb Andrea Scian:
+>>>> I think I can find some time to do some performance tests on real hardware.
+>>>> Can you please help me in finding:
+>>>> - which benchmark to use (currently I'm using bonnie++ on UBIFS, maybe I
+>>>> can you just mtd_speedtest)
+>>>> - where to implement those read
+>>>
+>>> I think the test should be done at the UBI layer if we want to check
+>>> the real impact of the additional read sequence, but given the answer I
+>>> gave to your other question I'm not sure this is relevant anymore ;-).
 >
-> You realize that if someone does bisect and has only this patch applied,
-> the compiler will complain loudly about mismatching data types, right ? :)
+> I'm not sure whether introducing a read-before-write check is the best solution.
+> At least we need hard numbers for slow/old SLC NANDs too.
 
-Yes, the compiler prints a warning. However, only the return value
-which is not used changes so it should not cause any real problem. The
-data type in the fsl-quadspi and m25p80 drivers is matched in the
-following two patches.
+We can enable the feature only for MLC, AFAIK it has not been required 
+for old SLC ;-)
 
-Thanks
+Anyway, maybe I can do some performance test if you point me to the 
+right userspace tool to use.
+As I already say I'm using bonnie++ to stress the device, more from a 
+stability than from performance point of view.
+I'm also used to run mtd_speedtest but this may be useless if we put 
+some code inside the upper layers.
 
-Michal
+> We has such checks already and got rid of them.
+> commit 657f28f8811c92724db10d18bbbec70d540147d6
+> Author: Huang Shijie <shijie8@gmail.com>
+> Date:   Tue Aug 14 22:38:45 2012 -0400
+>
+>      mtd: kill MTD_NAND_VERIFY_WRITE
+>
+>
+> Although the goal of 657f28f8 was something else.
+
+Understood, thanks for point this out
+
+>
+> In general I don't think putting much MTD/ECC logic into UBI is the way to go.
+> UBI is a layer above MTD and MTD should do as much as possible wrt. ECC.
+>
+>>>>
+>>>> For the second point I think we can implement it a UBI or MTD level.
+>>>> I think the former will allow us to easily schedule scrubbing and choose
+>>>> another block to issue the write to. However I don't really know how to
+>>>> implement it (I don't really know so much about the UBI code).
+>
+> Implementing this is not much work.
+> I've done such hacks for various customers to hunt down hardware issues.
+>
+>>> I didn't check before suggesting that, but it seems that the UBI layer
+>>> is already doing this check for you [1], so if you're using UBI/UBIFS
+>>> you shouldn't worry about bitflips in erased pages: if there is any,
+>>> and their presence impact the write result, they should be detected.
+>>> AFAICT, the only thing that is not checked is whether the number of
+>>> bitflips after a write exceed the bitflips threshold or not, and I
+>>> guess this can be added.
+>>
+>> IIUC this is a runtime debug check
+>>
+>> if (!ubi_dbg_chk_io(ubi))
+>>      ....
+>>
+>> And thus is disabled by default.
+>
+> That's correct.
+
+Thanks.
+In your opinion, enabling chk_io is correct to rough estimate the 
+overhead or does it enable too much checks?
+
+TIA,
+
+-- 
+
+Andrea SCIAN
+
+DAVE Embedded Systems
