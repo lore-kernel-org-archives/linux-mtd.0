@@ -1,22 +1,23 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMeMw-0005RY-6z
- for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 15:43:11 +0000
-Subject: Re: [RFC PATCH 1/2] mtd: nand: add nand_check_erased helper functions
-To: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <mailman.4514.1438332781.1758.linux-mtd@lists.infradead.org>
- <mailman.4514.1438332781.1758.linux-mtd.{9f6e5a96-15b4-4e33-a5c0-29fab6f7a2dc}.0@lists.infradead.org>
- <20150731091037.09c7ee57@bbrezillon>
+Date: Tue, 4 Aug 2015 16:51:48 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Vignesh R <vigneshr@ti.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
-From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <55C0DD73.4050009@dave-tech.it>
-Date: Tue, 4 Aug 2015 17:42:43 +0200
+ Brian Norris <computersforpeace@gmail.com>,
+ Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>,
+ Huang Shijie <b32955@freescale.com>, linux-omap@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org
+Message-ID: <20150804155148.GR20873@sirena.org.uk>
+References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
+ <1438072876-16338-2-git-send-email-vigneshr@ti.com>
+ <20150731181745.GM20873@sirena.org.uk> <55BEF4AF.5090704@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20150731091037.09c7ee57@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="zYaYz6F2svGt3wno"
+Content-Disposition: inline
+In-Reply-To: <55BEF4AF.5090704@ti.com>
+Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,181 +28,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Boris,
+--zYaYz6F2svGt3wno
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-sorry for the later review.
-I'm trying to run your patch on our systems. See below
+On Mon, Aug 03, 2015 at 10:27:19AM +0530, Vignesh R wrote:
 
-Il 31/07/2015 09:10, Boris Brezillon ha scritto:
-> On Thu, 30 Jul 2015 19:34:53 +0200
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->
->> Add two helper functions to help NAND controller drivers test whether a
->> specific NAND region is erased or not.
->>
->> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->> ---
->>   drivers/mtd/nand/nand_base.c | 104 +++++++++++++++++++++++++++++++++++++++++++
->>   include/linux/mtd/nand.h     |   8 ++++
->>   2 files changed, 112 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index ceb68ca..1542ea7 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -1101,6 +1101,110 @@ out:
->>   EXPORT_SYMBOL(nand_lock);
->>
->>   /**
->> + * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
->> + * @buf: buffer to test
->> + * @len: buffer length
->> + * @bitflips_threshold:maximum number of bitflips
->> + *
->> + * Check if a buffer contains only 0xff, which means the underlying region
->> + * has been erased and is ready to be programmed.
->> + * The bitflips_threshold specify the maximum number of bitflips before
->> + * considering the region is not erased.
->> + * Note: The logic of this function has been extracted from the memweight
->> + * implementation, except that nand_check_erased_buf function exit before
->> + * testing the whole buffer if the number of bitflips exceed the
->> + * bitflips_threshold value.
->> + *
->> + * Returns a positive number of bitflips or -ERROR_CODE.
->> + */
->> +int nand_check_erased_buf(void *buf, int len, int bitflips_threshold)
->> +{
->> +	const unsigned char *bitmap = buf;
->> +	int bitflips = 0;
->> +	int weight;
->> +	int longs;
->> +
->> +	for (; len && ((unsigned long)bitmap) % sizeof(long);
->> +	     len--, bitmap++) {
->> +		weight = hweight8(*bitmap);
->> +
->> +		bitflips += sizeof(u8) - weight;
+> @use_mmap_mode: Some SPI controller chips are optimized for interacting
+> with serial flash memories. These chips have memory mapped interface,
+> through which entire serial flash memory slave can be read/written as if
+> though they are physical memories (like RAM). Using this interface,
+> flash can be accessed using memcpy() function and the spi controller
+> hardware will take care of communicating with serial flash over SPI.
+> Setting this flag will indicate the SPI controller driver that the
+> spi_message is from mtd layer to read from/write to flash. The SPI
+> master driver can then appropriately switch the controller to memory
+> mapped interface to read from/write to flash, based on this flag (See
+> drivers/spi/spi-ti-qspi.c for example).
+> NOTE: If the SPI controller chip lacks memory mapped interface, then the
+> driver will ignore this flag and use normal SPI protocol to read
+> from/write to flash. Communication with non-flash SPI devices is not
+> possible using the memory mapped interface.
 
-I think the above like should be
+I still can't tell from the above what this interface is supposed to do.
+It sounds like the use of memory mapped mode is supposed to be
+transparent to users, it should just affect how the controller interacts
+with the hardware, but if that's the case why do we need to expose it to
+users at all?  Shouldn't the driver just use memory mapped mode if it's
+faster?
 
-bitflips += sizeof(u8)*BITS_PER_BYTE - weight;
+--zYaYz6F2svGt3wno
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->> +		if (bitflips > bitflips_threshold)
->> +			return -EINVAL;
->> +	}
->> +
->> +
->> +	for (longs = len / sizeof(long); longs;
->> +	     longs--, bitmap += sizeof(long)) {
->> +		BUG_ON(longs >= INT_MAX / BITS_PER_LONG);
->> +		weight = hweight_long(*((unsigned long *)bitmap));
->> +
->> +		bitflips += sizeof(long) - weight;
+iQEcBAEBCAAGBQJVwN+UAAoJECTWi3JdVIfQYvEH/AxbIEh4Z3wk0/fRXRwuE2N6
+M8CdBC7sVqTzidzqFY1PyXOc8tHIxlYHUEEG9Fx/yC1oOW0NJNVV+8FOJj4HVC0N
+unGPXMEH/PaBAZYAeaiGYUZg7sGzUVcAX2QqA594NJpcaG5stX/0wrcshiTBofEc
+0ebxHQy9WAxvOUGhB0DJDn4m/j34+42krz+O2OI7nGMm2p/0G1r1EobuHejHCEyQ
+i8cpQbdngVQYIUrhLtiGUSYppfC0qB70Nw97H0WXEaIuF9zQ4CtIsJpnAlCMKznw
+BLF0obMgtKkOHqA9TyzrosVBzOb+EYjHkSQyWRs/tt/r+qwh+Qt8i06sq4gaQ7o=
+=VgSn
+-----END PGP SIGNATURE-----
 
-as above:
-
-bitflips += sizeof(long)*BITS_PER_BYTE - weight;
-
->> +		if (bitflips > bitflips_threshold)
->> +			return -EINVAL;
->> +	}
->> +
->> +	len %= sizeof(long);
->> +
->> +	for (; len > 0; len--, bitmap++) {
->> +		weight = hweight8(*bitmap);
->> +		bitflips += sizeof(u8) - weight;
-
-
-as above:
-
-bitflips += sizeof(u8)*BITS_PER_BYTE - weight;
-
-
->> +	}
->> +
->> +	return bitflips;
->> +}
->> +EXPORT_SYMBOL(nand_check_erased_buf);
->> +
->> +/**
->> + * nand_check_erased_ecc_chunk - check if an ECC chunk contains (almost) only
->> + *				 0xff data
->> + * @data: data buffer to test
->> + * @datalen: data length
->> + * @ecc: ECC buffer
->> + * @ecclen: ECC length
->> + * @extraoob: extra OOB buffer
->> + * @extraooblen: extra OOB length
->> + * @bitflips_threshold: maximum number of bitflips
->> + *
->> + * Check if a data buffer and its associated ECC and OOB data contains only
->> + * 0xff pattern, which means the underlying region has been erased and is
->> + * ready to be programmed.
->> + * The bitflips_threshold specify the maximum number of bitflips before
->> + * considering the region as not erased.
->> + *
->> + * Returns a positive number of bitflips or -ERROR_CODE.
->> + */
->> +int nand_check_erased_ecc_chunk(void *data, int datalen,
->> +				void *ecc, int ecclen,
->> +				void *extraoob, int extraooblen,
->> +				int bitflips_threshold)
->> +{
->> +	int bitflips = 0;
->> +	int ret;
->> +
->> +	ret = nand_check_erased_buf(data, datalen, bitflips_threshold);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	bitflips += ret;
->> +	bitflips_threshold -= ret;
->> +
->> +	ret = nand_check_erased_buf(ecc, ecclen, bitflips_threshold);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	bitflips += ret;
->> +	bitflips_threshold -= ret;
->> +
->> +	ret = nand_check_erased_buf(extraoob, extraooblen, bitflips_threshold);
->> +	if (ret < 0)
->> +		return ret;
->> +
->
-> Forgot the memset operations here:
->
-> 	memset(data, 0xff, datalen);
-> 	memset(ecc, 0xff, ecclen);
-> 	memset(extraoob, 0xff, extraooblen);
->
->> +	return bitflips + ret;
->> +}
->> +EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
->> +
->> +/**
->>    * nand_read_page_raw - [INTERN] read raw page data without ecc
->>    * @mtd: mtd info structure
->>    * @chip: nand chip info structure
->> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
->> index 272f429..ae06a07 100644
->> --- a/include/linux/mtd/nand.h
->> +++ b/include/linux/mtd/nand.h
->> @@ -1030,4 +1030,12 @@ struct nand_sdr_timings {
->>
->>   /* get timing characteristics from ONFI timing mode. */
->>   const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
->> +
->> +int nand_check_erased_buf(void *data, int datalen,
->> +			  int threshold);
->> +
->> +int nand_check_erased_ecc_chunk(void *data, int datalen,
->> +				void *ecc, int ecclen,
->> +				void *extraoob, int extraooblen,
->> +				int threshold);
->>   #endif /* __LINUX_MTD_NAND_H */
->
->
->
+--zYaYz6F2svGt3wno--
