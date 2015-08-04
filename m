@@ -1,23 +1,14 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMgPV-00006H-Ri
- for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 17:53:58 +0000
-Message-ID: <55C0FC1E.2060909@codeaurora.org>
-Date: Tue, 04 Aug 2015 10:53:34 -0700
-From: Stephen Boyd <sboyd@codeaurora.org>
+Date: Tue, 4 Aug 2015 12:52:54 -0500 (CDT)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: linux-mtd@lists.infradead.org
+Message-ID: <288216793.189179.1438710774869.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <447095612.147126.1421278909058.JavaMail.zimbra@xes-inc.com>
+Subject: [PATCH] mtd: fsl_upm: Enable software BCH ECC support
 MIME-Version: 1.0
-To: Archit Taneja <architt@codeaurora.org>
-CC: dehrenberg@google.com, linux-arm-msm@vger.kernel.org,
- cernekee@gmail.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, agross@codeaurora.org,
- computersforpeace@gmail.com
-Subject: Re: [PATCH v3 2/5] mtd: nand: Qualcomm NAND controller driver
-References: <1421419702-17812-1-git-send-email-architt@codeaurora.org>
- <1438578498-32254-1-git-send-email-architt@codeaurora.org>
- <1438578498-32254-3-git-send-email-architt@codeaurora.org>
- <20150803233852.GA20229@codeaurora.org> <55C0D483.7020405@codeaurora.org>
-In-Reply-To: <55C0D483.7020405@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,60 +19,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/04/2015 08:04 AM, Archit Taneja wrote:
->
-> On 8/4/2015 5:08 AM, Stephen Boyd wrote:
->> I also wonder if this is little endian? It looks like some sort
->> of in memory register map that we point DMA to so that it can
->> write the values to the actual hardware registers?
->
-> Yes, that's what it's supposed to do. I kept it in the form above
-> so that updating the register map is as easy as assigning a new
-> value to the member.
->
-> I've tried to fix it for endianness in the diff below. I created
-> some funcs to not flood the driver with cpu_to_le32() calls. Does
-> it look okay?
->
+This patch preserves the default software ECC mode while adding the
+ability to use BCH ECC (as required for larger NAND devices).
 
-Looks good.
+The BCH-required strength and step size values are pulled from the
+device-tree by nand_scan_ident(), so we replace nand_scan() with
+explicit calls to nand_scan_ident() and nand_scan_tail() in order
+to sanity check ECC properties from the device-tree.
 
->>
->>> +
->>> +    return 0;
->>> +}
->>> +
->> [...]
->>> +
->>> +/*
->>> + * this is called after NAND_CMD_PAGEPROG and NAND_CMD_ERASE1 to 
->>> set our
->>> + * privately maintained status byte, this status byte can be read 
->>> after
->>> + * NAND_CMD_STATUS is called
->>> + */
->>> +static void parse_erase_write_errors(struct qcom_nandc_data *this, 
->>> int command)
->>> +{
->>> +    struct nand_chip *chip = &this->chip;
->>> +    struct nand_ecc_ctrl *ecc = &chip->ecc;
->>> +    int num_cw;
->>> +    int i;
->>> +
->>> +    num_cw = command == NAND_CMD_PAGEPROG ? ecc->steps : 1;
->>> +
->>> +    for (i = 0; i < num_cw; i++) {
->>> +        __le32 flash_status = le32_to_cpu(this->reg_read_buf[i]);
->>
->> So this doesn't need the i * 3 thing? If it does, perhaps
->> reg_read_buf needs to be of type struct read_stats instead.
->
-> We just read back one register per codeword here, so we can't do
-> the read_stats thing as before. I could read back the extra registers
-> and discrading them, but I'd I'll leave that for later.
+Tested-by: Ryan Schaefer <rschaefer@xes-inc.com>
+Signed-off-by: Jordan Friendshuh <jfriendshuh@xes-inc.com>
+Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+---
+ .../devicetree/bindings/mtd/fsl-upm-nand.txt       | 32 ++++++++++++++++++++
+ drivers/mtd/nand/fsl_upm.c                         | 35 +++++++++++++++++++++-
+ 2 files changed, 66 insertions(+), 1 deletion(-)
 
-Ah right. Sounds like nothing to change then.
-
+diff --git a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+index fce4894..3643ee1 100644
+--- a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+@@ -18,6 +18,9 @@ Optional properties:
+ - chip-delay : chip dependent delay for transferring data from array to
+ 	read registers (tR). Required if property "gpios" is not used
+ 	(R/B# pins not connected).
++- nand-ecc-mode : as defined by nand.txt ("soft" and "soft_bch", only).
++- nand-ecc-strength : as defined by nand.txt.
++- nand-ecc-step-size : as defined by nand.txt.
+ 
+ Each flash chip described may optionally contain additional sub-nodes
+ describing partitions of the address space. See partition.txt for more
+@@ -65,3 +68,32 @@ upm@3,0 {
+ 		};
+ 	};
+ };
++
++/*
++ * Micron MT29F32G08AFABA (M62B)
++ * 32 Gb (4 GiB), 2 chipselect
++ */
++upm@2,0 {
++	#address-cells = <0>;
++	#size-cells = <0>;
++	compatible = "fsl,upm-nand";
++	reg = <2 0x0 0x80000>;
++	fsl,upm-addr-line-cs-offsets = <0x0 0x10000>;
++	fsl,upm-addr-offset = <0x10>;
++	fsl,upm-cmd-offset = <0x08>;
++	fsl,upm-wait-flags = <0x1>;
++	chip-delay = <50>;
++
++	nand@0 {
++		#address-cells = <1>;
++		#size-cells = <2>;
++		nand-ecc-mode = "soft_bch";
++		nand-ecc-strength = <4>;
++		nand-ecc-step-size = <512>;
++
++		partition@0 {
++			label = "NAND filesystem";
++			reg = <0x0 0x1 0x00000000>;
++		};
++	};
++};
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+index 72755d7..0982d7a 100644
+--- a/drivers/mtd/nand/fsl_upm.c
++++ b/drivers/mtd/nand/fsl_upm.c
+@@ -182,6 +182,7 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 	if (!flash_np)
+ 		return -ENODEV;
+ 
++	fun->chip.dn = flash_np;
+ 	fun->mtd.name = kasprintf(GFP_KERNEL, "0x%llx.%s", (u64)io_res->start,
+ 				  flash_np->name);
+ 	if (!fun->mtd.name) {
+@@ -189,7 +190,39 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 		goto err;
+ 	}
+ 
+-	ret = nand_scan(&fun->mtd, fun->mchip_count);
++	ret = nand_scan_ident(&fun->mtd, fun->mchip_count, NULL);
++	if (ret)
++		goto err;
++
++	switch (fun->chip.ecc.mode) {
++	case NAND_ECC_NONE:
++		fun->chip.ecc.mode = NAND_ECC_SOFT;
++		break;
++	case NAND_ECC_SOFT:
++		if (fun->chip.ecc.strength && fun->chip.ecc.strength != 1)
++			dev_warn(fun->dev, "Ignoring %d-bit software ECC\n",
++				fun->chip.ecc.strength);
++		if (fun->chip.ecc.size &&
++		    (fun->chip.ecc.size != 256) &&
++		    (fun->chip.ecc.size != 512)) {
++			dev_err(fun->dev, "Invalid software ECC step: %d\n",
++				fun->chip.ecc.size);
++			goto err;
++		}
++		break;
++	case NAND_ECC_SOFT_BCH:
++		if (fun->chip.ecc.strength < 2) {
++			dev_err(fun->dev, "Invalid BCH ECC strength: %d\n",
++				fun->chip.ecc.strength);
++			goto err;
++		}
++		break;
++	default:
++		dev_err(fun->dev, "ECC mode unsupported");
++		goto err;
++	}
++
++	ret = nand_scan_tail(&fun->mtd);
+ 	if (ret)
+ 		goto err;
+ 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+1.9.1
