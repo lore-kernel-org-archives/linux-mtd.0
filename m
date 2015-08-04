@@ -1,16 +1,15 @@
 Received: from mail-bn1bon0113.outbound.protection.outlook.com
  ([157.56.111.113] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1ZMeE8-0002oc-Rm
+ id 1ZMeE9-0002oc-Jy
  for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 15:34:05 +0000
 From: Han Xu <b45815@freescale.com>
 To: <computersforpeace@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <frank.li@freescale.com>,
  <han.xu@freescale.com>
-Subject: [PATCH v4 04/10] Documentation: fsl-quadspi: Add fsl,
- imx7d-qspi compatible string
-Date: Tue, 4 Aug 2015 10:25:41 -0500
-Message-ID: <1438701941-27039-1-git-send-email-b45815@freescale.com>
+Subject: [PATCH v4 05/10] mtd: spi-nor: fsl-quadspi: add i.mx6ul support
+Date: Tue, 4 Aug 2015 10:25:47 -0500
+Message-ID: <1438701947-27081-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,26 +23,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Frank Li <Frank.Li@freescale.com>
 
-new compatible string: "fsl,imx7d-qspi"
+Add i.mx6ul chip support
 
 Signed-off-by: Frank Li <Frank.Li@freescale.com>
+Acked-by: Han xu <han.xu@freescale.com>
 ---
- Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Change from v3 to v4:
+add comma after the last entries
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-index 4461dc7..ca72696 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-@@ -1,7 +1,8 @@
- * Freescale Quad Serial Peripheral Interface(QuadSPI)
+Change from v2 to v3:
+Resend whole serial patch
+
+ drivers/mtd/spi-nor/fsl-quadspi.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 9abaa06..a327e2d 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -208,6 +208,7 @@ enum fsl_qspi_devtype {
+ 	FSL_QUADSPI_VYBRID,
+ 	FSL_QUADSPI_IMX6SX,
+ 	FSL_QUADSPI_IMX7D,
++	FSL_QUADSPI_IMX6UL,
+ };
  
- Required properties:
--  - compatible : Should be "fsl,vf610-qspi" or "fsl,imx6sx-qspi"
-+  - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
-+		 "fsl,imx7d-qspi"
-   - reg : the first contains the register location and length,
-           the second contains the memory mapping address and length
-   - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
+ struct fsl_qspi_devtype_data {
+@@ -243,6 +244,15 @@ static struct fsl_qspi_devtype_data imx7d_data = {
+ 		       | QUADSPI_QUIRK_4X_INT_CLK,
+ };
+ 
++static struct fsl_qspi_devtype_data imx6ul_data = {
++	.devtype = FSL_QUADSPI_IMX6UL,
++	.rxfifo = 128,
++	.txfifo = 512,
++	.ahb_buf_size = 1024,
++	.driver_data = QUADSPI_QUIRK_TKT253890
++		       | QUADSPI_QUIRK_4X_INT_CLK,
++};
++
+ #define FSL_QSPI_MAX_CHIP	4
+ struct fsl_qspi {
+ 	struct mtd_info mtd[FSL_QSPI_MAX_CHIP];
+@@ -705,6 +715,7 @@ static const struct of_device_id fsl_qspi_dt_ids[] = {
+ 	{ .compatible = "fsl,vf610-qspi", .data = (void *)&vybrid_data, },
+ 	{ .compatible = "fsl,imx6sx-qspi", .data = (void *)&imx6sx_data, },
+ 	{ .compatible = "fsl,imx7d-qspi", .data = (void *)&imx7d_data, },
++	{ .compatible = "fsl,imx6ul-qspi", .data = (void *)&imx6ul_data, },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
 -- 
 1.9.1
