@@ -1,20 +1,33 @@
-Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMfXz-0006td-EW
- for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 16:58:39 +0000
-Received: by obnw1 with SMTP id w1so11742946obn.3
- for <linux-mtd@lists.infradead.org>; Tue, 04 Aug 2015 09:58:17 -0700 (PDT)
+ id 1ZMfZn-0008ET-Mq
+ for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 17:00:33 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, zmxu@marvell.com,
+ jszhang@marvell.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] mtd: pxa3xx_nand: rework the timing setup
+References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+ <20150717134159.GC10608@kwain> <55A912F0.7080605@vanguardiasur.com.ar>
+ <87h9p2is8e.fsf@belgarion.home>
+ <CAAEAJfCcdioVQKZs9U3DP6H94BiuQ2qU21DsMKevS5+j+-XEKA@mail.gmail.com>
+ <87wpxufw2v.fsf@belgarion.home>
+ <CAAEAJfB3caa+DmJN=Pa8brx0uGC11QA29KJb3NQdJjXTgw-yuA@mail.gmail.com>
+ <87si81m15m.fsf@belgarion.home>
+ <CAAEAJfBMpQ8nf5aLTUqrCsJkMQbnkQTB1yA5MBiJ6R4h6RgupQ@mail.gmail.com>
+Date: Tue, 04 Aug 2015 18:56:23 +0200
+In-Reply-To: <CAAEAJfBMpQ8nf5aLTUqrCsJkMQbnkQTB1yA5MBiJ6R4h6RgupQ@mail.gmail.com>
+ (Ezequiel Garcia's message of "Mon, 3 Aug 2015 10:48:55 -0300")
+Message-ID: <87d1z3m1qg.fsf@belgarion.home>
 MIME-Version: 1.0
-In-Reply-To: <0D51A477944EA44BA3616A7D2CAB53CA0952EAE5@ERDE.irisgmbh.local>
-References: <0D51A477944EA44BA3616A7D2CAB53CA0952EAE5@ERDE.irisgmbh.local>
-Date: Tue, 4 Aug 2015 18:58:17 +0200
-Message-ID: <CAFLxGvwozcZAP+7+6y_8UxyLKraYrA7=txure=L5xd2yDUaD1w@mail.gmail.com>
-Subject: Re: Lisensing questions
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: iris Christian Klemke <Christian.Klemke@irisgmbh.de>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +37,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 4, 2015 at 3:47 PM, iris Christian Klemke
-<Christian.Klemke@irisgmbh.de> wrote:
-> Hi,
->
-> I have a question regarding the GPL implications in a somewhat special ca=
-se.
-> What I would like to do is to take the JFFS2 source code and port it to a=
- closed-source real-time kernel named VDK (by Analog Devices), by a combina=
-tion of source code modifications and/or provision of an emulation layer fo=
-r the relevant Linux subsystems (like MTD).
-> My understanding of the GPL is that I would be this would usually oblige =
-me to publish the resulting source codes under the GPL as well. So far, so =
-good. However, I suspect the implications of the GPL license might not stop=
- there because the VDK is not a full operating system on which our applicat=
-ion runs. Instead, it is a kernel which gets linked with the application co=
-de into one monolithic firmware image. So in case of the VDK the separation=
- between operating system and application, which would usually also be a "b=
-arrier" for the GPL, does not exist. Nonetheless a separation would exist i=
-n architectural terms, because the JFFS2 integration would be coded against=
- the VDK filesystem driver interface while the application would not call a=
-ny JFFS2-related code directly but only rely on the standard C file API tha=
-t is offered by the VDK and its C-runtime library.
-> So, the big question is: would a JFFS2 integration as outlined above requ=
-ire the publication of the whole application source code under the GPL alon=
-g with the VDK-integration part in this scenario ? Or would the GPL obligat=
-ions be limited to the code related to the integration of JFFS2 into VDK ?
+Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
 
-Please consult a lawyer.
-Don't expect anyone of us to help you bypassing the GPL.
+>>
+>> The issue I see is that :
+>>  - there is a bug in the clk driver for pxa3xx I introduced (CKEN_AB)
 
-> A related question is: what if I create an independent implementation of =
-JFFS2 by implementing its concepts/functionality from scratch writing my ow=
-n code ? Would the GPL still apply ?
+>>  - and shutting down the GCU clock prevents the NAND from working (I can't
+>>  explain that one yet)
 
-You're free to do with your own code what you want.
-If you fear patents, again, consult a lawyer.
+Ah actually it's even trickier, but it has nothing to do with the GCU clock,
+that was a wrong interpretation of the test sequence.
 
---=20
-Thanks,
-//richard
+What actually happens is that on the platform I have, the NAND is sharing the
+DFI bus with the Static Memory Controller. Now let's see what happens on
+boot-up, knowing that my pxa3xx-nand is a module, not builtin :
+ - the kernel boots
+ - the core clock initializes
+ - the ethernet card initializes (it is on the static memory controller)
+ - the kernel finishes the boot sequence
+   => the NAND clock is unused
+   => as such, the core clock framework disables it
+
+And here is the catch : on the next ethernet access, the system bus will be
+stalled forever. The reason behind is that because the bootloader left the
+"NDCR_ND_ARB_EN" bit enabled, the DFI bus sees the ethernet register access, and
+asks for arbitration; as the NAND clock is down, the arbitration never happens,
+and the pxa3xx is stalled forever.
+
+The very same thing happens when you load and unload pxa3xx-nand with a platform
+where it was loaded with "enable-arbiter" platform-data, and if that platform
+has any driver mapped in the SMC address space (0x0 .. 0x14000000).
+
+If you have an opportunity to load/unload a pxa3xx-nand, I'd be glad to have
+someone verify this theory.
+
+The first fix comming to my mind would be to :
+ - disable the NDCR_ND_ARB_EN in the pxa3xx core bring up
+ - keep enablement in pxa3xx-nand
+ - ensure it is disabled on the probe error path or remove of pxa3xx-nand
+
+Cheers.
+
+--
+Robert
+
+PS: That also means that the fix I posted for CKENA/CKENB inversion should fix
+the issues you see.
