@@ -1,18 +1,23 @@
-Received: from mail-by2on0128.outbound.protection.outlook.com
- ([207.46.100.128] helo=na01-by2-obe.outbound.protection.outlook.com)
- by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1ZMeEK-0002oi-BP
- for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 15:34:16 +0000
-From: Han Xu <b45815@freescale.com>
-To: <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <frank.li@freescale.com>,
- <han.xu@freescale.com>
-Subject: [PATCH v4 06/10] Documentation: fsl-quadspi: Add fsl,
- imx6ul-qspi compatible string
-Date: Tue, 4 Aug 2015 10:25:52 -0500
-Message-ID: <1438701952-27122-1-git-send-email-b45815@freescale.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMf74-0002mH-HA
+ for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 16:30:52 +0000
+In-Reply-To: <55C0DD73.4050009@dave-tech.it>
+References: <mailman.4514.1438332781.1758.linux-mtd@lists.infradead.org>
+ <mailman.4514.1438332781.1758.linux-mtd.{9f6e5a96-15b4-4e33-a5c0-29fab6f7a2dc}.0@lists.infradead.org>
+ <20150731091037.09c7ee57@bbrezillon> <55C0DD73.4050009@dave-tech.it>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=UTF-8
+Subject: Re: [RFC PATCH 1/2] mtd: nand: add nand_check_erased helper functions
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Tue, 04 Aug 2015 18:27:52 +0200
+To: Andrea Scian <rnd4@dave-tech.it>,linux-mtd@lists.infradead.org
+CC: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
+Message-ID: <96F19FF3-4FC0-4CC0-91E3-4497F7B912A2@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Frank Li <Frank.Li@freescale.com>
 
-new compatible string: "fsl,imx6ul-qspi".
 
-Signed-off-by: Frank Li <Frank.Li@freescale.com>
----
- Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Andrea
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-index ca72696..862aa2f 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-@@ -2,7 +2,7 @@
- 
- Required properties:
-   - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
--		 "fsl,imx7d-qspi"
-+		 "fsl,imx7d-qspi", "fsl,imx6ul-qspi"
-   - reg : the first contains the register location and length,
-           the second contains the memory mapping address and length
-   - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
--- 
-1.9.1
+Le 4 août 2015 17:42:43 GMT+02:00, Andrea Scian <rnd4@dave-tech.it> a écrit :
+>
+>>> +
+>>> +		bitflips += sizeof(long) - weight;
+>
+>as above:
+>
+>bitflips += sizeof(long)*BITS_PER_BYTE - weight;
+
+
+Indeed, or we could just replace sizeof(u8) by BITS_PER_BYTE and sizeof(long) by BITS_PER_LONG.
+
+I'll fix that in the next version.
+
+Note that I didn't test the series on a real platform and won't be able to do so for the next two weeks, so you might find other inconsistencies/bugs.
+
+Thanks for testing it.
+
+Best regards,
+
+Boris
