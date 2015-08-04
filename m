@@ -1,18 +1,22 @@
-Received: from mail-bn1bbn0108.outbound.protection.outlook.com
- ([157.56.111.108] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMeFI-0001Rr-Ne
- for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 15:35:29 +0000
-From: Han Xu <b45815@freescale.com>
-To: <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <frank.li@freescale.com>,
- <han.xu@freescale.com>
-Subject: [PATCH v4 09/10] mtd: spi-nor: fsl-quadspi: reset the module in the
- probe
-Date: Tue, 4 Aug 2015 10:26:10 -0500
-Message-ID: <1438701970-27245-1-git-send-email-b45815@freescale.com>
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMeMw-0005RY-6z
+ for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 15:43:11 +0000
+Subject: Re: [RFC PATCH 1/2] mtd: nand: add nand_check_erased helper functions
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <mailman.4514.1438332781.1758.linux-mtd@lists.infradead.org>
+ <mailman.4514.1438332781.1758.linux-mtd.{9f6e5a96-15b4-4e33-a5c0-29fab6f7a2dc}.0@lists.infradead.org>
+ <20150731091037.09c7ee57@bbrezillon>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
+From: Andrea Scian <rnd4@dave-tech.it>
+Message-ID: <55C0DD73.4050009@dave-tech.it>
+Date: Tue, 4 Aug 2015 17:42:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20150731091037.09c7ee57@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +26,182 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Frank Li <Frank.Li@freescale.com>
 
-The uboot may run the QuadSpi controler with command:
-    #sf probe
+Boris,
 
-So we should reset the module in the probe.
-This patch also clear the pending interrupts which arised by the uboot
-code.
+sorry for the later review.
+I'm trying to run your patch on our systems. See below
 
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
-Signed-off-by: Frank Li <Frank.Li@freescale.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Il 31/07/2015 09:10, Boris Brezillon ha scritto:
+> On Thu, 30 Jul 2015 19:34:53 +0200
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+>
+>> Add two helper functions to help NAND controller drivers test whether a
+>> specific NAND region is erased or not.
+>>
+>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> ---
+>>   drivers/mtd/nand/nand_base.c | 104 +++++++++++++++++++++++++++++++++++++++++++
+>>   include/linux/mtd/nand.h     |   8 ++++
+>>   2 files changed, 112 insertions(+)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index ceb68ca..1542ea7 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -1101,6 +1101,110 @@ out:
+>>   EXPORT_SYMBOL(nand_lock);
+>>
+>>   /**
+>> + * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
+>> + * @buf: buffer to test
+>> + * @len: buffer length
+>> + * @bitflips_threshold:maximum number of bitflips
+>> + *
+>> + * Check if a buffer contains only 0xff, which means the underlying region
+>> + * has been erased and is ready to be programmed.
+>> + * The bitflips_threshold specify the maximum number of bitflips before
+>> + * considering the region is not erased.
+>> + * Note: The logic of this function has been extracted from the memweight
+>> + * implementation, except that nand_check_erased_buf function exit before
+>> + * testing the whole buffer if the number of bitflips exceed the
+>> + * bitflips_threshold value.
+>> + *
+>> + * Returns a positive number of bitflips or -ERROR_CODE.
+>> + */
+>> +int nand_check_erased_buf(void *buf, int len, int bitflips_threshold)
+>> +{
+>> +	const unsigned char *bitmap = buf;
+>> +	int bitflips = 0;
+>> +	int weight;
+>> +	int longs;
+>> +
+>> +	for (; len && ((unsigned long)bitmap) % sizeof(long);
+>> +	     len--, bitmap++) {
+>> +		weight = hweight8(*bitmap);
+>> +
+>> +		bitflips += sizeof(u8) - weight;
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index c8e0eb6..d09fb28 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -716,6 +716,11 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 	if (ret)
- 		return ret;
- 
-+	/* Reset the module */
-+	writel(QUADSPI_MCR_SWRSTSD_MASK | QUADSPI_MCR_SWRSTHD_MASK,
-+		base + QUADSPI_MCR);
-+	udelay(1);
-+
- 	/* Init the LUT table. */
- 	fsl_qspi_init_lut(q);
- 
-@@ -733,6 +738,9 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 	writel(QUADSPI_MCR_RESERVED_MASK | QUADSPI_MCR_END_CFG_MASK,
- 			base + QUADSPI_MCR);
- 
-+	/* clear all interrupt status */
-+	writel(0xffffffff, q->iobase + QUADSPI_FR);
-+
- 	/* enable the interrupt */
- 	writel(QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
- 
--- 
-1.9.1
+I think the above like should be
+
+bitflips += sizeof(u8)*BITS_PER_BYTE - weight;
+
+
+>> +		if (bitflips > bitflips_threshold)
+>> +			return -EINVAL;
+>> +	}
+>> +
+>> +
+>> +	for (longs = len / sizeof(long); longs;
+>> +	     longs--, bitmap += sizeof(long)) {
+>> +		BUG_ON(longs >= INT_MAX / BITS_PER_LONG);
+>> +		weight = hweight_long(*((unsigned long *)bitmap));
+>> +
+>> +		bitflips += sizeof(long) - weight;
+
+as above:
+
+bitflips += sizeof(long)*BITS_PER_BYTE - weight;
+
+>> +		if (bitflips > bitflips_threshold)
+>> +			return -EINVAL;
+>> +	}
+>> +
+>> +	len %= sizeof(long);
+>> +
+>> +	for (; len > 0; len--, bitmap++) {
+>> +		weight = hweight8(*bitmap);
+>> +		bitflips += sizeof(u8) - weight;
+
+
+as above:
+
+bitflips += sizeof(u8)*BITS_PER_BYTE - weight;
+
+
+>> +	}
+>> +
+>> +	return bitflips;
+>> +}
+>> +EXPORT_SYMBOL(nand_check_erased_buf);
+>> +
+>> +/**
+>> + * nand_check_erased_ecc_chunk - check if an ECC chunk contains (almost) only
+>> + *				 0xff data
+>> + * @data: data buffer to test
+>> + * @datalen: data length
+>> + * @ecc: ECC buffer
+>> + * @ecclen: ECC length
+>> + * @extraoob: extra OOB buffer
+>> + * @extraooblen: extra OOB length
+>> + * @bitflips_threshold: maximum number of bitflips
+>> + *
+>> + * Check if a data buffer and its associated ECC and OOB data contains only
+>> + * 0xff pattern, which means the underlying region has been erased and is
+>> + * ready to be programmed.
+>> + * The bitflips_threshold specify the maximum number of bitflips before
+>> + * considering the region as not erased.
+>> + *
+>> + * Returns a positive number of bitflips or -ERROR_CODE.
+>> + */
+>> +int nand_check_erased_ecc_chunk(void *data, int datalen,
+>> +				void *ecc, int ecclen,
+>> +				void *extraoob, int extraooblen,
+>> +				int bitflips_threshold)
+>> +{
+>> +	int bitflips = 0;
+>> +	int ret;
+>> +
+>> +	ret = nand_check_erased_buf(data, datalen, bitflips_threshold);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>> +	bitflips += ret;
+>> +	bitflips_threshold -= ret;
+>> +
+>> +	ret = nand_check_erased_buf(ecc, ecclen, bitflips_threshold);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>> +	bitflips += ret;
+>> +	bitflips_threshold -= ret;
+>> +
+>> +	ret = nand_check_erased_buf(extraoob, extraooblen, bitflips_threshold);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>
+> Forgot the memset operations here:
+>
+> 	memset(data, 0xff, datalen);
+> 	memset(ecc, 0xff, ecclen);
+> 	memset(extraoob, 0xff, extraooblen);
+>
+>> +	return bitflips + ret;
+>> +}
+>> +EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
+>> +
+>> +/**
+>>    * nand_read_page_raw - [INTERN] read raw page data without ecc
+>>    * @mtd: mtd info structure
+>>    * @chip: nand chip info structure
+>> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+>> index 272f429..ae06a07 100644
+>> --- a/include/linux/mtd/nand.h
+>> +++ b/include/linux/mtd/nand.h
+>> @@ -1030,4 +1030,12 @@ struct nand_sdr_timings {
+>>
+>>   /* get timing characteristics from ONFI timing mode. */
+>>   const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
+>> +
+>> +int nand_check_erased_buf(void *data, int datalen,
+>> +			  int threshold);
+>> +
+>> +int nand_check_erased_ecc_chunk(void *data, int datalen,
+>> +				void *ecc, int ecclen,
+>> +				void *extraoob, int extraooblen,
+>> +				int threshold);
+>>   #endif /* __LINUX_MTD_NAND_H */
+>
+>
+>
