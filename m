@@ -1,24 +1,18 @@
-Date: Tue, 4 Aug 2015 16:52:36 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Vignesh R <vigneshr@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>,
- Huang Shijie <b32955@freescale.com>, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org
-Message-ID: <20150804155236.GS20873@sirena.org.uk>
-References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
- <1438072876-16338-5-git-send-email-vigneshr@ti.com>
- <20150731181903.GN20873@sirena.org.uk> <55BEF5D1.1050608@ti.com>
+Received: from mail-bn1on0143.outbound.protection.outlook.com
+ ([157.56.110.143] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1ZMeET-0002ok-US
+ for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 15:34:26 +0000
+From: Han Xu <b45815@freescale.com>
+To: <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <frank.li@freescale.com>,
+ <han.xu@freescale.com>
+Subject: [PATCH v4 08/10] mtd: spi-nor: fsl-quadspi: workaround qspi can't
+ wakeup from wait mode
+Date: Tue, 4 Aug 2015 10:26:04 -0500
+Message-ID: <1438701964-27204-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="DNbkntcEGyiBe7B+"
-Content-Disposition: inline
-In-Reply-To: <55BEF5D1.1050608@ti.com>
-Subject: Re: [RFC PATCH 4/5] ARM: dts: DRA7: Add memory map region entries
- for qspi
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +22,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Frank Li <Frank.Li@freescale.com>
 
---DNbkntcEGyiBe7B+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+QSPI1 cannot wake up CCM from WAIT mode on SX ARD board, add pmqos to
+let PM NOT enter WAIT mode when accessing QSPI1, refer to TKT245618.
 
-On Mon, Aug 03, 2015 at 10:32:09AM +0530, Vignesh R wrote:
-> On 07/31/2015 11:49 PM, Mark Brown wrote:
+Signed-off-by: Frank Li <Frank.Li@freescale.com>
+Signed-off-by: Han Xu <Han.xu@freescale.com>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
 
-> >> -			reg = <0x47900000 0x100>;
-> >> +			reg = <0x47900000 0x100>,
-> >> +			      <0x30000000 0x3ffffff>;
-> >> +			reg-names = "qspi_base", "qspi_mmap";
-
-> > The DT binding document for the controller needs to be extended to
-> > document this change in the binding.
-
-> DT bindings are already documented at
-> Documentation/devicetree/bindings/spi/ti_qspi.txt. Did you mean to add
-> this node as an example in that file?
-
-No, I mean you're changing the binding to add this new memory region -
-that new region needs to be added to the documentation.
-
---DNbkntcEGyiBe7B+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVwN/DAAoJECTWi3JdVIfQDmgIAIR4xT4J2eYaCKDeCNkOZR0Z
-oGMLIpACnU+bu9wiAPbfQMq43bQOdP7XSZAHrxKkXmLVZpVUPeGpOmN4Wa99U25W
-whmSIjwJf73efIv8N8K4Y4QUiU73JL1RAfIDl2moe2708e4sFEJGN0NufeHcppHr
-vZdjKfIfhVnZ6DuF7TkItapDBq6E5BVMXLoIr1RCN11gYcupBqBiqQGEhrY6fQsy
-bVzX1OjtJoGtTaybt1or9KPgMWcP2EapqBJ8qTwcLdnAlsMr8Jb1qxS89in82Q6q
-QqwahNKtFSNzzVtds/Mc7YOEGUBdl9qWc669cKTwJClNmbHv4chkuXAPCnkf7uU=
-=Hgzf
------END PGP SIGNATURE-----
-
---DNbkntcEGyiBe7B+--
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 93b7943..c8e0eb6 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -27,6 +27,7 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/spi-nor.h>
+ #include <linux/mutex.h>
++#include <linux/pm_qos.h>
+ 
+ /* Controller needs driver to swap endian */
+ #define QUADSPI_QUIRK_SWAP_ENDIAN	(1 << 0)
+@@ -37,6 +38,8 @@
+  * trigger data transfer even though extern data will not transferred.
+  */
+ #define QUADSPI_QUIRK_TKT253890		(1 << 2)
++/* Controller cannot wake up from wait mode, TKT245618 */
++#define QUADSPI_QUIRK_TKT245618         (1 << 3)
+ 
+ /* The registers */
+ #define QUADSPI_MCR			0x00
+@@ -232,7 +235,8 @@ static struct fsl_qspi_devtype_data imx6sx_data = {
+ 	.rxfifo = 128,
+ 	.txfifo = 512,
+ 	.ahb_buf_size = 1024,
+-	.driver_data = QUADSPI_QUIRK_4X_INT_CLK,
++	.driver_data = QUADSPI_QUIRK_4X_INT_CLK
++		       | QUADSPI_QUIRK_TKT245618,
+ };
+ 
+ static struct fsl_qspi_devtype_data imx7d_data = {
+@@ -272,6 +276,7 @@ struct fsl_qspi {
+ 	unsigned int chip_base_addr; /* We may support two chips. */
+ 	bool has_second_chip;
+ 	struct mutex lock;
++	struct pm_qos_request pm_qos_req;
+ };
+ 
+ static inline int needs_swap_endian(struct fsl_qspi *q)
+@@ -289,6 +294,11 @@ static inline int needs_fill_txfifo(struct fsl_qspi *q)
+ 	return q->devtype_data->driver_data & QUADSPI_QUIRK_TKT253890;
+ }
+ 
++static inline int needs_wakeup_wait_mode(struct fsl_qspi *q)
++{
++	return q->devtype_data->driver_data & QUADSPI_QUIRK_TKT245618;
++}
++
+ /*
+  * An IC bug makes us to re-arrange the 32-bit data.
+  * The following chips, such as IMX6SLX, have fixed this bug.
+@@ -670,12 +680,18 @@ static int fsl_qspi_clk_prep_enable(struct fsl_qspi *q)
+ 		return ret;
+ 	}
+ 
++	if (needs_wakeup_wait_mode(q))
++		pm_qos_add_request(&q->pm_qos_req, PM_QOS_CPU_DMA_LATENCY, 0);
++
+ 	return 0;
+ }
+ 
+ /* This function was used to disable and unprepare QSPI clock */
+ static void fsl_qspi_clk_disable_unprep(struct fsl_qspi *q)
+ {
++	if (needs_wakeup_wait_mode(q))
++		pm_qos_remove_request(&q->pm_qos_req);
++
+ 	clk_disable_unprepare(q->clk);
+ 	clk_disable_unprepare(q->clk_en);
+ 
+@@ -926,6 +942,10 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	if (!q->nor_num || q->nor_num > FSL_QSPI_MAX_CHIP)
+ 		return -ENODEV;
+ 
++	q->dev = dev;
++	q->devtype_data = (struct fsl_qspi_devtype_data *)of_id->data;
++	platform_set_drvdata(pdev, q);
++
+ 	/* find the resources */
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "QuadSPI");
+ 	q->iobase = devm_ioremap_resource(dev, res);
+@@ -971,10 +991,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		goto irq_failed;
+ 	}
+ 
+-	q->dev = dev;
+-	q->devtype_data = (struct fsl_qspi_devtype_data *)of_id->data;
+-	platform_set_drvdata(pdev, q);
+-
+ 	ret = fsl_qspi_nor_setup(q);
+ 	if (ret)
+ 		goto irq_failed;
+-- 
+1.9.1
