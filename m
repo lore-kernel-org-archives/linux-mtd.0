@@ -1,16 +1,16 @@
-Received: from mail-bn1bon0113.outbound.protection.outlook.com
- ([157.56.111.113] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1ZMeEA-0002oc-1O
- for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 15:34:06 +0000
+Received: from mail-bn1on0116.outbound.protection.outlook.com
+ ([157.56.110.116] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMeEb-0000la-6W
+ for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 15:34:42 +0000
 From: Han Xu <b45815@freescale.com>
 To: <computersforpeace@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <frank.li@freescale.com>,
  <han.xu@freescale.com>
-Subject: [PATCH v4 07/10] mtd: spi-nor: fsl-quadspi: i.MX6SX: fixed the random
- QSPI access failed issue
-Date: Tue, 4 Aug 2015 10:25:58 -0500
-Message-ID: <1438701958-27163-1-git-send-email-b45815@freescale.com>
+Subject: [PATCH v4 10/10] mtd: spi-nor: fsl-quadspi: fix unsupported cmd when
+ run flash_erase
+Date: Tue, 4 Aug 2015 10:26:16 -0500
+Message-ID: <1438701976-27286-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,216 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Allen Xu <b45815@freescale.com>
+From: Frank Li <Frank.Li@freescale.com>
 
-We found there is a low probability(5%) QSPI access timeout issue,
-usually it happened on kernel boot stage, the first time kernel tried to
-access QSPI chip. The READ_ID command was sent but not executed,
-consequently the probe function failed.
+Erase function will use cmd 0x20 (SPINOR_OP_BE_4K) if kenrel enable option
+CONFIG_MTD_SPI_NOR_USE_4K_SECTORS.
 
-The root cause is that the divider is not glitchless in i.MX6SX chip.
-If qspi clock enabled then change clock frequency by call clk_set_rate,
-there will be glitch at low possiblity rate and pass to qspi controller.
-The controler will be hang by this glitch.
+This command is not in fsl-quadspi driver LUT. So driver continue report
+fsl-quadspi 21e0000.qspi: Unsupported cmd 0x20.
 
-Based on the new clock flag(CLK_SET_RATE_GATE) and new framework, we
-need to change the approach of seting clock rate.
-1. Disable clock.
-2. call clk_set_rate.
-3. Enable clock again.
+This patch fix this issue.
 
-Signed-off-by: Han Xu <han.xu@freescale.com>
 Signed-off-by: Frank Li <Frank.Li@freescale.com>
+Acked-by: Han Xu <Han.xu@freescale.com>
 ---
-
-Change from v3 to v4:
--change the commit message to describe the issue
--add comments to explain why to disable the clock
-
-Change from v2 to v3:
-Resend whole serial patch
-
- drivers/mtd/spi-nor/fsl-quadspi.c | 81 +++++++++++++++++++++++++++------------
- 1 file changed, 56 insertions(+), 25 deletions(-)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index a327e2d..93b7943 100644
+index d09fb28..66d1eb8 100644
 --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -655,6 +655,32 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
- 		q->iobase + QUADSPI_BFGENCR);
- }
+@@ -397,14 +397,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 	/* Erase a sector */
+ 	lut_base = SEQID_SE * 4;
  
-+/* This function was used to prepare and enable QSPI clock */
-+static int fsl_qspi_clk_prep_enable(struct fsl_qspi *q)
-+{
-+	int ret;
-+
-+	ret = clk_prepare_enable(q->clk_en);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_prepare_enable(q->clk);
-+	if (ret) {
-+		clk_disable_unprepare(q->clk_en);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+/* This function was used to disable and unprepare QSPI clock */
-+static void fsl_qspi_clk_disable_unprep(struct fsl_qspi *q)
-+{
-+	clk_disable_unprepare(q->clk);
-+	clk_disable_unprepare(q->clk_en);
-+
-+}
-+
- /* We use this function to do some basic init for spi_nor_scan(). */
- static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- {
-@@ -662,11 +688,18 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 	u32 reg;
- 	int ret;
- 
--	/* the default frequency, we will change it in the future.*/
-+	/* disable and unprepare clock to avoid glitch pass to controller*/
-+	fsl_qspi_clk_disable_unprep(q);
-+
-+	/* the default frequency, we will change it in the future. */
- 	ret = clk_set_rate(q->clk, 66000000);
- 	if (ret)
- 		return ret;
- 
-+	ret = fsl_qspi_clk_prep_enable(q);
-+	if (ret)
-+		return ret;
-+
- 	/* Init the LUT table. */
- 	fsl_qspi_init_lut(q);
- 
-@@ -698,10 +731,17 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
- 	if (needs_4x_clock(q))
- 		rate *= 4;
- 
-+	/* disable and unprepare clock to avoid glitch pass to controller */
-+	fsl_qspi_clk_disable_unprep(q);
-+
- 	ret = clk_set_rate(q->clk, rate);
- 	if (ret)
- 		return ret;
- 
-+	ret = fsl_qspi_clk_prep_enable(q);
-+	if (ret)
-+		return ret;
-+
- 	/* Init the LUT table again. */
- 	fsl_qspi_init_lut(q);
- 
-@@ -844,22 +884,16 @@ static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
- 	int ret;
- 
- 	mutex_lock(&q->lock);
--	ret = clk_enable(q->clk_en);
--	if (ret)
--		goto err_mutex;
- 
--	ret = clk_enable(q->clk);
-+	ret = fsl_qspi_clk_prep_enable(q);
- 	if (ret)
--		goto err_clk;
-+		goto err_mutex;
- 
- 	fsl_qspi_set_base_addr(q, nor);
- 	return 0;
- 
--err_clk:
--	clk_disable(q->clk_en);
- err_mutex:
- 	mutex_unlock(&q->lock);
--
- 	return ret;
- }
- 
-@@ -867,8 +901,7 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
- {
- 	struct fsl_qspi *q = nor->priv;
- 
--	clk_disable(q->clk);
--	clk_disable(q->clk_en);
-+	fsl_qspi_clk_disable_unprep(q);
- 	mutex_unlock(&q->lock);
- }
- 
-@@ -918,15 +951,9 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 	if (IS_ERR(q->clk))
- 		return PTR_ERR(q->clk);
- 
--	ret = clk_prepare_enable(q->clk_en);
-+	ret = fsl_qspi_clk_prep_enable(q);
- 	if (ret) {
--		dev_err(dev, "cannot enable the qspi_en clock: %d\n", ret);
--		return ret;
+-	if (q->nor_size <= SZ_16M) {
+-		cmd = SPINOR_OP_SE;
+-		addrlen = ADDR24BIT;
+-	} else {
+-		/* use the 4-byte address */
+-		cmd = SPINOR_OP_SE;
+-		addrlen = ADDR32BIT;
 -	}
--
--	ret = clk_prepare_enable(q->clk);
--	if (ret) {
--		dev_err(dev, "cannot enable the qspi clock: %d\n", ret);
-+		dev_err(dev, "can not enable the clock\n");
- 		goto clk_failed;
++	cmd = q->nor[0].erase_opcode;
++	addrlen = q->nor_size <= SZ_16M ? ADDR24BIT : ADDR32BIT;
+ 
+ 	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+ 			base + QUADSPI_LUT(lut_base));
+@@ -473,6 +467,8 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
+ 	case SPINOR_OP_BRWR:
+ 		return SEQID_BRWR;
+ 	default:
++		if (cmd == q->nor[0].erase_opcode)
++			return SEQID_SE;
+ 		dev_err(q->dev, "Unsupported cmd 0x%.2x\n", cmd);
+ 		break;
  	}
- 
-@@ -1032,8 +1059,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto last_init_failed;
- 
--	clk_disable(q->clk);
--	clk_disable(q->clk_en);
-+	fsl_qspi_clk_disable_unprep(q);
- 	return 0;
- 
- last_init_failed:
-@@ -1046,9 +1072,9 @@ last_init_failed:
- mutex_failed:
- 	mutex_destroy(&q->lock);
- irq_failed:
--	clk_disable_unprepare(q->clk);
-+	fsl_qspi_clk_disable_unprep(q);
- clk_failed:
--	clk_disable_unprepare(q->clk_en);
-+	dev_err(dev, "Freescale QuadSPI probe failed\n");
- 	return ret;
- }
- 
-@@ -1069,8 +1095,6 @@ static int fsl_qspi_remove(struct platform_device *pdev)
- 	writel(0x0, q->iobase + QUADSPI_RSER);
- 
- 	mutex_destroy(&q->lock);
--	clk_unprepare(q->clk);
--	clk_unprepare(q->clk_en);
- 
- 	if (q->ahb_addr)
- 		iounmap(q->ahb_addr);
-@@ -1085,12 +1109,19 @@ static int fsl_qspi_suspend(struct platform_device *pdev, pm_message_t state)
- 
- static int fsl_qspi_resume(struct platform_device *pdev)
- {
-+	int ret;
- 	struct fsl_qspi *q = platform_get_drvdata(pdev);
- 
-+	ret = fsl_qspi_clk_prep_enable(q);
-+	if (ret)
-+		return ret;
-+
- 	fsl_qspi_nor_setup(q);
- 	fsl_qspi_set_map_addr(q);
- 	fsl_qspi_nor_setup_last(q);
- 
-+	fsl_qspi_clk_disable_unprep(q);
-+
- 	return 0;
- }
- 
 -- 
 1.9.1
