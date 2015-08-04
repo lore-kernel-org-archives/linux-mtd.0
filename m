@@ -1,14 +1,22 @@
-Date: Tue, 4 Aug 2015 12:52:54 -0500 (CDT)
-From: Aaron Sierra <asierra@xes-inc.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: linux-mtd@lists.infradead.org
-Message-ID: <288216793.189179.1438710774869.JavaMail.zimbra@xes-inc.com>
-In-Reply-To: <447095612.147126.1421278909058.JavaMail.zimbra@xes-inc.com>
-Subject: [PATCH] mtd: fsl_upm: Enable software BCH ECC support
+Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
+To: Mark Brown <broonie@kernel.org>
+References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
+ <1438072876-16338-2-git-send-email-vigneshr@ti.com>
+ <20150731181745.GM20873@sirena.org.uk> <55BEF4AF.5090704@ti.com>
+ <20150804155148.GR20873@sirena.org.uk>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ Russell King <linux@arm.linux.org.uk>,
+ Huang Shijie <b32955@freescale.com>, <linux-omap@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-spi@vger.kernel.org>
+From: "R, Vignesh" <vigneshr@ti.com>
+Message-ID: <55C0FD98.1090107@ti.com>
+Date: Tue, 4 Aug 2015 23:29:52 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <20150804155148.GR20873@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -19,121 +27,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch preserves the default software ECC mode while adding the
-ability to use BCH ECC (as required for larger NAND devices).
 
-The BCH-required strength and step size values are pulled from the
-device-tree by nand_scan_ident(), so we replace nand_scan() with
-explicit calls to nand_scan_ident() and nand_scan_tail() in order
-to sanity check ECC properties from the device-tree.
 
-Tested-by: Ryan Schaefer <rschaefer@xes-inc.com>
-Signed-off-by: Jordan Friendshuh <jfriendshuh@xes-inc.com>
-Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
----
- .../devicetree/bindings/mtd/fsl-upm-nand.txt       | 32 ++++++++++++++++++++
- drivers/mtd/nand/fsl_upm.c                         | 35 +++++++++++++++++++++-
- 2 files changed, 66 insertions(+), 1 deletion(-)
+On 8/4/2015 9:21 PM, Mark Brown wrote:
+> On Mon, Aug 03, 2015 at 10:27:19AM +0530, Vignesh R wrote:
+> 
+>> @use_mmap_mode: Some SPI controller chips are optimized for interacting
+>> with serial flash memories. These chips have memory mapped interface,
+>> through which entire serial flash memory slave can be read/written as if
+>> though they are physical memories (like RAM). Using this interface,
+>> flash can be accessed using memcpy() function and the spi controller
+>> hardware will take care of communicating with serial flash over SPI.
+>> Setting this flag will indicate the SPI controller driver that the
+>> spi_message is from mtd layer to read from/write to flash. The SPI
+>> master driver can then appropriately switch the controller to memory
+>> mapped interface to read from/write to flash, based on this flag (See
+>> drivers/spi/spi-ti-qspi.c for example).
+>> NOTE: If the SPI controller chip lacks memory mapped interface, then the
+>> driver will ignore this flag and use normal SPI protocol to read
+>> from/write to flash. Communication with non-flash SPI devices is not
+>> possible using the memory mapped interface.
+> 
+> I still can't tell from the above what this interface is supposed to do.
+> It sounds like the use of memory mapped mode is supposed to be
+> transparent to users, it should just affect how the controller interacts
+> with the hardware, but if that's the case why do we need to expose it to
+> users at all?  Shouldn't the driver just use memory mapped mode if it's
+> faster?
+> 
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-index fce4894..3643ee1 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-@@ -18,6 +18,9 @@ Optional properties:
- - chip-delay : chip dependent delay for transferring data from array to
- 	read registers (tR). Required if property "gpios" is not used
- 	(R/B# pins not connected).
-+- nand-ecc-mode : as defined by nand.txt ("soft" and "soft_bch", only).
-+- nand-ecc-strength : as defined by nand.txt.
-+- nand-ecc-step-size : as defined by nand.txt.
- 
- Each flash chip described may optionally contain additional sub-nodes
- describing partitions of the address space. See partition.txt for more
-@@ -65,3 +68,32 @@ upm@3,0 {
- 		};
- 	};
- };
-+
-+/*
-+ * Micron MT29F32G08AFABA (M62B)
-+ * 32 Gb (4 GiB), 2 chipselect
-+ */
-+upm@2,0 {
-+	#address-cells = <0>;
-+	#size-cells = <0>;
-+	compatible = "fsl,upm-nand";
-+	reg = <2 0x0 0x80000>;
-+	fsl,upm-addr-line-cs-offsets = <0x0 0x10000>;
-+	fsl,upm-addr-offset = <0x10>;
-+	fsl,upm-cmd-offset = <0x08>;
-+	fsl,upm-wait-flags = <0x1>;
-+	chip-delay = <50>;
-+
-+	nand@0 {
-+		#address-cells = <1>;
-+		#size-cells = <2>;
-+		nand-ecc-mode = "soft_bch";
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+
-+		partition@0 {
-+			label = "NAND filesystem";
-+			reg = <0x0 0x1 0x00000000>;
-+		};
-+	};
-+};
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index 72755d7..0982d7a 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -182,6 +182,7 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
- 	if (!flash_np)
- 		return -ENODEV;
- 
-+	fun->chip.dn = flash_np;
- 	fun->mtd.name = kasprintf(GFP_KERNEL, "0x%llx.%s", (u64)io_res->start,
- 				  flash_np->name);
- 	if (!fun->mtd.name) {
-@@ -189,7 +190,39 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
- 		goto err;
- 	}
- 
--	ret = nand_scan(&fun->mtd, fun->mchip_count);
-+	ret = nand_scan_ident(&fun->mtd, fun->mchip_count, NULL);
-+	if (ret)
-+		goto err;
-+
-+	switch (fun->chip.ecc.mode) {
-+	case NAND_ECC_NONE:
-+		fun->chip.ecc.mode = NAND_ECC_SOFT;
-+		break;
-+	case NAND_ECC_SOFT:
-+		if (fun->chip.ecc.strength && fun->chip.ecc.strength != 1)
-+			dev_warn(fun->dev, "Ignoring %d-bit software ECC\n",
-+				fun->chip.ecc.strength);
-+		if (fun->chip.ecc.size &&
-+		    (fun->chip.ecc.size != 256) &&
-+		    (fun->chip.ecc.size != 512)) {
-+			dev_err(fun->dev, "Invalid software ECC step: %d\n",
-+				fun->chip.ecc.size);
-+			goto err;
-+		}
-+		break;
-+	case NAND_ECC_SOFT_BCH:
-+		if (fun->chip.ecc.strength < 2) {
-+			dev_err(fun->dev, "Invalid BCH ECC strength: %d\n",
-+				fun->chip.ecc.strength);
-+			goto err;
-+		}
-+		break;
-+	default:
-+		dev_err(fun->dev, "ECC mode unsupported");
-+		goto err;
-+	}
-+
-+	ret = nand_scan_tail(&fun->mtd);
- 	if (ret)
- 		goto err;
- 
--- 
-1.9.1
+TI QSPI controller has two blocks:
+1. SPI_CORE: This is generic(normal) spi mode. This can be used to
+communicate with any SPI devices (serial flashes as well as non-flash
+devices like touchscreen).
+2. SFI_MM_IF(SPI memory mapped interface): The SFI_MM_IF block only
+allows reading and writing to an SPI flash device only. Used to speed up
+flash reads. It _cannot_ be used to communicate with non flash devices.
+Now, the spi_message that ti-qspi receives in transfer_one() callback
+can be from mtd device(in which case SFI_MM_IF can be used) or from any
+other non flash SPI device (in which case SFI_MM_IF must not be used
+instead SPI_CORE is to be used) but there is no way(is there?) to
+distinguish where spi_message is from. Therefore I introduced flag
+(use_mmap_mode) to struct spi_message. mtd driver will set flag to true,
+this helps the ti-qspi driver to determine that the user is flash device
+and thus can do read via SFI_MM_IF. If this flag is not set then the
+user is assumed to be non flash SPI driver and will use SPI_CORE block
+to communicate.
+
+On the whole, I just need a way to determine that the user is a flash
+device in order to switch to memory mapped interface.
+
+Regards
+Vignesh
