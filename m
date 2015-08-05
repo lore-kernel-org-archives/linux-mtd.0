@@ -1,20 +1,20 @@
-Received: from mail-by2on0112.outbound.protection.outlook.com
- ([207.46.100.112] helo=na01-by2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMixm-0004Kl-3M
- for linux-mtd@lists.infradead.org; Tue, 04 Aug 2015 20:37:30 +0000
-Message-ID: <1438720623.2097.95.camel@freescale.com>
-Subject: Re: [v5,RESEND] IFC: Change IO accessor based on endianness
-From: Scott Wood <scottwood@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
- Jaiprakash Singh <b44839@freescale.com>
-Date: Tue, 4 Aug 2015 15:37:03 -0500
-In-Reply-To: <20150528011910.GA16716@home.buserror.net>
-References: <1432174631-30091-1-git-send-email-scottwood@freescale.com>
- <20150528011910.GA16716@home.buserror.net>
-Content-Type: text/plain; charset="UTF-8"
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMnUq-0000aI-Nj
+ for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 01:27:57 +0000
+Message-ID: <55C1652F.9040201@cn.fujitsu.com>
+Date: Wed, 5 Aug 2015 09:21:51 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
+To: Richard Weinberger <richard@nod.at>, <viro@ZenIV.linux.org.uk>,
+ <jack@suse.cz>, <dedekind1@gmail.com>, <richard.weinberger@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 20/35] ubifs: implement IO functions for quota files
+References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438235311-23788-21-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <55BFE142.1030008@nod.at>
+In-Reply-To: <55BFE142.1030008@nod.at>
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,31 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2015-05-27 at 20:19 -0500, Scott Wood wrote:
-> On Wed, May 20, 2015 at 09:17:11PM -0500, Scott Wood wrote:
-> > From: Jaiprakash Singh <b44839@freescale.com>
-> > 
-> > IFC IO accressor are set at run time based
-> > on IFC IP registers endianness.IFC node in
-> > DTS file contains information about
-> > endianness.
-> > 
-> > Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
-> > Signed-off-by: Scott Wood <scottwood@freescale.com>
-> > ---
-> > v5: I'm assuming it's the same as v4, but I didn't send v4, and this
-> > comes from a versionless [RESEND] that never made it to the mailing list,
-> > so bumping the version just in case.
-> > 
-> >  .../bindings/memory-controllers/fsl/ifc.txt        |   3 +
-> >  drivers/memory/fsl_ifc.c                           |  43 ++--
-> >  drivers/mtd/nand/fsl_ifc_nand.c                    | 258 +++++++++++-----
-> > -----
-> >  include/linux/fsl_ifc.h                            |  50 ++++
-> >  4 files changed, 213 insertions(+), 141 deletions(-)
-> 
-> Brian, can I get an ack for this?
+On 08/04/2015 05:46 AM, Richard Weinberger wrote:
+> Am 30.07.2015 um 07:48 schrieb Dongsheng Yang:
+>> We have to implement 3 functions to support quota in ubifs:
+>> ubifs_quota_read(), ubifs_quota_write() and ubifs_get_quotas()
+>>
+[...]
+>
+> I'll review your other patches these days.
+> For now I'm too sleepy.
 
-ping
+Thank you so much, Richard. :)
 
--Scott
+I will reply all the comments from you and Jan
+when you finish the review.
+
+Thanx
+Yang
+>
+> Thanks,
+> //richard
+> .
+>
