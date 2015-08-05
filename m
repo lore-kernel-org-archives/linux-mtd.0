@@ -1,19 +1,26 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZN6ki-0003Xq-3R
- for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 22:01:36 +0000
-Subject: Re: ubi_wl_get_peb: Unable to get a free PEB from user WL pool
-To: =?UTF-8?Q?J=c3=b6rg_Krause?= <joerg.krause@embedded.rocks>,
- linux-mtd@lists.infradead.org
-References: <1438809724.6328.18.camel@embedded.rocks>
- <55C28070.2000804@nod.at> <1438810690.6328.26.camel@embedded.rocks>
- <55C2840B.5000709@nod.at> <1438811611.6328.32.camel@embedded.rocks>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55C287A9.8000006@nod.at>
-Date: Thu, 6 Aug 2015 00:01:13 +0200
+ id 1ZN711-00015r-24
+ for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 22:18:28 +0000
+Received: by wicgj17 with SMTP id gj17so210240994wic.1
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Aug 2015 15:18:04 -0700 (PDT)
+Sender: Salah TRIKI <salah.triki@gmail.com>
+Date: Wed, 5 Aug 2015 23:17:54 +0100
+From: Salah Triki <salah.triki@acm.org>
+To: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH] jffs2: Remove NULL checks from jffs2_destroy_slab_caches
+Message-ID: <20150805221754.GA3160@pc>
+References: <1438717590-4263-1-git-send-email-salah.triki@acm.org>
+ <20150804200639.GP10676@google.com>
+ <20150805133247.GB576@swordfish>
 MIME-Version: 1.0
-In-Reply-To: <1438811611.6328.32.camel@embedded.rocks>
-Content-Type: multipart/mixed; boundary="------------020605020604000601030805"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150805133247.GB576@swordfish>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,96 +30,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------020605020604000601030805
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Hi,
 
-Am 05.08.2015 um 23:53 schrieb Jörg Krause:
-> On Mi, 2015-08-05 at 23:45 +0200, Richard Weinberger wrote:
->> Jörg,
->>
->> Am 05.08.2015 um 23:38 schrieb Jörg Krause:
->>> On Mi, 2015-08-05 at 23:30 +0200, Richard Weinberger wrote:
+It is not a copy paste of a cleanup patch by Julia Lawall. It is just a coincidence. In
+addition, I think that, generaly, cleanups patchs are similar.
+
+Best regards
+--
+Salah Triki
+
+On Wed, Aug 05, 2015 at 10:32:47PM +0900, Sergey Senozhatsky wrote:
 > 
-> [snip]
+> Hi,
 > 
->>>
->>> I attached the kernel boot log.
->>
->> Thanks.
->> That's a really small UBI setup.
->> [    3.202421] ubi1: default fastmap pool size: 10
->> [    3.207174] ubi1: default fastmap WL pool size: 5
+> Cc Julia Lawall
 > 
-> What do you exactly mean by small UBI setup? The fastmap pool size? The
-> UBI layout?
-
-The UBI image it self. Your MTD is very small.
-But it should not matter.
-
-> [snip]
+> On (08/04/15 13:06), Brian Norris wrote:
+> > On Tue, Aug 04, 2015 at 08:46:30PM +0100, Salah Triki wrote:
+> > > kmem_cache_destroy can be called with NULL values. Thus, the checks that
+> > > precede the calls are useless.
+> > 
+> > This isn't *currently* true. Only after a bit of work did I find that
+> > this is queued to change in the next release -- akpm has a patch:
+> > 
+> > commit 3e54c0cd3abdca0cf91854278c8633fc7df6beb1
+> > Author: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> > Date:   Thu Jul 30 09:55:36 2015 +1000
+> > 
+> >     mm/slab_common: allow NULL cache pointer in kmem_cache_destroy()
+> > 
+> > Please provide the appropriate context next time. And for the moment, I will
+> > not apply this, because this does not work on the current MTD development tree.
+> > Try your patch bomb on the next release, as it's not worth my time to
+> > cross-merge a -next branch just for a "cleanup".
+> > 
 > 
->>>
->>> It is enabled in the kernel config. Not sure how to use it.
->>
->> Then just disable it. :)
+> Julia already has a patch set to cleanup all the existing users
+> (not published yet, though).
 > 
-> I did :) I thought fastmap is used automatically by the UBI driver?
-
-It will *use* fastmap automatically but not convert non-fastmap UBI images
-to fastmap.
-You can enable ubi.fm_autoconvert to do so.
-
->> Meanwhile I'll find out what exactly is going on.
+> Apart from that, and this is more important, the patch in question
+> looks to me as 100% copy paste of a patch by Julia Lawall.
 > 
-> Many thanks!
-
-Can you please apply the attached debug patch?
-I wonder why exactly the auto resize function is failing.
-
-Thanks,
-//richard
-
---------------020605020604000601030805
-Content-Type: text/x-patch;
- name="debug.diff"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="debug.diff"
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 22fd19c..89aa7ac9 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -820,8 +820,8 @@ static int autoresize(struct ubi_device *ubi, int vol=
-_id)
- 		err =3D ubi_resize_volume(&desc,
- 					old_reserved_pebs + ubi->avail_pebs);
- 		if (err)
--			ubi_err(ubi, "cannot auto-resize volume %d",
--				vol_id);
-+			ubi_err(ubi, "cannot auto-resize volume %d: %d",
-+				vol_id, err);
- 	}
-=20
- 	if (err)
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 1ae17bb..7be6fa3 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -498,8 +498,10 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, =
-int reserved_pebs)
- 	if (pebs < 0) {
- 		for (i =3D 0; i < -pebs; i++) {
- 			err =3D ubi_eba_unmap_leb(ubi, vol, reserved_pebs + i);
--			if (err)
-+			if (err) {
-+				ubi_err(ubi, "unable to unmap LEB");
- 				goto out_acc;
-+			}
- 		}
- 		spin_lock(&ubi->volumes_lock);
- 		ubi->rsvd_pebs +=3D pebs;
-
---------------020605020604000601030805--
+> https://lkml.org/lkml/2015/6/10/31
+> 
+> And no, Salah, it's not "Signed-off-by: Salah Triki <salah.triki@acm.org>".
+> 
+> For the record, this is the second, let's say strange, patch from Salah
+> that I see today.
+> 
+> 	-ss
+> 
+> > > Signed-off-by: Salah Triki <salah.triki@acm.org>
+> > > ---
+> > >  fs/jffs2/malloc.c | 27 +++++++++------------------
+> > >  1 file changed, 9 insertions(+), 18 deletions(-)
+> > > 
+> > > diff --git a/fs/jffs2/malloc.c b/fs/jffs2/malloc.c
+> > > index b8fd651..ce11897 100644
+> > > --- a/fs/jffs2/malloc.c
+> > > +++ b/fs/jffs2/malloc.c
+> > > @@ -97,25 +97,16 @@ int __init jffs2_create_slab_caches(void)
+> > >  
+> > >  void jffs2_destroy_slab_caches(void)
+> > >  {
+> > > -	if(full_dnode_slab)
+> > > -		kmem_cache_destroy(full_dnode_slab);
+> > > -	if(raw_dirent_slab)
+> > > -		kmem_cache_destroy(raw_dirent_slab);
+> > > -	if(raw_inode_slab)
+> > > -		kmem_cache_destroy(raw_inode_slab);
+> > > -	if(tmp_dnode_info_slab)
+> > > -		kmem_cache_destroy(tmp_dnode_info_slab);
+> > > -	if(raw_node_ref_slab)
+> > > -		kmem_cache_destroy(raw_node_ref_slab);
+> > > -	if(node_frag_slab)
+> > > -		kmem_cache_destroy(node_frag_slab);
+> > > -	if(inode_cache_slab)
+> > > -		kmem_cache_destroy(inode_cache_slab);
+> > > +	kmem_cache_destroy(full_dnode_slab);
+> > > +	kmem_cache_destroy(raw_dirent_slab);
+> > > +	kmem_cache_destroy(raw_inode_slab);
+> > > +	kmem_cache_destroy(tmp_dnode_info_slab);
+> > > +	kmem_cache_destroy(raw_node_ref_slab);
+> > > +	kmem_cache_destroy(node_frag_slab);
+> > > +	kmem_cache_destroy(inode_cache_slab);
+> > >  #ifdef CONFIG_JFFS2_FS_XATTR
+> > > -	if (xattr_datum_cache)
+> > > -		kmem_cache_destroy(xattr_datum_cache);
+> > > -	if (xattr_ref_cache)
+> > > -		kmem_cache_destroy(xattr_ref_cache);
+> > > +	kmem_cache_destroy(xattr_datum_cache);
+> > > +	kmem_cache_destroy(xattr_ref_cache);
+> > >  #endif
+> > >  }
+> > >  
+> > > -- 
+> > > 1.9.1
+> > > 
+> > > 
+> > > ______________________________________________________
+> > > Linux MTD discussion mailing list
+> > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> > 
