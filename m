@@ -1,18 +1,29 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMqW0-000212-3Y
- for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 04:41:21 +0000
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id AF2BB80715
- for <linux-mtd@lists.infradead.org>; Wed,  5 Aug 2015 16:40:50 +1200 (NZST)
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-To: linux-mtd@lists.infradead.org
-Cc: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Subject: [PATCH] JFFS2: Prevent CPU starvation during garbage collection.
-Date: Wed,  5 Aug 2015 16:40:30 +1200
-Message-Id: <1438749630-1656-1-git-send-email-mark.tomlinson@alliedtelesis.co.nz>
+From: Ranjit Abhimanyu Waghmode <ranjit.waghmode@xilinx.com>
+To: Mark Brown <broonie@kernel.org>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, Michal Simek <michals@xilinx.com>, "Soren
+ Brinkmann" <sorenb@xilinx.com>, "zajec5@gmail.com" <zajec5@gmail.com>,
+ "ben@decadent.org.uk" <ben@decadent.org.uk>, "marex@denx.de" <marex@denx.de>,
+ "knut.wohlrab@de.bosch.com" <knut.wohlrab@de.bosch.com>, "juhosg@openwrt.org"
+ <juhosg@openwrt.org>, "beanhuo@micron.com" <beanhuo@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Harini Katakam <harinik@xilinx.com>,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>, "ran27jit@gmail.com"
+ <ran27jit@gmail.com>
+Subject: RE: [LINUX RFC 1/2] mtd: spi-nor: add dual parallel mode support
+Date: Wed, 5 Aug 2015 05:01:15 +0000
+Message-ID: <7CFCFE83B8145347A1D424EC939F1C3C01492420@XAP-PVEXMBX01.xlnx.xilinx.com>
+References: <1438592707-30713-1-git-send-email-ranjit.waghmode@xilinx.com>
+ <1438592707-30713-2-git-send-email-ranjit.waghmode@xilinx.com>
+ <20150803160829.GX20873@sirena.org.uk>
+In-Reply-To: <20150803160829.GX20873@sirena.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +33,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The JFFS2 garbage collection checks every file on the system for correct
-checksums and cleaning up anything that it needs to. It sleeps for 50ms
-between each file, but within each file it remains busy.
+Hi Mark,
 
-As far as I can tell, there is no reason to not reschedule while checking a
-file, by putting a cond_resched() inside jfffs2_build_inode_fragtree(). In
-fact, jffs2_get_inode_nodes() will call cond_resched(), which is done
-immediately before jffs2_build_inode_fragtree().
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Monday, August 03, 2015 9:38 PM
+> To: Ranjit Abhimanyu Waghmode
+> Cc: dwmw2@infradead.org; computersforpeace@gmail.com; Michal Simek;
+> Soren Brinkmann; zajec5@gmail.com; ben@decadent.org.uk; marex@denx.de;
+> b32955@freescale.com; knut.wohlrab@de.bosch.com; juhosg@openwrt.org;
+> beanhuo@micron.com; linux-mtd@lists.infradead.org; linux-
+> kernel@vger.kernel.org; linux-spi@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; Harini Katakam; Punnaiah Choudary Kalluri; Ra=
+njit
+> Abhimanyu Waghmode; ran27jit@gmail.com
+> Subject: Re: [LINUX RFC 1/2] mtd: spi-nor: add dual parallel mode support
+>=20
+> On Mon, Aug 03, 2015 at 02:35:06PM +0530, Ranjit Waghmode wrote:
+>=20
+> >  drivers/mtd/devices/m25p80.c  |  1 +
+> >  drivers/mtd/spi-nor/spi-nor.c | 92 ++++++++++++++++++++++++++++++++++-=
+-
+> -------
+> >  include/linux/mtd/spi-nor.h   |  3 ++
+> >  include/linux/spi/spi.h       |  2 +
+> >  4 files changed, 79 insertions(+), 19 deletions(-)
+>=20
+> You need to at least split this into two patches, one adding a new SPI in=
+terface
+> and another using it in MTD.  Probably the MTD core and driver changes ne=
+ed
+> splitting too.  Please see SubmittingPatches for discussion of splitting =
+things.
+>=20
 
-With this extra cond_resched() between reading file blocks, there is a
-dramatic improvement in latency for any processes which are running during
-this initial garbage collection phase.
+I will split and resend the same.
 
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
----
- fs/jffs2/readinode.c | 1 +
- 1 file changed, 1 insertion(+)
+> > diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h index
+> > d673072..8dec349 100644
+> > --- a/include/linux/spi/spi.h
+> > +++ b/include/linux/spi/spi.h
+> > @@ -355,6 +355,8 @@ struct spi_master {
+> >  #define SPI_MASTER_NO_TX	BIT(2)		/* can't do buffer write */
+> >  #define SPI_MASTER_MUST_RX      BIT(3)		/* requires rx */
+> >  #define SPI_MASTER_MUST_TX      BIT(4)		/* requires tx */
+> > +#define SPI_MASTER_DATA_STRIPE		BIT(7)		/* support
+> data stripe */
+> > +#define SPI_MASTER_BOTH_CS		BIT(8)		/* enable both
+> chips */
+>=20
+> This is really not adequate description for a new API, I can't tell what =
+"data
+> stripe" is supposed to mean at all and I've got at best a vague idea what=
+ "both
+> chips" really means.  This means other developers won't be able to tell h=
+ow to
+> use or implement these flags either, and it means I can't really review t=
+his.  You
+> need to provide more information here, both in the code and in the commit
+> message.
+>=20
 
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 28e0aab..78c526a 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -536,6 +536,7 @@ static int jffs2_build_inode_fragtree(struct jffs2_sb_info *c,
- 				jffs2_free_tmp_dnode_info(this);
- 			}
- 			this = vers_next;
-+			cond_resched();
- 		}
- 	}
- 	return 0;
--- 
-2.5.0
+I'm sorry about that. I have added description in cover letter, but will ad=
+d more information about the same here too.
+
+> I'd also expect some handling in the core for these, for example error ha=
+ndling if
+> they can't be supported.
+
+Will update and send you the updated version.
+
+Thanks,
+Ranjit
