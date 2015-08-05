@@ -1,24 +1,20 @@
-Received: from kiutl.biot.com ([31.172.244.210])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMvWu-0004HS-Dc
- for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 10:02:38 +0000
-Received: from spamd by kiutl.biot.com with sa-checked (Exim 4.83)
- (envelope-from <bert@biot.com>) id 1ZMvWT-0001Rf-T4
- for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 12:02:10 +0200
-Message-ID: <55C1DF18.4090800@biot.com>
-Date: Wed, 05 Aug 2015 12:02:00 +0200
-From: Bert Vermeulen <bert@biot.com>
+Received: from mail.irisgmbh.de ([81.169.172.79])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMw6d-0002BR-4T
+ for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 10:39:34 +0000
+From: iris Christian Klemke <Christian.Klemke@irisgmbh.de>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: AW: Lisensing questions
+Date: Wed, 5 Aug 2015 10:38:34 +0000
+Message-ID: <0D51A477944EA44BA3616A7D2CAB53CA0952ED8B@ERDE.irisgmbh.local>
+References: <0D51A477944EA44BA3616A7D2CAB53CA0952EAE5@ERDE.irisgmbh.local>
+ <CAFLxGvwozcZAP+7+6y_8UxyLKraYrA7=txure=L5xd2yDUaD1w@mail.gmail.com>
+In-Reply-To: <CAFLxGvwozcZAP+7+6y_8UxyLKraYrA7=txure=L5xd2yDUaD1w@mail.gmail.com>
+Content-Language: de-DE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-CC: dwmw2@infradead.org, fransklaver@gmail.com,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- linux-gpio@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3] nand: Add NAND driver for Mikrotik RB4xx series boards
-References: <1431689631-7217-1-git-send-email-bert@biot.com>
- <20150721202904.GK24125@google.com>
-In-Reply-To: <20150721202904.GK24125@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +24,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/21/2015 10:29 PM, Brian Norris wrote:
-
->> +static struct spi_driver rb4xx_cpld_driver = {
->> +	.probe = rb4xx_cpld_probe,
->> +	.remove = rb4xx_cpld_remove,
->> +	.driver = {
->> +		.name = "rb4xx-cpld",
->> +		.owner = THIS_MODULE,
->> +	},
->> +};
-> 
-> I feel some deja vu here (did I make this comment before?); why do you
-> need to embed both a SPI and a platform driver here? It appears that the
-> NAND controller actually sits on the SPI bus, so this really is not a
-> platform driver; it's a SPI driver. Can you just kill off all the
-> platform_driver stuff and merge the probe functions?
-> 
-> Or if I'm missing something big, please do enlighten.
-
-This driver was specifically refused by the SPI subsystem maintainer:
-
-  http://www.linux-mips.org/archives/linux-mips/2015-03/msg00422.html
-
-He suggested the MFD subsystem, where it was also refused:
-
-  http://lkml.iu.edu/hypermail/linux/kernel/1504.0/03162.html
-
-Andy Shevchenko suggested drivers/misc, so I mailed Arnd Bergmann and asked
-if he would accept it there.
-
-Arnd took a good look at the driver and suggested the MTD/NAND subsystem.
-This is after all a driver for a NAND chip controller. The controller just
-happens to reside in a CPLD with custom firmware, which is controlled via
-SPI and has some GPIO controller functionality thrown in.
-
-I realize it's an odd hardware setup, and I can't fix that, but this really
-does seem to be the best place for it.
-
-I can deal with your other comments on the patch, but I'd really like some
-agreement on where this driver will be accepted first. I've come full circle
-with getting referred back to the SPI subsystem.
-
-
--- 
-Bert Vermeulen        bert@biot.com          email/xmpp
+SGkgUmljaGFyZCwNCg0KdGhhbmtzIGZvciB5b3VyIHJlcGx5LiBJIHRoaW5rIHlvdSBtZSB3cm9u
+ZyByZWdhcmRpbmcgbXkgaW50ZW50aW9uLiBJIGRvIG5vdCBhdCBhbGwgcGxhbiB0byBieXBhc3Mg
+dGhlIEdQTC4gSW4gZmFjdCwgdGhlIG9wcG9zaXRlIGlzIHRydWU6IEkgZG8gcmVzcGVjdCBpdCBh
+bmQgSSB0cnkgdG8gYXZvaWQgdG8gdmlvbGF0ZSBpdCAoZWl0aGVyIHdpdHRpbmdseSBvciB1bndp
+dHRpbmdseSkuIFdoaWNoIHNpbXBseSBtZWFuczogaWYgdGhlIHBsYW5uZWQgSkZGUzIgcG9ydCBy
+ZXN1bHRzIGluIHRoZSBvYmxpZ2F0aW9uIHRvIHB1Ymxpc2ggb3VyIGNvbXBsZXRlIGFwcGxpY2F0
+aW9uIGNvZGUsIHRoZW4gaXQncyBub3QgYW4gb3B0aW9uIGFuZCBJIHdpbGwgaGF2ZSB0byBmaW5k
+IGFub3RoZXIgc29sdXRpb24sIGVnIGJ5IGJ1eWluZyBhIGxpY2Vuc2UgZm9yIG9uZSBvZiB0aGUg
+Y29tbWVyY2lhbGx5IGF2YWlsYWJsZSBmbGFzaCBmaWxlc3lzdGVtIGltcGxlbWVudGF0aW9ucyBv
+biB0aGUgbWFya2V0LiBBZnRlciBhbGwsIEkgaGF2ZSB0byByZXNwZWN0IHRoZSBpbnRlcmVzdHMg
+b2YgdGhlIGNvbXBhbnkgSSB3b3JrIGZvciB3aGljaCB3YW50cyB0byBwcm90ZWN0IGl0cyBpbnRl
+bGxlY3R1YWwgcHJvcGVydHkgYW5kIGl0cyBwYXRlbnRlZCB0ZWNobm9sb2d5IHdoaWNoIG1hdGVy
+aWFsaXplcyBpbiB2aXRhbCBwYXJ0cyBvZiB0aGUgYXBwbGljYXRpb24gY29kZS4NClRoZSBHUEwg
+aXMgYSBncmVhdCBjb25jZXB0IGFuZCBJIHBlcnNvbmFsbHkgbGlrZSBhbmQgc3VwcG9ydCBpdHMg
+aWRlYShscykuIEhvd2V2ZXIsIGV2ZW4gdGhlIEdQTCBsZWF2ZXMgdGhlIGZyZWVkb20gdG8gZWcg
+cnVuIGNsb3NlZC1zb3VyY2UgYXBwbGljYXRpb24gc29mdHdhcmUgb24gdG9wIExpbnV4LiBJbiBt
+eSBzY2VuYXJpbyB0aGF0IGZyZWVkb20gd291bGQgYmUgbG9zdCBpZiB0aGUgR1BMIGlzIGFjdHVh
+bGx5IGV4dGVuZGVkIHRvIHRoZSBhcHBsaWNhdGlvbiBjb2RlIGFzIHdlbGwgc2ltcGx5IGJlY2F1
+c2UgdGVjaG5pY2FsbHkgdGhlIGJpbmRpbmcgYmV0d2VlbiBvcGVyYXRpbmcgc3lzdGVtIGFuZCBh
+cHBsaWNhdGlvbiBkaWZmZXJzIGJldHdlZW4gTGludXggYW5kIFZESy4NCkhvd2V2ZXIsIGl0IHNl
+ZW1zIEkgd2lsbCBpbmRlZWQgaGF2ZSB0byBmaW5kIGEgbGF3eWVyIHNwZWNpYWxpemVkIGluIHNv
+ZnR3YXJlIGxpY2Vuc2UgcXVlc3Rpb25zLiBJbiBhZGRpdGlvbiwgSSdtIGdvaW5nIHRvIHBvc3Qg
+bXkgcXVlc3Rpb24gdG8gdGhlIE9TSSBtYWlsaW5nIGxpc3Q7IG1heWJlIHNvbWVvbmUgdGhlcmUg
+Y2FuIHByb3ZpZGUgdGhlIG5lZWRlZCBsZWdhbCBhZHZpY2UuDQoNCkNoZWVycywNCkNocmlzdGlh
+bg0KDQoNCi0tLS0tVXJzcHLDvG5nbGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogUmljaGFyZCBX
+ZWluYmVyZ2VyIFttYWlsdG86cmljaGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbV0gDQpHZXNlbmRl
+dDogRGllbnN0YWcsIDQuIEF1Z3VzdCAyMDE1IDE4OjU4DQpBbjogaXJpcyBDaHJpc3RpYW4gS2xl
+bWtlDQpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCkJldHJlZmY6IFJlOiBMaXNl
+bnNpbmcgcXVlc3Rpb25zDQoNCk9uIFR1ZSwgQXVnIDQsIDIwMTUgYXQgMzo0NyBQTSwgaXJpcyBD
+aHJpc3RpYW4gS2xlbWtlIDxDaHJpc3RpYW4uS2xlbWtlQGlyaXNnbWJoLmRlPiB3cm90ZToNCj4g
+SGksDQo+DQo+IEkgaGF2ZSBhIHF1ZXN0aW9uIHJlZ2FyZGluZyB0aGUgR1BMIGltcGxpY2F0aW9u
+cyBpbiBhIHNvbWV3aGF0IHNwZWNpYWwgY2FzZS4NCj4gV2hhdCBJIHdvdWxkIGxpa2UgdG8gZG8g
+aXMgdG8gdGFrZSB0aGUgSkZGUzIgc291cmNlIGNvZGUgYW5kIHBvcnQgaXQgdG8gYSBjbG9zZWQt
+c291cmNlIHJlYWwtdGltZSBrZXJuZWwgbmFtZWQgVkRLIChieSBBbmFsb2cgRGV2aWNlcyksIGJ5
+IGEgY29tYmluYXRpb24gb2Ygc291cmNlIGNvZGUgbW9kaWZpY2F0aW9ucyBhbmQvb3IgcHJvdmlz
+aW9uIG9mIGFuIGVtdWxhdGlvbiBsYXllciBmb3IgdGhlIHJlbGV2YW50IExpbnV4IHN1YnN5c3Rl
+bXMgKGxpa2UgTVREKS4NCj4gTXkgdW5kZXJzdGFuZGluZyBvZiB0aGUgR1BMIGlzIHRoYXQgSSB3
+b3VsZCBiZSB0aGlzIHdvdWxkIHVzdWFsbHkgb2JsaWdlIG1lIHRvIHB1Ymxpc2ggdGhlIHJlc3Vs
+dGluZyBzb3VyY2UgY29kZXMgdW5kZXIgdGhlIEdQTCBhcyB3ZWxsLiBTbyBmYXIsIHNvIGdvb2Qu
+IEhvd2V2ZXIsIEkgc3VzcGVjdCB0aGUgaW1wbGljYXRpb25zIG9mIHRoZSBHUEwgbGljZW5zZSBt
+aWdodCBub3Qgc3RvcCB0aGVyZSBiZWNhdXNlIHRoZSBWREsgaXMgbm90IGEgZnVsbCBvcGVyYXRp
+bmcgc3lzdGVtIG9uIHdoaWNoIG91ciBhcHBsaWNhdGlvbiBydW5zLiBJbnN0ZWFkLCBpdCBpcyBh
+IGtlcm5lbCB3aGljaCBnZXRzIGxpbmtlZCB3aXRoIHRoZSBhcHBsaWNhdGlvbiBjb2RlIGludG8g
+b25lIG1vbm9saXRoaWMgZmlybXdhcmUgaW1hZ2UuIFNvIGluIGNhc2Ugb2YgdGhlIFZESyB0aGUg
+c2VwYXJhdGlvbiBiZXR3ZWVuIG9wZXJhdGluZyBzeXN0ZW0gYW5kIGFwcGxpY2F0aW9uLCB3aGlj
+aCB3b3VsZCB1c3VhbGx5IGFsc28gYmUgYSAiYmFycmllciIgZm9yIHRoZSBHUEwsIGRvZXMgbm90
+IGV4aXN0LiBOb25ldGhlbGVzcyBhIHNlcGFyYXRpb24gd291bGQgZXhpc3QgaW4gYXJjaGl0ZWN0
+dXJhbCB0ZXJtcywgYmVjYXVzZSB0aGUgSkZGUzIgaW50ZWdyYXRpb24gd291bGQgYmUgY29kZWQg
+YWdhaW5zdCB0aGUgVkRLIGZpbGVzeXN0ZW0gZHJpdmVyIGludGVyZmFjZSB3aGlsZSB0aGUgYXBw
+bGljYXRpb24gd291bGQgbm90IGNhbGwgYW55IEpGRlMyLXJlbGF0ZWQgY29kZSBkaXJlY3RseSBi
+dXQgb25seSByZWx5IG9uIHRoZSBzdGFuZGFyZCBDIGZpbGUgQVBJIHRoYXQgaXMgb2ZmZXJlZCBi
+eSB0aGUgVkRLIGFuZCBpdHMgQy1ydW50aW1lIGxpYnJhcnkuDQo+IFNvLCB0aGUgYmlnIHF1ZXN0
+aW9uIGlzOiB3b3VsZCBhIEpGRlMyIGludGVncmF0aW9uIGFzIG91dGxpbmVkIGFib3ZlIHJlcXVp
+cmUgdGhlIHB1YmxpY2F0aW9uIG9mIHRoZSB3aG9sZSBhcHBsaWNhdGlvbiBzb3VyY2UgY29kZSB1
+bmRlciB0aGUgR1BMIGFsb25nIHdpdGggdGhlIFZESy1pbnRlZ3JhdGlvbiBwYXJ0IGluIHRoaXMg
+c2NlbmFyaW8gPyBPciB3b3VsZCB0aGUgR1BMIG9ibGlnYXRpb25zIGJlIGxpbWl0ZWQgdG8gdGhl
+IGNvZGUgcmVsYXRlZCB0byB0aGUgaW50ZWdyYXRpb24gb2YgSkZGUzIgaW50byBWREsgPw0KDQpQ
+bGVhc2UgY29uc3VsdCBhIGxhd3llci4NCkRvbid0IGV4cGVjdCBhbnlvbmUgb2YgdXMgdG8gaGVs
+cCB5b3UgYnlwYXNzaW5nIHRoZSBHUEwuDQoNCj4gQSByZWxhdGVkIHF1ZXN0aW9uIGlzOiB3aGF0
+IGlmIEkgY3JlYXRlIGFuIGluZGVwZW5kZW50IGltcGxlbWVudGF0aW9uIG9mIEpGRlMyIGJ5IGlt
+cGxlbWVudGluZyBpdHMgY29uY2VwdHMvZnVuY3Rpb25hbGl0eSBmcm9tIHNjcmF0Y2ggd3JpdGlu
+ZyBteSBvd24gY29kZSA/IFdvdWxkIHRoZSBHUEwgc3RpbGwgYXBwbHkgPw0KDQpZb3UncmUgZnJl
+ZSB0byBkbyB3aXRoIHlvdXIgb3duIGNvZGUgd2hhdCB5b3Ugd2FudC4NCklmIHlvdSBmZWFyIHBh
+dGVudHMsIGFnYWluLCBjb25zdWx0IGEgbGF3eWVyLg0KDQotLQ0KVGhhbmtzLA0KLy9yaWNoYXJk
+DQo=
