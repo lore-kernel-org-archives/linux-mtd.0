@@ -1,21 +1,19 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMnUq-0000aI-Nj
- for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 01:27:57 +0000
-Message-ID: <55C1652F.9040201@cn.fujitsu.com>
-Date: Wed, 5 Aug 2015 09:21:51 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <viro@ZenIV.linux.org.uk>,
- <jack@suse.cz>, <dedekind1@gmail.com>, <richard.weinberger@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v2 20/35] ubifs: implement IO functions for quota files
-References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-21-git-send-email-yangds.fnst@cn.fujitsu.com>
- <55BFE142.1030008@nod.at>
-In-Reply-To: <55BFE142.1030008@nod.at>
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMpt9-0006eQ-Ha
+ for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 04:01:12 +0000
+Received: by padck2 with SMTP id ck2so24892606pad.0
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Aug 2015 21:00:50 -0700 (PDT)
+From: Tomer Barletz <barletz@gmail.com>
+To: dwmw2@infradead.org,
+	computersforpeace@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Tomer Barletz <barletz@gmail.com>
+Subject: [PATCH] mtd: Fix switch-bool compilation warning
+Date: Tue,  4 Aug 2015 21:00:24 -0700
+Message-Id: <1438747224-14125-1-git-send-email-barletz@gmail.com>
+In-Reply-To: <20150802134845.GA31982@virgo.local>
+References: <20150802134845.GA31982@virgo.local>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/04/2015 05:46 AM, Richard Weinberger wrote:
-> Am 30.07.2015 um 07:48 schrieb Dongsheng Yang:
->> We have to implement 3 functions to support quota in ubifs:
->> ubifs_quota_read(), ubifs_quota_write() and ubifs_get_quotas()
->>
-[...]
->
-> I'll review your other patches these days.
-> For now I'm too sleepy.
+With gcc 5.1 I get:
+warning: switch condition has boolean value [-Wswitch-bool]
 
-Thank you so much, Richard. :)
+Signed-off-by: Tomer Barletz <barletz@gmail.com>
+---
+ drivers/mtd/mtd_blkdevs.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-I will reply all the comments from you and Jan
-when you finish the review.
-
-Thanx
-Yang
->
-> Thanks,
-> //richard
-> .
->
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 41acc50..8830475 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -97,14 +97,13 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
+ 	if (req->cmd_flags & REQ_DISCARD)
+ 		return tr->discard(dev, block, nsect);
+ 
+-	switch(rq_data_dir(req)) {
+-	case READ:
++	if (rq_data_dir(req) == READ) {
+ 		for (; nsect > 0; nsect--, block++, buf += tr->blksize)
+ 			if (tr->readsect(dev, block, buf))
+ 				return -EIO;
+ 		rq_flush_dcache_pages(req);
+ 		return 0;
+-	case WRITE:
++	} else {
+ 		if (!tr->writesect)
+ 			return -EIO;
+ 
+@@ -113,9 +112,6 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
+ 			if (tr->writesect(dev, block, buf))
+ 				return -EIO;
+ 		return 0;
+-	default:
+-		printk(KERN_NOTICE "Unknown request %u\n", rq_data_dir(req));
+-		return -EIO;
+ 	}
+ }
+ 
+-- 
+2.4.3
