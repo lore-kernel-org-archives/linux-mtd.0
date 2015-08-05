@@ -1,19 +1,18 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMpt9-0006eQ-Ha
- for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 04:01:12 +0000
-Received: by padck2 with SMTP id ck2so24892606pad.0
- for <linux-mtd@lists.infradead.org>; Tue, 04 Aug 2015 21:00:50 -0700 (PDT)
-From: Tomer Barletz <barletz@gmail.com>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Tomer Barletz <barletz@gmail.com>
-Subject: [PATCH] mtd: Fix switch-bool compilation warning
-Date: Tue,  4 Aug 2015 21:00:24 -0700
-Message-Id: <1438747224-14125-1-git-send-email-barletz@gmail.com>
-In-Reply-To: <20150802134845.GA31982@virgo.local>
-References: <20150802134845.GA31982@virgo.local>
+ id 1ZMqW0-000212-3Y
+ for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 04:41:21 +0000
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (Client did not present a certificate)
+ by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id AF2BB80715
+ for <linux-mtd@lists.infradead.org>; Wed,  5 Aug 2015 16:40:50 +1200 (NZST)
+From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+To: linux-mtd@lists.infradead.org
+Cc: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Subject: [PATCH] JFFS2: Prevent CPU starvation during garbage collection.
+Date: Wed,  5 Aug 2015 16:40:30 +1200
+Message-Id: <1438749630-1656-1-git-send-email-mark.tomlinson@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With gcc 5.1 I get:
-warning: switch condition has boolean value [-Wswitch-bool]
+The JFFS2 garbage collection checks every file on the system for correct
+checksums and cleaning up anything that it needs to. It sleeps for 50ms
+between each file, but within each file it remains busy.
 
-Signed-off-by: Tomer Barletz <barletz@gmail.com>
+As far as I can tell, there is no reason to not reschedule while checking a
+file, by putting a cond_resched() inside jfffs2_build_inode_fragtree(). In
+fact, jffs2_get_inode_nodes() will call cond_resched(), which is done
+immediately before jffs2_build_inode_fragtree().
+
+With this extra cond_resched() between reading file blocks, there is a
+dramatic improvement in latency for any processes which are running during
+this initial garbage collection phase.
+
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 ---
- drivers/mtd/mtd_blkdevs.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ fs/jffs2/readinode.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 41acc50..8830475 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -97,14 +97,13 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
- 	if (req->cmd_flags & REQ_DISCARD)
- 		return tr->discard(dev, block, nsect);
- 
--	switch(rq_data_dir(req)) {
--	case READ:
-+	if (rq_data_dir(req) == READ) {
- 		for (; nsect > 0; nsect--, block++, buf += tr->blksize)
- 			if (tr->readsect(dev, block, buf))
- 				return -EIO;
- 		rq_flush_dcache_pages(req);
- 		return 0;
--	case WRITE:
-+	} else {
- 		if (!tr->writesect)
- 			return -EIO;
- 
-@@ -113,9 +112,6 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
- 			if (tr->writesect(dev, block, buf))
- 				return -EIO;
- 		return 0;
--	default:
--		printk(KERN_NOTICE "Unknown request %u\n", rq_data_dir(req));
--		return -EIO;
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 28e0aab..78c526a 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -536,6 +536,7 @@ static int jffs2_build_inode_fragtree(struct jffs2_sb_info *c,
+ 				jffs2_free_tmp_dnode_info(this);
+ 			}
+ 			this = vers_next;
++			cond_resched();
+ 		}
  	}
- }
- 
+ 	return 0;
 -- 
-2.4.3
+2.5.0
