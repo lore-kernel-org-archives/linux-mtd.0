@@ -1,23 +1,25 @@
-Received: from mail-la0-x22c.google.com ([2a00:1450:4010:c03::22c])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMyPp-0003ih-B2
- for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 13:07:30 +0000
-Received: by labow3 with SMTP id ow3so28294159lab.1
- for <linux-mtd@lists.infradead.org>; Wed, 05 Aug 2015 06:07:07 -0700 (PDT)
+ id 1ZMypc-0006Kh-02
+ for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 13:34:08 +0000
+Received: by pabyb7 with SMTP id yb7so4556563pab.0
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Aug 2015 06:33:46 -0700 (PDT)
+Date: Wed, 5 Aug 2015 22:32:47 +0900
+From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Salah Triki <salah.triki@acm.org>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH] jffs2: Remove NULL checks from jffs2_destroy_slab_caches
+Message-ID: <20150805133247.GB576@swordfish>
+References: <1438717590-4263-1-git-send-email-salah.triki@acm.org>
+ <20150804200639.GP10676@google.com>
 MIME-Version: 1.0
-In-Reply-To: <55C1E92E.506@nod.at>
-References: <0D51A477944EA44BA3616A7D2CAB53CA0952EAE5@ERDE.irisgmbh.local>
- <CAFLxGvwozcZAP+7+6y_8UxyLKraYrA7=txure=L5xd2yDUaD1w@mail.gmail.com>
- <0D51A477944EA44BA3616A7D2CAB53CA0952ED8B@ERDE.irisgmbh.local>
- <55C1E92E.506@nod.at>
-Date: Wed, 5 Aug 2015 15:07:06 +0200
-Message-ID: <CADvTj4qgHG_S4JDWkEhtuKkRrMhTw3ccbvCdaab=-Gnbx20+2Q@mail.gmail.com>
-Subject: Re: Lisensing questions
-From: James Hilliard <james.hilliard1@gmail.com>
-To: Christian.Klemke@irisgmbh.de
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150804200639.GP10676@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +29,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-You may want to try contacting licensing@gnu.org for their position on
-this particular issue.
 
-On Wed, Aug 5, 2015 at 12:45 PM, Richard Weinberger <richard@nod.at> wrote:
-> Christian,
->
-> Am 05.08.2015 um 12:38 schrieb iris Christian Klemke:
->> Hi Richard,
->>
->> thanks for your reply. I think you me wrong regarding my intention. I do=
- not at all plan to bypass the GPL. In fact, the opposite is true: I do res=
-pect it and I try to avoid to violate it (either wittingly or unwittingly).=
- Which simply means: if the planned JFFS2 port results in the obligation to=
- publish our complete application code, then it's not an option and I will =
-have to find another solution, eg by buying a license for one of the commer=
-cially available flash filesystem implementations on the market. After all,=
- I have to respect the interests of the company I work for which wants to p=
-rotect its intellectual property and its patented technology which material=
-izes in vital parts of the application code.
->> The GPL is a great concept and I personally like and support its idea(ls=
-). However, even the GPL leaves the freedom to eg run closed-source applica=
-tion software on top Linux. In my scenario that freedom would be lost if th=
-e GPL is actually extended to the application code as well simply because t=
-echnically the binding between operating system and application differs bet=
-ween Linux and VDK.
->> However, it seems I will indeed have to find a lawyer specialized in sof=
-tware license questions. In addition, I'm going to post my question to the =
-OSI mailing list; maybe someone there can provide the needed legal advice.
->
-> I can understand your point but as I said, you can only get a reasonable =
-answer from a lawyer. :-)
-> We're engineers.
->
-> Thanks,
-> //richard
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Hi,
+
+Cc Julia Lawall
+
+On (08/04/15 13:06), Brian Norris wrote:
+> On Tue, Aug 04, 2015 at 08:46:30PM +0100, Salah Triki wrote:
+> > kmem_cache_destroy can be called with NULL values. Thus, the checks that
+> > precede the calls are useless.
+> 
+> This isn't *currently* true. Only after a bit of work did I find that
+> this is queued to change in the next release -- akpm has a patch:
+> 
+> commit 3e54c0cd3abdca0cf91854278c8633fc7df6beb1
+> Author: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Date:   Thu Jul 30 09:55:36 2015 +1000
+> 
+>     mm/slab_common: allow NULL cache pointer in kmem_cache_destroy()
+> 
+> Please provide the appropriate context next time. And for the moment, I will
+> not apply this, because this does not work on the current MTD development tree.
+> Try your patch bomb on the next release, as it's not worth my time to
+> cross-merge a -next branch just for a "cleanup".
+> 
+
+Julia already has a patch set to cleanup all the existing users
+(not published yet, though).
+
+Apart from that, and this is more important, the patch in question
+looks to me as 100% copy paste of a patch by Julia Lawall.
+
+https://lkml.org/lkml/2015/6/10/31
+
+And no, Salah, it's not "Signed-off-by: Salah Triki <salah.triki@acm.org>".
+
+For the record, this is the second, let's say strange, patch from Salah
+that I see today.
+
+	-ss
+
+> > Signed-off-by: Salah Triki <salah.triki@acm.org>
+> > ---
+> >  fs/jffs2/malloc.c | 27 +++++++++------------------
+> >  1 file changed, 9 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/fs/jffs2/malloc.c b/fs/jffs2/malloc.c
+> > index b8fd651..ce11897 100644
+> > --- a/fs/jffs2/malloc.c
+> > +++ b/fs/jffs2/malloc.c
+> > @@ -97,25 +97,16 @@ int __init jffs2_create_slab_caches(void)
+> >  
+> >  void jffs2_destroy_slab_caches(void)
+> >  {
+> > -	if(full_dnode_slab)
+> > -		kmem_cache_destroy(full_dnode_slab);
+> > -	if(raw_dirent_slab)
+> > -		kmem_cache_destroy(raw_dirent_slab);
+> > -	if(raw_inode_slab)
+> > -		kmem_cache_destroy(raw_inode_slab);
+> > -	if(tmp_dnode_info_slab)
+> > -		kmem_cache_destroy(tmp_dnode_info_slab);
+> > -	if(raw_node_ref_slab)
+> > -		kmem_cache_destroy(raw_node_ref_slab);
+> > -	if(node_frag_slab)
+> > -		kmem_cache_destroy(node_frag_slab);
+> > -	if(inode_cache_slab)
+> > -		kmem_cache_destroy(inode_cache_slab);
+> > +	kmem_cache_destroy(full_dnode_slab);
+> > +	kmem_cache_destroy(raw_dirent_slab);
+> > +	kmem_cache_destroy(raw_inode_slab);
+> > +	kmem_cache_destroy(tmp_dnode_info_slab);
+> > +	kmem_cache_destroy(raw_node_ref_slab);
+> > +	kmem_cache_destroy(node_frag_slab);
+> > +	kmem_cache_destroy(inode_cache_slab);
+> >  #ifdef CONFIG_JFFS2_FS_XATTR
+> > -	if (xattr_datum_cache)
+> > -		kmem_cache_destroy(xattr_datum_cache);
+> > -	if (xattr_ref_cache)
+> > -		kmem_cache_destroy(xattr_ref_cache);
+> > +	kmem_cache_destroy(xattr_datum_cache);
+> > +	kmem_cache_destroy(xattr_ref_cache);
+> >  #endif
+> >  }
+> >  
+> > -- 
+> > 1.9.1
+> > 
+> > 
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
