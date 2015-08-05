@@ -1,20 +1,20 @@
-Received: from mail.irisgmbh.de ([81.169.172.79])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMw6d-0002BR-4T
- for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 10:39:34 +0000
-From: iris Christian Klemke <Christian.Klemke@irisgmbh.de>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: AW: Lisensing questions
-Date: Wed, 5 Aug 2015 10:38:34 +0000
-Message-ID: <0D51A477944EA44BA3616A7D2CAB53CA0952ED8B@ERDE.irisgmbh.local>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZMwCQ-0007So-1f
+ for linux-mtd@lists.infradead.org; Wed, 05 Aug 2015 10:45:31 +0000
+Subject: Re: Lisensing questions
+To: iris Christian Klemke <Christian.Klemke@irisgmbh.de>
 References: <0D51A477944EA44BA3616A7D2CAB53CA0952EAE5@ERDE.irisgmbh.local>
  <CAFLxGvwozcZAP+7+6y_8UxyLKraYrA7=txure=L5xd2yDUaD1w@mail.gmail.com>
-In-Reply-To: <CAFLxGvwozcZAP+7+6y_8UxyLKraYrA7=txure=L5xd2yDUaD1w@mail.gmail.com>
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <0D51A477944EA44BA3616A7D2CAB53CA0952ED8B@ERDE.irisgmbh.local>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55C1E92E.506@nod.at>
+Date: Wed, 5 Aug 2015 12:45:02 +0200
 MIME-Version: 1.0
+In-Reply-To: <0D51A477944EA44BA3616A7D2CAB53CA0952ED8B@ERDE.irisgmbh.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCwNCg0KdGhhbmtzIGZvciB5b3VyIHJlcGx5LiBJIHRoaW5rIHlvdSBtZSB3cm9u
-ZyByZWdhcmRpbmcgbXkgaW50ZW50aW9uLiBJIGRvIG5vdCBhdCBhbGwgcGxhbiB0byBieXBhc3Mg
-dGhlIEdQTC4gSW4gZmFjdCwgdGhlIG9wcG9zaXRlIGlzIHRydWU6IEkgZG8gcmVzcGVjdCBpdCBh
-bmQgSSB0cnkgdG8gYXZvaWQgdG8gdmlvbGF0ZSBpdCAoZWl0aGVyIHdpdHRpbmdseSBvciB1bndp
-dHRpbmdseSkuIFdoaWNoIHNpbXBseSBtZWFuczogaWYgdGhlIHBsYW5uZWQgSkZGUzIgcG9ydCBy
-ZXN1bHRzIGluIHRoZSBvYmxpZ2F0aW9uIHRvIHB1Ymxpc2ggb3VyIGNvbXBsZXRlIGFwcGxpY2F0
-aW9uIGNvZGUsIHRoZW4gaXQncyBub3QgYW4gb3B0aW9uIGFuZCBJIHdpbGwgaGF2ZSB0byBmaW5k
-IGFub3RoZXIgc29sdXRpb24sIGVnIGJ5IGJ1eWluZyBhIGxpY2Vuc2UgZm9yIG9uZSBvZiB0aGUg
-Y29tbWVyY2lhbGx5IGF2YWlsYWJsZSBmbGFzaCBmaWxlc3lzdGVtIGltcGxlbWVudGF0aW9ucyBv
-biB0aGUgbWFya2V0LiBBZnRlciBhbGwsIEkgaGF2ZSB0byByZXNwZWN0IHRoZSBpbnRlcmVzdHMg
-b2YgdGhlIGNvbXBhbnkgSSB3b3JrIGZvciB3aGljaCB3YW50cyB0byBwcm90ZWN0IGl0cyBpbnRl
-bGxlY3R1YWwgcHJvcGVydHkgYW5kIGl0cyBwYXRlbnRlZCB0ZWNobm9sb2d5IHdoaWNoIG1hdGVy
-aWFsaXplcyBpbiB2aXRhbCBwYXJ0cyBvZiB0aGUgYXBwbGljYXRpb24gY29kZS4NClRoZSBHUEwg
-aXMgYSBncmVhdCBjb25jZXB0IGFuZCBJIHBlcnNvbmFsbHkgbGlrZSBhbmQgc3VwcG9ydCBpdHMg
-aWRlYShscykuIEhvd2V2ZXIsIGV2ZW4gdGhlIEdQTCBsZWF2ZXMgdGhlIGZyZWVkb20gdG8gZWcg
-cnVuIGNsb3NlZC1zb3VyY2UgYXBwbGljYXRpb24gc29mdHdhcmUgb24gdG9wIExpbnV4LiBJbiBt
-eSBzY2VuYXJpbyB0aGF0IGZyZWVkb20gd291bGQgYmUgbG9zdCBpZiB0aGUgR1BMIGlzIGFjdHVh
-bGx5IGV4dGVuZGVkIHRvIHRoZSBhcHBsaWNhdGlvbiBjb2RlIGFzIHdlbGwgc2ltcGx5IGJlY2F1
-c2UgdGVjaG5pY2FsbHkgdGhlIGJpbmRpbmcgYmV0d2VlbiBvcGVyYXRpbmcgc3lzdGVtIGFuZCBh
-cHBsaWNhdGlvbiBkaWZmZXJzIGJldHdlZW4gTGludXggYW5kIFZESy4NCkhvd2V2ZXIsIGl0IHNl
-ZW1zIEkgd2lsbCBpbmRlZWQgaGF2ZSB0byBmaW5kIGEgbGF3eWVyIHNwZWNpYWxpemVkIGluIHNv
-ZnR3YXJlIGxpY2Vuc2UgcXVlc3Rpb25zLiBJbiBhZGRpdGlvbiwgSSdtIGdvaW5nIHRvIHBvc3Qg
-bXkgcXVlc3Rpb24gdG8gdGhlIE9TSSBtYWlsaW5nIGxpc3Q7IG1heWJlIHNvbWVvbmUgdGhlcmUg
-Y2FuIHByb3ZpZGUgdGhlIG5lZWRlZCBsZWdhbCBhZHZpY2UuDQoNCkNoZWVycywNCkNocmlzdGlh
-bg0KDQoNCi0tLS0tVXJzcHLDvG5nbGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogUmljaGFyZCBX
-ZWluYmVyZ2VyIFttYWlsdG86cmljaGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbV0gDQpHZXNlbmRl
-dDogRGllbnN0YWcsIDQuIEF1Z3VzdCAyMDE1IDE4OjU4DQpBbjogaXJpcyBDaHJpc3RpYW4gS2xl
-bWtlDQpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCkJldHJlZmY6IFJlOiBMaXNl
-bnNpbmcgcXVlc3Rpb25zDQoNCk9uIFR1ZSwgQXVnIDQsIDIwMTUgYXQgMzo0NyBQTSwgaXJpcyBD
-aHJpc3RpYW4gS2xlbWtlIDxDaHJpc3RpYW4uS2xlbWtlQGlyaXNnbWJoLmRlPiB3cm90ZToNCj4g
-SGksDQo+DQo+IEkgaGF2ZSBhIHF1ZXN0aW9uIHJlZ2FyZGluZyB0aGUgR1BMIGltcGxpY2F0aW9u
-cyBpbiBhIHNvbWV3aGF0IHNwZWNpYWwgY2FzZS4NCj4gV2hhdCBJIHdvdWxkIGxpa2UgdG8gZG8g
-aXMgdG8gdGFrZSB0aGUgSkZGUzIgc291cmNlIGNvZGUgYW5kIHBvcnQgaXQgdG8gYSBjbG9zZWQt
-c291cmNlIHJlYWwtdGltZSBrZXJuZWwgbmFtZWQgVkRLIChieSBBbmFsb2cgRGV2aWNlcyksIGJ5
-IGEgY29tYmluYXRpb24gb2Ygc291cmNlIGNvZGUgbW9kaWZpY2F0aW9ucyBhbmQvb3IgcHJvdmlz
-aW9uIG9mIGFuIGVtdWxhdGlvbiBsYXllciBmb3IgdGhlIHJlbGV2YW50IExpbnV4IHN1YnN5c3Rl
-bXMgKGxpa2UgTVREKS4NCj4gTXkgdW5kZXJzdGFuZGluZyBvZiB0aGUgR1BMIGlzIHRoYXQgSSB3
-b3VsZCBiZSB0aGlzIHdvdWxkIHVzdWFsbHkgb2JsaWdlIG1lIHRvIHB1Ymxpc2ggdGhlIHJlc3Vs
-dGluZyBzb3VyY2UgY29kZXMgdW5kZXIgdGhlIEdQTCBhcyB3ZWxsLiBTbyBmYXIsIHNvIGdvb2Qu
-IEhvd2V2ZXIsIEkgc3VzcGVjdCB0aGUgaW1wbGljYXRpb25zIG9mIHRoZSBHUEwgbGljZW5zZSBt
-aWdodCBub3Qgc3RvcCB0aGVyZSBiZWNhdXNlIHRoZSBWREsgaXMgbm90IGEgZnVsbCBvcGVyYXRp
-bmcgc3lzdGVtIG9uIHdoaWNoIG91ciBhcHBsaWNhdGlvbiBydW5zLiBJbnN0ZWFkLCBpdCBpcyBh
-IGtlcm5lbCB3aGljaCBnZXRzIGxpbmtlZCB3aXRoIHRoZSBhcHBsaWNhdGlvbiBjb2RlIGludG8g
-b25lIG1vbm9saXRoaWMgZmlybXdhcmUgaW1hZ2UuIFNvIGluIGNhc2Ugb2YgdGhlIFZESyB0aGUg
-c2VwYXJhdGlvbiBiZXR3ZWVuIG9wZXJhdGluZyBzeXN0ZW0gYW5kIGFwcGxpY2F0aW9uLCB3aGlj
-aCB3b3VsZCB1c3VhbGx5IGFsc28gYmUgYSAiYmFycmllciIgZm9yIHRoZSBHUEwsIGRvZXMgbm90
-IGV4aXN0LiBOb25ldGhlbGVzcyBhIHNlcGFyYXRpb24gd291bGQgZXhpc3QgaW4gYXJjaGl0ZWN0
-dXJhbCB0ZXJtcywgYmVjYXVzZSB0aGUgSkZGUzIgaW50ZWdyYXRpb24gd291bGQgYmUgY29kZWQg
-YWdhaW5zdCB0aGUgVkRLIGZpbGVzeXN0ZW0gZHJpdmVyIGludGVyZmFjZSB3aGlsZSB0aGUgYXBw
-bGljYXRpb24gd291bGQgbm90IGNhbGwgYW55IEpGRlMyLXJlbGF0ZWQgY29kZSBkaXJlY3RseSBi
-dXQgb25seSByZWx5IG9uIHRoZSBzdGFuZGFyZCBDIGZpbGUgQVBJIHRoYXQgaXMgb2ZmZXJlZCBi
-eSB0aGUgVkRLIGFuZCBpdHMgQy1ydW50aW1lIGxpYnJhcnkuDQo+IFNvLCB0aGUgYmlnIHF1ZXN0
-aW9uIGlzOiB3b3VsZCBhIEpGRlMyIGludGVncmF0aW9uIGFzIG91dGxpbmVkIGFib3ZlIHJlcXVp
-cmUgdGhlIHB1YmxpY2F0aW9uIG9mIHRoZSB3aG9sZSBhcHBsaWNhdGlvbiBzb3VyY2UgY29kZSB1
-bmRlciB0aGUgR1BMIGFsb25nIHdpdGggdGhlIFZESy1pbnRlZ3JhdGlvbiBwYXJ0IGluIHRoaXMg
-c2NlbmFyaW8gPyBPciB3b3VsZCB0aGUgR1BMIG9ibGlnYXRpb25zIGJlIGxpbWl0ZWQgdG8gdGhl
-IGNvZGUgcmVsYXRlZCB0byB0aGUgaW50ZWdyYXRpb24gb2YgSkZGUzIgaW50byBWREsgPw0KDQpQ
-bGVhc2UgY29uc3VsdCBhIGxhd3llci4NCkRvbid0IGV4cGVjdCBhbnlvbmUgb2YgdXMgdG8gaGVs
-cCB5b3UgYnlwYXNzaW5nIHRoZSBHUEwuDQoNCj4gQSByZWxhdGVkIHF1ZXN0aW9uIGlzOiB3aGF0
-IGlmIEkgY3JlYXRlIGFuIGluZGVwZW5kZW50IGltcGxlbWVudGF0aW9uIG9mIEpGRlMyIGJ5IGlt
-cGxlbWVudGluZyBpdHMgY29uY2VwdHMvZnVuY3Rpb25hbGl0eSBmcm9tIHNjcmF0Y2ggd3JpdGlu
-ZyBteSBvd24gY29kZSA/IFdvdWxkIHRoZSBHUEwgc3RpbGwgYXBwbHkgPw0KDQpZb3UncmUgZnJl
-ZSB0byBkbyB3aXRoIHlvdXIgb3duIGNvZGUgd2hhdCB5b3Ugd2FudC4NCklmIHlvdSBmZWFyIHBh
-dGVudHMsIGFnYWluLCBjb25zdWx0IGEgbGF3eWVyLg0KDQotLQ0KVGhhbmtzLA0KLy9yaWNoYXJk
-DQo=
+Christian,
+
+Am 05.08.2015 um 12:38 schrieb iris Christian Klemke:
+> Hi Richard,
+> 
+> thanks for your reply. I think you me wrong regarding my intention. I do not at all plan to bypass the GPL. In fact, the opposite is true: I do respect it and I try to avoid to violate it (either wittingly or unwittingly). Which simply means: if the planned JFFS2 port results in the obligation to publish our complete application code, then it's not an option and I will have to find another solution, eg by buying a license for one of the commercially available flash filesystem implementations on the market. After all, I have to respect the interests of the company I work for which wants to protect its intellectual property and its patented technology which materializes in vital parts of the application code.
+> The GPL is a great concept and I personally like and support its idea(ls). However, even the GPL leaves the freedom to eg run closed-source application software on top Linux. In my scenario that freedom would be lost if the GPL is actually extended to the application code as well simply because technically the binding between operating system and application differs between Linux and VDK.
+> However, it seems I will indeed have to find a lawyer specialized in software license questions. In addition, I'm going to post my question to the OSI mailing list; maybe someone there can provide the needed legal advice.
+
+I can understand your point but as I said, you can only get a reasonable answer from a lawyer. :-)
+We're engineers.
+
+Thanks,
+//richard
