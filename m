@@ -1,21 +1,22 @@
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNETx-00064b-9m
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 06:16:51 +0000
-Date: Thu, 6 Aug 2015 08:16:21 +0200 (CEST)
-From: Julia Lawall <julia.lawall@lip6.fr>
-To: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-cc: Brian Norris <computersforpeace@gmail.com>,
- Salah Triki <salah.triki@acm.org>, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] jffs2: Remove NULL checks from jffs2_destroy_slab_caches
-In-Reply-To: <20150805133247.GB576@swordfish>
-Message-ID: <alpine.DEB.2.02.1508060812450.2305@localhost6.localdomain6>
-References: <1438717590-4263-1-git-send-email-salah.triki@acm.org>
- <20150804200639.GP10676@google.com> <20150805133247.GB576@swordfish>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNF2r-0004uE-Pb
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 06:52:54 +0000
+Message-ID: <55C302DA.6090709@cn.fujitsu.com>
+Date: Thu, 6 Aug 2015 14:46:50 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: <dedekind1@gmail.com>, <viro@ZenIV.linux.org.uk>, <jack@suse.cz>,
+ <richard.weinberger@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 19/35] ubifs: budget for inode in ubifs_dirty_inode
+ if necessary
+References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>	
+ <1438235311-23788-20-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438762294.26877.14.camel@gmail.com>
+In-Reply-To: <1438762294.26877.14.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,108 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 08/05/2015 04:11 PM, Artem Bityutskiy wrote:
+> On Thu, 2015-07-30 at 13:48 +0800, Dongsheng Yang wrote:
+>> In ubifs, we have to do a budget for inode before marking
+>> it as dirty. But sometimes, we would call dirty_inode in vfs
+>> which will not do a budget for inode. In this case, we have
+>> to do a budget in ubifs_dirty_inode() by ourselvies.
+>>
+>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+>
+> Could you please explain some more the problem you are trying to solve.
+> Locking looks confusing and broken. It looks like what you are
+> expressing is that the 'ui_mutex' is optional, and this smells fishy.
 
+Oh, yes, that's TRUE. This patch makes the locking broken. I am sorry
+about it.
+>
+[...]
+>
+> Please, try to explain what you want to achieve some more. I am not
+> sure I understand the end goal.
 
-On Wed, 5 Aug 2015, Sergey Senozhatsky wrote:
+Okey, what I want here is to doing a budget for the inode in
+.dirty_inode called by vfs. Currently, the all work is under the full
+control of ubifs as the comment of @ui_mutex said. But the
+dquot_disable() is doing a dirty_inode() without asking ubifs is that
+allowed. So I want to do the budget in ubifs_dirty_inode() itself here.
 
-> 
-> Hi,
-> 
-> Cc Julia Lawall
-> 
-> On (08/04/15 13:06), Brian Norris wrote:
-> > On Tue, Aug 04, 2015 at 08:46:30PM +0100, Salah Triki wrote:
-> > > kmem_cache_destroy can be called with NULL values. Thus, the checks that
-> > > precede the calls are useless.
-> > 
-> > This isn't *currently* true. Only after a bit of work did I find that
-> > this is queued to change in the next release -- akpm has a patch:
-> > 
-> > commit 3e54c0cd3abdca0cf91854278c8633fc7df6beb1
-> > Author: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> > Date:   Thu Jul 30 09:55:36 2015 +1000
-> > 
-> >     mm/slab_common: allow NULL cache pointer in kmem_cache_destroy()
-> > 
-> > Please provide the appropriate context next time. And for the moment, I will
-> > not apply this, because this does not work on the current MTD development tree.
-> > Try your patch bomb on the next release, as it's not worth my time to
-> > cross-merge a -next branch just for a "cleanup".
-> > 
-> 
-> Julia already has a patch set to cleanup all the existing users
-> (not published yet, though).
-> 
-> Apart from that, and this is more important, the patch in question
-> looks to me as 100% copy paste of a patch by Julia Lawall.
-> 
-> https://lkml.org/lkml/2015/6/10/31
-> 
-> And no, Salah, it's not "Signed-off-by: Salah Triki <salah.triki@acm.org>".
-> 
-> For the record, this is the second, let's say strange, patch from Salah
-> that I see today.
+But, that's INCORRECT. Yes, my bad. Thanx for your comment.
 
-I'm missing some context.  As far as I can see, kmem_cache_destroy is 
-updated in linux-next.  So it seems like it could be OK to submit a patch 
-to clean up the uses now.  Does Salah's patch address all three functions: 
-kmem_cache_destroy, mempool_destroy, and dma_pool_destroy?
+And I found another solution for it. To introduce a callback in quota
+to allow filesystem to dirty inode in dquot_disable(). I believe that
+works.
 
-julia
+Anyway, I agree that this patch is a fishy one here. I will drop it
+in next version and send a better solution for it. Of course, with
+some more description for what I am doing. :)
 
-> 
-> 	-ss
-> 
-> > > Signed-off-by: Salah Triki <salah.triki@acm.org>
-> > > ---
-> > >  fs/jffs2/malloc.c | 27 +++++++++------------------
-> > >  1 file changed, 9 insertions(+), 18 deletions(-)
-> > > 
-> > > diff --git a/fs/jffs2/malloc.c b/fs/jffs2/malloc.c
-> > > index b8fd651..ce11897 100644
-> > > --- a/fs/jffs2/malloc.c
-> > > +++ b/fs/jffs2/malloc.c
-> > > @@ -97,25 +97,16 @@ int __init jffs2_create_slab_caches(void)
-> > >  
-> > >  void jffs2_destroy_slab_caches(void)
-> > >  {
-> > > -	if(full_dnode_slab)
-> > > -		kmem_cache_destroy(full_dnode_slab);
-> > > -	if(raw_dirent_slab)
-> > > -		kmem_cache_destroy(raw_dirent_slab);
-> > > -	if(raw_inode_slab)
-> > > -		kmem_cache_destroy(raw_inode_slab);
-> > > -	if(tmp_dnode_info_slab)
-> > > -		kmem_cache_destroy(tmp_dnode_info_slab);
-> > > -	if(raw_node_ref_slab)
-> > > -		kmem_cache_destroy(raw_node_ref_slab);
-> > > -	if(node_frag_slab)
-> > > -		kmem_cache_destroy(node_frag_slab);
-> > > -	if(inode_cache_slab)
-> > > -		kmem_cache_destroy(inode_cache_slab);
-> > > +	kmem_cache_destroy(full_dnode_slab);
-> > > +	kmem_cache_destroy(raw_dirent_slab);
-> > > +	kmem_cache_destroy(raw_inode_slab);
-> > > +	kmem_cache_destroy(tmp_dnode_info_slab);
-> > > +	kmem_cache_destroy(raw_node_ref_slab);
-> > > +	kmem_cache_destroy(node_frag_slab);
-> > > +	kmem_cache_destroy(inode_cache_slab);
-> > >  #ifdef CONFIG_JFFS2_FS_XATTR
-> > > -	if (xattr_datum_cache)
-> > > -		kmem_cache_destroy(xattr_datum_cache);
-> > > -	if (xattr_ref_cache)
-> > > -		kmem_cache_destroy(xattr_ref_cache);
-> > > +	kmem_cache_destroy(xattr_datum_cache);
-> > > +	kmem_cache_destroy(xattr_ref_cache);
-> > >  #endif
-> > >  }
-> > >  
-> > > -- 
-> > > 1.9.1
-> > > 
-> > > 
-> > > ______________________________________________________
-> > > Linux MTD discussion mailing list
-> > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > 
-> 
+Thanx a lot, Richard and Atem
+
+Yang
+>
+> Artem.
+> .
+>
