@@ -1,18 +1,29 @@
-Received: from mail-pa0-f51.google.com ([209.85.220.51])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNAlP-0000q7-PA
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 02:18:36 +0000
-Received: by pacrr5 with SMTP id rr5so15008417pac.3
- for <linux-mtd@lists.infradead.org>; Wed, 05 Aug 2015 19:18:14 -0700 (PDT)
-Message-ID: <1438827489.19066.3.camel@ingics.com>
-Subject: [PATCH RFT] mtd: brcmnand: Fix misuse of IS_ENABLED
-From: Axel Lin <axel.lin@ingics.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Date: Thu, 06 Aug 2015 10:18:09 +0800
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from mx.dave-tech.it ([2.229.21.40])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNCno-0003A6-Pk
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 04:29:14 +0000
+Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
+ default ECC read functions
+To: Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
+ <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
+ <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
+ <55BB48D9.6050508@dave-tech.it> <20150731123221.34cf601e@bbrezillon>
+ <55BB7ABD.7040008@dave-tech.it> <20150731161032.2b155ccb@bbrezillon>
+ <55BBA012.4080600@dave-tech.it> <20150731182709.14c345df@bbrezillon>
+ <55BF4D72.8090000@dave-tech.it> <20150803144253.66fc6941@bbrezillon>
+ <55BF6F09.9000001@dave-tech.it> <55BFC1DA.3090108@nod.at>
+ <55C06379.5090705@dave-tech.it> <55C067F7.3000309@nod.at>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
+ Han Xu <b45815@freescale.com>, Artem Bityutskiy <dedekind1@gmail.com>
+From: Andrea Scian <rnd4@dave-tech.it>
+Message-ID: <55C2E27D.3030406@dave-tech.it>
+Date: Thu, 6 Aug 2015 06:28:45 +0200
+MIME-Version: 1.0
+In-Reply-To: <55C067F7.3000309@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,55 +34,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-While IS_ENABLED() is perfectly fine for CONFIG_* symbols, it is not
-for other symbols such as __BIG_ENDIAN that is provided directly by
-the compiler.
+Il 04/08/2015 09:21, Richard Weinberger ha scritto:
+> Andrea,
+>
+> Am 04.08.2015 um 09:02 schrieb Andrea Scian:
+>>> I'm not sure whether introducing a read-before-write check is the best solution.
+>>> At least we need hard numbers for slow/old SLC NANDs too.
+>>
+>> We can enable the feature only for MLC, AFAIK it has not been required for old SLC ;-)
+>
+> I think this needs more discussion.
+>
+> Boris, Brian, will you be at Embedded Linux Conference Europe in Dublin?
+> Maybe we can discuss these issues (data retention, ff-checks, etc...) in person and
+ > figure out where to address them.
+> I really want to avoid ad-hoc solutions. :)
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
-Hi,
-I don't have a big endian machine to test this, so I'd appreciate if
-someone can review and test this patch.
+Maybe I'll be at ELCE this year too
+I'll be glad to meet all of you in person and participate to this 
+discussion. :)
 
-A similar misuse of IS_ENABLED is reported and fixed in:
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/dma/mv_xor.c?id=0ec9ebc706fbd394bc233d87ac7aaad1c4f3ab54
+It will be nice if also some silicon vendor would like to participate. I 
+know that someone from micron is actively following us on this ML, but I 
+don't really know if there's someone here in Europe. :)
 
- drivers/mtd/nand/brcmnand/brcmnand.h | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+>
+>> Thanks.
+>> In your opinion, enabling chk_io is correct to rough estimate the overhead
+ >> or does it enable too much checks?
+>
+> You mean the other checks bedside of self_check_write()? You can comment them out
+ > for your tests.
+>
+> Thanks,
+> //richard
+>
 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
-index a20c736..c697a4e 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.h
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.h
-@@ -50,19 +50,21 @@ static inline u32 brcmnand_readl(void __iomem *addr)
- 	 * Other architectures (e.g., ARM) either do not support big endian, or
- 	 * else leave I/O in little endian mode.
- 	 */
--	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
--		return __raw_readl(addr);
--	else
--		return readl_relaxed(addr);
-+#if defined(__BIG_ENDIAN) && IS_ENABLED(CONFIG_MIPS)
-+	return __raw_readl(addr);
-+#else
-+	return readl_relaxed(addr);
-+#endif
- }
- 
- static inline void brcmnand_writel(u32 val, void __iomem *addr)
- {
- 	/* See brcmnand_readl() comments */
--	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
--		__raw_writel(val, addr);
--	else
--		writel_relaxed(val, addr);
-+#if defined(__BIG_ENDIAN) && IS_ENABLED(CONFIG_MIPS)
-+	__raw_writel(val, addr);
-+#else
-+	writel_relaxed(val, addr);
-+#endif
- }
- 
- int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc);
+Kind Regards,
+
 -- 
-2.1.0
+
+Andrea SCIAN
+
+DAVE Embedded Systems
