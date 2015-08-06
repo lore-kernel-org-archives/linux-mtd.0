@@ -1,30 +1,16 @@
-Message-ID: <55C35233.2000105@ti.com>
-Date: Thu, 6 Aug 2015 17:55:23 +0530
-From: Vignesh R <vigneshr@ti.com>
-MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Michal Suchanek
- <hramrach@gmail.com>, Mark Brown <broonie@kernel.org>
-CC: devicetree <devicetree@vger.kernel.org>, Brian Norris
- <computersforpeace@gmail.com>, Tony Lindgren <tony@atomide.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-spi
- <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- <linux-omap@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
-References: <20150731181745.GM20873@sirena.org.uk> <55BEF4AF.5090704@ti.com>
- <20150804155148.GR20873@sirena.org.uk> <55C0FD98.1090107@ti.com>
- <20150805115013.GJ20873@sirena.org.uk>
- <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
- <20150805124412.GN20873@sirena.org.uk>
- <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
- <20150806090202.GO20873@sirena.org.uk>
- <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
- <20150806102225.GI7576@n2100.arm.linux.org.uk>
-In-Reply-To: <20150806102225.GI7576@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNKqn-0005Nv-Eo
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 13:04:51 +0000
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 3/4] mtd: denali_pci: refactor driver using devres API
+Date: Thu,  6 Aug 2015 16:04:23 +0300
+Message-Id: <1438866264-11091-3-git-send-email-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <1438866264-11091-1-git-send-email-andriy.shevchenko@linux.intel.com>
+References: <1438866264-11091-1-git-send-email-andriy.shevchenko@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,93 +20,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+In recent kernels we have a lot of helper functions, including
+devres API, to make life of device driver developer easy.
 
+Convert the driver using devm_kzalloc() and pcim_enable_device().
 
-On 08/06/2015 03:52 PM, Russell King - ARM Linux wrote:
-> On Thu, Aug 06, 2015 at 12:01:37PM +0200, Michal Suchanek wrote:
->> Disclaimer: I am not familiar with the hardware for which this patch
->> adds support.
->>
->> However, I am familiar m25p80.c and as I understand it the controller
->> is basically supposed to implement m25p80.c in hardware when this flag
->> is set.
-> 
-> That, to me, sounds like what you have is:
-> 
-> ---m25p80 specific interface--->SPI bus--->m25p80 device
-> 
-> Where the m25p80 specific interface does not expose direct access to the
-> SPI bus?
-> 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/mtd/nand/denali_pci.c | 23 ++++++-----------------
+ 1 file changed, 6 insertions(+), 17 deletions(-)
 
-Let me give overview of ti-qspi controller:
-
-There are two interfaces in the controller, one exposes direct access to
-SPI bus and the other doesn't. It is possible to dynamically switch
-between these ports by writing to QSPI_SPI_SWITCH_REG.
-
-The two interface are [1]:
-1) Generic SPI interface: (config port): with this interface, ti-qspi
-controller can communicate with *any* spi device (flash and non-flash).
-This interface is provides direct access to SPI bus.
-
-2) SPI memory mapped interface (memory mapped port): This is m25p80
-specific interface which can be use to read data from flash.
-But if the flash has to be configured to some particular mode like QUAD
-READ MODE, then the controller needs to be put in to config port to read
-and modify serial flash's config register and then switch to memory
-mapped port in order to read data stored on flash.
-
-For example on DRA74 evm, if a 64 MB flash is connected as a slave,
-entire flash memory is visible from 0x5C000000 to 0x5FFFFFFF L3_MAIN
-address. In order to read using memory mapped port following will be the
-sequence:
-
-1.Write to flash config register via config port to switch to QUAD MODE
-(or any mode that flash supports).
-2. Populate QSPI_SPI_SETUP_REGx with flash read command, number of
-address bytes to use and dummy bytes required.
-3. Switch to memory mapped port by writing to QSPI_SPI_SWITCH_REG.
-4. Now, its possible to perform read from 0x5C000000 to 0x5FFFFFFF using
-memcpy. The qspi controller hardware will communicate over SPI bus and
-get the data. This data is directly sent to RAM via SoC's interconnect.
-
-Advantages of memory mapped port are: improved read performance,
-MEM_TO_MEM DMA support can be added (ti-qspi hardware as such does not
-provide DMA events).
-
-Advantages of config port: can be used to communicate with *any* SPI
-device, provides direct read/write access to SPI bus.
-
-On the whole following are my requirements:
-1. to be able to communicate with non -flash SPI devices via config port
-( this functionality is supported by current driver, I dont want to
-break it). Or pump any spi_message on to SPI bus directly.
-2. take advantage of memory mapped port in order to increase read
-throughput( and use dma in future) when the slave is a m25p80 type flash.
-3. handle m25p80 as well as other slave on multiple chipselects.
-
-I just need to know whether the user that requested the transfer is
-m25p80 driver. If yes, ti-qspi driver can take advantage of memory
-mapped interface, else just use config port to access SPI bus directly.
-
-Writing separate driver based on spi-nor framework to interface with
-m25p80 is not an option because, I would lose the ability to interface
-with non-flash devices.
-
-The spi_message that is received in transfer_one_message() is too
-generic to imply the slave device that is on the other side of the wire.
-IMO, the read command does not imply that the slave is m25p80 flash
-(besides the read opcodes vary across vendors of m25p80 and across modes).
-
-As Michal suggested, adding a flag to spi_device to distinguish whether
-the slave is a m25p80 flash type will help spi master to handle
-optimizations specific to m25p80s while being generic enough to handle
-all other spi devices. Is that ok? Is there any other way to imply what
-slave as at the other end?
-
-[1] TRM: http://www.ti.com/lit/ug/spruhz6/spruhz6.pdf 24.5.4 QSPI
-Functional Description
+diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
+index 29e5d0c..ad16e2e 100644
+--- a/drivers/mtd/nand/denali_pci.c
++++ b/drivers/mtd/nand/denali_pci.c
+@@ -30,19 +30,19 @@ MODULE_DEVICE_TABLE(pci, denali_pci_ids);
+ 
+ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ {
+-	int ret = -ENODEV;
++	int ret;
+ 	resource_size_t csr_base, mem_base;
+ 	unsigned long csr_len, mem_len;
+ 	struct denali_nand_info *denali;
+ 
+-	denali = kzalloc(sizeof(*denali), GFP_KERNEL);
++	denali = devm_kzalloc(&dev->dev, sizeof(*denali), GFP_KERNEL);
+ 	if (!denali)
+ 		return -ENOMEM;
+ 
+-	ret = pci_enable_device(dev);
++	ret = pcim_enable_device(dev);
+ 	if (ret) {
+ 		pr_err("Spectra: pci_enable_device failed.\n");
+-		goto failed_alloc_memery;
++		return ret;
+ 	}
+ 
+ 	if (id->driver_data == INTEL_CE4100) {
+@@ -70,14 +70,13 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 	ret = pci_request_regions(dev, DENALI_NAND_NAME);
+ 	if (ret) {
+ 		pr_err("Spectra: Unable to request memory regions\n");
+-		goto failed_enable_dev;
++		return ret;
+ 	}
+ 
+ 	denali->flash_reg = ioremap_nocache(csr_base, csr_len);
+ 	if (!denali->flash_reg) {
+ 		pr_err("Spectra: Unable to remap memory region\n");
+-		ret = -ENOMEM;
+-		goto failed_req_regions;
++		return -ENOMEM;
+ 	}
+ 
+ 	denali->flash_mem = ioremap_nocache(mem_base, mem_len);
+@@ -99,13 +98,6 @@ failed_remap_mem:
+ 	iounmap(denali->flash_mem);
+ failed_remap_reg:
+ 	iounmap(denali->flash_reg);
+-failed_req_regions:
+-	pci_release_regions(dev);
+-failed_enable_dev:
+-	pci_disable_device(dev);
+-failed_alloc_memery:
+-	kfree(denali);
+-
+ 	return ret;
+ }
+ 
+@@ -117,9 +109,6 @@ static void denali_pci_remove(struct pci_dev *dev)
+ 	denali_remove(denali);
+ 	iounmap(denali->flash_reg);
+ 	iounmap(denali->flash_mem);
+-	pci_release_regions(dev);
+-	pci_disable_device(dev);
+-	kfree(denali);
+ }
+ 
+ static struct pci_driver denali_pci_driver = {
 -- 
-Regards
-Vignesh
+2.4.6
