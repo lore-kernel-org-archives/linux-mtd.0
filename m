@@ -1,35 +1,32 @@
-Received: from pandora.arm.linux.org.uk
- ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNIMC-0007S7-ST
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 10:25:06 +0000
-Date: Thu, 6 Aug 2015 11:22:25 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Michal Suchanek <hramrach@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, "R, Vignesh" <vigneshr@ti.com>,
- devicetree <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Tony Lindgren <tony@atomide.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
-Message-ID: <20150806102225.GI7576@n2100.arm.linux.org.uk>
-References: <20150731181745.GM20873@sirena.org.uk> <55BEF4AF.5090704@ti.com>
- <20150804155148.GR20873@sirena.org.uk> <55C0FD98.1090107@ti.com>
- <20150805115013.GJ20873@sirena.org.uk>
- <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
- <20150805124412.GN20873@sirena.org.uk>
- <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
- <20150806090202.GO20873@sirena.org.uk>
- <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
+ id 1ZNITJ-0004Ro-8g
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 10:32:26 +0000
+Received: by wibxm9 with SMTP id xm9so17830353wib.1
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Aug 2015 03:32:02 -0700 (PDT)
+From: Bhuvanchandra DV <bhuvanchandradv@gmail.com>
+Subject: Re: UBIFS errors when file-system is full
+To: Richard Weinberger <richard@nod.at>
+References: <55A3C342.9010704@gmail.com>
+ <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
+ <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
+ <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
+ <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
+ <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
+ <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
+ <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
+ <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
+ <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
+ <55AF4447.50500@nod.at> <55B24F2F.9020705@gmail.com>
+ <55B26D24.3060006@nod.at> <55BBA6A5.9020701@gmail.com>
+ <55BC68D6.2070008@nod.at>
+Cc: linux-mtd@lists.infradead.org
+Message-ID: <55C3379E.50000@gmail.com>
+Date: Thu, 6 Aug 2015 12:31:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+In-Reply-To: <55BC68D6.2070008@nod.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,54 +36,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 06, 2015 at 12:01:37PM +0200, Michal Suchanek wrote:
-> Disclaimer: I am not familiar with the hardware for which this patch
-> adds support.
-> 
-> However, I am familiar m25p80.c and as I understand it the controller
-> is basically supposed to implement m25p80.c in hardware when this flag
-> is set.
+Hi Richard,
 
-That, to me, sounds like what you have is:
+On 08/01/2015 08:36 AM, Richard Weinberger wrote:
 
----m25p80 specific interface--->SPI bus--->m25p80 device
+> Am 31.07.2015 um 18:47 schrieb Bhuvanchandra DV:
+>> On 07/24/2015 06:51 PM, Richard Weinberger wrote:
+>>
+>>> Hi!
+>>>
+>>> Am 24.07.2015 um 16:43 schrieb Bhuvanchandra DV:
+>>>> Disabled fastmap in U-Boot, still the corruption is persistent when using
+>>>> U-Boot to mount rootfs and load kernel.
+>>> Can you please describe your boot setup in detail?
+>>> Why does U-Boot _mount_ an UBIFS? Install the kernel on an UBI static volume.
+>> U-Boot mounts UBIFS for loading the kernel and device tree blobs availabel in rootfs.
+>> Since approximately around ~3-5 % of spare blocks are reserverd for wear leveling
+>> (according to the NAND manufacturer). Initially we had a separate UBI partition of 8MB
+>> for Kenrel, but after few times of re-writing the kernel to that volume kernel fails
+>> with no available free space. Due to that reason we made a single big ubi volume and
+>> moved the kernel and device tree blobs to rootfs.
+> UBI partition? You mean UBI volume?
 
-Where the m25p80 specific interface does not expose direct access to the
-SPI bus?
+Sorry, UBI volume.
 
-If that's the case, then maybe you should consider whether using the SPI
-bus infrastructure is really the best way forward.  Would it make more
-sense instead to adopt a different software structure, something more
-high-level like:
+> Just install kernel, initrd and dtb on UBI static volumes.
+>
+> If U-Boot has to mount UBIFS it has to do that in RW mode.
+> So, no fastmap for you.
 
-     +-------------------------------------------+
-     |          m25p80 high-level driver         |
-     +----------------------+--------------------+
-     |   SPI m25p80 driver  |                    |
-     +----------------------+                    |
-     |      SPI layer       |  Special driver    |
-     +----------------------+                    |
-     |    SPI bus driver    |                    |
-     +----------------------+--------------------+
-     |     SPI hardware     |  Special hardware  |
-     +----------------------+--------------------+
+Okay
 
-Rather than what you seem to be trying to do, which seems to be:
+>> Seems the mtd-utils are not really cross-compile friendly, some how managed to build the ubi-tests
+>> tweeking the Makefiles.
+> Seeing forward to receive patches or at least a bug report.
 
-     +----------------------+
-     |   SPI m25p80 driver  |
-     +----------------------+
-     |      SPI layer       |
-     +----------------------+
-     |  Translation driver  |
-     +----------------------+
-     |   Special hardware   |
-     +----------------------+
+Sure will do it.
 
-where this requires M25P80 specific hacks to be introduced into the SPI
-layer so that you can communicate additional information between the SPI
-M25P80 driver and the translation driver.
+>
+>> The tests ran on ubi partition after isolating it from U-Boot completly.
+>> Formatted the ubi partition and then boot with SD card (4.1.2 kernel fastmap enabled/disabled, fm_debug enabled).
+>> Please find the below log of ubi-tests:
+>>
+>> [io_paral] write_thread():222: written and read data are different
+> *blink*
 
--- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
+Tried to run the io_paral test multiple times seperately with few debug prints added to see what exact
+differences with read and write buffers, so far we could see one complete page is read twice even though
+it is written once. I'm now confused is the issue happen while reading or while writing. Can you give us
+some pointers so that we can narrow down the cause for this failure.
+
+>
+> Thanks,
+> //richard
+
+Best regards,
+Bhuvan
