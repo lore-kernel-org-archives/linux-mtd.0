@@ -1,22 +1,38 @@
-Received: from mx02.posteo.de ([89.146.194.165])
+Received: from pandora.arm.linux.org.uk
+ ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNQ91-0000aV-7u
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 18:44:00 +0000
-Message-ID: <1438886613.32524.28.camel@embedded.rocks>
-Subject: Re: ubi_wl_get_peb: Unable to get a free PEB from user WL pool
-From: =?ISO-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
-To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Date: Thu, 06 Aug 2015 20:43:33 +0200
-In-Reply-To: <55C3A465.5070504@nod.at>
-References: <1438809724.6328.18.camel@embedded.rocks>
- <55C28070.2000804@nod.at> <1438810690.6328.26.camel@embedded.rocks>
- <55C2840B.5000709@nod.at> <1438811611.6328.32.camel@embedded.rocks>
- <55C287A9.8000006@nod.at> <1438813074.6328.35.camel@embedded.rocks>
- <55C30D24.1010504@nod.at> <1438848603.32524.6.camel@embedded.rocks>
- <55C3A465.5070504@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ id 1ZNSnz-0006UK-5Z
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 21:34:29 +0000
+Date: Thu, 6 Aug 2015 22:33:40 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Vignesh R <vigneshr@ti.com>, Michal Suchanek <hramrach@gmail.com>,
+ Mark Brown <broonie@kernel.org>, devicetree <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Tony Lindgren <tony@atomide.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
+Message-ID: <20150806213340.GK7576@n2100.arm.linux.org.uk>
+References: <20150805115013.GJ20873@sirena.org.uk>
+ <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
+ <20150805124412.GN20873@sirena.org.uk>
+ <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
+ <20150806090202.GO20873@sirena.org.uk>
+ <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
+ <20150806102225.GI7576@n2100.arm.linux.org.uk>
+ <55C35233.2000105@ti.com>
+ <20150806135129.GJ7576@n2100.arm.linux.org.uk>
+ <CAMuHMdWWDwZ=ziGQXFCnOX8pErXpsEi533J73_Hh=sEqq4hR6Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWWDwZ=ziGQXFCnOX8pErXpsEi533J73_Hh=sEqq4hR6Q@mail.gmail.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +42,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Do, 2015-08-06 at 20:16 +0200, Richard Weinberger wrote:
-> Am 06.08.2015 um 10:10 schrieb Jörg Krause:
-> > I will turn fastmap off for now, but feel free to send more patches 
-> > to
-> > try.
+On Thu, Aug 06, 2015 at 06:14:00PM +0200, Geert Uytterhoeven wrote:
+> On Thu, Aug 6, 2015 at 3:51 PM, Russell King - ARM Linux
+> <linux@arm.linux.org.uk> wrote:
+> > On Thu, Aug 06, 2015 at 05:55:23PM +0530, Vignesh R wrote:
+> >> On the whole following are my requirements:
+> >> 1. to be able to communicate with non -flash SPI devices via config port
+> >> ( this functionality is supported by current driver, I dont want to
+> >> break it). Or pump any spi_message on to SPI bus directly.
+> >> 2. take advantage of memory mapped port in order to increase read
+> >> throughput( and use dma in future) when the slave is a m25p80 type flash.
+> >> 3. handle m25p80 as well as other slave on multiple chipselects.
+> >>
+> >> I just need to know whether the user that requested the transfer is
+> >> m25p80 driver. If yes, ti-qspi driver can take advantage of memory
+> >> mapped interface, else just use config port to access SPI bus directly.
+> >
+> > The problem with this approach is that it's an abomination.  It's adding
+> > a SPI-user specific hack which is detected by a specific driver.  That's
+> > really not sane - what happens when we have lots of these kinds of "I'm
+> > an X SPI-user" with drivers detecting that?  It's not maintainable in the
+> > long term.
+> >
+> > Yes, your requirements _today_ seem simple and easy, but you're only
+> > thinking about today, not tomorrow when you've moved on and someone else
+> > has to maintain the mess left behind (or delete it from mainline because
+> > they're sick of dealing with a hack.)
+> >
+> >> The spi_message that is received in transfer_one_message() is too
+> >> generic to imply the slave device that is on the other side of the wire.
+> >> IMO, the read command does not imply that the slave is m25p80 flash
+> >> (besides the read opcodes vary across vendors of m25p80 and across modes).
+> >
+> > I can see both sides of the argument.
+> >
+> > Mark is saying: if the SPI driver detects that the message to be transmitted
+> > is a read command followed by the appropriate number of dummy bytes, and
+> > then the data being read _and_ it's using quad-mode access, and the hardware
+> > generates _exactly_ that in hardware using the memory mapped mode, there is
+> > no reason _not_ to use the hardware to achieve that SPI transaction.  The
+> > bus activity will be identical to what happens when the SPI controller is
+> > used manually to achieve that bus sequence.
+> >
+> > You're saying: but the documentation says you can't use it for anything
+> > except m25p80.  If you look at 24.5.4.1.2, it tells you what the SFI
+> > generates on the bus, which is:
+> >
+> > 1. CS active
+> > 2. Read command byte sent
+> > 3. 1-4 address bytes sent
+> > 4. 0-3 dummy bytes sent
+> > 5. data bytes read from bus
+> > 6. CS inactive
+> >
+> > So, Mark's point is "if we can detect a transaction which fits _that_
+> > bus activity, there's no reason not to use this acceleration for the
+> > transaction."
+> >
+> > What you're failing to counter with is: we don't have enough information
+> > in the SPI driver to know how many dummy bytes there are between the
+> > address bytes and the data read from the bus.
 > 
-> Can you please give the attached patch a try?
-> 
+> Irrespective of the dummy bytes.
+> What if the spi device is not a FLASH ROM, but some other device,
+> which receives a data packet that accidentally looks like an m25p80 READ
+> command?
 
-Congratulations! That fix it :-)
+Well, for the most part it looks like it should still work, but there
+could be a gotcha, but first, let's get rid of a myth there.
 
-Here is the corresponding snap from the kernel log:
+The QSPI is _not_ specific to the M25P80.  The manual says nothing
+about being specific to that device.  What it says is that it's for
+SPI NOR memory.  It will work with bus widths of 1, 2 or 4 data lines,
+so it probably works with non-M25P80 SPI NOR devices too - and the fact
+that the read and write commands are completely programmable suggests
+that using it with SPI NOR devices which do not use the M25P80 read
+command value is intended.
 
-    [    3.175194] ubi1: default fastmap pool size: 10
-    [    3.179937] ubi1: default fastmap WL pool size: 5
-    [    3.184713] ubi1: attaching mtd7
-    [    3.539869] ubi1: scanning is finished
-    [    3.623707] ubi1: volume 0 ("user") re-sized from 13 to 262 LEBs
-    [    3.634937] ubi1: attached mtd7 (name "data", size 36 MiB)
-    [    3.640722] ubi1: PEB size: 131072 bytes (128 KiB), LEB size:
-    126976 bytes
-    [    3.647772] ubi1: min./max. I/O unit sizes: 2048/2048, sub-page
-    size 2048
-    [    3.654611] ubi1: VID header offset: 2048 (aligned 2048), data
-    offset: 4096
-    [    3.661714] ubi1: good PEBs: 288, bad PEBs: 0, corrupted PEBs: 0
-    [    3.667890] ubi1: user volume: 1, internal volumes: 1, max.
-    volumes count: 128
-    [    3.675168] ubi1: max/mean erase counter: 1/0, WL threshold:
-    4096, image sequence number: 1059544151
-    [    3.684448] ubi1: available PEBs: 0, total reserved PEBs: 288,
-    PEBs reserved for bad PEB handling: 20
-    [    3.693923] ubi1: background thread "ubi_bgt1d" started, PID 42
 
-Many thanks for this!
+The SFI is a state machine based translator which sits behind the SPI
+interface (look at the manual).  It sequence sthe SPI bus through a
+series of standard SPI states which happen to be the states I detailed
+above.
 
-Jörg
+Now, the first byte of the SFI-generated SPI message can be programmed
+to any 8 bit value.  So the first byte of the SPI message is totally
+under software control.  The next one to four bytes which comprise the
+"address" can be controlled to by deciding where in the memory map to
+start reading from.  Hence, the value of those bytes is also totally
+under software control.  The number of dummy bytes can be programmed
+too.  So far so good.
+
+So, if we know that we have a SPI message which says "send 0x01 0x20
+0x30, send one dummy byte, read 32 bytes", if we program the SFI to
+send a read command as 0x01, program an address length of 2 bytes
+with one dummy byte, and then read the next 32 bytes at the appropriate
+offset in the memory mapping to cause the next two bytes to be 0x20,
+0x30, then what we end up with on the bus is:
+
+	send 0x01, 0x20, 0x30
+	send one dummy byte
+
+That much is good, but now is the problem - how does the SFI know that
+we're going to require to read 32 bytes?  I think the answer to that
+is that it doesn't know, so it probably just reads the number of bytes
+which the access on the SoC bus is asking for, which makes it
+indeterminant from a software point of view to control how many bytes
+will be read without provoking another "send 0x01, next address, dummy
+byte" sequence.
+
+So, I'm now on the side of not parsing commands in the SPI driver, and
+back on the idea that this needs to be handled in some other manner
+which doesn't involve polluting the SPI core with flag-hacks.
+
+-- 
+FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
+according to speedtest.net.
