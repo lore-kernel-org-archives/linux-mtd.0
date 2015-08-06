@@ -1,23 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNFa1-0005mU-M9
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 07:27:10 +0000
-Message-ID: <1438846005.26877.45.camel@gmail.com>
-Subject: Re: [PATCH v2 19/35] ubifs: budget for inode in ubifs_dirty_inode
- if necessary
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, viro@ZenIV.linux.org.uk,
- jack@suse.cz, richard.weinberger@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Date: Thu, 06 Aug 2015 10:26:45 +0300
-In-Reply-To: <55C302DA.6090709@cn.fujitsu.com>
-References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-20-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438762294.26877.14.camel@gmail.com> <55C302DA.6090709@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNFdu-0008FQ-Ly
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 07:31:12 +0000
+Subject: Re: ubi_wl_get_peb: Unable to get a free PEB from user WL pool
+To: =?UTF-8?Q?J=c3=b6rg_Krause?= <joerg.krause@embedded.rocks>,
+ linux-mtd@lists.infradead.org
+References: <1438809724.6328.18.camel@embedded.rocks>
+ <55C28070.2000804@nod.at> <1438810690.6328.26.camel@embedded.rocks>
+ <55C2840B.5000709@nod.at> <1438811611.6328.32.camel@embedded.rocks>
+ <55C287A9.8000006@nod.at> <1438813074.6328.35.camel@embedded.rocks>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55C30D24.1010504@nod.at>
+Date: Thu, 6 Aug 2015 09:30:44 +0200
+MIME-Version: 1.0
+In-Reply-To: <1438813074.6328.35.camel@embedded.rocks>
+Content-Type: multipart/mixed; boundary="------------000607060206080603090900"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +24,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2015-08-06 at 14:46 +0800, Dongsheng Yang wrote:
-> On 08/05/2015 04:11 PM, Artem Bityutskiy wrote:
-> > On Thu, 2015-07-30 at 13:48 +0800, Dongsheng Yang wrote:
-> > > In ubifs, we have to do a budget for inode before marking
-> > > it as dirty. But sometimes, we would call dirty_inode in vfs
-> > > which will not do a budget for inode. In this case, we have
-> > > to do a budget in ubifs_dirty_inode() by ourselvies.
-> > > 
-> > > Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> > 
-> > Could you please explain some more the problem you are trying to 
-> > solve.
-> > Locking looks confusing and broken. It looks like what you are
-> > expressing is that the 'ui_mutex' is optional, and this smells 
-> > fishy.
+This is a multi-part message in MIME format.
+--------------000607060206080603090900
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Jörg,
+
+Am 06.08.2015 um 00:17 schrieb Jörg Krause:
+>>>> Then just disable it. :)
+>>>
+>>> I did :) I thought fastmap is used automatically by the UBI driver?
+>>
+>> It will *use* fastmap automatically but not convert non-fastmap UBI 
+>> images
+>> to fastmap.
+>> You can enable ubi.fm_autoconvert to do so.
 > 
-> Oh, yes, that's TRUE. This patch makes the locking broken. I am sorry
-> about it.
-> > 
-> [...]
-> > 
-> > Please, try to explain what you want to achieve some more. I am not
-> > sure I understand the end goal.
+> Sorry for asking, but how do I create an UBI image with fastmap
+> support? I've never read something about this.
+
+You have to use the ubi.fm_autoconvert parameter. The UBI will automatically
+write down a fastmap if needed.
+
+Currently it is not possible to create a fastmap-enabled UBI image
+using ubinize.
+The reason is that fastmap stores the LEB->PEB mappings to allow
+a fast attach. ubinize cannot know which PEBs are bad.
+So, we'd need a tool which creates the fastmap while flashing to the nand.
+
+>>>> Meanwhile I'll find out what exactly is going on.
+>>>
+>>> Many thanks!
+>>
+>> Can you please apply the attached debug patch?
+>> I wonder why exactly the auto resize function is failing.
 > 
-> Okey, what I want here is to doing a budget for the inode in
-> .dirty_inode called by vfs. Currently, the all work is under the full
-> control of ubifs as the comment of @ui_mutex said. But the
-> dquot_disable() is doing a dirty_inode() without asking ubifs is that
-> allowed. So I want to do the budget in ubifs_dirty_inode() itself 
-> here.But, that's INCORRECT. Yes, my bad. Thanx for your comment.
-> 
-> And I found another solution for it. To introduce a callback in quota
-> to allow filesystem to dirty inode in dquot_disable(). I believe that
-> works.
+> autoresize: cannot auto-resize volume 0: -28
 
-Yes, the high-level picture is this.
+I have good and bad news.
+The good news is that I know what is going on, the bad one
+is that I don't have an good solution for it.
 
-1. Dirtying and inode implies liability - the system becomes liable to
-write it to the media.
+UBI is requesting a new PEB but your system is still busy with
+erasing them. With fastmap disabled UBI can use produce_free_peb()
+and wait for a new erased PEB.
+But fastmap cannot use this helper as it releases ->wl_lock
+and would lead to a inconsistent fastmap state.
+Kernels < 4.1 did so and faced interesting fastmap corruptions.
+I hoped using the current retry logic the issue you're facing cannot
+happen. But as it seems I was wrong.
 
-2. Most file-systems have no problems with this, because there is
-always space allocated for the inode.
+Can you please give the attached patch a try?
 
-3. Some file-systems like UBIFS may have no space for writing dirty
-inodes. Often UBIFS can product this space, but it will involve forcing
-write-back, and there are locking issues when doing write-back from the
-write-back path.
+Thanks,
+//richard
 
-4. So the approach UBIFS took is to allocate space in advance for every
-dirty inode.
+--------------000607060206080603090900
+Content-Type: text/x-patch;
+ name="dirty_hack.diff"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="dirty_hack.diff"
 
-5. To do that, UBIFS requires VFS avoid dirtying inodes directly, but
-instead, dirty them via the file-system. The file-system then has a
-chance to do all the necessary things related to dirtying the inode.
-The FS may even refuse to dirty the inode if in knows that it is
-impossible to do (the FS is 100% full, for example).
+diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
+index b2a6653..e47974d 100644
+--- a/drivers/mtd/ubi/fastmap-wl.c
++++ b/drivers/mtd/ubi/fastmap-wl.c
+@@ -206,12 +206,12 @@ again:
+=20
+ 	if (pool->used =3D=3D pool->size) {
+ 		spin_unlock(&ubi->wl_lock);
+-		if (retried) {
++		if (retried > 5) {
+ 			ubi_err(ubi, "Unable to get a free PEB from user WL pool");
+ 			ret =3D -ENOSPC;
+ 			goto out;
+ 		}
+-		retried =3D 1;
++		retried++;
+ 		up_read(&ubi->fm_eba_sem);
+ 		goto again;
+ 	}
 
-So yes, if the generic quota code could dirty its inodes via the FS,
-not directly, that would be great.
-
-But please, check that the generic quota code can handle errors,
-because ubifs_dirty_inode() may return -ENOSPC or other errors.
-
-Artem.
+--------------000607060206080603090900--
