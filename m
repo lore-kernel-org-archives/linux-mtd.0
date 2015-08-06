@@ -1,36 +1,27 @@
-Received: from pandora.arm.linux.org.uk
- ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNLah-0004LM-Bd
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 13:52:18 +0000
-Date: Thu, 6 Aug 2015 14:51:29 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Michal Suchanek <hramrach@gmail.com>, Mark Brown <broonie@kernel.org>,
- devicetree <devicetree@vger.kernel.org>,
+ id 1ZNM0F-0002lN-VK
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 14:18:41 +0000
+Received: by pabxd6 with SMTP id xd6so46046325pab.2
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Aug 2015 07:18:18 -0700 (PDT)
+Date: Thu, 6 Aug 2015 23:17:18 +0900
+From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Tony Lindgren <tony@atomide.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
-Message-ID: <20150806135129.GJ7576@n2100.arm.linux.org.uk>
-References: <20150804155148.GR20873@sirena.org.uk> <55C0FD98.1090107@ti.com>
- <20150805115013.GJ20873@sirena.org.uk>
- <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
- <20150805124412.GN20873@sirena.org.uk>
- <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
- <20150806090202.GO20873@sirena.org.uk>
- <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
- <20150806102225.GI7576@n2100.arm.linux.org.uk>
- <55C35233.2000105@ti.com>
+ Salah Triki <salah.triki@acm.org>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] jffs2: Remove NULL checks from jffs2_destroy_slab_caches
+Message-ID: <20150806141718.GA4292@swordfish>
+References: <1438717590-4263-1-git-send-email-salah.triki@acm.org>
+ <20150804200639.GP10676@google.com>
+ <20150805133247.GB576@swordfish>
+ <alpine.DEB.2.02.1508060812450.2305@localhost6.localdomain6>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <55C35233.2000105@ti.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+In-Reply-To: <alpine.DEB.2.02.1508060812450.2305@localhost6.localdomain6>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,121 +31,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 06, 2015 at 05:55:23PM +0530, Vignesh R wrote:
-> On the whole following are my requirements:
-> 1. to be able to communicate with non -flash SPI devices via config port
-> ( this functionality is supported by current driver, I dont want to
-> break it). Or pump any spi_message on to SPI bus directly.
-> 2. take advantage of memory mapped port in order to increase read
-> throughput( and use dma in future) when the slave is a m25p80 type flash.
-> 3. handle m25p80 as well as other slave on multiple chipselects.
+On (08/06/15 08:16), Julia Lawall wrote:
+> > On (08/04/15 13:06), Brian Norris wrote:
+> > > On Tue, Aug 04, 2015 at 08:46:30PM +0100, Salah Triki wrote:
+> > > > kmem_cache_destroy can be called with NULL values. Thus, the checks that
+> > > > precede the calls are useless.
+> > > 
+> > > This isn't *currently* true. Only after a bit of work did I find that
+> > > this is queued to change in the next release -- akpm has a patch:
+> > > 
+> > > commit 3e54c0cd3abdca0cf91854278c8633fc7df6beb1
+> > > Author: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> > > Date:   Thu Jul 30 09:55:36 2015 +1000
+> > > 
+> > >     mm/slab_common: allow NULL cache pointer in kmem_cache_destroy()
+> > > 
+> > > Please provide the appropriate context next time. And for the moment, I will
+> > > not apply this, because this does not work on the current MTD development tree.
+> > > Try your patch bomb on the next release, as it's not worth my time to
+> > > cross-merge a -next branch just for a "cleanup".
+> > > 
+> > 
+> > Julia already has a patch set to cleanup all the existing users
+> > (not published yet, though).
+> > 
+> > Apart from that, and this is more important, the patch in question
+> > looks to me as 100% copy paste of a patch by Julia Lawall.
+> > 
+> > https://lkml.org/lkml/2015/6/10/31
+> > 
+> > And no, Salah, it's not "Signed-off-by: Salah Triki <salah.triki@acm.org>".
+> > 
+> > For the record, this is the second, let's say strange, patch from Salah
+> > that I see today.
 > 
-> I just need to know whether the user that requested the transfer is
-> m25p80 driver. If yes, ti-qspi driver can take advantage of memory
-> mapped interface, else just use config port to access SPI bus directly.
+> I'm missing some context.  As far as I can see, kmem_cache_destroy is 
+> updated in linux-next.  So it seems like it could be OK to submit a patch 
+> to clean up the uses now.  Does Salah's patch address all three functions: 
+> kmem_cache_destroy, mempool_destroy, and dma_pool_destroy?
+> 
 
-The problem with this approach is that it's an abomination.  It's adding
-a SPI-user specific hack which is detected by a specific driver.  That's
-really not sane - what happens when we have lots of these kinds of "I'm
-an X SPI-user" with drivers detecting that?  It's not maintainable in the
-long term.
+no, just one that you already published.
 
-Yes, your requirements _today_ seem simple and easy, but you're only
-thinking about today, not tomorrow when you've moved on and someone else
-has to maintain the mess left behind (or delete it from mainline because
-they're sick of dealing with a hack.)
+all 3 functions are updated in -next, so you are welcome to send
+your patch set.
 
-> The spi_message that is received in transfer_one_message() is too
-> generic to imply the slave device that is on the other side of the wire.
-> IMO, the read command does not imply that the slave is m25p80 flash
-> (besides the read opcodes vary across vendors of m25p80 and across modes).
+	-ss
 
-I can see both sides of the argument.
-
-Mark is saying: if the SPI driver detects that the message to be transmitted
-is a read command followed by the appropriate number of dummy bytes, and
-then the data being read _and_ it's using quad-mode access, and the hardware
-generates _exactly_ that in hardware using the memory mapped mode, there is
-no reason _not_ to use the hardware to achieve that SPI transaction.  The
-bus activity will be identical to what happens when the SPI controller is
-used manually to achieve that bus sequence.
-
-You're saying: but the documentation says you can't use it for anything
-except m25p80.  If you look at 24.5.4.1.2, it tells you what the SFI
-generates on the bus, which is:
-
-1. CS active
-2. Read command byte sent
-3. 1-4 address bytes sent
-4. 0-3 dummy bytes sent
-5. data bytes read from bus
-6. CS inactive
-
-So, Mark's point is "if we can detect a transaction which fits _that_
-bus activity, there's no reason not to use this acceleration for the
-transaction."
-
-What you're failing to counter with is: we don't have enough information
-in the SPI driver to know how many dummy bytes there are between the
-address bytes and the data read from the bus.
-
-The M25P80 driver just appends additional bytes to the message to
-achieve this:
-
-        struct m25p *flash = nor->priv;
-        unsigned int dummy = nor->read_dummy;
-
-        /* convert the dummy cycles to the number of bytes */
-        dummy /= 8;
-
-        flash->command[0] = nor->read_opcode;
-        m25p_addr2cmd(nor, from, flash->command);
-
-        t[0].tx_buf = flash->command;
-        t[0].len = m25p_cmdsz(nor) + dummy;
-        spi_message_add_tail(&t[0], &m);
-
-The reason that the number of dummy bytes can't be detected is because
-it's all hidden in the first transaction as the total number of bytes to
-be transmitted - and the dummy bytes are uninitialised, so you can't
-make any assumptions what value they are.  There is no way for the SPI
-driver to know whether these dummy bytes are dummy bytes or whether they
-have an effect on the targetted device.
-
-I think that comprehensively rules out Mark's idea with the SPI core as
-it stands today: there is no way for the SPI driver to reliably detect
-a message like a SFI read command by parsing the SPI transmitted message
-prior to sending it as we can never be sure whether there are dummy bytes
-to be transmitted.
-
-What may make more sense from the SPI point of view is to communicate to
-all SPI drivers how many dummy bytes are to be transferred.  I'm not fully
-up on SPI, but maybe something like this:
-
-	t[0].tx_buf = flash->command;
-	t[0].len = m25p_cmdsz(nor);
-	spi_message_add_tail(&t[0], &m);
-	t[1].tx_buf = dummy_buffer;
-	t[1].len = dummy;
-	t[1].dummy = 1;
-	spi_message_add_tail(&t[1], &m);
-
-This way, we're describing the transfer to the SPI core, and explicitly
-indicating that there are some dummy bytes.  The SPI driver can then
-tell that these are dummy bytes, and if the SPI message consists of:
-
-- transmit 2 to 5 bytes where the first byte is a recognised read command
-- transmit 0 to 3 dummy bytes
-- read some bytes
-
-then it can make use of the SFI mode to accelerate the operation.
-
-This would not be a hack to the SPI code: we're describing to the SPI
-code what we want to achieve in terms of the activity on the bus, and
-providing that level of description then allows the SPI driver to make
-informed decisions on whether it can handle the transfer using some
-non-standard feature.
-
--- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
+> > 
+> > 	-ss
+> > 
+> > > > Signed-off-by: Salah Triki <salah.triki@acm.org>
+> > > > ---
+> > > >  fs/jffs2/malloc.c | 27 +++++++++------------------
+> > > >  1 file changed, 9 insertions(+), 18 deletions(-)
+> > > > 
+> > > > diff --git a/fs/jffs2/malloc.c b/fs/jffs2/malloc.c
+> > > > index b8fd651..ce11897 100644
+> > > > --- a/fs/jffs2/malloc.c
+> > > > +++ b/fs/jffs2/malloc.c
+> > > > @@ -97,25 +97,16 @@ int __init jffs2_create_slab_caches(void)
+> > > >  
+> > > >  void jffs2_destroy_slab_caches(void)
+> > > >  {
+> > > > -	if(full_dnode_slab)
+> > > > -		kmem_cache_destroy(full_dnode_slab);
+> > > > -	if(raw_dirent_slab)
+> > > > -		kmem_cache_destroy(raw_dirent_slab);
+> > > > -	if(raw_inode_slab)
+> > > > -		kmem_cache_destroy(raw_inode_slab);
+> > > > -	if(tmp_dnode_info_slab)
+> > > > -		kmem_cache_destroy(tmp_dnode_info_slab);
+> > > > -	if(raw_node_ref_slab)
+> > > > -		kmem_cache_destroy(raw_node_ref_slab);
+> > > > -	if(node_frag_slab)
+> > > > -		kmem_cache_destroy(node_frag_slab);
+> > > > -	if(inode_cache_slab)
+> > > > -		kmem_cache_destroy(inode_cache_slab);
+> > > > +	kmem_cache_destroy(full_dnode_slab);
+> > > > +	kmem_cache_destroy(raw_dirent_slab);
+> > > > +	kmem_cache_destroy(raw_inode_slab);
+> > > > +	kmem_cache_destroy(tmp_dnode_info_slab);
+> > > > +	kmem_cache_destroy(raw_node_ref_slab);
+> > > > +	kmem_cache_destroy(node_frag_slab);
+> > > > +	kmem_cache_destroy(inode_cache_slab);
+> > > >  #ifdef CONFIG_JFFS2_FS_XATTR
+> > > > -	if (xattr_datum_cache)
+> > > > -		kmem_cache_destroy(xattr_datum_cache);
+> > > > -	if (xattr_ref_cache)
+> > > > -		kmem_cache_destroy(xattr_ref_cache);
+> > > > +	kmem_cache_destroy(xattr_datum_cache);
+> > > > +	kmem_cache_destroy(xattr_ref_cache);
+> > > >  #endif
+> > > >  }
+> > > >  
+> > > > -- 
+> > > > 1.9.1
+> > > > 
+> > > > 
+> > > > ______________________________________________________
+> > > > Linux MTD discussion mailing list
+> > > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> > > 
+> > 
+> 
