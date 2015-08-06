@@ -1,27 +1,15 @@
+Received: from mail-oi0-x232.google.com ([2607:f8b0:4003:c06::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNJtV-0005Em-7U
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 12:03:34 +0000
+Received: by oihn130 with SMTP id n130so38280541oih.2
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Aug 2015 05:03:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20150806112353.GT20873@sirena.org.uk>
-References: <20150731181745.GM20873@sirena.org.uk> <55BEF4AF.5090704@ti.com>
- <20150804155148.GR20873@sirena.org.uk> <55C0FD98.1090107@ti.com>
- <20150805115013.GJ20873@sirena.org.uk>
- <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
- <20150805124412.GN20873@sirena.org.uk>
- <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
- <20150806090202.GO20873@sirena.org.uk>
- <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
- <20150806112353.GT20873@sirena.org.uk>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 6 Aug 2015 13:42:32 +0200
-Message-ID: <CAOMqctQKc6f5Mbe_CSd-ghguUfZvf6v_BRvYxQJVqPne73iESA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
-To: Mark Brown <broonie@kernel.org>
-Cc: "R, Vignesh" <vigneshr@ti.com>, devicetree <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, Tony Lindgren <tony@atomide.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+From: shawn rose <shawn@ecoventsystems.com>
+Date: Thu, 6 Aug 2015 08:02:50 -0400
+Message-ID: <CAKWcF8-LTkPQEjLR3gdiZ1ZLrmoZHqdo2tBkzZsnrxiVqK+oag@mail.gmail.com>
+Subject: Encrypting UBIFS Filesystem
+To: linux-mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,48 +20,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6 August 2015 at 13:23, Mark Brown <broonie@kernel.org> wrote:
-> On Thu, Aug 06, 2015 at 12:01:37PM +0200, Michal Suchanek wrote:
->
->> However, I am familiar m25p80.c and as I understand it the controller
->> is basically supposed to implement m25p80.c in hardware when this flag
->> is set.
->
-> But what in concrete terms is that supposed to mean?  It's currently
-> just an essentially undocumented flag on a message rather than something
-> operating at the level of a flash chip.  That's pretty much where
-> Russell's comments come from.
->
->> If I was using m25p80.c to talk to anything but an actual flash chip
->> it would get me quite worried.
->
-> Sure, but at the end of the day it's just emitting standard SPI messages
-> which don't know anything about flash.  If those messages are a sensible
-> interface here then why bother with the flag, we can just pattern match
-> on the format of the message.  If that doesn't work then probably this
-> isn't a great interface and a separate, application specific interface
-> makes more sense.
+Hello,
 
-The messages are sensible interface for communicating with a device
-that interprets a particular part of the mesasge as address and
-another particular part of the message as command and sends same
-amount of junk before reply as the flash chip would. If your device
-happens to send reply immediately part of it is trashed. If it happens
-to interpret address differently the data ends up in random part of
-your memory. So no, that is not something you can autodetect.
+Anyone have experience, or know of people/company/contractors, that
+have Encrypted UBIFS before?  If so, I'd like to be introduced.  I
+have a IoT device which is currently using UBIFS and like to encrypt
+the entire system.  I am looking for the lessons learned from those
+who have done this before.
 
-At the end of the day you have valid SPI messages but the m25p80 layer
-adds interpretation to those messages which may not always give
-correct result.
+Thanks,
+-Shawn
 
-On the other hand, if you ever get to m25p80 or spi-nor you can assume
-any message you send goes to a flash chip and insist that the
-controller uses the flash-specific interface.
+-- 
 
-If there is possibility of connecting different kind of devices to
-multiple chipselects on the same master then you probably want to
-select this option per message or per slave.
-
-Thanks
-
-Michal
+Shawn Rose
+Co-founder and CIO
+shawn@ecoventsystems.com
+www.ecoventsystems.com
