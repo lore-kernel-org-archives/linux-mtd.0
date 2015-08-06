@@ -1,16 +1,14 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNKqn-0005Nk-61
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 13:04:53 +0000
+ id 1ZNKrG-0005SD-4a
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 13:05:18 +0000
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 2/4] mtd: denali_pci: use module_pci_driver() macro
-Date: Thu,  6 Aug 2015 16:04:22 +0300
-Message-Id: <1438866264-11091-2-git-send-email-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <1438866264-11091-1-git-send-email-andriy.shevchenko@linux.intel.com>
-References: <1438866264-11091-1-git-send-email-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 1/4] mtd: denali: hide core part from user in Kconfig
+Date: Thu,  6 Aug 2015 16:04:21 +0300
+Message-Id: <1438866264-11091-1-git-send-email-andriy.shevchenko@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +18,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Let's use module_pci_driver() macro to reduce code base of the driver.
-
-There is no functional change.
+There is no need to user to see the core part of the driver.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/mtd/nand/denali_pci.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ drivers/mtd/nand/Kconfig | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-index 6e2f387..29e5d0c 100644
---- a/drivers/mtd/nand/denali_pci.c
-+++ b/drivers/mtd/nand/denali_pci.c
-@@ -129,14 +129,4 @@ static struct pci_driver denali_pci_driver = {
- 	.remove = denali_pci_remove,
- };
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 5b2806a..3324281 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -42,23 +42,20 @@ config MTD_SM_COMMON
+ 	default n
  
--static int denali_init_pci(void)
--{
--	return pci_register_driver(&denali_pci_driver);
--}
--module_init(denali_init_pci);
--
--static void denali_exit_pci(void)
--{
--	pci_unregister_driver(&denali_pci_driver);
--}
--module_exit(denali_exit_pci);
-+module_pci_driver(denali_pci_driver);
+ config MTD_NAND_DENALI
+-        tristate "Support Denali NAND controller"
+-        depends on HAS_DMA
+-        help
+-	  Enable support for the Denali NAND controller.  This should be
+-	  combined with either the PCI or platform drivers to provide device
+-	  registration.
++	tristate
+ 
+ config MTD_NAND_DENALI_PCI
+         tristate "Support Denali NAND controller on Intel Moorestown"
+-	depends on PCI && MTD_NAND_DENALI
++	select MTD_NAND_DENALI
++	depends on HAS_DMA && PCI
+         help
+           Enable the driver for NAND flash on Intel Moorestown, using the
+           Denali NAND controller core.
+ 
+ config MTD_NAND_DENALI_DT
+ 	tristate "Support Denali NAND controller as a DT device"
+-	depends on HAVE_CLK && MTD_NAND_DENALI
++	select MTD_NAND_DENALI
++	depends on HAS_DMA && HAVE_CLK
+ 	help
+ 	  Enable the driver for NAND flash on platforms using a Denali NAND
+ 	  controller as a DT device.
 -- 
 2.4.6
