@@ -1,21 +1,21 @@
-Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNOgP-0003qT-Ik
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 17:10:22 +0000
-Received: by pdco4 with SMTP id o4so34534972pdc.3
- for <linux-mtd@lists.infradead.org>; Thu, 06 Aug 2015 10:10:00 -0700 (PDT)
-Date: Thu, 6 Aug 2015 10:09:56 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Han Xu <b45815@freescale.com>
-Cc: linux-mtd@lists.infradead.org, frank.li@freescale.com, han.xu@freescale.com
-Subject: Re: [PATCH v4 01/10] mtd: spi-nor: fsl-quadspi: dynamically map
- memory space for AHB read
-Message-ID: <20150806170956.GT10676@google.com>
-References: <1438701922-26916-1-git-send-email-b45815@freescale.com>
+ id 1ZNPiS-00052U-K4
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 18:16:34 +0000
+Subject: Re: ubi_wl_get_peb: Unable to get a free PEB from user WL pool
+To: =?UTF-8?Q?J=c3=b6rg_Krause?= <joerg.krause@embedded.rocks>,
+ linux-mtd@lists.infradead.org
+References: <1438809724.6328.18.camel@embedded.rocks>
+ <55C28070.2000804@nod.at> <1438810690.6328.26.camel@embedded.rocks>
+ <55C2840B.5000709@nod.at> <1438811611.6328.32.camel@embedded.rocks>
+ <55C287A9.8000006@nod.at> <1438813074.6328.35.camel@embedded.rocks>
+ <55C30D24.1010504@nod.at> <1438848603.32524.6.camel@embedded.rocks>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55C3A465.5070504@nod.at>
+Date: Thu, 6 Aug 2015 20:16:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1438701922-26916-1-git-send-email-b45815@freescale.com>
+In-Reply-To: <1438848603.32524.6.camel@embedded.rocks>
+Content-Type: multipart/mixed; boundary="------------060902070600090502070104"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 04, 2015 at 10:25:22AM -0500, Han Xu wrote:
-> From: Han Xu <han.xu@freescale.com>
-> 
-> QSPI may failed to map enough memory (256MB) for AHB read in
-> previous implementation, especially in 3G/1G memory layout kernel.
-> Dynamically map memory to avoid such issue.
-> 
-> This implementation generally map QUADSPI_MAX_IOMAP (default 4MB) memory
-> for AHB read, it should be enough for common scenarios, and the side
-> effect (0.6% performance drop) is minor.
-> 
-> Previous implementation
-> 
-> root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=1K count=32K
-> 32768+0 records in
-> 32768+0 records out
-> 33554432 bytes (34 MB) copied, 2.16006 s, 15.5 MB/s
-> 
-> root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=32M count=1
-> 1+0 records in
-> 1+0 records out
-> 33554432 bytes (34 MB) copied, 1.43149 s, 23.4 MB/s
-> 
-> After applied the patch
-> 
-> root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=1K count=32K
-> 32768+0 records in
-> 32768+0 records out
-> 33554432 bytes (34 MB) copied, 2.1743 s, 15.4 MB/s
-> 
-> root@imx6qdlsolo:~# dd if=/dev/mtd0 of=/dev/null bs=32M count=1
-> 1+0 records in
-> 1+0 records out
-> 33554432 bytes (34 MB) copied, 1.43158 s, 23.4 MB/s
-> 
-> Signed-off-by: Han Xu <han.xu@freescale.com>
-> Signed-off-by: Frank Li <Frank.Li@freescale.com>
-> ---
-> 
-> Change from v3 to v4:
-> According to Brian's comments,
-> - introduce a new macro QUADSPI_MIN_IOMAP instead of SZ_4M
-> - reduce the duplicated computation for offset
-> - reintroduce the devm_request_mem_region()
-> 
-> Change from v2 to v3:
-> Resend whole serial patch
-> 
-> Change from v1 to v2:
->    rebase to last l2-mtd
+This is a multi-part message in MIME format.
+--------------060902070600090502070104
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
-Thanks, pushed the series to l2-mtd.git, with a few whitespace fixups.
+Am 06.08.2015 um 10:10 schrieb Jörg Krause:
+> I will turn fastmap off for now, but feel free to send more patches to
+> try.
 
-Brian
+Can you please give the attached patch a try?
+
+Thanks,
+//richard
+
+--------------060902070600090502070104
+Content-Type: text/x-patch;
+ name="fastmap_produce_peb.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="fastmap_produce_peb.diff"
+
+diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
+index b2a6653..bbd30dc 100644
+--- a/drivers/mtd/ubi/fastmap-wl.c
++++ b/drivers/mtd/ubi/fastmap-wl.c
+@@ -172,6 +172,30 @@ void ubi_refill_pools(struct ubi_device *ubi)
+ }
+ 
+ /**
++ * produce_free_peb - produce a free physical eraseblock.
++ * @ubi: UBI device description object
++ *
++ * This function tries to make a free PEB by means of synchronous execution of
++ * pending works. This may be needed if, for example the background thread is
++ * disabled. Returns zero in case of success and a negative error code in case
++ * of failure.
++ */
++static int produce_free_peb(struct ubi_device *ubi)
++{
++	int err;
++
++	while (!ubi->free.rb_node && ubi->works_count) {
++		dbg_wl("do one work synchronously");
++		err = do_work(ubi);
++
++		if (err)
++			return err;
++	}
++
++	return 0;
++}
++
++/**
+  * ubi_wl_get_peb - get a physical eraseblock.
+  * @ubi: UBI device description object
+  *
+@@ -213,6 +237,7 @@ again:
+ 		}
+ 		retried = 1;
+ 		up_read(&ubi->fm_eba_sem);
++		produce_free_peb(ubi);
+ 		goto again;
+ 	}
+ 
+
+--------------060902070600090502070104--
