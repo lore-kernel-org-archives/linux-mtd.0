@@ -1,31 +1,28 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNHhJ-0005E0-2b
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 09:42:49 +0000
-Subject: Re: [RFC PATCH 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
- default ECC read functions
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <mailman.4457.1438277726.1758.linux-mtd@lists.infradead.org>
- <mailman.4457.1438277726.1758.linux-mtd.{07a3baba-0e8a-469e-82e1-92b4ef074f4f}.0@lists.infradead.org>
- <1438277694-23763-3-git-send-email-boris.brezillon@free-electrons.com>
- <55BB48D9.6050508@dave-tech.it> <20150731123221.34cf601e@bbrezillon>
- <55BB7ABD.7040008@dave-tech.it> <20150731161032.2b155ccb@bbrezillon>
- <55BBA012.4080600@dave-tech.it> <20150731182709.14c345df@bbrezillon>
- <55BF4D72.8090000@dave-tech.it> <20150803144253.66fc6941@bbrezillon>
- <55BF6F09.9000001@dave-tech.it> <55BFC1DA.3090108@nod.at>
- <55C06379.5090705@dave-tech.it> <55C067F7.3000309@nod.at>
- <20150806111901.3d2d5494@bbrezillon>
-Cc: Andrea Scian <rnd4@dave-tech.it>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
- Han Xu <b45815@freescale.com>, Artem Bityutskiy <dedekind1@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55C32BFF.6020802@nod.at>
-Date: Thu, 6 Aug 2015 11:42:23 +0200
 MIME-Version: 1.0
-In-Reply-To: <20150806111901.3d2d5494@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20150806090202.GO20873@sirena.org.uk>
+References: <1438072876-16338-1-git-send-email-vigneshr@ti.com>
+ <1438072876-16338-2-git-send-email-vigneshr@ti.com>
+ <20150731181745.GM20873@sirena.org.uk>
+ <55BEF4AF.5090704@ti.com> <20150804155148.GR20873@sirena.org.uk>
+ <55C0FD98.1090107@ti.com> <20150805115013.GJ20873@sirena.org.uk>
+ <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
+ <20150805124412.GN20873@sirena.org.uk>
+ <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
+ <20150806090202.GO20873@sirena.org.uk>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Thu, 6 Aug 2015 12:01:37 +0200
+Message-ID: <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
+To: Mark Brown <broonie@kernel.org>
+Cc: "R, Vignesh" <vigneshr@ti.com>, devicetree <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Russell King <linux@arm.linux.org.uk>, Tony Lindgren <tony@atomide.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>, linux-omap@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,21 +32,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 6 August 2015 at 11:02, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Aug 05, 2015 at 02:56:09PM +0200, Michal Suchanek wrote:
+>> On 5 August 2015 at 14:44, Mark Brown <broonie@kernel.org> wrote:
+>> > On Wed, Aug 05, 2015 at 02:40:01PM +0200, Michal Suchanek wrote:
+>
+>> >> I don't think sending 03 or other random byte as the first byte of a
+>> >> SPI transfer can be used as reliable detection that we are talking to
+>> >> a SPI flash memory.
+>
+>> > Why care - if something is physically in the same format as a flash read
+>> > command how would a device be able to tell that it wasn't actually a
+>> > flash read command?  The signals sent on the bus are going to be
+>> > identical anyway.
+>
+>> Not only must the command be the same but also the response must be tha same.
+>
+> What difference would that make?  The caller is sending a single SPI
+> operation and this is a user visible thing...
+>
+>> The flash chip responds by sending arbitrary amount of data. Given
+>> that transfer_one gets only the part that sends the read command and
+>> the part to do the actual read may or may not follow this is getting a
+>> bit hairy. Add in dummy bytes due to fast-read lag and page write
+>> wrap-around and you get something that you definitely do not want
+>> unless you are really sure that there is a flash memory on the other
+>> end of the wire.
+>
+> So if you're doing this you may have a good reason to implement
+> transfer_one_message() instead.  Or perhaps implement it in the core and
+> provide operations to do the map and unmap.  And of course if this sort
+> of requirement exists that's an obvious thing that must be documented
+> in the interfaces but isn't.
+>
+> We need a lot more thought about the interface here, the lack of any
+> explanation of what the interface is supposed to be and the fact that
+> all questions about it are being answered in terms of describing the
+> specific system are both a bit worrying.
 
+Disclaimer: I am not familiar with the hardware for which this patch
+adds support.
 
-Am 06.08.2015 um 11:19 schrieb Boris Brezillon:
->> I think this needs more discussion.
->>
->> Boris, Brian, will you be at Embedded Linux Conference Europe in Dublin?
->> Maybe we can discuss these issues (data retention, ff-checks, etc...) in person and figure out where to address them.
->> I really want to avoid ad-hoc solutions. :)
-> 
-> I'll be at ELCE and I'd be happy to discuss all these NAND/MTD/UBI
-> related issues with you, though I think we should keep discussing
-> those problems on the ML too.
+However, I am familiar m25p80.c and as I understand it the controller
+is basically supposed to implement m25p80.c in hardware when this flag
+is set.
 
-Sure, I did not recommend a secret meeting. ;-)
-But often a face to face conversation is better for brain storming.
+If I was using m25p80.c to talk to anything but an actual flash chip
+it would get me quite worried.
 
-Thanks,
-//richard
+Thanks
+
+Michal
