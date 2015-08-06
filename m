@@ -1,10 +1,10 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNM0F-0002lN-VK
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 14:18:41 +0000
-Received: by pabxd6 with SMTP id xd6so46046325pab.2
- for <linux-mtd@lists.infradead.org>; Thu, 06 Aug 2015 07:18:18 -0700 (PDT)
-Date: Thu, 6 Aug 2015 23:17:18 +0900
+ id 1ZNMAS-0005ks-4W
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 14:29:33 +0000
+Received: by pdrg1 with SMTP id g1so33233442pdr.2
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Aug 2015 07:28:51 -0700 (PDT)
+Date: Thu, 6 Aug 2015 23:27:51 +0900
 From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 To: Julia Lawall <julia.lawall@lip6.fr>
 Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -13,15 +13,15 @@ Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Andrew Morton <akpm@linux-foundation.org>
 Subject: Re: [PATCH] jffs2: Remove NULL checks from jffs2_destroy_slab_caches
-Message-ID: <20150806141718.GA4292@swordfish>
+Message-ID: <20150806142751.GC4292@swordfish>
 References: <1438717590-4263-1-git-send-email-salah.triki@acm.org>
  <20150804200639.GP10676@google.com>
  <20150805133247.GB576@swordfish>
- <alpine.DEB.2.02.1508060812450.2305@localhost6.localdomain6>
+ <alpine.DEB.2.10.1508060923250.2343@hadrien>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.02.1508060812450.2305@localhost6.localdomain6>
+In-Reply-To: <alpine.DEB.2.10.1508060923250.2343@hadrien>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,107 +31,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On (08/06/15 08:16), Julia Lawall wrote:
-> > On (08/04/15 13:06), Brian Norris wrote:
-> > > On Tue, Aug 04, 2015 at 08:46:30PM +0100, Salah Triki wrote:
-> > > > kmem_cache_destroy can be called with NULL values. Thus, the checks that
-> > > > precede the calls are useless.
-> > > 
-> > > This isn't *currently* true. Only after a bit of work did I find that
-> > > this is queued to change in the next release -- akpm has a patch:
-> > > 
-> > > commit 3e54c0cd3abdca0cf91854278c8633fc7df6beb1
-> > > Author: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> > > Date:   Thu Jul 30 09:55:36 2015 +1000
-> > > 
-> > >     mm/slab_common: allow NULL cache pointer in kmem_cache_destroy()
-> > > 
+On (08/06/15 09:24), Julia Lawall wrote:
+> > >
 > > > Please provide the appropriate context next time. And for the moment, I will
 > > > not apply this, because this does not work on the current MTD development tree.
 > > > Try your patch bomb on the next release, as it's not worth my time to
 > > > cross-merge a -next branch just for a "cleanup".
-> > > 
-> > 
+> > >
+> >
 > > Julia already has a patch set to cleanup all the existing users
 > > (not published yet, though).
-> > 
-> > Apart from that, and this is more important, the patch in question
-> > looks to me as 100% copy paste of a patch by Julia Lawall.
-> > 
-> > https://lkml.org/lkml/2015/6/10/31
-> > 
-> > And no, Salah, it's not "Signed-off-by: Salah Triki <salah.triki@acm.org>".
-> > 
-> > For the record, this is the second, let's say strange, patch from Salah
-> > that I see today.
 > 
-> I'm missing some context.  As far as I can see, kmem_cache_destroy is 
-> updated in linux-next.  So it seems like it could be OK to submit a patch 
-> to clean up the uses now.  Does Salah's patch address all three functions: 
-> kmem_cache_destroy, mempool_destroy, and dma_pool_destroy?
+> We should probably have put our patches into a series.  Because it is true
+> that the cleanup patch breaks existing code.  So one has to be aware of
+> the dependency between them.
 > 
 
-no, just one that you already published.
-
-all 3 functions are updated in -next, so you are welcome to send
-your patch set.
+I guess we can wait until 3 patches in question will land in Linus's
+tree. What do you think?
 
 	-ss
-
-> > 
-> > 	-ss
-> > 
-> > > > Signed-off-by: Salah Triki <salah.triki@acm.org>
-> > > > ---
-> > > >  fs/jffs2/malloc.c | 27 +++++++++------------------
-> > > >  1 file changed, 9 insertions(+), 18 deletions(-)
-> > > > 
-> > > > diff --git a/fs/jffs2/malloc.c b/fs/jffs2/malloc.c
-> > > > index b8fd651..ce11897 100644
-> > > > --- a/fs/jffs2/malloc.c
-> > > > +++ b/fs/jffs2/malloc.c
-> > > > @@ -97,25 +97,16 @@ int __init jffs2_create_slab_caches(void)
-> > > >  
-> > > >  void jffs2_destroy_slab_caches(void)
-> > > >  {
-> > > > -	if(full_dnode_slab)
-> > > > -		kmem_cache_destroy(full_dnode_slab);
-> > > > -	if(raw_dirent_slab)
-> > > > -		kmem_cache_destroy(raw_dirent_slab);
-> > > > -	if(raw_inode_slab)
-> > > > -		kmem_cache_destroy(raw_inode_slab);
-> > > > -	if(tmp_dnode_info_slab)
-> > > > -		kmem_cache_destroy(tmp_dnode_info_slab);
-> > > > -	if(raw_node_ref_slab)
-> > > > -		kmem_cache_destroy(raw_node_ref_slab);
-> > > > -	if(node_frag_slab)
-> > > > -		kmem_cache_destroy(node_frag_slab);
-> > > > -	if(inode_cache_slab)
-> > > > -		kmem_cache_destroy(inode_cache_slab);
-> > > > +	kmem_cache_destroy(full_dnode_slab);
-> > > > +	kmem_cache_destroy(raw_dirent_slab);
-> > > > +	kmem_cache_destroy(raw_inode_slab);
-> > > > +	kmem_cache_destroy(tmp_dnode_info_slab);
-> > > > +	kmem_cache_destroy(raw_node_ref_slab);
-> > > > +	kmem_cache_destroy(node_frag_slab);
-> > > > +	kmem_cache_destroy(inode_cache_slab);
-> > > >  #ifdef CONFIG_JFFS2_FS_XATTR
-> > > > -	if (xattr_datum_cache)
-> > > > -		kmem_cache_destroy(xattr_datum_cache);
-> > > > -	if (xattr_ref_cache)
-> > > > -		kmem_cache_destroy(xattr_ref_cache);
-> > > > +	kmem_cache_destroy(xattr_datum_cache);
-> > > > +	kmem_cache_destroy(xattr_ref_cache);
-> > > >  #endif
-> > > >  }
-> > > >  
-> > > > -- 
-> > > > 1.9.1
-> > > > 
-> > > > 
-> > > > ______________________________________________________
-> > > > Linux MTD discussion mailing list
-> > > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > > 
-> > 
-> 
