@@ -1,21 +1,32 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNPiS-00052U-K4
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 18:16:34 +0000
-Subject: Re: ubi_wl_get_peb: Unable to get a free PEB from user WL pool
-To: =?UTF-8?Q?J=c3=b6rg_Krause?= <joerg.krause@embedded.rocks>,
- linux-mtd@lists.infradead.org
-References: <1438809724.6328.18.camel@embedded.rocks>
- <55C28070.2000804@nod.at> <1438810690.6328.26.camel@embedded.rocks>
- <55C2840B.5000709@nod.at> <1438811611.6328.32.camel@embedded.rocks>
- <55C287A9.8000006@nod.at> <1438813074.6328.35.camel@embedded.rocks>
- <55C30D24.1010504@nod.at> <1438848603.32524.6.camel@embedded.rocks>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55C3A465.5070504@nod.at>
-Date: Thu, 6 Aug 2015 20:16:05 +0200
 MIME-Version: 1.0
-In-Reply-To: <1438848603.32524.6.camel@embedded.rocks>
-Content-Type: multipart/mixed; boundary="------------060902070600090502070104"
+In-Reply-To: <CAMuHMdWWDwZ=ziGQXFCnOX8pErXpsEi533J73_Hh=sEqq4hR6Q@mail.gmail.com>
+References: <20150804155148.GR20873@sirena.org.uk> <55C0FD98.1090107@ti.com>
+ <20150805115013.GJ20873@sirena.org.uk>
+ <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
+ <20150805124412.GN20873@sirena.org.uk>
+ <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
+ <20150806090202.GO20873@sirena.org.uk>
+ <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
+ <20150806102225.GI7576@n2100.arm.linux.org.uk> <55C35233.2000105@ti.com>
+ <20150806135129.GJ7576@n2100.arm.linux.org.uk>
+ <CAMuHMdWWDwZ=ziGQXFCnOX8pErXpsEi533J73_Hh=sEqq4hR6Q@mail.gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Thu, 6 Aug 2015 20:20:02 +0200
+Message-ID: <CAOMqctTisUv4YcSSojKadotX5XAB4Ro0bxT4Wn9tRP=Jyc0iqw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+ Vignesh R <vigneshr@ti.com>,
+ Mark Brown <broonie@kernel.org>, devicetree <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,69 +36,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------060902070600090502070104
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+On 6 August 2015 at 18:14, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Thu, Aug 6, 2015 at 3:51 PM, Russell King - ARM Linux
+> <linux@arm.linux.org.uk> wrote:
+>> On Thu, Aug 06, 2015 at 05:55:23PM +0530, Vignesh R wrote:
+>>> On the whole following are my requirements:
+>>> 1. to be able to communicate with non -flash SPI devices via config port
+>>> ( this functionality is supported by current driver, I dont want to
+>>> break it). Or pump any spi_message on to SPI bus directly.
+>>> 2. take advantage of memory mapped port in order to increase read
+>>> throughput( and use dma in future) when the slave is a m25p80 type flash.
+>>> 3. handle m25p80 as well as other slave on multiple chipselects.
+>>>
+>>> I just need to know whether the user that requested the transfer is
+>>> m25p80 driver. If yes, ti-qspi driver can take advantage of memory
+>>> mapped interface, else just use config port to access SPI bus directly.
+>>
+>> The problem with this approach is that it's an abomination.  It's adding
+>> a SPI-user specific hack which is detected by a specific driver.  That's
+>> really not sane - what happens when we have lots of these kinds of "I'm
+>> an X SPI-user" with drivers detecting that?  It's not maintainable in the
+>> long term.
+>>
+>> Yes, your requirements _today_ seem simple and easy, but you're only
+>> thinking about today, not tomorrow when you've moved on and someone else
+>> has to maintain the mess left behind (or delete it from mainline because
+>> they're sick of dealing with a hack.)
+>>
+>>> The spi_message that is received in transfer_one_message() is too
+>>> generic to imply the slave device that is on the other side of the wire.
+>>> IMO, the read command does not imply that the slave is m25p80 flash
+>>> (besides the read opcodes vary across vendors of m25p80 and across modes).
+>>
+>> I can see both sides of the argument.
+>>
+>> Mark is saying: if the SPI driver detects that the message to be transmitted
+>> is a read command followed by the appropriate number of dummy bytes, and
+>> then the data being read _and_ it's using quad-mode access, and the hardware
+>> generates _exactly_ that in hardware using the memory mapped mode, there is
+>> no reason _not_ to use the hardware to achieve that SPI transaction.  The
+>> bus activity will be identical to what happens when the SPI controller is
+>> used manually to achieve that bus sequence.
+>>
+>> You're saying: but the documentation says you can't use it for anything
+>> except m25p80.  If you look at 24.5.4.1.2, it tells you what the SFI
+>> generates on the bus, which is:
+>>
+>> 1. CS active
+>> 2. Read command byte sent
+>> 3. 1-4 address bytes sent
+>> 4. 0-3 dummy bytes sent
+>> 5. data bytes read from bus
+>> 6. CS inactive
+>>
+>> So, Mark's point is "if we can detect a transaction which fits _that_
+>> bus activity, there's no reason not to use this acceleration for the
+>> transaction."
+>>
+>> What you're failing to counter with is: we don't have enough information
+>> in the SPI driver to know how many dummy bytes there are between the
+>> address bytes and the data read from the bus.
+>
+> Irrespective of the dummy bytes.
+> What if the spi device is not a FLASH ROM, but some other device,
+> which receives a data packet that accidentally looks like an m25p80 READ
+> command?
+>
 
-Am 06.08.2015 um 10:10 schrieb Jörg Krause:
-> I will turn fastmap off for now, but feel free to send more patches to
-> try.
+Presumably the driver would interpret some random part of the message
+as address and map the reply in your address space at that address
+from the flash mmap base.
 
-Can you please give the attached patch a try?
+If you happen to overflow the flash memory mmap space the behaviour
+will probably not be well defined.
 
-Thanks,
-//richard
+Thanks
 
---------------060902070600090502070104
-Content-Type: text/x-patch;
- name="fastmap_produce_peb.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="fastmap_produce_peb.diff"
-
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index b2a6653..bbd30dc 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -172,6 +172,30 @@ void ubi_refill_pools(struct ubi_device *ubi)
- }
- 
- /**
-+ * produce_free_peb - produce a free physical eraseblock.
-+ * @ubi: UBI device description object
-+ *
-+ * This function tries to make a free PEB by means of synchronous execution of
-+ * pending works. This may be needed if, for example the background thread is
-+ * disabled. Returns zero in case of success and a negative error code in case
-+ * of failure.
-+ */
-+static int produce_free_peb(struct ubi_device *ubi)
-+{
-+	int err;
-+
-+	while (!ubi->free.rb_node && ubi->works_count) {
-+		dbg_wl("do one work synchronously");
-+		err = do_work(ubi);
-+
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-  * ubi_wl_get_peb - get a physical eraseblock.
-  * @ubi: UBI device description object
-  *
-@@ -213,6 +237,7 @@ again:
- 		}
- 		retried = 1;
- 		up_read(&ubi->fm_eba_sem);
-+		produce_free_peb(ubi);
- 		goto again;
- 	}
- 
-
---------------060902070600090502070104--
+Michal
