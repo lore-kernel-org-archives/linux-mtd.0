@@ -1,14 +1,14 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNKqp-0005Nv-5v
- for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 13:04:51 +0000
+ id 1ZNKqn-0005Nk-61
+ for linux-mtd@lists.infradead.org; Thu, 06 Aug 2015 13:04:53 +0000
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 4/4] mtd: denali_pci: switch to dev_err()
-Date: Thu,  6 Aug 2015 16:04:24 +0300
-Message-Id: <1438866264-11091-4-git-send-email-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 2/4] mtd: denali_pci: use module_pci_driver() macro
+Date: Thu,  6 Aug 2015 16:04:22 +0300
+Message-Id: <1438866264-11091-2-git-send-email-andriy.shevchenko@linux.intel.com>
 In-Reply-To: <1438866264-11091-1-git-send-email-andriy.shevchenko@linux.intel.com>
 References: <1438866264-11091-1-git-send-email-andriy.shevchenko@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,48 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is better to have device name prefixed the actual error message.
+Let's use module_pci_driver() macro to reduce code base of the driver.
+
+There is no functional change.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/mtd/nand/denali_pci.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/denali_pci.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-index ad16e2e..de31514 100644
+index 6e2f387..29e5d0c 100644
 --- a/drivers/mtd/nand/denali_pci.c
 +++ b/drivers/mtd/nand/denali_pci.c
-@@ -41,7 +41,7 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+@@ -129,14 +129,4 @@ static struct pci_driver denali_pci_driver = {
+ 	.remove = denali_pci_remove,
+ };
  
- 	ret = pcim_enable_device(dev);
- 	if (ret) {
--		pr_err("Spectra: pci_enable_device failed.\n");
-+		dev_err(&dev->dev, "Spectra: pci_enable_device failed.\n");
- 		return ret;
- 	}
- 
-@@ -69,19 +69,19 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 
- 	ret = pci_request_regions(dev, DENALI_NAND_NAME);
- 	if (ret) {
--		pr_err("Spectra: Unable to request memory regions\n");
-+		dev_err(&dev->dev, "Spectra: Unable to request memory regions\n");
- 		return ret;
- 	}
- 
- 	denali->flash_reg = ioremap_nocache(csr_base, csr_len);
- 	if (!denali->flash_reg) {
--		pr_err("Spectra: Unable to remap memory region\n");
-+		dev_err(&dev->dev, "Spectra: Unable to remap memory region\n");
- 		return -ENOMEM;
- 	}
- 
- 	denali->flash_mem = ioremap_nocache(mem_base, mem_len);
- 	if (!denali->flash_mem) {
--		pr_err("Spectra: ioremap_nocache failed!");
-+		dev_err(&dev->dev, "Spectra: ioremap_nocache failed!");
- 		ret = -ENOMEM;
- 		goto failed_remap_reg;
- 	}
+-static int denali_init_pci(void)
+-{
+-	return pci_register_driver(&denali_pci_driver);
+-}
+-module_init(denali_init_pci);
+-
+-static void denali_exit_pci(void)
+-{
+-	pci_unregister_driver(&denali_pci_driver);
+-}
+-module_exit(denali_exit_pci);
++module_pci_driver(denali_pci_driver);
 -- 
 2.4.6
