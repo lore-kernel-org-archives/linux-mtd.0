@@ -5,9 +5,10 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2 03/22] memory: omap-gpmc: Introduce GPMC to NAND interface
-Date: Fri, 7 Aug 2015 12:12:13 +0300
-Message-ID: <1438938752-31010-4-git-send-email-rogerq@ti.com>
+Subject: [PATCH v2 04/22] mtd: nand: omap2: Use gpmc_omap_get_nand_ops() to
+ get NAND registers
+Date: Fri, 7 Aug 2015 12:12:14 +0300
+Message-ID: <1438938752-31010-5-git-send-email-rogerq@ti.com>
 In-Reply-To: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 References: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,119 +22,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The OMAP GPMC module has certain registers dedicated for NAND
-access and some NAND bits mixed with other GPMC functionality.
-
-For the NAND dedicated registers we have the struct gpmc_nand_regs.
-
-The NAND driver needs to access NAND specific bits from the
-following non-dedicated registers
-1) FIFOEVENT and TERMCOUNT from GPMC_IRQENABLE and GPMC_IRQSTATUS
-2) EMPTYWRITEBUFFERSTATUS from GPMC_STATUS
-
-For accessing these bits we introduce the struct gpmc_nand_ops.
-
-Rename the gpmc_update_nand_reg() API to gpmc_omap_get_nand_ops()
-and make it return the gpmc_nand_ops along with updating the
-gpmc_nand_regs. This API will be called by the OMAP NAND driver
-to access the necessary bits in GPMC register space.
+Deprecate nand register passing via platform data and use
+gpmc_omap_get_nand_ops() instead.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- drivers/memory/omap-gpmc.c | 21 +++++++++++++++++++++
- include/linux/omap-gpmc.h  | 42 ++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 61 insertions(+), 2 deletions(-)
+ arch/arm/mach-omap2/gpmc-nand.c              | 2 --
+ drivers/mtd/nand/omap2.c                     | 9 ++++++++-
+ include/linux/platform_data/mtd-nand-omap2.h | 4 +++-
+ 3 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index 3a27a84..79d78ab 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -1099,6 +1099,27 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
- 	}
- }
+diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+index 72918c4..04e6998 100644
+--- a/arch/arm/mach-omap2/gpmc-nand.c
++++ b/arch/arm/mach-omap2/gpmc-nand.c
+@@ -121,8 +121,6 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
+ 	if (err < 0)
+ 		goto out_free_cs;
  
-+static struct gpmc_nand_ops nand_ops;
-+
-+/**
-+ * gpmc_omap_get_nand_ops - Get the GPMC NAND interface
-+ * @regs: the GPMC NAND register map exclusive for NAND use.
-+ * @cs: GPMC chip select number on which the NAND sits. The
-+ *      register map returned will be specific to this chip select.
-+ *
-+ * Returns NULL on error e.g. invalid cs.
-+ */
-+struct gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *reg, int cs)
-+{
-+	if (cs >= gpmc_cs_num)
-+		return NULL;
-+
-+	gpmc_update_nand_reg(reg, cs);
-+
-+	return &nand_ops;
-+}
-+EXPORT_SYMBOL_GPL(gpmc_omap_get_nand_ops);
-+
- int gpmc_get_client_irq(unsigned irq_config)
- {
- 	int i;
-diff --git a/include/linux/omap-gpmc.h b/include/linux/omap-gpmc.h
-index 2dcef1c..a811c91 100644
---- a/include/linux/omap-gpmc.h
-+++ b/include/linux/omap-gpmc.h
-@@ -14,14 +14,52 @@
- #define GPMC_IRQ_FIFOEVENTENABLE	0x01
- #define GPMC_IRQ_COUNT_EVENT		0x02
+-	gpmc_update_nand_reg(&gpmc_nand_data->reg, gpmc_nand_data->cs);
+-
+ 	if (!gpmc_hwecc_bch_capable(gpmc_nand_data->ecc_opt)) {
+ 		pr_err("omap2-nand: Unsupported NAND ECC scheme selected\n");
+ 		err = -EINVAL;
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 60fa899..f214fe2 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -28,6 +28,7 @@
+ #include <linux/mtd/nand_bch.h>
+ #include <linux/platform_data/elm.h>
  
-+enum gpmc_nand_irq {
-+	GPMC_NAND_IRQ_FIFOEVENT = 0,
-+	GPMC_NAND_IRQ_TERMCOUNT,
-+};
-+
-+/**
-+ * gpmc_nand_ops - Interface between NAND and GPMC
-+ * @nand_irq_enable: enable the requested GPMC NAND interrupt event.
-+ * @nand_irq_disable: disable the requested GPMC NAND interrupt event.
-+ * @nand_irq_clear: clears the GPMC NAND interrupt event status.
-+ * @nand_irq_status: get the NAND interrupt event status.
-+ * @nand_write_buffer_empty: get the NAND write buffer empty status.
-+ */
-+struct gpmc_nand_ops {
-+	int (*nand_irq_enable)(enum gpmc_nand_irq irq);
-+	int (*nand_irq_disable)(enum gpmc_nand_irq irq);
-+	void (*nand_irq_clear)(enum gpmc_nand_irq irq);
-+	u32 (*nand_irq_status)(void);
-+	bool (*nand_writebuffer_empty)(void);
-+};
-+
-+struct gpmc_nand_regs;
-+
-+#if IS_ENABLED(CONFIG_OMAP_GPMC)
-+struct gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *regs,
-+					     int cs);
-+#else
-+static inline gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *regs,
-+						    int cs);
-+{
-+	return NULL;
-+}
-+#endif /* CONFIG_OMAP_GPMC */
-+
-+/*--------------------------------*/
-+
-+/* deprecated APIs */
-+extern void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs);
-+/*--------------------------------*/
-+
- extern int gpmc_calc_timings(struct gpmc_timings *gpmc_t,
- 			     struct gpmc_settings *gpmc_s,
- 			     struct gpmc_device_timings *dev_t);
++#include <linux/omap-gpmc.h>
+ #include <linux/platform_data/mtd-nand-omap2.h>
  
--struct gpmc_nand_regs;
- struct device_node;
+ #define	DRIVER_NAME	"omap2-nand"
+@@ -169,7 +170,9 @@ struct omap_nand_info {
+ 	} iomode;
+ 	u_char				*buf;
+ 	int					buf_len;
++	/* Interface to GPMC */
+ 	struct gpmc_nand_regs		reg;
++	struct gpmc_nand_ops		*ops;
+ 	/* generated at runtime depending on ECC algorithm and layout selected */
+ 	struct nand_ecclayout		oobinfo;
+ 	/* fields specific for BCHx_HW ECC scheme */
+@@ -1677,9 +1680,13 @@ static int omap_nand_probe(struct platform_device *pdev)
  
--extern void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs);
- extern int gpmc_get_client_irq(unsigned irq_config);
+ 	platform_set_drvdata(pdev, info);
  
- extern unsigned int gpmc_ticks_to_ns(unsigned int ticks);
++	info->ops = gpmc_omap_get_nand_ops(&info->reg, info->gpmc_cs);
++	if (!info->ops) {
++		dev_err(&pdev->dev, "Failed to get GPMC->NAND interface\n");
++		return -ENODEV;
++	}
+ 	info->pdev		= pdev;
+ 	info->gpmc_cs		= pdata->cs;
+-	info->reg		= pdata->reg;
+ 	info->of_node		= pdata->of_node;
+ 	info->ecc_opt		= pdata->ecc_opt;
+ 	mtd			= &info->mtd;
+diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
+index 090bbab..a067f58 100644
+--- a/include/linux/platform_data/mtd-nand-omap2.h
++++ b/include/linux/platform_data/mtd-nand-omap2.h
+@@ -75,10 +75,12 @@ struct omap_nand_platform_data {
+ 	enum nand_io		xfer_type;
+ 	int			devsize;
+ 	enum omap_ecc           ecc_opt;
+-	struct gpmc_nand_regs	reg;
+ 
+ 	/* for passing the partitions */
+ 	struct device_node	*of_node;
+ 	struct device_node	*elm_of_node;
++
++	/* deprecated */
++	struct gpmc_nand_regs	reg;
+ };
+ #endif
 -- 
 2.1.4
