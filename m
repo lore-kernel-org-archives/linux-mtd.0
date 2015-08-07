@@ -5,9 +5,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2 13/22] memory: omap-gpmc: Prevent mapping into 1st 16MB
-Date: Fri, 7 Aug 2015 12:12:23 +0300
-Message-ID: <1438938752-31010-14-git-send-email-rogerq@ti.com>
+Subject: [PATCH v2 14/22] ARM: dts: OMAP2+: Fix NAND device nodes.
+Date: Fri, 7 Aug 2015 12:12:24 +0300
+Message-ID: <1438938752-31010-15-git-send-email-rogerq@ti.com>
 In-Reply-To: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 References: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,67 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We have been preventing mapping GPMC children in the
-first 1MB but really it has to be the first 16MB as
-the minimum GPMC partition size is 16MB.
+Add compatible id, GPMC register resource and interrupt
+resource to NAND controller nodes.
 
-Also print an error message if CS mapping fails
-due to DT requesting address outside the GPMC
-map.
+TODO: For now only dra7-evm and omap3-beagle are fixed.
+Once series is reviewed I'll update this patch to
+fix all omap boards.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- drivers/memory/omap-gpmc.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/dra7-evm.dts     | 4 +++-
+ arch/arm/boot/dts/omap3-beagle.dts | 3 ++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index 1c87252..30d9c21 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -93,6 +93,14 @@
- #define GPMC_CS_SIZE		0x30
- #define	GPMC_BCH_SIZE		0x10
+diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
+index 096f68b..ce11b0f 100644
+--- a/arch/arm/boot/dts/dra7-evm.dts
++++ b/arch/arm/boot/dts/dra7-evm.dts
+@@ -569,9 +569,11 @@
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&nand_flash_x16>;
+-	ranges = <0 0 0 0x01000000>;	/* minimum GPMC partition = 16MB */
++	ranges = <0 0 0x08000000 0x01000000>;	/* minimum GPMC partition = 16MB */
+ 	nand@0,0 {
++		compatible = "ti,omap2-nand";
+ 		reg = <0 0 4>;		/* device IO registers */
++		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+ 		ti,nand-ecc-opt = "bch8";
+ 		ti,elm-id = <&elm>;
+ 		nand-bus-width = <16>;
+diff --git a/arch/arm/boot/dts/omap3-beagle.dts b/arch/arm/boot/dts/omap3-beagle.dts
+index a547411..34cf55e 100644
+--- a/arch/arm/boot/dts/omap3-beagle.dts
++++ b/arch/arm/boot/dts/omap3-beagle.dts
+@@ -384,7 +384,8 @@
  
-+/*
-+ * The first 1MB of GPMC address space is typically mapped to
-+ * the internal ROM. Never allocate the first page, to
-+ * facilitate bug detection; even if we didn't boot from ROM.
-+ * As GPMC minimum partition size is 16MB we can only start from
-+ * there.
-+ */
-+#define GPMC_MEM_START		0x1000000
- #define GPMC_MEM_END		0x3FFFFFFF
- 
- #define GPMC_CHUNK_SHIFT	24		/* 16 MB */
-@@ -1171,12 +1179,7 @@ static void gpmc_mem_init(void)
- {
- 	int cs;
- 
--	/*
--	 * The first 1MB of GPMC address space is typically mapped to
--	 * the internal ROM. Never allocate the first page, to
--	 * facilitate bug detection; even if we didn't boot from ROM.
--	 */
--	gpmc_mem_root.start = SZ_1M;
-+	gpmc_mem_root.start = GPMC_MEM_START;
- 	gpmc_mem_root.end = GPMC_MEM_END;
- 
- 	/* Reserve all regions that has been set up by bootloader */
-@@ -1830,6 +1833,15 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "cannot remap GPMC CS %d to %pa\n",
- 			cs, &res.start);
-+		if (res.start < GPMC_MEM_START) {
-+			dev_info(&pdev->dev,
-+				 "GPMC CS %d start cannot be lesser than 0x%x\n",
-+				 cs, GPMC_MEM_START);
-+		} else if (res.end > GPMC_MEM_END) {
-+			dev_info(&pdev->dev,
-+				 "GPMC CS %d end cannot be greater than 0x%x\n",
-+				 cs, GPMC_MEM_END);
-+		}
- 		goto err;
- 	}
- 
+ 	/* Chip select 0 */
+ 	nand@0,0 {
+-		reg = <0 0 4>;		/* NAND I/O window, 4 bytes */
++		compatible = "ti,omap2-nand";
++		reg = <0 0 4>;		/* CS0, offset 0, IO size 4 */
+ 		interrupts = <20>;
+ 		ti,nand-ecc-opt = "ham1";
+ 		nand-bus-width = <16>;
 -- 
 2.1.4
