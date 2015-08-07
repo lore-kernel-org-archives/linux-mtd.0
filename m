@@ -1,14 +1,24 @@
-Message-ID: <55C51319.2010901@tul.cz>
-Date: Fri, 07 Aug 2015 22:20:41 +0200
-From: Petr Cvek <petr.cvek@tul.cz>
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNqZd-0003IJ-4u
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 22:57:13 +0000
+Received: by pdrh1 with SMTP id h1so31894999pdr.0
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2015 15:56:51 -0700 (PDT)
+Date: Fri, 7 Aug 2015 15:56:48 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Hou Zhiqiang <B48286@freescale.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ Hu Vincent <Mingkai.Hu@freescale.com>
+Subject: Re: [PATCH] mtd: m25p80: Add Power Management support
+Message-ID: <20150807225648.GC60523@google.com>
+References: <1437473933-11983-1-git-send-email-B48286@freescale.com>
+ <CY1PR0301MB0780DF6BC293B2C6B5397EA88B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CY1PR0301MB07806C6F60DA735D23EED0AC8B730@CY1PR0301MB0780.namprd03.prod.outlook.com>
 MIME-Version: 1.0
-To: daniel@zonque.org, haojian.zhuang@gmail.com,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- dwmw2@infradead.org, computersforpeace@gmail.com, eric.y.miao@gmail.com
-CC: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
-Subject: [BUG, RFC] MTD Execute in Place on ARM breaks build
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CY1PR0301MB07806C6F60DA735D23EED0AC8B730@CY1PR0301MB0780.namprd03.prod.outlook.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,38 +28,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Fri, Aug 07, 2015 at 04:18:30AM +0000, Hou Zhiqiang wrote:
+> If you haven't any comment with this patch, could you please apply this patch?
 
-Configuration:
-
-	CONFIG_MTD_XIP=y
-
-on PXA2xx architecture causes request of undefined macros from 
-
-	drivers/mtd/chipscfi_cmdset_0001.c
-
-These macros (using ICIP and ICMR) are defined here:
-
-	http://lxr.free-electrons.com/source/arch/arm/mach-pxa/include/mach/mtd-xip.h#L20
-
-register definitions for ICIP and ICMR were removed by commit:
-	
-	5d284e353eb11ab2e8b1c5671ba06489b0bd1e0c
-
-Similar is for macros with OSCR (lines 23 and 24), which have different type.
-Re-adding ICIP and ICMR definition and explicit type conversion will fix the build
-and the kernel boots, but I'm not yet able to test XIP functionality (too many different
-bugs to flash over windows mobile image).
-
-My temporal fix (ugly):
-
-#define ICIP __REG(0x40D00000)  /* Interrupt Controller IRQ Pending Register */
-#define ICMR __REG(0x40D00004)  /* Interrupt Controller Mask Register */
-...
-#define xip_currtime()		((unsigned long) OSCR)
-#define xip_elapsed_since(x)	(signed)((((unsigned long) OSCR) - (x)) / 4)
-
-
-P.S. Same macros are used on omap1 and sa1100 too.
-
-Petr Cvek
+No. There's a backlog of much longer than 3 weeks.
