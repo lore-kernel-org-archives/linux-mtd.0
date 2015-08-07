@@ -1,20 +1,19 @@
-Received: from fudo.makrotopia.org ([2001:41d0:8:c75d::1])
+Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNc5L-0002Vy-2O
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 07:29:00 +0000
-Date: Fri, 7 Aug 2015 09:28:25 +0200
-From: Daniel Golle <daniel@makrotopia.org>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: shawn rose <shawn@ecoventsystems.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: Encrypting UBIFS Filesystem
-Message-ID: <20150807072824.GA1972@makrotopia.org>
-References: <CAKWcF8-LTkPQEjLR3gdiZ1ZLrmoZHqdo2tBkzZsnrxiVqK+oag@mail.gmail.com>
- <CAAEAJfC_iy=5GumEVJrY_V_7z2gTwXHwZHwzwt_YOzwn4sEsgg@mail.gmail.com>
+ id 1ZNc7t-0004R2-Cs
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 07:31:38 +0000
+Received: by obbfr1 with SMTP id fr1so36780633obb.1
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2015 00:31:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAEAJfC_iy=5GumEVJrY_V_7z2gTwXHwZHwzwt_YOzwn4sEsgg@mail.gmail.com>
+In-Reply-To: <CAOx4H9CHrhBhW6DZrJi8h+Lz=5QFbmUn=n9o1WwBpzY1FGDR_A@mail.gmail.com>
+References: <CAOx4H9CHrhBhW6DZrJi8h+Lz=5QFbmUn=n9o1WwBpzY1FGDR_A@mail.gmail.com>
+Date: Fri, 7 Aug 2015 09:31:14 +0200
+Message-ID: <CAFLxGvwr0-jTESMBV+BCcVf8-ZJGZPqO3cKhLeb8BwUnRs54mQ@mail.gmail.com>
+Subject: Re: UBI confusing scrubbing information
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: t kevin <kevint324@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On Fri, Aug 7, 2015 at 5:20 AM, t kevin <kevint324@gmail.com> wrote:
+> Hi,
+>
+> [ 2982.880000] UBI: scrubbed PEB 426 (LEB 0:1255), data moved to PEB 1301
+> [ 2983.420000] UBI: scrubbed PEB 426 (LEB 0:451), data moved to PEB 1301
+> [ 3043.920000] UBI: scrubbed PEB 426 (LEB 0:491), data moved to PEB 1301
+> [ 3044.740000] UBI: scrubbed PEB 426 (LEB 0:1255), data moved to PEB 1301
+> [ 3045.240000] UBI: scrubbed PEB 426 (LEB 0:1098), data moved to PEB 1301
+> [ 3045.820000] UBI: scrubbed PEB 426 (LEB 0:65), data moved to PEB 1301
+> [ 3046.160000] UBI: scrubbed PEB 1319 (LEB 0:1098), data moved to PEB 1301
+>
+> I'm using kernel 2.6.36.
+> I got above message on my console which got me confused.
+> First few lines indicates PEB 426 is on different LEBs?
+> And all those PEB/LEB are moved to PEB1301 multiple times?
+>
+> Please help me understand what is happening.
 
+It can be that PEB426 and 1301 got erased between the log messages.
 
-On Fri, Aug 07, 2015 at 02:25:44AM -0300, Ezequiel Garcia wrote:
-> Shawn,
-> 
-> On 6 August 2015 at 09:02, shawn rose <shawn@ecoventsystems.com> wrote:
-> >
-> > Anyone have experience, or know of people/company/contractors, that
-> > have Encrypted UBIFS before?  If so, I'd like to be introduced.  I
-> > have a IoT device which is currently using UBIFS and like to encrypt
-> > the entire system.  I am looking for the lessons learned from those
-> > who have done this before.
-> >
-> 
-> You can use a regular block filesystem on top of UBI using the block
-> interface (drivers/mtd/ubi/block.c), and then use standard encrypt stuff
-> for block devices (dm-crypt for instance).
-> 
-> However, this has nothing to do with UBIFS, so maybe it's not an option for you.
-> 
-> If the filesystem you want to encrypt is read-only, then you may consider
-> the UBI block option.
-
-ecryptfs works fine on top of UBIFS.
-Another option is having an encrypted disk-image as a file in UBIFS and
-use cryptsetup with a loopback block device. However, this will most
-likely not perform very well and I must admit that I never tried that.
-
-
-Cheers
-
-
-Daniel
+-- 
+Thanks,
+//richard
