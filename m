@@ -1,20 +1,22 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNlL7-0001NO-Ay
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 17:21:54 +0000
-Received: by pdrh1 with SMTP id h1so29438436pdr.0
- for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2015 10:21:30 -0700 (PDT)
-Date: Fri, 7 Aug 2015 10:21:27 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] JFFS2: Prevent CPU starvation during garbage collection.
-Message-ID: <20150807172127.GB60523@google.com>
-References: <1438749630-1656-1-git-send-email-mark.tomlinson@alliedtelesis.co.nz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1438749630-1656-1-git-send-email-mark.tomlinson@alliedtelesis.co.nz>
+Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNnq4-0002b6-CS
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 20:02:01 +0000
+Date: 7 Aug 2015 20:01:32 -0000
+Message-Id: <fa591fbdbac60d507b54f55e8e5140da94b1f60e.1438977111.git.hramrach@gmail.com>
+In-Reply-To: <cover.1438977111.git.hramrach@gmail.com>
+References: <cover.1438977111.git.hramrach@gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Subject: [PATCH v3 2/6] mtd: m25p80: return amount of data transferred or
+ error in read/write
+To: David Woodhouse <dwmw2@infradead.org>,
+  Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
+  "Rafał Miłecki" <zajec5@gmail.com>, Michal Suchanek <hramrach@gmail.com>,
+  Alison Chaiken <alison_chaiken@mentor.com>, Marek Vasut <marex@denx.de>,
+  Ben Hutchings <ben@decadent.org.uk>, Huang Shijie <b32955@freescale.com>,
+  Gabor Juhos <juhosg@openwrt.org>, "Bean Huo 霍斌斌" <beanhuo@micron.com>,
+  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, ,
+  Hou Zhiqiang <B48286@freescale.com>, shijie.huang@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +26,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ David
+Add checking of SPI transfer errors and return them from read/write
+functions. Also return the amount of data transferred.
 
-I'm not maintaining JFFS2, but if it's exceedingly obvious (this patch
-might qualify), I might take patches.
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+---
+ drivers/mtd/devices/m25p80.c | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
-On Wed, Aug 05, 2015 at 04:40:30PM +1200, Mark Tomlinson wrote:
-> The JFFS2 garbage collection checks every file on the system for correct
-> checksums and cleaning up anything that it needs to. It sleeps for 50ms
-> between each file, but within each file it remains busy.
-> 
-> As far as I can tell, there is no reason to not reschedule while checking a
-> file, by putting a cond_resched() inside jfffs2_build_inode_fragtree(). In
-> fact, jffs2_get_inode_nodes() will call cond_resched(), which is done
-> immediately before jffs2_build_inode_fragtree().
-> 
-> With this extra cond_resched() between reading file blocks, there is a
-> dramatic improvement in latency for any processes which are running during
-> this initial garbage collection phase.
-> 
-> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-> ---
->  fs/jffs2/readinode.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-> index 28e0aab..78c526a 100644
-> --- a/fs/jffs2/readinode.c
-> +++ b/fs/jffs2/readinode.c
-> @@ -536,6 +536,7 @@ static int jffs2_build_inode_fragtree(struct jffs2_sb_info *c,
->  				jffs2_free_tmp_dnode_info(this);
->  			}
->  			this = vers_next;
-> +			cond_resched();
->  		}
->  	}
->  	return 0;
-
-Obligatory question: did you test this?
-
-Brian
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index b2fafc9..c93bc41 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -83,6 +83,7 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+ 	struct spi_transfer t[2] = {};
+ 	struct spi_message m;
+ 	int cmd_sz = m25p_cmdsz(nor);
++	ssize_t ret;
+ 
+ 	spi_message_init(&m);
+ 
+@@ -100,10 +101,15 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+ 	t[1].len = len;
+ 	spi_message_add_tail(&t[1], &m);
+ 
+-	spi_sync(spi, &m);
++	ret = spi_sync(spi, &m);
++	if (ret)
++		return ret;
+ 
+-	*retlen += m.actual_length - cmd_sz;
+-	return 0;
++	ret = m.actual_length - cmd_sz;
++	if (ret < 0)
++		return -EIO;
++	*retlen += ret;
++	return ret;
+ }
+ 
+ static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+@@ -130,6 +136,7 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	struct spi_transfer t[2];
+ 	struct spi_message m;
+ 	unsigned int dummy = nor->read_dummy;
++	ssize_t ret;
+ 
+ 	/* convert the dummy cycles to the number of bytes */
+ 	dummy /= 8;
+@@ -149,10 +156,15 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	t[1].len = len;
+ 	spi_message_add_tail(&t[1], &m);
+ 
+-	spi_sync(spi, &m);
++	ret = spi_sync(spi, &m);
++	if (ret)
++		return ret;
+ 
+-	*retlen = m.actual_length - m25p_cmdsz(nor) - dummy;
+-	return 0;
++	ret = m.actual_length - m25p_cmdsz(nor) - dummy;
++	if (ret < 0)
++		return -EIO;
++	*retlen += ret;
++	return ret;
+ }
+ 
+ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
+@@ -166,9 +178,7 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
+ 	flash->command[0] = nor->erase_opcode;
+ 	m25p_addr2cmd(nor, offset, flash->command);
+ 
+-	spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
+-
+-	return 0;
++	return spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
+ }
+ 
+ /*
+-- 
+2.1.4
