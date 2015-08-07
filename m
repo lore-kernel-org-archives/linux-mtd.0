@@ -1,33 +1,16 @@
-Message-ID: <55C46DBE.7060809@ti.com>
-Date: Fri, 7 Aug 2015 14:05:10 +0530
-From: Vignesh R <vigneshr@ti.com>
+From: Roger Quadros <rogerq@ti.com>
+To: <tony@atomide.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
+ <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v2 00/22] memory: omap-gpmc: mtd: nand: Support GPMC NAND on
+ non-OMAP platforms
+Date: Fri, 7 Aug 2015 12:12:10 +0300
+Message-ID: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-To: Michal Suchanek <hramrach@gmail.com>, Russell King - ARM Linux
- <linux@arm.linux.org.uk>
-CC: Geert Uytterhoeven <geert@linux-m68k.org>, Mark Brown <broonie@kernel.org>,
- devicetree <devicetree@vger.kernel.org>, Brian Norris
- <computersforpeace@gmail.com>, Tony Lindgren <tony@atomide.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-spi
- <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
-References: <20150805115013.GJ20873@sirena.org.uk>
- <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
- <20150805124412.GN20873@sirena.org.uk>
- <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
- <20150806090202.GO20873@sirena.org.uk>
- <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
- <20150806102225.GI7576@n2100.arm.linux.org.uk> <55C35233.2000105@ti.com>
- <20150806135129.GJ7576@n2100.arm.linux.org.uk>
- <CAMuHMdWWDwZ=ziGQXFCnOX8pErXpsEi533J73_Hh=sEqq4hR6Q@mail.gmail.com>
- <20150806213340.GK7576@n2100.arm.linux.org.uk>
- <CAOMqctRBW230fA4AEhK7MyqkZY==6ENNNHE-LVm7-mHKA_VzRw@mail.gmail.com>
-In-Reply-To: <CAOMqctRBW230fA4AEhK7MyqkZY==6ENNNHE-LVm7-mHKA_VzRw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,77 +20,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
+We do a couple of things in this series which result in
+cleaner device tree implementation, faster perfomance and
+multi-platform support. As an added bonus we get new GPI/Interrupt pins
+for use in the system.
 
-On 08/07/2015 01:08 PM, Michal Suchanek wrote:
+- Establish a custom interface between NAND and GPMC driver. This is
+needed because all of the NAND registers sit in the GPMC register space.
+Some bits like NAND IRQ are even shared with GPMC.
 
-> Now since the description is clearer it's obvious that ti-qspi cannot
-> work fully mmapped as fsl-qspi does because the setup has to be done
-> over normal spi access and using non-m25p80 devices on the same bus is
-> a requirement.
-> 
-> The place where it is known if a transfer can use the mmap access is m25p80.c
-> 
-> So my suggestion is
-> 
->  - add a new method for spi master that gets the read opcode, dummy
-> length, address, address length, buffer, buffer length and performs
-> read from the flash memory in a hardware-specific way
-> 
-> - add a check in m25p80.c that the master supports this feature and if
-> so use it (eg check that the method is non-null)
-> 
-> Presumably if some new SPI controllers with similar feature are
-> supported in the future they can use the same inteface because you
-> pass on everything the m25p80 read knows.
-> 
+- Remove NAND IRQ handling from omap-gpmc driver, share the GPMC IRQ
+with the omap2-nand driver and handle NAND IRQ events in the NAND driver.
+This causes performance increase when using prefetch-irq mode.
+30% increase in read, 17% increase in write in prefetch-irq mode.
 
-Ok... Do you mean something like this?
+- Clean up device tree support so that omap-gpmc IP and the omap2 NAND
+driver can be used on non-OMAP platforms. e.g. Keystone.
 
-I will take m25p80 as example but can be expanded for any flash.
+- Implement GPIOCHIP + IRQCHIP for the GPMC WAITPINS. SoCs can contain
+2 to 4 of these and most of them would be unused otherwise. It also
+allows a cleaner implementation of NAND Ready pin status for the NAND driver.
 
-In include/linux/mtd.h:
-	struct spi_mtd_config_info {
-		struct spi_device 	*spi;
-	        u32                     page_size;
-	        u8                      addr_width;
-       		u8                      erase_opcode;
-	        u8                      read_opcode;
-        	u8                      read_dummy;
-	        u8                      program_opcode;
-        	enum read_mode          flash_read;
+- Implement GPIOlib based NAND ready pin checking for OMAP NAND driver.
 
-	} /* subset of struct spi_nor */
+NOTE: I've only adapted dra7.dtsi and dra7x-evms for this series.
+I will adapt all other boards when the series is in a shape to be accepted.
 
+cheers,
+-roger
 
-In m25p80.c:
+This is done in patches 1 to 14
 
-	static int m25p80_read(struct spi_nor *nor, loff_t from,
-				size_t len, size_t *retlen,
-				u_char *buf)
-	{
-		struct spi_mtd_config_info info;
-		struct spi_device *spi;
-		
-		if (spi->master->spi_mtd_mmap_read) {
-		  /* Populate spi_mtd_config_info */
-		  spi->master->spi_mtd_mmap_read(&info, from, len,
-						 retlen, buf);
-		}
-		else {
-		/* no mtd specific acceleration supported try normal
-		 * SPI way of communicating with flash
-		 * continue with current code
-		 * set up spi_message and call spi_sync()
-		 */
-	}
+Roger Quadros (22):
+  ARM: OMAP2+: gpmc: Add platform data
+  ARM: OMAP2+: gpmc: Add gpmc timings and settings to platform data
+  memory: omap-gpmc: Introduce GPMC to NAND interface
+  mtd: nand: omap2: Use gpmc_omap_get_nand_ops() to get NAND registers
+  memory: omap-gpmc: Add GPMC-NAND ops to get writebufferempty status
+  mtd: nand: omap2: Switch to using GPMC-NAND ops for writebuffer empty
+    check
+  memory: omap-gpmc: Remove NAND IRQ code
+  memory: omap-gpmc: Add IRQ ops for GPMC-NAND interface
+  mtd: nand: omap2: manage NAND interrupts
+  mtd: nand: omap: Copy platform data parameters to omap_nand_info data
+  mtd: nand: omap: Clean up device tree support
+  mtd: nand: omap: Update DT binding documentation
+  memory: omap-gpmc: Prevent mapping into 1st 16MB
+  ARM: dts: OMAP2+: Fix NAND device nodes.
+  memory: omap-gpmc: Move device tree binding to correct location
+  memory: omap-gpmc: Support general purpose input for WAITPINs
+  memory: omap-gpmc: Reserve WAITPIN if needed for WAIT monitoring
+  memory: omap-gpmc: Add irqchip support to the gpiochip
+  ARM: dts: dra7: Enable gpio & interrupt controller for gpmc node
+  mtd: nand: omap2: Implement NAND ready using gpiolib
+  ARM: dts: dra7x-evm: Provide NAND ready pin
+  memory: omap-gpmc: Prevent GPMC_STATUS from being accessed via
+    gpmc_regs
 
-      }
-
-In spi-ti-qspi.c:
-Implement spi_mtd_mmap_read while holding master->bus_lock mutex.
-
+ .../omap-gpmc.txt}                                 |   0
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  16 +-
+ arch/arm/boot/dts/dra7-evm.dts                     |   6 +-
+ arch/arm/boot/dts/dra7.dtsi                        |   4 +
+ arch/arm/boot/dts/dra72-evm.dts                    |   2 +
+ arch/arm/boot/dts/omap3-beagle.dts                 |   3 +-
+ arch/arm/mach-omap2/gpmc-nand.c                    |  11 +-
+ drivers/memory/omap-gpmc.c                         | 610 ++++++++++++---------
+ drivers/mtd/nand/omap2.c                           | 261 ++++++---
+ include/linux/omap-gpmc.h                          | 172 ++----
+ include/linux/platform_data/gpmc-omap.h            | 169 ++++++
+ include/linux/platform_data/mtd-nand-omap2.h       |  12 +-
+ 12 files changed, 782 insertions(+), 484 deletions(-)
+ rename Documentation/devicetree/bindings/{bus/ti-gpmc.txt => memory-controllers/omap-gpmc.txt} (100%)
+ create mode 100644 include/linux/platform_data/gpmc-omap.h
 
 -- 
-Regards
-Vignesh
+2.1.4
