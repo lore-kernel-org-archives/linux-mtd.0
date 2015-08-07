@@ -1,18 +1,30 @@
-Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNc7t-0004R2-Cs
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 07:31:38 +0000
-Received: by obbfr1 with SMTP id fr1so36780633obb.1
- for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2015 00:31:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOx4H9CHrhBhW6DZrJi8h+Lz=5QFbmUn=n9o1WwBpzY1FGDR_A@mail.gmail.com>
-References: <CAOx4H9CHrhBhW6DZrJi8h+Lz=5QFbmUn=n9o1WwBpzY1FGDR_A@mail.gmail.com>
-Date: Fri, 7 Aug 2015 09:31:14 +0200
-Message-ID: <CAFLxGvwr0-jTESMBV+BCcVf8-ZJGZPqO3cKhLeb8BwUnRs54mQ@mail.gmail.com>
-Subject: Re: UBI confusing scrubbing information
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: t kevin <kevint324@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <20150806213340.GK7576@n2100.arm.linux.org.uk>
+References: <20150805115013.GJ20873@sirena.org.uk>
+ <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
+ <20150805124412.GN20873@sirena.org.uk>
+ <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
+ <20150806090202.GO20873@sirena.org.uk>
+ <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
+ <20150806102225.GI7576@n2100.arm.linux.org.uk> <55C35233.2000105@ti.com>
+ <20150806135129.GJ7576@n2100.arm.linux.org.uk>
+ <CAMuHMdWWDwZ=ziGQXFCnOX8pErXpsEi533J73_Hh=sEqq4hR6Q@mail.gmail.com>
+ <20150806213340.GK7576@n2100.arm.linux.org.uk>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Fri, 7 Aug 2015 09:38:48 +0200
+Message-ID: <CAOMqctRBW230fA4AEhK7MyqkZY==6ENNNHE-LVm7-mHKA_VzRw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Vignesh R <vigneshr@ti.com>,
+ Mark Brown <broonie@kernel.org>, devicetree <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,26 +35,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 7, 2015 at 5:20 AM, t kevin <kevint324@gmail.com> wrote:
-> Hi,
+On 6 August 2015 at 23:33, Russell King - ARM Linux
+<linux@arm.linux.org.uk> wrote:
+> On Thu, Aug 06, 2015 at 06:14:00PM +0200, Geert Uytterhoeven wrote:
+>> On Thu, Aug 6, 2015 at 3:51 PM, Russell King - ARM Linux
+>> <linux@arm.linux.org.uk> wrote:
+>> > On Thu, Aug 06, 2015 at 05:55:23PM +0530, Vignesh R wrote:
+>> >> On the whole following are my requirements:
+>> >> 1. to be able to communicate with non -flash SPI devices via config port
+>> >> ( this functionality is supported by current driver, I dont want to
+>> >> break it). Or pump any spi_message on to SPI bus directly.
+>> >> 2. take advantage of memory mapped port in order to increase read
+>> >> throughput( and use dma in future) when the slave is a m25p80 type flash.
+>> >> 3. handle m25p80 as well as other slave on multiple chipselects.
+>> >>
+>> >> I just need to know whether the user that requested the transfer is
+>> >> m25p80 driver. If yes, ti-qspi driver can take advantage of memory
+>> >> mapped interface, else just use config port to access SPI bus directly.
+>> >
+>> > The problem with this approach is that it's an abomination.  It's adding
+>> > a SPI-user specific hack which is detected by a specific driver.  That's
+>> > really not sane - what happens when we have lots of these kinds of "I'm
+>> > an X SPI-user" with drivers detecting that?  It's not maintainable in the
+>> > long term.
+>> >
+>> > Yes, your requirements _today_ seem simple and easy, but you're only
+>> > thinking about today, not tomorrow when you've moved on and someone else
+>> > has to maintain the mess left behind (or delete it from mainline because
+>> > they're sick of dealing with a hack.)
+>> >
+>> >> The spi_message that is received in transfer_one_message() is too
+>> >> generic to imply the slave device that is on the other side of the wire.
+>> >> IMO, the read command does not imply that the slave is m25p80 flash
+>> >> (besides the read opcodes vary across vendors of m25p80 and across modes).
+>> >
+>> > I can see both sides of the argument.
+>> >
+>> > Mark is saying: if the SPI driver detects that the message to be transmitted
+>> > is a read command followed by the appropriate number of dummy bytes, and
+>> > then the data being read _and_ it's using quad-mode access, and the hardware
+>> > generates _exactly_ that in hardware using the memory mapped mode, there is
+>> > no reason _not_ to use the hardware to achieve that SPI transaction.  The
+>> > bus activity will be identical to what happens when the SPI controller is
+>> > used manually to achieve that bus sequence.
+>> >
+>> > You're saying: but the documentation says you can't use it for anything
+>> > except m25p80.  If you look at 24.5.4.1.2, it tells you what the SFI
+>> > generates on the bus, which is:
+>> >
+>> > 1. CS active
+>> > 2. Read command byte sent
+>> > 3. 1-4 address bytes sent
+>> > 4. 0-3 dummy bytes sent
+>> > 5. data bytes read from bus
+>> > 6. CS inactive
+>> >
+>> > So, Mark's point is "if we can detect a transaction which fits _that_
+>> > bus activity, there's no reason not to use this acceleration for the
+>> > transaction."
+>> >
+>> > What you're failing to counter with is: we don't have enough information
+>> > in the SPI driver to know how many dummy bytes there are between the
+>> > address bytes and the data read from the bus.
+>>
+>> Irrespective of the dummy bytes.
+>> What if the spi device is not a FLASH ROM, but some other device,
+>> which receives a data packet that accidentally looks like an m25p80 READ
+>> command?
 >
-> [ 2982.880000] UBI: scrubbed PEB 426 (LEB 0:1255), data moved to PEB 1301
-> [ 2983.420000] UBI: scrubbed PEB 426 (LEB 0:451), data moved to PEB 1301
-> [ 3043.920000] UBI: scrubbed PEB 426 (LEB 0:491), data moved to PEB 1301
-> [ 3044.740000] UBI: scrubbed PEB 426 (LEB 0:1255), data moved to PEB 1301
-> [ 3045.240000] UBI: scrubbed PEB 426 (LEB 0:1098), data moved to PEB 1301
-> [ 3045.820000] UBI: scrubbed PEB 426 (LEB 0:65), data moved to PEB 1301
-> [ 3046.160000] UBI: scrubbed PEB 1319 (LEB 0:1098), data moved to PEB 1301
+> Well, for the most part it looks like it should still work, but there
+> could be a gotcha, but first, let's get rid of a myth there.
 >
-> I'm using kernel 2.6.36.
-> I got above message on my console which got me confused.
-> First few lines indicates PEB 426 is on different LEBs?
-> And all those PEB/LEB are moved to PEB1301 multiple times?
+> The QSPI is _not_ specific to the M25P80.  The manual says nothing
+> about being specific to that device.  What it says is that it's for
+> SPI NOR memory.  It will work with bus widths of 1, 2 or 4 data lines,
+> so it probably works with non-M25P80 SPI NOR devices too - and the fact
+> that the read and write commands are completely programmable suggests
+> that using it with SPI NOR devices which do not use the M25P80 read
+> command value is intended.
 >
-> Please help me understand what is happening.
+...
+>
+> That much is good, but now is the problem - how does the SFI know that
+> we're going to require to read 32 bytes?  I think the answer to that
+> is that it doesn't know, so it probably just reads the number of bytes
+> which the access on the SoC bus is asking for, which makes it
+> indeterminant from a software point of view to control how many bytes
+> will be read without provoking another "send 0x01, next address, dummy
+> byte" sequence.
+>
+> So, I'm now on the side of not parsing commands in the SPI driver, and
+> back on the idea that this needs to be handled in some other manner
+> which doesn't involve polluting the SPI core with flag-hacks.
 
-It can be that PEB426 and 1301 got erased between the log messages.
+OK, so we can agree that using this hardware acceleration for any kind
+of transfer indiscriminately is not a very good idea.
 
--- 
-Thanks,
-//richard
+Now since the description is clearer it's obvious that ti-qspi cannot
+work fully mmapped as fsl-qspi does because the setup has to be done
+over normal spi access and using non-m25p80 devices on the same bus is
+a requirement.
+
+The place where it is known if a transfer can use the mmap access is m25p80.c
+
+So my suggestion is
+
+ - add a new method for spi master that gets the read opcode, dummy
+length, address, address length, buffer, buffer length and performs
+read from the flash memory in a hardware-specific way
+
+- add a check in m25p80.c that the master supports this feature and if
+so use it (eg check that the method is non-null)
+
+Presumably if some new SPI controllers with similar feature are
+supported in the future they can use the same inteface because you
+pass on everything the m25p80 read knows.
+
+Thanks
+
+Michal
