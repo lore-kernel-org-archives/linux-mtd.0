@@ -1,23 +1,20 @@
-Received: from mail-bn1on0135.outbound.protection.outlook.com
- ([157.56.110.135] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-wi0-f175.google.com ([209.85.212.175])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNZ7N-0003xh-J8
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 04:18:55 +0000
-From: Hou Zhiqiang <B48286@freescale.com>
-To: Hou Zhiqiang <B48286@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-CC: Hu Vincent <Mingkai.Hu@freescale.com>
-Subject: RE: [PATCH] mtd: m25p80: Add Power Management support
-Date: Fri, 7 Aug 2015 04:18:30 +0000
-Message-ID: <CY1PR0301MB07806C6F60DA735D23EED0AC8B730@CY1PR0301MB0780.namprd03.prod.outlook.com>
-References: <1437473933-11983-1-git-send-email-B48286@freescale.com>
- <CY1PR0301MB0780DF6BC293B2C6B5397EA88B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
-In-Reply-To: <CY1PR0301MB0780DF6BC293B2C6B5397EA88B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ id 1ZNaAR-00066r-2L
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 05:26:07 +0000
+Received: by wicgj17 with SMTP id gj17so47340795wic.1
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Aug 2015 22:25:44 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAKWcF8-LTkPQEjLR3gdiZ1ZLrmoZHqdo2tBkzZsnrxiVqK+oag@mail.gmail.com>
+References: <CAKWcF8-LTkPQEjLR3gdiZ1ZLrmoZHqdo2tBkzZsnrxiVqK+oag@mail.gmail.com>
+Date: Fri, 7 Aug 2015 02:25:44 -0300
+Message-ID: <CAAEAJfC_iy=5GumEVJrY_V_7z2gTwXHwZHwzwt_YOzwn4sEsgg@mail.gmail.com>
+Subject: Re: Encrypting UBIFS Filesystem
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: shawn rose <shawn@ecoventsystems.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,56 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQnJpYW4sDQoNCklmIHlvdSBoYXZlbid0IGFueSBjb21tZW50IHdpdGggdGhpcyBwYXRjaCwg
-Y291bGQgeW91IHBsZWFzZSBhcHBseSB0aGlzIHBhdGNoPw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVz
-c2FnZS0tLS0tDQo+IEZyb206IEhvdSBaaGlxaWFuZy1CNDgyODYNCj4gU2VudDogMjAxNcTqN9TC
-MzHI1SAxODo0NQ0KPiBUbzogSG91IFpoaXFpYW5nLUI0ODI4NjsgbGludXgtbXRkQGxpc3RzLmlu
-ZnJhZGVhZC5vcmc7DQo+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgZHdtdzJAaW5mcmFk
-ZWFkLm9yZw0KPiBDYzogSHUgTWluZ2thaS1CMjEyODQNCj4gU3ViamVjdDogUkU6IFtQQVRDSF0g
-bXRkOiBtMjVwODA6IEFkZCBQb3dlciBNYW5hZ2VtZW50IHN1cHBvcnQNCj4gDQo+IEhpIEJyaWFu
-LA0KPiANCj4gRG8geW91IGhhdmUgYW55IGNvbW1lbnQ/DQo+IA0KPiA+IC0tLS0tT3JpZ2luYWwg
-TWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogWmhpcWlhbmcgSG91IFttYWlsdG86QjQ4Mjg2QGZyZWVz
-Y2FsZS5jb21dDQo+ID4gU2VudDogMjAxNcTqN9TCMjHI1SAxODoxOQ0KPiA+IFRvOiBsaW51eC1t
-dGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOw0KPiA+
-IGR3bXcyQGluZnJhZGVhZC5vcmcNCj4gPiBDYzogSHUgTWluZ2thaS1CMjEyODQ7IEhvdSBaaGlx
-aWFuZy1CNDgyODYNCj4gPiBTdWJqZWN0OiBbUEFUQ0hdIG10ZDogbTI1cDgwOiBBZGQgUG93ZXIg
-TWFuYWdlbWVudCBzdXBwb3J0DQo+ID4NCj4gPiBGcm9tOiBIb3UgWmhpcWlhbmcgPEI0ODI4NkBm
-cmVlc2NhbGUuY29tPg0KPiA+DQo+ID4gQWRkIHRoZSByZXNjYW5uaW5nIGFuZCBpbml0aWFsaXph
-dGlvbiBvZiBTUEkgZmxhc2gsIHRvIG1ha2UgdGhlIFNQSQ0KPiA+IGZsYXNoIGluIHRoZSBjb3Jy
-ZWN0IHN0YXRlLiBCZWNhdXNlIGlmIHRoZSBQb3dlciBNYW5hZ2VtZW50IHN5c3RlbQ0KPiA+IHRy
-dW5zIG9mZiBwb3dlciBzdXBwbHkgZm9yIFNQSSBmbGFzaCB3aGVuIHN5c3RlbSBzdXNwZW5kaW5n
-LCB0aGUgU1BJDQo+ID4gZmxhc2ggd2lsbCByZXR1cm4gdG8gdGhlIHJlc2V0IHN0YXRlIGFmdGVy
-IHN5c3RlbSByZXN1bWUuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBIb3UgWmhpcWlhbmcgPEI0
-ODI4NkBmcmVlc2NhbGUuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL210ZC9kZXZpY2VzL20y
-NXA4MC5jIHwgMzQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZp
-bGUgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL2RldmljZXMvbTI1cDgwLmMNCj4gPiBiL2RyaXZlcnMvbXRkL2RldmljZXMvbTI1cDgw
-LmMgaW5kZXggZDMxM2Y5NDhiLi5mOWQyYjJlIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRk
-L2RldmljZXMvbTI1cDgwLmMNCj4gPiArKysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL20yNXA4MC5j
-DQo+ID4gQEAgLTI0OCw2ICsyNDgsMzkgQEAgc3RhdGljIGludCBtMjVwX3JlbW92ZShzdHJ1Y3Qg
-c3BpX2RldmljZSAqc3BpKQ0KPiA+ICAJcmV0dXJuIG10ZF9kZXZpY2VfdW5yZWdpc3RlcigmZmxh
-c2gtPm10ZCk7DQo+ID4gIH0NCj4gPg0KPiA+ICsjaWZkZWYgQ09ORklHX1BNX1NMRUVQDQo+ID4g
-K3N0YXRpYyBpbnQgbTI1cF9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikgew0KPiA+ICsJcmV0
-dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQgbTI1cF9yZXN1bWUoc3RydWN0
-IGRldmljZSAqZGV2KSB7DQo+ID4gKwlzdHJ1Y3QgbTI1cCAqZmxhc2ggPSBkZXZfZ2V0X2RydmRh
-dGEoZGV2KTsNCj4gPiArCXN0cnVjdCBzcGlfZGV2aWNlICpzcGkgPSBmbGFzaC0+c3BpOw0KPiA+
-ICsJc3RydWN0IHNwaV9ub3IgKm5vciA9ICZmbGFzaC0+c3BpX25vcjsNCj4gPiArCWVudW0gcmVh
-ZF9tb2RlIG1vZGUgPSBTUElfTk9SX05PUk1BTDsNCj4gPiArCXN0cnVjdCBmbGFzaF9wbGF0Zm9y
-bV9kYXRhICpkYXRhOw0KPiA+ICsJY2hhciAqZmxhc2hfbmFtZSA9IE5VTEw7DQo+ID4gKw0KPiA+
-ICsJaWYgKHNwaS0+bW9kZSAmIFNQSV9SWF9RVUFEKQ0KPiA+ICsJCW1vZGUgPSBTUElfTk9SX1FV
-QUQ7DQo+ID4gKwllbHNlIGlmIChzcGktPm1vZGUgJiBTUElfUlhfRFVBTCkNCj4gPiArCQltb2Rl
-ID0gU1BJX05PUl9EVUFMOw0KPiA+ICsNCj4gPiArCWRhdGEgPSBkZXZfZ2V0X3BsYXRkYXRhKCZz
-cGktPmRldik7DQo+ID4gKwlpZiAoZGF0YSAmJiBkYXRhLT50eXBlKQ0KPiA+ICsJCWZsYXNoX25h
-bWUgPSBkYXRhLT50eXBlOw0KPiA+ICsJZWxzZSBpZiAoIXN0cmNtcChzcGktPm1vZGFsaWFzLCAi
-c3BpLW5vciIpKQ0KPiA+ICsJCWZsYXNoX25hbWUgPSBOVUxMOyAvKiBhdXRvLWRldGVjdCAqLw0K
-PiA+ICsJZWxzZQ0KPiA+ICsJCWZsYXNoX25hbWUgPSBzcGktPm1vZGFsaWFzOw0KPiA+ICsNCj4g
-PiArCXJldHVybiBzcGlfbm9yX3NjYW4obm9yLCBmbGFzaF9uYW1lLCBtb2RlKTsgfSAjZW5kaWYg
-LyoNCj4gPiArQ09ORklHX1BNX1NMRUVQICovDQo+ID4gKw0KPiA+ICtzdGF0aWMgU0lNUExFX0RF
-Vl9QTV9PUFMobTI1cF9wbV9vcHMsIG0yNXBfc3VzcGVuZCwgbTI1cF9yZXN1bWUpOw0KPiA+ICAv
-Kg0KPiA+ICAgKiBEbyBOT1QgYWRkIHRvIHRoaXMgYXJyYXkgd2l0aG91dCByZWFkaW5nIHRoZSBm
-b2xsb3dpbmc6DQo+ID4gICAqDQo+ID4gQEAgLTMwMiw2ICszMzUsNyBAQCBzdGF0aWMgc3RydWN0
-IHNwaV9kcml2ZXIgbTI1cDgwX2RyaXZlciA9IHsNCj4gPiAgCS5kcml2ZXIgPSB7DQo+ID4gIAkJ
-Lm5hbWUJPSAibTI1cDgwIiwNCj4gPiAgCQkub3duZXIJPSBUSElTX01PRFVMRSwNCj4gPiArCQku
-cG0JPSAmbTI1cF9wbV9vcHMsDQo+ID4gIAl9LA0KPiA+ICAJLmlkX3RhYmxlCT0gbTI1cF9pZHMs
-DQo+ID4gIAkucHJvYmUJPSBtMjVwX3Byb2JlLA0KPiA+IC0tDQo+ID4gMi4xLjAuMjcuZzk2ZGIz
-MjQNCj4gDQo+IFRoYW5rcywNCj4gWmhpcWlhbmcNCg0KVGhhbmtzLA0KWmhpcWlhbmcNCg==
+Shawn,
+
+On 6 August 2015 at 09:02, shawn rose <shawn@ecoventsystems.com> wrote:
+>
+> Anyone have experience, or know of people/company/contractors, that
+> have Encrypted UBIFS before?  If so, I'd like to be introduced.  I
+> have a IoT device which is currently using UBIFS and like to encrypt
+> the entire system.  I am looking for the lessons learned from those
+> who have done this before.
+>
+
+You can use a regular block filesystem on top of UBI using the block
+interface (drivers/mtd/ubi/block.c), and then use standard encrypt stuff
+for block devices (dm-crypt for instance).
+
+However, this has nothing to do with UBIFS, so maybe it's not an option for=
+ you.
+
+If the filesystem you want to encrypt is read-only, then you may consider
+the UBI block option.
+
+Hope it helps,
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
