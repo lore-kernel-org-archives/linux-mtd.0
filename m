@@ -1,17 +1,20 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNauI-0008UI-I8
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 06:13:31 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <richard@nod.at>, <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3] ubifs: make ubifs_[get|set]xattr atomic
-Date: Fri, 7 Aug 2015 14:07:20 +0800
-Message-ID: <1438927640-14931-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-In-Reply-To: <55C444EA.7090305@cn.fujitsu.com>
-References: <55C444EA.7090305@cn.fujitsu.com>
+Received: from fudo.makrotopia.org ([2001:41d0:8:c75d::1])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNc5L-0002Vy-2O
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 07:29:00 +0000
+Date: Fri, 7 Aug 2015 09:28:25 +0200
+From: Daniel Golle <daniel@makrotopia.org>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: shawn rose <shawn@ecoventsystems.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Encrypting UBIFS Filesystem
+Message-ID: <20150807072824.GA1972@makrotopia.org>
+References: <CAKWcF8-LTkPQEjLR3gdiZ1ZLrmoZHqdo2tBkzZsnrxiVqK+oag@mail.gmail.com>
+ <CAAEAJfC_iy=5GumEVJrY_V_7z2gTwXHwZHwzwt_YOzwn4sEsgg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAEAJfC_iy=5GumEVJrY_V_7z2gTwXHwZHwzwt_YOzwn4sEsgg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,66 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit make the ubifs_[get|set]xattr protected by ui_mutex.
+Hi!
 
-Originally, there is a possibility that ubifs_getxattr to get
-a wrong value.
 
-  P1                                  P2
-----------                  	----------
-ubifs_getxattr                      ubifs_setxattr
-					- kfree()
-- memcpy()
-					- kmemdup()
+On Fri, Aug 07, 2015 at 02:25:44AM -0300, Ezequiel Garcia wrote:
+> Shawn,
+> 
+> On 6 August 2015 at 09:02, shawn rose <shawn@ecoventsystems.com> wrote:
+> >
+> > Anyone have experience, or know of people/company/contractors, that
+> > have Encrypted UBIFS before?  If so, I'd like to be introduced.  I
+> > have a IoT device which is currently using UBIFS and like to encrypt
+> > the entire system.  I am looking for the lessons learned from those
+> > who have done this before.
+> >
+> 
+> You can use a regular block filesystem on top of UBI using the block
+> interface (drivers/mtd/ubi/block.c), and then use standard encrypt stuff
+> for block devices (dm-crypt for instance).
+> 
+> However, this has nothing to do with UBIFS, so maybe it's not an option for you.
+> 
+> If the filesystem you want to encrypt is read-only, then you may consider
+> the UBI block option.
 
-Then ubifs_getxattr() would get a non-sense data. To solve this
-problem, this commit make the xattr of ubifs_inode updated in
-atomic.
+ecryptfs works fine on top of UBIFS.
+Another option is having an encrypted disk-image as a file in UBIFS and
+use cryptsetup with a loopback block device. However, this will most
+likely not perform very well and I must admit that I never tried that.
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
-	-v2
-		fix a dead lock in error flow
- fs/ubifs/xattr.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 96f3448..33badeb 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -208,14 +208,17 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 	if (err)
- 		return err;
- 
-+	mutex_lock(&ui->ui_mutex);
- 	kfree(ui->data);
- 	ui->data = kmemdup(value, size, GFP_NOFS);
- 	if (!ui->data) {
-+		mutex_unlock(&ui->ui_mutex);
- 		err = -ENOMEM;
- 		goto out_free;
- 	}
- 	inode->i_size = ui->ui_size = size;
- 	ui->data_len = size;
-+	mutex_unlock(&ui->ui_mutex);
- 
- 	mutex_lock(&host_ui->ui_mutex);
- 	host->i_ctime = ubifs_current_time(host);
-@@ -409,6 +412,7 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
- 	ubifs_assert(inode->i_size == ui->data_len);
- 	ubifs_assert(ubifs_inode(host)->xattr_size > ui->data_len);
- 
-+	mutex_lock(&ui->ui_mutex);
- 	if (buf) {
- 		/* If @buf is %NULL we are supposed to return the length */
- 		if (ui->data_len > size) {
-@@ -423,6 +427,7 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
- 	err = ui->data_len;
- 
- out_iput:
-+	mutex_unlock(&ui->ui_mutex);
- 	iput(inode);
- out_unlock:
- 	kfree(xent);
--- 
-1.8.4.2
+Cheers
+
+
+Daniel
