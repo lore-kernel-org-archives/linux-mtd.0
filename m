@@ -1,30 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNguU-0000Rg-9A
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 12:38:08 +0000
-Subject: Re: UBIFS errors when file-system is full
-To: Bhuvanchandra DV <bhuvanchandradv@gmail.com>
-References: <55A3C342.9010704@gmail.com>
- <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
- <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
- <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
- <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
- <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
- <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
- <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
- <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
- <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
- <55AF4447.50500@nod.at> <55B24F2F.9020705@gmail.com>
- <55B26D24.3060006@nod.at> <55BBA6A5.9020701@gmail.com>
- <55BC68D6.2070008@nod.at> <55C3379E.50000@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55C4A695.7060608@nod.at>
-Date: Fri, 7 Aug 2015 14:37:41 +0200
+ id 1ZNhAT-0008KL-KY
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 12:54:38 +0000
+Received: by wijp15 with SMTP id p15so59134614wij.0
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2015 05:54:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <55C3379E.50000@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFLxGvxjKVLRQ1Jrjw-hTLq8k1jMTeWVOYwdgHzg=_dQfFsnRg@mail.gmail.com>
+References: <CAEo2pzuPdN56QQbvoao_oo9oppr1CNmBMhq7d0BSGQXraBZYOA@mail.gmail.com>
+ <CAFLxGvxjKVLRQ1Jrjw-hTLq8k1jMTeWVOYwdgHzg=_dQfFsnRg@mail.gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Fri, 7 Aug 2015 14:53:36 +0200
+Message-ID: <CAOMqctSmF8S9=F7JJKciF0wksLid2CkxXt_=3_3Qct=uM_nRwA@mail.gmail.com>
+Subject: Re: ubifs: nand flash wear profiling for userspace application file
+ i/o
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: =?UTF-8?B?0JjQu9GM0Y/RgSDQk9Cw0YHQsNC90L7Qsg==?= <torso.nafi@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,28 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On 7 August 2015 at 14:30, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> On Fri, Aug 7, 2015 at 1:47 PM, =D0=98=D0=BB=D1=8C=D1=8F=D1=81 =D0=93=D0=
+=B0=D1=81=D0=B0=D0=BD=D0=BE=D0=B2 <torso.nafi@gmail.com> wrote:
+>> Hello.
+>>
+>> We are developing a GNU/Linux-based appliance, and our customers are
+>> concerned that the defining application, which runs on it, wears out
+>> its flash storage too quickly under certain circumstances. The h/w
+>> supplier guarantees at least 10 000 rewrite cycles for its nand flash
+>> blocks before wear out.
+>
+> 10000 is not much, is this MLC?
+>
+>> Is there a suitable method to count (or accurately estimate) the
+>> distribution of rewrite cycles for ubifs flash blocks during a certain
+>> period of application work cycle, e. g. for three days? The power is
+>> not guaranteed to be 100% time on, without a single outage, so it
+>> would be preferred if persistent data is used, like ubifs journal or
+>> ubi wear-leveling peb contents, rather than volatile kernelspace
+>> counters and such.
+>
+> ubinfo prints the maximum erase counter value, does this help?
+> This info is also available via /sys/class/ubi/ubi0/max_ec.
+>
+> If you want the distribution you have to write a small script which
+> reads the EC header of all blocks.
+> But as UBI does wear leveling for you, the distribution should not
+> matter. Please keep in mind that you need to define a sane
+> WL threshold.
+>
 
-Am 06.08.2015 um 12:31 schrieb Bhuvanchandra DV:
->>> The tests ran on ubi partition after isolating it from U-Boot completly.
->>> Formatted the ubi partition and then boot with SD card (4.1.2 kernel fastmap enabled/disabled, fm_debug enabled).
->>> Please find the below log of ubi-tests:
->>>
->>> [io_paral] write_thread():222: written and read data are different
->> *blink*
-> 
-> Tried to run the io_paral test multiple times seperately with few debug prints added to see what exact
-> differences with read and write buffers, so far we could see one complete page is read twice even though
-> it is written once. I'm now confused is the issue happen while reading or while writing. Can you give us
-> some pointers so that we can narrow down the cause for this failure.
+Also be aware that with MLC power outage can destroy already written
+block which is in the same physical area as the currently programmed
+block which ubifs currently does not handle AFAIK.
 
-The test verifies that the data has been written correctly to the block.
-(Maybe a buffer problem in your MTD driver?)
+Thanks
 
-You can also enable UBI's IO checks.
-i.e. echo 1 > /sys/kernel/debug/ubi/ubi0/chk_io
-
-It will also verify it's writes. Maybe it can give you a clue.
-
-Thanks,
-//richard
+Michal
