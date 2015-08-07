@@ -1,21 +1,14 @@
-Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNnxr-0006d4-3M
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 20:10:04 +0000
-Date: 7 Aug 2015 20:01:33 -0000
-Message-Id: <e1251eea4ec9cc8c72d54300f3396919a3afe4b1.1438977111.git.hramrach@gmail.com>
-In-Reply-To: <cover.1438977111.git.hramrach@gmail.com>
-References: <cover.1438977111.git.hramrach@gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v3 6/6] mtd: spi-nor: simplify write loop
-To: David Woodhouse <dwmw2@infradead.org>,
-  Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
-  "Rafał Miłecki" <zajec5@gmail.com>, Michal Suchanek <hramrach@gmail.com>,
-  Alison Chaiken <alison_chaiken@mentor.com>, Marek Vasut <marex@denx.de>,
-  Ben Hutchings <ben@decadent.org.uk>, Huang Shijie <b32955@freescale.com>,
-  Gabor Juhos <juhosg@openwrt.org>, "Bean Huo 霍斌斌" <beanhuo@micron.com>,
-  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, ,
-  Hou Zhiqiang <B48286@freescale.com>, shijie.huang@intel.com
+Message-ID: <55C51319.2010901@tul.cz>
+Date: Fri, 07 Aug 2015 22:20:41 +0200
+From: Petr Cvek <petr.cvek@tul.cz>
+MIME-Version: 1.0
+To: daniel@zonque.org, haojian.zhuang@gmail.com,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ dwmw2@infradead.org, computersforpeace@gmail.com, eric.y.miao@gmail.com
+CC: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
+Subject: [BUG, RFC] MTD Execute in Place on ARM breaks build
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,92 +18,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The spi-nor write loop assumes that what is passed to the hardware
-driver write() is what gets written.
+Hello,
 
-When write() writes less than page size at once data is dropped on the
-floor. Check the amount of data writen.
+Configuration:
 
-This also means that write can start mid-page any time so there is
-no special case for first page.
+	CONFIG_MTD_XIP=y
 
-Signed-off-by: Michal Suchanek <hramrach@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 48 ++++++++++++++-----------------------------
- 1 file changed, 15 insertions(+), 33 deletions(-)
+on PXA2xx architecture causes request of undefined macros from 
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 837e3df..e0ae9cf 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -836,7 +836,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	size_t *retlen, const u_char *buf)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
--	u32 page_offset, page_size, i;
-+	size_t page_offset, page_remain, i;
- 	int ret;
- 
- 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
-@@ -845,45 +845,27 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	if (ret)
- 		return ret;
- 
--	write_enable(nor);
--
--	page_offset = to & (nor->page_size - 1);
-+	for (i = 0; i < len; ) {
-+		int written;
- 
--	/* do all the bytes fit onto one page? */
--	if (page_offset + len <= nor->page_size) {
--		ret = nor->write(nor, to, len, buf);
--		if (ret < 0)
--			goto write_err;
--		*retlen += ret;
--	} else {
-+		page_offset = to & (nor->page_size - 1);
- 		/* the size of data remaining on the first page */
--		page_size = nor->page_size - page_offset;
--		ret = nor->write(nor, to, page_size, buf);
-+		page_remain = min_t(size_t,
-+				    nor->page_size - page_offset, len - i);
-+
-+		write_enable(nor);
-+		ret = nor->write(nor, to + i, page_remain, buf + i);
- 		if (ret < 0)
- 			goto write_err;
--		*retlen += ret;
--
--		/* write everything in nor->page_size chunks */
--		for (i = ret; i < len; ) {
--			page_size = len - i;
--			if (page_size > nor->page_size)
--				page_size = nor->page_size;
--
--			ret = spi_nor_wait_till_ready(nor);
--			if (ret)
--				goto write_err;
-+		written = ret;
- 
--			write_enable(nor);
--
--			ret = nor->write(nor, to + i, page_size, buf + i);
--			if (ret < 0)
--				goto write_err;
--			*retlen += ret;
--			i += ret;
--		}
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			goto write_err;
-+		*retlen += written;
-+		i += written;
- 	}
- 
--	ret = spi_nor_wait_till_ready(nor);
- write_err:
- 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
- 	return ret;
--- 
-2.1.4
+	drivers/mtd/chipscfi_cmdset_0001.c
+
+These macros (using ICIP and ICMR) are defined here:
+
+	http://lxr.free-electrons.com/source/arch/arm/mach-pxa/include/mach/mtd-xip.h#L20
+
+register definitions for ICIP and ICMR were removed by commit:
+	
+	5d284e353eb11ab2e8b1c5671ba06489b0bd1e0c
+
+Similar is for macros with OSCR (lines 23 and 24), which have different type.
+Re-adding ICIP and ICMR definition and explicit type conversion will fix the build
+and the kernel boots, but I'm not yet able to test XIP functionality (too many different
+bugs to flash over windows mobile image).
+
+My temporal fix (ugly):
+
+#define ICIP __REG(0x40D00000)  /* Interrupt Controller IRQ Pending Register */
+#define ICMR __REG(0x40D00004)  /* Interrupt Controller Mask Register */
+...
+#define xip_currtime()		((unsigned long) OSCR)
+#define xip_elapsed_since(x)	(signed)((((unsigned long) OSCR) - (x)) / 4)
+
+
+P.S. Same macros are used on omap1 and sa1100 too.
+
+Petr Cvek
