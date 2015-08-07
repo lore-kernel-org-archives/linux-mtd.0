@@ -5,9 +5,10 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2 21/22] ARM: dts: dra7x-evm: Provide NAND ready pin
-Date: Fri, 7 Aug 2015 12:12:31 +0300
-Message-ID: <1438938752-31010-22-git-send-email-rogerq@ti.com>
+Subject: [PATCH v2 22/22] memory: omap-gpmc: Prevent GPMC_STATUS from being
+ accessed via gpmc_regs
+Date: Fri, 7 Aug 2015 12:12:32 +0300
+Message-ID: <1438938752-31010-23-git-send-email-rogerq@ti.com>
 In-Reply-To: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 References: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,42 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On these boards NAND ready pin status is avilable over
-GPMC_WAIT0 pin.
+GPMC_STATUS register is private to the GPMC module and must not be
+accessed directly by NAND driver through the gpmc_regs.
 
-Read speed increases from 13768 KiB/ to 17246 KiB/s.
-Write speed was unchanged at 7123 KiB/s.
-Measured using mtd_speedtest.ko.
+They must use gpmc_omap_get_nand_ops() instead.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/boot/dts/dra7-evm.dts  | 1 +
- arch/arm/boot/dts/dra72-evm.dts | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/memory/omap-gpmc.c                   | 2 +-
+ include/linux/platform_data/mtd-nand-omap2.h | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
-index 3fb1ced..b717fd0 100644
---- a/arch/arm/boot/dts/dra7-evm.dts
-+++ b/arch/arm/boot/dts/dra7-evm.dts
-@@ -575,6 +575,7 @@
- 		reg = <0 0 4>;		/* device IO registers */
- 		interrupt-parent = <&crossbar_mpu>;
- 		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+		ready-gpio = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 pin */
- 		ti,nand-ecc-opt = "bch8";
- 		ti,elm-id = <&elm>;
- 		nand-bus-width = <16>;
-diff --git a/arch/arm/boot/dts/dra72-evm.dts b/arch/arm/boot/dts/dra72-evm.dts
-index fc0677a..c1a3397 100644
---- a/arch/arm/boot/dts/dra72-evm.dts
-+++ b/arch/arm/boot/dts/dra72-evm.dts
-@@ -387,6 +387,7 @@
- 		 */
- 		reg = <0 0 4>;		/* device IO registers */
- 		interrupt-parent = <&crossbar_mpu>;
-+		ready-gpio = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 pin */
- 		ti,nand-ecc-opt = "bch8";
- 		ti,elm-id = <&elm>;
- 		nand-bus-width = <16>;
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index 417acce..bdd1533 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -1051,7 +1051,7 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
+ {
+ 	int i;
+ 
+-	reg->gpmc_status = gpmc_base + GPMC_STATUS;
++	reg->gpmc_status = NULL;	/* deprecated */
+ 	reg->gpmc_nand_command = gpmc_base + GPMC_CS0_OFFSET +
+ 				GPMC_CS_NAND_COMMAND + GPMC_CS_SIZE * cs;
+ 	reg->gpmc_nand_address = gpmc_base + GPMC_CS0_OFFSET +
+diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
+index 19e509d..17d57a1 100644
+--- a/include/linux/platform_data/mtd-nand-omap2.h
++++ b/include/linux/platform_data/mtd-nand-omap2.h
+@@ -45,7 +45,6 @@ enum omap_ecc {
+ };
+ 
+ struct gpmc_nand_regs {
+-	void __iomem	*gpmc_status;
+ 	void __iomem	*gpmc_nand_command;
+ 	void __iomem	*gpmc_nand_address;
+ 	void __iomem	*gpmc_nand_data;
+@@ -64,6 +63,8 @@ struct gpmc_nand_regs {
+ 	void __iomem	*gpmc_bch_result4[GPMC_BCH_NUM_REMAINDER];
+ 	void __iomem	*gpmc_bch_result5[GPMC_BCH_NUM_REMAINDER];
+ 	void __iomem	*gpmc_bch_result6[GPMC_BCH_NUM_REMAINDER];
++	/* Deprecated. Do not use */
++	void __iomem	*gpmc_status;
+ };
+ 
+ struct omap_nand_platform_data {
 -- 
 2.1.4
