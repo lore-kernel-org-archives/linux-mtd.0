@@ -1,13 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNnq4-0002b1-C6
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 20:02:03 +0000
-Date: 7 Aug 2015 20:01:31 -0000
-Message-Id: <731125a19451465a1e74b16e7f0b5889cdb3da11.1438977111.git.hramrach@gmail.com>
+ id 1ZNnxm-0006c8-3g
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 20:10:01 +0000
+Date: 7 Aug 2015 20:01:32 -0000
+Message-Id: <724d829f0cd3bd21fe0f1ee696cefb29e90dd208.1438977111.git.hramrach@gmail.com>
 In-Reply-To: <cover.1438977111.git.hramrach@gmail.com>
 References: <cover.1438977111.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v3 1/6] mtd: spi-nor: change return value of read/write
+Subject: [PATCH v3 4/6] mtd: spi-nor: check return value from read/write
 To: David Woodhouse <dwmw2@infradead.org>,
   Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
   "Rafał Miłecki" <zajec5@gmail.com>, Michal Suchanek <hramrach@gmail.com>,
@@ -25,90 +25,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Change the return value of spi-nor device read and write methods to
-allow returning amount of data transferred and errors as
-read(2)/write(2) does.
+SPI NOR hardware drivers now return useful value from their read/write
+functions so check them.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 ---
+ drivers/mtd/spi-nor/spi-nor.c | 50 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 36 insertions(+), 14 deletions(-)
 
- - avoid compiler warning
----
- drivers/mtd/devices/m25p80.c      | 5 +++--
- drivers/mtd/spi-nor/fsl-quadspi.c | 5 +++--
- include/linux/mtd/spi-nor.h       | 4 ++--
- 3 files changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index d313f948b..b2fafc9 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -75,7 +75,7 @@ static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
- 	return spi_write(spi, flash->command, len + 1);
- }
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d78831b..5116bbd 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -741,7 +741,10 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	ret = nor->read(nor, from, len, retlen, buf);
  
--static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
-+static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 			size_t *retlen, const u_char *buf)
- {
- 	struct m25p *flash = nor->priv;
-@@ -103,6 +103,7 @@ static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	spi_sync(spi, &m);
- 
- 	*retlen += m.actual_length - cmd_sz;
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
+-	return ret;
++	if (ret < 0)
++		return ret;
++
 +	return 0;
  }
  
- static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
-@@ -121,7 +122,7 @@ static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
-  * Read an address range from the nor chip.  The address range
-  * may be any size provided it is within the physical boundaries.
-  */
--static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
-+static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 			size_t *retlen, u_char *buf)
- {
- 	struct m25p *flash = nor->priv;
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 52a872f..4ad2a68 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -712,7 +712,7 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
+ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -767,10 +770,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_BP;
+ 
+ 		/* write one byte. */
+-		nor->write(nor, to, 1, retlen, buf);
++		ret = nor->write(nor, to, 1, retlen, buf);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 	}
+ 	to += actual;
+ 
+@@ -779,10 +786,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_AAI_WP;
+ 
+ 		/* write two bytes. */
+-		nor->write(nor, to, 2, retlen, buf + actual);
++		ret = nor->write(nor, to, 2, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		to += 2;
+ 		nor->sst_write_second = true;
+ 	}
+@@ -791,21 +802,24 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	write_disable(nor);
+ 	ret = spi_nor_wait_till_ready(nor);
+ 	if (ret)
+-		goto time_out;
++		goto sst_write_err;
+ 
+ 	/* Write out trailing byte if it exists. */
+ 	if (actual != len) {
+ 		write_enable(nor);
+ 
+ 		nor->program_opcode = SPINOR_OP_BP;
+-		nor->write(nor, to, 1, retlen, buf + actual);
+-
++		ret = nor->write(nor, to, 1, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		write_disable(nor);
+ 	}
+-time_out:
++sst_write_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
  	return ret;
  }
+@@ -834,14 +848,18 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
  
--static void fsl_qspi_write(struct spi_nor *nor, loff_t to,
-+static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
- 		size_t len, size_t *retlen, const u_char *buf)
- {
- 	struct fsl_qspi *q = nor->priv;
-@@ -722,9 +722,10 @@ static void fsl_qspi_write(struct spi_nor *nor, loff_t to,
+ 	/* do all the bytes fit onto one page? */
+ 	if (page_offset + len <= nor->page_size) {
+-		nor->write(nor, to, len, retlen, buf);
++		ret = nor->write(nor, to, len, retlen, buf);
++		if (ret < 0)
++			goto write_err;
+ 	} else {
+ 		/* the size of data remaining on the first page */
+ 		page_size = nor->page_size - page_offset;
+-		nor->write(nor, to, page_size, retlen, buf);
++		ret = nor->write(nor, to, page_size, retlen, buf);
++		if (ret < 0)
++			goto write_err;
  
- 	/* invalid the data in the AHB buffer. */
- 	fsl_qspi_invalid(q);
-+	return 0;
- }
+ 		/* write everything in nor->page_size chunks */
+-		for (i = page_size; i < len; i += page_size) {
++		for (i = ret; i < len; ) {
+ 			page_size = len - i;
+ 			if (page_size > nor->page_size)
+ 				page_size = nor->page_size;
+@@ -852,7 +870,11 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
  
--static int fsl_qspi_read(struct spi_nor *nor, loff_t from,
-+static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
- 		size_t len, size_t *retlen, u_char *buf)
- {
- 	struct fsl_qspi *q = nor->priv;
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index e540952..7d782cb 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -185,9 +185,9 @@ struct spi_nor {
- 	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
- 			int write_enable);
+ 			write_enable(nor);
  
--	int (*read)(struct spi_nor *nor, loff_t from,
-+	ssize_t (*read)(struct spi_nor *nor, loff_t from,
- 			size_t len, size_t *retlen, u_char *read_buf);
--	void (*write)(struct spi_nor *nor, loff_t to,
-+	ssize_t (*write)(struct spi_nor *nor, loff_t to,
- 			size_t len, size_t *retlen, const u_char *write_buf);
- 	int (*erase)(struct spi_nor *nor, loff_t offs);
+-			nor->write(nor, to + i, page_size, retlen, buf + i);
++			ret = nor->write(nor, to + i, page_size, retlen,
++					 buf + i);
++			if (ret < 0)
++				goto write_err;
++			i += ret;
+ 		}
+ 	}
  
 -- 
 2.1.4
