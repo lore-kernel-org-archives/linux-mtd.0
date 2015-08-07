@@ -1,22 +1,23 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNYSS-0003lE-9M
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 03:36:37 +0000
-Message-ID: <55C42658.2020605@cn.fujitsu.com>
-Date: Fri, 7 Aug 2015 11:30:32 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Received: from mail-bn1on0135.outbound.protection.outlook.com
+ ([157.56.110.135] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNZ7N-0003xh-J8
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 04:18:55 +0000
+From: Hou Zhiqiang <B48286@freescale.com>
+To: Hou Zhiqiang <B48286@freescale.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+CC: Hu Vincent <Mingkai.Hu@freescale.com>
+Subject: RE: [PATCH] mtd: m25p80: Add Power Management support
+Date: Fri, 7 Aug 2015 04:18:30 +0000
+Message-ID: <CY1PR0301MB07806C6F60DA735D23EED0AC8B730@CY1PR0301MB0780.namprd03.prod.outlook.com>
+References: <1437473933-11983-1-git-send-email-B48286@freescale.com>
+ <CY1PR0301MB0780DF6BC293B2C6B5397EA88B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+In-Reply-To: <CY1PR0301MB0780DF6BC293B2C6B5397EA88B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Jan Kara <jack@suse.cz>
-CC: <viro@ZenIV.linux.org.uk>, <dedekind1@gmail.com>,
- <richard.weinberger@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v2 33/35] fs: introduce a get_qsize() to file_operations
-References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-34-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20150803201546.GI23810@quack.suse.cz>
-In-Reply-To: <20150803201546.GI23810@quack.suse.cz>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,109 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/04/2015 04:15 AM, Jan Kara wrote:
-> On Thu 30-07-15 13:48:29, Dongsheng Yang wrote:
->> get_qsize() is used to allow inode to decide how much of the quota size
->> in itself. If file system implements the own get_qsize(), ioctl of
->> FIOQSIZe will call it to get quota size. If not implemented, get the
->> quota size in a generic way.
->
-> OK, can you ellaborate a bit why using i_blocks / i_bytes isn't good
-> enough for ubifs?
-
-Sure, below is the comment in ubifs_getattr(), I think it can make
-it clear.
-"because UBIFS does not have notion of "block". For example, it is
-difficult to tell how many block a directory takes - it actually takes
-less than 300 bytes, but we have to round it to block size, which
-introduces large mistake. This makes utilities like 'du' to report
-completely senseless numbers. This is the reason why UBIFS goes the
-same way as JFFS2 - it reports zero blocks for everything but regular
-files, which makes more sense than reporting completely wrong sizes."
-
-So I followed the same reason here for quota_size. Because ubifs
-is designed for raw flash, which have no "block". I hope I expressed
-myself clearly.
->
->>
->> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
->> ---
->>   fs/ioctl.c         | 31 ++++++++++++++++++++++++-------
->>   include/linux/fs.h |  1 +
->>   2 files changed, 25 insertions(+), 7 deletions(-)
->>
->> diff --git a/fs/ioctl.c b/fs/ioctl.c
->> index 5d01d26..2c567db 100644
->> --- a/fs/ioctl.c
->> +++ b/fs/ioctl.c
->> @@ -545,6 +545,29 @@ static int ioctl_fsthaw(struct file *filp)
->>   	return thaw_super(sb);
->>   }
->>
->> +static int ioctl_fioqsize(struct file *filp, int __user *argp)
->> +{
->> +	struct inode *inode = file_inode(filp);
->> +	loff_t res = 0;
->> +	int error = 0;
->> +
->> +	if (filp->f_op->get_qsize) {
->
-> Using file->f_ops looks wrong to me. I think it would be more naturally an
-> inode operation.
-
-Oh, sure. That should be inode operations. will update it in next version.
-
-Thanx
-Yang
->
-> 								Honza
->
->> +		res = filp->f_op->get_qsize(inode);
->> +		error = copy_to_user(argp, &res, sizeof(res)) ?
->> +				-EFAULT : 0;
->> +	} else {
->> +                if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
->> +                    S_ISLNK(inode->i_mode)) {
->> +                        res = inode_get_bytes(inode);
->> +                        error = copy_to_user(argp, &res, sizeof(res)) ?
->> +                                        -EFAULT : 0;
->> +                } else {
->> +                        error = -ENOTTY;
->> +		}
->> +	}
->> +	return error;
->> +}
->> +
->>   /*
->>    * When you add any new common ioctls to the switches above and below
->>    * please update compat_sys_ioctl() too.
->> @@ -577,13 +600,7 @@ int do_vfs_ioctl(struct file *filp, unsigned int fd, unsigned int cmd,
->>   		break;
->>
->>   	case FIOQSIZE:
->> -		if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
->> -		    S_ISLNK(inode->i_mode)) {
->> -			loff_t res = inode_get_bytes(inode);
->> -			error = copy_to_user(argp, &res, sizeof(res)) ?
->> -					-EFAULT : 0;
->> -		} else
->> -			error = -ENOTTY;
->> +		error = ioctl_fioqsize(filp, argp);
->>   		break;
->>
->>   	case FIFREEZE:
->> diff --git a/include/linux/fs.h b/include/linux/fs.h
->> index 860b235..70695d3 100644
->> --- a/include/linux/fs.h
->> +++ b/include/linux/fs.h
->> @@ -1601,6 +1601,7 @@ struct file_operations {
->>   	long (*fallocate)(struct file *file, int mode, loff_t offset,
->>   			  loff_t len);
->>   	void (*show_fdinfo)(struct seq_file *m, struct file *f);
->> +	ssize_t (*get_qsize) (struct inode *);
->>   #ifndef CONFIG_MMU
->>   	unsigned (*mmap_capabilities)(struct file *);
->>   #endif
->> --
->> 1.8.4.2
->>
+SGkgQnJpYW4sDQoNCklmIHlvdSBoYXZlbid0IGFueSBjb21tZW50IHdpdGggdGhpcyBwYXRjaCwg
+Y291bGQgeW91IHBsZWFzZSBhcHBseSB0aGlzIHBhdGNoPw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVz
+c2FnZS0tLS0tDQo+IEZyb206IEhvdSBaaGlxaWFuZy1CNDgyODYNCj4gU2VudDogMjAxNcTqN9TC
+MzHI1SAxODo0NQ0KPiBUbzogSG91IFpoaXFpYW5nLUI0ODI4NjsgbGludXgtbXRkQGxpc3RzLmlu
+ZnJhZGVhZC5vcmc7DQo+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgZHdtdzJAaW5mcmFk
+ZWFkLm9yZw0KPiBDYzogSHUgTWluZ2thaS1CMjEyODQNCj4gU3ViamVjdDogUkU6IFtQQVRDSF0g
+bXRkOiBtMjVwODA6IEFkZCBQb3dlciBNYW5hZ2VtZW50IHN1cHBvcnQNCj4gDQo+IEhpIEJyaWFu
+LA0KPiANCj4gRG8geW91IGhhdmUgYW55IGNvbW1lbnQ/DQo+IA0KPiA+IC0tLS0tT3JpZ2luYWwg
+TWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogWmhpcWlhbmcgSG91IFttYWlsdG86QjQ4Mjg2QGZyZWVz
+Y2FsZS5jb21dDQo+ID4gU2VudDogMjAxNcTqN9TCMjHI1SAxODoxOQ0KPiA+IFRvOiBsaW51eC1t
+dGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOw0KPiA+
+IGR3bXcyQGluZnJhZGVhZC5vcmcNCj4gPiBDYzogSHUgTWluZ2thaS1CMjEyODQ7IEhvdSBaaGlx
+aWFuZy1CNDgyODYNCj4gPiBTdWJqZWN0OiBbUEFUQ0hdIG10ZDogbTI1cDgwOiBBZGQgUG93ZXIg
+TWFuYWdlbWVudCBzdXBwb3J0DQo+ID4NCj4gPiBGcm9tOiBIb3UgWmhpcWlhbmcgPEI0ODI4NkBm
+cmVlc2NhbGUuY29tPg0KPiA+DQo+ID4gQWRkIHRoZSByZXNjYW5uaW5nIGFuZCBpbml0aWFsaXph
+dGlvbiBvZiBTUEkgZmxhc2gsIHRvIG1ha2UgdGhlIFNQSQ0KPiA+IGZsYXNoIGluIHRoZSBjb3Jy
+ZWN0IHN0YXRlLiBCZWNhdXNlIGlmIHRoZSBQb3dlciBNYW5hZ2VtZW50IHN5c3RlbQ0KPiA+IHRy
+dW5zIG9mZiBwb3dlciBzdXBwbHkgZm9yIFNQSSBmbGFzaCB3aGVuIHN5c3RlbSBzdXNwZW5kaW5n
+LCB0aGUgU1BJDQo+ID4gZmxhc2ggd2lsbCByZXR1cm4gdG8gdGhlIHJlc2V0IHN0YXRlIGFmdGVy
+IHN5c3RlbSByZXN1bWUuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBIb3UgWmhpcWlhbmcgPEI0
+ODI4NkBmcmVlc2NhbGUuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL210ZC9kZXZpY2VzL20y
+NXA4MC5jIHwgMzQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZp
+bGUgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbXRkL2RldmljZXMvbTI1cDgwLmMNCj4gPiBiL2RyaXZlcnMvbXRkL2RldmljZXMvbTI1cDgw
+LmMgaW5kZXggZDMxM2Y5NDhiLi5mOWQyYjJlIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRk
+L2RldmljZXMvbTI1cDgwLmMNCj4gPiArKysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL20yNXA4MC5j
+DQo+ID4gQEAgLTI0OCw2ICsyNDgsMzkgQEAgc3RhdGljIGludCBtMjVwX3JlbW92ZShzdHJ1Y3Qg
+c3BpX2RldmljZSAqc3BpKQ0KPiA+ICAJcmV0dXJuIG10ZF9kZXZpY2VfdW5yZWdpc3RlcigmZmxh
+c2gtPm10ZCk7DQo+ID4gIH0NCj4gPg0KPiA+ICsjaWZkZWYgQ09ORklHX1BNX1NMRUVQDQo+ID4g
+K3N0YXRpYyBpbnQgbTI1cF9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikgew0KPiA+ICsJcmV0
+dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQgbTI1cF9yZXN1bWUoc3RydWN0
+IGRldmljZSAqZGV2KSB7DQo+ID4gKwlzdHJ1Y3QgbTI1cCAqZmxhc2ggPSBkZXZfZ2V0X2RydmRh
+dGEoZGV2KTsNCj4gPiArCXN0cnVjdCBzcGlfZGV2aWNlICpzcGkgPSBmbGFzaC0+c3BpOw0KPiA+
+ICsJc3RydWN0IHNwaV9ub3IgKm5vciA9ICZmbGFzaC0+c3BpX25vcjsNCj4gPiArCWVudW0gcmVh
+ZF9tb2RlIG1vZGUgPSBTUElfTk9SX05PUk1BTDsNCj4gPiArCXN0cnVjdCBmbGFzaF9wbGF0Zm9y
+bV9kYXRhICpkYXRhOw0KPiA+ICsJY2hhciAqZmxhc2hfbmFtZSA9IE5VTEw7DQo+ID4gKw0KPiA+
+ICsJaWYgKHNwaS0+bW9kZSAmIFNQSV9SWF9RVUFEKQ0KPiA+ICsJCW1vZGUgPSBTUElfTk9SX1FV
+QUQ7DQo+ID4gKwllbHNlIGlmIChzcGktPm1vZGUgJiBTUElfUlhfRFVBTCkNCj4gPiArCQltb2Rl
+ID0gU1BJX05PUl9EVUFMOw0KPiA+ICsNCj4gPiArCWRhdGEgPSBkZXZfZ2V0X3BsYXRkYXRhKCZz
+cGktPmRldik7DQo+ID4gKwlpZiAoZGF0YSAmJiBkYXRhLT50eXBlKQ0KPiA+ICsJCWZsYXNoX25h
+bWUgPSBkYXRhLT50eXBlOw0KPiA+ICsJZWxzZSBpZiAoIXN0cmNtcChzcGktPm1vZGFsaWFzLCAi
+c3BpLW5vciIpKQ0KPiA+ICsJCWZsYXNoX25hbWUgPSBOVUxMOyAvKiBhdXRvLWRldGVjdCAqLw0K
+PiA+ICsJZWxzZQ0KPiA+ICsJCWZsYXNoX25hbWUgPSBzcGktPm1vZGFsaWFzOw0KPiA+ICsNCj4g
+PiArCXJldHVybiBzcGlfbm9yX3NjYW4obm9yLCBmbGFzaF9uYW1lLCBtb2RlKTsgfSAjZW5kaWYg
+LyoNCj4gPiArQ09ORklHX1BNX1NMRUVQICovDQo+ID4gKw0KPiA+ICtzdGF0aWMgU0lNUExFX0RF
+Vl9QTV9PUFMobTI1cF9wbV9vcHMsIG0yNXBfc3VzcGVuZCwgbTI1cF9yZXN1bWUpOw0KPiA+ICAv
+Kg0KPiA+ICAgKiBEbyBOT1QgYWRkIHRvIHRoaXMgYXJyYXkgd2l0aG91dCByZWFkaW5nIHRoZSBm
+b2xsb3dpbmc6DQo+ID4gICAqDQo+ID4gQEAgLTMwMiw2ICszMzUsNyBAQCBzdGF0aWMgc3RydWN0
+IHNwaV9kcml2ZXIgbTI1cDgwX2RyaXZlciA9IHsNCj4gPiAgCS5kcml2ZXIgPSB7DQo+ID4gIAkJ
+Lm5hbWUJPSAibTI1cDgwIiwNCj4gPiAgCQkub3duZXIJPSBUSElTX01PRFVMRSwNCj4gPiArCQku
+cG0JPSAmbTI1cF9wbV9vcHMsDQo+ID4gIAl9LA0KPiA+ICAJLmlkX3RhYmxlCT0gbTI1cF9pZHMs
+DQo+ID4gIAkucHJvYmUJPSBtMjVwX3Byb2JlLA0KPiA+IC0tDQo+ID4gMi4xLjAuMjcuZzk2ZGIz
+MjQNCj4gDQo+IFRoYW5rcywNCj4gWmhpcWlhbmcNCg0KVGhhbmtzLA0KWmhpcWlhbmcNCg==
