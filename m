@@ -5,10 +5,10 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2 06/22] mtd: nand: omap2: Switch to using GPMC-NAND ops for
- writebuffer empty check
-Date: Fri, 7 Aug 2015 12:12:16 +0300
-Message-ID: <1438938752-31010-7-git-send-email-rogerq@ti.com>
+Subject: [PATCH v2 08/22] memory: omap-gpmc: Add IRQ ops for GPMC-NAND
+ interface
+Date: Fri, 7 Aug 2015 12:12:18 +0300
+Message-ID: <1438938752-31010-9-git-send-email-rogerq@ti.com>
 In-Reply-To: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 References: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -22,54 +22,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of accessing the gpmc_status register directly start
-using the gpmc_nand_ops->nand_writebuffer_empty() helper
-to check write buffer empty status.
+Provide functions to enable/disable NAND IRQs, get
+NAND event status and clear NAND events.
+
+The NAND events of interest are TERMCOUNT and FIFOEVENT.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- drivers/mtd/nand/omap2.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ drivers/memory/omap-gpmc.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/omap-gpmc.h  |  4 ++++
+ 2 files changed, 54 insertions(+)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f214fe2..5c2f6df 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -289,15 +289,11 @@ static void omap_write_buf8(struct mtd_info *mtd, const u_char *buf, int len)
- 	struct omap_nand_info *info = container_of(mtd,
- 						struct omap_nand_info, mtd);
- 	u_char *p = (u_char *)buf;
--	u32	status = 0;
- 
- 	while (len--) {
- 		iowrite8(*p++, info->nand.IO_ADDR_W);
- 		/* wait until buffer is available for write */
--		do {
--			status = readl(info->reg.gpmc_status) &
--					STATUS_BUFF_EMPTY;
--		} while (!status);
-+		while (info->ops->nand_writebuffer_empty());
- 	}
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index e70a8df..713d7af 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -1078,8 +1078,58 @@ static bool gpmc_nand_writebuffer_empty(void)
+ 	return false;
  }
  
-@@ -325,17 +321,13 @@ static void omap_write_buf16(struct mtd_info *mtd, const u_char * buf, int len)
- 	struct omap_nand_info *info = container_of(mtd,
- 						struct omap_nand_info, mtd);
- 	u16 *p = (u16 *) buf;
--	u32	status = 0;
- 	/* FIXME try bursts of writesw() or DMA ... */
- 	len >>= 1;
++static int gpmc_nand_irq_enable(enum gpmc_nand_irq irq)
++{
++	u32 reg;
++
++	if (irq > GPMC_NAND_IRQ_TERMCOUNT)
++		return -EINVAL;
++
++	reg = gpmc_read_reg(GPMC_IRQENABLE);
++	reg |= BIT(irq);
++	gpmc_write_reg(GPMC_IRQENABLE, reg);
++
++	return 0;
++}
++
++static int gpmc_nand_irq_disable(enum gpmc_nand_irq irq)
++{
++	u32 reg;
++
++	if (irq > GPMC_NAND_IRQ_TERMCOUNT)
++		return -EINVAL;
++
++	reg = gpmc_read_reg(GPMC_IRQENABLE);
++	reg &= ~BIT(irq);
++	gpmc_write_reg(GPMC_IRQENABLE, reg);
++
++	return 0;
++}
++
++static void gpmc_nand_irq_clear(enum gpmc_nand_irq irq)
++{
++	if (irq > GPMC_NAND_IRQ_TERMCOUNT)
++		return;
++
++	/* setting bit to 1 clears the bit in IRQSTATUS */
++	gpmc_write_reg(GPMC_IRQSTATUS, BIT(irq));
++}
++
++static u32 gpmc_nand_irq_status(void)
++{
++	u32 reg = gpmc_read_reg(GPMC_IRQSTATUS);
++
++	/* Mask out non-NAND bits */
++	reg &= GPMC_IRQENABLE_FIFOEVENT | GPMC_IRQENABLE_TERMCOUNT;
++	return reg;
++}
++
+ static struct gpmc_nand_ops nand_ops = {
+ 	.nand_writebuffer_empty = gpmc_nand_writebuffer_empty,
++	.nand_irq_enable = gpmc_nand_irq_enable,
++	.nand_irq_disable = gpmc_nand_irq_disable,
++	.nand_irq_clear = gpmc_nand_irq_clear,
++	.nand_irq_status = gpmc_nand_irq_status,
+ };
  
- 	while (len--) {
- 		iowrite16(*p++, info->nand.IO_ADDR_W);
- 		/* wait until buffer is available for write */
--		do {
--			status = readl(info->reg.gpmc_status) &
--					STATUS_BUFF_EMPTY;
--		} while (!status);
-+		while (info->ops->nand_writebuffer_empty());
- 	}
- }
+ /**
+diff --git a/include/linux/omap-gpmc.h b/include/linux/omap-gpmc.h
+index 44e322f..063a84f 100644
+--- a/include/linux/omap-gpmc.h
++++ b/include/linux/omap-gpmc.h
+@@ -11,6 +11,10 @@
  
+ #define GPMC_CONFIG_WP		0x00000005
+ 
++/* GPMC IRQENABLE/IRQSTATUS BIT defs */
++#define GPMC_IRQENABLE_FIFOEVENT	BIT(0)
++#define GPMC_IRQENABLE_TERMCOUNT	BIT(1)
++
+ enum gpmc_nand_irq {
+ 	GPMC_NAND_IRQ_FIFOEVENT = 0,
+ 	GPMC_NAND_IRQ_TERMCOUNT,
 -- 
 2.1.4
