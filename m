@@ -1,21 +1,16 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNYDj-0005n1-47
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 03:21:23 +0000
-Message-ID: <55C422C0.4050206@cn.fujitsu.com>
-Date: Fri, 7 Aug 2015 11:15:12 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Received: from mail-io0-x234.google.com ([2607:f8b0:4001:c06::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNYDj-0005n3-LP
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 03:21:24 +0000
+Received: by ioeg141 with SMTP id g141so100366099ioe.3
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Aug 2015 20:21:01 -0700 (PDT)
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <viro@ZenIV.linux.org.uk>,
- <jack@suse.cz>, <dedekind1@gmail.com>, <richard.weinberger@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v2 17/35] ubifs: export read_block() from file.c
-References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-18-git-send-email-yangds.fnst@cn.fujitsu.com>
- <55BFD993.3000808@nod.at> <55BFDD4F.4060005@nod.at>
-In-Reply-To: <55BFDD4F.4060005@nod.at>
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
-Content-Transfer-Encoding: 7bit
+Date: Fri, 7 Aug 2015 11:20:58 +0800
+Message-ID: <CAOx4H9CHrhBhW6DZrJi8h+Lz=5QFbmUn=n9o1WwBpzY1FGDR_A@mail.gmail.com>
+Subject: UBI confusing scrubbing information
+From: t kevin <kevint324@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/04/2015 05:29 AM, Richard Weinberger wrote:
-> Am 03.08.2015 um 23:13 schrieb Richard Weinberger:
->> Am 30.07.2015 um 07:48 schrieb Dongsheng Yang:
->>> We want to use read_block to read quota file bypass the page cache.
->>> So export it from file.c, then we can use it in somewhere else.
->>>
->>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
->>> ---
->>>   fs/ubifs/file.c  | 4 ++--
->>>   fs/ubifs/ubifs.h | 2 ++
->>>   2 files changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
->>> index 554d7b9..f307e86 100644
->>> --- a/fs/ubifs/file.c
->>> +++ b/fs/ubifs/file.c
->>> @@ -54,7 +54,7 @@
->>>   #include <linux/namei.h>
->>>   #include <linux/slab.h>
->>>
->>> -static int read_block(struct inode *inode, void *addr, unsigned int block,
->>> +int ubifs_read_block(struct inode *inode, void *addr, unsigned int block,
->>>   		      struct ubifs_data_node *dn)
->
-> Forgot one minor comment, as the function is now public please document the
-> parameters.
+Hi,
 
-Thanx, will update it in next verison.
+[ 2982.880000] UBI: scrubbed PEB 426 (LEB 0:1255), data moved to PEB 1301
+[ 2983.420000] UBI: scrubbed PEB 426 (LEB 0:451), data moved to PEB 1301
+[ 3043.920000] UBI: scrubbed PEB 426 (LEB 0:491), data moved to PEB 1301
+[ 3044.740000] UBI: scrubbed PEB 426 (LEB 0:1255), data moved to PEB 1301
+[ 3045.240000] UBI: scrubbed PEB 426 (LEB 0:1098), data moved to PEB 1301
+[ 3045.820000] UBI: scrubbed PEB 426 (LEB 0:65), data moved to PEB 1301
+[ 3046.160000] UBI: scrubbed PEB 1319 (LEB 0:1098), data moved to PEB 1301
 
-Yang
->
-> Thanks,
-> //richard
-> .
->
+I'm using kernel 2.6.36.
+I got above message on my console which got me confused.
+First few lines indicates PEB 426 is on different LEBs?
+And all those PEB/LEB are moved to PEB1301 multiple times?
+
+Please help me understand what is happening.
+
+Thanks a lot
+Kevin
