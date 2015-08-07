@@ -5,10 +5,10 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2 16/22] memory: omap-gpmc: Support general purpose input for
- WAITPINs
-Date: Fri, 7 Aug 2015 12:12:26 +0300
-Message-ID: <1438938752-31010-17-git-send-email-rogerq@ti.com>
+Subject: [PATCH v2 18/22] memory: omap-gpmc: Add irqchip support to the
+ gpiochip
+Date: Fri, 7 Aug 2015 12:12:28 +0300
+Message-ID: <1438938752-31010-19-git-send-email-rogerq@ti.com>
 In-Reply-To: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 References: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -22,222 +22,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OMAPs can have 2 to 4 WAITPINs that can be used as general purpose
-input if not used for memory wait state insertion.
-
-The first user will be the OMAP NAND chip to get the NAND
-read/busy status using gpiolib.
+The WAIT pins support falling edge interrupts so add irqchip
+support to the gpiochip model.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- drivers/memory/omap-gpmc.c | 122 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 117 insertions(+), 5 deletions(-)
+ drivers/memory/omap-gpmc.c | 111 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 111 insertions(+)
 
 diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index 30d9c21..264009d 100644
+index 0df70ab..417acce 100644
 --- a/drivers/memory/omap-gpmc.c
 +++ b/drivers/memory/omap-gpmc.c
-@@ -21,6 +21,7 @@
- #include <linux/spinlock.h>
- #include <linux/io.h>
- #include <linux/module.h>
-+#include <linux/gpio/driver.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
-@@ -223,6 +224,11 @@ struct omap3_gpmc_regs {
- 	struct gpmc_cs_config cs_context[GPMC_CS_NUM];
+@@ -13,6 +13,7 @@
+  * published by the Free Software Foundation.
+  */
+ #include <linux/irq.h>
++#include <linux/irqdomain.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/err.h>
+@@ -227,6 +228,7 @@ struct omap3_gpmc_regs {
+ struct gpmc_device {
+ 	struct device *dev;
+ 	struct gpio_chip gpio_chip;
++	struct irq_chip	irq_chip;
  };
  
-+struct gpmc_device {
-+	struct device *dev;
-+	struct gpio_chip gpio_chip;
-+};
-+
  static struct resource	gpmc_mem_root;
- static struct gpmc_cs_data gpmc_cs[GPMC_CS_NUM];
- static DEFINE_SPINLOCK(gpmc_mem_lock);
-@@ -1919,10 +1925,69 @@ err:
+@@ -1944,6 +1946,79 @@ err:
  	return ret;
  }
  
-+static int gpmc_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
++static int gpmc_irq_endis(unsigned long hwirq, bool endis)
 +{
-+	return 1;	/* we're input only */
-+}
++	u32 regval;
 +
-+static int gpmc_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
-+{
-+	return 0;	/* we're input only */
-+}
++	/* WAITPIN starts at BIT 8 */
++	hwirq += 8;
 +
-+static int gpmc_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
-+				      int value)
-+{
-+	return -EINVAL;	/* we're input only */
-+}
-+
-+static void gpmc_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
-+{
-+}
-+
-+static int gpmc_gpio_get(struct gpio_chip *chip, unsigned offset)
-+{
-+	u32 reg;
-+
-+	offset += 8;
-+
-+	reg = gpmc_read_reg(GPMC_STATUS) & BIT(offset);
-+
-+	return !!reg;
-+}
-+
-+static int gpmc_gpio_init(struct gpmc_device *gpmc)
-+{
-+	int ret;
-+
-+	gpmc->gpio_chip.dev = gpmc->dev;
-+	gpmc->gpio_chip.owner = THIS_MODULE;
-+	gpmc->gpio_chip.label = DEVICE_NAME;
-+	gpmc->gpio_chip.ngpio = gpmc_nr_waitpins;
-+	gpmc->gpio_chip.get_direction = gpmc_gpio_get_direction;
-+	gpmc->gpio_chip.direction_input = gpmc_gpio_direction_input;
-+	gpmc->gpio_chip.direction_output = gpmc_gpio_direction_output;
-+	gpmc->gpio_chip.set = gpmc_gpio_set;
-+	gpmc->gpio_chip.get = gpmc_gpio_get;
-+	gpmc->gpio_chip.base = -1;
-+
-+	ret = gpiochip_add(&gpmc->gpio_chip);
-+	if (ret < 0) {
-+		dev_err(gpmc->dev, "could not register gpio chip: %d\n", ret);
-+		return ret;
-+	}
++	regval = gpmc_read_reg(GPMC_IRQENABLE);
++	if (endis)
++		regval |= BIT(hwirq);
++	else
++		regval &= ~BIT(hwirq);
++	gpmc_write_reg(GPMC_IRQENABLE, regval);
 +
 +	return 0;
 +}
 +
-+static void gpmc_gpio_exit(struct gpmc_device *gpmc)
++static void gpmc_irq_mask(struct irq_data *d)
 +{
-+	gpiochip_remove(&gpmc->gpio_chip);
++	gpmc_irq_endis(d->hwirq, false);
 +}
 +
- static int gpmc_probe_dt(struct platform_device *pdev)
++static void gpmc_irq_unmask(struct irq_data *d)
++{
++	gpmc_irq_endis(d->hwirq, true);
++}
++
++static void gpmc_irq_ack(struct irq_data *d)
++{
++	unsigned hwirq = d->hwirq + 8;
++
++	/* Setting bit to 1 clears (or Acks) the interrupt */
++	gpmc_write_reg(GPMC_IRQSTATUS, BIT(hwirq));
++}
++
++static int gpmc_irq_set_type(struct irq_data *d, unsigned trigger)
++{
++	/* We only support falling edge interrupts */
++	if (trigger & ~IRQ_TYPE_EDGE_FALLING)
++		return -EINVAL;
++
++	return 0;
++}
++
++static irqreturn_t gpmc_handle_irq(int irq, void *data)
++{
++	int hwirq, virq;
++	u32 regval;
++	struct gpmc_device *gpmc = data;
++
++	regval = gpmc_read_reg(GPMC_IRQSTATUS);
++	regval >>= 8;	/* we're only interested in WAIT pins */
++
++	if (!regval)
++		return IRQ_NONE;
++
++	for (hwirq = 0; hwirq < gpmc->gpio_chip.ngpio; hwirq++) {
++		if (regval & BIT(hwirq)) {
++			virq = irq_find_mapping(gpmc->gpio_chip.irqdomain,
++						hwirq);
++			if (!virq) {
++				dev_warn(gpmc_dev,
++					 "spurious irq detected hwirq %d, virq %d\n",
++					 hwirq, virq);
++			}
++
++			generic_handle_irq(virq);
++		}
++	}
++
++	return IRQ_HANDLED;
++}
++
+ static int gpmc_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
+ {
+ 	return 1;	/* we're input only */
+@@ -1978,6 +2053,7 @@ static int gpmc_gpio_get(struct gpio_chip *chip, unsigned offset)
+ static int gpmc_gpio_init(struct gpmc_device *gpmc)
  {
  	int ret;
--	struct device_node *child;
- 	const struct of_device_id *of_id =
- 		of_match_device(gpmc_dt_ids, &pdev->dev);
++	u32 regval;
  
-@@ -1950,6 +2015,17 @@ static int gpmc_probe_dt(struct platform_device *pdev)
+ 	gpmc->gpio_chip.dev = gpmc->dev;
+ 	gpmc->gpio_chip.owner = THIS_MODULE;
+@@ -1996,7 +2072,42 @@ static int gpmc_gpio_init(struct gpmc_device *gpmc)
  		return ret;
  	}
  
-+	dev_info(&pdev->dev, "num-cs %d, num-wait %d\n",
-+		 gpmc_cs_num, gpmc_nr_waitpins);
++	/* Disable interrupts */
++	gpmc_write_reg(GPMC_IRQENABLE, 0);
 +
-+	return 0;
-+}
++	/* clear interrupts */
++	regval = gpmc_read_reg(GPMC_IRQSTATUS);
++	gpmc_write_reg(GPMC_IRQSTATUS, regval);
 +
-+static int gpmc_probe_dt_children(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct device_node *child;
++	gpmc->irq_chip.name = DEVICE_NAME;
++	gpmc->irq_chip.irq_ack = gpmc_irq_ack;
++	gpmc->irq_chip.irq_mask = gpmc_irq_mask;
++	gpmc->irq_chip.irq_unmask = gpmc_irq_unmask;
++	gpmc->irq_chip.irq_set_type = gpmc_irq_set_type;
 +
- 	for_each_available_child_of_node(pdev->dev.of_node, child) {
- 
- 		if (!child->name)
-@@ -1959,6 +2035,9 @@ static int gpmc_probe_dt(struct platform_device *pdev)
- 			ret = gpmc_probe_onenand_child(pdev, child);
- 		else
- 			ret = gpmc_probe_generic_child(pdev, child);
++	ret = gpiochip_irqchip_add(&gpmc->gpio_chip, &gpmc->irq_chip, 0,
++				   handle_edge_irq, IRQ_TYPE_NONE);
 +
-+		if (ret)
-+			return ret;
- 	}
- 
- 	return 0;
-@@ -1968,6 +2047,11 @@ static int gpmc_probe_dt(struct platform_device *pdev)
- {
- 	return 0;
- }
++	if (ret) {
++		dev_err(gpmc->dev, "could not add irqchip to gpiochip: %d\n",
++			ret);
++		goto fail;
++	}
 +
-+static int gpmc_probe_dt_children(struct platform_device *pdev)
-+{
-+	return 0;
-+}
- #endif
- 
- static int gpmc_probe(struct platform_device *pdev)
-@@ -1975,6 +2059,7 @@ static int gpmc_probe(struct platform_device *pdev)
- 	int rc;
- 	u32 l;
- 	struct resource *res;
-+	struct gpmc_device *gpmc;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (res == NULL)
-@@ -2005,6 +2090,17 @@ static int gpmc_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
-+	rc = gpmc_probe_dt(pdev);
-+	if (rc)
-+		return rc;
++	/* We're sharing this IRQ with OMAP NAND driver */
++	ret = request_irq(gpmc_irq, gpmc_handle_irq, IRQF_SHARED, "gpmc", gpmc);
++	if (ret) {
++		dev_err(gpmc->dev, "could not request gpmc irq (%d): %d\n",
++			gpmc_irq, ret);
++		goto fail;
++	}
 +
-+	gpmc = devm_kzalloc(&pdev->dev, sizeof(*gpmc), GFP_KERNEL);
-+	if (!gpmc)
-+		return -ENOMEM;
-+
-+	gpmc->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, gpmc);
-+
- 	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_get_sync(&pdev->dev);
- 
-@@ -2032,24 +2128,40 @@ static int gpmc_probe(struct platform_device *pdev)
- 		 GPMC_REVISION_MINOR(l));
- 
- 	gpmc_mem_init();
-+	rc = gpmc_gpio_init(gpmc);
-+	if (rc)
-+		goto gpio_init_failed;
-+
- 
- 	if (!pdev->dev.of_node) {
- 		gpmc_cs_num	 = GPMC_CS_NUM;
- 		gpmc_nr_waitpins = GPMC_NR_WAITPINS;
- 	}
- 
--	rc = gpmc_probe_dt(pdev);
-+	rc = gpmc_probe_dt_children(pdev);
- 	if (rc < 0) {
--		pm_runtime_put_sync(&pdev->dev);
--		dev_err(gpmc_dev, "failed to probe DT parameters\n");
--		return rc;
-+		dev_err(gpmc_dev, "failed to probe DT children\n");
-+		goto dt_children_failed;
- 	}
- 
  	return 0;
 +
-+dt_children_failed:
-+	gpmc_gpio_exit(gpmc);
-+gpio_init_failed:
-+	gpmc_mem_exit();
-+	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
-+	gpmc_dev = NULL;
++fail:
++	gpiochip_remove(&gpmc->gpio_chip);
 +
-+	return rc;
++	return ret;
  }
  
- static int gpmc_remove(struct platform_device *pdev)
- {
-+	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
-+
-+	gpmc_gpio_exit(gpmc);
- 	gpmc_mem_exit();
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
+ static void gpmc_gpio_exit(struct gpmc_device *gpmc)
 -- 
 2.1.4
