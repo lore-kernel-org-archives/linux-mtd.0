@@ -5,10 +5,10 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2 18/22] memory: omap-gpmc: Add irqchip support to the
- gpiochip
-Date: Fri, 7 Aug 2015 12:12:28 +0300
-Message-ID: <1438938752-31010-19-git-send-email-rogerq@ti.com>
+Subject: [PATCH v2 19/22] ARM: dts: dra7: Enable gpio & interrupt controller
+ for gpmc node
+Date: Fri, 7 Aug 2015 12:12:29 +0300
+Message-ID: <1438938752-31010-20-git-send-email-rogerq@ti.com>
 In-Reply-To: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 References: <1438938752-31010-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -22,164 +22,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The WAIT pins support falling edge interrupts so add irqchip
-support to the gpiochip model.
+The GPMC driver now implements gpiochip and irqchip so
+enable gpio-controller and interrupt-controller properties.
+
+With this the interrupt parent of NAND node changes so fix it
+accordingly.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- drivers/memory/omap-gpmc.c | 111 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 111 insertions(+)
+ arch/arm/boot/dts/dra7-evm.dts  | 1 +
+ arch/arm/boot/dts/dra7.dtsi     | 4 ++++
+ arch/arm/boot/dts/dra72-evm.dts | 1 +
+ 3 files changed, 6 insertions(+)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index 0df70ab..417acce 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -13,6 +13,7 @@
-  * published by the Free Software Foundation.
-  */
- #include <linux/irq.h>
-+#include <linux/irqdomain.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/err.h>
-@@ -227,6 +228,7 @@ struct omap3_gpmc_regs {
- struct gpmc_device {
- 	struct device *dev;
- 	struct gpio_chip gpio_chip;
-+	struct irq_chip	irq_chip;
- };
+diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
+index ce11b0f..3fb1ced 100644
+--- a/arch/arm/boot/dts/dra7-evm.dts
++++ b/arch/arm/boot/dts/dra7-evm.dts
+@@ -573,6 +573,7 @@
+ 	nand@0,0 {
+ 		compatible = "ti,omap2-nand";
+ 		reg = <0 0 4>;		/* device IO registers */
++		interrupt-parent = <&crossbar_mpu>;
+ 		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+ 		ti,nand-ecc-opt = "bch8";
+ 		ti,elm-id = <&elm>;
+diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
+index 8f1e25b..a4ab66d 100644
+--- a/arch/arm/boot/dts/dra7.dtsi
++++ b/arch/arm/boot/dts/dra7.dtsi
+@@ -1369,6 +1369,10 @@
+ 			gpmc,num-waitpins = <2>;
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			interrupt-controller;
++			#interrupt-cells = <2>;
+ 			status = "disabled";
+ 		};
  
- static struct resource	gpmc_mem_root;
-@@ -1944,6 +1946,79 @@ err:
- 	return ret;
- }
- 
-+static int gpmc_irq_endis(unsigned long hwirq, bool endis)
-+{
-+	u32 regval;
-+
-+	/* WAITPIN starts at BIT 8 */
-+	hwirq += 8;
-+
-+	regval = gpmc_read_reg(GPMC_IRQENABLE);
-+	if (endis)
-+		regval |= BIT(hwirq);
-+	else
-+		regval &= ~BIT(hwirq);
-+	gpmc_write_reg(GPMC_IRQENABLE, regval);
-+
-+	return 0;
-+}
-+
-+static void gpmc_irq_mask(struct irq_data *d)
-+{
-+	gpmc_irq_endis(d->hwirq, false);
-+}
-+
-+static void gpmc_irq_unmask(struct irq_data *d)
-+{
-+	gpmc_irq_endis(d->hwirq, true);
-+}
-+
-+static void gpmc_irq_ack(struct irq_data *d)
-+{
-+	unsigned hwirq = d->hwirq + 8;
-+
-+	/* Setting bit to 1 clears (or Acks) the interrupt */
-+	gpmc_write_reg(GPMC_IRQSTATUS, BIT(hwirq));
-+}
-+
-+static int gpmc_irq_set_type(struct irq_data *d, unsigned trigger)
-+{
-+	/* We only support falling edge interrupts */
-+	if (trigger & ~IRQ_TYPE_EDGE_FALLING)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static irqreturn_t gpmc_handle_irq(int irq, void *data)
-+{
-+	int hwirq, virq;
-+	u32 regval;
-+	struct gpmc_device *gpmc = data;
-+
-+	regval = gpmc_read_reg(GPMC_IRQSTATUS);
-+	regval >>= 8;	/* we're only interested in WAIT pins */
-+
-+	if (!regval)
-+		return IRQ_NONE;
-+
-+	for (hwirq = 0; hwirq < gpmc->gpio_chip.ngpio; hwirq++) {
-+		if (regval & BIT(hwirq)) {
-+			virq = irq_find_mapping(gpmc->gpio_chip.irqdomain,
-+						hwirq);
-+			if (!virq) {
-+				dev_warn(gpmc_dev,
-+					 "spurious irq detected hwirq %d, virq %d\n",
-+					 hwirq, virq);
-+			}
-+
-+			generic_handle_irq(virq);
-+		}
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int gpmc_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
- {
- 	return 1;	/* we're input only */
-@@ -1978,6 +2053,7 @@ static int gpmc_gpio_get(struct gpio_chip *chip, unsigned offset)
- static int gpmc_gpio_init(struct gpmc_device *gpmc)
- {
- 	int ret;
-+	u32 regval;
- 
- 	gpmc->gpio_chip.dev = gpmc->dev;
- 	gpmc->gpio_chip.owner = THIS_MODULE;
-@@ -1996,7 +2072,42 @@ static int gpmc_gpio_init(struct gpmc_device *gpmc)
- 		return ret;
- 	}
- 
-+	/* Disable interrupts */
-+	gpmc_write_reg(GPMC_IRQENABLE, 0);
-+
-+	/* clear interrupts */
-+	regval = gpmc_read_reg(GPMC_IRQSTATUS);
-+	gpmc_write_reg(GPMC_IRQSTATUS, regval);
-+
-+	gpmc->irq_chip.name = DEVICE_NAME;
-+	gpmc->irq_chip.irq_ack = gpmc_irq_ack;
-+	gpmc->irq_chip.irq_mask = gpmc_irq_mask;
-+	gpmc->irq_chip.irq_unmask = gpmc_irq_unmask;
-+	gpmc->irq_chip.irq_set_type = gpmc_irq_set_type;
-+
-+	ret = gpiochip_irqchip_add(&gpmc->gpio_chip, &gpmc->irq_chip, 0,
-+				   handle_edge_irq, IRQ_TYPE_NONE);
-+
-+	if (ret) {
-+		dev_err(gpmc->dev, "could not add irqchip to gpiochip: %d\n",
-+			ret);
-+		goto fail;
-+	}
-+
-+	/* We're sharing this IRQ with OMAP NAND driver */
-+	ret = request_irq(gpmc_irq, gpmc_handle_irq, IRQF_SHARED, "gpmc", gpmc);
-+	if (ret) {
-+		dev_err(gpmc->dev, "could not request gpmc irq (%d): %d\n",
-+			gpmc_irq, ret);
-+		goto fail;
-+	}
-+
- 	return 0;
-+
-+fail:
-+	gpiochip_remove(&gpmc->gpio_chip);
-+
-+	return ret;
- }
- 
- static void gpmc_gpio_exit(struct gpmc_device *gpmc)
+diff --git a/arch/arm/boot/dts/dra72-evm.dts b/arch/arm/boot/dts/dra72-evm.dts
+index 8037384..fc0677a 100644
+--- a/arch/arm/boot/dts/dra72-evm.dts
++++ b/arch/arm/boot/dts/dra72-evm.dts
+@@ -386,6 +386,7 @@
+ 		 * SW5.9 (GPMC_WPN) = OFF (HIGH)
+ 		 */
+ 		reg = <0 0 4>;		/* device IO registers */
++		interrupt-parent = <&crossbar_mpu>;
+ 		ti,nand-ecc-opt = "bch8";
+ 		ti,elm-id = <&elm>;
+ 		nand-bus-width = <16>;
 -- 
 2.1.4
