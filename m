@@ -1,21 +1,20 @@
-Received: from mail-oi0-x229.google.com ([2607:f8b0:4003:c06::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNhBe-0001Cf-UG
- for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 12:55:51 +0000
-Received: by oip136 with SMTP id 136so53385480oip.1
- for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2015 05:55:29 -0700 (PDT)
+Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZNlL7-0001NO-Ay
+ for linux-mtd@lists.infradead.org; Fri, 07 Aug 2015 17:21:54 +0000
+Received: by pdrh1 with SMTP id h1so29438436pdr.0
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2015 10:21:30 -0700 (PDT)
+Date: Fri, 7 Aug 2015 10:21:27 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] JFFS2: Prevent CPU starvation during garbage collection.
+Message-ID: <20150807172127.GB60523@google.com>
+References: <1438749630-1656-1-git-send-email-mark.tomlinson@alliedtelesis.co.nz>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvxjKVLRQ1Jrjw-hTLq8k1jMTeWVOYwdgHzg=_dQfFsnRg@mail.gmail.com>
-References: <CAEo2pzuPdN56QQbvoao_oo9oppr1CNmBMhq7d0BSGQXraBZYOA@mail.gmail.com>
- <CAFLxGvxjKVLRQ1Jrjw-hTLq8k1jMTeWVOYwdgHzg=_dQfFsnRg@mail.gmail.com>
-Date: Fri, 7 Aug 2015 15:55:29 +0300
-Message-ID: <CAEo2pzsyFea_De6A-dZEzs6UBKcebfieSwVab0xe-TcjYLo1+A@mail.gmail.com>
-Subject: Re: ubifs: nand flash wear profiling for userspace application file
- i/o
-From: =?UTF-8?B?0JjQu9GM0Y/RgSDQk9Cw0YHQsNC90L7Qsg==?= <torso.nafi@gmail.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1438749630-1656-1-git-send-email-mark.tomlinson@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
++ David
 
-2015-08-07 15:30 GMT+03:00 Richard Weinberger <richard.weinberger@gmail.com>:
-> 10000 is not much, is this MLC?
+I'm not maintaining JFFS2, but if it's exceedingly obvious (this patch
+might qualify), I might take patches.
 
-Maybe, I'm not sure. At least, this is the guaranteed value, not the
-average one, afaik.
+On Wed, Aug 05, 2015 at 04:40:30PM +1200, Mark Tomlinson wrote:
+> The JFFS2 garbage collection checks every file on the system for correct
+> checksums and cleaning up anything that it needs to. It sleeps for 50ms
+> between each file, but within each file it remains busy.
+> 
+> As far as I can tell, there is no reason to not reschedule while checking a
+> file, by putting a cond_resched() inside jfffs2_build_inode_fragtree(). In
+> fact, jffs2_get_inode_nodes() will call cond_resched(), which is done
+> immediately before jffs2_build_inode_fragtree().
+> 
+> With this extra cond_resched() between reading file blocks, there is a
+> dramatic improvement in latency for any processes which are running during
+> this initial garbage collection phase.
+> 
+> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+> ---
+>  fs/jffs2/readinode.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+> index 28e0aab..78c526a 100644
+> --- a/fs/jffs2/readinode.c
+> +++ b/fs/jffs2/readinode.c
+> @@ -536,6 +536,7 @@ static int jffs2_build_inode_fragtree(struct jffs2_sb_info *c,
+>  				jffs2_free_tmp_dnode_info(this);
+>  			}
+>  			this = vers_next;
+> +			cond_resched();
+>  		}
+>  	}
+>  	return 0;
 
-> ubinfo prints the maximum erase counter value, does this help?
-> This info is also available via /sys/class/ubi/ubi0/max_ec.
+Obligatory question: did you test this?
 
-Yes, it does for our purpose. We need to test it for some days though,
-for precision reasons.
-
-> If you want the distribution you have to write a small script which
-> reads the EC header of all blocks.
-> But as UBI does wear leveling for you, the distribution should not
-> matter. Please keep in mind that you need to define a sane
-> WL threshold.
-
-That about covers it, thank you.
-
-Best regards,
-Ilyas Gasanov
+Brian
