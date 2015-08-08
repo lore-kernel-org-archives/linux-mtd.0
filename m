@@ -1,20 +1,20 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOAp4-0004Yt-7O
- for linux-mtd@lists.infradead.org; Sat, 08 Aug 2015 20:34:31 +0000
-Subject: Re: [PATCH v2] ubifs: make ubifs_[get|set]xattr atomic
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com
-References: <55BABB80.9080406@cn.fujitsu.com>
- <1438305123-31675-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <55BFCEA0.7080900@nod.at> <55C444EA.7090305@cn.fujitsu.com>
-Cc: linux-mtd@lists.infradead.org
+ id 1ZOBLu-0008E8-1s
+ for linux-mtd@lists.infradead.org; Sat, 08 Aug 2015 21:08:26 +0000
+Subject: Re: [PATCH v2 21/35] ubifs: disable quota in ubifs_put_super
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, viro@ZenIV.linux.org.uk,
+ jack@suse.cz, dedekind1@gmail.com, richard.weinberger@gmail.com
+References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438235311-23788-22-git-send-email-yangds.fnst@cn.fujitsu.com>
+Cc: linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <55C667BB.2040204@nod.at>
-Date: Sat, 8 Aug 2015 22:34:03 +0200
+Message-ID: <55C66FB1.2050302@nod.at>
+Date: Sat, 8 Aug 2015 23:08:01 +0200
 MIME-Version: 1.0
-In-Reply-To: <55C444EA.7090305@cn.fujitsu.com>
+In-Reply-To: <1438235311-23788-22-git-send-email-yangds.fnst@cn.fujitsu.com>
 Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 07.08.2015 um 07:40 schrieb Dongsheng Yang:
-> On 08/04/2015 04:27 AM, Richard Weinberger wrote:
->> Am 31.07.2015 um 03:12 schrieb Dongsheng Yang:
->>> This commit make the ubifs_[get|set]xattr protected by ui_mutex.
->>>
->>> Originally, there is a possibility that ubifs_getxattr to get
->>> a wrong value.
->>>
->>>      P1                    P2
->>> ----------            ----------
->>> ubifs_getxattr            ubifs_setxattr
->>>                    - kfree()
->>>     - memcpy()
->>>                    - kmemdup()
->>>
->>> Then ubifs_getxattr() would get a non-sense data. To solve this
->>> problem, this commit make the xattr of ubifs_inode updated in
->>> atomic.
->>
->> so, ui->data needs protection?
->> The comment in fs/ubifs/ubifs.h does not mention ->data.
->> I'm asking because I want to make sure that ui_mutex is the correct lock to take.
+Am 30.07.2015 um 07:48 schrieb Dongsheng Yang:
+> We need to disable quota in umounting ubifs. So we have to
+> disable quota in ubifs_put_super(). But quota disable will
+> write quota file, and we have to budget for it.
 > 
-> ui->data needs protection for sure, as I show above.
-> Without protection, there is a problem to get wrong value.
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> ---
+>  fs/ubifs/super.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> And yes, the comment does not mention the ->data. But
-> I think ui_mutex is a good choice for it. And not all fields
-> which is being protected by ui_mutex are listed in the comment,
-> such as xattr_names and xattr_cnt.
+> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> index 3609d7b..7031c16 100644
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -2027,6 +2027,8 @@ static void ubifs_put_super(struct super_block *sb)
+>  
+>  	ubifs_msg(c, "un-mount UBI device %d", c->vi.ubi_num);
+>  
+> +	if (!c->ro_mount)
+> +		dquot_disable(sb, -1, DQUOT_USAGE_ENABLED | DQUOT_LIMITS_ENABLED);
 
-Yeah. ;-\
-The comment needs an update. In UBI and UBIFS we try hard to document our locking.
-Will you do a patch or shall I?
+I fear this will explode in your face.
+dquot_disable disables all inodes needed for quota support, once enabled
+you have to shut down quota support.
+IOW if someone remounts UBIFS read only or UBIFS does itself due to an error
+you'll leak inodes.
 
 Thanks,
 //richard
