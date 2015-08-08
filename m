@@ -1,17 +1,25 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Petr Cvek <petr.cvek@tul.cz>, daniel@zonque.org, haojian.zhuang@gmail.com,
- Robert Jarzmik <robert.jarzmik@free.fr>, dwmw2@infradead.org,
- computersforpeace@gmail.com, eric.y.miao@gmail.com,
- linux-mtd@lists.infradead.org
+Received: from pandora.arm.linux.org.uk
+ ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZO4VO-0007Pg-Vu
+ for linux-mtd@lists.infradead.org; Sat, 08 Aug 2015 13:49:48 +0000
+Date: Sat, 8 Aug 2015 14:47:09 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org, eric.y.miao@gmail.com,
+ dwmw2@infradead.org, haojian.zhuang@gmail.com,
+ linux-mtd@lists.infradead.org, Petr Cvek <petr.cvek@tul.cz>,
+ computersforpeace@gmail.com,
+ Robert Jarzmik <robert.jarzmik@free.fr>, daniel@zonque.org
 Subject: Re: [BUG, RFC] MTD Execute in Place on ARM breaks build
-Date: Sat, 08 Aug 2015 13:42:50 +0200
-Message-ID: <1564596.BEQS8u7XSM@wuerfel>
-In-Reply-To: <55C51319.2010901@tul.cz>
+Message-ID: <20150808134708.GK7557@n2100.arm.linux.org.uk>
 References: <55C51319.2010901@tul.cz>
+ <1564596.BEQS8u7XSM@wuerfel>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1564596.BEQS8u7XSM@wuerfel>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 07 August 2015 22:20:41 Petr Cvek wrote:
-> Hello,
-> 
-> Configuration:
-> 
-> 	CONFIG_MTD_XIP=y
-> 
-> on PXA2xx architecture causes request of undefined macros from 
-> 
-> 	drivers/mtd/chipscfi_cmdset_0001.c
-> 
-> These macros (using ICIP and ICMR) are defined here:
-> 
-> 	http://lxr.free-electrons.com/source/arch/arm/mach-pxa/include/mach/mtd-xip.h#L20
-> 
-> register definitions for ICIP and ICMR were removed by commit:
-> 	
-> 	5d284e353eb11ab2e8b1c5671ba06489b0bd1e0c
-> 
-> Similar is for macros with OSCR (lines 23 and 24), which have different type.
-> Re-adding ICIP and ICMR definition and explicit type conversion will fix the build
-> and the kernel boots, but I'm not yet able to test XIP functionality (too many different
-> bugs to flash over windows mobile image).
->
-> My temporal fix (ugly):
-> 
-> #define ICIP __REG(0x40D00000)  /* Interrupt Controller IRQ Pending Register */
-> #define ICMR __REG(0x40D00004)  /* Interrupt Controller Mask Register */
-> ...
-> #define xip_currtime()		((unsigned long) OSCR)
-> #define xip_elapsed_since(x)	(signed)((((unsigned long) OSCR) - (x)) / 4)
+On Sat, Aug 08, 2015 at 01:42:50PM +0200, Arnd Bergmann wrote:
+> A cleaner approach might be to replace xip_currtime() with
+> ktime_get_ns(), and find some other generic interface to replace
+> xip_irqpending.
 
+Definitely not.
 
-Macros that do implicit pointer dereferences are discouraged, a better way to
-write them is
+The issue here is that the kernel sits in flash.  When we want to write
+to flash, we need to switch the flash into a mode where the data
+contained in the flash becomes unreadable - reading from it results in
+status bytes being returned.  Status bytes are not executable.
 
-	#define xip_currtime()	readl_relaxed(OSCR)
+To get around that problem, we have a small amount of code in RAM which
+does the flash erasing and/or programming.  This code, however, needs
+to have access to the interrupt controller and timer.
 
-with the OSCR definition from arch/arm/mach-pxa/include/mach/regs-ost.h.
+Calling generic functions that would be part of the paged-out kernel
+image is just not possible; doing so will immediately crash the kernel
+and break what's being achieved here.  You'd need to mark these functions
+and any functions that they then call (including spinlocks, probably
+the entire lockdep infrastructure, etc) with __xipram.  I don't think
+that's feasible.
 
-> P.S. Same macros are used on omap1 and sa1100 too.
+In any case, I don't think XIP multiplatform makes any sense what so
+ever.  Needless to say, it _could_ be made to work, but you're likely
+need some complexity, and given that it has very few users, I don't
+think there's much to be gained from putting that work in.  We've even
+talked a few times about removing XIP support altogether.
 
-There is a (slow) effort to move both omap1 and pxa into ARCH_MULTIPLATFORM
-in the long run, and at that point we have to come up with something
-better. The easiest way out would be to replace the functions with
-function pointers that can be set by platform specific code.
-
-A cleaner approach might be to replace xip_currtime() with
-ktime_get_ns(), and find some other generic interface to replace
-xip_irqpending. That would let us eliminate the mach/mtd-xip.h
-header entirely and make mtd-xip portablel to a lot of other
-platforms.
-
-For a real multiplatform kernel, you'd also need to replace the
-#ifdef CONFIG_MTD_XIP instances with a runtime conditional, but that
-is less urgent for real world use cases.
-
-	Arnd
+-- 
+FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
+according to speedtest.net.
