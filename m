@@ -1,26 +1,20 @@
-Received: from pandora.arm.linux.org.uk
- ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZO9tI-0000Ex-9K
- for linux-mtd@lists.infradead.org; Sat, 08 Aug 2015 19:34:49 +0000
-Date: Sat, 8 Aug 2015 20:34:12 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Petr Cvek <petr.cvek@tul.cz>
-Cc: eric.y.miao@gmail.com, Arnd Bergmann <arnd@arndb.de>,
- Robert Jarzmik <robert.jarzmik@free.fr>, haojian.zhuang@gmail.com,
- linux-mtd@lists.infradead.org, daniel@zonque.org,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [BUG, RFC] MTD Execute in Place on ARM breaks build
-Message-ID: <20150808193412.GP7557@n2100.arm.linux.org.uk>
-References: <55C51319.2010901@tul.cz> <1564596.BEQS8u7XSM@wuerfel>
- <20150808134708.GK7557@n2100.arm.linux.org.uk>
- <55C64FE6.40007@tul.cz>
+ id 1ZOAp4-0004Yt-7O
+ for linux-mtd@lists.infradead.org; Sat, 08 Aug 2015 20:34:31 +0000
+Subject: Re: [PATCH v2] ubifs: make ubifs_[get|set]xattr atomic
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com
+References: <55BABB80.9080406@cn.fujitsu.com>
+ <1438305123-31675-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <55BFCEA0.7080900@nod.at> <55C444EA.7090305@cn.fujitsu.com>
+Cc: linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55C667BB.2040204@nod.at>
+Date: Sat, 8 Aug 2015 22:34:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55C64FE6.40007@tul.cz>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+In-Reply-To: <55C444EA.7090305@cn.fujitsu.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,32 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 08, 2015 at 08:52:22PM +0200, Petr Cvek wrote:
-> How often are these chips erased/written? If it is only for system
-> image update, it could be done with special code (something like
-> BIOS flashing).
+Am 07.08.2015 um 07:40 schrieb Dongsheng Yang:
+> On 08/04/2015 04:27 AM, Richard Weinberger wrote:
+>> Am 31.07.2015 um 03:12 schrieb Dongsheng Yang:
+>>> This commit make the ubifs_[get|set]xattr protected by ui_mutex.
+>>>
+>>> Originally, there is a possibility that ubifs_getxattr to get
+>>> a wrong value.
+>>>
+>>>      P1                    P2
+>>> ----------            ----------
+>>> ubifs_getxattr            ubifs_setxattr
+>>>                    - kfree()
+>>>     - memcpy()
+>>>                    - kmemdup()
+>>>
+>>> Then ubifs_getxattr() would get a non-sense data. To solve this
+>>> problem, this commit make the xattr of ubifs_inode updated in
+>>> atomic.
+>>
+>> so, ui->data needs protection?
+>> The comment in fs/ubifs/ubifs.h does not mention ->data.
+>> I'm asking because I want to make sure that ui_mutex is the correct lock to take.
+> 
+> ui->data needs protection for sure, as I show above.
+> Without protection, there is a problem to get wrong value.
+> 
+> And yes, the comment does not mention the ->data. But
+> I think ui_mutex is a good choice for it. And not all fields
+> which is being protected by ui_mutex are listed in the comment,
+> such as xattr_names and xattr_cnt.
 
-I have no idea what the use case is for this.  Nicolas did all the
-development work while working for Montavista...  It's entirely
-possible that people use jffs2 or some other writable filesystem.
+Yeah. ;-\
+The comment needs an update. In UBI and UBIFS we try hard to document our locking.
+Will you do a patch or shall I?
 
-> Anyway, is my patch proposal for build fixing OK?
-
-I don't think so - it effectively hides the broken nature of it,
-which really isn't what kernel maintanence is about.  If something
-is wrong, either it needs to be fixed properly, or it needs to stay
-as a reportable bug so it reminds people that it needs to be fixed.
-Papering over a bug with something that doesn't work isn't a way
-forward.
-
-Arnd suggested getting around some of the issue with:
-
-	#define xip_currtime()  readl_relaxed(OSCR)
-
-which would be a step in the right direction - that should issue
-correct code on PXA to read the OSCR register from the __xipram
-marked code.
-
--- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
+Thanks,
+//richard
