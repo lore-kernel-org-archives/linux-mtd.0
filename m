@@ -1,16 +1,18 @@
-Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOkqs-0002kr-4Y
- for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 11:02:50 +0000
-Received: by wicne3 with SMTP id ne3so131017915wic.1
- for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 04:02:23 -0700 (PDT)
-From: Andrew Murray <amurray@embedded-bits.co.uk>
-To: linux-mtd@lists.infradead.org
-Cc: Andrew Murray <amurray@embedded-bits.co.uk>,
- Richard Weinberger <richard@nod.at>, trivial@kernel.org
-Subject: [PATCH] UBI: Update comments to reflect UBI_METAONLY flag
-Date: Mon, 10 Aug 2015 12:02:09 +0100
-Message-Id: <1439204529-15440-1-git-send-email-amurray@embedded-bits.co.uk>
+ id 1ZOsv3-0007Nj-82
+ for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 19:39:38 +0000
+Received: by igbpg9 with SMTP id pg9so76625705igb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 12:39:16 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Subject: [PATCH] mtd: spi-nor: stop (ab)using struct spi_device_id
+Date: Mon, 10 Aug 2015 21:39:03 +0200
+Message-Id: <1439235543-2893-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +22,207 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch trivially updates code comments to reflect the addition of the
-UBI_METAONLY flag - as discussed https://lkml.org/lkml/2014/10/29/764
+Using struct spi_device_id for storing list of flash devices comes from
+early SPI NOR framework days. Thanks to the commit 70f3ce0510af ("mtd:
+spi-nor: make spi_nor_scan() take a chip type name, not spi_device_id")
+we can stop using spi_device_id and just switch to our own struct.
 
-Cc: Richard Weinberger <richard@nod.at>
-Cc: trivial@kernel.org
-Signed-off-by: Andrew Murray <amurray@embedded-bits.co.uk>
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/mtd/ubi/gluebi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 62 +++++++++++++++++++------------------------
+ 1 file changed, 27 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
-index b93807b..cb7c075 100644
---- a/drivers/mtd/ubi/gluebi.c
-+++ b/drivers/mtd/ubi/gluebi.c
-@@ -112,8 +112,8 @@ static int gluebi_get_device(struct mtd_info *mtd)
- 		 * The MTD device is already referenced and this is just one
- 		 * more reference. MTD allows many users to open the same
- 		 * volume simultaneously and do not distinguish between
--		 * readers/writers/exclusive openers as UBI does. So we do not
--		 * open the UBI volume again - just increase the reference
-+		 * readers/writers/exclusive/meta openers as UBI does. So we do
-+		 * not open the UBI volume again - just increase the reference
- 		 * counter and return.
- 		 */
- 		gluebi->refcnt += 1;
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 47516d3..04f5934 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -29,6 +29,8 @@
+ #define SPI_NOR_MAX_ID_LEN	6
+ 
+ struct flash_info {
++	char		*name;
++
+ 	/*
+ 	 * This array stores the ID bytes.
+ 	 * The first three bytes are the JEDIC ID.
+@@ -59,7 +61,7 @@ struct flash_info {
+ 
+ #define JEDEC_MFR(info)	((info)->id[0])
+ 
+-static const struct spi_device_id *spi_nor_match_id(const char *name);
++static const struct flash_info *spi_nor_match_id(const char *name);
+ 
+ /*
+  * Read the status register, returning its value in the location
+@@ -169,7 +171,7 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+ }
+ 
+ /* Enable/disable 4-byte addressing mode. */
+-static inline int set_4byte(struct spi_nor *nor, struct flash_info *info,
++static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+ 			    int enable)
+ {
+ 	int status;
+@@ -469,7 +471,6 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 
+ /* Used when the "_ext_id" is two bytes at most */
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+-	((kernel_ulong_t)&(struct flash_info) {				\
+ 		.id = {							\
+ 			((_jedec_id) >> 16) & 0xff,			\
+ 			((_jedec_id) >> 8) & 0xff,			\
+@@ -481,11 +482,9 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		.sector_size = (_sector_size),				\
+ 		.n_sectors = (_n_sectors),				\
+ 		.page_size = 256,					\
+-		.flags = (_flags),					\
+-	})
++		.flags = (_flags),
+ 
+ #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+-	((kernel_ulong_t)&(struct flash_info) {				\
+ 		.id = {							\
+ 			((_jedec_id) >> 16) & 0xff,			\
+ 			((_jedec_id) >> 8) & 0xff,			\
+@@ -498,17 +497,14 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		.sector_size = (_sector_size),				\
+ 		.n_sectors = (_n_sectors),				\
+ 		.page_size = 256,					\
+-		.flags = (_flags),					\
+-	})
++		.flags = (_flags),
+ 
+ #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_width, _flags)	\
+-	((kernel_ulong_t)&(struct flash_info) {				\
+ 		.sector_size = (_sector_size),				\
+ 		.n_sectors = (_n_sectors),				\
+ 		.page_size = (_page_size),				\
+ 		.addr_width = (_addr_width),				\
+-		.flags = (_flags),					\
+-	})
++		.flags = (_flags),
+ 
+ /* NOTE: double check command sets and memory organization when you add
+  * more nor chips.  This current list focusses on newer chips, which
+@@ -521,7 +517,7 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+  * For historical (and compatibility) reasons (before we got above config) some
+  * old entries may be missing 4K flag.
+  */
+-static const struct spi_device_id spi_nor_ids[] = {
++static const struct flash_info spi_nor_ids[] = {
+ 	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
+ 	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K) },
+ 	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) },
+@@ -702,11 +698,11 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	{ },
+ };
+ 
+-static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
++static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+ {
+ 	int			tmp;
+ 	u8			id[SPI_NOR_MAX_ID_LEN];
+-	struct flash_info	*info;
++	const struct flash_info	*info;
+ 
+ 	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
+ 	if (tmp < 0) {
+@@ -715,7 +711,7 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+ 	}
+ 
+ 	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+-		info = (void *)spi_nor_ids[tmp].driver_data;
++		info = &spi_nor_ids[tmp];
+ 		if (info->id_len) {
+ 			if (!memcmp(info->id, id, info->id_len))
+ 				return &spi_nor_ids[tmp];
+@@ -961,7 +957,7 @@ static int micron_quad_enable(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
+-static int set_quad_mode(struct spi_nor *nor, struct flash_info *info)
++static int set_quad_mode(struct spi_nor *nor, const struct flash_info *info)
+ {
+ 	int status;
+ 
+@@ -1003,8 +999,7 @@ static int spi_nor_check(struct spi_nor *nor)
+ 
+ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ {
+-	const struct spi_device_id	*id = NULL;
+-	struct flash_info		*info;
++	const struct flash_info *info = NULL;
+ 	struct device *dev = nor->dev;
+ 	struct mtd_info *mtd = nor->mtd;
+ 	struct device_node *np = dev->of_node;
+@@ -1016,26 +1011,24 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 		return ret;
+ 
+ 	if (name)
+-		id = spi_nor_match_id(name);
++		info = spi_nor_match_id(name);
+ 	/* Try to auto-detect if chip name wasn't specified or not found */
+-	if (!id)
+-		id = spi_nor_read_id(nor);
+-	if (IS_ERR_OR_NULL(id))
++	if (!info)
++		info = spi_nor_read_id(nor);
++	if (IS_ERR_OR_NULL(info))
+ 		return -ENOENT;
+ 
+-	info = (void *)id->driver_data;
+-
+ 	/*
+ 	 * If caller has specified name of flash model that can normally be
+ 	 * detected using JEDEC, let's verify it.
+ 	 */
+ 	if (name && info->id_len) {
+-		const struct spi_device_id *jid;
++		const struct flash_info *jinfo;
+ 
+-		jid = spi_nor_read_id(nor);
+-		if (IS_ERR(jid)) {
+-			return PTR_ERR(jid);
+-		} else if (jid != id) {
++		jinfo = spi_nor_read_id(nor);
++		if (IS_ERR(jinfo)) {
++			return PTR_ERR(jinfo);
++		} else if (jinfo != info) {
+ 			/*
+ 			 * JEDEC knows better, so overwrite platform ID. We
+ 			 * can't trust partitions any longer, but we'll let
+@@ -1044,9 +1037,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 			 * information, even if it's not 100% accurate.
+ 			 */
+ 			dev_warn(dev, "found %s, expected %s\n",
+-				 jid->name, id->name);
+-			id = jid;
+-			info = (void *)jid->driver_data;
++				 jinfo->name, info->name);
++			info = jinfo;
+ 		}
+ 	}
+ 
+@@ -1196,7 +1188,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 
+ 	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
+ 
+-	dev_info(dev, "%s (%lld Kbytes)\n", id->name,
++	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+ 			(long long)mtd->size >> 10);
+ 
+ 	dev_dbg(dev,
+@@ -1219,9 +1211,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ }
+ EXPORT_SYMBOL_GPL(spi_nor_scan);
+ 
+-static const struct spi_device_id *spi_nor_match_id(const char *name)
++static const struct flash_info *spi_nor_match_id(const char *name)
+ {
+-	const struct spi_device_id *id = spi_nor_ids;
++	const struct flash_info *id = spi_nor_ids;
+ 
+ 	while (id->name[0]) {
+ 		if (!strcmp(name, id->name))
 -- 
-1.8.3.2
+1.8.4.5
