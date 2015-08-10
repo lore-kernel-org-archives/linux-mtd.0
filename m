@@ -1,24 +1,23 @@
-Received: from mail-io0-f177.google.com ([209.85.223.177])
+Received: from mail-ig0-f180.google.com ([209.85.213.180])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOuGe-0001cw-7S
+ id 1ZOuGe-0001dU-Bb
  for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 21:06:01 +0000
-Received: by iodb91 with SMTP id b91so122857410iod.1
- for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 14:05:36 -0700 (PDT)
+Received: by igbpg9 with SMTP id pg9so78174710igb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 14:05:39 -0700 (PDT)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
- selinux@tycho.nsa.gov
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Jeff Layton <jlayton@poochiereds.net>,
+ "J. Bruce Fields" <bfields@fieldses.org>
 Cc: Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
- Seth Forshee <seth.forshee@canonical.com>,
- John Johansen <john.johansen@canonical.com>,
- Kentaro Takeda <takedakn@nttdata.co.jp>,
- Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
- James Morris <james.l.morris@oracle.com>, Kees Cook <keescook@chromium.org>
-Subject: [PATCH v2 0/7] Initial support for user namespace owned mounts
-Date: Mon, 10 Aug 2015 16:05:11 -0500
-Message-Id: <1439240719-46850-1-git-send-email-seth.forshee@canonical.com>
+ Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH v2 2/7] userns: Simpilify MNT_NODEV handling.
+Date: Mon, 10 Aug 2015 16:05:13 -0500
+Message-Id: <1439240719-46850-3-git-send-email-seth.forshee@canonical.com>
+In-Reply-To: <1439240719-46850-1-git-send-email-seth.forshee@canonical.com>
+References: <1439240719-46850-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,76 +27,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This series adds support for the idea of superblocks owned by
-unprivileged user namespaces. This is initially used to simplify the
-MNT_NODEV handling for unpivileged mounts, and the ultimate goal is to
-allow mounting of additional filesystem types from unprivileged
-containers. As such these are the first in a larger set of patches, with
-the full series (so far) available at:
+From: "Eric W. Biederman" <ebiederm@xmission.com>
 
-  git://kernel.ubuntu.com/sforshee/linux.git userns-mounts
+- Consolidate the testing if a device node may be opened in a new
+  function may_open_dev.
 
-The strategy for the series as a whole is to do as much of the heavy
-lifting as possible in the vfs to avoid the need to handle any weird
-edge cases in the code for individual filesystems. These patches lay the
-initial groundwork and fall into a two broad groups:
+- Move the check for allowing access to device nodes on filesystems
+  not mounted in the initial user namespace from mount time to open
+  time and include it in may_open_dev.
 
- 1. Patches 1-2 add s_ser_ns and simplify MNT_NODEV handling.
+This set of changes removes the implicit adding of MNT_NODEV which
+simplifies the logic in fs/namespace.c and removes a potentially
+problematic user visible difference in how normal and unprivileged
+mount namespaces work.
 
- 2. Patches 3-7 tighten down security for mounts with s_user_ns !=
-    &init_user_ns. This includes updates to how file caps and suid are
-    handled and updates for SELinux and Smack to avoid using security
-    labels from untrusted mounts.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ fs/block_dev.c     |  2 +-
+ fs/namei.c         |  9 ++++++++-
+ fs/namespace.c     | 18 ++++--------------
+ include/linux/fs.h |  1 +
+ 4 files changed, 14 insertions(+), 16 deletions(-)
 
-Note that no updates are included for the LSMs which do not store
-security labels on disk. As far as I can tell these security modules are
-not susceptible to attack via unprivileged mounts because no security
-metadata can be injected into the system via these mounts. I have cc-ed
-the maintainers of these LSMs and would appreciate confirmation that
-this is the case.
-
-Also note that this only addresses security at the vfs level. As has
-been discussed previously, individual filesystems may still be
-vulnerable to attacks via maliciuos metadata in the backing store. The
-goal is to find a small set of filesystems that can be hardened against
-attacks from below. At minimum fuse has been designed to resist such
-attacks.
-
-Changes since v1:
- - Check current_user_ns instead of mount ns owner for MNT_LOCK_NODEV
-   check in fs_fully_visible.
- - Add check of s_user_ns in mnt_may_suid.
- - Improve handling of superblocks from unprivileged users in SELinux
-   and Smack.
- - Add permission checks for block device paths passed to mount by
-   unprivileged users.
-
-Andy Lutomirski (1):
-  fs: Treat foreign mounts as nosuid
-
-Eric W. Biederman (1):
-  userns: Simpilify MNT_NODEV handling.
-
-Seth Forshee (5):
-  fs: Add user namesapace member to struct super_block
-  fs: Verify access of user towards block device file when mounting
-  fs: Limit file caps to the user namespace of the super block
-  Smack: Add support for unprivileged mounts from user namespaces
-  selinux: Add support for unprivileged mounts from user namespaces
-
- drivers/mtd/mtdsuper.c         |  7 +++++-
- fs/block_dev.c                 | 54 +++++++++++++++++++++++++++++++++---------
- fs/exec.c                      |  2 +-
- fs/namei.c                     |  9 ++++++-
- fs/namespace.c                 | 34 +++++++++++++++-----------
- fs/proc/root.c                 |  3 ++-
- fs/super.c                     | 38 +++++++++++++++++++++++++----
- include/linux/fs.h             | 11 ++++++++-
- include/linux/mount.h          |  1 +
- include/linux/user_namespace.h |  8 +++++++
- kernel/user_namespace.c        | 14 +++++++++++
- security/commoncap.c           |  4 +++-
- security/selinux/hooks.c       | 25 ++++++++++++++++++-
- security/smack/smack.h         |  6 +++++
- security/smack/smack_lsm.c     | 35 ++++++++++++++++++++-------
- 15 files changed, 206 insertions(+), 45 deletions(-)
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 198243717da5..f8ce371c437c 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -1729,7 +1729,7 @@ struct block_device *lookup_bdev(const char *pathname)
+ 	if (!S_ISBLK(inode->i_mode))
+ 		goto fail;
+ 	error = -EACCES;
+-	if (path.mnt->mnt_flags & MNT_NODEV)
++	if (!may_open_dev(&path))
+ 		goto fail;
+ 	error = -ENOMEM;
+ 	bdev = bd_acquire(inode);
+diff --git a/fs/namei.c b/fs/namei.c
+index fbbcf0993312..59444c066f47 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2640,6 +2640,13 @@ int vfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+ }
+ EXPORT_SYMBOL(vfs_create);
+ 
++bool may_open_dev(const struct path *path)
++{
++	return !(path->mnt->mnt_flags & MNT_NODEV) &&
++		((path->mnt->mnt_sb->s_user_ns == &init_user_ns) ||
++		 (path->mnt->mnt_sb->s_type->fs_flags & FS_USERNS_DEV_MOUNT));
++}
++
+ static int may_open(struct path *path, int acc_mode, int flag)
+ {
+ 	struct dentry *dentry = path->dentry;
+@@ -2662,7 +2669,7 @@ static int may_open(struct path *path, int acc_mode, int flag)
+ 		break;
+ 	case S_IFBLK:
+ 	case S_IFCHR:
+-		if (path->mnt->mnt_flags & MNT_NODEV)
++		if (!may_open_dev(path))
+ 			return -EACCES;
+ 		/*FALLTHRU*/
+ 	case S_IFIFO:
+diff --git a/fs/namespace.c b/fs/namespace.c
+index d023a353dc63..e48fa1c23378 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -2177,13 +2177,7 @@ static int do_remount(struct path *path, int flags, int mnt_flags,
+ 	}
+ 	if ((mnt->mnt.mnt_flags & MNT_LOCK_NODEV) &&
+ 	    !(mnt_flags & MNT_NODEV)) {
+-		/* Was the nodev implicitly added in mount? */
+-		if ((mnt->mnt_ns->user_ns != &init_user_ns) &&
+-		    !(sb->s_type->fs_flags & FS_USERNS_DEV_MOUNT)) {
+-			mnt_flags |= MNT_NODEV;
+-		} else {
+-			return -EPERM;
+-		}
++		return -EPERM;
+ 	}
+ 	if ((mnt->mnt.mnt_flags & MNT_LOCK_NOSUID) &&
+ 	    !(mnt_flags & MNT_NOSUID)) {
+@@ -2396,13 +2390,6 @@ static int do_new_mount(struct path *path, const char *fstype, int flags,
+ 			put_filesystem(type);
+ 			return -EPERM;
+ 		}
+-		/* Only in special cases allow devices from mounts
+-		 * created outside the initial user namespace.
+-		 */
+-		if (!(type->fs_flags & FS_USERNS_DEV_MOUNT)) {
+-			flags |= MS_NODEV;
+-			mnt_flags |= MNT_NODEV | MNT_LOCK_NODEV;
+-		}
+ 		if (type->fs_flags & FS_USERNS_VISIBLE) {
+ 			if (!fs_fully_visible(type, &mnt_flags))
+ 				return -EPERM;
+@@ -3238,6 +3225,9 @@ static bool fs_fully_visible(struct file_system_type *type, int *new_mnt_flags)
+ 		mnt_flags = mnt->mnt.mnt_flags;
+ 		if (mnt->mnt.mnt_sb->s_iflags & SB_I_NOEXEC)
+ 			mnt_flags &= ~(MNT_LOCK_NOSUID | MNT_LOCK_NOEXEC);
++		if (current_user_ns() != &init_user_ns &&
++		    !(mnt->mnt.mnt_sb->s_type->fs_flags & FS_USERNS_DEV_MOUNT))
++			mnt_flags &= ~(MNT_LOCK_NODEV);
+ 
+ 		/* Verify the mount flags are equal to or more permissive
+ 		 * than the proposed new mount.
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 6242e9629fe6..4a60e76f86ac 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1527,6 +1527,7 @@ extern void dentry_unhash(struct dentry *dentry);
+  */
+ extern void inode_init_owner(struct inode *inode, const struct inode *dir,
+ 			umode_t mode);
++extern bool may_open_dev(const struct path *path);
+ /*
+  * VFS FS_IOC_FIEMAP helper definitions.
+  */
+-- 
+1.9.1
