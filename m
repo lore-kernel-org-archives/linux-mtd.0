@@ -1,16 +1,24 @@
-Received: from mail-ob0-x231.google.com ([2607:f8b0:4003:c01::231])
+Received: from mail-io0-f177.google.com ([209.85.223.177])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOtC3-0007WT-Uk
- for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 19:57:13 +0000
-Received: by obbfr1 with SMTP id fr1so95291510obb.1
- for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 12:56:50 -0700 (PDT)
-MIME-Version: 1.0
-Date: Mon, 10 Aug 2015 20:56:50 +0100
-Message-ID: <CAPcvp5GZi0gV=J2Zbz_Sp+NmZNKnA38JAsYtbuNiwsq84yMDfg@mail.gmail.com>
-Subject: [RFC] mtd: ubi: UBI Encryption
-From: Andrew Murray <amurray@embedded-bits.co.uk>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+ id 1ZOuGe-0001cw-7S
+ for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 21:06:01 +0000
+Received: by iodb91 with SMTP id b91so122857410iod.1
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 14:05:36 -0700 (PDT)
+From: Seth Forshee <seth.forshee@canonical.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
+ selinux@tycho.nsa.gov
+Cc: Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
+ Seth Forshee <seth.forshee@canonical.com>,
+ John Johansen <john.johansen@canonical.com>,
+ Kentaro Takeda <takedakn@nttdata.co.jp>,
+ Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+ James Morris <james.l.morris@oracle.com>, Kees Cook <keescook@chromium.org>
+Subject: [PATCH v2 0/7] Initial support for user namespace owned mounts
+Date: Mon, 10 Aug 2015 16:05:11 -0500
+Message-Id: <1439240719-46850-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,75 +28,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We've recently implemented support for encryption within UBI for one of our
-customers and now wish to use this experience to provide a suitable solution
-for the community.
+This series adds support for the idea of superblocks owned by
+unprivileged user namespaces. This is initially used to simplify the
+MNT_NODEV handling for unpivileged mounts, and the ultimate goal is to
+allow mounting of additional filesystem types from unprivileged
+containers. As such these are the first in a larger set of patches, with
+the full series (so far) available at:
 
-Our current implementation works on real hardware and the latest linux-mtd
-kernel - however there are many issues that in my opinion make it unsuitable
-for the wider community. I'm keen to address these issues with feedback from
-linux-mtd such that we can get this in good shape. I'm happy to share the
-current implementation if it helps form the basis of a discussion that will
-address the general issues of adding encryption to UBI. (The diffstat for the
-current implementation is about 407 insertions).
+  git://kernel.ubuntu.com/sforshee/linux.git userns-mounts
 
-In summary:
+The strategy for the series as a whole is to do as much of the heavy
+lifting as possible in the vfs to avoid the need to handle any weird
+edge cases in the code for individual filesystems. These patches lay the
+initial groundwork and fall into a two broad groups:
 
- - The approach I've taken is to intercept data between UBI and MTD (e.g.
-   mtd_read, mtd_write etc) and encrypt/decrypt it with the kernel crypto
-   framework (e.g. crypto_*). This is good because it de-couples encryption
-   from the rest of UBI, reduces/isolates complexity and ensures that everything
-   is indiscriminately encrypted. Though there may be a more obvious place to do
-   this.
+ 1. Patches 1-2 add s_ser_ns and simplify MNT_NODEV handling.
 
- - This approach is also bad because it breaks an assumption that UBI and UBIFS
-   make (as well as any other UBI users) that data returned from the MTD layer
-   containing 'all bits set' is erased flash. The same is also true for writing
-   data - for example when filling space with 0xFFs. Where we intercept and
-   encrypt/decrypt the 'all bits set' data we break the assumption because
-   we've turned it to garbage.
+ 2. Patches 3-7 tighten down security for mounts with s_user_ns !=
+    &init_user_ns. This includes updates to how file caps and suid are
+    handled and updates for SELinux and Smack to avoid using security
+    labels from untrusted mounts.
 
- - My work around for this erased flash issue was to conditionally
-   encrypt/decrypt only when the input data is not 'all bits set'. This had
-   minimal impact on UBI/UBIFS/etc but it is possible (though very unlikely)
-   that the output of an encryption algorithm is 'all bits set' - Thus when you
-   later attempt to decrypt the 'all bits set' cipher text we incorrectly treat
-   it as erased flash so return it verbatim and thus cause corruption. I've not
-   seen this issue occur despite reading and writing more than 50GB of data.
+Note that no updates are included for the LSMs which do not store
+security labels on disk. As far as I can tell these security modules are
+not susceptible to attack via unprivileged mounts because no security
+metadata can be injected into the system via these mounts. I have cc-ed
+the maintainers of these LSMs and would appreciate confirmation that
+this is the case.
 
- - A better solution may be to correctly fix up the callers to the
-   'interception' layer such that they can choose to read raw or with
-   encryption. An example of where this would be needed is in 'torture_peb' -
-   after an erase the fuction reads back the flash to see if its 'all
-bits set'. This
-   seems like the right approach to me.
+Also note that this only addresses security at the vfs level. As has
+been discussed previously, individual filesystems may still be
+vulnerable to attacks via maliciuos metadata in the backing store. The
+goal is to find a small set of filesystems that can be hardened against
+attacks from below. At minimum fuse has been designed to resist such
+attacks.
 
- - I have implemented the 'better solution' and it appears to work - however
-   modifications are then needed to UBIFS in order for that to work. For example
-   when mounting UBIFS on empty flash it will scan and fail to find
-   UBIFS_NODE_MAGIC headers (as expected) - it will then determine that the
-   start scan wasn't empty space (as the 0xFFs have been decrypted into garbage)
-   and return an error. I believe this is the only issue I found with UBIFS.
-   (Of course another way to solve this would be to encrypt empty space - but
-   this would increase wear as the empty space (decrypted to 0xFFs) wouldn't
-   actually be erased flash thus requiring an additional erase prior to writing
-   data.).
+Changes since v1:
+ - Check current_user_ns instead of mount ns owner for MNT_LOCK_NODEV
+   check in fs_fully_visible.
+ - Add check of s_user_ns in mnt_may_suid.
+ - Improve handling of superblocks from unprivileged users in SELinux
+   and Smack.
+ - Add permission checks for block device paths passed to mount by
+   unprivileged users.
 
- - The current implementation  encrypts with cbc(aes) across fixed sized
-   units of hdrs_min_io_size - it also uses an IV based on the physcial offset
-   of the block and user provided IV. The key/IV is read from a fixed location
-   in flash. I'm not sure of the best way to manage/locate keys - this is
-   clearly a hack.
+Andy Lutomirski (1):
+  fs: Treat foreign mounts as nosuid
 
- - Encryption in UBI was preferred as it removed the complexity from userspace,
-   though I suppose there is no reason why this can't be done within the MTD
-   layer rather than in UBI and thus benefit all MTD users.
+Eric W. Biederman (1):
+  userns: Simpilify MNT_NODEV handling.
 
-I'm keen to hear any feedback regarding the approaches I've mentioned and to
-hear if anyone else working in this area. I'm also keen to hear if
-this is wanted
-or if this is a bad idea. I accept this isn't trivial undertaking.
+Seth Forshee (5):
+  fs: Add user namesapace member to struct super_block
+  fs: Verify access of user towards block device file when mounting
+  fs: Limit file caps to the user namespace of the super block
+  Smack: Add support for unprivileged mounts from user namespaces
+  selinux: Add support for unprivileged mounts from user namespaces
 
-Thanks,
-
-Andrew Murray
+ drivers/mtd/mtdsuper.c         |  7 +++++-
+ fs/block_dev.c                 | 54 +++++++++++++++++++++++++++++++++---------
+ fs/exec.c                      |  2 +-
+ fs/namei.c                     |  9 ++++++-
+ fs/namespace.c                 | 34 +++++++++++++++-----------
+ fs/proc/root.c                 |  3 ++-
+ fs/super.c                     | 38 +++++++++++++++++++++++++----
+ include/linux/fs.h             | 11 ++++++++-
+ include/linux/mount.h          |  1 +
+ include/linux/user_namespace.h |  8 +++++++
+ kernel/user_namespace.c        | 14 +++++++++++
+ security/commoncap.c           |  4 +++-
+ security/selinux/hooks.c       | 25 ++++++++++++++++++-
+ security/smack/smack.h         |  6 +++++
+ security/smack/smack_lsm.c     | 35 ++++++++++++++++++++-------
+ 15 files changed, 206 insertions(+), 45 deletions(-)
