@@ -1,21 +1,19 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOdYr-0000rt-AG
- for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 03:15:41 +0000
-Message-ID: <55C815ED.50707@cn.fujitsu.com>
-Date: Mon, 10 Aug 2015 11:09:33 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <viro@ZenIV.linux.org.uk>,
- <jack@suse.cz>, <dedekind1@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v2 26/35] ubifs: free quota inode information in
- ubifs_evict_inode
-References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-27-git-send-email-yangds.fnst@cn.fujitsu.com>
- <55C679CB.3050605@nod.at>
-In-Reply-To: <55C679CB.3050605@nod.at>
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+ id 1ZOi5G-0001Ro-MJ
+ for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 08:05:27 +0000
+Message-ID: <1439193902.26877.96.camel@gmail.com>
+Subject: Re: [PATCH v3] ubifs: make ubifs_[get|set]xattr atomic
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, richard@nod.at,
+ linux-mtd@lists.infradead.org
+Date: Mon, 10 Aug 2015 11:05:02 +0300
+In-Reply-To: <1438927640-14931-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+References: <55C444EA.7090305@cn.fujitsu.com>
+ <1438927640-14931-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,55 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/09/2015 05:51 AM, Richard Weinberger wrote:
-> Am 30.07.2015 um 07:48 schrieb Dongsheng Yang:
->> In evict, we have to call dquot_free_inode() to tell quota
->> subsystem there is one inode to be free. Please update the
->> quota information.
->>
->> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
->> ---
->>   fs/ubifs/super.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
->> index 06dd7af..20500f0 100644
->> --- a/fs/ubifs/super.c
->> +++ b/fs/ubifs/super.c
->> @@ -361,6 +361,7 @@ static void ubifs_evict_inode(struct inode *inode)
->>   	if (is_bad_inode(inode))
->>   		goto out;
->>
->> +	dquot_initialize(inode);
->>   	ui->ui_size = inode->i_size = 0;
->>   	err = ubifs_jnl_delete_inode(c, inode);
->>   	if (err)
->> @@ -370,7 +371,7 @@ static void ubifs_evict_inode(struct inode *inode)
->>   		 */
->>   		ubifs_err(c, "can't delete inode %lu, error %d",
->>   			  inode->i_ino, err);
->> -
->> +	dquot_free_inode(inode);
->>   out:
->>   	if (ui->dirty)
->>   		ubifs_release_dirty_inode_budget(c, ui);
->> @@ -380,6 +381,7 @@ out:
->>   		smp_wmb();
->>   	}
->>   done:
->> +	dquot_drop(inode);
->
-> Is it allowed to call this without a dquot_initialize()?
-> The if (inode->i_nlink) branch will hit that condition.
+Right now, AFAICS, UBIFS uses the "host" inode mutex to serialize xattr
+operations. May be the terminology is not the best, but "host" is the
+non-xattr inode (say, a file inode) which "carries" the extended
+attributes. So one "host" may have many xattrs.
 
-Yes, that's intentional. If (inode->i_nlink), we should
-just call dquot_drop(). else, we have to dquot_initialize()->
-dquot_free_inode()->dquot_drop();
+Now, obviously, locking the entire "host" to change one xattr is very
+coarse, because operations on other xattrs get blocked by operations on
+other, unrelated xattrs.
 
-Thanx
-Yang
->
-> Thanks,
-> //richard
-> .
->
+So the host inode has fields like "xattr_size" - this needs to be
+protected with the host mutex, but operations on individual xattrs may
+be protected by xattr mutexes. However, this would be a more complex
+locking scheme.
+
+
+So my point is - use the "host->ui_mutex", not the xattr's mutex,
+because this is how it is implemented now.
+
+Re-working and improving locking could be a separate piece of job.
+
+On Fri, 2015-08-07 at 14:07 +0800, Dongsheng Yang wrote:
+> This commit make the ubifs_[get|set]xattr protected by ui_mutex.
+> 
+> Originally, there is a possibility that ubifs_getxattr to get
+> a wrong value.
+> 
+>   P1                                  P2
+> ----------                  	----------
+> ubifs_getxattr                      ubifs_setxattr
+> 					- kfree()
+> - memcpy()
+> 					- kmemdup()
+> 
+
+...
+
+>  
+> +	mutex_lock(&ui->ui_mutex);
+
+Or to put it differently, you need to use 'host->ui_mutex', not 'ui
+->ui_mutex', because 'ui' is the xattr inode here.
