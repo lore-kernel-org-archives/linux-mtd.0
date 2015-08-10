@@ -1,18 +1,16 @@
-Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
+Received: from mail-ob0-x231.google.com ([2607:f8b0:4003:c01::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOsv3-0007Nj-82
- for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 19:39:38 +0000
-Received: by igbpg9 with SMTP id pg9so76625705igb.0
- for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 12:39:16 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-Subject: [PATCH] mtd: spi-nor: stop (ab)using struct spi_device_id
-Date: Mon, 10 Aug 2015 21:39:03 +0200
-Message-Id: <1439235543-2893-1-git-send-email-zajec5@gmail.com>
+ id 1ZOtC3-0007WT-Uk
+ for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 19:57:13 +0000
+Received: by obbfr1 with SMTP id fr1so95291510obb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 12:56:50 -0700 (PDT)
 MIME-Version: 1.0
+Date: Mon, 10 Aug 2015 20:56:50 +0100
+Message-ID: <CAPcvp5GZi0gV=J2Zbz_Sp+NmZNKnA38JAsYtbuNiwsq84yMDfg@mail.gmail.com>
+Subject: [RFC] mtd: ubi: UBI Encryption
+From: Andrew Murray <amurray@embedded-bits.co.uk>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,207 +20,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using struct spi_device_id for storing list of flash devices comes from
-early SPI NOR framework days. Thanks to the commit 70f3ce0510af ("mtd:
-spi-nor: make spi_nor_scan() take a chip type name, not spi_device_id")
-we can stop using spi_device_id and just switch to our own struct.
+We've recently implemented support for encryption within UBI for one of our
+customers and now wish to use this experience to provide a suitable solution
+for the community.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 62 +++++++++++++++++++------------------------
- 1 file changed, 27 insertions(+), 35 deletions(-)
+Our current implementation works on real hardware and the latest linux-mtd
+kernel - however there are many issues that in my opinion make it unsuitable
+for the wider community. I'm keen to address these issues with feedback from
+linux-mtd such that we can get this in good shape. I'm happy to share the
+current implementation if it helps form the basis of a discussion that will
+address the general issues of adding encryption to UBI. (The diffstat for the
+current implementation is about 407 insertions).
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 47516d3..04f5934 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -29,6 +29,8 @@
- #define SPI_NOR_MAX_ID_LEN	6
- 
- struct flash_info {
-+	char		*name;
-+
- 	/*
- 	 * This array stores the ID bytes.
- 	 * The first three bytes are the JEDIC ID.
-@@ -59,7 +61,7 @@ struct flash_info {
- 
- #define JEDEC_MFR(info)	((info)->id[0])
- 
--static const struct spi_device_id *spi_nor_match_id(const char *name);
-+static const struct flash_info *spi_nor_match_id(const char *name);
- 
- /*
-  * Read the status register, returning its value in the location
-@@ -169,7 +171,7 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
- }
- 
- /* Enable/disable 4-byte addressing mode. */
--static inline int set_4byte(struct spi_nor *nor, struct flash_info *info,
-+static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
- 			    int enable)
- {
- 	int status;
-@@ -469,7 +471,6 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 
- /* Used when the "_ext_id" is two bytes at most */
- #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
--	((kernel_ulong_t)&(struct flash_info) {				\
- 		.id = {							\
- 			((_jedec_id) >> 16) & 0xff,			\
- 			((_jedec_id) >> 8) & 0xff,			\
-@@ -481,11 +482,9 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 		.sector_size = (_sector_size),				\
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = 256,					\
--		.flags = (_flags),					\
--	})
-+		.flags = (_flags),
- 
- #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
--	((kernel_ulong_t)&(struct flash_info) {				\
- 		.id = {							\
- 			((_jedec_id) >> 16) & 0xff,			\
- 			((_jedec_id) >> 8) & 0xff,			\
-@@ -498,17 +497,14 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 		.sector_size = (_sector_size),				\
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = 256,					\
--		.flags = (_flags),					\
--	})
-+		.flags = (_flags),
- 
- #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_width, _flags)	\
--	((kernel_ulong_t)&(struct flash_info) {				\
- 		.sector_size = (_sector_size),				\
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = (_page_size),				\
- 		.addr_width = (_addr_width),				\
--		.flags = (_flags),					\
--	})
-+		.flags = (_flags),
- 
- /* NOTE: double check command sets and memory organization when you add
-  * more nor chips.  This current list focusses on newer chips, which
-@@ -521,7 +517,7 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-  * For historical (and compatibility) reasons (before we got above config) some
-  * old entries may be missing 4K flag.
-  */
--static const struct spi_device_id spi_nor_ids[] = {
-+static const struct flash_info spi_nor_ids[] = {
- 	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
- 	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K) },
- 	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) },
-@@ -702,11 +698,11 @@ static const struct spi_device_id spi_nor_ids[] = {
- 	{ },
- };
- 
--static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
-+static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
- {
- 	int			tmp;
- 	u8			id[SPI_NOR_MAX_ID_LEN];
--	struct flash_info	*info;
-+	const struct flash_info	*info;
- 
- 	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
- 	if (tmp < 0) {
-@@ -715,7 +711,7 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
- 	}
- 
- 	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
--		info = (void *)spi_nor_ids[tmp].driver_data;
-+		info = &spi_nor_ids[tmp];
- 		if (info->id_len) {
- 			if (!memcmp(info->id, id, info->id_len))
- 				return &spi_nor_ids[tmp];
-@@ -961,7 +957,7 @@ static int micron_quad_enable(struct spi_nor *nor)
- 	return 0;
- }
- 
--static int set_quad_mode(struct spi_nor *nor, struct flash_info *info)
-+static int set_quad_mode(struct spi_nor *nor, const struct flash_info *info)
- {
- 	int status;
- 
-@@ -1003,8 +999,7 @@ static int spi_nor_check(struct spi_nor *nor)
- 
- int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- {
--	const struct spi_device_id	*id = NULL;
--	struct flash_info		*info;
-+	const struct flash_info *info = NULL;
- 	struct device *dev = nor->dev;
- 	struct mtd_info *mtd = nor->mtd;
- 	struct device_node *np = dev->of_node;
-@@ -1016,26 +1011,24 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 		return ret;
- 
- 	if (name)
--		id = spi_nor_match_id(name);
-+		info = spi_nor_match_id(name);
- 	/* Try to auto-detect if chip name wasn't specified or not found */
--	if (!id)
--		id = spi_nor_read_id(nor);
--	if (IS_ERR_OR_NULL(id))
-+	if (!info)
-+		info = spi_nor_read_id(nor);
-+	if (IS_ERR_OR_NULL(info))
- 		return -ENOENT;
- 
--	info = (void *)id->driver_data;
--
- 	/*
- 	 * If caller has specified name of flash model that can normally be
- 	 * detected using JEDEC, let's verify it.
- 	 */
- 	if (name && info->id_len) {
--		const struct spi_device_id *jid;
-+		const struct flash_info *jinfo;
- 
--		jid = spi_nor_read_id(nor);
--		if (IS_ERR(jid)) {
--			return PTR_ERR(jid);
--		} else if (jid != id) {
-+		jinfo = spi_nor_read_id(nor);
-+		if (IS_ERR(jinfo)) {
-+			return PTR_ERR(jinfo);
-+		} else if (jinfo != info) {
- 			/*
- 			 * JEDEC knows better, so overwrite platform ID. We
- 			 * can't trust partitions any longer, but we'll let
-@@ -1044,9 +1037,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 			 * information, even if it's not 100% accurate.
- 			 */
- 			dev_warn(dev, "found %s, expected %s\n",
--				 jid->name, id->name);
--			id = jid;
--			info = (void *)jid->driver_data;
-+				 jinfo->name, info->name);
-+			info = jinfo;
- 		}
- 	}
- 
-@@ -1196,7 +1188,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 
- 	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
- 
--	dev_info(dev, "%s (%lld Kbytes)\n", id->name,
-+	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
- 			(long long)mtd->size >> 10);
- 
- 	dev_dbg(dev,
-@@ -1219,9 +1211,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- }
- EXPORT_SYMBOL_GPL(spi_nor_scan);
- 
--static const struct spi_device_id *spi_nor_match_id(const char *name)
-+static const struct flash_info *spi_nor_match_id(const char *name)
- {
--	const struct spi_device_id *id = spi_nor_ids;
-+	const struct flash_info *id = spi_nor_ids;
- 
- 	while (id->name[0]) {
- 		if (!strcmp(name, id->name))
--- 
-1.8.4.5
+In summary:
+
+ - The approach I've taken is to intercept data between UBI and MTD (e.g.
+   mtd_read, mtd_write etc) and encrypt/decrypt it with the kernel crypto
+   framework (e.g. crypto_*). This is good because it de-couples encryption
+   from the rest of UBI, reduces/isolates complexity and ensures that everything
+   is indiscriminately encrypted. Though there may be a more obvious place to do
+   this.
+
+ - This approach is also bad because it breaks an assumption that UBI and UBIFS
+   make (as well as any other UBI users) that data returned from the MTD layer
+   containing 'all bits set' is erased flash. The same is also true for writing
+   data - for example when filling space with 0xFFs. Where we intercept and
+   encrypt/decrypt the 'all bits set' data we break the assumption because
+   we've turned it to garbage.
+
+ - My work around for this erased flash issue was to conditionally
+   encrypt/decrypt only when the input data is not 'all bits set'. This had
+   minimal impact on UBI/UBIFS/etc but it is possible (though very unlikely)
+   that the output of an encryption algorithm is 'all bits set' - Thus when you
+   later attempt to decrypt the 'all bits set' cipher text we incorrectly treat
+   it as erased flash so return it verbatim and thus cause corruption. I've not
+   seen this issue occur despite reading and writing more than 50GB of data.
+
+ - A better solution may be to correctly fix up the callers to the
+   'interception' layer such that they can choose to read raw or with
+   encryption. An example of where this would be needed is in 'torture_peb' -
+   after an erase the fuction reads back the flash to see if its 'all
+bits set'. This
+   seems like the right approach to me.
+
+ - I have implemented the 'better solution' and it appears to work - however
+   modifications are then needed to UBIFS in order for that to work. For example
+   when mounting UBIFS on empty flash it will scan and fail to find
+   UBIFS_NODE_MAGIC headers (as expected) - it will then determine that the
+   start scan wasn't empty space (as the 0xFFs have been decrypted into garbage)
+   and return an error. I believe this is the only issue I found with UBIFS.
+   (Of course another way to solve this would be to encrypt empty space - but
+   this would increase wear as the empty space (decrypted to 0xFFs) wouldn't
+   actually be erased flash thus requiring an additional erase prior to writing
+   data.).
+
+ - The current implementation  encrypts with cbc(aes) across fixed sized
+   units of hdrs_min_io_size - it also uses an IV based on the physcial offset
+   of the block and user provided IV. The key/IV is read from a fixed location
+   in flash. I'm not sure of the best way to manage/locate keys - this is
+   clearly a hack.
+
+ - Encryption in UBI was preferred as it removed the complexity from userspace,
+   though I suppose there is no reason why this can't be done within the MTD
+   layer rather than in UBI and thus benefit all MTD users.
+
+I'm keen to hear any feedback regarding the approaches I've mentioned and to
+hear if anyone else working in this area. I'm also keen to hear if
+this is wanted
+or if this is a bad idea. I accept this isn't trivial undertaking.
+
+Thanks,
+
+Andrew Murray
