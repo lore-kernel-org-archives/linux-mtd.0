@@ -1,13 +1,13 @@
-Received: from mail-ig0-f171.google.com ([209.85.213.171])
- by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1ZOuGm-0001Qp-2q
- for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 21:06:08 +0000
-Received: by igfj19 with SMTP id j19so58748285igf.1
- for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 14:05:45 -0700 (PDT)
+Received: from mail-ig0-f174.google.com ([209.85.213.174])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZOuGo-0000Pt-Bn
+ for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 21:06:11 +0000
+Received: by igbpg9 with SMTP id pg9so78221783igb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 14:05:46 -0700 (PDT)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Casey Schaufler <casey@schaufler-ca.com>
+ Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore <paul@paul-moore.com>,
+ Stephen Smalley <sds@tycho.nsa.gov>, Eric Paris <eparis@parisplace.org>
 Cc: Serge Hallyn <serge.hallyn@canonical.com>,
  Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
@@ -15,10 +15,10 @@ Cc: Serge Hallyn <serge.hallyn@canonical.com>,
  Seth Forshee <seth.forshee@canonical.com>,
  James Morris <james.l.morris@oracle.com>,
  "Serge E. Hallyn" <serge@hallyn.com>
-Subject: [PATCH v2 6/7] Smack: Add support for unprivileged mounts from user
+Subject: [PATCH v2 7/7] selinux: Add support for unprivileged mounts from user
  namespaces
-Date: Mon, 10 Aug 2015 16:05:17 -0500
-Message-Id: <1439240719-46850-7-git-send-email-seth.forshee@canonical.com>
+Date: Mon, 10 Aug 2015 16:05:18 -0500
+Message-Id: <1439240719-46850-8-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1439240719-46850-1-git-send-email-seth.forshee@canonical.com>
 References: <1439240719-46850-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,133 +30,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Security labels from unprivileged mounts cannot be trusted.
-Ideally for these mounts we would assign the objects in the
-filesystem the same label as the inode for the backing device
-passed to mount. Unfortunately it's currently impossible to
-determine which inode this is from the LSM mount hooks, so we
-settle for the label of the process doing the mount.
+Security labels from unprivileged mounts in user namespaces must
+be ignored. Force superblocks from user namespaces whose labeling
+behavior is to use xattrs to use mountpoint labeling instead.
+For the mountpoint label, default to converting the current task
+context into a form suitable for file objects, but also allow the
+policy writer to specify a different label through policy
+transition rules.
 
-This label is assigned to s_root, and also to smk_default to
-ensure that new inodes receive this label. The transmute property
-is also set on s_root to make this behavior more explicit, even
-though it is technically not necessary.
-
-If a filesystem has existing security labels, access to inodes is
-permitted if the label is the same as smk_root, otherwise access
-is denied. The SMACK64EXEC xattr is completely ignored.
-
-Explicit setting of security labels continues to require
-CAP_MAC_ADMIN in init_user_ns.
-
-Altogether, this ensures that filesystem objects are not
-accessible to subjects which cannot already access the backing
-store, that MAC is not violated for any objects in the fileystem
-which are already labeled, and that a user cannot use an
-unprivileged mount to gain elevated MAC privileges.
-
-sysfs, tmpfs, and ramfs are already mountable from user
-namespaces and support security labels. We can't rule out the
-possibility that these filesystems may already be used in mounts
-from user namespaces with security lables set from the init
-namespace, so failing to trust lables in these filesystems may
-introduce regressions. It is safe to trust labels from these
-filesystems, since the unprivileged user does not control the
-backing store and thus cannot supply security labels, so an
-explicit exception is made to trust labels from these
-filesystems.
+Pieced together from code snippets provided by Stephen Smalley.
 
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 ---
- security/smack/smack.h     |  6 ++++++
- security/smack/smack_lsm.c | 35 +++++++++++++++++++++++++++--------
- 2 files changed, 33 insertions(+), 8 deletions(-)
+ security/selinux/hooks.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/security/smack/smack.h b/security/smack/smack.h
-index 244e035e5a99..473cfc355a8d 100644
---- a/security/smack/smack.h
-+++ b/security/smack/smack.h
-@@ -76,8 +76,14 @@ struct superblock_smack {
- 	struct smack_known	*smk_hat;
- 	struct smack_known	*smk_default;
- 	int			smk_initialized;
-+	int			smk_flags;
- };
- 
-+/*
-+ * Superblock flags
-+ */
-+#define SMK_SB_UNTRUSTED	0x01
-+
- struct socket_smack {
- 	struct smack_known	*smk_out;	/* outbound label */
- 	struct smack_known	*smk_in;	/* inbound label */
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index a143328f75eb..70ccc7796bee 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -662,6 +662,17 @@ static int smack_sb_kern_mount(struct super_block *sb, int flags, void *data)
- 		skp = smk_of_current();
- 		sp->smk_root = skp;
- 		sp->smk_default = skp;
-+		/*
-+		 * For a handful of fs types with no user-controlled
-+		 * backing store it's okay to trust security labels
-+		 * in the filesystem. The rest are untrusted.
-+		 */
-+		if (sb->s_user_ns != &init_user_ns &&
-+		    sb->s_magic != SYSFS_MAGIC && sb->s_magic != TMPFS_MAGIC &&
-+		    sb->s_magic != RAMFS_MAGIC) {
-+			transmute = 1;
-+			sp->smk_flags |= SMK_SB_UNTRUSTED;
-+		}
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 459e71ddbc9d..242dac0b8b24 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -745,6 +745,28 @@ static int selinux_set_mnt_opts(struct super_block *sb,
+ 			goto out;
+ 		}
  	}
- 	/*
- 	 * Initialize the root inode.
-@@ -1012,6 +1023,7 @@ static int smack_inode_rename(struct inode *old_inode,
-  */
- static int smack_inode_permission(struct inode *inode, int mask)
- {
-+	struct superblock_smack *sbsp = inode->i_sb->s_security;
- 	struct smk_audit_info ad;
- 	int no_block = mask & MAY_NOT_BLOCK;
- 	int rc;
-@@ -1023,6 +1035,11 @@ static int smack_inode_permission(struct inode *inode, int mask)
- 	if (mask == 0)
- 		return 0;
- 
-+	if (sbsp->smk_flags & SMK_SB_UNTRUSTED) {
-+		if (smk_of_inode(inode) != sbsp->smk_root)
-+			return -EACCES;
++
++	/*
++	 * If this is a user namespace mount, no contexts are allowed
++	 * on the command line and security labels must be ignored.
++	 */
++	if (sb->s_user_ns != &init_user_ns) {
++		if (context_sid || fscontext_sid || rootcontext_sid ||
++		    defcontext_sid) {
++			rc = -EACCES;
++			goto out;
++		}
++		if (sbsec->behavior == SECURITY_FS_USE_XATTR) {
++			sbsec->behavior = SECURITY_FS_USE_MNTPOINT;
++			rc = security_transition_sid(current_sid(), current_sid(),
++						     SECCLASS_FILE, NULL,
++						     &sbsec->mntpoint_sid);
++			if (rc)
++				goto out;
++		}
++		goto out_set_opts;
 +	}
 +
- 	/* May be droppable after audit */
- 	if (no_block)
- 		return -ECHILD;
-@@ -3220,14 +3237,16 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
- 			if (rc >= 0)
- 				transflag = SMK_INODE_TRANSMUTE;
- 		}
--		/*
--		 * Don't let the exec or mmap label be "*" or "@".
--		 */
--		skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
--		if (IS_ERR(skp) || skp == &smack_known_star ||
--		    skp == &smack_known_web)
--			skp = NULL;
--		isp->smk_task = skp;
-+		if (!(sbsp->smk_flags & SMK_SB_UNTRUSTED)) {
-+			/*
-+			 * Don't let the exec or mmap label be "*" or "@".
-+			 */
-+			skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
-+			if (IS_ERR(skp) || skp == &smack_known_star ||
-+			    skp == &smack_known_web)
-+				skp = NULL;
-+			isp->smk_task = skp;
-+		}
+ 	/* sets the context of the superblock for the fs being mounted. */
+ 	if (fscontext_sid) {
+ 		rc = may_context_mount_sb_relabel(fscontext_sid, sbsec, cred);
+@@ -813,6 +835,7 @@ static int selinux_set_mnt_opts(struct super_block *sb,
+ 		sbsec->def_sid = defcontext_sid;
+ 	}
  
- 		skp = smk_fetch(XATTR_NAME_SMACKMMAP, inode, dp);
- 		if (IS_ERR(skp) || skp == &smack_known_star ||
++out_set_opts:
+ 	rc = sb_finish_set_opts(sb);
+ out:
+ 	mutex_unlock(&sbsec->lock);
 -- 
 1.9.1
