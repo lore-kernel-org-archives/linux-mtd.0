@@ -1,17 +1,14 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPH5g-00026P-M6
- for linux-mtd@lists.infradead.org; Tue, 11 Aug 2015 21:28:13 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, joerg.krause@embedded.rocks,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] ubi: fastmap: Implement produce_free_peb()
-Date: Tue, 11 Aug 2015 23:27:44 +0200
-Message-Id: <1439328464-5521-1-git-send-email-richard@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Xander Huff <xander.huff@ni.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ jeff.westfahl@ni.com, jaeden.amero@ni.com, joshc@ni.com,
+ Ben Shelton <ben.shelton@ni.com>, xander.huff@ni.com
+Subject: [RESEND RESEND PATCH v2] mtd: nand_bbt: scan for next free bbt block
+ if writing bbt fails
+Date: Tue, 11 Aug 2015 16:55:22 -0500
+Message-Id: <1439330122-41912-1-git-send-email-xander.huff@ni.com>
+In-Reply-To: <1437594157-44885-1-git-send-email-xander.huff@ni.com>
+References: <1437594157-44885-1-git-send-email-xander.huff@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +18,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If fastmap requests a free PEB for a pool and UBI is busy
-with erasing PEBs we need to offer a function to wait for one.
-We can reuse produce_free_peb() from the non-fastmap WL code
-but with different locking semantics.
+From: Ben Shelton <ben.shelton@ni.com>
 
-Reported-and-tested-by: Jörg Krause <joerg.krause@embedded.rocks>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+If erasing or writing the BBT fails, we should mark the current BBT
+block as bad and use the BBT descriptor to scan for the next available
+unused block in the BBT. We should only return a failure if there isn't
+any space left.
+
+Based on original code implemented by Jeff Westfahl
+<jeff.westfahl@ni.com>.
+
+Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+Reviewed-by: Jaeden Amero <jaeden.amero@ni.com>
+Suggested-by: Jeff Westfahl <jeff.westfahl@ni.com>
+Signed-off-by: Xander Huff <xander.huff@ni.com>
 ---
-This time the correct patch with error handling.
-I need some sleep. ;-\
-
+This v2 patch is in reply to comments from Brian Norris on 7/22/13. See
+the following links for context:
+http://lists.infradead.org/pipermail/linux-mtd/2013-July/047596.html
+http://patchwork.ozlabs.org/patch/244324/
 ---
- drivers/mtd/ubi/fastmap-wl.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/mtd/nand/nand_base.c |  4 ++++
+ drivers/mtd/nand/nand_bbt.c  | 34 ++++++++++++++++++++++++++++++++--
+ include/linux/mtd/nand.h     |  7 +++++++
+ 3 files changed, 43 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index b2a6653..30d3999 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -172,6 +172,30 @@ void ubi_refill_pools(struct ubi_device *ubi)
- }
- 
- /**
-+ * produce_free_peb - produce a free physical eraseblock.
-+ * @ubi: UBI device description object
-+ *
-+ * This function tries to make a free PEB by means of synchronous execution of
-+ * pending works. This may be needed if, for example the background thread is
-+ * disabled. Returns zero in case of success and a negative error code in case
-+ * of failure.
-+ */
-+static int produce_free_peb(struct ubi_device *ubi)
-+{
-+	int err;
-+
-+	while (!ubi->free.rb_node && ubi->works_count) {
-+		dbg_wl("do one work synchronously");
-+		err = do_work(ubi);
-+
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-  * ubi_wl_get_peb - get a physical eraseblock.
-  * @ubi: UBI device description object
-  *
-@@ -213,6 +237,11 @@ again:
- 		}
- 		retried = 1;
- 		up_read(&ubi->fm_eba_sem);
-+		ret = produce_free_peb(ubi);
-+		if (ret < 0) {
-+			down_read(&ubi->fm_eba_sem);
-+			goto out;
-+		}
- 		goto again;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ceb68ca..48299dc 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2761,6 +2761,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 		pr_debug("%s: device is write protected!\n",
+ 				__func__);
+ 		instr->state = MTD_ERASE_FAILED;
++		instr->priv = NAND_ERASE_WRITE_PROTECTED;
+ 		goto erase_exit;
  	}
  
+@@ -2776,6 +2777,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
+ 				    __func__, page);
+ 			instr->state = MTD_ERASE_FAILED;
++			instr->priv = NAND_ERASE_BAD_BLOCK;
+ 			goto erase_exit;
+ 		}
+ 
+@@ -2802,6 +2804,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 			pr_debug("%s: failed erase, page 0x%08x\n",
+ 					__func__, page);
+ 			instr->state = MTD_ERASE_FAILED;
++			instr->priv = NAND_ERASE_BLOCK_ERASE_FAILED;
+ 			instr->fail_addr =
+ 				((loff_t)page << chip->page_shift);
+ 			goto erase_exit;
+@@ -2819,6 +2822,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 		}
+ 	}
+ 	instr->state = MTD_ERASE_DONE;
++	instr->priv = NAND_ERASE_OK;
+ 
+ erase_exit:
+ 
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 63a1a36..09f9e62 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -662,6 +662,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			page = td->pages[chip];
+ 			goto write;
+ 		}
++next:
+ 
+ 		/*
+ 		 * Automatic placement of the bad block table. Search direction
+@@ -787,13 +788,42 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		einfo.addr = to;
+ 		einfo.len = 1 << this->bbt_erase_shift;
+ 		res = nand_erase_nand(mtd, &einfo, 1);
+-		if (res < 0)
++		if (res == -EIO && einfo.state == MTD_ERASE_FAILED
++		    && einfo.priv == NAND_ERASE_BLOCK_ERASE_FAILED) {
++			/* This block is bad. Mark it as such and see if
++			 * there's another block available in the BBT area. */
++			int block = page >>
++				(this->bbt_erase_shift - this->page_shift);
++			pr_info("nand_bbt: failed to erase block %d when writing BBT\n",
++				block);
++			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++
++			res = this->block_markbad(mtd, block);
++			if (res)
++				pr_warn("nand_bbt: error %d while marking block %d bad\n",
++					res, block);
++			goto next;
++		} else if (res < 0)
+ 			goto outerr;
+ 
+ 		res = scan_write_bbt(mtd, to, len, buf,
+ 				td->options & NAND_BBT_NO_OOB ? NULL :
+ 				&buf[len]);
+-		if (res < 0)
++		if (res == -EIO) {
++			/* This block is bad. Mark it as such and see if
++			 * there's another block available in the BBT area. */
++			int block = page >>
++				(this->bbt_erase_shift - this->page_shift);
++			pr_info("nand_bbt: failed to erase block %d when writing BBT\n",
++				block);
++			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++
++			res = this->block_markbad(mtd, block);
++			if (res)
++				pr_warn("nand_bbt: error %d while marking block %d bad\n",
++					res, block);
++			goto next;
++		} else if (res < 0)
+ 			goto outerr;
+ 
+ 		pr_info("Bad block table written to 0x%012llx, version 0x%02X\n",
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 272f429..86e11f6 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -1030,4 +1030,11 @@ struct nand_sdr_timings {
+ 
+ /* get timing characteristics from ONFI timing mode. */
+ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
++
++/* reasons for erase failures */
++#define NAND_ERASE_OK			0
++#define NAND_ERASE_WRITE_PROTECTED	1
++#define NAND_ERASE_BAD_BLOCK		2
++#define NAND_ERASE_BLOCK_ERASE_FAILED	3
++
+ #endif /* __LINUX_MTD_NAND_H */
 -- 
-1.8.4.5
+1.9.1
