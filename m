@@ -1,20 +1,26 @@
-Received: from mga14.intel.com ([192.55.52.115])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZP97a-0001Es-7q
- for linux-mtd@lists.infradead.org; Tue, 11 Aug 2015 12:57:38 +0000
-Message-ID: <1439297835.31419.31.camel@gmail.com>
-Subject: Re: [PATCH v3] ubifs: make ubifs_[get|set]xattr atomic
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, richard@nod.at,
- linux-mtd@lists.infradead.org
-Date: Tue, 11 Aug 2015 15:57:15 +0300
-In-Reply-To: <1438927640-14931-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-References: <55C444EA.7090305@cn.fujitsu.com>
- <1438927640-14931-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZP9Z8-0007MV-2Z
+ for linux-mtd@lists.infradead.org; Tue, 11 Aug 2015 13:26:07 +0000
+Received: by wibhh20 with SMTP id hh20so195703156wib.0
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Aug 2015 06:25:43 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAPcvp5H-WLn5mdkH1VgiGO+qc77MZFFJsmBfAMRBVhK3ZbPd_A@mail.gmail.com>
+References: <CAPcvp5GZi0gV=J2Zbz_Sp+NmZNKnA38JAsYtbuNiwsq84yMDfg@mail.gmail.com>
+ <CAFLxGvx5xEPRGU3kQDUz70egsPSxF-NLzoECM=y1n1LXqX9rpA@mail.gmail.com>
+ <CAPcvp5Hc8x23VjNy4mStWBAJT5fUVXb5_i7a=iGiSv-O6ChBvg@mail.gmail.com>
+ <CAOMqctTMQUmqqZKpYpF-cZc1NygW5mmSRoQjGE+-oOYQj-4w=Q@mail.gmail.com>
+ <CAPcvp5Ft-5h22gvwHUk6=oQRx1wJkjJpQqfxJmHj855VRKFoiA@mail.gmail.com>
+ <CAOMqctRMAu1y=epkBCAH8igNUX4zEHs_9=5VRJtArK3jPZ7veg@mail.gmail.com>
+ <CAPcvp5H-WLn5mdkH1VgiGO+qc77MZFFJsmBfAMRBVhK3ZbPd_A@mail.gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Tue, 11 Aug 2015 15:24:58 +0200
+Message-ID: <CAOMqctTgL+fu6HhgJG9J6mtNu6qjiNgMnM=hq+XhznSqCg4T+w@mail.gmail.com>
+Subject: Re: [RFC] mtd: ubi: UBI Encryption
+To: Andrew Murray <amurray@embedded-bits.co.uk>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +30,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2015-08-07 at 14:07 +0800, Dongsheng Yang wrote:
-> +	mutex_lock(&ui->ui_mutex);
->  	kfree(ui->data);
->  	ui->data = kmemdup(value, size, GFP_NOFS);
->  	if (!ui->data) {
-> +		mutex_unlock(&ui->ui_mutex);
->  		err = -ENOMEM;
->  		goto out_free;
->  	}
->  	inode->i_size = ui->ui_size = size;
->  	ui->data_len = size;
-> +	mutex_unlock(&ui->ui_mutex);
+On 11 August 2015 at 14:40, Andrew Murray <amurray@embedded-bits.co.uk> wrote:
+> On 11 August 2015 at 12:39, Michal Suchanek <hramrach@gmail.com> wrote:
+>> On 11 August 2015 at 13:03, Andrew Murray <amurray@embedded-bits.co.uk> wrote:
+>>> On 11 August 2015 at 11:23, Michal Suchanek <hramrach@gmail.com> wrote:
+>>>>
+>>>> On 11 August 2015 at 11:47, Andrew Murray <amurray@embedded-bits.co.uk> wrote:
+>>>> > On 11 August 2015 at 07:30, Richard Weinberger
+>>>> > <richard.weinberger@gmail.com> wrote:
+>>>> >> On Mon, Aug 10, 2015 at 9:56 PM, Andrew Murray
+>>>> >> <amurray@embedded-bits.co.uk> wrote:
+>>>>
+>>>> >>
+>>>> >>>  - Encryption in UBI was preferred as it removed the complexity from userspace,
+>>>> >>>    though I suppose there is no reason why this can't be done within the MTD
+>>>> >>>    layer rather than in UBI and thus benefit all MTD users.
+>>>> >>
+>>>> >> I'm not sure if UBI is the right layer for that. I'd do it in MTD to
+>>>> >> have a dm_crypt like
+>>>> >> MTD driver. At best it will be compatible with dm_crypt's userspace tools.
+>>>> >
+>>>> > I've not investigated this - but it seems plausible. My 'interception'
+>>>> > layer works immediately above the MTD layer (i.e. the patchset looks a
+>>>> > bit like this):
+>>>> >
+>>>> > -       err = mtd_write(ubi->mtd, addr, len, &written, buf);
+>>>> > +       err = mtd_crypt_write(ubi, addr, len, &written, buf);
+>>>> >
+>>>> > Thus this code could just as easily exist on the other size of mtd_*.
+>>>> >
+>>>> > However this still leaves the issue of assumptions all over the place
+>>>> > that 0xFF == erased flash. Is it best to risk the collision that
+>>>> > crypto output could generate all 0xFFs - or is it best to overcome the
+>>>> > assumptions by fixing them up as an initial stage? I suspect the later
+>>>> > - besides helping the encryption problem it also means you aren't
+>>>> > relying on the content of the flash to determine its state (I wonder
+>>>> > if this could also be used to solve other issues where its difficult
+>>>> > to tell if flash is erased - e.g. inverted ECCs?).
+>>>>
+>>>> It's probably good idea to treat empty blocks as truly empty and only
+>>>> encrypt data blocks.
+>>>
+>>>
+>>> In some sense this is what I already have. My encryption hooks exist
+>>> just above the MTD layer and only get used if UBI attempts to write
+>>> data to MTD. One of my implementations doesn't encrypt data from UBI
+>>> if it contains all 0xFFs. (Of course the problem is reading those
+>>> 0xFFs back from flash and determining if its empty data or encrypted
+>>> data).
+>>
+>> Then that's wrong. The data is all 1 and the encrypted data should be
+>> not.
+>
+> For clarify I've tried two approaches:
+>
+> 1) An implementation where encryption is provided unconditionally,
+> thus all 1's become something other than all 1's
+>
+> 2) An implementation where encryption is conditional based on the
+> data. If the plain text is all 1's then I do not encrypt.
+>
+> I stuck with implementation 2) as it was less invasive. In order to
+> support implementation 2) (which also works), I needed to modify much
+> more code including UBIFS. This was needed as approach 2) breaks the
+> assumption that all 1's is empty flash - this is the case because when
+> reading and decrypting, all 1's becomes garbage - this breaks lots.
+> For example torture_peb erases flash and reads it back to ensure it
+> was erased - with encryption this test fails as the erased flash is
+> decrypted and becomes garbage.
+>
+> I feel that the second approach is the correct one, I'm sensing you also agree?
 
+Yes, it sounds correct. Unfortunately, it seems it needs to straighten
+a wart of UBIFS.
 
-Just one note - should kmemdup() be called outside of the critical
-section, to make is shorter (memory allocation is a potentially slow
-operation)?
+>
+>>
+>> If the FTL says it's a datablock it's a datablock.
+>>
+>> If all blocks are empty you should format that flash.
+>>
+>> Flash with FTL structure has non-empty blocks that contain the FTL data.
+>
+> Can you clarify what FTL is? Are you referring to a data structure
+> devised by the software layers that is stored on flash, a flash
+> translation layer or something in hardware?
 
-Something like:
+Flash translation layer - something that deals accounting of used and
+unused blocks, erase counts, wear levelling, etc. It can be in
+software like with MTD in kernel or in hardware like on SD cards. It
+needs some bookkeeping on the raw flash medium to know which blocks
+are used and keep the erase counters, etc.
 
-buf = kmemdup()
-mutex_lock()
-kfree(ui->data)
-ui->data = buf
-mutex_unlock()
+>
+>>
+>>>
+>>>>
+>>>> It is also possible to write all 1s to
+>>>> unencrypted ubifs block and the filesystem should handle it. The block
+>>>> will technically remain empty but it can be interpreted as data. If
+>>>> this does not work properly for non-encrypted flash it should be fixed
+>>>> I guess.
+>>>
+>>>
+>>> Yes this is what I do, if data is provided to UBI containing all 1s, I
+>>> write it to flash as all 1s. Upon reading it back I also return it to
+>>> UBI without modification. UBIFS expects this - and attempting to mount
+>>> UBIFS on a empty UBI volume will otherwise fail unless I do this (as
+>>> UBIFS makes the assumption that all 1s is empty flash).
+>>>
+>>> I'm slightly uncomfortable that UBIFS makes this assumption, it seems
+>>> to be present as a very sensible sanity check - but it ties back in
+>>> the characteristics of flash back into a layer that should be
+>>> abstracted away from it.
+>>
+>> Ubifs deals directly with physical flash erase blocks so it cannot
+>> possibly be abstracted from it.
+>
+> I thought the purpose of UBI was to abstract the horribleness of flash
+> from its users. Such that filesystems could care about filesystem
+> related things rather than working around bad blocks and the other
+> nasties of flash.
+>
+> UBIFS deals with logical erase blocks doesn't it? It doesn't need to
+> worry about erasing flash before using it, etc. So why should UBIFS
+> need to understand that all 1's is empty flash?
 
-Artem.
+If it's supposed to be abstracetd then the abstraction leaks here.
+
+If it dealt with logical blocks it could not enumerate the physical
+blocks of the volume and ascertain all of them are all 1s
+
+Actually it seems that this is indeed supposed to be tracked by UBI
+and the UBIFS driver is just tied way too tightly to it.
+
+Thanks
+
+Michal
