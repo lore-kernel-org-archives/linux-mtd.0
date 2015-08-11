@@ -1,20 +1,18 @@
-Received: from mail-ob0-x22f.google.com ([2607:f8b0:4003:c01::22f])
+Received: from mail-oi0-x230.google.com ([2607:f8b0:4003:c06::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZP2xz-0004HU-8l
- for linux-mtd@lists.infradead.org; Tue, 11 Aug 2015 06:23:20 +0000
-Received: by obnw1 with SMTP id w1so140892765obn.3
- for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 23:22:57 -0700 (PDT)
+ id 1ZP35I-0007M4-0y
+ for linux-mtd@lists.infradead.org; Tue, 11 Aug 2015 06:30:52 +0000
+Received: by oip136 with SMTP id 136so98267571oip.1
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 23:30:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <55C98A3B.3010405@exertus.fi>
+In-Reply-To: <CAPcvp5GZi0gV=J2Zbz_Sp+NmZNKnA38JAsYtbuNiwsq84yMDfg@mail.gmail.com>
 References: <CAPcvp5GZi0gV=J2Zbz_Sp+NmZNKnA38JAsYtbuNiwsq84yMDfg@mail.gmail.com>
- <55C98A3B.3010405@exertus.fi>
-Date: Tue, 11 Aug 2015 08:22:57 +0200
-Message-ID: <CAFLxGvxQnd+QJUFoqPrDWOf4HJS0nKeBZ20WoPnwumjO5Kv-GA@mail.gmail.com>
+Date: Tue, 11 Aug 2015 08:30:30 +0200
+Message-ID: <CAFLxGvx5xEPRGU3kQDUz70egsPSxF-NLzoECM=y1n1LXqX9rpA@mail.gmail.com>
 Subject: Re: [RFC] mtd: ubi: UBI Encryption
 From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Timo Ketola <Timo.Ketola@exertus.fi>
-Cc: Andrew Murray <amurray@embedded-bits.co.uk>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Andrew Murray <amurray@embedded-bits.co.uk>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,45 +23,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 11, 2015 at 7:38 AM, Timo Ketola <Timo.Ketola@exertus.fi> wrote:
-> Hi,
+On Mon, Aug 10, 2015 at 9:56 PM, Andrew Murray
+<amurray@embedded-bits.co.uk> wrote:
+> We've recently implemented support for encryption within UBI for one of our
+> customers and now wish to use this experience to provide a suitable solution
+> for the community.
 >
-> I have been lurking in this list for a long time and this is my first
-> post here. I decided to write because I think I have yet another idea
-> for this one:
+> Our current implementation works on real hardware and the latest linux-mtd
+> kernel - however there are many issues that in my opinion make it unsuitable
+> for the wider community. I'm keen to address these issues with feedback from
+> linux-mtd such that we can get this in good shape. I'm happy to share the
+> current implementation if it helps form the basis of a discussion that will
+> address the general issues of adding encryption to UBI. (The diffstat for the
+> current implementation is about 407 insertions).
 >
-> On 10.08.2015 22:56, Andrew Murray wrote:
->> ...
->>  - My work around for this erased flash issue was to conditionally
->>    encrypt/decrypt only when the input data is not 'all bits set'. This had
->>    minimal impact on UBI/UBIFS/etc but it is possible (though very unlikely)
->>    that the output of an encryption algorithm is 'all bits set' - Thus when you
->>    later attempt to decrypt the 'all bits set' cipher text we incorrectly treat
->>    it as erased flash so return it verbatim and thus cause corruption. I've not
->>    seen this issue occur despite reading and writing more than 50GB of data.
->> ...
+> In summary:
 >
-> Why not postprocess the data so that the encrypted FF becomes FF again
-> like this:
+>  - The approach I've taken is to intercept data between UBI and MTD (e.g.
+>    mtd_read, mtd_write etc) and encrypt/decrypt it with the kernel crypto
+>    framework (e.g. crypto_*). This is good because it de-couples encryption
+>    from the rest of UBI, reduces/isolates complexity and ensures that everything
+>    is indiscriminately encrypted. Though there may be a more obvious place to do
+>    this.
 >
-> Lets say clear text data is I, encrypted data is O, encryption function
-> is e() and decryption function is d(). Then, what is normally done, is
-> of course:
+>  - This approach is also bad because it breaks an assumption that UBI and UBIFS
+>    make (as well as any other UBI users) that data returned from the MTD layer
+>    containing 'all bits set' is erased flash. The same is also true for writing
+>    data - for example when filling space with 0xFFs. Where we intercept and
+>    encrypt/decrypt the 'all bits set' data we break the assumption because
+>    we've turned it to garbage.
 >
-> Write: O = e(I)
-> Read: I = d(O)
+>  - My work around for this erased flash issue was to conditionally
+>    encrypt/decrypt only when the input data is not 'all bits set'. This had
+>    minimal impact on UBI/UBIFS/etc but it is possible (though very unlikely)
+>    that the output of an encryption algorithm is 'all bits set' - Thus when you
+>    later attempt to decrypt the 'all bits set' cipher text we incorrectly treat
+>    it as erased flash so return it verbatim and thus cause corruption. I've not
+>    seen this issue occur despite reading and writing more than 50GB of data.
 >
-> Calculate F = ~e(FF), where F is encrypted and inverted version of 'all
-> bits set' (FF) data, and modify writing and reading:
+>  - A better solution may be to correctly fix up the callers to the
+>    'interception' layer such that they can choose to read raw or with
+>    encryption. An example of where this would be needed is in 'torture_peb' -
+>    after an erase the fuction reads back the flash to see if its 'all
+> bits set'. This
+>    seems like the right approach to me.
 >
-> Write: O = e(I) ^ F
-> Read: I = d(O ^ F)
+>  - I have implemented the 'better solution' and it appears to work - however
+>    modifications are then needed to UBIFS in order for that to work. For example
+>    when mounting UBIFS on empty flash it will scan and fail to find
+>    UBIFS_NODE_MAGIC headers (as expected) - it will then determine that the
+>    start scan wasn't empty space (as the 0xFFs have been decrypted into garbage)
+>    and return an error. I believe this is the only issue I found with UBIFS.
+>    (Of course another way to solve this would be to encrypt empty space - but
+>    this would increase wear as the empty space (decrypted to 0xFFs) wouldn't
+>    actually be erased flash thus requiring an additional erase prior to writing
+>    data.).
 >
-> Now encrypting FF input results in FF output and vice versa.
->
-> Just wanted to introduce an idea.
+>  - The current implementation  encrypts with cbc(aes) across fixed sized
+>    units of hdrs_min_io_size - it also uses an IV based on the physcial offset
+>    of the block and user provided IV. The key/IV is read from a fixed location
+>    in flash. I'm not sure of the best way to manage/locate keys - this is
+>    clearly a hack.
 
-But wouldn't that only work for ECB cipher mode?
+Hm, what do you mean by "read from a fixed location in flash"?
+Did you change the UBI on-flash format to store new meta data?
+
+How do you chain the encrypted blocks? You have to deal with bad blocks.
+IOW if you lose a block it should only affect encrypted data with in
+the same block.
+
+>  - Encryption in UBI was preferred as it removed the complexity from userspace,
+>    though I suppose there is no reason why this can't be done within the MTD
+>    layer rather than in UBI and thus benefit all MTD users.
+
+I'm not sure if UBI is the right layer for that. I'd do it in MTD to
+have a dm_crypt like
+MTD driver. At best it will be compatible with dm_crypt's userspace tools.
 
 -- 
 Thanks,
