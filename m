@@ -1,26 +1,16 @@
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from mail-io0-x231.google.com ([2607:f8b0:4001:c06::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZP9Z8-0007MV-2Z
- for linux-mtd@lists.infradead.org; Tue, 11 Aug 2015 13:26:07 +0000
-Received: by wibhh20 with SMTP id hh20so195703156wib.0
- for <linux-mtd@lists.infradead.org>; Tue, 11 Aug 2015 06:25:43 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAPcvp5H-WLn5mdkH1VgiGO+qc77MZFFJsmBfAMRBVhK3ZbPd_A@mail.gmail.com>
-References: <CAPcvp5GZi0gV=J2Zbz_Sp+NmZNKnA38JAsYtbuNiwsq84yMDfg@mail.gmail.com>
- <CAFLxGvx5xEPRGU3kQDUz70egsPSxF-NLzoECM=y1n1LXqX9rpA@mail.gmail.com>
- <CAPcvp5Hc8x23VjNy4mStWBAJT5fUVXb5_i7a=iGiSv-O6ChBvg@mail.gmail.com>
- <CAOMqctTMQUmqqZKpYpF-cZc1NygW5mmSRoQjGE+-oOYQj-4w=Q@mail.gmail.com>
- <CAPcvp5Ft-5h22gvwHUk6=oQRx1wJkjJpQqfxJmHj855VRKFoiA@mail.gmail.com>
- <CAOMqctRMAu1y=epkBCAH8igNUX4zEHs_9=5VRJtArK3jPZ7veg@mail.gmail.com>
- <CAPcvp5H-WLn5mdkH1VgiGO+qc77MZFFJsmBfAMRBVhK3ZbPd_A@mail.gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Tue, 11 Aug 2015 15:24:58 +0200
-Message-ID: <CAOMqctTgL+fu6HhgJG9J6mtNu6qjiNgMnM=hq+XhznSqCg4T+w@mail.gmail.com>
-Subject: Re: [RFC] mtd: ubi: UBI Encryption
-To: Andrew Murray <amurray@embedded-bits.co.uk>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+ id 1ZPCEA-0005aW-49
+ for linux-mtd@lists.infradead.org; Tue, 11 Aug 2015 16:16:38 +0000
+Received: by iods203 with SMTP id s203so10409211iod.0
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Aug 2015 09:16:17 -0700 (PDT)
+From: Abhilash Jindal <klock.android@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ Abhilash Jindal <klock.android@gmail.com>
+Subject: [PATCH] mtd: tests: Use boottime
+Date: Tue, 11 Aug 2015 12:16:14 -0400
+Message-Id: <1439309774-12539-1-git-send-email-klock.android@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,140 +20,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11 August 2015 at 14:40, Andrew Murray <amurray@embedded-bits.co.uk> wrote:
-> On 11 August 2015 at 12:39, Michal Suchanek <hramrach@gmail.com> wrote:
->> On 11 August 2015 at 13:03, Andrew Murray <amurray@embedded-bits.co.uk> wrote:
->>> On 11 August 2015 at 11:23, Michal Suchanek <hramrach@gmail.com> wrote:
->>>>
->>>> On 11 August 2015 at 11:47, Andrew Murray <amurray@embedded-bits.co.uk> wrote:
->>>> > On 11 August 2015 at 07:30, Richard Weinberger
->>>> > <richard.weinberger@gmail.com> wrote:
->>>> >> On Mon, Aug 10, 2015 at 9:56 PM, Andrew Murray
->>>> >> <amurray@embedded-bits.co.uk> wrote:
->>>>
->>>> >>
->>>> >>>  - Encryption in UBI was preferred as it removed the complexity from userspace,
->>>> >>>    though I suppose there is no reason why this can't be done within the MTD
->>>> >>>    layer rather than in UBI and thus benefit all MTD users.
->>>> >>
->>>> >> I'm not sure if UBI is the right layer for that. I'd do it in MTD to
->>>> >> have a dm_crypt like
->>>> >> MTD driver. At best it will be compatible with dm_crypt's userspace tools.
->>>> >
->>>> > I've not investigated this - but it seems plausible. My 'interception'
->>>> > layer works immediately above the MTD layer (i.e. the patchset looks a
->>>> > bit like this):
->>>> >
->>>> > -       err = mtd_write(ubi->mtd, addr, len, &written, buf);
->>>> > +       err = mtd_crypt_write(ubi, addr, len, &written, buf);
->>>> >
->>>> > Thus this code could just as easily exist on the other size of mtd_*.
->>>> >
->>>> > However this still leaves the issue of assumptions all over the place
->>>> > that 0xFF == erased flash. Is it best to risk the collision that
->>>> > crypto output could generate all 0xFFs - or is it best to overcome the
->>>> > assumptions by fixing them up as an initial stage? I suspect the later
->>>> > - besides helping the encryption problem it also means you aren't
->>>> > relying on the content of the flash to determine its state (I wonder
->>>> > if this could also be used to solve other issues where its difficult
->>>> > to tell if flash is erased - e.g. inverted ECCs?).
->>>>
->>>> It's probably good idea to treat empty blocks as truly empty and only
->>>> encrypt data blocks.
->>>
->>>
->>> In some sense this is what I already have. My encryption hooks exist
->>> just above the MTD layer and only get used if UBI attempts to write
->>> data to MTD. One of my implementations doesn't encrypt data from UBI
->>> if it contains all 0xFFs. (Of course the problem is reading those
->>> 0xFFs back from flash and determining if its empty data or encrypted
->>> data).
->>
->> Then that's wrong. The data is all 1 and the encrypted data should be
->> not.
->
-> For clarify I've tried two approaches:
->
-> 1) An implementation where encryption is provided unconditionally,
-> thus all 1's become something other than all 1's
->
-> 2) An implementation where encryption is conditional based on the
-> data. If the plain text is all 1's then I do not encrypt.
->
-> I stuck with implementation 2) as it was less invasive. In order to
-> support implementation 2) (which also works), I needed to modify much
-> more code including UBIFS. This was needed as approach 2) breaks the
-> assumption that all 1's is empty flash - this is the case because when
-> reading and decrypting, all 1's becomes garbage - this breaks lots.
-> For example torture_peb erases flash and reads it back to ensure it
-> was erased - with encryption this test fails as the erased flash is
-> decrypted and becomes garbage.
->
-> I feel that the second approach is the correct one, I'm sensing you also agree?
+Wall time obtained from do_gettimeofday is susceptible to sudden jumps due to
+user setting the time or due to NTP.  Boot time is constantly increasing time
+better suited for comparing two timestamps.
 
-Yes, it sounds correct. Unfortunately, it seems it needs to straighten
-a wart of UBIFS.
+Signed-off-by: Abhilash Jindal <klock.android@gmail.com>
+---
+ drivers/mtd/tests/speedtest.c   |    9 ++++-----
+ drivers/mtd/tests/torturetest.c |    9 ++++-----
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
->
->>
->> If the FTL says it's a datablock it's a datablock.
->>
->> If all blocks are empty you should format that flash.
->>
->> Flash with FTL structure has non-empty blocks that contain the FTL data.
->
-> Can you clarify what FTL is? Are you referring to a data structure
-> devised by the software layers that is stored on flash, a flash
-> translation layer or something in hardware?
-
-Flash translation layer - something that deals accounting of used and
-unused blocks, erase counts, wear levelling, etc. It can be in
-software like with MTD in kernel or in hardware like on SD cards. It
-needs some bookkeeping on the raw flash medium to know which blocks
-are used and keep the erase counters, etc.
-
->
->>
->>>
->>>>
->>>> It is also possible to write all 1s to
->>>> unencrypted ubifs block and the filesystem should handle it. The block
->>>> will technically remain empty but it can be interpreted as data. If
->>>> this does not work properly for non-encrypted flash it should be fixed
->>>> I guess.
->>>
->>>
->>> Yes this is what I do, if data is provided to UBI containing all 1s, I
->>> write it to flash as all 1s. Upon reading it back I also return it to
->>> UBI without modification. UBIFS expects this - and attempting to mount
->>> UBIFS on a empty UBI volume will otherwise fail unless I do this (as
->>> UBIFS makes the assumption that all 1s is empty flash).
->>>
->>> I'm slightly uncomfortable that UBIFS makes this assumption, it seems
->>> to be present as a very sensible sanity check - but it ties back in
->>> the characteristics of flash back into a layer that should be
->>> abstracted away from it.
->>
->> Ubifs deals directly with physical flash erase blocks so it cannot
->> possibly be abstracted from it.
->
-> I thought the purpose of UBI was to abstract the horribleness of flash
-> from its users. Such that filesystems could care about filesystem
-> related things rather than working around bad blocks and the other
-> nasties of flash.
->
-> UBIFS deals with logical erase blocks doesn't it? It doesn't need to
-> worry about erasing flash before using it, etc. So why should UBIFS
-> need to understand that all 1's is empty flash?
-
-If it's supposed to be abstracetd then the abstraction leaks here.
-
-If it dealt with logical blocks it could not enumerate the physical
-blocks of the volume and ascertain all of them are all 1s
-
-Actually it seems that this is indeed supposed to be tracked by UBI
-and the UBIFS driver is just tied way too tightly to it.
-
-Thanks
-
-Michal
+diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
+index 5a6f31a..854b707 100644
+--- a/drivers/mtd/tests/speedtest.c
++++ b/drivers/mtd/tests/speedtest.c
+@@ -49,7 +49,7 @@ static int pgsize;
+ static int ebcnt;
+ static int pgcnt;
+ static int goodebcnt;
+-static struct timeval start, finish;
++static ktime_t start, finish;
+ 
+ static int multiblock_erase(int ebnum, int blocks)
+ {
+@@ -168,12 +168,12 @@ static int read_eraseblock_by_2pages(int ebnum)
+ 
+ static inline void start_timing(void)
+ {
+-	do_gettimeofday(&start);
++	start = ktime_get_boottime();
+ }
+ 
+ static inline void stop_timing(void)
+ {
+-	do_gettimeofday(&finish);
++	finish = ktime_get_boottime();
+ }
+ 
+ static long calc_speed(void)
+@@ -181,8 +181,7 @@ static long calc_speed(void)
+ 	uint64_t k;
+ 	long ms;
+ 
+-	ms = (finish.tv_sec - start.tv_sec) * 1000 +
+-	     (finish.tv_usec - start.tv_usec) / 1000;
++	ms = ktime_to_ms(ktime_sub(finish, start));
+ 	if (ms == 0)
+ 		return 0;
+ 	k = (uint64_t)goodebcnt * (mtd->erasesize / 1024) * 1000;
+diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
+index e5d6e6d..228023a 100644
+--- a/drivers/mtd/tests/torturetest.c
++++ b/drivers/mtd/tests/torturetest.c
+@@ -79,18 +79,18 @@ static unsigned char *check_buf;
+ static unsigned int erase_cycles;
+ 
+ static int pgsize;
+-static struct timeval start, finish;
++static ktime_t start, finish;
+ 
+ static void report_corrupt(unsigned char *read, unsigned char *written);
+ 
+ static inline void start_timing(void)
+ {
+-	do_gettimeofday(&start);
++	start = ktime_get_boottime();
+ }
+ 
+ static inline void stop_timing(void)
+ {
+-	do_gettimeofday(&finish);
++	finish = ktime_get_boottime();
+ }
+ 
+ /*
+@@ -333,8 +333,7 @@ static int __init tort_init(void)
+ 			long ms;
+ 
+ 			stop_timing();
+-			ms = (finish.tv_sec - start.tv_sec) * 1000 +
+-			     (finish.tv_usec - start.tv_usec) / 1000;
++			ms = ktime_to_ms(ktime_sub(finish, start));
+ 			pr_info("%08u erase cycles done, took %lu "
+ 			       "milliseconds (%lu seconds)\n",
+ 			       erase_cycles, ms, ms / 1000);
+-- 
+1.7.9.5
