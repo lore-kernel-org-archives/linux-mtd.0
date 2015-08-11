@@ -1,25 +1,19 @@
-Received: from mail-ig0-f171.google.com ([209.85.213.171])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOuGj-0000Pp-QB
- for linux-mtd@lists.infradead.org; Mon, 10 Aug 2015 21:06:06 +0000
-Received: by igui7 with SMTP id i7so27487411igu.1
- for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2015 14:05:43 -0700 (PDT)
-From: Seth Forshee <seth.forshee@canonical.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
- Stephen Smalley <sds@tycho.nsa.gov>, Eric Paris <eparis@parisplace.org>
-Cc: Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH v2 5/7] fs: Treat foreign mounts as nosuid
-Date: Mon, 10 Aug 2015 16:05:16 -0500
-Message-Id: <1439240719-46850-6-git-send-email-seth.forshee@canonical.com>
-In-Reply-To: <1439240719-46850-1-git-send-email-seth.forshee@canonical.com>
-References: <1439240719-46850-1-git-send-email-seth.forshee@canonical.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZOyzW-0005Es-Di
+ for linux-mtd@lists.infradead.org; Tue, 11 Aug 2015 02:08:39 +0000
+Message-ID: <55C957B9.9090408@cn.fujitsu.com>
+Date: Tue, 11 Aug 2015 10:02:33 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v4] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
+References: <1438304996-31502-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1439195531.26877.103.camel@gmail.com>
+In-Reply-To: <1439195531.26877.103.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,123 +23,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Andy Lutomirski <luto@amacapital.net>
+On 08/10/2015 04:32 PM, Artem Bityutskiy wrote:
+> Could you please describe how you tested your patch. Did you run stress
+> tests with atime enabled, which ones?
 
-If a process gets access to a mount from a different user
-namespace, that process should not be able to take advantage of
-setuid files or selinux entrypoints from that filesystem.  Prevent
-this by treating mounts from other mount namespaces and those not
-owned by current_user_ns() or an ancestor as nosuid.
+About the functionality testing, I tried xfstests, it passed.
 
-This will make it safer to allow more complex filesystems to be
-mounted in non-root user namespaces.
+About the stress tests, I tried the fio and xfstests for stress.
+Below is my result:
+* I added a counter in ubifs_dirty_inode() to see how many times
+we dirtied inode in my testing.*
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 1f2415f..aac1da2 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -398,6 +398,7 @@ static void ubifs_dirty_inode(struct inode *inode, 
+int flags)
+         int locked = mutex_is_locked(&ui->ui_mutex);
+         struct ubifs_info *c = inode->i_sb->s_fs_info;
+         int ret = 0;
++       static unsigned long long count = 0;
 
-This does not remove the need for MNT_LOCK_NOSUID.  The setuid,
-setgid, and file capability bits can no longer be abused if code in
-a user namespace were to clear nosuid on an untrusted filesystem,
-but this patch, by itself, is insufficient to protect the system
-from abuse of files that, when execed, would increase MAC privilege.
+         if (!locked)
+                 mutex_lock(&ui->ui_mutex);
+@@ -412,6 +413,7 @@ static void ubifs_dirty_inode(struct inode *inode, 
+int flags)
+                 }
+                 ui->dirty = 1;
+                 dbg_gen("inode %lu",  inode->i_ino);
++               pr_info("count: %llu\n", ++count);
+         }
 
-As a more concrete explanation, any task that can manipulate a
-vfsmount associated with a given user namespace already has
-capabilities in that namespace and all of its descendents.  If they
-can cause a malicious setuid, setgid, or file-caps executable to
-appear in that mount, then that executable will only allow them to
-elevate privileges in exactly the set of namespaces in which they
-are already privileges.
+RESULT:
+stress test steps: (for ((i=0;i<10;i++)); do ./check -g stress; done)
 
-On the other hand, if they can cause a malicious executable to
-appear with a dangerous MAC label, running it could change the
-caller's security context in a way that should not have been
-possible, even inside the namespace in which the task is confined.
+noatime: 67169
+relatime: 68084
+strictatime: 68643
 
-As a hardening measure, this would have made CVE-2014-5207 much
-more difficult to exploit.
+Atem, Do you want some other testing for it?
 
-Signed-off-by: Andy Lutomirski <luto@amacapital.net>
-Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
----
- fs/exec.c                |  2 +-
- fs/namespace.c           | 13 +++++++++++++
- include/linux/mount.h    |  1 +
- security/commoncap.c     |  2 +-
- security/selinux/hooks.c |  2 +-
- 5 files changed, 17 insertions(+), 3 deletions(-)
+>
+> On Fri, 2015-07-31 at 09:09 +0800, Dongsheng Yang wrote:
+>> +> 	> 	> sb->s_flags |= MS_ACTIVE;
+>> +#ifndef CONFIG_UBIFS_ATIME_SUPPORT
+>> +> 	> 	> sb->s_flags |= MS_NOATIME;
+>> +#else
+>> +> 	> 	> ubifs_warn(c, "************WARNING START****************");
+>> +> 	> 	> ubifs_warn(c, "Ubifs is supporting atime now, that would");
+>> +> 	> 	> ubifs_warn(c, "probably damage your flash. If you are not");
+>> +> 	> 	> ubifs_warn(c, "sure about it, please set UBIFS_ATIME_SUPPORT");
+>> +> 	> 	> ubifs_warn(c, "to 'N'.");
+>> +> 	> 	> ubifs_warn(c, "************WARNING END******************");
+>
+> Could we please be a little be less scary.
+>
+> 1. I think these starting and ending "*****" lines are unnecessary.
+> 2. Ah, and use "UBIFS", not "Ubifs" please.
+> 3. Let's be shorter, just this should be enough:
+>
+> ubifs_warn("full atime support is enabled, which may wear out your
+> flash faster");
 
-diff --git a/fs/exec.c b/fs/exec.c
-index b06623a9347f..ea7311d72cc3 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1295,7 +1295,7 @@ static void bprm_fill_uid(struct linux_binprm *bprm)
- 	bprm->cred->euid = current_euid();
- 	bprm->cred->egid = current_egid();
- 
--	if (bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID)
-+	if (!mnt_may_suid(bprm->file->f_path.mnt))
- 		return;
- 
- 	if (task_no_new_privs(current))
-diff --git a/fs/namespace.c b/fs/namespace.c
-index e48fa1c23378..710aaa05cdaa 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -3276,6 +3276,19 @@ found:
- 	return visible;
- }
- 
-+bool mnt_may_suid(struct vfsmount *mnt)
-+{
-+	/*
-+	 * Foreign mounts (accessed via fchdir or through /proc
-+	 * symlinks) are always treated as if they are nosuid.  This
-+	 * prevents namespaces from trusting potentially unsafe
-+	 * suid/sgid bits, file caps, or security labels that originate
-+	 * in other namespaces.
-+	 */
-+	return !(mnt->mnt_flags & MNT_NOSUID) && check_mnt(real_mount(mnt)) &&
-+	       in_userns(current_user_ns(), mnt->mnt_sb->s_user_ns);
-+}
-+
- static struct ns_common *mntns_get(struct task_struct *task)
- {
- 	struct ns_common *ns = NULL;
-diff --git a/include/linux/mount.h b/include/linux/mount.h
-index f822c3c11377..54a594d49733 100644
---- a/include/linux/mount.h
-+++ b/include/linux/mount.h
-@@ -81,6 +81,7 @@ extern void mntput(struct vfsmount *mnt);
- extern struct vfsmount *mntget(struct vfsmount *mnt);
- extern struct vfsmount *mnt_clone_internal(struct path *path);
- extern int __mnt_is_readonly(struct vfsmount *mnt);
-+extern bool mnt_may_suid(struct vfsmount *mnt);
- 
- struct path;
- extern struct vfsmount *clone_private_mount(struct path *path);
-diff --git a/security/commoncap.c b/security/commoncap.c
-index 175ab497e810..858d86a1b73c 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -437,7 +437,7 @@ static int get_file_caps(struct linux_binprm *bprm, bool *effective, bool *has_c
- 	if (!file_caps_enabled)
- 		return 0;
- 
--	if (bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID)
-+	if (!mnt_may_suid(bprm->file->f_path.mnt))
- 		return 0;
- 	if (!in_userns(current_user_ns(), bprm->file->f_path.mnt->mnt_sb->s_user_ns))
- 		return 0;
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 564079c5c49d..459e71ddbc9d 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -2137,7 +2137,7 @@ static int check_nnp_nosuid(const struct linux_binprm *bprm,
- 			    const struct task_security_struct *new_tsec)
- {
- 	int nnp = (bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS);
--	int nosuid = (bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID);
-+	int nosuid = !mnt_may_suid(bprm->file->f_path.mnt);
- 	int rc;
- 
- 	if (!nnp && !nosuid)
--- 
-1.9.1
+Okey, will update it.
+Yang
+>
+> Artem.
+> .
+>
