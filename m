@@ -1,31 +1,29 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPQS9-0003OE-93
- for linux-mtd@lists.infradead.org; Wed, 12 Aug 2015 07:28:03 +0000
-Subject: Re: UBIFS errors when file-system is full
-To: Stefan Agner <stefan@agner.ch>, computersforpeace@gmail.com
-References: <55A3C342.9010704@gmail.com>
- <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
- <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
- <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
- <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
- <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
- <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
- <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
- <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
- <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
- <55AF4447.50500@nod.at> <55B24F2F.9020705@gmail.com>
- <55B26D24.3060006@nod.at> <55BBA6A5.9020701@gmail.com>
- <55BC68D6.2070008@nod.at> <55C3379E.50000@gmail.com>
- <55C4A695.7060608@nod.at> <e3d338cfd875b941061d5ac3da9f29c0@agner.ch>
-Cc: Bhuvanchandra DV <bhuvanchandradv@gmail.com>, linux-mtd@lists.infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55CAF568.5090704@nod.at>
-Date: Wed, 12 Aug 2015 09:27:36 +0200
+ id 1ZPS5z-0000kb-UV
+ for linux-mtd@lists.infradead.org; Wed, 12 Aug 2015 09:13:17 +0000
+From: Marek Vasut <marex@denx.de>
+To: Vikas MANOCHA <vikas.manocha@st.com>
+Subject: Re: [PATCH V6 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+Date: Wed, 12 Aug 2015 11:11:52 +0200
+Cc: Graham Moore <grmoore@opensource.altera.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Alan Tull <atull@opensource.altera.com>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>
+References: <1438105083-19738-1-git-send-email-grmoore@opensource.altera.com>
+ <201508060115.18627.marex@denx.de>
+ <9026814FBF99304F9FA3AC3FB72F3E2F0491A0BE@SAFEX1MAIL4.st.com>
+In-Reply-To: <9026814FBF99304F9FA3AC3FB72F3E2F0491A0BE@SAFEX1MAIL4.st.com>
 MIME-Version: 1.0
-In-Reply-To: <e3d338cfd875b941061d5ac3da9f29c0@agner.ch>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Message-Id: <201508121111.52367.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,83 +33,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stefan,
+On Wednesday, August 12, 2015 at 03:05:48 AM, Vikas MANOCHA wrote:
+> Hi Marek,
 
-Am 12.08.2015 um 09:01 schrieb Stefan Agner:
-> Hi Richard,
+Hi,
+
+> > -----Original Message-----
+> > From: Marek Vasut [mailto:marex@denx.de]
+> > Sent: Wednesday, August 05, 2015 4:15 PM
+> > To: Vikas MANOCHA
+> > Cc: Graham Moore; linux-mtd@lists.infradead.org; David Woodhouse; Brian
+> > Norris; linux-kernel@vger.kernel.org; Alan Tull; Dinh Nguyen; Yves
+> > Vandervennet
+> > Subject: Re: [PATCH V6 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+> > Flash Controller.
+> > 
+> > On Wednesday, August 05, 2015 at 08:29:11 PM, vikasm wrote:
+> > > Hi Graham,
+> > 
+> > Hi vikasm,
+> > 
+> > > On 07/28/2015 10:38 AM, Graham Moore wrote:
+> > > > Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> > > > ---
+> > > > V2: use NULL instead of modalias in spi_nor_scan call
+> > > > V3: Use existing property is-decoded-cs instead of creating
+> > > > duplicate. V4: Support Micron quad mode by snooping command stream
+> > > > for EVCR command and subsequently configuring Cadence controller for
+> > > > quad
+> > 
+> > mode.
+> > 
+> > > > V5: Clean up sparse and smatch complaints.  Remove snooping of
+> > > > Micron quad mode.  Add comment on XIP mode bit and dummy clock
+> > > > cycles.  Set up SRAM partition at 1:1 during init.
+> > > > V6: Remove dts patch that was included by mistake.  Incorporate
+> > > > Vikas's comments regarding fifo width, SRAM partition setting, and
+> > > > trigger address.  Trigger address was added as an unsigned int, as
+> > > > it is not an IO resource per se, and does not need to be mapped.
+> > > > Also add Marek Vasut's workaround for picking up OF properties on
+> > 
+> > subnodes.
+> > 
+> > > I am still not able to apply this patch to master. It seems to be
+> > > rebased on master for ..spi-nor/Kconfig & spi-nor/makefile.
+> > 
+> > I'm able to apply this on next/master just fine.
 > 
-> [also added Brian to the discussion, since he had a look into that
-> driver before]
+> I think my thunderbird client is messing up with the patch, I am trying to
+> fix it.
 
-Good idea, maybe Brian has an idea.
+OK
 
-> On 2015-08-07 14:37, Richard Weinberger wrote:
->> Hi!
->>
->> Am 06.08.2015 um 12:31 schrieb Bhuvanchandra DV:
->>>>> The tests ran on ubi partition after isolating it from U-Boot completly.
->>>>> Formatted the ubi partition and then boot with SD card (4.1.2 kernel fastmap enabled/disabled, fm_debug enabled).
->>>>> Please find the below log of ubi-tests:
->>>>>
->>>>> [io_paral] write_thread():222: written and read data are different
->>>> *blink*
->>>
->>> Tried to run the io_paral test multiple times seperately with few debug prints added to see what exact
->>> differences with read and write buffers, so far we could see one complete page is read twice even though
->>> it is written once. I'm now confused is the issue happen while reading or while writing. Can you give us
->>> some pointers so that we can narrow down the cause for this failure.
->>
->> The test verifies that the data has been written correctly to the block.
->> (Maybe a buffer problem in your MTD driver?)
->>
->> You can also enable UBI's IO checks.
->> i.e. echo 1 > /sys/kernel/debug/ubi/ubi0/chk_io
->>
->> It will also verify it's writes. Maybe it can give you a clue.
+> > > Also I still see spaces are still not replaced by tabs in this version.
+> > 
+> > Which exact spots are you talking about ? I don't see that many indent
+> > flubs in this patch to be honest. Sometimes, it is better to indent the
+> > last piece with spaces (mandated by kernel coding style btw) to increase
+> > the readability.
+> > 
+> > This is in particular the case with stuff like this:
+> > 
+> > pr_err("formating string that is almost 80 chars long %i!\n",
+> > 
+> >        parameter_that_is_indented_with_7_spaces);
+> > 
+> > The sole purpose is to align stuff right under the opening parenthesis.
+> > 
+> > > > ---
+> > 
+> > btw. would you please learn to use [...] and keep only the part you're
+> > commenting on with a bit of context in your reply? It is really hard to
+> > locate your comment if it's inbetween 500 lines of nothing.
+> > 
+> > [...]
 > 
-> According to Bhuvan's test, it really seems that we have an issue on
-> write path (this error is reproduceable):
-> root@colibri-vf:~/ubi-tests-bin# ./io_paral /dev/ubi0 2>&1 | tee
-> ~/io-parl4.log
-> [ 6451.223087] ubi0 error: self_check_write: self-check failed for PEB
-> 843:4096, len 126976
-> [ 6451.231650] ubi0: data differ at position 61440
-> [ 6451.236325] ubi0: hex dump of the original buffer from 61440 to
-> 126976
-> [ 6451.331045] ubi0: hex dump of the read buffer from 61440 to 126976
-> [ 6451.426703] CPU: 0 PID: 1182 Comm: io_paral Not tainted
-> 4.1.4-00704-g2631972 #21
-> [ 6451.434506] Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
+> Thanks Marek, I am not sure how to use it.  I would appreciate any help.
 
-Thanks for letting me know. :)
+That's rather simple in fact, but it really depends on your UI.
+TL;DR, select the irrelevant piece of email and replace it with [...] .
 
-> This 4.1.4 with v10 of the driver applied:
-> http://thread.gmane.org/gmane.linux.drivers.devicetree/130300
-> 
-> 
-> I worked on the driver since quite some time, currently v10 is in
-> review. With this issue in mind, I went through the driver however I
-> currently can't see an issue.
-> 
-> The error position is always page aligned, but at different pages. We
-> printed the reread buffers once: It seems that one page lands on flash
-> twice. My guess is that the second page doesn't get transmitted
-> properly, while the new column/row gets transmitted and
-> NAND_CMD_PAGEPROG executed... Hence the same buffer would be written to
-> the device again.
-> 
-> The NFC IP in Vybrid (vf610) has a higher level programming model which
-> takes care of the command sequencing. Therefore some callbacks are not
-> actually sending a command to the device (e.g. NAND_CMD_SEQIN) since
-> this will be done one command later, on in NAND_CMD_PAGEPROG. Now, of
-> course, the driver relies heavily on not being interrupted by other
-> requests in between, (also not read!) but I thought that this is taken
-> care of by the MTD subsystem? So for me it is a bit hard to spot the
-> error since I'm always unsure whether the assumptions regarding
-> locking/exclusiveness between the calls is really guaranteed...
+[...]
 
-NAND access is serialized using nand_get_device() and nand_release_device()
-in nand_base.c, so serialization should be fine.
+> > > > +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
+> > > > +
+> > > > +       /* Clear all interrupts. */
+> > > > +       writel(CQSPI_IRQ_STATUS_MASK, reg_base +
+> > > > + CQSPI_REG_IRQSTATUS);
+> > > > +
+> > > > +       cqspi->irq_mask = CQSPI_IRQ_MASK_RD;
+> > > > +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
+> > > > +
+> > > > +       reinit_completion(&cqspi->transfer_complete);
+> > > > +       writel(CQSPI_REG_INDIRECTRD_START_MASK,
+> > > > +              reg_base + CQSPI_REG_INDIRECTRD);
+> > > > +
+> > > > +       while (remaining > 0) {
+> > > > +               ret =
+> > > > wait_for_completion_timeout(&cqspi->transfer_complete, +
+> > > > 
+> > > >                                 msecs_to_jiffies +
+> > > >                           
+> > > >                           (CQSPI_READ_TIMEOUT_MS)); +
+> > > > 
+> > > > +               bytes_to_read = CQSPI_GET_RD_SRAM_LEVEL(reg_base);
+> > > 
+> > > There should not be any need to read SRAM level, we should be able to
+> > > get rid of it like in u-boot.
+> > 
+> > Can you explain why ?
+> 
+> There is no need to check for sram fill level. If sram is empty, cpu will
+> go in the wait state till the time data is available from flash.
 
-HTH,
-//richard
+You mean reading from SRAM will stall the CPU ?
+
+> Also Relying on SRAM fill level only for deciding when the data should
+> befetched from the local SRAM is not most efficient approach, particularly
+> if we are working on high data rates.
+> 
+> After one SRAM word is collected, the information is forwarded into system
+> domain and then synchronized into register domain (apb). If we are using
+> slow APB and AHB clks, SRAM fill level might not be up-to-dated because of
+> latency cycles needed for synchronization. For example in case we are
+> getting SRAM fill level equal to 10 locations but in reality there were 2
+> another words completed and actual level is 12 but information may not be
+> synchronized yet because of the synchronization latency on APB domain.
+
+We use the SRAM level only to determine how many bytes at minimum can we safely
+read. If there are more data waiting, but the SRAM level is not yet updated, we
+will keep looping here until the update happens, right ?
+
+Though I agree this is not the most efficient method either. Can the CQSPI do
+DMA and deliver the data to CPU's RAM somehow on it's own maybe ?
+
+Thanks!
