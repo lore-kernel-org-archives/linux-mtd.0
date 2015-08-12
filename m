@@ -1,20 +1,16 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPSnQ-0000P9-1o
- for linux-mtd@lists.infradead.org; Wed, 12 Aug 2015 09:58:08 +0000
-Message-ID: <1439373464.31419.45.camel@gmail.com>
-Subject: Re: [PATCH v4] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- richard.weinberger@gmail.com,  linux-mtd@lists.infradead.org
-Date: Wed, 12 Aug 2015 12:57:44 +0300
-In-Reply-To: <55C957B9.9090408@cn.fujitsu.com>
-References: <1438304996-31502-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1439195531.26877.103.camel@gmail.com> <55C957B9.9090408@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from mail-yk0-x22a.google.com ([2607:f8b0:4002:c07::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZPUDT-0002nY-2X
+ for linux-mtd@lists.infradead.org; Wed, 12 Aug 2015 11:29:09 +0000
+Received: by ykdz80 with SMTP id z80so10934294ykd.2
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Aug 2015 04:28:45 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: han.xu@freescale.com
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ Fabio Estevam <fabio.estevam@freescale.com>
+Subject: [PATCH] spi-nor: Kconfig: Remove unneeded help message
+Date: Wed, 12 Aug 2015 08:28:19 -0300
+Message-Id: <1439378899-5660-1-git-send-email-festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,10 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2015-08-11 at 10:02 +0800, Dongsheng Yang wrote:
-> Atem, Do you want some other testing for it?
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-No, your testing looks good enough, thanks. Just submit an updated
-patch version.
+The "We only connect the NOR to this controller now" phrase
+is not really useful for a Kconfig help text, so remove it.
 
-Artem.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/spi-nor/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 64a4f0e..baa8442 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -26,6 +26,5 @@ config SPI_FSL_QUADSPI
+ 	depends on ARCH_MXC
+ 	help
+ 	  This enables support for the Quad SPI controller in master mode.
+-	  We only connect the NOR to this controller now.
+ 
+ endif # MTD_SPI_NOR
+-- 
+1.9.1
