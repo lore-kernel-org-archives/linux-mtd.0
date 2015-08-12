@@ -1,31 +1,27 @@
-Message-ID: <55CB1167.7010804@ti.com>
-Date: Wed, 12 Aug 2015 14:57:03 +0530
-From: Vignesh R <vigneshr@ti.com>
+Received: from mail-ob0-x22e.google.com ([2607:f8b0:4003:c01::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZPSVO-0007xY-LI
+ for linux-mtd@lists.infradead.org; Wed, 12 Aug 2015 09:39:33 +0000
+Received: by obbhe7 with SMTP id he7so8603674obb.0
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Aug 2015 02:39:09 -0700 (PDT)
 MIME-Version: 1.0
-To: Michal Suchanek <hramrach@gmail.com>, Martin Sperl <martin@sperl.org>
-CC: Russell King - ARM Linux <linux@arm.linux.org.uk>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Mark Brown <broonie@kernel.org>, devicetree
- <devicetree@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
- Tony Lindgren <tony@atomide.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, MTD
- Maling List <linux-mtd@lists.infradead.org>, "linux-omap@vger.kernel.org"
- <linux-omap@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
-References: <20150805115013.GJ20873@sirena.org.uk>
- <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
- <20150805124412.GN20873@sirena.org.uk>
- <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
- <20150806090202.GO20873@sirena.org.uk>
- <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
- <20150806102225.GI7576@n2100.arm.linux.org.uk> <55C35233.2000105@ti.com>
- <20150806135129.GJ7576@n2100.arm.linux.org.uk>
- <CAMuHMdWWDwZ=ziGQXFCnOX8pErXpsEi533J73_Hh=sEqq4hR6Q@mail.gmail.com>
- <20150806213340.GK7576@n2100.arm.linux.org.uk> <55C46B84.3010304@sperl.org>
- <CAOMqctScUybdoZPgqH185qzDxB=TyutDMARextHx0XwC7L3Xmw@mail.gmail.com>
-In-Reply-To: <CAOMqctScUybdoZPgqH185qzDxB=TyutDMARextHx0XwC7L3Xmw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAOMqctTgL+fu6HhgJG9J6mtNu6qjiNgMnM=hq+XhznSqCg4T+w@mail.gmail.com>
+References: <CAPcvp5GZi0gV=J2Zbz_Sp+NmZNKnA38JAsYtbuNiwsq84yMDfg@mail.gmail.com>
+ <CAFLxGvx5xEPRGU3kQDUz70egsPSxF-NLzoECM=y1n1LXqX9rpA@mail.gmail.com>
+ <CAPcvp5Hc8x23VjNy4mStWBAJT5fUVXb5_i7a=iGiSv-O6ChBvg@mail.gmail.com>
+ <CAOMqctTMQUmqqZKpYpF-cZc1NygW5mmSRoQjGE+-oOYQj-4w=Q@mail.gmail.com>
+ <CAPcvp5Ft-5h22gvwHUk6=oQRx1wJkjJpQqfxJmHj855VRKFoiA@mail.gmail.com>
+ <CAOMqctRMAu1y=epkBCAH8igNUX4zEHs_9=5VRJtArK3jPZ7veg@mail.gmail.com>
+ <CAPcvp5H-WLn5mdkH1VgiGO+qc77MZFFJsmBfAMRBVhK3ZbPd_A@mail.gmail.com>
+ <CAOMqctTgL+fu6HhgJG9J6mtNu6qjiNgMnM=hq+XhznSqCg4T+w@mail.gmail.com>
+Date: Wed, 12 Aug 2015 10:39:09 +0100
+Message-ID: <CAPcvp5HxHi=GUUAbA6m4u_g4Bc3J+Mczq81jGozT1=83jCZ8PA@mail.gmail.com>
+Subject: Re: [RFC] mtd: ubi: UBI Encryption
+From: Andrew Murray <amurray@embedded-bits.co.uk>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,88 +31,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 11 August 2015 at 14:24, Michal Suchanek <hramrach@gmail.com> wrote:
+> On 11 August 2015 at 14:40, Andrew Murray <amurray@embedded-bits.co.uk> wrote:
+>> On 11 August 2015 at 12:39, Michal Suchanek <hramrach@gmail.com> wrote:
+>>> On 11 August 2015 at 13:03, Andrew Murray <amurray@embedded-bits.co.uk> wrote:
+>>>> On 11 August 2015 at 11:23, Michal Suchanek <hramrach@gmail.com> wrote:
+>>>>>
+>>>>> On 11 August 2015 at 11:47, Andrew Murray <amurray@embedded-bits.co.uk> wrote:
+>>>>> > On 11 August 2015 at 07:30, Richard Weinberger
+>>>>> > <richard.weinberger@gmail.com> wrote:
+>>>>> >> On Mon, Aug 10, 2015 at 9:56 PM, Andrew Murray
+>>>>> >> <amurray@embedded-bits.co.uk> wrote:
+>>>>>
+>>>>> >>
+>>>>> >>>  - Encryption in UBI was preferred as it removed the complexity from userspace,
+>>>>> >>>    though I suppose there is no reason why this can't be done within the MTD
+>>>>> >>>    layer rather than in UBI and thus benefit all MTD users.
+>>>>> >>
+>>>>> >> I'm not sure if UBI is the right layer for that. I'd do it in MTD to
+>>>>> >> have a dm_crypt like
+>>>>> >> MTD driver. At best it will be compatible with dm_crypt's userspace tools.
+>>>>> >
+>>>>> > I've not investigated this - but it seems plausible. My 'interception'
+>>>>> > layer works immediately above the MTD layer (i.e. the patchset looks a
+>>>>> > bit like this):
+>>>>> >
+>>>>> > -       err = mtd_write(ubi->mtd, addr, len, &written, buf);
+>>>>> > +       err = mtd_crypt_write(ubi, addr, len, &written, buf);
+>>>>> >
+>>>>> > Thus this code could just as easily exist on the other size of mtd_*.
+>>>>> >
+>>>>> > However this still leaves the issue of assumptions all over the place
+>>>>> > that 0xFF == erased flash. Is it best to risk the collision that
+>>>>> > crypto output could generate all 0xFFs - or is it best to overcome the
+>>>>> > assumptions by fixing them up as an initial stage? I suspect the later
+>>>>> > - besides helping the encryption problem it also means you aren't
+>>>>> > relying on the content of the flash to determine its state (I wonder
+>>>>> > if this could also be used to solve other issues where its difficult
+>>>>> > to tell if flash is erased - e.g. inverted ECCs?).
+>>>>>
+>>>>> It's probably good idea to treat empty blocks as truly empty and only
+>>>>> encrypt data blocks.
+>>>>
+>>>>
+>>>> In some sense this is what I already have. My encryption hooks exist
+>>>> just above the MTD layer and only get used if UBI attempts to write
+>>>> data to MTD. One of my implementations doesn't encrypt data from UBI
+>>>> if it contains all 0xFFs. (Of course the problem is reading those
+>>>> 0xFFs back from flash and determining if its empty data or encrypted
+>>>> data).
+>>>
+>>> Then that's wrong. The data is all 1 and the encrypted data should be
+>>> not.
+>>
+>> For clarify I've tried two approaches:
+>>
+>> 1) An implementation where encryption is provided unconditionally,
+>> thus all 1's become something other than all 1's
+>>
+>> 2) An implementation where encryption is conditional based on the
+>> data. If the plain text is all 1's then I do not encrypt.
+>>
+>> I stuck with implementation 2) as it was less invasive. In order to
+>> support implementation 2) (which also works), I needed to modify much
+>> more code including UBIFS. This was needed as approach 2) breaks the
+>> assumption that all 1's is empty flash - this is the case because when
+>> reading and decrypting, all 1's becomes garbage - this breaks lots.
+>> For example torture_peb erases flash and reads it back to ensure it
+>> was erased - with encryption this test fails as the erased flash is
+>> decrypted and becomes garbage.
+>>
+>> I feel that the second approach is the correct one, I'm sensing you also agree?
+>
+> Yes, it sounds correct. Unfortunately, it seems it needs to straighten
+> a wart of UBIFS.
 
+This seems the general consensus.
 
-On 08/07/2015 03:46 PM, Michal Suchanek wrote:
-[snip]
-> On 7 August 2015 at 10:35, Vignesh R <vigneshr@ti.com> wrote:
+>
 >>
->>
->> On 08/07/2015 01:08 PM, Michal Suchanek wrote:
->>
->>> Now since the description is clearer it's obvious that ti-qspi cannot
->>> work fully mmapped as fsl-qspi does because the setup has to be done
->>> over normal spi access and using non-m25p80 devices on the same bus is
->>> a requirement.
 >>>
->>> The place where it is known if a transfer can use the mmap access is m25p80.c
+>>> If the FTL says it's a datablock it's a datablock.
 >>>
->>> So my suggestion is
+>>> If all blocks are empty you should format that flash.
 >>>
->>>  - add a new method for spi master that gets the read opcode, dummy
->>> length, address, address length, buffer, buffer length and performs
->>> read from the flash memory in a hardware-specific way
->>>
->>> - add a check in m25p80.c that the master supports this feature and if
->>> so use it (eg check that the method is non-null)
->>>
->>> Presumably if some new SPI controllers with similar feature are
->>> supported in the future they can use the same inteface because you
->>> pass on everything the m25p80 read knows.
->>>
+>>> Flash with FTL structure has non-empty blocks that contain the FTL data.
 >>
->> Ok... Do you mean something like this?
->>
->> I will take m25p80 as example but can be expanded for any flash.
->>
->> In include/linux/mtd.h:
->>         struct spi_mtd_config_info {
->>                 struct spi_device       *spi;
->>                 u32                     page_size;
->>                 u8                      addr_width;
->>                 u8                      erase_opcode;
->>                 u8                      read_opcode;
->>                 u8                      read_dummy;
->>                 u8                      program_opcode;
->>                 enum read_mode          flash_read;
->>
->>         } /* subset of struct spi_nor */
->>
-> 
-> I would just pass these as separate arguments to the function but whatver.
-> 
->> In m25p80.c:
->>
->>         static int m25p80_read(struct spi_nor *nor, loff_t from,
->>                                 size_t len, size_t *retlen,
->>                                 u_char *buf)
->>         {
->>                 struct spi_mtd_config_info info;
->>                 struct spi_device *spi;
->>
->>                 if (spi->master->spi_mtd_mmap_read) {
->>                   /* Populate spi_mtd_config_info */
->>                   spi->master->spi_mtd_mmap_read(&info, from, len,
->>                                                  retlen, buf);
->>                 }
->>                 else {
->>                 /* no mtd specific acceleration supported try normal
->>                  * SPI way of communicating with flash
->>                  * continue with current code
->>                  * set up spi_message and call spi_sync()
->>                  */
->>         }
->>
->>       }
->>
->> In spi-ti-qspi.c:
->> Implement spi_mtd_mmap_read while holding master->bus_lock mutex.
->>
-> 
+>> Can you clarify what FTL is? Are you referring to a data structure
+>> devised by the software layers that is stored on flash, a flash
+>> translation layer or something in hardware?
+>
+> Flash translation layer - something that deals accounting of used and
+> unused blocks, erase counts, wear levelling, etc. It can be in
+> software like with MTD in kernel or in hardware like on SD cards. It
+> needs some bookkeeping on the raw flash medium to know which blocks
+> are used and keep the erase counters, etc.
 
-I will re-submit patches based on the above idea, if there are no
-further comments..
+OK I'm on the same page as you.
 
--- 
-Thanks
-Vignesh
+>
+>>
+>>>
+>>>>
+>>>>>
+>>>>> It is also possible to write all 1s to
+>>>>> unencrypted ubifs block and the filesystem should handle it. The block
+>>>>> will technically remain empty but it can be interpreted as data. If
+>>>>> this does not work properly for non-encrypted flash it should be fixed
+>>>>> I guess.
+>>>>
+>>>>
+>>>> Yes this is what I do, if data is provided to UBI containing all 1s, I
+>>>> write it to flash as all 1s. Upon reading it back I also return it to
+>>>> UBI without modification. UBIFS expects this - and attempting to mount
+>>>> UBIFS on a empty UBI volume will otherwise fail unless I do this (as
+>>>> UBIFS makes the assumption that all 1s is empty flash).
+>>>>
+>>>> I'm slightly uncomfortable that UBIFS makes this assumption, it seems
+>>>> to be present as a very sensible sanity check - but it ties back in
+>>>> the characteristics of flash back into a layer that should be
+>>>> abstracted away from it.
+>>>
+>>> Ubifs deals directly with physical flash erase blocks so it cannot
+>>> possibly be abstracted from it.
+>>
+>> I thought the purpose of UBI was to abstract the horribleness of flash
+>> from its users. Such that filesystems could care about filesystem
+>> related things rather than working around bad blocks and the other
+>> nasties of flash.
+>>
+>> UBIFS deals with logical erase blocks doesn't it? It doesn't need to
+>> worry about erasing flash before using it, etc. So why should UBIFS
+>> need to understand that all 1's is empty flash?
+>
+> If it's supposed to be abstracetd then the abstraction leaks here.
+>
+> If it dealt with logical blocks it could not enumerate the physical
+> blocks of the volume and ascertain all of them are all 1s
+>
+> Actually it seems that this is indeed supposed to be tracked by UBI
+> and the UBIFS driver is just tied way too tightly to it.
+
+The feedback that I've gained from this discussion is:
+
+- Encryption shouldn't be conditional - this causes issues with 0xFF
+assumptions - but that should be addressed. This seems like a first
+step to prepare the way for encryption
+- Encryption could be provided in the MTD layer rather than the UBI
+layer - this will likely expose more 0xFF assumptions in other MTD
+users besides UBI (that wish to use encryption).
+- I've not heard anything that suggests this shouldn't be done in the
+kernel (rather than userspace) - or that the mechanism of encrypting
+through intercepting reads/writes is terrible. (Though interested to
+hear further thoughts on this.)
+
+I will investigate the occurrences of 0xFF assumptions with a view to
+consolidate them - such that the logic for determining empty flash is
+in one place that can consider the presence of encryption (or other
+factors).
+
+Thanks,
+
+Andrew Murray
