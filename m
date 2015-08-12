@@ -1,29 +1,31 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPS5z-0000kb-UV
- for linux-mtd@lists.infradead.org; Wed, 12 Aug 2015 09:13:17 +0000
-From: Marek Vasut <marex@denx.de>
-To: Vikas MANOCHA <vikas.manocha@st.com>
-Subject: Re: [PATCH V6 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-Date: Wed, 12 Aug 2015 11:11:52 +0200
-Cc: Graham Moore <grmoore@opensource.altera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Alan Tull <atull@opensource.altera.com>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>
-References: <1438105083-19738-1-git-send-email-grmoore@opensource.altera.com>
- <201508060115.18627.marex@denx.de>
- <9026814FBF99304F9FA3AC3FB72F3E2F0491A0BE@SAFEX1MAIL4.st.com>
-In-Reply-To: <9026814FBF99304F9FA3AC3FB72F3E2F0491A0BE@SAFEX1MAIL4.st.com>
+Message-ID: <55CB1167.7010804@ti.com>
+Date: Wed, 12 Aug 2015 14:57:03 +0530
+From: Vignesh R <vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+To: Michal Suchanek <hramrach@gmail.com>, Martin Sperl <martin@sperl.org>
+CC: Russell King - ARM Linux <linux@arm.linux.org.uk>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Mark Brown <broonie@kernel.org>, devicetree
+ <devicetree@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ Tony Lindgren <tony@atomide.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, MTD
+ Maling List <linux-mtd@lists.infradead.org>, "linux-omap@vger.kernel.org"
+ <linux-omap@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC PATCH 1/5] spi: introduce flag for memory mapped read
+References: <20150805115013.GJ20873@sirena.org.uk>
+ <CAOMqctQXwcHyiWBwtugSDSE_k65qrNfrwnhjQMDJkLoJMmGzUw@mail.gmail.com>
+ <20150805124412.GN20873@sirena.org.uk>
+ <CAOMqctS9Y5FxpUCCJew6+cnjH5iTvbzkH3g-8yrXs4OuS2pSGA@mail.gmail.com>
+ <20150806090202.GO20873@sirena.org.uk>
+ <CAOMqctQZRZ4zG_yYy=CeX3DX4NVNWN1COP4Q-2YvMun9xYOA7g@mail.gmail.com>
+ <20150806102225.GI7576@n2100.arm.linux.org.uk> <55C35233.2000105@ti.com>
+ <20150806135129.GJ7576@n2100.arm.linux.org.uk>
+ <CAMuHMdWWDwZ=ziGQXFCnOX8pErXpsEi533J73_Hh=sEqq4hR6Q@mail.gmail.com>
+ <20150806213340.GK7576@n2100.arm.linux.org.uk> <55C46B84.3010304@sperl.org>
+ <CAOMqctScUybdoZPgqH185qzDxB=TyutDMARextHx0XwC7L3Xmw@mail.gmail.com>
+In-Reply-To: <CAOMqctScUybdoZPgqH185qzDxB=TyutDMARextHx0XwC7L3Xmw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201508121111.52367.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,138 +35,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, August 12, 2015 at 03:05:48 AM, Vikas MANOCHA wrote:
-> Hi Marek,
 
-Hi,
 
-> > -----Original Message-----
-> > From: Marek Vasut [mailto:marex@denx.de]
-> > Sent: Wednesday, August 05, 2015 4:15 PM
-> > To: Vikas MANOCHA
-> > Cc: Graham Moore; linux-mtd@lists.infradead.org; David Woodhouse; Brian
-> > Norris; linux-kernel@vger.kernel.org; Alan Tull; Dinh Nguyen; Yves
-> > Vandervennet
-> > Subject: Re: [PATCH V6 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
-> > Flash Controller.
-> > 
-> > On Wednesday, August 05, 2015 at 08:29:11 PM, vikasm wrote:
-> > > Hi Graham,
-> > 
-> > Hi vikasm,
-> > 
-> > > On 07/28/2015 10:38 AM, Graham Moore wrote:
-> > > > Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> > > > ---
-> > > > V2: use NULL instead of modalias in spi_nor_scan call
-> > > > V3: Use existing property is-decoded-cs instead of creating
-> > > > duplicate. V4: Support Micron quad mode by snooping command stream
-> > > > for EVCR command and subsequently configuring Cadence controller for
-> > > > quad
-> > 
-> > mode.
-> > 
-> > > > V5: Clean up sparse and smatch complaints.  Remove snooping of
-> > > > Micron quad mode.  Add comment on XIP mode bit and dummy clock
-> > > > cycles.  Set up SRAM partition at 1:1 during init.
-> > > > V6: Remove dts patch that was included by mistake.  Incorporate
-> > > > Vikas's comments regarding fifo width, SRAM partition setting, and
-> > > > trigger address.  Trigger address was added as an unsigned int, as
-> > > > it is not an IO resource per se, and does not need to be mapped.
-> > > > Also add Marek Vasut's workaround for picking up OF properties on
-> > 
-> > subnodes.
-> > 
-> > > I am still not able to apply this patch to master. It seems to be
-> > > rebased on master for ..spi-nor/Kconfig & spi-nor/makefile.
-> > 
-> > I'm able to apply this on next/master just fine.
+On 08/07/2015 03:46 PM, Michal Suchanek wrote:
+[snip]
+> On 7 August 2015 at 10:35, Vignesh R <vigneshr@ti.com> wrote:
+>>
+>>
+>> On 08/07/2015 01:08 PM, Michal Suchanek wrote:
+>>
+>>> Now since the description is clearer it's obvious that ti-qspi cannot
+>>> work fully mmapped as fsl-qspi does because the setup has to be done
+>>> over normal spi access and using non-m25p80 devices on the same bus is
+>>> a requirement.
+>>>
+>>> The place where it is known if a transfer can use the mmap access is m25p80.c
+>>>
+>>> So my suggestion is
+>>>
+>>>  - add a new method for spi master that gets the read opcode, dummy
+>>> length, address, address length, buffer, buffer length and performs
+>>> read from the flash memory in a hardware-specific way
+>>>
+>>> - add a check in m25p80.c that the master supports this feature and if
+>>> so use it (eg check that the method is non-null)
+>>>
+>>> Presumably if some new SPI controllers with similar feature are
+>>> supported in the future they can use the same inteface because you
+>>> pass on everything the m25p80 read knows.
+>>>
+>>
+>> Ok... Do you mean something like this?
+>>
+>> I will take m25p80 as example but can be expanded for any flash.
+>>
+>> In include/linux/mtd.h:
+>>         struct spi_mtd_config_info {
+>>                 struct spi_device       *spi;
+>>                 u32                     page_size;
+>>                 u8                      addr_width;
+>>                 u8                      erase_opcode;
+>>                 u8                      read_opcode;
+>>                 u8                      read_dummy;
+>>                 u8                      program_opcode;
+>>                 enum read_mode          flash_read;
+>>
+>>         } /* subset of struct spi_nor */
+>>
 > 
-> I think my thunderbird client is messing up with the patch, I am trying to
-> fix it.
-
-OK
-
-> > > Also I still see spaces are still not replaced by tabs in this version.
-> > 
-> > Which exact spots are you talking about ? I don't see that many indent
-> > flubs in this patch to be honest. Sometimes, it is better to indent the
-> > last piece with spaces (mandated by kernel coding style btw) to increase
-> > the readability.
-> > 
-> > This is in particular the case with stuff like this:
-> > 
-> > pr_err("formating string that is almost 80 chars long %i!\n",
-> > 
-> >        parameter_that_is_indented_with_7_spaces);
-> > 
-> > The sole purpose is to align stuff right under the opening parenthesis.
-> > 
-> > > > ---
-> > 
-> > btw. would you please learn to use [...] and keep only the part you're
-> > commenting on with a bit of context in your reply? It is really hard to
-> > locate your comment if it's inbetween 500 lines of nothing.
-> > 
-> > [...]
+> I would just pass these as separate arguments to the function but whatver.
 > 
-> Thanks Marek, I am not sure how to use it.  I would appreciate any help.
-
-That's rather simple in fact, but it really depends on your UI.
-TL;DR, select the irrelevant piece of email and replace it with [...] .
-
-[...]
-
-> > > > +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
-> > > > +
-> > > > +       /* Clear all interrupts. */
-> > > > +       writel(CQSPI_IRQ_STATUS_MASK, reg_base +
-> > > > + CQSPI_REG_IRQSTATUS);
-> > > > +
-> > > > +       cqspi->irq_mask = CQSPI_IRQ_MASK_RD;
-> > > > +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
-> > > > +
-> > > > +       reinit_completion(&cqspi->transfer_complete);
-> > > > +       writel(CQSPI_REG_INDIRECTRD_START_MASK,
-> > > > +              reg_base + CQSPI_REG_INDIRECTRD);
-> > > > +
-> > > > +       while (remaining > 0) {
-> > > > +               ret =
-> > > > wait_for_completion_timeout(&cqspi->transfer_complete, +
-> > > > 
-> > > >                                 msecs_to_jiffies +
-> > > >                           
-> > > >                           (CQSPI_READ_TIMEOUT_MS)); +
-> > > > 
-> > > > +               bytes_to_read = CQSPI_GET_RD_SRAM_LEVEL(reg_base);
-> > > 
-> > > There should not be any need to read SRAM level, we should be able to
-> > > get rid of it like in u-boot.
-> > 
-> > Can you explain why ?
+>> In m25p80.c:
+>>
+>>         static int m25p80_read(struct spi_nor *nor, loff_t from,
+>>                                 size_t len, size_t *retlen,
+>>                                 u_char *buf)
+>>         {
+>>                 struct spi_mtd_config_info info;
+>>                 struct spi_device *spi;
+>>
+>>                 if (spi->master->spi_mtd_mmap_read) {
+>>                   /* Populate spi_mtd_config_info */
+>>                   spi->master->spi_mtd_mmap_read(&info, from, len,
+>>                                                  retlen, buf);
+>>                 }
+>>                 else {
+>>                 /* no mtd specific acceleration supported try normal
+>>                  * SPI way of communicating with flash
+>>                  * continue with current code
+>>                  * set up spi_message and call spi_sync()
+>>                  */
+>>         }
+>>
+>>       }
+>>
+>> In spi-ti-qspi.c:
+>> Implement spi_mtd_mmap_read while holding master->bus_lock mutex.
+>>
 > 
-> There is no need to check for sram fill level. If sram is empty, cpu will
-> go in the wait state till the time data is available from flash.
 
-You mean reading from SRAM will stall the CPU ?
+I will re-submit patches based on the above idea, if there are no
+further comments..
 
-> Also Relying on SRAM fill level only for deciding when the data should
-> befetched from the local SRAM is not most efficient approach, particularly
-> if we are working on high data rates.
-> 
-> After one SRAM word is collected, the information is forwarded into system
-> domain and then synchronized into register domain (apb). If we are using
-> slow APB and AHB clks, SRAM fill level might not be up-to-dated because of
-> latency cycles needed for synchronization. For example in case we are
-> getting SRAM fill level equal to 10 locations but in reality there were 2
-> another words completed and actual level is 12 but information may not be
-> synchronized yet because of the synchronization latency on APB domain.
-
-We use the SRAM level only to determine how many bytes at minimum can we safely
-read. If there are more data waiting, but the SRAM level is not yet updated, we
-will keep looping here until the update happens, right ?
-
-Though I agree this is not the most efficient method either. Can the CQSPI do
-DMA and deliver the data to CPU's RAM somehow on it's own maybe ?
-
-Thanks!
+-- 
+Thanks
+Vignesh
