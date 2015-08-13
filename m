@@ -1,27 +1,22 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-bl2on0142.outbound.protection.outlook.com ([65.55.169.142]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPubZ-0002ZU-4u
- for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 15:39:45 +0000
-From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>
-To: Hou Zhiqiang <B48286@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "jonatas.rech@datacom.ind.br" <jonatas.rech@datacom.ind.br>,
- "Jane.Wan@gainspeed.com" <Jane.Wan@gainspeed.com>, "shijie.huang@intel.com"
- <shijie.huang@intel.com>, "valentin.longchamp@keymile.com"
- <valentin.longchamp@keymile.com>, "hkallweit1@gmail.com"
- <hkallweit1@gmail.com>, "hramrach@gmail.com" <hramrach@gmail.com>
-CC: Hu Vincent <Mingkai.Hu@freescale.com>
-Subject: RE: [PATCH] RFC: mtd/spi-nor: add checking for the spi_nor_read
-Date: Thu, 13 Aug 2015 15:38:50 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF447C2@NTXXIAMBX02.xacn.micron.com>
-References: <1437479828-30826-1-git-send-email-B48286@freescale.com>
- <CY1PR0301MB0780E3F6E2A1170A7A56A8538B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
- <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
-In-Reply-To: <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ id 1ZPvhB-0004AR-NX
+ for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 16:49:38 +0000
+From: Li Frank <Frank.Li@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>, Fabio Estevam
+ <festevam@gmail.com>
+CC: Fabio Estevam <Fabio.Estevam@freescale.com>, Huang Shijie
+ <shijie.huang@intel.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Xu Han <han.xu@freescale.com>
+Subject: RE: [PATCH] spi-nor: Kconfig: Remove unneeded help message
+Date: Thu, 13 Aug 2015 16:49:00 +0000
+Message-ID: <SN1PR0301MB16469016E92281F646579FCB827D0@SN1PR0301MB1646.namprd03.prod.outlook.com>
+References: <1439378899-5660-1-git-send-email-festevam@gmail.com>
+ <20150813031239.GF108786@google.com>
+In-Reply-To: <20150813031239.GF108786@google.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,14 +29,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Hi,
-Is it convenient to tell me that which vendor's spi nor?
-For current spi nor structure, write operation has been already split trans=
-action length
-By page size(256 Bytes). But seems "retlen" not reasonable.
 
-Spi nor read operation indeed does not take spi controller's transaction ab=
-ility into
-Account.but for spi nor, one-time read length is non-restrictive.
+> -----Original Message-----
+> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf =
+Of
+> Brian Norris
+> Sent: Wednesday, August 12, 2015 10:13 PM
+> To: Fabio Estevam
+> Cc: Estevam Fabio-R49496; Huang Shijie; linux-mtd@lists.infradead.org; Xu
+> Han-B45815
+> Subject: Re: [PATCH] spi-nor: Kconfig: Remove unneeded help message
+>=20
+> On Wed, Aug 12, 2015 at 08:28:19AM -0300, Fabio Estevam wrote:
+> > From: Fabio Estevam <fabio.estevam@freescale.com>
+> >
+> > The "We only connect the NOR to this controller now" phrase is not
+> > really useful for a Kconfig help text, so remove it.
+> >
+> > Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> > ---
+> >  drivers/mtd/spi-nor/Kconfig | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> > index 64a4f0e..baa8442 100644
+> > --- a/drivers/mtd/spi-nor/Kconfig
+> > +++ b/drivers/mtd/spi-nor/Kconfig
+> > @@ -26,6 +26,5 @@ config SPI_FSL_QUADSPI
+> >  	depends on ARCH_MXC
+> >  	help
+> >  	  This enables support for the Quad SPI controller in master mode.
+> > -	  We only connect the NOR to this controller now.
+>=20
+> I'm inclined to accept this patch, but I'm curious what the intention for=
+ the
+> original statement was. Does this mean "this controller could support gen=
+eric
+> SPI, but this driver only bothers to implement the NOR flash protocol"?
 
---Beanhuo
+This controller doesn't support generic SPI.=20
+Just support connect to SPI NOR flash.
+
+Best regards
+Frank Li
+
+>=20
+> >
+> >  endif # MTD_SPI_NOR
+> > --
+> > 1.9.1
+> >
+>=20
+> Brian
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
