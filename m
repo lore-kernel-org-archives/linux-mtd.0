@@ -1,18 +1,25 @@
-Received: from mail-bn1on0140.outbound.protection.outlook.com
- ([157.56.110.140] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-oi0-x22d.google.com ([2607:f8b0:4003:c06::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPvtz-00036D-1B
- for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 17:02:51 +0000
-From: Fabio Estevam <fabio.estevam@freescale.com>
-To: <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <han.xu@freescale.com>,
- <shijie8@gmail.com>, <Frank.Li@freescale.com>, Fabio Estevam
- <fabio.estevam@freescale.com>
-Subject: [PATCH v2] spi-nor: Kconfig: Improve help text for SPI_FSL_QUADSPI
-Date: Thu, 13 Aug 2015 14:02:05 -0300
-Message-ID: <1439485325-22977-1-git-send-email-fabio.estevam@freescale.com>
+ id 1ZPvwi-0004oy-MR
+ for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 17:05:41 +0000
+Received: by oio137 with SMTP id 137so30175835oio.0
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Aug 2015 10:05:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <SN1PR0301MB16469016E92281F646579FCB827D0@SN1PR0301MB1646.namprd03.prod.outlook.com>
+References: <1439378899-5660-1-git-send-email-festevam@gmail.com>
+ <20150813031239.GF108786@google.com>
+ <SN1PR0301MB16469016E92281F646579FCB827D0@SN1PR0301MB1646.namprd03.prod.outlook.com>
+Date: Thu, 13 Aug 2015 14:05:19 -0300
+Message-ID: <CAOMZO5BD4a+Yj++_jBg-Rji3WrHX2TxkAWp29fV5GX2CSq6MQw@mail.gmail.com>
+Subject: Re: [PATCH] spi-nor: Kconfig: Remove unneeded help message
+From: Fabio Estevam <festevam@gmail.com>
+To: Li Frank <Frank.Li@freescale.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Fabio Estevam <Fabio.Estevam@freescale.com>,
+ Huang Shijie <shijie.huang@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Xu Han <han.xu@freescale.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +29,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current "We only connect the NOR to this controller now." text
-is not very clear, so explain it better by saying that generic SPI
-is not supported by SPI_FSL_QUADSPI and only SPI NOR is.
+Hi Frank,
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- Explain that generic SPI is not supported and only SPI NOR is as
-suggested by Frank Li
+On Thu, Aug 13, 2015 at 1:49 PM, Li Frank <Frank.Li@freescale.com> wrote:
 
- drivers/mtd/spi-nor/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>> I'm inclined to accept this patch, but I'm curious what the intention for the
+>> original statement was. Does this mean "this controller could support generic
+>> SPI, but this driver only bothers to implement the NOR flash protocol"?
+>
+> This controller doesn't support generic SPI.
+> Just support connect to SPI NOR flash.
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 64a4f0e..2353431 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -26,6 +26,7 @@ config SPI_FSL_QUADSPI
- 	depends on ARCH_MXC
- 	help
- 	  This enables support for the Quad SPI controller in master mode.
--	  We only connect the NOR to this controller now.
-+	  This controller does not support generic SPI. It only supports
-+	  SPI NOR.
- 
- endif # MTD_SPI_NOR
--- 
-1.9.1
+Thanks for the clarification.
+
+I changed the Kconfig in v2 to make this clear as per your suggestion.
+
+Regards,
+
+Fabio Estevam
