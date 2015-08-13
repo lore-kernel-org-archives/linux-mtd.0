@@ -1,30 +1,20 @@
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPp1u-00086n-V2
- for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 09:42:35 +0000
-Received: by wicja10 with SMTP id ja10so62151367wic.1
- for <linux-mtd@lists.infradead.org>; Thu, 13 Aug 2015 02:42:13 -0700 (PDT)
+Message-ID: <55CC8651.2030600@ti.com>
+Date: Thu, 13 Aug 2015 14:58:09 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
-References: <1437479828-30826-1-git-send-email-B48286@freescale.com>
- <CY1PR0301MB0780E3F6E2A1170A7A56A8538B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
- <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 13 Aug 2015 11:41:33 +0200
-Message-ID: <CAOMqctSMyB+7=Rfw-hTvJ6YePn9y_QW8p6_jT8v=ejYZ9hF=hA@mail.gmail.com>
-Subject: Re: [PATCH] RFC: mtd/spi-nor: add checking for the spi_nor_read
-To: Hou Zhiqiang <B48286@freescale.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "jonatas.rech@datacom.ind.br" <jonatas.rech@datacom.ind.br>,
- "Jane.Wan@gainspeed.com" <Jane.Wan@gainspeed.com>,
- "shijie.huang@intel.com" <shijie.huang@intel.com>,
- "valentin.longchamp@keymile.com" <valentin.longchamp@keymile.com>,
- "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
- "beanhuo@micron.com" <beanhuo@micron.com>,
- Hu Vincent <Mingkai.Hu@freescale.com>
-Content-Type: text/plain; charset=UTF-8
+To: <tony@atomide.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
+ <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 16/22] memory: omap-gpmc: Support general purpose input
+ for WAITPINs
+References: <1438938752-31010-1-git-send-email-rogerq@ti.com>
+ <1438938752-31010-17-git-send-email-rogerq@ti.com>
+In-Reply-To: <1438938752-31010-17-git-send-email-rogerq@ti.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,69 +24,231 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 13 August 2015 at 11:03, Hou Zhiqiang <B48286@freescale.com> wrote:
-> Hello,
->
-> I want to add the 4-Byte addressing flashes support for the Freescale eSPI
-> controller dirver. Appreciate your suggestions.
->
-> Background:
-> In the Freescale eSPI controller dirver, if the transaction length exceed
-> 64KiB, the contents of the transaction was touched to update the command
-> with assumed the 3-Byte address width. It is a workaround, due to the
-> Freescale eSPI controller have a hardware limit that the maximum one-time
-> transaction length is 64KiB, that isn't consistent with many other vendors'
-> SPI controllers, and so far the SPI flash driver assume the SPI controller
-> have the ability to complete the specified transaction length at one-time.
->
-> But this workaround is only suit for 3-Byte addressing slaves, as time goes
-> by, there are 4-Byte address width SPI flashes, so this assumption isn't
-> correct and this workaround discombobulate the controller driver layer and
-> protocol driver layer. So, this workaround should be removed and the SPI
-> client driver should ensure the transaction completion.
->
-> There are two solutions:
-> 1. In spi-nor framework, compare the retlen with the transaction length
-> specified, if the retlen less than the transaction length and with no error
-> number returned, re-initiate the transaction with the updated address.
-> Advantage:
-> It won't affect other SPI controllers without this limit.
-> Disadvantage:
-> It is not a systematic solution.
 
-This can probably break transactions that are performed on non-flash
-slaves but look like flash read command.
 
->
-> 2. Add quirk support, something like i2c quirk.
-> Advantage:
-> It is a systematic solution.
-> Disadvantage:
-> The quirk mechanism is only useful for Freescale eSPI controller, but it will
-> affect whole SPI framework.
+On 07/08/15 12:12, Roger Quadros wrote:
+> OMAPs can have 2 to 4 WAITPINs that can be used as general purpose
+> input if not used for memory wait state insertion.
+> 
+> The first user will be the OMAP NAND chip to get the NAND
+> read/busy status using gpiolib.
+> 
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>  drivers/memory/omap-gpmc.c | 122 +++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 117 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+> index 30d9c21..264009d 100644
+> --- a/drivers/memory/omap-gpmc.c
+> +++ b/drivers/memory/omap-gpmc.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/spinlock.h>
+>  #include <linux/io.h>
+>  #include <linux/module.h>
+> +#include <linux/gpio/driver.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+> @@ -223,6 +224,11 @@ struct omap3_gpmc_regs {
+>  	struct gpmc_cs_config cs_context[GPMC_CS_NUM];
+>  };
+>  
+> +struct gpmc_device {
+> +	struct device *dev;
+> +	struct gpio_chip gpio_chip;
+> +};
+> +
+>  static struct resource	gpmc_mem_root;
+>  static struct gpmc_cs_data gpmc_cs[GPMC_CS_NUM];
+>  static DEFINE_SPINLOCK(gpmc_mem_lock);
+> @@ -1919,10 +1925,69 @@ err:
+>  	return ret;
+>  }
+>  
+> +static int gpmc_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
+> +{
+> +	return 1;	/* we're input only */
+> +}
+> +
+> +static int gpmc_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
+> +{
+> +	return 0;	/* we're input only */
+> +}
+> +
+> +static int gpmc_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
+> +				      int value)
+> +{
+> +	return -EINVAL;	/* we're input only */
+> +}
+> +
+> +static void gpmc_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+> +{
+> +}
+> +
+> +static int gpmc_gpio_get(struct gpio_chip *chip, unsigned offset)
+> +{
+> +	u32 reg;
+> +
+> +	offset += 8;
+> +
+> +	reg = gpmc_read_reg(GPMC_STATUS) & BIT(offset);
+> +
+> +	return !!reg;
+> +}
+> +
+> +static int gpmc_gpio_init(struct gpmc_device *gpmc)
+> +{
+> +	int ret;
+> +
+> +	gpmc->gpio_chip.dev = gpmc->dev;
+> +	gpmc->gpio_chip.owner = THIS_MODULE;
+> +	gpmc->gpio_chip.label = DEVICE_NAME;
+> +	gpmc->gpio_chip.ngpio = gpmc_nr_waitpins;
+> +	gpmc->gpio_chip.get_direction = gpmc_gpio_get_direction;
+> +	gpmc->gpio_chip.direction_input = gpmc_gpio_direction_input;
+> +	gpmc->gpio_chip.direction_output = gpmc_gpio_direction_output;
+> +	gpmc->gpio_chip.set = gpmc_gpio_set;
+> +	gpmc->gpio_chip.get = gpmc_gpio_get;
+> +	gpmc->gpio_chip.base = -1;
+> +
+> +	ret = gpiochip_add(&gpmc->gpio_chip);
+> +	if (ret < 0) {
+> +		dev_err(gpmc->dev, "could not register gpio chip: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void gpmc_gpio_exit(struct gpmc_device *gpmc)
+> +{
+> +	gpiochip_remove(&gpmc->gpio_chip);
+> +}
+> +
+>  static int gpmc_probe_dt(struct platform_device *pdev)
+>  {
+>  	int ret;
+> -	struct device_node *child;
+>  	const struct of_device_id *of_id =
+>  		of_match_device(gpmc_dt_ids, &pdev->dev);
+>  
+> @@ -1950,6 +2015,17 @@ static int gpmc_probe_dt(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> +	dev_info(&pdev->dev, "num-cs %d, num-wait %d\n",
+> +		 gpmc_cs_num, gpmc_nr_waitpins);
+> +
+> +	return 0;
+> +}
+> +
+> +static int gpmc_probe_dt_children(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +	struct device_node *child;
+> +
+>  	for_each_available_child_of_node(pdev->dev.of_node, child) {
+>  
+>  		if (!child->name)
+> @@ -1959,6 +2035,9 @@ static int gpmc_probe_dt(struct platform_device *pdev)
+>  			ret = gpmc_probe_onenand_child(pdev, child);
+>  		else
+>  			ret = gpmc_probe_generic_child(pdev, child);
+> +
+> +		if (ret)
+> +			return ret;
+>  	}
+>  
+>  	return 0;
+> @@ -1968,6 +2047,11 @@ static int gpmc_probe_dt(struct platform_device *pdev)
+>  {
+>  	return 0;
+>  }
+> +
+> +static int gpmc_probe_dt_children(struct platform_device *pdev)
+> +{
+> +	return 0;
+> +}
+>  #endif
+>  
+>  static int gpmc_probe(struct platform_device *pdev)
+> @@ -1975,6 +2059,7 @@ static int gpmc_probe(struct platform_device *pdev)
+>  	int rc;
+>  	u32 l;
+>  	struct resource *res;
+> +	struct gpmc_device *gpmc;
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	if (res == NULL)
+> @@ -2005,6 +2090,17 @@ static int gpmc_probe(struct platform_device *pdev)
+>  		return -EINVAL;
+>  	}
+>  
+> +	rc = gpmc_probe_dt(pdev);
+> +	if (rc)
+> +		return rc;
+> +
+> +	gpmc = devm_kzalloc(&pdev->dev, sizeof(*gpmc), GFP_KERNEL);
+> +	if (!gpmc)
+> +		return -ENOMEM;
+> +
+> +	gpmc->dev = &pdev->dev;
+> +	platform_set_drvdata(pdev, gpmc);
+> +
+>  	pm_runtime_enable(&pdev->dev);
+>  	pm_runtime_get_sync(&pdev->dev);
+>  
+> @@ -2032,24 +2128,40 @@ static int gpmc_probe(struct platform_device *pdev)
+>  		 GPMC_REVISION_MINOR(l));
+>  
+>  	gpmc_mem_init();
+> +	rc = gpmc_gpio_init(gpmc);
+> +	if (rc)
+> +		goto gpio_init_failed;
+> +
+>  
+>  	if (!pdev->dev.of_node) {
+>  		gpmc_cs_num	 = GPMC_CS_NUM;
+>  		gpmc_nr_waitpins = GPMC_NR_WAITPINS;
+>  	}
 
-I added this quirk in m25p80.c since my current SPI master driver is
-just broken so I tried to work around that. While the quirk itself is
-rejected as non-syetematic this series that adds the required support
-for checking the return value of the SPI master driver transfer
-functions.
+The above if {} needs to move near gpmc_probe_dt()
+else we break gpmc for legacy boot.
 
-So you have options:
+cheers,
+-roger
 
-2a: add SPI master quirk and check it in m25p80.c and truncate the
-transfer in m25p80.c
-
-2b: truncate the transfer in SPI master driver and just return the
-number of bytes transferred
-
-This patch series should handle fragmenting the transfers in spi-nor.c
-
-http://lists.infradead.org/pipermail/linux-mtd/2015-July/060466.html
-
-3: if your controller has manual CS driving support fragment the
-transfer in your SPI master driver into chunks the controler can
-transfer in one go.
-
-Thanks
-
-Michal
+>  
+> -	rc = gpmc_probe_dt(pdev);
+> +	rc = gpmc_probe_dt_children(pdev);
+>  	if (rc < 0) {
+> -		pm_runtime_put_sync(&pdev->dev);
+> -		dev_err(gpmc_dev, "failed to probe DT parameters\n");
+> -		return rc;
+> +		dev_err(gpmc_dev, "failed to probe DT children\n");
+> +		goto dt_children_failed;
+>  	}
+>  
+>  	return 0;
+> +
+> +dt_children_failed:
+> +	gpmc_gpio_exit(gpmc);
+> +gpio_init_failed:
+> +	gpmc_mem_exit();
+> +	pm_runtime_put_sync(&pdev->dev);
+> +	pm_runtime_disable(&pdev->dev);
+> +	gpmc_dev = NULL;
+> +
+> +	return rc;
+>  }
+>  
+>  static int gpmc_remove(struct platform_device *pdev)
+>  {
+> +	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
+> +
+> +	gpmc_gpio_exit(gpmc);
+>  	gpmc_mem_exit();
+>  	pm_runtime_put_sync(&pdev->dev);
+>  	pm_runtime_disable(&pdev->dev);
+> 
