@@ -1,24 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQ1cz-0006Zh-Pt
- for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 23:09:42 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RFT PATCH 1/4] mtd: fsl-quadspi: use automatic spi-nor detection
-Date: Fri, 14 Aug 2015 01:09:14 +0200
-Cc: linux-mtd@lists.infradead.org,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
- Joachim Eastwood <manabian@gmail.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Han Xu <han.xu@freescale.com>
-References: <1439505965-134748-1-git-send-email-computersforpeace@gmail.com>
- <1439505965-134748-2-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1439505965-134748-2-git-send-email-computersforpeace@gmail.com>
+Message-ID: <55CD25B6.6050901@codeaurora.org>
+Date: Thu, 13 Aug 2015 16:18:14 -0700
+From: Stephen Boyd <sboyd@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+To: Mathieu Olivari <mathieu@codeaurora.org>
+CC: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ linux@arm.linux.org.uk, dwmw2@infradead.org,
+ computersforpeace@gmail.com, agross@codeaurora.org,
+ bjorn.andersson@sonymobile.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/3] ARM: qcom: add SFPB nodes to IPQ806x dts
+References: <1439501620-24073-1-git-send-email-mathieu@codeaurora.org>
+ <1439501620-24073-2-git-send-email-mathieu@codeaurora.org>
+In-Reply-To: <1439501620-24073-2-git-send-email-mathieu@codeaurora.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201508140109.14149.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, August 14, 2015 at 12:46:02 AM, Brian Norris wrote:
-> We don't really need the flash information from the device tree here.
-> Let's stick with autodetection here instead.
-
-Thanks for keeping me in the loop.
-
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+On 08/13/2015 02:33 PM, Mathieu Olivari wrote:
+> Add one new node to the ipq806x.dtsi file to declare & register the
+> hardware spinlock devices. This mechanism is required to be used by
+> other drivers such as SMEM.
+>
+> Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
 > ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c
-> b/drivers/mtd/spi-nor/fsl-quadspi.c index d32b7e04ccca..2a17ec6269ff
-> 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -1006,8 +1006,6 @@ static int fsl_qspi_probe(struct platform_device
-> *pdev)
-> 
->  	/* iterate the subnodes. */
->  	for_each_available_child_of_node(dev->of_node, np) {
-> -		char modalias[40];
-> -
->  		/* skip the holes */
->  		if (!q->has_second_chip)
->  			i *= 2;
-> @@ -1030,10 +1028,6 @@ static int fsl_qspi_probe(struct platform_device
-> *pdev) nor->prepare = fsl_qspi_prep;
->  		nor->unprepare = fsl_qspi_unprep;
-> 
-> -		ret = of_modalias_node(np, modalias, sizeof(modalias));
-> -		if (ret < 0)
-> -			goto mutex_failed;
-> -
->  		ret = of_property_read_u32(np, "spi-max-frequency",
->  				&q->clk_rate);
->  		if (ret < 0)
-> @@ -1042,7 +1036,7 @@ static int fsl_qspi_probe(struct platform_device
-> *pdev) /* set the chip address for READID */
->  		fsl_qspi_set_base_addr(q, nor);
-> 
-> -		ret = spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
-> +		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
+>   arch/arm/boot/dts/qcom-ipq8064.dtsi | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+> index 9f727d8..ea7b959 100644
+> --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
+> +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+> @@ -67,6 +67,18 @@
+>   			clock-frequency = <32768>;
+>   			#clock-cells = <0>;
+>   		};
+> +
+> +		sfpb_mutex_block: syscon@01200600 {
 
-This is something I don't quite understand. So we have a SPI NOR controller,
-which as it's own struct device instance.
+I think you can drop the leading 0 here. Also this should be moved into 
+the soc node.
 
-This controller can have multiple SPI NORs on it. Each SPI NOR has it's own
-struct spi_nor instance and struct mtd_info instance, right?
+> +			compatible = "syscon";
+> +			reg = <0x01200600 0x100>;
+> +		};
+> +
+> +		sfpb_mutex: sfpb-mutex {
+> +			compatible = "qcom,sfpb-mutex";
+> +			syscon = <&sfpb_mutex_block 4 4>;
+> +
+> +			#hwlock-cells = <1>;
+> +		};
 
-But, all of the SPI NORs share the same struct device as the controller. Do
-I understand that correctly ? Does that make sense to NOT allocate a new
-struct device for each of the SPI NORs ?
+And this node should be moved to the root /.
+>   	};
+>   
+>   	soc: soc {
 
-Best regards,
-Marek Vasut
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
