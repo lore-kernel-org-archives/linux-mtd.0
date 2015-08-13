@@ -1,29 +1,30 @@
-Received: from mail-bn1bn0103.outbound.protection.outlook.com
- ([157.56.110.103] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPoQ5-0006ms-Vi
- for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 09:03:34 +0000
-From: Hou Zhiqiang <B48286@freescale.com>
-To: Hou Zhiqiang <B48286@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "jonatas.rech@datacom.ind.br" <jonatas.rech@datacom.ind.br>,
- "Jane.Wan@gainspeed.com" <Jane.Wan@gainspeed.com>, "shijie.huang@intel.com"
- <shijie.huang@intel.com>, "valentin.longchamp@keymile.com"
- <valentin.longchamp@keymile.com>, "hkallweit1@gmail.com"
- <hkallweit1@gmail.com>, "hramrach@gmail.com" <hramrach@gmail.com>,
- "beanhuo@micron.com" <beanhuo@micron.com>
-CC: Hu Vincent <Mingkai.Hu@freescale.com>
-Subject: RE: [PATCH] RFC: mtd/spi-nor: add checking for the spi_nor_read
-Date: Thu, 13 Aug 2015 09:03:04 +0000
-Message-ID: <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ id 1ZPp1u-00086n-V2
+ for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 09:42:35 +0000
+Received: by wicja10 with SMTP id ja10so62151367wic.1
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Aug 2015 02:42:13 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
 References: <1437479828-30826-1-git-send-email-B48286@freescale.com>
  <CY1PR0301MB0780E3F6E2A1170A7A56A8538B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
-In-Reply-To: <CY1PR0301MB0780E3F6E2A1170A7A56A8538B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Thu, 13 Aug 2015 11:41:33 +0200
+Message-ID: <CAOMqctSMyB+7=Rfw-hTvJ6YePn9y_QW8p6_jT8v=ejYZ9hF=hA@mail.gmail.com>
+Subject: Re: [PATCH] RFC: mtd/spi-nor: add checking for the spi_nor_read
+To: Hou Zhiqiang <B48286@freescale.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "jonatas.rech@datacom.ind.br" <jonatas.rech@datacom.ind.br>,
+ "Jane.Wan@gainspeed.com" <Jane.Wan@gainspeed.com>,
+ "shijie.huang@intel.com" <shijie.huang@intel.com>,
+ "valentin.longchamp@keymile.com" <valentin.longchamp@keymile.com>,
+ "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+ "beanhuo@micron.com" <beanhuo@micron.com>,
+ Hu Vincent <Mingkai.Hu@freescale.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,76 +34,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8sDQoNCkkgd2FudCB0byBhZGQgdGhlIDQtQnl0ZSBhZGRyZXNzaW5nIGZsYXNoZXMgc3Vw
-cG9ydCBmb3IgdGhlIEZyZWVzY2FsZSBlU1BJDQpjb250cm9sbGVyIGRpcnZlci4gQXBwcmVjaWF0
-ZSB5b3VyIHN1Z2dlc3Rpb25zLg0KDQpCYWNrZ3JvdW5kOg0KSW4gdGhlIEZyZWVzY2FsZSBlU1BJ
-IGNvbnRyb2xsZXIgZGlydmVyLCBpZiB0aGUgdHJhbnNhY3Rpb24gbGVuZ3RoIGV4Y2VlZA0KNjRL
-aUIsIHRoZSBjb250ZW50cyBvZiB0aGUgdHJhbnNhY3Rpb24gd2FzIHRvdWNoZWQgdG8gdXBkYXRl
-IHRoZSBjb21tYW5kIA0Kd2l0aCBhc3N1bWVkIHRoZSAzLUJ5dGUgYWRkcmVzcyB3aWR0aC4gSXQg
-aXMgYSB3b3JrYXJvdW5kLCBkdWUgdG8gdGhlIA0KRnJlZXNjYWxlIGVTUEkgY29udHJvbGxlciBo
-YXZlIGEgaGFyZHdhcmUgbGltaXQgdGhhdCB0aGUgbWF4aW11bSBvbmUtdGltZQ0KdHJhbnNhY3Rp
-b24gbGVuZ3RoIGlzIDY0S2lCLCB0aGF0IGlzbid0IGNvbnNpc3RlbnQgd2l0aCBtYW55IG90aGVy
-IHZlbmRvcnMnDQpTUEkgY29udHJvbGxlcnMsIGFuZCBzbyBmYXIgdGhlIFNQSSBmbGFzaCBkcml2
-ZXIgYXNzdW1lIHRoZSBTUEkgY29udHJvbGxlcg0KaGF2ZSB0aGUgYWJpbGl0eSB0byBjb21wbGV0
-ZSB0aGUgc3BlY2lmaWVkIHRyYW5zYWN0aW9uIGxlbmd0aCBhdCBvbmUtdGltZS4NCiANCkJ1dCB0
-aGlzIHdvcmthcm91bmQgaXMgb25seSBzdWl0IGZvciAzLUJ5dGUgYWRkcmVzc2luZyBzbGF2ZXMs
-IGFzIHRpbWUgZ29lcw0KYnksIHRoZXJlIGFyZSA0LUJ5dGUgYWRkcmVzcyB3aWR0aCBTUEkgZmxh
-c2hlcywgc28gdGhpcyBhc3N1bXB0aW9uIGlzbid0IA0KY29ycmVjdCBhbmQgdGhpcyB3b3JrYXJv
-dW5kIGRpc2NvbWJvYnVsYXRlIHRoZSBjb250cm9sbGVyIGRyaXZlciBsYXllciBhbmQNCnByb3Rv
-Y29sIGRyaXZlciBsYXllci4gU28sIHRoaXMgd29ya2Fyb3VuZCBzaG91bGQgYmUgcmVtb3ZlZCBh
-bmQgdGhlIFNQSQ0KY2xpZW50IGRyaXZlciBzaG91bGQgZW5zdXJlIHRoZSB0cmFuc2FjdGlvbiBj
-b21wbGV0aW9uLg0KDQpUaGVyZSBhcmUgdHdvIHNvbHV0aW9uczoNCjEuIEluIHNwaS1ub3IgZnJh
-bWV3b3JrLCBjb21wYXJlIHRoZSByZXRsZW4gd2l0aCB0aGUgdHJhbnNhY3Rpb24gbGVuZ3RoDQpz
-cGVjaWZpZWQsIGlmIHRoZSByZXRsZW4gbGVzcyB0aGFuIHRoZSB0cmFuc2FjdGlvbiBsZW5ndGgg
-YW5kIHdpdGggbm8gZXJyb3INCm51bWJlciByZXR1cm5lZCwgcmUtaW5pdGlhdGUgdGhlIHRyYW5z
-YWN0aW9uIHdpdGggdGhlIHVwZGF0ZWQgYWRkcmVzcy4NCkFkdmFudGFnZTogDQpJdCB3b24ndCBh
-ZmZlY3Qgb3RoZXIgU1BJIGNvbnRyb2xsZXJzIHdpdGhvdXQgdGhpcyBsaW1pdC4NCkRpc2FkdmFu
-dGFnZTogDQpJdCBpcyBub3QgYSBzeXN0ZW1hdGljIHNvbHV0aW9uLg0KDQoyLiBBZGQgcXVpcmsg
-c3VwcG9ydCwgc29tZXRoaW5nIGxpa2UgaTJjIHF1aXJrLg0KQWR2YW50YWdlOiANCkl0IGlzIGEg
-c3lzdGVtYXRpYyBzb2x1dGlvbi4NCkRpc2FkdmFudGFnZTogDQpUaGUgcXVpcmsgbWVjaGFuaXNt
-IGlzIG9ubHkgdXNlZnVsIGZvciBGcmVlc2NhbGUgZVNQSSBjb250cm9sbGVyLCBidXQgaXQgd2ls
-bA0KYWZmZWN0IHdob2xlIFNQSSBmcmFtZXdvcmsuDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3Nh
-Z2UtLS0tLQ0KPiBGcm9tOiBIb3UgWmhpcWlhbmctQjQ4Mjg2DQo+IFNlbnQ6IDIwMTXE6jfUwjMx
-yNUgMTg6MzYNCj4gVG86IEhvdSBaaGlxaWFuZy1CNDgyODY7IGxpbnV4LW10ZEBsaXN0cy5pbmZy
-YWRlYWQub3JnOw0KPiBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207IGR3bXcyQGluZnJhZGVh
-ZC5vcmc7IHNoaWppZS5odWFuZ0BpbnRlbC5jb20NCj4gQ2M6IEh1IE1pbmdrYWktQjIxMjg0DQo+
-IFN1YmplY3Q6IFJFOiBbUEFUQ0hdIFJGQzogbXRkL3NwaS1ub3I6IGFkZCBjaGVja2luZyBmb3Ig
-dGhlIHNwaV9ub3JfcmVhZA0KPiANCj4gSGkgU2hpamllIGFuZCBCcmlhbiwNCj4gDQo+IERvIHlv
-dSBoYXZlIGFueSBjb21tZW50Pw0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-PiA+IEZyb206IFpoaXFpYW5nIEhvdSBbbWFpbHRvOkI0ODI4NkBmcmVlc2NhbGUuY29tXQ0KPiA+
-IFNlbnQ6IDIwMTXE6jfUwjIxyNUgMTk6NTcNCj4gPiBUbzogbGludXgtbXRkQGxpc3RzLmluZnJh
-ZGVhZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsNCj4gPiBkd213MkBpbmZyYWRl
-YWQub3JnDQo+ID4gQ2M6IEh1IE1pbmdrYWktQjIxMjg0OyBIb3UgWmhpcWlhbmctQjQ4Mjg2DQo+
-ID4gU3ViamVjdDogW1BBVENIXSBSRkM6IG10ZC9zcGktbm9yOiBhZGQgY2hlY2tpbmcgZm9yIHRo
-ZSBzcGlfbm9yX3JlYWQNCj4gPg0KPiA+IEZyb206IEhvdSBaaGlxaWFuZyA8QjQ4Mjg2QGZyZWVz
-Y2FsZS5jb20+DQo+ID4NCj4gPiBDb21wYXJlIHRoZSB2YXIgcmV0bGVuIHdpdGggbGVuIHRvIGVu
-c3VyZSB0aGUgcmVhZCBvcGVyYXRpb24gc3VjY2Vzc2Z1bC4NCj4gPg0KPiA+IFRoZXJlIGFyZSBz
-b21lIFNQSSBjb250cm9sbGVycyB0aGF0IGhhdmUgYSBtYXhpbXVtIHRyYW5zZmVyIGxlbmd0aCwg
-ZS5nLg0KPiA+IEZyZWVzY2FsZSBlU1BJIGNvbnRyb2xsZXIgaXMgYWJsZSB0byB0cmFuc2ZlciAw
-eDEwMDAwIEJ5dGVzIGVhY2ggdGltZS4NCj4gPiBJZiB0aGUgc3BpX25vcl9yZWFkIGRpbGl2ZXIg
-YSB0cmFuc2FjdGlvbiBsZW5ndGggdGhhdCBleGNjZWQgdGhlDQo+ID4gYWJpbGl0eSBvZiB0aGUg
-U1BJIGNvbnRyb2xsZXIsIHRoZXJlIHNob3VsZCBiZSBtdWx0aXBsZSByZWFkIG9wZXJhdGlvbg0K
-PiA+IHRvIG1ha2Ugc3VyZSB0aGlzIHRyYW5zYWN0aW9uIGNvbXBsZXRpb24uDQo+ID4NCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBIb3UgWmhpcWlhbmcgPEI0ODI4NkBmcmVlc2NhbGUuY29tPg0KPiA+IC0t
-LQ0KPiA+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDE0ICsrKysrKysrKysrKy0t
-DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0K
-PiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIGIvZHJp
-dmVycy9tdGQvc3BpLW5vci9zcGktDQo+ID4gbm9yLmMgaW5kZXggZmJjNTAzNS4uZWMxMGNkMSAx
-MDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiA+ICsrKyBi
-L2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ID4gQEAgLTcxNSw2ICs3MTUsOCBAQCBz
-dGF0aWMgaW50IHNwaV9ub3JfcmVhZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwNCj4gPiBsb2ZmX3Qg
-ZnJvbSwgc2l6ZV90IGxlbiwgIHsNCj4gPiAgCXN0cnVjdCBzcGlfbm9yICpub3IgPSBtdGRfdG9f
-c3BpX25vcihtdGQpOw0KPiA+ICAJaW50IHJldDsNCj4gPiArCXNpemVfdCBjbnQgPSAwOw0KPiA+
-ICsJdV9jaGFyICpjdXIgPSBidWY7DQo+ID4NCj4gPiAgCWRldl9kYmcobm9yLT5kZXYsICJmcm9t
-IDB4JTA4eCwgbGVuICV6ZFxuIiwgKHUzMilmcm9tLCBsZW4pOw0KPiA+DQo+ID4gQEAgLTcyMiw4
-ICs3MjQsMTYgQEAgc3RhdGljIGludCBzcGlfbm9yX3JlYWQoc3RydWN0IG10ZF9pbmZvICptdGQs
-DQo+ID4gbG9mZl90IGZyb20sIHNpemVfdCBsZW4sDQo+ID4gIAlpZiAocmV0KQ0KPiA+ICAJCXJl
-dHVybiByZXQ7DQo+ID4NCj4gPiAtCXJldCA9IG5vci0+cmVhZChub3IsIGZyb20sIGxlbiwgcmV0
-bGVuLCBidWYpOw0KPiA+IC0NCj4gPiArCSpyZXRsZW4gPSAwOw0KPiA+ICsJd2hpbGUgKGxlbiA+
-IDApIHsNCj4gPiArCQlyZXQgPSBub3ItPnJlYWQobm9yLCBmcm9tLCBsZW4sICZjbnQsIGN1cik7
-DQo+ID4gKwkJaWYgKHJldCA8IDApDQo+ID4gKwkJCWJyZWFrOw0KPiA+ICsJCWxlbiAtPSBjbnQ7
-DQo+ID4gKwkJY3VyICs9IGNudDsNCj4gPiArCQkqcmV0bGVuICs9IGNudDsNCj4gPiArCQlmcm9t
-ICs9IGNudDsNCj4gPiArCX0NCj4gPiAgCXNwaV9ub3JfdW5sb2NrX2FuZF91bnByZXAobm9yLCBT
-UElfTk9SX09QU19SRUFEKTsNCj4gPiAgCXJldHVybiByZXQ7DQo+ID4gIH0NCj4gPiAtLQ0KPiA+
-IDIuMS4wLjI3Lmc5NmRiMzI0DQo+IA0KPiBUaGFua3MsDQo+IFpoaXFpYW5nDQoNClRoYW5rcywN
-ClpoaXFpYW5nDQo=
+On 13 August 2015 at 11:03, Hou Zhiqiang <B48286@freescale.com> wrote:
+> Hello,
+>
+> I want to add the 4-Byte addressing flashes support for the Freescale eSPI
+> controller dirver. Appreciate your suggestions.
+>
+> Background:
+> In the Freescale eSPI controller dirver, if the transaction length exceed
+> 64KiB, the contents of the transaction was touched to update the command
+> with assumed the 3-Byte address width. It is a workaround, due to the
+> Freescale eSPI controller have a hardware limit that the maximum one-time
+> transaction length is 64KiB, that isn't consistent with many other vendors'
+> SPI controllers, and so far the SPI flash driver assume the SPI controller
+> have the ability to complete the specified transaction length at one-time.
+>
+> But this workaround is only suit for 3-Byte addressing slaves, as time goes
+> by, there are 4-Byte address width SPI flashes, so this assumption isn't
+> correct and this workaround discombobulate the controller driver layer and
+> protocol driver layer. So, this workaround should be removed and the SPI
+> client driver should ensure the transaction completion.
+>
+> There are two solutions:
+> 1. In spi-nor framework, compare the retlen with the transaction length
+> specified, if the retlen less than the transaction length and with no error
+> number returned, re-initiate the transaction with the updated address.
+> Advantage:
+> It won't affect other SPI controllers without this limit.
+> Disadvantage:
+> It is not a systematic solution.
+
+This can probably break transactions that are performed on non-flash
+slaves but look like flash read command.
+
+>
+> 2. Add quirk support, something like i2c quirk.
+> Advantage:
+> It is a systematic solution.
+> Disadvantage:
+> The quirk mechanism is only useful for Freescale eSPI controller, but it will
+> affect whole SPI framework.
+
+I added this quirk in m25p80.c since my current SPI master driver is
+just broken so I tried to work around that. While the quirk itself is
+rejected as non-syetematic this series that adds the required support
+for checking the return value of the SPI master driver transfer
+functions.
+
+So you have options:
+
+2a: add SPI master quirk and check it in m25p80.c and truncate the
+transfer in m25p80.c
+
+2b: truncate the transfer in SPI master driver and just return the
+number of bytes transferred
+
+This patch series should handle fragmenting the transfers in spi-nor.c
+
+http://lists.infradead.org/pipermail/linux-mtd/2015-July/060466.html
+
+3: if your controller has manual CS driving support fragment the
+transfer in your SPI master driver into chunks the controler can
+transfer in one go.
+
+Thanks
+
+Michal
