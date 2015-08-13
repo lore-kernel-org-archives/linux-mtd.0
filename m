@@ -1,21 +1,16 @@
-Received: from hauke-m.de ([5.39.93.123])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPyp6-0002I7-4v
- for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 20:10:00 +0000
-Message-ID: <55CCF980.7080703@hauke-m.de>
-Date: Thu, 13 Aug 2015 22:09:36 +0200
-From: Hauke Mehrtens <hauke@hauke-m.de>
-MIME-Version: 1.0
-To: computersforpeace@gmail.com
-CC: linux-mtd@lists.infradead.org, rjui@broadcom.com,
- bcm-kernel-feedback-list@broadcom.com, f.fainelli@gmail.com,
- zajec5@gmail.com, devicetree@vger.kernel.org, jogo@openwrt.org,
- mathieu@codeaurora.org
-Subject: Re: [PATCH v2] mtd: part: add generic parsing of linux,part-probe
-References: <1432492714-12598-1-git-send-email-hauke@hauke-m.de>
-In-Reply-To: <1432492714-12598-1-git-send-email-hauke@hauke-m.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+From: Mathieu Olivari <mathieu@codeaurora.org>
+To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ linux@arm.linux.org.uk, dwmw2@infradead.org, computersforpeace@gmail.com,
+ agross@codeaurora.org, sboyd@codeaurora.org, bjorn.andersson@sonymobile.com
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Mathieu Olivari <mathieu@codeaurora.org>
+Subject: [PATCH 1/3] ARM: qcom: add SFPB nodes to IPQ806x dts
+Date: Thu, 13 Aug 2015 14:33:38 -0700
+Message-Id: <1439501620-24073-2-git-send-email-mathieu@codeaurora.org>
+In-Reply-To: <1439501620-24073-1-git-send-email-mathieu@codeaurora.org>
+References: <1439501620-24073-1-git-send-email-mathieu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/24/2015 08:38 PM, Hauke Mehrtens wrote:
-> This moves the linux,part-probe device tree parsing code from
-> physmap_of.c to mtdpart.c. Now all drivers can use this feature by just
-> providing a reference to their device tree node in struct
-> mtd_part_parser_data.
-> 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> ---
-> 
-> changes since
-> v1:
->  * add documentation for linux,part-probe
->  * fix spacing
->  * add documentation for of_get_probes()
-> 
->  Documentation/devicetree/bindings/mtd/nand.txt | 16 ++++++++++
->  drivers/mtd/maps/physmap_of.c                  | 40 +-----------------------
->  drivers/mtd/mtdpart.c                          | 43 ++++++++++++++++++++++++++
->  3 files changed, 60 insertions(+), 39 deletions(-)
-> 
-I just want to bring this up again.
+Add one new node to the ipq806x.dtsi file to declare & register the
+hardware spinlock devices. This mechanism is required to be used by
+other drivers such as SMEM.
 
-@Brian do you still have any problem with this patch? Should I use a
-different approach and if so which? I think we agreed on that it is bad
-when the flash chip driver decides which parser to use and it is not
-possible to change it other that changing the code, but this is the
-current situation with most drivers.
+Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
+---
+ arch/arm/boot/dts/qcom-ipq8064.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Hauke
+diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+index 9f727d8..ea7b959 100644
+--- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+@@ -67,6 +67,18 @@
+ 			clock-frequency = <32768>;
+ 			#clock-cells = <0>;
+ 		};
++
++		sfpb_mutex_block: syscon@01200600 {
++			compatible = "syscon";
++			reg = <0x01200600 0x100>;
++		};
++
++		sfpb_mutex: sfpb-mutex {
++			compatible = "qcom,sfpb-mutex";
++			syscon = <&sfpb_mutex_block 4 4>;
++
++			#hwlock-cells = <1>;
++		};
+ 	};
+ 
+ 	soc: soc {
+-- 
+2.1.4
