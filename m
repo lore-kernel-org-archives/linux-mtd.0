@@ -1,22 +1,20 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPiwx-0003RN-0z
- for linux-mtd@lists.infradead.org; Thu, 13 Aug 2015 03:13:03 +0000
-Received: by pacgr6 with SMTP id gr6so27609284pac.2
- for <linux-mtd@lists.infradead.org>; Wed, 12 Aug 2015 20:12:42 -0700 (PDT)
-Date: Wed, 12 Aug 2015 20:12:39 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: han.xu@freescale.com, linux-mtd@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>,
- Huang Shijie <shijie.huang@intel.com>
-Subject: Re: [PATCH] spi-nor: Kconfig: Remove unneeded help message
-Message-ID: <20150813031239.GF108786@google.com>
-References: <1439378899-5660-1-git-send-email-festevam@gmail.com>
+Message-ID: <55CC43B1.4020409@ti.com>
+Date: Thu, 13 Aug 2015 10:13:53 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1439378899-5660-1-git-send-email-festevam@gmail.com>
+To: Tony Lindgren <tony@atomide.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
+ <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/22] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+References: <1438938752-31010-1-git-send-email-rogerq@ti.com>
+ <20150811124829.GM4215@atomide.com>
+In-Reply-To: <20150811124829.GM4215@atomide.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 12, 2015 at 08:28:19AM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
-> 
-> The "We only connect the NOR to this controller now" phrase
-> is not really useful for a Kconfig help text, so remove it.
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-> ---
->  drivers/mtd/spi-nor/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 64a4f0e..baa8442 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -26,6 +26,5 @@ config SPI_FSL_QUADSPI
->  	depends on ARCH_MXC
->  	help
->  	  This enables support for the Quad SPI controller in master mode.
-> -	  We only connect the NOR to this controller now.
 
-I'm inclined to accept this patch, but I'm curious what the intention
-for the original statement was. Does this mean "this controller could
-support generic SPI, but this driver only bothers to implement the NOR
-flash protocol"?
+On 11/08/15 15:48, Tony Lindgren wrote:
+> * Roger Quadros <rogerq@ti.com> [150807 02:15]:
+>> Hi,
+>>
+>> We do a couple of things in this series which result in
+>> cleaner device tree implementation, faster perfomance and
+>> multi-platform support. As an added bonus we get new GPI/Interrupt pins
+>> for use in the system.
+>>
+>> - Establish a custom interface between NAND and GPMC driver. This is
+>> needed because all of the NAND registers sit in the GPMC register space.
+>> Some bits like NAND IRQ are even shared with GPMC.
+>>
+>> - Remove NAND IRQ handling from omap-gpmc driver, share the GPMC IRQ
+>> with the omap2-nand driver and handle NAND IRQ events in the NAND driver.
+>> This causes performance increase when using prefetch-irq mode.
+>> 30% increase in read, 17% increase in write in prefetch-irq mode.
+>>
+>> - Clean up device tree support so that omap-gpmc IP and the omap2 NAND
+>> driver can be used on non-OMAP platforms. e.g. Keystone.
+>>
+>> - Implement GPIOCHIP + IRQCHIP for the GPMC WAITPINS. SoCs can contain
+>> 2 to 4 of these and most of them would be unused otherwise. It also
+>> allows a cleaner implementation of NAND Ready pin status for the NAND driver.
+>>
+>> - Implement GPIOlib based NAND ready pin checking for OMAP NAND driver.
+> 
+> Nice job :) Using GPIOCHIP + IRQCHIP allows us to make the GPMC
+> using drivers pretty much generic eventually.
 
+Thanks :)
 >  
->  endif # MTD_SPI_NOR
-> -- 
-> 1.9.1
+>> NOTE: I've only adapted dra7.dtsi and dra7x-evms for this series.
+>> I will adapt all other boards when the series is in a shape to be accepted.
 > 
+> OK. Yeah let's make sure no regressions are caused by this.. We also
+> still have the omap3 legacy booting around, have you checked that it
+> keeps on working?
 
-Brian
+I don't have any omap3 board with legacy support with me. I have omap3-beagle
+but looks like legacy boot is dropped for it already.
+
+I'll try to revert the patch that drops beagle support and test it on that one.
+
+cheers,
+-roger
