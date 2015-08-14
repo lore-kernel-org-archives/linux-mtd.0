@@ -1,24 +1,33 @@
-Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
+Received: from mail-by2on0123.outbound.protection.outlook.com
+ ([207.46.100.123] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQ7k9-0004WU-JY
- for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 05:41:30 +0000
-Received: by lagz9 with SMTP id z9so37893333lag.3
- for <linux-mtd@lists.infradead.org>; Thu, 13 Aug 2015 22:41:07 -0700 (PDT)
+ id 1ZQ9Ns-0004Qp-CH
+ for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 07:26:37 +0000
+From: Hou Zhiqiang <B48286@freescale.com>
+To: Michal Suchanek <hramrach@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "jonatas.rech@datacom.ind.br"
+ <jonatas.rech@datacom.ind.br>, "Jane.Wan@gainspeed.com"
+ <Jane.Wan@gainspeed.com>, "shijie.huang@intel.com" <shijie.huang@intel.com>,
+ "valentin.longchamp@keymile.com" <valentin.longchamp@keymile.com>,
+ "hkallweit1@gmail.com" <hkallweit1@gmail.com>, "beanhuo@micron.com"
+ <beanhuo@micron.com>, Hu Vincent <Mingkai.Hu@freescale.com>
+Subject: RE: [PATCH] RFC: mtd/spi-nor: add checking for the spi_nor_read
+Date: Fri, 14 Aug 2015 07:26:13 +0000
+Message-ID: <CY1PR0301MB0780FE5CB8FE353B52B194838B7C0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+References: <1437479828-30826-1-git-send-email-B48286@freescale.com>
+ <CY1PR0301MB0780E3F6E2A1170A7A56A8538B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAOMqctSMyB+7=Rfw-hTvJ6YePn9y_QW8p6_jT8v=ejYZ9hF=hA@mail.gmail.com>
+ <CY1PR0301MB07804C16D086589B621FD9498B7C0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAOMqctRy8ozO9JCz2kxPttUj9yrXiHjemfZ2_ib5R4JjkY=k+Q@mail.gmail.com>
+ <CAOMqctRcPAhJxLb7_UrE_kyHXRq4v=k15bz9NcoppVPEWfwP_A@mail.gmail.com>
+In-Reply-To: <CAOMqctRcPAhJxLb7_UrE_kyHXRq4v=k15bz9NcoppVPEWfwP_A@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20150813232447.GJ60523@google.com>
-References: <1439505965-134748-1-git-send-email-computersforpeace@gmail.com>
- <1439505965-134748-2-git-send-email-computersforpeace@gmail.com>
- <201508140109.14149.marex@denx.de> <20150813232447.GJ60523@google.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Fri, 14 Aug 2015 07:40:27 +0200
-Message-ID: <CAOMqctS-CNu6By1b+s4yEPzgOy3gbtCYuwvET9sRrCnt8Azvhw@mail.gmail.com>
-Subject: Re: [RFT PATCH 1/4] mtd: fsl-quadspi: use automatic spi-nor detection
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Joachim Eastwood <manabian@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Han Xu <han.xu@freescale.com>
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,46 +37,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14 August 2015 at 01:24, Brian Norris <computersforpeace@gmail.com> wrote:
-> On Fri, Aug 14, 2015 at 01:09:14AM +0200, Marek Vasut wrote:
->> This is something I don't quite understand. So we have a SPI NOR controller,
->> which as it's own struct device instance.
->
-> Right.
->
->> This controller can have multiple SPI NORs on it. Each SPI NOR has it's own
->> struct spi_nor instance and struct mtd_info instance, right?
->
-> Right.
->
->> But, all of the SPI NORs share the same struct device as the controller. Do
->> I understand that correctly ?
->
-> Mostly yes. But your next statement doesn't quite follow in my mind, so
-> maybe you've missed something.
->
-> There is typically a single platform device (and associated struct
-> device) that represents the fsl-quadspi controller.
->
-> (Pedantic side point: each MTD actually creates one or more struct
-> device objects; one for the master MTD, and one for each partition that
-> might be created. But I don't think you're asking about these struct
-> device's.)
->
-> But none of this is super-relevant to this patch; I'm not talking about
-> struct devices (think kobjects, Linux driver model), I'm dealing with
-> struct device_node (think device tree, of_*() APIs, etc.).
->
-> Now, each flash connected to the controller has its own device_node. All
-> this patch is saying is that we don't need to know much about that node;
-> as long as it responds to the READ ID command properly, spi_nor_scan()
-> can autodetect it.
->
-
-And if there was suppor for a flash chip that does not respond to READ
-ID (or uses a different opcode for it) this patch would break it,
-right?
-
-Thanks
-
-Michal
+SGkgTWljaGFsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pY2hh
+bCBTdWNoYW5layBbbWFpbHRvOmhyYW1yYWNoQGdtYWlsLmNvbV0NCj4gU2VudDogMjAxNeW5tDjm
+nIgxNOaXpSAxMjo0Mw0KPiBUbzogSG91IFpoaXFpYW5nLUI0ODI4Ng0KPiBDYzogbGludXgtbXRk
+QGxpc3RzLmluZnJhZGVhZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsNCj4gZHdt
+dzJAaW5mcmFkZWFkLm9yZzsgam9uYXRhcy5yZWNoQGRhdGFjb20uaW5kLmJyOyBKYW5lLldhbkBn
+YWluc3BlZWQuY29tOw0KPiBzaGlqaWUuaHVhbmdAaW50ZWwuY29tOyB2YWxlbnRpbi5sb25nY2hh
+bXBAa2V5bWlsZS5jb207DQo+IGhrYWxsd2VpdDFAZ21haWwuY29tOyBiZWFuaHVvQG1pY3Jvbi5j
+b207IEh1IE1pbmdrYWktQjIxMjg0DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIFJGQzogbXRkL3Nw
+aS1ub3I6IGFkZCBjaGVja2luZyBmb3IgdGhlIHNwaV9ub3JfcmVhZA0KPiANCj4gT24gMTQgQXVn
+dXN0IDIwMTUgYXQgMDY6MzAsIE1pY2hhbCBTdWNoYW5layA8aHJhbXJhY2hAZ21haWwuY29tPiB3
+cm90ZToNCj4gPiBPbiAxNCBBdWd1c3QgMjAxNSBhdCAwNTo0MCwgSG91IFpoaXFpYW5nIDxCNDgy
+ODZAZnJlZXNjYWxlLmNvbT4gd3JvdGU6DQo+ID4+DQo+ID4+DQo+ID4+PiAtLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQ0KPiA+Pj4gRnJvbTogTWljaGFsIFN1Y2hhbmVrIFttYWlsdG86aHJhbXJh
+Y2hAZ21haWwuY29tXQ0KPiA+Pj4gU2VudDogMjAxNeW5tDjmnIgxM+aXpSAxNzo0Mg0KPiA+Pj4g
+VG86IEhvdSBaaGlxaWFuZy1CNDgyODYNCj4gPj4+IENjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFk
+ZWFkLm9yZzsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOw0KPiA+Pj4gZHdtdzJAaW5mcmFk
+ZWFkLm9yZzsgam9uYXRhcy5yZWNoQGRhdGFjb20uaW5kLmJyOw0KPiA+Pj4gSmFuZS5XYW5AZ2Fp
+bnNwZWVkLmNvbTsgc2hpamllLmh1YW5nQGludGVsLmNvbTsNCj4gPj4+IHZhbGVudGluLmxvbmdj
+aGFtcEBrZXltaWxlLmNvbTsgaGthbGx3ZWl0MUBnbWFpbC5jb207DQo+ID4+PiBiZWFuaHVvQG1p
+Y3Jvbi5jb207IEh1IE1pbmdrYWktQjIxMjg0DQo+ID4+PiBTdWJqZWN0OiBSZTogW1BBVENIXSBS
+RkM6IG10ZC9zcGktbm9yOiBhZGQgY2hlY2tpbmcgZm9yIHRoZQ0KPiA+Pj4gc3BpX25vcl9yZWFk
+DQo+ID4+Pg0KPiA+Pj4gT24gMTMgQXVndXN0IDIwMTUgYXQgMTE6MDMsIEhvdSBaaGlxaWFuZyA8
+QjQ4Mjg2QGZyZWVzY2FsZS5jb20+IHdyb3RlOg0KPiA+Pj4gPiBIZWxsbywNCj4gPj4+ID4NCj4g
+Pj4+ID4gSSB3YW50IHRvIGFkZCB0aGUgNC1CeXRlIGFkZHJlc3NpbmcgZmxhc2hlcyBzdXBwb3J0
+IGZvciB0aGUNCj4gPj4+ID4gRnJlZXNjYWxlIGVTUEkgY29udHJvbGxlciBkaXJ2ZXIuIEFwcHJl
+Y2lhdGUgeW91ciBzdWdnZXN0aW9ucy4NCj4gPj4+ID4NCj4gPj4+ID4gQmFja2dyb3VuZDoNCj4g
+Pj4+ID4gSW4gdGhlIEZyZWVzY2FsZSBlU1BJIGNvbnRyb2xsZXIgZGlydmVyLCBpZiB0aGUgdHJh
+bnNhY3Rpb24gbGVuZ3RoDQo+ID4+PiA+IGV4Y2VlZCA2NEtpQiwgdGhlIGNvbnRlbnRzIG9mIHRo
+ZSB0cmFuc2FjdGlvbiB3YXMgdG91Y2hlZCB0bw0KPiA+Pj4gPiB1cGRhdGUgdGhlIGNvbW1hbmQg
+d2l0aCBhc3N1bWVkIHRoZSAzLUJ5dGUgYWRkcmVzcyB3aWR0aC4gSXQgaXMgYQ0KPiA+Pj4gPiB3
+b3JrYXJvdW5kLCBkdWUgdG8gdGhlIEZyZWVzY2FsZSBlU1BJIGNvbnRyb2xsZXIgaGF2ZSBhIGhh
+cmR3YXJlDQo+ID4+PiA+IGxpbWl0IHRoYXQgdGhlIG1heGltdW0gb25lLXRpbWUgdHJhbnNhY3Rp
+b24gbGVuZ3RoIGlzIDY0S2lCLCB0aGF0DQo+ID4+PiA+IGlzbid0IGNvbnNpc3RlbnQNCj4gPj4+
+IHdpdGggbWFueSBvdGhlciB2ZW5kb3JzJw0KPiA+Pj4gPiBTUEkgY29udHJvbGxlcnMsIGFuZCBz
+byBmYXIgdGhlIFNQSSBmbGFzaCBkcml2ZXIgYXNzdW1lIHRoZSBTUEkNCj4gPj4+ID4gY29udHJv
+bGxlciBoYXZlIHRoZSBhYmlsaXR5IHRvIGNvbXBsZXRlIHRoZSBzcGVjaWZpZWQgdHJhbnNhY3Rp
+b24NCj4gPj4+IGxlbmd0aCBhdCBvbmUtdGltZS4NCj4gPj4+ID4NCj4gPj4+ID4gQnV0IHRoaXMg
+d29ya2Fyb3VuZCBpcyBvbmx5IHN1aXQgZm9yIDMtQnl0ZSBhZGRyZXNzaW5nIHNsYXZlcywgYXMN
+Cj4gPj4+ID4gdGltZSBnb2VzIGJ5LCB0aGVyZSBhcmUgNC1CeXRlIGFkZHJlc3Mgd2lkdGggU1BJ
+IGZsYXNoZXMsIHNvIHRoaXMNCj4gPj4+ID4gYXNzdW1wdGlvbiBpc24ndCBjb3JyZWN0IGFuZCB0
+aGlzIHdvcmthcm91bmQgZGlzY29tYm9idWxhdGUgdGhlDQo+ID4+PiA+IGNvbnRyb2xsZXIgZHJp
+dmVyIGxheWVyIGFuZCBwcm90b2NvbCBkcml2ZXIgbGF5ZXIuIFNvLCB0aGlzDQo+ID4+PiA+IHdv
+cmthcm91bmQgc2hvdWxkIGJlIHJlbW92ZWQgYW5kIHRoZSBTUEkgY2xpZW50IGRyaXZlciBzaG91
+bGQNCj4gPj4+ID4gZW5zdXJlIHRoZQ0KPiA+Pj4gdHJhbnNhY3Rpb24gY29tcGxldGlvbi4NCj4g
+Pj4+ID4NCj4gPj4+ID4gVGhlcmUgYXJlIHR3byBzb2x1dGlvbnM6DQo+ID4+PiA+IDEuIEluIHNw
+aS1ub3IgZnJhbWV3b3JrLCBjb21wYXJlIHRoZSByZXRsZW4gd2l0aCB0aGUgdHJhbnNhY3Rpb24N
+Cj4gPj4+ID4gbGVuZ3RoIHNwZWNpZmllZCwgaWYgdGhlIHJldGxlbiBsZXNzIHRoYW4gdGhlIHRy
+YW5zYWN0aW9uIGxlbmd0aA0KPiA+Pj4gPiBhbmQgd2l0aCBubyBlcnJvciBudW1iZXIgcmV0dXJu
+ZWQsIHJlLWluaXRpYXRlIHRoZSB0cmFuc2FjdGlvbg0KPiA+Pj4gPiB3aXRoIHRoZQ0KPiA+Pj4g
+dXBkYXRlZCBhZGRyZXNzLg0KPiA+Pj4gPiBBZHZhbnRhZ2U6DQo+ID4+PiA+IEl0IHdvbid0IGFm
+ZmVjdCBvdGhlciBTUEkgY29udHJvbGxlcnMgd2l0aG91dCB0aGlzIGxpbWl0Lg0KPiA+Pj4gPiBE
+aXNhZHZhbnRhZ2U6DQo+ID4+PiA+IEl0IGlzIG5vdCBhIHN5c3RlbWF0aWMgc29sdXRpb24uDQo+
+ID4+Pg0KPiA+Pj4gVGhpcyBjYW4gcHJvYmFibHkgYnJlYWsgdHJhbnNhY3Rpb25zIHRoYXQgYXJl
+IHBlcmZvcm1lZCBvbiBub24tZmxhc2gNCj4gPj4+IHNsYXZlcyBidXQgbG9vayBsaWtlIGZsYXNo
+IHJlYWQgY29tbWFuZC4NCj4gPj4+DQo+ID4+PiA+DQo+ID4+PiA+IDIuIEFkZCBxdWlyayBzdXBw
+b3J0LCBzb21ldGhpbmcgbGlrZSBpMmMgcXVpcmsuDQo+ID4+PiA+IEFkdmFudGFnZToNCj4gPj4+
+ID4gSXQgaXMgYSBzeXN0ZW1hdGljIHNvbHV0aW9uLg0KPiA+Pj4gPiBEaXNhZHZhbnRhZ2U6DQo+
+ID4+PiA+IFRoZSBxdWlyayBtZWNoYW5pc20gaXMgb25seSB1c2VmdWwgZm9yIEZyZWVzY2FsZSBl
+U1BJIGNvbnRyb2xsZXIsDQo+ID4+PiA+IGJ1dCBpdCB3aWxsIGFmZmVjdCB3aG9sZSBTUEkgZnJh
+bWV3b3JrLg0KPiA+Pj4NCj4gPj4+IEkgYWRkZWQgdGhpcyBxdWlyayBpbiBtMjVwODAuYyBzaW5j
+ZSBteSBjdXJyZW50IFNQSSBtYXN0ZXIgZHJpdmVyIGlzDQo+ID4+PiBqdXN0IGJyb2tlbiBzbyBJ
+IHRyaWVkIHRvIHdvcmsgYXJvdW5kIHRoYXQuIFdoaWxlIHRoZSBxdWlyayBpdHNlbGYNCj4gPj4+
+IGlzIHJlamVjdGVkIGFzIG5vbi1zeWV0ZW1hdGljIHRoaXMgc2VyaWVzIHRoYXQgYWRkcyB0aGUg
+cmVxdWlyZWQNCj4gPj4+IHN1cHBvcnQgZm9yIGNoZWNraW5nIHRoZSByZXR1cm4gdmFsdWUgb2Yg
+dGhlIFNQSSBtYXN0ZXIgZHJpdmVyDQo+IHRyYW5zZmVyIGZ1bmN0aW9ucy4NCj4gPj4+DQo+ID4+
+PiBTbyB5b3UgaGF2ZSBvcHRpb25zOg0KPiA+Pj4NCj4gPj4+IDJhOiBhZGQgU1BJIG1hc3RlciBx
+dWlyayBhbmQgY2hlY2sgaXQgaW4gbTI1cDgwLmMgYW5kIHRydW5jYXRlIHRoZQ0KPiA+Pj4gdHJh
+bnNmZXIgaW4gbTI1cDgwLmMNCj4gPj4+DQo+ID4+PiAyYjogdHJ1bmNhdGUgdGhlIHRyYW5zZmVy
+IGluIFNQSSBtYXN0ZXIgZHJpdmVyIGFuZCBqdXN0IHJldHVybiB0aGUNCj4gPj4+IG51bWJlciBv
+ZiBieXRlcyB0cmFuc2ZlcnJlZA0KPiA+Pj4NCj4gPj4NCj4gPj4gSSBleHBlY3QgdGhpcyB3YXks
+IHNvIHRoZSBzcGkgc2xhdmUgZHJpdmVyIHNob3VsZCBjaGVjayB0aGUgcmV0bGVuDQo+ID4+IHdp
+dGggdGhlIHRyYW5zYWN0aW9uIGxlbmd0aCBhbmQgZG8gc29tZSBsb29wIHRyYW5zZmVyLCBhbmQg
+bWFrZSBzdXJlDQo+ID4+IGdldHRpbmcgYWxsIGRhdGEgdGhpcyB0cmFuc2FjdGlvbiB3YW50ZWQu
+DQo+ID4+DQo+ID4+PiBUaGlzIHBhdGNoIHNlcmllcyBzaG91bGQgaGFuZGxlIGZyYWdtZW50aW5n
+IHRoZSB0cmFuc2ZlcnMgaW4NCj4gPj4+IHNwaS1ub3IuYw0KPiA+Pj4NCj4gPj4+IGh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxNS1KdWx5LzA2MDQ2Ni5o
+dG1sDQo+ID4+Pg0KPiA+Pg0KPiA+PiBQbGVhc2UgY29ycmVjdCBtZSBpZiBJJ20gd3JvbmcsIEFG
+QUlVIHRoZSBtdGQgbGF5ZXIgd2lsbCBjaGVjayB0aGUNCj4gPj4gcmV0bGVuIGFuZCBpZiBpdCBp
+c24ndCBlcXVhbCB0byB0aGUgdHJhbnNhY3Rpb24gbGVuZ3RoLCB0aGUgRUlPIHdpbGwNCj4gYmUg
+cmV0dXJuZWQuDQo+ID4NCj4gPiBJIG5ldmVyIGhhZCB0aGlzIGhhcHBlbiBiZWNhdXNlIHdpdGgg
+dGhpcyBwYXRjaCBzZXJpZXMgc3BpLW5vciBjaGVja3MNCj4gPiB0aGUgYW1vdW50IG9mIGRhdGEg
+dHJhbnNmZXJyZWQgYW5kIGNvbnRpbnVlcyB1bnRpbCB0aGUgd2hvbGUgbGVuZ3RoIGlzDQo+ID4g
+dHJhbnNmZXJyZWQuIFdpdGhvdXQgaXQganVzdCBzZXRzIHJldGxlbiB0byBsZW5ndGggcmVnYXJk
+bGVzcyBvZg0KPiA+IGFtb3VudCBvZiBkYXRhIHRyYW5zZmVycmVkLg0KPiA+DQo+IA0KPiBMb29r
+aW5nIGF0IHRoZSBjb2RlIGNsb3NlbHkgbXRkY29yZSBqdXN0IGludm9rZXMgX3JlYWQgaW4gbXRk
+X3JlYWQgYW5kDQo+IHBhc3NlcyB0aGUgcmVzdWx0IG9uLiBtdGRjaGFyIGRvZXMgdGhlIHNhbWUu
+IHViaSBoYXMgYXNzZXJ0IHRoYXQgcmVhZA0KPiBhbW91bnQgb2YgZGF0YSBpcyBlcXVhbCByZXF1
+ZXN0ZWQgc28gaWYgeW91IHVzZWQgdWJpIHlvdSB3aG91bGQgaGF2ZSB0bw0KPiBmaXggaXQgb3Ig
+YWRkIHJlYWQgbG9vcCBpbiBzcGktbm9yIHRvIHdvcmsgYXJvdW5kIHViaSBkZWZpY2llbmN5Lg0K
+PiANCg0KQnV0IGluIG10ZGJsb2NrLmMsIG10ZF9yZWFkIGlzIGludm9rZWQgYnkgbXRkYmxvY2tf
+cmVhZHNlY3QtPmRvX2NhY2hlZF9yZWFkDQp3aXRob3V0IHJlYWQgbG9vcC4gQW5kIGp1c3QgY29t
+cGFyZSB0aGUgcmV0bGVuIHdpdGggcmVxdWVzdGVkIGRhdGEgc2l6ZSwgaWYNCm5vdCBlcXVhbCwg
+dGhlIEVJTyB3aWxsIGJlIHJlcG9ydGVkLg0KDQoyNDMgICAgICAgICAgICAgICAgICAgICAgICAg
+cmV0ID0gbXRkX3JlYWQobXRkLCBwb3MsIHNpemUsICZyZXRsZW4sIGJ1Zik7DQoyNDQgICAgICAg
+ICAgICAgICAgICAgICAgICAgaWYgKHJldCkNCjI0NSAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHJldHVybiByZXQ7DQoyNDYgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKHJldGxl
+biAhPSBzaXplKQ0KMjQ3ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIC1F
+SU87DQogDQoNCj4gVGhhbmtzDQo+IA0KPiBNaWNoYWwNCg==
