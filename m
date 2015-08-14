@@ -1,14 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQBD3-0007Aq-He
- for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 09:23:34 +0000
-Date: 14 Aug 2015 09:23:07 -0000
-Message-Id: <8d8e00948c2789ac5b257d1a2c5bfb8abead98e0.1439543572.git.hramrach@gmail.com>
+ id 1ZQBD3-0007B0-Hh
+ for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 09:23:35 +0000
+Date: 14 Aug 2015 09:23:08 -0000
+Message-Id: <e1251eea4ec9cc8c72d54300f3396919a3afe4b1.1439543572.git.hramrach@gmail.com>
 In-Reply-To: <cover.1439543572.git.hramrach@gmail.com>
 References: <cover.1439543572.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v4 3/7] mtd: fsl-quadspi: return amount of data read/written
- or error
+Subject: [PATCH v4 6/7] mtd: spi-nor: simplify write loop
 To: Hou Zhiqiang <B48286@freescale.com>, shijie.huang@intel.com,
   David Woodhouse <dwmw2@infradead.org>,
   Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
@@ -26,73 +25,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Return amount of data read/written or error as read(2)/write(2) does.
+The spi-nor write loop assumes that what is passed to the hardware
+driver write() is what gets written.
+
+When write() writes less than page size at once data is dropped on the
+floor. Check the amount of data writen.
+
+This also means that write can start mid-page any time so there is
+no special case for first page.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 ---
- drivers/mtd/spi-nor/fsl-quadspi.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 48 ++++++++++++++-----------------------------
+ 1 file changed, 15 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 4ad2a68..a39f09e 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -525,7 +525,7 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
- 	writel(reg, q->iobase + QUADSPI_MCR);
- }
- 
--static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
-+static ssize_t fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
- 				u8 opcode, unsigned int to, u32 *txbuf,
- 				unsigned count, size_t *retlen)
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 837e3df..e0ae9cf 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -836,7 +836,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	size_t *retlen, const u_char *buf)
  {
-@@ -549,8 +549,11 @@ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
- 	/* Trigger it */
- 	ret = fsl_qspi_runcmd(q, opcode, to, count);
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	u32 page_offset, page_size, i;
++	size_t page_offset, page_remain, i;
+ 	int ret;
  
--	if (ret == 0 && retlen)
--		*retlen += count;
-+	if (ret == 0) {
-+		if (retlen)
-+			*retlen += count;
-+		return count;
-+	}
+ 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
+@@ -845,45 +845,27 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	if (ret)
+ 		return ret;
  
+-	write_enable(nor);
+-
+-	page_offset = to & (nor->page_size - 1);
++	for (i = 0; i < len; ) {
++		int written;
+ 
+-	/* do all the bytes fit onto one page? */
+-	if (page_offset + len <= nor->page_size) {
+-		ret = nor->write(nor, to, len, buf);
+-		if (ret < 0)
+-			goto write_err;
+-		*retlen += ret;
+-	} else {
++		page_offset = to & (nor->page_size - 1);
+ 		/* the size of data remaining on the first page */
+-		page_size = nor->page_size - page_offset;
+-		ret = nor->write(nor, to, page_size, buf);
++		page_remain = min_t(size_t,
++				    nor->page_size - page_offset, len - i);
++
++		write_enable(nor);
++		ret = nor->write(nor, to + i, page_remain, buf + i);
+ 		if (ret < 0)
+ 			goto write_err;
+-		*retlen += ret;
+-
+-		/* write everything in nor->page_size chunks */
+-		for (i = ret; i < len; ) {
+-			page_size = len - i;
+-			if (page_size > nor->page_size)
+-				page_size = nor->page_size;
+-
+-			ret = spi_nor_wait_till_ready(nor);
+-			if (ret)
+-				goto write_err;
++		written = ret;
+ 
+-			write_enable(nor);
+-
+-			ret = nor->write(nor, to + i, page_size, buf + i);
+-			if (ret < 0)
+-				goto write_err;
+-			*retlen += ret;
+-			i += ret;
+-		}
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			goto write_err;
++		*retlen += written;
++		i += written;
+ 	}
+ 
+-	ret = spi_nor_wait_till_ready(nor);
+ write_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
  	return ret;
- }
-@@ -704,6 +707,8 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
- 	} else if (len > 0) {
- 		ret = fsl_qspi_nor_write(q, nor, opcode, 0,
- 					(u32 *)buf, len, NULL);
-+		if (ret > 0)
-+			return 0;
- 	} else {
- 		dev_err(q->dev, "invalid cmd %d\n", opcode);
- 		ret = -EINVAL;
-@@ -717,12 +722,12 @@ static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
- {
- 	struct fsl_qspi *q = nor->priv;
- 
--	fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
-+	ssize_t ret = fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
- 				(u32 *)buf, len, retlen);
- 
- 	/* invalid the data in the AHB buffer. */
- 	fsl_qspi_invalid(q);
--	return 0;
-+	return ret;
- }
- 
- static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
-@@ -737,8 +742,7 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
- 	/* Read out the data directly from the AHB buffer.*/
- 	memcpy(buf, q->ahb_base + q->chip_base_addr + from, len);
- 
--	*retlen += len;
--	return 0;
-+	return len;
- }
- 
- static int fsl_qspi_erase(struct spi_nor *nor, loff_t offs)
 -- 
 2.1.4
