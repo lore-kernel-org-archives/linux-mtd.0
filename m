@@ -1,24 +1,16 @@
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQHkY-0004lE-De
- for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 16:22:35 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Jonas Gorski <jogo@openwrt.org>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, antoine.tenart@free-electrons.com
-Subject: Re: [PATCH 1/2] nand: pxa3xx: Increase READ_ID buffer and make the
- size static
-References: <1438612286-16070-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1438612286-16070-2-git-send-email-ezequiel@vanguardiasur.com.ar>
- <CAOiHx==8WbSqy=1XPGR5G4=hFouV55bNe_Y82k1Pby4+Yn+rxw@mail.gmail.com>
-Date: Fri, 14 Aug 2015 18:18:06 +0200
-In-Reply-To: <CAOiHx==8WbSqy=1XPGR5G4=hFouV55bNe_Y82k1Pby4+Yn+rxw@mail.gmail.com>
- (Jonas Gorski's message of "Fri, 14 Aug 2015 18:12:22 +0200")
-Message-ID: <871tf5c08x.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1ZQI4V-00052n-M1
+ for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 16:43:12 +0000
+Received: by lbbsx3 with SMTP id sx3so48743667lbb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2015 09:42:49 -0700 (PDT)
+From: Joachim Eastwood <manabian@gmail.com>
+To: computersforpeace@gmail.com
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, zajec5@gmail.com,
+ Joachim Eastwood <manabian@gmail.com>
+Subject: [PATCH] mtd: spi-nor: s25sl064p supports both dual and quad I/O
+Date: Fri, 14 Aug 2015 18:42:32 +0200
+Message-Id: <1439570552-24825-1-git-send-email-manabian@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jonas Gorski <jogo@openwrt.org> writes:
+This chip can be found on Hitex LPC4350 Evaluation Board.
 
->>
->> -               info->data_size = 8;
->> +               info->data_size = READ_ID_BYTES;
->
-> You are reducing ->data_size from 8 to 7 here, is this intentional?
-I bet it's a small mistake.
+Signed-off-by: Joachim Eastwood <manabian@gmail.com>
+---
 
-The pxa3xx NFC controller requires to read at least 8 bytes, as it is one entry
-FIFO (chapter 3.7.1.2 "Non-DMA Operating mode" of PXA3xx VolII developer
-manual).
+Based on mtd master.
 
-Same constraint applies to DMA btw.
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers.
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 47df4b5eae2f..ae705987ac54 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -606,7 +606,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	 * for the chips listed here (without boot sectors).
+ 	 */
+ 	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, 0) },
++	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
+ 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
 -- 
-Robert
+1.8.0
