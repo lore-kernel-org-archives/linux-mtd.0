@@ -1,22 +1,35 @@
-Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
+Received: from mail-bl2on0126.outbound.protection.outlook.com ([65.55.169.126]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQA2e-0004xo-5C
- for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 08:08:44 +0000
-Received: by oio137 with SMTP id 137so40455502oio.0
- for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2015 01:08:23 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAOMqctQUgbukQ-h9vznwu2JrNBaZJeuL1jQiAgG59s9qHzS14Q@mail.gmail.com>
-References: <CAPcvp5GZi0gV=J2Zbz_Sp+NmZNKnA38JAsYtbuNiwsq84yMDfg@mail.gmail.com>
- <8AC930D6-9BEE-4AA8-99AC-962027CCF336@sigma-star.at>
- <CAOMqctQUgbukQ-h9vznwu2JrNBaZJeuL1jQiAgG59s9qHzS14Q@mail.gmail.com>
-Date: Fri, 14 Aug 2015 09:08:22 +0100
-Message-ID: <CAPcvp5Ee8=mpPcw+nsNfwyw9-ojyNB7cZk9ygrJj-rZWQ4qwkw@mail.gmail.com>
-Subject: Re: [RFC] mtd: ubi: UBI Encryption
-From: Andrew Murray <amurray@embedded-bits.co.uk>
+ id 1ZQAck-0008UB-PK
+ for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 08:46:04 +0000
+From: Hou Zhiqiang <B48286@freescale.com>
 To: Michal Suchanek <hramrach@gmail.com>
-Cc: David Gstir <david@sigma-star.at>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "jonatas.rech@datacom.ind.br"
+ <jonatas.rech@datacom.ind.br>, "Jane.Wan@gainspeed.com"
+ <Jane.Wan@gainspeed.com>, "shijie.huang@intel.com" <shijie.huang@intel.com>,
+ "valentin.longchamp@keymile.com" <valentin.longchamp@keymile.com>,
+ "hkallweit1@gmail.com" <hkallweit1@gmail.com>, "beanhuo@micron.com"
+ <beanhuo@micron.com>, Hu Vincent <Mingkai.Hu@freescale.com>
+Subject: RE: [PATCH] RFC: mtd/spi-nor: add checking for the spi_nor_read
+Date: Fri, 14 Aug 2015 08:45:39 +0000
+Message-ID: <CY1PR0301MB07802168CC76BAACE631DD508B7C0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+References: <1437479828-30826-1-git-send-email-B48286@freescale.com>
+ <CY1PR0301MB0780E3F6E2A1170A7A56A8538B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAOMqctSMyB+7=Rfw-hTvJ6YePn9y_QW8p6_jT8v=ejYZ9hF=hA@mail.gmail.com>
+ <CY1PR0301MB07804C16D086589B621FD9498B7C0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAOMqctRy8ozO9JCz2kxPttUj9yrXiHjemfZ2_ib5R4JjkY=k+Q@mail.gmail.com>
+ <CAOMqctRcPAhJxLb7_UrE_kyHXRq4v=k15bz9NcoppVPEWfwP_A@mail.gmail.com>
+ <CY1PR0301MB0780FE5CB8FE353B52B194838B7C0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAOMqctTqOMNi83NJggT1dYs=o2Rtz_wMzo4x=4cFwE8t7=PVHw@mail.gmail.com>
+In-Reply-To: <CAOMqctTqOMNi83NJggT1dYs=o2Rtz_wMzo4x=4cFwE8t7=PVHw@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,92 +39,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14 August 2015 at 08:25, Michal Suchanek <hramrach@gmail.com> wrote:
-> Hello,
->
-> On 12 August 2015 at 19:19, David Gstir <david@sigma-star.at> wrote:
->> Hi!
->>
->
->>> - Encryption in UBI was preferred as it removed the complexity from userspace,
->>>   though I suppose there is no reason why this can't be done within the MTD
->>>   layer rather than in UBI and thus benefit all MTD users.
->>
->> Generally speaking, I'd argue for moving encryption to the highest layer possible. So, if you exclusively use UBIFS and need encryption, add it to UBIFS or even your userspace application.
->> The main reason for this is that disk encryption on lower layers (e.g block-level) has fewer security guarantees, like no authentication of encrypted data for example. So it cannot prevent "evil maid" attacks.
->> There is a nice writeup on this topic here: [2], which focuses on the commonly used XTS mode, but makes valid points for disk encryption in general.
->>
->> So, when you do encryption in UBI or MTD, be aware of the security implications and know your thread model.
->>
->> [2] http://sockpuppet.org/blog/2014/04/30/you-dont-want-xts/
->
-> Thanks for the pointers.
->
-> Obviously, full disk encryption is not ideal but it's also last resort
-> in the sense that you can cut & paste state of the art solution and it
-> works on any kind of disk with minimum requirements on the implementor
-> and reviewer.
->
-> From the notes about internal and external flash it seems that this is
-> upposed to protect against removing an external flash memory which is
-> attached to a device. This is probably a decent solution for the
-> problem. Knowing more details would help here.
-
-Yes that was the intent of this work - to provide moderate protection
-from someone removing an external flash chip and retrieving its data.
-
-Many SOMs provide internal flash and a means of protection such as
-security fuses that prevent JTAG access etc. Thus to retrieve the
-internal key you would need an increased level of skill (i.e. rather
-than removing an external chip and wiring it to another board (perhaps
-a reference board) - you'd now have to skim the SOM or similar).
-Combined with application/system security you can also make it much
-harder for the user to access the external flash via software hacking
-such as accessing a console prompt, exploiting vulnerabilities etc.
-
-This implementation provides a balance between
-implementation/integration complexity and protection. If other users
-can benefit from this then it's something they can just switch on -
-rather than having to add a variety of userspace components to their
-distribution, etc.
-
-At present my implementation makes an assumption that the key is
-stored in another MTD partition, I took this approach because it was
-easy. However I'm not sure if this is useful to the general case - or
-if the general case is in fact users on SOMs protecting external flash
-with keys on internal flash. It would be possible to extend the
-UBI/MTD API to add ioctl's (or similar) such that a user can provide a
-key during mount/attach time. This makes it slightly more complex for
-a user to use - as rather than updating a .config they now have to add
-an initramfs that reads a key from one MTD partition and provides it
-to the kernel.
-
->
-> Adding encryption to UBIFS itself is much more difficult.
-
-Whilst experimenting with this stuff, I actually was successful in
-adding encryption to UBIFS.
-
-To support compression, UBIFS provides functions thats get called when
-data needs to be compressed. This calls use a crypto framework, e.g.
-crypto_comp_compress. I extended this to actually use encryption. This
-worked - though it only encrypted the data and not file names etc, I
-also recall that compression can be turned off or not always applied.
-
-Much like the UBI encryption - I could have also tried to provided
-UBIFS encryption by intercepting the ubi_leb_write and ubi_write
-calls.
-
->
-> Adding encryption to every application is not really feasible unless
-> you have a single-purpose device with one application.
-
-
-Thanks,
-
-Andrew Murray
-
->
-> Thanks
->
-> Michal
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pY2hhbCBTdWNoYW5layBb
+bWFpbHRvOmhyYW1yYWNoQGdtYWlsLmNvbV0NCj4gU2VudDogMjAxNeW5tDjmnIgxNOaXpSAxNToz
+NA0KPiBUbzogSG91IFpoaXFpYW5nLUI0ODI4Ng0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJh
+ZGVhZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsNCj4gZHdtdzJAaW5mcmFkZWFk
+Lm9yZzsgam9uYXRhcy5yZWNoQGRhdGFjb20uaW5kLmJyOyBKYW5lLldhbkBnYWluc3BlZWQuY29t
+Ow0KPiBzaGlqaWUuaHVhbmdAaW50ZWwuY29tOyB2YWxlbnRpbi5sb25nY2hhbXBAa2V5bWlsZS5j
+b207DQo+IGhrYWxsd2VpdDFAZ21haWwuY29tOyBiZWFuaHVvQG1pY3Jvbi5jb207IEh1IE1pbmdr
+YWktQjIxMjg0DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIFJGQzogbXRkL3NwaS1ub3I6IGFkZCBj
+aGVja2luZyBmb3IgdGhlIHNwaV9ub3JfcmVhZA0KPiANCj4gT24gMTQgQXVndXN0IDIwMTUgYXQg
+MDk6MjYsIEhvdSBaaGlxaWFuZyA8QjQ4Mjg2QGZyZWVzY2FsZS5jb20+IHdyb3RlOg0KPiA+IEhp
+IE1pY2hhbCwNCj4gPg0KPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9t
+OiBNaWNoYWwgU3VjaGFuZWsgW21haWx0bzpocmFtcmFjaEBnbWFpbC5jb21dDQo+ID4+IFNlbnQ6
+IDIwMTXlubQ45pyIMTTml6UgMTI6NDMNCj4gPj4gVG86IEhvdSBaaGlxaWFuZy1CNDgyODYNCj4g
+Pj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBjb21wdXRlcnNmb3JwZWFjZUBn
+bWFpbC5jb207DQo+ID4+IGR3bXcyQGluZnJhZGVhZC5vcmc7IGpvbmF0YXMucmVjaEBkYXRhY29t
+LmluZC5icjsNCj4gPj4gSmFuZS5XYW5AZ2FpbnNwZWVkLmNvbTsgc2hpamllLmh1YW5nQGludGVs
+LmNvbTsNCj4gPj4gdmFsZW50aW4ubG9uZ2NoYW1wQGtleW1pbGUuY29tOyBoa2FsbHdlaXQxQGdt
+YWlsLmNvbTsNCj4gPj4gYmVhbmh1b0BtaWNyb24uY29tOyBIdSBNaW5na2FpLUIyMTI4NA0KPiA+
+PiBTdWJqZWN0OiBSZTogW1BBVENIXSBSRkM6IG10ZC9zcGktbm9yOiBhZGQgY2hlY2tpbmcgZm9y
+IHRoZQ0KPiA+PiBzcGlfbm9yX3JlYWQNCj4gPj4NCj4gPj4gT24gMTQgQXVndXN0IDIwMTUgYXQg
+MDY6MzAsIE1pY2hhbCBTdWNoYW5layA8aHJhbXJhY2hAZ21haWwuY29tPiB3cm90ZToNCj4gPj4g
+PiBPbiAxNCBBdWd1c3QgMjAxNSBhdCAwNTo0MCwgSG91IFpoaXFpYW5nIDxCNDgyODZAZnJlZXNj
+YWxlLmNvbT4NCj4gd3JvdGU6DQo+ID4+ID4+DQo+ID4+ID4+DQo+ID4+ID4+PiAtLS0tLU9yaWdp
+bmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiA+Pj4gRnJvbTogTWljaGFsIFN1Y2hhbmVrIFttYWlsdG86
+aHJhbXJhY2hAZ21haWwuY29tXQ0KPiA+PiA+Pj4gU2VudDogMjAxNeW5tDjmnIgxM+aXpSAxNzo0
+Mg0KPiA+PiA+Pj4gVG86IEhvdSBaaGlxaWFuZy1CNDgyODYNCj4gPj4gPj4+IENjOiBsaW51eC1t
+dGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOw0KPiA+
+PiA+Pj4gZHdtdzJAaW5mcmFkZWFkLm9yZzsgam9uYXRhcy5yZWNoQGRhdGFjb20uaW5kLmJyOw0K
+PiA+PiA+Pj4gSmFuZS5XYW5AZ2FpbnNwZWVkLmNvbTsgc2hpamllLmh1YW5nQGludGVsLmNvbTsN
+Cj4gPj4gPj4+IHZhbGVudGluLmxvbmdjaGFtcEBrZXltaWxlLmNvbTsgaGthbGx3ZWl0MUBnbWFp
+bC5jb207DQo+ID4+ID4+PiBiZWFuaHVvQG1pY3Jvbi5jb207IEh1IE1pbmdrYWktQjIxMjg0DQo+
+ID4+ID4+PiBTdWJqZWN0OiBSZTogW1BBVENIXSBSRkM6IG10ZC9zcGktbm9yOiBhZGQgY2hlY2tp
+bmcgZm9yIHRoZQ0KPiA+PiA+Pj4gc3BpX25vcl9yZWFkDQo+ID4+ID4+Pg0KPiA+PiA+Pj4gT24g
+MTMgQXVndXN0IDIwMTUgYXQgMTE6MDMsIEhvdSBaaGlxaWFuZyA8QjQ4Mjg2QGZyZWVzY2FsZS5j
+b20+DQo+IHdyb3RlOg0KPiA+PiA+Pj4gPiBIZWxsbywNCj4gPj4gPj4+ID4NCj4gPj4gPj4+ID4g
+SSB3YW50IHRvIGFkZCB0aGUgNC1CeXRlIGFkZHJlc3NpbmcgZmxhc2hlcyBzdXBwb3J0IGZvciB0
+aGUNCj4gPj4gPj4+ID4gRnJlZXNjYWxlIGVTUEkgY29udHJvbGxlciBkaXJ2ZXIuIEFwcHJlY2lh
+dGUgeW91ciBzdWdnZXN0aW9ucy4NCj4gPj4gPj4+ID4NCj4gPj4gPj4+ID4gQmFja2dyb3VuZDoN
+Cj4gPj4gPj4+ID4gSW4gdGhlIEZyZWVzY2FsZSBlU1BJIGNvbnRyb2xsZXIgZGlydmVyLCBpZiB0
+aGUgdHJhbnNhY3Rpb24NCj4gPj4gPj4+ID4gbGVuZ3RoIGV4Y2VlZCA2NEtpQiwgdGhlIGNvbnRl
+bnRzIG9mIHRoZSB0cmFuc2FjdGlvbiB3YXMNCj4gPj4gPj4+ID4gdG91Y2hlZCB0byB1cGRhdGUg
+dGhlIGNvbW1hbmQgd2l0aCBhc3N1bWVkIHRoZSAzLUJ5dGUgYWRkcmVzcw0KPiA+PiA+Pj4gPiB3
+aWR0aC4gSXQgaXMgYSB3b3JrYXJvdW5kLCBkdWUgdG8gdGhlIEZyZWVzY2FsZSBlU1BJIGNvbnRy
+b2xsZXINCj4gPj4gPj4+ID4gaGF2ZSBhIGhhcmR3YXJlIGxpbWl0IHRoYXQgdGhlIG1heGltdW0g
+b25lLXRpbWUgdHJhbnNhY3Rpb24NCj4gPj4gPj4+ID4gbGVuZ3RoIGlzIDY0S2lCLCB0aGF0IGlz
+bid0IGNvbnNpc3RlbnQNCj4gPj4gPj4+IHdpdGggbWFueSBvdGhlciB2ZW5kb3JzJw0KPiA+PiA+
+Pj4gPiBTUEkgY29udHJvbGxlcnMsIGFuZCBzbyBmYXIgdGhlIFNQSSBmbGFzaCBkcml2ZXIgYXNz
+dW1lIHRoZSBTUEkNCj4gPj4gPj4+ID4gY29udHJvbGxlciBoYXZlIHRoZSBhYmlsaXR5IHRvIGNv
+bXBsZXRlIHRoZSBzcGVjaWZpZWQNCj4gPj4gPj4+ID4gdHJhbnNhY3Rpb24NCj4gPj4gPj4+IGxl
+bmd0aCBhdCBvbmUtdGltZS4NCj4gPj4gPj4+ID4NCj4gPj4gPj4+ID4gQnV0IHRoaXMgd29ya2Fy
+b3VuZCBpcyBvbmx5IHN1aXQgZm9yIDMtQnl0ZSBhZGRyZXNzaW5nIHNsYXZlcywNCj4gPj4gPj4+
+ID4gYXMgdGltZSBnb2VzIGJ5LCB0aGVyZSBhcmUgNC1CeXRlIGFkZHJlc3Mgd2lkdGggU1BJIGZs
+YXNoZXMsIHNvDQo+ID4+ID4+PiA+IHRoaXMgYXNzdW1wdGlvbiBpc24ndCBjb3JyZWN0IGFuZCB0
+aGlzIHdvcmthcm91bmQNCj4gPj4gPj4+ID4gZGlzY29tYm9idWxhdGUgdGhlIGNvbnRyb2xsZXIg
+ZHJpdmVyIGxheWVyIGFuZCBwcm90b2NvbCBkcml2ZXINCj4gPj4gPj4+ID4gbGF5ZXIuIFNvLCB0
+aGlzIHdvcmthcm91bmQgc2hvdWxkIGJlIHJlbW92ZWQgYW5kIHRoZSBTUEkgY2xpZW50DQo+ID4+
+ID4+PiA+IGRyaXZlciBzaG91bGQgZW5zdXJlIHRoZQ0KPiA+PiA+Pj4gdHJhbnNhY3Rpb24gY29t
+cGxldGlvbi4NCj4gPj4gPj4+ID4NCj4gPj4gPj4+ID4gVGhlcmUgYXJlIHR3byBzb2x1dGlvbnM6
+DQo+ID4+ID4+PiA+IDEuIEluIHNwaS1ub3IgZnJhbWV3b3JrLCBjb21wYXJlIHRoZSByZXRsZW4g
+d2l0aCB0aGUNCj4gPj4gPj4+ID4gdHJhbnNhY3Rpb24gbGVuZ3RoIHNwZWNpZmllZCwgaWYgdGhl
+IHJldGxlbiBsZXNzIHRoYW4gdGhlDQo+ID4+ID4+PiA+IHRyYW5zYWN0aW9uIGxlbmd0aCBhbmQg
+d2l0aCBubyBlcnJvciBudW1iZXIgcmV0dXJuZWQsDQo+ID4+ID4+PiA+IHJlLWluaXRpYXRlIHRo
+ZSB0cmFuc2FjdGlvbiB3aXRoIHRoZQ0KPiA+PiA+Pj4gdXBkYXRlZCBhZGRyZXNzLg0KPiA+PiA+
+Pj4gPiBBZHZhbnRhZ2U6DQo+ID4+ID4+PiA+IEl0IHdvbid0IGFmZmVjdCBvdGhlciBTUEkgY29u
+dHJvbGxlcnMgd2l0aG91dCB0aGlzIGxpbWl0Lg0KPiA+PiA+Pj4gPiBEaXNhZHZhbnRhZ2U6DQo+
+ID4+ID4+PiA+IEl0IGlzIG5vdCBhIHN5c3RlbWF0aWMgc29sdXRpb24uDQo+ID4+ID4+Pg0KPiA+
+PiA+Pj4gVGhpcyBjYW4gcHJvYmFibHkgYnJlYWsgdHJhbnNhY3Rpb25zIHRoYXQgYXJlIHBlcmZv
+cm1lZCBvbg0KPiA+PiA+Pj4gbm9uLWZsYXNoIHNsYXZlcyBidXQgbG9vayBsaWtlIGZsYXNoIHJl
+YWQgY29tbWFuZC4NCj4gPj4gPj4+DQo+ID4+ID4+PiA+DQo+ID4+ID4+PiA+IDIuIEFkZCBxdWly
+ayBzdXBwb3J0LCBzb21ldGhpbmcgbGlrZSBpMmMgcXVpcmsuDQo+ID4+ID4+PiA+IEFkdmFudGFn
+ZToNCj4gPj4gPj4+ID4gSXQgaXMgYSBzeXN0ZW1hdGljIHNvbHV0aW9uLg0KPiA+PiA+Pj4gPiBE
+aXNhZHZhbnRhZ2U6DQo+ID4+ID4+PiA+IFRoZSBxdWlyayBtZWNoYW5pc20gaXMgb25seSB1c2Vm
+dWwgZm9yIEZyZWVzY2FsZSBlU1BJDQo+ID4+ID4+PiA+IGNvbnRyb2xsZXIsIGJ1dCBpdCB3aWxs
+IGFmZmVjdCB3aG9sZSBTUEkgZnJhbWV3b3JrLg0KPiA+PiA+Pj4NCj4gPj4gPj4+IEkgYWRkZWQg
+dGhpcyBxdWlyayBpbiBtMjVwODAuYyBzaW5jZSBteSBjdXJyZW50IFNQSSBtYXN0ZXIgZHJpdmVy
+DQo+ID4+ID4+PiBpcyBqdXN0IGJyb2tlbiBzbyBJIHRyaWVkIHRvIHdvcmsgYXJvdW5kIHRoYXQu
+IFdoaWxlIHRoZSBxdWlyaw0KPiA+PiA+Pj4gaXRzZWxmIGlzIHJlamVjdGVkIGFzIG5vbi1zeWV0
+ZW1hdGljIHRoaXMgc2VyaWVzIHRoYXQgYWRkcyB0aGUNCj4gPj4gPj4+IHJlcXVpcmVkIHN1cHBv
+cnQgZm9yIGNoZWNraW5nIHRoZSByZXR1cm4gdmFsdWUgb2YgdGhlIFNQSSBtYXN0ZXINCj4gPj4g
+Pj4+IGRyaXZlcg0KPiA+PiB0cmFuc2ZlciBmdW5jdGlvbnMuDQo+ID4+ID4+Pg0KPiA+PiA+Pj4g
+U28geW91IGhhdmUgb3B0aW9uczoNCj4gPj4gPj4+DQo+ID4+ID4+PiAyYTogYWRkIFNQSSBtYXN0
+ZXIgcXVpcmsgYW5kIGNoZWNrIGl0IGluIG0yNXA4MC5jIGFuZCB0cnVuY2F0ZQ0KPiA+PiA+Pj4g
+dGhlIHRyYW5zZmVyIGluIG0yNXA4MC5jDQo+ID4+ID4+Pg0KPiA+PiA+Pj4gMmI6IHRydW5jYXRl
+IHRoZSB0cmFuc2ZlciBpbiBTUEkgbWFzdGVyIGRyaXZlciBhbmQganVzdCByZXR1cm4NCj4gPj4g
+Pj4+IHRoZSBudW1iZXIgb2YgYnl0ZXMgdHJhbnNmZXJyZWQNCj4gPj4gPj4+DQo+ID4+ID4+DQo+
+ID4+ID4+IEkgZXhwZWN0IHRoaXMgd2F5LCBzbyB0aGUgc3BpIHNsYXZlIGRyaXZlciBzaG91bGQg
+Y2hlY2sgdGhlIHJldGxlbg0KPiA+PiA+PiB3aXRoIHRoZSB0cmFuc2FjdGlvbiBsZW5ndGggYW5k
+IGRvIHNvbWUgbG9vcCB0cmFuc2ZlciwgYW5kIG1ha2UNCj4gPj4gPj4gc3VyZSBnZXR0aW5nIGFs
+bCBkYXRhIHRoaXMgdHJhbnNhY3Rpb24gd2FudGVkLg0KPiA+PiA+Pg0KPiA+PiA+Pj4gVGhpcyBw
+YXRjaCBzZXJpZXMgc2hvdWxkIGhhbmRsZSBmcmFnbWVudGluZyB0aGUgdHJhbnNmZXJzIGluDQo+
+ID4+ID4+PiBzcGktbm9yLmMNCj4gPj4gPj4+DQo+ID4+ID4+PiBodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTUtSnVseS8wNjA0NjYuaA0KPiA+PiA+Pj4g
+dG1sDQo+ID4+ID4+Pg0KPiA+PiA+Pg0KPiA+PiA+PiBQbGVhc2UgY29ycmVjdCBtZSBpZiBJJ20g
+d3JvbmcsIEFGQUlVIHRoZSBtdGQgbGF5ZXIgd2lsbCBjaGVjayB0aGUNCj4gPj4gPj4gcmV0bGVu
+IGFuZCBpZiBpdCBpc24ndCBlcXVhbCB0byB0aGUgdHJhbnNhY3Rpb24gbGVuZ3RoLCB0aGUgRUlP
+DQo+ID4+ID4+IHdpbGwNCj4gPj4gYmUgcmV0dXJuZWQuDQo+ID4+ID4NCj4gPj4gPiBJIG5ldmVy
+IGhhZCB0aGlzIGhhcHBlbiBiZWNhdXNlIHdpdGggdGhpcyBwYXRjaCBzZXJpZXMgc3BpLW5vcg0K
+PiA+PiA+IGNoZWNrcyB0aGUgYW1vdW50IG9mIGRhdGEgdHJhbnNmZXJyZWQgYW5kIGNvbnRpbnVl
+cyB1bnRpbCB0aGUgd2hvbGUNCj4gPj4gPiBsZW5ndGggaXMgdHJhbnNmZXJyZWQuIFdpdGhvdXQg
+aXQganVzdCBzZXRzIHJldGxlbiB0byBsZW5ndGgNCj4gPj4gPiByZWdhcmRsZXNzIG9mIGFtb3Vu
+dCBvZiBkYXRhIHRyYW5zZmVycmVkLg0KPiA+PiA+DQo+ID4+DQo+ID4+IExvb2tpbmcgYXQgdGhl
+IGNvZGUgY2xvc2VseSBtdGRjb3JlIGp1c3QgaW52b2tlcyBfcmVhZCBpbiBtdGRfcmVhZA0KPiA+
+PiBhbmQgcGFzc2VzIHRoZSByZXN1bHQgb24uIG10ZGNoYXIgZG9lcyB0aGUgc2FtZS4gdWJpIGhh
+cyBhc3NlcnQgdGhhdA0KPiA+PiByZWFkIGFtb3VudCBvZiBkYXRhIGlzIGVxdWFsIHJlcXVlc3Rl
+ZCBzbyBpZiB5b3UgdXNlZCB1YmkgeW91IHdob3VsZA0KPiA+PiBoYXZlIHRvIGZpeCBpdCBvciBh
+ZGQgcmVhZCBsb29wIGluIHNwaS1ub3IgdG8gd29yayBhcm91bmQgdWJpDQo+IGRlZmljaWVuY3ku
+DQo+ID4+DQo+ID4NCj4gPiBCdXQgaW4gbXRkYmxvY2suYywgbXRkX3JlYWQgaXMgaW52b2tlZCBi
+eQ0KPiA+IG10ZGJsb2NrX3JlYWRzZWN0LT5kb19jYWNoZWRfcmVhZCB3aXRob3V0IHJlYWQgbG9v
+cC4gQW5kIGp1c3QgY29tcGFyZQ0KPiA+IHRoZSByZXRsZW4gd2l0aCByZXF1ZXN0ZWQgZGF0YSBz
+aXplLCBpZiBub3QgZXF1YWwsIHRoZSBFSU8gd2lsbCBiZQ0KPiByZXBvcnRlZC4NCj4gPg0KPiA+
+IDI0MyAgICAgICAgICAgICAgICAgICAgICAgICByZXQgPSBtdGRfcmVhZChtdGQsIHBvcywgc2l6
+ZSwgJnJldGxlbiwNCj4gYnVmKTsNCj4gPiAyNDQgICAgICAgICAgICAgICAgICAgICAgICAgaWYg
+KHJldCkNCj4gPiAyNDUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gcmV0
+Ow0KPiA+IDI0NiAgICAgICAgICAgICAgICAgICAgICAgICBpZiAocmV0bGVuICE9IHNpemUpDQo+
+ID4gMjQ3ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIC1FSU87DQo+ID4N
+Cj4gDQo+IFNpemUgaXMgc2V0IHRvIGNhY2hlX3NpemUgd2hpY2ggaXMgc2V0IHRvIGVyYXNlc2l6
+ZSB3aGljaCBpcyB0eXBpY2FsbHkNCj4gNGsvMzJrLzY0ayBvbiBzcGkgbm9yIHNvIHlvdSBzaG91
+bGQgbm90IGhpdCB0aGlzIGluIHByYWN0aWNlLg0KPiANCg0KSWYgdGhlIHNpemUgaXMgNjRLIGFu
+ZCB0aGUgc3BpIGNvbnRyb2xsZXIgaGF2ZSB0aGUgb25lLXRpbWUgdHJhbnNmZXIgbGltaXQNCkxl
+c3MgdGhhbiA2NEssIHRoZW4gdGhlIChyZXRsZW4gIT0gc2l6ZSkgaXMgaGl0ZWQgYW5kIEVJTyB3
+aWxsIGJlIHJldHVybmVkLg0KDQpBY2NvcmRpbmcgdG8gdGhpcyBjb2RlIHNlY3Rpb24sIGRvX2Nh
+Y2hlZF9yZWFkIHJlcXVpcmUgdGhlIG10ZF9yZWFkIHNob3VsZA0KZW5zdXJlIHRoZSBhbW91bnQg
+b2YgZGF0YSB0cmFuc2ZlcnJlZCBjb21wbGV0aW9uLiBBbmQgc3BpIG5vciByZWFkIGlnbm9yZXMN
+CmhhcmR3YXJlIGxpbWl0cyBvZiBzcGkgY29udHJvbGxlcnMgYW5kIGFzc3VtZXMgc3BpIGNvbnRy
+b2xsZXJzIGhhdmUgdGhlIA0KYWJpbGl0eSB0byB0cmFuc2ZlciBhbnkgbGVuZ3RoIHRyYW5zYWN0
+aW9uIG9uZS10aW1lLg0KDQo+IEl0IHNob3VsZCBiZSBmaXhlZCB0byB3b3JrIHdpdGggZXhvdGlj
+IGVyYXNlIHNpemVzIGFzIHdlbGwsIHRob3VnaC4NCj4gDQo+IFRoYW5rcw0KPiANCj4gTWljaGFs
+DQoNClRoYW5rcywNClpoaXFpYW5nDQo=
