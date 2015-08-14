@@ -1,28 +1,30 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-bl2on0144.outbound.protection.outlook.com ([65.55.169.144]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQ5jm-0005mq-RC
- for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 03:32:59 +0000
-From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH V7 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-Date: Fri, 14 Aug 2015 05:32:34 +0200
-Cc: Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Vikas MANOCHA <vikas.manocha@st.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- devicetree@vger.kernel.org
-References: <1439522892-7524-1-git-send-email-marex@denx.de>
- <1439522892-7524-2-git-send-email-marex@denx.de>
-In-Reply-To: <1439522892-7524-2-git-send-email-marex@denx.de>
+ id 1ZQ5r2-0000YA-Cw
+ for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 03:40:29 +0000
+From: Hou Zhiqiang <B48286@freescale.com>
+To: Michal Suchanek <hramrach@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "jonatas.rech@datacom.ind.br"
+ <jonatas.rech@datacom.ind.br>, "Jane.Wan@gainspeed.com"
+ <Jane.Wan@gainspeed.com>, "shijie.huang@intel.com" <shijie.huang@intel.com>,
+ "valentin.longchamp@keymile.com" <valentin.longchamp@keymile.com>,
+ "hkallweit1@gmail.com" <hkallweit1@gmail.com>, "beanhuo@micron.com"
+ <beanhuo@micron.com>, Hu Vincent <Mingkai.Hu@freescale.com>
+Subject: RE: [PATCH] RFC: mtd/spi-nor: add checking for the spi_nor_read
+Date: Fri, 14 Aug 2015 03:40:04 +0000
+Message-ID: <CY1PR0301MB07804C16D086589B621FD9498B7C0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+References: <1437479828-30826-1-git-send-email-B48286@freescale.com>
+ <CY1PR0301MB0780E3F6E2A1170A7A56A8538B8A0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CY1PR0301MB0780204E22E93D42F596043D8B7D0@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAOMqctSMyB+7=Rfw-hTvJ6YePn9y_QW8p6_jT8v=ejYZ9hF=hA@mail.gmail.com>
+In-Reply-To: <CAOMqctSMyB+7=Rfw-hTvJ6YePn9y_QW8p6_jT8v=ejYZ9hF=hA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201508140532.34935.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,83 +34,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, August 14, 2015 at 05:28:12 AM, Marek Vasut wrote:
-> From: Graham Moore <grmoore@opensource.altera.com>
-> 
-> Add support for the Cadence QSPI controller. This controller is
-> present in the Altera SoCFPGA SoCs and this driver has been tested
-> on the Cyclone V SoC.
-> 
-> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: Alan Tull <atull@opensource.altera.com>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
-> Cc: Graham Moore <grmoore@opensource.altera.com>
-> Cc: Vikas MANOCHA <vikas.manocha@st.com>
-> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
-> Cc: devicetree@vger.kernel.org
-
-[...]
-
-> +	/* Get flash device data */
-> +	for_each_available_child_of_node(dev->of_node, np) {
-> +		unsigned int cs;
-> +		struct cqspi_flash_pdata *f_pdata;
-> +
-> +		if (of_property_read_u32(np, "reg", &cs)) {
-> +			dev_err(dev, "couldn't determine chip select\n");
-> +			return -ENXIO;
-> +		}
-> +
-> +		if (cs >= CQSPI_MAX_CHIPSELECT) {
-> +			dev_err(dev, "chip select %d out of range\n", cs);
-> +			return -ENXIO;
-> +		}
-> +
-> +		f_pdata = &cqspi->f_pdata[cs];
-> +		f_pdata->cqspi = cqspi;
-> +		f_pdata->cs = cs;
-> +
-> +		ret = cqspi_of_get_flash_pdata(pdev, f_pdata, np);
-> +		if (ret)
-> +			goto probe_failed;
-> +
-> +		nor = &f_pdata->nor;
-> +		mtd = &f_pdata->mtd;
-> +
-> +		nor->mtd = mtd;
-> +		nor->dev = dev;
-> +		nor->priv = f_pdata;
-> +		mtd->priv = nor;
-> +
-> +		nor->read_reg = cqspi_read_reg;
-> +		nor->write_reg = cqspi_write_reg;
-> +		nor->read = cqspi_read;
-> +		nor->write = cqspi_write;
-> +		nor->erase = cqspi_erase;
-> +		nor->set_protocol = cqspi_set_protocol;
-> +
-> +		nor->prepare = cqspi_prep;
-> +
-
---->8---
-
-> +		/*
-> +		 * Here is a 'nasty hack' from Marek Vasut to pick
-> +		 * up OF properties from flash device subnode.
-> +		 */
-> +		nor->dev->of_node = np;
-> +
-> +		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> +		if (ret)
-> +			goto probe_failed;
-
-The only bizzare thing is this stuff above ^ . If I want to pass for example 
-"m25p,fast-read" to the SPI NOR connected to this controller, I have to set
-up the nor->dev->of_node, otherwise the of_node would point to the controller.
-I am positive this is wrong, but I'm not quite sure how to repair this.
-Brian, can you please comment on this one bit ?
-
-[...]
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWljaGFsIFN1Y2hhbmVr
+IFttYWlsdG86aHJhbXJhY2hAZ21haWwuY29tXQ0KPiBTZW50OiAyMDE15bm0OOaciDEz5pelIDE3
+OjQyDQo+IFRvOiBIb3UgWmhpcWlhbmctQjQ4Mjg2DQo+IENjOiBsaW51eC1tdGRAbGlzdHMuaW5m
+cmFkZWFkLm9yZzsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOw0KPiBkd213MkBpbmZyYWRl
+YWQub3JnOyBqb25hdGFzLnJlY2hAZGF0YWNvbS5pbmQuYnI7IEphbmUuV2FuQGdhaW5zcGVlZC5j
+b207DQo+IHNoaWppZS5odWFuZ0BpbnRlbC5jb207IHZhbGVudGluLmxvbmdjaGFtcEBrZXltaWxl
+LmNvbTsNCj4gaGthbGx3ZWl0MUBnbWFpbC5jb207IGJlYW5odW9AbWljcm9uLmNvbTsgSHUgTWlu
+Z2thaS1CMjEyODQNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gUkZDOiBtdGQvc3BpLW5vcjogYWRk
+IGNoZWNraW5nIGZvciB0aGUgc3BpX25vcl9yZWFkDQo+IA0KPiBPbiAxMyBBdWd1c3QgMjAxNSBh
+dCAxMTowMywgSG91IFpoaXFpYW5nIDxCNDgyODZAZnJlZXNjYWxlLmNvbT4gd3JvdGU6DQo+ID4g
+SGVsbG8sDQo+ID4NCj4gPiBJIHdhbnQgdG8gYWRkIHRoZSA0LUJ5dGUgYWRkcmVzc2luZyBmbGFz
+aGVzIHN1cHBvcnQgZm9yIHRoZSBGcmVlc2NhbGUNCj4gPiBlU1BJIGNvbnRyb2xsZXIgZGlydmVy
+LiBBcHByZWNpYXRlIHlvdXIgc3VnZ2VzdGlvbnMuDQo+ID4NCj4gPiBCYWNrZ3JvdW5kOg0KPiA+
+IEluIHRoZSBGcmVlc2NhbGUgZVNQSSBjb250cm9sbGVyIGRpcnZlciwgaWYgdGhlIHRyYW5zYWN0
+aW9uIGxlbmd0aA0KPiA+IGV4Y2VlZCA2NEtpQiwgdGhlIGNvbnRlbnRzIG9mIHRoZSB0cmFuc2Fj
+dGlvbiB3YXMgdG91Y2hlZCB0byB1cGRhdGUNCj4gPiB0aGUgY29tbWFuZCB3aXRoIGFzc3VtZWQg
+dGhlIDMtQnl0ZSBhZGRyZXNzIHdpZHRoLiBJdCBpcyBhIHdvcmthcm91bmQsDQo+ID4gZHVlIHRv
+IHRoZSBGcmVlc2NhbGUgZVNQSSBjb250cm9sbGVyIGhhdmUgYSBoYXJkd2FyZSBsaW1pdCB0aGF0
+IHRoZQ0KPiA+IG1heGltdW0gb25lLXRpbWUgdHJhbnNhY3Rpb24gbGVuZ3RoIGlzIDY0S2lCLCB0
+aGF0IGlzbid0IGNvbnNpc3RlbnQNCj4gd2l0aCBtYW55IG90aGVyIHZlbmRvcnMnDQo+ID4gU1BJ
+IGNvbnRyb2xsZXJzLCBhbmQgc28gZmFyIHRoZSBTUEkgZmxhc2ggZHJpdmVyIGFzc3VtZSB0aGUg
+U1BJDQo+ID4gY29udHJvbGxlciBoYXZlIHRoZSBhYmlsaXR5IHRvIGNvbXBsZXRlIHRoZSBzcGVj
+aWZpZWQgdHJhbnNhY3Rpb24NCj4gbGVuZ3RoIGF0IG9uZS10aW1lLg0KPiA+DQo+ID4gQnV0IHRo
+aXMgd29ya2Fyb3VuZCBpcyBvbmx5IHN1aXQgZm9yIDMtQnl0ZSBhZGRyZXNzaW5nIHNsYXZlcywg
+YXMgdGltZQ0KPiA+IGdvZXMgYnksIHRoZXJlIGFyZSA0LUJ5dGUgYWRkcmVzcyB3aWR0aCBTUEkg
+Zmxhc2hlcywgc28gdGhpcw0KPiA+IGFzc3VtcHRpb24gaXNuJ3QgY29ycmVjdCBhbmQgdGhpcyB3
+b3JrYXJvdW5kIGRpc2NvbWJvYnVsYXRlIHRoZQ0KPiA+IGNvbnRyb2xsZXIgZHJpdmVyIGxheWVy
+IGFuZCBwcm90b2NvbCBkcml2ZXIgbGF5ZXIuIFNvLCB0aGlzIHdvcmthcm91bmQNCj4gPiBzaG91
+bGQgYmUgcmVtb3ZlZCBhbmQgdGhlIFNQSSBjbGllbnQgZHJpdmVyIHNob3VsZCBlbnN1cmUgdGhl
+DQo+IHRyYW5zYWN0aW9uIGNvbXBsZXRpb24uDQo+ID4NCj4gPiBUaGVyZSBhcmUgdHdvIHNvbHV0
+aW9uczoNCj4gPiAxLiBJbiBzcGktbm9yIGZyYW1ld29yaywgY29tcGFyZSB0aGUgcmV0bGVuIHdp
+dGggdGhlIHRyYW5zYWN0aW9uDQo+ID4gbGVuZ3RoIHNwZWNpZmllZCwgaWYgdGhlIHJldGxlbiBs
+ZXNzIHRoYW4gdGhlIHRyYW5zYWN0aW9uIGxlbmd0aCBhbmQNCj4gPiB3aXRoIG5vIGVycm9yIG51
+bWJlciByZXR1cm5lZCwgcmUtaW5pdGlhdGUgdGhlIHRyYW5zYWN0aW9uIHdpdGggdGhlDQo+IHVw
+ZGF0ZWQgYWRkcmVzcy4NCj4gPiBBZHZhbnRhZ2U6DQo+ID4gSXQgd29uJ3QgYWZmZWN0IG90aGVy
+IFNQSSBjb250cm9sbGVycyB3aXRob3V0IHRoaXMgbGltaXQuDQo+ID4gRGlzYWR2YW50YWdlOg0K
+PiA+IEl0IGlzIG5vdCBhIHN5c3RlbWF0aWMgc29sdXRpb24uDQo+IA0KPiBUaGlzIGNhbiBwcm9i
+YWJseSBicmVhayB0cmFuc2FjdGlvbnMgdGhhdCBhcmUgcGVyZm9ybWVkIG9uIG5vbi1mbGFzaA0K
+PiBzbGF2ZXMgYnV0IGxvb2sgbGlrZSBmbGFzaCByZWFkIGNvbW1hbmQuDQo+IA0KPiA+DQo+ID4g
+Mi4gQWRkIHF1aXJrIHN1cHBvcnQsIHNvbWV0aGluZyBsaWtlIGkyYyBxdWlyay4NCj4gPiBBZHZh
+bnRhZ2U6DQo+ID4gSXQgaXMgYSBzeXN0ZW1hdGljIHNvbHV0aW9uLg0KPiA+IERpc2FkdmFudGFn
+ZToNCj4gPiBUaGUgcXVpcmsgbWVjaGFuaXNtIGlzIG9ubHkgdXNlZnVsIGZvciBGcmVlc2NhbGUg
+ZVNQSSBjb250cm9sbGVyLCBidXQNCj4gPiBpdCB3aWxsIGFmZmVjdCB3aG9sZSBTUEkgZnJhbWV3
+b3JrLg0KPiANCj4gSSBhZGRlZCB0aGlzIHF1aXJrIGluIG0yNXA4MC5jIHNpbmNlIG15IGN1cnJl
+bnQgU1BJIG1hc3RlciBkcml2ZXIgaXMganVzdA0KPiBicm9rZW4gc28gSSB0cmllZCB0byB3b3Jr
+IGFyb3VuZCB0aGF0LiBXaGlsZSB0aGUgcXVpcmsgaXRzZWxmIGlzIHJlamVjdGVkDQo+IGFzIG5v
+bi1zeWV0ZW1hdGljIHRoaXMgc2VyaWVzIHRoYXQgYWRkcyB0aGUgcmVxdWlyZWQgc3VwcG9ydCBm
+b3IgY2hlY2tpbmcNCj4gdGhlIHJldHVybiB2YWx1ZSBvZiB0aGUgU1BJIG1hc3RlciBkcml2ZXIg
+dHJhbnNmZXIgZnVuY3Rpb25zLg0KPiANCj4gU28geW91IGhhdmUgb3B0aW9uczoNCj4gDQo+IDJh
+OiBhZGQgU1BJIG1hc3RlciBxdWlyayBhbmQgY2hlY2sgaXQgaW4gbTI1cDgwLmMgYW5kIHRydW5j
+YXRlIHRoZQ0KPiB0cmFuc2ZlciBpbiBtMjVwODAuYw0KPiANCj4gMmI6IHRydW5jYXRlIHRoZSB0
+cmFuc2ZlciBpbiBTUEkgbWFzdGVyIGRyaXZlciBhbmQganVzdCByZXR1cm4gdGhlIG51bWJlcg0K
+PiBvZiBieXRlcyB0cmFuc2ZlcnJlZA0KPiANCg0KSSBleHBlY3QgdGhpcyB3YXksIHNvIHRoZSBz
+cGkgc2xhdmUgZHJpdmVyIHNob3VsZCBjaGVjayB0aGUgcmV0bGVuIHdpdGggdGhlDQp0cmFuc2Fj
+dGlvbiBsZW5ndGggYW5kIGRvIHNvbWUgbG9vcCB0cmFuc2ZlciwgYW5kIG1ha2Ugc3VyZSBnZXR0
+aW5nIGFsbCBkYXRhDQp0aGlzIHRyYW5zYWN0aW9uIHdhbnRlZC4NCg0KPiBUaGlzIHBhdGNoIHNl
+cmllcyBzaG91bGQgaGFuZGxlIGZyYWdtZW50aW5nIHRoZSB0cmFuc2ZlcnMgaW4gc3BpLW5vci5j
+DQo+IA0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIw
+MTUtSnVseS8wNjA0NjYuaHRtbA0KPiANCg0KUGxlYXNlIGNvcnJlY3QgbWUgaWYgSSdtIHdyb25n
+LCBBRkFJVSB0aGUgbXRkIGxheWVyIHdpbGwgY2hlY2sgdGhlIHJldGxlbiBhbmQNCmlmIGl0IGlz
+bid0IGVxdWFsIHRvIHRoZSB0cmFuc2FjdGlvbiBsZW5ndGgsIHRoZSBFSU8gd2lsbCBiZSByZXR1
+cm5lZC4NClNvLCBJJ20gYWZyYWlkIHRoaXMgcGF0Y2ggc2VyaWVzIGNhbid0IGhhbmRsZSB0aGUg
+ZnJhZ21lbnRpbmcgdGhlIHRyYW5zZmVycy4NCkJlY2F1c2UgaXQgY2Fubm90IGVuc3VyZSBhbGwg
+dGhlIGRhdGEgdGhlIHRoaXMgdHJhbnNhY3Rpb24gc3BlY2lmaWVkIGhhcyBiZWVuDQpyZWFkIGJh
+Y2suDQoNCj4gMzogaWYgeW91ciBjb250cm9sbGVyIGhhcyBtYW51YWwgQ1MgZHJpdmluZyBzdXBw
+b3J0IGZyYWdtZW50IHRoZSB0cmFuc2Zlcg0KPiBpbiB5b3VyIFNQSSBtYXN0ZXIgZHJpdmVyIGlu
+dG8gY2h1bmtzIHRoZSBjb250cm9sZXIgY2FuIHRyYW5zZmVyIGluIG9uZQ0KPiBnby4NCj4gDQo+
+IFRoYW5rcw0KPiANCj4gTWljaGFsDQo=
