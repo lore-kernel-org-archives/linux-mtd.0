@@ -1,11 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQBD3-0007B2-Hd
- for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 09:23:35 +0000
-Date: 14 Aug 2015 09:23:06 -0000
-Message-Id: <cover.1439543572.git.hramrach@gmail.com>
+ id 1ZQBD3-0007Ar-Hf
+ for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 09:23:36 +0000
+Date: 14 Aug 2015 09:23:07 -0000
+Message-Id: <724d829f0cd3bd21fe0f1ee696cefb29e90dd208.1439543572.git.hramrach@gmail.com>
+In-Reply-To: <cover.1439543572.git.hramrach@gmail.com>
+References: <cover.1439543572.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v4 0/7] Add spi-nor SPI transfer error handling
+Subject: [PATCH v4 4/7] mtd: spi-nor: check return value from read/write
 To: Hou Zhiqiang <B48286@freescale.com>, shijie.huang@intel.com,
   David Woodhouse <dwmw2@infradead.org>,
   Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
@@ -23,36 +25,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+SPI NOR hardware drivers now return useful value from their read/write
+functions so check them.
 
-with these patches SPI transfer errors are not silently ignored but rather
-reported to spi-nor users.
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 50 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 36 insertions(+), 14 deletions(-)
 
-This should prevent silently dropping data to the floor in cases when the SPI
-transfer fails and the failure is detected.
-
-It has been pointed out that MTD users do not handle the case when data is read
-only partially so this version adds the last patch which handles this in
-spi-nor.
-
-Thanks
-
-Michal
-
-Michal Suchanek (7):
-  mtd: spi-nor: change return value of read/write
-  mtd: m25p80: return amount of data transferred or error in read/write
-  mtd: fsl-quadspi: return amount of data read/written or error
-  mtd: spi-nor: check return value from read/write
-  mtd: spi-nor: stop passing around retlen
-  mtd: spi-nor: simplify write loop
-  mtd: spi-nor: add read loop
-
- drivers/mtd/devices/m25p80.c      | 33 +++++++++------
- drivers/mtd/spi-nor/fsl-quadspi.c | 29 ++++++-------
- drivers/mtd/spi-nor/spi-nor.c     | 85 +++++++++++++++++++++++----------------
- include/linux/mtd/spi-nor.h       |  8 ++--
- 4 files changed, 91 insertions(+), 64 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d78831b..5116bbd 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -741,7 +741,10 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	ret = nor->read(nor, from, len, retlen, buf);
+ 
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
+-	return ret;
++	if (ret < 0)
++		return ret;
++
++	return 0;
+ }
+ 
+ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -767,10 +770,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_BP;
+ 
+ 		/* write one byte. */
+-		nor->write(nor, to, 1, retlen, buf);
++		ret = nor->write(nor, to, 1, retlen, buf);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 	}
+ 	to += actual;
+ 
+@@ -779,10 +786,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_AAI_WP;
+ 
+ 		/* write two bytes. */
+-		nor->write(nor, to, 2, retlen, buf + actual);
++		ret = nor->write(nor, to, 2, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		to += 2;
+ 		nor->sst_write_second = true;
+ 	}
+@@ -791,21 +802,24 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	write_disable(nor);
+ 	ret = spi_nor_wait_till_ready(nor);
+ 	if (ret)
+-		goto time_out;
++		goto sst_write_err;
+ 
+ 	/* Write out trailing byte if it exists. */
+ 	if (actual != len) {
+ 		write_enable(nor);
+ 
+ 		nor->program_opcode = SPINOR_OP_BP;
+-		nor->write(nor, to, 1, retlen, buf + actual);
+-
++		ret = nor->write(nor, to, 1, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		write_disable(nor);
+ 	}
+-time_out:
++sst_write_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+ 	return ret;
+ }
+@@ -834,14 +848,18 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 	/* do all the bytes fit onto one page? */
+ 	if (page_offset + len <= nor->page_size) {
+-		nor->write(nor, to, len, retlen, buf);
++		ret = nor->write(nor, to, len, retlen, buf);
++		if (ret < 0)
++			goto write_err;
+ 	} else {
+ 		/* the size of data remaining on the first page */
+ 		page_size = nor->page_size - page_offset;
+-		nor->write(nor, to, page_size, retlen, buf);
++		ret = nor->write(nor, to, page_size, retlen, buf);
++		if (ret < 0)
++			goto write_err;
+ 
+ 		/* write everything in nor->page_size chunks */
+-		for (i = page_size; i < len; i += page_size) {
++		for (i = ret; i < len; ) {
+ 			page_size = len - i;
+ 			if (page_size > nor->page_size)
+ 				page_size = nor->page_size;
+@@ -852,7 +870,11 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 			write_enable(nor);
+ 
+-			nor->write(nor, to + i, page_size, retlen, buf + i);
++			ret = nor->write(nor, to + i, page_size, retlen,
++					 buf + i);
++			if (ret < 0)
++				goto write_err;
++			i += ret;
+ 		}
+ 	}
+ 
 -- 
 2.1.4
