@@ -1,16 +1,16 @@
-Received: from mail-ig0-x229.google.com ([2607:f8b0:4001:c05::229])
+Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQGHz-0006bE-8r
- for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 14:48:59 +0000
-Received: by igfj19 with SMTP id j19so14055462igf.0
- for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2015 07:48:38 -0700 (PDT)
+ id 1ZQGIv-0006v6-1j
+ for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 14:49:57 +0000
+Received: by igfj19 with SMTP id j19so14077293igf.0
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2015 07:49:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1439505965-134748-3-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1439505965-134748-4-git-send-email-computersforpeace@gmail.com>
 References: <1439505965-134748-1-git-send-email-computersforpeace@gmail.com>
- <1439505965-134748-3-git-send-email-computersforpeace@gmail.com>
-Date: Fri, 14 Aug 2015 16:48:37 +0200
-Message-ID: <CAGhQ9VyM6m-y=iYZbshSJMQhqfu2mYKVLKxe_x2JvzJt0RDw+Q@mail.gmail.com>
-Subject: Re: [RFT PATCH 2/4] mtd: spi-nor: assign mtd->priv in spi_nor_scan()
+ <1439505965-134748-4-git-send-email-computersforpeace@gmail.com>
+Date: Fri, 14 Aug 2015 16:49:35 +0200
+Message-ID: <CAGhQ9Vz==CwRAR5V5woJfae45c0mKGb9vEceVMWMXNbzZtpgQg@mail.gmail.com>
+Subject: Re: [RFT PATCH 3/4] mtd: spi-nor: add forward declaration for mtd_info
 From: Joachim  Eastwood <manabian@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Cc: linux-mtd@lists.infradead.org,
@@ -28,16 +28,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 14 August 2015 at 00:46, Brian Norris <computersforpeace@gmail.com> wrote:
-> Layering suggests that the SPI NOR layer (not the hardware driver)
-> should be initializing the MTD layer.
+> This header can't actually stand alone, as it relies on the declaration
+> (but not definition) of struct mtd_info. Let's fix that.
 >
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Boots fine on Hitex LPC4350 Evaluation Board (lpc18xx) with SPI-NOR
-NXP SPIFI and JFFS2 root on s25sl064p.
+Not much to test here I guess, but it was a part of the patch set I
+applied so FWIW:
 
 Tested-by: Joachim Eastwood <manabian@gmail.com>
-
 
 regards,
 Joachim Eastwood
