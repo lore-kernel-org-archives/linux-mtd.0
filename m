@@ -1,17 +1,22 @@
-Subject: Re: [linux-sunxi] [RFC PATCH 0/6] mtd: nand: per-partition ECC config
-To: boris.brezillon@free-electrons.com, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-References: <1438264225-23796-1-git-send-email-boris.brezillon@free-electrons.com>
-Cc: linux-kernel@vger.kernel.org, Roy Spliet <r.spliet@ultimaker.com>,
- Richard Weinberger <richard@nod.at>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <55CDE791.8030306@redhat.com>
-Date: Fri, 14 Aug 2015 15:05:21 +0200
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZQFiO-0003np-Ss
+ for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 14:12:13 +0000
+Message-ID: <55CDF72B.9060309@ti.com>
+Date: Fri, 14 Aug 2015 10:11:55 -0400
+From: Murali Karicheri <m-karicheri2@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1438264225-23796-1-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+To: Andrew Murray <amurray@embedded-bits.co.uk>, Michal Suchanek
+ <hramrach@gmail.com>
+CC: David Gstir <david@sigma-star.at>, MTD Maling List
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC] mtd: ubi: UBI Encryption
+References: <CAPcvp5GZi0gV=J2Zbz_Sp+NmZNKnA38JAsYtbuNiwsq84yMDfg@mail.gmail.com>
+ <8AC930D6-9BEE-4AA8-99AC-962027CCF336@sigma-star.at>
+ <CAOMqctQUgbukQ-h9vznwu2JrNBaZJeuL1jQiAgG59s9qHzS14Q@mail.gmail.com>
+ <CAPcvp5Ee8=mpPcw+nsNfwyw9-ojyNB7cZk9ygrJj-rZWQ4qwkw@mail.gmail.com>
+In-Reply-To: <CAPcvp5Ee8=mpPcw+nsNfwyw9-ojyNB7cZk9ygrJj-rZWQ4qwkw@mail.gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,73 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Andrew,
 
-On 30-07-15 15:50, Boris Brezillon wrote:
-> Hello,
+> This implementation provides a balance between
+> implementation/integration complexity and protection. If other users
+> can benefit from this then it's something they can just switch on -
+> rather than having to add a variety of userspace components to their
+> distribution, etc.
 >
-> It's been a year and a half since I posted my first series proposing
-> an approach to support per-partition ECC config [1].
->
-> First of all, before describing what's done in this patch series, I'd
-> like to sum-up why this is needed, and why a generic approach is
-> preferred over a NAND controller specific one.
-> On one side we have a lot of NAND chips out there and they all have
-> their own requirements in term of ECC strength and step size. On the
-> other side, most SoCs support booting from NAND (they embed a simple
-> logic in the ROM code to access a NAND chip through their NAND
-> controller).
-> In a ideal world all NAND chips would use the ONFI or JEDEC standard
-> exposing their requirements in a standard way, and the SoC vendors
-> would put the ONFI and JEDEC detection code in their ROM code and use
-> it to properly configure their NAND controller.
-> But we're not leaving in an ideal world, and some SoC vendors have
-> decided to hardcode (or use a simplified logic) to select the ECC
-> controller config. And in the case where the NAND requirement does
-> not match the ROM code config, you only have two solutions:
->
-> 1/ leave with the unsuitable ECC config for the whole chip
-> 2/ isolate the portion of NAND read by the ROM code into a sperate
->     partition and use a suitable ECC config for the rest of the
->     NAND
->
-> IMHO the second solution is far better than the first one, but it
-> requires some adjustments in the mtdpart and NAND code layer to be
-> applicable.
->
-> Now, why should we prefer a generic approach over a NAND controller/SoC
-> specific one ?
-> Because, this seems to be a problem faced by other people on other
-> platform than the sunxi one. Moreover, the ECC config is not the only
-> thing we'd have to tweak per partition: I'm currently working on the
-> NAND randomizer/scrambler aspect (required to support some MLC chips),
-> and this is also something the ROM code configure differently to
-> boot the first stage bootloader.
-> For all these reasons, I think providing a generic infrastructure allowing
-> specific implementation to tweak their behavior is better than hardcoding
-> it somewhere in the NAND controller driver.
->
-> This series proposes a solution to allow such per-partition config by
-> first letting MTD implementations (or subframework) overload the MTD
-> partition functions (patches 1 and 2), and then providing the appropriate
-> modifications in the NAND layer to support per-partition ECC config
-> (patches 3 to 5).
-> The last patch is showing how a NAND controller can add support for
-> per-partition ECC config.
->
-> Note that I tried to keep the changes as less invasive as impossible, but
-> I might have missed some aspects.
-> Any suggestions are welcome.
->
-> Best Regards,
->
-> Boris
+> At present my implementation makes an assumption that the key is
+> stored in another MTD partition, I took this approach because it was
+Did you looked into how to use the encryption key from secure storage in 
+SoC itself such as one from OTP memory?  In such case, is there an API 
+retrieve the key from such storage?
 
-Thanks for doing this, this series looks good to me.
+Murali
 
-MTD maintainers, what do we need to do to get this upstream, submit
-a non RFC version ? Or ... ?
+> easy. However I'm not sure if this is useful to the general case - or
+> if the general case is in fact users on SOMs protecting external flash
+> with keys on internal flash. It would be possible to extend the
+> UBI/MTD API to add ioctl's (or similar) such that a user can provide a
+> key during mount/attach time. This makes it slightly more complex for
+> a user to use - as rather than updating a .config they now have to add
+> an initramfs that reads a key from one MTD partition and provides it
+> to the kernel.
+>
+>>
+>> Adding encryption to UBIFS itself is much more difficult.
+>
+> Whilst experimenting with this stuff, I actually was successful in
+> adding encryption to UBIFS.
+>
+> To support compression, UBIFS provides functions thats get called when
+> data needs to be compressed. This calls use a crypto framework, e.g.
+> crypto_comp_compress. I extended this to actually use encryption. This
+> worked - though it only encrypted the data and not file names etc, I
+> also recall that compression can be turned off or not always applied.
+>
+> Much like the UBI encryption - I could have also tried to provided
+> UBIFS encryption by intercepting the ubi_leb_write and ubi_write
+> calls.
+>
+>>
+>> Adding encryption to every application is not really feasible unless
+>> you have a single-purpose device with one application.
+>
+>
+> Thanks,
+>
+> Andrew Murray
+>
+>>
+>> Thanks
+>>
+>> Michal
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
-Regards,
 
-Hans
+-- 
+Murali Karicheri
+Linux Kernel, Keystone
