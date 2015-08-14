@@ -1,14 +1,11 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQBD3-0007Au-Hh
+ id 1ZQBD3-0007B2-Hd
  for linux-mtd@lists.infradead.org; Fri, 14 Aug 2015 09:23:35 +0000
-Date: 14 Aug 2015 09:23:07 -0000
-Message-Id: <fa591fbdbac60d507b54f55e8e5140da94b1f60e.1439543572.git.hramrach@gmail.com>
-In-Reply-To: <cover.1439543572.git.hramrach@gmail.com>
-References: <cover.1439543572.git.hramrach@gmail.com>
+Date: 14 Aug 2015 09:23:06 -0000
+Message-Id: <cover.1439543572.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v4 2/7] mtd: m25p80: return amount of data transferred or
- error in read/write
+Subject: [PATCH v4 0/7] Add spi-nor SPI transfer error handling
 To: Hou Zhiqiang <B48286@freescale.com>, shijie.huang@intel.com,
   David Woodhouse <dwmw2@infradead.org>,
   Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
@@ -26,82 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add checking of SPI transfer errors and return them from read/write
-functions. Also return the amount of data transferred.
+Hello,
 
-Signed-off-by: Michal Suchanek <hramrach@gmail.com>
----
- drivers/mtd/devices/m25p80.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+with these patches SPI transfer errors are not silently ignored but rather
+reported to spi-nor users.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index b2fafc9..c93bc41 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -83,6 +83,7 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	struct spi_transfer t[2] = {};
- 	struct spi_message m;
- 	int cmd_sz = m25p_cmdsz(nor);
-+	ssize_t ret;
- 
- 	spi_message_init(&m);
- 
-@@ -100,10 +101,15 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
- 
--	spi_sync(spi, &m);
-+	ret = spi_sync(spi, &m);
-+	if (ret)
-+		return ret;
- 
--	*retlen += m.actual_length - cmd_sz;
--	return 0;
-+	ret = m.actual_length - cmd_sz;
-+	if (ret < 0)
-+		return -EIO;
-+	*retlen += ret;
-+	return ret;
- }
- 
- static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
-@@ -130,6 +136,7 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	struct spi_transfer t[2];
- 	struct spi_message m;
- 	unsigned int dummy = nor->read_dummy;
-+	ssize_t ret;
- 
- 	/* convert the dummy cycles to the number of bytes */
- 	dummy /= 8;
-@@ -149,10 +156,15 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
- 
--	spi_sync(spi, &m);
-+	ret = spi_sync(spi, &m);
-+	if (ret)
-+		return ret;
- 
--	*retlen = m.actual_length - m25p_cmdsz(nor) - dummy;
--	return 0;
-+	ret = m.actual_length - m25p_cmdsz(nor) - dummy;
-+	if (ret < 0)
-+		return -EIO;
-+	*retlen += ret;
-+	return ret;
- }
- 
- static int m25p80_erase(struct spi_nor *nor, loff_t offset)
-@@ -166,9 +178,7 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
- 	flash->command[0] = nor->erase_opcode;
- 	m25p_addr2cmd(nor, offset, flash->command);
- 
--	spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
--
--	return 0;
-+	return spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
- }
- 
- /*
+This should prevent silently dropping data to the floor in cases when the SPI
+transfer fails and the failure is detected.
+
+It has been pointed out that MTD users do not handle the case when data is read
+only partially so this version adds the last patch which handles this in
+spi-nor.
+
+Thanks
+
+Michal
+
+Michal Suchanek (7):
+  mtd: spi-nor: change return value of read/write
+  mtd: m25p80: return amount of data transferred or error in read/write
+  mtd: fsl-quadspi: return amount of data read/written or error
+  mtd: spi-nor: check return value from read/write
+  mtd: spi-nor: stop passing around retlen
+  mtd: spi-nor: simplify write loop
+  mtd: spi-nor: add read loop
+
+ drivers/mtd/devices/m25p80.c      | 33 +++++++++------
+ drivers/mtd/spi-nor/fsl-quadspi.c | 29 ++++++-------
+ drivers/mtd/spi-nor/spi-nor.c     | 85 +++++++++++++++++++++++----------------
+ include/linux/mtd/spi-nor.h       |  8 ++--
+ 4 files changed, 91 insertions(+), 64 deletions(-)
+
 -- 
 2.1.4
