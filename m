@@ -1,27 +1,27 @@
-Received: from arrakis.dune.hu ([78.24.191.176])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQa68-00082S-Ux
- for linux-mtd@lists.infradead.org; Sat, 15 Aug 2015 11:58:06 +0000
-Subject: Re: [PATCH] mtd: part: add generic parsing of linux,part-probe
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1431884112-28236-1-git-send-email-hauke@hauke-m.de>
- <20150518224910.GU11598@ld-irv-0074>
- <CAOiHx=k9SuwEYZ10P8kmHF25P2O2r6+9gaBTSQ6kXFxfDnzL=w@mail.gmail.com>
- <20150519230900.GB11598@ld-irv-0074>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Florian Fainelli <f.fainelli@gmail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, Mathieu Olivari <mathieu@qca.qualcomm.com>,
- rjui@broadcom.com
-From: Jonas Gorski <jogo@openwrt.org>
-Message-ID: <55CF293C.5000304@openwrt.org>
-Date: Sat, 15 Aug 2015 13:57:48 +0200
+ id 1ZQbXA-0003Rs-7K
+ for linux-mtd@lists.infradead.org; Sat, 15 Aug 2015 13:30:05 +0000
+From: Marek Vasut <marex@denx.de>
+To: Alexis Ballier <aballier@gentoo.org>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for sst25wf020a.
+Date: Sat, 15 Aug 2015 15:29:35 +0200
+Cc: Ben Hutchings <ben@decadent.org.uk>,
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>, Gabor Juhos <juhosg@openwrt.org>,
+ "open list:MEMORY TECHNOLOGY DEVICES \(MTD\)" <linux-mtd@lists.infradead.org>,
+ Huang Shijie <shijie.huang@intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, "Bean Huo
+ =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= \(beanhuo\)" <beanhuo@micron.com>
+References: <1439573741-24491-1-git-send-email-aballier@gentoo.org>
+ <201508142245.14289.marex@denx.de> <20150815103859.0a15da43@gentoo.org>
+In-Reply-To: <20150815103859.0a15da43@gentoo.org>
 MIME-Version: 1.0
-In-Reply-To: <20150519230900.GB11598@ld-irv-0074>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Message-Id: <201508151529.35983.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,165 +31,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Let's get this discussion back on track ;-)
-
-On 20.05.2015 01:09, Brian Norris wrote:
-> On Tue, May 19, 2015 at 10:25:58AM +0200, Jonas Gorski wrote:
->> On Tue, May 19, 2015 at 12:49 AM, Brian Norris
->> <computersforpeace@gmail.com> wrote:
->>> On Sun, May 17, 2015 at 07:35:12PM +0200, Hauke Mehrtens wrote:
->>>> --- a/drivers/mtd/mtdpart.c
->>>> +++ b/drivers/mtd/mtdpart.c
-> ...
->>>> @@ -718,6 +719,35 @@ void deregister_mtd_parser(struct mtd_part_parser *p)
->>>> +static const char * const *of_get_probes(struct device_node *dp)
->>>> +{
-> ...
->>>> +     cp = of_get_property(dp, "linux,part-probe", &cplen);
->>>
->>> I see this is not property is not documented in the first place. If
->>> we're going to make it generically useful, we definitely need to
->>> document it, including what the supported partition probe names are.
->>>
->>> I'm also kind of ambivalent on this point, but I might as well ask: does
->>> the 'linux,...' naming make sense? We're not really supposed to be
->>> putting pure software information in the device tree, let alone info
->>> that's specific to Linux. I see how the partition parser could be (and
->>> should be, really) considered OS-agnostic, though, and might deserve a
->>> spot in the DT, at least if it's not safe to run arbitrary partition
->>> parsers on all MTDs.
->>
->> As long as we use the direct parser names, we should keep the linux prefix.
->>
->> Actually a common issue is that many firmware partition tags aren't
->> capable of describing the full flash layout, so partition parsers have
->> to "cheat" and make a lot of assumptions, e.g. the location and the
->> size of the bootloader. So wo would need to have a mix of static
->> partitions (bootloader, bootloader config, calibration data) and
->> dynamic ones (kernel, rootfs, overlay).
+On Saturday, August 15, 2015 at 10:38:59 AM, Alexis Ballier wrote:
+> On Fri, 14 Aug 2015 22:45:14 +0200
 > 
-> OK, so this much seems to suggest that we can't really determine a set of
-> parsers that apply to all MTDs, and we have to stick with some kind of
-> platform information for choosing a set of custom parsers.
-
-We even want per-device information, because device manufacturers
-might "port" image tags to other architectures, e.g. Linksys used the trx
-partition table originally from bcm47xx also for ar71xx devices, wich
-normally uses u-boot uImage (+ cmdlineparts).
-
->> So ideally we would pass the
->> static partitions as device tree nodes, and let the partition parsers
->> then be applied to partitions instead of the full mtd device. This
->> would also work as a safeguard against mis-guessing important
->> partitions like calibration data which aren't recoverable in case they
->> get overwritten.
->>
->> So my first Idea would be having something like this:
-> [...]
+> Marek Vasut <marex@denx.de> wrote:
+> > On Friday, August 14, 2015 at 07:35:39 PM, Alexis Ballier wrote:
+> > > It is a 256KiB flash with 4 KiB erase sectors
+> > > and 64KiB overlay blocks.
+> > > 
+> > > This is the one available on Hardkernel's Odroid U3 shield.
+> > > 
+> > > Signed-off-by: Alexis Ballier <aballier@gentoo.org>
+> > > ---
+> > > 
+> > >  drivers/mtd/spi-nor/spi-nor.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/drivers/mtd/spi-nor/spi-nor.c
+> > > b/drivers/mtd/spi-nor/spi-nor.c index d78831b..e521b35 100644
+> > > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > > @@ -636,6 +636,7 @@ static const struct spi_device_id spi_nor_ids[]
+> > > = { { "sst25wf512",  INFO(0xbf2501, 0, 64 * 1024,  1, SECT_4K |
+> > > SST_WRITE)
+> > 
+> > },
+> > 
+> > >  	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2, SECT_4K
+> > >  	
+> > > | SST_WRITE)
+> > 
+> > },
+> > 
+> > >  	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4, SECT_4K
+> > >  	
+> > > | SST_WRITE)
+> > 
+> > },
+> > 
+> > > +	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4,
+> > > SECT_4K) },
+> > 
+> > Is the SST_WRITE not needed on this device ?
 > 
-> Not commenting on this portion yet. I'll read the others' comments
-> later, but I think that's veering a little off the track of the original
-> problem.
-> 
->>>> @@ -754,6 +784,13 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
->>>>  {
->>>>       struct mtd_part_parser *parser;
->>>>       int ret = 0;
->>>> +     const char *const *types_of = NULL;
->>>> +
->>>> +     if (data && data->of_node) {
->>>> +             types_of = of_get_probes(data->of_node);
->>>> +             if (types_of != NULL)
->>>> +                     types = types_of;
->>>> +     }
->>>
->>> I'm not sure I really like the semantics here. This means that the
->>> device tree can override all Linux defaults. So we can't, for instance,
->>> have the cmdline parser override all other selections (e.g., for
->>> debugging), or make sure that 'ofpart' is available for all MTDs.
->>
->> Letting the device tree override cmdline parsers is actually a valid
->> use case for OpenWrt, where the bootloader passes a
->> different/incompatible partition layout through mtdparts than what is
->> actually used by the firmware on flash.
-> 
-> That seems like a sucky firmware, and not an argument for changing how
-> Linux works. Can't you override their cmdline somehow?
+> Tried that at first and it didn't work (writes were silently not
+> performed).
 
-Sometimes yes, sometimes no. If the bootloader doesn't touch the dtb,
-there is no issue, but e.g. ipq806x bootloaders will overwrite any pre-
-existing bootargs in the chosen node with the bootloader one.
+This is the worst possible behavior.
 
-At OpenWrt we do have hacks like "bootargs-replace" and "bootargs-extend",
-but this doesn't feel very clean either.
+> I'm no expert here, but I don't see anything about auto address
+> increment in the spec:
+> http://ww1.microchip.com/downloads/en/DeviceDoc/20005139E.pdf
+> and it uses the page program command (0x02).
 
-And sometimes you even want a mix of them, e.g. on devices with support
-for multiple images you want the information from which image it booted
-(which is usually exposed through bootargs), but still use your own
-proprietary layout. Or the bootloader passes the ethernet mac addresses
-through the commandline, etc.
+They probably decided to start rolling out a standard SPI NOR, which is good :)
 
->> If we want to make it overrideable for debug purposes adding a
->> commandline parameter like
->> mtdparser="<mtdname>:<parser1[,parser2,...]>" might be a better
->> option.
->>
->>>>
->>>>       if (!types)
->>>>               types = default_mtd_part_types;
->>>
->>> In fact, I don't really like this existing hunk either ^^^. It has the
->>> same effect, of killing things like cmdlinepart, which should be
->>> available on all MTDs.
->>
->> default_mtd_part_types contains cmdline part, so it should be
->> available unless they pass their own parsers.
-> 
-> Right, but
-> (1) I don't like each driver deciding which parsers are available;
-> platform setup should be independent of the flash/controller driver, and
-> (2) the cmdline partition parser and ofpart parsers should always be
-> available for use on all drivers; to break that is a bug, IMO.
-> 
-> I think Hauke brought up a similar point to (1).
-
-Right. For (1), I think adding a way for specifying parsers to use through
-commandline for non-OF and a OF-way would be the way to get away from a
-driver centric assignment.
-
-(2) is a lot harder, because we also have to think about precedence. If
-there are both cmdline and ofpart parititions, which one should trump? And
-what about the platform specific parser(s)?
-
-Also I noticed a thing which I don't like about the current "linux,part-probe"
-(or my proposed mtdparsers commandline flag) at all: we define parser names,
-but we should define partition table names, which are well defined in a
-document somewhere.
-
-So maybe for the of-part, maybe we could make it "similar" to the stdout
-thing:
-
-aliases {
-	sflash0 = &sflash0;
-	sflash1 = &sflash1;
-	nand = &nand;
-};
-
-chosen {
-	...
-	mtd-partition-table-type = "nand:fixed-layout",
-				   "sflash0:commandline",
-				   "sflash1:bcm47xx-trx";
-};
-
-Which makes it also clear that this is configuration data.
-
-The commandline version could be then mtdtabletypes="<mtdname>:<table-type>[;...]"
-
-And then translate the table type names to their parser names (maybe parsers might
-also support more than one partition table type).
-
-This would make a "clean" separation from the linux-internal parser names.
-
-
-Jonas
+Best regards,
+Marek Vasut
