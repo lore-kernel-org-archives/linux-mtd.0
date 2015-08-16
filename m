@@ -1,23 +1,22 @@
 Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
  helo=smtp.smtpout.orange.fr)
  by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1ZR6OA-0002N9-4O
- for linux-mtd@lists.infradead.org; Sun, 16 Aug 2015 22:26:51 +0000
+ id 1ZR6K9-0002L8-JL
+ for linux-mtd@lists.infradead.org; Sun, 16 Aug 2015 22:22:42 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org,
  Antoine Tenart <antoine.tenart@free-electrons.com>
-Subject: Re: [PATCH 3/3] mtd: nand: pxa3xx-nand: fix readid without keep_config
-References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
- <1439323034-8820-3-git-send-email-robert.jarzmik@free.fr>
- <20150816213655.GA4585@laptop.cereza>
-Date: Mon, 17 Aug 2015 00:22:28 +0200
-In-Reply-To: <20150816213655.GA4585@laptop.cereza> (Ezequiel Garcia's message
- of "Sun, 16 Aug 2015 18:36:55 -0300")
-Message-ID: <87oai6an6j.fsf@belgarion.home>
+Subject: Re: [PATCH] mtd: nand: pxa3xx-nand: fix random command timeouts
+References: <1439396538-13298-1-git-send-email-robert.jarzmik@free.fr>
+ <20150816152924.GA799@laptop.cereza>
+Date: Mon, 17 Aug 2015 00:18:09 +0200
+In-Reply-To: <20150816152924.GA799@laptop.cereza> (Ezequiel Garcia's message
+ of "Sun, 16 Aug 2015 12:29:27 -0300")
+Message-ID: <87si7iandq.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,32 +30,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
 
-> On 11 Aug 09:57 PM, Robert Jarzmik wrote:
->> The cases of READID detection are broken on pxa3xx. The reason is that
->> in the early stages of nand probing, ie. at pxa3xx_nand_scan(), we
->> always have :
->>  - info->use_dma = 0 (regardless of dma support yet)
->>  - info->chunk_size = 0 (not yet detected)
->> 
->> The READID issued by pxa3xx_nand_scan() will therefore end up in
->> handle_data_pio(), and do_bytes will be 0, leading to not reading the
->> nand id, and blocking detection.
->> 
->> This doesn't happen if "keep_config" is used, which is probably the most
->> tested case.
->> 
->> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
->> Fixes: 70ed85232a93 ("mtd: nand: pxa3xx: Introduce multiple page I/O
->> support")
+> On 12 Aug 06:22 PM, Robert Jarzmik wrote:
 >
-> To be fair, Antoine submitted this a while ago:
+> This fix looks correct. Thanks!
 >
-> http://lists.infradead.org/pipermail/linux-mtd/2015-April/058739.html
+> Couple questions:
 >
-> Not sure which one takes precedence in such a case (and yours
-> has a proper Fixes tag).
-His has precedence. How is it that a fix patch is not yet merge since April ?
-Is it because it's part of a still in review serie ?
+> 1. In which platform are you seeing this bug?
+zylonite with a pxa310 (ie. internal stacked NAND).
+
+> 2. Is this a regression? (i.e. should we queue it for -stable?)
+No, it's been there for ages I think.
+
+> Also, one might question why we can't just write NDSR right after it's read,
+> before we wake the IRQ thread or start DMA. It appears this is
+> a requirement of BCH, as per the comment in drain_fifo.
+For irq thread that won't make any difference, the irq handler will finish first
+and clear the bits anyway. For DMA it's better.
+
+And more generaly speaking, I like it better, to clear it once read.
+
+> It would be nice to put a comment explaining why we clear NDSR only
+> before the check to WRCMDREQ. Maybe even copy-pasting something
+> from the commit log?
+If we move it up to something like that :
+	status = nand_readl(info, NDSR);
+	nand_writel(info, NDSR, status);
+Then the comment is overkill I think.
+
+> I'd like to say "Yay, let's pick it" but I'd like to make sure this is
+> tested on all platforms first (unless you've tested it already).
+I tested on zylonite (where bug occurs) and cm-x300 (where bug never occurs).
 
 Cheers.
 
