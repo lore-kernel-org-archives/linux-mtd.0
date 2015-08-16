@@ -1,25 +1,29 @@
-Received: from mail-qg0-f43.google.com ([209.85.192.43])
+Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZR5fq-0006Ap-O1
- for linux-mtd@lists.infradead.org; Sun, 16 Aug 2015 21:41:03 +0000
-Received: by qged69 with SMTP id d69so82699525qge.0
- for <linux-mtd@lists.infradead.org>; Sun, 16 Aug 2015 14:40:37 -0700 (PDT)
-Date: Sun, 16 Aug 2015 18:36:55 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Robert Jarzmik <robert.jarzmik@free.fr>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Antoine Tenart <antoine.tenart@free-electrons.com>
-Subject: Re: [PATCH 3/3] mtd: nand: pxa3xx-nand: fix readid without keep_config
-Message-ID: <20150816213655.GA4585@laptop.cereza>
-References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
- <1439323034-8820-3-git-send-email-robert.jarzmik@free.fr>
+ id 1ZQv5T-0001Mw-6l
+ for linux-mtd@lists.infradead.org; Sun, 16 Aug 2015 10:22:48 +0000
+Received: by lahi9 with SMTP id i9so63781624lah.2
+ for <linux-mtd@lists.infradead.org>; Sun, 16 Aug 2015 03:20:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1439323034-8820-3-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF44A3D@NTXXIAMBX02.xacn.micron.com>
+References: <cover.1439543572.git.hramrach@gmail.com>
+ <A765B125120D1346A63912DDE6D8B6310BF44A3D@NTXXIAMBX02.xacn.micron.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Sun, 16 Aug 2015 12:20:15 +0200
+Message-ID: <CAOMqctTQjA5S9ZnR-k5+jFyTOAc-wvWG1mS_21OmJYmtCP+UiA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/7] Add spi-nor SPI transfer error handling
+To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+Cc: Hou Zhiqiang <B48286@freescale.com>,
+ "shijie.huang@intel.com" <shijie.huang@intel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
+ =?UTF-8?B?UmFmYcOF4oCaIE1pw4XigJplY2tp?= <zajec5@gmail.com>,
+ Ben Hutchings <ben@decadent.org.uk>, Marek Vasut <marex@denx.de>,
+ Gabor Juhos <juhosg@openwrt.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11 Aug 09:57 PM, Robert Jarzmik wrote:
-> The cases of READID detection are broken on pxa3xx. The reason is that
-> in the early stages of nand probing, ie. at pxa3xx_nand_scan(), we
-> always have :
->  - info->use_dma = 0 (regardless of dma support yet)
->  - info->chunk_size = 0 (not yet detected)
-> 
-> The READID issued by pxa3xx_nand_scan() will therefore end up in
-> handle_data_pio(), and do_bytes will be 0, leading to not reading the
-> nand id, and blocking detection.
-> 
-> This doesn't happen if "keep_config" is used, which is probably the most
-> tested case.
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> Fixes: 70ed85232a93 ("mtd: nand: pxa3xx: Introduce multiple page I/O
-> support")
+Hello,
 
-To be fair, Antoine submitted this a while ago:
+On 15 August 2015 at 03:51, Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) =
+<beanhuo@micron.com> wrote:
+>>Hello,
+>
+>>with these patches SPI transfer errors are not silently ignored but rathe=
+r reported to spi-nor users.
+>
+>>This should prevent silently dropping data to the floor in cases when the=
+ SPI transfer fails and the failure is detected.
+>
+>>It has been pointed out that MTD users do not handle the case when data i=
+s read only partially so this version adds the last patch which handles thi=
+s in spi-nor.
+>
+>>Thanks
+>
+>>Michal
+>  Seems parallel nand read/write also has the same condition.
 
-http://lists.infradead.org/pipermail/linux-mtd/2015-April/058739.html
+I am not familiar with parallel NAND drivers so I have no idea if
+parallel nand can fail in similar way.
 
-Not sure which one takes precedence in such a case (and yours
-has a proper Fixes tag).
+As I understand it the parallel nand controller is dedicated piece of
+hardware just for accessing the nand so there may not be any problems
+similar to what the generic SPI bus has.
 
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index edfe329cc9db..b0737aec7caf 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1482,6 +1482,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
->  	int i, ret, num;
->  	uint16_t ecc_strength, ecc_step;
->  
-> +	info->chunk_size = 512;
->  	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
->  		goto KEEP_CONFIG;
->  
-> -- 
-> 2.1.4
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Thanks
 
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+Michal
