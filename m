@@ -1,25 +1,28 @@
-Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRNXV-0004j4-14
- for linux-mtd@lists.infradead.org; Mon, 17 Aug 2015 16:45:37 +0000
-Received: by igbjg10 with SMTP id jg10so60123782igb.0
- for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2015 09:45:13 -0700 (PDT)
+Received: from mail-lb0-f180.google.com ([209.85.217.180])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZROGM-0006DH-QY
+ for linux-mtd@lists.infradead.org; Mon, 17 Aug 2015 17:31:59 +0000
+Received: by lbbsx3 with SMTP id sx3so86808201lbb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2015 10:31:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOiHx=mFoke2sTQGsjyNF+k8DFq4GAt9AgU8ednxn5Kx4R7SNw@mail.gmail.com>
-References: <1439785625-36183-1-git-send-email-B48286@freescale.com>
- <CAOiHx=mFoke2sTQGsjyNF+k8DFq4GAt9AgU8ednxn5Kx4R7SNw@mail.gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Mon, 17 Aug 2015 18:44:34 +0200
-Message-ID: <CAOMqctS0qV2YK7yAx57CknJoTZW_81MppORvqSNO0u=0J+LG9g@mail.gmail.com>
-Subject: Re: [PATCH V6] mtd: m25p80: Modify the name of mtd_info
-To: Jonas Gorski <jogo@openwrt.org>
-Cc: Zhiqiang Hou <B48286@freescale.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>, mike@steroidmicros.com,
- Hu Vincent <Mingkai.Hu@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <87oai6an6j.fsf@belgarion.home>
+References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
+ <1439323034-8820-3-git-send-email-robert.jarzmik@free.fr>
+ <20150816213655.GA4585@laptop.cereza>
+ <87oai6an6j.fsf@belgarion.home>
+Date: Mon, 17 Aug 2015 14:31:34 -0300
+Message-ID: <CAAEAJfC_QM=fZOZ1guThuY7hXbAbr7O7U6p3aewqOzVaAsbuMQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd: nand: pxa3xx-nand: fix readid without keep_config
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +32,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17 August 2015 at 18:27, Jonas Gorski <jogo@openwrt.org> wrote:
-> Hi,
+On 16 August 2015 at 19:22, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
 >
-> On Mon, Aug 17, 2015 at 6:27 AM, Zhiqiang Hou <B48286@freescale.com> wrote:
->> From: Hou Zhiqiang <B48286@freescale.com>
+>> On 11 Aug 09:57 PM, Robert Jarzmik wrote:
+>>> The cases of READID detection are broken on pxa3xx. The reason is that
+>>> in the early stages of nand probing, ie. at pxa3xx_nand_scan(), we
+>>> always have :
+>>>  - info->use_dma =3D 0 (regardless of dma support yet)
+>>>  - info->chunk_size =3D 0 (not yet detected)
+>>>
+>>> The READID issued by pxa3xx_nand_scan() will therefore end up in
+>>> handle_data_pio(), and do_bytes will be 0, leading to not reading the
+>>> nand id, and blocking detection.
+>>>
+>>> This doesn't happen if "keep_config" is used, which is probably the mos=
+t
+>>> tested case.
+>>>
+>>> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>>> Fixes: 70ed85232a93 ("mtd: nand: pxa3xx: Introduce multiple page I/O
+>>> support")
 >>
->> Set the mtd_info's name to a fixed one, so spi flash layouts can
->> be specified by "mtdparts=..." in kernel cmdline, because the
->> cmdlinepart's parser will match the name of mtd_info with the name
->> given in cmdline.
+>> To be fair, Antoine submitted this a while ago:
 >>
->> So far, if DT is used, the mtd_info's name will be set to the name
->> of spi->dev. It includes spi_master->bus_num, and the bus_num may
->> be dynamically allocated. So, replace the component bus_num with
->> the physical address of spi controller.
+>> http://lists.infradead.org/pipermail/linux-mtd/2015-April/058739.html
+>>
+>> Not sure which one takes precedence in such a case (and yours
+>> has a proper Fixes tag).
+> His has precedence. How is it that a fix patch is not yet merge since Apr=
+il ?
+> Is it because it's part of a still in review serie ?
 >
-> You can easily enforce fixed bus numers in linux using aliases in the
-> DT, this is supported
-> by the spi core since v3.9 or so.
 
-WIth the bonus that you can move your boot partitions to another mtd
-device with a one line change in dt.
+Exactly. And because I thought it was needed for Berlin support,
+so it wasn't a regression.
 
-It might be nice to add a warning when partitions are created and the
-alias is not present.
-
-Thanks
-
-Michal
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
