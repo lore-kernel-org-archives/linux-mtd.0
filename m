@@ -1,29 +1,27 @@
-Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZQv5T-0001Mw-6l
- for linux-mtd@lists.infradead.org; Sun, 16 Aug 2015 10:22:48 +0000
-Received: by lahi9 with SMTP id i9so63781624lah.2
- for <linux-mtd@lists.infradead.org>; Sun, 16 Aug 2015 03:20:55 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF44A3D@NTXXIAMBX02.xacn.micron.com>
-References: <cover.1439543572.git.hramrach@gmail.com>
- <A765B125120D1346A63912DDE6D8B6310BF44A3D@NTXXIAMBX02.xacn.micron.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Sun, 16 Aug 2015 12:20:15 +0200
-Message-ID: <CAOMqctTQjA5S9ZnR-k5+jFyTOAc-wvWG1mS_21OmJYmtCP+UiA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] Add spi-nor SPI transfer error handling
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-Cc: Hou Zhiqiang <B48286@freescale.com>,
- "shijie.huang@intel.com" <shijie.huang@intel.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
- =?UTF-8?B?UmFmYcOF4oCaIE1pw4XigJplY2tp?= <zajec5@gmail.com>,
- Ben Hutchings <ben@decadent.org.uk>, Marek Vasut <marex@denx.de>,
- Gabor Juhos <juhosg@openwrt.org>,
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRMtH-00035d-GD
+ for linux-mtd@lists.infradead.org; Mon, 17 Aug 2015 16:04:04 +0000
+Received: by pawq9 with SMTP id q9so13691238paw.3
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2015 09:03:41 -0700 (PDT)
+Date: Mon, 17 Aug 2015 09:03:38 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Viet Nga Dao <vndao@altera.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] [PATCH v4] mtd:spi-nor: Add Altera Quad SPI Driver
+Message-ID: <20150817160338.GN60523@google.com>
+References: <1433316644-3748-1-git-send-email-vndao@altera.com>
+ <20150724183749.GI8876@google.com>
+ <CAN1oZWx1z0vq_8csMx3bs70ULfhR03CgX=NtTBj1HiLA8FdZjg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAN1oZWx1z0vq_8csMx3bs70ULfhR03CgX=NtTBj1HiLA8FdZjg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +31,151 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Mon, Jul 27, 2015 at 03:10:23PM +0800, Viet Nga Dao wrote:
+> On Sat, Jul 25, 2015 at 2:37 AM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+> > On Wed, Jun 03, 2015 at 12:30:44AM -0700, vndao@altera.com wrote:
+> >> From: VIET NGA DAO <vndao@altera.com>
+> >>
+> >> Altera Quad SPI Controller is a soft IP which enables access to
+> >> Altera EPCS, EPCQ and Mircon flash chips. This patch adds driver
+> >> for these devices.
+> >>
+> >> Signed-off-by: VIET NGA DAO <vndao@altera.com>
+> >>
+> >> ---
+> >> v4:
+> >> - Add more flash devices support ( EPCQL and Micron)
+> >
+> > ^^ Unfortunately, I think you've added yourself another burden with this
+> > one. Most of the rest actually is looking pretty good, so it's sad to
+> > see this hold your driver back. Comments below.
 
-On 15 August 2015 at 03:51, Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) =
-<beanhuo@micron.com> wrote:
->>Hello,
->
->>with these patches SPI transfer errors are not silently ignored but rathe=
-r reported to spi-nor users.
->
->>This should prevent silently dropping data to the floor in cases when the=
- SPI transfer fails and the failure is detected.
->
->>It has been pointed out that MTD users do not handle the case when data i=
-s read only partially so this version adds the last patch which handles thi=
-s in spi-nor.
->
->>Thanks
->
->>Michal
->  Seems parallel nand read/write also has the same condition.
+FWIW, this comment still stands. I cannot take your patch as-is.
 
-I am not familiar with parallel NAND drivers so I have no idea if
-parallel nand can fail in similar way.
+> >> - Remove redundant messages
+> >> - Change EPCQ_OPCODE_ID to NON_EPCS_OPCODE_ID
+> >> - Replace get_flash_name to altera_quadspi_scan
+> >> - Remove clk related parts
+> >> - Remove altera_quadspi_plat
+> >> - Change device tree reg name and remove opcode-id
+> >>
+> >> v3:
+> >> - Change altera_epcq driver name to altera_quadspi for more generic name
+> >> - Implement flash name searching in altera_quadspi.c instead of spi-nor
+> >> - Edit the altra quadspi info table in spi-nor
+> >> - Remove wait_til_ready in all read,write, erase, lock, unlock functions
+> >> - Merge .h and .c into 1 file
+> >>
+> >> v2:
+> >> - Change to spi_nor structure
+> >> - Add lock and unlock functions for spi_nor
+> >> - Simplify the altera_epcq_lock function
+> >> - Replace reg by compatible in device tree
+> >> ---
+> >>  .../devicetree/bindings/mtd/altera-quadspi.txt     |   49 ++
+> >>  drivers/mtd/spi-nor/Kconfig                        |    8 +
+> >>  drivers/mtd/spi-nor/Makefile                       |    1 +
+> >>  drivers/mtd/spi-nor/altera-quadspi.c               |  568 ++++++++++++++++++++
+> >>  drivers/mtd/spi-nor/spi-nor.c                      |   30 +
+> >>  5 files changed, 656 insertions(+), 0 deletions(-)
+> >>  create mode 100644 Documentation/devicetree/bindings/mtd/altera-quadspi.txt
+> >>  create mode 100644 drivers/mtd/spi-nor/altera-quadspi.c
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/mtd/altera-quadspi.txt b/Documentation/devicetree/bindings/mtd/altera-quadspi.txt
+> >> new file mode 100644
+> >> index 0000000..2873319
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/mtd/altera-quadspi.txt
+> >> @@ -0,0 +1,49 @@
+> >> +* MTD Altera QUADSPI driver
+> >> +
+> >> +Required properties:
+> >> +- compatible: Should be "altr,quadspi-1.0"
+> >> +- reg: Address and length of the register set  for the device. It contains
+> >> +  the information of registers in the same order as described by reg-names
+> >> +- reg-names: Should contain the reg names
+> >> +  "avl_csr": Should contain the register configuration base address
+> >> +  "avl_mem": Should contain the data base address
+> >> +- #address-cells: Must be <1>.
+> >> +- #size-cells: Must be <0>.
+> >> +- flash device tree subnode, there must be a node with the following fields:
+> >> +     - compatible: Should contain the flash name:
+> >> +       1. EPCS:   epcs16, epcs64, epcs128
+> >> +       2. EPCQ:   epcq16, epcq32, epcq64, epcq128, epcq256, epcq512, epcq1024
+> >> +       3. EPCQ-L: epcql256, epcql512, epcql1024
+> >> +       4. Mircon: n25q016-nonjedec, n25q032-nonjedec, n25q064-nonjedec,
+> >> +                  n25q128a13-nonjedec, n25q128a11-nonjedec, n25q256a-nonjedec,
+> >> +                  n25q256a11-nonjedec, n25q512a-nonjedec, n25q512ax3-nonjedec,
+> >> +                  mt25ql512-nonjedec, n25q00-nonjedec, n25q00a11-nonjedec
+> >
+> > OK, so you're adding a bunch of Micron flashes which already have
+> > support via standard DT bindings and spi-nor library code, except now
+> > you're adding "-nonjedec" to all of them. You better have a *really*
+> > good reason for this. Are these flash not compatible with the JEDEC READ
+> > ID opcode, by which every other system identifies these parts? Or are
+> > you adding these names because of limitations in your controller? For
+> > the former, I might be able to understand the need, but for the latter,
+> > I'm much disinclined to support this. There's got to be a better way.
+> >
+> 
+> Hi Brian,
+> It is really unfortunate that this controller is not able to read full
+> JEDEC ID. It only can provide 1 byte ID. I did discuss with IP
+> designer about this, but it is really unfortunate that they are not
+> able to fix that issue. Hence it requires software to make changes.
 
-As I understand it the parallel nand controller is dedicated piece of
-hardware just for accessing the nand so there may not be any problems
-similar to what the generic SPI bus has.
+Wow, what a joke. (Please quote me to your IP "designer.")
 
-Thanks
+In any case, there's no way I'm going to support a ton of new
+"*-nonjedec" strings just to support your completely broken controller.
+These aren't actually "nonjedec" flash devices, and AFAICT, there's
+absolutely nothing wrong with the flash that requires this description.
+It's purely your controller's fault.
 
-Michal
+Thus, I'm not changing the DT binding for all the flash you want to use.
+
+Instead, I think we need to assume that your controller is completely
+incapable of identifying the flash that's attached to it, and instead
+just rely on specifying this entirely in the device tree. Then, we need
+a flag for your driver to notify spi-nor.c that it can't trust the READ
+ID command at all, and it must instead rely strictly on flash string
+matching. e.g. something like:
+
+	ret = of_modalias_node(np, name, sizeof(name)); /* e.g., name = "n25q016" */
+	if (ret < 0)
+		return ret;
+	nor->controller_flags |= SPI_NOR_MY_CONTROLLER_SUCKS_AND_CANT_DO_READID;
+	ret = spi_nor_scan(nor, name, mode);
+
+along with something like this in spi-nor.c:
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 47df4b5eae2f..04d3aa7ec641 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -709,6 +709,11 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+ 	u8			id[SPI_NOR_MAX_ID_LEN];
+ 	struct flash_info	*info;
+ 
++	if (nor->my_foo_flags & SPI_NOR_MY_CONTROLLER_SUCKS_AND_CANT_DO_READID) {
++		dev_err(nor->dev, "READ ID not supported\n");
++		return ERR_PTR(-EOPNOTSUPP);
++	}
++
+ 	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
+ 	if (tmp < 0) {
+ 		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
+@@ -1018,6 +1023,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 
+ 	if (name)
+ 		id = spi_nor_match_id(name);
++	if (!id && (nor->my_foo_flags & SPI_NOR_MY_CONTROLLER_SUCKS_AND_CANT_DO_READID)) {
++		dev_err(dev, "no matching device found, and your controller sucks\n");
++		return -ENODEV;
++	}
+ 	/* Try to auto-detect if chip name wasn't specified or not found */
+ 	if (!id)
+ 		id = spi_nor_read_id(nor);
+
+Brian
