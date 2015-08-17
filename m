@@ -1,24 +1,18 @@
-Received: from mail-qk0-f178.google.com ([209.85.220.178])
- by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1ZQzx8-00087p-Dv
- for linux-mtd@lists.infradead.org; Sun, 16 Aug 2015 15:34:31 +0000
-Received: by qkbm65 with SMTP id m65so39683430qkb.2
- for <linux-mtd@lists.infradead.org>; Sun, 16 Aug 2015 08:33:08 -0700 (PDT)
-Date: Sun, 16 Aug 2015 12:29:27 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Antoine Tenart <antoine.tenart@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: pxa3xx-nand: fix random command timeouts
-Message-ID: <20150816152924.GA799@laptop.cereza>
-References: <1439396538-13298-1-git-send-email-robert.jarzmik@free.fr>
+Received: from mail-bl2on0128.outbound.protection.outlook.com ([65.55.169.128]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRC6S-0007Qc-4R
+ for linux-mtd@lists.infradead.org; Mon, 17 Aug 2015 04:32:57 +0000
+From: Zhiqiang Hou <B48286@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>
+CC: <zajec5@gmail.com>, <mike@steroidmicros.com>, <Mingkai.Hu@freescale.com>,
+ Hou Zhiqiang <B48286@freescale.com>
+Subject: [PATCH V6] mtd: m25p80: Modify the name of mtd_info
+Date: Mon, 17 Aug 2015 12:27:05 +0800
+Message-ID: <1439785625-36183-1-git-send-email-B48286@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1439396538-13298-1-git-send-email-robert.jarzmik@free.fr>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,86 +22,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12 Aug 06:22 PM, Robert Jarzmik wrote:
-> When 2 commands are submitted in a row, and the second is very quick,
-> the completion of the second command might never come. This happens
-> especially if the second command is quick, such as a status read after
-> an erase.
-> 
-> The issue is that in the interrupt handler, the status bits are cleared
-> after the new command is issued. There is a small temporal window where
-> this happens :
->  - the previous command has set the command done bit
->  - the ready for a command bit is set
->  - the handler submits the next command
->    - just then, the command completes, and the command done bit is still
->      set
->  - the handler clears the "previous" command done bit
->  - the handler exits
-> 
-> In this flow, the "command done" of the next command will never trigger
-> a new interrupt to finish the status command, as it was cleared for both
-> commands.
-> 
-> Fix this by clearing the status bit before submitting a new command.
-> 
+From: Hou Zhiqiang <B48286@freescale.com>
 
-This fix looks correct. Thanks!
+Set the mtd_info's name to a fixed one, so spi flash layouts can
+be specified by "mtdparts=..." in kernel cmdline, because the
+cmdlinepart's parser will match the name of mtd_info with the name
+given in cmdline.
 
-Couple questions:
+So far, if DT is used, the mtd_info's name will be set to the name
+of spi->dev. It includes spi_master->bus_num, and the bus_num may
+be dynamically allocated. So, replace the component bus_num with
+the physical address of spi controller.
 
-1. In which platform are you seeing this bug?
-2. Is this a regression? (i.e. should we queue it for -stable?)
+Signed-off-by: Hou Zhiqiang <B48286@freescale.com>
+---
+V6:
+	Removed the sentence return error number when allocating the
+	mtd_info's name failed.
+V5:
+	Rebase this patch on the latest l2-mtd tree.
+V4:
+	add check no-NULL for pointer of master's device node, and if it failed
+	to get physcial address of the master, then name the mtd_info by the
+	name of spi->dev.
+V3:
+	Fix a bug, matching unsigned long long with "%llx".
+V2:
+	1. Fix some code style issue.
+	2. Cast physical address to unsigned long long.
 
-Also, one might question why we can't just write NDSR right after it's read,
-before we wake the IRQ thread or start DMA. It appears this is
-a requirement of BCH, as per the comment in drain_fifo.
+ drivers/mtd/devices/m25p80.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-It would be nice to put a comment explaining why we clear NDSR only
-before the check to WRCMDREQ. Maybe even copy-pasting something
-from the commit log?
-
-I'd like to say "Yay, let's pick it" but I'd like to make sure this is
-tested on all platforms first (unless you've tested it already).
-
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index b0737aec7caf..718097414b9c 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -687,8 +687,10 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
->  		is_ready = 1;
->  	}
->  
-> +	/* clear NDSR to let the controller exit the IRQ */
-> +	nand_writel(info, NDSR, status);
-> +
->  	if (status & NDSR_WRCMDREQ) {
-> -		nand_writel(info, NDSR, NDSR_WRCMDREQ);
->  		status &= ~NDSR_WRCMDREQ;
->  		info->state = STATE_CMD_HANDLE;
->  
-> @@ -709,8 +711,6 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
->  			nand_writel(info, NDCB0, info->ndcb3);
->  	}
->  
-> -	/* clear NDSR to let the controller exit the IRQ */
-> -	nand_writel(info, NDSR, status);
->  	if (is_completed)
->  		complete(&info->cmd_complete);
->  	if (is_ready)
-> -- 
-> 2.1.4
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index d313f948b..35d11c3 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -26,6 +26,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/spi/flash.h>
+ #include <linux/mtd/spi-nor.h>
++#include <linux/of_address.h>
+ 
+ #define	MAX_CMD_SIZE		6
+ struct m25p {
+@@ -183,6 +184,8 @@ static int m25p_probe(struct spi_device *spi)
+ 	struct spi_nor *nor;
+ 	enum read_mode mode = SPI_NOR_NORMAL;
+ 	char *flash_name = NULL;
++	struct resource res;
++	struct device_node *mnp = spi->master->dev.of_node;
+ 	int ret;
+ 
+ 	data = dev_get_platdata(&spi->dev);
+@@ -215,6 +218,16 @@ static int m25p_probe(struct spi_device *spi)
+ 
+ 	if (data && data->name)
+ 		flash->mtd.name = data->name;
++	else if (mnp) {
++		ret = of_address_to_resource(mnp, 0, &res);
++		if (!ret)
++			flash->mtd.name = kasprintf(GFP_KERNEL, "spi%llx.%d",
++					(unsigned long long)res.start,
++					spi->chip_select);
++		else
++			dev_dbg(&spi->dev,
++				"Failed to get spi master resource\n");
++	}
+ 
+ 	/* For some (historical?) reason many platforms provide two different
+ 	 * names in flash_platform_data: "name" and "type". Quite often name is
 -- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+2.1.0.27.g96db324
