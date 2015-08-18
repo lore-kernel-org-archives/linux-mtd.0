@@ -1,23 +1,20 @@
-Received: from mail-qg0-f46.google.com ([209.85.192.46])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRYVl-0004vz-Fj
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 04:28:34 +0000
-Received: by qgj62 with SMTP id 62so109420523qgj.2
- for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2015 21:28:11 -0700 (PDT)
-Date: Tue, 18 Aug 2015 01:24:26 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mtd: nand: pxa3xx_nand: add register access debug
-Message-ID: <20150818042426.GA27858@laptop>
-References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRYkv-0001Gs-KC
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 04:44:14 +0000
+Message-ID: <55D2B6A3.5000709@cn.fujitsu.com>
+Date: Tue, 18 Aug 2015 12:37:55 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
+To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v4] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
+References: <1438304996-31502-1-git-send-email-yangds.fnst@cn.fujitsu.com>	
+ <1439195531.26877.103.camel@gmail.com> <55C957B9.9090408@cn.fujitsu.com>
+ <1439373464.31419.45.camel@gmail.com>
+In-Reply-To: <1439373464.31419.45.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11 Aug 09:57 PM, Robert Jarzmik wrote:
-> Add verbose debug for register accesses. This enables easier debugging
-> by following where and how hardware is stimulated, and how it answers.
-> 
+On 08/12/2015 05:57 PM, Artem Bityutskiy wrote:
+> On Tue, 2015-08-11 at 10:02 +0800, Dongsheng Yang wrote:
+>> Atem, Do you want some other testing for it?
+>
+> No, your testing looks good enough, thanks. Just submit an updated
+> patch version.
 
-I really don't see why we want this patch. It's probably an useful hack to
-use in some cases, but can't see why we would want it in mainline.
+Hi Atem,
+	Sorry for the delay, I was in my holiday last week and
+came back today. I will update my patches ASAP.
 
-Feel free to prove me wrong.
-
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 1259cc558ce9..ed44bddcc43f 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -127,11 +127,23 @@
->  #define EXT_CMD_TYPE_MONO	0 /* Monolithic read/write */
->  
->  /* macros for registers read/write */
-> -#define nand_writel(info, off, val)	\
-> -	writel_relaxed((val), (info)->mmio_base + (off))
-> -
-> -#define nand_readl(info, off)		\
-> -	readl_relaxed((info)->mmio_base + (off))
-> +#define nand_writel(info, off, val)					\
-> +	do {								\
-> +		dev_vdbg(&info->pdev->dev,				\
-> +			 "%s():%d nand_writel(0x%x, %s)\n",		\
-> +			 __func__, __LINE__, (val), #off);		\
-> +		writel_relaxed((val), (info)->mmio_base + (off));	\
-> +	} while (0)
-> +
-> +#define nand_readl(info, off)						\
-> +	({								\
-> +		unsigned int _v;					\
-> +		_v = readl_relaxed((info)->mmio_base + (off));		\
-> +		dev_vdbg(&info->pdev->dev,				\
-> +			 "%s():%d nand_readl(%s): 0x%x\n",		\
-> +			 __func__, __LINE__, #off, _v);			\
-> +		_v;							\
-> +	})
->  
->  /* error code and state */
->  enum {
-> -- 
-> 2.1.4
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+Thanx
+Yang
+>
+> Artem.
+>
