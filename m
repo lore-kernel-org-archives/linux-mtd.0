@@ -1,25 +1,26 @@
-Date: Tue, 18 Aug 2015 10:03:33 -0700
-From: Mathieu Olivari <mathieu@codeaurora.org>
-To: Jonas Gorski <jogo@openwrt.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, linux@arm.linux.org.uk,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, agross@codeaurora.org,
- sboyd@codeaurora.org, bjorn.andersson@sonymobile.com,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v3 0/3] qcom: Add SMEM MTD parser
-Message-ID: <20150818170333.GA1581@codeaurora.org>
+Date: Tue, 18 Aug 2015 10:59:21 -0700
+From: Bjorn Andersson <bjorn.andersson@sonymobile.com>
+To: Mathieu Olivari <mathieu@codeaurora.org>
+CC: "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com"
+ <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "galak@codeaurora.org" <galak@codeaurora.org>, "linux@arm.linux.org.uk"
+ <linux@arm.linux.org.uk>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "agross@codeaurora.org" <agross@codeaurora.org>, "sboyd@codeaurora.org"
+ <sboyd@codeaurora.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v3 1/3] ARM: qcom: add SFPB nodes to IPQ806x dts
+Message-ID: <20150818175921.GT13472@usrtlx11787.corpusers.net>
 References: <1439855266-26242-1-git-send-email-mathieu@codeaurora.org>
- <CAOiHx=nPDBPsj_Kg_7AkFeieedwGbcJmvALDp2eK+6aKi0wOJA@mail.gmail.com>
+ <1439855266-26242-2-git-send-email-mathieu@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAOiHx=nPDBPsj_Kg_7AkFeieedwGbcJmvALDp2eK+6aKi0wOJA@mail.gmail.com>
+In-Reply-To: <1439855266-26242-2-git-send-email-mathieu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 18, 2015 at 02:30:14PM +0200, Jonas Gorski wrote:
-> Hi,
-> 
-> On Tue, Aug 18, 2015 at 1:47 AM, Mathieu Olivari <mathieu@codeaurora.org> wrote:
-> > QCOM platforms such as IPQ806x are using SMEM to store their flash
-> > layout. This patch set adds the DT nodes required to instanciate SMEM
-> > on IPQ806x and add an MTD parser using it.
-> >
-> > This change is based on the SMEM driver posted here:
-> > *https://lkml.org/lkml/2015/7/27/1125
-> 
-> Nice work. After testing it on AP148 I see this:
-> 
-> [    2.481507] 12 qcom-smem partitions found on MTD device qcom-nandc
-> [    2.481540] Creating 12 MTD partitions on "qcom-nandc":
-> [    2.486690] 0x000000000000-0x000000040000 : "0:SBL1"
-> [    2.492842] 0x000000040000-0x000000180000 : "0:MIBIB"
-> [    2.497857] 0x000000180000-0x0000002c0000 : "0:SBL2"
-> [    2.502895] 0x0000002c0000-0x000000540000 : "0:SBL3"
-> [    2.507828] 0x000000540000-0x000000660000 : "0:DDRCONFIG"
-> [    2.512857] 0x000000660000-0x000000780000 : "0:SSD"
-> [    2.518074] 0x000000780000-0x000000a00000 : "0:TZ"
-> [    2.522834] 0x000000a00000-0x000000c80000 : "0:RPM"
-> [    2.527607] 0x000000c80000-0x000001180000 : "0:APPSBL"
-> [    2.532472] 0x000001180000-0x000001200000 : "0:APPSBLENV"
-> [    2.537586] 0x000001200000-0x000001340000 : "0:ART"
-> [    2.543140] 0x000001340000-0x000005340000 : "rootfs"
-> 
-> Are all these partition names supposed to be prefixed with "0:"? This
-> is using the OpenWrt applied version.
+On Mon 17 Aug 16:47 PDT 2015, Mathieu Olivari wrote:
 
-Yes. These are the names as they are listed in SMEM. If you run the
-"smem" command from the U-boot prompt, you will see the same information.
-I'm not sure what the 0: prefix means, and where it comes from to be
-honest.
+> Add one new node to the ipq806x.dtsi file to declare & register the
+> hardware spinlock devices. This mechanism is required to be used by
+> other drivers such as SMEM.
+> 
 
+Reviewed-by: Bjorn Andersson <bjorn.andersson@sonymobile.com>
+
+> Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
+> ---
+>  arch/arm/boot/dts/qcom-ipq8064.dtsi | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> 
-> Jonas
+> diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+> index 9f727d8..8d366ae 100644
+> --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
+> +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+> @@ -329,5 +329,16 @@
+>  			#reset-cells = <1>;
+>  		};
+>  
+> +		sfpb_mutex_block: syscon@1200600 {
+> +			compatible = "syscon";
+> +			reg = <0x01200600 0x100>;
+
+I have this block listed to start at 0x1200000 and used 0x604 as offset
+when testing this. In my docs there's nothing in those first 0x600 bytes
+though, so this works fine for me.
+
+> +		};
+> +	};
+> +
+> +	sfpb_mutex: sfpb-mutex {
+> +		compatible = "qcom,sfpb-mutex";
+> +		syscon = <&sfpb_mutex_block 4 4>;
+> +
+> +		#hwlock-cells = <1>;
+>  	};
+>  };
+
+Regards,
+Bjorn
