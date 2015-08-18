@@ -1,11 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRiuH-00011p-Px
+ id 1ZRiuH-00011o-PM
  for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 15:34:35 +0000
-Date: 18 Aug 2015 15:34:06 -0000
-Message-Id: <cover.1439911625.git.hramrach@gmail.com>
+Date: 18 Aug 2015 15:34:08 -0000
+Message-Id: <e47db0c8eeaeb11353bcb2f4dcd138e813c3ecd7.1439911625.git.hramrach@gmail.com>
+In-Reply-To: <cover.1439911625.git.hramrach@gmail.com>
+References: <cover.1439911625.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v3 0/5] improve mtdpart robustness
+Subject: [PATCH v3 3/5] mtd: ofpart: update devicetree binding specification
 To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Mark Rutland <mark.rutland@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
@@ -22,33 +24,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+To avoid conflict with other drivers using subnodes of the mtd device
+create only one ofpart-specific node rather than any number of
+arbitrary partition subnodes.
 
-this patch series addresses
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+---
+v3:
 
- - compiling in a mtd partitioning scheme may render a mtd device inacessible
- - ofpart can fail when subnodes of mtd device node exist
-     eg. s3c64xx spi controller-data
+ - rename DT node ofpart -> partitions
+---
+ .../devicetree/bindings/mtd/partition.txt          | 68 +++++++++++++---------
+ 1 file changed, 40 insertions(+), 28 deletions(-)
 
-v3 updates the last patch
-  - address possible memory leak
-  - use more generic name for partition node
-
-Thanks
-
-Michal
-
-Michal Suchanek (5):
-  mtd: mtdpart: add debug prints to partition parser.
-  mtd: mtdpart: Do not fail mtd probe when parsing partitions fails.
-  mtd: ofpart: update devicetree binding specification
-  mtd: ofpart: document the lock flag.
-  mtd: ofpart: move ofpart partitions to a dedicated dt node
-
- .../devicetree/bindings/mtd/partition.txt          | 69 +++++++++++++---------
- drivers/mtd/mtdpart.c                              | 14 ++++-
- drivers/mtd/ofpart.c                               | 63 ++++++++++++++------
- 3 files changed, 99 insertions(+), 47 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+index 8e5557d..8c2aff7 100644
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ b/Documentation/devicetree/bindings/mtd/partition.txt
+@@ -4,10 +4,16 @@ Partitions can be represented by sub-nodes of an mtd device. This can be used
+ on platforms which have strong conventions about which portions of a flash are
+ used for what purposes, but which don't use an on-flash partition table such
+ as RedBoot.
++
++The partition table should be partitions subnode of the mtd node. Partitions are
++defined in subnodes of the partitions node.
++
++For backwards compatibility partitions as direct subnodes of the mtd device are
++supported. This use is discouraged.
+ NOTE: if the sub-node has a compatible string, then it is not a partition.
+ 
+-#address-cells & #size-cells must both be present in the mtd device. There are
+-two valid values for both:
++#address-cells & #size-cells must both be present in the partitions subnode of the
++mtd device. There are two valid values for both:
+ <1>: for partitions that require a single 32-bit cell to represent their
+      size/address (aka the value is below 4 GiB)
+ <2>: for partitions that require two 32-bit cells to represent their
+@@ -28,44 +34,50 @@ Examples:
+ 
+ 
+ flash@0 {
+-	#address-cells = <1>;
+-	#size-cells = <1>;
++	partitions {
++		#address-cells = <1>;
++		#size-cells = <1>;
+ 
+-	partition@0 {
+-		label = "u-boot";
+-		reg = <0x0000000 0x100000>;
+-		read-only;
+-	};
++		partition@0 {
++			label = "u-boot";
++			reg = <0x0000000 0x100000>;
++			read-only;
++		};
+ 
+-	uimage@100000 {
+-		reg = <0x0100000 0x200000>;
++		uimage@100000 {
++			reg = <0x0100000 0x200000>;
++		};
+ 	};
+ };
+ 
+ flash@1 {
+-	#address-cells = <1>;
+-	#size-cells = <2>;
++	partitions {
++		#address-cells = <1>;
++		#size-cells = <2>;
+ 
+-	/* a 4 GiB partition */
+-	partition@0 {
+-		label = "filesystem";
+-		reg = <0x00000000 0x1 0x00000000>;
++		/* a 4 GiB partition */
++		partition@0 {
++			label = "filesystem";
++			reg = <0x00000000 0x1 0x00000000>;
++		};
+ 	};
+ };
+ 
+ flash@2 {
+-	#address-cells = <2>;
+-	#size-cells = <2>;
++	partitions {
++		#address-cells = <2>;
++		#size-cells = <2>;
+ 
+-	/* an 8 GiB partition */
+-	partition@0 {
+-		label = "filesystem #1";
+-		reg = <0x0 0x00000000 0x2 0x00000000>;
+-	};
++		/* an 8 GiB partition */
++		partition@0 {
++			label = "filesystem #1";
++			reg = <0x0 0x00000000 0x2 0x00000000>;
++		};
+ 
+-	/* a 4 GiB partition */
+-	partition@200000000 {
+-		label = "filesystem #2";
+-		reg = <0x2 0x00000000 0x1 0x00000000>;
++		/* a 4 GiB partition */
++		partition@200000000 {
++			label = "filesystem #2";
++			reg = <0x2 0x00000000 0x1 0x00000000>;
++		};
+ 	};
+ };
 -- 
 2.1.4
