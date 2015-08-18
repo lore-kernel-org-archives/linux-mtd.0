@@ -1,21 +1,30 @@
-Message-ID: <55D29A0B.20408@st.com>
-Date: Mon, 17 Aug 2015 19:35:55 -0700
-From: vikas <vikas.manocha@st.com>
-MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
- <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
- <dinguyen@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-Subject: Re: [PATCH V7 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRX0k-0003b5-M5
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 02:52:27 +0000
+Received: by pacgr6 with SMTP id gr6so121569014pac.2
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2015 19:52:06 -0700 (PDT)
+Date: Mon, 17 Aug 2015 19:47:35 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Cc: linux-mtd@lists.infradead.org,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Vikas MANOCHA <vikas.manocha@st.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ devicetree@vger.kernel.org, Huang Shijie <shijie.huang@intel.com>
+Subject: Re: [PATCH V7 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+Message-ID: <20150818024735.GA15907@localhost>
 References: <1439522892-7524-1-git-send-email-marex@denx.de>
-In-Reply-To: <1439522892-7524-1-git-send-email-marex@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+ <1439522892-7524-2-git-send-email-marex@denx.de>
+ <201508140532.34935.marex@denx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201508140532.34935.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,111 +34,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
-
-On 08/13/2015 08:28 PM, Marek Vasut wrote:
-> From: Graham Moore <grmoore@opensource.altera.com>
+On Fri, Aug 14, 2015 at 05:32:34AM +0200, Marek Vasut wrote:
+> On Friday, August 14, 2015 at 05:28:12 AM, Marek Vasut wrote:
 > 
-> Add binding document for the Cadence QSPI controller.
+> > +	/* Get flash device data */
+> > +	for_each_available_child_of_node(dev->of_node, np) {
+...
+> --->8---
 > 
-> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: Alan Tull <atull@opensource.altera.com>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
-> Cc: Graham Moore <grmoore@opensource.altera.com>
-> Cc: Vikas MANOCHA <vikas.manocha@st.com>
-> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
-> Cc: devicetree@vger.kernel.org
-> ---
->  .../devicetree/bindings/mtd/cadence_quadspi.txt    | 50 ++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+> > +		/*
+> > +		 * Here is a 'nasty hack' from Marek Vasut to pick
+> > +		 * up OF properties from flash device subnode.
+> > +		 */
+> > +		nor->dev->of_node = np;
+> > +
+> > +		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
+> > +		if (ret)
+> > +			goto probe_failed;
 > 
-> V2: Add cdns prefix to driver-specific bindings.
-> V3: Use existing property "is-decoded-cs" instead of creating a
->     duplicate, "ext-decoder". Timing parameters are in nanoseconds,
->     not master reference clocks. Remove bus-num completely.
-> V4: Add new properties fifo-width and trigger-address
-> V7: - Prefix all of the Cadence-specific properties with cdns prefix,
->       those are in particular "cdns,is-decoded-cs", "cdns,fifo-depth",
->       "cdns,fifo-width", "cdns,trigger-address".
->     - Drop bogus properties which were not used and were incorrect.
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-> new file mode 100644
-> index 0000000..ebaf1fd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
-> @@ -0,0 +1,50 @@
-> +* Cadence Quad SPI controller
-> +
-> +Required properties:
-> +- compatible : Should be "cdns,qspi-nor".
-> +- reg : Contains two entries, each of which is a tuple consisting of a
-> +	physical address and length.  The first entry is the address and
-> +	length of the controller register set.  The second entry is the
-> +	address and length of the QSPI Controller data area.
+> The only bizzare thing is this stuff above ^ . If I want to pass for example 
+> "m25p,fast-read" to the SPI NOR connected to this controller, I have to set
 
-"Controller data area", i think it means mapped NOR Flash address ?
-If yes, it would be more clear with "Physical base address & size of NOR Flash".
+Do we really want to extend m25p80 properties like 'm25p,fast-read' to
+all SPI NOR controllers? Are they necessary? It seems that there has
+been some attempt to do so, but I'm not sure if that's by good design or
+just by accident.
 
-> +- interrupts : Unit interrupt specifier for the controller interrupt.
-> +- clocks : phandle to the Quad SPI clock.
-> +- cdns,fifo-depth : Size of the data FIFO in words.
+> up the nor->dev->of_node, otherwise the of_node would point to the controller.
+> I am positive this is wrong, but I'm not quite sure how to repair this.
+> Brian, can you please comment on this one bit ?
 
-It actually is sram-depth, better would be "sram-depth" to avoid confusion.
+The problem is that spi_nor_scan() is assuming that nor->dev represents
+a flash device, not a flash controller (to which we might connect
+multiple flash). So we need to provide a way for spi_nor_scan() to find
+the flash device_node, not the controller device_node. Easy option:
 
-> +- cdns,fifo-width: Bus width of the data FIFO in bytes.
-> +- cdns,trigger-address : 32-bit indirect AHB trigger address.
+ (a) add a field to struct spi_nor, like I did to nand_chip [1]; e.g.,
+     spi_nor::dn.
 
-we might make trigger-address also part of property "reg".
+In doing that, we might then reevaluate what spi_nor::dev is supposed to
+mean (and clarify the doc comments in include/linux/mtd/spi-nor.h
+accordingly). Currently, it's used to shoe-horn in DT support (badly),
+as well as to provide mostly auxiliary info, like naming, debug info
+(dev_{dbg,info,err,etc...}()), and simliar. The latter half can actually
+be problematic too, since they start to become less useful once you have
+more than one flash connected to a single controller. e.g., you'll get
+colliding MTD names (via dev_name(nor->dev)) and debug info is suddenly
+less obvious (which flash chip is the log message from?).
 
-> +
-> +Optional properties:
-> +- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
+So, we might want to do something in the long run to avoid the mixing of
+layers that looks more like:
 
-Not clear about the usage of decoder, if it does not make sense we might remove it from driver.
+ (b) remove 'dev' from struct spi_nor entirely
 
-> +
-> +Optional subnodes:
+We can do debug prints and such with spi-nor-specific printk()
+formatters (e.g., snor_{info,dbg,err,etc...}()) and stop assuming that
+dev_name(nor->dev) is actually a good name for an MTD.
 
-I think flash subnode is mandatory.
+While we're at it... we may also want a larger rework to allow spi-nor.c
+to better support a notion of controllers (using the existing platform
+device) and flash devices (mostly without the use of struct device, and
+mostly using struct spi_nor as-is). You'll notice that controllers that
+want to support multiple flash are starting to develop much of the same
+initialization boiler-plate code.
 
-Rgds,
-Vikas
+Anyway, that's my rambling thoughts for now. I think (a) is pretty
+straightforward, correct, and quickly attainable, so you can ignore the
+remaining bits in the context of upstreaming this driver.
 
-> +Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
-> +custom properties:
-> +- cdns,read-delay : Delay for read capture logic, in clock cycles
-> +- cdns,tshsl-ns : Delay in nanoseconds for the length that the master mode chip select outputs are de-asserted between transactions.
-> +- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being de-activated and the activation of another.
-> +- cdns,tchsh-ns : Delay in nanoseconds between last bit of current transaction and deasserting the device chip select (qspi_n_ss_out).
-> +- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low and first bit transfer.
-> +
-> +Example:
-> +
-> +	qspi: spi@ff705000 {
-> +		compatible = "cdns,qspi-nor";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		reg = <0xff705000 0x1000>,
-> +		      <0xffa00000 0x1000>;
-> +		interrupts = <0 151 4>;
-> +		clocks = <&qspi_clk>;
-> +		cdns,is-decoded-cs;
-> +		cdns,fifo-depth = <128>;
-> +		cdns,fifo-width = <4>;
-> +		cdns,trigger-address = <0x00000000>;
-> +
-> +		flash0: n25q00@0 {
-> +			...
-> +			cdns,read-delay = <4>;
-> +			cdns,tshsl-ns = <50>;
-> +			cdns,tsd2d-ns = <50>;
-> +			cdns,tchsh-ns = <4>;
-> +			cdns,tslch-ns = <4>;
-> +		};
-> +	};
-> 
+Brian
+
+[1] https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=5844feeaa4154d1c46d3462c7a4653d22356d8b4
