@@ -1,16 +1,28 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRYnG-0002ch-QF
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 04:46:39 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v5] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
-Date: Tue, 18 Aug 2015 12:40:25 +0800
-Message-ID: <1439872825-4988-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRYpr-0002wH-2G
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 04:49:20 +0000
+From: Marek Vasut <marex@denx.de>
+To: vikas <vikas.manocha@st.com>
+Subject: Re: [PATCH V7 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+Date: Tue, 18 Aug 2015 06:47:30 +0200
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <1439522892-7524-1-git-send-email-marex@denx.de>
+ <55D29A0B.20408@st.com>
+In-Reply-To: <55D29A0B.20408@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201508180647.30119.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,206 +32,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To make ubifs support atime flexily, this commit introduces
-a Kconfig option named as UBIFS_ATIME_SUPPORT.
+On Tuesday, August 18, 2015 at 04:35:55 AM, vikas wrote:
+> Hi Marek,
+> 
+> On 08/13/2015 08:28 PM, Marek Vasut wrote:
+> > From: Graham Moore <grmoore@opensource.altera.com>
+> > 
+> > Add binding document for the Cadence QSPI controller.
+> > 
+> > Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> > Signed-off-by: Marek Vasut <marex@denx.de>
+> > Cc: Alan Tull <atull@opensource.altera.com>
+> > Cc: Brian Norris <computersforpeace@gmail.com>
+> > Cc: David Woodhouse <dwmw2@infradead.org>
+> > Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
+> > Cc: Graham Moore <grmoore@opensource.altera.com>
+> > Cc: Vikas MANOCHA <vikas.manocha@st.com>
+> > Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
+> > Cc: devicetree@vger.kernel.org
+> > ---
+> > 
+> >  .../devicetree/bindings/mtd/cadence_quadspi.txt    | 50
+> >  ++++++++++++++++++++++ 1 file changed, 50 insertions(+)
+> >  create mode 100644
+> >  Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+> > 
+> > V2: Add cdns prefix to driver-specific bindings.
+> > V3: Use existing property "is-decoded-cs" instead of creating a
+> > 
+> >     duplicate, "ext-decoder". Timing parameters are in nanoseconds,
+> >     not master reference clocks. Remove bus-num completely.
+> > 
+> > V4: Add new properties fifo-width and trigger-address
+> > V7: - Prefix all of the Cadence-specific properties with cdns prefix,
+> > 
+> >       those are in particular "cdns,is-decoded-cs", "cdns,fifo-depth",
+> >       "cdns,fifo-width", "cdns,trigger-address".
+> >     
+> >     - Drop bogus properties which were not used and were incorrect.
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+> > b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt new file
+> > mode 100644
+> > index 0000000..ebaf1fd
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/cadence_quadspi.txt
+> > @@ -0,0 +1,50 @@
+> > +* Cadence Quad SPI controller
+> > +
+> > +Required properties:
+> > +- compatible : Should be "cdns,qspi-nor".
+> > +- reg : Contains two entries, each of which is a tuple consisting of a
+> > +	physical address and length.  The first entry is the address and
+> > +	length of the controller register set.  The second entry is the
+> > +	address and length of the QSPI Controller data area.
+> 
+> "Controller data area", i think it means mapped NOR Flash address ?
 
-With UBIFS_ATIME_SUPPORT=n:
-	ubifs keeps the full compatibility to no_atime from
-the start of ubifs.
-=================UBIFS_ATIME_SUPPORT=n=======================
--o - no atime
--o atime - no atime
--o noatime - no atime
--o relatime - no atime
--o strictatime - no atime
--o lazyatime - no atime
+Probably ; Graham ?
 
-With UBIFS_ATIME_SUPPORT=y:
-	ubifs supports the atime same with other main stream
-file systems.
-=================UBIFS_ATIME_SUPPORT=y=======================
--o - default behavior (relatime currently)
--o atime - atime support
--o noatime - no atime support
--o relatime - relative atime support
--o strictatime - strict atime support
--o lazyatime - lazy atime support
+> If yes, it would be more clear with "Physical base address & size of NOR
+> Flash".
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
-	-v2:
-		implement update_time for ubifs
-	-v3:
-		Oops, forgot to assign update_time for
-		ubifs_dir_inode_operations.
-	-v4:
-		drop the patch to change 'Y' to 'N' in
-		Kconfig
-	-v5:
-		simplify the warning in atime supporting
- fs/ubifs/Kconfig | 11 +++++++++++
- fs/ubifs/dir.c   |  3 +++
- fs/ubifs/file.c  | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/super.c | 12 ++++++++++--
- fs/ubifs/ubifs.h |  1 +
- 5 files changed, 75 insertions(+), 2 deletions(-)
+This is the Direct mode thing, correct ? We don't support this, so I think
+we should drop this bit altogether and keep only one single address in this
+field.
 
-diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-index ba66d50..2eaae3e 100644
---- a/fs/ubifs/Kconfig
-+++ b/fs/ubifs/Kconfig
-@@ -35,3 +35,14 @@ config UBIFS_FS_ZLIB
- 	default y
- 	help
- 	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
-+
-+config UBIFS_ATIME_SUPPORT
-+	bool "Access time support" if UBIFS_FS
-+	depends on UBIFS_FS
-+	default n
-+	help
-+	  This option allows ubifs to support atime. -o strictatime is harmful to
-+	  your flash, we don't suggest it. But relatime and lazytime are much
-+	  better.
-+
-+	  If unsure, say 'N'
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 27060fc..8d93427 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1187,6 +1187,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
- 	.getxattr    = ubifs_getxattr,
- 	.listxattr   = ubifs_listxattr,
- 	.removexattr = ubifs_removexattr,
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+	.update_time = ubifs_update_time,
-+#endif
- };
- 
- const struct file_operations ubifs_dir_operations = {
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 35efc10..554d7b9 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1364,6 +1364,47 @@ static inline int mctime_update_needed(const struct inode *inode,
- }
- 
- /**
-+ * ubifs_update_time - update time of inode.
-+ * @inode: inode to update
-+ *
-+ * This function updates time of the inode.
-+ */
-+int ubifs_update_time(struct inode *inode, struct timespec *time,
-+			     int flags)
-+{
-+	struct ubifs_inode *ui = ubifs_inode(inode);
-+	struct ubifs_info *c = inode->i_sb->s_fs_info;
-+	struct ubifs_budget_req req = { .dirtied_ino = 1,
-+			.dirtied_ino_d = ALIGN(ui->data_len, 8) };
-+	int iflags = I_DIRTY_TIME;
-+	int err, release;
-+
-+	err = ubifs_budget_space(c, &req);
-+	if (err)
-+		return err;
-+
-+	mutex_lock(&ui->ui_mutex);
-+	if (flags & S_ATIME)
-+		inode->i_atime = *time;
-+	if (flags & S_VERSION)
-+		inode_inc_iversion(inode);
-+	if (flags & S_CTIME)
-+		inode->i_ctime = *time;
-+	if (flags & S_MTIME)
-+		inode->i_mtime = *time;
-+
-+	if (!(inode->i_sb->s_flags & MS_LAZYTIME) || (flags & S_VERSION))
-+		iflags |= I_DIRTY_SYNC;
-+
-+	release = ui->dirty;
-+	__mark_inode_dirty(inode, iflags);
-+	mutex_unlock(&ui->ui_mutex);
-+	if (release)
-+		ubifs_release_budget(c, &req);
-+	return 0;
-+}
-+
-+/**
-  * update_ctime - update mtime and ctime of an inode.
-  * @inode: inode to update
-  *
-@@ -1546,6 +1587,9 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (err)
- 		return err;
- 	vma->vm_ops = &ubifs_file_vm_ops;
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+	file_accessed(file);
-+#endif
- 	return 0;
- }
- 
-@@ -1566,6 +1610,9 @@ const struct inode_operations ubifs_file_inode_operations = {
- 	.getxattr    = ubifs_getxattr,
- 	.listxattr   = ubifs_listxattr,
- 	.removexattr = ubifs_removexattr,
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+	.update_time = ubifs_update_time,
-+#endif
- };
- 
- const struct inode_operations ubifs_symlink_inode_operations = {
-@@ -1577,6 +1624,9 @@ const struct inode_operations ubifs_symlink_inode_operations = {
- 	.getxattr    = ubifs_getxattr,
- 	.listxattr   = ubifs_listxattr,
- 	.removexattr = ubifs_removexattr,
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+	.update_time = ubifs_update_time,
-+#endif
- };
- 
- const struct file_operations ubifs_file_operations = {
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 75e6f04..ab9e9b3 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -128,7 +128,10 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
- 	if (err)
- 		goto out_ino;
- 
--	inode->i_flags |= (S_NOCMTIME | S_NOATIME);
-+	inode->i_flags |= S_NOCMTIME;
-+#ifndef CONFIG_UBIFS_ATIME_SUPPORT
-+	inode->i_flags |= S_NOATIME;
-+#endif
- 	set_nlink(inode, le32_to_cpu(ino->nlink));
- 	i_uid_write(inode, le32_to_cpu(ino->uid));
- 	i_gid_write(inode, le32_to_cpu(ino->gid));
-@@ -2138,7 +2141,12 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
- 		if (err)
- 			goto out_deact;
- 		/* We do not support atime */
--		sb->s_flags |= MS_ACTIVE | MS_NOATIME;
-+		sb->s_flags |= MS_ACTIVE;
-+#ifndef CONFIG_UBIFS_ATIME_SUPPORT
-+		sb->s_flags |= MS_NOATIME;
-+#else
-+		ubifs_warn(c, "full atime support is enabled, which may wear out your flash faster");
-+#endif
- 	}
- 
- 	/* 'fill_super()' opens ubi again so we must close it here */
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index de75902..216ba87 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1746,6 +1746,7 @@ int ubifs_calc_dark(const struct ubifs_info *c, int spc);
- /* file.c */
- int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
- int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
-+int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
- 
- /* dir.c */
- struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
--- 
-1.8.4.2
+> > +- interrupts : Unit interrupt specifier for the controller interrupt.
+> > +- clocks : phandle to the Quad SPI clock.
+> > +- cdns,fifo-depth : Size of the data FIFO in words.
+> 
+> It actually is sram-depth, better would be "sram-depth" to avoid confusion.
+
+Is there any documentation for this piece to which you can point me ?
+
+> > +- cdns,fifo-width: Bus width of the data FIFO in bytes.
+> > +- cdns,trigger-address : 32-bit indirect AHB trigger address.
+> 
+> we might make trigger-address also part of property "reg".
+
+No, we cannot, it's not part of the controller's base address, is it ?
+
+> > +
+> > +Optional properties:
+> > +- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
+> 
+> Not clear about the usage of decoder, if it does not make sense we might
+> remove it from driver.
+
+Graham ? SoCFPGA uses this decoded-cs thing, so we absolutely can not remove
+it from the driver.
+
+> > +Optional subnodes:
+> I think flash subnode is mandatory.
+
+You can have a controller with no SPI NORs on it.
