@@ -1,23 +1,20 @@
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRgBQ-0003BJ-L9
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 12:40:05 +0000
+Subject: Re: [PATCH v4 0/3] mtd: nand: jz4780: Add NAND and BCH drivers
+To: <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
+CC: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
+ <linux-kernel@vger.kernel.org>
+From: Alex Smith <alex.smith@imgtec.com>
+Message-ID: <55D3278C.5000403@imgtec.com>
+Date: Tue, 18 Aug 2015 13:39:40 +0100
 MIME-Version: 1.0
-In-Reply-To: <1439855266-26242-1-git-send-email-mathieu@codeaurora.org>
-References: <1439855266-26242-1-git-send-email-mathieu@codeaurora.org>
-From: Jonas Gorski <jogo@openwrt.org>
-Date: Tue, 18 Aug 2015 14:30:14 +0200
-Message-ID: <CAOiHx=nPDBPsj_Kg_7AkFeieedwGbcJmvALDp2eK+6aKi0wOJA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] qcom: Add SMEM MTD parser
-To: Mathieu Olivari <mathieu@codeaurora.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, linux@arm.linux.org.uk,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, agross@codeaurora.org,
- sboyd@codeaurora.org, bjorn.andersson@sonymobile.com,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 27/07/2015 14:50, Alex Smith wrote:
+> Hi,
+> 
+> This series adds support for the BCH controller and NAND devices on
+> the Ingenic JZ4780 SoC.
+> 
+> Tested on the MIPS Creator Ci20 board. All dependencies are now in
+> mainline so it should be possible to compile test now.
+> 
+> This version of the series has been rebased on 4.2-rc4, and also adds
+> an additional patch to fix an issue that was encountered in the
+> external Ci20 3.18 kernel branch.
+> 
+> Review and feedback welcome.
+> 
+> Thanks,
+> Alex
+> 
+> Alex Smith (3):
+>   mtd: nand: increase ready wait timeout and report timeouts
+>   dt-bindings: binding for jz4780-{nand,bch}
+>   mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs
+> 
+>  .../bindings/mtd/ingenic,jz4780-nand.txt           |  57 ++++
+>  drivers/mtd/nand/Kconfig                           |   7 +
+>  drivers/mtd/nand/Makefile                          |   1 +
+>  drivers/mtd/nand/jz4780_bch.c                      | 354 +++++++++++++++++++
+>  drivers/mtd/nand/jz4780_bch.h                      |  42 +++
+>  drivers/mtd/nand/jz4780_nand.c                     | 376 +++++++++++++++++++++
+>  drivers/mtd/nand/nand_base.c                       |  15 +-
+>  7 files changed, 849 insertions(+), 3 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+>  create mode 100644 drivers/mtd/nand/jz4780_bch.c
+>  create mode 100644 drivers/mtd/nand/jz4780_bch.h
+>  create mode 100644 drivers/mtd/nand/jz4780_nand.c
+
 Hi,
 
-On Tue, Aug 18, 2015 at 1:47 AM, Mathieu Olivari <mathieu@codeaurora.org> wrote:
-> QCOM platforms such as IPQ806x are using SMEM to store their flash
-> layout. This patch set adds the DT nodes required to instanciate SMEM
-> on IPQ806x and add an MTD parser using it.
->
-> This change is based on the SMEM driver posted here:
-> *https://lkml.org/lkml/2015/7/27/1125
+Would it be possible for these to go in for 4.3?
 
-Nice work. After testing it on AP148 I see this:
-
-[    2.481507] 12 qcom-smem partitions found on MTD device qcom-nandc
-[    2.481540] Creating 12 MTD partitions on "qcom-nandc":
-[    2.486690] 0x000000000000-0x000000040000 : "0:SBL1"
-[    2.492842] 0x000000040000-0x000000180000 : "0:MIBIB"
-[    2.497857] 0x000000180000-0x0000002c0000 : "0:SBL2"
-[    2.502895] 0x0000002c0000-0x000000540000 : "0:SBL3"
-[    2.507828] 0x000000540000-0x000000660000 : "0:DDRCONFIG"
-[    2.512857] 0x000000660000-0x000000780000 : "0:SSD"
-[    2.518074] 0x000000780000-0x000000a00000 : "0:TZ"
-[    2.522834] 0x000000a00000-0x000000c80000 : "0:RPM"
-[    2.527607] 0x000000c80000-0x000001180000 : "0:APPSBL"
-[    2.532472] 0x000001180000-0x000001200000 : "0:APPSBLENV"
-[    2.537586] 0x000001200000-0x000001340000 : "0:ART"
-[    2.543140] 0x000001340000-0x000005340000 : "rootfs"
-
-Are all these partition names supposed to be prefixed with "0:"? This
-is using the OpenWrt applied version.
-
-
-Jonas
+Thanks,
+Alex
