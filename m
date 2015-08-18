@@ -1,23 +1,27 @@
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-bn1on0056.outbound.protection.outlook.com ([157.56.110.56]
+ helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRlfS-0007au-Pt
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 18:31:27 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mtd: nand: pxa3xx_nand: add register access debug
-References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
- <20150818042426.GA27858@laptop>
-Date: Tue, 18 Aug 2015 20:26:49 +0200
-In-Reply-To: <20150818042426.GA27858@laptop> (Ezequiel Garcia's message of
- "Tue, 18 Aug 2015 01:24:26 -0300")
-Message-ID: <874mjwa1w6.fsf@belgarion.home>
+ id 1ZRmEw-0004Em-NB
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 19:08:07 +0000
+Message-ID: <55D3819D.1040009@opensource.altera.com>
+Date: Tue, 18 Aug 2015 14:03:57 -0500
+From: Graham Moore <grmoore@opensource.altera.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: Vikas MANOCHA <vikas.manocha@st.com>
+CC: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@opensource.altera.com>, "Yves
+ Vandervennet" <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH V7 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+References: <1439522892-7524-1-git-send-email-marex@denx.de>
+ <55D29A0B.20408@st.com> <201508180647.30119.marex@denx.de>
+ <0B80CAC4-70B3-4557-8D6E-4CA84AF9CEA2@st.com>
+In-Reply-To: <0B80CAC4-70B3-4557-8D6E-4CA84AF9CEA2@st.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +31,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
+Hi all,
 
-> On 11 Aug 09:57 PM, Robert Jarzmik wrote:
->> Add verbose debug for register accesses. This enables easier debugging
->> by following where and how hardware is stimulated, and how it answers.
->> 
+On 08/18/2015 12:48 AM, Vikas MANOCHA wrote:
+
+[...]
+
+>>>> +Required properties:
+>>>> +- compatible : Should be "cdns,qspi-nor".
+>>>> +- reg : Contains two entries, each of which is a tuple consisting of a
+>>>> +    physical address and length.  The first entry is the address and
+>>>> +    length of the controller register set.  The second entry is the
+>>>> +    address and length of the QSPI Controller data area.
+>>>
+>>> "Controller data area", i think it means mapped NOR Flash address ?
+>>
+>> Probably ; Graham ?
+>>
+>>> If yes, it would be more clear with "Physical base address & size of NOR
+>>> Flash".
+>>
+>> This is the Direct mode thing, correct ? We don't support this, so I think
+>> we should drop this bit altogether and keep only one single address in this
+>> field.
 >
-> I really don't see why we want this patch. It's probably an useful hack to
-> use in some cases, but can't see why we would want it in mainline.
+> No it's not.
 >
-> Feel free to prove me wrong.
-Why not.
 
-Imagine that there is a bug in the driver, such as the one with the status bits
-clearing. You can't reproduce it, and the person who has the hardware to
-reproduce it is not skilled enough to do any debug.
+It's the location of the SRAM fifo.  Also direct mode location I think, 
+if that were ever used.
 
-What are the tools and what will you ask this tester to do in order to debug and
-solve his problem, as a good driver maintainer ?
+The size is determined by a configuration parameter during system 
+design.  On Altera Cyclone5 the size is really big compared to SRAM 
+fifo.  I don't know why, maybe some hw engineer thought it would be 
+better to have a large size in case direct mode was used.
 
-Amongst the drivers I wrote in the past, this approach was the most reliable to
-capture traces to debug remotely.
-
-Cheers.
-
---
-Robert
+BR,
+Graham
