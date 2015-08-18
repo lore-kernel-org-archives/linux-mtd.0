@@ -1,20 +1,25 @@
-Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRiuL-00013B-Kq
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 15:34:38 +0000
-Date: 18 Aug 2015 15:34:07 -0000
-Message-Id: <5b636f504e32c9fe83df22694656075f4f45c710.1439911625.git.hramrach@gmail.com>
-In-Reply-To: <cover.1439911625.git.hramrach@gmail.com>
-References: <cover.1439911625.git.hramrach@gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v3 1/5] mtd: mtdpart: add debug prints to partition parser.
-To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+Date: Tue, 18 Aug 2015 10:03:33 -0700
+From: Mathieu Olivari <mathieu@codeaurora.org>
+To: Jonas Gorski <jogo@openwrt.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Mark Rutland <mark.rutland@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Kumar Gala <galak@codeaurora.org>, linux@arm.linux.org.uk,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, agross@codeaurora.org,
+ sboyd@codeaurora.org, bjorn.andersson@sonymobile.com,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v3 0/3] qcom: Add SMEM MTD parser
+Message-ID: <20150818170333.GA1581@codeaurora.org>
+References: <1439855266-26242-1-git-send-email-mathieu@codeaurora.org>
+ <CAOiHx=nPDBPsj_Kg_7AkFeieedwGbcJmvALDp2eK+6aKi0wOJA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOiHx=nPDBPsj_Kg_7AkFeieedwGbcJmvALDp2eK+6aKi0wOJA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +29,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The probe of a mtd device can fail when a partition parser returns
-error. The failure due to partition parsing can be quite mysterious when
-multiple partitioning schemes are comiled in and any of them can fail
-the probe.
+On Tue, Aug 18, 2015 at 02:30:14PM +0200, Jonas Gorski wrote:
+> Hi,
+> 
+> On Tue, Aug 18, 2015 at 1:47 AM, Mathieu Olivari <mathieu@codeaurora.org> wrote:
+> > QCOM platforms such as IPQ806x are using SMEM to store their flash
+> > layout. This patch set adds the DT nodes required to instanciate SMEM
+> > on IPQ806x and add an MTD parser using it.
+> >
+> > This change is based on the SMEM driver posted here:
+> > *https://lkml.org/lkml/2015/7/27/1125
+> 
+> Nice work. After testing it on AP148 I see this:
+> 
+> [    2.481507] 12 qcom-smem partitions found on MTD device qcom-nandc
+> [    2.481540] Creating 12 MTD partitions on "qcom-nandc":
+> [    2.486690] 0x000000000000-0x000000040000 : "0:SBL1"
+> [    2.492842] 0x000000040000-0x000000180000 : "0:MIBIB"
+> [    2.497857] 0x000000180000-0x0000002c0000 : "0:SBL2"
+> [    2.502895] 0x0000002c0000-0x000000540000 : "0:SBL3"
+> [    2.507828] 0x000000540000-0x000000660000 : "0:DDRCONFIG"
+> [    2.512857] 0x000000660000-0x000000780000 : "0:SSD"
+> [    2.518074] 0x000000780000-0x000000a00000 : "0:TZ"
+> [    2.522834] 0x000000a00000-0x000000c80000 : "0:RPM"
+> [    2.527607] 0x000000c80000-0x000001180000 : "0:APPSBL"
+> [    2.532472] 0x000001180000-0x000001200000 : "0:APPSBLENV"
+> [    2.537586] 0x000001200000-0x000001340000 : "0:ART"
+> [    2.543140] 0x000001340000-0x000005340000 : "rootfs"
+> 
+> Are all these partition names supposed to be prefixed with "0:"? This
+> is using the OpenWrt applied version.
 
-Add debug prints which show what parsers were tried and what they
-returned.
+Yes. These are the names as they are listed in SMEM. If you run the
+"smem" command from the U-boot prompt, you will see the same information.
+I'm not sure what the 0: prefix means, and where it comes from to be
+honest.
 
-Signed-off-by: Michal Suchanek <hramrach@gmail.com>
----
-v2:
-
- - reformat debug messages
----
- drivers/mtd/mtdpart.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index cafdb88..31888c2 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -759,12 +759,17 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
- 		types = default_mtd_part_types;
- 
- 	for ( ; ret <= 0 && *types; types++) {
-+		pr_debug("%s: parsing partitions %s\n", master->name, *types);
- 		parser = get_partition_parser(*types);
- 		if (!parser && !request_module("%s", *types))
- 			parser = get_partition_parser(*types);
-+		pr_debug("%s: got parser %s\n", master->name,
-+			 parser ? parser->name : NULL);
- 		if (!parser)
- 			continue;
- 		ret = (*parser->parse_fn)(master, pparts, data);
-+		pr_debug("%s: parser %s: %i\n",
-+			 master->name, parser->name, ret);
- 		put_partition_parser(parser);
- 		if (ret > 0) {
- 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
--- 
-2.1.4
+> 
+> 
+> Jonas
