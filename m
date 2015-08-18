@@ -1,13 +1,14 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRiuH-00011t-OP
+ id 1ZRiuH-00012I-O5
  for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 15:34:34 +0000
-Date: 18 Aug 2015 15:34:08 -0000
-Message-Id: <83fbf31ad895446837f8e01f77a1ff7c63d62251.1439911625.git.hramrach@gmail.com>
+Date: 18 Aug 2015 15:34:09 -0000
+Message-Id: <78e45e51c94899f92ec5d189846c5dd5cf9d8f7a.1439911625.git.hramrach@gmail.com>
 In-Reply-To: <cover.1439911625.git.hramrach@gmail.com>
 References: <cover.1439911625.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v3 4/5] mtd: ofpart: document the lock flag.
+Subject: [PATCH v3 5/5] mtd: ofpart: move ofpart partitions to a dedicated dt
+ node
 To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Mark Rutland <mark.rutland@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
@@ -24,24 +25,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The lock flag of ofpart is undocumented. Add to binding doc.
+Parsing direct subnodes of a mtd device as partitions is unreliable
+since the mtd device is also part of its bus subsystem and can contain
+bus data in subnodes.
+
+Move ofpart data to a subnode of its own so it is clear which data is
+part of the partition layout.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 ---
- Documentation/devicetree/bindings/mtd/partition.txt | 1 +
- 1 file changed, 1 insertion(+)
+v2:
+ - fix indent
+v3:
+ - fix possible memory leak when parittions are allocated but no valid
+   partition is found
+ - rename dt node ofpart -> partitions
+---
+ drivers/mtd/ofpart.c | 63 ++++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 46 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-index 8c2aff7..7fa9c08 100644
---- a/Documentation/devicetree/bindings/mtd/partition.txt
-+++ b/Documentation/devicetree/bindings/mtd/partition.txt
-@@ -29,6 +29,7 @@ Optional properties:
-   partition should only be mounted read-only. This is usually used for flash
-   partitions containing early-boot firmware images or data which should not be
-   clobbered.
-+- lock : Clear always locked after reset flag
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index aa26c32..669c345 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -29,23 +29,33 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 				   struct mtd_partition **pparts,
+ 				   struct mtd_part_parser_data *data)
+ {
+-	struct device_node *node;
++	struct device_node *mtd_node;
++	struct device_node *ofpart_node;
+ 	const char *partname;
+ 	struct device_node *pp;
+-	int nr_parts, i;
++	int nr_parts, i, ret = 0;
++	bool dedicated = true;
  
- Examples:
  
+ 	if (!data)
+ 		return 0;
+ 
+-	node = data->of_node;
+-	if (!node)
++	mtd_node = data->of_node;
++	if (!mtd_node)
+ 		return 0;
+ 
++	ofpart_node = of_get_child_by_name(mtd_node, "partitions");
++	if (!ofpart_node) {
++		pr_warn("%s: 'partitions' subnode not found on %s. Trying to parse direct subnodes as partitions.\n",
++			master->name, mtd_node->full_name);
++		ofpart_node = mtd_node;
++		dedicated = false;
++	}
++
+ 	/* First count the subnodes */
+ 	nr_parts = 0;
+-	for_each_child_of_node(node,  pp) {
+-		if (node_has_compatible(pp))
++	for_each_child_of_node(ofpart_node,  pp) {
++		if (!dedicated && node_has_compatible(pp))
+ 			continue;
+ 
+ 		nr_parts++;
+@@ -59,22 +69,36 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 		return -ENOMEM;
+ 
+ 	i = 0;
+-	for_each_child_of_node(node,  pp) {
++	for_each_child_of_node(ofpart_node,  pp) {
+ 		const __be32 *reg;
+ 		int len;
+ 		int a_cells, s_cells;
+ 
+-		if (node_has_compatible(pp))
++		if (!dedicated && node_has_compatible(pp))
+ 			continue;
+ 
+ 		reg = of_get_property(pp, "reg", &len);
+ 		if (!reg) {
+-			nr_parts--;
+-			continue;
++			if (dedicated) {
++				pr_debug("%s: ofpart partition %s (%s) missing reg property.\n",
++					 master->name, pp->full_name,
++					 mtd_node->full_name);
++				goto ofpart_fail;
++			} else {
++				nr_parts--;
++				continue;
++			}
+ 		}
+ 
+ 		a_cells = of_n_addr_cells(pp);
+ 		s_cells = of_n_size_cells(pp);
++		if (len / 4 != a_cells + s_cells) {
++			pr_debug("%s: ofpart partition %s (%s) error parsing reg property.\n",
++				 master->name, pp->full_name,
++				 mtd_node->full_name);
++			goto ofpart_fail;
++		}
++
+ 		(*pparts)[i].offset = of_read_number(reg, a_cells);
+ 		(*pparts)[i].size = of_read_number(reg + a_cells, s_cells);
+ 
+@@ -92,15 +116,20 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 		i++;
+ 	}
+ 
+-	if (!i) {
+-		of_node_put(pp);
+-		pr_err("No valid partition found on %s\n", node->full_name);
+-		kfree(*pparts);
+-		*pparts = NULL;
+-		return -EINVAL;
+-	}
++	if (!nr_parts)
++		goto ofpart_none;
+ 
+ 	return nr_parts;
++
++ofpart_fail:
++	pr_err("%s: error parsing ofpart partition %s (%s)\n",
++	       master->name, pp->full_name, mtd_node->full_name);
++	ret = -EINVAL;
++ofpart_none:
++	of_node_put(pp);
++	kfree(*pparts);
++	*pparts = NULL;
++	return ret;
+ }
+ 
+ static struct mtd_part_parser ofpart_parser = {
 -- 
 2.1.4
