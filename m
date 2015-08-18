@@ -1,8 +1,8 @@
-Received: from mail-bl2on0135.outbound.protection.outlook.com ([65.55.169.135]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-bn1bn0106.outbound.protection.outlook.com
+ ([157.56.110.106] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRXeU-0000cP-5C
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 03:33:31 +0000
+ id 1ZRXeZ-0000cY-Om
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 03:33:37 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
@@ -11,9 +11,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v2 1/6] mtd: nand: gpmi: add gpmi dsm supend/resume support
-Date: Mon, 17 Aug 2015 22:24:36 -0500
-Message-ID: <1439868276-24748-1-git-send-email-b45815@freescale.com>
+Subject: [PATCH v2 2/6] dmaengine: mxs: support i.MX7D and deep sleep mode
+Date: Mon, 17 Aug 2015 22:24:43 -0500
+Message-ID: <1439868283-24796-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,86 +27,200 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Huang Shijie <b32955@freescale.com>
 
-i.MX6SX supports deep sleep mode(DSM) that may turn off GPMI/BCH power
-during suspend, add gpmi nand suspend/resume function to release DMA
-channel in suspend function and re-init GPMI/BCH controller during
-resume function.
+The patch support i.MX7D platform by adding extra DMA clock.
 
-Although it is not necessary to restore GPMI/BCH registers value for
-i.MX6QDL, the code doesn't distinguish different platforms to keep the
-code simple.
+Deep Sleep Mode(dsm) turns off the power for APBH DMA module, add
+suspend/resume function and re-init the APBH DMA during resume.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 Signed-off-by: Han Xu <han.xu@freescale.com>
+Signed-off-by: Adrian Alonso <aalonso@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 45 +++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+ drivers/dma/mxs-dma.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 67 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 1b8f350..dfd0ba1 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1,7 +1,7 @@
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index 60de352..2b0915d 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -1,5 +1,5 @@
  /*
-  * Freescale GPMI NAND Flash Driver
+- * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
++ * Copyright 2011-2015 Freescale Semiconductor, Inc. All Rights Reserved.
   *
-- * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
-+ * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
-  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+  * Refer to drivers/dma/imx-sdma.c
   *
-  * This program is free software; you can redistribute it and/or modify
-@@ -2036,9 +2036,52 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+@@ -28,7 +28,6 @@
+ #include <linux/of_device.h>
+ #include <linux/of_dma.h>
+ #include <linux/list.h>
+-
+ #include <asm/irq.h>
+ 
+ #include "dmaengine.h"
+@@ -135,6 +134,7 @@ enum mxs_dma_devtype {
+ enum mxs_dma_id {
+ 	IMX23_DMA,
+ 	IMX28_DMA,
++	IMX7D_DMA,
+ };
+ 
+ struct mxs_dma_engine {
+@@ -142,6 +142,7 @@ struct mxs_dma_engine {
+ 	enum mxs_dma_devtype		type;
+ 	void __iomem			*base;
+ 	struct clk			*clk;
++	struct clk			*clk_io;
+ 	struct dma_device		dma_device;
+ 	struct device_dma_parameters	dma_parms;
+ 	struct mxs_dma_chan		mxs_chans[MXS_DMA_CHANNELS];
+@@ -167,6 +168,9 @@ static struct mxs_dma_type mxs_dma_types[] = {
+ 	}, {
+ 		.id = IMX28_DMA,
+ 		.type = MXS_DMA_APBX,
++	}, {
++		.id = IMX7D_DMA,
++		.type = MXS_DMA_APBH,
+ 	}
+ };
+ 
+@@ -184,6 +188,9 @@ static const struct platform_device_id mxs_dma_ids[] = {
+ 		.name = "imx28-dma-apbx",
+ 		.driver_data = (kernel_ulong_t) &mxs_dma_types[3],
+ 	}, {
++		.name = "imx7d-dma-apbh",
++		.driver_data = (kernel_ulong_t) &mxs_dma_types[4],
++	}, {
+ 		/* end of list */
+ 	}
+ };
+@@ -193,6 +200,7 @@ static const struct of_device_id mxs_dma_dt_ids[] = {
+ 	{ .compatible = "fsl,imx23-dma-apbx", .data = &mxs_dma_ids[1], },
+ 	{ .compatible = "fsl,imx28-dma-apbh", .data = &mxs_dma_ids[2], },
+ 	{ .compatible = "fsl,imx28-dma-apbx", .data = &mxs_dma_ids[3], },
++	{ .compatible = "fsl,imx7d-dma-apbh", .data = &mxs_dma_ids[4], },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, mxs_dma_dt_ids);
+@@ -440,6 +448,12 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+ 	if (ret)
+ 		goto err_clk;
+ 
++	if (mxs_dma->dev_id == IMX7D_DMA) {
++		ret = clk_prepare_enable(mxs_dma->clk_io);
++		if (ret)
++			goto err_clk_unprepare;
++	}
++
+ 	mxs_dma_reset_chan(chan);
+ 
+ 	dma_async_tx_descriptor_init(&mxs_chan->desc, chan);
+@@ -450,6 +464,8 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+ 
+ 	return 0;
+ 
++err_clk_unprepare:
++	clk_disable_unprepare(mxs_dma->clk);
+ err_clk:
+ 	free_irq(mxs_chan->chan_irq, mxs_dma);
+ err_irq:
+@@ -471,6 +487,9 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
+ 	dma_free_coherent(mxs_dma->dma_device.dev, CCW_BLOCK_SIZE,
+ 			mxs_chan->ccw, mxs_chan->ccw_phys);
+ 
++	if (mxs_dma->dev_id == IMX7D_DMA)
++		clk_disable_unprepare(mxs_dma->clk_io);
++
+ 	clk_disable_unprepare(mxs_dma->clk);
+ }
+ 
+@@ -693,7 +712,7 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
+ 	return mxs_chan->status;
+ }
+ 
+-static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
++static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+ {
+ 	int ret;
+ 
+@@ -701,6 +720,12 @@ static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+ 	if (ret)
+ 		return ret;
+ 
++	if (mxs_dma->dev_id == IMX7D_DMA) {
++		ret = clk_prepare_enable(mxs_dma->clk_io);
++		if (ret)
++			goto err_out;
++	}
++
+ 	ret = stmp_reset_block(mxs_dma->base);
+ 	if (ret)
+ 		goto err_out;
+@@ -803,9 +828,19 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mxs_dma->base))
+ 		return PTR_ERR(mxs_dma->base);
+ 
+-	mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(mxs_dma->clk))
+-		return PTR_ERR(mxs_dma->clk);
++	if (mxs_dma->dev_id == IMX7D_DMA) {
++		mxs_dma->clk = devm_clk_get(&pdev->dev, "dma_apbh_bch");
++		if (IS_ERR(mxs_dma->clk))
++			return PTR_ERR(mxs_dma->clk);
++		mxs_dma->clk_io = devm_clk_get(&pdev->dev, "dma_apbh_io");
++		if (IS_ERR(mxs_dma->clk_io))
++			return PTR_ERR(mxs_dma->clk_io);
++
++	} else {
++		mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
++		if (IS_ERR(mxs_dma->clk))
++			return PTR_ERR(mxs_dma->clk);
++	}
+ 
+ 	dma_cap_set(DMA_SLAVE, mxs_dma->dma_device.cap_mask);
+ 	dma_cap_set(DMA_CYCLIC, mxs_dma->dma_device.cap_mask);
+@@ -835,6 +870,7 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 
+ 	mxs_dma->pdev = pdev;
+ 	mxs_dma->dma_device.dev = &pdev->dev;
++	dev_set_drvdata(&pdev->dev, mxs_dma);
+ 
+ 	/* mxs_dma gets 65535 bytes maximum sg size */
+ 	mxs_dma->dma_device.dev->dma_parms = &mxs_dma->dma_parms;
+@@ -872,9 +908,34 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
  	return 0;
  }
  
-+static int gpmi_pm_suspend(struct device *dev)
++static int mxs_dma_pm_suspend(struct device *dev)
 +{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+
-+	release_dma_channels(this);
++	/*
++	 * We do not save any registers here, since the gpmi will release its
++	 * DMA channel.
++	 */
 +	return 0;
 +}
 +
-+static int gpmi_pm_resume(struct device *dev)
++static int mxs_dma_pm_resume(struct device *dev)
 +{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
 +	int ret;
 +
-+	ret = acquire_dma_channels(this);
-+	if (ret < 0)
++	ret = mxs_dma_init(mxs_dma);
++	if (ret)
 +		return ret;
-+
-+	/* re-init the GPMI registers */
-+	this->flags &= ~GPMI_TIMING_INIT_OK;
-+	ret = gpmi_init(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init the BCH registers */
-+	ret = bch_set_geometry(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting BCH : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init others */
-+	gpmi_extra_init(this);
-+
 +	return 0;
 +}
 +
-+static const struct dev_pm_ops gpmi_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
++static const struct dev_pm_ops mxs_dma_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(mxs_dma_pm_suspend, mxs_dma_pm_resume)
 +};
 +
- static struct platform_driver gpmi_nand_driver = {
- 	.driver = {
- 		.name = "gpmi-nand",
-+		.pm = &gpmi_pm_ops,
- 		.of_match_table = gpmi_nand_id_table,
+ static struct platform_driver mxs_dma_driver = {
+ 	.driver		= {
+ 		.name	= "mxs-dma",
++		.pm = &mxs_dma_pm_ops,
+ 		.of_match_table = mxs_dma_dt_ids,
  	},
- 	.probe   = gpmi_nand_probe,
+ 	.id_table	= mxs_dma_ids,
 -- 
 1.9.1
