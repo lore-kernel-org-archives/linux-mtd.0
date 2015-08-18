@@ -1,24 +1,30 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
+Received: from eu-smtp-delivery-143.mimecast.com ([207.82.80.143])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRb6b-00041P-EO
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 07:14:46 +0000
-Subject: Re: [PATCH v2 5/6] mtd: nand: gpmi: correct bitflip for erased NAND
- page
-To: linux-mtd@lists.infradead.org, shijie.huang@arm.com
-References: <mailman.144.1439868837.1751.linux-mtd@lists.infradead.org>
- <mailman.144.1439868837.1751.linux-mtd.{cd547de0-f721-45c0-87af-acbbd6eb9fa4}.0@lists.infradead.org>
- <1439868301-24937-1-git-send-email-b45815@freescale.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, b45815@freescale.com,
- boris.brezillon@free-electrons.com, fabio.estevam@freescale.com,
- hofrat@osadl.org, linux-kernel@vger.kernel.org, vinod.koul@intel.com,
- dan.j.williams@intel.com, dmaengine@vger.kernel.org
-From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <55D2DB48.1040500@dave-tech.it>
-Date: Tue, 18 Aug 2015 09:14:16 +0200
+ id 1ZRby1-0006Xj-Gf
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 08:09:58 +0000
+Date: Tue, 18 Aug 2015 16:09:27 +0800
+From: Huang Shijie <shijie.huang@arm.com>
+To: Han Xu <xhnjupt@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>, Marek Vasut <marex@denx.de>,
+ Joachim Eastwood <manabian@gmail.com>, Rafa?? Mi??ecki <zajec5@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Huang Shijie <shijie.huang@intel.com>, Han Xu <han.xu@freescale.com>
+Subject: Re: [RFT PATCH 1/4] mtd: fsl-quadspi: use automatic spi-nor detection
+Message-ID: <20150818080927.GE10641@free64-pc.asiapac.arm.com>
+References: <1439505965-134748-1-git-send-email-computersforpeace@gmail.com>
+ <1439505965-134748-2-git-send-email-computersforpeace@gmail.com>
+ <201508140109.14149.marex@denx.de>
+ <20150813232447.GJ60523@google.com>
+ <CAOMqctS-CNu6By1b+s4yEPzgOy3gbtCYuwvET9sRrCnt8Azvhw@mail.gmail.com>
+ <20150818025639.GB15907@localhost>
+ <CA+EcR21P_6KefOi1yH5Qiuy8KmwipL8wz2WJ5iWLYGUj_yOqKA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1439868301-24937-1-git-send-email-b45815@freescale.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CA+EcR21P_6KefOi1yH5Qiuy8KmwipL8wz2WJ5iWLYGUj_yOqKA@mail.gmail.com>
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,163 +34,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Aug 17, 2015 at 10:15:50PM -0500, Han Xu wrote:
+Hi Brian & Han,
 
-Il 18/08/2015 05:25, Han Xu ha scritto:
-> i.MX6QP and i.MX7D BCH module integrated a new feature to detect the
-> bitflip number for erased NAND page. So for these two platform, set the
-> erase threshold to gf/2 and if bitflip detected, GPMI driver will
-> correct the data to all 0xFF.
+> Seems Huang has changed the e-mail address.
+>=20
+> On Mon, Aug 17, 2015 at 9:56 PM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+> > On Fri, Aug 14, 2015 at 07:40:27AM +0200, Michal Suchanek wrote:
+> >> On 14 August 2015 at 01:24, Brian Norris <computersforpeace@gmail.com>=
+ wrote:
+> >> > Now, each flash connected to the controller has its own device_node.=
+ All
+> >> > this patch is saying is that we don't need to know much about that n=
+ode;
+> >> > as long as it responds to the READ ID command properly, spi_nor_scan=
+()
+> >> > can autodetect it.
+> >> >
+> >>
+> >> And if there was suppor for a flash chip that does not respond to READ
+> >> ID (or uses a different opcode for it) this patch would break it,
+> >> right?
 
-Please also fix the commit message. Once fixed I can add my Reviewed-by 
-(for what it's worth ;-) )
+Do not worry about the quadspi controller :)
 
->
-> Signed-off-by: Han Xu <b45815@freescale.com>
-> ---
->   drivers/mtd/nand/gpmi-nand/bch-regs.h  | 10 ++++++++++
->   drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  5 +++++
->   drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 24 +++++++++++++++++++++++-
->   drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  5 ++++-
->   4 files changed, 42 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> index 53e58bc..a84d72b 100644
-> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> @@ -30,7 +30,13 @@
->   #define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
->
->   #define HW_BCH_STATUS0				0x00000010
-> +
->   #define HW_BCH_MODE				0x00000020
-> +#define BP_BCH_MODE_ERASE_THRESHOLD		0
-> +#define BM_BCH_MODE_ERASE_THRESHOLD	(0xff << BP_BCH_MODE_ERASE_THRESHOLD)
-> +#define BF_BCH_MODE_ERASE_THRESHOLD(v)		\
-> +	(((v) << BP_BCH_MODE_ERASE_THRESHOLD) & BM_BCH_MODE_ERASE_THRESHOLD)
-> +
->   #define HW_BCH_ENCODEPTR			0x00000030
->   #define HW_BCH_DATAPTR				0x00000040
->   #define HW_BCH_METAPTR				0x00000050
-> @@ -125,4 +131,8 @@
->   	)
->
->   #define HW_BCH_VERSION				0x00000160
-> +#define HW_BCH_DEBUG1				0x00000170
-> +#define BP_BCH_DEBUG1_ERASED_ZERO_COUNT	0
-> +#define BM_BCH_DEBUG1_ERASED_ZERO_COUNT		\
-> +		(0x1ff << BP_BCH_DEBUG1_ERASED_ZERO_COUNT)
->   #endif
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index 6b37414..f00ce90 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -298,6 +298,11 @@ int bch_set_geometry(struct gpmi_nand_data *this)
->   			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
->   			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
->
-> +	/* Set erase threshold to ecc_strength for mx6qp and mx7 */
-> +	if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
-> +		writel(BF_BCH_MODE_ERASE_THRESHOLD(ecc_strength),
-> +			r->bch_regs + HW_BCH_MODE);
-> +
->   	/* Set *all* chip selects to use layout 0. */
->   	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 0462103..362cf4c 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -71,6 +71,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6q = {
->   	.max_chain_delay = 12,
->   };
->
-> +static const struct gpmi_devdata gpmi_devdata_imx6qp = {
-> +	.type = IS_MX6QP,
-> +	.bch_max_ecc_strength = 40,
-> +	.max_chain_delay = 12,
-> +};
-> +
->   static const struct gpmi_devdata gpmi_devdata_imx6sx = {
->   	.type = IS_MX6SX,
->   	.bch_max_ecc_strength = 62,
-> @@ -1010,6 +1016,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->   {
->   	struct gpmi_nand_data *this = chip->priv;
->   	struct bch_geometry *nfc_geo = &this->bch_geometry;
-> +	void __iomem *bch_regs = this->resources.bch_regs;
->   	void          *payload_virt;
->   	dma_addr_t    payload_phys;
->   	void          *auxiliary_virt;
-> @@ -1018,6 +1025,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->   	unsigned char *status;
->   	unsigned int  max_bitflips = 0;
->   	int           ret;
-> +	int flag = 0;
->
->   	dev_dbg(this->dev, "page number is : %d\n", page);
->   	ret = read_page_prepare(this, buf, nfc_geo->payload_size,
-> @@ -1050,9 +1058,16 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->   	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
->
->   	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
-> -		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
-> +		if (*status == STATUS_GOOD)
->   			continue;
->
-> +		if (*status == STATUS_ERASED) {
-> +			if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
-> +				if (readl(bch_regs + HW_BCH_DEBUG1))
-> +					flag = 1;
-> +			continue;
-> +		}
-> +
->   		if (*status == STATUS_UNCORRECTABLE) {
->   			mtd->ecc_stats.failed++;
->   			continue;
-> @@ -1081,6 +1096,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->   			nfc_geo->payload_size,
->   			payload_virt, payload_phys);
->
-> +	/* if bitflip occurred in erased page, change data to all 0xff */
-> +	if (flag)
-> +		memset(buf, 0xff, nfc_geo->payload_size);
-> +
->   	return max_bitflips;
->   }
->
-> @@ -1991,6 +2010,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
->   		.compatible = "fsl,imx6q-gpmi-nand",
->   		.data = &gpmi_devdata_imx6q,
->   	}, {
-> +		.compatible = "fsl,imx6qp-gpmi-nand",
-> +		.data = (void *)&gpmi_devdata_imx6qp,
-> +	}, {
->   		.compatible = "fsl,imx6sx-gpmi-nand",
->   		.data = &gpmi_devdata_imx6sx,
->   	}, {
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> index 1e105f1..36ffeda 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> @@ -123,6 +123,7 @@ enum gpmi_type {
->   	IS_MX23,
->   	IS_MX28,
->   	IS_MX6Q,
-> +	IS_MX6QP,
->   	IS_MX6SX,
->   	IS_MX7D
->   };
-> @@ -306,9 +307,11 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
->   #define GPMI_IS_MX23(x)		((x)->devdata->type == IS_MX23)
->   #define GPMI_IS_MX28(x)		((x)->devdata->type == IS_MX28)
->   #define GPMI_IS_MX6Q(x)		((x)->devdata->type == IS_MX6Q)
-> +#define GPMI_IS_MX6QP(x)	((x)->devdata->type == IS_MX6QP)
->   #define GPMI_IS_MX6SX(x)	((x)->devdata->type == IS_MX6SX)
->   #define GPMI_IS_MX7D(x)		((x)->devdata->type == IS_MX7D)
->
-> -#define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
-> +#define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6QP(x)\
-> +	   || GPMI_IS_MX6SX(x))
->   #define GPMI_IS_MX7(x)		(GPMI_IS_MX7D(x))
->   #endif
->
+The controller only uses the best NOR flash (or maybe the best NOR flash), =
+I remember
+that the NOR flash can support the QUAD DDR read which is not supported not=
+.
+
+So it will not break the driver.=20
+
+Btw: @Han Xu : I think you can test this patch.
+
+> >
+> > For the latter: this already doesn't support chips that use different
+> > opcodes.
+> >
+> > For the former: we're only talking about the "*-nonjedec" and similar,
+> > right? I'm not confident those were supported well by this driver in th=
+e
+> > first place. (And "*-nonjedec" should really die; if it's needed,
+> > support should be added by design, not by accident.)
+> >
+> > Perhaps Huang can comment.
+
+I think this patch is okay. But please wait for Han's test result.
+
+
+thanks
+Huang Shijie
