@@ -1,8 +1,8 @@
-Received: from mail-bn1bon0145.outbound.protection.outlook.com
- ([157.56.111.145] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-bl2on0135.outbound.protection.outlook.com ([65.55.169.135]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRXeL-0000bh-D5
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 03:33:22 +0000
+ id 1ZRXeU-0000cP-5C
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 03:33:31 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
@@ -11,9 +11,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v2 0/6] mtd: nand: gpmi: gpmi-nand DSM and bitflip support
-Date: Mon, 17 Aug 2015 22:24:25 -0500
-Message-ID: <1439868265-24701-1-git-send-email-b45815@freescale.com>
+Subject: [PATCH v2 1/6] mtd: nand: gpmi: add gpmi dsm supend/resume support
+Date: Mon, 17 Aug 2015 22:24:36 -0500
+Message-ID: <1439868276-24748-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,28 +25,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-send the patchs to Huang Shijie's latest e-mail address
+From: Huang Shijie <b32955@freescale.com>
 
-v1 ---> v2
-change the erased page bitflip threshold to ecc strength in bitflip patch
+i.MX6SX supports deep sleep mode(DSM) that may turn off GPMI/BCH power
+during suspend, add gpmi nand suspend/resume function to release DMA
+channel in suspend function and re-init GPMI/BCH controller during
+resume function.
 
+Although it is not necessary to restore GPMI/BCH registers value for
+i.MX6QDL, the code doesn't distinguish different platforms to keep the
+code simple.
 
-Han Xu (4):
-  mtd: nand: gpmi: may use minimum required ecc for 744 oobsize NAND
-  mtd: nand: gpmi: add GPMI NAND support for i.MX7D
-  mtd: nand: gpmi: correct bitflip for erased NAND page
-  mtd: nand: gpmi: support NAND on i.MX6UL
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Han Xu <han.xu@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 45 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
 
-Huang Shijie (2):
-  mtd: nand: gpmi: add gpmi dsm supend/resume support
-  dmaengine: mxs: support i.MX7D and deep sleep mode
-
- drivers/dma/mxs-dma.c                  |  73 +++++++++++++++++--
- drivers/mtd/nand/gpmi-nand/bch-regs.h  |  24 +++++--
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  15 ++--
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 126 ++++++++++++++++++++++++++++-----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  14 +++-
- 5 files changed, 215 insertions(+), 37 deletions(-)
-
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 1b8f350..dfd0ba1 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1,7 +1,7 @@
+ /*
+  * Freescale GPMI NAND Flash Driver
+  *
+- * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
++ * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
+  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -2036,9 +2036,52 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int gpmi_pm_suspend(struct device *dev)
++{
++	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++
++	release_dma_channels(this);
++	return 0;
++}
++
++static int gpmi_pm_resume(struct device *dev)
++{
++	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++	int ret;
++
++	ret = acquire_dma_channels(this);
++	if (ret < 0)
++		return ret;
++
++	/* re-init the GPMI registers */
++	this->flags &= ~GPMI_TIMING_INIT_OK;
++	ret = gpmi_init(this);
++	if (ret) {
++		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
++		return ret;
++	}
++
++	/* re-init the BCH registers */
++	ret = bch_set_geometry(this);
++	if (ret) {
++		dev_err(this->dev, "Error setting BCH : %d\n", ret);
++		return ret;
++	}
++
++	/* re-init others */
++	gpmi_extra_init(this);
++
++	return 0;
++}
++
++static const struct dev_pm_ops gpmi_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
++};
++
+ static struct platform_driver gpmi_nand_driver = {
+ 	.driver = {
+ 		.name = "gpmi-nand",
++		.pm = &gpmi_pm_ops,
+ 		.of_match_table = gpmi_nand_id_table,
+ 	},
+ 	.probe   = gpmi_nand_probe,
 -- 
 1.9.1
