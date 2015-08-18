@@ -1,20 +1,20 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRhVC-0000gE-6r
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 14:04:37 +0000
-Message-ID: <55D33B4F.8020602@ti.com>
-Date: Tue, 18 Aug 2015 17:03:59 +0300
-From: Roger Quadros <rogerq@ti.com>
-MIME-Version: 1.0
-To: Axel Lin <axel.lin@ingics.com>, Brian Norris <computersforpeace@gmail.com>
-CC: Frans Klaver <frans.klaver@xsens.com>, =?UTF-8?B?RXplcXVpZWwgR2FyY8Ot?=
- =?UTF-8?B?YQ==?= <ezequiel@vanguardiasur.com.ar>, David Woodhouse
- <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: omap_elm: Fix module alias
-References: <1439902993.15765.1.camel@ingics.com>
-In-Reply-To: <1439902993.15765.1.camel@ingics.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRiuH-00011t-OP
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 15:34:34 +0000
+Date: 18 Aug 2015 15:34:08 -0000
+Message-Id: <83fbf31ad895446837f8e01f77a1ff7c63d62251.1439911625.git.hramrach@gmail.com>
+In-Reply-To: <cover.1439911625.git.hramrach@gmail.com>
+References: <cover.1439911625.git.hramrach@gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Subject: [PATCH v3 4/5] mtd: ofpart: document the lock flag.
+To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18/08/15 16:03, Axel Lin wrote:
-> Remove extra space after the "platform:" prefix and make the alias matches
-> driver name.
-> 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+The lock flag of ofpart is undocumented. Add to binding doc.
 
-Acked-by: Roger Quadros <rogerq@ti.com>
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+---
+ Documentation/devicetree/bindings/mtd/partition.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-cheers,
--roger
-
-> ---
->  drivers/mtd/nand/omap_elm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/omap_elm.c b/drivers/mtd/nand/omap_elm.c
-> index 376bfe1..235ec79 100644
-> --- a/drivers/mtd/nand/omap_elm.c
-> +++ b/drivers/mtd/nand/omap_elm.c
-> @@ -574,5 +574,5 @@ module_platform_driver(elm_driver);
->  
->  MODULE_DESCRIPTION("ELM driver for BCH error correction");
->  MODULE_AUTHOR("Texas Instruments");
-> -MODULE_ALIAS("platform: elm");
-> +MODULE_ALIAS("platform:" DRIVER_NAME);
->  MODULE_LICENSE("GPL v2");
-> 
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+index 8c2aff7..7fa9c08 100644
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ b/Documentation/devicetree/bindings/mtd/partition.txt
+@@ -29,6 +29,7 @@ Optional properties:
+   partition should only be mounted read-only. This is usually used for flash
+   partitions containing early-boot firmware images or data which should not be
+   clobbered.
++- lock : Clear always locked after reset flag
+ 
+ Examples:
+ 
+-- 
+2.1.4
