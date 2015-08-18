@@ -1,14 +1,11 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRiuH-00011s-Ol
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 15:34:34 +0000
-Date: 18 Aug 2015 15:34:07 -0000
-Message-Id: <97366073dfe93b478f24e2fc30ca818326906e0a.1439911625.git.hramrach@gmail.com>
-In-Reply-To: <cover.1439911625.git.hramrach@gmail.com>
-References: <cover.1439911625.git.hramrach@gmail.com>
+ id 1ZRiuH-00011p-Px
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 15:34:35 +0000
+Date: 18 Aug 2015 15:34:06 -0000
+Message-Id: <cover.1439911625.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v3 2/5] mtd: mtdpart: Do not fail mtd probe when parsing
- partitions fails.
+Subject: [PATCH v3 0/5] improve mtdpart robustness
 To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Mark Rutland <mark.rutland@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
@@ -25,50 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Due to wrong assumption in ofpart ofpart fails on Exynos on SPI chips
-with no partitions because the subnode containing controller data
-confuses the ofpart parser.
+Hello,
 
-Thus compiling in ofpart support automatically fails probing any SPI NOR
-flash without partitions on Exynos.
+this patch series addresses
 
-Compiling in a partitioning scheme should not cause probe of otherwise
-valid device to fail.
+ - compiling in a mtd partitioning scheme may render a mtd device inacessible
+ - ofpart can fail when subnodes of mtd device node exist
+     eg. s3c64xx spi controller-data
 
-Remove that failure possibility when MTD_PARTITIONED_MASTER is set.
+v3 updates the last patch
+  - address possible memory leak
+  - use more generic name for partition node
 
-Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+Thanks
 
----
-v2:
+Michal
 
- - only allow partition parsing failure when MTD_PARTITIONED_MASTER is
-   set
----
- drivers/mtd/mtdpart.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Michal Suchanek (5):
+  mtd: mtdpart: add debug prints to partition parser.
+  mtd: mtdpart: Do not fail mtd probe when parsing partitions fails.
+  mtd: ofpart: update devicetree binding specification
+  mtd: ofpart: document the lock flag.
+  mtd: ofpart: move ofpart partitions to a dedicated dt node
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 31888c2..6eafbe9 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -774,10 +774,15 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
- 		if (ret > 0) {
- 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
- 			       ret, parser->name, master->name);
--			break;
-+			return ret;
-+		}
-+		if (!IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) && (ret < 0)) {
-+			pr_err("Error parsing %s partitions on %s\n",
-+			       parser->name, master->name);
-+			return ret;
- 		}
- 	}
--	return ret;
-+	return 0;
- }
- 
- int mtd_is_partition(const struct mtd_info *mtd)
+ .../devicetree/bindings/mtd/partition.txt          | 69 +++++++++++++---------
+ drivers/mtd/mtdpart.c                              | 14 ++++-
+ drivers/mtd/ofpart.c                               | 63 ++++++++++++++------
+ 3 files changed, 99 insertions(+), 47 deletions(-)
+
 -- 
 2.1.4
