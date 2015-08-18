@@ -1,8 +1,8 @@
-Received: from mail-bn1bon0132.outbound.protection.outlook.com
- ([157.56.111.132] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-bl2on0714.outbound.protection.outlook.com
+ ([2a01:111:f400:fc09::714] helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRXef-0000cs-AQ
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 03:33:42 +0000
+ id 1ZRXel-0000eE-Ds
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 03:33:48 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
@@ -11,10 +11,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v2 3/6] mtd: nand: gpmi: may use minimum required ecc for 744
- oobsize NAND
-Date: Mon, 17 Aug 2015 22:24:49 -0500
-Message-ID: <1439868289-24843-1-git-send-email-b45815@freescale.com>
+Subject: [PATCH v2 4/6] mtd: nand: gpmi: add GPMI NAND support for i.MX7D
+Date: Mon, 17 Aug 2015 22:24:55 -0500
+Message-ID: <1439868295-24890-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,99 +25,230 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-By default NAND driver will choose the highest ecc strength that oob
-could contain, in this case, for some 8K+744 NAND flash, the ecc
-strength will be up to 52bit, which beyonds the i.MX6QDL BCH capability
-(40bit).
-
-This patch allows the NAND driver try to use minimum required ecc
-strength if it failed to use the highest ecc, even without explicitly
-claiming "fsl,use-minimum-ecc" in dts.
+support GPMI NAND on i.MX7D
 
 Signed-off-by: Han Xu <b45815@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  | 14 +++++++-------
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 10 ++++++----
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 24 ++++++++++++++++++++----
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  7 +++++--
+ 4 files changed, 38 insertions(+), 17 deletions(-)
 
+diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+index 05bb91f..53e58bc 100644
+--- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
++++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+@@ -1,7 +1,7 @@
+ /*
+  * Freescale GPMI NAND Flash Driver
+  *
+- * Copyright 2008-2011 Freescale Semiconductor, Inc.
++ * Copyright 2008-2015 Freescale Semiconductor, Inc.
+  * Copyright 2008 Embedded Alley Solutions, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -54,7 +54,7 @@
+ #define MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0		11
+ #define MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)
+ #define BF_BCH_FLASH0LAYOUT0_ECC0(v, x)				\
+-	(GPMI_IS_MX6(x)					\
++	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))				\
+ 		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)	\
+ 			& MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0)	\
+ 		: (((v) << BP_BCH_FLASH0LAYOUT0_ECC0)		\
+@@ -65,7 +65,7 @@
+ #define MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14			\
+ 				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)
+ #define BF_BCH_FLASH0LAYOUT0_GF(v, x)				\
+-	((GPMI_IS_MX6(x) && ((v) == 14))			\
++	(((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))\
+ 		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)	\
+ 			& MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14)	\
+ 		: 0						\
+@@ -77,7 +77,7 @@
+ #define MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE	\
+ 			(0x3ff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
+ #define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v, x)				\
+-	(GPMI_IS_MX6(x)						\
++	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))	\
+ 		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)	\
+ 		: ((v) & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)		\
+ 	)
+@@ -96,7 +96,7 @@
+ #define MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN		11
+ #define MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)
+ #define BF_BCH_FLASH0LAYOUT1_ECCN(v, x)				\
+-	(GPMI_IS_MX6(x)					\
++	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))				\
+ 		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)	\
+ 			& MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN)	\
+ 		: (((v) << BP_BCH_FLASH0LAYOUT1_ECCN)		\
+@@ -107,7 +107,7 @@
+ #define MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14			\
+ 				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)
+ #define BF_BCH_FLASH0LAYOUT1_GF(v, x)				\
+-	((GPMI_IS_MX6(x) && ((v) == 14))			\
++	(((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))\
+ 		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)	\
+ 			& MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14)	\
+ 		: 0						\
+@@ -119,7 +119,7 @@
+ #define MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE	\
+ 			(0x3ff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
+ #define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v, x)				\
+-	(GPMI_IS_MX6(x)						\
++	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))	\
+ 		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)	\
+ 		: ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)		\
+ 	)
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 43fa16b..6b37414 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -1,7 +1,7 @@
+ /*
+  * Freescale GPMI NAND Flash Driver
+  *
+- * Copyright (C) 2008-2011 Freescale Semiconductor, Inc.
++ * Copyright (C) 2008-2015 Freescale Semiconductor, Inc.
+  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -971,7 +971,8 @@ int gpmi_extra_init(struct gpmi_nand_data *this)
+ 	struct nand_chip *chip = &this->nand;
+ 
+ 	/* Enable the asynchronous EDO feature. */
+-	if (GPMI_IS_MX6(this) && chip->onfi_version) {
++	if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
++			&& chip->onfi_version) {
+ 		int mode = onfi_get_async_timing_mode(chip);
+ 
+ 		/* We only support the timing mode 4 and mode 5. */
+@@ -1093,12 +1094,13 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
+ 	if (GPMI_IS_MX23(this)) {
+ 		mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
+ 		reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
+-	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this)) {
++	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this) ||
++			GPMI_IS_MX7(this)) {
+ 		/*
+ 		 * In the imx6, all the ready/busy pins are bound
+ 		 * together. So we only need to check chip 0.
+ 		 */
+-		if (GPMI_IS_MX6(this))
++		if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
+ 			chip = 0;
+ 
+ 		/* MX28 shares the same R/B register as MX6Q. */
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index dfd0ba1..01d24dd 100644
+index 01d24dd..0462103 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -136,7 +136,7 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+@@ -77,6 +77,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
+ 	.max_chain_delay = 12,
+ };
+ 
++static const struct gpmi_devdata gpmi_devdata_imx7d = {
++	.type = IS_MX7D,
++	.bch_max_ecc_strength = 62,
++	.max_chain_delay = 12,
++};
++
+ static irqreturn_t bch_irq(int irq, void *cookie)
+ {
+ 	struct gpmi_nand_data *this = cookie;
+@@ -575,6 +581,10 @@ static char *extra_clks_for_mx6q[GPMI_CLK_MAX] = {
+ 	"gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
+ };
+ 
++static char *extra_clks_for_mx7d[GPMI_CLK_MAX] = {
++	"gpmi_bch_apb",
++};
++
+ static int gpmi_get_clks(struct gpmi_nand_data *this)
+ {
+ 	struct resources *r = &this->resources;
+@@ -592,6 +602,8 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
+ 	/* Get extra clocks */
+ 	if (GPMI_IS_MX6(this))
+ 		extra_clks = extra_clks_for_mx6q;
++	if (GPMI_IS_MX7(this))
++		extra_clks = extra_clks_for_mx7d;
+ 	if (!extra_clks)
+ 		return 0;
+ 
+@@ -608,7 +620,7 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
+ 		r->clock[i] = clk;
+ 	}
+ 
+-	if (GPMI_IS_MX6(this))
++	if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
+ 		/*
+ 		 * Set the default value for the gpmi clock.
+ 		 *
+@@ -1869,7 +1881,7 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
+ 	 *  (1) the chip is imx6, and
+ 	 *  (2) the size of the ECC parity is byte aligned.
+ 	 */
+-	if (GPMI_IS_MX6(this) &&
++	if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) &&
+ 		((bch_geo->gf_len * bch_geo->ecc_strength) % 8) == 0) {
+ 		ecc->read_subpage = gpmi_ecc_read_subpage;
+ 		chip->options |= NAND_SUBPAGE_READ;
+@@ -1936,7 +1948,8 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto err_out;
+ 
+-	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
++	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) || GPMI_IS_MX7(this)\
++				? 2 : 1, NULL);
+ 	if (ret)
+ 		goto err_out;
+ 
+@@ -1980,7 +1993,10 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+ 	}, {
+ 		.compatible = "fsl,imx6sx-gpmi-nand",
+ 		.data = &gpmi_devdata_imx6sx,
+-	}, {}
++	}, {
++		.compatible = "fsl,imx7d-gpmi-nand",
++		.data = (void *)&gpmi_devdata_imx7d,
++	}
+ };
+ MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
+ 
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 544062f..1e105f1 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -1,7 +1,7 @@
+ /*
+  * Freescale GPMI NAND Flash Driver
   *
-  * We may have available oob space in this case.
-  */
--static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-+static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
- 	struct mtd_info *mtd = &this->mtd;
-@@ -145,7 +145,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 	unsigned int block_mark_bit_offset;
+- * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
++ * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
+  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -123,7 +123,8 @@ enum gpmi_type {
+ 	IS_MX23,
+ 	IS_MX28,
+ 	IS_MX6Q,
+-	IS_MX6SX
++	IS_MX6SX,
++	IS_MX7D
+ };
  
- 	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
--		return false;
-+		return -EINVAL;
+ struct gpmi_devdata {
+@@ -306,6 +307,8 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
+ #define GPMI_IS_MX28(x)		((x)->devdata->type == IS_MX28)
+ #define GPMI_IS_MX6Q(x)		((x)->devdata->type == IS_MX6Q)
+ #define GPMI_IS_MX6SX(x)	((x)->devdata->type == IS_MX6SX)
++#define GPMI_IS_MX7D(x)		((x)->devdata->type == IS_MX7D)
  
- 	switch (chip->ecc_step_ds) {
- 	case SZ_512:
-@@ -158,19 +158,19 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 		dev_err(this->dev,
- 			"unsupported nand chip. ecc bits : %d, ecc size : %d\n",
- 			chip->ecc_strength_ds, chip->ecc_step_ds);
--		return false;
-+		return -EINVAL;
- 	}
- 	geo->ecc_chunk_size = chip->ecc_step_ds;
- 	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
- 	if (!gpmi_check_ecc(this))
--		return false;
-+		return -EINVAL;
- 
- 	/* Keep the C >= O */
- 	if (geo->ecc_chunk_size < mtd->oobsize) {
- 		dev_err(this->dev,
- 			"unsupported nand chip. ecc size: %d, oob size : %d\n",
- 			chip->ecc_step_ds, mtd->oobsize);
--		return false;
-+		return -EINVAL;
- 	}
- 
- 	/* The default value, see comment in the legacy_set_geometry(). */
-@@ -242,7 +242,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 				+ ALIGN(geo->ecc_chunk_count, 4);
- 
- 	if (!this->swap_block_mark)
--		return true;
-+		return 0;
- 
- 	/* For bit swap. */
- 	block_mark_bit_offset = mtd->writesize * 8 -
-@@ -251,7 +251,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 
- 	geo->block_mark_byte_offset = block_mark_bit_offset / 8;
- 	geo->block_mark_bit_offset  = block_mark_bit_offset % 8;
--	return true;
-+	return 0;
- }
- 
- static int legacy_set_geometry(struct gpmi_nand_data *this)
-@@ -366,10 +366,12 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
- 
- int common_nfc_set_geometry(struct gpmi_nand_data *this)
- {
--	if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc")
--		&& set_geometry_by_ecc_info(this))
--		return 0;
--	return legacy_set_geometry(this);
-+
-+	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
-+				|| legacy_set_geometry(this))
-+		return set_geometry_by_ecc_info(this);
-+
-+	return 0;
- }
- 
- struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+ #define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
++#define GPMI_IS_MX7(x)		(GPMI_IS_MX7D(x))
+ #endif
 -- 
 1.9.1
