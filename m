@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRYlW-0001I3-0r
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 04:44:50 +0000
+ id 1ZRYnG-0002ch-QF
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 04:46:39 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v4] ubifs: make ubifs_[get|set]xattr atomic
-Date: Tue, 18 Aug 2015 12:38:36 +0800
-Message-ID: <1439872716-4810-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v5] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
+Date: Tue, 18 Aug 2015 12:40:25 +0800
+Message-ID: <1439872825-4988-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,79 +20,206 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit make the ubifs_[get|set]xattr protected by ui_mutex.
+To make ubifs support atime flexily, this commit introduces
+a Kconfig option named as UBIFS_ATIME_SUPPORT.
 
-Originally, there is a possibility that ubifs_getxattr to get
-a wrong value.
+With UBIFS_ATIME_SUPPORT=n:
+	ubifs keeps the full compatibility to no_atime from
+the start of ubifs.
+=================UBIFS_ATIME_SUPPORT=n=======================
+-o - no atime
+-o atime - no atime
+-o noatime - no atime
+-o relatime - no atime
+-o strictatime - no atime
+-o lazyatime - no atime
 
-  P1                                  P2
-----------                  	----------
-ubifs_getxattr                      ubifs_setxattr
-					- kfree()
-- memcpy()
-					- kmemdup()
-
-Then ubifs_getxattr() would get a non-sense data. To solve this
-problem, this commit make the xattr of ubifs_inode updated in
-atomic.
+With UBIFS_ATIME_SUPPORT=y:
+	ubifs supports the atime same with other main stream
+file systems.
+=================UBIFS_ATIME_SUPPORT=y=======================
+-o - default behavior (relatime currently)
+-o atime - atime support
+-o noatime - no atime support
+-o relatime - relative atime support
+-o strictatime - strict atime support
+-o lazyatime - lazy atime support
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
-	-v2
-		fix a dead lock in error flow
-	-v3
-		move kmemdup out of lock window.
- fs/ubifs/xattr.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+	-v2:
+		implement update_time for ubifs
+	-v3:
+		Oops, forgot to assign update_time for
+		ubifs_dir_inode_operations.
+	-v4:
+		drop the patch to change 'Y' to 'N' in
+		Kconfig
+	-v5:
+		simplify the warning in atime supporting
+ fs/ubifs/Kconfig | 11 +++++++++++
+ fs/ubifs/dir.c   |  3 +++
+ fs/ubifs/file.c  | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/super.c | 12 ++++++++++--
+ fs/ubifs/ubifs.h |  1 +
+ 5 files changed, 75 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 96f3448..99364ae 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -200,6 +200,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 	int err;
- 	struct ubifs_inode *host_ui = ubifs_inode(host);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
-+	void *buf = NULL;
- 	struct ubifs_budget_req req = { .dirtied_ino = 2,
- 		.dirtied_ino_d = ALIGN(size, 8) + ALIGN(host_ui->data_len, 8) };
+diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+index ba66d50..2eaae3e 100644
+--- a/fs/ubifs/Kconfig
++++ b/fs/ubifs/Kconfig
+@@ -35,3 +35,14 @@ config UBIFS_FS_ZLIB
+ 	default y
+ 	help
+ 	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
++
++config UBIFS_ATIME_SUPPORT
++	bool "Access time support" if UBIFS_FS
++	depends on UBIFS_FS
++	default n
++	help
++	  This option allows ubifs to support atime. -o strictatime is harmful to
++	  your flash, we don't suggest it. But relatime and lazytime are much
++	  better.
++
++	  If unsure, say 'N'
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 27060fc..8d93427 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1187,6 +1187,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
+ 	.getxattr    = ubifs_getxattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.removexattr = ubifs_removexattr,
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	.update_time = ubifs_update_time,
++#endif
+ };
  
-@@ -208,14 +209,17 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
+ const struct file_operations ubifs_dir_operations = {
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 35efc10..554d7b9 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1364,6 +1364,47 @@ static inline int mctime_update_needed(const struct inode *inode,
+ }
+ 
+ /**
++ * ubifs_update_time - update time of inode.
++ * @inode: inode to update
++ *
++ * This function updates time of the inode.
++ */
++int ubifs_update_time(struct inode *inode, struct timespec *time,
++			     int flags)
++{
++	struct ubifs_inode *ui = ubifs_inode(inode);
++	struct ubifs_info *c = inode->i_sb->s_fs_info;
++	struct ubifs_budget_req req = { .dirtied_ino = 1,
++			.dirtied_ino_d = ALIGN(ui->data_len, 8) };
++	int iflags = I_DIRTY_TIME;
++	int err, release;
++
++	err = ubifs_budget_space(c, &req);
++	if (err)
++		return err;
++
++	mutex_lock(&ui->ui_mutex);
++	if (flags & S_ATIME)
++		inode->i_atime = *time;
++	if (flags & S_VERSION)
++		inode_inc_iversion(inode);
++	if (flags & S_CTIME)
++		inode->i_ctime = *time;
++	if (flags & S_MTIME)
++		inode->i_mtime = *time;
++
++	if (!(inode->i_sb->s_flags & MS_LAZYTIME) || (flags & S_VERSION))
++		iflags |= I_DIRTY_SYNC;
++
++	release = ui->dirty;
++	__mark_inode_dirty(inode, iflags);
++	mutex_unlock(&ui->ui_mutex);
++	if (release)
++		ubifs_release_budget(c, &req);
++	return 0;
++}
++
++/**
+  * update_ctime - update mtime and ctime of an inode.
+  * @inode: inode to update
+  *
+@@ -1546,6 +1587,9 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
  	if (err)
  		return err;
+ 	vma->vm_ops = &ubifs_file_vm_ops;
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	file_accessed(file);
++#endif
+ 	return 0;
+ }
  
--	kfree(ui->data);
--	ui->data = kmemdup(value, size, GFP_NOFS);
--	if (!ui->data) {
-+	buf = kmemdup(value, size, GFP_NOFS);
-+	if (!buf) {
- 		err = -ENOMEM;
- 		goto out_free;
+@@ -1566,6 +1610,9 @@ const struct inode_operations ubifs_file_inode_operations = {
+ 	.getxattr    = ubifs_getxattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.removexattr = ubifs_removexattr,
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	.update_time = ubifs_update_time,
++#endif
+ };
+ 
+ const struct inode_operations ubifs_symlink_inode_operations = {
+@@ -1577,6 +1624,9 @@ const struct inode_operations ubifs_symlink_inode_operations = {
+ 	.getxattr    = ubifs_getxattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.removexattr = ubifs_removexattr,
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	.update_time = ubifs_update_time,
++#endif
+ };
+ 
+ const struct file_operations ubifs_file_operations = {
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 75e6f04..ab9e9b3 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -128,7 +128,10 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
+ 	if (err)
+ 		goto out_ino;
+ 
+-	inode->i_flags |= (S_NOCMTIME | S_NOATIME);
++	inode->i_flags |= S_NOCMTIME;
++#ifndef CONFIG_UBIFS_ATIME_SUPPORT
++	inode->i_flags |= S_NOATIME;
++#endif
+ 	set_nlink(inode, le32_to_cpu(ino->nlink));
+ 	i_uid_write(inode, le32_to_cpu(ino->uid));
+ 	i_gid_write(inode, le32_to_cpu(ino->gid));
+@@ -2138,7 +2141,12 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
+ 		if (err)
+ 			goto out_deact;
+ 		/* We do not support atime */
+-		sb->s_flags |= MS_ACTIVE | MS_NOATIME;
++		sb->s_flags |= MS_ACTIVE;
++#ifndef CONFIG_UBIFS_ATIME_SUPPORT
++		sb->s_flags |= MS_NOATIME;
++#else
++		ubifs_warn(c, "full atime support is enabled, which may wear out your flash faster");
++#endif
  	}
-+	mutex_lock(&ui->ui_mutex);
-+	kfree(ui->data);
-+	ui->data = buf;
- 	inode->i_size = ui->ui_size = size;
- 	ui->data_len = size;
-+	mutex_unlock(&ui->ui_mutex);
  
- 	mutex_lock(&host_ui->ui_mutex);
- 	host->i_ctime = ubifs_current_time(host);
-@@ -409,6 +413,7 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
- 	ubifs_assert(inode->i_size == ui->data_len);
- 	ubifs_assert(ubifs_inode(host)->xattr_size > ui->data_len);
+ 	/* 'fill_super()' opens ubi again so we must close it here */
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index de75902..216ba87 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1746,6 +1746,7 @@ int ubifs_calc_dark(const struct ubifs_info *c, int spc);
+ /* file.c */
+ int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
+ int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
++int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
  
-+	mutex_lock(&ui->ui_mutex);
- 	if (buf) {
- 		/* If @buf is %NULL we are supposed to return the length */
- 		if (ui->data_len > size) {
-@@ -423,6 +428,7 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
- 	err = ui->data_len;
- 
- out_iput:
-+	mutex_unlock(&ui->ui_mutex);
- 	iput(inode);
- out_unlock:
- 	kfree(xent);
+ /* dir.c */
+ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
 -- 
 1.8.4.2
