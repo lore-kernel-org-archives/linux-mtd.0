@@ -1,28 +1,24 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRVfI-0000qs-GJ
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 01:26:13 +0000
-Received: by pawq9 with SMTP id q9so22580382paw.3
- for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2015 18:25:51 -0700 (PDT)
-Date: Mon, 17 Aug 2015 18:24:44 -0700
+ id 1ZRVji-0002Vq-Q7
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 01:30:47 +0000
+Received: by pabyb7 with SMTP id yb7so120189829pab.0
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2015 18:30:25 -0700 (PDT)
+Date: Mon, 17 Aug 2015 18:30:19 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Cc: linux-mtd@lists.infradead.org, Viet Nga Dao <vndao@altera.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Rafa?? Mi??ecki <zajec5@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Graham Moore <grmoore@opensource.altera.com>
-Subject: Re: [PATCH] [PATCH v4] mtd:spi-nor: Add Altera Quad SPI Driver
-Message-ID: <20150818012444.GA17499@localhost>
-References: <1433316644-3748-1-git-send-email-vndao@altera.com>
- <CAN1oZWx1z0vq_8csMx3bs70ULfhR03CgX=NtTBj1HiLA8FdZjg@mail.gmail.com>
- <20150817160338.GN60523@google.com>
- <201508171953.23955.marex@denx.de>
+To: Jonas Gorski <jogo@openwrt.org>
+Cc: Zhiqiang Hou <B48286@freescale.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Mingkai.Hu@freescale.com,
+ Rafa?? Mi??ecki <zajec5@gmail.com>, mike@steroidmicros.com
+Subject: Re: [PATCH V6] mtd: m25p80: Modify the name of mtd_info
+Message-ID: <20150818013019.GB17499@localhost>
+References: <1439785625-36183-1-git-send-email-B48286@freescale.com>
+ <CAOiHx=mFoke2sTQGsjyNF+k8DFq4GAt9AgU8ednxn5Kx4R7SNw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201508171953.23955.marex@denx.de>
+In-Reply-To: <CAOiHx=mFoke2sTQGsjyNF+k8DFq4GAt9AgU8ednxn5Kx4R7SNw@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,19 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm not very helpful here, so hopefully Viet can be of more use:
+On Mon, Aug 17, 2015 at 06:27:36PM +0200, Jonas Gorski wrote:
+> On Mon, Aug 17, 2015 at 6:27 AM, Zhiqiang Hou <B48286@freescale.com> wrote:
+> > From: Hou Zhiqiang <B48286@freescale.com>
+> >
+> > Set the mtd_info's name to a fixed one, so spi flash layouts can
+> > be specified by "mtdparts=..." in kernel cmdline, because the
+> > cmdlinepart's parser will match the name of mtd_info with the name
+> > given in cmdline.
+> >
+> > So far, if DT is used, the mtd_info's name will be set to the name
+> > of spi->dev. It includes spi_master->bus_num, and the bus_num may
+> > be dynamically allocated. So, replace the component bus_num with
+> > the physical address of spi controller.
+> 
+> You can easily enforce fixed bus numers in linux using aliases in the
+> DT, this is supported
+> by the spi core since v3.9 or so.
 
-On Mon, Aug 17, 2015 at 07:53:23PM +0200, Marek Vasut wrote:
-> On Monday, August 17, 2015 at 06:03:38 PM, Brian Norris wrote:
-> Also, I cannot find any documentation for this IP block even if I search through 
-> Quartus/QSys, is there any proper documentation available anywhere?
+Interesting. Thanks for the suggestion. I haven't verified it myself,
+but if this is a workable solution, then I'd much prefer that to
+fiddling with the name here. So, tentative NAK.
 
-I never found proper documentation, but I didn't look too hard. I've
-mostly been going off of Viet's comments and code.
+> Also won't this change break it for everyone relying on the old naming
+> in their commandline mtdparts?
 
-But FWIW, I did find some relevant info for the peculiar Altera EPCQ
-flash here:
-
-https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/hb/cfg/cfg_cf52012.pdf
+Yes, and that's been my comment on the first several versions. I didn't
+have time to bother repeating it on these latter revisions.
 
 Brian
