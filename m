@@ -1,13 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRiuH-00011o-PM
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 15:34:35 +0000
-Date: 18 Aug 2015 15:34:08 -0000
-Message-Id: <e47db0c8eeaeb11353bcb2f4dcd138e813c3ecd7.1439911625.git.hramrach@gmail.com>
+ id 1ZRiuL-00013B-Kq
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 15:34:38 +0000
+Date: 18 Aug 2015 15:34:07 -0000
+Message-Id: <5b636f504e32c9fe83df22694656075f4f45c710.1439911625.git.hramrach@gmail.com>
 In-Reply-To: <cover.1439911625.git.hramrach@gmail.com>
 References: <cover.1439911625.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v3 3/5] mtd: ofpart: update devicetree binding specification
+Subject: [PATCH v3 1/5] mtd: mtdpart: add debug prints to partition parser.
 To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Mark Rutland <mark.rutland@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
@@ -24,118 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To avoid conflict with other drivers using subnodes of the mtd device
-create only one ofpart-specific node rather than any number of
-arbitrary partition subnodes.
+The probe of a mtd device can fail when a partition parser returns
+error. The failure due to partition parsing can be quite mysterious when
+multiple partitioning schemes are comiled in and any of them can fail
+the probe.
+
+Add debug prints which show what parsers were tried and what they
+returned.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 ---
-v3:
+v2:
 
- - rename DT node ofpart -> partitions
+ - reformat debug messages
 ---
- .../devicetree/bindings/mtd/partition.txt          | 68 +++++++++++++---------
- 1 file changed, 40 insertions(+), 28 deletions(-)
+ drivers/mtd/mtdpart.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-index 8e5557d..8c2aff7 100644
---- a/Documentation/devicetree/bindings/mtd/partition.txt
-+++ b/Documentation/devicetree/bindings/mtd/partition.txt
-@@ -4,10 +4,16 @@ Partitions can be represented by sub-nodes of an mtd device. This can be used
- on platforms which have strong conventions about which portions of a flash are
- used for what purposes, but which don't use an on-flash partition table such
- as RedBoot.
-+
-+The partition table should be partitions subnode of the mtd node. Partitions are
-+defined in subnodes of the partitions node.
-+
-+For backwards compatibility partitions as direct subnodes of the mtd device are
-+supported. This use is discouraged.
- NOTE: if the sub-node has a compatible string, then it is not a partition.
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index cafdb88..31888c2 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -759,12 +759,17 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 		types = default_mtd_part_types;
  
--#address-cells & #size-cells must both be present in the mtd device. There are
--two valid values for both:
-+#address-cells & #size-cells must both be present in the partitions subnode of the
-+mtd device. There are two valid values for both:
- <1>: for partitions that require a single 32-bit cell to represent their
-      size/address (aka the value is below 4 GiB)
- <2>: for partitions that require two 32-bit cells to represent their
-@@ -28,44 +34,50 @@ Examples:
- 
- 
- flash@0 {
--	#address-cells = <1>;
--	#size-cells = <1>;
-+	partitions {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
- 
--	partition@0 {
--		label = "u-boot";
--		reg = <0x0000000 0x100000>;
--		read-only;
--	};
-+		partition@0 {
-+			label = "u-boot";
-+			reg = <0x0000000 0x100000>;
-+			read-only;
-+		};
- 
--	uimage@100000 {
--		reg = <0x0100000 0x200000>;
-+		uimage@100000 {
-+			reg = <0x0100000 0x200000>;
-+		};
- 	};
- };
- 
- flash@1 {
--	#address-cells = <1>;
--	#size-cells = <2>;
-+	partitions {
-+		#address-cells = <1>;
-+		#size-cells = <2>;
- 
--	/* a 4 GiB partition */
--	partition@0 {
--		label = "filesystem";
--		reg = <0x00000000 0x1 0x00000000>;
-+		/* a 4 GiB partition */
-+		partition@0 {
-+			label = "filesystem";
-+			reg = <0x00000000 0x1 0x00000000>;
-+		};
- 	};
- };
- 
- flash@2 {
--	#address-cells = <2>;
--	#size-cells = <2>;
-+	partitions {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
- 
--	/* an 8 GiB partition */
--	partition@0 {
--		label = "filesystem #1";
--		reg = <0x0 0x00000000 0x2 0x00000000>;
--	};
-+		/* an 8 GiB partition */
-+		partition@0 {
-+			label = "filesystem #1";
-+			reg = <0x0 0x00000000 0x2 0x00000000>;
-+		};
- 
--	/* a 4 GiB partition */
--	partition@200000000 {
--		label = "filesystem #2";
--		reg = <0x2 0x00000000 0x1 0x00000000>;
-+		/* a 4 GiB partition */
-+		partition@200000000 {
-+			label = "filesystem #2";
-+			reg = <0x2 0x00000000 0x1 0x00000000>;
-+		};
- 	};
- };
+ 	for ( ; ret <= 0 && *types; types++) {
++		pr_debug("%s: parsing partitions %s\n", master->name, *types);
+ 		parser = get_partition_parser(*types);
+ 		if (!parser && !request_module("%s", *types))
+ 			parser = get_partition_parser(*types);
++		pr_debug("%s: got parser %s\n", master->name,
++			 parser ? parser->name : NULL);
+ 		if (!parser)
+ 			continue;
+ 		ret = (*parser->parse_fn)(master, pparts, data);
++		pr_debug("%s: parser %s: %i\n",
++			 master->name, parser->name, ret);
+ 		put_partition_parser(parser);
+ 		if (ret > 0) {
+ 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
 -- 
 2.1.4
