@@ -1,26 +1,25 @@
-Received: from mail-bn1on0056.outbound.protection.outlook.com ([157.56.110.56]
- helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-bl2on0055.outbound.protection.outlook.com ([65.55.169.55]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRmEw-0004Em-NB
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 19:08:07 +0000
-Message-ID: <55D3819D.1040009@opensource.altera.com>
-Date: Tue, 18 Aug 2015 14:03:57 -0500
+ id 1ZRmSN-00030c-1b
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 19:21:59 +0000
+Message-ID: <55D384D6.9040303@opensource.altera.com>
+Date: Tue, 18 Aug 2015 14:17:42 -0500
 From: Graham Moore <grmoore@opensource.altera.com>
 MIME-Version: 1.0
-To: Vikas MANOCHA <vikas.manocha@st.com>
+To: vikas <vikas.manocha@st.com>
 CC: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>, Alan Tull <atull@opensource.altera.com>,
  Brian Norris <computersforpeace@gmail.com>, David Woodhouse
  <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@opensource.altera.com>, "Yves
  Vandervennet" <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
  <devicetree@vger.kernel.org>
-Subject: Re: [PATCH V7 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
+Subject: Re: [PATCH V7 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
 References: <1439522892-7524-1-git-send-email-marex@denx.de>
- <55D29A0B.20408@st.com> <201508180647.30119.marex@denx.de>
- <0B80CAC4-70B3-4557-8D6E-4CA84AF9CEA2@st.com>
-In-Reply-To: <0B80CAC4-70B3-4557-8D6E-4CA84AF9CEA2@st.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+ <1439522892-7524-2-git-send-email-marex@denx.de> <55D299CD.2070809@st.com>
+In-Reply-To: <55D299CD.2070809@st.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,40 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi Vikas,
 
-On 08/18/2015 12:48 AM, Vikas MANOCHA wrote:
+On 08/17/2015 09:34 PM, vikas wrote:
+ > Hi Marek,
+ >
 
 [...]
 
->>>> +Required properties:
->>>> +- compatible : Should be "cdns,qspi-nor".
->>>> +- reg : Contains two entries, each of which is a tuple consisting of a
->>>> +    physical address and length.  The first entry is the address and
->>>> +    length of the controller register set.  The second entry is the
->>>> +    address and length of the QSPI Controller data area.
->>>
->>> "Controller data area", i think it means mapped NOR Flash address ?
->>
->> Probably ; Graham ?
->>
->>> If yes, it would be more clear with "Physical base address & size of NOR
->>> Flash".
->>
->> This is the Direct mode thing, correct ? We don't support this, so I think
->> we should drop this bit altogether and keep only one single address in this
->> field.
+ >> +
+>> +/* Operation timeout value */
+>> +#define CQSPI_TIMEOUT_MS                       500
+>> +#define CQSPI_READ_TIMEOUT_MS                  10
 >
-> No it's not.
+> please add some comment about the timeouts value selection.
 >
 
-It's the location of the SRAM fifo.  Also direct mode location I think, 
-if that were ever used.
+I wish I could comment, but I don't know the origin of these values. 
+The 500 ms value is probably just "a very long time".
 
-The size is determined by a configuration parameter during system 
-design.  On Altera Cyclone5 the size is really big compared to SRAM 
-fifo.  I don't know why, maybe some hw engineer thought it would be 
-better to have a large size in case direct mode was used.
+[...]
+
+>> +
+>> +       cqspi->irq_mask = CQSPI_IRQ_MASK_RD;
+>> +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
+>
+> here interrupt mask is being configured for every read, better would be to move it in init.
+>
+
+[...]
+
+>> +
+>> +       cqspi->irq_mask = CQSPI_IRQ_MASK_WR;
+>> +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
+>
+> same like read, it should be moved to init.
+>
+
+It uses different masks for read and write
+
+[...]
 
 BR,
 Graham
