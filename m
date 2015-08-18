@@ -6,9 +6,9 @@ To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
 Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Mathieu Olivari <mathieu@codeaurora.org>
-Subject: [PATCH v4 2/3] ARM: qcom: add SMEM device node to IPQ806x dts
-Date: Tue, 18 Aug 2015 14:04:19 -0700
-Message-Id: <1439931860-7473-3-git-send-email-mathieu@codeaurora.org>
+Subject: [PATCH v4 1/3] ARM: qcom: add SFPB nodes to IPQ806x dts
+Date: Tue, 18 Aug 2015 14:04:18 -0700
+Message-Id: <1439931860-7473-2-git-send-email-mathieu@codeaurora.org>
 In-Reply-To: <1439931860-7473-1-git-send-email-mathieu@codeaurora.org>
 References: <1439931860-7473-1-git-send-email-mathieu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,43 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SMEM is used on IPQ806x to store various board related information such
-as boot device and flash partition layout. We'll declare it as a device
-so we can make use of it thanks to the new SMEM soc driver.
+Add one new node to the ipq806x.dtsi file to declare & register the
+hardware spinlock devices. This mechanism is required to be used by
+other drivers such as SMEM.
 
 Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
 ---
-
-Notes:
-    v2:
-    *Rename "smem" tag into "smem_region"
-
- arch/arm/boot/dts/qcom-ipq8064.dtsi | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/qcom-ipq8064.dtsi | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-index 8d366ae..9834c94 100644
+index 9f727d8..8d366ae 100644
 --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
 +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-@@ -55,7 +55,7 @@
- 			no-map;
+@@ -329,5 +329,16 @@
+ 			#reset-cells = <1>;
  		};
  
--		smem@41000000 {
-+		smem_region: smem@41000000 {
- 			reg = <0x41000000 0x200000>;
- 			no-map;
- 		};
-@@ -341,4 +341,10 @@
- 
- 		#hwlock-cells = <1>;
- 	};
-+
-+	smem {
-+		compatible = "qcom,smem";
-+		memory-region = <&smem_region>;
-+		hwlocks = <&sfpb_mutex 3>;
++		sfpb_mutex_block: syscon@1200600 {
++			compatible = "syscon";
++			reg = <0x01200600 0x100>;
++		};
 +	};
++
++	sfpb_mutex: sfpb-mutex {
++		compatible = "qcom,sfpb-mutex";
++		syscon = <&sfpb_mutex_block 4 4>;
++
++		#hwlock-cells = <1>;
+ 	};
  };
 -- 
 2.1.4
