@@ -1,12 +1,23 @@
-From: Mike Scherban <m-scherban@ti.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <dwmw2@infradead.org>, <m-karicheri2@ti.com>, Mike Scherban
- <m-scherban@ti.com>
-Subject: [PATCH] mtd: davinci-nand: correct empty sector bit flips
-Date: Tue, 18 Aug 2015 15:23:46 -0500
-Message-ID: <1439929426-12284-1-git-send-email-m-scherban@ti.com>
+Message-ID: <55D39319.70108@st.com>
+Date: Tue, 18 Aug 2015 13:18:33 -0700
+From: vikas <vikas.manocha@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: Graham Moore <grmoore@opensource.altera.com>
+CC: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@opensource.altera.com>, Yves
+ Vandervennet <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH V7 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+References: <1439522892-7524-1-git-send-email-marex@denx.de>
+ <55D29A0B.20408@st.com> <201508180647.30119.marex@denx.de>
+ <0B80CAC4-70B3-4557-8D6E-4CA84AF9CEA2@st.com>
+ <55D3819D.1040009@opensource.altera.com>
+In-Reply-To: <55D3819D.1040009@opensource.altera.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,54 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently empty page bit flips are not corrected and report 0 errors.
-If there happens to be a bit flip, this will cause UBIFS to fail to
-mount with a "corruption in empty space" error. The only way to recover
-from this is to reflash the NAND partition.
+Hi,
 
-This changes the empty page handling to count the number of bit flips
-and correct them if they are under or equal to the ECC strength. UBI
-will then resolve the mounting error without requiring a reflash.
+On 08/18/2015 12:03 PM, Graham Moore wrote:
+> Hi all,
+> 
+> On 08/18/2015 12:48 AM, Vikas MANOCHA wrote:
+> 
+> [...]
+> 
+>>>>> +Required properties:
+>>>>> +- compatible : Should be "cdns,qspi-nor".
+>>>>> +- reg : Contains two entries, each of which is a tuple consisting of a
+>>>>> +    physical address and length.  The first entry is the address and
+>>>>> +    length of the controller register set.  The second entry is the
+>>>>> +    address and length of the QSPI Controller data area.
+>>>>
+>>>> "Controller data area", i think it means mapped NOR Flash address ?
+>>>
+>>> Probably ; Graham ?
+>>>
+>>>> If yes, it would be more clear with "Physical base address & size of NOR
+>>>> Flash".
+>>>
+>>> This is the Direct mode thing, correct ? We don't support this, so I think
+>>> we should drop this bit altogether and keep only one single address in this
+>>> field.
+>>
+>> No it's not.
+>>
+> 
+> It's the location of the SRAM fifo.  Also direct mode location I think, 
+> if that were ever used.
 
-Signed-off-by: Mike Scherban <m-scherban@ti.com>
----
- drivers/mtd/nand/davinci_nand.c |   21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+Hmm...It is the base address of NOR flash. SRAM is not memory mapped.
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index feb6d18..8189d8a 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -316,12 +316,27 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
- 	unsigned num_errors, corrected;
- 	unsigned long timeo;
- 
--	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
--	for (i = 0; i < 10; i++) {
-+	/* All bytes 0xff?  It's an erased page;
-+	 * Ignore its ECC, but check for bit flips.
-+	 */
-+	for (i = 0; i < info->chip.ecc.bytes; i++) {
- 		if (ecc_code[i] != 0xff)
- 			goto compare;
- 	}
--	return 0;
-+
-+	/* Count bit flips in empty space. */
-+	for (i = 0, corrected = 0; i < info->chip.ecc.size; i++)
-+		corrected += hweight8(~data[i]);
-+
-+	/* If bit flips are above the ecc strength produce an error */
-+	if (corrected > info->chip.ecc.strength)
-+		return -EIO;
-+
-+	/* If there are bit flips correct the data */
-+	if (corrected)
-+		memset(data, 0xff, info->chip.ecc.size);
-+
-+	return corrected;
- 
- compare:
- 	/* Unpack ten bytes into eight 10 bit values.  We know we're
--- 
-1.7.9.5
+> 
+> The size is determined by a configuration parameter during system 
+> design.  On Altera Cyclone5 the size is really big compared to SRAM 
+> fifo.  I don't know why, maybe some hw engineer thought it would be 
+> better to have a large size in case direct mode was used.
+
+my comment is about second parameter of property "reg" which is NOR flash address, so above explanation does not
+make sense for it.
+Also in direct mode, sram does not come into play.
+
+Rgds,
+Vikas
+
+> 
+> BR,
+> Graham
+> .
+> 
