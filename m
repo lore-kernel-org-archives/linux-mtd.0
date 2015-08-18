@@ -1,20 +1,16 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRcdY-0008G8-FX
- for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 08:52:52 +0000
-Message-ID: <1439887948.31419.118.camel@gmail.com>
-Subject: Re: [PATCH] mkfs.ubifs: remove the check for UBIFS_MAX_LEB_SZ
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- richard.weinberger@gmail.com,  computersforpeace@gmail.com
-Cc: linux-mtd@lists.infradead.org
-Date: Tue, 18 Aug 2015 11:52:28 +0300
-In-Reply-To: <1439873555-5352-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-References: <1439873555-5352-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1ZRck1-0002gl-Tr
+ for linux-mtd@lists.infradead.org; Tue, 18 Aug 2015 08:59:35 +0000
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: ezequiel.garcia@free-electrons.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, robert.jarzmik@free.fr
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: pxa3xx_nand: add a default chunk size
+Date: Tue, 18 Aug 2015 10:59:10 +0200
+Message-Id: <1439888350-9253-1-git-send-email-antoine.tenart@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2015-08-18 at 12:52 +0800, Dongsheng Yang wrote:
-> There is a commit 92ed6c0 to increase UBIFS_MAX_LEB_SZ
-> to 2MiB. But recently, as the leb size become larger and
-> larger, 2MiB is not a suitable limit any more.
-> 
-> Then remove this check in mkfs.ubifs
-> 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> ---
-> NOTE:
-> 	I am not sure the reason why we have to
-> limit the leb size in mkfs.ubifs. Because
-> I did not find any reason for it, I send
-> this patch out. It's very possible I am
-> mising something.
+When keeping the configuration set by the bootloader (by using
+the marvell,nand-keep-config property), the pxa3xx_nand_detect_config()
+function is called and set the chunk size to 512 as a default value if
+NDCR_PAGE_SZ is not set.
 
-Well, this is sanity check for the user input. If you accidentally
-added few zeroes, we want to spot this and inform you, and you may
-appreciate that we did not just created a bugus image for you. That's
-the idea.
+In the other case, when not keeping the bootloader configuration, no
+chunk size is set. Fix this by adding a default chunk size of 512.
 
-Another point is that UBIFS and UBI reads eraseblocks entirely into
-memory from time to time, e.g., when scanning the journal (UBIFS) or
-when doing wear-levelling (UBI). Too large eraseblocks will affect the
-UBI/UBIFS drivers negatively - the latency may increase significantly
-(thing reading eraseblock, modifying, writing it), as well as memory
-consumption.
+Fixes: 70ed85232a93 ("mtd: nand: pxa3xx: Introduce multiple page I/O
+support")
 
-I personally like to be strict, and if I am not sure about something, I
-put limits, assuming that others may later change the limits.
+Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+Acked-by: Robert Jarzmik <robert.jarzmik@free>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-That said, I'd prefer to increase the limit instead of removing it
-altogether. I suggest to make it reasonably large, so that it suits
-your purposes.
-
-Artem.
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 1259cc558ce9..5465fa439c9e 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1473,6 +1473,9 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
+ 		goto KEEP_CONFIG;
+ 
++	/* Set a default chunk size */
++	info->chunk_size = 512;
++
+ 	ret = pxa3xx_nand_sensing(info);
+ 	if (ret) {
+ 		dev_info(&info->pdev->dev, "There is no chip on cs %d!\n",
+-- 
+2.5.0
