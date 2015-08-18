@@ -1,5 +1,5 @@
-Message-ID: <55D39319.70108@st.com>
-Date: Tue, 18 Aug 2015 13:18:33 -0700
+Message-ID: <55D39722.8030506@st.com>
+Date: Tue, 18 Aug 2015 13:35:46 -0700
 From: vikas <vikas.manocha@st.com>
 MIME-Version: 1.0
 To: Graham Moore <grmoore@opensource.altera.com>
@@ -9,13 +9,12 @@ CC: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
  <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@opensource.altera.com>, Yves
  Vandervennet <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
  <devicetree@vger.kernel.org>
-Subject: Re: [PATCH V7 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
+Subject: Re: [PATCH V7 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
 References: <1439522892-7524-1-git-send-email-marex@denx.de>
- <55D29A0B.20408@st.com> <201508180647.30119.marex@denx.de>
- <0B80CAC4-70B3-4557-8D6E-4CA84AF9CEA2@st.com>
- <55D3819D.1040009@opensource.altera.com>
-In-Reply-To: <55D3819D.1040009@opensource.altera.com>
+ <1439522892-7524-2-git-send-email-marex@denx.de> <55D299CD.2070809@st.com>
+ <55D384D6.9040303@opensource.altera.com>
+In-Reply-To: <55D384D6.9040303@opensource.altera.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,54 +28,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On 08/18/2015 12:03 PM, Graham Moore wrote:
-> Hi all,
+
+On 08/18/2015 12:17 PM, Graham Moore wrote:
+> Hi Vikas,
 > 
-> On 08/18/2015 12:48 AM, Vikas MANOCHA wrote:
+> On 08/17/2015 09:34 PM, vikas wrote:
+>  > Hi Marek,
+>  >
 > 
 > [...]
 > 
->>>>> +Required properties:
->>>>> +- compatible : Should be "cdns,qspi-nor".
->>>>> +- reg : Contains two entries, each of which is a tuple consisting of a
->>>>> +    physical address and length.  The first entry is the address and
->>>>> +    length of the controller register set.  The second entry is the
->>>>> +    address and length of the QSPI Controller data area.
->>>>
->>>> "Controller data area", i think it means mapped NOR Flash address ?
->>>
->>> Probably ; Graham ?
->>>
->>>> If yes, it would be more clear with "Physical base address & size of NOR
->>>> Flash".
->>>
->>> This is the Direct mode thing, correct ? We don't support this, so I think
->>> we should drop this bit altogether and keep only one single address in this
->>> field.
+>  >> +
+>>> +/* Operation timeout value */
+>>> +#define CQSPI_TIMEOUT_MS                       500
+>>> +#define CQSPI_READ_TIMEOUT_MS                  10
 >>
->> No it's not.
+>> please add some comment about the timeouts value selection.
 >>
 > 
-> It's the location of the SRAM fifo.  Also direct mode location I think, 
-> if that were ever used.
+> I wish I could comment, but I don't know the origin of these values. 
+> The 500 ms value is probably just "a very long time".
 
-Hmm...It is the base address of NOR flash. SRAM is not memory mapped.
+In my opinion we should have some logical value based on some worst timing like read/write sector.
+I let you decide on this point.
 
 > 
-> The size is determined by a configuration parameter during system 
-> design.  On Altera Cyclone5 the size is really big compared to SRAM 
-> fifo.  I don't know why, maybe some hw engineer thought it would be 
-> better to have a large size in case direct mode was used.
+> [...]
+> 
+>>> +
+>>> +       cqspi->irq_mask = CQSPI_IRQ_MASK_RD;
+>>> +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
+>>
+>> here interrupt mask is being configured for every read, better would be to move it in init.
+>>
+> 
+> [...]
+> 
+>>> +
+>>> +       cqspi->irq_mask = CQSPI_IRQ_MASK_WR;
+>>> +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
+>>
+>> same like read, it should be moved to init.
+>>
+> 
+> It uses different masks for read and write
 
-my comment is about second parameter of property "reg" which is NOR flash address, so above explanation does not
-make sense for it.
-Also in direct mode, sram does not come into play.
+Yeah i saw it but why not to OR these values & configure for once in init. 
+After that in ISR, check for the interrupt source & take action accordingly. I think other drivers also use it this way.
 
 Rgds,
 Vikas
 
 > 
+> [...]
+> 
 > BR,
 > Graham
+> 
 > .
 > 
