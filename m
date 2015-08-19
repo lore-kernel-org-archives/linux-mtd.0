@@ -1,21 +1,25 @@
-Received: from mail-pa0-f43.google.com ([209.85.220.43])
+Received: from mail-bl2on0148.outbound.protection.outlook.com ([65.55.169.148]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZS07j-00062M-CH
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 09:57:35 +0000
-Received: by pacgr6 with SMTP id gr6so154254488pac.2
- for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2015 02:57:14 -0700 (PDT)
-From: Jagan Teki <jteki@openedev.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Jagan Teki <jteki@openedev.com>,
- Hou Zhiqiang <B48286@freescale.com>,
- "Mingkai.Hu" <Mingkai.Hu@freescale.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status register support
-Date: Wed, 19 Aug 2015 15:26:45 +0530
-Message-Id: <1439978205-6092-3-git-send-email-jteki@openedev.com>
-In-Reply-To: <1439978205-6092-1-git-send-email-jteki@openedev.com>
+ id 1ZS2En-0000xm-Vl
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 12:13:02 +0000
+From: Hou Zhiqiang <B48286@freescale.com>
+To: Jagan Teki <jteki@openedev.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Hu Vincent
+ <Mingkai.Hu@freescale.com>, David Woodhouse <dwmw2@infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>
+Subject: RE: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status register
+ support
+Date: Wed, 19 Aug 2015 12:12:38 +0000
+Message-ID: <CY1PR0301MB07803A969EC23D39E0FC9F7A8B670@CY1PR0301MB0780.namprd03.prod.outlook.com>
 References: <1439978205-6092-1-git-send-email-jteki@openedev.com>
+ <1439978205-6092-3-git-send-email-jteki@openedev.com>
+In-Reply-To: <1439978205-6092-3-git-send-email-jteki@openedev.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,100 +29,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The clear flag status register operation was required by Micron
-SPI-NOR chips, which support FSR. And if an error bit of FSR
-have been set like protection, voltage, erase, and program,
-it must be cleared by the clear FSR operation.
-
-Signed-off-by: Jagan Teki <jteki@openedev.com>
-Cc: Hou Zhiqiang <B48286@freescale.com>
-Cc: Mingkai.Hu <Mingkai.Hu@freescale.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 35 +++++++++++++++++++++++++++++++----
- include/linux/mtd/spi-nor.h   |  9 +++++++++
- 2 files changed, 40 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f954d03..c5c472d5 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -100,6 +100,28 @@ static int read_fsr(struct spi_nor *nor)
- }
- 
- /*
-+ * Read the clear flag status register.
-+ * The clear flag status register operation was required by Micron
-+ * SPI-NOR chips, which support FSR. And if an error bit of FSR
-+ * have been set like protection, voltage, erase, and program,
-+ * it must be cleared by the clear FSR operation.
-+ * Returns zero for FSR bits cleared and negative if error occurred.
-+ */
-+static int read_cfsr(struct spi_nor *nor)
-+{
-+	int ret;
-+	u8 val;
-+
-+	ret = nor->read_reg(nor, SPINOR_OP_RDCFSR, &val, 1);
-+	if (ret < 0) {
-+		pr_err("error %d reading CFSR\n", ret);
-+		return ret;
-+	}
-+
-+	return val;
-+}
-+
-+/*
-  * Read configuration register, returning its value in the
-  * location. Return the configuration register value.
-  * Returns negative if error occured.
-@@ -209,10 +231,15 @@ static inline int spi_nor_sr_ready(struct spi_nor *nor)
- static inline int spi_nor_fsr_ready(struct spi_nor *nor)
- {
- 	int fsr = read_fsr(nor);
--	if (fsr < 0)
--		return fsr;
--	else
--		return fsr & FSR_READY;
-+	if (fsr & FSR_ERR_MASK) {
-+		pr_err("flag status(0x%x) error occured\n", fsr);
-+		int cfsr = read_cfsr(nor);
-+		if (cfsr < 0)
-+			return cfsr;
-+		return -1;
-+	}
-+
-+	return fsr & FSR_READY;
- }
- 
- static int spi_nor_ready(struct spi_nor *nor)
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index c5a58c4..36c1681 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -35,6 +35,7 @@
- #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
- #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
- #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
-+#define SPINOR_OP_RDCFSR	0x50	/* Read clear flag status register */
- 
- /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
- #define SPINOR_OP_READ4		0x13	/* Read data bytes (low frequency) */
-@@ -74,6 +75,14 @@
- /* Enhanced Volatile Configuration Register bits */
- #define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
- 
-+/* Flag Status Register Error bits */
-+#define FSR_ERR_PROT		0x2	/* Protection */
-+#define FSR_ERR_VOLT		0x8	/* Voltage on Vpp */
-+#define FSR_ERR_PROG		0x10	/* Program operation */
-+#define FSR_ERR_ERASE		0x20	/* Erase operation */
-+#define FSR_ERR_MASK		(FSR_ERR_PROT | FSR_ERR_VOLT | \
-+				FSR_ERR_PROG | FSR_ERR_ERASE)
-+
- /* Flag Status Register bits */
- #define FSR_READY		0x80
- 
--- 
-1.9.1
+SGkgSmFnYW4sDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmFnYW4g
+VGVraSBbbWFpbHRvOmp0ZWtpQG9wZW5lZGV2LmNvbV0NCj4gU2VudDogMjAxNcTqONTCMTnI1SAx
+Nzo1Nw0KPiBUbzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gQ2M6IGxpbnV4LWtl
+cm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEphZ2FuIFRla2k7IEhvdSBaaGlxaWFuZy1CNDgyODY7IEh1
+DQo+IE1pbmdrYWktQjIxMjg0OyBEYXZpZCBXb29kaG91c2U7IEJyaWFuIE5vcnJpcw0KPiBTdWJq
+ZWN0OiBbUEFUQ0ggMy8zXSBtdGQ6IHNwaS1ub3I6IHNmOiBBZGQgY2xlYXIgZmxhZyBzdGF0dXMg
+cmVnaXN0ZXINCj4gc3VwcG9ydA0KPiANCj4gVGhlIGNsZWFyIGZsYWcgc3RhdHVzIHJlZ2lzdGVy
+IG9wZXJhdGlvbiB3YXMgcmVxdWlyZWQgYnkgTWljcm9uIFNQSS1OT1INCj4gY2hpcHMsIHdoaWNo
+IHN1cHBvcnQgRlNSLiBBbmQgaWYgYW4gZXJyb3IgYml0IG9mIEZTUiBoYXZlIGJlZW4gc2V0IGxp
+a2UNCj4gcHJvdGVjdGlvbiwgdm9sdGFnZSwgZXJhc2UsIGFuZCBwcm9ncmFtLCBpdCBtdXN0IGJl
+IGNsZWFyZWQgYnkgdGhlIGNsZWFyDQo+IEZTUiBvcGVyYXRpb24uDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBKYWdhbiBUZWtpIDxqdGVraUBvcGVuZWRldi5jb20+DQo+IENjOiBIb3UgWmhpcWlhbmcg
+PEI0ODI4NkBmcmVlc2NhbGUuY29tPg0KPiBDYzogTWluZ2thaS5IdSA8TWluZ2thaS5IdUBmcmVl
+c2NhbGUuY29tPg0KPiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPg0K
+PiBDYzogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+DQo+IC0tLQ0K
+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAzNSArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrLS0tLQ0KPiAgaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oICAgfCAgOSAr
+KysrKysrKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgNDAgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlv
+bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBi
+L2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLQ0KPiBub3IuYyBpbmRleCBmOTU0ZDAzLi5jNWM0NzJk
+NSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gKysrIGIv
+ZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gQEAgLTEwMCw2ICsxMDAsMjggQEAgc3Rh
+dGljIGludCByZWFkX2ZzcihzdHJ1Y3Qgc3BpX25vciAqbm9yKSAgfQ0KPiANCj4gIC8qDQo+ICsg
+KiBSZWFkIHRoZSBjbGVhciBmbGFnIHN0YXR1cyByZWdpc3Rlci4NCj4gKyAqIFRoZSBjbGVhciBm
+bGFnIHN0YXR1cyByZWdpc3RlciBvcGVyYXRpb24gd2FzIHJlcXVpcmVkIGJ5IE1pY3Jvbg0KPiAr
+ICogU1BJLU5PUiBjaGlwcywgd2hpY2ggc3VwcG9ydCBGU1IuIEFuZCBpZiBhbiBlcnJvciBiaXQg
+b2YgRlNSDQo+ICsgKiBoYXZlIGJlZW4gc2V0IGxpa2UgcHJvdGVjdGlvbiwgdm9sdGFnZSwgZXJh
+c2UsIGFuZCBwcm9ncmFtLA0KPiArICogaXQgbXVzdCBiZSBjbGVhcmVkIGJ5IHRoZSBjbGVhciBG
+U1Igb3BlcmF0aW9uLg0KPiArICogUmV0dXJucyB6ZXJvIGZvciBGU1IgYml0cyBjbGVhcmVkIGFu
+ZCBuZWdhdGl2ZSBpZiBlcnJvciBvY2N1cnJlZC4NCj4gKyAqLw0KPiArc3RhdGljIGludCByZWFk
+X2Nmc3Ioc3RydWN0IHNwaV9ub3IgKm5vcikgew0KPiArCWludCByZXQ7DQo+ICsJdTggdmFsOw0K
+PiArDQo+ICsJcmV0ID0gbm9yLT5yZWFkX3JlZyhub3IsIFNQSU5PUl9PUF9SRENGU1IsICZ2YWws
+IDEpOw0KDQpUaGVyZSBzaG91bGQgYmUgYSB3cml0ZV9yZWcgaW5zdGVhZCBvZiByZWFkX3JlZy4N
+ClRoZXJlIGlzbqGvdCBhIHJlZ2lzdGVyIG5hbWVkIENGU1IsIGFuZCB0aGUgY29tbWFuZCBTUElO
+T1JfT1BfUkRDRlNSDQppcyB1c2VkIHRvIGNsZWFyIHRoZSBGU1IsIGFub3RoZXIgd29yZHMgcmVz
+ZXQgRlNSIHRvIGRlZmF1bHQgdmFsdWUuDQoNCj4gKwlpZiAocmV0IDwgMCkgew0KPiArCQlwcl9l
+cnIoImVycm9yICVkIHJlYWRpbmcgQ0ZTUlxuIiwgcmV0KTsNCj4gKwkJcmV0dXJuIHJldDsNCj4g
+Kwl9DQo+ICsNCj4gKwlyZXR1cm4gdmFsOw0KPiArfQ0KPiArDQo+ICsvKg0KPiAgICogUmVhZCBj
+b25maWd1cmF0aW9uIHJlZ2lzdGVyLCByZXR1cm5pbmcgaXRzIHZhbHVlIGluIHRoZQ0KPiAgICog
+bG9jYXRpb24uIFJldHVybiB0aGUgY29uZmlndXJhdGlvbiByZWdpc3RlciB2YWx1ZS4NCj4gICAq
+IFJldHVybnMgbmVnYXRpdmUgaWYgZXJyb3Igb2NjdXJlZC4NCj4gQEAgLTIwOSwxMCArMjMxLDE1
+IEBAIHN0YXRpYyBpbmxpbmUgaW50IHNwaV9ub3Jfc3JfcmVhZHkoc3RydWN0IHNwaV9ub3INCj4g
+Km5vcikgIHN0YXRpYyBpbmxpbmUgaW50IHNwaV9ub3JfZnNyX3JlYWR5KHN0cnVjdCBzcGlfbm9y
+ICpub3IpICB7DQo+ICAJaW50IGZzciA9IHJlYWRfZnNyKG5vcik7DQo+IC0JaWYgKGZzciA8IDAp
+DQo+IC0JCXJldHVybiBmc3I7DQo+IC0JZWxzZQ0KPiAtCQlyZXR1cm4gZnNyICYgRlNSX1JFQURZ
+Ow0KPiArCWlmIChmc3IgJiBGU1JfRVJSX01BU0spIHsNCj4gKwkJcHJfZXJyKCJmbGFnIHN0YXR1
+cygweCV4KSBlcnJvciBvY2N1cmVkXG4iLCBmc3IpOw0KPiArCQlpbnQgY2ZzciA9IHJlYWRfY2Zz
+cihub3IpOw0KPiArCQlpZiAoY2ZzciA8IDApDQo+ICsJCQlyZXR1cm4gY2ZzcjsNCj4gKwkJcmV0
+dXJuIC0xOw0KPiArCX0NCj4gKw0KPiArCXJldHVybiBmc3IgJiBGU1JfUkVBRFk7DQo+ICB9DQo+
+IA0KPiAgc3RhdGljIGludCBzcGlfbm9yX3JlYWR5KHN0cnVjdCBzcGlfbm9yICpub3IpIGRpZmYg
+LS1naXQNCj4gYS9pbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmggYi9pbmNsdWRlL2xpbnV4L210
+ZC9zcGktbm9yLmggaW5kZXgNCj4gYzVhNThjNC4uMzZjMTY4MSAxMDA2NDQNCj4gLS0tIGEvaW5j
+bHVkZS9saW51eC9tdGQvc3BpLW5vci5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1u
+b3IuaA0KPiBAQCAtMzUsNiArMzUsNyBAQA0KPiAgI2RlZmluZSBTUElOT1JfT1BfUkRJRAkJMHg5
+ZgkvKiBSZWFkIEpFREVDIElEICovDQo+ICAjZGVmaW5lIFNQSU5PUl9PUF9SRENSCQkweDM1CS8q
+IFJlYWQgY29uZmlndXJhdGlvbiByZWdpc3RlciAqLw0KPiAgI2RlZmluZSBTUElOT1JfT1BfUkRG
+U1IJCTB4NzAJLyogUmVhZCBmbGFnIHN0YXR1cyByZWdpc3RlciAqLw0KPiArI2RlZmluZSBTUElO
+T1JfT1BfUkRDRlNSCTB4NTAJLyogUmVhZCBjbGVhciBmbGFnIHN0YXR1cyByZWdpc3RlciAqLw0K
+PiANCj4gIC8qIDQtYnl0ZSBhZGRyZXNzIG9wY29kZXMgLSB1c2VkIG9uIFNwYW5zaW9uIGFuZCBz
+b21lIE1hY3Jvbml4IGZsYXNoZXMuDQo+ICovDQo+ICAjZGVmaW5lIFNQSU5PUl9PUF9SRUFENAkJ
+MHgxMwkvKiBSZWFkIGRhdGEgYnl0ZXMgKGxvdw0KPiBmcmVxdWVuY3kpICovDQo+IEBAIC03NCw2
+ICs3NSwxNCBAQA0KPiAgLyogRW5oYW5jZWQgVm9sYXRpbGUgQ29uZmlndXJhdGlvbiBSZWdpc3Rl
+ciBiaXRzICovDQo+ICAjZGVmaW5lIEVWQ1JfUVVBRF9FTl9NSUNST04gICAgMHg4MCAgICAvKiBN
+aWNyb24gUXVhZCBJL08gKi8NCj4gDQo+ICsvKiBGbGFnIFN0YXR1cyBSZWdpc3RlciBFcnJvciBi
+aXRzICovDQo+ICsjZGVmaW5lIEZTUl9FUlJfUFJPVAkJMHgyCS8qIFByb3RlY3Rpb24gKi8NCj4g
+KyNkZWZpbmUgRlNSX0VSUl9WT0xUCQkweDgJLyogVm9sdGFnZSBvbiBWcHAgKi8NCj4gKyNkZWZp
+bmUgRlNSX0VSUl9QUk9HCQkweDEwCS8qIFByb2dyYW0gb3BlcmF0aW9uICovDQo+ICsjZGVmaW5l
+IEZTUl9FUlJfRVJBU0UJCTB4MjAJLyogRXJhc2Ugb3BlcmF0aW9uICovDQo+ICsjZGVmaW5lIEZT
+Ul9FUlJfTUFTSwkJKEZTUl9FUlJfUFJPVCB8IEZTUl9FUlJfVk9MVCB8IFwNCj4gKwkJCQlGU1Jf
+RVJSX1BST0cgfCBGU1JfRVJSX0VSQVNFKQ0KPiArDQo+ICAvKiBGbGFnIFN0YXR1cyBSZWdpc3Rl
+ciBiaXRzICovDQo+ICAjZGVmaW5lIEZTUl9SRUFEWQkJMHg4MA0KPiANCj4gLS0NCj4gMS45LjEN
+Cg0KVGhhbmtzLA0KWmhpcWlhbmcNCg==
