@@ -1,19 +1,16 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRyoU-0005JK-Aq
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:33:39 +0000
-Message-ID: <55D43E01.1070702@cn.fujitsu.com>
-Date: Wed, 19 Aug 2015 16:27:45 +0800
+ id 1ZRypw-0005T7-It
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:35:09 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <richard@nod.at>, <dedekind1@gmail.com>, <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
+ <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH] ubifs: correct the size of nnode in memset
+Date: Wed, 19 Aug 2015 16:28:52 +0800
+Message-ID: <1439972932-12116-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>
-CC: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v5] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
-References: <1439872825-4988-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1439887462.31419.111.camel@gmail.com>
-In-Reply-To: <1439887462.31419.111.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/18/2015 04:44 PM, Artem Bityutskiy wrote:
-> On Tue, 2015-08-18 at 12:40 +0800, Dongsheng Yang wrote:
->> To make ubifs support atime flexily, this commit introduces
->> a Kconfig option named as UBIFS_ATIME_SUPPORT.
->>
->> With UBIFS_ATIME_SUPPORT=n:
->> 	ubifs keeps the full compatibility to no_atime from
->> the start of ubifs.
->> =================UBIFS_ATIME_SUPPORT=n=======================
->> -o - no atime
->> -o atime - no atime
->> -o noatime - no atime
->> -o relatime - no atime
->> -o strictatime - no atime
->> -o lazyatime - no atime
->
-> And please, do include fsdevel when sending this patch.
+There is a typo in lpt to memset nnode by the
+size in sizeof(stuct ubifs_pnode).
 
-Sorry again. will cc it in next verison. :(
->
-> Artem.
-> .
->
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+---
+ mkfs.ubifs/lpt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mkfs.ubifs/lpt.c b/mkfs.ubifs/lpt.c
+index f6d4352..6aa0b88 100644
+--- a/mkfs.ubifs/lpt.c
++++ b/mkfs.ubifs/lpt.c
+@@ -384,7 +384,7 @@ int create_lpt(struct ubifs_info *c)
+ 		goto out;
+ 	}
+ 	memset(pnode, 0 , sizeof(struct ubifs_pnode));
+-	memset(nnode, 0 , sizeof(struct ubifs_pnode));
++	memset(nnode, 0 , sizeof(struct ubifs_nnode));
+ 
+ 	c->lscan_lnum = c->main_first;
+ 
+-- 
+1.8.4.2
