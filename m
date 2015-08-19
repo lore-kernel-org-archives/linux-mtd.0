@@ -1,27 +1,23 @@
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
- helo=smtp.smtpout.orange.fr)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRwrW-0006n3-CK
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 06:28:39 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Antoine Tenart <antoine.tenart@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: pxa3xx-nand: fix random command timeouts
-References: <1439396538-13298-1-git-send-email-robert.jarzmik@free.fr>
- <20150816152924.GA799@laptop.cereza> <87si7iandq.fsf@belgarion.home>
- <CAAEAJfAmD5VzA4J4+jwmCirmqfAJcvY8Ac45nupZwGVVb38Vhg@mail.gmail.com>
- <87d1ylafq3.fsf@belgarion.home> <20150819004629.GS60523@google.com>
-Date: Wed, 19 Aug 2015 08:22:05 +0200
-In-Reply-To: <20150819004629.GS60523@google.com> (Brian Norris's message of
- "Tue, 18 Aug 2015 17:46:29 -0700")
-Message-ID: <87io8b94s2.fsf@belgarion.home>
+ id 1ZRxM1-0001yc-AF
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 07:00:10 +0000
+Subject: Re: [kernel.org bug 103071] Dead "security.*" xattr code in ubifs
+To: Sheng Yong <shengyong1@huawei.com>,
+ =?UTF-8?Q?Andreas_Gr=c3=bcnbacher?= <andreas.gruenbacher@gmail.com>
+References: <CAHpGcM+bkFA-UDM0FKwH=FkS9+TWv_Br7nWJXSpKDquo5n_gFw@mail.gmail.com>
+ <CAFLxGvxPGZoRX3Ft_g59fzfLhoOmEES=q-oPBmYuGVBzn-dRUA@mail.gmail.com>
+ <55D3D6BB.3030307@huawei.com> <55D3DDD1.8060405@huawei.com>
+Cc: snijsure@grid-net.com, Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ mkl@pengutronix.de, gratian.crisan@ni.com, brad.mouring@ni.com
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55D42959.5070605@nod.at>
+Date: Wed, 19 Aug 2015 08:59:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <55D3DDD1.8060405@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,44 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris <computersforpeace@gmail.com> writes:
+Am 19.08.2015 um 03:37 schrieb Sheng Yong:
+> 
+> 
+> On 8/19/2015 9:07 AM, Sheng Yong wrote:
+>> Hi,
+>>
+>> On 8/19/2015 4:55 AM, Richard Weinberger wrote:
+>>> Andreas,
+>>>
+>>> On Tue, Aug 18, 2015 at 2:15 PM, Andreas Grünbacher
+>>> <andreas.gruenbacher@gmail.com> wrote:
+>>>> Hello,
+>>>>
+>>>> FYI, I've filed the following bug report against ubifs:
+>>>>
+>>>>> ubifs sets sb->s_xattr to ubifs_xattr_handlers which contains a handler for
+>>>>> "security.*" xattrs. The s_xattr handlers are never used because ubifs uses
+>>>>> its own ubifs_{get,set,list,remove}xattr inode operations instead of
+>>>>> generic_{get,set,list,remove}xattr inode operations though.
+>>>>
+>>>> https://bugzilla.kernel.org/show_bug.cgi?id=103071
+>>>
+>>> Thanks for reporting.
+> My bad for didn't reply at the right line :(
+>> This is because UBIFS did not implement extended attribute in the geneirc way
+>> (by calling generic_*xattr()). We could create an xattr_handler to have these
+>> dead functions called (in fact, I did that), but doing this seems just another
+>> encapsulation and makes no sense. So I think we could remove these dead code
+>> directly.
 
-> Hi Robert,
->
-> On Mon, Aug 17, 2015 at 09:15:48PM +0200, Robert Jarzmik wrote:
->> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
->> > So unless I'm completely off, the current patch is right, and a comment
->> > would be helpful.
->> Ok Ezequiel, I'll wait for your Tested-by, and respin with something like :
->> 
->> 	/* Clear all status bit before issuing the next command, which can and
->>          * will alter the status bits and will deserve a new interrupt on its
->>          * own.
->>          */
->
-> To be clear: I should hold off on this patch?
-If you can hold until this evening (ie. in 12h), I'll post the same version of
-the patch with Ezequiel's comment, and Ack/Test if he provides it.
+So, that would be a revert of commit d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53?
+I don't get what d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53 was supposed to do
+as it seems to be a no-op. :-)
 
-If you have to decide in the next few hours, take it, this fix should land in
-v4.3.
-
-> I'm going to try to clear my queue of things that are simple/obvious
-> and/or fix bugs (I think you spoke up about a different pxa3xx_nand
-> bugfix which I will try to find). There's too big a backlog for me to
-> get through everything for the merge window...
-
-I'll resend my pxa3xx-nand backlog this evening for fixes I have on mind which
-are simple fixes :
- - this one (random command timeouts)
- - Antoine's one (resent yesterday)
- - my fix for probe (mtd: nand: pxa3xx_nand: fix early spurious interrupt)
-If you can wait this evening it will spare you digging through your mails.
-
-Or alternatively Ezequiel, if you want to aggregate the patches because you have
-others on mind also, please feel free to overtake this from me before my evening :)
-
-Cheers.
-
--- 
-Robert
+Thanks,
+//richard
