@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRz0K-0005ja-Em
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:45:54 +0000
+ id 1ZRz0K-0005ke-F9
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:45:55 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <dedekind1@gmail.com>, <richard@nod.at>, <computersforpeace@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 07/27] ubifs: introduce ubifs-utils/include and ubifs-utils/lib
-Date: Wed, 19 Aug 2015 16:39:12 +0800
-Message-ID: <1439973572-12489-8-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 08/27] ubifs: move more functions into io lib
+Date: Wed, 19 Aug 2015 16:39:13 +0800
+Message-ID: <1439973572-12489-9-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,178 +22,283 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Restructure the ubifs-utils/, introducing ubifs-utils/include
-and ubifs-utils/lib to make the ubifs-utils/ better for scalability.
+Move some common functions in mkfs.ubifs.c to io.c
+to let others can use them.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- Makefile                                                          | 7 ++++---
- ubifs-utils/{mkfs.ubifs => }/COPYING                              | 0
- ubifs-utils/{mkfs.ubifs => }/README                               | 0
- ubifs-utils/{mkfs.ubifs => include}/compr.h                       | 0
- ubifs-utils/{mkfs.ubifs => include}/crc16.h                       | 0
- ubifs-utils/{mkfs.ubifs => include}/defs.h                        | 0
- ubifs-utils/{mkfs.ubifs => include}/devtable.h                    | 0
- ubifs-utils/{mkfs.ubifs/hashtable => include}/hashtable.h         | 0
- ubifs-utils/{mkfs.ubifs/hashtable => include}/hashtable_itr.h     | 0
- ubifs-utils/{mkfs.ubifs/hashtable => include}/hashtable_private.h | 0
- ubifs-utils/{mkfs.ubifs => include}/io.h                          | 0
- ubifs-utils/{mkfs.ubifs => include}/key.h                         | 0
- ubifs-utils/{mkfs.ubifs => include}/lpt.h                         | 0
- ubifs-utils/{mkfs.ubifs => include}/ubifs.h                       | 0
- ubifs-utils/{mkfs.ubifs => include}/ubifs_common.h                | 0
- ubifs-utils/{mkfs.ubifs => lib}/compr.c                           | 0
- ubifs-utils/{mkfs.ubifs => lib}/crc16.c                           | 0
- ubifs-utils/{mkfs.ubifs => lib}/devtable.c                        | 4 ++--
- ubifs-utils/{mkfs.ubifs/hashtable => lib}/hashtable.c             | 0
- ubifs-utils/{mkfs.ubifs/hashtable => lib}/hashtable_itr.c         | 0
- ubifs-utils/{mkfs.ubifs => lib}/io.c                              | 0
- ubifs-utils/{mkfs.ubifs => lib}/lpt.c                             | 0
- 22 files changed, 6 insertions(+), 5 deletions(-)
- rename ubifs-utils/{mkfs.ubifs => }/COPYING (100%)
- rename ubifs-utils/{mkfs.ubifs => }/README (100%)
- rename ubifs-utils/{mkfs.ubifs => include}/compr.h (100%)
- rename ubifs-utils/{mkfs.ubifs => include}/crc16.h (100%)
- rename ubifs-utils/{mkfs.ubifs => include}/defs.h (100%)
- rename ubifs-utils/{mkfs.ubifs => include}/devtable.h (100%)
- rename ubifs-utils/{mkfs.ubifs/hashtable => include}/hashtable.h (100%)
- rename ubifs-utils/{mkfs.ubifs/hashtable => include}/hashtable_itr.h (100%)
- rename ubifs-utils/{mkfs.ubifs/hashtable => include}/hashtable_private.h (100%)
- rename ubifs-utils/{mkfs.ubifs => include}/io.h (100%)
- rename ubifs-utils/{mkfs.ubifs => include}/key.h (100%)
- rename ubifs-utils/{mkfs.ubifs => include}/lpt.h (100%)
- rename ubifs-utils/{mkfs.ubifs => include}/ubifs.h (100%)
- rename ubifs-utils/{mkfs.ubifs => include}/ubifs_common.h (100%)
- rename ubifs-utils/{mkfs.ubifs => lib}/compr.c (100%)
- rename ubifs-utils/{mkfs.ubifs => lib}/crc16.c (100%)
- rename ubifs-utils/{mkfs.ubifs => lib}/devtable.c (99%)
- rename ubifs-utils/{mkfs.ubifs/hashtable => lib}/hashtable.c (100%)
- rename ubifs-utils/{mkfs.ubifs/hashtable => lib}/hashtable_itr.c (100%)
- rename ubifs-utils/{mkfs.ubifs => lib}/io.c (100%)
- rename ubifs-utils/{mkfs.ubifs => lib}/lpt.c (100%)
+ ubifs-utils/include/io.h            |   4 ++
+ ubifs-utils/lib/io.c                | 101 +++++++++++++++++++++++++++++++++++
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 102 +-----------------------------------
+ 3 files changed, 107 insertions(+), 100 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 843108c..ae02aac 100644
---- a/Makefile
-+++ b/Makefile
-@@ -3,7 +3,7 @@
+diff --git a/ubifs-utils/include/io.h b/ubifs-utils/include/io.h
+index e24d0c6..920645d 100644
+--- a/ubifs-utils/include/io.h
++++ b/ubifs-utils/include/io.h
+@@ -10,6 +10,10 @@
+ extern int out_fd;
+ extern int out_ubi;
+ extern libubi_t ubi;
++extern char *output;
  
- VERSION = 1.5.1
- 
--CPPFLAGS += -D_GNU_SOURCE -I./include -I$(BUILDDIR)/include -I./ubi-utils/include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS) $(UUIDCPPFLAGS)
-+CPPFLAGS += -D_GNU_SOURCE -I./include -I$(BUILDDIR)/include -I./ubi-utils/include -I./ubifs-utils/include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS) $(UUIDCPPFLAGS)
- 
- ifeq ($(WITHOUT_XATTR), 1)
-   CPPFLAGS += -DWITHOUT_XATTR
-@@ -129,8 +129,9 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
- #
- # Utils in ubifs-utils subdir
- #
--obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o io.o\
--	hashtable/hashtable.o hashtable/hashtable_itr.o
-+$(foreach v,crc16.o lpt.o compr.o devtable.o io.o hashtable.o hashtable_itr.o,$(eval UBIFS_LIBS += ../lib/$(v)))
+ int write_leb(struct ubifs_info *c, int lnum, int len, void *buf);
++int close_target(void);
++int open_target(struct ubifs_info *c, int yes);
++int open_ubi(struct ubifs_info *c, const char *node);
+ #endif
+diff --git a/ubifs-utils/lib/io.c b/ubifs-utils/lib/io.c
+index 7aba0a6..9817d2a 100644
+--- a/ubifs-utils/lib/io.c
++++ b/ubifs-utils/lib/io.c
+@@ -5,6 +5,107 @@
+ int out_fd;
+ int out_ubi;
+ libubi_t ubi;
++char *output;
 +
-+obj-mkfs.ubifs = $(UBIFS_LIBS)
- LDFLAGS_mkfs.ubifs = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
- LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid
- $(call mkdep,ubifs-utils/mkfs.ubifs/,mkfs.ubifs,,ubi-utils/libubi.a)
-diff --git a/ubifs-utils/mkfs.ubifs/COPYING b/ubifs-utils/COPYING
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/COPYING
-rename to ubifs-utils/COPYING
-diff --git a/ubifs-utils/mkfs.ubifs/README b/ubifs-utils/README
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/README
-rename to ubifs-utils/README
-diff --git a/ubifs-utils/mkfs.ubifs/compr.h b/ubifs-utils/include/compr.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/compr.h
-rename to ubifs-utils/include/compr.h
-diff --git a/ubifs-utils/mkfs.ubifs/crc16.h b/ubifs-utils/include/crc16.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/crc16.h
-rename to ubifs-utils/include/crc16.h
-diff --git a/ubifs-utils/mkfs.ubifs/defs.h b/ubifs-utils/include/defs.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/defs.h
-rename to ubifs-utils/include/defs.h
-diff --git a/ubifs-utils/mkfs.ubifs/devtable.h b/ubifs-utils/include/devtable.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/devtable.h
-rename to ubifs-utils/include/devtable.h
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable.h b/ubifs-utils/include/hashtable.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable.h
-rename to ubifs-utils/include/hashtable.h
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.h b/ubifs-utils/include/hashtable_itr.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.h
-rename to ubifs-utils/include/hashtable_itr.h
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable_private.h b/ubifs-utils/include/hashtable_private.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable_private.h
-rename to ubifs-utils/include/hashtable_private.h
-diff --git a/ubifs-utils/mkfs.ubifs/io.h b/ubifs-utils/include/io.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/io.h
-rename to ubifs-utils/include/io.h
-diff --git a/ubifs-utils/mkfs.ubifs/key.h b/ubifs-utils/include/key.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/key.h
-rename to ubifs-utils/include/key.h
-diff --git a/ubifs-utils/mkfs.ubifs/lpt.h b/ubifs-utils/include/lpt.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/lpt.h
-rename to ubifs-utils/include/lpt.h
-diff --git a/ubifs-utils/mkfs.ubifs/ubifs.h b/ubifs-utils/include/ubifs.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/ubifs.h
-rename to ubifs-utils/include/ubifs.h
-diff --git a/ubifs-utils/mkfs.ubifs/ubifs_common.h b/ubifs-utils/include/ubifs_common.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/ubifs_common.h
-rename to ubifs-utils/include/ubifs_common.h
-diff --git a/ubifs-utils/mkfs.ubifs/compr.c b/ubifs-utils/lib/compr.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/compr.c
-rename to ubifs-utils/lib/compr.c
-diff --git a/ubifs-utils/mkfs.ubifs/crc16.c b/ubifs-utils/lib/crc16.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/crc16.c
-rename to ubifs-utils/lib/crc16.c
-diff --git a/ubifs-utils/mkfs.ubifs/devtable.c b/ubifs-utils/lib/devtable.c
-similarity index 99%
-rename from ubifs-utils/mkfs.ubifs/devtable.c
-rename to ubifs-utils/lib/devtable.c
-index 1fc0256..e6ec319 100644
---- a/ubifs-utils/mkfs.ubifs/devtable.c
-+++ b/ubifs-utils/lib/devtable.c
-@@ -46,8 +46,8 @@
++/**
++ * check_volume_empty - check if the UBI volume is empty.
++ *
++ * This function checks if the UBI volume is empty by looking if its LEBs are
++ * mapped or not.
++ *
++ * Returns %0 in case of success, %1 is the volume is not empty,
++ * and a negative error code in case of failure.
++ */
++static int check_volume_empty(struct ubifs_info *c)
++{
++	int lnum, err;
++
++	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
++		err = ubi_is_mapped(out_fd, lnum);
++		if (err < 0)
++			return err;
++		if (err == 1)
++			return 1;
++	}
++	return 0;
++}
++
++/**
++ * open_ubi - open the UBI volume.
++ * @node: name of the UBI volume character device to fetch information about
++ *
++ * Returns %0 in case of success and %-1 in case of failure
++ */
++int open_ubi(struct ubifs_info *c, const char *node)
++{
++	struct stat st;
++
++	if (stat(node, &st) || !S_ISCHR(st.st_mode))
++		return -1;
++
++	ubi = libubi_open();
++	if (!ubi)
++		return -1;
++	if (ubi_get_vol_info(ubi, node, &c->vi))
++		return -1;
++	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di))
++		return -1;
++	return 0;
++}
++
++/**
++ * open_target - open the output target.
++ * @yes: always ansure yes
++ *
++ * Open the output target. The target can be an UBI volume
++ * or a file.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int open_target(struct ubifs_info *c, int yes)
++{
++	if (out_ubi) {
++		out_fd = open(output, O_RDWR | O_EXCL);
++
++		if (out_fd == -1)
++			return sys_err_msg("cannot open the UBI volume '%s'",
++					   output);
++		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
++			return sys_err_msg("ubi_set_property failed");
++
++		if (!yes && check_volume_empty(c)) {
++			if (!prompt("UBI volume is not empty.  Format anyways?", false))
++				return err_msg("UBI volume is not empty");
++		}
++	} else {
++		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
++			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
++		if (out_fd == -1)
++			return sys_err_msg("cannot create output file '%s'",
++					   output);
++	}
++	return 0;
++}
++
++/**
++ * close_target - close the output target.
++ *
++ * Close the output target. If the target was an UBI
++ * volume, also close libubi.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int close_target(void)
++{
++	if (ubi)
++		libubi_close(ubi);
++	if (out_fd >= 0 && close(out_fd) == -1)
++		return sys_err_msg("cannot close the target '%s'", output);
++	if (output)
++		free(output);
++	return 0;
++}
++
  
- #include "ubifs_common.h"
- #include "devtable.h"
--#include "hashtable/hashtable.h"
--#include "hashtable/hashtable_itr.h"
-+#include "hashtable.h"
-+#include "hashtable_itr.h"
+ /**
+  * write_leb - copy the image of a LEB to the output target.
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 9795282..b19646f 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -106,7 +106,6 @@ int yes;
+ static char *root;
+ static int root_len;
+ static struct stat root_st;
+-static char *output;
+ static int squash_owner;
  
- /*
-  * The hash table which contains paths to files/directories/device nodes
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable.c b/ubifs-utils/lib/hashtable.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable.c
-rename to ubifs-utils/lib/hashtable.c
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.c b/ubifs-utils/lib/hashtable_itr.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.c
-rename to ubifs-utils/lib/hashtable_itr.c
-diff --git a/ubifs-utils/mkfs.ubifs/io.c b/ubifs-utils/lib/io.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/io.c
-rename to ubifs-utils/lib/io.c
-diff --git a/ubifs-utils/mkfs.ubifs/lpt.c b/ubifs-utils/lib/lpt.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/lpt.c
-rename to ubifs-utils/lib/lpt.c
+ /* The 'head' (position) which nodes are written */
+@@ -446,28 +445,6 @@ static long long get_bytes(const char *str)
+ 
+ 	return bytes;
+ }
+-/**
+- * open_ubi - open the UBI volume.
+- * @node: name of the UBI volume character device to fetch information about
+- *
+- * Returns %0 in case of success and %-1 in case of failure
+- */
+-static int open_ubi(const char *node)
+-{
+-	struct stat st;
+-
+-	if (stat(node, &st) || !S_ISCHR(st.st_mode))
+-		return -1;
+-
+-	ubi = libubi_open();
+-	if (!ubi)
+-		return -1;
+-	if (ubi_get_vol_info(ubi, node, &c->vi))
+-		return -1;
+-	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di))
+-		return -1;
+-	return 0;
+-}
+ 
+ static int get_options(int argc, char**argv)
+ {
+@@ -629,7 +606,7 @@ static int get_options(int argc, char**argv)
+ 	if (!output)
+ 		return err_msg("not output device or file specified");
+ 
+-	out_ubi = !open_ubi(output);
++	out_ubi = !open_ubi(c, output);
+ 
+ 	if (out_ubi) {
+ 		c->min_io_size = c->di.min_io_size;
+@@ -2038,81 +2015,6 @@ static int write_orphan_area(void)
+ 	return 0;
+ }
+ 
+-/**
+- * check_volume_empty - check if the UBI volume is empty.
+- *
+- * This function checks if the UBI volume is empty by looking if its LEBs are
+- * mapped or not.
+- *
+- * Returns %0 in case of success, %1 is the volume is not empty,
+- * and a negative error code in case of failure.
+- */
+-static int check_volume_empty(void)
+-{
+-	int lnum, err;
+-
+-	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
+-		err = ubi_is_mapped(out_fd, lnum);
+-		if (err < 0)
+-			return err;
+-		if (err == 1)
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-/**
+- * open_target - open the output target.
+- *
+- * Open the output target. The target can be an UBI volume
+- * or a file.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-static int open_target(void)
+-{
+-	if (out_ubi) {
+-		out_fd = open(output, O_RDWR | O_EXCL);
+-
+-		if (out_fd == -1)
+-			return sys_err_msg("cannot open the UBI volume '%s'",
+-					   output);
+-		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
+-			return sys_err_msg("ubi_set_property failed");
+-
+-		if (!yes && check_volume_empty()) {
+-			if (!prompt("UBI volume is not empty.  Format anyways?", false))
+-				return err_msg("UBI volume is not empty");
+-		}
+-	} else {
+-		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
+-			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-		if (out_fd == -1)
+-			return sys_err_msg("cannot create output file '%s'",
+-					   output);
+-	}
+-	return 0;
+-}
+-
+-
+-/**
+- * close_target - close the output target.
+- *
+- * Close the output target. If the target was an UBI
+- * volume, also close libubi.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-static int close_target(void)
+-{
+-	if (ubi)
+-		libubi_close(ubi);
+-	if (out_fd >= 0 && close(out_fd) == -1)
+-		return sys_err_msg("cannot close the target '%s'", output);
+-	if (output)
+-		free(output);
+-	return 0;
+-}
+ 
+ /**
+  * init - initialize things.
+@@ -2279,7 +2181,7 @@ int main(int argc, char *argv[])
+ 	if (err)
+ 		return err;
+ 
+-	err = open_target();
++	err = open_target(c, yes);
+ 	if (err)
+ 		return err;
+ 
 -- 
 1.8.4.2
