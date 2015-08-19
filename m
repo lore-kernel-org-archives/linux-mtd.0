@@ -1,20 +1,26 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZS6Fg-0000Ii-DJ
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 16:30:13 +0000
-Received: by pdbfa8 with SMTP id fa8so3315421pdb.1
- for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2015 09:29:51 -0700 (PDT)
-Date: Wed, 19 Aug 2015 09:29:47 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Cc: richard@nod.at, dedekind1@gmail.com, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] ubifs: correct the size of nnode in memset
-Message-ID: <20150819162947.GW60523@google.com>
-References: <1439972932-12116-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Date: Wed, 19 Aug 2015 09:35:48 -0700
+From: Bjorn Andersson <bjorn.andersson@sonymobile.com>
+To: Mathieu Olivari <mathieu@codeaurora.org>
+CC: "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com"
+ <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "galak@codeaurora.org" <galak@codeaurora.org>, "linux@arm.linux.org.uk"
+ <linux@arm.linux.org.uk>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "agross@codeaurora.org" <agross@codeaurora.org>, "sboyd@codeaurora.org"
+ <sboyd@codeaurora.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v4 1/3] ARM: qcom: add SFPB nodes to IPQ806x dts
+Message-ID: <20150819163548.GX13472@usrtlx11787.corpusers.net>
+References: <1439931860-7473-1-git-send-email-mathieu@codeaurora.org>
+ <1439931860-7473-2-git-send-email-mathieu@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1439972932-12116-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1439931860-7473-2-git-send-email-mathieu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 19, 2015 at 04:28:52PM +0800, Dongsheng Yang wrote:
-> There is a typo in lpt to memset nnode by the
-> size in sizeof(stuct ubifs_pnode).
+On Tue 18 Aug 14:04 PDT 2015, Mathieu Olivari wrote:
+
+> Add one new node to the ipq806x.dtsi file to declare & register the
+> hardware spinlock devices. This mechanism is required to be used by
+> other drivers such as SMEM.
 > 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 
-Pushed to mtd-utils.git, as it's obvious. Good catch!
+Still looks good, but you should have added:
 
-I'll take a look at your restructuring patches eventually. But I'll
-usually just defer UBIFS stuff to Richard/Artem/others.
-
+Reviewed-by: Bjorn Andersson <bjorn.andersson@sonymobile.com>
+> Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
 > ---
->  mkfs.ubifs/lpt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm/boot/dts/qcom-ipq8064.dtsi | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> diff --git a/mkfs.ubifs/lpt.c b/mkfs.ubifs/lpt.c
-> index f6d4352..6aa0b88 100644
-> --- a/mkfs.ubifs/lpt.c
-> +++ b/mkfs.ubifs/lpt.c
-> @@ -384,7 +384,7 @@ int create_lpt(struct ubifs_info *c)
->  		goto out;
->  	}
->  	memset(pnode, 0 , sizeof(struct ubifs_pnode));
-> -	memset(nnode, 0 , sizeof(struct ubifs_pnode));
-> +	memset(nnode, 0 , sizeof(struct ubifs_nnode));
-
-FWIW, struct ubifs_pnode and struct ubifs_nnode look like they would be
-the same size when using 32-bit pointers, but a bit different (see the
-third field in structs ubifs_nbranch and ubifs_lprops) with 64-bit.
-
+> diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+> index 9f727d8..8d366ae 100644
+> --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
+> +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+> @@ -329,5 +329,16 @@
+>  			#reset-cells = <1>;
+>  		};
 >  
->  	c->lscan_lnum = c->main_first;
->  
+> +		sfpb_mutex_block: syscon@1200600 {
+> +			compatible = "syscon";
+> +			reg = <0x01200600 0x100>;
+> +		};
+> +	};
+> +
+> +	sfpb_mutex: sfpb-mutex {
+> +		compatible = "qcom,sfpb-mutex";
+> +		syscon = <&sfpb_mutex_block 4 4>;
+> +
+> +		#hwlock-cells = <1>;
+>  	};
+>  };
 > -- 
-> 1.8.4.2
-
-Brian
+> 2.1.4
+> 
