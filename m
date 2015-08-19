@@ -1,26 +1,31 @@
-Date: Wed, 19 Aug 2015 09:37:52 -0700
-From: Bjorn Andersson <bjorn.andersson@sonymobile.com>
-To: Mathieu Olivari <mathieu@codeaurora.org>
-CC: "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com"
- <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "galak@codeaurora.org" <galak@codeaurora.org>, "linux@arm.linux.org.uk"
- <linux@arm.linux.org.uk>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "agross@codeaurora.org" <agross@codeaurora.org>, "sboyd@codeaurora.org"
- <sboyd@codeaurora.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v4 3/3] mtd: add SMEM parser for QCOM platforms
-Message-ID: <20150819163752.GZ13472@usrtlx11787.corpusers.net>
-References: <1439931860-7473-1-git-send-email-mathieu@codeaurora.org>
- <1439931860-7473-4-git-send-email-mathieu@codeaurora.org>
+Received: from s159.web-hosting.com ([68.65.121.203])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZS7Uf-0001pS-EG
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 17:49:46 +0000
+Received: from mail-la0-f42.google.com ([209.85.215.42]:35992)
+ by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
+ (Exim 4.85) (envelope-from <jteki@openedev.com>) id 1ZS7UF-002IM9-Ct
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 13:49:22 -0400
+Received: by lagz9 with SMTP id z9so7774835lag.3
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2015 10:49:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1439931860-7473-4-git-send-email-mathieu@codeaurora.org>
+In-Reply-To: <CY1PR0301MB07803A969EC23D39E0FC9F7A8B670@CY1PR0301MB0780.namprd03.prod.outlook.com>
+References: <1439978205-6092-1-git-send-email-jteki@openedev.com>
+ <1439978205-6092-3-git-send-email-jteki@openedev.com>
+ <CY1PR0301MB07803A969EC23D39E0FC9F7A8B670@CY1PR0301MB0780.namprd03.prod.outlook.com>
+Date: Wed, 19 Aug 2015 23:19:17 +0530
+Message-ID: <CAD6G_RSVwXjyXRfqXYtusE1n+BZ=3H8AXJiU3idsyMymAQXGLQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status register
+ support
+From: Jagan Teki <jteki@openedev.com>
+To: Hou Zhiqiang <B48286@freescale.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Hu Vincent <Mingkai.Hu@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,324 +35,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue 18 Aug 14:04 PDT 2015, Mathieu Olivari wrote:
+Hi Zhiqiang,
 
-> On QCOM platforms using MTD devices storage (such as IPQ806x), SMEM is
-> used to store partition layout. This new parser can now be used to read
-> SMEM and use it to register an MTD layout according to its content.
-> 
+On 19 August 2015 at 17:42, Hou Zhiqiang <B48286@freescale.com> wrote:
+> Hi Jagan,
+>
+>> -----Original Message-----
+>> From: Jagan Teki [mailto:jteki@openedev.com]
+>> Sent: 2015=E5=B9=B48=E6=9C=8819=E6=97=A5 17:57
+>> To: linux-mtd@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org; Jagan Teki; Hou Zhiqiang-B48286; Hu
+>> Mingkai-B21284; David Woodhouse; Brian Norris
+>> Subject: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status register
+>> support
+>>
+>> The clear flag status register operation was required by Micron SPI-NOR
+>> chips, which support FSR. And if an error bit of FSR have been set like
+>> protection, voltage, erase, and program, it must be cleared by the clear
+>> FSR operation.
+>>
+>> Signed-off-by: Jagan Teki <jteki@openedev.com>
+>> Cc: Hou Zhiqiang <B48286@freescale.com>
+>> Cc: Mingkai.Hu <Mingkai.Hu@freescale.com>
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Cc: Brian Norris <computersforpeace@gmail.com>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 35 +++++++++++++++++++++++++++++++----
+>>  include/linux/mtd/spi-nor.h   |  9 +++++++++
+>>  2 files changed, 40 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-
+>> nor.c index f954d03..c5c472d5 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -100,6 +100,28 @@ static int read_fsr(struct spi_nor *nor)  }
+>>
+>>  /*
+>> + * Read the clear flag status register.
+>> + * The clear flag status register operation was required by Micron
+>> + * SPI-NOR chips, which support FSR. And if an error bit of FSR
+>> + * have been set like protection, voltage, erase, and program,
+>> + * it must be cleared by the clear FSR operation.
+>> + * Returns zero for FSR bits cleared and negative if error occurred.
+>> + */
+>> +static int read_cfsr(struct spi_nor *nor) {
+>> +     int ret;
+>> +     u8 val;
+>> +
+>> +     ret =3D nor->read_reg(nor, SPINOR_OP_RDCFSR, &val, 1);
+>
+> There should be a write_reg instead of read_reg.
+> There isn=E2=80=99t a register named CFSR, and the command SPINOR_OP_RDCF=
+SR
+> is used to clear the FSR, another words reset FSR to default value.
 
-Still looks good, but you should have added:
+Yes, SPINOR_OP_RDCFSR is clear flag status register, for clearing errors bi=
+ts
+on fsr we need to read cfsr once.
 
-Acked-by: Bjorn Andersson <bjorn.andersson@sonymobile.com>
+>
+>> +     if (ret < 0) {
+>> +             pr_err("error %d reading CFSR\n", ret);
+>> +             return ret;
+>> +     }
+>> +
+>> +     return val;
+>> +}
+>> +
+>> +/*
+>>   * Read configuration register, returning its value in the
+>>   * location. Return the configuration register value.
+>>   * Returns negative if error occured.
+>> @@ -209,10 +231,15 @@ static inline int spi_nor_sr_ready(struct spi_nor
+>> *nor)  static inline int spi_nor_fsr_ready(struct spi_nor *nor)  {
+>>       int fsr =3D read_fsr(nor);
+>> -     if (fsr < 0)
+>> -             return fsr;
+>> -     else
+>> -             return fsr & FSR_READY;
+>> +     if (fsr & FSR_ERR_MASK) {
+>> +             pr_err("flag status(0x%x) error occured\n", fsr);
+>> +             int cfsr =3D read_cfsr(nor);
+>> +             if (cfsr < 0)
+>> +                     return cfsr;
+>> +             return -1;
+>> +     }
+>> +
+>> +     return fsr & FSR_READY;
+>>  }
+>>
+>>  static int spi_nor_ready(struct spi_nor *nor) diff --git
+>> a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h index
+>> c5a58c4..36c1681 100644
+>> --- a/include/linux/mtd/spi-nor.h
+>> +++ b/include/linux/mtd/spi-nor.h
+>> @@ -35,6 +35,7 @@
+>>  #define SPINOR_OP_RDID               0x9f    /* Read JEDEC ID */
+>>  #define SPINOR_OP_RDCR               0x35    /* Read configuration regi=
+ster */
+>>  #define SPINOR_OP_RDFSR              0x70    /* Read flag status regist=
+er */
+>> +#define SPINOR_OP_RDCFSR     0x50    /* Read clear flag status register=
+ */
+>>
+>>  /* 4-byte address opcodes - used on Spansion and some Macronix flashes.
+>> */
+>>  #define SPINOR_OP_READ4              0x13    /* Read data bytes (low
+>> frequency) */
+>> @@ -74,6 +75,14 @@
+>>  /* Enhanced Volatile Configuration Register bits */
+>>  #define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
+>>
+>> +/* Flag Status Register Error bits */
+>> +#define FSR_ERR_PROT         0x2     /* Protection */
+>> +#define FSR_ERR_VOLT         0x8     /* Voltage on Vpp */
+>> +#define FSR_ERR_PROG         0x10    /* Program operation */
+>> +#define FSR_ERR_ERASE                0x20    /* Erase operation */
+>> +#define FSR_ERR_MASK         (FSR_ERR_PROT | FSR_ERR_VOLT | \
+>> +                             FSR_ERR_PROG | FSR_ERR_ERASE)
+>> +
+>>  /* Flag Status Register bits */
+>>  #define FSR_READY            0x80
 
-> Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
-> ---
-> 
-> Notes:
->     v2:
->     *Release the SPI device reference after looking it up (put_device())
->     *Represent SMEM data as __le32 rather than u32
->     *Move new DT nodes in their proper respective location
->     *Address readability concerns in MTD parser
->     
->     v3:
->     *Redefine SMEM functions prototypes for better readability
->     *Duplicate MTD name instead of pointing to SMEM string location in case
->      mtd layer tries to free it
->     *Rework some of the comments
->     
->     v4:
->     *Fix case in the license string
-> 
->  drivers/mtd/Kconfig          |   7 ++
->  drivers/mtd/Makefile         |   1 +
->  drivers/mtd/qcom_smem_part.c | 246 +++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 254 insertions(+)
->  create mode 100644 drivers/mtd/qcom_smem_part.c
-> 
-> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-> index a03ad29..debc887 100644
-> --- a/drivers/mtd/Kconfig
-> +++ b/drivers/mtd/Kconfig
-> @@ -155,6 +155,13 @@ config MTD_BCM47XX_PARTS
->  	  This provides partitions parser for devices based on BCM47xx
->  	  boards.
->  
-> +config MTD_QCOM_SMEM_PARTS
-> +	tristate "QCOM SMEM partitioning support"
-> +	depends on QCOM_SMEM
-> +	help
-> +	  This provides partitions parser for QCOM devices using SMEM
-> +	  such as IPQ806x.
-> +
->  comment "User Modules And Translation Layers"
->  
->  #
-> diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-> index 99bb9a1..b3c7de4 100644
-> --- a/drivers/mtd/Makefile
-> +++ b/drivers/mtd/Makefile
-> @@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
->  obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
->  obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
->  obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
-> +obj-$(CONFIG_MTD_QCOM_SMEM_PARTS) += qcom_smem_part.o
->  
->  # 'Users' - code which presents functionality to userspace.
->  obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
-> diff --git a/drivers/mtd/qcom_smem_part.c b/drivers/mtd/qcom_smem_part.c
-> new file mode 100644
-> index 0000000..b4f8acc
-> --- /dev/null
-> +++ b/drivers/mtd/qcom_smem_part.c
-> @@ -0,0 +1,246 @@
-> +/*
-> + * Copyright (c) 2015, The Linux Foundation. All rights reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 and
-> + * only version 2 as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/device.h>
-> +#include <linux/slab.h>
-> +
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/module.h>
-> +
-> +#include <linux/soc/qcom/smem.h>
-> +
-> +/* Processor/host identifier for the application processor */
-> +#define QCOM_SMEM_GLOBAL		0
-> +
-> +/* SMEM items index */
-> +#define SMEM_AARM_PARTITION_TABLE	9
-> +#define SMEM_BOOT_FLASH_TYPE		421
-> +#define SMEM_BOOT_FLASH_BLOCK_SIZE	424
-> +
-> +/* SMEM Flash types */
-> +#define SMEM_FLASH_NAND			2
-> +#define SMEM_FLASH_SPI			6
-> +
-> +#define SMEM_PART_NAME_SZ		16
-> +#define SMEM_PARTS_MAX			32
-> +
-> +struct smem_partition {
-> +	char name[SMEM_PART_NAME_SZ];
-> +	__le32 start;
-> +	__le32 size;
-> +	__le32 attr;
-> +};
-> +
-> +struct smem_partition_table {
-> +	u8 magic[8];
-> +	__le32 version;
-> +	__le32 len;
-> +	struct smem_partition parts[SMEM_PARTS_MAX];
-> +};
-> +
-> +/* SMEM Magic values in partition table */
-> +static const u8 SMEM_PTABLE_MAGIC[] = {
-> +	0xaa, 0x73, 0xee, 0x55,
-> +	0xdb, 0xbd, 0x5e, 0xe3,
-> +};
-> +
-> +static int qcom_smem_get_flash_blksz(void)
-> +{
-> +	int ret;
-> +	size_t size;
-> +	u64 *smem_blksz;
-> +
-> +	ret = qcom_smem_get(QCOM_SMEM_GLOBAL, SMEM_BOOT_FLASH_BLOCK_SIZE,
-> +			    (void **) &smem_blksz, &size);
-> +
-> +	if (ret < 0) {
-> +		pr_err("Unable to read flash blksz from SMEM\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	if (size != sizeof(*smem_blksz)) {
-> +		pr_err("Invalid flash blksz size in SMEM\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Sanity check block size value before casting it */
-> +	if (*smem_blksz > INT_MAX) {
-> +		pr_err("Invalid flash block size in SMEM\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return (int) *smem_blksz;
-> +}
-> +
-> +static int qcom_smem_get_flash_type(void)
-> +{
-> +	int ret;
-> +	size_t size;
-> +	u64 *smem_flash_type;
-> +
-> +	ret = qcom_smem_get(QCOM_SMEM_GLOBAL, SMEM_BOOT_FLASH_TYPE,
-> +			    (void **) &smem_flash_type, &size);
-> +
-> +	if (ret < 0) {
-> +		pr_err("Unable to read flash type from SMEM\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	if (size != sizeof(*smem_flash_type)) {
-> +		pr_err("Invalid flash type size in SMEM\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Sanity check flash type value before casting it */
-> +	if (*smem_flash_type > INT_MAX) {
-> +		pr_err("Invalid flash type in SMEM\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return (int) *smem_flash_type;
-> +}
-> +
-> +static struct smem_partition *qcom_smem_get_flash_partitions(size_t *count)
-> +{
-> +	struct smem_partition_table *smem_parts;
-> +	int ret;
-> +
-> +	ret = qcom_smem_get(QCOM_SMEM_GLOBAL, SMEM_AARM_PARTITION_TABLE,
-> +			    (void **) &smem_parts, NULL);
-> +
-> +	if (ret < 0) {
-> +		pr_err("Unable to read partition table from SMEM\n");
-> +		return ERR_PTR(-ENOENT);
-> +	}
-> +
-> +	if (memcmp(SMEM_PTABLE_MAGIC, smem_parts->magic,
-> +		   sizeof(SMEM_PTABLE_MAGIC))) {
-> +		pr_err("SMEM partition magic invalid\n");
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	if (le32_to_cpu(smem_parts->version) != 3) {
-> +		pr_err("SMEM version unsupported\n");
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	*count = le32_to_cpu(smem_parts->len);
-> +
-> +	return smem_parts->parts;
-> +}
-> +
-> +static int of_dev_node_match(struct device *dev, void *data)
-> +{
-> +	return dev->of_node == data;
-> +}
-> +
-> +static bool is_spi_device(struct device_node *np)
-> +{
-> +	struct device *dev;
-> +
-> +	dev = bus_find_device(&spi_bus_type, NULL, np, of_dev_node_match);
-> +	if (!dev)
-> +		return false;
-> +
-> +	put_device(dev);
-> +	return true;
-> +}
-> +
-> +static int parse_qcom_smem_partitions(struct mtd_info *master,
-> +				      struct mtd_partition **pparts,
-> +				      struct mtd_part_parser_data *data)
-> +{
-> +	struct smem_partition *smem_part;
-> +	int smem_flash_type, smem_blksz;
-> +	size_t nbparts = 0, len;
-> +	struct mtd_partition *mtd_parts;
-> +	struct device_node *of_node = data->of_node;
-> +
-> +	/* Only parse partitions on the specified memory type */
-> +	smem_flash_type = qcom_smem_get_flash_type();
-> +	if (smem_flash_type < 0)
-> +		return smem_flash_type;
-> +
-> +	if ((smem_flash_type == SMEM_FLASH_NAND && !mtd_type_is_nand(master))
-> +	    || (smem_flash_type == SMEM_FLASH_SPI && !is_spi_device(of_node)))
-> +		return 0;
-> +
-> +	/* Make sure the block size in SMEM matches the block size in MTD */
-> +	smem_blksz = qcom_smem_get_flash_blksz();
-> +	if (smem_blksz < 0)
-> +		return smem_blksz;
-> +
-> +	if (smem_blksz != master->erasesize) {
-> +		pr_err("SMEM block size differs from MTD block size\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Get partition pointer from SMEM */
-> +	smem_part = qcom_smem_get_flash_partitions(&nbparts);
-> +	if (IS_ERR_OR_NULL(smem_part))
-> +		return -EINVAL;
-> +
-> +	/* Allocate and populate the mtd structures */
-> +	mtd_parts = kcalloc(nbparts, sizeof(*mtd_parts), GFP_KERNEL);
-> +	if (!mtd_parts)
-> +		return -ENOMEM;
-> +
-> +	*pparts = mtd_parts;
-> +	len = nbparts;
-> +
-> +	while (len--) {
-> +		mtd_parts->name = kstrdup(smem_part->name, GFP_KERNEL);
-> +		mtd_parts->size = le32_to_cpu(smem_part->size) * smem_blksz;
-> +		mtd_parts->offset = le32_to_cpu(smem_part->start) * smem_blksz;
-> +
-> +		/*
-> +		 * The last SMEM partition may have its size marked as
-> +		 * something like 0xffffffff, which means "until the end of the
-> +		 * flash device". In this case, truncate it.
-> +		 */
-> +		if (mtd_parts->offset + mtd_parts->size > master->size)
-> +			mtd_parts->size = master->size - mtd_parts->offset;
-> +
-> +		smem_part++;
-> +		mtd_parts++;
-> +	}
-> +
-> +	return nbparts;
-> +}
-> +
-> +static struct mtd_part_parser qcom_smem_parser = {
-> +	.owner = THIS_MODULE,
-> +	.parse_fn = parse_qcom_smem_partitions,
-> +	.name = "qcom-smem",
-> +};
-> +
-> +static int __init qcom_smem_parser_init(void)
-> +{
-> +	register_mtd_parser(&qcom_smem_parser);
-> +	return 0;
-> +}
-> +
-> +static void __exit qcom_smem_parser_exit(void)
-> +{
-> +	deregister_mtd_parser(&qcom_smem_parser);
-> +}
-> +
-> +module_init(qcom_smem_parser_init);
-> +module_exit(qcom_smem_parser_exit);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Mathieu Olivari <mathieu@codeaurora.org>");
-> +MODULE_DESCRIPTION("Parsing code for SMEM based partition tables");
-> -- 
-> 2.1.4
-> 
+thanks!
+--=20
+Jagan | openedev.
