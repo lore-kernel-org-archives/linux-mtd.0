@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRz0V-0005lY-PN
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:46:06 +0000
+ id 1ZRz0W-0005ke-5p
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:46:07 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <dedekind1@gmail.com>, <richard@nod.at>, <computersforpeace@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 19/27] ubifs: ubifs_dump: dump master node
-Date: Wed, 19 Aug 2015 16:39:24 +0800
-Message-ID: <1439973572-12489-20-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 20/27] ubifs: ubifs_dump: dump log area
+Date: Wed, 19 Aug 2015 16:39:25 +0800
+Message-ID: <1439973572-12489-21-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,213 +22,215 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Search the master lebs and found the latest master node.
-Then dump it out.
+scan the log lebs and dump the log nodes out.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- Makefile                            |   1 +
- ubifs-utils/ubifs_dump/ubifs_dump.c | 142 +++++++++++++++++++++++++++++-------
- 2 files changed, 116 insertions(+), 27 deletions(-)
+ ubifs-utils/ubifs_dump/ubifs_dump.c | 158 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 151 insertions(+), 7 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index cad71dc..7abbef9 100644
---- a/Makefile
-+++ b/Makefile
-@@ -133,6 +133,7 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
- $(foreach v,crc16.o lpt.o compr.o devtable.o io.o hashtable.o hashtable_itr.o,$(eval UBIFS_LIBS += ../lib/$(v)))
- 
- obj-ubifs_dump = $(UBIFS_LIBS)
-+obj-ubifs_dump += ../lib/scan.o
- LDFLAGS_ubifs_dump = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
- LDLIBS_ubifs_dump = -lz -llzo2 -lm -luuid
- $(call mkdep,ubifs-utils/ubifs_dump/,ubifs_dump,,ubi-utils/libubi.a)
 diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-index 9ddb0f7..73f68b7 100644
+index 73f68b7..5fb96ef 100644
 --- a/ubifs-utils/ubifs_dump/ubifs_dump.c
 +++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-@@ -2,9 +2,11 @@
- #define PROGRAM_NAME "ubifs-dump"
- #include "common.h"
- 
-+#include "ubifs.h"
- #include "io.h"
- #include "key.h"
- #include "lpt.h"
-+#include "scan.h"
- 
- #define DBG_KEY_BUF_LEN		48
- 
-@@ -17,9 +19,6 @@ static const struct option longopts[] = {
+@@ -19,6 +19,8 @@ static const struct option longopts[] = {
  struct ubifs_info info_;
  static struct ubifs_info *c = &info_;
  
--/* Global buffers */
--static void *leb_buf;
--
++static void *leb_buf;
++
  /* Global nodes*/
  struct ubifs_mst_node mst;
  struct ubifs_sb_node sup;
-@@ -376,26 +375,6 @@ void dump_node(const struct ubifs_info *c, const void *node)
- 	printf("\n");
- }
+@@ -491,15 +493,10 @@ static int scan_for_master(struct ubifs_info *c, struct ubifs_mst_node *mst_node
+ 	struct ubifs_scan_leb *sleb;
+ 	struct ubifs_scan_node *snod;
+ 	int lnum, offs = 0, nodes_cnt;
+-	static void *leb_buf;
+ 	int err = 0;
+ 	
+ 	lnum = UBIFS_MST_LNUM;
  
--/**
-- * init - initialize things.
-- */
--static int init(void)
--{
 -	leb_buf = malloc(c->leb_size);
 -	if (!leb_buf)
--		return err_msg("out of memory");
+-		return -ENOMEM;
 -
--	return 0;
--}
--
--/**
-- * deinit - deinitialize things.
-- */
--static void deinit(void)
--{
+ 	sleb = ubifs_scan(c, lnum, 0, leb_buf, 1);
+ 	if (IS_ERR(sleb)) {
+ 		err = PTR_ERR(sleb);
+@@ -544,7 +541,6 @@ static int scan_for_master(struct ubifs_info *c, struct ubifs_mst_node *mst_node
+ 	err = 0;
+ 
+ out:
 -	free(leb_buf);
--}
--
- /*
-  * init_constants_sb - initialize UBIFS constants.
-  * @c: UBIFS file-system description object
-@@ -498,20 +477,129 @@ static int dump_super(void)
- 	return init_constants_sb(c);
+ 	ubifs_scan_destroy(sleb);
+ 	return err;
+ }
+@@ -588,6 +584,142 @@ static int dump_master(void)
+ 	return 0;
  }
  
--static int dump()
-+/**
-+ * scan_for_master - search the valid master node.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function scans the master node LEBs and search for the latest master
-+ * node. Returns zero in case of success, %-EUCLEAN if there master area is
-+ * corrupted and requires recovery, and a negative error code in case of
-+ * failure.
-+ */
-+static int scan_for_master(struct ubifs_info *c, struct ubifs_mst_node *mst_node)
- {
++static int __dump_log_leb(int leb_num)
++{
++	int err = 0;
 +	struct ubifs_scan_leb *sleb;
 +	struct ubifs_scan_node *snod;
-+	int lnum, offs = 0, nodes_cnt;
-+	static void *leb_buf;
- 	int err = 0;
-+	
-+	lnum = UBIFS_MST_LNUM;
- 
--	err = init();
--	if (err)
-+	leb_buf = malloc(c->leb_size);
-+	if (!leb_buf)
-+		return -ENOMEM;
++	const struct ubifs_cs_node *node;
++	static int cs_sqnum = 0;
++	int lnum = leb_num;
++	loff_t offs = 0;
++	int node_num = 0;
 +
-+	sleb = ubifs_scan(c, lnum, 0, leb_buf, 1);
++	sleb = ubifs_scan(c, lnum, offs, leb_buf, 0);
 +	if (IS_ERR(sleb)) {
-+		err = PTR_ERR(sleb);
- 		goto out;
++		printf("Error in scaning log leb");
++		return PTR_ERR(sleb);
 +	}
-+	nodes_cnt = sleb->nodes_cnt;
-+	if (nodes_cnt > 0) {
-+		snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node,
-+				  list);
-+		if (snod->type != UBIFS_MST_NODE) {
-+			err = -EINVAL;
-+			goto out;
++
++	if (sleb->nodes_cnt == 0) {
++		err = 1;
++		goto out;
++	}
++
++	node = sleb->buf;
++	snod = list_entry(sleb->nodes.next, struct ubifs_scan_node, list);
++	if (cs_sqnum == 0) {
++		/*
++		 * This is the first log LEB we are looking at, make sure that
++		 * the first node is a commit start node. Also record its
++		 * sequence number so that UBIFS can determine where the log
++		 * ends, because all nodes which were have higher sequence
++		 * numbers.
++		 */
++		if (snod->type != UBIFS_CS_NODE) {
++			ubifs_err(c, "first log node at LEB %d:%lu is not CS node",
++				  lnum, offs);
++			goto out_dump;
 +		}
-+		memcpy(mst_node, snod->node, snod->len);
-+		offs = snod->offs;
-+	}
-+	ubifs_scan_destroy(sleb);
++		if (le64_to_cpu(node->cmt_no) != mst.cmt_no) {
++			ubifs_err(c, "first CS node at LEB %d:%lu has wrong commit number %llu expected %llu",
++				  lnum, offs,
++				  (unsigned long long)le64_to_cpu(node->cmt_no),
++				  mst.cmt_no);
++			goto out_dump;
++		}
 +
-+	lnum += 1;
++		cs_sqnum = le64_to_cpu(node->ch.sqnum);
++	}
 +
-+	sleb = ubifs_scan(c, lnum, 0, leb_buf, 1);
-+	if (IS_ERR(sleb)) {
-+		err = PTR_ERR(sleb);
++	if (snod->sqnum < cs_sqnum) {
++		/*
++		 * This means that we reached end of log and now
++		 * look to the older log data, which was already
++		 * committed but the eraseblock was not erased (UBIFS
++		 * only un-maps it). So this basically means we have to
++		 * exit with "end of log" code.
++		 */
++		err = 1;
 +		goto out;
 +	}
-+	err = -EUCLEAN;
-+	if (sleb->nodes_cnt != nodes_cnt)
-+		goto out;
-+	if (!sleb->nodes_cnt)
-+		goto out;
-+	snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node, list);
-+	if (snod->type != UBIFS_MST_NODE) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+	if (snod->offs != offs)
-+		goto out;
-+	if (memcmp((void *)mst_node + UBIFS_CH_SZ,
-+		   (void *)snod->node + UBIFS_CH_SZ,
-+		   UBIFS_MST_NODE_SZ - UBIFS_CH_SZ))
-+		goto out;
-+	err = 0;
 +
++	/* Make sure the first node sits at offset zero of the LEB */
++	if (snod->offs != 0) {
++		ubifs_err(c, "first node is not at zero offset");
++		goto out_dump;
++	}
++
++	printf("\tLOG LEB %d\n", lnum);
++	list_for_each_entry(snod, &sleb->nodes, list) {
++		if (snod->sqnum < cs_sqnum) {
++			ubifs_err(c, "bad sqnum %llu, commit sqnum %d",
++				  snod->sqnum, cs_sqnum);
++			goto out_dump;
++		}
++
++		printf("\tNODE %d", node_num++);
++		switch (snod->type) {
++		case UBIFS_CS_NODE:
++			printf(" <START COMMIT>");
++		case UBIFS_REF_NODE: {
++			printf(":\n");
++			dump_node(c, snod->node);
++			break;
++		}
++		default:
++			ubifs_err(c, "unexpected node in log");
++			goto out_dump;
++		}
++	}
++	err = !sleb->endpt;
 +out:
-+	free(leb_buf);
 +	ubifs_scan_destroy(sleb);
++	return err;
++
++out_dump:
++	ubifs_err(c, "log error detected while replaying the log at LEB %d:%lu",
++		  lnum, offs + snod->offs);
++	ubifs_scan_destroy(sleb);
++	return -EINVAL;
++
++}
++
++static int dump_log(void)
++{
++	int err, lnum, ltail_lnum, log_last;
++
++	lnum = ltail_lnum = mst.log_lnum;
++	log_last = UBIFS_LOG_LNUM + sup.log_lebs - 1;
++	printf("LOG AREA:\n");
++	while (lnum <= log_last) {
++		err = __dump_log_leb(lnum);
++		if (err == 1) {
++			if (lnum != mst.log_lnum)
++				/* We hit the end of the log */
++				break;
++
++			/*
++			 * The head of the log must always start with the
++			 * "commit start" node on a properly formatted UBIFS.
++			 * But we found no nodes at all, which means that
++			 * someting went wrong and we cannot proceed mounting
++			 * the file-system.
++			 */
++			ubifs_err(c, "no UBIFS nodes found at the log head LEB %d:%d, possibly corrupted",
++				  lnum, 0);
++			err = -EINVAL;
++		}
++		if (err)
++			goto out;
++		lnum++;
++	}
++
++	err = 0;
++out:
 +	return err;
 +}
 +
-+static int dump_master(void)
-+{
-+	int err = 0;
-+
-+	printf("MASTER: \n");
-+	err = scan_for_master(c, &mst);
-+	if (err)
-+		return err;
-+	dump_node(c, &mst);
-+	mst.flags &= cpu_to_le32(~UBIFS_MST_RCVRY);
-+
-+	c->max_sqnum       = le64_to_cpu(mst.ch.sqnum);
-+	c->highest_inum    = le64_to_cpu(mst.highest_inum);
-+	c->zroot.lnum      = le32_to_cpu(mst.root_lnum);
-+	c->zroot.offs      = le32_to_cpu(mst.root_offs);
-+	c->zroot.len       = le32_to_cpu(mst.root_len);
-+	c->gc_lnum         = le32_to_cpu(mst.gc_lnum);
-+	c->ihead_lnum      = le32_to_cpu(mst.ihead_lnum);
-+	c->ihead_offs      = le32_to_cpu(mst.ihead_offs);
-+	c->lpt_lnum        = le32_to_cpu(mst.lpt_lnum);
-+	c->lpt_offs        = le32_to_cpu(mst.lpt_offs);
-+	c->nhead_lnum      = le32_to_cpu(mst.nhead_lnum);
-+	c->nhead_offs      = le32_to_cpu(mst.nhead_offs);
-+	c->ltab_lnum       = le32_to_cpu(mst.ltab_lnum);
-+	c->ltab_offs       = le32_to_cpu(mst.ltab_offs);
-+	c->lsave_lnum      = le32_to_cpu(mst.lsave_lnum);
-+	c->lsave_offs      = le32_to_cpu(mst.lsave_offs);
-+	c->lscan_lnum      = le32_to_cpu(mst.lscan_lnum);
-+	c->lst.empty_lebs  = le32_to_cpu(mst.empty_lebs);
-+	c->lst.idx_lebs    = le32_to_cpu(mst.idx_lebs);
-+	c->lst.total_free  = le64_to_cpu(mst.total_free);
-+	c->lst.total_dirty = le64_to_cpu(mst.total_dirty);
-+	c->lst.total_used  = le64_to_cpu(mst.total_used);
-+	c->lst.total_dead  = le64_to_cpu(mst.total_dead);
-+	c->lst.total_dark  = le64_to_cpu(mst.total_dark);
-+
-+	return 0;
-+}
-+
-+static int dump()
-+{
-+	int err = 0;
- 
- 	err = dump_super();
+ static int dump()
+ {
+ 	int err = 0;
+@@ -596,9 +728,21 @@ static int dump()
  	if (err)
  		goto out;
  
-+	err = dump_master();
-+	if (err)
++	leb_buf = malloc(c->leb_size);
++	if (!leb_buf) {
++		err = -ENOMEM;
 +		goto out;
++	}
++
+ 	err = dump_master();
+ 	if (err)
+-		goto out;
++		goto free;
++
++	err = dump_log();
++	if (err)
++		goto free;
++free:
++	free(leb_buf);
  out:
--	deinit();
  	return err;
  }
- 
 -- 
 1.8.4.2
