@@ -1,15 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRz0O-0005lY-C1
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:45:58 +0000
+ id 1ZRz0N-0005ja-9J
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:45:59 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <dedekind1@gmail.com>, <richard@nod.at>, <computersforpeace@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 12/27] ubifs: copy some important functions in key.h from
- kernel to ubifs-utils
-Date: Wed, 19 Aug 2015 16:39:17 +0800
-Message-ID: <1439973572-12489-13-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 10/27] ubifs: introduce list.h
+Date: Wed, 19 Aug 2015 16:39:15 +0800
+Message-ID: <1439973572-12489-11-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -23,111 +22,503 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We need some more functions in key.h, then copy it from kernel.
+Copy the list.h from kernel to ubifs-utils/
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/include/key.h | 76 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 75 insertions(+), 1 deletion(-)
+ ubifs-utils/include/list.h | 484 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 484 insertions(+)
+ create mode 100644 ubifs-utils/include/list.h
 
-diff --git a/ubifs-utils/include/key.h b/ubifs-utils/include/key.h
-index d3a02d4..779981a 100644
---- a/ubifs-utils/include/key.h
-+++ b/ubifs-utils/include/key.h
-@@ -37,6 +37,8 @@
- #ifndef __UBIFS_KEY_H__
- #define __UBIFS_KEY_H__
- 
-+#include "defs.h"
-+
- /**
-  * key_mask_hash - mask a valid hash value.
-  * @val: value to be masked
-@@ -107,7 +109,7 @@ static inline void ino_key_init(union ubifs_key *key, ino_t inum)
-  * @inum: parent inode number
-  * @nm: direntry name and length
-  */
--static inline void dent_key_init(const struct ubifs_info *c,
-+static inline void dent_key_init(const struct ubifs_info *c __attribute__((unused)),
- 				 union ubifs_key *key, ino_t inum,
- 				 const struct qstr *nm)
- {
-@@ -186,4 +188,76 @@ static inline int keys_cmp(const union ubifs_key *key1,
- 	return 0;
- }
- 
-+/**
-+ * key_read - transform a key to in-memory format.
-+ * @c: UBIFS file-system description object
-+ * @from: the key to transform
-+ * @to: the key to store the result
-+ */
-+static inline void key_read(const struct ubifs_info *c __attribute__((unused)), const void *from,
-+			    union ubifs_key *to)
-+{
-+	const union ubifs_key *f = from;
-+
-+	to->u32[0] = le32_to_cpu(f->j32[0]);
-+	to->u32[1] = le32_to_cpu(f->j32[1]);
-+}
-+
-+/**
-+ * invalid_key_init - initialize invalid node key.
-+ * @c: UBIFS file-system description object
-+ * @key: key to initialize
+diff --git a/ubifs-utils/include/list.h b/ubifs-utils/include/list.h
+new file mode 100644
+index 0000000..0cffa33
+--- /dev/null
++++ b/ubifs-utils/include/list.h
+@@ -0,0 +1,484 @@
++/*
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public
++ * License v2 as published by the Free Software Foundation.
 + *
-+ * This is a helper function which marks a @key object as invalid.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public
++ * License along with this program; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 021110-1307, USA.
 + */
-+static inline void invalid_key_init(const struct ubifs_info *c __attribute__((unused)),
-+				    union ubifs_key *key)
-+{
-+	key->u32[0] = 0xDEADBEAF;
-+	key->u32[1] = UBIFS_INVALID_KEY;
-+}
-+/**
-+ * key_type - get key type.
-+ * @c: UBIFS file-system description object
-+ * @key: key to get type of
++
++#ifndef _LINUX_LIST_H
++#define _LINUX_LIST_H
++
++#define LIST_POISON1  ((struct list_head *) 0x00100100)
++#define LIST_POISON2  ((struct list_head *) 0x00200200)
++
++/*
++ * Simple doubly linked list implementation.
++ *
++ * Some of the internal functions ("__xxx") are useful when
++ * manipulating whole lists rather than single entries, as
++ * sometimes we already know the next/prev entries and we can
++ * generate better code by using them directly rather than
++ * using the generic single-entry routines.
 + */
-+static inline int key_type(const struct ubifs_info *c __attribute__((unused)),
-+			   const union ubifs_key *key)
++
++struct list_head {
++	struct list_head *next, *prev;
++};
++
++#define LIST_HEAD_INIT(name) { &(name), &(name) }
++
++#define LIST_HEAD(name) \
++	struct list_head name = LIST_HEAD_INIT(name)
++
++static inline void INIT_LIST_HEAD(struct list_head *list)
 +{
-+	return key->u32[1] >> UBIFS_S_KEY_BLOCK_BITS;
++	list->next = list;
++	list->prev = list;
 +}
 +
 +/*
-+ * key_hash - get directory entry hash.
-+ * @c: UBIFS file-system description object
-+ * @key: the key to get hash from
++ * Insert a new entry between two known consecutive entries.
++ *
++ * This is only for internal list manipulation where we know
++ * the prev/next entries already!
 + */
-+static inline uint32_t key_hash(const struct ubifs_info *c __attribute__((unused)),
-+				const union ubifs_key *key)
++#ifndef CONFIG_DEBUG_LIST
++static inline void __list_add(struct list_head *xnew,
++			      struct list_head *prev,
++			      struct list_head *next)
 +{
-+	return key->u32[1] & UBIFS_S_KEY_HASH_MASK;
++	next->prev = xnew;
++	xnew->next = next;
++	xnew->prev = prev;
++	prev->next = xnew;
++}
++#else
++extern void __list_add(struct list_head *xnew,
++			      struct list_head *prev,
++			      struct list_head *next);
++#endif
++
++/**
++ * list_add - add a new entry
++ * @new: new entry to be added
++ * @head: list head to add it after
++ *
++ * Insert a new entry after the specified head.
++ * This is good for implementing stacks.
++ */
++#ifndef CONFIG_DEBUG_LIST
++static inline void list_add(struct list_head *xnew, struct list_head *head)
++{
++	__list_add(xnew, head, head->next);
++}
++#else
++extern void list_add(struct list_head *xnew, struct list_head *head);
++#endif
++
++
++/**
++ * list_add_tail - add a new entry
++ * @new: new entry to be added
++ * @head: list head to add it before
++ *
++ * Insert a new entry before the specified head.
++ * This is useful for implementing queues.
++ */
++static inline void list_add_tail(struct list_head *xnew, struct list_head *head)
++{
++	__list_add(xnew, head->prev, head);
++}
++
++/*
++ * Delete a list entry by making the prev/next entries
++ * point to each other.
++ *
++ * This is only for internal list manipulation where we know
++ * the prev/next entries already!
++ */
++static inline void __list_del(struct list_head * prev, struct list_head * next)
++{
++	next->prev = prev;
++	prev->next = next;
 +}
 +
 +/**
-+ * key_inum - fetch inode number from key.
-+ * @c: UBIFS file-system description object
-+ * @k: key to fetch inode number from
++ * list_del - deletes entry from list.
++ * @entry: the element to delete from the list.
++ * Note: list_empty on entry does not return true after this, the entry is
++ * in an undefined state.
 + */
-+static inline ino_t key_inum(const struct ubifs_info *c __attribute__((unused)), const void *k)
++#ifndef CONFIG_DEBUG_LIST
++static inline void list_del(struct list_head *entry)
 +{
-+	const union ubifs_key *key = k;
++	__list_del(entry->prev, entry->next);
++	entry->next = LIST_POISON1;
++	entry->prev = LIST_POISON2;
++}
++#else
++extern void list_del(struct list_head *entry);
++#endif
 +
-+	return key->u32[0];
++/**
++ * list_replace - replace old entry by new one
++ * @old : the element to be replaced
++ * @new : the new element to insert
++ * Note: if 'old' was empty, it will be overwritten.
++ */
++static inline void list_replace(struct list_head *old,
++				struct list_head *xnew)
++{
++	xnew->next = old->next;
++	xnew->next->prev = xnew;
++	xnew->prev = old->prev;
++	xnew->prev->next = xnew;
++}
++
++static inline void list_replace_init(struct list_head *old,
++					struct list_head *xnew)
++{
++	list_replace(old, xnew);
++	INIT_LIST_HEAD(old);
++}
++/**
++ * list_del_init - deletes entry from list and reinitialize it.
++ * @entry: the element to delete from the list.
++ */
++static inline void list_del_init(struct list_head *entry)
++{
++	__list_del(entry->prev, entry->next);
++	INIT_LIST_HEAD(entry);
 +}
 +
 +/**
-+ * key_block - get data block number.
-+ * @c: UBIFS file-system description object
-+ * @key: the key to get the block number from
++ * list_move - delete from one list and add as another's head
++ * @list: the entry to move
++ * @head: the head that will precede our entry
 + */
-+static inline unsigned int key_block(const struct ubifs_info *c __attribute__((unused)),
-+				     const union ubifs_key *key)
++static inline void list_move(struct list_head *list, struct list_head *head)
 +{
-+	return key->u32[1] & UBIFS_S_KEY_BLOCK_MASK;
++        __list_del(list->prev, list->next);
++        list_add(list, head);
 +}
- #endif /* !__UBIFS_KEY_H__ */
++
++/**
++ * list_move_tail - delete from one list and add as another's tail
++ * @list: the entry to move
++ * @head: the head that will follow our entry
++ */
++static inline void list_move_tail(struct list_head *list,
++				  struct list_head *head)
++{
++        __list_del(list->prev, list->next);
++        list_add_tail(list, head);
++}
++
++/**
++ * list_is_last - tests whether @list is the last entry in list @head
++ * @list: the entry to test
++ * @head: the head of the list
++ */
++static inline int list_is_last(const struct list_head *list,
++				const struct list_head *head)
++{
++	return list->next == head;
++}
++
++/**
++ * list_empty - tests whether a list is empty
++ * @head: the list to test.
++ */
++static inline int list_empty(const struct list_head *head)
++{
++	return head->next == head;
++}
++
++/**
++ * list_empty_careful - tests whether a list is empty and not being modified
++ * @head: the list to test
++ *
++ * Description:
++ * tests whether a list is empty _and_ checks that no other CPU might be
++ * in the process of modifying either member (next or prev)
++ *
++ * NOTE: using list_empty_careful() without synchronization
++ * can only be safe if the only activity that can happen
++ * to the list entry is list_del_init(). Eg. it cannot be used
++ * if another CPU could re-list_add() it.
++ */
++static inline int list_empty_careful(const struct list_head *head)
++{
++	struct list_head *next = head->next;
++	return (next == head) && (next == head->prev);
++}
++
++static inline void __list_splice(const struct list_head *list,
++				 struct list_head *prev,
++				 struct list_head *next)
++{
++	struct list_head *first = list->next;
++	struct list_head *last = list->prev;
++
++	first->prev = prev;
++	prev->next = first;
++
++	last->next = next;
++	next->prev = last;
++}
++
++/**
++ * list_splice - join two lists
++ * @list: the new list to add.
++ * @head: the place to add it in the first list.
++ */
++static inline void list_splice(struct list_head *list, struct list_head *head)
++{
++	if (!list_empty(list))
++		__list_splice(list, head, head->next);
++}
++
++/**
++ * list_splice_tail - join two lists, each list being a queue
++ * @list: the new list to add.
++ * @head: the place to add it in the first list.
++ */
++static inline void list_splice_tail(struct list_head *list,
++				struct list_head *head)
++{
++	if (!list_empty(list))
++		__list_splice(list, head->prev, head);
++}
++
++/**
++ * list_splice_init - join two lists and reinitialise the emptied list.
++ * @list: the new list to add.
++ * @head: the place to add it in the first list.
++ *
++ * The list at @list is reinitialised
++ */
++static inline void list_splice_init(struct list_head *list,
++				    struct list_head *head)
++{
++	if (!list_empty(list)) {
++		__list_splice(list, head, head->next);
++		INIT_LIST_HEAD(list);
++	}
++}
++
++/**
++ * list_splice_tail_init - join two lists and reinitialise the emptied list
++ * @list: the new list to add.
++ * @head: the place to add it in the first list.
++ *
++ * Each of the lists is a queue.
++ * The list at @list is reinitialised
++ */
++static inline void list_splice_tail_init(struct list_head *list,
++					 struct list_head *head)
++{
++	if (!list_empty(list)) {
++		__list_splice(list, head->prev, head);
++		INIT_LIST_HEAD(list);
++	}
++}
++
++/**
++ * list_entry - get the struct for this entry
++ * @ptr:	the &struct list_head pointer.
++ * @type:	the type of the struct this is embedded in.
++ * @member:	the name of the list_struct within the struct.
++ */
++#define list_entry(ptr, type, member) \
++	container_of(ptr, type, member)
++
++/**
++ * list_first_entry - get the first element from a list
++ * @ptr:	the list head to take the element from.
++ * @type:	the type of the struct this is embedded in.
++ * @member:	the name of the list_struct within the struct.
++ *
++ * Note, that list is expected to be not empty.
++ */
++#define list_first_entry(ptr, type, member) \
++	list_entry((ptr)->next, type, member)
++
++/**
++ * list_next_entry - get the next element from a list
++ * @ptr:	the list head to take the element from.
++ * @member:	the name of the list_struct within the struct.
++ *
++ * Note, that next is expected to be not null.
++ */
++#define list_next_entry(ptr, member) \
++	list_entry((ptr)->member.next, typeof(*ptr), member)
++
++/**
++ * list_for_each	-	iterate over a list
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @head:	the head for your list.
++ */
++#define list_for_each(pos, head) \
++	for (pos = (head)->next; pos != (head); \
++        	pos = pos->next)
++
++/**
++ * __list_for_each	-	iterate over a list
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @head:	the head for your list.
++ *
++ * This variant differs from list_for_each() in that it's the
++ * simplest possible list iteration code, no prefetching is done.
++ * Use this for code that knows the list to be very short (empty
++ * or 1 entry) most of the time.
++ */
++#define __list_for_each(pos, head) \
++	for (pos = (head)->next; pos != (head); pos = pos->next)
++
++/**
++ * list_for_each_prev	-	iterate over a list backwards
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @head:	the head for your list.
++ */
++#define list_for_each_prev(pos, head) \
++	for (pos = (head)->prev; pos != (head); \
++        	pos = pos->prev)
++
++/**
++ * list_for_each_safe - iterate over a list safe against removal of list entry
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @n:		another &struct list_head to use as temporary storage
++ * @head:	the head for your list.
++ */
++#define list_for_each_safe(pos, n, head) \
++	for (pos = (head)->next, n = pos->next; pos != (head); \
++		pos = n, n = pos->next)
++
++/**
++ * list_for_each_entry	-	iterate over list of given type
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_struct within the struct.
++ */
++#define list_for_each_entry(pos, head, member)				\
++	for (pos = list_entry((head)->next, typeof(*pos), member);	\
++	     &pos->member != (head); 	\
++	     pos = list_entry(pos->member.next, typeof(*pos), member))
++
++/**
++ * list_for_each_entry_reverse - iterate backwards over list of given type.
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_struct within the struct.
++ */
++#define list_for_each_entry_reverse(pos, head, member)			\
++	for (pos = list_entry((head)->prev, typeof(*pos), member);	\
++	     &pos->member != (head); 	\
++	     pos = list_entry(pos->member.prev, typeof(*pos), member))
++
++/**
++ * list_prepare_entry - prepare a pos entry for use in list_for_each_entry_continue
++ * @pos:	the type * to use as a start point
++ * @head:	the head of the list
++ * @member:	the name of the list_struct within the struct.
++ *
++ * Prepares a pos entry for use as a start point in list_for_each_entry_continue.
++ */
++#define list_prepare_entry(pos, head, member) \
++	((pos) ? : list_entry(head, typeof(*pos), member))
++
++/**
++ * list_for_each_entry_continue - continue iteration over list of given type
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_struct within the struct.
++ *
++ * Continue to iterate over list of given type, continuing after
++ * the current position.
++ */
++#define list_for_each_entry_continue(pos, head, member) 		\
++	for (pos = list_entry(pos->member.next, typeof(*pos), member);	\
++	     &pos->member != (head);	\
++	     pos = list_entry(pos->member.next, typeof(*pos), member))
++
++/**
++ * list_for_each_entry_from - iterate over list of given type from the current point
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_struct within the struct.
++ *
++ * Iterate over list of given type, continuing from current position.
++ */
++#define list_for_each_entry_from(pos, head, member) 			\
++	for (; &pos->member != (head);	\
++	     pos = list_entry(pos->member.next, typeof(*pos), member))
++
++/**
++ * list_for_each_entry_safe - iterate over list of given type safe against removal of list entry
++ * @pos:	the type * to use as a loop cursor.
++ * @n:		another type * to use as temporary storage
++ * @head:	the head for your list.
++ * @member:	the name of the list_struct within the struct.
++ */
++#define list_for_each_entry_safe(pos, n, head, member)			\
++	for (pos = list_entry((head)->next, typeof(*pos), member),	\
++		n = list_entry(pos->member.next, typeof(*pos), member);	\
++	     &pos->member != (head); 					\
++	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
++
++/**
++ * list_for_each_entry_safe_continue
++ * @pos:	the type * to use as a loop cursor.
++ * @n:		another type * to use as temporary storage
++ * @head:	the head for your list.
++ * @member:	the name of the list_struct within the struct.
++ *
++ * Iterate over list of given type, continuing after current point,
++ * safe against removal of list entry.
++ */
++#define list_for_each_entry_safe_continue(pos, n, head, member) 		\
++	for (pos = list_entry(pos->member.next, typeof(*pos), member), 		\
++		n = list_entry(pos->member.next, typeof(*pos), member);		\
++	     &pos->member != (head);						\
++	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
++
++/**
++ * list_for_each_entry_safe_from
++ * @pos:	the type * to use as a loop cursor.
++ * @n:		another type * to use as temporary storage
++ * @head:	the head for your list.
++ * @member:	the name of the list_struct within the struct.
++ *
++ * Iterate over list of given type from current point, safe against
++ * removal of list entry.
++ */
++#define list_for_each_entry_safe_from(pos, n, head, member) 			\
++	for (n = list_entry(pos->member.next, typeof(*pos), member);		\
++	     &pos->member != (head);						\
++	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
++
++/**
++ * list_for_each_entry_safe_reverse
++ * @pos:	the type * to use as a loop cursor.
++ * @n:		another type * to use as temporary storage
++ * @head:	the head for your list.
++ * @member:	the name of the list_struct within the struct.
++ *
++ * Iterate backwards over list of given type, safe against removal
++ * of list entry.
++ */
++#define list_for_each_entry_safe_reverse(pos, n, head, member)		\
++	for (pos = list_entry((head)->prev, typeof(*pos), member),	\
++		n = list_entry(pos->member.prev, typeof(*pos), member);	\
++	     &pos->member != (head); 					\
++	     pos = n, n = list_entry(n->member.prev, typeof(*n), member))
++
++#endif
 -- 
 1.8.4.2
