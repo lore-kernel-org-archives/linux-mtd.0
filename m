@@ -1,24 +1,21 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from mail-yk0-x229.google.com ([2607:f8b0:4002:c07::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRsL2-0006xG-IH
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 01:38:50 +0000
-Message-ID: <55D3DDD1.8060405@huawei.com>
-Date: Wed, 19 Aug 2015 09:37:21 +0800
-From: Sheng Yong <shengyong1@huawei.com>
+ id 1ZRtFe-0002tu-7V
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 02:37:18 +0000
+Received: by ykfw73 with SMTP id w73so124871305ykf.3
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2015 19:36:56 -0700 (PDT)
 MIME-Version: 1.0
-To: Richard Weinberger <richard.weinberger@gmail.com>, =?UTF-8?B?QW5kcmVh?=
- =?UTF-8?B?cyBHcsO8bmJhY2hlcg==?= <andreas.gruenbacher@gmail.com>
-CC: <snijsure@grid-net.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- <ben.shelton@ni.com>, <terry.wilcox@ni.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- <mkl@pengutronix.de>, <gratian.crisan@ni.com>, <brad.mouring@ni.com>
-Subject: Re: [kernel.org bug 103071] Dead "security.*" xattr code in ubifs
-References: <CAHpGcM+bkFA-UDM0FKwH=FkS9+TWv_Br7nWJXSpKDquo5n_gFw@mail.gmail.com>
- <CAFLxGvxPGZoRX3Ft_g59fzfLhoOmEES=q-oPBmYuGVBzn-dRUA@mail.gmail.com>
- <55D3D6BB.3030307@huawei.com>
-In-Reply-To: <55D3D6BB.3030307@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150819003217.GQ60523@google.com>
+References: <20150707072345.GA20060@vaishali-Ideapad-Z570>
+ <20150819003217.GQ60523@google.com>
+Date: Wed, 19 Aug 2015 08:06:56 +0530
+Message-ID: <CAK-LDbL65Q=fJ0mDqE25mEiAPjbvg5NXZA+cYP0A=DV_CP5xwg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: denali: Use module_pci_driver
+From: Vaishali Thakkar <vthakkar1994@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Aug 19, 2015 at 6:02 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+>
+> On Tue, Jul 07, 2015 at 12:53:45PM +0530, Vaishali Thakkar wrote:
+> > Use module_pci_driver for drivers whose init and exit functions
+> > only register and unregister, respectively.
+> >
+> > A simplified version of the Coccinelle semantic patch that performs
+> > this transformation is as follows:
+> >
+> > @a@
+> > identifier f, x;
+> > @@
+> > -static f(...) { return pci_register_driver(&x); }
+> >
+> > @b depends on a@
+> > identifier e, a.x;
+> > @@
+> > -static e(...) { pci_unregister_driver(&x); }
+> >
+> > @c depends on a && b@
+> > identifier a.f;
+> > declarer name module_init;
+> > @@
+> > -module_init(f);
+> >
+> > @d depends on a && b && c@
+> > identifier b.e, a.x;
+> > declarer name module_exit;
+> > declarer name module_pci_driver;
+> > @@
+> > -module_exit(e);
+> > +module_pci_driver(x);
+> >
+> > Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+>
+> It seems I got 3 independent versions of the same patch... I pushed the
+> most recent one, then noticed this one. Thanks anyway.
+
+No problem. It's fine with me.
+
+> Brian
 
 
-On 8/19/2015 9:07 AM, Sheng Yong wrote:
-> Hi,
-> 
-> On 8/19/2015 4:55 AM, Richard Weinberger wrote:
->> Andreas,
->>
->> On Tue, Aug 18, 2015 at 2:15 PM, Andreas Grünbacher
->> <andreas.gruenbacher@gmail.com> wrote:
->>> Hello,
->>>
->>> FYI, I've filed the following bug report against ubifs:
->>>
->>>> ubifs sets sb->s_xattr to ubifs_xattr_handlers which contains a handler for
->>>> "security.*" xattrs. The s_xattr handlers are never used because ubifs uses
->>>> its own ubifs_{get,set,list,remove}xattr inode operations instead of
->>>> generic_{get,set,list,remove}xattr inode operations though.
->>>
->>> https://bugzilla.kernel.org/show_bug.cgi?id=103071
->>
->> Thanks for reporting.
-My bad for didn't reply at the right line :(
-> This is because UBIFS did not implement extended attribute in the geneirc way
-> (by calling generic_*xattr()). We could create an xattr_handler to have these
-> dead functions called (in fact, I did that), but doing this seems just another
-> encapsulation and makes no sense. So I think we could remove these dead code
-> directly.
-> 
-> thanks,
-> Sheng
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+
+
+-- 
+Vaishali
