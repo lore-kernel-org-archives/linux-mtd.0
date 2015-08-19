@@ -1,17 +1,19 @@
-Received: from mail-pd0-f173.google.com ([209.85.192.173])
+Received: from mail-pa0-f43.google.com ([209.85.220.43])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZS07f-00060o-Le
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 09:57:32 +0000
-Received: by pdrh1 with SMTP id h1so80003978pdr.0
- for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2015 02:57:10 -0700 (PDT)
+ id 1ZS07j-00062M-CH
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 09:57:35 +0000
+Received: by pacgr6 with SMTP id gr6so154254488pac.2
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2015 02:57:14 -0700 (PDT)
 From: Jagan Teki <jteki@openedev.com>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, Jagan Teki <jteki@openedev.com>,
+ Hou Zhiqiang <B48286@freescale.com>,
+ "Mingkai.Hu" <Mingkai.Hu@freescale.com>,
  David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>
-Subject: [PATCH 2/3] mtd: spi-nor: Zap unneeded write_enable from write_reg
-Date: Wed, 19 Aug 2015 15:26:44 +0530
-Message-Id: <1439978205-6092-2-git-send-email-jteki@openedev.com>
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status register support
+Date: Wed, 19 Aug 2015 15:26:45 +0530
+Message-Id: <1439978205-6092-3-git-send-email-jteki@openedev.com>
 In-Reply-To: <1439978205-6092-1-git-send-email-jteki@openedev.com>
 References: <1439978205-6092-1-git-send-email-jteki@openedev.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,138 +25,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since write enabling shall do with buf and len without
-need of exctra write_enable argument, hence removed the
-same from write_reg.
+The clear flag status register operation was required by Micron
+SPI-NOR chips, which support FSR. And if an error bit of FSR
+have been set like protection, voltage, erase, and program,
+it must be cleared by the clear FSR operation.
 
 Signed-off-by: Jagan Teki <jteki@openedev.com>
+Cc: Hou Zhiqiang <B48286@freescale.com>
+Cc: Mingkai.Hu <Mingkai.Hu@freescale.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Han Xu <han.xu@freescale.com>
 ---
- drivers/mtd/devices/m25p80.c      |  3 +--
- drivers/mtd/spi-nor/fsl-quadspi.c |  3 +--
- drivers/mtd/spi-nor/spi-nor.c     | 16 ++++++++--------
- include/linux/mtd/spi-nor.h       |  3 +--
- 4 files changed, 11 insertions(+), 14 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 35 +++++++++++++++++++++++++++++++----
+ include/linux/mtd/spi-nor.h   |  9 +++++++++
+ 2 files changed, 40 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 9cd3631..ab69d2d 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -62,8 +62,7 @@ static int m25p_cmdsz(struct spi_nor *nor)
- 	return 1 + nor->addr_width;
- }
- 
--static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
--			int wr_en)
-+static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- {
- 	struct m25p *flash = nor->priv;
- 	struct spi_device *spi = flash->spi;
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index d32b7e0..2c8c578 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -798,8 +798,7 @@ static int fsl_qspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	return 0;
- }
- 
--static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
--			int write_enable)
-+static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- {
- 	struct fsl_qspi *q = nor->priv;
- 	int ret;
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 3e198b4..f954d03 100644
+index f954d03..c5c472d5 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -143,7 +143,7 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
- static inline int write_sr(struct spi_nor *nor, u8 val)
- {
- 	nor->cmd_buf[0] = val;
--	return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 1, 0);
-+	return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 1);
+@@ -100,6 +100,28 @@ static int read_fsr(struct spi_nor *nor)
  }
  
  /*
-@@ -152,7 +152,7 @@ static inline int write_sr(struct spi_nor *nor, u8 val)
-  */
- static inline int write_enable(struct spi_nor *nor)
++ * Read the clear flag status register.
++ * The clear flag status register operation was required by Micron
++ * SPI-NOR chips, which support FSR. And if an error bit of FSR
++ * have been set like protection, voltage, erase, and program,
++ * it must be cleared by the clear FSR operation.
++ * Returns zero for FSR bits cleared and negative if error occurred.
++ */
++static int read_cfsr(struct spi_nor *nor)
++{
++	int ret;
++	u8 val;
++
++	ret = nor->read_reg(nor, SPINOR_OP_RDCFSR, &val, 1);
++	if (ret < 0) {
++		pr_err("error %d reading CFSR\n", ret);
++		return ret;
++	}
++
++	return val;
++}
++
++/*
+  * Read configuration register, returning its value in the
+  * location. Return the configuration register value.
+  * Returns negative if error occured.
+@@ -209,10 +231,15 @@ static inline int spi_nor_sr_ready(struct spi_nor *nor)
+ static inline int spi_nor_fsr_ready(struct spi_nor *nor)
  {
--	return nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0, 0);
-+	return nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
+ 	int fsr = read_fsr(nor);
+-	if (fsr < 0)
+-		return fsr;
+-	else
+-		return fsr & FSR_READY;
++	if (fsr & FSR_ERR_MASK) {
++		pr_err("flag status(0x%x) error occured\n", fsr);
++		int cfsr = read_cfsr(nor);
++		if (cfsr < 0)
++			return cfsr;
++		return -1;
++	}
++
++	return fsr & FSR_READY;
  }
  
- /*
-@@ -160,7 +160,7 @@ static inline int write_enable(struct spi_nor *nor)
-  */
- static inline int write_disable(struct spi_nor *nor)
- {
--	return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0, 0);
-+	return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
- }
- 
- static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
-@@ -186,7 +186,7 @@ static inline int set_4byte(struct spi_nor *nor, struct flash_info *info,
- 			write_enable(nor);
- 
- 		cmd = enable ? SPINOR_OP_EN4B : SPINOR_OP_EX4B;
--		status = nor->write_reg(nor, cmd, NULL, 0, 0);
-+		status = nor->write_reg(nor, cmd, NULL, 0);
- 		if (need_wren)
- 			write_disable(nor);
- 
-@@ -194,7 +194,7 @@ static inline int set_4byte(struct spi_nor *nor, struct flash_info *info,
- 	default:
- 		/* Spansion style */
- 		nor->cmd_buf[0] = enable << 7;
--		return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1, 0);
-+		return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1);
- 	}
- }
- static inline int spi_nor_sr_ready(struct spi_nor *nor)
-@@ -265,7 +265,7 @@ static int erase_chip(struct spi_nor *nor)
- {
- 	dev_dbg(nor->dev, " %lldKiB\n", (long long)(nor->mtd->size >> 10));
- 
--	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0, 0);
-+	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
- }
- 
- static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-@@ -894,7 +894,7 @@ static int write_sr_cr(struct spi_nor *nor, u16 val)
- 	nor->cmd_buf[0] = val & 0xff;
- 	nor->cmd_buf[1] = (val >> 8);
- 
--	return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 2, 0);
-+	return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 2);
- }
- 
- static int spansion_quad_enable(struct spi_nor *nor)
-@@ -936,7 +936,7 @@ static int micron_quad_enable(struct spi_nor *nor)
- 
- 	/* set EVCR, enable quad I/O */
- 	nor->cmd_buf[0] = val & ~EVCR_QUAD_EN_MICRON;
--	ret = nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
-+	ret = nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1);
- 	if (ret < 0) {
- 		dev_err(nor->dev, "error while writing EVCR register\n");
- 		return ret;
+ static int spi_nor_ready(struct spi_nor *nor)
 diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index e540952..c5a58c4 100644
+index c5a58c4..36c1681 100644
 --- a/include/linux/mtd/spi-nor.h
 +++ b/include/linux/mtd/spi-nor.h
-@@ -182,8 +182,7 @@ struct spi_nor {
- 	int (*write_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
- 			  u8 *buf, size_t len);
- 	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
--	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
--			int write_enable);
-+	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+@@ -35,6 +35,7 @@
+ #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
+ #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
+ #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
++#define SPINOR_OP_RDCFSR	0x50	/* Read clear flag status register */
  
- 	int (*read)(struct spi_nor *nor, loff_t from,
- 			size_t len, size_t *retlen, u_char *read_buf);
+ /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+ #define SPINOR_OP_READ4		0x13	/* Read data bytes (low frequency) */
+@@ -74,6 +75,14 @@
+ /* Enhanced Volatile Configuration Register bits */
+ #define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
+ 
++/* Flag Status Register Error bits */
++#define FSR_ERR_PROT		0x2	/* Protection */
++#define FSR_ERR_VOLT		0x8	/* Voltage on Vpp */
++#define FSR_ERR_PROG		0x10	/* Program operation */
++#define FSR_ERR_ERASE		0x20	/* Erase operation */
++#define FSR_ERR_MASK		(FSR_ERR_PROT | FSR_ERR_VOLT | \
++				FSR_ERR_PROG | FSR_ERR_ERASE)
++
+ /* Flag Status Register bits */
+ #define FSR_READY		0x80
+ 
 -- 
 1.9.1
