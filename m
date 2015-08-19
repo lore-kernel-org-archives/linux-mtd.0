@@ -1,21 +1,17 @@
-Received: from mail-yk0-x229.google.com ([2607:f8b0:4002:c07::229])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRtFe-0002tu-7V
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 02:37:18 +0000
-Received: by ykfw73 with SMTP id w73so124871305ykf.3
- for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2015 19:36:56 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20150819003217.GQ60523@google.com>
-References: <20150707072345.GA20060@vaishali-Ideapad-Z570>
- <20150819003217.GQ60523@google.com>
-Date: Wed, 19 Aug 2015 08:06:56 +0530
-Message-ID: <CAK-LDbL65Q=fJ0mDqE25mEiAPjbvg5NXZA+cYP0A=DV_CP5xwg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: denali: Use module_pci_driver
-From: Vaishali Thakkar <vthakkar1994@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+ id 1ZRvJg-0000jx-93
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 04:49:36 +0000
+From: Archit Taneja <architt@codeaurora.org>
+To: linux-mtd@lists.infradead.org, dehrenberg@google.com, cernekee@gmail.com,
+ computersforpeace@gmail.com, sboyd@codeaurora.org
+Cc: linux-arm-msm@vger.kernel.org, agross@codeaurora.org,
+ linux-kernel@vger.kernel.org, Archit Taneja <architt@codeaurora.org>
+Subject: [PATCH v4 0/5] mtd: Qualcomm NAND controller driver
+Date: Wed, 19 Aug 2015 10:19:01 +0530
+Message-Id: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+In-Reply-To: <1438578498-32254-1-git-send-email-architt@codeaurora.org>
+References: <1438578498-32254-1-git-send-email-architt@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +21,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 19, 2015 at 6:02 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
->
-> On Tue, Jul 07, 2015 at 12:53:45PM +0530, Vaishali Thakkar wrote:
-> > Use module_pci_driver for drivers whose init and exit functions
-> > only register and unregister, respectively.
-> >
-> > A simplified version of the Coccinelle semantic patch that performs
-> > this transformation is as follows:
-> >
-> > @a@
-> > identifier f, x;
-> > @@
-> > -static f(...) { return pci_register_driver(&x); }
-> >
-> > @b depends on a@
-> > identifier e, a.x;
-> > @@
-> > -static e(...) { pci_unregister_driver(&x); }
-> >
-> > @c depends on a && b@
-> > identifier a.f;
-> > declarer name module_init;
-> > @@
-> > -module_init(f);
-> >
-> > @d depends on a && b && c@
-> > identifier b.e, a.x;
-> > declarer name module_exit;
-> > declarer name module_pci_driver;
-> > @@
-> > -module_exit(e);
-> > +module_pci_driver(x);
-> >
-> > Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
->
-> It seems I got 3 independent versions of the same patch... I pushed the
-> most recent one, then noticed this one. Thanks anyway.
+Add support for the NAND controller driver for SoC's that contain EBI2.
+For now, the only SoC upstream that has EBI2 is IPQ806x.
 
-No problem. It's fine with me.
+The original version was posted a while back. The main comments were
+about the driver not being able to use nand_bbt. This was because the
+controller could read factory bad block markers only in RAW mode. This
+forced us to implement our own versions of chip->block_bad and
+chip->blobk_markbad, and also we had to skip creating a BBT.
 
-> Brian
+Discussions with Kevin Cernekee concluded that having a new BBT flag
+that incorporates this controller's special requirement is a possible
+option.
 
+The new version makes use of this flag and now uses nand_bbt, at the
+cost of implement read_oob_raw and write_oob_raw ops.
 
+The patchset requires the v6 ADM dmaengine patches posted by Andy:
 
+https://lkml.org/lkml/2015/3/17/19
+
+v4:
+- Some more fixes. Mentioned in patch's changelog.
+
+v3:
+- Various fixes and clean ups suggested by Stephen Boyd.
+
+v2:
+- Added a new BBT flag that allows us to read BBM in raw mode
+- reduce memcpy-s in the driver
+- some refactor and clean ups because of above changes
+
+v1:
+- original series:
+  https://lkml.org/lkml/2015/1/16/317
+
+Archit Taneja (5):
+  mtd: nand: Create a BBT flag to access bad block markers in raw mode
+  mtd: nand: Qualcomm NAND controller driver
+  dt/bindings: qcom_nandc: Add DT bindings
+  arm: qcom: dts: Add NAND controller node for ipq806x
+  arm: qcom: dts: Enable NAND node on IPQ8064 AP148 platform
+
+ .../devicetree/bindings/mtd/qcom_nandc.txt         |   49 +
+ arch/arm/boot/dts/qcom-ipq8064-ap148.dts           |   40 +
+ arch/arm/boot/dts/qcom-ipq8064.dtsi                |   15 +
+ drivers/mtd/nand/Kconfig                           |    7 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/nand_base.c                       |    6 +-
+ drivers/mtd/nand/nand_bbt.c                        |    6 +-
+ drivers/mtd/nand/qcom_nandc.c                      | 1910 ++++++++++++++++++++
+ include/linux/mtd/bbm.h                            |    7 +
+ 9 files changed, 2039 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+ create mode 100644 drivers/mtd/nand/qcom_nandc.c
 
 -- 
-Vaishali
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+hosted by The Linux Foundation
