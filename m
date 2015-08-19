@@ -1,24 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRy9b-0006aH-LO
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 07:51:24 +0000
-Subject: Re: [kernel.org bug 103071] Dead "security.*" xattr code in ubifs
-To: Sheng Yong <shengyong1@huawei.com>,
- =?UTF-8?Q?Andreas_Gr=c3=bcnbacher?= <andreas.gruenbacher@gmail.com>
-References: <CAHpGcM+bkFA-UDM0FKwH=FkS9+TWv_Br7nWJXSpKDquo5n_gFw@mail.gmail.com>
- <CAFLxGvxPGZoRX3Ft_g59fzfLhoOmEES=q-oPBmYuGVBzn-dRUA@mail.gmail.com>
- <55D3D6BB.3030307@huawei.com> <55D3DDD1.8060405@huawei.com>
- <55D42959.5070605@nod.at> <55D431E8.5040509@huawei.com>
-Cc: snijsure@grid-net.com, Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- mkl@pengutronix.de, gratian.crisan@ni.com, brad.mouring@ni.com
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55D43564.3060009@nod.at>
-Date: Wed, 19 Aug 2015 09:51:00 +0200
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRyoQ-0005JK-00
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:33:37 +0000
+Message-ID: <55D43DE2.70008@cn.fujitsu.com>
+Date: Wed, 19 Aug 2015 16:27:14 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <55D431E8.5040509@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+To: Artem Bityutskiy <dedekind1@gmail.com>
+CC: <richard.weinberger@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v5] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
+References: <1439872825-4988-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <CAF4G-tJSMA3yYJZMzoMs4dk-ypVOdK9DsGMRMmo1dq+n+6RmKg@mail.gmail.com>
+In-Reply-To: <CAF4G-tJSMA3yYJZMzoMs4dk-ypVOdK9DsGMRMmo1dq+n+6RmKg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,58 +24,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 19.08.2015 um 09:36 schrieb Sheng Yong:
-> 
-> 
-> On 8/19/2015 2:59 PM, Richard Weinberger wrote:
->> Am 19.08.2015 um 03:37 schrieb Sheng Yong:
->>>
->>>
->>> On 8/19/2015 9:07 AM, Sheng Yong wrote:
->>>> Hi,
->>>>
->>>> On 8/19/2015 4:55 AM, Richard Weinberger wrote:
->>>>> Andreas,
->>>>>
->>>>> On Tue, Aug 18, 2015 at 2:15 PM, Andreas Grünbacher
->>>>> <andreas.gruenbacher@gmail.com> wrote:
->>>>>> Hello,
->>>>>>
->>>>>> FYI, I've filed the following bug report against ubifs:
->>>>>>
->>>>>>> ubifs sets sb->s_xattr to ubifs_xattr_handlers which contains a handler for
->>>>>>> "security.*" xattrs. The s_xattr handlers are never used because ubifs uses
->>>>>>> its own ubifs_{get,set,list,remove}xattr inode operations instead of
->>>>>>> generic_{get,set,list,remove}xattr inode operations though.
->>>>>>
->>>>>> https://bugzilla.kernel.org/show_bug.cgi?id=103071
->>>>>
->>>>> Thanks for reporting.
->>> My bad for didn't reply at the right line :(
->>>> This is because UBIFS did not implement extended attribute in the geneirc way
->>>> (by calling generic_*xattr()). We could create an xattr_handler to have these
->>>> dead functions called (in fact, I did that), but doing this seems just another
->>>> encapsulation and makes no sense. So I think we could remove these dead code
->>>> directly.
->>
->> So, that would be a revert of commit d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53?
-> I think we still need security xattr, so security stuff should be initialized
-> when creating inodes.
->> I don't get what d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53 was supposed to do
->> as it seems to be a no-op. :-)
-> AFAIK, geneirc_*attr() will go though sb->s_xattr to find the xattr_handler
-> which matches the xattr prefix, and generic_*attr() should have been triggered
-> from inode_operations. However, UBIFS uses ubifs_*attr in inode_operations
-> instead of these generic interfaces. So `ubifs_xattr_security_handler' defined
-> in fs/ubifs/xattr.c is useless, so are the security_*attr() functions. These
-> functions will never being called, set/get/list security xattr is still done
-> by calling ubifs_*attr() like other xattr.
+On 08/18/2015 04:43 PM, Artem Bityutskiy wrote:
+> Please, take a look at the mkwrite path, most of the file-systems update
+> atime there too,
+> I think your patch may need to do something about atime in
+> 'ubifs_vm_page_mkwrite()'.
 
-My concern is not that we don't need these xattr.
-I'm concerned about commit d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53.
-Today it seems to be a no-op. Did it ever work?
+Hi Atem,
+	most of the file-systems are updating the ctime and mtime
+in mkwrite path by calling file_update_time().It's a writing path
+so we don't update atime here.
+>
+> On Tue, Aug 18, 2015 at 7:40 AM, Dongsheng Yang
+> <yangds.fnst@cn.fujitsu.com <mailto:yangds.fnst@cn.fujitsu.com>> wrote:
+>
+>     To make ubifs support atime flexily, this commit introduces
+>     +config UBIFS_ATIME_SUPPORT
+>     +       bool "Access time support" if UBIFS_FS
+>     +       depends on UBIFS_FS
+>     +       default n
+>     +       help
+>     +         This option allows ubifs to support atime. -o strictatime
+>     is harmful to
+>     +         your flash, we don't suggest it. But relatime and lazytime
+>     are much
+>     +         better.
+>
+>
+> How about this.
+>
+> Originally UBIFS did not support atime, because it looked like a bad
+> idea due
+> increased flash wear. This option adds atime support and it is disabled
+> by default
+> to preserve the old behavior. If you enable this option, UBIFS starts
+> updating atime,
+> which means that file-system read operations will cause writes (inode ati=
+me
+> updates). This may affect file-system performance and increase flash
+> device wear,
+> so be careful. How often atime is updated depends on the selected strateg=
+y:
+> strictatime is the "heavy", relatime is "lighter", etc.
 
-Clearly something went wrong. :(
+Much better :)
+>
+>
+>     +int ubifs_update_time(struct inode *inode, struct timespec *time,
+>     +                            int flags)
+>     +{
+>     +       struct ubifs_inode *ui =3D ubifs_inode(inode);
+>     +       struct ubifs_info *c =3D inode->i_sb->s_fs_info;
+>     +       struct ubifs_budget_req req =3D { .dirtied_ino =3D 1,
+>     +                       .dirtied_ino_d =3D ALIGN(ui->data_len, 8) };
+>     +       int iflags =3D I_DIRTY_TIME;
+>     +       int err, release;
+>     +
+>     +       err =3D ubifs_budget_space(c, &req);
+>     +       if (err)
+>     +               return err;
+>     +
+>     +       mutex_lock(&ui->ui_mutex);
+>
+>     +       if (flags & S_ATIME)
+>     +               inode->i_atime =3D *time;
+>     +       if (flags & S_VERSION)
+>     +               inode_inc_iversion(inode);
+>     +       if (flags & S_CTIME)
+>     +               inode->i_ctime =3D *time;
+>     +       if (flags & S_MTIME)
+>     +               inode->i_mtime =3D *time;
+>     +
+>     +       if (!(inode->i_sb->s_flags & MS_LAZYTIME) || (flags &
+>     S_VERSION))
+>     +               iflags |=3D I_DIRTY_SYNC;
+>
+>
+> The lazytime part looks OK, but I am a bit concerned about the S_VERSION
+> part.
+> IIRC, the inode version stuff is needed for NFS, which UBIFS does not
+> support
+> anyway. I do not see that we do anything with inode version in UBIFS, so
+> it looks
+> like UBIFS just does not support this.
+>
+> I do not think we should add code we do not really need or understand.
+> Could you
+> please take a closer look to the S_VERSION stuff and either remove it
+> from this
+> patch or make sure UBIFS needs this piece of code, which I doubt.
 
-Thanks,
-//richard
+Thanx, I looked some more about it.
+
+Hmmm, yes, agree that we should not introduce some code here
+to make it hard for understanding, although that would never
+cause some problem. I will remove it.
+
+Maybe we can reintroduce it when we plan to add nfs supporting
+in ubifs.:)
+>
+>
+>     -               sb->s_flags |=3D MS_ACTIVE | MS_NOATIME;
+>     +               sb->s_flags |=3D MS_ACTIVE;
+>     +#ifndef CONFIG_UBIFS_ATIME_SUPPORT
+>     +               sb->s_flags |=3D MS_NOATIME;
+>     +#else
+>     +               ubifs_warn(c, "full atime support is enabled, which
+>     may wear out your flash faster");
+>     +#endif
+>
+>
+> I am not sure we need to print this warning. If I know what I am doing,
+> and want atime,
+> why whould I see the warning?
+>
+> We made the default to be the old behavior, whoudn't it be enough to
+> just print a
+> message (ubifs_info()) about enabled atime, without the "which may wear
+> out your flash
+> faster" part, what do you think?
+
+Hmmm "default behavior to disable" makes sense to me. Yes, if someone
+  enable it by intention, we need not warning it out to him. Okey,
+Just a ubifs_info sounds good to me.
+
+Yang
+>
+> Thanks!
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
