@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRz0Z-0005ke-Jy
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:46:13 +0000
+ id 1ZRz0c-0005lY-Fy
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 08:46:14 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <dedekind1@gmail.com>, <richard@nod.at>, <computersforpeace@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 24/27] ubifs: ubifs_dump: dump index area
-Date: Wed, 19 Aug 2015 16:39:29 +0800
-Message-ID: <1439973572-12489-25-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 26/27] ubifs: introduce hexdump lib
+Date: Wed, 19 Aug 2015 16:39:31 +0800
+Message-ID: <1439973572-12489-27-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,125 +22,248 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Scan the whole index tree and dump each index node.
+Introduce a hexdump lib to allow us to dump data in hex format
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/ubifs_dump/ubifs_dump.c | 95 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
+ ubifs-utils/include/hexdump.h |  21 +++++
+ ubifs-utils/lib/hexdump.c     | 200 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 221 insertions(+)
+ create mode 100644 ubifs-utils/include/hexdump.h
+ create mode 100644 ubifs-utils/lib/hexdump.c
 
-diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-index 0d375f0..90ac322 100644
---- a/ubifs-utils/ubifs_dump/ubifs_dump.c
-+++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-@@ -886,6 +886,97 @@ static int dump_lpt(void)
- 	return 0;
- }
- 
-+/**
-+ * ubifs_read_node - read node.
-+ * @c: UBIFS file-system description object
-+ * @buf: buffer to read to
-+ * @type: node type
-+ * @len: node length (not aligned)
-+ * @lnum: logical eraseblock number
-+ * @offs: offset within the logical eraseblock
+diff --git a/ubifs-utils/include/hexdump.h b/ubifs-utils/include/hexdump.h
+new file mode 100644
+index 0000000..f5f2800
+--- /dev/null
++++ b/ubifs-utils/include/hexdump.h
+@@ -0,0 +1,21 @@
++#ifndef __UBIFS_HEXDUMP_H__
++#define __UBIFS_HEXDUMP_H__
++
++#include "ubifs_common.h"
++
++static const char hex_asc[] = "0123456789abcdef";
++static const char hex_asc_upper[] = "0123456789ABCDEF";
++
++#define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
++#define hex_asc_hi(x)	hex_asc[((x) & 0xf0) >> 4]
++
++enum {
++	DUMP_PREFIX_NONE,
++	DUMP_PREFIX_ADDRESS,
++	DUMP_PREFIX_OFFSET
++};
++
++void print_hex_dump(const char *prefix_str, int prefix_type,
++		    int rowsize, int groupsize,
++		    const void *buf, size_t len, int ascii);
++#endif
+diff --git a/ubifs-utils/lib/hexdump.c b/ubifs-utils/lib/hexdump.c
+new file mode 100644
+index 0000000..c58f7cc
+--- /dev/null
++++ b/ubifs-utils/lib/hexdump.c
+@@ -0,0 +1,200 @@
++/*
++ * lib/hexdump.c
 + *
-+ * This function reads a node of known type and and length, checks it and
-+ * stores in @buf. Returns zero in case of success, %-EUCLEAN if CRC mismatched
-+ * and a negative error code in case of failure.
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation. See README and COPYING for
++ * more details.
 + */
-+int ubifs_read_node(const struct ubifs_info *c, void *buf, int len,
-+		    int lnum, loff_t offs)
++#include "hexdump.h"
++#define PROGRAM_NAME "hexdump"
++#include "common.h"
++/**
++ * hex_dump_to_buffer - convert a blob of data to "hex ASCII" in memory
++ * @buf: data blob to dump
++ * @len: number of bytes in the @buf
++ * @rowsize: number of bytes to print per line; must be 16 or 32
++ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
++ * @linebuf: where to put the converted data
++ * @linebuflen: total size of @linebuf, including space for terminating NUL
++ * @ascii: include ASCII after the hex output
++ *
++ * hex_dump_to_buffer() works on one "line" of output at a time, i.e.,
++ * 16 or 32 bytes of input data converted to hex + ASCII output.
++ *
++ * Given a buffer of u8 data, hex_dump_to_buffer() converts the input data
++ * to a hex + ASCII dump at the supplied memory location.
++ * The converted output is always NUL-terminated.
++ *
++ * E.g.:
++ *   hex_dump_to_buffer(frame->data, frame->len, 16, 1,
++ *			linebuf, sizeof(linebuf), true);
++ *
++ * example output buffer:
++ * 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
++ *
++ * Return:
++ * The amount of bytes placed in the buffer without terminating NUL. If the
++ * output was truncated, then the return value is the number of bytes
++ * (excluding the terminating NUL) which would have been written to the final
++ * string if enough space had been available.
++ */
++int hex_dump_to_buffer(const void *buf, size_t len, int rowsize, int groupsize,
++		       char *linebuf, size_t linebuflen, int ascii)
 +{
-+	int err;
++	const u8 *ptr = buf;
++	int ngroups;
++	u8 ch;
++	int j, lx = 0;
++	int ascii_column;
++	int ret;
 +
-+	ubifs_assert(lnum >= 0 && lnum < c->leb_cnt && offs >= 0);
-+	ubifs_assert(len >= UBIFS_CH_SZ && offs + len <= c->leb_size);
-+	ubifs_assert(!(offs & 7) && offs < c->leb_size);
-+	ubifs_assert(type >= 0 && type < UBIFS_NODE_TYPES_CNT);
++	if (rowsize != 16 && rowsize != 32)
++		rowsize = 16;
 +
-+	err = ubifs_read((loff_t)lnum * c->leb_size + offs, len, buf);
-+	if (err && err != -EBADMSG)
-+		return err;
++	if (len > rowsize)		/* limit to one line at a time */
++		len = rowsize;
++	if (!is_power_of_2(groupsize) || groupsize > 8)
++		groupsize = 1;
++	if ((len % groupsize) != 0)	/* no mixed size output */
++		groupsize = 1;
 +
-+	return 0;
-+}
++	ngroups = len / groupsize;
++	ascii_column = rowsize * 2 + rowsize / groupsize + 1;
 +
-+static int dump_zbr(struct ubifs_info *c, struct ubifs_zbranch *zbr)
-+{
-+	int i = 0;
-+	int err = 0;
-+	struct ubifs_idx_node *idx;
-+	void *buf;
++	if (!linebuflen)
++		goto overflow1;
 +
-+	buf = malloc(zbr->len);
-+	if (!buf)
-+		return -ENOMEM;
++	if (!len)
++		goto nil;
 +
-+	err = ubifs_read_node(c, buf, zbr->len, zbr->lnum, zbr->offs);
-+	if (err)
-+		goto out;
++	if (groupsize == 8) {
++		const u64 *ptr8 = buf;
 +
-+	dump_node(c, buf);
++		for (j = 0; j < ngroups; j++) {
++			ret = snprintf(linebuf + lx, linebuflen - lx,
++				       "%s%16.16llx", j ? " " : "",
++				       (unsigned long long)*(ptr8 + j));
++			if (ret >= linebuflen - lx)
++				goto overflow1;
++			lx += ret;
++		}
++	} else if (groupsize == 4) {
++		const u32 *ptr4 = buf;
 +
-+	if (le32_to_cpu(((struct ubifs_ch *)buf)->node_type) != UBIFS_IDX_NODE)
-+		goto out;
++		for (j = 0; j < ngroups; j++) {
++			ret = snprintf(linebuf + lx, linebuflen - lx,
++				       "%s%8.8x", j ? " " : "",
++				       *(ptr4 + j));
++			if (ret >= linebuflen - lx)
++				goto overflow1;
++			lx += ret;
++		}
++	} else if (groupsize == 2) {
++		const u16 *ptr2 = buf;
 +
-+	idx = ((struct ubifs_idx_node *)buf);
-+	for (i = 0; i < le32_to_cpu(idx->child_cnt); i++) {
-+		struct ubifs_branch *br;
-+		struct ubifs_zbranch child;
-+
-+		br = ubifs_idx_branch(c, idx, i);
-+		child.lnum = le32_to_cpu(br->lnum);
-+		child.offs = le32_to_cpu(br->offs);
-+		child.len = le32_to_cpu(br->len);
-+		err = dump_zbr(c, &child);
-+		if (err)
-+			goto out;
++		for (j = 0; j < ngroups; j++) {
++			ret = snprintf(linebuf + lx, linebuflen - lx,
++				       "%s%4.4x", j ? " " : "",
++				       *(ptr2 + j));
++			if (ret >= linebuflen - lx)
++				goto overflow1;
++			lx += ret;
++		}
++	} else {
++		for (j = 0; j < len; j++) {
++			if (linebuflen < lx + 3)
++				goto overflow2;
++			ch = ptr[j];
++			linebuf[lx++] = hex_asc_hi(ch);
++			linebuf[lx++] = hex_asc_lo(ch);
++			linebuf[lx++] = ' ';
++		}
++		if (j)
++			lx--;
 +	}
++	if (!ascii)
++		goto nil;
 +
-+out:
-+	free(buf);
-+	return err;
++	while (lx < ascii_column) {
++		if (linebuflen < lx + 2)
++			goto overflow2;
++		linebuf[lx++] = ' ';
++	}
++	for (j = 0; j < len; j++) {
++		if (linebuflen < lx + 2)
++			goto overflow2;
++		ch = ptr[j];
++		linebuf[lx++] = (isascii(ch) && isprint(ch)) ? ch : '.';
++	}
++nil:
++	linebuf[lx] = '\0';
++	return lx;
++overflow2:
++	linebuf[lx++] = '\0';
++overflow1:
++	return ascii ? ascii_column + len : (groupsize * 2 + 1) * ngroups - 1;
 +}
 +
-+static int dump_index()
++/**
++ * print_hex_dump - print a text hex dump to syslog for a binary blob of data
++ * @prefix_str: string to prefix each line with;
++ *  caller supplies trailing spaces for alignment if desired
++ * @prefix_type: controls whether prefix of an offset, address, or none
++ *  is printed (%DUMP_PREFIX_OFFSET, %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_NONE)
++ * @rowsize: number of bytes to print per line; must be 16 or 32
++ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
++ * @buf: data blob to dump
++ * @len: number of bytes in the @buf
++ * @ascii: include ASCII after the hex output
++ *
++ * Given a buffer of u8 data, print_hex_dump() prints a hex + ASCII dump
++ * to the kernel log at the specified kernel log level, with an optional
++ * leading prefix.
++ *
++ * print_hex_dump() works on one "line" of output at a time, i.e.,
++ * 16 or 32 bytes of input data converted to hex + ASCII output.
++ * print_hex_dump() iterates over the entire input @buf, breaking it into
++ * "line size" chunks to format and print.
++ *
++ * E.g.:
++ *   print_hex_dump(KERN_DEBUG, "raw data: ", DUMP_PREFIX_ADDRESS,
++ *		    16, 1, frame->data, frame->len, true);
++ *
++ * Example output using %DUMP_PREFIX_OFFSET and 1-byte mode:
++ * 0009ab42: 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
++ * Example output using %DUMP_PREFIX_ADDRESS and 4-byte mode:
++ * ffffffff88089af0: 73727170 77767574 7b7a7978 7f7e7d7c  pqrstuvwxyz{|}~.
++ */
++void print_hex_dump(const char *prefix_str, int prefix_type,
++		    int rowsize, int groupsize,
++		    const void *buf, size_t len, int ascii)
 +{
-+	int err = 0;
++	const u8 *ptr = buf;
++	int i, linelen, remaining = len;
++	char linebuf[32 * 3 + 2 + 32 + 1];
 +
-+	printf("\tINDEX AREA: \n");
-+	err = dump_zbr(c, &c->zroot);
-+	if (err)
-+		return err;
-+	return 0;
++	if (rowsize != 16 && rowsize != 32)
++		rowsize = 16;
++
++	for (i = 0; i < len; i += rowsize) {
++		linelen = min(remaining, rowsize);
++		remaining -= rowsize;
++
++		hex_dump_to_buffer(ptr + i, linelen, rowsize, groupsize,
++				   linebuf, sizeof(linebuf), ascii);
++
++		switch (prefix_type) {
++		case DUMP_PREFIX_ADDRESS:
++			printf("%s%p: %s\n",
++			       prefix_str, ptr + i, linebuf);
++			break;
++		case DUMP_PREFIX_OFFSET:
++			printf("%s%.8x: %s\n", prefix_str, i, linebuf);
++			break;
++		default:
++			printf("%s%s\n", prefix_str, linebuf);
++			break;
++		}
++	}
 +}
-+
-+static int dump_main()
-+{
-+	int err = 0;
-+	printf("MAIN AREA: \n");
-+	err = dump_index();
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
- static int dump()
- {
- 	int err = 0;
-@@ -911,6 +1002,10 @@ static int dump()
- 	err = dump_lpt();
- 	if (err)
- 		goto free;
-+
-+	err = dump_main();
-+	if (err)
-+		goto out;
- free:
- 	free(leb_buf);
- out:
 -- 
 1.8.4.2
