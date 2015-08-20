@@ -1,31 +1,21 @@
-Received: from mail-ob0-f172.google.com ([209.85.214.172])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSKQB-0005yw-Fq
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 07:37:59 +0000
-Received: by obbhe7 with SMTP id he7so25460880obb.0
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 00:37:37 -0700 (PDT)
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com.
- [209.85.214.173])
- by smtp.gmail.com with ESMTPSA id sj5sm1987529oeb.13.2015.08.20.00.37.33
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 20 Aug 2015 00:37:37 -0700 (PDT)
-Received: by obkg7 with SMTP id g7so25334061obk.3
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 00:37:33 -0700 (PDT)
+ id 1ZSKpO-0000GL-WC
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 08:04:04 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] [PATCH v5] mtd:spi-nor: Add Altera Quad SPI Driver
+Date: Thu, 20 Aug 2015 10:03:38 +0200
+Cc: vndao@altera.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ngachi86@gmail.com
+References: <1440053705-3836-1-git-send-email-vndao@altera.com>
+In-Reply-To: <1440053705-3836-1-git-send-email-vndao@altera.com>
 MIME-Version: 1.0
-In-Reply-To: <CAN1oZWyE9E2kRkGZPajpiNbpeKEjOhs9NDNDbUpmdw18WNYL2A@mail.gmail.com>
-References: <CAN1oZWyE9E2kRkGZPajpiNbpeKEjOhs9NDNDbUpmdw18WNYL2A@mail.gmail.com>
-Date: Thu, 20 Aug 2015 15:37:33 +0800
-Message-ID: <CAN1oZWx_wefKJhB2pVbhw_UUZNR8LfveS-FPBFtgndGg_nXoUw@mail.gmail.com>
-Subject: Re: [PATCH] [PATCH v4] mtd:spi-nor: Add Altera Quad SPI Driver
-From: Viet Nga Dao <vndao@altera.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, marex@denx.de
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- nga_chi86 <ngachi86@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201508201003.38179.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,42 +25,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
->> On Tuesday, August 18, 2015 at 03:24:44 AM, Brian Norris wrote:
->>> I'm not very helpful here, so hopefully Viet can be of more use:
->>
->> Yup :)
->>
->>> On Mon, Aug 17, 2015 at 07:53:23PM +0200, Marek Vasut wrote:
->>> > On Monday, August 17, 2015 at 06:03:38 PM, Brian Norris wrote:
->>> > Also, I cannot find any documentation for this IP block even if I
->>> > search through Quartus/QSys, is there any proper documentation
->>> > available anywhere?
->>>
->>> I never found proper documentation, but I didn't look too hard. I've
->>> mostly been going off of Viet's comments and code.
->>
->> Me neither, and I looked through the altera stuff in fact. I'm trying to learn whether this is just an Soft IP, in which case it certainly can be fixed ; or if there is actually some chip shipping with this crap synthesised into actual silicon.
->>
->>> But FWIW, I did find some relevant info for the peculiar Altera EPCQ
->>> flash here:
->>>
->>> https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/litera
->>> ture/
->>> hb/cfg/cfg_cf52012.pdf
->>
->> Altera EPCS/EPCQ flashes are just rebranded micron flashes, they just have different JEDEC >ID and are a bit more expensive.
->
-> You can find the document at here
-> (https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/ug/ug_embedded_ip.pdf)
->  Chapter 42.Page 407.
->
-> For the soft IP issue, i've requested hardware engineer to come out
-> the solution. So in the mean way, our driver will NOT support Micron
-> flashes until hardware fix is completed.
->
-> Hence, i just submitted version 5 for this driver with eliminating
-> micron device support. Hope this version will get ACKed by you.
->
-> Thanks,
-> Viet Nga
+On Thursday, August 20, 2015 at 08:55:05 AM, vndao@altera.com wrote:
+> From: VIET NGA DAO <vndao@altera.com>
+> 
+> Altera Quad SPI Controller is a soft IP which enables access to
+> Altera EPCS and EPCQ flash chips. This patch adds driver
+> for these devices.
+> 
+> Signed-off-by: VIET NGA DAO <vndao@altera.com>
+> 
+> ---
+> v5:
+> - Remove Micron support
+> - Add multiple flashes probe failure handle
+> 
+> v4:
+> - Add more flash devices support ( EPCQL and Micron)
+> - Remove redundant messages
+> - Change EPCQ_OPCODE_ID to NON_EPCS_OPCODE_ID
+> - Replace get_flash_name to altera_quadspi_scan
+> - Remove clk related parts
+> - Remove altera_quadspi_plat
+> - Change device tree reg name and remove opcode-id
+> 
+> v3:
+> - Change altera_epcq driver name to altera_quadspi for more generic name
+> - Implement flash name searching in altera_quadspi.c instead of spi-nor
+> - Edit the altra quadspi info table in spi-nor
+> - Remove wait_til_ready in all read,write, erase, lock, unlock functions
+> - Merge .h and .c into 1 file
+> 
+> v2:
+> - Change to spi_nor structure
+> - Add lock and unlock functions for spi_nor
+> - Simplify the altera_epcq_lock function
+> - Replace reg by compatible in device tree
+> ---
+>  .../devicetree/bindings/mtd/altera-quadspi.txt     |   45 ++
+>  drivers/mtd/spi-nor/Kconfig                        |    8 +
+>  drivers/mtd/spi-nor/Makefile                       |    1 +
+>  drivers/mtd/spi-nor/altera-quadspi.c               |  557
+> ++++++++++++++++++++ drivers/mtd/spi-nor/spi-nor.c                      | 
+>  18 +
+>  5 files changed, 629 insertions(+), 0 deletions(-)
+>  create mode 100644
+> Documentation/devicetree/bindings/mtd/altera-quadspi.txt create mode
+> 100644 drivers/mtd/spi-nor/altera-quadspi.c
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/altera-quadspi.txt
+> b/Documentation/devicetree/bindings/mtd/altera-quadspi.txt new file mode
+> 100644
+> index 0000000..e1bcf18
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/altera-quadspi.txt
+> @@ -0,0 +1,45 @@
+> +* MTD Altera QUADSPI driver
+> +
+> +Required properties:
+> +- compatible: Should be "altr,quadspi-1.0"
+> +- reg: Address and length of the register set  for the device. It contains
+> +  the information of registers in the same order as described by reg-names
+> +- reg-names: Should contain the reg names
+> +  "avl_csr": Should contain the register configuration base address
+> +  "avl_mem": Should contain the data base address
+> +- #address-cells: Must be <1>.
+> +- #size-cells: Must be <0>.
+> +- flash device tree subnode, there must be a node with the following
+> fields: +	- compatible: Should contain the flash name:
+> +	  1. EPCS:   epcs16, epcs64, epcs128
+> +	  2. EPCQ:   epcq16, epcq32, epcq64, epcq128, epcq256, epcq512, epcq1024
+> +	  3. EPCQ-L: epcql256, epcql512, epcql1024
+> +	- #address-cells: please refer to /mtd/partition.txt
+> +	- #size-cells: please refer to /mtd/partition.txt
+> +	For partitions inside each flash, please refer to /mtd/partition.txt
+> +
+> +Example:
+> +
+> +			quadspi_controller_0: quadspi@0x180014a0 {
+> +				compatible = "altr,quadspi-1.0";
+> +				reg = <0x180014a0 0x00000020>,
+> +				      <0x14000000 0x04000000>;
+> +				reg-names = "avl_csr", "avl_mem";
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				flash0: epcq256@0 {
+> +					compatible = "altr,epcq256";
+> +					#address-cells = <1>;
+> +					#size-cells = <1>;
+> +					partition@0 {
+> +						/* 16 MB for raw data. */
+> +						label = "EPCQ Flash 0 raw data";
+> +						reg = <0x0 0x1000000>;
+> +					};
+> +					partition@1000000 {
+> +						/* 16 MB for jffs2 data. */
+> +						label = "EPCQ Flash 0 JFFS 2";
+> +						reg = <0x1000000 0x1000000>;
+> +					};
+
+IIRC, encoding partitions into OF is deprecated (and it shouldn't be
+part of the example anyway, so please remove this bit).
+
+> +				};
+> +			}; //end quadspi@0x180014a0 (quadspi_controller_0)
+
+Remove this incorrect comment.
+
+
+[...]
+
+> +static struct flash_device flash_devices[] = {
+> +	FLASH_ID("epcs16",              EPCS_OPCODE_ID,     0x14),
+> +	FLASH_ID("epcs64",              EPCS_OPCODE_ID,     0x16),
+> +	FLASH_ID("epcs128",             EPCS_OPCODE_ID,     0x18),
+> +
+> +	FLASH_ID("epcq16",              NON_EPCS_OPCODE_ID, 0x15),
+> +	FLASH_ID("epcq32",              NON_EPCS_OPCODE_ID, 0x16),
+> +	FLASH_ID("epcq64",              NON_EPCS_OPCODE_ID, 0x17),
+> +	FLASH_ID("epcq128",             NON_EPCS_OPCODE_ID, 0x18),
+> +	FLASH_ID("epcq256",             NON_EPCS_OPCODE_ID, 0x19),
+> +	FLASH_ID("epcq512",             NON_EPCS_OPCODE_ID, 0x20),
+> +	FLASH_ID("epcq1024",            NON_EPCS_OPCODE_ID, 0x21),
+> +
+> +	FLASH_ID("epcql256",            NON_EPCS_OPCODE_ID, 0x19),
+> +	FLASH_ID("epcql512",            NON_EPCS_OPCODE_ID, 0x20),
+> +	FLASH_ID("epcql1024",           NON_EPCS_OPCODE_ID, 0x21),
+> +
+> +};
+
+I think it'd be better to wait until the IP block is fixed and can
+issue READID correctly.
+
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 14a5d23..2ab7279 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -687,6 +687,24 @@ static const struct spi_device_id spi_nor_ids[] = {
+>  	{ "cat25c09", CAT25_INFO( 128, 8, 32, 2, SPI_NOR_NO_ERASE |
+> SPI_NOR_NO_FR) }, { "cat25c17", CAT25_INFO( 256, 8, 32, 2,
+> SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) }, { "cat25128", CAT25_INFO(2048, 8, 64,
+> 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) }, +
+> +	/* Altera EPCQ/EPCS Flashes are non-JEDEC */
+
+Are they really ? Last time I checked on CV SoC, I was able to read their
+JEDEC ID just fine ; though it's true I used that EPCS core.
+
+> +	{ "epcs16",   INFO(0, 0, 0x10000, 32,   0) },
+> +	{ "epcs64",   INFO(0, 0, 0x10000, 128,  0) },
+> +	{ "epcs128",  INFO(0, 0, 0x40000, 256,  0) },
+> +
+> +	{ "epcq16",   INFO(0, 0, 0x10000, 32,   0) },
+> +	{ "epcq32",   INFO(0, 0, 0x10000, 64,   0) },
+> +	{ "epcq64",   INFO(0, 0, 0x10000, 128,  0) },
+> +	{ "epcq128",  INFO(0, 0, 0x10000, 256,  0) },
+> +	{ "epcq256",  INFO(0, 0, 0x10000, 512,  0) },
+> +	{ "epcq512",  INFO(0, 0, 0x10000, 1024, 0) },
+> +	{ "epcq1024", INFO(0, 0, 0x10000, 2048, 0) },
+> +
+> +	{ "epcql256",  INFO(0, 0, 0x10000, 512,  0) },
+> +	{ "epcql512",  INFO(0, 0, 0x10000, 1024, 0) },
+> +	{ "epcql1024", INFO(0, 0, 0x10000, 2048, 0) },
+> +
+>  	{ },
+>  };
