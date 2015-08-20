@@ -1,25 +1,21 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSH4l-0004dE-QF
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 04:03:40 +0000
-Received: by padfo6 with SMTP id fo6so11995159pad.0
- for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2015 21:03:15 -0700 (PDT)
-Date: Wed, 19 Aug 2015 21:03:12 -0700
+ id 1ZSH5C-0004hH-VJ
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 04:04:07 +0000
+Received: by pdrh1 with SMTP id h1so9298202pdr.0
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2015 21:03:51 -0700 (PDT)
+Date: Wed, 19 Aug 2015 21:03:47 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RESEND 0/2] mtd: nand: pxa3xx-nand: fixes
-Message-ID: <20150820040312.GB74600@google.com>
-References: <1440009015-3765-1-git-send-email-robert.jarzmik@free.fr>
- <CAAEAJfAuV7shpbp=k_dd4L6cSJcu4E+WVRcRpipXKBq0aGwT3w@mail.gmail.com>
+Cc: robert.jarzmik@free.fr, linux-mtd@lists.infradead.org, jogo@openwrt.org
+Subject: Re: [PATCH v2] nand: pxa3xx: Increase READ_ID buffer and make the
+ size static
+Message-ID: <20150820040347.GC74600@google.com>
+References: <1440024009-20177-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAEAJfAuV7shpbp=k_dd4L6cSJcu4E+WVRcRpipXKBq0aGwT3w@mail.gmail.com>
+In-Reply-To: <1440024009-20177-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 19, 2015 at 06:18:57PM -0300, Ezequiel Garcia wrote:
-> On 19 August 2015 at 15:30, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> > Hi Brian,
-> >
-> > As promised, here are the remaining fixes I have on pxa3xx-nand I'd like you to
-> > queue up. The other changes I have submitted are under review and not of "fixes" type.
-> >
-> > Cheers.
-> >
-> > --
-> > Robert
-> >
-> > Robert Jarzmik (2):
-> >   mtd: nand: pxa3xx_nand: fix early spurious interrupt
-> >   mtd: nand: pxa3xx-nand: fix random command timeouts
-> >
+On Wed, Aug 19, 2015 at 07:40:09PM -0300, Ezequiel Garcia wrote:
+> The read ID count should be made as large as the maximum READ_ID size,
+> so there's no need to have dynamic size. This commit sets the hardware
+> maximum read ID count, which should be more than enough on all cases.
+> Also, we get rid of the read_id_bytes, and use a macro instead.
 > 
-> For both patches:
+> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> ---
+> Changes from v1:
 > 
-> Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>   * Keep "data_size" to 8 bytes, as per hardware
+>     requirements to read at least a FIFO entry.
 > 
-> I tested this on Armada 370:
-> 
-> Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>   * While here, add a proper comment on READ_ID_BYTES'
+>     definition.
 
-Pushed both to l2-mtd.git, with Ezequiel's tags. Thanks for collecting
-the patches, testing, and reviewing.
-
-Brian
+Pushed to l2-mtd.git
