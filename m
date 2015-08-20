@@ -1,23 +1,53 @@
-Received: from ipmail06.adl2.internode.on.net ([150.101.137.129])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSX4h-00030k-9d
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 21:08:40 +0000
-Date: Fri, 21 Aug 2015 07:08:12 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Andreas =?iso-8859-1?Q?Gr=FCnbacher?= <andreas.gruenbacher@gmail.com>
-Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, fstests@vger.kernel.org,
- linux-mtd@lists.infradead.org, richard.weinberger@gmail.com
-Subject: Re: [PATCH] fstests: link .out to correct output when we set
- USE_ATTR_SECURE=yes
-Message-ID: <20150820210812.GO3902@dastard>
-References: <55D52473.7050209@cn.fujitsu.com>
- <1440032464-17626-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <CAHpGcMLZT5xYx5EUBLTPyLQd0f+jQ-g+c_f-oErsHP33m7-ROg@mail.gmail.com>
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZSX8E-00055D-NZ
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 21:12:19 +0000
+Received: by pdbmi9 with SMTP id mi9so18262339pdb.3
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 14:11:58 -0700 (PDT)
+Date: Thu, 20 Aug 2015 14:11:52 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Javier Martinez Canillas <javier@osg.samsung.com>
+Cc: linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
+ linux-fbdev@vger.kernel.org,
+ Michael Hennerich <Michael.Hennerich@analog.com>,
+ linux-iio@vger.kernel.org, linux-wireless@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-mtd@lists.infradead.org,
+ Lauro Ramos Venancio <lauro.venancio@openbossa.org>,
+ =?iso-8859-1?Q?S=F8ren?= Andersen <san@rosetechnology.dk>,
+ devel@driverdev.osuosl.org, Randy Dunlap <rdunlap@infradead.org>,
+ Masanari Iida <standby24x7@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
+ Devendra Naga <devendra.aaru@gmail.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Aloisio Almeida Jr <aloisio.almeida@openbossa.org>,
+ Jonathan Cameron <jic23@kernel.org>, Stephen Warren <swarren@nvidia.com>,
+ Urs =?iso-8859-1?Q?F=E4ssler?= <urs.fassler@bytesatwork.ch>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
+ Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>,
+ George McCollister <george.mccollister@gmail.com>,
+ Samuel Ortiz <sameo@linux.intel.com>,
+ Manfred Schlaegl <manfred.schlaegl@gmx.at>,
+ linux-omap@vger.kernel.org, Hartmut Knaack <knaack.h@gmx.de>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Antonio Borneo <borneo.antonio@gmail.com>,
+ Andrea Galbusera <gizero@gmail.com>, Michael Welling <mwelling@ieee.org>,
+ Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>,
+ linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ David Woodhouse <dwmw2@infradead.org>, netdev@vger.kernel.org,
+ linux-media@vger.kernel.org, Peter Meerwald <pmeerw@pmeerw.net>
+Subject: Re: [PATCH 00/18] Export SPI and OF module aliases in missing drivers
+Message-ID: <20150820211152.GI74600@google.com>
+References: <1440054451-1223-1-git-send-email-javier@osg.samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcMLZT5xYx5EUBLTPyLQd0f+jQ-g+c_f-oErsHP33m7-ROg@mail.gmail.com>
+In-Reply-To: <1440054451-1223-1-git-send-email-javier@osg.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +57,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 20, 2015 at 08:18:28AM +0200, Andreas Grünbacher wrote:
-> Dongsheng,
-> 
-> 2015-08-20 3:01 GMT+02:00 Dongsheng Yang <yangds.fnst@cn.fujitsu.com>:
-> >
-> > When we set USE_ATTR_SECURE to yes or no, the expected outputs of generic/062
-> > would be different. So we need to link the .out to different file.
-> 
-> Can the tests for the different namespaces please be separated from
-> each other here (see below)?
+On Thu, Aug 20, 2015 at 09:07:13AM +0200, Javier Martinez Canillas wrote:
+> Patches #1 and #2 solves a), patches #3 to #8 solves b) and patches
 
-I certainly agree with this approach ;)
+^^^ I'm dying to know how this sentence ends :)
 
-> 
-> diff --git a/tests/generic/062 b/tests/generic/062
-> index 194b638..9dd4498 100755
-> --- a/tests/generic/062
-> +++ b/tests/generic/062
-> @@ -142,6 +142,7 @@ for nsp in $ATTR_MODES; do
->                 echo "*** final list (strings, type=$inode, nsp=$nsp)"
->                 getfattr -m '.' -e hex $SCRATCH_MNT/$inode
-> 
-> +               # FIXME: Remove all remaining xattrs
->         done
->  done
-> 
-> Next, can the security namespace tests be put in their own test case
-> so that we don't need to switch between two different .out files? This
-> could be done by setting ATTR_MODES and then invoking
-> tests/generic/062 to avoid duplicating the entire test script.
+> Patch #18 changes the logic of spi_uevent() to report an OF modalias if
+> the device was registered using OF. But this patch is included in the
+> series only as an RFC for illustration purposes since changing that
+> without first applying all the other patches in this series, will break
+> module autoloading for the drivers of devices registered using OF but
+> that lacks an of_match_table. I'll repost patch #18 once all the patches
+> in this series have landed.
 
-Just not the suggested mechanism :)
+On a more productive note, the patches I've looked at look good to me.
+The missing aliases are a problem enough that should be fixed (i.e.,
+part (b)). I'll leave the SPI framework changes to others to comment on.
 
-We can't execute one test from another - that will lead to all sorts
-of bad juju occurring with results and timing and so on because they
-are all based on $0.  The correct way to do this is to factor the
-test internals into a common file, then wrap the common functions
-with a new test file.
-
-e.g. see _test_generic_punch(), which started off as corner case
-testing the XFS_IOC_ZERORANGE ioctl in a single test, Then got
-extended to testing hole punching in a new test, then got factored
-into common functions in common/punch, and it is now called by 14
-different tests....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Brian
