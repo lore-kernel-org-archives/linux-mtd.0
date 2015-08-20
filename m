@@ -1,21 +1,21 @@
-Received: from webbox1416.server-home.net ([77.236.96.61])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSMke-0004nL-Nf
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 10:07:17 +0000
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: Marek Vasut <marex@denx.de>
-Cc: linux-mtd@lists.infradead.org, vndao@altera.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, ngachi86@gmail.com
-Subject: Re: [PATCH] [PATCH v5] mtd:spi-nor: Add Altera Quad SPI Driver
-Date: Thu, 20 Aug 2015 12:06:36 +0200
-Message-ID: <3030745.IsU6n2jnJj@ws-stein>
-In-Reply-To: <201508201003.38179.marex@denx.de>
-References: <1440053705-3836-1-git-send-email-vndao@altera.com>
- <201508201003.38179.marex@denx.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+ id 1ZSO2p-0002lD-Eb
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 11:30:08 +0000
+Message-ID: <1440070182.31419.200.camel@gmail.com>
+Subject: Re: [PATCH 2/2] ubifs: Allow O_DIRECT
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, Dongsheng
+ Yang <yangds.fnst@cn.fujitsu.com>
+Date: Thu, 20 Aug 2015 14:29:42 +0300
+In-Reply-To: <1440016553-26481-2-git-send-email-richard@nod.at>
+References: <1440016553-26481-1-git-send-email-richard@nod.at>
+ <1440016553-26481-2-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Marek,
-
-On Thursday 20 August 2015 10:03:38, Marek Vasut wrote:
-> > +Example:
-> > +
-> > +			quadspi_controller_0: quadspi@0x180014a0 {
-> > +				compatible = "altr,quadspi-1.0";
-> > +				reg = <0x180014a0 0x00000020>,
-> > +				      <0x14000000 0x04000000>;
-> > +				reg-names = "avl_csr", "avl_mem";
-> > +				#address-cells = <1>;
-> > +				#size-cells = <0>;
-> > +				flash0: epcq256@0 {
-> > +					compatible = "altr,epcq256";
-> > +					#address-cells = <1>;
-> > +					#size-cells = <1>;
-> > +					partition@0 {
-> > +						/* 16 MB for raw data. */
-> > +						label = "EPCQ Flash 0 raw data";
-> > +						reg = <0x0 0x1000000>;
-> > +					};
-> > +					partition@1000000 {
-> > +						/* 16 MB for jffs2 data. */
-> > +						label = "EPCQ Flash 0 JFFS 2";
-> > +						reg = <0x1000000 0x1000000>;
-> > +					};
+On Wed, 2015-08-19 at 22:35 +0200, Richard Weinberger wrote:
+> Currently UBIFS does not support direct IO, but some applications
+> blindly use the O_DIRECT flag.
+> Instead of failing upon open() we can do better and fall back
+> to buffered IO.
 > 
-> IIRC, encoding partitions into OF is deprecated (and it shouldn't be
-> part of the example anyway, so please remove this bit).
+> Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> Cc: dedekind1@gmail.com
+> Suggested-by: Dave Chinner <david@fromorbit.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Do you mean specifying partitions in OF is deprecated in general? Is there any link for that?
-What would be an alternative to it?
+Richard,
 
-Best regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
-SYS TEC electronic GmbH
-alexander.stein@systec-electronic.com
+The idea was to explicitly reject what we do not support. Let's say I
+am an app which requires O_DIRECT, and which does not want to work with
+non-O_DIRECT. What would I do to ensure O_DIRECT?
 
-Legal and Commercial Address:
-Am Windrad 2
-08468 Heinsdorfergrund
-Germany
+Could you please check what other file-systems which do not support
+O_DIRECT do in this case? Do they also fall-back to normal IO instead
+of explicitly failing? If yes, we can do what is considered to be the
+"standard" behavior.
 
-Office: +49 (0) 3765 38600-0
-Fax:    +49 (0) 3765 38600-4100
- 
-Managing Directors:
-	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
-	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
-Commercial Registry:
-	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
+Thanks!
