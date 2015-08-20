@@ -1,50 +1,22 @@
-Received: from lists.s-osg.org ([54.187.51.154])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSXk7-00040M-Eh
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 21:51:28 +0000
-Subject: Re: [PATCH 00/18] Export SPI and OF module aliases in missing drivers
-To: Brian Norris <computersforpeace@gmail.com>
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZSXn3-0004Ys-Lu
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 21:54:30 +0000
+Received: by pacdd16 with SMTP id dd16so28403528pac.2
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 14:54:08 -0700 (PDT)
+Date: Thu, 20 Aug 2015 14:54:04 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Javier Martinez Canillas <javier@osg.samsung.com>
+Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 03/18] mtd: dataflash: Export OF module alias information
+Message-ID: <20150820215404.GA81844@google.com>
 References: <1440054451-1223-1-git-send-email-javier@osg.samsung.com>
- <20150820211152.GI74600@google.com>
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
- linux-fbdev@vger.kernel.org, Michael Hennerich
- <Michael.Hennerich@analog.com>, linux-iio@vger.kernel.org,
- linux-wireless@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- linux-mtd@lists.infradead.org,
- Lauro Ramos Venancio <lauro.venancio@openbossa.org>,
- =?UTF-8?Q?S=c3=b8ren_Andersen?= <san@rosetechnology.dk>,
- devel@driverdev.osuosl.org, Randy Dunlap <rdunlap@infradead.org>,
- Masanari Iida <standby24x7@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
- Devendra Naga <devendra.aaru@gmail.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Aloisio Almeida Jr <aloisio.almeida@openbossa.org>,
- Jonathan Cameron <jic23@kernel.org>, Stephen Warren <swarren@nvidia.com>,
- =?UTF-8?Q?Urs_F=c3=a4ssler?= <urs.fassler@bytesatwork.ch>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
- Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>,
- George McCollister <george.mccollister@gmail.com>,
- Samuel Ortiz <sameo@linux.intel.com>,
- Manfred Schlaegl <manfred.schlaegl@gmx.at>, linux-omap@vger.kernel.org,
- Hartmut Knaack <knaack.h@gmx.de>, Ulf Hansson <ulf.hansson@linaro.org>,
- Antonio Borneo <borneo.antonio@gmail.com>,
- Andrea Galbusera <gizero@gmail.com>, Michael Welling <mwelling@ieee.org>,
- Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>,
- linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
- Lars-Peter Clausen <lars@metafoo.de>, David Woodhouse <dwmw2@infradead.org>,
- netdev@vger.kernel.org, linux-media@vger.kernel.org,
- Peter Meerwald <pmeerw@pmeerw.net>
-Message-ID: <55D64BBA.7070802@osg.samsung.com>
-Date: Thu, 20 Aug 2015 23:50:50 +0200
+ <1440054451-1223-4-git-send-email-javier@osg.samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20150820211152.GI74600@google.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1440054451-1223-4-git-send-email-javier@osg.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -54,40 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Brian,
-
-On 08/20/2015 11:11 PM, Brian Norris wrote:
-> On Thu, Aug 20, 2015 at 09:07:13AM +0200, Javier Martinez Canillas wrote:
->> Patches #1 and #2 solves a), patches #3 to #8 solves b) and patches
+On Thu, Aug 20, 2015 at 09:07:16AM +0200, Javier Martinez Canillas wrote:
+> The SPI core always reports the MODALIAS uevent as "spi:<modalias>"
+> regardless of the mechanism that was used to register the device
+> (i.e: OF or board code) and the table that is used later to match
+> the driver with the device (i.e: SPI id table or OF match table).
 > 
-> ^^^ I'm dying to know how this sentence ends :)
->
-
-Sigh, I did some last minute restructuring of the cover letter and
-seems I missed a sentence. I meant to said:
-
-"and patches #9 to #17 solves c)."
- 
->> Patch #18 changes the logic of spi_uevent() to report an OF modalias if
->> the device was registered using OF. But this patch is included in the
->> series only as an RFC for illustration purposes since changing that
->> without first applying all the other patches in this series, will break
->> module autoloading for the drivers of devices registered using OF but
->> that lacks an of_match_table. I'll repost patch #18 once all the patches
->> in this series have landed.
+> So drivers needs to export the SPI id table and this be built into
+> the module or udev won't have the necessary information to autoload
+> the needed driver module when the device is added.
 > 
-> On a more productive note, the patches I've looked at look good to me.
-> The missing aliases are a problem enough that should be fixed (i.e.,
-> part (b)). I'll leave the SPI framework changes to others to comment on.
->
-
-Great, thanks a lot for your feedback.
- 
-> Brian
+> But this means that OF-only drivers needs to have both OF and SPI id
+> tables that have to be kept in sync and also the dev node compatible
+> manufacturer prefix is stripped when reporting the MODALIAS. Which can
+> lead to issues if two vendors use the same SPI device name for example.
 > 
+> To avoid the above, the SPI core behavior may be changed in the future
+> to not require an SPI device table for OF-only drivers and report the
+> OF module alias. So, it's better to also export the OF table even when
+> is unused now to prevent breaking module loading when the core changes.
+> 
+> Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
 
-Best regards,
--- 
-Javier Martinez Canillas
-Open Source Group
-Samsung Research America
+I appreciate the context for the whole problem here, but this commit
+subject mostly doesn't apply to this driver, and it deson't seem to
+match the problem this is solving. As I see it, the patch description
+for this patch should be more like:
+
+  "The OF ID table is used for auto-probing the device, but it is not
+  exported to the module device table. That means this driver won't
+  autoload when built as a module.
+
+  Export the OF ID table to fix that.
+
+  (insert some reference to the larger issue here)"
+
+Do you want to rewrite the message, shall I just prepend my
+modifications, or am I off-base?
+
+> ---
+> 
+>  drivers/mtd/devices/mtd_dataflash.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+> index 0099aba72a8b..df6f61137376 100644
+> --- a/drivers/mtd/devices/mtd_dataflash.c
+> +++ b/drivers/mtd/devices/mtd_dataflash.c
+> @@ -102,6 +102,7 @@ static const struct of_device_id dataflash_dt_ids[] = {
+>  	{ .compatible = "atmel,dataflash", },
+>  	{ /* sentinel */ }
+>  };
+> +MODULE_DEVICE_TABLE(of, dataflash_dt_ids);
+>  #endif
+>  
+>  /* ......................................................................... */
+
+For the patch:
+
+Reviewed-by: Brian Norris <computersforpeace@gmail.com>
