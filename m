@@ -1,27 +1,19 @@
-Received: from mail-bn1on0137.outbound.protection.outlook.com
- ([157.56.110.137] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSGBu-0002DW-Dt
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 03:06:59 +0000
-From: Hou Zhiqiang <B48286@freescale.com>
-To: Jagan Teki <jteki@openedev.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hu
- Vincent" <Mingkai.Hu@freescale.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status register
- support
-Date: Thu, 20 Aug 2015 03:06:31 +0000
-Message-ID: <CY1PR0301MB07801D6328FCB80967CF2CA58B660@CY1PR0301MB0780.namprd03.prod.outlook.com>
-References: <1439978205-6092-1-git-send-email-jteki@openedev.com>
- <1439978205-6092-3-git-send-email-jteki@openedev.com>
- <CY1PR0301MB07803A969EC23D39E0FC9F7A8B670@CY1PR0301MB0780.namprd03.prod.outlook.com>
- <CAD6G_RSVwXjyXRfqXYtusE1n+BZ=3H8AXJiU3idsyMymAQXGLQ@mail.gmail.com>
-In-Reply-To: <CAD6G_RSVwXjyXRfqXYtusE1n+BZ=3H8AXJiU3idsyMymAQXGLQ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZSGHN-0004E7-MV
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 03:12:38 +0000
+Message-ID: <55D54430.8030506@cn.fujitsu.com>
+Date: Thu, 20 Aug 2015 11:06:24 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+CC: <richard@nod.at>, <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] ubifs: correct the size of nnode in memset
+References: <1439972932-12116-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <20150819162947.GW60523@google.com>
+In-Reply-To: <20150819162947.GW60523@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,61 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gSmFnYW4sDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmFn
-YW4gVGVraSBbbWFpbHRvOmp0ZWtpQG9wZW5lZGV2LmNvbV0NCj4gU2VudDogMjAxNeW5tDjmnIgy
-MOaXpSAxOjQ5DQo+IFRvOiBIb3UgWmhpcWlhbmctQjQ4Mjg2DQo+IENjOiBsaW51eC1tdGRAbGlz
-dHMuaW5mcmFkZWFkLm9yZzsgSHUgTWluZ2thaS1CMjEyODQ7IEJyaWFuIE5vcnJpczsgRGF2aWQN
-Cj4gV29vZGhvdXNlOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJl
-OiBbUEFUQ0ggMy8zXSBtdGQ6IHNwaS1ub3I6IHNmOiBBZGQgY2xlYXIgZmxhZyBzdGF0dXMgcmVn
-aXN0ZXINCj4gc3VwcG9ydA0KPiANCj4gSGkgWmhpcWlhbmcsDQo+IA0KPiBPbiAxOSBBdWd1c3Qg
-MjAxNSBhdCAxNzo0MiwgSG91IFpoaXFpYW5nIDxCNDgyODZAZnJlZXNjYWxlLmNvbT4gd3JvdGU6
-DQo+ID4gSGkgSmFnYW4sDQo+ID4NCj4gPj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4g
-Pj4gRnJvbTogSmFnYW4gVGVraSBbbWFpbHRvOmp0ZWtpQG9wZW5lZGV2LmNvbV0NCj4gPj4gU2Vu
-dDogMjAxNeW5tDjmnIgxOeaXpSAxNzo1Nw0KPiA+PiBUbzogbGludXgtbXRkQGxpc3RzLmluZnJh
-ZGVhZC5vcmcNCj4gPj4gQ2M6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEphZ2FuIFRl
-a2k7IEhvdSBaaGlxaWFuZy1CNDgyODY7IEh1DQo+ID4+IE1pbmdrYWktQjIxMjg0OyBEYXZpZCBX
-b29kaG91c2U7IEJyaWFuIE5vcnJpcw0KPiA+PiBTdWJqZWN0OiBbUEFUQ0ggMy8zXSBtdGQ6IHNw
-aS1ub3I6IHNmOiBBZGQgY2xlYXIgZmxhZyBzdGF0dXMgcmVnaXN0ZXINCj4gPj4gc3VwcG9ydA0K
-PiA+Pg0KPiA+PiBUaGUgY2xlYXIgZmxhZyBzdGF0dXMgcmVnaXN0ZXIgb3BlcmF0aW9uIHdhcyBy
-ZXF1aXJlZCBieSBNaWNyb24NCj4gPj4gU1BJLU5PUiBjaGlwcywgd2hpY2ggc3VwcG9ydCBGU1Iu
-IEFuZCBpZiBhbiBlcnJvciBiaXQgb2YgRlNSIGhhdmUNCj4gPj4gYmVlbiBzZXQgbGlrZSBwcm90
-ZWN0aW9uLCB2b2x0YWdlLCBlcmFzZSwgYW5kIHByb2dyYW0sIGl0IG11c3QgYmUNCj4gPj4gY2xl
-YXJlZCBieSB0aGUgY2xlYXIgRlNSIG9wZXJhdGlvbi4NCj4gPj4NCj4gPj4gU2lnbmVkLW9mZi1i
-eTogSmFnYW4gVGVraSA8anRla2lAb3BlbmVkZXYuY29tPg0KPiA+PiBDYzogSG91IFpoaXFpYW5n
-IDxCNDgyODZAZnJlZXNjYWxlLmNvbT4NCj4gPj4gQ2M6IE1pbmdrYWkuSHUgPE1pbmdrYWkuSHVA
-ZnJlZXNjYWxlLmNvbT4NCj4gPj4gQ2M6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFk
-Lm9yZz4NCj4gPj4gQ2M6IEJyaWFuIE5vcnJpcyA8Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29t
-Pg0KPiA+PiAtLS0NCj4gPj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwgMzUgKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLQ0KPiAtDQo+ID4+ICBpbmNsdWRlL2xpbnV4
-L210ZC9zcGktbm9yLmggICB8ICA5ICsrKysrKysrKw0KPiA+PiAgMiBmaWxlcyBjaGFuZ2VkLCA0
-MCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiA+Pg0KPiA+PiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS0N
-Cj4gPj4gbm9yLmMgaW5kZXggZjk1NGQwMy4uYzVjNDcyZDUgMTAwNjQ0DQo+ID4+IC0tLSBhL2Ry
-aXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ID4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1u
-b3Ivc3BpLW5vci5jDQo+ID4+IEBAIC0xMDAsNiArMTAwLDI4IEBAIHN0YXRpYyBpbnQgcmVhZF9m
-c3Ioc3RydWN0IHNwaV9ub3IgKm5vcikgIH0NCj4gPj4NCj4gPj4gIC8qDQo+ID4+ICsgKiBSZWFk
-IHRoZSBjbGVhciBmbGFnIHN0YXR1cyByZWdpc3Rlci4NCj4gPj4gKyAqIFRoZSBjbGVhciBmbGFn
-IHN0YXR1cyByZWdpc3RlciBvcGVyYXRpb24gd2FzIHJlcXVpcmVkIGJ5IE1pY3Jvbg0KPiA+PiAr
-ICogU1BJLU5PUiBjaGlwcywgd2hpY2ggc3VwcG9ydCBGU1IuIEFuZCBpZiBhbiBlcnJvciBiaXQg
-b2YgRlNSDQo+ID4+ICsgKiBoYXZlIGJlZW4gc2V0IGxpa2UgcHJvdGVjdGlvbiwgdm9sdGFnZSwg
-ZXJhc2UsIGFuZCBwcm9ncmFtLA0KPiA+PiArICogaXQgbXVzdCBiZSBjbGVhcmVkIGJ5IHRoZSBj
-bGVhciBGU1Igb3BlcmF0aW9uLg0KPiA+PiArICogUmV0dXJucyB6ZXJvIGZvciBGU1IgYml0cyBj
-bGVhcmVkIGFuZCBuZWdhdGl2ZSBpZiBlcnJvciBvY2N1cnJlZC4NCj4gPj4gKyAqLw0KPiA+PiAr
-c3RhdGljIGludCByZWFkX2Nmc3Ioc3RydWN0IHNwaV9ub3IgKm5vcikgew0KPiA+PiArICAgICBp
-bnQgcmV0Ow0KPiA+PiArICAgICB1OCB2YWw7DQo+ID4+ICsNCj4gPj4gKyAgICAgcmV0ID0gbm9y
-LT5yZWFkX3JlZyhub3IsIFNQSU5PUl9PUF9SRENGU1IsICZ2YWwsIDEpOw0KPiA+DQo+ID4gVGhl
-cmUgc2hvdWxkIGJlIGEgd3JpdGVfcmVnIGluc3RlYWQgb2YgcmVhZF9yZWcuDQo+ID4gVGhlcmUg
-aXNu4oCZdCBhIHJlZ2lzdGVyIG5hbWVkIENGU1IsIGFuZCB0aGUgY29tbWFuZCBTUElOT1JfT1Bf
-UkRDRlNSIGlzDQo+ID4gdXNlZCB0byBjbGVhciB0aGUgRlNSLCBhbm90aGVyIHdvcmRzIHJlc2V0
-IEZTUiB0byBkZWZhdWx0IHZhbHVlLg0KPiANCj4gWWVzLCBTUElOT1JfT1BfUkRDRlNSIGlzIGNs
-ZWFyIGZsYWcgc3RhdHVzIHJlZ2lzdGVyLCBmb3IgY2xlYXJpbmcgZXJyb3JzDQo+IGJpdHMgb24g
-ZnNyIHdlIG5lZWQgdG8gcmVhZCBjZnNyIG9uY2UuDQo+IA0KDQpTb3JyeSwgSSdtIG5vdCBjbGVh
-ciBmb3IgdGhpcyBvcGVyYXRpb24uIFBsZWFzZSBjb3JyZWN0IG1lIGlmIEknbSB3cm9uZy4NCkFz
-IGZhciBhcyBJIHVuZGVyc3RhbmQsIHRoaXMgY29tbWFuZCBpcyB1c2VkIHRvIHJlc2V0IHRoZSBG
-U1IuIERvZXMgYSB2YWx1ZQ0KV2lsbCBiZSByZWFkIGJhY2s/IEFuZCB0aGVyZSBpcyBub3QgdGhl
-IHJlZ2lzdGVyIENGU1IsIHNvIEkgZG9uJ3Qga25vdyB3aGljaA0KcmVnaXN0ZXIgd2lsbCBiZSBy
-ZWFkIGJ5IFNQSU5PUl9PUF9SRENGU1I/DQoNCj4gPg0KPiA+PiArICAgICBpZiAocmV0IDwgMCkg
-ew0KPiA+PiArICAgICAgICAgICAgIHByX2VycigiZXJyb3IgJWQgcmVhZGluZyBDRlNSXG4iLCBy
-ZXQpOw0KPiA+PiArICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+ID4+ICsgICAgIH0NCj4gPj4g
-Kw0KPiA+PiArICAgICByZXR1cm4gdmFsOw0KPiA+PiArfQ0KPiA+PiArDQo+ID4+ICsvKg0KDQpU
-aGFua3MsDQpaaGlxaWFuZw0K
+On 08/20/2015 12:29 AM, Brian Norris wrote:
+> On Wed, Aug 19, 2015 at 04:28:52PM +0800, Dongsheng Yang wrote:
+>> There is a typo in lpt to memset nnode by the
+>> size in sizeof(stuct ubifs_pnode).
+>>
+>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+>
+> Pushed to mtd-utils.git, as it's obvious. Good catch!
+>
+> I'll take a look at your restructuring patches eventually. But I'll
+> usually just defer UBIFS stuff to Richard/Artem/others.
+
+Great, thanx a lot, Brian.
+>
+>> ---
+>>   mkfs.ubifs/lpt.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mkfs.ubifs/lpt.c b/mkfs.ubifs/lpt.c
+>> index f6d4352..6aa0b88 100644
+>> --- a/mkfs.ubifs/lpt.c
+>> +++ b/mkfs.ubifs/lpt.c
+>> @@ -384,7 +384,7 @@ int create_lpt(struct ubifs_info *c)
+>>   		goto out;
+>>   	}
+>>   	memset(pnode, 0 , sizeof(struct ubifs_pnode));
+>> -	memset(nnode, 0 , sizeof(struct ubifs_pnode));
+>> +	memset(nnode, 0 , sizeof(struct ubifs_nnode));
+>
+> FWIW, struct ubifs_pnode and struct ubifs_nnode look like they would be
+> the same size when using 32-bit pointers, but a bit different (see the
+> third field in structs ubifs_nbranch and ubifs_lprops) with 64-bit.
+
+Yes, but in the latest ubifs.h in kernel, they are more different. And
+when I updated the ubifs.h, I found the bug.
+
+Thanx
+Yang
+>
+>>
+>>   	c->lscan_lnum = c->main_first;
+>>
+>> --
+>> 1.8.4.2
+>
+> Brian
+> .
+>
