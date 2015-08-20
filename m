@@ -1,35 +1,26 @@
-Received: from mail-oi0-f54.google.com ([209.85.218.54])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSL3E-0000d4-Ej
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 08:18:21 +0000
-Received: by oiev193 with SMTP id v193so18415587oie.3
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 01:17:59 -0700 (PDT)
-Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com.
- [209.85.218.54])
- by smtp.gmail.com with ESMTPSA id l2sm2056245obx.13.2015.08.20.01.17.58
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 20 Aug 2015 01:17:58 -0700 (PDT)
-Received: by oio137 with SMTP id 137so18599008oio.0
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 01:17:57 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAN1oZWwLRYxs=eeWi8jh-jo8+C7WckdW1hfyunmq5_1qb1Jb8w@mail.gmail.com>
-References: <1440053705-3836-1-git-send-email-vndao@altera.com>
- <201508201003.38179.marex@denx.de>
- <CAN1oZWwLRYxs=eeWi8jh-jo8+C7WckdW1hfyunmq5_1qb1Jb8w@mail.gmail.com>
-Date: Thu, 20 Aug 2015 16:17:57 +0800
-Message-ID: <CAN1oZWxdk9XNW02Ldc0Da6dUcoR+-dLeutdYPAK_BMmSpxh7Zg@mail.gmail.com>
+ id 1ZSLjq-0001zW-Gj
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 09:02:23 +0000
+From: Marek Vasut <marex@denx.de>
+To: Viet Nga Dao <vndao@altera.com>
 Subject: Re: [PATCH] [PATCH v5] mtd:spi-nor: Add Altera Quad SPI Driver
-From: Viet Nga Dao <vndao@altera.com>
-To: Marek Vasut <marex@denx.de>
+Date: Thu, 20 Aug 2015 11:01:58 +0200
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Viet Nga Dao <vndao@altera.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- nga_chi86 <ngachi86@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+ "nga_chi86" <ngachi86@gmail.com>
+References: <1440053705-3836-1-git-send-email-vndao@altera.com>
+ <CAN1oZWwLRYxs=eeWi8jh-jo8+C7WckdW1hfyunmq5_1qb1Jb8w@mail.gmail.com>
+ <CAN1oZWxdk9XNW02Ldc0Da6dUcoR+-dLeutdYPAK_BMmSpxh7Zg@mail.gmail.com>
+In-Reply-To: <CAN1oZWxdk9XNW02Ldc0Da6dUcoR+-dLeutdYPAK_BMmSpxh7Zg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201508201101.58702.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,199 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry for missing to reply the last question
+On Thursday, August 20, 2015 at 10:17:57 AM, Viet Nga Dao wrote:
+> Sorry for missing to reply the last question
 
-On Thu, Aug 20, 2015 at 4:13 PM, Nga Chi <ngachi86@gmail.com> wrote:
-> On Thu, Aug 20, 2015 at 4:03 PM, Marek Vasut <marex@denx.de> wrote:
->> On Thursday, August 20, 2015 at 08:55:05 AM, vndao@altera.com wrote:
->>> From: VIET NGA DAO <vndao@altera.com>
->>>
->>> Altera Quad SPI Controller is a soft IP which enables access to
->>> Altera EPCS and EPCQ flash chips. This patch adds driver
->>> for these devices.
->>>
->>> Signed-off-by: VIET NGA DAO <vndao@altera.com>
->>>
->>> ---
->>> v5:
->>> - Remove Micron support
->>> - Add multiple flashes probe failure handle
->>>
->>> v4:
->>> - Add more flash devices support ( EPCQL and Micron)
->>> - Remove redundant messages
->>> - Change EPCQ_OPCODE_ID to NON_EPCS_OPCODE_ID
->>> - Replace get_flash_name to altera_quadspi_scan
->>> - Remove clk related parts
->>> - Remove altera_quadspi_plat
->>> - Change device tree reg name and remove opcode-id
->>>
->>> v3:
->>> - Change altera_epcq driver name to altera_quadspi for more generic name
->>> - Implement flash name searching in altera_quadspi.c instead of spi-nor
->>> - Edit the altra quadspi info table in spi-nor
->>> - Remove wait_til_ready in all read,write, erase, lock, unlock functions
->>> - Merge .h and .c into 1 file
->>>
->>> v2:
->>> - Change to spi_nor structure
->>> - Add lock and unlock functions for spi_nor
->>> - Simplify the altera_epcq_lock function
->>> - Replace reg by compatible in device tree
->>> ---
->>>  .../devicetree/bindings/mtd/altera-quadspi.txt     |   45 ++
->>>  drivers/mtd/spi-nor/Kconfig                        |    8 +
->>>  drivers/mtd/spi-nor/Makefile                       |    1 +
->>>  drivers/mtd/spi-nor/altera-quadspi.c               |  557
->>> ++++++++++++++++++++ drivers/mtd/spi-nor/spi-nor.c                      |
->>>  18 +
->>>  5 files changed, 629 insertions(+), 0 deletions(-)
->>>  create mode 100644
->>> Documentation/devicetree/bindings/mtd/altera-quadspi.txt create mode
->>> 100644 drivers/mtd/spi-nor/altera-quadspi.c
->>>
->>> diff --git a/Documentation/devicetree/bindings/mtd/altera-quadspi.txt
->>> b/Documentation/devicetree/bindings/mtd/altera-quadspi.txt new file mode
->>> 100644
->>> index 0000000..e1bcf18
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/mtd/altera-quadspi.txt
->>> @@ -0,0 +1,45 @@
->>> +* MTD Altera QUADSPI driver
->>> +
->>> +Required properties:
->>> +- compatible: Should be "altr,quadspi-1.0"
->>> +- reg: Address and length of the register set  for the device. It contains
->>> +  the information of registers in the same order as described by reg-names
->>> +- reg-names: Should contain the reg names
->>> +  "avl_csr": Should contain the register configuration base address
->>> +  "avl_mem": Should contain the data base address
->>> +- #address-cells: Must be <1>.
->>> +- #size-cells: Must be <0>.
->>> +- flash device tree subnode, there must be a node with the following
->>> fields: +     - compatible: Should contain the flash name:
->>> +       1. EPCS:   epcs16, epcs64, epcs128
->>> +       2. EPCQ:   epcq16, epcq32, epcq64, epcq128, epcq256, epcq512, epcq1024
->>> +       3. EPCQ-L: epcql256, epcql512, epcql1024
->>> +     - #address-cells: please refer to /mtd/partition.txt
->>> +     - #size-cells: please refer to /mtd/partition.txt
->>> +     For partitions inside each flash, please refer to /mtd/partition.txt
->>> +
->>> +Example:
->>> +
->>> +                     quadspi_controller_0: quadspi@0x180014a0 {
->>> +                             compatible = "altr,quadspi-1.0";
->>> +                             reg = <0x180014a0 0x00000020>,
->>> +                                   <0x14000000 0x04000000>;
->>> +                             reg-names = "avl_csr", "avl_mem";
->>> +                             #address-cells = <1>;
->>> +                             #size-cells = <0>;
->>> +                             flash0: epcq256@0 {
->>> +                                     compatible = "altr,epcq256";
->>> +                                     #address-cells = <1>;
->>> +                                     #size-cells = <1>;
->>> +                                     partition@0 {
->>> +                                             /* 16 MB for raw data. */
->>> +                                             label = "EPCQ Flash 0 raw data";
->>> +                                             reg = <0x0 0x1000000>;
->>> +                                     };
->>> +                                     partition@1000000 {
->>> +                                             /* 16 MB for jffs2 data. */
->>> +                                             label = "EPCQ Flash 0 JFFS 2";
->>> +                                             reg = <0x1000000 0x1000000>;
->>> +                                     };
->>
->> IIRC, encoding partitions into OF is deprecated (and it shouldn't be
->> part of the example anyway, so please remove this bit).
->>
->>> +                             };
->>> +                     }; //end quadspi@0x180014a0 (quadspi_controller_0)
->>
->> Remove this incorrect comment.
->>
->>
->> [...]
->>
->
->Do you mean the partition part below should not be in example?
->   partition@0 {
->                                             /* 16 MB for raw data. */
->                                             label = "EPCQ Flash 0 raw data";
->                                              reg = <0x0 0x1000000>;
->                                     };
->                                     partition@1000000 {
->                                            /* 16 MB for jffs2 data. */
->                                             label = "EPCQ Flash 0 JFFS 2";
->                                           reg = <0x1000000 0x1000000>;
->                                      };
->
->>> +static struct flash_device flash_devices[] = {
->>> +     FLASH_ID("epcs16",              EPCS_OPCODE_ID,     0x14),
->>> +     FLASH_ID("epcs64",              EPCS_OPCODE_ID,     0x16),
->>> +     FLASH_ID("epcs128",             EPCS_OPCODE_ID,     0x18),
->>> +
->>> +     FLASH_ID("epcq16",              NON_EPCS_OPCODE_ID, 0x15),
->>> +     FLASH_ID("epcq32",              NON_EPCS_OPCODE_ID, 0x16),
->>> +     FLASH_ID("epcq64",              NON_EPCS_OPCODE_ID, 0x17),
->>> +     FLASH_ID("epcq128",             NON_EPCS_OPCODE_ID, 0x18),
->>> +     FLASH_ID("epcq256",             NON_EPCS_OPCODE_ID, 0x19),
->>> +     FLASH_ID("epcq512",             NON_EPCS_OPCODE_ID, 0x20),
->>> +     FLASH_ID("epcq1024",            NON_EPCS_OPCODE_ID, 0x21),
->>> +
->>> +     FLASH_ID("epcql256",            NON_EPCS_OPCODE_ID, 0x19),
->>> +     FLASH_ID("epcql512",            NON_EPCS_OPCODE_ID, 0x20),
->>> +     FLASH_ID("epcql1024",           NON_EPCS_OPCODE_ID, 0x21),
->>> +
->>> +};
->>
->> I think it'd be better to wait until the IP block is fixed and can
->> issue READID correctly.
->>
->
-> The hardware IP fix will take time while there are lot of customer are
-> waiting for this driver. That is why we decided to upstream the
-> driver. If the hardware fix, there might not need to have any changes
-> in driver to support or if yes, it will be just minor.
->
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>> index 14a5d23..2ab7279 100644
->>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -687,6 +687,24 @@ static const struct spi_device_id spi_nor_ids[] = {
->>>       { "cat25c09", CAT25_INFO( 128, 8, 32, 2, SPI_NOR_NO_ERASE |
->>> SPI_NOR_NO_FR) }, { "cat25c17", CAT25_INFO( 256, 8, 32, 2,
->>> SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) }, { "cat25128", CAT25_INFO(2048, 8, 64,
->>> 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) }, +
->>> +     /* Altera EPCQ/EPCS Flashes are non-JEDEC */
->>
->> Are they really ? Last time I checked on CV SoC, I was able to read their
->> JEDEC ID just fine ; though it's true I used that EPCS core.
->>
+Hi!
 
-Altera EPCS flash is non-jedec device. And this new controller is not
-EPCS controller. If you look at the documentation i sent in another
-email, they are not the same.
+> >>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
+> >>> b/drivers/mtd/spi-nor/spi-nor.c index 14a5d23..2ab7279 100644
+> >>> --- a/drivers/mtd/spi-nor/spi-nor.c
+> >>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> >>> @@ -687,6 +687,24 @@ static const struct spi_device_id spi_nor_ids[] =
+> >>> {
+> >>> 
+> >>>       { "cat25c09", CAT25_INFO( 128, 8, 32, 2, SPI_NOR_NO_ERASE |
+> >>> 
+> >>> SPI_NOR_NO_FR) }, { "cat25c17", CAT25_INFO( 256, 8, 32, 2,
+> >>> SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) }, { "cat25128", CAT25_INFO(2048, 8,
+> >>> 64, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) }, +
+> >>> +     /* Altera EPCQ/EPCS Flashes are non-JEDEC */
+> >> 
+> >> Are they really ? Last time I checked on CV SoC, I was able to read
+> >> their JEDEC ID just fine ; though it's true I used that EPCS core.
+> 
+> Altera EPCS flash is non-jedec device. And this new controller is not
+> EPCS controller. If you look at the documentation i sent in another
+> email, they are not the same.
 
->>> +     { "epcs16",   INFO(0, 0, 0x10000, 32,   0) },
->>> +     { "epcs64",   INFO(0, 0, 0x10000, 128,  0) },
->>> +     { "epcs128",  INFO(0, 0, 0x40000, 256,  0) },
->>> +
->>> +     { "epcq16",   INFO(0, 0, 0x10000, 32,   0) },
->>> +     { "epcq32",   INFO(0, 0, 0x10000, 64,   0) },
->>> +     { "epcq64",   INFO(0, 0, 0x10000, 128,  0) },
->>> +     { "epcq128",  INFO(0, 0, 0x10000, 256,  0) },
->>> +     { "epcq256",  INFO(0, 0, 0x10000, 512,  0) },
->>> +     { "epcq512",  INFO(0, 0, 0x10000, 1024, 0) },
->>> +     { "epcq1024", INFO(0, 0, 0x10000, 2048, 0) },
->>> +
->>> +     { "epcql256",  INFO(0, 0, 0x10000, 512,  0) },
->>> +     { "epcql512",  INFO(0, 0, 0x10000, 1024, 0) },
->>> +     { "epcql1024", INFO(0, 0, 0x10000, 2048, 0) },
->>> +
->>>       { },
->>>  };
->
->
->
-> --
-> Nga
+https://www.altera.com/content/dam/altera-
+www/global/en_US/pdfs/literature/hb/cfg/cfg_cf52012.pdf page 15 ; seems
+like opcode 0x9f is supported. All the other opcodes seems compatible too.
+What is the problem ?
+
+Best regards,
+Marek Vasut
