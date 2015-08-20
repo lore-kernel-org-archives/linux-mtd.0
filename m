@@ -1,22 +1,23 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSXn3-0004Ys-Lu
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 21:54:30 +0000
-Received: by pacdd16 with SMTP id dd16so28403528pac.2
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 14:54:08 -0700 (PDT)
-Date: Thu, 20 Aug 2015 14:54:04 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 03/18] mtd: dataflash: Export OF module alias information
-Message-ID: <20150820215404.GA81844@google.com>
-References: <1440054451-1223-1-git-send-email-javier@osg.samsung.com>
- <1440054451-1223-4-git-send-email-javier@osg.samsung.com>
+ id 1ZSXxz-0000cS-BY
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 22:05:48 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] [PATCH v5] mtd:spi-nor: Add Altera Quad SPI Driver
+Date: Thu, 20 Aug 2015 23:52:22 +0200
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>,
+ linux-mtd@lists.infradead.org, vndao@altera.com, dwmw2@infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ngachi86@gmail.com
+References: <1440053705-3836-1-git-send-email-vndao@altera.com>
+ <3030745.IsU6n2jnJj@ws-stein> <20150820201925.GD74600@google.com>
+In-Reply-To: <20150820201925.GD74600@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1440054451-1223-4-git-send-email-javier@osg.samsung.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201508202352.22313.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 20, 2015 at 09:07:16AM +0200, Javier Martinez Canillas wrote:
-> The SPI core always reports the MODALIAS uevent as "spi:<modalias>"
-> regardless of the mechanism that was used to register the device
-> (i.e: OF or board code) and the table that is used later to match
-> the driver with the device (i.e: SPI id table or OF match table).
+On Thursday, August 20, 2015 at 10:19:25 PM, Brian Norris wrote:
+> On Thu, Aug 20, 2015 at 12:06:36PM +0200, Alexander Stein wrote:
+> > On Thursday 20 August 2015 10:03:38, Marek Vasut wrote:
+> > > > +Example:
+> > > > +
+> > > > +			quadspi_controller_0: quadspi@0x180014a0 {
+> > > > +				compatible = "altr,quadspi-1.0";
+> > > > +				reg = <0x180014a0 0x00000020>,
+> > > > +				      <0x14000000 0x04000000>;
+> > > > +				reg-names = "avl_csr", "avl_mem";
+> > > > +				#address-cells = <1>;
+> > > > +				#size-cells = <0>;
+> > > > +				flash0: epcq256@0 {
+> > > > +					compatible = "altr,epcq256";
+> > > > +					#address-cells = <1>;
+> > > > +					#size-cells = <1>;
+> > > > +					partition@0 {
+> > > > +						/* 16 MB for raw data. 
+*/
+> > > > +						label = "EPCQ Flash 0 
+raw data";
+> > > > +						reg = <0x0 0x1000000>;
+> > > > +					};
+> > > > +					partition@1000000 {
+> > > > +						/* 16 MB for jffs2 data. 
+*/
+> > > > +						label = "EPCQ Flash 0 
+JFFS 2";
+> > > > +						reg = <0x1000000 
+0x1000000>;
+> > > > +					};
+> > > 
+> > > IIRC, encoding partitions into OF is deprecated (and it shouldn't be
+> > > part of the example anyway, so please remove this bit).
+> > 
+> > Do you mean specifying partitions in OF is deprecated in general? Is
+> > there any link for that? What would be an alternative to it?
 > 
-> So drivers needs to export the SPI id table and this be built into
-> the module or udev won't have the necessary information to autoload
-> the needed driver module when the device is added.
-> 
-> But this means that OF-only drivers needs to have both OF and SPI id
-> tables that have to be kept in sync and also the dev node compatible
-> manufacturer prefix is stripped when reporting the MODALIAS. Which can
-> lead to issues if two vendors use the same SPI device name for example.
-> 
-> To avoid the above, the SPI core behavior may be changed in the future
-> to not require an SPI device table for OF-only drivers and report the
-> OF module alias. So, it's better to also export the OF table even when
-> is unused now to prevent breaking module loading when the core changes.
-> 
-> Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
+> This is the first I've heard of such a deprecation. I would argue that
+> it's still probably one of the best ways to specify partitions. It's not
+> exactly perfect (partitions aren't really "hardware", so may not belong
+> in the "hardware description")
 
-I appreciate the context for the whole problem here, but this commit
-subject mostly doesn't apply to this driver, and it deson't seem to
-match the problem this is solving. As I see it, the patch description
-for this patch should be more like:
+Which is the reasoning why I heard it was deprecated, but it seems my
+knowledge is not correct. I apologize for the misinformation, sorry.
 
-  "The OF ID table is used for auto-probing the device, but it is not
-  exported to the module device table. That means this driver won't
-  autoload when built as a module.
+> , but IMO it's better than cmdlineparts,
+> for instance. I also don't really know of any good-enough, generically
+> useful on-flash partition formats, especially ones that can handle the
+> complexities of NAND.
 
-  Export the OF ID table to fix that.
+Right.
 
-  (insert some reference to the larger issue here)"
-
-Do you want to rewrite the message, shall I just prepend my
-modifications, or am I off-base?
-
-> ---
-> 
->  drivers/mtd/devices/mtd_dataflash.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> index 0099aba72a8b..df6f61137376 100644
-> --- a/drivers/mtd/devices/mtd_dataflash.c
-> +++ b/drivers/mtd/devices/mtd_dataflash.c
-> @@ -102,6 +102,7 @@ static const struct of_device_id dataflash_dt_ids[] = {
->  	{ .compatible = "atmel,dataflash", },
->  	{ /* sentinel */ }
->  };
-> +MODULE_DEVICE_TABLE(of, dataflash_dt_ids);
->  #endif
->  
->  /* ......................................................................... */
-
-For the patch:
-
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
+Best regards,
+Marek Vasut
