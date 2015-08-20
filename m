@@ -1,18 +1,23 @@
-Received: from mail-qg0-f51.google.com ([209.85.192.51])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSC5n-0005qx-PB
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2015 22:44:25 +0000
-Received: by qgj62 with SMTP id 62so16418523qgj.2
- for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2015 15:44:02 -0700 (PDT)
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Brian Norris <computersforpeace@gmail.com>, robert.jarzmik@free.fr,
- <linux-mtd@lists.infradead.org>
-Cc: jogo@openwrt.org,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: [PATCH v2] nand: pxa3xx: Increase READ_ID buffer and make the size
- static
-Date: Wed, 19 Aug 2015 19:40:09 -0300
-Message-Id: <1440024009-20177-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZSEAQ-0001y7-RZ
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 00:57:19 +0000
+Message-ID: <55D52473.7050209@cn.fujitsu.com>
+Date: Thu, 20 Aug 2015 08:50:59 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+To: Richard Weinberger <richard.weinberger@gmail.com>, =?UTF-8?B?QW5kcmVh?=
+ =?UTF-8?B?cyBHcsO8bmJhY2hlcg==?= <andreas.gruenbacher@gmail.com>
+CC: <snijsure@grid-net.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ <ben.shelton@ni.com>, <terry.wilcox@ni.com>, <mkl@pengutronix.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ <gratian.crisan@ni.com>, <brad.mouring@ni.com>
+Subject: Re: [kernel.org bug 103071] Dead "security.*" xattr code in ubifs
+References: <CAHpGcM+bkFA-UDM0FKwH=FkS9+TWv_Br7nWJXSpKDquo5n_gFw@mail.gmail.com>
+ <CAFLxGvxPGZoRX3Ft_g59fzfLhoOmEES=q-oPBmYuGVBzn-dRUA@mail.gmail.com>
+In-Reply-To: <CAFLxGvxPGZoRX3Ft_g59fzfLhoOmEES=q-oPBmYuGVBzn-dRUA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,103 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The read ID count should be made as large as the maximum READ_ID size,
-so there's no need to have dynamic size. This commit sets the hardware
-maximum read ID count, which should be more than enough on all cases.
-Also, we get rid of the read_id_bytes, and use a macro instead.
+On 08/19/2015 04:55 AM, Richard Weinberger wrote:
+> Andreas,
+>
+> On Tue, Aug 18, 2015 at 2:15 PM, Andreas Gr=C3=BCnbacher
+> <andreas.gruenbacher@gmail.com> wrote:
+>> Hello,
+>>
+>> FYI, I've filed the following bug report against ubifs:
+>>
+>>> ubifs sets sb->s_xattr to ubifs_xattr_handlers which contains a handler=
+ for
+>>> "security.*" xattrs. The s_xattr handlers are never used because ubifs =
+uses
+>>> its own ubifs_{get,set,list,remove}xattr inode operations instead of
+>>> generic_{get,set,list,remove}xattr inode operations though.
+>>
+>> https://bugzilla.kernel.org/show_bug.cgi?id=3D103071
+>
+> Thanks for reporting.
+>
+> CC'ing authors of commit d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53
+> Author: Subodh Nijsure <snijsure@grid-net.com>
+> Date:   Fri Oct 31 13:50:30 2014 -0500
+>
+>      UBIFS: Add security.* XATTR support for the UBIFS
+>
+>
+> Also xfstests' generic/062 test seems to fail (with USE_ATTR_SECURE=3Dyes=
+)
+> ---cut---
+> generic/062 1s ... - output mismatch (see
+> /root/xfstests/results//generic/062.out.bad)
+>      --- tests/generic/062.out   2015-08-18 20:13:00.714593141 +0000
+>      +++ /root/xfstests/results//generic/062.out.bad     2015-08-18
+> 20:50:06.450418217 +0000
+>      @@ -203,6 +203,292 @@
+>       SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not p=
+ermitted
+>       *** final list (strings, type=3Ddev/p, nsp=3Duser)
+>
+>      +=3D=3D=3D TYPE reg; NAMESPACE security
+>      +
+>      +*** set/get one initially empty attribute
+>      +# file: SCRATCH_MNT/reg
+>      ...
+>      (Run 'diff -u tests/generic/062.out
+> /root/xfstests/results//generic/062.out.bad'  to see the entire diff)
+> Ran: generic/062
+> Failures: generic/062
+> Failed 1 of 1 tests
 
-Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
-Changes from v1:
+Hi Richard,
+	Glad to know you are also using fstests for our ubifs. :)
+About this case, I checked it and found it's a bug in fstests.
+Because when we are setting USE_ATTR_SECURE=3Dyes, the output
+would be different with what it expected currently.
+	So, I will send a patch out to fix it. And with a quick
+fix, I found ubifs works well in xattr security.
 
-  * Keep "data_size" to 8 bytes, as per hardware
-    requirements to read at least a FIFO entry.
-
-  * While here, add a proper comment on READ_ID_BYTES'
-    definition.
-
- drivers/mtd/nand/pxa3xx_nand.c | 31 ++++++++++---------------------
- 1 file changed, 10 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 51f8a58..740983a 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -129,6 +129,13 @@
- #define EXT_CMD_TYPE_LAST_RW	1 /* Last naked read/write */
- #define EXT_CMD_TYPE_MONO	0 /* Monolithic read/write */
- 
-+/*
-+ * This should be large enough to read 'ONFI' and 'JEDEC'.
-+ * Let's use 7 bytes, which is the maximum ID count supported
-+ * by the controller (see NDCR_RD_ID_CNT_MASK).
-+ */
-+#define READ_ID_BYTES		7
-+
- /* macros for registers read/write */
- #define nand_writel(info, off, val)	\
- 	writel_relaxed((val), (info)->mmio_base + (off))
-@@ -176,8 +183,6 @@ struct pxa3xx_nand_host {
- 	/* calculated from pxa3xx_nand_flash data */
- 	unsigned int		col_addr_cycles;
- 	unsigned int		row_addr_cycles;
--	size_t			read_id_bytes;
--
- };
- 
- struct pxa3xx_nand_info {
-@@ -917,7 +922,7 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
- 		break;
- 
- 	case NAND_CMD_READID:
--		info->buf_count = host->read_id_bytes;
-+		info->buf_count = READ_ID_BYTES;
- 		info->ndcb0 |= NDCB0_CMD_TYPE(3)
- 				| NDCB0_ADDR_CYC(1)
- 				| command;
-@@ -1254,9 +1259,6 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
- 		return -EINVAL;
- 	}
- 
--	/* calculate flash information */
--	host->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
--
- 	/* calculate addressing information */
- 	host->col_addr_cycles = (f->page_size == 2048) ? 2 : 1;
- 
-@@ -1272,7 +1274,7 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
- 	ndcr |= (f->flash_width == 16) ? NDCR_DWIDTH_M : 0;
- 	ndcr |= (f->dfc_width == 16) ? NDCR_DWIDTH_C : 0;
- 
--	ndcr |= NDCR_RD_ID_CNT(host->read_id_bytes);
-+	ndcr |= NDCR_RD_ID_CNT(READ_ID_BYTES);
- 	ndcr |= NDCR_SPARE_EN; /* enable spare by default */
- 
- 	info->reg_ndcr = ndcr;
-@@ -1283,23 +1285,10 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
- 
- static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- {
--	/*
--	 * We set 0 by hard coding here, for we don't support keep_config
--	 * when there is more than one chip attached to the controller
--	 */
--	struct pxa3xx_nand_host *host = info->host[0];
- 	uint32_t ndcr = nand_readl(info, NDCR);
- 
--	if (ndcr & NDCR_PAGE_SZ) {
--		/* Controller's FIFO size */
--		info->chunk_size = 2048;
--		host->read_id_bytes = 4;
--	} else {
--		info->chunk_size = 512;
--		host->read_id_bytes = 2;
--	}
--
- 	/* Set an initial chunk size */
-+	info->chunk_size = ndcr & NDCR_PAGE_SZ ? 2048 : 512;
- 	info->reg_ndcr = ndcr & ~NDCR_INT_MASK;
- 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
- 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
--- 
-2.4.6
+Yang
+> ---cut---
+>
+> Guys, how did you test this feature?
+>
