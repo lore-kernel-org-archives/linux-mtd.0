@@ -1,21 +1,31 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSK9s-00079j-Ad
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 07:21:08 +0000
-Message-ID: <55D57E6A.5040605@cn.fujitsu.com>
-Date: Thu, 20 Aug 2015 15:14:50 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Received: from mail-ob0-f172.google.com ([209.85.214.172])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZSKQB-0005yw-Fq
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 07:37:59 +0000
+Received: by obbhe7 with SMTP id he7so25460880obb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 00:37:37 -0700 (PDT)
+Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com.
+ [209.85.214.173])
+ by smtp.gmail.com with ESMTPSA id sj5sm1987529oeb.13.2015.08.20.00.37.33
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 20 Aug 2015 00:37:37 -0700 (PDT)
+Received: by obkg7 with SMTP id g7so25334061obk.3
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 00:37:33 -0700 (PDT)
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
- <dedekind1@gmail.com>
-Subject: Re: [PATCH 2/2] ubifs: Allow O_DIRECT
-References: <1440016553-26481-1-git-send-email-richard@nod.at>
- <1440016553-26481-2-git-send-email-richard@nod.at>
- <55D542C5.6040500@cn.fujitsu.com> <55D576BE.5040207@nod.at>
-In-Reply-To: <55D576BE.5040207@nod.at>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAN1oZWyE9E2kRkGZPajpiNbpeKEjOhs9NDNDbUpmdw18WNYL2A@mail.gmail.com>
+References: <CAN1oZWyE9E2kRkGZPajpiNbpeKEjOhs9NDNDbUpmdw18WNYL2A@mail.gmail.com>
+Date: Thu, 20 Aug 2015 15:37:33 +0800
+Message-ID: <CAN1oZWx_wefKJhB2pVbhw_UUZNR8LfveS-FPBFtgndGg_nXoUw@mail.gmail.com>
+Subject: Re: [PATCH] [PATCH v4] mtd:spi-nor: Add Altera Quad SPI Driver
+From: Viet Nga Dao <vndao@altera.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, marex@denx.de
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ nga_chi86 <ngachi86@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +35,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/20/2015 02:42 PM, Richard Weinberger wrote:
-> Yang, (Sorry if I've used your last name lately)
-
-Haha, that's fine. My friends in China all call me Dongsheng. :)
->
-> Am 20.08.2015 um 05:00 schrieb Dongsheng Yang:
->> On 08/20/2015 04:35 AM, Richard Weinberger wrote:
->>> Currently UBIFS does not support direct IO, but some applications
->>> blindly use the O_DIRECT flag.
->>> Instead of failing upon open() we can do better and fall back
->>> to buffered IO.
+Hi,
+>> On Tuesday, August 18, 2015 at 03:24:44 AM, Brian Norris wrote:
+>>> I'm not very helpful here, so hopefully Viet can be of more use:
 >>
->> Hmmmm, to be honest, I am not sure we have to do it as Dave
->> suggested. I think that's just a work-around for current fstests.
+>> Yup :)
 >>
->> IMHO, perform a buffered IO when user request direct IO without
->> any warning sounds not a good idea. Maybe adding a warning would
->> make it better.
+>>> On Mon, Aug 17, 2015 at 07:53:23PM +0200, Marek Vasut wrote:
+>>> > On Monday, August 17, 2015 at 06:03:38 PM, Brian Norris wrote:
+>>> > Also, I cannot find any documentation for this IP block even if I
+>>> > search through Quartus/QSys, is there any proper documentation
+>>> > available anywhere?
+>>>
+>>> I never found proper documentation, but I didn't look too hard. I've
+>>> mostly been going off of Viet's comments and code.
+>>
+>> Me neither, and I looked through the altera stuff in fact. I'm trying to learn whether this is just an Soft IP, in which case it certainly can be fixed ; or if there is actually some chip shipping with this crap synthesised into actual silicon.
+>>
+>>> But FWIW, I did find some relevant info for the peculiar Altera EPCQ
+>>> flash here:
+>>>
+>>> https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/litera
+>>> ture/
+>>> hb/cfg/cfg_cf52012.pdf
+>>
+>> Altera EPCS/EPCQ flashes are just rebranded micron flashes, they just have different JEDEC >ID and are a bit more expensive.
 >
-> Well, how would you inform the user?
-> A printk() to dmesg is useless are the vast majority of open()
-> callers do not check dmesg... :)
+> You can find the document at here
+> (https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/ug/ug_embedded_ip.pdf)
+>  Chapter 42.Page 407.
 >
-> Major filesystems implement ->direct_IO these days and having
-> a "return 0"-stub seems to be legit.
-> For example exofs does too. So, I really don't consider it a work around.
-
-Hmmm, then I am okey with this idea now.
+> For the soft IP issue, i've requested hardware engineer to come out
+> the solution. So in the mean way, our driver will NOT support Micron
+> flashes until hardware fix is completed.
 >
->> I think we need more discussion about AIO&DIO in ubifs, and actually
->> I have a plan for it. But I have not listed the all cons and pros of
->> it so far.
->
-> Sure, having a real ->direct_IO would be be best solution.
-> My patch won't block this.
-
-Yes, agree. So let's return 0 currently.
-
-Yang
+> Hence, i just submitted version 5 for this driver with eliminating
+> micron device support. Hope this version will get ACKed by you.
 >
 > Thanks,
-> //richard
-> .
->
+> Viet Nga
