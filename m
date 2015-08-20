@@ -1,23 +1,23 @@
-Message-ID: <55D5FB19.9010402@st.com>
-Date: Thu, 20 Aug 2015 09:06:49 -0700
-From: vikas <vikas.manocha@st.com>
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1ZSWJb-0007st-CI
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 20:20:00 +0000
+Received: by paom9 with SMTP id m9so1709960pao.1
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 13:19:31 -0700 (PDT)
+Date: Thu, 20 Aug 2015 13:19:25 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+ vndao@altera.com, dwmw2@infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, ngachi86@gmail.com
+Subject: Re: [PATCH] [PATCH v5] mtd:spi-nor: Add Altera Quad SPI Driver
+Message-ID: <20150820201925.GD74600@google.com>
+References: <1440053705-3836-1-git-send-email-vndao@altera.com>
+ <201508201003.38179.marex@denx.de> <3030745.IsU6n2jnJj@ws-stein>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-CC: Graham Moore <grmoore@opensource.altera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Alan Tull
- <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
- <dinguyen@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-Subject: Re: [PATCH V7 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
-References: <1439522892-7524-1-git-send-email-marex@denx.de>
- <55D3819D.1040009@opensource.altera.com> <55D39319.70108@st.com>
- <201508200603.19962.marex@denx.de>
-In-Reply-To: <201508200603.19962.marex@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3030745.IsU6n2jnJj@ws-stein>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,83 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On 08/19/2015 09:03 PM, Marek Vasut wrote:
-> On Tuesday, August 18, 2015 at 10:18:33 PM, vikas wrote:
->> Hi,
->>
->> On 08/18/2015 12:03 PM, Graham Moore wrote:
->>> Hi all,
->>>
->>> On 08/18/2015 12:48 AM, Vikas MANOCHA wrote:
->>>
->>> [...]
->>>
->>>>>>> +Required properties:
->>>>>>> +- compatible : Should be "cdns,qspi-nor".
->>>>>>> +- reg : Contains two entries, each of which is a tuple consisting of
->>>>>>> a +    physical address and length.  The first entry is the address
->>>>>>> and +    length of the controller register set.  The second entry is
->>>>>>> the +    address and length of the QSPI Controller data area.
->>>>>>
->>>>>> "Controller data area", i think it means mapped NOR Flash address ?
->>>>>
->>>>> Probably ; Graham ?
->>>>>
->>>>>> If yes, it would be more clear with "Physical base address & size of
->>>>>> NOR Flash".
->>>>>
->>>>> This is the Direct mode thing, correct ? We don't support this, so I
->>>>> think we should drop this bit altogether and keep only one single
->>>>> address in this field.
->>>>
->>>> No it's not.
->>>
->>> It's the location of the SRAM fifo.  Also direct mode location I think,
->>> if that were ever used.
->>
->> Hmm...It is the base address of NOR flash. SRAM is not memory mapped.
+On Thu, Aug 20, 2015 at 12:06:36PM +0200, Alexander Stein wrote:
+> On Thursday 20 August 2015 10:03:38, Marek Vasut wrote:
+> > > +Example:
+> > > +
+> > > +			quadspi_controller_0: quadspi@0x180014a0 {
+> > > +				compatible = "altr,quadspi-1.0";
+> > > +				reg = <0x180014a0 0x00000020>,
+> > > +				      <0x14000000 0x04000000>;
+> > > +				reg-names = "avl_csr", "avl_mem";
+> > > +				#address-cells = <1>;
+> > > +				#size-cells = <0>;
+> > > +				flash0: epcq256@0 {
+> > > +					compatible = "altr,epcq256";
+> > > +					#address-cells = <1>;
+> > > +					#size-cells = <1>;
+> > > +					partition@0 {
+> > > +						/* 16 MB for raw data. */
+> > > +						label = "EPCQ Flash 0 raw data";
+> > > +						reg = <0x0 0x1000000>;
+> > > +					};
+> > > +					partition@1000000 {
+> > > +						/* 16 MB for jffs2 data. */
+> > > +						label = "EPCQ Flash 0 JFFS 2";
+> > > +						reg = <0x1000000 0x1000000>;
+> > > +					};
+> > 
+> > IIRC, encoding partitions into OF is deprecated (and it shouldn't be
+> > part of the example anyway, so please remove this bit).
 > 
-> Huh ? I am inclined to trust Graham more -- I have seen memory mapped SRAM,
-> but I have yet to see memory mapped SPI NOR.
+> Do you mean specifying partitions in OF is deprecated in general? Is there any link for that?
+> What would be an alternative to it?
 
-Well, SPI NOR flash in SOCs normally is memory mapped.
-To give some mainline examples, all Spear family SOCs (spear300, 320, 1310, 1340).
+This is the first I've heard of such a deprecation. I would argue that
+it's still probably one of the best ways to specify partitions. It's not
+exactly perfect (partitions aren't really "hardware", so may not belong
+in the "hardware description"), but IMO it's better than cmdlineparts,
+for instance. I also don't really know of any good-enough, generically
+useful on-flash partition formats, especially ones that can handle the
+complexities of NAND.
 
-> Also, the driver code clearly
-> uses that area in a way one would use a memory mapped SRAM with FIFO on the
-> other side. I think the above description is pretty much OK.
-
-that is the purpose of making NOR flash memory mapped.
-
-> 
->>> The size is determined by a configuration parameter during system
->>> design.  On Altera Cyclone5 the size is really big compared to SRAM
->>> fifo.  I don't know why, maybe some hw engineer thought it would be
->>> better to have a large size in case direct mode was used.
->>
->> my comment is about second parameter of property "reg" which is NOR flash
->> address, so above explanation does not make sense for it.
->> Also in direct mode, sram does not come into play.
-> 
-> This is absolutelly not a SPI NOR address.
-
-Then i can only suggest to check out the controller literature.
-
-Think like this : what is the purpose of SRAM in all this flash access business, It can work without SRAM also,
-the only purpose of sram (& in fact indirect mode) is to access data from flash memory without AHB access to trigger it.
-Once the data is available in SRAM(in case of read), AHB Master can access it with low letency. Same is true for writes.
-SRAM is integral internal part of state machine in case of indirect mode, there is no need for it to memory mapped. If the controller
-does not support indirect mode, there is no need of sram in the system.
-
-Hope it is little bit more clear.
-
-Cheers,
-Vikas
-
-> 
-> Best regards,
-> Marek Vasut
-> .
-> 
+Brian
