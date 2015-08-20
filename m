@@ -1,18 +1,26 @@
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSMCq-0004HK-PT
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 09:32:21 +0000
-Received: by wicne3 with SMTP id ne3so10587791wic.1
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 02:31:59 -0700 (PDT)
-From: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Subodh Nijsure <snijsure@grid-net.com>,
+ id 1ZSMDQ-0004Ll-7m
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 09:32:56 +0000
+Received: by laba3 with SMTP id a3so18971842lab.1
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 02:32:34 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <55D43564.3060009@nod.at>
+References: <CAHpGcM+bkFA-UDM0FKwH=FkS9+TWv_Br7nWJXSpKDquo5n_gFw@mail.gmail.com>
+ <CAFLxGvxPGZoRX3Ft_g59fzfLhoOmEES=q-oPBmYuGVBzn-dRUA@mail.gmail.com>
+ <55D3D6BB.3030307@huawei.com> <55D3DDD1.8060405@huawei.com>
+ <55D42959.5070605@nod.at> <55D431E8.5040509@huawei.com>
+ <55D43564.3060009@nod.at>
+Date: Thu, 20 Aug 2015 11:32:34 +0200
+Message-ID: <CAHpGcMKCfEnpR+fPUq3801cYV4c712i8HV53LwciMetUHdMgqA@mail.gmail.com>
+Subject: Re: [kernel.org bug 103071] Dead "security.*" xattr code in ubifs
+From: =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Sheng Yong <shengyong1@huawei.com>, snijsure@grid-net.com,
  Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Richard Weinberger <richard@nod.at>, Sheng Yong <shengyong1@huawei.com>
-Subject: [PATCH] ubifs: Remove unused "security.*" xattr handler
-Date: Thu, 20 Aug 2015 11:31:55 +0200
-Message-Id: <1440063115-10055-1-git-send-email-agruenba@redhat.com>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ mkl@pengutronix.de, gratian.crisan@ni.com, brad.mouring@ni.com
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,95 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ubifs installs a "security.*" xattr handler in sb->s_xattr but doesn't use the
-generic_{get,set,list,remove}xattr inode operations needed for processing this
-list of attribute handlers; the handler is never called.  Instead, ubifs uses
-its own xattr handlers which also process "security.*" xattrs.
+Richard,
 
-Remove the dead code.
+2015-08-19 9:51 GMT+02:00 Richard Weinberger <richard@nod.at>:
+> My concern is not that we don't need these xattr.
+> I'm concerned about commit d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53.
+> Today it seems to be a no-op. Did it ever work?
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Cc: Subodh Nijsure <snijsure@grid-net.com>
----
- fs/ubifs/super.c |  1 -
- fs/ubifs/ubifs.h |  1 -
- fs/ubifs/xattr.c | 40 ----------------------------------------
- 3 files changed, 42 deletions(-)
+The commit also initializes the security context of new inodes, so that part
+likely works. It looks like the ubifs_ xattr inode operations will handle
+"security.*" attributes just fine.
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 9547a278..c71edca 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2037,7 +2037,6 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 	if (c->max_inode_sz > MAX_LFS_FILESIZE)
- 		sb->s_maxbytes = c->max_inode_sz = MAX_LFS_FILESIZE;
- 	sb->s_op = &ubifs_super_operations;
--	sb->s_xattr = ubifs_xattr_handlers;
- 
- 	mutex_lock(&c->umount_mutex);
- 	err = mount_ubifs(c);
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index de75902..33b6ee7 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1470,7 +1470,6 @@ extern spinlock_t ubifs_infos_lock;
- extern atomic_long_t ubifs_clean_zn_cnt;
- extern struct kmem_cache *ubifs_inode_slab;
- extern const struct super_operations ubifs_super_operations;
--extern const struct xattr_handler *ubifs_xattr_handlers[];
- extern const struct address_space_operations ubifs_file_address_operations;
- extern const struct file_operations ubifs_file_operations;
- extern const struct inode_operations ubifs_file_inode_operations;
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 96f3448..b512b14 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -582,46 +582,6 @@ out_free:
- 	return err;
- }
- 
--static size_t security_listxattr(struct dentry *d, char *list, size_t list_size,
--				 const char *name, size_t name_len, int flags)
--{
--	const int prefix_len = XATTR_SECURITY_PREFIX_LEN;
--	const size_t total_len = prefix_len + name_len + 1;
--
--	if (list && total_len <= list_size) {
--		memcpy(list, XATTR_SECURITY_PREFIX, prefix_len);
--		memcpy(list + prefix_len, name, name_len);
--		list[prefix_len + name_len] = '\0';
--	}
--
--	return total_len;
--}
--
--static int security_getxattr(struct dentry *d, const char *name, void *buffer,
--		      size_t size, int flags)
--{
--	return ubifs_getxattr(d, name, buffer, size);
--}
--
--static int security_setxattr(struct dentry *d, const char *name,
--			     const void *value, size_t size, int flags,
--			     int handler_flags)
--{
--	return ubifs_setxattr(d, name, value, size, flags);
--}
--
--static const struct xattr_handler ubifs_xattr_security_handler = {
--	.prefix = XATTR_SECURITY_PREFIX,
--	.list   = security_listxattr,
--	.get    = security_getxattr,
--	.set    = security_setxattr,
--};
--
--const struct xattr_handler *ubifs_xattr_handlers[] = {
--	&ubifs_xattr_security_handler,
--	NULL,
--};
--
- static int init_xattrs(struct inode *inode, const struct xattr *xattr_array,
- 		      void *fs_info)
- {
--- 
-2.4.3
+The "security.*" xattr handler was already dead code when introduced in that
+commit, though. I've sent a patch to remove that.
+
+Thanks,
+Andreas
