@@ -1,25 +1,23 @@
-Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSWmc-000553-Bz
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 20:49:58 +0000
-Received: by pdob1 with SMTP id b1so18100597pdo.2
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 13:49:37 -0700 (PDT)
-Date: Thu, 20 Aug 2015 13:49:33 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: dedekind1@gmail.com, Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ubifs: Allow O_DIRECT
-Message-ID: <20150820204933.GG74600@google.com>
-References: <1440016553-26481-1-git-send-email-richard@nod.at>
- <1440016553-26481-2-git-send-email-richard@nod.at>
- <55D542C5.6040500@cn.fujitsu.com>
- <1440070300.31419.202.camel@gmail.com> <55D5BC92.8050903@nod.at>
+Received: from ipmail06.adl2.internode.on.net ([150.101.137.129])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZSX4h-00030k-9d
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 21:08:40 +0000
+Date: Fri, 21 Aug 2015 07:08:12 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Andreas =?iso-8859-1?Q?Gr=FCnbacher?= <andreas.gruenbacher@gmail.com>
+Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, fstests@vger.kernel.org,
+ linux-mtd@lists.infradead.org, richard.weinberger@gmail.com
+Subject: Re: [PATCH] fstests: link .out to correct output when we set
+ USE_ATTR_SECURE=yes
+Message-ID: <20150820210812.GO3902@dastard>
+References: <55D52473.7050209@cn.fujitsu.com>
+ <1440032464-17626-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <CAHpGcMLZT5xYx5EUBLTPyLQd0f+jQ-g+c_f-oErsHP33m7-ROg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <55D5BC92.8050903@nod.at>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHpGcMLZT5xYx5EUBLTPyLQd0f+jQ-g+c_f-oErsHP33m7-ROg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,50 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pardon the innocent bystander's comment, but:
-
-On Thu, Aug 20, 2015 at 01:40:02PM +0200, Richard Weinberger wrote:
-> Am 20.08.2015 um 13:31 schrieb Artem Bityutskiy:
-> > On Thu, 2015-08-20 at 11:00 +0800, Dongsheng Yang wrote:
-> >> On 08/20/2015 04:35 AM, Richard Weinberger wrote:
-> >>> Currently UBIFS does not support direct IO, but some applications
-> >>> blindly use the O_DIRECT flag.
-> >>> Instead of failing upon open() we can do better and fall back
-> >>> to buffered IO.
-> >>
-> >> Hmmmm, to be honest, I am not sure we have to do it as Dave
-> >> suggested. I think that's just a work-around for current fstests.
-> >>
-> >> IMHO, perform a buffered IO when user request direct IO without
-> >> any warning sounds not a good idea. Maybe adding a warning would
-> >> make it better.
-> >>
-> >> I think we need more discussion about AIO&DIO in ubifs, and actually
-> >> I have a plan for it. But I have not listed the all cons and pros of
-> >> it so far.
-> >>
-> >> Artem, what's your opinion?
-> > 
-> > Yes, this is my worry too.
-> > 
-> > Basically, we need to see what is the "common practice" here, and
-> > follow it. This requires a small research. What would be the most
-> > popular Linux FS which does not support direct I/O? Can we check what
-> > it does?
+On Thu, Aug 20, 2015 at 08:18:28AM +0200, Andreas Grünbacher wrote:
+> Dongsheng,
 > 
-> All popular filesystems seem to support direct IO.
-> That's the problem, application do not expect O_DIRECT to fail.
+> 2015-08-20 3:01 GMT+02:00 Dongsheng Yang <yangds.fnst@cn.fujitsu.com>:
+> >
+> > When we set USE_ATTR_SECURE to yes or no, the expected outputs of generic/062
+> > would be different. So we need to link the .out to different file.
+> 
+> Can the tests for the different namespaces please be separated from
+> each other here (see below)?
 
-Why can't we just suggest fixing the applications? The man pages for
-O_DIRECT clearly document the EINVAL return code:
+I certainly agree with this approach ;)
 
-  EINVAL The filesystem does not support the O_DIRECT flag. See NOTES
-  for more information.
+> 
+> diff --git a/tests/generic/062 b/tests/generic/062
+> index 194b638..9dd4498 100755
+> --- a/tests/generic/062
+> +++ b/tests/generic/062
+> @@ -142,6 +142,7 @@ for nsp in $ATTR_MODES; do
+>                 echo "*** final list (strings, type=$inode, nsp=$nsp)"
+>                 getfattr -m '.' -e hex $SCRATCH_MNT/$inode
+> 
+> +               # FIXME: Remove all remaining xattrs
+>         done
+>  done
+> 
+> Next, can the security namespace tests be put in their own test case
+> so that we don't need to switch between two different .out files? This
+> could be done by setting ATTR_MODES and then invoking
+> tests/generic/062 to avoid duplicating the entire test script.
 
-and under NOTES:
+Just not the suggested mechanism :)
 
-  O_DIRECT  support  was added under Linux in kernel version 2.4.10.
-  Older Linux kernels simply ignore this flag.  Some filesystems may not
-  implement the flag and open() will fail with EINVAL if it is used.
+We can't execute one test from another - that will lead to all sorts
+of bad juju occurring with results and timing and so on because they
+are all based on $0.  The correct way to do this is to factor the
+test internals into a common file, then wrap the common functions
+with a new test file.
 
-Brian
+e.g. see _test_generic_punch(), which started off as corner case
+testing the XFS_IOC_ZERORANGE ioctl in a single test, Then got
+extended to testing hole punching in a new test, then got factored
+into common functions in common/punch, and it is now called by 14
+different tests....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
