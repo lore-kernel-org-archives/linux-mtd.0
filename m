@@ -1,21 +1,23 @@
-Received: from lists.s-osg.org ([54.187.51.154])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSY5v-0002sx-9z
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 22:14:00 +0000
-Subject: Re: [PATCH 03/18] mtd: dataflash: Export OF module alias information
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1440054451-1223-1-git-send-email-javier@osg.samsung.com>
- <1440054451-1223-4-git-send-email-javier@osg.samsung.com>
- <20150820215404.GA81844@google.com>
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Message-ID: <55D6510E.7010002@osg.samsung.com>
-Date: Fri, 21 Aug 2015 00:13:34 +0200
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZSYMt-0001me-8R
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 22:31:31 +0000
+Received: by pawq9 with SMTP id q9so37297082paw.3
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 15:31:09 -0700 (PDT)
+Date: Thu, 20 Aug 2015 15:31:05 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Bert Vermeulen <bert@biot.com>
+Cc: dwmw2@infradead.org, fransklaver@gmail.com,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3] nand: Add NAND driver for Mikrotik RB4xx series boards
+Message-ID: <20150820223105.GB81844@google.com>
+References: <1431689631-7217-1-git-send-email-bert@biot.com>
+ <20150721202904.GK24125@google.com> <55C1DF18.4090800@biot.com>
 MIME-Version: 1.0
-In-Reply-To: <20150820215404.GA81844@google.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55C1DF18.4090800@biot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,70 +27,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Brian,
-
-On 08/20/2015 11:54 PM, Brian Norris wrote:
-> On Thu, Aug 20, 2015 at 09:07:16AM +0200, Javier Martinez Canillas wrote:
->> The SPI core always reports the MODALIAS uevent as "spi:<modalias>"
->> regardless of the mechanism that was used to register the device
->> (i.e: OF or board code) and the table that is used later to match
->> the driver with the device (i.e: SPI id table or OF match table).
->>
->> So drivers needs to export the SPI id table and this be built into
->> the module or udev won't have the necessary information to autoload
->> the needed driver module when the device is added.
->>
->> But this means that OF-only drivers needs to have both OF and SPI id
->> tables that have to be kept in sync and also the dev node compatible
->> manufacturer prefix is stripped when reporting the MODALIAS. Which can
->> lead to issues if two vendors use the same SPI device name for example.
->>
->> To avoid the above, the SPI core behavior may be changed in the future
->> to not require an SPI device table for OF-only drivers and report the
->> OF module alias. So, it's better to also export the OF table even when
->> is unused now to prevent breaking module loading when the core changes.
->>
->> Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
+On Wed, Aug 05, 2015 at 12:02:00PM +0200, Bert Vermeulen wrote:
+> On 07/21/2015 10:29 PM, Brian Norris wrote:
 > 
-> I appreciate the context for the whole problem here, but this commit
-> subject mostly doesn't apply to this driver, and it deson't seem to
-> match the problem this is solving. As I see it, the patch description
-> for this patch should be more like:
+> >> +static struct spi_driver rb4xx_cpld_driver = {
+> >> +	.probe = rb4xx_cpld_probe,
+> >> +	.remove = rb4xx_cpld_remove,
+> >> +	.driver = {
+> >> +		.name = "rb4xx-cpld",
+> >> +		.owner = THIS_MODULE,
+> >> +	},
+> >> +};
+> > 
+> > I feel some deja vu here (did I make this comment before?); why do you
+> > need to embed both a SPI and a platform driver here? It appears that the
+> > NAND controller actually sits on the SPI bus, so this really is not a
+> > platform driver; it's a SPI driver. Can you just kill off all the
+> > platform_driver stuff and merge the probe functions?
+> > 
+> > Or if I'm missing something big, please do enlighten.
 > 
->   "The OF ID table is used for auto-probing the device, but it is not
->   exported to the module device table. That means this driver won't
->   autoload when built as a module.
+> This driver was specifically refused by the SPI subsystem maintainer:
 > 
->   Export the OF ID table to fix that.
+>   http://www.linux-mips.org/archives/linux-mips/2015-03/msg00422.html
+
+We're speaking past each other here a bit: I was recommending a SPI
+*device* driver, not a host controller driver [1]. (This device is
+definitely not a SPI controller!)
+
+> He suggested the MFD subsystem, where it was also refused:
 > 
->   (insert some reference to the larger issue here)"
+>   http://lkml.iu.edu/hypermail/linux/kernel/1504.0/03162.html
+
+I honestly can't straighten out what the definition of an MFD is, so I
+can't blame you for getting that one "wrong."
+
+> Andy Shevchenko suggested drivers/misc, so I mailed Arnd Bergmann and asked
+> if he would accept it there.
 > 
-> Do you want to rewrite the message, shall I just prepend my
-> modifications, or am I off-base?
->
+> Arnd took a good look at the driver and suggested the MTD/NAND subsystem.
+> This is after all a driver for a NAND chip controller. The controller just
+> happens to reside in a CPLD with custom firmware, which is controlled via
+> SPI and has some GPIO controller functionality thrown in.
 
-Well, I believe my commit message is more accurate than yours :-)
+I think Arnd was right, from the looks of it. I don't mind the GPIO
+controller functionality thrown in, as long as someone from linux-gpio
+can review that part. I just minded the structure of the driver itself,
+in which you register both a platfrom and a spi driver
+(spi_register_driver() and module_platform_driver()).
 
-I mean, right now the OF modalias information is not really used neither
-by the SPI core since always MODALIAS=spi:foo is reported nor by user
-space since the MODALIAS uevent will never match the OF exported modalias.
+AFAICT, the driver structure and your above comment suggest that the
+entire device essentially sits on the SPI bus (not the platform bus), so
+it seems like it can all be initialized behind module_spi_driver().
 
-So this patch really is a no-op right now and is not fixing anything.
-As long as the driver has a MODULE_DEVICE_TABLE(spi,...), things will
-work without a MODULE_DEVICE_TABLE(of,...).
+> I realize it's an odd hardware setup, and I can't fix that, but this really
+> does seem to be the best place for it.
+> 
+> I can deal with your other comments on the patch, but I'd really like some
+> agreement on where this driver will be accepted first. I've come full circle
+> with getting referred back to the SPI subsystem.
 
-However, this patch is needed to avoid breaking module autoloading in
-the future once RFC patch 18/18 is applied and the SPI core is changed
-to report a MODALIAS=of:N*T*Cfoo,bar for SPI devices registered by OF.
+Sorry again for the confusion. To be clear, I'm *not* suggesting sending
+this back to the SPI subsystem.
 
-Having said that, I will of course re-spin the patch and write a
-commit message that you agree on. So I'll be happy to trim it down if
-is providing too much content or is not correct.
+Brian
 
-I just don't think your suggestion better matches reality than mine.
-
-Best regards,
--- 
-Javier Martinez Canillas
-Open Source Group
-Samsung Research America
+[1] I guess the SPI documentation (Documentation/spi/spi-summary) calls
+    these "controller" vs. "protocol" drivers; your driver is a
+    "protocol" driver and can find a home wherever that protocol makes
+    sense. In this case, you're mostly doing NAND flash, therefore it
+    goes in drivers/mtd/.
