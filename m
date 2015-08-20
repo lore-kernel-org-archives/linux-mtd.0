@@ -1,18 +1,19 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSGHN-0004E7-MV
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 03:12:38 +0000
-Message-ID: <55D54430.8030506@cn.fujitsu.com>
-Date: Thu, 20 Aug 2015 11:06:24 +0800
+ id 1ZSGI8-0004OK-WE
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 03:13:25 +0000
+Message-ID: <55D5445D.2060406@cn.fujitsu.com>
+Date: Thu, 20 Aug 2015 11:07:09 +0800
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-CC: <richard@nod.at>, <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] ubifs: correct the size of nnode in memset
-References: <1439972932-12116-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20150819162947.GW60523@google.com>
-In-Reply-To: <20150819162947.GW60523@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+To: Richard Weinberger <richard@nod.at>, <dedekind1@gmail.com>,
+ <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC PATCH 00/27] Introduce ubifs_dump in ubifs-utils
+References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <55D4EADA.70408@nod.at>
+In-Reply-To: <55D4EADA.70408@nod.at>
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,51 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/20/2015 12:29 AM, Brian Norris wrote:
-> On Wed, Aug 19, 2015 at 04:28:52PM +0800, Dongsheng Yang wrote:
->> There is a typo in lpt to memset nnode by the
->> size in sizeof(stuct ubifs_pnode).
+On 08/20/2015 04:45 AM, Richard Weinberger wrote:
+> Dongsheng,
+>
+> Am 19.08.2015 um 10:39 schrieb Dongsheng Yang:
+>> Hi Atem, Richard and Brian,
+>> 	This patchset introduce a userspace tool named ubifs_dump
+>> to dump data from a ubi media.
+>> 	It will dump the areas in ubifs, such as super block,
+>> master, log, lpt and main.
+>> 	That's helpful for us to see what exactly written in
+>> media.
+>> 	the [1/patch] is a RESEND patch, it restructures the mtd-utils.
+>> Please Brian help to take a look at it. thanx a lot. :)
 >>
->> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
->
-> Pushed to mtd-utils.git, as it's obvious. Good catch!
->
-> I'll take a look at your restructuring patches eventually. But I'll
-> usually just defer UBIFS stuff to Richard/Artem/others.
-
-Great, thanx a lot, Brian.
->
->> ---
->>   mkfs.ubifs/lpt.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
+>> NOTE:
+>> 	This patch set depends on a patch I sent out [ubifs: correct the size of nnode in memset]
+>> But you can get a full code at:
+>> https://github.com/yangdongsheng/mtd-utils.git ubifs_dump_v1
 >>
->> diff --git a/mkfs.ubifs/lpt.c b/mkfs.ubifs/lpt.c
->> index f6d4352..6aa0b88 100644
->> --- a/mkfs.ubifs/lpt.c
->> +++ b/mkfs.ubifs/lpt.c
->> @@ -384,7 +384,7 @@ int create_lpt(struct ubifs_info *c)
->>   		goto out;
->>   	}
->>   	memset(pnode, 0 , sizeof(struct ubifs_pnode));
->> -	memset(nnode, 0 , sizeof(struct ubifs_pnode));
->> +	memset(nnode, 0 , sizeof(struct ubifs_nnode));
+>> Please help to review or test it.
 >
-> FWIW, struct ubifs_pnode and struct ubifs_nnode look like they would be
-> the same size when using 32-bit pointers, but a bit different (see the
-> third field in structs ubifs_nbranch and ubifs_lprops) with 64-bit.
+> thanks a lot for your patches, I'll happily test and review them.
+> But I'll be on vacation till 14th of September.
+> So, it has to wait a bit. :-)
 
-Yes, but in the latest ubifs.h in kernel, they are more different. And
-when I updated the ubifs.h, I found the bug.
+That's okey, have a nice vacation :).
 
-Thanx
 Yang
 >
->>
->>   	c->lscan_lnum = c->main_first;
->>
->> --
->> 1.8.4.2
->
-> Brian
+> Thanks,
+> //richard
 > .
 >
