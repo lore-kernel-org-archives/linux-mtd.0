@@ -1,23 +1,19 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSEAQ-0001y7-RZ
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 00:57:19 +0000
-Message-ID: <55D52473.7050209@cn.fujitsu.com>
-Date: Thu, 20 Aug 2015 08:50:59 +0800
+ id 1ZSEKA-0005T7-EW
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 01:07:28 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <fstests@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+CC: <richard.weinberger@gmail.com>, <andreas.gruenbacher@gmail.com>, Dongsheng
+ Yang <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH] fstests: link .out to correct output when we set
+ USE_ATTR_SECURE=yes
+Date: Thu, 20 Aug 2015 09:01:04 +0800
+Message-ID: <1440032464-17626-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <55D52473.7050209@cn.fujitsu.com>
+References: <55D52473.7050209@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard.weinberger@gmail.com>, =?UTF-8?B?QW5kcmVh?=
- =?UTF-8?B?cyBHcsO8bmJhY2hlcg==?= <andreas.gruenbacher@gmail.com>
-CC: <snijsure@grid-net.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- <ben.shelton@ni.com>, <terry.wilcox@ni.com>, <mkl@pengutronix.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- <gratian.crisan@ni.com>, <brad.mouring@ni.com>
-Subject: Re: [kernel.org bug 103071] Dead "security.*" xattr code in ubifs
-References: <CAHpGcM+bkFA-UDM0FKwH=FkS9+TWv_Br7nWJXSpKDquo5n_gFw@mail.gmail.com>
- <CAFLxGvxPGZoRX3Ft_g59fzfLhoOmEES=q-oPBmYuGVBzn-dRUA@mail.gmail.com>
-In-Reply-To: <CAFLxGvxPGZoRX3Ft_g59fzfLhoOmEES=q-oPBmYuGVBzn-dRUA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +23,2371 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/19/2015 04:55 AM, Richard Weinberger wrote:
-> Andreas,
->
-> On Tue, Aug 18, 2015 at 2:15 PM, Andreas Gr=C3=BCnbacher
-> <andreas.gruenbacher@gmail.com> wrote:
->> Hello,
->>
->> FYI, I've filed the following bug report against ubifs:
->>
->>> ubifs sets sb->s_xattr to ubifs_xattr_handlers which contains a handler=
- for
->>> "security.*" xattrs. The s_xattr handlers are never used because ubifs =
-uses
->>> its own ubifs_{get,set,list,remove}xattr inode operations instead of
->>> generic_{get,set,list,remove}xattr inode operations though.
->>
->> https://bugzilla.kernel.org/show_bug.cgi?id=3D103071
->
-> Thanks for reporting.
->
-> CC'ing authors of commit d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53
-> Author: Subodh Nijsure <snijsure@grid-net.com>
-> Date:   Fri Oct 31 13:50:30 2014 -0500
->
->      UBIFS: Add security.* XATTR support for the UBIFS
->
->
-> Also xfstests' generic/062 test seems to fail (with USE_ATTR_SECURE=3Dyes=
-)
-> ---cut---
-> generic/062 1s ... - output mismatch (see
-> /root/xfstests/results//generic/062.out.bad)
->      --- tests/generic/062.out   2015-08-18 20:13:00.714593141 +0000
->      +++ /root/xfstests/results//generic/062.out.bad     2015-08-18
-> 20:50:06.450418217 +0000
->      @@ -203,6 +203,292 @@
->       SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not p=
-ermitted
->       *** final list (strings, type=3Ddev/p, nsp=3Duser)
->
->      +=3D=3D=3D TYPE reg; NAMESPACE security
->      +
->      +*** set/get one initially empty attribute
->      +# file: SCRATCH_MNT/reg
->      ...
->      (Run 'diff -u tests/generic/062.out
-> /root/xfstests/results//generic/062.out.bad'  to see the entire diff)
-> Ran: generic/062
-> Failures: generic/062
-> Failed 1 of 1 tests
+When we set USE_ATTR_SECURE to yes or no, the expected outputs of generic/062
+would be different. So we need to link the .out to different file.
 
-Hi Richard,
-	Glad to know you are also using fstests for our ubifs. :)
-About this case, I checked it and found it's a bug in fstests.
-Because when we are setting USE_ATTR_SECURE=3Dyes, the output
-would be different with what it expected currently.
-	So, I will send a patch out to fix it. And with a quick
-fix, I found ubifs works well in xattr security.
+Reported-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+---
+ common/rc                       |  14 +
+ tests/generic/062               |   5 +
+ tests/generic/062.out           | 654 ---------------------------
+ tests/generic/062.out.no_secure | 654 +++++++++++++++++++++++++++
+ tests/generic/062.out.secure    | 976 ++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 1649 insertions(+), 654 deletions(-)
+ delete mode 100644 tests/generic/062.out
+ create mode 100644 tests/generic/062.out.no_secure
+ create mode 100644 tests/generic/062.out.secure
 
-Yang
-> ---cut---
->
-> Guys, how did you test this feature?
->
+diff --git a/common/rc b/common/rc
+index 610045e..1ef262b 100644
+--- a/common/rc
++++ b/common/rc
+@@ -2145,6 +2145,20 @@ _link_out_file()
+ 	fi
+ }
+ 
++_link_secure_out_file()
++{
++	if [ -z "$1" -o -z "$2" ]; then
++		echo Error must pass src and dst.
++		exit
++	fi
++	rm -f $2
++	if [ "$USE_ATTR_SECURE" = yes ]; then
++		ln -s $1.secure $2
++	else
++		ln -s $1.no_secure $2
++	fi
++}
++
+ _die()
+ {
+         echo $@
+diff --git a/tests/generic/062 b/tests/generic/062
+index 047c930..194b638 100755
+--- a/tests/generic/062
++++ b/tests/generic/062
+@@ -23,6 +23,7 @@
+ #-----------------------------------------------------------------------
+ #
+ 
++seqfull=$0
+ seq=`basename $0`
+ seqres=$RESULT_DIR/$seq
+ echo "QA output created by $seq"
+@@ -94,6 +95,10 @@ if [ "$USE_ATTR_SECURE" = yes ]; then
+ else
+     ATTR_MODES="user trusted"
+ fi
++
++# link correct .out file
++_link_secure_out_file $seq.out $seqfull.out
++
+ for nsp in $ATTR_MODES; do
+ 	for inode in reg dir lnk dev/b dev/c dev/p; do
+ 
+diff --git a/tests/generic/062.out b/tests/generic/062.out
+deleted file mode 100644
+index 8cc3c65..0000000
+--- a/tests/generic/062.out
++++ /dev/null
+@@ -1,654 +0,0 @@
+-QA output created by 062
+-*** create test bed
+-SCRATCH_MNT
+-SCRATCH_MNT/dev
+-SCRATCH_MNT/dev/b
+-SCRATCH_MNT/dev/c
+-SCRATCH_MNT/dev/p
+-SCRATCH_MNT/dir
+-SCRATCH_MNT/lnk
+-SCRATCH_MNT/reg
+-
+-=== TYPE reg; NAMESPACE user
+-
+-*** set/get one initially empty attribute
+-# file: SCRATCH_MNT/reg
+-user.name
+-
+-*** overwrite empty, set several new attributes
+-*** fetch several attribute names and values (hex)
+-# file: SCRATCH_MNT/reg
+-user.name=0xbabe
+-user.name2=0xdeadbeef
+-user.name3=0xdeface
+-
+-*** fetch several attribute names and values (base64)
+-# file: SCRATCH_MNT/reg
+-user.name=0sur4=
+-user.name2=0s3q2+7w==
+-user.name3=0s3vrO
+-
+-*** shrink value of an existing attribute
+-# file: SCRATCH_MNT/reg
+-user.name=0xbabe
+-user.name2=0xdeaf
+-user.name3=0xdeface
+-
+-*** grow value of existing attribute
+-# file: SCRATCH_MNT/reg
+-user.name=0xbabe
+-user.name2=0xdecade
+-user.name3=0xdeface
+-
+-*** set an empty value for second attribute
+-# file: SCRATCH_MNT/reg
+-user.name2
+-
+-*** overwrite empty value
+-# file: SCRATCH_MNT/reg
+-user.name2=0xcafe
+-
+-*** remove attribute
+-SCRATCH_MNT/reg: user.name2: No such attribute or operation not permitted
+-*** final list (strings, type=reg, nsp=user)
+-# file: SCRATCH_MNT/reg
+-user.name=0xbabe
+-user.name3=0xdeface
+-
+-
+-=== TYPE dir; NAMESPACE user
+-
+-*** set/get one initially empty attribute
+-# file: SCRATCH_MNT/dir
+-user.name
+-
+-*** overwrite empty, set several new attributes
+-*** fetch several attribute names and values (hex)
+-# file: SCRATCH_MNT/dir
+-user.name=0xbabe
+-user.name2=0xdeadbeef
+-user.name3=0xdeface
+-
+-*** fetch several attribute names and values (base64)
+-# file: SCRATCH_MNT/dir
+-user.name=0sur4=
+-user.name2=0s3q2+7w==
+-user.name3=0s3vrO
+-
+-*** shrink value of an existing attribute
+-# file: SCRATCH_MNT/dir
+-user.name=0xbabe
+-user.name2=0xdeaf
+-user.name3=0xdeface
+-
+-*** grow value of existing attribute
+-# file: SCRATCH_MNT/dir
+-user.name=0xbabe
+-user.name2=0xdecade
+-user.name3=0xdeface
+-
+-*** set an empty value for second attribute
+-# file: SCRATCH_MNT/dir
+-user.name2
+-
+-*** overwrite empty value
+-# file: SCRATCH_MNT/dir
+-user.name2=0xcafe
+-
+-*** remove attribute
+-SCRATCH_MNT/dir: user.name2: No such attribute or operation not permitted
+-*** final list (strings, type=dir, nsp=user)
+-# file: SCRATCH_MNT/dir
+-user.name=0xbabe
+-user.name3=0xdeface
+-
+-
+-=== TYPE lnk; NAMESPACE user
+-
+-*** set/get one initially empty attribute
+-setfattr: SCRATCH_MNT/lnk: Operation not permitted
+-*** overwrite empty, set several new attributes
+-setfattr: SCRATCH_MNT/lnk: Operation not permitted
+-setfattr: SCRATCH_MNT/lnk: Operation not permitted
+-setfattr: SCRATCH_MNT/lnk: Operation not permitted
+-*** fetch several attribute names and values (hex)
+-*** fetch several attribute names and values (base64)
+-*** shrink value of an existing attribute
+-setfattr: SCRATCH_MNT/lnk: Operation not permitted
+-*** grow value of existing attribute
+-setfattr: SCRATCH_MNT/lnk: Operation not permitted
+-*** set an empty value for second attribute
+-setfattr: SCRATCH_MNT/lnk: Operation not permitted
+-SCRATCH_MNT/lnk: user.name2: No such attribute or operation not permitted
+-*** overwrite empty value
+-setfattr: SCRATCH_MNT/lnk: Operation not permitted
+-SCRATCH_MNT/lnk: user.name2: No such attribute or operation not permitted
+-*** remove attribute
+-setfattr: SCRATCH_MNT/lnk: Operation not permitted
+-SCRATCH_MNT/lnk: user.name2: No such attribute or operation not permitted
+-*** final list (strings, type=lnk, nsp=user)
+-
+-=== TYPE dev/b; NAMESPACE user
+-
+-*** set/get one initially empty attribute
+-setfattr: SCRATCH_MNT/dev/b: Operation not permitted
+-*** overwrite empty, set several new attributes
+-setfattr: SCRATCH_MNT/dev/b: Operation not permitted
+-setfattr: SCRATCH_MNT/dev/b: Operation not permitted
+-setfattr: SCRATCH_MNT/dev/b: Operation not permitted
+-*** fetch several attribute names and values (hex)
+-*** fetch several attribute names and values (base64)
+-*** shrink value of an existing attribute
+-setfattr: SCRATCH_MNT/dev/b: Operation not permitted
+-*** grow value of existing attribute
+-setfattr: SCRATCH_MNT/dev/b: Operation not permitted
+-*** set an empty value for second attribute
+-setfattr: SCRATCH_MNT/dev/b: Operation not permitted
+-SCRATCH_MNT/dev/b: user.name2: No such attribute or operation not permitted
+-*** overwrite empty value
+-setfattr: SCRATCH_MNT/dev/b: Operation not permitted
+-SCRATCH_MNT/dev/b: user.name2: No such attribute or operation not permitted
+-*** remove attribute
+-setfattr: SCRATCH_MNT/dev/b: Operation not permitted
+-SCRATCH_MNT/dev/b: user.name2: No such attribute or operation not permitted
+-*** final list (strings, type=dev/b, nsp=user)
+-
+-=== TYPE dev/c; NAMESPACE user
+-
+-*** set/get one initially empty attribute
+-setfattr: SCRATCH_MNT/dev/c: Operation not permitted
+-*** overwrite empty, set several new attributes
+-setfattr: SCRATCH_MNT/dev/c: Operation not permitted
+-setfattr: SCRATCH_MNT/dev/c: Operation not permitted
+-setfattr: SCRATCH_MNT/dev/c: Operation not permitted
+-*** fetch several attribute names and values (hex)
+-*** fetch several attribute names and values (base64)
+-*** shrink value of an existing attribute
+-setfattr: SCRATCH_MNT/dev/c: Operation not permitted
+-*** grow value of existing attribute
+-setfattr: SCRATCH_MNT/dev/c: Operation not permitted
+-*** set an empty value for second attribute
+-setfattr: SCRATCH_MNT/dev/c: Operation not permitted
+-SCRATCH_MNT/dev/c: user.name2: No such attribute or operation not permitted
+-*** overwrite empty value
+-setfattr: SCRATCH_MNT/dev/c: Operation not permitted
+-SCRATCH_MNT/dev/c: user.name2: No such attribute or operation not permitted
+-*** remove attribute
+-setfattr: SCRATCH_MNT/dev/c: Operation not permitted
+-SCRATCH_MNT/dev/c: user.name2: No such attribute or operation not permitted
+-*** final list (strings, type=dev/c, nsp=user)
+-
+-=== TYPE dev/p; NAMESPACE user
+-
+-*** set/get one initially empty attribute
+-setfattr: SCRATCH_MNT/dev/p: Operation not permitted
+-*** overwrite empty, set several new attributes
+-setfattr: SCRATCH_MNT/dev/p: Operation not permitted
+-setfattr: SCRATCH_MNT/dev/p: Operation not permitted
+-setfattr: SCRATCH_MNT/dev/p: Operation not permitted
+-*** fetch several attribute names and values (hex)
+-*** fetch several attribute names and values (base64)
+-*** shrink value of an existing attribute
+-setfattr: SCRATCH_MNT/dev/p: Operation not permitted
+-*** grow value of existing attribute
+-setfattr: SCRATCH_MNT/dev/p: Operation not permitted
+-*** set an empty value for second attribute
+-setfattr: SCRATCH_MNT/dev/p: Operation not permitted
+-SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not permitted
+-*** overwrite empty value
+-setfattr: SCRATCH_MNT/dev/p: Operation not permitted
+-SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not permitted
+-*** remove attribute
+-setfattr: SCRATCH_MNT/dev/p: Operation not permitted
+-SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not permitted
+-*** final list (strings, type=dev/p, nsp=user)
+-
+-=== TYPE reg; NAMESPACE trusted
+-
+-*** set/get one initially empty attribute
+-# file: SCRATCH_MNT/reg
+-trusted.name
+-
+-*** overwrite empty, set several new attributes
+-*** fetch several attribute names and values (hex)
+-# file: SCRATCH_MNT/reg
+-trusted.name=0xbabe
+-trusted.name2=0xdeadbeef
+-trusted.name3=0xdeface
+-
+-*** fetch several attribute names and values (base64)
+-# file: SCRATCH_MNT/reg
+-trusted.name=0sur4=
+-trusted.name2=0s3q2+7w==
+-trusted.name3=0s3vrO
+-
+-*** shrink value of an existing attribute
+-# file: SCRATCH_MNT/reg
+-trusted.name=0xbabe
+-trusted.name2=0xdeaf
+-trusted.name3=0xdeface
+-
+-*** grow value of existing attribute
+-# file: SCRATCH_MNT/reg
+-trusted.name=0xbabe
+-trusted.name2=0xdecade
+-trusted.name3=0xdeface
+-
+-*** set an empty value for second attribute
+-# file: SCRATCH_MNT/reg
+-trusted.name2
+-
+-*** overwrite empty value
+-# file: SCRATCH_MNT/reg
+-trusted.name2=0xcafe
+-
+-*** remove attribute
+-SCRATCH_MNT/reg: trusted.name2: No such attribute or operation not permitted
+-*** final list (strings, type=reg, nsp=trusted)
+-# file: SCRATCH_MNT/reg
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-user.name=0xbabe
+-user.name3=0xdeface
+-
+-
+-=== TYPE dir; NAMESPACE trusted
+-
+-*** set/get one initially empty attribute
+-# file: SCRATCH_MNT/dir
+-trusted.name
+-
+-*** overwrite empty, set several new attributes
+-*** fetch several attribute names and values (hex)
+-# file: SCRATCH_MNT/dir
+-trusted.name=0xbabe
+-trusted.name2=0xdeadbeef
+-trusted.name3=0xdeface
+-
+-*** fetch several attribute names and values (base64)
+-# file: SCRATCH_MNT/dir
+-trusted.name=0sur4=
+-trusted.name2=0s3q2+7w==
+-trusted.name3=0s3vrO
+-
+-*** shrink value of an existing attribute
+-# file: SCRATCH_MNT/dir
+-trusted.name=0xbabe
+-trusted.name2=0xdeaf
+-trusted.name3=0xdeface
+-
+-*** grow value of existing attribute
+-# file: SCRATCH_MNT/dir
+-trusted.name=0xbabe
+-trusted.name2=0xdecade
+-trusted.name3=0xdeface
+-
+-*** set an empty value for second attribute
+-# file: SCRATCH_MNT/dir
+-trusted.name2
+-
+-*** overwrite empty value
+-# file: SCRATCH_MNT/dir
+-trusted.name2=0xcafe
+-
+-*** remove attribute
+-SCRATCH_MNT/dir: trusted.name2: No such attribute or operation not permitted
+-*** final list (strings, type=dir, nsp=trusted)
+-# file: SCRATCH_MNT/dir
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-user.name=0xbabe
+-user.name3=0xdeface
+-
+-
+-=== TYPE lnk; NAMESPACE trusted
+-
+-*** set/get one initially empty attribute
+-# file: SCRATCH_MNT/lnk
+-trusted.name
+-
+-*** overwrite empty, set several new attributes
+-*** fetch several attribute names and values (hex)
+-# file: SCRATCH_MNT/lnk
+-trusted.name=0xbabe
+-trusted.name2=0xdeadbeef
+-trusted.name3=0xdeface
+-
+-*** fetch several attribute names and values (base64)
+-# file: SCRATCH_MNT/lnk
+-trusted.name=0sur4=
+-trusted.name2=0s3q2+7w==
+-trusted.name3=0s3vrO
+-
+-*** shrink value of an existing attribute
+-# file: SCRATCH_MNT/lnk
+-trusted.name=0xbabe
+-trusted.name2=0xdeaf
+-trusted.name3=0xdeface
+-
+-*** grow value of existing attribute
+-# file: SCRATCH_MNT/lnk
+-trusted.name=0xbabe
+-trusted.name2=0xdecade
+-trusted.name3=0xdeface
+-
+-*** set an empty value for second attribute
+-# file: SCRATCH_MNT/lnk
+-trusted.name2
+-
+-*** overwrite empty value
+-# file: SCRATCH_MNT/lnk
+-trusted.name2=0xcafe
+-
+-*** remove attribute
+-SCRATCH_MNT/lnk: trusted.name2: No such attribute or operation not permitted
+-*** final list (strings, type=lnk, nsp=trusted)
+-# file: SCRATCH_MNT/lnk
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-
+-=== TYPE dev/b; NAMESPACE trusted
+-
+-*** set/get one initially empty attribute
+-# file: SCRATCH_MNT/dev/b
+-trusted.name
+-
+-*** overwrite empty, set several new attributes
+-*** fetch several attribute names and values (hex)
+-# file: SCRATCH_MNT/dev/b
+-trusted.name=0xbabe
+-trusted.name2=0xdeadbeef
+-trusted.name3=0xdeface
+-
+-*** fetch several attribute names and values (base64)
+-# file: SCRATCH_MNT/dev/b
+-trusted.name=0sur4=
+-trusted.name2=0s3q2+7w==
+-trusted.name3=0s3vrO
+-
+-*** shrink value of an existing attribute
+-# file: SCRATCH_MNT/dev/b
+-trusted.name=0xbabe
+-trusted.name2=0xdeaf
+-trusted.name3=0xdeface
+-
+-*** grow value of existing attribute
+-# file: SCRATCH_MNT/dev/b
+-trusted.name=0xbabe
+-trusted.name2=0xdecade
+-trusted.name3=0xdeface
+-
+-*** set an empty value for second attribute
+-# file: SCRATCH_MNT/dev/b
+-trusted.name2
+-
+-*** overwrite empty value
+-# file: SCRATCH_MNT/dev/b
+-trusted.name2=0xcafe
+-
+-*** remove attribute
+-SCRATCH_MNT/dev/b: trusted.name2: No such attribute or operation not permitted
+-*** final list (strings, type=dev/b, nsp=trusted)
+-# file: SCRATCH_MNT/dev/b
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-
+-=== TYPE dev/c; NAMESPACE trusted
+-
+-*** set/get one initially empty attribute
+-# file: SCRATCH_MNT/dev/c
+-trusted.name
+-
+-*** overwrite empty, set several new attributes
+-*** fetch several attribute names and values (hex)
+-# file: SCRATCH_MNT/dev/c
+-trusted.name=0xbabe
+-trusted.name2=0xdeadbeef
+-trusted.name3=0xdeface
+-
+-*** fetch several attribute names and values (base64)
+-# file: SCRATCH_MNT/dev/c
+-trusted.name=0sur4=
+-trusted.name2=0s3q2+7w==
+-trusted.name3=0s3vrO
+-
+-*** shrink value of an existing attribute
+-# file: SCRATCH_MNT/dev/c
+-trusted.name=0xbabe
+-trusted.name2=0xdeaf
+-trusted.name3=0xdeface
+-
+-*** grow value of existing attribute
+-# file: SCRATCH_MNT/dev/c
+-trusted.name=0xbabe
+-trusted.name2=0xdecade
+-trusted.name3=0xdeface
+-
+-*** set an empty value for second attribute
+-# file: SCRATCH_MNT/dev/c
+-trusted.name2
+-
+-*** overwrite empty value
+-# file: SCRATCH_MNT/dev/c
+-trusted.name2=0xcafe
+-
+-*** remove attribute
+-SCRATCH_MNT/dev/c: trusted.name2: No such attribute or operation not permitted
+-*** final list (strings, type=dev/c, nsp=trusted)
+-# file: SCRATCH_MNT/dev/c
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-
+-=== TYPE dev/p; NAMESPACE trusted
+-
+-*** set/get one initially empty attribute
+-# file: SCRATCH_MNT/dev/p
+-trusted.name
+-
+-*** overwrite empty, set several new attributes
+-*** fetch several attribute names and values (hex)
+-# file: SCRATCH_MNT/dev/p
+-trusted.name=0xbabe
+-trusted.name2=0xdeadbeef
+-trusted.name3=0xdeface
+-
+-*** fetch several attribute names and values (base64)
+-# file: SCRATCH_MNT/dev/p
+-trusted.name=0sur4=
+-trusted.name2=0s3q2+7w==
+-trusted.name3=0s3vrO
+-
+-*** shrink value of an existing attribute
+-# file: SCRATCH_MNT/dev/p
+-trusted.name=0xbabe
+-trusted.name2=0xdeaf
+-trusted.name3=0xdeface
+-
+-*** grow value of existing attribute
+-# file: SCRATCH_MNT/dev/p
+-trusted.name=0xbabe
+-trusted.name2=0xdecade
+-trusted.name3=0xdeface
+-
+-*** set an empty value for second attribute
+-# file: SCRATCH_MNT/dev/p
+-trusted.name2
+-
+-*** overwrite empty value
+-# file: SCRATCH_MNT/dev/p
+-trusted.name2=0xcafe
+-
+-*** remove attribute
+-SCRATCH_MNT/dev/p: trusted.name2: No such attribute or operation not permitted
+-*** final list (strings, type=dev/p, nsp=trusted)
+-# file: SCRATCH_MNT/dev/p
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-
+-
+-*** extend test bed
+-SCRATCH_MNT
+-SCRATCH_MNT/descend
+-SCRATCH_MNT/descend/and
+-SCRATCH_MNT/descend/down
+-SCRATCH_MNT/descend/down/here
+-SCRATCH_MNT/dev
+-SCRATCH_MNT/dev/b
+-SCRATCH_MNT/dev/c
+-SCRATCH_MNT/dev/p
+-SCRATCH_MNT/dir
+-SCRATCH_MNT/here
+-SCRATCH_MNT/here/up
+-SCRATCH_MNT/here/up/ascend
+-SCRATCH_MNT/lnk
+-SCRATCH_MNT/reg
+-
+-*** directory descent with us following symlinks
+-# file: SCRATCH_MNT/descend
+-user.1=0x3233
+-user.x=0x797a
+-
+-# file: SCRATCH_MNT/descend/and/ascend
+-trusted.9=0x3837
+-trusted.a=0x6263
+-
+-# file: SCRATCH_MNT/descend/down
+-user.1=0x3233
+-user.x=0x797a
+-
+-# file: SCRATCH_MNT/descend/down/here
+-user.1=0x3233
+-user.x=0x797a
+-
+-# file: SCRATCH_MNT/dev/b
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-# file: SCRATCH_MNT/dev/c
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-# file: SCRATCH_MNT/dev/p
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-# file: SCRATCH_MNT/dir
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-user.name=0xbabe
+-user.name3=0xdeface
+-
+-# file: SCRATCH_MNT/here
+-trusted.9=0x3837
+-trusted.a=0x6263
+-
+-# file: SCRATCH_MNT/here/up
+-trusted.9=0x3837
+-trusted.a=0x6263
+-
+-# file: SCRATCH_MNT/here/up/ascend
+-trusted.9=0x3837
+-trusted.a=0x6263
+-
+-# file: SCRATCH_MNT/lnk
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-# file: SCRATCH_MNT/reg
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-user.name=0xbabe
+-user.name3=0xdeface
+-
+-
+-*** directory descent without following symlinks
+-# file: SCRATCH_MNT/descend
+-user.1=0x3233
+-user.x=0x797a
+-
+-# file: SCRATCH_MNT/descend/down
+-user.1=0x3233
+-user.x=0x797a
+-
+-# file: SCRATCH_MNT/descend/down/here
+-user.1=0x3233
+-user.x=0x797a
+-
+-# file: SCRATCH_MNT/dev/b
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-# file: SCRATCH_MNT/dev/c
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-# file: SCRATCH_MNT/dev/p
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-# file: SCRATCH_MNT/dir
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-user.name=0xbabe
+-user.name3=0xdeface
+-
+-# file: SCRATCH_MNT/here
+-trusted.9=0x3837
+-trusted.a=0x6263
+-
+-# file: SCRATCH_MNT/here/up
+-trusted.9=0x3837
+-trusted.a=0x6263
+-
+-# file: SCRATCH_MNT/here/up/ascend
+-trusted.9=0x3837
+-trusted.a=0x6263
+-
+-# file: SCRATCH_MNT/lnk
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-
+-# file: SCRATCH_MNT/reg
+-trusted.name=0xbabe
+-trusted.name3=0xdeface
+-user.name=0xbabe
+-user.name3=0xdeface
+-
+-
+-
+-*** backup everything
+-*** clear out the scratch device
+-*** reset test bed with no extended attributes
+-*** create test bed
+-SCRATCH_MNT
+-SCRATCH_MNT/dev
+-SCRATCH_MNT/dev/b
+-SCRATCH_MNT/dev/c
+-SCRATCH_MNT/dev/p
+-SCRATCH_MNT/dir
+-SCRATCH_MNT/lnk
+-SCRATCH_MNT/reg
+-*** extend test bed
+-SCRATCH_MNT
+-SCRATCH_MNT/descend
+-SCRATCH_MNT/descend/and
+-SCRATCH_MNT/descend/down
+-SCRATCH_MNT/descend/down/here
+-SCRATCH_MNT/dev
+-SCRATCH_MNT/dev/b
+-SCRATCH_MNT/dev/c
+-SCRATCH_MNT/dev/p
+-SCRATCH_MNT/dir
+-SCRATCH_MNT/here
+-SCRATCH_MNT/here/up
+-SCRATCH_MNT/here/up/ascend
+-SCRATCH_MNT/lnk
+-SCRATCH_MNT/reg
+-*** restore everything
+-*** compare before and after backups
+-
+-*** unmount
+diff --git a/tests/generic/062.out.no_secure b/tests/generic/062.out.no_secure
+new file mode 100644
+index 0000000..8cc3c65
+--- /dev/null
++++ b/tests/generic/062.out.no_secure
+@@ -0,0 +1,654 @@
++QA output created by 062
++*** create test bed
++SCRATCH_MNT
++SCRATCH_MNT/dev
++SCRATCH_MNT/dev/b
++SCRATCH_MNT/dev/c
++SCRATCH_MNT/dev/p
++SCRATCH_MNT/dir
++SCRATCH_MNT/lnk
++SCRATCH_MNT/reg
++
++=== TYPE reg; NAMESPACE user
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/reg
++user.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/reg
++user.name=0xbabe
++user.name2=0xdeadbeef
++user.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/reg
++user.name=0sur4=
++user.name2=0s3q2+7w==
++user.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/reg
++user.name=0xbabe
++user.name2=0xdeaf
++user.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/reg
++user.name=0xbabe
++user.name2=0xdecade
++user.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/reg
++user.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/reg
++user.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/reg: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=reg, nsp=user)
++# file: SCRATCH_MNT/reg
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE dir; NAMESPACE user
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dir
++user.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dir
++user.name=0xbabe
++user.name2=0xdeadbeef
++user.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dir
++user.name=0sur4=
++user.name2=0s3q2+7w==
++user.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dir
++user.name=0xbabe
++user.name2=0xdeaf
++user.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dir
++user.name=0xbabe
++user.name2=0xdecade
++user.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dir
++user.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dir
++user.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dir: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=dir, nsp=user)
++# file: SCRATCH_MNT/dir
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE lnk; NAMESPACE user
++
++*** set/get one initially empty attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++*** overwrite empty, set several new attributes
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++*** fetch several attribute names and values (hex)
++*** fetch several attribute names and values (base64)
++*** shrink value of an existing attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++*** grow value of existing attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++*** set an empty value for second attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++SCRATCH_MNT/lnk: user.name2: No such attribute or operation not permitted
++*** overwrite empty value
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++SCRATCH_MNT/lnk: user.name2: No such attribute or operation not permitted
++*** remove attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++SCRATCH_MNT/lnk: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=lnk, nsp=user)
++
++=== TYPE dev/b; NAMESPACE user
++
++*** set/get one initially empty attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++*** overwrite empty, set several new attributes
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++*** fetch several attribute names and values (hex)
++*** fetch several attribute names and values (base64)
++*** shrink value of an existing attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++*** grow value of existing attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++*** set an empty value for second attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++SCRATCH_MNT/dev/b: user.name2: No such attribute or operation not permitted
++*** overwrite empty value
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++SCRATCH_MNT/dev/b: user.name2: No such attribute or operation not permitted
++*** remove attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++SCRATCH_MNT/dev/b: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/b, nsp=user)
++
++=== TYPE dev/c; NAMESPACE user
++
++*** set/get one initially empty attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++*** overwrite empty, set several new attributes
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++*** fetch several attribute names and values (hex)
++*** fetch several attribute names and values (base64)
++*** shrink value of an existing attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++*** grow value of existing attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++*** set an empty value for second attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++SCRATCH_MNT/dev/c: user.name2: No such attribute or operation not permitted
++*** overwrite empty value
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++SCRATCH_MNT/dev/c: user.name2: No such attribute or operation not permitted
++*** remove attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++SCRATCH_MNT/dev/c: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/c, nsp=user)
++
++=== TYPE dev/p; NAMESPACE user
++
++*** set/get one initially empty attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++*** overwrite empty, set several new attributes
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++*** fetch several attribute names and values (hex)
++*** fetch several attribute names and values (base64)
++*** shrink value of an existing attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++*** grow value of existing attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++*** set an empty value for second attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not permitted
++*** overwrite empty value
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not permitted
++*** remove attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/p, nsp=user)
++
++=== TYPE reg; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/reg
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/reg
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/reg
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/reg
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/reg
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/reg
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/reg
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/reg: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=reg, nsp=trusted)
++# file: SCRATCH_MNT/reg
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE dir; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dir
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dir
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dir
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dir
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dir
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dir
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dir
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dir: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=dir, nsp=trusted)
++# file: SCRATCH_MNT/dir
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE lnk; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/lnk
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/lnk
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/lnk
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/lnk
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/lnk
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/lnk
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/lnk
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/lnk: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=lnk, nsp=trusted)
++# file: SCRATCH_MNT/lnk
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++
++=== TYPE dev/b; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dev/b
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dev/b
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dev/b
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dev/b
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dev/b
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dev/b
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dev/b
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dev/b: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/b, nsp=trusted)
++# file: SCRATCH_MNT/dev/b
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++
++=== TYPE dev/c; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dev/c
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dev/c
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dev/c
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dev/c
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dev/c
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dev/c
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dev/c
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dev/c: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/c, nsp=trusted)
++# file: SCRATCH_MNT/dev/c
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++
++=== TYPE dev/p; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dev/p
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dev/p
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dev/p
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dev/p
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dev/p
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dev/p
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dev/p
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dev/p: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/p, nsp=trusted)
++# file: SCRATCH_MNT/dev/p
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++
++
++*** extend test bed
++SCRATCH_MNT
++SCRATCH_MNT/descend
++SCRATCH_MNT/descend/and
++SCRATCH_MNT/descend/down
++SCRATCH_MNT/descend/down/here
++SCRATCH_MNT/dev
++SCRATCH_MNT/dev/b
++SCRATCH_MNT/dev/c
++SCRATCH_MNT/dev/p
++SCRATCH_MNT/dir
++SCRATCH_MNT/here
++SCRATCH_MNT/here/up
++SCRATCH_MNT/here/up/ascend
++SCRATCH_MNT/lnk
++SCRATCH_MNT/reg
++
++*** directory descent with us following symlinks
++# file: SCRATCH_MNT/descend
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/descend/and/ascend
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/descend/down
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/descend/down/here
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/dev/b
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dev/c
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dev/p
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dir
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++# file: SCRATCH_MNT/here
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/here/up
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/here/up/ascend
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/lnk
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/reg
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++*** directory descent without following symlinks
++# file: SCRATCH_MNT/descend
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/descend/down
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/descend/down/here
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/dev/b
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dev/c
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dev/p
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dir
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++# file: SCRATCH_MNT/here
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/here/up
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/here/up/ascend
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/lnk
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/reg
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++
++*** backup everything
++*** clear out the scratch device
++*** reset test bed with no extended attributes
++*** create test bed
++SCRATCH_MNT
++SCRATCH_MNT/dev
++SCRATCH_MNT/dev/b
++SCRATCH_MNT/dev/c
++SCRATCH_MNT/dev/p
++SCRATCH_MNT/dir
++SCRATCH_MNT/lnk
++SCRATCH_MNT/reg
++*** extend test bed
++SCRATCH_MNT
++SCRATCH_MNT/descend
++SCRATCH_MNT/descend/and
++SCRATCH_MNT/descend/down
++SCRATCH_MNT/descend/down/here
++SCRATCH_MNT/dev
++SCRATCH_MNT/dev/b
++SCRATCH_MNT/dev/c
++SCRATCH_MNT/dev/p
++SCRATCH_MNT/dir
++SCRATCH_MNT/here
++SCRATCH_MNT/here/up
++SCRATCH_MNT/here/up/ascend
++SCRATCH_MNT/lnk
++SCRATCH_MNT/reg
++*** restore everything
++*** compare before and after backups
++
++*** unmount
+diff --git a/tests/generic/062.out.secure b/tests/generic/062.out.secure
+new file mode 100644
+index 0000000..1c7214d
+--- /dev/null
++++ b/tests/generic/062.out.secure
+@@ -0,0 +1,976 @@
++QA output created by 062
++*** create test bed
++SCRATCH_MNT
++SCRATCH_MNT/dev
++SCRATCH_MNT/dev/b
++SCRATCH_MNT/dev/c
++SCRATCH_MNT/dev/p
++SCRATCH_MNT/dir
++SCRATCH_MNT/lnk
++SCRATCH_MNT/reg
++
++=== TYPE reg; NAMESPACE user
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/reg
++user.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/reg
++user.name=0xbabe
++user.name2=0xdeadbeef
++user.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/reg
++user.name=0sur4=
++user.name2=0s3q2+7w==
++user.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/reg
++user.name=0xbabe
++user.name2=0xdeaf
++user.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/reg
++user.name=0xbabe
++user.name2=0xdecade
++user.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/reg
++user.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/reg
++user.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/reg: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=reg, nsp=user)
++# file: SCRATCH_MNT/reg
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE dir; NAMESPACE user
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dir
++user.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dir
++user.name=0xbabe
++user.name2=0xdeadbeef
++user.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dir
++user.name=0sur4=
++user.name2=0s3q2+7w==
++user.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dir
++user.name=0xbabe
++user.name2=0xdeaf
++user.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dir
++user.name=0xbabe
++user.name2=0xdecade
++user.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dir
++user.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dir
++user.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dir: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=dir, nsp=user)
++# file: SCRATCH_MNT/dir
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE lnk; NAMESPACE user
++
++*** set/get one initially empty attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++*** overwrite empty, set several new attributes
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++*** fetch several attribute names and values (hex)
++*** fetch several attribute names and values (base64)
++*** shrink value of an existing attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++*** grow value of existing attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++*** set an empty value for second attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++SCRATCH_MNT/lnk: user.name2: No such attribute or operation not permitted
++*** overwrite empty value
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++SCRATCH_MNT/lnk: user.name2: No such attribute or operation not permitted
++*** remove attribute
++setfattr: SCRATCH_MNT/lnk: Operation not permitted
++SCRATCH_MNT/lnk: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=lnk, nsp=user)
++
++=== TYPE dev/b; NAMESPACE user
++
++*** set/get one initially empty attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++*** overwrite empty, set several new attributes
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++*** fetch several attribute names and values (hex)
++*** fetch several attribute names and values (base64)
++*** shrink value of an existing attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++*** grow value of existing attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++*** set an empty value for second attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++SCRATCH_MNT/dev/b: user.name2: No such attribute or operation not permitted
++*** overwrite empty value
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++SCRATCH_MNT/dev/b: user.name2: No such attribute or operation not permitted
++*** remove attribute
++setfattr: SCRATCH_MNT/dev/b: Operation not permitted
++SCRATCH_MNT/dev/b: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/b, nsp=user)
++
++=== TYPE dev/c; NAMESPACE user
++
++*** set/get one initially empty attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++*** overwrite empty, set several new attributes
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++*** fetch several attribute names and values (hex)
++*** fetch several attribute names and values (base64)
++*** shrink value of an existing attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++*** grow value of existing attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++*** set an empty value for second attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++SCRATCH_MNT/dev/c: user.name2: No such attribute or operation not permitted
++*** overwrite empty value
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++SCRATCH_MNT/dev/c: user.name2: No such attribute or operation not permitted
++*** remove attribute
++setfattr: SCRATCH_MNT/dev/c: Operation not permitted
++SCRATCH_MNT/dev/c: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/c, nsp=user)
++
++=== TYPE dev/p; NAMESPACE user
++
++*** set/get one initially empty attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++*** overwrite empty, set several new attributes
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++*** fetch several attribute names and values (hex)
++*** fetch several attribute names and values (base64)
++*** shrink value of an existing attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++*** grow value of existing attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++*** set an empty value for second attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not permitted
++*** overwrite empty value
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not permitted
++*** remove attribute
++setfattr: SCRATCH_MNT/dev/p: Operation not permitted
++SCRATCH_MNT/dev/p: user.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/p, nsp=user)
++
++=== TYPE reg; NAMESPACE security
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/reg
++security.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/reg
++security.name=0xbabe
++security.name2=0xdeadbeef
++security.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/reg
++security.name=0sur4=
++security.name2=0s3q2+7w==
++security.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/reg
++security.name=0xbabe
++security.name2=0xdeaf
++security.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/reg
++security.name=0xbabe
++security.name2=0xdecade
++security.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/reg
++security.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/reg
++security.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/reg: security.name2: No such attribute or operation not permitted
++*** final list (strings, type=reg, nsp=security)
++# file: SCRATCH_MNT/reg
++security.name=0xbabe
++security.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE dir; NAMESPACE security
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dir
++security.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dir
++security.name=0xbabe
++security.name2=0xdeadbeef
++security.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dir
++security.name=0sur4=
++security.name2=0s3q2+7w==
++security.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dir
++security.name=0xbabe
++security.name2=0xdeaf
++security.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dir
++security.name=0xbabe
++security.name2=0xdecade
++security.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dir
++security.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dir
++security.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dir: security.name2: No such attribute or operation not permitted
++*** final list (strings, type=dir, nsp=security)
++# file: SCRATCH_MNT/dir
++security.name=0xbabe
++security.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE lnk; NAMESPACE security
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/lnk
++security.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/lnk
++security.name=0xbabe
++security.name2=0xdeadbeef
++security.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/lnk
++security.name=0sur4=
++security.name2=0s3q2+7w==
++security.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/lnk
++security.name=0xbabe
++security.name2=0xdeaf
++security.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/lnk
++security.name=0xbabe
++security.name2=0xdecade
++security.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/lnk
++security.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/lnk
++security.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/lnk: security.name2: No such attribute or operation not permitted
++*** final list (strings, type=lnk, nsp=security)
++# file: SCRATCH_MNT/lnk
++security.name=0xbabe
++security.name3=0xdeface
++
++
++=== TYPE dev/b; NAMESPACE security
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dev/b
++security.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dev/b
++security.name=0xbabe
++security.name2=0xdeadbeef
++security.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dev/b
++security.name=0sur4=
++security.name2=0s3q2+7w==
++security.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dev/b
++security.name=0xbabe
++security.name2=0xdeaf
++security.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dev/b
++security.name=0xbabe
++security.name2=0xdecade
++security.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dev/b
++security.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dev/b
++security.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dev/b: security.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/b, nsp=security)
++# file: SCRATCH_MNT/dev/b
++security.name=0xbabe
++security.name3=0xdeface
++
++
++=== TYPE dev/c; NAMESPACE security
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dev/c
++security.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dev/c
++security.name=0xbabe
++security.name2=0xdeadbeef
++security.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dev/c
++security.name=0sur4=
++security.name2=0s3q2+7w==
++security.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dev/c
++security.name=0xbabe
++security.name2=0xdeaf
++security.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dev/c
++security.name=0xbabe
++security.name2=0xdecade
++security.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dev/c
++security.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dev/c
++security.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dev/c: security.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/c, nsp=security)
++# file: SCRATCH_MNT/dev/c
++security.name=0xbabe
++security.name3=0xdeface
++
++
++=== TYPE dev/p; NAMESPACE security
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dev/p
++security.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dev/p
++security.name=0xbabe
++security.name2=0xdeadbeef
++security.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dev/p
++security.name=0sur4=
++security.name2=0s3q2+7w==
++security.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dev/p
++security.name=0xbabe
++security.name2=0xdeaf
++security.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dev/p
++security.name=0xbabe
++security.name2=0xdecade
++security.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dev/p
++security.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dev/p
++security.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dev/p: security.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/p, nsp=security)
++# file: SCRATCH_MNT/dev/p
++security.name=0xbabe
++security.name3=0xdeface
++
++
++=== TYPE reg; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/reg
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/reg
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/reg
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/reg
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/reg
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/reg
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/reg
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/reg: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=reg, nsp=trusted)
++# file: SCRATCH_MNT/reg
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE dir; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dir
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dir
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dir
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dir
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dir
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dir
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dir
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dir: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=dir, nsp=trusted)
++# file: SCRATCH_MNT/dir
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++=== TYPE lnk; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/lnk
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/lnk
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/lnk
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/lnk
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/lnk
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/lnk
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/lnk
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/lnk: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=lnk, nsp=trusted)
++# file: SCRATCH_MNT/lnk
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++
++=== TYPE dev/b; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dev/b
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dev/b
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dev/b
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dev/b
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dev/b
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dev/b
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dev/b
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dev/b: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/b, nsp=trusted)
++# file: SCRATCH_MNT/dev/b
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++
++=== TYPE dev/c; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dev/c
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dev/c
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dev/c
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dev/c
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dev/c
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dev/c
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dev/c
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dev/c: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/c, nsp=trusted)
++# file: SCRATCH_MNT/dev/c
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++
++=== TYPE dev/p; NAMESPACE trusted
++
++*** set/get one initially empty attribute
++# file: SCRATCH_MNT/dev/p
++trusted.name
++
++*** overwrite empty, set several new attributes
++*** fetch several attribute names and values (hex)
++# file: SCRATCH_MNT/dev/p
++trusted.name=0xbabe
++trusted.name2=0xdeadbeef
++trusted.name3=0xdeface
++
++*** fetch several attribute names and values (base64)
++# file: SCRATCH_MNT/dev/p
++trusted.name=0sur4=
++trusted.name2=0s3q2+7w==
++trusted.name3=0s3vrO
++
++*** shrink value of an existing attribute
++# file: SCRATCH_MNT/dev/p
++trusted.name=0xbabe
++trusted.name2=0xdeaf
++trusted.name3=0xdeface
++
++*** grow value of existing attribute
++# file: SCRATCH_MNT/dev/p
++trusted.name=0xbabe
++trusted.name2=0xdecade
++trusted.name3=0xdeface
++
++*** set an empty value for second attribute
++# file: SCRATCH_MNT/dev/p
++trusted.name2
++
++*** overwrite empty value
++# file: SCRATCH_MNT/dev/p
++trusted.name2=0xcafe
++
++*** remove attribute
++SCRATCH_MNT/dev/p: trusted.name2: No such attribute or operation not permitted
++*** final list (strings, type=dev/p, nsp=trusted)
++# file: SCRATCH_MNT/dev/p
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++
++
++*** extend test bed
++SCRATCH_MNT
++SCRATCH_MNT/descend
++SCRATCH_MNT/descend/and
++SCRATCH_MNT/descend/down
++SCRATCH_MNT/descend/down/here
++SCRATCH_MNT/dev
++SCRATCH_MNT/dev/b
++SCRATCH_MNT/dev/c
++SCRATCH_MNT/dev/p
++SCRATCH_MNT/dir
++SCRATCH_MNT/here
++SCRATCH_MNT/here/up
++SCRATCH_MNT/here/up/ascend
++SCRATCH_MNT/lnk
++SCRATCH_MNT/reg
++
++*** directory descent with us following symlinks
++# file: SCRATCH_MNT/descend
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/descend/and/ascend
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/descend/down
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/descend/down/here
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/dev/b
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dev/c
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dev/p
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dir
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++# file: SCRATCH_MNT/here
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/here/up
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/here/up/ascend
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/lnk
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/reg
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++*** directory descent without following symlinks
++# file: SCRATCH_MNT/descend
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/descend/down
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/descend/down/here
++user.1=0x3233
++user.x=0x797a
++
++# file: SCRATCH_MNT/dev/b
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dev/c
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dev/p
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/dir
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++# file: SCRATCH_MNT/here
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/here/up
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/here/up/ascend
++trusted.9=0x3837
++trusted.a=0x6263
++
++# file: SCRATCH_MNT/lnk
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++
++# file: SCRATCH_MNT/reg
++security.name=0xbabe
++security.name3=0xdeface
++trusted.name=0xbabe
++trusted.name3=0xdeface
++user.name=0xbabe
++user.name3=0xdeface
++
++
++
++*** backup everything
++*** clear out the scratch device
++*** reset test bed with no extended attributes
++*** create test bed
++SCRATCH_MNT
++SCRATCH_MNT/dev
++SCRATCH_MNT/dev/b
++SCRATCH_MNT/dev/c
++SCRATCH_MNT/dev/p
++SCRATCH_MNT/dir
++SCRATCH_MNT/lnk
++SCRATCH_MNT/reg
++*** extend test bed
++SCRATCH_MNT
++SCRATCH_MNT/descend
++SCRATCH_MNT/descend/and
++SCRATCH_MNT/descend/down
++SCRATCH_MNT/descend/down/here
++SCRATCH_MNT/dev
++SCRATCH_MNT/dev/b
++SCRATCH_MNT/dev/c
++SCRATCH_MNT/dev/p
++SCRATCH_MNT/dir
++SCRATCH_MNT/here
++SCRATCH_MNT/here/up
++SCRATCH_MNT/here/up/ascend
++SCRATCH_MNT/lnk
++SCRATCH_MNT/reg
++*** restore everything
++*** compare before and after backups
++
++*** unmount
+-- 
+1.8.4.2
