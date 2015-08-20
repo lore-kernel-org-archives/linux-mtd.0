@@ -1,53 +1,24 @@
-Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
+Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSX8E-00055D-NZ
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 21:12:19 +0000
-Received: by pdbmi9 with SMTP id mi9so18262339pdb.3
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 14:11:58 -0700 (PDT)
-Date: Thu, 20 Aug 2015 14:11:52 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
- linux-fbdev@vger.kernel.org,
- Michael Hennerich <Michael.Hennerich@analog.com>,
- linux-iio@vger.kernel.org, linux-wireless@vger.kernel.org,
- Lee Jones <lee.jones@linaro.org>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- linux-mtd@lists.infradead.org,
- Lauro Ramos Venancio <lauro.venancio@openbossa.org>,
- =?iso-8859-1?Q?S=F8ren?= Andersen <san@rosetechnology.dk>,
- devel@driverdev.osuosl.org, Randy Dunlap <rdunlap@infradead.org>,
- Masanari Iida <standby24x7@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
- Devendra Naga <devendra.aaru@gmail.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Aloisio Almeida Jr <aloisio.almeida@openbossa.org>,
- Jonathan Cameron <jic23@kernel.org>, Stephen Warren <swarren@nvidia.com>,
- Urs =?iso-8859-1?Q?F=E4ssler?= <urs.fassler@bytesatwork.ch>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
- Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>,
- George McCollister <george.mccollister@gmail.com>,
- Samuel Ortiz <sameo@linux.intel.com>,
- Manfred Schlaegl <manfred.schlaegl@gmx.at>,
- linux-omap@vger.kernel.org, Hartmut Knaack <knaack.h@gmx.de>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Antonio Borneo <borneo.antonio@gmail.com>,
- Andrea Galbusera <gizero@gmail.com>, Michael Welling <mwelling@ieee.org>,
- Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>,
- linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
- Lars-Peter Clausen <lars@metafoo.de>,
- David Woodhouse <dwmw2@infradead.org>, netdev@vger.kernel.org,
- linux-media@vger.kernel.org, Peter Meerwald <pmeerw@pmeerw.net>
-Subject: Re: [PATCH 00/18] Export SPI and OF module aliases in missing drivers
-Message-ID: <20150820211152.GI74600@google.com>
-References: <1440054451-1223-1-git-send-email-javier@osg.samsung.com>
+ id 1ZSXE1-0007Me-SX
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2015 21:18:18 +0000
+Received: by lbcbn3 with SMTP id bn3so31955883lbc.2
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 14:17:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1440054451-1223-1-git-send-email-javier@osg.samsung.com>
+In-Reply-To: <20150820210812.GO3902@dastard>
+References: <55D52473.7050209@cn.fujitsu.com>
+ <1440032464-17626-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <CAHpGcMLZT5xYx5EUBLTPyLQd0f+jQ-g+c_f-oErsHP33m7-ROg@mail.gmail.com>
+ <20150820210812.GO3902@dastard>
+Date: Thu, 20 Aug 2015 23:17:54 +0200
+Message-ID: <CAHpGcM+-dqBNQKE0bxeF+bM1Gb11NmXiy-jjb-pj-_ziSyKL0g@mail.gmail.com>
+Subject: Re: [PATCH] fstests: link .out to correct output when we set
+ USE_ATTR_SECURE=yes
+From: =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, fstests@vger.kernel.org,
+ linux-mtd@lists.infradead.org, richard.weinberger@gmail.com
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -57,21 +28,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 20, 2015 at 09:07:13AM +0200, Javier Martinez Canillas wrote:
-> Patches #1 and #2 solves a), patches #3 to #8 solves b) and patches
+2015-08-20 23:08 GMT+02:00 Dave Chinner <david@fromorbit.com>:
+> The correct way to do this [...]
 
-^^^ I'm dying to know how this sentence ends :)
+Yes, that's better.
 
-> Patch #18 changes the logic of spi_uevent() to report an OF modalias if
-> the device was registered using OF. But this patch is included in the
-> series only as an RFC for illustration purposes since changing that
-> without first applying all the other patches in this series, will break
-> module autoloading for the drivers of devices registered using OF but
-> that lacks an of_match_table. I'll repost patch #18 once all the patches
-> in this series have landed.
-
-On a more productive note, the patches I've looked at look good to me.
-The missing aliases are a problem enough that should be fixed (i.e.,
-part (b)). I'll leave the SPI framework changes to others to comment on.
-
-Brian
+Thanks,
+Andreas
