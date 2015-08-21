@@ -1,28 +1,28 @@
 Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSelF-0005Ft-7f
- for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 05:21:06 +0000
+ id 1ZSewg-0000ae-0d
+ for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 05:32:54 +0000
 From: Marek Vasut <marex@denx.de>
-To: vikas <vikas.manocha@st.com>
-Subject: Re: [PATCH V7 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
-Date: Fri, 21 Aug 2015 05:46:28 +0200
-Cc: Graham Moore <grmoore@opensource.altera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH V7 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+Date: Fri, 21 Aug 2015 07:32:06 +0200
+Cc: linux-mtd@lists.infradead.org,
+ Graham Moore <grmoore@opensource.altera.com>,
  Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Vikas MANOCHA <vikas.manocha@st.com>,
  Yves Vandervennet <yvanderv@opensource.altera.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+ devicetree@vger.kernel.org, Huang Shijie <shijie.huang@intel.com>
 References: <1439522892-7524-1-git-send-email-marex@denx.de>
- <201508200603.19962.marex@denx.de> <55D5FB19.9010402@st.com>
-In-Reply-To: <55D5FB19.9010402@st.com>
+ <201508140532.34935.marex@denx.de> <20150818024735.GA15907@localhost>
+In-Reply-To: <20150818024735.GA15907@localhost>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201508210546.28932.marex@denx.de>
+Message-Id: <201508210732.06556.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,75 +32,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, August 20, 2015 at 06:06:49 PM, vikas wrote:
-> Hi,
+On Tuesday, August 18, 2015 at 04:47:35 AM, Brian Norris wrote:
 
 Hi!
 
 [...]
 
-> >>> It's the location of the SRAM fifo.  Also direct mode location I think,
-> >>> if that were ever used.
-> >> 
-> >> Hmm...It is the base address of NOR flash. SRAM is not memory mapped.
-> > 
-> > Huh ? I am inclined to trust Graham more -- I have seen memory mapped
-> > SRAM, but I have yet to see memory mapped SPI NOR.
+> > The only bizzare thing is this stuff above ^ . If I want to pass for
+> > example "m25p,fast-read" to the SPI NOR connected to this controller, I
+> > have to set
 > 
-> Well, SPI NOR flash in SOCs normally is memory mapped.
+> Do we really want to extend m25p80 properties like 'm25p,fast-read' to
+> all SPI NOR controllers? Are they necessary? It seems that there has
+> been some attempt to do so, but I'm not sure if that's by good design or
+> just by accident.
 
-I'm afraid you have some very disturbed views of how SPI NORs are operated
-most of the time. No, SPI NOR is most often hanging off of some sort of SPI
-controller just like any other SPI device. It is definitelly not common for
-a SPI NOR to be memory mapped.
+I guess we might want to support at least the m25p,fast-read prop.
+I think it might be a good idea to let the SPI NOR framework parse
+the common props, while also let the SPI NOR controller drivers parse
+whatever props they need.
 
-> To give some mainline examples, all Spear family SOCs (spear300, 320, 1310,
-> 1340).
-
-That's an exception, not a rule :)
-
-> > Also, the driver code clearly
-> > uses that area in a way one would use a memory mapped SRAM with FIFO on
-> > the other side. I think the above description is pretty much OK.
+> > up the nor->dev->of_node, otherwise the of_node would point to the
+> > controller. I am positive this is wrong, but I'm not quite sure how to
+> > repair this. Brian, can you please comment on this one bit ?
 > 
-> that is the purpose of making NOR flash memory mapped.
+> The problem is that spi_nor_scan() is assuming that nor->dev represents
+> a flash device, not a flash controller (to which we might connect
+> multiple flash). So we need to provide a way for spi_nor_scan() to find
+> the flash device_node, not the controller device_node. Easy option:
 
-I'm not sure if you agree with me or not anymore. I am pretty sure the 
-discussion went quite far for such a trivial matter though.
+Right.
 
-> >>> The size is determined by a configuration parameter during system
-> >>> design.  On Altera Cyclone5 the size is really big compared to SRAM
-> >>> fifo.  I don't know why, maybe some hw engineer thought it would be
-> >>> better to have a large size in case direct mode was used.
-> >> 
-> >> my comment is about second parameter of property "reg" which is NOR
-> >> flash address, so above explanation does not make sense for it.
-> >> Also in direct mode, sram does not come into play.
-> > 
-> > This is absolutelly not a SPI NOR address.
+>  (a) add a field to struct spi_nor, like I did to nand_chip [1]; e.g.,
+>      spi_nor::dn.
 > 
-> Then i can only suggest to check out the controller literature.
+> In doing that, we might then reevaluate what spi_nor::dev is supposed to
+> mean (and clarify the doc comments in include/linux/mtd/spi-nor.h
+> accordingly). Currently, it's used to shoe-horn in DT support (badly),
+> as well as to provide mostly auxiliary info, like naming, debug info
+> (dev_{dbg,info,err,etc...}()), and simliar. The latter half can actually
+> be problematic too, since they start to become less useful once you have
+> more than one flash connected to a single controller. e.g., you'll get
+> colliding MTD names (via dev_name(nor->dev)) and debug info is suddenly
+> less obvious (which flash chip is the log message from?).
+
+Right. Would it make sense to have one device per one SPI NOR flash and
+then another one for the controller ?
+
+> So, we might want to do something in the long run to avoid the mixing of
+> layers that looks more like:
 > 
-> Think like this : what is the purpose of SRAM in all this flash access
-> business, It can work without SRAM also, the only purpose of sram (& in
-> fact indirect mode) is to access data from flash memory without AHB access
-> to trigger it. Once the data is available in SRAM(in case of read), AHB
-> Master can access it with low letency. Same is true for writes. SRAM is
-> integral internal part of state machine in case of indirect mode, there is
-> no need for it to memory mapped. If the controller does not support
-> indirect mode, there is no need of sram in the system.
+>  (b) remove 'dev' from struct spi_nor entirely
 > 
-> Hope it is little bit more clear.
+> We can do debug prints and such with spi-nor-specific printk()
+> formatters (e.g., snor_{info,dbg,err,etc...}()) and stop assuming that
+> dev_name(nor->dev) is actually a good name for an MTD.
 
-It is, I understand what you're trying to convey now.
+I cannot say I'm very fond of introducing new ad-hoc kernel printing
+facility just for the sake of dealing with this.
 
-Yes, this register area can be used in certain modes of the controller in
-such a way that it presents a window of the SPI NOR, which can be directly
-accessed.
+> While we're at it... we may also want a larger rework to allow spi-nor.c
+> to better support a notion of controllers (using the existing platform
+> device) and flash devices (mostly without the use of struct device, and
+> mostly using struct spi_nor as-is).
 
-This register area can also be used as a FIFO, which is the way we used this
-area in the driver . We read/write the first four bytes when communicating
-with the flash.
+See my question about the devices above please, I'm not quite sure here.
 
-So I don't really see a problem with calling the second register a "Controller
-data area", that's what the IP documentation also calls it.
+> You'll notice that controllers that
+> want to support multiple flash are starting to develop much of the same
+> initialization boiler-plate code.
+
+Yep, I tweaked the Cadence driver such, that the boilerplate code is nicely
+isolated in a separate function now, so this would also be visible :)
+
+> Anyway, that's my rambling thoughts for now. I think (a) is pretty
+> straightforward, correct, and quickly attainable
+
+I just did that, it was a couple lines of code. I think I need to write a
+better commit message for it before I send it out.
+
+> so you can ignore the
+> remaining bits in the context of upstreaming this driver.
+> 
+> Brian
+> 
+> [1]
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id
+> =5844feeaa4154d1c46d3462c7a4653d22356d8b4
