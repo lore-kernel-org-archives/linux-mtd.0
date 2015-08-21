@@ -1,37 +1,16 @@
-Received: from mail-ob0-f178.google.com ([209.85.214.178])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSbHz-0003fD-Bi
- for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 01:38:40 +0000
-Received: by obbwr7 with SMTP id wr7so47591645obb.2
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 18:38:16 -0700 (PDT)
-Received: from mail-oi0-f46.google.com (mail-oi0-f46.google.com.
- [209.85.218.46])
- by smtp.gmail.com with ESMTPSA id a10sm3679428obl.9.2015.08.20.18.38.15
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 20 Aug 2015 18:38:16 -0700 (PDT)
-Received: by oiev193 with SMTP id v193so33713654oie.3
- for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2015 18:38:15 -0700 (PDT)
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZScow-0007sM-Gh
+ for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 03:16:48 +0000
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
+ Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v6] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
+Date: Fri, 21 Aug 2015 11:10:26 +0800
+Message-ID: <1440126626-18446-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <20150820203726.GE74600@google.com>
-References: <1440053705-3836-1-git-send-email-vndao@altera.com>
- <201508201003.38179.marex@denx.de>
- <CAN1oZWwLRYxs=eeWi8jh-jo8+C7WckdW1hfyunmq5_1qb1Jb8w@mail.gmail.com>
- <201508201052.47502.marex@denx.de>
- <CAN1oZWzADdeNyZofXQwKa0F2_Jv4Oda824ew5C3Ug+-V9Lx3hw@mail.gmail.com>
- <20150820203726.GE74600@google.com>
-Date: Fri, 21 Aug 2015 09:38:15 +0800
-Message-ID: <CAN1oZWz4Yk+Yofjrj8SMs_vgYuf+EzG2Rya9p4XFT2ka5LiK7g@mail.gmail.com>
-Subject: Re: [PATCH] [PATCH v5] mtd:spi-nor: Add Altera Quad SPI Driver
-From: Viet Nga Dao <vndao@altera.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- nga_chi86 <ngachi86@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,65 +20,212 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 21, 2015 at 4:37 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Thu, Aug 20, 2015 at 05:18:14PM +0800, Viet Nga Dao wrote:
->> You might misunderstand the hardware problem i mention here. This soft
->> IP controller is able to provide the ID for our Altera EPCS/EPCQ flash
->> chips, which are non JEDEC chips. As from EPCQ device data sheet
->> (https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/hb/cfg/cfg_cf52012.pdf),
->> the device ID is 8 bit data.
->
-> 8 bits of data is vastly insufficient for uniquely identifying a flash.
-> This is not extendible and is not really a candidate for inclusion in
-> mainline, unless it's somehow guaranteed that these flash can only be
-> used with your controller (and I'm not sure how you would do that).
-> Otherwise, you need to augment every flash with more out-of-band
-> device-tree information.
->
->> The remaining problem here is that this
->> controller is able to support Micron chips but it currently has
->> limitation in providing only 8 bit ID, which is not full JEDEC ID for
->> Micron chips.
->
-> You're just proving my point. I will not support "READ ID" detection
-> that is based on only 8 bits of ID.
->
->> Hence, we are asking hardware engineer to find out the
->> solution so that the driver does not need to do any dirty hacking.
->
-> OK, then I wish your hardware team great speed.
->
->> And
->> so, this table should still be here even hardware fix will take place
->> or not.
->
-> I'm not sure how you come to this conclusion.
->
+To make ubifs support atime flexily, this commit introduces
+a Kconfig option named as UBIFS_ATIME_SUPPORT.
 
-I have this conclusion is because Altera EPCQ/EPCS flashes are non
-JEDEC. Thus on the spi_device_id table,
-the ID in the INFO struct must be filled up with zeros in order to
-matches the current framework.
-However, since i still persist to have the device id check in my
-driver, as suggested by Rash,
-I should implement it locally in my driver. And this table is the look
-up table for the device ID of supported flashes.
+With UBIFS_ATIME_SUPPORT=n:
+	ubifs keeps the full compatibility to no_atime from
+the start of ubifs.
+=================UBIFS_ATIME_SUPPORT=n=======================
+-o - no atime
+-o atime - no atime
+-o noatime - no atime
+-o relatime - no atime
+-o strictatime - no atime
+-o lazyatime - no atime
 
-Or maybe you can give me any other better idea?
+With UBIFS_ATIME_SUPPORT=y:
+	ubifs supports the atime same with other main stream
+file systems.
+=================UBIFS_ATIME_SUPPORT=y=======================
+-o - default behavior (relatime currently)
+-o atime - atime support
+-o noatime - no atime support
+-o relatime - relative atime support
+-o strictatime - strict atime support
+-o lazyatime - lazy atime support
 
-> BTW, to reiterate one other question that I feel wasn't adequately
-> answered: what does the full ID string look like for these EPCS/EPCQ
-> flash chips? Not the ID as seen by your limited controller, but the ID
-> that can be reported by the flash chip. Is it really only an 8-bit
-> number? Or does it have a longer string that your controller just can't
-> read?
->
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+---
+	-v2:
+		implement update_time for ubifs
+	-v3:
+		Oops, forgot to assign update_time for
+		ubifs_dir_inode_operations.
+	-v4:
+		drop the patch to change 'Y' to 'N' in
+		Kconfig
+	-v5:
+		simplify the warning in atime supporting
+	-v6:
+		* replace ubifs_warn with ubifs_msg
+		* rewrite the messages in Kconfig as Artem suggested
+		* remove S_VERSION related code
+ fs/ubifs/Kconfig | 15 +++++++++++++++
+ fs/ubifs/dir.c   |  3 +++
+ fs/ubifs/file.c  | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/super.c | 12 ++++++++++--
+ fs/ubifs/ubifs.h |  1 +
+ 5 files changed, 77 insertions(+), 2 deletions(-)
 
-Yes, As you can refer to page 32 of EPCQ flash datasheet
-(https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/hb/cfg/cfg_cf52012.pdf),
- "This operation reads the 8-bit device identification of the EPCQ
-device from the DATA1 output pin".
-Table 29 lists the EPCQ device identifications
-
-Nga
+diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+index ba66d50..7ff7712 100644
+--- a/fs/ubifs/Kconfig
++++ b/fs/ubifs/Kconfig
+@@ -35,3 +35,18 @@ config UBIFS_FS_ZLIB
+ 	default y
+ 	help
+ 	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
++
++config UBIFS_ATIME_SUPPORT
++	bool "Access time support" if UBIFS_FS
++	depends on UBIFS_FS
++	default n
++	help
++	  Originally UBIFS did not support atime, because it looked like a bad idea due
++	  increased flash wear. This option adds atime support and it is disabled by default
++	  to preserve the old behavior. If you enable this option, UBIFS starts updating atime,
++	  which means that file-system read operations will cause writes (inode atime
++	  updates). This may affect file-system performance and increase flash device wear,
++	  so be careful. How often atime is updated depends on the selected strategy:
++	  strictatime is the "heavy", relatime is "lighter", etc.
++
++	  If unsure, say 'N'
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 27060fc..8d93427 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1187,6 +1187,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
+ 	.getxattr    = ubifs_getxattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.removexattr = ubifs_removexattr,
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	.update_time = ubifs_update_time,
++#endif
+ };
+ 
+ const struct file_operations ubifs_dir_operations = {
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 35efc10..423ce6b 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1364,6 +1364,45 @@ static inline int mctime_update_needed(const struct inode *inode,
+ }
+ 
+ /**
++ * ubifs_update_time - update time of inode.
++ * @inode: inode to update
++ *
++ * This function updates time of the inode.
++ */
++int ubifs_update_time(struct inode *inode, struct timespec *time,
++			     int flags)
++{
++	struct ubifs_inode *ui = ubifs_inode(inode);
++	struct ubifs_info *c = inode->i_sb->s_fs_info;
++	struct ubifs_budget_req req = { .dirtied_ino = 1,
++			.dirtied_ino_d = ALIGN(ui->data_len, 8) };
++	int iflags = I_DIRTY_TIME;
++	int err, release;
++
++	err = ubifs_budget_space(c, &req);
++	if (err)
++		return err;
++
++	mutex_lock(&ui->ui_mutex);
++	if (flags & S_ATIME)
++		inode->i_atime = *time;
++	if (flags & S_CTIME)
++		inode->i_ctime = *time;
++	if (flags & S_MTIME)
++		inode->i_mtime = *time;
++
++	if (!(inode->i_sb->s_flags & MS_LAZYTIME))
++		iflags |= I_DIRTY_SYNC;
++
++	release = ui->dirty;
++	__mark_inode_dirty(inode, iflags);
++	mutex_unlock(&ui->ui_mutex);
++	if (release)
++		ubifs_release_budget(c, &req);
++	return 0;
++}
++
++/**
+  * update_ctime - update mtime and ctime of an inode.
+  * @inode: inode to update
+  *
+@@ -1546,6 +1585,9 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ 	if (err)
+ 		return err;
+ 	vma->vm_ops = &ubifs_file_vm_ops;
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	file_accessed(file);
++#endif
+ 	return 0;
+ }
+ 
+@@ -1566,6 +1608,9 @@ const struct inode_operations ubifs_file_inode_operations = {
+ 	.getxattr    = ubifs_getxattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.removexattr = ubifs_removexattr,
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	.update_time = ubifs_update_time,
++#endif
+ };
+ 
+ const struct inode_operations ubifs_symlink_inode_operations = {
+@@ -1577,6 +1622,9 @@ const struct inode_operations ubifs_symlink_inode_operations = {
+ 	.getxattr    = ubifs_getxattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.removexattr = ubifs_removexattr,
++#ifdef CONFIG_UBIFS_ATIME_SUPPORT
++	.update_time = ubifs_update_time,
++#endif
+ };
+ 
+ const struct file_operations ubifs_file_operations = {
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 75e6f04..e1e42ff 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -128,7 +128,10 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
+ 	if (err)
+ 		goto out_ino;
+ 
+-	inode->i_flags |= (S_NOCMTIME | S_NOATIME);
++	inode->i_flags |= S_NOCMTIME;
++#ifndef CONFIG_UBIFS_ATIME_SUPPORT
++	inode->i_flags |= S_NOATIME;
++#endif
+ 	set_nlink(inode, le32_to_cpu(ino->nlink));
+ 	i_uid_write(inode, le32_to_cpu(ino->uid));
+ 	i_gid_write(inode, le32_to_cpu(ino->gid));
+@@ -2138,7 +2141,12 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
+ 		if (err)
+ 			goto out_deact;
+ 		/* We do not support atime */
+-		sb->s_flags |= MS_ACTIVE | MS_NOATIME;
++		sb->s_flags |= MS_ACTIVE;
++#ifndef CONFIG_UBIFS_ATIME_SUPPORT
++		sb->s_flags |= MS_NOATIME;
++#else
++		ubifs_msg(c, "full atime support is enabled.");
++#endif
+ 	}
+ 
+ 	/* 'fill_super()' opens ubi again so we must close it here */
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index de75902..216ba87 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1746,6 +1746,7 @@ int ubifs_calc_dark(const struct ubifs_info *c, int spc);
+ /* file.c */
+ int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
+ int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
++int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
+ 
+ /* dir.c */
+ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
+-- 
+1.8.4.2
