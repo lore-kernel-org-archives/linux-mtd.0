@@ -1,18 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSiSq-0007gE-FQ
- for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 09:18:21 +0000
-Subject: Re: [PATCH] ubi: do not re-read the data already read out in retry
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-References: <1440143981-20826-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55D6ECC4.5070503@nod.at>
-Date: Fri, 21 Aug 2015 11:17:56 +0200
-MIME-Version: 1.0
-In-Reply-To: <1440143981-20826-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
+ id 1ZSiW0-000188-Sp
+ for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 09:21:37 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Cc: Graham Moore <grmoore@opensource.altera.com>, Marek Vasut <marex@denx.de>,
+ Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Vikas MANOCHA <vikas.manocha@st.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ devicetree@vger.kernel.org
+Subject: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+Date: Fri, 21 Aug 2015 11:20:50 +0200
+Message-Id: <1440148851-14621-1-git-send-email-marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +25,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 21.08.2015 um 09:59 schrieb Dongsheng Yang:
-> In ubi_io_read(), we will retry if current reading failed
-> to read all data we wanted. But we are doing a full re-do
-> in the re-try path. Actually, we can skip the data which
-> we have already read out in the last reading.
-> 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> ---
->  drivers/mtd/ubi/io.c | 19 +++++++++++++------
->  1 file changed, 13 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-> index 5bbd1f0..a3ac643 100644
-> --- a/drivers/mtd/ubi/io.c
-> +++ b/drivers/mtd/ubi/io.c
-> @@ -127,7 +127,7 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
->  		int len)
->  {
->  	int err, retries = 0;
-> -	size_t read;
-> +	size_t read, already_read = 0;
->  	loff_t addr;
->  
->  	dbg_io("read %d bytes from PEB %d:%d", len, pnum, offset);
-> @@ -165,6 +165,7 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
->  	addr = (loff_t)pnum * ubi->peb_size + offset;
->  retry:
->  	err = mtd_read(ubi->mtd, addr, len, &read, buf);
-> +	already_read += read;
+From: Graham Moore <grmoore@opensource.altera.com>
 
-Hmm, this change makes me nervous.
+Add binding document for the Cadence QSPI controller.
 
-Brian, does MTD core guarantee that upon an erroneous mtd_read() the number of "read" bytes
-in "buf" are valid?
+Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alan Tull <atull@opensource.altera.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
+Cc: Graham Moore <grmoore@opensource.altera.com>
+Cc: Vikas MANOCHA <vikas.manocha@st.com>
+Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
+Cc: devicetree@vger.kernel.org
+---
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    | 56 ++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
 
-So, my fear is that this change will introduce new regressions (due faulty MTD drivers, etc..)
-without a real gain.
+V2: Add cdns prefix to driver-specific bindings.
+V3: Use existing property "is-decoded-cs" instead of creating a
+    duplicate, "ext-decoder". Timing parameters are in nanoseconds,
+    not master reference clocks. Remove bus-num completely.
+V4: Add new properties fifo-width and trigger-address
+V7: - Prefix all of the Cadence-specific properties with cdns prefix,
+      those are in particular "cdns,is-decoded-cs", "cdns,fifo-depth",
+      "cdns,fifo-width", "cdns,trigger-address".
+    - Drop bogus properties which were not used and were incorrect.
+V8: Align lines to 80 chars.
 
-Thanks,
-//richard
+diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+new file mode 100644
+index 0000000..f248056
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+@@ -0,0 +1,56 @@
++* Cadence Quad SPI controller
++
++Required properties:
++- compatible : Should be "cdns,qspi-nor".
++- reg : Contains two entries, each of which is a tuple consisting of a
++	physical address and length. The first entry is the address and
++	length of the controller register set. The second entry is the
++	address and length of the QSPI Controller data area.
++- interrupts : Unit interrupt specifier for the controller interrupt.
++- clocks : phandle to the Quad SPI clock.
++- cdns,fifo-depth : Size of the data FIFO in words.
++- cdns,fifo-width : Bus width of the data FIFO in bytes.
++- cdns,trigger-address : 32-bit indirect AHB trigger address.
++
++Optional properties:
++- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
++
++Optional subnodes:
++Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
++custom properties:
++- cdns,read-delay : Delay for read capture logic, in clock cycles
++- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
++                  mode chip select outputs are de-asserted between
++		  transactions.
++- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
++                  de-activated and the activation of another.
++- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
++                  transaction and deasserting the device chip select
++		  (qspi_n_ss_out).
++- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
++                  and first bit transfer.
++
++Example:
++
++	qspi: spi@ff705000 {
++		compatible = "cdns,qspi-nor";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0xff705000 0x1000>,
++		      <0xffa00000 0x1000>;
++		interrupts = <0 151 4>;
++		clocks = <&qspi_clk>;
++		cdns,is-decoded-cs;
++		cdns,fifo-depth = <128>;
++		cdns,fifo-width = <4>;
++		cdns,trigger-address = <0x00000000>;
++
++		flash0: n25q00@0 {
++			...
++			cdns,read-delay = <4>;
++			cdns,tshsl-ns = <50>;
++			cdns,tsd2d-ns = <50>;
++			cdns,tchsh-ns = <4>;
++			cdns,tslch-ns = <4>;
++		};
++	};
+-- 
+2.1.4
