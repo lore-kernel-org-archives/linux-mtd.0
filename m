@@ -1,16 +1,34 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+Received: from bastet.se.axis.com ([195.60.68.11])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZShKq-0002rF-4o
- for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 08:06:01 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH] ubi: do not re-read the data already read out in retry
-Date: Fri, 21 Aug 2015 15:59:41 +0800
-Message-ID: <1440143981-20826-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ id 1ZSiBx-0001RP-Sp
+ for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 09:00:54 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by bastet.se.axis.com (Postfix) with ESMTP id B06F318245
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Aug 2015 11:00:29 +0200 (CEST)
+Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id Oje+zHa7fDx4 for <linux-mtd@lists.infradead.org>;
+ Fri, 21 Aug 2015 11:00:29 +0200 (CEST)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bastet.se.axis.com (Postfix) with ESMTP id 2C6D51820C
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Aug 2015 11:00:29 +0200 (CEST)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id 1509B14EB
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Aug 2015 11:00:29 +0200 (CEST)
+Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
+ by boulder.se.axis.com (Postfix) with ESMTP id 09B71FEC
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Aug 2015 11:00:29 +0200 (CEST)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by seth.se.axis.com (Postfix) with ESMTP id 05CD93E049
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Aug 2015 11:00:29 +0200 (CEST)
+Date: Fri, 21 Aug 2015 11:00:28 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: JFFS2 vs. UBIFS compression
+Message-ID: <alpine.DEB.2.02.1508211046210.10202@lnxricardw1.se.axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,75 +38,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In ubi_io_read(), we will retry if current reading failed
-to read all data we wanted. But we are doing a full re-do
-in the re-try path. Actually, we can skip the data which
-we have already read out in the last reading.
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
- drivers/mtd/ubi/io.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+I came across something odd that I wasn't really expecting the other day.
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 5bbd1f0..a3ac643 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -127,7 +127,7 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
- 		int len)
- {
- 	int err, retries = 0;
--	size_t read;
-+	size_t read, already_read = 0;
- 	loff_t addr;
- 
- 	dbg_io("read %d bytes from PEB %d:%d", len, pnum, offset);
-@@ -165,6 +165,7 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
- 	addr = (loff_t)pnum * ubi->peb_size + offset;
- retry:
- 	err = mtd_read(ubi->mtd, addr, len, &read, buf);
-+	already_read += read;
- 	if (err) {
- 		const char *errstr = mtd_is_eccerr(err) ? " (ECC error)" : "";
- 
-@@ -179,19 +180,25 @@ retry:
- 			 */
- 			ubi_msg(ubi, "fixable bit-flip detected at PEB %d",
- 				pnum);
--			ubi_assert(len == read);
-+			ubi_assert(len == already_read);
- 			return UBI_IO_BITFLIPS;
- 		}
- 
- 		if (retries++ < UBI_IO_RETRIES) {
--			ubi_warn(ubi, "error %d%s while reading %d bytes from PEB %d:%d, read only %zd bytes, retry",
--				 err, errstr, len, pnum, offset, read);
-+			ubi_warn(ubi, "error %d%s while reading %d bytes from PEB %d:%lu, read only %zd bytes, retry",
-+				 err, errstr, len, pnum, offset + already_read, read);
- 			yield();
-+			/*
-+			 * Skip to do retry for data which was already read out;
-+			 */
-+			addr += read;
-+			len -= read;
-+			buf += read;
- 			goto retry;
- 		}
- 
- 		ubi_err(ubi, "error %d%s while reading %d bytes from PEB %d:%d, read %zd bytes",
--			err, errstr, len, pnum, offset, read);
-+			err, errstr, len, pnum, offset, already_read);
- 		dump_stack();
- 
- 		/*
-@@ -204,7 +211,7 @@ retry:
- 			err = -EIO;
- 		}
- 	} else {
--		ubi_assert(len == read);
-+		ubi_assert(len == already_read);
- 
- 		if (ubi_dbg_is_bitflip(ubi)) {
- 			dbg_gen("bit-flip (emulated)");
+On a JFFS2 file system, we have a file that is 12.25 MB in size. When 
+written to an 8 MB partition, df reports that it occupies 5.9 MB. Writing 
+a second copy of the file fails because the file system is full. Fair 
+enough.
+
+On a similar UBIFS system (however in this case with a volume size of 32 
+MB), the same file is reported by df to have occupied 7.9 MB. Writing 
+multiple copies of the same file confirms that we can fit slightly more 
+than 4 copies of the same file on the file system (32 MB / 7.9 MB yields 
+4.05), so 7.9 MB seems about right.
+
+Now I fully understand that getting df to report valid figures for 
+compressed file systems is guesswork at best, but don't JFFS2 and UBIFS 
+utilize the same compression algorithms? Consequently, the space used by 
+especially large files (where the overhead is small) should be essentially 
+the same for both file systems? If anything, one would expect that UBIFS, 
+being newer, would better at compression than JFFS2.
+
+So what are we seeing here, is UBIFS more conservative in reporting disk 
+usage, or is JFFS2 really better than UBIFS at file compression?
+
+/Ricard
 -- 
-1.8.4.2
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
