@@ -1,16 +1,28 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZScow-0007sM-Gh
- for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 03:16:48 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
- Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v6] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
-Date: Fri, 21 Aug 2015 11:10:26 +0800
-Message-ID: <1440126626-18446-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZSeks-0005Ee-0g
+ for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 05:20:43 +0000
+From: Marek Vasut <marex@denx.de>
+To: vikas <vikas.manocha@st.com>
+Subject: Re: [PATCH V7 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+Date: Fri, 21 Aug 2015 06:04:30 +0200
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <1439522892-7524-1-git-send-email-marex@denx.de>
+ <1439522892-7524-2-git-send-email-marex@denx.de> <55D299CD.2070809@st.com>
+In-Reply-To: <55D299CD.2070809@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201508210604.30272.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,212 +32,178 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To make ubifs support atime flexily, this commit introduces
-a Kconfig option named as UBIFS_ATIME_SUPPORT.
+On Tuesday, August 18, 2015 at 04:34:53 AM, vikas wrote:
+> Hi Marek,
 
-With UBIFS_ATIME_SUPPORT=n:
-	ubifs keeps the full compatibility to no_atime from
-the start of ubifs.
-=================UBIFS_ATIME_SUPPORT=n=======================
--o - no atime
--o atime - no atime
--o noatime - no atime
--o relatime - no atime
--o strictatime - no atime
--o lazyatime - no atime
+Hi,
 
-With UBIFS_ATIME_SUPPORT=y:
-	ubifs supports the atime same with other main stream
-file systems.
-=================UBIFS_ATIME_SUPPORT=y=======================
--o - default behavior (relatime currently)
--o atime - atime support
--o noatime - no atime support
--o relatime - relative atime support
--o strictatime - strict atime support
--o lazyatime - lazy atime support
+[...]
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
-	-v2:
-		implement update_time for ubifs
-	-v3:
-		Oops, forgot to assign update_time for
-		ubifs_dir_inode_operations.
-	-v4:
-		drop the patch to change 'Y' to 'N' in
-		Kconfig
-	-v5:
-		simplify the warning in atime supporting
-	-v6:
-		* replace ubifs_warn with ubifs_msg
-		* rewrite the messages in Kconfig as Artem suggested
-		* remove S_VERSION related code
- fs/ubifs/Kconfig | 15 +++++++++++++++
- fs/ubifs/dir.c   |  3 +++
- fs/ubifs/file.c  | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/super.c | 12 ++++++++++--
- fs/ubifs/ubifs.h |  1 +
- 5 files changed, 77 insertions(+), 2 deletions(-)
+> > +#define CQSPI_POLL_IDLE_RETRY                  3
+> > +
+> > +#define CQSPI_REG_SRAM_RESV_WORDS              2
+> > +#define CQSPI_REG_SRAM_PARTITION_WR            1
+> 
+> remove unused macros.
+> 
+> > +#define CQSPI_REG_SRAM_THRESHOLD_BYTES         50
+> 
+> the macro is used only for write sram watermark, something like
+> ...WR_THRESH_BYTES would be better. Infact instead of magic number like
+> 50, it should be based on sram_depth similar to read watermark
+> configuration.
 
-diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-index ba66d50..7ff7712 100644
---- a/fs/ubifs/Kconfig
-+++ b/fs/ubifs/Kconfig
-@@ -35,3 +35,18 @@ config UBIFS_FS_ZLIB
- 	default y
- 	help
- 	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
-+
-+config UBIFS_ATIME_SUPPORT
-+	bool "Access time support" if UBIFS_FS
-+	depends on UBIFS_FS
-+	default n
-+	help
-+	  Originally UBIFS did not support atime, because it looked like a bad idea due
-+	  increased flash wear. This option adds atime support and it is disabled by default
-+	  to preserve the old behavior. If you enable this option, UBIFS starts updating atime,
-+	  which means that file-system read operations will cause writes (inode atime
-+	  updates). This may affect file-system performance and increase flash device wear,
-+	  so be careful. How often atime is updated depends on the selected strategy:
-+	  strictatime is the "heavy", relatime is "lighter", etc.
-+
-+	  If unsure, say 'N'
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 27060fc..8d93427 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1187,6 +1187,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
- 	.getxattr    = ubifs_getxattr,
- 	.listxattr   = ubifs_listxattr,
- 	.removexattr = ubifs_removexattr,
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+	.update_time = ubifs_update_time,
-+#endif
- };
- 
- const struct file_operations ubifs_dir_operations = {
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 35efc10..423ce6b 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1364,6 +1364,45 @@ static inline int mctime_update_needed(const struct inode *inode,
- }
- 
- /**
-+ * ubifs_update_time - update time of inode.
-+ * @inode: inode to update
-+ *
-+ * This function updates time of the inode.
-+ */
-+int ubifs_update_time(struct inode *inode, struct timespec *time,
-+			     int flags)
-+{
-+	struct ubifs_inode *ui = ubifs_inode(inode);
-+	struct ubifs_info *c = inode->i_sb->s_fs_info;
-+	struct ubifs_budget_req req = { .dirtied_ino = 1,
-+			.dirtied_ino_d = ALIGN(ui->data_len, 8) };
-+	int iflags = I_DIRTY_TIME;
-+	int err, release;
-+
-+	err = ubifs_budget_space(c, &req);
-+	if (err)
-+		return err;
-+
-+	mutex_lock(&ui->ui_mutex);
-+	if (flags & S_ATIME)
-+		inode->i_atime = *time;
-+	if (flags & S_CTIME)
-+		inode->i_ctime = *time;
-+	if (flags & S_MTIME)
-+		inode->i_mtime = *time;
-+
-+	if (!(inode->i_sb->s_flags & MS_LAZYTIME))
-+		iflags |= I_DIRTY_SYNC;
-+
-+	release = ui->dirty;
-+	__mark_inode_dirty(inode, iflags);
-+	mutex_unlock(&ui->ui_mutex);
-+	if (release)
-+		ubifs_release_budget(c, &req);
-+	return 0;
-+}
-+
-+/**
-  * update_ctime - update mtime and ctime of an inode.
-  * @inode: inode to update
-  *
-@@ -1546,6 +1585,9 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (err)
- 		return err;
- 	vma->vm_ops = &ubifs_file_vm_ops;
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+	file_accessed(file);
-+#endif
- 	return 0;
- }
- 
-@@ -1566,6 +1608,9 @@ const struct inode_operations ubifs_file_inode_operations = {
- 	.getxattr    = ubifs_getxattr,
- 	.listxattr   = ubifs_listxattr,
- 	.removexattr = ubifs_removexattr,
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+	.update_time = ubifs_update_time,
-+#endif
- };
- 
- const struct inode_operations ubifs_symlink_inode_operations = {
-@@ -1577,6 +1622,9 @@ const struct inode_operations ubifs_symlink_inode_operations = {
- 	.getxattr    = ubifs_getxattr,
- 	.listxattr   = ubifs_listxattr,
- 	.removexattr = ubifs_removexattr,
-+#ifdef CONFIG_UBIFS_ATIME_SUPPORT
-+	.update_time = ubifs_update_time,
-+#endif
- };
- 
- const struct file_operations ubifs_file_operations = {
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 75e6f04..e1e42ff 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -128,7 +128,10 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
- 	if (err)
- 		goto out_ino;
- 
--	inode->i_flags |= (S_NOCMTIME | S_NOATIME);
-+	inode->i_flags |= S_NOCMTIME;
-+#ifndef CONFIG_UBIFS_ATIME_SUPPORT
-+	inode->i_flags |= S_NOATIME;
-+#endif
- 	set_nlink(inode, le32_to_cpu(ino->nlink));
- 	i_uid_write(inode, le32_to_cpu(ino->uid));
- 	i_gid_write(inode, le32_to_cpu(ino->gid));
-@@ -2138,7 +2141,12 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
- 		if (err)
- 			goto out_deact;
- 		/* We do not support atime */
--		sb->s_flags |= MS_ACTIVE | MS_NOATIME;
-+		sb->s_flags |= MS_ACTIVE;
-+#ifndef CONFIG_UBIFS_ATIME_SUPPORT
-+		sb->s_flags |= MS_NOATIME;
-+#else
-+		ubifs_msg(c, "full atime support is enabled.");
-+#endif
- 	}
- 
- 	/* 'fill_super()' opens ubi again so we must close it here */
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index de75902..216ba87 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1746,6 +1746,7 @@ int ubifs_calc_dark(const struct ubifs_info *c, int spc);
- /* file.c */
- int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
- int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
-+int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
- 
- /* dir.c */
- struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
--- 
-1.8.4.2
+I suppose if the fifo falls below 1/8, that might be a sensible time to
+trigger an underflow interrupt.
+
+> > +
+> > +/* Instruction type */
+> > +#define CQSPI_INST_TYPE_SINGLE                 0
+> > +#define CQSPI_INST_TYPE_DUAL                   1
+> > +#define CQSPI_INST_TYPE_QUAD                   2
+> > +
+> > +#define CQSPI_DUMMY_CLKS_MAX                   31
+> > +
+> > +#define CQSPI_STIG_DATA_LEN_MAX                        8
+> > +
+> > +/* Register map */
+> > +#define CQSPI_REG_CONFIG                       0x00
+> > +#define CQSPI_REG_CONFIG_ENABLE_MASK           BIT(0)
+> > +#define CQSPI_REG_CONFIG_DECODE_MASK           BIT(9)
+> > +#define CQSPI_REG_CONFIG_CHIPSELECT_LSB                10
+> > +#define CQSPI_REG_CONFIG_DMA_MASK              BIT(15)
+> > +#define CQSPI_REG_CONFIG_BAUD_LSB              19
+> > +#define CQSPI_REG_CONFIG_IDLE_LSB              31
+> 
+> To be consistent, it would be good to use BIT(nr) for all bit positions.
+
+You don't use BIT() macro for bitfields and the above are bitfields.
+Thus, this is not applicable.
+
+> > +#define CQSPI_REG_CONFIG_CHIPSELECT_MASK       0xF
+> > +#define CQSPI_REG_CONFIG_BAUD_MASK             0xF
+
+[...]
+
+> > +#define CQSPI_REG_CMDADDRESS                   0x94
+> > +#define CQSPI_REG_CMDREADDATALOWER             0xA0
+> > +#define CQSPI_REG_CMDREADDATAUPPER             0xA4
+> > +#define CQSPI_REG_CMDWRITEDATALOWER            0xA8
+> > +#define CQSPI_REG_CMDWRITEDATAUPPER            0xAC
+> 
+> I am not sure if there is any recommended way but instread of register
+> macros with offset, isn't it better to use something like struct cdns_qspi
+> {
+> 					u32 config,
+> 					u32 rd_instn,
+> 					....
+> 				};
+> & then configuring the pointer to this structure to the peripheral's (qspi
+> controller in this case) base address.
+
+U-Boot is slowly abolishing this practice as it turned out to be a horrible
+mistake, which is annoying to deal with . No, I will not do this.
+
+> It helps in debugging also as you can have all registers under one
+> structure, easy/clean access of register like cdsn_qspi_ptr->config
+> instead of adding offset for every access & also clean picture of all
+> peripheral registers.
+
+Once you have three similar controllers with only one register mapped
+elsewhere, you'd need three such structures. This approach does look
+nice at first, but certainly does not scale.
+
+> > +
+> > +/* Interrupt status bits */
+> > +#define CQSPI_REG_IRQ_MODE_ERR                 BIT(0)
+> > +#define CQSPI_REG_IRQ_UNDERFLOW                        BIT(1)
+> > +#define CQSPI_REG_IRQ_IND_COMP                 BIT(2)
+> > +#define CQSPI_REG_IRQ_IND_RD_REJECT            BIT(3)
+> > +#define CQSPI_REG_IRQ_WR_PROTECTED_ERR         BIT(4)
+> > +#define CQSPI_REG_IRQ_ILLEGAL_AHB_ERR          BIT(5)
+> > +#define CQSPI_REG_IRQ_WATERMARK                        BIT(6)
+> > +#define CQSPI_REG_IRQ_IND_RD_OVERFLOW          BIT(12)
+
+[...]
+
+> > +
+> > +static unsigned int cqspi_check_timeout(const unsigned long timeout)
+> > +{
+> > +       return time_before(jiffies, timeout);
+> > +}
+> 
+> try to replace using blocking jiffies check using kernel timeout function.
+> 
+
+What function do you refer to ?
+
+[...]
+
+> > +static int cqspi_indirect_read_execute(struct spi_nor *nor,
+> > +                                      u8 *rxbuf, const unsigned n_rx)
+> > +{
+> > +       struct cqspi_flash_pdata *f_pdata = nor->priv;
+> > +       struct cqspi_st *cqspi = f_pdata->cqspi;
+> > +       void __iomem *reg_base = cqspi->iobase;
+> > +       void __iomem *ahb_base = cqspi->ahb_base;
+> > +       unsigned int remaining = n_rx;
+> > +       unsigned int reg = 0;
+> > +       unsigned int bytes_to_read = 0;
+> > +       unsigned int timeout;
+> > +       int ret = 0;
+> > +
+> > +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
+> > +
+> > +       /* Clear all interrupts. */
+> > +       writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
+> > +
+> > +       cqspi->irq_mask = CQSPI_IRQ_MASK_RD;
+> > +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
+> 
+> here interrupt mask is being configured for every read, better would be to
+> move it in init.
+
+It certainly would not, it is configured differently for READ and WRITE.
+
+> > +
+> > +       reinit_completion(&cqspi->transfer_complete);
+> > +       writel(CQSPI_REG_INDIRECTRD_START_MASK,
+> > +              reg_base + CQSPI_REG_INDIRECTRD);
+> > +
+> > +       while (remaining > 0) {
+> > +               ret =
+
+[...]
+
+> > +static void cqspi_controller_init(struct cqspi_st *cqspi)
+> > +{
+> > +       cqspi_controller_disable(cqspi);
+> > +
+> > +       /* Configure the remap address register, no remap */
+> > +       writel(0, cqspi->iobase + CQSPI_REG_REMAP);
+> > +
+> > +       /* Disable all interrupts. */
+> > +       writel(0, cqspi->iobase + CQSPI_REG_IRQMASK);
+> > +
+> > +       /* Configure the SRAM split to 1:1 . */
+> > +       writel(cqspi->fifo_depth / 2, cqspi->iobase +
+> > CQSPI_REG_SRAMPARTITION); +
+> > +       /* Load indirect trigger address. */
+> 
+> almost all comments of this function seems unnecessary.
+
+I disagree, having sensible comments in code makes my life easier after
+I have to revisit the code a few years later.
+
+> > +       writel(cqspi->trigger_address,
+> > +              cqspi->iobase + CQSPI_REG_INDIRECTTRIGGER);
+> > +
+> > +       /* Program read and write watermark. */
+> > +       writel(cqspi->fifo_depth * cqspi->fifo_width / 2,
+> > +              cqspi->iobase + CQSPI_REG_INDIRECTRDWATERMARK);
+> > +       writel(CQSPI_REG_SRAM_THRESHOLD_BYTES,
+> > +              cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
+
+[...]
+
+Best regards,
