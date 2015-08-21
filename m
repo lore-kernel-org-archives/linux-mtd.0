@@ -1,17 +1,12 @@
-Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSnl2-0002wg-3s
- for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 14:57:29 +0000
-Received: by pdob1 with SMTP id b1so27527406pdo.2
- for <linux-mtd@lists.infradead.org>; Fri, 21 Aug 2015 07:57:06 -0700 (PDT)
-From: Peng Fan <van.freenix@gmail.com>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- van.freenix@gmail.com
-Subject: [PATCH] mtd: blktrans: fix integer overflow
-Date: Fri, 21 Aug 2015 22:57:31 +0800
-Message-Id: <1440169051-13891-1-git-send-email-van.freenix@gmail.com>
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH] mtd: nand: sunxi: rely on nand_dt_init initialization
+Date: Fri, 21 Aug 2015 18:41:10 +0200
+Message-Id: <1440175270-11334-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,40 +16,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In drivers/mtd/mtd_blkdevs.c:
-406	set_capacity(gd, (new->size * tr->blksize) >> 9);
-The type of new->size is unsigned long and the type of tr->blksize is int,
-the result of 'new->size * tr->blksize' may exceed ULONG_MAX on 32bit
-machines.
+nand_dt_init(), called from nand_scan_ident(), is already parsing the
+generic MTD/NAND DT properties, and initializing the nand_chip struct
+accordingly.
+Rely on this initialization instead of manually parsing those properties.
 
-I use nand chip MT29F32G08CBADBWP which is 4GB and the parameters passed
-to kernel is 'mtdparts=gpmi-nand:-(user)', the whole nand chip will be
-treated as a 4GB mtd partition. new->size is 0x800000 and tr->blksize is
-0x200, 'new->size * tr->blksize' however is 0. This is what we do not want
-to see.
-
-Change the type of entry size of mtd_blktrans_dev to unsigned long long
-to fix the overflow issue.
-
-Signed-off-by: Peng Fan <van.freenix@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- include/linux/mtd/blktrans.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/sunxi_nand.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
-index e93837f..3853d74 100644
---- a/include/linux/mtd/blktrans.h
-+++ b/include/linux/mtd/blktrans.h
-@@ -38,7 +38,7 @@ struct mtd_blktrans_dev {
- 	struct mutex lock;
- 	int devnum;
- 	bool bg_stop;
--	unsigned long size;
-+	unsigned long long size;
- 	int readonly;
- 	int open;
- 	struct kref ref;
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index f97a58d..6bd7099 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -1166,12 +1166,7 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+ 	int blk_size;
+ 	int ret;
+ 
+-	blk_size = of_get_nand_ecc_step_size(np);
+-	strength = of_get_nand_ecc_strength(np);
+-	if (blk_size > 0 && strength > 0) {
+-		ecc->size = blk_size;
+-		ecc->strength = strength;
+-	} else {
++	if (!ecc->size) {
+ 		ecc->size = nand->ecc_step_ds;
+ 		ecc->strength = nand->ecc_strength_ds;
+ 	}
+@@ -1181,10 +1176,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+ 
+ 	ecc->mode = NAND_ECC_HW;
+ 
+-	ret = of_get_nand_ecc_mode(np);
+-	if (ret >= 0)
+-		ecc->mode = ret;
+-
+ 	switch (ecc->mode) {
+ 	case NAND_ECC_SOFT_BCH:
+ 		break;
+@@ -1310,15 +1301,13 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 	/* Default tR value specified in the ONFI spec (chapter 4.15.1) */
+ 	nand->chip_delay = 200;
+ 	nand->controller = &nfc->controller;
++	nand->dn = np;
+ 	nand->select_chip = sunxi_nfc_select_chip;
+ 	nand->cmd_ctrl = sunxi_nfc_cmd_ctrl;
+ 	nand->read_buf = sunxi_nfc_read_buf;
+ 	nand->write_buf = sunxi_nfc_write_buf;
+ 	nand->read_byte = sunxi_nfc_read_byte;
+ 
+-	if (of_get_nand_on_flash_bbt(np))
+-		nand->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+-
+ 	mtd = &chip->mtd;
+ 	mtd->dev.parent = dev;
+ 	mtd->priv = nand;
+@@ -1328,6 +1317,9 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 	if (ret)
+ 		return ret;
+ 
++	if (nand->bbt_options & NAND_BBT_USE_FLASH)
++		nand->bbt_options |= NAND_BBT_NO_OOB;
++
+ 	ret = sunxi_nand_chip_init_timings(chip, np);
+ 	if (ret) {
+ 		dev_err(dev, "could not configure chip timings: %d\n", ret);
 -- 
-1.8.4
+1.9.1
