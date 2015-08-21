@@ -1,24 +1,33 @@
-From: Vikas MANOCHA <vikas.manocha@st.com>
-To: Marek Vasut <marex@denx.de>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Graham
- Moore <grmoore@opensource.altera.com>, Alan Tull
- <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
- <dinguyen@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-Date: Fri, 21 Aug 2015 09:09:13 +0200
-Subject: Re: [PATCH V7 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-Message-ID: <66396623-E1BC-4DF7-BC19-E85BE2F347D9@st.com>
-References: <1439522892-7524-1-git-send-email-marex@denx.de>
- <1439522892-7524-2-git-send-email-marex@denx.de> <55D299CD.2070809@st.com>
- <201508210604.30272.marex@denx.de>
-In-Reply-To: <201508210604.30272.marex@denx.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from s159.web-hosting.com ([68.65.121.203])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZSgVD-0008IK-Sc
+ for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 07:12:40 +0000
+Received: from mail-la0-f54.google.com ([209.85.215.54]:36397)
+ by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
+ (Exim 4.85) (envelope-from <jteki@openedev.com>) id 1ZSgUo-003WL8-6S
+ for linux-mtd@lists.infradead.org; Fri, 21 Aug 2015 03:12:18 -0400
+Received: by lagz9 with SMTP id z9so36027411lag.3
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Aug 2015 00:12:12 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CY1PR0301MB07801D6328FCB80967CF2CA58B660@CY1PR0301MB0780.namprd03.prod.outlook.com>
+References: <1439978205-6092-1-git-send-email-jteki@openedev.com>
+ <1439978205-6092-3-git-send-email-jteki@openedev.com>
+ <CY1PR0301MB07803A969EC23D39E0FC9F7A8B670@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAD6G_RSVwXjyXRfqXYtusE1n+BZ=3H8AXJiU3idsyMymAQXGLQ@mail.gmail.com>
+ <CY1PR0301MB07801D6328FCB80967CF2CA58B660@CY1PR0301MB0780.namprd03.prod.outlook.com>
+Date: Fri, 21 Aug 2015 12:42:12 +0530
+Message-ID: <CAD6G_RTQLx8Q-aiDzM3jmZXdZhFuASV=a7iAFT0Tgzs5A-2GEQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status register
+ support
+From: Jagan Teki <jteki@openedev.com>
+To: Hou Zhiqiang <B48286@freescale.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Hu Vincent <Mingkai.Hu@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,199 +37,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Zhiqiang,
 
+On 20 August 2015 at 08:36, Hou Zhiqiang <B48286@freescale.com> wrote:
+> Hello Jagan,
+>
+>> -----Original Message-----
+>> From: Jagan Teki [mailto:jteki@openedev.com]
+>> Sent: 2015=E5=B9=B48=E6=9C=8820=E6=97=A5 1:49
+>> To: Hou Zhiqiang-B48286
+>> Cc: linux-mtd@lists.infradead.org; Hu Mingkai-B21284; Brian Norris; Davi=
+d
+>> Woodhouse; linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status registe=
+r
+>> support
+>>
+>> Hi Zhiqiang,
+>>
+>> On 19 August 2015 at 17:42, Hou Zhiqiang <B48286@freescale.com> wrote:
+>> > Hi Jagan,
+>> >
+>> >> -----Original Message-----
+>> >> From: Jagan Teki [mailto:jteki@openedev.com]
+>> >> Sent: 2015=E5=B9=B48=E6=9C=8819=E6=97=A5 17:57
+>> >> To: linux-mtd@lists.infradead.org
+>> >> Cc: linux-kernel@vger.kernel.org; Jagan Teki; Hou Zhiqiang-B48286; Hu
+>> >> Mingkai-B21284; David Woodhouse; Brian Norris
+>> >> Subject: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status register
+>> >> support
+>> >>
+>> >> The clear flag status register operation was required by Micron
+>> >> SPI-NOR chips, which support FSR. And if an error bit of FSR have
+>> >> been set like protection, voltage, erase, and program, it must be
+>> >> cleared by the clear FSR operation.
+>> >>
+>> >> Signed-off-by: Jagan Teki <jteki@openedev.com>
+>> >> Cc: Hou Zhiqiang <B48286@freescale.com>
+>> >> Cc: Mingkai.Hu <Mingkai.Hu@freescale.com>
+>> >> Cc: David Woodhouse <dwmw2@infradead.org>
+>> >> Cc: Brian Norris <computersforpeace@gmail.com>
+>> >> ---
+>> >>  drivers/mtd/spi-nor/spi-nor.c | 35 +++++++++++++++++++++++++++++++--=
+-
+>> -
+>> >>  include/linux/mtd/spi-nor.h   |  9 +++++++++
+>> >>  2 files changed, 40 insertions(+), 4 deletions(-)
+>> >>
+>> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-
+>> >> nor.c index f954d03..c5c472d5 100644
+>> >> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> >> @@ -100,6 +100,28 @@ static int read_fsr(struct spi_nor *nor)  }
+>> >>
+>> >>  /*
+>> >> + * Read the clear flag status register.
+>> >> + * The clear flag status register operation was required by Micron
+>> >> + * SPI-NOR chips, which support FSR. And if an error bit of FSR
+>> >> + * have been set like protection, voltage, erase, and program,
+>> >> + * it must be cleared by the clear FSR operation.
+>> >> + * Returns zero for FSR bits cleared and negative if error occurred.
+>> >> + */
+>> >> +static int read_cfsr(struct spi_nor *nor) {
+>> >> +     int ret;
+>> >> +     u8 val;
+>> >> +
+>> >> +     ret =3D nor->read_reg(nor, SPINOR_OP_RDCFSR, &val, 1);
+>> >
+>> > There should be a write_reg instead of read_reg.
+>> > There isn=E2=80=99t a register named CFSR, and the command SPINOR_OP_R=
+DCFSR is
+>> > used to clear the FSR, another words reset FSR to default value.
+>>
+>> Yes, SPINOR_OP_RDCFSR is clear flag status register, for clearing errors
+>> bits on fsr we need to read cfsr once.
+>>
+>
+> Sorry, I'm not clear for this operation. Please correct me if I'm wrong.
+> As far as I understand, this command is used to reset the FSR. Does a val=
+ue
+> Will be read back? And there is not the register CFSR, so I don't know wh=
+ich
+> register will be read by SPINOR_OP_RDCFSR?
 
+Sorry for the confusion in previous email.
 
-> On Aug 20, 2015, at 10:20 PM, Marek Vasut <marex@denx.de> wrote:
->=20
->> On Tuesday, August 18, 2015 at 04:34:53 AM, vikas wrote:
->> Hi Marek,
->=20
-> Hi,
->=20
-> [...]
->=20
->>> +#define CQSPI_POLL_IDLE_RETRY                  3
->>> +
->>> +#define CQSPI_REG_SRAM_RESV_WORDS              2
->>> +#define CQSPI_REG_SRAM_PARTITION_WR            1
->>=20
->> remove unused macros.
->>=20
->>> +#define CQSPI_REG_SRAM_THRESHOLD_BYTES         50
->>=20
->> the macro is used only for write sram watermark, something like
->> ...WR_THRESH_BYTES would be better. Infact instead of magic number like
->> 50, it should be based on sram_depth similar to read watermark
->> configuration.
->=20
-> I suppose if the fifo falls below 1/8, that might be a sensible time to
-> trigger an underflow interrupt.
->=20
->>> +
->>> +/* Instruction type */
->>> +#define CQSPI_INST_TYPE_SINGLE                 0
->>> +#define CQSPI_INST_TYPE_DUAL                   1
->>> +#define CQSPI_INST_TYPE_QUAD                   2
->>> +
->>> +#define CQSPI_DUMMY_CLKS_MAX                   31
->>> +
->>> +#define CQSPI_STIG_DATA_LEN_MAX                        8
->>> +
->>> +/* Register map */
->>> +#define CQSPI_REG_CONFIG                       0x00
->>> +#define CQSPI_REG_CONFIG_ENABLE_MASK           BIT(0)
->>> +#define CQSPI_REG_CONFIG_DECODE_MASK           BIT(9)
->>> +#define CQSPI_REG_CONFIG_CHIPSELECT_LSB                10
->>> +#define CQSPI_REG_CONFIG_DMA_MASK              BIT(15)
->>> +#define CQSPI_REG_CONFIG_BAUD_LSB              19
->>> +#define CQSPI_REG_CONFIG_IDLE_LSB              31
->>=20
->> To be consistent, it would be good to use BIT(nr) for all bit positions.
->=20
-> You don't use BIT() macro for bitfields and the above are bitfields.
-> Thus, this is not applicable.
->=20
->>> +#define CQSPI_REG_CONFIG_CHIPSELECT_MASK       0xF
->>> +#define CQSPI_REG_CONFIG_BAUD_MASK             0xF
->=20
-> [...]
->=20
->>> +#define CQSPI_REG_CMDADDRESS                   0x94
->>> +#define CQSPI_REG_CMDREADDATALOWER             0xA0
->>> +#define CQSPI_REG_CMDREADDATAUPPER             0xA4
->>> +#define CQSPI_REG_CMDWRITEDATALOWER            0xA8
->>> +#define CQSPI_REG_CMDWRITEDATAUPPER            0xAC
->>=20
->> I am not sure if there is any recommended way but instread of register
->> macros with offset, isn't it better to use something like struct cdns_qs=
-pi
->> {
->>                    u32 config,
->>                    u32 rd_instn,
->>                    ....
->>                };
->> & then configuring the pointer to this structure to the peripheral's (qs=
-pi
->> controller in this case) base address.
->=20
-> U-Boot is slowly abolishing this practice as it turned out to be a horrib=
-le
-> mistake, which is annoying to deal with . No, I will not do this.
->=20
->> It helps in debugging also as you can have all registers under one
->> structure, easy/clean access of register like cdsn_qspi_ptr->config
->> instead of adding offset for every access & also clean picture of all
->> peripheral registers.
->=20
-> Once you have three similar controllers with only one register mapped
-> elsewhere, you'd need three such structures. This approach does look
-> nice at first, but certainly does not scale.
->=20
->>> +
->>> +/* Interrupt status bits */
->>> +#define CQSPI_REG_IRQ_MODE_ERR                 BIT(0)
->>> +#define CQSPI_REG_IRQ_UNDERFLOW BIT(1)
->>> +#define CQSPI_REG_IRQ_IND_COMP                 BIT(2)
->>> +#define CQSPI_REG_IRQ_IND_RD_REJECT            BIT(3)
->>> +#define CQSPI_REG_IRQ_WR_PROTECTED_ERR         BIT(4)
->>> +#define CQSPI_REG_IRQ_ILLEGAL_AHB_ERR          BIT(5)
->>> +#define CQSPI_REG_IRQ_WATERMARK                        BIT(6)
->>> +#define CQSPI_REG_IRQ_IND_RD_OVERFLOW          BIT(12)
->=20
-> [...]
->=20
->>> +
->>> +static unsigned int cqspi_check_timeout(const unsigned long timeout)
->>> +{
->>> +       return time_before(jiffies, timeout);
->>> +}
->>=20
->> try to replace using blocking jiffies check using kernel timeout functio=
-n.
->=20
-> What function do you refer to ?
->=20
-> [...]
->=20
->>> +static int cqspi_indirect_read_execute(struct spi_nor *nor,
->>> +                                      u8 *rxbuf, const unsigned n_rx)
->>> +{
->>> +       struct cqspi_flash_pdata *f_pdata =3D nor->priv;
->>> +       struct cqspi_st *cqspi =3D f_pdata->cqspi;
->>> +       void __iomem *reg_base =3D cqspi->iobase;
->>> +       void __iomem *ahb_base =3D cqspi->ahb_base;
->>> +       unsigned int remaining =3D n_rx;
->>> +       unsigned int reg =3D 0;
->>> +       unsigned int bytes_to_read =3D 0;
->>> +       unsigned int timeout;
->>> +       int ret =3D 0;
->>> +
->>> +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
->>> +
->>> +       /* Clear all interrupts. */
->>> +       writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
->>> +
->>> +       cqspi->irq_mask =3D CQSPI_IRQ_MASK_RD;
->>> +       writel(cqspi->irq_mask, reg_base + CQSPI_REG_IRQMASK);
->>=20
->> here interrupt mask is being configured for every read, better would be =
-to
->> move it in init.
->=20
-> It certainly would not, it is configured differently for READ and WRITE.
+If there is any error bits set during FSR operation, those will reset
+back to original
+values by reading CFSR ie means the bits on flag status register
+revert back to original
+state, so-that the flag status register is ready for next FSR operation.
 
-And what is blocking to configure read and write mask together at one time =
-in the register ?
+I have defined this, SPINOR_OP_RDCFSR on the patch
 
->=20
->>> +
->>> +       reinit_completion(&cqspi->transfer_complete);
->>> +       writel(CQSPI_REG_INDIRECTRD_START_MASK,
->>> +              reg_base + CQSPI_REG_INDIRECTRD);
->>> +
->>> +       while (remaining > 0) {
->>> +               ret =3D
->=20
-> [...]
->=20
->>> +static void cqspi_controller_init(struct cqspi_st *cqspi)
->>> +{
->>> +       cqspi_controller_disable(cqspi);
->>> +
->>> +       /* Configure the remap address register, no remap */
->>> +       writel(0, cqspi->iobase + CQSPI_REG_REMAP);
->>> +
->>> +       /* Disable all interrupts. */
->>> +       writel(0, cqspi->iobase + CQSPI_REG_IRQMASK);
->>> +
->>> +       /* Configure the SRAM split to 1:1 . */
->>> +       writel(cqspi->fifo_depth / 2, cqspi->iobase +
->>> CQSPI_REG_SRAMPARTITION); +
->>> +       /* Load indirect trigger address. */
->>=20
->> almost all comments of this function seems unnecessary.
->=20
-> I disagree, having sensible comments in code makes my life easier after
-> I have to revisit the code a few years later.
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index c5a58c4..36c1681 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -35,6 +35,7 @@
+ #define SPINOR_OP_RDID         0x9f    /* Read JEDEC ID */
+ #define SPINOR_OP_RDCR         0x35    /* Read configuration register */
+ #define SPINOR_OP_RDFSR                0x70    /* Read flag status registe=
+r */
++#define SPINOR_OP_RDCFSR       0x50    /* Read clear flag status register =
+*/
 
-Yes for sensible comments , you are loading value in one register and comme=
-nting it.
+For more information pls- refer flash datasheet[1]
 
-Cheers,
-Vikas=20
+Page, 29: about fsr
+Page, 41: about cfsr
 
->=20
->>> +       writel(cqspi->trigger_address,
->>> +              cqspi->iobase + CQSPI_REG_INDIRECTTRIGGER);
->>> +
->>> +       /* Program read and write watermark. */
->>> +       writel(cqspi->fifo_depth * cqspi->fifo_width / 2,
->>> +              cqspi->iobase + CQSPI_REG_INDIRECTRDWATERMARK);
->>> +       writel(CQSPI_REG_SRAM_THRESHOLD_BYTES,
->>> +              cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
->=20
-> [...]
->=20
-> Best regards,
+[1] https://www.google.co.in/url?sa=3Dt&rct=3Dj&q=3D&esrc=3Ds&source=3Dweb&=
+cd=3D2&cad=3Drja&uact=3D8&ved=3D0CCIQFjABahUKEwjTwY3zzbnHAhXVj44KHdiWDVU&ur=
+l=3Dhttps%3A%2F%2Fwww.micron.com%2F~%2Fmedia%2Fdocuments%2Fproducts%2Fdata-=
+sheet%2Fnor-flash%2Fserial-nor%2Fn25q%2Fn25q_512mb_1ce_3v_65nm.pdf&ei=3DUc3=
+WVZPVCNWfugTYrbaoBQ&usg=3DAFQjCNEN4dLie4U9OTSbNxN-h9jyN9InDQ&sig2=3DvRQTvlk=
+bgsgJw1Fy9z1K8A
+
+thanks!
+--=20
+Jagan | openedev.
