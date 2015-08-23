@@ -1,17 +1,23 @@
 Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZTaf4-0004Lf-7D
- for linux-mtd@lists.infradead.org; Sun, 23 Aug 2015 19:10:35 +0000
+ id 1ZTaiV-0004af-B5
+ for linux-mtd@lists.infradead.org; Sun, 23 Aug 2015 19:14:08 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH] mtd: nand: pxa3xx-nand: prevent DFI bus lockup on removal
-Date: Sun, 23 Aug 2015 21:05:41 +0200
-Message-Id: <1440356741-24308-1-git-send-email-robert.jarzmik@free.fr>
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mtd: nand: pxa3xx_nand: add register access debug
+References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
+ <20150818042426.GA27858@laptop> <874mjwa1w6.fsf@belgarion.home>
+Date: Sun, 23 Aug 2015 21:09:31 +0200
+In-Reply-To: <874mjwa1w6.fsf@belgarion.home> (Robert Jarzmik's message of
+ "Tue, 18 Aug 2015 20:26:49 +0200")
+Message-ID: <87r3mt3jpw.fsf@belgarion.home>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After the conversion of pxa architecture to common clock framework, the
-NAND clock can be disabled on driver exit.
+Robert Jarzmik <robert.jarzmik@free.fr> writes:
 
-In this case, it happens that if the driver used the NAND and set the
-DFI arbitration bit, the next access to a static memory controller area,
-such as an ethernet card, will stall the system bus, and the core will
-be stalled forever.
+> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
+>
+>> On 11 Aug 09:57 PM, Robert Jarzmik wrote:
+>>> Add verbose debug for register accesses. This enables easier debugging
+>>> by following where and how hardware is stimulated, and how it answers.
+>>> 
+>>
+>> I really don't see why we want this patch. It's probably an useful hack to
+>> use in some cases, but can't see why we would want it in mainline.
+>>
+>> Feel free to prove me wrong.
+> Why not.
+>
+> Imagine that there is a bug in the driver, such as the one with the status bits
+> clearing. You can't reproduce it, and the person who has the hardware to
+> reproduce it is not skilled enough to do any debug.
+>
+> What are the tools and what will you ask this tester to do in order to debug and
+> solve his problem, as a good driver maintainer ?
+>
+> Amongst the drivers I wrote in the past, this approach was the most reliable to
+> capture traces to debug remotely.
 
-This is especially true on pxa31x SoCs, where the NDCR was augmented
-with a new bit to prevent this lockups by giving full ownership of the
-DFI arbiter to the SMC, in change SCr#6.
+Ezequiel, do you agree with my point ?
 
-Fix this by clearing the DFI arbritration bit in driver exit. This
-effectively prevents a lockup on zylonite when removing pxa3xx-nand
-module, and using ethernet afterwards.
+Cheers.
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-
----
-Ezequiel, this deserves a test on Armada, as the bit has another meaning
-there I think.
----
- drivers/mtd/nand/pxa3xx_nand.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index f287ce9e225a..087d769f92fd 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -78,6 +78,7 @@
- #define NDCR_NAND_MODE   	(0x0)
- #define NDCR_CLR_PG_CNT		(0x1 << 20)
- #define NDCR_STOP_ON_UNCOR	(0x1 << 19)
-+#define NDCR_ARB_CNTL		(0x1 << 19)
- #define NDCR_RD_ID_CNT_MASK	(0x7 << 16)
- #define NDCR_RD_ID_CNT(x)	(((x) << 16) & NDCR_RD_ID_CNT_MASK)
- 
-@@ -1322,7 +1323,8 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	}
- 
- 	/* Set an initial chunk size */
--	info->reg_ndcr = ndcr & ~NDCR_INT_MASK;
-+	info->reg_ndcr = ndcr &
-+		~(NDCR_INT_MASK | NDCR_ND_ARB_EN | NDCR_ARB_CNTL);
- 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
- 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
- 	return 0;
-@@ -1569,6 +1571,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 	pxa3xx_flash_ids[1].name = NULL;
- 	def = pxa3xx_flash_ids;
- KEEP_CONFIG:
-+	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
- 	if (info->reg_ndcr & NDCR_DWIDTH_M)
- 		chip->options |= NAND_BUSWIDTH_16;
- 
-@@ -1784,6 +1787,8 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
- 		free_irq(irq, info);
- 	pxa3xx_nand_free_buff(info);
- 
-+	nand_writel(info, NDCR,
-+		    (nand_readl(info, NDCR) & ~NDCR_ND_ARB_EN) | NDCR_ARB_CNTL);
- 	clk_disable_unprepare(info->clk);
- 
- 	for (cs = 0; cs < pdata->num_cs; cs++)
 -- 
-2.1.4
+Robert
