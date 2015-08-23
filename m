@@ -1,19 +1,17 @@
-Received: from mail-ob0-x232.google.com ([2607:f8b0:4003:c01::232])
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZTZca-0002iS-QB
- for linux-mtd@lists.infradead.org; Sun, 23 Aug 2015 18:03:57 +0000
-Received: by obbhe7 with SMTP id he7so95904260obb.0
- for <linux-mtd@lists.infradead.org>; Sun, 23 Aug 2015 11:03:31 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.02.1508211046210.10202@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1508211046210.10202@lnxricardw1.se.axis.com>
-Date: Sun, 23 Aug 2015 20:03:31 +0200
-Message-ID: <CAFLxGvw6dOG1Opwp8i9pW6o65HbYF-vu6iFpQmYOH_EMJqB2aA@mail.gmail.com>
-Subject: Re: JFFS2 vs. UBIFS compression
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+ id 1ZTaf4-0004Lf-7D
+ for linux-mtd@lists.infradead.org; Sun, 23 Aug 2015 19:10:35 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH] mtd: nand: pxa3xx-nand: prevent DFI bus lockup on removal
+Date: Sun, 23 Aug 2015 21:05:41 +0200
+Message-Id: <1440356741-24308-1-git-send-email-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +21,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 21, 2015 at 11:00 AM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
->
-> I came across something odd that I wasn't really expecting the other day.
->
-> On a JFFS2 file system, we have a file that is 12.25 MB in size. When
-> written to an 8 MB partition, df reports that it occupies 5.9 MB. Writing
-> a second copy of the file fails because the file system is full. Fair
-> enough.
->
-> On a similar UBIFS system (however in this case with a volume size of 32
-> MB), the same file is reported by df to have occupied 7.9 MB. Writing
-> multiple copies of the same file confirms that we can fit slightly more
-> than 4 copies of the same file on the file system (32 MB / 7.9 MB yields
-> 4.05), so 7.9 MB seems about right.
->
-> Now I fully understand that getting df to report valid figures for
-> compressed file systems is guesswork at best, but don't JFFS2 and UBIFS
-> utilize the same compression algorithms? Consequently, the space used by
-> especially large files (where the overhead is small) should be essentially
-> the same for both file systems? If anything, one would expect that UBIFS,
-> being newer, would better at compression than JFFS2.
->
-> So what are we seeing here, is UBIFS more conservative in reporting disk
-> usage, or is JFFS2 really better than UBIFS at file compression?
+After the conversion of pxa architecture to common clock framework, the
+NAND clock can be disabled on driver exit.
 
-Both support zlib and lzo. Did you setup UBIFS and JFFS2 with the same
-compression method?
-Also keep in meed to run "sync" before using "df" on UBIFS.
-Otherwise it will not write down to flash and report the uncompressed size.
+In this case, it happens that if the driver used the NAND and set the
+DFI arbitration bit, the next access to a static memory controller area,
+such as an ethernet card, will stall the system bus, and the core will
+be stalled forever.
 
-HTH
+This is especially true on pxa31x SoCs, where the NDCR was augmented
+with a new bit to prevent this lockups by giving full ownership of the
+DFI arbiter to the SMC, in change SCr#6.
 
+Fix this by clearing the DFI arbritration bit in driver exit. This
+effectively prevents a lockup on zylonite when removing pxa3xx-nand
+module, and using ethernet afterwards.
+
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+
+---
+Ezequiel, this deserves a test on Armada, as the bit has another meaning
+there I think.
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index f287ce9e225a..087d769f92fd 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -78,6 +78,7 @@
+ #define NDCR_NAND_MODE   	(0x0)
+ #define NDCR_CLR_PG_CNT		(0x1 << 20)
+ #define NDCR_STOP_ON_UNCOR	(0x1 << 19)
++#define NDCR_ARB_CNTL		(0x1 << 19)
+ #define NDCR_RD_ID_CNT_MASK	(0x7 << 16)
+ #define NDCR_RD_ID_CNT(x)	(((x) << 16) & NDCR_RD_ID_CNT_MASK)
+ 
+@@ -1322,7 +1323,8 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+ 	}
+ 
+ 	/* Set an initial chunk size */
+-	info->reg_ndcr = ndcr & ~NDCR_INT_MASK;
++	info->reg_ndcr = ndcr &
++		~(NDCR_INT_MASK | NDCR_ND_ARB_EN | NDCR_ARB_CNTL);
+ 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
+ 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
+ 	return 0;
+@@ -1569,6 +1571,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 	pxa3xx_flash_ids[1].name = NULL;
+ 	def = pxa3xx_flash_ids;
+ KEEP_CONFIG:
++	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
+ 	if (info->reg_ndcr & NDCR_DWIDTH_M)
+ 		chip->options |= NAND_BUSWIDTH_16;
+ 
+@@ -1784,6 +1787,8 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
+ 		free_irq(irq, info);
+ 	pxa3xx_nand_free_buff(info);
+ 
++	nand_writel(info, NDCR,
++		    (nand_readl(info, NDCR) & ~NDCR_ND_ARB_EN) | NDCR_ARB_CNTL);
+ 	clk_disable_unprepare(info->clk);
+ 
+ 	for (cs = 0; cs < pdata->num_cs; cs++)
 -- 
-Thanks,
-//richard
+2.1.4
