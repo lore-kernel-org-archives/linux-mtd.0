@@ -1,24 +1,21 @@
-From: Marek Vasut <marex@denx.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH linux-next v4 3/5] mtd: spi-nor: allow to tune the number
- of dummy cycles
-Date: Mon, 24 Aug 2015 18:48:50 +0200
-Cc: nicolas.ferre@atmel.com, broonie@kernel.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
- beanhuo@micron.com, juhosg@openwrt.org, shijie.huang@intel.com,
- ben@decadent.org.uk, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- linux-mtd@lists.infradead.org
-References: <cover.1440410236.git.cyrille.pitchen@atmel.com>
- <201508241248.17466.marex@denx.de> <55DB4986.1000207@atmel.com>
-In-Reply-To: <55DB4986.1000207@atmel.com>
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZTuxu-0002mp-6s
+ for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 16:51:23 +0000
+Received: by pacti10 with SMTP id ti10so27869428pac.0
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2015 09:51:01 -0700 (PDT)
+Date: Mon, 24 Aug 2015 09:50:58 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] ubi: do not re-read the data already read out in retry
+Message-ID: <20150824165058.GF81844@google.com>
+References: <1440143981-20826-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <55D6ECC4.5070503@nod.at> <55DA6DC8.9010308@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201508241848.50974.marex@denx.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55DA6DC8.9010308@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,129 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, August 24, 2015 at 06:42:46 PM, Cyrille Pitchen wrote:
-> Hi Marek,
+On Mon, Aug 24, 2015 at 09:05:12AM +0800, Dongsheng Yang wrote:
+> On 08/21/2015 05:17 PM, Richard Weinberger wrote:
+> >Brian, does MTD core guarantee that upon an erroneous mtd_read() the number of "read" bytes
+> >in "buf" are valid?
 
-Hi!
+I'll take a look. I believe the Dongsheng is interpreting the mtd_read()
+API correctly, but most MTD "guarantees" are more like surveys of
+existing practice; most implementations may do something sane, but there
+may be a few oddballs.
 
-[...]
-
-> >> - * Dummy Cycle calculation for different type of read.
-> >> - * It can be used to support more commands with
-> >> - * different dummy cycle requirements.
-> >> - */
-> >> -static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
-> >> -{
-> >> -	switch (nor->flash_read) {
-> >> -	case SPI_NOR_FAST:
-> >> -	case SPI_NOR_DUAL:
-> >> -	case SPI_NOR_QUAD:
-> >> -		return 8;
-> >> -	case SPI_NOR_NORMAL:
-> >> -		return 0;
-> >> -	}
-> >> -	return 0;
-> >> -}
-> > 
-> > You can probably just soup up this function so that it sets the
-> > nor->read_dummy, no ?
+> >So, my fear is that this change will introduce new regressions (due faulty MTD drivers, etc..)
+> >without a real gain.
 > 
-> Actually, this is what the patch does: spi_nor_read_dummy_cycles() was
-> reused and enhanced few lines below where you've pointed out the
-> "switch (nor->flash_read)" block should be move after the else block.
+> I would say "big gain" rather than "real gain".
 
-You know what? I'll go get some sleep, coffee doesn't cut it anymore :)
+I'd like evidence, rather than just bold statements :)
 
-> I think when I wrote the code I've chosen to move the definition of this
-> function instead of adding forward declarations of functions such as
-> read_cr() or write_sr_cr(), which are now called by
-> micron_set_dummy_cycles().
+> Consider this case, if
+> you are going to read 4M from driver but it failed at the last byte
+> twice. When we success on the third retry, we have read out 4*3=12M for
+> 4M data user requested. That tripled the latency.
 
-Yep, that's all right, sorry for the confusion.
+On what driver do you see this? Many drivers take an all-or-nothing
+approach already; they don't fill in 'retlen' to any non-zero value
+until the last byte, so Richard is right in those cases.
 
-> >> -/*
-> >> 
-> >>   * Write status register 1 byte
-> >>   * Returns negative if error occurred.
-> >>   */
-> >> 
-> >> @@ -1012,6 +994,81 @@ static int set_quad_mode(struct spi_nor *nor,
-> >> struct flash_info *info) }
-> >> 
-> >>  }
+(I can partly answer this question; nand_do_read_ops() incrementally
+fills pages, and *retlen increases when a (portion of) a page is read
+correctly.)
 
-[...]
+Also, what sort of failure modes are you seeing? It seems a bit dubious
+to be relying on UBI I/O retry, let alone optimizing for performance,
+since the retry may be masking significant problems anyway.
 
-> >> +/*
-> >> + * Dummy Cycle calculation for different type of read.
-> >> + * It can be used to support more commands with
-> >> + * different dummy cycle requirements.
-> >> + */
-> >> +static int spi_nor_read_dummy_cycles(struct spi_nor *nor,
-> >> +				     const struct flash_info *info)
-> >> +{
-> >> +	struct device_node *np = nor->dev->of_node;
-> >> +	u32 num_dummy_cycles;
-> >> +
-> >> +	if (np && !of_property_read_u32(np, "m25p,num-dummy-cycles",
-> >> +					&num_dummy_cycles)) {
-> >> +		nor->read_dummy = num_dummy_cycles;
-> >> +
-> >> +		/*
-> >> +		 * This switch block might be moved after the if...then...else
-> >> +		 * statement but it was not tested with all Spansion or Micron
-> >> +		 * memories.
-> >> +		 * Now the "m25p,num-dummy-cycles" property needs to be
-> >> +		 * explicitly set in the device tree so the switch statement is
-> >> +		 * executed. This should avoid unwanted side effects and keep
-> >> +		 * backward compatibility.
-> >> +		 */
-> >> +		switch (JEDEC_MFR(info)) {
-> >> +		case CFI_MFR_ST:
-> >> +			return micron_set_dummy_cycles(nor);
-> > 
-> >> +		default:
-> > If you do have m25p,num-dummy-cycles set for non-micron flash, you have a
-> > problem here I believe.
-> > 
-> >> +			break;
-> >> +		}
-> >> +	} else {
-> > 
-> > The solution would be to drop this else {} bit here, so that if you fail
-> > in the DT-based configuration, you fall back to this old behavior. What
-> > do you think please ? :)
+> But with this patch applied. we do not re-try the data we have already
+> read out. So the latency is 1/3 of it mentioned above.
 > 
-> Good idea!
-> I also add a trace for the default case of "switch (JEDEC_MFR(info))":
-> 
-> dev_warn(dev, "can't set the number of dummy cycles\n");
+> But, yes, I said understandable, I also want Brian to say is this
+> change safe enough currently.
 
-Maybe change this to "setting the number of dummy cycles not supported by chip, 
-ignoring" or something, to be explicit about the fallback and that this is not
-supported by the chip. But this is just an idea, feel free to ignore it.
-
-> So the user is notified that the driver could not use the value of
-> "m25p,num-dummy-cycles" from the DT before falling back to the legacy
-> code.
-
-Yup.
-
-> >> +		switch (nor->flash_read) {
-> >> +		case SPI_NOR_FAST:
-> >> +		case SPI_NOR_DUAL:
-> >> +		case SPI_NOR_QUAD:
-> >> +			nor->read_dummy = 8;
-> >> +		case SPI_NOR_NORMAL:
-> >> +			nor->read_dummy = 0;
-> >> +		}
-> >> +	}
-> >> +
-> >> +	return 0;
-> >> +}
-> > 
-> > [...]
-> 
-> thanks for the review!
-
-Im glad it helped ;-)
+Brian
