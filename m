@@ -1,19 +1,19 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZTgIU-00023m-OY
- for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 01:11:39 +0000
-Message-ID: <55DA6DC8.9010308@cn.fujitsu.com>
-Date: Mon, 24 Aug 2015 09:05:12 +0800
+ id 1ZTgKz-0002Gz-Ss
+ for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 01:14:14 +0000
+Message-ID: <55DA6E69.8070301@cn.fujitsu.com>
+Date: Mon, 24 Aug 2015 09:07:53 +0800
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, Brian Norris
+To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>,
  <computersforpeace@gmail.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] ubi: do not re-read the data already read out in retry
-References: <1440143981-20826-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <55D6ECC4.5070503@nod.at>
-In-Reply-To: <55D6ECC4.5070503@nod.at>
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+Subject: Re: [PATCH] mkfs.ubifs: remove the check for UBIFS_MAX_LEB_SZ
+References: <1439873555-5352-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1439887948.31419.118.camel@gmail.com>
+In-Reply-To: <1439887948.31419.118.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,62 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/21/2015 05:17 PM, Richard Weinberger wrote:
-> Am 21.08.2015 um 09:59 schrieb Dongsheng Yang:
->> In ubi_io_read(), we will retry if current reading failed
->> to read all data we wanted. But we are doing a full re-do
->> in the re-try path. Actually, we can skip the data which
->> we have already read out in the last reading.
+On 08/18/2015 04:52 PM, Artem Bityutskiy wrote:
+> On Tue, 2015-08-18 at 12:52 +0800, Dongsheng Yang wrote:
+>> There is a commit 92ed6c0 to increase UBIFS_MAX_LEB_SZ
+>> to 2MiB. But recently, as the leb size become larger and
+>> larger, 2MiB is not a suitable limit any more.
+>>
+>> Then remove this check in mkfs.ubifs
 >>
 >> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 >> ---
->>   drivers/mtd/ubi/io.c | 19 +++++++++++++------
->>   1 file changed, 13 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
->> index 5bbd1f0..a3ac643 100644
->> --- a/drivers/mtd/ubi/io.c
->> +++ b/drivers/mtd/ubi/io.c
->> @@ -127,7 +127,7 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
->>   		int len)
->>   {
->>   	int err, retries = 0;
->> -	size_t read;
->> +	size_t read, already_read = 0;
->>   	loff_t addr;
->>
->>   	dbg_io("read %d bytes from PEB %d:%d", len, pnum, offset);
->> @@ -165,6 +165,7 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
->>   	addr = (loff_t)pnum * ubi->peb_size + offset;
->>   retry:
->>   	err = mtd_read(ubi->mtd, addr, len, &read, buf);
->> +	already_read += read;
+>> NOTE:
+>> 	I am not sure the reason why we have to
+>> limit the leb size in mkfs.ubifs. Because
+>> I did not find any reason for it, I send
+>> this patch out. It's very possible I am
+>> mising something.
 >
-> Hmm, this change makes me nervous.
+> Well, this is sanity check for the user input. If you accidentally
+> added few zeroes, we want to spot this and inform you, and you may
+> appreciate that we did not just created a bugus image for you. That's
+> the idea.
 
-Ha, yes, understandable.
->
-> Brian, does MTD core guarantee that upon an erroneous mtd_read() the number of "read" bytes
-> in "buf" are valid?
->
-> So, my fear is that this change will introduce new regressions (due faulty MTD drivers, etc..)
-> without a real gain.
+Sorry, Artem, I was trying to understand it, but I did not got the
+point. Could you give me some more information about the idea? Maybe
+an example?
 
-I would say "big gain" rather than "real gain". Consider this case, if
-you are going to read 4M from driver but it failed at the last byte
-twice. When we success on the third retry, we have read out 4*3=12M for
-4M data user requested. That tripled the latency.
-
-But with this patch applied. we do not re-try the data we have already
-read out. So the latency is 1/3 of it mentioned above.
-
-But, yes, I said understandable, I also want Brian to say is this
-change safe enough currently.
-
-Thanx
+Thanx a lot
 Yang
 >
-> Thanks,
-> //richard
+> Another point is that UBIFS and UBI reads eraseblocks entirely into
+> memory from time to time, e.g., when scanning the journal (UBIFS) or
+> when doing wear-levelling (UBI). Too large eraseblocks will affect the
+> UBI/UBIFS drivers negatively - the latency may increase significantly
+> (thing reading eraseblock, modifying, writing it), as well as memory
+> consumption.
+>
+> I personally like to be strict, and if I am not sure about something, I
+> put limits, assuming that others may later change the limits.
+>
+> That said, I'd prefer to increase the limit instead of removing it
+> altogether. I suggest to make it reasonably large, so that it suits
+> your purposes.
+>
+> Artem.
 > .
 >
