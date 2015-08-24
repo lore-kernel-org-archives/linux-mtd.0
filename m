@@ -1,25 +1,26 @@
-From: Marek Vasut <marex@denx.de>
-To: "Russell King - ARM Linux" <linux@arm.linux.org.uk>
-Subject: Re: [PATCH linux-next v4 5/5] mtd: atmel-quadspi: add driver for
- Atmel QSPI controller
-Date: Mon, 24 Aug 2015 15:15:44 +0200
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, mark.rutland@arm.com,
- devicetree@vger.kernel.org, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, ben@decadent.org.uk, zajec5@gmail.com,
- nicolas.ferre@atmel.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-spi@vger.kernel.org, juhosg@openwrt.org, broonie@kernel.org,
- linux-mtd@lists.infradead.org, galak@codeaurora.org,
- shijie.huang@intel.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, beanhuo@micron.com
-References: <cover.1440410236.git.cyrille.pitchen@atmel.com>
- <201508241303.52066.marex@denx.de>
- <20150824124924.GZ7557@n2100.arm.linux.org.uk>
-In-Reply-To: <20150824124924.GZ7557@n2100.arm.linux.org.uk>
+Received: from mail-la0-f50.google.com ([209.85.215.50])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZTs5D-0003RS-E0
+ for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 13:46:44 +0000
+Received: by labia3 with SMTP id ia3so13321410lab.3
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2015 06:46:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201508241515.45036.marex@denx.de>
+In-Reply-To: <87r3mt3jpw.fsf@belgarion.home>
+References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
+ <20150818042426.GA27858@laptop> <874mjwa1w6.fsf@belgarion.home>
+ <87r3mt3jpw.fsf@belgarion.home>
+Date: Mon, 24 Aug 2015 10:46:18 -0300
+Message-ID: <CAAEAJfD2NB+JkpwwcwRz6gWOfcNVEY2MqWGkCskf0a0WRNR9gQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd: nand: pxa3xx_nand: add register access debug
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,37 +30,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, August 24, 2015 at 02:49:24 PM, Russell King - ARM Linux wrote:
+On 23 August 2015 at 16:09, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> Robert Jarzmik <robert.jarzmik@free.fr> writes:
+>
+>> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
+>>
+>>> On 11 Aug 09:57 PM, Robert Jarzmik wrote:
+>>>> Add verbose debug for register accesses. This enables easier debugging
+>>>> by following where and how hardware is stimulated, and how it answers.
+>>>>
+>>>
+>>> I really don't see why we want this patch. It's probably an useful hack=
+ to
+>>> use in some cases, but can't see why we would want it in mainline.
+>>>
+>>> Feel free to prove me wrong.
+>> Why not.
+>>
+>> Imagine that there is a bug in the driver, such as the one with the stat=
+us bits
+>> clearing. You can't reproduce it, and the person who has the hardware to
+>> reproduce it is not skilled enough to do any debug.
+>>
 
-Hi Russell,
+So let's assume this person is not skilled enough to debug it, but it is sk=
+illed
+enough to rebuild a kernel (to activate the verbose debug).
 
-> On Mon, Aug 24, 2015 at 01:03:51PM +0200, Marek Vasut wrote:
-> > These are functions, not macros :)
-> > 
-> > btw is there any reason for these ? I'd say, just put the read*() and
-> > write*() functions directly into the code and be done with it, it is
-> > much less confusing.
-> > 
-> > Also, why do you use the _relaxed() versions of the functions ?
-> 
-> Now that the _relaxed() accessors are available throughout the kernel,
-> everyone should be using the _relaxed() versions unless they need the
-> properties of the non-relaxed versions.
+Then this person can also apply a simple patch (this patch), which seems
+a pretty trivial step to do.
 
-You mean the memory barrier, right ?
+Since you might also need some other debug traces, I'm not convinced about
+pushing this particular group to mainline.
 
-> Remember that the non-relaxed
-> versions are rather expensive on ARM due to the need to go all the way
-> out to the L2 cache - it at least doubles the number of accesses for
-> every read*/write*().
+>> What are the tools and what will you ask this tester to do in order to d=
+ebug and
+>> solve his problem, as a good driver maintainer ?
+>>
+>> Amongst the drivers I wrote in the past, this approach was the most reli=
+able to
+>> capture traces to debug remotely.
+>
+> Ezequiel, do you agree with my point ?
+>
 
-I think in case of this driver, we don't need the non-relaxed version
-anywhere, right ? Thanks for the educational writeup :)
+I agree that the hack is useful for debugging purposes, it's just that I do=
+n't
+see why we want it in mainline - where we usually avoid clutter.
 
-btw. is [1] still the current study material on the I/O accessor best
-practices please ?
+Also, your argument applies to all the other drivers, but that doesn't mean
+we will patch them all.
 
-[1] http://permalink.gmane.org/gmane.linux.ports.arm.kernel/117644
+Anyway, this is just my opinion. If Brian thinks differently, I have no pro=
+blem
+with it.
 
-Best regards,
-Marek Vasut
+Thanks!
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
