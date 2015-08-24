@@ -1,28 +1,24 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZTuSf-0002pL-9j
- for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 16:19:05 +0000
-Received: by pdbmi9 with SMTP id mi9so55054227pdb.3
- for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2015 09:18:43 -0700 (PDT)
-Date: Mon, 24 Aug 2015 09:18:37 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ubifs: Allow O_DIRECT
-Message-ID: <20150824161837.GA28975@localhost>
-References: <1440016553-26481-1-git-send-email-richard@nod.at>
- <1440016553-26481-2-git-send-email-richard@nod.at>
- <55D542C5.6040500@cn.fujitsu.com>
- <1440070300.31419.202.camel@gmail.com> <55D5BC92.8050903@nod.at>
- <20150820204933.GG74600@google.com>
- <1440400405.15510.29.camel@gmail.com>
+Message-ID: <55DB4986.1000207@atmel.com>
+Date: Mon, 24 Aug 2015 18:42:46 +0200
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1440400405.15510.29.camel@gmail.com>
+To: Marek Vasut <marex@denx.de>
+CC: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
+ <juhosg@openwrt.org>, <shijie.huang@intel.com>, <ben@decadent.org.uk>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH linux-next v4 3/5] mtd: spi-nor: allow to tune the number
+ of dummy cycles
+References: <cover.1440410236.git.cyrille.pitchen@atmel.com>
+ <b0d8470fdd46e89ef692e27dc2600b880c1d5dde.1440410236.git.cyrille.pitchen@atmel.com>
+ <201508241248.17466.marex@denx.de>
+In-Reply-To: <201508241248.17466.marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,33 +28,191 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 24, 2015 at 10:13:25AM +0300, Artem Bityutskiy wrote:
-> Now, some user-space fails when direct I/O is not supported.
+Hi Marek,
 
-I think the whole argument rested on what it means when "some user space
-fails"; apparently that "user space" is just a test suite (which
-can/should be fixed).
+Le 24/08/2015 12:48, Marek Vasut a écrit :
+> On Monday, August 24, 2015 at 12:13:58 PM, Cyrille Pitchen wrote:
+>> The number of dummy cycles used during Fast Read commands can be reduced
+>> to improve transfer performances. Each manufacturer has a dedicated set of
+>> registers to provide the memory with the exact number of dummy cycles it
+>> should expect. Both the memory and the (Q)SPI controller must agree on
+>> this number of dummy cycles.
+>>
+>> The number of dummy cycles can be found into the memory datasheet and
+>> mostly depends on the SPI clock frequency, the Fast Read op code and the
+>> Single/Dual Data Rate mode.
+>>
+>> Probing JEDEC Serial Flash Discoverable Parameters (SFDP) tables would
+>> only provide the driver with a high enough number of dummy cycles for each
+>> Fast Read command to be used for all clock frequencies: this solution
+>> would not be optimized.
+>>
+>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> 
+> Hi!
+> 
+>>  drivers/mtd/spi-nor/spi-nor.c | 97
+>> ++++++++++++++++++++++++++++++++++--------- include/linux/mtd/spi-nor.h  
+>> |  2 +
+>>  2 files changed, 80 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index e2a6029dc056..869e098a6841 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -119,24 +119,6 @@ static int read_cr(struct spi_nor *nor)
+>>  }
+>>
+>>  /*
+>> - * Dummy Cycle calculation for different type of read.
+>> - * It can be used to support more commands with
+>> - * different dummy cycle requirements.
+>> - */
+>> -static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
+>> -{
+>> -	switch (nor->flash_read) {
+>> -	case SPI_NOR_FAST:
+>> -	case SPI_NOR_DUAL:
+>> -	case SPI_NOR_QUAD:
+>> -		return 8;
+>> -	case SPI_NOR_NORMAL:
+>> -		return 0;
+>> -	}
+>> -	return 0;
+>> -}
+> 
+> You can probably just soup up this function so that it sets the
+> nor->read_dummy, no ?
+>
 
-> We can
-> chose to fake direct I/O or fix user-space. The latter seems to be the
-> preferred course of actions, and you are correctly pointing the man
-> page.
-> 
-> However, if
-> 
-> 1. we are the only FS erroring out on O_DIRECT
-> 2. other file-systems not supporting direct IO just fake it
-> 
-> we may just follow the crowd and fake it too.
-> 
-> I am kind of trusting Richard here - I assume he did the research and
-> the above is the case, this is why I am fine with his patch.
-> 
-> Does this logic seem acceptable to you? Other folk's opinion would be
-> great to hear.
+Actually, this is what the patch does: spi_nor_read_dummy_cycles() was reused
+and enhanced few lines below where you've pointed out the 
+"switch (nor->flash_read)" block should be move after the else block.
 
-Could work for me, though that doesn't seem ideal. Anyway, it now seems
-Christopher and Richard agree with me.
+I think when I wrote the code I've chosen to move the definition of this
+function instead of adding forward declarations of functions such as read_cr()
+or write_sr_cr(), which are now called by micron_set_dummy_cycles().
 
-Regards,
-Brian
+>> -/*
+>>   * Write status register 1 byte
+>>   * Returns negative if error occurred.
+>>   */
+>> @@ -1012,6 +994,81 @@ static int set_quad_mode(struct spi_nor *nor, struct
+>> flash_info *info) }
+>>  }
+>>
+>> +static int micron_set_dummy_cycles(struct spi_nor *nor)
+>> +{
+>> +	int ret;
+>> +	u8 val, mask;
+>> +
+>> +	/* read the Volatile Configuration Register (VCR) */
+> 
+> NIT: If this is a sentence, start it with capital letter and end it with 
+> fullstop :)
+> 
+
+done for the next version
+
+>> +	ret = nor->read_reg(nor, SPINOR_OP_RD_VCR, &val, 1);
+>> +	if (ret < 0) {
+>> +		dev_err(nor->dev, "error %d reading VCR\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	write_enable(nor);
+>> +
+>> +	/* update the number of dummy into the VCR */
+> 
+> DTTO
+> 
+
+done for the next version
+
+>> +	mask = GENMASK(7, 4);
+>> +	val &= ~mask;
+>> +	val |= (nor->read_dummy << 4) & mask;
+>> +	ret = nor->write_reg(nor, SPINOR_OP_WR_VCR, &val, 1, 0);
+>> +	if (ret < 0) {
+>> +		dev_err(nor->dev, "error while writing VCR register\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = spi_nor_wait_till_ready(nor);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +/*
+>> + * Dummy Cycle calculation for different type of read.
+>> + * It can be used to support more commands with
+>> + * different dummy cycle requirements.
+>> + */
+>> +static int spi_nor_read_dummy_cycles(struct spi_nor *nor,
+>> +				     const struct flash_info *info)
+>> +{
+>> +	struct device_node *np = nor->dev->of_node;
+>> +	u32 num_dummy_cycles;
+>> +
+>> +	if (np && !of_property_read_u32(np, "m25p,num-dummy-cycles",
+>> +					&num_dummy_cycles)) {
+>> +		nor->read_dummy = num_dummy_cycles;
+>> +
+>> +		/*
+>> +		 * This switch block might be moved after the if...then...else
+>> +		 * statement but it was not tested with all Spansion or Micron
+>> +		 * memories.
+>> +		 * Now the "m25p,num-dummy-cycles" property needs to be
+>> +		 * explicitly set in the device tree so the switch statement is
+>> +		 * executed. This should avoid unwanted side effects and keep
+>> +		 * backward compatibility.
+>> +		 */
+>> +		switch (JEDEC_MFR(info)) {
+>> +		case CFI_MFR_ST:
+>> +			return micron_set_dummy_cycles(nor);
+>> +		default:
+> 
+> If you do have m25p,num-dummy-cycles set for non-micron flash, you have a 
+> problem here I believe.
+> 
+>> +			break;
+>> +		}
+>> +	} else {
+> 
+> The solution would be to drop this else {} bit here, so that if you fail in
+> the DT-based configuration, you fall back to this old behavior. What do you 
+> think please ? :)
+> 
+
+Good idea!
+I also add a trace for the default case of "switch (JEDEC_MFR(info))":
+
+dev_warn(dev, "can't set the number of dummy cycles\n");
+
+So the user is notified that the driver could not use the value of
+"m25p,num-dummy-cycles" from the DT before falling back to the legacy
+code.
+
+>> +		switch (nor->flash_read) {
+>> +		case SPI_NOR_FAST:
+>> +		case SPI_NOR_DUAL:
+>> +		case SPI_NOR_QUAD:
+>> +			nor->read_dummy = 8;
+>> +		case SPI_NOR_NORMAL:
+>> +			nor->read_dummy = 0;
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> 
+> [...]
+> 
+
+thanks for the review!
+
+Best regards,
+
+Cyrille
