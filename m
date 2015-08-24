@@ -1,19 +1,22 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZTgKz-0002Gz-Ss
- for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 01:14:14 +0000
-Message-ID: <55DA6E69.8070301@cn.fujitsu.com>
-Date: Mon, 24 Aug 2015 09:07:53 +0800
+ id 1ZTgfx-0007Nw-3Q
+ for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 01:35:53 +0000
+Message-ID: <55DA7379.3030009@cn.fujitsu.com>
+Date: Mon, 24 Aug 2015 09:29:29 +0800
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>,
- <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mkfs.ubifs: remove the check for UBIFS_MAX_LEB_SZ
-References: <1439873555-5352-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1439887948.31419.118.camel@gmail.com>
-In-Reply-To: <1439887948.31419.118.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Richard Weinberger <richard@nod.at>, <viro@ZenIV.linux.org.uk>,
+ <jack@suse.cz>, <richard.weinberger@gmail.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 23/35] ubifs: set/clear MS_RDONLY properly in
+ ubifs_remount
+References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1438235311-23788-24-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <55C671F0.5050607@nod.at> <55C81090.1010802@cn.fujitsu.com>
+In-Reply-To: <55C81090.1010802@cn.fujitsu.com>
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,49 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/18/2015 04:52 PM, Artem Bityutskiy wrote:
-> On Tue, 2015-08-18 at 12:52 +0800, Dongsheng Yang wrote:
->> There is a commit 92ed6c0 to increase UBIFS_MAX_LEB_SZ
->> to 2MiB. But recently, as the leb size become larger and
->> larger, 2MiB is not a suitable limit any more.
+On 08/10/2015 10:46 AM, Dongsheng Yang wrote:
+> On 08/09/2015 05:17 AM, Richard Weinberger wrote:
+>> Am 30.07.2015 um 07:48 schrieb Dongsheng Yang:
+>>> We need to set or clear MS_RDONLY in remounting.
 >>
->> Then remove this check in mkfs.ubifs
->>
->> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
->> ---
->> NOTE:
->> 	I am not sure the reason why we have to
->> limit the leb size in mkfs.ubifs. Because
->> I did not find any reason for it, I send
->> this patch out. It's very possible I am
->> mising something.
+>> Care to explain why?
+>> Does the quota subsystem need that information?
+>> If so, where?
 >
-> Well, this is sanity check for the user input. If you accidentally
-> added few zeroes, we want to spot this and inform you, and you may
-> appreciate that we did not just created a bugus image for you. That's
-> the idea.
+> Ha, yes, you are right.
+>
+> When we remount to rw from ro, we need to call dquot_resume.
+> And dquot_resume will call vfs_load_quota_inode() which
+> will check the MS_RDONLY. If it's ro mode, will return
+> an -EROFS.
+>
+> And I know that we are using ->ro_mount in ubifs
+> to store the mounted mode. So we don't care about
+> the MS_RDONLY in ubifs. But why not to tell vfs we are in
+> ro or rw? Does it cause any problem?
 
-Sorry, Artem, I was trying to understand it, but I did not got the
-point. Could you give me some more information about the idea? Maybe
-an example?
+Hi Artem,
+	I found there is a commit 2ef13294d to introduce
+ro_mount to ubifs. Yes, I see the reason to use ro_mount
+rather than MS_RDONLY in ubifs. But why we do not set
+MS_RDONLY to tell vfs it's in rdonly or not? Current
+quota depends on it. Does this patch cause some problem?
 
-Thanx a lot
 Yang
 >
-> Another point is that UBIFS and UBI reads eraseblocks entirely into
-> memory from time to time, e.g., when scanning the journal (UBIFS) or
-> when doing wear-levelling (UBI). Too large eraseblocks will affect the
-> UBI/UBIFS drivers negatively - the latency may increase significantly
-> (thing reading eraseblock, modifying, writing it), as well as memory
-> consumption.
+> Thanx
+> YAng
 >
-> I personally like to be strict, and if I am not sure about something, I
-> put limits, assuming that others may later change the limits.
+>> Thanks,
+>> //richard
+>> .
+>>
 >
-> That said, I'd prefer to increase the limit instead of removing it
-> altogether. I suggest to make it reasonably large, so that it suits
-> your purposes.
->
-> Artem.
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-fsdevel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 > .
 >
