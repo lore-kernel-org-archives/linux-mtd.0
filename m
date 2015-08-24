@@ -1,22 +1,19 @@
 Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZTlnB-0006Xk-IF
- for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 07:03:42 +0000
-Message-ID: <1440399770.15510.20.camel@gmail.com>
-Subject: Re: [PATCH v2 23/35] ubifs: set/clear MS_RDONLY properly in
- ubifs_remount
+ id 1ZTlpr-0008DY-HL
+ for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 07:06:28 +0000
+Message-ID: <1440399957.15510.23.camel@gmail.com>
+Subject: Re: [PATCH] mkfs.ubifs: remove the check for UBIFS_MAX_LEB_SZ
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, Richard Weinberger
- <richard@nod.at>, viro@ZenIV.linux.org.uk, jack@suse.cz,
- richard.weinberger@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Date: Mon, 24 Aug 2015 10:02:50 +0300
-In-Reply-To: <55DA7379.3030009@cn.fujitsu.com>
-References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1438235311-23788-24-git-send-email-yangds.fnst@cn.fujitsu.com>
- <55C671F0.5050607@nod.at> <55C81090.1010802@cn.fujitsu.com>
- <55DA7379.3030009@cn.fujitsu.com>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
+ richard.weinberger@gmail.com,  computersforpeace@gmail.com
+Cc: linux-mtd@lists.infradead.org
+Date: Mon, 24 Aug 2015 10:05:57 +0300
+In-Reply-To: <55DABBAC.9040401@cn.fujitsu.com>
+References: <1439873555-5352-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1439887948.31419.118.camel@gmail.com> <55DA6E69.8070301@cn.fujitsu.com>
+ <1440397943.15510.2.camel@gmail.com> <55DABBAC.9040401@cn.fujitsu.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -29,55 +26,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2015-08-24 at 09:29 +0800, Dongsheng Yang wrote:
-> On 08/10/2015 10:46 AM, Dongsheng Yang wrote:
-> > On 08/09/2015 05:17 AM, Richard Weinberger wrote:
-> > > Am 30.07.2015 um 07:48 schrieb Dongsheng Yang:
-> > > > We need to set or clear MS_RDONLY in remounting.
+On Mon, 2015-08-24 at 14:37 +0800, Dongsheng Yang wrote:
+> On 08/24/2015 02:32 PM, Artem Bityutskiy wrote:
+> > On Mon, 2015-08-24 at 09:07 +0800, Dongsheng Yang wrote:
+> > > On 08/18/2015 04:52 PM, Artem Bityutskiy wrote:
+> > > > On Tue, 2015-08-18 at 12:52 +0800, Dongsheng Yang wrote:
+> > > > > There is a commit 92ed6c0 to increase UBIFS_MAX_LEB_SZ
+> > > > > to 2MiB. But recently, as the leb size become larger and
+> > > > > larger, 2MiB is not a suitable limit any more.
+> > > > > 
+> > > > > Then remove this check in mkfs.ubifs
+> > > > > 
+> > > > > Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> > > > > ---
+> > > > > NOTE:
+> > > > > 	I am not sure the reason why we have to
+> > > > > limit the leb size in mkfs.ubifs. Because
+> > > > > I did not find any reason for it, I send
+> > > > > this patch out. It's very possible I am
+> > > > > mising something.
+> > > > 
+> > > > Well, this is sanity check for the user input. If you
+> > > > accidentally
+> > > > added few zeroes, we want to spot this and inform you, and you
+> > > > may
+> > > > appreciate that we did not just created a bugus image for you.
+> > > > That's
+> > > > the idea.
 > > > 
-> > > Care to explain why?
-> > > Does the quota subsystem need that information?
-> > > If so, where?
+> > > Sorry, Artem, I was trying to understand it, but I did not got
+> > > the
+> > > point. Could you give me some more information about the idea?
+> > > Maybe
+> > > an example?
 > > 
-> > Ha, yes, you are right.
-> > 
-> > When we remount to rw from ro, we need to call dquot_resume.
-> > And dquot_resume will call vfs_load_quota_inode() which
-> > will check the MS_RDONLY. If it's ro mode, will return
-> > an -EROFS.
-> > 
-> > And I know that we are using ->ro_mount in ubifs
-> > to store the mounted mode. So we don't care about
-> > the MS_RDONLY in ubifs. But why not to tell vfs we are in
-> > ro or rw? Does it cause any problem?
+> > Well, this is defensive programming concept.
 > 
-> Hi Artem,
-> 	I found there is a commit 2ef13294d to introduce
-> ro_mount to ubifs. Yes, I see the reason to use ro_mount
-> rather than MS_RDONLY in ubifs. But why we do not set
-> MS_RDONLY to tell vfs it's in rdonly or not? Current
-> quota depends on it. Does this patch cause some problem?
+> Ha, okey, got it. That's good.
+> 
+> But I got a device with ped_size=32M. (Although that would affect
+> ubi/ubifs performance negatively, that's another topic) I am
+> not sure increasing the MAX_LEB_SIZE to 32M is a good idea, at least
+> I don't think it's convincing to others that "I have a device with
+> 32M
+> peb, so I will increase it to 32M". Could you give me some more
+> suggestion?
 
-MS_RDONLY is set at mount time, then it can be changed when we re
--mount, and then UBIFS can change it when there was a critical error,
-to ask VFS to stop writing more data to the file-system. See
-'ubifs_ro_mode()'.
+Well, defensive programming is just a generally useful concept, it
+helps to reveal problems, rather than help them hide.
 
-The custom ro_mount is the same as MS_RDONLY, but it does not change in
-'ubifs_ro_mode()'. It preserves the last mount state before the error
-happened - was it R/O or R/W.
-
-Why is this needed?
-
-UBIFS allocate different amount of resources depending on whether we
-are R/O or R/W. We use less memory in R/O mode, for example.
-
-At unmount time, we need to know whether we allocated the "RW" amount
-of resources or the "RO" amount of resources.
-
-We cannot use the MS_RDONLY flag to detect that, because it is changed
-in 'ubifs_ro_mode()' unconditionally, so we lose the information.
-Therefore we use the custom ro_mount flag - it tells us how we were
-mounted, so we know how much resources to free.
+But sometimes it stands on your way, in which case you need to relax
+the defense. I already suggested to change the constant to the size you
+need. I'd appreciate also a comment telling about the system which
+needs 32MiB, if possible.
 
 Artem.
