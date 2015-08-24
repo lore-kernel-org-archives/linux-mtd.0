@@ -1,26 +1,28 @@
-Received: from mail-qk0-x229.google.com ([2607:f8b0:400d:c09::229])
+Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZTtVQ-0004L7-8F
- for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 15:17:52 +0000
-Received: by qkda128 with SMTP id a128so21525236qkd.3
- for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2015 08:17:30 -0700 (PDT)
+ id 1ZTuSf-0002pL-9j
+ for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 16:19:05 +0000
+Received: by pdbmi9 with SMTP id mi9so55054227pdb.3
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2015 09:18:43 -0700 (PDT)
+Date: Mon, 24 Aug 2015 09:18:37 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ubifs: Allow O_DIRECT
+Message-ID: <20150824161837.GA28975@localhost>
+References: <1440016553-26481-1-git-send-email-richard@nod.at>
+ <1440016553-26481-2-git-send-email-richard@nod.at>
+ <55D542C5.6040500@cn.fujitsu.com>
+ <1440070300.31419.202.camel@gmail.com> <55D5BC92.8050903@nod.at>
+ <20150820204933.GG74600@google.com>
+ <1440400405.15510.29.camel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1438693881-10432-1-git-send-email-geert+renesas@glider.be>
-References: <1438693881-10432-1-git-send-email-geert+renesas@glider.be>
-From: Rob Herring <robherring2@gmail.com>
-Date: Mon, 24 Aug 2015 10:17:11 -0500
-Message-ID: <CAL_JsqKZaGVw_CWPhvH_YWaAhOcZArWxJ-yh7fuAx-zxavh+aw@mail.gmail.com>
-Subject: Re: [PATCH v2] of: Add vendor prefix for JEDEC Solid State Technology
- Association
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Brian Norris <computersforpeace@gmail.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1440400405.15510.29.camel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,38 +32,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 4, 2015 at 8:11 AM, Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
-> Add the "jedec" vendor prefix for the "JEDEC Solid State Technology
-> Association" (formerly known as the "Joint Electron Device Engineering
-> Council"), which is already in use in several bindings.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
+On Mon, Aug 24, 2015 at 10:13:25AM +0300, Artem Bityutskiy wrote:
+> Now, some user-space fails when direct I/O is not supported.
 
-Applied. Thanks.
+I think the whole argument rested on what it means when "some user space
+fails"; apparently that "user space" is just a test suite (which
+can/should be fixed).
 
-Rob
+> We can
+> chose to fake direct I/O or fix user-space. The latter seems to be the
+> preferred course of actions, and you are correctly pointing the man
+> page.
+> 
+> However, if
+> 
+> 1. we are the only FS erroring out on O_DIRECT
+> 2. other file-systems not supporting direct IO just fake it
+> 
+> we may just follow the crowd and fake it too.
+> 
+> I am kind of trusting Richard here - I assume he did the research and
+> the above is the case, this is why I am fine with his patch.
+> 
+> Does this logic seem acceptable to you? Other folk's opinion would be
+> great to hear.
 
-> ---
-> v2:
->   - Add Acked-by.
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.txt | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Documentation/devicetree/bindings/vendor-prefixes.txt
-> index f727469b0893b2c3..1d88c84545b4dfd9 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.txt
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
-> @@ -113,6 +113,7 @@ intel       Intel Corporation
->  intercontrol   Inter Control Group
->  isee   ISEE 2007 S.L.
->  isil   Intersil
-> +jedec  JEDEC Solid State Technology Association
->  karo   Ka-Ro electronics GmbH
->  keymile        Keymile GmbH
->  kinetic Kinetic Technologies
-> --
-> 1.9.1
->
+Could work for me, though that doesn't seem ideal. Anyway, it now seems
+Christopher and Richard agree with me.
+
+Regards,
+Brian
