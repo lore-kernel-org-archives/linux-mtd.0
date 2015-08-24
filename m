@@ -1,21 +1,12 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZToUw-0001Dh-3f
- for linux-mtd@lists.infradead.org; Mon, 24 Aug 2015 09:57:03 +0000
-Date: Mon, 24 Aug 2015 11:56:30 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Maxime Ripard
- <maxime.ripard@free-electrons.com>, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH] nand: sunxi: fix write to USER_DATA reg
-Message-ID: <20150824115630.53287671@bbrezillon>
-In-Reply-To: <1438250466-18396-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1438250466-18396-1-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH v2] mtd: nand: sunxi: rely on nand_dt_init initialization
+Date: Mon, 24 Aug 2015 12:10:31 +0200
+Message-Id: <1440411031-8910-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,95 +16,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+nand_dt_init(), called from nand_scan_ident(), is already parsing the
+generic MTD/NAND DT properties, and initializing the nand_chip struct
+accordingly.
+Rely on this initialization instead of manually parsing those properties.
 
-On Thu, 30 Jul 2015 12:01:06 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+Changes since v1:
+- drop unused strength and blk_size variables
+---
+ drivers/mtd/nand/sunxi_nand.c | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
 
-> The USER_DATA register cannot be accessed using byte accessors on A13
-> SoCs, thus triggering a bug when using memcpy_toio on this register.
-> Declare a temporary u32 variable to store the USER_DATA value and access
-> the register with writel.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-Could you consider taking this patch for 4.3 (if it's too late for
-4.3-rc1, could you queue it for -rc2)?
-
-BTW, I'd like to add
-
-Cc: <stable@vger.kernel.org> # 3.19+
-
-should I resend a new version or could you add it while you're applying
-the patch on your branch?
-
-Thanks,
-
-Boris
-
-> ---
->  drivers/mtd/nand/sunxi_nand.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index 6f93b29..5e374ab 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -624,6 +624,8 @@ static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
->  	writel(tmp, nfc->regs + NFC_REG_ECC_CTL);
->  
->  	for (i = 0; i < ecc->steps; i++) {
-> +		u32 user_data;
-> +
->  		if (i)
->  			chip->cmdfunc(mtd, NAND_CMD_RNDIN, i * ecc->size, -1);
->  
-> @@ -632,16 +634,16 @@ static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
->  		offset = layout->eccpos[i * ecc->bytes] - 4 + mtd->writesize;
->  
->  		/* Fill OOB data in */
-> -		if (oob_required) {
-> -			tmp = 0xffffffff;
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
-> -				    4);
-> +		if (!oob_required) {
-> +			user_data = 0xffffffff;
->  		} else {
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE,
-> -				    chip->oob_poi + offset - mtd->writesize,
-> -				    4);
-> +			memcpy(&user_data,
-> +			       chip->oob_poi + layout->oobfree[i].offset, 4);
-> +			user_data = le32_to_cpu(user_data);
->  		}
->  
-> +		writel(user_data, nfc->regs + NFC_REG_USER_DATA_BASE);
-> +
->  		chip->cmdfunc(mtd, NAND_CMD_RNDIN, offset, -1);
->  
->  		ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
-> @@ -772,13 +774,13 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
->  		/* Fill OOB data in */
->  		if (oob_required) {
->  			tmp = 0xffffffff;
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
-> -				    4);
->  		} else {
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, oob,
-> -				    4);
-> +			memcpy(&tmp, oob, sizeof(tmp));
-> +			tmp = le32_to_cpu(tmp);
->  		}
->  
-> +		writel(tmp, nfc->regs + NFC_REG_USER_DATA_BASE);
-> +
->  		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ACCESS_DIR |
->  		      (1 << 30);
->  		writel(tmp, nfc->regs + NFC_REG_CMD);
-
-
-
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index 96dda70..92a2c58 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -1164,16 +1164,9 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+ 			       struct device_node *np)
+ {
+ 	struct nand_chip *nand = mtd->priv;
+-	int strength;
+-	int blk_size;
+ 	int ret;
+ 
+-	blk_size = of_get_nand_ecc_step_size(np);
+-	strength = of_get_nand_ecc_strength(np);
+-	if (blk_size > 0 && strength > 0) {
+-		ecc->size = blk_size;
+-		ecc->strength = strength;
+-	} else {
++	if (!ecc->size) {
+ 		ecc->size = nand->ecc_step_ds;
+ 		ecc->strength = nand->ecc_strength_ds;
+ 	}
+@@ -1183,10 +1176,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+ 
+ 	ecc->mode = NAND_ECC_HW;
+ 
+-	ret = of_get_nand_ecc_mode(np);
+-	if (ret >= 0)
+-		ecc->mode = ret;
+-
+ 	switch (ecc->mode) {
+ 	case NAND_ECC_SOFT_BCH:
+ 		break;
+@@ -1312,15 +1301,13 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 	/* Default tR value specified in the ONFI spec (chapter 4.15.1) */
+ 	nand->chip_delay = 200;
+ 	nand->controller = &nfc->controller;
++	nand->dn = np;
+ 	nand->select_chip = sunxi_nfc_select_chip;
+ 	nand->cmd_ctrl = sunxi_nfc_cmd_ctrl;
+ 	nand->read_buf = sunxi_nfc_read_buf;
+ 	nand->write_buf = sunxi_nfc_write_buf;
+ 	nand->read_byte = sunxi_nfc_read_byte;
+ 
+-	if (of_get_nand_on_flash_bbt(np))
+-		nand->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+-
+ 	mtd = &chip->mtd;
+ 	mtd->dev.parent = dev;
+ 	mtd->priv = nand;
+@@ -1330,6 +1317,9 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 	if (ret)
+ 		return ret;
+ 
++	if (nand->bbt_options & NAND_BBT_USE_FLASH)
++		nand->bbt_options |= NAND_BBT_NO_OOB;
++
+ 	ret = sunxi_nand_chip_init_timings(chip, np);
+ 	if (ret) {
+ 		dev_err(dev, "could not configure chip timings: %d\n", ret);
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+1.9.1
