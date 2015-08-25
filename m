@@ -1,29 +1,24 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUGTR-0004gi-UB
- for linux-mtd@lists.infradead.org; Tue, 25 Aug 2015 15:49:22 +0000
-Message-ID: <1440517736.15510.81.camel@gmail.com>
-Subject: Re: [PATCH 2/2] ubifs: Allow O_DIRECT
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Chris Mason <clm@fb.com>, Dave Chinner <david@fromorbit.com>
-Cc: Jeff Moyer <jmoyer@redhat.com>, Brian Norris
- <computersforpeace@gmail.com>,  Richard Weinberger <richard@nod.at>,
- Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Date: Tue, 25 Aug 2015 18:48:56 +0300
-In-Reply-To: <20150825012831.GC7176@ret.masoncoding.com>
-References: <1440016553-26481-1-git-send-email-richard@nod.at>
- <1440016553-26481-2-git-send-email-richard@nod.at>
- <55D542C5.6040500@cn.fujitsu.com> <1440070300.31419.202.camel@gmail.com>
- <55D5BC92.8050903@nod.at> <20150820204933.GG74600@google.com>
- <1440400405.15510.29.camel@gmail.com> <20150824161837.GA28975@localhost>
- <x49si78bo4j.fsf@segfault.boston.devel.redhat.com>
- <20150824234611.GV3902@dastard> <20150825012831.GC7176@ret.masoncoding.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Date: Tue, 25 Aug 2015 08:57:49 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, nicolas.ferre@atmel.com,
+ broonie@kernel.org, linux-spi@vger.kernel.org, dwmw2@infradead.org,
+ zajec5@gmail.com, beanhuo@micron.com, juhosg@openwrt.org,
+ shijie.huang@intel.com, ben@decadent.org.uk,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
+ galak@codeaurora.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH linux-next v4 5/5] mtd: atmel-quadspi: add driver for
+ Atmel QSPI controller
+Message-ID: <20150825155749.GA7622@localhost>
+References: <cover.1440410236.git.cyrille.pitchen@atmel.com>
+ <201508241303.52066.marex@denx.de> <55DC40C1.3050405@atmel.com>
+ <201508251222.10813.marex@denx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201508251222.10813.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,15 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2015-08-24 at 21:28 -0400, Chris Mason wrote:
-> This is what btrfs already does for O_DIRECT plus compressed, or
-> other
-> cases where people don't want their applications to break on top of
-> new
-> features that aren't quite compatible with it.
+On Tue, Aug 25, 2015 at 12:22:10PM +0200, Marek Vasut wrote:
+> On Tuesday, August 25, 2015 at 12:17:37 PM, Cyrille Pitchen wrote:
+> > If you don't mind, I'd rather keep some of these inline functions. I have
+> > no strong justification, it's more a personal taste: it makes lines
+> > shorter as it avoids the need to add "->regs + ".
+> > Also it makes the code consistent with other Atmel drivers which already
+> > use such wrappers.
+> > 
+> > However I'll fix the comment and remove the byte and word versions, which
+> > are not used. So only qspi_readl() and qspi_writel() are left.
+> > 
+> > Does it sound good to you?
+> 
+> In my mind, seeing explicit readl_relaxed() somewhere is much easier to
+> digest than seeing some wrapper, which I have to look up. But please do
+> wait for others to voice their concern too, I might not be the best person
+> to tell you what to do when it comes to wrapping IO accessors ;-)
 
-I do not know how much of direct IO we can do in UBIFS - we have
-compression too, there is not block layer under us. But someone should
-try and see what could be done.
+I could go either way, but there are times where local wrapper I/O
+accessors are useful. Case in point: it makes it really easy to make the
+choice between readl() and readl_relaxed() in one place (i.e., the
+discussion you had in another branch of this thread). That's been useful
+for me on brcmnand, where certain platforms (big-endian MIPS) have
+different assumptions about endianness than your average platform. Also,
+it helps with things like what Robert Jarzmik is trying to do on
+pxa3xx_nand -- add debug info to print every register read/write.
 
-Artem.
+Also as Cyrille mentioned, personal taste is a factor.
+
+Anyway, I'll go with whatever makes sense between y'all. I don't mind.
+
+Brian
