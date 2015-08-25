@@ -1,32 +1,28 @@
-From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, "nicolas.ferre@atmel.com"
- <nicolas.ferre@atmel.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "zajec5@gmail.com" <zajec5@gmail.com>,
- "juhosg@openwrt.org" <juhosg@openwrt.org>, "marex@denx.de" <marex@denx.de>,
- "shijie.huang@intel.com" <shijie.huang@intel.com>, "ben@decadent.org.uk"
- <ben@decadent.org.uk>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk"
- <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org"
- <galak@codeaurora.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH linux-next v4 5/5] mtd: atmel-quadspi: add driver for
- Atmel QSPI controller
-Date: Tue, 25 Aug 2015 01:44:57 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF47A26@NTXXIAMBX02.xacn.micron.com>
-References: <cover.1440410236.git.cyrille.pitchen@atmel.com>
- <bf368fc101f38db231131b69eff0863210f2b01c.1440410236.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <bf368fc101f38db231131b69eff0863210f2b01c.1440410236.git.cyrille.pitchen@atmel.com>
+Received: from mail-bn1on0136.outbound.protection.outlook.com
+ ([157.56.110.136] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZU3sg-0005Jg-9U
+ for linux-mtd@lists.infradead.org; Tue, 25 Aug 2015 02:22:35 +0000
+From: Hou Zhiqiang <B48286@freescale.com>
+To: Jagan Teki <jteki@openedev.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hu
+ Vincent" <Mingkai.Hu@freescale.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 3/3] mtd: spi-nor: sf: Add clear flag status register
+ support
+Date: Tue, 25 Aug 2015 02:22:10 +0000
+Message-ID: <CY1PR0301MB07800B870A1982A820BE86708B610@CY1PR0301MB0780.namprd03.prod.outlook.com>
+References: <1439978205-6092-1-git-send-email-jteki@openedev.com>
+ <1439978205-6092-3-git-send-email-jteki@openedev.com>
+ <CY1PR0301MB07803A969EC23D39E0FC9F7A8B670@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAD6G_RSVwXjyXRfqXYtusE1n+BZ=3H8AXJiU3idsyMymAQXGLQ@mail.gmail.com>
+ <CY1PR0301MB07801D6328FCB80967CF2CA58B660@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAD6G_RTQLx8Q-aiDzM3jmZXdZhFuASV=a7iAFT0Tgzs5A-2GEQ@mail.gmail.com>
+In-Reply-To: <CAD6G_RTQLx8Q-aiDzM3jmZXdZhFuASV=a7iAFT0Tgzs5A-2GEQ@mail.gmail.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,62 +33,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
->+	nor->read_reg =3D atmel_qspi_read_reg;
->+	nor->write_reg =3D atmel_qspi_write_reg;
->+	nor->read =3D atmel_qspi_read;
->+	nor->write =3D atmel_qspi_write;
->+	nor->erase =3D atmel_qspi_erase;
->+	nor->set_protocol =3D atmel_qspi_set_protocol;
-
-This is very good, the structure of spi_nor should add a hook function to n=
-otify spi controller=20
-That spi nor transfer protocol already changed.
-
->+
->+	if (of_modalias_node(child, modalias, sizeof(modalias)) < 0) {
->+		err =3D -ENODEV;
->+		goto release_channel;
->+	}
->+
->+	err =3D of_property_read_u32(child, "spi-max-frequency", &aq->clk_rate);
->+	if (err < 0)
->+		goto release_channel;
->+
->+	err =3D atmel_qspi_init(aq);
->+	if (err)
->+		goto release_channel;
->+
->+	nor->dev->of_node =3D child;
->+	err =3D spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
->		goto release_channel;
->+
-
-
-.......
-
->static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)  {
- 	return mtd->priv;
->@@ -944,6 +960,11 @@ static int micron_quad_enable(struct spi_nor *nor)
->		return ret;
-> 	}
->=20
->+	/* switch protocol to Quad CMD 4-4-4 */
->+	ret =3D spi_nor_set_protocol(nor, SPI_PROTO_4_4_4);
->+	if (ret)
->+		return ret;
->+
-
-This make sense,from spi nor side,once its protocol being changed,
-Mtd layer must notify this status to spi nor controller immediately,
-And spi nor controller also should re-adjust its protocol.
-Otherwise, following reading SR operation will fail.=20
-
->
-> 	ret =3D spi_nor_wait_till_ready(nor);
-> 	if (ret)
-> 		return ret;
-
-If my ack has any value in here, feel free to add it.
-
-Acked-by: Bean Huo <beanhuo@micron.com>
+SGkgSmFnYW4sDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmFnYW4g
+VGVraSBbbWFpbHRvOmp0ZWtpQG9wZW5lZGV2LmNvbV0NCj4gU2VudDogMjAxNeW5tDjmnIgyMeaX
+pSAxNToxMg0KPiBUbzogSG91IFpoaXFpYW5nLUI0ODI4Ng0KPiBDYzogbGludXgtbXRkQGxpc3Rz
+LmluZnJhZGVhZC5vcmc7IEh1IE1pbmdrYWktQjIxMjg0OyBCcmlhbiBOb3JyaXM7IERhdmlkDQo+
+IFdvb2Rob3VzZTsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTog
+W1BBVENIIDMvM10gbXRkOiBzcGktbm9yOiBzZjogQWRkIGNsZWFyIGZsYWcgc3RhdHVzIHJlZ2lz
+dGVyDQo+IHN1cHBvcnQNCj4gDQo+IEhpIFpoaXFpYW5nLA0KPiANCj4gT24gMjAgQXVndXN0IDIw
+MTUgYXQgMDg6MzYsIEhvdSBaaGlxaWFuZyA8QjQ4Mjg2QGZyZWVzY2FsZS5jb20+IHdyb3RlOg0K
+PiA+IEhlbGxvIEphZ2FuLA0KPiA+DQo+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+
+ID4+IEZyb206IEphZ2FuIFRla2kgW21haWx0bzpqdGVraUBvcGVuZWRldi5jb21dDQo+ID4+IFNl
+bnQ6IDIwMTXlubQ45pyIMjDml6UgMTo0OQ0KPiA+PiBUbzogSG91IFpoaXFpYW5nLUI0ODI4Ng0K
+PiA+PiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IEh1IE1pbmdrYWktQjIxMjg0
+OyBCcmlhbiBOb3JyaXM7DQo+ID4+IERhdmlkIFdvb2Rob3VzZTsgbGludXgta2VybmVsQHZnZXIu
+a2VybmVsLm9yZw0KPiA+PiBTdWJqZWN0OiBSZTogW1BBVENIIDMvM10gbXRkOiBzcGktbm9yOiBz
+ZjogQWRkIGNsZWFyIGZsYWcgc3RhdHVzDQo+ID4+IHJlZ2lzdGVyIHN1cHBvcnQNCj4gPj4NCj4g
+Pj4gSGkgWmhpcWlhbmcsDQo+ID4+DQo+ID4+IE9uIDE5IEF1Z3VzdCAyMDE1IGF0IDE3OjQyLCBI
+b3UgWmhpcWlhbmcgPEI0ODI4NkBmcmVlc2NhbGUuY29tPiB3cm90ZToNCj4gPj4gPiBIaSBKYWdh
+biwNCj4gPj4gPg0KPiA+PiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiA+PiBG
+cm9tOiBKYWdhbiBUZWtpIFttYWlsdG86anRla2lAb3BlbmVkZXYuY29tXQ0KPiA+PiA+PiBTZW50
+OiAyMDE15bm0OOaciDE55pelIDE3OjU3DQo+ID4+ID4+IFRvOiBsaW51eC1tdGRAbGlzdHMuaW5m
+cmFkZWFkLm9yZw0KPiA+PiA+PiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgSmFn
+YW4gVGVraTsgSG91IFpoaXFpYW5nLUI0ODI4NjsNCj4gPj4gPj4gSHUgTWluZ2thaS1CMjEyODQ7
+IERhdmlkIFdvb2Rob3VzZTsgQnJpYW4gTm9ycmlzDQo+ID4+ID4+IFN1YmplY3Q6IFtQQVRDSCAz
+LzNdIG10ZDogc3BpLW5vcjogc2Y6IEFkZCBjbGVhciBmbGFnIHN0YXR1cw0KPiA+PiA+PiByZWdp
+c3RlciBzdXBwb3J0DQo+ID4+ID4+DQo+ID4+ID4+IFRoZSBjbGVhciBmbGFnIHN0YXR1cyByZWdp
+c3RlciBvcGVyYXRpb24gd2FzIHJlcXVpcmVkIGJ5IE1pY3Jvbg0KPiA+PiA+PiBTUEktTk9SIGNo
+aXBzLCB3aGljaCBzdXBwb3J0IEZTUi4gQW5kIGlmIGFuIGVycm9yIGJpdCBvZiBGU1IgaGF2ZQ0K
+PiA+PiA+PiBiZWVuIHNldCBsaWtlIHByb3RlY3Rpb24sIHZvbHRhZ2UsIGVyYXNlLCBhbmQgcHJv
+Z3JhbSwgaXQgbXVzdCBiZQ0KPiA+PiA+PiBjbGVhcmVkIGJ5IHRoZSBjbGVhciBGU1Igb3BlcmF0
+aW9uLg0KPiA+PiA+Pg0KPiA+PiA+PiBTaWduZWQtb2ZmLWJ5OiBKYWdhbiBUZWtpIDxqdGVraUBv
+cGVuZWRldi5jb20+DQo+ID4+ID4+IENjOiBIb3UgWmhpcWlhbmcgPEI0ODI4NkBmcmVlc2NhbGUu
+Y29tPg0KPiA+PiA+PiBDYzogTWluZ2thaS5IdSA8TWluZ2thaS5IdUBmcmVlc2NhbGUuY29tPg0K
+PiA+PiA+PiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPg0KPiA+PiA+
+PiBDYzogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+DQo+ID4+ID4+
+IC0tLQ0KPiA+PiA+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAzNQ0KPiA+PiA+
+PiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tDQo+ID4+IC0NCj4gPj4gPj4gIGlu
+Y2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaCAgIHwgIDkgKysrKysrKysrDQo+ID4+ID4+ICAyIGZp
+bGVzIGNoYW5nZWQsIDQwIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+ID4+ID4+DQo+
+ID4+ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiA+PiA+
+PiBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLSBub3IuYyBpbmRleCBmOTU0ZDAzLi5jNWM0NzJk
+NSAxMDA2NDQNCj4gPj4gPj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4g
+Pj4gPj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPj4gPj4gQEAgLTEw
+MCw2ICsxMDAsMjggQEAgc3RhdGljIGludCByZWFkX2ZzcihzdHJ1Y3Qgc3BpX25vciAqbm9yKSAg
+fQ0KPiA+PiA+Pg0KPiA+PiA+PiAgLyoNCj4gPj4gPj4gKyAqIFJlYWQgdGhlIGNsZWFyIGZsYWcg
+c3RhdHVzIHJlZ2lzdGVyLg0KPiA+PiA+PiArICogVGhlIGNsZWFyIGZsYWcgc3RhdHVzIHJlZ2lz
+dGVyIG9wZXJhdGlvbiB3YXMgcmVxdWlyZWQgYnkNCj4gPj4gPj4gK01pY3Jvbg0KPiA+PiA+PiAr
+ICogU1BJLU5PUiBjaGlwcywgd2hpY2ggc3VwcG9ydCBGU1IuIEFuZCBpZiBhbiBlcnJvciBiaXQg
+b2YgRlNSDQo+ID4+ID4+ICsgKiBoYXZlIGJlZW4gc2V0IGxpa2UgcHJvdGVjdGlvbiwgdm9sdGFn
+ZSwgZXJhc2UsIGFuZCBwcm9ncmFtLA0KPiA+PiA+PiArICogaXQgbXVzdCBiZSBjbGVhcmVkIGJ5
+IHRoZSBjbGVhciBGU1Igb3BlcmF0aW9uLg0KPiA+PiA+PiArICogUmV0dXJucyB6ZXJvIGZvciBG
+U1IgYml0cyBjbGVhcmVkIGFuZCBuZWdhdGl2ZSBpZiBlcnJvcg0KPiBvY2N1cnJlZC4NCj4gPj4g
+Pj4gKyAqLw0KPiA+PiA+PiArc3RhdGljIGludCByZWFkX2Nmc3Ioc3RydWN0IHNwaV9ub3IgKm5v
+cikgew0KPiA+PiA+PiArICAgICBpbnQgcmV0Ow0KPiA+PiA+PiArICAgICB1OCB2YWw7DQo+ID4+
+ID4+ICsNCj4gPj4gPj4gKyAgICAgcmV0ID0gbm9yLT5yZWFkX3JlZyhub3IsIFNQSU5PUl9PUF9S
+RENGU1IsICZ2YWwsIDEpOw0KPiA+PiA+DQo+ID4+ID4gVGhlcmUgc2hvdWxkIGJlIGEgd3JpdGVf
+cmVnIGluc3RlYWQgb2YgcmVhZF9yZWcuDQo+ID4+ID4gVGhlcmUgaXNu4oCZdCBhIHJlZ2lzdGVy
+IG5hbWVkIENGU1IsIGFuZCB0aGUgY29tbWFuZCBTUElOT1JfT1BfUkRDRlNSDQo+ID4+ID4gaXMg
+dXNlZCB0byBjbGVhciB0aGUgRlNSLCBhbm90aGVyIHdvcmRzIHJlc2V0IEZTUiB0byBkZWZhdWx0
+IHZhbHVlLg0KPiA+Pg0KPiA+PiBZZXMsIFNQSU5PUl9PUF9SRENGU1IgaXMgY2xlYXIgZmxhZyBz
+dGF0dXMgcmVnaXN0ZXIsIGZvciBjbGVhcmluZw0KPiA+PiBlcnJvcnMgYml0cyBvbiBmc3Igd2Ug
+bmVlZCB0byByZWFkIGNmc3Igb25jZS4NCj4gPj4NCj4gPg0KPiA+IFNvcnJ5LCBJJ20gbm90IGNs
+ZWFyIGZvciB0aGlzIG9wZXJhdGlvbi4gUGxlYXNlIGNvcnJlY3QgbWUgaWYgSSdtIHdyb25nLg0K
+PiA+IEFzIGZhciBhcyBJIHVuZGVyc3RhbmQsIHRoaXMgY29tbWFuZCBpcyB1c2VkIHRvIHJlc2V0
+IHRoZSBGU1IuIERvZXMgYQ0KPiA+IHZhbHVlIFdpbGwgYmUgcmVhZCBiYWNrPyBBbmQgdGhlcmUg
+aXMgbm90IHRoZSByZWdpc3RlciBDRlNSLCBzbyBJDQo+ID4gZG9uJ3Qga25vdyB3aGljaCByZWdp
+c3RlciB3aWxsIGJlIHJlYWQgYnkgU1BJTk9SX09QX1JEQ0ZTUj8NCj4gDQo+IFNvcnJ5IGZvciB0
+aGUgY29uZnVzaW9uIGluIHByZXZpb3VzIGVtYWlsLg0KPiANCj4gSWYgdGhlcmUgaXMgYW55IGVy
+cm9yIGJpdHMgc2V0IGR1cmluZyBGU1Igb3BlcmF0aW9uLCB0aG9zZSB3aWxsIHJlc2V0DQo+IGJh
+Y2sgdG8gb3JpZ2luYWwgdmFsdWVzIGJ5IHJlYWRpbmcgQ0ZTUiBpZSBtZWFucyB0aGUgYml0cyBv
+biBmbGFnIHN0YXR1cw0KPiByZWdpc3RlciByZXZlcnQgYmFjayB0byBvcmlnaW5hbCBzdGF0ZSwg
+c28tdGhhdCB0aGUgZmxhZyBzdGF0dXMgcmVnaXN0ZXINCj4gaXMgcmVhZHkgZm9yIG5leHQgRlNS
+IG9wZXJhdGlvbi4NCj4gDQo+IEkgaGF2ZSBkZWZpbmVkIHRoaXMsIFNQSU5PUl9PUF9SRENGU1Ig
+b24gdGhlIHBhdGNoDQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5v
+ci5oIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oDQo+IGluZGV4IGM1YTU4YzQuLjM2YzE2
+ODEgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiArKysgYi9p
+bmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmgNCj4gQEAgLTM1LDYgKzM1LDcgQEANCj4gICNkZWZp
+bmUgU1BJTk9SX09QX1JESUQgICAgICAgICAweDlmICAgIC8qIFJlYWQgSkVERUMgSUQgKi8NCj4g
+ICNkZWZpbmUgU1BJTk9SX09QX1JEQ1IgICAgICAgICAweDM1ICAgIC8qIFJlYWQgY29uZmlndXJh
+dGlvbiByZWdpc3RlciAqLw0KPiAgI2RlZmluZSBTUElOT1JfT1BfUkRGU1IgICAgICAgICAgICAg
+ICAgMHg3MCAgICAvKiBSZWFkIGZsYWcgc3RhdHVzDQo+IHJlZ2lzdGVyICovDQo+ICsjZGVmaW5l
+IFNQSU5PUl9PUF9SRENGU1IgICAgICAgMHg1MCAgICAvKiBSZWFkIGNsZWFyIGZsYWcgc3RhdHVz
+DQo+IHJlZ2lzdGVyICovDQo+IA0KPiBGb3IgbW9yZSBpbmZvcm1hdGlvbiBwbHMtIHJlZmVyIGZs
+YXNoIGRhdGFzaGVldFsxXQ0KPiANCj4gUGFnZSwgMjk6IGFib3V0IGZzcg0KPiBQYWdlLCA0MTog
+YWJvdXQgY2Zzcg0KDQpVcG9uIHBhZ2UgNDEsIEkgdGhpbmssIGl0IGlzIGEgQ01EIHdoaWNoIGlz
+IHVzZWQgdG8gY2xlYXIgdGhlIEZTUiBpbnN0ZWFkIG9mDQphIENGU1IgUmVnaXN0ZXIuIFRoaXMg
+c2VjdGlvbiBpcyB0byBleHBvdW5kIHRoZSAiQ0xFQVIgRkxBRyBTVEFUVVMgUkVHSVNURVINCkNv
+bW1hbmQiLCBhbmQgaXQgc2F5cyBleGVjdXRlIHRoaXMgQ01EIHRvIGNsZWFyIHRoZSBlcnJvciBi
+aXRzLCByYXRoZXIgdGhhbg0KcmVhZCB0aGUgQ0ZTUiB0byBjbGVhciB0aG9zZSBiaXRzLg0KDQo+
+IA0KPiBbMV0NCj4gaHR0cHM6Ly93d3cuZ29vZ2xlLmNvLmluL3VybD9zYT10JnJjdD1qJnE9JmVz
+cmM9cyZzb3VyY2U9d2ViJmNkPTImY2FkPXJqYQ0KPiAmdWFjdD04JnZlZD0wQ0NJUUZqQUJhaFVL
+RXdqVHdZM3p6Ym5IQWhYVmo0NEtIZGlXRFZVJnVybD1odHRwcyUzQSUyRiUyRnd3DQo+IHcubWlj
+cm9uLmNvbSUyRn4lMkZtZWRpYSUyRmRvY3VtZW50cyUyRnByb2R1Y3RzJTJGZGF0YS1zaGVldCUy
+Rm5vci0NCj4gZmxhc2glMkZzZXJpYWwtDQo+IG5vciUyRm4yNXElMkZuMjVxXzUxMm1iXzFjZV8z
+dl82NW5tLnBkZiZlaT1VYzNXVlpQVkNOV2Z1Z1RZcmJhb0JRJnVzZz1BRlENCj4gakNORU40ZExp
+ZTRVOU9UU2JOeE4taDlqeU45SW5EUSZzaWcyPXZSUVR2bGtiZ3NnSncxRnk5ejFLOEENCj4gDQpU
+aGFua3MhDQpaaGlxaWFuZw0K
