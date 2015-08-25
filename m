@@ -1,32 +1,24 @@
+Message-ID: <55DC40C1.3050405@atmel.com>
+Date: Tue, 25 Aug 2015 12:17:37 +0200
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <201508241945.33577.marex@denx.de>
-References: <cover.1440410236.git.cyrille.pitchen@atmel.com>
- <201508241303.52066.marex@denx.de> <55DB4EA6.9090807@atmel.com>
- <201508241945.33577.marex@denx.de>
-From: Jonas Gorski <jogo@openwrt.org>
-Date: Tue, 25 Aug 2015 11:46:08 +0200
-Message-ID: <CAOiHx=kExyKAoGW4ciWHHxGNosNR0VdvHHrSqeo7RH1rNOXgig@mail.gmail.com>
+To: Marek Vasut <marex@denx.de>
+CC: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
+ <juhosg@openwrt.org>, <shijie.huang@intel.com>, <ben@decadent.org.uk>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, <linux-mtd@lists.infradead.org>
 Subject: Re: [PATCH linux-next v4 5/5] mtd: atmel-quadspi: add driver for
  Atmel QSPI controller
-To: Marek Vasut <marex@denx.de>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Ben Hutchings <ben@decadent.org.uk>, Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- nicolas.ferre@atmel.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- linux-spi@vger.kernel.org, Gabor Juhos <juhosg@openwrt.org>,
- Mark Brown <broonie@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Kumar Gala <galak@codeaurora.org>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <cover.1440410236.git.cyrille.pitchen@atmel.com>
+ <bf368fc101f38db231131b69eff0863210f2b01c.1440410236.git.cyrille.pitchen@atmel.com>
+ <201508241303.52066.marex@denx.de>
+In-Reply-To: <201508241303.52066.marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,41 +28,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 24, 2015 at 7:45 PM, Marek Vasut <marex@denx.de> wrote:
-> On Monday, August 24, 2015 at 07:04:38 PM, Cyrille Pitchen wrote:
->> Hi Marek,
->
-> Hi!
->
->> Le 24/08/2015 13:03, Marek Vasut a =C3=A9crit :
->> > On Monday, August 24, 2015 at 12:14:00 PM, Cyrille Pitchen wrote:
->> >> This driver add support to the new Atmel QSPI controller embedded int=
-o
->> >> sama5d2x SoCs. It expects a NOR memory to be connected to the QSPI
->> >> controller.
->
-> [...]
->
->> >> +  /* Compute address parameters */
->> >> +  switch (cmd->enable.bits.address) {
->> >> +  case 4:
->> >> +          ifr |=3D QSPI_IFR_ADDRL;
->> >> +          /*break;*/ /* fallback to the 24bit address case */
->> >
->> > What's this commented out bit of code for ? :-)
+Hi Marek,
+
+Le 24/08/2015 13:03, Marek Vasut a écrit :
+> On Monday, August 24, 2015 at 12:14:00 PM, Cyrille Pitchen wrote:
+>> This driver add support to the new Atmel QSPI controller embedded into
+>> sama5d2x SoCs. It expects a NOR memory to be connected to the QSPI
+>> controller.
 >>
->> I just wanted to stress out there was no missing "break;".
->> I've reworded the comment to:
->> /* No "break" on purpose: fallback to the 24bit address case. */
->
-> Oh, the address is in bytes . I see, yes, it makes sense to be more
-> explicit here about the purpose of the fallback. I think this change
-> in the comment will make it easier for everyone who comes back in a
-> few years and reads this code.
+>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+> 
+> Hi,
+> 
+> [...]
+> 
+>> +/* Register access macros */
+> 
+> These are functions, not macros :)
+> 
+> btw is there any reason for these ? I'd say, just put the read*() and
+> write*() functions directly into the code and be done with it, it is
+> much less confusing.
 
-I think you are looking for the term "(switch case) fallthrough", not
-"fallback". "Fallback" makes it sound like there is something missing,
-or an invalid state.
+If you don't mind, I'd rather keep some of these inline functions. I have
+no strong justification, it's more a personal taste: it makes lines
+shorter as it avoids the need to add "->regs + ".
+Also it makes the code consistent with other Atmel drivers which already
+use such wrappers.
 
+However I'll fix the comment and remove the byte and word versions, which
+are not used. So only qspi_readl() and qspi_writel() are left.
 
-Jonas
+Does it sound good to you?
+
+> 
+> Also, why do you use the _relaxed() versions of the functions ?
+> 
+>> +static inline u32 qspi_readl(struct atmel_qspi *aq, u32 reg)
+>> +{
+>> +	return readl_relaxed(aq->regs + reg);
+>> +}
+>> +
+>> +static inline void qspi_writel(struct atmel_qspi *aq, u32 reg, u32 value)
+>> +{
+>> +	writel_relaxed(value, aq->regs + reg);
+>> +}
+>> +
+>> +static inline u16 qspi_readw(struct atmel_qspi *aq, u32 reg)
+>> +{
+>> +	return readw_relaxed(aq->regs + reg);
+>> +}
+>> +
+>> +static inline void qspi_writew(struct atmel_qspi *aq, u32 reg, u16 value)
+>> +{
+>> +	writew_relaxed(value, aq->regs + reg);
+>> +}
+>> +
+>> +static inline u8 qspi_readb(struct atmel_qspi *aq, u32 reg)
+>> +{
+>> +	return readb_relaxed(aq->regs + reg);
+>> +}
+>> +
+>> +static inline void qspi_writeb(struct atmel_qspi *aq, u32 reg, u8 value)
+>> +{
+>> +	writeb_relaxed(value, aq->regs + reg);
+>> +}
+> 
+> [...]
+> 
+> Hope this helps :)
+> 
+
+Best regards,
+
+Cyrille
