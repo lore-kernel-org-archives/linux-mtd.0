@@ -1,21 +1,24 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUL4H-0007Xb-MK
- for linux-mtd@lists.infradead.org; Tue, 25 Aug 2015 20:43:43 +0000
-Received: by pabzx8 with SMTP id zx8so44392514pab.1
- for <linux-mtd@lists.infradead.org>; Tue, 25 Aug 2015 13:43:20 -0700 (PDT)
-Date: Tue, 25 Aug 2015 13:43:18 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] mtd: spi-nor: stop (ab)using struct spi_device_id
-Message-ID: <20150825204318.GN81844@google.com>
-References: <1439235543-2893-1-git-send-email-zajec5@gmail.com>
+Date: Tue, 25 Aug 2015 22:43:35 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>, Stefan Agner <stefan@agner.ch>
+Cc: sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de, marb@ixxat.de,
+ aaron@tastycactus.com, bpringlemeir@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ albert.aribaud@3adev.fr, klimov.linux@gmail.com, Bill Pringlemeir
+ <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v10 2/5] mtd: nand: vf610_nfc: add hardware BCH-ECC support
+Message-ID: <20150825224335.6f846a28@bbrezillon>
+In-Reply-To: <20150825195411.GJ81844@google.com>
+References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
+ <1438594050-4595-3-git-send-email-stefan@agner.ch>
+ <ff2e2716578a1ae5f0c4b0e0ca8bbdc3@agner.ch>
+ <20150825195411.GJ81844@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1439235543-2893-1-git-send-email-zajec5@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,12 +28,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 10, 2015 at 09:39:03PM +0200, Rafał Miłecki wrote:
-> Using struct spi_device_id for storing list of flash devices comes from
-> early SPI NOR framework days. Thanks to the commit 70f3ce0510af ("mtd:
-> spi-nor: make spi_nor_scan() take a chip type name, not spi_device_id")
-> we can stop using spi_device_id and just switch to our own struct.
-> 
-> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+Brian, Stefan,
 
-Excellent, thanks! Pushed to l2-mtd.git.
+On Tue, 25 Aug 2015 12:54:11 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> On Mon, Aug 03, 2015 at 11:28:43AM +0200, Stefan Agner wrote:
+> > On 2015-08-03 11:27, Stefan Agner wrote:
+> > <snip>
+> > > +static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
+> > > +					 uint8_t *oob, int oob_loaded)
+> > > +{
+> > > +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> > > +	u8 ecc_status;
+> > > +	u8 ecc_count;
+> > > +	int flip;
+> > > +
+> > > +	ecc_status = __raw_readb(nfc->regs + ECC_SRAM_ADDR * 8 + ECC_OFFSET);
+> 
+> Why __raw_readb()? That's not normally encourage, and it has issues with
+> endianness. It looks like maybe this is actulaly a 32-bit register, and
+> you're having trouble when trying to do bytewise access? I see this
+> earlier:
+> 
+> /*
+>  * ECC status is stored at NFC_CFG[ECCADD] +4 for little-endian
+>  * and +7 for big-endian SoCs.
+>  */
+> #ifdef __LITTLE_ENDIAN
+> #define ECC_OFFSET      4
+> #else
+> #define ECC_OFFSET      7
+> #endif
+> 
+> So maybe you really just want:
+> 
+> #define ECC_OFFSET	4
+> ...
+> 	ecc_status = vf610_nfc_read(ECC_SRAM_ADDR * 8 + ECC_OFFSET) & 0xff;
+> 
+> ?
+> 
+> > > +	ecc_count = ecc_status & ECC_ERR_COUNT;
+> > > +
+> > > +	if (!(ecc_status & ECC_STATUS_MASK))
+> > > +		return ecc_count;
+> > > +
+> > > +	if (!oob_loaded)
+> > > +		vf610_nfc_read_buf(mtd, oob, mtd->oobsize);
+> > > +
+> > > +	/*
+> > > +	 * On an erased page, bit count (including OOB) should be zero or
+> > > +	 * at least less then half of the ECC strength.
+> > > +	 */
+> > > +	flip = count_written_bits(dat, nfc->chip.ecc.size, ecc_count);
+> 
+> Another side note: why are you using ecc_count as a max threshold? AIUI,
+> an ECC algorithm doesn't really report useful error count information if
+> it's above the correction limit. So wouldn't we be looking to count up
+> to our SW threshold? i.e., ecc.strength / 2, or similar? Similar
+> comments below.
+
+The exact threshold value is still something I'm not sure about, though
+I'm sure it should be correlated to ecc.strength value (whether it's
+directly set to ecc.strength or less than ecc.strength is something
+we'll have to figure out).
+
+> 
+> > > +	flip += count_written_bits(oob, mtd->oobsize - nfc->chip.ecc.bytes,
+> > > +				   ecc_count);
+> > 
+> > With ECC the controller seems to clear the ECC bytes in SRAM buffer.
+> > This is a dump of 64 Bit OOB with the 32-error ECC mode which requires
+> > 60 bytes of OOB for ECC:
+> > 
+> > [   22.190273] ff ff ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 
+> Hmm, that's not really good. The point is that we need to make sure that
+> everything that could have been programmed (including the ECC area) was
+> not actually programmed. But your ECC controller is not, contrary to
+> MTD's expectations, dumping raw uncorrected data here.
+
+Yep, for this test we really need the ECC bytes generated for the chunk
+you're currently testing.
+How to retrieve those bytes really depends on your NAND controller, but
+such controllers usually provides a way to disable the ECC engine. The
+only thing you'll have to do in this case is disable the ECC engine and
+read the OOB data (using RNDOUT and read_buf for example).
+
+> 
+> > [   22.209698] vf610_nfc_correct_data, flips 1
+> > 
+> > Not sure if this is acceptable, but I now only count the bits in the
+> > non-ECC area of the OOB.
+> 
+> That's not the intention of my suggestion. You're still missing out on a
+> class of patterns that might look close to all 0xff but are not
+> actually.
+
+Exactly.
+
+> 
+> If the HW ECC really doesn't give you valid data+OOB at this point, then
+> you might have to re-read with ECC disabled. Of course, that's got a
+> performance cost...
+
+As suggested above, if that's possible, reading the OOB area (or a
+portion of the OOB area) with the ECC engine disabled should be enough.
+
+> 
+> Or perhaps Boris has a better suggestion? He's been surveying other NAND
+> drivers that need to do similar things, and he's working on providing
+> some support code for common design patterns.
+
+Yep, the patch series is here in case you want to have a look [1].
+
+Best Regards,
+
+Boris
+
+[1]https://patchwork.ozlabs.org/patch/509970/
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
