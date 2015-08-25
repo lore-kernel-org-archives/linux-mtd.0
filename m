@@ -1,31 +1,33 @@
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZU32s-00078M-Pa
- for linux-mtd@lists.infradead.org; Tue, 25 Aug 2015 01:29:03 +0000
-Date: Mon, 24 Aug 2015 21:28:31 -0400
-From: Chris Mason <clm@fb.com>
-To: Dave Chinner <david@fromorbit.com>
-CC: Jeff Moyer <jmoyer@redhat.com>, Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>,
- <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] ubifs: Allow O_DIRECT
-Message-ID: <20150825012831.GC7176@ret.masoncoding.com>
-References: <1440016553-26481-1-git-send-email-richard@nod.at>
- <1440016553-26481-2-git-send-email-richard@nod.at>
- <55D542C5.6040500@cn.fujitsu.com>
- <1440070300.31419.202.camel@gmail.com> <55D5BC92.8050903@nod.at>
- <20150820204933.GG74600@google.com>
- <1440400405.15510.29.camel@gmail.com>
- <20150824161837.GA28975@localhost>
- <x49si78bo4j.fsf@segfault.boston.devel.redhat.com>
- <20150824234611.GV3902@dastard>
+From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, "nicolas.ferre@atmel.com"
+ <nicolas.ferre@atmel.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "zajec5@gmail.com" <zajec5@gmail.com>,
+ "juhosg@openwrt.org" <juhosg@openwrt.org>, "marex@denx.de" <marex@denx.de>,
+ "shijie.huang@intel.com" <shijie.huang@intel.com>, "ben@decadent.org.uk"
+ <ben@decadent.org.uk>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk"
+ <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org"
+ <galak@codeaurora.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH linux-next v4 5/5] mtd: atmel-quadspi: add driver for
+ Atmel QSPI controller
+Date: Tue, 25 Aug 2015 01:44:57 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF47A26@NTXXIAMBX02.xacn.micron.com>
+References: <cover.1440410236.git.cyrille.pitchen@atmel.com>
+ <bf368fc101f38db231131b69eff0863210f2b01c.1440410236.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <bf368fc101f38db231131b69eff0863210f2b01c.1440410236.git.cyrille.pitchen@atmel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20150824234611.GV3902@dastard>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,36 +37,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 25, 2015 at 09:46:11AM +1000, Dave Chinner wrote:
-> On Mon, Aug 24, 2015 at 01:19:24PM -0400, Jeff Moyer wrote:
-> > Brian Norris <computersforpeace@gmail.com> writes:
-> > 
-> > > On Mon, Aug 24, 2015 at 10:13:25AM +0300, Artem Bityutskiy wrote:
-> > >> Now, some user-space fails when direct I/O is not supported.
-> > >
-> > > I think the whole argument rested on what it means when "some user space
-> > > fails"; apparently that "user space" is just a test suite (which
-> > > can/should be fixed).
-> > 
-> > Even if it wasn't a test suite it should still fail.  Either the fs
-> > supports O_DIRECT or it doesn't.  Right now, the only way an application
-> > can figure this out is to try an open and see if it fails.  Don't break
-> > that.
-> 
-> Who cares how a filesystem implements O_DIRECT as long as it does
-> not corrupt data? ext3 fell back to buffered IO in many situations,
-> yet the only complaints about that were performance. IOWs, it's long been
-> true that if the user cares about O_DIRECT *performance* then they
-> have to be careful about their choice of filesystem.
-> 
-> But if it's only 5 lines of code per filesystem to support O_DIRECT
-> *correctly* via buffered IO, then exactly why should userspace have
-> to jump through hoops to explicitly handle open(O_DIRECT) failure?
-> Especially when you consider that all they can do is fall back to
-> buffered IO themselves....
 
-This is what btrfs already does for O_DIRECT plus compressed, or other
-cases where people don't want their applications to break on top of new
-features that aren't quite compatible with it.
+>+	nor->read_reg =3D atmel_qspi_read_reg;
+>+	nor->write_reg =3D atmel_qspi_write_reg;
+>+	nor->read =3D atmel_qspi_read;
+>+	nor->write =3D atmel_qspi_write;
+>+	nor->erase =3D atmel_qspi_erase;
+>+	nor->set_protocol =3D atmel_qspi_set_protocol;
 
--chris
+This is very good, the structure of spi_nor should add a hook function to n=
+otify spi controller=20
+That spi nor transfer protocol already changed.
+
+>+
+>+	if (of_modalias_node(child, modalias, sizeof(modalias)) < 0) {
+>+		err =3D -ENODEV;
+>+		goto release_channel;
+>+	}
+>+
+>+	err =3D of_property_read_u32(child, "spi-max-frequency", &aq->clk_rate);
+>+	if (err < 0)
+>+		goto release_channel;
+>+
+>+	err =3D atmel_qspi_init(aq);
+>+	if (err)
+>+		goto release_channel;
+>+
+>+	nor->dev->of_node =3D child;
+>+	err =3D spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
+>		goto release_channel;
+>+
+
+
+.......
+
+>static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)  {
+ 	return mtd->priv;
+>@@ -944,6 +960,11 @@ static int micron_quad_enable(struct spi_nor *nor)
+>		return ret;
+> 	}
+>=20
+>+	/* switch protocol to Quad CMD 4-4-4 */
+>+	ret =3D spi_nor_set_protocol(nor, SPI_PROTO_4_4_4);
+>+	if (ret)
+>+		return ret;
+>+
+
+This make sense,from spi nor side,once its protocol being changed,
+Mtd layer must notify this status to spi nor controller immediately,
+And spi nor controller also should re-adjust its protocol.
+Otherwise, following reading SR operation will fail.=20
+
+>
+> 	ret =3D spi_nor_wait_till_ready(nor);
+> 	if (ret)
+> 		return ret;
+
+If my ack has any value in here, feel free to add it.
+
+Acked-by: Bean Huo <beanhuo@micron.com>
