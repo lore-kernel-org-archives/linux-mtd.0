@@ -1,24 +1,33 @@
-From: Marek Vasut <marex@denx.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <55DC5064.6050500@atmel.com>
+Date: Tue, 25 Aug 2015 13:24:20 +0200
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+MIME-Version: 1.0
+To: =?UTF-8?B?IkJlYW4gSHVvIOmcjeaWjOaWjCAoYmVhbmh1byki?= <beanhuo@micron.com>,
+ "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "zajec5@gmail.com" <zajec5@gmail.com>, "juhosg@openwrt.org"
+ <juhosg@openwrt.org>, "marex@denx.de" <marex@denx.de>,
+ "shijie.huang@intel.com" <shijie.huang@intel.com>, "ben@decadent.org.uk"
+ <ben@decadent.org.uk>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk"
+ <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org"
+ <galak@codeaurora.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
 Subject: Re: [PATCH linux-next v4 5/5] mtd: atmel-quadspi: add driver for
  Atmel QSPI controller
-Date: Tue, 25 Aug 2015 12:22:10 +0200
-Cc: nicolas.ferre@atmel.com, broonie@kernel.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
- beanhuo@micron.com, juhosg@openwrt.org, shijie.huang@intel.com,
- ben@decadent.org.uk, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- linux-mtd@lists.infradead.org
 References: <cover.1440410236.git.cyrille.pitchen@atmel.com>
- <201508241303.52066.marex@denx.de> <55DC40C1.3050405@atmel.com>
-In-Reply-To: <55DC40C1.3050405@atmel.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201508251222.10813.marex@denx.de>
+ <bf368fc101f38db231131b69eff0863210f2b01c.1440410236.git.cyrille.pitchen@atmel.com>
+ <A765B125120D1346A63912DDE6D8B6310BF47A26@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF47A26@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +37,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, August 25, 2015 at 12:17:37 PM, Cyrille Pitchen wrote:
-> Hi Marek,
-
 Hi!
 
-> Le 24/08/2015 13:03, Marek Vasut a =E9crit :
-> > On Monday, August 24, 2015 at 12:14:00 PM, Cyrille Pitchen wrote:
-> >> This driver add support to the new Atmel QSPI controller embedded into
-> >> sama5d2x SoCs. It expects a NOR memory to be connected to the QSPI
-> >> controller.
-> >>=20
-> >> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> >> Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-> >=20
-> > Hi,
-> >=20
-> > [...]
-> >=20
-> >> +/* Register access macros */
-> >=20
-> > These are functions, not macros :)
-> >=20
-> > btw is there any reason for these ? I'd say, just put the read*() and
-> > write*() functions directly into the code and be done with it, it is
-> > much less confusing.
->=20
-> If you don't mind, I'd rather keep some of these inline functions. I have
-> no strong justification, it's more a personal taste: it makes lines
-> shorter as it avoids the need to add "->regs + ".
-> Also it makes the code consistent with other Atmel drivers which already
-> use such wrappers.
->=20
-> However I'll fix the comment and remove the byte and word versions, which
-> are not used. So only qspi_readl() and qspi_writel() are left.
->=20
-> Does it sound good to you?
+Le 25/08/2015 03:44, Bean Huo 霍斌斌 (beanhuo) a écrit :
+> 
+>> +	nor->read_reg = atmel_qspi_read_reg;
+>> +	nor->write_reg = atmel_qspi_write_reg;
+>> +	nor->read = atmel_qspi_read;
+>> +	nor->write = atmel_qspi_write;
+>> +	nor->erase = atmel_qspi_erase;
+>> +	nor->set_protocol = atmel_qspi_set_protocol;
+> 
+> This is very good, the structure of spi_nor should add a hook function to notify spi controller 
+> That spi nor transfer protocol already changed.
+> 
+>> +
+>> +	if (of_modalias_node(child, modalias, sizeof(modalias)) < 0) {
+>> +		err = -ENODEV;
+>> +		goto release_channel;
+>> +	}
+>> +
+>> +	err = of_property_read_u32(child, "spi-max-frequency", &aq->clk_rate);
+>> +	if (err < 0)
+>> +		goto release_channel;
+>> +
+>> +	err = atmel_qspi_init(aq);
+>> +	if (err)
+>> +		goto release_channel;
+>> +
+>> +	nor->dev->of_node = child;
+>> +	err = spi_nor_scan(nor, modalias, SPI_NOR_QUAD);
+>> 		goto release_channel;
+>> +
+> 
+> 
+> .......
+> 
+>> static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)  {
+>  	return mtd->priv;
+>> @@ -944,6 +960,11 @@ static int micron_quad_enable(struct spi_nor *nor)
+>> 		return ret;
+>> 	}
+>>
+>> +	/* switch protocol to Quad CMD 4-4-4 */
+>> +	ret = spi_nor_set_protocol(nor, SPI_PROTO_4_4_4);
+>> +	if (ret)
+>> +		return ret;
+>> +
+> 
+> This make sense,from spi nor side,once its protocol being changed,
+> Mtd layer must notify this status to spi nor controller immediately,
+> And spi nor controller also should re-adjust its protocol.
+> Otherwise, following reading SR operation will fail. 
+> 
+>>
+>> 	ret = spi_nor_wait_till_ready(nor);
+>> 	if (ret)
+>> 		return ret;
+> 
+> If my ack has any value in here, feel free to add it.
+> 
+> Acked-by: Bean Huo <beanhuo@micron.com>
+> 
 
-In my mind, seeing explicit readl_relaxed() somewhere is much easier to
-digest than seeing some wrapper, which I have to look up. But please do
-wait for others to voice their concern too, I might not be the best person
-to tell you what to do when it comes to wrapping IO accessors ;-)
+Since your comments deal with the protocol change, I'll add your ack to the
+first patch of the series:
+"mtd: spi-nor: notify (Q)SPI controller about protocol change"
+
+Thanks for your review!
 
 Best regards,
-Marek Vasut
+
+Cyrille
