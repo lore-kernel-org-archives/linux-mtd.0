@@ -1,21 +1,21 @@
-Date: Mon, 24 Aug 2015 17:35:21 -0700
-From: Stephen Boyd <sboyd@codeaurora.org>
-To: Mathieu Olivari <mathieu@codeaurora.org>
-Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- linux@arm.linux.org.uk, dwmw2@infradead.org,
- computersforpeace@gmail.com, agross@codeaurora.org,
- bjorn.andersson@sonymobile.com, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v4 3/3] mtd: add SMEM parser for QCOM platforms
-Message-ID: <20150825003521.GD19120@codeaurora.org>
-References: <1439931860-7473-1-git-send-email-mathieu@codeaurora.org>
- <1439931860-7473-4-git-send-email-mathieu@codeaurora.org>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZU2I5-0007VP-Uh
+ for linux-mtd@lists.infradead.org; Tue, 25 Aug 2015 00:40:42 +0000
+Message-ID: <55DBB80E.9080100@cn.fujitsu.com>
+Date: Tue, 25 Aug 2015 08:34:22 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1439931860-7473-4-git-send-email-mathieu@codeaurora.org>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] ubi: do not re-read the data already read out in retry
+References: <1440143981-20826-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <55D6ECC4.5070503@nod.at> <55DA6DC8.9010308@cn.fujitsu.com>
+ <55DABDBB.4080404@nod.at> <55DAC1E2.2040700@cn.fujitsu.com>
+ <20150824165916.GG81844@google.com>
+In-Reply-To: <20150824165916.GG81844@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/18, Mathieu Olivari wrote:
-> On QCOM platforms using MTD devices storage (such as IPQ806x), SMEM is
-> used to store partition layout. This new parser can now be used to read
-> SMEM and use it to register an MTD layout according to its content.
-> 
-> Signed-off-by: Mathieu Olivari <mathieu@codeaurora.org>
-> ---
+On 08/25/2015 12:59 AM, Brian Norris wrote:
+> On Mon, Aug 24, 2015 at 03:04:02PM +0800, Dongsheng Yang wrote:
+>> TBH, my customer send me this requirement and I cooked this patch
+>> to them.
+>
+> Ah, so it's highly likely the driver is just terrible! In that case, I'd
+> suggest a nice NAK, until we find a legitimate use case.
 
-Reviewed-by: Stephen Boyd <sboyd@codeaurora.org>
+Agreed, thanx Brian.
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Yang
+>
+> Regards,
+> Brian
+>
