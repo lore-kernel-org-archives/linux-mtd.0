@@ -1,21 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUaOv-0001j6-Rd
- for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 13:06:02 +0000
-From: Marek Vasut <marex@denx.de>
-To: Jonas Gorski <jogo@openwrt.org>
-Subject: Re: [PATCH] mtd: spi-nor: allow dual/quad reads on S25FL129P
-Date: Wed, 26 Aug 2015 15:05:36 +0200
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-References: <1440593813-16360-1-git-send-email-jogo@openwrt.org>
-In-Reply-To: <1440593813-16360-1-git-send-email-jogo@openwrt.org>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
+ <juhosg@openwrt.org>, <marex@denx.de>, <shijie.huang@intel.com>,
+ <ben@decadent.org.uk>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, <linux-mtd@lists.infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: [PATCH linux-next v5 3/5] mtd: spi-nor: allow to tune the number of
+ dummy cycles
+Date: Wed, 26 Aug 2015 14:30:25 +0200
+Message-ID: <4324f398c0e69e3057e7da6a1a3e0328b44f224f.1440580764.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <cover.1440580764.git.cyrille.pitchen@atmel.com>
+References: <cover.1440580764.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201508261505.36546.marex@denx.de>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +26,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, August 26, 2015 at 02:56:53 PM, Jonas Gorski wrote:
-> According to the datasheet[1], both S25FL129P0 (256kB sectors) and
-> S25FL129P1 (64kB sectors) support dual read, quad read, dual i/o read
-> and quad i/o read.
-> 
-> I have verified dual read to be working for S25FL129P1 on a dual
-> capable spi controller. Quad as well as S25FL129P0 is untested, lacking
-> hardware to verify.
-> 
-> [1] http://www.spansion.com/Support/Datasheets/S25FL129P_00.pdf
-> 
-> Signed-off-by: Jonas Gorski <jogo@openwrt.org>
+The number of dummy cycles used during Fast Read commands can be reduced
+to improve transfer performances. Each manufacturer has a dedicated set of
+registers to provide the memory with the exact number of dummy cycles it
+should expect. Both the memory and the (Q)SPI controller must agree on
+this number of dummy cycles.
 
-I don't have this device, so I cannot test, sorry. On the other hand,
-spansion doesn't seem to put b/s in their datasheets, so I'd be happy
-to add my:
+The number of dummy cycles can be found into the memory datasheet and
+mostly depends on the SPI clock frequency, the Fast Read op code and the
+Single/Dual Data Rate mode.
 
-Reviewed-by: Marek Vasut <marex@denx.de>
+Probing JEDEC Serial Flash Discoverable Parameters (SFDP) tables would
+only provide the driver with a high enough number of dummy cycles for each
+Fast Read command to be used for all clock frequencies: this solution
+would not be optimized.
 
-Best regards,
-Marek Vasut
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 102 ++++++++++++++++++++++++++++++++++--------
+ include/linux/mtd/spi-nor.h   |   2 +
+ 2 files changed, 85 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index c8810313a752..46d6e02f7560 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -121,24 +121,6 @@ static int read_cr(struct spi_nor *nor)
+ }
+ 
+ /*
+- * Dummy Cycle calculation for different type of read.
+- * It can be used to support more commands with
+- * different dummy cycle requirements.
+- */
+-static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
+-{
+-	switch (nor->flash_read) {
+-	case SPI_NOR_FAST:
+-	case SPI_NOR_DUAL:
+-	case SPI_NOR_QUAD:
+-		return 8;
+-	case SPI_NOR_NORMAL:
+-		return 0;
+-	}
+-	return 0;
+-}
+-
+-/*
+  * Write status register 1 byte
+  * Returns negative if error occurred.
+  */
+@@ -1008,6 +990,86 @@ static int set_quad_mode(struct spi_nor *nor, const struct flash_info *info)
+ 	}
+ }
+ 
++static int micron_set_dummy_cycles(struct spi_nor *nor)
++{
++	int ret;
++	u8 val, mask;
++
++	/* Read the Volatile Configuration Register (VCR). */
++	ret = nor->read_reg(nor, SPINOR_OP_RD_VCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading VCR\n", ret);
++		return ret;
++	}
++
++	write_enable(nor);
++
++	/* Update the number of dummy into the VCR. */
++	mask = GENMASK(7, 4);
++	val &= ~mask;
++	val |= (nor->read_dummy << 4) & mask;
++	ret = nor->write_reg(nor, SPINOR_OP_WR_VCR, &val, 1, 0);
++	if (ret < 0) {
++		dev_err(nor->dev, "error while writing VCR register\n");
++		return ret;
++	}
++
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++/*
++ * Dummy Cycle calculation for different type of read.
++ * It can be used to support more commands with
++ * different dummy cycle requirements.
++ */
++static int spi_nor_read_dummy_cycles(struct spi_nor *nor,
++				     const struct flash_info *info)
++{
++	struct device_node *np = nor->dev->of_node;
++	struct device *dev = nor->dev;
++	u32 num_dummy_cycles;
++
++	if (np && !of_property_read_u32(np, "m25p,num-dummy-cycles",
++					&num_dummy_cycles)) {
++		nor->read_dummy = num_dummy_cycles;
++
++		/*
++		 * This switch block might be moved at the end of the function,
++		 * once nor->read_dummy has been set, but it was not tested with
++		 * all Micron memories.
++		 * Now the "m25p,num-dummy-cycles" property needs to be
++		 * explicitly set in the device tree so the switch statement is
++		 * executed. This should avoid unwanted side effects and keep
++		 * backward compatibility.
++		 */
++		switch (JEDEC_MFR(info)) {
++		case CFI_MFR_ST:
++			return micron_set_dummy_cycles(nor);
++		default:
++			dev_warn(dev,
++				 "Tuning of the number of dummy cycles is not implemented for spi-nor of this manufacturer,\n"
++				 "ignoring the DT property value and falling back to the framework default settings.\n");
++			break;
++		}
++	}
++
++	/* Fallback to legacy code. */
++	switch (nor->flash_read) {
++	case SPI_NOR_FAST:
++	case SPI_NOR_DUAL:
++	case SPI_NOR_QUAD:
++		nor->read_dummy = 8;
++	case SPI_NOR_NORMAL:
++		nor->read_dummy = 0;
++	}
++
++	return 0;
++}
++
+ static int spi_nor_check(struct spi_nor *nor)
+ {
+ 	if (!nor->dev || !nor->read || !nor->write ||
+@@ -1208,7 +1270,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 		nor->addr_width = 3;
+ 	}
+ 
+-	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
++	ret = spi_nor_read_dummy_cycles(nor, info);
++	if (ret)
++		return ret;
+ 
+ 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+ 			(long long)mtd->size >> 10);
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 1bf6f11310ef..e03a4c4053d3 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -59,6 +59,8 @@
+ /* Used for Micron flashes only. */
+ #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
+ #define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
++#define SPINOR_OP_RD_VCR	0x85	/* Read VCR register */
++#define SPINOR_OP_WR_VCR	0x81	/* Write VCR register */
+ 
+ /* Status Register bits. */
+ #define SR_WIP			1	/* Write in progress */
+-- 
+1.8.2.2
