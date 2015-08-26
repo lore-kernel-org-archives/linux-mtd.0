@@ -1,21 +1,24 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUbaH-0002wj-Hk
- for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 14:21:50 +0000
-Subject: Re: [PATCH v4 0/3] mtd: nand: jz4780: Add NAND and BCH drivers
-To: <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-References: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
- <55D3278C.5000403@imgtec.com>
-CC: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- <linux-kernel@vger.kernel.org>
-From: Alex Smith <alex.smith@imgtec.com>
-Message-ID: <55DDCB62.4020902@imgtec.com>
-Date: Wed, 26 Aug 2015 15:21:22 +0100
+From: Marek Vasut <marex@denx.de>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH linux-next v5 3/5] mtd: spi-nor: allow to tune the number
+ of dummy cycles
+Date: Wed, 26 Aug 2015 16:39:02 +0200
+Cc: nicolas.ferre@atmel.com, broonie@kernel.org, linux-spi@vger.kernel.org,
+ dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
+ beanhuo@micron.com, juhosg@openwrt.org, shijie.huang@intel.com,
+ ben@decadent.org.uk, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ linux-mtd@lists.infradead.org
+References: <cover.1440580764.git.cyrille.pitchen@atmel.com>
+ <4324f398c0e69e3057e7da6a1a3e0328b44f224f.1440580764.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <4324f398c0e69e3057e7da6a1a3e0328b44f224f.1440580764.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <55D3278C.5000403@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Message-Id: <201508261639.02377.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18/08/2015 13:39, Alex Smith wrote:
-> On 27/07/2015 14:50, Alex Smith wrote:
->> Hi,
->>
->> This series adds support for the BCH controller and NAND devices on
->> the Ingenic JZ4780 SoC.
->>
->> Tested on the MIPS Creator Ci20 board. All dependencies are now in
->> mainline so it should be possible to compile test now.
->>
->> This version of the series has been rebased on 4.2-rc4, and also adds
->> an additional patch to fix an issue that was encountered in the
->> external Ci20 3.18 kernel branch.
->>
->> Review and feedback welcome.
->>
->> Thanks,
->> Alex
->>
->> Alex Smith (3):
->>   mtd: nand: increase ready wait timeout and report timeouts
->>   dt-bindings: binding for jz4780-{nand,bch}
->>   mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs
->>
->>  .../bindings/mtd/ingenic,jz4780-nand.txt           |  57 ++++
->>  drivers/mtd/nand/Kconfig                           |   7 +
->>  drivers/mtd/nand/Makefile                          |   1 +
->>  drivers/mtd/nand/jz4780_bch.c                      | 354 +++++++++++++++++++
->>  drivers/mtd/nand/jz4780_bch.h                      |  42 +++
->>  drivers/mtd/nand/jz4780_nand.c                     | 376 +++++++++++++++++++++
->>  drivers/mtd/nand/nand_base.c                       |  15 +-
->>  7 files changed, 849 insertions(+), 3 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
->>  create mode 100644 drivers/mtd/nand/jz4780_bch.c
->>  create mode 100644 drivers/mtd/nand/jz4780_bch.h
->>  create mode 100644 drivers/mtd/nand/jz4780_nand.c
+On Wednesday, August 26, 2015 at 02:30:25 PM, Cyrille Pitchen wrote:
+> The number of dummy cycles used during Fast Read commands can be reduced
+> to improve transfer performances. Each manufacturer has a dedicated set of
+> registers to provide the memory with the exact number of dummy cycles it
+> should expect. Both the memory and the (Q)SPI controller must agree on
+> this number of dummy cycles.
 > 
-> Hi,
+> The number of dummy cycles can be found into the memory datasheet and
+> mostly depends on the SPI clock frequency, the Fast Read op code and the
+> Single/Dual Data Rate mode.
 > 
-> Would it be possible for these to go in for 4.3?
+> Probing JEDEC Serial Flash Discoverable Parameters (SFDP) tables would
+> only provide the driver with a high enough number of dummy cycles for each
+> Fast Read command to be used for all clock frequencies: this solution
+> would not be optimized.
 > 
-> Thanks,
-> Alex
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
-Ping again.
+Acked-by: Marek Vasut <marex@denx.de>
+
+Best regards,
+Marek Vasut
