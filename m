@@ -1,27 +1,27 @@
-Received: from mail-vk0-x22c.google.com ([2607:f8b0:400c:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUhFM-0001Cx-4Z
- for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 20:24:37 +0000
-Received: by vkif69 with SMTP id f69so88729891vki.3
- for <linux-mtd@lists.infradead.org>; Wed, 26 Aug 2015 13:24:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20150818065252.GB10641@free64-pc.asiapac.arm.com>
-References: <1439868295-24890-1-git-send-email-b45815@freescale.com>
- <20150818065252.GB10641@free64-pc.asiapac.arm.com>
-Date: Wed, 26 Aug 2015 15:24:14 -0500
-Message-ID: <CA+EcR23-nhpoEz1tcGMPmb07RcEAk-dQCCnkCpNra50RjXwe_A@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] mtd: nand: gpmi: add GPMI NAND support for i.MX7D
-From: Han Xu <xhnjupt@gmail.com>
-To: Huang Shijie <shijie.huang@arm.com>
-Cc: Han Xu <b45815@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>,
- boris.brezillon@free-electrons.com, vinod.koul@intel.com,
- linux-kernel@vger.kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Nicholas Mc Guire <hofrat@osadl.org>,
- dmaengine@vger.kernel.org, dan.j.williams@intel.com,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Wed, 26 Aug 2015 14:15:45 -0700
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Bill Pringlemeir
+ <bpringle@sympatico.ca>
+Cc: Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org,
+ sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de, marb@ixxat.de,
+ aaron@tastycactus.com, bpringlemeir@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ albert.aribaud@3adev.fr, klimov.linux@gmail.com, Bill Pringlemeir
+ <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v10 3/5] mtd: nand: vf610_nfc: add device tree bindings
+In-Reply-To: <20150826173903.25479201@bbrezillon>
+References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
+ <1438594050-4595-4-git-send-email-stefan@agner.ch>
+ <20150825202546.GL81844@google.com>
+ <BLU436-SMTP1971442F63D96D55AC8E905B8600@phx.gbl>
+ <20150826173903.25479201@bbrezillon>
+Message-ID: <56589547ed623481ca2b94ff364d6434@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,255 +31,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Shijie,
+On 2015-08-26 08:39, Boris Brezillon wrote:
+> Hi Bill,
+> 
+> On Wed, 26 Aug 2015 11:26:36 -0400
+> Bill Pringlemeir <bpringle@sympatico.ca> wrote:
+> 
+>> On 25 Aug 2015, computersforpeace@gmail.com wrote:
+>>
+>> > Sorry, I realized a potential issue here.
+>>
+>> > On Mon, Aug 03, 2015 at 11:27:28AM +0200, Stefan Agner wrote:
+>> >> Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
+>> >> Acked-by: Shawn Guo <shawnguo@kernel.org>
+>> >> Reviewed-by: Brian Norris <computersforpeace@gmail.com>
+>> >> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>> >> ---
+>> >> .../devicetree/bindings/mtd/vf610-nfc.txt | 45 ++++++++++++++++++++++
+>> >> 1 file changed, 45 insertions(+) create mode 100644
+>> >> Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+>>
+>> >> diff --git a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+>> >> b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+>> >> new file mode 100644
+>> >> index 0000000..cae5f25
+>> >> --- /dev/null
+>> >> +++ b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+>> >>>> -0,0 +1,45 @@
+>> >> +- nand-bus-width: see nand.txt
+>> >> +- nand-ecc-mode: see nand.txt
+>> >> +- nand-on-flash-bbt: see nand.txt
+>>
+>> > Stumbling across the "multi-CS" questions on the driver reminds me: it
+>> > typically makes sense to define new NAND bindings using separate NAND
+>> > *controller* and *flash* device nodes. The above 3 properties, at
+>> > least, would apply on a per-flash basis, not per-controller
+>> > typically. See sunxi-nand, for instance:
+>>
+>> > http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+>>
+>> > brcmnand had a similar pattern:
+>>
+>> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+>>
+>> > (Perhaps it's time we standardized this a little more formally...)
+>>
+>> These would apply per chip, but the controller has to be configured to
+>> support each and every one.  Every time an operation was performed, we
+>> would have to check the chip type and reconfigure the controller.
+>> Currently, the driver does not support this and it would add a lot of
+>> overhead in some cases unless a register cache was used.
+>>
+>> Is the flexibility of using a system with combined 8/16bit devices
+>> really worth all the overhead?  Isn't it sort of brain dead hardware not
+>> to make all of the chips similar?  Why would everyone have to pay for
+>> such a crazy setup?
+>>
+>> To separate it would at least be a lie versus the code in the current
+>> form.  As well, there are only a few SOC which support multiple chip
+>> selects.  The 'multi-CS' register bits of this controller varies between
+>> PowerPC, 68K/Coldfire and ARM platforms.
 
-The features for MX6 and MX7 are not identical, I would love to use
-two macros in this patch and will push another patch to use quirks to
-distinguish them, is that Okay for you?
+The DT can be a lie versus the code. The DT should reflect how the
+hardware is wired, afaik, if we take shortcuts in the driver code, that
+is fine. If we don't support a certain configuration right now (e.g.
+second NAND chip), the driver can just return an appropriate error code.
+>>
+>> I looked briefly at the brcmnand.c  and it seems that it is not
+>> supporting different ECC per chip even though the nodes are broken out
+>> this way.  In fact, if some raw functions are called, I think it will
+>> put it in ECC mode even if it wasn't before?  Well, I agree that this
+>> would be good generically, I think it puts a lot of effort in the
+>> drivers for not so much payoff?
+> 
+> Hm, the sunxi driver supports it, and it does not add such a big
+> overhead...
+> The only thing you have to do is cache a bunch of register values
+> per-chip and restore/apply them when the chip is selected
+> (in your ->select_chip() implementation).
+> 
+> Anyway, even if the suggested DT representation is a lie in regards to
+> your implementation, it's actually pretty accurate from an hardware
+> POV, and this is exactly what DT is supposed to represent.
 
-On Tue, Aug 18, 2015 at 1:52 AM, Huang Shijie <shijie.huang@arm.com> wrote:
-> On Mon, Aug 17, 2015 at 10:24:55PM -0500, Han Xu wrote:
->> support GPMI NAND on i.MX7D
->>
->> Signed-off-by: Han Xu <b45815@freescale.com>
->> ---
->>  drivers/mtd/nand/gpmi-nand/bch-regs.h  | 14 +++++++-------
->>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 10 ++++++----
->>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 24 ++++++++++++++++++++----
->>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  7 +++++--
->>  4 files changed, 38 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
->> index 05bb91f..53e58bc 100644
->> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
->> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
->> @@ -1,7 +1,7 @@
->>  /*
->>   * Freescale GPMI NAND Flash Driver
->>   *
->> - * Copyright 2008-2011 Freescale Semiconductor, Inc.
->> + * Copyright 2008-2015 Freescale Semiconductor, Inc.
->>   * Copyright 2008 Embedded Alley Solutions, Inc.
->>   *
->>   * This program is free software; you can redistribute it and/or modify
->> @@ -54,7 +54,7 @@
->>  #define MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0               11
->>  #define MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0       (0x1f << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)
->>  #define BF_BCH_FLASH0LAYOUT0_ECC0(v, x)                              \
->> -     (GPMI_IS_MX6(x)                                 \
->> +     ((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))                             \
->
-> I suggest we can introduce a new macro to wrap it:
-> #define GPMI_IS_MX(x) (GPMI_IS_MX6(x) || GPMI_IS_MX7(x)
->
-> So when the imx8 or imx9 appear, we only change the GPMI_IS_MX(), and we do not need to
-> change so many places as show below.
->
-> thanks
-> Huang Shijie
->
->
->>               ? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)      \
->>                       & MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0)       \
->>               : (((v) << BP_BCH_FLASH0LAYOUT0_ECC0)           \
->> @@ -65,7 +65,7 @@
->>  #define MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14                   \
->>                               (0x1 << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)
->>  #define BF_BCH_FLASH0LAYOUT0_GF(v, x)                                \
->> -     ((GPMI_IS_MX6(x) && ((v) == 14))                        \
->> +     (((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))\
->>               ? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)  \
->>                       & MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14)   \
->>               : 0                                             \
->> @@ -77,7 +77,7 @@
->>  #define MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE \
->>                       (0x3ff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
->>  #define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v, x)                                \
->> -     (GPMI_IS_MX6(x)                                         \
->> +     ((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))     \
->>               ? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)   \
->>               : ((v) & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)               \
->>       )
->> @@ -96,7 +96,7 @@
->>  #define MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN               11
->>  #define MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN       (0x1f << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)
->>  #define BF_BCH_FLASH0LAYOUT1_ECCN(v, x)                              \
->> -     (GPMI_IS_MX6(x)                                 \
->> +     ((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))                             \
->>               ? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)      \
->>                       & MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN)       \
->>               : (((v) << BP_BCH_FLASH0LAYOUT1_ECCN)           \
->> @@ -107,7 +107,7 @@
->>  #define MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14                   \
->>                               (0x1 << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)
->>  #define BF_BCH_FLASH0LAYOUT1_GF(v, x)                                \
->> -     ((GPMI_IS_MX6(x) && ((v) == 14))                        \
->> +     (((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))\
->>               ? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)  \
->>                       & MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14)   \
->>               : 0                                             \
->> @@ -119,7 +119,7 @@
->>  #define MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE \
->>                       (0x3ff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
->>  #define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v, x)                                \
->> -     (GPMI_IS_MX6(x)                                         \
->> +     ((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))     \
->>               ? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)   \
->>               : ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)               \
->>       )
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> index 43fa16b..6b37414 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> @@ -1,7 +1,7 @@
->>  /*
->>   * Freescale GPMI NAND Flash Driver
->>   *
->> - * Copyright (C) 2008-2011 Freescale Semiconductor, Inc.
->> + * Copyright (C) 2008-2015 Freescale Semiconductor, Inc.
->>   * Copyright (C) 2008 Embedded Alley Solutions, Inc.
->>   *
->>   * This program is free software; you can redistribute it and/or modify
->> @@ -971,7 +971,8 @@ int gpmi_extra_init(struct gpmi_nand_data *this)
->>       struct nand_chip *chip = &this->nand;
->>
->>       /* Enable the asynchronous EDO feature. */
->> -     if (GPMI_IS_MX6(this) && chip->onfi_version) {
->> +     if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
->> +                     && chip->onfi_version) {
->>               int mode = onfi_get_async_timing_mode(chip);
->>
->>               /* We only support the timing mode 4 and mode 5. */
->> @@ -1093,12 +1094,13 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
->>       if (GPMI_IS_MX23(this)) {
->>               mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
->>               reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
->> -     } else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this)) {
->> +     } else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this) ||
->> +                     GPMI_IS_MX7(this)) {
->>               /*
->>                * In the imx6, all the ready/busy pins are bound
->>                * together. So we only need to check chip 0.
->>                */
->> -             if (GPMI_IS_MX6(this))
->> +             if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
->>                       chip = 0;
->>
->>               /* MX28 shares the same R/B register as MX6Q. */
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->> index 01d24dd..0462103 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->> @@ -77,6 +77,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
->>       .max_chain_delay = 12,
->>  };
->>
->> +static const struct gpmi_devdata gpmi_devdata_imx7d = {
->> +     .type = IS_MX7D,
->> +     .bch_max_ecc_strength = 62,
->> +     .max_chain_delay = 12,
->> +};
->> +
->>  static irqreturn_t bch_irq(int irq, void *cookie)
->>  {
->>       struct gpmi_nand_data *this = cookie;
->> @@ -575,6 +581,10 @@ static char *extra_clks_for_mx6q[GPMI_CLK_MAX] = {
->>       "gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
->>  };
->>
->> +static char *extra_clks_for_mx7d[GPMI_CLK_MAX] = {
->> +     "gpmi_bch_apb",
->> +};
->> +
->>  static int gpmi_get_clks(struct gpmi_nand_data *this)
->>  {
->>       struct resources *r = &this->resources;
->> @@ -592,6 +602,8 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
->>       /* Get extra clocks */
->>       if (GPMI_IS_MX6(this))
->>               extra_clks = extra_clks_for_mx6q;
->> +     if (GPMI_IS_MX7(this))
->> +             extra_clks = extra_clks_for_mx7d;
->>       if (!extra_clks)
->>               return 0;
->>
->> @@ -608,7 +620,7 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
->>               r->clock[i] = clk;
->>       }
->>
->> -     if (GPMI_IS_MX6(this))
->> +     if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
->>               /*
->>                * Set the default value for the gpmi clock.
->>                *
->> @@ -1869,7 +1881,7 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
->>        *  (1) the chip is imx6, and
->>        *  (2) the size of the ECC parity is byte aligned.
->>        */
->> -     if (GPMI_IS_MX6(this) &&
->> +     if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) &&
->>               ((bch_geo->gf_len * bch_geo->ecc_strength) % 8) == 0) {
->>               ecc->read_subpage = gpmi_ecc_read_subpage;
->>               chip->options |= NAND_SUBPAGE_READ;
->> @@ -1936,7 +1948,8 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
->>       if (ret)
->>               goto err_out;
->>
->> -     ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
->> +     ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) || GPMI_IS_MX7(this)\
->> +                             ? 2 : 1, NULL);
->>       if (ret)
->>               goto err_out;
->>
->> @@ -1980,7 +1993,10 @@ static const struct of_device_id gpmi_nand_id_table[] = {
->>       }, {
->>               .compatible = "fsl,imx6sx-gpmi-nand",
->>               .data = &gpmi_devdata_imx6sx,
->> -     }, {}
->> +     }, {
->> +             .compatible = "fsl,imx7d-gpmi-nand",
->> +             .data = (void *)&gpmi_devdata_imx7d,
->> +     }
->>  };
->>  MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
->>
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
->> index 544062f..1e105f1 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
->> @@ -1,7 +1,7 @@
->>  /*
->>   * Freescale GPMI NAND Flash Driver
->>   *
->> - * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
->> + * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
->>   * Copyright (C) 2008 Embedded Alley Solutions, Inc.
->>   *
->>   * This program is free software; you can redistribute it and/or modify
->> @@ -123,7 +123,8 @@ enum gpmi_type {
->>       IS_MX23,
->>       IS_MX28,
->>       IS_MX6Q,
->> -     IS_MX6SX
->> +     IS_MX6SX,
->> +     IS_MX7D
->>  };
->>
->>  struct gpmi_devdata {
->> @@ -306,6 +307,8 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
->>  #define GPMI_IS_MX28(x)              ((x)->devdata->type == IS_MX28)
->>  #define GPMI_IS_MX6Q(x)              ((x)->devdata->type == IS_MX6Q)
->>  #define GPMI_IS_MX6SX(x)     ((x)->devdata->type == IS_MX6SX)
->> +#define GPMI_IS_MX7D(x)              ((x)->devdata->type == IS_MX7D)
->>
->>  #define GPMI_IS_MX6(x)               (GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
->> +#define GPMI_IS_MX7(x)               (GPMI_IS_MX7D(x))
->>  #endif
->> --
->> 1.9.1
->>
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+I agree with both of you. I don't see much value implementing multi-NAND
+chip support, especially with different configurations, at the moment. I
+am not aware of any hardware making use of that now.
+
+I will update the driver to parse a NAND sub node and get the ECC
+properties from the per flash configuration. However, I won't add chip
+select or multi-NAND support right now...
+
+Any objection?
+
+--
+Stefan
