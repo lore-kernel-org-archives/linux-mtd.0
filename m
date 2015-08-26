@@ -1,24 +1,22 @@
-From: Marek Vasut <marex@denx.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH linux-next v5 3/5] mtd: spi-nor: allow to tune the number
- of dummy cycles
-Date: Wed, 26 Aug 2015 16:39:02 +0200
-Cc: nicolas.ferre@atmel.com, broonie@kernel.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
- beanhuo@micron.com, juhosg@openwrt.org, shijie.huang@intel.com,
- ben@decadent.org.uk, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- linux-mtd@lists.infradead.org
-References: <cover.1440580764.git.cyrille.pitchen@atmel.com>
- <4324f398c0e69e3057e7da6a1a3e0328b44f224f.1440580764.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <4324f398c0e69e3057e7da6a1a3e0328b44f224f.1440580764.git.cyrille.pitchen@atmel.com>
+Message-ID: <BLU436-SMTP1971442F63D96D55AC8E905B8600@phx.gbl>
+From: Bill Pringlemeir <bpringle@sympatico.ca>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: Stefan Agner <stefan@agner.ch>, dwmw2@infradead.org,
+ sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
+ bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, albert.aribaud@3adev.fr, klimov.linux@gmail.com,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v10 3/5] mtd: nand: vf610_nfc: add device tree bindings
+References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
+ <1438594050-4595-4-git-send-email-stefan@agner.ch>
+ <20150825202546.GL81844@google.com>
+Date: Wed, 26 Aug 2015 11:26:36 -0400
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201508261639.02377.marex@denx.de>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, August 26, 2015 at 02:30:25 PM, Cyrille Pitchen wrote:
-> The number of dummy cycles used during Fast Read commands can be reduced
-> to improve transfer performances. Each manufacturer has a dedicated set of
-> registers to provide the memory with the exact number of dummy cycles it
-> should expect. Both the memory and the (Q)SPI controller must agree on
-> this number of dummy cycles.
-> 
-> The number of dummy cycles can be found into the memory datasheet and
-> mostly depends on the SPI clock frequency, the Fast Read op code and the
-> Single/Dual Data Rate mode.
-> 
-> Probing JEDEC Serial Flash Discoverable Parameters (SFDP) tables would
-> only provide the driver with a high enough number of dummy cycles for each
-> Fast Read command to be used for all clock frequencies: this solution
-> would not be optimized.
-> 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+On 25 Aug 2015, computersforpeace@gmail.com wrote:
 
-Acked-by: Marek Vasut <marex@denx.de>
+> Sorry, I realized a potential issue here.
 
-Best regards,
-Marek Vasut
+> On Mon, Aug 03, 2015 at 11:27:28AM +0200, Stefan Agner wrote:
+>> Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
+>> Acked-by: Shawn Guo <shawnguo@kernel.org>
+>> Reviewed-by: Brian Norris <computersforpeace@gmail.com>
+>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>> ---
+>> .../devicetree/bindings/mtd/vf610-nfc.txt | 45 ++++++++++++++++++++++
+>> 1 file changed, 45 insertions(+) create mode 100644
+>> Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+
+>> diff --git a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+>> b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+>> new file mode 100644
+>> index 0000000..cae5f25
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+>>>> -0,0 +1,45 @@
+>> +- nand-bus-width: see nand.txt
+>> +- nand-ecc-mode: see nand.txt
+>> +- nand-on-flash-bbt: see nand.txt
+
+> Stumbling across the "multi-CS" questions on the driver reminds me: it
+> typically makes sense to define new NAND bindings using separate NAND
+> *controller* and *flash* device nodes. The above 3 properties, at
+> least, would apply on a per-flash basis, not per-controller
+> typically. See sunxi-nand, for instance:
+
+> http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+
+> brcmnand had a similar pattern:
+
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+
+> (Perhaps it's time we standardized this a little more formally...)
+
+These would apply per chip, but the controller has to be configured to
+support each and every one.  Every time an operation was performed, we
+would have to check the chip type and reconfigure the controller.
+Currently, the driver does not support this and it would add a lot of
+overhead in some cases unless a register cache was used.
+
+Is the flexibility of using a system with combined 8/16bit devices
+really worth all the overhead?  Isn't it sort of brain dead hardware not
+to make all of the chips similar?  Why would everyone have to pay for
+such a crazy setup?
+
+To separate it would at least be a lie versus the code in the current
+form.  As well, there are only a few SOC which support multiple chip
+selects.  The 'multi-CS' register bits of this controller varies between
+PowerPC, 68K/Coldfire and ARM platforms.
+
+I looked briefly at the brcmnand.c  and it seems that it is not
+supporting different ECC per chip even though the nodes are broken out
+this way.  In fact, if some raw functions are called, I think it will
+put it in ECC mode even if it wasn't before?  Well, I agree that this
+would be good generically, I think it puts a lot of effort in the
+drivers for not so much payoff?
+
+Fwiw,
+Bill Pringlemeir.
