@@ -1,31 +1,27 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-vk0-x22c.google.com ([2607:f8b0:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUf66-0007ET-He
- for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 18:06:55 +0000
-Received: by pacti10 with SMTP id ti10so95553408pac.0
- for <linux-mtd@lists.infradead.org>; Wed, 26 Aug 2015 11:06:33 -0700 (PDT)
-Date: Wed, 26 Aug 2015 11:06:31 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: vikas <vikas.manocha@st.com>
-Cc: Marek Vasut <marex@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
- Controller.
-Message-ID: <20150826180631.GS81844@google.com>
-References: <1440148851-14621-1-git-send-email-marex@denx.de>
- <1440148851-14621-2-git-send-email-marex@denx.de>
- <55DCE7AE.5070501@st.com> <201508260819.02535.marex@denx.de>
- <55DDDF99.4030701@st.com>
+ id 1ZUhFM-0001Cx-4Z
+ for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 20:24:37 +0000
+Received: by vkif69 with SMTP id f69so88729891vki.3
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Aug 2015 13:24:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55DDDF99.4030701@st.com>
+In-Reply-To: <20150818065252.GB10641@free64-pc.asiapac.arm.com>
+References: <1439868295-24890-1-git-send-email-b45815@freescale.com>
+ <20150818065252.GB10641@free64-pc.asiapac.arm.com>
+Date: Wed, 26 Aug 2015 15:24:14 -0500
+Message-ID: <CA+EcR23-nhpoEz1tcGMPmb07RcEAk-dQCCnkCpNra50RjXwe_A@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] mtd: nand: gpmi: add GPMI NAND support for i.MX7D
+From: Han Xu <xhnjupt@gmail.com>
+To: Huang Shijie <shijie.huang@arm.com>
+Cc: Han Xu <b45815@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>,
+ boris.brezillon@free-electrons.com, vinod.koul@intel.com,
+ linux-kernel@vger.kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Nicholas Mc Guire <hofrat@osadl.org>,
+ dmaengine@vger.kernel.org, dan.j.williams@intel.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,32 +31,255 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 26, 2015 at 08:47:37AM -0700, vikas wrote:
-> On 08/25/2015 11:19 PM, Marek Vasut wrote:
-> > On Wednesday, August 26, 2015 at 12:09:50 AM, vikas wrote:
-> >> the patch failed to apply, please rebase it to master.
-> > 
-> > it's based on -next, I'm sure you can fix trivial conflicts yourself if you
-> > need to apply it elsewhere. Do you have any other review comments ?
-> 
-> Always rebase the patch on master.
+Hi Shijie,
 
-Development works against -next, not Linus' master:
+The features for MX6 and MX7 are not identical, I would love to use
+two macros in this patch and will push another patch to use quirks to
+distinguish them, is that Okay for you?
 
-https://lwn.net/Articles/289013/
-
-This is also noted here:
-
-https://www.kernel.org/doc/man-pages/linux-next.html
-
-Technically, you should work off of the respective subsystem tree (see
-entries in MAINTAINERS). For MTD, this is also documented here:
-
-http://linux-mtd.infradead.org/source.html
-
-In the end, most MTD patches get applied to l2-mtd.git, but l2-mtd.git
-and linux-next.git should provide pretty similar MTD patching
-experiences, as the former is included in the latter.
-
-Regards,
-Brian
+On Tue, Aug 18, 2015 at 1:52 AM, Huang Shijie <shijie.huang@arm.com> wrote:
+> On Mon, Aug 17, 2015 at 10:24:55PM -0500, Han Xu wrote:
+>> support GPMI NAND on i.MX7D
+>>
+>> Signed-off-by: Han Xu <b45815@freescale.com>
+>> ---
+>>  drivers/mtd/nand/gpmi-nand/bch-regs.h  | 14 +++++++-------
+>>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 10 ++++++----
+>>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 24 ++++++++++++++++++++----
+>>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  7 +++++--
+>>  4 files changed, 38 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+>> index 05bb91f..53e58bc 100644
+>> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
+>> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+>> @@ -1,7 +1,7 @@
+>>  /*
+>>   * Freescale GPMI NAND Flash Driver
+>>   *
+>> - * Copyright 2008-2011 Freescale Semiconductor, Inc.
+>> + * Copyright 2008-2015 Freescale Semiconductor, Inc.
+>>   * Copyright 2008 Embedded Alley Solutions, Inc.
+>>   *
+>>   * This program is free software; you can redistribute it and/or modify
+>> @@ -54,7 +54,7 @@
+>>  #define MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0               11
+>>  #define MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0       (0x1f << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)
+>>  #define BF_BCH_FLASH0LAYOUT0_ECC0(v, x)                              \
+>> -     (GPMI_IS_MX6(x)                                 \
+>> +     ((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))                             \
+>
+> I suggest we can introduce a new macro to wrap it:
+> #define GPMI_IS_MX(x) (GPMI_IS_MX6(x) || GPMI_IS_MX7(x)
+>
+> So when the imx8 or imx9 appear, we only change the GPMI_IS_MX(), and we do not need to
+> change so many places as show below.
+>
+> thanks
+> Huang Shijie
+>
+>
+>>               ? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)      \
+>>                       & MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0)       \
+>>               : (((v) << BP_BCH_FLASH0LAYOUT0_ECC0)           \
+>> @@ -65,7 +65,7 @@
+>>  #define MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14                   \
+>>                               (0x1 << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)
+>>  #define BF_BCH_FLASH0LAYOUT0_GF(v, x)                                \
+>> -     ((GPMI_IS_MX6(x) && ((v) == 14))                        \
+>> +     (((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))\
+>>               ? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)  \
+>>                       & MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14)   \
+>>               : 0                                             \
+>> @@ -77,7 +77,7 @@
+>>  #define MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE \
+>>                       (0x3ff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
+>>  #define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v, x)                                \
+>> -     (GPMI_IS_MX6(x)                                         \
+>> +     ((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))     \
+>>               ? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)   \
+>>               : ((v) & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)               \
+>>       )
+>> @@ -96,7 +96,7 @@
+>>  #define MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN               11
+>>  #define MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN       (0x1f << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)
+>>  #define BF_BCH_FLASH0LAYOUT1_ECCN(v, x)                              \
+>> -     (GPMI_IS_MX6(x)                                 \
+>> +     ((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))                             \
+>>               ? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)      \
+>>                       & MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN)       \
+>>               : (((v) << BP_BCH_FLASH0LAYOUT1_ECCN)           \
+>> @@ -107,7 +107,7 @@
+>>  #define MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14                   \
+>>                               (0x1 << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)
+>>  #define BF_BCH_FLASH0LAYOUT1_GF(v, x)                                \
+>> -     ((GPMI_IS_MX6(x) && ((v) == 14))                        \
+>> +     (((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))\
+>>               ? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)  \
+>>                       & MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14)   \
+>>               : 0                                             \
+>> @@ -119,7 +119,7 @@
+>>  #define MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE \
+>>                       (0x3ff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
+>>  #define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v, x)                                \
+>> -     (GPMI_IS_MX6(x)                                         \
+>> +     ((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))     \
+>>               ? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)   \
+>>               : ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)               \
+>>       )
+>> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+>> index 43fa16b..6b37414 100644
+>> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+>> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+>> @@ -1,7 +1,7 @@
+>>  /*
+>>   * Freescale GPMI NAND Flash Driver
+>>   *
+>> - * Copyright (C) 2008-2011 Freescale Semiconductor, Inc.
+>> + * Copyright (C) 2008-2015 Freescale Semiconductor, Inc.
+>>   * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+>>   *
+>>   * This program is free software; you can redistribute it and/or modify
+>> @@ -971,7 +971,8 @@ int gpmi_extra_init(struct gpmi_nand_data *this)
+>>       struct nand_chip *chip = &this->nand;
+>>
+>>       /* Enable the asynchronous EDO feature. */
+>> -     if (GPMI_IS_MX6(this) && chip->onfi_version) {
+>> +     if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
+>> +                     && chip->onfi_version) {
+>>               int mode = onfi_get_async_timing_mode(chip);
+>>
+>>               /* We only support the timing mode 4 and mode 5. */
+>> @@ -1093,12 +1094,13 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
+>>       if (GPMI_IS_MX23(this)) {
+>>               mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
+>>               reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
+>> -     } else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this)) {
+>> +     } else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this) ||
+>> +                     GPMI_IS_MX7(this)) {
+>>               /*
+>>                * In the imx6, all the ready/busy pins are bound
+>>                * together. So we only need to check chip 0.
+>>                */
+>> -             if (GPMI_IS_MX6(this))
+>> +             if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
+>>                       chip = 0;
+>>
+>>               /* MX28 shares the same R/B register as MX6Q. */
+>> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>> index 01d24dd..0462103 100644
+>> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>> @@ -77,6 +77,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
+>>       .max_chain_delay = 12,
+>>  };
+>>
+>> +static const struct gpmi_devdata gpmi_devdata_imx7d = {
+>> +     .type = IS_MX7D,
+>> +     .bch_max_ecc_strength = 62,
+>> +     .max_chain_delay = 12,
+>> +};
+>> +
+>>  static irqreturn_t bch_irq(int irq, void *cookie)
+>>  {
+>>       struct gpmi_nand_data *this = cookie;
+>> @@ -575,6 +581,10 @@ static char *extra_clks_for_mx6q[GPMI_CLK_MAX] = {
+>>       "gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
+>>  };
+>>
+>> +static char *extra_clks_for_mx7d[GPMI_CLK_MAX] = {
+>> +     "gpmi_bch_apb",
+>> +};
+>> +
+>>  static int gpmi_get_clks(struct gpmi_nand_data *this)
+>>  {
+>>       struct resources *r = &this->resources;
+>> @@ -592,6 +602,8 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
+>>       /* Get extra clocks */
+>>       if (GPMI_IS_MX6(this))
+>>               extra_clks = extra_clks_for_mx6q;
+>> +     if (GPMI_IS_MX7(this))
+>> +             extra_clks = extra_clks_for_mx7d;
+>>       if (!extra_clks)
+>>               return 0;
+>>
+>> @@ -608,7 +620,7 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
+>>               r->clock[i] = clk;
+>>       }
+>>
+>> -     if (GPMI_IS_MX6(this))
+>> +     if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
+>>               /*
+>>                * Set the default value for the gpmi clock.
+>>                *
+>> @@ -1869,7 +1881,7 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
+>>        *  (1) the chip is imx6, and
+>>        *  (2) the size of the ECC parity is byte aligned.
+>>        */
+>> -     if (GPMI_IS_MX6(this) &&
+>> +     if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) &&
+>>               ((bch_geo->gf_len * bch_geo->ecc_strength) % 8) == 0) {
+>>               ecc->read_subpage = gpmi_ecc_read_subpage;
+>>               chip->options |= NAND_SUBPAGE_READ;
+>> @@ -1936,7 +1948,8 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+>>       if (ret)
+>>               goto err_out;
+>>
+>> -     ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
+>> +     ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) || GPMI_IS_MX7(this)\
+>> +                             ? 2 : 1, NULL);
+>>       if (ret)
+>>               goto err_out;
+>>
+>> @@ -1980,7 +1993,10 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+>>       }, {
+>>               .compatible = "fsl,imx6sx-gpmi-nand",
+>>               .data = &gpmi_devdata_imx6sx,
+>> -     }, {}
+>> +     }, {
+>> +             .compatible = "fsl,imx7d-gpmi-nand",
+>> +             .data = (void *)&gpmi_devdata_imx7d,
+>> +     }
+>>  };
+>>  MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
+>>
+>> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+>> index 544062f..1e105f1 100644
+>> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+>> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+>> @@ -1,7 +1,7 @@
+>>  /*
+>>   * Freescale GPMI NAND Flash Driver
+>>   *
+>> - * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
+>> + * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
+>>   * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+>>   *
+>>   * This program is free software; you can redistribute it and/or modify
+>> @@ -123,7 +123,8 @@ enum gpmi_type {
+>>       IS_MX23,
+>>       IS_MX28,
+>>       IS_MX6Q,
+>> -     IS_MX6SX
+>> +     IS_MX6SX,
+>> +     IS_MX7D
+>>  };
+>>
+>>  struct gpmi_devdata {
+>> @@ -306,6 +307,8 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
+>>  #define GPMI_IS_MX28(x)              ((x)->devdata->type == IS_MX28)
+>>  #define GPMI_IS_MX6Q(x)              ((x)->devdata->type == IS_MX6Q)
+>>  #define GPMI_IS_MX6SX(x)     ((x)->devdata->type == IS_MX6SX)
+>> +#define GPMI_IS_MX7D(x)              ((x)->devdata->type == IS_MX7D)
+>>
+>>  #define GPMI_IS_MX6(x)               (GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
+>> +#define GPMI_IS_MX7(x)               (GPMI_IS_MX7D(x))
+>>  #endif
+>> --
+>> 1.9.1
+>>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
