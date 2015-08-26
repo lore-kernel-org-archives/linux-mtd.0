@@ -1,26 +1,24 @@
-Date: Wed, 26 Aug 2015 14:34:48 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: bpringlemeir@gmail.com, sebastian@breakpoint.cc, robh+dt@kernel.org,
- pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de,
- aaron@tastycactus.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, albert.aribaud@3adev.fr,
- klimov.linux@gmail.com, Bill Pringlemeir <bpringlemeir@nbsps.com>
-Subject: Re: [PATCH v10 2/5] mtd: nand: vf610_nfc: add hardware BCH-ECC support
-Message-ID: <20150826213448.GU81844@google.com>
-References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
- <1438594050-4595-3-git-send-email-stefan@agner.ch>
- <ff2e2716578a1ae5f0c4b0e0ca8bbdc3@agner.ch>
- <20150825195411.GJ81844@google.com>
- <07a479863eef4c53ab2ef6ef85321680@agner.ch>
+Message-ID: <55DE4623.8090508@st.com>
+Date: Wed, 26 Aug 2015 16:05:07 -0700
+From: vikas <vikas.manocha@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07a479863eef4c53ab2ef6ef85321680@agner.ch>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Graham Moore
+ <grmoore@opensource.altera.com>, Alan Tull <atull@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
+ <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
+ Controller.
+References: <1440148851-14621-1-git-send-email-marex@denx.de>
+ <1440148851-14621-2-git-send-email-marex@denx.de> <55DCE7AE.5070501@st.com>
+ <201508260819.02535.marex@denx.de> <55DDDF99.4030701@st.com>
+ <20150826180631.GS81844@google.com>
+In-Reply-To: <20150826180631.GS81844@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,38 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 26, 2015 at 10:57:38AM -0700, Stefan Agner wrote:
-> On 2015-08-25 12:54, Brian Norris wrote:
-> > On Mon, Aug 03, 2015 at 11:28:43AM +0200, Stefan Agner wrote:
-> >> Btw, if the ECC check fails, the controller seems kind of count the
-> >> amount of bitflips. It works for most devices reliable, but we had
-> >> devices for which that number was not accurate, see:
-> >> http://thread.gmane.org/gmane.linux.ports.arm.kernel/357439
-> > 
-> > I'm a little confused there. Why would you be expecting to get a count
-> > of bitflips, when the ECC engine can't correct all errors? How is it
-> > supposed to know what the "right" data is if the bit errors are beyond
-> > the correction strength?
-> 
-> When printing the ECC error count on ECC fail when reading an erased
-> NAND flash, the numbers of bit flips (stuck at zero) seem to widely
-> correlate with the number returned by the controller. While it seems to
-> correlate widely, there are exceptions, as discussed in the thread:
-> http://thread.gmane.org/gmane.linux.ports.arm.kernel/295424
-> 
-> Maybe this is an artifact of the ECC algorithm we just can't/shouldn't
-> rely on? I am not sure where this originated, I did not found any
-> indication in the reference manual about what that value contains in the
-> error case.
+Hi,
 
-Doesn't sound too reliable to me. And I'm not sure even if it was
-reliable, that it would provide much value. We have to a lot of
-re-counting anyway, so we might as well just be using our own threshold.
-Or maybe I'm missing the point.
-
-> Bill, do you have an idea why we used that value as threshold in early
-> implementations?
+On 08/26/2015 11:06 AM, Brian Norris wrote:
+> On Wed, Aug 26, 2015 at 08:47:37AM -0700, vikas wrote:
+>> On 08/25/2015 11:19 PM, Marek Vasut wrote:
+>>> On Wednesday, August 26, 2015 at 12:09:50 AM, vikas wrote:
+>>>> the patch failed to apply, please rebase it to master.
+>>>
+>>> it's based on -next, I'm sure you can fix trivial conflicts yourself if you
+>>> need to apply it elsewhere. Do you have any other review comments ?
+>>
+>> Always rebase the patch on master.
 > 
-> Otherwise I also think we should just drop the use of this value.
+> Development works against -next, not Linus' master:
+> 
+> https://lwn.net/Articles/289013/
+> 
+> This is also noted here:
+> 
+> https://www.kernel.org/doc/man-pages/linux-next.html
+> 
+> Technically, you should work off of the respective subsystem tree (see
+> entries in MAINTAINERS). For MTD, this is also documented here:
+> 
+> http://linux-mtd.infradead.org/source.html
+> 
+> In the end, most MTD patches get applied to l2-mtd.git, but l2-mtd.git
+> and linux-next.git should provide pretty similar MTD patching
+> experiences, as the former is included in the latter.
 
-Brian
+Thanks Brian for these useful links, appreciate it.
+
+Rgds,
+Vikas
+
+> 
+> Regards,
+> Brian
+> .
+> 
