@@ -1,23 +1,25 @@
-Message-ID: <55DDDF99.4030701@st.com>
-Date: Wed, 26 Aug 2015 08:47:37 -0700
-From: vikas <vikas.manocha@st.com>
+From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
+To: Brian Norris <computersforpeace@gmail.com>, Xander Huff
+ <xander.huff@ni.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "jeff.westfahl@ni.com" <jeff.westfahl@ni.com>, "jaeden.amero@ni.com"
+ <jaeden.amero@ni.com>, "joshc@ni.com" <joshc@ni.com>, Ben Shelton
+ <ben.shelton@ni.com>
+Subject: RE: [RESEND RESEND RESEND PATCH v2] mtd: nand_bbt: scan for next
+ free bbt block if writing bbt fails
+Date: Wed, 26 Aug 2015 15:57:00 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF47F35@NTXXIAMBX02.xacn.micron.com>
+References: <1439330122-41912-1-git-send-email-xander.huff@ni.com>
+ <1440524966-29627-1-git-send-email-xander.huff@ni.com>
+ <20150825183400.GH81844@google.com>
+In-Reply-To: <20150825183400.GH81844@google.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Graham
- Moore <grmoore@opensource.altera.com>, Alan Tull
- <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
- <dinguyen@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
- Controller.
-References: <1440148851-14621-1-git-send-email-marex@denx.de>
- <1440148851-14621-2-git-send-email-marex@denx.de> <55DCE7AE.5070501@st.com>
- <201508260819.02535.marex@denx.de>
-In-Reply-To: <201508260819.02535.marex@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,124 +29,183 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+> + Bean, who is looking at refactoring this driver. Perhaps he can review
+> this.
+>=20
+> On Tue, Aug 25, 2015 at 12:49:26PM -0500, Xander Huff wrote:
+> > From: Ben Shelton <ben.shelton@ni.com>
+> >
+> > If erasing or writing the BBT fails, we should mark the current BBT
+> > block as bad and use the BBT descriptor to scan for the next available
+> > unused block in the BBT. We should only return a failure if there
+> > isn't any space left.
+> >
+> > Based on original code implemented by Jeff Westfahl
+> > <jeff.westfahl@ni.com>.
+> >
+> > Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+> > Reviewed-by: Jaeden Amero <jaeden.amero@ni.com>
+> > Suggested-by: Jeff Westfahl <jeff.westfahl@ni.com>
+> > Signed-off-by: Xander Huff <xander.huff@ni.com>
+> > ---
+> > This v2 patch is in reply to comments from Brian Norris on 7/22/13.
+> > See the following links for context:
+> > http://lists.infradead.org/pipermail/linux-mtd/2013-July/047596.html
+> > http://patchwork.ozlabs.org/patch/244324/
+>=20
+> Wow, a blast from the past...
+>=20
+> > ---
+> >  drivers/mtd/nand/nand_base.c |  4 ++++  drivers/mtd/nand/nand_bbt.c
+> > | 34 ++++++++++++++++++++++++++++++++--
+> >  include/linux/mtd/nand.h     |  7 +++++++
+> >  3 files changed, 43 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/mtd/nand/nand_base.c
+> > b/drivers/mtd/nand/nand_base.c index ceb68ca..48299dc 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -2761,6 +2761,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct
+> erase_info *instr,
+> >  		pr_debug("%s: device is write protected!\n",
+> >  				__func__);
+> >  		instr->state =3D MTD_ERASE_FAILED;
+> > +		instr->priv =3D NAND_ERASE_WRITE_PROTECTED;
+>=20
+Here will overload the 'priv' field of mtdchar.c=20
+Please go thought mtdchar_ioctl() function.
 
-On 08/25/2015 11:19 PM, Marek Vasut wrote:
-> On Wednesday, August 26, 2015 at 12:09:50 AM, vikas wrote:
->> Hi,
->>
->> On 08/21/2015 02:20 AM, Marek Vasut wrote:
->>> From: Graham Moore <grmoore@opensource.altera.com>
->>>
->>> Add support for the Cadence QSPI controller. This controller is
->>> present in the Altera SoCFPGA SoCs and this driver has been tested
->>> on the Cyclone V SoC.
->>>
->>> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
->>> Signed-off-by: Marek Vasut <marex@denx.de>
->>> Cc: Alan Tull <atull@opensource.altera.com>
->>> Cc: Brian Norris <computersforpeace@gmail.com>
->>> Cc: David Woodhouse <dwmw2@infradead.org>
->>> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
->>> Cc: Graham Moore <grmoore@opensource.altera.com>
->>> Cc: Vikas MANOCHA <vikas.manocha@st.com>
->>> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
->>> Cc: devicetree@vger.kernel.org
->>> ---
->>>
->>>  drivers/mtd/spi-nor/Kconfig           |   11 +
->>>  drivers/mtd/spi-nor/Makefile          |    1 +
->>>  drivers/mtd/spi-nor/cadence-quadspi.c | 1260
->>>  +++++++++++++++++++++++++++++++++ 3 files changed, 1272 insertions(+)
->>>  create mode 100644 drivers/mtd/spi-nor/cadence-quadspi.c
->>>
->>> V2: use NULL instead of modalias in spi_nor_scan call
->>> V3: Use existing property is-decoded-cs instead of creating duplicate.
->>> V4: Support Micron quad mode by snooping command stream for EVCR command
->>>
->>>     and subsequently configuring Cadence controller for quad mode.
->>>
->>> V5: Clean up sparse and smatch complaints.  Remove snooping of Micron
->>>
->>>     quad mode.  Add comment on XIP mode bit and dummy clock cycles.  Set
->>>     up SRAM partition at 1:1 during init.
->>>
->>> V6: Remove dts patch that was included by mistake.  Incorporate Vikas's
->>>
->>>     comments regarding fifo width, SRAM partition setting, and trigger
->>>     address.  Trigger address was added as an unsigned int, as it is not
->>>     an IO resource per se, and does not need to be mapped. Also add
->>>     Marek Vasut's workaround for picking up OF properties on subnodes.
->>>
->>> V7: - Perform coding-style cleanup and type fixes. Remove ugly QSPI_*()
->>>
->>>       macros and replace them with functions. Get rid of unused
->>>       variables.
->>>     
->>>     - Implement support for nor->set_protocol() to handle Quad-command,
->>>     
->>>       this patch now depends on the following patch:
->>>       mtd: spi-nor: notify (Q)SPI controller about protocol change
->>>     
->>>     - Replace that cqspi_fifo_read() disaster with plain old readsl()
->>>     
->>>       and cqspi_fifo_write() tentacle horror with pretty writesl().
->>>     
->>>     - Remove CQSPI_SUPPORT_XIP_CHIPS, which is broken.
->>>     - Get rid of cqspi_find_chipselect() mess, instead just place the
->>>     
->>>       struct cqspi_st and chipselect number into struct cqspi_flash_pdata
->>>       and set nor->priv to the struct cqspi_flash_pdata of that
->>>       particular chip.
->>>     
->>>     - Replace the odd math in calculate_ticks_for_ns() with
->>>     DIV_ROUND_UP(). - Make variables const where applicable.
->>>
->>> V8: - Implement a function to wait for bit being set/unset for a given
->>>
->>>       period of time and use it to replace the ad-hoc bits of code.
->>>     
->>>     - Configure the write underflow watermark to be 1/8 if FIFO size.
->>>     - Extract out the SPI NOR flash probing code into separate function
->>>     
->>>       to clearly mark what will soon be considered a boilerplate code.
->>>     
->>>     - Repair the handling of mode bits, which caused instability in V7.
->>>     - Clean up the interrupt handling
->>>     - Fix Kconfig help text and make the patch depend on OF and
->>>     COMPILE_TEST.
->>>
->>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
->>> index 89bf4c1..ed253a2 100644
->>> --- a/drivers/mtd/spi-nor/Kconfig
->>> +++ b/drivers/mtd/spi-nor/Kconfig
->>> @@ -40,4 +40,15 @@ config SPI_NXP_SPIFI
->>>
->>>           Flash. Enable this option if you have a device with a SPIFI
->>>           controller and want to access the Flash as a mtd device.
->>>
->>> +config SPI_CADENCE_QUADSPI
->>> +       tristate "Cadence Quad SPI controller"
->>> +       depends on OF && COMPILE_TEST
->>> +       help
->>> +         Enable support for the Cadence Quad SPI Flash controller.
->>> +
->>> +         Cadence QSPI is a specialized controller for connecting an SPI
->>> +         Flash over 1/2/4-bit wide bus. Enable this option if you have a
->>> +         device with a Cadence QSPI controller and want to access the
->>> +         Flash as an MTD device.
->>> +
->>
->> the patch failed to apply, please rebase it to master.
-> 
-> it's based on -next, I'm sure you can fix trivial conflicts yourself if you
-> need to apply it elsewhere. Do you have any other review comments ?
+> I'm pretty sure this is an illegal overloading of the 'priv' field.
+> Notice how ioctl(MEMERASE64) uses this field in mtdchard.c. So I suspect
+> you've broken char access to /dev/mtdX. Try 'flash_erase' from mtd-utils,=
+ for
+> instance.
+>=20
+> >  		goto erase_exit;
+> >  	}
+> >
+> > @@ -2776,6 +2777,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct
+> erase_info *instr,
+> >  			pr_warn("%s: attempt to erase a bad block at page
+> 0x%08x\n",
+> >  				    __func__, page);
+> >  			instr->state =3D MTD_ERASE_FAILED;
+> > +			instr->priv =3D NAND_ERASE_BAD_BLOCK;
+> >  			goto erase_exit;
+> >  		}
+> >
+> > @@ -2802,6 +2804,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct
+> erase_info *instr,
+> >  			pr_debug("%s: failed erase, page 0x%08x\n",
+> >  					__func__, page);
+> >  			instr->state =3D MTD_ERASE_FAILED;
+> > +			instr->priv =3D NAND_ERASE_BLOCK_ERASE_FAILED;
+> >  			instr->fail_addr =3D
+> >  				((loff_t)page << chip->page_shift);
+> >  			goto erase_exit;
+> > @@ -2819,6 +2822,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct
+> erase_info *instr,
+> >  		}
+> >  	}
+> >  	instr->state =3D MTD_ERASE_DONE;
+> > +	instr->priv =3D NAND_ERASE_OK;
+> >
+> >  erase_exit:
+> >
+> > diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> > index 63a1a36..09f9e62 100644
+> > --- a/drivers/mtd/nand/nand_bbt.c
+> > +++ b/drivers/mtd/nand/nand_bbt.c
+> > @@ -662,6 +662,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t =
+*buf,
+> >  			page =3D td->pages[chip];
+> >  			goto write;
+> >  		}
+> > +next:
+> >
+> >  		/*
+> >  		 * Automatic placement of the bad block table. Search direction
+> @@
+> > -787,13 +788,42 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *=
+buf,
+> >  		einfo.addr =3D to;
+> >  		einfo.len =3D 1 << this->bbt_erase_shift;
+> >  		res =3D nand_erase_nand(mtd, &einfo, 1);
+> > -		if (res < 0)
+> > +		if (res =3D=3D -EIO && einfo.state =3D=3D MTD_ERASE_FAILED
+> > +		    && einfo.priv =3D=3D NAND_ERASE_BLOCK_ERASE_FAILED) {
+>=20
+> Do you actually need that last condition? What's wrong with the first two=
+?
+>=20
+> > +			/* This block is bad. Mark it as such and see if
+> > +			 * there's another block available in the BBT area. */
+> > +			int block =3D page >>
+> > +				(this->bbt_erase_shift - this->page_shift);
+> > +			pr_info("nand_bbt: failed to erase block %d when writing
+> BBT\n",
+> > +				block);
+> > +			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
+> > +
+> > +			res =3D this->block_markbad(mtd, block);
+> > +			if (res)
+> > +				pr_warn("nand_bbt: error %d while marking block %d
+> bad\n",
+> > +					res, block);
+> > +			goto next;
+> > +		} else if (res < 0)
+> >  			goto outerr;
 
-Always rebase the patch on master.
-I will be reviewing the patchset this week but on a quick look it seems many review comments of v7 are not there.
 
-Cheers,
-Vikas
+For my knowledge , we don't directly mark this block be a bad block,
+Just like ubi layer,this block also need to further testing and verify if
+It is real bad block.right?
 
-> .
-> 
+> >
+> >  		res =3D scan_write_bbt(mtd, to, len, buf,
+> >  				td->options & NAND_BBT_NO_OOB ? NULL :
+> >  				&buf[len]);
+> > -		if (res < 0)
+> > +		if (res =3D=3D -EIO) {
+> > +			/* This block is bad. Mark it as such and see if
+> > +			 * there's another block available in the BBT area. */
+> > +			int block =3D page >>
+> > +				(this->bbt_erase_shift - this->page_shift);
+> > +			pr_info("nand_bbt: failed to erase block %d when writing
+> BBT\n",
+> > +				block);
+> > +			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
+> > +
+> > +			res =3D this->block_markbad(mtd, block);
+> > +			if (res)
+> > +				pr_warn("nand_bbt: error %d while marking block %d
+> bad\n",
+> > +					res, block);
+> > +			goto next;
+> > +		} else if (res < 0)
+> >  			goto outerr;
+> >
+> >  		pr_info("Bad block table written to 0x%012llx, version 0x%02X\n",
+> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h index
+> > 272f429..86e11f6 100644
+> > --- a/include/linux/mtd/nand.h
+> > +++ b/include/linux/mtd/nand.h
+> > @@ -1030,4 +1030,11 @@ struct nand_sdr_timings {
+> >
+> >  /* get timing characteristics from ONFI timing mode. */  const struct
+> > nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
+> > +
+> > +/* reasons for erase failures */
+> > +#define NAND_ERASE_OK			0
+> > +#define NAND_ERASE_WRITE_PROTECTED	1
+> > +#define NAND_ERASE_BAD_BLOCK		2
+> > +#define NAND_ERASE_BLOCK_ERASE_FAILED	3
+>=20
+> Why exactly do you need these statuses? I thought the existing error code=
+s
+> were sufficient..
+>=20
+> > +
+> >  #endif /* __LINUX_MTD_NAND_H */
+>=20
+> Brian
