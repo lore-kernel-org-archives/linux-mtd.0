@@ -1,22 +1,16 @@
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
- <juhosg@openwrt.org>, <marex@denx.de>, <shijie.huang@intel.com>,
- <ben@decadent.org.uk>
-CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
- <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
- <galak@codeaurora.org>, <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: [PATCH linux-next v5 4/5] Documentation: atmel-quadspi: add binding
- file for Atmel QSPI driver
-Date: Wed, 26 Aug 2015 14:30:26 +0200
-Message-ID: <793cb906c79eed821cf9b47e79dc1b54a7a5dbd0.1440580764.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1440580764.git.cyrille.pitchen@atmel.com>
-References: <cover.1440580764.git.cyrille.pitchen@atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from arrakis.dune.hu ([78.24.191.176])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZUaH2-0006iy-Od
+ for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 12:57:53 +0000
+From: Jonas Gorski <jogo@openwrt.org>
+To: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Marek Vasut <marex@denx.de>
+Subject: [PATCH] mtd: spi-nor: allow dual/quad reads on S25FL129P
+Date: Wed, 26 Aug 2015 14:56:53 +0200
+Message-Id: <1440593813-16360-1-git-send-email-jogo@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch documents the DT bindings for the driver of the Atmel QSPI
-controller embedded inside sama5d2x SoCs.
+According to the datasheet[1], both S25FL129P0 (256kB sectors) and
+S25FL129P1 (64kB sectors) support dual read, quad read, dual i/o read
+and quad i/o read.
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-Acked-by: Marek Vasut <marex@denx.de>
+I have verified dual read to be working for S25FL129P1 on a dual
+capable spi controller. Quad as well as S25FL129P0 is untested, lacking
+hardware to verify.
+
+[1] http://www.spansion.com/Support/Datasheets/S25FL129P_00.pdf
+
+Signed-off-by: Jonas Gorski <jogo@openwrt.org>
 ---
- .../devicetree/bindings/mtd/atmel-quadspi.txt      | 29 ++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+ drivers/mtd/spi-nor/spi-nor.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
-new file mode 100644
-index 000000000000..0b8d545bb198
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
-@@ -0,0 +1,29 @@
-+* Atmel Quad Serial Peripheral Interface (QSPI)
-+
-+Required properties:
-+- compatible:     should be "atmel,sama5d2-qspi"
-+- reg:            the first contains the register location and length,
-+                  the second contains the memory mapping address and length
-+- interrupts:     should contain the interrupt for the device
-+- clocks:         the phandle of the clock needed by the QSPI controller
-+- #address-cells: should be <1>
-+- #size-cells:    should be <0>
-+
-+Example:
-+
-+spi@f0020000 {
-+	compatible = "atmel,sama5d2-qspi";
-+	reg = <0xf0020000 0x100>,
-+	      <0xd0000000 0x8000000>;
-+	interrupts = <52 IRQ_TYPE_LEVEL_HIGH 7>;
-+	clocks = <&spi0_clk>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi0_default>;
-+	status = "okay";
-+
-+	m25p80@0 {
-+		...
-+	};
-+};
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index c27d427..ed449b4 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -610,8 +610,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+ 	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, 0) },
+-	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, 0) },
++	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
+ 	{ "s25sl008a",  INFO(0x010213,      0,  64 * 1024,  16, 0) },
+ 	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32, 0) },
 -- 
-1.8.2.2
+2.1.4
