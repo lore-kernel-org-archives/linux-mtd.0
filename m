@@ -1,28 +1,24 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUdjg-00075F-Rr
- for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 16:39:41 +0000
-From: Marek Vasut <marex@denx.de>
-To: vikas <vikas.manocha@st.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
- Controller.
-Date: Wed, 26 Aug 2015 18:39:14 +0200
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <1440148851-14621-1-git-send-email-marex@denx.de>
- <201508260819.02535.marex@denx.de> <55DDDF99.4030701@st.com>
-In-Reply-To: <55DDDF99.4030701@st.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <201508261839.14769.marex@denx.de>
+Date: Wed, 26 Aug 2015 10:57:38 -0700
+From: Stefan Agner <stefan@agner.ch>
+To: Brian Norris <computersforpeace@gmail.com>, bpringlemeir@gmail.com
+Cc: sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ albert.aribaud@3adev.fr, klimov.linux@gmail.com, Bill Pringlemeir
+ <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v10 2/5] mtd: nand: vf610_nfc: add hardware BCH-ECC support
+In-Reply-To: <20150825195411.GJ81844@google.com>
+References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
+ <1438594050-4595-3-git-send-email-stefan@agner.ch>
+ <ff2e2716578a1ae5f0c4b0e0ca8bbdc3@agner.ch>
+ <20150825195411.GJ81844@google.com>
+Message-ID: <07a479863eef4c53ab2ef6ef85321680@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,130 +28,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, August 26, 2015 at 05:47:37 PM, vikas wrote:
-> Hi,
-
-Hi,
-
-> On 08/25/2015 11:19 PM, Marek Vasut wrote:
-> > On Wednesday, August 26, 2015 at 12:09:50 AM, vikas wrote:
-> >> Hi,
-> >> 
-> >> On 08/21/2015 02:20 AM, Marek Vasut wrote:
-> >>> From: Graham Moore <grmoore@opensource.altera.com>
-> >>> 
-> >>> Add support for the Cadence QSPI controller. This controller is
-> >>> present in the Altera SoCFPGA SoCs and this driver has been tested
-> >>> on the Cyclone V SoC.
-> >>> 
-> >>> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> >>> Signed-off-by: Marek Vasut <marex@denx.de>
-> >>> Cc: Alan Tull <atull@opensource.altera.com>
-> >>> Cc: Brian Norris <computersforpeace@gmail.com>
-> >>> Cc: David Woodhouse <dwmw2@infradead.org>
-> >>> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
-> >>> Cc: Graham Moore <grmoore@opensource.altera.com>
-> >>> Cc: Vikas MANOCHA <vikas.manocha@st.com>
-> >>> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
-> >>> Cc: devicetree@vger.kernel.org
-> >>> ---
-> >>> 
-> >>>  drivers/mtd/spi-nor/Kconfig           |   11 +
-> >>>  drivers/mtd/spi-nor/Makefile          |    1 +
-> >>>  drivers/mtd/spi-nor/cadence-quadspi.c | 1260
-> >>>  +++++++++++++++++++++++++++++++++ 3 files changed, 1272 insertions(+)
-> >>>  create mode 100644 drivers/mtd/spi-nor/cadence-quadspi.c
-> >>> 
-> >>> V2: use NULL instead of modalias in spi_nor_scan call
-> >>> V3: Use existing property is-decoded-cs instead of creating duplicate.
-> >>> V4: Support Micron quad mode by snooping command stream for EVCR
-> >>> command
-> >>> 
-> >>>     and subsequently configuring Cadence controller for quad mode.
-> >>> 
-> >>> V5: Clean up sparse and smatch complaints.  Remove snooping of Micron
-> >>> 
-> >>>     quad mode.  Add comment on XIP mode bit and dummy clock cycles. 
-> >>>     Set up SRAM partition at 1:1 during init.
-> >>> 
-> >>> V6: Remove dts patch that was included by mistake.  Incorporate Vikas's
-> >>> 
-> >>>     comments regarding fifo width, SRAM partition setting, and trigger
-> >>>     address.  Trigger address was added as an unsigned int, as it is
-> >>>     not an IO resource per se, and does not need to be mapped. Also
-> >>>     add Marek Vasut's workaround for picking up OF properties on
-> >>>     subnodes.
-> >>> 
-> >>> V7: - Perform coding-style cleanup and type fixes. Remove ugly QSPI_*()
-> >>> 
-> >>>       macros and replace them with functions. Get rid of unused
-> >>>       variables.
-> >>>     
-> >>>     - Implement support for nor->set_protocol() to handle Quad-command,
-> >>>     
-> >>>       this patch now depends on the following patch:
-> >>>       mtd: spi-nor: notify (Q)SPI controller about protocol change
-> >>>     
-> >>>     - Replace that cqspi_fifo_read() disaster with plain old readsl()
-> >>>     
-> >>>       and cqspi_fifo_write() tentacle horror with pretty writesl().
-> >>>     
-> >>>     - Remove CQSPI_SUPPORT_XIP_CHIPS, which is broken.
-> >>>     - Get rid of cqspi_find_chipselect() mess, instead just place the
-> >>>     
-> >>>       struct cqspi_st and chipselect number into struct
-> >>>       cqspi_flash_pdata and set nor->priv to the struct
-> >>>       cqspi_flash_pdata of that particular chip.
-> >>>     
-> >>>     - Replace the odd math in calculate_ticks_for_ns() with
-> >>>     DIV_ROUND_UP(). - Make variables const where applicable.
-> >>> 
-> >>> V8: - Implement a function to wait for bit being set/unset for a given
-> >>> 
-> >>>       period of time and use it to replace the ad-hoc bits of code.
-> >>>     
-> >>>     - Configure the write underflow watermark to be 1/8 if FIFO size.
-> >>>     - Extract out the SPI NOR flash probing code into separate function
-> >>>     
-> >>>       to clearly mark what will soon be considered a boilerplate code.
-> >>>     
-> >>>     - Repair the handling of mode bits, which caused instability in V7.
-> >>>     - Clean up the interrupt handling
-> >>>     - Fix Kconfig help text and make the patch depend on OF and
-> >>>     COMPILE_TEST.
-> >>> 
-> >>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> >>> index 89bf4c1..ed253a2 100644
-> >>> --- a/drivers/mtd/spi-nor/Kconfig
-> >>> +++ b/drivers/mtd/spi-nor/Kconfig
-> >>> @@ -40,4 +40,15 @@ config SPI_NXP_SPIFI
-> >>> 
-> >>>           Flash. Enable this option if you have a device with a SPIFI
-> >>>           controller and want to access the Flash as a mtd device.
-> >>> 
-> >>> +config SPI_CADENCE_QUADSPI
-> >>> +       tristate "Cadence Quad SPI controller"
-> >>> +       depends on OF && COMPILE_TEST
-> >>> +       help
-> >>> +         Enable support for the Cadence Quad SPI Flash controller.
-> >>> +
-> >>> +         Cadence QSPI is a specialized controller for connecting an
-> >>> SPI +         Flash over 1/2/4-bit wide bus. Enable this option if you
-> >>> have a +         device with a Cadence QSPI controller and want to
-> >>> access the +         Flash as an MTD device.
-> >>> +
-> >> 
-> >> the patch failed to apply, please rebase it to master.
-> > 
-> > it's based on -next, I'm sure you can fix trivial conflicts yourself if
-> > you need to apply it elsewhere. Do you have any other review comments ?
+On 2015-08-25 12:54, Brian Norris wrote:
+> On Mon, Aug 03, 2015 at 11:28:43AM +0200, Stefan Agner wrote:
+>> On 2015-08-03 11:27, Stefan Agner wrote:
+>> <snip>
+>> > +static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
+>> > +					 uint8_t *oob, int oob_loaded)
+>> > +{
+>> > +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+>> > +	u8 ecc_status;
+>> > +	u8 ecc_count;
+>> > +	int flip;
+>> > +
+>> > +	ecc_status = __raw_readb(nfc->regs + ECC_SRAM_ADDR * 8 + ECC_OFFSET);
 > 
-> Always rebase the patch on master.
+> Why __raw_readb()? That's not normally encourage, and it has issues with
+> endianness. It looks like maybe this is actulaly a 32-bit register, and
+> you're having trouble when trying to do bytewise access? I see this
+> earlier:
+> 
+> /*
+>  * ECC status is stored at NFC_CFG[ECCADD] +4 for little-endian
+>  * and +7 for big-endian SoCs.
+>  */
+> #ifdef __LITTLE_ENDIAN
+> #define ECC_OFFSET      4
+> #else
+> #define ECC_OFFSET      7
+> #endif
+> 
+> So maybe you really just want:
+> 
+> #define ECC_OFFSET	4
+> ...
+> 	ecc_status = vf610_nfc_read(ECC_SRAM_ADDR * 8 + ECC_OFFSET) & 0xff;
+> 
+> ?
+> 
 
-The patch applies correctly both on next/master and l2-mtd/master.
-I think the problem is on your end.
+Agreed, much cleaner.
 
-> I will be reviewing the patchset this week but on a quick look it seems
-> many review comments of v7 are not there.
+>> > +	ecc_count = ecc_status & ECC_ERR_COUNT;
+>> > +
+>> > +	if (!(ecc_status & ECC_STATUS_MASK))
+>> > +		return ecc_count;
+>> > +
+>> > +	if (!oob_loaded)
+>> > +		vf610_nfc_read_buf(mtd, oob, mtd->oobsize);
+>> > +
+>> > +	/*
+>> > +	 * On an erased page, bit count (including OOB) should be zero or
+>> > +	 * at least less then half of the ECC strength.
+>> > +	 */
+>> > +	flip = count_written_bits(dat, nfc->chip.ecc.size, ecc_count);
+> 
+> Another side note: why are you using ecc_count as a max threshold? AIUI,
+> an ECC algorithm doesn't really report useful error count information if
+> it's above the correction limit. So wouldn't we be looking to count up
+> to our SW threshold? i.e., ecc.strength / 2, or similar? Similar
+> comments below.
+> 
 
-Aha.
+Initially, that was the only threshold below, hence it made sense. But I
+agree, we should count up to the threshold used below...
+
+>> > +	flip += count_written_bits(oob, mtd->oobsize - nfc->chip.ecc.bytes,
+>> > +				   ecc_count);
+>>
+>> With ECC the controller seems to clear the ECC bytes in SRAM buffer.
+>> This is a dump of 64 Bit OOB with the 32-error ECC mode which requires
+>> 60 bytes of OOB for ECC:
+>>
+>> [   22.190273] ff ff ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 
+> Hmm, that's not really good. The point is that we need to make sure that
+> everything that could have been programmed (including the ECC area) was
+> not actually programmed. But your ECC controller is not, contrary to
+> MTD's expectations, dumping raw uncorrected data here.
+> 
+>> [   22.209698] vf610_nfc_correct_data, flips 1
+>>
+>> Not sure if this is acceptable, but I now only count the bits in the
+>> non-ECC area of the OOB.
+> 
+> That's not the intention of my suggestion. You're still missing out on a
+> class of patterns that might look close to all 0xff but are not
+> actually.
+> 
+> If the HW ECC really doesn't give you valid data+OOB at this point, then
+> you might have to re-read with ECC disabled. Of course, that's got a
+> performance cost...
+
+Yes I can do that. Not sure yet how it will look like exactly, maybe I
+only need to reread the OOB area and (re-)use the main data part since
+those arrive uncorrected in the error case.
+
+> 
+> Or perhaps Boris has a better suggestion? He's been surveying other NAND
+> drivers that need to do similar things, and he's working on providing
+> some support code for common design patterns.
+> 
+>> Btw, if the ECC check fails, the controller seems kind of count the
+>> amount of bitflips. It works for most devices reliable, but we had
+>> devices for which that number was not accurate, see:
+>> http://thread.gmane.org/gmane.linux.ports.arm.kernel/357439
+> 
+> I'm a little confused there. Why would you be expecting to get a count
+> of bitflips, when the ECC engine can't correct all errors? How is it
+> supposed to know what the "right" data is if the bit errors are beyond
+> the correction strength?
+
+When printing the ECC error count on ECC fail when reading an erased
+NAND flash, the numbers of bit flips (stuck at zero) seem to widely
+correlate with the number returned by the controller. While it seems to
+correlate widely, there are exceptions, as discussed in the thread:
+http://thread.gmane.org/gmane.linux.ports.arm.kernel/295424
+
+Maybe this is an artifact of the ECC algorithm we just can't/shouldn't
+rely on? I am not sure where this originated, I did not found any
+indication in the reference manual about what that value contains in the
+error case.
+
+Bill, do you have an idea why we used that value as threshold in early
+implementations?
+
+Otherwise I also think we should just drop the use of this value.
+
+--
+Stefan
