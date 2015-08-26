@@ -1,19 +1,25 @@
-Received: from mail-pa0-f52.google.com ([209.85.220.52])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUYGw-0001Vd-I0
- for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 10:49:39 +0000
-Received: by pacgr6 with SMTP id gr6so5396498pac.3
- for <linux-mtd@lists.infradead.org>; Wed, 26 Aug 2015 03:49:16 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1440570367-22569-1-git-send-email-ranjit.waghmode@xilinx.com>
+References: <1440570367-22569-1-git-send-email-ranjit.waghmode@xilinx.com>
+Date: Wed, 26 Aug 2015 17:49:59 +0530
+Message-ID: <CAD6G_RQhWBsUTZNBB44W98Fjzw82H_D_E9nY0aDWezj729mkoA@mail.gmail.com>
+Subject: Re: [LINUX RFC v2 0/4] spi: add dual parallel mode support in Zynq
+ MPSoC GQSPI controller
 From: Jagan Teki <jteki@openedev.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Jagan Teki <jteki@openedev.com>,
- Hou Zhiqiang <B48286@freescale.com>,
- "Mingkai.Hu" <Mingkai.Hu@freescale.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 3/3] mtd: spi-nor: Add clear flag status register support
-Date: Wed, 26 Aug 2015 16:18:47 +0530
-Message-Id: <1440586128-4325-1-git-send-email-jteki@openedev.com>
+To: Ranjit Waghmode <ranjit.waghmode@xilinx.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, broonie@kernel.org,
+ Michal Simek <michal.simek@xilinx.com>,
+ Soren Brinkmann <soren.brinkmann@xilinx.com>, zajec5@gmail.com,
+ ben@decadent.org.uk, =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
+ Huang Shijie <b32955@freescale.com>, knut.wohlrab@de.bosch.com,
+ juhosg@openwrt.org, beanhuo@micron.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi@vger.kernel.org,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ harinik@xilinx.com, punnaia@xilinx.com
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,92 +29,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The clear flag status register operation is required by Micron
-SPI-NOR chips, which support FSR. And if error bits of FSR
-have been set like protection, voltage, erase, and program,
-it must be cleared by executing clear FSR operation.
+On 26 August 2015 at 11:56, Ranjit Waghmode <ranjit.waghmode@xilinx.com> wrote:
+> This series adds dual parallel mode support for Zynq Ultrascale+
+> MPSoC GQSPI controller driver.
+>
+> What is dual parallel mode?
+> ---------------------------
+> ZynqMP GQSPI controller supports Dual Parallel mode with following functionalities:
+> 1) Supporting two SPI flash memories operating in parallel. 8 I/O lines.
+> 2) Chip selects and clock are shared to both the flash devices
+> 3) This mode is targeted for faster read/write speed and also doubles the size
+> 4) Commands/data can be transmitted/received from both the devices(mirror),
+>    or only upper or only lower flash memory devices.
+> 5) Data arrangement:
+>    With stripe enabled,
+>    Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
+>    Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
+>
+> This series also updated MTD layer files for adding parallel mode support.
+>
+> 1) Added Support for two flashes
+> 2) Support to enable/disable data stripe as and when required.
+> 3) Added required parameters to spi_nor structure. Initialized all
+>    added parameters in spi_nor_scan()
+> 4) Added support for dual parallel in spi_nor_read/write/erase functions by:
+>    a) Increasing page_size, sector_size, erase_size and toatal flash size
+>       as and when required.
+>    b) Dividing address by 2
+>    c) Updating spi->master->flags for qspi driver to change CS
+> 5) Updated read_sr() to get status of both flashes
+> 6) Also updated read_fsr() to get status of both flashes
+>
+> These all are very high level changes and expected to make an idea clear.
+> Comments and suggestions are always welcomed
+>
+> ---
+> V2 Changes:
+> a) Splitted patches based on logical changes
+> b) Added error handling for newly added APIs in SPI core
+> ---
+>
+> Ranjit Waghmode (4):
+>   spi: add support of two chip selects & data stripe
+>   mtd: add spi_device instance to spi_nor struct
+>   spi-nor: add dual parallel mode support
+>   spi: zynqmp: gqspi: add support for dual parallel mode configuration
 
-Signed-off-by: Jagan Teki <jteki@openedev.com>
-Cc: Hou Zhiqiang <B48286@freescale.com>
-Cc: Mingkai.Hu <Mingkai.Hu@freescale.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
----
-Changes for v2:
-	- Write cfsr instead of reading it.
-	- Return -EINVAL instead of -1
+I don't find any previous discussion about way to inform flash
+dual-ness into spi-nor
+from spi drivers.
 
- drivers/mtd/spi-nor/spi-nor.c | 23 +++++++++++++++++++----
- include/linux/mtd/spi-nor.h   |  9 +++++++++
- 2 files changed, 28 insertions(+), 4 deletions(-)
+Here is my idea, probably others may think same.
+Informing dual_flash from drivers/spi through flags or any other mode
+bits is not a better approach as dual flash feature is specific to
+spi-nor flash controller (controller specially designed for spi-nor
+flash not the generic spi controller).  So if the driver sits on
+drivers/mtd/spi-nor/ (ex: fsl-quadspi.c), may be we can inform flash
+specific things to spi-nor as it's not touching generic spi stack in
+Linux. But there is a defined-drawback if the driver is moved to
+drivers/mtd/spi-nor ie it can't use spi core API's at-all.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f954d03..0a77061 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -163,6 +163,18 @@ static inline int write_disable(struct spi_nor *nor)
- 	return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
- }
- 
-+/*
-+ * The clear flag status register operation is required by Micron
-+ * SPI-NOR chips, which support FSR. And if error bits of FSR
-+ * have been set like protection, voltage, erase, and program,
-+ * it must be cleared by executing clear FSR operation.
-+ * Returns negative if error occurred.
-+ */
-+static inline int write_cfsr(struct spi_nor *nor)
-+{
-+	return nor->write_reg(nor, SPINOR_OP_WRCFSR, NULL, 0);
-+}
-+
- static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
- {
- 	return mtd->priv;
-@@ -209,10 +221,13 @@ static inline int spi_nor_sr_ready(struct spi_nor *nor)
- static inline int spi_nor_fsr_ready(struct spi_nor *nor)
- {
- 	int fsr = read_fsr(nor);
--	if (fsr < 0)
--		return fsr;
--	else
--		return fsr & FSR_READY;
-+	if (fsr & FSR_ERR_MASK) {
-+		pr_err("flag status(0x%x) error occured\n", fsr);
-+		write_cfsr(nor);
-+		return -EINVAL;
-+	}
-+
-+	return fsr & FSR_READY;
- }
- 
- static int spi_nor_ready(struct spi_nor *nor)
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index c5a58c4..0288081 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -35,6 +35,7 @@
- #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
- #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
- #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
-+#define SPINOR_OP_WRCFSR	0x50	/* Write clear flag status register */
- 
- /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
- #define SPINOR_OP_READ4		0x13	/* Read data bytes (low frequency) */
-@@ -74,6 +75,14 @@
- /* Enhanced Volatile Configuration Register bits */
- #define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
- 
-+/* Flag Status Register Error bits */
-+#define FSR_ERR_PROT		0x2	/* Protection */
-+#define FSR_ERR_VOLT		0x8	/* Voltage on Vpp */
-+#define FSR_ERR_PROG		0x10	/* Program operation */
-+#define FSR_ERR_ERASE		0x20	/* Erase operation */
-+#define FSR_ERR_MASK		(FSR_ERR_PROT | FSR_ERR_VOLT | \
-+				FSR_ERR_PROG | FSR_ERR_ERASE)
-+
- /* Flag Status Register bits */
- #define FSR_READY		0x80
- 
+thanks!
 -- 
-1.9.1
+Jagan | openedev.
