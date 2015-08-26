@@ -1,22 +1,30 @@
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
- <juhosg@openwrt.org>, <marex@denx.de>, <shijie.huang@intel.com>,
- <ben@decadent.org.uk>
-CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
- <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
- <galak@codeaurora.org>, <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: [PATCH linux-next v5 2/5] Documentation: mtd: add a DT property to
- set the number of dummy cycles
-Date: Wed, 26 Aug 2015 14:30:24 +0200
-Message-ID: <648dbf9f9d1d4cd414fe2df8d298880b2245c7b5.1440580764.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1440580764.git.cyrille.pitchen@atmel.com>
-References: <cover.1440580764.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <464fce12d75a5ba2105456cfd0a385b2d40305ba.1440580764.git.cyrille.pitchen@atmel.com>
+References: <cover.1440580764.git.cyrille.pitchen@atmel.com>
+ <464fce12d75a5ba2105456cfd0a385b2d40305ba.1440580764.git.cyrille.pitchen@atmel.com>
+From: Jonas Gorski <jogo@openwrt.org>
+Date: Wed, 26 Aug 2015 16:02:49 +0200
+Message-ID: <CAOiHx=n+byfsbJNhnboqDEwhruOT8uKDJ+CcES7QBqPDLVAMsw@mail.gmail.com>
+Subject: Re: [PATCH linux-next v5 1/5] mtd: spi-nor: notify (Q)SPI controller
+ about protocol change
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: nicolas.ferre@atmel.com, Mark Brown <broonie@kernel.org>,
+ linux-spi@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "Bean Huo (beanhuo)" <beanhuo@micron.com>, Gabor Juhos <juhosg@openwrt.org>,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
+ shijie.huang@intel.com, Ben Hutchings <ben@decadent.org.uk>,
+ Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Kumar Gala <galak@codeaurora.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +34,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Depending on the SPI clock frequency, the Fast Read op code and the
-Single/Dual Data Rate mode, the number of dummy cycles can be tuned to
-improve transfer speed.
-The actual number of dummy cycles is specific for each memory model and is
-provided by the manufacturer thanks to the memory datasheet.
+On Wed, Aug 26, 2015 at 2:30 PM, Cyrille Pitchen
+<cyrille.pitchen@atmel.com> wrote:
+> Once the Quad SPI mode has been enabled on a Micron flash memory, this
+> device expects ALL the following commands to use the SPI 4-4-4 protocol.
+> The (Q)SPI controller needs to be notified about the protocol change so it
+> can adapt and keep on dialoging with the Micron memory.
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
----
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+Doesn't that mean you need to disable quad mode on removal? Else the
+following will break/fail:
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-index 2bee68103b01..4387567d8024 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-@@ -19,6 +19,11 @@ Optional properties:
-                    all chips and support for it can not be detected at runtime.
-                    Refer to your chips' datasheet to check if this is supported
-                    by your chip.
-+- m25p,num-dummy-cycles : Set the number of dummy cycles for Fast Read commands.
-+                          Depending on the manufacturer additional dedicated
-+                          commands are sent to the flash memory so the
-+                          controller and the memory can agree on the number of
-+                          dummy cycles to use.
- 
- Example:
- 
-@@ -29,4 +34,5 @@ Example:
- 		reg = <0>;
- 		spi-max-frequency = <40000000>;
- 		m25p,fast-read;
-+		m25p,num-dummy-cycles = <8>;
- 	};
--- 
-1.8.2.2
+insmod atmel-quadspi.ko ~> spi-nor attaches -> sees micron -> enables quad mode
+rmmod atmel-quadspi.ko ~> spi-nor detaches
+insmod atmel-quadspi.ko ~> spi-nor attaches -> fails to read the id
+because flash is still in quad mode.
+
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> Acked-by: Marek Vasut <marex@denx.de>
+> Acked-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 21 +++++++++++++++++++++
+>  include/linux/mtd/spi-nor.h   | 13 +++++++++++++
+>  2 files changed, 34 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index c27d427fead4..c8810313a752 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -165,6 +165,22 @@ static inline int write_disable(struct spi_nor *nor)
+>         return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0, 0);
+>  }
+>
+> +/*
+> + * Let the spi-nor framework notify lower layers, especially the driver of the
+> + * (Q)SPI controller, about the new protocol to be used. Indeed, once the
+> + * spi-nor framework has sent manufacturer specific commands to a memory to
+> + * enable its Quad SPI mode, it should immediately after tell the QSPI
+> + * controller to use the very same Quad SPI protocol as expected by the memory.
+> + */
+> +static inline int spi_nor_set_protocol(struct spi_nor *nor,
+> +                                      enum spi_protocol proto)
+> +{
+> +       if (nor->set_protocol)
+> +               return nor->set_protocol(nor, proto);
+> +
+> +       return 0;
+
+Shouldn't the default assumption be that it won't support it? Also it
+might make sense to first check if it's supported before enabling it
+in the chip, so that we don't enable something just to then find out
+we can't back out of it.
+
+I also wonder if we need an extra flag for that as at least SPI has
+RX_{DUAL,QUAD} and TX_{DUAL,QUAD} separated, so in theory there could
+be a controller that supports quad read, but not quad write, so we
+shouldn't be using the quad mode in that case. m25p80 currently sets
+SPI_NOR_{DUAL,QUAD} only based on SPI_RX_{DUAL,QUAD}, so that would
+then fail.
+
+At least the n25q32 seems to support the "boring" 1_1_2 and 1_1_4
+commands, so these should work in case the spi controller does not
+support quad tx, but quad rx.
+
+So maybe an additional flag for the "full" dual/quad modes would be in order.
+
+Last but not least, the protocol probably should be stored somewhere
+in the nor struct, so that users don't have to store it themselves (I
+assume they will need to check it for each command again to know if
+the cmd/address should be send in serial or quad mode).
+
+
+Jonas
