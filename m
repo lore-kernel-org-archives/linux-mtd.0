@@ -1,26 +1,21 @@
-Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUbUL-0007qc-SV
- for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 14:15:42 +0000
-Date: Wed, 26 Aug 2015 09:15:09 -0500
-From: Josh Cartwright <joshc@ni.com>
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- Subodh Nijsure <snijsure@grid-net.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>, Brad Mouring <brad.mouring@ni.com>,
- Gratian Crisan <gratian.crisan@ni.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/2] ubifs: Remove dead xattr code
-Message-ID: <20150826141509.GJ8016@jcartwri.amer.corp.natinst.com>
-References: <1440016553-26481-1-git-send-email-richard@nod.at>
- <55D54006.9030700@cn.fujitsu.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZUbaH-0002wj-Hk
+ for linux-mtd@lists.infradead.org; Wed, 26 Aug 2015 14:21:50 +0000
+Subject: Re: [PATCH v4 0/3] mtd: nand: jz4780: Add NAND and BCH drivers
+To: <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
+ <55D3278C.5000403@imgtec.com>
+CC: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
+ <linux-kernel@vger.kernel.org>
+From: Alex Smith <alex.smith@imgtec.com>
+Message-ID: <55DDCB62.4020902@imgtec.com>
+Date: Wed, 26 Aug 2015 15:21:22 +0100
 MIME-Version: 1.0
-In-Reply-To: <55D54006.9030700@cn.fujitsu.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="NyChO5MpGs3JHJbz"
-Content-Disposition: inline
+In-Reply-To: <55D3278C.5000403@imgtec.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 18/08/2015 13:39, Alex Smith wrote:
+> On 27/07/2015 14:50, Alex Smith wrote:
+>> Hi,
+>>
+>> This series adds support for the BCH controller and NAND devices on
+>> the Ingenic JZ4780 SoC.
+>>
+>> Tested on the MIPS Creator Ci20 board. All dependencies are now in
+>> mainline so it should be possible to compile test now.
+>>
+>> This version of the series has been rebased on 4.2-rc4, and also adds
+>> an additional patch to fix an issue that was encountered in the
+>> external Ci20 3.18 kernel branch.
+>>
+>> Review and feedback welcome.
+>>
+>> Thanks,
+>> Alex
+>>
+>> Alex Smith (3):
+>>   mtd: nand: increase ready wait timeout and report timeouts
+>>   dt-bindings: binding for jz4780-{nand,bch}
+>>   mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs
+>>
+>>  .../bindings/mtd/ingenic,jz4780-nand.txt           |  57 ++++
+>>  drivers/mtd/nand/Kconfig                           |   7 +
+>>  drivers/mtd/nand/Makefile                          |   1 +
+>>  drivers/mtd/nand/jz4780_bch.c                      | 354 +++++++++++++++++++
+>>  drivers/mtd/nand/jz4780_bch.h                      |  42 +++
+>>  drivers/mtd/nand/jz4780_nand.c                     | 376 +++++++++++++++++++++
+>>  drivers/mtd/nand/nand_base.c                       |  15 +-
+>>  7 files changed, 849 insertions(+), 3 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+>>  create mode 100644 drivers/mtd/nand/jz4780_bch.c
+>>  create mode 100644 drivers/mtd/nand/jz4780_bch.h
+>>  create mode 100644 drivers/mtd/nand/jz4780_nand.c
+> 
+> Hi,
+> 
+> Would it be possible for these to go in for 4.3?
+> 
+> Thanks,
+> Alex
 
---NyChO5MpGs3JHJbz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Aug 20, 2015 at 10:48:38AM +0800, Dongsheng Yang wrote:
-> On 08/20/2015 04:35 AM, Richard Weinberger wrote:
-> >This is a partial revert of commit d7f0b70d30ffb9bbe6b8a3e1035cf0b79965e=
-f53
-> >("UBIFS: Add security.* XATTR support for the UBIFS").
->=20
-> Hi Richard,
-> 	What about a full reverting of this commit. In ubifs, we
-> *can* support any namespace of xattr including user, trusted, security
-> or other anyone prefixed by any words. But we have a check_namespace()
-> in xattr.c to limit what we want to support. That said, if we want to
-> "Add security.* XATTR support for the UBIFS", what we need to do is
-> just extending the check_namespace() to allow security namespace pass.
-> And yes, check_namespace() have been supporting security namespace.
-
-Is this good enough?  Yes, it'd mean that the xattrs end up on disk, but
-then who's responsible for invoking the selected LSMs inode_init_security()=
- hooks?
-AFAICT, we'd still need to invoke security_inode_init_security for newly
-created inodes (which, Richard's proposed commit still does).
-
-Thanks,
-
-  Josh (who, admittedly, is neither a filesystem nor security module guy :)
-
---NyChO5MpGs3JHJbz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAABCAAGBQJV3cnqAAoJEKp7ZBKwQFArZmUH/RahFRE6YWI4DZVqIl2bQe0L
-wHn7x5pFPjExC3c+smzpxW+cJPyTDd28Eg1g8B7IrT3Ls7ZYUeHje2a2hNfuJ7FS
-9RRz25RPz46dv/Tlgkr8Rocthng28WU5H/QQ3rk2k0EqJj0etH6dkEym8gB8BNi/
-z28t+fFL9TmCrfOlPHRtKwTuNnlcbEsYCADmFHi6HlNSXyPv25IIp5Jyh9GA90uO
-v8BRVbAgCKvbfW73aSHY3u0ovaD9gN+u1np/pnTWoV75OsFHZQPi81CpFKsr6bd/
-l6QTy6MWlbt7GGVb1w2NeQVbn8vm8yR2o6lO864duj2BjD1X56CsyyoJDzHi1fc=
-=bOUW
------END PGP SIGNATURE-----
-
---NyChO5MpGs3JHJbz--
+Ping again.
