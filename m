@@ -1,26 +1,21 @@
+Message-ID: <55DF4C82.3070708@st.com>
+Date: Thu, 27 Aug 2015 10:44:34 -0700
+From: vikas <vikas.manocha@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
+ <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
+ <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+References: <1440148851-14621-1-git-send-email-marex@denx.de>
+In-Reply-To: <1440148851-14621-1-git-send-email-marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Date: Thu, 27 Aug 2015 10:25:15 -0700
-From: Stefan Agner <stefan@agner.ch>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: dwmw2@infradead.org, sebastian@breakpoint.cc, robh+dt@kernel.org,
- pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
- galak@codeaurora.org, shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
- bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, albert.aribaud@3adev.fr,
- klimov.linux@gmail.com, Bill Pringlemeir <bpringlemeir@nbsps.com>
-Subject: Re: [PATCH v10 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-In-Reply-To: <20150827163421.GX81844@google.com>
-References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
- <1438594050-4595-2-git-send-email-stefan@agner.ch>
- <20150825201631.GK81844@google.com>
- <bf1ed158fe08b51c4668faffde44083f@agner.ch>
- <20150827163421.GX81844@google.com>
-Message-ID: <9ccab0ac37e59f58b16718708653d7ea@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,101 +25,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015-08-27 09:34, Brian Norris wrote:
-> On Wed, Aug 26, 2015 at 06:02:31PM -0700, Stefan Agner wrote:
->> On 2015-08-25 13:16, Brian Norris wrote:
->> > On Mon, Aug 03, 2015 at 11:27:26AM +0200, Stefan Agner wrote:
->> >> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
->> >> new file mode 100644
->> >> index 0000000..5c8dfe8
->> >> --- /dev/null
->> >> +++ b/drivers/mtd/nand/vf610_nfc.c
->> >> @@ -0,0 +1,645 @@
->> >
->> > ...
->> >
->> >> +/*
->> >> + * This function supports Vybrid only (MPC5125 would have full RB and four CS)
->> >> + */
->> >> +static void vf610_nfc_select_chip(struct mtd_info *mtd, int chip)
->> >> +{
->> >> +#ifdef CONFIG_SOC_VF610
->> >
->> > Why the #ifdef? I don't see anything compile-time specific to SOC_VF610.
->> >
->> > If this is trying to handle the comment above ("This function supports
->> > Vybrid only (MPC5125 would have full RB and four CS)") then that's the
->> > wrong way of doing it, as you need to support multiplatform kernels.
->> > You'll need to have a way to differentiate the different platform
->> > support at runtime, not compile time.
->>
->> Yes it is trying to handle the comment above. Well, the other two
->> platforms I am aware of are also different architectures... (PowerPC and
->> ColdFire). I think we won't have a multi-architecture kernel anytime
->> soon,
-> 
-> Ha, right. Sorry, I don't really know this particular IP.
-> 
->> hence I think removing the code at compile time is the right thing
->> todo.
-> 
-> I don't believe that conclusion follows though.
-> 
->> However, probably CONFIG_SOC_VF610 is the wrong symbol then, I could
->> just use CONFIG_ARM and add a comment that this might be different on
->> another other ARM SoC than VF610.
->>
->> Just checked CodingStyle, and I see that IS_ENABLED is the preferred way
->> for conditional compiling.
->>
->> So my suggestion:
->>
->> static void vf610_nfc_select_chip(struct mtd_info *mtd, int chip)
->> {
->> 	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
->> 	u32 tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
->>
->> 	if (!IS_ENABLED(CONFIG_ARM))
->> 		return;
->>
->> 	/*
->> 	 * This code is only tested on the ARM platform VF610
->> 	 * PowerPC based MPC5125 would have full RB and four CS
->> 	 */
->> ....
->>
->> With that the compiler should be able to remove this (currently) ARM
->> VF610 specific code on the other supported architectures...
->>
->> What do you think?
-> 
-> The code structure isn't bad, and yes, IS_ENABLED() would be preferable,
-> as it removes some of the problems with #ifdef, but I still don't think
-> the processor architecture has much to do with the version of the IP.
+Hi,
 
-Well yes, the processor architecture has probably not much to do with
-the IP version.
-
-However, that particular problem, the wiring up of the CS/RB signals, is
-probably more SoC (as a whole) specific, and how that is done might have
-some relation which architecture is in use...
-
-I do not have a strong opinion on this, so we might as well go with the
-run-time distinction using compatible. If there are different IP
-variants within one architecture, we anyway would need to do that.
-
-> The canonical way of distiguishing per-IP revisions is to key on the
-> compatible property. So you'd have some kind of enum, which would
-> currently only have an entry for VF610. i.e.:
+On 08/21/2015 02:20 AM, Marek Vasut wrote:
+> From: Graham Moore <grmoore@opensource.altera.com>
 > 
-> 	/* MPC5125 not yet supported */
-> 	if (nfc->revision != NAND_VFC610)
-> 		return;
+> Add binding document for the Cadence QSPI controller.
 > 
+> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: Alan Tull <atull@opensource.altera.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
+> Cc: Graham Moore <grmoore@opensource.altera.com>
+> Cc: Vikas MANOCHA <vikas.manocha@st.com>
+> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
+> Cc: devicetree@vger.kernel.org
+> ---
+>  .../devicetree/bindings/mtd/cadence-quadspi.txt    | 56 ++++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+> 
+> V2: Add cdns prefix to driver-specific bindings.
+> V3: Use existing property "is-decoded-cs" instead of creating a
+>     duplicate, "ext-decoder". Timing parameters are in nanoseconds,
+>     not master reference clocks. Remove bus-num completely.
+> V4: Add new properties fifo-width and trigger-address
+> V7: - Prefix all of the Cadence-specific properties with cdns prefix,
+>       those are in particular "cdns,is-decoded-cs", "cdns,fifo-depth",
+>       "cdns,fifo-width", "cdns,trigger-address".
+>     - Drop bogus properties which were not used and were incorrect.
+> V8: Align lines to 80 chars.
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+> new file mode 100644
+> index 0000000..f248056
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+> @@ -0,0 +1,56 @@
+> +* Cadence Quad SPI controller
+> +
+> +Required properties:
+> +- compatible : Should be "cdns,qspi-nor".
+> +- reg : Contains two entries, each of which is a tuple consisting of a
+> +	physical address and length. The first entry is the address and
+> +	length of the controller register set. The second entry is the
+> +	address and length of the QSPI Controller data area.
 
-Ok, just checked, I can use the data field of the of table to assign
-specific data to a compatible string, similar to how pxa3xx_nand.c does
-it.
+still hooked up with  "Controller data area", it is ambiguous.
+Use something which is more clear: Nor Flash memory mapped address.
 
---
-Stefan
+> +- interrupts : Unit interrupt specifier for the controller interrupt.
+> +- clocks : phandle to the Quad SPI clock.
+> +- cdns,fifo-depth : Size of the data FIFO in words.
+> +- cdns,fifo-width : Bus width of the data FIFO in bytes.
+> +- cdns,trigger-address : 32-bit indirect AHB trigger address.
+> +
+> +Optional properties:
+
+again, is it optional ? can the driver be used without these properties ?
+
+> +- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
+
+again, add info what the decoder is for ? 
+
+> +
+> +Optional subnodes:
+> +Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
+> +custom properties:
+> +- cdns,read-delay : Delay for read capture logic, in clock cycles
+> +- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
+> +                  mode chip select outputs are de-asserted between
+> +		  transactions.
+> +- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
+> +                  de-activated and the activation of another.
+> +- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
+> +                  transaction and deasserting the device chip select
+> +		  (qspi_n_ss_out).
+> +- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
+> +                  and first bit transfer.
+> +
+> +Example:
+> +
+> +	qspi: spi@ff705000 {
+> +		compatible = "cdns,qspi-nor";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		reg = <0xff705000 0x1000>,
+> +		      <0xffa00000 0x1000>;
+> +		interrupts = <0 151 4>;
+> +		clocks = <&qspi_clk>;
+> +		cdns,is-decoded-cs;
+
+flag value ?
+
+Cheers,
+Vikas
+
+> +		cdns,fifo-depth = <128>;
+> +		cdns,fifo-width = <4>;
+> +		cdns,trigger-address = <0x00000000>;
+> +
+> +		flash0: n25q00@0 {
+> +			...
+> +			cdns,read-delay = <4>;
+> +			cdns,tshsl-ns = <50>;
+> +			cdns,tsd2d-ns = <50>;
+> +			cdns,tchsh-ns = <4>;
+> +			cdns,tslch-ns = <4>;
+> +		};
+> +	};
+> 
