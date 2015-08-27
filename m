@@ -1,27 +1,24 @@
-Received: from eu-smtp-delivery-143.mimecast.com ([146.101.78.143])
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUmmW-00065N-Ct
- for linux-mtd@lists.infradead.org; Thu, 27 Aug 2015 02:19:13 +0000
-Date: Thu, 27 Aug 2015 10:18:32 +0800
-From: Huang Shijie <shijie.huang@arm.com>
-To: Han Xu <xhnjupt@gmail.com>
-Cc: Han Xu <b45815@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>,
- boris.brezillon@free-electrons.com, vinod.koul@intel.com,
- linux-kernel@vger.kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Nicholas Mc Guire <hofrat@osadl.org>, dmaengine@vger.kernel.org,
- dan.j.williams@intel.com, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 4/6] mtd: nand: gpmi: add GPMI NAND support for i.MX7D
-Message-ID: <20150827021832.GA4193@free64-pc.asiapac.arm.com>
-References: <1439868295-24890-1-git-send-email-b45815@freescale.com>
- <20150818065252.GB10641@free64-pc.asiapac.arm.com>
- <CA+EcR23-nhpoEz1tcGMPmb07RcEAk-dQCCnkCpNra50RjXwe_A@mail.gmail.com>
+ id 1ZUnOs-0002fh-DT
+ for linux-mtd@lists.infradead.org; Thu, 27 Aug 2015 02:58:51 +0000
+Message-ID: <55DE7B6B.1010200@cn.fujitsu.com>
+Date: Thu, 27 Aug 2015 10:52:27 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+EcR23-nhpoEz1tcGMPmb07RcEAk-dQCCnkCpNra50RjXwe_A@mail.gmail.com>
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+To: <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
+ <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <richard.weinberger@gmail.com>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v2 23/35] ubifs: set/clear MS_RDONLY properly in
+ ubifs_remount
+References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>		
+ <1438235311-23788-24-git-send-email-yangds.fnst@cn.fujitsu.com>		
+ <55C671F0.5050607@nod.at> <55C81090.1010802@cn.fujitsu.com>		
+ <55DA7379.3030009@cn.fujitsu.com> <1440399770.15510.20.camel@gmail.com>	
+ <55DAC3C3.9050906@cn.fujitsu.com> <1440401215.15510.35.camel@gmail.com>
+In-Reply-To: <1440401215.15510.35.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,15 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 26, 2015 at 03:24:14PM -0500, Han Xu wrote:
-> Hi Shijie,
->=20
-> The features for MX6 and MX7 are not identical, I would love to use
-> two macros in this patch and will push another patch to use quirks to
-> distinguish them, is that Okay for you?
-okay, no problem.
+On 08/24/2015 03:26 PM, Artem Bityutskiy wrote:
+> On Mon, 2015-08-24 at 15:12 +0800, Dongsheng Yang wrote:
+>> On 08/24/2015 03:02 PM, Artem Bityutskiy wrote:
+[...]
+>
+> Well, sounds like a bug. Either we missed that, or VFS used to set it,
+Hi Artem,
 
-Actually, you should be the maintainer for the gpmi driver, not me :)
+Yes, VFS is setting flags after sb->s_op->remount_fs(). But someone
+would use it in remount_fs() such as quota. That's the reason for this
+patch. What I want here is to make our ubifs working similarly with
+other filesystems setting or clearing MS_RDONLY in remount_fs(). Because
+someone in vfs needs this information.
 
-thanks
-Huang Shijie
+Although that's another topic, we set MS_RDONLY twice, one in ubifs, two
+in VFS. But they are different. in ubifs, we only set the MS_RDONLY in
+remount_ro() specially for MS_RDONLY. But in VFS, we are
+setting all flags for s_flags in remounting. So, I think it's okey in 
+design.
+
+> and now does not. In either case, IIUC, the MS_RDONLY flag should be
+> set on remount and reflect the mount state. Please, verify /proc/mounts
+> after RO<->RW remounts - we must make sure mount options are correct
+> there. You can cook a patch and send it. Do not forget to add the
+> stable tag then.
+
+Before adding quota for ubifs, there is no user to use MS_RDONLY
+before do_remount() returning. So there is no problem before
+adding quota in ubifs and no need for stable then.
+
+Thanx
+Yang
+>
+> Artem.
+> .
+>
