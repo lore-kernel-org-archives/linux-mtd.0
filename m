@@ -1,24 +1,27 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUnOs-0002fh-DT
- for linux-mtd@lists.infradead.org; Thu, 27 Aug 2015 02:58:51 +0000
-Message-ID: <55DE7B6B.1010200@cn.fujitsu.com>
-Date: Thu, 27 Aug 2015 10:52:27 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
- <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <richard.weinberger@gmail.com>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 23/35] ubifs: set/clear MS_RDONLY properly in
- ubifs_remount
-References: <1438235311-23788-1-git-send-email-yangds.fnst@cn.fujitsu.com>		
- <1438235311-23788-24-git-send-email-yangds.fnst@cn.fujitsu.com>		
- <55C671F0.5050607@nod.at> <55C81090.1010802@cn.fujitsu.com>		
- <55DA7379.3030009@cn.fujitsu.com> <1440399770.15510.20.camel@gmail.com>	
- <55DAC3C3.9050906@cn.fujitsu.com> <1440401215.15510.35.camel@gmail.com>
-In-Reply-To: <1440401215.15510.35.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAGnW=BZtsVtT+Z7gTq5jybXsHWp+RNpjc6ckk6-MXWxAS7u8Mw@mail.gmail.com>
+References: <1440570367-22569-1-git-send-email-ranjit.waghmode@xilinx.com>
+ <CAD6G_RQhWBsUTZNBB44W98Fjzw82H_D_E9nY0aDWezj729mkoA@mail.gmail.com>
+ <CAGnW=BZtsVtT+Z7gTq5jybXsHWp+RNpjc6ckk6-MXWxAS7u8Mw@mail.gmail.com>
+Date: Thu, 27 Aug 2015 11:53:16 +0530
+Message-ID: <CAD6G_RTCQ5Fzjgxz+-3oMDAyUTg6UFAqvpEPQzJ9maSTZ3Nc_g@mail.gmail.com>
+Subject: Re: [LINUX RFC v2 0/4] spi: add dual parallel mode support in Zynq
+ MPSoC GQSPI controller
+From: Jagan Teki <jteki@openedev.com>
+To: punnaiah choudary kalluri <punnaia@xilinx.com>
+Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>, harinik@xilinx.com,
+ zajec5@gmail.com, juhosg@openwrt.org, ben@decadent.org.uk,
+ Ranjit Waghmode <ranjit.waghmode@xilinx.com>, linux-spi@vger.kernel.org,
+ Michal Simek <michal.simek@xilinx.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, broonie@kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ knut.wohlrab@de.bosch.com, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Soren Brinkmann <soren.brinkmann@xilinx.com>, beanhuo@micron.com,
+ Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +31,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/24/2015 03:26 PM, Artem Bityutskiy wrote:
-> On Mon, 2015-08-24 at 15:12 +0800, Dongsheng Yang wrote:
->> On 08/24/2015 03:02 PM, Artem Bityutskiy wrote:
-[...]
+On 26 August 2015 at 21:02, punnaiah choudary kalluri
+<punnaia@xilinx.com> wrote:
+> On Wed, Aug 26, 2015 at 5:49 PM, Jagan Teki <jteki@openedev.com> wrote:
+>> On 26 August 2015 at 11:56, Ranjit Waghmode <ranjit.waghmode@xilinx.com> wrote:
+>>> This series adds dual parallel mode support for Zynq Ultrascale+
+>>> MPSoC GQSPI controller driver.
+>>>
+>>> What is dual parallel mode?
+>>> ---------------------------
+>>> ZynqMP GQSPI controller supports Dual Parallel mode with following functionalities:
+>>> 1) Supporting two SPI flash memories operating in parallel. 8 I/O lines.
+>>> 2) Chip selects and clock are shared to both the flash devices
+>>> 3) This mode is targeted for faster read/write speed and also doubles the size
+>>> 4) Commands/data can be transmitted/received from both the devices(mirror),
+>>>    or only upper or only lower flash memory devices.
+>>> 5) Data arrangement:
+>>>    With stripe enabled,
+>>>    Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
+>>>    Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
+>>>
+>>> This series also updated MTD layer files for adding parallel mode support.
+>>>
+>>> 1) Added Support for two flashes
+>>> 2) Support to enable/disable data stripe as and when required.
+>>> 3) Added required parameters to spi_nor structure. Initialized all
+>>>    added parameters in spi_nor_scan()
+>>> 4) Added support for dual parallel in spi_nor_read/write/erase functions by:
+>>>    a) Increasing page_size, sector_size, erase_size and toatal flash size
+>>>       as and when required.
+>>>    b) Dividing address by 2
+>>>    c) Updating spi->master->flags for qspi driver to change CS
+>>> 5) Updated read_sr() to get status of both flashes
+>>> 6) Also updated read_fsr() to get status of both flashes
+>>>
+>>> These all are very high level changes and expected to make an idea clear.
+>>> Comments and suggestions are always welcomed
+>>>
+>>> ---
+>>> V2 Changes:
+>>> a) Splitted patches based on logical changes
+>>> b) Added error handling for newly added APIs in SPI core
+>>> ---
+>>>
+>>> Ranjit Waghmode (4):
+>>>   spi: add support of two chip selects & data stripe
+>>>   mtd: add spi_device instance to spi_nor struct
+>>>   spi-nor: add dual parallel mode support
+>>>   spi: zynqmp: gqspi: add support for dual parallel mode configuration
+>>
+>> I don't find any previous discussion about way to inform flash
+>> dual-ness into spi-nor
+>> from spi drivers.
+>>
+>> Here is my idea, probably others may think same.
+>> Informing dual_flash from drivers/spi through flags or any other mode
+>> bits is not a better approach as dual flash feature is specific to
+>> spi-nor flash controller (controller specially designed for spi-nor
+>> flash not the generic spi controller).  So if the driver sits on
+>> drivers/mtd/spi-nor/ (ex: fsl-quadspi.c), may be we can inform flash
+>> specific things to spi-nor as it's not touching generic spi stack in
+>> Linux. But there is a defined-drawback if the driver is moved to
+>> drivers/mtd/spi-nor ie it can't use spi core API's at-all.
 >
-> Well, sounds like a bug. Either we missed that, or VFS used to set it,
-Hi Artem,
+> Xilinx GQSPI is a generic quad spi controller. The primary goal is to support
+> Generic/Future command sequences and Future NOR/NAND flash devices.
+> This core can also be used for legacy SPI devices. Due to the generic nature
+> of the core, software can generate any command sequence. It also has additional
+> features like parallel and stacked configurations to double the data
+> rate and size.
+> Accessing spi-nor flash device is one particular use case and like
+> that there will be
+> many. So, we decided to keep this driver in generic spi framework and
+> that is the ideal
+> thing to do for the GQSPI controller.
 
-Yes, VFS is setting flags after sb->s_op->remount_fs(). But someone
-would use it in remount_fs() such as quota. That's the reason for this
-patch. What I want here is to make our ubifs working similarly with
-other filesystems setting or clearing MS_RDONLY in remount_fs(). Because
-someone in vfs needs this information.
+Yes, I understand the generic nature of the GQSPI and it's good to
+have all-in-one like generic spi, spi-nor and spi-nand and more
+together, but Linux stacks were implemented in such a way to support
+the each type of controller with connected slaves separably for better
+handling.
 
-Although that's another topic, we set MS_RDONLY twice, one in ubifs, two
-in VFS. But they are different. in ubifs, we only set the MS_RDONLY in
-remount_ro() specially for MS_RDONLY. But in VFS, we are
-setting all flags for s_flags in remounting. So, I think it's okey in 
-design.
+Currently GQSPI driver is added in drivers/spi as it supports generic
+spi nature and now it enhanced more through flags for supporting
+spi-nor, what if we add spi-nand support for the same controller? do
+we add one more driver in spi-nand framework (drivers/mtd/spi-nand -
+an on going implementation)? My only observation here is even if the
+controller is more generic to support more number of device classes,
+and adding same driver and populate the slave stuff through flags or
+different kind of mechanism to different driver stack, this is not a
+better approach I thought.
 
-> and now does not. In either case, IIUC, the MS_RDONLY flag should be
-> set on remount and reflect the mount state. Please, verify /proc/mounts
-> after RO<->RW remounts - we must make sure mount options are correct
-> there. You can cook a patch and send it. Do not forget to add the
-> stable tag then.
+Based on the above comments, there is an approach to handle this
+support and I'm not 100% sure whether this fits or not but we
+implemented the same -  this is "probing child devices from parent"
+(there was a discussion with Arnd earlier wrt this, but I'm unable to
+get the mailing thread)
 
-Before adding quota for ubifs, there is no user to use MS_RDONLY
-before do_remount() returning. So there is no problem before
-adding quota in ubifs and no need for stable then.
+Added Arnd (probably will give more inputs or corrections)
 
-Thanx
-Yang
->
-> Artem.
-> .
->
+Let me explain how we implemented on our design.
+We have PCIe controller that support basic root complex handling, dma
+and controller hotplug (not in-build pcie hp) and ideally we need to
+write driver for handling root complex on drivers/pci/host and one
+hotplug driver in drivers/pci and one more driver in drivers/dma for
+handling pcie dma stuff. And some pcie calls need to navigate from
+root complex driver to dma and hotplug driver that means there is call
+transition from driver/pci to driver/dma which is absolutely not a
+good approach (spi to spi-nor and spi-nand transition - in GQSPI case)
+
+So the implementation we follow is like there is a pcie root complex
+driver(probably generic spi driver in drivers/spi/*) and inside probe
+we have register platform_device for hotplug (spi-nor) and dma
+(spi-nand) and the dma driver in drivers/dma and hotplug driver in
+driver/pci/ are platform drivers which is of legacy binding (not with
+dts) so there should be a common dts for root complex driver
+(drivers/spi/*) and individual child driver need to take those while
+registering platform_device.
+
+example pseudo:
+
+drivers/dma/dma-child2.c
+
+Legacy platform_driver binding and handling dma future as normal dma
+driver, spi-nand in your case
+
+drivers/pci/hotplug/hp-child1.c
+
+Legacy platform_driver binding and handling hotplug future as normal
+hotplug driver, spi-nor in your case.
+
+drivers/pci/host/rc-parent-pci.c
+
+static int rc_parent_pcie_probe_bridge(struct platform_device *pdev)
+{
+   // Generic rc handling (genric spi stuff)
+
+   // Hotplug handling (spi-nor)
+   - platform_device_alloc
+   - assign need resources
+   - register pdev using platform_device_add
+
+    // DMA handling (spi-nand)
+   - same as above
+}
+
+static const struct of_device_id rc_parent_pcie_match_table[] = {
+        {.compatible = "abc,rc-parent",},
+        {},
+};
+
+static struct platform_driver rc_parent_pcie_driver = {
+        .driver = {
+                   .name = "rc-parent",
+                   .of_match_table = of_match_ptr(rc_parent_pcie_match_table),
+        },
+        .probe = rc_parent_pcie_probe_bridge,
+};
+module_platform_driver(rc_parent_pcie_driver);
+
+I couldn't find any driver mainlined wrt this design, think more on
+GQSPI front, whether this design fits well or not.
+
+thanks!
+-- 
+Jagan | openedev.
