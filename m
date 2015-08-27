@@ -1,24 +1,25 @@
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZUled-000072-BR
+ for linux-mtd@lists.infradead.org; Thu, 27 Aug 2015 01:06:59 +0000
+Message-ID: <55DE6130.1060905@cn.fujitsu.com>
+Date: Thu, 27 Aug 2015 09:00:32 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Josh Cartwright <joshc@ni.com>
+CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>, Subodh
+ Nijsure <snijsure@grid-net.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Brad Mouring <brad.mouring@ni.com>, Gratian Crisan <gratian.crisan@ni.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>
+Subject: Re: [PATCH 1/2] ubifs: Remove dead xattr code
+References: <1440016553-26481-1-git-send-email-richard@nod.at>
+ <55D54006.9030700@cn.fujitsu.com>
+ <20150826141509.GJ8016@jcartwri.amer.corp.natinst.com>
+In-Reply-To: <20150826141509.GJ8016@jcartwri.amer.corp.natinst.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Wed, 26 Aug 2015 18:02:31 -0700
-From: Stefan Agner <stefan@agner.ch>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: dwmw2@infradead.org, sebastian@breakpoint.cc, robh+dt@kernel.org,
- pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
- galak@codeaurora.org, shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
- bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, albert.aribaud@3adev.fr,
- klimov.linux@gmail.com, Bill Pringlemeir <bpringlemeir@nbsps.com>
-Subject: Re: [PATCH v10 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-In-Reply-To: <20150825201631.GK81844@google.com>
-References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
- <1438594050-4595-2-git-send-email-stefan@agner.ch>
- <20150825201631.GK81844@google.com>
-Message-ID: <bf1ed158fe08b51c4668faffde44083f@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,125 +29,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015-08-25 13:16, Brian Norris wrote:
-> A few more comments.
-> 
-> On Mon, Aug 03, 2015 at 11:27:26AM +0200, Stefan Agner wrote:
->> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
->> new file mode 100644
->> index 0000000..5c8dfe8
->> --- /dev/null
->> +++ b/drivers/mtd/nand/vf610_nfc.c
->> @@ -0,0 +1,645 @@
-> 
-> ...
-> 
->> +/*
->> + * This function supports Vybrid only (MPC5125 would have full RB and four CS)
->> + */
->> +static void vf610_nfc_select_chip(struct mtd_info *mtd, int chip)
->> +{
->> +#ifdef CONFIG_SOC_VF610
-> 
-> Why the #ifdef? I don't see anything compile-time specific to SOC_VF610.
-> 
-> If this is trying to handle the comment above ("This function supports
-> Vybrid only (MPC5125 would have full RB and four CS)") then that's the
-> wrong way of doing it, as you need to support multiplatform kernels.
-> You'll need to have a way to differentiate the different platform
-> support at runtime, not compile time.
+On 08/26/2015 10:15 PM, Josh Cartwright wrote:
+> On Thu, Aug 20, 2015 at 10:48:38AM +0800, Dongsheng Yang wrote:
+>> On 08/20/2015 04:35 AM, Richard Weinberger wrote:
+>>> This is a partial revert of commit d7f0b70d30ffb9bbe6b8a3e1035cf0b79965ef53
+>>> ("UBIFS: Add security.* XATTR support for the UBIFS").
+>>
+>> Hi Richard,
+>> 	What about a full reverting of this commit. In ubifs, we
+>> *can* support any namespace of xattr including user, trusted, security
+>> or other anyone prefixed by any words. But we have a check_namespace()
+>> in xattr.c to limit what we want to support. That said, if we want to
+>> "Add security.* XATTR support for the UBIFS", what we need to do is
+>> just extending the check_namespace() to allow security namespace pass.
+>> And yes, check_namespace() have been supporting security namespace.
+>
+> Is this good enough?  Yes, it'd mean that the xattrs end up on disk, but
+> then who's responsible for invoking the selected LSMs inode_init_security() hooks?
+> AFAICT, we'd still need to invoke security_inode_init_security for newly
+> created inodes (which, Richard's proposed commit still does).
 
-Yes it is trying to handle the comment above. Well, the other two
-platforms I am aware of are also different architectures... (PowerPC and
-ColdFire). I think we won't have a multi-architecture kernel anytime
-soon, hence I think removing the code at compile time is the right thing
-todo.
+OH, right. My bad!!!! I missed the security_inode_init_security().
+Besides to allow security.* prefix in xattr, we still need to call
+security_inode_init_security() in ubifs_create(). That's true.
 
-However, probably CONFIG_SOC_VF610 is the wrong symbol then, I could
-just use CONFIG_ARM and add a comment that this might be different on
-another other ARM SoC than VF610.
+So what we need to remove is only the ubifs_xattr_handlers.
 
-Just checked CodingStyle, and I see that IS_ENABLED is the preferred way
-for conditional compiling.
+Thanx Josh, you are right.
 
-So my suggestion:
+And Richard, sorry for my bad mind.
 
-static void vf610_nfc_select_chip(struct mtd_info *mtd, int chip)
-{
-	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-	u32 tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
+Reviewed-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 
-	if (!IS_ENABLED(CONFIG_ARM))
-		return;
-
-	/*
-	 * This code is only tested on the ARM platform VF610
-	 * PowerPC based MPC5125 would have full RB and four CS
-	 */
-....
-
-With that the compiler should be able to remove this (currently) ARM
-VF610 specific code on the other supported architectures...
-
-What do you think?
-
-
-> 
->> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
->> +	u32 tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
->> +
->> +	tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
->> +	tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
->> +
->> +	if (chip == 0)
->> +		tmp |= 1 << ROW_ADDR_CHIP_SEL_SHIFT;
->> +	else if (chip == 1)
->> +		tmp |= 2 << ROW_ADDR_CHIP_SEL_SHIFT;
-> 
-> 	else ... ?
-> 
-> Maybe you can write this as a formulaic pattern (e.g.:
-> 
-> 	tmp |= (chip + 1) << ROW_ADDR_CHIP_SEL_SHIFT;
-> 
-> ) and just do the "max # of chips" checks on a per-platform basis in the
-> probe(). Then I'm guessing this same function can apply to both
-> platforms. (I'm not looking at HW datasheets for this, BTW, just
-> guessing based on the context here.)
-
-It seems that MCP5125 is different than VF610. MCP5125 has 4 chip
-selects and 4 R/B signals, whereas VF610 has only 2 chip selects and
-just 1 R/B signals...
-
-> But wait...I see that you call nand_scan_ident() with a max of 1 chip.
-> So you won't ever see the chip > 0 case, right?
-> 
-> So does this driver support multiple flash attached or not? Looks like
-> you're assuming you'll only be using chip-select 0. (This is fine for
-> now, but at least your code should acknowledge this. Perhaps a comment
-> at the top under "limitations.")
-> 
-
-Ok, will add that information under limitations.
-
-
->> +
->> +	vf610_nfc_write(nfc, NFC_ROW_ADDR, tmp);
->> +#endif
->> +}
-> 
-> ...
-> 
->> +static int vf610_nfc_probe(struct platform_device *pdev)
->> +{
-> 
-> ...
-> 
->> +	/* first scan to find the device and get the page size */
->> +	if (nand_scan_ident(mtd, 1, NULL)) {
->> +		err = -ENXIO;
->> +		goto error;
->> +	}
-
---
-Stefan
+Thanx
+Yang
+>
+> Thanks,
+>
+>    Josh (who, admittedly, is neither a filesystem nor security module guy :)
+>
