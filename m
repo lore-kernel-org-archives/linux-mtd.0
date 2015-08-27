@@ -1,29 +1,29 @@
+Subject: Re: [PATCH linux-next v5 1/5] mtd: spi-nor: notify (Q)SPI controller
+ about protocol change
+To: Jonas Gorski <jogo@openwrt.org>
+References: <cover.1440580764.git.cyrille.pitchen@atmel.com>
+ <464fce12d75a5ba2105456cfd0a385b2d40305ba.1440580764.git.cyrille.pitchen@atmel.com>
+ <CAOiHx=n+byfsbJNhnboqDEwhruOT8uKDJ+CcES7QBqPDLVAMsw@mail.gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: <nicolas.ferre@atmel.com>, Mark Brown <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>, "Bean Huo (beanhuo)" <beanhuo@micron.com>, Gabor Juhos
+ <juhosg@openwrt.org>, =?UTF-8?Q?Marek_Va=c5=a1ut?= <marex@denx.de>,
+ <shijie.huang@intel.com>, Ben Hutchings <ben@decadent.org.uk>, Mark Rutland
+ <mark.rutland@arm.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, "MTD
+ Maling List" <linux-mtd@lists.infradead.org>, Kumar Gala
+ <galak@codeaurora.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>
+Message-ID: <55DEDDBD.8060408@atmel.com>
+Date: Thu, 27 Aug 2015 11:51:57 +0200
 MIME-Version: 1.0
-Sender: kalluripunnaiahchoudary@gmail.com
-In-Reply-To: <CAD6G_RTCQ5Fzjgxz+-3oMDAyUTg6UFAqvpEPQzJ9maSTZ3Nc_g@mail.gmail.com>
-References: <1440570367-22569-1-git-send-email-ranjit.waghmode@xilinx.com>
- <CAD6G_RQhWBsUTZNBB44W98Fjzw82H_D_E9nY0aDWezj729mkoA@mail.gmail.com>
- <CAGnW=BZtsVtT+Z7gTq5jybXsHWp+RNpjc6ckk6-MXWxAS7u8Mw@mail.gmail.com>
- <CAD6G_RTCQ5Fzjgxz+-3oMDAyUTg6UFAqvpEPQzJ9maSTZ3Nc_g@mail.gmail.com>
-Date: Thu, 27 Aug 2015 14:18:43 +0530
-Message-ID: <CAGnW=BZ80B_2kzZVULhZvEXFs+_GXkGbu8mii1eFp3MySvA8aA@mail.gmail.com>
-Subject: Re: [LINUX RFC v2 0/4] spi: add dual parallel mode support in Zynq
- MPSoC GQSPI controller
-From: punnaiah choudary kalluri <punnaia@xilinx.com>
-To: Jagan Teki <jteki@openedev.com>
-Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>, harinik@xilinx.com,
- zajec5@gmail.com, juhosg@openwrt.org, ben@decadent.org.uk,
- Ranjit Waghmode <ranjit.waghmode@xilinx.com>, linux-spi@vger.kernel.org,
- Michal Simek <michal.simek@xilinx.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>, broonie@kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- knut.wohlrab@de.bosch.com, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Soren Brinkmann <soren.brinkmann@xilinx.com>, beanhuo@micron.com,
- Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAOiHx=n+byfsbJNhnboqDEwhruOT8uKDJ+CcES7QBqPDLVAMsw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,162 +33,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 27, 2015 at 11:53 AM, Jagan Teki <jteki@openedev.com> wrote:
-> On 26 August 2015 at 21:02, punnaiah choudary kalluri
-> <punnaia@xilinx.com> wrote:
->> On Wed, Aug 26, 2015 at 5:49 PM, Jagan Teki <jteki@openedev.com> wrote:
->>> On 26 August 2015 at 11:56, Ranjit Waghmode <ranjit.waghmode@xilinx.com> wrote:
->>>> This series adds dual parallel mode support for Zynq Ultrascale+
->>>> MPSoC GQSPI controller driver.
->>>>
->>>> What is dual parallel mode?
->>>> ---------------------------
->>>> ZynqMP GQSPI controller supports Dual Parallel mode with following functionalities:
->>>> 1) Supporting two SPI flash memories operating in parallel. 8 I/O lines.
->>>> 2) Chip selects and clock are shared to both the flash devices
->>>> 3) This mode is targeted for faster read/write speed and also doubles the size
->>>> 4) Commands/data can be transmitted/received from both the devices(mirror),
->>>>    or only upper or only lower flash memory devices.
->>>> 5) Data arrangement:
->>>>    With stripe enabled,
->>>>    Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
->>>>    Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
-<snip>
->>> I don't find any previous discussion about way to inform flash
->>> dual-ness into spi-nor
->>> from spi drivers.
->>>
->>> Here is my idea, probably others may think same.
->>> Informing dual_flash from drivers/spi through flags or any other mode
->>> bits is not a better approach as dual flash feature is specific to
->>> spi-nor flash controller (controller specially designed for spi-nor
->>> flash not the generic spi controller).  So if the driver sits on
->>> drivers/mtd/spi-nor/ (ex: fsl-quadspi.c), may be we can inform flash
->>> specific things to spi-nor as it's not touching generic spi stack in
->>> Linux. But there is a defined-drawback if the driver is moved to
->>> drivers/mtd/spi-nor ie it can't use spi core API's at-all.
+Hi Jonas,
+
+Le 26/08/2015 16:02, Jonas Gorski a écrit :
+> On Wed, Aug 26, 2015 at 2:30 PM, Cyrille Pitchen
+> <cyrille.pitchen@atmel.com> wrote:
+>> Once the Quad SPI mode has been enabled on a Micron flash memory, this
+>> device expects ALL the following commands to use the SPI 4-4-4 protocol.
+>> The (Q)SPI controller needs to be notified about the protocol change so it
+>> can adapt and keep on dialoging with the Micron memory.
+> 
+> Doesn't that mean you need to disable quad mode on removal? Else the
+> following will break/fail:
+> 
+> insmod atmel-quadspi.ko ~> spi-nor attaches -> sees micron -> enables quad mode
+> rmmod atmel-quadspi.ko ~> spi-nor detaches
+> insmod atmel-quadspi.ko ~> spi-nor attaches -> fails to read the id
+> because flash is still in quad mode.
+>
+
+Indeed you're right such an issue does exist. So as you said one solution
+could be create a new function to "clean" what have been done by spi_nor_scan()
+then call it from remove() function of each driver calling spi_nor_scan() from
+its probe().
+However we could also enhance the probing of the memory. It is true that Micron
+spi nor memories only accept SPI 4-4-4 commands once switched in quad mode but
+actually they also provide a new command for this purpose:
+"Multiple I/O Read ID" (0xAF).
+Hence we could first try to probe using the regular Read ID (0x9F) command then
+change the protocol, for instance to SPI 4-4-4, and try the 0xAF command.
+I don't think all combinations for command/protocol need to be tested: for
+Micron memories, their datasheets claim the 0x9F command is only supported in
+"extended spi mode" so for the SPI 1-1-1 protocol whereas the 0xAF command
+only works in dual or quad modes.
+On the other hand Spansion memories still reply to the regular 0x9F command in
+SPI 1-1-1 protocol even after their quad mode had been enabled.
+For other manufacturers, well... I don't know!
+
+Some of the advantages of the probe solution as compared to the remove one are:
+- we don't need to patch all drivers using spi_nor_scan() to call a new
+  function from their remove().
+- it doesn't rely on the assumption that the spi-nor memory starts in
+  SPI 1-1-1 protocol. As a matter of fact the remove() won't be called for
+  built-in modules or in many (all ?) cases of reset. Moreover some bootloaders
+  may have already enabled the quad mode before starting the Linux kernel. This
+  is what the sama5d2 romcode does when it is configured to boot from a QSPI
+  memory.
+
+Anyway you're right and the issue need to be addressed but maybe in another
+dedicated patch ?
+ 
+>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> Acked-by: Marek Vasut <marex@denx.de>
+>> Acked-by: Bean Huo <beanhuo@micron.com>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 21 +++++++++++++++++++++
+>>  include/linux/mtd/spi-nor.h   | 13 +++++++++++++
+>>  2 files changed, 34 insertions(+)
 >>
->> Xilinx GQSPI is a generic quad spi controller. The primary goal is to support
->> Generic/Future command sequences and Future NOR/NAND flash devices.
->> This core can also be used for legacy SPI devices. Due to the generic nature
->> of the core, software can generate any command sequence. It also has additional
->> features like parallel and stacked configurations to double the data
->> rate and size.
->> Accessing spi-nor flash device is one particular use case and like
->> that there will be
->> many. So, we decided to keep this driver in generic spi framework and
->> that is the ideal
->> thing to do for the GQSPI controller.
->
-> Yes, I understand the generic nature of the GQSPI and it's good to
-> have all-in-one like generic spi, spi-nor and spi-nand and more
-> together, but Linux stacks were implemented in such a way to support
-> the each type of controller with connected slaves separably for better
-> handling.
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index c27d427fead4..c8810313a752 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -165,6 +165,22 @@ static inline int write_disable(struct spi_nor *nor)
+>>         return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0, 0);
+>>  }
+>>
+>> +/*
+>> + * Let the spi-nor framework notify lower layers, especially the driver of the
+>> + * (Q)SPI controller, about the new protocol to be used. Indeed, once the
+>> + * spi-nor framework has sent manufacturer specific commands to a memory to
+>> + * enable its Quad SPI mode, it should immediately after tell the QSPI
+>> + * controller to use the very same Quad SPI protocol as expected by the memory.
+>> + */
+>> +static inline int spi_nor_set_protocol(struct spi_nor *nor,
+>> +                                      enum spi_protocol proto)
+>> +{
+>> +       if (nor->set_protocol)
+>> +               return nor->set_protocol(nor, proto);
+>> +
+>> +       return 0;
+> 
+> Shouldn't the default assumption be that it won't support it? Also it
+> might make sense to first check if it's supported before enabling it
+> in the chip, so that we don't enable something just to then find out
+> we can't back out of it.
+> 
+> I also wonder if we need an extra flag for that as at least SPI has
+> RX_{DUAL,QUAD} and TX_{DUAL,QUAD} separated, so in theory there could
+> be a controller that supports quad read, but not quad write, so we
+> shouldn't be using the quad mode in that case. m25p80 currently sets
+> SPI_NOR_{DUAL,QUAD} only based on SPI_RX_{DUAL,QUAD}, so that would
+> then fail.
+> 
+> At least the n25q32 seems to support the "boring" 1_1_2 and 1_1_4
+> commands, so these should work in case the spi controller does not
+> support quad tx, but quad rx.
+> 
+> So maybe an additional flag for the "full" dual/quad modes would be in order.
+> 
 
-True and this is the reason we have controller drivers and protocol drivers.
-GQSPI is the controller driver and spi-nor and spi-nand are the
-protocol drivers.
+My first thought was to return -ENOSYS when the set_protocol() callback is not
+implemented but logically none of the already existing drivers implements it.
+So I made this new callback optional. This way, micron_quad_enable() works the
+exact same way as before for all the existing drivers so no regression or side-
+effect should be introduced by this patch.
 
->
-> Currently GQSPI driver is added in drivers/spi as it supports generic
-> spi nature and now it enhanced more through flags for supporting
-> spi-nor, what if we add spi-nand support for the same controller? do
-> we add one more driver in spi-nand framework (drivers/mtd/spi-nand -
-> an on going implementation)? My only observation here is even if the
-> controller is more generic to support more number of device classes,
-> and adding same driver and populate the slave stuff through flags or
-> different kind of mechanism to different driver stack, this is not a
-> better approach I thought.
+Besides, the purpose of this callback is to notify the SPI controller that the
+protocol change has been done at the memory side but not to decide whether such
+a change is possible. Indeed, the capabilities of both the controller and the
+memory are checked before calling set_quad_mode() so the decision has already
+been taken when micron_quad_enable() is eventually called. Once the Quad Mode
+bit set in the Enhanced Volatile Configuration Register of Micron memory, it's
+too late: the memory now expects commands in SPI 4-4-4 protocol whether or not
+the controller supports this protocol.
 
-Just to clear, dual parallel( 2 CS and 8 IO lines) is not only specific
-to flash parts, one can use for any other custom streaming protocols
-I would say exporting dual parallel connection to protocol drivers is
-something like depicting the spi bus topology to the protocol layer.
+So more accurate checks should be done before calling set_quad_mode(). Maybe
+the range of values for the mode parameter of spi_nor_scan() is too small.
+SPI_NOR_QUAD doesn't allow to make the difference between SPI protocols 1-1-4,
+1-4-4 or 4-4-4. Knowing the exact set of protocols supported by both the
+controller and the memory could help making the right decision and choosing the
+best suited Fast Read command.
+The RX_{DUAL_QUAD} and TX_{DUAL,QUAD} flags from the spi->mode in the m25p80
+driver provide more information than the limited "mode" argument of
+spi_nor_scan().
 
-AFAIK, spi-nor and spi-nand are protocol drivers for accessing the
-nor and nand flash devices sitting on the spi bus using the spi
-controller driver.
+> Last but not least, the protocol probably should be stored somewhere
+> in the nor struct, so that users don't have to store it themselves (I
+> assume they will need to check it for each command again to know if
+> the cmd/address should be send in serial or quad mode).
+> 
+> 
+I agree with you, this could be an improvement for some spi controller drivers :)
 
-Regards,
-Punnaiah
+> Jonas
+> 
 
->
-> Based on the above comments, there is an approach to handle this
-> support and I'm not 100% sure whether this fits or not but we
-> implemented the same -  this is "probing child devices from parent"
-> (there was a discussion with Arnd earlier wrt this, but I'm unable to
-> get the mailing thread)
->
-> Added Arnd (probably will give more inputs or corrections)
->
-> Let me explain how we implemented on our design.
-> We have PCIe controller that support basic root complex handling, dma
-> and controller hotplug (not in-build pcie hp) and ideally we need to
-> write driver for handling root complex on drivers/pci/host and one
-> hotplug driver in drivers/pci and one more driver in drivers/dma for
-> handling pcie dma stuff. And some pcie calls need to navigate from
-> root complex driver to dma and hotplug driver that means there is call
-> transition from driver/pci to driver/dma which is absolutely not a
-> good approach (spi to spi-nor and spi-nand transition - in GQSPI case)
->
-> So the implementation we follow is like there is a pcie root complex
-> driver(probably generic spi driver in drivers/spi/*) and inside probe
-> we have register platform_device for hotplug (spi-nor) and dma
-> (spi-nand) and the dma driver in drivers/dma and hotplug driver in
-> driver/pci/ are platform drivers which is of legacy binding (not with
-> dts) so there should be a common dts for root complex driver
-> (drivers/spi/*) and individual child driver need to take those while
-> registering platform_device.
->
-> example pseudo:
->
-> drivers/dma/dma-child2.c
->
-> Legacy platform_driver binding and handling dma future as normal dma
-> driver, spi-nand in your case
->
-> drivers/pci/hotplug/hp-child1.c
->
-> Legacy platform_driver binding and handling hotplug future as normal
-> hotplug driver, spi-nor in your case.
->
-> drivers/pci/host/rc-parent-pci.c
->
-> static int rc_parent_pcie_probe_bridge(struct platform_device *pdev)
-> {
->    // Generic rc handling (genric spi stuff)
->
->    // Hotplug handling (spi-nor)
->    - platform_device_alloc
->    - assign need resources
->    - register pdev using platform_device_add
->
->     // DMA handling (spi-nand)
->    - same as above
-> }
->
-> static const struct of_device_id rc_parent_pcie_match_table[] = {
->         {.compatible = "abc,rc-parent",},
->         {},
-> };
->
-> static struct platform_driver rc_parent_pcie_driver = {
->         .driver = {
->                    .name = "rc-parent",
->                    .of_match_table = of_match_ptr(rc_parent_pcie_match_table),
->         },
->         .probe = rc_parent_pcie_probe_bridge,
-> };
-> module_platform_driver(rc_parent_pcie_driver);
->
-> I couldn't find any driver mainlined wrt this design, think more on
-> GQSPI front, whether this design fits well or not.
->
-> thanks!
-> --
-> Jagan | openedev.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+thanks for your review!
+
+Best regards,
+
+Cyrille
