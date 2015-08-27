@@ -1,24 +1,27 @@
+Received: from eu-smtp-delivery-143.mimecast.com ([146.101.78.143])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZUmmW-00065N-Ct
+ for linux-mtd@lists.infradead.org; Thu, 27 Aug 2015 02:19:13 +0000
+Date: Thu, 27 Aug 2015 10:18:32 +0800
+From: Huang Shijie <shijie.huang@arm.com>
+To: Han Xu <xhnjupt@gmail.com>
+Cc: Han Xu <b45815@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>,
+ boris.brezillon@free-electrons.com, vinod.koul@intel.com,
+ linux-kernel@vger.kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Nicholas Mc Guire <hofrat@osadl.org>, dmaengine@vger.kernel.org,
+ dan.j.williams@intel.com, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2 4/6] mtd: nand: gpmi: add GPMI NAND support for i.MX7D
+Message-ID: <20150827021832.GA4193@free64-pc.asiapac.arm.com>
+References: <1439868295-24890-1-git-send-email-b45815@freescale.com>
+ <20150818065252.GB10641@free64-pc.asiapac.arm.com>
+ <CA+EcR23-nhpoEz1tcGMPmb07RcEAk-dQCCnkCpNra50RjXwe_A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Wed, 26 Aug 2015 18:10:05 -0700
-From: Stefan Agner <stefan@agner.ch>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: dwmw2@infradead.org, sebastian@breakpoint.cc, robh+dt@kernel.org,
- pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
- galak@codeaurora.org, shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
- bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, albert.aribaud@3adev.fr,
- klimov.linux@gmail.com, Bill Pringlemeir <bpringlemeir@nbsps.com>
-Subject: Re: [PATCH v10 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-In-Reply-To: <20150825203412.GM81844@google.com>
-References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
- <1438594050-4595-2-git-send-email-stefan@agner.ch>
- <20150825203412.GM81844@google.com>
-Message-ID: <a2060e9f1ad9f26e508af64549da52e7@agner.ch>
+In-Reply-To: <CA+EcR23-nhpoEz1tcGMPmb07RcEAk-dQCCnkCpNra50RjXwe_A@mail.gmail.com>
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +31,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015-08-25 13:34, Brian Norris wrote:
-> One more thing...
-> 
-> On Mon, Aug 03, 2015 at 11:27:26AM +0200, Stefan Agner wrote:
->> --- /dev/null
->> +++ b/drivers/mtd/nand/vf610_nfc.c
->> @@ -0,0 +1,645 @@
-> ...
->> +struct vf610_nfc {
->> +	struct mtd_info mtd;
->> +	struct nand_chip chip;
->> +	struct device *dev;
->> +	void __iomem *regs;
->> +	struct completion cmd_done;
->> +	uint buf_offset;
->> +	int page_sz;
-> 
-> AFAICT (even with the 2nd patch), you never really use this field. You
-> just set it/increment it, but don't use it for anything. Kill it?
+On Wed, Aug 26, 2015 at 03:24:14PM -0500, Han Xu wrote:
+> Hi Shijie,
+>=20
+> The features for MX6 and MX7 are not identical, I would love to use
+> two macros in this patch and will push another patch to use quirks to
+> distinguish them, is that Okay for you?
+okay, no problem.
 
-It is used in the write path, I think I meant to use it for subpage
-writes, when I thought it would just mean to transfer only parts of the
-page to the controller.
+Actually, you should be the maintainer for the gpmi driver, not me :)
 
-However, as the subpage discussion basically concluded in not using it
-for now on this controller, we can as well transfer the complete page
-(page_sz). Or is there another case in which vf610_nfc_write_buf could
-be called with less than page_sz?
-
---
-Stefan
+thanks
+Huang Shijie
