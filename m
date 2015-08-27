@@ -1,31 +1,27 @@
+Date: Thu, 27 Aug 2015 09:34:21 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: dwmw2@infradead.org, sebastian@breakpoint.cc, robh+dt@kernel.org,
+ pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de,
+ aaron@tastycactus.com, bpringlemeir@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ albert.aribaud@3adev.fr, klimov.linux@gmail.com,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v10 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
+ MPC5125 and others
+Message-ID: <20150827163421.GX81844@google.com>
+References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
+ <1438594050-4595-2-git-send-email-stefan@agner.ch>
+ <20150825201631.GK81844@google.com>
+ <bf1ed158fe08b51c4668faffde44083f@agner.ch>
 MIME-Version: 1.0
-Sender: kalluripunnaiahchoudary@gmail.com
-In-Reply-To: <CAD6G_RR+QnuK++KvztYo+68sb7yQqwM7qg-X7bybCYaBN+nAGQ@mail.gmail.com>
-References: <1440570367-22569-1-git-send-email-ranjit.waghmode@xilinx.com>
- <CAD6G_RQhWBsUTZNBB44W98Fjzw82H_D_E9nY0aDWezj729mkoA@mail.gmail.com>
- <CAGnW=BZtsVtT+Z7gTq5jybXsHWp+RNpjc6ckk6-MXWxAS7u8Mw@mail.gmail.com>
- <CAD6G_RTCQ5Fzjgxz+-3oMDAyUTg6UFAqvpEPQzJ9maSTZ3Nc_g@mail.gmail.com>
- <CAGnW=BZ80B_2kzZVULhZvEXFs+_GXkGbu8mii1eFp3MySvA8aA@mail.gmail.com>
- <CAD6G_RR+QnuK++KvztYo+68sb7yQqwM7qg-X7bybCYaBN+nAGQ@mail.gmail.com>
-Date: Thu, 27 Aug 2015 17:19:15 +0530
-Message-ID: <CAGnW=Bar5_t9Pzfz4v6x7HL6ZN=Tm8TPW8HpY42JaksT1NLnQw@mail.gmail.com>
-Subject: Re: [LINUX RFC v2 0/4] spi: add dual parallel mode support in Zynq
- MPSoC GQSPI controller
-From: punnaiah choudary kalluri <punnaia@xilinx.com>
-To: Jagan Teki <jteki@openedev.com>
-Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>, harinik@xilinx.com,
- Ranjit Waghmode <ranjit.waghmode@xilinx.com>, Arnd Bergmann <arnd@arndb.de>,
- Huang Shijie <b32955@freescale.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, zajec5@gmail.com,
- Michal Simek <michal.simek@xilinx.com>, linux-spi@vger.kernel.org,
- juhosg@openwrt.org, broonie@kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Soren Brinkmann <soren.brinkmann@xilinx.com>, knut.wohlrab@de.bosch.com,
- Brian Norris <computersforpeace@gmail.com>, ben@decadent.org.uk,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- beanhuo@micron.com
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf1ed158fe08b51c4668faffde44083f@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,193 +31,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 27, 2015 at 3:45 PM, Jagan Teki <jteki@openedev.com> wrote:
-> On 27 August 2015 at 14:18, punnaiah choudary kalluri
-> <punnaia@xilinx.com> wrote:
->> On Thu, Aug 27, 2015 at 11:53 AM, Jagan Teki <jteki@openedev.com> wrote:
->>> On 26 August 2015 at 21:02, punnaiah choudary kalluri
->>> <punnaia@xilinx.com> wrote:
->>>> On Wed, Aug 26, 2015 at 5:49 PM, Jagan Teki <jteki@openedev.com> wrote:
->>>>> On 26 August 2015 at 11:56, Ranjit Waghmode <ranjit.waghmode@xilinx.com> wrote:
->>>>>> This series adds dual parallel mode support for Zynq Ultrascale+
->>>>>> MPSoC GQSPI controller driver.
->>>>>>
->>>>>> What is dual parallel mode?
->>>>>> ---------------------------
->>>>>> ZynqMP GQSPI controller supports Dual Parallel mode with following functionalities:
->>>>>> 1) Supporting two SPI flash memories operating in parallel. 8 I/O lines.
->>>>>> 2) Chip selects and clock are shared to both the flash devices
->>>>>> 3) This mode is targeted for faster read/write speed and also doubles the size
->>>>>> 4) Commands/data can be transmitted/received from both the devices(mirror),
->>>>>>    or only upper or only lower flash memory devices.
->>>>>> 5) Data arrangement:
->>>>>>    With stripe enabled,
->>>>>>    Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
->>>>>>    Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
->> <snip>
->>>>> I don't find any previous discussion about way to inform flash
->>>>> dual-ness into spi-nor
->>>>> from spi drivers.
->>>>>
->>>>> Here is my idea, probably others may think same.
->>>>> Informing dual_flash from drivers/spi through flags or any other mode
->>>>> bits is not a better approach as dual flash feature is specific to
->>>>> spi-nor flash controller (controller specially designed for spi-nor
->>>>> flash not the generic spi controller).  So if the driver sits on
->>>>> drivers/mtd/spi-nor/ (ex: fsl-quadspi.c), may be we can inform flash
->>>>> specific things to spi-nor as it's not touching generic spi stack in
->>>>> Linux. But there is a defined-drawback if the driver is moved to
->>>>> drivers/mtd/spi-nor ie it can't use spi core API's at-all.
->>>>
->>>> Xilinx GQSPI is a generic quad spi controller. The primary goal is to support
->>>> Generic/Future command sequences and Future NOR/NAND flash devices.
->>>> This core can also be used for legacy SPI devices. Due to the generic nature
->>>> of the core, software can generate any command sequence. It also has additional
->>>> features like parallel and stacked configurations to double the data
->>>> rate and size.
->>>> Accessing spi-nor flash device is one particular use case and like
->>>> that there will be
->>>> many. So, we decided to keep this driver in generic spi framework and
->>>> that is the ideal
->>>> thing to do for the GQSPI controller.
->>>
->>> Yes, I understand the generic nature of the GQSPI and it's good to
->>> have all-in-one like generic spi, spi-nor and spi-nand and more
->>> together, but Linux stacks were implemented in such a way to support
->>> the each type of controller with connected slaves separably for better
->>> handling.
->>
->> True and this is the reason we have controller drivers and protocol drivers.
->> GQSPI is the controller driver and spi-nor and spi-nand are the
->> protocol drivers.
->>
->>>
->>> Currently GQSPI driver is added in drivers/spi as it supports generic
->>> spi nature and now it enhanced more through flags for supporting
->>> spi-nor, what if we add spi-nand support for the same controller? do
->>> we add one more driver in spi-nand framework (drivers/mtd/spi-nand -
->>> an on going implementation)? My only observation here is even if the
->>> controller is more generic to support more number of device classes,
->>> and adding same driver and populate the slave stuff through flags or
->>> different kind of mechanism to different driver stack, this is not a
->>> better approach I thought.
->>
->> Just to clear, dual parallel( 2 CS and 8 IO lines) is not only specific
->> to flash parts, one can use for any other custom streaming protocols
->> I would say exporting dual parallel connection to protocol drivers is
->> something like depicting the spi bus topology to the protocol layer.
->
-> So dual parallel may not used for spi-nor flash it can also used other
-> spi slaves that's what your saying is it?
+On Wed, Aug 26, 2015 at 06:02:31PM -0700, Stefan Agner wrote:
+> On 2015-08-25 13:16, Brian Norris wrote:
+> > On Mon, Aug 03, 2015 at 11:27:26AM +0200, Stefan Agner wrote:
+> >> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+> >> new file mode 100644
+> >> index 0000000..5c8dfe8
+> >> --- /dev/null
+> >> +++ b/drivers/mtd/nand/vf610_nfc.c
+> >> @@ -0,0 +1,645 @@
+> > 
+> > ...
+> > 
+> >> +/*
+> >> + * This function supports Vybrid only (MPC5125 would have full RB and four CS)
+> >> + */
+> >> +static void vf610_nfc_select_chip(struct mtd_info *mtd, int chip)
+> >> +{
+> >> +#ifdef CONFIG_SOC_VF610
+> > 
+> > Why the #ifdef? I don't see anything compile-time specific to SOC_VF610.
+> > 
+> > If this is trying to handle the comment above ("This function supports
+> > Vybrid only (MPC5125 would have full RB and four CS)") then that's the
+> > wrong way of doing it, as you need to support multiplatform kernels.
+> > You'll need to have a way to differentiate the different platform
+> > support at runtime, not compile time.
+> 
+> Yes it is trying to handle the comment above. Well, the other two
+> platforms I am aware of are also different architectures... (PowerPC and
+> ColdFire). I think we won't have a multi-architecture kernel anytime
+> soon,
 
-Yes. As i said above, the main intention of this feature is to improve
-the data rate with an overhead of few IO lines.
+Ha, right. Sorry, I don't really know this particular IP.
 
->
->>
->> AFAIK, spi-nor and spi-nand are protocol drivers for accessing the
->> nor and nand flash devices sitting on the spi bus using the spi
->> controller driver.
->
-> Yes, I do agree with your point, but though driver stacks are
-> different with same kind of bus here, I'm trying to spit the GQSPI
-> into 3 different controller drivers as Linux understand it and fit on
-> to Linux stack with out disturbing the generic-ness.
+> hence I think removing the code at compile time is the right thing
+> todo.
 
- I feel this is not a nice idea. if there are 'n' functionalities and having
-'n' controller drivers doesn't seem good in any direction.
+I don't believe that conclusion follows though.
 
-Protocol driver can query the spi core about the bus topology and it is the
-responsibility of the spi core and controller driver providing this information
-to the upper layers.
+> However, probably CONFIG_SOC_VF610 is the wrong symbol then, I could
+> just use CONFIG_ARM and add a comment that this might be different on
+> another other ARM SoC than VF610.
+> 
+> Just checked CodingStyle, and I see that IS_ENABLED is the preferred way
+> for conditional compiling.
+> 
+> So my suggestion:
+> 
+> static void vf610_nfc_select_chip(struct mtd_info *mtd, int chip)
+> {
+> 	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> 	u32 tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
+> 
+> 	if (!IS_ENABLED(CONFIG_ARM))
+> 		return;
+> 
+> 	/*
+> 	 * This code is only tested on the ARM platform VF610
+> 	 * PowerPC based MPC5125 would have full RB and four CS
+> 	 */
+> ....
+> 
+> With that the compiler should be able to remove this (currently) ARM
+> VF610 specific code on the other supported architectures...
+> 
+> What do you think?
 
+The code structure isn't bad, and yes, IS_ENABLED() would be preferable,
+as it removes some of the problems with #ifdef, but I still don't think
+the processor architecture has much to do with the version of the IP.
+The canonical way of distiguishing per-IP revisions is to key on the
+compatible property. So you'd have some kind of enum, which would
+currently only have an entry for VF610. i.e.:
 
-Regards,
-Punnaiah
+	/* MPC5125 not yet supported */
+	if (nfc->revision != NAND_VFC610)
+		return;
 
+> >> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> >> +	u32 tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
+> >> +
+> >> +	tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
+> >> +	tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
+> >> +
+> >> +	if (chip == 0)
+> >> +		tmp |= 1 << ROW_ADDR_CHIP_SEL_SHIFT;
+> >> +	else if (chip == 1)
+> >> +		tmp |= 2 << ROW_ADDR_CHIP_SEL_SHIFT;
+> > 
+> > 	else ... ?
+> > 
+> > Maybe you can write this as a formulaic pattern (e.g.:
+> > 
+> > 	tmp |= (chip + 1) << ROW_ADDR_CHIP_SEL_SHIFT;
+> > 
+> > ) and just do the "max # of chips" checks on a per-platform basis in the
+> > probe(). Then I'm guessing this same function can apply to both
+> > platforms. (I'm not looking at HW datasheets for this, BTW, just
+> > guessing based on the context here.)
+> 
+> It seems that MCP5125 is different than VF610. MCP5125 has 4 chip
+> selects and 4 R/B signals, whereas VF610 has only 2 chip selects and
+> just 1 R/B signals...
 
->
-> Assumption is GQSPI shall split to various platform_drivers (if each
-> platform driver treated as a controller) thought it made up of  spi
-> bus.
->
->>>
->>> Based on the above comments, there is an approach to handle this
->>> support and I'm not 100% sure whether this fits or not but we
->>> implemented the same -  this is "probing child devices from parent"
->>> (there was a discussion with Arnd earlier wrt this, but I'm unable to
->>> get the mailing thread)
->>>
->>> Added Arnd (probably will give more inputs or corrections)
->>>
->>> Let me explain how we implemented on our design.
->>> We have PCIe controller that support basic root complex handling, dma
->>> and controller hotplug (not in-build pcie hp) and ideally we need to
->>> write driver for handling root complex on drivers/pci/host and one
->>> hotplug driver in drivers/pci and one more driver in drivers/dma for
->>> handling pcie dma stuff. And some pcie calls need to navigate from
->>> root complex driver to dma and hotplug driver that means there is call
->>> transition from driver/pci to driver/dma which is absolutely not a
->>> good approach (spi to spi-nor and spi-nand transition - in GQSPI case)
->>>
->>> So the implementation we follow is like there is a pcie root complex
->>> driver(probably generic spi driver in drivers/spi/*) and inside probe
->>> we have register platform_device for hotplug (spi-nor) and dma
->>> (spi-nand) and the dma driver in drivers/dma and hotplug driver in
->>> driver/pci/ are platform drivers which is of legacy binding (not with
->>> dts) so there should be a common dts for root complex driver
->>> (drivers/spi/*) and individual child driver need to take those while
->>> registering platform_device.
->>>
->>> example pseudo:
->>>
->>> drivers/dma/dma-child2.c
->>>
->>> Legacy platform_driver binding and handling dma future as normal dma
->>> driver, spi-nand in your case
->>>
->>> drivers/pci/hotplug/hp-child1.c
->>>
->>> Legacy platform_driver binding and handling hotplug future as normal
->>> hotplug driver, spi-nor in your case.
->>>
->>> drivers/pci/host/rc-parent-pci.c
->>>
->>> static int rc_parent_pcie_probe_bridge(struct platform_device *pdev)
->>> {
->>>    // Generic rc handling (genric spi stuff)
->>>
->>>    // Hotplug handling (spi-nor)
->>>    - platform_device_alloc
->>>    - assign need resources
->>>    - register pdev using platform_device_add
->>>
->>>     // DMA handling (spi-nand)
->>>    - same as above
->>> }
->>>
->>> static const struct of_device_id rc_parent_pcie_match_table[] = {
->>>         {.compatible = "abc,rc-parent",},
->>>         {},
->>> };
->>>
->>> static struct platform_driver rc_parent_pcie_driver = {
->>>         .driver = {
->>>                    .name = "rc-parent",
->>>                    .of_match_table = of_match_ptr(rc_parent_pcie_match_table),
->>>         },
->>>         .probe = rc_parent_pcie_probe_bridge,
->>> };
->>> module_platform_driver(rc_parent_pcie_driver);
->>>
->>> I couldn't find any driver mainlined wrt this design, think more on
->>> GQSPI front, whether this design fits well or not.
->
-> thanks!
-> --
-> Jagan | openedev.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+OK I don't presume to know what the different IP versions look like. And
+if you just note they are unsupported/untested, you're fine.
+
+Brian
