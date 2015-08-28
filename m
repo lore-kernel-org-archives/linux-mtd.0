@@ -1,22 +1,21 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-by2on0141.outbound.protection.outlook.com
+ ([207.46.100.141] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZVNJ9-0007z2-Vm
- for linux-mtd@lists.infradead.org; Fri, 28 Aug 2015 17:19:20 +0000
-Received: by pacdd16 with SMTP id dd16so68680232pac.2
- for <linux-mtd@lists.infradead.org>; Fri, 28 Aug 2015 10:18:59 -0700 (PDT)
-Date: Fri, 28 Aug 2015 10:18:56 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: dwmw2@infradead.org, akinobu.mita@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: mtd_oobtest: Fix the address offset with
- vary_offset case
-Message-ID: <20150828171856.GA81844@google.com>
-References: <1436356219-5085-1-git-send-email-rogerq@ti.com>
+ id 1ZVPXL-0001q3-3C
+ for linux-mtd@lists.infradead.org; Fri, 28 Aug 2015 19:42:07 +0000
+From: Han Xu <b45815@freescale.com>
+To: <shijie.huang@arm.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <b45815@freescale.com>, <boris.brezillon@free-electrons.com>,
+ <fabio.estevam@freescale.com>, <hofrat@osadl.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
+ <dmaengine@vger.kernel.org>
+Subject: [PATCH v3 0/6] mtd: nand: gpmi: gpmi-nand DSM and bitflip support
+Date: Fri, 28 Aug 2015 14:32:39 -0500
+Message-ID: <1440790365-28072-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1436356219-5085-1-git-send-email-rogerq@ti.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 08, 2015 at 02:50:19PM +0300, Roger Quadros wrote:
-> When vary_offset is set (e.g. test case 3), the offset is not always
-> zero so memcmpshow() will show the wrong offset in the print message.
-> To fix this we introduce a new function memcmpshowoffset() which takes
-> offset as a parameter and displays the right offset and use it in
-> the case where offset is non zero.
-> 
-> The old memcmpshow() functionality is preserved by converting it into
-> a macro with offset preset to 0.
-> 
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
+v1 ---> v2
+change the erased page bitflip threshold to ecc strength in bitflip patch
 
-Applied to l2-mtd.git. Thanks!
+v2 ---> v3
+remove unnecessary function in mxs-dma
+change the log message when legacy_set_geometry failed
+fix the comment message for bitflip
+add comma for all field entries
+
+Han Xu (4):
+  mtd: nand: gpmi: may use minimum required ecc for 744 oobsize NAND
+  mtd: nand: gpmi: add GPMI NAND support for i.MX7D
+  mtd: nand: gpmi: correct bitflip for erased NAND page
+  mtd: nand: gpmi: support NAND on i.MX6UL
+
+Huang Shijie (2):
+  mtd: nand: gpmi: add gpmi dsm supend/resume support
+  dmaengine: mxs: support i.MX7D and deep sleep mode
+
+ drivers/dma/mxs-dma.c                  |  64 +++++++++++++++--
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  |  24 +++++--
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  15 ++--
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 128 ++++++++++++++++++++++++++++-----
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  14 +++-
+ 5 files changed, 207 insertions(+), 38 deletions(-)
+
+-- 
+1.9.1
