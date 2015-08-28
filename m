@@ -1,26 +1,23 @@
-Received: from mail-lb0-f171.google.com ([209.85.217.171])
+Received: from mail-qg0-f50.google.com ([209.85.192.50])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZVSPo-0005Sb-NB
- for linux-mtd@lists.infradead.org; Fri, 28 Aug 2015 22:46:33 +0000
-Received: by lbbsx3 with SMTP id sx3so37743505lbb.0
- for <linux-mtd@lists.infradead.org>; Fri, 28 Aug 2015 15:46:09 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <87io8435q4.fsf@belgarion.home>
-References: <1440356741-24308-1-git-send-email-robert.jarzmik@free.fr>
- <20150824150847.GA8497@laptop.cereza>
- <87io8435q4.fsf@belgarion.home>
-Date: Fri, 28 Aug 2015 19:46:09 -0300
-Message-ID: <CAAEAJfDCUGDbssCkQEazcJLuvJWjbSxKDix9ts4peSZ8Xk1ZOA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: pxa3xx-nand: prevent DFI bus lockup on removal
+ id 1ZVSXV-0007PO-OL
+ for linux-mtd@lists.infradead.org; Fri, 28 Aug 2015 22:54:30 +0000
+Received: by qgj62 with SMTP id 62so38078789qgj.2
+ for <linux-mtd@lists.infradead.org>; Fri, 28 Aug 2015 15:54:08 -0700 (PDT)
+Date: Fri, 28 Aug 2015 19:50:20 -0300
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: Robert Jarzmik <robert.jarzmik@free.fr>
 Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: pxa3xx-nand: switch to dmaengine
+Message-ID: <20150828225019.GA1774@laptop.cereza>
+References: <1440441674-12103-1-git-send-email-robert.jarzmik@free.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1440441674-12103-1-git-send-email-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,62 +29,374 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Robert,
 
-On 24 August 2015 at 15:24, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
->
->> Should we worry about having two definitions for the same bit?
->> Would it be too ugly to mix the two meaning? Something like this:
->>
->> /* This bit has two different meanings on NFCv1 and NFCv2 */
->> #define NDCR_STOP_ON_UNCOR_ARB_CNTL (0x1 << 19)
-> I don't find that very pretty, but if you want I can put that in the patc=
-h
-> instead.
+On 24 Aug 08:41 PM, Robert Jarzmik wrote:
+> Now pxa architecture has a dmaengine driver, remove the access to direct
+> dma registers in favor of the more generic dmaengine code.
+> 
+> This should be also applicable for mmp and orion, provided they work in
+> device-tree environment.
+> 
+> This patch also removes the previous hack which was necessary to make
+> the driver work in a devicetree environment.
 >
 
-Yeah, it's far from pretty.
+Oh, this is nice.
 
-OK, another idea. How about this:
+I haven't been following the PXA dmaengine effort,
+should I expect this to Just Work (TM) on a CM-X300 (PXA310) in linux-next?
 
-#define NFCV2_NDCR_STOP_ON_UNCOR (0x1 << 19)
-#define NFCV1_NDCR_ARB_CNTL      (0x1 << 19)
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 223 ++++++++++++++++++++---------------------
+>  1 file changed, 109 insertions(+), 114 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 34c9a60c8c5c..9c555276afc3 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -15,7 +15,9 @@
+>  #include <linux/module.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/dmaengine.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/dma/pxa-dma.h>
+>  #include <linux/delay.h>
+>  #include <linux/clk.h>
+>  #include <linux/mtd/mtd.h>
+> @@ -33,10 +35,6 @@
+>  #define ARCH_HAS_DMA
+>  #endif
+>  
+> -#ifdef ARCH_HAS_DMA
+> -#include <mach/dma.h>
+> -#endif
+> -
+>  #include <linux/platform_data/mtd-nand-pxa3xx.h>
+>  
+>  #define	CHIP_DELAY_TIMEOUT	msecs_to_jiffies(200)
+> @@ -206,6 +204,10 @@ struct pxa3xx_nand_info {
+>  	unsigned int		oob_buff_pos;
+>  
+>  	/* DMA information */
+> +	struct scatterlist	sg;
+> +	enum dma_data_direction	dma_dir;
+> +	struct dma_chan		*dma_chan;
+> +	dma_cookie_t		dma_cookie;
+>  	int			drcmr_dat;
+>  	int			drcmr_cmd;
+>  
+> @@ -213,8 +215,6 @@ struct pxa3xx_nand_info {
+>  	unsigned char		*oob_buff;
+>  	dma_addr_t 		data_buff_phys;
+>  	int 			data_dma_ch;
+> -	struct pxa_dma_desc	*data_desc;
+> -	dma_addr_t 		data_desc_addr;
+>  
+>  	struct pxa3xx_nand_host *host[NUM_CHIP_SELECT];
+>  	unsigned int		state;
+> @@ -473,6 +473,9 @@ static void pxa3xx_nand_stop(struct pxa3xx_nand_info *info)
+>  		ndcr &= ~NDCR_ND_RUN;
+>  		nand_writel(info, NDCR, ndcr);
+>  	}
+> +	if (info->dma_chan)
+> +		dmaengine_terminate_all(info->dma_chan);
+> +
+>  	/* clear status bits */
+>  	nand_writel(info, NDSR, NDSR_MASK);
+>  }
+> @@ -564,57 +567,62 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
+>  	info->data_size -= do_bytes;
+>  }
+>  
+> -#ifdef ARCH_HAS_DMA
+> -static void start_data_dma(struct pxa3xx_nand_info *info)
+> +static void pxa3xx_nand_data_dma_irq(void *data)
+>  {
+> -	struct pxa_dma_desc *desc = info->data_desc;
+> -	int dma_len = ALIGN(info->data_size + info->oob_size, 32);
+> +	struct pxa3xx_nand_info *info = data;
+> +	struct dma_tx_state state;
+> +	enum dma_status status;
+> +
+> +	status = dmaengine_tx_status(info->dma_chan, info->dma_cookie, &state);
+> +	if (likely(status == DMA_COMPLETE)) {
+> +		info->state = STATE_DMA_DONE;
+> +	} else {
+> +		dev_err(&info->pdev->dev, "DMA error on data channel\n");
+> +		info->retcode = ERR_DMABUSERR;
+> +	}
+> +	dma_unmap_sg(info->dma_chan->device->dev,
+> +		     &info->sg, 1, info->dma_dir);
+>  
+> -	desc->ddadr = DDADR_STOP;
+> -	desc->dcmd = DCMD_ENDIRQEN | DCMD_WIDTH4 | DCMD_BURST32 | dma_len;
+> +	nand_writel(info, NDSR, NDSR_WRDREQ | NDSR_RDDREQ);
+> +	enable_int(info, NDCR_INT_MASK);
+> +}
+> +
+> +static void start_data_dma(struct pxa3xx_nand_info *info)
+> +{
+> +	enum dma_data_direction direction;
+> +	struct dma_async_tx_descriptor *tx;
+>  
+>  	switch (info->state) {
+>  	case STATE_DMA_WRITING:
+> -		desc->dsadr = info->data_buff_phys;
+> -		desc->dtadr = info->mmio_phys + NDDB;
+> -		desc->dcmd |= DCMD_INCSRCADDR | DCMD_FLOWTRG;
+> +		info->dma_dir = DMA_TO_DEVICE;
+> +		direction = DMA_MEM_TO_DEV;
+>  		break;
+>  	case STATE_DMA_READING:
+> -		desc->dtadr = info->data_buff_phys;
+> -		desc->dsadr = info->mmio_phys + NDDB;
+> -		desc->dcmd |= DCMD_INCTRGADDR | DCMD_FLOWSRC;
+> +		info->dma_dir = DMA_FROM_DEVICE;
+> +		direction = DMA_DEV_TO_MEM;
+>  		break;
+>  	default:
+>  		dev_err(&info->pdev->dev, "%s: invalid state %d\n", __func__,
+>  				info->state);
+>  		BUG();
+>  	}
+> -
+> -	DRCMR(info->drcmr_dat) = DRCMR_MAPVLD | info->data_dma_ch;
+> -	DDADR(info->data_dma_ch) = info->data_desc_addr;
+> -	DCSR(info->data_dma_ch) |= DCSR_RUN;
+> -}
+> -
+> -static void pxa3xx_nand_data_dma_irq(int channel, void *data)
+> -{
+> -	struct pxa3xx_nand_info *info = data;
+> -	uint32_t dcsr;
+> -
+> -	dcsr = DCSR(channel);
+> -	DCSR(channel) = dcsr;
+> -
+> -	if (dcsr & DCSR_BUSERR) {
+> -		info->retcode = ERR_DMABUSERR;
+> +	info->sg.length = info->data_size +
+> +		(info->oob_size ? info->spare_size + info->ecc_size : 0);
+> +	dma_map_sg(info->dma_chan->device->dev, &info->sg, 1, info->dma_dir);
+> +
+> +	tx = dmaengine_prep_slave_sg(info->dma_chan, &info->sg, 1, direction,
+> +				     DMA_PREP_INTERRUPT);
+> +	if (!tx) {
+> +		dev_err(&info->pdev->dev, "prep_slave_sg() failed\n");
+> +		return;
+>  	}
+> -
+> -	info->state = STATE_DMA_DONE;
+> -	enable_int(info, NDCR_INT_MASK);
+> -	nand_writel(info, NDSR, NDSR_WRDREQ | NDSR_RDDREQ);
+> +	tx->callback = pxa3xx_nand_data_dma_irq;
+> +	tx->callback_param = info;
+> +	info->dma_cookie = dmaengine_submit(tx);
+> +	dma_async_issue_pending(info->dma_chan);
+> +	dev_dbg(&info->pdev->dev, "%s(dir=%d cookie=%x size=%u)\n",
+> +		__func__, direction, info->dma_cookie, info->sg.length);
+>  }
+> -#else
+> -static void start_data_dma(struct pxa3xx_nand_info *info)
+> -{}
+> -#endif
+>  
+>  static irqreturn_t pxa3xx_nand_irq_thread(int irq, void *data)
+>  {
+> @@ -1313,36 +1321,50 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+>  	return 0;
+>  }
+>  
+> -#ifdef ARCH_HAS_DMA
+>  static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+>  {
+>  	struct platform_device *pdev = info->pdev;
+> -	int data_desc_offset = info->buf_size - sizeof(struct pxa_dma_desc);
+> +	struct dma_slave_config	config;
+> +	dma_cap_mask_t mask;
+> +	struct pxad_param param;
+> +	int ret;
+>  
+> -	if (use_dma == 0) {
+> -		info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
+> -		if (info->data_buff == NULL)
+> -			return -ENOMEM;
+> +	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
+> +	if (info->data_buff == NULL)
+> +		return -ENOMEM;
+> +	if (use_dma == 0)
+>  		return 0;
+> -	}
+>  
+> -	info->data_buff = dma_alloc_coherent(&pdev->dev, info->buf_size,
+> -				&info->data_buff_phys, GFP_KERNEL);
+> -	if (info->data_buff == NULL) {
+> -		dev_err(&pdev->dev, "failed to allocate dma buffer\n");
+> -		return -ENOMEM;
+> -	}
+> +	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+> +	if (ret)
+> +		return ret;
+>  
+> -	info->data_desc = (void *)info->data_buff + data_desc_offset;
+> -	info->data_desc_addr = info->data_buff_phys + data_desc_offset;
+> +	sg_init_one(&info->sg, info->data_buff, info->buf_size);
+> +	dma_cap_zero(mask);
+> +	dma_cap_set(DMA_SLAVE, mask);
+> +	param.prio = PXAD_PRIO_LOWEST;
+> +	param.drcmr = info->drcmr_dat;
+> +	info->dma_chan = dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> +							  &param, &pdev->dev,
+> +							  "data");
+> +	if (!info->dma_chan) {
+> +		dev_err(&pdev->dev, "unable to request data dma channel\n");
+> +		return -ENODEV;
+> +	}
+>  
+> -	info->data_dma_ch = pxa_request_dma("nand-data", DMA_PRIO_LOW,
+> -				pxa3xx_nand_data_dma_irq, info);
+> -	if (info->data_dma_ch < 0) {
+> -		dev_err(&pdev->dev, "failed to request data dma\n");
+> -		dma_free_coherent(&pdev->dev, info->buf_size,
+> -				info->data_buff, info->data_buff_phys);
+> -		return info->data_dma_ch;
+> +	memset(&config, 0, sizeof(config));
+> +	config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	config.src_addr = info->mmio_phys + NDDB;
+> +	config.dst_addr = info->mmio_phys + NDDB;
+> +	config.src_maxburst = 32;
+> +	config.dst_maxburst = 32;
+> +	ret = dmaengine_slave_config(info->dma_chan, &config);
+> +	if (ret < 0) {
+> +		dev_err(&info->pdev->dev,
+> +			"dma channel configuration failed: %d\n",
+> +			ret);
+> +		return ret;
+>  	}
+>  
+>  	/*
+> @@ -1355,29 +1377,12 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+>  
+>  static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+>  {
+> -	struct platform_device *pdev = info->pdev;
+>  	if (info->use_dma) {
+> -		pxa_free_dma(info->data_dma_ch);
+> -		dma_free_coherent(&pdev->dev, info->buf_size,
+> -				  info->data_buff, info->data_buff_phys);
+> -	} else {
+> -		kfree(info->data_buff);
+> +		dmaengine_terminate_all(info->dma_chan);
+> +		dma_release_channel(info->dma_chan);
+>  	}
+> -}
+> -#else
+> -static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+> -{
+> -	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
+> -	if (info->data_buff == NULL)
+> -		return -ENOMEM;
+> -	return 0;
+> -}
+> -
+> -static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+> -{
+>  	kfree(info->data_buff);
+>  }
+> -#endif
+>  
+>  static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
+>  {
+> @@ -1679,34 +1684,23 @@ static int alloc_nand_resource(struct platform_device *pdev)
+>  		return ret;
+>  
+>  	if (use_dma) {
+> -		/*
+> -		 * This is a dirty hack to make this driver work from
+> -		 * devicetree bindings. It can be removed once we have
+> -		 * a prober DMA controller framework for DT.
+> -		 */
+> -		if (pdev->dev.of_node &&
+> -		    of_machine_is_compatible("marvell,pxa3xx")) {
+> -			info->drcmr_dat = 97;
+> -			info->drcmr_cmd = 99;
+> -		} else {
+> -			r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+> -			if (r == NULL) {
+> -				dev_err(&pdev->dev,
+> -					"no resource defined for data DMA\n");
+> -				ret = -ENXIO;
+> -				goto fail_disable_clk;
+> -			}
+> -			info->drcmr_dat = r->start;
+> -
+> -			r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+> -			if (r == NULL) {
+> -				dev_err(&pdev->dev,
+> -					"no resource defined for cmd DMA\n");
+> -				ret = -ENXIO;
+> -				goto fail_disable_clk;
+> -			}
+> -			info->drcmr_cmd = r->start;
+> +		r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+> +		if (r == NULL) {
+> +			dev_err(&pdev->dev,
+> +				"no resource defined for data DMA\n");
+> +			ret = -ENXIO;
+> +			goto fail_disable_clk;
+>  		}
+> +		info->drcmr_dat = r->start;
+> +
+> +		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+> +		if (r == NULL) {
+> +			dev_err(&pdev->dev,
+> +				"no resource defined for cmd DMA\n");
+> +			ret = -ENXIO;
+> +			goto fail_disable_clk;
+> +		}
+> +		info->drcmr_cmd = r->start;
+>  	}
+>  
+>  	irq = platform_get_irq(pdev, 0);
+> @@ -1819,15 +1813,16 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+>  	struct pxa3xx_nand_platform_data *pdata;
+>  	struct mtd_part_parser_data ppdata = {};
+>  	struct pxa3xx_nand_info *info;
+> -	int ret, cs, probe_success;
+> +	int ret, cs, probe_success, dma_available;
+>  
+> -#ifndef ARCH_HAS_DMA
+> -	if (use_dma) {
+> +	dma_available = IS_ENABLED(CONFIG_ARM) &&
+> +		(IS_ENABLED(CONFIG_ARCH_PXA) || IS_ENABLED(CONFIG_ARCH_MMP));
+> +	if (use_dma && !dma_available) {
 
-Or maybe I'm just bike-shedding here? I figured it's important
-to document the bit has different meanings in different
-hardware versions.
+Isn't it just simpler to always fallback to PIO if the
+devicetree doesn't provide any DMA channels?
 
-Anyway, just submit a v2 with whatever you feel it's less ugly.
+Platforms without DMA would fall naturally to PIO.
 
->>> @@ -1784,6 +1787,8 @@ static int pxa3xx_nand_remove(struct platform_dev=
-ice *pdev)
->>>              free_irq(irq, info);
->>>      pxa3xx_nand_free_buff(info);
->>>
->>
->> I think a comment here explaining how this disables DFI arbitration and
->> how clearing it grants DFI access to SMC only.
->>
->> While here, we might want to document how the whole arbiter applies to
->> PXA only, since the DFI bus is shared there.
-> Ok, for v2. I take it that DFI bus is not shared on Armada, lucky you.
+Also: do we need to update the devicetree binding?
 
-Right, seems not shared.
+>  		use_dma = 0;
+>  		dev_warn(&pdev->dev,
+>  			 "This platform can't do DMA on this device\n");
+>  	}
+> -#endif
+> +
+>  	ret = pxa3xx_nand_probe_dt(pdev);
+>  	if (ret)
+>  		return ret;
+> -- 
+> 2.1.4
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-> Maybe
-> something like :
->
-> /*
->  * In the pxa3xx case, the DFI bus is shared between the SMC and NFC. In =
-order
->  * to prevent a lockup of the system bus, the DFI bus arbitration is gran=
-ted
->  * to SMC upon driver removal. This is done by setting the x_ARB_CNTL bit=
-,
->  * which also prevents the NAND to have access to the bus anymore.
->  */
->
-
-That'll work. Feel free to send a v2.
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
+-- 
+Ezequiel Garcia, VanguardiaSur
 www.vanguardiasur.com.ar
