@@ -1,21 +1,25 @@
-Received: from mail-bn1on0131.outbound.protection.outlook.com
- ([157.56.110.131] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZVPXO-0001q5-Fk
- for linux-mtd@lists.infradead.org; Fri, 28 Aug 2015 19:42:11 +0000
-From: Han Xu <b45815@freescale.com>
-To: <shijie.huang@arm.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <b45815@freescale.com>, <boris.brezillon@free-electrons.com>,
- <fabio.estevam@freescale.com>, <hofrat@osadl.org>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
- <dmaengine@vger.kernel.org>
-Subject: [PATCH v3 2/6] dmaengine: mxs: support i.MX7D and deep sleep mode
-Date: Fri, 28 Aug 2015 14:32:41 -0500
-Message-ID: <1440790365-28072-3-git-send-email-b45815@freescale.com>
-In-Reply-To: <1440790365-28072-1-git-send-email-b45815@freescale.com>
-References: <1440790365-28072-1-git-send-email-b45815@freescale.com>
+Message-ID: <BLU436-SMTP79A4D637801F08C772536AB86E0@phx.gbl>
+From: Bill Pringlemeir <bpringle@sympatico.ca>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: Stefan Agner <stefan@agner.ch>, bpringlemeir@gmail.com,
+ sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ albert.aribaud@3adev.fr, klimov.linux@gmail.com,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v10 2/5] mtd: nand: vf610_nfc: add hardware BCH-ECC support
+References: <1438594050-4595-1-git-send-email-stefan@agner.ch>
+ <1438594050-4595-3-git-send-email-stefan@agner.ch>
+ <ff2e2716578a1ae5f0c4b0e0ca8bbdc3@agner.ch>
+ <20150825195411.GJ81844@google.com>
+ <07a479863eef4c53ab2ef6ef85321680@agner.ch>
+ <20150826213448.GU81844@google.com>
+Date: Fri, 28 Aug 2015 17:14:08 -0400
+In-Reply-To: <20150826213448.GU81844@google.com> (Brian Norris's message of
+ "Wed, 26 Aug 2015 14:34:48 -0700")
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,193 +31,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <b32955@freescale.com>
 
-The patch support i.MX7D platform by adding extra DMA clock.
+On 26 Aug 2015, computersforpeace@gmail.com wrote:
 
-Deep Sleep Mode(dsm) turns off the power for APBH DMA module, add
-suspend/resume function and re-init the APBH DMA during resume.
+> On Wed, Aug 26, 2015 at 10:57:38AM -0700, Stefan Agner wrote:
+>> When printing the ECC error count on ECC fail when reading an erased
+>> NAND flash, the numbers of bit flips (stuck at zero) seem to widely
+>> correlate with the number returned by the controller. While it seems
+>> to correlate widely, there are exceptions, as discussed in the
+>> thread: http://thread.gmane.org/gmane.linux.ports.arm.kernel/295424
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Han Xu <han.xu@freescale.com>
-Signed-off-by: Adrian Alonso <aalonso@freescale.com>
----
- drivers/dma/mxs-dma.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 58 insertions(+), 6 deletions(-)
+>> Maybe this is an artifact of the ECC algorithm we just
+>> can't/shouldn't rely on? I am not sure where this originated, I did
+>> not found any indication in the reference manual about what that
+>> value contains in the error case.
 
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 60de352..5be13ad 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -1,5 +1,5 @@
- /*
-- * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
-+ * Copyright 2011-2015 Freescale Semiconductor, Inc. All Rights Reserved.
-  *
-  * Refer to drivers/dma/imx-sdma.c
-  *
-@@ -28,7 +28,6 @@
- #include <linux/of_device.h>
- #include <linux/of_dma.h>
- #include <linux/list.h>
--
- #include <asm/irq.h>
- 
- #include "dmaengine.h"
-@@ -135,6 +134,7 @@ enum mxs_dma_devtype {
- enum mxs_dma_id {
- 	IMX23_DMA,
- 	IMX28_DMA,
-+	IMX7D_DMA,
- };
- 
- struct mxs_dma_engine {
-@@ -142,6 +142,7 @@ struct mxs_dma_engine {
- 	enum mxs_dma_devtype		type;
- 	void __iomem			*base;
- 	struct clk			*clk;
-+	struct clk			*clk_io;
- 	struct dma_device		dma_device;
- 	struct device_dma_parameters	dma_parms;
- 	struct mxs_dma_chan		mxs_chans[MXS_DMA_CHANNELS];
-@@ -167,6 +168,9 @@ static struct mxs_dma_type mxs_dma_types[] = {
- 	}, {
- 		.id = IMX28_DMA,
- 		.type = MXS_DMA_APBX,
-+	}, {
-+		.id = IMX7D_DMA,
-+		.type = MXS_DMA_APBH,
- 	}
- };
- 
-@@ -184,6 +188,9 @@ static const struct platform_device_id mxs_dma_ids[] = {
- 		.name = "imx28-dma-apbx",
- 		.driver_data = (kernel_ulong_t) &mxs_dma_types[3],
- 	}, {
-+		.name = "imx7d-dma-apbh",
-+		.driver_data = (kernel_ulong_t) &mxs_dma_types[4],
-+	}, {
- 		/* end of list */
- 	}
- };
-@@ -193,6 +200,7 @@ static const struct of_device_id mxs_dma_dt_ids[] = {
- 	{ .compatible = "fsl,imx23-dma-apbx", .data = &mxs_dma_ids[1], },
- 	{ .compatible = "fsl,imx28-dma-apbh", .data = &mxs_dma_ids[2], },
- 	{ .compatible = "fsl,imx28-dma-apbx", .data = &mxs_dma_ids[3], },
-+	{ .compatible = "fsl,imx7d-dma-apbh", .data = &mxs_dma_ids[4], },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mxs_dma_dt_ids);
-@@ -440,6 +448,12 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
- 	if (ret)
- 		goto err_clk;
- 
-+	if (mxs_dma->dev_id == IMX7D_DMA) {
-+		ret = clk_prepare_enable(mxs_dma->clk_io);
-+		if (ret)
-+			goto err_clk_unprepare;
-+	}
-+
- 	mxs_dma_reset_chan(chan);
- 
- 	dma_async_tx_descriptor_init(&mxs_chan->desc, chan);
-@@ -450,6 +464,8 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
- 
- 	return 0;
- 
-+err_clk_unprepare:
-+	clk_disable_unprepare(mxs_dma->clk);
- err_clk:
- 	free_irq(mxs_chan->chan_irq, mxs_dma);
- err_irq:
-@@ -471,6 +487,9 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
- 	dma_free_coherent(mxs_dma->dma_device.dev, CCW_BLOCK_SIZE,
- 			mxs_chan->ccw, mxs_chan->ccw_phys);
- 
-+	if (mxs_dma->dev_id == IMX7D_DMA)
-+		clk_disable_unprepare(mxs_dma->clk_io);
-+
- 	clk_disable_unprepare(mxs_dma->clk);
- }
- 
-@@ -693,7 +712,7 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
- 	return mxs_chan->status;
- }
- 
--static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
-+static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
- {
- 	int ret;
- 
-@@ -701,6 +720,12 @@ static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
- 	if (ret)
- 		return ret;
- 
-+	if (mxs_dma->dev_id == IMX7D_DMA) {
-+		ret = clk_prepare_enable(mxs_dma->clk_io);
-+		if (ret)
-+			goto err_out;
-+	}
-+
- 	ret = stmp_reset_block(mxs_dma->base);
- 	if (ret)
- 		goto err_out;
-@@ -803,9 +828,19 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 	if (IS_ERR(mxs_dma->base))
- 		return PTR_ERR(mxs_dma->base);
- 
--	mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
--	if (IS_ERR(mxs_dma->clk))
--		return PTR_ERR(mxs_dma->clk);
-+	if (mxs_dma->dev_id == IMX7D_DMA) {
-+		mxs_dma->clk = devm_clk_get(&pdev->dev, "dma_apbh_bch");
-+		if (IS_ERR(mxs_dma->clk))
-+			return PTR_ERR(mxs_dma->clk);
-+		mxs_dma->clk_io = devm_clk_get(&pdev->dev, "dma_apbh_io");
-+		if (IS_ERR(mxs_dma->clk_io))
-+			return PTR_ERR(mxs_dma->clk_io);
-+
-+	} else {
-+		mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
-+		if (IS_ERR(mxs_dma->clk))
-+			return PTR_ERR(mxs_dma->clk);
-+	}
- 
- 	dma_cap_set(DMA_SLAVE, mxs_dma->dma_device.cap_mask);
- 	dma_cap_set(DMA_CYCLIC, mxs_dma->dma_device.cap_mask);
-@@ -835,6 +870,7 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 
- 	mxs_dma->pdev = pdev;
- 	mxs_dma->dma_device.dev = &pdev->dev;
-+	dev_set_drvdata(&pdev->dev, mxs_dma);
- 
- 	/* mxs_dma gets 65535 bytes maximum sg size */
- 	mxs_dma->dma_device.dev->dma_parms = &mxs_dma->dma_parms;
-@@ -872,9 +908,25 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int mxs_dma_pm_resume(struct device *dev)
-+{
-+	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = mxs_dma_init(mxs_dma);
-+	if (ret)
-+		return ret;
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops mxs_dma_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(NULL, mxs_dma_pm_resume)
-+};
-+
- static struct platform_driver mxs_dma_driver = {
- 	.driver		= {
- 		.name	= "mxs-dma",
-+		.pm = &mxs_dma_pm_ops,
- 		.of_match_table = mxs_dma_dt_ids,
- 	},
- 	.id_table	= mxs_dma_ids,
+> Doesn't sound too reliable to me. And I'm not sure even if it was
+> reliable, that it would provide much value. We have to a lot of
+> re-counting anyway, so we might as well just be using our own
+> threshold.  Or maybe I'm missing the point.
+
+>> Bill, do you have an idea why we used that value as threshold in
+>> early implementations?
+
+>> Otherwise I also think we should just drop the use of this value.
+
+Yes, using this value is not especially useful if we re-read with ECC
+disabled to count the bit flips for erased pages.   I think this is what
+Stefan has done in the 11th patch set.
+
 -- 
-1.9.1
+Married men live  longer than single men, but married  men are much more
+willing to die - Dilworth
