@@ -1,19 +1,23 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZVVdv-0002vJ-Qb
- for linux-mtd@lists.infradead.org; Sat, 29 Aug 2015 02:13:20 +0000
-Received: by pabzx8 with SMTP id zx8so79705955pab.1
- for <linux-mtd@lists.infradead.org>; Fri, 28 Aug 2015 19:12:58 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
- Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: [RFC / BUG] mtd: provide proper 32/64-bit compat_ioctl() support for
- BLKPG
-Date: Fri, 28 Aug 2015 19:12:36 -0700
-Message-Id: <1440814356-52070-1-git-send-email-computersforpeace@gmail.com>
+Received: from hofr.at ([212.69.189.236] helo=mail.hofr.at)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZVcH4-0003KH-79
+ for linux-mtd@lists.infradead.org; Sat, 29 Aug 2015 09:18:11 +0000
+Date: Sat, 29 Aug 2015 11:17:40 +0200
+From: Nicholas Mc Guire <der.herr@hofr.at>
+To: Han Xu <b45815@freescale.com>
+Cc: shijie.huang@arm.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, fabio.estevam@freescale.com,
+ hofrat@osadl.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, vinod.koul@intel.com,
+ dan.j.williams@intel.com, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v3 1/6] mtd: nand: gpmi: add gpmi dsm supend/resume support
+Message-ID: <20150829091740.GC5594@opentech.at>
+References: <1440790365-28072-1-git-send-email-b45815@freescale.com>
+ <1440790365-28072-2-git-send-email-b45815@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1440790365-28072-2-git-send-email-b45815@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,131 +27,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After a bit of poking around wondering why my 32-bit user-space can't
-seem to send a proper ioctl(BLKPG) to an MTD on my 64-bit kernel
-(ARM64), I noticed that struct blkpg_ioctl_arg is actually pretty
-unsuitable for use in the ioctl() ABI, due to its use of raw pointers,
-and its lack of alignment/packing restrictions (32-bit arch'es tend to
-pack the 4 fields into 4 32-bit words, whereas 64-bit arch'es would add
-padding after the third int, and make this 6 32-bit words).
+On Fri, 28 Aug 2015, Han Xu wrote:
 
-Anyway, this means BLKPG deserves some special compat_ioctl handling. Do
-the conversion in a small shim for MTD.
+> From: Huang Shijie <b32955@freescale.com>
+> 
+> i.MX6SX supports deep sleep mode(DSM) that may turn off GPMI/BCH power
+> during suspend, add gpmi nand suspend/resume function to release DMA
+> channel in suspend function and re-init GPMI/BCH controller during
+> resume function.
+>
 
-The same bug applies to block/ioctl.c, but I wanted to get some comments
-first. I can send a non-RFC with the same approach for the block
-subsystem. But then: which tree should it go in?
+Just a question regarding gpmi_pm_resume() errror reporting
+Is there a reason that the retrun value of gpmi_extra_init() is not checked ?
+gpmi_extra_init() can retrun -ENOMEM or -EINVAL via return enable_edo_mode(),
+while the -EINVAL would produce a dev_err message, -ENOMEM does not so maybe
+this also wants to include a if(ret) {...} ? - something like the below
+ 
+> Although it is not necessary to restore GPMI/BCH registers value for
+> i.MX6QDL, the code doesn't distinguish different platforms to keep the
+> code simple.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Signed-off-by: Han Xu <han.xu@freescale.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 45 +++++++++++++++++++++++++++++++++-
+>  1 file changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 1b8f350..dfd0ba1 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1,7 +1,7 @@
+>  /*
+>   * Freescale GPMI NAND Flash Driver
+>   *
+> - * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
+> + * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
+>   * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+>   *
+>   * This program is free software; you can redistribute it and/or modify
+> @@ -2036,9 +2036,52 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +static int gpmi_pm_suspend(struct device *dev)
+> +{
+> +	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+> +
+> +	release_dma_channels(this);
+> +	return 0;
+> +}
+> +
+> +static int gpmi_pm_resume(struct device *dev)
+> +{
+> +	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = acquire_dma_channels(this);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* re-init the GPMI registers */
+> +	this->flags &= ~GPMI_TIMING_INIT_OK;
+> +	ret = gpmi_init(this);
+> +	if (ret) {
+> +		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* re-init the BCH registers */
+> +	ret = bch_set_geometry(this);
+> +	if (ret) {
+> +		dev_err(this->dev, "Error setting BCH : %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* re-init others */
+> +	gpmi_extra_init(this);
 
-Tested only on MTD, with an ARM32 user space on an ARM64 kernel.
+report failure of enable_edo_mode() ?
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/mtdchar.c      | 42 +++++++++++++++++++++++++++++++++---------
- include/uapi/linux/blkpg.h | 10 ++++++++++
- 2 files changed, 43 insertions(+), 9 deletions(-)
+	if (ret) {
+		dev_err(this->dev, "Error enabling EDO mode : %d\n", ret);
+		return ret;
+	}
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 55fa27ecf4e1..bf966be09e79 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -498,21 +498,17 @@ static int shrink_ecclayout(const struct nand_ecclayout *from,
- }
- 
- static int mtdchar_blkpg_ioctl(struct mtd_info *mtd,
--			   struct blkpg_ioctl_arg __user *arg)
-+			       struct blkpg_ioctl_arg *arg)
- {
--	struct blkpg_ioctl_arg a;
- 	struct blkpg_partition p;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
--	if (copy_from_user(&a, arg, sizeof(struct blkpg_ioctl_arg)))
-+	if (copy_from_user(&p, arg->data, sizeof(p)))
- 		return -EFAULT;
- 
--	if (copy_from_user(&p, a.data, sizeof(struct blkpg_partition)))
--		return -EFAULT;
--
--	switch (a.op) {
-+	switch (arg->op) {
- 	case BLKPG_ADD_PARTITION:
- 
- 		/* Only master mtd device must be used to add partitions */
-@@ -966,8 +962,13 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 
- 	case BLKPG:
- 	{
--		ret = mtdchar_blkpg_ioctl(mtd,
--		      (struct blkpg_ioctl_arg __user *)arg);
-+		struct blkpg_ioctl_arg __user *blk_arg = argp;
-+		struct blkpg_ioctl_arg a;
-+
-+		if (copy_from_user(&a, blk_arg, sizeof(a)))
-+			ret = -EFAULT;
-+		else
-+			ret = mtdchar_blkpg_ioctl(mtd, &a);
- 		break;
- 	}
- 
-@@ -1046,6 +1047,29 @@ static long mtdchar_compat_ioctl(struct file *file, unsigned int cmd,
- 				&buf_user->start);
- 		break;
- 	}
-+
-+	case BLKPG:
-+	{
-+		/* Convert from blkpg_compat_ioctl_arg to blkpg_ioctl_arg */
-+		struct blkpg_compat_ioctl_arg __user *uarg = argp;
-+		struct blkpg_compat_ioctl_arg arg;
-+		struct blkpg_ioctl_arg a;
-+
-+		if (copy_from_user(&arg, uarg, sizeof(arg))) {
-+			ret = -EFAULT;
-+			break;
-+		}
-+
-+		memset(&a, 0, sizeof(a));
-+		a.op = arg.op;
-+		a.flags = arg.flags;
-+		a.datalen = arg.datalen;
-+		a.data = compat_ptr(arg.data);
-+
-+		ret = mtdchar_blkpg_ioctl(mtd, &a);
-+		break;
-+	}
-+
- 	default:
- 		ret = mtdchar_ioctl(file, cmd, (unsigned long)argp);
- 	}
-diff --git a/include/uapi/linux/blkpg.h b/include/uapi/linux/blkpg.h
-index a8519446c111..0574147f4490 100644
---- a/include/uapi/linux/blkpg.h
-+++ b/include/uapi/linux/blkpg.h
-@@ -26,6 +26,7 @@
-  */
- #include <linux/compiler.h>
- #include <linux/ioctl.h>
-+#include <linux/compat.h>
- 
- #define BLKPG      _IO(0x12,105)
- 
-@@ -37,6 +38,15 @@ struct blkpg_ioctl_arg {
-         void __user *data;
- };
- 
-+#ifdef CONFIG_COMPAT
-+struct blkpg_compat_ioctl_arg {
-+	compat_int_t op;
-+	compat_int_t flags;
-+	compat_int_t datalen;
-+	compat_uptr_t data;
-+};
-+#endif
-+
- /* The subfunctions (for the op field) */
- #define BLKPG_ADD_PARTITION	1
- #define BLKPG_DEL_PARTITION	2
--- 
-2.5.0.457.gab17608
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops gpmi_pm_ops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
+> +};
+> +
+>  static struct platform_driver gpmi_nand_driver = {
+>  	.driver = {
+>  		.name = "gpmi-nand",
+> +		.pm = &gpmi_pm_ops,
+>  		.of_match_table = gpmi_nand_id_table,
+>  	},
+>  	.probe   = gpmi_nand_probe,
+> -- 
+> 1.9.1
+> 
