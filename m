@@ -1,25 +1,23 @@
-Received: from mail-bn1bon0089.outbound.protection.outlook.com
- ([157.56.111.89] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWSz1-0005my-9l
- for linux-mtd@lists.infradead.org; Mon, 31 Aug 2015 17:35:04 +0000
-Message-ID: <55E48F3D.3030800@opensource.altera.com>
-Date: Mon, 31 Aug 2015 12:30:37 -0500
-From: Graham Moore <grmoore@opensource.altera.com>
+ id 1ZWTPC-0007MV-EZ
+ for linux-mtd@lists.infradead.org; Mon, 31 Aug 2015 18:02:06 +0000
+Received: by padhy3 with SMTP id hy3so41876456pad.0
+ for <linux-mtd@lists.infradead.org>; Mon, 31 Aug 2015 11:01:44 -0700 (PDT)
+Date: Mon, 31 Aug 2015 11:01:42 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+ Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [RFC / BUG] mtd: provide proper 32/64-bit compat_ioctl() support
+ for BLKPG
+Message-ID: <20150831180142.GB81844@google.com>
+References: <1440814356-52070-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-CC: <linux-mtd@lists.infradead.org>, Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@opensource.altera.com>, "Vikas
- MANOCHA" <vikas.manocha@st.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
- Controller.
-References: <1440148851-14621-1-git-send-email-marex@denx.de>
- <1440148851-14621-2-git-send-email-marex@denx.de>
-In-Reply-To: <1440148851-14621-2-git-send-email-marex@denx.de>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1440814356-52070-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,104 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
+On Fri, Aug 28, 2015 at 07:12:36PM -0700, Brian Norris wrote:
+> The same bug applies to block/ioctl.c
 
-Having some compile issues...see below
+Actually I'll correct myself: it looks like block/ already has OK
+compat_ioctl support for this. Block devices do a copy to/from user
+space to marshal a new struct. Personally, I find my approach a little
+clearer. 
 
-On 08/21/2015 04:20 AM, Marek Vasut wrote:
-> From: Graham Moore <grmoore@opensource.altera.com>
->
-> Add support for the Cadence QSPI controller. This controller is
-> present in the Altera SoCFPGA SoCs and this driver has been tested
-> on the Cyclone V SoC.
->
-> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> Signed-off-by: Marek Vasut <marex@denx.de>
+> But then: which tree should it go in?
 
-[...]
+I guess since this is only an MTD bug, then it'd be fair to take via
+MTD. I'll plan to do that eventually if there are no objections.
 
-> +static int cqspi_set_protocol(struct spi_nor *nor, enum spi_protocol proto)
-> +{
-> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
-> +
-> +	switch (proto) {
-> +	case SPI_PROTO_1_1_1:
-> +	case SPI_PROTO_1_1_2:
-> +	case SPI_PROTO_1_1_4:
-> +	case SPI_PROTO_1_2_2:
-> +	case SPI_PROTO_1_4_4:
-> +		f_pdata->inst_width = CQSPI_INST_TYPE_SINGLE;
-> +		break;
-> +	case SPI_PROTO_2_2_2:
-> +		f_pdata->inst_width = CQSPI_INST_TYPE_DUAL;
-> +		break;
-> +	case SPI_PROTO_4_4_4:
-> +		f_pdata->inst_width = CQSPI_INST_TYPE_QUAD;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	switch (proto) {
-> +	case SPI_PROTO_1_1_1:
-> +	case SPI_PROTO_1_1_2:
-> +	case SPI_PROTO_1_1_4:
-> +		f_pdata->addr_width = CQSPI_INST_TYPE_SINGLE;
-> +		break;
-> +	case SPI_PROTO_1_2_2:
-> +	case SPI_PROTO_2_2_2:
-> +		f_pdata->addr_width = CQSPI_INST_TYPE_DUAL;
-> +		break;
-> +	case SPI_PROTO_1_4_4:
-> +	case SPI_PROTO_4_4_4:
-> +		f_pdata->addr_width = CQSPI_INST_TYPE_QUAD;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
+> Tested only on MTD, with an ARM32 user space on an ARM64 kernel.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/mtdchar.c      | 42 +++++++++++++++++++++++++++++++++---------
+>  include/uapi/linux/blkpg.h | 10 ++++++++++
+>  2 files changed, 43 insertions(+), 9 deletions(-)
 
-I think you have some other patches in your tree, the above doesn't 
-compile on l2-mtd/master:
+I also suspect it might make more sense to move the compat definitions
+to a new non-UAPI include/linux/blkpg.h. I'll probably put that in v2.
 
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:701:57: warning: ‘enum 
-spi_protocol’ declared inside parameter list [enabled by default]
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:701:57: warning: its 
-scope is only this definition or declaration, which is probably not what 
-you want [enabled by default]
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:701:70: error: parameter 
-2 (‘proto’) has incomplete type
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:701:12: error: function 
-declaration isn’t a prototype [-Werror=strict-prototypes]
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c: In function 
-‘cqspi_set_protocol’:
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:706:7: error: 
-‘SPI_PROTO_1_1_1’ undeclared (first use in this function)
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:706:7: note: each 
-undeclared identifier is reported only once for each function it appears in
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:707:7: error: 
-‘SPI_PROTO_1_1_2’ undeclared (first use in this function)
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:708:7: error: 
-‘SPI_PROTO_1_1_4’ undeclared (first use in this function)
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:709:7: error: 
-‘SPI_PROTO_1_2_2’ undeclared (first use in this function)
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:710:7: error: 
-‘SPI_PROTO_1_4_4’ undeclared (first use in this function)
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:713:7: error: 
-‘SPI_PROTO_2_2_2’ undeclared (first use in this function)
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:716:7: error: 
-‘SPI_PROTO_4_4_4’ undeclared (first use in this function)
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c: In function 
-‘cqspi_setup_flash’:
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:1087:6: error: ‘struct 
-spi_nor’ has no member named ‘dn’
-~/l2-mtd/drivers/mtd/spi-nor/cadence-quadspi.c:1096:6: error: ‘struct 
-spi_nor’ has no member named ‘set_protocol’
-
-[...]
-
-Regards,
-Graham
+Brian
