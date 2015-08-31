@@ -1,15 +1,16 @@
 Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWXfN-00042a-FT
+ id 1ZWXfN-00042M-FQ
  for linux-mtd@lists.infradead.org; Mon, 31 Aug 2015 22:35:05 +0000
-Received: by pacdd16 with SMTP id dd16so152797022pac.2
- for <linux-mtd@lists.infradead.org>; Mon, 31 Aug 2015 15:34:45 -0700 (PDT)
+Received: by pacgr6 with SMTP id gr6so2104360pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 31 Aug 2015 15:34:44 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH mtd-utils 03/11] flash_{un,}lock: support --version flag
-Date: Mon, 31 Aug 2015 15:34:24 -0700
-Message-Id: <1441060472-82169-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH mtd-utils 01/11] flash_{un,
+ }lock: nest optional parameters in help message
+Date: Mon, 31 Aug 2015 15:34:22 -0700
+Message-Id: <1441060472-82169-2-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1441060472-82169-1-git-send-email-computersforpeace@gmail.com>
 References: <1441060472-82169-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,34 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just use the common helper macro.
+block count should be nested within the optional offset listing. That
+is, we require offset before we accept a block count.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- flash_unlock.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ flash_unlock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/flash_unlock.c b/flash_unlock.c
-index 777e4375a44d..9a24b5f796e0 100644
+index 1cc8c2ff2d9b..ee8ac890f61c 100644
 --- a/flash_unlock.c
 +++ b/flash_unlock.c
-@@ -39,6 +39,7 @@ static void usage(int status)
- static const char short_opts[] = "h";
- static const struct option long_opts[] = {
- 	{ "help",	no_argument,	0, 'h' },
-+	{ "version",	no_argument,	0, 'v' },
- 	{ NULL,		0,		0, 0 },
- };
- 
-@@ -61,6 +62,9 @@ int main(int argc, char *argv[])
- 		case 'h':
- 			usage(0);
- 			break;
-+		case 'v':
-+			common_print_version();
-+			exit(0);
- 		default:
- 			usage(1);
- 			break;
+@@ -28,7 +28,7 @@
+ static void usage(int status)
+ {
+ 	fprintf(status ? stderr : stdout,
+-		"Usage: %s <mtd device> [offset] [block count]\n\n"
++		"Usage: %s <mtd device> [offset [block count]]\n\n"
+ 		"If offset is not specified, it defaults to 0.\n"
+ 		"If block count is not specified, it defaults to all blocks.\n",
+ 		PROGRAM_NAME);
 -- 
 2.5.0.457.gab17608
