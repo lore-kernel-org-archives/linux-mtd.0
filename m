@@ -1,15 +1,15 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWXfO-00042T-1h
- for linux-mtd@lists.infradead.org; Mon, 31 Aug 2015 22:35:06 +0000
-Received: by pacgr6 with SMTP id gr6so2104599pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 31 Aug 2015 15:34:45 -0700 (PDT)
+ id 1ZWXfP-00042x-FH
+ for linux-mtd@lists.infradead.org; Mon, 31 Aug 2015 22:35:07 +0000
+Received: by paczk9 with SMTP id zk9so4726943pac.0
+ for <linux-mtd@lists.infradead.org>; Mon, 31 Aug 2015 15:34:46 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH mtd-utils 02/11] flash_{un,}lock: switch to getopt library
-Date: Mon, 31 Aug 2015 15:34:23 -0700
-Message-Id: <1441060472-82169-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH mtd-utils 04/11] flash_{un,}lock: document option flags
+Date: Mon, 31 Aug 2015 15:34:25 -0700
+Message-Id: <1441060472-82169-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1441060472-82169-1-git-send-email-computersforpeace@gmail.com>
 References: <1441060472-82169-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,66 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We will be adding some more flags, so the getopt library can help.
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- flash_unlock.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ flash_unlock.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/flash_unlock.c b/flash_unlock.c
-index ee8ac890f61c..777e4375a44d 100644
+index 9a24b5f796e0..27e7df1eac3f 100644
 --- a/flash_unlock.c
 +++ b/flash_unlock.c
-@@ -13,6 +13,7 @@
- #define FLASH_UNLOCK 0
- #endif
- 
-+#include <getopt.h>
- #include <unistd.h>
- #include <stdlib.h>
- #include <stdio.h>
-@@ -35,6 +36,12 @@ static void usage(int status)
- 	exit(status);
- }
- 
-+static const char short_opts[] = "h";
-+static const struct option long_opts[] = {
-+	{ "help",	no_argument,	0, 'h' },
-+	{ NULL,		0,		0, 0 },
-+};
-+
- int main(int argc, char *argv[])
+@@ -29,7 +29,12 @@
+ static void usage(int status)
  {
- 	int fd, request;
-@@ -43,11 +50,26 @@ int main(int argc, char *argv[])
- 	int count;
- 	const char *dev;
- 
-+	for (;;) {
-+		int c;
-+
-+		c = getopt_long(argc, argv, short_opts, long_opts, NULL);
-+		if (c == EOF)
-+			break;
-+
-+		switch (c) {
-+		case 'h':
-+			usage(0);
-+			break;
-+		default:
-+			usage(1);
-+			break;
-+		}
-+	}
-+
- 	/* Parse command line options */
- 	if (argc < 2 || argc > 4)
- 		usage(1);
--	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
--		usage(0);
- 
- 	dev = argv[1];
- 
+ 	fprintf(status ? stderr : stdout,
+-		"Usage: %s <mtd device> [offset [block count]]\n\n"
++		"Usage: %s [options] [--] <mtd device> [offset [block count]]\n"
++		"\n"
++		"Options:\n"
++		" -h         --help              Display this help and exit\n"
++		"            --version           Display version information and exit\n"
++		"\n"
+ 		"If offset is not specified, it defaults to 0.\n"
+ 		"If block count is not specified, it defaults to all blocks.\n",
+ 		PROGRAM_NAME);
 -- 
 2.5.0.457.gab17608
