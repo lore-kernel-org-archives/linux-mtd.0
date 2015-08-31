@@ -1,17 +1,19 @@
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZW82f-00073c-F6
- for linux-mtd@lists.infradead.org; Sun, 30 Aug 2015 19:13:26 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH v2] mtd: nand: pxa3xx-nand: prevent DFI bus lockup on removal
-Date: Sun, 30 Aug 2015 21:08:30 +0200
-Message-Id: <1440961710-17347-1-git-send-email-robert.jarzmik@free.fr>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZWKxr-0003QA-HL
+ for linux-mtd@lists.infradead.org; Mon, 31 Aug 2015 09:01:21 +0000
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
+ <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 1/2] mtd: test: refactor mtdtest_erase_eraseblock to introduce
+ a new mtdtest_erase function
+Date: Mon, 31 Aug 2015 16:54:50 +0800
+Message-ID: <1441011291-6081-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1437467420-22019-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+References: <1437467420-22019-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,78 +23,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After the conversion of pxa architecture to common clock framework, the
-NAND clock can be disabled on driver exit.
+In original mtd_test, there is only one function to erase a block, but
+we need a function to accept [addr, size] to erase mtd device for
+mtd_erasetest. So refactor the original mtdtest_erase_eraseblock
+to introduce a new mtdtest_erase.
 
-In this case, it happens that if the driver used the NAND and set the
-DFI arbitration bit, the next access to a static memory controller area,
-such as an ethernet card, will stall the system bus, and the core will
-be stalled forever.
-
-This is especially true on pxa31x SoCs, where the NDCR was augmented
-with a new bit to prevent this lockups by giving full ownership of the
-DFI arbiter to the SMC, in change SCr#6.
-
-Fix this by clearing the DFI arbritration bit in driver exit. This
-effectively prevents a lockup on zylonite when removing pxa3xx-nand
-module, and using ethernet afterwards.
-
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
-Since v1: add comment, switch to NFCV1/NCFV2 registers naming
----
- drivers/mtd/nand/pxa3xx_nand.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ drivers/mtd/tests/mtd_test.c | 44 ++++++++++++++++++++++++++++++++------------
+ drivers/mtd/tests/mtd_test.h |  1 +
+ 2 files changed, 33 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 718097414b9c..2f39bfe34584 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -75,7 +75,8 @@
- #define NDCR_ND_MODE		(0x3 << 21)
- #define NDCR_NAND_MODE   	(0x0)
- #define NDCR_CLR_PG_CNT		(0x1 << 20)
--#define NDCR_STOP_ON_UNCOR	(0x1 << 19)
-+#define NFCV1_NDCR_ARB_CNTL	(0x1 << 19)
-+#define NFCV2_NDCR_STOP_ON_UNCOR	(0x1 << 19)
- #define NDCR_RD_ID_CNT_MASK	(0x7 << 16)
- #define NDCR_RD_ID_CNT(x)	(((x) << 16) & NDCR_RD_ID_CNT_MASK)
+diff --git a/drivers/mtd/tests/mtd_test.c b/drivers/mtd/tests/mtd_test.c
+index 34736bb..4c4320c 100644
+--- a/drivers/mtd/tests/mtd_test.c
++++ b/drivers/mtd/tests/mtd_test.c
+@@ -9,24 +9,14 @@
+ int mtdtest_erase_eraseblock(struct mtd_info *mtd, unsigned int ebnum)
+ {
+ 	int err;
+-	struct erase_info ei;
+ 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
  
-@@ -1305,7 +1306,8 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+-	memset(&ei, 0, sizeof(struct erase_info));
+-	ei.mtd  = mtd;
+-	ei.addr = addr;
+-	ei.len  = mtd->erasesize;
+-
+-	err = mtd_erase(mtd, &ei);
++	err = mtdtest_erase(mtd, addr, mtd->erasesize, 0);
+ 	if (err) {
+-		pr_info("error %d while erasing EB %d\n", err, ebnum);
++		pr_info("failed to erase EB %d\n", ebnum);
+ 		return err;
  	}
  
- 	/* Set an initial chunk size */
--	info->reg_ndcr = ndcr & ~NDCR_INT_MASK;
-+	info->reg_ndcr = ndcr &
-+		~(NDCR_INT_MASK | NDCR_ND_ARB_EN | NFCV1_NDCR_ARB_CNTL);
- 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
- 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
+-	if (ei.state == MTD_ERASE_FAILED) {
+-		pr_info("some erase error occurred at EB %d\n", ebnum);
+-		return -EIO;
+-	}
  	return 0;
-@@ -1542,6 +1544,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 	pxa3xx_flash_ids[1].name = NULL;
- 	def = pxa3xx_flash_ids;
- KEEP_CONFIG:
-+	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
- 	if (info->reg_ndcr & NDCR_DWIDTH_M)
- 		chip->options |= NAND_BUSWIDTH_16;
+ }
  
-@@ -1768,6 +1771,16 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
- 		free_irq(irq, info);
- 	pxa3xx_nand_free_buff(info);
+@@ -111,3 +101,33 @@ int mtdtest_write(struct mtd_info *mtd, loff_t addr, size_t size,
  
-+	/*
-+	 * In the pxa3xx case, the DFI bus is shared between the SMC and NFC.
-+	 * In order to prevent a lockup of the system bus, the DFI bus
-+	 * arbitration is granted to SMC upon driver removal. This is done by
-+	 * setting the x_ARB_CNTL bit, which also prevents the NAND to have
-+	 * access to the bus anymore.
-+	 */
-+	nand_writel(info, NDCR,
-+		    (nand_readl(info, NDCR) & ~NDCR_ND_ARB_EN) |
-+		    NFCV1_NDCR_ARB_CNTL);
- 	clk_disable_unprepare(info->clk);
- 
- 	for (cs = 0; cs < pdata->num_cs; cs++)
+ 	return err;
+ }
++
++/*
++ * There is a parameter named as quiet, it's useful to clean the output
++ * when we are testing some negative cases.
++ */
++int mtdtest_erase(struct mtd_info *mtd, loff_t addr, size_t size, int quiet)
++{
++	int err;
++	struct erase_info ei;
++
++	memset(&ei, 0, sizeof(struct erase_info));
++	ei.mtd  = mtd;
++	ei.addr = addr;
++	ei.len  = size;
++
++	err = mtd_erase(mtd, &ei);
++	if (err) {
++		if (!quiet)
++			pr_err("error %d while erasing (addr: %#llx, size: %lu)\n", err, addr, size);
++		return err;
++	}
++
++	if (ei.state == MTD_ERASE_FAILED) {
++		if (!quiet)
++			pr_err("some erase error occurred in erasing (addr: %#llx, size: %lu)\n", addr, size);
++		return -EIO;
++	}
++
++	return err;
++}
+diff --git a/drivers/mtd/tests/mtd_test.h b/drivers/mtd/tests/mtd_test.h
+index 4b7bee1..c53558c 100644
+--- a/drivers/mtd/tests/mtd_test.h
++++ b/drivers/mtd/tests/mtd_test.h
+@@ -21,3 +21,4 @@ int mtdtest_erase_good_eraseblocks(struct mtd_info *mtd, unsigned char *bbt,
+ int mtdtest_read(struct mtd_info *mtd, loff_t addr, size_t size, void *buf);
+ int mtdtest_write(struct mtd_info *mtd, loff_t addr, size_t size,
+ 		const void *buf);
++int mtdtest_erase(struct mtd_info *mtd, loff_t addr, size_t size, int quiet);
 -- 
-2.1.4
+1.8.4.2
