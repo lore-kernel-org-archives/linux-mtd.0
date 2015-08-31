@@ -1,15 +1,16 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWXfU-00043s-5M
- for linux-mtd@lists.infradead.org; Mon, 31 Aug 2015 22:35:12 +0000
-Received: by paczk9 with SMTP id zk9so4728664pac.0
- for <linux-mtd@lists.infradead.org>; Mon, 31 Aug 2015 15:34:51 -0700 (PDT)
+ id 1ZWXfV-00044D-1v
+ for linux-mtd@lists.infradead.org; Mon, 31 Aug 2015 22:35:13 +0000
+Received: by pabzx8 with SMTP id zx8so152932203pab.1
+ for <linux-mtd@lists.infradead.org>; Mon, 31 Aug 2015 15:34:52 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH mtd-utils 11/11] flash_{un,}lock: document block count == -1
-Date: Mon, 31 Aug 2015 15:34:32 -0700
-Message-Id: <1441060472-82169-12-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH mtd-utils 09/11] flash_{un,
+ }lock: improve strtol() error handling
+Date: Mon, 31 Aug 2015 15:34:30 -0700
+Message-Id: <1441060472-82169-10-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1441060472-82169-1-git-send-email-computersforpeace@gmail.com>
 References: <1441060472-82169-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,27 +22,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These utilities have accepted -1 as a block count to mean "all blocks."
-Let's document that.
+Use the simple_* helpers to improve error checking.
+
+Also fixup brace style at the same time.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- flash_unlock.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ flash_unlock.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
 diff --git a/flash_unlock.c b/flash_unlock.c
-index d775c0b01950..f51870aeb69f 100644
+index 644360548601..7a7a773d1d76 100644
 --- a/flash_unlock.c
 +++ b/flash_unlock.c
-@@ -52,7 +52,8 @@ static void usage(int status)
- 		" -u         --unlock            Unlock a region of flash\n"
- 		"\n"
- 		"If offset is not specified, it defaults to 0.\n"
--		"If block count is not specified, it defaults to all blocks.\n",
-+		"If block count is not specified, it defaults to all blocks.\n"
-+		"A block count of -1 means all blocks.\n",
- 		flash_msg[DEFAULT_REQUEST],
- 		PROGRAM_NAME);
- 	exit(status);
+@@ -147,8 +147,8 @@ int main(int argc, char *argv[])
+ 	int fd, request;
+ 	struct mtd_info_user mtdInfo;
+ 	struct erase_info_user mtdLockInfo;
+-	int count;
+-	int ret;
++	long count;
++	int ret = 0;
+ 
+ 	process_args(argc, argv);
+ 
+@@ -161,22 +161,28 @@ int main(int argc, char *argv[])
+ 		sys_errmsg_die("could not get mtd info: %s", dev);
+ 
+ 	/* Make sure user options are valid */
+-	if (offs_s)
+-		mtdLockInfo.start = strtol(offs_s, NULL, 0);
+-	else
++	if (offs_s) {
++		mtdLockInfo.start = simple_strtol(offs_s, &ret);
++		if (ret)
++			errmsg_die("bad offset");
++	} else {
+ 		mtdLockInfo.start = 0;
++	}
+ 	if (mtdLockInfo.start > mtdInfo.size)
+ 		errmsg_die("%#x is beyond device size %#x",
+ 			mtdLockInfo.start, mtdInfo.size);
+ 
+ 	if (count_s) {
+-		count = strtol(count_s, NULL, 0);
++		count = simple_strtol(count_s, &ret);
++		if (ret)
++			errmsg_die("bad count");
+ 		if (count == -1)
+ 			mtdLockInfo.length = mtdInfo.size;
+ 		else
+ 			mtdLockInfo.length = mtdInfo.erasesize * count;
+-	} else
++	} else {
+ 		mtdLockInfo.length = mtdInfo.size;
++	}
+ 	if (mtdLockInfo.start + mtdLockInfo.length > mtdInfo.size)
+ 		errmsg_die("range is more than device supports: %#x + %#x > %#x",
+ 			mtdLockInfo.start, mtdLockInfo.length, mtdInfo.size);
 -- 
 2.5.0.457.gab17608
