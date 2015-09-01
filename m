@@ -1,16 +1,16 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWri9-0002tx-WE
- for linux-mtd@lists.infradead.org; Tue, 01 Sep 2015 19:59:18 +0000
-Received: by pacwi10 with SMTP id wi10so5858398pac.3
- for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 12:58:57 -0700 (PDT)
+ id 1ZWriA-0002wE-Re
+ for linux-mtd@lists.infradead.org; Tue, 01 Sep 2015 19:59:19 +0000
+Received: by pacfv12 with SMTP id fv12so5914871pac.2
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 12:58:58 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
 	Marek Vasut <marex@denx.de>
-Subject: [PATCH 02/10] mtd: spi-nor: make bitfield constants more consistent
-Date: Tue,  1 Sep 2015 12:57:07 -0700
-Message-Id: <1441137435-52862-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 03/10] mtd: spi-nor: add SPI NOR manufacturer IDs
+Date: Tue,  1 Sep 2015 12:57:08 -0700
+Message-Id: <1441137435-52862-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
 References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,55 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These status bits use different ways of representing similar integer
-constants -- some are decimal, some are hex. Make them more consistent.
+These are often similar for CFI (parallel NOR) and for SPI NOR, but they
+aren't always the same, for various reasons (different namespaces,
+company acquisitions and renames, etc.). And some don't have CFI_MFR_*
+entries at all.
 
-At the same time, impose my own preference, since IMO it's clearer what
-these are when using the BIT() macro.
+So let's make a proper place to list the SPI NOR IDs, with all the SPI
+NOR specific assumptions and comments.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- include/linux/mtd/spi-nor.h | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ include/linux/mtd/spi-nor.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 91e165fa3918..321a055bc266 100644
+index 321a055bc266..8558793cc0f7 100644
 --- a/include/linux/mtd/spi-nor.h
 +++ b/include/linux/mtd/spi-nor.h
-@@ -63,24 +63,24 @@
- #define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
+@@ -11,6 +11,21 @@
+ #define __LINUX_MTD_SPI_NOR_H
  
- /* Status Register bits. */
--#define SR_WIP			1	/* Write in progress */
--#define SR_WEL			2	/* Write enable latch */
-+#define SR_WIP			BIT(0)	/* Write in progress */
-+#define SR_WEL			BIT(1)	/* Write enable latch */
- /* meaning of other SR_* bits may differ between vendors */
--#define SR_BP0			4	/* Block protect 0 */
--#define SR_BP1			8	/* Block protect 1 */
--#define SR_BP2			0x10	/* Block protect 2 */
--#define SR_SRWD			0x80	/* SR write protect */
-+#define SR_BP0			BIT(2)	/* Block protect 0 */
-+#define SR_BP1			BIT(3)	/* Block protect 1 */
-+#define SR_BP2			BIT(4)	/* Block protect 2 */
-+#define SR_SRWD			BIT(7)	/* SR write protect */
+ #include <linux/bitops.h>
++#include <linux/mtd/cfi.h>
++
++/*
++ * Manufacturer IDs
++ *
++ * The first byte returned from the flash after sending opcode SPINOR_OP_RDID.
++ * Sometimes these are the same as CFI IDs, but sometimes they aren't.
++ */
++#define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
++#define SNOR_MFR_INTEL		CFI_MFR_INTEL
++#define SNOR_MFR_MICRON		CFI_MFR_ST /* ST Micro <--> Micron */
++#define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
++#define SNOR_MFR_SPANSION	CFI_MFR_AMD
++#define SNOR_MFR_SST		CFI_MFR_SST
++#define SNOR_MFR_WINBOND	0xef
  
--#define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
-+#define SR_QUAD_EN_MX		BIT(6)	/* Macronix Quad I/O */
- 
- /* Enhanced Volatile Configuration Register bits */
--#define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
-+#define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
- 
- /* Flag Status Register bits */
--#define FSR_READY		0x80
-+#define FSR_READY		BIT(7)
- 
- /* Configuration Register bits. */
--#define CR_QUAD_EN_SPAN		0x2	/* Spansion Quad I/O */
-+#define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
- 
- enum read_mode {
- 	SPI_NOR_NORMAL = 0,
+ /*
+  * Note on opcode nomenclature: some opcodes have a format like
 -- 
 2.5.0.457.gab17608
