@@ -1,16 +1,16 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWriD-00030R-Em
+ id 1ZWriE-00030S-43
  for linux-mtd@lists.infradead.org; Tue, 01 Sep 2015 19:59:22 +0000
-Received: by pacfv12 with SMTP id fv12so5915787pac.2
- for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 12:59:00 -0700 (PDT)
+Received: by pacfv12 with SMTP id fv12so5916101pac.2
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 12:59:01 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
 	Marek Vasut <marex@denx.de>
-Subject: [PATCH 06/10] mtd: spi-nor: refactor block protection functions
-Date: Tue,  1 Sep 2015 12:57:11 -0700
-Message-Id: <1441137435-52862-7-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 07/10] mtd: spi-nor: add mtd_is_locked() support
+Date: Tue,  1 Sep 2015 12:57:12 -0700
+Message-Id: <1441137435-52862-8-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
 References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,244 +22,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This code was a bit sloppy, would produce a lot of copy-and-paste, and
-did not always provide a sensible interface:
-
- * It didn't validate the length for LOCK and the offset for UNLOCK, so
-   we were essentially discarding half of the user-supplied data and
-   assuming what they wanted to lock/unlock
- * It didn't do very good error checking
- * It didn't make use of the fact that this operation works on
-   power-of-two dimensions
-
-So, rewrite this to do proper bit arithmetic rather than a bunch of
-hard-coded condition tables. Now we have:
-
- * More comments on how this was derived
- * Notes on what is (and isn't) supported
- * A more exendible function, so we could add support for other
-   protection ranges
- * More accurate locking - e.g., suppose the top quadrant is locked (75%
-   to 100%); then in the following cases, case (a) will succeed but (b)
-   will not (return -EINVAL):
-     (a) user requests lock 3rd quadrant (50% to 75%)
-     (b) user requests lock 3rd quadrant, minus a few blocks (e.g., 50%
-         to 73%)
-   Case (b) *should* fail, since we'd have to lock blocks that weren't
-   requested. But the old implementation didn't know the difference and
-   would lock the entire second half (50% to 100%)
-
-This refactoring work will also help enable the addition of
-mtd_is_locked() support and potentially the support of bottom boot
-protection (TB=1).
+This enables ioctl(MEMISLOCKED). Status can now be reported in the
+mtdinfo or flash_lock utilities found in mtd-utils.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 171 +++++++++++++++++++++++++++++++-----------
- 1 file changed, 126 insertions(+), 45 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 37 ++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/spi-nor.h   |  3 +++
+ 2 files changed, 39 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 09183eb51297..62fa1b4ff3c0 100644
+index 62fa1b4ff3c0..c4fb1205f1d3 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -370,72 +370,153 @@ erase_err:
+@@ -519,6 +519,24 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	return write_sr(nor, status_new);
+ }
+ 
++/*
++ * Check if a region of the flash is (completely) locked. See stm_lock() for
++ * more info.
++ *
++ * Returns 1 if entire region is locked, 0 if any portion is unlocked, and
++ * negative on errors.
++ */
++static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
++{
++	int status;
++
++	status = read_sr(nor);
++	if (status < 0)
++		return status;
++
++	return stm_is_locked_sr(nor, ofs, len, status);
++}
++
+ static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+@@ -549,6 +567,21 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
  	return ret;
  }
  
-+static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
-+				 uint64_t *len)
++static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
 +{
-+	struct mtd_info *mtd = &nor->mtd;
-+	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
-+	int shift = ffs(mask) - 1;
-+	int pow;
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
 +
-+	if (!(sr & mask)) {
-+		/* No protection */
-+		*ofs = 0;
-+		*len = 0;
-+	} else {
-+		pow = ((sr & mask) ^ mask) >> shift;
-+		*len = mtd->size >> pow;
-+		*ofs = mtd->size - *len;
-+	}
++	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_UNLOCK);
++	if (ret)
++		return ret;
++
++	ret = nor->flash_is_locked(nor, ofs, len);
++
++	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK);
++	return ret;
 +}
 +
-+/*
-+ * Return 1 if the entire region is locked, 0 otherwise
-+ */
-+static int stm_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
-+			    u8 sr)
-+{
-+	loff_t lock_offs;
-+	uint64_t lock_len;
-+
-+	stm_get_locked_range(nor, sr, &lock_offs, &lock_len);
-+
-+	return (ofs + len <= lock_offs + lock_len) && (ofs >= lock_offs);
-+}
-+
-+/*
-+ * Lock a region of the flash. Compatible with ST Micro and similar flash.
-+ * Supports only the block protection bits BP{0,1,2} in the status register
-+ * (SR). Does not support these features found in newer SR bitfields:
-+ *   - TB: top/bottom protect - only handle TB=0 (top protect)
-+ *   - SEC: sector/block protect - only handle SEC=0 (block protect)
-+ *   - CMP: complement protect - only support CMP=0 (range is not complemented)
-+ *
-+ * Sample table portion for 8MB flash (Winbond w25q64fw):
-+ *
-+ *   SEC  |  TB   |  BP2  |  BP1  |  BP0  |  Prot Length  | Protected Portion
-+ *  --------------------------------------------------------------------------
-+ *    X   |   X   |   0   |   0   |   0   |  NONE         | NONE
-+ *    0   |   0   |   0   |   0   |   1   |  128 KB       | Upper 1/64
-+ *    0   |   0   |   0   |   1   |   0   |  256 KB       | Upper 1/32
-+ *    0   |   0   |   0   |   1   |   1   |  512 KB       | Upper 1/16
-+ *    0   |   0   |   1   |   0   |   0   |  1 MB         | Upper 1/8
-+ *    0   |   0   |   1   |   0   |   1   |  2 MB         | Upper 1/4
-+ *    0   |   0   |   1   |   1   |   0   |  4 MB         | Upper 1/2
-+ *    X   |   X   |   1   |   1   |   1   |  8 MB         | ALL
-+ *
-+ * Returns negative on errors, 0 on success.
-+ */
- static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- {
- 	struct mtd_info *mtd = &nor->mtd;
--	uint32_t offset = ofs;
--	uint8_t status_old, status_new;
--	int ret = 0;
-+	u8 status_old, status_new;
-+	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
-+	u8 shift = ffs(mask) - 1, pow, val;
- 
- 	status_old = read_sr(nor);
- 
--	if (offset < mtd->size - (mtd->size / 2))
--		status_new = status_old | SR_BP2 | SR_BP1 | SR_BP0;
--	else if (offset < mtd->size - (mtd->size / 4))
--		status_new = (status_old & ~SR_BP0) | SR_BP2 | SR_BP1;
--	else if (offset < mtd->size - (mtd->size / 8))
--		status_new = (status_old & ~SR_BP1) | SR_BP2 | SR_BP0;
--	else if (offset < mtd->size - (mtd->size / 16))
--		status_new = (status_old & ~(SR_BP0 | SR_BP1)) | SR_BP2;
--	else if (offset < mtd->size - (mtd->size / 32))
--		status_new = (status_old & ~SR_BP2) | SR_BP1 | SR_BP0;
--	else if (offset < mtd->size - (mtd->size / 64))
--		status_new = (status_old & ~(SR_BP2 | SR_BP0)) | SR_BP1;
--	else
--		status_new = (status_old & ~(SR_BP2 | SR_BP1)) | SR_BP0;
-+	/* SPI NOR always locks to the end */
-+	if (ofs + len != mtd->size) {
-+		/* Does combined region extend to end? */
-+		if (!stm_is_locked_sr(nor, ofs + len, mtd->size - ofs - len,
-+				      status_old))
-+			return -EINVAL;
-+		len = mtd->size - ofs;
-+	}
-+
-+	/*
-+	 * Need smallest pow such that:
-+	 *
-+	 *   1 / (2^pow) <= (len / size)
-+	 *
-+	 * so (assuming power-of-2 size) we do:
-+	 *
-+	 *   pow = ceil(log2(size / len)) = log2(size) - floor(log2(len))
-+	 */
-+	pow = ilog2(mtd->size) - ilog2(len);
-+	val = mask - (pow << shift);
-+	if (val & ~mask)
-+		return -EINVAL;
-+	/* Don't "lock" with no region! */
-+	if (!(val & mask))
-+		return -EINVAL;
-+
-+	status_new = (status_old & ~mask) | val;
- 
- 	/* Only modify protection if it will not unlock other areas */
--	if ((status_new & (SR_BP2 | SR_BP1 | SR_BP0)) >
--				(status_old & (SR_BP2 | SR_BP1 | SR_BP0))) {
--		write_enable(nor);
--		ret = write_sr(nor, status_new);
--	}
-+	if ((status_new & mask) <= (status_old & mask))
-+		return -EINVAL;
- 
--	return ret;
-+	write_enable(nor);
-+	return write_sr(nor, status_new);
- }
- 
-+/*
-+ * Unlock a region of the flash. See stm_lock() for more info
-+ *
-+ * Returns negative on errors, 0 on success.
-+ */
- static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- {
- 	struct mtd_info *mtd = &nor->mtd;
--	uint32_t offset = ofs;
- 	uint8_t status_old, status_new;
--	int ret = 0;
-+	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
-+	u8 shift = ffs(mask) - 1, pow, val;
- 
- 	status_old = read_sr(nor);
- 
--	if (offset+len > mtd->size - (mtd->size / 64))
--		status_new = status_old & ~(SR_BP2 | SR_BP1 | SR_BP0);
--	else if (offset+len > mtd->size - (mtd->size / 32))
--		status_new = (status_old & ~(SR_BP2 | SR_BP1)) | SR_BP0;
--	else if (offset+len > mtd->size - (mtd->size / 16))
--		status_new = (status_old & ~(SR_BP2 | SR_BP0)) | SR_BP1;
--	else if (offset+len > mtd->size - (mtd->size / 8))
--		status_new = (status_old & ~SR_BP2) | SR_BP1 | SR_BP0;
--	else if (offset+len > mtd->size - (mtd->size / 4))
--		status_new = (status_old & ~(SR_BP0 | SR_BP1)) | SR_BP2;
--	else if (offset+len > mtd->size - (mtd->size / 2))
--		status_new = (status_old & ~SR_BP1) | SR_BP2 | SR_BP0;
--	else
--		status_new = (status_old & ~SR_BP0) | SR_BP2 | SR_BP1;
-+	/* Cannot unlock; would unlock larger region than requested */
-+	if (stm_is_locked_sr(nor, status_old, ofs - mtd->erasesize,
-+			     mtd->erasesize))
-+		return -EINVAL;
- 
--	/* Only modify protection if it will not lock other areas */
--	if ((status_new & (SR_BP2 | SR_BP1 | SR_BP0)) <
--				(status_old & (SR_BP2 | SR_BP1 | SR_BP0))) {
--		write_enable(nor);
--		ret = write_sr(nor, status_new);
-+	/*
-+	 * Need largest pow such that:
-+	 *
-+	 *   1 / (2^pow) >= (len / size)
-+	 *
-+	 * so (assuming power-of-2 size) we do:
-+	 *
-+	 *   pow = floor(log2(size / len)) = log2(size) - ceil(log2(len))
-+	 */
-+	pow = ilog2(mtd->size) - order_base_2(mtd->size - (ofs + len));
-+	if (ofs + len == mtd->size) {
-+		val = 0; /* fully unlocked */
-+	} else {
-+		val = mask - (pow << shift);
-+		/* Some power-of-two sizes are not supported */
-+		if (val & ~mask)
-+			return -EINVAL;
+ /* Used when the "_ext_id" is two bytes at most */
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+ 		.id = {							\
+@@ -1151,11 +1184,13 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	if (JEDEC_MFR(info) == SNOR_MFR_MICRON) {
+ 		nor->flash_lock = stm_lock;
+ 		nor->flash_unlock = stm_unlock;
++		nor->flash_is_locked = stm_is_locked;
  	}
  
--	return ret;
-+	status_new = (status_old & ~mask) | val;
-+
-+	/* Only modify protection if it will not lock other areas */
-+	if ((status_new & mask) >= (status_old & mask))
-+		return -EINVAL;
-+
-+	write_enable(nor);
-+	return write_sr(nor, status_new);
- }
+-	if (nor->flash_lock && nor->flash_unlock) {
++	if (nor->flash_lock && nor->flash_unlock && nor->flash_is_locked) {
+ 		mtd->_lock = spi_nor_lock;
+ 		mtd->_unlock = spi_nor_unlock;
++		mtd->_is_locked = spi_nor_is_locked;
+ 	}
  
- static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	/* sst nor chips use AAI word program */
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index bd8068f6796a..8620bfaed261 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -176,6 +176,8 @@ struct mtd_info;
+  *			at the offset @offs
+  * @flash_lock:		[FLASH-SPECIFIC] lock a region of the SPI NOR
+  * @flash_unlock:	[FLASH-SPECIFIC] unlock a region of the SPI NOR
++ * @flash_is_locked:	[FLASH-SPECIFIC] check if a region of the SPI NOR is
++ *			completely locked
+  * @priv:		the private data
+  */
+ struct spi_nor {
+@@ -212,6 +214,7 @@ struct spi_nor {
+ 
+ 	int (*flash_lock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+ 	int (*flash_unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
++	int (*flash_is_locked)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+ 
+ 	void *priv;
+ };
 -- 
 2.5.0.457.gab17608
