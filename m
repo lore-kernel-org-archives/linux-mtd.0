@@ -1,21 +1,25 @@
-Date: Tue, 1 Sep 2015 14:19:38 -0700
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZWt83-00033K-1t
+ for linux-mtd@lists.infradead.org; Tue, 01 Sep 2015 21:30:07 +0000
+Received: by pacfv12 with SMTP id fv12so8048433pac.2
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 14:29:46 -0700 (PDT)
+Date: Tue, 1 Sep 2015 14:29:43 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Holler <holler@ahsoftware.de>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
- Russel King <linux@arm.linux.org.uk>,
- Andrew Morton <akpm@linux-foundation.org>,
- Grant Likely <grant.likely@linaro.org>,
- Tomeu Vizoso <tomeu.vizoso@collabora.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 15/16] mtd: mtdcore: fix initcall level
-Message-ID: <20150901211938.GJ81844@google.com>
-References: <1440592108-3740-1-git-send-email-holler@ahsoftware.de>
- <1440592108-3740-16-git-send-email-holler@ahsoftware.de>
+To: Oleksij Rempel <linux@rempel-privat.de>
+Cc: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 3/3] mtd: nand: add Toshiba TC58NVG0S3E to nand_ids
+ table
+Message-ID: <20150901212943.GK81844@google.com>
+References: <20141230200946.277c56c0@bbrezillon>
+ <1420030733-10374-1-git-send-email-linux@rempel-privat.de>
+ <1420030733-10374-3-git-send-email-linux@rempel-privat.de>
+ <20150825192509.GI81844@google.com>
+ <55DD39E6.7030406@rempel-privat.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1440592108-3740-16-git-send-email-holler@ahsoftware.de>
+In-Reply-To: <55DD39E6.7030406@rempel-privat.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexander,
+Hi Oleksij,
 
-No judgment here for the rest of this series, but for this patch:
-
-On Wed, Aug 26, 2015 at 02:28:27PM +0200, Alexander Holler wrote:
-> The mtd-core has to be initialized before other dependent mtd-drivers,
-> otherwise a crash might occur.
+On Wed, Aug 26, 2015 at 06:00:38AM +0200, Oleksij Rempel wrote:
+> Am 25.08.2015 um 21:25 schrieb Brian Norris:
+> > An old one here...
+> > 
+> > On Wed, Dec 31, 2014 at 01:58:53PM +0100, Oleksij Rempel wrote:
+> >> Add the full description of the Toshiba TC58NVG0S3E NAND chip in the
+> >> nand_ids table so that we can later use the NAND ECC infos and ONFI timings
+> >> mode in controller drivers.
+> >>
+> >> Tested with asm9260_nand driver.
+> > 
+> > Looks like this driver work stalled?
 > 
-> Currently mtd_init() is called in the initcall-level device, which is the
-> same level where most mtd-drivers will end up. By luck this seemed to have
-> been called most of the time before other mtd-drivers without having been
-> explicitly enforced.
+> Yea, i'm working on other project. The company with asm9260_nand chip
+> asked not to be named any more. I assume, they have some legal issues. I
+> can continue to work on this in my free time, but i need some suggestion
+> how to handle this issue. Any ideas?
 
-I can't really speak for the original authors, but it does not appear to
-be entirely "by luck." Link order was one of the de facto ways to get
-this ordering (though it's not really a great one), and mtdcore was
-always linked first within the drivers/mtd/ directory structure.
+Well, I'm not a lawyer, and I can't give legal advice. But AIUI, as long
+as you can fulfill the Developer's Certificate of Origin (see
+Documentation/SubmittingPatches), then you can still contribute code.
+It's on you to clear up whether you have "the right to submit it under
+the open source license indicated in the file."
 
-But that's just background, I think this is worth fixing anyway. It
-could, for instance, become a problem if drivers are located outside
-drivers/mtd/; I see random board files in arch/ that register with MTD,
-and I'm actually not sure how they have never tripped on this.
+(IANAL double: but given that the original submissions are already out
+on the mailing lists under GPLv2 (the Signed-off-by), nothing would stop
+random developer X from picking up your work and upstreaming it, without
+any additional permission.)
 
-> But if mtd_init() is not called before a dependent
-> driver, a null-pointer exception might occur (e.g. because the mtd device
-> class isn't registered).
-> 
-> To fix this, mtd-init() is moved to the initcall-level fs (right before
-> the standard initcall level device).
-
-Is there a good reason we shouldn't just make this a subsys_initcall()?
-That would match the naming better, and it mirrors what, e.g.,
-block/genhd uses. It would also allow flexibility if there are other
-current/future use cases that might need to sit between the subsystem
-and the drivers.
-
-> Signed-off-by: Alexander Holler <holler@ahsoftware.de>
-> ---
->  drivers/mtd/mtdcore.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 8bbbb75..fa8e6452 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -1303,7 +1303,7 @@ static void __exit cleanup_mtd(void)
->  	bdi_destroy(&mtd_bdi);
->  }
->  
-> -module_init(init_mtd);
-> +fs_initcall_sync(init_mtd);
-
-Why the *_sync() version? init_mtd() is very simple and doesn't have any
-multithreading issues to handle.
-
->  module_exit(cleanup_mtd);
->  
->  MODULE_LICENSE("GPL");
-> -- 
-> 2.1.0
-> 
-
-Regards,
 Brian
