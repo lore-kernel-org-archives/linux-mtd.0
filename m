@@ -1,16 +1,16 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWriA-0002wE-Re
- for linux-mtd@lists.infradead.org; Tue, 01 Sep 2015 19:59:19 +0000
-Received: by pacfv12 with SMTP id fv12so5914871pac.2
- for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 12:58:58 -0700 (PDT)
+ id 1ZWriB-00030J-RX
+ for linux-mtd@lists.infradead.org; Tue, 01 Sep 2015 19:59:20 +0000
+Received: by pary6 with SMTP id y6so973535par.0
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 12:58:59 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
 	Marek Vasut <marex@denx.de>
-Subject: [PATCH 03/10] mtd: spi-nor: add SPI NOR manufacturer IDs
-Date: Tue,  1 Sep 2015 12:57:08 -0700
-Message-Id: <1441137435-52862-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 04/10] mtd: spi-nor: use SNOR_MFR_* instead of CFI_MFR_*
+Date: Tue,  1 Sep 2015 12:57:09 -0700
+Message-Id: <1441137435-52862-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
 References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,44 +22,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These are often similar for CFI (parallel NOR) and for SPI NOR, but they
-aren't always the same, for various reasons (different namespaces,
-company acquisitions and renames, etc.). And some don't have CFI_MFR_*
-entries at all.
-
-So let's make a proper place to list the SPI NOR IDs, with all the SPI
-NOR specific assumptions and comments.
+No functional change, just cosmetic.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- include/linux/mtd/spi-nor.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/mtd/spi-nor/spi-nor.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 321a055bc266..8558793cc0f7 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -11,6 +11,21 @@
- #define __LINUX_MTD_SPI_NOR_H
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index dd46d5e65846..09183eb51297 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -17,7 +17,6 @@
+ #include <linux/mutex.h>
+ #include <linux/math64.h>
  
- #include <linux/bitops.h>
-+#include <linux/mtd/cfi.h>
-+
-+/*
-+ * Manufacturer IDs
-+ *
-+ * The first byte returned from the flash after sending opcode SPINOR_OP_RDID.
-+ * Sometimes these are the same as CFI IDs, but sometimes they aren't.
-+ */
-+#define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
-+#define SNOR_MFR_INTEL		CFI_MFR_INTEL
-+#define SNOR_MFR_MICRON		CFI_MFR_ST /* ST Micro <--> Micron */
-+#define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
-+#define SNOR_MFR_SPANSION	CFI_MFR_AMD
-+#define SNOR_MFR_SST		CFI_MFR_SST
-+#define SNOR_MFR_WINBOND	0xef
+-#include <linux/mtd/cfi.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/of_platform.h>
+ #include <linux/spi/flash.h>
+@@ -179,11 +178,11 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+ 	u8 cmd;
  
- /*
-  * Note on opcode nomenclature: some opcodes have a format like
+ 	switch (JEDEC_MFR(info)) {
+-	case CFI_MFR_ST: /* Micron, actually */
++	case SNOR_MFR_MICRON:
+ 		/* Some Micron need WREN command; all will accept it */
+ 		need_wren = true;
+-	case CFI_MFR_MACRONIX:
+-	case 0xEF /* winbond */:
++	case SNOR_MFR_MACRONIX:
++	case SNOR_MFR_WINBOND:
+ 		if (need_wren)
+ 			write_enable(nor);
+ 
+@@ -963,14 +962,14 @@ static int set_quad_mode(struct spi_nor *nor, const struct flash_info *info)
+ 	int status;
+ 
+ 	switch (JEDEC_MFR(info)) {
+-	case CFI_MFR_MACRONIX:
++	case SNOR_MFR_MACRONIX:
+ 		status = macronix_quad_enable(nor);
+ 		if (status) {
+ 			dev_err(nor->dev, "Macronix quad-read not enabled\n");
+ 			return -EINVAL;
+ 		}
+ 		return status;
+-	case CFI_MFR_ST:
++	case SNOR_MFR_MICRON:
+ 		status = micron_quad_enable(nor);
+ 		if (status) {
+ 			dev_err(nor->dev, "Micron quad-read not enabled\n");
+@@ -1050,9 +1049,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	 * up with the software protection bits set
+ 	 */
+ 
+-	if (JEDEC_MFR(info) == CFI_MFR_ATMEL ||
+-	    JEDEC_MFR(info) == CFI_MFR_INTEL ||
+-	    JEDEC_MFR(info) == CFI_MFR_SST) {
++	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
++	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
++	    JEDEC_MFR(info) == SNOR_MFR_SST) {
+ 		write_enable(nor);
+ 		write_sr(nor, 0);
+ 	}
+@@ -1067,8 +1066,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	mtd->_erase = spi_nor_erase;
+ 	mtd->_read = spi_nor_read;
+ 
+-	/* nor protection support for STmicro chips */
+-	if (JEDEC_MFR(info) == CFI_MFR_ST) {
++	/* NOR protection support for STmicro/Micron chips */
++	if (JEDEC_MFR(info) == SNOR_MFR_MICRON) {
+ 		nor->flash_lock = stm_lock;
+ 		nor->flash_unlock = stm_unlock;
+ 	}
+@@ -1162,7 +1161,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	else if (mtd->size > 0x1000000) {
+ 		/* enable 4-byte addressing if the device exceeds 16MiB */
+ 		nor->addr_width = 4;
+-		if (JEDEC_MFR(info) == CFI_MFR_AMD) {
++		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION) {
+ 			/* Dedicated 4-byte command set */
+ 			switch (nor->flash_read) {
+ 			case SPI_NOR_QUAD:
 -- 
 2.5.0.457.gab17608
