@@ -1,16 +1,22 @@
-Date: Tue, 1 Sep 2015 18:16:16 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] mtd: nand: sunxi: rely on nand_dt_init initialization
-Message-ID: <20150902011616.GP81844@google.com>
-References: <1440411031-8910-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH 15/16] mtd: mtdcore: fix initcall level
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1440592108-3740-1-git-send-email-holler@ahsoftware.de>
+ <1440592108-3740-16-git-send-email-holler@ahsoftware.de>
+ <20150901211938.GJ81844@google.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+ Russel King <linux@arm.linux.org.uk>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Grant Likely <grant.likely@linaro.org>,
+ Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+From: Alexander Holler <holler@ahsoftware.de>
+Message-ID: <55E68A72.30909@ahsoftware.de>
+Date: Wed, 2 Sep 2015 07:34:42 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1440411031-8910-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <20150901211938.GJ81844@google.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,93 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 24, 2015 at 12:10:31PM +0200, Boris Brezillon wrote:
-> nand_dt_init(), called from nand_scan_ident(), is already parsing the
-> generic MTD/NAND DT properties, and initializing the nand_chip struct
-> accordingly.
-> Rely on this initialization instead of manually parsing those properties.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
-> Changes since v1:
-> - drop unused strength and blk_size variables
+Am 01.09.2015 um 23:19 schrieb Brian Norris:
+> Hi Alexander,
+>
+> No judgment here for the rest of this series, but for this patch:
+>
+> On Wed, Aug 26, 2015 at 02:28:27PM +0200, Alexander Holler wrote:
+>> The mtd-core has to be initialized before other dependent mtd-drivers,
+>> otherwise a crash might occur.
+>>
+>> Currently mtd_init() is called in the initcall-level device, which is the
+>> same level where most mtd-drivers will end up. By luck this seemed to have
+>> been called most of the time before other mtd-drivers without having been
+>> explicitly enforced.
+>
+> I can't really speak for the original authors, but it does not appear to
+> be entirely "by luck." Link order was one of the de facto ways to get
+> this ordering (though it's not really a great one), and mtdcore was
+> always linked first within the drivers/mtd/ directory structure.
+>
+> But that's just background, I think this is worth fixing anyway. It
+> could, for instance, become a problem if drivers are located outside
+> drivers/mtd/; I see random board files in arch/ that register with MTD,
+> and I'm actually not sure how they have never tripped on this.
 
-Good catch, I was about to comment on v1 :)
+I've already found at least a half a dozen other drivers with the same 
+problem through my shuffling of the drivers which all end up in the 
+standard initcall level device. I'm aware that this is based on the link 
+order, which itself is based on linker behaviour (and maybe other things 
+like make or other build tools). I'm just calling it luck, because this 
+is nowhere explicitly stated, at least I've never seen such a statement, 
+neither in any source, nor somewhere in Documentation. So I've choosen 
+the term "by luck" in order to provoke a bit (or to stimulate a 
+discussion about that widespread problem).
 
-> ---
->  drivers/mtd/nand/sunxi_nand.c | 20 +++++---------------
->  1 file changed, 5 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index 96dda70..92a2c58 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -1164,16 +1164,9 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
->  			       struct device_node *np)
->  {
->  	struct nand_chip *nand = mtd->priv;
-> -	int strength;
-> -	int blk_size;
->  	int ret;
->  
-> -	blk_size = of_get_nand_ecc_step_size(np);
-> -	strength = of_get_nand_ecc_strength(np);
-> -	if (blk_size > 0 && strength > 0) {
-> -		ecc->size = blk_size;
-> -		ecc->strength = strength;
-> -	} else {
-> +	if (!ecc->size) {
->  		ecc->size = nand->ecc_step_ds;
->  		ecc->strength = nand->ecc_strength_ds;
->  	}
-> @@ -1183,10 +1176,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
->  
->  	ecc->mode = NAND_ECC_HW;
->  
-> -	ret = of_get_nand_ecc_mode(np);
-> -	if (ret >= 0)
-> -		ecc->mode = ret;
-> -
+>
+>> But if mtd_init() is not called before a dependent
+>> driver, a null-pointer exception might occur (e.g. because the mtd device
+>> class isn't registered).
+>>
+>> To fix this, mtd-init() is moved to the initcall-level fs (right before
+>> the standard initcall level device).
+>
+> Is there a good reason we shouldn't just make this a subsys_initcall()?
+> That would match the naming better, and it mirrors what, e.g.,
+> block/genhd uses. It would also allow flexibility if there are other
+> current/future use cases that might need to sit between the subsystem
+> and the drivers.
 
-I think you've missed something here. You're now *only* allowing HW ECC!
-You now want to make this a default case.
+No real reason here. The names for the initcall levels seem to be 
+outdated since a long time anyway, and I think just speaking about the 
+numbers 1-7 (or 0-14) would be better anyways. The only reason why I've 
+used the fs (sync) level is because I was too lazy to check out if 
+mtdcore might depend on something else in any other level. Therefor I've 
+used the one most close to were it was before.
 
-There's also a subtle change here that affects more than just here: you
-don't have a good way to tell the difference between "no ECC mode
-provide" and NAND_ECC_NONE. Perhaps we can modify the nand_ecc_modes_t
-enum to include a "uninitialized" value? I'm not sure if that'd work
-best as 0, -1, or something else, in case there are people making
-assumptions elsewhere...
+Also I've an idea about how to fix that in general for all drivers (by 
+using the same algorithm I've now introduced just for DT-based drivers 
+with a device description). Wouldn't be that hard to use that for all 
+drivers, but as I've written in a follow up to the introductory mail, 
+one step after another.
 
->  	switch (ecc->mode) {
->  	case NAND_ECC_SOFT_BCH:
->  		break;
-> @@ -1312,15 +1301,13 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
->  	/* Default tR value specified in the ONFI spec (chapter 4.15.1) */
->  	nand->chip_delay = 200;
->  	nand->controller = &nfc->controller;
-> +	nand->dn = np;
->  	nand->select_chip = sunxi_nfc_select_chip;
->  	nand->cmd_ctrl = sunxi_nfc_cmd_ctrl;
->  	nand->read_buf = sunxi_nfc_read_buf;
->  	nand->write_buf = sunxi_nfc_write_buf;
->  	nand->read_byte = sunxi_nfc_read_byte;
->  
-> -	if (of_get_nand_on_flash_bbt(np))
-> -		nand->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
-> -
->  	mtd = &chip->mtd;
->  	mtd->dev.parent = dev;
->  	mtd->priv = nand;
-> @@ -1330,6 +1317,9 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
->  	if (ret)
->  		return ret;
->  
-> +	if (nand->bbt_options & NAND_BBT_USE_FLASH)
-> +		nand->bbt_options |= NAND_BBT_NO_OOB;
-> +
->  	ret = sunxi_nand_chip_init_timings(chip, np);
->  	if (ret) {
->  		dev_err(dev, "could not configure chip timings: %d\n", ret);
+Regards,
 
-Brian
+Alexander Holler
