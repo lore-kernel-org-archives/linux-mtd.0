@@ -1,25 +1,21 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWvwn-0001aT-52
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 00:30:43 +0000
-Received: by paap5 with SMTP id p5so4714759paa.0
- for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 17:30:20 -0700 (PDT)
-Date: Tue, 1 Sep 2015 17:30:17 -0700
+ id 1ZWw4U-0004bP-5S
+ for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 00:38:38 +0000
+Received: by pacwi10 with SMTP id wi10so12374132pac.3
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 17:38:17 -0700 (PDT)
+Date: Tue, 1 Sep 2015 17:38:14 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Marek Vasut <marex@denx.de>
-Cc: Jonas Gorski <jogo@openwrt.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] mtd: spi-nor: Decouple SPI NOR's device_node from
  controller device
-Message-ID: <20150902003017.GN81844@google.com>
+Message-ID: <20150902003814.GO81844@google.com>
 References: <1440148160-14355-1-git-send-email-marex@denx.de>
- <201508212034.50804.marex@denx.de>
- <CAOiHx=kU_Pg3RXojJPtPWdyVwwn+GAVotw0pR4hF4FDQPNXEtg@mail.gmail.com>
- <201508212316.21111.marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201508212316.21111.marex@denx.de>
+In-Reply-To: <1440148160-14355-1-git-send-email-marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +25,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 21, 2015 at 11:16:21PM +0200, Marek Vasut wrote:
-> On Friday, August 21, 2015 at 10:49:46 PM, Jonas Gorski wrote:
-> > On Fri, Aug 21, 2015 at 8:34 PM, Marek Vasut <marex@denx.de> wrote:
-> > > On Friday, August 21, 2015 at 04:15:11 PM, Jonas Gorski wrote:
-> > >> > This patch is inspired by 5844feeaa4154d1c46d3462c7a4653d22356d8b4
-> > >> > mtd: nand: add common DT init code
-> > >> 
-> > >> I know that this commit named it dn for nand, but IMHO "dn" isn't a
-> > >> very readable member name, so I would suggest using something with
-> > >> "node" in it (just using of_node as well seems to be common). I see no
-> > >> place where the name length might become an issue.
-> > > 
-> > > I thought .dn was supposed to be abbrev for device_node ;-)
-> > 
-> > Sure, if you know what it is supposed to stand for it is obvious ;-).
-> > And from a "stylistic" point of view, struct spi_nor has members
-> > called page_size, flash_read or cmd_buf and not ps, fr, or cb so using
-> > dn instead of e.g. dev_node seems a bit odd.
+On Fri, Aug 21, 2015 at 11:09:20AM +0200, Marek Vasut wrote:
+> The problem this patch is trying to address is such, that SPI NOR flash
+> devices attached to a dedicated SPI NOR controller cannot read their
+> properties from the associated struct device_node.
 > 
-> On the other hand, the .dn is consistent across the MTD subsystem.
-> I don't have a strong prefference though.
+> A couple of facts first:
+> 1) Each SPI NOR flash has a struct spi_nor associated with it.
+> 2) Each SPI NOR flash has certain device properties associated
+>    with it, for example the OF property 'm25p,fast-read' is a
+>    good pick. These properties are used by the SPI NOR core to
+>    select which opcodes are sent to such SPI NOR flash. These
+>    properties are coming from spi_nor .dev->device_node .
+> 
+> The problem is, that for SPI NOR controllers, the struct spi_nor .dev
+> element points to the struct device of the SPI NOR controller, not the
+> SPI NOR flash. Therefore, the associated dev->device_node also is the
+> one of the controller and therefore the SPI NOR core code is trying to
+> parse the SPI NOR controller's properties, not the properties of the
+> SPI NOR flash.
+> 
+> Note: The m25p80 driver is not affected, because the controller and
+>       the flash are the same device, so the associated device_node
+>       of the controller and the flash are the same.
+> 
+> This patch adjusts the SPI NOR core such that the device_node is not
+> picked from spi_nor .dev directly, but from a new separate spi_nor .dn
+> element.
 
-I just stuck in nand_chip::dn since we needed something, and because
-I've seen it used as a function parameter name and a local variable name
-all over the place, enough that it just seemed natural. But a field name
-is probably a bit more important. I'd be OK with making the "standard"
-a bit more verbose, and maybe even changing the one in struct nand_chip.
+Does it really?
 
-How about:
+[...]
+> ---
+>  drivers/mtd/devices/m25p80.c      | 1 +
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 1 +
+>  drivers/mtd/spi-nor/nxp-spifi.c   | 1 +
+>  include/linux/mtd/spi-nor.h       | 3 +++
+>  4 files changed, 6 insertions(+)
 
-  flash_node <-- this one leaves room for a controller node, if we
-                 eventually need it
-  device_node
-  dev_node
-  of_node <-- this one is commonly used, but mostly out of legacy
-              reasons. We're not really dealing with Open Firmware
+^^ I would expect to see spi-nor.c changes in the diffstat. Did you miss
+something?
 
-?
+[...]
 
-Pick one and run with it.
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 1bf6f11..333999d 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -169,6 +169,7 @@ enum spi_nor_option_flags {
+>   * @lock:		[FLASH-SPECIFIC] lock a region of the SPI NOR
+>   * @unlock:		[FLASH-SPECIFIC] unlock a region of the SPI NOR
+>   * @priv:		the private data
+> + * @dn:			[BOARD-SPECIFIC] device node describing this instance
+
+I might like to see this up near the @dev entry, for organization
+purposes.
+
+>   */
+>  struct spi_nor {
+>  	struct mtd_info		*mtd;
+> @@ -208,6 +209,8 @@ struct spi_nor {
+>  	int (*flash_unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+>  
+>  	void *priv;
+> +
+> +	struct device_node *dn;
+
+And this would get moved up as well.
+
+>  };
+>  
+>  /**
 
 Brian
