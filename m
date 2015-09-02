@@ -1,20 +1,15 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mo6-p04-ob.smtp.rzone.de ([2a01:238:20a:202:5304::4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZX3w3-0007qD-Kz
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 09:02:28 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 07/10] mtd: spi-nor: add mtd_is_locked() support
-Date: Wed, 2 Sep 2015 11:01:49 +0200
-Cc: linux-mtd@lists.infradead.org
-References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
- <1441137435-52862-8-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1441137435-52862-8-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201509021101.49731.marex@denx.de>
+ id 1ZX4jR-0006cw-7f
+ for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 09:53:30 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: nand: fsmc: Add BCH4 SW ECC support for SPEAr600
+Date: Wed,  2 Sep 2015 11:53:01 +0200
+Message-Id: <1441187581-12928-1-git-send-email-sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +19,159 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, September 01, 2015 at 09:57:12 PM, Brian Norris wrote:
-> This enables ioctl(MEMISLOCKED). Status can now be reported in the
-> mtdinfo or flash_lock utilities found in mtd-utils.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 37 ++++++++++++++++++++++++++++++++++++-
->  include/linux/mtd/spi-nor.h   |  3 +++
->  2 files changed, 39 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 62fa1b4ff3c0..c4fb1205f1d3 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -519,6 +519,24 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs,
-> uint64_t len) return write_sr(nor, status_new);
->  }
-> 
-> +/*
-> + * Check if a region of the flash is (completely) locked. See stm_lock()
-> for + * more info.
-> + *
-> + * Returns 1 if entire region is locked, 0 if any portion is unlocked, and
-> + * negative on errors.
-> + */
-> +static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
-> +{
-> +	int status;
-> +
-> +	status = read_sr(nor);
-> +	if (status < 0)
-> +		return status;
-> +
-> +	return stm_is_locked_sr(nor, ofs, len, status);
-> +}
-> +
->  static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  {
->  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> @@ -549,6 +567,21 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t
-> ofs, uint64_t len) return ret;
->  }
-> 
-> +static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t
-> len) +{
-> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> +	int ret;
-> +
-> +	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_UNLOCK);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = nor->flash_is_locked(nor, ofs, len);
+This patch adds support for 4-bit ECC BCH4 for the SPEAr600 SoC. This can
+be used by boards equipped with a NAND chip that requires 4-bit ECC
+strength. The SPEAr600 HW ECC only supports 1-bit ECC strength.
 
-Is nor->flash_is_locked () always available or should you check this here ?
+To enable SW BCH4, you need to specify this in your nand controller
+DT node:
 
-> +
-> +	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK);
-> +	return ret;
-> +}
-> +
-[...]
+	nand-ecc-mode = "soft_bch";
+
+Tested on a custom SPEAr600 board.
+
+Signed-off-by: Stefan Roese <sr@denx.de>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/fsmc_nand.c | 72 ++++++++++++++++++++++++++++++++------------
+ include/linux/mtd/fsmc.h     |  2 ++
+ 2 files changed, 54 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 793872f..3e01288 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -29,9 +29,11 @@
+ #include <linux/types.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/nand.h>
++#include <linux/mtd/nand_bch.h>
+ #include <linux/mtd/nand_ecc.h>
+ #include <linux/platform_device.h>
+ #include <linux/of.h>
++#include <linux/of_mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/io.h>
+ #include <linux/slab.h>
+@@ -908,6 +910,13 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
+ 		}
+ 		pdata->bank = val;
+ 	}
++
++	ret = of_get_nand_ecc_mode(np);
++	if (ret >= 0)
++		pdata->ecc_mode = ret;
++	else
++		pdata->ecc_mode = NAND_ECC_HW;
++
+ 	return 0;
+ }
+ #else
+@@ -960,7 +969,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	host->data_va = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(host->data_va))
+ 		return PTR_ERR(host->data_va);
+-	
++
+ 	host->data_pa = (dma_addr_t)res->start;
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_addr");
+@@ -1023,7 +1032,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	nand->cmd_ctrl = fsmc_cmd_ctrl;
+ 	nand->chip_delay = 30;
+ 
+-	nand->ecc.mode = NAND_ECC_HW;
++	nand->ecc.mode = pdata->ecc_mode;
+ 	nand->ecc.hwctl = fsmc_enable_hwecc;
+ 	nand->ecc.size = 512;
+ 	nand->options = pdata->options;
+@@ -1071,10 +1080,27 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 		nand->ecc.bytes = 13;
+ 		nand->ecc.strength = 8;
+ 	} else {
+-		nand->ecc.calculate = fsmc_read_hwecc_ecc1;
+-		nand->ecc.correct = nand_correct_data;
+-		nand->ecc.bytes = 3;
+-		nand->ecc.strength = 1;
++		switch (nand->ecc.mode) {
++		case NAND_ECC_HW:
++			dev_info(&pdev->dev, "Using 1-bit HW ECC scheme\n");
++			nand->ecc.calculate = fsmc_read_hwecc_ecc1;
++			nand->ecc.correct = nand_correct_data;
++			nand->ecc.bytes = 3;
++			nand->ecc.strength = 1;
++			break;
++
++		case NAND_ECC_SOFT_BCH:
++			dev_info(&pdev->dev, "Using 4-bit SW BCH ECC scheme\n");
++			nand->ecc.calculate = nand_bch_calculate_ecc;
++			nand->ecc.correct = nand_bch_correct_data;
++			nand->ecc.bytes = 7;
++			nand->ecc.strength = 4;
++			break;
++
++		default:
++			dev_err(&pdev->dev, "Unsupported ECC mode!\n");
++			goto err_scan_ident;
++		}
+ 	}
+ 
+ 	/*
+@@ -1114,20 +1140,26 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 			BUG();
+ 		}
+ 	} else {
+-		switch (host->mtd.oobsize) {
+-		case 16:
+-			nand->ecc.layout = &fsmc_ecc1_16_layout;
+-			break;
+-		case 64:
+-			nand->ecc.layout = &fsmc_ecc1_64_layout;
+-			break;
+-		case 128:
+-			nand->ecc.layout = &fsmc_ecc1_128_layout;
+-			break;
+-		default:
+-			dev_warn(&pdev->dev, "No oob scheme defined for oobsize %d\n",
+-				 mtd->oobsize);
+-			BUG();
++		/*
++		 * Don't set layout for BCH4 SW ECC. This will be
++		 * generated later in nand_bch_init() later.
++		 */
++		if (nand->ecc.mode != NAND_ECC_SOFT_BCH) {
++			switch (host->mtd.oobsize) {
++			case 16:
++				nand->ecc.layout = &fsmc_ecc1_16_layout;
++				break;
++			case 64:
++				nand->ecc.layout = &fsmc_ecc1_64_layout;
++				break;
++			case 128:
++				nand->ecc.layout = &fsmc_ecc1_128_layout;
++				break;
++			default:
++				dev_warn(&pdev->dev, "No oob scheme defined for oobsize %d\n",
++					 mtd->oobsize);
++				BUG();
++			}
+ 		}
+ 	}
+ 
+diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
+index c8be32e..dfdbb16 100644
+--- a/include/linux/mtd/fsmc.h
++++ b/include/linux/mtd/fsmc.h
+@@ -163,6 +163,8 @@ struct fsmc_nand_platform_data {
+ 	/* priv structures for dma accesses */
+ 	void			*read_dma_priv;
+ 	void			*write_dma_priv;
++
++	int			ecc_mode;
+ };
+ 
+ extern int __init fsmc_nor_init(struct platform_device *pdev,
+-- 
+2.5.1
