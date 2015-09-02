@@ -1,21 +1,16 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWw4U-0004bP-5S
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 00:38:38 +0000
-Received: by pacwi10 with SMTP id wi10so12374132pac.3
- for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2015 17:38:17 -0700 (PDT)
-Date: Tue, 1 Sep 2015 17:38:14 -0700
+Date: Tue, 1 Sep 2015 18:16:16 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: Decouple SPI NOR's device_node from
- controller device
-Message-ID: <20150902003814.GO81844@google.com>
-References: <1440148160-14355-1-git-send-email-marex@denx.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] mtd: nand: sunxi: rely on nand_dt_init initialization
+Message-ID: <20150902011616.GP81844@google.com>
+References: <1440411031-8910-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1440148160-14355-1-git-send-email-marex@denx.de>
+In-Reply-To: <1440411031-8910-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +20,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 21, 2015 at 11:09:20AM +0200, Marek Vasut wrote:
-> The problem this patch is trying to address is such, that SPI NOR flash
-> devices attached to a dedicated SPI NOR controller cannot read their
-> properties from the associated struct device_node.
+On Mon, Aug 24, 2015 at 12:10:31PM +0200, Boris Brezillon wrote:
+> nand_dt_init(), called from nand_scan_ident(), is already parsing the
+> generic MTD/NAND DT properties, and initializing the nand_chip struct
+> accordingly.
+> Rely on this initialization instead of manually parsing those properties.
 > 
-> A couple of facts first:
-> 1) Each SPI NOR flash has a struct spi_nor associated with it.
-> 2) Each SPI NOR flash has certain device properties associated
->    with it, for example the OF property 'm25p,fast-read' is a
->    good pick. These properties are used by the SPI NOR core to
->    select which opcodes are sent to such SPI NOR flash. These
->    properties are coming from spi_nor .dev->device_node .
-> 
-> The problem is, that for SPI NOR controllers, the struct spi_nor .dev
-> element points to the struct device of the SPI NOR controller, not the
-> SPI NOR flash. Therefore, the associated dev->device_node also is the
-> one of the controller and therefore the SPI NOR core code is trying to
-> parse the SPI NOR controller's properties, not the properties of the
-> SPI NOR flash.
-> 
-> Note: The m25p80 driver is not affected, because the controller and
->       the flash are the same device, so the associated device_node
->       of the controller and the flash are the same.
-> 
-> This patch adjusts the SPI NOR core such that the device_node is not
-> picked from spi_nor .dev directly, but from a new separate spi_nor .dn
-> element.
-
-Does it really?
-
-[...]
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  drivers/mtd/devices/m25p80.c      | 1 +
->  drivers/mtd/spi-nor/fsl-quadspi.c | 1 +
->  drivers/mtd/spi-nor/nxp-spifi.c   | 1 +
->  include/linux/mtd/spi-nor.h       | 3 +++
->  4 files changed, 6 insertions(+)
+> Changes since v1:
+> - drop unused strength and blk_size variables
 
-^^ I would expect to see spi-nor.c changes in the diffstat. Did you miss
-something?
+Good catch, I was about to comment on v1 :)
 
-[...]
-
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 1bf6f11..333999d 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -169,6 +169,7 @@ enum spi_nor_option_flags {
->   * @lock:		[FLASH-SPECIFIC] lock a region of the SPI NOR
->   * @unlock:		[FLASH-SPECIFIC] unlock a region of the SPI NOR
->   * @priv:		the private data
-> + * @dn:			[BOARD-SPECIFIC] device node describing this instance
-
-I might like to see this up near the @dev entry, for organization
-purposes.
-
->   */
->  struct spi_nor {
->  	struct mtd_info		*mtd;
-> @@ -208,6 +209,8 @@ struct spi_nor {
->  	int (*flash_unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 20 +++++---------------
+>  1 file changed, 5 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index 96dda70..92a2c58 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -1164,16 +1164,9 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+>  			       struct device_node *np)
+>  {
+>  	struct nand_chip *nand = mtd->priv;
+> -	int strength;
+> -	int blk_size;
+>  	int ret;
 >  
->  	void *priv;
+> -	blk_size = of_get_nand_ecc_step_size(np);
+> -	strength = of_get_nand_ecc_strength(np);
+> -	if (blk_size > 0 && strength > 0) {
+> -		ecc->size = blk_size;
+> -		ecc->strength = strength;
+> -	} else {
+> +	if (!ecc->size) {
+>  		ecc->size = nand->ecc_step_ds;
+>  		ecc->strength = nand->ecc_strength_ds;
+>  	}
+> @@ -1183,10 +1176,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+>  
+>  	ecc->mode = NAND_ECC_HW;
+>  
+> -	ret = of_get_nand_ecc_mode(np);
+> -	if (ret >= 0)
+> -		ecc->mode = ret;
+> -
+
+I think you've missed something here. You're now *only* allowing HW ECC!
+You now want to make this a default case.
+
+There's also a subtle change here that affects more than just here: you
+don't have a good way to tell the difference between "no ECC mode
+provide" and NAND_ECC_NONE. Perhaps we can modify the nand_ecc_modes_t
+enum to include a "uninitialized" value? I'm not sure if that'd work
+best as 0, -1, or something else, in case there are people making
+assumptions elsewhere...
+
+>  	switch (ecc->mode) {
+>  	case NAND_ECC_SOFT_BCH:
+>  		break;
+> @@ -1312,15 +1301,13 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+>  	/* Default tR value specified in the ONFI spec (chapter 4.15.1) */
+>  	nand->chip_delay = 200;
+>  	nand->controller = &nfc->controller;
+> +	nand->dn = np;
+>  	nand->select_chip = sunxi_nfc_select_chip;
+>  	nand->cmd_ctrl = sunxi_nfc_cmd_ctrl;
+>  	nand->read_buf = sunxi_nfc_read_buf;
+>  	nand->write_buf = sunxi_nfc_write_buf;
+>  	nand->read_byte = sunxi_nfc_read_byte;
+>  
+> -	if (of_get_nand_on_flash_bbt(np))
+> -		nand->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+> -
+>  	mtd = &chip->mtd;
+>  	mtd->dev.parent = dev;
+>  	mtd->priv = nand;
+> @@ -1330,6 +1317,9 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (nand->bbt_options & NAND_BBT_USE_FLASH)
+> +		nand->bbt_options |= NAND_BBT_NO_OOB;
 > +
-> +	struct device_node *dn;
-
-And this would get moved up as well.
-
->  };
->  
->  /**
+>  	ret = sunxi_nand_chip_init_timings(chip, np);
+>  	if (ret) {
+>  		dev_err(dev, "could not configure chip timings: %d\n", ret);
 
 Brian
