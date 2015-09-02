@@ -1,22 +1,23 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXEgS-00081F-Fi
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 20:31:04 +0000
-Received: by pacfv12 with SMTP id fv12so22444253pac.2
- for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2015 13:30:43 -0700 (PDT)
-Date: Wed, 2 Sep 2015 13:30:41 -0700
+ id 1ZXEl8-0001o2-98
+ for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 20:35:55 +0000
+Received: by pacex6 with SMTP id ex6so17119012pac.0
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2015 13:35:33 -0700 (PDT)
+Date: Wed, 2 Sep 2015 13:35:30 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 07/10] mtd: spi-nor: add mtd_is_locked() support
-Message-ID: <20150902203041.GC21475@google.com>
-References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
- <1441137435-52862-8-git-send-email-computersforpeace@gmail.com>
- <201509021101.49731.marex@denx.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Andrea Scian <rnd4@dave-tech.it>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
+ default ECC read functions
+Message-ID: <20150902203530.GT81844@google.com>
+References: <1440409642-5495-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1440409642-5495-3-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201509021101.49731.marex@denx.de>
+In-Reply-To: <1440409642-5495-3-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,56 +27,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 02, 2015 at 11:01:49AM +0200, Marek Vasut wrote:
-> On Tuesday, September 01, 2015 at 09:57:12 PM, Brian Norris wrote:
-> > This enables ioctl(MEMISLOCKED). Status can now be reported in the
-> > mtdinfo or flash_lock utilities found in mtd-utils.
-> > 
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 37 ++++++++++++++++++++++++++++++++++++-
-> >  include/linux/mtd/spi-nor.h   |  3 +++
-> >  2 files changed, 39 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index 62fa1b4ff3c0..c4fb1205f1d3 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-...
-> > @@ -549,6 +567,21 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t
-> > ofs, uint64_t len) return ret;
-> >  }
-> > 
-> > +static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t
-> > len) +{
-> > +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> > +	int ret;
-> > +
-> > +	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_UNLOCK);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = nor->flash_is_locked(nor, ofs, len);
+On Mon, Aug 24, 2015 at 11:47:22AM +0200, Boris Brezillon wrote:
+> The default NAND read functions are relying on an underlying controller
+> to correct bitflips, but some of those controller cannot properly fix
+> bitflips in erased pages.
+> In case of ECC failures, check if the page of subpage is empty before
+> reporting an ECC failure.
 > 
-> Is nor->flash_is_locked () always available or should you check this here ?
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-spi_nor_is_locked() is only used when all 3 of
-flash_{lock,unlock,is_locked} are available:
+General note: this looks pretty good to me. Are there drivers which we
+should kill erased-page checks from now, given this patch? There are
+several of dubious value that we might drop without consequence. But
+with some, I'd wonder if we might cause a performance slowdown and/or
+high CPU utilization -- particularly those that look like they might
+signal ECC errors on all-0xff pages, even with no bitflips.
 
-	if (nor->flash_lock && nor->flash_unlock && nor->flash_is_locked) {
-		mtd->_lock = spi_nor_lock;
-		mtd->_unlock = spi_nor_unlock;
-		mtd->_is_locked = spi_nor_is_locked;
-	}
+> ---
+>  drivers/mtd/nand/nand_base.c | 62 +++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 55 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 4d2ef65..e095d86 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1400,6 +1400,19 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+>  		stat = chip->ecc.correct(mtd, p,
+>  			&chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
+>  		if (stat < 0) {
 
-I think it's a reasonable condition to enforce, that we only provide
-lock/unlock support if your flash also implements is_locked.
+I'm not sure if this is a fault of your patch or of the API design, but
+do we want to do erased-ECC checks on all failures, regardless of type?
+I would have expected maybe we could check only for -EBADMSG, but it
+appears that's not consistent. Apparently all correction failures are
+just "some negative value."
 
-> > +
-> > +	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK);
-> > +	return ret;
-> > +}
-> > +
-> [...]
+Anyway, if we had better consistency, I'd suggest:
+
+		if (stat == -EBADMSG) {
+
+But I suppose that 'stat < 0' is the best we can do for now.
+
+> +			/* check for empty pages with bitflips */
+> +			int col = (int)(p - bufpoi);
+> +
+> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, col, -1);
+
+Are all drivers that use this function prepared to handle another RNDOUT
+properly? I know some drivers tend to make assumptions about things that
+nand_base is doing like this. I know that would be a dirty trick, but
+it's not impossible...
+
+> +			chip->read_buf(mtd, p, chip->ecc.size);
+
+Also, are you sure we need to re-read here? Technically, drivers are
+supposed to be leaving uncorrected data in their buffers if they can't
+correct it, no?
+
+Similar comments apply to the other cases.
+
+> +			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
+> +						&chip->buffers->ecccode[i],
+> +						chip->ecc.bytes,
+> +						NULL, 0,
+> +						chip->ecc.strength);
+> +		}
+> +
+> +		if (stat < 0) {
+>  			mtd->ecc_stats.failed++;
+>  		} else {
+>  			mtd->ecc_stats.corrected += stat;
+> @@ -1449,6 +1462,16 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+>  		if (stat < 0) {
+> +			/* check for empty pages with bitflips */
+> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, i, -1);
+> +			chip->read_buf(mtd, p, eccsize);
+> +			stat = nand_check_erased_ecc_chunk(p, eccsize,
+> +						&ecc_code[i], eccbytes,
+> +						NULL, 0,
+> +						chip->ecc.strength);
+> +		}
+> +
+> +		if (stat < 0) {
+>  			mtd->ecc_stats.failed++;
+>  		} else {
+>  			mtd->ecc_stats.corrected += stat;
+> @@ -1501,6 +1524,17 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+>  
+>  		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
+>  		if (stat < 0) {
+> +			/* check for empty pages with bitflips */
+> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
+> +				      i + mtd->oobsize, -1);
+> +			chip->read_buf(mtd, p, eccsize);
+> +			stat = nand_check_erased_ecc_chunk(p, eccsize,
+> +						&ecc_code[i], eccbytes,
+> +						NULL, 0,
+> +						chip->ecc.strength);
+> +		}
+> +
+> +		if (stat < 0) {
+>  			mtd->ecc_stats.failed++;
+>  		} else {
+>  			mtd->ecc_stats.corrected += stat;
+> @@ -1527,6 +1561,8 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+>  	int i, eccsize = chip->ecc.size;
+>  	int eccbytes = chip->ecc.bytes;
+>  	int eccsteps = chip->ecc.steps;
+> +	int eccstepsize = eccsize + eccbytes + chip->ecc.prepad +
+> +			  chip->ecc.postpad;
+>  	uint8_t *p = buf;
+>  	uint8_t *oob = chip->oob_poi;
+>  	unsigned int max_bitflips = 0;
+> @@ -1546,19 +1582,31 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+>  		chip->read_buf(mtd, oob, eccbytes);
+>  		stat = chip->ecc.correct(mtd, p, oob, NULL);
+>  
+> -		if (stat < 0) {
+> -			mtd->ecc_stats.failed++;
+> -		} else {
+> -			mtd->ecc_stats.corrected += stat;
+> -			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> -		}
+> -
+>  		oob += eccbytes;
+>  
+>  		if (chip->ecc.postpad) {
+>  			chip->read_buf(mtd, oob, chip->ecc.postpad);
+>  			oob += chip->ecc.postpad;
+>  		}
+> +
+> +		if (stat < 0) {
+> +			/* check for empty pages with bitflips */
+> +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
+> +				      i * eccstepsize, -1);
+> +			chip->read_buf(mtd, p, chip->ecc.size);
+> +			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
+> +							   oob - eccstepsize,
+> +							   eccstepsize,
+> +							   NULL, 0,
+> +							   chip->ecc.strength);
+> +		}
+> +
+> +		if (stat < 0) {
+> +			mtd->ecc_stats.failed++;
+> +		} else {
+> +			mtd->ecc_stats.corrected += stat;
+> +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> +		}
+>  	}
+>  
+>  	/* Calculate remaining oob bytes */
 
 Brian
