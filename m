@@ -1,21 +1,29 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXBRK-0005Zc-Ct
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 17:03:15 +0000
-Received: by pacwi10 with SMTP id wi10so17325746pac.3
- for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2015 10:02:52 -0700 (PDT)
-Date: Wed, 2 Sep 2015 10:02:49 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Peng Fan <van.freenix@gmail.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: blktrans: fix integer overflow
-Message-ID: <20150902170249.GQ81844@google.com>
-References: <1440169051-13891-1-git-send-email-van.freenix@gmail.com>
+From: Ranjit Abhimanyu Waghmode <ranjit.waghmode@xilinx.com>
+To: Marek Vasut <marex@denx.de>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
+ "zajec5@gmail.com" <zajec5@gmail.com>, "ben@decadent.org.uk"
+ <ben@decadent.org.uk>, "b32955@freescale.com" <b32955@freescale.com>,
+ "knut.wohlrab@de.bosch.com" <knut.wohlrab@de.bosch.com>, "juhosg@openwrt.org"
+ <juhosg@openwrt.org>, "beanhuo@micron.com" <beanhuo@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Harini Katakam <harinik@xilinx.com>,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+Subject: RE: [LINUX RFC v2 0/4] spi: add dual parallel mode support in Zynq
+ MPSoC GQSPI controller
+Date: Wed, 2 Sep 2015 17:12:14 +0000
+Message-ID: <7CFCFE83B8145347A1D424EC939F1C3C014AFF00@XAP-PVEXMBX01.xlnx.xilinx.com>
+References: <1440570367-22569-1-git-send-email-ranjit.waghmode@xilinx.com>
+ <201508260856.22258.marex@denx.de>
+In-Reply-To: <201508260856.22258.marex@denx.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1440169051-13891-1-git-send-email-van.freenix@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +33,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 21, 2015 at 10:57:31PM +0800, Peng Fan wrote:
-> In drivers/mtd/mtd_blkdevs.c:
-> 406	set_capacity(gd, (new->size * tr->blksize) >> 9);
-> The type of new->size is unsigned long and the type of tr->blksize is int,
-> the result of 'new->size * tr->blksize' may exceed ULONG_MAX on 32bit
-> machines.
-> 
-> I use nand chip MT29F32G08CBADBWP which is 4GB and the parameters passed
-> to kernel is 'mtdparts=gpmi-nand:-(user)', the whole nand chip will be
-> treated as a 4GB mtd partition. new->size is 0x800000 and tr->blksize is
-> 0x200, 'new->size * tr->blksize' however is 0. This is what we do not want
-> to see.
-> 
-> Change the type of entry size of mtd_blktrans_dev to unsigned long long
-> to fix the overflow issue.
-> 
-> Signed-off-by: Peng Fan <van.freenix@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> ---
->  include/linux/mtd/blktrans.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
-> index e93837f..3853d74 100644
-> --- a/include/linux/mtd/blktrans.h
-> +++ b/include/linux/mtd/blktrans.h
-> @@ -38,7 +38,7 @@ struct mtd_blktrans_dev {
->  	struct mutex lock;
->  	int devnum;
->  	bool bg_stop;
-> -	unsigned long size;
-> +	unsigned long long size;
+Hi Marek,
 
-Sorry, you can't just do that. Some builds won't have right arithmetic
-instructions (or compiler helpers) to do certain 64-bit operations, so you
-either need to go and fix all the blktrans users to be more careful (e.g., do
-bit shifts instead of division/modulo), or else find another solution. See, on
-an ARM32 build:
+> -----Original Message-----
+> From: Marek Vasut [mailto:marex@denx.de]
+> Sent: Wednesday, August 26, 2015 12:26 PM
+> To: Ranjit Abhimanyu Waghmode
+> Cc: dwmw2@infradead.org; computersforpeace@gmail.com;
+> broonie@kernel.org; Michal Simek; Soren Brinkmann; zajec5@gmail.com;
+> ben@decadent.org.uk; b32955@freescale.com; knut.wohlrab@de.bosch.com;
+> juhosg@openwrt.org; beanhuo@micron.com; linux-mtd@lists.infradead.org;
+> linux-kernel@vger.kernel.org; linux-spi@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; Harini Katakam; Punnaiah Choudary Kalluri
+> Subject: Re: [LINUX RFC v2 0/4] spi: add dual parallel mode support in Zy=
+nq
+> MPSoC GQSPI controller
+>=20
+> On Wednesday, August 26, 2015 at 08:26:03 AM, Ranjit Waghmode wrote:
+> > This series adds dual parallel mode support for Zynq Ultrascale+ MPSoC
+> > GQSPI controller driver.
+> >
+> > What is dual parallel mode?
+> > ---------------------------
+> > ZynqMP GQSPI controller supports Dual Parallel mode with following
+> > functionalities: 1) Supporting two SPI flash memories operating in
+> > parallel. 8 I/O lines. 2) Chip selects and clock are shared to both
+> > the flash devices
+> > 3) This mode is targeted for faster read/write speed and also doubles
+> > the size 4) Commands/data can be transmitted/received from both the
+> > devices(mirror), or only upper or only lower flash memory devices.
+> > 5) Data arrangement:
+> >    With stripe enabled,
+> >    Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
+> >    Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
+>=20
+> This might be a dumb question, but why don't you just treat this as an SP=
+I NOR
+> flash with 8-bit bus ?
 
-  LD      init/built-in.o
-drivers/built-in.o: In function `nftl_add_mtd':
-:(.text+0x1369dc): undefined reference to `__aeabi_uldivmod'
-:(.text+0x1369f4): undefined reference to `__aeabi_uldivmod'
-:(.text+0x136a70): undefined reference to `__aeabi_uldivmod'
-drivers/built-in.o: In function `inftl_add_mtd':
-:(.text+0x137eb0): undefined reference to `__aeabi_uldivmod'
-:(.text+0x137ec8): undefined reference to `__aeabi_uldivmod'
-drivers/built-in.o::(.text+0x137f4c): more undefined references to `__aeabi_uldivmod' follow
+In case of dual parallel configuration of this controller there are differe=
+nt modes like single, dual and quad mode.
+Whatever you are suggesting would fit only in the case of Quad mode operati=
+on as both buses would have 4 lines each.
+In case of single mode of parallel configuration, there would be two buses;=
+ but the line on each bus would one. So altogether there will be two lines.
+And in case of dual mode of parallel configuration each bus will be having =
+two lines. So altogether 4 lines will be there.
+So keeping 8 lines would not support above two modes of parallel configurat=
+ion correctly.
 
->  	int readonly;
->  	int open;
->  	struct kref ref;
+Logically it is a single flash with 8 IO lines but physically it's a two fl=
+ash devices and each has 4 IO lines.=20
+So, in this case, read and write addresses should be always even and minimu=
+m data that can be accessed is 2 bytes.
 
-One possibility, since you only point to a single computation that
-overflows, is to just fix the overflow locally. It's not like the 'size'
-(which represents number of sectors) is actually ever overflowing a
-32-bit integer. It's just the multiplication that overflows. So you
-could cast to 64-bit arithmetic just for the multiplication. e.g.:
+Regards,
+Ranjit
 
-	set_capcity(gd, ((u64)new->size * tr->blksize) >> 9);
-
-Or some other creative solution.
-
-Then, we don't have to address this problem till we start seeing 2TB
-MTDs!
-
-Brian
+>=20
+> Best regards,
+> Marek Vasut
