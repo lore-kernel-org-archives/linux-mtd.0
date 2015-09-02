@@ -1,21 +1,17 @@
-Received: from mail-pa0-f47.google.com ([209.85.220.47])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZX5xw-0006uT-PN
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 11:12:33 +0000
-Received: by pacex6 with SMTP id ex6so3325236pac.0
- for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2015 04:12:12 -0700 (PDT)
-Date: Wed, 2 Sep 2015 16:42:06 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Stefan Roese <sr@denx.de>
-Cc: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: fsmc: Add BCH4 SW ECC support for SPEAr600
-Message-ID: <20150902111206.GF26744@linux>
-References: <1441187581-12928-1-git-send-email-sr@denx.de>
+Date: Wed, 2 Sep 2015 14:43:27 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] nand: sunxi: fix write to USER_DATA reg
+Message-ID: <20150902144327.08efeba1@bbrezillon>
+In-Reply-To: <1441180621-29708-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1441180621-29708-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1441187581-12928-1-git-send-email-sr@denx.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +21,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02-09-15, 11:53, Stefan Roese wrote:
-> This patch adds support for 4-bit ECC BCH4 for the SPEAr600 SoC. This can
-> be used by boards equipped with a NAND chip that requires 4-bit ECC
-> strength. The SPEAr600 HW ECC only supports 1-bit ECC strength.
-> 
-> To enable SW BCH4, you need to specify this in your nand controller
-> DT node:
-> 
-> 	nand-ecc-mode = "soft_bch";
-> 
-> Tested on a custom SPEAr600 board.
-> 
-> Signed-off-by: Stefan Roese <sr@denx.de>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/nand/fsmc_nand.c | 72 ++++++++++++++++++++++++++++++++------------
->  include/linux/mtd/fsmc.h     |  2 ++
->  2 files changed, 54 insertions(+), 20 deletions(-)
+Hi Brian,
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+On Wed,  2 Sep 2015 09:57:01 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+
+> The USER_DATA register cannot be accessed using byte accessors on A13
+> SoCs, thus triggering a bug when using memcpy_toio on this register.
+> Declare an NFC_USER_DATA() macro to convert the OOB buffer content into
+> a suitable u32 value which can then be programmed with writel().
+> 
+> Also drop the oob_required contidion, since ->oob_pio already contains
+> FFs when oob_required is false.
+
+Please ignore this version. I just figured I would need a macro to
+convert a USER_DATA value into an u8 buffer.
+I'll send a v3 adding two macros (NFC_BUF_TO_USER_DATA() and
+NFC_USER_DATA_TO_BUF()) instead of the NFC_USER_DATA() one.
+
+Best Regards,
+
+Boris
+
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> 
+> ---
+> Changes since v1:
+> - drop the !oob_required conditional path
+> - replace endianness conversions by a macro relying on byte shifting
+>   operations
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 25 ++++++++-----------------
+>  1 file changed, 8 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index 6f93b29..0c29f6c 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -138,6 +138,10 @@
+>  #define NFC_ECC_MODE		GENMASK(15, 12)
+>  #define NFC_RANDOM_SEED		GENMASK(30, 16)
+>  
+> +/* NFC_USER_DATA helper macro */
+> +#define NFC_USER_DATA(buf)	((buf)[0] | ((buf)[1] << 8) | \
+> +				 ((buf)[2] << 16) | ((buf)[3] << 24))
+> +
+>  #define NFC_DEFAULT_TIMEOUT_MS	1000
+>  
+>  #define NFC_SRAM_SIZE		1024
+> @@ -632,15 +636,9 @@ static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
+>  		offset = layout->eccpos[i * ecc->bytes] - 4 + mtd->writesize;
+>  
+>  		/* Fill OOB data in */
+> -		if (oob_required) {
+> -			tmp = 0xffffffff;
+> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
+> -				    4);
+> -		} else {
+> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE,
+> -				    chip->oob_poi + offset - mtd->writesize,
+> -				    4);
+> -		}
+> +		writel(NFC_USER_DATA(chip->oob_poi +
+> +				     layout->oobfree[i].offset),
+> +		       nfc->regs + NFC_REG_USER_DATA_BASE);
+>  
+>  		chip->cmdfunc(mtd, NAND_CMD_RNDIN, offset, -1);
+>  
+> @@ -770,14 +768,7 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
+>  		offset += ecc->size;
+>  
+>  		/* Fill OOB data in */
+> -		if (oob_required) {
+> -			tmp = 0xffffffff;
+> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
+> -				    4);
+> -		} else {
+> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, oob,
+> -				    4);
+> -		}
+> +		writel(NFC_USER_DATA(oob), nfc->regs + NFC_REG_USER_DATA_BASE);
+>  
+>  		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ACCESS_DIR |
+>  		      (1 << 30);
+
+
 
 -- 
-viresh
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
