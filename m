@@ -1,14 +1,18 @@
-Date: Wed, 2 Sep 2015 14:43:27 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZX7Qn-0003td-S7
+ for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 12:46:27 +0000
+Date: Wed, 2 Sep 2015 14:46:03 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Maxime Ripard
- <maxime.ripard@free-electrons.com>, linux-sunxi@googlegroups.com,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] nand: sunxi: fix write to USER_DATA reg
-Message-ID: <20150902144327.08efeba1@bbrezillon>
-In-Reply-To: <1441180621-29708-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1441180621-29708-1-git-send-email-boris.brezillon@free-electrons.com>
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Andrea Scian
+ <rnd4@dave-tech.it>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 0/2] mtd: nand: properly handle bitflips in erased pages
+Message-ID: <20150902144603.1612c26d@bbrezillon>
+In-Reply-To: <1440409642-5495-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1440409642-5495-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -21,90 +25,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Brian,
 
-On Wed,  2 Sep 2015 09:57:01 +0200
+On Mon, 24 Aug 2015 11:47:20 +0200
 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> The USER_DATA register cannot be accessed using byte accessors on A13
-> SoCs, thus triggering a bug when using memcpy_toio on this register.
-> Declare an NFC_USER_DATA() macro to convert the OOB buffer content into
-> a suitable u32 value which can then be programmed with writel().
+> Hello,
 > 
-> Also drop the oob_required contidion, since ->oob_pio already contains
-> FFs when oob_required is false.
+> This patch series aims at providing a common logic to check for bitflips
+> in erased pages.
 
-Please ignore this version. I just figured I would need a macro to
-convert a USER_DATA value into an u8 buffer.
-I'll send a v3 adding two macros (NFC_BUF_TO_USER_DATA() and
-NFC_USER_DATA_TO_BUF()) instead of the NFC_USER_DATA() one.
-
-Best Regards,
-
-Boris
+Could we settle on something regarding this problem?
+I need that feature for the sunxi NAND driver, and we can't agree on
+something I'll have to implement my own private function to do that...
 
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Currently each driver is implementing its own logic to check for bitflips
+> in erased pages. Not only this create code duplication, but most of these
+> implementations are incorrect.
+> Here are a few aspects that are often left aside in those implementations:
+> 1/ they do not check OOB bytes when checking for the ff pattern, which
+>    means they can consider a page as empty while the MTD user actually
+>    wanted to write almost ff with a few bits to zero
+> 2/ they check for the ff pattern on the whole page, while ECC actually
+>    works on smaller chunks (usually 512 or 1024 bytes chunks)
+> 3/ they use random bitflip thresholds to decide whether a page/chunk is
+>    erased or not. IMO this threshold should be set to ECC strength (or
+>    at least something correlated to this parameter)
 > 
-> ---
+> The approach taken in this series is to provide two helper functions to
+> check for bitflips in erased pages. Each driver that needs to check for
+> such cases can then call the nand_check_erased_ecc_chunk() function, and
+> rely on the common logic to decide whether a page is erased or not.
+> 
+> While Brian suggested a few times to make this detection automatic for
+> all drivers that set a specific flag (NAND_CHECK_ERASED_BITFLIPS?), here
+> is a few reasons I think this is not such a good idea:
+> 1/ some (a lot of) drivers do not properly implement the raw access
+>    functions, and since we need to check for raw data and OOB bytes this
+>    makes the automatic detection unusable for most drivers unless they
+>    decide to correctly implement those methods (which would be a good
+>    thing BTW).
+> 2/ as a I said earlier, this check should be made at the ECC chunk level
+>    and not at the page level. This spots two problems: some (a lot of)
+>    drivers do not properly specify the ecc layout information, and even
+>    if the ecc layout is correctly defined, there is no way to attach ECC
+>    bytes to a specific ECC chunk.
+> 3/ the last aspect is the perf penalty incured by this test. Automatically
+>    doing that at the NAND core level implies reading the whole page again
+>    in raw mode, while with the helper function approach, drivers supporting
+>    access at the ECC chunk level can read only the faulty chunk in raw
+>    mode.
+> 
+> Regarding the bitflips threshold at which an erased pages is considered as
+> faulty, I have assigned it to ECC strength. As mentioned by Andrea, using
+> ECC strength might cause some trouble, because if you already have some
+> bitflips in an erased page, programming it might generate even more of
+> them.
+> In the other hand, shouldn't that be checked after (or before) programming
+> a page. I mean, UBI is already capable of detecting pages which are over
+> the configured bitflips_threshold and move data around when it detects
+> such pages.
+> If we check data after writing a page we wouldn't have to bother about
+> setting a weaker value for the "bitflips in erased page" case.
+> Another thing in favor of the ECC strength value for this "bitflips in
+> erased page" threshold value: if the ECC engine is generating 0xff ECC
+> bytes when the page is empty, then it will be able to fix ECC strength
+> bitflips without complaining, so why should we use different value when
+> we detect bitflips using the pattern match approach?
+> 
+> Best Regards,
+> 
+> Boris
+> 
 > Changes since v1:
-> - drop the !oob_required conditional path
-> - replace endianness conversions by a macro relying on byte shifting
->   operations
-> ---
->  drivers/mtd/nand/sunxi_nand.c | 25 ++++++++-----------------
->  1 file changed, 8 insertions(+), 17 deletions(-)
+> - fix the nand_check_erased_buf() function
+> - mark the bitflips > bitflips_threshold condition as unlikely
+> - add missing memsets in nand_check_erased_ecc_chunk()
 > 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index 6f93b29..0c29f6c 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -138,6 +138,10 @@
->  #define NFC_ECC_MODE		GENMASK(15, 12)
->  #define NFC_RANDOM_SEED		GENMASK(30, 16)
->  
-> +/* NFC_USER_DATA helper macro */
-> +#define NFC_USER_DATA(buf)	((buf)[0] | ((buf)[1] << 8) | \
-> +				 ((buf)[2] << 16) | ((buf)[3] << 24))
-> +
->  #define NFC_DEFAULT_TIMEOUT_MS	1000
->  
->  #define NFC_SRAM_SIZE		1024
-> @@ -632,15 +636,9 @@ static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
->  		offset = layout->eccpos[i * ecc->bytes] - 4 + mtd->writesize;
->  
->  		/* Fill OOB data in */
-> -		if (oob_required) {
-> -			tmp = 0xffffffff;
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
-> -				    4);
-> -		} else {
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE,
-> -				    chip->oob_poi + offset - mtd->writesize,
-> -				    4);
-> -		}
-> +		writel(NFC_USER_DATA(chip->oob_poi +
-> +				     layout->oobfree[i].offset),
-> +		       nfc->regs + NFC_REG_USER_DATA_BASE);
->  
->  		chip->cmdfunc(mtd, NAND_CMD_RNDIN, offset, -1);
->  
-> @@ -770,14 +768,7 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
->  		offset += ecc->size;
->  
->  		/* Fill OOB data in */
-> -		if (oob_required) {
-> -			tmp = 0xffffffff;
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
-> -				    4);
-> -		} else {
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, oob,
-> -				    4);
-> -		}
-> +		writel(NFC_USER_DATA(oob), nfc->regs + NFC_REG_USER_DATA_BASE);
->  
->  		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ACCESS_DIR |
->  		      (1 << 30);
+> Boris Brezillon (2):
+>   mtd: nand: add nand_check_erased helper functions
+>   mtd: nand: use nand_check_erased_ecc_chunk in default ECC read
+>     functions
+> 
+>  drivers/mtd/nand/nand_base.c | 170 +++++++++++++++++++++++++++++++++++++++++--
+>  include/linux/mtd/nand.h     |   8 ++
+>  2 files changed, 171 insertions(+), 7 deletions(-)
+> 
 
 
 
