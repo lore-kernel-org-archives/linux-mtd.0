@@ -1,26 +1,23 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXEr1-0003zv-6V
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 20:41:59 +0000
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZXEuT-0005uR-9w
+ for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 20:45:34 +0000
+Date: Wed, 2 Sep 2015 22:45:09 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Andrea Scian <rnd4@dave-tech.it>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 2/2] mtd: nand: use nand_check_erased_ecc_chunk in
+ default ECC read functions
+Message-ID: <20150902224509.2c1033d5@bbrezillon>
+In-Reply-To: <20150902203530.GT81844@google.com>
+References: <1440409642-5495-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1440409642-5495-3-git-send-email-boris.brezillon@free-electrons.com>
+ <20150902203530.GT81844@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date: Wed, 02 Sep 2015 13:41:14 -0700
-From: Stefan Agner <stefan@agner.ch>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Bhuvanchandra DV
- <bhuvanchandradv@gmail.com>, linux-mtd@lists.infradead.org, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-Subject: Re: UBIFS errors when file-system is full
-In-Reply-To: <20150902201312.GA21475@google.com>
-References: <55B26D24.3060006@nod.at> <55BBA6A5.9020701@gmail.com>
- <55BC68D6.2070008@nod.at> <55C3379E.50000@gmail.com>
- <55C4A695.7060608@nod.at> <e3d338cfd875b941061d5ac3da9f29c0@agner.ch>
- <55CAF568.5090704@nod.at> <812d355821f585decf92a66628caef7b@agner.ch>
- <20150901014315.GF81844@google.com>
- <f3a5ff1f82ee358541125b920460c17a@agner.ch>
- <20150902201312.GA21475@google.com>
-Message-ID: <7e389b47a409181ae554bd300602b553@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +27,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015-09-02 13:13, Brian Norris wrote:
-> On Wed, Sep 02, 2015 at 12:58:08PM -0700, Stefan Agner wrote:
-> In case I didn't mention it already, I'm taking a closer look at Boris'
-> approach for this series:
+On Wed, 2 Sep 2015 13:35:30 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> On Mon, Aug 24, 2015 at 11:47:22AM +0200, Boris Brezillon wrote:
+> > The default NAND read functions are relying on an underlying controller
+> > to correct bitflips, but some of those controller cannot properly fix
+> > bitflips in erased pages.
+> > In case of ECC failures, check if the page of subpage is empty before
+> > reporting an ECC failure.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > 
-> http://lists.infradead.org/pipermail/linux-mtd/2015-August/061361.html
+> General note: this looks pretty good to me. Are there drivers which we
+> should kill erased-page checks from now, given this patch? There are
+> several of dubious value that we might drop without consequence. But
+> with some, I'd wonder if we might cause a performance slowdown and/or
+> high CPU utilization -- particularly those that look like they might
+> signal ECC errors on all-0xff pages, even with no bitflips.
 > 
-> but your driver looks like a good candidate for using
-> nand_check_erased_ecc_chunk(), once we've agreed. Depenending on the
-> order of acceptance, I might like to get your driver converted either
-> before or after merging it. Shouldn't be too hard, though, as your
-> implementation looks very similar right now.
+> > ---
+> >  drivers/mtd/nand/nand_base.c | 62 +++++++++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 55 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index 4d2ef65..e095d86 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -1400,6 +1400,19 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+> >  		stat = chip->ecc.correct(mtd, p,
+> >  			&chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
+> >  		if (stat < 0) {
+> 
+> I'm not sure if this is a fault of your patch or of the API design, but
+> do we want to do erased-ECC checks on all failures, regardless of type?
+> I would have expected maybe we could check only for -EBADMSG, but it
+> appears that's not consistent. Apparently all correction failures are
+> just "some negative value."
+> 
+> Anyway, if we had better consistency, I'd suggest:
+> 
+> 		if (stat == -EBADMSG) {
 
-Sure, can update my driver if the common implementations lands in the
-MTD tree before the driver.
+Yes, that would be preferable to avoid useless empty pattern check. 
 
-Otherwise, I just will send a follow up patch afterwards.
+> 
+> But I suppose that 'stat < 0' is the best we can do for now.
 
---
-Stefan
+I guess that's something we can easily check (I'll have a look).
+
+> 
+> > +			/* check for empty pages with bitflips */
+> > +			int col = (int)(p - bufpoi);
+> > +
+> > +			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, col, -1);
+> 
+> Are all drivers that use this function prepared to handle another RNDOUT
+> properly? I know some drivers tend to make assumptions about things that
+> nand_base is doing like this. I know that would be a dirty trick, but
+> it's not impossible...
+> 
+> > +			chip->read_buf(mtd, p, chip->ecc.size);
+> 
+> Also, are you sure we need to re-read here? Technically, drivers are
+> supposed to be leaving uncorrected data in their buffers if they can't
+> correct it, no?
+
+Normally they should leave the data untouched in this case, but I wasn't
+sure all drivers were behaving like this, hence the conservative
+approach.
+Maybe that's something we can drop, which would also remove the extra
+RNDOUT command.
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
