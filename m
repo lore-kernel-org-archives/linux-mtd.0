@@ -1,19 +1,22 @@
-From: Stefan Agner <stefan@agner.ch>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Cc: sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
- mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
- bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, albert.aribaud@3adev.fr,
- klimov.linux@gmail.com, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v12 5/5] ARM: dts: vf-colibri: enable NAND flash controller
-Date: Wed,  2 Sep 2015 18:06:37 -0700
-Message-Id: <1441242397-870-6-git-send-email-stefan@agner.ch>
-In-Reply-To: <1441242397-870-1-git-send-email-stefan@agner.ch>
-References: <1441242397-870-1-git-send-email-stefan@agner.ch>
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZXNwI-0004qa-9q
+ for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 06:24:03 +0000
+Received: by wiclp12 with SMTP id lp12so40335650wic.1
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2015 23:23:40 -0700 (PDT)
+Message-ID: <55E7E768.7000909@gmail.com>
+Date: Thu, 03 Sep 2015 08:23:36 +0200
+From: Gabriel Dobato <dobatog@gmail.com>
+MIME-Version: 1.0
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Kernel Update on NAND (CM-510 Compulab)
+References: <55DC55A6.4000801@gmail.com>	<CAAEAJfA9=RaEd6VEobs53qLQTuY-w0PfYDjqA-HSY7xTq1oGTA@mail.gmail.com>	<55DD015F.4070103@gmail.com>
+ <CAAEAJfDGbS3Pde7vsHkNk8JTZOc6Hq_W0yUKVD5O18Kzt9DsLw@mail.gmail.com>
+ <55E0DD91.4000701@gmail.com>
+In-Reply-To: <55E0DD91.4000701@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable NAND access by adding pinmux and NAND flash controller node
-to device tree. The NAND chips currently used on the Colibri VF61
-requires 8-bit ECC per 512 byte page, hence specify 32-bit ECC
-strength per 2k page size.
+Hi again Ezequiel,
 
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm/boot/dts/vf-colibri.dtsi | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+I have noticed that there are some new commits of pxa3xx_nand. Is it 
+possible that my problem is related with some issues that these commits fix?
 
-diff --git a/arch/arm/boot/dts/vf-colibri.dtsi b/arch/arm/boot/dts/vf-colibri.dtsi
-index 68ca125..e5949b9 100644
---- a/arch/arm/boot/dts/vf-colibri.dtsi
-+++ b/arch/arm/boot/dts/vf-colibri.dtsi
-@@ -52,6 +52,26 @@
- 	pinctrl-0 = <&pinctrl_i2c0>;
- };
- 
-+&nfc {
-+	assigned-clocks = <&clks VF610_CLK_NFC>;
-+	assigned-clock-rates = <33000000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_nfc>;
-+	status = "okay";
-+
-+	nand@0 {
-+		compatible = "fsl,vf610-nfc-nandcs";
-+		reg = <0>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		nand-bus-width = <8>;
-+		nand-ecc-mode = "hw";
-+		nand-ecc-strength = <32>;
-+		nand-ecc-step-size = <2048>;
-+		nand-on-flash-bbt;
-+	};
-+};
-+
- &pwm0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pwm0>;
-@@ -156,6 +176,25 @@
- 			>;
- 		};
- 
-+		pinctrl_nfc: nfcgrp {
-+			fsl,pins = <
-+				VF610_PAD_PTD23__NF_IO7		0x28df
-+				VF610_PAD_PTD22__NF_IO6		0x28df
-+				VF610_PAD_PTD21__NF_IO5		0x28df
-+				VF610_PAD_PTD20__NF_IO4		0x28df
-+				VF610_PAD_PTD19__NF_IO3		0x28df
-+				VF610_PAD_PTD18__NF_IO2		0x28df
-+				VF610_PAD_PTD17__NF_IO1		0x28df
-+				VF610_PAD_PTD16__NF_IO0		0x28df
-+				VF610_PAD_PTB24__NF_WE_B	0x28c2
-+				VF610_PAD_PTB25__NF_CE0_B	0x28c2
-+				VF610_PAD_PTB27__NF_RE_B	0x28c2
-+				VF610_PAD_PTC26__NF_RB_B	0x283d
-+				VF610_PAD_PTC27__NF_ALE		0x28c2
-+				VF610_PAD_PTC28__NF_CLE		0x28c2
-+			>;
-+		};
-+
- 		pinctrl_pwm0: pwm0grp {
- 			fsl,pins = <
- 				VF610_PAD_PTB0__FTM0_CH0		0x1182
--- 
-2.5.1
+
+
+Gabriel
+
+El 29.08.2015 a las 00:15, Gabriel Dobato escribió:
+>
+>
+> El 27.08.2015 a las 02:53, Ezequiel Garcia escribió:
+>> Hmmm.. this looks odd indeed.
+>>
+>> Can you run two nandtests simultaneously (in parallel)
+>> on the two /dev/mtd devices?
+>>
+>> If you share your kernel configuration, I can give it a try
+>> on some (similar) board.
+> Hi Ezequiel,
+>
+> attached the kernel configuration, and below the Nand node of my DT:
+>
+>    nand@c0000 {
+>
+>                                 compatible = "marvell,armada370-nand";
+>                                 status = "okay";
+>                                 reg= <0xc0000 0x60>;
+>                                 interrupts = <3>;
+>                                 #address-cells = <1>;
+>                                 #size-cells = <0>;
+>                                 num-cs = <1>;
+>                                 clocks = <&gate_clk 10>;
+>                                 marvell,nand-keep-config;
+>                                 nand-on-flash-bbt;
+>                                 pinctrl-0 = <&pmx_nand_gpo>;
+>                                 pinctrl-names = "default";
+>                                 nand-ecc-strength = <4>;
+>                                 nand-ecc-step-size= <512>;
+>
+>                                 partition@0 {
+>                                         label = "uImage";
+>                                          reg = <0x00000000 0x00400000>;
+>                                 };
+>                                 partition@400000 {
+>                                         label = "rootfs";
+>                                         reg = <0x00400000 0x1FC00000>;
+>                                 };
+>                         };
+>
+>
+> };
+>
+> Also, attached the nandtests results. I have applied them 
+> simultaneously on /dev/mtd0 and /dev/mtd1.
+>
+> Is there any additional test that I can run ?
+>
+> Thank you.
+>
+>
