@@ -1,20 +1,17 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXHgj-0007Is-BJ
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2015 23:43:34 +0000
-Received: by pacfv12 with SMTP id fv12so26660304pac.2
- for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2015 16:43:12 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-Subject: [PATCH] mtd: spi-nor: fix NULL dereference when no match found in
- spi_nor_ids[]
-Date: Wed,  2 Sep 2015 16:43:00 -0700
-Message-Id: <1441237380-18522-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Stefan Agner <stefan@agner.ch>
+To: dwmw2@infradead.org,
+	computersforpeace@gmail.com
+Cc: sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
+ bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, albert.aribaud@3adev.fr,
+ klimov.linux@gmail.com, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v12 0/5] mtd: nand: vf610_nfc: Freescale NFC for VF610
+Date: Wed,  2 Sep 2015 18:06:32 -0700
+Message-Id: <1441242397-870-1-git-send-email-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,74 +21,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 06bb6f5a69df ("mtd: spi-nor: stop (ab)using struct
-spi_device_id") converted an array into a pointer, which means that
-we should be checking if the pointer goes anywhere, not whether the C
-string is empty. To do the latter means we dereference a NULL pointer
-when we reach the terminating entry, for which 'name' is now NULL
-instead of an array { 0, 0, ... }.
+This v12 fixes a race condition which sometimes has been lead
+to corrupted reads. This has been observed while continously
+rebooting or in the io_paral ubi-test, see also:
+http://thread.gmane.org/gmane.linux.drivers.mtd/59955
 
-Sample crash:
+Since the 11th revision the driver rereads the OOB area in case
+hardware ECC fails. This allows to count the flipped bits accross
+the whole page reliably. Also the device tree bindings have been
+updated: NAND chips can be specified using sub-nodes, the ECC
+properties are part of those chip nodes. Note however that the
+driver currently only supports one NAND chip. The driver has been
+verified again using the MTD tests.
 
-[    1.101371] Unable to handle kernel NULL pointer dereference at virtual address 00000000
-[    1.109457] pgd = c0004000
-[    1.112157] [00000000] *pgd=00000000
-[    1.115736] Internal error: Oops: 5 [#1] SMP ARM
-[    1.120345] Modules linked in:
-[    1.123405] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 4.2.0-next-20150902+ #61
-[    1.130611] Hardware name: Rockchip (Device Tree)
-[    1.135306] task: ee0b8d40 ti: ee0ba000 task.ti: ee0ba000
-[    1.140697] PC is at spi_nor_scan+0x90/0x8c4
-[    1.144958] LR is at spi_nor_scan+0xa4/0x8c4
-...
-[    1.504112] [<c03cc2e0>] (spi_nor_scan) from [<c03cb188>] (m25p_probe+0xc8/0x11c)
-[    1.511583] [<c03cb188>] (m25p_probe) from [<c03cd9d8>] (spi_drv_probe+0x60/0x7c)
-[    1.519055] [<c03cd9d8>] (spi_drv_probe) from [<c037faa0>] (driver_probe_device+0x1a0/0x444)
-[    1.527478] [<c037faa0>] (driver_probe_device) from [<c037fec8>] (__device_attach_driver+0x94/0xa0)
-[    1.536507] [<c037fec8>] (__device_attach_driver) from [<c037db3c>] (bus_for_each_drv+0x94/0xa4)
-[    1.545277] [<c037db3c>] (bus_for_each_drv) from [<c037f7e4>] (__device_attach+0xa4/0x144)
-[    1.553526] [<c037f7e4>] (__device_attach) from [<c0380058>] (device_initial_probe+0x1c/0x20)
-[    1.562035] [<c0380058>] (device_initial_probe) from [<c037ec88>] (bus_probe_device+0x38/0x94)
-[    1.570631] [<c037ec88>] (bus_probe_device) from [<c037ccf4>] (device_add+0x430/0x558)
-[    1.578534] [<c037ccf4>] (device_add) from [<c03d0240>] (spi_add_device+0xe4/0x174)
-[    1.586178] [<c03d0240>] (spi_add_device) from [<c03d0a24>] (spi_register_master+0x698/0x7d4)
-[    1.594688] [<c03d0a24>] (spi_register_master) from [<c03d0ba0>] (devm_spi_register_master+0x40/0x7c)
-[    1.603892] [<c03d0ba0>] (devm_spi_register_master) from [<c03d2fb4>] (rockchip_spi_probe+0x360/0x3f4)
-[    1.613182] [<c03d2fb4>] (rockchip_spi_probe) from [<c0381e34>] (platform_drv_probe+0x58/0xa8)
-[    1.621779] [<c0381e34>] (platform_drv_probe) from [<c037faa0>] (driver_probe_device+0x1a0/0x444)
-[    1.630635] [<c037faa0>] (driver_probe_device) from [<c037fdc4>] (__driver_attach+0x80/0xa4)
-[    1.639058] [<c037fdc4>] (__driver_attach) from [<c037e850>] (bus_for_each_dev+0x98/0xac)
-[    1.647221] [<c037e850>] (bus_for_each_dev) from [<c037f448>] (driver_attach+0x28/0x30)
-[    1.655210] [<c037f448>] (driver_attach) from [<c037ef74>] (bus_add_driver+0x128/0x250)
-[    1.663200] [<c037ef74>] (bus_add_driver) from [<c0380c40>] (driver_register+0xac/0xf0)
-[    1.671191] [<c0380c40>] (driver_register) from [<c0381d50>] (__platform_driver_register+0x58/0x6c)
-[    1.680221] [<c0381d50>] (__platform_driver_register) from [<c0a467c8>] (rockchip_spi_driver_init+0x18/0x20)
-[    1.690033] [<c0a467c8>] (rockchip_spi_driver_init) from [<c00098a4>] (do_one_initcall+0x124/0x1dc)
-[    1.699063] [<c00098a4>] (do_one_initcall) from [<c0a19f84>] (kernel_init_freeable+0x218/0x2ec)
-[    1.707748] [<c0a19f84>] (kernel_init_freeable) from [<c0719ed8>] (kernel_init+0x1c/0xf4)
-[    1.715912] [<c0719ed8>] (kernel_init) from [<c000fe50>] (ret_from_fork+0x14/0x24)
-[    1.723460] Code: e3510000 159f67c0 0a00000c e5961000 (e5d13000)
-[    1.729564] ---[ end trace 95baa6b3b861ce25 ]---
+More information and the full test log of earlier patchset version
+can be found in the cover letter of the last revision v6:
+http://thread.gmane.org/gmane.linux.kernel/1979868
 
-Fixes: 06bb6f5a69df ("mtd: spi-nor: stop (ab)using struct spi_device_id")
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v11:
+- Unconditionally wait for idle interrupt. This avoids an race condition:
+  The interrupt may fire between setting and checking the idle bit. So
+  the IRQ handler will increment the completion struct (cmd_done), but
+  won't be doing the corresponding decrement via wait_for_completion().
+  The subsequent wait_for_completion() will immediately succeed, the
+  upper layers then read out the old page buffer (again).
+- Return amount of bitflips when counting stuck at zero bits in a
+  empty page
+- Use a common order of function calls in vf610_nfc_command
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 25372f9b534e..f59aedfe1462 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1218,7 +1218,7 @@ static const struct flash_info *spi_nor_match_id(const char *name)
- {
- 	const struct flash_info *id = spi_nor_ids;
- 
--	while (id->name[0]) {
-+	while (id->name) {
- 		if (!strcmp(name, id->name))
- 			return id;
- 		id++;
+Changes since v10:
+- Rebased onto l2-mtd/master
+- Use children nodes for NAND chips in device tree bindings
+- Support exactly one NAND chip using the new device tree bindings
+- Reread page OOB on ECC error in order to reliable determine the amount
+  of bit flips on a erased page
+- Use ECC strength/2 as the only bit flip threshold
+- Rely on endianness aware word read to read the ECC status
+- Introduce vf610_nfc_variant which reflects the variant according to
+  the device tree compatible string
+- Use variant to determine chip select implementation
+- Use enum for alternate buffer indication
+- Renamed page_sz variable in struct vf610_nfc as well as in the function
+  vf610_nfc_command to more specific names
+- Some smaller code cleanup (altered ECC_SRAM_ADDR, introduce OOB_MAX)
+
+Changes since v9:
+- Remove inline of vf610_nfc_done
+- Add __iomem to src argument of vf610_nfc_memcpy
+- Handle return value of mtd_device_parse_register correctly
+- Count bits in OOB too (only non-ECC bits)
+- Return bitflips in ecc.read_page callback vf610_nfc_read_page
+- Fall-through ALT_BUF_ONFI
+- Use BIT macros
+
+Changes since v8:
+- Fix 16-Bit NAND flash support by splitting up initialization
+  (introduce vf610_nfc_preinit_controller)
+- Updated comments in initialziation functions
+
+Changes since v7:
+- vf610-twr.dts: Moved NFC pinmux into the existing iomuxc node
+  and sort new nfc node behind the existing iomuxc node as well.
+- vf610-twr.dts/vf-colibri.dtsi: Dropped _1 suffixes
+
+Changes since v6:
+- Rebased ontop of l2-mtd/master (v4.2-rc1 based)
+- Removed HAVE_NAND_VF610_NFC and use depends on. This made
+  "[PATCH v6 4/6] ARM: vf610: enable NAND Flash Controller" unnecessary
+
+Changes since v5:
+- Removed fsl,mpc5125-nfc compatible string
+- Removed readl/writel_relaxed
+- Change interface of vf610_nfc_transfer_size to match other accessors
+
+Changes since v4:
+- Rebased ontop of l2-mtd/master (v4.1-rc4 based)
+- Eliminate unnecessary page read (NAND_CMD_SEQIN) since the driver does
+  not support sub-page writes anyway (improves write performance)
+- Support ONFI by enabling READID command with offset and parameter page
+  reads (CMD_PARAM)
+- Change to dedicated read_page/write_page function, enables raw writes
+- Use __LITTLE_ENDIAN to distingush between LE/BE relevant statements
+- Eliminated vf610_nfc_probe_dt in favor of common DT init code
+- Use wait_for_completion_timeout
+- Some style fixes (spaces, etc.)
+
+Changes since v3:
+- Make the driver selectable when COMPILE_TEST is set
+- Fix compile error due to superfluous ECC_STATUS configuration in initial
+  patch (without ECC correction ECC_STATUS does not need to be configured)
+- Remove custom BBT pattern and switch to in-band BBT in the initial patch
+- Include two bug fixes, for details see the corresponding U-Boot patches:
+  http://thread.gmane.org/gmane.comp.boot-loaders.u-boot/215802
+
+Changes since v2:
+- Updated binding documentation
+
+Changes since v1:
+- Nest nfc_config struct within the main nfc struct
+- Use assigned clock binding to specify NFC clock
+- Rebased ontop of MSCM IR patchset (driver parts have been merged)
+- Split out arch Kconfig in a separate config
+- Fix module license
+- Updated MAINTAINERS
+
+Changes since RFC (Bill Pringlemeir):
+- Renamed driver from fsl_nfc to vf610_nfc
+- Use readl/writel for all register in accessor functions
+- Optimized field accessor functions
+- Implemented PM (suspend/resume) functions
+- Implemented basic support for ECC strength/ECC step size from dt
+- Improved performance of count_written_bits by using hweight32
+- Support ECC with 60-bytes to correct up to 32 bit errors
+- Changed to in-band BBT (NAND_BBT_NO_OOB) which also allows ECC modes
+  which uses up to 60 bytes on 64 byte OOB
+- Removed custom (downstream) BBT pattern since BBT table won't be
+  compatible anyway (due to the change above)
+
+Stefan Agner (5):
+  mtd: nand: vf610_nfc: Freescale NFC for VF610, MPC5125 and others
+  mtd: nand: vf610_nfc: add hardware BCH-ECC support
+  mtd: nand: vf610_nfc: add device tree bindings
+  ARM: dts: vf610twr: add NAND flash controller peripherial
+  ARM: dts: vf-colibri: enable NAND flash controller
+
+ .../devicetree/bindings/mtd/vf610-nfc.txt          |  59 ++
+ MAINTAINERS                                        |   6 +
+ arch/arm/boot/dts/vf-colibri.dtsi                  |  39 +
+ arch/arm/boot/dts/vf610-twr.dts                    |  47 ++
+ arch/arm/boot/dts/vfxxx.dtsi                       |  10 +
+ drivers/mtd/nand/Kconfig                           |  11 +
+ drivers/mtd/nand/Makefile                          |   1 +
+ drivers/mtd/nand/vf610_nfc.c                       | 885 +++++++++++++++++++++
+ 8 files changed, 1058 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+ create mode 100644 drivers/mtd/nand/vf610_nfc.c
+
 -- 
-2.5.0.457.gab17608
+2.5.1
