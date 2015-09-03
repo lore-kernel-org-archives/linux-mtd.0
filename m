@@ -1,16 +1,16 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXWvK-0002xC-Dw
+ id 1ZXWvK-0002zl-Du
  for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 15:59:40 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Cc: Andrea Scian <rnd4@dave-tech.it>, Richard Weinberger <richard@nod.at>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v3 3/5] mtd: nand: make 'erased check' optional
-Date: Thu,  3 Sep 2015 17:58:47 +0200
-Message-Id: <1441295932-14868-6-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 5/5] mtd: nand: remove custom 'erased check' implementation
+Date: Thu,  3 Sep 2015 17:58:51 +0200
+Message-Id: <1441295932-14868-10-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1441295932-14868-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1441295932-14868-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,144 +22,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some ECC controllers do not need the extra 'erased check' done by the core.
-Make it optional by creating a new NAND_ECC_DISABLE_ERASED_CHECK flag.
-
-Reed-Solomon ECC engines are guaranteed to generate ff ECC bytes when the
-page in empty and are thus able to fix bitflips in erased pages.
-
-The software BCH implementation is also generating ff ECC bytes for empty
-pages, and is thus able to fix bitflips in erased pages too.
+Some drivers are manually checking for 'erased pages' while correcting
+ECC bytes.
+This logic is now done by the core infrastructure, and can thus be removed
+from those drivers.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_base.c | 20 ++++++++++++++++----
- drivers/mtd/nand/r852.c      |  1 +
- drivers/mtd/nand/tmio_nand.c |  1 +
- drivers/mtd/nand/txx9ndfmc.c |  1 +
- include/linux/mtd/nand.h     |  8 ++++++++
- 5 files changed, 27 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/davinci_nand.c |  8 --------
+ drivers/mtd/nand/diskonchip.c   | 32 ++------------------------------
+ drivers/mtd/nand/jz4740_nand.c  | 18 ------------------
+ 3 files changed, 2 insertions(+), 56 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 9a109a5..3be312d 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1419,7 +1419,8 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index 816ef53..0d6adbe 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -316,14 +316,6 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
+ 	unsigned num_errors, corrected;
+ 	unsigned long timeo;
  
- 		stat = chip->ecc.correct(mtd, p,
- 			&chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
--		if (stat == -EBADMSG) {
-+		if (stat == -EBADMSG &&
-+		    !(chip->ecc.options & NAND_ECC_DISABLE_ERASED_CHECK)) {
- 			/* check for empty pages with bitflips */
- 			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
- 						&chip->buffers->ecccode[i],
-@@ -1477,7 +1478,8 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- 		int stat;
- 
- 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
--		if (stat == -EBADMSG) {
-+		if (stat == -EBADMSG &&
-+		    !(chip->ecc.options & NAND_ECC_DISABLE_ERASED_CHECK)) {
- 			/* check for empty pages with bitflips */
- 			stat = nand_check_erased_ecc_chunk(p, eccsize,
- 						&ecc_code[i], eccbytes,
-@@ -1537,7 +1539,8 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
- 		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
- 
- 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
--		if (stat == -EBADMSG) {
-+		if (stat == -EBADMSG &&
-+		    !(chip->ecc.options & NAND_ECC_DISABLE_ERASED_CHECK)) {
- 			/* check for empty pages with bitflips */
- 			stat = nand_check_erased_ecc_chunk(p, eccsize,
- 						&ecc_code[i], eccbytes,
-@@ -1600,7 +1603,8 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
- 			oob += chip->ecc.postpad;
- 		}
- 
--		if (stat == -EBADMSG) {
-+		if (stat == -EBADMSG &&
-+		    !(chip->ecc.options & NAND_ECC_DISABLE_ERASED_CHECK)) {
- 			/* check for empty pages with bitflips */
- 			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
- 							   oob - eccstepsize,
-@@ -4300,6 +4304,14 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		ecc->write_oob_raw = ecc->write_oob;
- 
- 	/*
-+	 * The software implementation does not need the the erased check
-+	 * since they already generate ff pattern for an erased page.
-+	 */
-+	if (ecc->correct == nand_bch_correct_data ||
-+	    ecc->correct == nand_correct_data)
-+		ecc->options |= NAND_ECC_DISABLE_ERASED_CHECK;
-+
-+	/*
- 	 * The number of bytes available for a client to place data into
- 	 * the out of band area.
+-	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
+-	for (i = 0; i < 10; i++) {
+-		if (ecc_code[i] != 0xff)
+-			goto compare;
+-	}
+-	return 0;
+-
+-compare:
+ 	/* Unpack ten bytes into eight 10 bit values.  We know we're
+ 	 * little-endian, and use type punning for less shifting/masking.
  	 */
-diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-index c9ad7a0..b82e4d9 100644
---- a/drivers/mtd/nand/r852.c
-+++ b/drivers/mtd/nand/r852.c
-@@ -876,6 +876,7 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
- 	chip->ecc.hwctl = r852_ecc_hwctl;
- 	chip->ecc.calculate = r852_ecc_calculate;
- 	chip->ecc.correct = r852_ecc_correct;
-+	chip->ecc.options |= NAND_ECC_DISABLE_ERASED_CHECK;
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index 7da266a..eb65769 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -936,37 +936,9 @@ static int doc200x_correct_data(struct mtd_info *mtd, u_char *dat,
+ 				calc_ecc[i] = ReadDOC_(docptr, DoC_Mplus_ECCSyndrome0 + i);
+ 			else
+ 				calc_ecc[i] = ReadDOC_(docptr, DoC_ECCSyndrome0 + i);
+-			if (calc_ecc[i] != empty_read_syndrome[i])
+-				emptymatch = 0;
+ 		}
+-		/* If emptymatch=1, the read syndrome is consistent with an
+-		   all-0xff data and stored ecc block.  Check the stored ecc. */
+-		if (emptymatch) {
+-			for (i = 0; i < 6; i++) {
+-				if (read_ecc[i] == 0xff)
+-					continue;
+-				emptymatch = 0;
+-				break;
+-			}
+-		}
+-		/* If emptymatch still =1, check the data block. */
+-		if (emptymatch) {
+-			/* Note: this somewhat expensive test should not be triggered
+-			   often.  It could be optimized away by examining the data in
+-			   the readbuf routine, and remembering the result. */
+-			for (i = 0; i < 512; i++) {
+-				if (dat[i] == 0xff)
+-					continue;
+-				emptymatch = 0;
+-				break;
+-			}
+-		}
+-		/* If emptymatch still =1, this is almost certainly a freshly-
+-		   erased block, in which case the ECC will not come out right.
+-		   We'll suppress the error and tell the caller everything's
+-		   OK.  Because it is. */
+-		if (!emptymatch)
+-			ret = doc_ecc_decode(rs_decoder, dat, calc_ecc);
++
++		ret = doc_ecc_decode(rs_decoder, dat, calc_ecc);
+ 		if (ret > 0)
+ 			printk(KERN_ERR "doc200x_correct_data corrected %d errors\n", ret);
+ 	}
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+index ba44af3..4d73276 100644
+--- a/drivers/mtd/nand/jz4740_nand.c
++++ b/drivers/mtd/nand/jz4740_nand.c
+@@ -224,24 +224,6 @@ static int jz_nand_correct_ecc_rs(struct mtd_info *mtd, uint8_t *dat,
+ 	uint32_t t;
+ 	unsigned int timeout = 1000;
  
- 	/* TODO: hack */
- 	chip->ecc.read_oob = r852_read_oob;
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index fb8fd35..24192ac 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -415,6 +415,7 @@ static int tmio_probe(struct platform_device *dev)
- 	nand_chip->ecc.hwctl = tmio_nand_enable_hwecc;
- 	nand_chip->ecc.calculate = tmio_nand_calculate_ecc;
- 	nand_chip->ecc.correct = tmio_nand_correct_data;
-+	nand_chip->ecc.options |= NAND_ECC_DISABLE_ERASED_CHECK;
+-	t = read_ecc[0];
+-
+-	if (t == 0xff) {
+-		for (i = 1; i < 9; ++i)
+-			t &= read_ecc[i];
+-
+-		t &= dat[0];
+-		t &= dat[nand->chip.ecc.size / 2];
+-		t &= dat[nand->chip.ecc.size - 1];
+-
+-		if (t == 0xff) {
+-			for (i = 1; i < nand->chip.ecc.size - 1; ++i)
+-				t &= dat[i];
+-			if (t == 0xff)
+-				return 0;
+-		}
+-	}
+-
+ 	for (i = 0; i < 9; ++i)
+ 		writeb(read_ecc[i], nand->base + JZ_REG_NAND_PAR0 + i);
  
- 	if (data)
- 		nand_chip->badblock_pattern = data->badblock_pattern;
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index 9c0bc45..d5ca045 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -336,6 +336,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		chip->ecc.correct = txx9ndfmc_correct_data;
- 		chip->ecc.hwctl = txx9ndfmc_enable_hwecc;
- 		chip->ecc.mode = NAND_ECC_HW;
-+		chip->ecc.options |= NAND_ECC_DISABLE_ERASED_CHECK;
- 		/* txx9ndfmc_nand_scan will overwrite ecc.size and ecc.bytes */
- 		chip->ecc.size = 256;
- 		chip->ecc.bytes = 3;
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 19d43b1..88956ab 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -128,6 +128,13 @@ typedef enum {
- #define NAND_ECC_WRITE		1
- /* Enable Hardware ECC before syndrome is read back from flash */
- #define NAND_ECC_READSYN	2
-+/*
-+ * Disable NAND 'page erased' check. In any case, this check is only done when
-+ * ecc.correct() returns -EBADMSG.
-+ * Set this flag if your implementation is able to fix bitflips in erased
-+ * pages.
-+ */
-+#define NAND_ECC_DISABLE_ERASED_CHECK	BIT(1)
- 
- /* Bit mask for flags passed to do_nand_read_ecc */
- #define NAND_GET_DEVICE		0x80
-@@ -500,6 +507,7 @@ struct nand_ecc_ctrl {
- 	int strength;
- 	int prepad;
- 	int postpad;
-+	unsigned int options;
- 	struct nand_ecclayout	*layout;
- 	void *priv;
- 	void (*hwctl)(struct mtd_info *mtd, int mode);
 -- 
 1.9.1
