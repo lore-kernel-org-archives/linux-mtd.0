@@ -1,23 +1,22 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXb92-0000GJ-3S
- for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 20:30:04 +0000
-Received: by pacwi10 with SMTP id wi10so846871pac.3
- for <linux-mtd@lists.infradead.org>; Thu, 03 Sep 2015 13:29:42 -0700 (PDT)
-Date: Thu, 3 Sep 2015 13:29:39 -0700
+ id 1ZXbCY-0002Mz-1m
+ for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 20:33:42 +0000
+Received: by pacfv12 with SMTP id fv12so969645pac.2
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Sep 2015 13:33:20 -0700 (PDT)
+Date: Thu, 3 Sep 2015 13:33:18 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 07/10] mtd: spi-nor: add mtd_is_locked() support
-Message-ID: <20150903202939.GB81844@google.com>
-References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
- <201509021101.49731.marex@denx.de>
- <20150902203041.GC21475@google.com>
- <201509031143.09714.marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: fix NULL dereference when no match found
+ in spi_nor_ids[]
+Message-ID: <20150903203318.GC81844@google.com>
+References: <1441237380-18522-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <201509031143.09714.marex@denx.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1441237380-18522-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,80 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 03, 2015 at 11:43:09AM +0200, Marek Vasut wrote:
-> On Wednesday, September 02, 2015 at 10:30:41 PM, Brian Norris wrote:
-> > On Wed, Sep 02, 2015 at 11:01:49AM +0200, Marek Vasut wrote:
-> > > On Tuesday, September 01, 2015 at 09:57:12 PM, Brian Norris wrote:
-> > > > This enables ioctl(MEMISLOCKED). Status can now be reported in the
-> > > > mtdinfo or flash_lock utilities found in mtd-utils.
-> > > > 
-> > > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > > > ---
-> > > > 
-> > > >  drivers/mtd/spi-nor/spi-nor.c | 37
-> > > >  ++++++++++++++++++++++++++++++++++++- include/linux/mtd/spi-nor.h   |
-> > > >   3 +++
-> > > >  2 files changed, 39 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/mtd/spi-nor/spi-nor.c
-> > > > b/drivers/mtd/spi-nor/spi-nor.c index 62fa1b4ff3c0..c4fb1205f1d3
-> > > > 100644
-> > > > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > > > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > 
-> > ...
-> > 
-> > > > @@ -549,6 +567,21 @@ static int spi_nor_unlock(struct mtd_info *mtd,
-> > > > loff_t ofs, uint64_t len) return ret;
-> > > > 
-> > > >  }
-> > > > 
-> > > > +static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs,
-> > > > uint64_t len) +{
-> > > > +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> > > > +	int ret;
-> > > > +
-> > > > +	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_UNLOCK);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	ret = nor->flash_is_locked(nor, ofs, len);
-> > > 
-> > > Is nor->flash_is_locked () always available or should you check this here
-> > > ?
-> > 
-> > spi_nor_is_locked() is only used when all 3 of
-> > flash_{lock,unlock,is_locked} are available:
-> > 
-> > 	if (nor->flash_lock && nor->flash_unlock && nor->flash_is_locked) {
-> > 		mtd->_lock = spi_nor_lock;
-> > 		mtd->_unlock = spi_nor_unlock;
-> > 		mtd->_is_locked = spi_nor_is_locked;
-> > 	}
-> > 
-> > I think it's a reasonable condition to enforce, that we only provide
-> > lock/unlock support if your flash also implements is_locked.
+On Wed, Sep 02, 2015 at 04:43:00PM -0700, Brian Norris wrote:
+> Commit 06bb6f5a69df ("mtd: spi-nor: stop (ab)using struct
+> spi_device_id") converted an array into a pointer, which means that
+> we should be checking if the pointer goes anywhere, not whether the C
+> string is empty. To do the latter means we dereference a NULL pointer
+> when we reach the terminating entry, for which 'name' is now NULL
+> instead of an array { 0, 0, ... }.
 > 
-> Yes, you're right. At least until some sort of flash which can only be locked
-> and not unlocked (like OTP) comes around.
+> Sample crash:
+> 
+> [    1.101371] Unable to handle kernel NULL pointer dereference at virtual address 00000000
+> [    1.109457] pgd = c0004000
+> [    1.112157] [00000000] *pgd=00000000
+> [    1.115736] Internal error: Oops: 5 [#1] SMP ARM
+> [    1.120345] Modules linked in:
+> [    1.123405] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 4.2.0-next-20150902+ #61
+> [    1.130611] Hardware name: Rockchip (Device Tree)
+> [    1.135306] task: ee0b8d40 ti: ee0ba000 task.ti: ee0ba000
+> [    1.140697] PC is at spi_nor_scan+0x90/0x8c4
+> [    1.144958] LR is at spi_nor_scan+0xa4/0x8c4
+> ...
+> [    1.504112] [<c03cc2e0>] (spi_nor_scan) from [<c03cb188>] (m25p_probe+0xc8/0x11c)
+> [    1.511583] [<c03cb188>] (m25p_probe) from [<c03cd9d8>] (spi_drv_probe+0x60/0x7c)
+> [    1.519055] [<c03cd9d8>] (spi_drv_probe) from [<c037faa0>] (driver_probe_device+0x1a0/0x444)
+> [    1.527478] [<c037faa0>] (driver_probe_device) from [<c037fec8>] (__device_attach_driver+0x94/0xa0)
+> [    1.536507] [<c037fec8>] (__device_attach_driver) from [<c037db3c>] (bus_for_each_drv+0x94/0xa4)
+> [    1.545277] [<c037db3c>] (bus_for_each_drv) from [<c037f7e4>] (__device_attach+0xa4/0x144)
+> [    1.553526] [<c037f7e4>] (__device_attach) from [<c0380058>] (device_initial_probe+0x1c/0x20)
+> [    1.562035] [<c0380058>] (device_initial_probe) from [<c037ec88>] (bus_probe_device+0x38/0x94)
+> [    1.570631] [<c037ec88>] (bus_probe_device) from [<c037ccf4>] (device_add+0x430/0x558)
+> [    1.578534] [<c037ccf4>] (device_add) from [<c03d0240>] (spi_add_device+0xe4/0x174)
+> [    1.586178] [<c03d0240>] (spi_add_device) from [<c03d0a24>] (spi_register_master+0x698/0x7d4)
+> [    1.594688] [<c03d0a24>] (spi_register_master) from [<c03d0ba0>] (devm_spi_register_master+0x40/0x7c)
+> [    1.603892] [<c03d0ba0>] (devm_spi_register_master) from [<c03d2fb4>] (rockchip_spi_probe+0x360/0x3f4)
+> [    1.613182] [<c03d2fb4>] (rockchip_spi_probe) from [<c0381e34>] (platform_drv_probe+0x58/0xa8)
+> [    1.621779] [<c0381e34>] (platform_drv_probe) from [<c037faa0>] (driver_probe_device+0x1a0/0x444)
+> [    1.630635] [<c037faa0>] (driver_probe_device) from [<c037fdc4>] (__driver_attach+0x80/0xa4)
+> [    1.639058] [<c037fdc4>] (__driver_attach) from [<c037e850>] (bus_for_each_dev+0x98/0xac)
+> [    1.647221] [<c037e850>] (bus_for_each_dev) from [<c037f448>] (driver_attach+0x28/0x30)
+> [    1.655210] [<c037f448>] (driver_attach) from [<c037ef74>] (bus_add_driver+0x128/0x250)
+> [    1.663200] [<c037ef74>] (bus_add_driver) from [<c0380c40>] (driver_register+0xac/0xf0)
+> [    1.671191] [<c0380c40>] (driver_register) from [<c0381d50>] (__platform_driver_register+0x58/0x6c)
+> [    1.680221] [<c0381d50>] (__platform_driver_register) from [<c0a467c8>] (rockchip_spi_driver_init+0x18/0x20)
+> [    1.690033] [<c0a467c8>] (rockchip_spi_driver_init) from [<c00098a4>] (do_one_initcall+0x124/0x1dc)
+> [    1.699063] [<c00098a4>] (do_one_initcall) from [<c0a19f84>] (kernel_init_freeable+0x218/0x2ec)
+> [    1.707748] [<c0a19f84>] (kernel_init_freeable) from [<c0719ed8>] (kernel_init+0x1c/0xf4)
+> [    1.715912] [<c0719ed8>] (kernel_init) from [<c000fe50>] (ret_from_fork+0x14/0x24)
+> [    1.723460] Code: e3510000 159f67c0 0a00000c e5961000 (e5d13000)
+> [    1.729564] ---[ end trace 95baa6b3b861ce25 ]---
+> 
+> Fixes: 06bb6f5a69df ("mtd: spi-nor: stop (ab)using struct spi_device_id")
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Rafał Miłecki <zajec5@gmail.com>
 
-I suppose we could split this up into independent conditions if/when
-needed:
-
-	if (nor->flash_lock)
-		mtd->_lock = spi_nor_lock;
- 	if (nor->flash_unlock)
- 		mtd->_unlock = spi_nor_unlock;
- 	if (nor->flash_is_locked) {
- 		mtd->_is_locked = spi_nor_is_locked;
-
-But I kinda like enforcing all three, for as much as possible.
-
-> But we shouldn't overengineer things
-> from the getgo.
-
-Sure.
-
-Thanks for reviewing.
+Pushed to l2-mtd.git. I'll need to get this into 4.3-rc1 quick, since
+the buggy patch just made it in this week...
 
 Brian
