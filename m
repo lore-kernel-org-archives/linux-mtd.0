@@ -1,17 +1,17 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXWuy-0002g8-Ld
+ id 1ZXWuy-0002gQ-LH
  for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 15:59:19 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Cc: Andrea Scian <rnd4@dave-tech.it>, Richard Weinberger <richard@nod.at>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v3 1/5] mtd: nand: return consistent error codes in
+Subject: [PATCH v3 2/5] mtd: nand: return consistent error codes in
  ecc.correct() implementations
-Date: Thu,  3 Sep 2015 17:58:44 +0200
-Message-Id: <1441295932-14868-3-git-send-email-boris.brezillon@free-electrons.com>
+Date: Thu,  3 Sep 2015 17:58:45 +0200
+Message-Id: <1441295932-14868-4-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1441295932-14868-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1441295932-14868-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
