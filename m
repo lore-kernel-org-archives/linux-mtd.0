@@ -1,22 +1,14 @@
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXNwI-0004qa-9q
- for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 06:24:03 +0000
-Received: by wiclp12 with SMTP id lp12so40335650wic.1
- for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2015 23:23:40 -0700 (PDT)
-Message-ID: <55E7E768.7000909@gmail.com>
-Date: Thu, 03 Sep 2015 08:23:36 +0200
-From: Gabriel Dobato <dobatog@gmail.com>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Kernel Update on NAND (CM-510 Compulab)
-References: <55DC55A6.4000801@gmail.com>	<CAAEAJfA9=RaEd6VEobs53qLQTuY-w0PfYDjqA-HSY7xTq1oGTA@mail.gmail.com>	<55DD015F.4070103@gmail.com>
- <CAAEAJfDGbS3Pde7vsHkNk8JTZOc6Hq_W0yUKVD5O18Kzt9DsLw@mail.gmail.com>
- <55E0DD91.4000701@gmail.com>
-In-Reply-To: <55E0DD91.4000701@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ <stable@vger.kernel.org>
+Subject: [PATCH v3] mtd: nand: sunxi: fix OOB handling in ->write_xxx()
+ functions
+Date: Thu,  3 Sep 2015 09:06:48 +0200
+Message-Id: <1441264008-24569-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,65 +18,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi again Ezequiel,
+The USER_DATA register cannot be accessed using byte accessors on A13
+SoCs, thus triggering a bug when using memcpy_toio on this register.
+Declare two helper macros to convert an OOB buffer into a suitable
+USER_DATA value and vice-versa.
 
-I have noticed that there are some new commits of pxa3xx_nand. Is it 
-possible that my problem is related with some issues that these commits fix?
+This patch also fixes an error in the oob_required logic (some OOB data
+are not written even if the user required it) by removing the
+oob_required condition, which is perfectly valid since the core already
+fill ->oob_poi with FFs when oob_required is false.
 
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: <stable@vger.kernel.org> # 3.19+
+Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
 
+---
+Changes since v2:
+- add the NFC_USER_DATA_TO_BUF() macro and rename NFC_USER_DATA() into
+  NFC_BUF_TO_USER_DATA()
+- rework the commit message
 
-Gabriel
+Changes since v1:
+- drop the !oob_required conditional path
+- replace endianness conversions by a macro relying on byte shifting
+  operations
+---
+ drivers/mtd/nand/sunxi_nand.c | 33 ++++++++++++++++-----------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
 
-El 29.08.2015 a las 00:15, Gabriel Dobato escribió:
->
->
-> El 27.08.2015 a las 02:53, Ezequiel Garcia escribió:
->> Hmmm.. this looks odd indeed.
->>
->> Can you run two nandtests simultaneously (in parallel)
->> on the two /dev/mtd devices?
->>
->> If you share your kernel configuration, I can give it a try
->> on some (similar) board.
-> Hi Ezequiel,
->
-> attached the kernel configuration, and below the Nand node of my DT:
->
->    nand@c0000 {
->
->                                 compatible = "marvell,armada370-nand";
->                                 status = "okay";
->                                 reg= <0xc0000 0x60>;
->                                 interrupts = <3>;
->                                 #address-cells = <1>;
->                                 #size-cells = <0>;
->                                 num-cs = <1>;
->                                 clocks = <&gate_clk 10>;
->                                 marvell,nand-keep-config;
->                                 nand-on-flash-bbt;
->                                 pinctrl-0 = <&pmx_nand_gpo>;
->                                 pinctrl-names = "default";
->                                 nand-ecc-strength = <4>;
->                                 nand-ecc-step-size= <512>;
->
->                                 partition@0 {
->                                         label = "uImage";
->                                          reg = <0x00000000 0x00400000>;
->                                 };
->                                 partition@400000 {
->                                         label = "rootfs";
->                                         reg = <0x00400000 0x1FC00000>;
->                                 };
->                         };
->
->
-> };
->
-> Also, attached the nandtests results. I have applied them 
-> simultaneously on /dev/mtd0 and /dev/mtd1.
->
-> Is there any additional test that I can run ?
->
-> Thank you.
->
->
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index f97a58d..f9b5a4c 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -147,6 +147,17 @@
+ #define NFC_ECC_MODE		GENMASK(15, 12)
+ #define NFC_RANDOM_SEED		GENMASK(30, 16)
+ 
++/* NFC_USER_DATA helper macros */
++#define NFC_BUF_TO_USER_DATA(buf)	((buf)[0] | ((buf)[1] << 8) | \
++					((buf)[2] << 16) | ((buf)[3] << 24))
++#define NFC_USER_DATA_TO_BUF(buf, val)	\
++	{				\
++		(buf)[0] = val;		\
++		(buf)[1] = val >> 8;	\
++		(buf)[2] = val >> 16;	\
++		(buf)[3] = val >> 24;	\
++	}
++
+ #define NFC_DEFAULT_TIMEOUT_MS	1000
+ 
+ #define NFC_SRAM_SIZE		1024
+@@ -646,15 +657,9 @@ static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
+ 		offset = layout->eccpos[i * ecc->bytes] - 4 + mtd->writesize;
+ 
+ 		/* Fill OOB data in */
+-		if (oob_required) {
+-			tmp = 0xffffffff;
+-			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
+-				    4);
+-		} else {
+-			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE,
+-				    chip->oob_poi + offset - mtd->writesize,
+-				    4);
+-		}
++		writel(NFC_BUF_TO_USER_DATA(chip->oob_poi +
++					    layout->oobfree[i].offset),
++		       nfc->regs + NFC_REG_USER_DATA_BASE);
+ 
+ 		chip->cmdfunc(mtd, NAND_CMD_RNDIN, offset, -1);
+ 
+@@ -784,14 +789,8 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
+ 		offset += ecc->size;
+ 
+ 		/* Fill OOB data in */
+-		if (oob_required) {
+-			tmp = 0xffffffff;
+-			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
+-				    4);
+-		} else {
+-			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, oob,
+-				    4);
+-		}
++		writel(NFC_BUF_TO_USER_DATA(oob),
++		       nfc->regs + NFC_REG_USER_DATA_BASE);
+ 
+ 		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ACCESS_DIR |
+ 		      (1 << 30);
+-- 
+1.9.1
