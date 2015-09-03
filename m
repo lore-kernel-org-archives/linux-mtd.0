@@ -1,21 +1,16 @@
 Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXXQ5-0006dO-6G
- for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 16:31:26 +0000
+ id 1ZXXUf-0001kS-Vl
+ for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 16:36:10 +0000
 From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: Decouple SPI NOR's device_node from
- controller device
-Date: Thu, 3 Sep 2015 18:21:46 +0200
-Cc: linux-mtd@lists.infradead.org
-References: <1440148160-14355-1-git-send-email-marex@denx.de>
- <20150902003814.GO81844@google.com>
-In-Reply-To: <20150902003814.GO81844@google.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201509031821.46602.marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Cc: Jonas Gorski <jogo@openwrt.org>, Marek Vasut <marex@denx.de>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 2/2] mtd: nand: Rename nand_chip .dn to .flash_node
+Date: Thu,  3 Sep 2015 18:35:37 +0200
+Message-Id: <1441298137-12199-2-git-send-email-marex@denx.de>
+In-Reply-To: <1441298137-12199-1-git-send-email-marex@denx.de>
+References: <1441298137-12199-1-git-send-email-marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,72 +20,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, September 02, 2015 at 02:38:14 AM, Brian Norris wrote:
-> On Fri, Aug 21, 2015 at 11:09:20AM +0200, Marek Vasut wrote:
-> > The problem this patch is trying to address is such, that SPI NOR flash
-> > devices attached to a dedicated SPI NOR controller cannot read their
-> > properties from the associated struct device_node.
-> > 
-> > A couple of facts first:
-> > 1) Each SPI NOR flash has a struct spi_nor associated with it.
-> > 2) Each SPI NOR flash has certain device properties associated
-> > 
-> >    with it, for example the OF property 'm25p,fast-read' is a
-> >    good pick. These properties are used by the SPI NOR core to
-> >    select which opcodes are sent to such SPI NOR flash. These
-> >    properties are coming from spi_nor .dev->device_node .
-> > 
-> > The problem is, that for SPI NOR controllers, the struct spi_nor .dev
-> > element points to the struct device of the SPI NOR controller, not the
-> > SPI NOR flash. Therefore, the associated dev->device_node also is the
-> > one of the controller and therefore the SPI NOR core code is trying to
-> > parse the SPI NOR controller's properties, not the properties of the
-> > SPI NOR flash.
-> > 
-> > Note: The m25p80 driver is not affected, because the controller and
-> > 
-> >       the flash are the same device, so the associated device_node
-> >       of the controller and the flash are the same.
-> > 
-> > This patch adjusts the SPI NOR core such that the device_node is not
-> > picked from spi_nor .dev directly, but from a new separate spi_nor .dn
-> > element.
-> 
-> Does it really?
+Use a more descriptive name for the device_node element in struct nand_chip .
+This name matches the element name used for device_node property of a flash
+in the spi-nor framework.
 
-Yes, it does, but I missed a bit from this patch, sorry.
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/brcmnand/brcmnand.c | 5 +++--
+ drivers/mtd/nand/nand_base.c         | 4 ++--
+ include/linux/mtd/nand.h             | 4 ++--
+ 3 files changed, 7 insertions(+), 6 deletions(-)
 
-> [...]
-> 
-> > ---
-> > 
-> >  drivers/mtd/devices/m25p80.c      | 1 +
-> >  drivers/mtd/spi-nor/fsl-quadspi.c | 1 +
-> >  drivers/mtd/spi-nor/nxp-spifi.c   | 1 +
-> >  include/linux/mtd/spi-nor.h       | 3 +++
-> >  4 files changed, 6 insertions(+)
-> 
-> ^^ I would expect to see spi-nor.c changes in the diffstat. Did you miss
-> something?
-
-Yes, sorry.
-
-> [...]
-> 
-> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> > index 1bf6f11..333999d 100644
-> > --- a/include/linux/mtd/spi-nor.h
-> > +++ b/include/linux/mtd/spi-nor.h
-> > @@ -169,6 +169,7 @@ enum spi_nor_option_flags {
-> > 
-> >   * @lock:		[FLASH-SPECIFIC] lock a region of the SPI NOR
-> >   * @unlock:		[FLASH-SPECIFIC] unlock a region of the SPI NOR
-> >   * @priv:		the private data
-> > 
-> > + * @dn:			[BOARD-SPECIFIC] device node describing this 
-instance
-> 
-> I might like to see this up near the @dev entry, for organization
-> purposes.
-
-Right, will do in V2.
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index fddb795..048e4e0 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -1792,7 +1792,8 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+ 
+ 	memset(cfg, 0, sizeof(*cfg));
+ 
+-	ret = of_property_read_u32(chip->dn, "brcm,nand-oob-sector-size",
++	ret = of_property_read_u32(chip->flash_node,
++				   "brcm,nand-oob-sector-size",
+ 				   &oob_sector);
+ 	if (ret) {
+ 		/* Use detected size */
+@@ -1899,7 +1900,7 @@ static int brcmnand_init_cs(struct brcmnand_host *host)
+ 	mtd = &host->mtd;
+ 	chip = &host->chip;
+ 
+-	chip->dn = dn;
++	chip->flash_node = dn;
+ 	chip->priv = host;
+ 	mtd->priv = chip;
+ 	mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "brcmnand.%d",
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ceb68ca..51f7816 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3846,8 +3846,8 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	struct nand_flash_dev *type;
+ 	int ret;
+ 
+-	if (chip->dn) {
+-		ret = nand_dt_init(mtd, chip, chip->dn);
++	if (chip->flash_node) {
++		ret = nand_dt_init(mtd, chip, chip->flash_node);
+ 		if (ret)
+ 			return ret;
+ 	}
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 272f429..3140b3d 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -544,7 +544,7 @@ struct nand_buffers {
+  *			flash device
+  * @IO_ADDR_W:		[BOARDSPECIFIC] address to write the 8 I/O lines of the
+  *			flash device.
+- * @dn:			[BOARDSPECIFIC] device node describing this instance
++ * @flash_node:		[BOARDSPECIFIC] device node describing this instance
+  * @read_byte:		[REPLACEABLE] read one byte from the chip
+  * @read_word:		[REPLACEABLE] read one word from the chip
+  * @write_byte:		[REPLACEABLE] write a single byte to the chip on the
+@@ -647,7 +647,7 @@ struct nand_chip {
+ 	void __iomem *IO_ADDR_R;
+ 	void __iomem *IO_ADDR_W;
+ 
+-	struct device_node *dn;
++	struct device_node *flash_node;
+ 
+ 	uint8_t (*read_byte)(struct mtd_info *mtd);
+ 	u16 (*read_word)(struct mtd_info *mtd);
+-- 
+2.1.4
