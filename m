@@ -1,20 +1,24 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXR3O-0001ua-SR
- for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 09:43:35 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 07/10] mtd: spi-nor: add mtd_is_locked() support
-Date: Thu, 3 Sep 2015 11:43:09 +0200
-Cc: linux-mtd@lists.infradead.org
-References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
- <201509021101.49731.marex@denx.de> <20150902203041.GC21475@google.com>
-In-Reply-To: <20150902203041.GC21475@google.com>
+Date: Thu, 3 Sep 2015 13:12:32 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Ranjit Waghmode <ranjit.waghmode@xilinx.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ michal.simek@xilinx.com, soren.brinkmann@xilinx.com,
+ zajec5@gmail.com, ben@decadent.org.uk, marex@denx.de,
+ b32955@freescale.com, knut.wohlrab@de.bosch.com, juhosg@openwrt.org,
+ beanhuo@micron.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, harinik@xilinx.com,
+ punnaia@xilinx.com
+Message-ID: <20150903121232.GW12027@sirena.org.uk>
+References: <1440570367-22569-1-git-send-email-ranjit.waghmode@xilinx.com>
+ <1440570367-22569-2-git-send-email-ranjit.waghmode@xilinx.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201509031143.09714.marex@denx.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="0DzvS/R5x22MwsQI"
+Content-Disposition: inline
+In-Reply-To: <1440570367-22569-2-git-send-email-ranjit.waghmode@xilinx.com>
+Subject: Re: [LINUX RFC v2 1/4] spi: add support of two chip selects & data
+ stripe
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,64 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, September 02, 2015 at 10:30:41 PM, Brian Norris wrote:
-> On Wed, Sep 02, 2015 at 11:01:49AM +0200, Marek Vasut wrote:
-> > On Tuesday, September 01, 2015 at 09:57:12 PM, Brian Norris wrote:
-> > > This enables ioctl(MEMISLOCKED). Status can now be reported in the
-> > > mtdinfo or flash_lock utilities found in mtd-utils.
-> > > 
-> > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > > ---
-> > > 
-> > >  drivers/mtd/spi-nor/spi-nor.c | 37
-> > >  ++++++++++++++++++++++++++++++++++++- include/linux/mtd/spi-nor.h   |
-> > >   3 +++
-> > >  2 files changed, 39 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/mtd/spi-nor/spi-nor.c
-> > > b/drivers/mtd/spi-nor/spi-nor.c index 62fa1b4ff3c0..c4fb1205f1d3
-> > > 100644
-> > > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> 
-> ...
-> 
-> > > @@ -549,6 +567,21 @@ static int spi_nor_unlock(struct mtd_info *mtd,
-> > > loff_t ofs, uint64_t len) return ret;
-> > > 
-> > >  }
-> > > 
-> > > +static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs,
-> > > uint64_t len) +{
-> > > +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> > > +	int ret;
-> > > +
-> > > +	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_UNLOCK);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = nor->flash_is_locked(nor, ofs, len);
-> > 
-> > Is nor->flash_is_locked () always available or should you check this here
-> > ?
-> 
-> spi_nor_is_locked() is only used when all 3 of
-> flash_{lock,unlock,is_locked} are available:
-> 
-> 	if (nor->flash_lock && nor->flash_unlock && nor->flash_is_locked) {
-> 		mtd->_lock = spi_nor_lock;
-> 		mtd->_unlock = spi_nor_unlock;
-> 		mtd->_is_locked = spi_nor_is_locked;
-> 	}
-> 
-> I think it's a reasonable condition to enforce, that we only provide
-> lock/unlock support if your flash also implements is_locked.
 
-Yes, you're right. At least until some sort of flash which can only be locked
-and not unlocked (like OTP) comes around. But we shouldn't overengineer things
-from the getgo.
+--0DzvS/R5x22MwsQI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks for clarifying.
+On Wed, Aug 26, 2015 at 11:56:04AM +0530, Ranjit Waghmode wrote:
 
-Best regards,
-Marek Vasut
+> To support dual parallel mode operation of ZynqMP GQSPI controller
+> following API's are added inside the core:
+
+As covered in SubmittingPatches please try to make each patch a single
+change rather than having multiple separate changes in one commit.
+
+> +	/* Controller may support more than one chip.
+> +	 * This flag will enable that feature.
+> +	 */
+> +#define SPI_MASTER_BOTH_CS		BIT(8)		/* enable both chips */
+
+This isn't saying that the controller supports more than one chip, it's
+saying that the controller supports asserting more than one chip select
+at once which isn't the same thing.  I'm also not entirely sure that
+this makes sense as a separate feature to the data striping one - I'm
+struggling to think of a way to use this sensibly separately to that.
+
+--0DzvS/R5x22MwsQI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV6DkwAAoJECTWi3JdVIfQXYgH/10ooGEfIRwg3+RXxCX4cCXQ
+9tZHzQ8/VXSmmnYOZk5t7sGeX4V9+KxegIv7qYfF5xo6axxM7nR5YVsytqbFmxg6
+U+RGTxUM3kTvgD6xSELunChkj4/TQo2WpNxUekG06ei7KW/fTHvp/LjpfhMvm9oO
+Kyz9u7CU7Jw4IqxhjFOiy+zP6lWCE2Qqh5mThX9YvxFt8q4CDZRzI/ITlOVCnT4R
+Cck5fqSeRIZtaNUjZJz4f7+ZSrNt/TqoFxRmfyoEgf7XUAiw1ZmBX7NqfMbgzOEX
+msplicMkoGRWtgvS2MTX4eAL22pvbnuFZOq1YKyOLc5uxboB+lgIaz8jVeVDbkU=
+=fCrY
+-----END PGP SIGNATURE-----
+
+--0DzvS/R5x22MwsQI--
