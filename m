@@ -1,18 +1,29 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXVId-0004fS-SN
- for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 14:15:38 +0000
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@sigma-star.at>
-Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
-From: Andrea Scian <rnd4@dave-tech.it>
-Subject: [RFC] MTD BoF at ELCE 2015 [was [RFC PATCH 2/2] mtd: nand: use
- nand_check_erased_ecc_chunk in default ECC read functions]
-Message-ID: <55E855EF.5000600@dave-tech.it>
-Date: Thu, 3 Sep 2015 16:15:11 +0200
+Received: from mail-lb0-f179.google.com ([209.85.217.179])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZXWI3-00043f-Gl
+ for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 15:19:04 +0000
+Received: by lbpo4 with SMTP id o4so26415884lbp.2
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Sep 2015 08:18:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <55A912F0.7080605@vanguardiasur.com.ar>
+References: <1436281707-20106-1-git-send-email-antoine.tenart@free-electrons.com>
+ <20150717134159.GC10608@kwain>
+ <55A912F0.7080605@vanguardiasur.com.ar>
+Date: Thu, 3 Sep 2015 12:18:40 -0300
+Message-ID: <CAAEAJfD=uoPksfU=vqwa00RjM_0JN=QH-UoEqPJBFyVNP7H4ew@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] mtd: pxa3xx_nand: rework the timing setup
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, zmxu@marvell.com,
+ jszhang@marvell.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +33,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 17 July 2015 at 11:36, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> w=
+rote:
+> Hi Antoine,
+>
+> On 07/17/2015 10:41 AM, Antoine Tenart wrote:
+>>
+>> Hi guys,
+>>
+>> On Tue, Jul 07, 2015 at 05:08:23PM +0200, Antoine Tenart wrote:
+>>>
+>>>
+>>> This series was part of a bigger one[1], which was split into smaller
+>>> ones as asked by Ezequiel[2]. When we take this into account, this is
+>>> v7. In addition, there was absolutely no comment for more than 1 month
+>>> (since June 2nd). Given this, I really expect the series to be merge
+>>> soon as other series are based on this.
+>>
+>>
+>> Any news on this series?
+>>
 
-Dear Boris, Richard and all the other MTD developers,
+Antoine,
 
-I take the idea from a nearly-one-month-ago-thread to ask for comment 
-about what Richard proposed at that time.
+Do you think you can respin this patchset and send a new one so we
+can move forward? There might be still some issues with it (16-bit support)=
+,
+but I think it'll be better to discuss them on a fresh patchset.
 
-Il 06/08/2015 11:42, Richard Weinberger ha scritto:
- >
- > Am 06.08.2015 um 11:19 schrieb Boris Brezillon:
- >>> I think this needs more discussion.
- >>>
- >>> Boris, Brian, will you be at Embedded Linux Conference Europe
- >>> in Dublin?
- >>> Maybe we can discuss these issues (data retention, ff-checks,
- >>> etc...) in person and figure out where to address them.
- >>> I really want to avoid ad-hoc solutions. :)
- >>
- >> I'll be at ELCE and I'd be happy to discuss all these NAND/MTD/UBI
- >> related issues with you, though I think we should keep discussing
- >> those problems on the ML too.
- >
- > Sure, I did not recommend a secret meeting. ;-)
- > But often a face to face conversation is better for brain storming.
- >
+Don't forget to Cc Robert, since he's able to provide valuable input
+and testing on PXA boards.
 
-I'll be at ELCE too and I'll be glad to meet all of you.
-For sure I'll attend to Richard presentation!
-
-I'm wondering if we can organize something like a mini-summit or BoF 
-about MTD/UBI.
-I don't really know how LF events are organized or if we can have a room 
-reserved for us, but even if it's not possible (or too hard to organize 
-at this later stage) I think we can find some good and quiet place into 
-the CCD to meet.
-
-Anyway.. a pub after the conference will be a nice place to have this 
-meeting too :-)
-
-Kind Regards,
-
--- 
-
-Andrea SCIAN
-
-DAVE Embedded Systems
+Thanks a lot,
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
