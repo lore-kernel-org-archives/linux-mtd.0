@@ -1,19 +1,22 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXX01-0007lC-BJ
- for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 16:04:30 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Andrea Scian <rnd4@dave-tech.it>, Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [RESEND PATCH v3 5/5] mtd: nand: remove custom 'erased check'
- implementation
-Date: Thu,  3 Sep 2015 18:03:42 +0200
-Message-Id: <1441296222-14989-6-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1441296222-14989-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1441296222-14989-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail-out.m-online.net ([212.18.0.10])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZXXQ5-0006dX-6I
+ for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 16:31:26 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: Decouple SPI NOR's device_node from
+ controller device
+Date: Thu, 3 Sep 2015 18:20:45 +0200
+Cc: Jonas Gorski <jogo@openwrt.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+References: <1440148160-14355-1-git-send-email-marex@denx.de>
+ <201508212316.21111.marex@denx.de> <20150902003017.GN81844@google.com>
+In-Reply-To: <20150902003017.GN81844@google.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201509031820.45665.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,109 +26,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some drivers are manually checking for 'erased pages' while correcting
-ECC bytes.
-This logic is now done by the core infrastructure, and can thus be removed
-from those drivers.
+On Wednesday, September 02, 2015 at 02:30:17 AM, Brian Norris wrote:
+> On Fri, Aug 21, 2015 at 11:16:21PM +0200, Marek Vasut wrote:
+> > On Friday, August 21, 2015 at 10:49:46 PM, Jonas Gorski wrote:
+> > > On Fri, Aug 21, 2015 at 8:34 PM, Marek Vasut <marex@denx.de> wrote:
+> > > > On Friday, August 21, 2015 at 04:15:11 PM, Jonas Gorski wrote:
+> > > >> > This patch is inspired by 5844feeaa4154d1c46d3462c7a4653d22356d8b4
+> > > >> > mtd: nand: add common DT init code
+> > > >> 
+> > > >> I know that this commit named it dn for nand, but IMHO "dn" isn't a
+> > > >> very readable member name, so I would suggest using something with
+> > > >> "node" in it (just using of_node as well seems to be common). I see
+> > > >> no place where the name length might become an issue.
+> > > > 
+> > > > I thought .dn was supposed to be abbrev for device_node ;-)
+> > > 
+> > > Sure, if you know what it is supposed to stand for it is obvious ;-).
+> > > And from a "stylistic" point of view, struct spi_nor has members
+> > > called page_size, flash_read or cmd_buf and not ps, fr, or cb so using
+> > > dn instead of e.g. dev_node seems a bit odd.
+> > 
+> > On the other hand, the .dn is consistent across the MTD subsystem.
+> > I don't have a strong prefference though.
+> 
+> I just stuck in nand_chip::dn since we needed something, and because
+> I've seen it used as a function parameter name and a local variable name
+> all over the place, enough that it just seemed natural. But a field name
+> is probably a bit more important. I'd be OK with making the "standard"
+> a bit more verbose, and maybe even changing the one in struct nand_chip.
+> 
+> How about:
+> 
+>   flash_node <-- this one leaves room for a controller node, if we
+>                  eventually need it
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/davinci_nand.c |  8 --------
- drivers/mtd/nand/diskonchip.c   | 32 ++------------------------------
- drivers/mtd/nand/jz4740_nand.c  | 18 ------------------
- 3 files changed, 2 insertions(+), 56 deletions(-)
+I like this one the most, exactly because of your reasoning.
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 816ef53..0d6adbe 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -316,14 +316,6 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
- 	unsigned num_errors, corrected;
- 	unsigned long timeo;
- 
--	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
--	for (i = 0; i < 10; i++) {
--		if (ecc_code[i] != 0xff)
--			goto compare;
--	}
--	return 0;
--
--compare:
- 	/* Unpack ten bytes into eight 10 bit values.  We know we're
- 	 * little-endian, and use type punning for less shifting/masking.
- 	 */
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index 7da266a..eb65769 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -936,37 +936,9 @@ static int doc200x_correct_data(struct mtd_info *mtd, u_char *dat,
- 				calc_ecc[i] = ReadDOC_(docptr, DoC_Mplus_ECCSyndrome0 + i);
- 			else
- 				calc_ecc[i] = ReadDOC_(docptr, DoC_ECCSyndrome0 + i);
--			if (calc_ecc[i] != empty_read_syndrome[i])
--				emptymatch = 0;
- 		}
--		/* If emptymatch=1, the read syndrome is consistent with an
--		   all-0xff data and stored ecc block.  Check the stored ecc. */
--		if (emptymatch) {
--			for (i = 0; i < 6; i++) {
--				if (read_ecc[i] == 0xff)
--					continue;
--				emptymatch = 0;
--				break;
--			}
--		}
--		/* If emptymatch still =1, check the data block. */
--		if (emptymatch) {
--			/* Note: this somewhat expensive test should not be triggered
--			   often.  It could be optimized away by examining the data in
--			   the readbuf routine, and remembering the result. */
--			for (i = 0; i < 512; i++) {
--				if (dat[i] == 0xff)
--					continue;
--				emptymatch = 0;
--				break;
--			}
--		}
--		/* If emptymatch still =1, this is almost certainly a freshly-
--		   erased block, in which case the ECC will not come out right.
--		   We'll suppress the error and tell the caller everything's
--		   OK.  Because it is. */
--		if (!emptymatch)
--			ret = doc_ecc_decode(rs_decoder, dat, calc_ecc);
-+
-+		ret = doc_ecc_decode(rs_decoder, dat, calc_ecc);
- 		if (ret > 0)
- 			printk(KERN_ERR "doc200x_correct_data corrected %d errors\n", ret);
- 	}
-diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-index ba44af3..4d73276 100644
---- a/drivers/mtd/nand/jz4740_nand.c
-+++ b/drivers/mtd/nand/jz4740_nand.c
-@@ -224,24 +224,6 @@ static int jz_nand_correct_ecc_rs(struct mtd_info *mtd, uint8_t *dat,
- 	uint32_t t;
- 	unsigned int timeout = 1000;
- 
--	t = read_ecc[0];
--
--	if (t == 0xff) {
--		for (i = 1; i < 9; ++i)
--			t &= read_ecc[i];
--
--		t &= dat[0];
--		t &= dat[nand->chip.ecc.size / 2];
--		t &= dat[nand->chip.ecc.size - 1];
--
--		if (t == 0xff) {
--			for (i = 1; i < nand->chip.ecc.size - 1; ++i)
--				t &= dat[i];
--			if (t == 0xff)
--				return 0;
--		}
--	}
--
- 	for (i = 0; i < 9; ++i)
- 		writeb(read_ecc[i], nand->base + JZ_REG_NAND_PAR0 + i);
- 
--- 
-1.9.1
+>   device_node
+>   dev_node
+>   of_node <-- this one is commonly used, but mostly out of legacy
+>               reasons. We're not really dealing with Open Firmware
+> 
+> ?
+> 
+> Pick one and run with it.
+> 
+> Brian
+
+Best regards,
+Marek Vasut
