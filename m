@@ -1,22 +1,22 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXbCY-0002Mz-1m
- for linux-mtd@lists.infradead.org; Thu, 03 Sep 2015 20:33:42 +0000
-Received: by pacfv12 with SMTP id fv12so969645pac.2
- for <linux-mtd@lists.infradead.org>; Thu, 03 Sep 2015 13:33:20 -0700 (PDT)
-Date: Thu, 3 Sep 2015 13:33:18 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: fix NULL dereference when no match found
- in spi_nor_ids[]
-Message-ID: <20150903203318.GC81844@google.com>
-References: <1441237380-18522-1-git-send-email-computersforpeace@gmail.com>
+Subject: Re: [PATCH 15/16] mtd: mtdcore: fix initcall level
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1440592108-3740-1-git-send-email-holler@ahsoftware.de>
+ <1440592108-3740-16-git-send-email-holler@ahsoftware.de>
+ <20150901211938.GJ81844@google.com> <55E68A72.30909@ahsoftware.de>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+ Russel King <linux@arm.linux.org.uk>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Grant Likely <grant.likely@linaro.org>,
+ Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+From: Alexander Holler <holler@ahsoftware.de>
+Message-ID: <55E91746.4060502@ahsoftware.de>
+Date: Fri, 4 Sep 2015 06:00:06 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1441237380-18522-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <55E68A72.30909@ahsoftware.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +26,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 02, 2015 at 04:43:00PM -0700, Brian Norris wrote:
-> Commit 06bb6f5a69df ("mtd: spi-nor: stop (ab)using struct
-> spi_device_id") converted an array into a pointer, which means that
-> we should be checking if the pointer goes anywhere, not whether the C
-> string is empty. To do the latter means we dereference a NULL pointer
-> when we reach the terminating entry, for which 'name' is now NULL
-> instead of an array { 0, 0, ... }.
-> 
-> Sample crash:
-> 
-> [    1.101371] Unable to handle kernel NULL pointer dereference at virtual address 00000000
-> [    1.109457] pgd = c0004000
-> [    1.112157] [00000000] *pgd=00000000
-> [    1.115736] Internal error: Oops: 5 [#1] SMP ARM
-> [    1.120345] Modules linked in:
-> [    1.123405] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 4.2.0-next-20150902+ #61
-> [    1.130611] Hardware name: Rockchip (Device Tree)
-> [    1.135306] task: ee0b8d40 ti: ee0ba000 task.ti: ee0ba000
-> [    1.140697] PC is at spi_nor_scan+0x90/0x8c4
-> [    1.144958] LR is at spi_nor_scan+0xa4/0x8c4
-> ...
-> [    1.504112] [<c03cc2e0>] (spi_nor_scan) from [<c03cb188>] (m25p_probe+0xc8/0x11c)
-> [    1.511583] [<c03cb188>] (m25p_probe) from [<c03cd9d8>] (spi_drv_probe+0x60/0x7c)
-> [    1.519055] [<c03cd9d8>] (spi_drv_probe) from [<c037faa0>] (driver_probe_device+0x1a0/0x444)
-> [    1.527478] [<c037faa0>] (driver_probe_device) from [<c037fec8>] (__device_attach_driver+0x94/0xa0)
-> [    1.536507] [<c037fec8>] (__device_attach_driver) from [<c037db3c>] (bus_for_each_drv+0x94/0xa4)
-> [    1.545277] [<c037db3c>] (bus_for_each_drv) from [<c037f7e4>] (__device_attach+0xa4/0x144)
-> [    1.553526] [<c037f7e4>] (__device_attach) from [<c0380058>] (device_initial_probe+0x1c/0x20)
-> [    1.562035] [<c0380058>] (device_initial_probe) from [<c037ec88>] (bus_probe_device+0x38/0x94)
-> [    1.570631] [<c037ec88>] (bus_probe_device) from [<c037ccf4>] (device_add+0x430/0x558)
-> [    1.578534] [<c037ccf4>] (device_add) from [<c03d0240>] (spi_add_device+0xe4/0x174)
-> [    1.586178] [<c03d0240>] (spi_add_device) from [<c03d0a24>] (spi_register_master+0x698/0x7d4)
-> [    1.594688] [<c03d0a24>] (spi_register_master) from [<c03d0ba0>] (devm_spi_register_master+0x40/0x7c)
-> [    1.603892] [<c03d0ba0>] (devm_spi_register_master) from [<c03d2fb4>] (rockchip_spi_probe+0x360/0x3f4)
-> [    1.613182] [<c03d2fb4>] (rockchip_spi_probe) from [<c0381e34>] (platform_drv_probe+0x58/0xa8)
-> [    1.621779] [<c0381e34>] (platform_drv_probe) from [<c037faa0>] (driver_probe_device+0x1a0/0x444)
-> [    1.630635] [<c037faa0>] (driver_probe_device) from [<c037fdc4>] (__driver_attach+0x80/0xa4)
-> [    1.639058] [<c037fdc4>] (__driver_attach) from [<c037e850>] (bus_for_each_dev+0x98/0xac)
-> [    1.647221] [<c037e850>] (bus_for_each_dev) from [<c037f448>] (driver_attach+0x28/0x30)
-> [    1.655210] [<c037f448>] (driver_attach) from [<c037ef74>] (bus_add_driver+0x128/0x250)
-> [    1.663200] [<c037ef74>] (bus_add_driver) from [<c0380c40>] (driver_register+0xac/0xf0)
-> [    1.671191] [<c0380c40>] (driver_register) from [<c0381d50>] (__platform_driver_register+0x58/0x6c)
-> [    1.680221] [<c0381d50>] (__platform_driver_register) from [<c0a467c8>] (rockchip_spi_driver_init+0x18/0x20)
-> [    1.690033] [<c0a467c8>] (rockchip_spi_driver_init) from [<c00098a4>] (do_one_initcall+0x124/0x1dc)
-> [    1.699063] [<c00098a4>] (do_one_initcall) from [<c0a19f84>] (kernel_init_freeable+0x218/0x2ec)
-> [    1.707748] [<c0a19f84>] (kernel_init_freeable) from [<c0719ed8>] (kernel_init+0x1c/0xf4)
-> [    1.715912] [<c0719ed8>] (kernel_init) from [<c000fe50>] (ret_from_fork+0x14/0x24)
-> [    1.723460] Code: e3510000 159f67c0 0a00000c e5961000 (e5d13000)
-> [    1.729564] ---[ end trace 95baa6b3b861ce25 ]---
-> 
-> Fixes: 06bb6f5a69df ("mtd: spi-nor: stop (ab)using struct spi_device_id")
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Rafał Miłecki <zajec5@gmail.com>
+Am 02.09.2015 um 07:34 schrieb Alexander Holler:
+> Am 01.09.2015 um 23:19 schrieb Brian Norris:
+>> Hi Alexander,
+>>
+>> No judgment here for the rest of this series, but for this patch:
+>>
+>> On Wed, Aug 26, 2015 at 02:28:27PM +0200, Alexander Holler wrote:
+>>> The mtd-core has to be initialized before other dependent mtd-drivers,
+>>> otherwise a crash might occur.
+>>>
+>>> Currently mtd_init() is called in the initcall-level device, which is
+>>> the
+>>> same level where most mtd-drivers will end up. By luck this seemed to
+>>> have
+>>> been called most of the time before other mtd-drivers without having
+>>> been
+>>> explicitly enforced.
+>>
+>> I can't really speak for the original authors, but it does not appear to
+>> be entirely "by luck." Link order was one of the de facto ways to get
+>> this ordering (though it's not really a great one), and mtdcore was
+>> always linked first within the drivers/mtd/ directory structure.
+>>
+>> But that's just background, I think this is worth fixing anyway. It
+>> could, for instance, become a problem if drivers are located outside
+>> drivers/mtd/; I see random board files in arch/ that register with MTD,
+>> and I'm actually not sure how they have never tripped on this.
+>
+> I've already found at least a half a dozen other drivers with the same
+> problem through my shuffling of the drivers which all end up in the
+> standard initcall level device. I'm aware that this is based on the link
+> order, which itself is based on linker behaviour (and maybe other things
+> like make or other build tools). I'm just calling it luck, because this
+> is nowhere explicitly stated, at least I've never seen such a statement,
+> neither in any source, nor somewhere in Documentation. So I've choosen
+> the term "by luck" in order to provoke a bit (or to stimulate a
+> discussion about that widespread problem).
 
-Pushed to l2-mtd.git. I'll need to get this into 4.3-rc1 quick, since
-the buggy patch just made it in this week...
+A good example why "luck" might not be far away from the truth is what 
+happens when a drivers moves e.g. from staging to it's real position. 
+Also the position will stay inside the same initcall level, the move of 
+the driver into another directory (maybe together with a rename) will 
+likely change its position in the initcall-sequence, without anyone 
+really expecting this.
 
-Brian
+>>> But if mtd_init() is not called before a dependent
+>>> driver, a null-pointer exception might occur (e.g. because the mtd
+>>> device
+>>> class isn't registered).
+>>>
+>>> To fix this, mtd-init() is moved to the initcall-level fs (right before
+>>> the standard initcall level device).
+>>
+>> Is there a good reason we shouldn't just make this a subsys_initcall()?
+>> That would match the naming better, and it mirrors what, e.g.,
+>> block/genhd uses. It would also allow flexibility if there are other
+>> current/future use cases that might need to sit between the subsystem
+>> and the drivers.
+>
+> No real reason here. The names for the initcall levels seem to be
+> outdated since a long time anyway, and I think just speaking about the
+> numbers 1-7 (or 0-14) would be better anyways. The only reason why I've
+> used the fs (sync) level is because I was too lazy to check out if
+> mtdcore might depend on something else in any other level. Therefor I've
+> used the one most close to were it was before.
+
+Lazy was the wrong term. It is time consuming, cumbersome and therefor 
+error-prone to check on what other stuff a driver depends. One reason 
+why choosing the right place in the initcall sequence isn't that easy 
+and why some automation make sense.
+
+> Also I've an idea about how to fix that in general for all drivers (by
+> using the same algorithm I've now introduced just for DT-based drivers
+> with a device description). Wouldn't be that hard to use that for all
+> drivers, but as I've written in a follow up to the introductory mail,
+> one step after another.
+>
+> Regards,
+>
+> Alexander Holler
