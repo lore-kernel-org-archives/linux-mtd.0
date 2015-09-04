@@ -8,9 +8,11 @@ CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
  <linux-omap@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>, Vignesh R
  <vigneshr@ti.com>
-Subject: [PATCH 0/5] Add memory mapped read support for ti-qspi
-Date: Fri, 4 Sep 2015 13:59:57 +0530
-Message-ID: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
+Subject: [PATCH 5/5] ARM: dts: AM4372: add entry for qspi mmap region
+Date: Fri, 4 Sep 2015 14:00:02 +0530
+Message-ID: <1441355402-6837-6-git-send-email-vigneshr@ti.com>
+In-Reply-To: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
+References: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,40 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add qspi memory mapped region entries for AM43xx based SoCs. Also,
+update the binding documents for the controller to document this change.
 
-Hi,
+Signed-off-by: Vignesh R <vigneshr@ti.com>
+---
+ Documentation/devicetree/bindings/spi/ti_qspi.txt | 5 +++--
+ arch/arm/boot/dts/am4372.dtsi                     | 4 +++-
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-This patch series adds support for memory mapped read port of ti-qspi.
-ti-qspi has a special memory mapped port through which SPI flash
-memories can be accessed directly via SoC specific memory region.
-
-First patch adds a method to pass flash specific information like read
-opcode, dummy bytes etc and to request mmap read. Second patch
-implements mmap read method in ti-qspi driver. Patch 3 adapts m25p80 to
-use mmap read method before trying normal SPI transfer. Patch 4 and 5
-add memory map region DT entries for DRA7xx and AM43xx SoCs.
-
-This patch series is based on the discussions here:
-http://www.spinics.net/lists/linux-spi/msg04796.html
-
-Tested on DRA74 EVM and AM437x-SK.
-Read performance increases from ~100kB/s to ~2.5MB/s.
-
-
-Vignesh R (5):
-  spi: introduce mmap read support for spi flash devices
-  spi: spi-ti-qspi: add mmap mode read support
-  mtd: devices: m25p80: add support for mmap read request
-  ARM: dts: DRA7: add entry for qspi mmap region
-  ARM: dts: AM4372: add entry for qspi mmap region
-
- Documentation/devicetree/bindings/spi/ti_qspi.txt |  18 +++-
- arch/arm/boot/dts/am4372.dtsi                     |   4 +-
- arch/arm/boot/dts/dra7.dtsi                       |   6 +-
- drivers/mtd/devices/m25p80.c                      |   8 ++
- drivers/spi/spi-ti-qspi.c                         | 106 +++++++++++++++++++++-
- include/linux/spi/spi.h                           |  21 +++++
- 6 files changed, 154 insertions(+), 9 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/spi/ti_qspi.txt b/Documentation/devicetree/bindings/spi/ti_qspi.txt
+index f05dd631bef1..05488970060b 100644
+--- a/Documentation/devicetree/bindings/spi/ti_qspi.txt
++++ b/Documentation/devicetree/bindings/spi/ti_qspi.txt
+@@ -17,9 +17,10 @@ Recommended properties:
+ 
+ Example:
+ 
++For am4372:
+ qspi: qspi@4b300000 {
+-	compatible = "ti,dra7xxx-qspi";
+-	reg = <0x47900000 0x100>, <0x30000000 0x3ffffff>;
++	compatible = "ti,am4372-qspi";
++	reg = <0x47900000 0x100>, <0x30000000 0x4000000>;
+ 	reg-names = "qspi_base", "qspi_mmap";
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
+index ade28c790f4b..52cf4846b8e1 100644
+--- a/arch/arm/boot/dts/am4372.dtsi
++++ b/arch/arm/boot/dts/am4372.dtsi
+@@ -902,7 +902,9 @@
+ 
+ 		qspi: qspi@47900000 {
+ 			compatible = "ti,am4372-qspi";
+-			reg = <0x47900000 0x100>;
++			reg = <0x47900000 0x100>,
++			      <0x30000000 0x4000000>;
++			reg-names = "qspi_base", "qspi_mmap";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			ti,hwmods = "qspi";
 -- 
 2.5.1
