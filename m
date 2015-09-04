@@ -1,29 +1,22 @@
-Message-ID: <55EA0B0F.8030601@ni.com>
-Date: Fri, 04 Sep 2015 16:20:15 -0500
-From: Xander Huff <xander.huff@ni.com>
+Message-ID: <55EA2CFD.6060300@st.com>
+Date: Fri, 4 Sep 2015 16:45:01 -0700
+From: vikas <vikas.manocha@st.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>,
- =?UTF-8?B?IkJlYW4gSHVvIOmcjQ==?=
- =?UTF-8?B?5paM5paMIChiZWFuaHVvKSI=?= <beanhuo@micron.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "jeff.westfahl@ni.com" <jeff.westfahl@ni.com>,
- "jaeden.amero@ni.com" <jaeden.amero@ni.com>,
- "joshc@ni.com" <joshc@ni.com>, Ben Shelton <ben.shelton@ni.com>,
- Richard Weinberger <richard@nod.at>,
- =?UTF-8?B?IlBldGVyIFBhbiDmvZjmoIsgKHBldGVycGFuZG9uZyki?=
- <peterpandong@micron.com>, nathan.sullivan@ni.com
-Subject: Re: [RESEND RESEND RESEND PATCH v2] mtd: nand_bbt: scan for next
- free bbt block if writing bbt fails
-References: <1439330122-41912-1-git-send-email-xander.huff@ni.com>
- <1440524966-29627-1-git-send-email-xander.huff@ni.com>
- <20150825183400.GH81844@google.com>
- <A765B125120D1346A63912DDE6D8B6310BF47F35@NTXXIAMBX02.xacn.micron.com>
- <20150827000731.GW81844@google.com>
-In-Reply-To: <20150827000731.GW81844@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+To: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
+ <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
+ <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
+ Controller.
+References: <1440148851-14621-1-git-send-email-marex@denx.de>
+ <1440148851-14621-2-git-send-email-marex@denx.de>
+In-Reply-To: <1440148851-14621-2-git-send-email-marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,127 +26,917 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/26/2015 7:07 PM, Brian Norris wrote:
-> On Wed, Aug 26, 2015 at 03:57:00PM +0000, Bean Huo =E9=9C=8D=E6=96=8C=E6=
-=96=8C (beanhuo) wrote:
->>> On Tue, Aug 25, 2015 at 12:49:26PM -0500, Xander Huff wrote:
+Hi,
+
+On 08/21/2015 02:20 AM, Marek Vasut wrote:
+> From: Graham Moore <grmoore@opensource.altera.com>
+> 
+> Add support for the Cadence QSPI controller. This controller is
+> present in the Altera SoCFPGA SoCs and this driver has been tested
+> on the Cyclone V SoC.
+
+can we add info about the modes supported/not supported like direct mode, indirect etc.
+
+> 
+> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: Alan Tull <atull@opensource.altera.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
+> Cc: Graham Moore <grmoore@opensource.altera.com>
+> Cc: Vikas MANOCHA <vikas.manocha@st.com>
+> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
+> Cc: devicetree@vger.kernel.org
+> ---
+>  drivers/mtd/spi-nor/Kconfig           |   11 +
+>  drivers/mtd/spi-nor/Makefile          |    1 +
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 1260 +++++++++++++++++++++++++++++++++
+>  3 files changed, 1272 insertions(+)
+>  create mode 100644 drivers/mtd/spi-nor/cadence-quadspi.c
+> 
+> V2: use NULL instead of modalias in spi_nor_scan call
+> V3: Use existing property is-decoded-cs instead of creating duplicate.
+> V4: Support Micron quad mode by snooping command stream for EVCR command
+>     and subsequently configuring Cadence controller for quad mode.
+> V5: Clean up sparse and smatch complaints.  Remove snooping of Micron
+>     quad mode.  Add comment on XIP mode bit and dummy clock cycles.  Set
+>     up SRAM partition at 1:1 during init.
+> V6: Remove dts patch that was included by mistake.  Incorporate Vikas's
+>     comments regarding fifo width, SRAM partition setting, and trigger
+>     address.  Trigger address was added as an unsigned int, as it is not
+>     an IO resource per se, and does not need to be mapped. Also add
+>     Marek Vasut's workaround for picking up OF properties on subnodes.
+> V7: - Perform coding-style cleanup and type fixes. Remove ugly QSPI_*()
+>       macros and replace them with functions. Get rid of unused variables.
+>     - Implement support for nor->set_protocol() to handle Quad-command,
+>       this patch now depends on the following patch:
+>       mtd: spi-nor: notify (Q)SPI controller about protocol change
+>     - Replace that cqspi_fifo_read() disaster with plain old readsl()
+>       and cqspi_fifo_write() tentacle horror with pretty writesl().
+>     - Remove CQSPI_SUPPORT_XIP_CHIPS, which is broken.
+>     - Get rid of cqspi_find_chipselect() mess, instead just place the
+>       struct cqspi_st and chipselect number into struct cqspi_flash_pdata
+>       and set nor->priv to the struct cqspi_flash_pdata of that particular
+>       chip.
+>     - Replace the odd math in calculate_ticks_for_ns() with DIV_ROUND_UP().
+>     - Make variables const where applicable.
+> V8: - Implement a function to wait for bit being set/unset for a given
+>       period of time and use it to replace the ad-hoc bits of code.
+>     - Configure the write underflow watermark to be 1/8 if FIFO size.
+>     - Extract out the SPI NOR flash probing code into separate function
+>       to clearly mark what will soon be considered a boilerplate code.
+>     - Repair the handling of mode bits, which caused instability in V7.
+>     - Clean up the interrupt handling
+>     - Fix Kconfig help text and make the patch depend on OF and COMPILE_TEST.
+> 
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index 89bf4c1..ed253a2 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -40,4 +40,15 @@ config SPI_NXP_SPIFI
+>           Flash. Enable this option if you have a device with a SPIFI
+>           controller and want to access the Flash as a mtd device.
+> 
+> +config SPI_CADENCE_QUADSPI
+> +       tristate "Cadence Quad SPI controller"
+> +       depends on OF && COMPILE_TEST
+> +       help
+> +         Enable support for the Cadence Quad SPI Flash controller.
+> +
+> +         Cadence QSPI is a specialized controller for connecting an SPI
+> +         Flash over 1/2/4-bit wide bus. Enable this option if you have a
+> +         device with a Cadence QSPI controller and want to access the
+> +         Flash as an MTD device.
+> +
+>  endif # MTD_SPI_NOR
+> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> index e53333e..446c6b9 100644
+> --- a/drivers/mtd/spi-nor/Makefile
+> +++ b/drivers/mtd/spi-nor/Makefile
+> @@ -1,3 +1,4 @@
+>  obj-$(CONFIG_MTD_SPI_NOR)      += spi-nor.o
+> +obj-$(CONFIG_SPI_CADENCE_QUADSPI)      += cadence-quadspi.o
+>  obj-$(CONFIG_SPI_FSL_QUADSPI)  += fsl-quadspi.o
+>  obj-$(CONFIG_SPI_NXP_SPIFI)    += nxp-spifi.o
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> new file mode 100644
+> index 0000000..8e024b8
+> --- /dev/null
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -0,0 +1,1260 @@
+> +/*
+> + * Driver for Cadence QSPI Controller
+> + *
+> + * Copyright Altera Corporation (C) 2012-2014. All rights reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms and conditions of the GNU General Public License,
+> + * version 2, as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope it will be useful, but WITHOUT
+> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+> + * more details.
+> + *
+> + * You should have received a copy of the GNU General Public License along with
+> + * this program.  If not, see <http://www.gnu.org/licenses/>.
+> + */
+> +#include <linux/clk.h>
+> +#include <linux/completion.h>
+> +#include <linux/delay.h>
+> +#include <linux/err.h>
+> +#include <linux/errno.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/mtd/spi-nor.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/sched.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/timer.h>
+> +
+> +#define CQSPI_NAME                     "cadence-qspi"
+> +#define CQSPI_MAX_CHIPSELECT           16
+> +
+> +struct cqspi_st;
+> +
+> +struct cqspi_flash_pdata {
+> +       struct mtd_info mtd;
+> +       struct spi_nor  nor;
+> +       struct cqspi_st *cqspi;
+> +       u32             clk_rate;
+> +       u32             read_delay;
+> +       u32             tshsl_ns;
+> +       u32             tsd2d_ns;
+> +       u32             tchsh_ns;
+> +       u32             tslch_ns;
+> +       u8              inst_width;
+> +       u8              addr_width;
+> +       u8              cs;
+> +};
+> +
+> +struct cqspi_st {
+> +       struct platform_device  *pdev;
+> +
+> +       struct clk              *clk;
+> +       unsigned int            sclk;
+> +
+> +       void __iomem            *iobase;
+> +       void __iomem            *ahb_base;
+> +       struct completion       transfer_complete;
+> +
+> +       int                     current_cs;
+> +       unsigned long           master_ref_clk_hz;
+> +       bool                    is_decoded_cs;
+> +       u32                     fifo_depth;
+> +       u32                     fifo_width;
+> +       u32                     trigger_address;
+> +       struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
+> +};
+
+[...]
+
+> +#define CQSPI_REG_CMDADDRESS                   0x94
+> +#define CQSPI_REG_CMDREADDATALOWER             0xA0
+> +#define CQSPI_REG_CMDREADDATAUPPER             0xA4
+> +#define CQSPI_REG_CMDWRITEDATALOWER            0xA8
+> +#define CQSPI_REG_CMDWRITEDATAUPPER            0xAC
+> +
+> +/* Interrupt status bits */
+> +#define CQSPI_REG_IRQ_MODE_ERR                 BIT(0)
+> +#define CQSPI_REG_IRQ_UNDERFLOW                        BIT(1)
+> +#define CQSPI_REG_IRQ_IND_COMP                 BIT(2)
+> +#define CQSPI_REG_IRQ_IND_RD_REJECT            BIT(3)
+> +#define CQSPI_REG_IRQ_WR_PROTECTED_ERR         BIT(4)
+> +#define CQSPI_REG_IRQ_ILLEGAL_AHB_ERR          BIT(5)
+
+remove unused MACROs.
+
+> +#define CQSPI_REG_IRQ_WATERMARK                        BIT(6)
+> +#define CQSPI_REG_IRQ_IND_RD_OVERFLOW          BIT(12)
+
+Correct this bit name to ..IND_RD_SRAM_FULL.
+
+> +
+> +#define CQSPI_IRQ_MASK_RD              (CQSPI_REG_IRQ_WATERMARK        | \
+> +                                        CQSPI_REG_IRQ_IND_RD_OVERFLOW  | \
+> +                                        CQSPI_REG_IRQ_IND_COMP)
+> +
+> +#define CQSPI_IRQ_MASK_WR              (CQSPI_REG_IRQ_IND_COMP         | \
+> +                                        CQSPI_REG_IRQ_WATERMARK        | \
+> +                                        CQSPI_REG_IRQ_UNDERFLOW)
+> +
+> +#define CQSPI_IRQ_STATUS_MASK          0x1FFFF
+> +
+> +static int cqspi_wait_for_bit(void __iomem *reg, const u32 mask, bool clear)
+> +{
+> +       unsigned long end = jiffies + msecs_to_jiffies(CQSPI_TIMEOUT_MS);
+> +       u32 val;
+> +
+> +       while (1) {
+> +               val = readl(reg);
+> +               if (clear)
+> +                       val = ~val;
+> +               val &= mask;
+> +
+> +               if (val == mask)
+> +                       return 0;
+> +
+> +               if (time_after(jiffies, end))
+> +                       return -ETIMEDOUT;
+> +       }
+> +}
+> +
+> +static bool cqspi_is_idle(struct cqspi_st *cqspi)
+> +{
+> +       u32 reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
+> +
+> +       return reg & (1 << CQSPI_REG_CONFIG_IDLE_LSB);
+> +}
+> +
+> +static u32 cqspi_get_rd_sram_level(struct cqspi_st *cqspi)
+> +{
+> +       u32 reg = readl(cqspi->iobase + CQSPI_REG_SDRAMLEVEL);
+> +
+> +       reg >>= CQSPI_REG_SDRAMLEVEL_RD_LSB;
+> +       return reg & CQSPI_REG_SDRAMLEVEL_RD_MASK;
+> +}
+> +
+> +static irqreturn_t cqspi_irq_handler(int this_irq, void *dev)
+> +{
+> +       struct cqspi_st *cqspi = dev;
+> +       unsigned int irq_status;
+> +
+> +       /* Read interrupt status */
+
+no need of this comment.
+
+> +       irq_status = readl(cqspi->iobase + CQSPI_REG_IRQSTATUS);
+> +
+> +       /* Clear interrupt */
+> +       writel(irq_status, cqspi->iobase + CQSPI_REG_IRQSTATUS);
+> +
+> +       irq_status &= CQSPI_IRQ_MASK_RD | CQSPI_IRQ_MASK_WR;
+> +
+> +       if (irq_status)
+> +               complete(&cqspi->transfer_complete);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static unsigned int cqspi_calc_rdreg(struct spi_nor *nor, const u8 opcode)
+> +{
+> +       unsigned int rdreg = 0;
+> +       struct cqspi_flash_pdata *f_pdata = nor->priv;
+> +
+> +       rdreg |= f_pdata->inst_width << CQSPI_REG_RD_INSTR_TYPE_INSTR_LSB;
+> +       rdreg |= f_pdata->addr_width << CQSPI_REG_RD_INSTR_TYPE_ADDR_LSB;
+> +
+> +       if (nor->flash_read == SPI_NOR_QUAD)
+> +               rdreg |= CQSPI_INST_TYPE_QUAD
+> +                        << CQSPI_REG_RD_INSTR_TYPE_DATA_LSB;
+> +       return rdreg;
+> +}
+> +
+> +static int cqspi_wait_idle(struct cqspi_st *cqspi)
+> +{
+> +       const unsigned int poll_idle_retry = 3;
+> +       unsigned int count = 0;
+> +       unsigned long timeout;
+> +
+> +       timeout = jiffies + msecs_to_jiffies(CQSPI_TIMEOUT_MS);
+> +       while (1) {
+> +               /*
+> +                * Read few times in succession to ensure the controller
+> +                * is indeed idle, that is, the bit does not transition
+> +                * low again.
+> +                */
+> +               if (cqspi_is_idle(cqspi))
+> +                       count++;
+> +               else
+> +                       count = 0;
+> +
+> +               if (count >= poll_idle_retry)
+> +                       return 0;
+
+why do we need to check it 3 times ?
+
 >
->>>> diff --git a/drivers/mtd/nand/nand=5Fbbt.c b/drivers/mtd/nand/nand=5Fb=
-bt.c
->>>> index 63a1a36..09f9e62 100644
->>>> --- a/drivers/mtd/nand/nand=5Fbbt.c
->>>> +++ b/drivers/mtd/nand/nand=5Fbbt.c
->
->>>> -787,13 +788,42 @@ static int write=5Fbbt(struct mtd=5Finfo *mtd, uint=
-8=5Ft *buf,
->>>>   		einfo.addr =3D to;
->>>>   		einfo.len =3D 1 << this->bbt=5Ferase=5Fshift;
->>>>   		res =3D nand=5Ferase=5Fnand(mtd, &einfo, 1);
->>>> -		if (res < 0)
->>>> +		if (res =3D=3D -EIO && einfo.state =3D=3D MTD=5FERASE=5FFAILED
->>>> +		    && einfo.priv =3D=3D NAND=5FERASE=5FBLOCK=5FERASE=5FFAILED) {
->>>
->>> Do you actually need that last condition? What's wrong with the first t=
-wo?
->>>
+> +
+> +               if (time_after(jiffies, timeout)) {
+> +                       /* Timeout, in busy mode. */
+> +                       dev_err(&cqspi->pdev->dev,
+> +                               "QSPI is still busy after %dms timeout.\n",
+> +                               CQSPI_TIMEOUT_MS);
+> +                       return -ETIMEDOUT;
+> +               }
+> +
+> +               cpu_relax();
+> +       }
+> +}
+> +
 
-The intent of the extra condition is to distinguish from other erase failur=
-es=20
-due to write protection or an already known bad block. We don't want to mar=
-k a=20
-write protected block as bad simply because we failed to erase it, for exam=
-ple.
-
->>>> +			/* This block is bad. Mark it as such and see if
->>>> +			 * there's another block available in the BBT area. */
->>>> +			int block =3D page >>
->>>> +				(this->bbt=5Ferase=5Fshift - this->page=5Fshift);
->>>> +			pr=5Finfo("nand=5Fbbt: failed to erase block %d when writing
->>> BBT\n",
->>>> +				block);
->>>> +			bbt=5Fmark=5Fentry(this, block, BBT=5FBLOCK=5FWORN);
->>>> +
->>>> +			res =3D this->block=5Fmarkbad(mtd, block);
->>>> +			if (res)
->>>> +				pr=5Fwarn("nand=5Fbbt: error %d while marking block %d
->>> bad\n",
->>>> +					res, block);
->>>> +			goto next;
->>>> +		} else if (res < 0)
->>>>   			goto outerr;
->>
->>
->> For my knowledge , we don't directly mark this block be a bad block,
->> Just like ubi layer,this block also need to further testing and verify if
->> It is real bad block.right?
->
-> That's a good point...we might want some kind of separate function for a
-> torture test. Might look at UBI's torture=5Fpeb() for inspiration.
->
-
-Hmm, I'll look into this. Any performance concerns if we're torturing for e=
-very=20
-potential bad block we come across?
-
->>>>
->>>>   		res =3D scan=5Fwrite=5Fbbt(mtd, to, len, buf,
->>>>   				td->options & NAND=5FBBT=5FNO=5FOOB ? NULL :
->>>>   				&buf[len]);
->>>> -		if (res < 0)
->>>> +		if (res =3D=3D -EIO) {
->>>> +			/* This block is bad. Mark it as such and see if
->>>> +			 * there's another block available in the BBT area. */
->>>> +			int block =3D page >>
->>>> +				(this->bbt=5Ferase=5Fshift - this->page=5Fshift);
->>>> +			pr=5Finfo("nand=5Fbbt: failed to erase block %d when writing
->>> BBT\n",
->>>> +				block);
->>>> +			bbt=5Fmark=5Fentry(this, block, BBT=5FBLOCK=5FWORN);
->>>> +
->>>> +			res =3D this->block=5Fmarkbad(mtd, block);
->>>> +			if (res)
->>>> +				pr=5Fwarn("nand=5Fbbt: error %d while marking block %d
->>> bad\n",
->>>> +					res, block);
->>>> +			goto next;
->>>> +		} else if (res < 0)
->>>>   			goto outerr;
->>>>
->>>>   		pr=5Finfo("Bad block table written to 0x%012llx, version 0x%02X\n"=
-,>
->>>> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h index
->>>> 272f429..86e11f6 100644
->>>> --- a/include/linux/mtd/nand.h
->>>> +++ b/include/linux/mtd/nand.h
->>>> @@ -1030,4 +1030,11 @@ struct nand=5Fsdr=5Ftimings {
->>>>
->>>>  /* get timing characteristics from ONFI timing mode. */  const struct
->>>> nand=5Fsdr=5Ftimings *onfi=5Fasync=5Ftiming=5Fmode=5Fto=5Fsdr=5Ftiming=
-s(int mode);
->>>> +
->>>> +/* reasons for erase failures */
->>>> +#define NAND=5FERASE=5FOK			0
->>>> +#define NAND=5FERASE=5FWRITE=5FPROTECTED	1
->>>> +#define NAND=5FERASE=5FBAD=5FBLOCK		2
->>>> +#define NAND=5FERASE=5FBLOCK=5FERASE=5FFAILED	3
->>>
->>> Why exactly do you need these statuses? I thought the existing error co=
-des
->>> were sufficient..
-
-This goes along with why we were originally using the 'priv' field. Lots of=
-=20
-places use MTD=5FERASE=5FFAILED to see if an erase failed, but we want to c=
-heck=20
-specifically what type of erase failure occurred. Do ya'll have any suggest=
-ions=20
-on how better to accomplish this? I'm thinking maybe adding a new member to=
- the=20
-erase=5Finfo struct like 'fail=5Finfo' to get this information to nand=5Fbb=
-t.
+[...]
 
 
---=20
-Xander Huff
-Staff Software Engineer
-National Instruments
+> +
+> +static int cqspi_indirect_read_execute(struct spi_nor *nor,
+> +                                      u8 *rxbuf, const unsigned n_rx)
+> +{
+> +       struct cqspi_flash_pdata *f_pdata = nor->priv;
+> +       struct cqspi_st *cqspi = f_pdata->cqspi;
+> +       void __iomem *reg_base = cqspi->iobase;
+> +       void __iomem *ahb_base = cqspi->ahb_base;
+> +       unsigned int remaining = n_rx;
+> +       unsigned int bytes_to_read = 0;
+> +       int ret = 0;
+> +
+> +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
+> +
+> +       /* Clear all interrupts. */
+> +       writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
+> +
+> +       writel(CQSPI_IRQ_MASK_RD, reg_base + CQSPI_REG_IRQMASK);
+
+I think there is no need for separate masks for read & write. Use one mask &
+configure it once in the init rather than configuring each time for every
+read/write. Then in the ISR, take action as per the interrupt source: read/write/error condition etc.
+
+> +
+> +       reinit_completion(&cqspi->transfer_complete);
+> +       writel(CQSPI_REG_INDIRECTRD_START_MASK,
+> +              reg_base + CQSPI_REG_INDIRECTRD);
+> +
+> +       while (remaining > 0) {
+> +               ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+> +                                                 msecs_to_jiffies
+> +                                                 (CQSPI_READ_TIMEOUT_MS));
+> +
+> +               bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+> +
+> +               if (!ret && bytes_to_read == 0) {
+> +                       dev_err(nor->dev, "Indirect read timeout, no bytes\n");
+> +                       ret = -ETIMEDOUT;
+> +                       goto failrd;
+> +               }
+> +
+> +               while (bytes_to_read != 0) {
+> +                       bytes_to_read *= cqspi->fifo_width;
+> +                       bytes_to_read = bytes_to_read > remaining ?
+> +                                       remaining : bytes_to_read;
+> +                       readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
+> +                       rxbuf += bytes_to_read;
+> +                       remaining -= bytes_to_read;
+> +                       bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+> +               }
+> +       }
+> +
+> +       /* Check indirect done status */
+> +       ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_INDIRECTRD,
+> +                                CQSPI_REG_INDIRECTRD_DONE_MASK, 0);
+> +       if (ret) {
+> +               dev_err(nor->dev,
+> +                       "Indirect read completion error (%i)\n", ret);
+> +               goto failrd;
+> +       }
+> +
+> +       /* Disable interrupt */
+> +       writel(0, reg_base + CQSPI_REG_IRQMASK);
+> +
+> +       /* Clear indirect completion status */
+> +       writel(CQSPI_REG_INDIRECTRD_DONE_MASK, reg_base + CQSPI_REG_INDIRECTRD);
+> +
+> +       return 0;
+> +
+> +failrd:
+> +       /* Disable interrupt */
+> +       writel(0, reg_base + CQSPI_REG_IRQMASK);
+> +
+> +       /* Cancel the indirect read */
+> +       writel(CQSPI_REG_INDIRECTWR_CANCEL_MASK,
+> +              reg_base + CQSPI_REG_INDIRECTRD);
+> +       return ret;
+> +}
+> +
+> +static int cqspi_indirect_write_setup(struct spi_nor *nor,
+> +                                     const unsigned int to_addr)
+> +{
+> +       unsigned int reg;
+> +       struct cqspi_flash_pdata *f_pdata = nor->priv;
+> +       struct cqspi_st *cqspi = f_pdata->cqspi;
+> +       void __iomem *reg_base = cqspi->iobase;
+> +
+> +       /* Set opcode. */
+> +       reg = nor->program_opcode << CQSPI_REG_WR_INSTR_OPCODE_LSB;
+> +       writel(reg, reg_base + CQSPI_REG_WR_INSTR);
+> +       reg = cqspi_calc_rdreg(nor, nor->program_opcode);
+> +       writel(reg, reg_base + CQSPI_REG_RD_INSTR);
+> +
+> +       writel(to_addr, reg_base + CQSPI_REG_INDIRECTWRSTARTADDR);
+> +
+> +       reg = readl(reg_base + CQSPI_REG_SIZE);
+> +       reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
+> +       reg |= (nor->addr_width - 1);
+> +       writel(reg, reg_base + CQSPI_REG_SIZE);
+> +       return 0;
+> +}
+> +
+> +static int cqspi_indirect_write_execute(struct spi_nor *nor,
+> +                                       const u8 *txbuf, const unsigned n_tx)
+> +{
+> +       const unsigned int page_size = nor->page_size;
+> +       struct cqspi_flash_pdata *f_pdata = nor->priv;
+> +       struct cqspi_st *cqspi = f_pdata->cqspi;
+> +       void __iomem *reg_base = cqspi->iobase;
+> +       unsigned int remaining = n_tx;
+> +       unsigned int write_bytes;
+> +       int ret;
+> +
+> +       writel(remaining, reg_base + CQSPI_REG_INDIRECTWRBYTES);
+> +
+> +       /* Clear all interrupts. */
+> +       writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
+> +
+> +       writel(CQSPI_IRQ_MASK_WR, reg_base + CQSPI_REG_IRQMASK);
+
+as above, no need for separate masks for read & write. Use one mask & configure it
+once in the init rather than configuring each time for every read/write.
+
+> +
+> +       reinit_completion(&cqspi->transfer_complete);
+> +       writel(CQSPI_REG_INDIRECTWR_START_MASK,
+> +              reg_base + CQSPI_REG_INDIRECTWR);
+> +
+> +       while (remaining > 0) {
+> +               write_bytes = remaining > page_size ? page_size : remaining;
+> +               writesl(cqspi->ahb_base, txbuf, DIV_ROUND_UP(write_bytes, 4));
+> +
+> +               ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+> +                                                 msecs_to_jiffies
+> +                                                 (CQSPI_TIMEOUT_MS));
+> +               if (!ret) {
+> +                       dev_err(nor->dev, "Indirect write timeout\n");
+> +                       ret = -ETIMEDOUT;
+> +                       goto failwr;
+> +               }
+> +
+> +               txbuf += write_bytes;
+> +               remaining -= write_bytes;
+> +       }
+> +
+> +       /* Check indirect done status */
+> +       ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_INDIRECTWR,
+> +                                CQSPI_REG_INDIRECTWR_DONE_MASK, 0);
+> +       if (ret) {
+> +               dev_err(nor->dev,
+> +                       "Indirect write completion error (%i)\n", ret);
+> +               goto failwr;
+> +       }
+> +
+> +       /* Disable interrupt. */
+> +       writel(0, reg_base + CQSPI_REG_IRQMASK);
+> +
+> +       /* Clear indirect completion status */
+> +       writel(CQSPI_REG_INDIRECTWR_DONE_MASK, reg_base + CQSPI_REG_INDIRECTWR);
+> +
+> +       cqspi_wait_idle(cqspi);
+> +
+> +       return 0;
+> +
+> +failwr:
+> +       /* Disable interrupt. */
+> +       writel(0, reg_base + CQSPI_REG_IRQMASK);
+> +
+> +       /* Cancel the indirect write */
+> +       writel(CQSPI_REG_INDIRECTWR_CANCEL_MASK,
+> +              reg_base + CQSPI_REG_INDIRECTWR);
+> +       return ret;
+> +}
+> +
+
+[...]
+
+> +
+> +static void cqspi_controller_enable(struct cqspi_st *cqspi)
+> +{
+> +       void __iomem *reg_base = cqspi->iobase;
+> +       unsigned int reg;
+> +
+> +       reg = readl(reg_base + CQSPI_REG_CONFIG);
+> +       reg |= CQSPI_REG_CONFIG_ENABLE_MASK;
+> +       writel(reg, reg_base + CQSPI_REG_CONFIG);
+> +}
+> +
+> +static void cqspi_controller_disable(struct cqspi_st *cqspi)
+> +{
+> +       void __iomem *reg_base = cqspi->iobase;
+> +       unsigned int reg;
+> +
+> +       reg = readl(reg_base + CQSPI_REG_CONFIG);
+> +       reg &= ~CQSPI_REG_CONFIG_ENABLE_MASK;
+> +       writel(reg, reg_base + CQSPI_REG_CONFIG);
+> +}
+
+two above function are almost same, we can have one function by adding
+one bool arg.
+
+> +
+> +static void cqspi_switch_cs(struct spi_nor *nor)
+> +{
+> +       struct cqspi_flash_pdata *f_pdata = nor->priv;
+> +       struct cqspi_st *cqspi = f_pdata->cqspi;
+> +       void __iomem *iobase = cqspi->iobase;
+> +       unsigned int reg;
+> +
+> +       cqspi_controller_disable(cqspi);
+> +
+> +       /* configure page size and block size. */
+> +       reg = readl(iobase + CQSPI_REG_SIZE);
+> +       reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
+> +       reg &= ~(CQSPI_REG_SIZE_BLOCK_MASK << CQSPI_REG_SIZE_BLOCK_LSB);
+> +       reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
+> +       reg |= (nor->page_size << CQSPI_REG_SIZE_PAGE_LSB);
+> +       reg |= (ilog2(nor->mtd->erasesize) << CQSPI_REG_SIZE_BLOCK_LSB);
+> +       reg |= (nor->addr_width - 1);
+> +       writel(reg, iobase + CQSPI_REG_SIZE);
+> +
+> +       /* configure the chip select */
+> +       cqspi_chipselect(nor);
+> +
+> +       cqspi_controller_enable(cqspi);
+> +}
+> +
+> +static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+> +{
+> +       struct cqspi_flash_pdata *f_pdata = nor->priv;
+> +       struct cqspi_st *cqspi = f_pdata->cqspi;
+> +       const unsigned int sclk = f_pdata->clk_rate;
+> +
+> +       /* Switch chip select. */
+> +       if (cqspi->current_cs != f_pdata->cs) {
+> +               cqspi->current_cs = f_pdata->cs;
+> +               cqspi_switch_cs(nor);
+> +       }
+> +
+> +       /* Setup baudrate divisor and delays */
+> +       if (cqspi->sclk != sclk) {
+> +               cqspi->sclk = sclk;
+> +               cqspi_controller_disable(cqspi);
+> +               cqspi_config_baudrate_div(cqspi, sclk);
+> +               cqspi_delay(nor, sclk);
+> +               cqspi_readdata_capture(cqspi, 1, f_pdata->read_delay);
+> +               cqspi_controller_enable(cqspi);
+> +       }
+> +       return 0;
+> +}
+> +
+> +static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+> +{
+> +       int ret;
+> +
+> +       cqspi_prep(nor, SPI_NOR_OPS_READ);
+> +
+> +       ret = cqspi_command_read(nor, &opcode, 1, buf, len);
+> +       return ret;
+> +}
+> +
+> +static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
+> +                          int write_enable)
+> +{
+> +       int ret = 0;
+> +
+> +       cqspi_prep(nor, SPI_NOR_OPS_WRITE);
+> +
+> +       ret = cqspi_command_write(nor, opcode, buf, len);
+> +       return ret;
+> +}
+> +
+> +static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
+> +                                   struct cqspi_flash_pdata *f_pdata,
+> +                                   struct device_node *np)
+> +{
+> +       if (of_property_read_u32(np, "cdns,read-delay", &f_pdata->read_delay)) {
+> +               dev_err(&pdev->dev, "couldn't determine read-delay\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       if (of_property_read_u32(np, "cdns,tshsl-ns", &f_pdata->tshsl_ns)) {
+> +               dev_err(&pdev->dev, "couldn't determine tshsl-ns\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       if (of_property_read_u32(np, "cdns,tsd2d-ns", &f_pdata->tsd2d_ns)) {
+> +               dev_err(&pdev->dev, "couldn't determine tsd2d-ns\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       if (of_property_read_u32(np, "cdns,tchsh-ns", &f_pdata->tchsh_ns)) {
+> +               dev_err(&pdev->dev, "couldn't determine tchsh-ns\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       if (of_property_read_u32(np, "cdns,tslch-ns", &f_pdata->tslch_ns)) {
+> +               dev_err(&pdev->dev, "couldn't determine tslch-ns\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       if (of_property_read_u32(np, "spi-max-frequency", &f_pdata->clk_rate)) {
+> +               dev_err(&pdev->dev, "couldn't determine spi-max-frequency\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int cqspi_of_get_pdata(struct platform_device *pdev)
+> +{
+> +       struct device_node *np = pdev->dev.of_node;
+> +       struct cqspi_st *cqspi = platform_get_drvdata(pdev);
+> +
+> +       cqspi->is_decoded_cs = of_property_read_bool(np, "cdns,is-decoded-cs");
+> +
+> +       if (of_property_read_u32(np, "cdns,fifo-depth", &cqspi->fifo_depth)) {
+> +               dev_err(&pdev->dev, "couldn't determine fifo-depth\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       if (of_property_read_u32(np, "cdns,fifo-width", &cqspi->fifo_width)) {
+> +               dev_err(&pdev->dev, "couldn't determine fifo-width\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       if (of_property_read_u32(np, "cdns,trigger-address",
+> +                                &cqspi->trigger_address)) {
+> +               dev_err(&pdev->dev, "couldn't determine trigger-address\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static void cqspi_controller_init(struct cqspi_st *cqspi)
+> +{
+> +       cqspi_controller_disable(cqspi);
+> +
+> +       /* Configure the remap address register, no remap */
+> +       writel(0, cqspi->iobase + CQSPI_REG_REMAP);
+> +
+> +       /* Disable all interrupts. */
+> +       writel(0, cqspi->iobase + CQSPI_REG_IRQMASK);
+> +
+> +       /* Configure the SRAM split to 1:1 . */
+
+The comment is rightly using "SRAM" but the variable name "fifo_depth" is misleading,
+change it to sram_depth.
+
+> +       writel(cqspi->fifo_depth / 2, cqspi->iobase + CQSPI_REG_SRAMPARTITION);
+> +
+> +       /* Load indirect trigger address. */
+
+remove this comment & review other comments of this function. I would
+remove at least first two comments also of the routine.
+
+> +       writel(cqspi->trigger_address,
+> +              cqspi->iobase + CQSPI_REG_INDIRECTTRIGGER);
+> +
+> +       /* Program read watermark -- 1/2 of the FIFO. */
+> +       writel(cqspi->fifo_depth * cqspi->fifo_width / 2,
+> +              cqspi->iobase + CQSPI_REG_INDIRECTRDWATERMARK);
+> +       /* Program write watermark -- 1/8 of the FIFO. */
+> +       writel(cqspi->fifo_depth * cqspi->fifo_width / 8,
+> +              cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
+> +
+> +       cqspi_controller_enable(cqspi);
+> +}
+> +
+> +static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+> +{
+> +       struct platform_device *pdev = cqspi->pdev;
+> +       struct device *dev = &pdev->dev;
+> +       struct mtd_part_parser_data ppdata;
+> +       struct cqspi_flash_pdata *f_pdata;
+> +       struct spi_nor *nor;
+> +       struct mtd_info *mtd;
+> +       unsigned int cs;
+> +       int i, ret;
+> +
+> +       /* Get flash device data */
+> +       for_each_available_child_of_node(dev->of_node, np) {
+> +               if (of_property_read_u32(np, "reg", &cs)) {
+> +                       dev_err(dev, "Couldn't determine chip select.\n");
+> +                       goto err;
+> +               }
+> +
+> +               if (cs > CQSPI_MAX_CHIPSELECT) {
+> +                       dev_err(dev, "Chip select %d out of range.\n", cs);
+> +                       goto err;
+> +               }
+> +
+> +               f_pdata = &cqspi->f_pdata[cs];
+> +               f_pdata->cqspi = cqspi;
+> +               f_pdata->cs = cs;
+> +
+> +               ret = cqspi_of_get_flash_pdata(pdev, f_pdata, np);
+> +               if (ret)
+> +                       goto err;
+> +
+> +               nor = &f_pdata->nor;
+> +               mtd = &f_pdata->mtd;
+> +
+> +               mtd->priv = nor;
+> +
+> +               nor->mtd = mtd;
+> +               nor->dev = dev;
+> +               nor->dn = np;
+> +               nor->priv = f_pdata;
+> +
+> +               nor->read_reg = cqspi_read_reg;
+> +               nor->write_reg = cqspi_write_reg;
+> +               nor->read = cqspi_read;
+> +               nor->write = cqspi_write;
+> +               nor->erase = cqspi_erase;
+> +               nor->prepare = cqspi_prep;
+> +               nor->set_protocol = cqspi_set_protocol;
+> +
+> +               ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
+> +               if (ret)
+> +                       goto err;
+> +
+> +               ppdata.of_node = np;
+> +               ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+> +               if (ret)
+> +                       goto err;
+> +       }
+> +
+> +       return 0;
+> +
+> +err:
+> +       for (i = 0; i < CQSPI_MAX_CHIPSELECT; i++)
+> +               if (cqspi->f_pdata[i].mtd.name)
+> +                       mtd_device_unregister(&cqspi->f_pdata[i].mtd);
+> +       return ret;
+> +}
+> +
+> +static int cqspi_probe(struct platform_device *pdev)
+> +{
+> +       struct device_node *np = pdev->dev.of_node;
+> +       struct device *dev = &pdev->dev;
+> +       struct cqspi_st *cqspi;
+> +       struct resource *res;
+> +       struct resource *res_ahb;
+> +       int ret;
+> +       int irq;
+> +
+> +       cqspi = devm_kzalloc(dev, sizeof(*cqspi), GFP_KERNEL);
+> +       if (!cqspi)
+> +               return -ENOMEM;
+> +
+> +       cqspi->pdev = pdev;
+> +       platform_set_drvdata(pdev, cqspi);
+> +
+> +       /* Obtain configuration from OF. */
+> +       ret = cqspi_of_get_pdata(pdev);
+> +       if (ret) {
+> +               dev_err(dev, "Cannot get mandatory OF data.\n");
+> +               return -ENODEV;
+> +       }
+> +
+> +       /* Obtain QSPI clock. */
+> +       cqspi->clk = devm_clk_get(dev, NULL);
+> +       if (IS_ERR(cqspi->clk)) {
+> +               dev_err(dev, "Cannot claim QSPI clock.\n");
+> +               return PTR_ERR(cqspi->clk);
+> +       }
+> +
+> +       cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
+> +
+> +       /* Obtain and remap controller address. */
+> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +       cqspi->iobase = devm_ioremap_resource(dev, res);
+> +       if (IS_ERR(cqspi->iobase)) {
+> +               dev_err(dev, "Cannot remap controller address.\n");
+> +               return PTR_ERR(cqspi->iobase);
+> +       }
+> +
+> +       /* Obtain and remap AHB address. */
+> +       res_ahb = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +       cqspi->ahb_base = devm_ioremap_resource(dev, res_ahb);
+> +       if (IS_ERR(cqspi->ahb_base)) {
+> +               dev_err(dev, "Cannot remap AHB address.\n");
+> +               return PTR_ERR(cqspi->ahb_base);
+> +       }
+> +
+> +       init_completion(&cqspi->transfer_complete);
+> +
+> +       /* Obtain IRQ line. */
+> +       irq = platform_get_irq(pdev, 0);
+> +       if (irq < 0) {
+> +               dev_err(dev, "Cannot obtain IRQ.\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       ret = devm_request_irq(dev, irq, cqspi_irq_handler, 0,
+> +                              pdev->name, cqspi);
+> +       if (ret) {
+> +               dev_err(dev, "Cannot request IRQ.\n");
+> +               return ret;
+> +       }
+> +
+> +       cqspi_wait_idle(cqspi);
+
+why do we need it here ?
+
+
+Cheers,
+Vikas
+
+> +       cqspi_controller_init(cqspi);
+> +       cqspi->current_cs = -1;
+> +       cqspi->sclk = 0;
+> +
+> +       ret = cqspi_setup_flash(cqspi, np);
+> +       if (ret) {
+> +               dev_err(dev, "Cadence QSPI NOR probe failed %d\n", ret);
+> +               cqspi_controller_disable(cqspi);
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +static int cqspi_remove(struct platform_device *pdev)
+> +{
+> +       struct cqspi_st *cqspi = platform_get_drvdata(pdev);
+> +       int i;
+> +
+> +       cqspi_controller_disable(cqspi);
+> +
+> +       for (i = 0; i < CQSPI_MAX_CHIPSELECT; i++)
+> +               if (cqspi->f_pdata[i].mtd.name)
+> +                       mtd_device_unregister(&cqspi->f_pdata[i].mtd);
+> +
+> +       return 0;
+> +}
+> +
+> +#ifdef CONFIG_PM_SLEEP
+> +static int cqspi_suspend(struct device *dev)
+> +{
+> +       struct cqspi_st *cqspi = dev_get_drvdata(dev);
+> +
+> +       cqspi_controller_disable(cqspi);
+> +       return 0;
+> +}
+> +
+> +static int cqspi_resume(struct device *dev)
+> +{
+> +       struct cqspi_st *cqspi = dev_get_drvdata(dev);
+> +
+> +       cqspi_controller_enable(cqspi);
+> +       return 0;
+> +}
+> +
+> +static const struct dev_pm_ops cqspi__dev_pm_ops = {
+> +       .suspend = cqspi_suspend,
+> +       .resume = cqspi_resume,
+> +};
+> +
+> +#define CQSPI_DEV_PM_OPS       (&cqspi__dev_pm_ops)
+> +#else
+> +#define CQSPI_DEV_PM_OPS       NULL
+> +#endif
+> +
+> +static struct of_device_id const cqspi_dt_ids[] = {
+> +       {.compatible = "cdns,qspi-nor",},
+> +       { /* end of table */ }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, cqspi_dt_ids);
+> +
+> +static struct platform_driver cqspi_platform_driver = {
+> +       .probe = cqspi_probe,
+> +       .remove = cqspi_remove,
+> +       .driver = {
+> +               .name = CQSPI_NAME,
+> +               .pm = CQSPI_DEV_PM_OPS,
+> +               .of_match_table = cqspi_dt_ids,
+> +       },
+> +};
+> +
+> +module_platform_driver(cqspi_platform_driver);
+> +
+> +MODULE_DESCRIPTION("Cadence QSPI Controller Driver");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:" CQSPI_NAME);
+> +MODULE_AUTHOR("Ley Foon Tan <lftan@altera.com>");
+> +MODULE_AUTHOR("Graham Moore <grmoore@opensource.altera.com>");
+> --
+> 2.1.4
+> 
+> .
+> 
