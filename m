@@ -1,26 +1,19 @@
-Received: from s159.web-hosting.com ([68.65.121.203])
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXpAa-00042I-Kx
- for linux-mtd@lists.infradead.org; Fri, 04 Sep 2015 11:28:37 +0000
-Received: from mail-lb0-f176.google.com ([209.85.217.176]:33449)
- by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
- (Exim 4.85) (envelope-from <jteki@openedev.com>) id 1ZXpAF-002U0F-0P
- for linux-mtd@lists.infradead.org; Fri, 04 Sep 2015 07:28:16 -0400
-Received: by lbcjc2 with SMTP id jc2so9482254lbc.0
- for <linux-mtd@lists.infradead.org>; Fri, 04 Sep 2015 04:28:13 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1439978205-6092-2-git-send-email-jteki@openedev.com>
-References: <1439978205-6092-1-git-send-email-jteki@openedev.com>
- <1439978205-6092-2-git-send-email-jteki@openedev.com>
-Date: Fri, 4 Sep 2015 16:58:13 +0530
-Message-ID: <CAD6G_RTGs4ctyk1pq7XW9XDCsyNZxWzT8duTQMoTDm-KXxTu2Q@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mtd: spi-nor: Zap unneeded write_enable from write_reg
-From: Jagan Teki <jteki@openedev.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jagan Teki <jteki@openedev.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>
-Content-Type: text/plain; charset=UTF-8
+ id 1ZXpcu-0000gH-12
+ for linux-mtd@lists.infradead.org; Fri, 04 Sep 2015 11:57:53 +0000
+Received: by wicfx3 with SMTP id fx3so15426807wic.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Sep 2015 04:57:29 -0700 (PDT)
+From: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+To: Alexander Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>,
+ Eric Van Hensbergen <ericvh@gmail.com>, Ron Minnich <rminnich@sandia.gov>,
+ Latchesar Ionkov <lucho@ionkov.net>, v9fs-developer@lists.sourceforge.net
+Subject: [PATCH 0/5] Pass xattr handler to xattr handler operations
+Date: Fri,  4 Sep 2015 13:57:17 +0200
+Message-Id: <1441367842-25079-1-git-send-email-agruenba@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,145 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19 August 2015 at 15:26, Jagan Teki <jteki@openedev.com> wrote:
-> Since write enabling shall do with buf and len without
-> need of exctra write_enable argument, hence removed the
-> same from write_reg.
->
-> Signed-off-by: Jagan Teki <jteki@openedev.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Han Xu <han.xu@freescale.com>
-> ---
->  drivers/mtd/devices/m25p80.c      |  3 +--
->  drivers/mtd/spi-nor/fsl-quadspi.c |  3 +--
->  drivers/mtd/spi-nor/spi-nor.c     | 16 ++++++++--------
->  include/linux/mtd/spi-nor.h       |  3 +--
->  4 files changed, 11 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 9cd3631..ab69d2d 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -62,8 +62,7 @@ static int m25p_cmdsz(struct spi_nor *nor)
->         return 1 + nor->addr_width;
->  }
->
-> -static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
-> -                       int wr_en)
-> +static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
->  {
->         struct m25p *flash = nor->priv;
->         struct spi_device *spi = flash->spi;
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index d32b7e0..2c8c578 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -798,8 +798,7 @@ static int fsl_qspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
->         return 0;
->  }
->
-> -static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
-> -                       int write_enable)
-> +static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
->  {
->         struct fsl_qspi *q = nor->priv;
->         int ret;
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 3e198b4..f954d03 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -143,7 +143,7 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
->  static inline int write_sr(struct spi_nor *nor, u8 val)
->  {
->         nor->cmd_buf[0] = val;
-> -       return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 1, 0);
-> +       return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 1);
->  }
->
->  /*
-> @@ -152,7 +152,7 @@ static inline int write_sr(struct spi_nor *nor, u8 val)
->   */
->  static inline int write_enable(struct spi_nor *nor)
->  {
-> -       return nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0, 0);
-> +       return nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
->  }
->
->  /*
-> @@ -160,7 +160,7 @@ static inline int write_enable(struct spi_nor *nor)
->   */
->  static inline int write_disable(struct spi_nor *nor)
->  {
-> -       return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0, 0);
-> +       return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
->  }
->
->  static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
-> @@ -186,7 +186,7 @@ static inline int set_4byte(struct spi_nor *nor, struct flash_info *info,
->                         write_enable(nor);
->
->                 cmd = enable ? SPINOR_OP_EN4B : SPINOR_OP_EX4B;
-> -               status = nor->write_reg(nor, cmd, NULL, 0, 0);
-> +               status = nor->write_reg(nor, cmd, NULL, 0);
->                 if (need_wren)
->                         write_disable(nor);
->
-> @@ -194,7 +194,7 @@ static inline int set_4byte(struct spi_nor *nor, struct flash_info *info,
->         default:
->                 /* Spansion style */
->                 nor->cmd_buf[0] = enable << 7;
-> -               return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1, 0);
-> +               return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1);
->         }
->  }
->  static inline int spi_nor_sr_ready(struct spi_nor *nor)
-> @@ -265,7 +265,7 @@ static int erase_chip(struct spi_nor *nor)
->  {
->         dev_dbg(nor->dev, " %lldKiB\n", (long long)(nor->mtd->size >> 10));
->
-> -       return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0, 0);
-> +       return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
->  }
->
->  static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-> @@ -894,7 +894,7 @@ static int write_sr_cr(struct spi_nor *nor, u16 val)
->         nor->cmd_buf[0] = val & 0xff;
->         nor->cmd_buf[1] = (val >> 8);
->
-> -       return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 2, 0);
-> +       return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 2);
->  }
->
->  static int spansion_quad_enable(struct spi_nor *nor)
-> @@ -936,7 +936,7 @@ static int micron_quad_enable(struct spi_nor *nor)
->
->         /* set EVCR, enable quad I/O */
->         nor->cmd_buf[0] = val & ~EVCR_QUAD_EN_MICRON;
-> -       ret = nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
-> +       ret = nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1);
->         if (ret < 0) {
->                 dev_err(nor->dev, "error while writing EVCR register\n");
->                 return ret;
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index e540952..c5a58c4 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -182,8 +182,7 @@ struct spi_nor {
->         int (*write_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
->                           u8 *buf, size_t len);
->         int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
-> -       int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
-> -                       int write_enable);
-> +       int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
->
->         int (*read)(struct spi_nor *nor, loff_t from,
->                         size_t len, size_t *retlen, u_char *read_buf);
-> --
-> 1.9.1
->
+Here are some xattr cleanups centered around passing struct xattr_handler down
+to the xattr handler operations.  Please review.
 
-Ping
+Thanks,
+Andreas
+
+Andreas Gruenbacher (5):
+  ubifs: Remove unused "security.*" xattr handler
+  hfsplus: Remove unused xattr handler list operations
+  9p: Simplify the xattr handlers
+  xattr handlers: Pass handler to operations instead of flags
+  xattr handlers: Some simplifications
+
+ fs/9p/Makefile               |  5 +--
+ fs/9p/acl.c                  | 59 ++++++--------------------------
+ fs/9p/xattr.c                | 42 +++++++++++++++++++++++
+ fs/9p/xattr.h                |  3 --
+ fs/9p/xattr_security.c       | 80 -------------------------------------------
+ fs/9p/xattr_trusted.c        | 80 -------------------------------------------
+ fs/9p/xattr_user.c           | 80 -------------------------------------------
+ fs/ext2/xattr.c              |  2 +-
+ fs/ext2/xattr_security.c     |  9 +++--
+ fs/ext2/xattr_trusted.c      |  9 +++--
+ fs/ext2/xattr_user.c         |  9 +++--
+ fs/ext4/xattr.c              |  2 +-
+ fs/ext4/xattr_security.c     |  9 +++--
+ fs/ext4/xattr_trusted.c      |  9 +++--
+ fs/ext4/xattr_user.c         |  9 +++--
+ fs/f2fs/xattr.c              | 46 ++++++++++++-------------
+ fs/gfs2/xattr.c              |  9 +++--
+ fs/hfsplus/xattr.c           | 17 +++-------
+ fs/hfsplus/xattr_security.c  | 17 +++-------
+ fs/hfsplus/xattr_trusted.c   | 17 +++-------
+ fs/hfsplus/xattr_user.c      | 17 +++-------
+ fs/jffs2/security.c          |  9 +++--
+ fs/jffs2/xattr.c             |  4 +--
+ fs/jffs2/xattr_trusted.c     |  8 +++--
+ fs/jffs2/xattr_user.c        |  9 +++--
+ fs/nfs/nfs4proc.c            | 18 ++++++----
+ fs/ocfs2/xattr.c             | 27 ++++++++++-----
+ fs/posix_acl.c               | 22 ++++++------
+ fs/reiserfs/xattr.c          | 11 +++---
+ fs/reiserfs/xattr_security.c |  8 +++--
+ fs/reiserfs/xattr_trusted.c  |  8 +++--
+ fs/reiserfs/xattr_user.c     |  8 +++--
+ fs/squashfs/xattr.c          | 81 ++++++++++++++++----------------------------
+ fs/ubifs/super.c             |  1 -
+ fs/ubifs/ubifs.h             |  1 -
+ fs/ubifs/xattr.c             | 40 ----------------------
+ fs/xattr.c                   | 10 +++---
+ fs/xfs/xfs_xattr.c           |  8 +++--
+ include/linux/xattr.h        |  9 ++---
+ 39 files changed, 259 insertions(+), 553 deletions(-)
+ delete mode 100644 fs/9p/xattr_security.c
+ delete mode 100644 fs/9p/xattr_trusted.c
+ delete mode 100644 fs/9p/xattr_user.c
 
 -- 
-Jagan | openedev.
+2.4.3
