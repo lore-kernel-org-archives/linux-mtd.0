@@ -1,25 +1,20 @@
-MIME-Version: 1.0
-In-Reply-To: <1441242397-870-2-git-send-email-stefan@agner.ch>
-References: <1441242397-870-1-git-send-email-stefan@agner.ch>
- <1441242397-870-2-git-send-email-stefan@agner.ch>
-Date: Fri, 4 Sep 2015 07:10:10 +0300
-Message-ID: <CALW4P+LDwFnCjOorh7iCr8TrUnync7a_zkdZ4Hp_91=60AtUQw@mail.gmail.com>
-Subject: Re: [PATCH v12 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-From: Alexey Klimov <klimov.linux@gmail.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+From: Vignesh R <vigneshr@ti.com>
+To: Benoit Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>,
+ Russell King <linux@arm.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
- Mark Rutland <mark.rutland@arm.com>, ijc+devicetree@hellion.org.uk,
- Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
- kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
- Bill Pringlemeir <bpringlemeir@gmail.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- albert.aribaud@3adev.fr, Bill Pringlemeir <bpringlemeir@nbsps.com>
-Content-Type: text/plain; charset=UTF-8
+ Mark Brown <broonie@kernel.org>, <hramrach@gmail.com>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>, Vignesh R
+ <vigneshr@ti.com>
+Subject: [PATCH 4/5] ARM: dts: DRA7: add entry for qspi mmap region
+Date: Fri, 4 Sep 2015 14:00:01 +0530
+Message-ID: <1441355402-6837-5-git-send-email-vigneshr@ti.com>
+In-Reply-To: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
+References: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,124 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+Add qspi memory mapped region entries for DRA7xx based SoCs. Also,
+update the binding documents for the controller to document this change.
 
-just few very small comments.
+Signed-off-by: Vignesh R <vigneshr@ti.com>
+---
+ Documentation/devicetree/bindings/spi/ti_qspi.txt | 13 +++++++++++++
+ arch/arm/boot/dts/dra7.dtsi                       |  6 ++++--
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-On Thu, Sep 3, 2015 at 4:06 AM, Stefan Agner <stefan@agner.ch> wrote:
-
-[..]
-
-> --- /dev/null
-> +++ b/drivers/mtd/nand/vf610_nfc.c
-
-[..]
-
-> +static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
-> +{
-> +       return readl(nfc->regs + reg);
-> +}
-> +
-> +static inline void vf610_nfc_write(struct vf610_nfc *nfc, uint reg, u32 val)
-> +{
-> +       writel(val, nfc->regs + reg);
-> +}
-> +
-> +static inline void vf610_nfc_set(struct vf610_nfc *nfc, uint reg, u32 bits)
-> +{
-> +       vf610_nfc_write(nfc, reg, vf610_nfc_read(nfc, reg) | bits);
-> +}
-> +
-> +static inline void vf610_nfc_clear(struct vf610_nfc *nfc, uint reg, u32 bits)
-> +{
-> +       vf610_nfc_write(nfc, reg, vf610_nfc_read(nfc, reg) & ~bits);
-> +}
-> +
-> +static inline void vf610_nfc_set_field(struct vf610_nfc *nfc, u32 reg,
-> +                                      u32 mask, u32 shift, u32 val)
-> +{
-> +       vf610_nfc_write(nfc, reg,
-> +                       (vf610_nfc_read(nfc, reg) & (~mask)) | val << shift);
-> +}
-> +
-> +static inline void vf610_nfc_memcpy(void *dst, const void __iomem *src,
-> +                                   size_t n)
-> +{
-> +       /*
-> +        * Use this accessor for the internal SRAM buffers. On the ARM
-> +        * Freescale Vybrid SoC it's known that the driver can treat
-> +        * the SRAM buffer as if it's memory. Other platform might need
-> +        * to treat the buffers differently.
-> +        *
-> +        * For the time being, use memcpy
-> +        */
-> +       memcpy(dst, src, n);
-> +}
-> +
-> +/* Clear flags for upcoming command */
-> +static inline void vf610_nfc_clear_status(struct vf610_nfc *nfc)
-> +{
-> +       u32 tmp = vf610_nfc_read(nfc, NFC_IRQ_STATUS);
-> +
-> +       tmp |= CMD_DONE_CLEAR_BIT | IDLE_CLEAR_BIT;
-> +       vf610_nfc_write(nfc, NFC_IRQ_STATUS, tmp);
-> +}
-
-There is general intention on maillists that I see sometimes is to
-make people get rid of
-'inline' for static functions in *.c files and let compiler decide how
-to optimize that.
-
-
-> +static int vf610_nfc_probe(struct platform_device *pdev)
-> +{
-> +       struct vf610_nfc *nfc;
-> +       struct resource *res;
-> +       struct mtd_info *mtd;
-> +       struct nand_chip *chip;
-> +       struct device_node *child;
-> +       const struct of_device_id *of_id;
-> +       int err = 0;
-
-According to usage you don't need to initialize err to zero here.
-
-> +       int irq;
-> +
-> +       nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-> +       if (!nfc)
-> +               return -ENOMEM;
-> +
-> +       nfc->dev = &pdev->dev;
-> +       mtd = &nfc->mtd;
-> +       chip = &nfc->chip;
-> +
-> +       mtd->priv = chip;
-> +       mtd->owner = THIS_MODULE;
-> +       mtd->dev.parent = nfc->dev;
-> +       mtd->name = DRV_NAME;
-> +
-> +       irq = platform_get_irq(pdev, 0);
-> +       if (irq <= 0)
-> +               return -EINVAL;
-> +
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       nfc->regs = devm_ioremap_resource(nfc->dev, res);
-> +       if (IS_ERR(nfc->regs))
-> +               return PTR_ERR(nfc->regs);
-> +
-> +       nfc->clk = devm_clk_get(&pdev->dev, NULL);
-> +       if (IS_ERR(nfc->clk))
-> +               return PTR_ERR(nfc->clk);
-> +
-> +       err = clk_prepare_enable(nfc->clk);
-> +       if (err) {
-> +               dev_err(nfc->dev, "Unable to enable clock!\n");
-> +               return err;
-> +       }
-
-After fixing that feel free to use:
-
-Reviewed-by: Alexey Klimov <klimov.linux@gmail.com>
-
-Thanks,
-Alexey Klimov
+diff --git a/Documentation/devicetree/bindings/spi/ti_qspi.txt b/Documentation/devicetree/bindings/spi/ti_qspi.txt
+index 601a360531a5..f05dd631bef1 100644
+--- a/Documentation/devicetree/bindings/spi/ti_qspi.txt
++++ b/Documentation/devicetree/bindings/spi/ti_qspi.txt
+@@ -26,3 +26,16 @@ qspi: qspi@4b300000 {
+ 	spi-max-frequency = <25000000>;
+ 	ti,hwmods = "qspi";
+ };
++
++For dra7xx:
++qspi: qspi@4b300000 {
++	compatible = "ti,dra7xxx-qspi";
++	reg = <0x4b300000 0x100>, <0x4a002558 0x4>,
++	      <0x5c000000 0x4000000>;
++	reg-names = "qspi_base", "qspi_ctrlmod",
++		    "qspi_mmap";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	spi-max-frequency = <48000000>;
++	ti,hwmods = "qspi";
++};
+diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
+index 1e29ccf77ea2..f6798d6ecd60 100644
+--- a/arch/arm/boot/dts/dra7.dtsi
++++ b/arch/arm/boot/dts/dra7.dtsi
+@@ -1103,8 +1103,10 @@
+ 
+ 		qspi: qspi@4b300000 {
+ 			compatible = "ti,dra7xxx-qspi";
+-			reg = <0x4b300000 0x100>;
+-			reg-names = "qspi_base";
++			reg = <0x4b300000 0x100>, <0x4a002558 0x4>,
++			      <0x5c000000 0x4000000>;
++			reg-names = "qspi_base", "qspi_ctrlmod",
++				    "qspi_mmap";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			ti,hwmods = "qspi";
+-- 
+2.5.1
