@@ -1,10 +1,10 @@
-Received: from mail-qg0-f48.google.com ([209.85.192.48])
+Received: from mail-qg0-f54.google.com ([209.85.192.54])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZYI4T-0006nI-Pf
- for linux-mtd@lists.infradead.org; Sat, 05 Sep 2015 18:20:14 +0000
-Received: by qgt47 with SMTP id 47so38483456qgt.2
- for <linux-mtd@lists.infradead.org>; Sat, 05 Sep 2015 11:19:51 -0700 (PDT)
-Date: Sat, 5 Sep 2015 15:15:59 -0300
+ id 1ZYIMc-0005Pq-Ap
+ for linux-mtd@lists.infradead.org; Sat, 05 Sep 2015 18:38:59 +0000
+Received: by qgt47 with SMTP id 47so38654284qgt.2
+ for <linux-mtd@lists.infradead.org>; Sat, 05 Sep 2015 11:38:37 -0700 (PDT)
+Date: Sat, 5 Sep 2015 15:34:45 -0300
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: Robert Jarzmik <robert.jarzmik@free.fr>
 Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
@@ -12,14 +12,12 @@ Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] mtd: nand: pxa3xx-nand: switch to dmaengine
-Message-ID: <20150905181559.GA6978@laptop.cereza>
+Message-ID: <20150905183445.GB6978@laptop.cereza>
 References: <1440441674-12103-1-git-send-email-robert.jarzmik@free.fr>
- <20150828225019.GA1774@laptop.cereza>
- <87wpwe1hpq.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87wpwe1hpq.fsf@belgarion.home>
+In-Reply-To: <1440441674-12103-1-git-send-email-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,111 +27,346 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29 Aug 01:01 PM, Robert Jarzmik wrote:
-> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
-> 
-> > Robert,
-> >
-> > On 24 Aug 08:41 PM, Robert Jarzmik wrote:
-> >> Now pxa architecture has a dmaengine driver, remove the access to direct
-> >> dma registers in favor of the more generic dmaengine code.
-> >> 
-> >> This should be also applicable for mmp and orion, provided they work in
-> >> device-tree environment.
-> >> 
-> >> This patch also removes the previous hack which was necessary to make
-> >> the driver work in a devicetree environment.
-> >>
-> >
-> > Oh, this is nice.
-> >
-> > I haven't been following the PXA dmaengine effort,
-> > should I expect this to Just Work (TM) on a CM-X300 (PXA310) in linux-next?
-> No, because linux-next without it gives :
-> Unable to handle kernel paging request at virtual address e36208e4
-> pgd = c0004000
-> [e36208e4] *pgd=c360044e(bad)
-> Internal error: Oops: 823 [#1] ARM
-> Modules linked in:
-> CPU: 0 PID: 1 Comm: swapper Not tainted 4.2.0-rc8-next-20150828-cm-x300+ #864
-> Hardware name: CM-X300 module
-> task: e3436000 ti: e3444000 task.ti: e3444000
-> PC is at nand_scan_ident+0xe00/0x1330
-> LR is at nand_scan_ident+0xd28/0x1330
-> pc : [<c02a7250>]    lr : [<c02a7178>]    psr: 68000053
-> sp : e3445d70  ip : 68000053  fp : c0ba0c80
-> r10: 00000000  r9 : 000000dc  r8 : 000000ec
-> r7 : 00000001  r6 : e36208dc  r5 : 00000000  r4 : 20000000
-> r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : 00000000
-> Flags: nZCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment none
-> Control: 0000397f  Table: a0004018  DAC: 00000071
-> Process swapper (pid: 1, stack limit = 0xe3444198)
-> Stack: (0xe3445d70 to 0xe3446000)
-> 5d60:                                     00000800 00000040 00000000 00000001
-> 5d80: 00000095 00000001 e22e0500 00002000 9510dcec ffffffff e3620810 e3620810
-> 5da0: e3620b24 e36208dc c0b8bd34 00000000 c02ab1a8 c02ab1e0 c0b8bd34 c02ac228
-> 5dc0: c04823d8 e3620810 c0b885c0 c0b8bd4c c0b885d0 e3620878 00000007 e3403888
-> 5de0: e3620810 00000000 c0b8bd34 80000000 001000d0 28000053 00000000 00000000
-> 5e00: 00000000 c0206fc8 e22e5b40 000019b9 00000000 c00f8f94 00000002 00000000
-> 5e20: e22ed190 e3529460 e3529460 c00f9148 e22ed0f0 e3529460 e3529460 00000001
-> 5e40: e3529460 e22ed0f0 e22ed190 c04bde88 e3529460 ffffffed c0b885d0 fffffdfb
-> 5e60: c0ba1a2c 00000000 c0533830 c051559c 00000000 c0271bfc c0271bcc c0b885d0
-> 5e80: c0c02b6c c0ba1a2c c0b9bb48 c0270300 c0b885d0 c0ba1a2c c0b88604 c0b9bb48
-> 5ea0: 00000000 c0270440 00000000 c0ba1a2c c02703b4 c026e890 e3432b8c e3477750
-> 5ec0: c0ba1a2c e22ee000 00000000 c026f9e8 c04823d8 00000006 c0ba1a2c c0ba1a2c
-> 5ee0: c0b85b80 e22e5b00 c052b2a0 c0270c04 00000000 c0b85b80 c0b85b80 c00096d0
-> 5f00: c0bf6b6c e3407600 e3463980 c03d60f8 00000000 00000000 00000000 c00f0a4c
-> 5f20: 00000000 00000000 e3ffce2e c002f694 00000000 c04f2d68 e3ffce49 00000006
-> 5f40: 00000006 00000000 00000000 c053ee4c c053ef9c 00000006 c0bb1080 00000075
-> 5f60: c0bb1080 c051559c 00000000 c0515d6c 00000006 00000006 00000000 c051559c
-> 5f80: c0018bcc 00000000 c03d121c 00000000 00000000 00000000 00000000 00000000
-> 5fa0: 00000000 c03d1224 00000000 c000a4d0 00000000 00000000 00000000 00000000
-> 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000 50001052 31082120
-> [<c02a7250>] (nand_scan_ident) from [<c02ac228>] (pxa3xx_nand_probe+0x344/0xc6c)
-> [<c02ac228>] (pxa3xx_nand_probe) from [<c0271bfc>] (platform_drv_probe+0x30/0x94)
-> [<c0271bfc>] (platform_drv_probe) from [<c0270300>] (driver_probe_device+0x240/0x2f4)
-> [<c0270300>] (driver_probe_device) from [<c0270440>] (__driver_attach+0x8c/0x90)
-> [<c0270440>] (__driver_attach) from [<c026e890>] (bus_for_each_dev+0x70/0xa0)
-> [<c026e890>] (bus_for_each_dev) from [<c026f9e8>] (bus_add_driver+0x18c/0x210)
-> [<c026f9e8>] (bus_add_driver) from [<c0270c04>] (driver_register+0x78/0xf8)
-> [<c0270c04>] (driver_register) from [<c00096d0>] (do_one_initcall+0x80/0x1e8)
-> [<c00096d0>] (do_one_initcall) from [<c0515d6c>] (kernel_init_freeable+0x100/0x1c8)
-> [<c0515d6c>] (kernel_init_freeable) from [<c03d1224>] (kernel_init+0x8/0xec)
-> [<c03d1224>] (kernel_init) from [<c000a4d0>] (ret_from_fork+0x14/0x24)
-> Code: e0854093 e3a00000 e0232391 e0835005 (e1c640f8) 
-> ---[ end trace b0bd534a8da9246f ]---
-> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> 
-> ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> 
-> >> -#ifndef ARCH_HAS_DMA
-> >> -	if (use_dma) {
-> >> +	dma_available = IS_ENABLED(CONFIG_ARM) &&
-> >> +		(IS_ENABLED(CONFIG_ARCH_PXA) || IS_ENABLED(CONFIG_ARCH_MMP));
-> >> +	if (use_dma && !dma_available) {
-> >
-> > Isn't it just simpler to always fallback to PIO if the
-> > devicetree doesn't provide any DMA channels?
-> Most certainly, but that deserves another patch as it changes the current
-> behavior.
-> 
+Robert,
 
-Right.
+Just a couple of minor comments.
 
-> > Platforms without DMA would fall naturally to PIO.
-> What about -EPROBE_DEFER handling ?
+On 24 Aug 08:41 PM, Robert Jarzmik wrote:
+> Now pxa architecture has a dmaengine driver, remove the access to direct
+> dma registers in favor of the more generic dmaengine code.
 > 
-
-Hmm.. dunno.
-
-> > Also: do we need to update the devicetree binding?
-> Yes, the example and an optional dma node property.
+> This should be also applicable for mmp and orion, provided they work in
+> device-tree environment.
 > 
+> This patch also removes the previous hack which was necessary to make
+> the driver work in a devicetree environment.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 223 ++++++++++++++++++++---------------------
+>  1 file changed, 109 insertions(+), 114 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 34c9a60c8c5c..9c555276afc3 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -15,7 +15,9 @@
+>  #include <linux/module.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/dmaengine.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/dma/pxa-dma.h>
+>  #include <linux/delay.h>
+>  #include <linux/clk.h>
+>  #include <linux/mtd/mtd.h>
+> @@ -33,10 +35,6 @@
+>  #define ARCH_HAS_DMA
+>  #endif
+>  
+> -#ifdef ARCH_HAS_DMA
+> -#include <mach/dma.h>
+> -#endif
+> -
+>  #include <linux/platform_data/mtd-nand-pxa3xx.h>
+>  
+>  #define	CHIP_DELAY_TIMEOUT	msecs_to_jiffies(200)
+> @@ -206,6 +204,10 @@ struct pxa3xx_nand_info {
+>  	unsigned int		oob_buff_pos;
+>  
+>  	/* DMA information */
+> +	struct scatterlist	sg;
+> +	enum dma_data_direction	dma_dir;
+> +	struct dma_chan		*dma_chan;
+> +	dma_cookie_t		dma_cookie;
+>  	int			drcmr_dat;
+>  	int			drcmr_cmd;
+>  
+> @@ -213,8 +215,6 @@ struct pxa3xx_nand_info {
+>  	unsigned char		*oob_buff;
+>  	dma_addr_t 		data_buff_phys;
+>  	int 			data_dma_ch;
+> -	struct pxa_dma_desc	*data_desc;
+> -	dma_addr_t 		data_desc_addr;
+>  
+>  	struct pxa3xx_nand_host *host[NUM_CHIP_SELECT];
+>  	unsigned int		state;
+> @@ -473,6 +473,9 @@ static void pxa3xx_nand_stop(struct pxa3xx_nand_info *info)
+>  		ndcr &= ~NDCR_ND_RUN;
+>  		nand_writel(info, NDCR, ndcr);
+>  	}
+> +	if (info->dma_chan)
+> +		dmaengine_terminate_all(info->dma_chan);
+> +
+>  	/* clear status bits */
+>  	nand_writel(info, NDSR, NDSR_MASK);
+>  }
+> @@ -564,57 +567,62 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
+>  	info->data_size -= do_bytes;
+>  }
+>  
+> -#ifdef ARCH_HAS_DMA
+> -static void start_data_dma(struct pxa3xx_nand_info *info)
+> +static void pxa3xx_nand_data_dma_irq(void *data)
+>  {
+> -	struct pxa_dma_desc *desc = info->data_desc;
+> -	int dma_len = ALIGN(info->data_size + info->oob_size, 32);
+> +	struct pxa3xx_nand_info *info = data;
+> +	struct dma_tx_state state;
+> +	enum dma_status status;
+> +
+> +	status = dmaengine_tx_status(info->dma_chan, info->dma_cookie, &state);
+> +	if (likely(status == DMA_COMPLETE)) {
+> +		info->state = STATE_DMA_DONE;
+> +	} else {
+> +		dev_err(&info->pdev->dev, "DMA error on data channel\n");
+> +		info->retcode = ERR_DMABUSERR;
+> +	}
+> +	dma_unmap_sg(info->dma_chan->device->dev,
+> +		     &info->sg, 1, info->dma_dir);
 
-OK, so you'll be sending a v2?
+Unneeded line breaking.
 
-Have a few more comments on this, so I'll reply to the original patch.
+>  
+> -	desc->ddadr = DDADR_STOP;
+> -	desc->dcmd = DCMD_ENDIRQEN | DCMD_WIDTH4 | DCMD_BURST32 | dma_len;
+> +	nand_writel(info, NDSR, NDSR_WRDREQ | NDSR_RDDREQ);
+> +	enable_int(info, NDCR_INT_MASK);
+> +}
+> +
+> +static void start_data_dma(struct pxa3xx_nand_info *info)
+> +{
+> +	enum dma_data_direction direction;
+> +	struct dma_async_tx_descriptor *tx;
+>  
+>  	switch (info->state) {
+>  	case STATE_DMA_WRITING:
+> -		desc->dsadr = info->data_buff_phys;
+> -		desc->dtadr = info->mmio_phys + NDDB;
+> -		desc->dcmd |= DCMD_INCSRCADDR | DCMD_FLOWTRG;
+> +		info->dma_dir = DMA_TO_DEVICE;
+> +		direction = DMA_MEM_TO_DEV;
+>  		break;
+>  	case STATE_DMA_READING:
+> -		desc->dtadr = info->data_buff_phys;
+> -		desc->dsadr = info->mmio_phys + NDDB;
+> -		desc->dcmd |= DCMD_INCTRGADDR | DCMD_FLOWSRC;
+> +		info->dma_dir = DMA_FROM_DEVICE;
+> +		direction = DMA_DEV_TO_MEM;
+>  		break;
+>  	default:
+>  		dev_err(&info->pdev->dev, "%s: invalid state %d\n", __func__,
+>  				info->state);
+>  		BUG();
+>  	}
+> -
+> -	DRCMR(info->drcmr_dat) = DRCMR_MAPVLD | info->data_dma_ch;
+> -	DDADR(info->data_dma_ch) = info->data_desc_addr;
+> -	DCSR(info->data_dma_ch) |= DCSR_RUN;
+> -}
+> -
+> -static void pxa3xx_nand_data_dma_irq(int channel, void *data)
+> -{
+> -	struct pxa3xx_nand_info *info = data;
+> -	uint32_t dcsr;
+> -
+> -	dcsr = DCSR(channel);
+> -	DCSR(channel) = dcsr;
+> -
+> -	if (dcsr & DCSR_BUSERR) {
+> -		info->retcode = ERR_DMABUSERR;
+> +	info->sg.length = info->data_size +
+> +		(info->oob_size ? info->spare_size + info->ecc_size : 0);
+> +	dma_map_sg(info->dma_chan->device->dev, &info->sg, 1, info->dma_dir);
+> +
+> +	tx = dmaengine_prep_slave_sg(info->dma_chan, &info->sg, 1, direction,
+> +				     DMA_PREP_INTERRUPT);
+> +	if (!tx) {
+> +		dev_err(&info->pdev->dev, "prep_slave_sg() failed\n");
+> +		return;
+>  	}
+> -
+> -	info->state = STATE_DMA_DONE;
+> -	enable_int(info, NDCR_INT_MASK);
+> -	nand_writel(info, NDSR, NDSR_WRDREQ | NDSR_RDDREQ);
+> +	tx->callback = pxa3xx_nand_data_dma_irq;
+> +	tx->callback_param = info;
+> +	info->dma_cookie = dmaengine_submit(tx);
+> +	dma_async_issue_pending(info->dma_chan);
+> +	dev_dbg(&info->pdev->dev, "%s(dir=%d cookie=%x size=%u)\n",
+> +		__func__, direction, info->dma_cookie, info->sg.length);
+>  }
+> -#else
+> -static void start_data_dma(struct pxa3xx_nand_info *info)
+> -{}
+> -#endif
+>  
+>  static irqreturn_t pxa3xx_nand_irq_thread(int irq, void *data)
+>  {
+> @@ -1313,36 +1321,50 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+>  	return 0;
+>  }
+>  
+> -#ifdef ARCH_HAS_DMA
+>  static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+>  {
+>  	struct platform_device *pdev = info->pdev;
+> -	int data_desc_offset = info->buf_size - sizeof(struct pxa_dma_desc);
+> +	struct dma_slave_config	config;
+> +	dma_cap_mask_t mask;
+> +	struct pxad_param param;
+> +	int ret;
+>  
+> -	if (use_dma == 0) {
+> -		info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
+> -		if (info->data_buff == NULL)
+> -			return -ENOMEM;
+> +	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
+> +	if (info->data_buff == NULL)
+> +		return -ENOMEM;
+> +	if (use_dma == 0)
+>  		return 0;
+> -	}
+>  
+> -	info->data_buff = dma_alloc_coherent(&pdev->dev, info->buf_size,
+> -				&info->data_buff_phys, GFP_KERNEL);
+> -	if (info->data_buff == NULL) {
+> -		dev_err(&pdev->dev, "failed to allocate dma buffer\n");
+> -		return -ENOMEM;
+> -	}
+> +	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+> +	if (ret)
+> +		return ret;
+>  
+> -	info->data_desc = (void *)info->data_buff + data_desc_offset;
+> -	info->data_desc_addr = info->data_buff_phys + data_desc_offset;
+> +	sg_init_one(&info->sg, info->data_buff, info->buf_size);
+> +	dma_cap_zero(mask);
+> +	dma_cap_set(DMA_SLAVE, mask);
+> +	param.prio = PXAD_PRIO_LOWEST;
+> +	param.drcmr = info->drcmr_dat;
+> +	info->dma_chan = dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> +							  &param, &pdev->dev,
+> +							  "data");
+> +	if (!info->dma_chan) {
+> +		dev_err(&pdev->dev, "unable to request data dma channel\n");
+> +		return -ENODEV;
+> +	}
+>  
+> -	info->data_dma_ch = pxa_request_dma("nand-data", DMA_PRIO_LOW,
+> -				pxa3xx_nand_data_dma_irq, info);
+> -	if (info->data_dma_ch < 0) {
+> -		dev_err(&pdev->dev, "failed to request data dma\n");
+> -		dma_free_coherent(&pdev->dev, info->buf_size,
+> -				info->data_buff, info->data_buff_phys);
+> -		return info->data_dma_ch;
+> +	memset(&config, 0, sizeof(config));
+> +	config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	config.src_addr = info->mmio_phys + NDDB;
+> +	config.dst_addr = info->mmio_phys + NDDB;
+> +	config.src_maxburst = 32;
+> +	config.dst_maxburst = 32;
+> +	ret = dmaengine_slave_config(info->dma_chan, &config);
+> +	if (ret < 0) {
+> +		dev_err(&info->pdev->dev,
+> +			"dma channel configuration failed: %d\n",
+> +			ret);
+> +		return ret;
+>  	}
+>  
+>  	/*
+> @@ -1355,29 +1377,12 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+>  
+>  static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+>  {
+> -	struct platform_device *pdev = info->pdev;
+>  	if (info->use_dma) {
+> -		pxa_free_dma(info->data_dma_ch);
+> -		dma_free_coherent(&pdev->dev, info->buf_size,
+> -				  info->data_buff, info->data_buff_phys);
+> -	} else {
+> -		kfree(info->data_buff);
+> +		dmaengine_terminate_all(info->dma_chan);
+> +		dma_release_channel(info->dma_chan);
+>  	}
+> -}
+> -#else
+> -static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+> -{
+> -	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
+> -	if (info->data_buff == NULL)
+> -		return -ENOMEM;
+> -	return 0;
+> -}
+> -
+> -static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+> -{
+>  	kfree(info->data_buff);
+>  }
+> -#endif
+>  
+>  static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
+>  {
+> @@ -1679,34 +1684,23 @@ static int alloc_nand_resource(struct platform_device *pdev)
+>  		return ret;
+>  
+>  	if (use_dma) {
+> -		/*
+> -		 * This is a dirty hack to make this driver work from
+> -		 * devicetree bindings. It can be removed once we have
+> -		 * a prober DMA controller framework for DT.
+> -		 */
+> -		if (pdev->dev.of_node &&
+> -		    of_machine_is_compatible("marvell,pxa3xx")) {
+> -			info->drcmr_dat = 97;
+> -			info->drcmr_cmd = 99;
+> -		} else {
+> -			r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+> -			if (r == NULL) {
+> -				dev_err(&pdev->dev,
+> -					"no resource defined for data DMA\n");
+> -				ret = -ENXIO;
+> -				goto fail_disable_clk;
+> -			}
+> -			info->drcmr_dat = r->start;
+> -
+> -			r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+> -			if (r == NULL) {
+> -				dev_err(&pdev->dev,
+> -					"no resource defined for cmd DMA\n");
+> -				ret = -ENXIO;
+> -				goto fail_disable_clk;
+> -			}
+> -			info->drcmr_cmd = r->start;
+> +		r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+> +		if (r == NULL) {
+> +			dev_err(&pdev->dev,
+> +				"no resource defined for data DMA\n");
+> +			ret = -ENXIO;
+> +			goto fail_disable_clk;
+>  		}
+> +		info->drcmr_dat = r->start;
+> +
+> +		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+> +		if (r == NULL) {
+> +			dev_err(&pdev->dev,
+> +				"no resource defined for cmd DMA\n");
+> +			ret = -ENXIO;
+> +			goto fail_disable_clk;
+> +		}
+> +		info->drcmr_cmd = r->start;
+
+AFAICS, you only do data DMA, so this command resource can go away.
+If you want to keep it for now and remove it as a follow up patch,
+that's fine.
+
+Other than this minor stuff:
+
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+
+Tested on Armada 370 to make sure it doesn't cause any regressions.
 -- 
 Ezequiel Garcia, VanguardiaSur
 www.vanguardiasur.com.ar
