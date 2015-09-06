@@ -1,17 +1,28 @@
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZYZpn-0005Am-Mn
- for linux-mtd@lists.infradead.org; Sun, 06 Sep 2015 13:18:17 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ id 1ZYbnq-0006Fg-SF
+ for linux-mtd@lists.infradead.org; Sun, 06 Sep 2015 15:24:24 +0000
+From: Marek Vasut <marex@denx.de>
+To: vikas <vikas.manocha@st.com>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
+ Controller.
+Date: Sun, 6 Sep 2015 17:16:27 +0200
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH v2] mtd: nand: pxa3xx-nand: switch to dmaengine
-Date: Sun,  6 Sep 2015 15:12:47 +0200
-Message-Id: <1441545167-23383-1-git-send-email-robert.jarzmik@free.fr>
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <1440148851-14621-1-git-send-email-marex@denx.de>
+ <1440148851-14621-2-git-send-email-marex@denx.de> <55EA2CFD.6060300@st.com>
+In-Reply-To: <55EA2CFD.6060300@st.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201509061716.27521.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,353 +32,260 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now pxa architecture has a dmaengine driver, remove the access to direct
-dma registers in favor of the more generic dmaengine code.
+On Saturday, September 05, 2015 at 01:45:01 AM, vikas wrote:
+> Hi,
+> 
+> On 08/21/2015 02:20 AM, Marek Vasut wrote:
+> > From: Graham Moore <grmoore@opensource.altera.com>
+> > 
+> > Add support for the Cadence QSPI controller. This controller is
+> > present in the Altera SoCFPGA SoCs and this driver has been tested
+> > on the Cyclone V SoC.
+> 
+> can we add info about the modes supported/not supported like direct mode,
+> indirect etc.
 
-This should be also applicable for mmp and orion, provided they work in
-device-tree environment.
+It's already part of the documentation.
 
-This patch also removes the previous hack which was necessary to make
-the driver work in a devicetree environment.
+> > Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> > Signed-off-by: Marek Vasut <marex@denx.de>
+> > Cc: Alan Tull <atull@opensource.altera.com>
+> > Cc: Brian Norris <computersforpeace@gmail.com>
+> > Cc: David Woodhouse <dwmw2@infradead.org>
+> > Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
+> > Cc: Graham Moore <grmoore@opensource.altera.com>
+> > Cc: Vikas MANOCHA <vikas.manocha@st.com>
+> > Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
+> > Cc: devicetree@vger.kernel.org
+> > ---
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
-Since v1: dma_unmap_sg() line break fix
----
- drivers/mtd/nand/pxa3xx_nand.c | 222 ++++++++++++++++++++---------------------
- 1 file changed, 108 insertions(+), 114 deletions(-)
+[...]
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 2f39bfe34584..1e9d462065e8 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -15,7 +15,9 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
-+#include <linux/dmaengine.h>
- #include <linux/dma-mapping.h>
-+#include <linux/dma/pxa-dma.h>
- #include <linux/delay.h>
- #include <linux/clk.h>
- #include <linux/mtd/mtd.h>
-@@ -33,10 +35,6 @@
- #define ARCH_HAS_DMA
- #endif
- 
--#ifdef ARCH_HAS_DMA
--#include <mach/dma.h>
--#endif
--
- #include <linux/platform_data/mtd-nand-pxa3xx.h>
- 
- #define	CHIP_DELAY_TIMEOUT	msecs_to_jiffies(200)
-@@ -206,6 +204,10 @@ struct pxa3xx_nand_info {
- 	unsigned int		oob_buff_pos;
- 
- 	/* DMA information */
-+	struct scatterlist	sg;
-+	enum dma_data_direction	dma_dir;
-+	struct dma_chan		*dma_chan;
-+	dma_cookie_t		dma_cookie;
- 	int			drcmr_dat;
- 	int			drcmr_cmd;
- 
-@@ -213,8 +215,6 @@ struct pxa3xx_nand_info {
- 	unsigned char		*oob_buff;
- 	dma_addr_t 		data_buff_phys;
- 	int 			data_dma_ch;
--	struct pxa_dma_desc	*data_desc;
--	dma_addr_t 		data_desc_addr;
- 
- 	struct pxa3xx_nand_host *host[NUM_CHIP_SELECT];
- 	unsigned int		state;
-@@ -473,6 +473,9 @@ static void pxa3xx_nand_stop(struct pxa3xx_nand_info *info)
- 		ndcr &= ~NDCR_ND_RUN;
- 		nand_writel(info, NDCR, ndcr);
- 	}
-+	if (info->dma_chan)
-+		dmaengine_terminate_all(info->dma_chan);
-+
- 	/* clear status bits */
- 	nand_writel(info, NDSR, NDSR_MASK);
- }
-@@ -564,57 +567,61 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
- 	info->data_size -= do_bytes;
- }
- 
--#ifdef ARCH_HAS_DMA
--static void start_data_dma(struct pxa3xx_nand_info *info)
-+static void pxa3xx_nand_data_dma_irq(void *data)
- {
--	struct pxa_dma_desc *desc = info->data_desc;
--	int dma_len = ALIGN(info->data_size + info->oob_size, 32);
-+	struct pxa3xx_nand_info *info = data;
-+	struct dma_tx_state state;
-+	enum dma_status status;
-+
-+	status = dmaengine_tx_status(info->dma_chan, info->dma_cookie, &state);
-+	if (likely(status == DMA_COMPLETE)) {
-+		info->state = STATE_DMA_DONE;
-+	} else {
-+		dev_err(&info->pdev->dev, "DMA error on data channel\n");
-+		info->retcode = ERR_DMABUSERR;
-+	}
-+	dma_unmap_sg(info->dma_chan->device->dev, &info->sg, 1, info->dma_dir);
- 
--	desc->ddadr = DDADR_STOP;
--	desc->dcmd = DCMD_ENDIRQEN | DCMD_WIDTH4 | DCMD_BURST32 | dma_len;
-+	nand_writel(info, NDSR, NDSR_WRDREQ | NDSR_RDDREQ);
-+	enable_int(info, NDCR_INT_MASK);
-+}
-+
-+static void start_data_dma(struct pxa3xx_nand_info *info)
-+{
-+	enum dma_data_direction direction;
-+	struct dma_async_tx_descriptor *tx;
- 
- 	switch (info->state) {
- 	case STATE_DMA_WRITING:
--		desc->dsadr = info->data_buff_phys;
--		desc->dtadr = info->mmio_phys + NDDB;
--		desc->dcmd |= DCMD_INCSRCADDR | DCMD_FLOWTRG;
-+		info->dma_dir = DMA_TO_DEVICE;
-+		direction = DMA_MEM_TO_DEV;
- 		break;
- 	case STATE_DMA_READING:
--		desc->dtadr = info->data_buff_phys;
--		desc->dsadr = info->mmio_phys + NDDB;
--		desc->dcmd |= DCMD_INCTRGADDR | DCMD_FLOWSRC;
-+		info->dma_dir = DMA_FROM_DEVICE;
-+		direction = DMA_DEV_TO_MEM;
- 		break;
- 	default:
- 		dev_err(&info->pdev->dev, "%s: invalid state %d\n", __func__,
- 				info->state);
- 		BUG();
- 	}
--
--	DRCMR(info->drcmr_dat) = DRCMR_MAPVLD | info->data_dma_ch;
--	DDADR(info->data_dma_ch) = info->data_desc_addr;
--	DCSR(info->data_dma_ch) |= DCSR_RUN;
--}
--
--static void pxa3xx_nand_data_dma_irq(int channel, void *data)
--{
--	struct pxa3xx_nand_info *info = data;
--	uint32_t dcsr;
--
--	dcsr = DCSR(channel);
--	DCSR(channel) = dcsr;
--
--	if (dcsr & DCSR_BUSERR) {
--		info->retcode = ERR_DMABUSERR;
-+	info->sg.length = info->data_size +
-+		(info->oob_size ? info->spare_size + info->ecc_size : 0);
-+	dma_map_sg(info->dma_chan->device->dev, &info->sg, 1, info->dma_dir);
-+
-+	tx = dmaengine_prep_slave_sg(info->dma_chan, &info->sg, 1, direction,
-+				     DMA_PREP_INTERRUPT);
-+	if (!tx) {
-+		dev_err(&info->pdev->dev, "prep_slave_sg() failed\n");
-+		return;
- 	}
--
--	info->state = STATE_DMA_DONE;
--	enable_int(info, NDCR_INT_MASK);
--	nand_writel(info, NDSR, NDSR_WRDREQ | NDSR_RDDREQ);
-+	tx->callback = pxa3xx_nand_data_dma_irq;
-+	tx->callback_param = info;
-+	info->dma_cookie = dmaengine_submit(tx);
-+	dma_async_issue_pending(info->dma_chan);
-+	dev_dbg(&info->pdev->dev, "%s(dir=%d cookie=%x size=%u)\n",
-+		__func__, direction, info->dma_cookie, info->sg.length);
- }
--#else
--static void start_data_dma(struct pxa3xx_nand_info *info)
--{}
--#endif
- 
- static irqreturn_t pxa3xx_nand_irq_thread(int irq, void *data)
- {
-@@ -1313,36 +1320,50 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	return 0;
- }
- 
--#ifdef ARCH_HAS_DMA
- static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
- {
- 	struct platform_device *pdev = info->pdev;
--	int data_desc_offset = info->buf_size - sizeof(struct pxa_dma_desc);
-+	struct dma_slave_config	config;
-+	dma_cap_mask_t mask;
-+	struct pxad_param param;
-+	int ret;
- 
--	if (use_dma == 0) {
--		info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
--		if (info->data_buff == NULL)
--			return -ENOMEM;
-+	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
-+	if (info->data_buff == NULL)
-+		return -ENOMEM;
-+	if (use_dma == 0)
- 		return 0;
--	}
- 
--	info->data_buff = dma_alloc_coherent(&pdev->dev, info->buf_size,
--				&info->data_buff_phys, GFP_KERNEL);
--	if (info->data_buff == NULL) {
--		dev_err(&pdev->dev, "failed to allocate dma buffer\n");
--		return -ENOMEM;
--	}
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-+	if (ret)
-+		return ret;
- 
--	info->data_desc = (void *)info->data_buff + data_desc_offset;
--	info->data_desc_addr = info->data_buff_phys + data_desc_offset;
-+	sg_init_one(&info->sg, info->data_buff, info->buf_size);
-+	dma_cap_zero(mask);
-+	dma_cap_set(DMA_SLAVE, mask);
-+	param.prio = PXAD_PRIO_LOWEST;
-+	param.drcmr = info->drcmr_dat;
-+	info->dma_chan = dma_request_slave_channel_compat(mask, pxad_filter_fn,
-+							  &param, &pdev->dev,
-+							  "data");
-+	if (!info->dma_chan) {
-+		dev_err(&pdev->dev, "unable to request data dma channel\n");
-+		return -ENODEV;
-+	}
- 
--	info->data_dma_ch = pxa_request_dma("nand-data", DMA_PRIO_LOW,
--				pxa3xx_nand_data_dma_irq, info);
--	if (info->data_dma_ch < 0) {
--		dev_err(&pdev->dev, "failed to request data dma\n");
--		dma_free_coherent(&pdev->dev, info->buf_size,
--				info->data_buff, info->data_buff_phys);
--		return info->data_dma_ch;
-+	memset(&config, 0, sizeof(config));
-+	config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+	config.src_addr = info->mmio_phys + NDDB;
-+	config.dst_addr = info->mmio_phys + NDDB;
-+	config.src_maxburst = 32;
-+	config.dst_maxburst = 32;
-+	ret = dmaengine_slave_config(info->dma_chan, &config);
-+	if (ret < 0) {
-+		dev_err(&info->pdev->dev,
-+			"dma channel configuration failed: %d\n",
-+			ret);
-+		return ret;
- 	}
- 
- 	/*
-@@ -1355,29 +1376,12 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
- 
- static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
- {
--	struct platform_device *pdev = info->pdev;
- 	if (info->use_dma) {
--		pxa_free_dma(info->data_dma_ch);
--		dma_free_coherent(&pdev->dev, info->buf_size,
--				  info->data_buff, info->data_buff_phys);
--	} else {
--		kfree(info->data_buff);
-+		dmaengine_terminate_all(info->dma_chan);
-+		dma_release_channel(info->dma_chan);
- 	}
--}
--#else
--static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
--{
--	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
--	if (info->data_buff == NULL)
--		return -ENOMEM;
--	return 0;
--}
--
--static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
--{
- 	kfree(info->data_buff);
- }
--#endif
- 
- static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
- {
-@@ -1679,34 +1683,23 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 		return ret;
- 
- 	if (use_dma) {
--		/*
--		 * This is a dirty hack to make this driver work from
--		 * devicetree bindings. It can be removed once we have
--		 * a prober DMA controller framework for DT.
--		 */
--		if (pdev->dev.of_node &&
--		    of_machine_is_compatible("marvell,pxa3xx")) {
--			info->drcmr_dat = 97;
--			info->drcmr_cmd = 99;
--		} else {
--			r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--			if (r == NULL) {
--				dev_err(&pdev->dev,
--					"no resource defined for data DMA\n");
--				ret = -ENXIO;
--				goto fail_disable_clk;
--			}
--			info->drcmr_dat = r->start;
--
--			r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--			if (r == NULL) {
--				dev_err(&pdev->dev,
--					"no resource defined for cmd DMA\n");
--				ret = -ENXIO;
--				goto fail_disable_clk;
--			}
--			info->drcmr_cmd = r->start;
-+		r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+		if (r == NULL) {
-+			dev_err(&pdev->dev,
-+				"no resource defined for data DMA\n");
-+			ret = -ENXIO;
-+			goto fail_disable_clk;
- 		}
-+		info->drcmr_dat = r->start;
-+
-+		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-+		if (r == NULL) {
-+			dev_err(&pdev->dev,
-+				"no resource defined for cmd DMA\n");
-+			ret = -ENXIO;
-+			goto fail_disable_clk;
-+		}
-+		info->drcmr_cmd = r->start;
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
-@@ -1827,15 +1820,16 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 	struct pxa3xx_nand_platform_data *pdata;
- 	struct mtd_part_parser_data ppdata = {};
- 	struct pxa3xx_nand_info *info;
--	int ret, cs, probe_success;
-+	int ret, cs, probe_success, dma_available;
- 
--#ifndef ARCH_HAS_DMA
--	if (use_dma) {
-+	dma_available = IS_ENABLED(CONFIG_ARM) &&
-+		(IS_ENABLED(CONFIG_ARCH_PXA) || IS_ENABLED(CONFIG_ARCH_MMP));
-+	if (use_dma && !dma_available) {
- 		use_dma = 0;
- 		dev_warn(&pdev->dev,
- 			 "This platform can't do DMA on this device\n");
- 	}
--#endif
-+
- 	ret = pxa3xx_nand_probe_dt(pdev);
- 	if (ret)
- 		return ret;
--- 
-2.1.4
+> > +#define CQSPI_REG_CMDADDRESS                   0x94
+> > +#define CQSPI_REG_CMDREADDATALOWER             0xA0
+> > +#define CQSPI_REG_CMDREADDATAUPPER             0xA4
+> > +#define CQSPI_REG_CMDWRITEDATALOWER            0xA8
+> > +#define CQSPI_REG_CMDWRITEDATAUPPER            0xAC
+> > +
+> > +/* Interrupt status bits */
+> > +#define CQSPI_REG_IRQ_MODE_ERR                 BIT(0)
+> > +#define CQSPI_REG_IRQ_UNDERFLOW                        BIT(1)
+> > +#define CQSPI_REG_IRQ_IND_COMP                 BIT(2)
+> > +#define CQSPI_REG_IRQ_IND_RD_REJECT            BIT(3)
+> > +#define CQSPI_REG_IRQ_WR_PROTECTED_ERR         BIT(4)
+> > +#define CQSPI_REG_IRQ_ILLEGAL_AHB_ERR          BIT(5)
+> 
+> remove unused MACROs.
+
+You mean you prefer to have incomplete definition of bits in the register
+instead of a complete one ? I cannot agree to this, sorry.
+
+> > +#define CQSPI_REG_IRQ_WATERMARK                        BIT(6)
+> > +#define CQSPI_REG_IRQ_IND_RD_OVERFLOW          BIT(12)
+> 
+> Correct this bit name to ..IND_RD_SRAM_FULL.
+
+Good catch.
+
+[...]
+
+> > +static int cqspi_wait_idle(struct cqspi_st *cqspi)
+> > +{
+> > +       const unsigned int poll_idle_retry = 3;
+> > +       unsigned int count = 0;
+> > +       unsigned long timeout;
+> > +
+> > +       timeout = jiffies + msecs_to_jiffies(CQSPI_TIMEOUT_MS);
+> > +       while (1) {
+> > +               /*
+> > +                * Read few times in succession to ensure the controller
+> > +                * is indeed idle, that is, the bit does not transition
+> > +                * low again.
+> > +                */
+> > +               if (cqspi_is_idle(cqspi))
+> > +                       count++;
+> > +               else
+> > +                       count = 0;
+> > +
+> > +               if (count >= poll_idle_retry)
+> > +                       return 0;
+> 
+> why do we need to check it 3 times ?
+
+Please see the comment above.
+
+> > +
+> > +               if (time_after(jiffies, timeout)) {
+> > +                       /* Timeout, in busy mode. */
+> > +                       dev_err(&cqspi->pdev->dev,
+> > +                               "QSPI is still busy after %dms
+> > timeout.\n", +                               CQSPI_TIMEOUT_MS);
+> > +                       return -ETIMEDOUT;
+> > +               }
+> > +
+> > +               cpu_relax();
+> > +       }
+> > +}
+> > +
+> 
+> [...]
+> 
+> > +
+> > +static int cqspi_indirect_read_execute(struct spi_nor *nor,
+> > +                                      u8 *rxbuf, const unsigned n_rx)
+> > +{
+> > +       struct cqspi_flash_pdata *f_pdata = nor->priv;
+> > +       struct cqspi_st *cqspi = f_pdata->cqspi;
+> > +       void __iomem *reg_base = cqspi->iobase;
+> > +       void __iomem *ahb_base = cqspi->ahb_base;
+> > +       unsigned int remaining = n_rx;
+> > +       unsigned int bytes_to_read = 0;
+> > +       int ret = 0;
+> > +
+> > +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
+> > +
+> > +       /* Clear all interrupts. */
+> > +       writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
+> > +
+> > +       writel(CQSPI_IRQ_MASK_RD, reg_base + CQSPI_REG_IRQMASK);
+> 
+> I think there is no need for separate masks for read & write. Use one mask
+> & configure it once in the init rather than configuring each time for
+> every read/write. Then in the ISR, take action as per the interrupt
+> source: read/write/error condition etc.
+
+Setting up the specific IRQ mask prevents spurious interrupts during the
+particular IO operation, so this solution looks more precise to me.
+
+> > +
+> > +       reinit_completion(&cqspi->transfer_complete);
+> > +       writel(CQSPI_REG_INDIRECTRD_START_MASK,
+> > +              reg_base + CQSPI_REG_INDIRECTRD);
+> > +
+> > +       while (remaining > 0) {
+> > +               ret =
+> > wait_for_completion_timeout(&cqspi->transfer_complete, +                
+> >                                 msecs_to_jiffies +                      
+> >                           (CQSPI_READ_TIMEOUT_MS)); +
+> > +               bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+> > +
+> > +               if (!ret && bytes_to_read == 0) {
+> > +                       dev_err(nor->dev, "Indirect read timeout, no
+> > bytes\n"); +                       ret = -ETIMEDOUT;
+> > +                       goto failrd;
+> > +               }
+> > +
+> > +               while (bytes_to_read != 0) {
+> > +                       bytes_to_read *= cqspi->fifo_width;
+> > +                       bytes_to_read = bytes_to_read > remaining ?
+> > +                                       remaining : bytes_to_read;
+> > +                       readsl(ahb_base, rxbuf,
+> > DIV_ROUND_UP(bytes_to_read, 4)); +                       rxbuf +=
+> > bytes_to_read;
+> > +                       remaining -= bytes_to_read;
+> > +                       bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+> > +               }
+> > +       }
+> > +
+> > +       /* Check indirect done status */
+> > +       ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_INDIRECTRD,
+> > +                                CQSPI_REG_INDIRECTRD_DONE_MASK, 0);
+> > +       if (ret) {
+> > +               dev_err(nor->dev,
+> > +                       "Indirect read completion error (%i)\n", ret);
+> > +               goto failrd;
+> > +       }
+> > +
+> > +       /* Disable interrupt */
+> > +       writel(0, reg_base + CQSPI_REG_IRQMASK);
+> > +
+> > +       /* Clear indirect completion status */
+> > +       writel(CQSPI_REG_INDIRECTRD_DONE_MASK, reg_base +
+> > CQSPI_REG_INDIRECTRD); +
+> > +       return 0;
+> > +
+> > +failrd:
+> > +       /* Disable interrupt */
+> > +       writel(0, reg_base + CQSPI_REG_IRQMASK);
+> > +
+> > +       /* Cancel the indirect read */
+> > +       writel(CQSPI_REG_INDIRECTWR_CANCEL_MASK,
+> > +              reg_base + CQSPI_REG_INDIRECTRD);
+> > +       return ret;
+> > +}
+
+[...]
+
+> > +static void cqspi_controller_enable(struct cqspi_st *cqspi)
+> > +{
+> > +       void __iomem *reg_base = cqspi->iobase;
+> > +       unsigned int reg;
+> > +
+> > +       reg = readl(reg_base + CQSPI_REG_CONFIG);
+> > +       reg |= CQSPI_REG_CONFIG_ENABLE_MASK;
+> > +       writel(reg, reg_base + CQSPI_REG_CONFIG);
+> > +}
+> > +
+> > +static void cqspi_controller_disable(struct cqspi_st *cqspi)
+> > +{
+> > +       void __iomem *reg_base = cqspi->iobase;
+> > +       unsigned int reg;
+> > +
+> > +       reg = readl(reg_base + CQSPI_REG_CONFIG);
+> > +       reg &= ~CQSPI_REG_CONFIG_ENABLE_MASK;
+> > +       writel(reg, reg_base + CQSPI_REG_CONFIG);
+> > +}
+> 
+> two above function are almost same, we can have one function by adding
+> one bool arg.
+
+It makes the code less readable, but whatever.
+
+[...]
+
+> > +static void cqspi_controller_init(struct cqspi_st *cqspi)
+> > +{
+> > +       cqspi_controller_disable(cqspi);
+> > +
+> > +       /* Configure the remap address register, no remap */
+> > +       writel(0, cqspi->iobase + CQSPI_REG_REMAP);
+> > +
+> > +       /* Disable all interrupts. */
+> > +       writel(0, cqspi->iobase + CQSPI_REG_IRQMASK);
+> > +
+> > +       /* Configure the SRAM split to 1:1 . */
+> 
+> The comment is rightly using "SRAM" but the variable name "fifo_depth" is
+> misleading, change it to sram_depth.
+
+Quote from the datasheet:
+
+Defines the size of the indirect read partition in the
+SRAM, in units of SRAM locations. By default, half of
+the SRAM is reserved for indirect read operations and
+half for indirect write operations.
+
+
+> > +       writel(cqspi->fifo_depth / 2, cqspi->iobase +
+> > CQSPI_REG_SRAMPARTITION); +
+> > +       /* Load indirect trigger address. */
+> 
+> remove this comment & review other comments of this function. I would
+> remove at least first two comments also of the routine.
+
+I already answered this in the previous iteration.
+
+> > +       writel(cqspi->trigger_address,
+> > +              cqspi->iobase + CQSPI_REG_INDIRECTTRIGGER);
+> > +
+> > +       /* Program read watermark -- 1/2 of the FIFO. */
+> > +       writel(cqspi->fifo_depth * cqspi->fifo_width / 2,
+> > +              cqspi->iobase + CQSPI_REG_INDIRECTRDWATERMARK);
+> > +       /* Program write watermark -- 1/8 of the FIFO. */
+> > +       writel(cqspi->fifo_depth * cqspi->fifo_width / 8,
+> > +              cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
+> > +
+> > +       cqspi_controller_enable(cqspi);
+> > +}
+
+[...]
