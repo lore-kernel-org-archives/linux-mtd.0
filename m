@@ -1,28 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-qk0-f182.google.com ([209.85.220.182])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZYbnq-0006Fg-SF
- for linux-mtd@lists.infradead.org; Sun, 06 Sep 2015 15:24:24 +0000
-From: Marek Vasut <marex@denx.de>
-To: vikas <vikas.manocha@st.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
- Controller.
-Date: Sun, 6 Sep 2015 17:16:27 +0200
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1ZYgkv-0007Xi-Sp
+ for linux-mtd@lists.infradead.org; Sun, 06 Sep 2015 20:41:42 +0000
+Received: by qkdw123 with SMTP id w123so11220165qkd.0
+ for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2015 13:41:19 -0700 (PDT)
+Date: Sun, 6 Sep 2015 17:37:26 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Alex Smith <alex.smith@imgtec.com>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <1440148851-14621-1-git-send-email-marex@denx.de>
- <1440148851-14621-2-git-send-email-marex@denx.de> <55EA2CFD.6060300@st.com>
-In-Reply-To: <55EA2CFD.6060300@st.com>
+ Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] mtd: nand: increase ready wait timeout and report
+ timeouts
+Message-ID: <20150906203726.GA7745@laptop.cereza>
+References: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
+ <1438005019-28162-2-git-send-email-alex.smith@imgtec.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201509061716.27521.marex@denx.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1438005019-28162-2-git-send-email-alex.smith@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,260 +29,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday, September 05, 2015 at 01:45:01 AM, vikas wrote:
-> Hi,
+On 27 Jul 02:50 PM, Alex Smith wrote:
+> If nand_wait_ready() times out, this is silently ignored, and its
+> caller will then proceed to read from/write to the chip before it is
+> ready. This can potentially result in corruption with no indication as
+> to why.
 > 
-> On 08/21/2015 02:20 AM, Marek Vasut wrote:
-> > From: Graham Moore <grmoore@opensource.altera.com>
-> > 
-> > Add support for the Cadence QSPI controller. This controller is
-> > present in the Altera SoCFPGA SoCs and this driver has been tested
-> > on the Cyclone V SoC.
+> While a 20ms timeout seems like it should be plenty enough, certain
+> behaviour can cause it to timeout much earlier than expected. The
+> situation which prompted this change was that CPU 0, which is
+> responsible for updating jiffies, was holding interrupts disabled
+> for a fairly long time while writing to the console during a printk,
+> causing several jiffies updates to be delayed. If CPU 1 happens to
+> enter the timeout loop in nand_wait_ready() just before CPU 0 re-
+> enables interrupts and updates jiffies, CPU 1 will immediately time
+> out when the delayed jiffies updates are made. The result of this is
+> that nand_wait_ready() actually waits less time than the NAND chip
+> would normally take to be ready, and then read_page() proceeds to
+> read out bad data from the chip.
 > 
-> can we add info about the modes supported/not supported like direct mode,
-> indirect etc.
-
-It's already part of the documentation.
-
-> > Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> > Signed-off-by: Marek Vasut <marex@denx.de>
-> > Cc: Alan Tull <atull@opensource.altera.com>
-> > Cc: Brian Norris <computersforpeace@gmail.com>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
-> > Cc: Graham Moore <grmoore@opensource.altera.com>
-> > Cc: Vikas MANOCHA <vikas.manocha@st.com>
-> > Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
-> > Cc: devicetree@vger.kernel.org
-> > ---
-
-[...]
-
-> > +#define CQSPI_REG_CMDADDRESS                   0x94
-> > +#define CQSPI_REG_CMDREADDATALOWER             0xA0
-> > +#define CQSPI_REG_CMDREADDATAUPPER             0xA4
-> > +#define CQSPI_REG_CMDWRITEDATALOWER            0xA8
-> > +#define CQSPI_REG_CMDWRITEDATAUPPER            0xAC
-> > +
-> > +/* Interrupt status bits */
-> > +#define CQSPI_REG_IRQ_MODE_ERR                 BIT(0)
-> > +#define CQSPI_REG_IRQ_UNDERFLOW                        BIT(1)
-> > +#define CQSPI_REG_IRQ_IND_COMP                 BIT(2)
-> > +#define CQSPI_REG_IRQ_IND_RD_REJECT            BIT(3)
-> > +#define CQSPI_REG_IRQ_WR_PROTECTED_ERR         BIT(4)
-> > +#define CQSPI_REG_IRQ_ILLEGAL_AHB_ERR          BIT(5)
+> The situation described above may seem unlikely, but in fact it can be
+> reproduced almost every boot on the MIPS Creator Ci20.
 > 
-> remove unused MACROs.
 
-You mean you prefer to have incomplete definition of bits in the register
-instead of a complete one ? I cannot agree to this, sorry.
+Not only unlikely but scary :) BTW, can't find SMP patches for Ci20,
+are you sure this behavior will apply once SMP is upstreamed?
 
-> > +#define CQSPI_REG_IRQ_WATERMARK                        BIT(6)
-> > +#define CQSPI_REG_IRQ_IND_RD_OVERFLOW          BIT(12)
+> Debugging this was made more difficult by the misleading comment above
+> nand_wait_ready() stating "The timeout is caught later" - no timeout
+> was ever reported, leading me away from the real source of the problem.
 > 
-> Correct this bit name to ..IND_RD_SRAM_FULL.
-
-Good catch.
-
-[...]
-
-> > +static int cqspi_wait_idle(struct cqspi_st *cqspi)
-> > +{
-> > +       const unsigned int poll_idle_retry = 3;
-> > +       unsigned int count = 0;
-> > +       unsigned long timeout;
-> > +
-> > +       timeout = jiffies + msecs_to_jiffies(CQSPI_TIMEOUT_MS);
-> > +       while (1) {
-> > +               /*
-> > +                * Read few times in succession to ensure the controller
-> > +                * is indeed idle, that is, the bit does not transition
-> > +                * low again.
-> > +                */
-> > +               if (cqspi_is_idle(cqspi))
-> > +                       count++;
-> > +               else
-> > +                       count = 0;
-> > +
-> > +               if (count >= poll_idle_retry)
-> > +                       return 0;
+> Therefore, this patch increases the timeout to 200ms. This should be
+> enough to cover cases where jiffies updates get delayed. Additionally,
+> add a pr_warn() when a timeout does occur so that it is easier to
+> pinpoint any problems in future caused by the chip not becoming ready.
 > 
-> why do we need to check it 3 times ?
-
-Please see the comment above.
-
-> > +
-> > +               if (time_after(jiffies, timeout)) {
-> > +                       /* Timeout, in busy mode. */
-> > +                       dev_err(&cqspi->pdev->dev,
-> > +                               "QSPI is still busy after %dms
-> > timeout.\n", +                               CQSPI_TIMEOUT_MS);
-> > +                       return -ETIMEDOUT;
-> > +               }
-> > +
-> > +               cpu_relax();
-> > +       }
-> > +}
-> > +
+> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+> Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+> v3 -> v4:
+>  - New patch to fix issue encountered in external Ci20 3.18 kernel
+>    branch which also applies upstream.
+> ---
+>  drivers/mtd/nand/nand_base.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
 > 
-> [...]
-> 
-> > +
-> > +static int cqspi_indirect_read_execute(struct spi_nor *nor,
-> > +                                      u8 *rxbuf, const unsigned n_rx)
-> > +{
-> > +       struct cqspi_flash_pdata *f_pdata = nor->priv;
-> > +       struct cqspi_st *cqspi = f_pdata->cqspi;
-> > +       void __iomem *reg_base = cqspi->iobase;
-> > +       void __iomem *ahb_base = cqspi->ahb_base;
-> > +       unsigned int remaining = n_rx;
-> > +       unsigned int bytes_to_read = 0;
-> > +       int ret = 0;
-> > +
-> > +       writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
-> > +
-> > +       /* Clear all interrupts. */
-> > +       writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
-> > +
-> > +       writel(CQSPI_IRQ_MASK_RD, reg_base + CQSPI_REG_IRQMASK);
-> 
-> I think there is no need for separate masks for read & write. Use one mask
-> & configure it once in the init rather than configuring each time for
-> every read/write. Then in the ISR, take action as per the interrupt
-> source: read/write/error condition etc.
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index ceb68ca8277a..a0dab3414f16 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -543,23 +543,32 @@ static void panic_nand_wait_ready(struct mtd_info *mtd, unsigned long timeo)
+>  	}
+>  }
+>  
+> -/* Wait for the ready pin, after a command. The timeout is caught later. */
+> +/**
+> + * nand_wait_ready - [GENERIC] Wait for the ready pin after commands.
+> + * @mtd: MTD device structure
+> + *
+> + * Wait for the ready pin after a command, and warn if a timeout occurs.
+> + */
+>  void nand_wait_ready(struct mtd_info *mtd)
+>  {
+>  	struct nand_chip *chip = mtd->priv;
+> -	unsigned long timeo = jiffies + msecs_to_jiffies(20);
+> +	unsigned long timeo = jiffies + msecs_to_jiffies(200);
+>  
+>  	/* 400ms timeout */
+>  	if (in_interrupt() || oops_in_progress)
+>  		return panic_nand_wait_ready(mtd, 400);
+>  
+>  	led_trigger_event(nand_led_trigger, LED_FULL);
+> +
 
-Setting up the specific IRQ mask prevents spurious interrupts during the
-particular IO operation, so this solution looks more precise to me.
+Spurious change here.
 
-> > +
-> > +       reinit_completion(&cqspi->transfer_complete);
-> > +       writel(CQSPI_REG_INDIRECTRD_START_MASK,
-> > +              reg_base + CQSPI_REG_INDIRECTRD);
-> > +
-> > +       while (remaining > 0) {
-> > +               ret =
-> > wait_for_completion_timeout(&cqspi->transfer_complete, +                
-> >                                 msecs_to_jiffies +                      
-> >                           (CQSPI_READ_TIMEOUT_MS)); +
-> > +               bytes_to_read = cqspi_get_rd_sram_level(cqspi);
-> > +
-> > +               if (!ret && bytes_to_read == 0) {
-> > +                       dev_err(nor->dev, "Indirect read timeout, no
-> > bytes\n"); +                       ret = -ETIMEDOUT;
-> > +                       goto failrd;
-> > +               }
-> > +
-> > +               while (bytes_to_read != 0) {
-> > +                       bytes_to_read *= cqspi->fifo_width;
-> > +                       bytes_to_read = bytes_to_read > remaining ?
-> > +                                       remaining : bytes_to_read;
-> > +                       readsl(ahb_base, rxbuf,
-> > DIV_ROUND_UP(bytes_to_read, 4)); +                       rxbuf +=
-> > bytes_to_read;
-> > +                       remaining -= bytes_to_read;
-> > +                       bytes_to_read = cqspi_get_rd_sram_level(cqspi);
-> > +               }
-> > +       }
-> > +
-> > +       /* Check indirect done status */
-> > +       ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_INDIRECTRD,
-> > +                                CQSPI_REG_INDIRECTRD_DONE_MASK, 0);
-> > +       if (ret) {
-> > +               dev_err(nor->dev,
-> > +                       "Indirect read completion error (%i)\n", ret);
-> > +               goto failrd;
-> > +       }
-> > +
-> > +       /* Disable interrupt */
-> > +       writel(0, reg_base + CQSPI_REG_IRQMASK);
-> > +
-> > +       /* Clear indirect completion status */
-> > +       writel(CQSPI_REG_INDIRECTRD_DONE_MASK, reg_base +
-> > CQSPI_REG_INDIRECTRD); +
-> > +       return 0;
-> > +
-> > +failrd:
-> > +       /* Disable interrupt */
-> > +       writel(0, reg_base + CQSPI_REG_IRQMASK);
-> > +
-> > +       /* Cancel the indirect read */
-> > +       writel(CQSPI_REG_INDIRECTWR_CANCEL_MASK,
-> > +              reg_base + CQSPI_REG_INDIRECTRD);
-> > +       return ret;
-> > +}
+>  	/* Wait until command is processed or timeout occurs */
+>  	do {
+>  		if (chip->dev_ready(mtd))
+> -			break;
+> +			goto out;
+>  		touch_softlockup_watchdog();
+>  	} while (time_before(jiffies, timeo));
+> +
+> +	pr_warn("timeout while waiting for chip to become ready\n");
+> +out:
+>  	led_trigger_event(nand_led_trigger, LED_OFF);
+>  }
 
-[...]
+This change looks reasonable, a timeout value should be large enough
+to be confident the operation has _really_ timed out. On non-error
+path, this change shouldn't make any difference.
 
-> > +static void cqspi_controller_enable(struct cqspi_st *cqspi)
-> > +{
-> > +       void __iomem *reg_base = cqspi->iobase;
-> > +       unsigned int reg;
-> > +
-> > +       reg = readl(reg_base + CQSPI_REG_CONFIG);
-> > +       reg |= CQSPI_REG_CONFIG_ENABLE_MASK;
-> > +       writel(reg, reg_base + CQSPI_REG_CONFIG);
-> > +}
-> > +
-> > +static void cqspi_controller_disable(struct cqspi_st *cqspi)
-> > +{
-> > +       void __iomem *reg_base = cqspi->iobase;
-> > +       unsigned int reg;
-> > +
-> > +       reg = readl(reg_base + CQSPI_REG_CONFIG);
-> > +       reg &= ~CQSPI_REG_CONFIG_ENABLE_MASK;
-> > +       writel(reg, reg_base + CQSPI_REG_CONFIG);
-> > +}
-> 
-> two above function are almost same, we can have one function by adding
-> one bool arg.
+And the warning is probably helpful too, so:
 
-It makes the code less readable, but whatever.
-
-[...]
-
-> > +static void cqspi_controller_init(struct cqspi_st *cqspi)
-> > +{
-> > +       cqspi_controller_disable(cqspi);
-> > +
-> > +       /* Configure the remap address register, no remap */
-> > +       writel(0, cqspi->iobase + CQSPI_REG_REMAP);
-> > +
-> > +       /* Disable all interrupts. */
-> > +       writel(0, cqspi->iobase + CQSPI_REG_IRQMASK);
-> > +
-> > +       /* Configure the SRAM split to 1:1 . */
-> 
-> The comment is rightly using "SRAM" but the variable name "fifo_depth" is
-> misleading, change it to sram_depth.
-
-Quote from the datasheet:
-
-Defines the size of the indirect read partition in the
-SRAM, in units of SRAM locations. By default, half of
-the SRAM is reserved for indirect read operations and
-half for indirect write operations.
-
-
-> > +       writel(cqspi->fifo_depth / 2, cqspi->iobase +
-> > CQSPI_REG_SRAMPARTITION); +
-> > +       /* Load indirect trigger address. */
-> 
-> remove this comment & review other comments of this function. I would
-> remove at least first two comments also of the routine.
-
-I already answered this in the previous iteration.
-
-> > +       writel(cqspi->trigger_address,
-> > +              cqspi->iobase + CQSPI_REG_INDIRECTTRIGGER);
-> > +
-> > +       /* Program read watermark -- 1/2 of the FIFO. */
-> > +       writel(cqspi->fifo_depth * cqspi->fifo_width / 2,
-> > +              cqspi->iobase + CQSPI_REG_INDIRECTRDWATERMARK);
-> > +       /* Program write watermark -- 1/8 of the FIFO. */
-> > +       writel(cqspi->fifo_depth * cqspi->fifo_width / 8,
-> > +              cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
-> > +
-> > +       cqspi_controller_enable(cqspi);
-> > +}
-
-[...]
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
