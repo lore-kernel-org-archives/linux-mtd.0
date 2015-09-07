@@ -1,25 +1,20 @@
-Received: from mail-qk0-f177.google.com ([209.85.220.177])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZYhRq-0003Fy-Aw
- for linux-mtd@lists.infradead.org; Sun, 06 Sep 2015 21:26:05 +0000
-Received: by qkfq186 with SMTP id q186so27399560qkf.1
- for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2015 14:25:40 -0700 (PDT)
-Date: Sun, 6 Sep 2015 18:21:47 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Alex Smith <alex.smith@imgtec.com>
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] mtd: nand: jz4780: driver for NAND devices on
- JZ4780 SoCs
-Message-ID: <20150906212147.GC7745@laptop.cereza>
-References: <1438005019-28162-1-git-send-email-alex.smith@imgtec.com>
- <55B63E85.5030809@imgtec.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZYrXn-00050d-Nj
+ for linux-mtd@lists.infradead.org; Mon, 07 Sep 2015 08:12:54 +0000
+Message-ID: <55ED4573.8000809@cn.fujitsu.com>
+Date: Mon, 7 Sep 2015 16:06:11 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55B63E85.5030809@imgtec.com>
+To: Sheng Yong <shengyong1@huawei.com>, <dedekind1@gmail.com>,
+ <richard.weinberger@gmail.com>, <agruen@suse.de>
+CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 2/3] UBIFS: ACL: add ACL support
+References: <1441561221-18899-1-git-send-email-shengyong1@huawei.com>
+ <1441561221-18899-3-git-send-email-shengyong1@huawei.com>
+In-Reply-To: <1441561221-18899-3-git-send-email-shengyong1@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,914 +24,657 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 27 Jul 03:21 PM, Alex Smith wrote:
-> Add a driver for NAND devices connected to the NEMC on JZ4780 SoCs, as
-> well as the hardware BCH controller. DMA is not currently implemented.
-> 
-> While older 47xx SoCs also have a BCH controller, they are incompatible
-> with the one in the 4780 due to differing register/bit positions, which
-> would make implementing a common driver for them quite messy.
-> 
-
-If the difference is only in register/bit positions, a common driver
-might be fairly simple. See drivers/i2c/busses/i2c-mv64xxx.c,
-which supports two different register layouts.
-
-Anyway, the drivers look mostly good. Just a handful of comments.
-
-> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-> Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
+On 09/07/2015 01:40 AM, Sheng Yong wrote:
+> Signed-off-by: Sheng Yong <shengyong1@huawei.com>
 > ---
-> v3 -> v4:
->  - Rebase to 4.2-rc4
->  - Change ECC_HW_OOB_FIRST to ECC_HW, reading OOB first is not necessary.
->  - Fix argument to get_device() in jz4780_bch_get()
-> 
-> v2 -> v3:
->  - Rebase to 4.0-rc6
->  - Reflect binding changes
->  - get/put_device in bch get/release
->  - Removed empty .remove() callback
->  - Removed .owner
->  - Set mtd->dev.parent
-> 
-> v1 -> v2:
->  - Fixed module license macro
->  - Rebase to 4.0-rc3
-> ---
->  drivers/mtd/nand/Kconfig       |   7 +
->  drivers/mtd/nand/Makefile      |   1 +
->  drivers/mtd/nand/jz4780_bch.c  | 354 ++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/nand/jz4780_bch.h  |  42 +++++
->  drivers/mtd/nand/jz4780_nand.c | 376 +++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 780 insertions(+)
->  create mode 100644 drivers/mtd/nand/jz4780_bch.c
->  create mode 100644 drivers/mtd/nand/jz4780_bch.h
->  create mode 100644 drivers/mtd/nand/jz4780_nand.c
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 5b2806a7e5f7..3900e5f93146 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -511,6 +511,13 @@ config MTD_NAND_JZ4740
->  	help
->  		Enables support for NAND Flash on JZ4740 SoC based boards.
->  
-> +config MTD_NAND_JZ4780
-> +	tristate "Support for NAND on JZ4780 SoC"
-> +	depends on MACH_JZ4780 && JZ4780_NEMC
-> +	help
-> +	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
-> +	  based boards, using the BCH controller for hardware error correction.
-> +
->  config MTD_NAND_FSMC
->  	tristate "Support for NAND on ST Micros FSMC"
->  	depends on PLAT_SPEAR || ARCH_NOMADIK || ARCH_U8500 || MACH_U300
-> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> index 1f897ec3c242..3ee2fd6bc641 100644
-> --- a/drivers/mtd/nand/Makefile
-> +++ b/drivers/mtd/nand/Makefile
-> @@ -47,6 +47,7 @@ obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
->  obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
->  obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
->  obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
-> +obj-$(CONFIG_MTD_NAND_JZ4780)		+= jz4780_nand.o jz4780_bch.o
->  obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
->  obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
->  obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
-> diff --git a/drivers/mtd/nand/jz4780_bch.c b/drivers/mtd/nand/jz4780_bch.c
+>   fs/ubifs/acl.c   | 312 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>   fs/ubifs/dir.c   |  20 ++++
+>   fs/ubifs/file.c  |  14 +++
+>   fs/ubifs/super.c |  15 +++
+>   fs/ubifs/ubifs.h |  14 +++
+>   fs/ubifs/xattr.c |  64 +++++++++++-
+>   6 files changed, 434 insertions(+), 5 deletions(-)
+>   create mode 100644 fs/ubifs/acl.c
+>
+> diff --git a/fs/ubifs/acl.c b/fs/ubifs/acl.c
 > new file mode 100644
-> index 000000000000..1686d76f8457
+> index 0000000..5120712
 > --- /dev/null
-> +++ b/drivers/mtd/nand/jz4780_bch.c
-> @@ -0,0 +1,354 @@
+> +++ b/fs/ubifs/acl.c
+> @@ -0,0 +1,312 @@
 > +/*
-> + * JZ4780 BCH controller
-> + *
-> + * Copyright (c) 2015 Imagination Technologies
-> + * Author: Alex Smith <alex.smith@imgtec.com>
+> + * This file is part of UBIFS.
 > + *
 > + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License version 2 as published
-> + * by the Free Software Foundation.
+> + * under the terms of the GNU General Public License version 2 as published by
+> + * the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful, but WITHOUT
+> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+> + * more details.
+> + *
+> + * You should have received a copy of the GNU General Public License along with
+> + * this program; if not, write to the Free Software Foundation, Inc., 51
+> + * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+> + *
 > + */
 > +
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/sched.h>
-> +#include <linux/slab.h>
+> +#include <linux/fs.h>
+> +#include <linux/xattr.h>
+> +#include <linux/posix_acl_xattr.h>
 > +
-> +#include "jz4780_bch.h"
+> +#include "ubifs.h"
 > +
-> +#define BCH_BHCR			0x0
-> +#define BCH_BHCCR			0x8
-> +#define BCH_BHCNT			0xc
-> +#define BCH_BHDR			0x10
-> +#define BCH_BHPAR0			0x14
-> +#define BCH_BHERR0			0x84
-> +#define BCH_BHINT			0x184
-> +#define BCH_BHINTES			0x188
-> +#define BCH_BHINTEC			0x18c
-> +#define BCH_BHINTE			0x190
+> +#define UBIFS_ACL_VERSION	0x0001
 > +
-> +#define BCH_BHCR_BSEL_SHIFT		4
-> +#define BCH_BHCR_BSEL_MASK		(0x7f << BCH_BHCR_BSEL_SHIFT)
-> +#define BCH_BHCR_ENCE			BIT(2)
-> +#define BCH_BHCR_INIT			BIT(1)
-> +#define BCH_BHCR_BCHE			BIT(0)
-> +
-> +#define BCH_BHCNT_PARITYSIZE_SHIFT	16
-> +#define BCH_BHCNT_PARITYSIZE_MASK	(0x7f << BCH_BHCNT_PARITYSIZE_SHIFT)
-> +#define BCH_BHCNT_BLOCKSIZE_SHIFT	0
-> +#define BCH_BHCNT_BLOCKSIZE_MASK	(0x7ff << BCH_BHCNT_BLOCKSIZE_SHIFT)
-> +
-> +#define BCH_BHERR_MASK_SHIFT		16
-> +#define BCH_BHERR_MASK_MASK		(0xffff << BCH_BHERR_MASK_SHIFT)
-> +#define BCH_BHERR_INDEX_SHIFT		0
-> +#define BCH_BHERR_INDEX_MASK		(0x7ff << BCH_BHERR_INDEX_SHIFT)
-> +
-> +#define BCH_BHINT_ERRC_SHIFT		24
-> +#define BCH_BHINT_ERRC_MASK		(0x7f << BCH_BHINT_ERRC_SHIFT)
-> +#define BCH_BHINT_TERRC_SHIFT		16
-> +#define BCH_BHINT_TERRC_MASK		(0x7f << BCH_BHINT_TERRC_SHIFT)
-> +#define BCH_BHINT_DECF			BIT(3)
-> +#define BCH_BHINT_ENCF			BIT(2)
-> +#define BCH_BHINT_UNCOR			BIT(1)
-> +#define BCH_BHINT_ERR			BIT(0)
-> +
-> +#define BCH_CLK_RATE			(200 * 1000 * 1000)
-> +
-> +/* Timeout for BCH calculation/correction in milliseconds. */
-> +#define BCH_TIMEOUT			100
-> +
-> +struct jz4780_bch {
-> +	void __iomem *base;
-> +	struct clk *clk;
+> +struct ubifs_acl_entry {
+> +	__le16 e_tag;
+> +	__le16 e_perm;
+> +	__le32 e_id;
 > +};
 > +
-> +static void jz4780_bch_init(struct jz4780_bch *bch,
-> +			    struct jz4780_bch_params *params, bool encode)
+> +struct ubifs_acl_entry_short {
+> +	__le16 e_tag;
+> +	__le16 e_perm;
+> +};
+> +
+> +struct ubifs_acl_header {
+> +	__le32 a_version;
+> +};
+> +
+> +#define UBIFS_ACL_HEADER_SZ		sizeof(struct ubifs_acl_header)
+> +#define UBIFS_ACL_ENTRY_SZ		sizeof(struct ubifs_acl_entry)
+> +#define UBIFS_ACL_ENTRY_SHORT_SZ	sizeof(struct ubifs_acl_entry_short)
+Hi Sheng,
+	I found you define some structures different with
+the generic posix_acl, why? Please explain as much as
+possible, it's helpful for review.
+
+> +
+> +static inline size_t acl_size(int count)
 > +{
-> +	uint32_t reg;
-> +
-> +	/* Clear interrupt status. */
-> +	writel(readl(bch->base + BCH_BHINT), bch->base + BCH_BHINT);
-> +
-> +	/* Set up BCH count register. */
-> +	reg = params->size << BCH_BHCNT_BLOCKSIZE_SHIFT;
-> +	reg |= params->bytes << BCH_BHCNT_PARITYSIZE_SHIFT;
-> +	writel(reg, bch->base + BCH_BHCNT);
-> +
-> +	/* Initialise and enable BCH. */
-> +	reg = BCH_BHCR_BCHE | BCH_BHCR_INIT;
-> +	reg |= params->strength << BCH_BHCR_BSEL_SHIFT;
-> +	if (encode)
-> +		reg |= BCH_BHCR_ENCE;
-> +	writel(reg, bch->base + BCH_BHCR);
+> +	if (count <= 4) {
+> +		return UBIFS_ACL_HEADER_SZ +
+> +			count * UBIFS_ACL_ENTRY_SHORT_SZ;
+> +	} else {
+> +		return UBIFS_ACL_HEADER_SZ +
+> +			4 * UBIFS_ACL_ENTRY_SHORT_SZ +
+> +			(count - 4) * UBIFS_ACL_ENTRY_SZ;
+> +	}
 > +}
 > +
-> +static void jz4780_bch_disable(struct jz4780_bch *bch)
+> +static inline int acl_count(size_t size)
 > +{
-> +	writel(readl(bch->base + BCH_BHINT), bch->base + BCH_BHINT);
-> +	writel(BCH_BHCR_BCHE, bch->base + BCH_BHCCR);
+> +	ssize_t s;
+> +
+> +	size -= UBIFS_ACL_HEADER_SZ;
+> +	s = size - 4 * UBIFS_ACL_ENTRY_SHORT_SZ;
+> +	if (s < 0) {
+> +		if (size % UBIFS_ACL_ENTRY_SHORT_SZ)
+> +			return -1;
+> +		return size / UBIFS_ACL_ENTRY_SHORT_SZ;
+> +	} else {
+> +		if (s % UBIFS_ACL_ENTRY_SZ)
+> +			return -1;
+> +		return s / UBIFS_ACL_ENTRY_SZ + 4;
+> +	}
 > +}
 > +
-> +static void jz4780_bch_write_data(struct jz4780_bch *bch, const void *buf,
-> +				  size_t size)
+> +/* convert from in-memory ACL to on-flash ACL */
+> +static void *acl_to_flash(const struct posix_acl *acl, size_t *size, int type)
+
+	Why we need a  special function here to do this conversion?
+Is posix_acl_[to|from]_xattr() not suitable for us? If yes,
+please add a comment here.
+
+Thanx
+Yang
 > +{
-> +	size_t size32 = size / sizeof(uint32_t);
-> +	size_t size8 = size & (sizeof(uint32_t) - 1);
-> +	const uint32_t *src32;
-> +	const uint8_t *src8;
+> +	struct ubifs_acl_header *hdr;
+> +	struct ubifs_acl_entry *uae;
+> +	int i;
 > +
-> +	src32 = (const uint32_t *)buf;
-> +	while (size32--)
-> +		writel(*src32++, bch->base + BCH_BHDR);
+> +	*size = acl_size(acl->a_count);
+> +	hdr = kmalloc(*size, GFP_KERNEL);
+> +	if (!hdr)
+> +		return ERR_PTR(-ENOMEM);
 > +
-> +	src8 = (const uint8_t *)src32;
-> +	while (size8--)
-> +		writeb(*src8++, bch->base + BCH_BHDR);
-> +}
+> +	hdr->a_version = cpu_to_le32(UBIFS_ACL_VERSION);
+> +	uae = (struct ubifs_acl_entry *) (hdr + 1);
 > +
-> +static void jz4780_bch_read_parity(struct jz4780_bch *bch, void *buf,
-> +				   size_t size)
-> +{
-> +	size_t size32 = size / sizeof(uint32_t);
-> +	size_t size8 = size & (sizeof(uint32_t) - 1);
-> +	uint32_t *dest32;
-> +	uint8_t *dest8;
-> +	uint32_t val, offset = 0;
-> +
-> +	dest32 = (uint32_t *)buf;
-> +	while (size32--) {
-> +		*dest32++ = readl(bch->base + BCH_BHPAR0 + offset);
-> +		offset += sizeof(uint32_t);
+> +	for (i = 0; i < acl->a_count; i++) {
+> +		const struct posix_acl_entry *ae = &acl->a_entries[i];
+> +		uae->e_tag = cpu_to_le16(ae->e_tag);
+> +		uae->e_perm = cpu_to_le16(ae->e_perm);
+> +		switch (ae->e_tag) {
+> +		case ACL_USER_OBJ:
+> +		case ACL_GROUP_OBJ:
+> +		case ACL_MASK:
+> +		case ACL_OTHER:
+> +			/* for the 4 options, id is not used */
+> +			uae = (struct ubifs_acl_entry *) ((char *) uae +
+> +						UBIFS_ACL_ENTRY_SHORT_SZ);
+> +			break;
+> +		case ACL_USER:
+> +		{
+> +			uid_t u = from_kuid(&init_user_ns, ae->e_uid);
+> +			uae->e_id = cpu_to_le32(u);
+> +			uae = (struct ubifs_acl_entry *) ((char *) uae +
+> +						UBIFS_ACL_ENTRY_SZ);
+> +			break;
+> +		}
+> +		case ACL_GROUP:
+> +		{
+> +			gid_t g = from_kgid(&init_user_ns, ae->e_gid);
+> +			uae->e_id = cpu_to_le32(g);
+> +			uae = (struct ubifs_acl_entry *) ((char *) uae +
+> +						UBIFS_ACL_ENTRY_SZ);
+> +			break;
+> +		}
+> +		default:
+> +			goto fail;
+> +		}
 > +	}
 > +
-> +	dest8 = (uint8_t *)dest32;
-> +	val = readl(bch->base + BCH_BHPAR0 + offset);
-> +	switch (size8) {
-> +	case 3:
-> +		dest8[2] = (val >> 16) & 0xff;
-> +	case 2:
-> +		dest8[1] = (val >> 8) & 0xff;
-> +	case 1:
-> +		dest8[0] = val & 0xff;
+> +	return (void *) hdr;
+> +
+> +fail:
+> +	kfree(hdr);
+> +	return ERR_PTR(-EINVAL);
+> +}
+> +
+> +/* convert from on-flash ACL to in-memory ACL */
+> +static struct posix_acl *acl_from_flash(const void *value, size_t size)
+> +{
+> +	struct posix_acl *acl;
+> +	struct ubifs_acl_header *hdr = (struct ubifs_acl_header *) value;
+> +	struct ubifs_acl_entry *uae = (struct ubifs_acl_entry *) (hdr + 1);
+> +	const char *end = value + size;
+> +	int count, i;
+> +
+> +	if (!value)
+> +		return NULL;
+> +	if (size < UBIFS_ACL_HEADER_SZ)
+> +		return ERR_PTR(-EINVAL);
+> +	if (hdr->a_version != cpu_to_le32(UBIFS_ACL_VERSION))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	count = acl_count(size);
+> +	if (count < 0)
+> +		return ERR_PTR(-EINVAL);
+> +	if (count == 0)
+> +		return NULL;
+> +
+> +	acl = posix_acl_alloc(count, GFP_KERNEL);
+> +	if (!acl)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	for (i = 0; i < count; i++) {
+> +		if ((char *) uae > end)
+> +			goto fail;
+> +
+> +		acl->a_entries[i].e_tag = le16_to_cpu(uae->e_tag);
+> +		acl->a_entries[i].e_perm = le16_to_cpu(uae->e_perm);
+> +		switch (acl->a_entries[i].e_tag) {
+> +		case ACL_USER_OBJ:
+> +		case ACL_GROUP_OBJ:
+> +		case ACL_MASK:
+> +		case ACL_OTHER:
+> +			/* for the 4 options, no id */
+> +			uae = (struct ubifs_acl_entry *) ((char *) uae +
+> +						UBIFS_ACL_ENTRY_SHORT_SZ);
+> +			break;
+> +		case ACL_USER:
+> +		{
+> +			uid_t u = le32_to_cpu(uae->e_id);
+> +			acl->a_entries[i].e_uid = make_kuid(&init_user_ns, u);
+> +			uae = (struct ubifs_acl_entry *) ((char *) uae +
+> +						UBIFS_ACL_ENTRY_SZ);
+> +			break;
+> +		}
+> +		case ACL_GROUP:
+> +		{
+> +			gid_t g = le32_to_cpu(uae->e_id);
+> +			acl->a_entries[i].e_gid = make_kgid(&init_user_ns, g);
+> +			uae = (struct ubifs_acl_entry *) ((char *) uae +
+> +						UBIFS_ACL_ENTRY_SZ);
+> +			break;
+> +		}
+> +		default:
+> +			goto fail;
+> +		}
+> +	}
+> +
+> +	if ((char *) uae != end)
+> +		goto fail;
+> +
+> +	return acl;
+> +
+> +fail:
+> +	posix_acl_release(acl);
+> +	return ERR_PTR(-EINVAL);
+> +}
+> +
+> +struct posix_acl *ubifs_get_acl(struct inode *inode, int type)
+> +{
+> +	struct posix_acl *acl;
+> +	char *name, *value = NULL;
+> +	int size = 0;
+> +
+> +	switch (type) {
+> +	case ACL_TYPE_ACCESS:
+> +		name = XATTR_NAME_POSIX_ACL_ACCESS;
 > +		break;
+> +	case ACL_TYPE_DEFAULT:
+> +		name = XATTR_NAME_POSIX_ACL_DEFAULT;
+> +		break;
+> +	default:
+> +		BUG();
 > +	}
+> +
+> +	size = ubifs_do_getxattr(inode, name, NULL, 0);
+> +	if (size > 0) {
+> +		value = kmalloc(size, GFP_KERNEL);
+> +		if (!value)
+> +			return ERR_PTR(-ENOMEM);
+> +		size = ubifs_do_getxattr(inode, name, value, size);
+> +	}
+> +	if (size > 0)
+> +		acl = acl_from_flash(value, size);
+> +	else if (size == -ENODATA)
+> +		acl = NULL;
+> +	else if (size < 0)
+> +		return ERR_PTR(size);
+> +
+> +	kfree(value);
+> +	if (!IS_ERR(acl))
+> +		set_cached_acl(inode, type, acl);
+> +
+> +	return acl;
 > +}
 > +
-> +static bool jz4780_bch_wait_complete(struct jz4780_bch *bch, unsigned int irq,
-> +				     uint32_t *status)
+> +int ubifs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 > +{
-> +	unsigned long timeout = jiffies + msecs_to_jiffies(BCH_TIMEOUT);
-> +	uint32_t reg;
+> +	char *name;
+> +	void *value = NULL;
+> +	size_t size = 0;
+> +	int err;
 > +
-> +	/*
-> +	 * While we could use use interrupts here and sleep until the operation
-> +	 * completes, the controller works fairly quickly (usually a few
-> +	 * microseconds), so the overhead of sleeping until we get an interrupt
-> +	 * actually quite noticably decreases performance.
-
-s/noticably/noticeably
-
-> +	 */
-> +	do {
-> +		reg = readl(bch->base + BCH_BHINT);
-> +		if ((reg & irq) == irq) {
-> +			if (status)
-> +				*status = reg;
-> +
-> +			writel(reg, bch->base + BCH_BHINT);
-> +			return true;
+> +	switch (type) {
+> +	case ACL_TYPE_ACCESS:
+> +		name = XATTR_NAME_POSIX_ACL_ACCESS;
+> +		if (acl) {
+> +			err = posix_acl_equiv_mode(acl, &inode->i_mode);
+> +			if (err < 0)
+> +				return err;
+> +			if (err == 0)
+> +				acl = NULL;
 > +		}
+> +		break;
 > +
-> +		cond_resched();
-> +	} while (time_before(jiffies, timeout));
+> +	case ACL_TYPE_DEFAULT:
+> +		name = XATTR_NAME_POSIX_ACL_DEFAULT;
+> +		if (!S_ISDIR(inode->i_mode))
+> +			return acl ? -EACCES : 0;
+> +		break;
 > +
-
-Maybe you can use some readl_poll_timeout variant (with null delay).
-
-> +	return false;
+> +	default:
+> +		BUG();
+> +	}
+> +
+> +	if (acl) {
+> +		value = acl_to_flash(acl, &size, type);
+> +		if (IS_ERR(value))
+> +			return (int) PTR_ERR(value);
+> +	}
+> +
+> +	err = ubifs_do_setxattr(inode, name, value, size, 0);
+> +	kfree(value);
+> +	if (!err)
+> +		set_cached_acl(inode, type, acl);
+> +	return err;
 > +}
 > +
-> +/**
-> + * jz4780_bch_calculate() - calculate ECC for a data buffer
-> + * @dev: BCH device.
-> + * @params: BCH parameters.
-> + * @buf: input buffer with raw data.
-> + * @ecc_code: output buffer with ECC.
-> + *
-> + * Return: 0 on success, -ETIMEDOUT if timed out while waiting for BCH
-> + * controller.
+> +/*
+> + * Initialize the ACLs of a new inode.
 > + */
-> +int jz4780_bch_calculate(struct device *dev, struct jz4780_bch_params *params,
-> +			 const uint8_t *buf, uint8_t *ecc_code)
+> +int ubifs_init_acl(struct inode *dir, struct inode *inode)
 > +{
-> +	struct jz4780_bch *bch = dev_get_drvdata(dev);
-> +	int ret = 0;
+> +	struct posix_acl *default_acl, *acl;
+> +	int err;
 > +
-> +	jz4780_bch_init(bch, params, true);
-> +	jz4780_bch_write_data(bch, buf, params->size);
+> +	err = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
+> +	if (err)
+> +		return err;
 > +
-> +	if (jz4780_bch_wait_complete(bch, BCH_BHINT_ENCF, NULL)) {
-> +		jz4780_bch_read_parity(bch, ecc_code, params->bytes);
-> +	} else {
-> +		dev_err(dev, "timed out while calculating ECC\n");
-> +		ret = -ETIMEDOUT;
+> +	if (default_acl) {
+> +		mutex_lock(&inode->i_mutex);
+> +		err = ubifs_set_acl(inode, default_acl, ACL_TYPE_DEFAULT);
+> +		mutex_unlock(&inode->i_mutex);
+> +		posix_acl_release(default_acl);
 > +	}
 > +
-> +	jz4780_bch_disable(bch);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(jz4780_bch_calculate);
-> +
-> +/**
-> + * jz4780_bch_correct() - detect and correct bit errors
-> + * @dev: BCH device.
-> + * @params: BCH parameters.
-> + * @buf: raw data read from the chip.
-> + * @ecc_code: ECC read from the chip.
-> + *
-> + * Given the raw data and the ECC read from the NAND device, detects and
-> + * corrects errors in the data.
-> + *
-> + * Return: the number of bit errors corrected, or -1 if there are too many
-> + * errors to correct or we timed out waiting for the controller.
-> + */
-> +int jz4780_bch_correct(struct device *dev, struct jz4780_bch_params *params,
-> +		       uint8_t *buf, uint8_t *ecc_code)
-> +{
-> +	struct jz4780_bch *bch = dev_get_drvdata(dev);
-> +	uint32_t reg, mask, index;
-> +	int i, ret, count;
-> +
-> +	jz4780_bch_init(bch, params, false);
-> +	jz4780_bch_write_data(bch, buf, params->size);
-> +	jz4780_bch_write_data(bch, ecc_code, params->bytes);
-> +
-> +	if (!jz4780_bch_wait_complete(bch, BCH_BHINT_DECF, &reg)) {
-> +		dev_err(dev, "timed out while correcting data\n");
-> +		ret = -1;
-> +		goto out;
-> +	}
-> +
-> +	if (reg & BCH_BHINT_UNCOR) {
-> +		dev_warn(dev, "uncorrectable ECC error\n");
-> +		ret = -1;
-> +		goto out;
-> +	}
-> +
-> +	/* Correct any detected errors. */
-> +	if (reg & BCH_BHINT_ERR) {
-> +		count = (reg & BCH_BHINT_ERRC_MASK) >> BCH_BHINT_ERRC_SHIFT;
-> +		ret = (reg & BCH_BHINT_TERRC_MASK) >> BCH_BHINT_TERRC_SHIFT;
-> +
-> +		for (i = 0; i < count; i++) {
-> +			reg = readl(bch->base + BCH_BHERR0 + (i * 4));
-> +			mask = (reg & BCH_BHERR_MASK_MASK) >>
-> +						BCH_BHERR_MASK_SHIFT;
-> +			index = (reg & BCH_BHERR_INDEX_MASK) >>
-> +						BCH_BHERR_INDEX_SHIFT;
-> +			buf[(index * 2) + 0] ^= mask;
-> +			buf[(index * 2) + 1] ^= mask >> 8;
+> +	if (acl) {
+> +		if (!err) {
+> +			mutex_lock(&inode->i_mutex);
+> +			err = ubifs_set_acl(inode, acl, ACL_TYPE_ACCESS);
+> +			mutex_unlock(&inode->i_mutex);
 > +		}
-> +	} else {
-> +		ret = 0;
+> +		posix_acl_release(acl);
 > +	}
 > +
-> +out:
-> +	jz4780_bch_disable(bch);
-> +	return ret;
+> +	return err;
 > +}
-> +EXPORT_SYMBOL(jz4780_bch_correct);
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index 5c27c66..db5dd45 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -270,6 +270,10 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>   		goto out_budg;
+>   	}
+>
+> +	err = ubifs_init_acl(dir, inode);
+> +	if (err)
+> +		goto out_inode;
 > +
-> +/**
-> + * jz4780_bch_get() - get the BCH controller device
-> + * @np: BCH device tree node.
-> + * @dev: where to store pointer to BCH controller device.
-> + *
-> + * Gets the BCH controller device from the specified device tree node. The
-> + * device must be released with jz4780_bch_release() when it is no longer being
-> + * used.
-> + *
-> + * Return: 0 on success, -EPROBE_DEFER if the controller has not yet been
-> + * initialised.
-> + */
-> +int jz4780_bch_get(struct device_node *np, struct device **dev)
+>   	err = ubifs_init_security(dir, inode, &dentry->d_name);
+>   	if (err)
+>   		goto out_inode;
+> @@ -731,6 +735,10 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>   		goto out_budg;
+>   	}
+>
+> +	err = ubifs_init_acl(dir, inode);
+> +	if (err)
+> +		goto out_inode;
+> +
+>   	err = ubifs_init_security(dir, inode, &dentry->d_name);
+>   	if (err)
+>   		goto out_inode;
+> @@ -810,6 +818,10 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+>   		goto out_budg;
+>   	}
+>
+> +	err = ubifs_init_acl(dir, inode);
+> +	if (err)
+> +		goto out_inode;
+> +
+>   	init_special_inode(inode, inode->i_mode, rdev);
+>   	inode->i_size = ubifs_inode(inode)->ui_size = devlen;
+>   	ui = ubifs_inode(inode);
+> @@ -898,6 +910,10 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+>   	ui->data_len = len;
+>   	inode->i_size = ubifs_inode(inode)->ui_size = len;
+>
+> +	err = ubifs_init_acl(dir, inode);
+> +	if (err)
+> +		goto out_inode;
+> +
+>   	err = ubifs_init_security(dir, inode, &dentry->d_name);
+>   	if (err)
+>   		goto out_inode;
+> @@ -1188,6 +1204,10 @@ const struct inode_operations ubifs_dir_inode_operations = {
+>   	.getxattr    = ubifs_getxattr,
+>   	.listxattr   = ubifs_listxattr,
+>   	.removexattr = ubifs_removexattr,
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	.get_acl     = ubifs_get_acl,
+> +	.set_acl     = ubifs_set_acl,
+> +#endif
+>   };
+>
+>   const struct file_operations ubifs_dir_operations = {
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index a3dfe2a..74f4c63 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -52,6 +52,7 @@
+>   #include "ubifs.h"
+>   #include <linux/mount.h>
+>   #include <linux/slab.h>
+> +#include <linux/posix_acl.h>
+>
+>   static int read_block(struct inode *inode, void *addr, unsigned int block,
+>   		      struct ubifs_data_node *dn)
+> @@ -1246,6 +1247,11 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
+>   		mark_inode_dirty_sync(inode);
+>   	mutex_unlock(&ui->ui_mutex);
+>
+> +	if (attr->ia_valid & ATTR_MODE)
+> +		err = posix_acl_chmod(inode, inode->i_mode);
+> +	if (err)
+> +		return err;
+> +
+>   	if (release)
+>   		ubifs_release_budget(c, &req);
+>   	if (IS_SYNC(inode))
+> @@ -1557,6 +1563,10 @@ const struct inode_operations ubifs_file_inode_operations = {
+>   	.getxattr    = ubifs_getxattr,
+>   	.listxattr   = ubifs_listxattr,
+>   	.removexattr = ubifs_removexattr,
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	.get_acl     = ubifs_get_acl,
+> +	.set_acl     = ubifs_set_acl,
+> +#endif
+>   };
+>
+>   const struct inode_operations ubifs_symlink_inode_operations = {
+> @@ -1568,6 +1578,10 @@ const struct inode_operations ubifs_symlink_inode_operations = {
+>   	.getxattr    = ubifs_getxattr,
+>   	.listxattr   = ubifs_listxattr,
+>   	.removexattr = ubifs_removexattr,
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	.get_acl     = ubifs_get_acl,
+> +	.set_acl     = ubifs_set_acl,
+> +#endif
+>   };
+>
+>   const struct file_operations ubifs_file_operations = {
+> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> index 9547a278..52baad1 100644
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -441,6 +441,9 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
+>   			   ubifs_compr_name(c->mount_opts.compr_type));
+>   	}
+>
+> +	if (c->vfs_sb->s_flags & MS_POSIXACL)
+> +		seq_printf(s, ",acl");
+> +
+>   	return 0;
+>   }
+>
+> @@ -926,6 +929,8 @@ enum {
+>   	Opt_chk_data_crc,
+>   	Opt_no_chk_data_crc,
+>   	Opt_override_compr,
+> +	Opt_acl,
+> +	Opt_noacl,
+>   	Opt_err,
+>   };
+>
+> @@ -937,6 +942,8 @@ static const match_table_t tokens = {
+>   	{Opt_chk_data_crc, "chk_data_crc"},
+>   	{Opt_no_chk_data_crc, "no_chk_data_crc"},
+>   	{Opt_override_compr, "compr=%s"},
+> +	{Opt_acl, "acl"},
+> +	{Opt_noacl, "noacl"},
+>   	{Opt_err, NULL},
+>   };
+>
+> @@ -1037,6 +1044,14 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
+>   			c->default_compr = c->mount_opts.compr_type;
+>   			break;
+>   		}
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +		case Opt_acl:
+> +			c->vfs_sb->s_flags |= MS_POSIXACL;
+> +			break;
+> +		case Opt_noacl:
+> +			c->vfs_sb->s_flags &= ~MS_POSIXACL;
+> +			break;
+> +#endif
+>   		default:
+>   		{
+>   			unsigned long flag;
+> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+> index 62aa1a5..b9ddc8d 100644
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -1767,6 +1767,20 @@ int ubifs_removexattr(struct dentry *dentry, const char *name);
+>   int ubifs_init_security(struct inode *dentry, struct inode *inode,
+>   			const struct qstr *qstr);
+>
+> +/* acl.c */
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +int ubifs_init_acl(struct inode *dir, struct inode *inode);
+> +int ubifs_set_acl(struct inode *inode, struct posix_acl *acl, int type);
+> +struct posix_acl *ubifs_get_acl(struct inode *inode, int type);
+> +#else
+> +static inline int ubifs_init_acl(struct inode *inode, struct inode *dir)
 > +{
-> +	struct platform_device *pdev;
-> +	struct jz4780_bch *bch;
-> +
-> +	pdev = of_find_device_by_node(np);
-> +	if (!pdev || !platform_get_drvdata(pdev))
-> +		return -EPROBE_DEFER;
-> +
-> +	get_device(&pdev->dev);
-> +
-> +	bch = platform_get_drvdata(pdev);
-> +	clk_prepare_enable(bch->clk);
-> +
-> +	*dev = &pdev->dev;
 > +	return 0;
 > +}
-> +EXPORT_SYMBOL(jz4780_bch_get);
-> +
-> +/**
-> + * jz4780_bch_release() - release the BCH controller device
-> + * @dev: BCH device.
-> + */
-> +void jz4780_bch_release(struct device *dev)
-> +{
-> +	struct jz4780_bch *bch = dev_get_drvdata(dev);
-> +
-> +	clk_disable_unprepare(bch->clk);
-> +	put_device(dev);
-> +}
-> +EXPORT_SYMBOL(jz4780_bch_release);
-> +
-> +static int jz4780_bch_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct jz4780_bch *bch;
-> +	struct resource *res;
-> +
-> +	bch = devm_kzalloc(dev, sizeof(*bch), GFP_KERNEL);
-> +	if (!bch)
-> +		return -ENOMEM;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	bch->base = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(bch->base)) {
-> +		dev_err(dev, "failed to get I/O memory\n");
-
-This message is not needed. See lib/devres.c.
-
-> +		return PTR_ERR(bch->base);
-> +	}
-> +
-> +	jz4780_bch_disable(bch);
-> +
-> +	bch->clk = devm_clk_get(dev, NULL);
-> +	if (IS_ERR(bch->clk)) {
-> +		dev_err(dev, "failed to get clock: %ld\n", PTR_ERR(bch->clk));
-> +		return PTR_ERR(bch->clk);
-> +	}
-> +
-> +	clk_set_rate(bch->clk, BCH_CLK_RATE);
-> +
-> +	platform_set_drvdata(pdev, bch);
-> +	dev_info(dev, "JZ4780 BCH initialised\n");
-
-This message is not too useful.
-
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id jz4780_bch_dt_match[] = {
-> +	{ .compatible = "ingenic,jz4780-bch" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, jz4780_bch_dt_match);
-> +
-> +static struct platform_driver jz4780_bch_driver = {
-> +	.probe		= jz4780_bch_probe,
-
-Why no remove?
-
-> +	.driver	= {
-> +		.name	= "jz4780-bch",
-> +		.of_match_table = of_match_ptr(jz4780_bch_dt_match),
-> +	},
-> +};
-> +module_platform_driver(jz4780_bch_driver);
-> +
-> +MODULE_AUTHOR("Alex Smith <alex.smith@imgtec.com>");
-> +MODULE_DESCRIPTION("Ingenic JZ4780 BCH error correction driver");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/mtd/nand/jz4780_bch.h b/drivers/mtd/nand/jz4780_bch.h
-> new file mode 100644
-> index 000000000000..cf315f384b6e
-> --- /dev/null
-> +++ b/drivers/mtd/nand/jz4780_bch.h
-> @@ -0,0 +1,42 @@
-> +/*
-> + * JZ4780 BCH controller
-> + *
-> + * Copyright (c) 2015 Imagination Technologies
-> + * Author: Alex Smith <alex.smith@imgtec.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License version 2 as published
-> + * by the Free Software Foundation.
-> + */
-> +
-> +#ifndef __DRIVERS_MTD_NAND_JZ4780_BCH_H__
-> +#define __DRIVERS_MTD_NAND_JZ4780_BCH_H__
-> +
-> +#include <linux/types.h>
-> +
-> +struct device;
-> +struct device_node;
-> +
-> +/**
-> + * struct jz4780_bch_params - BCH parameters
-> + * @size: data bytes per ECC step.
-> + * @bytes: ECC bytes per step.
-> + * @strength: number of correctable bits per ECC step.
-> + */
-> +struct jz4780_bch_params {
-> +	int size;
-> +	int bytes;
-> +	int strength;
-> +};
-> +
-> +extern int jz4780_bch_calculate(struct device *dev,
-> +				struct jz4780_bch_params *params,
-> +				const uint8_t *buf, uint8_t *ecc_code);
-> +extern int jz4780_bch_correct(struct device *dev,
-> +			      struct jz4780_bch_params *params, uint8_t *buf,
-> +			      uint8_t *ecc_code);
-> +
-> +extern int jz4780_bch_get(struct device_node *np, struct device **dev);
-> +extern void jz4780_bch_release(struct device *dev);
-> +
-> +#endif /* __DRIVERS_MTD_NAND_JZ4780_BCH_H__ */
-> diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
-> new file mode 100644
-> index 000000000000..925a6b65363a
-> --- /dev/null
-> +++ b/drivers/mtd/nand/jz4780_nand.c
-> @@ -0,0 +1,376 @@
-> +/*
-> + * JZ4780 NAND driver
-> + *
-> + * Copyright (c) 2015 Imagination Technologies
-> + * Author: Alex Smith <alex.smith@imgtec.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License version 2 as published
-> + * by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/init.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_gpio.h>
-> +#include <linux/of_mtd.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/mtd/partitions.h>
-> +
-> +#include <linux/jz4780-nemc.h>
-> +
-> +#include "jz4780_bch.h"
-> +
-> +#define OFFSET_DATA	0x00000000
-> +#define OFFSET_CMD	0x00400000
-> +#define OFFSET_ADDR	0x00800000
-> +
-> +/* Command delay when there is no R/B pin (in microseconds). */
-> +#define RB_DELAY	50
-> +
-> +struct jz4780_nand_chip {
-> +	unsigned int bank;
-> +	void __iomem *base;
-> +};
-> +
-> +struct jz4780_nand {
-> +	struct mtd_info mtd;
-> +	struct nand_chip chip;
-> +
-> +	struct device *dev;
-> +	struct device *bch;
-> +
-> +	struct nand_ecclayout ecclayout;
-> +
-> +	int busy_gpio;
-> +	int wp_gpio;
-> +	unsigned int busy_gpio_active_low: 1;
-> +	unsigned int wp_gpio_active_low: 1;
-> +	unsigned int reading: 1;
-> +
-> +	unsigned int num_banks;
-> +	int selected;
-> +	struct jz4780_nand_chip chips[];
-> +};
-> +
-> +static inline struct jz4780_nand *to_jz4780_nand(struct mtd_info *mtd)
-> +{
-> +	return container_of(mtd, struct jz4780_nand, mtd);
-> +}
-> +
-> +static void jz4780_nand_select_chip(struct mtd_info *mtd, int chipnr)
-> +{
-> +	struct jz4780_nand *nand = to_jz4780_nand(mtd);
-> +	struct jz4780_nand_chip *chip;
-> +
-> +	if (chipnr == -1) {
-> +		/* Ensure the currently selected chip is deasserted. */
-> +		if (nand->selected >= 0) {
-> +			chip = &nand->chips[nand->selected];
-> +			jz4780_nemc_assert(nand->dev, chip->bank, false);
-> +		}
-> +	} else {
-> +		chip = &nand->chips[chipnr];
-> +		nand->chip.IO_ADDR_R = chip->base + OFFSET_DATA;
-> +		nand->chip.IO_ADDR_W = chip->base + OFFSET_DATA;
-> +	}
-> +
-> +	nand->selected = chipnr;
-> +}
-> +
-> +static void jz4780_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
-> +				 unsigned int ctrl)
-> +{
-> +	struct jz4780_nand *nand = to_jz4780_nand(mtd);
-> +	struct jz4780_nand_chip *chip;
-> +
-> +	BUG_ON(nand->selected < 0);
-
-Maybe instead of BUG() you could use a WARN() and avoid
-killing the kernel.
-
-> +	chip = &nand->chips[nand->selected];
-> +
-> +	if (ctrl & NAND_CTRL_CHANGE) {
-> +		if (ctrl & NAND_ALE)
-> +			nand->chip.IO_ADDR_W = chip->base + OFFSET_ADDR;
-> +		else if (ctrl & NAND_CLE)
-> +			nand->chip.IO_ADDR_W = chip->base + OFFSET_CMD;
-> +		else
-> +			nand->chip.IO_ADDR_W = chip->base + OFFSET_DATA;
-> +
-> +		jz4780_nemc_assert(nand->dev, chip->bank, ctrl & NAND_NCE);
-> +	}
-> +
-> +	if (cmd != NAND_CMD_NONE)
-> +		writeb(cmd, nand->chip.IO_ADDR_W);
-> +}
-> +
-> +static int jz4780_nand_dev_ready(struct mtd_info *mtd)
-> +{
-> +	struct jz4780_nand *nand = to_jz4780_nand(mtd);
-> +
-> +	return !(gpio_get_value(nand->busy_gpio) ^ nand->busy_gpio_active_low);
-> +}
-> +
-> +static void jz4780_nand_ecc_hwctl(struct mtd_info *mtd, int mode)
-> +{
-> +	struct jz4780_nand *nand = to_jz4780_nand(mtd);
-> +
-> +	nand->reading = (mode == NAND_ECC_READ);
-> +}
-> +
-> +static int jz4780_nand_ecc_calculate(struct mtd_info *mtd, const uint8_t *dat,
-> +				     uint8_t *ecc_code)
-> +{
-> +	struct jz4780_nand *nand = to_jz4780_nand(mtd);
-> +	struct jz4780_bch_params params;
-> +
-> +	/*
-> +	 * Don't need to generate the ECC when reading, BCH does it for us as
-> +	 * part of decoding/correction.
-> +	 */
-> +	if (nand->reading)
-> +		return 0;
-> +
-> +	params.size = nand->chip.ecc.size;
-> +	params.bytes = nand->chip.ecc.bytes;
-> +	params.strength = nand->chip.ecc.strength;
-> +
-> +	return jz4780_bch_calculate(nand->bch, &params, dat, ecc_code);
-> +}
-> +
-> +static int jz4780_nand_ecc_correct(struct mtd_info *mtd, uint8_t *dat,
-> +				   uint8_t *read_ecc, uint8_t *calc_ecc)
-> +{
-> +	struct jz4780_nand *nand = to_jz4780_nand(mtd);
-> +	struct jz4780_bch_params params;
-> +
-> +	params.size = nand->chip.ecc.size;
-> +	params.bytes = nand->chip.ecc.bytes;
-> +	params.strength = nand->chip.ecc.strength;
-> +
-> +	return jz4780_bch_correct(nand->bch, &params, dat, read_ecc);
-> +}
-> +
-> +static void jz4780_nand_init_ecc(struct jz4780_nand *nand, struct device *dev)
-> +{
-> +	struct mtd_info *mtd = &nand->mtd;
-> +	struct nand_chip *chip = &nand->chip;
-> +	struct nand_ecclayout *layout = &nand->ecclayout;
-> +	uint32_t start, i;
-> +
-> +	chip->ecc.size = of_get_nand_ecc_step_size(dev->of_node);
-> +	if (chip->ecc.size < 0)
-> +		chip->ecc.size = 1024;
-> +
-> +	chip->ecc.strength = of_get_nand_ecc_strength(dev->of_node);
-> +	if (chip->ecc.strength < 0)
-> +		chip->ecc.strength = 24;
-> +
-> +	chip->ecc.bytes = fls(1 + 8 * chip->ecc.size) * chip->ecc.strength / 8;
-> +
-> +	dev_info(dev, "using %s BCH (strength %d, size %d, bytes %d)\n",
-> +		 (nand->bch) ? "hardware" : "software", chip->ecc.strength,
-> +		 chip->ecc.size, chip->ecc.bytes);
-> +
-> +	if (nand->bch) {
-> +		chip->ecc.mode = NAND_ECC_HW;
-> +		chip->ecc.hwctl = jz4780_nand_ecc_hwctl;
-> +		chip->ecc.calculate = jz4780_nand_ecc_calculate;
-> +		chip->ecc.correct = jz4780_nand_ecc_correct;
-> +	} else {
-> +		chip->ecc.mode = NAND_ECC_SOFT_BCH;
-> +	}
-> +
-> +	/* Generate ECC layout. ECC codes are right aligned in the OOB area. */
-> +	layout->eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
-> +	start = mtd->oobsize - layout->eccbytes;
-> +	for (i = 0; i < layout->eccbytes; i++)
-> +		layout->eccpos[i] = start + i;
-> +
-> +	layout->oobfree[0].offset = 2;
-> +	layout->oobfree[0].length = mtd->oobsize - layout->eccbytes - 2;
-> +
-> +	chip->ecc.layout = layout;
-> +}
-> +
-> +static int jz4780_nand_init_chips(struct jz4780_nand *nand, struct device *dev)
-> +{
-> +	struct jz4780_nand_chip *chip;
-> +	const __be32 *prop;
-> +	u64 addr, size;
-> +	int i = 0;
-> +
-> +	/*
-> +	 * Iterate over each bank assigned to this device and request resources.
-> +	 * The bank numbers may not be consecutive, but nand_scan_ident()
-> +	 * expects chip numbers to be, so fill out a consecutive array of chips
-> +	 * which map chip number to actual bank number.
-> +	 */
-> +	while ((prop = of_get_address(dev->of_node, i, &size, NULL))) {
-> +		chip = &nand->chips[i];
-> +		chip->bank = of_read_number(prop, 1);
-> +
-> +		jz4780_nemc_set_type(nand->dev, chip->bank,
-> +				     JZ4780_NEMC_BANK_NAND);
-> +
-> +		addr = of_translate_address(dev->of_node, prop);
-
-Are you sure you must translate the address yourself?
-Isn't this handled by the OF magic behing the ranges property
-in the NEMC DT node?
-
-> +		if (addr == OF_BAD_ADDR)
+> +#define ubifs_get_acl NULL
+> +#define ubifs_set_acl NULL
+> +#endif
+> +
+>   /* super.c */
+>   struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
+>
+> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+> index 6534b98..f2556d2 100644
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -52,7 +52,6 @@
+>    * in the VFS inode cache. The xentries are cached in the LNC cache (see
+>    * tnc.c).
+>    *
+> - * ACL support is not implemented.
+>    */
+>
+>   #include "ubifs.h"
+> @@ -78,6 +77,10 @@ enum {
+>   	USER_XATTR,
+>   	TRUSTED_XATTR,
+>   	SECURITY_XATTR,
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	POSIX_ACL_DEFAULT,
+> +	POSIX_ACL_ACCESS,
+> +#endif
+>   };
+>
+>   static const struct inode_operations empty_iops;
+> @@ -276,6 +279,18 @@ static int check_namespace(const struct qstr *nm)
+>   		if (nm->name[sizeof(XATTR_SECURITY_PREFIX) - 1] == '\0')
+>   			return -EINVAL;
+>   		type = SECURITY_XATTR;
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	} else if (!strncmp(nm->name, XATTR_NAME_POSIX_ACL_DEFAULT,
+> +			    sizeof(XATTR_NAME_POSIX_ACL_DEFAULT) - 1)) {
+> +		if (nm->name[sizeof(XATTR_NAME_POSIX_ACL_DEFAULT) - 1] != '\0')
 > +			return -EINVAL;
-> +
-> +		chip->base = devm_ioremap(dev, addr, size);
-> +		if (IS_ERR(chip->base)) {
-> +			dev_err(dev, "failed to map bank %u: %ld\n", chip->bank,
-> +				PTR_ERR(chip->base));
-> +			return PTR_ERR(chip->base);
-> +		}
-> +
-> +		i++;
+> +		type = POSIX_ACL_DEFAULT;
+> +	} else if (!strncmp(nm->name, XATTR_NAME_POSIX_ACL_ACCESS,
+> +			    sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1)) {
+> +		if (nm->name[sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1] != '\0')
+> +			return -EINVAL;
+> +		type = POSIX_ACL_ACCESS;
+> +#endif
+>   	} else
+>   		return -EOPNOTSUPP;
+>
+> @@ -359,6 +374,9 @@ out_free:
+>   int ubifs_setxattr(struct dentry *dentry, const char *name,
+>   		   const void *value, size_t size, int flags)
+>   {
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	const struct xattr_handler *handler;
+> +#endif
+>   	struct qstr nm = QSTR_INIT(name, strlen(name));
+>   	int type;
+>
+> @@ -369,6 +387,16 @@ int ubifs_setxattr(struct dentry *dentry, const char *name,
+>   	if (type < 0)
+>   		return type;
+>
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	if (type == POSIX_ACL_DEFAULT || type == POSIX_ACL_ACCESS) {
+> +		if (type == POSIX_ACL_DEFAULT)
+> +			handler = &posix_acl_default_xattr_handler;
+> +		if (type == POSIX_ACL_ACCESS)
+> +			handler = &posix_acl_access_xattr_handler;
+> +		return handler->set(dentry, name, value, size, flags,
+> +				    handler->flags);
 > +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int jz4780_nand_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	unsigned int num_banks;
-> +	struct jz4780_nand *nand;
-> +	struct device_node *bch_np;
-> +	struct mtd_info *mtd;
-> +	struct nand_chip *chip;
-> +	enum of_gpio_flags flags;
-> +	struct mtd_part_parser_data ppdata;
-> +	int ret;
-> +
-> +	num_banks = jz4780_nemc_num_banks(dev);
-> +
-> +	nand = devm_kzalloc(dev,
-> +			sizeof(*nand) + (sizeof(nand->chips[0]) * num_banks),
-> +			GFP_KERNEL);
-> +	if (!nand)
-> +		return -ENOMEM;
-> +
-> +	nand->dev = dev;
-> +	nand->num_banks = num_banks;
-> +	nand->selected = -1;
-> +
-> +	/* Look for the BCH controller. */
-> +	bch_np = of_parse_phandle(dev->of_node, "ingenic,bch-device", 0);
-> +	if (bch_np) {
-> +		ret = jz4780_bch_get(bch_np, &nand->bch);
-> +		of_node_put(bch_np);
-> +		if (ret)
-> +			return ret;
+> +#endif
+>   	return ubifs_do_setxattr(d_inode(dentry), name, value, size, flags);
+>   }
+>
+> @@ -428,6 +456,9 @@ out_unlock:
+>   ssize_t ubifs_getxattr(struct dentry *dentry, const char *name,
+>   		       void *value, size_t size)
+>   {
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	const struct xattr_handler *handler;
+> +#endif
+>   	struct qstr nm = QSTR_INIT(name, strlen(name));
+>   	int type;
+>
+> @@ -438,6 +469,16 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name,
+>   	if (type < 0)
+>   		return type;
+>
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	if (type == POSIX_ACL_DEFAULT || type == POSIX_ACL_ACCESS) {
+> +		if (type == POSIX_ACL_DEFAULT)
+> +			handler = &posix_acl_default_xattr_handler;
+> +		if (type == POSIX_ACL_ACCESS)
+> +			handler = &posix_acl_access_xattr_handler;
+> +		return handler->get(dentry, name, value, size,
+> +				    handler->flags);
 > +	}
+> +#endif
+>   	return ubifs_do_getxattr(d_inode(dentry), name, value, size);
+>   }
+>
+> @@ -547,20 +588,33 @@ out_cancel:
+>
+>   int ubifs_removexattr(struct dentry *dentry, const char *name)
+>   {
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	const struct xattr_handler *handler;
+> +#endif
+>   	struct inode *inode, *host = d_inode(dentry);
+>   	struct ubifs_info *c = host->i_sb->s_fs_info;
+>   	struct qstr nm = QSTR_INIT(name, strlen(name));
+>   	struct ubifs_dent_node *xent;
+>   	union ubifs_key key;
+> -	int err;
+> +	int type, err;
+>
+>   	dbg_gen("xattr '%s', ino %lu ('%pd')", name,
+>   		host->i_ino, dentry);
+>   	ubifs_assert(mutex_is_locked(&host->i_mutex));
+>
+> -	err = check_namespace(&nm);
+> -	if (err < 0)
+> -		return err;
+> +	type = check_namespace(&nm);
+> +	if (type < 0)
+> +		return type;
 > +
-> +	mtd = &nand->mtd;
-> +	chip = &nand->chip;
-> +	mtd->priv = chip;
-> +	mtd->owner = THIS_MODULE;
-> +	mtd->name = "jz4780-nand";
-
-Nit: you might want to use a macro and avoid duplicating
-the name string.
-
-> +	mtd->dev.parent = dev;
-> +
-> +	chip->chip_delay = RB_DELAY;
-> +	chip->options = NAND_NO_SUBPAGE_WRITE;
-> +	chip->bbt_options = NAND_BBT_USE_FLASH;
-> +	chip->select_chip = jz4780_nand_select_chip;
-> +	chip->cmd_ctrl = jz4780_nand_cmd_ctrl;
-> +
-> +	nand->busy_gpio = of_get_named_gpio_flags(dev->of_node,
-> +						  "rb-gpios",
-> +						  0, &flags);
-> +	if (gpio_is_valid(nand->busy_gpio)) {
-> +		ret = devm_gpio_request(dev, nand->busy_gpio, "NAND busy");
-> +		if (ret) {
-> +			dev_err(dev, "failed to request busy GPIO %d: %d\n",
-> +				nand->busy_gpio, ret);
-> +			goto err_release_bch;
-> +		}
-> +
-> +		nand->busy_gpio_active_low = flags & OF_GPIO_ACTIVE_LOW;
-> +		gpio_direction_input(nand->busy_gpio);
-> +
-> +		chip->dev_ready = jz4780_nand_dev_ready;
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +	if (type == POSIX_ACL_DEFAULT || type == POSIX_ACL_ACCESS) {
+> +		if (type == POSIX_ACL_DEFAULT)
+> +			handler = &posix_acl_default_xattr_handler;
+> +		if (type == POSIX_ACL_ACCESS)
+> +			handler = &posix_acl_access_xattr_handler;
+> +		return handler->set(dentry, name, NULL, 0, 0, handler->flags);
 > +	}
-> +
-> +	nand->wp_gpio = of_get_named_gpio_flags(dev->of_node, "wp-gpios",
-> +						0, &flags);
-> +	if (gpio_is_valid(nand->wp_gpio)) {
-> +		ret = devm_gpio_request(dev, nand->wp_gpio, "NAND WP");
-> +		if (ret) {
-> +			dev_err(dev, "failed to request WP GPIO %d: %d\n",
-> +				nand->wp_gpio, ret);
-> +			goto err_release_bch;
-> +		}
-> +
-> +		nand->wp_gpio_active_low = flags & OF_GPIO_ACTIVE_LOW;
-> +		gpio_direction_output(nand->wp_gpio, nand->wp_gpio_active_low);
-> +	}
-> +
-> +	ret = jz4780_nand_init_chips(nand, dev);
-> +	if (ret)
-> +		goto err_release_bch;
-> +
-> +	ret = nand_scan_ident(mtd, num_banks, NULL);
-> +	if (ret)
-> +		goto err_release_bch;
-> +
-> +	jz4780_nand_init_ecc(nand, dev);
-> +
-> +	ret = nand_scan_tail(mtd);
-> +	if (ret)
-> +		goto err_release_bch;
-> +
-> +	ppdata.of_node = dev->of_node;
-> +	ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
-> +	if (ret)
-> +		goto err_release_nand;
-> +
-> +	platform_set_drvdata(pdev, nand);
-> +	dev_info(dev, "JZ4780 NAND initialised\n");
-
-Ditto.
-
-> +	return 0;
-> +
-> +err_release_nand:
-> +	nand_release(mtd);
-> +
-> +err_release_bch:
-> +	if (nand->bch)
-> +		jz4780_bch_release(nand->bch);
-> +
-> +	return ret;
-> +}
-> +
-> +static int jz4780_nand_remove(struct platform_device *pdev)
-> +{
-> +	struct jz4780_nand *nand = platform_get_drvdata(pdev);
-> +
-> +	if (nand->bch)
-> +		jz4780_bch_release(nand->bch);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id jz4780_nand_dt_match[] = {
-> +	{ .compatible = "ingenic,jz4780-nand" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, jz4780_nand_dt_match);
-> +
-> +static struct platform_driver jz4780_nand_driver = {
-> +	.probe		= jz4780_nand_probe,
-> +	.remove		= jz4780_nand_remove,
-> +	.driver	= {
-> +		.name	= "jz4780-nand",
-> +		.of_match_table = of_match_ptr(jz4780_nand_dt_match),
-> +	},
-> +};
-> +module_platform_driver(jz4780_nand_driver);
-> +
-> +MODULE_AUTHOR("Alex Smith <alex.smith@imgtec.com>");
-> +MODULE_DESCRIPTION("Ingenic JZ4780 NAND driver");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.4.6
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+> +#endif
+>
+>   	xent = kmalloc(UBIFS_MAX_XENT_NODE_SZ, GFP_NOFS);
+>   	if (!xent)
+>
