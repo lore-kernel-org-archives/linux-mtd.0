@@ -8,9 +8,9 @@ CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
  <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-mtd@lists.infradead.org>, Bayi Cheng <bayi.cheng@mediatek.com>
-Subject: [PATCH 1/3] doc: dt: add documentation for Mediatek spi-nor controller
-Date: Tue, 8 Sep 2015 17:49:54 +0800
-Message-ID: <1441705796-11365-2-git-send-email-bayi.cheng@mediatek.com>
+Subject: [PATCH 3/3] arm64: dts: mt8173: Add nor flash node
+Date: Tue, 8 Sep 2015 17:49:56 +0800
+Message-ID: <1441705796-11365-4-git-send-email-bayi.cheng@mediatek.com>
 In-Reply-To: <1441705796-11365-1-git-send-email-bayi.cheng@mediatek.com>
 References: <1441705796-11365-1-git-send-email-bayi.cheng@mediatek.com>
 MIME-Version: 1.0
@@ -24,45 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add device tree binding documentation for serial flash with
-Mediatek serial flash controller
+Add Mediatek nor flash node
 
 Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
 ---
- Documentation/devicetree/bindings/mtd/mtk_nor.txt | 25 +++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/mtk_nor.txt
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtk_nor.txt b/Documentation/devicetree/bindings/mtd/mtk_nor.txt
-new file mode 100644
-index 0000000..0eca0cd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/mtk_nor.txt
-@@ -0,0 +1,25 @@
-+* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+index d18ee42..a14f005 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -365,6 +365,16 @@
+ 			status = "disabled";
+ 		};
+ 
++		nor_flash: nor@1100d000 {
++			compatible = "mediatek,mt8173-nor";
++			reg = <0 0x1100d000 0 0xe0>;
++			clocks = <&pericfg CLK_PERI_SPI>,
++				 <&topckgen CLK_TOP_AXI_SEL>,
++				 <&topckgen CLK_TOP_UNIVPLL2_D8>,
++				 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
++			clock-names = "spi_clk", "axi_clk", "mux_clk", "sf_clk";
++		};
 +
-+MTK MT81xx serial flash controller is designed for serial Flash device.
-+It supports one Flash device with signal mode, dual mode and quad mode.
-+
-+Required properties:
-+- compatible: should be "mediatek,mt8173-nor";
-+- reg: physical base address and length of the controller's register
-+- clocks: spi nor source clock
-+- clock-names: "spi_clk", "axi_clk", "mux_clk", "sf_clk"
-+
-+See Documentation/devicetree/bindings/clock/clock-bindings.txt
-+and Documentation/mtd/spi-nor.txt for details.
-+
-+Example:
-+nor_flash: nor@1100d000 {
-+	compatible = "mediatek,mt8173-nor";
-+	reg = <0 0x1100d000 0 0xe0>;
-+	clocks = <&pericfg CLK_PERI_SPI>,
-+		 <&topckgen CLK_TOP_AXI_SEL>,
-+		 <&topckgen CLK_TOP_UNIVPLL2_D8>,
-+		 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
-+	clock-names = "spi_clk", "axi_clk", "mux_clk", "sf_clk";
-+};
-+
+ 		i2c3: i2c3@11010000 {
+ 			compatible = "mediatek,mt8173-i2c";
+ 			reg = <0 0x11010000 0 0x70>,
 -- 
 1.8.1.1.dirty
