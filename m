@@ -1,33 +1,23 @@
-From: Marek Vasut <marex@denx.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH linux-next v5 1/5] mtd: spi-nor: notify (Q)SPI controller
- about protocol change
-Date: Tue, 8 Sep 2015 18:29:10 +0200
-Cc: Jonas Gorski <jogo@openwrt.org>, nicolas.ferre@atmel.com,
- Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>,
- "Brian Norris" <computersforpeace@gmail.com>,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
- "Bean Huo (beanhuo)" <beanhuo@micron.com>,
- Gabor Juhos <juhosg@openwrt.org>, shijie.huang@intel.com,
- Ben Hutchings <ben@decadent.org.uk>, Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- "MTD Maling List" <linux-mtd@lists.infradead.org>,
- Kumar Gala <galak@codeaurora.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <cover.1440580764.git.cyrille.pitchen@atmel.com>
- <CAOiHx=m0FhuH5BR-EYp4yQyB83yGRzdCFAPVfqB0b0+BvRE-6Q@mail.gmail.com>
- <55EF0AB5.3070508@atmel.com>
-In-Reply-To: <55EF0AB5.3070508@atmel.com>
+Subject: Re: [PATCH 15/16] mtd: mtdcore: fix initcall level
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1440592108-3740-1-git-send-email-holler@ahsoftware.de>
+ <1440592108-3740-16-git-send-email-holler@ahsoftware.de>
+ <20150901211938.GJ81844@google.com> <55E68A72.30909@ahsoftware.de>
+ <55E91746.4060502@ahsoftware.de>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+ Russel King <linux@arm.linux.org.uk>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Grant Likely <grant.likely@linaro.org>,
+ Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+From: Alexander Holler <holler@ahsoftware.de>
+Message-ID: <55EF38A1.2040201@ahsoftware.de>
+Date: Tue, 8 Sep 2015 21:36:01 +0200
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+In-Reply-To: <55E91746.4060502@ahsoftware.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201509081829.10398.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,34 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, September 08, 2015 at 06:20:05 PM, Cyrille Pitchen wrote:
-> Hi Jonas,
-> 
-> taking your comments into account I'm about to test a new series with
-> additional patches to handle the Read ID command in multiple I/O protocols
-> and relying on new members in the struct spi_nor:
-> 
->  * @erase_proto:	the SPI protocol used by erase operations
->  * @read_proto:		the SPI protocol used by read operations
->  * @write_proto:	the SPI protocol used by write operations
->  * @reg_proto		the SPI protocol used by read_reg/write_reg operations
-> 
-> 	enum spi_protocol	erase_proto;
-> 	enum spi_protocol	read_proto;
-> 	enum spi_protocol	write_proto;
-> 	enum spi_protocol	reg_proto;
-> 
-> This way, the read(), write(), erase(), read_reg() and write_reg() hooks
-> can check the relevant protocol member so the spi-nor framework doesn't
-> need to call spi_nor_set_protocol() before any command.
-> 
-> Also the op codes for read, page program and erase commands will be tuned
-> depending on the memory manufacturer and the selected SPI protocol.
-> 
-> I'm likely to publish this new series tomorrow after my tests on a Micron
-> memory.
+Am 04.09.2015 um 06:00 schrieb Alexander Holler:
+> Am 02.09.2015 um 07:34 schrieb Alexander Holler:
+>> Am 01.09.2015 um 23:19 schrieb Brian Norris:
+>>> Hi Alexander,
+>>>
+>>> No judgment here for the rest of this series, but for this patch:
+>>>
+>>> On Wed, Aug 26, 2015 at 02:28:27PM +0200, Alexander Holler wrote:
+>>>> The mtd-core has to be initialized before other dependent mtd-drivers,
+>>>> otherwise a crash might occur.
+>>>>
+>>>> Currently mtd_init() is called in the initcall-level device, which is
+>>>> the
+>>>> same level where most mtd-drivers will end up. By luck this seemed to
+>>>> have
+>>>> been called most of the time before other mtd-drivers without having
+>>>> been
+>>>> explicitly enforced.
+>>>
+>>> I can't really speak for the original authors, but it does not appear to
+>>> be entirely "by luck." Link order was one of the de facto ways to get
+>>> this ordering (though it's not really a great one), and mtdcore was
+>>> always linked first within the drivers/mtd/ directory structure.
+>>>
+>>> But that's just background, I think this is worth fixing anyway. It
+>>> could, for instance, become a problem if drivers are located outside
+>>> drivers/mtd/; I see random board files in arch/ that register with MTD,
+>>> and I'm actually not sure how they have never tripped on this.
 
-Excellent, please keep me on Cc as I'm already warming up my Spansion part ;-)
+As I've just had a look at my patches in order to clean up the patch for 
+parallel initialization (to post it here too):
 
-Best regards,
-Marek Vasut
+drivers/mtd/ofparts.c has the same problem. In order to let the 
+NAND-driver see the partitions defined in the DT I had to move this into 
+another initcall level (fs sync) too.
+
+Regards,
+
+Alexander Holler
