@@ -1,22 +1,23 @@
-Subject: Re: [PATCH 15/16] mtd: mtdcore: fix initcall level
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1440592108-3740-1-git-send-email-holler@ahsoftware.de>
- <1440592108-3740-16-git-send-email-holler@ahsoftware.de>
- <20150901211938.GJ81844@google.com> <55E68A72.30909@ahsoftware.de>
- <55E91746.4060502@ahsoftware.de>
+Sender: Rob Herring <robherring2@gmail.com>
+Subject: Re: [PATCH linux-next v5 4/5] Documentation: atmel-quadspi: add
+ binding file for Atmel QSPI driver
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, nicolas.ferre@atmel.com,
+ broonie@kernel.org, linux-spi@vger.kernel.org, dwmw2@infradead.org,
+ computersforpeace@gmail.com, zajec5@gmail.com, beanhuo@micron.com,
+ juhosg@openwrt.org, marex@denx.de, shijie.huang@intel.com,
+ ben@decadent.org.uk
+References: <cover.1440580764.git.cyrille.pitchen@atmel.com>
+ <793cb906c79eed821cf9b47e79dc1b54a7a5dbd0.1440580764.git.cyrille.pitchen@atmel.com>
 Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
- Russel King <linux@arm.linux.org.uk>,
- Andrew Morton <akpm@linux-foundation.org>,
- Grant Likely <grant.likely@linaro.org>,
- Tomeu Vizoso <tomeu.vizoso@collabora.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-From: Alexander Holler <holler@ahsoftware.de>
-Message-ID: <55EF38A1.2040201@ahsoftware.de>
-Date: Tue, 8 Sep 2015 21:36:01 +0200
+ devicetree@vger.kernel.org, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ linux-mtd@lists.infradead.org
+From: Rob Herring <robh@kernel.org>
+Message-ID: <55EF6F50.5020006@kernel.org>
+Date: Tue, 8 Sep 2015 18:29:20 -0500
 MIME-Version: 1.0
-In-Reply-To: <55E91746.4060502@ahsoftware.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <793cb906c79eed821cf9b47e79dc1b54a7a5dbd0.1440580764.git.cyrille.pitchen@atmel.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,42 +28,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 04.09.2015 um 06:00 schrieb Alexander Holler:
-> Am 02.09.2015 um 07:34 schrieb Alexander Holler:
->> Am 01.09.2015 um 23:19 schrieb Brian Norris:
->>> Hi Alexander,
->>>
->>> No judgment here for the rest of this series, but for this patch:
->>>
->>> On Wed, Aug 26, 2015 at 02:28:27PM +0200, Alexander Holler wrote:
->>>> The mtd-core has to be initialized before other dependent mtd-drivers,
->>>> otherwise a crash might occur.
->>>>
->>>> Currently mtd_init() is called in the initcall-level device, which is
->>>> the
->>>> same level where most mtd-drivers will end up. By luck this seemed to
->>>> have
->>>> been called most of the time before other mtd-drivers without having
->>>> been
->>>> explicitly enforced.
->>>
->>> I can't really speak for the original authors, but it does not appear to
->>> be entirely "by luck." Link order was one of the de facto ways to get
->>> this ordering (though it's not really a great one), and mtdcore was
->>> always linked first within the drivers/mtd/ directory structure.
->>>
->>> But that's just background, I think this is worth fixing anyway. It
->>> could, for instance, become a problem if drivers are located outside
->>> drivers/mtd/; I see random board files in arch/ that register with MTD,
->>> and I'm actually not sure how they have never tripped on this.
+On 08/26/2015 07:30 AM, Cyrille Pitchen wrote:
+> This patch documents the DT bindings for the driver of the Atmel QSPI
+> controller embedded inside sama5d2x SoCs.
+> 
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+> Acked-by: Marek Vasut <marex@denx.de>
 
-As I've just had a look at my patches in order to clean up the patch for 
-parallel initialization (to post it here too):
+Acked-by: Rob Herring <robh@kernel.org>
 
-drivers/mtd/ofparts.c has the same problem. In order to let the 
-NAND-driver see the partitions defined in the DT I had to move this into 
-another initcall level (fs sync) too.
-
-Regards,
-
-Alexander Holler
+> ---
+>  .../devicetree/bindings/mtd/atmel-quadspi.txt      | 29 ++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+> new file mode 100644
+> index 000000000000..0b8d545bb198
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+> @@ -0,0 +1,29 @@
+> +* Atmel Quad Serial Peripheral Interface (QSPI)
+> +
+> +Required properties:
+> +- compatible:     should be "atmel,sama5d2-qspi"
+> +- reg:            the first contains the register location and length,
+> +                  the second contains the memory mapping address and length
+> +- interrupts:     should contain the interrupt for the device
+> +- clocks:         the phandle of the clock needed by the QSPI controller
+> +- #address-cells: should be <1>
+> +- #size-cells:    should be <0>
+> +
+> +Example:
+> +
+> +spi@f0020000 {
+> +	compatible = "atmel,sama5d2-qspi";
+> +	reg = <0xf0020000 0x100>,
+> +	      <0xd0000000 0x8000000>;
+> +	interrupts = <52 IRQ_TYPE_LEVEL_HIGH 7>;
+> +	clocks = <&spi0_clk>;
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_spi0_default>;
+> +	status = "okay";
+> +
+> +	m25p80@0 {
+> +		...
+> +	};
+> +};
+> 
