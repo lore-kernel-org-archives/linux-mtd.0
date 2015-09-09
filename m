@@ -1,19 +1,21 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-bn1bon0139.outbound.protection.outlook.com
+ ([157.56.111.139] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZZjfo-0007dD-K0
- for linux-mtd@lists.infradead.org; Wed, 09 Sep 2015 18:00:45 +0000
-Received: by padhk3 with SMTP id hk3so16746377pad.3
- for <linux-mtd@lists.infradead.org>; Wed, 09 Sep 2015 11:00:23 -0700 (PDT)
-Date: Wed, 9 Sep 2015 11:00:20 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MTD updates #2 for 4.3-rc1
-Message-ID: <20150909180020.GE81844@google.com>
+ id 1ZZo8z-0007Qg-Mc
+ for linux-mtd@lists.infradead.org; Wed, 09 Sep 2015 22:47:10 +0000
+From: Han Xu <b45815@freescale.com>
+To: <shijie.huang@arm.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <b45815@freescale.com>, <boris.brezillon@free-electrons.com>,
+ <fabio.estevam@freescale.com>, <hofrat@osadl.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
+ <dmaengine@vger.kernel.org>
+Subject: [PATCH v4 0/6] mtd: nand: gpmi: gpmi-nand DSM and bitflip support
+Date: Wed, 9 Sep 2015 17:37:18 -0500
+Message-ID: <1441838244-2106-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+v1 ---> v2
+change the erased page bitflip threshold to ecc strength in bitflip patch
 
-There was one significant bug in my first pull request, fixed here. I
-also threw in a few trivial ID additions and a small module rename.
+v2 ---> v3
+remove unnecessary function in mxs-dma
+change the log message when legacy_set_geometry failed
+fix the comment message for bitflip
+add comma for all field entries
 
-The following changes since commit 718e38b4d96085b4dab08d3d32e5e033aa1ba6e9:
+v3 ---> v4
+code style change for indentation
 
-  mtd: mtd_oobtest: Fix the address offset with vary_offset case (2015-08-27 16:30:01 -0700)
+Han Xu (4):
+  mtd: nand: gpmi: may use minimum required ecc for 744 oobsize NAND
+  mtd: nand: gpmi: add GPMI NAND support for i.MX7D
+  mtd: nand: gpmi: correct bitflip for erased NAND page
+  mtd: nand: gpmi: support NAND on i.MX6UL
 
-are available in the git repository at:
+Huang Shijie (2):
+  mtd: nand: gpmi: add gpmi dsm supend/resume support
+  dmaengine: mxs: support i.MX7D and deep sleep mode
 
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20150909
+ drivers/dma/mxs-dma.c                  |  64 ++++++++++++++--
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  |  24 ++++--
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  15 +++-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 130 ++++++++++++++++++++++++++++-----
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  14 +++-
+ 5 files changed, 208 insertions(+), 39 deletions(-)
 
-for you to fetch changes up to 2ff46e6fea6254ac8fa97aeb9c14e51436ab95f6:
-
-  mtd: spi-nor: fix NULL dereference when no match found in spi_nor_ids[] (2015-09-02 16:34:35 -0700)
-
-----------------------------------------------------------------
-MTD updates #2 for 4.3-rc1:
-
- * SPI NOR: bug fix for a "end of table" check that resulted in a NULL
-   dereference in some cases
-
- * SPI NOR: a few new IDs / feature flags
-
- * OMAP2 NAND: rename module so it doesn't conflict with onenand omap2.ko
-
-----------------------------------------------------------------
-Alexis Ballier (1):
-      mtd: spi-nor: Add support for sst25wf020a
-
-Brian Norris (1):
-      mtd: spi-nor: fix NULL dereference when no match found in spi_nor_ids[]
-
-Joachim Eastwood (1):
-      mtd: spi-nor: s25sl064p supports both dual and quad I/O
-
-Jonas Gorski (1):
-      mtd: spi-nor: allow dual/quad reads on S25FL129P
-
-Mika Westerberg (1):
-      mtd: spi-nor: Add support for Micron n25q064a serial flash
-
-Roger Quadros (1):
-      mtd: nand: omap2: Rename shippable module to omap2_nand
-
- drivers/mtd/nand/Makefile     |  3 ++-
- drivers/mtd/spi-nor/spi-nor.c | 10 ++++++----
- 2 files changed, 8 insertions(+), 5 deletions(-)
+-- 
+1.9.1
