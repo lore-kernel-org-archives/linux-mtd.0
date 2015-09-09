@@ -1,23 +1,23 @@
-Received: from mail-bn1on0142.outbound.protection.outlook.com
- ([157.56.110.142] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZZo91-0007Qn-OH
- for linux-mtd@lists.infradead.org; Wed, 09 Sep 2015 22:47:14 +0000
-From: Han Xu <b45815@freescale.com>
-To: <shijie.huang@arm.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <b45815@freescale.com>, <boris.brezillon@free-electrons.com>,
- <fabio.estevam@freescale.com>, <hofrat@osadl.org>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
- <dmaengine@vger.kernel.org>
-Subject: [PATCH v4 1/6] mtd: nand: gpmi: add gpmi dsm supend/resume support
-Date: Wed, 9 Sep 2015 17:37:19 -0500
-Message-ID: <1441838244-2106-2-git-send-email-b45815@freescale.com>
-In-Reply-To: <1441838244-2106-1-git-send-email-b45815@freescale.com>
-References: <1441838244-2106-1-git-send-email-b45815@freescale.com>
+ id 1ZZovt-0007IA-BE
+ for linux-mtd@lists.infradead.org; Wed, 09 Sep 2015 23:37:42 +0000
+Received: by pacex6 with SMTP id ex6so23887083pac.0
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Sep 2015 16:37:20 -0700 (PDT)
+Date: Wed, 9 Sep 2015 16:37:18 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Peng Fan <van.freenix@gmail.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: blktrans: fix integer overflow
+Message-ID: <20150909233718.GA11487@google.com>
+References: <1440169051-13891-1-git-send-email-van.freenix@gmail.com>
+ <20150902170249.GQ81844@google.com>
+ <20150905134224.GB17774@linux-4gyl.site>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150905134224.GB17774@linux-4gyl.site>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,88 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <b32955@freescale.com>
+On Sat, Sep 05, 2015 at 09:42:27PM +0800, Peng Fan wrote:
+> On Wed, Sep 02, 2015 at 10:02:49AM -0700, Brian Norris wrote:
+> > One possibility, since you only point to a single computation that
+> > overflows, is to just fix the overflow locally. It's not like the 'size'
+> > (which represents number of sectors) is actually ever overflowing a
+> > 32-bit integer. It's just the multiplication that overflows. So you
+> > could cast to 64-bit arithmetic just for the multiplication. e.g.:
+> > 
+> > 	set_capcity(gd, ((u64)new->size * tr->blksize) >> 9);
+> 
+> Yeah. It is the multiplication overflowing a 32-bit interger. My frist
+> implementation is this way, using u64 to do type cast. But I guess one
+> day the number of sectors can be larger than UINT_MAX, so I change it
+> to 'unsigned long long' from 'unsigned long', which is
+> not the right way, thanks for correcting me.
+> > 
+> > Or some other creative solution.
+> 
+> I think this should be a bug fix. If you need a quick fix, I can send
+> out the simple patch that just do (u64) cast. If not, I can take some
+> time to "fix all the blktrans users".
 
-i.MX6SX supports deep sleep mode(DSM) that may turn off GPMI/BCH power
-during suspend, add gpmi nand suspend/resume function to release DMA
-channel in suspend function and re-init GPMI/BCH controller during
-resume function.
+I think since you've identified (and tested) a fix, we might as well
+include it. So I suppose the cast approach. The larger change would be
+more invasive and may take a while.
 
-Although it is not necessary to restore GPMI/BCH registers value for
-i.MX6QDL, the code doesn't distinguish different platforms to keep the
-code simple.
+> > 
+> > Then, we don't have to address this problem till we start seeing 2TB
+> > MTDs!
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Han Xu <han.xu@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 45 +++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 1b8f350..dfd0ba1 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1,7 +1,7 @@
- /*
-  * Freescale GPMI NAND Flash Driver
-  *
-- * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
-+ * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
-  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
-  *
-  * This program is free software; you can redistribute it and/or modify
-@@ -2036,9 +2036,52 @@ static int gpmi_nand_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int gpmi_pm_suspend(struct device *dev)
-+{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+
-+	release_dma_channels(this);
-+	return 0;
-+}
-+
-+static int gpmi_pm_resume(struct device *dev)
-+{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = acquire_dma_channels(this);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* re-init the GPMI registers */
-+	this->flags &= ~GPMI_TIMING_INIT_OK;
-+	ret = gpmi_init(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init the BCH registers */
-+	ret = bch_set_geometry(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting BCH : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init others */
-+	gpmi_extra_init(this);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops gpmi_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
-+};
-+
- static struct platform_driver gpmi_nand_driver = {
- 	.driver = {
- 		.name = "gpmi-nand",
-+		.pm = &gpmi_pm_ops,
- 		.of_match_table = gpmi_nand_id_table,
- 	},
- 	.probe   = gpmi_nand_probe,
--- 
-1.9.1
+Brian
