@@ -1,24 +1,19 @@
-Subject: Re: [PATCH linux-next v6 1/8] mtd: spi-nor: read JEDEC ID with
- multiple I/O protocols
-To: Marek Vasut <marex@denx.de>
-References: <cover.1441803609.git.cyrille.pitchen@atmel.com>
- <735e22efa25f6529bf8ed4a709c18a719176714b.1441803609.git.cyrille.pitchen@atmel.com>
- <201509091559.40948.marex@denx.de>
-CC: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
- <juhosg@openwrt.org>, <ben@decadent.org.uk>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
- <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
- <linux-mtd@lists.infradead.org>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <55F0566A.7060501@atmel.com>
-Date: Wed, 9 Sep 2015 17:55:22 +0200
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZZjfo-0007dD-K0
+ for linux-mtd@lists.infradead.org; Wed, 09 Sep 2015 18:00:45 +0000
+Received: by padhk3 with SMTP id hk3so16746377pad.3
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Sep 2015 11:00:23 -0700 (PDT)
+Date: Wed, 9 Sep 2015 11:00:20 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] MTD updates #2 for 4.3-rc1
+Message-ID: <20150909180020.GE81844@google.com>
 MIME-Version: 1.0
-In-Reply-To: <201509091559.40948.marex@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,84 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
+Hi Linus,
 
-Le 09/09/2015 15:59, Marek Vasut a écrit :
-> On Wednesday, September 09, 2015 at 03:24:11 PM, Cyrille Pitchen wrote:
->> When their quad or dual I/O mode is enabled, Micron and Macronix spi-nor
->> memories don't reply to the regular Read ID (0x9f) command. Instead they
->> reply to a new dedicated command Read ID Multiple I/O (0xaf).
->>
->> If the Read ID (0x9f) command fails (the read ID is all 1's or all 0's),
->> then the Read ID Multiple I/O (0xaf) is used, first with SPI 4-4-4 protocol
->> (supported by both Micron and Macronix memories), lately with SPI-2-2-2
->> protocol (supported only by Micron memories).
->>
->> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 28 +++++++++++++++++++++++++++-
->>  include/linux/mtd/spi-nor.h   | 23 +++++++++++++++++++++--
->>  2 files changed, 48 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index f59aedfe1462..80a0db078aaa 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -703,8 +703,9 @@ static const struct flash_info spi_nor_ids[] = {
->>
->>  static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->>  {
->> -	int			tmp;
->> +	int			i, tmp;
->>  	u8			id[SPI_NOR_MAX_ID_LEN];
->> +	enum spi_protocol	proto[2] = {SPI_PROTO_4_4_4, SPI_PROTO_2_2_2};
->>  	const struct flash_info	*info;
->>
->>  	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
->> @@ -713,6 +714,25 @@ static const struct flash_info *spi_nor_read_id(struct
->> spi_nor *nor) return ERR_PTR(tmp);
->>  	}
->>
->> +	/* Special case for Micron/Macronix qspi nor. */
->> +	for (i = 0; i < ARRAY_SIZE(proto); ++i) {
->> +		if (!((id[0] == 0xff && id[1] == 0xff && id[2] == 0xff) ||
->> +		      (id[0] == 0x00 && id[1] == 0x00 && id[2] == 0x00)))
->> +			break;
->> +
->> +		nor->erase_proto = proto[i];
->> +		nor->read_proto = proto[i];
->> +		nor->write_proto = proto[i];
->> +		nor->reg_proto = proto[i];
->> +		tmp = nor->read_reg(nor, SPINOR_OP_MIO_RDID,
->> +				    id, SPI_NOR_MAX_ID_LEN);
->> +		if (tmp < 0) {
->> +			dev_dbg(nor->dev,
->> +				" error %d reading JEDEC ID (MULTI IO)\n", tmp);
-> 
-> Don't you have one space too much in front of the " error" ?
-> 
+There was one significant bug in my first pull request, fixed here. I
+also threw in a few trivial ID additions and a small module rename.
 
-Probably, I've just copied and pasted the dev_dbg() message few lines above when
-the regular SPINOR_OP_RDID fails, then appended the "(MULTI IO)" string to make
-think consistent but I don't mind removing the leading space.
+The following changes since commit 718e38b4d96085b4dab08d3d32e5e033aa1ba6e9:
 
-	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
-	if (tmp < 0) {
-		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
-		return ERR_PTR(tmp);
-	}
+  mtd: mtd_oobtest: Fix the address offset with vary_offset case (2015-08-27 16:30:01 -0700)
 
->> +			return ERR_PTR(tmp);
->> +		}
->> +	}
->> +
->>  	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
->>  		info = &spi_nor_ids[tmp];
->>  		if (info->id_len) {
-> 
-> [...]
-> 
+are available in the git repository at:
 
-Best Regards,
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20150909
 
-Cyrille
+for you to fetch changes up to 2ff46e6fea6254ac8fa97aeb9c14e51436ab95f6:
+
+  mtd: spi-nor: fix NULL dereference when no match found in spi_nor_ids[] (2015-09-02 16:34:35 -0700)
+
+----------------------------------------------------------------
+MTD updates #2 for 4.3-rc1:
+
+ * SPI NOR: bug fix for a "end of table" check that resulted in a NULL
+   dereference in some cases
+
+ * SPI NOR: a few new IDs / feature flags
+
+ * OMAP2 NAND: rename module so it doesn't conflict with onenand omap2.ko
+
+----------------------------------------------------------------
+Alexis Ballier (1):
+      mtd: spi-nor: Add support for sst25wf020a
+
+Brian Norris (1):
+      mtd: spi-nor: fix NULL dereference when no match found in spi_nor_ids[]
+
+Joachim Eastwood (1):
+      mtd: spi-nor: s25sl064p supports both dual and quad I/O
+
+Jonas Gorski (1):
+      mtd: spi-nor: allow dual/quad reads on S25FL129P
+
+Mika Westerberg (1):
+      mtd: spi-nor: Add support for Micron n25q064a serial flash
+
+Roger Quadros (1):
+      mtd: nand: omap2: Rename shippable module to omap2_nand
+
+ drivers/mtd/nand/Makefile     |  3 ++-
+ drivers/mtd/spi-nor/spi-nor.c | 10 ++++++----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
