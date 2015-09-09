@@ -1,30 +1,30 @@
-Sender: Rob Herring <robherring2@gmail.com>
-Subject: Re: [PATCH 3/3] arm64: dts: mt8173: Add nor flash node
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Jagan Teki <jteki@openedev.com>
-References: <1441705796-11365-1-git-send-email-bayi.cheng@mediatek.com>
- <1441705796-11365-4-git-send-email-bayi.cheng@mediatek.com>
- <CAD6G_RTR2r8ETMQ14uGosRn-85sssvVsFT4BjK9SkVSfMkG8Dw@mail.gmail.com>
- <CAAEAJfCg+O=b9pfndG2WfxKVk9gvcqHUL0MV4fDpHj_9CaCBbQ@mail.gmail.com>
-Cc: Bayi Cheng <bayi.cheng@mediatek.com>, Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, Sascha Hauer <s.hauer@pengutronix.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Daniel Kurtz <djkurtz@chromium.org>, Rob Herring <robh+dt@kernel.org>,
- linux-mediatek@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZZYFP-0003GS-RL
+ for linux-mtd@lists.infradead.org; Wed, 09 Sep 2015 05:48:44 +0000
+Date: Wed, 9 Sep 2015 07:47:34 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Bayi Cheng <bayi.cheng@mediatek.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-From: Rob Herring <robh@kernel.org>
-Message-ID: <55EF7346.5040607@kernel.org>
-Date: Tue, 8 Sep 2015 18:46:14 -0500
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Daniel Kurtz <djkurtz@chromium.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/3] doc: dt: add documentation for Mediatek spi-nor
+ controller
+Message-ID: <20150909054734.GC18700@pengutronix.de>
+References: <1441705796-11365-1-git-send-email-bayi.cheng@mediatek.com>
+ <1441705796-11365-2-git-send-email-bayi.cheng@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAEAJfCg+O=b9pfndG2WfxKVk9gvcqHUL0MV4fDpHj_9CaCBbQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1441705796-11365-2-git-send-email-bayi.cheng@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,34 +34,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/08/2015 10:18 AM, Ezequiel Garcia wrote:
-> On 8 September 2015 at 08:53, Jagan Teki <jteki@openedev.com> wrote:
->> On 8 September 2015 at 15:19, Bayi Cheng <bayi.cheng@mediatek.com> wrote:
->>> Add Mediatek nor flash node
->>>
->>> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
->>> ---
->>>  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 10 ++++++++++
->>>  1 file changed, 10 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->>> index d18ee42..a14f005 100644
->>> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->>> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->>> @@ -365,6 +365,16 @@
->>>                         status = "disabled";
->>>                 };
->>>
->>> +               nor_flash: nor@1100d000 {
->>
->> Based on the comments from 1/3 - this notation needs to be change something like
->> qspi0: quadspi@1100d000
->>
+On Tue, Sep 08, 2015 at 05:49:54PM +0800, Bayi Cheng wrote:
+> Add device tree binding documentation for serial flash with
+> Mediatek serial flash controller
 > 
-> Actually, to follow ePAPR recomendations it should be named as flash@1100d000.
-> (See ePAPR, 2.2.2 Generic Names Recommendation).
+> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/mtk_nor.txt | 25 +++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/mtk_nor.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk_nor.txt b/Documentation/devicetree/bindings/mtd/mtk_nor.txt
+> new file mode 100644
+> index 0000000..0eca0cd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/mtk_nor.txt
+> @@ -0,0 +1,25 @@
+> +* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
+> +
+> +MTK MT81xx serial flash controller is designed for serial Flash device.
+> +It supports one Flash device with signal mode, dual mode and quad mode.
+> +
+> +Required properties:
+> +- compatible: should be "mediatek,mt8173-nor";
+> +- reg: physical base address and length of the controller's register
+> +- clocks: spi nor source clock
+> +- clock-names: "spi_clk", "axi_clk", "mux_clk", "sf_clk"
 
-The flash device node should, but this is the controller which should be
-"spi" IMO even if this is not a general purpose controller.
+Drop the _clk suffix. It's the clock-names property which already makes
+it clear that these are clock names.
 
-Rob
+Sascha
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
