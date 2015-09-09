@@ -1,23 +1,24 @@
-From: Marek Vasut <marex@denx.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 Subject: Re: [PATCH linux-next v6 1/8] mtd: spi-nor: read JEDEC ID with
  multiple I/O protocols
-Date: Wed, 9 Sep 2015 15:59:40 +0200
-Cc: nicolas.ferre@atmel.com, broonie@kernel.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
- beanhuo@micron.com, juhosg@openwrt.org, ben@decadent.org.uk,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, robh+dt@kernel.org, pawel.moll@arm.com,
- mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- linux-mtd@lists.infradead.org
+To: Marek Vasut <marex@denx.de>
 References: <cover.1441803609.git.cyrille.pitchen@atmel.com>
  <735e22efa25f6529bf8ed4a709c18a719176714b.1441803609.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <735e22efa25f6529bf8ed4a709c18a719176714b.1441803609.git.cyrille.pitchen@atmel.com>
+ <201509091559.40948.marex@denx.de>
+CC: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
+ <juhosg@openwrt.org>, <ben@decadent.org.uk>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
+ <linux-mtd@lists.infradead.org>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <55F0566A.7060501@atmel.com>
+Date: Wed, 9 Sep 2015 17:55:22 +0200
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201509091559.40948.marex@denx.de>
+In-Reply-To: <201509091559.40948.marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +28,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, September 09, 2015 at 03:24:11 PM, Cyrille Pitchen wrote:
-> When their quad or dual I/O mode is enabled, Micron and Macronix spi-nor
-> memories don't reply to the regular Read ID (0x9f) command. Instead they
-> reply to a new dedicated command Read ID Multiple I/O (0xaf).
-> 
-> If the Read ID (0x9f) command fails (the read ID is all 1's or all 0's),
-> then the Read ID Multiple I/O (0xaf) is used, first with SPI 4-4-4 protocol
-> (supported by both Micron and Macronix memories), lately with SPI-2-2-2
-> protocol (supported only by Micron memories).
-> 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 28 +++++++++++++++++++++++++++-
->  include/linux/mtd/spi-nor.h   | 23 +++++++++++++++++++++--
->  2 files changed, 48 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index f59aedfe1462..80a0db078aaa 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -703,8 +703,9 @@ static const struct flash_info spi_nor_ids[] = {
-> 
->  static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->  {
-> -	int			tmp;
-> +	int			i, tmp;
->  	u8			id[SPI_NOR_MAX_ID_LEN];
-> +	enum spi_protocol	proto[2] = {SPI_PROTO_4_4_4, SPI_PROTO_2_2_2};
->  	const struct flash_info	*info;
-> 
->  	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
-> @@ -713,6 +714,25 @@ static const struct flash_info *spi_nor_read_id(struct
-> spi_nor *nor) return ERR_PTR(tmp);
->  	}
-> 
-> +	/* Special case for Micron/Macronix qspi nor. */
-> +	for (i = 0; i < ARRAY_SIZE(proto); ++i) {
-> +		if (!((id[0] == 0xff && id[1] == 0xff && id[2] == 0xff) ||
-> +		      (id[0] == 0x00 && id[1] == 0x00 && id[2] == 0x00)))
-> +			break;
-> +
-> +		nor->erase_proto = proto[i];
-> +		nor->read_proto = proto[i];
-> +		nor->write_proto = proto[i];
-> +		nor->reg_proto = proto[i];
-> +		tmp = nor->read_reg(nor, SPINOR_OP_MIO_RDID,
-> +				    id, SPI_NOR_MAX_ID_LEN);
-> +		if (tmp < 0) {
-> +			dev_dbg(nor->dev,
-> +				" error %d reading JEDEC ID (MULTI IO)\n", tmp);
+Hi Marek,
 
-Don't you have one space too much in front of the " error" ?
+Le 09/09/2015 15:59, Marek Vasut a écrit :
+> On Wednesday, September 09, 2015 at 03:24:11 PM, Cyrille Pitchen wrote:
+>> When their quad or dual I/O mode is enabled, Micron and Macronix spi-nor
+>> memories don't reply to the regular Read ID (0x9f) command. Instead they
+>> reply to a new dedicated command Read ID Multiple I/O (0xaf).
+>>
+>> If the Read ID (0x9f) command fails (the read ID is all 1's or all 0's),
+>> then the Read ID Multiple I/O (0xaf) is used, first with SPI 4-4-4 protocol
+>> (supported by both Micron and Macronix memories), lately with SPI-2-2-2
+>> protocol (supported only by Micron memories).
+>>
+>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 28 +++++++++++++++++++++++++++-
+>>  include/linux/mtd/spi-nor.h   | 23 +++++++++++++++++++++--
+>>  2 files changed, 48 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index f59aedfe1462..80a0db078aaa 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -703,8 +703,9 @@ static const struct flash_info spi_nor_ids[] = {
+>>
+>>  static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+>>  {
+>> -	int			tmp;
+>> +	int			i, tmp;
+>>  	u8			id[SPI_NOR_MAX_ID_LEN];
+>> +	enum spi_protocol	proto[2] = {SPI_PROTO_4_4_4, SPI_PROTO_2_2_2};
+>>  	const struct flash_info	*info;
+>>
+>>  	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
+>> @@ -713,6 +714,25 @@ static const struct flash_info *spi_nor_read_id(struct
+>> spi_nor *nor) return ERR_PTR(tmp);
+>>  	}
+>>
+>> +	/* Special case for Micron/Macronix qspi nor. */
+>> +	for (i = 0; i < ARRAY_SIZE(proto); ++i) {
+>> +		if (!((id[0] == 0xff && id[1] == 0xff && id[2] == 0xff) ||
+>> +		      (id[0] == 0x00 && id[1] == 0x00 && id[2] == 0x00)))
+>> +			break;
+>> +
+>> +		nor->erase_proto = proto[i];
+>> +		nor->read_proto = proto[i];
+>> +		nor->write_proto = proto[i];
+>> +		nor->reg_proto = proto[i];
+>> +		tmp = nor->read_reg(nor, SPINOR_OP_MIO_RDID,
+>> +				    id, SPI_NOR_MAX_ID_LEN);
+>> +		if (tmp < 0) {
+>> +			dev_dbg(nor->dev,
+>> +				" error %d reading JEDEC ID (MULTI IO)\n", tmp);
+> 
+> Don't you have one space too much in front of the " error" ?
+> 
 
-> +			return ERR_PTR(tmp);
-> +		}
-> +	}
-> +
->  	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
->  		info = &spi_nor_ids[tmp];
->  		if (info->id_len) {
+Probably, I've just copied and pasted the dev_dbg() message few lines above when
+the regular SPINOR_OP_RDID fails, then appended the "(MULTI IO)" string to make
+think consistent but I don't mind removing the leading space.
 
-[...]
+	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
+	if (tmp < 0) {
+		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
+		return ERR_PTR(tmp);
+	}
+
+>> +			return ERR_PTR(tmp);
+>> +		}
+>> +	}
+>> +
+>>  	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+>>  		info = &spi_nor_ids[tmp];
+>>  		if (info->id_len) {
+> 
+> [...]
+> 
+
+Best Regards,
+
+Cyrille
