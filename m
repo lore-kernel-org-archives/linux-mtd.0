@@ -1,26 +1,20 @@
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Za2Nf-0005mZ-AG
+ for linux-mtd@lists.infradead.org; Thu, 10 Sep 2015 13:59:15 +0000
+Received: from mail.micron.com (ntxboicas01.micron.com [137.201.84.60])
+ by mailout.micron.com (8.14.4/8.14.6) with ESMTP id t8ADwr12011074
+ (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Sep 2015 07:58:53 -0600
+From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: How to know mainline linux verion of  certain patch being merged into
+Date: Thu, 10 Sep 2015 13:58:50 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4B022@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <cover.1441803609.git.cyrille.pitchen@atmel.com>
-References: <cover.1441803609.git.cyrille.pitchen@atmel.com>
-From: Jonas Gorski <jogo@openwrt.org>
-Date: Thu, 10 Sep 2015 12:36:26 +0200
-Message-ID: <CAOiHx=khSdd-Ro8xJ11X+hijMWjyiryfYJtJOoMoK_CrZ_m39A@mail.gmail.com>
-Subject: Re: [PATCH linux-next v6 0/8] add driver for Atmel QSPI controller
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: nicolas.ferre@atmel.com, Mark Brown <broonie@kernel.org>,
- linux-spi@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "Bean Huo (beanhuo)" <beanhuo@micron.com>, Gabor Juhos <juhosg@openwrt.org>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
- Ben Hutchings <ben@decadent.org.uk>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +24,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Wed, Sep 9, 2015 at 3:24 PM, Cyrille Pitchen
-<cyrille.pitchen@atmel.com> wrote:
-> This series of patches add support for the new Atmel QSPI controller
-> embedded inside sama5d2x SoCs.
->
-> These patches were first developped for linux-3.18-at91 and tested on a
-> sama5d27 Xplained ultra board, which embeds a Micron n25q128a13 QSPI NOR
-> flash memory. Then the series was adapted for mainline.
-
-All in all, this looks a lot better now compared to the previous
-version. What I'm still missing is some definsive programming to
-ensure we don't break existing users, or update the current users to
-not break. The issues I currently see are
-
-1) We don't check if a spi-nor controller actually supports a certain
-protocol, just if SPI_NOR_DUAL/_QUAD is set
-2) We currently set these new protocols, but none of the current
-spi-nor controller drivers are aware of the protocols, which has the
-possiblity of silently breaking things (or not, since they will then
-fail to read correct data)
-3) m25p80 currently uses SPI_RX_DUAL -> SPI_NOR_DUAL, but does not
-check SPI_TX_DUAL (which is required for any of the != 1_1_x
-commands). Although this is more an academical concern, as currently
-all spi controller drivers seem to support _RX_ and _TX_, never only
-one direction.
-
-
-Jonas
+SGksIGFsbCANCklmIEkga25vdyB0aGUgdGltZSBvZiBvbmUgcGF0Y2ggYmVpbmcgbWVyZ2VkIGlu
+IExpbnV4LCBhbmQgaG93IEkgY2FuIGtub3cgcmVsZXZhbnQgTGludXggdmVyc2lvbj8NCk1lYW5z
+IHRoYXQgSSB3YW50IHRvIGtub3cgZnJvbSB3aGljaCBMaW51eCBrZXJuZWwgdmVyc2lvbiB0aGF0
+IHRoaXMgcGF0Y2ggYmVpbmcgZW5hYmxlZC4NClRoYW5rcyBmb3IgQW55IGhlbHBmdWwgaW5mb3Jt
+YXRpb24gaW4gYWR2YW5jZS4NCg0K
