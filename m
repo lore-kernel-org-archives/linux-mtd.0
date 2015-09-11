@@ -1,16 +1,15 @@
 Received: from szxga03-in.huawei.com ([119.145.14.66])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZaD39-0008Rk-EA
- for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 01:22:49 +0000
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1ZaD34-0005a5-Qo
+ for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 01:22:44 +0000
 From: Sheng Yong <shengyong1@huawei.com>
 To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>,
  <andreas.gruenbacher@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <yangds.fnst@cn.fujitsu.com>,
  <linux-fsdevel@vger.kernel.org>
-Subject: [RFC PATCH v3 1/5] UBIFS: ACL: introduce init/set/get functions for
- ACL
-Date: Fri, 11 Sep 2015 09:09:53 +0000
-Message-ID: <1441962597-13543-2-git-send-email-shengyong1@huawei.com>
+Subject: [RFC PATCH v3 4/5] UBIFS: ACL: introduce ACL mount options
+Date: Fri, 11 Sep 2015 09:09:56 +0000
+Message-ID: <1441962597-13543-5-git-send-email-shengyong1@huawei.com>
 In-Reply-To: <1441962597-13543-1-git-send-email-shengyong1@huawei.com>
 References: <1441962597-13543-1-git-send-email-shengyong1@huawei.com>
 MIME-Version: 1.0
@@ -24,196 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch introduce a new file `acl.c', which implements:
-  * initializing ACL for new file according to the directory's default ACL,
-  * getting ACL which finds the ACL releated xattr and converts it to ACL,
-  * setting ACL function which converts ACL to xattr and creates/changes/
-    removes the xattr.
-
-On flash ACL format is based on POSIX ACL structures, and POSIX generic
-functions, posix_acl_[to|from]_xattr, are called to do the ACL conversion
-between in-memory and on-flash ACL.
-
-The ACL xattr handler is not implemented, because UBIFS does not use it.
+This patch introduces `acl' and `noacl' mount options for ACL.
 
 Signed-off-by: Sheng Yong <shengyong1@huawei.com>
 ---
- fs/ubifs/acl.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/ubifs.h |  14 ++++++
- 2 files changed, 155 insertions(+)
- create mode 100644 fs/ubifs/acl.c
+ fs/ubifs/super.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/fs/ubifs/acl.c b/fs/ubifs/acl.c
-new file mode 100644
-index 0000000..bf37875
---- /dev/null
-+++ b/fs/ubifs/acl.c
-@@ -0,0 +1,141 @@
-+/*
-+ * This file is part of UBIFS.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ */
-+
-+#include <linux/fs.h>
-+#include <linux/xattr.h>
-+#include <linux/posix_acl_xattr.h>
-+
-+#include "ubifs.h"
-+
-+struct posix_acl *ubifs_get_acl(struct inode *inode, int type)
-+{
-+	struct posix_acl *acl;
-+	char *name, *value = NULL;
-+	int size = 0;
-+
-+	switch (type) {
-+	case ACL_TYPE_ACCESS:
-+		name = XATTR_NAME_POSIX_ACL_ACCESS;
-+		break;
-+	case ACL_TYPE_DEFAULT:
-+		name = XATTR_NAME_POSIX_ACL_DEFAULT;
-+		break;
-+	default:
-+		BUG();
-+	}
-+
-+	size = ubifs_do_getxattr(inode, name, NULL, 0);
-+	if (size > 0) {
-+		value = kmalloc(size, GFP_KERNEL);
-+		if (!value)
-+			return ERR_PTR(-ENOMEM);
-+		size = ubifs_do_getxattr(inode, name, value, size);
-+	}
-+	if (size > 0)
-+		acl = posix_acl_from_xattr(&init_user_ns, value, size);
-+	else if (size == -ENODATA)
-+		acl = NULL;
-+	else
-+		acl = ERR_PTR(size);
-+
-+	kfree(value);
-+	if (!IS_ERR(acl))
-+		set_cached_acl(inode, type, acl);
-+
-+	return acl;
-+}
-+
-+int ubifs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
-+{
-+	char *name;
-+	void *value = NULL;
-+	size_t size = 0;
-+	int flag = 0, err;
-+
-+	switch (type) {
-+	case ACL_TYPE_ACCESS:
-+		name = XATTR_NAME_POSIX_ACL_ACCESS;
-+		if (acl) {
-+			err = posix_acl_equiv_mode(acl, &inode->i_mode);
-+			if (err < 0)
-+				return err;
-+			if (err == 0)
-+				acl = NULL;
-+		}
-+		break;
-+
-+	case ACL_TYPE_DEFAULT:
-+		name = XATTR_NAME_POSIX_ACL_DEFAULT;
-+		if (!S_ISDIR(inode->i_mode))
-+			return acl ? -EACCES : 0;
-+		break;
-+
-+	default:
-+		BUG();
-+	}
-+
-+	if (acl) {
-+		size = posix_acl_xattr_size(acl->a_count);
-+		value = kmalloc(size, GFP_NOFS);
-+		if (!value)
-+			return -ENOMEM;
-+
-+		err = posix_acl_to_xattr(&init_user_ns, acl, value, size);
-+		if (err < 0) {
-+			kfree(value);
-+			return err;
-+		}
-+	}
-+
-+	if (size == 0)
-+		flag = XATTR_REPLACE;
-+	err = ubifs_do_setxattr(inode, name, value, size, flag);
-+
-+	kfree(value);
-+	if (!err)
-+		set_cached_acl(inode, type, acl);
-+
-+	return err;
-+}
-+
-+/*
-+ * Initialize the ACLs of a new inode.
-+ */
-+int ubifs_init_acl(struct inode *dir, struct inode *inode)
-+{
-+	struct posix_acl *default_acl, *acl;
-+	int err;
-+
-+	err = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
-+	if (err)
-+		return err;
-+
-+	if (default_acl) {
-+		mutex_lock(&inode->i_mutex);
-+		err = ubifs_set_acl(inode, default_acl, ACL_TYPE_DEFAULT);
-+		mutex_unlock(&inode->i_mutex);
-+		posix_acl_release(default_acl);
-+	}
-+
-+	if (acl) {
-+		if (!err) {
-+			mutex_lock(&inode->i_mutex);
-+			err = ubifs_set_acl(inode, acl, ACL_TYPE_ACCESS);
-+			mutex_unlock(&inode->i_mutex);
-+		}
-+		posix_acl_release(acl);
-+	}
-+
-+	return err;
-+}
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 62aa1a5..b9ddc8d 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1767,6 +1767,20 @@ int ubifs_removexattr(struct dentry *dentry, const char *name);
- int ubifs_init_security(struct inode *dentry, struct inode *inode,
- 			const struct qstr *qstr);
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 9547a278..52baad1 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -441,6 +441,9 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
+ 			   ubifs_compr_name(c->mount_opts.compr_type));
+ 	}
  
-+/* acl.c */
++	if (c->vfs_sb->s_flags & MS_POSIXACL)
++		seq_printf(s, ",acl");
++
+ 	return 0;
+ }
+ 
+@@ -926,6 +929,8 @@ enum {
+ 	Opt_chk_data_crc,
+ 	Opt_no_chk_data_crc,
+ 	Opt_override_compr,
++	Opt_acl,
++	Opt_noacl,
+ 	Opt_err,
+ };
+ 
+@@ -937,6 +942,8 @@ static const match_table_t tokens = {
+ 	{Opt_chk_data_crc, "chk_data_crc"},
+ 	{Opt_no_chk_data_crc, "no_chk_data_crc"},
+ 	{Opt_override_compr, "compr=%s"},
++	{Opt_acl, "acl"},
++	{Opt_noacl, "noacl"},
+ 	{Opt_err, NULL},
+ };
+ 
+@@ -1037,6 +1044,14 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
+ 			c->default_compr = c->mount_opts.compr_type;
+ 			break;
+ 		}
 +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+int ubifs_init_acl(struct inode *dir, struct inode *inode);
-+int ubifs_set_acl(struct inode *inode, struct posix_acl *acl, int type);
-+struct posix_acl *ubifs_get_acl(struct inode *inode, int type);
-+#else
-+static inline int ubifs_init_acl(struct inode *inode, struct inode *dir)
-+{
-+	return 0;
-+}
-+#define ubifs_get_acl NULL
-+#define ubifs_set_acl NULL
++		case Opt_acl:
++			c->vfs_sb->s_flags |= MS_POSIXACL;
++			break;
++		case Opt_noacl:
++			c->vfs_sb->s_flags &= ~MS_POSIXACL;
++			break;
 +#endif
-+
- /* super.c */
- struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
- 
+ 		default:
+ 		{
+ 			unsigned long flag;
 -- 
 1.9.1
