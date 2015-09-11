@@ -1,31 +1,20 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZaFYz-0003aG-TC
- for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 04:03:51 +0000
-Received: by padhy16 with SMTP id hy16so62394099pad.1
- for <linux-mtd@lists.infradead.org>; Thu, 10 Sep 2015 21:03:28 -0700 (PDT)
-From: Bhuvanchandra <bhuvanchandradv@gmail.com>
-Subject: Re: UBIFS errors when file-system is full
-To: Richard Weinberger <richard@nod.at>
-References: <55A3C342.9010704@gmail.com>
- <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
- <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
- <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
- <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
- <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
- <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
- <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
- <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
- <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
- <55AF4447.50500@nod.at> <55B24F2F.9020705@gmail.com>
- <55B26D24.3060006@nod.at> <55BBA6A5.9020701@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Stefan Agner <stefan@agner.ch>,
- richard@nod.at
-Message-ID: <55F2528D.9050506@gmail.com>
-Date: Fri, 11 Sep 2015 09:33:25 +0530
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZaGZ0-00005p-Mv
+ for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 05:07:55 +0000
+Message-ID: <55F2601B.60203@cn.fujitsu.com>
+Date: Fri, 11 Sep 2015 13:01:15 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <55BBA6A5.9020701@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+To: Sheng Yong <shengyong1@huawei.com>, <dedekind1@gmail.com>,
+ <richard.weinberger@gmail.com>, <andreas.gruenbacher@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH v3 1/5] UBIFS: ACL: introduce init/set/get functions
+ for ACL
+References: <1441962597-13543-1-git-send-email-shengyong1@huawei.com>
+ <1441962597-13543-2-git-send-email-shengyong1@huawei.com>
+In-Reply-To: <1441962597-13543-2-git-send-email-shengyong1@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,228 +25,200 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+On 09/11/2015 05:09 PM, Sheng Yong wrote:
+> This patch introduce a new file `acl.c', which implements:
+>    * initializing ACL for new file according to the directory's default ACL,
+>    * getting ACL which finds the ACL releated xattr and converts it to ACL,
+>    * setting ACL function which converts ACL to xattr and creates/changes/
+>      removes the xattr.
+>
+> On flash ACL format is based on POSIX ACL structures, and POSIX generic
+> functions, posix_acl_[to|from]_xattr, are called to do the ACL conversion
+> between in-memory and on-flash ACL.
+>
+> The ACL xattr handler is not implemented, because UBIFS does not use it.
 
-On 07/31/2015 10:17 PM, Bhuvanchandra DV wrote:
+Why not, I think we can use it.
 
-> On 07/24/2015 06:51 PM, Richard Weinberger wrote:
+Yang
 >
->> Hi!
->>
->> Am 24.07.2015 um 16:43 schrieb Bhuvanchandra DV:
->>> Disabled fastmap in U-Boot, still the corruption is persistent when 
->>> using
->>> U-Boot to mount rootfs and load kernel.
->> Can you please describe your boot setup in detail?
->> Why does U-Boot _mount_ an UBIFS? Install the kernel on an UBI static 
->> volume.
+> Signed-off-by: Sheng Yong <shengyong1@huawei.com>
+> ---
+>   fs/ubifs/acl.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>   fs/ubifs/ubifs.h |  14 ++++++
+>   2 files changed, 155 insertions(+)
+>   create mode 100644 fs/ubifs/acl.c
 >
-> U-Boot mounts UBIFS for loading the kernel and device tree blobs 
-> availabel in rootfs.
-> Since approximately around ~3-5 % of spare blocks are reserverd for 
-> wear leveling
-> (according to the NAND manufacturer). Initially we had a separate UBI 
-> partition of 8MB
-> for Kenrel, but after few times of re-writing the kernel to that 
-> volume kernel fails
-> with no available free space. Due to that reason we made a single big 
-> ubi volume and
-> moved the kernel and device tree blobs to rootfs.
+> diff --git a/fs/ubifs/acl.c b/fs/ubifs/acl.c
+> new file mode 100644
+> index 0000000..bf37875
+> --- /dev/null
+> +++ b/fs/ubifs/acl.c
+> @@ -0,0 +1,141 @@
+> +/*
+> + * This file is part of UBIFS.
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of the GNU General Public License version 2 as published by
+> + * the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful, but WITHOUT
+> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+> + * more details.
+> + *
+> + */
+> +
+> +#include <linux/fs.h>
+> +#include <linux/xattr.h>
+> +#include <linux/posix_acl_xattr.h>
+> +
+> +#include "ubifs.h"
+> +
+> +struct posix_acl *ubifs_get_acl(struct inode *inode, int type)
+> +{
+> +	struct posix_acl *acl;
+> +	char *name, *value = NULL;
+> +	int size = 0;
+> +
+> +	switch (type) {
+> +	case ACL_TYPE_ACCESS:
+> +		name = XATTR_NAME_POSIX_ACL_ACCESS;
+> +		break;
+> +	case ACL_TYPE_DEFAULT:
+> +		name = XATTR_NAME_POSIX_ACL_DEFAULT;
+> +		break;
+> +	default:
+> +		BUG();
+> +	}
+> +
+> +	size = ubifs_do_getxattr(inode, name, NULL, 0);
+> +	if (size > 0) {
+> +		value = kmalloc(size, GFP_KERNEL);
+> +		if (!value)
+> +			return ERR_PTR(-ENOMEM);
+> +		size = ubifs_do_getxattr(inode, name, value, size);
+> +	}
+> +	if (size > 0)
+> +		acl = posix_acl_from_xattr(&init_user_ns, value, size);
+> +	else if (size == -ENODATA)
+> +		acl = NULL;
+> +	else
+> +		acl = ERR_PTR(size);
+> +
+> +	kfree(value);
+> +	if (!IS_ERR(acl))
+> +		set_cached_acl(inode, type, acl);
+> +
+> +	return acl;
+> +}
+> +
+> +int ubifs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+> +{
+> +	char *name;
+> +	void *value = NULL;
+> +	size_t size = 0;
+> +	int flag = 0, err;
+> +
+> +	switch (type) {
+> +	case ACL_TYPE_ACCESS:
+> +		name = XATTR_NAME_POSIX_ACL_ACCESS;
+> +		if (acl) {
+> +			err = posix_acl_equiv_mode(acl, &inode->i_mode);
+> +			if (err < 0)
+> +				return err;
+> +			if (err == 0)
+> +				acl = NULL;
+> +		}
+> +		break;
+> +
+> +	case ACL_TYPE_DEFAULT:
+> +		name = XATTR_NAME_POSIX_ACL_DEFAULT;
+> +		if (!S_ISDIR(inode->i_mode))
+> +			return acl ? -EACCES : 0;
+> +		break;
+> +
+> +	default:
+> +		BUG();
+> +	}
+> +
+> +	if (acl) {
+> +		size = posix_acl_xattr_size(acl->a_count);
+> +		value = kmalloc(size, GFP_NOFS);
+> +		if (!value)
+> +			return -ENOMEM;
+> +
+> +		err = posix_acl_to_xattr(&init_user_ns, acl, value, size);
+> +		if (err < 0) {
+> +			kfree(value);
+> +			return err;
+> +		}
+> +	}
+> +
+> +	if (size == 0)
+> +		flag = XATTR_REPLACE;
+> +	err = ubifs_do_setxattr(inode, name, value, size, flag);
+> +
+> +	kfree(value);
+> +	if (!err)
+> +		set_cached_acl(inode, type, acl);
+> +
+> +	return err;
+> +}
+> +
+> +/*
+> + * Initialize the ACLs of a new inode.
+> + */
+> +int ubifs_init_acl(struct inode *dir, struct inode *inode)
+> +{
+> +	struct posix_acl *default_acl, *acl;
+> +	int err;
+> +
+> +	err = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
+> +	if (err)
+> +		return err;
+> +
+> +	if (default_acl) {
+> +		mutex_lock(&inode->i_mutex);
+> +		err = ubifs_set_acl(inode, default_acl, ACL_TYPE_DEFAULT);
+> +		mutex_unlock(&inode->i_mutex);
+> +		posix_acl_release(default_acl);
+> +	}
+> +
+> +	if (acl) {
+> +		if (!err) {
+> +			mutex_lock(&inode->i_mutex);
+> +			err = ubifs_set_acl(inode, acl, ACL_TYPE_ACCESS);
+> +			mutex_unlock(&inode->i_mutex);
+> +		}
+> +		posix_acl_release(acl);
+> +	}
+> +
+> +	return err;
+> +}
+> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+> index 62aa1a5..b9ddc8d 100644
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -1767,6 +1767,20 @@ int ubifs_removexattr(struct dentry *dentry, const char *name);
+>   int ubifs_init_security(struct inode *dentry, struct inode *inode,
+>   			const struct qstr *qstr);
 >
->> If U-Boot mounts UBIFS it has to use UBI in RW mode and therefore it 
->> has to process
->> fastmap or _delete_ it.
->>
->>>>> The same power cut tests are done by skipping the U-Boot to mount 
->>>>> the UBIFS. Loaded
->>>>> the kernel via tftp and mount the rootfs with kernel. The power 
->>>>> cut test passed.
->>>>> I think U-Boot might have some issues, but not very sure.
->>>> To my knowledge U-Boot's fastmap support is incomplete.
->>>> If you *really* need fastmap in U-Boot make sure that they have 
->>>> backported
->>>> all recent fastmap changes. Fastmap is still experimental and faced 
->>>> a lot of fixes
->>>> recently.
->>> Tested with mainline U-Boot along with few downstream patches for 
->>> boot config block
->>> support applied, the ubifs corruption is persistant.
->>>
->>>>>> Anyway, we need to sort out what is going on.
->>>>>> As fm_debug does not trigger it could also be a non-fastmap issue.
->>>>>> Did you try your test without fastmap being enabled?
->>>>>>
->>>>>> Does your target pass UBI tests too?
->>>>> I'm not aware of UBI tests so far the driver passed all MTD tests.
->>>>> Can you please provide some pointers for UBI tests. Will run the 
->>>>> UBI tests with
->>>>> driver.
->>>> They are in the mtd-utils source.
->>> Not yet ran the ubi-tests. Will run the tests and share the results.
->> Please do so. :-)
+> +/* acl.c */
+> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> +int ubifs_init_acl(struct inode *dir, struct inode *inode);
+> +int ubifs_set_acl(struct inode *inode, struct posix_acl *acl, int type);
+> +struct posix_acl *ubifs_get_acl(struct inode *inode, int type);
+> +#else
+> +static inline int ubifs_init_acl(struct inode *inode, struct inode *dir)
+> +{
+> +	return 0;
+> +}
+> +#define ubifs_get_acl NULL
+> +#define ubifs_set_acl NULL
+> +#endif
+> +
+>   /* super.c */
+>   struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
 >
-> Seems the mtd-utils are not really cross-compile friendly, some how 
-> managed to build the ubi-tests
-> tweeking the Makefiles.
->
-> The tests ran on ubi partition after isolating it from U-Boot completly.
-> Formatted the ubi partition and then boot with SD card (4.1.2 kernel 
-> fastmap enabled/disabled, fm_debug enabled).
-> Please find the below log of ubi-tests:
->
-> root@colibri-vf:~# ubiattach -m 3
-> [   44.663944] ubi0: default fastmap pool size: 50
-> [   44.668930] ubi0: default fastmap WL pool size: 25
-> [   44.674045] ubi0: attaching mtd3
-> [   44.995279] ubi0: scanning is finished
-> [   44.999364] ubi0: empty MTD device detected
-> [   45.033211] ubi0: attached mtd3 (name "ubi", size 126 MiB)
-> [   45.039205] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 
-> 126976 bytes
-> [   45.046572] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page 
-> size 2048
-> [   45.053715] ubi0: VID header offset: 2048 (aligned 2048), data 
-> offset: 4096
-> [   45.061141] ubi0: good PEBs: 1003, bad PEBs: 5, corrupted PEBs: 0
-> [   45.067951] ubi0: user volume: 0, internal volumes: 1, max. volumes 
-> count: 128
-> [   45.075701] ubi0: max/mean erase counter: 0/0, WL threshold: 4096, 
-> image sequence number: 595808446
-> [   45.085278] ubi0: available PEBs: 982, total reserved PEBs: 21, 
-> PEBs reserved for bad PEB handling: 15
-> [   45.101889] ubi0: background thread "ubi_bgt0d" started, PID 337
-> UBI device number 0, total 1003 LEBs (127356928 bytes, 121.5 MiB), 
-> available 982 LEBs (124690432 bytes, 118.9 MiB), LEB size 126976 bytes 
-> (124.0 KiB)
-> root@colibri-vf:~# cd ubi-tests-bin/
-> root@colibri-vf:~/ubi-tests-bin# ./runtests.sh /dev/ubi0 - test /dev/ubi0
-> Running mkvol_basic /dev/ubi0
-> Running mkvol_bad /dev/ubi0
-> [   99.630756] ubi0 error: verify_mkvol_req: bad volume creation request
-> [   99.637579] Volume creation request dump:
-> [   99.641987]  vol_id    -2
-> [   99.644784]  alignment 1
-> [   99.647466]  bytes     124690432
-> [   99.650994]  vol_type  3
-> [   99.653696]  name_len  22
-> [   99.656464]  1st 16 characters of name: mkvol_bad:test_m
-> [   99.669464] ubi0 error: verify_mkvol_req: bad volume creation request
-> [   99.676292] Volume creation request dump:
-> [   99.680674]  vol_id    128
-> [   99.683558]  alignment 1
-> [   99.686240]  bytes     124690432
-> [   99.694911]  vol_type  3
-> [   99.702852]  name_len  22
-> [   99.710786]  1st 16 characters of name: mkvol_bad:test_m
-> [   99.728668] ubi0 error: verify_mkvol_req: bad volume creation request
-> [   99.740962] Volume creation request dump:
-> [   99.750630]  vol_id    0
-> [   99.758537]  alignment 0
-> [   99.766352]  bytes     124690432
-> [   99.774804]  vol_type  3
-> [   99.782409]  name_len  22
-> [   99.789923]  1st 16 characters of name: mkvol_bad:test_m
-> [   99.808480] ubi0 error: verify_mkvol_req: bad volume creation request
-> [   99.820028] Volume creation request dump:
-> [   99.828796]  vol_id    0
-> [   99.835879]  alignment -1
-> [   99.842859]  bytes     124690432
-> [   99.850335]  vol_type  3
-> [   99.856849]  name_len  22
-> [   99.863395]  1st 16 characters of name: mkvol_bad:test_m
-> [   99.880157] ubi0 error: verify_mkvol_req: bad volume creation request
-> [   99.891064] Volume creation request dump:
-> [   99.899440]  vol_id    0
-> [   99.906182]  alignment 126977
-> [   99.913456]  bytes     124690432
-> [   99.920926]  vol_type  3
-> [   99.927467]  name_len  22
-> [   99.934058]  1st 16 characters of name: mkvol_bad:test_m
-> [   99.950732] ubi0 error: verify_mkvol_req: bad volume creation request
-> [   99.961655] Volume creation request dump:
-> [   99.970057]  vol_id    0
-> [   99.976826]  alignment 2049
-> [   99.983931]  bytes     124690432
-> [   99.991412]  vol_type  3
-> [   99.997959]  name_len  22
-> [  100.004551]  1st 16 characters of name: mkvol_bad:test_m
-> [  100.021254] ubi0 error: verify_mkvol_req: bad volume creation request
-> [  100.032201] Volume creation request dump:
-> [  100.040649]  vol_id    0
-> [  100.047441]  alignment 1
-> [  100.054334]  bytes     -1
-> [  100.061191]  vol_type  3
-> [  100.067708]  name_len  22
-> [  100.074250]  1st 16 characters of name: mkvol_bad:test_m
-> [  100.090929] ubi0 error: verify_mkvol_req: bad volume creation request
-> [  100.101834] Volume creation request dump:
-> [  100.110223]  vol_id    0
-> [  100.116969]  alignment 1
-> [  100.123783]  bytes     0
-> [  100.130505]  vol_type  3
-> [  100.136980]  name_len  22
-> [  100.143502]  1st 16 characters of name: mkvol_bad:test_m
-> [  100.160274] ubi0 error: ubi_create_volume: not enough PEBs, only 
-> 982 available
-> [  100.175970] ubi0 error: ubi_create_volume: cannot create volume 0, 
-> error -28
-> [  100.189501] ubi0 error: ubi_create_volume: not enough PEBs, only 
-> 982 available
-> [  100.205998] ubi0 error: ubi_create_volume: cannot create volume 0, 
-> error -28
-> [  100.222091] ubi0 error: verify_mkvol_req: bad volume creation request
-> [  100.233529] Volume creation request dump:
-> [  100.242409]  vol_id    0
-> [  100.249771]  alignment 1
-> [  100.256993]  bytes     126976
-> [  100.264716]  vol_type  7
-> [  100.272035]  name_len  22
-> [  100.279316]  1st 16 characters of name: mkvol_bad:test_m
-> [  100.416661] ubi0 error: ubi_create_volume: volume 0 already exists
-> [  100.427776] ubi0 error: ubi_create_volume: cannot create volume 0, 
-> error -17
-> [  100.441410] ubi0 error: ubi_create_volume: volume 
-> "mkvol_bad:test_mkvol()" exists (ID 0)
-> [  100.459295] ubi0 error: ubi_create_volume: cannot create volume 1, 
-> error -17
-> [  100.711027] ubi0 error: ubi_create_volume: volume 
-> "mkvol_bad:test_mkvol()" exists (ID 0)
-> [  100.729733] ubi0 error: ubi_create_volume: cannot create volume 1, 
-> error -17
-> [  131.225291] ubi0 error: ubi_open_volume: cannot open device 0, 
-> volume 128, error -22
-> [  131.244295] ubi0 error: ubi_open_volume: cannot open device 0, 
-> volume -1, error -22
-> [  131.269510] ubi0 error: ubi_open_volume: cannot open device 0, 
-> volume 128, error -22
-> [  131.290092] ubi0 error: ubi_open_volume: cannot open device 0, 
-> volume 0, error -19
-> [  131.551660] ubi0 error: ubi_open_volume: cannot open device 0, 
-> volume 0, error -19
-
-With the recent fixes by Stefan to vf610_nfc driver the io_paral test 
-passed, but the
-above error's with the volume creation are still reproducible. Are these 
-erros need to
-be taken into consideration ?
-
-Best regards,
-Bhuvan
-> Running mkvol_paral /dev/ubi0
-> Running rsvol /dev/ubi0
-> Running io_basic /dev/ubi0
-> Running io_read /dev/ubi0
-> Running io_update /dev/ubi0
-> Running io_paral /dev/ubi0
-> [io_paral] write_thread():222: written and read data are different
-> Running volrefcnt /dev/ubi0
-> SUCCESS
-> root@colibri-vf:~/ubi-tests-bin#
->
->>
->> Thanks,
->> //richard
->
-> Best regards,
-> Bhuvan
 >
