@@ -1,15 +1,16 @@
 Received: from szxga03-in.huawei.com ([119.145.14.66])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZaD39-0008Rl-E4
- for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 01:22:50 +0000
+ id 1ZaD39-0008Rk-EA
+ for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 01:22:49 +0000
 From: Sheng Yong <shengyong1@huawei.com>
 To: <dedekind1@gmail.com>, <richard.weinberger@gmail.com>,
  <andreas.gruenbacher@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <yangds.fnst@cn.fujitsu.com>,
  <linux-fsdevel@vger.kernel.org>
-Subject: [RFC PATCH v3 3/5] UBIFS: ACL: handle ACL through xattr
-Date: Fri, 11 Sep 2015 09:09:55 +0000
-Message-ID: <1441962597-13543-4-git-send-email-shengyong1@huawei.com>
+Subject: [RFC PATCH v3 1/5] UBIFS: ACL: introduce init/set/get functions for
+ ACL
+Date: Fri, 11 Sep 2015 09:09:53 +0000
+Message-ID: <1441962597-13543-2-git-send-email-shengyong1@huawei.com>
 In-Reply-To: <1441962597-13543-1-git-send-email-shengyong1@huawei.com>
 References: <1441962597-13543-1-git-send-email-shengyong1@huawei.com>
 MIME-Version: 1.0
@@ -23,409 +24,196 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* initialize ACL when file is created
-* get ACL through ubifs_getxattr
-* set ACL through ubifs_setxattr. If the size of ACL is 0, the ACL is going
-  to be removed
-* clear cached ACL in ubifs_removexattr if ACL xattr is removed
-* modify ACL if file mode is changed
+This patch introduce a new file `acl.c', which implements:
+  * initializing ACL for new file according to the directory's default ACL,
+  * getting ACL which finds the ACL releated xattr and converts it to ACL,
+  * setting ACL function which converts ACL to xattr and creates/changes/
+    removes the xattr.
+
+On flash ACL format is based on POSIX ACL structures, and POSIX generic
+functions, posix_acl_[to|from]_xattr, are called to do the ACL conversion
+between in-memory and on-flash ACL.
+
+The ACL xattr handler is not implemented, because UBIFS does not use it.
 
 Signed-off-by: Sheng Yong <shengyong1@huawei.com>
 ---
- fs/ubifs/dir.c   |  16 ++++
- fs/ubifs/file.c  |   6 ++
- fs/ubifs/xattr.c | 243 ++++++++++++++++++++++++++++++++++---------------------
- 3 files changed, 175 insertions(+), 90 deletions(-)
+ fs/ubifs/acl.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/ubifs.h |  14 ++++++
+ 2 files changed, 155 insertions(+)
+ create mode 100644 fs/ubifs/acl.c
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 69ccc78..db5dd45 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -270,6 +270,10 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
- 		goto out_budg;
- 	}
- 
-+	err = ubifs_init_acl(dir, inode);
-+	if (err)
-+		goto out_inode;
+diff --git a/fs/ubifs/acl.c b/fs/ubifs/acl.c
+new file mode 100644
+index 0000000..bf37875
+--- /dev/null
++++ b/fs/ubifs/acl.c
+@@ -0,0 +1,141 @@
++/*
++ * This file is part of UBIFS.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ */
 +
- 	err = ubifs_init_security(dir, inode, &dentry->d_name);
- 	if (err)
- 		goto out_inode;
-@@ -731,6 +735,10 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
- 		goto out_budg;
- 	}
- 
-+	err = ubifs_init_acl(dir, inode);
-+	if (err)
-+		goto out_inode;
++#include <linux/fs.h>
++#include <linux/xattr.h>
++#include <linux/posix_acl_xattr.h>
 +
- 	err = ubifs_init_security(dir, inode, &dentry->d_name);
- 	if (err)
- 		goto out_inode;
-@@ -810,6 +818,10 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
- 		goto out_budg;
- 	}
- 
-+	err = ubifs_init_acl(dir, inode);
-+	if (err)
-+		goto out_inode;
++#include "ubifs.h"
 +
- 	init_special_inode(inode, inode->i_mode, rdev);
- 	inode->i_size = ubifs_inode(inode)->ui_size = devlen;
- 	ui = ubifs_inode(inode);
-@@ -898,6 +910,10 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
- 	ui->data_len = len;
- 	inode->i_size = ubifs_inode(inode)->ui_size = len;
- 
-+	err = ubifs_init_acl(dir, inode);
-+	if (err)
-+		goto out_inode;
-+
- 	err = ubifs_init_security(dir, inode, &dentry->d_name);
- 	if (err)
- 		goto out_inode;
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 58298f8..74f4c63 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -52,6 +52,7 @@
- #include "ubifs.h"
- #include <linux/mount.h>
- #include <linux/slab.h>
-+#include <linux/posix_acl.h>
- 
- static int read_block(struct inode *inode, void *addr, unsigned int block,
- 		      struct ubifs_data_node *dn)
-@@ -1246,6 +1247,11 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
- 		mark_inode_dirty_sync(inode);
- 	mutex_unlock(&ui->ui_mutex);
- 
-+	if (attr->ia_valid & ATTR_MODE)
-+		err = posix_acl_chmod(inode, inode->i_mode);
-+	if (err)
-+		return err;
-+
- 	if (release)
- 		ubifs_release_budget(c, &req);
- 	if (IS_SYNC(inode))
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 6534b98..dad1070 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -52,7 +52,6 @@
-  * in the VFS inode cache. The xentries are cached in the LNC cache (see
-  * tnc.c).
-  *
-- * ACL support is not implemented.
-  */
- 
- #include "ubifs.h"
-@@ -78,6 +77,10 @@ enum {
- 	USER_XATTR,
- 	TRUSTED_XATTR,
- 	SECURITY_XATTR,
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	POSIX_ACL_DEFAULT,
-+	POSIX_ACL_ACCESS,
-+#endif
- };
- 
- static const struct inode_operations empty_iops;
-@@ -276,6 +279,18 @@ static int check_namespace(const struct qstr *nm)
- 		if (nm->name[sizeof(XATTR_SECURITY_PREFIX) - 1] == '\0')
- 			return -EINVAL;
- 		type = SECURITY_XATTR;
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	} else if (!strncmp(nm->name, XATTR_NAME_POSIX_ACL_DEFAULT,
-+			    sizeof(XATTR_NAME_POSIX_ACL_DEFAULT) - 1)) {
-+		if (nm->name[sizeof(XATTR_NAME_POSIX_ACL_DEFAULT) - 1] != '\0')
-+			return -EINVAL;
-+		type = POSIX_ACL_DEFAULT;
-+	} else if (!strncmp(nm->name, XATTR_NAME_POSIX_ACL_ACCESS,
-+			    sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1)) {
-+		if (nm->name[sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1] != '\0')
-+			return -EINVAL;
-+		type = POSIX_ACL_ACCESS;
-+#endif
- 	} else
- 		return -EOPNOTSUPP;
- 
-@@ -299,6 +314,105 @@ static struct inode *iget_xattr(struct ubifs_info *c, ino_t inum)
- 	return ERR_PTR(-EINVAL);
- }
- 
-+static int remove_xattr(struct ubifs_info *c, struct inode *host,
-+			struct inode *inode, const struct qstr *nm)
++struct posix_acl *ubifs_get_acl(struct inode *inode, int type)
 +{
++	struct posix_acl *acl;
++	char *name, *value = NULL;
++	int size = 0;
++
++	switch (type) {
++	case ACL_TYPE_ACCESS:
++		name = XATTR_NAME_POSIX_ACL_ACCESS;
++		break;
++	case ACL_TYPE_DEFAULT:
++		name = XATTR_NAME_POSIX_ACL_DEFAULT;
++		break;
++	default:
++		BUG();
++	}
++
++	size = ubifs_do_getxattr(inode, name, NULL, 0);
++	if (size > 0) {
++		value = kmalloc(size, GFP_KERNEL);
++		if (!value)
++			return ERR_PTR(-ENOMEM);
++		size = ubifs_do_getxattr(inode, name, value, size);
++	}
++	if (size > 0)
++		acl = posix_acl_from_xattr(&init_user_ns, value, size);
++	else if (size == -ENODATA)
++		acl = NULL;
++	else
++		acl = ERR_PTR(size);
++
++	kfree(value);
++	if (!IS_ERR(acl))
++		set_cached_acl(inode, type, acl);
++
++	return acl;
++}
++
++int ubifs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
++{
++	char *name;
++	void *value = NULL;
++	size_t size = 0;
++	int flag = 0, err;
++
++	switch (type) {
++	case ACL_TYPE_ACCESS:
++		name = XATTR_NAME_POSIX_ACL_ACCESS;
++		if (acl) {
++			err = posix_acl_equiv_mode(acl, &inode->i_mode);
++			if (err < 0)
++				return err;
++			if (err == 0)
++				acl = NULL;
++		}
++		break;
++
++	case ACL_TYPE_DEFAULT:
++		name = XATTR_NAME_POSIX_ACL_DEFAULT;
++		if (!S_ISDIR(inode->i_mode))
++			return acl ? -EACCES : 0;
++		break;
++
++	default:
++		BUG();
++	}
++
++	if (acl) {
++		size = posix_acl_xattr_size(acl->a_count);
++		value = kmalloc(size, GFP_NOFS);
++		if (!value)
++			return -ENOMEM;
++
++		err = posix_acl_to_xattr(&init_user_ns, acl, value, size);
++		if (err < 0) {
++			kfree(value);
++			return err;
++		}
++	}
++
++	if (size == 0)
++		flag = XATTR_REPLACE;
++	err = ubifs_do_setxattr(inode, name, value, size, flag);
++
++	kfree(value);
++	if (!err)
++		set_cached_acl(inode, type, acl);
++
++	return err;
++}
++
++/*
++ * Initialize the ACLs of a new inode.
++ */
++int ubifs_init_acl(struct inode *dir, struct inode *inode)
++{
++	struct posix_acl *default_acl, *acl;
 +	int err;
-+	struct ubifs_inode *host_ui = ubifs_inode(host);
-+	struct ubifs_inode *ui = ubifs_inode(inode);
-+	struct ubifs_budget_req req = { .dirtied_ino = 2, .mod_dent = 1,
-+				.dirtied_ino_d = ALIGN(host_ui->data_len, 8) };
 +
-+	ubifs_assert(ui->data_len == inode->i_size);
-+
-+	err = ubifs_budget_space(c, &req);
++	err = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
 +	if (err)
 +		return err;
 +
-+	mutex_lock(&host_ui->ui_mutex);
-+	host->i_ctime = ubifs_current_time(host);
-+	host_ui->xattr_cnt -= 1;
-+	host_ui->xattr_size -= CALC_DENT_SIZE(nm->len);
-+	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
-+	host_ui->xattr_names -= nm->len;
++	if (default_acl) {
++		mutex_lock(&inode->i_mutex);
++		err = ubifs_set_acl(inode, default_acl, ACL_TYPE_DEFAULT);
++		mutex_unlock(&inode->i_mutex);
++		posix_acl_release(default_acl);
++	}
 +
-+	err = ubifs_jnl_delete_xattr(c, host, inode, nm);
-+	if (err)
-+		goto out_cancel;
-+	mutex_unlock(&host_ui->ui_mutex);
++	if (acl) {
++		if (!err) {
++			mutex_lock(&inode->i_mutex);
++			err = ubifs_set_acl(inode, acl, ACL_TYPE_ACCESS);
++			mutex_unlock(&inode->i_mutex);
++		}
++		posix_acl_release(acl);
++	}
 +
-+	ubifs_release_budget(c, &req);
-+	return 0;
-+
-+out_cancel:
-+	host_ui->xattr_cnt += 1;
-+	host_ui->xattr_size += CALC_DENT_SIZE(nm->len);
-+	host_ui->xattr_size += CALC_XATTR_BYTES(ui->data_len);
-+	mutex_unlock(&host_ui->ui_mutex);
-+	ubifs_release_budget(c, &req);
-+	make_bad_inode(inode);
 +	return err;
 +}
-+
-+int ubifs_removexattr(struct dentry *dentry, const char *name)
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 62aa1a5..b9ddc8d 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1767,6 +1767,20 @@ int ubifs_removexattr(struct dentry *dentry, const char *name);
+ int ubifs_init_security(struct inode *dentry, struct inode *inode,
+ 			const struct qstr *qstr);
+ 
++/* acl.c */
++#ifdef CONFIG_UBIFS_FS_POSIX_ACL
++int ubifs_init_acl(struct inode *dir, struct inode *inode);
++int ubifs_set_acl(struct inode *inode, struct posix_acl *acl, int type);
++struct posix_acl *ubifs_get_acl(struct inode *inode, int type);
++#else
++static inline int ubifs_init_acl(struct inode *inode, struct inode *dir)
 +{
-+	struct inode *inode, *host = d_inode(dentry);
-+	struct ubifs_info *c = host->i_sb->s_fs_info;
-+	struct qstr nm = QSTR_INIT(name, strlen(name));
-+	struct ubifs_dent_node *xent;
-+	union ubifs_key key;
-+	int type, err;
-+
-+	dbg_gen("xattr '%s', ino %lu ('%pd')", name,
-+		host->i_ino, dentry);
-+	ubifs_assert(mutex_is_locked(&host->i_mutex));
-+
-+	type = check_namespace(&nm);
-+	if (type < 0)
-+		return type;
-+
-+	xent = kmalloc(UBIFS_MAX_XENT_NODE_SZ, GFP_NOFS);
-+	if (!xent)
-+		return -ENOMEM;
-+
-+	xent_key_init(c, &key, host->i_ino, &nm);
-+	err = ubifs_tnc_lookup_nm(c, &key, xent, &nm);
-+	if (err) {
-+		if (err == -ENOENT)
-+			err = -ENODATA;
-+		goto out_free;
-+	}
-+
-+	inode = iget_xattr(c, le64_to_cpu(xent->inum));
-+	if (IS_ERR(inode)) {
-+		err = PTR_ERR(inode);
-+		goto out_free;
-+	}
-+
-+	ubifs_assert(inode->i_nlink == 1);
-+	clear_nlink(inode);
-+	err = remove_xattr(c, host, inode, &nm);
-+	if (err)
-+		set_nlink(inode, 1);
-+
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	if (!err) {
-+		if (type == POSIX_ACL_DEFAULT)
-+			set_cached_acl(host, ACL_TYPE_DEFAULT, NULL);
-+		else if (type == POSIX_ACL_ACCESS)
-+			set_cached_acl(host, ACL_TYPE_ACCESS, NULL);
-+	}
-+#endif
-+
-+	/* If @i_nlink is 0, 'iput()' will delete the inode */
-+	iput(inode);
-+
-+out_free:
-+	kfree(xent);
-+	return err;
++	return 0;
 +}
++#define ubifs_get_acl NULL
++#define ubifs_set_acl NULL
++#endif
 +
-+
- int ubifs_do_setxattr(struct inode *host, const char *name,
- 		      const void *value, size_t size, int flags)
- {
-@@ -348,7 +462,19 @@ int ubifs_do_setxattr(struct inode *host, const char *name,
- 		goto out_free;
- 	}
+ /* super.c */
+ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
  
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	if (size == 0) {
-+		ubifs_assert(inode->i_nlink == 1);
-+		clear_nlink(inode);
-+		err = remove_xattr(c, host, inode, &nm);
-+		if (err)
-+			set_nlink(inode, 1);
-+		iput(inode);
-+		goto out_free;
-+	}
-+#endif
- 	err = change_xattr(c, host, inode, value, size);
-+
- 	iput(inode);
- 
- out_free:
-@@ -359,6 +485,9 @@ out_free:
- int ubifs_setxattr(struct dentry *dentry, const char *name,
- 		   const void *value, size_t size, int flags)
- {
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	const struct xattr_handler *handler;
-+#endif
- 	struct qstr nm = QSTR_INIT(name, strlen(name));
- 	int type;
- 
-@@ -369,6 +498,16 @@ int ubifs_setxattr(struct dentry *dentry, const char *name,
- 	if (type < 0)
- 		return type;
- 
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	if (type == POSIX_ACL_DEFAULT || type == POSIX_ACL_ACCESS) {
-+		if (type == POSIX_ACL_DEFAULT)
-+			handler = &posix_acl_default_xattr_handler;
-+		if (type == POSIX_ACL_ACCESS)
-+			handler = &posix_acl_access_xattr_handler;
-+		return handler->set(dentry, name, value, size, flags,
-+				    handler->flags);
-+	}
-+#endif
- 	return ubifs_do_setxattr(d_inode(dentry), name, value, size, flags);
- }
- 
-@@ -428,6 +567,9 @@ out_unlock:
- ssize_t ubifs_getxattr(struct dentry *dentry, const char *name,
- 		       void *value, size_t size)
- {
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	const struct xattr_handler *handler;
-+#endif
- 	struct qstr nm = QSTR_INIT(name, strlen(name));
- 	int type;
- 
-@@ -438,6 +580,16 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name,
- 	if (type < 0)
- 		return type;
- 
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	if (type == POSIX_ACL_DEFAULT || type == POSIX_ACL_ACCESS) {
-+		if (type == POSIX_ACL_DEFAULT)
-+			handler = &posix_acl_default_xattr_handler;
-+		if (type == POSIX_ACL_ACCESS)
-+			handler = &posix_acl_access_xattr_handler;
-+		return handler->get(dentry, name, value, size,
-+				    handler->flags);
-+	}
-+#endif
- 	return ubifs_do_getxattr(d_inode(dentry), name, value, size);
- }
- 
-@@ -505,95 +657,6 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 	return written;
- }
- 
--static int remove_xattr(struct ubifs_info *c, struct inode *host,
--			struct inode *inode, const struct qstr *nm)
--{
--	int err;
--	struct ubifs_inode *host_ui = ubifs_inode(host);
--	struct ubifs_inode *ui = ubifs_inode(inode);
--	struct ubifs_budget_req req = { .dirtied_ino = 2, .mod_dent = 1,
--				.dirtied_ino_d = ALIGN(host_ui->data_len, 8) };
--
--	ubifs_assert(ui->data_len == inode->i_size);
--
--	err = ubifs_budget_space(c, &req);
--	if (err)
--		return err;
--
--	mutex_lock(&host_ui->ui_mutex);
--	host->i_ctime = ubifs_current_time(host);
--	host_ui->xattr_cnt -= 1;
--	host_ui->xattr_size -= CALC_DENT_SIZE(nm->len);
--	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
--	host_ui->xattr_names -= nm->len;
--
--	err = ubifs_jnl_delete_xattr(c, host, inode, nm);
--	if (err)
--		goto out_cancel;
--	mutex_unlock(&host_ui->ui_mutex);
--
--	ubifs_release_budget(c, &req);
--	return 0;
--
--out_cancel:
--	host_ui->xattr_cnt += 1;
--	host_ui->xattr_size += CALC_DENT_SIZE(nm->len);
--	host_ui->xattr_size += CALC_XATTR_BYTES(ui->data_len);
--	mutex_unlock(&host_ui->ui_mutex);
--	ubifs_release_budget(c, &req);
--	make_bad_inode(inode);
--	return err;
--}
--
--int ubifs_removexattr(struct dentry *dentry, const char *name)
--{
--	struct inode *inode, *host = d_inode(dentry);
--	struct ubifs_info *c = host->i_sb->s_fs_info;
--	struct qstr nm = QSTR_INIT(name, strlen(name));
--	struct ubifs_dent_node *xent;
--	union ubifs_key key;
--	int err;
--
--	dbg_gen("xattr '%s', ino %lu ('%pd')", name,
--		host->i_ino, dentry);
--	ubifs_assert(mutex_is_locked(&host->i_mutex));
--
--	err = check_namespace(&nm);
--	if (err < 0)
--		return err;
--
--	xent = kmalloc(UBIFS_MAX_XENT_NODE_SZ, GFP_NOFS);
--	if (!xent)
--		return -ENOMEM;
--
--	xent_key_init(c, &key, host->i_ino, &nm);
--	err = ubifs_tnc_lookup_nm(c, &key, xent, &nm);
--	if (err) {
--		if (err == -ENOENT)
--			err = -ENODATA;
--		goto out_free;
--	}
--
--	inode = iget_xattr(c, le64_to_cpu(xent->inum));
--	if (IS_ERR(inode)) {
--		err = PTR_ERR(inode);
--		goto out_free;
--	}
--
--	ubifs_assert(inode->i_nlink == 1);
--	clear_nlink(inode);
--	err = remove_xattr(c, host, inode, &nm);
--	if (err)
--		set_nlink(inode, 1);
--
--	/* If @i_nlink is 0, 'iput()' will delete the inode */
--	iput(inode);
--
--out_free:
--	kfree(xent);
--	return err;
--}
--
- static size_t security_listxattr(struct dentry *d, char *list, size_t list_size,
- 				 const char *name, size_t name_len, int flags)
- {
 -- 
 1.9.1
