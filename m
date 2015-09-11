@@ -1,17 +1,32 @@
-Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZaOa5-0006xg-Rq
- for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 13:41:34 +0000
-Received: by oixx17 with SMTP id x17so42834951oix.0
- for <linux-mtd@lists.infradead.org>; Fri, 11 Sep 2015 06:41:12 -0700 (PDT)
-From: Peng Fan <van.freenix@gmail.com>
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- computersforpeace@gmail.com
-Cc: van.freenix@gmail.com,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2] mtd: blktrans: fix multiplication overflow
-Date: Fri, 11 Sep 2015 21:41:47 +0800
-Message-Id: <1441978907-19520-1-git-send-email-van.freenix@gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <20150911123644.GU12027@sirena.org.uk>
+References: <1440570367-22569-1-git-send-email-ranjit.waghmode@xilinx.com>
+ <1440570367-22569-2-git-send-email-ranjit.waghmode@xilinx.com>
+ <20150903121232.GW12027@sirena.org.uk>
+ <7CFCFE83B8145347A1D424EC939F1C3C014B0D67@XAP-PVEXMBX01.xlnx.xilinx.com>
+ <20150911123644.GU12027@sirena.org.uk>
+Date: Fri, 11 Sep 2015 21:54:29 +0530
+Message-ID: <CAFcVECJ_sF6Sav4NffMkwS5iQnPk2x7SE=qji5ByF17ejX0n=g@mail.gmail.com>
+Subject: Re: [LINUX RFC v2 1/4] spi: add support of two chip selects & data
+ stripe
+From: Harini Katakam <harinikatakamlinux@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Ranjit Abhimanyu Waghmode <ranjit.waghmode@xilinx.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ Michal Simek <michals@xilinx.com>,
+ Soren Brinkmann <sorenb@xilinx.com>, "zajec5@gmail.com" <zajec5@gmail.com>,
+ "ben@decadent.org.uk" <ben@decadent.org.uk>, "marex@denx.de" <marex@denx.de>,
+ "b32955@freescale.com" <b32955@freescale.com>,
+ "knut.wohlrab@de.bosch.com" <knut.wohlrab@de.bosch.com>,
+ "juhosg@openwrt.org" <juhosg@openwrt.org>,
+ "beanhuo@micron.com" <beanhuo@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,43 +36,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In drivers/mtd/mtd_blkdevs.c:
-406	set_capacity(gd, (new->size * tr->blksize) >> 9);
-The type of new->size is unsigned long and the type of tr->blksize is int,
-the result of 'new->size * tr->blksize' may exceed ULONG_MAX on 32bit
-machines.
+Hi Mark,
 
-I use nand chip MT29F32G08CBADBWP which is 4GB and the parameters passed
-to kernel is 'mtdparts=gpmi-nand:-(user)', the whole nand chip will be
-treated as a 4GB mtd partition. new->size is 0x800000 and tr->blksize is
-0x200, 'new->size * tr->blksize' however is 0. This is what we do not want
-to see.
+On Fri, Sep 11, 2015 at 6:06 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Sep 04, 2015 at 12:02:21PM +0000, Ranjit Abhimanyu Waghmode wrote:
+>
+> Please fix your mail client to word wrap within paragraphs and to quote
+> text without reflowing it - your messages are very hard to read.
+>
+>> > > + /* Controller may support more than one chip.
+>> > > +  * This flag will enable that feature.
+>> > > +  */
+>> > > +#define SPI_MASTER_BOTH_CS               BIT(8)          /* enable both
+>> > chips */
+>
+>> Now we can consider following use cases:
+>
+>> Suppose we need to send the same data to multiple slaves of same kind:
+>> Here the application need not to do individual slave access for writing, instead it can send data to all the devices in one go.
+>
+> That's a *very* specific application which will only work for write only
+> devices - I'd be surprised if such systems actually had distinct chip
+> select lines at the CPU level.
+>
 
-Using type cast u64 to fix the multiplication overflow issue.
+Agreed that it is very specific but here are a few ways it is used
+when communicating with two flash devices in parallel configuration:
+- Write enable is sent to both devices using a single operation.
+- Writing to any configuration registers in the flash is done in one go
+- Some application that want to mirror important data to both devices.
+Even with reading, the assertion of multiple cs combined with stripe
+will mean:
+- Two status bytes, one form each will be obtained in one operation
+- Similarly data that was written using stripe is read back and combined.
 
-Signed-off-by: Peng Fan <van.freenix@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
----
+Such systems could still maintain separate chip selects to perform
+individual operations such as reading flash ID, debugging failures or
+locking specific sectors.
 
-Changes V2:
- use type cast to avoid build break for platforms which does not support 64 bit multilplication.
-
- drivers/mtd/mtd_blkdevs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 44dc965..cb47d79 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -399,7 +399,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 		snprintf(gd->disk_name, sizeof(gd->disk_name),
- 			 "%s%d", tr->name, new->devnum);
- 
--	set_capacity(gd, (new->size * tr->blksize) >> 9);
-+	set_capacity(gd, ((u64)new->size * tr->blksize) >> 9);
- 
- 	/* Create the request queue */
- 	spin_lock_init(&new->queue_lock);
--- 
-1.8.4
+Regards,
+Harini
