@@ -1,20 +1,20 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZaJez-0005z6-Cd
- for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 08:26:19 +0000
-Message-ID: <55F28FDF.2090104@huawei.com>
-Date: Fri, 11 Sep 2015 16:25:03 +0800
-From: Sheng Yong <shengyong1@huawei.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZaJkU-0001qb-OM
+ for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 08:31:59 +0000
+Message-ID: <55F28FF1.4010201@cn.fujitsu.com>
+Date: Fri, 11 Sep 2015 16:25:21 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, <dedekind1@gmail.com>,
+To: Sheng Yong <shengyong1@huawei.com>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>, <andreas.gruenbacher@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
 Subject: Re: [RFC PATCH v3 4/5] UBIFS: ACL: introduce ACL mount options
 References: <1441962597-13543-1-git-send-email-shengyong1@huawei.com>
  <1441962597-13543-5-git-send-email-shengyong1@huawei.com>
- <55F2608A.30805@cn.fujitsu.com>
-In-Reply-To: <55F2608A.30805@cn.fujitsu.com>
-Content-Type: text/plain; charset="utf-8"
+ <55F2608A.30805@cn.fujitsu.com> <55F28FDF.2090104@huawei.com>
+In-Reply-To: <55F28FDF.2090104@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,75 +25,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 09/11/2015 04:25 PM, Sheng Yong wrote:
+>
+>
+> On 9/11/2015 1:03 PM, Dongsheng Yang wrote:
+>> On 09/11/2015 05:09 PM, Sheng Yong wrote:
+>>> This patch introduces `acl' and `noacl' mount options for ACL.
+>>>
+>>> Signed-off-by: Sheng Yong <shengyong1@huawei.com>
+>>> ---
+>>>    fs/ubifs/super.c | 15 +++++++++++++++
+>>>    1 file changed, 15 insertions(+)
+>>>
+>>> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+>>> index 9547a278..52baad1 100644
+>>> --- a/fs/ubifs/super.c
+>>> +++ b/fs/ubifs/super.c
+>>> @@ -441,6 +441,9 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
+>>>                   ubifs_compr_name(c->mount_opts.compr_type));
+>>>        }
+>>>
+>>> +    if (c->vfs_sb->s_flags & MS_POSIXACL)
+>>> +        seq_printf(s, ",acl");
+>>> +
+>>>        return 0;
+>>>    }
+>>>
+>>> @@ -926,6 +929,8 @@ enum {
+>>>        Opt_chk_data_crc,
+>>>        Opt_no_chk_data_crc,
+>>>        Opt_override_compr,
+>>> +    Opt_acl,
+>>> +    Opt_noacl,
+>>>        Opt_err,
+>>>    };
+>>>
+>>> @@ -937,6 +942,8 @@ static const match_table_t tokens = {
+>>>        {Opt_chk_data_crc, "chk_data_crc"},
+>>>        {Opt_no_chk_data_crc, "no_chk_data_crc"},
+>>>        {Opt_override_compr, "compr=%s"},
+>>> +    {Opt_acl, "acl"},
+>>> +    {Opt_noacl, "noacl"},
+>>>        {Opt_err, NULL},
+>>>    };
+>>>
+>>> @@ -1037,6 +1044,14 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
+>>>                c->default_compr = c->mount_opts.compr_type;
+>>>                break;
+>>>            }
+>>> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+>>> +        case Opt_acl:
+>>> +            c->vfs_sb->s_flags |= MS_POSIXACL;
+>>> +            break;
+>>
+>> I think we can error out if CONFIG_UBIFS_FS_POSIX_ACL=n && Opt_acl is specified. I think you missed my comment again, I mentioned it in your V2 patch.
+>
+> I don't think the else is needed. I think the `default' could handle this.
 
+Oh, yes, good. My bad. default would handle it.
 
-On 9/11/2015 1:03 PM, Dongsheng Yang wrote:
-> On 09/11/2015 05:09 PM, Sheng Yong wrote:
->> This patch introduces `acl' and `noacl' mount options for ACL.
+Thanx
+Yang
+>
+> thanks,
+> Sheng
 >>
->> Signed-off-by: Sheng Yong <shengyong1@huawei.com>
->> ---
->>   fs/ubifs/super.c | 15 +++++++++++++++
->>   1 file changed, 15 insertions(+)
+>> Yang
+>>> +        case Opt_noacl:
+>>> +            c->vfs_sb->s_flags &= ~MS_POSIXACL;
+>>> +            break;
+>>> +#endif
+>>>            default:
+>>>            {
+>>>                unsigned long flag;
+>>>
 >>
->> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
->> index 9547a278..52baad1 100644
->> --- a/fs/ubifs/super.c
->> +++ b/fs/ubifs/super.c
->> @@ -441,6 +441,9 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
->>                  ubifs_compr_name(c->mount_opts.compr_type));
->>       }
 >>
->> +    if (c->vfs_sb->s_flags & MS_POSIXACL)
->> +        seq_printf(s, ",acl");
->> +
->>       return 0;
->>   }
+>> .
 >>
->> @@ -926,6 +929,8 @@ enum {
->>       Opt_chk_data_crc,
->>       Opt_no_chk_data_crc,
->>       Opt_override_compr,
->> +    Opt_acl,
->> +    Opt_noacl,
->>       Opt_err,
->>   };
->>
->> @@ -937,6 +942,8 @@ static const match_table_t tokens = {
->>       {Opt_chk_data_crc, "chk_data_crc"},
->>       {Opt_no_chk_data_crc, "no_chk_data_crc"},
->>       {Opt_override_compr, "compr=%s"},
->> +    {Opt_acl, "acl"},
->> +    {Opt_noacl, "noacl"},
->>       {Opt_err, NULL},
->>   };
->>
->> @@ -1037,6 +1044,14 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
->>               c->default_compr = c->mount_opts.compr_type;
->>               break;
->>           }
->> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
->> +        case Opt_acl:
->> +            c->vfs_sb->s_flags |= MS_POSIXACL;
->> +            break;
-> 
-> I think we can error out if CONFIG_UBIFS_FS_POSIX_ACL=n && Opt_acl is specified. I think you missed my comment again, I mentioned it in your V2 patch.
-
-I don't think the else is needed. I think the `default' could handle this.
-
-thanks,
-Sheng
-> 
-> Yang
->> +        case Opt_noacl:
->> +            c->vfs_sb->s_flags &= ~MS_POSIXACL;
->> +            break;
->> +#endif
->>           default:
->>           {
->>               unsigned long flag;
->>
-> 
-> 
+>
 > .
-> 
+>
