@@ -1,21 +1,25 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZaJkU-0001qb-OM
- for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 08:31:59 +0000
-Message-ID: <55F28FF1.4010201@cn.fujitsu.com>
-Date: Fri, 11 Sep 2015 16:25:21 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-To: Sheng Yong <shengyong1@huawei.com>, <dedekind1@gmail.com>,
- <richard.weinberger@gmail.com>, <andreas.gruenbacher@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
-Subject: Re: [RFC PATCH v3 4/5] UBIFS: ACL: introduce ACL mount options
-References: <1441962597-13543-1-git-send-email-shengyong1@huawei.com>
- <1441962597-13543-5-git-send-email-shengyong1@huawei.com>
- <55F2608A.30805@cn.fujitsu.com> <55F28FDF.2090104@huawei.com>
-In-Reply-To: <55F28FDF.2090104@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Message-ID: <1441964863.23394.4.camel@mhfsdcap03>
+Subject: Re: [PATCH 3/3] arm64: dts: mt8173: Add nor flash node
+From: bayi.cheng <bayi.cheng@mediatek.com>
+To: Jagan Teki <jteki@openedev.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Sascha Hauer <s.hauer@pengutronix.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Daniel Kurtz
+ <djkurtz@chromium.org>, Rob Herring <robh+dt@kernel.org>,
+ <linux-mediatek@lists.infradead.org>, Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>
+Date: Fri, 11 Sep 2015 17:47:43 +0800
+In-Reply-To: <CAD6G_RTR2r8ETMQ14uGosRn-85sssvVsFT4BjK9SkVSfMkG8Dw@mail.gmail.com>
+References: <1441705796-11365-1-git-send-email-bayi.cheng@mediatek.com>
+ <1441705796-11365-4-git-send-email-bayi.cheng@mediatek.com>
+ <CAD6G_RTR2r8ETMQ14uGosRn-85sssvVsFT4BjK9SkVSfMkG8Dw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,84 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/11/2015 04:25 PM, Sheng Yong wrote:
->
->
-> On 9/11/2015 1:03 PM, Dongsheng Yang wrote:
->> On 09/11/2015 05:09 PM, Sheng Yong wrote:
->>> This patch introduces `acl' and `noacl' mount options for ACL.
->>>
->>> Signed-off-by: Sheng Yong <shengyong1@huawei.com>
->>> ---
->>>    fs/ubifs/super.c | 15 +++++++++++++++
->>>    1 file changed, 15 insertions(+)
->>>
->>> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
->>> index 9547a278..52baad1 100644
->>> --- a/fs/ubifs/super.c
->>> +++ b/fs/ubifs/super.c
->>> @@ -441,6 +441,9 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
->>>                   ubifs_compr_name(c->mount_opts.compr_type));
->>>        }
->>>
->>> +    if (c->vfs_sb->s_flags & MS_POSIXACL)
->>> +        seq_printf(s, ",acl");
->>> +
->>>        return 0;
->>>    }
->>>
->>> @@ -926,6 +929,8 @@ enum {
->>>        Opt_chk_data_crc,
->>>        Opt_no_chk_data_crc,
->>>        Opt_override_compr,
->>> +    Opt_acl,
->>> +    Opt_noacl,
->>>        Opt_err,
->>>    };
->>>
->>> @@ -937,6 +942,8 @@ static const match_table_t tokens = {
->>>        {Opt_chk_data_crc, "chk_data_crc"},
->>>        {Opt_no_chk_data_crc, "no_chk_data_crc"},
->>>        {Opt_override_compr, "compr=%s"},
->>> +    {Opt_acl, "acl"},
->>> +    {Opt_noacl, "noacl"},
->>>        {Opt_err, NULL},
->>>    };
->>>
->>> @@ -1037,6 +1044,14 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
->>>                c->default_compr = c->mount_opts.compr_type;
->>>                break;
->>>            }
->>> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
->>> +        case Opt_acl:
->>> +            c->vfs_sb->s_flags |= MS_POSIXACL;
->>> +            break;
->>
->> I think we can error out if CONFIG_UBIFS_FS_POSIX_ACL=n && Opt_acl is specified. I think you missed my comment again, I mentioned it in your V2 patch.
->
-> I don't think the else is needed. I think the `default' could handle this.
+On Tue, 2015-09-08 at 17:23 +0530, Jagan Teki wrote:
+> On 8 September 2015 at 15:19, Bayi Cheng <bayi.cheng@mediatek.com> wrote:
+> > Add Mediatek nor flash node
+> >
+> > Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+> > ---
+> >  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> > index d18ee42..a14f005 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> > @@ -365,6 +365,16 @@
+> >                         status = "disabled";
+> >                 };
+> >
+> > +               nor_flash: nor@1100d000 {
+> 
+> Based on the comments from 1/3 - this notation needs to be change something like
+> qspi0: quadspi@1100d000
 
-Oh, yes, good. My bad. default would handle it.
-
-Thanx
-Yang
->
-> thanks,
-> Sheng
->>
->> Yang
->>> +        case Opt_noacl:
->>> +            c->vfs_sb->s_flags &= ~MS_POSIXACL;
->>> +            break;
->>> +#endif
->>>            default:
->>>            {
->>>                unsigned long flag;
->>>
->>
->>
->> .
->>
->
-> .
->
+OK, I will fixed it!
+> 
+> > +                       compatible = "mediatek,mt8173-nor";
+> > +                       reg = <0 0x1100d000 0 0xe0>;
+> > +                       clocks = <&pericfg CLK_PERI_SPI>,
+> > +                                <&topckgen CLK_TOP_AXI_SEL>,
+> > +                                <&topckgen CLK_TOP_UNIVPLL2_D8>,
+> > +                                <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
+> > +                       clock-names = "spi_clk", "axi_clk", "mux_clk", "sf_clk";
+> > +               };
+> > +
+> >                 i2c3: i2c3@11010000 {
+> >                         compatible = "mediatek,mt8173-i2c";
+> >                         reg = <0 0x11010000 0 0x70>,
+> > --
+> > 1.8.1.1.dirty
+> >
+> 
+> thanks!
