@@ -1,31 +1,25 @@
+Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZaUaO-0006g1-8Z
+ for linux-mtd@lists.infradead.org; Fri, 11 Sep 2015 20:06:17 +0000
+Received: by lagj9 with SMTP id j9so55569704lag.2
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Sep 2015 13:05:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20150911123644.GU12027@sirena.org.uk>
-References: <1440570367-22569-1-git-send-email-ranjit.waghmode@xilinx.com>
- <1440570367-22569-2-git-send-email-ranjit.waghmode@xilinx.com>
- <20150903121232.GW12027@sirena.org.uk>
- <7CFCFE83B8145347A1D424EC939F1C3C014B0D67@XAP-PVEXMBX01.xlnx.xilinx.com>
- <20150911123644.GU12027@sirena.org.uk>
-Date: Fri, 11 Sep 2015 21:54:29 +0530
-Message-ID: <CAFcVECJ_sF6Sav4NffMkwS5iQnPk2x7SE=qji5ByF17ejX0n=g@mail.gmail.com>
-Subject: Re: [LINUX RFC v2 1/4] spi: add support of two chip selects & data
- stripe
-From: Harini Katakam <harinikatakamlinux@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Ranjit Abhimanyu Waghmode <ranjit.waghmode@xilinx.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- Michal Simek <michals@xilinx.com>,
- Soren Brinkmann <sorenb@xilinx.com>, "zajec5@gmail.com" <zajec5@gmail.com>,
- "ben@decadent.org.uk" <ben@decadent.org.uk>, "marex@denx.de" <marex@denx.de>,
- "b32955@freescale.com" <b32955@freescale.com>,
- "knut.wohlrab@de.bosch.com" <knut.wohlrab@de.bosch.com>,
- "juhosg@openwrt.org" <juhosg@openwrt.org>,
- "beanhuo@micron.com" <beanhuo@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+In-Reply-To: <55F270EE.9060801@huawei.com>
+References: <1441962597-13543-1-git-send-email-shengyong1@huawei.com>
+ <1441962597-13543-2-git-send-email-shengyong1@huawei.com>
+ <55F2601B.60203@cn.fujitsu.com> <55F270EE.9060801@huawei.com>
+Date: Fri, 11 Sep 2015 22:05:52 +0200
+Message-ID: <CAHpGcMJ3GYJNzKh0Z3VXd3K8c_J2bDpTmrK4FfE6e1H-dPY_oA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 1/5] UBIFS: ACL: introduce init/set/get functions
+ for ACL
+From: =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+To: Sheng Yong <shengyong1@huawei.com>
+Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,43 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+2015-09-11 8:13 GMT+02:00 Sheng Yong <shengyong1@huawei.com>:
+> It seems xattr handler will be removed because of dead code of security xattr.
 
-On Fri, Sep 11, 2015 at 6:06 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Sep 04, 2015 at 12:02:21PM +0000, Ranjit Abhimanyu Waghmode wrote:
->
-> Please fix your mail client to word wrap within paragraphs and to quote
-> text without reflowing it - your messages are very hard to read.
->
->> > > + /* Controller may support more than one chip.
->> > > +  * This flag will enable that feature.
->> > > +  */
->> > > +#define SPI_MASTER_BOTH_CS               BIT(8)          /* enable both
->> > chips */
->
->> Now we can consider following use cases:
->
->> Suppose we need to send the same data to multiple slaves of same kind:
->> Here the application need not to do individual slave access for writing, instead it can send data to all the devices in one go.
->
-> That's a *very* specific application which will only work for write only
-> devices - I'd be surprised if such systems actually had distinct chip
-> select lines at the CPU level.
->
+The security xattr handler right now is dead code. If you can convert
+ubifs to use the xattr handler infrastructure (super_block.s_xattr,
+etc.), that would be great; the security xattr handler would then
+start being useful. You could then implement POSIX ACLs as tmpfs does
+(mm/shmem.c).
 
-Agreed that it is very specific but here are a few ways it is used
-when communicating with two flash devices in parallel configuration:
-- Write enable is sent to both devices using a single operation.
-- Writing to any configuration registers in the flash is done in one go
-- Some application that want to mirror important data to both devices.
-Even with reading, the assertion of multiple cs combined with stripe
-will mean:
-- Two status bytes, one form each will be obtained in one operation
-- Similarly data that was written using stripe is read back and combined.
-
-Such systems could still maintain separate chip selects to perform
-individual operations such as reading flash ID, debugging failures or
-locking specific sectors.
-
-Regards,
-Harini
+Andreas
