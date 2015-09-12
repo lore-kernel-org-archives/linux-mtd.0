@@ -1,19 +1,29 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZahDZ-0004Pw-J1
- for linux-mtd@lists.infradead.org; Sat, 12 Sep 2015 09:35:34 +0000
-Subject: Re: [RFC] MTD BoF at ELCE 2015 [was [RFC PATCH 2/2] mtd: nand: use
- nand_check_erased_ecc_chunk in default ECC read functions]
-To: Andrea Scian <rnd4@dave-tech.it>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <55E855EF.5000600@dave-tech.it>
-Cc: mtd_mailinglist <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@sigma-star.at>
-Message-ID: <55F3F1CB.3010809@sigma-star.at>
-Date: Sat, 12 Sep 2015 11:35:07 +0200
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZahHW-0004hi-Fm
+ for linux-mtd@lists.infradead.org; Sat, 12 Sep 2015 09:39:40 +0000
+Subject: Re: UBIFS errors when file-system is full
+To: Bhuvanchandra <bhuvanchandradv@gmail.com>
+References: <55A3C342.9010704@gmail.com>
+ <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
+ <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
+ <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
+ <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
+ <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
+ <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
+ <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
+ <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
+ <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
+ <55AF4447.50500@nod.at> <55B24F2F.9020705@gmail.com>
+ <55B26D24.3060006@nod.at> <55BBA6A5.9020701@gmail.com>
+ <55F2528D.9050506@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Stefan Agner <stefan@agner.ch>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55F3F2BE.8090207@nod.at>
+Date: Sat, 12 Sep 2015 11:39:10 +0200
 MIME-Version: 1.0
-In-Reply-To: <55E855EF.5000600@dave-tech.it>
-Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <55F2528D.9050506@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,47 +36,101 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi!
 
-Am 03.09.2015 um 16:15 schrieb Andrea Scian:
+Am 11.09.2015 um 06:03 schrieb Bhuvanchandra:
+>> Running mkvol_bad /dev/ubi0
+>> [   99.630756] ubi0 error: verify_mkvol_req: bad volume creation request
+>> [   99.637579] Volume creation request dump:
+>> [   99.641987]  vol_id    -2
+>> [   99.644784]  alignment 1
+>> [   99.647466]  bytes     124690432
+>> [   99.650994]  vol_type  3
+>> [   99.653696]  name_len  22
+>> [   99.656464]  1st 16 characters of name: mkvol_bad:test_m
+>> [   99.669464] ubi0 error: verify_mkvol_req: bad volume creation request
+>> [   99.676292] Volume creation request dump:
+>> [   99.680674]  vol_id    128
+>> [   99.683558]  alignment 1
+>> [   99.686240]  bytes     124690432
+>> [   99.694911]  vol_type  3
+>> [   99.702852]  name_len  22
+>> [   99.710786]  1st 16 characters of name: mkvol_bad:test_m
+>> [   99.728668] ubi0 error: verify_mkvol_req: bad volume creation request
+>> [   99.740962] Volume creation request dump:
+>> [   99.750630]  vol_id    0
+>> [   99.758537]  alignment 0
+>> [   99.766352]  bytes     124690432
+>> [   99.774804]  vol_type  3
+>> [   99.782409]  name_len  22
+>> [   99.789923]  1st 16 characters of name: mkvol_bad:test_m
+>> [   99.808480] ubi0 error: verify_mkvol_req: bad volume creation request
+>> [   99.820028] Volume creation request dump:
+>> [   99.828796]  vol_id    0
+>> [   99.835879]  alignment -1
+>> [   99.842859]  bytes     124690432
+>> [   99.850335]  vol_type  3
+>> [   99.856849]  name_len  22
+>> [   99.863395]  1st 16 characters of name: mkvol_bad:test_m
+>> [   99.880157] ubi0 error: verify_mkvol_req: bad volume creation request
+>> [   99.891064] Volume creation request dump:
+>> [   99.899440]  vol_id    0
+>> [   99.906182]  alignment 126977
+>> [   99.913456]  bytes     124690432
+>> [   99.920926]  vol_type  3
+>> [   99.927467]  name_len  22
+>> [   99.934058]  1st 16 characters of name: mkvol_bad:test_m
+>> [   99.950732] ubi0 error: verify_mkvol_req: bad volume creation request
+>> [   99.961655] Volume creation request dump:
+>> [   99.970057]  vol_id    0
+>> [   99.976826]  alignment 2049
+>> [   99.983931]  bytes     124690432
+>> [   99.991412]  vol_type  3
+>> [   99.997959]  name_len  22
+>> [  100.004551]  1st 16 characters of name: mkvol_bad:test_m
+>> [  100.021254] ubi0 error: verify_mkvol_req: bad volume creation request
+>> [  100.032201] Volume creation request dump:
+>> [  100.040649]  vol_id    0
+>> [  100.047441]  alignment 1
+>> [  100.054334]  bytes     -1
+>> [  100.061191]  vol_type  3
+>> [  100.067708]  name_len  22
+>> [  100.074250]  1st 16 characters of name: mkvol_bad:test_m
+>> [  100.090929] ubi0 error: verify_mkvol_req: bad volume creation request
+>> [  100.101834] Volume creation request dump:
+>> [  100.110223]  vol_id    0
+>> [  100.116969]  alignment 1
+>> [  100.123783]  bytes     0
+>> [  100.130505]  vol_type  3
+>> [  100.136980]  name_len  22
+>> [  100.143502]  1st 16 characters of name: mkvol_bad:test_m
+>> [  100.160274] ubi0 error: ubi_create_volume: not enough PEBs, only 982 available
+>> [  100.175970] ubi0 error: ubi_create_volume: cannot create volume 0, error -28
+>> [  100.189501] ubi0 error: ubi_create_volume: not enough PEBs, only 982 available
+>> [  100.205998] ubi0 error: ubi_create_volume: cannot create volume 0, error -28
+>> [  100.222091] ubi0 error: verify_mkvol_req: bad volume creation request
+>> [  100.233529] Volume creation request dump:
+>> [  100.242409]  vol_id    0
+>> [  100.249771]  alignment 1
+>> [  100.256993]  bytes     126976
+>> [  100.264716]  vol_type  7
+>> [  100.272035]  name_len  22
+>> [  100.279316]  1st 16 characters of name: mkvol_bad:test_m
+>> [  100.416661] ubi0 error: ubi_create_volume: volume 0 already exists
+>> [  100.427776] ubi0 error: ubi_create_volume: cannot create volume 0, error -17
+>> [  100.441410] ubi0 error: ubi_create_volume: volume "mkvol_bad:test_mkvol()" exists (ID 0)
+>> [  100.459295] ubi0 error: ubi_create_volume: cannot create volume 1, error -17
+>> [  100.711027] ubi0 error: ubi_create_volume: volume "mkvol_bad:test_mkvol()" exists (ID 0)
+>> [  100.729733] ubi0 error: ubi_create_volume: cannot create volume 1, error -17
+>> [  131.225291] ubi0 error: ubi_open_volume: cannot open device 0, volume 128, error -22
+>> [  131.244295] ubi0 error: ubi_open_volume: cannot open device 0, volume -1, error -22
+>> [  131.269510] ubi0 error: ubi_open_volume: cannot open device 0, volume 128, error -22
+>> [  131.290092] ubi0 error: ubi_open_volume: cannot open device 0, volume 0, error -19
+>> [  131.551660] ubi0 error: ubi_open_volume: cannot open device 0, volume 0, error -19
 > 
-> Dear Boris, Richard and all the other MTD developers,
-> 
-> I take the idea from a nearly-one-month-ago-thread to ask for comment about what Richard proposed at that time.
-> 
-> Il 06/08/2015 11:42, Richard Weinberger ha scritto:
->>
->> Am 06.08.2015 um 11:19 schrieb Boris Brezillon:
->>>> I think this needs more discussion.
->>>>
->>>> Boris, Brian, will you be at Embedded Linux Conference Europe
->>>> in Dublin?
->>>> Maybe we can discuss these issues (data retention, ff-checks,
->>>> etc...) in person and figure out where to address them.
->>>> I really want to avoid ad-hoc solutions. :)
->>>
->>> I'll be at ELCE and I'd be happy to discuss all these NAND/MTD/UBI
->>> related issues with you, though I think we should keep discussing
->>> those problems on the ML too.
->>
->> Sure, I did not recommend a secret meeting. ;-)
->> But often a face to face conversation is better for brain storming.
->>
-> 
-> I'll be at ELCE too and I'll be glad to meet all of you.
-> For sure I'll attend to Richard presentation!
-> 
-> I'm wondering if we can organize something like a mini-summit or BoF about MTD/UBI.
-> I don't really know how LF events are organized or if we can have a room reserved for us, but even if it's not possible (or too hard to organize at this later stage) I think we can
-> find some good and quiet place into the CCD to meet.
+> With the recent fixes by Stefan to vf610_nfc driver the io_paral test passed, but the
+> above error's with the volume creation are still reproducible. Are these erros need to
+> be taken into consideration ?
 
-AFACT it is too late for an official mini summit.
-
-> Anyway.. a pub after the conference will be a nice place to have this meeting too :-)
-
-Definitely. Let's talk/meet after our talks. :-)
+No. These logs are fine. mkvol_bad does negative testing.
 
 Thanks,
 //richard
-
--- 
-sigma star gmbh - Bundesstrasse 3 - 6111 Volders - Austria
-ATU66964118 - FN 374287y
