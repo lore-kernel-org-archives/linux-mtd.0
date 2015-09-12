@@ -1,30 +1,29 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from s159.web-hosting.com ([68.65.121.203])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZahHW-0004hi-Fm
- for linux-mtd@lists.infradead.org; Sat, 12 Sep 2015 09:39:40 +0000
-Subject: Re: UBIFS errors when file-system is full
-To: Bhuvanchandra <bhuvanchandradv@gmail.com>
-References: <55A3C342.9010704@gmail.com>
- <CAFLxGvzriSX-aGh_NShqP7McyZQK6bOdnOm=yXkZSUfX=r8pzw@mail.gmail.com>
- <55A48EA7.6050302@gmail.com> <55A4A896.9050500@nod.at>
- <55A4AC7A.1020203@gmail.com> <55A4ACEF.20307@nod.at>
- <55A4C866.2010400@gmail.com> <55A4CB60.2080505@nod.at>
- <55A4DF83.5080505@gmail.com> <55A4ED47.4060802@nod.at>
- <55A74812.2020906@gmail.com> <55A74AA1.2000000@nod.at>
- <55A7540C.3050900@nod.at> <55A7592D.6010906@gmail.com>
- <55A75A05.7040603@nod.at> <55ADE0F1.9090809@gmail.com>
- <55ADE35F.6050808@nod.at> <55AF41DD.2060902@gmail.com>
- <55AF4447.50500@nod.at> <55B24F2F.9020705@gmail.com>
- <55B26D24.3060006@nod.at> <55BBA6A5.9020701@gmail.com>
- <55F2528D.9050506@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Stefan Agner <stefan@agner.ch>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55F3F2BE.8090207@nod.at>
-Date: Sat, 12 Sep 2015 11:39:10 +0200
+ id 1ZanLj-0008VK-AE
+ for linux-mtd@lists.infradead.org; Sat, 12 Sep 2015 16:08:24 +0000
+Received: from mail-lb0-f178.google.com ([209.85.217.178]:33981)
+ by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
+ (Exim 4.85) (envelope-from <jteki@openedev.com>) id 1ZanLJ-0036th-LX
+ for linux-mtd@lists.infradead.org; Sat, 12 Sep 2015 12:08:00 -0400
+Received: by lbbmp1 with SMTP id mp1so52092611lbb.1
+ for <linux-mtd@lists.infradead.org>; Sat, 12 Sep 2015 09:07:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <55F2528D.9050506@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAD6G_RT05bSJCz1_-GhLudQXiCoULbbUzvrUqihz1_TNY=APkg@mail.gmail.com>
+References: <1440586128-4325-1-git-send-email-jteki@openedev.com>
+ <CAD6G_RT05bSJCz1_-GhLudQXiCoULbbUzvrUqihz1_TNY=APkg@mail.gmail.com>
+Date: Sat, 12 Sep 2015 21:37:56 +0530
+Message-ID: <CAD6G_RSn9mLL7eZ5J3BxHkuuW=0Lh1aqe=eQHQbHAfhjzCBtDQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] mtd: spi-nor: Add clear flag status register
+ support
+From: Jagan Teki <jteki@openedev.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jagan Teki <jteki@openedev.com>,
+ Hou Zhiqiang <B48286@freescale.com>, "Mingkai.Hu" <Mingkai.Hu@freescale.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,103 +33,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On 1 September 2015 at 21:40, Jagan Teki <jteki@openedev.com> wrote:
+> On 26 August 2015 at 16:18, Jagan Teki <jteki@openedev.com> wrote:
+>> The clear flag status register operation is required by Micron
+>> SPI-NOR chips, which support FSR. And if error bits of FSR
+>> have been set like protection, voltage, erase, and program,
+>> it must be cleared by executing clear FSR operation.
+>>
+>> Signed-off-by: Jagan Teki <jteki@openedev.com>
+>> Cc: Hou Zhiqiang <B48286@freescale.com>
+>> Cc: Mingkai.Hu <Mingkai.Hu@freescale.com>
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Cc: Brian Norris <computersforpeace@gmail.com>
+>
+> Any response, please comment
+>
+>> ---
+>> Changes for v2:
+>>         - Write cfsr instead of reading it.
+>>         - Return -EINVAL instead of -1
+>>
+>>  drivers/mtd/spi-nor/spi-nor.c | 23 +++++++++++++++++++----
+>>  include/linux/mtd/spi-nor.h   |  9 +++++++++
+>>  2 files changed, 28 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index f954d03..0a77061 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -163,6 +163,18 @@ static inline int write_disable(struct spi_nor *nor)
+>>         return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
+>>  }
+>>
+>> +/*
+>> + * The clear flag status register operation is required by Micron
+>> + * SPI-NOR chips, which support FSR. And if error bits of FSR
+>> + * have been set like protection, voltage, erase, and program,
+>> + * it must be cleared by executing clear FSR operation.
+>> + * Returns negative if error occurred.
+>> + */
+>> +static inline int write_cfsr(struct spi_nor *nor)
+>> +{
+>> +       return nor->write_reg(nor, SPINOR_OP_WRCFSR, NULL, 0);
+>> +}
+>> +
+>>  static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+>>  {
+>>         return mtd->priv;
+>> @@ -209,10 +221,13 @@ static inline int spi_nor_sr_ready(struct spi_nor *nor)
+>>  static inline int spi_nor_fsr_ready(struct spi_nor *nor)
+>>  {
+>>         int fsr = read_fsr(nor);
+>> -       if (fsr < 0)
+>> -               return fsr;
+>> -       else
+>> -               return fsr & FSR_READY;
+>> +       if (fsr & FSR_ERR_MASK) {
+>> +               pr_err("flag status(0x%x) error occured\n", fsr);
+>> +               write_cfsr(nor);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       return fsr & FSR_READY;
+>>  }
+>>
+>>  static int spi_nor_ready(struct spi_nor *nor)
+>> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+>> index c5a58c4..0288081 100644
+>> --- a/include/linux/mtd/spi-nor.h
+>> +++ b/include/linux/mtd/spi-nor.h
+>> @@ -35,6 +35,7 @@
+>>  #define SPINOR_OP_RDID         0x9f    /* Read JEDEC ID */
+>>  #define SPINOR_OP_RDCR         0x35    /* Read configuration register */
+>>  #define SPINOR_OP_RDFSR                0x70    /* Read flag status register */
+>> +#define SPINOR_OP_WRCFSR       0x50    /* Write clear flag status register */
+>>
+>>  /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+>>  #define SPINOR_OP_READ4                0x13    /* Read data bytes (low frequency) */
+>> @@ -74,6 +75,14 @@
+>>  /* Enhanced Volatile Configuration Register bits */
+>>  #define EVCR_QUAD_EN_MICRON    0x80    /* Micron Quad I/O */
+>>
+>> +/* Flag Status Register Error bits */
+>> +#define FSR_ERR_PROT           0x2     /* Protection */
+>> +#define FSR_ERR_VOLT           0x8     /* Voltage on Vpp */
+>> +#define FSR_ERR_PROG           0x10    /* Program operation */
+>> +#define FSR_ERR_ERASE          0x20    /* Erase operation */
+>> +#define FSR_ERR_MASK           (FSR_ERR_PROT | FSR_ERR_VOLT | \
+>> +                               FSR_ERR_PROG | FSR_ERR_ERASE)
+>> +
+>>  /* Flag Status Register bits */
+>>  #define FSR_READY              0x80
+>>
+>> --
+>> 1.9.1
 
-Am 11.09.2015 um 06:03 schrieb Bhuvanchandra:
->> Running mkvol_bad /dev/ubi0
->> [   99.630756] ubi0 error: verify_mkvol_req: bad volume creation request
->> [   99.637579] Volume creation request dump:
->> [   99.641987]  vol_id    -2
->> [   99.644784]  alignment 1
->> [   99.647466]  bytes     124690432
->> [   99.650994]  vol_type  3
->> [   99.653696]  name_len  22
->> [   99.656464]  1st 16 characters of name: mkvol_bad:test_m
->> [   99.669464] ubi0 error: verify_mkvol_req: bad volume creation request
->> [   99.676292] Volume creation request dump:
->> [   99.680674]  vol_id    128
->> [   99.683558]  alignment 1
->> [   99.686240]  bytes     124690432
->> [   99.694911]  vol_type  3
->> [   99.702852]  name_len  22
->> [   99.710786]  1st 16 characters of name: mkvol_bad:test_m
->> [   99.728668] ubi0 error: verify_mkvol_req: bad volume creation request
->> [   99.740962] Volume creation request dump:
->> [   99.750630]  vol_id    0
->> [   99.758537]  alignment 0
->> [   99.766352]  bytes     124690432
->> [   99.774804]  vol_type  3
->> [   99.782409]  name_len  22
->> [   99.789923]  1st 16 characters of name: mkvol_bad:test_m
->> [   99.808480] ubi0 error: verify_mkvol_req: bad volume creation request
->> [   99.820028] Volume creation request dump:
->> [   99.828796]  vol_id    0
->> [   99.835879]  alignment -1
->> [   99.842859]  bytes     124690432
->> [   99.850335]  vol_type  3
->> [   99.856849]  name_len  22
->> [   99.863395]  1st 16 characters of name: mkvol_bad:test_m
->> [   99.880157] ubi0 error: verify_mkvol_req: bad volume creation request
->> [   99.891064] Volume creation request dump:
->> [   99.899440]  vol_id    0
->> [   99.906182]  alignment 126977
->> [   99.913456]  bytes     124690432
->> [   99.920926]  vol_type  3
->> [   99.927467]  name_len  22
->> [   99.934058]  1st 16 characters of name: mkvol_bad:test_m
->> [   99.950732] ubi0 error: verify_mkvol_req: bad volume creation request
->> [   99.961655] Volume creation request dump:
->> [   99.970057]  vol_id    0
->> [   99.976826]  alignment 2049
->> [   99.983931]  bytes     124690432
->> [   99.991412]  vol_type  3
->> [   99.997959]  name_len  22
->> [  100.004551]  1st 16 characters of name: mkvol_bad:test_m
->> [  100.021254] ubi0 error: verify_mkvol_req: bad volume creation request
->> [  100.032201] Volume creation request dump:
->> [  100.040649]  vol_id    0
->> [  100.047441]  alignment 1
->> [  100.054334]  bytes     -1
->> [  100.061191]  vol_type  3
->> [  100.067708]  name_len  22
->> [  100.074250]  1st 16 characters of name: mkvol_bad:test_m
->> [  100.090929] ubi0 error: verify_mkvol_req: bad volume creation request
->> [  100.101834] Volume creation request dump:
->> [  100.110223]  vol_id    0
->> [  100.116969]  alignment 1
->> [  100.123783]  bytes     0
->> [  100.130505]  vol_type  3
->> [  100.136980]  name_len  22
->> [  100.143502]  1st 16 characters of name: mkvol_bad:test_m
->> [  100.160274] ubi0 error: ubi_create_volume: not enough PEBs, only 982 available
->> [  100.175970] ubi0 error: ubi_create_volume: cannot create volume 0, error -28
->> [  100.189501] ubi0 error: ubi_create_volume: not enough PEBs, only 982 available
->> [  100.205998] ubi0 error: ubi_create_volume: cannot create volume 0, error -28
->> [  100.222091] ubi0 error: verify_mkvol_req: bad volume creation request
->> [  100.233529] Volume creation request dump:
->> [  100.242409]  vol_id    0
->> [  100.249771]  alignment 1
->> [  100.256993]  bytes     126976
->> [  100.264716]  vol_type  7
->> [  100.272035]  name_len  22
->> [  100.279316]  1st 16 characters of name: mkvol_bad:test_m
->> [  100.416661] ubi0 error: ubi_create_volume: volume 0 already exists
->> [  100.427776] ubi0 error: ubi_create_volume: cannot create volume 0, error -17
->> [  100.441410] ubi0 error: ubi_create_volume: volume "mkvol_bad:test_mkvol()" exists (ID 0)
->> [  100.459295] ubi0 error: ubi_create_volume: cannot create volume 1, error -17
->> [  100.711027] ubi0 error: ubi_create_volume: volume "mkvol_bad:test_mkvol()" exists (ID 0)
->> [  100.729733] ubi0 error: ubi_create_volume: cannot create volume 1, error -17
->> [  131.225291] ubi0 error: ubi_open_volume: cannot open device 0, volume 128, error -22
->> [  131.244295] ubi0 error: ubi_open_volume: cannot open device 0, volume -1, error -22
->> [  131.269510] ubi0 error: ubi_open_volume: cannot open device 0, volume 128, error -22
->> [  131.290092] ubi0 error: ubi_open_volume: cannot open device 0, volume 0, error -19
->> [  131.551660] ubi0 error: ubi_open_volume: cannot open device 0, volume 0, error -19
-> 
-> With the recent fixes by Stefan to vf610_nfc driver the io_paral test passed, but the
-> above error's with the volume creation are still reproducible. Are these erros need to
-> be taken into consideration ?
+Ping!
 
-No. These logs are fine. mkvol_bad does negative testing.
-
-Thanks,
-//richard
+thanks!
+-- 
+Jagan | openedev.
