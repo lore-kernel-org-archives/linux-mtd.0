@@ -1,37 +1,21 @@
-Received: from mout.web.de ([212.227.17.12])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbSN1-0000xT-VJ
- for linux-mtd@lists.infradead.org; Mon, 14 Sep 2015 11:56:28 +0000
-Subject: Re: [PATCH 00/39] drop null test before destroy functions
-To: Julia Lawall <Julia.Lawall@lip6.fr>, kernel-janitors@vger.kernel.org
-References: <1442146532-9100-1-git-send-email-Julia.Lawall@lip6.fr>
-Cc: iommu@lists.linux-foundation.org, dccp@vger.kernel.org,
- dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- ecryptfs@vger.kernel.org, dmaengine@vger.kernel.org,
- sergey.senozhatsky@gmail.com, Dan Williams <dan.j.williams@intel.com>,
- cluster-devel@redhat.com, intel-wired-lan@lists.osuosl.org,
- Mitch Williams <mitch.a.williams@intel.com>,
- John Ronciak <john.ronciak@intel.com>, Matthew Vick
- <matthew.vick@intel.com>, Don Skidmore <donald.c.skidmore@intel.com>,
- Carolyn Wyborny <carolyn.wyborny@intel.com>,
- Shannon Nelson <shannon.nelson@intel.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>, linux-nfs@vger.kernel.org,
- linux-raid@vger.kernel.org, netdev@vger.kernel.org,
- linux-atm-general@lists.sourceforge.net, linux-btrfs@vger.kernel.org,
- linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-usb@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-rdma@vger.kernel.org,
- devel@driverdev.osuosl.org, HPDD-discuss@lists.01.org,
- linux-bcache@vger.kernel.org, drbd-user@lists.linbit.com,
- ocfs2-devel@oss.oracle.com, kvm@vger.kernel.org, ceph-devel@vger.kernel.org,
- Chao Yu <chao2.yu@samsung.com>, linux-f2fs-devel@lists.sourceforge.net
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Message-ID: <55F6B59A.4040104@users.sourceforge.net>
-Date: Mon, 14 Sep 2015 13:55:06 +0200
+From: Arnd Bergmann <arnd@arndb.de>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ stable@vger.kernel.org, linux-sunxi@googlegroups.com,
+ linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v4] mtd: nand: sunxi: fix OOB handling in ->write_xxx()
+ functions
+Date: Mon, 14 Sep 2015 14:36 +0200
+Message-ID: <3052942.HDd39OoZnN@wuerfel>
+In-Reply-To: <3809181.WuS0af6Yyz@wuerfel>
+References: <1442220063-7520-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20150914114113.4aa7ea03@bbrezillon> <3809181.WuS0af6Yyz@wuerfel>
 MIME-Version: 1.0
-In-Reply-To: <1442146532-9100-1-git-send-email-Julia.Lawall@lip6.fr>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,25 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Recent commits to kernel/git/torvalds/linux.git have made the following
-> functions able to tolerate NULL arguments:
->
-> kmem_cache_destroy (commit 3942d29918522)
-> mempool_destroy (commit 4e3ca3e033d1)
-> dma_pool_destroy (commit 44d7175da6ea)
+On Monday 14 September 2015 13:49:12 Arnd Bergmann wrote:
+> > > If all hardware can do 32-bit accesses here and the size is guaranteed to be a
+> > > multiple of four bytes, you can probably improve performance by using a
+> > > __raw_writel() loop there. Using __raw_writel() in general is almost always
+> > > a bug, but here it actually makes sense. See also the powerpc implementation
+> > > of _memcpy_toio().
+> > 
+> > AFAICT, buffer passed to ->write_bu() are not necessarily aligned on
+> > 32bits, so using writel here might require copying data in temporary
+> > buffers :-/.
+> > 
+> > Don't hesitate to point where I'm wrong ;-).
+> 
+> Brian or Dwmw2 should be able to know for sure. I think it's definitely
+> worth trying as the potential performance gains could be huge, if you
+> replace
+> 
+>         for (p = start; p < start + length; data++, p++) {
+>                 writeb(*data, p);
+>                 wmb();
+>         }
+> 
+> with
+> 
+>         for (p = start; p < start + length; data++, p+=4) {
+>                 writel(*data, p);
+>         };
+>         wmb();
+> 
 
-How do you think about to extend an other SmPL script?
+As Boris pointed out on IRC, we have an optimized version of
+memcpy_toio on little-endian, which already does this. I'm not completely
+sure why we don't use it for big-endian architectures as well.
 
-Related topic:
-scripts/coccinelle/free: Delete NULL test before freeing functions
-https://systeme.lip6.fr/pipermail/cocci/2015-May/001960.html
-https://www.mail-archive.com/cocci@systeme.lip6.fr/msg01855.html
+Powerpc uses the same method on big-endian, but it's possible that
+it does not do the right thing on one of the older platforms using
+BE32 mode, or one that has a weird bus mode.
 
-
-> If these changes are OK, I will address the remainder later.
-
-Would anybody like to reuse my general SmPL approach for similar source
-code clean-up?
-
-Regards,
-Markus
+	Arnd
+ 
