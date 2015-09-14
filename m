@@ -1,19 +1,19 @@
-Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbUgk-0006Eq-65
- for linux-mtd@lists.infradead.org; Mon, 14 Sep 2015 14:24:58 +0000
-Received: by obbzf10 with SMTP id zf10so54018462obb.2
- for <linux-mtd@lists.infradead.org>; Mon, 14 Sep 2015 07:24:36 -0700 (PDT)
+Received: from m50-110.126.com ([123.125.50.110])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZbVMb-0006YA-Hq
+ for linux-mtd@lists.infradead.org; Mon, 14 Sep 2015 15:08:14 +0000
+Message-ID: <55F6E2C3.7000407@126.com>
+Date: Mon, 14 Sep 2015 23:07:47 +0800
+From: wangxing <pingfanrenweilai@126.com>
 MIME-Version: 1.0
-In-Reply-To: <55F6C9A1.2030203@126.com>
-References: <55F6C9A1.2030203@126.com>
-Date: Mon, 14 Sep 2015 16:24:36 +0200
-Message-ID: <CAFLxGvw+pD0ZNqG8RZMeTc481Vdv-DgU0Zoc9EcV5U67YJ+kZw@mail.gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: Re: panic_write
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: wangxing <pingfanrenweilai@126.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+References: <55F6C9A1.2030203@126.com>
+ <CAFLxGvw+pD0ZNqG8RZMeTc481Vdv-DgU0Zoc9EcV5U67YJ+kZw@mail.gmail.com>
+In-Reply-To: <CAFLxGvw+pD0ZNqG8RZMeTc481Vdv-DgU0Zoc9EcV5U67YJ+kZw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,12 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 14, 2015 at 3:20 PM, wangxing <pingfanrenweilai@126.com> wrote:
-> Hi, I use the mtdoops get:
-> mtdoops:Cannot write from panic without panic_write.
 
-Can it be that your MTD driver does not support the panic_write interface?
-
--- 
-Thanks,
-//richard
+On 2015年09月14日 22:24, Richard Weinberger wrote:
+> On Mon, Sep 14, 2015 at 3:20 PM, wangxing <pingfanrenweilai@126.com> wrote:
+>> Hi, I use the mtdoops get:
+>> mtdoops:Cannot write from panic without panic_write.
+> Can it be that your MTD driver does not support the panic_write interface?
+>
+Em, as the message said, I think  MTD driver does not support the 
+panic_write interface.
+1.Is a writable filesytem enough for mtdoops like jsff2?
+2.Is the panic_write interface  highly related to the flash device(I use 
+the winbond 32M)? Or is it a common layer interface of mtd.
