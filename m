@@ -1,18 +1,22 @@
-Date: Mon, 14 Sep 2015 10:02:04 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v4] mtd: nand: sunxi: fix OOB handling in ->write_xxx()
- functions
-Message-ID: <20150914170204.GL11487@google.com>
-References: <1442220063-7520-1-git-send-email-boris.brezillon@free-electrons.com>
+Date: Mon, 14 Sep 2015 19:26:00 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Vignesh R <vigneshr@ti.com>
+Cc: Benoit Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>,
+ Russell King <linux@arm.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, hramrach@gmail.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Message-ID: <20150914182600.GC12027@sirena.org.uk>
+References: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
+ <1441355402-6837-3-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="hr8bQwfI8oPfWpHR"
 Content-Disposition: inline
-In-Reply-To: <1442220063-7520-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1441355402-6837-3-git-send-email-vigneshr@ti.com>
+Subject: Re: [PATCH 2/5] spi: spi-ti-qspi: add mmap mode read support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,105 +26,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 14, 2015 at 10:41:03AM +0200, Boris Brezillon wrote:
-> The USER_DATA register cannot be accessed using byte accessors on A13
-> SoCs, thus triggering a bug when using memcpy_toio on this register.
-> Declare an helper macros to convert an OOB buffer into a suitable
-> USER_DATA value and vice-versa.
-> 
-> This patch also fixes an error in the oob_required logic (some OOB data
-> are not written even if the user required it) by removing the
-> oob_required condition, which is perfectly valid since the core already
-> fill ->oob_poi with FFs when oob_required is false.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: <stable@vger.kernel.org> # 3.19+
-> Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
-> 
-> ---
-> Changes since v3:
-> - drop the NFC_USER_DATA_TO_BUF() macro
 
-I don't have any real objections to this version, and I think some IRC
-discussion helped clear up a few questions. I'll take this for 4.3 soon,
-unless I see any objections.
+--hr8bQwfI8oPfWpHR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Changes since v2:
-> - add the NFC_USER_DATA_TO_BUF() macro and rename NFC_USER_DATA() into
->   NFC_BUF_TO_USER_DATA()
-> - rework the commit message
-> 
-> Changes since v1:
-> - drop the !oob_required conditional path
-> - replace endianness conversions by a macro relying on byte shifting
->   operations
-> ---
->  drivers/mtd/nand/sunxi_nand.c | 26 +++++++++-----------------
->  1 file changed, 9 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index f97a58d..279cafd 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -147,6 +147,10 @@
->  #define NFC_ECC_MODE		GENMASK(15, 12)
->  #define NFC_RANDOM_SEED		GENMASK(30, 16)
->  
-> +/* NFC_USER_DATA helper macros */
-> +#define NFC_BUF_TO_USER_DATA(buf)	((buf)[0] | ((buf)[1] << 8) | \
-> +					((buf)[2] << 16) | ((buf)[3] << 24))
+On Fri, Sep 04, 2015 at 01:59:59PM +0530, Vignesh R wrote:
+
+> +static int ti_qspi_spi_mtd_mmap_read(struct  spi_device *spi,
+> +				     loff_t from, size_t len,
+> +				     size_t *retlen, u_char *buf,
+> +				     u8 read_opcode, u8 addr_width,
+> +				     u8 dummy_bytes)
+> +{
+> +	struct ti_qspi *qspi = spi_master_get_devdata(spi->master);
+> +	int ret = 0;
 > +
->  #define NFC_DEFAULT_TIMEOUT_MS	1000
->  
->  #define NFC_SRAM_SIZE		1024
-> @@ -646,15 +650,9 @@ static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
->  		offset = layout->eccpos[i * ecc->bytes] - 4 + mtd->writesize;
->  
->  		/* Fill OOB data in */
-> -		if (oob_required) {
-> -			tmp = 0xffffffff;
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
-> -				    4);
-> -		} else {
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE,
-> -				    chip->oob_poi + offset - mtd->writesize,
-> -				    4);
-> -		}
-> +		writel(NFC_BUF_TO_USER_DATA(chip->oob_poi +
-> +					    layout->oobfree[i].offset),
-> +		       nfc->regs + NFC_REG_USER_DATA_BASE);
+> +	spi_bus_lock(qspi->master);
 
-I believe the few remaining questionable points were:
+I suspect I'm going to see the answer to this in another patch but the
+fact that we're having to take this lock in a driver when it's an op the
+core should be calling.
 
- * you don't actually need to add the barrier, thus __raw_writel() would
-   suffice
- * you're still doing a double swap for the (likely theoretical) big
-   endian case
+> +	ret = pm_runtime_get_sync(qspi->dev);
+> +	if (ret < 0) {
+> +		dev_err(qspi->dev, "pm_runtime_get_sync() failed\n");
+> +		return ret;
+> +	}
 
-Neither point matters much to me, so as noted above, LGTM.
+This would be better outside the lock, there's no need to have the lock
+before we power on and this fixes the fact that you don't release the
+lock here.
 
->  
->  		chip->cmdfunc(mtd, NAND_CMD_RNDIN, offset, -1);
->  
-> @@ -784,14 +782,8 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
->  		offset += ecc->size;
->  
->  		/* Fill OOB data in */
-> -		if (oob_required) {
-> -			tmp = 0xffffffff;
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, &tmp,
-> -				    4);
-> -		} else {
-> -			memcpy_toio(nfc->regs + NFC_REG_USER_DATA_BASE, oob,
-> -				    4);
-> -		}
-> +		writel(NFC_BUF_TO_USER_DATA(oob),
-> +		       nfc->regs + NFC_REG_USER_DATA_BASE);
+> +	memcpy(buf, (__force void *)(qspi->mmap_base + from), len);
 
-Same here.
+The fact that you're having to cast here should be a warning that
+there's someting wrong here.  I think you're looking for
+memcpy_fromio().
 
->  
->  		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ACCESS_DIR |
->  		      (1 << 30);
+> @@ -479,6 +576,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
+>  	master->setup = ti_qspi_setup;
+>  	master->auto_runtime_pm = true;
+>  	master->transfer_one_message = ti_qspi_start_transfer_one;
+> +	master->spi_mtd_mmap_read = ti_qspi_spi_mtd_mmap_read;
+>  	master->dev.of_node = pdev->dev.of_node;
+>  	master->bits_per_word_mask = SPI_BPW_MASK(32) | SPI_BPW_MASK(16) |
+>  				     SPI_BPW_MASK(8);
 
-Brian
+Don't we need to map a resource somewhere?
+
+--hr8bQwfI8oPfWpHR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV9xE3AAoJECTWi3JdVIfQfbIH/jkoRH8R/Fd2x7/W2yvrG7Q2
+V/kCmfMV3VnopEYY2NrjsdUNdxqi+vObifrhOytPmF9nRbKWU7m52WQjTSMCoWbQ
+PdaRXdJN0Jbpx7iEmCjXPefTjekiYJ/Tk6S4N/Scr/GC6ekEuiA8kPos9Y6nNhtc
+XWsdcPDOhQBLLmD6OHI5OQ+sg2THAbTsHRMjr2KlSq2wR64kaj2zAOTRMx7n2P1z
+h3NWJF57RuhNIsT+34bg55Y5pS4mr5T7d0gAS/QME0Ej1NvH9Wv/1I1UVqm5qjyL
+HRDgbrMZpKFukWivMMx2FHriuYZs7rNYPFXI/x++sunI7/5NWxyirdO7RvrzuDc=
+=gYMN
+-----END PGP SIGNATURE-----
+
+--hr8bQwfI8oPfWpHR--
