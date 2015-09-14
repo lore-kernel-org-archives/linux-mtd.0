@@ -1,16 +1,19 @@
-Date: Mon, 14 Sep 2015 09:49:35 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZbOzE-0005S3-OU
+ for linux-mtd@lists.infradead.org; Mon, 14 Sep 2015 08:19:41 +0000
+Date: Mon, 14 Sep 2015 10:19:18 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v3] mtd: nand: sunxi: fix OOB handling in ->write_xxx()
- functions
-Message-ID: <20150914094935.5a20b6d8@bbrezillon>
-In-Reply-To: <20150911224603.GG11487@google.com>
-References: <1441264008-24569-1-git-send-email-boris.brezillon@free-electrons.com>
- <20150911224603.GG11487@google.com>
+To: Richard Weinberger <richard@sigma-star.at>
+Cc: Andrea Scian <rnd4@dave-tech.it>, mtd_mailinglist
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC] MTD BoF at ELCE 2015 [was [RFC PATCH 2/2] mtd: nand: use
+ nand_check_erased_ecc_chunk in default ECC read functions]
+Message-ID: <20150914101918.18921035@bbrezillon>
+In-Reply-To: <55F3F1CB.3010809@sigma-star.at>
+References: <55E855EF.5000600@dave-tech.it>
+	<55F3F1CB.3010809@sigma-star.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,68 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi,
 
-On Fri, 11 Sep 2015 15:46:03 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+On Sat, 12 Sep 2015 11:35:07 +0200
+Richard Weinberger <richard@sigma-star.at> wrote:
 
-> On Thu, Sep 03, 2015 at 09:06:48AM +0200, Boris Brezillon wrote:
-> > The USER_DATA register cannot be accessed using byte accessors on A13
-> > SoCs, thus triggering a bug when using memcpy_toio on this register.
-> > Declare two helper macros to convert an OOB buffer into a suitable
-> > USER_DATA value and vice-versa.
-> > 
-> > This patch also fixes an error in the oob_required logic (some OOB data
-> > are not written even if the user required it) by removing the
-> > oob_required condition, which is perfectly valid since the core already
-> > fill ->oob_poi with FFs when oob_required is false.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > Cc: <stable@vger.kernel.org> # 3.19+
-> > Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
-> > 
-> > ---
-> > Changes since v2:
-> > - add the NFC_USER_DATA_TO_BUF() macro and rename NFC_USER_DATA() into
-> >   NFC_BUF_TO_USER_DATA()
-> > - rework the commit message
-> > 
-> > Changes since v1:
-> > - drop the !oob_required conditional path
-> > - replace endianness conversions by a macro relying on byte shifting
-> >   operations
-> > ---
-> >  drivers/mtd/nand/sunxi_nand.c | 33 ++++++++++++++++-----------------
-> >  1 file changed, 16 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> > index f97a58d..f9b5a4c 100644
-> > --- a/drivers/mtd/nand/sunxi_nand.c
-> > +++ b/drivers/mtd/nand/sunxi_nand.c
-> > @@ -147,6 +147,17 @@
-> >  #define NFC_ECC_MODE		GENMASK(15, 12)
-> >  #define NFC_RANDOM_SEED		GENMASK(30, 16)
-> >  
-> > +/* NFC_USER_DATA helper macros */
-> > +#define NFC_BUF_TO_USER_DATA(buf)	((buf)[0] | ((buf)[1] << 8) | \
-> > +					((buf)[2] << 16) | ((buf)[3] << 24))
+> Hi!
 > 
-> I thought you were treading on thin ice with bit-shifting a uint8_t, but
-> it appears that C integer promotion rules are on your side here. (The
-> result of this operation should be an int.)
+> Am 03.09.2015 um 16:15 schrieb Andrea Scian:
+> > 
+> > Dear Boris, Richard and all the other MTD developers,
+> > 
+> > I take the idea from a nearly-one-month-ago-thread to ask for comment about what Richard proposed at that time.
+> > 
+> > Il 06/08/2015 11:42, Richard Weinberger ha scritto:
+> >>
+> >> Am 06.08.2015 um 11:19 schrieb Boris Brezillon:
+> >>>> I think this needs more discussion.
+> >>>>
+> >>>> Boris, Brian, will you be at Embedded Linux Conference Europe
+> >>>> in Dublin?
+> >>>> Maybe we can discuss these issues (data retention, ff-checks,
+> >>>> etc...) in person and figure out where to address them.
+> >>>> I really want to avoid ad-hoc solutions. :)
+> >>>
+> >>> I'll be at ELCE and I'd be happy to discuss all these NAND/MTD/UBI
+> >>> related issues with you, though I think we should keep discussing
+> >>> those problems on the ML too.
+> >>
+> >> Sure, I did not recommend a secret meeting. ;-)
+> >> But often a face to face conversation is better for brain storming.
+> >>
+> > 
+> > I'll be at ELCE too and I'll be glad to meet all of you.
+> > For sure I'll attend to Richard presentation!
+> > 
+> > I'm wondering if we can organize something like a mini-summit or BoF about MTD/UBI.
+> > I don't really know how LF events are organized or if we can have a room reserved for us, but even if it's not possible (or too hard to organize at this later stage) I think we can
+> > find some good and quiet place into the CCD to meet.
+> 
+> AFACT it is too late for an official mini summit.
 
-Yep. I used to cast the first element to an u32 to deal with such use
-cases until I realized it was actually not needed ;-).
+We might be able to find an empty room during lunch time...
 
 > 
-> > +#define NFC_USER_DATA_TO_BUF(buf, val)	\
+> > Anyway.. a pub after the conference will be a nice place to have this meeting too :-)
 > 
-> BTW, why do you need this macro? It's currently unused. Just as an
-> example? I can take it as-is if you'd like, but I was curious why you
-> felt the need for this in v3, especially for -stable.
+> Definitely. Let's talk/meet after our talks. :-)
 
-You're right, it's not needed in this patch. I'll remove it from this
-commit and re-introduce it when needed.
+... but I really like the idea of discussing that in a pub ;-).
 
 Best Regards,
 
