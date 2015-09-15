@@ -1,16 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbmEw-0002kO-U3
- for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:28 +0000
+ id 1ZbmEy-0002lT-1p
+ for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:29 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 15/39] fs: quota: introduce a callback of restore_iflags to
- quotactl_ops
-Date: Tue, 15 Sep 2015 17:02:10 +0800
-Message-ID: <1442307754-13233-16-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 16/39] ubi: introduce a interface to get cdev in ubi_volume
+Date: Tue, 15 Sep 2015 17:02:11 +0800
+Message-ID: <1442307754-13233-17-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,118 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In dquot_disable, we need to restore the iflags of quota files
-and mark the inodes to dirty. But that's pain to file-systems
-working in out-place-updating way, such as btrfs and ubifs. when
-they are going to update inode, they have to reserve space for
-this inode.
-
-So we can not mark_inode_dirty() in dquot_disable for them. To solve
-this kind of problem, the common solution is introduce a callback
-to allow file-systems to do the inode_dirty work by themselves,
-the similar way with update_time().
+We want to fill the sb->s_cdev in ubifs_fill_super(),
+so, we need to add a interface in ubi to get the cdev
+of an ubi_volume.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Acked-by: Richard Weinberger <richard@nod.at>
 ---
- fs/quota/dquot.c      | 51 ++++++++++++++++++++++++++++++++++-----------------
- include/linux/quota.h |  4 ++++
- 2 files changed, 38 insertions(+), 17 deletions(-)
+ drivers/mtd/ubi/kapi.c  | 6 ++++++
+ include/linux/mtd/ubi.h | 1 +
+ 2 files changed, 7 insertions(+)
 
-diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index c73f44d..3f08e69 100644
---- a/fs/quota/dquot.c
-+++ b/fs/quota/dquot.c
-@@ -2020,6 +2020,33 @@ int dquot_file_open(struct inode *inode, struct file *file)
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index e844887..d3d1982 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -862,3 +862,9 @@ int ubi_unregister_volume_notifier(struct notifier_block *nb)
+ 	return blocking_notifier_chain_unregister(&ubi_notifiers, nb);
  }
- EXPORT_SYMBOL(dquot_file_open);
- 
-+static int generic_restore_iflags(struct super_block *sb, struct inode **toputinode,
-+					unsigned int *old_flags)
+ EXPORT_SYMBOL_GPL(ubi_unregister_volume_notifier);
++
++inline struct cdev *ubi_get_volume_cdev(struct ubi_volume_desc *desc)
 +{
-+	int cnt = 0;
-+	struct quota_info *dqopt = sb_dqopt(sb);
-+
-+	for (cnt = 0; cnt < MAXQUOTAS; cnt++)
-+		if (toputinode[cnt]) {
-+			mutex_lock(&dqopt->dqonoff_mutex);
-+			/* If quota was reenabled in the meantime, we have
-+			 * nothing to do */
-+			if (!sb_has_quota_loaded(sb, cnt)) {
-+				mutex_lock(&toputinode[cnt]->i_mutex);
-+				toputinode[cnt]->i_flags &= ~(S_IMMUTABLE |
-+				  S_NOATIME | S_NOQUOTA);
-+				toputinode[cnt]->i_flags |= old_flags[cnt];
-+				truncate_inode_pages(&toputinode[cnt]->i_data,
-+						     0);
-+				mutex_unlock(&toputinode[cnt]->i_mutex);
-+				mark_inode_dirty_sync(toputinode[cnt]);
-+			}
-+			mutex_unlock(&dqopt->dqonoff_mutex);
-+		}
-+
-+	return 0;
++	return &(desc->vol->cdev);
 +}
-+
++EXPORT_SYMBOL_GPL(ubi_get_volume_cdev);
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index 1e271cb..301c6e9 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -261,6 +261,7 @@ int ubi_leb_map(struct ubi_volume_desc *desc, int lnum);
+ int ubi_is_mapped(struct ubi_volume_desc *desc, int lnum);
+ int ubi_sync(int ubi_num);
+ int ubi_flush(int ubi_num, int vol_id, int lnum);
++struct cdev *ubi_get_volume_cdev(struct ubi_volume_desc *desc);
+ 
  /*
-  * Turn quota off on a device. type == -1 ==> quotaoff for all types (umount)
-  */
-@@ -2028,6 +2055,7 @@ int dquot_disable(struct super_block *sb, int type, unsigned int flags)
- 	int cnt, ret = 0;
- 	struct quota_info *dqopt = sb_dqopt(sb);
- 	struct inode *toputinode[MAXQUOTAS];
-+	unsigned int *old_flags = dqopt->old_flags;
- 
- 	/* Cannot turn off usage accounting without turning off limits, or
- 	 * suspend quotas and simultaneously turn quotas off. */
-@@ -2111,28 +2139,17 @@ int dquot_disable(struct super_block *sb, int type, unsigned int flags)
- 	 * disk (and so userspace sees correct data afterwards). */
- 	sync_filesystem(sb);
- 	sync_blockdev(sb->s_bdev);
-+
- 	/* Now the quota files are just ordinary files and we can set the
- 	 * inode flags back. Moreover we discard the pagecache so that
- 	 * userspace sees the writes we did bypassing the pagecache. We
- 	 * must also discard the blockdev buffers so that we see the
- 	 * changes done by userspace on the next quotaon() */
--	for (cnt = 0; cnt < MAXQUOTAS; cnt++)
--		if (toputinode[cnt]) {
--			mutex_lock(&dqopt->dqonoff_mutex);
--			/* If quota was reenabled in the meantime, we have
--			 * nothing to do */
--			if (!sb_has_quota_loaded(sb, cnt)) {
--				mutex_lock(&toputinode[cnt]->i_mutex);
--				toputinode[cnt]->i_flags &= ~(S_IMMUTABLE |
--				  S_NOATIME | S_NOQUOTA);
--				toputinode[cnt]->i_flags |= dqopt->old_flags[cnt];
--				truncate_inode_pages(&toputinode[cnt]->i_data,
--						     0);
--				mutex_unlock(&toputinode[cnt]->i_mutex);
--				mark_inode_dirty_sync(toputinode[cnt]);
--			}
--			mutex_unlock(&dqopt->dqonoff_mutex);
--		}
-+	if (sb->s_qcop->restore_iflags)
-+		ret = sb->s_qcop->restore_iflags(sb, toputinode, old_flags);
-+	else
-+		ret = generic_restore_iflags(sb, toputinode, old_flags);
-+
- 	if (sb->s_bdev)
- 		invalidate_bdev(sb->s_bdev);
- put_inodes:
-diff --git a/include/linux/quota.h b/include/linux/quota.h
-index fcfee5a..64e52e4 100644
---- a/include/linux/quota.h
-+++ b/include/linux/quota.h
-@@ -428,6 +428,10 @@ struct quotactl_ops {
- 	int (*set_dqblk)(struct super_block *, struct kqid, struct qc_dqblk *);
- 	int (*get_state)(struct super_block *, struct qc_state *);
- 	int (*rm_xquota)(struct super_block *, unsigned int);
-+	/*
-+	 * used in quota_disable to restore the i_flags of quota files.
-+	 */
-+	int (*restore_iflags)(struct super_block *sb, struct inode **, unsigned int *);
- };
- 
- struct quota_format_type {
+  * This function is the same as the 'ubi_leb_read()' function, but it does not
 -- 
 1.8.4.2
