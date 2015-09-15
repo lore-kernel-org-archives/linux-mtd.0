@@ -1,16 +1,16 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbmFC-0002kO-BL
- for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:44 +0000
+ id 1ZbmFD-0002lT-32
+ for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:45 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 35/39] ubifs: write inode in ubifs_quota_write if we are
- appending
-Date: Tue, 15 Sep 2015 17:02:30 +0800
-Message-ID: <1442307754-13233-36-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 36/39] ubifs: implement ubifs_get_qsize to get quota size
+ in ubifs
+Date: Tue, 15 Sep 2015 17:02:31 +0800
+Message-ID: <1442307754-13233-37-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,74 +24,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When we are appending writing quota file, we have to do a
-budgeting for the inode and write inode in ubifs_quota_write.
+We only care the size of regular file in ubifs for quota.
+The reason is similar with the comment in ubifs_getattr().
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/ubifs/super.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ fs/ubifs/dir.c   |  3 +++
+ fs/ubifs/file.c  | 22 ++++++++++++++++++++++
+ fs/ubifs/ubifs.h |  1 +
+ 3 files changed, 26 insertions(+)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 47b1f44..d3213a2 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -980,6 +980,10 @@ static ssize_t ubifs_quota_write(struct super_block *sb, int type,
- 				const char *data, size_t len, loff_t off)
- {
- 	struct inode *inode = sb_dqopt(sb)->files[type];
-+	struct ubifs_inode *ui = ubifs_inode(inode);
-+	loff_t end_pos = off + len;
-+	int appending = (end_pos > inode->i_size);
-+	int ino_released = 0;
- 	unsigned long block = off >> UBIFS_BLOCK_SHIFT;
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 	int offset = off & (sb->s_blocksize - 1);
-@@ -988,6 +992,8 @@ static ssize_t ubifs_quota_write(struct super_block *sb, int type,
- 	size_t towrite = len;
- 	int ret, err = 0;
- 	struct ubifs_budget_req req = {};
-+	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
-+				.dirtied_ino_d = ALIGN(ui->data_len, 8) };
- 	struct ubifs_data_node *dn;
- 	char *block_buf;
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 802c6ad..0d3d6d3 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1205,6 +1205,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
+ #ifdef CONFIG_UBIFS_ATIME_SUPPORT
+ 	.update_time = ubifs_update_time,
+ #endif
++#ifdef CONFIG_QUOTA
++	.get_qsize	= ubifs_get_qsize,
++#endif
+ };
  
-@@ -1014,6 +1020,12 @@ static ssize_t ubifs_quota_write(struct super_block *sb, int type,
- 	if (err)
- 		goto out;
+ const struct file_operations ubifs_dir_operations = {
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index b57ccf3..f1d792a 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1636,6 +1636,22 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ 	return 0;
+ }
  
-+	if (appending) {
-+		err = ubifs_budget_space(c, &ino_req);
-+		if (err)
-+			goto release_block;
-+	}
++/*
++ * ubifs_get_qsize: get the quota size of a file
++ * @inode: inode which we are going to get the qsize
++ *
++ * We only care the size of regular file in ubifs
++ * for quota. The reason is similar with the comment
++ * in ubifs_getattr().
++ */
++ssize_t ubifs_get_qsize(struct inode *inode)
++{
++	if (S_ISREG(inode->i_mode))
++		return i_size_read(inode);
++	else
++		return 0;
++}
 +
- 	dn = kmalloc(UBIFS_MAX_DATA_NODE_SZ, GFP_NOFS);
- 	if (!dn) {
- 		err = -ENOMEM;
-@@ -1050,11 +1062,23 @@ static ssize_t ubifs_quota_write(struct super_block *sb, int type,
- 		towrite -= tocopy;
- 		data += tocopy;
- 	}
-+	if (appending) {
-+		mutex_lock(&ui->ui_mutex);
-+		i_size_write(inode, end_pos);
-+		ui->ui_size = end_pos;
-+		__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
-+		mutex_unlock(&ui->ui_mutex);
-+		err = inode->i_sb->s_op->write_inode(inode, NULL);
-+		ino_released = 1;
-+	}
- free_buf:
- 	kfree(block_buf);
- free_dn:
- 	kfree(dn);
- release_budget:
-+	if (appending && !ino_released)
-+		ubifs_release_budget(c, &ino_req);
-+release_block:
- 	ubifs_release_budget(c, &req);
- out:
- 	if (!err)
+ const struct address_space_operations ubifs_file_address_operations = {
+ 	.readpage       = ubifs_readpage,
+ 	.writepage      = ubifs_writepage,
+@@ -1656,6 +1672,9 @@ const struct inode_operations ubifs_file_inode_operations = {
+ #ifdef CONFIG_UBIFS_ATIME_SUPPORT
+ 	.update_time = ubifs_update_time,
+ #endif
++#ifdef CONFIG_QUOTA
++	.get_qsize	= ubifs_get_qsize,
++#endif
+ };
+ 
+ const struct inode_operations ubifs_symlink_inode_operations = {
+@@ -1670,6 +1689,9 @@ const struct inode_operations ubifs_symlink_inode_operations = {
+ #ifdef CONFIG_UBIFS_ATIME_SUPPORT
+ 	.update_time = ubifs_update_time,
+ #endif
++#ifdef CONFIG_QUOTA
++	.get_qsize	= ubifs_get_qsize,
++#endif
+ };
+ 
+ const struct file_operations ubifs_file_operations = {
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 99cf10c..21b5dc0 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1759,6 +1759,7 @@ int ubifs_read_block(struct inode *inode, void *addr, unsigned int block,
+ int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
+ int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
+ int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
++ssize_t ubifs_get_qsize(struct inode *inode);
+ 
+ /* dir.c */
+ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
 -- 
 1.8.4.2
