@@ -1,21 +1,18 @@
-Received: from mail-wi0-f170.google.com ([209.85.212.170])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbrBv-0000Ll-Dx
- for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 14:26:40 +0000
-Received: by wiclk2 with SMTP id lk2so30043417wic.1
- for <linux-mtd@lists.infradead.org>; Tue, 15 Sep 2015 07:26:17 -0700 (PDT)
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
+ <juhosg@openwrt.org>, <marex@denx.de>, <ben@decadent.org.uk>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, <linux-mtd@lists.infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: [linux-next RFC v7 0/6] mtd: spi-nor: improve support of QSPI nor
+Date: Tue, 15 Sep 2015 17:27:58 +0200
+Message-ID: <cover.1442330503.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <1659571442320272@web21h.yandex.ru>
-References: <1659571442320272@web21h.yandex.ru>
-Date: Tue, 15 Sep 2015 11:26:17 -0300
-Message-ID: <CAAEAJfAqoTp8cXffFRfQazUQa+UtKRGpkft3k9xZQ+W8J2u75w@mail.gmail.com>
-Subject: Re: Backporting ubiblock to Linux 3.3
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Konstantin Tokarev <annulen@yandex.ru>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard.weinberger@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Konstantin,
+Hi all,
 
-On 15 September 2015 at 09:31, Konstantin Tokarev <annulen@yandex.ru> wrote=
-:
-> Hi Ezequiel and others,
->
-> How do you think, would it be feasible to backport ubiblock to Linux 3.3 =
-without large amount of work? I don't need latest and greatest version, jus=
-t anything to get working and stable squashfs on top of it.
->
+this series is still a work in progress though it is almost finished.
+The support of Macronix dummy code to configure the number of dummy cycles
+is still missing...
 
-Yes, this should be feasible and not too complex.
+However I would like some feedbacks to synchronize this work with other
+mtd / spi-nor improvements as I see lots of patches on the mailing list.
 
-> Could you point me to any specific version of ubiblock patch to start fro=
-m? Should I apply patches from [1] first? Or any specific patches to UBI or=
- MTD which are missing in that branch?
->
+Best Regards,
 
-On 15 September 2015 at 11:01, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
-[..]
-> Backporting the state before my blk-mq conversion should be trivial.
+Cyrille
 
-As Richard says, you'll want to avoid the blk-mq conversion. I'd say
-starting with v3.18 should
-be sufficient:
+Cyrille Pitchen (6):
+  mtd: spi-nor: remove unused read_xfer/write_xfer hooks
+  mtd: spi-nor: read JEDEC ID with multiple I/O protocols
+  mtd: spi-nor: set the read op code and protocol based on the
+    manufacturer
+  mtd: m25p80: add support of dual and quad spi protocols to all
+    commands
+  Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
+  mtd: atmel-quadspi: add driver for Atmel QSPI controller
 
-$ git log v3.18.21  --reverse --no-merges --oneline -- drivers/mtd/ubi/bloc=
-k.c
-9d54c8a UBI: R/O block driver on top of UBI volumes
-4d283ee UBI: block: do not use term "attach"
-ca2b722 UBI: block: Mark init-only symbol as __initdata
-9981e14 UBI: block: Use 'u64' for the 64-bit dividend
-8af8718 UBI: rename block device ioctls
-d56030a UBI: block: Remove __initdata from ubiblock_param_ops
-b4f42e2 block: remove struct request buffer member
-bebfef1 UBI: avoid workqueue format string leak
-151d6b2 UBI: block: Fix error path on alloc_workqueue failure
-495f2bf UBI: block: Make ubiblock_resize return something
-0a3d571 UBI: block: Set disk_capacity out of the mutex
-4df3892 UBI: block: Avoid disk size integer overflow
-3df7707 UBI: block: fix dereference on uninitialized dev
-978d649 UBI: block: Fix block device size setting
-06d9c29 UBI: block: Add support for the UBI_VOLUME_UPDATED notification
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      |  29 +
+ drivers/mtd/devices/m25p80.c                       | 262 ++++--
+ drivers/mtd/spi-nor/Kconfig                        |   7 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/atmel-quadspi.c                | 880 +++++++++++++++++++++
+ drivers/mtd/spi-nor/fsl-quadspi.c                  |   2 +-
+ drivers/mtd/spi-nor/nxp-spifi.c                    |  13 +-
+ drivers/mtd/spi-nor/spi-nor.c                      | 603 ++++++++++++--
+ include/linux/mtd/spi-nor.h                        |  68 +-
+ 9 files changed, 1689 insertions(+), 176 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
 
-And you might want to backport this one too:
-
-commit eb20e69ac83a1e4d764a49bf671e1e2e5dc4c15c
-Author: Kevin Cernekee <cernekee@chromium.org>
-Date:   Wed Apr 22 09:30:53 2015 -0300
-
-    UBI: block: Add missing cache flushes
-
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+-- 
+1.8.2.2
