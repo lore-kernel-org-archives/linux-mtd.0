@@ -1,15 +1,17 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbmEo-0002kO-Ai
- for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:19 +0000
+ id 1ZbmEp-0002nf-DZ
+ for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:21 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 00/39] Add quota supporting in ubifs
-Date: Tue, 15 Sep 2015 17:01:55 +0800
-Message-ID: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 04/39] fs: super: consolidate the get_super class functions
+Date: Tue, 15 Sep 2015 17:01:59 +0800
+Message-ID: <1442307754-13233-5-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,123 +23,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-	This is the V3 to add quota in ubifs.
+There is a lot of duplicated code in get_super and user_get_super.
+This commit introduc a __get_super as a common function to reduce
+the duplication of it.
 
-Hi Al,
-	There are some patches about vfs, and
-some of them are already Reviewed-by Jan, please
-take a look at them. Thanx.
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Reviewed-by: Jan Kara <jack@suse.com>
+---
+ fs/super.c | 64 ++++++++++++++++++++++++++++++--------------------------------
+ 1 file changed, 31 insertions(+), 33 deletions(-)
 
-Hi Jan,
-	There are some new patches for dquot,
-please take a look.
-
-Hi Artem and Richard,
-	please help to review the ubifs part.
-
-Test:
-
- # ./check -g quota
-FSTYP         -- ubifs
-PLATFORM      -- Linux/x86_64 atest-guest 4.2.0-quota_v3+
-MKFS_OPTIONS  -- /dev/ubi0_1
-MOUNT_OPTIONS -- -o context=system_u:object_r:nfs_t:s0 /dev/ubi0_1 /mnt/scratch
-
-generic/055	 [not run] ubifs does not support shutdown
-generic/082 0s ... 1s
-generic/219 1s ... [not run] O_DIRECT is not supported
-generic/230 13s ... 13s
-generic/231 46s ... 47s
-generic/232 2s ... 3s
-generic/233 4s ... 4s
-generic/234 8s ... 8s
-generic/235 1s ... 1s
-generic/270	 [not run] Filesystem ubifs not supported in _scratch_mkfs_sized
-generic/280	 [not run] ubifs does not support freezing
-Ran: generic/082 generic/230 generic/231 generic/232 generic/233 generic/234 generic/235
-Not run: generic/055 generic/219 generic/270 generic/280
-Passed all 7 tests
-
-As usual, you can get the code from:
-	https://github.com/yangdongsheng/linux.git   ubifs_quota_v3
-
-Changelog:
-	v1->v2:
-		- remove the duplication in block_dev and char_dev
-		- rename read_block to ubifs_read_block
-		- drop patch for ui->budgeted
-		- budget in ubifs_dirty_inode() if necessary
-	v2->v3:
-		- introduce a callback function in quotactl_ops
-		  to allow filesystem to do some special work
-		  in restoring iflags. This fix the problem
-		  in V2 about ubifs_dirty_inode()
-
-Dongsheng Yang (39):
-  fs: introduce a ->s_cdev field into struct super_block
-  fs: cleanup: remove the blank line before EXPORT_SYMBOL
-  fs: super: cleanup: make the comment of each function aligned
-  fs: super: consolidate the get_super class functions
-  fs: super: introduce a get_super_cdev to get super by a cdev reference
-  fs: super: introduce a get_super_cdev_thawed to get sb by cdev
-    reference
-  fs: char_dev: introduce cd_acquire function to acquire cdev
-  fs: introduce a __lookup_dev for internal using
-  fs: char_dev: introduce lookup_cdev to get cdev by pathname
-  fs: dquot: skip invalidate_bdev if bdev is NULL
-  fs: quota: replace opened calling of ->sync_fs with sync_filesystem
-  fs: quota: make quota support fs which is running on char dev
-  fs: introduce a get_qsize() to inode_operations
-  fs: quota: restore i_flags of quota files in dquot_disable
-  fs: quota: introduce a callback of restore_iflags to quotactl_ops
-  ubi: introduce a interface to get cdev in ubi_volume
-  ubifs: extend budget for blocks
-  ubifs: fill sb->s_cdev in ubifs_fill_super()
-  ubifs: fill ->s_dev in ubifs_fill_super
-  ubifs: export read_block() from file.c
-  ubifs: introduce i_dquot to ubifs_inode
-  ubifs: implement IO functions for quota files
-  ubifs: disable quota in ubifs_put_super
-  ubifs: write quota back in ubifs_sync
-  ubifs: set/clear MS_RDONLY properly in ubifs_remount
-  ubifs: suspend & resume quota properly in ubifs_remount
-  ubifs: check inode with NULL before using it
-  ubifs: record quota information about inode in ubifs_new_inode
-  ubifs: free quota inode information in ubifs_evict_inode
-  ubifs: alloc quota space in ubifs writing path
-  ubifs: free quota space in do_truncation
-  ubifs: free quota space when deleting a file
-  ubifs: adapt quota space informatin in do_setattr
-  ubifs: transfer quota information in changing owner or group
-  ubifs: write inode in ubifs_quota_write if we are appending
-  ubifs: implement ubifs_get_qsize to get quota size in ubifs
-  ubifs: implement ubifs_restore_iflags for quotactl_operations
-  ubifs: fill the quota related fields in ubifs_fill_super
-  ubifs: introduce quota related mount options
-
- drivers/mtd/ubi/kapi.c  |   6 +
- fs/Makefile             |   2 +-
- fs/block_dev.c          |  26 +----
- fs/char_dev.c           |  48 ++++++++
- fs/dev.c                |  77 +++++++++++++
- fs/internal.h           |  14 +++
- fs/ioctl.c              |  31 +++--
- fs/quota/dquot.c        |  62 ++++++----
- fs/quota/quota.c        |  30 +++--
- fs/super.c              | 284 ++++++++++++++++++++++++---------------------
- fs/ubifs/budget.c       |   4 +
- fs/ubifs/debug.c        |   2 +
- fs/ubifs/dir.c          |  23 +++-
- fs/ubifs/file.c         |  80 ++++++++++++-
- fs/ubifs/journal.c      |   4 +
- fs/ubifs/super.c        | 297 +++++++++++++++++++++++++++++++++++++++++++++++-
- fs/ubifs/ubifs.h        |  17 +++
- include/linux/fs.h      |   6 +
- include/linux/mtd/ubi.h |   1 +
- include/linux/quota.h   |   5 +
- 20 files changed, 819 insertions(+), 200 deletions(-)
- create mode 100644 fs/dev.c
-
+diff --git a/fs/super.c b/fs/super.c
+index 9589fa4..4d667fe 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -559,19 +559,20 @@ void iterate_supers_type(struct file_system_type *type,
+ }
+ EXPORT_SYMBOL(iterate_supers_type);
+ 
+-/**
+- * get_super - get the superblock of a device
+- * @bdev: device to get the superblock for
+- * 
+- * Scans the superblock list and finds the superblock of the file system
+- * mounted on the device given. %NULL is returned if no match is found.
++/*
++ * __get_super - helper function for the other functions in get_super class
++ * @compare: function pointer to compare sb in list and key
++ * @key: key of the sb you want
++ *
++ * Scans the superblock list and finds the superblock you want. %NULL is
++ * returned if no match is found.
+  */
+-
+-struct super_block *get_super(struct block_device *bdev)
++static struct super_block *__get_super(
++		int (*compare)(struct super_block *, void *), void *key)
+ {
+ 	struct super_block *sb;
+ 
+-	if (!bdev)
++	if (!key)
+ 		return NULL;
+ 
+ 	spin_lock(&sb_lock);
+@@ -579,7 +580,7 @@ rescan:
+ 	list_for_each_entry(sb, &super_blocks, s_list) {
+ 		if (hlist_unhashed(&sb->s_instances))
+ 			continue;
+-		if (sb->s_bdev == bdev) {
++		if (compare(sb, key)) {
+ 			sb->s_count++;
+ 			spin_unlock(&sb_lock);
+ 			down_read(&sb->s_umount);
+@@ -596,6 +597,20 @@ rescan:
+ 	spin_unlock(&sb_lock);
+ 	return NULL;
+ }
++
++static int bdev_compare(struct super_block *sb, void *key)
++{
++	return (sb->s_bdev == (struct block_device *)key);
++}
++
++/**
++ * get_super - get the superblock of a device
++ * @bdev: device to get the superblock for
++ */
++struct super_block *get_super(struct block_device *bdev)
++{
++	return __get_super(bdev_compare, bdev);
++}
+ EXPORT_SYMBOL(get_super);
+ 
+ /**
+@@ -651,32 +666,15 @@ restart:
+ 	spin_unlock(&sb_lock);
+ 	return NULL;
+ }
++
++static int user_compare(struct super_block *sb, void *key)
++{
++	return (sb->s_dev == *(dev_t *)key);
++}
+  
+ struct super_block *user_get_super(dev_t dev)
+ {
+-	struct super_block *sb;
+-
+-	spin_lock(&sb_lock);
+-rescan:
+-	list_for_each_entry(sb, &super_blocks, s_list) {
+-		if (hlist_unhashed(&sb->s_instances))
+-			continue;
+-		if (sb->s_dev ==  dev) {
+-			sb->s_count++;
+-			spin_unlock(&sb_lock);
+-			down_read(&sb->s_umount);
+-			/* still alive? */
+-			if (sb->s_root && (sb->s_flags & MS_BORN))
+-				return sb;
+-			up_read(&sb->s_umount);
+-			/* nope, got unmounted */
+-			spin_lock(&sb_lock);
+-			__put_super(sb);
+-			goto rescan;
+-		}
+-	}
+-	spin_unlock(&sb_lock);
+-	return NULL;
++	return __get_super(user_compare, &dev);
+ }
+ 
+ /**
 -- 
 1.8.4.2
