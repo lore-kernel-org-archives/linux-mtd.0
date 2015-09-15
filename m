@@ -1,16 +1,16 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbmEo-0002lT-Ak
+ id 1ZbmEo-0002nf-Ah
  for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:18 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 01/39] fs: introduce a ->s_cdev field into struct
- super_block
-Date: Tue, 15 Sep 2015 17:01:56 +0800
-Message-ID: <1442307754-13233-2-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 02/39] fs: cleanup: remove the blank line before
+ EXPORT_SYMBOL
+Date: Tue, 15 Sep 2015 17:01:57 +0800
+Message-ID: <1442307754-13233-3-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,26 +24,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are some filesystems are running on char devs, such
-as ubifs. So we need a field in super_block to hold a
-reference to the char device.
-
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- include/linux/fs.h | 1 +
- 1 file changed, 1 insertion(+)
+ fs/super.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 84b783f..9896b62 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1313,6 +1313,7 @@ struct super_block {
- 	struct hlist_bl_head	s_anon;		/* anonymous dentries for (nfs) exporting */
- 	struct list_head	s_mounts;	/* list of mounts; _not_ for fs use */
- 	struct block_device	*s_bdev;
-+	struct cdev		*s_cdev;
- 	struct backing_dev_info *s_bdi;
- 	struct mtd_info		*s_mtd;
- 	struct hlist_node	s_instances;
+diff --git a/fs/super.c b/fs/super.c
+index b613723..72f9e1d 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -299,7 +299,6 @@ void deactivate_locked_super(struct super_block *s)
+ 		up_write(&s->s_umount);
+ 	}
+ }
+-
+ EXPORT_SYMBOL(deactivate_locked_super);
+ 
+ /**
+@@ -317,7 +316,6 @@ void deactivate_super(struct super_block *s)
+ 		deactivate_locked_super(s);
+ 	}
+ }
+-
+ EXPORT_SYMBOL(deactivate_super);
+ 
+ /**
+@@ -423,7 +421,6 @@ void generic_shutdown_super(struct super_block *sb)
+ 	spin_unlock(&sb_lock);
+ 	up_write(&sb->s_umount);
+ }
+-
+ EXPORT_SYMBOL(generic_shutdown_super);
+ 
+ /**
+@@ -484,7 +481,6 @@ retry:
+ 	register_shrinker(&s->s_shrink);
+ 	return s;
+ }
+-
+ EXPORT_SYMBOL(sget);
+ 
+ void drop_super(struct super_block *sb)
+@@ -492,7 +488,6 @@ void drop_super(struct super_block *sb)
+ 	up_read(&sb->s_umount);
+ 	put_super(sb);
+ }
+-
+ EXPORT_SYMBOL(drop_super);
+ 
+ /**
+@@ -562,7 +557,6 @@ void iterate_supers_type(struct file_system_type *type,
+ 		__put_super(p);
+ 	spin_unlock(&sb_lock);
+ }
+-
+ EXPORT_SYMBOL(iterate_supers_type);
+ 
+ /**
+@@ -602,7 +596,6 @@ rescan:
+ 	spin_unlock(&sb_lock);
+ 	return NULL;
+ }
+-
+ EXPORT_SYMBOL(get_super);
+ 
+ /**
+@@ -870,7 +863,6 @@ int set_anon_super(struct super_block *s, void *data)
+ {
+ 	return get_anon_bdev(&s->s_dev);
+ }
+-
+ EXPORT_SYMBOL(set_anon_super);
+ 
+ void kill_anon_super(struct super_block *sb)
+@@ -879,7 +871,6 @@ void kill_anon_super(struct super_block *sb)
+ 	generic_shutdown_super(sb);
+ 	free_anon_bdev(dev);
+ }
+-
+ EXPORT_SYMBOL(kill_anon_super);
+ 
+ void kill_litter_super(struct super_block *sb)
+@@ -888,7 +879,6 @@ void kill_litter_super(struct super_block *sb)
+ 		d_genocide(sb->s_root);
+ 	kill_anon_super(sb);
+ }
+-
+ EXPORT_SYMBOL(kill_litter_super);
+ 
+ static int ns_test_super(struct super_block *sb, void *data)
+@@ -924,7 +914,6 @@ struct dentry *mount_ns(struct file_system_type *fs_type, int flags,
+ 
+ 	return dget(sb->s_root);
+ }
+-
+ EXPORT_SYMBOL(mount_ns);
+ 
+ #ifdef CONFIG_BLOCK
+@@ -1034,7 +1023,6 @@ void kill_block_super(struct super_block *sb)
+ 	WARN_ON_ONCE(!(mode & FMODE_EXCL));
+ 	blkdev_put(bdev, mode | FMODE_EXCL);
+ }
+-
+ EXPORT_SYMBOL(kill_block_super);
+ #endif
+ 
 -- 
 1.8.4.2
