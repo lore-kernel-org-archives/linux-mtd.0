@@ -1,16 +1,16 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbmEv-0002kO-Dm
- for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:26 +0000
+ id 1ZbmEw-0002lT-PZ
+ for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:27 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 12/39] fs: quota: make quota support fs which is running on
- char dev
-Date: Tue, 15 Sep 2015 17:02:07 +0800
-Message-ID: <1442307754-13233-13-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 14/39] fs: quota: restore i_flags of quota files in
+ dquot_disable
+Date: Tue, 15 Sep 2015 17:02:09 +0800
+Message-ID: <1442307754-13233-15-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,75 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-So far, we have done all preparation. Then let's add some
-code to support char dev fs in quotactl.
+When we load quota files, we set the i_flags of the inodes
+to (S_NOQUOTA | S_NOATIME | S_IMMUTABLE). In dquot_disable()
+we only clear these flags, But we do not restore the old
+flags. That would change the i_flags of quota files if some
+of these flags were set before loading quota files.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/quota/quota.c | 30 +++++++++++++++++++++---------
- 1 file changed, 21 insertions(+), 9 deletions(-)
+ fs/quota/dquot.c      | 2 ++
+ include/linux/quota.h | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/fs/quota/quota.c b/fs/quota/quota.c
-index 86ded73..3f9acea 100644
---- a/fs/quota/quota.c
-+++ b/fs/quota/quota.c
-@@ -17,6 +17,7 @@
- #include <linux/quotaops.h>
- #include <linux/types.h>
- #include <linux/writeback.h>
-+#include <linux/cdev.h>
- 
- static int check_quotactl_permission(struct super_block *sb, int type, int cmd,
- 				     qid_t id)
-@@ -726,29 +727,40 @@ static int quotactl_cmd_write(int cmd)
-  */
- static struct super_block *quotactl_block(const char __user *special, int cmd)
- {
-+	struct super_block *sb = NULL;
-+	struct filename *tmp = getname(special);
-+	struct cdev *cdev = NULL;
-+
- #ifdef CONFIG_BLOCK
- 	struct block_device *bdev;
--	struct super_block *sb;
--	struct filename *tmp = getname(special);
- 
- 	if (IS_ERR(tmp))
- 		return ERR_CAST(tmp);
- 	bdev = lookup_bdev(tmp->name);
--	putname(tmp);
- 	if (IS_ERR(bdev))
--		return ERR_CAST(bdev);
-+		goto not_block;
- 	if (quotactl_cmd_write(cmd))
- 		sb = get_super_thawed(bdev);
- 	else
- 		sb = get_super(bdev);
- 	bdput(bdev);
--	if (!sb)
--		return ERR_PTR(-ENODEV);
-+	goto out;
- 
--	return sb;
--#else
--	return ERR_PTR(-ENODEV);
-+not_block:
- #endif
-+	cdev = lookup_cdev(tmp->name);
-+	if (IS_ERR(cdev))
-+		goto out;
-+	if (quotactl_cmd_write(cmd))
-+		sb = get_super_cdev_thawed(cdev);
-+	else
-+		sb = get_super_cdev(cdev);
-+	cdev_put(cdev);
-+out:
-+	putname(tmp);
-+	if (sb)
-+		return sb;
-+	return ERR_PTR(-ENODEV);
- }
- 
- /*
+diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+index 0bda7fa..c73f44d 100644
+--- a/fs/quota/dquot.c
++++ b/fs/quota/dquot.c
+@@ -2125,6 +2125,7 @@ int dquot_disable(struct super_block *sb, int type, unsigned int flags)
+ 				mutex_lock(&toputinode[cnt]->i_mutex);
+ 				toputinode[cnt]->i_flags &= ~(S_IMMUTABLE |
+ 				  S_NOATIME | S_NOQUOTA);
++				toputinode[cnt]->i_flags |= dqopt->old_flags[cnt];
+ 				truncate_inode_pages(&toputinode[cnt]->i_data,
+ 						     0);
+ 				mutex_unlock(&toputinode[cnt]->i_mutex);
+@@ -2223,6 +2224,7 @@ static int vfs_load_quota_inode(struct inode *inode, int type, int format_id,
+ 		oldflags = inode->i_flags & (S_NOATIME | S_IMMUTABLE |
+ 					     S_NOQUOTA);
+ 		inode->i_flags |= S_NOQUOTA | S_NOATIME | S_IMMUTABLE;
++		dqopt->old_flags[type] = oldflags;
+ 		mutex_unlock(&inode->i_mutex);
+ 		/*
+ 		 * When S_NOQUOTA is set, remove dquot references as no more
+diff --git a/include/linux/quota.h b/include/linux/quota.h
+index b2505ac..fcfee5a 100644
+--- a/include/linux/quota.h
++++ b/include/linux/quota.h
+@@ -507,6 +507,7 @@ struct quota_info {
+ 	struct mutex dqio_mutex;		/* lock device while I/O in progress */
+ 	struct mutex dqonoff_mutex;		/* Serialize quotaon & quotaoff */
+ 	struct inode *files[MAXQUOTAS];		/* inodes of quotafiles */
++	unsigned int old_flags[MAXQUOTAS];	/* i_flags for each quota file */
+ 	struct mem_dqinfo info[MAXQUOTAS];	/* Information for each quota type */
+ 	const struct quota_format_ops *ops[MAXQUOTAS];	/* Operations for each type */
+ };
 -- 
 1.8.4.2
