@@ -1,20 +1,25 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from mail-la0-f45.google.com ([209.85.215.45])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zbmhh-0003nk-0g
- for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:39:10 +0000
-Message-ID: <55F7E6A0.9070204@huawei.com>
-Date: Tue, 15 Sep 2015 17:36:32 +0800
-From: Sheng Yong <shengyong1@huawei.com>
+ id 1ZbmjB-0005gw-Mf
+ for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:40:42 +0000
+Received: by lanb10 with SMTP id b10so102979092lan.3
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Sep 2015 02:40:19 -0700 (PDT)
 MIME-Version: 1.0
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, <viro@ZenIV.linux.org.uk>,
- <jack@suse.cz>, <dedekind1@gmail.com>, <richard.weinberger@gmail.com>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v3 39/39] ubifs: introduce quota related mount options
-References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1442307754-13233-40-git-send-email-yangds.fnst@cn.fujitsu.com>
-In-Reply-To: <1442307754-13233-40-git-send-email-yangds.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20150909142439.GA2371@laptop>
+References: <1441703453-2838-1-git-send-email-alex.smith@imgtec.com>
+ <1441703453-2838-4-git-send-email-alex.smith@imgtec.com>
+ <20150909142439.GA2371@laptop>
+Date: Tue, 15 Sep 2015 10:40:19 +0100
+Message-ID: <CAOFt0_CHW-BQdJ+1RUTBVHJSkkrpykGLTaYWsObP56YuDdo79Q@mail.gmail.com>
+Subject: Re: [PATCH v5 3/4] mtd: nand: jz4780: driver for NAND devices on
+ JZ4780 SoCs
+From: Alex Smith <alex@alex-smith.me.uk>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Alex Smith <alex.smith@imgtec.com>, linux-mtd@lists.infradead.org,
+ Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
+ linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,114 +29,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 9 September 2015 at 15:24, Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
+> On 08 Sep 10:10 AM, Alex Smith wrote:
+>> Add a driver for NAND devices connected to the NEMC on JZ4780 SoCs, as
+>> well as the hardware BCH controller. DMA is not currently implemented.
+>>
+>> While older 47xx SoCs also have a BCH controller, they are incompatible
+>> with the one in the 4780 due to differing register/bit positions, which
+>> would make implementing a common driver for them quite messy.
+>>
+>> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+>> Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Cc: Brian Norris <computersforpeace@gmail.com>
+>> Cc: linux-mtd@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> ---
+>> v4 -> v5:
+>>  - Bump RB_DELAY up to be sufficient for the driver to work without a
+>>    busy GPIO available.
+>>  - Use readl_poll_timeout instead of custom polling loop.
+>>  - Remove useless printks.
+>>  - Change a BUG_ON to WARN_ON.
+>>  - Remove use of of_translate_address(), use standard platform resource
+>>    APIs.
+>>  - Add DRV_NAME define to avoid duplication of the same string.
+>>
+>> v3 -> v4:
+>>  - Rebase to 4.2-rc4
+>>  - Change ECC_HW_OOB_FIRST to ECC_HW, reading OOB first is not necessary.
+>>  - Fix argument to get_device() in jz4780_bch_get()
+>>
+>> v2 -> v3:
+>>  - Rebase to 4.0-rc6
+>>  - Reflect binding changes
+>>  - get/put_device in bch get/release
+>>  - Removed empty .remove() callback
+>>  - Removed .owner
+>>  - Set mtd->dev.parent
+>>
+>> v1 -> v2:
+>>  - Fixed module license macro
+>>  - Rebase to 4.0-rc3
+>> ---
+>>  drivers/mtd/nand/Kconfig       |   7 +
+>>  drivers/mtd/nand/Makefile      |   1 +
+>>  drivers/mtd/nand/jz4780_bch.c  | 348 +++++++++++++++++++++++++++++++++++++
+>>  drivers/mtd/nand/jz4780_bch.h  |  42 +++++
+>>  drivers/mtd/nand/jz4780_nand.c | 378 +++++++++++++++++++++++++++++++++++++++++
+>>  5 files changed, 776 insertions(+)
+>>  create mode 100644 drivers/mtd/nand/jz4780_bch.c
+>>  create mode 100644 drivers/mtd/nand/jz4780_bch.h
+>>  create mode 100644 drivers/mtd/nand/jz4780_nand.c
+>>
+> [..]
+>> +
+>> +static int jz4780_nand_init_chips(struct jz4780_nand *nand,
+>> +                               struct platform_device *pdev)
+>> +{
+>> +     struct device *dev = &pdev->dev;
+>> +     struct jz4780_nand_chip *chip;
+>> +     const __be32 *prop;
+>> +     struct resource *res;
+>> +     int i = 0;
+>> +
+>> +     /*
+>> +      * Iterate over each bank assigned to this device and request resources.
+>> +      * The bank numbers may not be consecutive, but nand_scan_ident()
+>> +      * expects chip numbers to be, so fill out a consecutive array of chips
+>> +      * which map chip number to actual bank number.
+>> +      */
+>> +     while ((prop = of_get_address(dev->of_node, i, NULL, NULL))) {
+>> +             chip = &nand->chips[i];
+>> +             chip->bank = of_read_number(prop, 1);
+>> +
+>> +             jz4780_nemc_set_type(nand->dev, chip->bank,
+>> +                                  JZ4780_NEMC_BANK_NAND);
+>> +
+>> +             res = platform_get_resource(pdev, IORESOURCE_MEM, i);
+>> +             chip->base = devm_ioremap_resource(dev, res);
+>> +             if (IS_ERR(chip->base)) {
+>> +                     dev_err(dev, "failed to map bank %u: %ld\n",
+>> +                             chip->bank, PTR_ERR(chip->base));
+>
+> You don't need to print anything on devm_ioremap_resource errors.
+>
+> The rest looks good:
+>
+> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
+Thanks Ezequiel, I'll resend with the printk removed soon.
 
-On 9/15/2015 5:02 PM, Dongsheng Yang wrote:
-> This commit introduce mount options of quota, noquota,
-> usrquota and grpquota. These options are used to make
-> ubifs support quota.
-> 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> ---
->  fs/ubifs/super.c | 30 ++++++++++++++++++++++++++++++
->  fs/ubifs/ubifs.h |  4 ++++
->  2 files changed, 34 insertions(+)
-> 
-> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-> index da16c65..e7e68ee 100644
-> --- a/fs/ubifs/super.c
-> +++ b/fs/ubifs/super.c
-> @@ -36,6 +36,7 @@
->  #include <linux/mount.h>
->  #include <linux/math64.h>
->  #include <linux/writeback.h>
-> +#include <linux/quotaops.h>
->  #include <linux/cdev.h>
->  #include <linux/quotaops.h>
->  #include "ubifs.h"
-> @@ -443,6 +444,12 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
->  	else if (c->mount_opts.chk_data_crc == 1)
->  		seq_puts(s, ",no_chk_data_crc");
->  
-> +	if (c->usrquota)
-> +		seq_puts(s, ",usrquota");
-> +
-> +	if (c->grpquota)
-> +		seq_puts(s, ",grpquota");
-> +
->  	if (c->mount_opts.override_compr) {
->  		seq_printf(s, ",compr=%s",
->  			   ubifs_compr_name(c->mount_opts.compr_type));
-> @@ -1112,6 +1119,10 @@ enum {
->  	Opt_chk_data_crc,
->  	Opt_no_chk_data_crc,
->  	Opt_override_compr,
-> +	Opt_ignore,
-> +	Opt_quota,
-> +	Opt_usrquota,
-> +	Opt_grpquota,
->  	Opt_err,
->  };
->  
-> @@ -1123,6 +1134,10 @@ static const match_table_t tokens = {
->  	{Opt_chk_data_crc, "chk_data_crc"},
->  	{Opt_no_chk_data_crc, "no_chk_data_crc"},
->  	{Opt_override_compr, "compr=%s"},
-> +	{Opt_ignore, "noquota"},
-> +	{Opt_quota, "quota"},
-> +	{Opt_usrquota, "usrquota"},
-> +	{Opt_grpquota, "grpquota"},
->  	{Opt_err, NULL},
->  };
->  
-> @@ -1223,6 +1238,21 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
->  			c->default_compr = c->mount_opts.compr_type;
->  			break;
->  		}
-> +#ifdef CONFIG_QUOTA
-> +		case Opt_quota:
-> +		case Opt_usrquota:
-> +			c->usrquota = 1;
-> +			break;
-> +		case Opt_grpquota:
-> +			c->grpquota = 1;
-> +			break;
-> +#else
-Hi, Dongsheng,
+Alex
 
-The elseif here can be covered by default :)
-
-thanks,
-Sheng
-> +		case Opt_quota:
-> +		case Opt_usrquota:
-> +		case Opt_grpquota:
-> +			ubifs_err(c, "quota operations not supported");
-> +			break;
-> +#endif
->  		default:
->  		{
->  			unsigned long flag;
-> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-> index 21b5dc0..ef06af7 100644
-> --- a/fs/ubifs/ubifs.h
-> +++ b/fs/ubifs/ubifs.h
-> @@ -1044,6 +1044,8 @@ struct ubifs_debug_info;
->   * @bulk_read: enable bulk-reads
->   * @default_compr: default compression algorithm (%UBIFS_COMPR_LZO, etc)
->   * @rw_incompat: the media is not R/W compatible
-> + * @usrquota: enable usrquota
-> + * @grpquota: enable grpquota
->   *
->   * @tnc_mutex: protects the Tree Node Cache (TNC), @zroot, @cnext, @enext, and
->   *             @calc_idx_sz
-> @@ -1285,6 +1287,8 @@ struct ubifs_info {
->  	unsigned int bulk_read:1;
->  	unsigned int default_compr:2;
->  	unsigned int rw_incompat:1;
-> +	unsigned int usrquota:1;
-> +	unsigned int grpquota:1;
->  
->  	struct mutex tnc_mutex;
->  	struct ubifs_zbranch zroot;
-> 
+> --
+> Ezequiel Garcia, VanguardiaSur
+> www.vanguardiasur.com.ar
