@@ -1,16 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbmEw-0002lT-PZ
- for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:27 +0000
+ id 1ZbmEw-0002nf-OD
+ for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:28 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 14/39] fs: quota: restore i_flags of quota files in
- dquot_disable
-Date: Tue, 15 Sep 2015 17:02:09 +0800
-Message-ID: <1442307754-13233-15-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 13/39] fs: introduce a get_qsize() to inode_operations
+Date: Tue, 15 Sep 2015 17:02:08 +0800
+Message-ID: <1442307754-13233-14-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,49 +23,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When we load quota files, we set the i_flags of the inodes
-to (S_NOQUOTA | S_NOATIME | S_IMMUTABLE). In dquot_disable()
-we only clear these flags, But we do not restore the old
-flags. That would change the i_flags of quota files if some
-of these flags were set before loading quota files.
+get_qsize() is used to allow inode to decide how much of the quota size
+in itself. If file system implements the own get_qsize(), ioctl of
+FIOQSIZe will call it to get quota size. If not implemented, get the
+quota size in a generic way.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/quota/dquot.c      | 2 ++
- include/linux/quota.h | 1 +
- 2 files changed, 3 insertions(+)
+ fs/ioctl.c         | 31 ++++++++++++++++++++++++-------
+ include/linux/fs.h |  1 +
+ 2 files changed, 25 insertions(+), 7 deletions(-)
 
-diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index 0bda7fa..c73f44d 100644
---- a/fs/quota/dquot.c
-+++ b/fs/quota/dquot.c
-@@ -2125,6 +2125,7 @@ int dquot_disable(struct super_block *sb, int type, unsigned int flags)
- 				mutex_lock(&toputinode[cnt]->i_mutex);
- 				toputinode[cnt]->i_flags &= ~(S_IMMUTABLE |
- 				  S_NOATIME | S_NOQUOTA);
-+				toputinode[cnt]->i_flags |= dqopt->old_flags[cnt];
- 				truncate_inode_pages(&toputinode[cnt]->i_data,
- 						     0);
- 				mutex_unlock(&toputinode[cnt]->i_mutex);
-@@ -2223,6 +2224,7 @@ static int vfs_load_quota_inode(struct inode *inode, int type, int format_id,
- 		oldflags = inode->i_flags & (S_NOATIME | S_IMMUTABLE |
- 					     S_NOQUOTA);
- 		inode->i_flags |= S_NOQUOTA | S_NOATIME | S_IMMUTABLE;
-+		dqopt->old_flags[type] = oldflags;
- 		mutex_unlock(&inode->i_mutex);
- 		/*
- 		 * When S_NOQUOTA is set, remove dquot references as no more
-diff --git a/include/linux/quota.h b/include/linux/quota.h
-index b2505ac..fcfee5a 100644
---- a/include/linux/quota.h
-+++ b/include/linux/quota.h
-@@ -507,6 +507,7 @@ struct quota_info {
- 	struct mutex dqio_mutex;		/* lock device while I/O in progress */
- 	struct mutex dqonoff_mutex;		/* Serialize quotaon & quotaoff */
- 	struct inode *files[MAXQUOTAS];		/* inodes of quotafiles */
-+	unsigned int old_flags[MAXQUOTAS];	/* i_flags for each quota file */
- 	struct mem_dqinfo info[MAXQUOTAS];	/* Information for each quota type */
- 	const struct quota_format_ops *ops[MAXQUOTAS];	/* Operations for each type */
- };
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index 5d01d26..cc69560 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -545,6 +545,29 @@ static int ioctl_fsthaw(struct file *filp)
+ 	return thaw_super(sb);
+ }
+ 
++static int ioctl_fioqsize(struct file *filp, int __user *argp)
++{
++	struct inode *inode = file_inode(filp);
++	loff_t res = 0;
++	int error = 0;
++
++	if (inode->i_op->get_qsize) {
++		res = inode->i_op->get_qsize(inode);
++		error = copy_to_user(argp, &res, sizeof(res)) ?
++				-EFAULT : 0;
++	} else {
++                if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
++                    S_ISLNK(inode->i_mode)) {
++                        res = inode_get_bytes(inode);
++                        error = copy_to_user(argp, &res, sizeof(res)) ?
++                                        -EFAULT : 0;
++                } else {
++                        error = -ENOTTY;
++		}
++	}
++	return error;
++}
++
+ /*
+  * When you add any new common ioctls to the switches above and below
+  * please update compat_sys_ioctl() too.
+@@ -577,13 +600,7 @@ int do_vfs_ioctl(struct file *filp, unsigned int fd, unsigned int cmd,
+ 		break;
+ 
+ 	case FIOQSIZE:
+-		if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
+-		    S_ISLNK(inode->i_mode)) {
+-			loff_t res = inode_get_bytes(inode);
+-			error = copy_to_user(argp, &res, sizeof(res)) ?
+-					-EFAULT : 0;
+-		} else
+-			error = -ENOTTY;
++		error = ioctl_fioqsize(filp, argp);
+ 		break;
+ 
+ 	case FIFREEZE:
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 6f0c614..6d183d5 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1669,6 +1669,7 @@ struct inode_operations {
+ 			   umode_t create_mode, int *opened);
+ 	int (*tmpfile) (struct inode *, struct dentry *, umode_t);
+ 	int (*set_acl)(struct inode *, struct posix_acl *, int);
++	ssize_t (*get_qsize) (struct inode *);
+ 
+ 	/* WARNING: probably going away soon, do not use! */
+ } ____cacheline_aligned;
 -- 
 1.8.4.2
