@@ -1,15 +1,16 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbmEw-0002nf-OD
+ id 1ZbmEw-0002kO-U3
  for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:28 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 13/39] fs: introduce a get_qsize() to inode_operations
-Date: Tue, 15 Sep 2015 17:02:08 +0800
-Message-ID: <1442307754-13233-14-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 15/39] fs: quota: introduce a callback of restore_iflags to
+ quotactl_ops
+Date: Tue, 15 Sep 2015 17:02:10 +0800
+Message-ID: <1442307754-13233-16-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -23,77 +24,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-get_qsize() is used to allow inode to decide how much of the quota size
-in itself. If file system implements the own get_qsize(), ioctl of
-FIOQSIZe will call it to get quota size. If not implemented, get the
-quota size in a generic way.
+In dquot_disable, we need to restore the iflags of quota files
+and mark the inodes to dirty. But that's pain to file-systems
+working in out-place-updating way, such as btrfs and ubifs. when
+they are going to update inode, they have to reserve space for
+this inode.
+
+So we can not mark_inode_dirty() in dquot_disable for them. To solve
+this kind of problem, the common solution is introduce a callback
+to allow file-systems to do the inode_dirty work by themselves,
+the similar way with update_time().
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- fs/ioctl.c         | 31 ++++++++++++++++++++++++-------
- include/linux/fs.h |  1 +
- 2 files changed, 25 insertions(+), 7 deletions(-)
+ fs/quota/dquot.c      | 51 ++++++++++++++++++++++++++++++++++-----------------
+ include/linux/quota.h |  4 ++++
+ 2 files changed, 38 insertions(+), 17 deletions(-)
 
-diff --git a/fs/ioctl.c b/fs/ioctl.c
-index 5d01d26..cc69560 100644
---- a/fs/ioctl.c
-+++ b/fs/ioctl.c
-@@ -545,6 +545,29 @@ static int ioctl_fsthaw(struct file *filp)
- 	return thaw_super(sb);
+diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+index c73f44d..3f08e69 100644
+--- a/fs/quota/dquot.c
++++ b/fs/quota/dquot.c
+@@ -2020,6 +2020,33 @@ int dquot_file_open(struct inode *inode, struct file *file)
  }
+ EXPORT_SYMBOL(dquot_file_open);
  
-+static int ioctl_fioqsize(struct file *filp, int __user *argp)
++static int generic_restore_iflags(struct super_block *sb, struct inode **toputinode,
++					unsigned int *old_flags)
 +{
-+	struct inode *inode = file_inode(filp);
-+	loff_t res = 0;
-+	int error = 0;
++	int cnt = 0;
++	struct quota_info *dqopt = sb_dqopt(sb);
 +
-+	if (inode->i_op->get_qsize) {
-+		res = inode->i_op->get_qsize(inode);
-+		error = copy_to_user(argp, &res, sizeof(res)) ?
-+				-EFAULT : 0;
-+	} else {
-+                if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
-+                    S_ISLNK(inode->i_mode)) {
-+                        res = inode_get_bytes(inode);
-+                        error = copy_to_user(argp, &res, sizeof(res)) ?
-+                                        -EFAULT : 0;
-+                } else {
-+                        error = -ENOTTY;
++	for (cnt = 0; cnt < MAXQUOTAS; cnt++)
++		if (toputinode[cnt]) {
++			mutex_lock(&dqopt->dqonoff_mutex);
++			/* If quota was reenabled in the meantime, we have
++			 * nothing to do */
++			if (!sb_has_quota_loaded(sb, cnt)) {
++				mutex_lock(&toputinode[cnt]->i_mutex);
++				toputinode[cnt]->i_flags &= ~(S_IMMUTABLE |
++				  S_NOATIME | S_NOQUOTA);
++				toputinode[cnt]->i_flags |= old_flags[cnt];
++				truncate_inode_pages(&toputinode[cnt]->i_data,
++						     0);
++				mutex_unlock(&toputinode[cnt]->i_mutex);
++				mark_inode_dirty_sync(toputinode[cnt]);
++			}
++			mutex_unlock(&dqopt->dqonoff_mutex);
 +		}
-+	}
-+	return error;
++
++	return 0;
 +}
 +
  /*
-  * When you add any new common ioctls to the switches above and below
-  * please update compat_sys_ioctl() too.
-@@ -577,13 +600,7 @@ int do_vfs_ioctl(struct file *filp, unsigned int fd, unsigned int cmd,
- 		break;
+  * Turn quota off on a device. type == -1 ==> quotaoff for all types (umount)
+  */
+@@ -2028,6 +2055,7 @@ int dquot_disable(struct super_block *sb, int type, unsigned int flags)
+ 	int cnt, ret = 0;
+ 	struct quota_info *dqopt = sb_dqopt(sb);
+ 	struct inode *toputinode[MAXQUOTAS];
++	unsigned int *old_flags = dqopt->old_flags;
  
- 	case FIOQSIZE:
--		if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode) ||
--		    S_ISLNK(inode->i_mode)) {
--			loff_t res = inode_get_bytes(inode);
--			error = copy_to_user(argp, &res, sizeof(res)) ?
--					-EFAULT : 0;
--		} else
--			error = -ENOTTY;
-+		error = ioctl_fioqsize(filp, argp);
- 		break;
+ 	/* Cannot turn off usage accounting without turning off limits, or
+ 	 * suspend quotas and simultaneously turn quotas off. */
+@@ -2111,28 +2139,17 @@ int dquot_disable(struct super_block *sb, int type, unsigned int flags)
+ 	 * disk (and so userspace sees correct data afterwards). */
+ 	sync_filesystem(sb);
+ 	sync_blockdev(sb->s_bdev);
++
+ 	/* Now the quota files are just ordinary files and we can set the
+ 	 * inode flags back. Moreover we discard the pagecache so that
+ 	 * userspace sees the writes we did bypassing the pagecache. We
+ 	 * must also discard the blockdev buffers so that we see the
+ 	 * changes done by userspace on the next quotaon() */
+-	for (cnt = 0; cnt < MAXQUOTAS; cnt++)
+-		if (toputinode[cnt]) {
+-			mutex_lock(&dqopt->dqonoff_mutex);
+-			/* If quota was reenabled in the meantime, we have
+-			 * nothing to do */
+-			if (!sb_has_quota_loaded(sb, cnt)) {
+-				mutex_lock(&toputinode[cnt]->i_mutex);
+-				toputinode[cnt]->i_flags &= ~(S_IMMUTABLE |
+-				  S_NOATIME | S_NOQUOTA);
+-				toputinode[cnt]->i_flags |= dqopt->old_flags[cnt];
+-				truncate_inode_pages(&toputinode[cnt]->i_data,
+-						     0);
+-				mutex_unlock(&toputinode[cnt]->i_mutex);
+-				mark_inode_dirty_sync(toputinode[cnt]);
+-			}
+-			mutex_unlock(&dqopt->dqonoff_mutex);
+-		}
++	if (sb->s_qcop->restore_iflags)
++		ret = sb->s_qcop->restore_iflags(sb, toputinode, old_flags);
++	else
++		ret = generic_restore_iflags(sb, toputinode, old_flags);
++
+ 	if (sb->s_bdev)
+ 		invalidate_bdev(sb->s_bdev);
+ put_inodes:
+diff --git a/include/linux/quota.h b/include/linux/quota.h
+index fcfee5a..64e52e4 100644
+--- a/include/linux/quota.h
++++ b/include/linux/quota.h
+@@ -428,6 +428,10 @@ struct quotactl_ops {
+ 	int (*set_dqblk)(struct super_block *, struct kqid, struct qc_dqblk *);
+ 	int (*get_state)(struct super_block *, struct qc_state *);
+ 	int (*rm_xquota)(struct super_block *, unsigned int);
++	/*
++	 * used in quota_disable to restore the i_flags of quota files.
++	 */
++	int (*restore_iflags)(struct super_block *sb, struct inode **, unsigned int *);
+ };
  
- 	case FIFREEZE:
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 6f0c614..6d183d5 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1669,6 +1669,7 @@ struct inode_operations {
- 			   umode_t create_mode, int *opened);
- 	int (*tmpfile) (struct inode *, struct dentry *, umode_t);
- 	int (*set_acl)(struct inode *, struct posix_acl *, int);
-+	ssize_t (*get_qsize) (struct inode *);
- 
- 	/* WARNING: probably going away soon, do not use! */
- } ____cacheline_aligned;
+ struct quota_format_type {
 -- 
 1.8.4.2
