@@ -1,16 +1,20 @@
-Received: from forward18h.cmail.yandex.net ([2a02:6b8:0:f35::a3])
+Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbpOf-000189-G1
- for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 12:31:43 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Backporting ubiblock to Linux 3.3
+ id 1ZbquS-0003RA-2w
+ for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 14:08:40 +0000
+Received: by obbda8 with SMTP id da8so135399279obb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Sep 2015 07:08:14 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <1659571442320272@web21h.yandex.ru>
-Date: Tue, 15 Sep 2015 15:31:12 +0300
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
+In-Reply-To: <1659571442320272@web21h.yandex.ru>
+References: <1659571442320272@web21h.yandex.ru>
+Date: Tue, 15 Sep 2015 16:01:13 +0200
+Message-ID: <CAFLxGvz3U31Jys+fkKsZ0gE2F44-4tZBia3v3hEYR8g1KGH_hw@mail.gmail.com>
+Subject: Re: Backporting ubiblock to Linux 3.3
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Konstantin Tokarev <annulen@yandex.ru>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,16 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel and others,
+On Tue, Sep 15, 2015 at 2:31 PM, Konstantin Tokarev <annulen@yandex.ru> wrote:
+> Hi Ezequiel and others,
+>
+> How do you think, would it be feasible to backport ubiblock to Linux 3.3 without large amount of work? I don't need latest and greatest version, just anything to get working and stable squashfs on top of it.
 
-How do you think, would it be feasible to backport ubiblock to Linux 3.3 without large amount of work? I don't need latest and greatest version, just anything to get working and stable squashfs on top of it.
-
-Could you point me to any specific version of ubiblock patch to start from? Should I apply patches from [1] first? Or any specific patches to UBI or MTD which are missing in that branch?
-
-Thank you in advance.
-
-[1] http://git.infradead.org/users/dedekind/ubifs-v3.3.git
+Backporting the state before my blk-mq conversion should be trivial.
 
 -- 
-Regards,
-Konstantin
+Thanks,
+//richard
