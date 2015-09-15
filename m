@@ -1,16 +1,16 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbmEp-0002kO-VF
- for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:21 +0000
+ id 1ZbmEr-0002nf-Lu
+ for linux-mtd@lists.infradead.org; Tue, 15 Sep 2015 09:09:22 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <viro@ZenIV.linux.org.uk>, <jack@suse.cz>, <dedekind1@gmail.com>,
  <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 05/39] fs: super: introduce a get_super_cdev to get super
- by a cdev reference
-Date: Tue, 15 Sep 2015 17:02:00 +0800
-Message-ID: <1442307754-13233-6-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 06/39] fs: super: introduce a get_super_cdev_thawed to get
+ sb by cdev reference
+Date: Tue, 15 Sep 2015 17:02:01 +0800
+Message-ID: <1442307754-13233-7-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -24,54 +24,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As we have cdev in superblock now, we can provide get_super_cdev
-to get super_block by a cdev reference, similar with get_super
-which is working only for block_device.
+This patch refactors the original get_super_thawed to get a common
+helper function of __get_super_thawed. Then take the use of
+__get_super_thawed, we can implement get_super_cdev_thawed easily.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Reviewed-by: Jan Kara <jack@suse.com>
 ---
- fs/super.c         | 15 +++++++++++++++
+ fs/super.c         | 29 +++++++++++++++++++++++++----
  include/linux/fs.h |  1 +
- 2 files changed, 16 insertions(+)
+ 2 files changed, 26 insertions(+), 4 deletions(-)
 
 diff --git a/fs/super.c b/fs/super.c
-index 4d667fe..321d16b 100644
+index 321d16b..df32393 100644
 --- a/fs/super.c
 +++ b/fs/super.c
-@@ -613,6 +613,21 @@ struct super_block *get_super(struct block_device *bdev)
- }
- EXPORT_SYMBOL(get_super);
+@@ -629,18 +629,20 @@ struct super_block *get_super_cdev(struct cdev *cdev)
+ EXPORT_SYMBOL(get_super_cdev);
  
-+static int cdev_compare(struct super_block *sb, void *key)
-+{
-+	return (sb->s_cdev == (struct cdev *)key);
-+}
+ /**
+- * get_super_thawed - get thawed superblock of a device
+- * @bdev: device to get the superblock for
++ * __get_super_thawed - get thawed superblock
++ * @func: function pointer to get superblock by key
++ * @key: key to find superblock
+  *
+  * Scans the superblock list and finds the superblock of the file system
+  * mounted on the device. The superblock is returned once it is thawed
+  * (or immediately if it was not frozen). %NULL is returned if no match
+  * is found.
+  */
+-struct super_block *get_super_thawed(struct block_device *bdev)
++static struct super_block *__get_super_thawed(
++		int (*compare)(struct super_block *, void *), void *key)
+ {
+ 	while (1) {
+-		struct super_block *s = get_super(bdev);
++		struct super_block *s = __get_super(compare, key);
+ 		if (!s || s->s_writers.frozen == SB_UNFROZEN)
+ 			return s;
+ 		up_read(&s->s_umount);
+@@ -649,9 +651,28 @@ struct super_block *get_super_thawed(struct block_device *bdev)
+ 		put_super(s);
+ 	}
+ }
 +
 +/**
-+ * get_super_cdev - get the superblock of a cdev
-+ * @cdev: char device to get the superblock for
++ * get_super_thawed - get thawed superblock of a device
++ * @bdev: device to get the superblock for
 + */
-+struct super_block *get_super_cdev(struct cdev *cdev)
++struct super_block *get_super_thawed(struct block_device *bdev)
 +{
-+	return __get_super(cdev_compare, cdev);
++	return __get_super_thawed(bdev_compare, bdev);
 +}
-+EXPORT_SYMBOL(get_super_cdev);
-+
+ EXPORT_SYMBOL(get_super_thawed);
+ 
  /**
-  * get_super_thawed - get thawed superblock of a device
++ * get_super_cdev_thawed - get thawed superblock of a char device
++ * @cdev: device to get the superblock for
++ */
++struct super_block *get_super_cdev_thawed(struct cdev *cdev)
++{
++	return __get_super_thawed(cdev_compare, cdev);
++}
++EXPORT_SYMBOL(get_super_cdev_thawed);
++
++/**
+  * get_active_super - get an active reference to the superblock of a device
   * @bdev: device to get the superblock for
+  *
 diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 9896b62..df71cbb 100644
+index df71cbb..2c1c122 100644
 --- a/include/linux/fs.h
 +++ b/include/linux/fs.h
-@@ -2796,6 +2796,7 @@ extern void get_filesystem(struct file_system_type *fs);
- extern void put_filesystem(struct file_system_type *fs);
- extern struct file_system_type *get_fs_type(const char *name);
+@@ -2798,6 +2798,7 @@ extern struct file_system_type *get_fs_type(const char *name);
  extern struct super_block *get_super(struct block_device *);
-+extern struct super_block *get_super_cdev(struct cdev *);
+ extern struct super_block *get_super_cdev(struct cdev *);
  extern struct super_block *get_super_thawed(struct block_device *);
++extern struct super_block *get_super_cdev_thawed(struct cdev *);
  extern struct super_block *get_active_super(struct block_device *bdev);
  extern void drop_super(struct super_block *sb);
+ extern void iterate_supers(void (*)(struct super_block *, void *), void *);
 -- 
 1.8.4.2
