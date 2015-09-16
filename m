@@ -1,24 +1,25 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcBOt-0003ch-Am
- for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 12:01:24 +0000
-Message-ID: <55F959F9.7040102@axis.com>
-Date: Wed, 16 Sep 2015 14:00:57 +0200
-From: Niklas Cassel <niklas.cassel@axis.com>
 MIME-Version: 1.0
-To: Alex Smith <alex@alex-smith.me.uk>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-CC: Alex Smith <alex.smith@imgtec.com>, Zubair Lutfullah Kakakhel
- <Zubair.Kakakhel@imgtec.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/4] mtd: nand: increase ready wait timeout and report
- timeouts
-References: <1442403417-5288-1-git-send-email-alex@alex-smith.me.uk>
- <1442403417-5288-2-git-send-email-alex@alex-smith.me.uk>
-In-Reply-To: <1442403417-5288-2-git-send-email-alex@alex-smith.me.uk>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20150914183553.GE12027@sirena.org.uk>
+References: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
+ <1441355402-6837-2-git-send-email-vigneshr@ti.com>
+ <CAD6G_RT8Q+Uyp1ZjzHf54Tno1wHm0SmLKEwRAe2gkdp772FD9A@mail.gmail.com>
+ <20150914183553.GE12027@sirena.org.uk>
+Date: Wed, 16 Sep 2015 18:16:55 +0530
+Message-ID: <CAD6G_RQOazkS7KHrG75wgMXx1cH_pKjx43Mve6fz1qOJGPpq9w@mail.gmail.com>
+Subject: Re: [PATCH 1/5] spi: introduce mmap read support for spi flash devices
+From: Jagan Teki <jteki@openedev.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, hramrach@gmail.com,
+ Russell King <linux@arm.linux.org.uk>, Vignesh R <vigneshr@ti.com>,
+ Tony Lindgren <tony@atomide.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi@vger.kernel.org, linux-omap@vger.kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Benoit Cousson <bcousson@baylibre.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,50 +29,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/16/2015 01:36 PM, Alex Smith wrote:
-> From: Alex Smith <alex.smith@imgtec.com>
-> 
-> If nand_wait_ready() times out, this is silently ignored, and its
-> caller will then proceed to read from/write to the chip before it is
-> ready. This can potentially result in corruption with no indication as
-> to why.
-> 
-> While a 20ms timeout seems like it should be plenty enough, certain
-> behaviour can cause it to timeout much earlier than expected. The
-> situation which prompted this change was that CPU 0, which is
-> responsible for updating jiffies, was holding interrupts disabled
-> for a fairly long time while writing to the console during a printk,
-> causing several jiffies updates to be delayed. If CPU 1 happens to
-> enter the timeout loop in nand_wait_ready() just before CPU 0 re-
-> enables interrupts and updates jiffies, CPU 1 will immediately time
-> out when the delayed jiffies updates are made. The result of this is
-> that nand_wait_ready() actually waits less time than the NAND chip
-> would normally take to be ready, and then read_page() proceeds to
-> read out bad data from the chip.
-> 
-> The situation described above may seem unlikely, but in fact it can be
-> reproduced almost every boot on the MIPS Creator Ci20.
-> 
-> Therefore, this patch increases the timeout to 400ms. This should be
-> enough to cover cases where jiffies updates get delayed. In nand_wait()
-> the timeout was previously chosen based on whether erasing or
-> programming. This is changed to be 400ms unconditionally as well to
-> avoid similar problems there. nand_wait() is also slightly refactored
-> to be consistent with nand_wait{,_status}_ready(). These changes should
-> have no effect during normal operation.
-> 
-> Debugging this was made more difficult by the misleading comment above
-> nand_wait_ready() stating "The timeout is caught later" - no timeout was
-> ever reported, leading me away from the real source of the problem.
-> Therefore, a pr_warn() is added when a timeout does occur so that it is
-> easier to pinpoint similar problems in future.
-> 
-> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-> Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Niklas Cassel <niklas.cassel@axis.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
+On 15 September 2015 at 00:05, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Sep 04, 2015 at 04:55:33PM +0530, Jagan Teki wrote:
+>> On 4 September 2015 at 13:59, Vignesh R <vigneshr@ti.com> wrote:
+>
+>> > + * @spi_mtd_mmap_read: some spi-controller hardwares provide memory
+>> > + *                     mapped interface to communicate with mtd flashes.
+>> > + *                     For this, spi  controller needs to know flash
+>> > + *                     memory settings like read command to use, dummy
+>> > + *                     bytes and address width. Once these settings are
+>> > + *                     populated in hardware registers, any read
+>> > + *                     accesses to flash's memory map region(as defined
+>> > + *                     by SoC) through memcpy or mem-to-mem DMA copy
+>> > + *                     will be handled by controller hardware. The
+>> > + *                     hardware will automatically generate spi signals
+>> > + *                     required to read data from flash and present it
+>> > + *                     to CPU or DMA. SPI master drivers can use this
+>> > + *                     callback to implement memory mapped read
+>> > + *                     interface. Flash driver (like m25p80) requests
+>> > + *                     memory mapped read via this method. The interface
+>> > + *                     should  only be used mtd flashes and cannot be
+>> > + *                     used with other spi devices.
+>
+> This comment is *way* too verbose - probably you just need up to the
+> "Once" here.
+>
+>> > +       int (*spi_mtd_mmap_read)(struct  spi_device *spi,
+>> > +                                loff_t from, size_t len, size_t *retlen,
+>> > +                                u_char *buf, u8 read_opcode,
+>> > +                                u8 addr_width, u8 dummy_bytes);
+>
+>> This looks un-manageable to know spi core or master knows what are the
+>> command or opcode used by spi-nor flash and also I think mmap support
+>> seems to be flash related or any justification this is spi bus
+>> master/controller feature?
+>
+> There seem to be a reasonable number of SPI controllers out there which
+> have as an extension the ability to do memory mapped reads but are
+> otherwise perfectly normal SPI controllers and which rely on that for
+> everything except reads.
 
-Reviewed-by: Niklas Cassel <niklas.cassel@axis.com>
+This is true, but exposing direct spi-nor arguments or features like
+read_opcode, addr_width or dummy_byte to spi layer isn't fine? because
+for spi layer there is a spi to flash transition mtd m25p80.c is there
+to handle is it?
+
+thanks!
+-- 
+Jagan | openedev.
