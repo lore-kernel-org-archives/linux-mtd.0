@@ -1,22 +1,16 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from mail-bl2on0118.outbound.protection.outlook.com ([65.55.169.118]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zc9Vv-00017M-J5
- for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 10:00:32 +0000
-Date: Wed, 16 Sep 2015 12:00:07 +0200
-From: Jan Kara <jack@suse.cz>
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Cc: viro@ZenIV.linux.org.uk, jack@suse.cz, dedekind1@gmail.com,
- richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 36/39] ubifs: implement ubifs_get_qsize to get quota
- size in ubifs
-Message-ID: <20150916100007.GD13325@quack.suse.cz>
-References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1442307754-13233-37-git-send-email-yangds.fnst@cn.fujitsu.com>
+ id 1Zc9bG-0006ji-JJ
+ for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 10:06:04 +0000
+From: Yuan Yao <yao.yuan@freescale.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: spi-nor: Add support for sst25wf040b
+Date: Wed, 16 Sep 2015 17:59:45 +0800
+Message-ID: <1442397585-16313-1-git-send-email-yao.yuan@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1442307754-13233-37-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,101 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue 15-09-15 17:02:31, Dongsheng Yang wrote:
-> We only care the size of regular file in ubifs for quota.
-> The reason is similar with the comment in ubifs_getattr().
-> 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> ---
->  fs/ubifs/dir.c   |  3 +++
->  fs/ubifs/file.c  | 22 ++++++++++++++++++++++
->  fs/ubifs/ubifs.h |  1 +
->  3 files changed, 26 insertions(+)
-> 
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 802c6ad..0d3d6d3 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -1205,6 +1205,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
->  #ifdef CONFIG_UBIFS_ATIME_SUPPORT
->  	.update_time = ubifs_update_time,
->  #endif
-> +#ifdef CONFIG_QUOTA
-> +	.get_qsize	= ubifs_get_qsize,
-> +#endif
->  };
->  
->  const struct file_operations ubifs_dir_operations = {
-> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> index b57ccf3..f1d792a 100644
-> --- a/fs/ubifs/file.c
-> +++ b/fs/ubifs/file.c
-> @@ -1636,6 +1636,22 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
->  	return 0;
->  }
->  
-> +/*
-> + * ubifs_get_qsize: get the quota size of a file
-> + * @inode: inode which we are going to get the qsize
-> + *
-> + * We only care the size of regular file in ubifs
-> + * for quota. The reason is similar with the comment
-> + * in ubifs_getattr().
-> + */
-> +ssize_t ubifs_get_qsize(struct inode *inode)
-> +{
-> +	if (S_ISREG(inode->i_mode))
-> +		return i_size_read(inode);
-> +	else
-> +		return 0;
-> +}
-> +
+It is a 512KiB flash with 4 KiB erase sectors.
 
-The quota space is accounted in bytes. So why don't you store appropriate
-number of bytes the file consumes in i_blocks / i_bytes? Reiserfs can also
-have files occupying only say 100 bytes and everything works properly
-there so I don't see why ubifs needs to differ.
+Signed-off-by: Yuan Yao <yao.yuan@freescale.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-								Honza
-
->  const struct address_space_operations ubifs_file_address_operations = {
->  	.readpage       = ubifs_readpage,
->  	.writepage      = ubifs_writepage,
-> @@ -1656,6 +1672,9 @@ const struct inode_operations ubifs_file_inode_operations = {
->  #ifdef CONFIG_UBIFS_ATIME_SUPPORT
->  	.update_time = ubifs_update_time,
->  #endif
-> +#ifdef CONFIG_QUOTA
-> +	.get_qsize	= ubifs_get_qsize,
-> +#endif
->  };
->  
->  const struct inode_operations ubifs_symlink_inode_operations = {
-> @@ -1670,6 +1689,9 @@ const struct inode_operations ubifs_symlink_inode_operations = {
->  #ifdef CONFIG_UBIFS_ATIME_SUPPORT
->  	.update_time = ubifs_update_time,
->  #endif
-> +#ifdef CONFIG_QUOTA
-> +	.get_qsize	= ubifs_get_qsize,
-> +#endif
->  };
->  
->  const struct file_operations ubifs_file_operations = {
-> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-> index 99cf10c..21b5dc0 100644
-> --- a/fs/ubifs/ubifs.h
-> +++ b/fs/ubifs/ubifs.h
-> @@ -1759,6 +1759,7 @@ int ubifs_read_block(struct inode *inode, void *addr, unsigned int block,
->  int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
->  int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
->  int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
-> +ssize_t ubifs_get_qsize(struct inode *inode);
->  
->  /* dir.c */
->  struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
-> -- 
-> 1.8.4.2
-> 
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index f59aedf..cd02934 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -635,6 +635,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2, SECT_4K | SST_WRITE) },
+ 	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4, SECT_4K | SST_WRITE) },
+ 	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K) },
++	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
+ 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+ 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.1.0.27.g96db324
