@@ -1,25 +1,19 @@
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZcCpJ-00088f-PI
+ for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 13:32:47 +0000
+Subject: Re: [RFC PATCH 00/27] Introduce ubifs_dump in ubifs-utils
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com,
+ computersforpeace@gmail.com
+References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Cc: linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55F96F61.8040201@nod.at>
+Date: Wed, 16 Sep 2015 15:32:17 +0200
 MIME-Version: 1.0
-In-Reply-To: <20150914183553.GE12027@sirena.org.uk>
-References: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
- <1441355402-6837-2-git-send-email-vigneshr@ti.com>
- <CAD6G_RT8Q+Uyp1ZjzHf54Tno1wHm0SmLKEwRAe2gkdp772FD9A@mail.gmail.com>
- <20150914183553.GE12027@sirena.org.uk>
-Date: Wed, 16 Sep 2015 18:16:55 +0530
-Message-ID: <CAD6G_RQOazkS7KHrG75wgMXx1cH_pKjx43Mve6fz1qOJGPpq9w@mail.gmail.com>
-Subject: Re: [PATCH 1/5] spi: introduce mmap read support for spi flash devices
-From: Jagan Teki <jteki@openedev.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, hramrach@gmail.com,
- Russell King <linux@arm.linux.org.uk>, Vignesh R <vigneshr@ti.com>,
- Tony Lindgren <tony@atomide.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi@vger.kernel.org, linux-omap@vger.kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Benoit Cousson <bcousson@baylibre.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,51 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15 September 2015 at 00:05, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Sep 04, 2015 at 04:55:33PM +0530, Jagan Teki wrote:
->> On 4 September 2015 at 13:59, Vignesh R <vigneshr@ti.com> wrote:
->
->> > + * @spi_mtd_mmap_read: some spi-controller hardwares provide memory
->> > + *                     mapped interface to communicate with mtd flashes.
->> > + *                     For this, spi  controller needs to know flash
->> > + *                     memory settings like read command to use, dummy
->> > + *                     bytes and address width. Once these settings are
->> > + *                     populated in hardware registers, any read
->> > + *                     accesses to flash's memory map region(as defined
->> > + *                     by SoC) through memcpy or mem-to-mem DMA copy
->> > + *                     will be handled by controller hardware. The
->> > + *                     hardware will automatically generate spi signals
->> > + *                     required to read data from flash and present it
->> > + *                     to CPU or DMA. SPI master drivers can use this
->> > + *                     callback to implement memory mapped read
->> > + *                     interface. Flash driver (like m25p80) requests
->> > + *                     memory mapped read via this method. The interface
->> > + *                     should  only be used mtd flashes and cannot be
->> > + *                     used with other spi devices.
->
-> This comment is *way* too verbose - probably you just need up to the
-> "Once" here.
->
->> > +       int (*spi_mtd_mmap_read)(struct  spi_device *spi,
->> > +                                loff_t from, size_t len, size_t *retlen,
->> > +                                u_char *buf, u8 read_opcode,
->> > +                                u8 addr_width, u8 dummy_bytes);
->
->> This looks un-manageable to know spi core or master knows what are the
->> command or opcode used by spi-nor flash and also I think mmap support
->> seems to be flash related or any justification this is spi bus
->> master/controller feature?
->
-> There seem to be a reasonable number of SPI controllers out there which
-> have as an extension the ability to do memory mapped reads but are
-> otherwise perfectly normal SPI controllers and which rely on that for
-> everything except reads.
+Yang,
 
-This is true, but exposing direct spi-nor arguments or features like
-read_opcode, addr_width or dummy_byte to spi layer isn't fine? because
-for spi layer there is a spi to flash transition mtd m25p80.c is there
-to handle is it?
+Am 19.08.2015 um 10:39 schrieb Dongsheng Yang:
+> Hi Atem, Richard and Brian,
+> 	This patchset introduce a userspace tool named ubifs_dump
+> to dump data from a ubi media.
+> 	It will dump the areas in ubifs, such as super block,
+> master, log, lpt and main.
+> 	That's helpful for us to see what exactly written in
+> media.
+> 	the [1/patch] is a RESEND patch, it restructures the mtd-utils.
+> Please Brian help to take a look at it. thanx a lot. :)
+> 
+> NOTE:
+> 	This patch set depends on a patch I sent out [ubifs: correct the size of nnode in memset]
+> But you can get a full code at:
+> https://github.com/yangdongsheng/mtd-utils.git ubifs_dump_v1
 
-thanks!
--- 
-Jagan | openedev.
+I'm looking/testing right now your patches.
+Your tools is useful. I like the idea, maybe the can change the name to
+"ubifs_dump_meta"? Do you have plans to extend it?
+
+I'm asking because I've started working on an ubifs.fsck/debugfs tool based on
+some scripts and hacky other tools I wrote some time ago.
+So, let's coordinate and avoid double work.
+
+It's first feature is being able to extract all files from an UBIFS.
+Scanning and identifying all UBIFS nodes, as your tool does, is a subset
+of the needed functionality. As you sent patches first I'll happily rebase
+my tool to your patches. One of the major differences is that it will work without the UBI/UBIFS kernel
+modules. You can use /dev/ubiXY or a plain nanddump.
+I hope I can release the first version soon.
+
+Thanks,
+//richard
