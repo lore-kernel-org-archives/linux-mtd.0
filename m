@@ -1,16 +1,23 @@
-Received: from mail-bl2on0118.outbound.protection.outlook.com ([65.55.169.118]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zc9bG-0006ji-JJ
- for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 10:06:04 +0000
-From: Yuan Yao <yao.yuan@freescale.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: spi-nor: Add support for sst25wf040b
-Date: Wed, 16 Sep 2015 17:59:45 +0800
-Message-ID: <1442397585-16313-1-git-send-email-yao.yuan@freescale.com>
+Subject: Re: [PATCH 3/5] mtd: devices: m25p80: add support for mmap read
+ request
+To: Mark Brown <broonie@kernel.org>
+References: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
+ <1441355402-6837-4-git-send-email-vigneshr@ti.com>
+ <20150914182704.GD12027@sirena.org.uk>
+CC: Benoit Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>,
+ Russell King <linux@arm.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, <hramrach@gmail.com>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <55F93F4F.1010704@ti.com>
+Date: Wed, 16 Sep 2015 15:37:11 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20150914182704.GD12027@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is a 512KiB flash with 4 KiB erase sectors.
 
-Signed-off-by: Yuan Yao <yao.yuan@freescale.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f59aedf..cd02934 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -635,6 +635,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2, SECT_4K | SST_WRITE) },
- 	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4, SECT_4K | SST_WRITE) },
- 	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K) },
-+	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
- 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
- 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
- 
+On 09/14/2015 11:57 PM, Mark Brown wrote:
+> On Fri, Sep 04, 2015 at 02:00:00PM +0530, Vignesh R wrote:
+> 
+>> +	if (spi->master->spi_mtd_mmap_read) {
+>> +		return  spi->master->spi_mtd_mmap_read(spi, from, len,
+>> +						       retlen, buf,
+>> +						       nor->read_opcode,
+>> +						       nor->addr_width,
+>> +						       dummy);
+>> +	}
+> 
+> We should be calling some API provided by the SPI core here, not peering
+> directly into the ops struture.
+> 
+
+Ok..
 -- 
-2.1.0.27.g96db324
+Regards
+Vignesh
