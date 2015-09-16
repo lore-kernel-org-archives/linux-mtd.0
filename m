@@ -1,23 +1,24 @@
-Received: from mail-wi0-f173.google.com ([209.85.212.173])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcB22-0004se-SU
- for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 11:37:47 +0000
-Received: by wicfx3 with SMTP id fx3so66152444wic.0
- for <linux-mtd@lists.infradead.org>; Wed, 16 Sep 2015 04:37:25 -0700 (PDT)
-From: Alex Smith <alex@alex-smith.me.uk>
-To: linux-mtd@lists.infradead.org
-Cc: Alex Smith <alex.smith@imgtec.com>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Subject: [PATCH v6 4/4] MIPS: dts: jz4780/ci20: Add NEMC,
- BCH and NAND device tree nodes
-Date: Wed, 16 Sep 2015 12:36:57 +0100
-Message-Id: <1442403417-5288-5-git-send-email-alex@alex-smith.me.uk>
-In-Reply-To: <1442403417-5288-1-git-send-email-alex@alex-smith.me.uk>
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZcBOt-0003ch-Am
+ for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 12:01:24 +0000
+Message-ID: <55F959F9.7040102@axis.com>
+Date: Wed, 16 Sep 2015 14:00:57 +0200
+From: Niklas Cassel <niklas.cassel@axis.com>
+MIME-Version: 1.0
+To: Alex Smith <alex@alex-smith.me.uk>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: Alex Smith <alex.smith@imgtec.com>, Zubair Lutfullah Kakakhel
+ <Zubair.Kakakhel@imgtec.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/4] mtd: nand: increase ready wait timeout and report
+ timeouts
 References: <1442403417-5288-1-git-send-email-alex@alex-smith.me.uk>
+ <1442403417-5288-2-git-send-email-alex@alex-smith.me.uk>
+In-Reply-To: <1442403417-5288-2-git-send-email-alex@alex-smith.me.uk>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,132 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Alex Smith <alex.smith@imgtec.com>
+On 09/16/2015 01:36 PM, Alex Smith wrote:
+> From: Alex Smith <alex.smith@imgtec.com>
+> 
+> If nand_wait_ready() times out, this is silently ignored, and its
+> caller will then proceed to read from/write to the chip before it is
+> ready. This can potentially result in corruption with no indication as
+> to why.
+> 
+> While a 20ms timeout seems like it should be plenty enough, certain
+> behaviour can cause it to timeout much earlier than expected. The
+> situation which prompted this change was that CPU 0, which is
+> responsible for updating jiffies, was holding interrupts disabled
+> for a fairly long time while writing to the console during a printk,
+> causing several jiffies updates to be delayed. If CPU 1 happens to
+> enter the timeout loop in nand_wait_ready() just before CPU 0 re-
+> enables interrupts and updates jiffies, CPU 1 will immediately time
+> out when the delayed jiffies updates are made. The result of this is
+> that nand_wait_ready() actually waits less time than the NAND chip
+> would normally take to be ready, and then read_page() proceeds to
+> read out bad data from the chip.
+> 
+> The situation described above may seem unlikely, but in fact it can be
+> reproduced almost every boot on the MIPS Creator Ci20.
+> 
+> Therefore, this patch increases the timeout to 400ms. This should be
+> enough to cover cases where jiffies updates get delayed. In nand_wait()
+> the timeout was previously chosen based on whether erasing or
+> programming. This is changed to be 400ms unconditionally as well to
+> avoid similar problems there. nand_wait() is also slightly refactored
+> to be consistent with nand_wait{,_status}_ready(). These changes should
+> have no effect during normal operation.
+> 
+> Debugging this was made more difficult by the misleading comment above
+> nand_wait_ready() stating "The timeout is caught later" - no timeout was
+> ever reported, leading me away from the real source of the problem.
+> Therefore, a pr_warn() is added when a timeout does occur so that it is
+> easier to pinpoint similar problems in future.
+> 
+> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+> Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Niklas Cassel <niklas.cassel@axis.com>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
 
-Add device tree nodes for the NEMC and BCH to the JZ4780 device tree,
-and make use of them in the Ci20 device tree to add a node for the
-board's NAND.
-
-Note that since the pinctrl driver is not yet upstream, this includes
-neither pin configuration nor busy/write-protect GPIO pins for the
-NAND. Use of the NAND relies on the boot loader to have left the pins
-configured in a usable state, which should be the case when booted
-from the NAND.
-
-Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org
----
-v5 -> v6:
- - No change.
-
-v4 -> v5:
- - New patch adding DT nodes for the NAND so that the driver can be
-   tested.
----
- arch/mips/boot/dts/ingenic/ci20.dts    | 51 ++++++++++++++++++++++++++++++++++
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 26 +++++++++++++++++
- 2 files changed, 77 insertions(+)
-
-diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index 9fcb9e7..c0c8a64 100644
---- a/arch/mips/boot/dts/ingenic/ci20.dts
-+++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -42,3 +42,54 @@
- &uart4 {
- 	status = "okay";
- };
-+
-+&nemc {
-+	status = "okay";
-+
-+	nand: nand@1 {
-+		compatible = "ingenic,jz4780-nand";
-+		reg = <1 0 0x1000000>;
-+
-+		ingenic,nemc-tAS = <10>;
-+		ingenic,nemc-tAH = <5>;
-+		ingenic,nemc-tBP = <10>;
-+		ingenic,nemc-tAW = <15>;
-+		ingenic,nemc-tSTRV = <100>;
-+
-+		ingenic,bch-controller = <&bch>;
-+		ingenic,ecc-size = <1024>;
-+		ingenic,ecc-strength = <24>;
-+
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+
-+		partition@0 {
-+			label = "u-boot-spl";
-+			reg = <0x0 0x0 0x0 0x800000>;
-+		};
-+
-+		partition@0x800000 {
-+			label = "u-boot";
-+			reg = <0x0 0x800000 0x0 0x200000>;
-+		};
-+
-+		partition@0xa00000 {
-+			label = "u-boot-env";
-+			reg = <0x0 0xa00000 0x0 0x200000>;
-+		};
-+
-+		partition@0xc00000 {
-+			label = "boot";
-+			reg = <0x0 0xc00000 0x0 0x4000000>;
-+		};
-+
-+		partition@0x8c00000 {
-+			label = "system";
-+			reg = <0x0 0x4c00000 0x1 0xfb400000>;
-+		};
-+	};
-+};
-+
-+&bch {
-+	status = "okay";
-+};
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index 65389f6..b868b42 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -108,4 +108,30 @@
- 
- 		status = "disabled";
- 	};
-+
-+	nemc: nemc@13410000 {
-+		compatible = "ingenic,jz4780-nemc";
-+		reg = <0x13410000 0x10000>;
-+		#address-cells = <2>;
-+		#size-cells = <1>;
-+		ranges = <1 0 0x1b000000 0x1000000
-+			  2 0 0x1a000000 0x1000000
-+			  3 0 0x19000000 0x1000000
-+			  4 0 0x18000000 0x1000000
-+			  5 0 0x17000000 0x1000000
-+			  6 0 0x16000000 0x1000000>;
-+
-+		clocks = <&cgu JZ4780_CLK_NEMC>;
-+
-+		status = "disabled";
-+	};
-+
-+	bch: bch@134d0000 {
-+		compatible = "ingenic,jz4780-bch";
-+		reg = <0x134d0000 0x10000>;
-+
-+		clocks = <&cgu JZ4780_CLK_BCH>;
-+
-+		status = "disabled";
-+	};
- };
--- 
-2.5.2
+Reviewed-by: Niklas Cassel <niklas.cassel@axis.com>
