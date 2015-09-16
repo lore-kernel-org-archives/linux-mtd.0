@@ -1,27 +1,22 @@
-Subject: Re: [linux-next RFC v7 2/6] mtd: spi-nor: read JEDEC ID with multiple
- I/O protocols
-To: Jagan Teki <jteki@openedev.com>
-References: <cover.1442330503.git.cyrille.pitchen@atmel.com>
- <900653cccf2903386a992ea2b702b04dc8205407.1442330503.git.cyrille.pitchen@atmel.com>
- <CAD6G_RQV--nRk-pf347ThnEbQ=+tozXq8PKZL818cEK7nAi+gA@mail.gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <nicolas.ferre@atmel.com>, Mark Brown <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, "Brian
- Norris" <computersforpeace@gmail.com>, <zajec5@gmail.com>,
- <beanhuo@micron.com>, <juhosg@openwrt.org>, =?UTF-8?Q?Marek_Va=c5=a1ut?=
- <marex@denx.de>, <ben@decadent.org.uk>, Mark Rutland <mark.rutland@arm.com>,
- <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Kumar Gala
- <galak@codeaurora.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Jonas Gorski <jogo@openwrt.org>
-Message-ID: <55F9299B.5030104@atmel.com>
-Date: Wed, 16 Sep 2015 10:34:35 +0200
+Received: from mx2.suse.de ([195.135.220.15])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zc8Sh-00063N-4R
+ for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 08:53:08 +0000
+Date: Wed, 16 Sep 2015 10:16:48 +0200
+From: Jan Kara <jack@suse.cz>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: viro@ZenIV.linux.org.uk, jack@suse.cz, dedekind1@gmail.com,
+ richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 07/39] fs: char_dev: introduce cd_acquire function to
+ acquire cdev
+Message-ID: <20150916081648.GB13325@quack.suse.cz>
+References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1442307754-13233-8-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD6G_RQV--nRk-pf347ThnEbQ=+tozXq8PKZL818cEK7nAi+gA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1442307754-13233-8-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,214 +26,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jagan,
-
-Le 15/09/2015 19:53, Jagan Teki a écrit :
-> On 15 September 2015 at 20:58, Cyrille Pitchen
-> <cyrille.pitchen@atmel.com> wrote:
->> When their quad or dual I/O mode is enabled, Micron and Macronix spi-nor
->> memories don't reply to the regular Read ID (0x9f) command. Instead they
->> reply to a new dedicated command Read ID Multiple I/O (0xaf).
->>
->> If the Read ID (0x9f) command fails (the read ID is all 1's or all 0's),
->> then the Read ID Multiple I/O (0xaf) is used, first with SPI 4-4-4 protocol
->> (supported by both Micron and Macronix memories), lately with SPI-2-2-2
->> protocol (supported only by Micron memories).
->>
->> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->> ---
->>  drivers/mtd/devices/m25p80.c      |  8 +-----
->>  drivers/mtd/spi-nor/fsl-quadspi.c |  2 +-
->>  drivers/mtd/spi-nor/nxp-spifi.c   | 13 +++------
->>  drivers/mtd/spi-nor/spi-nor.c     | 59 ++++++++++++++++++++++++++++++++++-----
->>  include/linux/mtd/spi-nor.h       | 27 +++++++++++++++---
->>  5 files changed, 81 insertions(+), 28 deletions(-)
->>
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index 4b5d7a4655fd..1457866a4930 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -179,7 +179,6 @@ static int m25p_probe(struct spi_device *spi)
->>         struct flash_platform_data      *data;
->>         struct m25p *flash;
->>         struct spi_nor *nor;
->> -       enum read_mode mode = SPI_NOR_NORMAL;
->>         char *flash_name = NULL;
->>         int ret;
->>
->> @@ -205,11 +204,6 @@ static int m25p_probe(struct spi_device *spi)
->>         spi_set_drvdata(spi, flash);
->>         flash->spi = spi;
->>
->> -       if (spi->mode & SPI_RX_QUAD)
->> -               mode = SPI_NOR_QUAD;
->> -       else if (spi->mode & SPI_RX_DUAL)
->> -               mode = SPI_NOR_DUAL;
->> -
->>         if (data && data->name)
->>                 nor->mtd.name = data->name;
->>
->> @@ -223,7 +217,7 @@ static int m25p_probe(struct spi_device *spi)
->>         else
->>                 flash_name = spi->modalias;
->>
->> -       ret = spi_nor_scan(nor, flash_name, mode);
->> +       ret = spi_nor_scan(nor, flash_name, spi->mode);
+On Tue 15-09-15 17:02:02, Dongsheng Yang wrote:
+> cd_acquire() works like bd_acquire() to get cdev by an inode,
+> this commit is a preparation for lookup_cdev().
 > 
-> IMHO, this is certainly incorrect because spi-nor never know anything
-> about spi (Linux) that is why this framework got into picture.
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+
+Two comments below.
+
+> ---
+>  fs/char_dev.c | 35 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 35 insertions(+)
 > 
+> diff --git a/fs/char_dev.c b/fs/char_dev.c
+> index ea06a3d..e818faa 100644
+> --- a/fs/char_dev.c
+> +++ b/fs/char_dev.c
+> @@ -439,6 +439,41 @@ static int exact_lock(dev_t dev, void *data)
+>  	return cdev_get(p) ? 0 : -1;
+>  }
+>  
+> +struct cdev *cd_acquire(struct inode *inode)
+> +{
+> +	struct cdev *cdev;
+> +	struct cdev *new = NULL;
+> +
+> +	spin_lock(&cdev_lock);
+> +	cdev = inode->i_cdev;
+> +	if (!cdev) {
+> +		struct kobject *kobj;
+> +		int idx;
 
-OK but what to use instead? Because we need to know the SPI controller
-capabilities as compared to what the SPI NOR memory expects.
+Empty line here please to separate variable declarations from the code.
 
-SPI_NOR_QUAD is just not enough as it doesn't allow us to make the difference
-between SPI 1-1-4, 1-4-4 or 4-4-4 protocols.
-Some manufacturer specific commands like Multiple I/O Read ID (0xaf) only work
-with the SPI 4-4-4 protocol.
+> +		spin_unlock(&cdev_lock);
+> +		kobj = kobj_lookup(cdev_map, inode->i_rdev, &idx);
+> +		if (!kobj) {
+> +			cdev = NULL;
+> +			goto out;
+> +		}
+> +		new = container_of(kobj, struct cdev, kobj);
+> +		spin_lock(&cdev_lock);
+> +		/* Check i_cdev again in case somebody beat us to it while
+> +		   we dropped the lock. */
+> +		cdev = inode->i_cdev;
+> +		if (!cdev) {
+> +			inode->i_cdev = cdev = new;
+> +			list_add(&inode->i_devices, &cdev->list);
+> +		}
 
-Also patch 3 (mtd: spi-nor: set the read op code and protocol based on the
-manufacturer) makes use of the SPI controller capabilities to select the right
-Fast Read op code and SPI protocol to match the SPI NOR memory interface.
+I think you need to put 'new' in case you didn't use it, don't you?
 
-Currently the framework always uses the Fast Read Quad Output 1-1-4 (0x6b).
-Then for Macronix QSPI memories, the framework also enables their QPI mode.
-However the datasheet of Macronix MX66L1G claims this command (0x6b) is only
-supported in in SPI mode but not in QPI mode.
+> +	}
+> +
+> +	if (!cdev_get(cdev))
+> +		cdev = NULL;
+> +	spin_unlock(&cdev_lock);
+> +
+> +out:
+> +	return cdev;
+> +}
+> +
+>  /**
+>   * cdev_add() - add a char device to the system
+>   * @p: the cdev structure for the device
 
-Also for Micron QSPI memories, the framework turns their Quad mode on but once
-enabled the spi-nor memories expected ALL commands to use the SPI 4-4-4
-protocol. SPI controllers have no mean to be notified about that protocol
-change.
-
-Besides, the m25p80 driver only checks the SPI_RX_QUAD flag before asking the
-spi-nor framework to use some Quad SPI mode but in many cases it's not enough;
-the SPI_TX_QUAD flag is also needed.
-
-Of course there are other ways to provide the spi-nor framework with the SPI
-controller. Maybe we can still use a bitmask for its simplicity of use by
-changing a little bit the definition of the spi_protocol constants:
-
-#define SPI_PROTO_1_1_1    0x0001
-#define SPI_PROTO_1_1_2    0x0002
-#define SPI_PROTO_1_1_4    0x0004
-#define SPI_PROTO_1_2_2    0x0008
-#define SPI_PROTO_1_4_4    0x0010
-#define SPI_PROTO_2_2_2    0x0020
-#define SPI_PROTO_4_4_4    0x0040
-
-Then for instance in m25p80.c, we do something like:
-
-unsigned int supported_protocols = SPI_PROTO_1_1_1;
-
-if (spi->mode & SPI_RX_QUAD) {
-        supported_protocols |= SPI_PROTO_1_1_4;
-
-        if (spi->mode & SPI_TX_QUAD)
-                supported_protocols |= (SPI_PROTO_1_4_4 | SPI_PROTO_4_4_4);
-}
-
-if (spi->mode & SPI_RX_DUAL) {
-        supported_protocols |= SPI_PROTO_1_1_2;
-
-        if (spi->mode & SPI_TX_DUAL)
-                supported_protocols |= (SPI_PROTO_1_2_2 | SPI_PROTO_2_2_2);
-}
-
-ret = spi_nor_scan(nor, flash_name, supported_protocols);
-
-Does it sound better to you so we don't use the flags defined in
-<linux/spi/spi.h> in the spi-nor framework ?
-
-
-[...]
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 8818d4325d20..1908038c8f2e 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -20,6 +20,7 @@
->>  #include <linux/mtd/cfi.h>
->>  #include <linux/mtd/mtd.h>
->>  #include <linux/of_platform.h>
->> +#include <linux/spi/spi.h>
-> 
-> Same comment as above - don't use spi on spi-nor.
-> 
->>  #include <linux/spi/flash.h>
->>  #include <linux/mtd/spi-nor.h>
->>
->> @@ -61,6 +62,11 @@ struct flash_info {
->>
->>  #define JEDEC_MFR(info)        ((info)->id[0])
->>
->> +struct read_id_proto {
->> +       enum spi_protocol       proto;  /* SPI protocol to read the JEDEC ID */
->> +       u16                     mode;   /* SPI controller required caps */
->> +};
->> +
->>  static const struct flash_info *spi_nor_match_id(const char *name);
->>
->>  /*
->> @@ -701,11 +707,15 @@ static const struct flash_info spi_nor_ids[] = {
->>         { },
->>  };
->>
->> -static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->> +static const struct flash_info *spi_nor_read_id(struct spi_nor *nor, u16 mode)
->>  {
->> -       int                     tmp;
->> +       int                     i, tmp;
->>         u8                      id[SPI_NOR_MAX_ID_LEN];
->>         const struct flash_info *info;
->> +       static const struct read_id_proto proto[] = {
->> +               { SPI_PROTO_4_4_4, SPI_RX_QUAD | SPI_TX_QUAD },
->> +               { SPI_PROTO_2_2_2, SPI_RX_DUAL | SPI_TX_DUAL }
->> +       };
->>
->>         tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
->>         if (tmp < 0) {
->> @@ -713,6 +723,35 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->>                 return ERR_PTR(tmp);
->>         }
->>
->> +       /* Special case for Micron/Macronix qspi nor. */
->> +       for (i = 0; i < ARRAY_SIZE(proto); ++i) {
->> +               if (!((id[0] == 0xff && id[1] == 0xff && id[2] == 0xff) ||
->> +                     (id[0] == 0x00 && id[1] == 0x00 && id[2] == 0x00)))
->> +                       break;
->> +
->> +               /* Check whether the SPI controller supports this protocol. */
->> +               if ((mode & proto[i].mode) != proto[i].mode)
->> +                       continue;
->> +
->> +               nor->erase_proto = proto[i].proto;
->> +               nor->read_proto = proto[i].proto;
->> +               nor->write_proto = proto[i].proto;
->> +               nor->reg_proto = proto[i].proto;
->> +
->> +               /*
->> +                * Multiple I/O Read ID only returns the Manufacturer ID
->> +                * (1 byte) and the Device ID (2 bytes). So we reset the
->> +                * remaining bytes.
->> +                */
->> +               memset(id, 0, sizeof(id));
->> +               tmp = nor->read_reg(nor, SPINOR_OP_MIO_RDID, id, 3);
->> +               if (tmp < 0) {
->> +                       dev_dbg(nor->dev,
->> +                               " error %d reading JEDEC ID (MULTI IO)\n", tmp);
->> +                       return ERR_PTR(tmp);
->> +               }
->> +       }
->> +
->>         for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
->>                 info = &spi_nor_ids[tmp];
->>                 if (info->id_len) {
-[...]
-> 
-> 
-> thanks!
-> 
-
-Best Regards,
-
-Cyrille
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
