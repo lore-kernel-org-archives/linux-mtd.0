@@ -1,16 +1,23 @@
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zc7Y8-0008Ik-6q
+ for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 07:54:41 +0000
+Date: Wed, 16 Sep 2015 09:54:18 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi@googlegroups.com, Hans de Goede <hdegoede@redhat.com>,
- linux-arm-kernel@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 2/2] mtd: sunxi: nand: refactor ->read_page()/->write_page()
- code
-Date: Wed, 16 Sep 2015 09:46:37 +0200
-Message-Id: <1442389597-30698-3-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1442389597-30698-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1442389597-30698-1-git-send-email-boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-mtd@lists.infradead.org, Andrea Scian
+ <rnd4@dave-tech.it>, Richard Weinberger <richard@nod.at>
+Subject: Re: [RESEND PATCH v3 1/5] mtd: nand: add nand_check_erased helper
+ functions
+Message-ID: <20150916095418.14af0cda@bbrezillon>
+In-Reply-To: <1441296222-14989-2-git-send-email-boris.brezillon@free-electrons.com>
+References: <1441296222-14989-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1441296222-14989-2-git-send-email-boris.brezillon@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,511 +27,186 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Most of the logic to read/write pages with the HW ECC engine enabled
-is common to the HW_ECC and NAND_ECC_HW_SYNDROME scheme.
-Refactor the code to avoid code duplication.
+Hi Brian,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/sunxi_nand.c | 404 ++++++++++++++++++++++--------------------
- 1 file changed, 212 insertions(+), 192 deletions(-)
+Unless you have objections to the current version, could you consider
+taking this patch in 4.4.
+I have a patch to support fixing bitflips in erased pages for the
+sunxi NAND driver, but it depends on this one.
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index dc44435..640b96c 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -159,6 +159,13 @@
- /* NFC_USER_DATA helper macros */
- #define NFC_BUF_TO_USER_DATA(buf)	((buf)[0] | ((buf)[1] << 8) | \
- 					((buf)[2] << 16) | ((buf)[3] << 24))
-+#define NFC_USER_DATA_TO_BUF(buf, val)	\
-+	{				\
-+		(buf)[0] = val;		\
-+		(buf)[1] = val >> 8;	\
-+		(buf)[2] = val >> 16;	\
-+		(buf)[3] = val >> 24;	\
-+	}
- 
- #define NFC_DEFAULT_TIMEOUT_MS	1000
- 
-@@ -543,153 +550,228 @@ static void sunxi_nfc_cmd_ctrl(struct mtd_info *mtd, int dat,
- 	sunxi_nfc_wait_int(nfc, NFC_CMD_INT_FLAG, 0);
- }
- 
--static int sunxi_nfc_hw_ecc_read_page(struct mtd_info *mtd,
--				      struct nand_chip *chip, uint8_t *buf,
--				      int oob_required, int page)
-+static void sunxi_nfc_hw_ecc_enable(struct mtd_info *mtd)
- {
--	struct sunxi_nfc *nfc = to_sunxi_nfc(chip->controller);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	struct nand_ecclayout *layout = ecc->layout;
--	struct sunxi_nand_hw_ecc *data = ecc->priv;
--	unsigned int max_bitflips = 0;
--	int offset;
--	int ret;
--	u32 tmp;
--	int i;
--	int cnt;
-+	struct nand_chip *nand = mtd->priv;
-+	struct sunxi_nfc *nfc = to_sunxi_nfc(nand->controller);
-+	struct sunxi_nand_hw_ecc *data = nand->ecc.priv;
-+	u32 ecc_ctl;
- 
--	tmp = readl(nfc->regs + NFC_REG_ECC_CTL);
--	tmp &= ~(NFC_ECC_MODE_MSK | NFC_ECC_PIPELINE | NFC_ECC_BLOCK_SIZE_MSK);
--	tmp |= NFC_ECC_EN | NFC_ECC_MODE(data->mode) | NFC_ECC_EXCEPTION;
-+	ecc_ctl = readl(nfc->regs + NFC_REG_ECC_CTL);
-+	ecc_ctl &= ~(NFC_ECC_MODE_MSK | NFC_ECC_PIPELINE |
-+		     NFC_ECC_BLOCK_SIZE_MSK);
-+	ecc_ctl |= NFC_ECC_EN | NFC_ECC_MODE(data->mode) | NFC_ECC_EXCEPTION;
- 
--	writel(tmp, nfc->regs + NFC_REG_ECC_CTL);
-+	writel(ecc_ctl, nfc->regs + NFC_REG_ECC_CTL);
-+}
- 
--	for (i = 0; i < ecc->steps; i++) {
--		if (i)
--			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, i * ecc->size, -1);
-+static void sunxi_nfc_hw_ecc_disable(struct mtd_info *mtd)
-+{
-+	struct nand_chip *nand = mtd->priv;
-+	struct sunxi_nfc *nfc = to_sunxi_nfc(nand->controller);
- 
--		offset = mtd->writesize + layout->eccpos[i * ecc->bytes] - 4;
-+	writel(readl(nfc->regs + NFC_REG_ECC_CTL) & ~NFC_ECC_EN,
-+	       nfc->regs + NFC_REG_ECC_CTL);
-+}
- 
--		chip->read_buf(mtd, NULL, ecc->size);
-+static int sunxi_nfc_hw_ecc_read_chunk(struct mtd_info *mtd,
-+				       u8 *data, int data_off,
-+				       u8 *oob, int oob_off,
-+				       int *cur_off,
-+				       unsigned int *max_bitflips)
-+{
-+	struct nand_chip *nand = mtd->priv;
-+	struct sunxi_nfc *nfc = to_sunxi_nfc(nand->controller);
-+	struct nand_ecc_ctrl *ecc = &nand->ecc;
-+	u32 status;
-+	int ret;
- 
--		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, offset, -1);
-+	if (*cur_off != data_off)
-+		nand->cmdfunc(mtd, NAND_CMD_RNDOUT, data_off, -1);
- 
--		ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
--		if (ret)
--			return ret;
-+	sunxi_nfc_read_buf(mtd, data, ecc->size);
- 
--		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ECC_OP;
--		writel(tmp, nfc->regs + NFC_REG_CMD);
-+	if (data_off + ecc->bytes != oob_off)
-+		nand->cmdfunc(mtd, NAND_CMD_RNDOUT, oob_off, -1);
- 
--		ret = sunxi_nfc_wait_int(nfc, NFC_CMD_INT_FLAG, 0);
--		if (ret)
--			return ret;
-+	ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
-+	if (ret)
-+		return ret;
- 
--		memcpy_fromio(buf + (i * ecc->size),
--			      nfc->regs + NFC_RAM0_BASE, ecc->size);
-+	writel(NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ECC_OP,
-+	       nfc->regs + NFC_REG_CMD);
- 
--		if (readl(nfc->regs + NFC_REG_ECC_ST) & NFC_ECC_ERR(0)) {
--			mtd->ecc_stats.failed++;
--		} else {
--			tmp = readl(nfc->regs + NFC_REG_ECC_ERR_CNT(0));
--			mtd->ecc_stats.corrected += NFC_ECC_ERR_CNT(0, tmp);
--			max_bitflips = max_t(unsigned int, max_bitflips, tmp);
--		}
-+	ret = sunxi_nfc_wait_int(nfc, NFC_CMD_INT_FLAG, 0);
-+	if (ret)
-+		return ret;
- 
--		if (oob_required) {
--			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, offset, -1);
-+	status = readl(nfc->regs + NFC_REG_ECC_ST);
-+	ret = NFC_ECC_ERR_CNT(0, readl(nfc->regs + NFC_REG_ECC_ERR_CNT(0)));
- 
--			ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
--			if (ret)
--				return ret;
-+	memcpy_fromio(data, nfc->regs + NFC_RAM0_BASE, ecc->size);
- 
--			offset -= mtd->writesize;
--			chip->read_buf(mtd, chip->oob_poi + offset,
--				      ecc->bytes + 4);
--		}
-+	nand->cmdfunc(mtd, NAND_CMD_RNDOUT, oob_off, -1);
-+	sunxi_nfc_read_buf(mtd, oob, ecc->bytes + 4);
-+
-+	if (status & NFC_ECC_ERR(0)) {
-+		ret = -EIO;
-+	} else {
-+		/*
-+		 * The engine protects 4 bytes OOB data per chunk.
-+		 * Retrieve the corrected OOB bytes.
-+		 */
-+		NFC_USER_DATA_TO_BUF(oob,
-+				     readl(nfc->regs + NFC_REG_USER_DATA(0)));
- 	}
- 
--	if (oob_required) {
--		cnt = ecc->layout->oobfree[ecc->steps].length;
--		if (cnt > 0) {
--			offset = mtd->writesize +
--				 ecc->layout->oobfree[ecc->steps].offset;
--			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, offset, -1);
--			offset -= mtd->writesize;
--			chip->read_buf(mtd, chip->oob_poi + offset, cnt);
--		}
-+	if (ret < 0) {
-+		mtd->ecc_stats.failed++;
-+	} else {
-+		mtd->ecc_stats.corrected += ret;
-+		*max_bitflips = max_t(unsigned int, *max_bitflips, ret);
- 	}
- 
--	tmp = readl(nfc->regs + NFC_REG_ECC_CTL);
--	tmp &= ~NFC_ECC_EN;
-+	*cur_off = oob_off + ecc->bytes + 4;
- 
--	writel(tmp, nfc->regs + NFC_REG_ECC_CTL);
-+	return 0;
-+}
- 
--	return max_bitflips;
-+static void sunxi_nfc_hw_ecc_read_extra_oob(struct mtd_info *mtd,
-+					    u8 *oob, int *cur_off)
-+{
-+	struct nand_chip *nand = mtd->priv;
-+	struct nand_ecc_ctrl *ecc = &nand->ecc;
-+	int offset = ((ecc->bytes + 4) * ecc->steps);
-+	int len = mtd->oobsize - offset;
-+
-+	if (len <= 0)
-+		return;
-+
-+	if (*cur_off != offset)
-+		nand->cmdfunc(mtd, NAND_CMD_RNDOUT,
-+			      offset + mtd->writesize, -1);
-+
-+	sunxi_nfc_read_buf(mtd, oob + offset, len);
-+
-+	*cur_off = mtd->oobsize + mtd->writesize;
- }
- 
--static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
--				       struct nand_chip *chip,
--				       const uint8_t *buf, int oob_required)
-+static int sunxi_nfc_hw_ecc_write_chunk(struct mtd_info *mtd,
-+					const u8 *data, int data_off,
-+					const u8 *oob, int oob_off,
-+					int *cur_off)
- {
--	struct sunxi_nfc *nfc = to_sunxi_nfc(chip->controller);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	struct nand_ecclayout *layout = ecc->layout;
--	struct sunxi_nand_hw_ecc *data = ecc->priv;
--	int offset;
-+	struct nand_chip *nand = mtd->priv;
-+	struct sunxi_nfc *nfc = to_sunxi_nfc(nand->controller);
-+	struct nand_ecc_ctrl *ecc = &nand->ecc;
- 	int ret;
--	u32 tmp;
--	int i;
--	int cnt;
- 
--	tmp = readl(nfc->regs + NFC_REG_ECC_CTL);
--	tmp &= ~(NFC_ECC_MODE_MSK | NFC_ECC_PIPELINE | NFC_ECC_BLOCK_SIZE_MSK);
--	tmp |= NFC_ECC_EN | NFC_ECC_MODE(data->mode) | NFC_ECC_EXCEPTION;
-+	if (data_off != *cur_off)
-+		nand->cmdfunc(mtd, NAND_CMD_RNDIN, data_off, -1);
- 
--	writel(tmp, nfc->regs + NFC_REG_ECC_CTL);
-+	sunxi_nfc_write_buf(mtd, data, ecc->size);
- 
--	for (i = 0; i < ecc->steps; i++) {
--		if (i)
--			chip->cmdfunc(mtd, NAND_CMD_RNDIN, i * ecc->size, -1);
-+	/* Fill OOB data in */
-+	writel(NFC_BUF_TO_USER_DATA(oob), nfc->regs + NFC_REG_USER_DATA(0));
- 
--		chip->write_buf(mtd, buf + (i * ecc->size), ecc->size);
-+	if (data_off + ecc->bytes != oob_off)
-+		nand->cmdfunc(mtd, NAND_CMD_RNDIN, oob_off, -1);
- 
--		offset = layout->eccpos[i * ecc->bytes] - 4 + mtd->writesize;
-+	ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
-+	if (ret)
-+		return ret;
- 
--		/* Fill OOB data in */
--		writel(NFC_BUF_TO_USER_DATA(chip->oob_poi +
--					    layout->oobfree[i].offset),
--		       nfc->regs + NFC_REG_USER_DATA(0));
-+	writel(NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD |
-+	       NFC_ACCESS_DIR | NFC_ECC_OP,
-+	       nfc->regs + NFC_REG_CMD);
- 
--		chip->cmdfunc(mtd, NAND_CMD_RNDIN, offset, -1);
-+	ret = sunxi_nfc_wait_int(nfc, NFC_CMD_INT_FLAG, 0);
-+	if (ret)
-+		return ret;
- 
--		ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
--		if (ret)
--			return ret;
-+	*cur_off = oob_off + ecc->bytes + 4;
- 
--		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ACCESS_DIR |
--		      NFC_ECC_OP;
--		writel(tmp, nfc->regs + NFC_REG_CMD);
--		ret = sunxi_nfc_wait_int(nfc, NFC_CMD_INT_FLAG, 0);
-+	return 0;
-+}
-+
-+static void sunxi_nfc_hw_ecc_write_extra_oob(struct mtd_info *mtd,
-+					     u8 *oob, int *cur_off)
-+{
-+	struct nand_chip *nand = mtd->priv;
-+	struct nand_ecc_ctrl *ecc = &nand->ecc;
-+	int offset = ((ecc->bytes + 4) * ecc->steps);
-+	int len = mtd->oobsize - offset;
-+
-+	if (len <= 0)
-+		return;
-+
-+	if (*cur_off != offset)
-+		nand->cmdfunc(mtd, NAND_CMD_RNDIN,
-+			      offset + mtd->writesize, -1);
-+
-+	sunxi_nfc_write_buf(mtd, oob + offset, len);
-+
-+	*cur_off = mtd->oobsize + mtd->writesize;
-+}
-+
-+static int sunxi_nfc_hw_ecc_read_page(struct mtd_info *mtd,
-+				      struct nand_chip *chip, uint8_t *buf,
-+				      int oob_required, int page)
-+{
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+	unsigned int max_bitflips = 0;
-+	int ret, i, cur_off = 0;
-+
-+	sunxi_nfc_hw_ecc_enable(mtd);
-+
-+	for (i = 0; i < ecc->steps; i++) {
-+		int data_off = i * ecc->size;
-+		int oob_off = i * (ecc->bytes + 4);
-+		u8 *data = buf + data_off;
-+		u8 *oob = chip->oob_poi + oob_off;
-+
-+		ret = sunxi_nfc_hw_ecc_read_chunk(mtd, data, data_off, oob,
-+						  oob_off + mtd->writesize,
-+						  &cur_off, &max_bitflips);
- 		if (ret)
- 			return ret;
- 	}
- 
--	if (oob_required) {
--		cnt = ecc->layout->oobfree[i].length;
--		if (cnt > 0) {
--			offset = mtd->writesize +
--				 ecc->layout->oobfree[i].offset;
--			chip->cmdfunc(mtd, NAND_CMD_RNDIN, offset, -1);
--			offset -= mtd->writesize;
--			chip->write_buf(mtd, chip->oob_poi + offset, cnt);
--		}
-+	if (oob_required)
-+		sunxi_nfc_hw_ecc_read_extra_oob(mtd, chip->oob_poi,
-+						&cur_off);
-+
-+	sunxi_nfc_hw_ecc_disable(mtd);
-+
-+	return max_bitflips;
-+}
-+
-+static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
-+				       struct nand_chip *chip,
-+				       const uint8_t *buf, int oob_required)
-+{
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+	int ret, i, cur_off = 0;
-+
-+	sunxi_nfc_hw_ecc_enable(mtd);
-+
-+	for (i = 0; i < ecc->steps; i++) {
-+		int data_off = i * ecc->size;
-+		int oob_off = i * (ecc->bytes + 4);
-+		const u8 *data = buf + data_off;
-+		const u8 *oob = chip->oob_poi + oob_off;
-+
-+		ret = sunxi_nfc_hw_ecc_write_chunk(mtd, data, data_off, oob,
-+						   oob_off + mtd->writesize,
-+						   &cur_off);
-+		if (ret)
-+			return ret;
- 	}
- 
--	tmp = readl(nfc->regs + NFC_REG_ECC_CTL);
--	tmp &= ~NFC_ECC_EN;
-+	if (oob_required)
-+		sunxi_nfc_hw_ecc_write_extra_oob(mtd, chip->oob_poi, &cur_off);
- 
--	writel(tmp, nfc->regs + NFC_REG_ECC_CTL);
-+	sunxi_nfc_hw_ecc_disable(mtd);
- 
- 	return 0;
- }
-@@ -699,64 +781,29 @@ static int sunxi_nfc_hw_syndrome_ecc_read_page(struct mtd_info *mtd,
- 					       uint8_t *buf, int oob_required,
- 					       int page)
- {
--	struct sunxi_nfc *nfc = to_sunxi_nfc(chip->controller);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	struct sunxi_nand_hw_ecc *data = ecc->priv;
- 	unsigned int max_bitflips = 0;
--	uint8_t *oob = chip->oob_poi;
--	int offset = 0;
--	int ret;
--	int cnt;
--	u32 tmp;
--	int i;
--
--	tmp = readl(nfc->regs + NFC_REG_ECC_CTL);
--	tmp &= ~(NFC_ECC_MODE_MSK | NFC_ECC_PIPELINE | NFC_ECC_BLOCK_SIZE_MSK);
--	tmp |= NFC_ECC_EN | NFC_ECC_MODE(data->mode) | NFC_ECC_EXCEPTION;
-+	int ret, i, cur_off = 0;
- 
--	writel(tmp, nfc->regs + NFC_REG_ECC_CTL);
-+	sunxi_nfc_hw_ecc_enable(mtd);
- 
- 	for (i = 0; i < ecc->steps; i++) {
--		chip->read_buf(mtd, NULL, ecc->size);
--
--		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ECC_OP;
--		writel(tmp, nfc->regs + NFC_REG_CMD);
--
--		ret = sunxi_nfc_wait_int(nfc, NFC_CMD_INT_FLAG, 0);
-+		int data_off = i * (ecc->size + ecc->bytes + 4);
-+		int oob_off = data_off + ecc->size;
-+		u8 *data = buf + (i * ecc->size);
-+		u8 *oob = chip->oob_poi + (i * (ecc->bytes + 4));
-+
-+		ret = sunxi_nfc_hw_ecc_read_chunk(mtd, data, data_off, oob,
-+						  oob_off, &cur_off,
-+						  &max_bitflips);
- 		if (ret)
- 			return ret;
--
--		memcpy_fromio(buf, nfc->regs + NFC_RAM0_BASE, ecc->size);
--		buf += ecc->size;
--		offset += ecc->size;
--
--		if (readl(nfc->regs + NFC_REG_ECC_ST) & NFC_ECC_ERR(0)) {
--			mtd->ecc_stats.failed++;
--		} else {
--			tmp = readl(nfc->regs + NFC_REG_ECC_ERR_CNT(0));
--			mtd->ecc_stats.corrected += NFC_ECC_ERR_CNT(0, tmp);
--			max_bitflips = max_t(unsigned int, max_bitflips, tmp);
--		}
--
--		if (oob_required) {
--			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, offset, -1);
--			chip->read_buf(mtd, oob, ecc->bytes + ecc->prepad);
--			oob += ecc->bytes + ecc->prepad;
--		}
--
--		offset += ecc->bytes + ecc->prepad;
- 	}
- 
--	if (oob_required) {
--		cnt = mtd->oobsize - (oob - chip->oob_poi);
--		if (cnt > 0) {
--			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, offset, -1);
--			chip->read_buf(mtd, oob, cnt);
--		}
--	}
-+	if (oob_required)
-+		sunxi_nfc_hw_ecc_read_extra_oob(mtd, chip->oob_poi, &cur_off);
- 
--	writel(readl(nfc->regs + NFC_REG_ECC_CTL) & ~NFC_ECC_EN,
--	       nfc->regs + NFC_REG_ECC_CTL);
-+	sunxi_nfc_hw_ecc_disable(mtd);
- 
- 	return max_bitflips;
- }
-@@ -766,54 +813,27 @@ static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
- 						const uint8_t *buf,
- 						int oob_required)
- {
--	struct sunxi_nfc *nfc = to_sunxi_nfc(chip->controller);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	struct sunxi_nand_hw_ecc *data = ecc->priv;
--	uint8_t *oob = chip->oob_poi;
--	int offset = 0;
--	int ret;
--	int cnt;
--	u32 tmp;
--	int i;
--
--	tmp = readl(nfc->regs + NFC_REG_ECC_CTL);
--	tmp &= ~(NFC_ECC_MODE_MSK | NFC_ECC_PIPELINE | NFC_ECC_BLOCK_SIZE_MSK);
--	tmp |= NFC_ECC_EN | NFC_ECC_MODE(data->mode) | NFC_ECC_EXCEPTION;
-+	int ret, i, cur_off = 0;
- 
--	writel(tmp, nfc->regs + NFC_REG_ECC_CTL);
-+	sunxi_nfc_hw_ecc_enable(mtd);
- 
- 	for (i = 0; i < ecc->steps; i++) {
--		chip->write_buf(mtd, buf + (i * ecc->size), ecc->size);
--		offset += ecc->size;
-+		int data_off = i * (ecc->size + ecc->bytes + 4);
-+		int oob_off = data_off + ecc->size;
-+		const u8 *data = buf + (i * ecc->size);
-+		const u8 *oob = chip->oob_poi + (i * (ecc->bytes + 4));
- 
--		/* Fill OOB data in */
--		writel(NFC_BUF_TO_USER_DATA(oob),
--		       nfc->regs + NFC_REG_USER_DATA(0));
--
--		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ACCESS_DIR |
--		      NFC_ECC_OP;
--		writel(tmp, nfc->regs + NFC_REG_CMD);
--
--		ret = sunxi_nfc_wait_int(nfc, NFC_CMD_INT_FLAG, 0);
-+		ret = sunxi_nfc_hw_ecc_write_chunk(mtd, data, data_off,
-+						   oob, oob_off, &cur_off);
- 		if (ret)
- 			return ret;
--
--		offset += ecc->bytes + ecc->prepad;
--		oob += ecc->bytes + ecc->prepad;
--	}
--
--	if (oob_required) {
--		cnt = mtd->oobsize - (oob - chip->oob_poi);
--		if (cnt > 0) {
--			chip->cmdfunc(mtd, NAND_CMD_RNDIN, offset, -1);
--			chip->write_buf(mtd, oob, cnt);
--		}
- 	}
- 
--	tmp = readl(nfc->regs + NFC_REG_ECC_CTL);
--	tmp &= ~NFC_ECC_EN;
-+	if (oob_required)
-+		sunxi_nfc_hw_ecc_write_extra_oob(mtd, chip->oob_poi, &cur_off);
- 
--	writel(tmp, nfc->regs + NFC_REG_ECC_CTL);
-+	sunxi_nfc_hw_ecc_disable(mtd);
- 
- 	return 0;
- }
+Thanks,
+
+Boris
+
+On Thu,  3 Sep 2015 18:03:38 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+
+> Add two helper functions to help NAND controller drivers test whether a
+> specific NAND region is erased or not.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 128 +++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/nand.h     |   5 ++
+>  2 files changed, 133 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index ceb68ca..a2687ea 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1101,6 +1101,134 @@ out:
+>  EXPORT_SYMBOL(nand_lock);
+>  
+>  /**
+> + * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
+> + * @buf: buffer to test
+> + * @len: buffer length
+> + * @bitflips_threshold: maximum number of bitflips
+> + *
+> + * Check if a buffer contains only 0xff, which means the underlying region
+> + * has been erased and is ready to be programmed.
+> + * The bitflips_threshold specify the maximum number of bitflips before
+> + * considering the region is not erased.
+> + * Note: The logic of this function has been extracted from the memweight
+> + * implementation, except that nand_check_erased_buf function exit before
+> + * testing the whole buffer if the number of bitflips exceed the
+> + * bitflips_threshold value.
+> + *
+> + * Returns a positive number of bitflips less than or equal to
+> + * bitflips_threshold, or -ERROR_CODE for bitflips in excess of the
+> + * threshold.
+> + */
+> +static int nand_check_erased_buf(void *buf, int len, int bitflips_threshold)
+> +{
+> +	const unsigned char *bitmap = buf;
+> +	int bitflips = 0;
+> +	int weight;
+> +
+> +	for (; len && ((uintptr_t)bitmap) % sizeof(long);
+> +	     len--, bitmap++) {
+> +		weight = hweight8(*bitmap);
+> +		bitflips += BITS_PER_BYTE - weight;
+> +		if (unlikely(bitflips > bitflips_threshold))
+> +			return -EBADMSG;
+> +	}
+> +
+> +	for (; len >= sizeof(long);
+> +	     len -= sizeof(long), bitmap += sizeof(long)) {
+> +		weight = hweight_long(*((unsigned long *)bitmap));
+> +		bitflips += BITS_PER_LONG - weight;
+> +		if (unlikely(bitflips > bitflips_threshold))
+> +			return -EBADMSG;
+> +	}
+> +
+> +	for (; len > 0; len--, bitmap++) {
+> +		weight = hweight8(*bitmap);
+> +		bitflips += BITS_PER_BYTE - weight;
+> +		if (unlikely(bitflips > bitflips_threshold))
+> +			return -EBADMSG;
+> +	}
+> +
+> +	return bitflips;
+> +}
+> +
+> +/**
+> + * nand_check_erased_ecc_chunk - check if an ECC chunk contains (almost) only
+> + *				 0xff data
+> + * @data: data buffer to test
+> + * @datalen: data length
+> + * @ecc: ECC buffer
+> + * @ecclen: ECC length
+> + * @extraoob: extra OOB buffer
+> + * @extraooblen: extra OOB length
+> + * @bitflips_threshold: maximum number of bitflips
+> + *
+> + * Check if a data buffer and its associated ECC and OOB data contains only
+> + * 0xff pattern, which means the underlying region has been erased and is
+> + * ready to be programmed.
+> + * The bitflips_threshold specify the maximum number of bitflips before
+> + * considering the region as not erased.
+> + *
+> + * Note:
+> + * 1/ ECC algorithms are working on pre-defined block sizes which are usually
+> + *    different from the NAND page size. When fixing bitflips, ECC engines will
+> + *    report the number of errors per chunk, and the NAND core infrastructure
+> + *    expect you to return the maximum number of bitflips for the whole page.
+> + *    This is why you should always use this function on a single chunk and
+> + *    not on the whole page. After checking each chunk you should update your
+> + *    max_bitflips value accordingly.
+> + * 2/ When checking for bitflips in erased pages you should not only check
+> + *    the payload data but also their associated ECC data, because a user might
+> + *    have programmed almost all bits to 1 but a few. In this case, we
+> + *    shouldn't consider the chunk as erased, and checking ECC bytes prevent
+> + *    this case.
+> + * 3/ The extraoob argument is optional, and should be used if some of your OOB
+> + *    data are protected by the ECC engine.
+> + *    It could also be used if you support subpages and want to attach some
+> + *    extra OOB data to an ECC chunk.
+> + *
+> + * Returns a positive number of bitflips less than or equal to
+> + * bitflips_threshold, or -ERROR_CODE for bitflips in excess of the
+> + * threshold. In case of success, the passed buffers are filled with 0xff.
+> + */
+> +int nand_check_erased_ecc_chunk(void *data, int datalen,
+> +				void *ecc, int ecclen,
+> +				void *extraoob, int extraooblen,
+> +				int bitflips_threshold)
+> +{
+> +	int data_bitflips = 0, ecc_bitflips = 0, extraoob_bitflips = 0;
+> +
+> +	data_bitflips = nand_check_erased_buf(data, datalen,
+> +					      bitflips_threshold);
+> +	if (data_bitflips < 0)
+> +		return data_bitflips;
+> +
+> +	bitflips_threshold -= data_bitflips;
+> +
+> +	ecc_bitflips = nand_check_erased_buf(ecc, ecclen, bitflips_threshold);
+> +	if (ecc_bitflips < 0)
+> +		return ecc_bitflips;
+> +
+> +	bitflips_threshold -= ecc_bitflips;
+> +
+> +	extraoob_bitflips = nand_check_erased_buf(extraoob, extraooblen,
+> +						  bitflips_threshold);
+> +	if (extraoob_bitflips < 0)
+> +		return extraoob_bitflips;
+> +
+> +	if (data_bitflips)
+> +		memset(data, 0xff, datalen);
+> +
+> +	if (ecc_bitflips)
+> +		memset(ecc, 0xff, ecclen);
+> +
+> +	if (extraoob_bitflips)
+> +		memset(extraoob, 0xff, extraooblen);
+> +
+> +	return data_bitflips + ecc_bitflips + extraoob_bitflips;
+> +}
+> +EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
+> +
+> +/**
+>   * nand_read_page_raw - [INTERN] read raw page data without ecc
+>   * @mtd: mtd info structure
+>   * @chip: nand chip info structure
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 272f429..77affe9 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -1030,4 +1030,9 @@ struct nand_sdr_timings {
+>  
+>  /* get timing characteristics from ONFI timing mode. */
+>  const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
+> +
+> +int nand_check_erased_ecc_chunk(void *data, int datalen,
+> +				void *ecc, int ecclen,
+> +				void *extraoob, int extraooblen,
+> +				int threshold);
+>  #endif /* __LINUX_MTD_NAND_H */
+
+
+
 -- 
-1.9.1
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
