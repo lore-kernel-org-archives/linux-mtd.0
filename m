@@ -1,19 +1,22 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcS1b-0006qX-Th
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2015 05:46:28 +0000
-Message-ID: <55FA5220.3070402@cn.fujitsu.com>
-Date: Thu, 17 Sep 2015 13:39:44 +0800
+ id 1ZcSmi-0001xV-Dm
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2015 06:35:09 +0000
+Message-ID: <55FA5D8A.9030108@cn.fujitsu.com>
+Date: Thu, 17 Sep 2015 14:28:26 +0800
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <dedekind1@gmail.com>,
- <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>
-Subject: Re: [RFC PATCH 00/27] Introduce ubifs_dump in ubifs-utils
-References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <55F96F61.8040201@nod.at>
-In-Reply-To: <55F96F61.8040201@nod.at>
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+To: Jan Kara <jack@suse.cz>
+CC: <viro@ZenIV.linux.org.uk>, <dedekind1@gmail.com>,
+ <richard.weinberger@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v3 11/39] fs: quota: replace opened calling of ->sync_fs
+ with sync_filesystem
+References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1442307754-13233-12-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <20150916101402.GE13325@quack.suse.cz>
+In-Reply-To: <20150916101402.GE13325@quack.suse.cz>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,60 +27,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/16/2015 09:32 PM, Richard Weinberger wrote:
-> Yang,
->
-> Am 19.08.2015 um 10:39 schrieb Dongsheng Yang:
->> Hi Atem, Richard and Brian,
->> 	This patchset introduce a userspace tool named ubifs_dump
->> to dump data from a ubi media.
->> 	It will dump the areas in ubifs, such as super block,
->> master, log, lpt and main.
->> 	That's helpful for us to see what exactly written in
->> media.
->> 	the [1/patch] is a RESEND patch, it restructures the mtd-utils.
->> Please Brian help to take a look at it. thanx a lot. :)
+On 09/16/2015 06:14 PM, Jan Kara wrote:
+> On Tue 15-09-15 17:02:06, Dongsheng Yang wrote:
+>> There are only two places in whole kernel to call ->sync_fs directly. It
+>> will sync fs even in read-only mode. It's not a good idea and some filesystem
+>> would warn out if you are syncing in read-only mode. But sync_filesystem()
+>> does filter this case out. Let's call sync_filesystem() here instead.
 >>
->> NOTE:
->> 	This patch set depends on a patch I sent out [ubifs: correct the size of nnode in memset]
->> But you can get a full code at:
->> https://github.com/yangdongsheng/mtd-utils.git ubifs_dump_v1
+>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 >
-> I'm looking/testing right now your patches.
-> Your tools is useful. I like the idea, maybe the can change the name to
-> "ubifs_dump_meta"? Do you have plans to extend it?
-Hi Richard,
+> So I'd prefer ubifs used hidden system inodes for quota files, set
+> DQUOT_QUOTA_SYS_FILE flag and so this code calling sync_fs() could be
+> completely avoided.
 
-ubifs_dump_meta? Hmmm, but I also dump data nodes in it. Do you have
-some reason to rename it? Extend it? Of course, I would like to make it
-better and better. But the first step is making it in mtd-utils.
+Hmmm, I think it's a good idea to make quota files SYS_FILEs. But how
+about quota-tools? E.g, if quotacheck do some modification
+on quota files, we would not read them without a sync_fs().
+
+Could you help explain how quota works in this case?
 >
-> I'm asking because I've started working on an ubifs.fsck/debugfs tool based on
-> some scripts and hacky other tools I wrote some time ago.
-> So, let's coordinate and avoid double work.
+> I don't like calling sync_filesystem() from quota code. Mainly, it does
+> much more work than ->sync_fs() for most filesystems (it flushes all files
+> to disk). Just adding a check for read-only filesystem would look better to
+> me.
 
-Oh, sorry for sending my patch without any asking. I thought there is
-nobody caring about it. And what's more, I am planning to do a fsck.ubifs
-actually. Haha, so I think we can cooperate on it. Could you share more
-about your work so far?
->
-> It's first feature is being able to extract all files from an UBIFS.
-> Scanning and identifying all UBIFS nodes, as your tool does, is a subset
-> of the needed functionality. As you sent patches first I'll happily rebase
-> my tool to your patches.
-
-Thanx a lot. :)
-> One of the major differences is that it will work without the UBI/UBIFS kernel
-> modules. You can use /dev/ubiXY or a plain nanddump.
-> I hope I can release the first version soon.
-
-Yea, sounds very interesting, although I am not sure how it can be
-implemented. Looking forward your release.
+Okey, I will add a read-only check here.
 
 Thanx
 Yang
 >
-> Thanks,
-> //richard
-> .
->
+> 									Honza
+>> ---
+>>   fs/quota/dquot.c | 8 +++-----
+>>   1 file changed, 3 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+>> index 140397a..0bda7fa 100644
+>> --- a/fs/quota/dquot.c
+>> +++ b/fs/quota/dquot.c
+>> @@ -668,8 +668,7 @@ int dquot_quota_sync(struct super_block *sb, int type)
+>>   	/* This is not very clever (and fast) but currently I don't know about
+>>   	 * any other simple way of getting quota data to disk and we must get
+>>   	 * them there for userspace to be visible... */
+>> -	if (sb->s_op->sync_fs)
+>> -		sb->s_op->sync_fs(sb, 1);
+>> +	sync_filesystem(sb);
+>>   	sync_blockdev(sb->s_bdev);
+>>
+>>   	/*
+>> @@ -2043,7 +2042,7 @@ int dquot_disable(struct super_block *sb, int type, unsigned int flags)
+>>   	/*
+>>   	 * Skip everything if there's nothing to do. We have to do this because
+>>   	 * sometimes we are called when fill_super() failed and calling
+>> -	 * sync_fs() in such cases does no good.
+>> +	 * sync_filesystem() in such cases does no good.
+>>   	 */
+>>   	if (!sb_any_quota_loaded(sb)) {
+>>   		mutex_unlock(&dqopt->dqonoff_mutex);
+>> @@ -2110,8 +2109,7 @@ int dquot_disable(struct super_block *sb, int type, unsigned int flags)
+>>
+>>   	/* Sync the superblock so that buffers with quota data are written to
+>>   	 * disk (and so userspace sees correct data afterwards). */
+>> -	if (sb->s_op->sync_fs)
+>> -		sb->s_op->sync_fs(sb, 1);
+>> +	sync_filesystem(sb);
+>>   	sync_blockdev(sb->s_bdev);
+>>   	/* Now the quota files are just ordinary files and we can set the
+>>   	 * inode flags back. Moreover we discard the pagecache so that
+>> --
+>> 1.8.4.2
+>>
