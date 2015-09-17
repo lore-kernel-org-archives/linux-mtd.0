@@ -1,22 +1,24 @@
-Message-ID: <1442480573.27250.28.camel@mhfsdcap03>
-Subject: Re: [PATCH 1/3] doc: dt: add documentation for Mediatek spi-nor
- controller
-From: bayi.cheng <bayi.cheng@mediatek.com>
-To: David Woodhouse <dwmw2@infradead.org>
-CC: Brian Norris <computersforpeace@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Kumar
- Gala" <galak@codeaurora.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>
-Date: Thu, 17 Sep 2015 17:02:53 +0800
-In-Reply-To: <1442478994-12467-1-git-send-email-bayi.cheng@mediatek.com>
-References: <1442478994-12467-1-git-send-email-bayi.cheng@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from mx2.suse.de ([195.135.220.15])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZcX12-0004zQ-Pt
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2015 11:06:13 +0000
+Date: Thu, 17 Sep 2015 13:05:47 +0200
+From: Jan Kara <jack@suse.cz>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: Jan Kara <jack@suse.cz>, viro@ZenIV.linux.org.uk, dedekind1@gmail.com,
+ richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 11/39] fs: quota: replace opened calling of ->sync_fs
+ with sync_filesystem
+Message-ID: <20150917110547.GB32280@quack.suse.cz>
+References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1442307754-13233-12-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <20150916101402.GE13325@quack.suse.cz>
+ <55FA5D8A.9030108@cn.fujitsu.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55FA5D8A.9030108@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry, Please ignore this mail, and I will publish new one.
-
-
-
-
-On Thu, 2015-09-17 at 16:36 +0800, Bayi Cheng wrote:
-> Add device tree binding documentation for serial flash with
-> Mediatek serial flash controller
+On Thu 17-09-15 14:28:26, Dongsheng Yang wrote:
+> On 09/16/2015 06:14 PM, Jan Kara wrote:
+> >On Tue 15-09-15 17:02:06, Dongsheng Yang wrote:
+> >>There are only two places in whole kernel to call ->sync_fs directly. It
+> >>will sync fs even in read-only mode. It's not a good idea and some filesystem
+> >>would warn out if you are syncing in read-only mode. But sync_filesystem()
+> >>does filter this case out. Let's call sync_filesystem() here instead.
+> >>
+> >>Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> >
+> >So I'd prefer ubifs used hidden system inodes for quota files, set
+> >DQUOT_QUOTA_SYS_FILE flag and so this code calling sync_fs() could be
+> >completely avoided.
 > 
-> Change-Id: Iaecd0bb7ba1b224f1e27bd7063f0b8d7ea30175a
-> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/mtd/mtk_quadspi.txt | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/mtk_quadspi.txt
+> Hmmm, I think it's a good idea to make quota files SYS_FILEs. But how
+> about quota-tools? E.g, if quotacheck do some modification
+> on quota files, we would not read them without a sync_fs().
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk_quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk_quadspi.txt
-> new file mode 100644
-> index 0000000..6153227
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/mtk_quadspi.txt
-> @@ -0,0 +1,18 @@
-> +* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
-> +
-> +Required properties:
-> +- compatible: Should be "mediatek,mt8173-nor";
-> +- reg: Physical base address and length of the controller's register
-> +- clocks: spi source clock amd serial flash controller's clock
-> +- clock-names: "spi", "sf"
-> +  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
-> +
-> +Example:
-> +nor_flash: nor@1100d000 {
-> +	compatible = "mediatek,mt8173-nor";
-> +	reg = <0 0x1100D000 0 0xE0>;
-> +	clocks = <&pericfg CLK_PERI_SPI>,
-> +			 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
-> +	clock-names = "spi", "sf";
-> +};
-> +
+> Could you help explain how quota works in this case?
+
+So tools like quota(1) or setquota(1) work using quotactl so they don't
+need access to quota files. When quota files are system files, quotacheck
+functionality belongs into the fsck - so fsck.ubifs is responsible for
+checking consistency of quota files. How e.g. e2fsck does it is that when
+scanning inodes, it computes usage for each user / group, loads limits
+information from old quota files and then just creates new quota files with
+updated information if there's any difference to the old quota files.
+
+Another advantage of the checking functionality being in fsck is that
+fs-specific fsck can gather usage information much more efficiently (and
+fsck has to do full fs scan anyway) and there's no need to propagate quota
+usage information to userspace using FIQSIZE ioctl() and similar stuff...
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
