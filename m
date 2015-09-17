@@ -1,24 +1,22 @@
-Received: from mail-ob0-f171.google.com ([209.85.214.171])
+Received: from mail-ob0-f180.google.com ([209.85.214.180])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcJm3-0007jB-Br
- for linux-mtd@lists.infradead.org; Wed, 16 Sep 2015 20:57:52 +0000
-Received: by obqa2 with SMTP id a2so159817013obq.3
- for <linux-mtd@lists.infradead.org>; Wed, 16 Sep 2015 13:57:29 -0700 (PDT)
+ id 1ZcN0y-0005QB-Qr
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2015 00:25:29 +0000
+Received: by obbda8 with SMTP id da8so1748719obb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Sep 2015 17:25:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1442433764-80826-6-git-send-email-seth.forshee@canonical.com>
+In-Reply-To: <1442433764-80826-3-git-send-email-seth.forshee@canonical.com>
 References: <1442433764-80826-1-git-send-email-seth.forshee@canonical.com>
- <1442433764-80826-6-git-send-email-seth.forshee@canonical.com>
+ <1442433764-80826-3-git-send-email-seth.forshee@canonical.com>
 From: Andy Lutomirski <luto@amacapital.net>
-Date: Wed, 16 Sep 2015 13:57:10 -0700
-Message-ID: <CALCETrUHUwYYdah-H48NY94xzxf7ws0rtEmegh+v6JZVByUPHQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/7] fs: Treat foreign mounts as nosuid
+Date: Wed, 16 Sep 2015 17:24:47 -0700
+Message-ID: <CALCETrXoAi91JN4VLD2ybPgkD_J26=2_N-fyCCjOPL5Swo7kGA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] userns: Simpilify MNT_NODEV handling.
 To: Seth Forshee <seth.forshee@canonical.com>
 Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
  Alexander Viro <viro@zeniv.linux.org.uk>,
+ Jeff Layton <jlayton@poochiereds.net>, "J. Bruce Fields" <bfields@fieldses.org>,
  Serge Hallyn <serge.hallyn@canonical.com>,
- James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
- Stephen Smalley <sds@tycho.nsa.gov>, Eric Paris <eparis@parisplace.org>,
  Linux FS Devel <linux-fsdevel@vger.kernel.org>,
  LSM List <linux-security-module@vger.kernel.org>,
  SELinux-NSA <selinux@tycho.nsa.gov>,
@@ -36,85 +34,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Wed, Sep 16, 2015 at 1:02 PM, Seth Forshee
 <seth.forshee@canonical.com> wrote:
-> From: Andy Lutomirski <luto@amacapital.net>
+> From: "Eric W. Biederman" <ebiederm@xmission.com>
 >
-> If a process gets access to a mount from a different user
-> namespace, that process should not be able to take advantage of
-> setuid files or selinux entrypoints from that filesystem.  Prevent
-> this by treating mounts from other mount namespaces and those not
-> owned by current_user_ns() or an ancestor as nosuid.
+> - Consolidate the testing if a device node may be opened in a new
+>   function may_open_dev.
 >
-> This will make it safer to allow more complex filesystems to be
-> mounted in non-root user namespaces.
+> - Move the check for allowing access to device nodes on filesystems
+>   not mounted in the initial user namespace from mount time to open
+>   time and include it in may_open_dev.
 >
-> This does not remove the need for MNT_LOCK_NOSUID.  The setuid,
-> setgid, and file capability bits can no longer be abused if code in
-> a user namespace were to clear nosuid on an untrusted filesystem,
-> but this patch, by itself, is insufficient to protect the system
-> from abuse of files that, when execed, would increase MAC privilege.
+> This set of changes removes the implicit adding of MNT_NODEV which
+> simplifies the logic in fs/namespace.c and removes a potentially
+> problematic user visible difference in how normal and unprivileged
+> mount namespaces work.
 >
-> As a more concrete explanation, any task that can manipulate a
-> vfsmount associated with a given user namespace already has
-> capabilities in that namespace and all of its descendents.  If they
-> can cause a malicious setuid, setgid, or file-caps executable to
-> appear in that mount, then that executable will only allow them to
-> elevate privileges in exactly the set of namespaces in which they
-> are already privileges.
->
-> On the other hand, if they can cause a malicious executable to
-> appear with a dangerous MAC label, running it could change the
-> caller's security context in a way that should not have been
-> possible, even inside the namespace in which the task is confined.
->
-> As a hardening measure, this would have made CVE-2014-5207 much
-> more difficult to exploit.
->
-> Signed-off-by: Andy Lutomirski <luto@amacapital.net>
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> ---
->  fs/exec.c                |  2 +-
->  fs/namespace.c           | 13 +++++++++++++
->  include/linux/mount.h    |  1 +
->  security/commoncap.c     |  2 +-
->  security/selinux/hooks.c |  2 +-
->  5 files changed, 17 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/exec.c b/fs/exec.c
-> index b06623a9347f..ea7311d72cc3 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1295,7 +1295,7 @@ static void bprm_fill_uid(struct linux_binprm *bprm)
->         bprm->cred->euid = current_euid();
->         bprm->cred->egid = current_egid();
->
-> -       if (bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID)
-> +       if (!mnt_may_suid(bprm->file->f_path.mnt))
->                 return;
->
->         if (task_no_new_privs(current))
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index da70f7c4ece1..2101ce7b96ab 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -3276,6 +3276,19 @@ found:
->         return visible;
->  }
->
-> +bool mnt_may_suid(struct vfsmount *mnt)
-> +{
-> +       /*
-> +        * Foreign mounts (accessed via fchdir or through /proc
-> +        * symlinks) are always treated as if they are nosuid.  This
-> +        * prevents namespaces from trusting potentially unsafe
-> +        * suid/sgid bits, file caps, or security labels that originate
-> +        * in other namespaces.
-> +        */
-> +       return !(mnt->mnt_flags & MNT_NOSUID) && check_mnt(real_mount(mnt)) &&
-> +              in_userns(current_user_ns(), mnt->mnt_sb->s_user_ns);
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Is check_mnt correct here?  If I read it correctly, this means that,
-if I just unshare my userns and do nothing else (and, in particular,
-don't unshare my mount namespace), then everything will have
-mnt_may_suid return false.
+> -               /* Only in special cases allow devices from mounts
+> -                * created outside the initial user namespace.
+> -                */
+> -               if (!(type->fs_flags & FS_USERNS_DEV_MOUNT)) {
+> -                       flags |= MS_NODEV;
+> -                       mnt_flags |= MNT_NODEV | MNT_LOCK_NODEV;
+> -               }
+
+This is an ABI change.  It's probably okay, but I think the commit
+message should make it clear what's happening.
+
 
 --Andy
