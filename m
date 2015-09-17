@@ -1,24 +1,32 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from mail-ig0-f180.google.com ([209.85.213.180])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcXsC-0003rA-Av
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2015 12:01:09 +0000
-Date: Thu, 17 Sep 2015 14:00:44 +0200
-From: Jan Kara <jack@suse.cz>
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Cc: Jan Kara <jack@suse.cz>, viro@ZenIV.linux.org.uk, dedekind1@gmail.com,
- richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 36/39] ubifs: implement ubifs_get_qsize to get quota
- size in ubifs
-Message-ID: <20150917120044.GC32280@quack.suse.cz>
-References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1442307754-13233-37-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20150916100007.GD13325@quack.suse.cz>
- <55FA6A5F.1010702@cn.fujitsu.com>
+ id 1ZcYeE-0006v5-M9
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2015 12:50:47 +0000
+Received: by igbkq10 with SMTP id kq10so11461544igb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 17 Sep 2015 05:50:25 -0700 (PDT)
+Date: Thu, 17 Sep 2015 07:49:21 -0500
+From: Seth Forshee <seth.forshee@canonical.com>
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ James Morris <james.l.morris@oracle.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
+ Stephen Smalley <sds@tycho.nsa.gov>, Eric Paris <eparis@parisplace.org>,
+ Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+ LSM List <linux-security-module@vger.kernel.org>,
+ SELinux-NSA <selinux@tycho.nsa.gov>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 5/7] fs: Treat foreign mounts as nosuid
+Message-ID: <20150917124921.GA85188@ubuntu-hedt>
+References: <1442433764-80826-1-git-send-email-seth.forshee@canonical.com>
+ <1442433764-80826-6-git-send-email-seth.forshee@canonical.com>
+ <CALCETrUHUwYYdah-H48NY94xzxf7ws0rtEmegh+v6JZVByUPHQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <55FA6A5F.1010702@cn.fujitsu.com>
+In-Reply-To: <CALCETrUHUwYYdah-H48NY94xzxf7ws0rtEmegh+v6JZVByUPHQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,95 +36,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu 17-09-15 15:23:11, Dongsheng Yang wrote:
-> On 09/16/2015 06:00 PM, Jan Kara wrote:
-> >On Tue 15-09-15 17:02:31, Dongsheng Yang wrote:
-> >>We only care the size of regular file in ubifs for quota.
-> >>The reason is similar with the comment in ubifs_getattr().
-> >>
-> >>Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> >>---
-> >>  fs/ubifs/dir.c   |  3 +++
-> >>  fs/ubifs/file.c  | 22 ++++++++++++++++++++++
-> >>  fs/ubifs/ubifs.h |  1 +
-> >>  3 files changed, 26 insertions(+)
-> >>
-> >>diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> >>index 802c6ad..0d3d6d3 100644
-> >>--- a/fs/ubifs/dir.c
-> >>+++ b/fs/ubifs/dir.c
-> >>@@ -1205,6 +1205,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
-> >>  #ifdef CONFIG_UBIFS_ATIME_SUPPORT
-> >>  	.update_time = ubifs_update_time,
-> >>  #endif
-> >>+#ifdef CONFIG_QUOTA
-> >>+	.get_qsize	= ubifs_get_qsize,
-> >>+#endif
-> >>  };
-> >>
-> >>  const struct file_operations ubifs_dir_operations = {
-> >>diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> >>index b57ccf3..f1d792a 100644
-> >>--- a/fs/ubifs/file.c
-> >>+++ b/fs/ubifs/file.c
-> >>@@ -1636,6 +1636,22 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
-> >>  	return 0;
-> >>  }
-> >>
-> >>+/*
-> >>+ * ubifs_get_qsize: get the quota size of a file
-> >>+ * @inode: inode which we are going to get the qsize
-> >>+ *
-> >>+ * We only care the size of regular file in ubifs
-> >>+ * for quota. The reason is similar with the comment
-> >>+ * in ubifs_getattr().
-> >>+ */
-> >>+ssize_t ubifs_get_qsize(struct inode *inode)
-> >>+{
-> >>+	if (S_ISREG(inode->i_mode))
-> >>+		return i_size_read(inode);
-> >>+	else
-> >>+		return 0;
-> >>+}
-> >>+
+On Wed, Sep 16, 2015 at 01:57:10PM -0700, Andy Lutomirski wrote:
+> On Wed, Sep 16, 2015 at 1:02 PM, Seth Forshee
+> <seth.forshee@canonical.com> wrote:
+> > From: Andy Lutomirski <luto@amacapital.net>
 > >
-> >The quota space is accounted in bytes. So why don't you store appropriate
-> >number of bytes the file consumes in i_blocks / i_bytes? Reiserfs can also
-> >have files occupying only say 100 bytes and everything works properly
-> >there so I don't see why ubifs needs to differ.
+> > If a process gets access to a mount from a different user
+> > namespace, that process should not be able to take advantage of
+> > setuid files or selinux entrypoints from that filesystem.  Prevent
+> > this by treating mounts from other mount namespaces and those not
+> > owned by current_user_ns() or an ancestor as nosuid.
+> >
+> > This will make it safer to allow more complex filesystems to be
+> > mounted in non-root user namespaces.
+> >
+> > This does not remove the need for MNT_LOCK_NOSUID.  The setuid,
+> > setgid, and file capability bits can no longer be abused if code in
+> > a user namespace were to clear nosuid on an untrusted filesystem,
+> > but this patch, by itself, is insufficient to protect the system
+> > from abuse of files that, when execed, would increase MAC privilege.
+> >
+> > As a more concrete explanation, any task that can manipulate a
+> > vfsmount associated with a given user namespace already has
+> > capabilities in that namespace and all of its descendents.  If they
+> > can cause a malicious setuid, setgid, or file-caps executable to
+> > appear in that mount, then that executable will only allow them to
+> > elevate privileges in exactly the set of namespaces in which they
+> > are already privileges.
+> >
+> > On the other hand, if they can cause a malicious executable to
+> > appear with a dangerous MAC label, running it could change the
+> > caller's security context in a way that should not have been
+> > possible, even inside the namespace in which the task is confined.
+> >
+> > As a hardening measure, this would have made CVE-2014-5207 much
+> > more difficult to exploit.
+> >
+> > Signed-off-by: Andy Lutomirski <luto@amacapital.net>
+> > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+> > ---
+> >  fs/exec.c                |  2 +-
+> >  fs/namespace.c           | 13 +++++++++++++
+> >  include/linux/mount.h    |  1 +
+> >  security/commoncap.c     |  2 +-
+> >  security/selinux/hooks.c |  2 +-
+> >  5 files changed, 17 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/exec.c b/fs/exec.c
+> > index b06623a9347f..ea7311d72cc3 100644
+> > --- a/fs/exec.c
+> > +++ b/fs/exec.c
+> > @@ -1295,7 +1295,7 @@ static void bprm_fill_uid(struct linux_binprm *bprm)
+> >         bprm->cred->euid = current_euid();
+> >         bprm->cred->egid = current_egid();
+> >
+> > -       if (bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID)
+> > +       if (!mnt_may_suid(bprm->file->f_path.mnt))
+> >                 return;
+> >
+> >         if (task_no_new_privs(current))
+> > diff --git a/fs/namespace.c b/fs/namespace.c
+> > index da70f7c4ece1..2101ce7b96ab 100644
+> > --- a/fs/namespace.c
+> > +++ b/fs/namespace.c
+> > @@ -3276,6 +3276,19 @@ found:
+> >         return visible;
+> >  }
+> >
+> > +bool mnt_may_suid(struct vfsmount *mnt)
+> > +{
+> > +       /*
+> > +        * Foreign mounts (accessed via fchdir or through /proc
+> > +        * symlinks) are always treated as if they are nosuid.  This
+> > +        * prevents namespaces from trusting potentially unsafe
+> > +        * suid/sgid bits, file caps, or security labels that originate
+> > +        * in other namespaces.
+> > +        */
+> > +       return !(mnt->mnt_flags & MNT_NOSUID) && check_mnt(real_mount(mnt)) &&
+> > +              in_userns(current_user_ns(), mnt->mnt_sb->s_user_ns);
 > 
-> Ha, yes, we did not keep i_blocks in ubifs currently. Because we have
-> no blocks in ubifs. Although we can simulate a i_block for quota, I
-> did not do it. Let me try to show what I am thinking here.
-> 
-> (1).Block file system are counting space with blocks. Then the quota
-> could works in (dquot_alloc_block & i_blocks) way. I mean, account
-> spaces by dquot_alloc_block() and FIOQSIZE can get the qsize from
-> i_blocks.
-> 
-> (2). But ubifs has no blocks, then I choose another way to do it,
-> (quot_alloc_space & i_size). That means, we account quota spaces
-> in ubifs by dquot_alloc_space() and want FIOSIZE to get i_size
-> of inodes. Then there is no notion of *block* but only space.
-> 
-> So, I want to make FIOSIZE more flexible here to introduce a get_qsize()
-> into inode_operations.
+> Is check_mnt correct here?  If I read it correctly, this means that,
+> if I just unshare my userns and do nothing else (and, in particular,
+> don't unshare my mount namespace), then everything will have
+> mnt_may_suid return false.
 
-But when you use dquot_alloc_space(), then i_blocks / i_bytes will be
-updated accordingly by quota code (after all, those values are used when
-inode gets transferred between users on chown to update quota information
-accordingly). So I don't see a reason why you should need to use i_size in
-FIOSIZE.
+The condition in check_mnt is exactly the same as the condition that
+check_mnt replaces. If mnt_may_suid returned true before you unshared
+only your user namespace then it should also return true after unshare.
+The mount ns is the same as it was before so check_mnt returns true, and
+the new user namespace is a child of the previous one so in_userns also
+returns true.
 
-As a side note, I think that using inode size as the amount of space used
-is wrong. I believe even ubifs has a notion of how many bytes of storage
-the file occupies and *this* information should be fed into quota subsystem
-and updated via dquot_alloc_space(). That way it will be more or less
-consistent with how quota for other filesystems works as well. However this
-is more or less filesystem internal decision so I can live with ubifs doing
-it either way...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Seth
