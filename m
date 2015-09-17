@@ -1,29 +1,23 @@
-Received: from out03.mta.xmission.com ([166.70.13.233])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcNaS-0001HG-Lg
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2015 01:02:11 +0000
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Seth Forshee <seth.forshee@canonical.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Linux FS Devel <linux-fsdevel@vger.kernel.org>,
- LSM List <linux-security-module@vger.kernel.org>,
- SELinux-NSA <selinux@tycho.nsa.gov>,
- "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org
-References: <1442433764-80826-1-git-send-email-seth.forshee@canonical.com>
- <1442433764-80826-3-git-send-email-seth.forshee@canonical.com>
- <CALCETrXoAi91JN4VLD2ybPgkD_J26=2_N-fyCCjOPL5Swo7kGA@mail.gmail.com>
-Date: Wed, 16 Sep 2015 19:54:26 -0500
-In-Reply-To: <CALCETrXoAi91JN4VLD2ybPgkD_J26=2_N-fyCCjOPL5Swo7kGA@mail.gmail.com>
- (Andy Lutomirski's message of "Wed, 16 Sep 2015 17:24:47 -0700")
-Message-ID: <87r3lxyif1.fsf@x220.int.ebiederm.org>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZcQ0K-0000KC-IO
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2015 03:37:01 +0000
+Message-ID: <55FA33CB.8060900@cn.fujitsu.com>
+Date: Thu, 17 Sep 2015 11:30:19 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH v3 2/7] userns: Simpilify MNT_NODEV handling.
+To: Jan Kara <jack@suse.cz>
+CC: <viro@ZenIV.linux.org.uk>, <dedekind1@gmail.com>,
+ <richard.weinberger@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v3 07/39] fs: char_dev: introduce cd_acquire function
+ to acquire cdev
+References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1442307754-13233-8-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <20150916081648.GB13325@quack.suse.cz>
+In-Reply-To: <20150916081648.GB13325@quack.suse.cz>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,47 +27,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andy Lutomirski <luto@amacapital.net> writes:
-
-> On Wed, Sep 16, 2015 at 1:02 PM, Seth Forshee
-> <seth.forshee@canonical.com> wrote:
->> From: "Eric W. Biederman" <ebiederm@xmission.com>
+On 09/16/2015 04:16 PM, Jan Kara wrote:
+> On Tue 15-09-15 17:02:02, Dongsheng Yang wrote:
+>> cd_acquire() works like bd_acquire() to get cdev by an inode,
+>> this commit is a preparation for lookup_cdev().
 >>
->> - Consolidate the testing if a device node may be opened in a new
->>   function may_open_dev.
->>
->> - Move the check for allowing access to device nodes on filesystems
->>   not mounted in the initial user namespace from mount time to open
->>   time and include it in may_open_dev.
->>
->> This set of changes removes the implicit adding of MNT_NODEV which
->> simplifies the logic in fs/namespace.c and removes a potentially
->> problematic user visible difference in how normal and unprivileged
->> mount namespaces work.
->>
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 >
->> -               /* Only in special cases allow devices from mounts
->> -                * created outside the initial user namespace.
->> -                */
->> -               if (!(type->fs_flags & FS_USERNS_DEV_MOUNT)) {
->> -                       flags |= MS_NODEV;
->> -                       mnt_flags |= MNT_NODEV | MNT_LOCK_NODEV;
->> -               }
+> Two comments below.
 >
-> This is an ABI change.  It's probably okay, but I think the commit
-> message should make it clear what's happening.
+>> ---
+>>   fs/char_dev.c | 35 +++++++++++++++++++++++++++++++++++
+>>   1 file changed, 35 insertions(+)
+>>
+>> diff --git a/fs/char_dev.c b/fs/char_dev.c
+>> index ea06a3d..e818faa 100644
+>> --- a/fs/char_dev.c
+>> +++ b/fs/char_dev.c
+>> @@ -439,6 +439,41 @@ static int exact_lock(dev_t dev, void *data)
+>>   	return cdev_get(p) ? 0 : -1;
+>>   }
+>>
+>> +struct cdev *cd_acquire(struct inode *inode)
+>> +{
+>> +	struct cdev *cdev;
+>> +	struct cdev *new = NULL;
+>> +
+>> +	spin_lock(&cdev_lock);
+>> +	cdev = inode->i_cdev;
+>> +	if (!cdev) {
+>> +		struct kobject *kobj;
+>> +		int idx;
+>
+> Empty line here please to separate variable declarations from the code.
 
-You mean it should include in big flashing neon letters
-            ***REGRESSION FIX***
-?
+Yes,
+>
+>> +		spin_unlock(&cdev_lock);
+>> +		kobj = kobj_lookup(cdev_map, inode->i_rdev, &idx);
+>> +		if (!kobj) {
+>> +			cdev = NULL;
+>> +			goto out;
+>> +		}
+>> +		new = container_of(kobj, struct cdev, kobj);
+>> +		spin_lock(&cdev_lock);
+>> +		/* Check i_cdev again in case somebody beat us to it while
+>> +		   we dropped the lock. */
+>> +		cdev = inode->i_cdev;
+>> +		if (!cdev) {
+>> +			inode->i_cdev = cdev = new;
+>> +			list_add(&inode->i_devices, &cdev->list);
+>> +		}
+>
+> I think you need to put 'new' in case you didn't use it, don't you?
 
-It is longer in coming than I had hoped.  But that is part of the reason
-I did not fix the security hole this way.  Getting the s_user_ns stuff
-just so has been non-trivial.
+Oh, yes, I forgot it. will update it.
 
-I do agree that because this is a user visible change we do need to keep
-our eyes peeled for pieces of userspace software that may depend on the
-exact details of the current behavior.
-
-Eric
+Thanx
+Yang
+>
+>> +	}
+>> +
+>> +	if (!cdev_get(cdev))
+>> +		cdev = NULL;
+>> +	spin_unlock(&cdev_lock);
+>> +
+>> +out:
+>> +	return cdev;
+>> +}
+>> +
+>>   /**
+>>    * cdev_add() - add a char device to the system
+>>    * @p: the cdev structure for the device
+>
+> 								Honza
+>
