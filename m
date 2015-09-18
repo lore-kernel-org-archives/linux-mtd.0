@@ -1,19 +1,16 @@
-Received: from mail-io0-x22b.google.com ([2607:f8b0:4001:c06::22b])
+Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zd0GN-0005c1-KK
- for linux-mtd@lists.infradead.org; Fri, 18 Sep 2015 18:20:00 +0000
-Received: by iofb144 with SMTP id b144so65432146iof.1
- for <linux-mtd@lists.infradead.org>; Fri, 18 Sep 2015 11:19:38 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <loom.20150918T183854-37@post.gmane.org>
-References: <loom.20150918T183854-37@post.gmane.org>
-Date: Fri, 18 Sep 2015 15:19:38 -0300
-Message-ID: <CAOMZO5Bf6QjNVa1W=8ognoWRnG2Ct2W8Xs4++-7OMOLR6dikiA@mail.gmail.com>
-Subject: Re: UBIFS corruptions on NOR-Flash
-From: Fabio Estevam <festevam@gmail.com>
-To: Roshni <roshni.shah@timesys.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+ id 1Zd1Z7-0004iU-6T
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2015 19:43:25 +0000
+Received: by lahg1 with SMTP id g1so36940599lah.1
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Sep 2015 12:43:02 -0700 (PDT)
+From: Tom Englund <tomenglund26@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	computersforpeace@gmail.com
+Cc: Tom Englund <tomenglund26@gmail.com>
+Subject: [PATCH 1/1] pcmciamtd: Add id for PRETEC 4MB SRAM
+Date: Fri, 18 Sep 2015 21:42:59 +0200
+Message-Id: <1442605379-27627-1-git-send-email-tomenglund26@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 18, 2015 at 1:50 PM, Roshni <roshni.shah@timesys.com> wrote:
-> Hi,
->
-> I have a custom board based on Freescale Vybrid Platform with a SPI-NOR
-> flash S25fl128s (16MiB). When using UBIFS on this flash part, I see
-> corruptions after UBIFS is mounted. See error/further below:
->
-> What could be the cause of these corruptions? Any pointers / help will be
-> greatly appreciated.
->
-> Thanks a lot,
-> Roshni
->
-> Kernel Version - 3.13
+The module pcmciamtd doesn't generate a mtd node for PRETEC 4MB SRAM
+cards without the id and hash added to pcmciamtd.c
 
-Does the problem also happen on 4.2 or 4.3-rc1?
+Tested on 3 different 4MB pretec sram cards.
+
+Signed-off-by: Tom Englund <tomenglund26@gmail.com>
+---
+ drivers/mtd/maps/pcmciamtd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/maps/pcmciamtd.c b/drivers/mtd/maps/pcmciamtd.c
+index af747af..3dad211 100644
+--- a/drivers/mtd/maps/pcmciamtd.c
++++ b/drivers/mtd/maps/pcmciamtd.c
+@@ -700,6 +700,7 @@ static const struct pcmcia_device_id pcmciamtd_ids[] = {
+ 	PCMCIA_DEVICE_PROD_ID12("Maxtor", "MAXFL MobileMax Flash Memory Card", 0xb68968c8, 0x2dfb47b0),
+ 	PCMCIA_DEVICE_PROD_ID123("M-Systems", "M-SYS Flash Memory Card", "(c) M-Systems", 0x7ed2ad87, 0x675dc3fb, 0x7aef3965),
+ 	PCMCIA_DEVICE_PROD_ID12("PRETEC", "  2MB SRAM CARD", 0xebf91155, 0x805360ca),
++	PCMCIA_DEVICE_PROD_ID12("PRETEC", "  4MB SRAM CARD", 0xebf91155, 0x20b6bf17),
+ 	PCMCIA_DEVICE_PROD_ID12("SEIKO EPSON", "WWB101EN20", 0xf9876baf, 0xad0b207b),
+ 	PCMCIA_DEVICE_PROD_ID12("SEIKO EPSON", "WWB513EN20", 0xf9876baf, 0xe8d884ad),
+ 	PCMCIA_DEVICE_PROD_ID12("SMART Modular Technologies", " 4MB FLASH Card", 0x96fd8277, 0x737a5b05),
+-- 
+2.5.1
