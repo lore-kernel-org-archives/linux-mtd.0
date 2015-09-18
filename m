@@ -1,14 +1,25 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcqgY-0007ZU-C2
- for linux-mtd@lists.infradead.org; Fri, 18 Sep 2015 08:06:22 +0000
-From: Enrico Jorns <ejo@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: kernel@pengutronix.de,
-	Enrico Jorns <ejo@pengutronix.de>
-Subject: [PATCH] mtd: nand: denali: pass col argument to READID operation
-Date: Fri, 18 Sep 2015 10:02:41 +0200
-Message-Id: <1442563361-32230-1-git-send-email-ejo@pengutronix.de>
+Message-ID: <1442564062.27250.36.camel@mhfsdcap03>
+Subject: Re: [PATCH v2 2/3] mtd: mtk-nor: mtk serial flash controller driver
+From: bayi.cheng <bayi.cheng@mediatek.com>
+To: Huang Shijie <shijie.huang@arm.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>, Pawel Moll
+ <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Sascha
+ Hauer" <s.hauer@pengutronix.de>, <linux-kernel@vger.kernel.org>, Daniel Kurtz
+ <djkurtz@chromium.org>, <jteki@openedev.com>, Rob Herring
+ <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
+ <ezequiel@vanduardiasur.com.ar>, Kumar Gala <galak@codeaurora.org>,
+ "Matthias Brugger" <matthias.bgg@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>
+Date: Fri, 18 Sep 2015 16:14:22 +0800
+In-Reply-To: <20150918072710.GA30710@free64-pc.asiapac.arm.com>
+References: <1442559533-17552-1-git-send-email-bayi.cheng@mediatek.com>
+ <1442559533-17552-3-git-send-email-bayi.cheng@mediatek.com>
+ <20150918072710.GA30710@free64-pc.asiapac.arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +29,244 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A read id operation followed by 0x00 reads the device ID while
-a read id operation followed by 0x20 reads the possible ONFI identifier.
+On Fri, 2015-09-18 at 15:27 +0800, Huang Shijie wrote:
+> On Fri, Sep 18, 2015 at 02:58:52PM +0800, Bayi Cheng wrote:
+> > add spi nor flash driver for mediatek controller
+> > 
+> > Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+> > ---
+> >  drivers/mtd/spi-nor/Kconfig       |   7 +
+> >  drivers/mtd/spi-nor/Makefile      |   1 +
+> >  drivers/mtd/spi-nor/mtk_quadspi.c | 483 ++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 491 insertions(+)
+> >  create mode 100644 drivers/mtd/spi-nor/mtk_quadspi.c
+> > 
+> > diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> > index 89bf4c1..f433890 100644
+> > --- a/drivers/mtd/spi-nor/Kconfig
+> > +++ b/drivers/mtd/spi-nor/Kconfig
+> > @@ -7,6 +7,13 @@ menuconfig MTD_SPI_NOR
+> >  
+> >  if MTD_SPI_NOR
+> >  
+> > +config MTD_MT81xx_NOR
+> > +	tristate "Support SPI flash Controller MTD_MT81xx_NOR"
+> > +	help
+> > +	  This enables access to SPI Nor flash, using MTD_MT81XX_NOR controller.
+> > +	  This controller does nor support generic SPI BUS, It only supports
+> > +	  SPI NOR Flash.
+> > +
+> >  config MTD_SPI_NOR_USE_4K_SECTORS
+> >  	bool "Use small 4096 B erase sectors"
+> >  	default y
+> > diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> > index e53333e..138cfea 100644
+> > --- a/drivers/mtd/spi-nor/Makefile
+> > +++ b/drivers/mtd/spi-nor/Makefile
+> > @@ -1,3 +1,4 @@
+> > +obj-$(CONFIG_MTD_MT81xx_NOR)	+= mtk_quadspi.o
+> >  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+> >  obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
+> >  obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
+> > diff --git a/drivers/mtd/spi-nor/mtk_quadspi.c b/drivers/mtd/spi-nor/mtk_quadspi.c
+> > new file mode 100644
+> > index 0000000..f60560e
+> > --- /dev/null
+> > +++ b/drivers/mtd/spi-nor/mtk_quadspi.c
+> > @@ -0,0 +1,483 @@
+> > +/*
+> > + * Copyright (c) 2015 MediaTek Inc.
+> > + * Author: Bayi Cheng <bayi.cheng@mediatek.com>
+> > + *
+> > + * This program is free software; you can redistribute it and/or modify
+> > + * it under the terms of the GNU General Public License version 2 as
+> > + * published by the Free Software Foundation.
+> > + *
+> > + * This program is distributed in the hope that it will be useful,
+> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> > + * GNU General Public License for more details.
+> > + */
+> > +
+> > +#include <linux/clk.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/device.h>
+> > +#include <linux/init.h>
+> > +#include <linux/io.h>
+> > +#include <linux/iopoll.h>
+> > +#include <linux/ioport.h>
+> > +#include <linux/math64.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mtd/mtd.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/of_gpio.h>
+> > +#include <linux/pinctrl/consumer.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/mtd/mtd.h>
+> > +#include <linux/mtd/partitions.h>
+> > +#include <linux/mtd/spi-nor.h>
+> > +
+> > +#define MTK_NOR_CMD_REG			0x00
+> > +#define MTK_NOR_CNT_REG			0x04
+> > +#define MTK_NOR_RDSR_REG		0x08
+> > +#define MTK_NOR_RDATA_REG		0x0c
+> > +#define MTK_NOR_RADR0_REG		0x10
+> > +#define MTK_NOR_RADR1_REG		0x14
+> > +#define MTK_NOR_RADR2_REG		0x18
+> > +#define MTK_NOR_WDATA_REG		0x1c
+> > +#define MTK_NOR_PRGDATA0_REG		0x20
+> > +#define MTK_NOR_PRGDATA1_REG		0x24
+> > +#define MTK_NOR_PRGDATA2_REG		0x28
+> > +#define MTK_NOR_PRGDATA3_REG		0x2c
+> > +#define MTK_NOR_PRGDATA4_REG		0x30
+> > +#define MTK_NOR_PRGDATA5_REG		0x34
+> > +#define MTK_NOR_SHREG0_REG		0x38
+> > +#define MTK_NOR_SHREG1_REG		0x3c
+> > +#define MTK_NOR_SHREG2_REG		0x40
+> > +#define MTK_NOR_SHREG3_REG		0x44
+> > +#define MTK_NOR_SHREG4_REG		0x48
+> > +#define MTK_NOR_SHREG5_REG		0x4c
+> > +#define MTK_NOR_SHREG6_REG		0x50
+> > +#define MTK_NOR_SHREG7_REG		0x54
+> > +#define MTK_NOR_SHREG8_REG		0x58
+> > +#define MTK_NOR_SHREG9_REG		0x5c
+> > +#define MTK_NOR_FLHCFG_REG		0x84
+> > +#define MTK_NOR_PP_DATA_REG		0x98
+> > +#define MTK_NOR_PREBUF_STUS_REG		0x9c
+> > +#define MTK_NOR_INTRSTUS_REG		0xa8
+> > +#define MTK_NOR_INTREN_REG		0xac
+> > +#define MTK_NOR_TIME_REG		0x94
+> > +#define MTK_NOR_CHKSUM_CTL_REG		0xb8
+> > +#define MTK_NOR_CHKSUM_REG		0xbc
+> > +#define MTK_NOR_CMD2_REG		0xc0
+> > +#define MTK_NOR_WRPROT_REG		0xc4
+> > +#define MTK_NOR_RADR3_REG		0xc8
+> > +#define MTK_NOR_DUAL_REG		0xcc
+> > +#define MTK_NOR_DELSEL0_REG		0xa0
+> > +#define MTK_NOR_DELSEL1_REG		0xa4
+> > +#define MTK_NOR_DELSEL2_REG		0xd0
+> > +#define MTK_NOR_DELSEL3_REG		0xd4
+> > +#define MTK_NOR_DELSEL4_REG		0xd8
+> > +#define MTK_NOR_CFG1_REG		0x60
+> > +#define MTK_NOR_CFG2_REG		0x64
+> > +#define MTK_NOR_CFG3_REG		0x68
+> > +#define MTK_NOR_STATUS0_REG		0x70
+> > +#define MTK_NOR_STATUS1_REG		0x74
+> > +#define MTK_NOR_STATUS2_REG		0x78
+> > +#define MTK_NOR_STATUS3_REG		0x7c
+> > +/* commands for mtk nor controller */
+> > +#define MTK_NOR_READ_CMD		0x0
+> > +#define MTK_NOR_RDSR_CMD		0x2
+> > +#define MTK_NOR_PRG_CMD			0x4
+> > +#define MTK_NOR_WR_CMD			0x10
+> > +#define MTK_NOR_WRSR_CMD		0x20
+> > +#define MTK_NOR_PIO_READ_CMD		0x81
+> > +#define MTK_NOR_WR_BUF_ENABLE		0x1
+> > +#define MTK_NOR_WR_BUF_DISABLE		0x0
+> > +#define MTK_NOR_ENABLE_SF_CMD		0x30
+> > +#define MTK_NOR_DUAD_ADDR_EN		0x8
+> > +#define MTK_NOR_QUAD_READ_EN		0x4
+> > +#define MTK_NOR_DUAL_ADDR_EN		0x2
+> > +#define MTK_NOR_DUAL_READ_EN		0x1
+> > +#define MTK_NOR_DUAL_DISABLE		0x0
+> > +#define MTK_NOR_FAST_READ		0x1
+> > +
+> > +#define SFLASH_WRBUF_SIZE		128
+> > +#define MAX_FLASHCOUNT			1
+> > +#define SFLASHHWNAME_LEN		12
+> > +#define SFLASH_MAX_DMA_SIZE		(1024 * 8)
+> > +
+> > +#define LOCAL_BUF_SIZE		(SFLASH_MAX_DMA_SIZE * 20)
+> > +
+> > +struct mt8173_nor {
+> > +	struct mtd_info mtd;
+> > +	struct spi_nor nor;
+> > +	struct device *dev;
+> > +	void __iomem *base;	/* nor flash base address */
+> > +	struct clk *spi_clk;
+> > +	struct clk *nor_clk;
+> > +};
+> > +
+> > +static void mt8173_nor_set_read_mode(struct mt8173_nor *mt8173_nor)
+> > +{
+> > +	struct spi_nor *nor = &mt8173_nor->nor;
+> > +
+> > +	switch (nor->flash_read) {
+> > +	case SPI_NOR_FAST:
+> > +		writeb(SPINOR_OP_READ_FAST, mt8173_nor->base +
+> > +		       MTK_NOR_PRGDATA3_REG);
+> > +		writeb(MTK_NOR_FAST_READ, mt8173_nor->base +
+> > +		       MTK_NOR_CFG1_REG);
+> > +		break;
+> > +	case SPI_NOR_DUAL:
+> > +		writeb(SPINOR_OP_READ_1_1_2, mt8173_nor->base +
+> > +		       MTK_NOR_PRGDATA3_REG);
+> > +		writeb(MTK_NOR_DUAL_READ_EN, mt8173_nor->base +
+> > +		       MTK_NOR_DUAL_REG);
+> > +		break;
+> > +	case SPI_NOR_QUAD:
+> > +		writeb(SPINOR_OP_READ_1_1_4, mt8173_nor->base +
+> > +		       MTK_NOR_PRGDATA3_REG);
+> > +		writeb(MTK_NOR_QUAD_READ_EN, mt8173_nor->base +
+> > +		       MTK_NOR_DUAL_REG);
+> > +		break;
+> > +	default:
+> > +		writeb(SPINOR_OP_READ, mt8173_nor->base +
+> > +		       MTK_NOR_PRGDATA3_REG);
+> > +		writeb(MTK_NOR_DUAL_DISABLE, mt8173_nor->base +
+> > +		       MTK_NOR_DUAL_REG);
+> > +		break;
+> > +	}
+> > +}
+> > +
+> > +static int mt8173_nor_execute_cmd(struct mt8173_nor *mt8173_nor, u8 cmdval)
+> > +{
+> > +	int reg;
+> > +	u8 val = cmdval & 0x1f;
+> > +
+> > +	writeb(cmdval, mt8173_nor->base + MTK_NOR_CMD_REG);
+> > +	return readl_poll_timeout(mt8173_nor->base + MTK_NOR_CMD_REG, reg,
+> > +				  !(reg & val), 100, 10000);
+> > +}
+> > +
+> > +static int mt8173_nor_set_cmd(struct mt8173_nor *mt8173_nor, int addr, int len,
+> > +			      int op)
+> > +{
+> > +	writeb(op, mt8173_nor->base + MTK_NOR_PRGDATA5_REG);
+> > +	/*  send the address to nor flash
+> > +	 *  MTK_NOR_PRGDATA5_REG is shifted first
+> > +	 *  MTK_NOR_PRGDATA0_REG is shifted last
+> > +	 */
+> > +	writeb(((addr >> 16) & 0xff), mt8173_nor->base + MTK_NOR_PRGDATA4_REG);
+> > +	writeb(((addr >> 8) & 0xff), mt8173_nor->base + MTK_NOR_PRGDATA3_REG);
+> > +	writeb((addr & 0xff), mt8173_nor->base + MTK_NOR_PRGDATA2_REG);
+> Why not use some macros to wrap the hardcode such as:
+> 	     (addr >> 16) & 0xff.
+> 
+> thanks
+> Huang Shijie
+> 
+Hi, Shijie, this is the review comments of Sascha Hauer, So I adopt this
+pattern .
+"
+> > +   writeb(LoByte(HiWord(addr)), mt8173_nor->base +
+MTK_NOR_PRGDATA4_REG);
+> > +   writeb(HiByte(LoWord(addr)), mt8173_nor->base +
+MTK_NOR_PRGDATA3_REG);
+> > +   writeb(LoByte(LoWord(addr)), mt8173_nor->base +
+MTK_NOR_PRGDATA2_REG);
+> 
 
-As the READID function did not propagate the second id parameter but had
-a hard-coded call for 0x90 0x00, reading the ONFI identifier was not
-possible and thus chips werde not detected (tested with
-MT29F8G08ABABAWP)
+> Just do a:
+> 
+> (addr >> 16) & 0xff
+> (addr >> 8) & 0xff
+> addr & 0xff
+> 
+"
 
-Signed-off-by: Enrico Jorns <ejo@pengutronix.de>
----
- drivers/mtd/nand/denali.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 870c7fc..7b6186f 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1304,7 +1304,7 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 		 */
- 		addr = MODE_11 | BANK(denali->flash_bank);
- 		index_addr(denali, addr | 0, 0x90);
--		index_addr(denali, addr | 1, 0);
-+		index_addr(denali, addr | 1, col);
- 		for (i = 0; i < 8; i++) {
- 			index_addr_read_data(denali, addr | 2, &id);
- 			write_byte_to_buf(denali, id);
--- 
-2.5.1
+Thanks
+Bayi Cheng
