@@ -1,29 +1,21 @@
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZchTm-0000Dt-JV
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2015 22:16:35 +0000
-Received: by obbda8 with SMTP id da8so24598732obb.1
- for <linux-mtd@lists.infradead.org>; Thu, 17 Sep 2015 15:16:13 -0700 (PDT)
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZclRO-0003w1-0h
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2015 02:30:23 +0000
+Message-ID: <55FB75A4.6040105@cn.fujitsu.com>
+Date: Fri, 18 Sep 2015 10:23:32 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <87r3lxyif1.fsf@x220.int.ebiederm.org>
-References: <1442433764-80826-1-git-send-email-seth.forshee@canonical.com>
- <1442433764-80826-3-git-send-email-seth.forshee@canonical.com>
- <CALCETrXoAi91JN4VLD2ybPgkD_J26=2_N-fyCCjOPL5Swo7kGA@mail.gmail.com>
- <87r3lxyif1.fsf@x220.int.ebiederm.org>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Thu, 17 Sep 2015 15:15:53 -0700
-Message-ID: <CALCETrVDr9KAPQp8RDVbdMHZzt19jAeJeq+6JDj5Jq3Yzmcs2Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] userns: Simpilify MNT_NODEV handling.
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Jeff Layton <jlayton@poochiereds.net>, SELinux-NSA <selinux@tycho.nsa.gov>,
- LSM List <linux-security-module@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Linux FS Devel <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Seth Forshee <seth.forshee@canonical.com>
-Content-Type: text/plain; charset=UTF-8
+To: Richard Weinberger <richard@nod.at>, <dedekind1@gmail.com>,
+ <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC PATCH 00/27] Introduce ubifs_dump in ubifs-utils
+References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <55F96F61.8040201@nod.at> <55FA5220.3070402@cn.fujitsu.com>
+ <55FB2EEA.2010606@nod.at>
+In-Reply-To: <55FB2EEA.2010606@nod.at>
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,53 +25,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sep 16, 2015 6:01 PM, "Eric W. Biederman" <ebiederm@xmission.com> wrote:
+On 09/18/2015 05:21 AM, Richard Weinberger wrote:
+> Am 17.09.2015 um 07:39 schrieb Dongsheng Yang:
+>> On 09/16/2015 09:32 PM, Richard Weinberger wrote:
+>>> Yang,
+>>>
+>>> Am 19.08.2015 um 10:39 schrieb Dongsheng Yang:
+>>>> Hi Atem, Richard and Brian,
+>>>>      This patchset introduce a userspace tool named ubifs_dump
+>>>> to dump data from a ubi media.
+>>>>      It will dump the areas in ubifs, such as super block,
+>>>> master, log, lpt and main.
+>>>>      That's helpful for us to see what exactly written in
+>>>> media.
+>>>>      the [1/patch] is a RESEND patch, it restructures the mtd-utils.
+>>>> Please Brian help to take a look at it. thanx a lot. :)
+>>>>
+>>>> NOTE:
+>>>>      This patch set depends on a patch I sent out [ubifs: correct the size of nnode in memset]
+>>>> But you can get a full code at:
+>>>> https://github.com/yangdongsheng/mtd-utils.git ubifs_dump_v1
+>>>
+>>> I'm looking/testing right now your patches.
+>>> Your tools is useful. I like the idea, maybe the can change the name to
+>>> "ubifs_dump_meta"? Do you have plans to extend it?
+>> Hi Richard,
+>>
+>> ubifs_dump_meta? Hmmm, but I also dump data nodes in it. Do you have
+>> some reason to rename it? Extend it? Of course, I would like to make it
+>> better and better. But the first step is making it in mtd-utils.
 >
-> Andy Lutomirski <luto@amacapital.net> writes:
+> You are right.
+> Let's keep the name. It does the same as jffs2dump.
 >
-> > On Wed, Sep 16, 2015 at 1:02 PM, Seth Forshee
-> > <seth.forshee@canonical.com> wrote:
-> >> From: "Eric W. Biederman" <ebiederm@xmission.com>
-> >>
-> >> - Consolidate the testing if a device node may be opened in a new
-> >>   function may_open_dev.
-> >>
-> >> - Move the check for allowing access to device nodes on filesystems
-> >>   not mounted in the initial user namespace from mount time to open
-> >>   time and include it in may_open_dev.
-> >>
-> >> This set of changes removes the implicit adding of MNT_NODEV which
-> >> simplifies the logic in fs/namespace.c and removes a potentially
-> >> problematic user visible difference in how normal and unprivileged
-> >> mount namespaces work.
-> >>
-> >> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> >
-> >> -               /* Only in special cases allow devices from mounts
-> >> -                * created outside the initial user namespace.
-> >> -                */
-> >> -               if (!(type->fs_flags & FS_USERNS_DEV_MOUNT)) {
-> >> -                       flags |= MS_NODEV;
-> >> -                       mnt_flags |= MNT_NODEV | MNT_LOCK_NODEV;
-> >> -               }
-> >
-> > This is an ABI change.  It's probably okay, but I think the commit
-> > message should make it clear what's happening.
+>>> I'm asking because I've started working on an ubifs.fsck/debugfs tool based on
+>>> some scripts and hacky other tools I wrote some time ago.
+>>> So, let's coordinate and avoid double work.
+>>
+>> Oh, sorry for sending my patch without any asking. I thought there is
+>> nobody caring about it. And what's more, I am planning to do a fsck.ubifs
+>> actually. Haha, so I think we can cooperate on it. Could you share more
+>> about your work so far?
 >
-> You mean it should include in big flashing neon letters
->             ***REGRESSION FIX***
-> ?
->
-> It is longer in coming than I had hoped.  But that is part of the reason
-> I did not fix the security hole this way.  Getting the s_user_ns stuff
-> just so has been non-trivial.
->
-> I do agree that because this is a user visible change we do need to keep
-> our eyes peeled for pieces of userspace software that may depend on the
-> exact details of the current behavior.
+> It started as a simple tool to unpack UBIFS.
+> As unpacking involves also analyzing the whole file system we can extend
+> it to repair problems.
+> The first version will only be able to repair minor issue but I hope
+> we can add more advanced features step by step.
 
-Yeah.  "Removes a potentially problematic user visible difference"
-sounds like the difference has been there forever.   If it needs to
-get backported, people will appreciate it.
+Similar with what's in my mind. Let me share my idea here.
 
---Andy
+(1), ubifs_dump.
+As what I sent out, this tool is dumping the metadata and data of ubifs.
+
+(2), fsck.ubifs
+This tool is going to check the all nodes in media. I did not begin it.
+
+(3), fsck.ubifs --repair
+Introduce a --repair to repair problems we found in checking.
+
+Sounds similar with what you are going to do.
+
+Yang
+>
+>>>
+>>> It's first feature is being able to extract all files from an UBIFS.
+>>> Scanning and identifying all UBIFS nodes, as your tool does, is a subset
+>>> of the needed functionality. As you sent patches first I'll happily rebase
+>>> my tool to your patches.
+>>
+>> Thanx a lot. :)
+>>> One of the major differences is that it will work without the UBI/UBIFS kernel
+>>> modules. You can use /dev/ubiXY or a plain nanddump.
+>>> I hope I can release the first version soon.
+>>
+>> Yea, sounds very interesting, although I am not sure how it can be
+>> implemented. Looking forward your release.
+>
+> You mean using a plain nanddump? It is not that hard, all you need is a "mini-UBI"
+> implementation. My current UBIFS unpacker works so far only with nanddumps.
+> It's the only thing I get from customers, nobody sends me an UBIFS only image. :D
+>
+> Thanks,
+> //richard
+> .
+>
