@@ -5,9 +5,10 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v3 12/27] mtd: nand: omap: Update DT binding documentation
-Date: Fri, 18 Sep 2015 17:53:34 +0300
-Message-ID: <1442588029-13769-13-git-send-email-rogerq@ti.com>
+Subject: [PATCH v3 16/27] memory: omap-gpmc: Reserve WAITPIN if needed for
+ WAIT monitoring
+Date: Fri, 18 Sep 2015 17:53:38 +0300
+Message-ID: <1442588029-13769-17-git-send-email-rogerq@ti.com>
 In-Reply-To: <1442588029-13769-1-git-send-email-rogerq@ti.com>
 References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,58 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add compatible id and interrupts. The NAND interrupts are
-provided by the GPMC controller node.
+If the device attached to GPMC wants to use the WAIT pin
+for WAIT monitoring then we reserve it internally for
+exclusive use.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/memory/omap-gpmc.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index fb733c4..253e6de 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -13,7 +13,11 @@ Documentation/devicetree/bindings/mtd/nand.txt
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index 518b418..fdf19eeb 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -1779,6 +1779,8 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+ 	const char *name;
+ 	int ret, cs;
+ 	u32 val;
++	struct gpio_desc *waitpin_desc = NULL;
++	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
  
- Required properties:
+ 	if (of_property_read_u32(child, "reg", &cs) < 0) {
+ 		dev_err(&pdev->dev, "%s has no 'reg' property\n",
+@@ -1880,15 +1882,28 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+ 			goto err;
+ 	}
  
-- - reg:		The CS line the peripheral is connected to
-+ - compatible:	"ti,omap2-nand"
-+ - reg:		range id (CS number), base offset and length of the
-+		NAND I/O space
-+ - interrupt-parent: must point to gpmc node
-+ - interrupts: gpmc interrupt
++	/* Reserve wait pin if it is required and valid */
++	if (gpmc_s.wait_on_read || gpmc_s.wait_on_write) {
++		unsigned wait_pin = gpmc_s.wait_pin;
++
++		waitpin_desc = gpiochip_request_own_desc(&gpmc->gpio_chip,
++							 wait_pin, "WAITPIN");
++		if (IS_ERR(waitpin_desc)) {
++			dev_err(&pdev->dev, "invalid wait-pin: %d\n", wait_pin);
++			ret = PTR_ERR(waitpin_desc);
++			goto err;
++		}
++	}
++
+ 	ret = gpmc_cs_program_settings(cs, &gpmc_s);
+ 	if (ret < 0)
+-		goto err;
++		goto err_cs;
  
- Optional properties:
+ 	ret = gpmc_cs_set_timings(cs, &gpmc_t, &gpmc_s);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to set gpmc timings for: %s\n",
+ 			child->name);
+-		goto err;
++		goto err_cs;
+ 	}
  
-@@ -55,20 +59,24 @@ Example for an AM33xx board:
- 	gpmc: gpmc@50000000 {
- 		compatible = "ti,am3352-gpmc";
- 		ti,hwmods = "gpmc";
--		reg = <0x50000000 0x1000000>;
-+		reg = <0x50000000 0x36c>;
- 		interrupts = <100>;
- 		gpmc,num-cs = <8>;
- 		gpmc,num-waitpins = <2>;
- 		#address-cells = <2>;
- 		#size-cells = <1>;
--		ranges = <0 0 0x08000000 0x2000>;	/* CS0: NAND */
-+		ranges = <0 0 0x08000000 0x1000000>;	/* CS0 space, 16MB */
- 		elm_id = <&elm>;
+ 	/* Clear limited address i.e. enable A26-A11 */
+@@ -1919,6 +1934,10 @@ err_child_fail:
+ 	dev_err(&pdev->dev, "failed to create gpmc child %s\n", child->name);
+ 	ret = -ENODEV;
  
- 		nand@0,0 {
--			reg = <0 0 0>; /* CS0, offset 0 */
-+			compatible = "ti,omap2-nand";
-+			reg = <0 0 4>;		/* CS0, offset 0, NAND I/O window 4 */
-+			interrupts = <100>;
- 			nand-bus-width = <16>;
- 			ti,nand-ecc-opt = "bch8";
- 			ti,nand-xfer-type = "polled";
-+			interrupt-parent = <&gpmc>;
-+			interrupts = <0>, <1>;
++err_cs:
++	if (waitpin_desc)
++		gpiochip_free_own_desc(waitpin_desc);
++
+ err:
+ 	gpmc_cs_free(cs);
  
- 			gpmc,sync-clk-ps = <0>;
- 			gpmc,cs-on-ns = <0>;
 -- 
 2.1.4
