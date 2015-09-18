@@ -1,23 +1,17 @@
-Subject: Re: [PATCH 1/5] spi: introduce mmap read support for spi flash devices
-To: Mark Brown <broonie@kernel.org>
-References: <1441355402-6837-1-git-send-email-vigneshr@ti.com>
- <1441355402-6837-2-git-send-email-vigneshr@ti.com>
- <20150914183744.GF12027@sirena.org.uk> <55F93F89.7060708@ti.com>
- <20150916105647.GK11268@sirena.org.uk>
-CC: Benoit Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>,
- Russell King <linux@arm.linux.org.uk>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, <hramrach@gmail.com>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-omap@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <55FBFF36.8050905@ti.com>
-Date: Fri, 18 Sep 2015 17:40:30 +0530
+From: Roger Quadros <rogerq@ti.com>
+To: <tony@atomide.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
+ <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v3 01/27] ARM: OMAP2+: gpmc: Add platform data
+Date: Fri, 18 Sep 2015 17:53:23 +0300
+Message-ID: <1442588029-13769-2-git-send-email-rogerq@ti.com>
+In-Reply-To: <1442588029-13769-1-git-send-email-rogerq@ti.com>
+References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20150916105647.GK11268@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +21,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add a platform data structure for GPMC. It contains all the necessary
+platform information that needs to be passed from platform init code
+to GPMC driver.
 
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ include/linux/omap-gpmc.h               |  3 +--
+ include/linux/platform_data/gpmc-omap.h | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+), 2 deletions(-)
+ create mode 100644 include/linux/platform_data/gpmc-omap.h
 
-On 09/16/2015 04:26 PM, Mark Brown wrote:
-> On Wed, Sep 16, 2015 at 03:38:09PM +0530, Vignesh R wrote:
-> 
->> But, I didn't get how to integrate with existing message queue. Memory
->> mapped read by-passes message queue of SPI core. Could you please
->> explain a bit more on integrating with message queue? Did you mean
->> locking the existing message queue when memory mapped read is being
->> requested?
-> 
-> Yes, and also making sure that we don't everything gets processed in
-> order so memory mapped requests come after any commands needed to set
-> them up and don't starve other work.
-> 
-
-Ok, thanks for the clarification!
-
+diff --git a/include/linux/omap-gpmc.h b/include/linux/omap-gpmc.h
+index 7dee0014..5c79190 100644
+--- a/include/linux/omap-gpmc.h
++++ b/include/linux/omap-gpmc.h
+@@ -7,8 +7,7 @@
+  *  option) any later version.
+  */
+ 
+-/* Maximum Number of Chip Selects */
+-#define GPMC_CS_NUM		8
++#include <linux/platform_data/gpmc-omap.h>
+ 
+ #define GPMC_CONFIG_WP		0x00000005
+ 
+diff --git a/include/linux/platform_data/gpmc-omap.h b/include/linux/platform_data/gpmc-omap.h
+new file mode 100644
+index 0000000..d32d9de
+--- /dev/null
++++ b/include/linux/platform_data/gpmc-omap.h
+@@ -0,0 +1,30 @@
++/*
++ * OMAP GPMC Platform data
++ *
++ * Copyright (C) 2014 Texas Instruments, Inc. - http://www.ti.com
++ *	Roger Quadros <rogerq@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ */
++
++#ifndef _GPMC_OMAP_H_
++#define _GPMC_OMAP_H_
++
++/* Maximum Number of Chip Selects */
++#define GPMC_CS_NUM		8
++
++/* Data for each chip select */
++struct gpmc_omap_cs_data {
++	bool valid;			/* data is valid */
++	bool is_nand;			/* device within this CS is NAND */
++	struct platform_device *pdev;	/* device within this CS region */
++	unsigned pdata_size;
++};
++
++struct gpmc_omap_platform_data {
++	struct gpmc_omap_cs_data cs[GPMC_CS_NUM];
++};
++
++#endif /* _GPMC_OMAP_H */
 -- 
-Regards
-Vignesh
+2.1.4
