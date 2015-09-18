@@ -1,22 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-ob0-f174.google.com ([209.85.214.174])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zd1y9-00029i-HD
- for linux-mtd@lists.infradead.org; Fri, 18 Sep 2015 20:09:18 +0000
-Subject: Re: UBIFS corruptions on NOR-Flash
-To: Roshni Shah <roshni.shah@timesys.com>
-References: <loom.20150918T183854-37@post.gmane.org>
- <CAFLxGvwJjy=6GLXJm=2frruO9vKqqPG_6yYxSH7HLLr47x9apg@mail.gmail.com>
- <CA+-FG628WkbiqnzT9tp4Li=SP2qHPM+Nn+KLHjQWqHN-f==+vg@mail.gmail.com>
- <55FC6BCB.1030901@nod.at>
- <CA+-FG62MN2FBLKecGJJ6YHqPDyrgrx8BkCAZGezoKbADOCm_0g@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55FC6F56.4050107@nod.at>
-Date: Fri, 18 Sep 2015 22:08:54 +0200
+ id 1Zd2sE-0005JH-9s
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2015 21:07:15 +0000
+Received: by obbmp4 with SMTP id mp4so12342874obb.3
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Sep 2015 14:06:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+-FG62MN2FBLKecGJJ6YHqPDyrgrx8BkCAZGezoKbADOCm_0g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAOMZO5C7GBZ0SgqOeb5fxfNWZ6P=jonJYrzzC-36vxcw_mFpbA@mail.gmail.com>
+References: <loom.20150918T183854-37@post.gmane.org>
+ <CAOMZO5Bf6QjNVa1W=8ognoWRnG2Ct2W8Xs4++-7OMOLR6dikiA@mail.gmail.com>
+ <CA+-FG62+vpJiuxNegEDd6sZ7oqfcrv_EWqa4skuoSXWzM-Ea3g@mail.gmail.com>
+ <CAOMZO5C7GBZ0SgqOeb5fxfNWZ6P=jonJYrzzC-36vxcw_mFpbA@mail.gmail.com>
+Date: Fri, 18 Sep 2015 17:06:53 -0400
+Message-ID: <CA+-FG60tS+u0Ck+Vmsw6BS1RnG1OBL7HN=nd-9eCtXBJtTFysg@mail.gmail.com>
+Subject: Re: UBIFS corruptions on NOR-Flash
+From: Roshni Shah <roshni.shah@timesys.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ stefan@agner.ch, bhuvanchandra.dv@toradex.com
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 18.09.2015 um 22:05 schrieb Roshni Shah:
-> Its not mainline. I am using this driver from Freescale, which has
-> support for Quad/DDR read and support for IMX6 SoloX.
-> 
-> http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/tree/drivers/mtd/spi-nor/fsl-quadspi.c?h=imx_3.14.28_1.0.0_ga
-> 
-> Mainline driver excludes the above support.
-> 
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/drivers/mtd/spi-nor/fsl-quadspi.c
-> 
-> Also, even though the Freescale driver supports Quad / DDR read, I am
-> not using that for this test. My device tree just uses regular read.
+Hi Fabio,
 
-Can you please retry using a pristine and recent kernel?
+Thanks for pointing me to those discussions. The changes there are for
+the NAND driver, however I am testing with the NOR flash (s25fl128s).
+
+I will take a look at the suggested fix if there is anything
+applicable for NOR too.
 
 Thanks,
-//richard
+Roshni
+
+On Fri, Sep 18, 2015 at 4:02 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> [Adding Stefan and Bhuvan]
+>
+> On Fri, Sep 18, 2015 at 4:51 PM, Roshni Shah <roshni.shah@timesys.com> wrote:
+>> Hi Fabio,
+>>
+>> I haven't tried 4.2 or 4.3-rc1 on this custom board. However, I have
+>> tried 4.1-rc5 on Vybrid TWR (same NOR chip, qspi interface, Vybrid
+>> processor as the custom board) and I saw the same issues as described
+>> in the first post.
+>>
+>> if there are specific fixes in 4.2 or 4.3-rc1, I could try them on
+>> both them on the custom board / Vybrid TWR board.  Let me know.
+>
+> Please check:
+>
+> http://lists.infradead.org/pipermail/linux-mtd/2015-September/061601.html
+>
+> http://lists.infradead.org/pipermail/linux-mtd/2015-September/061585.html
