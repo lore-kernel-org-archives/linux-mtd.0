@@ -5,9 +5,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v3 20/27] ARM: dts: dra7: Fix NAND device nodes.
-Date: Fri, 18 Sep 2015 17:53:42 +0300
-Message-ID: <1442588029-13769-21-git-send-email-rogerq@ti.com>
+Subject: [PATCH v3 21/27] ARM: dts: dra7x-evm: Provide NAND ready pin
+Date: Fri, 18 Sep 2015 17:53:43 +0300
+Message-ID: <1442588029-13769-22-git-send-email-rogerq@ti.com>
 In-Reply-To: <1442588029-13769-1-git-send-email-rogerq@ti.com>
 References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,74 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add compatible id, GPMC register resource and interrupt
-resource to NAND controller nodes.
+On these boards NAND ready pin status is avilable over
+GPMC_WAIT0 pin.
 
-The GPMC driver now implements gpiochip and irqchip so
-enable gpio-controller and interrupt-controller properties.
-
-With this the interrupt parent of NAND node changes so fix it
-accordingly.
+Read speed increases from 13768 KiB/ to 17246 KiB/s.
+Write speed was unchanged at 7123 KiB/s.
+Measured using mtd_speedtest.ko.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/boot/dts/dra7-evm.dts  | 5 ++++-
- arch/arm/boot/dts/dra7.dtsi     | 4 ++++
- arch/arm/boot/dts/dra72-evm.dts | 5 ++++-
- 3 files changed, 12 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/dra7-evm.dts  | 1 +
+ arch/arm/boot/dts/dra72-evm.dts | 1 +
+ 2 files changed, 2 insertions(+)
 
 diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
-index a6c82e5..8a31161 100644
+index 8a31161..4760562 100644
 --- a/arch/arm/boot/dts/dra7-evm.dts
 +++ b/arch/arm/boot/dts/dra7-evm.dts
-@@ -585,9 +585,12 @@
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&nand_flash_x16>;
--	ranges = <0 0 0 0x01000000>;	/* minimum GPMC partition = 16MB */
-+	ranges = <0 0 0x08000000 0x01000000>;	/* minimum GPMC partition = 16MB */
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
+@@ -591,6 +591,7 @@
  		reg = <0 0 4>;		/* device IO registers */
-+		interrupt-parent = <&crossbar_mpu>;
-+		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+ 		interrupt-parent = <&crossbar_mpu>;
+ 		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
++		ready-gpio = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 pin */
  		ti,nand-ecc-opt = "bch8";
  		ti,elm-id = <&elm>;
  		nand-bus-width = <16>;
-diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
-index 5d65db9..f0a3616 100644
---- a/arch/arm/boot/dts/dra7.dtsi
-+++ b/arch/arm/boot/dts/dra7.dtsi
-@@ -1389,6 +1389,10 @@
- 			gpmc,num-waitpins = <2>;
- 			#address-cells = <2>;
- 			#size-cells = <1>;
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
- 			status = "disabled";
- 		};
- 
 diff --git a/arch/arm/boot/dts/dra72-evm.dts b/arch/arm/boot/dts/dra72-evm.dts
-index 6f6bd98..245f5f9 100644
+index 245f5f9..a11a646 100644
 --- a/arch/arm/boot/dts/dra72-evm.dts
 +++ b/arch/arm/boot/dts/dra72-evm.dts
-@@ -395,13 +395,16 @@
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&nand_default>;
--	ranges = <0 0 0 0x01000000>;	/* minimum GPMC partition = 16MB */
-+	ranges = <0 0 0x08000000 0x01000000>;	/* minimum GPMC partition = 16MB */
- 	nand@0,0 {
- 		/* To use NAND, DIP switch SW5 must be set like so:
- 		 * SW5.1 (NAND_SELn) = ON (LOW)
- 		 * SW5.9 (GPMC_WPN) = OFF (HIGH)
- 		 */
-+		compatible = "ti,omap2-nand";
+@@ -405,6 +405,7 @@
  		reg = <0 0 4>;		/* device IO registers */
-+		interrupt-parent = <&crossbar_mpu>;
-+		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+ 		interrupt-parent = <&crossbar_mpu>;
+ 		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
++		ready-gpio = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 pin */
  		ti,nand-ecc-opt = "bch8";
  		ti,elm-id = <&elm>;
  		nand-bus-width = <16>;
