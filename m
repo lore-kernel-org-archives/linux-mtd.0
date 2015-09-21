@@ -1,22 +1,26 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZeAXk-0004FI-3J
- for linux-mtd@lists.infradead.org; Mon, 21 Sep 2015 23:30:44 +0000
-Received: by padbj2 with SMTP id bj2so4595923pad.3
- for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2015 16:30:23 -0700 (PDT)
-Date: Mon, 21 Sep 2015 16:30:21 -0700
+ id 1ZeAm4-00028v-7n
+ for linux-mtd@lists.infradead.org; Mon, 21 Sep 2015 23:45:33 +0000
+Received: by padbj2 with SMTP id bj2so4887999pad.3
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2015 16:45:11 -0700 (PDT)
+Date: Mon, 21 Sep 2015 16:45:09 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Andrea Scian <rnd4@dave-tech.it>, Richard Weinberger <richard@nod.at>
-Subject: Re: [RESEND PATCH v3 4/5] mtd: nand: make 'erased check' optional
-Message-ID: <20150921233021.GH31505@google.com>
+ Andrea Scian <rnd4@dave-tech.it>,
+ Richard Weinberger <richard@nod.at>, Roger Quadros <rogerq@ti.com>,
+ Pekon Gupta <pekon.gupta@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [RESEND PATCH v3 3/5] mtd: nand: use nand_check_erased_ecc_chunk
+ in default ECC read functions
+Message-ID: <20150921234509.GI31505@google.com>
 References: <1441296222-14989-1-git-send-email-boris.brezillon@free-electrons.com>
- <1441296222-14989-5-git-send-email-boris.brezillon@free-electrons.com>
+ <1441296222-14989-4-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1441296222-14989-5-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1441296222-14989-4-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,158 +30,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 03, 2015 at 06:03:41PM +0200, Boris Brezillon wrote:
-> Some ECC controllers do not need the extra 'erased check' done by the core.
-> Make it optional by creating a new NAND_ECC_DISABLE_ERASED_CHECK flag.
-> 
-> Reed-Solomon ECC engines are guaranteed to generate ff ECC bytes when the
-> page in empty and are thus able to fix bitflips in erased pages.
-> 
-> The software BCH implementation is also generating ff ECC bytes for empty
-> pages, and is thus able to fix bitflips in erased pages too.
++ others
+
+On Thu, Sep 03, 2015 at 06:03:40PM +0200, Boris Brezillon wrote:
+> The default NAND read functions are relying on an underlying controller
+> to correct bitflips, but some of those controller cannot properly fix
+> bitflips in erased pages.
+> In case of ECC failures, check if the page of subpage is empty before
+> reporting an ECC failure.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+I'd really want some test results for this before opting everyone in. If
+I remember your last response correctly, you're just testing sunxi-nand,
+which uses a different implementation, right?
+
+Potential different strategy: if we can get one or two drivers to test
+this, we could flip it around into an opt-in flag (this would
+modify/eliminate patch 3). I know this has downsides for
+less-actively-developed drivers, which may never get fixed up to support
+erased-page ECC checks, but then, it also likely has less benefits for
+those cases too.
+
+Thoughts? I could be convinced another way if I we can get reasonable
+backing from others who can test this.
+
+One more comment below.
+
 > ---
->  drivers/mtd/nand/nand_base.c | 20 ++++++++++++++++----
->  drivers/mtd/nand/r852.c      |  1 +
->  drivers/mtd/nand/tmio_nand.c |  1 +
->  drivers/mtd/nand/txx9ndfmc.c |  1 +
->  include/linux/mtd/nand.h     |  8 ++++++++
->  5 files changed, 27 insertions(+), 4 deletions(-)
+>  drivers/mtd/nand/nand_base.c | 50 +++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 43 insertions(+), 7 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 9a109a5..3be312d 100644
+> index a2687ea..9a109a5 100644
 > --- a/drivers/mtd/nand/nand_base.c
 > +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1419,7 +1419,8 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+> @@ -1419,6 +1419,15 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
 >  
 >  		stat = chip->ecc.correct(mtd, p,
 >  			&chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
-> -		if (stat == -EBADMSG) {
-> +		if (stat == -EBADMSG &&
-> +		    !(chip->ecc.options & NAND_ECC_DISABLE_ERASED_CHECK)) {
->  			/* check for empty pages with bitflips */
->  			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
->  						&chip->buffers->ecccode[i],
-> @@ -1477,7 +1478,8 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+> +		if (stat == -EBADMSG) {
+> +			/* check for empty pages with bitflips */
+> +			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
+> +						&chip->buffers->ecccode[i],
+> +						chip->ecc.bytes,
+> +						NULL, 0,
+> +						chip->ecc.strength);
+> +		}
+> +
+>  		if (stat < 0) {
+>  			mtd->ecc_stats.failed++;
+>  		} else {
+> @@ -1468,6 +1477,14 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
 >  		int stat;
 >  
 >  		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
-> -		if (stat == -EBADMSG) {
-> +		if (stat == -EBADMSG &&
-> +		    !(chip->ecc.options & NAND_ECC_DISABLE_ERASED_CHECK)) {
->  			/* check for empty pages with bitflips */
->  			stat = nand_check_erased_ecc_chunk(p, eccsize,
->  						&ecc_code[i], eccbytes,
-> @@ -1537,7 +1539,8 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+> +		if (stat == -EBADMSG) {
+> +			/* check for empty pages with bitflips */
+> +			stat = nand_check_erased_ecc_chunk(p, eccsize,
+> +						&ecc_code[i], eccbytes,
+> +						NULL, 0,
+> +						chip->ecc.strength);
+> +		}
+> +
+>  		if (stat < 0) {
+>  			mtd->ecc_stats.failed++;
+>  		} else {
+> @@ -1520,6 +1537,14 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
 >  		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
 >  
 >  		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
-> -		if (stat == -EBADMSG) {
-> +		if (stat == -EBADMSG &&
-> +		    !(chip->ecc.options & NAND_ECC_DISABLE_ERASED_CHECK)) {
->  			/* check for empty pages with bitflips */
->  			stat = nand_check_erased_ecc_chunk(p, eccsize,
->  						&ecc_code[i], eccbytes,
-> @@ -1600,7 +1603,8 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+> +		if (stat == -EBADMSG) {
+> +			/* check for empty pages with bitflips */
+> +			stat = nand_check_erased_ecc_chunk(p, eccsize,
+> +						&ecc_code[i], eccbytes,
+> +						NULL, 0,
+> +						chip->ecc.strength);
+> +		}
+> +
+>  		if (stat < 0) {
+>  			mtd->ecc_stats.failed++;
+>  		} else {
+> @@ -1547,6 +1572,8 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+>  	int i, eccsize = chip->ecc.size;
+>  	int eccbytes = chip->ecc.bytes;
+>  	int eccsteps = chip->ecc.steps;
+> +	int eccstepsize = eccsize + eccbytes + chip->ecc.prepad +
+> +			  chip->ecc.postpad;
+
+Hmm, is this correct? I think you shouldn't be adding in eccsize, if
+you're looking for just the length of the ECC OOB region. But I could be
+wrong.
+
+>  	uint8_t *p = buf;
+>  	uint8_t *oob = chip->oob_poi;
+>  	unsigned int max_bitflips = 0;
+> @@ -1566,19 +1593,28 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+>  		chip->read_buf(mtd, oob, eccbytes);
+>  		stat = chip->ecc.correct(mtd, p, oob, NULL);
+>  
+> -		if (stat < 0) {
+> -			mtd->ecc_stats.failed++;
+> -		} else {
+> -			mtd->ecc_stats.corrected += stat;
+> -			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> -		}
+> -
+>  		oob += eccbytes;
+>  
+>  		if (chip->ecc.postpad) {
+>  			chip->read_buf(mtd, oob, chip->ecc.postpad);
 >  			oob += chip->ecc.postpad;
 >  		}
->  
-> -		if (stat == -EBADMSG) {
-> +		if (stat == -EBADMSG &&
-> +		    !(chip->ecc.options & NAND_ECC_DISABLE_ERASED_CHECK)) {
->  			/* check for empty pages with bitflips */
->  			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
->  							   oob - eccstepsize,
-> @@ -4300,6 +4304,14 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		ecc->write_oob_raw = ecc->write_oob;
->  
->  	/*
-> +	 * The software implementation does not need the the erased check
-> +	 * since they already generate ff pattern for an erased page.
-> +	 */
-> +	if (ecc->correct == nand_bch_correct_data ||
-> +	    ecc->correct == nand_correct_data)
-> +		ecc->options |= NAND_ECC_DISABLE_ERASED_CHECK;
 > +
-> +	/*
->  	 * The number of bytes available for a client to place data into
->  	 * the out of band area.
->  	 */
-> diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-> index c9ad7a0..b82e4d9 100644
-> --- a/drivers/mtd/nand/r852.c
-> +++ b/drivers/mtd/nand/r852.c
-> @@ -876,6 +876,7 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
->  	chip->ecc.hwctl = r852_ecc_hwctl;
->  	chip->ecc.calculate = r852_ecc_calculate;
->  	chip->ecc.correct = r852_ecc_correct;
-> +	chip->ecc.options |= NAND_ECC_DISABLE_ERASED_CHECK;
-
-Maybe a comment here as to why? (e.g., something about hamming?)
-
+> +		if (stat == -EBADMSG) {
+> +			/* check for empty pages with bitflips */
+> +			stat = nand_check_erased_ecc_chunk(p, chip->ecc.size,
+> +							   oob - eccstepsize,
+> +							   eccstepsize,
+> +							   NULL, 0,
+> +							   chip->ecc.strength);
+> +		}
+> +
+> +		if (stat < 0) {
+> +			mtd->ecc_stats.failed++;
+> +		} else {
+> +			mtd->ecc_stats.corrected += stat;
+> +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> +		}
+>  	}
 >  
->  	/* TODO: hack */
->  	chip->ecc.read_oob = r852_read_oob;
-> diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-> index fb8fd35..24192ac 100644
-> --- a/drivers/mtd/nand/tmio_nand.c
-> +++ b/drivers/mtd/nand/tmio_nand.c
-> @@ -415,6 +415,7 @@ static int tmio_probe(struct platform_device *dev)
->  	nand_chip->ecc.hwctl = tmio_nand_enable_hwecc;
->  	nand_chip->ecc.calculate = tmio_nand_calculate_ecc;
->  	nand_chip->ecc.correct = tmio_nand_correct_data;
-> +	nand_chip->ecc.options |= NAND_ECC_DISABLE_ERASED_CHECK;
+>  	/* Calculate remaining oob bytes */
 
-Same here.
-
->  
->  	if (data)
->  		nand_chip->badblock_pattern = data->badblock_pattern;
-> diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-> index 9c0bc45..d5ca045 100644
-> --- a/drivers/mtd/nand/txx9ndfmc.c
-> +++ b/drivers/mtd/nand/txx9ndfmc.c
-> @@ -336,6 +336,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
->  		chip->ecc.correct = txx9ndfmc_correct_data;
->  		chip->ecc.hwctl = txx9ndfmc_enable_hwecc;
->  		chip->ecc.mode = NAND_ECC_HW;
-> +		chip->ecc.options |= NAND_ECC_DISABLE_ERASED_CHECK;
-
-Same here.
-
->  		/* txx9ndfmc_nand_scan will overwrite ecc.size and ecc.bytes */
->  		chip->ecc.size = 256;
->  		chip->ecc.bytes = 3;
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 19d43b1..88956ab 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -128,6 +128,13 @@ typedef enum {
->  #define NAND_ECC_WRITE		1
->  /* Enable Hardware ECC before syndrome is read back from flash */
->  #define NAND_ECC_READSYN	2
-> +/*
-> + * Disable NAND 'page erased' check. In any case, this check is only done when
-> + * ecc.correct() returns -EBADMSG.
-> + * Set this flag if your implementation is able to fix bitflips in erased
-> + * pages.
-> + */
-> +#define NAND_ECC_DISABLE_ERASED_CHECK	BIT(1)
-
-Any good reason you start at BIT(1) instead of BIT(0)?
-
->  
->  /* Bit mask for flags passed to do_nand_read_ecc */
->  #define NAND_GET_DEVICE		0x80
-> @@ -500,6 +507,7 @@ struct nand_ecc_ctrl {
->  	int strength;
->  	int prepad;
->  	int postpad;
-> +	unsigned int options;
->  	struct nand_ecclayout	*layout;
->  	void *priv;
->  	void (*hwctl)(struct mtd_info *mtd, int mode);
-> -- 
-> 1.9.1
-> 
+Brian
