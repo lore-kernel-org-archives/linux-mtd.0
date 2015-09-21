@@ -1,23 +1,28 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ze4VW-0000Ak-QU
- for linux-mtd@lists.infradead.org; Mon, 21 Sep 2015 17:04:03 +0000
-Date: Mon, 21 Sep 2015 22:32:38 +0530
-From: Vinod Koul <vinod.koul@intel.com>
-To: Han Xu <b45815@freescale.com>
-Cc: shijie.huang@arm.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, fabio.estevam@freescale.com,
- hofrat@osadl.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, dan.j.williams@intel.com,
- dmaengine@vger.kernel.org
-Subject: Re: [PATCH v3 2/6] dmaengine: mxs: support i.MX7D and deep sleep mode
-Message-ID: <20150921170238.GP2381@localhost>
-References: <1440790365-28072-1-git-send-email-b45815@freescale.com>
- <1440790365-28072-3-git-send-email-b45815@freescale.com>
+Sender: Rob Herring <robherring2@gmail.com>
+Subject: Re: [PATCH v2 1/3] doc: dt: add documentation for Mediatek spi-nor
+ controller
+To: Bayi Cheng <bayi.cheng@mediatek.com>
+References: <1442559533-17552-1-git-send-email-bayi.cheng@mediatek.com>
+ <1442559533-17552-2-git-send-email-bayi.cheng@mediatek.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Rob Herring
+ <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Daniel Kurtz <djkurtz@chromium.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ srv_heupstream@mediatek.com, jteki@openedev.com,
+ ezequiel@vanduardiasur.com.ar
+From: Rob Herring <robh@kernel.org>
+Message-ID: <56000B82.9060607@kernel.org>
+Date: Mon, 21 Sep 2015 08:52:02 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1440790365-28072-3-git-send-email-b45815@freescale.com>
+In-Reply-To: <1442559533-17552-2-git-send-email-bayi.cheng@mediatek.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 28, 2015 at 02:32:41PM -0500, Han Xu wrote:
-> @@ -28,7 +28,6 @@
->  #include <linux/of_device.h>
->  #include <linux/of_dma.h>
->  #include <linux/list.h>
-> -
-
-Pl dont change at random places
-
-> +	if (mxs_dma->dev_id == IMX7D_DMA) {
-> +		ret = clk_prepare_enable(mxs_dma->clk_io);
-> +		if (ret)
-> +			goto err_clk_unprepare;
-> +	}
+On 09/18/2015 01:58 AM, Bayi Cheng wrote:
+> Add device tree binding documentation for serial flash with
+> Mediatek serial flash controller
+> 
+> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+> ---
+>  .../devicetree/bindings/mtd/mtk_quadspi.txt        | 27 ++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/mtk_quadspi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk_quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk_quadspi.txt
+> new file mode 100644
+> index 0000000..380b907
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/mtk_quadspi.txt
+> @@ -0,0 +1,27 @@
+> +* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
 > +
->  	mxs_dma_reset_chan(chan);
->  
->  	dma_async_tx_descriptor_init(&mxs_chan->desc, chan);
-> @@ -450,6 +464,8 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
->  
->  	return 0;
->  
-> +err_clk_unprepare:
-> +	clk_disable_unprepare(mxs_dma->clk);
+> +Required properties:
+> +- compatible: 	  should be "mediatek,mt8173-nor";
+> +- reg: 		  physical base address and length of the controller's register
+> +- clocks: 	  the phandle of the clock needed by the QuadSPI controller
 
-and this doesn't look right. You are calling this for failure on
-clk_prepare_enable() so if clock prepare failed you are still going to
-disable and unprepare??
+QuadSPI?
 
-> -static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
-> +static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+Please document number of clocks and their use/function.
 
-this should be separate change explaining why
-
-> +static int mxs_dma_pm_resume(struct device *dev)
-> +{
-> +	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
-> +	int ret;
+> +- clock-names: 	  the name of the clocks
+> +		  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+> +- #address-cells: should be <1>
+> +- #size-cells:	  should be <0>
 > +
-> +	ret = mxs_dma_init(mxs_dma);
-> +	if (ret)
-> +		return ret;
-> +	return 0;
-
-Aren't you supposed to prepare and unprepare clock in PM handlers too?
-
--- 
-~Vinod
+> +Example:
+> +
+> +nor_flash: spi@1100d000 {
+> +	compatible = "mediatek,mt8173-nor";
+> +	reg = <0 0x1100d000 0 0xe0>;
+> +	clocks = <&pericfg CLK_PERI_SPI>,
+> +		 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
+> +	clock-names = "spi", "sf";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	flash@0 {
+> +		....
+> +	};
+> +};
+> +
+> 
