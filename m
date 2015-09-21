@@ -1,12 +1,25 @@
-To: linux-mtd@bombadil.infradead.org
-Subject: Your e-ticket #000969561
-Date: Sun, 20 Sep 2015 10:36:12 +0000
-From: "America Airlines" <orders@aa.com>
-Reply-To: "America Airlines" <orders@aa.com>
-Message-ID: <e90c00b35445b360f74555ce1438568b@aa.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zdss6-0002W3-IT
+ for linux-mtd@lists.infradead.org; Mon, 21 Sep 2015 04:38:35 +0000
+Message-ID: <55FF882B.4030003@cn.fujitsu.com>
+Date: Mon, 21 Sep 2015 12:31:39 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_62f6f5db05ee1024a5d842240a263447"
-Content-Transfer-Encoding: 8bit
+To: Jan Kara <jack@suse.cz>
+CC: <viro@ZenIV.linux.org.uk>, <dedekind1@gmail.com>,
+ <richard.weinberger@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v3 11/39] fs: quota: replace opened calling of ->sync_fs
+ with sync_filesystem
+References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1442307754-13233-12-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <20150916101402.GE13325@quack.suse.cz> <55FA5D8A.9030108@cn.fujitsu.com>
+ <20150917110547.GB32280@quack.suse.cz> <55FBA5E5.1040201@cn.fujitsu.com>
+ <20150918090038.GA14330@quack.suse.cz>
+In-Reply-To: <20150918090038.GA14330@quack.suse.cz>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,83 +29,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_62f6f5db05ee1024a5d842240a263447
-Content-Type: text/plain; charset=us-ascii
+On 09/18/2015 05:00 PM, Jan Kara wrote:
+> On Fri 18-09-15 13:49:25, Dongsheng Yang wrote:
+>> On 09/17/2015 07:05 PM, Jan Kara wrote:
+>>> On Thu 17-09-15 14:28:26, Dongsheng Yang wrote:
+>>>> On 09/16/2015 06:14 PM, Jan Kara wrote:
+>>>>> On Tue 15-09-15 17:02:06, Dongsheng Yang wrote:
+>>>>>> There are only two places in whole kernel to call ->sync_fs directly. It
+>>>>>> will sync fs even in read-only mode. It's not a good idea and some filesystem
+>>>>>> would warn out if you are syncing in read-only mode. But sync_filesystem()
+>>>>>> does filter this case out. Let's call sync_filesystem() here instead.
+>>>>>>
+>>>>>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+>>>>>
+>>>>> So I'd prefer ubifs used hidden system inodes for quota files, set
+>>>>> DQUOT_QUOTA_SYS_FILE flag and so this code calling sync_fs() could be
+>>>>> completely avoided.
+>>>>
+>>>> Hmmm, I think it's a good idea to make quota files SYS_FILEs. But how
+>>>> about quota-tools? E.g, if quotacheck do some modification
+>>>> on quota files, we would not read them without a sync_fs().
+>>>>
+>>>> Could you help explain how quota works in this case?
+>>>
+>>> So tools like quota(1) or setquota(1) work using quotactl so they don't
+>>> need access to quota files. When quota files are system files, quotacheck
+>>> functionality belongs into the fsck - so fsck.ubifs is responsible for
+>>> checking consistency of quota files. How e.g. e2fsck does it is that when
+>>> scanning inodes, it computes usage for each user / group, loads limits
+>>> information from old quota files and then just creates new quota files with
+>>> updated information if there's any difference to the old quota files.
+>>
+>> About quotacheck, I think just call fsync() in it sounds good to me.
+>> Maybe something like the attachment.
+>>
+>> OKEY, but I found repquota is still using read() to access quota files.
+>
+> repquota(8) uses read on quota files only if quota files are visible to
+> userspace. If quota files are invisible (they are system files),
+> repquota(8) uses Q_GETQUOTA quotactl to report quotas. So this is not an
+> issue.
+>
+>> Please consider that case: 1.we read quota file and there is a pagecache
+>> for it. 2. Then kernel did some modification on quota files. But
+>> if the files is SYS_FILES marked, dquot_quota_sync() would not drop
+>> the pagecache, then 3. repquota would get an outdated data from pagecache.
+>
+> You can mark quota files as SYS_FILES only if they are invisible to
+> userspace - usually they are stored in inodes not attached to any directory
+> (their inode numbers are stored in superblock or similarly so that fs can
+> find them when it is mounted).
+>
+>> I am not sure why ext4 works well in this case. There must be something
+>> I am missing.
+>
+> Ext4 marks quota files as SYS_FILES only if it is configured to have quota
+> files in hidden system inodes. So everything works fine.
+>
+>> Maybe we can introduce a Q_GETBLK for quotactl() to make all
+>> quota tools getting informations from ioctl.
+>
+> The idea is we don't want to expose raw quota blocks to quota tools
+> anymore and there's no real need to. The only suboptimal thing is
+> repquota(8) which would benefit from a way to iterate over all quota
+> entries of a particular quota type to make it more efficient if it doesn't
+> have access to quota file. For that we could create a new quotactl
+> but it was never pressing enough so that it would get implemented.
+>
+>>> Another advantage of the checking functionality being in fsck is that
+>>> fs-specific fsck can gather usage information much more efficiently (and
+>>> fsck has to do full fs scan anyway) and there's no need to propagate quota
+>>> usage information to userspace using FIQSIZE ioctl() and similar stuff...
+>>
+>> So, let me try to summary the my opinions about it.
+>> Pros:
+>> 	(1). Security. quota files shouldn't be accessible to usespace.
+>> 	(2). Efficiency. No need for quotacheck, just do it in fsck.
+>> 	(3). No need FIOQSIZE any more.
+>> Cons:
+>> 	(1). Incompatibility:
+>> 		If I set DQUOT_QUOTA_SYS_FILE currently, there are at
+>> least two commands would not work: quotacheck and repquota. Actually
+>> that means the whole quota is not usable to user.
+>
+> When quota file is a system file, quotacheck(8) is not needed - fsck does
+> all the work. So that isn't an issue. Repquota(8) knows how to deal with a
+> situation when quota file is not visible (when it is a system file), so
+> that works as well.  Believe me, both ext4 and ocfs2 use this mechanism and
+> it works fine. XFS and GFS2 use the same principles but the don't fully use
+> the quota framework (only quotactl interface) so that's a bit different
+> case.
+>
+>> So, I think the compatibility is important to me. Then what about
+>> setting quota files as regular files at first. After all tools (quota
+>> tools, quotacheck, repquota, fsck) prepared, setting the
+>> DQUOT_QUOTA_SYS_FILE seems better.
+>
+> Quota tools are prepared for this. And ext4 originally used quota files as
+> regular files and later transitioned to store quota in system files and the
+> transition isn't a trivial process so it's better to avoid it.
 
-Dear customer,
+Okey, so I need to do my work similar with what ext4 is doing. I will read
+more about it in ext4 and quota-tools to see how to implement it in
+ubifs.
+>
+> Furthermore I'm not inclined to accept changes to generic quota
+> infrastructure just to accommodate ubifs to store quotas in regular files
+> when storing them in system files will solve these problems without changes
+> to the generic infrastructure.
 
-Your payment was successfully processed, your credit card was charged.
+Yes, I agree with that. We should keep the generic
+infrastructure until we have to change it. :)
 
-Please print your e-ticket attached to this email.
-
-Order summary:
-
-FLIGHT NUMBER - KS810465
-DATE & TIME - Sep 24 2015, 21:50
-DEPARTING - Phoenix
-TOTAL PRICE - $ 700.00
-
-Thank you for choosing America Airlines.
-
-
---b1_62f6f5db05ee1024a5d842240a263447
-Content-Type: application/zip; name="Order_000969561.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=Order_000969561.zip
-
-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
-
-
---b1_62f6f5db05ee1024a5d842240a263447--
+Yang
+>
+> 								Honza
+>
