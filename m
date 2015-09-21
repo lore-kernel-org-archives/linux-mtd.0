@@ -1,25 +1,40 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZdsvB-0004GM-3t
- for linux-mtd@lists.infradead.org; Mon, 21 Sep 2015 04:41:46 +0000
-Message-ID: <55FF88F5.5070703@cn.fujitsu.com>
-Date: Mon, 21 Sep 2015 12:35:01 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Received: from e28smtp07.in.ibm.com ([122.248.162.7])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zdvab-0000in-Uk
+ for linux-mtd@lists.infradead.org; Mon, 21 Sep 2015 07:32:42 +0000
+Received: from /spool/local
+ by e28smtp07.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <aneesh.kumar@linux.vnet.ibm.com>;
+ Mon, 21 Sep 2015 13:01:28 +0530
+Received: from d28relay02.in.ibm.com (d28relay02.in.ibm.com [9.184.220.59])
+ by d28dlp01.in.ibm.com (Postfix) with ESMTP id 151CAE0054
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2015 13:00:59 +0530 (IST)
+Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
+ by d28relay02.in.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ t8L7VHRx51249240
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2015 13:01:18 +0530
+Received: from d28av04.in.ibm.com (localhost [127.0.0.1])
+ by d28av04.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+ t8L7VH2l007912
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2015 13:01:17 +0530
+From: "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>
+To: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>,
+ Eric Van Hensbergen <ericvh@gmail.com>,
+ Ron Minnich <rminnich@sandia.gov>, Latchesar Ionkov <lucho@ionkov.net>,
+ v9fs-developer@lists.sourceforge.net
+Subject: Re: [PATCH 3/5] 9p: Simplify the xattr handlers
+In-Reply-To: <1441367842-25079-4-git-send-email-agruenba@redhat.com>
+References: <1441367842-25079-1-git-send-email-agruenba@redhat.com>
+ <1441367842-25079-4-git-send-email-agruenba@redhat.com>
+Date: Mon, 21 Sep 2015 13:00:57 +0530
+Message-ID: <87pp1cdya6.fsf@linux.vnet.ibm.com>
 MIME-Version: 1.0
-To: Jan Kara <jack@suse.cz>
-CC: <viro@ZenIV.linux.org.uk>, <dedekind1@gmail.com>,
- <richard.weinberger@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v3 36/39] ubifs: implement ubifs_get_qsize to get quota
- size in ubifs
-References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1442307754-13233-37-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20150916100007.GD13325@quack.suse.cz> <55FA6A5F.1010702@cn.fujitsu.com>
- <20150917120044.GC32280@quack.suse.cz> <55FBABD8.9030002@cn.fujitsu.com>
- <20150918112006.GA16306@quack.suse.cz>
-In-Reply-To: <20150918112006.GA16306@quack.suse.cz>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,121 +44,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/18/2015 07:20 PM, Jan Kara wrote:
-> On Fri 18-09-15 14:14:48, Dongsheng Yang wrote:
->> On 09/17/2015 08:00 PM, Jan Kara wrote:
->>> On Thu 17-09-15 15:23:11, Dongsheng Yang wrote:
->>>> On 09/16/2015 06:00 PM, Jan Kara wrote:
->>>>> On Tue 15-09-15 17:02:31, Dongsheng Yang wrote:
->>>>>> We only care the size of regular file in ubifs for quota.
->>>>>> The reason is similar with the comment in ubifs_getattr().
->>>>>>
->>>>>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
->>>>>> ---
->>>>>>   fs/ubifs/dir.c   |  3 +++
->>>>>>   fs/ubifs/file.c  | 22 ++++++++++++++++++++++
->>>>>>   fs/ubifs/ubifs.h |  1 +
->>>>>>   3 files changed, 26 insertions(+)
->>>>>>
->>>>>> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
->>>>>> index 802c6ad..0d3d6d3 100644
->>>>>> --- a/fs/ubifs/dir.c
->>>>>> +++ b/fs/ubifs/dir.c
->>>>>> @@ -1205,6 +1205,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
->>>>>>   #ifdef CONFIG_UBIFS_ATIME_SUPPORT
->>>>>>   	.update_time = ubifs_update_time,
->>>>>>   #endif
->>>>>> +#ifdef CONFIG_QUOTA
->>>>>> +	.get_qsize	= ubifs_get_qsize,
->>>>>> +#endif
->>>>>>   };
->>>>>>
->>>>>>   const struct file_operations ubifs_dir_operations = {
->>>>>> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
->>>>>> index b57ccf3..f1d792a 100644
->>>>>> --- a/fs/ubifs/file.c
->>>>>> +++ b/fs/ubifs/file.c
->>>>>> @@ -1636,6 +1636,22 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
->>>>>>   	return 0;
->>>>>>   }
->>>>>>
->>>>>> +/*
->>>>>> + * ubifs_get_qsize: get the quota size of a file
->>>>>> + * @inode: inode which we are going to get the qsize
->>>>>> + *
->>>>>> + * We only care the size of regular file in ubifs
->>>>>> + * for quota. The reason is similar with the comment
->>>>>> + * in ubifs_getattr().
->>>>>> + */
->>>>>> +ssize_t ubifs_get_qsize(struct inode *inode)
->>>>>> +{
->>>>>> +	if (S_ISREG(inode->i_mode))
->>>>>> +		return i_size_read(inode);
->>>>>> +	else
->>>>>> +		return 0;
->>>>>> +}
->>>>>> +
->>>>>
->>>>> The quota space is accounted in bytes. So why don't you store appropriate
->>>>> number of bytes the file consumes in i_blocks / i_bytes? Reiserfs can also
->>>>> have files occupying only say 100 bytes and everything works properly
->>>>> there so I don't see why ubifs needs to differ.
->>>>
->>>> Ha, yes, we did not keep i_blocks in ubifs currently. Because we have
->>>> no blocks in ubifs. Although we can simulate a i_block for quota, I
->>>> did not do it. Let me try to show what I am thinking here.
->>>>
->>>> (1).Block file system are counting space with blocks. Then the quota
->>>> could works in (dquot_alloc_block & i_blocks) way. I mean, account
->>>> spaces by dquot_alloc_block() and FIOQSIZE can get the qsize from
->>>> i_blocks.
->>>>
->>>> (2). But ubifs has no blocks, then I choose another way to do it,
->>>> (quot_alloc_space & i_size). That means, we account quota spaces
->>>> in ubifs by dquot_alloc_space() and want FIOSIZE to get i_size
->>>> of inodes. Then there is no notion of *block* but only space.
->>>>
->>>> So, I want to make FIOSIZE more flexible here to introduce a get_qsize()
->>>> into inode_operations.
->>>
->>> But when you use dquot_alloc_space(), then i_blocks / i_bytes will be
->>> updated accordingly by quota code (after all, those values are used when
->>> inode gets transferred between users on chown to update quota information
->>> accordingly). So I don't see a reason why you should need to use i_size in
->>> FIOSIZE.
->>
->> Yes, dquot_alloc_space() would update i_blocks. But ubifs_iget() would
->> never set i_blocks. So i_blocks would be 0 if you get inode from flash
->> again. Yes, I can make ubifs to maintain a i_blocks. But.....
->>>
->>> As a side note, I think that using inode size as the amount of space used
->>> is wrong. I believe even ubifs has a notion of how many bytes of storage
->>> the file occupies and *this* information should be fed into quota subsystem
->>> and updated via dquot_alloc_space(). That way it will be more or less
->>> consistent with how quota for other filesystems works as well.
->>
->> .... TBH, there is a little different with other filesystems. I did not
->> use the "disk" space, but the file space in ubifs quota, although dquot
->> means disk quota. Same with btrfs quota. If we use disk space for quota,
->> the most common problem from user is that: why I did not reach the limit
->> but I can not write any byte. COW in btrfs or out-place-updating in
->> ubifs makes this problem much worse.
->>
->> So I choose file space here for ubifs.
->
-> OK, so these are really two separate questions. I understand your choice of
-> using file space as the amount of space to account for quota purposes and
-> I'm fine with that choice. Another thing is that regardless of how you
-> decide to do quota accounting, you must maintain i_blocks / i_bytes to
-> contain proper value because dquot_transfer() uses that information to update
-> quota usage when inode owner is changed.
+Andreas Gruenbacher <andreas.gruenbacher@gmail.com> writes:
 
-But if we don't use i_blocks to get qsize, what we care only in 
-dquot_transter() is dquot->dq_dqb. That means, even if the i_blocks
-is not correct in dquot_transfer() in ubifs, that's okey, because we
-will never use this value, right?
+> The generic_{get,set,remove}xattr inode operations use the xattr name prefix to
+> decide which of the defined xattr handlers to call, then call the appropriate
+> handler's get or set operation.  The name suffix is passed to the get or set
+> operations, the prefix is still "there" in the name before the suffix though.
+> There is no need to recompose the name in a temporary buffer.
+>
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> ---
+>  fs/9p/xattr_security.c | 34 ++++------------------------------
+>  fs/9p/xattr_trusted.c  | 34 ++++------------------------------
+>  fs/9p/xattr_user.c     | 34 ++++------------------------------
+>  3 files changed, 12 insertions(+), 90 deletions(-)
+>
+> diff --git a/fs/9p/xattr_security.c b/fs/9p/xattr_security.c
+> index cb247a1..2c9b394 100644
+> --- a/fs/9p/xattr_security.c
+> +++ b/fs/9p/xattr_security.c
+> @@ -22,10 +22,7 @@
+>  static int v9fs_xattr_security_get(struct dentry *dentry, const char *name,
+>  			void *buffer, size_t size, int type)
+>  {
+> -	int retval;
+> -	char *full_name;
+> -	size_t name_len;
+> -	size_t prefix_len = XATTR_SECURITY_PREFIX_LEN;
+> +	const char *full_name = name - XATTR_SECURITY_PREFIX_LEN;
+>  
+>  	if (name == NULL)
+>  		return -EINVAL;
+> @@ -33,26 +30,13 @@ static int v9fs_xattr_security_get(struct dentry *dentry, const char *name,
+>  	if (strcmp(name, "") == 0)
+>  		return -EINVAL;
+>  
+> -	name_len = strlen(name);
+> -	full_name = kmalloc(prefix_len + name_len + 1 , GFP_KERNEL);
+> -	if (!full_name)
+> -		return -ENOMEM;
+> -	memcpy(full_name, XATTR_SECURITY_PREFIX, prefix_len);
+> -	memcpy(full_name+prefix_len, name, name_len);
+> -	full_name[prefix_len + name_len] = '\0';
+> -
+> -	retval = v9fs_xattr_get(dentry, full_name, buffer, size);
+> -	kfree(full_name);
+> -	return retval;
+> +	return v9fs_xattr_get(dentry, full_name, buffer, size);
+>  }
+>  
 
-Yang
->
-> 								Honza
->
+I look strange, to expect that name argument passed to ->get() will have
+the full name details. In any case this need more documentation and a
+helper as Christoph suggested
+
+-aneesh
