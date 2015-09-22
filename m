@@ -1,24 +1,18 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZeB7W-00035h-2k
- for linux-mtd@lists.infradead.org; Tue, 22 Sep 2015 00:07:42 +0000
-Received: by padbj2 with SMTP id bj2so5339321pad.3
- for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2015 17:07:21 -0700 (PDT)
-Date: Mon, 21 Sep 2015 17:07:18 -0700
+Date: Mon, 21 Sep 2015 17:15:28 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: David Woodhouse <dwmw2@infradead.org>, sergey.senozhatsky@gmail.com,
- kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/39] mtd: nandsim: drop null test before destroy
- functions
-Message-ID: <20150922000718.GK31505@google.com>
-References: <1442146532-9100-1-git-send-email-Julia.Lawall@lip6.fr>
- <1442146532-9100-2-git-send-email-Julia.Lawall@lip6.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+ Priit Laes <plaes@plaes.org>, Hans de Goede <hdegoede@redhat.com>,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: sunxi: fix sunxi_nand_chips_cleanup()
+Message-ID: <20150922001528.GL31505@google.com>
+References: <1442160883-29011-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1442146532-9100-2-git-send-email-Julia.Lawall@lip6.fr>
+In-Reply-To: <1442160883-29011-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 13, 2015 at 02:14:54PM +0200, Julia Lawall wrote:
-> Remove unneeded NULL test.
-> 
-> The semantic patch that makes this change is as follows:
-> (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @@ expression x; @@
-> -if (x != NULL)
->   \(kmem_cache_destroy\|mempool_destroy\|dma_pool_destroy\)(x);
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+On Sun, Sep 13, 2015 at 06:14:43PM +0200, Boris Brezillon wrote:
+> The sunxi_nand_chips_cleanup() function is missing a call to list_del()
+> which generates a double free error.
 
-Applied patches 1 and 36 to l2-mtd.git
+And if you could manage to get past that...an infinite loop, no?
+
+> Reported-by: Priit Laes <plaes@plaes.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: <stable@vger.kernel.org> # 3.19+
+> Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
+
+Applied to linux-mtd.git, as this is a -stable fix.
+
+Brian
