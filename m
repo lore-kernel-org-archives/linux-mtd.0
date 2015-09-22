@@ -1,18 +1,28 @@
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from mail-la0-f47.google.com ([209.85.215.47])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZeMfQ-0004yO-Pt
- for linux-mtd@lists.infradead.org; Tue, 22 Sep 2015 12:27:29 +0000
-From: Andreas Gruenbacher <agruenba@redhat.com>
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
- Christoph Hellwig <hch@infradead.org>, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH v2 3/7] jffs2: Add missing capability check for listing
- trusted xattrs
-Date: Tue, 22 Sep 2015 14:26:48 +0200
-Message-Id: <1442924812-9384-4-git-send-email-agruenba@redhat.com>
-In-Reply-To: <1442924812-9384-1-git-send-email-agruenba@redhat.com>
+ id 1ZeNuJ-0006hN-I4
+ for linux-mtd@lists.infradead.org; Tue, 22 Sep 2015 13:46:56 +0000
+Received: by lahg1 with SMTP id g1so13045495lah.1
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Sep 2015 06:46:26 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAFLxGvxrm1E696hSJ6GtnC-V16uWFWBU036a-Aak8PW43us69A@mail.gmail.com>
 References: <1442924812-9384-1-git-send-email-agruenba@redhat.com>
+ <1442924812-9384-2-git-send-email-agruenba@redhat.com>
+ <CAFLxGvxrm1E696hSJ6GtnC-V16uWFWBU036a-Aak8PW43us69A@mail.gmail.com>
+Date: Tue, 22 Sep 2015 14:47:08 +0200
+Message-ID: <CAHc6FU4TB8sTNRZ+X5BGwcXJzrEQsOSu4ajdH1i3vzJJ5U-9vw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] ubifs: Remove unused security xattr handler
+From: Andreas Gruenbacher <agruenba@redhat.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christoph Hellwig <hch@infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Subodh Nijsure <snijsure@grid-net.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +32,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The vfs checks if a task has the appropriate access for get and set
-operations, but it cannot do that for the list operation; the file system
-must check for that itself.
+2015-09-22 14:41 GMT+02:00 Richard Weinberger <richard.weinberger@gmail.com>:
+> Should this go through the ubifs tree or do you carry it?
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- fs/jffs2/xattr_trusted.c | 3 +++
- 1 file changed, 3 insertions(+)
+I hope that Al will take these patches from me. The filesystem patches
+are not so exciting from a filesystem point of view.
 
-diff --git a/fs/jffs2/xattr_trusted.c b/fs/jffs2/xattr_trusted.c
-index ceaf9c6..bbd20c1 100644
---- a/fs/jffs2/xattr_trusted.c
-+++ b/fs/jffs2/xattr_trusted.c
-@@ -39,6 +39,9 @@ static size_t jffs2_trusted_listxattr(struct dentry *dentry, char *list,
- {
- 	size_t retlen = XATTR_TRUSTED_PREFIX_LEN + name_len + 1;
- 
-+	if (!capable(CAP_SYS_ADMIN))
-+		return 0;
-+
- 	if (list && retlen<=list_size) {
- 		strcpy(list, XATTR_TRUSTED_PREFIX);
- 		strcpy(list + XATTR_TRUSTED_PREFIX_LEN, name);
--- 
-2.4.3
+Thanks,
+Andreas
