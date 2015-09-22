@@ -1,24 +1,24 @@
-Date: Mon, 21 Sep 2015 17:01:45 -0700
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZeB7W-00035h-2k
+ for linux-mtd@lists.infradead.org; Tue, 22 Sep 2015 00:07:42 +0000
+Received: by padbj2 with SMTP id bj2so5339321pad.3
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2015 17:07:21 -0700 (PDT)
+Date: Mon, 21 Sep 2015 17:07:18 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, nicolas.ferre@atmel.com,
- broonie@kernel.org, linux-spi@vger.kernel.org, dwmw2@infradead.org,
- zajec5@gmail.com, beanhuo@micron.com, juhosg@openwrt.org,
- ben@decadent.org.uk, jogo@openwrt.org, jteki@openedev.com,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, robh+dt@kernel.org, pawel.moll@arm.com,
- mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
- galak@codeaurora.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH linux-next 1/4] mtd: spi-nor: remove unused
- read_xfer/write_xfer hooks
-Message-ID: <20150922000145.GJ31505@google.com>
-References: <cover.1442590224.git.cyrille.pitchen@atmel.com>
- <719ad7cc8bf6df151dd799cd4f13292fd9471079.1442590224.git.cyrille.pitchen@atmel.com>
- <201509190508.55496.marex@denx.de>
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: David Woodhouse <dwmw2@infradead.org>, sergey.senozhatsky@gmail.com,
+ kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/39] mtd: nandsim: drop null test before destroy
+ functions
+Message-ID: <20150922000718.GK31505@google.com>
+References: <1442146532-9100-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1442146532-9100-2-git-send-email-Julia.Lawall@lip6.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201509190508.55496.marex@denx.de>
+In-Reply-To: <1442146532-9100-2-git-send-email-Julia.Lawall@lip6.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Sep 19, 2015 at 05:08:55AM +0200, Marek Vasut wrote:
-> On Friday, September 18, 2015 at 05:49:25 PM, Cyrille Pitchen wrote:
-> > struct spi_nor_xfer_cfg and read_xfer/write_xfer hooks were never used by
-> > any driver. Do some cleanup by removing them.
-> > 
-> > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+On Sun, Sep 13, 2015 at 02:14:54PM +0200, Julia Lawall wrote:
+> Remove unneeded NULL test.
 > 
-> Right, if this will ever be needed, it can be re-added.
+> The semantic patch that makes this change is as follows:
+> (http://coccinelle.lip6.fr/)
 > 
-> Reviewed-by: Marek Vasut <marex@denx.de>
+> // <smpl>
+> @@ expression x; @@
+> -if (x != NULL)
+>   \(kmem_cache_destroy\|mempool_destroy\|dma_pool_destroy\)(x);
+> // </smpl>
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
-Applied this patch to l2-mtd.git. Thanks.
+Applied patches 1 and 36 to l2-mtd.git
