@@ -1,17 +1,20 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+Received: from smtp.transmode.se ([31.15.61.139])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zf0PI-0007yE-Mz
- for linux-mtd@lists.infradead.org; Thu, 24 Sep 2015 06:53:29 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <richard@nod.at>, Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2] ubifs: ubifs_dump: dump index area
-Date: Thu, 24 Sep 2015 14:46:37 +0800
-Message-ID: <1443077197-26371-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-In-Reply-To: <56039767.2060202@nod.at>
-References: <56039767.2060202@nod.at>
+ id 1Zf0jb-0002Cg-Cy
+ for linux-mtd@lists.infradead.org; Thu, 24 Sep 2015 07:14:28 +0000
+Received: from exch2.transmode.se (exch2.transmode.se [192.168.203.24])
+ by smtp.transmode.se (Postfix) with ESMTP id 64CE71186FE9
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Sep 2015 12:34:21 +0200 (CEST)
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: List archive offline?
+Date: Wed, 23 Sep 2015 10:34:20 +0000
+Message-ID: <1443004460.29498.103.camel@transmode.se>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-15"
+Content-ID: <C51869F2B3CB3945A58402FCC2B1CD66@transmode.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,129 +24,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Scan the whole index tree and dump each index node.
+infraded.org seems dead and I cannot access mail list archives.
+Can this be fixed?
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
-	changelog:
-		- fix the incorrect width in reading data
-		  from flash. Thanx Richard to point it out.
-
- ubifs-utils/ubifs_dump/ubifs_dump.c | 95 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
-
-diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-index 0d375f0..ab3a682 100644
---- a/ubifs-utils/ubifs_dump/ubifs_dump.c
-+++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-@@ -886,6 +886,97 @@ static int dump_lpt(void)
- 	return 0;
- }
- 
-+/**
-+ * ubifs_read_node - read node.
-+ * @c: UBIFS file-system description object
-+ * @buf: buffer to read to
-+ * @type: node type
-+ * @len: node length (not aligned)
-+ * @lnum: logical eraseblock number
-+ * @offs: offset within the logical eraseblock
-+ *
-+ * This function reads a node of known type and and length, checks it and
-+ * stores in @buf. Returns zero in case of success, %-EUCLEAN if CRC mismatched
-+ * and a negative error code in case of failure.
-+ */
-+int ubifs_read_node(const struct ubifs_info *c, void *buf, int len,
-+		    int lnum, loff_t offs)
-+{
-+	int err;
-+
-+	ubifs_assert(lnum >= 0 && lnum < c->leb_cnt && offs >= 0);
-+	ubifs_assert(len >= UBIFS_CH_SZ && offs + len <= c->leb_size);
-+	ubifs_assert(!(offs & 7) && offs < c->leb_size);
-+	ubifs_assert(type >= 0 && type < UBIFS_NODE_TYPES_CNT);
-+
-+	err = ubifs_read((loff_t)lnum * c->leb_size + offs, len, buf);
-+	if (err && err != -EBADMSG)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int dump_zbr(struct ubifs_info *c, struct ubifs_zbranch *zbr)
-+{
-+	int i = 0;
-+	int err = 0;
-+	struct ubifs_idx_node *idx;
-+	void *buf;
-+
-+	buf = malloc(zbr->len);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	err = ubifs_read_node(c, buf, zbr->len, zbr->lnum, zbr->offs);
-+	if (err)
-+		goto out;
-+
-+	dump_node(c, buf);
-+
-+	if (((struct ubifs_ch *)buf)->node_type != UBIFS_IDX_NODE)
-+		goto out;
-+
-+	idx = ((struct ubifs_idx_node *)buf);
-+	for (i = 0; i < le16_to_cpu(idx->child_cnt); i++) {
-+		struct ubifs_branch *br;
-+		struct ubifs_zbranch child;
-+
-+		br = ubifs_idx_branch(c, idx, i);
-+		child.lnum = le32_to_cpu(br->lnum);
-+		child.offs = le32_to_cpu(br->offs);
-+		child.len = le32_to_cpu(br->len);
-+		err = dump_zbr(c, &child);
-+		if (err)
-+			goto out;
-+	}
-+
-+out:
-+	free(buf);
-+	return err;
-+}
-+
-+static int dump_index()
-+{
-+	int err = 0;
-+
-+	printf("\tINDEX AREA: \n");
-+	err = dump_zbr(c, &c->zroot);
-+	if (err)
-+		return err;
-+	return 0;
-+}
-+
-+static int dump_main()
-+{
-+	int err = 0;
-+	printf("MAIN AREA: \n");
-+	err = dump_index();
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
- static int dump()
- {
- 	int err = 0;
-@@ -911,6 +1002,10 @@ static int dump()
- 	err = dump_lpt();
- 	if (err)
- 		goto free;
-+
-+	err = dump_main();
-+	if (err)
-+		goto out;
- free:
- 	free(leb_buf);
- out:
--- 
-1.8.4.2
+ Jocke=
