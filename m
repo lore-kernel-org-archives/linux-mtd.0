@@ -1,31 +1,33 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZevoJ-0007PD-Qk
- for linux-mtd@lists.infradead.org; Thu, 24 Sep 2015 01:59:00 +0000
-From: =?gb2312?B?S2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk=?=
- <karlzhang@micron.com>
-To: Andrea Scian <rnd4@dave-tech.it>, "dedekind1@gmail.com"
- <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: Iwo Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff Lauruhn (jlauruhn)"
- <jlauruhn@micron.com>, =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?=
- <qiwang@micron.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, "shuangshuo@gmail.com"
- <shuangshuo@gmail.com>
-Subject: RE: UBI/UBIFS: dealing with MLC's paired pages
-Date: Thu, 24 Sep 2015 01:57:41 +0000
-Message-ID: <D067BF0533BDBE4F821CF557AAAE78443B96AA67@NTXXIAMBX01.xacn.micron.com>
-References: <20150917152240.757c9e90@bbrezillon>
- <1442503239.19983.18.camel@gmail.com> <20150917174642.0c983136@bbrezillon>
- <55FAEEB1.50401@nod.at> <55FBBA6E.9070203@dave-tech.it>
- <1442562845.19983.43.camel@gmail.com> <55FBDB8F.2040301@dave-tech.it>
-In-Reply-To: <55FBDB8F.2040301@dave-tech.it>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ id 1ZewCn-00006W-Iv
+ for linux-mtd@lists.infradead.org; Thu, 24 Sep 2015 02:24:19 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B2E6DAAAD
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2015 02:23:48 +0000 (UTC)
+Date: Wed, 23 Sep 2015 09:42:36 +0200
+From: Jan Kara <jack@suse.cz>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: Jan Kara <jack@suse.cz>, viro@ZenIV.linux.org.uk, dedekind1@gmail.com,
+ richard.weinberger@gmail.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 36/39] ubifs: implement ubifs_get_qsize to get quota
+ size in ubifs
+Message-ID: <20150923074236.GA23181@quack.suse.cz>
+References: <20150916100007.GD13325@quack.suse.cz>
+ <55FA6A5F.1010702@cn.fujitsu.com>
+ <20150917120044.GC32280@quack.suse.cz>
+ <55FBABD8.9030002@cn.fujitsu.com>
+ <20150918112006.GA16306@quack.suse.cz>
+ <55FF88F5.5070703@cn.fujitsu.com>
+ <20150921091355.GA9028@quack.suse.cz>
+ <55FFCB01.9070205@cn.fujitsu.com>
+ <20150921094452.GC9028@quack.suse.cz>
+ <55FFE3C6.2020609@cn.fujitsu.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55FFE3C6.2020609@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,64 +37,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8NCg0KQWN0dWFsbHksIHdlIGFyZSB3b3JraW5nIG9uIHRoZSBwYWlyZWQgcGFnZXMgcHJv
-YmxlbSB0b28uIFdlIGhhdmUgb24gTUxDIA0KY2hpcHMgYW5kIGRldmVsb3BlZCBhIGhhcmR3YXJl
-IHBvd2VyIGNvbnRyb2wgYm9hcmQgdG8gc2ltdWxhdGUgdGhlIHJlYWwgcG93ZXIgbG9zcyBjeWNs
-ZS4NCg0KV2UgaGF2ZSBtYW55IGlkZWFzIHRvIHNoYXJlIHdpdGggeW91Lg0KDQoNCjEuIGVtdWxh
-dGluZyB0aGUgcGFpcmVkLXBhZ2UgY2FzZQ0KCUhXOiBEZXZlbG9wIGEgcG93ZXIgY29udHJvbCBk
-YXVnaHRlciBib2FyZCB0byBjb250cm9sIHRoZSBwb3dlciBzdXBwbHkgdG8gTkFORCwgaW5jbHVk
-aW5nIHZvbHRhZ2UvcmFtcCBjb250cm9sLg0KCVNXOiBBZGQgYSBtb2R1bGUgaW4gTkFORCBjb250
-cm9sbGVyLCB1dGlsaXplIHBvd2VyIGJvYXJkIHRvIHNodXQgZG93biBOQU5EIHBvd2VyIHdoZW4g
-cHJvZ3JhbW1pbmcgcGFpcmVkIHVwcGVyIHBhZ2UuDQoJCQ0KIFRoaXMgaXMgZWFzeSBmb3IgdXMg
-dG8gcmVwcm9kdWNlIHBhaXJlZC1wYWdlIGNhc2UsIGluIG9yZGVyIHRvIGd1YXJhbnRlZSB0aGUg
-cG93ZXIgbG9zcyBtb21lbnQsIHdlIGFkZCB1c2UgRlBHQSBsb2dpYyANCnRvIGNvbnRyb2wgdGhl
-IHBvd2VyIGJvYXJkIGFuZCBkZXRlY3QgdGhlIHN0YXR1cyBvZiBOQU5ELg0KDQoNCjIuIEVDL1ZJ
-RCBoZWFkZXIgY29ycnVwdGlvbg0KCUFzIEJvcmlzJ3MgZXhjZWxsZW50IHN1bW1hcnkgbWVudGlv
-bmVkLCAiZHVwbGljYXRlIHRoZSBFQyBoZWFkZXIgaW4gdGhlIFZJRCBoZWFkZXIiLCBJIGFsc28g
-YmVsaWV2ZSB0aGlzIGlzIGEgZ29vZCANCglzb2x1dGlvbiB0byBwcm90ZWN0IEVDLCBhbmQgd2Ug
-YXJlIGRvaW5nIHRoaXMgYW5kIHRlc3Rpbmcgb24gTUxDLg0KCQ0KCUZvciBWSUQgaGVhZGVyLCBJ
-IHRoaW5rIHNraXAgcGFnZXMgd2lsbCB3YXN0ZSB0b28gbWFueSBjYXBhY2l0eSwgYW5kIFNMQyBt
-b2RlIGNvbmp1Z2F0aW9uIHdpdGggR0Mgd2lsbCBtYWtlIFBFIGN5Y2xpbmcgaGlnaGVyLg0KDQoJ
-V2UgYXJlIGRldmVsb3BpbmcgYW5vdGhlciBzb2x1dGlvbiB0byBzdG9yZSBWSUQgaW5mbyBpbnRv
-IG90aGVyIHBhZ2UncyBPT0IgYXJlYSBpbiBpdHMgb3duIGJsb2NrLCBiZWNhdXNlIFVCSSBkb2Vz
-IG5vdCANCgl1c2UgT09CIGFuZCBFQ0MgY29kZSBhbHdheXMgbm90IHVzZSBhbGwgT09CIGFyZWEu
-IA0KCQ0KDQoNCldlIGFyZSBzdGlsbCBkZXZlbG9waW5nIGFuZCB0ZXN0aW5nIHRoZXNlIHNvbHV0
-aW9ucyB0byBwcm90ZWN0IEVDIGFuZCBWSUQgb24gTUxDLg0KCQkNCg0KQWxsIHRoZSBhYm92ZSBp
-cyBteSBsaW1pdGVkIHdvcmsgb24gcGFpcmVkIHBhZ2VzLCBhbmQgSSBhbSBvcGVuIHRvIGFueSBu
-ZXcgc3VnZ2VzdGlvbnMgYW5kIGNvb3BlcmF0aW9uLg0KDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNz
-YWdlLS0tLS0NCkZyb206IGxpbnV4LW10ZCBbbWFpbHRvOmxpbnV4LW10ZC1ib3VuY2VzQGxpc3Rz
-LmluZnJhZGVhZC5vcmddIE9uIEJlaGFsZiBPZiBBbmRyZWEgU2NpYW4NClNlbnQ6IEZyaWRheSwg
-U2VwdGVtYmVyIDE4LCAyMDE1IDU6MzggUE0NClRvOiBkZWRla2luZDFAZ21haWwuY29tOyBSaWNo
-YXJkIFdlaW5iZXJnZXI7IEJvcmlzIEJyZXppbGxvbg0KQ2M6IEl3byBNZXJnbGVyOyBKZWZmIExh
-dXJ1aG4gKGpsYXVydWhuKTsgUWkgV2FuZyDN9cbwICIocWl3YW5nKSI7IGxpbnV4LW10ZEBsaXN0
-cy5pbmZyYWRlYWQub3JnOyBCcmlhbiBOb3JyaXM7IERhdmlkIFdvb2Rob3VzZQ0KU3ViamVjdDog
-UmU6IFVCSS9VQklGUzogZGVhbGluZyB3aXRoIE1MQydzIHBhaXJlZCBwYWdlcw0KDQoNCkJvcmlz
-LCBBcnRlbSwNCg0KdGhhbmtzIHRvIGJvdGggb2YgeW91IGZvciB5b3UgZGV0YWlsZWQgZGVzY3Jp
-cHRpb24uDQpJJ2xsIGZvbGxvdyB0aGlzIGRldmVsb3BtZW50LCBmb3Igc3VyZSBJJ2xsIGxlYXJu
-IGEgbG90IDotKQ0KDQpLaW5kIFJlZ2FyZHMsDQoNCi0tIA0KDQpBbmRyZWEgU0NJQU4NCg0KREFW
-RSBFbWJlZGRlZCBTeXN0ZW1zDQoNCklsIDE4LzA5LzIwMTUgMDk6NTQsIEFydGVtIEJpdHl1dHNr
-aXkgaGEgc2NyaXR0bzoNCj4gSGkgQW5kcmVhLA0KPg0KPiBPbiBGcmksIDIwMTUtMDktMTggYXQg
-MDk6MTcgKzAyMDAsIEFuZHJlYSBTY2lhbiB3cm90ZToNCj4+IEkgcGVyZmVjdGx5IHVuZGVyc3Rh
-bmQgdGhlIHJlYXNvbiB3aHkgdXNpbmcgbmFuZHNpbSAoYW5kIHBvd2VyY3V0IA0KPj4gc2ltdWxh
-dG9yIGluIGdlbmVyYWwpIGJ1dCwgQUZBSUssIHRoZSBwb3dlcmN1dCBwcm9ibGVtIGlzIGhhcmQg
-dG8gDQo+PiAic2ltdWxhdGUiIGJlY2F1c2UgdGhlIG1haW4gaXNzdWUgaXMgd2hlbiB0aGUgZGV2
-aWNlIHNlZSBhIGxvc3Mgb2YgDQo+PiBwb3dlciBpbiB0aGUgbWlkZGxlIG9mIGFuIG9wZXJhdGlv
-biAocGFnZSB3cml0ZSBvciBibG9jayBlcmFzZSkNCj4NCj4gVGhpcyBpcyByaWdodCwgYW5kIG5v
-IGRvdWJ0cyByZWFsIHBvd2VyIGN1dHMgdGVzdGluZyBpcyB0aGUgbW9zdCANCj4gaW1wb3J0YW50
-IHRoaW5nLg0KPg0KPiBIb3dldmVyLCBhdCB0aGUgYmVnaW5uaW5nLCBpdCBpcyB2ZXJ5IGhhcmQg
-dG8gZGV2ZWxvcCBpZiB5b3UgZG8gbm90IA0KPiBoYXZlIGEgcXVpY2sgd2F5IHRvIHZlcmlmeSB5
-b3VyIGlkZWFzLiBTaW11bGF0aW9uIGlzIGV4YWN0bHkgZm9yIHRoaXMgDQo+IC0gdG8gbWFrZSB0
-aGUgZmlyc3QgcmVsaWFibGUgZHJhZnQuIE9uY2UgdGhhdCB3b3JrLCB5b3UgZ28gdG8gdGhlIA0K
-PiBzZWNvbmQgc3RhZ2UgLSByZWFsIEhXIHRlc3RpbmcuDQo+DQo+IFJlYWwgSFcgdGVzdGluZyBy
-ZXF1aXJlcyBhIHJlYWwgcG93ZXIgY3ljbGUsIG5vIGd1YXJhbnRlZXMgcG93ZXIgY3V0IA0KPiBo
-YXBwZW5zIGF0IHRoZSByaWdodCBtb21lbnQsIHNvIHlvdSBtYXkgc3BlbmQgaG91cnMgZW11bGF0
-aW5nIGp1c3Qgb25lIA0KPiBwYWlyZWQtcGFnZSBjYXNlLiBDb21wYXJlIHRoaXMgdG8ganVzdCBy
-dW5uaW5nIGEgc2NyaXB0LCBhbmQgaXQgDQo+IGVtdWxhdGVzIHlvdSAxMDAgcGFpcmVkLXBhZ2Ug
-Y2FzZXMgZHVyaW5nIDEwIG1pbnV0ZXMuIEFuZCB5b3UgY2FuIA0KPiBlbXVsYXRlIGl0IGVhc2ls
-eSBhdCB0aGUgaW50ZXJlc3RpbmcgcGxhY2VzLCBub3QganVzdCBkdXJpbmcgdGhlIG1haW4gDQo+
-IGRhdGEgd3JpdGVzLg0KPg0KPiBTbywgdG8gcmVjYXAsIEkgc3VnZ2VzdCBlbXVsYXRpb24gdG8g
-bWFrZSB0aGUgZmlyc3QgZHJhZnQsIGFuZCB0aGVuIA0KPiBzdGFydCBoZWF2eSByZWFsIHRlc3Rp
-bmcgdG8gc2hhcGUgdGhlIGZpbmFsIHNvbHV0aW9uLg0KPg0KPiBBcnRlbS4NCj4NCg0KDQpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvDQo=
+On Mon 21-09-15 19:02:30, Dongsheng Yang wrote:
+> On 09/21/2015 05:44 PM, Jan Kara wrote:
+> >On Mon 21-09-15 17:16:49, Dongsheng Yang wrote:
+> >>On 09/21/2015 05:13 PM, Jan Kara wrote:
+> >>>On Mon 21-09-15 12:35:01, Dongsheng Yang wrote:
+> >>>>On 09/18/2015 07:20 PM, Jan Kara wrote:
+> >>>>>>.... TBH, there is a little different with other filesystems. I did not
+> >>>>>>use the "disk" space, but the file space in ubifs quota, although dquot
+> >>>>>>means disk quota. Same with btrfs quota. If we use disk space for quota,
+> >>>>>>the most common problem from user is that: why I did not reach the limit
+> >>>>>>but I can not write any byte. COW in btrfs or out-place-updating in
+> >>>>>>ubifs makes this problem much worse.
+> >>>>>>
+> >>>>>>So I choose file space here for ubifs.
+> >>>>>
+> >>>>>OK, so these are really two separate questions. I understand your choice of
+> >>>>>using file space as the amount of space to account for quota purposes and
+> >>>>>I'm fine with that choice. Another thing is that regardless of how you
+> >>>>>decide to do quota accounting, you must maintain i_blocks / i_bytes to
+> >>>>>contain proper value because dquot_transfer() uses that information to update
+> >>>>>quota usage when inode owner is changed.
+> >>>>
+> >>>>But if we don't use i_blocks to get qsize, what we care only in
+> >>>>dquot_transter() is dquot->dq_dqb. That means, even if the i_blocks
+> >>>>is not correct in dquot_transfer() in ubifs, that's okey, because we
+> >>>>will never use this value, right?
+> >>>
+> >>>dquot_transfer() will use the value - when file F changes owner from user A
+> >>>to user B, then you need to decrement amount of space used by F from A's
+> >>>quota usage and add that amount to B's quota usage. And the amount of space
+> >>>is obtained via inode_get_bytes() which uses i_blocks and i_bytes. See
+> >>>__dquot_transfer() in fs/quota/dquot.c for details.
+> >>
+> >>Yes, I see it. But if ubifs doesn't use i_blocks and i_bytes to stand
+> >>for quota size, as I mentioned I want to use i_size. Then we will never
+> >>use i_blocks. So we only need a to transfer dquot->dq_dqb values. That
+> >>means, even the i_blocks in dquot_transfer() is not correct, we don't
+> >>care it. we only need to make sure values in dquot_dq_dqb are
+> >>transfered, such as dquot->dq_dqb->curspace for user B is equal with
+> >>i_size.
+> >
+> >I think you are missing one thing:
+> >
+> >Assume user A has files F1 (1MB) F2 (2MB) F3 (3MB).
+> >User B has one file G1 (4MB).
+> >
+> >So user A uses 6 MB in total (stored in dquot for user A in dqb_curspace
+> >field). User B uses 4MB.
+> >
+> >Now you do "chown B F1"
+> >
+> >You need to change dq_dqb of F1 to point to user B quota structure as you
+> >explain, that is correct. However you also need to subtract 1MB from user
+> >A's total usage (which is stored in struct dquot for user A) since file F1
+> >no longer belongs to him. And you need to add 1 MB to user B's total usage.
+> >
+> >After this user A will have total usage of 5 MB and user B has usage of 5
+> >MB as well. You need to properly update the total usage of each user so
+> >that you can check the usage against quota limits.
+> 
+> But that's all done in dquot_transfer(). It dquot_decr_space(from) and
+> dquot_incr_space(to). Let me show the test result in my implementation.
+
+Yes, dquot_decr_space(transfer_from[cnt], cur_space) and
+dquot_incr_space(transfer_to[cnt], cur_space) are the functions changing
+usage. However have a look at what cur_space is. It is set as:
+
+cur_space = inode_get_bytes(inode);
+
+and inode_get_bytes() is:
+
+ret = (((loff_t)inode->i_blocks) << 9) + inode->i_bytes;
+
+So for dquot_transfer() to work correctly, filesystem has to properly
+maintain i_blocks and i_bytes.
+
+> (1). root -> 1M/2M/3M     yds ->4M
+> 
+> [root@atest-guest linux_compile]# ll -h /mnt/ubifs/
+> total 11M
+> -rw-r--r--. 1 root root 1.0M Sep 21 15:54 1M
+> -rw-r--r--. 1 root root 2.0M Sep 21 15:54 2M
+> -rw-r--r--. 1 root root 3.0M Sep 21 15:54 3M
+> -rw-r--r--. 1 yds  root 4.0M Sep 21 15:55 4M
+> -rw-------. 1 root root 6.0K Sep 21 15:53 aquota.group
+> -rw-------. 1 root root 7.0K Sep 21 15:53 aquota.user
+> [root@atest-guest linux_compile]# repquota -u /mnt/ubifs/
+> *** Report for user quotas on device /dev/ubi0_0
+> Block grace time: 7days; Inode grace time: 7days
+>                         Block limits                File limits
+> User            used    soft    hard  grace    used  soft  hard  grace
+> ----------------------------------------------------------------------
+> root      --    6144       0       0              4     0     0
+> yds       --    4096       0       0              1     0     0
+> 
+> 
+> (2). chown yds /mnt/ubifs/1M
+> [root@atest-guest linux_compile]# chown yds /mnt/ubifs/1M
+> [root@atest-guest linux_compile]# ll -h /mnt/ubifs/
+> total 11M
+> -rw-r--r--. 1 yds  root 1.0M Sep 21 15:54 1M
+> -rw-r--r--. 1 root root 2.0M Sep 21 15:54 2M
+> -rw-r--r--. 1 root root 3.0M Sep 21 15:54 3M
+> -rw-r--r--. 1 yds  root 4.0M Sep 21 15:55 4M
+> -rw-------. 1 root root 6.0K Sep 21 15:53 aquota.group
+> -rw-------. 1 root root 7.0K Sep 21 15:53 aquota.user
+> [root@atest-guest linux_compile]# repquota -u /mnt/ubifs/
+> *** Report for user quotas on device /dev/ubi0_0
+> Block grace time: 7days; Inode grace time: 7days
+>                         Block limits                File limits
+> User            used    soft    hard  grace    used  soft  hard  grace
+> ----------------------------------------------------------------------
+> root      --    5120       0       0              3     0     0
+> yds       --    5120       0       0              2     0     0
+> 
+> 
+> (3). quotacheck and check again.
+> [root@atest-guest linux_compile]# quotaoff /mnt/ubifs && quotacheck
+> -u /mnt/ubifs/
+> [root@atest-guest linux_compile]# ll -h /mnt/ubifs
+> total 11M
+> -rw-r--r--. 1 yds  root 1.0M Sep 21 15:54 1M
+> -rw-r--r--. 1 root root 2.0M Sep 21 15:54 2M
+> -rw-r--r--. 1 root root 3.0M Sep 21 15:54 3M
+> -rw-r--r--. 1 yds  root 4.0M Sep 21 15:55 4M
+> -rw-------. 1 root root 6.0K Sep 21 15:53 aquota.group
+> -rw-------. 1 root root 7.0K Sep 21 16:00 aquota.user
+> [root@atest-guest linux_compile]# repquota -u /mnt/ubifs/
+> *** Report for user quotas on device /dev/ubi0_0
+> Block grace time: 7days; Inode grace time: 7days
+>                         Block limits                File limits
+> User            used    soft    hard  grace    used  soft  hard  grace
+> ----------------------------------------------------------------------
+> root      --    5120       0       0              3     0     0
+> yds       --    5120       0       0              2     0     0
+
+Yes, this case is working because quota code updated i_blocks properly when
+creating files. But if you do not set i_blocks when reading inodes
+(which seems to be the case) I expect the following would not work:
+
+mount -t ubifs -o usrjquota=aquota.user,jqfmt=vfsv0 <dev> /mnt
+quotacheck -vu /mnt
+quotaon -vu /mnt
+dd if=/dev/zero of=file1 bs=1M count=1
+# Umount fs to prune cached information
+umount /mnt
+mount -t ubifs -o usrjquota=aquota.user,jqfmt=vfsv0 <dev> /mnt
+quotaon -vu /mnt
+chown yds /mnt/file1
+repquota -u /mnt/
+
+Now unless you set i_blocks when reading inode, yds would not be accounted
+for 1 MB /mnt/file1 is using...
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
