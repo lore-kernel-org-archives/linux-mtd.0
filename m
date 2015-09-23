@@ -1,29 +1,20 @@
-Received: from mail-oi0-f41.google.com ([209.85.218.41])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zeomo-0004bR-M5
- for linux-mtd@lists.infradead.org; Wed, 23 Sep 2015 18:28:59 +0000
-Received: by oiww128 with SMTP id w128so28858247oiw.2
- for <linux-mtd@lists.infradead.org>; Wed, 23 Sep 2015 11:28:37 -0700 (PDT)
+ id 1Zeor9-0006av-F2
+ for linux-mtd@lists.infradead.org; Wed, 23 Sep 2015 18:33:28 +0000
+Date: Wed, 23 Sep 2015 20:33:02 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>,
+ Baruch Siach <baruch@tkos.co.il>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mxc_nand: fix copy_spare
+Message-ID: <20150923183302.GC15052@pengutronix.de>
+References: <1443020848-28813-1-git-send-email-eric@eukrea.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+EcR23BLTvQgD36bAAiT3yULYSpE0zMiXpRm0kDGQeLOTho8w@mail.gmail.com>
-References: <loom.20150918T183854-37@post.gmane.org>
- <CAFLxGvwJjy=6GLXJm=2frruO9vKqqPG_6yYxSH7HLLr47x9apg@mail.gmail.com>
- <CA+-FG628WkbiqnzT9tp4Li=SP2qHPM+Nn+KLHjQWqHN-f==+vg@mail.gmail.com>
- <55FC6BCB.1030901@nod.at>
- <CA+-FG62MN2FBLKecGJJ6YHqPDyrgrx8BkCAZGezoKbADOCm_0g@mail.gmail.com>
- <55FC6F56.4050107@nod.at>
- <CA+-FG62nCCaK_GEGSqBJ4ROvqgVPZdsh7pyEsnq2C0AXZrnkjw@mail.gmail.com>
- <55FC8712.5040905@nod.at>
- <CA+EcR23BLTvQgD36bAAiT3yULYSpE0zMiXpRm0kDGQeLOTho8w@mail.gmail.com>
-Date: Wed, 23 Sep 2015 14:28:37 -0400
-Message-ID: <CA+-FG62qXfW8nLqPbYrRMHNZmCJqiy36a_waKzRV=5=cYb7yTQ@mail.gmail.com>
-Subject: Re: UBIFS corruptions on NOR-Flash
-From: Roshni Shah <roshni.shah@timesys.com>
-To: Han Xu <xhnjupt@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "han.xu@freescale.com" <han.xu@freescale.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1443020848-28813-1-git-send-email-eric@eukrea.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,55 +24,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Han,
+Hello Eric,
 
-Thank you very much for looking into this.
+On Wed, Sep 23, 2015 at 05:07:28PM +0200, Eric Bénard wrote:
+> it was broken by 35d5d20efad8a04c8c002c7f31241dff973977a6
+> "mtd: mxc_nand: cleanup copy_spare function"
+> 
+> else we get the following error :
+> [   22.709507] ubi0: attaching mtd3
+> [   23.613470] ubi0: scanning is finished
+> [   23.617278] ubi0: empty MTD device detected
+> [   23.623219] Unhandled fault: imprecise external abort (0x1c06) at 0x9e62f0ec
+> [   23.630291] pgd = 9df80000
+> [   23.633005] [9e62f0ec] *pgd=8e60041e(bad)
+> [   23.637064] Internal error: : 1c06 [#1] SMP ARM
+> [   23.641605] Modules linked in:
+> [   23.644687] CPU: 0 PID: 99 Comm: ubiattach Not tainted 4.2.0-dirty #22
+> [   23.651222] Hardware name: Freescale i.MX53 (Device Tree Support)
+> [   23.657322] task: 9e687300 ti: 9dcfc000 task.ti: 9dcfc000
+> [   23.662744] PC is at memcpy16_toio+0x4c/0x74
+> [   23.667026] LR is at mxc_nand_command+0x484/0x640
+> [   23.671739] pc : [<803f9c08>]    lr : [<803faeb0>]    psr: 60000013
+> [   23.671739] sp : 9dcfdb10  ip : 9e62f0ea  fp : 9dcfdb1c
+> [   23.683222] r10: a09c1000  r9 : 0000001a  r8 : ffffffff
+> [   23.688453] r7 : ffffffff  r6 : 9e674810  r5 : 9e674810  r4 : 000000b6
+> [   23.694985] r3 : a09c16a4  r2 : a09c16a4  r1 : a09c16a4  r0 : 0000ffff
+> [   23.701521] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+> [   23.708662] Control: 10c5387d  Table: 8df80019  DAC: 00000015
+> [   23.714413] Process ubiattach (pid: 99, stack limit = 0x9dcfc210)
+> [   23.720514] Stack: (0x9dcfdb10 to 0x9dcfe000)
+> [   23.724881] db00:                                     9dcfdb6c 9dcfdb20 803faeb0 803f9bc8
+> [   23.733069] db20: 803f227c 803f9b74 ffffffff 9e674810 9e674810 9e674810 00000040 9e62f010
+> [   23.741255] db40: 803faa2c 9e674b40 9e674810 803faa2c 00000400 803faa2c 00000000 9df42800
+> [   23.749441] db60: 9dcfdb9c 9dcfdb70 803f2024 803faa38 9e4201cc 00000000 803f0a78 9e674b40
+> [   23.757627] db80: 803f1f80 9e674810 00000400 00000400 9dcfdc14 9dcfdba0 803f3bd8 803f1f8c
+> [   23.765814] dba0: 9e4201cc 00000000 00000580 00000000 00000000 800718c0 0000007f 00001000
+> [   23.774000] dbc0: 9df42800 000000e0 00000000 00000000 9e4201cc 00000000 00000000 00000000
+> [   23.782186] dbe0: 00000580 00000580 00000000 9e674810 9dcfdc20 9dcfdce8 9df42800 00580000
+> [   23.790372] dc00: 00000000 00000400 9dcfdc6c 9dcfdc18 803f3f94 803f39a4 9dcfdc20 00000000
+> [   23.798558] dc20: 00000000 00000400 00000000 00000000 00000000 00000000 9df42800 00000000
+> [   23.806744] dc40: 9dcfdd0c 00580000 00000000 00000400 00000000 9df42800 9dee1000 9d802000
+> [   23.814930] dc60: 9dcfdc94 9dcfdc70 803eb63c 803f3f38 00000400 9dcfdce8 9df42800 dead4ead
+> [   23.823116] dc80: 803eb5f4 00000000 9dcfdcc4 9dcfdc98 803e82ac 803eb600 00000400 9dcfdce8
+> [   23.831301] dca0: 9df42800 00000400 9dee0000 00000000 00000400 00000000 9dcfdd1c 9dcfdcc8
+> [   23.839488] dcc0: 80406048 803e8230 00000400 9dcfdce8 9df42800 9dcfdc78 00000008 00000000
+> [   23.847673] dce0: 00000000 00000000 00000000 00000004 00000000 9df42800 9dee0000 00000000
+> [   23.855859] dd00: 9d802030 00000000 9dc8b214 9d802000 9dcfdd44 9dcfdd20 804066cc 80405f50
+> [   23.864047] dd20: 00000400 9dc8b200 9d802030 9df42800 9dee0000 9dc8b200 9dcfdd84 9dcfdd48
+> [   23.872233] dd40: 8040a544 804065ac 9e401c80 000080d0 9dcfdd84 00000001 800fc828 9df42400
+> [   23.880418] dd60: 00000000 00000080 9dc8b200 9dc8b200 9dc8b200 9dee0000 9dcfdddc 9dcfdd88
+> [   23.888605] dd80: 803fb560 8040a440 9dcfddc4 9dcfdd98 800f1428 9dee1000 a0acf000 00000000
+> [   23.896792] dda0: 00000000 ffffffff 00000006 00000000 9dee0000 9dee0000 00005600 00000080
+> [   23.904979] ddc0: 9dc8b200 a0acf000 9dc8b200 8112514c 9dcfde24 9dcfdde0 803fc08c 803fb4f0
+> [   23.913165] dde0: 9e401c80 00000013 9dcfde04 9dcfddf8 8006bbf8 8006ba00 9dcfde24 00000000
+> [   23.921351] de00: 9dee0000 00000065 9dee0000 00000001 9dc8b200 8112514c 9dcfde84 9dcfde28
+> [   23.929538] de20: 8040afa0 803fb948 ffffffff 00000000 9dc8b214 9dcfde40 800f1428 800f11dc
+> [   23.937724] de40: 9dc8b21c 9dc8b20c 9dc8b204 9dee1000 9dc8b214 8069bb60 fffff000 fffff000
+> [   23.945911] de60: 9e7b5400 00000000 9dee0000 9dee1000 00001000 9e7b5400 9dcfdecc 9dcfde88
+> [   23.954097] de80: 803ff1bc 8040a630 9dcfdea4 9dcfde98 00000800 00000800 9dcfdecc 9dcfdea8
+> [   23.962284] dea0: 803e8f6c 00000000 7e87ab70 9e7b5400 80113e30 00000003 9dcfc000 00000000
+> [   23.970470] dec0: 9dcfdf04 9dcfded0 804008cc 803feb98 ffffffff 00000003 00000000 00000000
+> [   23.978656] dee0: 00000000 00000000 9e7cb000 9dc193e0 7e87ab70 9dd92140 9dcfdf7c 9dcfdf08
+> [   23.986842] df00: 80113b5c 8040080c 800fbed8 8006bbf0 9e7cb000 00000003 9e7cb000 9dd92140
+> [   23.995029] df20: 9dc193e0 9dd92148 9dcfdf4c 9dcfdf38 8011022c 800fbe78 8000f9cc 9e687300
+> [   24.003216] df40: 9dcfdf6c 9dcfdf50 8011f798 8007ffe8 7e87ab70 9dd92140 00000003 9dd92140
+> [   24.011402] df60: 40186f40 7e87ab70 9dcfc000 00000000 9dcfdfa4 9dcfdf80 80113e30 8011373c
+> [   24.019588] df80: 7e87ab70 7e87ab70 7e87aea9 00000036 8000fb84 9dcfc000 00000000 9dcfdfa8
+> [   24.027775] dfa0: 8000f9a0 80113e00 7e87ab70 7e87ab70 00000003 40186f40 7e87ab70 00000000
+> [   24.035962] dfc0: 7e87ab70 7e87ab70 7e87aea9 00000036 00000000 00000000 76fd1f70 00000000
+> [   24.044148] dfe0: 76f80f8c 7e87ab28 00009810 76f80fc4 60000010 00000003 00000000 00000000
+> [   24.052328] Backtrace:
+> [   24.054806] [<803f9bbc>] (memcpy16_toio) from [<803faeb0>] (mxc_nand_command+0x484/0x640)
+> [   24.062996] [<803faa2c>] (mxc_nand_command) from [<803f2024>] (nand_write_page+0xa4/0x154)
+> [   24.071264]  r10:9df42800 r9:00000000 r8:803faa2c r7:00000400 r6:803faa2c r5:9e674810
+> [   24.079180]  r4:9e674b40
+> [   24.081738] [<803f1f80>] (nand_write_page) from [<803f3bd8>] (nand_do_write_ops+0x240/0x444)
+> [   24.090180]  r8:00000400 r7:00000400 r6:9e674810 r5:803f1f80 r4:9e674b40
+> [   24.096970] [<803f3998>] (nand_do_write_ops) from [<803f3f94>] (nand_write+0x68/0x88)
+> [   24.104804]  r10:00000400 r9:00000000 r8:00580000 r7:9df42800 r6:9dcfdce8 r5:9dcfdc20
+> [   24.112719]  r4:9e674810
+> [   24.115287] [<803f3f2c>] (nand_write) from [<803eb63c>] (part_write+0x48/0x50)
+> [   24.122514]  r10:9d802000 r9:9dee1000 r8:9df42800 r7:00000000 r6:00000400 r5:00000000
+> [   24.130429]  r4:00580000
+> [   24.132989] [<803eb5f4>] (part_write) from [<803e82ac>] (mtd_write+0x88/0xa0)
+> [   24.140129]  r5:00000000 r4:803eb5f4
+> [   24.143748] [<803e8224>] (mtd_write) from [<80406048>] (ubi_io_write+0x104/0x65c)
+> [   24.151235]  r7:00000000 r6:00000400 r5:00000000 r4:9dee0000
+> [   24.156968] [<80405f44>] (ubi_io_write) from [<804066cc>] (ubi_io_write_ec_hdr+0x12c/0x190)
+> [   24.165323]  r10:9d802000 r9:9dc8b214 r8:00000000 r7:9d802030 r6:00000000 r5:9dee0000
+> [   24.173239]  r4:9df42800
+> [   24.175798] [<804065a0>] (ubi_io_write_ec_hdr) from [<8040a544>] (ubi_early_get_peb+0x110/0x1f0)
+> [   24.184587]  r6:9dc8b200 r5:9dee0000 r4:9df42800
+> [   24.189262] [<8040a434>] (ubi_early_get_peb) from [<803fb560>] (create_vtbl+0x7c/0x238)
+> [   24.197271]  r10:9dee0000 r9:9dc8b200 r8:9dc8b200 r7:9dc8b200 r6:00000080 r5:00000000
+> [   24.205187]  r4:9df42400
+> [   24.207746] [<803fb4e4>] (create_vtbl) from [<803fc08c>] (ubi_read_volume_table+0x750/0xa64)
+> [   24.216187]  r10:8112514c r9:9dc8b200 r8:a0acf000 r7:9dc8b200 r6:00000080 r5:00005600
+> [   24.224103]  r4:9dee0000
+> [   24.226662] [<803fb93c>] (ubi_read_volume_table) from [<8040afa0>] (ubi_attach+0x97c/0x152c)
+> [   24.235103]  r10:8112514c r9:9dc8b200 r8:00000001 r7:9dee0000 r6:00000065 r5:9dee0000
+> [   24.243018]  r4:00000000
+> [   24.245579] [<8040a624>] (ubi_attach) from [<803ff1bc>] (ubi_attach_mtd_dev+0x630/0xbac)
+> [   24.253673]  r10:9e7b5400 r9:00001000 r8:9dee1000 r7:9dee0000 r6:00000000 r5:9e7b5400
+> [   24.261588]  r4:fffff000
+> [   24.264148] [<803feb8c>] (ubi_attach_mtd_dev) from [<804008cc>] (ctrl_cdev_ioctl+0xcc/0x1cc)
+> [   24.272589]  r10:00000000 r9:9dcfc000 r8:00000003 r7:80113e30 r6:9e7b5400 r5:7e87ab70
+> [   24.280505]  r4:00000000
+> [   24.283070] [<80400800>] (ctrl_cdev_ioctl) from [<80113b5c>] (do_vfs_ioctl+0x42c/0x6c4)
+> [   24.291077]  r6:9dd92140 r5:7e87ab70 r4:9dc193e0
+> [   24.295753] [<80113730>] (do_vfs_ioctl) from [<80113e30>] (SyS_ioctl+0x3c/0x64)
+> [   24.303066]  r10:00000000 r9:9dcfc000 r8:7e87ab70 r7:40186f40 r6:9dd92140 r5:00000003
+> [   24.310981]  r4:9dd92140
+> [   24.313549] [<80113df4>] (SyS_ioctl) from [<8000f9a0>] (ret_fast_syscall+0x0/0x54)
+> [   24.321123]  r9:9dcfc000 r8:8000fb84 r7:00000036 r6:7e87aea9 r5:7e87ab70 r4:7e87ab70
+> [   24.328957] Code: e1c300b0 e1510002 e1a03001 1afffff9 (e89da800)
+> [   24.335066] ---[ end trace ab1cb17887f21bbb ]---
+> [   24.340249] Unhandled fault: imprecise external abort (0x1c06) at 0x7ee8bcf0
+> [   24.347310] pgd = 9df3c000
+> [   24.350023] [7ee8bcf0] *pgd=8dcbf831, *pte=8eb3334f, *ppte=8eb3383f
+> Segmentation fault
+> 
+> Signed-off-by: Eric Bénard <eric@eukrea.com>
+> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+I wonder why this didn't backfire already earlier. I would expect that
+for a 512 nand writing to the oob fails completely, doesn't it?
 
-I do not have CONFIG_CMA enabled. I did not know it was required. I
-can try a test with that enabled.
+The fix looks right though, so
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-I tried the older version of the fsl_quadspi driver yesterday and with
-that, I was able to mount the UBIFS.
+Thanks
+Uwe
 
-http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/tree/drivers/mtd/spi-nor/fsl-quadspi.c?h=imx_3.14.28_1.0.0_ga&id=7a998cb82c4e6862eff95ff75d253717e8f5598d
-
-Is the CONFIG_CMA requirement applicable to later versions of the driver?
-
-Thanks,
-Roshni
-
-On Wed, Sep 23, 2015 at 2:21 PM, Han Xu <xhnjupt@gmail.com> wrote:
-> Have you enabled the CONFIG_CMA in kernel setting?
->
-> On Fri, Sep 18, 2015 at 4:50 PM, Richard Weinberger <richard@nod.at> wrote:
->> Am 18.09.2015 um 23:36 schrieb Roshni Shah:
->>> Thanks. I tried 4.1 Kernel ran UBI tests and mounting the UBIFS on
->>> Vybrid TWR. I see a different error, however corruptions & UBI test
->>> failures still persist.
->>>
->>> Flash chip: s25fl128s (same as above).
->>>
->>> # uname -r
->>> 4.1.5
->>>
->>> Following are the results:
->>
->> [...]
->>
->>> ubi0 warning: ubi_eba_read_leb: CRC error: calculated 0x8f7714b9, must
->>> be 0x31a3fc87
->>> ubi0 warning: vol_cdev_write: volume 0 on UBI device 0 is corrupted
->>> ubi0 warning: ubi_eba_read_leb: CRC error: calculated 0xd1882123, must
->>
->> So, reading data using UBI does not work as expected.
->> One thing MTD drivers sometimes get wrong is that UBI is using vmalloc'ed buffers
->> and drivers cannot deal with that.
->>
->> Adding Han Xu, maybe he has an idea.
->>
->> Thanks,
->> //richard
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
