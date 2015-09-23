@@ -1,14 +1,18 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZeVaD-0001hJ-JM
- for linux-mtd@lists.infradead.org; Tue, 22 Sep 2015 21:58:42 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZedNn-0000F6-Vi
+ for linux-mtd@lists.infradead.org; Wed, 23 Sep 2015 06:18:25 +0000
+Subject: Re: [Resend PATCH 0/2] UBIFS: two trivial fix
+To: Sheng Yong <shengyong1@huawei.com>, dedekind1@gmail.com
+References: <1442999500-5343-1-git-send-email-shengyong1@huawei.com>
+Cc: linux-mtd@lists.infradead.org
 From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- stable@vger.kernel.org
-Subject: [PATCH] UBI: Validate data_size
-Date: Tue, 22 Sep 2015 23:58:07 +0200
-Message-Id: <1442959087-9820-1-git-send-email-richard@nod.at>
+Message-ID: <56024416.6090806@nod.at>
+Date: Wed, 23 Sep 2015 08:17:58 +0200
+MIME-Version: 1.0
+In-Reply-To: <1442999500-5343-1-git-send-email-shengyong1@huawei.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make sure that data_size is less than LEB size.
-Otherwise a handcrafted UBI image is able to trigger
-an out of bounds memory access in ubi_compare_lebs().
+Am 23.09.2015 um 11:11 schrieb Sheng Yong:
+> Sheng Yong (2):
+>   UBIFS: call dbg_is_power_cut() instead of reading c->dbg->pc_happened
+>   UBIFS: print verbose message when rescanning a corrupted node
+> 
+>  fs/ubifs/debug.c    | 8 ++++----
+>  fs/ubifs/recovery.c | 2 +-
+>  2 files changed, 5 insertions(+), 5 deletions(-)
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/io.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Patches look good to me. :-)
+Artem, I'd queue them for v4.4, ok?
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 5bbd1f0..1fc23e4 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -926,6 +926,11 @@ static int validate_vid_hdr(const struct ubi_device *ubi,
- 		goto bad;
- 	}
- 
-+	if (data_size > ubi->leb_size) {
-+		ubi_err(ubi, "bad data_size");
-+		goto bad;
-+	}
-+
- 	if (vol_type == UBI_VID_STATIC) {
- 		/*
- 		 * Although from high-level point of view static volumes may
--- 
-1.8.4.5
+Thanks,
+//richard
