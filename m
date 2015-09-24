@@ -1,16 +1,20 @@
-Date: Thu, 24 Sep 2015 07:25:12 +0300
-From: Baruch Siach <baruch@tkos.co.il>
-To: Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] mxc_nand: fix copy_spare
-Message-ID: <20150924042512.GC2229@tarshish>
-References: <1443020848-28813-1-git-send-email-eric@eukrea.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zezyu-000098-OI
+ for linux-mtd@lists.infradead.org; Thu, 24 Sep 2015 06:26:13 +0000
+Subject: Re: [PATCH 24/27] ubifs: ubifs_dump: dump index area
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com,
+ computersforpeace@gmail.com
+References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1439973572-12489-25-git-send-email-yangds.fnst@cn.fujitsu.com>
+Cc: linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56039767.2060202@nod.at>
+Date: Thu, 24 Sep 2015 08:25:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1443020848-28813-1-git-send-email-eric@eukrea.com>
+In-Reply-To: <1439973572-12489-25-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Eric,
+Yang,
 
-On Wed, Sep 23, 2015 at 05:07:28PM +0200, Eric Bénard wrote:
-> it was broken by 35d5d20efad8a04c8c002c7f31241dff973977a6
-> "mtd: mxc_nand: cleanup copy_spare function"
-> 
-> else we get the following error :
+while porting my tool to your patches I've spotted this:
 
-[long kernel oops resulting in:]
+Am 19.08.2015 um 10:39 schrieb Dongsheng Yang:
+> +static int dump_zbr(struct ubifs_info *c, struct ubifs_zbranch *zbr)
 
-> Segmentation fault
-> 
-> Signed-off-by: Eric Bénard <eric@eukrea.com>
-> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+[...]
 
-Reviewed-by: Baruch Siach <baruch@tkos.co.il>
+> +
+> +	if (le32_to_cpu(((struct ubifs_ch *)buf)->node_type) != UBIFS_IDX_NODE)
 
-Sorry for not catching it earlier.
+->node_type is u8 not le32.
+
+> +		goto out;
+> +
+> +	idx = ((struct ubifs_idx_node *)buf);
+> +	for (i = 0; i < le32_to_cpu(idx->child_cnt); i++) {
+
+->child_cnt is le16 not le32.
+
+> +		struct ubifs_branch *br;
+> +		struct ubifs_zbranch child;
+
+Please double check also other places where access on-disk data
+to use the correct width.
 
 Thanks,
-baruch
-
-> ---
->  drivers/mtd/nand/mxc_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 2426db8..f04445b 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -879,7 +879,7 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom)
->  				      oob_chunk_size);
->  
->  		/* the last chunk */
-> -		memcpy16_toio(&s[oob_chunk_size * sparebuf_size],
-> +		memcpy16_toio(&s[i * sparebuf_size],
->  			      &d[i * oob_chunk_size],
->  			      host->used_oobsize - i * oob_chunk_size);
->  	}
-
--- 
-     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
+//richard
