@@ -1,19 +1,21 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zf3uu-0004p1-0u
- for linux-mtd@lists.infradead.org; Thu, 24 Sep 2015 10:38:20 +0000
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Subject: Re: [PATCH] UBI: Validate data_size
-From: David Gstir <david@sigma-star.at>
-In-Reply-To: <1442959087-9820-1-git-send-email-richard@nod.at>
-Date: Thu, 24 Sep 2015 12:37:49 +0200
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2909A36F-2B40-424F-9861-BB992DB2B2BF@sigma-star.at>
-References: <1442959087-9820-1-git-send-email-richard@nod.at>
-To: Richard Weinberger <richard@nod.at>
+Received: from mail-pa0-f46.google.com ([209.85.220.46])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zf7Ql-0005Pj-CQ
+ for linux-mtd@lists.infradead.org; Thu, 24 Sep 2015 14:23:28 +0000
+Received: by pacgz1 with SMTP id gz1so7994542pac.3
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2015 07:23:06 -0700 (PDT)
+Message-ID: <1443104575.7429.49.camel@linux>
+Subject: Re: UBI on dual NAND chips
+From: Nathan Williams <nathan.williams@flightdata.com.au>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Date: Fri, 25 Sep 2015 00:22:55 +1000
+In-Reply-To: <CAFLxGvxN-6EQtzO4z7AsJX1QrGU2Nuf9mhqFqrxyE+dGXDWYqw@mail.gmail.com>
+References: <1443062690.32223.70.camel@ubuntu.flightdata.com.au>
+ <CAFLxGvxN-6EQtzO4z7AsJX1QrGU2Nuf9mhqFqrxyE+dGXDWYqw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 2015-09-24 at 11:02 +0200, Richard Weinberger wrote:
+> Using UBI on MLC is not supported yet.
+> IOW, you have been warned. ;-)
 
-> On 22.09.2015, at 23:58, Richard Weinberger <richard@nod.at> wrote:
->=20
-> Make sure that data_size is less than LEB size.
-> Otherwise a handcrafted UBI image is able to trigger
-> an out of bounds memory access in ubi_compare_lebs().
->=20
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
-> drivers/mtd/ubi/io.c | 5 +++++
-> 1 file changed, 5 insertions(+)
->=20
-> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-> index 5bbd1f0..1fc23e4 100644
-> --- a/drivers/mtd/ubi/io.c
-> +++ b/drivers/mtd/ubi/io.c
-> @@ -926,6 +926,11 @@ static int validate_vid_hdr(const struct =
-ubi_device *ubi,
-> 		goto bad;
-> 	}
->=20
-> +	if (data_size > ubi->leb_size) {
-> +		ubi_err(ubi, "bad data_size");
-> +		goto bad;
-> +	}
-> +
+Thanks. I wasn't sure, despite my background reading.
 
-Nice catch!
+> > From what I've read, it's possible to use UBI on a concatenated MTD.
+> > If I have two identical chips, will these be concatenated automatically?
+> 
+> You mean using the mtd_concat driver?
 
-Reviewed-by: David Gstir <david@sigma-star.at>=
+Yes.
+
+> > Is creating a single UBI volume over the two NAND chips (and using UBIFS
+> > on it) the best way to make use of a redundant NAND chip? Would
+> > mirroring data on a second UBI volume offer additional improvements to
+> > data reliability?
+> 
+> Depends on how you define "data reliability".
+> You're looking for something like an MTD RAID1 to deal with a dead chip?
+
+Yes that would be ideal. The NAND flash will be used for data logging.
+We'd like to use multiple chips to improve our chances of recovering
+recorded data in the event that either a chip dies or there are too many
+errors.
+
+> > Also, what's the current status of the "unstable bits issue"?
+> 
+> It is a known issue but nobody cared hard enough so far.
+> Mostly due to the fact that nobody actually can trigger it.
+> 
+> Can you trigger it? If so, I'd like to get access to that hardware
+> and have a look.
+
+No I haven't seen it. Our hardware is still in the planning phase.
