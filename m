@@ -1,12 +1,28 @@
-To: linux-mtd@bombadil.infradead.org
-Subject: You recieved tax refund payment (case #00546854)
-Date: Thu, 24 Sep 2015 23:46:29 +0200
-From: "Internal Revenue Service" <office@huberthaupt-medien.de>
-Reply-To: "Internal Revenue Service" <office@huberthaupt-medien.de>
-Message-ID: <0147cc6d2fe6709c4fbc77b7b0fb0feb@huberthaupt-medien.de>
+Received: from out02.mta.xmission.com ([166.70.13.232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZfEZQ-0005ep-Ha
+ for linux-mtd@lists.infradead.org; Thu, 24 Sep 2015 22:00:53 +0000
+From: ebiederm@xmission.com (Eric W. Biederman)
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Jeff Layton <jlayton@poochiereds.net>,
+ "J. Bruce Fields" <bfields@fieldses.org>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <1443039368-55445-1-git-send-email-seth.forshee@canonical.com>
+ <1443039368-55445-4-git-send-email-seth.forshee@canonical.com>
+Date: Thu, 24 Sep 2015 16:53:11 -0500
+In-Reply-To: <1443039368-55445-4-git-send-email-seth.forshee@canonical.com>
+ (Seth Forshee's message of "Wed, 23 Sep 2015 15:16:03 -0500")
+Message-ID: <87si63o56g.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_bb4e79f24f6c3432b45a14c8da7f5ffb"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Subject: Re: [PATCH v4 3/7] fs: Verify access of user towards block device
+ file when mounting
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,91 +32,175 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_bb4e79f24f6c3432b45a14c8da7f5ffb
-Content-Type: text/plain; charset=us-ascii
+Seth Forshee <seth.forshee@canonical.com> writes:
 
-You are receiving this notification because your tax refund request has been processed.
+> When mounting a filesystem on a block device there is currently
+> no verification that the user has appropriate access to the
+> device file passed to mount. This has not been an issue so far
+> since the user in question has always been root, but this must
+> be changed before allowing unprivileged users to mount in user
+> namespaces.
+>
+> To do this, a new version of lookup_bdev() is added named
+> lookup_bdev_perm(). Both of these functions become wrappers
+> around a common inner fucntion. The behavior of lookup_bdev() is
+> unchanged, but calling lookup_bdev_perm() will fail if the user
+> does not have the specified access rights to the supplied path.
+> The permission check is skipped if the user has CAP_SYS_ADMIN to
+> avoid any possible regressions in behavior.
+>
+> blkdev_get_by_path() is updated to use lookup_bdev_perm(). This
+> is used by mount_bdev() and mount_mtd(), so this will cause
+> mounts on block devices to fail when the user lacks the required
+> permissions. Other calls to blkdev_get_by_path() will all happen
+> with root privileges, so these calls will be unaffected.
 
-Please download attached document with approved 94031K form.
+Good but buggy patch.
 
-Transaction type - Tax Refund
-Payment method - Wire transfer
-Amount - $ 3332.00
-Status - Processed
-Form - 94031K
+In the mtd bits the flags are super flags, not file mode bits,
+which makes testing them against FMODE_READ and FMODE_WRITE is
+incorrect.
 
-Additional information regarding tax refunds can be found on our website:
-http://www.irs.gov/Refunds.
+Further it looks like quite a few more possibly all of the lookup_bdev
+instances could use inode level permission checking.
 
-Regards,
-Internal Revenue Service
-Address: 1111 Constitution Avenue, NW
-Washington, DC 20224
-Website: http://www.irs.gov
-Phone: 1-800-829-1040
+Certainly code such as quotactl makes me wonder.
 
+Ugh.  Your code needs to be using __inode_permission and not
+inode_permission.
 
---b1_bb4e79f24f6c3432b45a14c8da7f5ffb
-Content-Type: application/zip; name="Refund_Request_00546854_Confirmed.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=Refund_Request_00546854_Confirmed.zip
+The readability or writability of a device node has little or nothing to
+do with the readability/writability of the superblock.   So I don't see
+any reason we should be checking that.
 
-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
-
-
---b1_bb4e79f24f6c3432b45a14c8da7f5ffb--
+Eric
+>
+> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+> ---
+>  drivers/mtd/mtdsuper.c |  7 ++++++-
+>  fs/block_dev.c         | 52 ++++++++++++++++++++++++++++++++++++++++----------
+>  include/linux/fs.h     |  1 +
+>  3 files changed, 49 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
+> index 20c02a3b7417..a3970b0506b9 100644
+> --- a/drivers/mtd/mtdsuper.c
+> +++ b/drivers/mtd/mtdsuper.c
+> @@ -125,6 +125,7 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
+>  #ifdef CONFIG_BLOCK
+>  	struct block_device *bdev;
+>  	int ret, major;
+> +	int perm = 0;
+>  #endif
+>  	int mtdnr;
+>  
+> @@ -176,7 +177,11 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
+>  	/* try the old way - the hack where we allowed users to mount
+>  	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
+>  	 */
+> -	bdev = lookup_bdev(dev_name);
+> +	if (flags & FMODE_READ)
+> +		perm |= MAY_READ;
+> +	if (flags & FMODE_WRITE)
+> +		perm |= MAY_WRITE;
+> +	bdev = lookup_bdev_perm(dev_name, perm);
+>  	if (IS_ERR(bdev)) {
+>  		ret = PTR_ERR(bdev);
+>  		pr_debug("MTDSB: lookup_bdev() returned %d\n", ret);
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 46bd98482f71..7ca0f8911e97 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1401,9 +1401,14 @@ struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
+>  					void *holder)
+>  {
+>  	struct block_device *bdev;
+> +	int perm = 0;
+>  	int err;
+>  
+> -	bdev = lookup_bdev(path);
+> +	if (mode & FMODE_READ)
+> +		perm |= MAY_READ;
+> +	if (mode & FMODE_WRITE)
+> +		perm |= MAY_WRITE;
+> +	bdev = lookup_bdev_perm(path, perm);
+>  	if (IS_ERR(bdev))
+>  		return bdev;
+>  
+> @@ -1710,15 +1715,8 @@ int ioctl_by_bdev(struct block_device *bdev, unsigned cmd, unsigned long arg)
+>  
+>  EXPORT_SYMBOL(ioctl_by_bdev);
+>  
+> -/**
+> - * lookup_bdev  - lookup a struct block_device by name
+> - * @pathname:	special file representing the block device
+> - *
+> - * Get a reference to the blockdevice at @pathname in the current
+> - * namespace if possible and return it.  Return ERR_PTR(error)
+> - * otherwise.
+> - */
+> -struct block_device *lookup_bdev(const char *pathname)
+> +static struct block_device *__lookup_bdev(const char *pathname, int mask,
+> +					  bool check_perm)
+>  {
+>  	struct block_device *bdev;
+>  	struct inode *inode;
+> @@ -1733,6 +1731,11 @@ struct block_device *lookup_bdev(const char *pathname)
+>  		return ERR_PTR(error);
+>  
+>  	inode = d_backing_inode(path.dentry);
+> +	if (check_perm && !capable(CAP_SYS_ADMIN)) {
+> +		error = inode_permission(inode, mask);
+> +		if (error)
+> +			goto fail;
+> +	}
+>  	error = -ENOTBLK;
+>  	if (!S_ISBLK(inode->i_mode))
+>  		goto fail;
+> @@ -1750,6 +1753,35 @@ fail:
+>  	bdev = ERR_PTR(error);
+>  	goto out;
+>  }
+> +
+> +/*
+> + * lookup_bdev_perm - lookup a struct block_device by name and check for
+> + *		      access rights
+> + * @pathname:	special file representing the block device
+> + * @mask:	rights to check for (%MAY_READ, %MAY_WRITE, %MAY_EXEC)
+> + *
+> + * Get a reference to the blockdevice at @pathname in the current
+> + * namespace if possible, check for the specified rights to the device
+> + * at @pathname, and return it.  Return ERR_PTR(error) otherwise.
+> + */
+> +struct block_device *lookup_bdev_perm(const char *pathname, int mask)
+> +{
+> +	return __lookup_bdev(pathname, mask, true);
+> +}
+> +EXPORT_SYMBOL(lookup_bdev_perm);
+> +
+> +/**
+> + * lookup_bdev  - lookup a struct block_device by name
+> + * @pathname:	special file representing the block device
+> + *
+> + * Get a reference to the blockdevice at @pathname in the current
+> + * namespace if possible and return it.  Return ERR_PTR(error)
+> + * otherwise.
+> + */
+> +struct block_device *lookup_bdev(const char *pathname)
+> +{
+> +	return __lookup_bdev(pathname, 0, false);
+> +}
+>  EXPORT_SYMBOL(lookup_bdev);
+>  
+>  int __invalidate_device(struct block_device *bdev, bool kill_dirty)
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 5ec201e8308c..d03c2061bdd2 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2383,6 +2383,7 @@ static inline void unregister_chrdev(unsigned int major, const char *name)
+>  #define BLKDEV_MAJOR_HASH_SIZE	255
+>  extern const char *__bdevname(dev_t, char *buffer);
+>  extern const char *bdevname(struct block_device *bdev, char *buffer);
+> +extern struct block_device *lookup_bdev_perm(const char *, int);
+>  extern struct block_device *lookup_bdev(const char *);
+>  extern void blkdev_show(struct seq_file *,off_t);
