@@ -16,11 +16,12 @@ CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  <peterpandong@micron.com>, Kamil Debski <Kamil.Debski@imgtec.com>, "Ionela
  Voinescu" <Ionela.Voinescu@imgtec.com>,
  =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-Subject: FW: [PATCH 01/12] mtd: nand_bbt: new header for nand family BBT
-Date: Fri, 25 Sep 2015 06:35:33 +0000
-Message-ID: <87F60714EC601C4C83DFF1D2E3D390A0326CC840@NTXXIAMBX02.xacn.micron.com>
+Subject: [PATCH 01/12] mtd: nand_bbt: new header for nand family BBT
+Date: Fri, 25 Sep 2015 06:37:00 +0000
+Message-ID: <87F60714EC601C4C83DFF1D2E3D390A0326CC852@NTXXIAMBX02.xacn.micron.com>
 References: <87F60714EC601C4C83DFF1D2E3D390A0326CC7D2@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A0326CC7D2@NTXXIAMBX02.xacn.micron.com>
+ <87F60714EC601C4C83DFF1D2E3D390A0326CC840@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A0326CC840@NTXXIAMBX02.xacn.micron.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="gb2312"
 Content-Transfer-Encoding: base64
