@@ -1,30 +1,31 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfOTa-0001AF-3s
- for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 08:35:31 +0000
-Subject: Re: UBI/UBIFS: dealing with MLC's paired pages
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>, Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4CAA8@NTXXIAMBX02.xacn.micron.com>
- <20150925093023.113ceeb1@bbrezillon>
- <A765B125120D1346A63912DDE6D8B6310BF4CBFC@NTXXIAMBX02.xacn.micron.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- Stefan Roese <sr@denx.de>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "shuangshuo@gmail.com" <shuangshuo@gmail.com>,
- "rnd4@dave-tech.it" <rnd4@dave-tech.it>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- =?UTF-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6aGFuZyk=?=
- <karlzhang@micron.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56050734.1000901@nod.at>
-Date: Fri, 25 Sep 2015 10:35:00 +0200
+From: =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, "fransklaver@gmail.com"
+ <fransklaver@gmail.com>, "wsa@the-dreams.de" <wsa@the-dreams.de>,
+ "zajec5@gmail.com" <zajec5@gmail.com>, "baruch@tkos.co.il"
+ <baruch@tkos.co.il>, "ezequiel.garcia@free-electrons.com"
+ <ezequiel.garcia@free-electrons.com>, "kdasu.kdev@gmail.com"
+ <kdasu.kdev@gmail.com>, "rogerq@ti.com" <rogerq@ti.com>,
+ "asierra@xes-inc.com" <asierra@xes-inc.com>, bpqw <bpqw@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
+ Kamil Debski <Kamil.Debski@imgtec.com>, Ionela Voinescu
+ <Ionela.Voinescu@imgtec.com>,
+ =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+Subject: RE: [PATCH 00/12] mtd: nand_bbt: introduce independent nand BBT
+Date: Fri, 25 Sep 2015 08:36:46 +0000
+Message-ID: <87F60714EC601C4C83DFF1D2E3D390A0326CC9FC@NTXXIAMBX02.xacn.micron.com>
+References: <87F60714EC601C4C83DFF1D2E3D390A0326CC7C2@NTXXIAMBX02.xacn.micron.com>
+ <87F60714EC601C4C83DFF1D2E3D390A0326CC82E@NTXXIAMBX02.xacn.micron.com>
+ <20150925085355.122a3884@bbrezillon>
+In-Reply-To: <20150925085355.122a3884@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4CBFC@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,20 +35,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 25.09.2015 um 10:25 schrieb Bean Huo 霍斌斌 (beanhuo):
-> For NAND OOB area, it is dedicated for ECC value, at the same time,
-> User available area in OOB is not covered by ECC protection mechanism.
-> so saving EC or VID information in OOB is not a perfect solution.
-> But if there is additional space, and this space can be covered by ECC,
-> We can try it.
-
-As I said, I'm *really* against using OOB and see it as the absolutely last choice.
-
-> By the way, I want to allocate a new internal volume to solve paired pages issue.
-> How do you think about this ?
-
-More details please. :)
-Adding a new internal volume to UBI is not a big deal.
-
-Thanks,
-//richard
+SGkgQm9yaXMsDQoNClNvcnJ5IGZvciB0cm91YmxlIHlvdS4gU2luY2UgSSBjYW5ub3Qgc2VuZCBt
+YWlsIHVzaW5nICdnaXQgc2VuZC1lbWFpbCcgcmlnaHQgbm93Lg0KSSBzZW50IHRoaXMgc2VyaWVz
+IGJ5IG91dGxvb2suIFRoYW5rcyBmb3IgeW91ciBzdWdnZXN0aW9uLiBJJ2xsIGZpeCB0aGlzIHNv
+b24uDQoNClBldGVyIFBhbg0KDQpPbiBGcmksIDI1IFNlcCAyMDE1IDE0OjU0OjM4ICswMDAwDQpC
+b3JpcyBCcmV6aWxsb24gPCBib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tID4gd3Jv
+dGU6DQoNCj4gSGkgUGV0ZXIsDQo+IA0KPiBUaGlzIGNvbW1lbnQgaXMgbm90IHJlbGF0ZWQgdG8g
+dGhlIGNvZGUgaXRzZWxmLCBidXQgbmV4dCB0aW1lIHlvdSBzZW5kIGENCj4gcGF0Y2ggc2VyaWVz
+LCBjb3VsZCB5b3Ugc2VuZCBhbGwgcGF0Y2hlcyBhcyBhIHJlcGx5IHRvIHRoZSBjb3ZlciBsZXR0
+ZXI/DQo+IFRoaXMgaXMgYXV0b21hdGljYWxseSBkb25lIHdoZW4geW91IHVzZSBnaXQgc2VuZC1l
+bWFpbCB1bmxlc3MgeW91IHBhc3MNCj4gdGhlIC0tbm8tdGhyZWFkIG9wdGlvbi4NCj4gVGhlIGZv
+bGxvd2luZyBjb21tYW5kIHNob3VsZCBkbyB0aGUgdHJpY2s6DQo+IA0KPiBnaXQgc2VuZC1lbWFp
+bCA8cGF0aC10by15b3VyLXBhdGNoc2V0LWRpcj4vKi5wYXRjaA0KPiANCj4gQmVzdCBSZWdhcmRz
+LA0KPiANCj4gQm9yaXMNCj4gDQo+IE9uIEZyaSwgMjUgU2VwIDIwMTUgMDY6MzQ6MzQgKzAwMDAN
+Cj4gUGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKSA8cGV0ZXJwYW5kb25nQG1pY3Jvbi5j
+b20+IHdyb3RlOg0KPiANCj4gPiBDdXJyZW50bHkgbmFuZF9iYnQuYyBpcyB0aWVkIHdpdGggc3Ry
+dWN0IG5hbmRfY2hpcCwgYW5kIGl0IG1ha2VzIG90aGVyDQo+ID4gTkFORCBmYW1pbHkgY2hpcHMg
+aGFyZCB0byB1c2UgbmFuZF9iYnQuYy4gTWF5YmUgaXQncyB0aGUgcmVhc29uIHdoeQ0KPiA+IG9u
+ZW5hbmQgaGFzIG93biBiYnQob25lbmFuZF9iYnQuYykuDQo+ID4NCj4gPiBTZXBhcmF0ZSBzdHJ1
+Y3QgbmFuZF9jaGlwIGZyb20gQkJUIGNvZGUgY2FuIG1ha2UgY3VycmVudCBCQlQgc2hhcmVhYmxl
+Lg0KPiA+IFdlIGNyZWF0ZSBzdHJ1Y3QgbmFuZF9iYnQgdG8gdGFrZSBwbGFjZSBvZiBuYW5kX2No
+aXAgaW4gbmFuZF9iYnQuYy4NCj4gPiBTdHJ1Y3QgbmFuZF9iYnQgY29udGFpbnMgYWxsIHRoZSBp
+bmZvcm1hdGlvbiBCQlQgbmVlZGVkIGZyb20gb3V0c2lkZSBhbmQNCj4gPiBpdCBzaG91bGQgYmUg
+ZW1iZWRkZWQgaW50byBOQU5EIGZhbWlseSBjaGlwIHN0cnVjdCAoc3VjaCBhcyBzdHJ1Y3QNCj4g
+bmFuZF9jaGlwKS4NCj4gPiBOQU5EIGZhbWlseSBkcml2ZXIgc2hvdWxkIGFsbG9jYXRlLCBpbml0
+aWFsaXplIGFuZCBmcmVlIHN0cnVjdCBuYW5kX2JidC4NCj4gPg0KPiA+IEJlbG93IGlzIG10ZCBm
+b2xkZXIgc3RydWN0dXJlIHdlIHdhbnQ6DQo+ID4gCW10ZA0KPiA+IAnilJzilIDilIAgS2NvbmZp
+Zw0KPiA+IAnilJzilIDilIAgTWFrZWZpbGUNCj4gPiAJ4pSc4pSA4pSAIC4uLg0KPiA+IAnilJzi
+lIDilIAgbmFuZF9iYnQuYw0KPiA+IAnilJzilIDilIAgbmFuZA0KPiA+IAnilILCoMKgIOKUnOKU
+gOKUgCBLY29uZmlnDQo+ID4gCeKUgsKgwqAg4pSc4pSA4pSAIE1ha2VmaWxlDQo+ID4gCeKUgsKg
+wqAg4pSc4pSA4pSAIG5hbmRfYmFzZS5jDQo+ID4gCeKUgsKgwqAg4pSc4pSA4pSAIG5hbmRfaWRz
+LmMNCj4gPiAJ4pSCwqDCoCDilJzilIDilIAgLi4uDQo+ID4gCeKUgsKgwqAg4pSU4pSA4pSAIHh3
+YXlfbmFuZC5jDQo+ID4gCeKUnOKUgOKUgCBzcGktbmFuZA0KPiA+IAnilILCoMKgIOKUnOKUgOKU
+gCBLY29uZmlnDQo+ID4gCeKUgsKgwqAg4pSc4pSA4pSAIE1ha2VmaWxlDQo+ID4gCeKUgsKgwqAg
+4pSc4pSA4pSAIHNwaS1uYW5kLWJhc2UuYw0KPiA+IAnilILCoMKgIOKUnOKUgOKUgCAuLi4NCj4g
+PiAJ4pSCwqDCoCDilJTilIDilIAgc3BpLW5hbmQtZGV2aWNlLmMNCj4gPiAJ4pSU4pSA4pSAIC4u
+Lg0KPiA+DQo+ID4gTW9zdCBvZiB0aGUgcGF0Y2ggaXMgYm9ycm93ZWQgZnJvbSBCcmlhbiBOb3Jy
+aXMNCj4gPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT4uDQo+ID4NCj4gaHR0cDovL2dpdC5p
+bmZyYWRlYWQub3JnL3VzZXJzL25vcnJpcy9saW51eC1tdGQuZ2l0L3Nob3J0bG9nL3JlZnMvaGVh
+ZHMvbmFuDQo+IGQtYmJ0DQo+ID4gQmFzZWQgb24gQnJpYW4ncyBzdWdnZXN0aW9uLCBJIG1ha2Ug
+bXkgcHJldmlvdXMgQkJUIHBhdGNoIGludG8gMTINCj4gaW5kZXBlbmRlbnQNCj4gPiBwYXRjaGVz
+LiBQcmV2aW91cyBwYXRjaCBpcyBodHRwOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcGF0Y2gvNDky
+MDY2Lw0KPiA+IEJlc2lkZSB0aGUgcGF0Y2ggc3BsaXQsIEkgYWxzbyBtb3ZlZCBuYW5kX2JidC5j
+IHRvIG10ZCBmb2xkZXIsIHdoaWNoIGRpZG4ndA0KPiBpbg0KPiA+IHByZXZpb3VzIHBhdGNoLg0K
+PiA+DQo+ID4gUGF0Y2ggMywgNywgOCwgOSwgMTAgYW5kIDExIGFyZSB0b3RhbGx5IGJvcnJvd2Vk
+IGZyb20gQnJpYW4ncyBnaXQgdHJlZS4gSSBqdXN0DQo+ID4gdGVzdCBhbmQgc3BsaXQgdGhlIGNv
+ZGUgaW50byBpbmRlcGVuZGVudCBwYXRjaC4gUGF0Y2ggMSwgMiwgNSBhbmQgNiBhcmUNCj4gcGFy
+dGlhbA0KPiA+IGJvcnJvd2VkLiBJIG1ha2Ugc29tZSBjaGFuZ2VzIGZyb20gQnJpYW4ncyBnaXQg
+dHJlZSBhbmQgdGhlIGNoYW5nZXMgYXJlDQo+IHJlY29yZGVkDQo+ID4gaW4gY29tbWl0IGxvZy4g
+UGF0Y2ggNCBhbmQgMTIgYXJlIHdyaXR0ZW4gYnkgbWUuDQo+ID4NCj4gPiBUaGUgcGF0Y2ggaXMg
+dGVzdGVkIG9uIFplZCBib2FyZC4gVGhpcyB2ZXJzaW9uIG9mIHRoaXMgc2VyaWVzIGlzIGJhc2Vk
+IG9uDQo+IG1hc3Rlcg0KPiA+IGJyYW5jaCBvZiBsMi1tdGQuZ2l0IChjb21taXQNCj4gZTEzMDVk
+ZjEyODNjYmUxYWE1NzA5M2Y4NzY2YjJkZmU2NTBlZDVmZikuDQo+ID4NCj4gPiBCcmlhbiBOb3Jy
+aXMgKDYpOg0KPiA+IAltdGQ6IG5hbmRfYmJ0OiBhZGQgbmV3IEFQSSBkZWZpbml0aW9ucw0KPiA+
+IAltdGQ6IG5hbmQ6IG1ha2UgbmFuZF9lcmFzZV9uYW5kKCkgc3RhdGljDQo+ID4gCW10ZDogbmFu
+ZF9iYnQ6IHJlbW92ZSBzdHJ1Y3QgbmFuZF9jaGlwIGZyb20gbmFuZF9iYnQuYw0KPiA+IAltdGQ6
+IG5hbmRfYmJ0OiByZW1vdmUgb2xkIEFQSSBkZWZpbml0aW9ucw0KPiA+IAltdGQ6IG5hbmRfYmJ0
+OiByZW1vdmUgTkFORF9CQlRfRFlOQU1JQ1NUUlVDVCBtYWNybw0KPiA+IAltdGQ6IG5hbmQ6IHJl
+bW92ZSBuYW5kX2NoaXAuYmJ0DQo+ID4gQnJpYW4gTm9ycmlzIGFuZCBQZXRlciBQYW4gKDQpOg0K
+PiA+IAltdGQ6IG5hbmRfYmJ0OiBuZXcgaGVhZGVyIGZvciBuYW5kIGZhbWlseSBCQlQNCj4gPiAJ
+bXRkOiBuYW5kX2JidDogaW50cm9kdWNlIHN0cnVjdCBuYW5kX2JidA0KPiA+IAltdGQ6IG5hbmQ6
+IHVzZSBuZXcgQkJUIEFQSSBpbnN0ZWFkIG9mIG9sZCBvbmVzDQo+ID4gCW10ZDogbmFuZF9iYnQ6
+IHVzZSBlcmFzZSgpIGFuZCBpc19iYWRfYmJtKCkgaG9vayBpbiBCQlQNCj4gPiBQZXRlciBQYW4g
+KDIpOg0KPiA+IAltdGQ6IG5hbmRfYmJ0OiBhZGQgbmFuZF9iYnRfbWFya2JhZF9mYWN0b3J5KCkg
+aW50ZXJmYWNlDQo+ID4gCW10ZDogbmFuZC1iYnQ6IG1vdmUgbmFuZF9iYnQuYyB0byBtdGQgZm9s
+ZGVyDQo+ID4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvS2NvbmZpZyAgICAgICAgICB8ICAg
+IDcgKw0KPiA+ICBkcml2ZXJzL210ZC9NYWtlZmlsZSAgICAgICAgIHwgICAgMSArDQo+ID4gIGRy
+aXZlcnMvbXRkL25hbmQvS2NvbmZpZyAgICAgfCAgICAyICstDQo+ID4gIGRyaXZlcnMvbXRkL25h
+bmQvTWFrZWZpbGUgICAgfCAgICAyICstDQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvZG9jZzQuYyAg
+ICAgfCAgICA2ICstDQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMgfCAgMTQ1ICsr
+KystDQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvbmFuZF9iYnQuYyAgfCAxMzc3IC0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+ICBkcml2ZXJzL210ZC9uYW5kX2Ji
+dC5jICAgICAgIHwgMTI4OQ0KPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysNCj4gPiAgaW5jbHVkZS9saW51eC9tdGQvYmJtLmggICAgICB8ICAgOTYgKy0tDQo+ID4gIGlu
+Y2x1ZGUvbGludXgvbXRkL25hbmQuaCAgICAgfCAgIDE2ICstDQo+ID4gIGluY2x1ZGUvbGludXgv
+bXRkL25hbmRfYmJ0LmggfCAgMTc3ICsrKysrKw0KPiA+ICAxMSBmaWxlcyBjaGFuZ2VkLCAxNjI0
+IGluc2VydGlvbnMoKyksIDE0OTQgZGVsZXRpb25zKC0pDQo+ID4gIGRlbGV0ZSBtb2RlIDEwMDY0
+NCBkcml2ZXJzL210ZC9uYW5kL25hbmRfYmJ0LmMNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
+aXZlcnMvbXRkL25hbmRfYmJ0LmMNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGlu
+dXgvbXRkL25hbmRfYmJ0LmgNCj4gDQo+IA0KPiANCj4gLS0NCj4gQm9yaXMgQnJlemlsbG9uLCBG
+cmVlIEVsZWN0cm9ucw0KPiBFbWJlZGRlZCBMaW51eCBhbmQgS2VybmVsIGVuZ2luZWVyaW5nDQo+
+IGh0dHA6Ly9mcmVlLWVsZWN0cm9ucy5jb20NCg==
