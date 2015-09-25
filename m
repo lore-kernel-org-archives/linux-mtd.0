@@ -1,38 +1,33 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-io0-f177.google.com ([209.85.223.177])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfWwC-0006eQ-7p
- for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 17:37:39 +0000
-Received: by pacfv12 with SMTP id fv12so113488536pac.2
- for <linux-mtd@lists.infradead.org>; Fri, 25 Sep 2015 10:37:15 -0700 (PDT)
-Date: Fri, 25 Sep 2015 10:37:12 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Peter Pan =?utf-8?B?5r2Y5qCLIChwZXRlcnBhbmRvbmcp?=
- <peterpandong@micron.com>
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "fransklaver@gmail.com" <fransklaver@gmail.com>,
- "wsa@the-dreams.de" <wsa@the-dreams.de>,
- "zajec5@gmail.com" <zajec5@gmail.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "baruch@tkos.co.il" <baruch@tkos.co.il>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- "kdasu.kdev@gmail.com" <kdasu.kdev@gmail.com>,
- "rogerq@ti.com" <rogerq@ti.com>,
- "asierra@xes-inc.com" <asierra@xes-inc.com>, bpqw <bpqw@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Frank Liu =?utf-8?B?5YiY576kIChmcmFua2xpdSk=?= <frankliu@micron.com>,
- Kamil Debski <Kamil.Debski@imgtec.com>,
- Ionela Voinescu <Ionela.Voinescu@imgtec.com>,
- Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-Subject: Re: [PATCH 12/12] mtd: nand-bbt: move nand_bbt.c to mtd folder
-Message-ID: <20150925173712.GM31505@google.com>
-References: <87F60714EC601C4C83DFF1D2E3D390A0326CC82E@NTXXIAMBX02.xacn.micron.com>
- <87F60714EC601C4C83DFF1D2E3D390A0326CC91F@NTXXIAMBX02.xacn.micron.com>
+ id 1ZfWye-0001Ic-WB
+ for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 17:40:11 +0000
+Received: by iofh134 with SMTP id h134so118204582iof.0
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Sep 2015 10:39:45 -0700 (PDT)
+Date: Fri, 25 Sep 2015 12:39:44 -0500
+From: Seth Forshee <seth.forshee@canonical.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Jeff Layton <jlayton@poochiereds.net>,
+ "J. Bruce Fields" <bfields@fieldses.org>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v4 3/7] fs: Verify access of user towards block device
+ file when mounting
+Message-ID: <20150925173944.GC11862@ubuntu-xps13>
+References: <1443039368-55445-1-git-send-email-seth.forshee@canonical.com>
+ <1443039368-55445-4-git-send-email-seth.forshee@canonical.com>
+ <87si63o56g.fsf@x220.int.ebiederm.org>
+ <20150925124833.GA104990@ubuntu-hedt>
+ <87si62ju5w.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87F60714EC601C4C83DFF1D2E3D390A0326CC91F@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <87si62ju5w.fsf@x220.int.ebiederm.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,61 +37,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter,
-
-First of all, thanks for taking the time to try to address my
-long-delayed comments. I hope to give this a proper look soon. (I also
-hope you can fix the email threading soon! I know that's a pain...)
-
-But first, a simpler comment:
-
-On Fri, Sep 25, 2015 at 06:48:05AM +0000, Peter Pan 潘栋 (peterpandong) wrote:
-> Since struct nand_chip is removed from nand_bbt.c, BBT is now
-> shareable. Both NAND and SPI NAND can use it. So move nand_bbt.c
-> from nand/ foler to mtd/ folder and create MTD_NAND_BBT config.
-> Both NAND and SPI NAND should depend on MTD_NAND_BBT.
+On Fri, Sep 25, 2015 at 12:16:59PM -0500, Eric W. Biederman wrote:
 > 
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> ---
->  drivers/mtd/Kconfig         |    7 +
->  drivers/mtd/Makefile        |    1 +
->  drivers/mtd/nand/Kconfig    |    2 +-
->  drivers/mtd/nand/Makefile   |    2 +-
->  drivers/mtd/nand/nand_bbt.c | 1289 -------------------------------------------
->  drivers/mtd/nand_bbt.c      | 1289 +++++++++++++++++++++++++++++++++++++++++++
->  6 files changed, 1299 insertions(+), 1291 deletions(-)
->  delete mode 100644 drivers/mtd/nand/nand_bbt.c
->  create mode 100644 drivers/mtd/nand_bbt.c
+> Argh.  This looks like morning person meets night owl.
+
+Indded :-)
+
+> Seth Forshee <seth.forshee@canonical.com> writes:
 > 
-[...]
-> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-> deleted file mode 100644
-> index 47c1084..0000000
-> --- a/drivers/mtd/nand/nand_bbt.c
-> +++ /dev/null
-> @@ -1,1289 +0,0 @@
+> > On Thu, Sep 24, 2015 at 04:53:11PM -0500, Eric W. Biederman wrote:
+> >> Seth Forshee <seth.forshee@canonical.com> writes:
+> >> 
+> >> > When mounting a filesystem on a block device there is currently
+> >> > no verification that the user has appropriate access to the
+> >> > device file passed to mount. This has not been an issue so far
+> >> > since the user in question has always been root, but this must
+> >> > be changed before allowing unprivileged users to mount in user
+> >> > namespaces.
+> >> >
+> >> > To do this, a new version of lookup_bdev() is added named
+> >> > lookup_bdev_perm(). Both of these functions become wrappers
+> >> > around a common inner fucntion. The behavior of lookup_bdev() is
+> >> > unchanged, but calling lookup_bdev_perm() will fail if the user
+> >> > does not have the specified access rights to the supplied path.
+> >> > The permission check is skipped if the user has CAP_SYS_ADMIN to
+> >> > avoid any possible regressions in behavior.
+> >> >
+> >> > blkdev_get_by_path() is updated to use lookup_bdev_perm(). This
+> >> > is used by mount_bdev() and mount_mtd(), so this will cause
+> >> > mounts on block devices to fail when the user lacks the required
+> >> > permissions. Other calls to blkdev_get_by_path() will all happen
+> >> > with root privileges, so these calls will be unaffected.
+> >> 
+> >> Good but buggy patch.
+> >> 
+> >> In the mtd bits the flags are super flags, not file mode bits,
+> >> which makes testing them against FMODE_READ and FMODE_WRITE is
+> >> incorrect.
+> >
+> > Bah, yes. Fixed.
+> >
+> >> Further it looks like quite a few more possibly all of the lookup_bdev
+> >> instances could use inode level permission checking.
+> >> 
+> >> Certainly code such as quotactl makes me wonder.
+> >
+> > I opted to stick to places related to mounting, but let's take a look at
+> > the other callers.
+> >
+> > bcache calls it in the context of sysfs writes, and those attributes are
+> > writable only by root. In that case the inode permission check will be
+> > skipped anyway, so it makes no difference either way.
+> >
+> > Device mapper calls it in dm_get_device, which is called from a bunch of
+> > places. I had started trying to walk back through all the callers of
+> > dm_get_device, but that rabbit hole got really deep really quickly so I
+> > didn't feel confident that changing it wouldn't break anyone.
+> >
+> > quotactl gave me pause, as it seems to have done for you too. I was
+> > surprised that inode permissions aren't checked, but
+> > check_quotactl_permission does get called before actually doing
+> > anything. I fear that adding a check of inode permissions could end up
+> > breaking someone.
+> 
+> My gut feel on all of this is that we should act like may_open and have
+> have a flag of 0 for access mode mean don't check permissions.
+> 
+> That way we can change all of the callers of lookup_bdev to pass an
+> additional argument and make it explicit what is going on but we don't
+> actually have to change the callers to actually perform an additional
+> check.
 
-[snip deleting entire file]
+Sounds reasonable, I'll make that change.
 
-> diff --git a/drivers/mtd/nand_bbt.c b/drivers/mtd/nand_bbt.c
-> new file mode 100644
-> index 0000000..47c1084
-> --- /dev/null
-> +++ b/drivers/mtd/nand_bbt.c
-> @@ -0,0 +1,1289 @@
+> Leaving stones unturned is a good way to introduce a security hole by
+> accident so I don't want to leave dm_get_device unreviewed, but any
+> changes can be in later patches.
 
-[snip adding the whole file again -- exactly the same I hope?]
+Unless I've made a mistake it shouldn't introduce security holes,
+dm_get_device should behave exactly the same was as it behaves today.
+Any security problems would already be present.
 
-When moving files, it helps if you can use the '-M' (or
-'--find-renames') option to git-format-patch. That will give much
-smaller output that's easier to review. And if you had to change
-anything in the move, it should also help highlight exactly what
-changed, instead of including the entire file "diff".
+I can take another crack at reviewing, but it might also be good if
+someone who already knows the code commented as well. As I recall I gave
+up after getting several levels deep in indirect function calls where the
+names of the struct members which held the function pointers were
+identical at a couple of levels, so I was having a hard time knowing if
+I was keeping everything straight.
 
-Regards,
-Brian
-
-P.S. Incidentally, this should also work around your issues with the
-copyright symbol. But then, I suspect that some people have used these
-sorts of non-ASCII characters just to fish out issues with mail
-clients/MTAs like yours :)
+Seth
