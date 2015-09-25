@@ -1,28 +1,21 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfOoQ-0005Ds-9A
- for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 08:57:02 +0000
-Date: Fri, 25 Sep 2015 10:56:16 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Karl Zhang =?UTF-8?B?5byg5Y+M6ZSj?= (karlzhang)" <karlzhang@micron.com>
-Cc: "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= (beanhuo)" <beanhuo@micron.com>, Iwo
- Mergler <Iwo.Mergler@netcommwireless.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "richard@nod.at" <richard@nod.at>, "shuangshuo@gmail.com"
- <shuangshuo@gmail.com>, "rnd4@dave-tech.it" <rnd4@dave-tech.it>, "Jeff
- Lauruhn (jlauruhn)" <jlauruhn@micron.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Stefan Roese <sr@denx.de>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: UBI/UBIFS: dealing with MLC's paired pages
-Message-ID: <20150925105616.3afa23d1@bbrezillon>
-In-Reply-To: <D067BF0533BDBE4F821CF557AAAE78443B96DEA8@NTXXIAMBX01.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4CAA8@NTXXIAMBX02.xacn.micron.com>
- <20150925093023.113ceeb1@bbrezillon>
- <D067BF0533BDBE4F821CF557AAAE78443B96DEA8@NTXXIAMBX01.xacn.micron.com>
+Received: from mail1-a.eqx.gridhost.co.uk ([95.142.156.16])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZfPLU-0006TL-KI
+ for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 09:31:13 +0000
+Received: from [209.85.212.169] (helo=mail-wi0-f169.google.com)
+ by mail1.eqx.gridhost.co.uk with esmtpsa (UNKNOWN:AES128-GCM-SHA256:128)
+ (Exim 4.72) (envelope-from <cybergibbons@cybergibbons.com>)
+ id 1ZfPJQ-0003m2-KR
+ for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 10:29:04 +0100
+Received: by wiclk2 with SMTP id lk2so11613270wic.1
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Sep 2015 02:29:04 -0700 (PDT)
 MIME-Version: 1.0
+Date: Fri, 25 Sep 2015 10:29:04 +0100
+Message-ID: <CAK__sc6BFSMu6+NjTkT9xsqdjA+H=Df9nw=ajTmfuRmn4Hz3+A@mail.gmail.com>
+Subject: UBIFS recovery/forensics tools
+From: Andrew Tierney <cybergibbons@cybergibbons.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,49 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 25 Sep 2015 08:30:23 +0000
-Karl Zhang =E5=BC=A0=E5=8F=8C=E9=94=A3 (karlzhang) <karlzhang@micron.com> w=
-rote:
+Hello all,
 
-> Hi Boris
->=20
-> Something else suggestions.=20
->=20
-> We know that using the OOB area to store UBI metadata(Backup data) is not=
- a good idea, this is just a thinking, and also do a little work to impleme=
-nt it and verification .
->=20
-> For paired page issue from MLC is troublesome, we are trying our best to =
-deal with it. Although attempt to use some bad ideas.
->=20
-> > > Only NAND provides an OOB area.=20
-> Some devices(NOR) do not have OOB, simultaneously, they do not have paire=
-d page issue, right?  I think they do not need to store a redundant metadat=
-a to anywhere.
-> AFAIK , only MLC(TLC maybe) NAND need store some metadata for another cop=
-y, and try to protected it by ECC.
->=20
-> But, if OOB have some unused area (at least 48 bytes) and the chip has pa=
-ired page issue , could we take a little advantage of them  to reduce UBI f=
-ail rate?=20
->=20
-> Above, is just some thinking , wish we can have some better solutions.=20
-> As Bean said, most customer do not want UBIFS crash, and so do we.
->=20
-> Thanks to your patient to point out my wrong opinion.
+I am a reverse engineer, and I am finding that UBIFS is becoming
+increasingly common on embedded devices. A common task is recovering
+file systems from locked down or damaged devices, and I'm finding this
+very challenging with UBIFS!
 
-Don't be sorry, and there's no wrong opinion: the whole point of this
-discussion is sharing our ideas and arguing to find the best solution.
+I have seen talk on here of userspace tools to recover damaged UBIFS
+systems. Did anything every come of this? I am currently using "ubi
+reader" ( https://github.com/jrspruitt/ubi_reader ) with some success.
 
-Regarding the use of extra OOB bytes, I'll follow Richard's opinion:
-let's keep it as a 'last resort' solution if we fail to find an
-acceptable alternative.
-
-Best Regards,
-
-Boris
-
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Andrew
