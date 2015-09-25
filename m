@@ -1,27 +1,28 @@
-Received: from out02.mta.xmission.com ([166.70.13.232])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfXMc-0004wi-7r
- for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 18:04:54 +0000
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- James Morris <james.l.morris@oracle.com>, "Serge E. Hallyn" <serge@hallyn.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <1443039368-55445-1-git-send-email-seth.forshee@canonical.com>
- <1443039368-55445-5-git-send-email-seth.forshee@canonical.com>
- <87fv23o4vs.fsf@x220.int.ebiederm.org>
- <20150925124924.GB104990@ubuntu-hedt>
-Date: Fri, 25 Sep 2015 12:57:12 -0500
-In-Reply-To: <20150925124924.GB104990@ubuntu-hedt> (Seth Forshee's message of
- "Fri, 25 Sep 2015 07:49:24 -0500")
-Message-ID: <87k2reidqf.fsf@x220.int.ebiederm.org>
+ id 1ZfXPy-0007GN-Sw
+ for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 18:08:23 +0000
+Subject: Re: UBIFS corruptions on NOR-Flash
+To: Han Xu <xhnjupt@gmail.com>
+References: <loom.20150918T183854-37@post.gmane.org>
+ <CAFLxGvwJjy=6GLXJm=2frruO9vKqqPG_6yYxSH7HLLr47x9apg@mail.gmail.com>
+ <CA+-FG628WkbiqnzT9tp4Li=SP2qHPM+Nn+KLHjQWqHN-f==+vg@mail.gmail.com>
+ <55FC6BCB.1030901@nod.at>
+ <CA+-FG62MN2FBLKecGJJ6YHqPDyrgrx8BkCAZGezoKbADOCm_0g@mail.gmail.com>
+ <55FC6F56.4050107@nod.at>
+ <CA+-FG62nCCaK_GEGSqBJ4ROvqgVPZdsh7pyEsnq2C0AXZrnkjw@mail.gmail.com>
+ <55FC8712.5040905@nod.at>
+ <CA+EcR23BLTvQgD36bAAiT3yULYSpE0zMiXpRm0kDGQeLOTho8w@mail.gmail.com>
+Cc: Roshni Shah <roshni.shah@timesys.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "han.xu@freescale.com" <han.xu@freescale.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56058D7B.3050005@nod.at>
+Date: Fri, 25 Sep 2015 20:07:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH v4 4/7] fs: Limit file caps to the user namespace of the
- super block
+In-Reply-To: <CA+EcR23BLTvQgD36bAAiT3yULYSpE0zMiXpRm0kDGQeLOTho8w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,28 +32,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Seth Forshee <seth.forshee@canonical.com> writes:
+Am 23.09.2015 um 20:21 schrieb Han Xu:
+> Have you enabled the CONFIG_CMA in kernel setting?
 
-> On Thu, Sep 24, 2015 at 04:59:35PM -0500, Eric W. Biederman wrote:
->> Seth Forshee <seth.forshee@canonical.com> writes:
->> 
->> > Capability sets attached to files must be ignored except in the
->> > user namespaces where the mounter is privileged, i.e. s_user_ns
->> > and its descendants. Otherwise a vector exists for gaining
->> > privileges in namespaces where a user is not already privileged.
->> >
->> > Add a new helper function, in_user_ns(), to test whether a user
->> > namespace is the same as or a descendant of another namespace.
->> > Use this helper to determine whether a file's capability set
->> > should be applied to the caps constructed during exec.
->> 
->> No issues with this but given that we always pass current_user_ns()
->> we may want to simplify the users of in_user_ns by renaming it
->> current_in_user_ns() and hard codeing current_user_ns().
->
-> Sure, if that's what you prefer then I'll change it.
+CMA or DMA? :)
 
-I took your patch as is.  This is a suggestion for a possible
-incremental improvement.
-
-Eric
+Thanks,
+//richard
