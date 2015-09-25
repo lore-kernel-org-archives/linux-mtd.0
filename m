@@ -1,28 +1,28 @@
-Received: from out02.mta.xmission.com ([166.70.13.232])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfWtX-0004A9-Bp
- for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 17:34:52 +0000
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <1443039368-55445-1-git-send-email-seth.forshee@canonical.com>
- <1443039368-55445-2-git-send-email-seth.forshee@canonical.com>
- <87vbazplja.fsf@x220.int.ebiederm.org>
- <20150925125414.GC104990@ubuntu-hedt>
-Date: Fri, 25 Sep 2015 12:27:09 -0500
-In-Reply-To: <20150925125414.GC104990@ubuntu-hedt> (Seth Forshee's message of
- "Fri, 25 Sep 2015 07:54:14 -0500")
-Message-ID: <87eghmjtoy.fsf@x220.int.ebiederm.org>
+ id 1ZfWto-0004DM-Un
+ for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 17:35:10 +0000
+Subject: Re: [PATCH 3/5] UBI: switch the UBI device in read-only mode when mtd
+ returns -EROFS
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
+References: <1443193758-22071-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1443193758-22071-4-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Andrea Scian <rnd4@dave-tech.it>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ =?UTF-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6aGFuZyk=?=
+ <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
+ "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
+ linux-kernel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <560585B2.3020904@nod.at>
+Date: Fri, 25 Sep 2015 19:34:42 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH v4 1/7] fs: Add user namesapace member to struct
- super_block
+In-Reply-To: <1443193758-22071-4-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,135 +32,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Seth Forshee <seth.forshee@canonical.com> writes:
+Am 25.09.2015 um 17:09 schrieb Boris Brezillon:
+> The NAND layer is now able to forward power-cut emulation errors from
+> a NAND driver to the MTD user.
+> Check for this kind of errors in UBI and switch the UBI device in read-only
+> mode if such an error occurs.
+> The error will also be forwarded to the UBI user requesting the operation
+> if any, thus allowing UBIFS to act accordingly.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/ubi/io.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+> index 5bbd1f0..c5ebef7 100644
+> --- a/drivers/mtd/ubi/io.c
+> +++ b/drivers/mtd/ubi/io.c
+> @@ -303,6 +303,8 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+>  		len = ubi->peb_size - offset;
+>  		if (len)
+>  			err = ubi_self_check_all_ff(ubi, pnum, offset, len);
+> +	} else if (err == -EROFS) {
+> +		ubi_ro_mode(ubi);
+>  	}
+>  
+>  	return err;
+> @@ -355,7 +357,7 @@ retry:
+>  
+>  	err = mtd_erase(ubi->mtd, &ei);
+>  	if (err) {
+> -		if (retries++ < UBI_IO_RETRIES) {
+> +		if (err != -EROFS && retries++ < UBI_IO_RETRIES) {
 
-> On Thu, Sep 24, 2015 at 04:14:33PM -0500, Eric W. Biederman wrote:
->> Seth Forshee <seth.forshee@canonical.com> writes:
->> 
->> > Initially this will be used to eliminate the implicit MNT_NODEV
->> > flag for mounts from user namespaces. In the future it will also
->> > be used for translating ids and checking capabilities for
->> > filesystems mounted from user namespaces.
->> >
->> > s_user_ns is initialized in alloc_super() and is generally set to
->> > current_user_ns(). To avoid security and corruption issues, two
->> > additional mount checks are also added:
->> >
->> >  - do_new_mount() gains a check that the user has CAP_SYS_ADMIN
->> >    in current_user_ns().
->> >
->> >  - sget() will fail with EBUSY when the filesystem it's looking
->> >    for is already mounted from another user namespace.
->> >
->> > proc requires some special handling. The user namespace of
->> > current isn't appropriate when forking as a result of clone (2)
->> > with CLONE_NEWPID|CLONE_NEWUSER, as it will set s_user_ns to the
->> > namespace of the parent and make proc unmountable in the new user
->> > namespace. Instead, the user namespace which owns the new pid
->> > namespace is used. sget_userns() is allowed to allow passing in
->> > a namespace other than that of current, and sget becomes a
->> > wrapper around sget_userns() which passes current_user_ns().
->> 
->> Minor nits below.  I have fixed them up.
->> 
->> > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
->> > ---
->> >  fs/namespace.c     |  3 +++
->> >  fs/proc/root.c     |  3 ++-
->> >  fs/super.c         | 38 +++++++++++++++++++++++++++++++++-----
->> >  include/linux/fs.h |  9 ++++++++-
->> >  4 files changed, 46 insertions(+), 7 deletions(-)
->> >
->> > diff --git a/fs/namespace.c b/fs/namespace.c
->> > index 0570729c87fd..d023a353dc63 100644
->> > --- a/fs/namespace.c
->> > +++ b/fs/namespace.c
->> > @@ -2381,6 +2381,9 @@ static int do_new_mount(struct path *path, const char *fstype, int flags,
->> >  	struct vfsmount *mnt;
->> >  	int err;
->> >  
->> > +	if (!ns_capable(current_user_ns(), CAP_SYS_ADMIN))
->> > +		return -EPERM;
->> > +
->> >  	if (!fstype)
->> >  		return -EINVAL;
->> >  
->> > diff --git a/fs/proc/root.c b/fs/proc/root.c
->> > index 361ab4ee42fc..4b302cbf13f9 100644
->> > --- a/fs/proc/root.c
->> > +++ b/fs/proc/root.c
->> > @@ -117,7 +117,8 @@ static struct dentry *proc_mount(struct file_system_type *fs_type,
->> >  			return ERR_PTR(-EPERM);
->> >  	}
->> >  
->> > -	sb = sget(fs_type, proc_test_super, proc_set_super, flags, ns);
->> > +	sb = sget_userns(fs_type, proc_test_super, proc_set_super, flags,
->> > +			 ns->user_ns, ns);
->> >  	if (IS_ERR(sb))
->> >  		return ERR_CAST(sb);
->> >  
->> > diff --git a/fs/super.c b/fs/super.c
->> > index 954aeb80e202..42837da7d641 100644
->> > --- a/fs/super.c
->> > +++ b/fs/super.c
->> > @@ -33,6 +33,7 @@
->> >  #include <linux/cleancache.h>
->> >  #include <linux/fsnotify.h>
->> >  #include <linux/lockdep.h>
->> > +#include <linux/user_namespace.h>
->> >  #include "internal.h"
->> >  
->> >  
->> > @@ -163,6 +164,7 @@ static void destroy_super(struct super_block *s)
->> >  {
->> >  	list_lru_destroy(&s->s_dentry_lru);
->> >  	list_lru_destroy(&s->s_inode_lru);
->> > +	put_user_ns(s->s_user_ns);
->> >  	security_sb_free(s);
->> >  	WARN_ON(!list_empty(&s->s_mounts));
->> >  	kfree(s->s_subtype);
->> > @@ -178,7 +180,8 @@ static void destroy_super(struct super_block *s)
->> >   *	Allocates and initializes a new &struct super_block.  alloc_super()
->> >   *	returns a pointer new superblock or %NULL if allocation had failed.
->> >   */
->> > -static struct super_block *alloc_super(struct file_system_type *type, int flags)
->> > +static struct super_block *alloc_super(struct file_system_type *type, int flags,
->> > +				       struct user_namespace *user_ns)
->> >  {
->> >  	struct super_block *s = kzalloc(sizeof(struct super_block),  GFP_USER);
->> >  	static const struct super_operations default_op;
->> > @@ -246,6 +249,8 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags)
->> >  	s->s_shrink.count_objects = super_cache_count;
->> >  	s->s_shrink.batch = 1024;
->> >  	s->s_shrink.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE;
->> > +
->> > +	s->s_user_ns = get_user_ns(user_ns);
->> >  	return s;
->> >  
->> >  fail:
->> > @@ -442,17 +447,17 @@ void generic_shutdown_super(struct super_block *sb)
->> >  EXPORT_SYMBOL(generic_shutdown_super);
->> >  
->> >  /**
->> > - *	sget	-	find or create a superblock
->> > + *	sget_userns -	find or create a superblock
->> >   *	@type:	filesystem type superblock should belong to
->> >   *	@test:	comparison callback
->> >   *	@set:	setup callback
->> >   *	@flags:	mount flags
->> 
->> You don't mention the user namespace parameter here.  I have fixed that
->> as.
->> 
->>   + *     @user_ns: User namespace you need CAP_SYS_ADMIN over to mount this fs.
->
-> Looks good, thanks. Seems I also missed it in alloc_super though.
+Looks good! :)
+One small nit, can you please add a comment above both lines that the EROFS checks are
+here because of emulators.
 
-FYI I have placed everything that I has made it through my review in my
-for-testing branch up on kernel.org.  So you can see what I have merged,
-and the build test bots can look and see if they find anything to
-complain about.
-
-git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git for-testing
-
-Eric
+Thanks,
+//richard
