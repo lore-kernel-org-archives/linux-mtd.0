@@ -1,22 +1,22 @@
-Received: from mail-pa0-f48.google.com ([209.85.220.48])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfKrG-0002b0-Ik
- for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 04:43:42 +0000
-Received: by pacex6 with SMTP id ex6so93902909pac.0
- for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2015 21:43:21 -0700 (PDT)
-Message-ID: <1443156194.29967.21.camel@ubuntu.flightdata.com.au>
-Subject: Re: UBI on dual NAND chips
-From: Nathan Williams <nathan.williams@flightdata.com.au>
-To: Bean Huo =?UTF-8?Q?=E9=9C=8D=E6=96=8C=E6=96=8C?= "(beanhuo)"
- <beanhuo@micron.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ id 1ZfLfv-0006d2-Lk
+ for linux-mtd@lists.infradead.org; Fri, 25 Sep 2015 05:36:04 +0000
+From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Nathan Williams <nathan.williams@flightdata.com.au>
+CC: =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>
-Date: Fri, 25 Sep 2015 14:43:14 +1000
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4CAC4@NTXXIAMBX02.xacn.micron.com>
+Subject: RE: UBI on dual NAND chips
+Date: Fri, 25 Sep 2015 05:35:32 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4CB17@NTXXIAMBX02.xacn.micron.com>
 References: <A765B125120D1346A63912DDE6D8B6310BF4CAC4@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <1443156194.29967.21.camel@ubuntu.flightdata.com.au>
+In-Reply-To: <1443156194.29967.21.camel@ubuntu.flightdata.com.au>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2015-09-25 at 01:16 +0000, Bean Huo 霍斌斌 (beanhuo) wrote:
-> Hi, 
-> Do you already enable mtd_concat driver on your MLC NAND?
-> For MLC NAND, I think, it is not suitable. 
-
-I don't have any hardware yet. I'm still only investigating the
-possibilities. At the moment it looks like we'll design hardware with
-two NAND interfaces and see what we can get working. Perhaps we will
-start with one chip and only use half of it until the paired pages issue
-is resolved.
+PiBPbiBGcmksIDIwMTUtMDktMjUgYXQgMDE6MTYgKzAwMDAsIEJlYW4gSHVvIOmcjeaWjOaWjCAo
+YmVhbmh1bykgd3JvdGU6DQo+ID4gSGksDQo+ID4gRG8geW91IGFscmVhZHkgZW5hYmxlIG10ZF9j
+b25jYXQgZHJpdmVyIG9uIHlvdXIgTUxDIE5BTkQ/DQo+ID4gRm9yIE1MQyBOQU5ELCBJIHRoaW5r
+LCBpdCBpcyBub3Qgc3VpdGFibGUuDQo+IA0KPiBJIGRvbid0IGhhdmUgYW55IGhhcmR3YXJlIHll
+dC4gSSdtIHN0aWxsIG9ubHkgaW52ZXN0aWdhdGluZyB0aGUgcG9zc2liaWxpdGllcy4gQXQNCj4g
+dGhlIG1vbWVudCBpdCBsb29rcyBsaWtlIHdlJ2xsIGRlc2lnbiBoYXJkd2FyZSB3aXRoIHR3byBO
+QU5EIGludGVyZmFjZXMgYW5kDQo+IHNlZSB3aGF0IHdlIGNhbiBnZXQgd29ya2luZy4gUGVyaGFw
+cyB3ZSB3aWxsIHN0YXJ0IHdpdGggb25lIGNoaXAgYW5kIG9ubHkgdXNlDQo+IGhhbGYgb2YgaXQg
+dW50aWwgdGhlIHBhaXJlZCBwYWdlcyBpc3N1ZSBpcyByZXNvbHZlZC4NCg0KTWVhbnMgeW91IHJl
+Z2FyZCBNTEMgTkFORCBhcyBTTEMgTkFORCwgb25seSBwcm9ncmFtIGxvd2VyIHBhZ2U/DQpGb3Ig
+cGFpcmVkIHBhZ2VzIGlzc3VlLCB3ZSBqdXN0IG5vdyBoYXZlIHR3byBtZXRob2RzIHNvbHV0aW9u
+IGJhc2VkIG9uIFVCSSwNClRoaXMgd2VlayBJIHdpbGwgc2VuZCBvdXQgZmlyc3Qgb25lLCB3ZSBj
+YW4gdGFsayBhYm91dCBpdCB0b2dldGhlciwgaWYgeW91IGludGVyZXN0ZWQgaW4gaXQuDQo=
