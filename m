@@ -1,19 +1,20 @@
 Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfvrO-0001vy-6z
- for linux-mtd@lists.infradead.org; Sat, 26 Sep 2015 20:14:18 +0000
+ id 1Zfw1I-0006au-S5
+ for linux-mtd@lists.infradead.org; Sat, 26 Sep 2015 20:24:33 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+To: Brian Norris <computersforpeace@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx-nand: switch to dmaengine
-References: <1441545167-23383-1-git-send-email-robert.jarzmik@free.fr>
-Date: Sat, 26 Sep 2015 22:08:47 +0200
-In-Reply-To: <1441545167-23383-1-git-send-email-robert.jarzmik@free.fr>
- (Robert Jarzmik's message of "Sun, 6 Sep 2015 15:12:47 +0200")
-Message-ID: <87eghleyeo.fsf@belgarion.home>
+Subject: Re: [PATCH v2] mtd: nand: pxa3xx-nand: prevent DFI bus lockup on
+ removal
+References: <1440961710-17347-1-git-send-email-robert.jarzmik@free.fr>
+Date: Sat, 26 Sep 2015 22:19:07 +0200
+In-Reply-To: <1440961710-17347-1-git-send-email-robert.jarzmik@free.fr>
+ (Robert Jarzmik's message of "Sun, 30 Aug 2015 21:08:30 +0200")
+Message-ID: <87a8s9exxg.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,23 +28,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Robert Jarzmik <robert.jarzmik@free.fr> writes:
 
-> Now pxa architecture has a dmaengine driver, remove the access to direct
-> dma registers in favor of the more generic dmaengine code.
+> After the conversion of pxa architecture to common clock framework, the
+> NAND clock can be disabled on driver exit.
 >
-> This should be also applicable for mmp and orion, provided they work in
-> device-tree environment.
+> In this case, it happens that if the driver used the NAND and set the
+> DFI arbitration bit, the next access to a static memory controller area,
+> such as an ethernet card, will stall the system bus, and the core will
+> be stalled forever.
 >
-> This patch also removes the previous hack which was necessary to make
-> the driver work in a devicetree environment.
+> This is especially true on pxa31x SoCs, where the NDCR was augmented
+> with a new bit to prevent this lockups by giving full ownership of the
+> DFI arbiter to the SMC, in change SCr#6.
+>
+> Fix this by clearing the DFI arbritration bit in driver exit. This
+> effectively prevents a lockup on zylonite when removing pxa3xx-nand
+> module, and using ethernet afterwards.
 >
 > Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> ---
-> Since v1: dma_unmap_sg() line break fix
 Hi Brian,
 
-Could you stage this to your next tree please ?
+Are you happy with this patch, and if so could you queue it please ?
 
 Cheers.
 
