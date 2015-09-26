@@ -1,20 +1,21 @@
-Received: from r00tworld.com ([212.85.137.150])
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfpQK-0003zT-UE
- for linux-mtd@lists.infradead.org; Sat, 26 Sep 2015 13:21:57 +0000
-From: "PaX Team" <pageexec@freemail.hu>
-To: linux-mtd@lists.infradead.org
-Date: Sat, 26 Sep 2015 15:18:08 +0200
+ id 1ZfvrO-0001vy-6z
+ for linux-mtd@lists.infradead.org; Sat, 26 Sep 2015 20:14:18 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: nand: pxa3xx-nand: switch to dmaengine
+References: <1441545167-23383-1-git-send-email-robert.jarzmik@free.fr>
+Date: Sat, 26 Sep 2015 22:08:47 +0200
+In-Reply-To: <1441545167-23383-1-git-send-email-robert.jarzmik@free.fr>
+ (Robert Jarzmik's message of "Sun, 6 Sep 2015 15:12:47 +0200")
+Message-ID: <87eghleyeo.fsf@belgarion.home>
 MIME-Version: 1.0
-Subject: question about potential integer truncation in default_erasesize
-Reply-to: pageexec@freemail.hu
-CC: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, re.emese@gmail.com,
- spender@grsecurity.net
-Message-ID: <56069B10.450.51AFEC35@pageexec.freemail.hu>
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Content-description: Mail message body
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi all,
+Robert Jarzmik <robert.jarzmik@free.fr> writes:
 
-drivers/mtd/chips/map_rom.c:default_erasesize can truncate map_info.size
-from unsigned long to unsigned int on 64 bit archs and i'm wondering if
-this is intentional or should/could map_info.size be turned into an unsigned
-int field? FTR, this issue was detected with the upcoming version of the
-size overflow plugin we have in PaX/grsecurity and there're a handful of
-similar cases in the tree where potentially unwanted or unnecessary integer
-truncations occur, this being one of these. any opinion/help is welcome!
+> Now pxa architecture has a dmaengine driver, remove the access to direct
+> dma registers in favor of the more generic dmaengine code.
+>
+> This should be also applicable for mmp and orion, provided they work in
+> device-tree environment.
+>
+> This patch also removes the previous hack which was necessary to make
+> the driver work in a devicetree environment.
+>
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> ---
+> Since v1: dma_unmap_sg() line break fix
+Hi Brian,
 
-cheers,
-  PaX Team
+Could you stage this to your next tree please ?
+
+Cheers.
+
+--
+Robert
