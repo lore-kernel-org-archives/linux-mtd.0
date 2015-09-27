@@ -1,21 +1,16 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zg1nT-0005Rc-44
- for linux-mtd@lists.infradead.org; Sun, 27 Sep 2015 02:34:39 +0000
-Message-ID: <56075420.5080303@cn.fujitsu.com>
-Date: Sun, 27 Sep 2015 10:27:44 +0800
+ id 1Zg1yg-00022O-No
+ for linux-mtd@lists.infradead.org; Sun, 27 Sep 2015 02:46:15 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
+ <dedekind1@gmail.com>, <richard@nod.at>
+CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH] UBIFS: Add freeze support in ubifs
+Date: Sun, 27 Sep 2015 10:39:21 +0800
+Message-ID: <1443321561-20581-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard.weinberger@gmail.com>, Andrew Tierney
- <cybergibbons@cybergibbons.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, David
- Gstir <david@sigma-star.at>
-Subject: Re: UBIFS recovery/forensics tools
-References: <CAK__sc6BFSMu6+NjTkT9xsqdjA+H=Df9nw=ajTmfuRmn4Hz3+A@mail.gmail.com>
- <CAFLxGvwtq9WF3SL_ZaAYHMsvi4g3B29XwRddKvPyu2YDz2P-hA@mail.gmail.com>
-In-Reply-To: <CAFLxGvwtq9WF3SL_ZaAYHMsvi4g3B29XwRddKvPyu2YDz2P-hA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/25/2015 06:26 PM, Richard Weinberger wrote:
-> On Fri, Sep 25, 2015 at 11:29 AM, Andrew Tierney
-> <cybergibbons@cybergibbons.com> wrote:
->> Hello all,
->>
->> I am a reverse engineer, and I am finding that UBIFS is becoming
->> increasingly common on embedded devices. A common task is recovering
->> file systems from locked down or damaged devices, and I'm finding this
->> very challenging with UBIFS!
->>
->> I have seen talk on here of userspace tools to recover damaged UBIFS
->> systems. Did anything every come of this? I am currently using "ubi
->> reader" ( https://github.com/jrspruitt/ubi_reader ) with some success.
->
-> We're currently working on such tools.
-> Stay tuned.
+We need to do nothing in ubifs, as all is already done in vfs.
 
-Yes, there is already a RFC for ubifs_dump tool,
-http://lists.infradead.org/pipermail/linux-mtd/2015-August/061201.html
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+---
+ fs/ubifs/super.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-fsck.ubifs is in developing. Andrew, do you want something like that?
-
-Yang
->
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 9547a278..e8f85b5 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1871,6 +1871,11 @@ static int ubifs_remount_fs(struct super_block *sb, int *flags, char *data)
+ 	return 0;
+ }
+ 
++static int ubifs_freeze_fs(struct super_block *sb)
++{
++	return 0;
++}
++
+ const struct super_operations ubifs_super_operations = {
+ 	.alloc_inode   = ubifs_alloc_inode,
+ 	.destroy_inode = ubifs_destroy_inode,
+@@ -1882,6 +1887,7 @@ const struct super_operations ubifs_super_operations = {
+ 	.remount_fs    = ubifs_remount_fs,
+ 	.show_options  = ubifs_show_options,
+ 	.sync_fs       = ubifs_sync_fs,
++	.freeze_fs     = ubifs_freeze_fs,
+ };
+ 
+ /**
+-- 
+1.8.4.2
