@@ -1,18 +1,25 @@
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgfZF-000773-Ci
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 21:02:38 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH v2 REBASED] mtd: nand: pxa3xx-nand: prevent DFI bus lockup on
- removal
-Date: Mon, 28 Sep 2015 22:56:51 +0200
-Message-Id: <1443473811-14285-1-git-send-email-robert.jarzmik@free.fr>
+ id 1ZghcY-0005Jh-3Q
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 23:14:10 +0000
+Received: by padhy16 with SMTP id hy16so186609962pad.1
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Sep 2015 16:13:48 -0700 (PDT)
+Date: Mon, 28 Sep 2015 16:13:46 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jagan Teki <jteki@openedev.com>
+Cc: Marek Vasut <marex@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 03/10] mtd: spi-nor: add SPI NOR manufacturer IDs
+Message-ID: <20150928231346.GN31505@google.com>
+References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
+ <1441137435-52862-4-git-send-email-computersforpeace@gmail.com>
+ <CAD6G_RTpucYCnbNxnTs1xionz4pYukAmvys6x45EjYc=n7PNFw@mail.gmail.com>
+ <20150928004644.GD34421@google.com>
+ <CAD6G_RQazifzcjDhUk8dWQUDz4yzxmxb+86nrypYv-m8e2QiKg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD6G_RQazifzcjDhUk8dWQUDz4yzxmxb+86nrypYv-m8e2QiKg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,79 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After the conversion of pxa architecture to common clock framework, the
-NAND clock can be disabled on driver exit.
+On Mon, Sep 28, 2015 at 02:42:24PM +0530, Jagan Teki wrote:
+> On 28 September 2015 at 06:16, Brian Norris <computersforpeace@gmail.com> wrote:
+> > The whole point of this patch is that some mfrs use different IDs for
+> > different classes of flash, so we shouldn't force our programming
+> > patterns into looking like CFI (i.e., parallel NOR [1]) when we're
+> > talking about serial NOR.
+> >
+> > If you'd rather, I can just copy the values into this header (e.g.,
+> > 0x01, 0x89, etc.) and completely remove all references to CFI.
+> 
+> Understand your intention,
 
-In this case, it happens that if the driver used the NAND and set the
-DFI arbitration bit, the next access to a static memory controller area,
-such as an ethernet card, will stall the system bus, and the core will
-be stalled forever.
+Do you? It really doesn't seem like it.
 
-This is especially true on pxa31x SoCs, where the NDCR was augmented
-with a new bit to prevent this lockups by giving full ownership of the
-DFI arbiter to the SMC, in change SCr#6.
+> but if what are the mfrs id's same then
+> it's better to use already defined CFI notation because we may get
+> into impression that the mfrs uses same id for CFI and SPINOR
 
-Fix this by clearing the DFI arbritration bit in driver exit. This
-effectively prevents a lockup on zylonite when removing pxa3xx-nand
-module, and using ethernet afterwards.
+CFI is really unrelated, for the most part. Parallel and serial NOR
+evolved quite differently. Why would we want that impression, again?
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Really, is it that hard to understand why we'd want two separate MFR ID
+lists -- one for CFI and one for SPI NOR -- when it's quite clear that
+those lists are NOT the same? Why should you needlessly ask programmers
+to jump between using CFI_MFR_* and SNOR_MFR_* in the same framework?
+What if someone starts trying to use CFI_MFR_WINBOND (which is NOT
+correct for SPI NOR)? I'm trying *clarify* the ID namespace here, not
+convolute it...
 
----
-Since v1: add comment, switch to NFCV1/NCFV2 registers naming
-Since v2: rebase on top of Brian's tree
----
- drivers/mtd/nand/pxa3xx_nand.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+> (as cfi
+> and spinor are NOR complaint flash memories) - IMHO.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 740983a34626..3b74d18884ce 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -78,7 +78,8 @@
- #define NDCR_ND_MODE		(0x3 << 21)
- #define NDCR_NAND_MODE   	(0x0)
- #define NDCR_CLR_PG_CNT		(0x1 << 20)
--#define NDCR_STOP_ON_UNCOR	(0x1 << 19)
-+#define NFCV1_NDCR_ARB_CNTL	(0x1 << 19)
-+#define NFCV2_NDCR_STOP_ON_UNCOR	(0x1 << 19)
- #define NDCR_RD_ID_CNT_MASK	(0x7 << 16)
- #define NDCR_RD_ID_CNT(x)	(((x) << 16) & NDCR_RD_ID_CNT_MASK)
- 
-@@ -1289,7 +1290,8 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 
- 	/* Set an initial chunk size */
- 	info->chunk_size = ndcr & NDCR_PAGE_SZ ? 2048 : 512;
--	info->reg_ndcr = ndcr & ~NDCR_INT_MASK;
-+	info->reg_ndcr = ndcr &
-+		~(NDCR_INT_MASK | NDCR_ND_ARB_EN | NFCV1_NDCR_ARB_CNTL);
- 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
- 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
- 	return 0;
-@@ -1528,6 +1530,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 	pxa3xx_flash_ids[1].name = NULL;
- 	def = pxa3xx_flash_ids;
- KEEP_CONFIG:
-+	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
- 	if (info->reg_ndcr & NDCR_DWIDTH_M)
- 		chip->options |= NAND_BUSWIDTH_16;
- 
-@@ -1754,6 +1757,16 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
- 		free_irq(irq, info);
- 	pxa3xx_nand_free_buff(info);
- 
-+	/*
-+	 * In the pxa3xx case, the DFI bus is shared between the SMC and NFC.
-+	 * In order to prevent a lockup of the system bus, the DFI bus
-+	 * arbitration is granted to SMC upon driver removal. This is done by
-+	 * setting the x_ARB_CNTL bit, which also prevents the NAND to have
-+	 * access to the bus anymore.
-+	 */
-+	nand_writel(info, NDCR,
-+		    (nand_readl(info, NDCR) & ~NDCR_ND_ARB_EN) |
-+		    NFCV1_NDCR_ARB_CNTL);
- 	clk_disable_unprepare(info->clk);
- 
- 	for (cs = 0; cs < pdata->num_cs; cs++)
--- 
-2.1.4
+That doesn't make any sense. "NOR" is not anything to be "compliant" to;
+it's a type of flash technology (i.e., electrical design).
+
+Brian
