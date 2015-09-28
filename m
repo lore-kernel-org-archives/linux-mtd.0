@@ -1,9 +1,9 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgUvb-0005KZ-BG
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 09:41:00 +0000
-Date: Mon, 28 Sep 2015 11:40:08 +0200
+ id 1ZgV3A-0008Jt-F1
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 09:48:49 +0000
+Date: Mon, 28 Sep 2015 11:48:15 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= (beanhuo)" <beanhuo@micron.com>
 Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
@@ -19,11 +19,11 @@ Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
  <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
  "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/9] drivers:nand:mtd: add support for UBI bakvol in mtd
- layer
-Message-ID: <20150928114008.06dcd1cd@bbrezillon>
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4CECC@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4CECC@NTXXIAMBX02.xacn.micron.com>
+Subject: Re: [PATCH 2/9] drivers:mtd:ubi:add definition for UBI bakvol
+ operation
+Message-ID: <20150928114815.698d9f2a@bbrezillon>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4CEDA@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF4CEDA@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -36,130 +36,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bean,
-
-On Mon, 28 Sep 2015 07:02:37 +0000
+On Mon, 28 Sep 2015 07:02:40 +0000
 Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) <beanhuo@micron.com> wrote:
 
-> Add support for UBI bakvol in mtd layer.
->=20
-> This solution based on MLC NAND dual plane program.
-> so add hook in mtd layer.
-
-I know you don't have any other choices to expose "two-plane page
-program" to the UBI layer, but I keep thinking that exposing that to
-the MTD users is not a good idea (I might be wrong ;-)).
-
+> Add macro definition for UBI bakvol operation.
 >=20
 > Signed-off-by: Bean Huo <beanhuo@micron.com>
 > ---
->  include/linux/mtd/mtd.h  | 19 +++++++++++++++++++
->  include/linux/mtd/nand.h |  4 ++++
->  include/linux/mtd/ubi.h  |  9 +++++++++
->  3 files changed, 32 insertions(+)
+>  drivers/mtd/ubi/ubi.h | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 >=20
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index f17fa75..cfcb3a68 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -204,6 +204,9 @@ struct mtd_info {
->  			  struct mtd_oob_ops *ops);
->  	int (*_write_oob) (struct mtd_info *mtd, loff_t to,
->  			   struct mtd_oob_ops *ops);
-> +	int (*_dual_plane_write_oob) (struct mtd_info *mtd, loff_t to_plane0,
-> +			struct mtd_oob_ops *ops_plane0, loff_t to_plane1,
-> +					struct mtd_oob_ops *ops_plane1);
+> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+> index 2974b67..746dfbe 100644
+> --- a/drivers/mtd/ubi/ubi.h
+> +++ b/drivers/mtd/ubi/ubi.h
+> @@ -438,6 +438,7 @@ struct ubi_debug_info {
+>   * @vtbl_slots: how many slots are available in the volume table
+>   * @vtbl_size: size of the volume table in bytes
+>   * @vtbl: in-RAM volume table copy
+> + * @bkblk_tbl: backup block table
+>   * @device_mutex: protects on-flash volume table and serializes volume
+>   *                creation, deletion, update, re-size, re-name and set
+>   *                property
+> @@ -547,6 +548,7 @@ struct ubi_device {
+>  	int vtbl_slots;
+>  	int vtbl_size;
+>  	struct ubi_vtbl_record *vtbl;
+> +	struct ubi_bkblk_tbl *bkblk_tbl;
 
+Where is struct ubi_bkblk_tbl defined (actually I found it in patch
+2).
 
-IMHO, if we were about to allow parallel write operations this should
-be exposed as a more generic API, something like:
-
-struct mtd_write_op {
-	loff_t to;
-	struct mtd_oob_ops ops;
-};
-
-struct mtd_multi_write_ops {
-	struct list_head writes;
-};
-
-int (*_multi_write)(struct mtd_info *mtd,
-		    struct mtd_multi_write_ops *ops);
-
-Then the NAND layer could optimize that if the NAND chip supports
-"two-plane page program", and if 2 pages in the write list are
-fulfilling the requirements.
-
->  	int (*_get_fact_prot_info) (struct mtd_info *mtd, size_t len,
->  				    size_t *retlen, struct otp_info *buf);
->  	int (*_read_fact_prot_reg) (struct mtd_info *mtd, loff_t from,
-> @@ -280,6 +283,22 @@ static inline int mtd_write_oob(struct mtd_info *mtd=
-, loff_t to,
->  	return mtd->_write_oob(mtd, to, ops);
->  }
+>  	struct mutex device_mutex;
 > =20
-> +static inline int mtd_write_dual_plane_oob(struct mtd_info *mtd,
-> +		loff_t to_plane0, struct mtd_oob_ops *ops0, loff_t to_plane1,
-> +						struct mtd_oob_ops *ops1)
-> +{
-> +	ops0->retlen =3D ops0->oobretlen =3D 0;
-> +	ops1->retlen =3D ops1->oobretlen =3D 0;
-> +
-> +	if (!mtd->_dual_plane_write_oob)
-> +		return -EOPNOTSUPP;
-> +	if (!(mtd->flags & MTD_WRITEABLE))
-> +		return -EROFS;
-> +
-> +	return mtd->_dual_plane_write_oob(mtd, to_plane0, ops0,
-> +						to_plane1, ops1);
-> +}
-> +
->  int mtd_get_fact_prot_info(struct mtd_info *mtd, size_t len, size_t *ret=
-len,
->  			   struct otp_info *buf);
->  int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 272f429..4c5be01 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -77,6 +77,7 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs=
-, uint64_t len);
->  #define NAND_CMD_READ1		1
->  #define NAND_CMD_RNDOUT		5
->  #define NAND_CMD_PAGEPROG	0x10
-> +#define NAND_CMD_MULTI_PAGEPROG	0x11
->  #define NAND_CMD_READOOB	0x50
->  #define NAND_CMD_ERASE1		0x60
->  #define NAND_CMD_STATUS		0x70
-> @@ -671,6 +672,9 @@ struct nand_chip {
->  	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
->  			uint32_t offset, int data_len, const uint8_t *buf,
->  			int oob_required, int page, int cached, int raw);
-> +	int (*write_plane_page)(struct mtd_info *mtd, struct nand_chip *chip,
-> +			uint32_t offset, int data_len, const uint8_t *buf,
-> +			int oob_required, int page, int plane, int raw);
->  	int (*onfi_set_features)(struct mtd_info *mtd, struct nand_chip *chip,
->  			int feature_addr, uint8_t *subfeature_para);
->  	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
-> diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-> index 1e271cb..1da3418 100644
-> --- a/include/linux/mtd/ubi.h
-> +++ b/include/linux/mtd/ubi.h
-> @@ -35,6 +35,15 @@
->   */
->  #define UBI_MAX_SG_COUNT 64
+>  	int max_ec;
+> @@ -797,6 +799,20 @@ int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
+>  			    struct list_head *rename_list);
+>  int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_attach_info=
+ *ai);
 > =20
-> +enum {
-> +	UBI_BAKVOL_UNONE,
-> +	UBI_BAKVOL_INIT_INFO,
-> +	UBI_BAKVOL_INIT_INFO_DONE,
-> +	UBI_BAKVOL_INIT_VOLUME,
-> +	UBI_BAKVOL_INIT_VOLUME_DONE,
-> +	UBI_BAKVOL_RUN
-> +};
+> +/* bakvol.c*/
+> +int ubi_check_backup_volume(struct ubi_device *ubi);
+> +int ubi_backup_data_to_backup_volume(struct ubi_device *ubi, loff_t addr,
+> +		size_t len, size_t *retlen, const void *buf);
+> +int ubi_backup_volume_init(struct ubi_device *ubi);
+> +int ubi_backup_volume_scan(struct ubi_device *ubi,
+> +			struct ubi_vid_hdr *vidh, int pnum);
+> +int ubi_backup_volume_init_tail(struct ubi_device *ubi,
+> +				struct ubi_attach_info *si);
+> +int ubi_bad_data_recovery(struct ubi_device *ubi);
+> +int is_backup_need(struct ubi_device *ubi, loff_t addr);
+> +void init_bakvol(struct ubi_volume_desc *desc, uint8_t choice);
+> +void clear_bakvol(struct ubi_device *ubi);
 > +
+>  /* vmt.c */
+>  int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req);
+>  int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl);
+> @@ -846,6 +862,7 @@ int self_check_eba(struct ubi_device *ubi, struct ubi=
+_attach_info *ai_fastmap,
+> =20
+>  /* wl.c */
+>  int ubi_wl_get_peb(struct ubi_device *ubi);
+> +int ubi_wl_get_plane_peb(struct ubi_device *ubi, int plane);
 
-Are those changes related to this patch?
+The same goes for those functions. You only define their protypes here,
+and implement them in patch 4.
+
+Please split your changes in a consistent way.
 
 Best Regards,
 
