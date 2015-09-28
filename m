@@ -1,9 +1,9 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgV3A-0008Jt-F1
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 09:48:49 +0000
-Date: Mon, 28 Sep 2015 11:48:15 +0200
+ id 1ZgVLA-0004Sl-Ar
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 10:07:24 +0000
+Date: Mon, 28 Sep 2015 12:06:51 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= (beanhuo)" <beanhuo@micron.com>
 Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
@@ -19,11 +19,10 @@ Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
  <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
  "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/9] drivers:mtd:ubi:add definition for UBI bakvol
- operation
-Message-ID: <20150928114815.698d9f2a@bbrezillon>
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4CEDA@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4CEDA@NTXXIAMBX02.xacn.micron.com>
+Subject: Re: [PATCH 3/9] drivers:mtd:ubi:add metadata struct for UBI bakvol
+Message-ID: <20150928120651.5c55317d@bbrezillon>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4CEE1@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF4CEE1@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -36,77 +35,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 28 Sep 2015 07:02:40 +0000
+On Mon, 28 Sep 2015 07:02:42 +0000
 Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) <beanhuo@micron.com> wrote:
 
-> Add macro definition for UBI bakvol operation.
+> Add metadata struct for UBI bakvol.
+> Currently , bakvol reserves 20 PEBs for internal log volume.
+> Shares wear-leveling operation with ubi.=20
+>=20
 >=20
 > Signed-off-by: Bean Huo <beanhuo@micron.com>
 > ---
->  drivers/mtd/ubi/ubi.h | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
+>  drivers/mtd/ubi/ubi-media.h | 40 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
 >=20
-> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-> index 2974b67..746dfbe 100644
-> --- a/drivers/mtd/ubi/ubi.h
-> +++ b/drivers/mtd/ubi/ubi.h
-> @@ -438,6 +438,7 @@ struct ubi_debug_info {
->   * @vtbl_slots: how many slots are available in the volume table
->   * @vtbl_size: size of the volume table in bytes
->   * @vtbl: in-RAM volume table copy
-> + * @bkblk_tbl: backup block table
->   * @device_mutex: protects on-flash volume table and serializes volume
->   *                creation, deletion, update, re-size, re-name and set
->   *                property
-> @@ -547,6 +548,7 @@ struct ubi_device {
->  	int vtbl_slots;
->  	int vtbl_size;
->  	struct ubi_vtbl_record *vtbl;
-> +	struct ubi_bkblk_tbl *bkblk_tbl;
 
-Where is struct ubi_bkblk_tbl defined (actually I found it in patch
-2).
+[...]
 
->  	struct mutex device_mutex;
 > =20
->  	int max_ec;
-> @@ -797,6 +799,20 @@ int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
->  			    struct list_head *rename_list);
->  int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_attach_info=
- *ai);
+> @@ -325,6 +339,32 @@ struct ubi_vid_hdr {
+>  #define UBI_VTBL_RECORD_SIZE_CRC (UBI_VTBL_RECORD_SIZE - sizeof(__be32))
 > =20
-> +/* bakvol.c*/
-> +int ubi_check_backup_volume(struct ubi_device *ubi);
-> +int ubi_backup_data_to_backup_volume(struct ubi_device *ubi, loff_t addr,
-> +		size_t len, size_t *retlen, const void *buf);
-> +int ubi_backup_volume_init(struct ubi_device *ubi);
-> +int ubi_backup_volume_scan(struct ubi_device *ubi,
-> +			struct ubi_vid_hdr *vidh, int pnum);
-> +int ubi_backup_volume_init_tail(struct ubi_device *ubi,
-> +				struct ubi_attach_info *si);
-> +int ubi_bad_data_recovery(struct ubi_device *ubi);
-> +int is_backup_need(struct ubi_device *ubi, loff_t addr);
-> +void init_bakvol(struct ubi_volume_desc *desc, uint8_t choice);
-> +void clear_bakvol(struct ubi_device *ubi);
+>  /**
+> + * struct ubi_bkblk_info - the information for one backup block .
+> + * @pbn: physical block number
+> + * @lbn:  logic block number
+> + * @plane: this block belongs to which plane
+> + * @pgnum: the page number (lower page) that can be programmed last time
+> + */
+
+I'm not sure to understand what those fields are used for, but I guess
+I'll understand it while reviewing the following patches.
+
+> +struct ubi_bkblk_info {
+> +	__be32  pbn;
+> +	__be32  lbn;
+> +	__u8    plane;
+> +	__be32  pgnum;
+> +	struct  list_head node;
+> +};
+
+You're mixing runtime and storage representation: node has nothing to
+do here.
+
 > +
->  /* vmt.c */
->  int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req);
->  int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl);
-> @@ -846,6 +862,7 @@ int self_check_eba(struct ubi_device *ubi, struct ubi=
-_attach_info *ai_fastmap,
-> =20
->  /* wl.c */
->  int ubi_wl_get_peb(struct ubi_device *ubi);
-> +int ubi_wl_get_plane_peb(struct ubi_device *ubi, int plane);
+> +/**
+> + * struct ubi_bkblk_tbl - a table for backup blocks.
+> + * @volume_built: indicate if backup volume be initted
+> + * @bcount_of_plane:  block count that has bee applied for corresponding=
+ plane
+> + */
+> +struct ubi_bkblk_tbl {
+> +	__u8    volume_built;
+> +	__be32  bcount_of_plane[2];
+> +	struct  list_head head;
+> +};
 
-The same goes for those functions. You only define their protypes here,
-and implement them in patch 4.
+Ditto.
 
-Please split your changes in a consistent way.
 
-Best Regards,
-
-Boris
 
 --=20
 Boris Brezillon, Free Electrons
