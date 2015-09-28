@@ -1,20 +1,18 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgfMu-0007Oy-Ne
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 20:49:53 +0000
-Subject: Re: [PATCH] ubifs: Add new mount option to force fdatasync before
- rename
-To: Nikhilesh Reddy <reddyn@codeaurora.org>
-References: <560984B4.7090105@codeaurora.org> <56099735.2060503@nod.at>
- <5609A52E.5010109@codeaurora.org>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5609A7D8.4000801@nod.at>
-Date: Mon, 28 Sep 2015 22:49:28 +0200
-MIME-Version: 1.0
-In-Reply-To: <5609A52E.5010109@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ id 1ZgfZF-000773-Ci
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 21:02:38 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v2 REBASED] mtd: nand: pxa3xx-nand: prevent DFI bus lockup on
+ removal
+Date: Mon, 28 Sep 2015 22:56:51 +0200
+Message-Id: <1443473811-14285-1-git-send-email-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +22,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+After the conversion of pxa architecture to common clock framework, the
+NAND clock can be disabled on driver exit.
 
-Am 28.09.2015 um 22:38 schrieb Nikhilesh Reddy:
->> ...and these applications are buggy by design.
->> ext4 has some hacks to detect some misuses (IIRC replace by rename and replace by truncate)
->> as these applications worked by chance on ext3.
->> Adding such a hack now to UBIFS needs a bit more justification.
->> Especially as your new mount option is a sledgehammer.
->>
->> Which application triggers this issue?
->> I'm asking because UBIFS is more or less an embedded filesystem.
->> On ext4 mostly broken GUI programs like eclipse or kwrite forgot to fsync().
-> 
-> Thanks Richard for lookign into this patch.
-> I completely agree with you on the fact that these applications are indeed buggy.
-> But yes the issues were seen on embedded systems.
-> We saw this issue when debugging a few applications that used an xml parser library.
-> to write  data.
+In this case, it happens that if the driver used the NAND and set the
+DFI arbitration bit, the next access to a static memory controller area,
+such as an ethernet card, will stall the system bus, and the core will
+be stalled forever.
 
-libxml2?
+This is especially true on pxa31x SoCs, where the NDCR was augmented
+with a new bit to prevent this lockups by giving full ownership of the
+DFI arbiter to the SMC, in change SCr#6.
 
-> There were a few other applications as well but i dont have access to their source.
-> Fixing all the applications is not exactly feasible since they may have bugs in multiple places.
-> And sometimes we dont have a legal go ahead to fix code that is from thirdparties who may never fix their code... or just distribute a s binaries.
-> This change was made due to multiple requests that came from our customers who ran into this issue on the applications that they run on their products.
-> 
-> We could  use "-o sync" mount option. But this makes UBIFS perform badly that just syncing the old inode data alone.
-> The idea was to have a mount point option that could be enabled only as needed and taking a performance hit during a rename.
-> All the tests showed no real performance degradation.
+Fix this by clearing the DFI arbritration bit in driver exit. This
+effectively prevents a lockup on zylonite when removing pxa3xx-nand
+module, and using ethernet afterwards.
 
-Hmm, I'd have assumed that programs with heavy rename() usage would degrade.
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-> Since it would be disabled by default the normal mount without this would have no impact what so ever to the current behavior.
-> Only on filesystems that are mounted with this option will this new behavior kick in.
-> 
-> Please do consider applying the patch.
-> If you have any suggestions on improving this patch to you liking please do let me know and I am happy to make any chances that you deem necessary.
+---
+Since v1: add comment, switch to NFCV1/NCFV2 registers naming
+Since v2: rebase on top of Brian's tree
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-Instead of making all rename() synchronous it would be a good start to detect broken
-patterns like ext4 does.
-I'll happily test and review those. :-)
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 740983a34626..3b74d18884ce 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -78,7 +78,8 @@
+ #define NDCR_ND_MODE		(0x3 << 21)
+ #define NDCR_NAND_MODE   	(0x0)
+ #define NDCR_CLR_PG_CNT		(0x1 << 20)
+-#define NDCR_STOP_ON_UNCOR	(0x1 << 19)
++#define NFCV1_NDCR_ARB_CNTL	(0x1 << 19)
++#define NFCV2_NDCR_STOP_ON_UNCOR	(0x1 << 19)
+ #define NDCR_RD_ID_CNT_MASK	(0x7 << 16)
+ #define NDCR_RD_ID_CNT(x)	(((x) << 16) & NDCR_RD_ID_CNT_MASK)
+ 
+@@ -1289,7 +1290,8 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+ 
+ 	/* Set an initial chunk size */
+ 	info->chunk_size = ndcr & NDCR_PAGE_SZ ? 2048 : 512;
+-	info->reg_ndcr = ndcr & ~NDCR_INT_MASK;
++	info->reg_ndcr = ndcr &
++		~(NDCR_INT_MASK | NDCR_ND_ARB_EN | NFCV1_NDCR_ARB_CNTL);
+ 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
+ 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
+ 	return 0;
+@@ -1528,6 +1530,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 	pxa3xx_flash_ids[1].name = NULL;
+ 	def = pxa3xx_flash_ids;
+ KEEP_CONFIG:
++	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
+ 	if (info->reg_ndcr & NDCR_DWIDTH_M)
+ 		chip->options |= NAND_BUSWIDTH_16;
+ 
+@@ -1754,6 +1757,16 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
+ 		free_irq(irq, info);
+ 	pxa3xx_nand_free_buff(info);
+ 
++	/*
++	 * In the pxa3xx case, the DFI bus is shared between the SMC and NFC.
++	 * In order to prevent a lockup of the system bus, the DFI bus
++	 * arbitration is granted to SMC upon driver removal. This is done by
++	 * setting the x_ARB_CNTL bit, which also prevents the NAND to have
++	 * access to the bus anymore.
++	 */
++	nand_writel(info, NDCR,
++		    (nand_readl(info, NDCR) & ~NDCR_ND_ARB_EN) |
++		    NFCV1_NDCR_ARB_CNTL);
+ 	clk_disable_unprepare(info->clk);
+ 
+ 	for (cs = 0; cs < pdata->num_cs; cs++)
+-- 
+2.1.4
