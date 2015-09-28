@@ -1,19 +1,27 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgOw1-0003f1-Ic
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 03:17:02 +0000
-Message-ID: <5608AF8D.4060402@cn.fujitsu.com>
-Date: Mon, 28 Sep 2015 11:10:05 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+ id 1ZgRBI-0000z5-AQ
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 05:40:57 +0000
+Date: Mon, 28 Sep 2015 13:41:01 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: kbuild-all@01.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Andrea Scian <rnd4@dave-tech.it>,
+ Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ Karl Zhang =?utf-8?B?5byg5Y+M6ZSjIChrYXJsemhhbmcp?= <karlzhang@micron.com>,
+ Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
+ "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>,
+ Stefan Roese <sr@denx.de>, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH 1/5] mtd: nand: add basic stuff to support power-cut
+ emulation
+Message-ID: <201509281344.QKsmTAhY%fengguang.wu@intel.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-fsdevel@vger.kernel.org>, <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBIFS: Add freeze support in ubifs
-References: <1443321561-20581-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <5607A387.9050703@nod.at>
-In-Reply-To: <5607A387.9050703@nod.at>
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="ibTvN161/egqYuK8"
+Content-Disposition: inline
+In-Reply-To: <1443193758-22071-2-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +31,180 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/27/2015 04:06 PM, Richard Weinberger wrote:
-> Yang,
->
-> Am 27.09.2015 um 04:39 schrieb Dongsheng Yang:
->> We need to do nothing in ubifs, as all is already done in vfs.
->
-> Please more details. :-)
 
-Oh, this patch is really an incorrect one. At least I have to add
-sb_start/end_intwrite and sb_start/end_pagefault in ubifs at
-first. And I have to add more details about what I am doing and
-why. Will send v2 later.
+--ibTvN161/egqYuK8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I think I was out of my mind yesterday, this patch is really not ready
-to go in my local box. :(
+Hi Boris,
 
-Sorry for the noisy.
+[auto build test results on v4.3-rc2 -- if it's inappropriate base, please ignore]
 
-Yang
-> The current changelog reads like every filesystem should implement
-> it as nop. Which is obviously not the case.
->
-> fs/super.c checks whether ->freeze_fs() is implemented, so
-> a nop-implementation does not make sense here.
->
-> I bet you hit this in fs/ioctl.c:
->          /* If filesystem doesn't support freeze feature, return. */
->          if (sb->s_op->freeze_fs == NULL && sb->s_op->freeze_super == NULL)
->                  return -EOPNOTSUPP;
->
-> Correct?
->
-> And the most important detail is missing, why is UBIFS allowed
-> to have a nop-implementation?
->
-> Thanks,
-> //richard
-> .
->
+config: i386-allnoconfig (attached as .config)
+reproduce:
+  git checkout f3924c26b426d59134751b046f403f3f66e16ed7
+  # save the attached .config to linux build tree
+  make ARCH=i386 
+
+All warnings (new ones prefixed by >>):
+
+>> include/linux/mtd/nand.h:730: warning: No description found for parameter 'get_status'
+
+vim +/get_status +730 include/linux/mtd/nand.h
+
+30631cb8 Alessandro Rubini 2009-09-20  714  	flstate_t state;
+f75e5097 Thomas Gleixner   2006-05-26  715  
+f75e5097 Thomas Gleixner   2006-05-26  716  	uint8_t *oob_poi;
+f75e5097 Thomas Gleixner   2006-05-26  717  	struct nand_hw_control *controller;
+f75e5097 Thomas Gleixner   2006-05-26  718  
+f75e5097 Thomas Gleixner   2006-05-26  719  	struct nand_ecc_ctrl ecc;
+4bf63fcb David Woodhouse   2006-09-25  720  	struct nand_buffers *buffers;
+f75e5097 Thomas Gleixner   2006-05-26  721  	struct nand_hw_control hwcontrol;
+f75e5097 Thomas Gleixner   2006-05-26  722  
+^1da177e Linus Torvalds    2005-04-16  723  	uint8_t *bbt;
+^1da177e Linus Torvalds    2005-04-16  724  	struct nand_bbt_descr *bbt_td;
+^1da177e Linus Torvalds    2005-04-16  725  	struct nand_bbt_descr *bbt_md;
+f75e5097 Thomas Gleixner   2006-05-26  726  
+^1da177e Linus Torvalds    2005-04-16  727  	struct nand_bbt_descr *badblock_pattern;
+f75e5097 Thomas Gleixner   2006-05-26  728  
+^1da177e Linus Torvalds    2005-04-16  729  	void *priv;
+^1da177e Linus Torvalds    2005-04-16 @730  };
+^1da177e Linus Torvalds    2005-04-16  731  
+^1da177e Linus Torvalds    2005-04-16  732  /*
+^1da177e Linus Torvalds    2005-04-16  733   * NAND Flash Manufacturer ID Codes
+^1da177e Linus Torvalds    2005-04-16  734   */
+^1da177e Linus Torvalds    2005-04-16  735  #define NAND_MFR_TOSHIBA	0x98
+^1da177e Linus Torvalds    2005-04-16  736  #define NAND_MFR_SAMSUNG	0xec
+^1da177e Linus Torvalds    2005-04-16  737  #define NAND_MFR_FUJITSU	0x04
+^1da177e Linus Torvalds    2005-04-16  738  #define NAND_MFR_NATIONAL	0x8f
+
+:::::: The code at line 730 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+--ibTvN161/egqYuK8
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+ubBVQvALfVfFQEZVAAA=
+
+--ibTvN161/egqYuK8--
