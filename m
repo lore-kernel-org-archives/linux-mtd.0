@@ -1,24 +1,19 @@
-Received: from mail-ob0-x242.google.com ([2607:f8b0:4003:c01::242])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zgdyn-0002lZ-L3
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 19:20:54 +0000
-Received: by obri8 with SMTP id i8so11764596obr.2
- for <linux-mtd@lists.infradead.org>; Mon, 28 Sep 2015 12:20:32 -0700 (PDT)
+ id 1ZgeGF-0003tK-Qn
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 19:38:57 +0000
+Subject: Re: [PATCH] ubifs: Add new mount option to force fdatasync before
+ rename
+To: Nikhilesh Reddy <reddyn@codeaurora.org>
+References: <560984B4.7090105@codeaurora.org>
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56099735.2060503@nod.at>
+Date: Mon, 28 Sep 2015 21:38:29 +0200
 MIME-Version: 1.0
-In-Reply-To: <1443452004-5831-1-git-send-email-bywxiaobai@163.com>
-References: <1443446807-4838-1-git-send-email-bywxiaobai@163.com>
- <1443452004-5831-1-git-send-email-bywxiaobai@163.com>
-Date: Mon, 28 Sep 2015 21:20:32 +0200
-Message-ID: <CAFLxGvx=BTm4z2e5C=Fy6Hj7mF4Lqhvxe7j6EzsZhkPQqeHXrA@mail.gmail.com>
-Subject: Re: [PATCH 17/17] fs/ubifs: remove unnecessary new_valid_dev check
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Yaowei Bai <bywxiaobai@163.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <560984B4.7090105@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 28, 2015 at 4:53 PM, Yaowei Bai <bywxiaobai@163.com> wrote:
-> As new_valid_dev always returns 1, so new_valid_dev check is not
-> needed, remove it.
->
-> Signed-off-by: Yaowei Bai <bywxiaobai@163.com>
-> ---
->  fs/ubifs/dir.c  | 3 ---
->  fs/ubifs/misc.h | 9 ++-------
->  2 files changed, 2 insertions(+), 10 deletions(-)
->
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 5c27c66..1dd9267 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -787,9 +787,6 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
->
->         dbg_gen("dent '%pd' in dir ino %lu", dentry, dir->i_ino);
->
-> -       if (!new_valid_dev(rdev))
-> -               return -EINVAL;
-> -
->         if (S_ISBLK(mode) || S_ISCHR(mode)) {
->                 dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
->                 if (!dev)
-> diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
-> index ee7cb5e..0197ed6 100644
-> --- a/fs/ubifs/misc.h
-> +++ b/fs/ubifs/misc.h
-> @@ -155,13 +155,8 @@ static inline int ubifs_wbuf_sync(struct ubifs_wbuf *wbuf)
->   */
->  static inline int ubifs_encode_dev(union ubifs_dev_desc *dev, dev_t rdev)
->  {
-> -       if (new_valid_dev(rdev)) {
-> -               dev->new = cpu_to_le32(new_encode_dev(rdev));
-> -               return sizeof(dev->new);
-> -       } else {
-> -               dev->huge = cpu_to_le64(huge_encode_dev(rdev));
-> -               return sizeof(dev->huge);
-> -       }
-> +       dev->huge = cpu_to_le64(huge_encode_dev(rdev));
-> +       return sizeof(dev->huge);
+Hi!
 
-Please be careful.
+Am 28.09.2015 um 20:19 schrieb Nikhilesh Reddy:
+> The rename operation in UBIFS is synchronous (or nearly synchronous)
+> while the write operation is not. This can result in zero length files when
+> renaming of files followed by an abrupt power down or a crash.
+> 
+> For example:
+> 1) Say a file a.txt exists with size 1KB.
+> 2) Create a file b.tmp (open)
+> 3) Update the data in b.tmp with new values (write and close)
+> 4) rename b.tmp to a.txt
+> 5) Abrupt power down or crash
+> 
+> This above scenario can result in a.txt becoming a file of zero length and
+> giving the impression of a.txt being truncated.
+> This scenario can ofcourse be prevented by calling fsync or fdatasync
+> before the rename operation.
+> 
+> There are many applications and libraries that do not call fsync or
+> fdatasync since they were tested on EXT4 which has a hack to handle
+> the above case.
 
-dev->new = cpu_to_le32(new_encode_dev(rdev));
-return sizeof(dev->huge);
+...and these applications are buggy by design.
+ext4 has some hacks to detect some misuses (IIRC replace by rename and replace by truncate)
+as these applications worked by chance on ext3.
+Adding such a hack now to UBIFS needs a bit more justification.
+Especially as your new mount option is a sledgehammer.
 
-...is the correct branch. You enabled the dead one.
+Which application triggers this issue?
+I'm asking because UBIFS is more or less an embedded filesystem.
+On ext4 mostly broken GUI programs like eclipse or kwrite forgot to fsync().
 
--- 
+> Add a new mount option of sync_before_rename which would implicitly
+> sync the data before renaming the file to help address cases where the
+> rename cases need to be handled implicitly and prevent the zero length
+> files as a result of a rename.
+> 
+> Change-Id: I4e8771d40307543b532df7f46bd87864f0d3d294
+
+What is that?
+
 Thanks,
 //richard
