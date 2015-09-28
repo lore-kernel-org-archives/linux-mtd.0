@@ -1,23 +1,19 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgMdV-0005m2-1J
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 00:49:45 +0000
-Received: by pablk4 with SMTP id lk4so60387619pab.3
- for <linux-mtd@lists.infradead.org>; Sun, 27 Sep 2015 17:49:24 -0700 (PDT)
-Date: Sun, 27 Sep 2015 17:49:22 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx-nand: switch to dmaengine
-Message-ID: <20150928004922.GA75400@google.com>
-References: <1441545167-23383-1-git-send-email-robert.jarzmik@free.fr>
- <20150928001856.GB34421@google.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZgOw1-0003f1-Ic
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 03:17:02 +0000
+Message-ID: <5608AF8D.4060402@cn.fujitsu.com>
+Date: Mon, 28 Sep 2015 11:10:05 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150928001856.GB34421@google.com>
+To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-fsdevel@vger.kernel.org>, <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBIFS: Add freeze support in ubifs
+References: <1443321561-20581-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <5607A387.9050703@nod.at>
+In-Reply-To: <5607A387.9050703@nod.at>
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 27, 2015 at 05:18:56PM -0700, Brian Norris wrote:
-> Sparse has one complaint, but I have no others:
-> 
-> On Sun, Sep 06, 2015 at 03:12:47PM +0200, Robert Jarzmik wrote:
-> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> > index 2f39bfe34584..1e9d462065e8 100644
-> > --- a/drivers/mtd/nand/pxa3xx_nand.c
-> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> > @@ -15,7 +15,9 @@
-> ...
-> > @@ -564,57 +567,61 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
-> [...]
-> > +static void start_data_dma(struct pxa3xx_nand_info *info)
-> > +{
-> > +	enum dma_data_direction direction;
-> 
-> I think this should be dma_transfer_direction. See warning below.
+On 09/27/2015 04:06 PM, Richard Weinberger wrote:
+> Yang,
+>
+> Am 27.09.2015 um 04:39 schrieb Dongsheng Yang:
+>> We need to do nothing in ubifs, as all is already done in vfs.
+>
+> Please more details. :-)
 
-I just fixed this up and pushed to l2-mtd.git. I can revert and apply
-something different if you'd like.
+Oh, this patch is really an incorrect one. At least I have to add
+sb_start/end_intwrite and sb_start/end_pagefault in ubifs at
+first. And I have to add more details about what I am doing and
+why. Will send v2 later.
 
-Regards,
-Brian
+I think I was out of my mind yesterday, this patch is really not ready
+to go in my local box. :(
+
+Sorry for the noisy.
+
+Yang
+> The current changelog reads like every filesystem should implement
+> it as nop. Which is obviously not the case.
+>
+> fs/super.c checks whether ->freeze_fs() is implemented, so
+> a nop-implementation does not make sense here.
+>
+> I bet you hit this in fs/ioctl.c:
+>          /* If filesystem doesn't support freeze feature, return. */
+>          if (sb->s_op->freeze_fs == NULL && sb->s_op->freeze_super == NULL)
+>                  return -EOPNOTSUPP;
+>
+> Correct?
+>
+> And the most important detail is missing, why is UBIFS allowed
+> to have a nop-implementation?
+>
+> Thanks,
+> //richard
+> .
+>
