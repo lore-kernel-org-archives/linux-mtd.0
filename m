@@ -1,35 +1,27 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from s159.web-hosting.com ([68.65.121.203])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgTxY-0000dG-1j
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 08:38:56 +0000
-From: =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "fransklaver@gmail.com"
- <fransklaver@gmail.com>, "wsa@the-dreams.de" <wsa@the-dreams.de>,
- "zajec5@gmail.com" <zajec5@gmail.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "baruch@tkos.co.il"
- <baruch@tkos.co.il>, "ezequiel.garcia@free-electrons.com"
- <ezequiel.garcia@free-electrons.com>, "kdasu.kdev@gmail.com"
- <kdasu.kdev@gmail.com>, "rogerq@ti.com" <rogerq@ti.com>,
- "asierra@xes-inc.com" <asierra@xes-inc.com>, bpqw <bpqw@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- "Kamil Debski" <Kamil.Debski@imgtec.com>, Ionela Voinescu
- <Ionela.Voinescu@imgtec.com>,
- =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-Subject: RE: [PATCH 12/12] mtd: nand-bbt: move nand_bbt.c to mtd folder
-Date: Mon, 28 Sep 2015 08:37:46 +0000
-Message-ID: <87F60714EC601C4C83DFF1D2E3D390A0326CD2E6@NTXXIAMBX02.xacn.micron.com>
-References: <87F60714EC601C4C83DFF1D2E3D390A0326CC82E@NTXXIAMBX02.xacn.micron.com>
- <87F60714EC601C4C83DFF1D2E3D390A0326CC91F@NTXXIAMBX02.xacn.micron.com>
- <20150925173712.GM31505@google.com>
-In-Reply-To: <20150925173712.GM31505@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1ZgUUM-0003WI-6B
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 09:12:50 +0000
+Received: from mail-la0-f43.google.com ([209.85.215.43]:34397)
+ by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
+ (Exim 4.85) (envelope-from <jteki@openedev.com>) id 1ZgUTx-0047RV-Vu
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 05:12:26 -0400
+Received: by labzv5 with SMTP id zv5so7575800lab.1
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Sep 2015 02:12:24 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20150928004644.GD34421@google.com>
+References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
+ <1441137435-52862-4-git-send-email-computersforpeace@gmail.com>
+ <CAD6G_RTpucYCnbNxnTs1xionz4pYukAmvys6x45EjYc=n7PNFw@mail.gmail.com>
+ <20150928004644.GD34421@google.com>
+Date: Mon, 28 Sep 2015 14:42:24 +0530
+Message-ID: <CAD6G_RQazifzcjDhUk8dWQUDz4yzxmxb+86nrypYv-m8e2QiKg@mail.gmail.com>
+Subject: Re: [PATCH 03/10] mtd: spi-nor: add SPI NOR manufacturer IDs
+From: Jagan Teki <jteki@openedev.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,54 +31,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQnJpYW4sDQoNClRoYW5rcyBmb3IgeW91ciByZXBseS4NCg0KT24gRnJpLCBTZXAgMjUsIDIw
-MTUgYXQgMDY6NDg6MDVBTSArMDAwMCwgQnJpYW4gTm9ycmlzIDwgY29tcHV0ZXJzZm9ycGVhY2VA
-Z21haWwuY29tID4NCndyb3RlOg0KPiBIaSBQZXRlciwNCj4gDQo+IEZpcnN0IG9mIGFsbCwgdGhh
-bmtzIGZvciB0YWtpbmcgdGhlIHRpbWUgdG8gdHJ5IHRvIGFkZHJlc3MgbXkNCj4gbG9uZy1kZWxh
-eWVkIGNvbW1lbnRzLiBJIGhvcGUgdG8gZ2l2ZSB0aGlzIGEgcHJvcGVyIGxvb2sgc29vbi4gKEkg
-YWxzbw0KPiBob3BlIHlvdSBjYW4gZml4IHRoZSBlbWFpbCB0aHJlYWRpbmcgc29vbiEgSSBrbm93
-IHRoYXQncyBhIHBhaW4uLi4pDQoNClNvcnJ5IGZvciBicmluZ2luZyBpbmNvbnZlbmllbmNlIC4g
-SSdtIHdvcmtpbmcgb24gdGhpcyBub3cuIEknbSB0cnlpbmcgdG8gZW5hYmxlDQpnaXQtc2VuZC1l
-bWFpbCBvbiBteSBzZXJ2ZXIuIE9uY2UgaXQgZG9uZSwgSSB3aWxsIHJlc2VuZCB0aGlzIHNlcmll
-cy4gQnV0IHBsZWFzZSBsb29rDQphdCB0aGlzIHNlcmllcyBmaXJzdCBpZiB5b3UgaGF2ZSB0aW1l
-Lg0KDQo+IA0KPiBCdXQgZmlyc3QsIGEgc2ltcGxlciBjb21tZW50Og0KPiANCj4gT24gRnJpLCBT
-ZXAgMjUsIDIwMTUgYXQgMDY6NDg6MDVBTSArMDAwMCwgUGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJw
-YW5kb25nKQ0KPiB3cm90ZToNCj4gPiBTaW5jZSBzdHJ1Y3QgbmFuZF9jaGlwIGlzIHJlbW92ZWQg
-ZnJvbSBuYW5kX2JidC5jLCBCQlQgaXMgbm93DQo+ID4gc2hhcmVhYmxlLiBCb3RoIE5BTkQgYW5k
-IFNQSSBOQU5EIGNhbiB1c2UgaXQuIFNvIG1vdmUgbmFuZF9iYnQuYw0KPiA+IGZyb20gbmFuZC8g
-Zm9sZXIgdG8gbXRkLyBmb2xkZXIgYW5kIGNyZWF0ZSBNVERfTkFORF9CQlQgY29uZmlnLg0KPiA+
-IEJvdGggTkFORCBhbmQgU1BJIE5BTkQgc2hvdWxkIGRlcGVuZCBvbiBNVERfTkFORF9CQlQuDQo+
-ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBQZXRlciBQYW4gPHBldGVycGFuZG9uZ0BtaWNyb24uY29t
-Pg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL210ZC9LY29uZmlnICAgICAgICAgfCAgICA3ICsNCj4g
-PiAgZHJpdmVycy9tdGQvTWFrZWZpbGUgICAgICAgIHwgICAgMSArDQo+ID4gIGRyaXZlcnMvbXRk
-L25hbmQvS2NvbmZpZyAgICB8ICAgIDIgKy0NCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9NYWtlZmls
-ZSAgIHwgICAgMiArLQ0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL25hbmRfYmJ0LmMgfCAxMjg5IC0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAgZHJpdmVycy9t
-dGQvbmFuZF9iYnQuYyAgICAgIHwgMTI4OQ0KPiArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrDQo+ID4gIDYgZmlsZXMgY2hhbmdlZCwgMTI5OSBpbnNlcnRpb25zKCsp
-LCAxMjkxIGRlbGV0aW9ucygtKQ0KPiA+ICBkZWxldGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQv
-bmFuZC9uYW5kX2JidC5jDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9uYW5k
-X2JidC5jDQo+ID4NCj4gWy4uLl0NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9u
-YW5kX2JidC5jIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2JidC5jDQo+ID4gZGVsZXRlZCBmaWxl
-IG1vZGUgMTAwNjQ0DQo+ID4gaW5kZXggNDdjMTA4NC4uMDAwMDAwMA0KPiA+IC0tLSBhL2RyaXZl
-cnMvbXRkL25hbmQvbmFuZF9iYnQuYw0KPiA+ICsrKyAvZGV2L251bGwNCj4gPiBAQCAtMSwxMjg5
-ICswLDAgQEANCj4gDQo+IFtzbmlwIGRlbGV0aW5nIGVudGlyZSBmaWxlXQ0KPiANCj4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZF9iYnQuYyBiL2RyaXZlcnMvbXRkL25hbmRfYmJ0LmMN
-Cj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAuLjQ3YzEwODQNCj4g
-PiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZF9iYnQuYw0KPiA+IEBA
-IC0wLDAgKzEsMTI4OSBAQA0KPiANCj4gW3NuaXAgYWRkaW5nIHRoZSB3aG9sZSBmaWxlIGFnYWlu
-IC0tIGV4YWN0bHkgdGhlIHNhbWUgSSBob3BlP10NCg0KWWVzLiBUaGUgd2hvbGUgZmlsZSBpcyBl
-eGFjdGx5IHRoZSBzYW1lLg0KDQo+IA0KPiBXaGVuIG1vdmluZyBmaWxlcywgaXQgaGVscHMgaWYg
-eW91IGNhbiB1c2UgdGhlICctTScgKG9yDQo+ICctLWZpbmQtcmVuYW1lcycpIG9wdGlvbiB0byBn
-aXQtZm9ybWF0LXBhdGNoLiBUaGF0IHdpbGwgZ2l2ZSBtdWNoDQo+IHNtYWxsZXIgb3V0cHV0IHRo
-YXQncyBlYXNpZXIgdG8gcmV2aWV3LiBBbmQgaWYgeW91IGhhZCB0byBjaGFuZ2UNCj4gYW55dGhp
-bmcgaW4gdGhlIG1vdmUsIGl0IHNob3VsZCBhbHNvIGhlbHAgaGlnaGxpZ2h0IGV4YWN0bHkgd2hh
-dA0KPiBjaGFuZ2VkLCBpbnN0ZWFkIG9mIGluY2x1ZGluZyB0aGUgZW50aXJlIGZpbGUgImRpZmYi
-Lg0KDQpUaGFua3MgYSBsb3QgZm9yIHlvdXIgc3VnZ2VzdGlvbi4gSSdtIHF1aXRlIG5ldyB3aXRo
-IHBhdGNoIHN1Ym1pdC4NClNvIHBsZWFzZSBmZWVsIGZyZWUgdG8gcG9pbnQgb3V0IG15IG1pc3Np
-bmcvbWlzdGFrZS4gVGhhbmtzIGluIGFkdmFuY2UuDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IEJyaWFu
-DQo+IA0KPiBQLlMuIEluY2lkZW50YWxseSwgdGhpcyBzaG91bGQgYWxzbyB3b3JrIGFyb3VuZCB5
-b3VyIGlzc3VlcyB3aXRoIHRoZQ0KPiBjb3B5cmlnaHQgc3ltYm9sLiBCdXQgdGhlbiwgSSBzdXNw
-ZWN0IHRoYXQgc29tZSBwZW9wbGUgaGF2ZSB1c2VkIHRoZXNlDQo+IHNvcnRzIG9mIG5vbi1BU0NJ
-SSBjaGFyYWN0ZXJzIGp1c3QgdG8gZmlzaCBvdXQgaXNzdWVzIHdpdGggbWFpbA0KPiBjbGllbnRz
-L01UQXMgbGlrZSB5b3VycyA6KQ0K
+On 28 September 2015 at 06:16, Brian Norris <computersforpeace@gmail.com> wrote:
+> On Fri, Sep 25, 2015 at 01:47:18AM +0530, Jagan Teki wrote:
+>> On 2 September 2015 at 01:27, Brian Norris <computersforpeace@gmail.com> wrote:
+>> > These are often similar for CFI (parallel NOR) and for SPI NOR, but they
+>> > aren't always the same, for various reasons (different namespaces,
+>> > company acquisitions and renames, etc.). And some don't have CFI_MFR_*
+>> > entries at all.
+>> >
+>> > So let's make a proper place to list the SPI NOR IDs, with all the SPI
+>> > NOR specific assumptions and comments.
+>> >
+>> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+>> > ---
+>> >  include/linux/mtd/spi-nor.h | 15 +++++++++++++++
+>> >  1 file changed, 15 insertions(+)
+>> >
+>> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+>> > index 321a055bc266..8558793cc0f7 100644
+>> > --- a/include/linux/mtd/spi-nor.h
+>> > +++ b/include/linux/mtd/spi-nor.h
+>> > @@ -11,6 +11,21 @@
+>> >  #define __LINUX_MTD_SPI_NOR_H
+>> >
+>> >  #include <linux/bitops.h>
+>> > +#include <linux/mtd/cfi.h>
+>> > +
+>> > +/*
+>> > + * Manufacturer IDs
+>> > + *
+>> > + * The first byte returned from the flash after sending opcode SPINOR_OP_RDID.
+>> > + * Sometimes these are the same as CFI IDs, but sometimes they aren't.
+>> > + */
+>> > +#define SNOR_MFR_ATMEL         CFI_MFR_ATMEL
+>> > +#define SNOR_MFR_INTEL         CFI_MFR_INTEL
+>> > +#define SNOR_MFR_MICRON                CFI_MFR_ST /* ST Micro <--> Micron */
+>> > +#define SNOR_MFR_MACRONIX      CFI_MFR_MACRONIX
+>> > +#define SNOR_MFR_SPANSION      CFI_MFR_AMD
+>> > +#define SNOR_MFR_SST           CFI_MFR_SST
+>> > +#define SNOR_MFR_WINBOND       0xef
+>>
+>> Ideally company names same but looks like winbond is the only diff as
+>> of now, why can't we define WIN and re-use the same from CFI?
+>
+> I'm not quite sure what you're suggesting. Are you suggesting we make up
+> a new Winbond CFI ID? There already is one, and it doesn't match their
+> SPI NOR, so we can't use it:
+>
+> #define CFI_MFR_WINBOND         0x00DA
+
+No - I'm suggesting in a different way, as the only change in winbond
+may be you can define this as SPINOR_MFR_WINDOND and rest will reuse.
+
+>
+> The whole point of this patch is that some mfrs use different IDs for
+> different classes of flash, so we shouldn't force our programming
+> patterns into looking like CFI (i.e., parallel NOR [1]) when we're
+> talking about serial NOR.
+>
+> If you'd rather, I can just copy the values into this header (e.g.,
+> 0x01, 0x89, etc.) and completely remove all references to CFI.
+
+Understand your intention, but if what are the mfrs id's same then
+it's better to use already defined CFI notation because we may get
+into impression that the mfrs uses same id for CFI and SPINOR(as cfi
+and spinor are NOR complaint flash memories) - IMHO.
+
+>
+> Brian
+>
+> [1] Actually, I've seen some serial flash which have CFI parameter
+> tables. But that's a different subject.
+
+--  Jagan.
