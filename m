@@ -1,21 +1,21 @@
 Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgTFQ-0003hX-0G
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 07:53:20 +0000
+ id 1ZgTHT-0005R8-UB
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 07:55:28 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Brian Norris <computersforpeace@gmail.com>
 Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx-nand: switch to dmaengine
-References: <1441545167-23383-1-git-send-email-robert.jarzmik@free.fr>
- <20150928001856.GB34421@google.com>
- <20150928004922.GA75400@google.com>
-Date: Mon, 28 Sep 2015 09:47:48 +0200
-In-Reply-To: <20150928004922.GA75400@google.com> (Brian Norris's message of
- "Sun, 27 Sep 2015 17:49:22 -0700")
-Message-ID: <87y4frdly3.fsf@belgarion.home>
+Subject: Re: [PATCH v2] mtd: nand: pxa3xx-nand: prevent DFI bus lockup on
+ removal
+References: <1440961710-17347-1-git-send-email-robert.jarzmik@free.fr>
+ <87a8s9exxg.fsf@belgarion.home> <20150928000515.GA34421@google.com>
+Date: Mon, 28 Sep 2015 09:50:00 +0200
+In-Reply-To: <20150928000515.GA34421@google.com> (Brian Norris's message of
+ "Sun, 27 Sep 2015 17:05:15 -0700")
+Message-ID: <87twqfdluf.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,27 +29,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Brian Norris <computersforpeace@gmail.com> writes:
 
-> On Sun, Sep 27, 2015 at 05:18:56PM -0700, Brian Norris wrote:
->> Sparse has one complaint, but I have no others:
+> On Sat, Sep 26, 2015 at 10:19:07PM +0200, Robert Jarzmik wrote:
+>> Robert Jarzmik <robert.jarzmik@free.fr> writes:
 >> 
->> On Sun, Sep 06, 2015 at 03:12:47PM +0200, Robert Jarzmik wrote:
->> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
->> > index 2f39bfe34584..1e9d462065e8 100644
->> > --- a/drivers/mtd/nand/pxa3xx_nand.c
->> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> > @@ -15,7 +15,9 @@
->> ...
->> > @@ -564,57 +567,61 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
->> [...]
->> > +static void start_data_dma(struct pxa3xx_nand_info *info)
->> > +{
->> > +	enum dma_data_direction direction;
+>> > After the conversion of pxa architecture to common clock framework, the
+>> > NAND clock can be disabled on driver exit.
+>> >
+>> > In this case, it happens that if the driver used the NAND and set the
+>> > DFI arbitration bit, the next access to a static memory controller area,
+>> > such as an ethernet card, will stall the system bus, and the core will
+>> > be stalled forever.
+>> >
+>> > This is especially true on pxa31x SoCs, where the NDCR was augmented
+>> > with a new bit to prevent this lockups by giving full ownership of the
+>> > DFI arbiter to the SMC, in change SCr#6.
+>> >
+>> > Fix this by clearing the DFI arbritration bit in driver exit. This
+>> > effectively prevents a lockup on zylonite when removing pxa3xx-nand
+>> > module, and using ethernet afterwards.
+>> >
+>> > Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>> Hi Brian,
 >> 
->> I think this should be dma_transfer_direction. See warning below.
+>> Are you happy with this patch, and if so could you queue it please ?
 >
-> I just fixed this up and pushed to l2-mtd.git. I can revert and apply
-> something different if you'd like.
-Thanks, your fix is perfectly correct.
+> It looks OK to me, but it doesn't apply to the latest l2-mtd.git. Am I
+> missing something? I didn't try too hard to work out the conflict
+> myself.
+OK, I'll rebase it on your tree and resend a "PATCH v2 REBASED" version today.
 
 Cheers.
 
