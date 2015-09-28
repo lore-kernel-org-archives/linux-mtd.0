@@ -1,31 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgWVs-00013J-Mz
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 11:22:33 +0000
-Date: Mon, 28 Sep 2015 13:21:59 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= (beanhuo)" <beanhuo@micron.com>
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
- <adrian.hunter@intel.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "baruch@tkos.co.il" <baruch@tkos.co.il>,
- "asierra@xes-inc.com" <asierra@xes-inc.com>, "guz.fnst@cn.fujitsu.com"
- <guz.fnst@cn.fujitsu.com>, "gsi@denx.de" <gsi@denx.de>, "richard@nod.at"
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Frank Liu
- =?UTF-8?B?5YiY576k?= (frankliu)" <frankliu@micron.com>, Andrea Scian
- <rnd4@dave-tech.it>, "Peter Pan =?UTF-8?B?5r2Y5p+P5a6P?= (peterpan)"
- <peterpan@micron.com>, "Karl Zhang =?UTF-8?B?5byg5Y+M6ZSj?= (karlzhang)"
- <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/9] fs:ubifs: add hook for UBI bakvol in ubifs layer
-Message-ID: <20150928132159.4738f573@bbrezillon>
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4CEE8@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4CEE8@NTXXIAMBX02.xacn.micron.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Received: from mx0b-00158d01.pphosted.com ([67.231.152.180])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZgWni-0001XX-GQ
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 11:40:59 +0000
+From: Fabien Proriol <Fabien.Proriol@viavisolutions.com>
+To: Paul Barker <paul@paulbarker.me.uk>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE:Fixing off_t handling in flashcp
+Date: Mon, 28 Sep 2015 11:38:30 +0000
+Message-ID: <FE17C31C9CA27B49A9BCBCD9E09346590127675B57@EUEXMB01.ds.jdsu.net>
+References: <20150926105507.GA2711@bang.betafive.co.uk>
+In-Reply-To: <20150926105507.GA2711@bang.betafive.co.uk>
+Content-Language: fr-FR
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,36 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 28 Sep 2015 07:02:52 +0000
-Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) <beanhuo@micron.com> wrote:
+Hi,
 
-> Add hook for UBI bakvol in ubifs layer.
->=20
-> open/close bakvol operation in ubifs mount.
->=20
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  fs/ubifs/super.c | 6 ++++++
->  fs/ubifs/ubifs.h | 1 +
->  2 files changed, 7 insertions(+)
->=20
-> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-> index 9547a278..f3bf548 100644
-> --- a/fs/ubifs/super.c
-> +++ b/fs/ubifs/super.c
-> @@ -1463,6 +1463,8 @@ static int mount_ubifs(struct ubifs_info *c)
->  	dbg_gen("max. seq. number:    %llu", c->max_sqnum);
->  	dbg_gen("commit number:       %llu", c->cmt_no);
-> =20
-> +	init_bakvol(c->ubi, 1);
+I used it since 2014 by appling this patch with my OpenEmbedded recipe, and=
+ it's work well for ARM architecture (xilinx zynq).
 
-This function is implemented in patch 9 and you're using it here, which
-means your series is not bisectable.
+Fabien
+________________________________________
+De : Paul Barker [paul@paulbarker.me.uk]
+Envoy=E9 : samedi 26 septembre 2015 12:55
+=C0 : linux-mtd@lists.infradead.org; Fabien Proriol
+Objet : Fixing off_t handling in flashcp
 
-Also, do we really want to let UBIFS decide whether this feature should
-be enabled or not for the whole UBI device?
+Hi,
 
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+flashcp uses "%lu" to print values of type off_t. For example, from line 30=
+7 of
+flashcp.c, with formatting butchered to fit in 80 cols:
+
+    log_printf (LOG_NORMAL,"\rWriting data: %dk/%luk (%lu%%)",
+                KB (written + i),
+                KB (filestat.st_size),
+                PERCENTAGE (written + i,filestat.st_size));
+
+The KB() macro doesn't change the type of filestat.st_size, which is 64 bit=
+s
+when large file support is enabled. On a 32-bit system this should be print=
+ed as
+"%llu" not "%lu".
+
+Looking through the archives there is already a patch to address this but i=
+t
+doesn't seem to have been applied or replied to:
+http://lists.infradead.org/pipermail/linux-mtd/2014-November/056410.html
+
+I'd like to see this fixed as the current display output is ugly on our sys=
+tems.
+Could someone take another look at this patch from Fabien? I'll also test t=
+his
+at work this week to ensure it works correctly.
+
+Thanks,
+
+--
+Paul Barker
+
+Email: paul@paulbarker.me.uk
+http://www.paulbarker.me.uk=
