@@ -1,32 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgT4R-0005qT-4t
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 07:42:00 +0000
-Date: Mon, 28 Sep 2015 09:41:34 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= (beanhuo)" <beanhuo@micron.com>
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
- <adrian.hunter@intel.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "baruch@tkos.co.il" <baruch@tkos.co.il>,
- "asierra@xes-inc.com" <asierra@xes-inc.com>, "guz.fnst@cn.fujitsu.com"
- <guz.fnst@cn.fujitsu.com>, "gsi@denx.de" <gsi@denx.de>, "richard@nod.at"
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Frank Liu
- =?UTF-8?B?5YiY576k?= (frankliu)" <frankliu@micron.com>, Andrea Scian
- <rnd4@dave-tech.it>, "Peter Pan =?UTF-8?B?5r2Y5p+P5a6P?= (peterpan)"
- <peterpan@micron.com>, "Karl Zhang =?UTF-8?B?5byg5Y+M6ZSj?= (karlzhang)"
- <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/9] drivers:mtd:UBI: add bakvol module for MLC NAND
- paired page issue
-Message-ID: <20150928094134.2ab8557e@bbrezillon>
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4CEC3@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4CEC3@NTXXIAMBX02.xacn.micron.com>
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZgTFQ-0003hX-0G
+ for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 07:53:20 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: nand: pxa3xx-nand: switch to dmaengine
+References: <1441545167-23383-1-git-send-email-robert.jarzmik@free.fr>
+ <20150928001856.GB34421@google.com>
+ <20150928004922.GA75400@google.com>
+Date: Mon, 28 Sep 2015 09:47:48 +0200
+In-Reply-To: <20150928004922.GA75400@google.com> (Brian Norris's message of
+ "Sun, 27 Sep 2015 17:49:22 -0700")
+Message-ID: <87y4frdly3.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,56 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bean,
+Brian Norris <computersforpeace@gmail.com> writes:
 
-Next time you send a patch series, could send all the patches in reply
-to the cover letter?
+> On Sun, Sep 27, 2015 at 05:18:56PM -0700, Brian Norris wrote:
+>> Sparse has one complaint, but I have no others:
+>> 
+>> On Sun, Sep 06, 2015 at 03:12:47PM +0200, Robert Jarzmik wrote:
+>> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+>> > index 2f39bfe34584..1e9d462065e8 100644
+>> > --- a/drivers/mtd/nand/pxa3xx_nand.c
+>> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+>> > @@ -15,7 +15,9 @@
+>> ...
+>> > @@ -564,57 +567,61 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
+>> [...]
+>> > +static void start_data_dma(struct pxa3xx_nand_info *info)
+>> > +{
+>> > +	enum dma_data_direction direction;
+>> 
+>> I think this should be dma_transfer_direction. See warning below.
+>
+> I just fixed this up and pushed to l2-mtd.git. I can revert and apply
+> something different if you'd like.
+Thanks, your fix is perfectly correct.
 
-On Mon, 28 Sep 2015 07:02:35 +0000
-Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) <beanhuo@micron.com> wrote:
+Cheers.
 
-> Hello,
->=20
-> This series aims at adding a bakvol module for MLC NAND paired page
-> Power loss protection.
-> MLC NAND paired page power loss is a known issue so far, MLC NAND pages a=
-re
-> coupled in a sense that if you cut power while writing to a page, you cor=
-rupt not only
-> this page, but also one of the previous pages which is paired with the cu=
-rrent one.
-> Currently, there is no a perfect solution for this.=20
-> This paired page solution is based on NAND multiple plane program feature=
-. For this
-> Patch, only used dual plane page program, means two different plane pages=
- can
-> Be programmed together at the same time.
-> Dual plane page program only implements in backup operation. Only lower p=
-age data
-> Be duplicated and back up into a internal log volume by dual plane progra=
-m method.
-
-Hm, I'm not very fond of the idea, especially because of the complexity
-caused by dual plane program operations (you can't take a random block
-to write your backup on it, which means WL is complexified too), and
-the fact that you're duplicating data (thus introducing a performance
-penalty and storage overhead).
-
->=20
-> This patch has been testing on Micron 70s/80s/90s MLC NAND.
-> Of course there are some places needed to be improved and simplified.
->=20
-> Any suggestion and comments welcomed.
-
-Sure, I'll try to review it soon.
-
-Thanks for submitting those patches.
-
-Best Regards,
-
-Boris
-
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+-- 
+Robert
