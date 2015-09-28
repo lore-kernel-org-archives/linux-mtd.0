@@ -1,19 +1,21 @@
-Received: from mx0b-00158d01.pphosted.com ([67.231.152.180])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgWni-0001XX-GQ
- for linux-mtd@lists.infradead.org; Mon, 28 Sep 2015 11:40:59 +0000
-From: Fabien Proriol <Fabien.Proriol@viavisolutions.com>
-To: Paul Barker <paul@paulbarker.me.uk>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE:Fixing off_t handling in flashcp
-Date: Mon, 28 Sep 2015 11:38:30 +0000
-Message-ID: <FE17C31C9CA27B49A9BCBCD9E09346590127675B57@EUEXMB01.ds.jdsu.net>
-References: <20150926105507.GA2711@bang.betafive.co.uk>
-In-Reply-To: <20150926105507.GA2711@bang.betafive.co.uk>
-Content-Language: fr-FR
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH linux-next 0/4] mtd: spi-nor: fix Quad SPI memory support
+To: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
+ <juhosg@openwrt.org>, <marex@denx.de>, <ben@decadent.org.uk>,
+ <jogo@openwrt.org>, <jteki@openedev.com>
+References: <cover.1442590224.git.cyrille.pitchen@atmel.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, <linux-mtd@lists.infradead.org>
+Message-ID: <56094A49.7000304@atmel.com>
+Date: Mon, 28 Sep 2015 16:10:17 +0200
 MIME-Version: 1.0
+In-Reply-To: <cover.1442590224.git.cyrille.pitchen@atmel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi all,
 
-I used it since 2014 by appling this patch with my OpenEmbedded recipe, and=
- it's work well for ARM architecture (xilinx zynq).
+are there other works in progress to enhance the QSPI support inside the
+spi-nor framework?
+Do you have any suggestion about what should be done and how to do it?
+Is there any discussion on this topic? If so, I would be interested in taking
+part of it so I could synchronize my work with other developers' efforts.
 
-Fabien
-________________________________________
-De : Paul Barker [paul@paulbarker.me.uk]
-Envoy=E9 : samedi 26 septembre 2015 12:55
-=C0 : linux-mtd@lists.infradead.org; Fabien Proriol
-Objet : Fixing off_t handling in flashcp
+Brian, Mark, Marek, with this series I've removed the Atmel QSPI controller
+driver to focus only on the common spi-nor framework. I will send a dedicated
+series later for the Atmel QSPI controller once we all agree on an update of
+the framework API to add support to other QSPI memory manufacturers such as
+Micron or Macronix.
 
-Hi,
+Currently, it looks like the spi-nor framework only works with Spansion
+memories. For instance, without the patches of this series, I can't use the
+Micron n25q128a13 embedded on sama5d2 xplained boards.
+So I hope we will find a way to make it work!
 
-flashcp uses "%lu" to print values of type off_t. For example, from line 30=
-7 of
-flashcp.c, with formatting butchered to fit in 80 cols:
+Best Regards,
 
-    log_printf (LOG_NORMAL,"\rWriting data: %dk/%luk (%lu%%)",
-                KB (written + i),
-                KB (filestat.st_size),
-                PERCENTAGE (written + i,filestat.st_size));
+Cyrille
 
-The KB() macro doesn't change the type of filestat.st_size, which is 64 bit=
-s
-when large file support is enabled. On a 32-bit system this should be print=
-ed as
-"%llu" not "%lu".
-
-Looking through the archives there is already a patch to address this but i=
-t
-doesn't seem to have been applied or replied to:
-http://lists.infradead.org/pipermail/linux-mtd/2014-November/056410.html
-
-I'd like to see this fixed as the current display output is ugly on our sys=
-tems.
-Could someone take another look at this patch from Fabien? I'll also test t=
-his
-at work this week to ensure it works correctly.
-
-Thanks,
-
---
-Paul Barker
-
-Email: paul@paulbarker.me.uk
-http://www.paulbarker.me.uk=
+Le 18/09/2015 17:49, Cyrille Pitchen a écrit :
+> Hi all,
+> 
+> this series of patches fixes the QSPI support mostly for Micron and
+> Macronix memories. There are also some updates for Spansion memories.
+> There are also many comments to explain the implementation choices based
+> on the datasheets from memory manufacturers.
+> 
+> The series was backported to a at91-4.1 kernel then tested on a sama5d2
+> xplained board, which embeds a at25df321a memory on a SPI controller and
+> a Micron n25q128a13 QSPI memory on the new Atmel QSPI controller.
+> 
+> The at25 memory was used to check non regression on the m25p80 driver
+> whereas the Micron memory was used to test the fixes of the spi-nor
+> framework. The driver for the Atmel QSPI controller will be sent in a
+> dedicated series.
+> 
+> Best Regards,
+> 
+> Cyrille
+> 
+> Cyrille Pitchen (4):
+>   mtd: spi-nor: remove unused read_xfer/write_xfer hooks
+>   mtd: spi-nor: properly detect the memory when it boots in Quad or Dual
+>     mode
+>   mtd: spi-nor: fix Quad SPI mode support for Spansion, Micron and
+>     Macronix
+>   mtd: m25p80: add support of dual and quad spi protocols to all
+>     commands
+> 
+>  drivers/mtd/devices/m25p80.c  | 254 ++++++++++---
+>  drivers/mtd/spi-nor/spi-nor.c | 811 ++++++++++++++++++++++++++++++++++++------
+>  include/linux/mtd/spi-nor.h   |  69 ++--
+>  3 files changed, 954 insertions(+), 180 deletions(-)
+> 
