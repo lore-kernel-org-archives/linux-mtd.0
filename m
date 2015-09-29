@@ -1,23 +1,24 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zh1U0-0008Iq-Ed
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 20:26:40 +0000
-Received: by pacex6 with SMTP id ex6so15750060pac.0
- for <linux-mtd@lists.infradead.org>; Tue, 29 Sep 2015 13:26:20 -0700 (PDT)
-Date: Tue, 29 Sep 2015 13:26:17 -0700
+ id 1Zh1WU-0001O4-R4
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 20:29:15 +0000
+Received: by pablk4 with SMTP id lk4so15350034pab.3
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Sep 2015 13:28:54 -0700 (PDT)
+Date: Tue, 29 Sep 2015 13:28:52 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Furquan Shaikh <furquan@google.com>,
- Stephen Barber <smbarber@chromium.org>, Marek Vasut <marex@denx.de>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Huang Shijie <shijie.huang@arm.com>
-Subject: Re: [PATCH] mtd: spi-nor: add support for w25q128fw
-Message-ID: <20150929202617.GL31505@google.com>
-References: <1442614094-38680-1-git-send-email-computersforpeace@gmail.com>
+To: Josh Cartwright <joshc@ni.com>
+Cc: Cai Zhiyong <caizhiyong@huawei.com>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: cmdlinepart: allow fill-up partition at any point
+Message-ID: <20150929202852.GM31505@google.com>
+References: <1431053861-32284-1-git-send-email-ben.shelton@ni.com>
+ <20150929195539.GF31505@google.com>
+ <20150929200045.GH31505@google.com>
+ <20150929201835.GN26335@jcartwri.amer.corp.natinst.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1442614094-38680-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <20150929201835.GN26335@jcartwri.amer.corp.natinst.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,10 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 18, 2015 at 03:08:14PM -0700, Brian Norris wrote:
-> Tested only with single I/O, but the datasheet says it supports dual and
-> quad.
+On Tue, Sep 29, 2015 at 03:18:35PM -0500, Josh Cartwright wrote:
+> On Tue, Sep 29, 2015 at 01:00:45PM -0700, Brian Norris wrote:
+> > On Tue, Sep 29, 2015 at 12:55:39PM -0700, Brian Norris wrote:
+> > 
+> > ...
+> > 
+> > Seems Ben Shelton has moved on to other things...
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> He has, but there are others paying attention who want this feature :).
 
-Pushed to l2-mtd.git
+Ok, great. Let me know if you have any questions/comments about my
+review then.
