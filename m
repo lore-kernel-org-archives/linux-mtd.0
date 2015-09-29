@@ -1,21 +1,15 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgkFf-000712-GQ
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 02:02:43 +0000
-Received: by pablk4 with SMTP id lk4so93494769pab.3
- for <linux-mtd@lists.infradead.org>; Mon, 28 Sep 2015 19:02:23 -0700 (PDT)
-Date: Mon, 28 Sep 2015 19:02:20 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: PaX Team <pageexec@freemail.hu>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- re.emese@gmail.com, spender@grsecurity.net
-Subject: Re: question about potential integer truncation in default_erasesize
-Message-ID: <20150929020220.GB31505@google.com>
-References: <56069B10.450.51AFEC35@pageexec.freemail.hu>
+ id 1ZglbG-00077M-IU
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 03:29:08 +0000
+From: <fangwei1@huawei.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, Wei Fang <fangwei1@huawei.com>
+Subject: [PATCH] jffs2: fix a memleak in read_direntry()
+Date: Tue, 29 Sep 2015 11:23:55 +0800
+Message-ID: <1443497035-25220-1-git-send-email-fangwei1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56069B10.450.51AFEC35@pageexec.freemail.hu>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Sep 26, 2015 at 03:18:08PM +0200, PaX Team wrote:
-> hi all,
-> 
-> drivers/mtd/chips/map_rom.c:default_erasesize can truncate map_info.size
-> from unsigned long to unsigned int on 64 bit archs and i'm wondering if
-> this is intentional or should/could map_info.size be turned into an unsigned
-> int field? FTR, this issue was detected with the upcoming version of the
-> size overflow plugin we have in PaX/grsecurity and there're a handful of
-> similar cases in the tree where potentially unwanted or unnecessary integer
-> truncations occur, this being one of these. any opinion/help is welcome!
+From: Wei Fang <fangwei1@huawei.com>
 
-This is being assigned to the erasesize, which is 32-bit already, and
-all of MTD expects a 32-bit erasesize, so it'd be a pretty big job to
-"fix" the truncation. But really, we can't handle (and shouldn't;
-there's really no need) >32-bit eraseblocks. That would be an
-un-manageable flash geometry.
+Need to free the memory allocated for 'fd' if failed to read all
+of the remainder name.
 
-Regards,
-Brian
+Signed-off-by: Wei Fang <fangwei1@huawei.com>
+---
+ fs/jffs2/readinode.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 28e0aab..bfebbf1 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -660,8 +660,12 @@ static inline int read_direntry(struct jffs2_sb_info *c, struct jffs2_raw_node_r
+ 
+ 		err = jffs2_flash_read(c, (ref_offset(ref)) + read,
+ 				rd->nsize - already, &read, &fd->name[already]);
+-		if (unlikely(read != rd->nsize - already) && likely(!err))
++		if (unlikely(read != rd->nsize - already) && likely(!err)) {
++			jffs2_free_full_dirent(fd);
++			JFFS2_ERROR("short read: wanted %d bytes, got %zd\n",
++				    rd->nsize - already, read);
+ 			return -EIO;
++		}
+ 
+ 		if (unlikely(err)) {
+ 			JFFS2_ERROR("read remainder of name: error %d\n", err);
+-- 
+1.7.1
